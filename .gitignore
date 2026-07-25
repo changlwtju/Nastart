@@ -1,0 +1,28 @@
+.DS_Store
+Thumbs.db
+
+# Xcode
+DerivedData/
+*.xcuserstate
+*.xcworkspace/xcuserdata/
+*.xcodeproj/xcuserdata/
+
+# Swift Package Manager
+.build/
+.swiftpm/
+Package.resolved
+
+# Node / website tooling
+node_modules/
+dist/
+.astro/
+.next/
+
+# Logs
+*.log
+
+# Local secrets
+.env
+.env.*
+!.env.example
+
