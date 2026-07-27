@@ -79,9 +79,12 @@ struct LaunchpadView: View {
                 Button {
                 } label: {
                     Image(systemName: "magnifyingglass")
+                        .font(.body.weight(.semibold))
+                        .frame(width: 34, height: 34)
+                        .background(Color(.secondarySystemGroupedBackground))
+                        .clipShape(Circle())
                 }
-                .buttonStyle(.bordered)
-                .buttonBorderShape(.circle)
+                .buttonStyle(.plain)
             }
         }
     }
