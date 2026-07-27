@@ -1,0 +1,747 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nastart Launchpad Concept Wireframes</title>
+  <style>
+    :root {
+      --bg: #f4f4f5;
+      --paper: #fff;
+      --ink: #161616;
+      --muted: #6f7177;
+      --line: #d8d9dd;
+      --soft: #eff0f2;
+      --soft-2: #e5e6ea;
+      --phone-w: 340px;
+      --phone-h: 736px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC",
+        "Helvetica Neue", Arial, sans-serif;
+    }
+
+    .page {
+      max-width: 1500px;
+      margin: 0 auto;
+      padding: 28px;
+    }
+
+    .hero {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    h1, h2, h3, p { margin: 0; }
+
+    h1 {
+      font-size: 28px;
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+
+    .hero p {
+      max-width: 920px;
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.75;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(var(--phone-w), 1fr));
+      gap: 26px;
+      align-items: start;
+    }
+
+    .concept {
+      display: grid;
+      gap: 10px;
+      justify-items: start;
+    }
+
+    .caption {
+      padding: 0 6px;
+    }
+
+    .caption h2 {
+      font-size: 17px;
+      line-height: 1.2;
+    }
+
+    .caption p {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .phone {
+      width: var(--phone-w);
+      height: var(--phone-h);
+      border: 2px solid #202124;
+      border-radius: 38px;
+      background: #fff;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 18px 44px rgba(0,0,0,.08);
+    }
+
+    .screen {
+      height: 100%;
+      overflow: hidden;
+      padding: 18px 18px 72px;
+      background: #fff;
+    }
+
+    .screen.soft {
+      background: #f8f8f9;
+    }
+
+    .screen.stage {
+      background:
+        radial-gradient(circle at 50% 12%, rgba(0,0,0,.10), transparent 24%),
+        linear-gradient(180deg, #fff 0%, #f6f6f7 48%, #eceef1 100%);
+    }
+
+    .status {
+      height: 22px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      margin-bottom: 14px;
+    }
+
+    .nav {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: start;
+      margin-bottom: 14px;
+    }
+
+    .brand {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      min-width: 0;
+    }
+
+    .logo {
+      width: 34px;
+      height: 34px;
+      border: 1.5px solid #9fa3ab;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--muted);
+      background: #fff;
+      flex: none;
+    }
+
+    .title {
+      font-size: 19px;
+      font-weight: 850;
+      line-height: 1.1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .sub {
+      color: var(--muted);
+      font-size: 11px;
+      margin-top: 3px;
+    }
+
+    .round {
+      width: 34px;
+      height: 34px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      background: #fff;
+      font-size: 13px;
+    }
+
+    .search {
+      height: 38px;
+      border-radius: 14px;
+      background: var(--soft);
+      color: var(--muted);
+      padding: 0 12px;
+      display: flex;
+      align-items: center;
+      font-size: 12px;
+      margin-bottom: 14px;
+    }
+
+    .summary-hero {
+      border: 1px solid #cfd1d7;
+      border-radius: 22px;
+      background: #fff;
+      padding: 15px;
+      margin-bottom: 14px;
+    }
+
+    .summary-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .summary-top strong {
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    .summary-top span {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .meter-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .meter {
+      border-radius: 13px;
+      background: var(--soft);
+      padding: 9px;
+      min-height: 58px;
+    }
+
+    .meter strong {
+      display: block;
+      font-size: 13px;
+    }
+
+    .meter span {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .line {
+      height: 5px;
+      border-radius: 999px;
+      background: var(--soft-2);
+      overflow: hidden;
+      margin-top: 8px;
+    }
+
+    .line i {
+      display: block;
+      height: 100%;
+      background: #9ca0a8;
+      border-radius: inherit;
+    }
+
+    .section-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin: 14px 0 8px;
+      font-size: 14px;
+      font-weight: 850;
+    }
+
+    .section-label span {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .smart-row {
+      display: grid;
+      grid-template-columns: 1.24fr .76fr;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .feature-card,
+    .service,
+    .stack,
+    .pill-card,
+    .rail-card {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 18px;
+    }
+
+    .feature-card {
+      min-height: 128px;
+      padding: 13px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .service-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .service {
+      min-height: 88px;
+      padding: 11px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .service.compact {
+      min-height: 70px;
+      border-radius: 16px;
+      padding: 10px;
+    }
+
+    .service.media {
+      border-style: dashed;
+      background: linear-gradient(180deg, #fff, #f3f4f6);
+    }
+
+    .icon-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .app-icon {
+      width: 30px;
+      height: 30px;
+      border: 1px solid #aeb1b8;
+      border-radius: 9px;
+      display: grid;
+      place-items: center;
+      background: var(--soft);
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 850;
+      flex: none;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #1f1f1f;
+      margin-top: 4px;
+      flex: none;
+    }
+
+    .dot.off {
+      background: #b8bbc2;
+    }
+
+    .card-title {
+      font-size: 13px;
+      font-weight: 850;
+      line-height: 1.2;
+    }
+
+    .card-meta {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.35;
+    }
+
+    .stage-panel {
+      min-height: 210px;
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background: rgba(255,255,255,.72);
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+
+    .stage-main {
+      height: 110px;
+      border-radius: 22px;
+      background: #fff;
+      border: 1px solid var(--line);
+      padding: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .dock {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .dock .service {
+      min-height: 62px;
+      padding: 8px;
+      border-radius: 16px;
+    }
+
+    .stack {
+      padding: 12px;
+      margin-bottom: 10px;
+    }
+
+    .stack-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 10px;
+    }
+
+    .stack-head strong {
+      font-size: 14px;
+    }
+
+    .stack-head span {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .stack-line {
+      display: grid;
+      grid-template-columns: 34px 1fr auto;
+      gap: 10px;
+      align-items: center;
+      padding: 9px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .stack-line:first-of-type {
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    .stack-line:last-child {
+      padding-bottom: 0;
+    }
+
+    .rail-layout {
+      display: grid;
+      grid-template-columns: 74px 1fr;
+      gap: 10px;
+    }
+
+    .rail {
+      display: grid;
+      gap: 8px;
+      align-content: start;
+    }
+
+    .rail-card {
+      min-height: 72px;
+      padding: 9px;
+      text-align: center;
+    }
+
+    .rail-card strong {
+      display: block;
+      font-size: 13px;
+    }
+
+    .rail-card span {
+      display: block;
+      color: var(--muted);
+      font-size: 9px;
+      margin-top: 4px;
+    }
+
+    .main-column {
+      min-width: 0;
+    }
+
+    .wide-card {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 19px;
+      padding: 12px;
+      margin-bottom: 10px;
+    }
+
+    .wide-card.media {
+      min-height: 112px;
+      background: linear-gradient(180deg, #fff, #f2f3f5);
+      border-style: dashed;
+    }
+
+    .tabbar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 66px;
+      border-top: 1px solid var(--line);
+      background: rgba(255,255,255,.96);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding-bottom: 5px;
+      align-items: center;
+    }
+
+    .tab {
+      display: grid;
+      gap: 4px;
+      justify-items: center;
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .tab i {
+      width: 22px;
+      height: 22px;
+      border: 1.5px solid currentColor;
+      border-radius: 7px;
+    }
+
+    .tab.active {
+      color: var(--ink);
+      font-weight: 800;
+    }
+
+    .notes {
+      margin-top: 24px;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    @media (max-width: 760px) {
+      .page { padding: 16px; }
+      .grid { justify-items: center; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <h1>Nastart Launchpad 概念低保真</h1>
+      <p>
+        这不是最终视觉稿，而是重新定义启动台的布局语言。目标是摆脱普通导航网格，
+        让 Launchpad 即使在低保真阶段也能看出“信息组织方式”和“产品气质”的差异。
+      </p>
+    </section>
+
+    <section class="grid">
+      <article class="concept">
+        <div class="caption">
+          <h2>方向 A：Home Base</h2>
+          <p>NAS 状态是舞台中央，服务围绕设备展开。适合作为默认主题基础。</p>
+        </div>
+        <div class="phone">
+          <div class="screen">
+            <div class="status"><span>9:41</span><span>5G 100%</span></div>
+            <div class="nav">
+              <div class="brand">
+                <div class="logo">N</div>
+                <div>
+                  <div class="title">DS918+</div>
+                  <div class="sub">DSM + Agent · 本地在线</div>
+                </div>
+              </div>
+              <div class="round">搜</div>
+            </div>
+            <div class="summary-hero">
+              <div class="summary-top">
+                <strong>NAS 正常</strong>
+                <span>3 个事项</span>
+              </div>
+              <div class="meter-row">
+                <div class="meter"><strong>CPU</strong><span>11%</span><div class="line"><i style="width:11%"></i></div></div>
+                <div class="meter"><strong>内存</strong><span>32%</span><div class="line"><i style="width:32%"></i></div></div>
+                <div class="meter"><strong>存储</strong><span>2.9 TB</span><div class="line"><i style="width:78%"></i></div></div>
+              </div>
+            </div>
+            <div class="smart-row">
+              <div class="feature-card">
+                <div class="icon-row"><div class="app-icon">JF</div><span class="dot"></span></div>
+                <div>
+                  <div class="card-title">Jellyfin</div>
+                  <div class="card-meta">继续观看 · 电影 111 · 剧集 59</div>
+                </div>
+              </div>
+              <div class="feature-card">
+                <div class="icon-row"><div class="app-icon">QB</div><span class="dot"></span></div>
+                <div>
+                  <div class="card-title">下载</div>
+                  <div class="card-meta">2 个任务 · 1.2 MB/s</div>
+                </div>
+              </div>
+            </div>
+            <div class="section-label">常用服务 <span>编辑</span></div>
+            <div class="service-grid">
+              <div class="service compact"><div class="icon-row"><div class="app-icon">DSM</div><span class="dot"></span></div><div><div class="card-title">DSM</div><div class="card-meta">设备控制</div></div></div>
+              <div class="service compact media"><div class="icon-row"><div class="app-icon">NV</div><span class="dot"></span></div><div><div class="card-title">音乐</div><div class="card-meta">Navidrome</div></div></div>
+              <div class="service compact"><div class="icon-row"><div class="app-icon">CT</div><span class="dot"></span></div><div><div class="card-title">容器</div><div class="card-meta">运行 18</div></div></div>
+              <div class="service compact"><div class="icon-row"><div class="app-icon">HP</div><span class="dot off"></span></div><div><div class="card-title">Homepage</div><div class="card-meta">未响应</div></div></div>
+            </div>
+          </div>
+          <div class="tabbar">
+            <div class="tab active"><i></i><span>启动台</span></div>
+            <div class="tab"><i></i><span>设备</span></div>
+            <div class="tab"><i></i><span>事项</span></div>
+            <div class="tab"><i></i><span>我的</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="concept">
+        <div class="caption">
+          <h2>方向 B：Service Stacks</h2>
+          <p>借鉴 Homepage 的分组，但移动端改成精致服务栈，避免铺满小方块。</p>
+        </div>
+        <div class="phone">
+          <div class="screen stage">
+            <div class="status"><span>9:41</span><span>5G 100%</span></div>
+            <div class="nav">
+              <div class="brand">
+                <div class="logo">N</div>
+                <div>
+                  <div class="title">Launchpad</div>
+                  <div class="sub">24 个服务 · 5 个分组</div>
+                </div>
+              </div>
+              <div class="round">...</div>
+            </div>
+            <div class="search">搜索服务或分组</div>
+            <div class="stage-panel">
+              <div class="stage-main">
+                <div>
+                  <div class="card-title">DS918+</div>
+                  <div class="card-meta">在线 · 证书 19 天后到期</div>
+                </div>
+                <div class="app-icon">NAS</div>
+              </div>
+              <div class="dock">
+                <div class="service"><div class="app-icon">JF</div><div class="card-meta">媒体</div></div>
+                <div class="service"><div class="app-icon">QB</div><div class="card-meta">下载</div></div>
+                <div class="service"><div class="app-icon">CT</div><div class="card-meta">容器</div></div>
+                <div class="service"><div class="app-icon">TLS</div><div class="card-meta">证书</div></div>
+              </div>
+            </div>
+            <div class="stack">
+              <div class="stack-head"><strong>Media Library</strong><span>4 个</span></div>
+              <div class="stack-line"><div class="app-icon">JF</div><div><div class="card-title">Jellyfin</div><div class="card-meta">电影 111 · 剧集 59</div></div><span class="dot"></span></div>
+              <div class="stack-line"><div class="app-icon">EM</div><div><div class="card-title">Emby</div><div class="card-meta">备用媒体库</div></div><span class="dot"></span></div>
+            </div>
+            <div class="stack">
+              <div class="stack-head"><strong>Network</strong><span>折叠</span></div>
+              <div class="stack-line"><div class="app-icon">NG</div><div><div class="card-title">Nginx Proxy</div><div class="card-meta">反向代理 · 443</div></div><span class="dot"></span></div>
+            </div>
+          </div>
+          <div class="tabbar">
+            <div class="tab active"><i></i><span>启动台</span></div>
+            <div class="tab"><i></i><span>设备</span></div>
+            <div class="tab"><i></i><span>事项</span></div>
+            <div class="tab"><i></i><span>我的</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="concept">
+        <div class="caption">
+          <h2>方向 C：Command Deck</h2>
+          <p>设备指标形成侧边仪表，服务卡片更像可操作控制板，适合高级用户。</p>
+        </div>
+        <div class="phone">
+          <div class="screen soft">
+            <div class="status"><span>9:41</span><span>5G 100%</span></div>
+            <div class="nav">
+              <div class="brand">
+                <div class="logo">N</div>
+                <div>
+                  <div class="title">DS918+</div>
+                  <div class="sub">运行 6d 21h · Agent 新鲜</div>
+                </div>
+              </div>
+              <div class="round">刷</div>
+            </div>
+            <div class="rail-layout">
+              <aside class="rail">
+                <div class="rail-card"><strong>11%</strong><span>CPU</span></div>
+                <div class="rail-card"><strong>32%</strong><span>MEM</span></div>
+                <div class="rail-card"><strong>78%</strong><span>DISK</span></div>
+                <div class="rail-card"><strong>19d</strong><span>TLS</span></div>
+              </aside>
+              <section class="main-column">
+                <div class="search">搜索 / 过滤</div>
+                <div class="wide-card media">
+                  <div class="icon-row"><div class="app-icon">JF</div><span class="dot"></span></div>
+                  <div style="margin-top: 16px;">
+                    <div class="card-title">Jellyfin</div>
+                    <div class="card-meta">继续观看 · 可系统播放 / 外部打开</div>
+                  </div>
+                  <div class="meter-row" style="margin-top: 12px;">
+                    <div class="meter"><strong>111</strong><span>电影</span></div>
+                    <div class="meter"><strong>59</strong><span>剧集</span></div>
+                    <div class="meter"><strong>0</strong><span>串流</span></div>
+                  </div>
+                </div>
+                <div class="wide-card">
+                  <div class="icon-row"><div class="app-icon">QB</div><span class="dot"></span></div>
+                  <div style="margin-top: 10px;">
+                    <div class="card-title">qBittorrent</div>
+                    <div class="card-meta">2 个任务 · RX 8.1 MB/s</div>
+                  </div>
+                </div>
+                <div class="wide-card">
+                  <div class="icon-row"><div class="app-icon">CT</div><span class="dot"></span></div>
+                  <div style="margin-top: 10px;">
+                    <div class="card-title">Container</div>
+                    <div class="card-meta">运行 18 · 异常 1</div>
+                  </div>
+                </div>
+                <div class="wide-card">
+                  <div class="icon-row"><div class="app-icon">TLS</div><span class="dot off"></span></div>
+                  <div style="margin-top: 10px;">
+                    <div class="card-title">证书提醒</div>
+                    <div class="card-meta">19 天后到期 · 进入事项</div>
+                  </div>
+                </div>
+              </section>
+            </div>
+          </div>
+          <div class="tabbar">
+            <div class="tab active"><i></i><span>启动台</span></div>
+            <div class="tab"><i></i><span>设备</span></div>
+            <div class="tab"><i></i><span>事项</span></div>
+            <div class="tab"><i></i><span>我的</span></div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="notes">
+      选择标准：方向不是比谁更花，而是比谁更像 Nastart。最终高保真阶段可以在这些结构上继续探索
+      Clean Grid、Command Center、Glass Deck 三种视觉表达，但不能再退回普通导航网格。
+    </section>
+  </main>
+</body>
+</html>

@@ -1,10 +1,12 @@
 # Cloud
 
-This directory is reserved for optional Nastart Cloud work.
+This directory is reserved for optional first-party Nastart Cloud work.
 
-Cloud is not required for the first local-first product experience.
+V1 should prioritize iCloud/CloudKit sync for Apple-device continuity. A custom
+Nastart Cloud backend is not required for the first local-first product
+experience.
 
-Potential future responsibilities:
+Potential future Nastart Cloud responsibilities:
 
 - encrypted sync
 - push notifications
@@ -14,4 +16,3 @@ Potential future responsibilities:
 
 Cloud must not store NAS credentials or other sensitive user secrets in
 plaintext.
-

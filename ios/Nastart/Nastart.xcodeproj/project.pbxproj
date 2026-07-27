@@ -1,0 +1,496 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		010101010101010101010001 /* NastartApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020001 /* NastartApp.swift */; };
+		010101010101010101010002 /* AppTabRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020002 /* AppTabRootView.swift */; };
+		010101010101010101010003 /* NASModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020003 /* NASModels.swift */; };
+		010101010101010101010004 /* SampleData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020004 /* SampleData.swift */; };
+		010101010101010101010005 /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020005 /* AppTheme.swift */; };
+		010101010101010101010006 /* StatusDot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020006 /* StatusDot.swift */; };
+		010101010101010101010007 /* MetricPill.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020007 /* MetricPill.swift */; };
+		010101010101010101010008 /* SectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020008 /* SectionHeader.swift */; };
+		010101010101010101010009 /* ServiceCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020009 /* ServiceCardView.swift */; };
+		010101010101010101010010 /* LaunchpadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020010 /* LaunchpadView.swift */; };
+		010101010101010101010011 /* DevicesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020011 /* DevicesView.swift */; };
+		010101010101010101010012 /* TasksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020012 /* TasksView.swift */; };
+		010101010101010101010013 /* MineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020013 /* MineView.swift */; };
+		010101010101010101010014 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 030303030303030303030001 /* Localizable.strings */; };
+		010101010101010101010015 /* PlaceholderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020016 /* PlaceholderView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		020202020202020202020001 /* NastartApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NastartApp.swift; sourceTree = "<group>"; };
+		020202020202020202020002 /* AppTabRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTabRootView.swift; sourceTree = "<group>"; };
+		020202020202020202020003 /* NASModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NASModels.swift; sourceTree = "<group>"; };
+		020202020202020202020004 /* SampleData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleData.swift; sourceTree = "<group>"; };
+		020202020202020202020005 /* AppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
+		020202020202020202020006 /* StatusDot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusDot.swift; sourceTree = "<group>"; };
+		020202020202020202020007 /* MetricPill.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetricPill.swift; sourceTree = "<group>"; };
+		020202020202020202020008 /* SectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeader.swift; sourceTree = "<group>"; };
+		020202020202020202020009 /* ServiceCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceCardView.swift; sourceTree = "<group>"; };
+		020202020202020202020010 /* LaunchpadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchpadView.swift; sourceTree = "<group>"; };
+		020202020202020202020011 /* DevicesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevicesView.swift; sourceTree = "<group>"; };
+		020202020202020202020012 /* TasksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TasksView.swift; sourceTree = "<group>"; };
+		020202020202020202020013 /* MineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MineView.swift; sourceTree = "<group>"; };
+		020202020202020202020014 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		020202020202020202020015 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		020202020202020202020016 /* PlaceholderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceholderView.swift; sourceTree = "<group>"; };
+		020202020202020202020099 /* Nastart.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Nastart.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		040404040404040404040001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		050505050505050505050000 = {
+			isa = PBXGroup;
+			children = (
+				050505050505050505050001 /* Nastart */,
+				050505050505050505050099 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		050505050505050505050001 /* Nastart */ = {
+			isa = PBXGroup;
+			children = (
+				050505050505050505050002 /* App */,
+				050505050505050505050003 /* Core */,
+				050505050505050505050004 /* Features */,
+				050505050505050505050005 /* Shared */,
+				030303030303030303030001 /* Localizable.strings */,
+			);
+			path = Nastart;
+			sourceTree = "<group>";
+		};
+		050505050505050505050002 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				020202020202020202020001 /* NastartApp.swift */,
+				020202020202020202020002 /* AppTabRootView.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		050505050505050505050003 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				050505050505050505050006 /* Models */,
+				050505050505050505050007 /* SampleData */,
+				050505050505050505050008 /* Design */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		050505050505050505050004 /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				050505050505050505050009 /* Launchpad */,
+				050505050505050505050010 /* Devices */,
+				050505050505050505050011 /* Tasks */,
+				050505050505050505050012 /* Mine */,
+			);
+			path = Features;
+			sourceTree = "<group>";
+		};
+		050505050505050505050005 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				020202020202020202020006 /* StatusDot.swift */,
+				020202020202020202020007 /* MetricPill.swift */,
+				020202020202020202020008 /* SectionHeader.swift */,
+				020202020202020202020016 /* PlaceholderView.swift */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		050505050505050505050006 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				020202020202020202020003 /* NASModels.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		050505050505050505050007 /* SampleData */ = {
+			isa = PBXGroup;
+			children = (
+				020202020202020202020004 /* SampleData.swift */,
+			);
+			path = SampleData;
+			sourceTree = "<group>";
+		};
+		050505050505050505050008 /* Design */ = {
+			isa = PBXGroup;
+			children = (
+				020202020202020202020005 /* AppTheme.swift */,
+			);
+			path = Design;
+			sourceTree = "<group>";
+		};
+		050505050505050505050009 /* Launchpad */ = {
+			isa = PBXGroup;
+			children = (
+				020202020202020202020009 /* ServiceCardView.swift */,
+				020202020202020202020010 /* LaunchpadView.swift */,
+			);
+			path = Launchpad;
+			sourceTree = "<group>";
+		};
+		050505050505050505050010 /* Devices */ = {
+			isa = PBXGroup;
+			children = (
+				020202020202020202020011 /* DevicesView.swift */,
+			);
+			path = Devices;
+			sourceTree = "<group>";
+		};
+		050505050505050505050011 /* Tasks */ = {
+			isa = PBXGroup;
+			children = (
+				020202020202020202020012 /* TasksView.swift */,
+			);
+			path = Tasks;
+			sourceTree = "<group>";
+		};
+		050505050505050505050012 /* Mine */ = {
+			isa = PBXGroup;
+			children = (
+				020202020202020202020013 /* MineView.swift */,
+			);
+			path = Mine;
+			sourceTree = "<group>";
+		};
+		050505050505050505050099 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				020202020202020202020099 /* Nastart.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		060606060606060606060001 /* Nastart */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 090909090909090909090002 /* Build configuration list for PBXNativeTarget "Nastart" */;
+			buildPhases = (
+				070707070707070707070001 /* Sources */,
+				040404040404040404040001 /* Frameworks */,
+				080808080808080808080001 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Nastart;
+			productName = Nastart;
+			productReference = 020202020202020202020099 /* Nastart.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		060606060606060606060000 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1600;
+				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+					060606060606060606060001 = {
+						CreatedOnToolsVersion = 16.0;
+					};
+				};
+			};
+			buildConfigurationList = 090909090909090909090001 /* Build configuration list for PBXProject "Nastart" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				"zh-Hans",
+			);
+			mainGroup = 050505050505050505050000;
+			productRefGroup = 050505050505050505050099 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				060606060606060606060001 /* Nastart */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		080808080808080808080001 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				010101010101010101010014 /* Localizable.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		070707070707070707070001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				010101010101010101010001 /* NastartApp.swift in Sources */,
+				010101010101010101010002 /* AppTabRootView.swift in Sources */,
+				010101010101010101010003 /* NASModels.swift in Sources */,
+				010101010101010101010004 /* SampleData.swift in Sources */,
+				010101010101010101010005 /* AppTheme.swift in Sources */,
+				010101010101010101010006 /* StatusDot.swift in Sources */,
+				010101010101010101010007 /* MetricPill.swift in Sources */,
+				010101010101010101010008 /* SectionHeader.swift in Sources */,
+				010101010101010101010009 /* ServiceCardView.swift in Sources */,
+				010101010101010101010010 /* LaunchpadView.swift in Sources */,
+				010101010101010101010011 /* DevicesView.swift in Sources */,
+				010101010101010101010012 /* TasksView.swift in Sources */,
+				010101010101010101010013 /* MineView.swift in Sources */,
+				010101010101010101010015 /* PlaceholderView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		030303030303030303030001 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				020202020202020202020014 /* en */,
+				020202020202020202020015 /* zh-Hans */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		090909090909090909090003 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		090909090909090909090004 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		090909090909090909090005 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Nastart;
+				INFOPLIST_KEY_CFBundleLocalizations = (
+					en,
+					"zh-Hans",
+				);
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.changliwen.nastart;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		090909090909090909090006 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Nastart;
+				INFOPLIST_KEY_CFBundleLocalizations = (
+					en,
+					"zh-Hans",
+				);
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.changliwen.nastart;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		090909090909090909090001 /* Build configuration list for PBXProject "Nastart" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				090909090909090909090003 /* Debug */,
+				090909090909090909090004 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		090909090909090909090002 /* Build configuration list for PBXNativeTarget "Nastart" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				090909090909090909090005 /* Debug */,
+				090909090909090909090006 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 060606060606060606060000 /* Project object */;
+}

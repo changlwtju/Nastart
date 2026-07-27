@@ -1,5 +1,6 @@
 .DS_Store
 Thumbs.db
+@eaDir/
 
 # Xcode
 DerivedData/
@@ -25,4 +26,3 @@ dist/
 .env
 .env.*
 !.env.example
-

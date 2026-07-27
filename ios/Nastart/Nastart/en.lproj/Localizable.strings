@@ -1,0 +1,95 @@
+"tab.launchpad" = "Launchpad";
+"tab.devices" = "Devices";
+"tab.tasks" = "Tasks";
+"tab.mine" = "Mine";
+
+"status.online" = "Online";
+"status.warning" = "Warning";
+"status.offline" = "Offline";
+"status.unknown" = "Unknown";
+
+"metric.cpu" = "CPU";
+"metric.memory" = "Memory";
+"metric.storage" = "Storage";
+"metric.tls" = "TLS";
+"metric.uptime" = "Uptime";
+
+"category.favorites" = "Favorites";
+"category.media" = "Media";
+"category.downloads" = "Downloads";
+"category.network" = "Network";
+"category.tools" = "Tools";
+
+"action.edit" = "Edit";
+"action.expand" = "Expand";
+"action.open" = "Open";
+"action.open_external" = "Open External";
+"action.details" = "Details";
+
+"launchpad.concept.picker" = "Launchpad Concept";
+"launchpad.concept.home_base" = "Home";
+"launchpad.concept.service_stacks" = "Stacks";
+"launchpad.concept.command_deck" = "Deck";
+"launchpad.summary.normal" = "NAS is healthy";
+"launchpad.summary.subtitle" = "Local network online · certificate expires in 19 days";
+"launchpad.section.services" = "Services";
+"launchpad.section.generated" = "Generated";
+
+"service.dsm.subtitle" = "Device control";
+"service.dsm.detail" = "Synology DSM control page";
+"service.jellyfin.subtitle" = "111 movies · 59 shows";
+"service.jellyfin.detail" = "Media library and playback handoff";
+"service.qb.subtitle" = "2 active tasks";
+"service.qb.detail" = "Download client Web UI";
+"service.container.subtitle" = "18 running · 1 warning";
+"service.container.detail" = "Container and port overview";
+"service.navidrome.subtitle" = "Music library offline";
+"service.navidrome.detail" = "Audio library and player handoff";
+"service.nginx.subtitle" = "Reverse proxy";
+"service.nginx.detail" = "HTTPS routing and certificate endpoint";
+
+"devices.section.resources" = "Resources";
+"devices.section.maintenance" = "Maintenance";
+"devices.resource.overview" = "Resource Overview";
+"devices.resource.containers" = "Containers";
+"devices.resource.files" = "Files";
+"devices.maintenance.certificate" = "Certificates & Security";
+"devices.maintenance.discovery" = "Rediscover Services";
+"devices.maintenance.agent" = "Nastart Agent";
+"devices.detail.status" = "Status";
+"devices.detail.mode" = "Connection";
+"devices.detail.certificate" = "Certificate";
+"devices.placeholder.agent" = "Agent-backed container details will appear here.";
+"devices.placeholder.files" = "Shared folders and favorite paths will appear here.";
+
+"tasks.segment.title" = "Task Segment";
+"tasks.segment.pending" = "Pending";
+"tasks.segment.watching" = "Watching";
+"tasks.segment.history" = "History";
+"tasks.section.pending" = "Pending";
+"tasks.section.watching" = "Watching";
+"tasks.empty.history" = "No history yet";
+"tasks.empty.history.description" = "Completed and ignored tasks will appear here.";
+"tasks.watch.certificates" = "Certificate monitoring";
+"tasks.watch.domains" = "Domain renewal monitoring";
+"tasks.watch.agent" = "Agent freshness monitoring";
+"task.cert.title" = "Certificate expires in 19 days";
+"task.cert.subtitle" = "nas.example.com · renewal suggested";
+"task.domain.title" = "Domain renews in 42 days";
+"task.domain.subtitle" = "example.com · manual reminder";
+"task.agent.title" = "Agent permission changed";
+"task.agent.subtitle" = "Review the updated data scope";
+
+"mine.profile.name" = "ChangLiwen";
+"mine.profile.subtitle" = "Local-first · iCloud off";
+"mine.plus.title" = "Nastart Plus";
+"mine.plus.subtitle" = "Unlock more cards, multiple devices, iCloud sync, and advanced themes.";
+"mine.plus.action" = "View Plus";
+"mine.launchpad.title" = "Launchpad";
+"mine.launchpad.description" = "Theme, layout, card density, and display items.";
+"mine.preferences.title" = "Preferences";
+"mine.preferences.description" = "Browser, player, external app, notification, transfer, and cache settings.";
+"mine.data.title" = "Data & Security";
+"mine.data.description" = "iCloud sync, Keychain, privacy, and trusted certificates.";
+"mine.about.title" = "Help & About";
+"mine.about.description" = "Support, feedback, version, and legal information.";

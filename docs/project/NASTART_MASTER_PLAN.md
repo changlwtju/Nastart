@@ -28,10 +28,15 @@ Major components:
 
 | Scenario | Team | Estimated Time | Risk |
 |---|---:|---:|---|
-| One person part-time | 1 | 3-5 years | very high |
+| One person part-time | 1 | 2-4+ years | feasible if scope is sliced into testable milestones |
 | One person full-time with AI | 1 | 18-30 months | feasible but demanding |
 | Small team | 2-3 | 12-18 months | recommended |
 | Professional team | around 5 | 8-12 months | faster but expensive |
+
+For Nastart's current reality, one-person part-time development is acceptable.
+The goal should not be to finish every planned feature quickly. The goal should
+be to ship coherent internal builds, then TestFlight builds, while keeping cash
+spending low and cutting scope aggressively when needed.
 
 ## 4. Work Breakdown
 
@@ -103,6 +108,12 @@ Potential stack:
 - App Store screenshots and support
 - long-term maintenance
 
+Detailed cost categories and V1 cost-control rules are maintained in
+`docs/project/COST_BREAKDOWN.md`.
+
+Post-MVP roadmap and V1 architectural extension points are maintained in
+`docs/product/POST_MVP_ROADMAP.md`.
+
 ## 7. Execution Phases
 
 ### Phase 0: Foundation
@@ -125,11 +136,21 @@ Potential stack:
 
 ### Phase 2: Prototype
 
+- finalize IA and visual style constraints for the prototype scope
+- detail core UX flows before visual mockups
+- create low-fidelity wireframes for iPhone and iPad
+- use imagegen to generate several high-fidelity visual references for selected
+  screens and launchpad themes
+- choose the implementation direction from the visual references
 - SwiftUI shell
 - local service cards
-- manual NAS/service entry
-- theme prototype
+- Synology DSM connection prototype
+- automatic service discovery and card generation prototype
+- lightweight media-root browsing and external player handoff prototype
+- three launchpad theme prototypes: Clean Grid, Command Center, Glass Deck
+- classic and Liquid presentation spike for launchpad cards
 - internal/external browser flow
+- real-device testing on available iPhone and iPad hardware
 
 ### Phase 3: Agent MVP
 
@@ -142,23 +163,37 @@ Potential stack:
 
 - multi-device management
 - generated launchpad
+- media roots and playable file handoff
 - health monitor
 - certificate/domain reminders
+- iCloud/CloudKit sync
 - iPad layout
+- polished launchpad themes across supported iPhone and iPad sizes
 - TestFlight release
 
-### Phase 5: Pro Product
+### Phase 5: Nastart Plus Product
 
 - advanced themes
 - widgets
 - diagnostics
 - multi-provider support
 - StoreKit 2 monetization
+- richer Launchpad customization
+- advanced media library and playback path
+- HTTPS/TLS certificate automation exploration
 
-### Phase 6: Optional Cloud
+### Phase 6: Optional Nastart Cloud
 
-- encrypted sync
+- custom encrypted sync if CloudKit is insufficient
 - push notifications
 - backup
 - multi-device continuity
 
+### Phase 7: Advanced Media And Automation
+
+- DS One/Lenna-class video playback track
+- richer audio playback and queue management
+- subtitle, audio track, progress, and quality controls
+- Agent-assisted certificate deployment and renewal
+- safer file operations and transfer queue
+- Apple TV and macOS media/dashboard expansion

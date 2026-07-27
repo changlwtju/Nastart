@@ -1,0 +1,95 @@
+"tab.launchpad" = "启动台";
+"tab.devices" = "设备";
+"tab.tasks" = "事项";
+"tab.mine" = "我的";
+
+"status.online" = "在线";
+"status.warning" = "警告";
+"status.offline" = "离线";
+"status.unknown" = "未知";
+
+"metric.cpu" = "CPU";
+"metric.memory" = "内存";
+"metric.storage" = "存储";
+"metric.tls" = "证书";
+"metric.uptime" = "运行时间";
+
+"category.favorites" = "收藏";
+"category.media" = "媒体";
+"category.downloads" = "下载";
+"category.network" = "网络";
+"category.tools" = "工具";
+
+"action.edit" = "编辑";
+"action.expand" = "展开";
+"action.open" = "打开";
+"action.open_external" = "外部打开";
+"action.details" = "详情";
+
+"launchpad.concept.picker" = "启动台方向";
+"launchpad.concept.home_base" = "主页";
+"launchpad.concept.service_stacks" = "分组";
+"launchpad.concept.command_deck" = "控制";
+"launchpad.summary.normal" = "NAS 状态正常";
+"launchpad.summary.subtitle" = "局域网在线 · 证书 19 天后到期";
+"launchpad.section.services" = "服务";
+"launchpad.section.generated" = "自动生成";
+
+"service.dsm.subtitle" = "设备控制";
+"service.dsm.detail" = "群晖 DSM 控制页";
+"service.jellyfin.subtitle" = "电影 111 · 剧集 59";
+"service.jellyfin.detail" = "媒体资源库与播放跳转";
+"service.qb.subtitle" = "2 个活动任务";
+"service.qb.detail" = "下载客户端 Web UI";
+"service.container.subtitle" = "运行 18 · 异常 1";
+"service.container.detail" = "容器与端口概览";
+"service.navidrome.subtitle" = "音乐库离线";
+"service.navidrome.detail" = "音频资源库与播放器跳转";
+"service.nginx.subtitle" = "反向代理";
+"service.nginx.detail" = "HTTPS 路由与证书端点";
+
+"devices.section.resources" = "资源";
+"devices.section.maintenance" = "维护";
+"devices.resource.overview" = "资源概览";
+"devices.resource.containers" = "容器";
+"devices.resource.files" = "文件";
+"devices.maintenance.certificate" = "证书与安全";
+"devices.maintenance.discovery" = "重新发现服务";
+"devices.maintenance.agent" = "Nastart Agent";
+"devices.detail.status" = "状态";
+"devices.detail.mode" = "连接方式";
+"devices.detail.certificate" = "证书";
+"devices.placeholder.agent" = "通过 Agent 读取到的容器详情会显示在这里。";
+"devices.placeholder.files" = "共享文件夹与收藏路径会显示在这里。";
+
+"tasks.segment.title" = "事项分段";
+"tasks.segment.pending" = "待处理";
+"tasks.segment.watching" = "监测项";
+"tasks.segment.history" = "历史";
+"tasks.section.pending" = "待处理";
+"tasks.section.watching" = "监测项";
+"tasks.empty.history" = "暂无历史";
+"tasks.empty.history.description" = "已完成和已忽略的事项会显示在这里。";
+"tasks.watch.certificates" = "证书监测";
+"tasks.watch.domains" = "域名续费监测";
+"tasks.watch.agent" = "Agent 新鲜度监测";
+"task.cert.title" = "证书 19 天后到期";
+"task.cert.subtitle" = "nas.example.com · 建议续期";
+"task.domain.title" = "域名 42 天后续费";
+"task.domain.subtitle" = "example.com · 手动提醒";
+"task.agent.title" = "Agent 权限有变化";
+"task.agent.subtitle" = "请确认新的数据范围";
+
+"mine.profile.name" = "ChangLiwen";
+"mine.profile.subtitle" = "本地优先 · iCloud 未开启";
+"mine.plus.title" = "Nastart Plus";
+"mine.plus.subtitle" = "解锁更多卡片、多设备、iCloud 同步和高级主题。";
+"mine.plus.action" = "查看 Plus";
+"mine.launchpad.title" = "启动台";
+"mine.launchpad.description" = "主题、布局、卡片密度与显示项。";
+"mine.preferences.title" = "偏好设置";
+"mine.preferences.description" = "浏览器、播放器、外部 App、通知、传输与缓存设置。";
+"mine.data.title" = "数据与安全";
+"mine.data.description" = "iCloud 同步、Keychain、隐私与可信证书。";
+"mine.about.title" = "帮助与关于";
+"mine.about.description" = "支持、反馈、版本和法律信息。";
