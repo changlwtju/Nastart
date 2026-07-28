@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="Nastart N Bay app icon concept">
+  <defs>
+    <linearGradient id="bg" x1="146" y1="118" x2="878" y2="904" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fffdf8"/>
+      <stop offset="1" stop-color="#ece6db"/>
+    </linearGradient>
+    <linearGradient id="case" x1="218" y1="222" x2="814" y2="796" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f7f3eb"/>
+      <stop offset=".56" stop-color="#d7d0c4"/>
+      <stop offset="1" stop-color="#b8b1a6"/>
+    </linearGradient>
+    <linearGradient id="face" x1="292" y1="310" x2="692" y2="714" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#36383d"/>
+      <stop offset="1" stop-color="#16181c"/>
+    </linearGradient>
+    <linearGradient id="start" x1="414" y1="372" x2="590" y2="650" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffba68"/>
+      <stop offset="1" stop-color="#ef9131"/>
+    </linearGradient>
+    <filter id="depth" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="26" stdDeviation="28" flood-color="#1b1b1b" flood-opacity=".14"/>
+    </filter>
+  </defs>
+  <rect width="1024" height="1024" rx="232" fill="url(#bg)"/>
+  <rect x="216" y="246" width="592" height="532" rx="122" fill="url(#case)" filter="url(#depth)"/>
+  <rect x="306" y="334" width="350" height="356" rx="64" fill="url(#face)"/>
+  <rect x="354" y="386" width="70" height="252" rx="25" fill="#f2eee5" opacity=".95"/>
+  <rect x="546" y="386" width="70" height="252" rx="25" fill="#f2eee5" opacity=".9"/>
+  <path d="M428 392l112 240" fill="none" stroke="url(#start)" stroke-width="28" stroke-linecap="round"/>
+  <path d="M374 462h30M566 462h30M374 562h30M566 562h30" fill="none" stroke="#2e3035" stroke-width="13" stroke-linecap="round" opacity=".54"/>
+  <path d="M704 432v48" fill="none" stroke="#f2eee5" stroke-width="14" stroke-linecap="round" opacity=".88"/>
+  <path d="M678 472a38 38 0 1 0 52 0" fill="none" stroke="#f2eee5" stroke-width="14" stroke-linecap="round" opacity=".88"/>
+  <circle cx="704" cy="634" r="13" fill="#ffad54"/>
+</svg>

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="Nastart NAS Launch icon concept">
+  <defs>
+    <linearGradient id="bg" x1="172" y1="120" x2="852" y2="912" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fbfaf7"/>
+      <stop offset="1" stop-color="#ebe8e1"/>
+    </linearGradient>
+    <linearGradient id="body" x1="246" y1="224" x2="790" y2="776" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#2a2d31"/>
+      <stop offset="1" stop-color="#0e1013"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="616" y1="373" x2="730" y2="535" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffb057"/>
+      <stop offset="1" stop-color="#f1932f"/>
+    </linearGradient>
+  </defs>
+  <rect width="1024" height="1024" rx="232" fill="url(#bg)"/>
+  <rect x="224" y="240" width="576" height="544" rx="132" fill="url(#body)"/>
+  <path d="M356 390h218" fill="none" stroke="#faf8f2" stroke-width="48" stroke-linecap="round" opacity=".94"/>
+  <path d="M356 512h170" fill="none" stroke="#faf8f2" stroke-width="48" stroke-linecap="round" opacity=".86"/>
+  <path d="M356 634h218" fill="none" stroke="#faf8f2" stroke-width="48" stroke-linecap="round" opacity=".94"/>
+  <path d="M620 404c0-32 36-51 62-33l116 82c23 16 23 50 0 66l-116 82c-26 18-62-1-62-33V404z" fill="url(#accent)"/>
+  <circle cx="628" cy="646" r="24" fill="#ffb057"/>
+</svg>

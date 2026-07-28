@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="Nastart Power Bay icon concept">
+  <defs>
+    <linearGradient id="bg" x1="160" y1="110" x2="860" y2="900" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fbfaf7"/>
+      <stop offset="1" stop-color="#ece9e3"/>
+    </linearGradient>
+    <linearGradient id="body" x1="236" y1="228" x2="800" y2="770" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#30343a"/>
+      <stop offset="1" stop-color="#101216"/>
+    </linearGradient>
+    <linearGradient id="power" x1="448" y1="300" x2="572" y2="592" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffb45f"/>
+      <stop offset="1" stop-color="#ef8f2e"/>
+    </linearGradient>
+  </defs>
+  <rect width="1024" height="1024" rx="232" fill="url(#bg)"/>
+  <rect x="214" y="262" width="596" height="500" rx="120" fill="url(#body)"/>
+  <path d="M512 344v138" fill="none" stroke="url(#power)" stroke-width="52" stroke-linecap="round"/>
+  <path d="M419 444a147 147 0 1 0 186 0" fill="none" stroke="#faf8f2" stroke-width="52" stroke-linecap="round"/>
+  <path d="M330 636h128M566 636h128" fill="none" stroke="#faf8f2" stroke-width="42" stroke-linecap="round" opacity=".82"/>
+  <circle cx="678" cy="404" r="22" fill="#ffad54"/>
+</svg>

@@ -22,6 +22,6 @@ struct PlaceholderView: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(AppTheme.groupedBackground)
+        .background(Color.clear)
     }
 }

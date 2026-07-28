@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="Nastart Launch Grid icon concept">
+  <defs>
+    <linearGradient id="bg" x1="166" y1="120" x2="858" y2="900" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fbfaf7"/>
+      <stop offset="1" stop-color="#ebe8e1"/>
+    </linearGradient>
+    <linearGradient id="tileDark" x1="242" y1="236" x2="782" y2="780" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#30343a"/>
+      <stop offset="1" stop-color="#111317"/>
+    </linearGradient>
+    <linearGradient id="tileWarm" x1="544" y1="248" x2="772" y2="482" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffb358"/>
+      <stop offset="1" stop-color="#f0922f"/>
+    </linearGradient>
+  </defs>
+  <rect width="1024" height="1024" rx="232" fill="url(#bg)"/>
+  <rect x="238" y="238" width="236" height="236" rx="70" fill="url(#tileDark)"/>
+  <rect x="550" y="238" width="236" height="236" rx="70" fill="url(#tileWarm)"/>
+  <rect x="238" y="550" width="236" height="236" rx="70" fill="url(#tileDark)"/>
+  <rect x="550" y="550" width="236" height="236" rx="70" fill="url(#tileDark)"/>
+  <path d="M340 332h68M340 394h92" fill="none" stroke="#faf8f2" stroke-width="34" stroke-linecap="round" opacity=".92"/>
+  <path d="M634 331l92 65-92 65z" fill="#fff7ec"/>
+  <path d="M335 640h96M335 700h68" fill="none" stroke="#faf8f2" stroke-width="34" stroke-linecap="round" opacity=".92"/>
+  <path d="M646 640h84M646 700h84" fill="none" stroke="#faf8f2" stroke-width="34" stroke-linecap="round" opacity=".92"/>
+  <circle cx="724" cy="602" r="20" fill="#ffb358"/>
+</svg>

@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="Nastart refined NAS power icon">
+  <defs>
+    <linearGradient id="bg" x1="174" y1="120" x2="850" y2="904" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fcfbf8"/>
+      <stop offset="1" stop-color="#ece8df"/>
+    </linearGradient>
+    <linearGradient id="shell" x1="272" y1="214" x2="754" y2="792" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#303236"/>
+      <stop offset="1" stop-color="#111316"/>
+    </linearGradient>
+    <linearGradient id="bay" x1="344" y1="300" x2="610" y2="724" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f7f4ed"/>
+      <stop offset="1" stop-color="#dcd7cd"/>
+    </linearGradient>
+    <linearGradient id="amber" x1="634" y1="380" x2="720" y2="478" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffb35a"/>
+      <stop offset="1" stop-color="#ee8e2d"/>
+    </linearGradient>
+    <filter id="softDepth" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="26" stdDeviation="28" flood-color="#111316" flood-opacity=".18"/>
+    </filter>
+  </defs>
+  <rect width="1024" height="1024" rx="232" fill="url(#bg)"/>
+  <rect x="238" y="214" width="548" height="596" rx="128" fill="url(#shell)" filter="url(#softDepth)"/>
+  <rect x="324" y="314" width="186" height="396" rx="46" fill="url(#bay)" opacity=".94"/>
+  <rect x="538" y="314" width="72" height="396" rx="30" fill="#f5f1e9" opacity=".72"/>
+  <path d="M368 416h96M368 510h96M368 604h96" fill="none" stroke="#34363a" stroke-width="20" stroke-linecap="round" opacity=".68"/>
+  <path d="M662 386v72" fill="none" stroke="url(#amber)" stroke-width="22" stroke-linecap="round"/>
+  <path d="M616 438a64 64 0 1 0 92 0" fill="none" stroke="url(#amber)" stroke-width="22" stroke-linecap="round"/>
+  <circle cx="662" cy="646" r="16" fill="#ffad52"/>
+</svg>

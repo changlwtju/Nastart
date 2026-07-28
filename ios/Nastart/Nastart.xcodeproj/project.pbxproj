@@ -22,6 +22,8 @@
 		010101010101010101010013 /* MineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020013 /* MineView.swift */; };
 		010101010101010101010014 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 030303030303030303030001 /* Localizable.strings */; };
 		010101010101010101010015 /* PlaceholderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020016 /* PlaceholderView.swift */; };
+		010101010101010101010016 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020017 /* Assets.xcassets */; };
+		010101010101010101010017 /* AppStateStores.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020018 /* AppStateStores.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -41,6 +43,8 @@
 		020202020202020202020014 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		020202020202020202020015 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		020202020202020202020016 /* PlaceholderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceholderView.swift; sourceTree = "<group>"; };
+		020202020202020202020017 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		020202020202020202020018 /* AppStateStores.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStateStores.swift; sourceTree = "<group>"; };
 		020202020202020202020099 /* Nastart.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Nastart.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -70,6 +74,7 @@
 				050505050505050505050003 /* Core */,
 				050505050505050505050004 /* Features */,
 				050505050505050505050005 /* Shared */,
+				020202020202020202020017 /* Assets.xcassets */,
 				030303030303030303030001 /* Localizable.strings */,
 			);
 			path = Nastart;
@@ -90,6 +95,7 @@
 				050505050505050505050006 /* Models */,
 				050505050505050505050007 /* SampleData */,
 				050505050505050505050008 /* Design */,
+				050505050505050505050013 /* Stores */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -138,6 +144,14 @@
 				020202020202020202020005 /* AppTheme.swift */,
 			);
 			path = Design;
+			sourceTree = "<group>";
+		};
+		050505050505050505050013 /* Stores */ = {
+			isa = PBXGroup;
+			children = (
+				020202020202020202020018 /* AppStateStores.swift */,
+			);
+			path = Stores;
 			sourceTree = "<group>";
 		};
 		050505050505050505050009 /* Launchpad */ = {
@@ -240,6 +254,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				010101010101010101010016 /* Assets.xcassets in Resources */,
 				010101010101010101010014 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -265,6 +280,7 @@
 				010101010101010101010012 /* TasksView.swift in Sources */,
 				010101010101010101010013 /* MineView.swift in Sources */,
 				010101010101010101010015 /* PlaceholderView.swift in Sources */,
+				010101010101010101010017 /* AppStateStores.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -403,6 +419,7 @@
 		090909090909090909090005 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
@@ -439,6 +456,7 @@
 		090909090909090909090006 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";

@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="Nastart refined dual drive start icon">
+  <defs>
+    <linearGradient id="bg" x1="166" y1="118" x2="864" y2="904" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fbfaf7"/>
+      <stop offset="1" stop-color="#ebe7df"/>
+    </linearGradient>
+    <linearGradient id="frame" x1="236" y1="230" x2="780" y2="780" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#292b2f"/>
+      <stop offset="1" stop-color="#101215"/>
+    </linearGradient>
+    <linearGradient id="plate" x1="312" y1="296" x2="622" y2="720" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f9f7f1"/>
+      <stop offset="1" stop-color="#dfd9ce"/>
+    </linearGradient>
+    <linearGradient id="warm" x1="630" y1="342" x2="716" y2="706" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffb55e"/>
+      <stop offset="1" stop-color="#ef912e"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="24" stdDeviation="24" flood-color="#111316" flood-opacity=".16"/>
+    </filter>
+  </defs>
+  <rect width="1024" height="1024" rx="232" fill="url(#bg)"/>
+  <rect x="226" y="236" width="572" height="552" rx="118" fill="url(#frame)" filter="url(#shadow)"/>
+  <rect x="318" y="326" width="132" height="368" rx="42" fill="url(#plate)"/>
+  <rect x="484" y="326" width="132" height="368" rx="42" fill="url(#plate)" opacity=".92"/>
+  <path d="M352 430h64M352 590h64M518 430h64M518 590h64" fill="none" stroke="#33363a" stroke-width="18" stroke-linecap="round" opacity=".62"/>
+  <path d="M676 388v82" fill="none" stroke="url(#warm)" stroke-width="20" stroke-linecap="round"/>
+  <path d="M628 450a70 70 0 1 0 96 0" fill="none" stroke="url(#warm)" stroke-width="20" stroke-linecap="round"/>
+  <path d="M664 658h24" fill="none" stroke="#ffaf55" stroke-width="20" stroke-linecap="round"/>
+</svg>

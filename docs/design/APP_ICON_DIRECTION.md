@@ -2,7 +2,7 @@
 
 Version: 0.1
 Status: Draft
-Last updated: 2026-07-27
+Last updated: 2026-07-28
 
 ## 1. Purpose
 
@@ -199,11 +199,201 @@ Reject an icon draft if:
 
 ## 10. Next Step
 
-Before implementation, produce low-fidelity icon drafts in SVG or a design tool,
-then compare them at:
+First SVG drafts have been added under `docs/design/app-icon/`.
+
+V2 direction after review:
+
+- Put the NAS hardware silhouette first.
+- Use the power/start symbol as a restrained secondary detail.
+- Avoid oversized play triangles and thick linework.
+- Keep the composition simple enough for iOS home-screen size.
+- Prefer refined product-icon rendering over dashboard/logo metaphors.
+
+V3 refinement after comparing NAS companion app icon conventions:
+
+- Use one centered NAS product mark as the primary object.
+- Keep drive bays and power/start control visually separated.
+- Avoid any overlap between the power button and bay/chassis elements.
+- Lighten the chassis color; avoid heavy black blocks unless used as a
+  background.
+- Make the power/start symbol read as an integrated front-panel control rather
+  than a large decorative symbol.
+
+V2 candidates:
+
+- `nastart-app-icon-v2-nas-power.svg`
+- `nastart-app-icon-v2-drive-start.svg`
+- `nastart-app-icon-v2-slim-bay.svg`
+
+V3 candidates:
+
+- `nastart-app-icon-v3-silver-nas.svg`
+- `nastart-app-icon-v3-soft-panel.svg`
+- `nastart-app-icon-v3-line-nas.svg`
+
+V4 direction:
+
+- Build from the `Silver NAS` direction, but add a Nastart-specific memory
+  point.
+- Let drive bays and a restrained startup light rail imply an abstract `N`.
+- Keep the mark recognizable as a NAS first, then readable as "start".
+- Avoid making the power button the primary symbol, because generic power icons
+  are common across utilities.
+
+V4 candidates:
+
+- `nastart-app-icon-v4-n-bay.svg`
+- `nastart-app-icon-v4-lightrail.svg`
+- `nastart-app-icon-v4-monolith.svg`
+
+V3.1 direction after review:
+
+- Return to the original `V3 Silver NAS` frame.
+- Keep the recognizable NAS chassis, bay structure, and small front-panel power
+  control.
+- Do not force an `N` symbol into the composition.
+- Tune the color system instead of changing the structure: lighter chassis,
+  softer amber power control, muted sage green status light, and warmer amber
+  secondary status light.
+
+V3.1 candidates:
+
+- `nastart-app-icon-v3-1-silver-nas-soft.svg`
+- `nastart-app-icon-v3-1-silver-nas-depth.svg`
+
+V3.2 direction:
+
+- Keep the `V3.1 Silver NAS` frame.
+- Reduce the visual weight of the power button.
+- Treat the power button and status lights as controls on the NAS front panel,
+  not decorative symbols floating beside the bay.
+- Use muted sage green and warm amber status colors instead of bright indicator
+  lights.
+
+V3.2 candidates:
+
+- `nastart-app-icon-v3-2-silver-nas-panel.svg`
+- `nastart-app-icon-v3-2-silver-nas-subtle.svg`
+
+V3.3 direction:
+
+- Keep the front-panel power/status controls from V3.2.
+- Use equal-width drive bays so the NAS reads as a refined storage product
+  instead of an irregular symbol.
+- Reserve visual variation for spacing, opacity, and control placement rather
+  than inconsistent bay widths.
+
+V3.3 candidates:
+
+- `nastart-app-icon-v3-3-silver-nas-equal-bays.svg`
+- `nastart-app-icon-v3-3-silver-nas-equal-panel.svg`
+
+V3.4 direction:
+
+- Keep equal-width drive bays and the embedded front-panel controls.
+- Soften the inner bay from near-black to layered dark gray.
+- Preserve the outer shell, recessed bay, drive tray, and control hierarchy.
+- Make the dark area read as a recessed front bay instead of another chassis.
+
+V3.4 candidates:
+
+- `nastart-app-icon-v3-4-silver-nas-soft-bay.svg`
+- `nastart-app-icon-v3-4-silver-nas-recessed.svg`
+
+V3.5 direction:
+
+- Continue from `V3.4 Recessed`.
+- Keep the stronger product hierarchy while reducing the outer recess contrast.
+- Preserve the recessed bay feeling without making the front panel look busy.
+- Add only minimal chassis polish if it improves premium feel at small sizes.
+
+V3.5 candidates:
+
+- `nastart-app-icon-v3-5-silver-nas-recessed-soft.svg`
+- `nastart-app-icon-v3-5-silver-nas-recessed-polished.svg`
+
+V3.6 direction:
+
+- Keep the V3.5 recessed structure.
+- Improve the outer chassis silhouette so the icon does not require the eye to
+  search for the case boundary.
+- Reduce visual fatigue by slightly lowering inner gray-step vibration.
+- Add contour clarity with a restrained edge and shadow, not a heavy outline.
+
+V3.6 candidates:
+
+- `nastart-app-icon-v3-6-silver-nas-recessed-balanced.svg`
+- `nastart-app-icon-v3-6-silver-nas-recessed-clear.svg`
+
+V3.7 direction:
+
+- Stop relying on adjacent warm-gray layers to define the chassis.
+- Reduce the number of gray surfaces so the icon does not feel misregistered or
+  visually fatiguing.
+- Separate background, chassis, and bay with clearer contrast.
+- Keep the equal drive bays and subtle front-panel controls from the strongest
+  previous versions.
+
+V3.7 candidates:
+
+- `nastart-app-icon-v3-7-silver-nas-slate-backdrop.svg`
+- `nastart-app-icon-v3-7-silver-nas-crisp.svg`
+- `nastart-app-icon-v3-7-silver-nas-porcelain.svg`
+
+V3.8 direction:
+
+- Use `V3.7 Porcelain` as the base because it is visually calmer.
+- Reduce nested surfaces; an app icon does not need to behave like a product
+  render.
+- Keep only the essential layers: background, chassis, front bay, drive trays,
+  and small controls.
+- Remove small tray ticks and close gray-on-gray surfaces that create eye strain.
+
+V3.8 candidates:
+
+- `nastart-app-icon-v3-8-silver-nas-porcelain-simple.svg`
+- `nastart-app-icon-v3-8-silver-nas-porcelain-flat-bay.svg`
+
+V3.9 direction:
+
+- Use `V3.7 Porcelain` as the base, but remove the outer rounded background
+  from the visual concept.
+- Treat the NAS chassis itself as the app icon's core mark.
+- Avoid unnecessary background/chassis nesting when the chassis already provides
+  enough silhouette.
+- Keep a non-transparent soft-ground export for final iOS AppIcon packaging,
+  because App Store icons should be opaque.
+
+V3.9 candidates:
+
+- `nastart-app-icon-v3-9-silver-nas-core.svg`
+- `nastart-app-icon-v3-9-silver-nas-core-soft-ground.svg`
+
+Current preferred direction:
+
+```text
+V3.9 Silver NAS Core
+```
+
+It preserves the strongest existing frame, avoids forced symbolism, and makes
+the NAS chassis the main visual object without the extra outer background layer.
+Use the core SVG as the source of truth, then place it on an opaque export
+background only when generating the final iOS AppIcon asset set.
+
+Earlier V1 candidates:
+
+- `nastart-app-icon-v1-nas-launch.svg`
+- `nastart-app-icon-v1-power-bay.svg`
+- `nastart-app-icon-v1-launch-grid.svg`
+- `app-icon-preview.html`
+
+Compare them at:
 
 - 1024 x 1024
 - App Store listing size
 - iPhone home screen size
 - Settings/search small icon size
 - dark and light wallpapers
+
+After one direction is selected, export the final vector master to the complete
+iOS AppIcon raster set and add it to the Xcode asset catalog.
