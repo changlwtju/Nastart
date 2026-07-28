@@ -236,7 +236,7 @@ private struct PlusView: View {
                 .tint(AppTheme.accent)
             }
 
-            Section("plus.subscription") {
+            Section {
                 Button("plus.action.restore") {
                     entitlementStore.restorePurchases()
                     showRestoreHint = true
@@ -246,6 +246,8 @@ private struct PlusView: View {
                         openURL(url)
                     }
                 }
+            } header: {
+                Text("plus.subscription")
             } footer: {
                 Text("plus.subscription.footer")
             }
@@ -324,13 +326,15 @@ private struct CardItemsSettingsView: View {
 
     var body: some View {
         Form {
-            Section("mine.appearance.card_items") {
+            Section {
                 Toggle("mine.appearance.item.status", isOn: $showStatus)
                 Toggle("mine.appearance.item.subtitle", isOn: $showSubtitle)
                 Toggle("mine.appearance.item.cpu", isOn: $showCPU)
                 Toggle("mine.appearance.item.memory", isOn: $showMemory)
                 Toggle("mine.appearance.item.ports", isOn: $showPorts)
                 Toggle("mine.appearance.item.library", isOn: $showLibraryCounts)
+            } header: {
+                Text("mine.appearance.card_items")
             } footer: {
                 Text("mine.appearance.card_items_footer")
             }
@@ -348,12 +352,14 @@ private struct LaunchpadGroupOrderView: View {
 
     var body: some View {
         Form {
-            Section("mine.appearance.group_default") {
+            Section {
                 Toggle("category.favorites", isOn: $expandedFavorites)
                 Toggle("category.media", isOn: $expandedMedia)
                 Toggle("category.downloads", isOn: $expandedDownloads)
                 Toggle("category.network", isOn: $expandedNetwork)
                 Toggle("category.tools", isOn: $expandedTools)
+            } header: {
+                Text("mine.appearance.group_default")
             } footer: {
                 Text("mine.appearance.group_footer")
             }
@@ -554,11 +560,13 @@ private struct DataExportView: View {
 
     var body: some View {
         Form {
-            Section("mine.privacy.export_scope") {
+            Section {
                 Toggle("mine.privacy.export.launchpad", isOn: $includeLaunchpad)
                 Toggle("mine.privacy.export.reminders", isOn: $includeReminders)
                 Toggle("mine.privacy.export.settings", isOn: $includeSettings)
                 Toggle("mine.privacy.export.secrets", isOn: $includeSecrets)
+            } header: {
+                Text("mine.privacy.export_scope")
             } footer: {
                 Text("mine.privacy.export_footer")
             }
