@@ -128,7 +128,7 @@ private struct TaskRow: View {
     var body: some View {
         HStack(spacing: 12) {
             Image(systemName: task.symbol)
-                .font(.headline)
+                .font(.subheadline)
                 .foregroundStyle(task.isUrgent ? .orange : .primary)
                 .frame(width: 34, height: 34)
                 .background(AppTheme.secondarySurface)
@@ -136,7 +136,7 @@ private struct TaskRow: View {
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(LocalizedStringKey(task.title))
-                    .font(.body.weight(.medium))
+                    .font(.body)
                 Text(LocalizedStringKey(task.subtitle))
                     .font(.caption)
                     .foregroundStyle(.secondary)

@@ -200,7 +200,7 @@ final class EntitlementStore: ObservableObject {
     @Published private(set) var plusStatus: PlusStatus
     @Published private(set) var isRestoring = false
 
-    init(plusStatus: PlusStatus = .free) {
+    init(plusStatus: PlusStatus = .active) {
         self.plusStatus = plusStatus
     }
 
