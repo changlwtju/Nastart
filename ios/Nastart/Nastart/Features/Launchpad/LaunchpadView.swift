@@ -2,7 +2,7 @@ import SwiftUI
 
 struct LaunchpadView: View {
     @EnvironmentObject private var dataStore: AppDataStore
-    @EnvironmentObject private var appearanceStore: AppearanceStore
+    @AppStorage(LaunchpadTheme.storageKey) private var launchpadThemeRaw = LaunchpadTheme.cleanGrid.rawValue
     @State private var showSearch = false
 
     var body: some View {
@@ -11,6 +11,7 @@ struct LaunchpadView: View {
                 VStack(alignment: .leading, spacing: 18) {
                     header
                     launchpadContent
+                        .id(selectedTheme)
                 }
                 .padding(18)
             }
@@ -33,7 +34,7 @@ struct LaunchpadView: View {
 
     @ViewBuilder
     private var launchpadContent: some View {
-        switch appearanceStore.launchpadTheme {
+        switch selectedTheme {
         case .cleanGrid:
             ProductLaunchpad(device: dataStore.device, services: dataStore.services)
         case .commandCenter:
@@ -45,7 +46,7 @@ struct LaunchpadView: View {
 
     @ViewBuilder
     private var launchpadBackground: some View {
-        switch appearanceStore.launchpadTheme {
+        switch selectedTheme {
         case .cleanGrid, .commandCenter:
             AppTheme.groupedBackground
         case .glassDeck:
@@ -59,6 +60,10 @@ struct LaunchpadView: View {
                 endPoint: .bottomTrailing
             )
         }
+    }
+
+    private var selectedTheme: LaunchpadTheme {
+        LaunchpadTheme(rawValue: launchpadThemeRaw) ?? .cleanGrid
     }
 
     private var header: some View {
@@ -107,54 +112,116 @@ private struct CommandCenterLaunchpad: View {
     let device: NASDevice
     let services: [LaunchpadService]
 
-    private var onlineCount: Int {
-        services.filter { $0.status == .online }.count
-    }
-
-    private var actionCount: Int {
-        services.filter { $0.status == .warning || $0.status == .offline }.count
-    }
-
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            DeviceSummaryPanel(device: device)
-
-            HStack(spacing: 10) {
-                CommandMetricTile(titleKey: "status.online", value: "\(onlineCount)")
-                CommandMetricTile(titleKey: "tasks.segment.pending", value: "\(actionCount)")
-                CommandMetricTile(titleKey: "metric.storage", value: device.storageFreeText)
-            }
-
             CertificateReminderStrip(days: device.certificateDaysRemaining)
 
-            VStack(alignment: .leading, spacing: 10) {
-                SectionHeader(titleKey: "launchpad.command.quick_actions", trailingKey: "launchpad.section.generated")
-                ForEach(services.prefix(6)) { service in
-                    ServiceListRow(service: service)
+            HStack(alignment: .top, spacing: 12) {
+                CommandMetricRail(device: device)
+
+                VStack(alignment: .leading, spacing: 10) {
+                    SectionHeader(titleKey: "launchpad.command.quick_actions", trailingKey: "launchpad.section.generated")
+                    ForEach(services.prefix(7)) { service in
+                        CommandServiceRailRow(service: service)
+                    }
                 }
+                .layoutPriority(1)
             }
         }
     }
 }
 
-private struct CommandMetricTile: View {
-    let titleKey: LocalizedStringKey
-    let value: String
+private struct CommandMetricRail: View {
+    let device: NASDevice
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(spacing: 10) {
+            CommandRailMetric(titleKey: "metric.cpu", value: "11%", symbolName: "cpu", progress: device.cpu)
+            CommandRailMetric(titleKey: "metric.memory", value: "32%", symbolName: "memorychip", progress: device.memory)
+            CommandRailMetric(titleKey: "metric.storage", value: device.storageFreeText, symbolName: "internaldrive", progress: device.storageUsed)
+            CommandRailMetric(titleKey: "metric.uptime", value: device.uptimeText, symbolName: "clock", progress: nil)
+        }
+        .frame(width: 94)
+        .padding(.vertical, 12)
+        .background(Color(.secondarySystemGroupedBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 24, style: .continuous)
+                .stroke(AppTheme.hairline, lineWidth: 1)
+        }
+    }
+}
+
+private struct CommandRailMetric: View {
+    let titleKey: LocalizedStringKey
+    let value: String
+    let symbolName: String
+    let progress: Double?
+
+    var body: some View {
+        VStack(spacing: 6) {
+            Image(systemName: symbolName)
+                .font(.caption.weight(.medium))
+                .foregroundStyle(.secondary)
+
             Text(value)
-                .font(.headline.weight(.semibold))
+                .font(.subheadline.weight(.semibold))
                 .lineLimit(1)
-                .minimumScaleFactor(0.78)
+                .minimumScaleFactor(0.72)
             Text(titleKey)
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .lineLimit(1)
-                .minimumScaleFactor(0.78)
+                .minimumScaleFactor(0.72)
+
+            if let progress {
+                ProgressView(value: progress)
+                    .tint(AppTheme.accent)
+                    .scaleEffect(x: 1, y: 0.64)
+            }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(14)
+        .frame(maxWidth: .infinity)
+        .padding(.horizontal, 8)
+        .padding(.vertical, 9)
+        .background(.background)
+        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+    }
+}
+
+private struct CommandServiceRailRow: View {
+    let service: LaunchpadService
+
+    var body: some View {
+        NavigationLink {
+            ServiceDetailView(service: service)
+        } label: {
+            HStack(spacing: 12) {
+                ServiceIconView(service: service, size: 38)
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(service.name)
+                        .font(.body.weight(.medium))
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.82)
+                    Text(LocalizedStringKey(service.detail))
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.78)
+                }
+                .layoutPriority(1)
+
+                Spacer(minLength: 8)
+
+                StatusDot(status: service.status)
+
+                Image(systemName: "chevron.right")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.tertiary)
+            }
+            .padding(12)
+        }
+        .buttonStyle(.plain)
         .background(Color(.secondarySystemGroupedBackground))
         .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
         .overlay {

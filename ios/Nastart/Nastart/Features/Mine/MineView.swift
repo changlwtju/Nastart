@@ -280,16 +280,20 @@ private struct PlusFeatureRow: View {
 private struct AppearanceSettingsView: View {
     @EnvironmentObject private var entitlementStore: EntitlementStore
     @EnvironmentObject private var appearanceStore: AppearanceStore
+    @AppStorage(LaunchpadTheme.storageKey) private var launchpadThemeRaw = LaunchpadTheme.cleanGrid.rawValue
 
     var body: some View {
         Form {
             Section {
-                Picker("mine.appearance.theme", selection: $appearanceStore.launchpadTheme) {
+                Picker("mine.appearance.theme", selection: $launchpadThemeRaw) {
                     ForEach(LaunchpadTheme.allCases) { theme in
-                        Text(LocalizedStringKey(theme.titleKey)).tag(theme)
+                        Text(LocalizedStringKey(theme.titleKey)).tag(theme.rawValue)
                     }
                 }
                 .disabled(!entitlementStore.canUse(.advancedThemes))
+                .onChange(of: launchpadThemeRaw) { newValue in
+                    appearanceStore.launchpadTheme = LaunchpadTheme(rawValue: newValue) ?? .cleanGrid
+                }
                 Toggle("mine.appearance.compact_metrics", isOn: $appearanceStore.compactMetrics)
                 Toggle("mine.appearance.status_dot", isOn: $appearanceStore.showServiceStatus)
                 if !entitlementStore.hasPlus {

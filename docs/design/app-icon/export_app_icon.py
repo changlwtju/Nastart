@@ -76,26 +76,29 @@ def rounded_rect_gradient(
 
 
 def draw_master() -> Image.Image:
-    canvas = gradient((1024, 1024), [(0, "#fbf4eb"), (1, "#dfd0bc")])
+    canvas = gradient((1024, 1024), [(0, "#fff8ee"), (0.64, "#eee3d1"), (1, "#dccab3")])
 
     rounded_rect_gradient(
         canvas,
-        (218, 258, 588, 500),
-        112,
-        [(0, "#fffaf1"), (0.54, "#e4dccf"), (1, "#bfb5a7")],
-        shadow=(0, 24, 24, hex_to_rgb("#5a4a3c"), 42),
+        (108, 170, 808, 684),
+        154,
+        [(0, "#fffdf7"), (0.5, "#e9e1d6"), (1, "#bdb3a6")],
+        shadow=(0, 28, 28, hex_to_rgb("#5a4a3c"), 34),
     )
-    rounded_rect_gradient(canvas, (304, 344, 314, 320), 48, [(0, "#565a60"), (1, "#2a2d33")])
+    rounded_rect_gradient(canvas, (218, 286, 440, 452), 68, [(0, "#555a61"), (1, "#292d34")])
 
-    for x, opacity in [(330, 245), (430, 230), (530, 214)]:
-        rounded_rect_gradient(canvas, (x, 376, 62, 256), 23, [(0, "#f5efe5"), (1, "#d7cec2")], opacity=opacity)
+    for x, opacity in [(260, 248), (390, 234), (520, 218)]:
+        rounded_rect_gradient(canvas, (x, 338, 78, 348), 29, [(0, "#fbf5ea"), (1, "#d7cec1")], opacity=opacity)
 
     draw = ImageDraw.Draw(canvas)
-    power_color = "#bd7b43"
-    draw.line((704, 438, 704, 474), fill=power_color, width=11)
-    draw.arc((675, 439, 733, 497), start=124, end=416, fill=power_color, width=11)
-    draw.ellipse((676, 596, 692, 612), fill="#83aa8a")
-    draw.ellipse((716, 596, 732, 612), fill="#c58f55")
+    for x in (292, 422, 552):
+        draw.line((x, 390, x, 628), fill="#6d7178", width=8)
+
+    power_color = "#bc804b"
+    draw.line((784, 332, 784, 386), fill=power_color, width=15)
+    draw.arc((740, 360, 828, 448), start=124, end=416, fill=power_color, width=15)
+    draw.ellipse((746, 616, 770, 640), fill="#7fa98a")
+    draw.ellipse((808, 616, 832, 640), fill="#c3986a")
 
     return canvas.convert("RGB")
 
@@ -128,6 +131,7 @@ def main() -> None:
     ]
 
     master = draw_master()
+    master.save(Path(__file__).resolve().with_name("nastart-app-icon-v3-10-fuller-nas.png"), "PNG", optimize=True)
     images = []
 
     for idiom, point_size, scale, pixels in specs:

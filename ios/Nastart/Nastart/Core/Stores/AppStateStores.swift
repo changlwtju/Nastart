@@ -149,10 +149,12 @@ enum PlusFeature: String {
     case moreReminders
 }
 
-enum LaunchpadTheme: String, CaseIterable, Identifiable {
+enum LaunchpadTheme: String, CaseIterable, Identifiable, Hashable {
     case cleanGrid
     case commandCenter
     case glassDeck
+
+    static let storageKey = "appearance.launchpadTheme"
 
     var id: String { rawValue }
 
@@ -168,7 +170,7 @@ enum LaunchpadTheme: String, CaseIterable, Identifiable {
 final class AppearanceStore: ObservableObject {
     @Published var launchpadTheme: LaunchpadTheme {
         didSet {
-            UserDefaults.standard.set(launchpadTheme.rawValue, forKey: Self.launchpadThemeKey)
+            UserDefaults.standard.set(launchpadTheme.rawValue, forKey: LaunchpadTheme.storageKey)
         }
     }
 
@@ -185,13 +187,12 @@ final class AppearanceStore: ObservableObject {
     }
 
     init() {
-        let savedTheme = UserDefaults.standard.string(forKey: Self.launchpadThemeKey)
+        let savedTheme = UserDefaults.standard.string(forKey: LaunchpadTheme.storageKey)
         launchpadTheme = savedTheme.flatMap(LaunchpadTheme.init(rawValue:)) ?? .cleanGrid
         compactMetrics = UserDefaults.standard.object(forKey: Self.compactMetricsKey) as? Bool ?? true
         showServiceStatus = UserDefaults.standard.object(forKey: Self.showServiceStatusKey) as? Bool ?? true
     }
 
-    private static let launchpadThemeKey = "appearance.launchpadTheme"
     private static let compactMetricsKey = "appearance.compactMetrics"
     private static let showServiceStatusKey = "appearance.showServiceStatus"
 }
