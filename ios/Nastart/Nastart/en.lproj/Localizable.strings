@@ -259,6 +259,9 @@
 "plus.locked.themes" = "Plus required for advanced themes";
 "mine.appearance.launchpad" = "Launchpad";
 "mine.appearance.theme" = "Theme";
+"mine.appearance.theme.clean_grid" = "Clean Grid";
+"mine.appearance.theme.command_center" = "Command Center";
+"mine.appearance.theme.glass_deck" = "Glass Deck";
 "mine.appearance.compact_metrics" = "Compact metrics";
 "mine.appearance.status_dot" = "Show status dots";
 "mine.appearance.cards" = "Cards";
@@ -266,6 +269,7 @@
 "mine.appearance.card_items_desc" = "Choose metadata shown on service cards.";
 "mine.appearance.group_order" = "Group order";
 "mine.appearance.group_order_desc" = "Reorder groups and choose defaults.";
+"launchpad.command.quick_actions" = "Quick Actions";
 "mine.players.defaults" = "Defaults";
 "mine.players.video" = "Video";
 "mine.players.audio" = "Audio";

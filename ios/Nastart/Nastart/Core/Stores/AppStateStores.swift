@@ -149,6 +149,53 @@ enum PlusFeature: String {
     case moreReminders
 }
 
+enum LaunchpadTheme: String, CaseIterable, Identifiable {
+    case cleanGrid
+    case commandCenter
+    case glassDeck
+
+    var id: String { rawValue }
+
+    var titleKey: String {
+        switch self {
+        case .cleanGrid: return "mine.appearance.theme.clean_grid"
+        case .commandCenter: return "mine.appearance.theme.command_center"
+        case .glassDeck: return "mine.appearance.theme.glass_deck"
+        }
+    }
+}
+
+final class AppearanceStore: ObservableObject {
+    @Published var launchpadTheme: LaunchpadTheme {
+        didSet {
+            UserDefaults.standard.set(launchpadTheme.rawValue, forKey: Self.launchpadThemeKey)
+        }
+    }
+
+    @Published var compactMetrics: Bool {
+        didSet {
+            UserDefaults.standard.set(compactMetrics, forKey: Self.compactMetricsKey)
+        }
+    }
+
+    @Published var showServiceStatus: Bool {
+        didSet {
+            UserDefaults.standard.set(showServiceStatus, forKey: Self.showServiceStatusKey)
+        }
+    }
+
+    init() {
+        let savedTheme = UserDefaults.standard.string(forKey: Self.launchpadThemeKey)
+        launchpadTheme = savedTheme.flatMap(LaunchpadTheme.init(rawValue:)) ?? .cleanGrid
+        compactMetrics = UserDefaults.standard.object(forKey: Self.compactMetricsKey) as? Bool ?? true
+        showServiceStatus = UserDefaults.standard.object(forKey: Self.showServiceStatusKey) as? Bool ?? true
+    }
+
+    private static let launchpadThemeKey = "appearance.launchpadTheme"
+    private static let compactMetricsKey = "appearance.compactMetrics"
+    private static let showServiceStatusKey = "appearance.showServiceStatus"
+}
+
 final class ProfileStore: ObservableObject {
     @Published var nickname: String {
         didSet {

@@ -2,6 +2,7 @@ import SwiftUI
 
 struct LaunchpadView: View {
     @EnvironmentObject private var dataStore: AppDataStore
+    @EnvironmentObject private var appearanceStore: AppearanceStore
     @State private var showSearch = false
 
     var body: some View {
@@ -9,11 +10,11 @@ struct LaunchpadView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 18) {
                     header
-                    ProductLaunchpad(device: dataStore.device, services: dataStore.services)
+                    launchpadContent
                 }
                 .padding(18)
             }
-            .background(AppTheme.groupedBackground)
+            .background(launchpadBackground)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -27,6 +28,36 @@ struct LaunchpadView: View {
             .sheet(isPresented: $showSearch) {
                 LaunchpadSearchView(services: dataStore.services)
             }
+        }
+    }
+
+    @ViewBuilder
+    private var launchpadContent: some View {
+        switch appearanceStore.launchpadTheme {
+        case .cleanGrid:
+            ProductLaunchpad(device: dataStore.device, services: dataStore.services)
+        case .commandCenter:
+            CommandCenterLaunchpad(device: dataStore.device, services: dataStore.services)
+        case .glassDeck:
+            GlassDeckLaunchpad(device: dataStore.device, services: dataStore.services)
+        }
+    }
+
+    @ViewBuilder
+    private var launchpadBackground: some View {
+        switch appearanceStore.launchpadTheme {
+        case .cleanGrid, .commandCenter:
+            AppTheme.groupedBackground
+        case .glassDeck:
+            LinearGradient(
+                colors: [
+                    Color(.systemBackground),
+                    AppTheme.softAccent.opacity(0.42),
+                    Color(.secondarySystemGroupedBackground)
+                ],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
         }
     }
 
@@ -69,6 +100,177 @@ struct LaunchpadView: View {
             }
             .buttonStyle(.plain)
         }
+    }
+}
+
+private struct CommandCenterLaunchpad: View {
+    let device: NASDevice
+    let services: [LaunchpadService]
+
+    private var onlineCount: Int {
+        services.filter { $0.status == .online }.count
+    }
+
+    private var actionCount: Int {
+        services.filter { $0.status == .warning || $0.status == .offline }.count
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            DeviceSummaryPanel(device: device)
+
+            HStack(spacing: 10) {
+                CommandMetricTile(titleKey: "status.online", value: "\(onlineCount)")
+                CommandMetricTile(titleKey: "tasks.segment.pending", value: "\(actionCount)")
+                CommandMetricTile(titleKey: "metric.storage", value: device.storageFreeText)
+            }
+
+            CertificateReminderStrip(days: device.certificateDaysRemaining)
+
+            VStack(alignment: .leading, spacing: 10) {
+                SectionHeader(titleKey: "launchpad.command.quick_actions", trailingKey: "launchpad.section.generated")
+                ForEach(services.prefix(6)) { service in
+                    ServiceListRow(service: service)
+                }
+            }
+        }
+    }
+}
+
+private struct CommandMetricTile: View {
+    let titleKey: LocalizedStringKey
+    let value: String
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text(value)
+                .font(.headline.weight(.semibold))
+                .lineLimit(1)
+                .minimumScaleFactor(0.78)
+            Text(titleKey)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .lineLimit(1)
+                .minimumScaleFactor(0.78)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(14)
+        .background(Color(.secondarySystemGroupedBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .stroke(AppTheme.hairline, lineWidth: 1)
+        }
+    }
+}
+
+private struct GlassDeckLaunchpad: View {
+    let device: NASDevice
+    let services: [LaunchpadService]
+
+    private var featuredServices: [LaunchpadService] {
+        Array(services.filter { $0.category == .favorites || $0.category == .media }.prefix(4))
+    }
+
+    private var remainingServices: [LaunchpadService] {
+        let featuredIDs = Set(featuredServices.map(\.id))
+        return Array(services.filter { !featuredIDs.contains($0.id) }.prefix(6))
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            GlassHeroPanel(device: device)
+
+            CertificateReminderStrip(days: device.certificateDaysRemaining)
+
+            VStack(alignment: .leading, spacing: 10) {
+                SectionHeader(titleKey: "category.favorites", trailingKey: "launchpad.section.generated")
+                VStack(spacing: 10) {
+                    ForEach(featuredServices) { service in
+                        GlassServiceRow(service: service)
+                    }
+                }
+            }
+
+            VStack(alignment: .leading, spacing: 10) {
+                SectionHeader(titleKey: "launchpad.section.services", trailingKey: nil)
+                ForEach(remainingServices) { service in
+                    ServiceListRow(service: service)
+                }
+            }
+        }
+    }
+}
+
+private struct GlassHeroPanel: View {
+    let device: NASDevice
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            HStack {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(device.name)
+                        .font(.title2.weight(.bold))
+                    Text(device.subtitle)
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
+                Spacer()
+                Image(systemName: "sparkles")
+                    .font(.title3)
+                    .foregroundStyle(AppTheme.accent)
+                    .frame(width: 42, height: 42)
+                    .background(.background.opacity(0.72))
+                    .clipShape(RoundedRectangle(cornerRadius: 15, style: .continuous))
+            }
+
+            MetricPillRow(metrics: [
+                MetricPillSpec("metric.cpu", value: "11%", progress: device.cpu, symbolName: "cpu"),
+                MetricPillSpec("metric.memory", value: "32%", progress: device.memory, symbolName: "memorychip"),
+                MetricPillSpec("metric.storage", value: device.storageFreeText, progress: device.storageUsed, symbolName: "internaldrive")
+            ])
+        }
+        .padding(18)
+        .background(.ultraThinMaterial)
+        .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 28, style: .continuous)
+                .stroke(.white.opacity(0.46), lineWidth: 1)
+        }
+    }
+}
+
+private struct GlassServiceRow: View {
+    let service: LaunchpadService
+
+    var body: some View {
+        NavigationLink {
+            ServiceDetailView(service: service)
+        } label: {
+            HStack(spacing: 14) {
+                ServiceIconView(service: service, size: 42)
+                VStack(alignment: .leading, spacing: 5) {
+                    Text(service.name)
+                        .font(.body.weight(.medium))
+                        .lineLimit(1)
+                    Text(LocalizedStringKey(service.detail))
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.82)
+                }
+                Spacer()
+                StatusDot(status: service.status)
+            }
+            .padding(15)
+            .background(.ultraThinMaterial)
+            .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+            .overlay {
+                RoundedRectangle(cornerRadius: 20, style: .continuous)
+                    .stroke(.white.opacity(0.42), lineWidth: 1)
+            }
+        }
+        .buttonStyle(.plain)
     }
 }
 

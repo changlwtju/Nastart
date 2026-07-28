@@ -259,6 +259,9 @@
 "plus.locked.themes" = "高级主题需要 Plus";
 "mine.appearance.launchpad" = "启动台";
 "mine.appearance.theme" = "主题";
+"mine.appearance.theme.clean_grid" = "清爽网格";
+"mine.appearance.theme.command_center" = "控制中心";
+"mine.appearance.theme.glass_deck" = "玻璃卡组";
 "mine.appearance.compact_metrics" = "紧凑指标";
 "mine.appearance.status_dot" = "显示状态点";
 "mine.appearance.cards" = "卡片";
@@ -266,6 +269,7 @@
 "mine.appearance.card_items_desc" = "选择启动台服务卡片中展示的元数据。";
 "mine.appearance.group_order" = "分组顺序";
 "mine.appearance.group_order_desc" = "调整启动台分组顺序和默认展开的分组。";
+"launchpad.command.quick_actions" = "快捷控制";
 "mine.players.defaults" = "默认方式";
 "mine.players.video" = "视频";
 "mine.players.audio" = "音频";

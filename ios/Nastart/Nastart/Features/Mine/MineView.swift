@@ -76,7 +76,7 @@ struct MineView: View {
                     }
                 }
 
-                Section("mine.section.settings") {
+                Section {
                     NavigationLink {
                         AppearanceSettingsView()
                     } label: {
@@ -97,6 +97,8 @@ struct MineView: View {
                     } label: {
                         Label("mine.privacy.title", systemImage: "lock.shield")
                     }
+                } header: {
+                    Text("mine.section.settings")
                 }
 
                 Section {
@@ -217,11 +219,13 @@ private struct PlusView: View {
                 .padding(.vertical, 8)
             }
 
-            Section("plus.includes") {
+            Section {
                 PlusFeatureRow(titleKey: "plus.feature.cards", symbol: "square.grid.2x2")
                 PlusFeatureRow(titleKey: "plus.feature.icloud", symbol: "icloud")
                 PlusFeatureRow(titleKey: "plus.feature.themes", symbol: "paintpalette")
                 PlusFeatureRow(titleKey: "plus.feature.reminders", symbol: "bell.badge")
+            } header: {
+                Text("plus.includes")
             }
 
             Section {
@@ -275,21 +279,19 @@ private struct PlusFeatureRow: View {
 
 private struct AppearanceSettingsView: View {
     @EnvironmentObject private var entitlementStore: EntitlementStore
-    @State private var launchpadTheme = 0
-    @State private var compactMetrics = true
-    @State private var showServiceStatus = true
+    @EnvironmentObject private var appearanceStore: AppearanceStore
 
     var body: some View {
         Form {
-            Section("mine.appearance.launchpad") {
-                Picker("mine.appearance.theme", selection: $launchpadTheme) {
-                    Text("Clean Grid").tag(0)
-                    Text("Command Center").tag(1)
-                    Text("Glass Deck").tag(2)
+            Section {
+                Picker("mine.appearance.theme", selection: $appearanceStore.launchpadTheme) {
+                    ForEach(LaunchpadTheme.allCases) { theme in
+                        Text(LocalizedStringKey(theme.titleKey)).tag(theme)
+                    }
                 }
                 .disabled(!entitlementStore.canUse(.advancedThemes))
-                Toggle("mine.appearance.compact_metrics", isOn: $compactMetrics)
-                Toggle("mine.appearance.status_dot", isOn: $showServiceStatus)
+                Toggle("mine.appearance.compact_metrics", isOn: $appearanceStore.compactMetrics)
+                Toggle("mine.appearance.status_dot", isOn: $appearanceStore.showServiceStatus)
                 if !entitlementStore.hasPlus {
                     NavigationLink {
                         PlusView()
@@ -297,9 +299,11 @@ private struct AppearanceSettingsView: View {
                         Label("plus.locked.themes", systemImage: "lock")
                     }
                 }
+            } header: {
+                Text("mine.appearance.launchpad")
             }
 
-            Section("mine.appearance.cards") {
+            Section {
                 NavigationLink {
                     CardItemsSettingsView()
                 } label: {
@@ -310,6 +314,8 @@ private struct AppearanceSettingsView: View {
                 } label: {
                     Label("mine.appearance.group_order", systemImage: "line.3.horizontal.decrease")
                 }
+            } header: {
+                Text("mine.appearance.cards")
             }
         }
         .navigationTitle("mine.appearance.title")
@@ -364,7 +370,7 @@ private struct LaunchpadGroupOrderView: View {
                 Text("mine.appearance.group_footer")
             }
 
-            Section("mine.appearance.group_order") {
+            Section {
                 ForEach(ServiceCategory.allCases) { category in
                     HStack {
                         Text(LocalizedStringKey(category.titleKey))
@@ -373,6 +379,8 @@ private struct LaunchpadGroupOrderView: View {
                             .foregroundStyle(.secondary)
                     }
                 }
+            } header: {
+                Text("mine.appearance.group_order")
             }
         }
         .navigationTitle("mine.appearance.group_order")
@@ -386,7 +394,7 @@ private struct PlayerSettingsView: View {
 
     var body: some View {
         Form {
-            Section("mine.players.defaults") {
+            Section {
                 Picker("mine.players.video", selection: $defaultVideo) {
                     Text("Infuse").tag("Infuse")
                     Text("VidHub").tag("VidHub")
@@ -399,13 +407,17 @@ private struct PlayerSettingsView: View {
                     Text("player.custom_scheme").tag("Custom Scheme")
                 }
                 Toggle("mine.players.prefer_external", isOn: $preferExternal)
+            } header: {
+                Text("mine.players.defaults")
             }
 
-            Section("mine.players.integrations") {
+            Section {
                 PlayerIntegrationRow(name: "Jellyfin", detailKey: "state.connected")
                 PlayerIntegrationRow(name: "Emby", detailKey: "state.not_connected")
                 PlayerIntegrationRow(name: "Plex", detailKey: "state.planned")
                 PlayerIntegrationRow(name: "Navidrome", detailKey: "state.connected")
+            } header: {
+                Text("mine.players.integrations")
             }
         }
         .navigationTitle("mine.players.title")
@@ -434,16 +446,18 @@ private struct SyncSettingsView: View {
 
     var body: some View {
         Form {
-            Section("mine.sync.icloud") {
+            Section {
                 Toggle("mine.sync.enable", isOn: $iCloudSync)
                     .disabled(!entitlementStore.canUse(.iCloudSync))
                 Toggle("mine.sync.launchpad", isOn: $syncLaunchpad)
                     .disabled(!entitlementStore.canUse(.iCloudSync))
                 Toggle("mine.sync.reminders", isOn: $syncReminders)
                     .disabled(!entitlementStore.canUse(.iCloudSync))
+            } header: {
+                Text("mine.sync.icloud")
             }
 
-            Section("mine.sync.scope") {
+            Section {
                 LabeledContent("mine.sync.devices", value: "2")
                 LabeledContent("mine.sync.last") {
                     Text("state.just_now")
@@ -455,6 +469,8 @@ private struct SyncSettingsView: View {
                         Label("plus.locked.icloud", systemImage: "lock")
                     }
                 }
+            } header: {
+                Text("mine.sync.scope")
             }
         }
         .navigationTitle("mine.sync.title")
@@ -468,7 +484,7 @@ private struct PrivacySecurityView: View {
 
     var body: some View {
         Form {
-            Section("mine.privacy.security") {
+            Section {
                 Toggle("mine.privacy.faceid", isOn: $biometricUnlock)
                 Toggle("mine.privacy.clipboard", isOn: $clipboardCheck)
                 NavigationLink {
@@ -476,9 +492,11 @@ private struct PrivacySecurityView: View {
                 } label: {
                     Label("mine.privacy.keychain", systemImage: "key")
                 }
+            } header: {
+                Text("mine.privacy.security")
             }
 
-            Section("mine.privacy.data") {
+            Section {
                 NavigationLink {
                     DataExportView()
                 } label: {
@@ -487,6 +505,8 @@ private struct PrivacySecurityView: View {
                 Button("mine.privacy.clear_cache") {
                     showCacheHint = true
                 }
+            } header: {
+                Text("mine.privacy.data")
             }
         }
         .navigationTitle("mine.privacy.title")
@@ -509,19 +529,23 @@ private struct KeychainSettingsView: View {
                     .padding(.vertical, 6)
             }
 
-            Section("mine.privacy.keychain_items") {
+            Section {
                 SecureItemRow(titleKey: "mine.privacy.keychain.dsm", detailKey: "state.connected")
                 SecureItemRow(titleKey: "mine.privacy.keychain.agent", detailKey: "state.connected")
                 SecureItemRow(titleKey: "mine.privacy.keychain.media", detailKey: "state.not_connected")
+            } header: {
+                Text("mine.privacy.keychain_items")
             }
 
-            Section("mine.privacy.keychain_actions") {
+            Section {
                 Button("mine.privacy.keychain.rotate") {
                     show("mine.privacy.keychain_rotate_hint")
                 }
                 Button("mine.privacy.keychain.clear", role: .destructive) {
                     show("mine.privacy.keychain_clear_hint")
                 }
+            } header: {
+                Text("mine.privacy.keychain_actions")
             }
         }
         .listStyle(.insetGrouped)

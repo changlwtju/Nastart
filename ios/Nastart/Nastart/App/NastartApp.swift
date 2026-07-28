@@ -6,6 +6,7 @@ struct NastartApp: App {
     @StateObject private var profileStore = ProfileStore()
     @StateObject private var connectionStore = NASConnectionStore()
     @StateObject private var entitlementStore = EntitlementStore()
+    @StateObject private var appearanceStore = AppearanceStore()
 
     var body: some Scene {
         WindowGroup {
@@ -14,6 +15,7 @@ struct NastartApp: App {
                 .environmentObject(profileStore)
                 .environmentObject(connectionStore)
                 .environmentObject(entitlementStore)
+                .environmentObject(appearanceStore)
         }
     }
 }
