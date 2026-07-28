@@ -155,7 +155,7 @@ private struct CollapsedServicePreview: View {
                     .frame(width: 34, height: 34)
                     .background(AppTheme.secondarySurface)
                     .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
-                }
+            }
 
             Spacer()
             Text("launchpad.group.collapsed_hint")
@@ -163,7 +163,6 @@ private struct CollapsedServicePreview: View {
                 .foregroundStyle(.secondary)
                 .lineLimit(1)
                 .minimumScaleFactor(0.8)
-            }
         }
         .padding(14)
         .nastartCard(cornerRadius: 18)
