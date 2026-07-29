@@ -47,6 +47,16 @@ enum ServiceCategory: String, CaseIterable, Identifiable {
         case .tools: return "category.tools"
         }
     }
+
+    var symbolName: String {
+        switch self {
+        case .favorites: return "star"
+        case .media: return "play.rectangle"
+        case .downloads: return "arrow.down.circle"
+        case .network: return "network"
+        case .tools: return "wrench.and.screwdriver"
+        }
+    }
 }
 
 enum ServiceStatus: String {

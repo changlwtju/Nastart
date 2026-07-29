@@ -76,29 +76,29 @@ def rounded_rect_gradient(
 
 
 def draw_master() -> Image.Image:
-    canvas = gradient((1024, 1024), [(0, "#fbf8ef"), (0.58, "#ece5d9"), (1, "#d5c7b3")])
+    canvas = gradient((1024, 1024), [(0, "#faf6ec"), (0.58, "#e9e0d2"), (1, "#cdbca4")])
 
     rounded_rect_gradient(
         canvas,
-        (108, 170, 808, 684),
-        154,
-        [(0, "#fffdf8"), (0.52, "#ece8df"), (1, "#b9b4aa")],
-        shadow=(0, 30, 30, hex_to_rgb("#40372f"), 42),
+        (66, 132, 892, 756),
+        176,
+        [(0, "#fffdf6"), (0.52, "#ebe5da"), (1, "#aaa39a")],
+        shadow=(0, 34, 34, hex_to_rgb("#40372f"), 46),
     )
-    rounded_rect_gradient(canvas, (214, 282, 452, 460), 70, [(0, "#4d535c"), (1, "#20252d")])
+    rounded_rect_gradient(canvas, (154, 246, 552, 532), 82, [(0, "#4b525b"), (1, "#161c25")])
 
-    for x, opacity in [(256, 248), (390, 238), (524, 228)]:
-        rounded_rect_gradient(canvas, (x, 334, 82, 354), 30, [(0, "#fffaf0"), (1, "#cfc7ba")], opacity=opacity)
+    for x, opacity in [(222, 250), (384, 240), (546, 230)]:
+        rounded_rect_gradient(canvas, (x, 316, 102, 386), 35, [(0, "#fff9ed"), (1, "#c9bdaf")], opacity=opacity)
 
     draw = ImageDraw.Draw(canvas)
-    for x in (297, 431, 565):
-        draw.line((x, 388, x, 632), fill="#5d626b", width=9)
+    for x in (273, 435, 597):
+        draw.line((x, 382, x, 636), fill="#5a6069", width=10)
 
-    power_color = "#a76638"
-    draw.line((786, 332, 786, 388), fill=power_color, width=18)
-    draw.arc((739, 358, 833, 452), start=124, end=416, fill=power_color, width=18)
-    draw.ellipse((742, 612, 772, 642), fill="#648e70")
-    draw.ellipse((806, 612, 836, 642), fill="#ad7948")
+    power_color = "#9f6338"
+    draw.line((812, 326, 812, 388), fill=power_color, width=22)
+    draw.arc((754, 358, 870, 474), start=124, end=416, fill=power_color, width=22)
+    draw.ellipse((760, 634, 798, 672), fill="#5f8d72")
+    draw.ellipse((836, 634, 874, 672), fill="#a97954")
 
     return canvas.convert("RGB")
 

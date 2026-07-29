@@ -425,6 +425,8 @@ private struct CommandServiceRailRow: View {
                     .foregroundStyle(.tertiary)
             }
             .padding(12)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .contentShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
         }
         .buttonStyle(.plain)
         .background(Color(.secondarySystemGroupedBackground))
@@ -636,12 +638,14 @@ private struct GlassServiceRow: View {
                 }
             }
             .padding(15)
+            .frame(maxWidth: .infinity, alignment: .leading)
             .background(.ultraThinMaterial)
             .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
             .overlay {
                 RoundedRectangle(cornerRadius: 20, style: .continuous)
                     .stroke(.white.opacity(0.42), lineWidth: 1)
             }
+            .contentShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
         }
         .buttonStyle(.plain)
     }
@@ -846,17 +850,18 @@ private struct ServiceListRow: View {
                     .foregroundStyle(.tertiary)
                     .padding(.leading, 2)
             }
+            .padding(.horizontal, 14)
+            .padding(.vertical, 13)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(rowBackground)
+            .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+            .overlay {
+                RoundedRectangle(cornerRadius: 18, style: .continuous)
+                    .stroke(AppTheme.hairline, lineWidth: 1)
+            }
+            .contentShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
         }
         .buttonStyle(.plain)
-        .padding(.horizontal, 14)
-        .padding(.vertical, 13)
-        .background(rowBackground)
-        .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
-        .overlay {
-            RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .stroke(AppTheme.hairline, lineWidth: 1)
-        }
-        .contentShape(Rectangle())
         .contextMenu {
             Button("action.open") {
                 showAction("service.context.open_hint")

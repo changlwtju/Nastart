@@ -338,29 +338,39 @@ private struct AppearanceSettingsView: View {
     var body: some View {
         Form {
             Section {
-                Picker("mine.appearance.language", selection: $appLanguageRaw) {
+                Picker(selection: $appLanguageRaw) {
                     ForEach(AppLanguage.allCases) { language in
                         Text(LocalizedStringKey(language.titleKey)).tag(language.rawValue)
                     }
+                } label: {
+                    Label("mine.appearance.language", systemImage: "globe")
                 }
 
-                Picker("mine.appearance.display", selection: $appThemeModeRaw) {
+                Picker(selection: $appThemeModeRaw) {
                     ForEach(AppThemeMode.allCases) { mode in
                         Text(LocalizedStringKey(mode.titleKey)).tag(mode.rawValue)
                     }
+                } label: {
+                    Label("mine.appearance.display", systemImage: "circle.lefthalf.filled")
                 }
 
-                Picker("mine.appearance.theme", selection: $launchpadThemeRaw) {
+                Picker(selection: $launchpadThemeRaw) {
                     ForEach(LaunchpadTheme.allCases) { theme in
                         Text(LocalizedStringKey(theme.titleKey)).tag(theme.rawValue)
                     }
+                } label: {
+                    Label("mine.appearance.theme", systemImage: "paintpalette")
                 }
                 .disabled(!entitlementStore.canUse(.advancedThemes))
                 .onChange(of: launchpadThemeRaw) { newValue in
                     appearanceStore.launchpadTheme = LaunchpadTheme(rawValue: newValue) ?? .cleanGrid
                 }
-                Toggle("mine.appearance.compact_metrics", isOn: $appearanceStore.compactMetrics)
-                Toggle("mine.appearance.status_dot", isOn: $appearanceStore.showServiceStatus)
+                Toggle(isOn: $appearanceStore.compactMetrics) {
+                    Label("mine.appearance.compact_metrics", systemImage: "rectangle.compress.vertical")
+                }
+                Toggle(isOn: $appearanceStore.showServiceStatus) {
+                    Label("mine.appearance.status_dot", systemImage: "circle.circle")
+                }
                 if !entitlementStore.hasPlus {
                     NavigationLink {
                         PlusView()
@@ -397,11 +407,21 @@ private struct CardItemsSettingsView: View {
     var body: some View {
         Form {
             Section {
-                Toggle("mine.appearance.item.subtitle", isOn: $showSubtitle)
-                Toggle("mine.appearance.item.cpu", isOn: $showCPU)
-                Toggle("mine.appearance.item.memory", isOn: $showMemory)
-                Toggle("mine.appearance.item.ports", isOn: $showPorts)
-                Toggle("mine.appearance.item.library", isOn: $showLibraryCounts)
+                Toggle(isOn: $showSubtitle) {
+                    Label("mine.appearance.item.subtitle", systemImage: "text.alignleft")
+                }
+                Toggle(isOn: $showCPU) {
+                    Label("mine.appearance.item.cpu", systemImage: "cpu")
+                }
+                Toggle(isOn: $showMemory) {
+                    Label("mine.appearance.item.memory", systemImage: "memorychip")
+                }
+                Toggle(isOn: $showPorts) {
+                    Label("mine.appearance.item.ports", systemImage: "network")
+                }
+                Toggle(isOn: $showLibraryCounts) {
+                    Label("mine.appearance.item.library", systemImage: "rectangle.stack")
+                }
             } header: {
                 Text("mine.appearance.card_items")
             } footer: {
@@ -424,11 +444,21 @@ private struct LaunchpadGroupOrderView: View {
     var body: some View {
         Form {
             Section {
-                Toggle("category.favorites", isOn: $expandedFavorites)
-                Toggle("category.media", isOn: $expandedMedia)
-                Toggle("category.downloads", isOn: $expandedDownloads)
-                Toggle("category.network", isOn: $expandedNetwork)
-                Toggle("category.tools", isOn: $expandedTools)
+                Toggle(isOn: $expandedFavorites) {
+                    Label("category.favorites", systemImage: ServiceCategory.favorites.symbolName)
+                }
+                Toggle(isOn: $expandedMedia) {
+                    Label("category.media", systemImage: ServiceCategory.media.symbolName)
+                }
+                Toggle(isOn: $expandedDownloads) {
+                    Label("category.downloads", systemImage: ServiceCategory.downloads.symbolName)
+                }
+                Toggle(isOn: $expandedNetwork) {
+                    Label("category.network", systemImage: ServiceCategory.network.symbolName)
+                }
+                Toggle(isOn: $expandedTools) {
+                    Label("category.tools", systemImage: ServiceCategory.tools.symbolName)
+                }
             } header: {
                 Text("mine.appearance.group_default")
             } footer: {
@@ -438,7 +468,7 @@ private struct LaunchpadGroupOrderView: View {
             Section {
                 ForEach(orderedCategories) { category in
                     HStack {
-                        Text(LocalizedStringKey(category.titleKey))
+                        Label(LocalizedStringKey(category.titleKey), systemImage: category.symbolName)
                         Spacer()
                         Image(systemName: "line.3.horizontal")
                             .foregroundStyle(.secondary)
@@ -475,18 +505,24 @@ private struct PlayerSettingsView: View {
     var body: some View {
         Form {
             Section {
-                Picker("mine.players.video", selection: $defaultVideo) {
+                Picker(selection: $defaultVideo) {
                     Text("Infuse").tag("Infuse")
                     Text("VidHub").tag("VidHub")
                     Text("VLC").tag("VLC")
                     Text("player.system").tag("System Player")
+                } label: {
+                    Label("mine.players.video", systemImage: "play.rectangle")
                 }
-                Picker("mine.players.audio", selection: $defaultAudio) {
+                Picker(selection: $defaultAudio) {
                     Text("Navidrome").tag("Navidrome")
                     Text("player.system").tag("System Player")
                     Text("player.custom_scheme").tag("Custom Scheme")
+                } label: {
+                    Label("mine.players.audio", systemImage: "music.note")
                 }
-                Toggle("mine.players.prefer_external", isOn: $preferExternal)
+                Toggle(isOn: $preferExternal) {
+                    Label("mine.players.prefer_external", systemImage: "arrow.up.forward.app")
+                }
             } header: {
                 Text("mine.players.defaults")
             }
@@ -511,10 +547,20 @@ private struct PlayerIntegrationRow: View {
 
     var body: some View {
         HStack {
-            Text(name)
+            Label(name, systemImage: symbolName)
             Spacer()
             Text(detailKey)
                 .foregroundStyle(.secondary)
+        }
+    }
+
+    private var symbolName: String {
+        switch name.lowercased() {
+        case "jellyfin": return "play.rectangle"
+        case "emby": return "play.tv"
+        case "plex": return "play.circle"
+        case "navidrome": return "music.note.list"
+        default: return "app.connected.to.app.below.fill"
         }
     }
 }
@@ -528,20 +574,34 @@ private struct SyncSettingsView: View {
     var body: some View {
         Form {
             Section {
-                Toggle("mine.sync.enable", isOn: $iCloudSync)
+                Toggle(isOn: $iCloudSync) {
+                    Label("mine.sync.enable", systemImage: "icloud")
+                }
                     .disabled(!entitlementStore.canUse(.iCloudSync))
-                Toggle("mine.sync.launchpad", isOn: $syncLaunchpad)
+                Toggle(isOn: $syncLaunchpad) {
+                    Label("mine.sync.launchpad", systemImage: "square.grid.2x2")
+                }
                     .disabled(!entitlementStore.canUse(.iCloudSync))
-                Toggle("mine.sync.reminders", isOn: $syncReminders)
+                Toggle(isOn: $syncReminders) {
+                    Label("mine.sync.reminders", systemImage: "bell")
+                }
                     .disabled(!entitlementStore.canUse(.iCloudSync))
             } header: {
                 Text("mine.sync.icloud")
             }
 
             Section {
-                LabeledContent("mine.sync.devices", value: "2")
-                LabeledContent("mine.sync.last") {
+                HStack {
+                    Label("mine.sync.devices", systemImage: "iphone.and.arrow.forward")
+                    Spacer()
+                    Text("2")
+                        .foregroundStyle(.secondary)
+                }
+                HStack {
+                    Label("mine.sync.last", systemImage: "clock.arrow.circlepath")
+                    Spacer()
                     Text("state.just_now")
+                        .foregroundStyle(.secondary)
                 }
                 if !entitlementStore.hasPlus {
                     NavigationLink {
@@ -627,12 +687,16 @@ private struct KeychainSettingsView: View {
             }
 
             Section {
-                Button("mine.privacy.keychain.rotate") {
+                Button {
                     show("mine.privacy.keychain_rotate_hint")
+                } label: {
+                    Label("mine.privacy.keychain.rotate", systemImage: "arrow.triangle.2.circlepath")
                 }
-                Button("mine.privacy.keychain.clear", role: .destructive) {
+                Button(role: .destructive) {
                     KeychainStore.shared.clearNASCredentials()
                     show("mine.privacy.keychain_clear_hint")
+                } label: {
+                    Label("mine.privacy.keychain.clear", systemImage: "trash")
                 }
             } header: {
                 Text("mine.privacy.keychain_actions")
@@ -676,10 +740,18 @@ private struct DataExportView: View {
     var body: some View {
         Form {
             Section {
-                Toggle("mine.privacy.export.launchpad", isOn: $includeLaunchpad)
-                Toggle("mine.privacy.export.reminders", isOn: $includeReminders)
-                Toggle("mine.privacy.export.settings", isOn: $includeSettings)
-                Toggle("mine.privacy.export.secrets", isOn: $includeSecrets)
+                Toggle(isOn: $includeLaunchpad) {
+                    Label("mine.privacy.export.launchpad", systemImage: "square.grid.2x2")
+                }
+                Toggle(isOn: $includeReminders) {
+                    Label("mine.privacy.export.reminders", systemImage: "bell")
+                }
+                Toggle(isOn: $includeSettings) {
+                    Label("mine.privacy.export.settings", systemImage: "gearshape")
+                }
+                Toggle(isOn: $includeSecrets) {
+                    Label("mine.privacy.export.secrets", systemImage: "key")
+                }
             } header: {
                 Text("mine.privacy.export_scope")
             } footer: {
@@ -690,7 +762,7 @@ private struct DataExportView: View {
                 Button {
                     showExportHint = true
                 } label: {
-                    Text("mine.privacy.export")
+                    Label("mine.privacy.export", systemImage: "square.and.arrow.up")
                         .font(.headline.weight(.semibold))
                         .frame(maxWidth: .infinity)
                 }
@@ -718,14 +790,20 @@ private struct HelpAboutView: View {
             }
 
             Section {
-                Button("mine.about.feedback") {
+                Button {
                     show("mine.about.feedback_hint")
+                } label: {
+                    Label("mine.about.feedback", systemImage: "bubble.left.and.bubble.right")
                 }
-                Button("mine.about.privacy") {
+                Button {
                     show("mine.about.privacy_hint")
+                } label: {
+                    Label("mine.about.privacy", systemImage: "hand.raised")
                 }
-                Button("mine.about.terms") {
+                Button {
                     show("mine.about.terms_hint")
+                } label: {
+                    Label("mine.about.terms", systemImage: "doc.text")
                 }
             }
         }

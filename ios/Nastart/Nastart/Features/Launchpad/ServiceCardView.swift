@@ -27,6 +27,7 @@ struct ServiceCardView: View {
             }
         }
         .padding(14)
+        .frame(maxWidth: .infinity, alignment: .leading)
         .frame(minHeight: service.isMedia ? 126 : 108)
         .background(cardBackground)
         .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
@@ -34,6 +35,7 @@ struct ServiceCardView: View {
             RoundedRectangle(cornerRadius: 22, style: .continuous)
                 .stroke(AppTheme.hairline, lineWidth: 1)
         }
+        .contentShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
         .contextMenu {
             Button("action.open") {
                 showAction("service.context.open_hint")

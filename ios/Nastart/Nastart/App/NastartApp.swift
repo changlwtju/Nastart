@@ -21,7 +21,6 @@ struct NastartApp: App {
                 .environmentObject(appearanceStore)
                 .environment(\.locale, selectedLanguage.locale)
                 .preferredColorScheme(preferredColorScheme)
-                .id(selectedLanguage.rawValue)
                 .task {
                     guard !didAttemptRestore else { return }
                     didAttemptRestore = true
