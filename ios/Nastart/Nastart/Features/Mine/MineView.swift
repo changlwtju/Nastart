@@ -10,36 +10,32 @@ struct MineView: View {
         NavigationStack {
             List {
                 Section {
-                    NavigationLink {
-                        ProfileEditView()
-                    } label: {
-                        HStack(spacing: 14) {
-                            Text(profileStore.avatarInitial)
-                                .font(.title3.weight(.bold))
-                                .foregroundStyle(.secondary)
-                                .frame(width: 54, height: 54)
-                                .background(AppTheme.secondarySurface)
-                                .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+                    HStack(spacing: 14) {
+                        Text(profileStore.avatarInitial)
+                            .font(.title3.weight(.bold))
+                            .foregroundStyle(.secondary)
+                            .frame(width: 54, height: 54)
+                            .background(AppTheme.secondarySurface)
+                            .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
 
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text(profileStore.nickname)
-                                    .font(.headline)
-                                    .lineLimit(1)
-                                    .minimumScaleFactor(0.82)
-                                HStack(spacing: 6) {
-                                    Text(LocalizedStringKey(connectionStore.profileSubtitleKey))
-                                    Text("-")
-                                    Text(LocalizedStringKey(entitlementStore.plusStatus.titleKey))
-                                }
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                                    .lineLimit(1)
-                                    .minimumScaleFactor(0.82)
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(connectionStore.connectedDevice?.name ?? profileStore.nickname)
+                                .font(.headline)
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.82)
+                            HStack(spacing: 6) {
+                                Text(LocalizedStringKey(connectionStore.profileSubtitleKey))
+                                Text("-")
+                                Text(LocalizedStringKey(entitlementStore.plusStatus.titleKey))
                             }
-                            .layoutPriority(1)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.82)
                         }
-                        .padding(.vertical, 8)
+                        .layoutPriority(1)
                     }
+                    .padding(.vertical, 8)
                 }
 
                 Section {
@@ -97,16 +93,13 @@ struct MineView: View {
                     } label: {
                         Label("mine.privacy.title", systemImage: "lock.shield")
                     }
-                } header: {
-                    Text("mine.section.settings")
-                }
-
-                Section {
                     NavigationLink {
                         HelpAboutView()
                     } label: {
                         Label("mine.about.title", systemImage: "questionmark.circle")
                     }
+                } header: {
+                    Text("mine.section.settings")
                 }
 
                 Section {
@@ -121,6 +114,7 @@ struct MineView: View {
                 }
             }
             .navigationTitle("tab.mine")
+            .navigationBarTitleDisplayMode(.inline)
             .confirmationDialog("mine.sign_out.confirm", isPresented: $showSignOutConfirm, titleVisibility: .visible) {
                 Button("mine.sign_out", role: .destructive) {
                     connectionStore.signOut()
@@ -179,6 +173,7 @@ private struct ProfileEditView: View {
         }
         .listStyle(.insetGrouped)
         .navigationTitle("mine.profile.edit")
+        .navigationBarTitleDisplayMode(.inline)
         .confirmationDialog("mine.profile.avatar", isPresented: $showAvatarSheet) {
             Button("mine.profile.use_system_avatar") {
                 profileStore.avatarInitial = "N"
@@ -220,6 +215,23 @@ private struct PlusView: View {
             }
 
             Section {
+                PlusPlanRow(
+                    titleKey: "plus.plan.monthly",
+                    priceKey: "plus.plan.monthly.price",
+                    badgeKey: nil
+                )
+                PlusPlanRow(
+                    titleKey: "plus.plan.yearly",
+                    priceKey: "plus.plan.yearly.price",
+                    badgeKey: "plus.plan.yearly.badge"
+                )
+            } header: {
+                Text("plus.pricing")
+            } footer: {
+                Text("plus.pricing.note")
+            }
+
+            Section {
                 PlusFeatureRow(titleKey: "plus.feature.cards", symbol: "square.grid.2x2")
                 PlusFeatureRow(titleKey: "plus.feature.icloud", symbol: "icloud")
                 PlusFeatureRow(titleKey: "plus.feature.themes", symbol: "paintpalette")
@@ -232,12 +244,21 @@ private struct PlusView: View {
                 Button {
                     showSubscribeHint = true
                 } label: {
-                    Text("plus.action.subscribe")
-                        .font(.headline.weight(.semibold))
-                        .frame(maxWidth: .infinity)
+                    HStack {
+                        Text("plus.action.subscribe")
+                            .font(.headline.weight(.semibold))
+                        Spacer()
+                        Image(systemName: "arrow.right")
+                            .font(.headline.weight(.semibold))
+                    }
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 18)
+                    .padding(.vertical, 14)
+                    .frame(maxWidth: .infinity)
+                    .background(AppTheme.accent)
+                    .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
                 }
-                .buttonStyle(.borderedProminent)
-                .tint(AppTheme.accent)
+                .buttonStyle(.plain)
             }
 
             Section {
@@ -258,12 +279,42 @@ private struct PlusView: View {
         }
         .listStyle(.insetGrouped)
         .navigationTitle("mine.plus.title")
+        .navigationBarTitleDisplayMode(.inline)
         .alert("plus.subscribe_hint", isPresented: $showSubscribeHint) {
             Button("action.ok", role: .cancel) {}
         }
         .alert("plus.restore_hint", isPresented: $showRestoreHint) {
             Button("action.ok", role: .cancel) {}
         }
+    }
+}
+
+private struct PlusPlanRow: View {
+    let titleKey: String
+    let priceKey: String
+    let badgeKey: String?
+
+    var body: some View {
+        HStack(spacing: 12) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text(LocalizedStringKey(titleKey))
+                    .font(.body.weight(.medium))
+                Text(LocalizedStringKey(priceKey))
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(AppTheme.accent)
+            }
+            Spacer(minLength: 12)
+            if let badgeKey {
+                Text(LocalizedStringKey(badgeKey))
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(AppTheme.accent)
+                    .padding(.horizontal, 9)
+                    .padding(.vertical, 5)
+                    .background(AppTheme.accent.opacity(0.12))
+                    .clipShape(Capsule())
+            }
+        }
+        .padding(.vertical, 4)
     }
 }
 
@@ -281,10 +332,24 @@ private struct AppearanceSettingsView: View {
     @EnvironmentObject private var entitlementStore: EntitlementStore
     @EnvironmentObject private var appearanceStore: AppearanceStore
     @AppStorage(LaunchpadTheme.storageKey) private var launchpadThemeRaw = LaunchpadTheme.cleanGrid.rawValue
+    @AppStorage(AppLanguage.storageKey) private var appLanguageRaw = AppLanguage.system.rawValue
+    @AppStorage(AppThemeMode.storageKey) private var appThemeModeRaw = AppThemeMode.system.rawValue
 
     var body: some View {
         Form {
             Section {
+                Picker("mine.appearance.language", selection: $appLanguageRaw) {
+                    ForEach(AppLanguage.allCases) { language in
+                        Text(LocalizedStringKey(language.titleKey)).tag(language.rawValue)
+                    }
+                }
+
+                Picker("mine.appearance.display", selection: $appThemeModeRaw) {
+                    ForEach(AppThemeMode.allCases) { mode in
+                        Text(LocalizedStringKey(mode.titleKey)).tag(mode.rawValue)
+                    }
+                }
+
                 Picker("mine.appearance.theme", selection: $launchpadThemeRaw) {
                     ForEach(LaunchpadTheme.allCases) { theme in
                         Text(LocalizedStringKey(theme.titleKey)).tag(theme.rawValue)
@@ -303,11 +368,6 @@ private struct AppearanceSettingsView: View {
                         Label("plus.locked.themes", systemImage: "lock")
                     }
                 }
-            } header: {
-                Text("mine.appearance.launchpad")
-            }
-
-            Section {
                 NavigationLink {
                     CardItemsSettingsView()
                 } label: {
@@ -319,25 +379,24 @@ private struct AppearanceSettingsView: View {
                     Label("mine.appearance.group_order", systemImage: "line.3.horizontal.decrease")
                 }
             } header: {
-                Text("mine.appearance.cards")
+                Text("mine.appearance.launchpad")
             }
         }
         .navigationTitle("mine.appearance.title")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
 private struct CardItemsSettingsView: View {
-    @State private var showStatus = true
-    @State private var showSubtitle = true
-    @State private var showCPU = true
-    @State private var showMemory = true
-    @State private var showPorts = false
-    @State private var showLibraryCounts = true
+    @AppStorage(AppearancePreferenceKeys.showCardSubtitle) private var showSubtitle = false
+    @AppStorage(AppearancePreferenceKeys.showCardCPU) private var showCPU = true
+    @AppStorage(AppearancePreferenceKeys.showCardMemory) private var showMemory = true
+    @AppStorage(AppearancePreferenceKeys.showCardPorts) private var showPorts = false
+    @AppStorage(AppearancePreferenceKeys.showCardLibraryCounts) private var showLibraryCounts = true
 
     var body: some View {
         Form {
             Section {
-                Toggle("mine.appearance.item.status", isOn: $showStatus)
                 Toggle("mine.appearance.item.subtitle", isOn: $showSubtitle)
                 Toggle("mine.appearance.item.cpu", isOn: $showCPU)
                 Toggle("mine.appearance.item.memory", isOn: $showMemory)
@@ -350,15 +409,17 @@ private struct CardItemsSettingsView: View {
             }
         }
         .navigationTitle("mine.appearance.card_items")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
 private struct LaunchpadGroupOrderView: View {
-    @State private var expandedFavorites = true
-    @State private var expandedMedia = true
-    @State private var expandedDownloads = false
-    @State private var expandedNetwork = false
-    @State private var expandedTools = false
+    @AppStorage(AppearancePreferenceKeys.groupFavoritesExpanded) private var expandedFavorites = true
+    @AppStorage(AppearancePreferenceKeys.groupMediaExpanded) private var expandedMedia = true
+    @AppStorage(AppearancePreferenceKeys.groupDownloadsExpanded) private var expandedDownloads = false
+    @AppStorage(AppearancePreferenceKeys.groupNetworkExpanded) private var expandedNetwork = false
+    @AppStorage(AppearancePreferenceKeys.groupToolsExpanded) private var expandedTools = false
+    @AppStorage(AppearancePreferenceKeys.groupOrder) private var groupOrderRaw = ServiceCategory.defaultOrderStorageValue
 
     var body: some View {
         Form {
@@ -375,7 +436,7 @@ private struct LaunchpadGroupOrderView: View {
             }
 
             Section {
-                ForEach(ServiceCategory.allCases) { category in
+                ForEach(orderedCategories) { category in
                     HStack {
                         Text(LocalizedStringKey(category.titleKey))
                         Spacer()
@@ -383,11 +444,26 @@ private struct LaunchpadGroupOrderView: View {
                             .foregroundStyle(.secondary)
                     }
                 }
+                .onMove(perform: moveGroup)
             } header: {
                 Text("mine.appearance.group_order")
             }
         }
         .navigationTitle("mine.appearance.group_order")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            EditButton()
+        }
+    }
+
+    private var orderedCategories: [ServiceCategory] {
+        ServiceCategory.ordered(from: groupOrderRaw)
+    }
+
+    private func moveGroup(from source: IndexSet, to destination: Int) {
+        var categories = orderedCategories
+        categories.move(fromOffsets: source, toOffset: destination)
+        groupOrderRaw = ServiceCategory.storageValue(for: categories)
     }
 }
 
@@ -425,6 +501,7 @@ private struct PlayerSettingsView: View {
             }
         }
         .navigationTitle("mine.players.title")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
@@ -478,6 +555,7 @@ private struct SyncSettingsView: View {
             }
         }
         .navigationTitle("mine.sync.title")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
@@ -489,8 +567,12 @@ private struct PrivacySecurityView: View {
     var body: some View {
         Form {
             Section {
-                Toggle("mine.privacy.faceid", isOn: $biometricUnlock)
-                Toggle("mine.privacy.clipboard", isOn: $clipboardCheck)
+                Toggle(isOn: $biometricUnlock) {
+                    Label("mine.privacy.faceid", systemImage: "faceid")
+                }
+                Toggle(isOn: $clipboardCheck) {
+                    Label("mine.privacy.clipboard", systemImage: "doc.on.clipboard")
+                }
                 NavigationLink {
                     KeychainSettingsView()
                 } label: {
@@ -506,14 +588,17 @@ private struct PrivacySecurityView: View {
                 } label: {
                     Label("mine.privacy.export", systemImage: "square.and.arrow.up")
                 }
-                Button("mine.privacy.clear_cache") {
+                Button {
                     showCacheHint = true
+                } label: {
+                    Label("mine.privacy.clear_cache", systemImage: "trash")
                 }
             } header: {
                 Text("mine.privacy.data")
             }
         }
         .navigationTitle("mine.privacy.title")
+        .navigationBarTitleDisplayMode(.inline)
         .alert("mine.privacy.clear_cache_hint", isPresented: $showCacheHint) {
             Button("action.ok", role: .cancel) {}
         }
@@ -546,6 +631,7 @@ private struct KeychainSettingsView: View {
                     show("mine.privacy.keychain_rotate_hint")
                 }
                 Button("mine.privacy.keychain.clear", role: .destructive) {
+                    KeychainStore.shared.clearNASCredentials()
                     show("mine.privacy.keychain_clear_hint")
                 }
             } header: {
@@ -554,6 +640,7 @@ private struct KeychainSettingsView: View {
         }
         .listStyle(.insetGrouped)
         .navigationTitle("mine.privacy.keychain")
+        .navigationBarTitleDisplayMode(.inline)
         .alert(LocalizedStringKey(messageKey), isPresented: $showHint) {
             Button("action.ok", role: .cancel) {}
         }
@@ -612,6 +699,7 @@ private struct DataExportView: View {
             }
         }
         .navigationTitle("mine.privacy.export")
+        .navigationBarTitleDisplayMode(.inline)
         .alert("mine.privacy.export_hint", isPresented: $showExportHint) {
             Button("action.ok", role: .cancel) {}
         }
@@ -643,6 +731,7 @@ private struct HelpAboutView: View {
         }
         .listStyle(.insetGrouped)
         .navigationTitle("mine.about.title")
+        .navigationBarTitleDisplayMode(.inline)
         .alert(LocalizedStringKey(messageKey), isPresented: $showHint) {
             Button("action.ok", role: .cancel) {}
         }

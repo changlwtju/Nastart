@@ -7,6 +7,9 @@ struct NastartApp: App {
     @StateObject private var connectionStore = NASConnectionStore()
     @StateObject private var entitlementStore = EntitlementStore()
     @StateObject private var appearanceStore = AppearanceStore()
+    @State private var didAttemptRestore = false
+    @AppStorage(AppLanguage.storageKey) private var appLanguageRaw = AppLanguage.system.rawValue
+    @AppStorage(AppThemeMode.storageKey) private var appThemeModeRaw = AppThemeMode.system.rawValue
 
     var body: some Scene {
         WindowGroup {
@@ -16,6 +19,26 @@ struct NastartApp: App {
                 .environmentObject(connectionStore)
                 .environmentObject(entitlementStore)
                 .environmentObject(appearanceStore)
+                .environment(\.locale, selectedLanguage.locale)
+                .preferredColorScheme(preferredColorScheme)
+                .id(selectedLanguage.rawValue)
+                .task {
+                    guard !didAttemptRestore else { return }
+                    didAttemptRestore = true
+                    await appDataStore.restoreDSMConnection(using: connectionStore)
+                }
+        }
+    }
+
+    private var selectedLanguage: AppLanguage {
+        AppLanguage(rawValue: appLanguageRaw) ?? .system
+    }
+
+    private var preferredColorScheme: ColorScheme? {
+        switch AppThemeMode(rawValue: appThemeModeRaw) ?? .system {
+        case .system: return nil
+        case .light: return .light
+        case .dark: return .dark
         }
     }
 }

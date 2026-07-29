@@ -18,6 +18,26 @@ enum ServiceCategory: String, CaseIterable, Identifiable {
 
     var id: String { rawValue }
 
+    static var defaultOrder: [ServiceCategory] {
+        allCases
+    }
+
+    static var defaultOrderStorageValue: String {
+        defaultOrder.map(\.rawValue).joined(separator: ",")
+    }
+
+    static func ordered(from storageValue: String) -> [ServiceCategory] {
+        let savedCategories = storageValue
+            .split(separator: ",")
+            .compactMap { ServiceCategory(rawValue: String($0)) }
+        let savedSet = Set(savedCategories)
+        return savedCategories + defaultOrder.filter { !savedSet.contains($0) }
+    }
+
+    static func storageValue(for categories: [ServiceCategory]) -> String {
+        categories.map(\.rawValue).joined(separator: ",")
+    }
+
     var titleKey: String {
         switch self {
         case .favorites: return "category.favorites"
@@ -60,6 +80,39 @@ struct LaunchpadService: Identifiable {
     let isMedia: Bool
     let cpu: Double?
     let memoryText: String?
+    let ports: [String]
+    let iconURL: URL?
+    let endpoint: URL?
+
+    init(
+        id: UUID,
+        name: String,
+        iconText: String,
+        category: ServiceCategory,
+        status: ServiceStatus,
+        subtitle: String,
+        detail: String,
+        isMedia: Bool,
+        cpu: Double?,
+        memoryText: String?,
+        ports: [String] = [],
+        iconURL: URL? = nil,
+        endpoint: URL? = nil
+    ) {
+        self.id = id
+        self.name = name
+        self.iconText = iconText
+        self.category = category
+        self.status = status
+        self.subtitle = subtitle
+        self.detail = detail
+        self.isMedia = isMedia
+        self.cpu = cpu
+        self.memoryText = memoryText
+        self.ports = ports
+        self.iconURL = iconURL
+        self.endpoint = endpoint
+    }
 }
 
 enum ServiceDisplayRole {
@@ -74,6 +127,28 @@ struct ServiceDisplayProfile {
     let role: ServiceDisplayRole
     let prefersFeaturedRow: Bool
     let primaryActionKey: String
+}
+
+enum ServiceWebMode: String, CaseIterable, Identifiable {
+    case automatic
+    case mobile
+    case desktop
+    case focused
+
+    var id: String { rawValue }
+
+    var titleKey: String {
+        switch self {
+        case .automatic:
+            return "web.mode.automatic"
+        case .mobile:
+            return "web.mode.mobile"
+        case .desktop:
+            return "web.mode.desktop"
+        case .focused:
+            return "web.mode.focused"
+        }
+    }
 }
 
 struct FileItem: Identifiable {

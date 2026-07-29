@@ -42,10 +42,10 @@
 "launchpad.concept.service_stacks" = "分组";
 "launchpad.concept.command_deck" = "控制";
 "launchpad.summary.normal" = "NAS 状态正常";
-"launchpad.summary.subtitle" = "局域网在线 · 证书 19 天后到期";
+"launchpad.summary.subtitle" = "局域网在线 · 服务自动生成";
 "launchpad.section.services" = "服务";
 "launchpad.section.generated" = "自动生成";
-"launchpad.reminder.cert" = "证书 %d 天后到期";
+"launchpad.reminder.cert %lld" = "证书 %lld 天后到期";
 "launchpad.group.collapsed_hint" = "点击展开";
 "search.title" = "搜索";
 "search.placeholder" = "搜索服务、文件、提醒";
@@ -64,18 +64,29 @@
 "service.navidrome.detail" = "音频资源库与播放器跳转";
 "service.nginx.subtitle" = "反向代理";
 "service.nginx.detail" = "HTTPS 路由与证书端点";
+"service.codex.subtitle" = "移动端指令入口";
+"service.codex.detail" = "App 内打开开发控制台";
 "service.detail.actions" = "操作";
 "service.action.device_control" = "设备控制";
-"service.action.open_web" = "打开 WebUI";
-"service.action.open_external" = "用 App 打开";
+"service.action.open_web" = "App 内打开";
+"service.action.open_console" = "App 内打开";
+"service.action.open_external" = "打开方式";
 "service.action.media_library" = "媒体资源库";
 "service.detail.connection" = "连接";
 "service.detail.endpoint" = "访问地址";
 "service.detail.source" = "数据来源";
 "service.detail.status" = "状态";
 "service.metric.library" = "资源库";
+"service.metric.ports" = "端口";
 "service.open.hint" = "接入真实服务地址后，这里会打开对应的 WebUI。";
 "service.external.title" = "打开方式";
+"service.console.title" = "开发控制台";
+"service.console.subtitle" = "为手机端保留常用控制键，适合发送指令和查看执行结果。";
+"web.mode.title" = "打开模式";
+"web.mode.automatic" = "自动";
+"web.mode.mobile" = "移动";
+"web.mode.desktop" = "桌面";
+"web.mode.focused" = "专注";
 "media.audio.title" = "音频资源库";
 "media.video.title" = "视频资源库";
 "media.library.description" = "先浏览服务资源库，需要播放时再交给偏好的播放器。";
@@ -91,6 +102,7 @@
 "connect.section.dsm" = "DSM";
 "connect.host" = "DSM 地址";
 "connect.account" = "账号";
+"connect.password" = "密码";
 "connect.scan.title" = "局域网发现";
 "connect.scan.description" = "局域网发现会列出可访问的 DSM 设备。";
 "connect.section.agent" = "Agent";
@@ -108,10 +120,19 @@
 "connect.scope.docker" = "Docker 容器";
 "connect.scope.services" = "服务发现";
 "connect.review.finish" = "连接";
-"connect.review.done" = "连接流程已准备好，后续会在这里接入真实 DSM 登录。";
+"connect.review.connecting" = "正在连接";
+"connect.review.done" = "已连接 DSM，并更新首屏数据。";
+"connect.error.title" = "连接失败";
+"connect.error.invalid_address" = "DSM 地址无效，请检查地址和端口。";
+"connect.error.invalid_response" = "DSM 没有返回可用响应，请检查网络、HTTPS 证书或端口。";
+"connect.error.api" = "DSM API 返回失败，请检查账号权限。";
+"connect.error.api_code" = "DSM API 返回失败，错误码：%d。";
+"connect.error.missing_session" = "DSM 登录成功但没有返回会话，请检查 DSM 版本或登录方式。";
 
 "data.refresh.ready" = "数据已准备";
 "data.refresh.mock_done" = "已刷新本地原型数据";
+"data.refresh.dsm_done" = "已刷新 DSM 数据";
+"data.refresh.restore_failed" = "DSM 自动恢复失败";
 
 "devices.section.resources" = "资源";
 "devices.section.maintenance" = "维护";
@@ -240,6 +261,13 @@
 "mine.sync.title" = "iCloud 同步";
 "mine.privacy.title" = "隐私与安全";
 "plus.description" = "Plus 保持 Nastart 本地优先，同时解锁最适合跨设备延续体验的能力。";
+"plus.pricing" = "会员方案";
+"plus.plan.monthly" = "月度会员";
+"plus.plan.monthly.price" = "暂定 ¥8 / 月";
+"plus.plan.yearly" = "年度会员";
+"plus.plan.yearly.price" = "暂定 ¥58 / 年";
+"plus.plan.yearly.badge" = "推荐";
+"plus.pricing.note" = "价格以 App Store Connect 最终配置为准。";
 "plus.includes" = "包含";
 "plus.feature.cards" = "更多启动台卡片";
 "plus.feature.icloud" = "跨设备 iCloud 同步";
@@ -258,10 +286,18 @@
 "plus.locked.icloud" = "iCloud 需要 Plus";
 "plus.locked.themes" = "高级主题需要 Plus";
 "mine.appearance.launchpad" = "启动台";
+"mine.appearance.language" = "语言";
+"mine.appearance.language.system" = "跟随系统";
+"mine.appearance.language.zh_hans" = "简体中文";
+"mine.appearance.language.en" = "English";
+"mine.appearance.display" = "显示模式";
+"mine.appearance.display.system" = "跟随系统";
+"mine.appearance.display.light" = "浅色";
+"mine.appearance.display.dark" = "深色";
 "mine.appearance.theme" = "主题";
-"mine.appearance.theme.clean_grid" = "清爽网格";
-"mine.appearance.theme.command_center" = "控制中心";
-"mine.appearance.theme.glass_deck" = "玻璃卡组";
+"mine.appearance.theme.clean_grid" = "清简";
+"mine.appearance.theme.command_center" = "看板";
+"mine.appearance.theme.glass_deck" = "流光";
 "mine.appearance.compact_metrics" = "紧凑指标";
 "mine.appearance.status_dot" = "显示状态点";
 "mine.appearance.cards" = "卡片";
@@ -315,6 +351,11 @@
 "external.files_hint" = "后续会交给系统文件或分享面板处理。";
 "external.navidrome_hint" = "后续会进入 Navidrome 音乐播放流程。";
 "external.system_player_hint" = "后续会使用系统播放器进行轻量播放。";
+"external.open_failed" = "未能打开该服务，请检查目标 App 是否已安装，或改用 Safari 打开。";
+"external.browser" = "Safari / 浏览器";
+"external.safari_failed" = "未能用 Safari 打开该服务，请检查服务地址是否可访问。";
+"external.player_failed" = "未能打开对应播放器，请确认已安装该 App，或先使用 App 内浏览器 / Safari 打开。";
+"external.unsupported_hint" = "当前服务暂不支持这种打开方式。";
 "player.system" = "系统播放器";
 "player.custom_scheme" = "自定义 Scheme";
 
@@ -331,7 +372,7 @@
 
 "connect.scan.results" = "发现结果";
 "connect.scan.use" = "使用";
-"connect.scan.use_hint" = "已选择 %@。回到连接页后会自动填入该地址。";
+"connect.scan.use_hint %@" = "已选择 %@。回到连接页后会自动填入该地址。";
 "connect.agent.steps" = "步骤";
 "connect.agent.step.package" = "部署容器";
 "connect.agent.step.package_detail" = "在 Container Manager 中运行 Nastart Agent。";
@@ -341,9 +382,9 @@
 "connect.agent.step.verify_detail" = "Nastart 会确认 Agent 版本、权限和最近在线时间。";
 "connect.agent.command" = "示例命令";
 "connect.agent.copy" = "复制命令";
-"connect.agent.copy_hint" = "复制功能接入系统剪贴板后会启用。";
+"connect.agent.copy_hint" = "已复制 Agent 示例命令。";
+"web.copy.done" = "已复制服务地址。";
 
-"mine.appearance.item.status" = "状态点";
 "mine.appearance.item.subtitle" = "副标题";
 "mine.appearance.item.cpu" = "CPU";
 "mine.appearance.item.memory" = "内存";
@@ -351,7 +392,7 @@
 "mine.appearance.item.library" = "媒体库数量";
 "mine.appearance.card_items_footer" = "这些设置会影响启动台卡片的默认信息密度。";
 "mine.appearance.group_default" = "默认展开";
-"mine.appearance.group_footer" = "分组排序拖拽会在配置持久化后启用。";
+"mine.appearance.group_footer" = "拖拽可调整启动台分组顺序；关闭的分组默认以折叠态显示。";
 
 "mine.privacy.keychain_items" = "保存项";
 "mine.privacy.keychain.dsm" = "DSM 会话";

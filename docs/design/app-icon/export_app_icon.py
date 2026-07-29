@@ -76,29 +76,29 @@ def rounded_rect_gradient(
 
 
 def draw_master() -> Image.Image:
-    canvas = gradient((1024, 1024), [(0, "#fff8ee"), (0.64, "#eee3d1"), (1, "#dccab3")])
+    canvas = gradient((1024, 1024), [(0, "#fbf8ef"), (0.58, "#ece5d9"), (1, "#d5c7b3")])
 
     rounded_rect_gradient(
         canvas,
         (108, 170, 808, 684),
         154,
-        [(0, "#fffdf7"), (0.5, "#e9e1d6"), (1, "#bdb3a6")],
-        shadow=(0, 28, 28, hex_to_rgb("#5a4a3c"), 34),
+        [(0, "#fffdf8"), (0.52, "#ece8df"), (1, "#b9b4aa")],
+        shadow=(0, 30, 30, hex_to_rgb("#40372f"), 42),
     )
-    rounded_rect_gradient(canvas, (218, 286, 440, 452), 68, [(0, "#555a61"), (1, "#292d34")])
+    rounded_rect_gradient(canvas, (214, 282, 452, 460), 70, [(0, "#4d535c"), (1, "#20252d")])
 
-    for x, opacity in [(260, 248), (390, 234), (520, 218)]:
-        rounded_rect_gradient(canvas, (x, 338, 78, 348), 29, [(0, "#fbf5ea"), (1, "#d7cec1")], opacity=opacity)
+    for x, opacity in [(256, 248), (390, 238), (524, 228)]:
+        rounded_rect_gradient(canvas, (x, 334, 82, 354), 30, [(0, "#fffaf0"), (1, "#cfc7ba")], opacity=opacity)
 
     draw = ImageDraw.Draw(canvas)
-    for x in (292, 422, 552):
-        draw.line((x, 390, x, 628), fill="#6d7178", width=8)
+    for x in (297, 431, 565):
+        draw.line((x, 388, x, 632), fill="#5d626b", width=9)
 
-    power_color = "#bc804b"
-    draw.line((784, 332, 784, 386), fill=power_color, width=15)
-    draw.arc((740, 360, 828, 448), start=124, end=416, fill=power_color, width=15)
-    draw.ellipse((746, 616, 770, 640), fill="#7fa98a")
-    draw.ellipse((808, 616, 832, 640), fill="#c3986a")
+    power_color = "#a76638"
+    draw.line((786, 332, 786, 388), fill=power_color, width=18)
+    draw.arc((739, 358, 833, 452), start=124, end=416, fill=power_color, width=18)
+    draw.ellipse((742, 612, 772, 642), fill="#648e70")
+    draw.ellipse((806, 612, 836, 642), fill="#ad7948")
 
     return canvas.convert("RGB")
 
@@ -131,7 +131,7 @@ def main() -> None:
     ]
 
     master = draw_master()
-    master.save(Path(__file__).resolve().with_name("nastart-app-icon-v3-10-fuller-nas.png"), "PNG", optimize=True)
+    master.save(Path(__file__).resolve().with_name("nastart-app-icon-v3-11-clear-nas.png"), "PNG", optimize=True)
     images = []
 
     for idiom, point_size, scale, pixels in specs:

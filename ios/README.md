@@ -47,6 +47,18 @@ In Xcode:
 The NAS workspace cannot compile this project because Xcode is only available
 on macOS.
 
+## Local Preflight
+
+Before pushing code or opening the project in Xcode, run:
+
+```text
+./scripts/preflight.sh
+```
+
+The script runs static checks that work in the NAS workspace, including
+localization parity, iOS 16 guard patterns, AppIcon asset integrity, Swift
+delimiter balance, and `git diff --check`.
+
 ## Localization
 
 The prototype uses `Localizable.strings`:

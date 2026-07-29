@@ -1,8 +1,24 @@
 import SwiftUI
+import UIKit
+import WebKit
 
 struct LaunchpadView: View {
     @EnvironmentObject private var dataStore: AppDataStore
+    @EnvironmentObject private var entitlementStore: EntitlementStore
     @AppStorage(LaunchpadTheme.storageKey) private var launchpadThemeRaw = LaunchpadTheme.cleanGrid.rawValue
+    @AppStorage(AppearancePreferenceKeys.compactMetrics) private var compactMetrics = true
+    @AppStorage(AppearancePreferenceKeys.showServiceStatus) private var showServiceStatus = true
+    @AppStorage(AppearancePreferenceKeys.showCardSubtitle) private var showCardSubtitle = false
+    @AppStorage(AppearancePreferenceKeys.showCardCPU) private var showCardCPU = true
+    @AppStorage(AppearancePreferenceKeys.showCardMemory) private var showCardMemory = true
+    @AppStorage(AppearancePreferenceKeys.showCardPorts) private var showCardPorts = false
+    @AppStorage(AppearancePreferenceKeys.showCardLibraryCounts) private var showCardLibraryCounts = true
+    @AppStorage(AppearancePreferenceKeys.groupFavoritesExpanded) private var groupFavoritesExpanded = true
+    @AppStorage(AppearancePreferenceKeys.groupMediaExpanded) private var groupMediaExpanded = true
+    @AppStorage(AppearancePreferenceKeys.groupDownloadsExpanded) private var groupDownloadsExpanded = false
+    @AppStorage(AppearancePreferenceKeys.groupNetworkExpanded) private var groupNetworkExpanded = false
+    @AppStorage(AppearancePreferenceKeys.groupToolsExpanded) private var groupToolsExpanded = false
+    @AppStorage(AppearancePreferenceKeys.groupOrder) private var groupOrderRaw = ServiceCategory.defaultOrderStorageValue
     @State private var showSearch = false
 
     var body: some View {
@@ -11,7 +27,7 @@ struct LaunchpadView: View {
                 VStack(alignment: .leading, spacing: 18) {
                     header
                     launchpadContent
-                        .id(selectedTheme)
+                        .id("\(selectedTheme.rawValue)-\(groupExpansionSignature)-\(groupOrderSignature)-\(displayOptionsSignature)")
                 }
                 .padding(18)
             }
@@ -36,11 +52,11 @@ struct LaunchpadView: View {
     private var launchpadContent: some View {
         switch selectedTheme {
         case .cleanGrid:
-            ProductLaunchpad(device: dataStore.device, services: dataStore.services)
+            ProductLaunchpad(device: dataStore.device, services: dataStore.services, categories: orderedCategories, options: displayOptions, groupDefaultExpanded: isGroupExpandedByDefault)
         case .commandCenter:
-            CommandCenterLaunchpad(device: dataStore.device, services: dataStore.services)
+            CommandCenterLaunchpad(device: dataStore.device, services: dataStore.services, categories: orderedCategories, options: displayOptions, groupDefaultExpanded: isGroupExpandedByDefault)
         case .glassDeck:
-            GlassDeckLaunchpad(device: dataStore.device, services: dataStore.services)
+            GlassDeckLaunchpad(device: dataStore.device, services: dataStore.services, categories: orderedCategories, options: displayOptions, groupDefaultExpanded: isGroupExpandedByDefault)
         }
     }
 
@@ -63,7 +79,68 @@ struct LaunchpadView: View {
     }
 
     private var selectedTheme: LaunchpadTheme {
-        LaunchpadTheme(rawValue: launchpadThemeRaw) ?? .cleanGrid
+        let theme = LaunchpadTheme(rawValue: launchpadThemeRaw) ?? .cleanGrid
+        if theme == .cleanGrid {
+            return theme
+        }
+        return entitlementStore.canUse(.advancedThemes) ? theme : .cleanGrid
+    }
+
+    private var displayOptions: LaunchpadDisplayOptions {
+        LaunchpadDisplayOptions(
+            compactMetrics: compactMetrics,
+            showServiceStatus: showServiceStatus,
+            showSubtitle: showCardSubtitle,
+            showCPU: showCardCPU,
+            showMemory: showCardMemory,
+            showPorts: showCardPorts,
+            showLibraryCounts: showCardLibraryCounts
+        )
+    }
+
+    private var groupExpansionSignature: String {
+        [
+            groupFavoritesExpanded,
+            groupMediaExpanded,
+            groupDownloadsExpanded,
+            groupNetworkExpanded,
+            groupToolsExpanded
+        ].map { $0 ? "1" : "0" }.joined()
+    }
+
+    private var orderedCategories: [ServiceCategory] {
+        ServiceCategory.ordered(from: groupOrderRaw)
+    }
+
+    private var groupOrderSignature: String {
+        orderedCategories.map(\.rawValue).joined(separator: "-")
+    }
+
+    private var displayOptionsSignature: String {
+        [
+            compactMetrics,
+            showServiceStatus,
+            showCardSubtitle,
+            showCardCPU,
+            showCardMemory,
+            showCardPorts,
+            showCardLibraryCounts
+        ].map { $0 ? "1" : "0" }.joined()
+    }
+
+    private func isGroupExpandedByDefault(_ category: ServiceCategory) -> Bool {
+        switch category {
+        case .favorites:
+            return groupFavoritesExpanded
+        case .media:
+            return groupMediaExpanded
+        case .downloads:
+            return groupDownloadsExpanded
+        case .network:
+            return groupNetworkExpanded
+        case .tools:
+            return groupToolsExpanded
+        }
     }
 
     private var header: some View {
@@ -108,45 +185,77 @@ struct LaunchpadView: View {
     }
 }
 
+private struct LaunchpadDisplayOptions {
+    let compactMetrics: Bool
+    let showServiceStatus: Bool
+    let showSubtitle: Bool
+    let showCPU: Bool
+    let showMemory: Bool
+    let showPorts: Bool
+    let showLibraryCounts: Bool
+}
+
+private enum LaunchpadReminderPolicy {
+    static let certificateWarningDays = 14
+}
+
 private struct CommandCenterLaunchpad: View {
     let device: NASDevice
     let services: [LaunchpadService]
+    let categories: [ServiceCategory]
+    let options: LaunchpadDisplayOptions
+    let groupDefaultExpanded: (ServiceCategory) -> Bool
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            CertificateReminderStrip(days: device.certificateDaysRemaining)
+            HStack(alignment: .top, spacing: options.compactMetrics ? 8 : 10) {
+                CommandMetricRail(device: device, compact: options.compactMetrics)
 
-            HStack(alignment: .top, spacing: 12) {
-                CommandMetricRail(device: device)
-
-                VStack(alignment: .leading, spacing: 10) {
+                VStack(alignment: .leading, spacing: 12) {
                     SectionHeader(titleKey: "launchpad.command.quick_actions", trailingKey: "launchpad.section.generated")
-                    ForEach(services.prefix(7)) { service in
-                        CommandServiceRailRow(service: service)
+                    ForEach(categories) { category in
+                        let categoryServices = services.filter { $0.category == category }
+                        if !categoryServices.isEmpty {
+                            CommandCategorySection(category: category, services: categoryServices, options: options, initiallyExpanded: groupDefaultExpanded(category))
+                        }
                     }
                 }
                 .layoutPriority(1)
             }
+
+            if shouldShowCertificateReminder {
+                NavigationLink {
+                    DeviceStatusView(device: device)
+                } label: {
+                    CertificateReminderStrip(days: device.certificateDaysRemaining)
+                }
+                .buttonStyle(.plain)
+            }
         }
+    }
+
+    private var shouldShowCertificateReminder: Bool {
+        device.certificateDaysRemaining <= LaunchpadReminderPolicy.certificateWarningDays
     }
 }
 
 private struct CommandMetricRail: View {
     let device: NASDevice
+    let compact: Bool
 
     var body: some View {
-        VStack(spacing: 10) {
-            CommandRailMetric(titleKey: "metric.cpu", value: "11%", symbolName: "cpu", progress: device.cpu)
-            CommandRailMetric(titleKey: "metric.memory", value: "32%", symbolName: "memorychip", progress: device.memory)
-            CommandRailMetric(titleKey: "metric.storage", value: device.storageFreeText, symbolName: "internaldrive", progress: device.storageUsed)
-            CommandRailMetric(titleKey: "metric.uptime", value: device.uptimeText, symbolName: "clock", progress: nil)
+        VStack(spacing: compact ? 6 : 8) {
+            CommandRailMetric(titleKey: "metric.cpu", value: launchpadPercentText(device.cpu), symbolName: "cpu", progress: compact ? nil : device.cpu, compact: compact)
+            CommandRailMetric(titleKey: "metric.memory", value: launchpadPercentText(device.memory), symbolName: "memorychip", progress: compact ? nil : device.memory, compact: compact)
+            CommandRailMetric(titleKey: "metric.storage", value: device.storageFreeText, symbolName: "internaldrive", progress: compact ? nil : device.storageUsed, compact: compact)
+            CommandRailMetric(titleKey: "metric.uptime", value: device.uptimeText, symbolName: "clock", progress: nil, compact: compact)
         }
-        .frame(width: 94)
-        .padding(.vertical, 12)
+        .frame(width: compact ? 58 : 66)
+        .padding(.vertical, compact ? 8 : 10)
         .background(Color(.secondarySystemGroupedBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+        .clipShape(RoundedRectangle(cornerRadius: 19, style: .continuous))
         .overlay {
-            RoundedRectangle(cornerRadius: 24, style: .continuous)
+            RoundedRectangle(cornerRadius: 19, style: .continuous)
                 .stroke(AppTheme.hairline, lineWidth: 1)
         }
     }
@@ -157,22 +266,25 @@ private struct CommandRailMetric: View {
     let value: String
     let symbolName: String
     let progress: Double?
+    let compact: Bool
 
     var body: some View {
-        VStack(spacing: 6) {
+        VStack(spacing: compact ? 3 : 5) {
             Image(systemName: symbolName)
-                .font(.caption.weight(.medium))
+                .font(.caption2.weight(.medium))
                 .foregroundStyle(.secondary)
 
             Text(value)
-                .font(.subheadline.weight(.semibold))
+                .font((compact ? Font.caption : Font.subheadline).weight(.semibold))
                 .lineLimit(1)
-                .minimumScaleFactor(0.72)
-            Text(titleKey)
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .lineLimit(1)
-                .minimumScaleFactor(0.72)
+                .minimumScaleFactor(0.66)
+            if !compact {
+                Text(titleKey)
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.66)
+            }
 
             if let progress {
                 ProgressView(value: progress)
@@ -181,15 +293,104 @@ private struct CommandRailMetric: View {
             }
         }
         .frame(maxWidth: .infinity)
-        .padding(.horizontal, 8)
-        .padding(.vertical, 9)
+        .padding(.horizontal, compact ? 4 : 6)
+        .padding(.vertical, compact ? 6 : 8)
         .background(.background)
-        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .clipShape(RoundedRectangle(cornerRadius: compact ? 12 : 14, style: .continuous))
+    }
+}
+
+private struct CommandCategorySection: View {
+    let category: ServiceCategory
+    let services: [LaunchpadService]
+    let options: LaunchpadDisplayOptions
+    @State private var isExpanded: Bool
+
+    init(category: ServiceCategory, services: [LaunchpadService], options: LaunchpadDisplayOptions, initiallyExpanded: Bool) {
+        self.category = category
+        self.services = services
+        self.options = options
+        _isExpanded = State(initialValue: initiallyExpanded)
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Button {
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    isExpanded.toggle()
+                }
+            } label: {
+                HStack(spacing: 8) {
+                    Text(LocalizedStringKey(category.titleKey))
+                        .font(.subheadline.weight(.semibold))
+                    Text("\(services.count)")
+                        .font(.caption2.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                        .padding(.horizontal, 7)
+                        .frame(minHeight: 20)
+                        .background(AppTheme.secondarySurface)
+                        .clipShape(Capsule())
+                    Spacer()
+                    Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
+                        .font(.caption.weight(.medium))
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .buttonStyle(.plain)
+            .padding(.horizontal, 2)
+
+            if isExpanded {
+                VStack(spacing: 8) {
+                    ForEach(services) { service in
+                        CommandServiceRailRow(service: service, options: options)
+                    }
+                }
+            } else {
+                Button {
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        isExpanded = true
+                    }
+                } label: {
+                    CommandCollapsedGroupRow(category: category, services: services)
+                }
+                .buttonStyle(.plain)
+            }
+        }
+    }
+}
+
+private struct CommandCollapsedGroupRow: View {
+    let category: ServiceCategory
+    let services: [LaunchpadService]
+
+    var body: some View {
+        HStack(spacing: 10) {
+            ServiceIconStack(services: services, size: 30)
+            VStack(alignment: .leading, spacing: 3) {
+                Text(LocalizedStringKey(category.titleKey))
+                    .font(.body.weight(.medium))
+                Text("\(services.count)")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            Spacer()
+            Text("launchpad.group.collapsed_hint")
+                .font(.caption.weight(.medium))
+                .foregroundStyle(.secondary)
+        }
+        .padding(12)
+        .background(Color(.secondarySystemGroupedBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .stroke(AppTheme.hairline, lineWidth: 1)
+        }
     }
 }
 
 private struct CommandServiceRailRow: View {
     let service: LaunchpadService
+    let options: LaunchpadDisplayOptions
 
     var body: some View {
         NavigationLink {
@@ -203,17 +404,21 @@ private struct CommandServiceRailRow: View {
                         .font(.body.weight(.medium))
                         .lineLimit(1)
                         .minimumScaleFactor(0.82)
-                    Text(LocalizedStringKey(service.detail))
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.78)
+                    if options.showSubtitle {
+                        Text(LocalizedStringKey(service.detail))
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.78)
+                    }
                 }
                 .layoutPriority(1)
 
                 Spacer(minLength: 8)
 
-                StatusDot(status: service.status)
+                if options.showServiceStatus {
+                    StatusDot(status: service.status)
+                }
 
                 Image(systemName: "chevron.right")
                     .font(.caption.weight(.semibold))
@@ -234,46 +439,134 @@ private struct CommandServiceRailRow: View {
 private struct GlassDeckLaunchpad: View {
     let device: NASDevice
     let services: [LaunchpadService]
-
-    private var featuredServices: [LaunchpadService] {
-        Array(services.filter { $0.category == .favorites || $0.category == .media }.prefix(4))
-    }
-
-    private var remainingServices: [LaunchpadService] {
-        let featuredIDs = Set(featuredServices.map(\.id))
-        return Array(services.filter { !featuredIDs.contains($0.id) }.prefix(6))
-    }
+    let categories: [ServiceCategory]
+    let options: LaunchpadDisplayOptions
+    let groupDefaultExpanded: (ServiceCategory) -> Bool
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            GlassHeroPanel(device: device)
+            GlassHeroPanel(device: device, compact: options.compactMetrics)
 
-            CertificateReminderStrip(days: device.certificateDaysRemaining)
+            if shouldShowCertificateReminder {
+                NavigationLink {
+                    DeviceStatusView(device: device)
+                } label: {
+                    CertificateReminderStrip(days: device.certificateDaysRemaining)
+                }
+                .buttonStyle(.plain)
+            }
 
-            VStack(alignment: .leading, spacing: 10) {
-                SectionHeader(titleKey: "category.favorites", trailingKey: "launchpad.section.generated")
-                VStack(spacing: 10) {
-                    ForEach(featuredServices) { service in
-                        GlassServiceRow(service: service)
+            ForEach(categories) { category in
+                let categoryServices = services.filter { $0.category == category }
+                if !categoryServices.isEmpty {
+                    GlassGroupSection(category: category, services: categoryServices, options: options, initiallyExpanded: groupDefaultExpanded(category))
+                }
+            }
+        }
+    }
+
+    private var shouldShowCertificateReminder: Bool {
+        device.certificateDaysRemaining <= LaunchpadReminderPolicy.certificateWarningDays
+    }
+}
+
+private struct GlassGroupSection: View {
+    let category: ServiceCategory
+    let services: [LaunchpadService]
+    let options: LaunchpadDisplayOptions
+    @State private var isExpanded: Bool
+
+    init(category: ServiceCategory, services: [LaunchpadService], options: LaunchpadDisplayOptions, initiallyExpanded: Bool) {
+        self.category = category
+        self.services = services
+        self.options = options
+        _isExpanded = State(initialValue: initiallyExpanded)
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Button {
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    isExpanded.toggle()
+                }
+            } label: {
+                HStack(spacing: 8) {
+                    Text(LocalizedStringKey(category.titleKey))
+                        .font(.headline.weight(.semibold))
+                    Text("\(services.count)")
+                        .font(.caption2.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                        .padding(.horizontal, 8)
+                        .frame(minHeight: 22)
+                        .background(.ultraThinMaterial)
+                        .clipShape(Capsule())
+                    Spacer()
+                    Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
+                        .font(.caption.weight(.medium))
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .buttonStyle(.plain)
+            .padding(.horizontal, 2)
+
+            if isExpanded {
+                VStack(spacing: 11) {
+                    ForEach(services) { service in
+                        GlassServiceRow(service: service, options: options)
                     }
                 }
-            }
-
-            VStack(alignment: .leading, spacing: 10) {
-                SectionHeader(titleKey: "launchpad.section.services", trailingKey: nil)
-                ForEach(remainingServices) { service in
-                    ServiceListRow(service: service)
+            } else {
+                Button {
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        isExpanded = true
+                    }
+                } label: {
+                    GlassCollapsedGroupRow(category: category, services: services)
                 }
+                .buttonStyle(.plain)
             }
+        }
+    }
+}
+
+private struct GlassCollapsedGroupRow: View {
+    let category: ServiceCategory
+    let services: [LaunchpadService]
+
+    var body: some View {
+        HStack(spacing: 12) {
+            ServiceIconStack(services: services, size: 32)
+            VStack(alignment: .leading, spacing: 3) {
+                Text(LocalizedStringKey(category.titleKey))
+                    .font(.body.weight(.medium))
+                Text("launchpad.group.collapsed_hint")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            Spacer()
+            Text("\(services.count)")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.secondary)
+                .frame(width: 30, height: 30)
+                .background(.background.opacity(0.62))
+                .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+        }
+        .padding(14)
+        .background(.ultraThinMaterial)
+        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .stroke(.white.opacity(0.38), lineWidth: 1)
         }
     }
 }
 
 private struct GlassHeroPanel: View {
     let device: NASDevice
+    let compact: Bool
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
+        VStack(alignment: .leading, spacing: compact ? 12 : 16) {
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(device.name)
@@ -291,13 +584,21 @@ private struct GlassHeroPanel: View {
                     .clipShape(RoundedRectangle(cornerRadius: 15, style: .continuous))
             }
 
-            MetricPillRow(metrics: [
-                MetricPillSpec("metric.cpu", value: "11%", progress: device.cpu, symbolName: "cpu"),
-                MetricPillSpec("metric.memory", value: "32%", progress: device.memory, symbolName: "memorychip"),
-                MetricPillSpec("metric.storage", value: device.storageFreeText, progress: device.storageUsed, symbolName: "internaldrive")
-            ])
+            if compact {
+                MetricPillRow(metrics: [
+                    MetricPillSpec("metric.cpu", value: launchpadPercentText(device.cpu), symbolName: "cpu"),
+                    MetricPillSpec("metric.memory", value: launchpadPercentText(device.memory), symbolName: "memorychip"),
+                    MetricPillSpec("metric.storage", value: device.storageFreeText, symbolName: "internaldrive")
+                ])
+            } else {
+                MetricPillRow(metrics: [
+                    MetricPillSpec("metric.cpu", value: launchpadPercentText(device.cpu), progress: device.cpu, symbolName: "cpu"),
+                    MetricPillSpec("metric.memory", value: launchpadPercentText(device.memory), progress: device.memory, symbolName: "memorychip"),
+                    MetricPillSpec("metric.storage", value: device.storageFreeText, progress: device.storageUsed, symbolName: "internaldrive")
+                ])
+            }
         }
-        .padding(18)
+        .padding(19)
         .background(.ultraThinMaterial)
         .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
         .overlay {
@@ -309,6 +610,7 @@ private struct GlassHeroPanel: View {
 
 private struct GlassServiceRow: View {
     let service: LaunchpadService
+    let options: LaunchpadDisplayOptions
 
     var body: some View {
         NavigationLink {
@@ -320,14 +622,18 @@ private struct GlassServiceRow: View {
                     Text(service.name)
                         .font(.body.weight(.medium))
                         .lineLimit(1)
-                    Text(LocalizedStringKey(service.detail))
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.82)
+                    if options.showSubtitle {
+                        Text(LocalizedStringKey(service.detail))
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.82)
+                    }
                 }
                 Spacer()
-                StatusDot(status: service.status)
+                if options.showServiceStatus {
+                    StatusDot(status: service.status)
+                }
             }
             .padding(15)
             .background(.ultraThinMaterial)
@@ -344,35 +650,52 @@ private struct GlassServiceRow: View {
 private struct ProductLaunchpad: View {
     let device: NASDevice
     let services: [LaunchpadService]
+    let categories: [ServiceCategory]
+    let options: LaunchpadDisplayOptions
+    let groupDefaultExpanded: (ServiceCategory) -> Bool
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            DeviceSummaryPanel(device: device)
-            CertificateReminderStrip(days: device.certificateDaysRemaining)
+        VStack(alignment: .leading, spacing: 20) {
+            DeviceSummaryPanel(device: device, compact: options.compactMetrics)
 
-            ForEach(ServiceCategory.allCases) { category in
+            if shouldShowCertificateReminder {
+                NavigationLink {
+                    DeviceStatusView(device: device)
+                } label: {
+                    CertificateReminderStrip(days: device.certificateDaysRemaining)
+                }
+                .buttonStyle(.plain)
+            }
+
+            ForEach(categories) { category in
                 let categoryServices = services.filter { $0.category == category }
                 if !categoryServices.isEmpty {
-                    ServiceGroupSection(category: category, services: categoryServices)
+                    ServiceGroupSection(category: category, services: categoryServices, options: options, initiallyExpanded: groupDefaultExpanded(category))
                 }
             }
         }
+    }
+
+    private var shouldShowCertificateReminder: Bool {
+        device.certificateDaysRemaining <= LaunchpadReminderPolicy.certificateWarningDays
     }
 }
 
 private struct ServiceGroupSection: View {
     let category: ServiceCategory
     let services: [LaunchpadService]
+    let options: LaunchpadDisplayOptions
     @State private var isExpanded: Bool
 
-    init(category: ServiceCategory, services: [LaunchpadService]) {
+    init(category: ServiceCategory, services: [LaunchpadService], options: LaunchpadDisplayOptions, initiallyExpanded: Bool) {
         self.category = category
         self.services = services
-        _isExpanded = State(initialValue: category == .favorites || category == .media)
+        self.options = options
+        _isExpanded = State(initialValue: initiallyExpanded)
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 12) {
             Button {
                 withAnimation(.easeInOut(duration: 0.2)) {
                     isExpanded.toggle()
@@ -382,27 +705,37 @@ private struct ServiceGroupSection: View {
                     Text(LocalizedStringKey(category.titleKey))
                         .font(.headline.weight(.semibold))
                     Text("\(services.count)")
-                        .font(.caption.weight(.semibold))
+                        .font(.caption2.weight(.semibold))
                         .foregroundStyle(.secondary)
-                        .frame(minWidth: 22, minHeight: 22)
+                        .padding(.horizontal, 8)
+                        .frame(minHeight: 22)
                         .background(AppTheme.secondarySurface)
                         .clipShape(Capsule())
                     Spacer()
                     Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
-                        .font(.caption.weight(.semibold))
+                        .font(.caption.weight(.medium))
                         .foregroundStyle(.secondary)
                 }
             }
             .buttonStyle(.plain)
+            .padding(.horizontal, 2)
+            .padding(.top, 2)
 
             if isExpanded {
-                VStack(spacing: 8) {
+                VStack(spacing: 10) {
                     ForEach(services) { service in
-                        ServiceListRow(service: service)
+                        ServiceListRow(service: service, options: options)
                     }
                 }
             } else {
-                CollapsedServicePreview(services: services)
+                Button {
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        isExpanded = true
+                    }
+                } label: {
+                    CollapsedServicePreview(services: services)
+                }
+                .buttonStyle(.plain)
             }
         }
     }
@@ -413,19 +746,7 @@ private struct CollapsedServicePreview: View {
 
     var body: some View {
         HStack(spacing: 10) {
-            ForEach(services.prefix(4)) { service in
-                ServiceIconView(service: service, size: 34)
-            }
-
-            if services.count > 4 {
-                Text("+\(services.count - 4)")
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(.secondary)
-                    .frame(width: 34, height: 34)
-                    .background(AppTheme.secondarySurface)
-                    .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
-            }
-
+            ServiceIconStack(services: services, size: 34)
             Spacer()
             Text("launchpad.group.collapsed_hint")
                 .font(.caption)
@@ -438,8 +759,41 @@ private struct CollapsedServicePreview: View {
     }
 }
 
+private struct ServiceIconStack: View {
+    let services: [LaunchpadService]
+    let size: CGFloat
+
+    var body: some View {
+        HStack(spacing: -8) {
+            ForEach(services.prefix(3)) { service in
+                ServiceIconView(service: service, size: size)
+                    .background(Color(.systemBackground))
+                    .clipShape(RoundedRectangle(cornerRadius: size * 0.28, style: .continuous))
+                    .overlay {
+                        RoundedRectangle(cornerRadius: size * 0.28, style: .continuous)
+                            .stroke(Color(.systemBackground), lineWidth: 2)
+                    }
+            }
+
+            if services.count > 3 {
+                Text("+\(services.count - 3)")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                    .frame(width: size, height: size)
+                    .background(AppTheme.secondarySurface)
+                    .clipShape(RoundedRectangle(cornerRadius: size * 0.28, style: .continuous))
+                    .overlay {
+                        RoundedRectangle(cornerRadius: size * 0.28, style: .continuous)
+                            .stroke(Color(.systemBackground), lineWidth: 2)
+                    }
+            }
+        }
+    }
+}
+
 private struct ServiceListRow: View {
     let service: LaunchpadService
+    let options: LaunchpadDisplayOptions
     @State private var actionMessageKey = "service.context.open_hint"
     @State private var showActionHint = false
 
@@ -447,7 +801,7 @@ private struct ServiceListRow: View {
         NavigationLink {
             ServiceDetailView(service: service)
         } label: {
-            HStack(alignment: .top, spacing: 12) {
+            HStack(alignment: .center, spacing: 13) {
                 ServiceIconView(service: service, size: 38)
 
                 VStack(alignment: .leading, spacing: 7) {
@@ -456,22 +810,29 @@ private struct ServiceListRow: View {
                             .font(.body.weight(.medium))
                             .lineLimit(1)
                             .minimumScaleFactor(0.82)
-                        ServiceStatusBadge(status: service.status)
+                        if options.showServiceStatus {
+                            ServiceStatusBadge(status: service.status)
+                        }
                     }
-                    Text(LocalizedStringKey(service.detail))
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.82)
+                    if options.showSubtitle {
+                        Text(LocalizedStringKey(service.detail))
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.82)
+                    }
 
                     HStack(spacing: 6) {
-                        if let cpu = service.cpu {
+                        if options.showCPU, let cpu = service.cpu {
                             InlineServiceMetric(titleKey: "metric.cpu", value: "\(Int(cpu * 100))%")
                         }
-                        if let memoryText = service.memoryText {
+                        if options.showMemory, let memoryText = service.memoryText {
                             InlineServiceMetric(titleKey: "metric.memory", value: memoryText)
                         }
-                        if service.isMedia {
+                        if options.showPorts, !service.ports.isEmpty {
+                            InlineServiceMetric(titleKey: "service.metric.ports", value: service.ports.prefix(2).joined(separator: " / "))
+                        }
+                        if options.showLibraryCounts, service.isMedia {
                             InlineServiceMetric(titleKey: "service.metric.library", valueKey: service.name == "Navidrome" ? "media.albums.title" : "media.movies.title")
                         }
                     }
@@ -481,18 +842,19 @@ private struct ServiceListRow: View {
                 Spacer(minLength: 10)
 
                 Image(systemName: "chevron.right")
-                    .font(.caption.weight(.semibold))
+                    .font(.caption.weight(.medium))
                     .foregroundStyle(.tertiary)
-                    .padding(.top, 10)
+                    .padding(.leading, 2)
             }
         }
         .buttonStyle(.plain)
-        .padding(14)
+        .padding(.horizontal, 14)
+        .padding(.vertical, 13)
         .background(rowBackground)
         .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
         .overlay {
             RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .stroke(service.displayProfile.prefersFeaturedRow ? AppTheme.accent.opacity(0.18) : AppTheme.hairline, lineWidth: 1)
+                .stroke(AppTheme.hairline, lineWidth: 1)
         }
         .contentShape(Rectangle())
         .contextMenu {
@@ -520,7 +882,7 @@ private struct ServiceListRow: View {
     }
 
     private var rowBackground: some ShapeStyle {
-        service.displayProfile.prefersFeaturedRow ? AnyShapeStyle(AppTheme.softAccent.opacity(0.24)) : AnyShapeStyle(Color(.secondarySystemGroupedBackground))
+        AnyShapeStyle(Color(.systemBackground))
     }
 }
 
@@ -544,22 +906,22 @@ private struct ServiceStatusBadge: View {
 
 private struct InlineServiceMetric: View {
     let titleKey: LocalizedStringKey
-    let value: String
+    let valueKey: LocalizedStringKey
 
     init(titleKey: LocalizedStringKey, value: String) {
         self.titleKey = titleKey
-        self.value = value
+        self.valueKey = LocalizedStringKey(value)
     }
 
     init(titleKey: LocalizedStringKey, valueKey: String) {
         self.titleKey = titleKey
-        value = NSLocalizedString(valueKey, comment: "")
+        self.valueKey = LocalizedStringKey(valueKey)
     }
 
     var body: some View {
         HStack(spacing: 3) {
             Text(titleKey)
-            Text(value)
+            Text(valueKey)
         }
         .font(.caption2.weight(.medium))
         .foregroundStyle(.secondary)
@@ -594,11 +956,13 @@ private struct LaunchpadSearchView: View {
                     }
                 }
 
-                Section("search.hot") {
+                Section {
                     FlowPills(items: ["DSM", "Jellyfin", "Docker", "HTTPS", "Navidrome", "qBittorrent"])
+                } header: {
+                    Text("search.hot")
                 }
 
-                Section("search.services") {
+                Section {
                     ForEach(filteredServices) { service in
                         NavigationLink {
                             ServiceDetailView(service: service)
@@ -606,6 +970,8 @@ private struct LaunchpadSearchView: View {
                             ServiceSearchRow(service: service)
                         }
                     }
+                } header: {
+                    Text("search.services")
                 }
             }
             .navigationTitle("search.title")
@@ -660,10 +1026,10 @@ private struct FlowPills: View {
 
 private struct ServiceDetailView: View {
     let service: LaunchpadService
+    @Environment(\.openURL) private var openURL
     @EnvironmentObject private var dataStore: AppDataStore
-    @State private var showOpenHint = false
     @State private var showExternalPicker = false
-    @State private var externalMessageKey = "external.safari_hint"
+    @State private var externalMessageKey = "external.open_failed"
     @State private var showExternalHint = false
 
     var body: some View {
@@ -692,7 +1058,7 @@ private struct ServiceDetailView: View {
                 .padding(.vertical, 8)
             }
 
-            Section("service.detail.actions") {
+            Section {
                 if service.name == "DSM" {
                     NavigationLink {
                         DeviceStatusView(device: dataStore.device)
@@ -701,10 +1067,14 @@ private struct ServiceDetailView: View {
                     }
                 }
 
-                Button {
-                    showOpenHint = true
+                NavigationLink {
+                    ServiceWebUIView(service: service)
                 } label: {
-                    Label("service.action.open_web", systemImage: "safari")
+                    Label {
+                        Text(LocalizedStringKey(service.isDeveloperConsole ? "service.action.open_console" : "service.action.open_web"))
+                    } icon: {
+                        Image(systemName: service.isDeveloperConsole ? "terminal" : "safari")
+                    }
                 }
 
                 Button {
@@ -720,34 +1090,36 @@ private struct ServiceDetailView: View {
                         Label("service.action.media_library", systemImage: service.name == "Navidrome" ? "music.note.list" : "play.rectangle")
                     }
                 }
+            } header: {
+                Text("service.detail.actions")
             }
 
-            Section("service.detail.connection") {
-                LabeledContent("service.detail.endpoint", value: "https://nas.example.com/\(service.name.lowercased())")
+            Section {
+                LabeledContent("service.detail.endpoint", value: service.suggestedEndpoint.absoluteString)
                 LabeledContent("service.detail.source", value: service.isMedia ? "DSM + API" : "DSM / Agent")
                 LabeledContent("service.detail.status") {
                     Text(LocalizedStringKey(service.status.titleKey))
                 }
+            } header: {
+                Text("service.detail.connection")
             }
         }
         .navigationTitle(service.name)
-        .alert("service.open.hint", isPresented: $showOpenHint) {
-            Button("action.ok", role: .cancel) {}
-        }
         .confirmationDialog("service.external.title", isPresented: $showExternalPicker) {
+            Button("external.browser") {
+                openExternal(.safari)
+            }
+
             if service.isMedia {
                 Button("Infuse") {
-                    showExternal("external.infuse_hint")
+                    openExternal(.infuse)
                 }
                 Button("VidHub") {
-                    showExternal("external.vidhub_hint")
+                    openExternal(.vidhub)
                 }
                 Button("VLC") {
-                    showExternal("external.vlc_hint")
+                    openExternal(.vlc)
                 }
-            }
-            Button("Safari") {
-                showExternal("external.safari_hint")
             }
             Button("action.cancel", role: .cancel) {}
         }
@@ -756,9 +1128,303 @@ private struct ServiceDetailView: View {
         }
     }
 
-    private func showExternal(_ key: String) {
-        externalMessageKey = key
-        showExternalHint = true
+    private func openExternal(_ target: ExternalOpenTarget) {
+        guard let url = target.url(for: service) else {
+            externalMessageKey = "external.unsupported_hint"
+            showExternalHint = true
+            return
+        }
+
+        openURL(url) { accepted in
+            if !accepted {
+                externalMessageKey = target.failureMessageKey
+                showExternalHint = true
+            }
+        }
+    }
+}
+
+private enum ExternalOpenTarget {
+    case safari
+    case infuse
+    case vidhub
+    case vlc
+
+    func url(for service: LaunchpadService) -> URL? {
+        switch self {
+        case .safari:
+            return service.suggestedEndpoint
+        case .infuse:
+            return callbackURL(scheme: "infuse", action: "play", service: service)
+        case .vidhub:
+            return callbackURL(scheme: "vidhub", action: "open", service: service)
+        case .vlc:
+            return callbackURL(scheme: "vlc-x-callback", action: "stream", service: service)
+        }
+    }
+
+    var failureMessageKey: String {
+        switch self {
+        case .safari:
+            return "external.safari_failed"
+        case .infuse, .vidhub, .vlc:
+            return "external.player_failed"
+        }
+    }
+
+    private func callbackURL(scheme: String, action: String, service: LaunchpadService) -> URL? {
+        var components = URLComponents()
+        components.scheme = scheme
+        components.host = "x-callback-url"
+        components.path = "/\(action)"
+        components.queryItems = [
+            URLQueryItem(name: "url", value: service.suggestedEndpoint.absoluteString)
+        ]
+        return components.url
+    }
+}
+
+private struct ServiceWebUIView: View {
+    let service: LaunchpadService
+    @Environment(\.openURL) private var openURL
+    @State private var selectedMode = ServiceWebMode.automatic
+    @State private var reloadToken = UUID()
+    @State private var showCopiedHint = false
+
+    var body: some View {
+        VStack(spacing: 0) {
+            if selectedMode != .focused, service.isDeveloperConsole {
+                DeveloperConsoleToolbar(service: service)
+                    .padding(.horizontal, 16)
+                    .padding(.bottom, 10)
+            }
+
+            WebContainerView(
+                url: service.suggestedEndpoint,
+                prefersDesktopMode: resolvedMode.usesDesktopUserAgent,
+                reloadToken: reloadToken
+            )
+                .background(Color(.systemBackground))
+        }
+        .navigationTitle(service.name)
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItemGroup(placement: .navigationBarTrailing) {
+                Menu {
+                    Picker(selection: $selectedMode) {
+                        ForEach(ServiceWebMode.allCases) { mode in
+                            Text(LocalizedStringKey(mode.titleKey)).tag(mode)
+                        }
+                    } label: {
+                        Text("web.mode.title")
+                    }
+                } label: {
+                    Image(systemName: "rectangle.on.rectangle")
+                }
+
+                Button {
+                    reloadToken = UUID()
+                } label: {
+                    Image(systemName: "arrow.clockwise")
+                }
+                Button {
+                    UIPasteboard.general.string = service.suggestedEndpoint.absoluteString
+                    showCopiedHint = true
+                } label: {
+                    Image(systemName: "link")
+                }
+                Button {
+                    openURL(service.suggestedEndpoint)
+                } label: {
+                    Image(systemName: "safari")
+                }
+            }
+        }
+        .alert("web.copy.done", isPresented: $showCopiedHint) {
+            Button("action.ok", role: .cancel) {}
+        }
+    }
+
+    private var resolvedMode: ResolvedWebMode {
+        switch selectedMode {
+        case .automatic:
+            return ResolvedWebMode(usesDesktopUserAgent: service.prefersEnhancedWebMode)
+        case .mobile:
+            return ResolvedWebMode(usesDesktopUserAgent: false)
+        case .desktop, .focused:
+            return ResolvedWebMode(usesDesktopUserAgent: true)
+        }
+    }
+}
+
+private struct ResolvedWebMode {
+    let usesDesktopUserAgent: Bool
+}
+
+private struct DeveloperConsoleToolbar: View {
+    let service: LaunchpadService
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(spacing: 10) {
+                ServiceIconView(service: service, size: 34)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("service.console.title")
+                        .font(.headline.weight(.semibold))
+                    Text("service.console.subtitle")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(2)
+                }
+                Spacer()
+            }
+
+            HStack(spacing: 8) {
+                ConsoleShortcutKey(title: "Esc")
+                ConsoleShortcutKey(title: "Tab")
+                ConsoleShortcutKey(title: "Ctrl")
+                ConsoleShortcutKey(title: "Cmd")
+                ConsoleShortcutKey(title: "/")
+            }
+        }
+        .padding(12)
+        .background(Color(.secondarySystemGroupedBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .stroke(AppTheme.hairline, lineWidth: 1)
+        }
+    }
+}
+
+private struct ConsoleShortcutKey: View {
+    let title: String
+
+    var body: some View {
+        Text(title)
+            .font(.caption.weight(.semibold))
+            .lineLimit(1)
+            .minimumScaleFactor(0.75)
+            .frame(minWidth: 42)
+            .padding(.vertical, 8)
+            .background(AppTheme.secondarySurface)
+            .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+    }
+}
+
+private struct WebContainerView: UIViewRepresentable {
+    let url: URL
+    let prefersDesktopMode: Bool
+    let reloadToken: UUID
+
+    private static let processPool = WKProcessPool()
+    private static let desktopUserAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15"
+
+    func makeUIView(context: Context) -> WKWebView {
+        let configuration = WKWebViewConfiguration()
+        configuration.allowsInlineMediaPlayback = true
+        configuration.processPool = Self.processPool
+        configuration.websiteDataStore = .default()
+        configuration.preferences.javaScriptCanOpenWindowsAutomatically = true
+        configuration.defaultWebpagePreferences.allowsContentJavaScript = true
+
+        let webView = WKWebView(frame: .zero, configuration: configuration)
+        webView.navigationDelegate = context.coordinator
+        webView.uiDelegate = context.coordinator
+        if prefersDesktopMode {
+            webView.customUserAgent = Self.desktopUserAgent
+        }
+        if #available(iOS 16.4, *) {
+            webView.isInspectable = true
+        }
+        webView.allowsBackForwardNavigationGestures = true
+        webView.scrollView.keyboardDismissMode = .interactive
+        webView.scrollView.contentInsetAdjustmentBehavior = .never
+        webView.load(URLRequest(url: url))
+        return webView
+    }
+
+    func updateUIView(_ uiView: WKWebView, context: Context) {
+        context.coordinator.parent = self
+        let wantsDesktop = prefersDesktopMode ? Self.desktopUserAgent : nil
+        if uiView.customUserAgent != wantsDesktop {
+            uiView.customUserAgent = wantsDesktop
+            uiView.load(URLRequest(url: url))
+            context.coordinator.lastReloadToken = reloadToken
+            return
+        }
+        if uiView.url != url {
+            uiView.load(URLRequest(url: url))
+        } else if context.coordinator.lastReloadToken != reloadToken {
+            context.coordinator.lastReloadToken = reloadToken
+            uiView.reload()
+        }
+    }
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(parent: self)
+    }
+
+    final class Coordinator: NSObject, WKNavigationDelegate, WKUIDelegate {
+        var parent: WebContainerView
+        var lastReloadToken: UUID
+
+        init(parent: WebContainerView) {
+            self.parent = parent
+            self.lastReloadToken = parent.reloadToken
+        }
+
+        func webView(
+            _ webView: WKWebView,
+            createWebViewWith configuration: WKWebViewConfiguration,
+            for navigationAction: WKNavigationAction,
+            windowFeatures: WKWindowFeatures
+        ) -> WKWebView? {
+            if navigationAction.targetFrame == nil {
+                webView.load(navigationAction.request)
+            }
+            return nil
+        }
+
+        func webView(
+            _ webView: WKWebView,
+            didReceive challenge: URLAuthenticationChallenge,
+            completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
+        ) {
+            guard
+                challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust,
+                let trust = challenge.protectionSpace.serverTrust,
+                shouldTrustServer(host: challenge.protectionSpace.host)
+            else {
+                completionHandler(.performDefaultHandling, nil)
+                return
+            }
+
+            completionHandler(.useCredential, URLCredential(trust: trust))
+        }
+
+        private func shouldTrustServer(host: String) -> Bool {
+            let lowercasedHost = host.lowercased()
+            if lowercasedHost == "localhost" || lowercasedHost.hasSuffix(".local") {
+                return true
+            }
+
+            let segments = lowercasedHost.split(separator: ".").compactMap { Int($0) }
+            guard segments.count == 4 else {
+                return false
+            }
+
+            if segments[0] == 10 {
+                return true
+            }
+            if segments[0] == 192 && segments[1] == 168 {
+                return true
+            }
+            if segments[0] == 172 && (16...31).contains(segments[1]) {
+                return true
+            }
+            return false
+        }
     }
 }
 
@@ -778,7 +1444,7 @@ private struct MediaLibraryView: View {
                 .padding(.vertical, 8)
             }
 
-            Section("media.library.sections") {
+            Section {
                 NavigationLink {
                     MediaShelfView(service: service, shelf: .continueWatching)
                 } label: {
@@ -794,6 +1460,8 @@ private struct MediaLibraryView: View {
                 } label: {
                     Label("media.search.title", systemImage: "magnifyingglass")
                 }
+            } header: {
+                Text("media.library.sections")
             }
         }
         .navigationTitle(service.name)
@@ -910,19 +1578,23 @@ private struct MediaItemDetailView: View {
                 .padding(.vertical, 8)
             }
 
-            Section("media.item.info") {
+            Section {
                 LabeledContent("media.item.source", value: service.name)
                 LabeledContent("media.item.location", value: item.path)
                 LabeledContent("media.item.meta", value: item.meta)
+            } header: {
+                Text("media.item.info")
             }
 
-            Section("media.item.actions") {
+            Section {
                 Button("media.item.play") {
                     showPlayerPicker = true
                 }
                 Button("media.item.favorite") {
                     show("media.item.favorite_hint")
                 }
+            } header: {
+                Text("media.item.actions")
             }
         }
         .listStyle(.insetGrouped)
@@ -950,8 +1622,9 @@ private struct MediaItemDetailView: View {
 }
 
 private struct DSMConnectionFlowView: View {
-    @State private var host = "https://nas.example.com:5001"
+    @State private var host = ""
     @State private var account = ""
+    @State private var password = ""
     @State private var useAgent = true
 
     var body: some View {
@@ -967,31 +1640,36 @@ private struct DSMConnectionFlowView: View {
                 .padding(.vertical, 8)
             }
 
-            Section("connect.section.dsm") {
+            Section {
                 TextField("connect.host", text: $host)
                     .textInputAutocapitalization(.never)
                     .keyboardType(.URL)
                 TextField("connect.account", text: $account)
                     .textInputAutocapitalization(.never)
+                SecureField("connect.password", text: $password)
                 NavigationLink {
                     LANDiscoveryView()
                 } label: {
                     Label("connect.scan.title", systemImage: "magnifyingglass")
                 }
+            } header: {
+                Text("connect.section.dsm")
             }
 
-            Section("connect.section.agent") {
+            Section {
                 Toggle("connect.agent.toggle", isOn: $useAgent)
                 NavigationLink {
                     AgentSetupGuideView()
                 } label: {
                     Label("connect.agent.guide", systemImage: "shippingbox")
                 }
+            } header: {
+                Text("connect.section.agent")
             }
 
             Section {
                 NavigationLink {
-                    DSMConnectionReviewView(host: host, account: account, useAgent: useAgent)
+                    DSMConnectionReviewView(host: host, account: account, password: password, useAgent: useAgent)
                 } label: {
                     Text("connect.action")
                         .font(.headline.weight(.semibold))
@@ -1019,7 +1697,7 @@ private struct LANDiscoveryView: View {
                     .padding(.vertical, 6)
             }
 
-            Section("connect.scan.results") {
+            Section {
                 ForEach(dataStore.discoveredDevices) { device in
                     HStack(spacing: 12) {
                         Image(systemName: "server.rack")
@@ -1043,11 +1721,13 @@ private struct LANDiscoveryView: View {
                     }
                     .padding(.vertical, 3)
                 }
+            } header: {
+                Text("connect.scan.results")
             }
         }
         .listStyle(.insetGrouped)
         .navigationTitle("connect.scan.title")
-        .alert(String(format: NSLocalizedString("connect.scan.use_hint", comment: ""), selectedHost), isPresented: $showHint) {
+        .alert("connect.scan.use_hint \(selectedHost)", isPresented: $showHint) {
             Button("action.ok", role: .cancel) {}
         }
     }
@@ -1055,6 +1735,7 @@ private struct LANDiscoveryView: View {
 
 private struct AgentSetupGuideView: View {
     @State private var showCopyHint = false
+    private let command = "docker run -d --name nastart-agent -p 8787:8787 nastart/agent:latest"
 
     var body: some View {
         List {
@@ -1069,19 +1750,24 @@ private struct AgentSetupGuideView: View {
                 .padding(.vertical, 8)
             }
 
-            Section("connect.agent.steps") {
+            Section {
                 AgentStepRow(number: 1, titleKey: "connect.agent.step.package", detailKey: "connect.agent.step.package_detail")
                 AgentStepRow(number: 2, titleKey: "connect.agent.step.token", detailKey: "connect.agent.step.token_detail")
                 AgentStepRow(number: 3, titleKey: "connect.agent.step.verify", detailKey: "connect.agent.step.verify_detail")
+            } header: {
+                Text("connect.agent.steps")
             }
 
-            Section("connect.agent.command") {
-                Text("docker run -d --name nastart-agent -p 8787:8787 nastart/agent:latest")
+            Section {
+                Text(command)
                     .font(.system(.footnote, design: .monospaced))
                     .textSelection(.enabled)
                 Button("connect.agent.copy") {
+                    UIPasteboard.general.string = command
                     showCopyHint = true
                 }
+            } header: {
+                Text("connect.agent.command")
             }
         }
         .listStyle(.insetGrouped)
@@ -1119,10 +1805,15 @@ private struct AgentStepRow: View {
 private struct DSMConnectionReviewView: View {
     let host: String
     let account: String
+    let password: String
     let useAgent: Bool
     @EnvironmentObject private var dataStore: AppDataStore
     @EnvironmentObject private var connectionStore: NASConnectionStore
+    @Environment(\.dismiss) private var dismiss
     @State private var showFinishHint = false
+    @State private var isConnecting = false
+    @State private var errorMessage = ""
+    @State private var showError = false
 
     var body: some View {
         List {
@@ -1137,39 +1828,92 @@ private struct DSMConnectionReviewView: View {
                 .padding(.vertical, 8)
             }
 
-            Section("connect.review.target") {
+            Section {
                 LabeledContent("connect.host", value: host)
                 LabeledContent("connect.account", value: account.isEmpty ? "-" : account)
+                LabeledContent("connect.password") {
+                    Text(password.isEmpty ? "-" : "••••••••")
+                        .foregroundStyle(.secondary)
+                }
                 LabeledContent("connect.agent.toggle") {
                     Text(LocalizedStringKey(useAgent ? "state.on" : "state.off"))
                         .foregroundStyle(.secondary)
                 }
+            } header: {
+                Text("connect.review.target")
             }
 
-            Section("connect.review.scope") {
+            Section {
                 CapabilityRow(titleKey: "connect.scope.system", symbol: "chart.line.uptrend.xyaxis")
                 CapabilityRow(titleKey: "connect.scope.files", symbol: "folder")
                 CapabilityRow(titleKey: "connect.scope.docker", symbol: "shippingbox")
                 CapabilityRow(titleKey: "connect.scope.services", symbol: "square.grid.2x2")
+            } header: {
+                Text("connect.review.scope")
             }
 
             Section {
                 Button {
-                    connectionStore.connect(device: dataStore.device)
-                    showFinishHint = true
+                    connectDSM()
                 } label: {
-                    Text("connect.review.finish")
-                        .font(.headline.weight(.semibold))
-                        .frame(maxWidth: .infinity)
+                    HStack {
+                        if isConnecting {
+                            ProgressView()
+                        }
+                        Text(LocalizedStringKey(isConnecting ? "connect.review.connecting" : "connect.review.finish"))
+                            .font(.headline.weight(.semibold))
+                    }
+                    .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.borderedProminent)
                 .tint(AppTheme.accent)
+                .disabled(isConnecting || host.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || account.isEmpty || password.isEmpty)
             }
         }
         .listStyle(.insetGrouped)
         .navigationTitle("connect.review.nav")
         .alert("connect.review.done", isPresented: $showFinishHint) {
+            Button("action.ok", role: .cancel) {
+                dismiss()
+            }
+        }
+        .alert("connect.error.title", isPresented: $showError) {
             Button("action.ok", role: .cancel) {}
+        } message: {
+            Text(errorMessage)
+        }
+    }
+
+    private func connectDSM() {
+        isConnecting = true
+        errorMessage = ""
+        Task {
+            do {
+                let baseURL = try DSMClient.normalizedBaseURL(from: host)
+                let client = DSMClient(baseURL: baseURL)
+                let session = try await client.login(account: account, password: password)
+                let snapshot = await client.loadSnapshot(session: session, useAgent: useAgent)
+                KeychainStore.shared.saveNASCredential(
+                    StoredNASCredential(
+                        baseURLString: baseURL.absoluteString,
+                        account: account,
+                        password: password,
+                        useAgent: useAgent
+                    )
+                )
+                await MainActor.run {
+                    dataStore.reload(from: snapshot)
+                    connectionStore.connect(device: snapshot.device, session: session)
+                    isConnecting = false
+                    showFinishHint = true
+                }
+            } catch {
+                await MainActor.run {
+                    isConnecting = false
+                    errorMessage = error.localizedDescription
+                    showError = true
+                }
+            }
         }
     }
 }
@@ -1202,7 +1946,7 @@ private struct CertificateReminderStrip: View {
         HStack(spacing: 10) {
             Image(systemName: "lock.shield")
                 .font(.subheadline.weight(.medium))
-            Text(String(format: NSLocalizedString("launchpad.reminder.cert", comment: ""), days))
+            Text("launchpad.reminder.cert \(days)")
                 .font(.subheadline)
             Spacer()
             Text("action.view")
@@ -1222,6 +1966,7 @@ private struct CertificateReminderStrip: View {
 
 private struct DeviceSummaryPanel: View {
     let device: NASDevice
+    let compact: Bool
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
@@ -1239,13 +1984,25 @@ private struct DeviceSummaryPanel: View {
                     .foregroundStyle(.secondary)
             }
 
-            MetricPillRow(metrics: [
-                MetricPillSpec("metric.cpu", value: "11%", progress: device.cpu),
-                MetricPillSpec("metric.memory", value: "32%", progress: device.memory),
-                MetricPillSpec("metric.storage", value: device.storageFreeText, progress: device.storageUsed)
-            ])
+            if compact {
+                MetricPillRow(metrics: [
+                    MetricPillSpec("metric.cpu", value: launchpadPercentText(device.cpu), symbolName: "cpu"),
+                    MetricPillSpec("metric.memory", value: launchpadPercentText(device.memory), symbolName: "memorychip"),
+                    MetricPillSpec("metric.storage", value: device.storageFreeText, symbolName: "internaldrive")
+                ])
+            } else {
+                MetricPillRow(metrics: [
+                    MetricPillSpec("metric.cpu", value: launchpadPercentText(device.cpu), progress: device.cpu, symbolName: "cpu"),
+                    MetricPillSpec("metric.memory", value: launchpadPercentText(device.memory), progress: device.memory, symbolName: "memorychip"),
+                    MetricPillSpec("metric.storage", value: device.storageFreeText, progress: device.storageUsed, symbolName: "internaldrive")
+                ])
+            }
         }
         .padding(16)
         .nastartCard(cornerRadius: 26)
     }
+}
+
+private func launchpadPercentText(_ value: Double) -> String {
+    "\(Int((value * 100).rounded()))%"
 }

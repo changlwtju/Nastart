@@ -2,6 +2,7 @@ import SwiftUI
 
 struct DevicesView: View {
     @EnvironmentObject private var dataStore: AppDataStore
+    @EnvironmentObject private var connectionStore: NASConnectionStore
     @State private var showRediscoverHint = false
 
     var body: some View {
@@ -31,15 +32,15 @@ struct DevicesView: View {
                         }
 
                         MetricPillRow(metrics: [
-                            MetricPillSpec("metric.cpu", value: "11%", progress: dataStore.device.cpu),
-                            MetricPillSpec("metric.memory", value: "32%", progress: dataStore.device.memory),
+                            MetricPillSpec("metric.cpu", value: devicePercentText(dataStore.device.cpu), progress: dataStore.device.cpu),
+                            MetricPillSpec("metric.memory", value: devicePercentText(dataStore.device.memory), progress: dataStore.device.memory),
                             MetricPillSpec("metric.storage", value: dataStore.device.storageFreeText, progress: dataStore.device.storageUsed)
                         ])
                     }
                     .padding(.vertical, 8)
                 }
 
-                Section("devices.section.resources") {
+                Section {
                     NavigationLink {
                         DeviceStatusView(device: dataStore.device)
                     } label: {
@@ -60,15 +61,24 @@ struct DevicesView: View {
                     } label: {
                         Label("devices.resource.network", systemImage: "network")
                     }
+                } header: {
+                    Text("devices.section.resources")
                 }
 
-                Section("devices.section.maintenance") {
+                Section {
                     NavigationLink {
                         CertificateSecurityView(device: dataStore.device)
                     } label: {
                         Label("devices.maintenance.certificate", systemImage: "lock.shield")
                     }
                     Button {
+                        if let session = connectionStore.dsmSession {
+                            Task {
+                                await dataStore.refreshDSM(session: session, useAgent: connectionStore.usesAgent)
+                            }
+                        } else {
+                            dataStore.refreshAll()
+                        }
                         showRediscoverHint = true
                     } label: {
                         Label("devices.maintenance.discovery", systemImage: "magnifyingglass")
@@ -78,6 +88,8 @@ struct DevicesView: View {
                     } label: {
                         Label("devices.maintenance.agent", systemImage: "antenna.radiowaves.left.and.right")
                     }
+                } header: {
+                    Text("devices.section.maintenance")
                 }
             }
             .listStyle(.insetGrouped)
@@ -99,31 +111,39 @@ struct DeviceStatusView: View {
                     Text("devices.status.title")
                         .font(.title2.weight(.bold))
                     MetricPillRow(metrics: [
-                        MetricPillSpec("metric.cpu", value: "11%", progress: device.cpu),
-                        MetricPillSpec("metric.memory", value: "32%", progress: device.memory),
+                        MetricPillSpec("metric.cpu", value: devicePercentText(device.cpu), progress: device.cpu),
+                        MetricPillSpec("metric.memory", value: devicePercentText(device.memory), progress: device.memory),
                         MetricPillSpec("metric.storage", value: device.storageFreeText, progress: device.storageUsed)
                     ])
                 }
                 .padding(.vertical, 8)
             }
 
-            Section("devices.detail.status") {
+            Section {
                 LabeledContent("metric.uptime", value: device.uptimeText)
                 LabeledContent("devices.detail.mode", value: device.subtitle)
                 LabeledContent("devices.detail.certificate", value: "\(device.certificateDaysRemaining)d")
                 LabeledContent("devices.status.temperature", value: "41 C")
                 LabeledContent("devices.status.network", value: "LAN - 32 ms")
+            } header: {
+                Text("devices.detail.status")
             }
 
-            Section("devices.status.diagnosis") {
+            Section {
                 DiagnosisRow(titleKey: "devices.diagnosis.reachable", valueKey: "devices.diagnosis.good", symbol: "checkmark.circle")
                 DiagnosisRow(titleKey: "devices.diagnosis.certificate", valueKey: "devices.diagnosis.watch", symbol: "lock.shield")
                 DiagnosisRow(titleKey: "devices.diagnosis.agent", valueKey: "devices.diagnosis.good", symbol: "antenna.radiowaves.left.and.right")
+            } header: {
+                Text("devices.status.diagnosis")
             }
         }
         .listStyle(.insetGrouped)
         .navigationTitle(device.name)
     }
+}
+
+private func devicePercentText(_ value: Double) -> String {
+    "\(Int((value * 100).rounded()))%"
 }
 
 private struct DiagnosisRow: View {
@@ -210,18 +230,22 @@ private struct DockerContainerDetailView: View {
                 DockerContainerRow(container: container)
             }
 
-            Section("devices.container.metrics") {
+            Section {
                 LabeledContent("metric.cpu", value: "\(Int(container.cpu * 100))%")
                 LabeledContent("metric.memory", value: container.memoryText)
+            } header: {
+                Text("devices.container.metrics")
             }
 
-            Section("devices.container.ports") {
+            Section {
                 ForEach(container.ports, id: \.self) { port in
                     Text(port)
                 }
+            } header: {
+                Text("devices.container.ports")
             }
 
-            Section("devices.container.actions") {
+            Section {
                 Button("devices.container.open_logs") {
                     showAction("devices.container.logs_hint")
                 }
@@ -231,6 +255,8 @@ private struct DockerContainerDetailView: View {
                 Button("devices.container.stop", role: .destructive) {
                     showAction("devices.container.stop_hint")
                 }
+            } header: {
+                Text("devices.container.actions")
             }
         }
         .listStyle(.insetGrouped)
@@ -252,10 +278,12 @@ private struct FileBrowserView: View {
 
     var body: some View {
         List {
-            Section("devices.files.favorites") {
+            Section {
                 ForEach(items) { item in
                     FileItemRowLink(item: item)
                 }
+            } header: {
+                Text("devices.files.favorites")
             }
         }
         .listStyle(.insetGrouped)
@@ -333,7 +361,7 @@ private struct FilePreviewView: View {
                 .padding(.vertical, 8)
             }
 
-            Section("devices.files.actions") {
+            Section {
                 Button("devices.files.preview") {
                     showPreviewHint = true
                 }
@@ -343,6 +371,8 @@ private struct FilePreviewView: View {
                 Button("devices.files.favorite") {
                     showFavoriteHint = true
                 }
+            } header: {
+                Text("devices.files.actions")
             }
         }
         .listStyle(.insetGrouped)
@@ -376,7 +406,7 @@ private struct NetworkDetailView: View {
 
     var body: some View {
         List {
-            Section("devices.network.reachability") {
+            Section {
                 ForEach(services) { service in
                     HStack {
                         Text(service.name)
@@ -384,12 +414,16 @@ private struct NetworkDetailView: View {
                         StatusDot(status: service.status)
                     }
                 }
+            } header: {
+                Text("devices.network.reachability")
             }
 
-            Section("devices.network.ports") {
+            Section {
                 LabeledContent("DSM", value: "5001")
                 LabeledContent("Jellyfin", value: "8096")
                 LabeledContent("Navidrome", value: "4533")
+            } header: {
+                Text("devices.network.ports")
             }
         }
         .listStyle(.insetGrouped)
@@ -410,13 +444,15 @@ private struct CertificateSecurityView: View {
                 LabeledContent("devices.cert.issuer", value: "Let's Encrypt")
             }
 
-            Section("devices.cert.actions") {
+            Section {
                 Button("devices.cert.create_task") {
                     showReminderHint = true
                 }
                 Button("devices.cert.check_now") {
                     showCheckHint = true
                 }
+            } header: {
+                Text("devices.cert.actions")
             }
         }
         .listStyle(.insetGrouped)
@@ -439,10 +475,12 @@ private struct AgentStatusView: View {
                 LabeledContent("devices.agent.last_seen", value: "2 min")
             }
 
-            Section("devices.agent.scope") {
+            Section {
                 Label("Docker", systemImage: "shippingbox")
                 Label("devices.agent.scope.metrics", systemImage: "chart.line.uptrend.xyaxis")
                 Label("devices.agent.scope.discovery", systemImage: "magnifyingglass")
+            } header: {
+                Text("devices.agent.scope")
             }
         }
         .listStyle(.insetGrouped)

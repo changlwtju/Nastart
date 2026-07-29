@@ -42,10 +42,10 @@
 "launchpad.concept.service_stacks" = "Stacks";
 "launchpad.concept.command_deck" = "Deck";
 "launchpad.summary.normal" = "NAS is healthy";
-"launchpad.summary.subtitle" = "Local network online · certificate expires in 19 days";
+"launchpad.summary.subtitle" = "Local network online · services generated";
 "launchpad.section.services" = "Services";
 "launchpad.section.generated" = "Generated";
-"launchpad.reminder.cert" = "Certificate expires in %d days";
+"launchpad.reminder.cert %lld" = "Certificate expires in %lld days";
 "launchpad.group.collapsed_hint" = "Tap to expand";
 "search.title" = "Search";
 "search.placeholder" = "Search services, files, reminders";
@@ -64,18 +64,29 @@
 "service.navidrome.detail" = "Audio library and player handoff";
 "service.nginx.subtitle" = "Reverse proxy";
 "service.nginx.detail" = "HTTPS routing and certificate endpoint";
+"service.codex.subtitle" = "Mobile command entry";
+"service.codex.detail" = "Open the dev console inside Nastart";
 "service.detail.actions" = "Actions";
 "service.action.device_control" = "Device Control";
-"service.action.open_web" = "Open Web UI";
-"service.action.open_external" = "Open In...";
+"service.action.open_web" = "Open In App";
+"service.action.open_console" = "Open In App";
+"service.action.open_external" = "Open With";
 "service.action.media_library" = "Library";
 "service.detail.connection" = "Connection";
 "service.detail.endpoint" = "Endpoint";
 "service.detail.source" = "Source";
 "service.detail.status" = "Status";
 "service.metric.library" = "Library";
+"service.metric.ports" = "Ports";
 "service.open.hint" = "This will open the configured Web UI once the real service URL is connected.";
 "service.external.title" = "Open with";
+"service.console.title" = "Developer Console";
+"service.console.subtitle" = "Keeps common control keys close by for sending commands and watching output on mobile.";
+"web.mode.title" = "Open Mode";
+"web.mode.automatic" = "Auto";
+"web.mode.mobile" = "Mobile";
+"web.mode.desktop" = "Desktop";
+"web.mode.focused" = "Focus";
 "media.audio.title" = "Audio Library";
 "media.video.title" = "Video Library";
 "media.library.description" = "Browse the library, then hand off playback when needed.";
@@ -91,6 +102,7 @@
 "connect.section.dsm" = "DSM";
 "connect.host" = "DSM address";
 "connect.account" = "Account";
+"connect.password" = "Password";
 "connect.scan.title" = "Discover on LAN";
 "connect.scan.description" = "Local discovery will list reachable DSM devices.";
 "connect.section.agent" = "Agent";
@@ -108,10 +120,19 @@
 "connect.scope.docker" = "Docker containers";
 "connect.scope.services" = "Service discovery";
 "connect.review.finish" = "Connect";
-"connect.review.done" = "Connection flow is ready. Real DSM login will be wired here.";
+"connect.review.connecting" = "Connecting";
+"connect.review.done" = "DSM connected and launch data refreshed.";
+"connect.error.title" = "Connection Failed";
+"connect.error.invalid_address" = "The DSM address is invalid. Check the host and port.";
+"connect.error.invalid_response" = "DSM did not return a usable response. Check network, HTTPS certificate, or port.";
+"connect.error.api" = "DSM API returned an error. Check account permissions.";
+"connect.error.api_code" = "DSM API returned error code: %d.";
+"connect.error.missing_session" = "DSM login succeeded but did not return a session. Check DSM version or login mode.";
 
 "data.refresh.ready" = "Data ready";
 "data.refresh.mock_done" = "Mock data refreshed";
+"data.refresh.dsm_done" = "DSM data refreshed";
+"data.refresh.restore_failed" = "DSM auto-restore failed";
 
 "devices.section.resources" = "Resources";
 "devices.section.maintenance" = "Maintenance";
@@ -240,6 +261,13 @@
 "mine.sync.title" = "iCloud Sync";
 "mine.privacy.title" = "Privacy";
 "plus.description" = "Unlock sync, themes, reminders, and larger launchpads.";
+"plus.pricing" = "Plans";
+"plus.plan.monthly" = "Monthly";
+"plus.plan.monthly.price" = "Tentative ¥8 / month";
+"plus.plan.yearly" = "Yearly";
+"plus.plan.yearly.price" = "Tentative ¥58 / year";
+"plus.plan.yearly.badge" = "Best value";
+"plus.pricing.note" = "Final prices are configured in App Store Connect.";
 "plus.includes" = "Included";
 "plus.feature.cards" = "More launchpad cards";
 "plus.feature.icloud" = "iCloud sync across devices";
@@ -258,10 +286,18 @@
 "plus.locked.icloud" = "Plus required for iCloud";
 "plus.locked.themes" = "Plus required for advanced themes";
 "mine.appearance.launchpad" = "Launchpad";
+"mine.appearance.language" = "Language";
+"mine.appearance.language.system" = "Follow System";
+"mine.appearance.language.zh_hans" = "简体中文";
+"mine.appearance.language.en" = "English";
+"mine.appearance.display" = "Display";
+"mine.appearance.display.system" = "Follow System";
+"mine.appearance.display.light" = "Light";
+"mine.appearance.display.dark" = "Dark";
 "mine.appearance.theme" = "Theme";
-"mine.appearance.theme.clean_grid" = "Clean Grid";
-"mine.appearance.theme.command_center" = "Command Center";
-"mine.appearance.theme.glass_deck" = "Glass Deck";
+"mine.appearance.theme.clean_grid" = "Clean";
+"mine.appearance.theme.command_center" = "Board";
+"mine.appearance.theme.glass_deck" = "Glow";
 "mine.appearance.compact_metrics" = "Compact metrics";
 "mine.appearance.status_dot" = "Show status dots";
 "mine.appearance.cards" = "Cards";
@@ -315,6 +351,11 @@
 "external.files_hint" = "This will be handed to Files or the share sheet later.";
 "external.navidrome_hint" = "This will open the Navidrome playback flow later.";
 "external.system_player_hint" = "This will use the system player for lightweight playback.";
+"external.open_failed" = "Could not open this service. Check whether the target app is installed, or open it in Safari instead.";
+"external.browser" = "Safari / Browser";
+"external.safari_failed" = "Could not open this service in Safari. Check whether the service URL is reachable.";
+"external.player_failed" = "Could not open the selected player. Make sure the app is installed, or use the in-app browser / Safari first.";
+"external.unsupported_hint" = "This open route is not supported for the current service.";
 "player.system" = "System Player";
 "player.custom_scheme" = "Custom Scheme";
 
@@ -331,7 +372,7 @@
 
 "connect.scan.results" = "Results";
 "connect.scan.use" = "Use";
-"connect.scan.use_hint" = "%@ selected. It will fill the connection form later.";
+"connect.scan.use_hint %@" = "%@ selected. It will fill the connection form later.";
 "connect.agent.steps" = "Steps";
 "connect.agent.step.package" = "Deploy container";
 "connect.agent.step.package_detail" = "Run Nastart Agent in Container Manager.";
@@ -341,9 +382,9 @@
 "connect.agent.step.verify_detail" = "Nastart checks Agent version, scope, and last seen.";
 "connect.agent.command" = "Sample command";
 "connect.agent.copy" = "Copy Command";
-"connect.agent.copy_hint" = "Copy will use the system clipboard later.";
+"connect.agent.copy_hint" = "Agent sample command copied.";
+"web.copy.done" = "Service URL copied.";
 
-"mine.appearance.item.status" = "Status";
 "mine.appearance.item.subtitle" = "Subtitle";
 "mine.appearance.item.cpu" = "CPU";
 "mine.appearance.item.memory" = "Memory";
@@ -351,7 +392,7 @@
 "mine.appearance.item.library" = "Library counts";
 "mine.appearance.card_items_footer" = "These options control default launchpad density.";
 "mine.appearance.group_default" = "Expanded by default";
-"mine.appearance.group_footer" = "Drag reorder will be enabled after settings persistence.";
+"mine.appearance.group_footer" = "Drag to reorder launchpad groups. Disabled groups open collapsed by default.";
 
 "mine.privacy.keychain_items" = "Saved Items";
 "mine.privacy.keychain.dsm" = "DSM session";

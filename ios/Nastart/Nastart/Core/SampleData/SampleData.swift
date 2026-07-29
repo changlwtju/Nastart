@@ -16,11 +16,12 @@ enum SampleData {
 
     static let services: [LaunchpadService] = [
         LaunchpadService(id: UUID(uuidString: "A1F38D26-9B9F-43B3-965F-001A21D22401")!, name: "DSM", iconText: "DSM", category: .favorites, status: .online, subtitle: "service.dsm.subtitle", detail: "service.dsm.detail", isMedia: false, cpu: nil, memoryText: nil),
-        LaunchpadService(id: UUID(uuidString: "776E95C2-12D1-42CF-A01D-A7D1F995B02D")!, name: "Jellyfin", iconText: "JF", category: .favorites, status: .online, subtitle: "service.jellyfin.subtitle", detail: "service.jellyfin.detail", isMedia: true, cpu: 0.08, memoryText: "504 MB"),
-        LaunchpadService(id: UUID(uuidString: "6E1E6495-1E90-4F87-A423-B20E2A73A442")!, name: "qBittorrent", iconText: "QB", category: .downloads, status: .online, subtitle: "service.qb.subtitle", detail: "service.qb.detail", isMedia: false, cpu: 0.03, memoryText: "138 MB"),
+        LaunchpadService(id: UUID(uuidString: "776E95C2-12D1-42CF-A01D-A7D1F995B02D")!, name: "Jellyfin", iconText: "JF", category: .favorites, status: .online, subtitle: "service.jellyfin.subtitle", detail: "service.jellyfin.detail", isMedia: true, cpu: 0.08, memoryText: "504 MB", ports: ["8096", "8920"]),
+        LaunchpadService(id: UUID(uuidString: "6E1E6495-1E90-4F87-A423-B20E2A73A442")!, name: "qBittorrent", iconText: "QB", category: .downloads, status: .online, subtitle: "service.qb.subtitle", detail: "service.qb.detail", isMedia: false, cpu: 0.03, memoryText: "138 MB", ports: ["8080", "6881"]),
         LaunchpadService(id: UUID(uuidString: "82A56666-10DC-4F32-8542-0902168EC67E")!, name: "Container", iconText: "CT", category: .tools, status: .warning, subtitle: "service.container.subtitle", detail: "service.container.detail", isMedia: false, cpu: nil, memoryText: nil),
-        LaunchpadService(id: UUID(uuidString: "81C464AE-1E60-408A-AF3B-16D87BC059AB")!, name: "Navidrome", iconText: "NV", category: .media, status: .offline, subtitle: "service.navidrome.subtitle", detail: "service.navidrome.detail", isMedia: true, cpu: nil, memoryText: nil),
-        LaunchpadService(id: UUID(uuidString: "5C49781A-1433-4244-ACB5-38D8362DC93A")!, name: "Nginx Proxy", iconText: "NG", category: .network, status: .online, subtitle: "service.nginx.subtitle", detail: "service.nginx.detail", isMedia: false, cpu: nil, memoryText: nil)
+        LaunchpadService(id: UUID(uuidString: "81C464AE-1E60-408A-AF3B-16D87BC059AB")!, name: "Navidrome", iconText: "NV", category: .media, status: .offline, subtitle: "service.navidrome.subtitle", detail: "service.navidrome.detail", isMedia: true, cpu: nil, memoryText: nil, ports: ["4533"]),
+        LaunchpadService(id: UUID(uuidString: "5C49781A-1433-4244-ACB5-38D8362DC93A")!, name: "Nginx Proxy", iconText: "NG", category: .network, status: .online, subtitle: "service.nginx.subtitle", detail: "service.nginx.detail", isMedia: false, cpu: nil, memoryText: nil, ports: ["80", "443"]),
+        LaunchpadService(id: UUID(uuidString: "02E67B3C-92D5-4B3F-A0B4-4F566729157C")!, name: "codex-server", iconText: "CD", category: .tools, status: .online, subtitle: "service.codex.subtitle", detail: "service.codex.detail", isMedia: false, cpu: 0.04, memoryText: "286 MB", ports: ["8443"])
     ]
 
     static let containers: [DockerContainer] = [

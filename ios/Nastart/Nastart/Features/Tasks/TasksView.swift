@@ -32,7 +32,7 @@ struct TasksView: View {
                 .listRowBackground(Color.clear)
 
                 if segment == .pending {
-                    Section("tasks.section.pending") {
+                    Section {
                         ForEach(dataStore.tasks) { task in
                             NavigationLink {
                                 TaskDetailView(task: task)
@@ -40,9 +40,11 @@ struct TasksView: View {
                                 TaskRow(task: task)
                             }
                         }
+                    } header: {
+                        Text("tasks.section.pending")
                     }
                 } else if segment == .watching {
-                    Section("tasks.section.watching") {
+                    Section {
                         NavigationLink {
                             ReminderCreateView(defaultKind: .certificate)
                         } label: {
@@ -58,6 +60,8 @@ struct TasksView: View {
                         } label: {
                             Label("tasks.watch.agent", systemImage: "antenna.radiowaves.left.and.right")
                         }
+                    } header: {
+                        Text("tasks.section.watching")
                     }
                 } else {
                     Section {
@@ -168,7 +172,7 @@ private struct TaskDetailView: View {
                 .padding(.vertical, 8)
             }
 
-            Section("tasks.detail.actions") {
+            Section {
                 Button("tasks.detail.handle") {
                     showAction("tasks.detail.handle_hint")
                 }
@@ -176,13 +180,17 @@ private struct TaskDetailView: View {
                 Button("tasks.detail.done") {
                     showAction("tasks.detail.done_hint")
                 }
+            } header: {
+                Text("tasks.detail.actions")
             }
 
-            Section("tasks.detail.timeline") {
+            Section {
                 LabeledContent("tasks.detail.created") {
                     Text("state.today")
                 }
                 LabeledContent("tasks.detail.next", value: task.isUrgent ? "19d" : "42d")
+            } header: {
+                Text("tasks.detail.timeline")
             }
         }
         .listStyle(.insetGrouped)
@@ -220,16 +228,20 @@ private struct ReminderCreateView: View {
                 }
             }
 
-            Section("reminder.section.basic") {
+            Section {
                 TextField("reminder.title.placeholder", text: $title)
                 TextField("reminder.target.placeholder", text: $target)
+            } header: {
+                Text("reminder.section.basic")
             }
 
-            Section("reminder.section.notify") {
+            Section {
                 Stepper(value: $daysBefore, in: 1...60) {
                     LabeledContent("reminder.days_before", value: "\(daysBefore)d")
                 }
                 Toggle("reminder.push", isOn: $enablePush)
+            } header: {
+                Text("reminder.section.notify")
             }
 
             Section {
