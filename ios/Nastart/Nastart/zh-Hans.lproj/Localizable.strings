@@ -112,7 +112,8 @@
 "connect.agent.toggle" = "DSM 登录后准备 Agent";
 "connect.agent.guide" = "Agent 部署指引";
 "connect.agent.description" = "Agent 可增强 Docker 指标、端口和服务发现能力，也为后续兼容其他 NAS 品牌预留空间。";
-"connect.action" = "继续";
+"connect.action" = "连接";
+"connect.scope.footer" = "连接后会读取系统状态、共享文件夹、Docker 容器与服务发现数据，用于生成启动台和设备页面。";
 "connect.review.nav" = "确认";
 "connect.review.title" = "确认访问范围";
 "connect.review.subtitle" = "Nastart 会用这些权限生成启动台和设备页面。";

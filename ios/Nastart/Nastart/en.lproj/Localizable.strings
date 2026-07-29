@@ -112,7 +112,8 @@
 "connect.agent.toggle" = "Add Agent after login";
 "connect.agent.guide" = "Agent setup guide";
 "connect.agent.description" = "Agent adds Docker metrics, ports, and discovery, with room for more NAS brands.";
-"connect.action" = "Continue";
+"connect.action" = "Connect";
+"connect.scope.footer" = "After connecting, Nastart reads system status, shared folders, Docker containers, and service discovery data to build the launchpad and device views.";
 "connect.review.nav" = "Confirm";
 "connect.review.title" = "Confirm Access";
 "connect.review.subtitle" = "These permissions build the launchpad and device views.";

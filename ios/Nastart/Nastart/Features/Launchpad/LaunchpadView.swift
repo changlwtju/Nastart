@@ -1623,12 +1623,19 @@ private struct MediaItemDetailView: View {
 
 private struct DSMConnectionFlowView: View {
     let onConnected: () -> Void
+    @EnvironmentObject private var dataStore: AppDataStore
+    @EnvironmentObject private var connectionStore: NASConnectionStore
+    @Environment(\.dismiss) private var dismiss
     @State private var host = ""
     @State private var account = ""
     @State private var password = ""
     @State private var oneTimeCode = ""
     @State private var allowsSelfSignedCertificates = false
     @State private var useAgent = true
+    @State private var isConnecting = false
+    @State private var errorMessage = ""
+    @State private var showError = false
+    @State private var showFinishHint = false
 
     var body: some View {
         List {
@@ -1682,26 +1689,79 @@ private struct DSMConnectionFlowView: View {
             }
 
             Section {
-                NavigationLink {
-                    DSMConnectionReviewView(
-                        host: host,
-                        account: account,
-                        password: password,
-                        oneTimeCode: oneTimeCode,
-                        allowsSelfSignedCertificates: allowsSelfSignedCertificates,
-                        useAgent: useAgent,
-                        onConnected: onConnected
-                    )
+                Button {
+                    connectDSM()
                 } label: {
-                    Text("connect.action")
-                        .font(.headline.weight(.semibold))
-                        .frame(maxWidth: .infinity)
+                    HStack {
+                        if isConnecting {
+                            ProgressView()
+                                .tint(.white)
+                        }
+                        Text(LocalizedStringKey(isConnecting ? "connect.review.connecting" : "connect.action"))
+                            .font(.headline.weight(.semibold))
+                    }
+                    .frame(maxWidth: .infinity)
                 }
                 .listRowBackground(AppTheme.accent)
                 .foregroundStyle(.white)
+                .disabled(isConnecting || host.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || account.isEmpty || password.isEmpty)
+            } footer: {
+                Text("connect.scope.footer")
             }
         }
         .navigationTitle("connect.nav")
+        .alert("connect.review.done", isPresented: $showFinishHint) {
+            Button("action.ok", role: .cancel) {
+                onConnected()
+                dismiss()
+            }
+        }
+        .alert("connect.error.title", isPresented: $showError) {
+            Button("action.ok", role: .cancel) {}
+        } message: {
+            Text(errorMessage)
+        }
+    }
+
+    private func connectDSM() {
+        isConnecting = true
+        errorMessage = ""
+        Task {
+            do {
+                let baseURL = try DSMClient.normalizedBaseURL(from: host)
+                let client = DSMClient(
+                    baseURL: baseURL,
+                    allowsSelfSignedCertificates: allowsSelfSignedCertificates
+                )
+                let session = try await client.login(
+                    account: account,
+                    password: password,
+                    oneTimeCode: oneTimeCode
+                )
+                let snapshot = await client.loadSnapshot(session: session, useAgent: useAgent)
+                KeychainStore.shared.saveNASCredential(
+                    StoredNASCredential(
+                        baseURLString: baseURL.absoluteString,
+                        account: account,
+                        password: password,
+                        useAgent: useAgent,
+                        allowsSelfSignedCertificates: allowsSelfSignedCertificates
+                    )
+                )
+                await MainActor.run {
+                    dataStore.reload(from: snapshot)
+                    connectionStore.connect(device: snapshot.device, session: session)
+                    isConnecting = false
+                    showFinishHint = true
+                }
+            } catch {
+                await MainActor.run {
+                    isConnecting = false
+                    errorMessage = error.localizedDescription
+                    showError = true
+                }
+            }
+        }
     }
 }
 
@@ -1818,152 +1878,6 @@ private struct AgentStepRow: View {
             }
         }
         .padding(.vertical, 3)
-    }
-}
-
-private struct DSMConnectionReviewView: View {
-    let host: String
-    let account: String
-    let password: String
-    let oneTimeCode: String
-    let allowsSelfSignedCertificates: Bool
-    let useAgent: Bool
-    let onConnected: () -> Void
-    @EnvironmentObject private var dataStore: AppDataStore
-    @EnvironmentObject private var connectionStore: NASConnectionStore
-    @Environment(\.dismiss) private var dismiss
-    @State private var showFinishHint = false
-    @State private var isConnecting = false
-    @State private var errorMessage = ""
-    @State private var showError = false
-
-    var body: some View {
-        List {
-            Section {
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("connect.review.title")
-                        .font(.title2.weight(.bold))
-                    Text("connect.review.subtitle")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                }
-                .padding(.vertical, 8)
-            }
-
-            Section {
-                LabeledContent("connect.host", value: host)
-                LabeledContent("connect.account", value: account.isEmpty ? "-" : account)
-                LabeledContent("connect.password") {
-                    Text(password.isEmpty ? "-" : "••••••••")
-                        .foregroundStyle(.secondary)
-                }
-                LabeledContent("connect.otp") {
-                    Text(oneTimeCode.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? "-" : "••••••")
-                        .foregroundStyle(.secondary)
-                }
-                LabeledContent("connect.trust_self_signed") {
-                    Text(LocalizedStringKey(allowsSelfSignedCertificates ? "state.on" : "state.off"))
-                        .foregroundStyle(.secondary)
-                }
-                LabeledContent("connect.agent.toggle") {
-                    Text(LocalizedStringKey(useAgent ? "state.on" : "state.off"))
-                        .foregroundStyle(.secondary)
-                }
-            } header: {
-                Text("connect.review.target")
-            }
-
-            Section {
-                CapabilityRow(titleKey: "connect.scope.system", symbol: "chart.line.uptrend.xyaxis")
-                CapabilityRow(titleKey: "connect.scope.files", symbol: "folder")
-                CapabilityRow(titleKey: "connect.scope.docker", symbol: "shippingbox")
-                CapabilityRow(titleKey: "connect.scope.services", symbol: "square.grid.2x2")
-            } header: {
-                Text("connect.review.scope")
-            }
-
-            Section {
-                Button {
-                    connectDSM()
-                } label: {
-                    HStack {
-                        if isConnecting {
-                            ProgressView()
-                        }
-                        Text(LocalizedStringKey(isConnecting ? "connect.review.connecting" : "connect.review.finish"))
-                            .font(.headline.weight(.semibold))
-                    }
-                    .frame(maxWidth: .infinity)
-                }
-                .buttonStyle(.borderedProminent)
-                .tint(AppTheme.accent)
-                .disabled(isConnecting || host.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || account.isEmpty || password.isEmpty)
-            }
-        }
-        .listStyle(.insetGrouped)
-        .navigationTitle("connect.review.nav")
-        .alert("connect.review.done", isPresented: $showFinishHint) {
-            Button("action.ok", role: .cancel) {
-                onConnected()
-                dismiss()
-            }
-        }
-        .alert("connect.error.title", isPresented: $showError) {
-            Button("action.ok", role: .cancel) {}
-        } message: {
-            Text(errorMessage)
-        }
-    }
-
-    private func connectDSM() {
-        isConnecting = true
-        errorMessage = ""
-        Task {
-            do {
-                let baseURL = try DSMClient.normalizedBaseURL(from: host)
-                let client = DSMClient(
-                    baseURL: baseURL,
-                    allowsSelfSignedCertificates: allowsSelfSignedCertificates
-                )
-                let session = try await client.login(
-                    account: account,
-                    password: password,
-                    oneTimeCode: oneTimeCode
-                )
-                let snapshot = await client.loadSnapshot(session: session, useAgent: useAgent)
-                KeychainStore.shared.saveNASCredential(
-                    StoredNASCredential(
-                        baseURLString: baseURL.absoluteString,
-                        account: account,
-                        password: password,
-                        useAgent: useAgent,
-                        allowsSelfSignedCertificates: allowsSelfSignedCertificates
-                    )
-                )
-                await MainActor.run {
-                    dataStore.reload(from: snapshot)
-                    connectionStore.connect(device: snapshot.device, session: session)
-                    isConnecting = false
-                    showFinishHint = true
-                }
-            } catch {
-                await MainActor.run {
-                    isConnecting = false
-                    errorMessage = error.localizedDescription
-                    showError = true
-                }
-            }
-        }
-    }
-}
-
-private struct CapabilityRow: View {
-    let titleKey: LocalizedStringKey
-    let symbol: String
-
-    var body: some View {
-        Label(titleKey, systemImage: symbol)
-            .padding(.vertical, 2)
     }
 }
 
