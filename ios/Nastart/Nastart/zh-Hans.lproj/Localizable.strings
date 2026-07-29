@@ -70,10 +70,12 @@
 "service.action.device_control" = "设备控制";
 "service.action.open_web" = "App 内打开";
 "service.action.open_console" = "App 内打开";
+"service.action.open_unavailable" = "暂未识别到访问地址";
 "service.action.open_external" = "打开方式";
 "service.action.media_library" = "媒体资源库";
 "service.detail.connection" = "连接";
 "service.detail.endpoint" = "访问地址";
+"service.detail.endpoint_unavailable" = "暂无可访问地址";
 "service.detail.source" = "数据来源";
 "service.detail.status" = "状态";
 "service.metric.library" = "资源库";
@@ -108,6 +110,7 @@
 "connect.trust_self_signed.footer" = "例如 lagransun.cn:5001 或 192.168.1.10:5001，无需手动输入 https://。仅在连接自己的 NAS 且确认地址正确时开启自签信任。";
 "connect.scan.title" = "局域网发现";
 "connect.scan.description" = "局域网发现会列出可访问的 DSM 设备。";
+"connect.scan.empty" = "暂未发现可用 NAS。请手动填写 DSM 地址，或确认手机与 NAS 在同一局域网。";
 "connect.section.agent" = "Agent";
 "connect.agent.toggle" = "DSM 登录后准备 Agent";
 "connect.agent.guide" = "Agent 部署指引";
@@ -139,6 +142,7 @@
 "data.refresh.mock_done" = "已刷新本地原型数据";
 "data.refresh.dsm_done" = "已刷新 DSM 数据";
 "data.refresh.restore_failed" = "DSM 自动恢复失败";
+"data.refresh.disconnected" = "已断开 NAS";
 
 "devices.section.resources" = "资源";
 "devices.section.maintenance" = "维护";
@@ -209,7 +213,7 @@
 "tasks.watch.domains" = "域名续费监测";
 "tasks.watch.agent" = "Agent 新鲜度监测";
 "task.cert.title" = "证书 19 天后到期";
-"task.cert.subtitle" = "nas.example.com · 建议续期";
+"task.cert.subtitle" = "当前 NAS · 建议续期";
 "task.domain.title" = "域名 42 天后续费";
 "task.domain.subtitle" = "example.com · 手动提醒";
 "task.agent.title" = "Agent 权限有变化";
@@ -416,3 +420,31 @@
 "mine.privacy.export.secrets" = "包含敏感凭据";
 "mine.privacy.export_footer" = "默认不会导出密码、令牌或密钥。";
 "mine.privacy.export_hint" = "后续会生成本地备份文件，并通过系统分享面板导出。";
+
+"diagnostics.title" = "DSM 连接诊断";
+"diagnostics.recent" = "最近诊断";
+"diagnostics.empty" = "暂无需要排查的问题。";
+"diagnostics.footer" = "诊断只记录连接、DSM API、套件和容器识别相关线索；不会记录密码、验证码、SID 或完整地址。";
+"diagnostics.export" = "导出诊断摘要";
+"diagnostics.copy" = "复制诊断摘要";
+"diagnostics.clear" = "清空诊断";
+"diagnostics.copy_done" = "诊断摘要已复制。";
+"diagnostics.level.info" = "信息";
+"diagnostics.level.warning" = "注意";
+"diagnostics.level.error" = "错误";
+"diagnostics.category.connection" = "连接";
+"diagnostics.category.dsm_api" = "DSM API";
+"diagnostics.category.container" = "容器";
+"diagnostics.login.started" = "开始连接 DSM";
+"diagnostics.login.succeeded" = "DSM 登录成功";
+"diagnostics.login.attempt_failed" = "登录兼容尝试失败";
+"diagnostics.login.failed" = "DSM 登录失败";
+"diagnostics.api_info.loaded" = "API 信息读取成功";
+"diagnostics.api_info.missing" = "API 信息读取失败";
+"diagnostics.api_info.coverage" = "API 覆盖检查完成";
+"diagnostics.api_request.failed" = "DSM API 请求失败";
+"diagnostics.snapshot.started" = "开始读取 NAS 快照";
+"diagnostics.snapshot.completed" = "NAS 快照读取完成";
+"diagnostics.container.request_failed" = "容器 API 请求失败";
+"diagnostics.container.empty_response" = "容器 API 返回为空";
+"diagnostics.container.loaded" = "容器列表读取成功";

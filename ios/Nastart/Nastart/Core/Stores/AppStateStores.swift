@@ -32,6 +32,14 @@ struct MockNASDataSource: NASDataSource {
     }
 }
 
+struct DisconnectedNASDataSource: NASDataSource {
+    let kind: NASDataSourceKind = .mock
+
+    func loadSnapshot() async -> AppDataProviding {
+        DisconnectedAppDataProvider()
+    }
+}
+
 struct DSMNASDataSource: NASDataSource {
     let session: DSMSession
     let useAgent: Bool
@@ -89,7 +97,7 @@ struct MockAppDataProvider: AppDataProviding, NASDeviceProviding, LaunchpadServi
     let tasks = SampleData.tasks
     let videoLibraryItems = SampleData.videoLibraryItems
     let audioLibraryItems = SampleData.audioLibraryItems
-    let discoveredDevices = SampleData.discoveredDevices
+    let discoveredDevices: [DiscoveredNASDevice] = []
 
     func loadDevice() -> NASDevice { device }
     func discoverDevices() -> [DiscoveredNASDevice] { discoveredDevices }
@@ -99,6 +107,28 @@ struct MockAppDataProvider: AppDataProviding, NASDeviceProviding, LaunchpadServi
     func loadVideoLibraryItems() -> [MediaItem] { videoLibraryItems }
     func loadAudioLibraryItems() -> [MediaItem] { audioLibraryItems }
     func loadTasks() -> [TaskItem] { tasks }
+}
+
+struct DisconnectedAppDataProvider: AppDataProviding {
+    let device = NASDevice(
+        id: UUID(),
+        name: "Nastart",
+        subtitle: NSLocalizedString("mine.profile.not_connected", comment: ""),
+        mode: .manualOnly,
+        cpu: 0,
+        memory: 0,
+        storageUsed: 0,
+        storageFreeText: "-",
+        uptimeText: "-",
+        certificateDaysRemaining: 999
+    )
+    let services: [LaunchpadService] = []
+    let containers: [DockerContainer] = []
+    let files: [FileItem] = []
+    let tasks: [TaskItem] = []
+    let videoLibraryItems: [MediaItem] = []
+    let audioLibraryItems: [MediaItem] = []
+    let discoveredDevices: [DiscoveredNASDevice] = []
 }
 
 struct DSMSession {
@@ -156,6 +186,130 @@ struct DSMDataSnapshot: AppDataProviding {
     let videoLibraryItems: [MediaItem]
     let audioLibraryItems: [MediaItem]
     let discoveredDevices: [DiscoveredNASDevice]
+}
+
+enum DiagnosticLogLevel: String {
+    case info
+    case warning
+    case error
+
+    var titleKey: String {
+        switch self {
+        case .info: return "diagnostics.level.info"
+        case .warning: return "diagnostics.level.warning"
+        case .error: return "diagnostics.level.error"
+        }
+    }
+}
+
+struct DiagnosticLogEntry: Identifiable {
+    let id = UUID()
+    let date: Date
+    let level: DiagnosticLogLevel
+    let categoryKey: String
+    let messageKey: String
+    let detail: String
+
+    var exportLine: String {
+        let timestamp = Self.timestampFormatter.string(from: date)
+        let localizedCategory = NSLocalizedString(categoryKey, comment: "")
+        let localizedMessage = NSLocalizedString(messageKey, comment: "")
+        let trimmedDetail = detail.trimmingCharacters(in: .whitespacesAndNewlines)
+        if trimmedDetail.isEmpty {
+            return "[\(timestamp)] \(level.rawValue.uppercased()) \(localizedCategory) - \(localizedMessage)"
+        }
+        return "[\(timestamp)] \(level.rawValue.uppercased()) \(localizedCategory) - \(localizedMessage) | \(trimmedDetail)"
+    }
+
+    var displayTime: String {
+        Self.displayFormatter.string(from: date)
+    }
+
+    private static let timestampFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        return formatter
+    }()
+
+    private static let displayFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .none
+        formatter.timeStyle = .medium
+        return formatter
+    }()
+}
+
+final class DiagnosticLogStore: ObservableObject {
+    static let shared = DiagnosticLogStore()
+
+    @Published private(set) var entries: [DiagnosticLogEntry] = []
+
+    private let maxEntries = 200
+
+    private init() {}
+
+    func record(
+        _ level: DiagnosticLogLevel,
+        categoryKey: String,
+        messageKey: String,
+        details: [String: String] = [:]
+    ) {
+        let detail = details
+            .filter { !$0.value.isEmpty }
+            .sorted { $0.key < $1.key }
+            .map { "\($0.key)=\($0.value)" }
+            .joined(separator: ", ")
+
+        Task { @MainActor in
+            self.append(DiagnosticLogEntry(
+                date: Date(),
+                level: level,
+                categoryKey: categoryKey,
+                messageKey: messageKey,
+                detail: detail
+            ))
+        }
+    }
+
+    @MainActor
+    func clear() {
+        entries.removeAll()
+    }
+
+    @MainActor
+    func exportText() -> String {
+        if entries.isEmpty {
+            return NSLocalizedString("diagnostics.empty", comment: "")
+        }
+        return entries.map(\.exportLine).joined(separator: "\n")
+    }
+
+    static func redactedHost(_ host: String?) -> String {
+        guard let host, !host.isEmpty else { return "-" }
+        let parts = host.split(separator: ".").map(String.init)
+        if parts.count == 4, parts.allSatisfy({ Int($0) != nil }) {
+            return "\(parts[0]).\(parts[1]).*.*"
+        }
+        guard host.count > 8 else { return host }
+        let prefix = host.prefix(3)
+        let suffix = host.suffix(5)
+        return "\(prefix)...\(suffix)"
+    }
+
+    static func redactedURL(_ url: URL) -> String {
+        let host = redactedHost(url.host)
+        if let port = url.port {
+            return "\(url.scheme ?? "https")://\(host):\(port)"
+        }
+        return "\(url.scheme ?? "https")://\(host)"
+    }
+
+    private func append(_ entry: DiagnosticLogEntry) {
+        entries.append(entry)
+        if entries.count > maxEntries {
+            entries.removeFirst(entries.count - maxEntries)
+        }
+    }
 }
 
 enum DSMClientError: LocalizedError {
@@ -396,6 +550,15 @@ final class DSMClient {
         }
     }
 
+    private func record(
+        _ level: DiagnosticLogLevel,
+        categoryKey: String,
+        messageKey: String,
+        details: [String: String] = [:]
+    ) {
+        DiagnosticLogStore.shared.record(level, categoryKey: categoryKey, messageKey: messageKey, details: details)
+    }
+
     static func normalizedBaseURL(from input: String) throws -> URL {
         var value = input.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !value.isEmpty else { throw DSMClientError.invalidAddress }
@@ -416,34 +579,74 @@ final class DSMClient {
     }
 
     func login(account: String, password: String, oneTimeCode: String = "") async throws -> DSMSession {
-        var queryItems = [
-            URLQueryItem(name: "api", value: "SYNO.API.Auth"),
-            URLQueryItem(name: "version", value: "6"),
-            URLQueryItem(name: "method", value: "login"),
-            URLQueryItem(name: "account", value: account),
-            URLQueryItem(name: "passwd", value: password),
-            URLQueryItem(name: "session", value: "Nastart"),
-            URLQueryItem(name: "format", value: "sid")
-        ]
+        record(
+            .info,
+            categoryKey: "diagnostics.category.connection",
+            messageKey: "diagnostics.login.started",
+            details: [
+                "target": DiagnosticLogStore.redactedURL(baseURL),
+                "account": DiagnosticLogStore.redactedHost(account),
+                "2fa": oneTimeCode.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? "off" : "on",
+                "selfSigned": allowsSelfSignedCertificates ? "on" : "off"
+            ]
+        )
+
+        let apiInfo = await optionalCall(
+            path: "/webapi/query.cgi",
+            queryItems: [
+                URLQueryItem(name: "api", value: "SYNO.API.Info"),
+                URLQueryItem(name: "version", value: "1"),
+                URLQueryItem(name: "method", value: "query"),
+                URLQueryItem(name: "query", value: "SYNO.API.Auth")
+            ]
+        )
+        record(
+            apiInfo == nil ? .warning : .info,
+            categoryKey: "diagnostics.category.dsm_api",
+            messageKey: apiInfo == nil ? "diagnostics.api_info.missing" : "diagnostics.api_info.loaded",
+            details: ["api": "SYNO.API.Auth"]
+        )
+
         let cleanedCode = oneTimeCode.trimmingCharacters(in: .whitespacesAndNewlines)
-        if !cleanedCode.isEmpty {
-            queryItems.append(URLQueryItem(name: "otp_code", value: cleanedCode))
-        }
-
-        let data = try await call(
-            path: "/webapi/auth.cgi",
-            queryItems: queryItems
-        )
-
-        guard let sid = data.firstString(for: ["sid"]) else {
-            throw DSMClientError.missingSession
-        }
-        return DSMSession(
-            baseURL: baseURL,
-            sid: sid,
+        for request in authLoginRequests(
             account: account,
-            allowsSelfSignedCertificates: allowsSelfSignedCertificates
+            password: password,
+            oneTimeCode: cleanedCode,
+            apiInfo: apiInfo
+        ) {
+            do {
+                let data = try await call(path: request.0, queryItems: request.1)
+                if let sid = data.firstString(for: ["sid"]) {
+                    record(
+                        .info,
+                        categoryKey: "diagnostics.category.connection",
+                        messageKey: "diagnostics.login.succeeded",
+                        details: requestSummary(path: request.0, queryItems: request.1)
+                    )
+                    return DSMSession(
+                        baseURL: baseURL,
+                        sid: sid,
+                        account: account,
+                        allowsSelfSignedCertificates: allowsSelfSignedCertificates
+                    )
+                }
+            } catch {
+                record(
+                    .warning,
+                    categoryKey: "diagnostics.category.connection",
+                    messageKey: "diagnostics.login.attempt_failed",
+                    details: requestSummary(path: request.0, queryItems: request.1).merging(["error": diagnosticMessage(for: error)]) { current, _ in current }
+                )
+                continue
+            }
+        }
+        record(
+            .error,
+            categoryKey: "diagnostics.category.connection",
+            messageKey: "diagnostics.login.failed",
+            details: ["target": DiagnosticLogStore.redactedURL(baseURL)]
         )
+        throw DSMClientError.missingSession
     }
 
     func logout(session: DSMSession) async {
@@ -460,29 +663,84 @@ final class DSMClient {
     }
 
     func loadSnapshot(session: DSMSession, useAgent: Bool) async -> DSMDataSnapshot {
-        async let systemData = optionalCall(
-            path: "/webapi/entry.cgi",
-            queryItems: sessionItems(session, api: "SYNO.Core.System", version: "1", method: "info")
+        record(
+            .info,
+            categoryKey: "diagnostics.category.dsm_api",
+            messageKey: "diagnostics.snapshot.started",
+            details: ["target": DiagnosticLogStore.redactedURL(session.baseURL)]
         )
-        async let utilizationData = optionalCall(
-            path: "/webapi/entry.cgi",
-            queryItems: sessionItems(session, api: "SYNO.Core.System.Utilization", version: "1", method: "get")
+
+        let apiInfo = await optionalCall(
+            path: "/webapi/query.cgi",
+            queryItems: [
+                URLQueryItem(name: "api", value: "SYNO.API.Info"),
+                URLQueryItem(name: "version", value: "1"),
+                URLQueryItem(name: "method", value: "query"),
+                URLQueryItem(
+                    name: "query",
+                    value: [
+                        "SYNO.Core.System",
+                        "SYNO.Core.System.Utilization",
+                        "SYNO.FileStation.List",
+                        "SYNO.Core.Package",
+                        "SYNO.ContainerManager.Container",
+                        "SYNO.Docker.Container"
+                    ].joined(separator: ",")
+                )
+            ]
         )
-        async let sharedFolderData = optionalCall(
-            path: "/webapi/entry.cgi",
-            queryItems: sessionItems(session, api: "SYNO.FileStation.List", version: "2", method: "list_share")
-        )
-        async let dockerData = firstSuccessfulContainerCall(containerRequests(session))
-        async let packageData = optionalCall(
-            path: "/webapi/entry.cgi",
-            queryItems: sessionItems(session, api: "SYNO.Core.Package", version: "2", method: "list")
-        )
+        recordAPIInfoCoverage(apiInfo)
+
+        async let systemData = firstSuccessfulCall(apiRequests(
+            session,
+            apiInfo: apiInfo,
+            apiName: "SYNO.Core.System",
+            fallbackPath: "/webapi/entry.cgi",
+            fallbackMaxVersion: 1,
+            method: "info"
+        ))
+        async let utilizationData = firstSuccessfulCall(apiRequests(
+            session,
+            apiInfo: apiInfo,
+            apiName: "SYNO.Core.System.Utilization",
+            fallbackPath: "/webapi/entry.cgi",
+            fallbackMaxVersion: 1,
+            method: "get"
+        ))
+        async let sharedFolderData = firstSuccessfulCall(apiRequests(
+            session,
+            apiInfo: apiInfo,
+            apiName: "SYNO.FileStation.List",
+            fallbackPath: "/webapi/entry.cgi",
+            fallbackMaxVersion: 2,
+            method: "list_share"
+        ))
+        async let packageData = firstSuccessfulCall(apiRequests(
+            session,
+            apiInfo: apiInfo,
+            apiName: "SYNO.Core.Package",
+            fallbackPath: "/webapi/entry.cgi",
+            fallbackMaxVersion: 2,
+            method: "list"
+        ))
+        async let dockerData = firstSuccessfulContainerCall(containerRequests(session, apiInfo: apiInfo))
 
         let system = await systemData
         let utilization = await utilizationData
         let files = DSMClient.mapSharedFolders(await sharedFolderData)
         let containers = DSMClient.mapContainers(await dockerData)
         let services = DSMClient.mapServices(containers: containers, packageData: await packageData, session: session)
+
+        record(
+            .info,
+            categoryKey: "diagnostics.category.dsm_api",
+            messageKey: "diagnostics.snapshot.completed",
+            details: [
+                "services": "\(services.count)",
+                "containers": "\(containers.count)",
+                "folders": "\(files.count)"
+            ]
+        )
 
         return DSMDataSnapshot(
             device: DSMClient.mapDevice(system: system, utilization: utilization, session: session, useAgent: useAgent),
@@ -492,7 +750,7 @@ final class DSMClient {
             tasks: [],
             videoLibraryItems: [],
             audioLibraryItems: [],
-            discoveredDevices: SampleData.discoveredDevices
+            discoveredDevices: []
         )
     }
 
@@ -522,8 +780,16 @@ final class DSMClient {
 
     private func firstSuccessfulCall(_ requests: [(String, [URLQueryItem])]) async -> DSMJSONValue? {
         for request in requests {
-            if let value = try? await call(path: request.0, queryItems: request.1) {
+            do {
+                let value = try await call(path: request.0, queryItems: request.1)
                 return value
+            } catch {
+                record(
+                    .warning,
+                    categoryKey: "diagnostics.category.dsm_api",
+                    messageKey: "diagnostics.api_request.failed",
+                    details: requestSummary(path: request.0, queryItems: request.1).merging(["error": diagnosticMessage(for: error)]) { current, _ in current }
+                )
             }
         }
         return nil
@@ -538,14 +804,57 @@ final class DSMClient {
         ] + extra
     }
 
-    private func containerRequests(_ session: DSMSession) -> [(String, [URLQueryItem])] {
+    private func authLoginRequests(
+        account: String,
+        password: String,
+        oneTimeCode: String,
+        apiInfo: DSMJSONValue?
+    ) -> [(String, [URLQueryItem])] {
+        let entry = apiInfoEntry(apiInfo, apiName: "SYNO.API.Auth")
+        let path = normalizedAPIPath(entry?.path ?? "/webapi/auth.cgi")
+        let maxVersion = max(entry?.maxVersion ?? 7, 1)
+        return (1...maxVersion).reversed().map { version in
+            var items = [
+                URLQueryItem(name: "api", value: "SYNO.API.Auth"),
+                URLQueryItem(name: "version", value: "\(version)"),
+                URLQueryItem(name: "method", value: "login"),
+                URLQueryItem(name: "account", value: account),
+                URLQueryItem(name: "passwd", value: password),
+                URLQueryItem(name: "session", value: "Nastart"),
+                URLQueryItem(name: "format", value: "sid")
+            ]
+            if !oneTimeCode.isEmpty {
+                items.append(URLQueryItem(name: "otp_code", value: oneTimeCode))
+            }
+            return (path, items)
+        }
+    }
+
+    private func containerRequests(_ session: DSMSession, apiInfo: DSMJSONValue?) -> [(String, [URLQueryItem])] {
         let commonExtras = [
             URLQueryItem(name: "limit", value: "1000"),
             URLQueryItem(name: "offset", value: "0")
         ]
         let allExtras = commonExtras + [URLQueryItem(name: "type", value: "all")]
 
-        return [
+        var requests: [(String, [URLQueryItem])] = []
+        requests += apiInfoRequests(
+            session,
+            apiInfo: apiInfo,
+            apiName: "SYNO.ContainerManager.Container",
+            fallbackPath: "/webapi/entry.cgi",
+            fallbackMaxVersion: 3,
+            extras: [allExtras, commonExtras]
+        )
+        requests += apiInfoRequests(
+            session,
+            apiInfo: apiInfo,
+            apiName: "SYNO.Docker.Container",
+            fallbackPath: "/webapi/entry.cgi",
+            fallbackMaxVersion: 2,
+            extras: [allExtras, commonExtras]
+        )
+        requests += [
             ("/webapi/entry.cgi", sessionItems(session, api: "SYNO.ContainerManager.Container", version: "1", method: "list", extra: allExtras)),
             ("/webapi/entry.cgi", sessionItems(session, api: "SYNO.ContainerManager.Container", version: "2", method: "list", extra: allExtras)),
             ("/webapi/entry.cgi", sessionItems(session, api: "SYNO.ContainerManager.Container", version: "3", method: "list", extra: allExtras)),
@@ -558,20 +867,150 @@ final class DSMClient {
             ("/webapi/Docker/Container.cgi", sessionItems(session, api: "SYNO.Docker.Container", version: "1", method: "list", extra: commonExtras)),
             ("/webapi/Docker/Container.cgi", sessionItems(session, api: "SYNO.Docker.Container", version: "2", method: "list", extra: commonExtras))
         ]
+        var seen = Set<String>()
+        return requests.filter { path, items in
+            let signature = path + "?" + items.map { "\($0.name)=\($0.value ?? "")" }.joined(separator: "&")
+            if seen.contains(signature) { return false }
+            seen.insert(signature)
+            return true
+        }
+    }
+
+    private func apiInfoRequests(
+        _ session: DSMSession,
+        apiInfo: DSMJSONValue?,
+        apiName: String,
+        fallbackPath: String,
+        fallbackMaxVersion: Int,
+        extras: [[URLQueryItem]]
+    ) -> [(String, [URLQueryItem])] {
+        apiRequests(
+            session,
+            apiInfo: apiInfo,
+            apiName: apiName,
+            fallbackPath: fallbackPath,
+            fallbackMaxVersion: fallbackMaxVersion,
+            method: "list",
+            extras: extras
+        )
+    }
+
+    private func apiRequests(
+        _ session: DSMSession,
+        apiInfo: DSMJSONValue?,
+        apiName: String,
+        fallbackPath: String,
+        fallbackMaxVersion: Int,
+        method: String,
+        extras: [[URLQueryItem]] = [[]]
+    ) -> [(String, [URLQueryItem])] {
+        let entry = apiInfoEntry(apiInfo, apiName: apiName)
+        let path = normalizedAPIPath(entry?.path ?? fallbackPath)
+        let maxVersion = max(entry?.maxVersion ?? fallbackMaxVersion, 1)
+        return (1...maxVersion).reversed().flatMap { version in
+            extras.map { extra in
+                (path, sessionItems(session, api: apiName, version: "\(version)", method: method, extra: extra))
+            }
+        }
+    }
+
+    private func apiInfoEntry(_ apiInfo: DSMJSONValue?, apiName: String) -> (path: String, maxVersion: Int)? {
+        guard let item = apiInfo?.objectValue?[apiName] else { return nil }
+        guard let path = item.firstString(for: ["path"]) else { return nil }
+        let maxVersion = Int(item.firstDouble(for: ["maxVersion", "max_version"]) ?? 1)
+        return (path, maxVersion)
+    }
+
+    private func normalizedAPIPath(_ path: String) -> String {
+        if path.hasPrefix("/") { return path }
+        if path.hasPrefix("webapi/") { return "/\(path)" }
+        return "/webapi/\(path)"
     }
 
     private func firstSuccessfulContainerCall(_ requests: [(String, [URLQueryItem])]) async -> DSMJSONValue? {
         var fallback: DSMJSONValue?
         for request in requests {
-            guard let value = try? await call(path: request.0, queryItems: request.1) else { continue }
+            let value: DSMJSONValue
+            do {
+                value = try await call(path: request.0, queryItems: request.1)
+            } catch {
+                record(
+                    .warning,
+                    categoryKey: "diagnostics.category.container",
+                    messageKey: "diagnostics.container.request_failed",
+                    details: requestSummary(path: request.0, queryItems: request.1).merging(["error": diagnosticMessage(for: error)]) { current, _ in current }
+                )
+                continue
+            }
             if fallback == nil {
                 fallback = value
             }
-            if !DSMClient.mapContainers(value).isEmpty {
+            let containers = DSMClient.mapContainers(value)
+            record(
+                containers.isEmpty ? .warning : .info,
+                categoryKey: "diagnostics.category.container",
+                messageKey: containers.isEmpty ? "diagnostics.container.empty_response" : "diagnostics.container.loaded",
+                details: requestSummary(path: request.0, queryItems: request.1).merging(["count": "\(containers.count)"]) { current, _ in current }
+            )
+            if !containers.isEmpty {
                 return value
             }
         }
         return fallback
+    }
+
+    private func requestSummary(path: String, queryItems: [URLQueryItem]) -> [String: String] {
+        var summary = ["path": path]
+        for key in ["api", "version", "method", "type"] {
+            if let value = queryItems.first(where: { $0.name == key })?.value {
+                summary[key] = value
+            }
+        }
+        return summary
+    }
+
+    private func diagnosticMessage(for error: Error) -> String {
+        if let dsmError = error as? DSMClientError {
+            switch dsmError {
+            case .invalidAddress: return "invalidAddress"
+            case .insecureHTTP: return "insecureHTTP"
+            case .invalidResponse: return "invalidResponse"
+            case .apiFailed(let code): return "apiFailed:\(code.map(String.init) ?? "-")"
+            case .missingSession: return "missingSession"
+            }
+        }
+        return String(describing: type(of: error))
+    }
+
+    private func recordAPIInfoCoverage(_ apiInfo: DSMJSONValue?) {
+        let apiNames = [
+            "SYNO.Core.System",
+            "SYNO.Core.System.Utilization",
+            "SYNO.FileStation.List",
+            "SYNO.Core.Package",
+            "SYNO.ContainerManager.Container",
+            "SYNO.Docker.Container"
+        ]
+        guard let apiInfo else {
+            record(
+                .warning,
+                categoryKey: "diagnostics.category.dsm_api",
+                messageKey: "diagnostics.api_info.missing",
+                details: ["api": "snapshot"]
+            )
+            return
+        }
+        let found = apiNames.filter { apiInfoEntry(apiInfo, apiName: $0) != nil }
+        let missing = apiNames.filter { !found.contains($0) }
+        record(
+            missing.isEmpty ? .info : .warning,
+            categoryKey: "diagnostics.category.dsm_api",
+            messageKey: "diagnostics.api_info.coverage",
+            details: [
+                "found": found.joined(separator: "|"),
+                "missing": missing.joined(separator: "|")
+            ]
+        )
     }
 
     private static func mapDevice(system: DSMJSONValue?, utilization: DSMJSONValue?, session: DSMSession, useAgent: Bool) -> NASDevice {
@@ -633,9 +1072,18 @@ final class DSMClient {
     private static func mapContainers(_ data: DSMJSONValue?) -> [DockerContainer] {
         let items = containerItems(from: data)
         return items.compactMap { item in
-            guard let name = textValue(in: item, keys: ["name", "Name", "container_name", "container", "id", "Id", "Names"]) else { return nil }
-            let image = textValue(in: item, keys: ["image", "Image", "image_name", "repository", "repo", "tag", "imageTag"]) ?? "-"
-            let stateText = textValue(in: item, keys: ["status", "Status", "state", "State", "status_text", "display_status"]) ?? ""
+            guard let name = textValue(
+                in: item,
+                keys: ["name", "Name", "container_name", "containerName", "container", "service", "title", "id", "Id", "Names"]
+            ) else { return nil }
+            let image = textValue(
+                in: item,
+                keys: ["image", "Image", "image_name", "imageName", "repository", "repo", "tag", "imageTag", "image_tag"]
+            ) ?? "-"
+            let stateText = textValue(
+                in: item,
+                keys: ["status", "Status", "state", "State", "status_text", "display_status", "up_time", "health"]
+            ) ?? ""
             let explicitRunning = item.firstBool(for: ["running", "Running", "is_running", "started", "start"])
             let cpu = DSMFormatters.percentage(item.firstDouble(for: ["cpu", "CPU", "cpu_usage", "cpu_percent"]))
             let memoryText = textValue(in: item, keys: ["memory", "Memory", "memory_usage", "memory_text", "mem_usage"])
@@ -662,7 +1110,7 @@ final class DSMClient {
         if let rootArray = data.arrayValue {
             return rootArray.filter(looksLikeContainer)
         }
-        return []
+        return allObjects(in: data).filter(looksLikeContainer)
     }
 
     private static func arrays(in value: DSMJSONValue, matching keys: Set<String>) -> [[DSMJSONValue]] {
@@ -681,12 +1129,24 @@ final class DSMClient {
 
     private static func looksLikeContainer(_ item: DSMJSONValue) -> Bool {
         guard item.objectValue != nil else { return false }
-        return textValue(in: item, keys: ["name", "Name", "container_name", "id", "Id", "Names"]) != nil
+        return textValue(in: item, keys: ["name", "Name", "container_name", "containerName", "id", "Id", "Names"]) != nil
             && (
-                textValue(in: item, keys: ["image", "Image", "image_name", "repository", "repo"]) != nil
-                || textValue(in: item, keys: ["status", "Status", "state", "State"]) != nil
-                || item.firstArray(for: ["ports", "Ports", "port_bindings", "port_mappings"]) != nil
+                textValue(in: item, keys: ["image", "Image", "image_name", "imageName", "repository", "repo"]) != nil
+                || textValue(in: item, keys: ["status", "Status", "state", "State", "status_text", "display_status"]) != nil
+                || item.firstArray(for: ["ports", "Ports", "port_bindings", "port_mappings", "portMappings"]) != nil
+                || item.firstValue(for: ["PortBindings", "portBindings", "ports"]) != nil
             )
+    }
+
+    private static func allObjects(in value: DSMJSONValue) -> [DSMJSONValue] {
+        switch value {
+        case .object(let object):
+            return [value] + object.values.flatMap { allObjects(in: $0) }
+        case .array(let array):
+            return array.flatMap { allObjects(in: $0) }
+        case .string, .number, .bool, .null:
+            return []
+        }
     }
 
     private static func mapServices(containers: [DockerContainer], packageData: DSMJSONValue?, session: DSMSession) -> [LaunchpadService] {
@@ -723,7 +1183,7 @@ final class DSMClient {
             )
         }
 
-        services += mapPackageServices(packageData)
+        services += mapPackageServices(packageData, session: session)
 
         var seen = Set<String>()
         return services.filter { service in
@@ -743,7 +1203,7 @@ final class DSMClient {
         }
     }
 
-    private static func mapPackageServices(_ data: DSMJSONValue?) -> [LaunchpadService] {
+    private static func mapPackageServices(_ data: DSMJSONValue?, session: DSMSession) -> [LaunchpadService] {
         guard let packages = data?.firstArray(for: ["packages", "items"]) else { return [] }
         return packages.compactMap { item in
             guard let name = item.firstString(for: ["name", "id", "package"]) else { return nil }
@@ -759,9 +1219,27 @@ final class DSMClient {
                 detail: name,
                 isMedia: isMedia(name),
                 cpu: nil,
-                memoryText: nil
+                memoryText: nil,
+                endpoint: packageEndpoint(for: item, baseURL: session.baseURL)
             )
         }
+    }
+
+    private static func packageEndpoint(for item: DSMJSONValue, baseURL: URL) -> URL? {
+        guard let text = textValue(
+            in: item,
+            keys: ["url", "URL", "uri", "launch_url", "launchUrl", "web_url", "webUrl", "webui", "homepage", "dsm_url"]
+        ) else {
+            return nil
+        }
+        if let absolute = URL(string: text), absolute.scheme != nil {
+            return absolute
+        }
+        guard var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false) else {
+            return nil
+        }
+        components.path = text.hasPrefix("/") ? text : "/\(text)"
+        return components.url
     }
 
     private static func packageStatus(_ item: DSMJSONValue) -> ServiceStatus {
@@ -812,17 +1290,76 @@ final class DSMClient {
     }
 
     private static func mapPorts(_ item: DSMJSONValue) -> [String] {
-        guard let ports = item.firstArray(for: ["ports", "Ports", "port_bindings", "port_mappings"]) else { return [] }
-        return ports.compactMap { port in
-            if let text = port.stringValue, !text.isEmpty {
-                return text
+        var ports: [String] = []
+
+        if let array = item.firstArray(for: ["ports", "Ports", "port_bindings", "PortBindings", "port_mappings", "portMappings"]) {
+            ports += array.compactMap(portText)
+        }
+
+        if let bindings = item.firstValue(for: ["port_bindings", "PortBindings", "portBindings", "port_mappings", "portMappings"]) {
+            ports += portBindingTexts(bindings)
+        }
+
+        return uniqueStrings(ports)
+    }
+
+    private static func portText(_ port: DSMJSONValue) -> String? {
+        if let text = port.stringValue, !text.isEmpty {
+            return text
+        }
+
+        let local = textValue(
+            in: port,
+            keys: [
+                "local_port", "localPort", "host_port", "hostPort",
+                "public_port", "publicPort", "PublicPort", "HostPort",
+                "external", "external_port", "externalPort", "host"
+            ]
+        )
+        let container = textValue(
+            in: port,
+            keys: [
+                "container_port", "containerPort", "private_port", "privatePort",
+                "PrivatePort", "ContainerPort", "target", "target_port", "targetPort", "port"
+            ]
+        )
+        if let local, let container {
+            return "\(local):\(container)"
+        }
+        return local ?? container
+    }
+
+    private static func portBindingTexts(_ value: DSMJSONValue) -> [String] {
+        if let text = portText(value) {
+            return [text]
+        }
+
+        if let array = value.arrayValue {
+            return array.flatMap(portBindingTexts)
+        }
+
+        guard let object = value.objectValue else { return [] }
+
+        return object.flatMap { key, child -> [String] in
+            let nested = portBindingTexts(child)
+            guard !nested.isEmpty else { return [] }
+
+            return nested.map { text in
+                guard let containerPort = key.split(separator: "/").first.map(String.init), !text.contains(":") else {
+                    return text
+                }
+                return "\(text):\(containerPort)"
             }
-            let local = textValue(in: port, keys: ["local_port", "host_port", "public_port", "PublicPort", "HostPort"])
-            let container = textValue(in: port, keys: ["container_port", "private_port", "PrivatePort", "ContainerPort"])
-            if let local, let container {
-                return "\(local):\(container)"
-            }
-            return local ?? container
+        }
+    }
+
+    private static func uniqueStrings(_ values: [String]) -> [String] {
+        var seen = Set<String>()
+        return values.filter { value in
+            let normalized = value.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !normalized.isEmpty, !seen.contains(normalized) else { return false }
+            seen.insert(normalized)
+            return true
         }
     }
 
@@ -960,11 +1497,18 @@ final class DSMClient {
     private static func hostPort(from text: String) -> Int? {
         let compact = text.replacingOccurrences(of: " ", with: "")
         let leftSide = compact.components(separatedBy: "->").first ?? compact
-        if leftSide.contains(":"),
-           let candidate = leftSide.split(separator: ":").last,
-           let port = Int(candidate),
-           port > 0 {
-            return port
+        let numbers = leftSide
+            .split { !$0.isNumber }
+            .compactMap { Int($0) }
+            .filter { $0 > 0 && $0 <= 65_535 }
+
+        if leftSide.contains(":") {
+            if numbers.count >= 2 {
+                return numbers[numbers.count - 2]
+            }
+            if let port = numbers.last {
+                return port
+            }
         }
         return compact
             .split { !$0.isNumber }
@@ -999,10 +1543,10 @@ final class AppDataStore: ObservableObject {
     private var provider: AppDataProviding
     private var activeDataSource: NASDataSource
 
-    init(provider: AppDataProviding = MockAppDataProvider()) {
+    init(provider: AppDataProviding = DisconnectedAppDataProvider()) {
         self.provider = provider
         sourceKind = provider is DSMDataSnapshot ? .dsm : .mock
-        activeDataSource = MockNASDataSource()
+        activeDataSource = DisconnectedNASDataSource()
         device = provider.device
         services = provider.services
         containers = provider.containers
@@ -1054,6 +1598,14 @@ final class AppDataStore: ObservableObject {
         activeDataSource = MockNASDataSource()
         reload(from: MockAppDataProvider())
         sourceKind = .mock
+    }
+
+    @MainActor
+    func clearConnectionData() {
+        activeDataSource = DisconnectedNASDataSource()
+        reload(from: DisconnectedAppDataProvider())
+        sourceKind = .mock
+        lastRefreshSummaryKey = "data.refresh.disconnected"
     }
 
     @MainActor
@@ -1264,7 +1816,7 @@ final class NASConnectionStore: ObservableObject {
     @Published private(set) var isConnected: Bool
     @Published private(set) var dsmSession: DSMSession?
 
-    init(device: NASDevice? = MockAppDataProvider().device) {
+    init(device: NASDevice? = nil) {
         connectedDevice = device
         isConnected = device != nil
     }
@@ -1354,7 +1906,10 @@ final class KeychainStore {
     }
 
     func clearNASCredentials() {
-        SecItemDelete(baseQuery(account: primaryNASAccount) as CFDictionary)
+        SecItemDelete([
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: service
+        ] as CFDictionary)
         // Agent tokens and service API keys will be deleted here after those credential types land.
     }
 

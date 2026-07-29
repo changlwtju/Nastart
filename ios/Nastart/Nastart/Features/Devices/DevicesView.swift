@@ -441,8 +441,8 @@ private struct CertificateSecurityView: View {
         List {
             Section {
                 LabeledContent("devices.detail.certificate", value: "\(device.certificateDaysRemaining)d")
-                LabeledContent("devices.cert.domain", value: "nas.example.com")
-                LabeledContent("devices.cert.issuer", value: "Let's Encrypt")
+                LabeledContent("devices.cert.domain", value: "-")
+                LabeledContent("devices.cert.issuer", value: "-")
             }
 
             Section {

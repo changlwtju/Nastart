@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 struct MineView: View {
     @EnvironmentObject private var profileStore: ProfileStore
@@ -119,7 +120,7 @@ struct MineView: View {
             .confirmationDialog("mine.sign_out.confirm", isPresented: $showSignOutConfirm, titleVisibility: .visible) {
                 Button("mine.sign_out", role: .destructive) {
                     connectionStore.signOut()
-                    dataStore.resetToMockData()
+                    dataStore.clearConnectionData()
                 }
                 Button("action.cancel", role: .cancel) {}
             } message: {
@@ -781,6 +782,7 @@ private struct DataExportView: View {
 }
 
 private struct HelpAboutView: View {
+    @EnvironmentObject private var diagnostics: DiagnosticLogStore
     @State private var messageKey = "mine.about.feedback_hint"
     @State private var showHint = false
 
@@ -792,6 +794,11 @@ private struct HelpAboutView: View {
             }
 
             Section {
+                NavigationLink {
+                    DiagnosticLogsView()
+                } label: {
+                    Label("diagnostics.title", systemImage: "stethoscope")
+                }
                 Button {
                     show("mine.about.feedback_hint")
                 } label: {
@@ -806,9 +813,102 @@ private struct HelpAboutView: View {
                     show("mine.about.terms_hint")
                 } label: {
                     Label("mine.about.terms", systemImage: "doc.text")
+        }
+    }
+}
+
+private struct DiagnosticLogsView: View {
+    @EnvironmentObject private var diagnostics: DiagnosticLogStore
+    @State private var showCopiedHint = false
+
+    private var reversedEntries: [DiagnosticLogEntry] {
+        Array(diagnostics.entries.reversed())
+    }
+
+    var body: some View {
+        List {
+            Section {
+                if reversedEntries.isEmpty {
+                    VStack(spacing: 10) {
+                        Image(systemName: "checkmark.seal")
+                            .font(.title2)
+                            .foregroundStyle(.secondary)
+                        Text("diagnostics.empty")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 28)
+                } else {
+                    ForEach(reversedEntries) { entry in
+                        VStack(alignment: .leading, spacing: 6) {
+                            HStack(spacing: 8) {
+                                Text(LocalizedStringKey(entry.messageKey))
+                                    .font(.headline.weight(.medium))
+                                    .lineLimit(2)
+                                    .minimumScaleFactor(0.82)
+                                Spacer(minLength: 8)
+                                Text(entry.displayTime)
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            HStack(spacing: 8) {
+                                Text(LocalizedStringKey(entry.categoryKey))
+                                Text(LocalizedStringKey(entry.level.titleKey))
+                            }
+                            .font(.caption.weight(.medium))
+                            .foregroundStyle(levelColor(entry.level))
+
+                            if !entry.detail.isEmpty {
+                                Text(entry.detail)
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                                    .textSelection(.enabled)
+                            }
+                        }
+                        .padding(.vertical, 5)
+                    }
                 }
+            } header: {
+                Text("diagnostics.recent")
+            } footer: {
+                Text("diagnostics.footer")
+            }
+
+            Section {
+                ShareLink(item: diagnostics.exportText()) {
+                    Label("diagnostics.export", systemImage: "square.and.arrow.up")
+                }
+                Button {
+                    UIPasteboard.general.string = diagnostics.exportText()
+                    showCopiedHint = true
+                } label: {
+                    Label("diagnostics.copy", systemImage: "doc.on.doc")
+                }
+                Button(role: .destructive) {
+                    diagnostics.clear()
+                } label: {
+                    Label("diagnostics.clear", systemImage: "trash")
+                }
+                .disabled(diagnostics.entries.isEmpty)
             }
         }
+        .listStyle(.insetGrouped)
+        .navigationTitle("diagnostics.title")
+        .navigationBarTitleDisplayMode(.inline)
+        .alert("diagnostics.copy_done", isPresented: $showCopiedHint) {
+            Button("action.ok", role: .cancel) {}
+        }
+    }
+
+    private func levelColor(_ level: DiagnosticLogLevel) -> Color {
+        switch level {
+        case .info: return .secondary
+        case .warning: return AppTheme.accent
+        case .error: return .red
+        }
+    }
+}
         .listStyle(.insetGrouped)
         .navigationTitle("mine.about.title")
         .navigationBarTitleDisplayMode(.inline)

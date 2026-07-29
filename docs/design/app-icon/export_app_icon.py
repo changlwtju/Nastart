@@ -76,29 +76,31 @@ def rounded_rect_gradient(
 
 
 def draw_master() -> Image.Image:
-    canvas = gradient((1024, 1024), [(0, "#fbf7ee"), (0.58, "#e8dece"), (1, "#c6b39b")])
+    canvas = gradient((1024, 1024), [(0, "#f6f8fb"), (0.54, "#d7e0e9"), (1, "#899baa")])
 
     rounded_rect_gradient(
         canvas,
-        (42, 98, 940, 828),
-        196,
-        [(0, "#fffdf7"), (0.5, "#e7ded1"), (1, "#9f978d")],
-        shadow=(0, 36, 34, hex_to_rgb("#3d342b"), 56),
+        (24, 68, 976, 884),
+        184,
+        [(0, "#fbfdff"), (0.52, "#d8e2eb"), (1, "#7f93a5")],
+        shadow=(0, 34, 34, hex_to_rgb("#203040"), 48),
     )
-    rounded_rect_gradient(canvas, (126, 216, 604, 596), 88, [(0, "#434a54"), (1, "#111820")])
+    rounded_rect_gradient(canvas, (70, 158, 724, 716), 94, [(0, "#4d5763"), (1, "#121a23")])
 
-    for x, opacity in [(208, 250), (386, 240), (564, 232)]:
-        rounded_rect_gradient(canvas, (x, 296, 118, 440), 38, [(0, "#fff8ea"), (1, "#cbbdad")], opacity=opacity)
+    for x, opacity in [(170, 252), (396, 244), (622, 238)]:
+        rounded_rect_gradient(canvas, (x, 286, 132, 472), 40, [(0, "#fbfdff"), (1, "#c7d1da")], opacity=opacity)
 
     draw = ImageDraw.Draw(canvas)
-    for x in (267, 445, 623):
-        draw.line((x, 374, x, 658), fill="#4d545d", width=12)
+    for x in (236, 462, 688):
+        draw.line((x, 376, x, 668), fill="#3f4a55", width=14)
 
-    power_color = "#b56a38"
-    draw.line((832, 312, 832, 380), fill=power_color, width=26)
-    draw.arc((764, 350, 900, 486), start=124, end=416, fill=power_color, width=26)
-    draw.ellipse((784, 644, 828, 688), fill="#628b74")
-    draw.ellipse((858, 644, 902, 688), fill="#ad7953")
+    rounded_rect_gradient(canvas, (800, 246, 144, 560), 50, [(0, "#f9fbfd"), (1, "#c8d3dc")], opacity=244)
+
+    power_color = "#8c623d"
+    draw.line((872, 332, 872, 392), fill=power_color, width=26)
+    draw.arc((814, 366, 930, 482), start=126, end=414, fill=power_color, width=26)
+    draw.ellipse((830, 648, 868, 686), fill="#5f826c")
+    draw.ellipse((882, 648, 920, 686), fill="#b0764d")
 
     return canvas.convert("RGB")
 
@@ -131,7 +133,7 @@ def main() -> None:
     ]
 
     master = draw_master()
-    master.save(Path(__file__).resolve().with_name("nastart-app-icon-v3-11-clear-nas.png"), "PNG", optimize=True)
+    master.save(Path(__file__).resolve().with_name("nastart-app-icon-v3-13-silver-graphite-nas.png"), "PNG", optimize=True)
     images = []
 
     for idiom, point_size, scale, pixels in specs:

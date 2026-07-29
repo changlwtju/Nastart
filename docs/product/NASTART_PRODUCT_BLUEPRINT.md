@@ -1,8 +1,8 @@
 # Nastart Product Blueprint
 
-Version: 0.1  
-Status: Draft  
-Last updated: 2026-07-25
+Version: 0.2
+Status: Draft
+Last updated: 2026-07-30
 
 ## 1. Product Vision
 
@@ -22,6 +22,22 @@ Product design motto:
 Nastart should look clean and approachable on every top-level page, while still
 revealing rich capability through subpages, details, sheets, and settings when
 the user needs them.
+
+The same principle applies to app size and implementation. Nastart should cover
+more NAS workflows through focused native code, reusable components, compact
+assets, and progressive disclosure instead of becoming a large bundle of heavy
+libraries, duplicated screens, or decorative resources. Installed size is a
+product quality metric, not an afterthought.
+
+Product and engineering decisions should use this rule:
+
+```text
+Keep the app useful, clear, and lightweight.
+```
+
+Avoid adding a dependency, image pack, media engine, or persistent background
+process unless it clearly improves a core workflow and cannot be solved with a
+smaller native approach.
 
 ## 2. One-Sentence Positioning
 

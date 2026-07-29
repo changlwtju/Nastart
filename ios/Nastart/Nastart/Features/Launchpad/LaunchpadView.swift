@@ -1067,14 +1067,23 @@ private struct ServiceDetailView: View {
                     }
                 }
 
-                NavigationLink {
-                    ServiceWebUIView(service: service)
-                } label: {
-                    Label {
-                        Text(LocalizedStringKey(service.isDeveloperConsole ? "service.action.open_console" : "service.action.open_web"))
-                    } icon: {
-                        Image(systemName: service.isDeveloperConsole ? "terminal" : "safari")
+                if let endpoint = service.suggestedEndpoint {
+                    NavigationLink {
+                        ServiceWebUIView(service: service, endpoint: endpoint)
+                    } label: {
+                        Label {
+                            Text(LocalizedStringKey(service.isDeveloperConsole ? "service.action.open_console" : "service.action.open_web"))
+                        } icon: {
+                            Image(systemName: service.isDeveloperConsole ? "terminal" : "safari")
+                        }
                     }
+                } else {
+                    Label {
+                        Text("service.action.open_unavailable")
+                    } icon: {
+                        Image(systemName: "link.badge.plus")
+                    }
+                    .foregroundStyle(.secondary)
                 }
 
                 Button {
@@ -1095,7 +1104,7 @@ private struct ServiceDetailView: View {
             }
 
             Section {
-                LabeledContent("service.detail.endpoint", value: service.suggestedEndpoint.absoluteString)
+                LabeledContent("service.detail.endpoint", value: service.endpointText)
                 LabeledContent("service.detail.source", value: service.isMedia ? "DSM + API" : "DSM / Agent")
                 LabeledContent("service.detail.status") {
                     Text(LocalizedStringKey(service.status.titleKey))
@@ -1173,12 +1182,13 @@ private enum ExternalOpenTarget {
     }
 
     private func callbackURL(scheme: String, action: String, service: LaunchpadService) -> URL? {
+        guard let endpoint = service.suggestedEndpoint else { return nil }
         var components = URLComponents()
         components.scheme = scheme
         components.host = "x-callback-url"
         components.path = "/\(action)"
         components.queryItems = [
-            URLQueryItem(name: "url", value: service.suggestedEndpoint.absoluteString)
+            URLQueryItem(name: "url", value: endpoint.absoluteString)
         ]
         return components.url
     }
@@ -1186,6 +1196,7 @@ private enum ExternalOpenTarget {
 
 private struct ServiceWebUIView: View {
     let service: LaunchpadService
+    let endpoint: URL
     @Environment(\.openURL) private var openURL
     @State private var selectedMode = ServiceWebMode.automatic
     @State private var reloadToken = UUID()
@@ -1200,7 +1211,7 @@ private struct ServiceWebUIView: View {
             }
 
             WebContainerView(
-                url: service.suggestedEndpoint,
+                url: endpoint,
                 prefersDesktopMode: resolvedMode.usesDesktopUserAgent,
                 reloadToken: reloadToken
             )
@@ -1228,13 +1239,13 @@ private struct ServiceWebUIView: View {
                     Image(systemName: "arrow.clockwise")
                 }
                 Button {
-                    UIPasteboard.general.string = service.suggestedEndpoint.absoluteString
+                    UIPasteboard.general.string = endpoint.absoluteString
                     showCopiedHint = true
                 } label: {
                     Image(systemName: "link")
                 }
                 Button {
-                    openURL(service.suggestedEndpoint)
+                    openURL(endpoint)
                 } label: {
                     Image(systemName: "safari")
                 }
@@ -1778,28 +1789,35 @@ private struct LANDiscoveryView: View {
             }
 
             Section {
-                ForEach(dataStore.discoveredDevices) { device in
-                    HStack(spacing: 12) {
-                        Image(systemName: "server.rack")
-                            .frame(width: 36, height: 36)
-                            .background(AppTheme.secondarySurface)
-                            .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(device.name)
-                                .font(.body.weight(.medium))
-                            Text(device.host)
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
+                if dataStore.discoveredDevices.isEmpty {
+                    Text("connect.scan.empty")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .padding(.vertical, 8)
+                } else {
+                    ForEach(dataStore.discoveredDevices) { device in
+                        HStack(spacing: 12) {
+                            Image(systemName: "server.rack")
+                                .frame(width: 36, height: 36)
+                                .background(AppTheme.secondarySurface)
+                                .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(device.name)
+                                    .font(.body.weight(.medium))
+                                Text(device.host)
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            Spacer()
+                            Button("connect.scan.use") {
+                                selectedHost = device.host
+                                dismiss()
+                            }
+                            .buttonStyle(.bordered)
+                            .tint(AppTheme.accent)
                         }
-                        Spacer()
-                        Button("connect.scan.use") {
-                            selectedHost = device.host
-                            dismiss()
-                        }
-                        .buttonStyle(.bordered)
-                        .tint(AppTheme.accent)
+                        .padding(.vertical, 3)
                     }
-                    .padding(.vertical, 3)
                 }
             } header: {
                 Text("connect.scan.results")

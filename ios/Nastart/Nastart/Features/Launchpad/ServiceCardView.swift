@@ -190,14 +190,12 @@ extension LaunchpadService {
         return enhancedNames.contains { normalizedName.contains($0) }
     }
 
-    var suggestedEndpoint: URL {
-        if let endpoint {
-            return endpoint
-        }
-        let slug = name
-            .lowercased()
-            .replacingOccurrences(of: " ", with: "-")
-        return URL(string: "https://nas.example.com/\(slug)")!
+    var suggestedEndpoint: URL? {
+        endpoint
+    }
+
+    var endpointText: String {
+        endpoint?.absoluteString ?? NSLocalizedString("service.detail.endpoint_unavailable", comment: "")
     }
 
     var resolvedIconURL: URL? {

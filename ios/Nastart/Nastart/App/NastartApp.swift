@@ -7,6 +7,7 @@ struct NastartApp: App {
     @StateObject private var connectionStore = NASConnectionStore()
     @StateObject private var entitlementStore = EntitlementStore()
     @StateObject private var appearanceStore = AppearanceStore()
+    @StateObject private var diagnosticLogStore = DiagnosticLogStore.shared
     @State private var didAttemptRestore = false
     @AppStorage(AppLanguage.storageKey) private var appLanguageRaw = AppLanguage.system.rawValue
     @AppStorage(AppThemeMode.storageKey) private var appThemeModeRaw = AppThemeMode.system.rawValue
@@ -19,6 +20,7 @@ struct NastartApp: App {
                 .environmentObject(connectionStore)
                 .environmentObject(entitlementStore)
                 .environmentObject(appearanceStore)
+                .environmentObject(diagnosticLogStore)
                 .environment(\.locale, selectedLanguage.locale)
                 .preferredColorScheme(preferredColorScheme)
                 .task {

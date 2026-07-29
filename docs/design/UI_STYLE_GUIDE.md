@@ -1,8 +1,8 @@
 # Nastart UI Style Guide
 
-Version: 0.2
+Version: 0.3
 Status: Draft
-Last updated: 2026-07-27
+Last updated: 2026-07-30
 
 ## 1. Purpose
 
@@ -67,6 +67,22 @@ Three glances invite action.
 
 The UI should communicate through hierarchy, spacing, symbols, status color,
 cards, and interaction states before relying on explanatory text.
+
+This principle also applies to implementation and app footprint. Nastart should
+cover useful NAS workflows without becoming bloated in installed size or runtime
+complexity. Prefer compact native SwiftUI views, SF Symbols, vector assets, and
+shared components before adding raster-heavy visuals, large dependencies, or
+duplicated custom UI.
+
+Every feature should pass this product-and-engineering test:
+
+```text
+Does it add clear user value without making the app feel heavier, harder to use,
+or unnecessarily larger to install?
+```
+
+If the answer is unclear, simplify the UI first, defer nonessential assets, and
+place advanced capability one level deeper.
 
 Top-level pages should follow this rule:
 

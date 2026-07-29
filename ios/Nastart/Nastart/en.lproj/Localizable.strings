@@ -70,10 +70,12 @@
 "service.action.device_control" = "Device Control";
 "service.action.open_web" = "Open In App";
 "service.action.open_console" = "Open In App";
+"service.action.open_unavailable" = "No endpoint detected";
 "service.action.open_external" = "Open With";
 "service.action.media_library" = "Library";
 "service.detail.connection" = "Connection";
 "service.detail.endpoint" = "Endpoint";
+"service.detail.endpoint_unavailable" = "No endpoint available";
 "service.detail.source" = "Source";
 "service.detail.status" = "Status";
 "service.metric.library" = "Library";
@@ -108,6 +110,7 @@
 "connect.trust_self_signed.footer" = "Examples: lagransun.cn:5001 or 192.168.1.10:5001. No need to type https://. Trust self-signed certificates only for your own NAS.";
 "connect.scan.title" = "Discover on LAN";
 "connect.scan.description" = "Local discovery will list reachable DSM devices.";
+"connect.scan.empty" = "No NAS was discovered yet. Enter the DSM address manually, or make sure your phone and NAS are on the same LAN.";
 "connect.section.agent" = "Agent";
 "connect.agent.toggle" = "Add Agent after login";
 "connect.agent.guide" = "Agent setup guide";
@@ -139,6 +142,7 @@
 "data.refresh.mock_done" = "Mock data refreshed";
 "data.refresh.dsm_done" = "DSM data refreshed";
 "data.refresh.restore_failed" = "DSM auto-restore failed";
+"data.refresh.disconnected" = "NAS disconnected";
 
 "devices.section.resources" = "Resources";
 "devices.section.maintenance" = "Maintenance";
@@ -209,7 +213,7 @@
 "tasks.watch.domains" = "Domain renewal monitoring";
 "tasks.watch.agent" = "Agent freshness monitoring";
 "task.cert.title" = "Certificate expires in 19 days";
-"task.cert.subtitle" = "nas.example.com · renewal suggested";
+"task.cert.subtitle" = "Current NAS · renewal suggested";
 "task.domain.title" = "Domain renews in 42 days";
 "task.domain.subtitle" = "example.com · manual reminder";
 "task.agent.title" = "Agent permission changed";
@@ -416,3 +420,31 @@
 "mine.privacy.export.secrets" = "Include secrets";
 "mine.privacy.export_footer" = "Passwords, tokens, and keys are excluded by default.";
 "mine.privacy.export_hint" = "A local backup file will be shared later.";
+
+"diagnostics.title" = "DSM Diagnostics";
+"diagnostics.recent" = "Recent Diagnostics";
+"diagnostics.empty" = "No issues need diagnosis yet.";
+"diagnostics.footer" = "Diagnostics only records connection, DSM API, package, and container discovery clues. Passwords, one-time codes, SIDs, and full addresses are never stored.";
+"diagnostics.export" = "Export Diagnostic Summary";
+"diagnostics.copy" = "Copy Diagnostic Summary";
+"diagnostics.clear" = "Clear Diagnostics";
+"diagnostics.copy_done" = "Diagnostic summary copied.";
+"diagnostics.level.info" = "Info";
+"diagnostics.level.warning" = "Notice";
+"diagnostics.level.error" = "Error";
+"diagnostics.category.connection" = "Connection";
+"diagnostics.category.dsm_api" = "DSM API";
+"diagnostics.category.container" = "Container";
+"diagnostics.login.started" = "Started DSM connection";
+"diagnostics.login.succeeded" = "DSM login succeeded";
+"diagnostics.login.attempt_failed" = "Login compatibility attempt failed";
+"diagnostics.login.failed" = "DSM login failed";
+"diagnostics.api_info.loaded" = "API info loaded";
+"diagnostics.api_info.missing" = "API info failed";
+"diagnostics.api_info.coverage" = "API coverage checked";
+"diagnostics.api_request.failed" = "DSM API request failed";
+"diagnostics.snapshot.started" = "Started NAS snapshot";
+"diagnostics.snapshot.completed" = "NAS snapshot loaded";
+"diagnostics.container.request_failed" = "Container API request failed";
+"diagnostics.container.empty_response" = "Container API returned empty";
+"diagnostics.container.loaded" = "Container list loaded";
