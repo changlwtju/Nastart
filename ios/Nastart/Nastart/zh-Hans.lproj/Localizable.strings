@@ -103,6 +103,9 @@
 "connect.host" = "DSM 地址";
 "connect.account" = "账号";
 "connect.password" = "密码";
+"connect.otp" = "双重验证代码";
+"connect.trust_self_signed" = "信任自签 HTTPS 证书";
+"connect.trust_self_signed.footer" = "仅在连接自己的 NAS 且确认地址正确时开启。验证码只用于本次登录，不会保存。";
 "connect.scan.title" = "局域网发现";
 "connect.scan.description" = "局域网发现会列出可访问的 DSM 设备。";
 "connect.section.agent" = "Agent";
@@ -128,6 +131,7 @@
 "connect.error.api" = "DSM API 返回失败，请检查账号权限。";
 "connect.error.api_code" = "DSM API 返回失败，错误码：%d。";
 "connect.error.missing_session" = "DSM 登录成功但没有返回会话，请检查 DSM 版本或登录方式。";
+"connect.error.otp_required" = "DSM 需要双重验证代码，或验证码已失效，请重新输入 2FA 验证码后再连接。";
 
 "data.refresh.ready" = "数据已准备";
 "data.refresh.mock_done" = "已刷新本地原型数据";
@@ -297,7 +301,7 @@
 "mine.appearance.theme" = "主题";
 "mine.appearance.theme.clean_grid" = "清简";
 "mine.appearance.theme.command_center" = "看板";
-"mine.appearance.theme.glass_deck" = "流光";
+"mine.appearance.theme.glass_deck" = "透镜";
 "mine.appearance.compact_metrics" = "紧凑指标";
 "mine.appearance.status_dot" = "显示状态点";
 "mine.appearance.cards" = "卡片";

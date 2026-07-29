@@ -436,9 +436,9 @@ private struct CardItemsSettingsView: View {
 private struct LaunchpadGroupOrderView: View {
     @AppStorage(AppearancePreferenceKeys.groupFavoritesExpanded) private var expandedFavorites = true
     @AppStorage(AppearancePreferenceKeys.groupMediaExpanded) private var expandedMedia = true
-    @AppStorage(AppearancePreferenceKeys.groupDownloadsExpanded) private var expandedDownloads = false
-    @AppStorage(AppearancePreferenceKeys.groupNetworkExpanded) private var expandedNetwork = false
-    @AppStorage(AppearancePreferenceKeys.groupToolsExpanded) private var expandedTools = false
+    @AppStorage(AppearancePreferenceKeys.groupDownloadsExpanded) private var expandedDownloads = true
+    @AppStorage(AppearancePreferenceKeys.groupNetworkExpanded) private var expandedNetwork = true
+    @AppStorage(AppearancePreferenceKeys.groupToolsExpanded) private var expandedTools = true
     @AppStorage(AppearancePreferenceKeys.groupOrder) private var groupOrderRaw = ServiceCategory.defaultOrderStorageValue
 
     var body: some View {

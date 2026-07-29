@@ -15,10 +15,11 @@ struct LaunchpadView: View {
     @AppStorage(AppearancePreferenceKeys.showCardLibraryCounts) private var showCardLibraryCounts = true
     @AppStorage(AppearancePreferenceKeys.groupFavoritesExpanded) private var groupFavoritesExpanded = true
     @AppStorage(AppearancePreferenceKeys.groupMediaExpanded) private var groupMediaExpanded = true
-    @AppStorage(AppearancePreferenceKeys.groupDownloadsExpanded) private var groupDownloadsExpanded = false
-    @AppStorage(AppearancePreferenceKeys.groupNetworkExpanded) private var groupNetworkExpanded = false
-    @AppStorage(AppearancePreferenceKeys.groupToolsExpanded) private var groupToolsExpanded = false
+    @AppStorage(AppearancePreferenceKeys.groupDownloadsExpanded) private var groupDownloadsExpanded = true
+    @AppStorage(AppearancePreferenceKeys.groupNetworkExpanded) private var groupNetworkExpanded = true
+    @AppStorage(AppearancePreferenceKeys.groupToolsExpanded) private var groupToolsExpanded = true
     @AppStorage(AppearancePreferenceKeys.groupOrder) private var groupOrderRaw = ServiceCategory.defaultOrderStorageValue
+    @AppStorage(AppearancePreferenceKeys.groupDefaultVersion) private var groupDefaultVersion = 0
     @State private var showSearch = false
 
     var body: some View {
@@ -45,6 +46,9 @@ struct LaunchpadView: View {
             .sheet(isPresented: $showSearch) {
                 LaunchpadSearchView(services: dataStore.services)
             }
+            .onAppear {
+                applyGroupDefaultMigrationIfNeeded()
+            }
         }
     }
 
@@ -69,7 +73,7 @@ struct LaunchpadView: View {
             LinearGradient(
                 colors: [
                     Color(.systemBackground),
-                    AppTheme.softAccent.opacity(0.42),
+                    AppTheme.softAccent.opacity(0.16),
                     Color(.secondarySystemGroupedBackground)
                 ],
                 startPoint: .topLeading,
@@ -143,22 +147,21 @@ struct LaunchpadView: View {
         }
     }
 
-    private var header: some View {
-        HStack(spacing: 12) {
-            Text("N")
-                .font(.headline.weight(.bold))
-                .foregroundStyle(.secondary)
-                .frame(width: 40, height: 40)
-                .background(.background)
-                .clipShape(RoundedRectangle(cornerRadius: 13, style: .continuous))
-                .overlay {
-                    RoundedRectangle(cornerRadius: 13, style: .continuous)
-                        .stroke(AppTheme.hairline, lineWidth: 1)
-                }
+    private func applyGroupDefaultMigrationIfNeeded() {
+        guard groupDefaultVersion < 1 else { return }
+        groupFavoritesExpanded = true
+        groupMediaExpanded = true
+        groupDownloadsExpanded = true
+        groupNetworkExpanded = true
+        groupToolsExpanded = true
+        groupDefaultVersion = 1
+    }
 
-            VStack(alignment: .leading, spacing: 3) {
+    private var header: some View {
+        HStack(alignment: .center, spacing: 12) {
+            VStack(alignment: .leading, spacing: 2) {
                 Text(dataStore.device.name)
-                    .font(.title2.weight(.bold))
+                    .font(.title2.weight(.semibold))
                     .lineLimit(1)
                     .minimumScaleFactor(0.82)
                 Text(dataStore.device.subtitle)
@@ -176,7 +179,7 @@ struct LaunchpadView: View {
             } label: {
                 Image(systemName: "magnifyingglass")
                     .font(.body.weight(.semibold))
-                    .frame(width: 34, height: 34)
+                    .frame(width: 38, height: 38)
                     .background(Color(.secondarySystemGroupedBackground))
                     .clipShape(Circle())
             }
@@ -248,14 +251,13 @@ private struct CommandMetricRail: View {
             CommandRailMetric(titleKey: "metric.cpu", value: launchpadPercentText(device.cpu), symbolName: "cpu", progress: compact ? nil : device.cpu, compact: compact)
             CommandRailMetric(titleKey: "metric.memory", value: launchpadPercentText(device.memory), symbolName: "memorychip", progress: compact ? nil : device.memory, compact: compact)
             CommandRailMetric(titleKey: "metric.storage", value: device.storageFreeText, symbolName: "internaldrive", progress: compact ? nil : device.storageUsed, compact: compact)
-            CommandRailMetric(titleKey: "metric.uptime", value: device.uptimeText, symbolName: "clock", progress: nil, compact: compact)
         }
-        .frame(width: compact ? 58 : 66)
-        .padding(.vertical, compact ? 8 : 10)
+        .frame(width: compact ? 52 : 60)
+        .padding(.vertical, compact ? 7 : 9)
         .background(Color(.secondarySystemGroupedBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 19, style: .continuous))
+        .clipShape(RoundedRectangle(cornerRadius: 17, style: .continuous))
         .overlay {
-            RoundedRectangle(cornerRadius: 19, style: .continuous)
+            RoundedRectangle(cornerRadius: 17, style: .continuous)
                 .stroke(AppTheme.hairline, lineWidth: 1)
         }
     }
@@ -314,7 +316,7 @@ private struct CommandCategorySection: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: 7) {
             Button {
                 withAnimation(.easeInOut(duration: 0.2)) {
                     isExpanded.toggle()
@@ -322,14 +324,10 @@ private struct CommandCategorySection: View {
             } label: {
                 HStack(spacing: 8) {
                     Text(LocalizedStringKey(category.titleKey))
-                        .font(.subheadline.weight(.semibold))
+                        .font(.subheadline.weight(.medium))
                     Text("\(services.count)")
                         .font(.caption2.weight(.semibold))
                         .foregroundStyle(.secondary)
-                        .padding(.horizontal, 7)
-                        .frame(minHeight: 20)
-                        .background(AppTheme.secondarySurface)
-                        .clipShape(Capsule())
                     Spacer()
                     Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
                         .font(.caption.weight(.medium))
@@ -486,7 +484,7 @@ private struct GlassGroupSection: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 8) {
             Button {
                 withAnimation(.easeInOut(duration: 0.2)) {
                     isExpanded.toggle()
@@ -494,14 +492,10 @@ private struct GlassGroupSection: View {
             } label: {
                 HStack(spacing: 8) {
                     Text(LocalizedStringKey(category.titleKey))
-                        .font(.headline.weight(.semibold))
+                        .font(.subheadline.weight(.medium))
                     Text("\(services.count)")
                         .font(.caption2.weight(.semibold))
                         .foregroundStyle(.secondary)
-                        .padding(.horizontal, 8)
-                        .frame(minHeight: 22)
-                        .background(.ultraThinMaterial)
-                        .clipShape(Capsule())
                     Spacer()
                     Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
                         .font(.caption.weight(.medium))
@@ -549,16 +543,13 @@ private struct GlassCollapsedGroupRow: View {
             Text("\(services.count)")
                 .font(.caption.weight(.semibold))
                 .foregroundStyle(.secondary)
-                .frame(width: 30, height: 30)
-                .background(.background.opacity(0.62))
-                .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
         }
-        .padding(14)
+        .padding(12)
         .background(.ultraThinMaterial)
-        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .clipShape(RoundedRectangle(cornerRadius: 17, style: .continuous))
         .overlay {
-            RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .stroke(.white.opacity(0.38), lineWidth: 1)
+            RoundedRectangle(cornerRadius: 17, style: .continuous)
+                .stroke(.white.opacity(0.3), lineWidth: 1)
         }
     }
 }
@@ -707,14 +698,10 @@ private struct ServiceGroupSection: View {
             } label: {
                 HStack(spacing: 8) {
                     Text(LocalizedStringKey(category.titleKey))
-                        .font(.headline.weight(.semibold))
+                        .font(.subheadline.weight(.medium))
                     Text("\(services.count)")
                         .font(.caption2.weight(.semibold))
                         .foregroundStyle(.secondary)
-                        .padding(.horizontal, 8)
-                        .frame(minHeight: 22)
-                        .background(AppTheme.secondarySurface)
-                        .clipShape(Capsule())
                     Spacer()
                     Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
                         .font(.caption.weight(.medium))
@@ -723,7 +710,6 @@ private struct ServiceGroupSection: View {
             }
             .buttonStyle(.plain)
             .padding(.horizontal, 2)
-            .padding(.top, 2)
 
             if isExpanded {
                 VStack(spacing: 10) {
@@ -750,7 +736,7 @@ private struct CollapsedServicePreview: View {
 
     var body: some View {
         HStack(spacing: 10) {
-            ServiceIconStack(services: services, size: 34)
+            ServiceIconStack(services: services, size: 30)
             Spacer()
             Text("launchpad.group.collapsed_hint")
                 .font(.caption)
@@ -758,8 +744,8 @@ private struct CollapsedServicePreview: View {
                 .lineLimit(1)
                 .minimumScaleFactor(0.8)
         }
-        .padding(14)
-        .nastartCard(cornerRadius: 18)
+        .padding(11)
+        .nastartCard(cornerRadius: 16)
     }
 }
 
@@ -1628,6 +1614,8 @@ private struct DSMConnectionFlowView: View {
     @State private var host = ""
     @State private var account = ""
     @State private var password = ""
+    @State private var oneTimeCode = ""
+    @State private var allowsSelfSignedCertificates = false
     @State private var useAgent = true
 
     var body: some View {
@@ -1650,6 +1638,10 @@ private struct DSMConnectionFlowView: View {
                 TextField("connect.account", text: $account)
                     .textInputAutocapitalization(.never)
                 SecureField("connect.password", text: $password)
+                TextField("connect.otp", text: $oneTimeCode)
+                    .textContentType(.oneTimeCode)
+                    .keyboardType(.numberPad)
+                Toggle("connect.trust_self_signed", isOn: $allowsSelfSignedCertificates)
                 NavigationLink {
                     LANDiscoveryView()
                 } label: {
@@ -1657,6 +1649,8 @@ private struct DSMConnectionFlowView: View {
                 }
             } header: {
                 Text("connect.section.dsm")
+            } footer: {
+                Text("connect.trust_self_signed.footer")
             }
 
             Section {
@@ -1672,7 +1666,14 @@ private struct DSMConnectionFlowView: View {
 
             Section {
                 NavigationLink {
-                    DSMConnectionReviewView(host: host, account: account, password: password, useAgent: useAgent)
+                    DSMConnectionReviewView(
+                        host: host,
+                        account: account,
+                        password: password,
+                        oneTimeCode: oneTimeCode,
+                        allowsSelfSignedCertificates: allowsSelfSignedCertificates,
+                        useAgent: useAgent
+                    )
                 } label: {
                     Text("connect.action")
                         .font(.headline.weight(.semibold))
@@ -1809,6 +1810,8 @@ private struct DSMConnectionReviewView: View {
     let host: String
     let account: String
     let password: String
+    let oneTimeCode: String
+    let allowsSelfSignedCertificates: Bool
     let useAgent: Bool
     @EnvironmentObject private var dataStore: AppDataStore
     @EnvironmentObject private var connectionStore: NASConnectionStore
@@ -1836,6 +1839,14 @@ private struct DSMConnectionReviewView: View {
                 LabeledContent("connect.account", value: account.isEmpty ? "-" : account)
                 LabeledContent("connect.password") {
                     Text(password.isEmpty ? "-" : "••••••••")
+                        .foregroundStyle(.secondary)
+                }
+                LabeledContent("connect.otp") {
+                    Text(oneTimeCode.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? "-" : "••••••")
+                        .foregroundStyle(.secondary)
+                }
+                LabeledContent("connect.trust_self_signed") {
+                    Text(LocalizedStringKey(allowsSelfSignedCertificates ? "state.on" : "state.off"))
                         .foregroundStyle(.secondary)
                 }
                 LabeledContent("connect.agent.toggle") {
@@ -1893,15 +1904,23 @@ private struct DSMConnectionReviewView: View {
         Task {
             do {
                 let baseURL = try DSMClient.normalizedBaseURL(from: host)
-                let client = DSMClient(baseURL: baseURL)
-                let session = try await client.login(account: account, password: password)
+                let client = DSMClient(
+                    baseURL: baseURL,
+                    allowsSelfSignedCertificates: allowsSelfSignedCertificates
+                )
+                let session = try await client.login(
+                    account: account,
+                    password: password,
+                    oneTimeCode: oneTimeCode
+                )
                 let snapshot = await client.loadSnapshot(session: session, useAgent: useAgent)
                 KeychainStore.shared.saveNASCredential(
                     StoredNASCredential(
                         baseURLString: baseURL.absoluteString,
                         account: account,
                         password: password,
-                        useAgent: useAgent
+                        useAgent: useAgent,
+                        allowsSelfSignedCertificates: allowsSelfSignedCertificates
                     )
                 )
                 await MainActor.run {
@@ -1972,18 +1991,14 @@ private struct DeviceSummaryPanel: View {
     let compact: Bool
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
+        VStack(alignment: .leading, spacing: 12) {
             HStack {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("launchpad.summary.normal")
-                        .font(.title3.weight(.bold))
-                    Text("launchpad.summary.subtitle")
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-                }
+                Label("launchpad.summary.normal", systemImage: "checkmark.circle.fill")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.primary)
                 Spacer()
                 Text(device.uptimeText)
-                    .font(.callout.weight(.semibold))
+                    .font(.caption.weight(.medium))
                     .foregroundStyle(.secondary)
             }
 
@@ -2001,8 +2016,8 @@ private struct DeviceSummaryPanel: View {
                 ])
             }
         }
-        .padding(16)
-        .nastartCard(cornerRadius: 26)
+        .padding(14)
+        .nastartCard(cornerRadius: 22)
     }
 }
 

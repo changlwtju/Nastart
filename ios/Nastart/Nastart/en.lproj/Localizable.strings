@@ -103,6 +103,9 @@
 "connect.host" = "DSM address";
 "connect.account" = "Account";
 "connect.password" = "Password";
+"connect.otp" = "2FA code";
+"connect.trust_self_signed" = "Trust self-signed HTTPS certificate";
+"connect.trust_self_signed.footer" = "Enable only for your own NAS after confirming the address. The 2FA code is used once and is not saved.";
 "connect.scan.title" = "Discover on LAN";
 "connect.scan.description" = "Local discovery will list reachable DSM devices.";
 "connect.section.agent" = "Agent";
@@ -128,6 +131,7 @@
 "connect.error.api" = "DSM API returned an error. Check account permissions.";
 "connect.error.api_code" = "DSM API returned error code: %d.";
 "connect.error.missing_session" = "DSM login succeeded but did not return a session. Check DSM version or login mode.";
+"connect.error.otp_required" = "DSM requires a 2FA code, or the code has expired. Enter a fresh code and connect again.";
 
 "data.refresh.ready" = "Data ready";
 "data.refresh.mock_done" = "Mock data refreshed";
@@ -297,7 +301,7 @@
 "mine.appearance.theme" = "Theme";
 "mine.appearance.theme.clean_grid" = "Clean";
 "mine.appearance.theme.command_center" = "Board";
-"mine.appearance.theme.glass_deck" = "Glow";
+"mine.appearance.theme.glass_deck" = "Lens";
 "mine.appearance.compact_metrics" = "Compact metrics";
 "mine.appearance.status_dot" = "Show status dots";
 "mine.appearance.cards" = "Cards";

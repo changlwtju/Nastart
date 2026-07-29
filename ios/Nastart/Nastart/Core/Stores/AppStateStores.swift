@@ -44,7 +44,10 @@ struct DSMNASDataSource: NASDataSource {
     init(session: DSMSession, useAgent: Bool) {
         self.session = session
         self.useAgent = useAgent
-        self.client = DSMClient(baseURL: session.baseURL)
+        self.client = DSMClient(
+            baseURL: session.baseURL,
+            allowsSelfSignedCertificates: session.allowsSelfSignedCertificates
+        )
     }
 
     func loadSnapshot() async -> AppDataProviding {
@@ -102,6 +105,7 @@ struct DSMSession {
     let baseURL: URL
     let sid: String
     let account: String
+    let allowsSelfSignedCertificates: Bool
 }
 
 struct StoredNASCredential: Codable {
@@ -109,6 +113,38 @@ struct StoredNASCredential: Codable {
     let account: String
     let password: String
     let useAgent: Bool
+    let allowsSelfSignedCertificates: Bool
+
+    init(
+        baseURLString: String,
+        account: String,
+        password: String,
+        useAgent: Bool,
+        allowsSelfSignedCertificates: Bool = false
+    ) {
+        self.baseURLString = baseURLString
+        self.account = account
+        self.password = password
+        self.useAgent = useAgent
+        self.allowsSelfSignedCertificates = allowsSelfSignedCertificates
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case baseURLString
+        case account
+        case password
+        case useAgent
+        case allowsSelfSignedCertificates
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        baseURLString = try container.decode(String.self, forKey: .baseURLString)
+        account = try container.decode(String.self, forKey: .account)
+        password = try container.decode(String.self, forKey: .password)
+        useAgent = try container.decode(Bool.self, forKey: .useAgent)
+        allowsSelfSignedCertificates = try container.decodeIfPresent(Bool.self, forKey: .allowsSelfSignedCertificates) ?? false
+    }
 }
 
 struct DSMDataSnapshot: AppDataProviding {
@@ -135,6 +171,9 @@ enum DSMClientError: LocalizedError {
         case .invalidResponse:
             return NSLocalizedString("connect.error.invalid_response", comment: "")
         case .apiFailed(let code):
+            if code == 403 {
+                return NSLocalizedString("connect.error.otp_required", comment: "")
+            }
             if let code {
                 return String(format: NSLocalizedString("connect.error.api_code", comment: ""), code)
             }
@@ -289,13 +328,49 @@ private enum DSMFormatters {
     }
 }
 
+private final class DSMCertificateTrustDelegate: NSObject, URLSessionDelegate {
+    func urlSession(
+        _ session: URLSession,
+        didReceive challenge: URLAuthenticationChallenge,
+        completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
+    ) {
+        guard
+            challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust,
+            let trust = challenge.protectionSpace.serverTrust
+        else {
+            completionHandler(.performDefaultHandling, nil)
+            return
+        }
+
+        completionHandler(.useCredential, URLCredential(trust: trust))
+    }
+}
+
 final class DSMClient {
     private let baseURL: URL
     private let urlSession: URLSession
+    private let allowsSelfSignedCertificates: Bool
+    private let sessionDelegate: URLSessionDelegate?
 
-    init(baseURL: URL, urlSession: URLSession = .shared) {
+    init(
+        baseURL: URL,
+        allowsSelfSignedCertificates: Bool = false,
+        urlSession: URLSession? = nil
+    ) {
         self.baseURL = baseURL
-        self.urlSession = urlSession
+        self.allowsSelfSignedCertificates = allowsSelfSignedCertificates
+
+        if let urlSession {
+            self.urlSession = urlSession
+            self.sessionDelegate = nil
+        } else if allowsSelfSignedCertificates {
+            let delegate = DSMCertificateTrustDelegate()
+            self.sessionDelegate = delegate
+            self.urlSession = URLSession(configuration: .ephemeral, delegate: delegate, delegateQueue: nil)
+        } else {
+            self.urlSession = .shared
+            self.sessionDelegate = nil
+        }
     }
 
     static func normalizedBaseURL(from input: String) throws -> URL {
@@ -314,24 +389,35 @@ final class DSMClient {
         return url
     }
 
-    func login(account: String, password: String) async throws -> DSMSession {
+    func login(account: String, password: String, oneTimeCode: String = "") async throws -> DSMSession {
+        var queryItems = [
+            URLQueryItem(name: "api", value: "SYNO.API.Auth"),
+            URLQueryItem(name: "version", value: "6"),
+            URLQueryItem(name: "method", value: "login"),
+            URLQueryItem(name: "account", value: account),
+            URLQueryItem(name: "passwd", value: password),
+            URLQueryItem(name: "session", value: "Nastart"),
+            URLQueryItem(name: "format", value: "sid")
+        ]
+        let cleanedCode = oneTimeCode.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !cleanedCode.isEmpty {
+            queryItems.append(URLQueryItem(name: "otp_code", value: cleanedCode))
+        }
+
         let data = try await call(
             path: "/webapi/auth.cgi",
-            queryItems: [
-                URLQueryItem(name: "api", value: "SYNO.API.Auth"),
-                URLQueryItem(name: "version", value: "6"),
-                URLQueryItem(name: "method", value: "login"),
-                URLQueryItem(name: "account", value: account),
-                URLQueryItem(name: "passwd", value: password),
-                URLQueryItem(name: "session", value: "Nastart"),
-                URLQueryItem(name: "format", value: "sid")
-            ]
+            queryItems: queryItems
         )
 
         guard let sid = data.firstString(for: ["sid"]) else {
             throw DSMClientError.missingSession
         }
-        return DSMSession(baseURL: baseURL, sid: sid, account: account)
+        return DSMSession(
+            baseURL: baseURL,
+            sid: sid,
+            account: account,
+            allowsSelfSignedCertificates: allowsSelfSignedCertificates
+        )
     }
 
     func logout(session: DSMSession) async {
@@ -798,7 +884,10 @@ final class AppDataStore: ObservableObject {
 
         do {
             let baseURL = try DSMClient.normalizedBaseURL(from: credential.baseURLString)
-            let client = DSMClient(baseURL: baseURL)
+            let client = DSMClient(
+                baseURL: baseURL,
+                allowsSelfSignedCertificates: credential.allowsSelfSignedCertificates
+            )
             let session = try await client.login(account: credential.account, password: credential.password)
             let dataSource = DSMNASDataSource(session: session, useAgent: credential.useAgent)
             let snapshot = await dataSource.loadSnapshot()
@@ -933,6 +1022,7 @@ enum AppearancePreferenceKeys {
     static let groupNetworkExpanded = "appearance.group.networkExpanded"
     static let groupToolsExpanded = "appearance.group.toolsExpanded"
     static let groupOrder = "appearance.group.order"
+    static let groupDefaultVersion = "appearance.group.defaultVersion"
 }
 
 final class AppearanceStore: ObservableObject {

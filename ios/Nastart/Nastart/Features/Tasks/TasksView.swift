@@ -74,6 +74,7 @@ struct TasksView: View {
             }
             .listStyle(.insetGrouped)
             .navigationTitle("tab.tasks")
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     NavigationLink {

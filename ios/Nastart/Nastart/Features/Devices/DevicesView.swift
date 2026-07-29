@@ -94,6 +94,7 @@ struct DevicesView: View {
             }
             .listStyle(.insetGrouped)
             .navigationTitle("tab.devices")
+            .navigationBarTitleDisplayMode(.inline)
             .alert("devices.discovery.hint", isPresented: $showRediscoverHint) {
                 Button("action.ok", role: .cancel) {}
             }
