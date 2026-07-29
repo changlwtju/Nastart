@@ -160,6 +160,7 @@ struct DSMDataSnapshot: AppDataProviding {
 
 enum DSMClientError: LocalizedError {
     case invalidAddress
+    case insecureHTTP
     case invalidResponse
     case apiFailed(code: Int?)
     case missingSession
@@ -168,10 +169,12 @@ enum DSMClientError: LocalizedError {
         switch self {
         case .invalidAddress:
             return NSLocalizedString("connect.error.invalid_address", comment: "")
+        case .insecureHTTP:
+            return NSLocalizedString("connect.error.insecure_http", comment: "")
         case .invalidResponse:
             return NSLocalizedString("connect.error.invalid_response", comment: "")
         case .apiFailed(let code):
-            if code == 403 {
+            if code == 403 || code == 404 {
                 return NSLocalizedString("connect.error.otp_required", comment: "")
             }
             if let code {
@@ -239,6 +242,22 @@ private enum DSMJSONValue: Decodable {
         }
     }
 
+    var boolValue: Bool? {
+        switch self {
+        case .bool(let value):
+            return value
+        case .number(let value):
+            return value != 0
+        case .string(let value):
+            let normalized = value.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+            if ["true", "yes", "enabled", "running", "started", "1"].contains(normalized) { return true }
+            if ["false", "no", "disabled", "stopped", "0"].contains(normalized) { return false }
+            return nil
+        case .object, .array, .null:
+            return nil
+        }
+    }
+
     subscript(key: String) -> DSMJSONValue? {
         objectValue?[key]
     }
@@ -258,6 +277,10 @@ private enum DSMJSONValue: Decodable {
 
     func firstDouble(for keys: [String]) -> Double? {
         firstValue(for: keys)?.doubleValue
+    }
+
+    func firstBool(for keys: [String]) -> Bool? {
+        firstValue(for: keys)?.boolValue
     }
 
     func firstArray(for keys: [String]) -> [DSMJSONValue]? {
@@ -382,6 +405,9 @@ final class DSMClient {
         guard var components = URLComponents(string: value), components.host != nil else {
             throw DSMClientError.invalidAddress
         }
+        if components.scheme?.lowercased() == "http" {
+            throw DSMClientError.insecureHTTP
+        }
         if components.path == "/" {
             components.path = ""
         }
@@ -448,7 +474,9 @@ final class DSMClient {
         )
         async let dockerData = firstSuccessfulCall([
             ("/webapi/entry.cgi", sessionItems(session, api: "SYNO.ContainerManager.Container", version: "1", method: "list")),
-            ("/webapi/entry.cgi", sessionItems(session, api: "SYNO.Docker.Container", version: "1", method: "list"))
+            ("/webapi/entry.cgi", sessionItems(session, api: "SYNO.ContainerManager.Container", version: "2", method: "list")),
+            ("/webapi/entry.cgi", sessionItems(session, api: "SYNO.Docker.Container", version: "1", method: "list")),
+            ("/webapi/entry.cgi", sessionItems(session, api: "SYNO.Docker.Container", version: "2", method: "list"))
         ])
         async let packageData = optionalCall(
             path: "/webapi/entry.cgi",
@@ -572,11 +600,11 @@ final class DSMClient {
     }
 
     private static func mapContainers(_ data: DSMJSONValue?) -> [DockerContainer] {
-        guard let items = data?.firstArray(for: ["containers", "container", "items"]) else { return [] }
+        guard let items = data?.firstArray(for: ["containers", "container", "items", "data"]) else { return [] }
         return items.compactMap { item in
-            guard let name = item.firstString(for: ["name", "container_name", "id"]) else { return nil }
-            let image = item.firstString(for: ["image", "image_name", "repository"]) ?? "-"
-            let stateText = item.firstString(for: ["status", "state"]) ?? ""
+            guard let name = item.firstString(for: ["name", "container_name", "container", "id"]) else { return nil }
+            let image = item.firstString(for: ["image", "image_name", "repository", "repo", "tag"]) ?? "-"
+            let stateText = item.firstString(for: ["status", "state", "status_text", "display_status"]) ?? ""
             let cpu = DSMFormatters.percentage(item.firstDouble(for: ["cpu", "cpu_usage", "cpu_percent"]))
             let memoryText = item.firstString(for: ["memory", "memory_usage", "memory_text"])
                 ?? DSMFormatters.bytes(item.firstDouble(for: ["memory_bytes", "mem_usage"]))
@@ -627,9 +655,7 @@ final class DSMClient {
             )
         }
 
-        if containers.isEmpty {
-            services += mapPackageServices(packageData)
-        }
+        services += mapPackageServices(packageData)
 
         var seen = Set<String>()
         return services.filter { service in
@@ -638,13 +664,23 @@ final class DSMClient {
             seen.insert(key)
             return true
         }
+        .sorted { lhs, rhs in
+            let lhsRank = serviceSortRank(lhs)
+            let rhsRank = serviceSortRank(rhs)
+            if lhsRank != rhsRank { return lhsRank < rhsRank }
+            if lhs.category.rawValue != rhs.category.rawValue {
+                return categorySortRank(lhs.category) < categorySortRank(rhs.category)
+            }
+            return lhs.name.localizedCaseInsensitiveCompare(rhs.name) == .orderedAscending
+        }
     }
 
     private static func mapPackageServices(_ data: DSMJSONValue?) -> [LaunchpadService] {
         guard let packages = data?.firstArray(for: ["packages", "items"]) else { return [] }
         return packages.compactMap { item in
             guard let name = item.firstString(for: ["name", "id", "package"]) else { return nil }
-            let status = serviceStatus(from: item.firstString(for: ["status", "state"]) ?? "")
+            guard shouldShowPackageService(name) else { return nil }
+            let status = packageStatus(item)
             return LaunchpadService(
                 id: UUID(),
                 name: displayName(for: name),
@@ -657,6 +693,53 @@ final class DSMClient {
                 cpu: nil,
                 memoryText: nil
             )
+        }
+    }
+
+    private static func packageStatus(_ item: DSMJSONValue) -> ServiceStatus {
+        if let isRunning = item.firstBool(for: ["start", "running", "is_running", "started", "enabled"]) {
+            return isRunning ? .online : .offline
+        }
+        return serviceStatus(from: item.firstString(for: ["status", "state", "status_text"]) ?? "")
+    }
+
+    private static func shouldShowPackageService(_ name: String) -> Bool {
+        let lower = name.lowercased()
+        let importantTokens = [
+            "container",
+            "docker",
+            "file station",
+            "download station",
+            "synology photos",
+            "photo station",
+            "video station",
+            "audio station",
+            "synology drive",
+            "webdav",
+            "vpn server",
+            "active backup",
+            "virtual machine"
+        ]
+        return importantTokens.contains { lower.contains($0) }
+    }
+
+    private static func serviceSortRank(_ service: LaunchpadService) -> Int {
+        let lower = service.name.lowercased()
+        if lower == "dsm" { return 0 }
+        if lower.contains("container") || lower.contains("docker") { return 1 }
+        if service.isMedia { return 2 }
+        if service.category == .downloads { return 3 }
+        if lower.contains("file station") || lower.contains("drive") || lower.contains("photos") { return 4 }
+        return 9
+    }
+
+    private static func categorySortRank(_ category: ServiceCategory) -> Int {
+        switch category {
+        case .favorites: return 0
+        case .media: return 1
+        case .downloads: return 2
+        case .network: return 3
+        case .tools: return 4
         }
     }
 
@@ -690,6 +773,12 @@ final class DSMClient {
         let name = rawName.trimmingCharacters(in: .whitespacesAndNewlines)
         let lower = name.lowercased()
         if lower.contains("container") { return "Container" }
+        if lower.contains("file station") { return "File Station" }
+        if lower.contains("synology photos") { return "Synology Photos" }
+        if lower.contains("download station") { return "Download Station" }
+        if lower.contains("synology drive") { return "Synology Drive" }
+        if lower.contains("video station") { return "Video Station" }
+        if lower.contains("audio station") { return "Audio Station" }
         if lower.contains("jellyfin") { return "Jellyfin" }
         if lower.contains("emby") { return "Emby" }
         if lower.contains("plex") { return "Plex" }
@@ -706,6 +795,12 @@ final class DSMClient {
         if lower.contains("navidrome") { return "NV" }
         if lower.contains("qbittorrent") { return "QB" }
         if lower.contains("container") { return "CT" }
+        if lower.contains("file station") { return "FS" }
+        if lower.contains("download station") { return "DL" }
+        if lower.contains("synology photos") { return "PH" }
+        if lower.contains("synology drive") { return "DR" }
+        if lower.contains("video station") { return "VD" }
+        if lower.contains("audio station") { return "AU" }
         if lower.contains("code") { return "</>" }
         let letters = name.split(separator: " ")
             .compactMap { $0.first }
@@ -718,8 +813,12 @@ final class DSMClient {
         let lower = name.lowercased()
         if lower.contains("dsm") || lower.contains("homepage") { return .favorites }
         if lower.contains("jellyfin") || lower.contains("emby") || lower.contains("plex") || lower.contains("navidrome") { return .media }
+        if lower.contains("photos") || lower.contains("video station") || lower.contains("audio station") { return .media }
         if lower.contains("torrent") || lower.contains("transmission") || lower.contains("aria") { return .downloads }
+        if lower.contains("download station") { return .downloads }
         if lower.contains("nginx") || lower.contains("adguard") || lower.contains("tailscale") { return .network }
+        if lower.contains("webdav") || lower.contains("vpn") { return .network }
+        if lower.contains("container") || lower.contains("docker") || lower.contains("file station") || lower.contains("drive") { return .favorites }
         return .tools
     }
 
@@ -869,6 +968,13 @@ final class AppDataStore: ObservableObject {
         let snapshot = await dataSource.loadSnapshot()
         reload(from: snapshot)
         sourceKind = dataSource.kind
+    }
+
+    @MainActor
+    func resetToMockData() {
+        activeDataSource = MockNASDataSource()
+        reload(from: MockAppDataProvider())
+        sourceKind = .mock
     }
 
     @MainActor

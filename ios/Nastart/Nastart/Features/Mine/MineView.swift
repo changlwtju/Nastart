@@ -3,6 +3,7 @@ import SwiftUI
 struct MineView: View {
     @EnvironmentObject private var profileStore: ProfileStore
     @EnvironmentObject private var connectionStore: NASConnectionStore
+    @EnvironmentObject private var dataStore: AppDataStore
     @EnvironmentObject private var entitlementStore: EntitlementStore
     @State private var showSignOutConfirm = false
 
@@ -118,6 +119,7 @@ struct MineView: View {
             .confirmationDialog("mine.sign_out.confirm", isPresented: $showSignOutConfirm, titleVisibility: .visible) {
                 Button("mine.sign_out", role: .destructive) {
                     connectionStore.signOut()
+                    dataStore.resetToMockData()
                 }
                 Button("action.cancel", role: .cancel) {}
             } message: {

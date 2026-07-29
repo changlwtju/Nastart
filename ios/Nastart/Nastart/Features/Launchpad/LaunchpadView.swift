@@ -4,6 +4,7 @@ import WebKit
 
 struct LaunchpadView: View {
     @EnvironmentObject private var dataStore: AppDataStore
+    @EnvironmentObject private var connectionStore: NASConnectionStore
     @EnvironmentObject private var entitlementStore: EntitlementStore
     @AppStorage(LaunchpadTheme.storageKey) private var launchpadThemeRaw = LaunchpadTheme.cleanGrid.rawValue
     @AppStorage(AppearancePreferenceKeys.compactMetrics) private var compactMetrics = true
@@ -21,6 +22,7 @@ struct LaunchpadView: View {
     @AppStorage(AppearancePreferenceKeys.groupOrder) private var groupOrderRaw = ServiceCategory.defaultOrderStorageValue
     @AppStorage(AppearancePreferenceKeys.groupDefaultVersion) private var groupDefaultVersion = 0
     @State private var showSearch = false
+    @State private var showConnectionFlow = false
 
     var body: some View {
         NavigationStack {
@@ -36,10 +38,19 @@ struct LaunchpadView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    NavigationLink {
-                        DSMConnectionFlowView()
-                    } label: {
-                        Image(systemName: "plus")
+                    if !connectionStore.isConnected {
+                        Button {
+                            showConnectionFlow = true
+                        } label: {
+                            Image(systemName: "plus")
+                        }
+                    }
+                }
+            }
+            .sheet(isPresented: $showConnectionFlow) {
+                NavigationStack {
+                    DSMConnectionFlowView {
+                        showConnectionFlow = false
                     }
                 }
             }
@@ -1611,6 +1622,7 @@ private struct MediaItemDetailView: View {
 }
 
 private struct DSMConnectionFlowView: View {
+    let onConnected: () -> Void
     @State private var host = ""
     @State private var account = ""
     @State private var password = ""
@@ -1634,16 +1646,21 @@ private struct DSMConnectionFlowView: View {
             Section {
                 TextField("connect.host", text: $host)
                     .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled()
                     .keyboardType(.URL)
                 TextField("connect.account", text: $account)
                     .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled()
+                    .keyboardType(.asciiCapable)
+                    .textContentType(.username)
                 SecureField("connect.password", text: $password)
-                TextField("connect.otp", text: $oneTimeCode)
+                    .textContentType(.password)
+                SecureField("connect.otp", text: $oneTimeCode)
                     .textContentType(.oneTimeCode)
                     .keyboardType(.numberPad)
                 Toggle("connect.trust_self_signed", isOn: $allowsSelfSignedCertificates)
                 NavigationLink {
-                    LANDiscoveryView()
+                    LANDiscoveryView(selectedHost: $host)
                 } label: {
                     Label("connect.scan.title", systemImage: "magnifyingglass")
                 }
@@ -1672,7 +1689,8 @@ private struct DSMConnectionFlowView: View {
                         password: password,
                         oneTimeCode: oneTimeCode,
                         allowsSelfSignedCertificates: allowsSelfSignedCertificates,
-                        useAgent: useAgent
+                        useAgent: useAgent,
+                        onConnected: onConnected
                     )
                 } label: {
                     Text("connect.action")
@@ -1689,8 +1707,8 @@ private struct DSMConnectionFlowView: View {
 
 private struct LANDiscoveryView: View {
     @EnvironmentObject private var dataStore: AppDataStore
-    @State private var selectedHost = ""
-    @State private var showHint = false
+    @Environment(\.dismiss) private var dismiss
+    @Binding var selectedHost: String
 
     var body: some View {
         List {
@@ -1718,7 +1736,7 @@ private struct LANDiscoveryView: View {
                         Spacer()
                         Button("connect.scan.use") {
                             selectedHost = device.host
-                            showHint = true
+                            dismiss()
                         }
                         .buttonStyle(.bordered)
                         .tint(AppTheme.accent)
@@ -1731,9 +1749,6 @@ private struct LANDiscoveryView: View {
         }
         .listStyle(.insetGrouped)
         .navigationTitle("connect.scan.title")
-        .alert("connect.scan.use_hint \(selectedHost)", isPresented: $showHint) {
-            Button("action.ok", role: .cancel) {}
-        }
     }
 }
 
@@ -1813,6 +1828,7 @@ private struct DSMConnectionReviewView: View {
     let oneTimeCode: String
     let allowsSelfSignedCertificates: Bool
     let useAgent: Bool
+    let onConnected: () -> Void
     @EnvironmentObject private var dataStore: AppDataStore
     @EnvironmentObject private var connectionStore: NASConnectionStore
     @Environment(\.dismiss) private var dismiss
@@ -1888,6 +1904,7 @@ private struct DSMConnectionReviewView: View {
         .navigationTitle("connect.review.nav")
         .alert("connect.review.done", isPresented: $showFinishHint) {
             Button("action.ok", role: .cancel) {
+                onConnected()
                 dismiss()
             }
         }
