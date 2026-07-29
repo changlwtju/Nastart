@@ -813,7 +813,20 @@ private struct HelpAboutView: View {
                     show("mine.about.terms_hint")
                 } label: {
                     Label("mine.about.terms", systemImage: "doc.text")
+                }
+            }
         }
+        .listStyle(.insetGrouped)
+        .navigationTitle("mine.about.title")
+        .navigationBarTitleDisplayMode(.inline)
+        .alert(LocalizedStringKey(messageKey), isPresented: $showHint) {
+            Button("action.ok", role: .cancel) {}
+        }
+    }
+
+    private func show(_ key: String) {
+        messageKey = key
+        showHint = true
     }
 }
 
@@ -907,18 +920,5 @@ private struct DiagnosticLogsView: View {
         case .warning: return AppTheme.accent
         case .error: return .red
         }
-    }
-}
-        .listStyle(.insetGrouped)
-        .navigationTitle("mine.about.title")
-        .navigationBarTitleDisplayMode(.inline)
-        .alert(LocalizedStringKey(messageKey), isPresented: $showHint) {
-            Button("action.ok", role: .cancel) {}
-        }
-    }
-
-    private func show(_ key: String) {
-        messageKey = key
-        showHint = true
     }
 }
