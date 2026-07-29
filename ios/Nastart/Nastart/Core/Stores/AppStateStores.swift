@@ -624,7 +624,7 @@ final class DSMClient {
         let letters = name.split(separator: " ")
             .compactMap { $0.first }
             .prefix(2)
-        let fallback = letters.isEmpty ? name.prefix(2) : String(letters)
+        let fallback = letters.isEmpty ? String(name.prefix(2)) : String(letters)
         return fallback.uppercased()
     }
 
