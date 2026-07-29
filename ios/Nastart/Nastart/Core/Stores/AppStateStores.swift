@@ -472,12 +472,7 @@ final class DSMClient {
             path: "/webapi/entry.cgi",
             queryItems: sessionItems(session, api: "SYNO.FileStation.List", version: "2", method: "list_share")
         )
-        async let dockerData = firstSuccessfulCall([
-            ("/webapi/entry.cgi", sessionItems(session, api: "SYNO.ContainerManager.Container", version: "1", method: "list")),
-            ("/webapi/entry.cgi", sessionItems(session, api: "SYNO.ContainerManager.Container", version: "2", method: "list")),
-            ("/webapi/entry.cgi", sessionItems(session, api: "SYNO.Docker.Container", version: "1", method: "list")),
-            ("/webapi/entry.cgi", sessionItems(session, api: "SYNO.Docker.Container", version: "2", method: "list"))
-        ])
+        async let dockerData = firstSuccessfulContainerCall(containerRequests(session))
         async let packageData = optionalCall(
             path: "/webapi/entry.cgi",
             queryItems: sessionItems(session, api: "SYNO.Core.Package", version: "2", method: "list")
@@ -534,13 +529,49 @@ final class DSMClient {
         return nil
     }
 
-    private func sessionItems(_ session: DSMSession, api: String, version: String, method: String) -> [URLQueryItem] {
+    private func sessionItems(_ session: DSMSession, api: String, version: String, method: String, extra: [URLQueryItem] = []) -> [URLQueryItem] {
         [
             URLQueryItem(name: "api", value: api),
             URLQueryItem(name: "version", value: version),
             URLQueryItem(name: "method", value: method),
             URLQueryItem(name: "_sid", value: session.sid)
+        ] + extra
+    }
+
+    private func containerRequests(_ session: DSMSession) -> [(String, [URLQueryItem])] {
+        let commonExtras = [
+            URLQueryItem(name: "limit", value: "1000"),
+            URLQueryItem(name: "offset", value: "0")
         ]
+        let allExtras = commonExtras + [URLQueryItem(name: "type", value: "all")]
+
+        return [
+            ("/webapi/entry.cgi", sessionItems(session, api: "SYNO.ContainerManager.Container", version: "1", method: "list", extra: allExtras)),
+            ("/webapi/entry.cgi", sessionItems(session, api: "SYNO.ContainerManager.Container", version: "2", method: "list", extra: allExtras)),
+            ("/webapi/entry.cgi", sessionItems(session, api: "SYNO.ContainerManager.Container", version: "3", method: "list", extra: allExtras)),
+            ("/webapi/entry.cgi", sessionItems(session, api: "SYNO.ContainerManager.Container", version: "1", method: "list", extra: commonExtras)),
+            ("/webapi/entry.cgi", sessionItems(session, api: "SYNO.ContainerManager.Container", version: "2", method: "list", extra: commonExtras)),
+            ("/webapi/entry.cgi", sessionItems(session, api: "SYNO.Docker.Container", version: "1", method: "list", extra: allExtras)),
+            ("/webapi/entry.cgi", sessionItems(session, api: "SYNO.Docker.Container", version: "2", method: "list", extra: allExtras)),
+            ("/webapi/entry.cgi", sessionItems(session, api: "SYNO.Docker.Container", version: "1", method: "list", extra: commonExtras)),
+            ("/webapi/entry.cgi", sessionItems(session, api: "SYNO.Docker.Container", version: "2", method: "list", extra: commonExtras)),
+            ("/webapi/Docker/Container.cgi", sessionItems(session, api: "SYNO.Docker.Container", version: "1", method: "list", extra: commonExtras)),
+            ("/webapi/Docker/Container.cgi", sessionItems(session, api: "SYNO.Docker.Container", version: "2", method: "list", extra: commonExtras))
+        ]
+    }
+
+    private func firstSuccessfulContainerCall(_ requests: [(String, [URLQueryItem])]) async -> DSMJSONValue? {
+        var fallback: DSMJSONValue?
+        for request in requests {
+            guard let value = try? await call(path: request.0, queryItems: request.1) else { continue }
+            if fallback == nil {
+                fallback = value
+            }
+            if !DSMClient.mapContainers(value).isEmpty {
+                return value
+            }
+        }
+        return fallback
     }
 
     private static func mapDevice(system: DSMJSONValue?, utilization: DSMJSONValue?, session: DSMSession, useAgent: Bool) -> NASDevice {
@@ -579,7 +610,7 @@ final class DSMClient {
 
     private static func mapStorage(_ utilization: DSMJSONValue?) -> (usedProgress: Double, freeText: String) {
         guard let disk = utilization?.firstValue(for: ["disk", "volume", "storage"]) else {
-            return (SampleData.device.storageUsed, SampleData.device.storageFreeText)
+            return (0, "-")
         }
         let total = disk.firstDouble(for: ["total", "total_size", "size_total"])
         let used = disk.firstDouble(for: ["used", "used_size", "size_used"])
@@ -587,7 +618,7 @@ final class DSMClient {
             let free = max(total - used, 0)
             return (min(max(used / total, 0), 1), DSMFormatters.bytes(free) ?? "-")
         }
-        return (SampleData.device.storageUsed, SampleData.device.storageFreeText)
+        return (0, "-")
     }
 
     private static func mapSharedFolders(_ data: DSMJSONValue?) -> [FileItem] {
@@ -600,25 +631,62 @@ final class DSMClient {
     }
 
     private static func mapContainers(_ data: DSMJSONValue?) -> [DockerContainer] {
-        guard let items = data?.firstArray(for: ["containers", "container", "items", "data"]) else { return [] }
+        let items = containerItems(from: data)
         return items.compactMap { item in
-            guard let name = item.firstString(for: ["name", "container_name", "container", "id"]) else { return nil }
-            let image = item.firstString(for: ["image", "image_name", "repository", "repo", "tag"]) ?? "-"
-            let stateText = item.firstString(for: ["status", "state", "status_text", "display_status"]) ?? ""
-            let cpu = DSMFormatters.percentage(item.firstDouble(for: ["cpu", "cpu_usage", "cpu_percent"]))
-            let memoryText = item.firstString(for: ["memory", "memory_usage", "memory_text"])
-                ?? DSMFormatters.bytes(item.firstDouble(for: ["memory_bytes", "mem_usage"]))
+            guard let name = textValue(in: item, keys: ["name", "Name", "container_name", "container", "id", "Id", "Names"]) else { return nil }
+            let image = textValue(in: item, keys: ["image", "Image", "image_name", "repository", "repo", "tag", "imageTag"]) ?? "-"
+            let stateText = textValue(in: item, keys: ["status", "Status", "state", "State", "status_text", "display_status"]) ?? ""
+            let explicitRunning = item.firstBool(for: ["running", "Running", "is_running", "started", "start"])
+            let cpu = DSMFormatters.percentage(item.firstDouble(for: ["cpu", "CPU", "cpu_usage", "cpu_percent"]))
+            let memoryText = textValue(in: item, keys: ["memory", "Memory", "memory_usage", "memory_text", "mem_usage"])
+                ?? DSMFormatters.bytes(item.firstDouble(for: ["memory_bytes", "mem_usage", "memoryUsage"]))
                 ?? "-"
             return DockerContainer(
                 id: UUID(),
                 name: name,
                 image: image,
-                status: serviceStatus(from: stateText),
+                status: explicitRunning.map { $0 ? .online : .offline } ?? serviceStatus(from: stateText),
                 cpu: cpu,
                 memoryText: memoryText,
                 ports: mapPorts(item)
             )
         }
+    }
+
+    private static func containerItems(from data: DSMJSONValue?) -> [DSMJSONValue] {
+        guard let data else { return [] }
+        let preferredKeys = Set(["containers", "container", "items", "list", "result"])
+        let candidates = arrays(in: data, matching: preferredKeys).flatMap { $0 }
+        let scored = candidates.filter(looksLikeContainer)
+        if !scored.isEmpty { return scored }
+        if let rootArray = data.arrayValue {
+            return rootArray.filter(looksLikeContainer)
+        }
+        return []
+    }
+
+    private static func arrays(in value: DSMJSONValue, matching keys: Set<String>) -> [[DSMJSONValue]] {
+        switch value {
+        case .object(let object):
+            return object.flatMap { key, child -> [[DSMJSONValue]] in
+                let own = keys.contains(key.lowercased()) ? (child.arrayValue.map { [$0] } ?? []) : []
+                return own + arrays(in: child, matching: keys)
+            }
+        case .array(let array):
+            return array.flatMap { arrays(in: $0, matching: keys) }
+        case .string, .number, .bool, .null:
+            return []
+        }
+    }
+
+    private static func looksLikeContainer(_ item: DSMJSONValue) -> Bool {
+        guard item.objectValue != nil else { return false }
+        return textValue(in: item, keys: ["name", "Name", "container_name", "id", "Id", "Names"]) != nil
+            && (
+                textValue(in: item, keys: ["image", "Image", "image_name", "repository", "repo"]) != nil
+                || textValue(in: item, keys: ["status", "Status", "state", "State"]) != nil
+                || item.firstArray(for: ["ports", "Ports", "port_bindings", "port_mappings"]) != nil
+            )
     }
 
     private static func mapServices(containers: [DockerContainer], packageData: DSMJSONValue?, session: DSMSession) -> [LaunchpadService] {
@@ -697,10 +765,10 @@ final class DSMClient {
     }
 
     private static func packageStatus(_ item: DSMJSONValue) -> ServiceStatus {
-        if let isRunning = item.firstBool(for: ["start", "running", "is_running", "started", "enabled"]) {
+        if let isRunning = item.firstBool(for: ["start", "running", "is_running", "started", "enabled", "run", "is_enable"]) {
             return isRunning ? .online : .offline
         }
-        return serviceStatus(from: item.firstString(for: ["status", "state", "status_text"]) ?? "")
+        return serviceStatus(from: textValue(in: item, keys: ["status", "state", "status_text", "display_status", "pkgStatus"]) ?? "")
     }
 
     private static func shouldShowPackageService(_ name: String) -> Bool {
@@ -744,10 +812,13 @@ final class DSMClient {
     }
 
     private static func mapPorts(_ item: DSMJSONValue) -> [String] {
-        guard let ports = item.firstArray(for: ["ports", "port_bindings"]) else { return [] }
+        guard let ports = item.firstArray(for: ["ports", "Ports", "port_bindings", "port_mappings"]) else { return [] }
         return ports.compactMap { port in
-            let local = port.firstString(for: ["local_port", "host_port", "public_port"])
-            let container = port.firstString(for: ["container_port", "private_port"])
+            if let text = port.stringValue, !text.isEmpty {
+                return text
+            }
+            let local = textValue(in: port, keys: ["local_port", "host_port", "public_port", "PublicPort", "HostPort"])
+            let container = textValue(in: port, keys: ["container_port", "private_port", "PrivatePort", "ContainerPort"])
             if let local, let container {
                 return "\(local):\(container)"
             }
@@ -757,16 +828,24 @@ final class DSMClient {
 
     private static func serviceStatus(from text: String) -> ServiceStatus {
         let normalized = text.lowercased()
-        if normalized.contains("running") || normalized == "up" || normalized == "online" || normalized == "started" {
+        if normalized.contains("running") || normalized.contains("healthy") || normalized == "up" || normalized == "online" || normalized == "started" {
             return .online
         }
         if normalized.contains("stop") || normalized.contains("exit") || normalized == "down" || normalized == "offline" {
             return .offline
         }
-        if normalized.isEmpty {
+        if normalized.isEmpty || normalized == "installed" {
             return .unknown
         }
         return .warning
+    }
+
+    private static func textValue(in item: DSMJSONValue, keys: [String]) -> String? {
+        guard let value = item.firstValue(for: keys) else { return nil }
+        let text = value.stringValue ?? value.arrayValue?.compactMap(\.stringValue).first
+        let normalized = text?
+            .trimmingCharacters(in: CharacterSet(charactersIn: "/").union(.whitespacesAndNewlines))
+        return normalized?.isEmpty == false ? normalized : nil
     }
 
     private static func displayName(for rawName: String) -> String {

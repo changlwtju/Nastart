@@ -38,12 +38,10 @@ struct LaunchpadView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    if !connectionStore.isConnected {
-                        Button {
-                            showConnectionFlow = true
-                        } label: {
-                            Image(systemName: "plus")
-                        }
+                    Button {
+                        showConnectionFlow = true
+                    } label: {
+                        Image(systemName: "plus")
                     }
                 }
             }
