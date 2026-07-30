@@ -1798,11 +1798,11 @@ final class DSMClient {
             return true
         }
         .sorted { lhs, rhs in
-            let lhsRank = serviceSortRank(lhs)
-            let rhsRank = serviceSortRank(rhs)
+            let lhsRank = Self.serviceSortRank(lhs)
+            let rhsRank = Self.serviceSortRank(rhs)
             if lhsRank != rhsRank { return lhsRank < rhsRank }
             if lhs.category.rawValue != rhs.category.rawValue {
-                return categorySortRank(lhs.category) < categorySortRank(rhs.category)
+                return Self.categorySortRank(lhs.category) < Self.categorySortRank(rhs.category)
             }
             return lhs.name.localizedCaseInsensitiveCompare(rhs.name) == .orderedAscending
         }
