@@ -69,6 +69,7 @@ enum ServiceStatus: String, Equatable {
 enum LaunchpadServiceSource: Equatable {
     case dsm
     case container
+    case reverseProxy
     case package
     case manual
 }
@@ -155,6 +156,7 @@ struct LaunchpadService: Identifiable {
     let iconURL: URL?
     let endpoint: URL?
     let source: LaunchpadServiceSource
+    let isLaunchpadVisible: Bool
 
     init(
         id: UUID,
@@ -170,7 +172,8 @@ struct LaunchpadService: Identifiable {
         ports: [String] = [],
         iconURL: URL? = nil,
         endpoint: URL? = nil,
-        source: LaunchpadServiceSource = .manual
+        source: LaunchpadServiceSource = .manual,
+        isLaunchpadVisible: Bool = true
     ) {
         self.id = id
         self.name = name
@@ -186,6 +189,7 @@ struct LaunchpadService: Identifiable {
         self.iconURL = iconURL
         self.endpoint = endpoint
         self.source = source
+        self.isLaunchpadVisible = isLaunchpadVisible
     }
 }
 

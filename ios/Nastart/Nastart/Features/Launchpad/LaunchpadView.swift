@@ -63,7 +63,7 @@ struct LaunchpadView: View {
                 }
             }
             .sheet(isPresented: $showSearch) {
-                LaunchpadSearchView(services: dataStore.services)
+                LaunchpadSearchView(services: launchpadServices)
             }
             .onAppear {
                 applyGroupDefaultMigrationIfNeeded()
@@ -75,12 +75,16 @@ struct LaunchpadView: View {
     private var launchpadContent: some View {
         switch selectedTheme {
         case .cleanGrid:
-            ProductLaunchpad(device: dataStore.device, services: dataStore.services, categories: orderedCategories, options: displayOptions, groupDefaultExpanded: isGroupExpandedByDefault)
+            ProductLaunchpad(device: dataStore.device, services: launchpadServices, categories: orderedCategories, options: displayOptions, groupDefaultExpanded: isGroupExpandedByDefault)
         case .commandCenter:
-            CommandCenterLaunchpad(device: dataStore.device, services: dataStore.services, categories: orderedCategories, options: displayOptions, groupDefaultExpanded: isGroupExpandedByDefault)
+            CommandCenterLaunchpad(device: dataStore.device, services: launchpadServices, categories: orderedCategories, options: displayOptions, groupDefaultExpanded: isGroupExpandedByDefault)
         case .glassDeck:
-            GlassDeckLaunchpad(device: dataStore.device, services: dataStore.services, categories: orderedCategories, options: displayOptions, groupDefaultExpanded: isGroupExpandedByDefault)
+            GlassDeckLaunchpad(device: dataStore.device, services: launchpadServices, categories: orderedCategories, options: displayOptions, groupDefaultExpanded: isGroupExpandedByDefault)
         }
+    }
+
+    private var launchpadServices: [LaunchpadService] {
+        dataStore.services.filter(\.isLaunchpadVisible)
     }
 
     @ViewBuilder

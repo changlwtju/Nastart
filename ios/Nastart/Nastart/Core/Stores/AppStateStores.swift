@@ -1,6 +1,7 @@
 import Foundation
 import Combine
 import Security
+import Darwin
 
 protocol AppDataProviding {
     var device: NASDevice { get }
@@ -782,6 +783,9 @@ final class DSMClient {
                         "SYNO.Core.Terminal",
                         "SYNO.FileStation.List",
                         "SYNO.Core.Package",
+                        "SYNO.Core.AppPortal.ReverseProxy",
+                        "SYNO.Storage.CGI.Storage",
+                        "SYNO.Storage.CGI.Volume",
                         "SYNO.ContainerManager.Container",
                         "SYNO.Docker.Container"
                     ].joined(separator: ",")
@@ -838,15 +842,30 @@ final class DSMClient {
             fallbackMaxVersion: 2,
             method: "list"
         ))
+        async let reverseProxyData = firstSuccessfulCall(apiRequests(
+            session,
+            apiInfo: apiInfo,
+            apiName: "SYNO.Core.AppPortal.ReverseProxy",
+            fallbackPath: "/webapi/entry.cgi",
+            fallbackMaxVersion: 1,
+            method: "list"
+        ))
+        async let storageData = firstSuccessfulCall(storageRequests(session, apiInfo: apiInfo))
         async let dockerData = firstSuccessfulContainerCall(containerRequests(session, apiInfo: apiInfo))
 
         let system = await systemData
         let utilization = await utilizationData
         let certificate = await certificateData
         let terminal = await terminalData
+        let storage = await storageData
         let files = DSMClient.mapSharedFolders(await sharedFolderData)
         let containers = DSMClient.mapContainers(await dockerData)
-        let services = DSMClient.mapServices(containers: containers, packageData: await packageData, session: session)
+        let services = await mapServices(
+            containers: containers,
+            packageData: await packageData,
+            reverseProxyData: await reverseProxyData,
+            session: session
+        )
 
         record(
             .info,
@@ -854,8 +873,11 @@ final class DSMClient {
             messageKey: "diagnostics.snapshot.completed",
             details: [
                 "services": "\(services.count)",
+                "launchpadServices": "\(services.filter(\.isLaunchpadVisible).count)",
                 "containers": "\(containers.count)",
-                "packages": "\(max(services.count - containers.count - 1, 0))",
+                "packages": "\(services.filter { $0.source == .package }.count)",
+                "publishedPorts": "\(containers.reduce(0) { $0 + $1.ports.count })",
+                "volumes": "\(Self.storageVolumeItems(storage).count)",
                 "folders": "\(files.count)"
             ]
         )
@@ -864,6 +886,7 @@ final class DSMClient {
             device: DSMClient.mapDevice(
                 system: system,
                 utilization: utilization,
+                storageData: storage,
                 certificateData: certificate,
                 terminalData: terminal,
                 session: session
@@ -1069,6 +1092,33 @@ final class DSMClient {
         ]
     }
 
+    private func storageRequests(_ session: DSMSession, apiInfo: DSMJSONValue?) -> [(String, [URLQueryItem])] {
+        var requests: [(String, [URLQueryItem])] = []
+        if apiInfoEntry(apiInfo, apiName: "SYNO.Storage.CGI.Storage") != nil || apiInfo == nil {
+            requests += apiRequests(
+                session,
+                apiInfo: apiInfo,
+                apiName: "SYNO.Storage.CGI.Storage",
+                fallbackPath: "/webapi/entry.cgi",
+                fallbackMaxVersion: 1,
+                method: "load_info"
+            )
+        }
+        if apiInfoEntry(apiInfo, apiName: "SYNO.Storage.CGI.Volume") != nil || apiInfo == nil {
+            for method in ["list", "get"] {
+                requests += apiRequests(
+                    session,
+                    apiInfo: apiInfo,
+                    apiName: "SYNO.Storage.CGI.Volume",
+                    fallbackPath: "/webapi/entry.cgi",
+                    fallbackMaxVersion: 1,
+                    method: method
+                )
+            }
+        }
+        return requests
+    }
+
     private func apiInfoRequests(
         _ session: DSMSession,
         apiInfo: DSMJSONValue?,
@@ -1191,6 +1241,9 @@ final class DSMClient {
             "SYNO.Core.Terminal",
             "SYNO.FileStation.List",
             "SYNO.Core.Package",
+            "SYNO.Core.AppPortal.ReverseProxy",
+            "SYNO.Storage.CGI.Storage",
+            "SYNO.Storage.CGI.Volume",
             "SYNO.ContainerManager.Container",
             "SYNO.Docker.Container"
         ]
@@ -1219,6 +1272,7 @@ final class DSMClient {
     private static func mapDevice(
         system: DSMJSONValue?,
         utilization: DSMJSONValue?,
+        storageData: DSMJSONValue?,
         certificateData: DSMJSONValue?,
         terminalData: DSMJSONValue?,
         session: DSMSession
@@ -1232,7 +1286,7 @@ final class DSMClient {
         let mode: ConnectionMode = .dsmOnly
         let cpu = mapCPU(utilization)
         let memory = mapMemory(utilization)
-        let storage = mapStorage(utilization)
+        let storage = mapStorage(storageData: storageData, utilization: utilization)
         let certificate = mapCertificate(certificateData, usesCustomTrust: session.allowsSelfSignedCertificates)
         let sshStatus = mapSSHStatus(terminalData)
         let subtitle = model.flatMap { $0.caseInsensitiveCompare(name) == .orderedSame ? nil : $0 }
@@ -1299,42 +1353,84 @@ final class DSMClient {
     }
 
     private static func mapStorage(
-        _ utilization: DSMJSONValue?
+        storageData: DSMJSONValue?,
+        utilization: DSMJSONValue?
     ) -> (progress: Double?, usedText: String?, totalText: String?, freeText: String) {
-        guard
-            let utilization,
-            let storageRoot = utilization.firstValue(for: ["space", "volume", "storage"])
-        else {
-            return (nil, nil, nil, "-")
+        let storageCandidates = storageVolumeItems(storageData).compactMap {
+            storageUsage(from: $0, assumesBytes: true)
         }
-        let storageItems = storageRoot.firstDirectArray(for: ["total", "volumes", "items"])
-            ?? allObjects(in: storageRoot)
-        let candidates = storageItems.compactMap { item -> (Double, Double)? in
-            guard
-                let total = item.firstDirectDouble(for: ["total", "total_size", "size_total", "size"]),
-                let used = item.firstDirectDouble(for: ["used", "used_size", "size_used"]),
-                total > 0,
-                used >= 0,
-                used <= total
-            else {
-                return nil
+        let utilizationCandidates: [(Double, Double)] = {
+            guard let storageRoot = utilization?.firstValue(for: ["space", "volume", "storage"]) else {
+                return []
             }
-            return (total, used)
-        }
-        guard !candidates.isEmpty else {
-            return (nil, nil, nil, "-")
-        }
-        let totalRaw = candidates.reduce(0) { $0 + $1.0 }
-        let usedRaw = candidates.reduce(0) { $0 + $1.1 }
-        let totalBytes = normalizedStorageBytes(totalRaw)
-        let usedBytes = normalizedStorageBytes(usedRaw)
+            let items = storageRoot.firstDirectArray(for: ["total", "volumes", "items"])
+                ?? allObjects(in: storageRoot)
+            return items.compactMap { storageUsage(from: $0, assumesBytes: false) }
+        }()
+        let candidates = storageCandidates.isEmpty ? utilizationCandidates : storageCandidates
+        guard !candidates.isEmpty else { return (nil, nil, nil, "-") }
+
+        let totalBytes = candidates.reduce(0) { $0 + $1.0 }
+        let usedBytes = candidates.reduce(0) { $0 + $1.1 }
         let freeBytes = max(totalBytes - usedBytes, 0)
         return (
-            min(max(usedRaw / totalRaw, 0), 1),
+            min(max(usedBytes / totalBytes, 0), 1),
             DSMFormatters.bytes(usedBytes),
             DSMFormatters.bytes(totalBytes),
             DSMFormatters.bytes(freeBytes) ?? "-"
         )
+    }
+
+    private static func storageVolumeItems(_ data: DSMJSONValue?) -> [DSMJSONValue] {
+        guard let data else { return [] }
+        let root = data.firstDirectValue(for: ["data", "result"]) ?? data
+        if let volumes = root.firstDirectArray(for: ["volumes", "volume", "volume_list", "volumeList"]) {
+            return volumes
+        }
+        let listed = arrays(
+            in: root,
+            matching: Set(["volumes", "volume", "volume_list", "volumelist"])
+        ).flatMap { $0 }
+        if !listed.isEmpty { return listed }
+        return allObjects(in: root).filter { item in
+            let identity = directTextValue(
+                in: item,
+                keys: ["id", "volume_id", "volumeId", "path", "volume_path"]
+            )?.lowercased() ?? ""
+            return identity.contains("volume") && storageUsage(from: item, assumesBytes: true) != nil
+        }
+    }
+
+    private static func storageUsage(
+        from item: DSMJSONValue,
+        assumesBytes: Bool
+    ) -> (Double, Double)? {
+        let size = item.firstDirectValue(for: ["size", "usage", "space"])
+        let totalKeys = [
+            "size_total", "total_size", "total", "capacity",
+            "total_byte", "total_bytes", "totalByte", "totalBytes"
+        ]
+        let usedKeys = [
+            "size_used", "used_size", "used",
+            "used_byte", "used_bytes", "usedByte", "usedBytes"
+        ]
+        let freeKeys = [
+            "size_free", "free_size", "free", "available",
+            "free_byte", "free_bytes", "freeByte", "freeBytes"
+        ]
+        let totalRaw = item.firstDirectDouble(for: totalKeys)
+            ?? size?.firstDirectDouble(for: totalKeys)
+        let usedRaw = item.firstDirectDouble(for: usedKeys)
+            ?? size?.firstDirectDouble(for: usedKeys)
+        let freeRaw = item.firstDirectDouble(for: freeKeys)
+            ?? size?.firstDirectDouble(for: freeKeys)
+        guard let totalRaw, totalRaw > 0 else { return nil }
+        let resolvedUsed = usedRaw ?? freeRaw.map { max(totalRaw - $0, 0) }
+        guard let resolvedUsed, resolvedUsed >= 0, resolvedUsed <= totalRaw else { return nil }
+        if assumesBytes {
+            return (totalRaw, resolvedUsed)
+        }
+        return (normalizedStorageBytes(totalRaw), normalizedStorageBytes(resolvedUsed))
     }
 
     private static func normalizedMemoryBytes(_ value: Double) -> Double {
@@ -1622,7 +1718,39 @@ final class DSMClient {
         }
     }
 
-    private static func mapServices(containers: [DockerContainer], packageData: DSMJSONValue?, session: DSMSession) -> [LaunchpadService] {
+    private struct DSMReverseProxyRule {
+        let name: String
+        let sourceHost: String?
+        let sourcePort: Int
+        let sourceScheme: String
+        let destinationPort: Int
+    }
+
+    private struct ResolvedContainerEndpoint {
+        let url: URL
+        let source: LaunchpadServiceSource
+    }
+
+    private func mapServices(
+        containers: [DockerContainer],
+        packageData: DSMJSONValue?,
+        reverseProxyData: DSMJSONValue?,
+        session: DSMSession
+    ) async -> [LaunchpadService] {
+        let reverseProxyRules = Self.mapReverseProxyRules(reverseProxyData)
+        record(
+            reverseProxyRules.isEmpty ? .warning : .info,
+            categoryKey: "diagnostics.category.dsm_api",
+            messageKey: reverseProxyRules.isEmpty
+                ? "diagnostics.reverse_proxy.empty"
+                : "diagnostics.reverse_proxy.loaded",
+            details: ["count": "\(reverseProxyRules.count)"]
+        )
+        let containerEndpoints = await resolvedContainerEndpoints(
+            containers,
+            reverseProxyRules: reverseProxyRules,
+            baseURL: session.baseURL
+        )
         var services: [LaunchpadService] = [
             LaunchpadService(
                 id: UUID(),
@@ -1641,24 +1769,26 @@ final class DSMClient {
         ]
 
         services += containers.map { container in
-            LaunchpadService(
+            let resolvedEndpoint = containerEndpoints[container.id]
+            return LaunchpadService(
                 id: UUID(),
-                name: displayName(for: container.name),
-                iconText: iconText(for: container.name),
-                category: category(for: container.name),
+                name: Self.displayName(for: container.name),
+                iconText: Self.iconText(for: container.name),
+                category: Self.category(for: container.name),
                 status: container.status,
-                subtitle: subtitle(for: container),
+                subtitle: Self.subtitle(for: container),
                 detail: container.image,
-                isMedia: isMedia(container.name),
+                isMedia: Self.isMedia(container.name),
                 cpu: container.cpu,
                 memoryText: container.memoryText,
                 ports: container.ports,
-                endpoint: endpoint(for: container, baseURL: session.baseURL),
-                source: .container
+                endpoint: resolvedEndpoint?.url,
+                source: resolvedEndpoint?.source ?? .container,
+                isLaunchpadVisible: Self.shouldAutomaticallyAdd(container, endpoint: resolvedEndpoint?.url)
             )
         }
 
-        services += mapPackageServices(packageData, session: session)
+        services += Self.mapPackageServices(packageData, session: session)
 
         var seen = Set<String>()
         return services.filter { service in
@@ -1707,9 +1837,173 @@ final class DSMClient {
                 cpu: nil,
                 memoryText: nil,
                 endpoint: endpoint,
-                source: .package
+                source: .package,
+                isLaunchpadVisible: false
             )
         }
+    }
+
+    private func resolvedContainerEndpoints(
+        _ containers: [DockerContainer],
+        reverseProxyRules: [DSMReverseProxyRule],
+        baseURL: URL
+    ) async -> [UUID: ResolvedContainerEndpoint] {
+        await withTaskGroup(
+            of: (UUID, ResolvedContainerEndpoint?).self,
+            returning: [UUID: ResolvedContainerEndpoint].self
+        ) { group in
+            for container in containers where container.status == .online {
+                group.addTask {
+                    if let endpoint = Self.reverseProxyEndpoint(
+                        for: container,
+                        rules: reverseProxyRules,
+                        baseURL: baseURL
+                    ) {
+                        return (
+                            container.id,
+                            ResolvedContainerEndpoint(url: endpoint, source: .reverseProxy)
+                        )
+                    }
+                    let endpoint = await self.firstReachableWebEndpoint(for: container, baseURL: baseURL)
+                    return (
+                        container.id,
+                        endpoint.map { ResolvedContainerEndpoint(url: $0, source: .container) }
+                    )
+                }
+            }
+
+            var endpoints: [UUID: ResolvedContainerEndpoint] = [:]
+            for await (id, endpoint) in group {
+                if let endpoint {
+                    endpoints[id] = endpoint
+                }
+            }
+            return endpoints
+        }
+    }
+
+    private static func mapReverseProxyRules(_ data: DSMJSONValue?) -> [DSMReverseProxyRule] {
+        guard let data else { return [] }
+        let root = data.firstDirectValue(for: ["data", "result"]) ?? data
+        let listedItems = root.firstDirectArray(for: ["rules", "items", "list"])
+            ?? arrays(in: root, matching: Set(["rules"])).flatMap { $0 }
+        let items = listedItems.isEmpty
+            ? allObjects(in: root).filter {
+                $0.firstDirectValue(for: ["frontend", "source", "incoming"]) != nil
+                    && $0.firstDirectValue(for: ["backend", "destination", "target"]) != nil
+            }
+            : listedItems
+        return items.compactMap { item in
+            guard
+                let source = item.firstDirectValue(for: ["frontend", "source", "incoming"]),
+                let destination = item.firstDirectValue(for: ["backend", "destination", "target"]),
+                let sourcePort = numericPort(source.firstDirectString(for: ["port", "source_port", "listen_port"])),
+                let destinationPort = numericPort(destination.firstDirectString(for: ["port", "destination_port", "target_port"]))
+            else {
+                return nil
+            }
+            let rawProtocol = source.firstDirectString(for: ["protocol", "scheme", "type"])?.lowercased()
+            let sourceScheme = rawProtocol == "https" || rawProtocol == "1" || source.firstDirectValue(for: ["https"]) != nil
+                ? "https"
+                : "http"
+            let sourceHost = nonEmptyString(source.firstDirectString(for: ["fqdn", "hostname", "host"]))
+            let name = directTextValue(in: item, keys: ["description", "name", "title", "id"]) ?? ""
+            return DSMReverseProxyRule(
+                name: name,
+                sourceHost: sourceHost,
+                sourcePort: sourcePort,
+                sourceScheme: sourceScheme,
+                destinationPort: destinationPort
+            )
+        }
+    }
+
+    private static func reverseProxyEndpoint(
+        for container: DockerContainer,
+        rules: [DSMReverseProxyRule],
+        baseURL: URL
+    ) -> URL? {
+        let mappings = container.ports.compactMap(portMapping(from:))
+        let hostPorts = Set(mappings.map(\.hostPort))
+        let containerTokens = serviceIdentifierTokens("\(container.name) \(container.image)")
+        let compactContainerName = compactServiceIdentifier(container.name)
+
+        let rankedRules = rules.compactMap { rule -> (Int, DSMReverseProxyRule)? in
+            if hostPorts.contains(rule.destinationPort) {
+                return (0, rule)
+            }
+            let ruleTokens = serviceIdentifierTokens("\(rule.name) \(rule.sourceHost ?? "")")
+            let compactRuleIdentity = compactServiceIdentifier("\(rule.name) \(rule.sourceHost ?? "")")
+            if !containerTokens.isDisjoint(with: ruleTokens)
+                || (compactContainerName.count >= 4 && compactRuleIdentity.contains(compactContainerName)) {
+                return (1, rule)
+            }
+            return nil
+        }
+        .sorted { lhs, rhs in
+            if lhs.0 != rhs.0 { return lhs.0 < rhs.0 }
+            return lhs.1.sourcePort < rhs.1.sourcePort
+        }
+
+        guard let rule = rankedRules.first?.1 else { return nil }
+        let configuredHost = rule.sourceHost?.trimmingCharacters(in: .whitespacesAndNewlines)
+        let host = configuredHost == nil || configuredHost == "*" ? baseURL.host : configuredHost
+        guard let host, !host.isEmpty else { return nil }
+        var components = URLComponents()
+        components.scheme = rule.sourceScheme
+        components.host = host
+        components.port = rule.sourcePort
+        return components.url
+    }
+
+    private static func serviceIdentifierTokens(_ value: String) -> Set<String> {
+        let ignored = Set([
+            "com", "cn", "net", "org", "www", "http", "https",
+            "docker", "container", "latest", "linuxserver"
+        ])
+        return Set(value.lowercased()
+            .components(separatedBy: CharacterSet.alphanumerics.inverted)
+            .filter { $0.count >= 3 && !ignored.contains($0) })
+    }
+
+    private static func compactServiceIdentifier(_ value: String) -> String {
+        value.lowercased()
+            .components(separatedBy: CharacterSet.alphanumerics.inverted)
+            .joined()
+    }
+
+    private func firstReachableWebEndpoint(for container: DockerContainer, baseURL: URL) async -> URL? {
+        for endpoint in Self.endpointCandidates(for: container, baseURL: baseURL) {
+            if await isReachableWebEndpoint(endpoint) {
+                return endpoint
+            }
+        }
+        return nil
+    }
+
+    private func isReachableWebEndpoint(_ endpoint: URL) async -> Bool {
+        var request = URLRequest(url: endpoint)
+        request.httpMethod = "HEAD"
+        request.timeoutInterval = 2
+        request.cachePolicy = .reloadIgnoringLocalCacheData
+        do {
+            let (_, response) = try await urlSession.data(for: request)
+            return response is HTTPURLResponse
+        } catch {
+            return false
+        }
+    }
+
+    private static func shouldAutomaticallyAdd(_ container: DockerContainer, endpoint: URL?) -> Bool {
+        guard container.status == .online, endpoint != nil else { return false }
+        let identity = "\(container.name) \(container.image)".lowercased()
+        let infrastructureTokens = [
+            "dockerproxy", "docker-proxy", "socket-proxy", "watchtower",
+            "postgres", "mariadb", "mysql", "mongodb", "redis",
+            "memcached", "elasticsearch", "influxdb",
+            "worker", "sidecar", "init-container"
+        ]
+        return !infrastructureTokens.contains { identity.contains($0) }
     }
 
     private static func isInstalledPackage(_ item: DSMJSONValue) -> Bool {
@@ -1807,86 +2101,95 @@ final class DSMClient {
     }
 
     private static func mapPorts(_ item: DSMJSONValue) -> [String] {
-        let portKeys = [
+        let directPortKeys = [
             "ports", "Ports", "port_bindings", "PortBindings", "portBindings",
-            "port_mappings", "portMappings", "PortMapping", "networkSettings", "NetworkSettings"
+            "port_mappings", "portMappings", "PortMapping"
         ]
-        let ports = portKeys.flatMap { key -> [String] in
+        var ports = directPortKeys.flatMap { key -> [String] in
             guard let value = item.firstDirectValue(for: [key]) else { return [] }
-            return portTexts(from: value, inheritedContainerPort: nil, keyHint: key)
+            return publishedPortTexts(from: value)
         }
+
+        for networkKey in ["networkSettings", "NetworkSettings"] {
+            guard let network = item.firstDirectValue(for: [networkKey]) else { continue }
+            for portKey in ["ports", "Ports", "port_bindings", "PortBindings"] {
+                guard let value = network.firstDirectValue(for: [portKey]) else { continue }
+                ports += publishedPortTexts(from: value)
+            }
+        }
+
         return uniqueStrings(ports)
     }
 
-    private static func portText(_ port: DSMJSONValue, inheritedContainerPort: String? = nil) -> String? {
-        if let text = nonEmptyString(port.stringValue) {
-            return text
-        }
-
-        let local = directTextValue(
-            in: port,
-            keys: [
-                "local_port", "localPort", "host_port", "hostPort",
-                "public_port", "publicPort", "PublicPort", "HostPort",
-                "external", "external_port", "externalPort"
-            ]
-        )
-        let container = directTextValue(
-            in: port,
-            keys: [
-                "container_port", "containerPort", "private_port", "privatePort",
-                "PrivatePort", "ContainerPort", "target", "target_port", "targetPort", "port"
-            ]
-        ) ?? inheritedContainerPort
-
-        let transport = directTextValue(in: port, keys: ["type", "protocol", "Protocol"])
-            .map { "/\($0.lowercased())" } ?? ""
-        if let local, let container, local != container {
-            return "\(local) -> \(container)\(transport)"
-        }
-        if let local {
-            return "\(local)\(transport)"
-        }
-        if let inheritedContainerPort, let container, inheritedContainerPort == container {
-            return nil
-        }
-        return container.map { "internal \($0)\(transport)" }
-    }
-
-    private static func portTexts(from value: DSMJSONValue, inheritedContainerPort: String?, keyHint: String) -> [String] {
-        if let text = portText(value, inheritedContainerPort: inheritedContainerPort) {
-            return [text]
-        }
-
+    private static func publishedPortTexts(from value: DSMJSONValue) -> [String] {
         if let array = value.arrayValue {
-            return array.flatMap { portTexts(from: $0, inheritedContainerPort: inheritedContainerPort, keyHint: keyHint) }
+            return array.flatMap { publishedPortTexts(from: $0) }
+        }
+
+        if let mapping = directPublishedPort(from: value, inheritedContainerPort: nil) {
+            return [mapping]
         }
 
         guard let object = value.objectValue else { return [] }
-
         return object.flatMap { key, child -> [String] in
-            let containerPort = portNumberPrefix(from: key) ?? inheritedContainerPort
-            let childKeyHint = keyHint + "." + key
-            return portTexts(from: child, inheritedContainerPort: containerPort, keyHint: childKeyHint).map { text in
-                guard
-                    let containerPort,
-                    !text.contains(":"),
-                    !text.contains("->"),
-                    !text.lowercased().hasPrefix("internal"),
-                    text != containerPort
-                else {
-                    return text
-                }
-                return "\(text):\(containerPort)"
+            guard let containerPort = portNumberPrefix(from: key) else { return [] }
+            let bindings = child.arrayValue ?? [child]
+            return bindings.compactMap {
+                directPublishedPort(from: $0, inheritedContainerPort: containerPort)
             }
         }
     }
 
-    private static func portNumberPrefix(from key: String) -> String? {
+    private static func directPublishedPort(
+        from value: DSMJSONValue,
+        inheritedContainerPort: Int?
+    ) -> String? {
+        guard value.objectValue != nil else { return nil }
+        let hostPort = numericPort(directTextValue(
+            in: value,
+            keys: [
+                "host_port", "hostPort", "HostPort",
+                "local_port", "localPort", "public_port", "publicPort", "PublicPort",
+                "host", "local", "public", "external", "external_port", "externalPort"
+            ]
+        ))
+        let containerPort = numericPort(directTextValue(
+            in: value,
+            keys: [
+                "container_port", "containerPort", "ContainerPort",
+                "private_port", "privatePort", "PrivatePort",
+                "target_port", "targetPort",
+                "container", "private", "target", "internal", "port"
+            ]
+        )) ?? inheritedContainerPort
+        guard let hostPort, let containerPort else { return nil }
+        let transport = transportName(directTextValue(in: value, keys: ["protocol", "Protocol", "type"]))
+        return "\(hostPort) -> \(containerPort)/\(transport)"
+    }
+
+    private static func numericPort(_ text: String?) -> Int? {
+        guard
+            let text,
+            !text.isEmpty,
+            text.allSatisfy(\.isNumber),
+            let port = Int(text),
+            (1...65_535).contains(port)
+        else {
+            return nil
+        }
+        return port
+    }
+
+    private static func transportName(_ raw: String?) -> String {
+        switch raw?.lowercased() {
+        case "17", "udp": return "udp"
+        default: return "tcp"
+        }
+    }
+
+    private static func portNumberPrefix(from key: String) -> Int? {
         guard let prefix = key.split(separator: "/").first else { return nil }
-        let numbers = prefix.split { !$0.isNumber }.compactMap { Int($0) }
-        guard let port = numbers.first, (1...65_535).contains(port) else { return nil }
-        return String(port)
+        return numericPort(String(prefix))
     }
 
     private static func uniqueStrings(_ values: [String]) -> [String] {
@@ -2001,88 +2304,57 @@ final class DSMClient {
         return container.ports.joined(separator: " · ")
     }
 
-    private static func endpoint(for container: DockerContainer, baseURL: URL) -> URL? {
-        guard let host = baseURL.host else { return nil }
-        let preferredPort = preferredWebPort(for: container)
-        guard let port = preferredPort else { return nil }
-        var components = URLComponents()
-        components.scheme = webScheme(for: port)
-        components.host = host
-        components.port = port
-        return components.url
+    private static func endpointCandidates(for container: DockerContainer, baseURL: URL) -> [URL] {
+        guard let host = baseURL.host else { return [] }
+        let preferredContainerPorts = preferredWebPorts(for: container.name)
+        let sortedMappings = container.ports.compactMap(portMapping(from:)).filter { $0.transport == "tcp" }
+            .sorted { lhs, rhs in
+                let lhsRank = preferredContainerPorts.firstIndex(of: lhs.containerPort) ?? Int.max
+                let rhsRank = preferredContainerPorts.firstIndex(of: rhs.containerPort) ?? Int.max
+                if lhsRank != rhsRank { return lhsRank < rhsRank }
+                return lhs.hostPort < rhs.hostPort
+            }
+        let mappings = Array(sortedMappings.prefix(3))
+
+        var seen = Set<String>()
+        return mappings.flatMap { mapping in
+            ["https", "http"].compactMap { scheme -> URL? in
+                var components = URLComponents()
+                components.scheme = scheme
+                components.host = host
+                components.port = mapping.hostPort
+                guard let url = components.url, seen.insert(url.absoluteString).inserted else { return nil }
+                return url
+            }
+        }
     }
 
-    private static func preferredWebPort(for container: DockerContainer) -> Int? {
-        let normalizedName = container.name.lowercased()
-        let preferredPorts: [Int]
-        if normalizedName.contains("jellyfin") {
-            preferredPorts = [8096, 8920]
-        } else if normalizedName.contains("emby") {
-            preferredPorts = [8096, 8920]
-        } else if normalizedName.contains("plex") {
-            preferredPorts = [32400]
-        } else if normalizedName.contains("navidrome") {
-            preferredPorts = [4533]
-        } else if normalizedName.contains("qbittorrent") {
-            preferredPorts = [8080]
-        } else if normalizedName.contains("code-server") || normalizedName.contains("codex-server") {
-            preferredPorts = [8443, 8080, 8000]
-        } else if normalizedName.contains("portainer") {
-            preferredPorts = [9443, 9000]
-        } else if normalizedName.contains("home") {
-            preferredPorts = [8123]
-        } else {
-            preferredPorts = [443, 8443, 9443, 80, 8080, 8000, 5000, 3000]
-        }
-
-        let ports = container.ports.compactMap(hostPort(from:))
-        for port in preferredPorts where ports.contains(port) {
-            return port
-        }
-        return ports.first
+    private static func preferredWebPorts(for name: String) -> [Int] {
+        let normalized = name.lowercased()
+        if normalized.contains("homepage") { return [3000, 3001] }
+        if normalized.contains("jellyfin") || normalized.contains("emby") { return [8096, 8920] }
+        if normalized.contains("plex") { return [32400] }
+        if normalized.contains("navidrome") { return [4533] }
+        if normalized.contains("qbittorrent") { return [8080] }
+        if normalized.contains("homeassistant") || normalized.contains("home-assistant") { return [8123] }
+        if normalized.contains("portainer") { return [9443, 9000] }
+        if normalized.contains("code-server") || normalized.contains("codex-server") { return [8443, 8080, 8000] }
+        return [443, 8443, 9443, 80, 8080, 8000, 5000, 3000]
     }
 
-    private static func hostPort(from text: String) -> Int? {
+    private static func portMapping(from text: String) -> (hostPort: Int, containerPort: Int, transport: String)? {
         let compact = text.replacingOccurrences(of: " ", with: "")
-        guard !compact.lowercased().hasPrefix("internal") else { return nil }
-        let arrowParts = compact.components(separatedBy: "->")
-        let hostLikeParts = arrowParts.filter { $0.contains(":") || $0.contains(".") || $0.contains("[") }
-        for part in hostLikeParts + arrowParts {
-            if let mapped = mappedHostPort(from: part) { return mapped }
+        let parts = compact.components(separatedBy: "->")
+        guard
+            parts.count == 2,
+            let hostPort = numericPort(parts[0])
+        else {
+            return nil
         }
-        return compact
-            .split { !$0.isNumber }
-            .compactMap { Int($0) }
-            .first { $0 > 0 && $0 <= 65_535 }
-    }
-
-    private static func mappedHostPort(from text: String) -> Int? {
-        let fragments = text.split(separator: ":").map(String.init).filter { !$0.isEmpty }
-        guard fragments.count > 1 else { return nil }
-        if fragments.count == 2,
-           let first = Int(fragments[0]),
-           let second = Int(fragments[1]),
-           (1...65_535).contains(first),
-           (1...65_535).contains(second) {
-            return first
-        }
-        if let lastText = fragments.last,
-           let last = Int(lastText),
-           (1...65_535).contains(last) {
-            return last
-        }
-        return text
-            .split { !$0.isNumber }
-            .compactMap { Int($0) }
-            .filter { $0 > 0 && $0 <= 65_535 }
-            .last
-    }
-
-    private static func webScheme(for port: Int) -> String {
-        if [443, 5001, 8443, 8920, 9443].contains(port) {
-            return "https"
-        }
-        return "http"
+        let target = parts[1].split(separator: "/", maxSplits: 1).map(String.init)
+        guard let containerPort = numericPort(target.first) else { return nil }
+        let transport = target.count > 1 ? transportName(target[1]) : "tcp"
+        return (hostPort, containerPort, transport)
     }
 }
 
@@ -2096,6 +2368,21 @@ final class LANDiscoveryService: NSObject, ObservableObject {
     private var resolvingServices: [ObjectIdentifier: NetService] = [:]
     private var probedURLs = Set<String>()
     private var searchGeneration = UUID()
+    private var subnetScanTask: Task<Void, Never>?
+    private var hadBrowserFailure = false
+    private let discoverySessionDelegate = DSMCertificateTrustDelegate()
+    private lazy var discoverySession: URLSession = {
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.timeoutIntervalForRequest = 1.2
+        configuration.timeoutIntervalForResource = 2
+        configuration.waitsForConnectivity = false
+        configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
+        return URLSession(
+            configuration: configuration,
+            delegate: discoverySessionDelegate,
+            delegateQueue: nil
+        )
+    }()
 
     func start() {
         stop()
@@ -2103,6 +2390,7 @@ final class LANDiscoveryService: NSObject, ObservableObject {
         errorKey = nil
         probedURLs.removeAll()
         isSearching = true
+        hadBrowserFailure = false
         searchGeneration = UUID()
         let generation = searchGeneration
         DiagnosticLogStore.shared.record(
@@ -2118,7 +2406,11 @@ final class LANDiscoveryService: NSObject, ObservableObject {
             browser.searchForServices(ofType: type, inDomain: "local.")
         }
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 10) { [weak self] in
+        subnetScanTask = Task { [weak self] in
+            await self?.scanLocalSubnets(generation: generation)
+        }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 12) { [weak self] in
             guard let self, self.searchGeneration == generation else { return }
             self.finish()
         }
@@ -2127,15 +2419,24 @@ final class LANDiscoveryService: NSObject, ObservableObject {
     func stop() {
         browsers.forEach { $0.stop() }
         resolvingServices.values.forEach { $0.stop() }
+        subnetScanTask?.cancel()
+        subnetScanTask = nil
         browsers.removeAll()
         resolvingServices.removeAll()
         isSearching = false
+        searchGeneration = UUID()
     }
 
     private func finish() {
+        guard isSearching else { return }
         browsers.forEach { $0.stop() }
         browsers.removeAll()
+        subnetScanTask?.cancel()
+        subnetScanTask = nil
         isSearching = false
+        if devices.isEmpty, hadBrowserFailure {
+            errorKey = "connect.scan.permission"
+        }
         DiagnosticLogStore.shared.record(
             .info,
             categoryKey: "diagnostics.category.connection",
@@ -2168,32 +2469,161 @@ final class LANDiscoveryService: NSObject, ObservableObject {
         }
 
         let displayName = service.name
+        let generation = searchGeneration
         Task {
-            let isDSM = await DSMClient(
-                baseURL: url,
-                allowsSelfSignedCertificates: true
-            ).isDSMEndpoint()
+            let isDSM = await probeDSM(at: url)
             guard isDSM else { return }
             await MainActor.run {
-                guard !self.devices.contains(where: { $0.host == url.absoluteString }) else { return }
-                self.devices.append(
-                    DiscoveredNASDevice(
-                        id: UUID(),
-                        name: displayName,
-                        host: url.absoluteString
-                    )
-                )
-                self.devices.sort {
-                    $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending
-                }
-                DiagnosticLogStore.shared.record(
-                    .info,
-                    categoryKey: "diagnostics.category.connection",
-                    messageKey: "diagnostics.discovery.found",
-                    details: ["target": DiagnosticLogStore.redactedURL(url)]
-                )
+                guard self.searchGeneration == generation else { return }
+                self.addDevice(name: displayName, url: url)
             }
         }
+    }
+
+    private func scanLocalSubnets(generation: UUID) async {
+        let candidates = Self.localIPv4Prefixes().flatMap { prefix in
+            (1...254).compactMap { host -> URL? in
+                var components = URLComponents()
+                components.scheme = "https"
+                components.host = "\(prefix).\(host)"
+                components.port = 5001
+                return components.url
+            }
+        }
+
+        guard !candidates.isEmpty else { return }
+        DiagnosticLogStore.shared.record(
+            .info,
+            categoryKey: "diagnostics.category.connection",
+            messageKey: "diagnostics.discovery.subnet_started",
+            details: ["candidates": "\(candidates.count)"]
+        )
+
+        let batchSize = 32
+        for startIndex in stride(from: 0, to: candidates.count, by: batchSize) {
+            guard !Task.isCancelled else { return }
+            let endIndex = min(startIndex + batchSize, candidates.count)
+            let batch = Array(candidates[startIndex..<endIndex])
+            let found = await withTaskGroup(of: URL?.self, returning: [URL].self) { group in
+                for url in batch {
+                    group.addTask {
+                        guard !Task.isCancelled else { return nil }
+                        return await self.probeDSM(at: url) ? url : nil
+                    }
+                }
+                var results: [URL] = []
+                for await result in group {
+                    if let result {
+                        results.append(result)
+                    }
+                }
+                return results
+            }
+
+            guard !Task.isCancelled else { return }
+            await MainActor.run {
+                guard self.searchGeneration == generation else { return }
+                for url in found {
+                    let name = url.host.map { "DSM \($0)" } ?? "DSM"
+                    self.addDevice(name: name, url: url)
+                }
+            }
+        }
+    }
+
+    private func probeDSM(at baseURL: URL) async -> Bool {
+        guard var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false) else {
+            return false
+        }
+        components.path = "/webapi/query.cgi"
+        components.queryItems = [
+            URLQueryItem(name: "api", value: "SYNO.API.Info"),
+            URLQueryItem(name: "version", value: "1"),
+            URLQueryItem(name: "method", value: "query"),
+            URLQueryItem(name: "query", value: "SYNO.API.Auth,SYNO.Core.System")
+        ]
+        guard let url = components.url else { return false }
+        var request = URLRequest(url: url)
+        request.timeoutInterval = 1.2
+        request.cachePolicy = .reloadIgnoringLocalCacheData
+
+        do {
+            let (data, response) = try await discoverySession.data(for: request)
+            guard
+                let response = response as? HTTPURLResponse,
+                (200..<300).contains(response.statusCode),
+                let envelope = try? JSONDecoder().decode(DSMAPIEnvelope.self, from: data),
+                envelope.success,
+                envelope.data?.objectValue?["SYNO.API.Auth"] != nil
+            else {
+                return false
+            }
+            return true
+        } catch {
+            return false
+        }
+    }
+
+    private func addDevice(name: String, url: URL) {
+        guard !devices.contains(where: { $0.host == url.absoluteString }) else { return }
+        devices.append(
+            DiscoveredNASDevice(
+                id: UUID(),
+                name: name,
+                host: url.absoluteString
+            )
+        )
+        devices.sort {
+            $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending
+        }
+        DiagnosticLogStore.shared.record(
+            .info,
+            categoryKey: "diagnostics.category.connection",
+            messageKey: "diagnostics.discovery.found",
+            details: ["target": DiagnosticLogStore.redactedURL(url)]
+        )
+    }
+
+    private static func localIPv4Prefixes() -> [String] {
+        var addresses: UnsafeMutablePointer<ifaddrs>?
+        guard getifaddrs(&addresses) == 0, let firstAddress = addresses else { return [] }
+        defer { freeifaddrs(addresses) }
+
+        var prefixes = Set<String>()
+        var pointer: UnsafeMutablePointer<ifaddrs>? = firstAddress
+        while let current = pointer {
+            defer { pointer = current.pointee.ifa_next }
+            guard
+                let socketAddress = current.pointee.ifa_addr,
+                socketAddress.pointee.sa_family == UInt8(AF_INET),
+                current.pointee.ifa_flags & UInt32(IFF_UP) != 0,
+                current.pointee.ifa_flags & UInt32(IFF_LOOPBACK) == 0
+            else {
+                continue
+            }
+            let interfaceName = String(cString: current.pointee.ifa_name)
+            guard interfaceName.hasPrefix("en") else { continue }
+
+            var address = UnsafeRawPointer(socketAddress)
+                .assumingMemoryBound(to: sockaddr_in.self)
+                .pointee
+                .sin_addr
+            var buffer = [CChar](repeating: 0, count: Int(INET_ADDRSTRLEN))
+            guard inet_ntop(AF_INET, &address, &buffer, socklen_t(INET_ADDRSTRLEN)) != nil else {
+                continue
+            }
+
+            let octets = String(cString: buffer).split(separator: ".").compactMap { Int($0) }
+            guard octets.count == 4, isPrivateIPv4(octets) else { continue }
+            prefixes.insert("\(octets[0]).\(octets[1]).\(octets[2])")
+        }
+        return prefixes.sorted()
+    }
+
+    private static func isPrivateIPv4(_ octets: [Int]) -> Bool {
+        octets[0] == 10
+            || (octets[0] == 172 && (16...31).contains(octets[1]))
+            || (octets[0] == 192 && octets[1] == 168)
     }
 }
 
@@ -2210,14 +2640,22 @@ extension LANDiscoveryService: NetServiceBrowserDelegate {
     }
 
     func netServiceBrowser(_ browser: NetServiceBrowser, didNotSearch errorDict: [String: NSNumber]) {
-        errorKey = "connect.scan.permission"
+        guard browsers.contains(where: { $0 === browser }) else { return }
+        browser.stop()
+        browsers.removeAll { $0 === browser }
+        hadBrowserFailure = true
+        let values = errorDict.values.map(\.intValue)
+        let code = values.first(where: { $0 < 0 }) ?? values.first ?? 0
+        let domain = values.first(where: { $0 >= 0 }) ?? 0
         DiagnosticLogStore.shared.record(
             .warning,
             categoryKey: "diagnostics.category.connection",
             messageKey: "diagnostics.discovery.failed",
-            details: ["code": errorDict.values.first?.stringValue ?? "-"]
+            details: [
+                "code": "\(code)",
+                "domain": "\(domain)"
+            ]
         )
-        finish()
     }
 }
 

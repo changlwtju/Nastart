@@ -79,6 +79,7 @@
 "service.detail.source" = "数据来源";
 "service.source.dsm" = "DSM API";
 "service.source.container" = "DSM Docker API";
+"service.source.reverse_proxy" = "DSM 反向代理";
 "service.source.package" = "DSM 套件 API";
 "service.source.manual" = "手动配置";
 "service.detail.status" = "状态";
@@ -489,9 +490,12 @@
 "diagnostics.login.attempt_failed" = "登录兼容尝试失败";
 "diagnostics.login.failed" = "DSM 登录失败";
 "diagnostics.discovery.started" = "开始局域网发现";
+"diagnostics.discovery.subnet_started" = "开始私有网段回退扫描";
 "diagnostics.discovery.completed" = "局域网发现完成";
 "diagnostics.discovery.found" = "发现可用 DSM";
 "diagnostics.discovery.failed" = "局域网发现不可用";
+"diagnostics.reverse_proxy.loaded" = "反向代理规则读取成功";
+"diagnostics.reverse_proxy.empty" = "未读取到可用的反向代理规则";
 "diagnostics.api_info.loaded" = "API 信息读取成功";
 "diagnostics.api_info.missing" = "API 信息读取失败";
 "diagnostics.api_info.coverage" = "API 覆盖检查完成";

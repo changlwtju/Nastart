@@ -123,6 +123,7 @@ extension LaunchpadService {
         switch source {
         case .dsm: return "service.source.dsm"
         case .container: return "service.source.container"
+        case .reverseProxy: return "service.source.reverse_proxy"
         case .package: return "service.source.package"
         case .manual: return "service.source.manual"
         }

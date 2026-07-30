@@ -79,6 +79,7 @@
 "service.detail.source" = "Source";
 "service.source.dsm" = "DSM API";
 "service.source.container" = "DSM Docker API";
+"service.source.reverse_proxy" = "DSM Reverse Proxy";
 "service.source.package" = "DSM Package API";
 "service.source.manual" = "Manual";
 "service.detail.status" = "Status";
@@ -489,9 +490,12 @@
 "diagnostics.login.attempt_failed" = "Login compatibility attempt failed";
 "diagnostics.login.failed" = "DSM login failed";
 "diagnostics.discovery.started" = "LAN discovery started";
+"diagnostics.discovery.subnet_started" = "Private subnet fallback scan started";
 "diagnostics.discovery.completed" = "LAN discovery completed";
 "diagnostics.discovery.found" = "Reachable DSM discovered";
 "diagnostics.discovery.failed" = "LAN discovery unavailable";
+"diagnostics.reverse_proxy.loaded" = "Reverse proxy rules loaded";
+"diagnostics.reverse_proxy.empty" = "No readable reverse proxy rules";
 "diagnostics.api_info.loaded" = "API info loaded";
 "diagnostics.api_info.missing" = "API info failed";
 "diagnostics.api_info.coverage" = "API coverage checked";
