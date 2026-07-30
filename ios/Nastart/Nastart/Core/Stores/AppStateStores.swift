@@ -42,16 +42,14 @@ struct DisconnectedNASDataSource: NASDataSource {
 
 struct DSMNASDataSource: NASDataSource {
     let session: DSMSession
-    let useAgent: Bool
     let client: DSMClient
 
     var kind: NASDataSourceKind {
-        useAgent ? .agent : .dsm
+        .dsm
     }
 
-    init(session: DSMSession, useAgent: Bool) {
+    init(session: DSMSession, useAgent _: Bool) {
         self.session = session
-        self.useAgent = useAgent
         self.client = DSMClient(
             baseURL: session.baseURL,
             allowsSelfSignedCertificates: session.allowsSelfSignedCertificates
@@ -59,7 +57,7 @@ struct DSMNASDataSource: NASDataSource {
     }
 
     func loadSnapshot() async -> AppDataProviding {
-        await client.loadSnapshot(session: session, useAgent: useAgent)
+        await client.loadSnapshot(session: session, useAgent: false)
     }
 
     func loadFolder(path: String) async throws -> [FileItem] {
@@ -118,13 +116,21 @@ struct DisconnectedAppDataProvider: AppDataProviding {
         id: UUID(),
         name: "Nastart",
         subtitle: NSLocalizedString("mine.profile.not_connected", comment: ""),
+        model: nil,
+        dsmVersion: nil,
         mode: .manualOnly,
-        cpu: 0,
-        memory: 0,
-        storageUsed: 0,
+        cpu: nil,
+        memory: nil,
+        memoryUsedText: nil,
+        memoryTotalText: nil,
+        storageUsed: nil,
+        storageUsedText: nil,
+        storageTotalText: nil,
         storageFreeText: "-",
         uptimeText: "-",
-        certificateDaysRemaining: 999
+        temperatureText: nil,
+        certificate: nil,
+        sshStatus: .unavailable
     )
     let services: [LaunchpadService] = []
     let containers: [DockerContainer] = []
@@ -338,7 +344,7 @@ enum DSMClientError: LocalizedError {
         case .invalidResponse:
             return NSLocalizedString("connect.error.invalid_response", comment: "")
         case .apiFailed(let code):
-            if code == 403 || code == 404 {
+            if code == 403 || code == 404 || code == 406 {
                 return NSLocalizedString("connect.error.otp_required", comment: "")
             }
             if let code {
@@ -451,6 +457,32 @@ private enum DSMJSONValue: Decodable {
         firstValue(for: keys)?.arrayValue
     }
 
+    func firstDirectValue(for keys: [String]) -> DSMJSONValue? {
+        guard let object = objectValue else { return nil }
+        for key in keys {
+            if let value = object[key] {
+                return value
+            }
+        }
+        return nil
+    }
+
+    func firstDirectString(for keys: [String]) -> String? {
+        firstDirectValue(for: keys)?.stringValue
+    }
+
+    func firstDirectDouble(for keys: [String]) -> Double? {
+        firstDirectValue(for: keys)?.doubleValue
+    }
+
+    func firstDirectBool(for keys: [String]) -> Bool? {
+        firstDirectValue(for: keys)?.boolValue
+    }
+
+    func firstDirectArray(for keys: [String]) -> [DSMJSONValue]? {
+        firstDirectValue(for: keys)?.arrayValue
+    }
+
     private func firstValue(for key: String) -> DSMJSONValue? {
         switch self {
         case .object(let object):
@@ -534,6 +566,7 @@ private final class DSMCertificateTrustDelegate: NSObject, URLSessionDelegate {
 }
 
 final class DSMClient {
+    private static let requestTimeout: TimeInterval = 18
     private let baseURL: URL
     private let urlSession: URLSession
     private let allowsSelfSignedCertificates: Bool
@@ -553,11 +586,24 @@ final class DSMClient {
         } else if allowsSelfSignedCertificates {
             let delegate = DSMCertificateTrustDelegate()
             self.sessionDelegate = delegate
-            self.urlSession = URLSession(configuration: .ephemeral, delegate: delegate, delegateQueue: nil)
+            self.urlSession = URLSession(
+                configuration: Self.sessionConfiguration(),
+                delegate: delegate,
+                delegateQueue: nil
+            )
         } else {
-            self.urlSession = .shared
+            self.urlSession = URLSession(configuration: Self.sessionConfiguration())
             self.sessionDelegate = nil
         }
+    }
+
+    private static func sessionConfiguration() -> URLSessionConfiguration {
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.timeoutIntervalForRequest = requestTimeout
+        configuration.timeoutIntervalForResource = 65
+        configuration.waitsForConnectivity = false
+        configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
+        return configuration
     }
 
     private func record(
@@ -572,7 +618,8 @@ final class DSMClient {
     static func normalizedBaseURL(from input: String) throws -> URL {
         var value = input.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !value.isEmpty else { throw DSMClientError.invalidAddress }
-        if !value.contains("://") {
+        let hadExplicitScheme = value.contains("://")
+        if !hadExplicitScheme {
             value = "https://\(value)"
         }
         guard var components = URLComponents(string: value), components.host != nil else {
@@ -580,6 +627,9 @@ final class DSMClient {
         }
         if components.scheme?.lowercased() == "http" {
             throw DSMClientError.insecureHTTP
+        }
+        if components.port == nil, !hadExplicitScheme {
+            components.port = 5001
         }
         if components.path == "/" {
             components.path = ""
@@ -623,6 +673,7 @@ final class DSMClient {
         )
 
         let cleanedCode = oneTimeCode.trimmingCharacters(in: .whitespacesAndNewlines)
+        var lastError: Error?
         for request in authLoginRequests(
             account: account,
             password: password,
@@ -631,7 +682,7 @@ final class DSMClient {
             apiInfo: apiInfo
         ) {
             do {
-                let data = try await call(path: request.0, queryItems: request.1)
+                let data = try await call(path: request.0, queryItems: request.1, timeout: 60)
                 if let sid = data.firstString(for: ["sid"]) {
                     let trustedDeviceID = data.firstString(
                         for: ["device_id", "deviceId", "did", "device_token"]
@@ -651,13 +702,26 @@ final class DSMClient {
                     )
                 }
             } catch {
+                lastError = error
                 record(
                     .warning,
                     categoryKey: "diagnostics.category.connection",
                     messageKey: "diagnostics.login.attempt_failed",
                     details: requestSummary(path: request.0, queryItems: request.1).merging(["error": diagnosticMessage(for: error)]) { current, _ in current }
                 )
-                continue
+                if shouldRetryAuthVersion(after: error) {
+                    continue
+                }
+                record(
+                    .error,
+                    categoryKey: "diagnostics.category.connection",
+                    messageKey: "diagnostics.login.failed",
+                    details: [
+                        "target": DiagnosticLogStore.redactedURL(baseURL),
+                        "error": diagnosticMessage(for: error)
+                    ]
+                )
+                throw error
             }
         }
         record(
@@ -666,7 +730,7 @@ final class DSMClient {
             messageKey: "diagnostics.login.failed",
             details: ["target": DiagnosticLogStore.redactedURL(baseURL)]
         )
-        throw DSMClientError.missingSession
+        throw lastError ?? DSMClientError.missingSession
     }
 
     func logout(session: DSMSession) async {
@@ -682,7 +746,20 @@ final class DSMClient {
         )
     }
 
-    func loadSnapshot(session: DSMSession, useAgent: Bool) async -> DSMDataSnapshot {
+    func isDSMEndpoint() async -> Bool {
+        let data = await optionalCall(
+            path: "/webapi/query.cgi",
+            queryItems: [
+                URLQueryItem(name: "api", value: "SYNO.API.Info"),
+                URLQueryItem(name: "version", value: "1"),
+                URLQueryItem(name: "method", value: "query"),
+                URLQueryItem(name: "query", value: "SYNO.API.Auth,SYNO.Core.System")
+            ]
+        )
+        return data?.objectValue?["SYNO.API.Auth"] != nil
+    }
+
+    func loadSnapshot(session: DSMSession, useAgent _: Bool) async -> DSMDataSnapshot {
         record(
             .info,
             categoryKey: "diagnostics.category.dsm_api",
@@ -701,6 +778,8 @@ final class DSMClient {
                     value: [
                         "SYNO.Core.System",
                         "SYNO.Core.System.Utilization",
+                        "SYNO.Core.Certificate.CRT",
+                        "SYNO.Core.Terminal",
                         "SYNO.FileStation.List",
                         "SYNO.Core.Package",
                         "SYNO.ContainerManager.Container",
@@ -727,6 +806,22 @@ final class DSMClient {
             fallbackMaxVersion: 1,
             method: "get"
         ))
+        async let certificateData = firstSuccessfulCall(apiRequests(
+            session,
+            apiInfo: apiInfo,
+            apiName: "SYNO.Core.Certificate.CRT",
+            fallbackPath: "/webapi/entry.cgi",
+            fallbackMaxVersion: 1,
+            method: "list"
+        ))
+        async let terminalData = firstSuccessfulCall(apiRequests(
+            session,
+            apiInfo: apiInfo,
+            apiName: "SYNO.Core.Terminal",
+            fallbackPath: "/webapi/entry.cgi",
+            fallbackMaxVersion: 1,
+            method: "get"
+        ))
         async let sharedFolderData = firstSuccessfulCall(apiRequests(
             session,
             apiInfo: apiInfo,
@@ -747,6 +842,8 @@ final class DSMClient {
 
         let system = await systemData
         let utilization = await utilizationData
+        let certificate = await certificateData
+        let terminal = await terminalData
         let files = DSMClient.mapSharedFolders(await sharedFolderData)
         let containers = DSMClient.mapContainers(await dockerData)
         let services = DSMClient.mapServices(containers: containers, packageData: await packageData, session: session)
@@ -758,12 +855,19 @@ final class DSMClient {
             details: [
                 "services": "\(services.count)",
                 "containers": "\(containers.count)",
+                "packages": "\(max(services.count - containers.count - 1, 0))",
                 "folders": "\(files.count)"
             ]
         )
 
         return DSMDataSnapshot(
-            device: DSMClient.mapDevice(system: system, utilization: utilization, session: session, useAgent: useAgent),
+            device: DSMClient.mapDevice(
+                system: system,
+                utilization: utilization,
+                certificateData: certificate,
+                terminalData: terminal,
+                session: session
+            ),
             services: services,
             containers: containers,
             files: files,
@@ -810,7 +914,11 @@ final class DSMClient {
         return items
     }
 
-    private func call(path: String, queryItems: [URLQueryItem]) async throws -> DSMJSONValue {
+    private func call(
+        path: String,
+        queryItems: [URLQueryItem],
+        timeout: TimeInterval = requestTimeout
+    ) async throws -> DSMJSONValue {
         guard var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false) else {
             throw DSMClientError.invalidAddress
         }
@@ -818,7 +926,10 @@ final class DSMClient {
         components.queryItems = queryItems
         guard let url = components.url else { throw DSMClientError.invalidAddress }
 
-        let (data, response) = try await urlSession.data(from: url)
+        var request = URLRequest(url: url)
+        request.timeoutInterval = timeout
+        request.cachePolicy = .reloadIgnoringLocalCacheData
+        let (data, response) = try await urlSession.data(for: request)
         guard let httpResponse = response as? HTTPURLResponse, (200..<300).contains(httpResponse.statusCode) else {
             throw DSMClientError.invalidResponse
         }
@@ -869,8 +980,8 @@ final class DSMClient {
     ) -> [(String, [URLQueryItem])] {
         let entry = apiInfoEntry(apiInfo, apiName: "SYNO.API.Auth")
         let path = normalizedAPIPath(entry?.path ?? "/webapi/auth.cgi")
-        let maxVersion = max(entry?.maxVersion ?? 7, 1)
-        return (1...maxVersion).reversed().map { version in
+        let versions = entry.map { [max($0.maxVersion, 1)] } ?? [7, 6, 3]
+        return versions.map { version in
             var items = [
                 URLQueryItem(name: "api", value: "SYNO.API.Auth"),
                 URLQueryItem(name: "version", value: "\(version)"),
@@ -894,6 +1005,16 @@ final class DSMClient {
         }
     }
 
+    private func shouldRetryAuthVersion(after error: Error) -> Bool {
+        guard
+            case DSMClientError.apiFailed(let optionalCode) = error,
+            let code = optionalCode
+        else {
+            return false
+        }
+        return [102, 103, 104].contains(code)
+    }
+
     private func containerRequests(_ session: DSMSession, apiInfo: DSMJSONValue?) -> [(String, [URLQueryItem])] {
         let commonExtras = [
             URLQueryItem(name: "limit", value: "1000"),
@@ -901,43 +1022,51 @@ final class DSMClient {
         ]
         let allExtras = commonExtras + [URLQueryItem(name: "type", value: "all")]
 
-        var requests: [(String, [URLQueryItem])] = []
-        requests += apiInfoRequests(
-            session,
-            apiInfo: apiInfo,
-            apiName: "SYNO.ContainerManager.Container",
-            fallbackPath: "/webapi/entry.cgi",
-            fallbackMaxVersion: 3,
-            extras: [allExtras, commonExtras]
-        )
-        requests += apiInfoRequests(
-            session,
-            apiInfo: apiInfo,
-            apiName: "SYNO.Docker.Container",
-            fallbackPath: "/webapi/entry.cgi",
-            fallbackMaxVersion: 2,
-            extras: [allExtras, commonExtras]
-        )
-        requests += [
-            ("/webapi/entry.cgi", sessionItems(session, api: "SYNO.ContainerManager.Container", version: "1", method: "list", extra: allExtras)),
-            ("/webapi/entry.cgi", sessionItems(session, api: "SYNO.ContainerManager.Container", version: "2", method: "list", extra: allExtras)),
-            ("/webapi/entry.cgi", sessionItems(session, api: "SYNO.ContainerManager.Container", version: "3", method: "list", extra: allExtras)),
-            ("/webapi/entry.cgi", sessionItems(session, api: "SYNO.ContainerManager.Container", version: "1", method: "list", extra: commonExtras)),
-            ("/webapi/entry.cgi", sessionItems(session, api: "SYNO.ContainerManager.Container", version: "2", method: "list", extra: commonExtras)),
-            ("/webapi/entry.cgi", sessionItems(session, api: "SYNO.Docker.Container", version: "1", method: "list", extra: allExtras)),
-            ("/webapi/entry.cgi", sessionItems(session, api: "SYNO.Docker.Container", version: "2", method: "list", extra: allExtras)),
-            ("/webapi/entry.cgi", sessionItems(session, api: "SYNO.Docker.Container", version: "1", method: "list", extra: commonExtras)),
-            ("/webapi/entry.cgi", sessionItems(session, api: "SYNO.Docker.Container", version: "2", method: "list", extra: commonExtras)),
-            ("/webapi/Docker/Container.cgi", sessionItems(session, api: "SYNO.Docker.Container", version: "1", method: "list", extra: commonExtras)),
-            ("/webapi/Docker/Container.cgi", sessionItems(session, api: "SYNO.Docker.Container", version: "2", method: "list", extra: commonExtras))
-        ]
-        var seen = Set<String>()
-        return requests.filter { path, items in
-            let signature = path + "?" + items.map { "\($0.name)=\($0.value ?? "")" }.joined(separator: "&")
-            if seen.contains(signature) { return false }
-            seen.insert(signature)
-            return true
+        let apiNames = ["SYNO.ContainerManager.Container", "SYNO.Docker.Container"]
+        let availableEntries = apiNames.compactMap { apiName -> (String, String, Int)? in
+            guard let entry = apiInfoEntry(apiInfo, apiName: apiName) else { return nil }
+            return (apiName, normalizedAPIPath(entry.path), max(entry.maxVersion, 1))
         }
+
+        if !availableEntries.isEmpty {
+            return availableEntries.flatMap { apiName, path, version in
+                [allExtras, commonExtras].map { extras in
+                    (
+                        path,
+                        sessionItems(
+                            session,
+                            api: apiName,
+                            version: "\(version)",
+                            method: "list",
+                            extra: extras
+                        )
+                    )
+                }
+            }
+        }
+
+        return [
+            (
+                "/webapi/entry.cgi",
+                sessionItems(
+                    session,
+                    api: "SYNO.Docker.Container",
+                    version: "1",
+                    method: "list",
+                    extra: allExtras
+                )
+            ),
+            (
+                "/webapi/entry.cgi",
+                sessionItems(
+                    session,
+                    api: "SYNO.ContainerManager.Container",
+                    version: "1",
+                    method: "list",
+                    extra: allExtras
+                )
+            )
+        ]
     }
 
     private func apiInfoRequests(
@@ -1014,7 +1143,12 @@ final class DSMClient {
                 containers.isEmpty ? .warning : .info,
                 categoryKey: "diagnostics.category.container",
                 messageKey: containers.isEmpty ? "diagnostics.container.empty_response" : "diagnostics.container.loaded",
-                details: requestSummary(path: request.0, queryItems: request.1).merging(["count": "\(containers.count)"]) { current, _ in current }
+                details: requestSummary(path: request.0, queryItems: request.1).merging([
+                    "count": "\(containers.count)",
+                    "running": "\(containers.filter { $0.status == .online }.count)",
+                    "stopped": "\(containers.filter { $0.status == .offline }.count)",
+                    "mappedPorts": "\(containers.reduce(0) { $0 + $1.ports.count })"
+                ]) { current, _ in current }
             )
             if !containers.isEmpty {
                 return value
@@ -1034,6 +1168,9 @@ final class DSMClient {
     }
 
     private func diagnosticMessage(for error: Error) -> String {
+        if let urlError = error as? URLError {
+            return "urlError:\(urlError.code.rawValue)"
+        }
         if let dsmError = error as? DSMClientError {
             switch dsmError {
             case .invalidAddress: return "invalidAddress"
@@ -1050,6 +1187,8 @@ final class DSMClient {
         let apiNames = [
             "SYNO.Core.System",
             "SYNO.Core.System.Utilization",
+            "SYNO.Core.Certificate.CRT",
+            "SYNO.Core.Terminal",
             "SYNO.FileStation.List",
             "SYNO.Core.Package",
             "SYNO.ContainerManager.Container",
@@ -1077,33 +1216,61 @@ final class DSMClient {
         )
     }
 
-    private static func mapDevice(system: DSMJSONValue?, utilization: DSMJSONValue?, session: DSMSession, useAgent: Bool) -> NASDevice {
+    private static func mapDevice(
+        system: DSMJSONValue?,
+        utilization: DSMJSONValue?,
+        certificateData: DSMJSONValue?,
+        terminalData: DSMJSONValue?,
+        session: DSMSession
+    ) -> NASDevice {
         let hostName = session.baseURL.host ?? "DSM"
-        let name = system?.firstString(for: ["server_name", "hostname", "model", "model_name"]) ?? hostName
-        let version = system?.firstString(for: ["firmware_ver", "version", "firmware"]) ?? "DSM"
-        let mode: ConnectionMode = useAgent ? .dsmWithAgent : .dsmOnly
+        let model = nonEmptyString(system?.firstString(for: ["model", "model_name", "modelName"]))
+        let name = nonEmptyString(system?.firstString(for: ["server_name", "hostname", "serverName"]))
+            ?? model
+            ?? hostName
+        let version = normalizedDSMVersion(system?.firstString(for: ["firmware_ver", "dsm_version", "version", "firmware"]))
+        let mode: ConnectionMode = .dsmOnly
         let cpu = mapCPU(utilization)
-        let memory = DSMFormatters.percentage(utilization?.firstValue(for: ["memory"])?.firstDouble(for: ["real_usage", "usage", "memory_usage"]))
+        let memory = mapMemory(utilization)
         let storage = mapStorage(utilization)
+        let certificate = mapCertificate(certificateData, usesCustomTrust: session.allowsSelfSignedCertificates)
+        let sshStatus = mapSSHStatus(terminalData)
+        let subtitle = model.flatMap { $0.caseInsensitiveCompare(name) == .orderedSame ? nil : $0 }
+            ?? "DSM"
 
         return NASDevice(
             id: UUID(),
             name: name,
-            subtitle: "\(version) · \(mode == .dsmWithAgent ? "Agent" : "DSM")",
+            subtitle: subtitle,
+            model: model,
+            dsmVersion: version,
             mode: mode,
             cpu: cpu,
-            memory: memory,
-            storageUsed: storage.usedProgress,
+            memory: memory.progress,
+            memoryUsedText: memory.usedText,
+            memoryTotalText: memory.totalText,
+            storageUsed: storage.progress,
+            storageUsedText: storage.usedText,
+            storageTotalText: storage.totalText,
             storageFreeText: storage.freeText,
-            uptimeText: system?.firstString(for: ["uptime", "up_time"]) ?? "-",
-            certificateDaysRemaining: 999
+            uptimeText: mapUptime(system?.firstValue(for: ["uptime", "up_time"])),
+            temperatureText: mapTemperature(system: system, utilization: utilization),
+            certificate: certificate,
+            sshStatus: sshStatus
         )
     }
 
-    private static func mapCPU(_ utilization: DSMJSONValue?) -> Double {
-        guard let cpu = utilization?.firstValue(for: ["cpu"]) else { return 0 }
+    private static func mapCPU(_ utilization: DSMJSONValue?) -> Double? {
+        guard let cpu = utilization?.firstValue(for: ["cpu"]) else { return nil }
         if let load = cpu.firstDouble(for: ["total_load", "load", "usage"]) {
             return DSMFormatters.percentage(load)
+        }
+        guard
+            cpu.firstDouble(for: ["user_load"]) != nil
+                || cpu.firstDouble(for: ["system_load"]) != nil
+                || cpu.firstDouble(for: ["other_load"]) != nil
+        else {
+            return nil
         }
         let user = cpu.firstDouble(for: ["user_load"]) ?? 0
         let system = cpu.firstDouble(for: ["system_load"]) ?? 0
@@ -1111,17 +1278,174 @@ final class DSMClient {
         return DSMFormatters.percentage(user + system + other)
     }
 
-    private static func mapStorage(_ utilization: DSMJSONValue?) -> (usedProgress: Double, freeText: String) {
-        guard let disk = utilization?.firstValue(for: ["disk", "volume", "storage"]) else {
-            return (0, "-")
+    private static func mapMemory(
+        _ utilization: DSMJSONValue?
+    ) -> (progress: Double?, usedText: String?, totalText: String?) {
+        guard let memory = utilization?.firstValue(for: ["memory"]) else {
+            return (nil, nil, nil)
         }
-        let total = disk.firstDouble(for: ["total", "total_size", "size_total"])
-        let used = disk.firstDouble(for: ["used", "used_size", "size_used"])
-        if let total, let used, total > 0 {
-            let free = max(total - used, 0)
-            return (min(max(used / total, 0), 1), DSMFormatters.bytes(free) ?? "-")
+        let reportedProgress = memory.firstDouble(for: ["real_usage", "usage", "memory_usage"]).map {
+            DSMFormatters.percentage($0)
         }
-        return (0, "-")
+        let totalRaw = memory.firstDouble(for: ["memory_size", "total", "total_memory", "mem_total"])
+        let availableRaw = memory.firstDouble(for: ["avail_real", "available", "available_memory", "mem_available"])
+        let usedRaw = memory.firstDouble(for: ["used", "used_memory", "mem_used"])
+            ?? totalRaw.flatMap { total in availableRaw.map { max(total - $0, 0) } }
+        let progress = reportedProgress
+            ?? totalRaw.flatMap { total in usedRaw.map { total > 0 ? min(max($0 / total, 0), 1) : 0 } }
+        let totalBytes = totalRaw.map(normalizedMemoryBytes)
+        let usedBytes = usedRaw.map(normalizedMemoryBytes)
+        return (progress, DSMFormatters.bytes(usedBytes), DSMFormatters.bytes(totalBytes))
+    }
+
+    private static func mapStorage(
+        _ utilization: DSMJSONValue?
+    ) -> (progress: Double?, usedText: String?, totalText: String?, freeText: String) {
+        guard
+            let utilization,
+            let storageRoot = utilization.firstValue(for: ["space", "volume", "storage"])
+        else {
+            return (nil, nil, nil, "-")
+        }
+        let storageItems = storageRoot.firstDirectArray(for: ["total", "volumes", "items"])
+            ?? allObjects(in: storageRoot)
+        let candidates = storageItems.compactMap { item -> (Double, Double)? in
+            guard
+                let total = item.firstDirectDouble(for: ["total", "total_size", "size_total", "size"]),
+                let used = item.firstDirectDouble(for: ["used", "used_size", "size_used"]),
+                total > 0,
+                used >= 0,
+                used <= total
+            else {
+                return nil
+            }
+            return (total, used)
+        }
+        guard !candidates.isEmpty else {
+            return (nil, nil, nil, "-")
+        }
+        let totalRaw = candidates.reduce(0) { $0 + $1.0 }
+        let usedRaw = candidates.reduce(0) { $0 + $1.1 }
+        let totalBytes = normalizedStorageBytes(totalRaw)
+        let usedBytes = normalizedStorageBytes(usedRaw)
+        let freeBytes = max(totalBytes - usedBytes, 0)
+        return (
+            min(max(usedRaw / totalRaw, 0), 1),
+            DSMFormatters.bytes(usedBytes),
+            DSMFormatters.bytes(totalBytes),
+            DSMFormatters.bytes(freeBytes) ?? "-"
+        )
+    }
+
+    private static func normalizedMemoryBytes(_ value: Double) -> Double {
+        value < 268_435_456 ? value * 1024 : value
+    }
+
+    private static func normalizedStorageBytes(_ value: Double) -> Double {
+        value < 100_000_000_000 ? value * 1024 : value
+    }
+
+    private static func normalizedDSMVersion(_ value: String?) -> String? {
+        guard let value = nonEmptyString(value) else { return nil }
+        return value.lowercased().hasPrefix("dsm") ? value : "DSM \(value)"
+    }
+
+    private static func mapUptime(_ value: DSMJSONValue?) -> String {
+        guard let value else { return "-" }
+        if case .string(let text) = value, text.rangeOfCharacter(from: .letters) != nil {
+            return text
+        }
+        guard let seconds = value.doubleValue, seconds >= 0 else {
+            return value.stringValue ?? "-"
+        }
+        let totalMinutes = Int(seconds) / 60
+        let days = totalMinutes / 1_440
+        let hours = (totalMinutes % 1_440) / 60
+        let minutes = totalMinutes % 60
+        if days > 0 { return "\(days)d \(hours)h" }
+        if hours > 0 { return "\(hours)h \(minutes)m" }
+        return "\(minutes)m"
+    }
+
+    private static func mapTemperature(system: DSMJSONValue?, utilization: DSMJSONValue?) -> String? {
+        guard let value = system?.firstDouble(for: ["temperature", "temperature_value", "temp"])
+            ?? utilization?.firstDouble(for: ["temperature", "temperature_value", "temp"])
+        else {
+            return nil
+        }
+        return "\(Int(value.rounded())) C"
+    }
+
+    private static func mapCertificate(
+        _ data: DSMJSONValue?,
+        usesCustomTrust: Bool
+    ) -> NASCertificateInfo? {
+        guard let data else { return nil }
+        let candidates = allObjects(in: data).filter { item in
+            item.firstDirectValue(for: ["valid_till", "valid_until", "not_after", "expire", "expiration"]) != nil
+                || item.firstDirectValue(for: ["issuer", "issuer_name", "subject", "subject_name", "desc"]) != nil
+        }
+        guard let item = candidates.first(where: {
+            $0.firstDirectBool(for: ["is_default", "default", "isDefault"]) == true
+        }) ?? candidates.first else {
+            return nil
+        }
+        return NASCertificateInfo(
+            subject: certificateText(
+                in: item,
+                keys: ["subject", "subject_name", "common_name", "domain", "desc"]
+            ),
+            issuer: certificateText(
+                in: item,
+                keys: ["issuer", "issuer_name", "issuer_common_name"]
+            ),
+            validFrom: mapCertificateDate(item.firstDirectValue(for: ["valid_from", "valid_since", "not_before", "start"])),
+            validUntil: mapCertificateDate(item.firstDirectValue(for: ["valid_till", "valid_until", "not_after", "expire", "expiration"])),
+            usesCustomTrust: usesCustomTrust
+        )
+    }
+
+    private static func certificateText(in item: DSMJSONValue, keys: [String]) -> String? {
+        guard let value = item.firstDirectValue(for: keys) else { return nil }
+        if let text = nonEmptyString(value.stringValue) {
+            return text
+        }
+        return nonEmptyString(value.firstString(for: [
+            "common_name", "commonName", "CN", "name", "organization", "O"
+        ]))
+    }
+
+    private static func mapCertificateDate(_ value: DSMJSONValue?) -> Date? {
+        guard let value else { return nil }
+        if let timestamp = value.doubleValue {
+            let seconds = timestamp > 10_000_000_000 ? timestamp / 1000 : timestamp
+            if seconds > 0 {
+                return Date(timeIntervalSince1970: seconds)
+            }
+        }
+        guard let text = value.stringValue else { return nil }
+        let isoFormatter = ISO8601DateFormatter()
+        if let date = isoFormatter.date(from: text) {
+            return date
+        }
+        for format in ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd", "MMM d HH:mm:ss yyyy zzz"] {
+            let formatter = DateFormatter()
+            formatter.locale = Locale(identifier: "en_US_POSIX")
+            formatter.dateFormat = format
+            if let date = formatter.date(from: text) {
+                return date
+            }
+        }
+        return nil
+    }
+
+    private static func mapSSHStatus(_ data: DSMJSONValue?) -> NASSSHStatus {
+        guard let enabled = data?.firstBool(for: [
+            "enable_ssh", "ssh_enabled", "enable_ssh_service", "ssh"
+        ]) else {
+            return .unavailable
+        }
+        return enabled ? .enabled : .disabled
     }
 
     private static func mapSharedFolders(_ data: DSMJSONValue?) -> [FileItem] {
@@ -1211,23 +1535,29 @@ final class DSMClient {
 
     private static func mapContainers(_ data: DSMJSONValue?) -> [DockerContainer] {
         let items = containerItems(from: data)
+        var seen = Set<String>()
         return items.compactMap { item in
-            guard let name = textValue(
+            guard let name = directTextValue(
                 in: item,
                 keys: ["name", "Name", "container_name", "containerName", "container", "service", "title", "id", "Id", "Names"]
             ) else { return nil }
-            let image = textValue(
+            let identifier = directTextValue(in: item, keys: ["id", "Id", "container_id", "containerId"])
+                ?? name.lowercased()
+            guard seen.insert(identifier).inserted else { return nil }
+            let image = directTextValue(
                 in: item,
                 keys: ["image", "Image", "image_name", "imageName", "repository", "repo", "tag", "imageTag", "image_tag"]
             ) ?? "-"
-            let stateText = textValue(
+            let stateText = directTextValue(
                 in: item,
                 keys: ["status", "Status", "state", "State", "status_text", "display_status", "up_time", "health"]
             ) ?? ""
-            let explicitRunning = item.firstBool(for: ["running", "Running", "is_running", "started", "start"])
-            let cpu = DSMFormatters.percentage(item.firstDouble(for: ["cpu", "CPU", "cpu_usage", "cpu_percent"]))
-            let memoryText = textValue(in: item, keys: ["memory", "Memory", "memory_usage", "memory_text", "mem_usage"])
-                ?? DSMFormatters.bytes(item.firstDouble(for: ["memory_bytes", "mem_usage", "memoryUsage"]))
+            let explicitRunning = item.firstDirectBool(for: ["running", "Running", "is_running", "started", "start"])
+            let cpu = item.firstDirectDouble(for: ["cpu", "CPU", "cpu_usage", "cpu_percent"]).map {
+                DSMFormatters.percentage($0)
+            }
+            let memoryText = directTextValue(in: item, keys: ["memory", "Memory", "memory_usage", "memory_text", "mem_usage"])
+                ?? DSMFormatters.bytes(item.firstDirectDouble(for: ["memory_bytes", "mem_usage", "memoryUsage"]))
                 ?? "-"
             return DockerContainer(
                 id: UUID(),
@@ -1243,6 +1573,9 @@ final class DSMClient {
 
     private static func containerItems(from data: DSMJSONValue?) -> [DSMJSONValue] {
         guard let data else { return [] }
+        if let directItems = data.firstDirectArray(for: ["containers", "items", "list", "result"]) {
+            return directItems.filter(looksLikeContainer)
+        }
         let preferredKeys = Set(["containers", "container", "items", "list", "result"])
         let candidates = arrays(in: data, matching: preferredKeys).flatMap { $0 }
         let scored = candidates.filter(looksLikeContainer)
@@ -1269,12 +1602,12 @@ final class DSMClient {
 
     private static func looksLikeContainer(_ item: DSMJSONValue) -> Bool {
         guard item.objectValue != nil else { return false }
-        return textValue(in: item, keys: ["name", "Name", "container_name", "containerName", "id", "Id", "Names"]) != nil
+        return directTextValue(in: item, keys: ["name", "Name", "container_name", "containerName", "id", "Id", "Names"]) != nil
             && (
-                textValue(in: item, keys: ["image", "Image", "image_name", "imageName", "repository", "repo"]) != nil
-                || textValue(in: item, keys: ["status", "Status", "state", "State", "status_text", "display_status"]) != nil
-                || item.firstArray(for: ["ports", "Ports", "port_bindings", "port_mappings", "portMappings"]) != nil
-                || item.firstValue(for: ["PortBindings", "portBindings", "ports"]) != nil
+                directTextValue(in: item, keys: ["image", "Image", "image_name", "imageName", "repository", "repo"]) != nil
+                || directTextValue(in: item, keys: ["status", "Status", "state", "State", "status_text", "display_status"]) != nil
+                || item.firstDirectArray(for: ["ports", "Ports", "port_bindings", "port_mappings", "portMappings"]) != nil
+                || item.firstDirectValue(for: ["PortBindings", "portBindings", "ports"]) != nil
             )
     }
 
@@ -1302,7 +1635,8 @@ final class DSMClient {
                 isMedia: false,
                 cpu: nil,
                 memoryText: nil,
-                endpoint: session.baseURL
+                endpoint: session.baseURL,
+                source: .dsm
             )
         ]
 
@@ -1319,7 +1653,8 @@ final class DSMClient {
                 cpu: container.cpu,
                 memoryText: container.memoryText,
                 ports: container.ports,
-                endpoint: endpoint(for: container, baseURL: session.baseURL)
+                endpoint: endpoint(for: container, baseURL: session.baseURL),
+                source: .container
             )
         }
 
@@ -1344,10 +1679,18 @@ final class DSMClient {
     }
 
     private static func mapPackageServices(_ data: DSMJSONValue?, session: DSMSession) -> [LaunchpadService] {
-        guard let packages = data?.firstArray(for: ["packages", "items", "list"]) else { return [] }
+        guard let data else { return [] }
+        let packageRoot = data.firstDirectValue(for: ["result", "data"]) ?? data
+        guard let packages = packageRoot.firstDirectArray(for: ["packages", "items", "list"]) else { return [] }
         return packages.compactMap { item in
-            guard let name = item.firstString(for: ["name", "id", "package", "package_name", "pkgname"]) else { return nil }
-            guard shouldShowPackageService(name), isInstalledPackage(item) else { return nil }
+            guard let name = directTextValue(
+                in: item,
+                keys: ["display_name", "displayName", "name", "id", "package", "package_name", "pkgname"]
+            ) else { return nil }
+            guard isInstalledPackage(item) else { return nil }
+            let endpoint = packageEndpoint(for: item, baseURL: session.baseURL)
+            let isBuiltIn = item.firstDirectBool(for: ["builtin", "is_builtin", "system", "is_system"]) == true
+            guard endpoint != nil || !isBuiltIn || shouldShowPackageService(name) else { return nil }
             let status = packageStatus(item)
             return LaunchpadService(
                 id: UUID(),
@@ -1355,22 +1698,26 @@ final class DSMClient {
                 iconText: iconText(for: name),
                 category: category(for: name),
                 status: status,
-                subtitle: item.firstString(for: ["version", "install_version", "installed_version", "pkg_version"]) ?? "DSM package",
+                subtitle: directTextValue(
+                    in: item,
+                    keys: ["version", "install_version", "installed_version", "pkg_version"]
+                ) ?? "DSM package",
                 detail: name,
                 isMedia: isMedia(name),
                 cpu: nil,
                 memoryText: nil,
-                endpoint: packageEndpoint(for: item, baseURL: session.baseURL)
+                endpoint: endpoint,
+                source: .package
             )
         }
     }
 
     private static func isInstalledPackage(_ item: DSMJSONValue) -> Bool {
-        if let explicit = item.firstBool(for: ["installed", "is_installed", "isInstalled", "is_install"]) {
+        if let explicit = item.firstDirectBool(for: ["installed", "is_installed", "isInstalled", "is_install"]) {
             return explicit
         }
 
-        let raw = (textValue(
+        let raw = (directTextValue(
             in: item,
             keys: ["status", "state", "status_text", "display_status", "pkgStatus", "install_status", "package_status"]
         ) ?? "").lowercased()
@@ -1381,17 +1728,19 @@ final class DSMClient {
             return true
         }
 
-        if nonEmptyString(item.firstString(for: ["install_version", "installed_version", "installedVersion"])) != nil {
+        if nonEmptyString(item.firstDirectString(for: [
+            "install_version", "installed_version", "installedVersion", "version", "pkg_version"
+        ])) != nil {
             return true
         }
-        if item.firstBool(for: ["start", "running", "is_running", "started", "enabled", "is_enable"]) != nil {
+        if item.firstDirectBool(for: ["start", "running", "is_running", "started", "enabled", "is_enable"]) != nil {
             return true
         }
         return false
     }
 
     private static func packageEndpoint(for item: DSMJSONValue, baseURL: URL) -> URL? {
-        guard let text = textValue(
+        guard let text = directTextValue(
             in: item,
             keys: ["url", "URL", "uri", "launch_url", "launchUrl", "web_url", "webUrl", "webui", "homepage", "dsm_url"]
         ) else {
@@ -1408,10 +1757,13 @@ final class DSMClient {
     }
 
     private static func packageStatus(_ item: DSMJSONValue) -> ServiceStatus {
-        if let isRunning = item.firstBool(for: ["start", "running", "is_running", "started", "enabled", "run", "is_enable"]) {
+        if let isRunning = item.firstDirectBool(for: ["start", "running", "is_running", "started", "enabled", "run", "is_enable"]) {
             return isRunning ? .online : .offline
         }
-        return serviceStatus(from: textValue(in: item, keys: ["status", "state", "status_text", "display_status", "pkgStatus"]) ?? "")
+        return serviceStatus(from: directTextValue(
+            in: item,
+            keys: ["status", "state", "status_text", "display_status", "pkgStatus"]
+        ) ?? "")
     }
 
     private static func shouldShowPackageService(_ name: String) -> Bool {
@@ -1459,15 +1811,10 @@ final class DSMClient {
             "ports", "Ports", "port_bindings", "PortBindings", "portBindings",
             "port_mappings", "portMappings", "PortMapping", "networkSettings", "NetworkSettings"
         ]
-        var ports = portKeys.flatMap { key -> [String] in
-            guard let value = item.firstValue(for: [key]) else { return [] }
+        let ports = portKeys.flatMap { key -> [String] in
+            guard let value = item.firstDirectValue(for: [key]) else { return [] }
             return portTexts(from: value, inheritedContainerPort: nil, keyHint: key)
         }
-
-        if ports.isEmpty {
-            ports = portLikeBranchTexts(from: item)
-        }
-
         return uniqueStrings(ports)
     }
 
@@ -1476,15 +1823,15 @@ final class DSMClient {
             return text
         }
 
-        let local = textValue(
+        let local = directTextValue(
             in: port,
             keys: [
                 "local_port", "localPort", "host_port", "hostPort",
                 "public_port", "publicPort", "PublicPort", "HostPort",
-                "external", "external_port", "externalPort", "host", "HostIp", "host_ip"
+                "external", "external_port", "externalPort"
             ]
         )
-        let container = textValue(
+        let container = directTextValue(
             in: port,
             keys: [
                 "container_port", "containerPort", "private_port", "privatePort",
@@ -1492,10 +1839,18 @@ final class DSMClient {
             ]
         ) ?? inheritedContainerPort
 
+        let transport = directTextValue(in: port, keys: ["type", "protocol", "Protocol"])
+            .map { "/\($0.lowercased())" } ?? ""
         if let local, let container, local != container {
-            return "\(local):\(container)"
+            return "\(local) -> \(container)\(transport)"
         }
-        return local ?? container
+        if let local {
+            return "\(local)\(transport)"
+        }
+        if let inheritedContainerPort, let container, inheritedContainerPort == container {
+            return nil
+        }
+        return container.map { "internal \($0)\(transport)" }
     }
 
     private static func portTexts(from value: DSMJSONValue, inheritedContainerPort: String?, keyHint: String) -> [String] {
@@ -1513,23 +1868,17 @@ final class DSMClient {
             let containerPort = portNumberPrefix(from: key) ?? inheritedContainerPort
             let childKeyHint = keyHint + "." + key
             return portTexts(from: child, inheritedContainerPort: containerPort, keyHint: childKeyHint).map { text in
-                guard let containerPort, !text.contains(":"), text != containerPort else { return text }
+                guard
+                    let containerPort,
+                    !text.contains(":"),
+                    !text.contains("->"),
+                    !text.lowercased().hasPrefix("internal"),
+                    text != containerPort
+                else {
+                    return text
+                }
                 return "\(text):\(containerPort)"
             }
-        }
-    }
-
-    private static func portLikeBranchTexts(from value: DSMJSONValue) -> [String] {
-        guard let object = value.objectValue else { return [] }
-        return object.flatMap { key, child -> [String] in
-            let lower = key.lowercased()
-            if lower.contains("port") || lower.contains("binding") || lower.contains("mapping") {
-                return portTexts(from: child, inheritedContainerPort: portNumberPrefix(from: key), keyHint: key)
-            }
-            if child.objectValue != nil || child.arrayValue != nil {
-                return portLikeBranchTexts(from: child)
-            }
-            return []
         }
     }
 
@@ -1552,10 +1901,14 @@ final class DSMClient {
 
     private static func serviceStatus(from text: String) -> ServiceStatus {
         let normalized = text.lowercased()
-        if normalized.contains("running") || normalized.contains("healthy") || normalized == "up" || normalized == "online" || normalized == "started" {
+        if normalized.contains("running")
+            || normalized.contains("healthy")
+            || ["up", "online", "start", "started", "run", "active"].contains(normalized) {
             return .online
         }
-        if normalized.contains("stop") || normalized.contains("exit") || normalized == "down" || normalized == "offline" {
+        if normalized.contains("stop")
+            || normalized.contains("exit")
+            || ["down", "offline", "dead", "inactive"].contains(normalized) {
             return .offline
         }
         if normalized.isEmpty || normalized == "installed" {
@@ -1566,6 +1919,14 @@ final class DSMClient {
 
     private static func textValue(in item: DSMJSONValue, keys: [String]) -> String? {
         guard let value = item.firstValue(for: keys) else { return nil }
+        let text = value.stringValue ?? value.arrayValue?.compactMap(\.stringValue).first
+        let normalized = text?
+            .trimmingCharacters(in: CharacterSet(charactersIn: "/").union(.whitespacesAndNewlines))
+        return normalized?.isEmpty == false ? normalized : nil
+    }
+
+    private static func directTextValue(in item: DSMJSONValue, keys: [String]) -> String? {
+        guard let value = item.firstDirectValue(for: keys) else { return nil }
         let text = value.stringValue ?? value.arrayValue?.compactMap(\.stringValue).first
         let normalized = text?
             .trimmingCharacters(in: CharacterSet(charactersIn: "/").union(.whitespacesAndNewlines))
@@ -1645,7 +2006,7 @@ final class DSMClient {
         let preferredPort = preferredWebPort(for: container)
         guard let port = preferredPort else { return nil }
         var components = URLComponents()
-        components.scheme = webScheme(for: port, fallback: baseURL.scheme)
+        components.scheme = webScheme(for: port)
         components.host = host
         components.port = port
         return components.url
@@ -1683,6 +2044,7 @@ final class DSMClient {
 
     private static func hostPort(from text: String) -> Int? {
         let compact = text.replacingOccurrences(of: " ", with: "")
+        guard !compact.lowercased().hasPrefix("internal") else { return nil }
         let arrowParts = compact.components(separatedBy: "->")
         let hostLikeParts = arrowParts.filter { $0.contains(":") || $0.contains(".") || $0.contains("[") }
         for part in hostLikeParts + arrowParts {
@@ -1716,14 +2078,157 @@ final class DSMClient {
             .last
     }
 
-    private static func webScheme(for port: Int, fallback: String?) -> String {
+    private static func webScheme(for port: Int) -> String {
         if [443, 5001, 8443, 8920, 9443].contains(port) {
             return "https"
         }
-        if [80, 5000, 8000, 8080, 8096, 8123, 9000].contains(port) {
-            return "http"
+        return "http"
+    }
+}
+
+final class LANDiscoveryService: NSObject, ObservableObject {
+    @Published private(set) var devices: [DiscoveredNASDevice] = []
+    @Published private(set) var isSearching = false
+    @Published private(set) var errorKey: String?
+
+    private let serviceTypes = ["_https._tcp.", "_http._tcp.", "_smb._tcp."]
+    private var browsers: [NetServiceBrowser] = []
+    private var resolvingServices: [ObjectIdentifier: NetService] = [:]
+    private var probedURLs = Set<String>()
+    private var searchGeneration = UUID()
+
+    func start() {
+        stop()
+        devices = []
+        errorKey = nil
+        probedURLs.removeAll()
+        isSearching = true
+        searchGeneration = UUID()
+        let generation = searchGeneration
+        DiagnosticLogStore.shared.record(
+            .info,
+            categoryKey: "diagnostics.category.connection",
+            messageKey: "diagnostics.discovery.started"
+        )
+
+        for type in serviceTypes {
+            let browser = NetServiceBrowser()
+            browser.delegate = self
+            browsers.append(browser)
+            browser.searchForServices(ofType: type, inDomain: "local.")
         }
-        return fallback == "http" ? "http" : "https"
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 10) { [weak self] in
+            guard let self, self.searchGeneration == generation else { return }
+            self.finish()
+        }
+    }
+
+    func stop() {
+        browsers.forEach { $0.stop() }
+        resolvingServices.values.forEach { $0.stop() }
+        browsers.removeAll()
+        resolvingServices.removeAll()
+        isSearching = false
+    }
+
+    private func finish() {
+        browsers.forEach { $0.stop() }
+        browsers.removeAll()
+        isSearching = false
+        DiagnosticLogStore.shared.record(
+            .info,
+            categoryKey: "diagnostics.category.connection",
+            messageKey: "diagnostics.discovery.completed",
+            details: ["count": "\(devices.count)"]
+        )
+    }
+
+    private func probe(service: NetService) {
+        guard let hostName = service.hostName?.trimmingCharacters(in: CharacterSet(charactersIn: ".")) else {
+            return
+        }
+        let port: Int
+        switch service.type {
+        case "_https._tcp.":
+            port = service.port
+        case "_http._tcp.", "_smb._tcp.":
+            port = 5001
+        default:
+            return
+        }
+        guard port > 0, port <= 65_535 else { return }
+
+        var components = URLComponents()
+        components.scheme = "https"
+        components.host = hostName
+        components.port = port
+        guard let url = components.url, probedURLs.insert(url.absoluteString).inserted else {
+            return
+        }
+
+        let displayName = service.name
+        Task {
+            let isDSM = await DSMClient(
+                baseURL: url,
+                allowsSelfSignedCertificates: true
+            ).isDSMEndpoint()
+            guard isDSM else { return }
+            await MainActor.run {
+                guard !self.devices.contains(where: { $0.host == url.absoluteString }) else { return }
+                self.devices.append(
+                    DiscoveredNASDevice(
+                        id: UUID(),
+                        name: displayName,
+                        host: url.absoluteString
+                    )
+                )
+                self.devices.sort {
+                    $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending
+                }
+                DiagnosticLogStore.shared.record(
+                    .info,
+                    categoryKey: "diagnostics.category.connection",
+                    messageKey: "diagnostics.discovery.found",
+                    details: ["target": DiagnosticLogStore.redactedURL(url)]
+                )
+            }
+        }
+    }
+}
+
+extension LANDiscoveryService: NetServiceBrowserDelegate {
+    func netServiceBrowser(
+        _ browser: NetServiceBrowser,
+        didFind service: NetService,
+        moreComing: Bool
+    ) {
+        let identifier = ObjectIdentifier(service)
+        resolvingServices[identifier] = service
+        service.delegate = self
+        service.resolve(withTimeout: 5)
+    }
+
+    func netServiceBrowser(_ browser: NetServiceBrowser, didNotSearch errorDict: [String: NSNumber]) {
+        errorKey = "connect.scan.permission"
+        DiagnosticLogStore.shared.record(
+            .warning,
+            categoryKey: "diagnostics.category.connection",
+            messageKey: "diagnostics.discovery.failed",
+            details: ["code": errorDict.values.first?.stringValue ?? "-"]
+        )
+        finish()
+    }
+}
+
+extension LANDiscoveryService: NetServiceDelegate {
+    func netServiceDidResolveAddress(_ sender: NetService) {
+        resolvingServices.removeValue(forKey: ObjectIdentifier(sender))
+        probe(service: sender)
+    }
+
+    func netService(_ sender: NetService, didNotResolve errorDict: [String: NSNumber]) {
+        resolvingServices.removeValue(forKey: ObjectIdentifier(sender))
     }
 }
 
@@ -1814,6 +2319,13 @@ final class AppDataStore: ObservableObject {
     }
 
     @MainActor
+    func activateDSM(snapshot: DSMDataSnapshot, session: DSMSession, useAgent _: Bool) {
+        activeDataSource = DSMNASDataSource(session: session, useAgent: false)
+        reload(from: snapshot)
+        sourceKind = .dsm
+    }
+
+    @MainActor
     func loadFolder(path: String) async -> [FileItem] {
         if let dataSource = activeDataSource as? DSMNASDataSource {
             do {
@@ -1857,14 +2369,14 @@ final class AppDataStore: ObservableObject {
                 password: credential.password,
                 deviceID: credential.deviceID
             )
-            let dataSource = DSMNASDataSource(session: session, useAgent: credential.useAgent)
+            let dataSource = DSMNASDataSource(session: session, useAgent: false)
             let snapshot = await dataSource.loadSnapshot()
             KeychainStore.shared.saveNASCredential(
                 StoredNASCredential(
                     baseURLString: credential.baseURLString,
                     account: credential.account,
                     password: credential.password,
-                    useAgent: credential.useAgent,
+                    useAgent: false,
                     allowsSelfSignedCertificates: credential.allowsSelfSignedCertificates,
                     deviceID: session.deviceID ?? credential.deviceID
                 )
@@ -1891,13 +2403,21 @@ final class AppDataStore: ObservableObject {
             id: device.id,
             name: discoveredDevice.name,
             subtitle: device.subtitle,
+            model: device.model,
+            dsmVersion: device.dsmVersion,
             mode: device.mode,
             cpu: device.cpu,
             memory: device.memory,
+            memoryUsedText: device.memoryUsedText,
+            memoryTotalText: device.memoryTotalText,
             storageUsed: device.storageUsed,
+            storageUsedText: device.storageUsedText,
+            storageTotalText: device.storageTotalText,
             storageFreeText: device.storageFreeText,
             uptimeText: device.uptimeText,
-            certificateDaysRemaining: device.certificateDaysRemaining
+            temperatureText: device.temperatureText,
+            certificate: device.certificate,
+            sshStatus: device.sshStatus
         )
     }
 }

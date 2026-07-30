@@ -3,15 +3,29 @@ import Foundation
 enum SampleData {
     static let device = NASDevice(
         id: UUID(uuidString: "45B4F6E7-339D-4E86-A33C-92A93463D33A")!,
-        name: "DS918+",
-        subtitle: "DSM 7.2.1 · Agent",
+        name: "Nastart Lab",
+        subtitle: "DS918+",
+        model: "DS918+",
+        dsmVersion: "DSM 7.2.1-69057",
         mode: .dsmWithAgent,
         cpu: 0.11,
         memory: 0.32,
+        memoryUsedText: "2.6 GB",
+        memoryTotalText: "8 GB",
         storageUsed: 0.78,
+        storageUsedText: "10.3 TB",
+        storageTotalText: "13.2 TB",
         storageFreeText: "2.9 TB",
         uptimeText: "6d 21h",
-        certificateDaysRemaining: 19
+        temperatureText: "41 C",
+        certificate: NASCertificateInfo(
+            subject: "nas.example.com",
+            issuer: "Let's Encrypt",
+            validFrom: Calendar.current.date(byAdding: .day, value: -71, to: Date()),
+            validUntil: Calendar.current.date(byAdding: .day, value: 19, to: Date()),
+            usesCustomTrust: false
+        ),
+        sshStatus: .enabled
     )
 
     static let services: [LaunchpadService] = [

@@ -433,6 +433,12 @@
 					en,
 					"zh-Hans",
 				);
+				INFOPLIST_KEY_NSBonjourServices = (
+					"_https._tcp",
+					"_http._tcp",
+					"_smb._tcp",
+				);
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "Nastart uses the local network to discover your NAS. Nastart 使用本地网络发现 NAS。";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -472,6 +478,12 @@
 					en,
 					"zh-Hans",
 				);
+				INFOPLIST_KEY_NSBonjourServices = (
+					"_https._tcp",
+					"_http._tcp",
+					"_smb._tcp",
+				);
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "Nastart uses the local network to discover your NAS. Nastart 使用本地网络发现 NAS。";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

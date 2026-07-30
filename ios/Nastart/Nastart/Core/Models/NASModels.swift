@@ -59,24 +59,85 @@ enum ServiceCategory: String, CaseIterable, Identifiable {
     }
 }
 
-enum ServiceStatus: String {
+enum ServiceStatus: String, Equatable {
     case online
     case warning
     case offline
     case unknown
 }
 
+enum LaunchpadServiceSource: Equatable {
+    case dsm
+    case container
+    case package
+    case manual
+}
+
 struct NASDevice: Identifiable {
     let id: UUID
     let name: String
     let subtitle: String
+    let model: String?
+    let dsmVersion: String?
     let mode: ConnectionMode
-    let cpu: Double
-    let memory: Double
-    let storageUsed: Double
+    let cpu: Double?
+    let memory: Double?
+    let memoryUsedText: String?
+    let memoryTotalText: String?
+    let storageUsed: Double?
+    let storageUsedText: String?
+    let storageTotalText: String?
     let storageFreeText: String
     let uptimeText: String
-    let certificateDaysRemaining: Int
+    let temperatureText: String?
+    let certificate: NASCertificateInfo?
+    let sshStatus: NASSSHStatus
+
+    var memoryDisplayText: String {
+        if let memoryUsedText, let memoryTotalText {
+            return "\(memoryUsedText) / \(memoryTotalText)"
+        }
+        return metricPercentText(memory)
+    }
+
+    var storageDisplayText: String {
+        if let storageUsedText, let storageTotalText {
+            return "\(storageUsedText) / \(storageTotalText)"
+        }
+        return storageFreeText
+    }
+
+    var certificateDaysRemaining: Int? {
+        certificate?.daysRemaining
+    }
+
+    private func metricPercentText(_ value: Double?) -> String {
+        guard let value else { return "-" }
+        return "\(Int((value * 100).rounded()))%"
+    }
+}
+
+struct NASCertificateInfo {
+    let subject: String?
+    let issuer: String?
+    let validFrom: Date?
+    let validUntil: Date?
+    let usesCustomTrust: Bool
+
+    var daysRemaining: Int? {
+        guard let validUntil else { return nil }
+        return Calendar.current.dateComponents(
+            [.day],
+            from: Calendar.current.startOfDay(for: Date()),
+            to: Calendar.current.startOfDay(for: validUntil)
+        ).day
+    }
+}
+
+enum NASSSHStatus {
+    case enabled
+    case disabled
+    case unavailable
 }
 
 struct LaunchpadService: Identifiable {
@@ -93,6 +154,7 @@ struct LaunchpadService: Identifiable {
     let ports: [String]
     let iconURL: URL?
     let endpoint: URL?
+    let source: LaunchpadServiceSource
 
     init(
         id: UUID,
@@ -107,7 +169,8 @@ struct LaunchpadService: Identifiable {
         memoryText: String?,
         ports: [String] = [],
         iconURL: URL? = nil,
-        endpoint: URL? = nil
+        endpoint: URL? = nil,
+        source: LaunchpadServiceSource = .manual
     ) {
         self.id = id
         self.name = name
@@ -122,6 +185,7 @@ struct LaunchpadService: Identifiable {
         self.ports = ports
         self.iconURL = iconURL
         self.endpoint = endpoint
+        self.source = source
     }
 }
 
@@ -202,7 +266,7 @@ struct DockerContainer: Identifiable {
     let name: String
     let image: String
     let status: ServiceStatus
-    let cpu: Double
+    let cpu: Double?
     let memoryText: String
     let ports: [String]
 }

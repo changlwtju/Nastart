@@ -9,7 +9,7 @@ struct DevicesView: View {
         NavigationStack {
             List {
                 Section {
-                    VStack(alignment: .leading, spacing: 14) {
+                    VStack(alignment: .leading, spacing: 12) {
                         HStack {
                             VStack(alignment: .leading, spacing: 4) {
                                 Text(dataStore.device.name)
@@ -24,23 +24,25 @@ struct DevicesView: View {
                             }
                             .layoutPriority(1)
                             Spacer()
-                            Label("status.online", systemImage: "checkmark.circle.fill")
+                            Label {
+                                Text(LocalizedStringKey(connectionStore.isConnected ? "status.online" : "state.not_connected"))
+                            } icon: {
+                                Image(systemName: connectionStore.isConnected ? "checkmark.circle.fill" : "minus.circle")
+                            }
                                 .font(.caption.weight(.semibold))
-                                .foregroundStyle(.green)
+                                .foregroundStyle(connectionStore.isConnected ? Color.green : Color.secondary)
                                 .lineLimit(1)
                                 .minimumScaleFactor(0.78)
                         }
 
                         MetricPillRow(metrics: [
                             MetricPillSpec("metric.cpu", value: devicePercentText(dataStore.device.cpu), progress: dataStore.device.cpu),
-                            MetricPillSpec("metric.memory", value: devicePercentText(dataStore.device.memory), progress: dataStore.device.memory),
-                            MetricPillSpec("metric.storage", value: dataStore.device.storageFreeText, progress: dataStore.device.storageUsed)
+                            MetricPillSpec("metric.memory", value: dataStore.device.memoryDisplayText, progress: dataStore.device.memory),
+                            MetricPillSpec("metric.storage", value: dataStore.device.storageDisplayText, progress: dataStore.device.storageUsed)
                         ])
                     }
-                    .padding(.vertical, 8)
-                }
+                    .padding(.vertical, 4)
 
-                Section {
                     NavigationLink {
                         DeviceStatusView(device: dataStore.device)
                     } label: {
@@ -49,7 +51,20 @@ struct DevicesView: View {
                     NavigationLink {
                         DockerContainersView(containers: dataStore.containers)
                     } label: {
-                        Label("devices.resource.containers", systemImage: "shippingbox")
+                        resourceLabel(
+                            "devices.resource.containers",
+                            systemImage: "shippingbox",
+                            count: dataStore.containers.count
+                        )
+                    }
+                    NavigationLink {
+                        PackageServicesView(services: packageServices)
+                    } label: {
+                        resourceLabel(
+                            "devices.resource.packages",
+                            systemImage: "square.stack.3d.up",
+                            count: packageServices.count
+                        )
                     }
                     NavigationLink {
                         FileBrowserView(titleKey: "devices.resource.files", items: dataStore.files)
@@ -61,13 +76,11 @@ struct DevicesView: View {
                     } label: {
                         Label("devices.resource.network", systemImage: "network")
                     }
-                } header: {
-                    Text("devices.section.resources")
                 }
 
                 Section {
                     NavigationLink {
-                        CertificateSecurityView(device: dataStore.device)
+                        CertificateSecurityView()
                     } label: {
                         Label("devices.maintenance.certificate", systemImage: "lock.shield")
                     }
@@ -93,11 +106,26 @@ struct DevicesView: View {
                 }
             }
             .listStyle(.insetGrouped)
+            .padding(.top, -12)
             .navigationTitle("tab.devices")
             .navigationBarTitleDisplayMode(.inline)
             .alert("devices.discovery.hint", isPresented: $showRediscoverHint) {
                 Button("action.ok", role: .cancel) {}
             }
+        }
+    }
+
+    private var packageServices: [LaunchpadService] {
+        dataStore.services.filter { $0.source == .package }
+    }
+
+    private func resourceLabel(_ key: String, systemImage: String, count: Int) -> some View {
+        HStack {
+            Label(LocalizedStringKey(key), systemImage: systemImage)
+            Spacer()
+            Text("\(count)")
+                .font(.caption.weight(.medium))
+                .foregroundStyle(.secondary)
         }
     }
 }
@@ -113,38 +141,88 @@ struct DeviceStatusView: View {
                         .font(.title2.weight(.bold))
                     MetricPillRow(metrics: [
                         MetricPillSpec("metric.cpu", value: devicePercentText(device.cpu), progress: device.cpu),
-                        MetricPillSpec("metric.memory", value: devicePercentText(device.memory), progress: device.memory),
-                        MetricPillSpec("metric.storage", value: device.storageFreeText, progress: device.storageUsed)
+                        MetricPillSpec("metric.memory", value: device.memoryDisplayText, progress: device.memory),
+                        MetricPillSpec("metric.storage", value: device.storageDisplayText, progress: device.storageUsed)
                     ])
                 }
-                .padding(.vertical, 8)
+                .padding(.vertical, 4)
             }
 
             Section {
+                LabeledContent("devices.detail.name", value: device.name)
+                if let model = device.model {
+                    LabeledContent("devices.detail.model", value: model)
+                }
+                if let dsmVersion = device.dsmVersion {
+                    LabeledContent("devices.detail.dsm_version", value: dsmVersion)
+                }
                 LabeledContent("metric.uptime", value: device.uptimeText)
-                LabeledContent("devices.detail.mode", value: device.subtitle)
-                LabeledContent("devices.detail.certificate", value: "\(device.certificateDaysRemaining)d")
-                LabeledContent("devices.status.temperature", value: "41 C")
-                LabeledContent("devices.status.network", value: "LAN - 32 ms")
+                LabeledContent("devices.detail.mode", value: deviceConnectionText(device.mode))
+                LabeledContent("metric.memory", value: device.memoryDisplayText)
+                LabeledContent("metric.storage", value: device.storageDisplayText)
+                LabeledContent("devices.detail.certificate", value: certificateDaysText(device.certificateDaysRemaining))
+                LabeledContent("devices.status.temperature", value: device.temperatureText ?? "-")
+                LabeledContent("devices.security.ssh", value: sshStatusText(device.sshStatus))
             } header: {
                 Text("devices.detail.status")
             }
 
             Section {
                 DiagnosisRow(titleKey: "devices.diagnosis.reachable", valueKey: "devices.diagnosis.good", symbol: "checkmark.circle")
-                DiagnosisRow(titleKey: "devices.diagnosis.certificate", valueKey: "devices.diagnosis.watch", symbol: "lock.shield")
-                DiagnosisRow(titleKey: "devices.diagnosis.agent", valueKey: "devices.diagnosis.good", symbol: "antenna.radiowaves.left.and.right")
+                DiagnosisRow(
+                    titleKey: "devices.diagnosis.certificate",
+                    valueKey: device.certificate == nil ? "status.unknown" : "devices.diagnosis.watch",
+                    symbol: "lock.shield"
+                )
+                DiagnosisRow(
+                    titleKey: "devices.diagnosis.agent",
+                    valueKey: device.mode == .dsmWithAgent ? "devices.diagnosis.good" : "status.unknown",
+                    symbol: "antenna.radiowaves.left.and.right"
+                )
             } header: {
                 Text("devices.status.diagnosis")
             }
         }
         .listStyle(.insetGrouped)
+        .padding(.top, -12)
         .navigationTitle(device.name)
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
-private func devicePercentText(_ value: Double) -> String {
-    "\(Int((value * 100).rounded()))%"
+private func devicePercentText(_ value: Double?) -> String {
+    guard let value else { return "-" }
+    return "\(Int((value * 100).rounded()))%"
+}
+
+private func certificateDaysText(_ days: Int?) -> String {
+    guard let days else { return "-" }
+    return String(format: NSLocalizedString("devices.cert.days_remaining %lld", comment: ""), days)
+}
+
+private func deviceConnectionText(_ mode: ConnectionMode) -> String {
+    switch mode {
+    case .dsmOnly: return "DSM"
+    case .dsmWithAgent: return "DSM + Agent"
+    case .agentOnly: return "Agent"
+    case .manualOnly: return "-"
+    }
+}
+
+private func sshStatusText(_ status: NASSSHStatus) -> String {
+    switch status {
+    case .enabled: return NSLocalizedString("state.on", comment: "")
+    case .disabled: return NSLocalizedString("state.off", comment: "")
+    case .unavailable: return NSLocalizedString("status.unknown", comment: "")
+    }
+}
+
+private func certificateTrustText(_ certificate: NASCertificateInfo?) -> String {
+    guard let certificate else { return "-" }
+    return NSLocalizedString(
+        certificate.usesCustomTrust ? "devices.cert.trust.custom" : "devices.cert.trust.system",
+        comment: ""
+    )
 }
 
 private struct DiagnosisRow: View {
@@ -182,6 +260,42 @@ private struct DockerContainersView: View {
         }
         .listStyle(.insetGrouped)
         .navigationTitle("devices.resource.containers")
+    }
+}
+
+private struct PackageServicesView: View {
+    let services: [LaunchpadService]
+
+    var body: some View {
+        List {
+            Section {
+                if services.isEmpty {
+                    Text("devices.packages.empty")
+                        .foregroundStyle(.secondary)
+                } else {
+                    ForEach(services) { service in
+                        HStack(spacing: 12) {
+                            ServiceIconView(service: service, size: 36)
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(service.name)
+                                    .font(.body.weight(.medium))
+                                Text(LocalizedStringKey(service.subtitle))
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            Spacer()
+                            StatusDot(status: service.status)
+                        }
+                        .padding(.vertical, 3)
+                    }
+                }
+            } footer: {
+                Text("devices.packages.footer")
+            }
+        }
+        .listStyle(.insetGrouped)
+        .navigationTitle("devices.resource.packages")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
@@ -232,7 +346,7 @@ private struct DockerContainerDetailView: View {
             }
 
             Section {
-                LabeledContent("metric.cpu", value: "\(Int(container.cpu * 100))%")
+                LabeledContent("metric.cpu", value: devicePercentText(container.cpu))
                 LabeledContent("metric.memory", value: container.memoryText)
             } header: {
                 Text("devices.container.metrics")
@@ -467,9 +581,14 @@ private struct NetworkDetailView: View {
             }
 
             Section {
-                LabeledContent("DSM", value: "5001")
-                LabeledContent("Jellyfin", value: "8096")
-                LabeledContent("Navidrome", value: "4533")
+                if portRows.isEmpty {
+                    Text("devices.network.ports.empty")
+                        .foregroundStyle(.secondary)
+                } else {
+                    ForEach(portRows, id: \.self) { row in
+                        LabeledContent(row.service, value: row.port)
+                    }
+                }
             } header: {
                 Text("devices.network.ports")
             }
@@ -477,39 +596,106 @@ private struct NetworkDetailView: View {
         .listStyle(.insetGrouped)
         .navigationTitle("devices.resource.network")
     }
+
+    private var portRows: [ServicePortRow] {
+        services.flatMap { service in
+            let ports = service.ports.isEmpty
+                ? service.endpoint?.port.map { ["\($0)"] } ?? []
+                : service.ports
+            return ports.map { ServicePortRow(service: service.name, port: $0) }
+        }
+    }
+}
+
+private struct ServicePortRow: Hashable {
+    let service: String
+    let port: String
 }
 
 private struct CertificateSecurityView: View {
-    let device: NASDevice
-    @State private var showCheckHint = false
+    @EnvironmentObject private var dataStore: AppDataStore
+    @EnvironmentObject private var connectionStore: NASConnectionStore
+    @State private var isChecking = false
+    @State private var showCheckResult = false
     @State private var showReminderHint = false
+
+    private var device: NASDevice {
+        dataStore.device
+    }
 
     var body: some View {
         List {
             Section {
-                LabeledContent("devices.detail.certificate", value: "\(device.certificateDaysRemaining)d")
-                LabeledContent("devices.cert.domain", value: "-")
-                LabeledContent("devices.cert.issuer", value: "-")
+                LabeledContent("devices.detail.certificate", value: certificateDaysText(device.certificateDaysRemaining))
+                LabeledContent("devices.cert.domain", value: device.certificate?.subject ?? "-")
+                LabeledContent("devices.cert.issuer", value: device.certificate?.issuer ?? "-")
+                LabeledContent("devices.cert.trust", value: certificateTrustText(device.certificate))
+                if let validFrom = device.certificate?.validFrom {
+                    LabeledContent("devices.cert.valid_from") {
+                        Text(validFrom, style: .date)
+                    }
+                }
+                if let validUntil = device.certificate?.validUntil {
+                    LabeledContent("devices.cert.valid_until") {
+                        Text(validUntil, style: .date)
+                    }
+                }
+            } header: {
+                Text("devices.cert.https")
+            }
+
+            Section {
+                LabeledContent("devices.security.ssh", value: sshStatusText(device.sshStatus))
+            } footer: {
+                Text("devices.security.ssh.footer")
             }
 
             Section {
                 Button("devices.cert.create_task") {
                     showReminderHint = true
                 }
-                Button("devices.cert.check_now") {
-                    showCheckHint = true
+                Button {
+                    checkNow()
+                } label: {
+                    HStack {
+                        Text("devices.cert.check_now")
+                        Spacer()
+                        if isChecking {
+                            ProgressView()
+                        }
+                    }
                 }
+                .disabled(isChecking || connectionStore.dsmSession == nil)
             } header: {
                 Text("devices.cert.actions")
             }
         }
         .listStyle(.insetGrouped)
+        .padding(.top, -12)
         .navigationTitle("devices.maintenance.certificate")
+        .navigationBarTitleDisplayMode(.inline)
         .alert("devices.cert.reminder_hint", isPresented: $showReminderHint) {
             Button("action.ok", role: .cancel) {}
         }
-        .alert("devices.cert.check_hint", isPresented: $showCheckHint) {
+        .alert(
+            LocalizedStringKey(
+                device.certificate == nil ? "devices.cert.check_unavailable" : "devices.cert.check_complete"
+            ),
+            isPresented: $showCheckResult
+        ) {
             Button("action.ok", role: .cancel) {}
+        }
+    }
+
+    private func checkNow() {
+        guard let session = connectionStore.dsmSession else { return }
+        isChecking = true
+        Task {
+            await dataStore.refreshDSM(session: session, useAgent: connectionStore.usesAgent)
+            await MainActor.run {
+                isChecking = false
+                showCheckResult = true
+            }
         }
     }
 }
@@ -518,20 +704,19 @@ private struct AgentStatusView: View {
     var body: some View {
         List {
             Section {
-                LabeledContent("devices.agent.mode", value: "DSM + Agent")
-                LabeledContent("devices.agent.version", value: "0.1.0")
-                LabeledContent("devices.agent.last_seen", value: "2 min")
+                LabeledContent(
+                    "devices.agent.mode",
+                    value: NSLocalizedString("state.not_connected", comment: "")
+                )
             }
 
             Section {
-                Label("Docker", systemImage: "shippingbox")
-                Label("devices.agent.scope.metrics", systemImage: "chart.line.uptrend.xyaxis")
-                Label("devices.agent.scope.discovery", systemImage: "magnifyingglass")
-            } header: {
-                Text("devices.agent.scope")
+                Label("devices.agent.not_connected", systemImage: "antenna.radiowaves.left.and.right")
+                    .foregroundStyle(.secondary)
             }
         }
         .listStyle(.insetGrouped)
         .navigationTitle("devices.maintenance.agent")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }

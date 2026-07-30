@@ -26,15 +26,25 @@ struct LaunchpadView: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 18) {
-                    header
-                    launchpadContent
-                        .id("\(selectedTheme.rawValue)-\(groupExpansionSignature)-\(groupOrderSignature)-\(displayOptionsSignature)")
+            Group {
+                if connectionStore.isConnected {
+                    ScrollView {
+                        VStack(alignment: .leading, spacing: 12) {
+                            header
+                            launchpadContent
+                                .id("\(selectedTheme.rawValue)-\(groupExpansionSignature)-\(groupOrderSignature)-\(displayOptionsSignature)")
+                        }
+                        .padding(.horizontal, 18)
+                        .padding(.top, 6)
+                        .padding(.bottom, 18)
+                    }
+                    .background(launchpadBackground)
+                } else {
+                    NASConnectionWelcomeView {
+                        showConnectionFlow = true
+                    }
                 }
-                .padding(18)
             }
-            .background(launchpadBackground)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -250,7 +260,7 @@ private struct CommandCenterLaunchpad: View {
                 NavigationLink {
                     DeviceStatusView(device: device)
                 } label: {
-                    CertificateReminderStrip(days: device.certificateDaysRemaining)
+                    CertificateReminderStrip(days: device.certificateDaysRemaining ?? 0)
                 }
                 .buttonStyle(.plain)
             }
@@ -258,7 +268,8 @@ private struct CommandCenterLaunchpad: View {
     }
 
     private var shouldShowCertificateReminder: Bool {
-        device.certificateDaysRemaining <= LaunchpadReminderPolicy.certificateWarningDays
+        guard let days = device.certificateDaysRemaining else { return false }
+        return days <= LaunchpadReminderPolicy.certificateWarningDays
     }
 }
 
@@ -270,7 +281,7 @@ private struct CommandMetricRail: View {
         VStack(spacing: compact ? 6 : 8) {
             CommandRailMetric(titleKey: "metric.cpu", value: launchpadPercentText(device.cpu), symbolName: "cpu", progress: compact ? nil : device.cpu, compact: compact)
             CommandRailMetric(titleKey: "metric.memory", value: launchpadPercentText(device.memory), symbolName: "memorychip", progress: compact ? nil : device.memory, compact: compact)
-            CommandRailMetric(titleKey: "metric.storage", value: device.storageFreeText, symbolName: "internaldrive", progress: compact ? nil : device.storageUsed, compact: compact)
+            CommandRailMetric(titleKey: "metric.storage", value: device.storageDisplayText, symbolName: "internaldrive", progress: compact ? nil : device.storageUsed, compact: compact)
         }
         .frame(width: compact ? 52 : 60)
         .padding(.vertical, compact ? 10 : 12)
@@ -471,7 +482,7 @@ private struct GlassDeckLaunchpad: View {
                 NavigationLink {
                     DeviceStatusView(device: device)
                 } label: {
-                    CertificateReminderStrip(days: device.certificateDaysRemaining)
+                    CertificateReminderStrip(days: device.certificateDaysRemaining ?? 0)
                 }
                 .buttonStyle(.plain)
             }
@@ -486,7 +497,8 @@ private struct GlassDeckLaunchpad: View {
     }
 
     private var shouldShowCertificateReminder: Bool {
-        device.certificateDaysRemaining <= LaunchpadReminderPolicy.certificateWarningDays
+        guard let days = device.certificateDaysRemaining else { return false }
+        return days <= LaunchpadReminderPolicy.certificateWarningDays
     }
 }
 
@@ -582,33 +594,25 @@ private struct GlassHeroPanel: View {
     var body: some View {
         VStack(alignment: .leading, spacing: compact ? 12 : 16) {
             HStack {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(device.name)
-                        .font(.title2.weight(.bold))
-                    Text(device.subtitle)
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-                }
+                Label("launchpad.summary.normal", systemImage: "checkmark.circle.fill")
+                    .font(.subheadline.weight(.semibold))
                 Spacer()
-                Image(systemName: "sparkles")
-                    .font(.title3)
-                    .foregroundStyle(AppTheme.accent)
-                    .frame(width: 42, height: 42)
-                    .background(.background.opacity(0.72))
-                    .clipShape(RoundedRectangle(cornerRadius: 15, style: .continuous))
+                Text(device.uptimeText)
+                    .font(.caption.weight(.medium))
+                    .foregroundStyle(.secondary)
             }
 
             if compact {
                 MetricPillRow(metrics: [
                     MetricPillSpec("metric.cpu", value: launchpadPercentText(device.cpu), symbolName: "cpu"),
                     MetricPillSpec("metric.memory", value: launchpadPercentText(device.memory), symbolName: "memorychip"),
-                    MetricPillSpec("metric.storage", value: device.storageFreeText, symbolName: "internaldrive")
+                    MetricPillSpec("metric.storage", value: device.storageDisplayText, symbolName: "internaldrive")
                 ])
             } else {
                 MetricPillRow(metrics: [
                     MetricPillSpec("metric.cpu", value: launchpadPercentText(device.cpu), progress: device.cpu, symbolName: "cpu"),
                     MetricPillSpec("metric.memory", value: launchpadPercentText(device.memory), progress: device.memory, symbolName: "memorychip"),
-                    MetricPillSpec("metric.storage", value: device.storageFreeText, progress: device.storageUsed, symbolName: "internaldrive")
+                    MetricPillSpec("metric.storage", value: device.storageDisplayText, progress: device.storageUsed, symbolName: "internaldrive")
                 ])
             }
         }
@@ -680,7 +684,7 @@ private struct ProductLaunchpad: View {
                 NavigationLink {
                     DeviceStatusView(device: device)
                 } label: {
-                    CertificateReminderStrip(days: device.certificateDaysRemaining)
+                    CertificateReminderStrip(days: device.certificateDaysRemaining ?? 0)
                 }
                 .buttonStyle(.plain)
             }
@@ -695,7 +699,8 @@ private struct ProductLaunchpad: View {
     }
 
     private var shouldShowCertificateReminder: Bool {
-        device.certificateDaysRemaining <= LaunchpadReminderPolicy.certificateWarningDays
+        guard let days = device.certificateDaysRemaining else { return false }
+        return days <= LaunchpadReminderPolicy.certificateWarningDays
     }
 }
 
@@ -1119,7 +1124,9 @@ private struct ServiceDetailView: View {
 
             Section {
                 LabeledContent("service.detail.endpoint", value: service.endpointText)
-                LabeledContent("service.detail.source", value: service.isMedia ? "DSM + API" : "DSM / Agent")
+                LabeledContent("service.detail.source") {
+                    Text(LocalizedStringKey(service.sourceTitleKey))
+                }
                 LabeledContent("service.detail.status") {
                     Text(LocalizedStringKey(service.status.titleKey))
                 }
@@ -1644,6 +1651,45 @@ private struct MediaItemDetailView: View {
     }
 }
 
+private struct NASConnectionWelcomeView: View {
+    let addAction: () -> Void
+
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 24) {
+                Image(systemName: "server.rack")
+                    .font(.system(size: 30, weight: .medium))
+                    .foregroundStyle(.white)
+                    .frame(width: 58, height: 58)
+                    .background(AppTheme.primaryAction)
+                    .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("connect.welcome.title")
+                        .font(.title2.weight(.bold))
+                    Text("connect.welcome.subtitle")
+                        .font(.body)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+
+                Button(action: addAction) {
+                    Label("connect.welcome.action", systemImage: "plus")
+                }
+                .buttonStyle(NastartPrimaryButtonStyle())
+
+                Label("connect.welcome.security", systemImage: "lock.shield")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
+            .frame(maxWidth: 520, alignment: .leading)
+            .padding(.horizontal, 24)
+            .padding(.top, 34)
+        }
+        .background(AppTheme.groupedBackground)
+    }
+}
+
 private struct DSMConnectionFlowView: View {
     let onConnected: () -> Void
     @EnvironmentObject private var dataStore: AppDataStore
@@ -1654,64 +1700,94 @@ private struct DSMConnectionFlowView: View {
     @State private var password = ""
     @State private var oneTimeCode = ""
     @State private var allowsSelfSignedCertificates = false
-    @State private var useAgent = true
     @State private var isConnecting = false
+    @State private var connectionStatusKey = "connect.review.authenticating"
     @State private var errorMessage = ""
     @State private var showError = false
     @State private var showFinishHint = false
+    @State private var connectionTask: Task<Void, Never>?
 
     var body: some View {
-        List {
-            Section {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 20) {
                 VStack(alignment: .leading, spacing: 8) {
+                    Image(systemName: "externaldrive.connected.to.line.below")
+                        .font(.system(size: 24, weight: .medium))
+                        .foregroundStyle(AppTheme.accent)
                     Text("connect.title")
                         .font(.title2.weight(.bold))
                     Text("connect.subtitle")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
-                .padding(.vertical, 8)
-            }
 
-            Section {
-                TextField("connect.host", text: $host)
-                    .textInputAutocapitalization(.never)
-                    .autocorrectionDisabled()
-                    .keyboardType(.URL)
-                TextField("connect.account", text: $account)
-                    .textInputAutocapitalization(.never)
-                    .autocorrectionDisabled()
-                    .keyboardType(.asciiCapable)
-                    .textContentType(.username)
-                SecureField("connect.password", text: $password)
-                    .textContentType(.password)
-                SecureField("connect.otp", text: $oneTimeCode)
-                    .textContentType(.oneTimeCode)
-                    .keyboardType(.numberPad)
-                Toggle("connect.trust_self_signed", isOn: $allowsSelfSignedCertificates)
-                NavigationLink {
-                    LANDiscoveryView(selectedHost: $host)
-                } label: {
-                    Label("connect.scan.title", systemImage: "magnifyingglass")
+                VStack(alignment: .leading, spacing: 14) {
+                    Text("connect.section.dsm")
+                        .font(.headline)
+
+                    connectionFieldLabel("connect.host")
+                    TextField("connect.host.example", text: $host)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                        .keyboardType(.URL)
+                        .connectionInputStyle()
+
+                    connectionFieldLabel("connect.account")
+                    TextField("connect.account.example", text: $account)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                        .keyboardType(.asciiCapable)
+                        .textContentType(.username)
+                        .connectionInputStyle()
+
+                    connectionFieldLabel("connect.password")
+                    SecureField("connect.password.example", text: $password)
+                        .textContentType(.password)
+                        .connectionInputStyle()
+
+                    connectionFieldLabel("connect.otp", optional: true)
+                    SecureField("connect.otp.example", text: $oneTimeCode)
+                        .textContentType(.oneTimeCode)
+                        .keyboardType(.numberPad)
+                        .connectionInputStyle()
+
+                    Toggle(isOn: $allowsSelfSignedCertificates) {
+                        VStack(alignment: .leading, spacing: 3) {
+                            Text("connect.trust_self_signed")
+                            Text("connect.trust_self_signed.inline_hint")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+
+                    Divider()
+
+                    NavigationLink {
+                        LANDiscoveryView(selectedHost: $host)
+                    } label: {
+                        Label("connect.scan.title", systemImage: "magnifyingglass")
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
                 }
-            } header: {
-                Text("connect.section.dsm")
-            } footer: {
-                Text("connect.trust_self_signed.footer")
-            }
+                .connectionSectionStyle()
 
-            Section {
-                Toggle("connect.agent.toggle", isOn: $useAgent)
-                NavigationLink {
-                    AgentSetupGuideView()
-                } label: {
-                    Label("connect.agent.guide", systemImage: "shippingbox")
+                VStack(alignment: .leading, spacing: 14) {
+                    Text("connect.section.agent")
+                        .font(.headline)
+                    Text("connect.agent.not_connected")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                    Divider()
+                    NavigationLink {
+                        AgentSetupGuideView()
+                    } label: {
+                        Label("connect.agent.guide", systemImage: "shippingbox")
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
                 }
-            } header: {
-                Text("connect.section.agent")
-            }
+                .connectionSectionStyle()
 
-            Section {
                 Button {
                     connectDSM()
                 } label: {
@@ -1720,19 +1796,36 @@ private struct DSMConnectionFlowView: View {
                             ProgressView()
                                 .tint(.white)
                         }
-                        Text(LocalizedStringKey(isConnecting ? "connect.review.connecting" : "connect.action"))
+                        Text(LocalizedStringKey(isConnecting ? connectionStatusKey : "connect.action"))
                             .font(.headline.weight(.semibold))
                     }
                 }
                 .buttonStyle(NastartPrimaryButtonStyle())
-                .listRowInsets(EdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0))
-                .listRowBackground(Color.clear)
                 .disabled(isConnecting || host.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || account.isEmpty || password.isEmpty)
-            } footer: {
-                Text("connect.scope.footer")
+
+                Label("connect.scope.footer", systemImage: "lock.shield")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .frame(maxWidth: 560)
+            .padding(.horizontal, 18)
+            .padding(.top, 8)
+            .padding(.bottom, 28)
+        }
+        .background(AppTheme.groupedBackground)
+        .navigationTitle("connect.nav")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button {
+                    connectionTask?.cancel()
+                    dismiss()
+                } label: {
+                    Image(systemName: "xmark")
+                }
             }
         }
-        .navigationTitle("connect.nav")
         .alert("connect.review.done", isPresented: $showFinishHint) {
             Button("action.ok", role: .cancel) {
                 onConnected()
@@ -1748,8 +1841,9 @@ private struct DSMConnectionFlowView: View {
 
     private func connectDSM() {
         isConnecting = true
+        connectionStatusKey = "connect.review.authenticating"
         errorMessage = ""
-        Task {
+        connectionTask = Task {
             do {
                 let baseURL = try DSMClient.normalizedBaseURL(from: host)
                 let client = DSMClient(
@@ -1761,38 +1855,62 @@ private struct DSMConnectionFlowView: View {
                     password: password,
                     oneTimeCode: oneTimeCode
                 )
-                let snapshot = await client.loadSnapshot(session: session, useAgent: useAgent)
+                await MainActor.run {
+                    connectionStatusKey = "connect.review.loading"
+                }
+                let snapshot = await client.loadSnapshot(session: session, useAgent: false)
+                try Task.checkCancellation()
                 KeychainStore.shared.saveNASCredential(
                     StoredNASCredential(
                         baseURLString: baseURL.absoluteString,
                         account: account,
                         password: password,
-                        useAgent: useAgent,
+                        useAgent: false,
                         allowsSelfSignedCertificates: allowsSelfSignedCertificates,
                         deviceID: session.deviceID
                     )
                 )
                 await MainActor.run {
-                    dataStore.reload(from: snapshot)
+                    dataStore.activateDSM(snapshot: snapshot, session: session, useAgent: false)
                     connectionStore.connect(device: snapshot.device, session: session)
                     isConnecting = false
+                    connectionTask = nil
                     showFinishHint = true
+                }
+            } catch is CancellationError {
+                await MainActor.run {
+                    isConnecting = false
+                    connectionTask = nil
                 }
             } catch {
                 await MainActor.run {
                     isConnecting = false
+                    connectionTask = nil
                     errorMessage = error.localizedDescription
                     showError = true
                 }
             }
         }
     }
+
+    private func connectionFieldLabel(_ key: String, optional: Bool = false) -> some View {
+        HStack(spacing: 6) {
+            Text(LocalizedStringKey(key))
+                .font(.subheadline.weight(.medium))
+            if optional {
+                Text("connect.optional")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .padding(.bottom, -8)
+    }
 }
 
 private struct LANDiscoveryView: View {
-    @EnvironmentObject private var dataStore: AppDataStore
     @Environment(\.dismiss) private var dismiss
     @Binding var selectedHost: String
+    @StateObject private var discoveryService = LANDiscoveryService()
 
     var body: some View {
         List {
@@ -1804,13 +1922,28 @@ private struct LANDiscoveryView: View {
             }
 
             Section {
-                if dataStore.discoveredDevices.isEmpty {
-                    Text("connect.scan.empty")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                        .padding(.vertical, 8)
+                if discoveryService.devices.isEmpty {
+                    VStack(spacing: 10) {
+                        if discoveryService.isSearching {
+                            ProgressView()
+                            Text("connect.scan.searching")
+                        } else {
+                            Image(systemName: discoveryService.errorKey == nil ? "server.rack" : "exclamationmark.triangle")
+                                .font(.title2)
+                            Text(LocalizedStringKey(discoveryService.errorKey ?? "connect.scan.empty"))
+                                .multilineTextAlignment(.center)
+                            Button("connect.scan.retry") {
+                                discoveryService.start()
+                            }
+                            .buttonStyle(.bordered)
+                        }
+                    }
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 22)
                 } else {
-                    ForEach(dataStore.discoveredDevices) { device in
+                    ForEach(discoveryService.devices) { device in
                         HStack(spacing: 12) {
                             Image(systemName: "server.rack")
                                 .frame(width: 36, height: 36)
@@ -1840,6 +1973,34 @@ private struct LANDiscoveryView: View {
         }
         .listStyle(.insetGrouped)
         .navigationTitle("connect.scan.title")
+        .navigationBarTitleDisplayMode(.inline)
+        .onAppear {
+            discoveryService.start()
+        }
+        .onDisappear {
+            discoveryService.stop()
+        }
+    }
+}
+
+private extension View {
+    func connectionInputStyle() -> some View {
+        self
+            .padding(.horizontal, 13)
+            .frame(minHeight: 48)
+            .background(Color(.tertiarySystemFill))
+            .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+            .overlay {
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .stroke(AppTheme.hairline, lineWidth: 1)
+            }
+    }
+
+    func connectionSectionStyle() -> some View {
+        self
+            .padding(16)
+            .background(Color(.secondarySystemGroupedBackground))
+            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
     }
 }
 
@@ -1968,13 +2129,13 @@ private struct DeviceSummaryPanel: View {
                 MetricPillRow(metrics: [
                     MetricPillSpec("metric.cpu", value: launchpadPercentText(device.cpu), symbolName: "cpu"),
                     MetricPillSpec("metric.memory", value: launchpadPercentText(device.memory), symbolName: "memorychip"),
-                    MetricPillSpec("metric.storage", value: device.storageFreeText, symbolName: "internaldrive")
+                    MetricPillSpec("metric.storage", value: device.storageDisplayText, symbolName: "internaldrive")
                 ])
             } else {
                 MetricPillRow(metrics: [
                     MetricPillSpec("metric.cpu", value: launchpadPercentText(device.cpu), progress: device.cpu, symbolName: "cpu"),
                     MetricPillSpec("metric.memory", value: launchpadPercentText(device.memory), progress: device.memory, symbolName: "memorychip"),
-                    MetricPillSpec("metric.storage", value: device.storageFreeText, progress: device.storageUsed, symbolName: "internaldrive")
+                    MetricPillSpec("metric.storage", value: device.storageDisplayText, progress: device.storageUsed, symbolName: "internaldrive")
                 ])
             }
         }
@@ -1983,6 +2144,7 @@ private struct DeviceSummaryPanel: View {
     }
 }
 
-private func launchpadPercentText(_ value: Double) -> String {
-    "\(Int((value * 100).rounded()))%"
+private func launchpadPercentText(_ value: Double?) -> String {
+    guard let value else { return "-" }
+    return "\(Int((value * 100).rounded()))%"
 }

@@ -119,6 +119,15 @@ struct ServiceIconView: View {
 }
 
 extension LaunchpadService {
+    var sourceTitleKey: String {
+        switch source {
+        case .dsm: return "service.source.dsm"
+        case .container: return "service.source.container"
+        case .package: return "service.source.package"
+        case .manual: return "service.source.manual"
+        }
+    }
+
     var displayProfile: ServiceDisplayProfile {
         if name == "DSM" {
             return ServiceDisplayProfile(role: .control, prefersFeaturedRow: true, primaryActionKey: "service.action.device_control")

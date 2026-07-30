@@ -21,7 +21,7 @@ struct MineView: View {
                             .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
 
                         VStack(alignment: .leading, spacing: 4) {
-                            Text(connectionStore.connectedDevice?.name ?? profileStore.nickname)
+                            Text(connectionStore.isConnected ? dataStore.device.name : profileStore.nickname)
                                 .font(.headline)
                                 .lineLimit(1)
                                 .minimumScaleFactor(0.82)
@@ -115,6 +115,7 @@ struct MineView: View {
                     Text("mine.sign_out.footer")
                 }
             }
+            .padding(.top, -12)
             .navigationTitle("tab.mine")
             .navigationBarTitleDisplayMode(.inline)
             .confirmationDialog("mine.sign_out.confirm", isPresented: $showSignOutConfirm, titleVisibility: .visible) {
@@ -655,9 +656,9 @@ private struct LaunchpadThemePreviewArtwork: View {
     private func previewHeader(inverted: Bool) -> some View {
         HStack {
             VStack(alignment: .leading, spacing: 2) {
-                Text("DS918+")
+                Text("Nastart NAS")
                     .font((expanded ? Font.headline : Font.caption).weight(.semibold))
-                Text("DSM 7.2")
+                Text("DSM")
                     .font(expanded ? .caption : .caption2)
                     .opacity(0.58)
             }

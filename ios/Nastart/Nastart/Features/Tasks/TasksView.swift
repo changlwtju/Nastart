@@ -73,6 +73,7 @@ struct TasksView: View {
                 }
             }
             .listStyle(.insetGrouped)
+            .padding(.top, -12)
             .navigationTitle("tab.tasks")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
