@@ -65,10 +65,10 @@ struct MineView: View {
                                 .foregroundStyle(.white)
                                 .lineLimit(1)
                                 .minimumScaleFactor(0.8)
-                                .padding(.horizontal, 12)
-                                .padding(.vertical, 7)
-                                .background(AppTheme.accent)
-                                .clipShape(Capsule())
+                                .padding(.horizontal, 11)
+                                .padding(.vertical, 6)
+                                .background(AppTheme.primaryAction)
+                                .clipShape(RoundedRectangle(cornerRadius: 9, style: .continuous))
                         }
                         .padding(.vertical, 6)
                     }
@@ -254,14 +254,10 @@ private struct PlusView: View {
                         Image(systemName: "arrow.right")
                             .font(.headline.weight(.semibold))
                     }
-                    .foregroundStyle(.white)
-                    .padding(.horizontal, 18)
-                    .padding(.vertical, 14)
-                    .frame(maxWidth: .infinity)
-                    .background(AppTheme.accent)
-                    .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(NastartPrimaryButtonStyle())
+                .listRowInsets(EdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0))
+                .listRowBackground(Color.clear)
             }
 
             Section {
@@ -332,7 +328,6 @@ private struct PlusFeatureRow: View {
 }
 
 private struct AppearanceSettingsView: View {
-    @EnvironmentObject private var entitlementStore: EntitlementStore
     @EnvironmentObject private var appearanceStore: AppearanceStore
     @AppStorage(LaunchpadTheme.storageKey) private var launchpadThemeRaw = LaunchpadTheme.cleanGrid.rawValue
     @AppStorage(AppLanguage.storageKey) private var appLanguageRaw = AppLanguage.system.rawValue
@@ -357,29 +352,21 @@ private struct AppearanceSettingsView: View {
                     Label("mine.appearance.display", systemImage: "circle.lefthalf.filled")
                 }
 
-                Picker(selection: $launchpadThemeRaw) {
-                    ForEach(LaunchpadTheme.allCases) { theme in
-                        Text(LocalizedStringKey(theme.titleKey)).tag(theme.rawValue)
-                    }
+                NavigationLink {
+                    LaunchpadThemeGalleryView()
                 } label: {
-                    Label("mine.appearance.theme", systemImage: "paintpalette")
-                }
-                .disabled(!entitlementStore.canUse(.advancedThemes))
-                .onChange(of: launchpadThemeRaw) { newValue in
-                    appearanceStore.launchpadTheme = LaunchpadTheme(rawValue: newValue) ?? .cleanGrid
+                    HStack(spacing: 12) {
+                        Label("mine.appearance.theme", systemImage: "paintpalette")
+                        Spacer()
+                        Text(LocalizedStringKey(selectedTheme.titleKey))
+                            .foregroundStyle(.secondary)
+                    }
                 }
                 Toggle(isOn: $appearanceStore.compactMetrics) {
                     Label("mine.appearance.compact_metrics", systemImage: "rectangle.compress.vertical")
                 }
                 Toggle(isOn: $appearanceStore.showServiceStatus) {
                     Label("mine.appearance.status_dot", systemImage: "circle.circle")
-                }
-                if !entitlementStore.hasPlus {
-                    NavigationLink {
-                        PlusView()
-                    } label: {
-                        Label("plus.locked.themes", systemImage: "lock")
-                    }
                 }
                 NavigationLink {
                     CardItemsSettingsView()
@@ -397,6 +384,340 @@ private struct AppearanceSettingsView: View {
         }
         .navigationTitle("mine.appearance.title")
         .navigationBarTitleDisplayMode(.inline)
+    }
+
+    private var selectedTheme: LaunchpadTheme {
+        LaunchpadTheme(rawValue: launchpadThemeRaw) ?? .cleanGrid
+    }
+}
+
+private struct LaunchpadThemeGalleryView: View {
+    @AppStorage(LaunchpadTheme.storageKey) private var launchpadThemeRaw = LaunchpadTheme.cleanGrid.rawValue
+
+    var body: some View {
+        ScrollView {
+            LazyVStack(spacing: 16) {
+                ForEach(LaunchpadTheme.allCases) { theme in
+                    NavigationLink {
+                        LaunchpadThemePreviewDetailView(theme: theme)
+                    } label: {
+                        VStack(alignment: .leading, spacing: 14) {
+                            LaunchpadThemePreviewArtwork(theme: theme, expanded: false)
+
+                            HStack(alignment: .firstTextBaseline, spacing: 10) {
+                                VStack(alignment: .leading, spacing: 5) {
+                                    Text(LocalizedStringKey(theme.titleKey))
+                                        .font(.headline)
+                                        .foregroundStyle(.primary)
+                                    Text(LocalizedStringKey(theme.descriptionKey))
+                                        .font(.subheadline)
+                                        .foregroundStyle(.secondary)
+                                        .multilineTextAlignment(.leading)
+                                        .lineLimit(2)
+                                }
+                                .layoutPriority(1)
+
+                                Spacer(minLength: 8)
+
+                                if theme.rawValue == launchpadThemeRaw {
+                                    Text("mine.appearance.theme.active")
+                                        .font(.caption.weight(.semibold))
+                                        .foregroundStyle(AppTheme.accent)
+                                } else if theme.isPremium {
+                                    Text("mine.appearance.theme.plus_badge")
+                                        .font(.caption.weight(.semibold))
+                                        .foregroundStyle(.white)
+                                        .padding(.horizontal, 8)
+                                        .padding(.vertical, 4)
+                                        .background(AppTheme.primaryAction)
+                                        .clipShape(RoundedRectangle(cornerRadius: 7, style: .continuous))
+                                }
+                            }
+                        }
+                        .padding(14)
+                        .background(Color(.secondarySystemGroupedBackground))
+                        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+                        .overlay {
+                            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                                .stroke(AppTheme.hairline, lineWidth: 1)
+                        }
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .padding(16)
+        }
+        .background(AppTheme.groupedBackground)
+        .navigationTitle("mine.appearance.theme.gallery")
+        .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+private struct LaunchpadThemePreviewDetailView: View {
+    @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var entitlementStore: EntitlementStore
+    @EnvironmentObject private var appearanceStore: AppearanceStore
+    @AppStorage(LaunchpadTheme.storageKey) private var launchpadThemeRaw = LaunchpadTheme.cleanGrid.rawValue
+
+    let theme: LaunchpadTheme
+
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 18) {
+                LaunchpadThemePreviewArtwork(theme: theme, expanded: true)
+
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack(spacing: 8) {
+                        Image(systemName: theme.symbolName)
+                            .foregroundStyle(AppTheme.accent)
+                        Text(LocalizedStringKey(theme.titleKey))
+                            .font(.title3.weight(.semibold))
+                        if theme.isPremium {
+                            Text("mine.appearance.theme.plus_badge")
+                                .font(.caption.weight(.semibold))
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    Text(LocalizedStringKey(theme.descriptionKey))
+                        .font(.body)
+                        .foregroundStyle(.secondary)
+                }
+
+                if isActive {
+                    Text("mine.appearance.theme.active")
+                        .font(.headline.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                        .frame(maxWidth: .infinity, minHeight: 50)
+                        .background(Color(.secondarySystemGroupedBackground))
+                        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                } else if canApply {
+                    Button("mine.appearance.theme.apply") {
+                        applyTheme()
+                    }
+                    .buttonStyle(NastartPrimaryButtonStyle())
+                } else {
+                    NavigationLink {
+                        PlusView()
+                    } label: {
+                        HStack {
+                            Text("mine.appearance.theme.unlock")
+                            Spacer()
+                            Image(systemName: "arrow.right")
+                        }
+                    }
+                    .buttonStyle(NastartPrimaryButtonStyle())
+
+                    Text("mine.appearance.theme.locked_hint")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                }
+            }
+            .padding(16)
+        }
+        .background(AppTheme.groupedBackground)
+        .navigationTitle("mine.appearance.theme.preview")
+        .navigationBarTitleDisplayMode(.inline)
+    }
+
+    private var isActive: Bool {
+        launchpadThemeRaw == theme.rawValue
+    }
+
+    private var canApply: Bool {
+        !theme.isPremium || entitlementStore.canUse(.advancedThemes)
+    }
+
+    private func applyTheme() {
+        launchpadThemeRaw = theme.rawValue
+        appearanceStore.launchpadTheme = theme
+        dismiss()
+    }
+}
+
+private struct LaunchpadThemePreviewArtwork: View {
+    let theme: LaunchpadTheme
+    let expanded: Bool
+
+    var body: some View {
+        Group {
+            switch theme {
+            case .cleanGrid:
+                cleanPreview
+            case .commandCenter:
+                commandPreview
+            case .glassDeck:
+                glassPreview
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .frame(height: expanded ? 390 : 190)
+        .clipShape(RoundedRectangle(cornerRadius: expanded ? 26 : 18, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: expanded ? 26 : 18, style: .continuous)
+                .stroke(.white.opacity(0.55), lineWidth: 1)
+        }
+    }
+
+    private var cleanPreview: some View {
+        VStack(alignment: .leading, spacing: expanded ? 14 : 8) {
+            previewHeader(inverted: false)
+            HStack(spacing: 7) {
+                previewMetric(symbol: "cpu", value: "11%")
+                previewMetric(symbol: "memorychip", value: "32%")
+                previewMetric(symbol: "internaldrive", value: "2.9 TB")
+            }
+            VStack(spacing: expanded ? 10 : 6) {
+                previewService(symbol: "server.rack", title: "DSM", inverted: false)
+                previewService(symbol: "play.rectangle", title: "Jellyfin", inverted: false)
+                if expanded {
+                    previewService(symbol: "arrow.down.circle", title: "Downloads", inverted: false)
+                }
+            }
+        }
+        .padding(expanded ? 20 : 12)
+        .background(Color(.systemGroupedBackground))
+    }
+
+    private var commandPreview: some View {
+        HStack(alignment: .top, spacing: expanded ? 14 : 8) {
+            VStack(spacing: expanded ? 18 : 10) {
+                previewRailMetric(symbol: "cpu", value: "11%")
+                previewRailMetric(symbol: "memorychip", value: "32%")
+                previewRailMetric(symbol: "internaldrive", value: "2.9T")
+            }
+            .padding(.vertical, expanded ? 18 : 10)
+            .frame(width: expanded ? 74 : 48)
+            .background(AppTheme.primaryAction)
+            .clipShape(RoundedRectangle(cornerRadius: expanded ? 20 : 14, style: .continuous))
+
+            VStack(alignment: .leading, spacing: expanded ? 12 : 7) {
+                previewHeader(inverted: false)
+                previewService(symbol: "server.rack", title: "DSM", inverted: false)
+                previewService(symbol: "shippingbox", title: "Container", inverted: false)
+                previewService(symbol: "play.rectangle", title: "Jellyfin", inverted: false)
+                if expanded {
+                    previewService(symbol: "network", title: "Network", inverted: false)
+                }
+            }
+        }
+        .padding(expanded ? 20 : 12)
+        .background(
+            LinearGradient(
+                colors: [Color(.systemGroupedBackground), Color(.secondarySystemGroupedBackground)],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+        )
+    }
+
+    private var glassPreview: some View {
+        VStack(alignment: .leading, spacing: expanded ? 14 : 8) {
+            VStack(alignment: .leading, spacing: 10) {
+                previewHeader(inverted: false)
+                HStack(spacing: 7) {
+                    previewMetric(symbol: "cpu", value: "11%")
+                    previewMetric(symbol: "memorychip", value: "32%")
+                    previewMetric(symbol: "internaldrive", value: "2.9 TB")
+                }
+            }
+            .padding(expanded ? 16 : 10)
+            .background(.regularMaterial)
+            .clipShape(RoundedRectangle(cornerRadius: expanded ? 22 : 14, style: .continuous))
+
+            previewService(symbol: "play.rectangle", title: "Jellyfin", inverted: false)
+                .background(.thinMaterial)
+                .clipShape(RoundedRectangle(cornerRadius: expanded ? 18 : 12, style: .continuous))
+            previewService(symbol: "music.note", title: "Navidrome", inverted: false)
+                .background(.thinMaterial)
+                .clipShape(RoundedRectangle(cornerRadius: expanded ? 18 : 12, style: .continuous))
+            if expanded {
+                previewService(symbol: "network", title: "Network", inverted: false)
+                    .background(.thinMaterial)
+                    .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+            }
+        }
+        .padding(expanded ? 20 : 12)
+        .background(
+            LinearGradient(
+                colors: [
+                    Color(.systemBackground),
+                    Color(.systemIndigo).opacity(0.16),
+                    AppTheme.accent.opacity(0.11),
+                    Color(.secondarySystemBackground)
+                ],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        )
+    }
+
+    private func previewHeader(inverted: Bool) -> some View {
+        HStack {
+            VStack(alignment: .leading, spacing: 2) {
+                Text("DS918+")
+                    .font((expanded ? Font.headline : Font.caption).weight(.semibold))
+                Text("DSM 7.2")
+                    .font(expanded ? .caption : .caption2)
+                    .opacity(0.58)
+            }
+            Spacer()
+            Image(systemName: "magnifyingglass")
+                .font(expanded ? .body : .caption)
+        }
+        .foregroundStyle(inverted ? Color.white : Color.primary)
+    }
+
+    private func previewMetric(symbol: String, value: String) -> some View {
+        VStack(alignment: .leading, spacing: expanded ? 7 : 4) {
+            Image(systemName: symbol)
+                .font(expanded ? .caption : .caption2)
+                .foregroundStyle(.secondary)
+            Text(value)
+                .font((expanded ? Font.subheadline : Font.caption2).weight(.semibold))
+                .lineLimit(1)
+                .minimumScaleFactor(0.72)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(expanded ? 11 : 7)
+        .background(Color(.systemBackground).opacity(0.8))
+        .clipShape(RoundedRectangle(cornerRadius: expanded ? 14 : 9, style: .continuous))
+    }
+
+    private func previewRailMetric(symbol: String, value: String) -> some View {
+        VStack(spacing: 4) {
+            Image(systemName: symbol)
+                .font(expanded ? .caption : .caption2)
+                .foregroundStyle(.white.opacity(0.65))
+            Text(value)
+                .font((expanded ? Font.caption : Font.caption2).weight(.semibold))
+                .foregroundStyle(.white)
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
+        }
+        .frame(maxWidth: .infinity)
+    }
+
+    private func previewService(symbol: String, title: String, inverted: Bool) -> some View {
+        HStack(spacing: expanded ? 11 : 7) {
+            Image(systemName: symbol)
+                .font(expanded ? .subheadline : .caption2)
+                .frame(width: expanded ? 32 : 22, height: expanded ? 32 : 22)
+                .background((inverted ? Color.white : Color.primary).opacity(0.07))
+                .clipShape(RoundedRectangle(cornerRadius: expanded ? 9 : 6, style: .continuous))
+            Text(title)
+                .font((expanded ? Font.subheadline : Font.caption2).weight(.medium))
+                .lineLimit(1)
+            Spacer()
+            Circle()
+                .fill(Color.green)
+                .frame(width: expanded ? 7 : 5, height: expanded ? 7 : 5)
+        }
+        .foregroundStyle(inverted ? Color.white : Color.primary)
+        .padding(.horizontal, expanded ? 12 : 8)
+        .frame(minHeight: expanded ? 52 : 30)
+        .background(inverted ? Color.white.opacity(0.08) : Color(.systemBackground).opacity(0.82))
+        .clipShape(RoundedRectangle(cornerRadius: expanded ? 16 : 10, style: .continuous))
     }
 }
 

@@ -308,6 +308,16 @@
 "mine.appearance.theme.clean_grid" = "Flow";
 "mine.appearance.theme.command_center" = "Stack";
 "mine.appearance.theme.glass_deck" = "Glow";
+"mine.appearance.theme.gallery" = "Launchpad Themes";
+"mine.appearance.theme.preview" = "Theme Preview";
+"mine.appearance.theme.apply" = "Apply Theme";
+"mine.appearance.theme.active" = "Active";
+"mine.appearance.theme.unlock" = "Unlock and Apply";
+"mine.appearance.theme.plus_badge" = "Plus";
+"mine.appearance.theme.locked_hint" = "Unlock Plus to apply this theme";
+"mine.appearance.theme.clean_grid.description" = "Open spacing and a light rhythm keep everyday services within easy reach.";
+"mine.appearance.theme.command_center.description" = "System metrics move into a focused side rail for dense, frequent checks.";
+"mine.appearance.theme.glass_deck.description" = "Layered materials and translucent cards create a more immersive launchpad.";
 "mine.appearance.compact_metrics" = "Compact metrics";
 "mine.appearance.status_dot" = "Show status dots";
 "mine.appearance.cards" = "Cards";
@@ -448,3 +458,7 @@
 "diagnostics.container.request_failed" = "Container API request failed";
 "diagnostics.container.empty_response" = "Container API returned empty";
 "diagnostics.container.loaded" = "Container list loaded";
+
+"diagnostics.files.folder_loaded" = "Folder loaded";
+"diagnostics.files.folder_failed" = "Folder load failed";
+"devices.files.empty" = "No files";

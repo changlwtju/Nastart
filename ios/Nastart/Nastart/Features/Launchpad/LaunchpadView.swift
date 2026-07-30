@@ -76,14 +76,25 @@ struct LaunchpadView: View {
     @ViewBuilder
     private var launchpadBackground: some View {
         switch selectedTheme {
-        case .cleanGrid, .commandCenter:
+        case .cleanGrid:
             AppTheme.groupedBackground
+        case .commandCenter:
+            LinearGradient(
+                colors: [
+                    Color(.systemGroupedBackground),
+                    Color(.secondarySystemGroupedBackground).opacity(0.72),
+                    Color(.systemGroupedBackground)
+                ],
+                startPoint: .top,
+                endPoint: .bottom
+            )
         case .glassDeck:
             LinearGradient(
                 colors: [
                     Color(.systemBackground),
-                    AppTheme.softAccent.opacity(0.16),
-                    Color(.secondarySystemGroupedBackground)
+                    Color(.systemIndigo).opacity(0.13),
+                    AppTheme.accent.opacity(0.09),
+                    Color(.secondarySystemBackground)
                 ],
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
@@ -262,13 +273,14 @@ private struct CommandMetricRail: View {
             CommandRailMetric(titleKey: "metric.storage", value: device.storageFreeText, symbolName: "internaldrive", progress: compact ? nil : device.storageUsed, compact: compact)
         }
         .frame(width: compact ? 52 : 60)
-        .padding(.vertical, compact ? 7 : 9)
-        .background(Color(.secondarySystemGroupedBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 17, style: .continuous))
+        .padding(.vertical, compact ? 10 : 12)
+        .background(AppTheme.primaryAction)
+        .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
         .overlay {
-            RoundedRectangle(cornerRadius: 17, style: .continuous)
-                .stroke(AppTheme.hairline, lineWidth: 1)
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .stroke(.white.opacity(0.12), lineWidth: 1)
         }
+        .shadow(color: .black.opacity(0.12), radius: 14, y: 8)
     }
 }
 
@@ -283,31 +295,30 @@ private struct CommandRailMetric: View {
         VStack(spacing: compact ? 3 : 5) {
             Image(systemName: symbolName)
                 .font(.caption2.weight(.medium))
-                .foregroundStyle(.secondary)
+                .foregroundStyle(.white.opacity(0.7))
 
             Text(value)
                 .font((compact ? Font.caption : Font.subheadline).weight(.semibold))
+                .foregroundStyle(.white)
                 .lineLimit(1)
                 .minimumScaleFactor(0.66)
             if !compact {
                 Text(titleKey)
                     .font(.caption2)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.white.opacity(0.58))
                     .lineLimit(1)
                     .minimumScaleFactor(0.66)
             }
 
             if let progress {
                 ProgressView(value: progress)
-                    .tint(AppTheme.accent)
+                    .tint(.white.opacity(0.82))
                     .scaleEffect(x: 1, y: 0.64)
             }
         }
         .frame(maxWidth: .infinity)
         .padding(.horizontal, compact ? 4 : 6)
-        .padding(.vertical, compact ? 6 : 8)
-        .background(.background)
-        .clipShape(RoundedRectangle(cornerRadius: compact ? 12 : 14, style: .continuous))
+        .padding(.vertical, compact ? 8 : 10)
     }
 }
 
@@ -554,12 +565,13 @@ private struct GlassCollapsedGroupRow: View {
                 .foregroundStyle(.secondary)
         }
         .padding(12)
-        .background(.ultraThinMaterial)
+        .background(.thinMaterial)
         .clipShape(RoundedRectangle(cornerRadius: 17, style: .continuous))
         .overlay {
             RoundedRectangle(cornerRadius: 17, style: .continuous)
-                .stroke(.white.opacity(0.3), lineWidth: 1)
+                .stroke(.white.opacity(0.58), lineWidth: 1)
         }
+        .shadow(color: .black.opacity(0.05), radius: 10, y: 5)
     }
 }
 
@@ -601,12 +613,13 @@ private struct GlassHeroPanel: View {
             }
         }
         .padding(19)
-        .background(.ultraThinMaterial)
+        .background(.regularMaterial)
         .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
         .overlay {
             RoundedRectangle(cornerRadius: 28, style: .continuous)
-                .stroke(.white.opacity(0.46), lineWidth: 1)
+                .stroke(.white.opacity(0.74), lineWidth: 1)
         }
+        .shadow(color: .black.opacity(0.07), radius: 20, y: 10)
     }
 }
 
@@ -639,12 +652,13 @@ private struct GlassServiceRow: View {
             }
             .padding(15)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(.ultraThinMaterial)
+            .background(.thinMaterial)
             .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
             .overlay {
                 RoundedRectangle(cornerRadius: 20, style: .continuous)
-                    .stroke(.white.opacity(0.42), lineWidth: 1)
+                    .stroke(.white.opacity(0.68), lineWidth: 1)
             }
+            .shadow(color: .black.opacity(0.045), radius: 12, y: 6)
             .contentShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
         }
         .buttonStyle(.plain)
@@ -1709,10 +1723,10 @@ private struct DSMConnectionFlowView: View {
                         Text(LocalizedStringKey(isConnecting ? "connect.review.connecting" : "connect.action"))
                             .font(.headline.weight(.semibold))
                     }
-                    .frame(maxWidth: .infinity)
                 }
-                .listRowBackground(AppTheme.accent)
-                .foregroundStyle(.white)
+                .buttonStyle(NastartPrimaryButtonStyle())
+                .listRowInsets(EdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0))
+                .listRowBackground(Color.clear)
                 .disabled(isConnecting || host.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || account.isEmpty || password.isEmpty)
             } footer: {
                 Text("connect.scope.footer")
@@ -1754,7 +1768,8 @@ private struct DSMConnectionFlowView: View {
                         account: account,
                         password: password,
                         useAgent: useAgent,
-                        allowsSelfSignedCertificates: allowsSelfSignedCertificates
+                        allowsSelfSignedCertificates: allowsSelfSignedCertificates,
+                        deviceID: session.deviceID
                     )
                 )
                 await MainActor.run {

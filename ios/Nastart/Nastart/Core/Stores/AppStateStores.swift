@@ -61,6 +61,10 @@ struct DSMNASDataSource: NASDataSource {
     func loadSnapshot() async -> AppDataProviding {
         await client.loadSnapshot(session: session, useAgent: useAgent)
     }
+
+    func loadFolder(path: String) async throws -> [FileItem] {
+        try await client.listFolder(session: session, folderPath: path)
+    }
 }
 
 protocol NASDeviceProviding {
@@ -136,6 +140,7 @@ struct DSMSession {
     let sid: String
     let account: String
     let allowsSelfSignedCertificates: Bool
+    let deviceID: String?
 }
 
 struct StoredNASCredential: Codable {
@@ -144,19 +149,22 @@ struct StoredNASCredential: Codable {
     let password: String
     let useAgent: Bool
     let allowsSelfSignedCertificates: Bool
+    let deviceID: String?
 
     init(
         baseURLString: String,
         account: String,
         password: String,
         useAgent: Bool,
-        allowsSelfSignedCertificates: Bool = false
+        allowsSelfSignedCertificates: Bool = false,
+        deviceID: String? = nil
     ) {
         self.baseURLString = baseURLString
         self.account = account
         self.password = password
         self.useAgent = useAgent
         self.allowsSelfSignedCertificates = allowsSelfSignedCertificates
+        self.deviceID = deviceID
     }
 
     enum CodingKeys: String, CodingKey {
@@ -165,6 +173,7 @@ struct StoredNASCredential: Codable {
         case password
         case useAgent
         case allowsSelfSignedCertificates
+        case deviceID
     }
 
     init(from decoder: Decoder) throws {
@@ -174,6 +183,7 @@ struct StoredNASCredential: Codable {
         password = try container.decode(String.self, forKey: .password)
         useAgent = try container.decode(Bool.self, forKey: .useAgent)
         allowsSelfSignedCertificates = try container.decodeIfPresent(Bool.self, forKey: .allowsSelfSignedCertificates) ?? false
+        deviceID = try container.decodeIfPresent(String.self, forKey: .deviceID)
     }
 }
 
@@ -578,7 +588,12 @@ final class DSMClient {
         return url
     }
 
-    func login(account: String, password: String, oneTimeCode: String = "") async throws -> DSMSession {
+    func login(
+        account: String,
+        password: String,
+        oneTimeCode: String = "",
+        deviceID: String? = nil
+    ) async throws -> DSMSession {
         record(
             .info,
             categoryKey: "diagnostics.category.connection",
@@ -612,11 +627,15 @@ final class DSMClient {
             account: account,
             password: password,
             oneTimeCode: cleanedCode,
+            deviceID: deviceID,
             apiInfo: apiInfo
         ) {
             do {
                 let data = try await call(path: request.0, queryItems: request.1)
                 if let sid = data.firstString(for: ["sid"]) {
+                    let trustedDeviceID = data.firstString(
+                        for: ["device_id", "deviceId", "did", "device_token"]
+                    ) ?? deviceID
                     record(
                         .info,
                         categoryKey: "diagnostics.category.connection",
@@ -627,7 +646,8 @@ final class DSMClient {
                         baseURL: baseURL,
                         sid: sid,
                         account: account,
-                        allowsSelfSignedCertificates: allowsSelfSignedCertificates
+                        allowsSelfSignedCertificates: allowsSelfSignedCertificates,
+                        deviceID: trustedDeviceID
                     )
                 }
             } catch {
@@ -754,6 +774,42 @@ final class DSMClient {
         )
     }
 
+    func listFolder(session: DSMSession, folderPath: String) async throws -> [FileItem] {
+        let normalizedPath = folderPath.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? "/" : folderPath
+        let apiInfo = await optionalCall(
+            path: "/webapi/query.cgi",
+            queryItems: [
+                URLQueryItem(name: "api", value: "SYNO.API.Info"),
+                URLQueryItem(name: "version", value: "1"),
+                URLQueryItem(name: "method", value: "query"),
+                URLQueryItem(name: "query", value: "SYNO.FileStation.List")
+            ]
+        )
+        let data = await firstSuccessfulCall(apiRequests(
+            session,
+            apiInfo: apiInfo,
+            apiName: "SYNO.FileStation.List",
+            fallbackPath: "/webapi/entry.cgi",
+            fallbackMaxVersion: 2,
+            method: "list",
+            extras: [[
+                URLQueryItem(name: "folder_path", value: normalizedPath),
+                URLQueryItem(name: "limit", value: "1000"),
+                URLQueryItem(name: "offset", value: "0"),
+                URLQueryItem(name: "additional", value: "size,time,type")
+            ]]
+        ))
+        guard let data else { throw DSMClientError.invalidResponse }
+        let items = DSMClient.mapFileItems(data, parentPath: normalizedPath)
+        record(
+            .info,
+            categoryKey: "diagnostics.category.dsm_api",
+            messageKey: "diagnostics.files.folder_loaded",
+            details: ["path": normalizedPath, "items": "\(items.count)"]
+        )
+        return items
+    }
+
     private func call(path: String, queryItems: [URLQueryItem]) async throws -> DSMJSONValue {
         guard var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false) else {
             throw DSMClientError.invalidAddress
@@ -808,6 +864,7 @@ final class DSMClient {
         account: String,
         password: String,
         oneTimeCode: String,
+        deviceID: String?,
         apiInfo: DSMJSONValue?
     ) -> [(String, [URLQueryItem])] {
         let entry = apiInfoEntry(apiInfo, apiName: "SYNO.API.Auth")
@@ -825,6 +882,13 @@ final class DSMClient {
             ]
             if !oneTimeCode.isEmpty {
                 items.append(URLQueryItem(name: "otp_code", value: oneTimeCode))
+            }
+            if version >= 6 {
+                items.append(URLQueryItem(name: "enable_device_token", value: "yes"))
+                items.append(URLQueryItem(name: "device_name", value: "Nastart"))
+                if let deviceID, !deviceID.isEmpty {
+                    items.append(URLQueryItem(name: "device_id", value: deviceID))
+                }
             }
             return (path, items)
         }
@@ -1061,12 +1125,88 @@ final class DSMClient {
     }
 
     private static func mapSharedFolders(_ data: DSMJSONValue?) -> [FileItem] {
-        guard let shares = data?.firstArray(for: ["shares", "items"]) else { return [] }
+        guard let shares = data?.firstArray(for: ["shares", "items", "list"]) else { return [] }
         return shares.compactMap { share in
-            guard let name = share.firstString(for: ["name", "path"]) else { return nil }
-            let path = share.firstString(for: ["path"]) ?? "/\(name)"
+            let rawPath = nonEmptyString(share.firstString(for: ["path", "additional_path"]))
+            guard let name = nonEmptyString(share.firstString(for: ["name", "display_name"])) ?? lastPathComponent(rawPath ?? "") else { return nil }
+            let path = rawPath ?? "/\(name)"
             return FileItem(id: UUID(), name: name, subtitle: path, kind: .folder, sizeText: nil, children: [])
         }
+        .sorted(by: sortFiles)
+    }
+
+    private static func mapFileItems(_ data: DSMJSONValue?, parentPath: String) -> [FileItem] {
+        guard let entries = data?.firstArray(for: ["files", "items", "list"]) else { return [] }
+        return entries.compactMap { item in
+            let path = filePath(for: item, parentPath: parentPath)
+            guard let name = fileName(for: item, path: path) else { return nil }
+            return FileItem(
+                id: UUID(),
+                name: name,
+                subtitle: path ?? normalizedChildPath(parentPath: parentPath, name: name),
+                kind: fileKind(for: name, item: item),
+                sizeText: fileSizeText(item),
+                children: []
+            )
+        }
+        .sorted(by: sortFiles)
+    }
+
+    private static func filePath(for item: DSMJSONValue, parentPath: String) -> String? {
+        if let path = nonEmptyString(item.firstString(for: ["path", "real_path", "filename"])) {
+            if path.hasPrefix("/") { return path }
+            return normalizedChildPath(parentPath: parentPath, name: path)
+        }
+        guard let name = nonEmptyString(item.firstString(for: ["name", "display_name"])) else { return nil }
+        return normalizedChildPath(parentPath: parentPath, name: name)
+    }
+
+    private static func fileName(for item: DSMJSONValue, path: String?) -> String? {
+        nonEmptyString(item.firstString(for: ["name", "display_name"])) ?? lastPathComponent(path ?? "")
+    }
+
+    private static func normalizedChildPath(parentPath: String, name: String) -> String {
+        let parent = parentPath == "/" ? "" : parentPath.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
+        let child = name.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
+        return "/\([parent, child].filter { !$0.isEmpty }.joined(separator: "/"))"
+    }
+
+    private static func lastPathComponent(_ path: String) -> String? {
+        let trimmed = path.trimmingCharacters(in: CharacterSet(charactersIn: "/").union(.whitespacesAndNewlines))
+        guard !trimmed.isEmpty, let last = trimmed.split(separator: "/").last else { return nil }
+        return String(last)
+    }
+
+    private static func isFolder(_ item: DSMJSONValue) -> Bool {
+        if let explicit = item.firstBool(for: ["isdir", "is_dir", "directory", "isFolder"]) {
+            return explicit
+        }
+        let type = (item.firstString(for: ["type", "kind", "filetype"]) ?? "").lowercased()
+        return type.contains("dir") || type.contains("folder") || type.contains("share")
+    }
+
+    private static func fileKind(for name: String, item: DSMJSONValue) -> FileKind {
+        if isFolder(item) { return .folder }
+        let ext = (name as NSString).pathExtension.lowercased()
+        if ["mp4", "mkv", "mov", "m4v", "avi", "wmv", "webm"].contains(ext) { return .video }
+        if ["mp3", "flac", "aac", "m4a", "wav", "ogg"].contains(ext) { return .audio }
+        if ["jpg", "jpeg", "png", "gif", "heic", "webp"].contains(ext) { return .image }
+        if ["zip", "rar", "7z", "tar", "gz"].contains(ext) { return .archive }
+        return .text
+    }
+
+    private static func fileSizeText(_ item: DSMJSONValue) -> String? {
+        textValue(in: item, keys: ["size", "filesize", "size_text"]) ?? DSMFormatters.bytes(item.firstDouble(for: ["size", "filesize"]))
+    }
+
+    private static func sortFiles(_ lhs: FileItem, _ rhs: FileItem) -> Bool {
+        if lhs.isFolder != rhs.isFolder { return lhs.isFolder }
+        return lhs.name.localizedCaseInsensitiveCompare(rhs.name) == .orderedAscending
+    }
+
+    private static func nonEmptyString(_ value: String?) -> String? {
+        let trimmed = value?.trimmingCharacters(in: .whitespacesAndNewlines)
+        return trimmed?.isEmpty == false ? trimmed : nil
     }
 
     private static func mapContainers(_ data: DSMJSONValue?) -> [DockerContainer] {
@@ -1204,10 +1344,10 @@ final class DSMClient {
     }
 
     private static func mapPackageServices(_ data: DSMJSONValue?, session: DSMSession) -> [LaunchpadService] {
-        guard let packages = data?.firstArray(for: ["packages", "items"]) else { return [] }
+        guard let packages = data?.firstArray(for: ["packages", "items", "list"]) else { return [] }
         return packages.compactMap { item in
-            guard let name = item.firstString(for: ["name", "id", "package"]) else { return nil }
-            guard shouldShowPackageService(name) else { return nil }
+            guard let name = item.firstString(for: ["name", "id", "package", "package_name", "pkgname"]) else { return nil }
+            guard shouldShowPackageService(name), isInstalledPackage(item) else { return nil }
             let status = packageStatus(item)
             return LaunchpadService(
                 id: UUID(),
@@ -1215,7 +1355,7 @@ final class DSMClient {
                 iconText: iconText(for: name),
                 category: category(for: name),
                 status: status,
-                subtitle: item.firstString(for: ["version"]) ?? "DSM package",
+                subtitle: item.firstString(for: ["version", "install_version", "installed_version", "pkg_version"]) ?? "DSM package",
                 detail: name,
                 isMedia: isMedia(name),
                 cpu: nil,
@@ -1223,6 +1363,31 @@ final class DSMClient {
                 endpoint: packageEndpoint(for: item, baseURL: session.baseURL)
             )
         }
+    }
+
+    private static func isInstalledPackage(_ item: DSMJSONValue) -> Bool {
+        if let explicit = item.firstBool(for: ["installed", "is_installed", "isInstalled", "is_install"]) {
+            return explicit
+        }
+
+        let raw = (textValue(
+            in: item,
+            keys: ["status", "state", "status_text", "display_status", "pkgStatus", "install_status", "package_status"]
+        ) ?? "").lowercased()
+
+        if raw.contains("not") && raw.contains("install") { return false }
+        if raw.contains("uninstall") || raw.contains("available") || raw.contains("installable") || raw == "none" { return false }
+        if raw.contains("running") || raw.contains("stopped") || raw.contains("started") || raw.contains("enabled") || raw.contains("disabled") || raw == "installed" {
+            return true
+        }
+
+        if nonEmptyString(item.firstString(for: ["install_version", "installed_version", "installedVersion"])) != nil {
+            return true
+        }
+        if item.firstBool(for: ["start", "running", "is_running", "started", "enabled", "is_enable"]) != nil {
+            return true
+        }
+        return false
     }
 
     private static func packageEndpoint(for item: DSMJSONValue, baseURL: URL) -> URL? {
@@ -1290,21 +1455,24 @@ final class DSMClient {
     }
 
     private static func mapPorts(_ item: DSMJSONValue) -> [String] {
-        var ports: [String] = []
-
-        if let array = item.firstArray(for: ["ports", "Ports", "port_bindings", "PortBindings", "port_mappings", "portMappings"]) {
-            ports += array.compactMap(portText)
+        let portKeys = [
+            "ports", "Ports", "port_bindings", "PortBindings", "portBindings",
+            "port_mappings", "portMappings", "PortMapping", "networkSettings", "NetworkSettings"
+        ]
+        var ports = portKeys.flatMap { key -> [String] in
+            guard let value = item.firstValue(for: [key]) else { return [] }
+            return portTexts(from: value, inheritedContainerPort: nil, keyHint: key)
         }
 
-        if let bindings = item.firstValue(for: ["port_bindings", "PortBindings", "portBindings", "port_mappings", "portMappings"]) {
-            ports += portBindingTexts(bindings)
+        if ports.isEmpty {
+            ports = portLikeBranchTexts(from: item)
         }
 
         return uniqueStrings(ports)
     }
 
-    private static func portText(_ port: DSMJSONValue) -> String? {
-        if let text = port.stringValue, !text.isEmpty {
+    private static func portText(_ port: DSMJSONValue, inheritedContainerPort: String? = nil) -> String? {
+        if let text = nonEmptyString(port.stringValue) {
             return text
         }
 
@@ -1313,7 +1481,7 @@ final class DSMClient {
             keys: [
                 "local_port", "localPort", "host_port", "hostPort",
                 "public_port", "publicPort", "PublicPort", "HostPort",
-                "external", "external_port", "externalPort", "host"
+                "external", "external_port", "externalPort", "host", "HostIp", "host_ip"
             ]
         )
         let container = textValue(
@@ -1322,35 +1490,54 @@ final class DSMClient {
                 "container_port", "containerPort", "private_port", "privatePort",
                 "PrivatePort", "ContainerPort", "target", "target_port", "targetPort", "port"
             ]
-        )
-        if let local, let container {
+        ) ?? inheritedContainerPort
+
+        if let local, let container, local != container {
             return "\(local):\(container)"
         }
         return local ?? container
     }
 
-    private static func portBindingTexts(_ value: DSMJSONValue) -> [String] {
-        if let text = portText(value) {
+    private static func portTexts(from value: DSMJSONValue, inheritedContainerPort: String?, keyHint: String) -> [String] {
+        if let text = portText(value, inheritedContainerPort: inheritedContainerPort) {
             return [text]
         }
 
         if let array = value.arrayValue {
-            return array.flatMap(portBindingTexts)
+            return array.flatMap { portTexts(from: $0, inheritedContainerPort: inheritedContainerPort, keyHint: keyHint) }
         }
 
         guard let object = value.objectValue else { return [] }
 
         return object.flatMap { key, child -> [String] in
-            let nested = portBindingTexts(child)
-            guard !nested.isEmpty else { return [] }
-
-            return nested.map { text in
-                guard let containerPort = key.split(separator: "/").first.map(String.init), !text.contains(":") else {
-                    return text
-                }
+            let containerPort = portNumberPrefix(from: key) ?? inheritedContainerPort
+            let childKeyHint = keyHint + "." + key
+            return portTexts(from: child, inheritedContainerPort: containerPort, keyHint: childKeyHint).map { text in
+                guard let containerPort, !text.contains(":"), text != containerPort else { return text }
                 return "\(text):\(containerPort)"
             }
         }
+    }
+
+    private static func portLikeBranchTexts(from value: DSMJSONValue) -> [String] {
+        guard let object = value.objectValue else { return [] }
+        return object.flatMap { key, child -> [String] in
+            let lower = key.lowercased()
+            if lower.contains("port") || lower.contains("binding") || lower.contains("mapping") {
+                return portTexts(from: child, inheritedContainerPort: portNumberPrefix(from: key), keyHint: key)
+            }
+            if child.objectValue != nil || child.arrayValue != nil {
+                return portLikeBranchTexts(from: child)
+            }
+            return []
+        }
+    }
+
+    private static func portNumberPrefix(from key: String) -> String? {
+        guard let prefix = key.split(separator: "/").first else { return nil }
+        let numbers = prefix.split { !$0.isNumber }.compactMap { Int($0) }
+        guard let port = numbers.first, (1...65_535).contains(port) else { return nil }
+        return String(port)
     }
 
     private static func uniqueStrings(_ values: [String]) -> [String] {
@@ -1496,24 +1683,37 @@ final class DSMClient {
 
     private static func hostPort(from text: String) -> Int? {
         let compact = text.replacingOccurrences(of: " ", with: "")
-        let leftSide = compact.components(separatedBy: "->").first ?? compact
-        let numbers = leftSide
-            .split { !$0.isNumber }
-            .compactMap { Int($0) }
-            .filter { $0 > 0 && $0 <= 65_535 }
-
-        if leftSide.contains(":") {
-            if numbers.count >= 2 {
-                return numbers[numbers.count - 2]
-            }
-            if let port = numbers.last {
-                return port
-            }
+        let arrowParts = compact.components(separatedBy: "->")
+        let hostLikeParts = arrowParts.filter { $0.contains(":") || $0.contains(".") || $0.contains("[") }
+        for part in hostLikeParts + arrowParts {
+            if let mapped = mappedHostPort(from: part) { return mapped }
         }
         return compact
             .split { !$0.isNumber }
             .compactMap { Int($0) }
             .first { $0 > 0 && $0 <= 65_535 }
+    }
+
+    private static func mappedHostPort(from text: String) -> Int? {
+        let fragments = text.split(separator: ":").map(String.init).filter { !$0.isEmpty }
+        guard fragments.count > 1 else { return nil }
+        if fragments.count == 2,
+           let first = Int(fragments[0]),
+           let second = Int(fragments[1]),
+           (1...65_535).contains(first),
+           (1...65_535).contains(second) {
+            return first
+        }
+        if let lastText = fragments.last,
+           let last = Int(lastText),
+           (1...65_535).contains(last) {
+            return last
+        }
+        return text
+            .split { !$0.isNumber }
+            .compactMap { Int($0) }
+            .filter { $0 > 0 && $0 <= 65_535 }
+            .last
     }
 
     private static func webScheme(for port: Int, fallback: String?) -> String {
@@ -1614,6 +1814,33 @@ final class AppDataStore: ObservableObject {
     }
 
     @MainActor
+    func loadFolder(path: String) async -> [FileItem] {
+        if let dataSource = activeDataSource as? DSMNASDataSource {
+            do {
+                return try await dataSource.loadFolder(path: path)
+            } catch {
+                DiagnosticLogStore.shared.record(
+                    .warning,
+                    categoryKey: "diagnostics.category.dsm_api",
+                    messageKey: "diagnostics.files.folder_failed",
+                    details: ["path": path, "error": "\(error)"]
+                )
+                return localChildren(for: path, in: files)
+            }
+        }
+        return localChildren(for: path, in: files)
+    }
+
+    private func localChildren(for path: String, in items: [FileItem]) -> [FileItem] {
+        for item in items {
+            if item.subtitle == path { return item.children }
+            let nested = localChildren(for: path, in: item.children)
+            if !nested.isEmpty { return nested }
+        }
+        return []
+    }
+
+    @MainActor
     func restoreDSMConnection(using connectionStore: NASConnectionStore) async {
         guard let credential = KeychainStore.shared.loadNASCredential() else { return }
         isRefreshing = true
@@ -1625,9 +1852,23 @@ final class AppDataStore: ObservableObject {
                 baseURL: baseURL,
                 allowsSelfSignedCertificates: credential.allowsSelfSignedCertificates
             )
-            let session = try await client.login(account: credential.account, password: credential.password)
+            let session = try await client.login(
+                account: credential.account,
+                password: credential.password,
+                deviceID: credential.deviceID
+            )
             let dataSource = DSMNASDataSource(session: session, useAgent: credential.useAgent)
             let snapshot = await dataSource.loadSnapshot()
+            KeychainStore.shared.saveNASCredential(
+                StoredNASCredential(
+                    baseURLString: credential.baseURLString,
+                    account: credential.account,
+                    password: credential.password,
+                    useAgent: credential.useAgent,
+                    allowsSelfSignedCertificates: credential.allowsSelfSignedCertificates,
+                    deviceID: session.deviceID ?? credential.deviceID
+                )
+            )
             activeDataSource = dataSource
             reload(from: snapshot)
             sourceKind = dataSource.kind
@@ -1698,6 +1939,26 @@ enum LaunchpadTheme: String, CaseIterable, Identifiable, Hashable {
         case .commandCenter: return "mine.appearance.theme.command_center"
         case .glassDeck: return "mine.appearance.theme.glass_deck"
         }
+    }
+
+    var descriptionKey: String {
+        switch self {
+        case .cleanGrid: return "mine.appearance.theme.clean_grid.description"
+        case .commandCenter: return "mine.appearance.theme.command_center.description"
+        case .glassDeck: return "mine.appearance.theme.glass_deck.description"
+        }
+    }
+
+    var symbolName: String {
+        switch self {
+        case .cleanGrid: return "rectangle.grid.1x2"
+        case .commandCenter: return "sidebar.left"
+        case .glassDeck: return "sparkles"
+        }
+    }
+
+    var isPremium: Bool {
+        self != .cleanGrid
     }
 }
 

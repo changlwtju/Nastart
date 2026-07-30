@@ -308,6 +308,16 @@
 "mine.appearance.theme.clean_grid" = "清流";
 "mine.appearance.theme.command_center" = "栈列";
 "mine.appearance.theme.glass_deck" = "流光";
+"mine.appearance.theme.gallery" = "启动台主题";
+"mine.appearance.theme.preview" = "主题预览";
+"mine.appearance.theme.apply" = "应用主题";
+"mine.appearance.theme.active" = "正在使用";
+"mine.appearance.theme.unlock" = "解锁并应用";
+"mine.appearance.theme.plus_badge" = "Plus";
+"mine.appearance.theme.locked_hint" = "解锁 Plus 后即可应用这套主题";
+"mine.appearance.theme.clean_grid.description" = "留白充足、节奏轻盈，快速进入常用服务。";
+"mine.appearance.theme.command_center.description" = "设备指标收进侧轨，适合高频巡检与密集服务。";
+"mine.appearance.theme.glass_deck.description" = "分层材质与通透卡片，带来更沉浸的启动台。";
 "mine.appearance.compact_metrics" = "紧凑指标";
 "mine.appearance.status_dot" = "显示状态点";
 "mine.appearance.cards" = "卡片";
@@ -448,3 +458,7 @@
 "diagnostics.container.request_failed" = "容器 API 请求失败";
 "diagnostics.container.empty_response" = "容器 API 返回为空";
 "diagnostics.container.loaded" = "容器列表读取成功";
+
+"diagnostics.files.folder_loaded" = "文件夹已读取";
+"diagnostics.files.folder_failed" = "文件夹读取失败";
+"devices.files.empty" = "暂无文件";

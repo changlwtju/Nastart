@@ -274,21 +274,68 @@ private struct DockerContainerDetailView: View {
 }
 
 private struct FileBrowserView: View {
+    @EnvironmentObject private var dataStore: AppDataStore
     let titleKey: LocalizedStringKey
     let items: [FileItem]
+    let folderPath: String?
+    @State private var loadedItems: [FileItem] = []
+    @State private var didLoad = false
+    @State private var isLoading = false
+
+    init(titleKey: LocalizedStringKey, items: [FileItem], folderPath: String? = nil) {
+        self.titleKey = titleKey
+        self.items = items
+        self.folderPath = folderPath
+    }
+
+    private var visibleItems: [FileItem] {
+        if folderPath == nil { return items }
+        return didLoad ? loadedItems : items
+    }
 
     var body: some View {
         List {
             Section {
-                ForEach(items) { item in
+                if isLoading && visibleItems.isEmpty {
+                    HStack {
+                        Spacer()
+                        ProgressView()
+                        Spacer()
+                    }
+                }
+
+                ForEach(visibleItems) { item in
                     FileItemRowLink(item: item)
                 }
+
+                if !isLoading && visibleItems.isEmpty {
+                    VStack(spacing: 10) {
+                        Image(systemName: "tray")
+                            .font(.title2)
+                            .foregroundStyle(.secondary)
+                        Text("devices.files.empty")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 24)
+                }
             } header: {
-                Text("devices.files.favorites")
+                Text(folderPath == nil ? "devices.files.favorites" : "devices.resource.files")
             }
         }
         .listStyle(.insetGrouped)
         .navigationTitle(titleKey)
+        .task { await loadIfNeeded() }
+    }
+
+    @MainActor
+    private func loadIfNeeded() async {
+        guard let folderPath, !didLoad else { return }
+        isLoading = true
+        loadedItems = await dataStore.loadFolder(path: folderPath)
+        didLoad = true
+        isLoading = false
     }
 }
 
@@ -298,7 +345,7 @@ private struct FileItemRowLink: View {
     var body: some View {
         if item.isFolder {
             NavigationLink {
-                FileBrowserView(titleKey: LocalizedStringKey(item.name), items: item.children)
+                FileBrowserView(titleKey: LocalizedStringKey(item.name), items: item.children, folderPath: item.subtitle)
             } label: {
                 FileItemRow(item: item)
             }

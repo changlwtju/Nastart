@@ -101,10 +101,20 @@ struct ServiceIconView: View {
         }
     }
 
+    @ViewBuilder
     private var fallbackIcon: some View {
-        Image(systemName: service.symbolName)
-            .font(.system(size: size * 0.44, weight: .medium))
-            .foregroundStyle(.primary)
+        if let symbolName = service.curatedSymbolName {
+            Image(systemName: symbolName)
+                .font(.system(size: size * 0.44, weight: .medium))
+                .foregroundStyle(.primary)
+        } else {
+            Text(service.iconText)
+                .font(.system(size: size * 0.28, weight: .semibold, design: .rounded))
+                .foregroundStyle(.primary)
+                .lineLimit(1)
+                .minimumScaleFactor(0.65)
+                .padding(.horizontal, size * 0.1)
+        }
     }
 }
 
@@ -132,40 +142,46 @@ extension LaunchpadService {
         }
     }
 
+    var curatedSymbolName: String? {
+        let normalizedName = name.lowercased()
+        let mappings: [(keywords: [String], symbol: String)] = [
+            (["dsm"], "server.rack"),
+            (["container manager", "docker", "container"], "shippingbox"),
+            (["file station", "file browser", "文件"], "folder"),
+            (["synology drive", "cloud station"], "externaldrive"),
+            (["synology photos", "photo station", "photos"], "photo"),
+            (["audio station", "navidrome", "music"], "music.note.list"),
+            (["video station", "jellyfin"], "play.rectangle"),
+            (["emby"], "play.tv"),
+            (["plex"], "play.circle"),
+            (["download station", "qbittorrent", "transmission", "aria2"], "arrow.down.circle"),
+            (["webdav"], "folder"),
+            (["vpn", "tailscale", "zerotier"], "lock.shield"),
+            (["virtual machine", "vm manager"], "desktopcomputer"),
+            (["mariadb", "mysql", "postgres"], "cylinder"),
+            (["nginx proxy", "reverse proxy", "traefik", "caddy"], "lock.rectangle"),
+            (["adguard", "pihole", "pi-hole"], "shield"),
+            (["home assistant", "homebridge"], "house"),
+            (["portainer"], "square.stack.3d.up"),
+            (["code-server", "codex-server", "jupyter", "terminal"], "terminal"),
+            (["gitea", "gitlab", "github"], "point.3.connected.trianglepath.dotted"),
+            (["uptime", "healthchecks"], "waveform.path.ecg"),
+            (["vaultwarden", "bitwarden"], "key"),
+            (["synology mail", "mail server"], "envelope"),
+            (["calendar"], "calendar"),
+            (["contacts"], "person.crop.circle"),
+            (["note station"], "note.text"),
+            (["surveillance station"], "video"),
+            (["web station"], "globe")
+        ]
+
+        return mappings.first { mapping in
+            mapping.keywords.contains { normalizedName.contains($0) }
+        }?.symbol
+    }
+
     var symbolName: String {
-        switch name.lowercased() {
-        case "dsm":
-            return "server.rack"
-        case "jellyfin":
-            return "play.rectangle"
-        case "emby":
-            return "play.tv"
-        case "plex":
-            return "play.circle"
-        case "navidrome":
-            return "music.note.list"
-        case "qbittorrent":
-            return "arrow.down.circle"
-        case "container":
-            return "shippingbox"
-        case "nginx proxy":
-            return "lock.rectangle"
-        case "code-server", "codex-server":
-            return "terminal"
-        default:
-            switch category {
-            case .favorites:
-                return "star"
-            case .media:
-                return "play.rectangle"
-            case .downloads:
-                return "arrow.down.circle"
-            case .network:
-                return "network"
-            case .tools:
-                return "wrench.and.screwdriver"
-            }
-        }
+        curatedSymbolName ?? category.symbolName
     }
 
     var isDeveloperConsole: Bool {
@@ -199,18 +215,6 @@ extension LaunchpadService {
     }
 
     var resolvedIconURL: URL? {
-        if let iconURL {
-            return iconURL
-        }
-
-        guard let endpoint else {
-            return nil
-        }
-
-        var components = URLComponents(url: endpoint, resolvingAgainstBaseURL: false)
-        components?.path = "/favicon.ico"
-        components?.query = nil
-        components?.fragment = nil
-        return components?.url
+        iconURL
     }
 }
