@@ -57,18 +57,6 @@ struct MineView: View {
                                     .minimumScaleFactor(0.82)
                             }
                             .layoutPriority(1)
-
-                            Spacer(minLength: 12)
-
-                            Text("mine.plus.action")
-                                .font(.caption.weight(.medium))
-                                .foregroundStyle(.white)
-                                .lineLimit(1)
-                                .minimumScaleFactor(0.8)
-                                .padding(.horizontal, 11)
-                                .padding(.vertical, 6)
-                                .background(AppTheme.primaryAction)
-                                .clipShape(RoundedRectangle(cornerRadius: 9, style: .continuous))
                         }
                         .padding(.vertical, 6)
                     }

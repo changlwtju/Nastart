@@ -1875,11 +1875,7 @@ final class DSMClient {
                     DSMFormatters.percentage($0)
                 }
             let memoryBytes = resource?.memoryBytes
-                ?? item.firstDirectDouble(for: ["memory_bytes", "mem_usage", "memoryUsage"])
-            let memoryText = DSMFormatters.bytes(memoryBytes)
-                ?? directTextValue(in: item, keys: ["memory", "Memory", "memory_usage", "memory_text", "mem_usage"])
-                ?? DSMFormatters.bytes(item.firstDirectDouble(for: ["memory_bytes", "mem_usage", "memoryUsage"]))
-                ?? "-"
+            let memoryText = DSMFormatters.bytes(memoryBytes) ?? "-"
             return DockerContainer(
                 id: UUID(),
                 name: name,

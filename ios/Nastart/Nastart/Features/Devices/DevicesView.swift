@@ -299,7 +299,7 @@ private enum ServiceResourceSort: String, CaseIterable, Identifiable {
 private struct ServiceResourcesView: View {
     @EnvironmentObject private var dataStore: AppDataStore
     @EnvironmentObject private var connectionStore: NASConnectionStore
-    @State private var sort: ServiceResourceSort = .cpu
+    @State private var sort: ServiceResourceSort = .memory
 
     var body: some View {
         List {
@@ -348,7 +348,7 @@ private struct ServiceResourcesView: View {
                     .padding(.vertical, 24)
                 } else {
                     ForEach(sortedContainers) { container in
-                        ServiceResourceRow(container: container)
+                        ServiceResourceRow(container: container, sort: sort)
                     }
                 }
             } header: {
@@ -381,8 +381,8 @@ private struct ServiceResourcesView: View {
                     return (lhs.cpu ?? -1) > (rhs.cpu ?? -1)
                 }
             case .memory:
-                if lhs.memoryBytes != rhs.memoryBytes {
-                    return (lhs.memoryBytes ?? -1) > (rhs.memoryBytes ?? -1)
+                if lhs.memoryPercent != rhs.memoryPercent {
+                    return (lhs.memoryPercent ?? -1) > (rhs.memoryPercent ?? -1)
                 }
             }
             return lhs.name.localizedCaseInsensitiveCompare(rhs.name) == .orderedAscending
@@ -392,14 +392,11 @@ private struct ServiceResourcesView: View {
 
 private struct ServiceResourceRow: View {
     let container: DockerContainer
+    let sort: ServiceResourceSort
 
     var body: some View {
         HStack(spacing: 12) {
-            Image(systemName: "shippingbox")
-                .font(.headline)
-                .frame(width: 36, height: 36)
-                .background(AppTheme.secondarySurface)
-                .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+            ContainerInitialIcon(name: container.name, size: 36)
 
             VStack(alignment: .leading, spacing: 4) {
                 HStack(spacing: 7) {
@@ -409,7 +406,7 @@ private struct ServiceResourceRow: View {
                         .minimumScaleFactor(0.82)
                     StatusDot(status: container.status)
                 }
-                Text(container.image)
+                Text(secondaryMetricText)
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
@@ -420,9 +417,9 @@ private struct ServiceResourceRow: View {
             Spacer(minLength: 8)
 
             VStack(alignment: .trailing, spacing: 4) {
-                Text(containerPercentText(container.cpu))
+                Text(primaryMetricText)
                     .font(.subheadline.monospacedDigit().weight(.semibold))
-                Text(memorySummary)
+                Text(primaryMetricLabel)
                     .font(.caption.monospacedDigit())
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
@@ -432,11 +429,65 @@ private struct ServiceResourceRow: View {
         .padding(.vertical, 3)
     }
 
-    private var memorySummary: String {
-        guard let memoryPercent = container.memoryPercent else {
-            return container.memoryText
+    private var primaryMetricText: String {
+        switch sort {
+        case .cpu:
+            return containerPercentText(container.cpu)
+        case .memory:
+            return containerPercentText(container.memoryPercent)
         }
-        return "\(container.memoryText) · \(containerPercentText(memoryPercent))"
+    }
+
+    private var primaryMetricLabel: String {
+        switch sort {
+        case .cpu:
+            return NSLocalizedString("metric.cpu", comment: "")
+        case .memory:
+            return NSLocalizedString("devices.container.memory_percent", comment: "")
+        }
+    }
+
+    private var secondaryMetricText: String {
+        guard container.memoryText != "-" else {
+            return NSLocalizedString("devices.container.runtime_memory_unavailable", comment: "")
+        }
+        return String.localizedStringWithFormat(
+            NSLocalizedString("devices.container.runtime_memory_value", comment: ""),
+            container.memoryText
+        )
+    }
+
+}
+
+private struct ContainerInitialIcon: View {
+    let name: String
+    let size: CGFloat
+
+    var body: some View {
+        Text(initials)
+            .font(.system(size: size * 0.28, weight: .semibold, design: .rounded))
+            .foregroundStyle(.primary)
+            .lineLimit(1)
+            .minimumScaleFactor(0.65)
+            .frame(width: size, height: size)
+            .background(AppTheme.secondarySurface)
+            .clipShape(RoundedRectangle(cornerRadius: size * 0.3, style: .continuous))
+            .overlay {
+                RoundedRectangle(cornerRadius: size * 0.3, style: .continuous)
+                    .stroke(AppTheme.hairline, lineWidth: 1)
+            }
+    }
+
+    private var initials: String {
+        let cleaned = name
+            .replacingOccurrences(of: "_", with: "-")
+            .split(separator: "-")
+            .prefix(2)
+            .compactMap { $0.first }
+            .map { String($0).uppercased() }
+            .joined()
+        if !cleaned.isEmpty { return cleaned }
+        return String(name.prefix(2)).uppercased()
     }
 }
 
@@ -481,11 +532,7 @@ private struct DockerContainerRow: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            Image(systemName: "shippingbox")
-                .font(.headline)
-                .frame(width: 36, height: 36)
-                .background(AppTheme.secondarySurface)
-                .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+            ContainerInitialIcon(name: container.name, size: 36)
             VStack(alignment: .leading, spacing: 4) {
                 HStack(spacing: 8) {
                     Text(container.name)
@@ -494,7 +541,7 @@ private struct DockerContainerRow: View {
                         .minimumScaleFactor(0.82)
                     StatusDot(status: container.status)
                 }
-                Text(container.image)
+                Text(LocalizedStringKey(container.status.titleKey))
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
@@ -502,7 +549,7 @@ private struct DockerContainerRow: View {
             }
             .layoutPriority(1)
             Spacer()
-            Text(container.memoryText)
+            Text(containerPercentText(container.memoryPercent))
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .lineLimit(1)
@@ -524,13 +571,11 @@ private struct DockerContainerDetailView: View {
 
             Section {
                 LabeledContent("metric.cpu", value: containerPercentText(container.cpu))
-                LabeledContent("metric.memory", value: container.memoryText)
-                if let memoryPercent = container.memoryPercent {
-                    LabeledContent(
-                        "devices.container.memory_percent",
-                        value: containerPercentText(memoryPercent)
-                    )
-                }
+                LabeledContent(
+                    "devices.container.memory_percent",
+                    value: containerPercentText(container.memoryPercent)
+                )
+                LabeledContent("devices.container.runtime_memory", value: container.memoryText)
             } header: {
                 Text("devices.container.metrics")
             }

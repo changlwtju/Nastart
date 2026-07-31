@@ -76,28 +76,7 @@ struct ServiceIconView: View {
     var size: CGFloat = 36
 
     var body: some View {
-        ZStack {
-            if let iconURL = service.resolvedIconURL {
-                AsyncImage(url: iconURL) { phase in
-                    switch phase {
-                    case .success(let image):
-                        image
-                            .resizable()
-                            .scaledToFit()
-                            .padding(size * 0.18)
-                    case .empty:
-                        fallbackIcon
-                            .opacity(0.55)
-                    case .failure:
-                        fallbackIcon
-                    @unknown default:
-                        fallbackIcon
-                    }
-                }
-            } else {
-                fallbackIcon
-            }
-        }
+        fallbackIcon
         .frame(width: size, height: size)
         .background(AppTheme.secondarySurface)
         .clipShape(RoundedRectangle(cornerRadius: size * 0.3, style: .continuous))
@@ -109,18 +88,12 @@ struct ServiceIconView: View {
 
     @ViewBuilder
     private var fallbackIcon: some View {
-        if let symbolName = service.curatedSymbolName {
-            Image(systemName: symbolName)
-                .font(.system(size: size * 0.44, weight: .medium))
-                .foregroundStyle(.primary)
-        } else {
-            Text(service.iconText)
-                .font(.system(size: size * 0.28, weight: .semibold, design: .rounded))
-                .foregroundStyle(.primary)
-                .lineLimit(1)
-                .minimumScaleFactor(0.65)
-                .padding(.horizontal, size * 0.1)
-        }
+        Text(service.iconText)
+            .font(.system(size: size * 0.28, weight: .semibold, design: .rounded))
+            .foregroundStyle(.primary)
+            .lineLimit(1)
+            .minimumScaleFactor(0.65)
+            .padding(.horizontal, size * 0.1)
     }
 }
 

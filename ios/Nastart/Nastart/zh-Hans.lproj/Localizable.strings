@@ -196,8 +196,11 @@
 "devices.resources.sort" = "排序方式";
 "devices.resources.services" = "容器服务";
 "devices.resources.empty" = "暂无运行中的服务";
-"devices.resources.footer" = "CPU 与内存数据来自 Container Manager，下拉即可刷新。套件级进程统计需要 DSM 提供额外支持。";
-"devices.container.memory_percent" = "内存使用率";
+"devices.resources.footer" = "CPU 与运行内存使用率来自 Container Manager 的资源采样；没有采样时显示为 -。";
+"devices.container.memory_percent" = "运行内存使用率";
+"devices.container.runtime_memory" = "运行内存";
+"devices.container.runtime_memory_value" = "运行内存 %@";
+"devices.container.runtime_memory_unavailable" = "暂无运行内存采样";
 "devices.discovery.hint" = "重新发现服务会扫描 DSM 套件、反向代理规则、Docker 端口和 Agent 元数据。";
 "devices.detail.status" = "状态";
 "devices.detail.name" = "设备名称";

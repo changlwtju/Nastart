@@ -196,8 +196,11 @@
 "devices.resources.sort" = "Sort by";
 "devices.resources.services" = "Container services";
 "devices.resources.empty" = "No running services";
-"devices.resources.footer" = "CPU and memory data comes from Container Manager. Pull down to refresh. Package-level process statistics require additional DSM support.";
-"devices.container.memory_percent" = "Memory usage";
+"devices.resources.footer" = "CPU and runtime RAM usage come from Container Manager resource samples. Missing samples are shown as -.";
+"devices.container.memory_percent" = "Runtime RAM Usage";
+"devices.container.runtime_memory" = "Runtime RAM";
+"devices.container.runtime_memory_value" = "Runtime RAM %@";
+"devices.container.runtime_memory_unavailable" = "No runtime RAM sample";
 "devices.discovery.hint" = "Rescan checks DSM packages, reverse proxy rules, Docker ports, and Agent metadata.";
 "devices.detail.status" = "Status";
 "devices.detail.name" = "Device Name";
