@@ -356,8 +356,6 @@
 "tasks.segment.pending" = "Pending";
 "tasks.segment.watching" = "Watching";
 "tasks.segment.history" = "History";
-"tasks.section.pending" = "Pending";
-"tasks.section.watching" = "Watching";
 "tasks.empty.history" = "No history yet";
 "tasks.empty.history.description" = "Completed and ignored tasks will appear here.";
 "tasks.empty.pending" = "Nothing pending";

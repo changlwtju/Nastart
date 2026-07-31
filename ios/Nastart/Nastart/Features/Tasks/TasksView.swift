@@ -31,17 +31,15 @@ struct TasksView: View {
                 .pickerStyle(.segmented)
                 .listRowBackground(Color.clear)
 
-                if segment == .pending {
-                    Section {
+                Section {
+                    switch segment {
+                    case .pending:
                         if dataStore.tasks.isEmpty {
                             TaskEmptyView(
                                 symbol: "checkmark.circle",
                                 titleKey: "tasks.empty.pending",
                                 descriptionKey: "tasks.empty.pending.description"
                             )
-                            .frame(minHeight: 220)
-                            .listRowInsets(EdgeInsets())
-                            .listRowBackground(Color.clear)
                         } else {
                             ForEach(dataStore.tasks) { task in
                                 NavigationLink {
@@ -51,11 +49,7 @@ struct TasksView: View {
                                 }
                             }
                         }
-                    } header: {
-                        Text("tasks.section.pending")
-                    }
-                } else if segment == .watching {
-                    Section {
+                    case .watching:
                         NavigationLink {
                             ReminderCreateView(defaultKind: .certificate)
                         } label: {
@@ -71,20 +65,15 @@ struct TasksView: View {
                         } label: {
                             Label("tasks.watch.agent", systemImage: "antenna.radiowaves.left.and.right")
                         }
-                    } header: {
-                        Text("tasks.section.watching")
-                    }
-                } else {
-                    Section {
+                    case .history:
                         TaskEmptyView(
                             symbol: "archivebox",
                             titleKey: "tasks.empty.history",
                             descriptionKey: "tasks.empty.history.description"
                         )
-                            .frame(minHeight: 220)
-                            .listRowInsets(EdgeInsets())
-                            .listRowBackground(Color.clear)
                     }
+                } header: {
+                    Text(segment.titleKey)
                 }
             }
             .listStyle(.insetGrouped)
@@ -122,10 +111,8 @@ private struct TaskEmptyView: View {
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 24)
         }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, 38)
-        .background(AppTheme.secondarySurface)
-        .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+        .frame(maxWidth: .infinity, minHeight: 176)
+        .padding(.vertical, 20)
     }
 }
 

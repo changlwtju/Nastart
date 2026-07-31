@@ -356,8 +356,6 @@
 "tasks.segment.pending" = "待处理";
 "tasks.segment.watching" = "监测项";
 "tasks.segment.history" = "历史";
-"tasks.section.pending" = "待处理";
-"tasks.section.watching" = "监测项";
 "tasks.empty.history" = "暂无历史";
 "tasks.empty.history.description" = "已完成和已忽略的事项会显示在这里。";
 "tasks.empty.pending" = "暂无待处理";
