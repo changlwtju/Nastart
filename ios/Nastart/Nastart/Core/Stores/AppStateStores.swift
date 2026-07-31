@@ -645,21 +645,25 @@ final class DSMClient {
         DiagnosticLogStore.shared.record(level, categoryKey: categoryKey, messageKey: messageKey, details: details)
     }
 
-    static func normalizedBaseURL(from input: String) throws -> URL {
+    static func normalizedBaseURL(
+        from input: String,
+        defaultsToHTTPOnLocalNetwork: Bool = false
+    ) throws -> URL {
         var value = input.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !value.isEmpty else { throw DSMClientError.invalidAddress }
         let hadExplicitScheme = value.contains("://")
         if !hadExplicitScheme {
-            value = "https://\(value)"
+            value = "\(defaultsToHTTPOnLocalNetwork ? "http" : "https")://\(value)"
         }
         guard var components = URLComponents(string: value), components.host != nil else {
             throw DSMClientError.invalidAddress
         }
-        if components.scheme?.lowercased() == "http" {
+        let scheme = components.scheme?.lowercased()
+        if scheme == "http", !isPrivateNetworkHost(components.host) {
             throw DSMClientError.insecureHTTP
         }
         if components.port == nil, !hadExplicitScheme {
-            components.port = 5001
+            components.port = scheme == "http" ? 5000 : 5001
         }
         if components.path == "/" {
             components.path = ""
@@ -937,6 +941,8 @@ final class DSMClient {
                 "containerEndpoints": "\(services.filter { ($0.source == .container || $0.source == .reverseProxy) && $0.endpoint != nil }.count)",
                 "lanContainerEndpoints": "\(services.filter { $0.source == .container && $0.endpoint != nil }.count)",
                 "reverseProxyEndpoints": "\(services.filter { $0.source == .reverseProxy && $0.endpoint != nil }.count)",
+                "httpEndpoints": "\(services.filter { $0.endpoint?.scheme?.lowercased() == "http" }.count)",
+                "httpsEndpoints": "\(services.filter { $0.endpoint?.scheme?.lowercased() == "https" }.count)",
                 "connectionLocation": Self.isPrivateNetworkHost(session.baseURL.host) ? "local" : "remote",
                 "packages": "\(services.filter { $0.source == .package }.count)",
                 "lanHosts": "\(lanHosts.count)",
@@ -2025,7 +2031,11 @@ final class DSMClient {
             messageKey: reverseProxyRules.isEmpty
                 ? "diagnostics.reverse_proxy.empty"
                 : "diagnostics.reverse_proxy.loaded",
-            details: ["count": "\(reverseProxyRules.count)"]
+            details: [
+                "count": "\(reverseProxyRules.count)",
+                "http": "\(reverseProxyRules.filter { $0.sourceScheme == "http" }.count)",
+                "https": "\(reverseProxyRules.filter { $0.sourceScheme == "https" }.count)"
+            ]
         )
         let containerEndpoints = await resolvedContainerEndpoints(
             containers,
@@ -2337,8 +2347,8 @@ final class DSMClient {
         ) { group in
             for (index, endpoint) in candidates.prefix(8).enumerated() {
                 group.addTask {
-                    let reachable = await self.isReachableWebEndpoint(endpoint)
-                    return (index, reachable ? endpoint : nil)
+                    let resolvedEndpoint = await self.reachableWebEndpoint(endpoint)
+                    return (index, resolvedEndpoint)
                 }
             }
 
@@ -2352,7 +2362,7 @@ final class DSMClient {
         }
     }
 
-    private func isReachableWebEndpoint(_ endpoint: URL) async -> Bool {
+    private func reachableWebEndpoint(_ endpoint: URL) async -> URL? {
         for method in ["HEAD", "GET"] {
             var request = URLRequest(url: endpoint)
             request.httpMethod = method
@@ -2363,14 +2373,14 @@ final class DSMClient {
             }
             do {
                 let (_, response) = try await urlSession.data(for: request)
-                if response is HTTPURLResponse {
-                    return true
+                if let response = response as? HTTPURLResponse {
+                    return response.url ?? endpoint
                 }
             } catch {
                 continue
             }
         }
-        return false
+        return nil
     }
 
     private static func isInstalledPackage(_ item: DSMJSONValue) -> Bool {
@@ -2926,30 +2936,24 @@ final class LANDiscoveryService: NSObject, ObservableObject {
         guard let hostName = service.hostName?.trimmingCharacters(in: CharacterSet(charactersIn: ".")) else {
             return
         }
-        let port: Int
+        let candidates: [URL]
         switch service.type {
         case "_https._tcp.":
-            port = service.port
-        case "_http._tcp.", "_smb._tcp.":
-            port = 5001
+            candidates = Self.serviceCandidates(scheme: "https", host: hostName, port: service.port)
+        case "_http._tcp.":
+            candidates = Self.serviceCandidates(scheme: "http", host: hostName, port: service.port)
+        case "_smb._tcp.":
+            candidates = Self.defaultDSMCandidates(host: hostName)
         default:
             return
         }
-        guard port > 0, port <= 65_535 else { return }
-
-        var components = URLComponents()
-        components.scheme = "https"
-        components.host = hostName
-        components.port = port
-        guard let url = components.url, probedURLs.insert(url.absoluteString).inserted else {
-            return
-        }
+        let unprobedCandidates = candidates.filter { probedURLs.insert($0.absoluteString).inserted }
+        guard !unprobedCandidates.isEmpty else { return }
 
         let displayName = service.name
         let generation = searchGeneration
         Task {
-            let isDSM = await probeDSM(at: url)
-            guard isDSM else { return }
+            guard let url = await preferredDSMURL(from: unprobedCandidates) else { return }
             await MainActor.run {
                 guard self.searchGeneration == generation else { return }
                 self.addDevice(name: displayName, url: url)
@@ -2959,13 +2963,7 @@ final class LANDiscoveryService: NSObject, ObservableObject {
 
     private func scanLocalSubnets(generation: UUID) async {
         let candidates = Self.localIPv4Prefixes().flatMap { prefix in
-            (1...254).compactMap { host -> URL? in
-                var components = URLComponents()
-                components.scheme = "https"
-                components.host = "\(prefix).\(host)"
-                components.port = 5001
-                return components.url
-            }
+            (1...254).map { host in "\(prefix).\(host)" }
         }
 
         guard !candidates.isEmpty else { return }
@@ -2973,7 +2971,10 @@ final class LANDiscoveryService: NSObject, ObservableObject {
             .info,
             categoryKey: "diagnostics.category.connection",
             messageKey: "diagnostics.discovery.subnet_started",
-            details: ["candidates": "\(candidates.count)"]
+            details: [
+                "hosts": "\(candidates.count)",
+                "protocolCandidates": "\(candidates.count * 2)"
+            ]
         )
 
         let batchSize = 32
@@ -2982,10 +2983,12 @@ final class LANDiscoveryService: NSObject, ObservableObject {
             let endIndex = min(startIndex + batchSize, candidates.count)
             let batch = Array(candidates[startIndex..<endIndex])
             let found = await withTaskGroup(of: URL?.self, returning: [URL].self) { group in
-                for url in batch {
+                for host in batch {
                     group.addTask {
                         guard !Task.isCancelled else { return nil }
-                        return await self.probeDSM(at: url) ? url : nil
+                        return await self.preferredDSMURL(
+                            from: Self.defaultDSMCandidates(host: host)
+                        )
                     }
                 }
                 var results: [URL] = []
@@ -3008,9 +3011,9 @@ final class LANDiscoveryService: NSObject, ObservableObject {
         }
     }
 
-    private func probeDSM(at baseURL: URL) async -> Bool {
+    private func resolvedDSMBaseURL(at baseURL: URL) async -> URL? {
         guard var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false) else {
-            return false
+            return nil
         }
         components.path = "/webapi/query.cgi"
         components.queryItems = [
@@ -3019,7 +3022,7 @@ final class LANDiscoveryService: NSObject, ObservableObject {
             URLQueryItem(name: "method", value: "query"),
             URLQueryItem(name: "query", value: "SYNO.API.Auth,SYNO.Core.System")
         ]
-        guard let url = components.url else { return false }
+        guard let url = components.url else { return nil }
         var request = URLRequest(url: url)
         request.timeoutInterval = 1.2
         request.cachePolicy = .reloadIgnoringLocalCacheData
@@ -3033,16 +3036,72 @@ final class LANDiscoveryService: NSObject, ObservableObject {
                 envelope.success,
                 envelope.data?.objectValue?["SYNO.API.Auth"] != nil
             else {
-                return false
+                return nil
             }
-            return true
+            guard var resolvedComponents = URLComponents(
+                url: response.url ?? baseURL,
+                resolvingAgainstBaseURL: false
+            ) else {
+                return baseURL
+            }
+            resolvedComponents.path = ""
+            resolvedComponents.query = nil
+            resolvedComponents.fragment = nil
+            return resolvedComponents.url ?? baseURL
         } catch {
-            return false
+            return nil
         }
     }
 
+    private func preferredDSMURL(from candidates: [URL]) async -> URL? {
+        await withTaskGroup(of: (Int, URL?).self, returning: URL?.self) { group in
+            for (index, candidate) in candidates.enumerated() {
+                group.addTask {
+                    let resolvedURL = await self.resolvedDSMBaseURL(at: candidate)
+                    return (index, resolvedURL)
+                }
+            }
+
+            var matches: [(Int, URL)] = []
+            for await (index, candidate) in group {
+                if let candidate {
+                    matches.append((index, candidate))
+                }
+            }
+            return matches.min { $0.0 < $1.0 }?.1
+        }
+    }
+
+    private static func defaultDSMCandidates(host: String) -> [URL] {
+        serviceCandidates(scheme: "http", host: host, port: 5000)
+            + serviceCandidates(scheme: "https", host: host, port: 5001)
+    }
+
+    private static func serviceCandidates(scheme: String, host: String, port: Int) -> [URL] {
+        guard (1...65_535).contains(port) else { return [] }
+        var components = URLComponents()
+        components.scheme = scheme
+        components.host = host
+        components.port = port
+        return components.url.map { [$0] } ?? []
+    }
+
     private func addDevice(name: String, url: URL) {
-        guard !devices.contains(where: { $0.host == url.absoluteString }) else { return }
+        if let index = devices.firstIndex(where: {
+            URL(string: $0.host)?.host?.caseInsensitiveCompare(url.host ?? "") == .orderedSame
+        }) {
+            guard
+                let existingURL = URL(string: devices[index].host),
+                protocolRank(url) < protocolRank(existingURL)
+            else { return }
+            devices[index] = DiscoveredNASDevice(
+                id: devices[index].id,
+                name: devices[index].name,
+                host: url.absoluteString
+            )
+            recordDiscoveredDevice(url)
+            return
+        }
         devices.append(
             DiscoveredNASDevice(
                 id: UUID(),
@@ -3053,11 +3112,22 @@ final class LANDiscoveryService: NSObject, ObservableObject {
         devices.sort {
             $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending
         }
+        recordDiscoveredDevice(url)
+    }
+
+    private func protocolRank(_ url: URL) -> Int {
+        url.scheme?.lowercased() == "http" ? 0 : 1
+    }
+
+    private func recordDiscoveredDevice(_ url: URL) {
         DiagnosticLogStore.shared.record(
             .info,
             categoryKey: "diagnostics.category.connection",
             messageKey: "diagnostics.discovery.found",
-            details: ["target": DiagnosticLogStore.redactedURL(url)]
+            details: [
+                "target": DiagnosticLogStore.redactedURL(url),
+                "protocol": url.scheme?.uppercased() ?? "-"
+            ]
         )
     }
 

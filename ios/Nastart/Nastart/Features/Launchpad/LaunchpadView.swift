@@ -4060,7 +4060,10 @@ private struct DSMConnectionFlowView: View {
         errorMessage = ""
         connectionTask = Task {
             do {
-                let baseURL = try DSMClient.normalizedBaseURL(from: host)
+                let baseURL = try DSMClient.normalizedBaseURL(
+                    from: host,
+                    defaultsToHTTPOnLocalNetwork: connectionLocation == .local
+                )
                 let client = DSMClient(
                     baseURL: baseURL,
                     allowsSelfSignedCertificates: allowsSelfSignedCertificates
