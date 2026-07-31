@@ -18,6 +18,8 @@
 "metric.cpu" = "CPU";
 "metric.memory" = "Memory";
 "metric.storage" = "Storage";
+"metric.memory_ram" = "RAM";
+"metric.storage_disk" = "Disk";
 "metric.tls" = "TLS";
 "metric.uptime" = "Uptime";
 
@@ -28,6 +30,7 @@
 "category.tools" = "Tools";
 
 "action.edit" = "Edit";
+"action.refresh" = "Refresh";
 "action.expand" = "Expand";
 "action.open" = "Open";
 "action.open_external" = "Open In...";
@@ -86,7 +89,7 @@
 "service.endpoint.invalid" = "Enter a valid HTTP or HTTPS address.";
 "service.detail.source" = "Source";
 "service.source.dsm" = "DSM API";
-"service.source.container" = "DSM Docker API";
+"service.source.container" = "Docker Port Mapping";
 "service.source.reverse_proxy" = "DSM Reverse Proxy";
 "service.source.package" = "DSM Package API";
 "service.source.manual" = "Manual";
@@ -226,6 +229,7 @@
 "devices.files.favorite" = "Favorite";
 "devices.files.preview_hint" = "Nastart uses system preview first, then external apps when needed.";
 "devices.files.favorite_hint" = "This path will appear in Quick Folders after persistence is connected.";
+"devices.files.session_required" = "No active DSM session is available. Reconnect the NAS before opening this file.";
 "devices.network.reachability" = "Reachability";
 "devices.network.ports" = "Ports";
 "devices.network.ports.empty" = "DSM did not return any recognizable service ports.";
@@ -295,6 +299,7 @@
 "launchpad.services.footer" = "Docker containers are shown by default. DSM packages are limited to selected user-facing apps; any detected service can be shown or hidden here.";
 "launchpad.services.reset_done" = "Recommended service visibility restored";
 "launchpad.service.hide" = "Hide from Launchpad";
+"launchpad.service.show" = "Show on Launchpad";
 "launchpad.service.hidden" = "Service hidden from Launchpad";
 "launchpad.service.shown" = "Service shown on Launchpad";
 
@@ -331,6 +336,8 @@
 "tasks.section.watching" = "Watching";
 "tasks.empty.history" = "No history yet";
 "tasks.empty.history.description" = "Completed and ignored tasks will appear here.";
+"tasks.empty.pending" = "Nothing pending";
+"tasks.empty.pending.description" = "Alerts and reminders that need attention will appear here.";
 "tasks.watch.certificates" = "Certificate monitoring";
 "tasks.watch.domains" = "Domain renewal monitoring";
 "tasks.watch.agent" = "Agent freshness monitoring";
@@ -536,11 +543,20 @@
 "player.title" = "Player";
 "player.open_stream" = "Open Media Stream";
 "player.play_in_app" = "Play in Nastart";
-"player.direct.intro" = "Play a direct HTTP, HTTPS, or HLS media stream with the system player.";
-"player.direct.footer" = "Direct MP4, MOV, M4V, HLS, MP3, M4A, AAC, WAV, and FLAC streams are supported. HTTPS streams need a trusted certificate, and signed-in pages may require a URL that already includes an access token.";
+"player.direct.intro" = "Open an HTTP, HTTPS, or HLS media address in Nastart's built-in player.";
+"player.direct.footer" = "The player will attempt the media directly. If this device cannot decode it, you can hand it off to Infuse, VidHub, VLC, or another app at any time.";
 "player.url.placeholder" = "https://nas.example/media/stream.m3u8";
 "player.url.invalid" = "Enter a valid HTTP or HTTPS media stream URL.";
 "player.load_failed" = "Could Not Play Media";
+"player.compatibility_unavailable" = "The compatibility player is not installed in this build.";
+"player.compatibility_failed" = "The compatibility player could not decode or load this media.";
+"player.engine.choose" = "Choose Player";
+"player.engine.system" = "System Player";
+"player.engine.compatibility" = "Compatibility Player";
+"player.play" = "Play";
+"player.pause" = "Pause";
+"player.seek_backward" = "Back 15 Seconds";
+"player.seek_forward" = "Forward 15 Seconds";
 
 "mine.appearance.item.subtitle" = "Subtitle";
 "mine.appearance.item.cpu" = "CPU";

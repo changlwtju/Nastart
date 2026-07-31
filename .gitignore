@@ -9,6 +9,7 @@ DerivedData/
 *.xcodeproj/xcuserdata/
 **/*.xcodeproj/project.xcworkspace/
 **/*.xcodeproj/xcuserdata/
+Pods/
 
 # Swift Package Manager
 .build/

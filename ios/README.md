@@ -18,11 +18,21 @@ Recommended initial stack:
 
 ## Current Prototype
 
-Open this project on macOS with Xcode:
+Install the iOS dependency on macOS, then open the CocoaPods workspace:
 
-```text
-ios/Nastart/Nastart.xcodeproj
+```bash
+cd ios/Nastart
+pod install
+open Nastart.xcworkspace
 ```
+
+`MobileVLCKit 3.6.0` is pinned in the `Podfile`. Nastart tries AVPlayer for
+Apple-native media first and uses MobileVLCKit for broader container and codec
+support. An AVPlayer decoding failure also switches to MobileVLCKit
+automatically. Every media item can still be handed to an external player.
+
+Opening `Nastart.xcodeproj` remains useful for the lightweight AVPlayer-only
+build, but it does not include the compatibility player.
 
 The first prototype includes:
 
@@ -37,7 +47,7 @@ The first prototype includes:
 
 In Xcode:
 
-1. Open `Nastart.xcodeproj`.
+1. Run `pod install` and open `Nastart.xcworkspace`.
 2. Select the `Nastart` target.
 3. Set your Apple Developer Team.
 4. Change `PRODUCT_BUNDLE_IDENTIFIER` if needed.
@@ -46,6 +56,25 @@ In Xcode:
 
 The NAS workspace cannot compile this project because Xcode is only available
 on macOS.
+
+## Measuring App Size
+
+Measure a Release archive rather than adding source or framework folder sizes:
+
+1. Select a generic iOS device and choose Product > Archive.
+2. In Organizer, choose Distribute App > Ad Hoc or Development.
+3. Enable the app thinning size report when exporting.
+4. Compare the installed size for the target device with the previous archive.
+
+MobileVLCKit contains native code for multiple device architectures, so the
+repository and archive can be much larger than the thinned App Store download
+or installed size for one device.
+
+## Third-Party Media Component
+
+MobileVLCKit is provided by VideoLAN under LGPL 2.1 or later. Before public
+distribution, keep the required notices and confirm the final linkage and
+relinking approach against the shipped archive. See `THIRD_PARTY_NOTICES.md`.
 
 ## Local Preflight
 

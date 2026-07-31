@@ -18,6 +18,8 @@
 "metric.cpu" = "CPU";
 "metric.memory" = "内存";
 "metric.storage" = "存储";
+"metric.memory_ram" = "内存 RAM";
+"metric.storage_disk" = "硬盘";
 "metric.tls" = "证书";
 "metric.uptime" = "运行时间";
 
@@ -28,6 +30,7 @@
 "category.tools" = "工具";
 
 "action.edit" = "编辑";
+"action.refresh" = "刷新";
 "action.expand" = "展开";
 "action.open" = "打开";
 "action.open_external" = "外部打开";
@@ -86,7 +89,7 @@
 "service.endpoint.invalid" = "请输入有效的 HTTP 或 HTTPS 地址。";
 "service.detail.source" = "数据来源";
 "service.source.dsm" = "DSM API";
-"service.source.container" = "DSM Docker API";
+"service.source.container" = "Docker 端口直连";
 "service.source.reverse_proxy" = "DSM 反向代理";
 "service.source.package" = "DSM 套件 API";
 "service.source.manual" = "手动配置";
@@ -226,6 +229,7 @@
 "devices.files.favorite" = "收藏";
 "devices.files.preview_hint" = "Nastart 会优先使用系统预览，不支持的文件再交给外部 App。";
 "devices.files.favorite_hint" = "文件持久化接入后，该路径会显示在常用文件夹。";
+"devices.files.session_required" = "当前没有可用的 DSM 会话，请重新连接 NAS 后再打开文件。";
 "devices.network.reachability" = "可达性";
 "devices.network.ports" = "端口";
 "devices.network.ports.empty" = "DSM 暂未返回可识别的服务端口。";
@@ -295,6 +299,7 @@
 "launchpad.services.footer" = "Docker 容器默认全部显示；DSM 套件仅默认显示精选的用户入口。你可以在这里显示或隐藏任一已识别服务。";
 "launchpad.services.reset_done" = "已恢复推荐的服务显示设置";
 "launchpad.service.hide" = "从启动页隐藏";
+"launchpad.service.show" = "显示到启动页";
 "launchpad.service.hidden" = "服务已从启动页隐藏";
 "launchpad.service.shown" = "服务已显示在启动页";
 
@@ -331,6 +336,8 @@
 "tasks.section.watching" = "监测项";
 "tasks.empty.history" = "暂无历史";
 "tasks.empty.history.description" = "已完成和已忽略的事项会显示在这里。";
+"tasks.empty.pending" = "暂无待处理";
+"tasks.empty.pending.description" = "需要处理的告警和提醒会显示在这里。";
 "tasks.watch.certificates" = "证书监测";
 "tasks.watch.domains" = "域名续费监测";
 "tasks.watch.agent" = "Agent 新鲜度监测";
@@ -536,11 +543,20 @@
 "player.title" = "播放器";
 "player.open_stream" = "打开媒体串流";
 "player.play_in_app" = "在 Nastart 中播放";
-"player.direct.intro" = "使用系统播放器播放 HTTP、HTTPS 或 HLS 媒体直链。";
-"player.direct.footer" = "支持 MP4、MOV、M4V、HLS、MP3、M4A、AAC、WAV 和 FLAC 直链。HTTPS 串流需使用受信任证书；需要登录时，可能必须提供已包含访问令牌的地址。";
+"player.direct.intro" = "使用 Nastart 内置播放器打开 HTTP、HTTPS 或 HLS 媒体地址。";
+"player.direct.footer" = "播放器会直接尝试打开媒体；如果当前设备无法解码，也可以随时交给 Infuse、VidHub、VLC 或其他 App。";
 "player.url.placeholder" = "https://nas.example/media/stream.m3u8";
 "player.url.invalid" = "请输入有效的 HTTP 或 HTTPS 媒体串流地址。";
 "player.load_failed" = "无法播放媒体";
+"player.compatibility_unavailable" = "当前构建未安装兼容播放器。";
+"player.compatibility_failed" = "兼容播放器仍无法解码或载入此媒体。";
+"player.engine.choose" = "选择播放器";
+"player.engine.system" = "系统播放器";
+"player.engine.compatibility" = "兼容播放器";
+"player.play" = "播放";
+"player.pause" = "暂停";
+"player.seek_backward" = "后退 15 秒";
+"player.seek_forward" = "前进 15 秒";
 
 "mine.appearance.item.subtitle" = "副标题";
 "mine.appearance.item.cpu" = "CPU";

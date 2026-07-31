@@ -38,8 +38,8 @@ struct DevicesView: View {
 
                         MetricPillRow(metrics: [
                             MetricPillSpec("metric.cpu", value: devicePercentText(dataStore.device.cpu), progress: dataStore.device.cpu),
-                            MetricPillSpec("metric.memory", value: devicePercentText(dataStore.device.memory), progress: dataStore.device.memory),
-                            MetricPillSpec("metric.storage", value: devicePercentText(dataStore.device.storageUsed), progress: dataStore.device.storageUsed)
+                            MetricPillSpec("metric.memory_ram", value: devicePercentText(dataStore.device.memory), progress: dataStore.device.memory),
+                            MetricPillSpec("metric.storage_disk", value: devicePercentText(dataStore.device.storageUsed), progress: dataStore.device.storageUsed)
                         ])
                     }
                     .padding(.vertical, 4)
@@ -170,8 +170,8 @@ struct DeviceStatusView: View {
             }
 
             Section {
-                LabeledContent("metric.memory", value: device.memoryDisplayText)
-                LabeledContent("metric.storage", value: device.storageDisplayText)
+                LabeledContent("metric.memory_ram", value: device.memoryDisplayText)
+                LabeledContent("metric.storage_disk", value: device.storageDisplayText)
                 LabeledContent("devices.status.storage_free", value: device.storageFreeText)
             } header: {
                 Text("devices.status.capacity")
@@ -685,11 +685,13 @@ private struct FileItemRow: View {
 
 private struct FilePreviewView: View {
     let item: FileItem
+    @EnvironmentObject private var connectionStore: NASConnectionStore
     @State private var showExternalPicker = false
-    @State private var showPreviewHint = false
     @State private var showFavoriteHint = false
-    @State private var externalMessageKey = "external.files_hint"
+    @State private var externalMessageKey = "external.open_failed"
     @State private var showExternalHint = false
+    @State private var playbackRequest: MediaPlaybackRequest?
+    @State private var sharePayload: FileSharePayload?
 
     var body: some View {
         List {
@@ -707,14 +709,20 @@ private struct FilePreviewView: View {
             }
 
             Section {
-                Button("devices.files.preview") {
-                    showPreviewHint = true
+                Button {
+                    previewFile()
+                } label: {
+                    Label("devices.files.preview", systemImage: "play.rectangle")
                 }
-                Button("devices.files.open_external") {
-                    showExternalPicker = true
+                Button {
+                    openExternalPicker()
+                } label: {
+                    Label("devices.files.open_external", systemImage: "arrow.up.forward.app")
                 }
-                Button("devices.files.favorite") {
+                Button {
                     showFavoriteHint = true
+                } label: {
+                    Label("devices.files.favorite", systemImage: "star")
                 }
             } header: {
                 Text("devices.files.actions")
@@ -722,28 +730,86 @@ private struct FilePreviewView: View {
         }
         .listStyle(.insetGrouped)
         .navigationTitle("devices.files.preview")
-        .alert("devices.files.preview_hint", isPresented: $showPreviewHint) {
-            Button("action.ok", role: .cancel) {}
-        }
         .alert("devices.files.favorite_hint", isPresented: $showFavoriteHint) {
             Button("action.ok", role: .cancel) {}
         }
         .confirmationDialog("service.external.title", isPresented: $showExternalPicker) {
-            Button("Infuse") { showExternal("external.infuse_hint") }
-            Button("VidHub") { showExternal("external.vidhub_hint") }
-            Button("VLC") { showExternal("external.vlc_hint") }
-            Button("Files") { showExternal("external.files_hint") }
+            Button("Infuse") { openExternal(.infuse) }
+            Button("VidHub") { openExternal(.vidhub) }
+            Button("VLC") { openExternal(.vlc) }
+            Button("external.other_apps") { presentShareSheet() }
             Button("action.cancel", role: .cancel) {}
         }
         .alert(LocalizedStringKey(externalMessageKey), isPresented: $showExternalHint) {
             Button("action.ok", role: .cancel) {}
         }
+        .sheet(item: $sharePayload) { payload in
+            SystemShareView(items: [payload.url])
+        }
+        .fullScreenCover(item: $playbackRequest) { request in
+            NavigationStack {
+                BuiltInMediaPlayerView(request: request)
+            }
+        }
     }
 
-    private func showExternal(_ key: String) {
+    private func previewFile() {
+        guard let url = authenticatedURL else {
+            showFailure("devices.files.session_required")
+            return
+        }
+        switch item.kind {
+        case .video, .audio:
+            playbackRequest = MediaPlaybackRequest(url: url, title: item.name)
+        case .folder, .image, .text, .archive:
+            sharePayload = FileSharePayload(url: url)
+        }
+    }
+
+    private func openExternalPicker() {
+        guard authenticatedURL != nil else {
+            showFailure("devices.files.session_required")
+            return
+        }
+        showExternalPicker = true
+    }
+
+    private func openExternal(_ target: ExternalOpenTarget) {
+        guard let targetURL = target.url(endpoint: authenticatedURL) else {
+            showFailure("external.unsupported_hint")
+            return
+        }
+        showExternalPicker = false
+        UIApplication.shared.open(targetURL, options: [:]) { accepted in
+            guard !accepted else { return }
+            DispatchQueue.main.async {
+                showFailure(target.failureMessageKey)
+            }
+        }
+    }
+
+    private func presentShareSheet() {
+        guard let authenticatedURL else {
+            showFailure("devices.files.session_required")
+            return
+        }
+        showExternalPicker = false
+        sharePayload = FileSharePayload(url: authenticatedURL)
+    }
+
+    private func showFailure(_ key: String) {
         externalMessageKey = key
         showExternalHint = true
     }
+
+    private var authenticatedURL: URL? {
+        connectionStore.dsmSession?.fileStationOpenURL(path: item.subtitle)
+    }
+}
+
+private struct FileSharePayload: Identifiable {
+    let id = UUID()
+    let url: URL
 }
 
 private struct NetworkDetailView: View {
@@ -775,7 +841,22 @@ private struct NetworkDetailView: View {
                         .foregroundStyle(.secondary)
                 } else {
                     ForEach(reachableEntries) { service in
-                        LabeledContent(service.name, value: endpointSummary(service.suggestedEndpoint))
+                        VStack(alignment: .leading, spacing: 6) {
+                            HStack(spacing: 8) {
+                                Text(service.name)
+                                    .font(.body.weight(.medium))
+                                Spacer()
+                                Text(LocalizedStringKey(service.sourceTitleKey))
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            Text(endpointSummary(service.suggestedEndpoint))
+                                .font(.footnote.monospaced())
+                                .foregroundStyle(.secondary)
+                                .textSelection(.enabled)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                        .padding(.vertical, 3)
                     }
                 }
             } header: {
@@ -791,8 +872,7 @@ private struct NetworkDetailView: View {
         return services.filter { service in
             guard
                 service.status == .online,
-                let endpoint = service.suggestedEndpoint,
-                service.source == .dsm || service.source == .reverseProxy
+                let endpoint = service.suggestedEndpoint
             else {
                 return false
             }

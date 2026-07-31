@@ -148,6 +148,30 @@ struct DSMSession {
     let account: String
     let allowsSelfSignedCertificates: Bool
     let deviceID: String?
+
+    func fileStationOpenURL(path: String) -> URL? {
+        guard
+            let encodedPaths = try? JSONEncoder().encode([path]),
+            let pathParameter = String(data: encodedPaths, encoding: .utf8),
+            var components = URLComponents(
+                url: baseURL
+                    .appendingPathComponent("webapi")
+                    .appendingPathComponent("entry.cgi"),
+                resolvingAgainstBaseURL: false
+            )
+        else {
+            return nil
+        }
+        components.queryItems = [
+            URLQueryItem(name: "api", value: "SYNO.FileStation.Download"),
+            URLQueryItem(name: "version", value: "2"),
+            URLQueryItem(name: "method", value: "download"),
+            URLQueryItem(name: "path", value: pathParameter),
+            URLQueryItem(name: "mode", value: "open"),
+            URLQueryItem(name: "_sid", value: sid)
+        ]
+        return components.url
+    }
 }
 
 struct StoredNASCredential: Codable {
@@ -1623,9 +1647,10 @@ final class DSMClient {
         if totalMinutes >= 1_440 {
             let days = totalMinutes / 1_440
             let hours = (totalMinutes % 1_440) / 60
-            return "\(days)d + \(hours)h"
+            let minutes = totalMinutes % 60
+            return "\(days)d\(hours)h\(minutes)min"
         }
-        return "\(totalMinutes / 60)h + \(totalMinutes % 60)min"
+        return "\(totalMinutes / 60)h\(totalMinutes % 60)min"
     }
 
     private static func mapTemperature(system: DSMJSONValue?, utilization: DSMJSONValue?) -> String? {
@@ -1772,9 +1797,24 @@ final class DSMClient {
 
     private static func fileKind(for name: String, item: DSMJSONValue) -> FileKind {
         if isFolder(item) { return .folder }
+        let mediaType = (item.firstString(for: [
+            "content_type", "contentType", "mime_type", "mimeType", "mimetype"
+        ]) ?? "").lowercased()
+        if mediaType.hasPrefix("video/") { return .video }
+        if mediaType.hasPrefix("audio/") { return .audio }
         let ext = (name as NSString).pathExtension.lowercased()
-        if ["mp4", "mkv", "mov", "m4v", "avi", "wmv", "webm"].contains(ext) { return .video }
-        if ["mp3", "flac", "aac", "m4a", "wav", "ogg"].contains(ext) { return .audio }
+        if [
+            "mp4", "mkv", "mov", "m4v", "avi", "wmv", "webm",
+            "ts", "m2ts", "mts", "mpeg", "mpg", "flv", "f4v",
+            "3gp", "3g2", "vob", "rm", "rmvb", "ogv", "asf",
+            "divx", "mxf", "m2v", "m1v", "mpv", "qt", "dv",
+            "h264", "h265", "hevc", "av1", "nut", "amv", "bik",
+            "roq", "wtv", "dvr-ms", "mod", "tod"
+        ].contains(ext) { return .video }
+        if [
+            "mp3", "flac", "aac", "m4a", "wav", "ogg", "opus",
+            "wma", "ape", "alac", "aiff", "aif", "amr", "ac3", "dts"
+        ].contains(ext) { return .audio }
         if ["jpg", "jpeg", "png", "gif", "heic", "webp"].contains(ext) { return .image }
         if ["zip", "rar", "7z", "tar", "gz"].contains(ext) { return .archive }
         return .text
@@ -2220,27 +2260,14 @@ final class DSMClient {
     ) -> URL? {
         let mappings = container.ports.compactMap(portMapping(from:))
         let hostPorts = Set(mappings.map(\.hostPort))
-        let containerTokens = serviceIdentifierTokens("\(container.name) \(container.image)")
-        let compactContainerName = compactServiceIdentifier(container.name)
 
-        let rankedRules = rules.compactMap { rule -> (Int, DSMReverseProxyRule)? in
-            if hostPorts.contains(rule.destinationPort) {
-                return (0, rule)
-            }
-            let ruleTokens = serviceIdentifierTokens("\(rule.name) \(rule.sourceHost ?? "")")
-            let compactRuleIdentity = compactServiceIdentifier("\(rule.name) \(rule.sourceHost ?? "")")
-            if !containerTokens.isDisjoint(with: ruleTokens)
-                || (compactContainerName.count >= 4 && compactRuleIdentity.contains(compactContainerName)) {
-                return (1, rule)
-            }
-            return nil
-        }
-        .sorted { lhs, rhs in
-            if lhs.0 != rhs.0 { return lhs.0 < rhs.0 }
-            return lhs.1.sourcePort < rhs.1.sourcePort
-        }
-
-        guard let rule = rankedRules.first?.1 else { return nil }
+        // An exact published destination port is the only reliable proof that a
+        // reverse-proxy rule belongs to this container.
+        guard let rule = rules
+            .filter({ hostPorts.contains($0.destinationPort) })
+            .sorted(by: { $0.sourcePort < $1.sourcePort })
+            .first
+        else { return nil }
         let configuredHost = rule.sourceHost?.trimmingCharacters(in: .whitespacesAndNewlines)
         let host = configuredHost == nil || configuredHost == "*" ? baseURL.host : configuredHost
         guard let host, !host.isEmpty else { return nil }
@@ -2252,28 +2279,6 @@ final class DSMClient {
             components.path = sourcePath.hasPrefix("/") ? sourcePath : "/\(sourcePath)"
         }
         return components.url
-    }
-
-    private static func serviceIdentifierTokens(_ value: String) -> Set<String> {
-        let ignored = Set([
-            "com", "cn", "net", "org", "www", "http", "https",
-            "docker", "container", "latest", "linuxserver"
-        ])
-        var tokens = Set(value.lowercased()
-            .components(separatedBy: CharacterSet.alphanumerics.inverted)
-            .filter { $0.count >= 3 && !ignored.contains($0) })
-        let compact = compactServiceIdentifier(value)
-        let aliases: [String: Set<String>] = [
-            "homeassistant": ["homeassistant", "hass", "ha"],
-            "codeserver": ["codeserver", "code", "vscode"],
-            "tinymediamanager": ["tinymediamanager", "tmm"],
-            "metacubexd": ["metacubexd", "metacube", "mihomo"],
-            "mihomo": ["mihomo", "metacube", "metacubexd"]
-        ]
-        for (identity, values) in aliases where compact.contains(identity) {
-            tokens.formUnion(values)
-        }
-        return tokens
     }
 
     private static func compactServiceIdentifier(_ value: String) -> String {
@@ -2679,7 +2684,7 @@ final class DSMClient {
         var seen = Set<String>()
         return mappings.flatMap { mapping in
             hosts.flatMap { host in
-                preferredSchemes(for: mapping.containerPort).compactMap { scheme -> URL? in
+                preferredSchemes(for: mapping.containerPort, serviceName: container.name).compactMap { scheme -> URL? in
                     var components = URLComponents()
                     components.scheme = scheme
                     components.host = host
@@ -2746,7 +2751,11 @@ final class DSMClient {
         return port >= 1024 && !nonWebPorts.contains(port)
     }
 
-    private static func preferredSchemes(for port: Int) -> [String] {
+    private static func preferredSchemes(for port: Int, serviceName: String) -> [String] {
+        let compactName = compactServiceIdentifier(serviceName)
+        if compactName.contains("codeserver") || compactName.contains("codexserver") {
+            return ["http", "https"]
+        }
         let tlsPorts: Set<Int> = [443, 4443, 5001, 5443, 7443, 8443, 8920, 9443]
         return tlsPorts.contains(port) ? ["https", "http"] : ["http", "https"]
     }
@@ -3140,6 +3149,7 @@ final class AppDataStore: ObservableObject {
 
     @MainActor
     func load(from dataSource: NASDataSource) async {
+        guard !isRefreshing else { return }
         isRefreshing = true
         defer { isRefreshing = false }
 

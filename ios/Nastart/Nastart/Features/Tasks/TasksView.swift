@@ -33,11 +33,22 @@ struct TasksView: View {
 
                 if segment == .pending {
                     Section {
-                        ForEach(dataStore.tasks) { task in
-                            NavigationLink {
-                                TaskDetailView(task: task)
-                            } label: {
-                                TaskRow(task: task)
+                        if dataStore.tasks.isEmpty {
+                            TaskEmptyView(
+                                symbol: "checkmark.circle",
+                                titleKey: "tasks.empty.pending",
+                                descriptionKey: "tasks.empty.pending.description"
+                            )
+                            .frame(minHeight: 220)
+                            .listRowInsets(EdgeInsets())
+                            .listRowBackground(Color.clear)
+                        } else {
+                            ForEach(dataStore.tasks) { task in
+                                NavigationLink {
+                                    TaskDetailView(task: task)
+                                } label: {
+                                    TaskRow(task: task)
+                                }
                             }
                         }
                     } header: {
@@ -65,7 +76,11 @@ struct TasksView: View {
                     }
                 } else {
                     Section {
-                        TaskHistoryEmptyView()
+                        TaskEmptyView(
+                            symbol: "archivebox",
+                            titleKey: "tasks.empty.history",
+                            descriptionKey: "tasks.empty.history.description"
+                        )
                             .frame(minHeight: 220)
                             .listRowInsets(EdgeInsets())
                             .listRowBackground(Color.clear)
@@ -89,15 +104,19 @@ struct TasksView: View {
     }
 }
 
-private struct TaskHistoryEmptyView: View {
+private struct TaskEmptyView: View {
+    let symbol: String
+    let titleKey: LocalizedStringKey
+    let descriptionKey: LocalizedStringKey
+
     var body: some View {
         VStack(spacing: 12) {
-            Image(systemName: "archivebox")
+            Image(systemName: symbol)
                 .font(.system(size: 34, weight: .regular))
                 .foregroundStyle(.secondary)
-            Text("tasks.empty.history")
+            Text(titleKey)
                 .font(.headline)
-            Text("tasks.empty.history.description")
+            Text(descriptionKey)
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)

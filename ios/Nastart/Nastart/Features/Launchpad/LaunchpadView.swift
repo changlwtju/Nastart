@@ -3,6 +3,9 @@ import UIKit
 import WebKit
 import AVFoundation
 import AVKit
+#if canImport(MobileVLCKit)
+import MobileVLCKit
+#endif
 
 struct LaunchpadView: View {
     @EnvironmentObject private var dataStore: AppDataStore
@@ -44,6 +47,9 @@ struct LaunchpadView: View {
                         .padding(.bottom, 18)
                     }
                     .background(launchpadBackground)
+                    .refreshable {
+                        await refreshLaunchpad()
+                    }
                 } else {
                     NASConnectionWelcomeView(
                         addNASAction: {
@@ -62,10 +68,26 @@ struct LaunchpadView: View {
                 Button("manual.service.add") {
                     showManualServiceEditor = true
                 }
+                if !dataStore.services.isEmpty {
+                    Button("launchpad.services.manage") {
+                        showServiceManager = true
+                    }
+                }
                 Button("action.cancel", role: .cancel) {}
             }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    if connectionStore.isConnected {
+                        Button {
+                            Task { await refreshLaunchpad() }
+                        } label: {
+                            Image(systemName: "arrow.clockwise")
+                        }
+                        .disabled(dataStore.isRefreshing)
+                        .accessibilityLabel(Text("action.refresh"))
+                    }
+                }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     if !dataStore.services.isEmpty {
                         Button {
@@ -112,6 +134,15 @@ struct LaunchpadView: View {
             .onAppear {
                 applyGroupDefaultMigrationIfNeeded()
             }
+        }
+    }
+
+    @MainActor
+    private func refreshLaunchpad() async {
+        if let session = connectionStore.dsmSession {
+            await dataStore.refreshDSM(session: session, useAgent: connectionStore.usesAgent)
+        } else {
+            dataStore.refreshAll()
         }
     }
 
@@ -653,7 +684,8 @@ private struct GlassHeroPanel: View {
                 Label("launchpad.summary.normal", systemImage: "checkmark.circle.fill")
                     .font(.subheadline.weight(.semibold))
                 Spacer()
-                Text(device.uptimeText)
+                LiveUptimeText(baseText: device.uptimeText)
+                    .id(device.uptimeText)
                     .font(.caption.weight(.medium))
                     .foregroundStyle(.secondary)
             }
@@ -661,14 +693,14 @@ private struct GlassHeroPanel: View {
             if compact {
                 MetricPillRow(metrics: [
                     MetricPillSpec("metric.cpu", value: launchpadPercentText(device.cpu), symbolName: "cpu"),
-                    MetricPillSpec("metric.memory", value: launchpadPercentText(device.memory), symbolName: "memorychip"),
-                    MetricPillSpec("metric.storage", value: launchpadPercentText(device.storageUsed), symbolName: "internaldrive")
+                    MetricPillSpec("metric.memory_ram", value: launchpadPercentText(device.memory), symbolName: "memorychip"),
+                    MetricPillSpec("metric.storage_disk", value: launchpadPercentText(device.storageUsed), symbolName: "internaldrive")
                 ])
             } else {
                 MetricPillRow(metrics: [
                     MetricPillSpec("metric.cpu", value: launchpadPercentText(device.cpu), progress: device.cpu, symbolName: "cpu"),
-                    MetricPillSpec("metric.memory", value: launchpadPercentText(device.memory), progress: device.memory, symbolName: "memorychip"),
-                    MetricPillSpec("metric.storage", value: launchpadPercentText(device.storageUsed), progress: device.storageUsed, symbolName: "internaldrive")
+                    MetricPillSpec("metric.memory_ram", value: launchpadPercentText(device.memory), progress: device.memory, symbolName: "memorychip"),
+                    MetricPillSpec("metric.storage_disk", value: launchpadPercentText(device.storageUsed), progress: device.storageUsed, symbolName: "internaldrive")
                 ])
             }
         }
@@ -1225,8 +1257,8 @@ private struct ServiceDetailView: View {
                     }
 
                     MetricPillRow(metrics: [
-                        MetricPillSpec("metric.cpu", value: launchpadServicePercentText(service.cpu), progress: service.cpu),
-                        MetricPillSpec("metric.memory", value: service.memoryText ?? "-", progress: service.memory)
+                        MetricPillSpec("metric.cpu", value: launchpadServicePercentText(effectiveCPU), progress: effectiveCPU),
+                        MetricPillSpec("metric.memory_ram", value: effectiveMemoryText, progress: effectiveMemory)
                     ])
                 }
                 .padding(.vertical, 8)
@@ -1246,7 +1278,10 @@ private struct ServiceDetailView: View {
                         ServiceWebUIView(
                             service: service,
                             endpoint: endpoint,
-                            allowsSelfSignedCertificates: connectionStore.dsmSession?.allowsSelfSignedCertificates == true
+                            allowsSelfSignedCertificates: connectionStore.dsmSession?.allowsSelfSignedCertificates == true,
+                            dsmSession: service.source == .dsm || service.source == .package
+                                ? connectionStore.dsmSession
+                                : nil
                         )
                     } label: {
                         Label {
@@ -1292,11 +1327,18 @@ private struct ServiceDetailView: View {
             }
 
             Section {
-                LabeledContent(
-                    "service.detail.endpoint",
-                    value: effectiveEndpoint?.absoluteString
-                        ?? NSLocalizedString("service.detail.endpoint_unavailable", comment: "")
-                )
+                VStack(alignment: .leading, spacing: 7) {
+                    Text("service.detail.endpoint")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    Text(effectiveEndpoint?.absoluteString
+                        ?? NSLocalizedString("service.detail.endpoint_unavailable", comment: ""))
+                        .font(.footnote.monospaced())
+                        .foregroundStyle(effectiveEndpoint == nil ? .secondary : .primary)
+                        .textSelection(.enabled)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .padding(.vertical, 4)
                 LabeledContent("service.detail.source") {
                     Text(LocalizedStringKey(endpointOverride == nil ? service.sourceTitleKey : "service.source.manual"))
                 }
@@ -1331,11 +1373,17 @@ private struct ServiceDetailView: View {
             }
 
             Section {
-                Button(role: .destructive) {
-                    dataStore.setService(service, visibleOnLaunchpad: false)
+                Button(role: isVisibleOnLaunchpad ? .destructive : nil) {
+                    dataStore.setService(service, visibleOnLaunchpad: !isVisibleOnLaunchpad)
                     dismiss()
                 } label: {
-                    Label("launchpad.service.hide", systemImage: "eye.slash")
+                    Label {
+                        Text(LocalizedStringKey(
+                            isVisibleOnLaunchpad ? "launchpad.service.hide" : "launchpad.service.show"
+                        ))
+                    } icon: {
+                        Image(systemName: isVisibleOnLaunchpad ? "eye.slash" : "eye")
+                    }
                 }
             }
         }
@@ -1428,6 +1476,25 @@ private struct ServiceDetailView: View {
 
     private var effectiveEndpoint: URL? {
         endpointOverride ?? service.suggestedEndpoint
+    }
+
+    private var isVisibleOnLaunchpad: Bool {
+        dataStore.isServiceVisibleOnLaunchpad(service)
+    }
+
+    private var effectiveCPU: Double? {
+        service.source == .dsm ? dataStore.device.cpu : service.cpu
+    }
+
+    private var effectiveMemory: Double? {
+        service.source == .dsm ? dataStore.device.memory : service.memory
+    }
+
+    private var effectiveMemoryText: String {
+        if service.source == .dsm {
+            return dataStore.device.memoryDisplayText
+        }
+        return service.memoryText ?? "-"
     }
 }
 
@@ -1535,7 +1602,7 @@ private struct ServiceSharePayload: Identifiable {
     let url: URL
 }
 
-private struct SystemShareView: UIViewControllerRepresentable {
+struct SystemShareView: UIViewControllerRepresentable {
     let items: [Any]
 
     func makeUIViewController(context: Context) -> UIActivityViewController {
@@ -1545,7 +1612,7 @@ private struct SystemShareView: UIViewControllerRepresentable {
     func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }
 
-private enum ExternalOpenTarget {
+enum ExternalOpenTarget {
     case safari
     case infuse
     case vidhub
@@ -1590,6 +1657,7 @@ private struct ServiceWebUIView: View {
     let service: LaunchpadService
     let endpoint: URL
     let allowsSelfSignedCertificates: Bool
+    let dsmSession: DSMSession?
     @State private var selectedMode = ServiceWebMode.automatic
     @State private var browserCommand: WebBrowserCommand?
     @State private var showCopiedHint = false
@@ -1604,10 +1672,16 @@ private struct ServiceWebUIView: View {
     @State private var playbackRequest: MediaPlaybackRequest?
     @State private var downloadedFileURL: URL?
 
-    init(service: LaunchpadService, endpoint: URL, allowsSelfSignedCertificates: Bool) {
+    init(
+        service: LaunchpadService,
+        endpoint: URL,
+        allowsSelfSignedCertificates: Bool,
+        dsmSession: DSMSession? = nil
+    ) {
         self.service = service
         self.endpoint = endpoint
         self.allowsSelfSignedCertificates = allowsSelfSignedCertificates
+        self.dsmSession = dsmSession
         _currentURL = State(initialValue: endpoint)
     }
 
@@ -1624,6 +1698,7 @@ private struct ServiceWebUIView: View {
                     url: endpoint,
                     prefersDesktopMode: resolvedMode.usesDesktopUserAgent,
                     allowsSelfSignedCertificates: allowsSelfSignedCertificates,
+                    authenticationCookie: authenticationCookie,
                     command: browserCommand,
                     isLoading: $isLoading,
                     loadError: $loadError,
@@ -1803,6 +1878,26 @@ private struct ServiceWebUIView: View {
     private func sendBrowserCommand(_ action: WebBrowserAction) {
         browserCommand = WebBrowserCommand(action: action)
     }
+
+    private var authenticationCookie: HTTPCookie? {
+        guard
+            let dsmSession,
+            let host = endpoint.host,
+            host.caseInsensitiveCompare(dsmSession.baseURL.host ?? "") == .orderedSame
+        else {
+            return nil
+        }
+        var properties: [HTTPCookiePropertyKey: Any] = [
+            .domain: host,
+            .path: "/",
+            .name: "id",
+            .value: dsmSession.sid
+        ]
+        if endpoint.scheme?.lowercased() == "https" {
+            properties[.secure] = "TRUE"
+        }
+        return HTTPCookie(properties: properties)
+    }
 }
 
 private struct ResolvedWebMode {
@@ -1876,6 +1971,7 @@ private struct WebContainerView: UIViewRepresentable {
     let url: URL
     let prefersDesktopMode: Bool
     let allowsSelfSignedCertificates: Bool
+    let authenticationCookie: HTTPCookie?
     let command: WebBrowserCommand?
     @Binding var isLoading: Bool
     @Binding var loadError: String?
@@ -1969,7 +2065,16 @@ private struct WebContainerView: UIViewRepresentable {
             setLoading(true, error: nil)
             var request = URLRequest(url: url)
             request.timeoutInterval = 30
-            webView.load(request)
+            guard let cookie = parent.authenticationCookie else {
+                webView.load(request)
+                return
+            }
+            webView.configuration.websiteDataStore.httpCookieStore.setCookie(cookie) { [weak self, weak webView] in
+                DispatchQueue.main.async {
+                    guard let self, let webView, self.lastRequestedURL == url else { return }
+                    webView.load(request)
+                }
+            }
         }
 
         func perform(_ action: WebBrowserAction, in webView: WKWebView) {
@@ -2253,10 +2358,15 @@ private struct WebContainerView: UIViewRepresentable {
     }
 }
 
-private enum DirectMediaURLPolicy {
-    private static let supportedExtensions = [
-        "m3u8", "mp4", "m4v", "mov",
-        "mp3", "m4a", "aac", "wav", "flac"
+enum DirectMediaURLPolicy {
+    private static let mediaExtensions = [
+        "m3u8", "mp4", "mkv", "mov", "m4v", "avi", "wmv", "webm",
+        "ts", "m2ts", "mts", "mpeg", "mpg", "flv", "f4v", "3gp", "3g2",
+        "vob", "rm", "rmvb", "ogv", "asf", "divx", "mxf", "m2v", "m1v",
+        "mpv", "qt", "dv", "h264", "h265", "hevc", "av1", "nut", "amv",
+        "bik", "roq", "wtv", "dvr-ms", "mod", "tod",
+        "mp3", "m4a", "aac", "wav", "flac", "ogg", "opus", "wma", "ape",
+        "alac", "aiff", "aif", "amr", "ac3", "dts"
     ]
 
     static func canAttemptPlayback(_ url: URL) -> Bool {
@@ -2269,15 +2379,47 @@ private enum DirectMediaURLPolicy {
     static func isLikelyMediaURL(_ url: URL) -> Bool {
         guard canAttemptPlayback(url) else { return false }
         let normalizedURL = url.absoluteString.lowercased()
-        return supportedExtensions.contains(url.pathExtension.lowercased())
-            || supportedExtensions.contains { normalizedURL.contains(".\($0)?") }
+        return mediaExtensions.contains(url.pathExtension.lowercased())
+            || mediaExtensions.contains { normalizedURL.contains(".\($0)?") }
     }
 }
 
-private struct MediaPlaybackRequest: Identifiable {
+struct MediaPlaybackRequest: Identifiable {
     let id = UUID()
     let url: URL
     let title: String
+
+    var fileExtensionHint: String {
+        let titleExtension = URL(fileURLWithPath: title).pathExtension.lowercased()
+        return titleExtension.isEmpty ? url.pathExtension.lowercased() : titleExtension
+    }
+}
+
+private enum MediaPlaybackEngine: Equatable {
+    case system
+    case compatibility
+}
+
+private enum MediaPlaybackPolicy {
+    private static let systemPreferredExtensions: Set<String> = [
+        "m3u8", "mp4", "m4v", "mov", "3gp", "3g2",
+        "mp3", "m4a", "aac", "wav", "caf"
+    ]
+
+    static var hasCompatibilityEngine: Bool {
+#if canImport(MobileVLCKit)
+        true
+#else
+        false
+#endif
+    }
+
+    static func preferredEngine(for request: MediaPlaybackRequest) -> MediaPlaybackEngine {
+        guard hasCompatibilityEngine else { return .system }
+        let fileExtension = request.fileExtensionHint
+        guard !fileExtension.isEmpty else { return .system }
+        return systemPreferredExtensions.contains(fileExtension) ? .system : .compatibility
+    }
 }
 
 private struct DirectMediaPlayerSetupView: View {
@@ -2377,35 +2519,44 @@ private final class MediaPlayerSession: ObservableObject {
     }
 }
 
-private struct BuiltInMediaPlayerView: View {
+struct BuiltInMediaPlayerView: View {
     let request: MediaPlaybackRequest
     @Environment(\.dismiss) private var dismiss
     @StateObject private var session: MediaPlayerSession
+    @State private var activeEngine: MediaPlaybackEngine
+    @State private var didAutomaticallyFallback = false
+    @State private var showExternalPicker = false
+    @State private var sharePayload: ServiceSharePayload?
+    @State private var externalMessageKey = "external.open_failed"
+    @State private var showExternalHint = false
 
     init(request: MediaPlaybackRequest) {
         self.request = request
         _session = StateObject(wrappedValue: MediaPlayerSession(url: request.url))
+        _activeEngine = State(initialValue: MediaPlaybackPolicy.preferredEngine(for: request))
     }
 
     var body: some View {
         ZStack {
             Color.black.ignoresSafeArea()
-            SystemPlayerController(player: session.player)
-                .ignoresSafeArea(edges: .bottom)
 
-            if let errorMessage = session.errorMessage {
-                VStack(spacing: 12) {
-                    Image(systemName: "exclamationmark.triangle")
-                        .font(.title2)
-                    Text("player.load_failed")
-                        .font(.headline)
-                    Text(errorMessage)
-                        .font(.caption)
-                        .multilineTextAlignment(.center)
-                        .lineLimit(4)
+            switch activeEngine {
+            case .system:
+                SystemPlayerController(player: session.player)
+                    .ignoresSafeArea(edges: .bottom)
+
+                if let errorMessage = session.errorMessage,
+                   !MediaPlaybackPolicy.hasCompatibilityEngine {
+                    playbackErrorView(errorMessage)
                 }
-                .foregroundStyle(.white)
-                .padding(22)
+            case .compatibility:
+#if canImport(MobileVLCKit)
+                VLCBuiltInPlayerView(request: request) {
+                    showExternalPicker = true
+                }
+#else
+                playbackErrorView(NSLocalizedString("player.compatibility_unavailable", comment: ""))
+#endif
             }
         }
         .navigationTitle(request.title.isEmpty ? "player.title" : request.title)
@@ -2419,22 +2570,303 @@ private struct BuiltInMediaPlayerView: View {
                     dismiss()
                 }
             }
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button {
-                    UIApplication.shared.open(request.url)
+            ToolbarItemGroup(placement: .navigationBarTrailing) {
+#if canImport(MobileVLCKit)
+                Menu {
+                    Button {
+                        selectEngine(.system)
+                    } label: {
+                        Label("player.engine.system", systemImage: activeEngine == .system ? "checkmark" : "play.rectangle")
+                    }
+                    Button {
+                        selectEngine(.compatibility)
+                    } label: {
+                        Label("player.engine.compatibility", systemImage: activeEngine == .compatibility ? "checkmark" : "rectangle.stack")
+                    }
                 } label: {
-                    Image(systemName: "safari")
+                    Image(systemName: "rectangle.stack")
                 }
+                .accessibilityLabel(Text("player.engine.choose"))
+#endif
+                Button {
+                    showExternalPicker = true
+                } label: {
+                    Image(systemName: "arrow.up.forward.app")
+                }
+                .accessibilityLabel(Text("devices.files.open_external"))
+            }
+        }
+        .confirmationDialog("service.external.title", isPresented: $showExternalPicker) {
+            Button("Infuse") { openExternal(.infuse) }
+            Button("VidHub") { openExternal(.vidhub) }
+            Button("VLC") { openExternal(.vlc) }
+            Button("external.browser") { openExternal(.safari) }
+            Button("external.other_apps") {
+                sharePayload = ServiceSharePayload(url: request.url)
+            }
+            Button("action.cancel", role: .cancel) {}
+        }
+        .sheet(item: $sharePayload) { payload in
+            SystemShareView(items: [payload.url])
+        }
+        .alert(LocalizedStringKey(externalMessageKey), isPresented: $showExternalHint) {
+            Button("action.ok", role: .cancel) {}
+        }
+        .onAppear {
+            if activeEngine == .system {
+                session.play()
+            }
+        }
+        .onDisappear {
+            session.pause()
+        }
+        .onChange(of: session.errorMessage) { errorMessage in
+            guard
+                errorMessage != nil,
+                activeEngine == .system,
+                MediaPlaybackPolicy.hasCompatibilityEngine,
+                !didAutomaticallyFallback
+            else {
+                return
+            }
+            didAutomaticallyFallback = true
+            selectEngine(.compatibility)
+        }
+    }
+
+    @ViewBuilder
+    private func playbackErrorView(_ errorMessage: String) -> some View {
+        VStack(spacing: 12) {
+            Image(systemName: "exclamationmark.triangle")
+                .font(.title2)
+            Text("player.load_failed")
+                .font(.headline)
+            Text(errorMessage)
+                .font(.caption)
+                .multilineTextAlignment(.center)
+                .lineLimit(4)
+            Button {
+                showExternalPicker = true
+            } label: {
+                Label("devices.files.open_external", systemImage: "arrow.up.forward.app")
+            }
+            .buttonStyle(.borderedProminent)
+            .tint(AppTheme.accent)
+        }
+        .foregroundStyle(.white)
+        .padding(22)
+    }
+
+    private func selectEngine(_ engine: MediaPlaybackEngine) {
+        guard activeEngine != engine else { return }
+        didAutomaticallyFallback = true
+        session.pause()
+        activeEngine = engine
+        if engine == .system {
+            session.play()
+        }
+    }
+
+    private func openExternal(_ target: ExternalOpenTarget) {
+        guard let targetURL = target.url(endpoint: request.url) else {
+            externalMessageKey = "external.unsupported_hint"
+            showExternalHint = true
+            return
+        }
+        UIApplication.shared.open(targetURL, options: [:]) { accepted in
+            guard !accepted else { return }
+            DispatchQueue.main.async {
+                externalMessageKey = target.failureMessageKey
+                showExternalHint = true
+            }
+        }
+    }
+}
+
+#if canImport(MobileVLCKit)
+private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaPlayerDelegate {
+    let player = VLCMediaPlayer()
+    @Published private(set) var isPlaying = false
+    @Published private(set) var position: Double = 0
+    @Published private(set) var isSeekable = false
+    @Published private(set) var errorMessage: String?
+
+    init(url: URL) {
+        super.init()
+        player.delegate = self
+        player.media = VLCMedia(url: url)
+    }
+
+    func attach(to view: UIView) {
+        player.drawable = view
+    }
+
+    func play() {
+        try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .moviePlayback)
+        try? AVAudioSession.sharedInstance().setActive(true)
+        player.play()
+        syncState()
+    }
+
+    func togglePlayback() {
+        player.isPlaying ? player.pause() : player.play()
+        syncState()
+    }
+
+    func jump(by seconds: Int) {
+        if seconds < 0 {
+            player.jumpBackward(-seconds)
+        } else {
+            player.jumpForward(seconds)
+        }
+    }
+
+    func seek(to newPosition: Double) {
+        guard player.isSeekable else { return }
+        player.position = Float(min(max(newPosition, 0), 1))
+        syncState()
+    }
+
+    func stop() {
+        player.stop()
+    }
+
+    func mediaPlayerStateChanged(_ notification: Notification) {
+        syncState()
+    }
+
+    func mediaPlayerTimeChanged(_ notification: Notification) {
+        syncState()
+    }
+
+    private func syncState() {
+        let isPlaying = player.isPlaying
+        let position = Double(max(player.position, 0))
+        let isSeekable = player.isSeekable
+        let errorMessage = player.state == .error
+            ? NSLocalizedString("player.compatibility_failed", comment: "")
+            : nil
+
+        DispatchQueue.main.async { [weak self] in
+            self?.isPlaying = isPlaying
+            self?.position = position
+            self?.isSeekable = isSeekable
+            self?.errorMessage = errorMessage
+        }
+    }
+
+    deinit {
+        player.stop()
+    }
+}
+
+private struct VLCBuiltInPlayerView: View {
+    let request: MediaPlaybackRequest
+    let openExternal: () -> Void
+    @StateObject private var session: VLCMediaPlayerSession
+
+    init(request: MediaPlaybackRequest, openExternal: @escaping () -> Void) {
+        self.request = request
+        self.openExternal = openExternal
+        _session = StateObject(wrappedValue: VLCMediaPlayerSession(url: request.url))
+    }
+
+    var body: some View {
+        ZStack {
+            VLCPlayerSurface(session: session)
+                .ignoresSafeArea(edges: .bottom)
+
+            VStack(spacing: 0) {
+                Spacer()
+                VStack(spacing: 10) {
+                    Slider(
+                        value: Binding(
+                            get: { session.position },
+                            set: { session.seek(to: $0) }
+                        ),
+                        in: 0...1
+                    )
+                    .disabled(!session.isSeekable)
+                    .tint(AppTheme.accent)
+
+                    HStack(spacing: 34) {
+                        Button {
+                            session.jump(by: -15)
+                        } label: {
+                            Image(systemName: "gobackward.15")
+                        }
+                        .accessibilityLabel(Text("player.seek_backward"))
+
+                        Button {
+                            session.togglePlayback()
+                        } label: {
+                            Image(systemName: session.isPlaying ? "pause.fill" : "play.fill")
+                                .font(.title2)
+                                .frame(width: 44, height: 44)
+                        }
+                        .accessibilityLabel(
+                            Text(LocalizedStringKey(session.isPlaying ? "player.pause" : "player.play"))
+                        )
+
+                        Button {
+                            session.jump(by: 15)
+                        } label: {
+                            Image(systemName: "goforward.15")
+                        }
+                        .accessibilityLabel(Text("player.seek_forward"))
+                    }
+                    .font(.title3)
+                }
+                .foregroundStyle(.white)
+                .padding(.horizontal, 24)
+                .padding(.top, 12)
+                .padding(.bottom, 18)
+                .background(.ultraThinMaterial)
+            }
+
+            if let errorMessage = session.errorMessage {
+                VStack(spacing: 12) {
+                    Image(systemName: "exclamationmark.triangle")
+                        .font(.title2)
+                    Text("player.load_failed")
+                        .font(.headline)
+                    Text(errorMessage)
+                        .font(.caption)
+                        .multilineTextAlignment(.center)
+                    Button(action: openExternal) {
+                        Label("devices.files.open_external", systemImage: "arrow.up.forward.app")
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(AppTheme.accent)
+                }
+                .foregroundStyle(.white)
+                .padding(22)
             }
         }
         .onAppear {
             session.play()
         }
         .onDisappear {
-            session.pause()
+            session.stop()
         }
     }
 }
+
+private struct VLCPlayerSurface: UIViewRepresentable {
+    @ObservedObject var session: VLCMediaPlayerSession
+
+    func makeUIView(context: Context) -> UIView {
+        let view = UIView()
+        view.backgroundColor = .black
+        session.attach(to: view)
+        return view
+    }
+
+    func updateUIView(_ view: UIView, context: Context) {
+        session.attach(to: view)
+    }
+}
+#endif
 
 private struct SystemPlayerController: UIViewControllerRepresentable {
     let player: AVPlayer
@@ -3215,6 +3647,49 @@ private struct CertificateReminderStrip: View {
     }
 }
 
+private struct LiveUptimeText: View {
+    let baseText: String
+    @State private var startedAt = Date()
+
+    var body: some View {
+        TimelineView(.periodic(from: startedAt, by: 60)) { context in
+            Text(displayText(at: context.date))
+        }
+    }
+
+    private func displayText(at date: Date) -> String {
+        guard let baseMinutes = Self.minutes(from: baseText) else { return baseText }
+        let elapsedMinutes = max(0, Int(date.timeIntervalSince(startedAt)) / 60)
+        let totalMinutes = baseMinutes + elapsedMinutes
+        if totalMinutes >= 1_440 {
+            return "\(totalMinutes / 1_440)d\((totalMinutes % 1_440) / 60)h\(totalMinutes % 60)min"
+        }
+        return "\(totalMinutes / 60)h\(totalMinutes % 60)min"
+    }
+
+    private static func minutes(from text: String) -> Int? {
+        let normalized = text.replacingOccurrences(of: " ", with: "")
+        let days: Int
+        let remainder: String
+        if let dayMarker = normalized.firstIndex(of: "d") {
+            guard let parsedDays = Int(normalized[..<dayMarker]) else { return nil }
+            days = parsedDays
+            remainder = String(normalized[normalized.index(after: dayMarker)...])
+        } else {
+            days = 0
+            remainder = normalized
+        }
+        guard let hourMarker = remainder.firstIndex(of: "h"), let hours = Int(remainder[..<hourMarker]) else {
+            return nil
+        }
+        let minuteText = String(remainder[remainder.index(after: hourMarker)...])
+            .replacingOccurrences(of: "min", with: "")
+        let minutes = minuteText.isEmpty ? 0 : Int(minuteText)
+        guard let minutes else { return nil }
+        return days * 1_440 + hours * 60 + minutes
+    }
+}
+
 private struct DeviceSummaryPanel: View {
     let device: NASDevice
     let compact: Bool
@@ -3226,7 +3701,8 @@ private struct DeviceSummaryPanel: View {
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(.primary)
                 Spacer()
-                Text(device.uptimeText)
+                LiveUptimeText(baseText: device.uptimeText)
+                    .id(device.uptimeText)
                     .font(.caption.weight(.medium))
                     .foregroundStyle(.secondary)
             }
@@ -3234,14 +3710,14 @@ private struct DeviceSummaryPanel: View {
             if compact {
                 MetricPillRow(metrics: [
                     MetricPillSpec("metric.cpu", value: launchpadPercentText(device.cpu), symbolName: "cpu"),
-                    MetricPillSpec("metric.memory", value: launchpadPercentText(device.memory), symbolName: "memorychip"),
-                    MetricPillSpec("metric.storage", value: launchpadPercentText(device.storageUsed), symbolName: "internaldrive")
+                    MetricPillSpec("metric.memory_ram", value: launchpadPercentText(device.memory), symbolName: "memorychip"),
+                    MetricPillSpec("metric.storage_disk", value: launchpadPercentText(device.storageUsed), symbolName: "internaldrive")
                 ])
             } else {
                 MetricPillRow(metrics: [
                     MetricPillSpec("metric.cpu", value: launchpadPercentText(device.cpu), progress: device.cpu, symbolName: "cpu"),
-                    MetricPillSpec("metric.memory", value: launchpadPercentText(device.memory), progress: device.memory, symbolName: "memorychip"),
-                    MetricPillSpec("metric.storage", value: launchpadPercentText(device.storageUsed), progress: device.storageUsed, symbolName: "internaldrive")
+                    MetricPillSpec("metric.memory_ram", value: launchpadPercentText(device.memory), progress: device.memory, symbolName: "memorychip"),
+                    MetricPillSpec("metric.storage_disk", value: launchpadPercentText(device.storageUsed), progress: device.storageUsed, symbolName: "internaldrive")
                 ])
             }
         }
