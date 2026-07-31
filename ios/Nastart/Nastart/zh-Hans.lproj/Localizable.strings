@@ -4,6 +4,7 @@
 "tab.mine" = "我的";
 
 "status.online" = "在线";
+"status.installed" = "已安装";
 "status.warning" = "警告";
 "status.offline" = "离线";
 "status.unknown" = "未知";
@@ -126,10 +127,17 @@
 "connect.welcome.action" = "添加 NAS";
 "connect.welcome.security" = "登录凭据仅保存在系统钥匙串中";
 "connect.title" = "连接群晖 DSM";
-"connect.subtitle" = "默认使用 HTTPS 连接 DSM；未填写端口时自动使用 5001。";
+"connect.subtitle" = "选择当前访问位置，并填写手机实际可访问的 DSM HTTPS 地址。";
 "connect.section.dsm" = "DSM";
-"connect.host" = "DSM 主机";
+"connect.location" = "访问位置";
+"connect.location.local" = "内网";
+"connect.location.remote" = "外网";
+"connect.host" = "DSM 地址（内网或外网）";
 "connect.host.example" = "例如：https://192.168.1.10:5001";
+"connect.host.example.local" = "例如：https://192.168.1.10:5001";
+"connect.host.example.remote" = "例如：https://nas.example.com:5001";
+"connect.host.hint.local" = "优先使用局域网发现，或填写 NAS 的私网 IP 和 DSM HTTPS 端口。";
+"connect.host.hint.remote" = "填写公网实际可达的完整 DSM HTTPS 地址；如使用非 443 端口，请一并填写。";
 "connect.account" = "账号";
 "connect.account.example" = "例如：nastart";
 "connect.password" = "密码";
@@ -139,6 +147,7 @@
 "connect.optional" = "可选";
 "connect.trust_self_signed" = "信任自签 HTTPS 证书";
 "connect.trust_self_signed.inline_hint" = "仅在确认这是你自己的 NAS 时开启";
+"connect.trust_self_signed.protocol_hint" = "无论是否开启，地址都应使用 https://；此开关只影响证书校验，不会开启 HTTPS 或修改端口。";
 "connect.trust_self_signed.footer" = "例如 lagransun.cn:5001 或 192.168.1.10:5001，无需手动输入 https://。仅在连接自己的 NAS 且确认地址正确时开启自签信任。";
 "connect.scan.title" = "局域网发现";
 "connect.scan.description" = "局域网发现会列出可访问的 DSM 设备。";
@@ -175,6 +184,9 @@
 "connect.error.api_code" = "DSM API 返回失败，错误码：%d。";
 "connect.error.missing_session" = "DSM 登录成功但没有返回会话，请检查 DSM 版本或登录方式。";
 "connect.error.otp_required" = "DSM 需要双重验证代码，或验证码已失效，请重新输入 2FA 验证码后再连接。";
+"connect.error.local_unreachable" = "无法连接内网 DSM。请确认手机与 NAS 在同一网络、地址和 HTTPS 端口正确，并允许 Nastart 访问本地网络。";
+"connect.error.remote_unreachable" = "公网 DSM 在登录前断开连接。请检查域名解析、公网端口映射或反向代理，并确认其能转发 DSM 的 /webapi 路径；在内网测试公网域名时还需路由器支持 NAT 回环。";
+"connect.error.certificate" = "DSM HTTPS 证书校验失败。请确认域名与证书匹配；仅在确认是自己的 NAS 时开启自签证书信任。";
 
 "data.refresh.ready" = "数据已准备";
 "data.refresh.mock_done" = "已刷新本地原型数据";
@@ -632,6 +644,7 @@
 "diagnostics.api_request.failed" = "DSM API 请求失败";
 "diagnostics.snapshot.started" = "开始读取 NAS 快照";
 "diagnostics.snapshot.completed" = "NAS 快照读取完成";
+"diagnostics.package.status_summary" = "套件状态解析完成";
 "diagnostics.refresh.applied" = "刷新快照已应用";
 "diagnostics.refresh.inventory_preserved" = "刷新数据不完整，已保留原服务";
 "diagnostics.container.request_failed" = "容器 API 请求失败";

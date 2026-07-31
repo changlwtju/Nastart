@@ -563,6 +563,7 @@ private extension ServiceStatus {
     var devicesTitleKey: LocalizedStringKey {
         switch self {
         case .online: return "status.online"
+        case .installed: return "status.installed"
         case .warning: return "status.warning"
         case .offline: return "status.offline"
         case .unknown: return "status.unknown"

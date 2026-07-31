@@ -61,6 +61,7 @@ enum ServiceCategory: String, CaseIterable, Identifiable, Hashable {
 
 enum ServiceStatus: String, Equatable {
     case online
+    case installed
     case warning
     case offline
     case unknown

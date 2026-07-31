@@ -935,6 +935,9 @@ final class DSMClient {
                 "containers": "\(containers.count)",
                 "containerServices": "\(services.filter { $0.source == .container || $0.source == .reverseProxy }.count)",
                 "containerEndpoints": "\(services.filter { ($0.source == .container || $0.source == .reverseProxy) && $0.endpoint != nil }.count)",
+                "lanContainerEndpoints": "\(services.filter { $0.source == .container && $0.endpoint != nil }.count)",
+                "reverseProxyEndpoints": "\(services.filter { $0.source == .reverseProxy && $0.endpoint != nil }.count)",
+                "connectionLocation": Self.isPrivateNetworkHost(session.baseURL.host) ? "local" : "remote",
                 "packages": "\(services.filter { $0.source == .package }.count)",
                 "lanHosts": "\(lanHosts.count)",
                 "publishedPorts": "\(containers.reduce(0) { $0 + $1.ports.count })",
@@ -2068,7 +2071,19 @@ final class DSMClient {
             )
         }
 
-        services += Self.mapPackageServices(packageData, session: session)
+        let packageServices = Self.mapPackageServices(packageData, session: session)
+        record(
+            packageServices.contains(where: { $0.status == .unknown }) ? .warning : .info,
+            categoryKey: "diagnostics.category.dsm_api",
+            messageKey: "diagnostics.package.status_summary",
+            details: [
+                "installed": "\(packageServices.filter { $0.status == .installed }.count)",
+                "online": "\(packageServices.filter { $0.status == .online }.count)",
+                "offline": "\(packageServices.filter { $0.status == .offline }.count)",
+                "unknown": "\(packageServices.filter { $0.status == .unknown }.count)"
+            ]
+        )
+        services += packageServices
 
         var seen = Set<String>()
         return services.filter { service in
@@ -2145,6 +2160,22 @@ final class DSMClient {
         ) { group in
             for container in containers where container.status == .online {
                 group.addTask {
+                    let candidates = Self.endpointCandidates(
+                        for: container,
+                        baseURL: baseURL,
+                        lanHosts: lanHosts
+                    )
+                    if Self.isPrivateNetworkHost(baseURL.host) {
+                        let reachableEndpoint = await self.firstReachableWebEndpoint(candidates)
+                        let endpoint = reachableEndpoint
+                            ?? (Self.isLikelyWebContainer(container) ? candidates.first : nil)
+                        if let endpoint {
+                            return (
+                                container.id,
+                                ResolvedContainerEndpoint(url: endpoint, source: .container)
+                            )
+                        }
+                    }
                     if let endpoint = Self.reverseProxyEndpoint(
                         for: container,
                         rules: reverseProxyRules,
@@ -2155,11 +2186,6 @@ final class DSMClient {
                             ResolvedContainerEndpoint(url: endpoint, source: .reverseProxy)
                         )
                     }
-                    let candidates = Self.endpointCandidates(
-                        for: container,
-                        baseURL: baseURL,
-                        lanHosts: lanHosts
-                    )
                     let reachableEndpoint = await self.firstReachableWebEndpoint(candidates)
                     let endpoint = reachableEndpoint
                         ?? (Self.isLikelyWebContainer(container) ? candidates.first : nil)
@@ -2206,6 +2232,14 @@ final class DSMClient {
         return octets[0] == 10
             || (octets[0] == 172 && (16...31).contains(octets[1]))
             || (octets[0] == 192 && octets[1] == 168)
+    }
+
+    private static func isPrivateNetworkHost(_ host: String?) -> Bool {
+        guard let host = host?.lowercased() else { return false }
+        return isPrivateIPv4(host)
+            || host == "localhost"
+            || host.hasSuffix(".local")
+            || host.hasSuffix(".lan")
     }
 
     private static func mapReverseProxyRules(_ data: DSMJSONValue?) -> [DSMReverseProxyRule] {
@@ -2384,13 +2418,29 @@ final class DSMClient {
     }
 
     private static func packageStatus(_ item: DSMJSONValue) -> ServiceStatus {
-        if let isRunning = item.firstDirectBool(for: ["start", "running", "is_running", "started", "enabled", "run", "is_enable"]) {
+        let runningKeys = [
+            "start", "running", "is_running", "isRunning", "started",
+            "enabled", "run", "is_enable", "run_status", "runStatus"
+        ]
+        if let isRunning = item.firstDirectBool(for: runningKeys) ?? item.firstBool(for: runningKeys) {
             return isRunning ? .online : .offline
         }
-        return serviceStatus(from: directTextValue(
+        let statusText = directTextValue(
             in: item,
-            keys: ["status", "state", "status_text", "display_status", "pkgStatus"]
-        ) ?? "")
+            keys: [
+                "status", "state", "status_text", "display_status", "pkgStatus",
+                "package_status", "service_status", "run_status", "runStatus"
+            ]
+        ) ?? textValue(
+            in: item,
+            keys: [
+                "status", "state", "status_text", "display_status", "pkgStatus",
+                "package_status", "service_status", "run_status", "runStatus"
+            ]
+        ) ?? ""
+        let status = serviceStatus(from: statusText)
+        if status != .unknown { return status }
+        return isInstalledPackage(item) ? .installed : .unknown
     }
 
     private static func shouldShowPackageService(_ name: String) -> Bool {

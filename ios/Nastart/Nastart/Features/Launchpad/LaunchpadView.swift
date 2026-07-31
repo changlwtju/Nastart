@@ -64,9 +64,6 @@ struct LaunchpadView: View {
                     NASConnectionWelcomeView(
                         addNASAction: {
                             showConnectionFlow = true
-                        },
-                        addManualServiceAction: {
-                            showManualServiceEditor = true
                         }
                     )
                 }
@@ -3748,7 +3745,6 @@ private struct MediaItemDetailView: View {
 
 private struct NASConnectionWelcomeView: View {
     let addNASAction: () -> Void
-    let addManualServiceAction: () -> Void
 
     var body: some View {
         ScrollView {
@@ -3773,11 +3769,6 @@ private struct NASConnectionWelcomeView: View {
                     Label("connect.welcome.action", systemImage: "plus")
                 }
                 .buttonStyle(NastartPrimaryButtonStyle())
-
-                Button(action: addManualServiceAction) {
-                    Label("manual.service.add", systemImage: "link.badge.plus")
-                }
-                .buttonStyle(.bordered)
 
                 Label("connect.welcome.security", systemImage: "lock.shield")
                     .font(.footnote)
@@ -3879,6 +3870,20 @@ private struct ManualServiceEditorView: View {
     }
 }
 
+private enum DSMConnectionLocation: String, CaseIterable, Identifiable {
+    case local
+    case remote
+
+    var id: String { rawValue }
+
+    var titleKey: String {
+        switch self {
+        case .local: return "connect.location.local"
+        case .remote: return "connect.location.remote"
+        }
+    }
+}
+
 private struct DSMConnectionFlowView: View {
     let onConnected: () -> Void
     @EnvironmentObject private var dataStore: AppDataStore
@@ -3888,6 +3893,7 @@ private struct DSMConnectionFlowView: View {
     @State private var account = ""
     @State private var password = ""
     @State private var oneTimeCode = ""
+    @State private var connectionLocation: DSMConnectionLocation = .local
     @State private var allowsSelfSignedCertificates = false
     @State private var isConnecting = false
     @State private var connectionStatusKey = "connect.review.authenticating"
@@ -3915,12 +3921,50 @@ private struct DSMConnectionFlowView: View {
                     Text("connect.section.dsm")
                         .font(.headline)
 
+                    Picker("connect.location", selection: $connectionLocation) {
+                        ForEach(DSMConnectionLocation.allCases) { location in
+                            Text(LocalizedStringKey(location.titleKey)).tag(location)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+
+                    if connectionLocation == .local {
+                        NavigationLink {
+                            LANDiscoveryView(selectedHost: $host)
+                        } label: {
+                            Label("connect.scan.title", systemImage: "magnifyingglass")
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        }
+                        Divider()
+                    }
+
                     connectionFieldLabel("connect.host")
-                    TextField("connect.host.example", text: $host)
+                    TextField(LocalizedStringKey(hostExampleKey), text: $host)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
                         .keyboardType(.URL)
                         .connectionInputStyle()
+
+                    Text(LocalizedStringKey(addressHintKey))
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+
+                    Toggle(isOn: $allowsSelfSignedCertificates) {
+                        VStack(alignment: .leading, spacing: 3) {
+                            Text("connect.trust_self_signed")
+                            Text("connect.trust_self_signed.inline_hint")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+
+                    Text("connect.trust_self_signed.protocol_hint")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+
+                    Divider()
 
                     connectionFieldLabel("connect.account")
                     TextField("connect.account.example", text: $account)
@@ -3940,24 +3984,6 @@ private struct DSMConnectionFlowView: View {
                         .textContentType(.oneTimeCode)
                         .keyboardType(.numberPad)
                         .connectionInputStyle()
-
-                    Toggle(isOn: $allowsSelfSignedCertificates) {
-                        VStack(alignment: .leading, spacing: 3) {
-                            Text("connect.trust_self_signed")
-                            Text("connect.trust_self_signed.inline_hint")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
-                    }
-
-                    Divider()
-
-                    NavigationLink {
-                        LANDiscoveryView(selectedHost: $host)
-                    } label: {
-                        Label("connect.scan.title", systemImage: "magnifyingglass")
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                    }
                 }
                 .connectionSectionStyle()
 
@@ -4075,10 +4101,42 @@ private struct DSMConnectionFlowView: View {
                 await MainActor.run {
                     isConnecting = false
                     connectionTask = nil
-                    errorMessage = error.localizedDescription
+                    errorMessage = connectionErrorMessage(for: error)
                     showError = true
                 }
             }
+        }
+    }
+
+    private var hostExampleKey: String {
+        connectionLocation == .local
+            ? "connect.host.example.local"
+            : "connect.host.example.remote"
+    }
+
+    private var addressHintKey: String {
+        connectionLocation == .local
+            ? "connect.host.hint.local"
+            : "connect.host.hint.remote"
+    }
+
+    private func connectionErrorMessage(for error: Error) -> String {
+        guard let urlError = error as? URLError else {
+            return error.localizedDescription
+        }
+        switch urlError.code {
+        case .networkConnectionLost, .cannotConnectToHost, .timedOut, .notConnectedToInternet:
+            return NSLocalizedString(
+                connectionLocation == .remote
+                    ? "connect.error.remote_unreachable"
+                    : "connect.error.local_unreachable",
+                comment: ""
+            )
+        case .serverCertificateUntrusted, .serverCertificateHasBadDate,
+                .serverCertificateHasUnknownRoot, .secureConnectionFailed:
+            return NSLocalizedString("connect.error.certificate", comment: "")
+        default:
+            return error.localizedDescription
         }
     }
 
@@ -4266,6 +4324,7 @@ private extension ServiceStatus {
     var titleKey: String {
         switch self {
         case .online: return "status.online"
+        case .installed: return "status.installed"
         case .warning: return "status.warning"
         case .offline: return "status.offline"
         case .unknown: return "status.unknown"
