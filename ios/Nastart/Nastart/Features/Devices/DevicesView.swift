@@ -816,7 +816,12 @@ private struct FilePreviewView: View {
         }
         switch item.kind {
         case .video, .audio:
-            playbackRequest = MediaPlaybackRequest(url: url, title: item.name)
+            playbackRequest = MediaPlaybackRequest(
+                url: url,
+                title: item.name,
+                allowsSelfSignedCertificates: connectionStore.dsmSession?.allowsSelfSignedCertificates == true,
+                source: .dsmFile
+            )
         case .folder, .image, .text, .archive:
             sharePayload = FileSharePayload(url: url)
         }

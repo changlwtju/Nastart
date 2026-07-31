@@ -593,10 +593,10 @@
 "mine.privacy.export_footer" = "Passwords, tokens, and keys are excluded by default.";
 "mine.privacy.export_hint" = "A local backup file will be shared later.";
 
-"diagnostics.title" = "DSM Diagnostics";
+"diagnostics.title" = "Development Diagnostics";
 "diagnostics.recent" = "Recent Diagnostics";
 "diagnostics.empty" = "No issues need diagnosis yet.";
-"diagnostics.footer" = "Diagnostics only records connection, DSM API, package, and container discovery clues. Passwords, one-time codes, SIDs, and full addresses are never stored.";
+"diagnostics.footer" = "During development, detailed refresh, DSM API, container, file, and media playback events are recorded. Passwords, one-time codes, SIDs, full addresses, and file names are never stored.";
 "diagnostics.export" = "Export Diagnostic Summary";
 "diagnostics.copy" = "Copy Diagnostic Summary";
 "diagnostics.clear" = "Clear Diagnostics";
@@ -607,6 +607,9 @@
 "diagnostics.category.connection" = "Connection";
 "diagnostics.category.dsm_api" = "DSM API";
 "diagnostics.category.container" = "Container";
+"diagnostics.category.refresh" = "Refresh";
+"diagnostics.category.media" = "Media Playback";
+"diagnostics.category.web" = "In-App Browser";
 "diagnostics.login.started" = "Started DSM connection";
 "diagnostics.login.succeeded" = "DSM login succeeded";
 "diagnostics.login.attempt_failed" = "Login compatibility attempt failed";
@@ -624,10 +627,25 @@
 "diagnostics.api_request.failed" = "DSM API request failed";
 "diagnostics.snapshot.started" = "Started NAS snapshot";
 "diagnostics.snapshot.completed" = "NAS snapshot loaded";
+"diagnostics.refresh.applied" = "Refresh snapshot applied";
+"diagnostics.refresh.inventory_preserved" = "Incomplete refresh kept existing services";
 "diagnostics.container.request_failed" = "Container API request failed";
 "diagnostics.container.empty_response" = "Container API returned empty";
 "diagnostics.container.loaded" = "Container list loaded";
 
 "diagnostics.files.folder_loaded" = "Folder loaded";
 "diagnostics.files.folder_failed" = "Folder load failed";
+"diagnostics.media.probe_started" = "Media response check started";
+"diagnostics.media.probe_succeeded" = "Media response check passed";
+"diagnostics.media.probe_invalid_response" = "Media URL returned non-media content";
+"diagnostics.media.probe_failed" = "Media response check failed";
+"diagnostics.media.player_started" = "Built-in player started";
+"diagnostics.media.player_ready" = "Built-in player became ready";
+"diagnostics.media.player_failed" = "Built-in player failed to load or decode";
+"diagnostics.media.player_state" = "Built-in player state changed";
+"diagnostics.web.started" = "In-app page load started";
+"diagnostics.web.completed" = "In-app page load completed";
+"diagnostics.web.redirected" = "In-app page redirected";
+"diagnostics.web.failed" = "In-app page load failed";
+"diagnostics.web.process_terminated" = "In-app web process stopped";
 "devices.files.empty" = "No files";

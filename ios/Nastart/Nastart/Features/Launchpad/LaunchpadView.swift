@@ -2036,7 +2036,7 @@ private struct SystemInAppBrowserView: UIViewControllerRepresentable {
     let onDone: () -> Void
 
     func makeCoordinator() -> Coordinator {
-        Coordinator(onDone: onDone)
+        Coordinator(url: url, onDone: onDone)
     }
 
     func makeUIViewController(context: Context) -> SFSafariViewController {
@@ -2047,16 +2047,59 @@ private struct SystemInAppBrowserView: UIViewControllerRepresentable {
         controller.delegate = context.coordinator
         controller.dismissButtonStyle = .close
         controller.preferredControlTintColor = UIColor(AppTheme.accent)
+        DiagnosticLogStore.shared.record(
+            .info,
+            categoryKey: "diagnostics.category.web",
+            messageKey: "diagnostics.web.started",
+            details: [
+                "engine": "SFSafariViewController",
+                "target": DiagnosticLogStore.redactedURL(url)
+            ]
+        )
         return controller
     }
 
     func updateUIViewController(_ controller: SFSafariViewController, context: Context) {}
 
     final class Coordinator: NSObject, SFSafariViewControllerDelegate {
+        let url: URL
         let onDone: () -> Void
 
-        init(onDone: @escaping () -> Void) {
+        init(url: URL, onDone: @escaping () -> Void) {
+            self.url = url
             self.onDone = onDone
+        }
+
+        func safariViewController(
+            _ controller: SFSafariViewController,
+            didCompleteInitialLoad didLoadSuccessfully: Bool
+        ) {
+            DiagnosticLogStore.shared.record(
+                didLoadSuccessfully ? .info : .error,
+                categoryKey: "diagnostics.category.web",
+                messageKey: didLoadSuccessfully
+                    ? "diagnostics.web.completed"
+                    : "diagnostics.web.failed",
+                details: [
+                    "engine": "SFSafariViewController",
+                    "target": DiagnosticLogStore.redactedURL(url)
+                ]
+            )
+        }
+
+        func safariViewController(
+            _ controller: SFSafariViewController,
+            initialLoadDidRedirectTo url: URL
+        ) {
+            DiagnosticLogStore.shared.record(
+                .info,
+                categoryKey: "diagnostics.category.web",
+                messageKey: "diagnostics.web.redirected",
+                details: [
+                    "engine": "SFSafariViewController",
+                    "target": DiagnosticLogStore.redactedURL(url)
+                ]
+            )
         }
 
         func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
@@ -2217,6 +2260,7 @@ private struct WebContainerView: UIViewRepresentable {
         private var lastPublishedCanGoBack: Bool?
         private var lastPublishedCanGoForward: Bool?
         private var processRecoveryCount = 0
+        private var loadStartedAt: Date?
 
         init(parent: WebContainerView) {
             self.parent = parent
@@ -2240,8 +2284,21 @@ private struct WebContainerView: UIViewRepresentable {
 
         func load(_ url: URL, in webView: WKWebView) {
             lastRequestedURL = url
+            loadStartedAt = Date()
             visibleLoadFallback?.cancel()
             setLoading(true, error: nil)
+            DiagnosticLogStore.shared.record(
+                .info,
+                categoryKey: "diagnostics.category.web",
+                messageKey: "diagnostics.web.started",
+                details: [
+                    "engine": "WKWebView",
+                    "target": DiagnosticLogStore.redactedURL(url),
+                    "desktop": parent.prefersDesktopMode ? "on" : "off",
+                    "selfSigned": parent.allowsSelfSignedCertificates ? "on" : "off",
+                    "sessionCookie": parent.authenticationCookie == nil ? "off" : "on"
+                ]
+            )
             var request = URLRequest(url: url)
             request.timeoutInterval = 30
             guard let cookie = parent.authenticationCookie else {
@@ -2292,10 +2349,32 @@ private struct WebContainerView: UIViewRepresentable {
             processRecoveryCount = 0
             setLoading(false, error: nil)
             syncState(from: webView, immediately: true)
+            DiagnosticLogStore.shared.record(
+                .info,
+                categoryKey: "diagnostics.category.web",
+                messageKey: "diagnostics.web.completed",
+                details: [
+                    "engine": "WKWebView",
+                    "target": DiagnosticLogStore.redactedURL(webView.url ?? parent.url),
+                    "durationMs": loadStartedAt.map {
+                        "\(Int(Date().timeIntervalSince($0) * 1000))"
+                    } ?? "-"
+                ]
+            )
         }
 
         func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
             visibleLoadFallback?.cancel()
+            DiagnosticLogStore.shared.record(
+                .error,
+                categoryKey: "diagnostics.category.web",
+                messageKey: "diagnostics.web.process_terminated",
+                details: [
+                    "engine": "WKWebView",
+                    "target": DiagnosticLogStore.redactedURL(webView.url ?? parent.url),
+                    "recovery": processRecoveryCount < 1 ? "reload" : "stopped"
+                ]
+            )
             guard processRecoveryCount < 1 else {
                 setLoading(false, error: NSLocalizedString("web.process_terminated", comment: ""))
                 return
@@ -2520,6 +2599,17 @@ private struct WebContainerView: UIViewRepresentable {
             if nsError.domain == NSURLErrorDomain && nsError.code == NSURLErrorCancelled {
                 return
             }
+            DiagnosticLogStore.shared.record(
+                .error,
+                categoryKey: "diagnostics.category.web",
+                messageKey: "diagnostics.web.failed",
+                details: [
+                    "engine": "WKWebView",
+                    "target": DiagnosticLogStore.redactedURL(parent.url),
+                    "errorDomain": nsError.domain,
+                    "errorCode": "\(nsError.code)"
+                ]
+            )
             visibleLoadFallback?.cancel()
             setLoading(false, error: error.localizedDescription)
         }
@@ -2627,10 +2717,162 @@ struct MediaPlaybackRequest: Identifiable {
     let id = UUID()
     let url: URL
     let title: String
+    let allowsSelfSignedCertificates: Bool
+    let source: MediaPlaybackSource
+
+    init(
+        url: URL,
+        title: String,
+        allowsSelfSignedCertificates: Bool = false,
+        source: MediaPlaybackSource = .directURL
+    ) {
+        self.url = url
+        self.title = title
+        self.allowsSelfSignedCertificates = allowsSelfSignedCertificates
+        self.source = source
+    }
 
     var fileExtensionHint: String {
         let titleExtension = URL(fileURLWithPath: title).pathExtension.lowercased()
         return titleExtension.isEmpty ? url.pathExtension.lowercased() : titleExtension
+    }
+
+    var mimeTypeHint: String? {
+        switch fileExtensionHint {
+        case "mp4", "m4v": return "video/mp4"
+        case "mov": return "video/quicktime"
+        case "m3u8": return "application/vnd.apple.mpegurl"
+        case "mp3": return "audio/mpeg"
+        case "m4a", "aac": return "audio/mp4"
+        case "wav": return "audio/wav"
+        default: return nil
+        }
+    }
+}
+
+enum MediaPlaybackSource: String {
+    case directURL = "direct"
+    case dsmFile = "dsmFile"
+}
+
+private final class MediaProbeTrustDelegate: NSObject, URLSessionDelegate {
+    let trustedHost: String?
+    let allowsSelfSignedCertificates: Bool
+
+    init(trustedHost: String?, allowsSelfSignedCertificates: Bool) {
+        self.trustedHost = trustedHost
+        self.allowsSelfSignedCertificates = allowsSelfSignedCertificates
+    }
+
+    func urlSession(
+        _ session: URLSession,
+        didReceive challenge: URLAuthenticationChallenge,
+        completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
+    ) {
+        guard
+            allowsSelfSignedCertificates,
+            challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust,
+            challenge.protectionSpace.host.caseInsensitiveCompare(trustedHost ?? "") == .orderedSame,
+            let trust = challenge.protectionSpace.serverTrust
+        else {
+            completionHandler(.performDefaultHandling, nil)
+            return
+        }
+        completionHandler(.useCredential, URLCredential(trust: trust))
+    }
+}
+
+private enum MediaPlaybackProbe {
+    static func run(_ playback: MediaPlaybackRequest) async {
+        let diagnostics = DiagnosticLogStore.shared
+        diagnostics.record(
+            .info,
+            categoryKey: "diagnostics.category.media",
+            messageKey: "diagnostics.media.probe_started",
+            details: baseDetails(for: playback)
+        )
+
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.timeoutIntervalForRequest = 15
+        configuration.timeoutIntervalForResource = 20
+        configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
+        let delegate = MediaProbeTrustDelegate(
+            trustedHost: playback.url.host,
+            allowsSelfSignedCertificates: playback.allowsSelfSignedCertificates
+        )
+        let session = URLSession(configuration: configuration, delegate: delegate, delegateQueue: nil)
+        defer { session.invalidateAndCancel() }
+
+        var request = URLRequest(url: playback.url)
+        request.timeoutInterval = 15
+        request.setValue("bytes=0-1", forHTTPHeaderField: "Range")
+        request.setValue("identity", forHTTPHeaderField: "Accept-Encoding")
+
+        do {
+            let (bytes, response) = try await session.bytes(for: request)
+            guard let httpResponse = response as? HTTPURLResponse else {
+                diagnostics.record(
+                    .error,
+                    categoryKey: "diagnostics.category.media",
+                    messageKey: "diagnostics.media.probe_failed",
+                    details: baseDetails(for: playback).merging(["error": "nonHTTPResponse"]) { current, _ in current }
+                )
+                return
+            }
+
+            var iterator = bytes.makeAsyncIterator()
+            _ = try await iterator.next()
+            let mimeType = httpResponse.mimeType?.lowercased() ?? "-"
+            let looksLikeAPIError = mimeType.contains("json") || mimeType.contains("html")
+            let accepted = (200...299).contains(httpResponse.statusCode) && !looksLikeAPIError
+            diagnostics.record(
+                accepted ? .info : .error,
+                categoryKey: "diagnostics.category.media",
+                messageKey: accepted
+                    ? "diagnostics.media.probe_succeeded"
+                    : "diagnostics.media.probe_invalid_response",
+                details: baseDetails(for: playback).merging([
+                    "status": "\(httpResponse.statusCode)",
+                    "mime": mimeType,
+                    "contentLength": httpResponse.value(forHTTPHeaderField: "Content-Length") ?? "-",
+                    "acceptRanges": httpResponse.value(forHTTPHeaderField: "Accept-Ranges") ?? "-",
+                    "contentRange": httpResponse.value(forHTTPHeaderField: "Content-Range") ?? "-",
+                    "contentDisposition": normalizedDisposition(
+                        httpResponse.value(forHTTPHeaderField: "Content-Disposition")
+                    )
+                ]) { current, _ in current }
+            )
+        } catch is CancellationError {
+            return
+        } catch {
+            let nsError = error as NSError
+            diagnostics.record(
+                .error,
+                categoryKey: "diagnostics.category.media",
+                messageKey: "diagnostics.media.probe_failed",
+                details: baseDetails(for: playback).merging([
+                    "errorDomain": nsError.domain,
+                    "errorCode": "\(nsError.code)"
+                ]) { current, _ in current }
+            )
+        }
+    }
+
+    static func baseDetails(for playback: MediaPlaybackRequest) -> [String: String] {
+        [
+            "target": DiagnosticLogStore.redactedURL(playback.url),
+            "source": playback.source.rawValue,
+            "extension": playback.fileExtensionHint.isEmpty ? "-" : playback.fileExtensionHint,
+            "selfSigned": playback.allowsSelfSignedCertificates ? "on" : "off"
+        ]
+    }
+
+    private static func normalizedDisposition(_ value: String?) -> String {
+        guard let value else { return "-" }
+        let lowercased = value.lowercased()
+        if lowercased.contains("attachment") { return "attachment" }
+        if lowercased.contains("inline") { return "inline" }
+        return "present"
     }
 }
 
@@ -2729,16 +2971,78 @@ private final class MediaPlayerSession: ObservableObject {
     let player: AVPlayer
     @Published private(set) var errorMessage: String?
     private var statusObservation: NSKeyValueObservation?
+    private var timeControlObservation: NSKeyValueObservation?
+    private var lastTimeControlStatus: AVPlayer.TimeControlStatus?
 
-    init(url: URL) {
-        let item = AVPlayerItem(url: url)
+    init(request: MediaPlaybackRequest) {
+        let options: [String: Any]? = request.mimeTypeHint.map {
+            ["AVURLAssetOutOfBandMIMETypeKey": $0 as Any]
+        }
+        let asset = AVURLAsset(url: request.url, options: options)
+        let item = AVPlayerItem(asset: asset)
         player = AVPlayer(playerItem: item)
+        DiagnosticLogStore.shared.record(
+            .info,
+            categoryKey: "diagnostics.category.media",
+            messageKey: "diagnostics.media.player_started",
+            details: MediaPlaybackProbe.baseDetails(for: request).merging([
+                "engine": "AVPlayer",
+                "mimeHint": request.mimeTypeHint ?? "-"
+            ]) { current, _ in current }
+        )
         statusObservation = item.observe(\.status, options: [.initial, .new]) { [weak self] item, _ in
             DispatchQueue.main.async {
-                self?.errorMessage = item.status == .failed
-                    ? item.error?.localizedDescription ?? NSLocalizedString("player.load_failed", comment: "")
-                    : nil
+                guard let self else { return }
+                switch item.status {
+                case .readyToPlay:
+                    self.errorMessage = nil
+                    DiagnosticLogStore.shared.record(
+                        .info,
+                        categoryKey: "diagnostics.category.media",
+                        messageKey: "diagnostics.media.player_ready",
+                        details: ["engine": "AVPlayer"]
+                    )
+                case .failed:
+                    let error = item.error as NSError?
+                    self.errorMessage = item.error?.localizedDescription
+                        ?? NSLocalizedString("player.load_failed", comment: "")
+                    DiagnosticLogStore.shared.record(
+                        .error,
+                        categoryKey: "diagnostics.category.media",
+                        messageKey: "diagnostics.media.player_failed",
+                        details: [
+                            "engine": "AVPlayer",
+                            "errorDomain": error?.domain ?? "-",
+                            "errorCode": error.map { "\($0.code)" } ?? "-"
+                        ]
+                    )
+                case .unknown:
+                    break
+                @unknown default:
+                    break
+                }
             }
+        }
+        timeControlObservation = player.observe(\.timeControlStatus, options: [.initial, .new]) { [weak self] player, _ in
+            guard let self, player.timeControlStatus != self.lastTimeControlStatus else { return }
+            self.lastTimeControlStatus = player.timeControlStatus
+            let state: String
+            switch player.timeControlStatus {
+            case .paused: state = "paused"
+            case .playing: state = "playing"
+            case .waitingToPlayAtSpecifiedRate: state = "waiting"
+            @unknown default: state = "unknown"
+            }
+            DiagnosticLogStore.shared.record(
+                state == "waiting" ? .warning : .info,
+                categoryKey: "diagnostics.category.media",
+                messageKey: "diagnostics.media.player_state",
+                details: [
+                    "engine": "AVPlayer",
+                    "state": state,
+                    "waitingReason": player.reasonForWaitingToPlay?.rawValue ?? "-"
+                ]
+            )
         }
     }
 
@@ -2754,6 +3058,7 @@ private final class MediaPlayerSession: ObservableObject {
 
     deinit {
         statusObservation?.invalidate()
+        timeControlObservation?.invalidate()
         player.pause()
     }
 }
@@ -2771,7 +3076,7 @@ struct BuiltInMediaPlayerView: View {
 
     init(request: MediaPlaybackRequest) {
         self.request = request
-        _session = StateObject(wrappedValue: MediaPlayerSession(url: request.url))
+        _session = StateObject(wrappedValue: MediaPlayerSession(request: request))
         _activeEngine = State(initialValue: MediaPlaybackPolicy.preferredEngine(for: request))
     }
 
@@ -2856,6 +3161,9 @@ struct BuiltInMediaPlayerView: View {
                 session.play()
             }
         }
+        .task {
+            await MediaPlaybackProbe.run(request)
+        }
         .onDisappear {
             session.pause()
         }
@@ -2929,11 +3237,20 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
     @Published private(set) var position: Double = 0
     @Published private(set) var isSeekable = false
     @Published private(set) var errorMessage: String?
+    private var lastStateDescription = ""
 
-    init(url: URL) {
+    init(request: MediaPlaybackRequest) {
         super.init()
         player.delegate = self
-        player.media = VLCMedia(url: url)
+        player.media = VLCMedia(url: request.url)
+        DiagnosticLogStore.shared.record(
+            .info,
+            categoryKey: "diagnostics.category.media",
+            messageKey: "diagnostics.media.player_started",
+            details: MediaPlaybackProbe.baseDetails(for: request).merging([
+                "engine": "MobileVLCKit"
+            ]) { current, _ in current }
+        )
     }
 
     func attach(to view: UIView) {
@@ -2982,9 +3299,26 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
         let isPlaying = player.isPlaying
         let position = Double(max(player.position, 0))
         let isSeekable = player.isSeekable
+        let stateDescription = String(describing: player.state)
         let errorMessage = player.state == .error
             ? NSLocalizedString("player.compatibility_failed", comment: "")
             : nil
+
+        if stateDescription != lastStateDescription {
+            lastStateDescription = stateDescription
+            DiagnosticLogStore.shared.record(
+                player.state == .error ? .error : .info,
+                categoryKey: "diagnostics.category.media",
+                messageKey: player.state == .error
+                    ? "diagnostics.media.player_failed"
+                    : "diagnostics.media.player_state",
+                details: [
+                    "engine": "MobileVLCKit",
+                    "state": stateDescription,
+                    "seekable": isSeekable ? "yes" : "no"
+                ]
+            )
+        }
 
         DispatchQueue.main.async { [weak self] in
             self?.isPlaying = isPlaying
@@ -3007,7 +3341,7 @@ private struct VLCBuiltInPlayerView: View {
     init(request: MediaPlaybackRequest, openExternal: @escaping () -> Void) {
         self.request = request
         self.openExternal = openExternal
-        _session = StateObject(wrappedValue: VLCMediaPlayerSession(url: request.url))
+        _session = StateObject(wrappedValue: VLCMediaPlayerSession(request: request))
     }
 
     var body: some View {

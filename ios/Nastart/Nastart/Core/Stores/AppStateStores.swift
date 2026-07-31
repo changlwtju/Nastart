@@ -153,6 +153,8 @@ struct DSMSession {
         guard
             let encodedPaths = try? JSONEncoder().encode([path]),
             let pathParameter = String(data: encodedPaths, encoding: .utf8),
+            let encodedMode = try? JSONEncoder().encode("open"),
+            let modeParameter = String(data: encodedMode, encoding: .utf8),
             var components = URLComponents(
                 url: baseURL
                     .appendingPathComponent("webapi")
@@ -167,7 +169,7 @@ struct DSMSession {
             URLQueryItem(name: "version", value: "2"),
             URLQueryItem(name: "method", value: "download"),
             URLQueryItem(name: "path", value: pathParameter),
-            URLQueryItem(name: "mode", value: "open"),
+            URLQueryItem(name: "mode", value: modeParameter),
             URLQueryItem(name: "_sid", value: sid)
         ]
         return components.url
@@ -227,6 +229,9 @@ struct DSMDataSnapshot: AppDataProviding {
     let videoLibraryItems: [MediaItem]
     let audioLibraryItems: [MediaItem]
     let discoveredDevices: [DiscoveredNASDevice]
+    let containerInventoryAvailable: Bool
+    let packageInventoryAvailable: Bool
+    let reverseProxyInventoryAvailable: Bool
 }
 
 enum DiagnosticLogLevel: String {
@@ -285,7 +290,7 @@ final class DiagnosticLogStore: ObservableObject {
 
     @Published private(set) var entries: [DiagnosticLogEntry] = []
 
-    private let maxEntries = 200
+    private let maxEntries = 1000
 
     private init() {}
 
@@ -899,6 +904,8 @@ final class DSMClient {
         let files = DSMClient.mapSharedFolders(await sharedFolderData)
         let docker = await dockerData
         let dockerResources = await dockerResourceData
+        let packages = await packageData
+        let reverseProxies = await reverseProxyData
         let resourceSampleCount = DSMClient.mapContainerResources(dockerResources).count
         let mappedContainers = DSMClient.mapContainers(
             docker,
@@ -912,8 +919,8 @@ final class DSMClient {
         let lanHosts = DSMClient.mapLANHosts(await networkInterfaceData)
         let services = await mapServices(
             containers: containers,
-            packageData: await packageData,
-            reverseProxyData: await reverseProxyData,
+            packageData: packages,
+            reverseProxyData: reverseProxies,
             lanHosts: lanHosts,
             session: session
         )
@@ -952,7 +959,10 @@ final class DSMClient {
             tasks: [],
             videoLibraryItems: [],
             audioLibraryItems: [],
-            discoveredDevices: []
+            discoveredDevices: [],
+            containerInventoryAvailable: docker != nil,
+            packageInventoryAvailable: packages != nil,
+            reverseProxyInventoryAvailable: reverseProxies != nil
         )
     }
 
@@ -3102,6 +3112,7 @@ final class AppDataStore: ObservableObject {
     private var activeDataSource: NASDataSource
     private var manualServiceStore = ManualLaunchpadServiceStore()
     private let launchpadVisibilityStore = LaunchpadVisibilityStore()
+    private var preservedContainerInventoryOnLastMerge = false
 
     init(provider: AppDataProviding = DisconnectedAppDataProvider()) {
         self.provider = provider
@@ -3119,19 +3130,90 @@ final class AppDataStore: ObservableObject {
     }
 
     func reload(from provider: AppDataProviding) {
+        let previousServices = services
+        let previousContainers = containers
         self.provider = provider
         sourceKind = provider is DSMDataSnapshot ? .dsm : .mock
         device = provider is DSMDataSnapshot
             ? Self.mergedDevice(fresh: provider.device, fallback: device)
             : provider.device
-        services = provider.services + manualServiceStore.load()
-        containers = provider.containers
+        if let snapshot = provider as? DSMDataSnapshot {
+            services = mergedServices(
+                fresh: snapshot.services,
+                previous: previousServices,
+                snapshot: snapshot
+            ) + manualServiceStore.load()
+        } else {
+            services = provider.services + manualServiceStore.load()
+            preservedContainerInventoryOnLastMerge = false
+        }
+        containers = preservedContainerInventoryOnLastMerge
+            ? previousContainers
+            : provider.containers
         files = provider.files
         tasks = provider.tasks
         videoLibraryItems = provider.videoLibraryItems
         audioLibraryItems = provider.audioLibraryItems
         discoveredDevices = provider.discoveredDevices
         lastRefreshSummaryKey = provider is DSMDataSnapshot ? "data.refresh.dsm_done" : "data.refresh.mock_done"
+    }
+
+    private func mergedServices(
+        fresh: [LaunchpadService],
+        previous: [LaunchpadService],
+        snapshot: DSMDataSnapshot
+    ) -> [LaunchpadService] {
+        let previousContainers = previous.filter {
+            $0.source == .container || $0.source == .reverseProxy
+        }
+        let freshContainers = fresh.filter {
+            $0.source == .container || $0.source == .reverseProxy
+        }
+        let previousPackages = previous.filter { $0.source == .package }
+        let freshPackages = fresh.filter { $0.source == .package }
+
+        // A total inventory collapse is much more likely to be a transient DSM
+        // response than the user deleting every service at once. Individual
+        // removals still apply whenever the refreshed inventory is non-empty.
+        let preserveContainers = freshContainers.isEmpty && !previousContainers.isEmpty
+        let preservePackages = freshPackages.isEmpty && !previousPackages.isEmpty
+        preservedContainerInventoryOnLastMerge = preserveContainers
+
+        var merged = fresh
+        if preserveContainers {
+            merged.removeAll { $0.source == .container || $0.source == .reverseProxy }
+            merged.append(contentsOf: previousContainers)
+        }
+        if preservePackages {
+            merged.removeAll { $0.source == .package }
+            merged.append(contentsOf: previousPackages)
+        }
+
+        let preservedKinds = [
+            preserveContainers ? "containers" : nil,
+            preservePackages ? "packages" : nil
+        ].compactMap { $0 }.joined(separator: "|")
+        DiagnosticLogStore.shared.record(
+            preserveContainers || preservePackages ? .warning : .info,
+            categoryKey: "diagnostics.category.refresh",
+            messageKey: preserveContainers || preservePackages
+                ? "diagnostics.refresh.inventory_preserved"
+                : "diagnostics.refresh.applied",
+            details: [
+                "before": "\(previous.filter { $0.source != .manual }.count)",
+                "received": "\(fresh.count)",
+                "applied": "\(merged.count)",
+                "containersBefore": "\(previousContainers.count)",
+                "containersReceived": "\(freshContainers.count)",
+                "containerInventory": snapshot.containerInventoryAvailable ? "available" : "failed",
+                "reverseProxyInventory": snapshot.reverseProxyInventoryAvailable ? "available" : "failed",
+                "packagesBefore": "\(previousPackages.count)",
+                "packagesReceived": "\(freshPackages.count)",
+                "packageInventory": snapshot.packageInventoryAvailable ? "available" : "failed",
+                "preserved": preservedKinds
+            ]
+        )
+        return merged
     }
 
     private static func mergedDevice(fresh: NASDevice, fallback: NASDevice) -> NASDevice {

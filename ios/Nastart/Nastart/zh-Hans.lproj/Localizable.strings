@@ -593,10 +593,10 @@
 "mine.privacy.export_footer" = "默认不会导出密码、令牌或密钥。";
 "mine.privacy.export_hint" = "后续会生成本地备份文件，并通过系统分享面板导出。";
 
-"diagnostics.title" = "DSM 连接诊断";
+"diagnostics.title" = "开发诊断";
 "diagnostics.recent" = "最近诊断";
 "diagnostics.empty" = "暂无需要排查的问题。";
-"diagnostics.footer" = "诊断只记录连接、DSM API、套件和容器识别相关线索；不会记录密码、验证码、SID 或完整地址。";
+"diagnostics.footer" = "开发阶段会详细记录刷新、DSM API、容器、文件和媒体播放链路；密码、验证码、SID、完整地址和文件名不会写入日志。";
 "diagnostics.export" = "导出诊断摘要";
 "diagnostics.copy" = "复制诊断摘要";
 "diagnostics.clear" = "清空诊断";
@@ -607,6 +607,9 @@
 "diagnostics.category.connection" = "连接";
 "diagnostics.category.dsm_api" = "DSM API";
 "diagnostics.category.container" = "容器";
+"diagnostics.category.refresh" = "刷新";
+"diagnostics.category.media" = "媒体播放";
+"diagnostics.category.web" = "App 内浏览器";
 "diagnostics.login.started" = "开始连接 DSM";
 "diagnostics.login.succeeded" = "DSM 登录成功";
 "diagnostics.login.attempt_failed" = "登录兼容尝试失败";
@@ -624,10 +627,25 @@
 "diagnostics.api_request.failed" = "DSM API 请求失败";
 "diagnostics.snapshot.started" = "开始读取 NAS 快照";
 "diagnostics.snapshot.completed" = "NAS 快照读取完成";
+"diagnostics.refresh.applied" = "刷新快照已应用";
+"diagnostics.refresh.inventory_preserved" = "刷新数据不完整，已保留原服务";
 "diagnostics.container.request_failed" = "容器 API 请求失败";
 "diagnostics.container.empty_response" = "容器 API 返回为空";
 "diagnostics.container.loaded" = "容器列表读取成功";
 
 "diagnostics.files.folder_loaded" = "文件夹已读取";
 "diagnostics.files.folder_failed" = "文件夹读取失败";
+"diagnostics.media.probe_started" = "开始检查媒体响应";
+"diagnostics.media.probe_succeeded" = "媒体响应检查通过";
+"diagnostics.media.probe_invalid_response" = "媒体地址返回了非媒体内容";
+"diagnostics.media.probe_failed" = "媒体响应检查失败";
+"diagnostics.media.player_started" = "内置播放器已启动";
+"diagnostics.media.player_ready" = "内置播放器已准备完成";
+"diagnostics.media.player_failed" = "内置播放器解码或加载失败";
+"diagnostics.media.player_state" = "内置播放器状态变化";
+"diagnostics.web.started" = "App 内网页开始加载";
+"diagnostics.web.completed" = "App 内网页加载完成";
+"diagnostics.web.redirected" = "App 内网页发生重定向";
+"diagnostics.web.failed" = "App 内网页加载失败";
+"diagnostics.web.process_terminated" = "App 内网页进程异常退出";
 "devices.files.empty" = "暂无文件";
