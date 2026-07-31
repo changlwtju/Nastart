@@ -541,7 +541,7 @@ private struct DockerContainerRow: View {
                         .minimumScaleFactor(0.82)
                     StatusDot(status: container.status)
                 }
-                Text(LocalizedStringKey(container.status.titleKey))
+                Text(container.status.devicesTitleKey)
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
@@ -555,6 +555,17 @@ private struct DockerContainerRow: View {
                 .lineLimit(1)
         }
         .padding(.vertical, 3)
+    }
+}
+
+private extension ServiceStatus {
+    var devicesTitleKey: LocalizedStringKey {
+        switch self {
+        case .online: return "status.online"
+        case .warning: return "status.warning"
+        case .offline: return "status.offline"
+        case .unknown: return "status.unknown"
+        }
     }
 }
 
