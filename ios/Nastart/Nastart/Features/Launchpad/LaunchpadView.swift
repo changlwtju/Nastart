@@ -1646,6 +1646,7 @@ private struct ServiceWebUIView: View {
     let dsmSession: DSMSession?
     @State private var selectedMode = ServiceWebMode.automatic
     @State private var showCompatibilityBrowser = false
+    @State private var didPresentPreferredBrowser = false
     @State private var browserCommand: WebBrowserCommand?
     @State private var showCopiedHint = false
     @State private var isLoading = true
@@ -1674,6 +1675,9 @@ private struct ServiceWebUIView: View {
 
     var body: some View {
         webKitBrowser
+            .onAppear {
+                presentPreferredBrowserIfNeeded()
+            }
             .fullScreenCover(isPresented: $showCompatibilityBrowser) {
                 SystemInAppBrowserView(url: currentURL) {
                     showCompatibilityBrowser = false
@@ -1688,6 +1692,7 @@ private struct ServiceWebUIView: View {
                 WebContainerView(
                     url: endpoint,
                     prefersDesktopMode: resolvedMode.usesDesktopUserAgent,
+                    prefersCompatibilityFallback: service.isDeveloperConsole,
                     allowsSelfSignedCertificates: allowsSelfSignedCertificates,
                     authenticationCookie: authenticationCookie,
                     command: browserCommand,
@@ -1697,6 +1702,7 @@ private struct ServiceWebUIView: View {
                     estimatedProgress: $estimatedProgress,
                     canGoBack: $canGoBack,
                     canGoForward: $canGoForward,
+                    compatibilityFallbackRequested: $showCompatibilityBrowser,
                     pendingMediaURL: Binding(
                         get: { playbackRequest?.url },
                         set: { url in
@@ -1883,6 +1889,21 @@ private struct ServiceWebUIView: View {
         browserCommand = WebBrowserCommand(action: action)
     }
 
+    private func presentPreferredBrowserIfNeeded() {
+        guard service.isDeveloperConsole, !didPresentPreferredBrowser else { return }
+        didPresentPreferredBrowser = true
+        DiagnosticLogStore.shared.record(
+            .info,
+            categoryKey: "diagnostics.category.web",
+            messageKey: "diagnostics.web.compatibility_fallback",
+            details: [
+                "reason": "developerConsolePreferred",
+                "target": DiagnosticLogStore.redactedURL(endpoint)
+            ]
+        )
+        showCompatibilityBrowser = true
+    }
+
     private var authenticationCookie: HTTPCookie? {
         guard
             let dsmSession,
@@ -2000,6 +2021,7 @@ private struct WebBrowserCommand {
 private struct WebContainerView: UIViewRepresentable {
     let url: URL
     let prefersDesktopMode: Bool
+    let prefersCompatibilityFallback: Bool
     let allowsSelfSignedCertificates: Bool
     let authenticationCookie: HTTPCookie?
     let command: WebBrowserCommand?
@@ -2009,6 +2031,7 @@ private struct WebContainerView: UIViewRepresentable {
     @Binding var estimatedProgress: Double
     @Binding var canGoBack: Bool
     @Binding var canGoForward: Bool
+    @Binding var compatibilityFallbackRequested: Bool
     @Binding var pendingMediaURL: URL?
     @Binding var downloadedFileURL: URL?
 
@@ -2021,6 +2044,15 @@ private struct WebContainerView: UIViewRepresentable {
         configuration.defaultWebpagePreferences.allowsContentJavaScript = true
         configuration.defaultWebpagePreferences.preferredContentMode = preferredContentMode
         configuration.mediaTypesRequiringUserActionForPlayback = []
+        configuration.suppressesIncrementalRendering = false
+        configuration.userContentController.add(context.coordinator, name: Self.diagnosticsHandlerName)
+        configuration.userContentController.addUserScript(
+            WKUserScript(
+                source: Self.diagnosticsScript,
+                injectionTime: .atDocumentStart,
+                forMainFrameOnly: false
+            )
+        )
 
         let webView = WKWebView(frame: .zero, configuration: configuration)
         webView.navigationDelegate = context.coordinator
@@ -2065,16 +2097,60 @@ private struct WebContainerView: UIViewRepresentable {
     static func dismantleUIView(_ uiView: WKWebView, coordinator: Coordinator) {
         uiView.stopLoading()
         coordinator.invalidateObservations()
+        uiView.configuration.userContentController.removeScriptMessageHandler(
+            forName: diagnosticsHandlerName
+        )
         uiView.navigationDelegate = nil
         uiView.uiDelegate = nil
     }
 
-    final class Coordinator: NSObject, WKNavigationDelegate, WKUIDelegate, WKDownloadDelegate {
+    private static let diagnosticsHandlerName = "nastartWebDiagnostics"
+
+    private static let diagnosticsScript = """
+    (() => {
+      if (window.__nastartDiagnosticsInstalled) return;
+      window.__nastartDiagnosticsInstalled = true;
+      const send = (kind, value) => {
+        try {
+          window.webkit.messageHandlers.nastartWebDiagnostics.postMessage({
+            kind,
+            message: String(value ?? '').slice(0, 600)
+          });
+        } catch (_) {}
+      };
+      ['error', 'warn'].forEach((level) => {
+        const original = console[level];
+        console[level] = (...args) => {
+          send(`console.${level}`, args.map((item) => String(item)).join(' '));
+          original.apply(console, args);
+        };
+      });
+      window.addEventListener('error', (event) => {
+        send('window.error', event.message || event.error || 'Unknown script error');
+      });
+      window.addEventListener('unhandledrejection', (event) => {
+        send('promise.rejection', event.reason || 'Unhandled promise rejection');
+      });
+    })();
+    """
+
+    private static let renderProbeScript = """
+    (() => ({
+      readyState: document.readyState || '',
+      bodyTextLength: (document.body?.innerText || '').trim().length,
+      bodyChildCount: document.body?.children?.length || 0,
+      htmlLength: document.documentElement?.outerHTML?.length || 0,
+      title: document.title || ''
+    }))();
+    """
+
+    final class Coordinator: NSObject, WKNavigationDelegate, WKUIDelegate, WKDownloadDelegate,
+        WKScriptMessageHandler {
         var parent: WebContainerView
         var lastCommandID: UUID?
         var lastRequestedURL: URL?
         private var progressObservation: NSKeyValueObservation?
-        private var visibleLoadFallback: DispatchWorkItem?
+        private var renderCheckWorkItem: DispatchWorkItem?
         private var stateSyncWorkItem: DispatchWorkItem?
         private var downloadDestinations: [ObjectIdentifier: URL] = [:]
         private var lastPublishedURL: URL?
@@ -2083,6 +2159,8 @@ private struct WebContainerView: UIViewRepresentable {
         private var lastPublishedCanGoForward: Bool?
         private var processRecoveryCount = 0
         private var loadStartedAt: Date?
+        private var didRequestCompatibilityFallback = false
+        private var scriptDiagnosticCount = 0
 
         init(parent: WebContainerView) {
             self.parent = parent
@@ -2098,8 +2176,8 @@ private struct WebContainerView: UIViewRepresentable {
         func invalidateObservations() {
             progressObservation?.invalidate()
             progressObservation = nil
-            visibleLoadFallback?.cancel()
-            visibleLoadFallback = nil
+            renderCheckWorkItem?.cancel()
+            renderCheckWorkItem = nil
             stateSyncWorkItem?.cancel()
             stateSyncWorkItem = nil
         }
@@ -2107,7 +2185,9 @@ private struct WebContainerView: UIViewRepresentable {
         func load(_ url: URL, in webView: WKWebView) {
             lastRequestedURL = url
             loadStartedAt = Date()
-            visibleLoadFallback?.cancel()
+            renderCheckWorkItem?.cancel()
+            didRequestCompatibilityFallback = false
+            scriptDiagnosticCount = 0
             setLoading(true, error: nil)
             DiagnosticLogStore.shared.record(
                 .info,
@@ -2142,6 +2222,9 @@ private struct WebContainerView: UIViewRepresentable {
             case .forward:
                 if webView.canGoForward { webView.goForward() }
             case .reload:
+                didRequestCompatibilityFallback = false
+                scriptDiagnosticCount = 0
+                loadStartedAt = Date()
                 if webView.url == nil {
                     load(parent.url, in: webView)
                 } else {
@@ -2156,18 +2239,27 @@ private struct WebContainerView: UIViewRepresentable {
         }
 
         func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
-            visibleLoadFallback?.cancel()
+            renderCheckWorkItem?.cancel()
             setLoading(true, error: nil)
             syncState(from: webView)
         }
 
         func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
-            scheduleVisibleLoadFallback(in: webView, after: 2.2)
+            DiagnosticLogStore.shared.record(
+                .info,
+                categoryKey: "diagnostics.category.web",
+                messageKey: "diagnostics.web.committed",
+                details: [
+                    "engine": "WKWebView",
+                    "target": DiagnosticLogStore.redactedURL(webView.url ?? parent.url)
+                ]
+            )
+            scheduleRenderCheck(in: webView, after: 7, trigger: "commitTimeout")
             syncState(from: webView)
         }
 
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-            visibleLoadFallback?.cancel()
+            renderCheckWorkItem?.cancel()
             processRecoveryCount = 0
             setLoading(false, error: nil)
             syncState(from: webView, immediately: true)
@@ -2183,10 +2275,11 @@ private struct WebContainerView: UIViewRepresentable {
                     } ?? "-"
                 ]
             )
+            scheduleRenderCheck(in: webView, after: 1.2, trigger: "didFinish")
         }
 
         func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
-            visibleLoadFallback?.cancel()
+            renderCheckWorkItem?.cancel()
             DiagnosticLogStore.shared.record(
                 .error,
                 categoryKey: "diagnostics.category.web",
@@ -2211,7 +2304,7 @@ private struct WebContainerView: UIViewRepresentable {
             didFail navigation: WKNavigation!,
             withError error: Error
         ) {
-            handleLoadError(error)
+            handleLoadError(error, in: webView)
         }
 
         func webView(
@@ -2219,7 +2312,7 @@ private struct WebContainerView: UIViewRepresentable {
             didFailProvisionalNavigation navigation: WKNavigation!,
             withError error: Error
         ) {
-            handleLoadError(error)
+            handleLoadError(error, in: webView)
         }
 
         func webView(
@@ -2398,6 +2491,44 @@ private struct WebContainerView: UIViewRepresentable {
             }
         }
 
+        func userContentController(
+            _ userContentController: WKUserContentController,
+            didReceive message: WKScriptMessage
+        ) {
+            guard
+                message.name == WebContainerView.diagnosticsHandlerName,
+                scriptDiagnosticCount < 40,
+                let payload = message.body as? [String: Any]
+            else { return }
+            scriptDiagnosticCount += 1
+            let kind = payload["kind"] as? String ?? "script"
+            let text = payload["message"] as? String ?? "-"
+            DiagnosticLogStore.shared.record(
+                .error,
+                categoryKey: "diagnostics.category.web",
+                messageKey: "diagnostics.web.script_error",
+                details: [
+                    "kind": String(kind.prefix(80)),
+                    "message": sanitizedScriptDiagnostic(text),
+                    "target": DiagnosticLogStore.redactedURL(parent.currentURL)
+                ]
+            )
+        }
+
+        private func sanitizedScriptDiagnostic(_ value: String) -> String {
+            let withoutURLs = value.replacingOccurrences(
+                of: #"https?://[^\s\"'<>]+"#,
+                with: "<url>",
+                options: [.regularExpression, .caseInsensitive]
+            )
+            let withoutSecrets = withoutURLs.replacingOccurrences(
+                of: #"(token|password|passwd|authorization|cookie)(\s*[:=]\s*)[^\s,;]+"#,
+                with: "$1$2<redacted>",
+                options: [.regularExpression, .caseInsensitive]
+            )
+            return String(withoutSecrets.prefix(600))
+        }
+
         func webView(
             _ webView: WKWebView,
             didReceive challenge: URLAuthenticationChallenge,
@@ -2416,7 +2547,102 @@ private struct WebContainerView: UIViewRepresentable {
             completionHandler(.useCredential, URLCredential(trust: trust))
         }
 
-        private func handleLoadError(_ error: Error) {
+        private func inspectRenderedPage(in webView: WKWebView, trigger: String) {
+            webView.evaluateJavaScript(WebContainerView.renderProbeScript) { [weak self, weak webView] result, error in
+                DispatchQueue.main.async {
+                    guard let self, let webView else { return }
+                    self.renderCheckWorkItem = nil
+
+                    if let error {
+                        self.recordRenderCheck(
+                            webView: webView,
+                            details: [
+                                "trigger": trigger,
+                                "probeError": (error as NSError).localizedDescription
+                            ]
+                        )
+                        self.requestCompatibilityFallbackIfNeeded(webView: webView, reason: "probeError")
+                        return
+                    }
+
+                    guard let values = result as? [String: Any] else {
+                        self.recordRenderCheck(
+                            webView: webView,
+                            details: ["trigger": trigger, "result": "invalid"]
+                        )
+                        self.requestCompatibilityFallbackIfNeeded(webView: webView, reason: "invalidProbe")
+                        return
+                    }
+
+                    let readyState = values["readyState"] as? String ?? "-"
+                    let bodyTextLength = (values["bodyTextLength"] as? NSNumber)?.intValue ?? 0
+                    let bodyChildCount = (values["bodyChildCount"] as? NSNumber)?.intValue ?? 0
+                    let htmlLength = (values["htmlLength"] as? NSNumber)?.intValue ?? 0
+                    let title = values["title"] as? String ?? ""
+                    let hasRenderedContent = bodyChildCount > 0 && htmlLength >= 200
+
+                    self.recordRenderCheck(
+                        webView: webView,
+                        details: [
+                            "readyState": readyState,
+                            "trigger": trigger,
+                            "bodyTextLength": "\(bodyTextLength)",
+                            "bodyChildCount": "\(bodyChildCount)",
+                            "htmlLength": "\(htmlLength)",
+                            "titleLength": "\(title.count)",
+                            "rendered": hasRenderedContent ? "yes" : "no"
+                        ]
+                    )
+
+                    if hasRenderedContent {
+                        if trigger == "commitTimeout", self.parent.prefersCompatibilityFallback {
+                            self.requestCompatibilityFallbackIfNeeded(
+                                webView: webView,
+                                reason: "loadTimeout"
+                            )
+                            return
+                        }
+                        self.setLoading(false, error: nil)
+                        self.syncState(from: webView, immediately: true)
+                    } else {
+                        self.requestCompatibilityFallbackIfNeeded(webView: webView, reason: "blankDOM")
+                    }
+                }
+            }
+        }
+
+        private func requestCompatibilityFallbackIfNeeded(webView: WKWebView, reason: String) {
+            guard parent.prefersCompatibilityFallback else {
+                setLoading(false, error: NSLocalizedString("web.blank_page", comment: ""))
+                return
+            }
+            guard !didRequestCompatibilityFallback else { return }
+            didRequestCompatibilityFallback = true
+            setLoading(false, error: nil)
+            DiagnosticLogStore.shared.record(
+                .error,
+                categoryKey: "diagnostics.category.web",
+                messageKey: "diagnostics.web.compatibility_fallback",
+                details: [
+                    "reason": reason,
+                    "target": DiagnosticLogStore.redactedURL(webView.url ?? parent.url)
+                ]
+            )
+            parent.compatibilityFallbackRequested = true
+        }
+
+        private func recordRenderCheck(webView: WKWebView, details: [String: String]) {
+            DiagnosticLogStore.shared.record(
+                .info,
+                categoryKey: "diagnostics.category.web",
+                messageKey: "diagnostics.web.render_check",
+                details: details.merging([
+                    "target": DiagnosticLogStore.redactedURL(webView.url ?? parent.url)
+                ]) { current, _ in current }
+            )
+        }
+
+        private func handleLoadError(_ error: Error, in webView: WKWebView) {
             let nsError = error as NSError
             if nsError.domain == NSURLErrorDomain && nsError.code == NSURLErrorCancelled {
                 return
@@ -2432,8 +2658,12 @@ private struct WebContainerView: UIViewRepresentable {
                     "errorCode": "\(nsError.code)"
                 ]
             )
-            visibleLoadFallback?.cancel()
-            setLoading(false, error: error.localizedDescription)
+            renderCheckWorkItem?.cancel()
+            if parent.prefersCompatibilityFallback {
+                requestCompatibilityFallbackIfNeeded(webView: webView, reason: "navigationError")
+            } else {
+                setLoading(false, error: error.localizedDescription)
+            }
         }
 
         private func syncState(from webView: WKWebView, immediately: Bool = false) {
@@ -2476,14 +2706,17 @@ private struct WebContainerView: UIViewRepresentable {
             }
         }
 
-        private func scheduleVisibleLoadFallback(in webView: WKWebView, after delay: TimeInterval) {
-            visibleLoadFallback?.cancel()
+        private func scheduleRenderCheck(
+            in webView: WKWebView,
+            after delay: TimeInterval,
+            trigger: String
+        ) {
+            renderCheckWorkItem?.cancel()
             let workItem = DispatchWorkItem { [weak self, weak webView] in
                 guard let self, let webView, webView.url != nil else { return }
-                self.setLoading(false, error: nil)
-                self.syncState(from: webView)
+                self.inspectRenderedPage(in: webView, trigger: trigger)
             }
-            visibleLoadFallback = workItem
+            renderCheckWorkItem = workItem
             DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: workItem)
         }
 

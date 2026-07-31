@@ -499,6 +499,7 @@
 "web.loading" = "Opening";
 "web.load_failed" = "Could Not Open Service";
 "web.process_terminated" = "The web process stopped unexpectedly. Reload to try again.";
+"web.blank_page" = "The page finished without visible content. Try the system in-app browser from the More menu.";
 "web.retry" = "Reload";
 "web.copy_url" = "Copy Current URL";
 "web.open_safari" = "Open in Safari";
@@ -596,8 +597,12 @@
 "diagnostics.media.external_handoff_accepted" = "External player accepted the media URL";
 "diagnostics.media.external_handoff_failed" = "External player did not accept the media URL";
 "diagnostics.web.started" = "In-app page load started";
+"diagnostics.web.committed" = "In-app page response committed";
 "diagnostics.web.completed" = "In-app page load completed";
 "diagnostics.web.redirected" = "In-app page redirected";
 "diagnostics.web.failed" = "In-app page load failed";
 "diagnostics.web.process_terminated" = "In-app web process stopped";
+"diagnostics.web.render_check" = "In-app page render check completed";
+"diagnostics.web.script_error" = "In-app page reported a script error";
+"diagnostics.web.compatibility_fallback" = "Switched to the system in-app browser";
 "devices.files.empty" = "No files";
