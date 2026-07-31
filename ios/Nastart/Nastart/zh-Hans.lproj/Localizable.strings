@@ -544,6 +544,7 @@
 "web.copy.done" = "已复制服务地址。";
 "web.loading" = "正在打开";
 "web.load_failed" = "服务页面无法打开";
+"web.process_terminated" = "网页进程异常退出，请重新加载。";
 "web.retry" = "重新加载";
 "web.copy_url" = "复制当前地址";
 "web.open_safari" = "在 Safari 中打开";

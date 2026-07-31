@@ -1,6 +1,7 @@
 import SwiftUI
 import UIKit
 import WebKit
+import SafariServices
 import AVFoundation
 import AVKit
 #if canImport(MobileVLCKit)
@@ -1745,6 +1746,7 @@ private struct ServiceWebUIView: View {
     let endpoint: URL
     let allowsSelfSignedCertificates: Bool
     let dsmSession: DSMSession?
+    @Environment(\.dismiss) private var dismiss
     @State private var selectedMode = ServiceWebMode.automatic
     @State private var browserCommand: WebBrowserCommand?
     @State private var showCopiedHint = false
@@ -1773,6 +1775,21 @@ private struct ServiceWebUIView: View {
     }
 
     var body: some View {
+        Group {
+            if ServiceBrowserPolicy.usesSystemBrowser(for: service, endpoint: endpoint) {
+                SystemInAppBrowserView(url: endpoint) {
+                    dismiss()
+                }
+                .ignoresSafeArea()
+                .navigationBarBackButtonHidden(true)
+                .toolbar(.hidden, for: .navigationBar)
+            } else {
+                webKitBrowser
+            }
+        }
+    }
+
+    private var webKitBrowser: some View {
         VStack(spacing: 0) {
             if selectedMode != .focused, service.isDeveloperConsole {
                 DeveloperConsoleToolbar(service: service)
@@ -1987,6 +2004,67 @@ private struct ServiceWebUIView: View {
     }
 }
 
+private enum ServiceBrowserPolicy {
+    static func usesSystemBrowser(for service: LaunchpadService, endpoint: URL) -> Bool {
+        // Public reverse-proxy pages benefit from Safari's production input,
+        // authentication and rendering path. Keep local/session pages in WKWebView.
+        guard endpoint.scheme?.lowercased() == "https" else { return false }
+        guard service.source == .reverseProxy || service.source == .manual else { return false }
+        guard let host = endpoint.host?.lowercased(), !isLocalHost(host) else { return false }
+        return true
+    }
+
+    private static func isLocalHost(_ host: String) -> Bool {
+        if host == "localhost" || host.hasSuffix(".local") || host.hasSuffix(".lan") {
+            return true
+        }
+
+        let octets = host.split(separator: ".").compactMap { Int($0) }
+        guard octets.count == 4, octets.allSatisfy({ (0...255).contains($0) }) else {
+            return false
+        }
+        return octets[0] == 10
+            || (octets[0] == 172 && (16...31).contains(octets[1]))
+            || (octets[0] == 192 && octets[1] == 168)
+            || octets[0] == 127
+            || (octets[0] == 169 && octets[1] == 254)
+    }
+}
+
+private struct SystemInAppBrowserView: UIViewControllerRepresentable {
+    let url: URL
+    let onDone: () -> Void
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(onDone: onDone)
+    }
+
+    func makeUIViewController(context: Context) -> SFSafariViewController {
+        let configuration = SFSafariViewController.Configuration()
+        configuration.entersReaderIfAvailable = false
+        configuration.barCollapsingEnabled = false
+        let controller = SFSafariViewController(url: url, configuration: configuration)
+        controller.delegate = context.coordinator
+        controller.dismissButtonStyle = .close
+        controller.preferredControlTintColor = UIColor(AppTheme.accent)
+        return controller
+    }
+
+    func updateUIViewController(_ controller: SFSafariViewController, context: Context) {}
+
+    final class Coordinator: NSObject, SFSafariViewControllerDelegate {
+        let onDone: () -> Void
+
+        init(onDone: @escaping () -> Void) {
+            self.onDone = onDone
+        }
+
+        func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
+            onDone()
+        }
+    }
+}
+
 private struct ResolvedWebMode {
     let usesDesktopUserAgent: Bool
 }
@@ -2069,28 +2147,27 @@ private struct WebContainerView: UIViewRepresentable {
     @Binding var pendingMediaURL: URL?
     @Binding var downloadedFileURL: URL?
 
-    private static let desktopUserAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15"
-
     func makeUIView(context: Context) -> WKWebView {
         let configuration = WKWebViewConfiguration()
         configuration.allowsInlineMediaPlayback = true
         configuration.websiteDataStore = .default()
         configuration.preferences.javaScriptCanOpenWindowsAutomatically = true
+        configuration.preferences.isTextInteractionEnabled = true
         configuration.defaultWebpagePreferences.allowsContentJavaScript = true
+        configuration.defaultWebpagePreferences.preferredContentMode = preferredContentMode
         configuration.mediaTypesRequiringUserActionForPlayback = []
 
         let webView = WKWebView(frame: .zero, configuration: configuration)
         webView.navigationDelegate = context.coordinator
         webView.uiDelegate = context.coordinator
-        if prefersDesktopMode {
-            webView.customUserAgent = Self.desktopUserAgent
-        }
         if #available(iOS 16.4, *) {
             webView.isInspectable = true
         }
         webView.allowsBackForwardNavigationGestures = true
-        webView.scrollView.keyboardDismissMode = .interactive
-        webView.scrollView.contentInsetAdjustmentBehavior = .never
+        webView.allowsLinkPreview = true
+        webView.scrollView.keyboardDismissMode = .none
+        webView.scrollView.contentInsetAdjustmentBehavior = .automatic
+        webView.scrollView.delaysContentTouches = false
         context.coordinator.attach(to: webView)
         context.coordinator.load(url, in: webView)
         return webView
@@ -2098,9 +2175,8 @@ private struct WebContainerView: UIViewRepresentable {
 
     func updateUIView(_ uiView: WKWebView, context: Context) {
         context.coordinator.parent = self
-        let wantsDesktop = prefersDesktopMode ? Self.desktopUserAgent : nil
-        if uiView.customUserAgent != wantsDesktop {
-            uiView.customUserAgent = wantsDesktop
+        if uiView.configuration.defaultWebpagePreferences.preferredContentMode != preferredContentMode {
+            uiView.configuration.defaultWebpagePreferences.preferredContentMode = preferredContentMode
             context.coordinator.load(url, in: uiView)
             return
         }
@@ -2117,6 +2193,10 @@ private struct WebContainerView: UIViewRepresentable {
         Coordinator(parent: self)
     }
 
+    private var preferredContentMode: WKContentMode {
+        prefersDesktopMode ? .desktop : .mobile
+    }
+
     static func dismantleUIView(_ uiView: WKWebView, coordinator: Coordinator) {
         uiView.stopLoading()
         coordinator.invalidateObservations()
@@ -2130,7 +2210,13 @@ private struct WebContainerView: UIViewRepresentable {
         var lastRequestedURL: URL?
         private var progressObservation: NSKeyValueObservation?
         private var visibleLoadFallback: DispatchWorkItem?
+        private var stateSyncWorkItem: DispatchWorkItem?
         private var downloadDestinations: [ObjectIdentifier: URL] = [:]
+        private var lastPublishedURL: URL?
+        private var lastPublishedProgress = -1.0
+        private var lastPublishedCanGoBack: Bool?
+        private var lastPublishedCanGoForward: Bool?
+        private var processRecoveryCount = 0
 
         init(parent: WebContainerView) {
             self.parent = parent
@@ -2148,6 +2234,8 @@ private struct WebContainerView: UIViewRepresentable {
             progressObservation = nil
             visibleLoadFallback?.cancel()
             visibleLoadFallback = nil
+            stateSyncWorkItem?.cancel()
+            stateSyncWorkItem = nil
         }
 
         func load(_ url: URL, in webView: WKWebView) {
@@ -2201,8 +2289,20 @@ private struct WebContainerView: UIViewRepresentable {
 
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
             visibleLoadFallback?.cancel()
+            processRecoveryCount = 0
             setLoading(false, error: nil)
-            syncState(from: webView)
+            syncState(from: webView, immediately: true)
+        }
+
+        func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
+            visibleLoadFallback?.cancel()
+            guard processRecoveryCount < 1 else {
+                setLoading(false, error: NSLocalizedString("web.process_terminated", comment: ""))
+                return
+            }
+            processRecoveryCount += 1
+            setLoading(true, error: nil)
+            webView.reload()
         }
 
         func webView(
@@ -2424,14 +2524,43 @@ private struct WebContainerView: UIViewRepresentable {
             setLoading(false, error: error.localizedDescription)
         }
 
-        private func syncState(from webView: WKWebView) {
-            DispatchQueue.main.async {
-                if let url = webView.url {
-                    self.parent.currentURL = url
-                }
-                self.parent.estimatedProgress = webView.estimatedProgress
-                self.parent.canGoBack = webView.canGoBack
-                self.parent.canGoForward = webView.canGoForward
+        private func syncState(from webView: WKWebView, immediately: Bool = false) {
+            if immediately {
+                stateSyncWorkItem?.cancel()
+                stateSyncWorkItem = nil
+                publishState(from: webView)
+                return
+            }
+            guard stateSyncWorkItem == nil else { return }
+            let workItem = DispatchWorkItem { [weak self, weak webView] in
+                guard let self, let webView else { return }
+                self.stateSyncWorkItem = nil
+                self.publishState(from: webView)
+            }
+            stateSyncWorkItem = workItem
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.08, execute: workItem)
+        }
+
+        private func publishState(from webView: WKWebView) {
+            dispatchPrecondition(condition: .onQueue(.main))
+            if let url = webView.url, url != lastPublishedURL {
+                lastPublishedURL = url
+                parent.currentURL = url
+            }
+
+            let progress = webView.estimatedProgress
+            if progress != lastPublishedProgress,
+               abs(progress - lastPublishedProgress) >= 0.02 || progress == 1 {
+                lastPublishedProgress = progress
+                parent.estimatedProgress = progress
+            }
+            if webView.canGoBack != lastPublishedCanGoBack {
+                lastPublishedCanGoBack = webView.canGoBack
+                parent.canGoBack = webView.canGoBack
+            }
+            if webView.canGoForward != lastPublishedCanGoForward {
+                lastPublishedCanGoForward = webView.canGoForward
+                parent.canGoForward = webView.canGoForward
             }
         }
 
@@ -2457,8 +2586,12 @@ private struct WebContainerView: UIViewRepresentable {
 
         private func setLoading(_ loading: Bool, error: String?) {
             DispatchQueue.main.async {
-                self.parent.isLoading = loading
-                self.parent.loadError = error
+                if self.parent.isLoading != loading {
+                    self.parent.isLoading = loading
+                }
+                if self.parent.loadError != error {
+                    self.parent.loadError = error
+                }
             }
         }
     }

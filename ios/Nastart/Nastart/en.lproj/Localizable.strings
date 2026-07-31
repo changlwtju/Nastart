@@ -544,6 +544,7 @@
 "web.copy.done" = "Service URL copied.";
 "web.loading" = "Opening";
 "web.load_failed" = "Could Not Open Service";
+"web.process_terminated" = "The web process stopped unexpectedly. Reload to try again.";
 "web.retry" = "Reload";
 "web.copy_url" = "Copy Current URL";
 "web.open_safari" = "Open in Safari";
