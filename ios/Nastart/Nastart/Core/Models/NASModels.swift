@@ -264,7 +264,7 @@ struct FileItem: Identifiable {
     }
 }
 
-enum FileKind {
+enum FileKind: Equatable {
     case folder
     case video
     case audio

@@ -1304,10 +1304,8 @@ private struct ServiceDetailView: View {
     @EnvironmentObject private var dataStore: AppDataStore
     @EnvironmentObject private var connectionStore: NASConnectionStore
     @Environment(\.dismiss) private var dismiss
-    @State private var showExternalPicker = false
     @State private var externalMessageKey = "external.open_failed"
     @State private var showExternalHint = false
-    @State private var sharePayload: ServiceSharePayload?
     @State private var endpointOverride: URL?
     @State private var showEndpointEditor = false
     @State private var showDeleteManualConfirmation = false
@@ -1374,9 +1372,9 @@ private struct ServiceDetailView: View {
                 }
 
                 Button {
-                    showExternalPicker = true
+                    openExternal(.safari)
                 } label: {
-                    Label("service.action.open_external", systemImage: "arrow.up.forward.app")
+                    Label("service.action.open_service_external", systemImage: "arrow.up.forward.app")
                 }
 
                 if service.isMedia {
@@ -1481,25 +1479,6 @@ private struct ServiceDetailView: View {
                 )
             }
         }
-        .confirmationDialog("service.external.title", isPresented: $showExternalPicker) {
-            if service.prefersCompanionApp {
-                Button {
-                    presentShareSheet()
-                } label: {
-                    Text(service.companionAppTitleKey)
-                }
-            }
-            Button("external.browser") {
-                openExternal(.safari)
-            }
-            Button("external.other_apps") {
-                presentShareSheet()
-            }
-            Button("action.cancel", role: .cancel) {}
-        }
-        .sheet(item: $sharePayload) { payload in
-            SystemShareView(items: [payload.url])
-        }
         .alert(LocalizedStringKey(externalMessageKey), isPresented: $showExternalHint) {
             Button("action.ok", role: .cancel) {}
         }
@@ -1519,7 +1498,6 @@ private struct ServiceDetailView: View {
             return
         }
 
-        showExternalPicker = false
         DispatchQueue.main.async {
             UIApplication.shared.open(url, options: [:]) { accepted in
                 guard !accepted else { return }
@@ -1528,18 +1506,6 @@ private struct ServiceDetailView: View {
                     showExternalHint = true
                 }
             }
-        }
-    }
-
-    private func presentShareSheet() {
-        guard let endpoint = effectiveEndpoint else {
-            externalMessageKey = "external.unsupported_hint"
-            showExternalHint = true
-            return
-        }
-        showExternalPicker = false
-        DispatchQueue.main.async {
-            sharePayload = ServiceSharePayload(url: endpoint)
         }
     }
 
@@ -1567,22 +1533,6 @@ private struct ServiceDetailView: View {
             return launchpadServicePercentText(memory)
         }
         return service.memoryText ?? "-"
-    }
-}
-
-private extension LaunchpadService {
-    var prefersCompanionApp: Bool {
-        normalizedServiceName.contains("jellyfin")
-    }
-
-    var companionAppTitleKey: LocalizedStringKey {
-        normalizedServiceName.contains("jellyfin")
-            ? "external.jellyfin_app"
-            : "external.other_apps"
-    }
-
-    private var normalizedServiceName: String {
-        name.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
     }
 }
 
@@ -1706,12 +1656,17 @@ enum ExternalOpenTarget {
     case vidhub
     case vlc
 
-    func url(endpoint: URL?) -> URL? {
+    func url(endpoint: URL?, filename: String? = nil) -> URL? {
         switch self {
         case .safari:
             return endpoint
         case .infuse:
-            return callbackURL(scheme: "infuse", action: "play", endpoint: endpoint)
+            return callbackURL(
+                scheme: "infuse",
+                action: "play",
+                endpoint: endpoint,
+                filename: filename
+            )
         case .vidhub:
             return callbackURL(scheme: "open-vidhub", action: "open", endpoint: endpoint)
         case .vlc:
@@ -1728,15 +1683,33 @@ enum ExternalOpenTarget {
         }
     }
 
-    private func callbackURL(scheme: String, action: String, endpoint: URL?) -> URL? {
+    var diagnosticName: String {
+        switch self {
+        case .safari: return "Safari"
+        case .infuse: return "Infuse"
+        case .vidhub: return "VidHub"
+        case .vlc: return "VLC"
+        }
+    }
+
+    private func callbackURL(
+        scheme: String,
+        action: String,
+        endpoint: URL?,
+        filename: String? = nil
+    ) -> URL? {
         guard let endpoint else { return nil }
         var components = URLComponents()
         components.scheme = scheme
         components.host = "x-callback-url"
         components.path = "/\(action)"
-        components.queryItems = [
+        var queryItems = [
             URLQueryItem(name: "url", value: endpoint.absoluteString)
         ]
+        if let filename, !filename.isEmpty {
+            queryItems.append(URLQueryItem(name: "filename", value: filename))
+        }
+        components.queryItems = queryItems
         return components.url
     }
 }
@@ -1746,8 +1719,8 @@ private struct ServiceWebUIView: View {
     let endpoint: URL
     let allowsSelfSignedCertificates: Bool
     let dsmSession: DSMSession?
-    @Environment(\.dismiss) private var dismiss
     @State private var selectedMode = ServiceWebMode.automatic
+    @State private var showCompatibilityBrowser = false
     @State private var browserCommand: WebBrowserCommand?
     @State private var showCopiedHint = false
     @State private var isLoading = true
@@ -1775,28 +1748,17 @@ private struct ServiceWebUIView: View {
     }
 
     var body: some View {
-        Group {
-            if ServiceBrowserPolicy.usesSystemBrowser(for: service, endpoint: endpoint) {
-                SystemInAppBrowserView(url: endpoint) {
-                    dismiss()
+        webKitBrowser
+            .fullScreenCover(isPresented: $showCompatibilityBrowser) {
+                SystemInAppBrowserView(url: currentURL) {
+                    showCompatibilityBrowser = false
                 }
                 .ignoresSafeArea()
-                .navigationBarBackButtonHidden(true)
-                .toolbar(.hidden, for: .navigationBar)
-            } else {
-                webKitBrowser
             }
-        }
     }
 
     private var webKitBrowser: some View {
         VStack(spacing: 0) {
-            if selectedMode != .focused, service.isDeveloperConsole {
-                DeveloperConsoleToolbar(service: service)
-                    .padding(.horizontal, 16)
-                    .padding(.bottom, 10)
-            }
-
             ZStack {
                 WebContainerView(
                     url: endpoint,
@@ -1894,6 +1856,11 @@ private struct ServiceWebUIView: View {
                         UIApplication.shared.open(currentURL)
                     } label: {
                         Label("web.open_safari", systemImage: "safari")
+                    }
+                    Button {
+                        showCompatibilityBrowser = true
+                    } label: {
+                        Label("web.open_compatibility_browser", systemImage: "safari.fill")
                     }
                     Button {
                         sharePayload = ServiceSharePayload(url: currentURL)
@@ -2004,33 +1971,6 @@ private struct ServiceWebUIView: View {
     }
 }
 
-private enum ServiceBrowserPolicy {
-    static func usesSystemBrowser(for service: LaunchpadService, endpoint: URL) -> Bool {
-        // Public reverse-proxy pages benefit from Safari's production input,
-        // authentication and rendering path. Keep local/session pages in WKWebView.
-        guard endpoint.scheme?.lowercased() == "https" else { return false }
-        guard service.source == .reverseProxy || service.source == .manual else { return false }
-        guard let host = endpoint.host?.lowercased(), !isLocalHost(host) else { return false }
-        return true
-    }
-
-    private static func isLocalHost(_ host: String) -> Bool {
-        if host == "localhost" || host.hasSuffix(".local") || host.hasSuffix(".lan") {
-            return true
-        }
-
-        let octets = host.split(separator: ".").compactMap { Int($0) }
-        guard octets.count == 4, octets.allSatisfy({ (0...255).contains($0) }) else {
-            return false
-        }
-        return octets[0] == 10
-            || (octets[0] == 172 && (16...31).contains(octets[1]))
-            || (octets[0] == 192 && octets[1] == 168)
-            || octets[0] == 127
-            || (octets[0] == 169 && octets[1] == 254)
-    }
-}
-
 private struct SystemInAppBrowserView: UIViewControllerRepresentable {
     let url: URL
     let onDone: () -> Void
@@ -2122,57 +2062,6 @@ private enum WebBrowserAction {
 private struct WebBrowserCommand {
     let id = UUID()
     let action: WebBrowserAction
-}
-
-private struct DeveloperConsoleToolbar: View {
-    let service: LaunchpadService
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack(spacing: 10) {
-                ServiceIconView(service: service, size: 34)
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("service.console.title")
-                        .font(.headline.weight(.semibold))
-                    Text("service.console.subtitle")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(2)
-                }
-                Spacer()
-            }
-
-            HStack(spacing: 8) {
-                ConsoleShortcutKey(title: "Esc")
-                ConsoleShortcutKey(title: "Tab")
-                ConsoleShortcutKey(title: "Ctrl")
-                ConsoleShortcutKey(title: "Cmd")
-                ConsoleShortcutKey(title: "/")
-            }
-        }
-        .padding(12)
-        .background(Color(.secondarySystemGroupedBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
-        .overlay {
-            RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .stroke(AppTheme.hairline, lineWidth: 1)
-        }
-    }
-}
-
-private struct ConsoleShortcutKey: View {
-    let title: String
-
-    var body: some View {
-        Text(title)
-            .font(.caption.weight(.semibold))
-            .lineLimit(1)
-            .minimumScaleFactor(0.75)
-            .frame(minWidth: 42)
-            .padding(.vertical, 8)
-            .background(AppTheme.secondarySurface)
-            .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
-    }
 }
 
 private struct WebContainerView: UIViewRepresentable {
@@ -2970,6 +2859,7 @@ private struct DirectMediaPlayerSetupView: View {
 private final class MediaPlayerSession: ObservableObject {
     let player: AVPlayer
     @Published private(set) var errorMessage: String?
+    @Published private(set) var isReady = false
     private var statusObservation: NSKeyValueObservation?
     private var timeControlObservation: NSKeyValueObservation?
     private var lastTimeControlStatus: AVPlayer.TimeControlStatus?
@@ -2995,6 +2885,7 @@ private final class MediaPlayerSession: ObservableObject {
                 guard let self else { return }
                 switch item.status {
                 case .readyToPlay:
+                    self.isReady = true
                     self.errorMessage = nil
                     DiagnosticLogStore.shared.record(
                         .info,
@@ -3003,6 +2894,7 @@ private final class MediaPlayerSession: ObservableObject {
                         details: ["engine": "AVPlayer"]
                     )
                 case .failed:
+                    self.isReady = false
                     let error = item.error as NSError?
                     self.errorMessage = item.error?.localizedDescription
                         ?? NSLocalizedString("player.load_failed", comment: "")
@@ -3164,6 +3056,37 @@ struct BuiltInMediaPlayerView: View {
         .task {
             await MediaPlaybackProbe.run(request)
         }
+        .task(id: activeEngine) {
+            guard
+                activeEngine == .system,
+                MediaPlaybackPolicy.hasCompatibilityEngine,
+                !didAutomaticallyFallback
+            else {
+                return
+            }
+            try? await Task.sleep(nanoseconds: 8_000_000_000)
+            guard
+                !Task.isCancelled,
+                activeEngine == .system,
+                !session.isReady,
+                session.errorMessage == nil,
+                !didAutomaticallyFallback
+            else {
+                return
+            }
+            DiagnosticLogStore.shared.record(
+                .warning,
+                categoryKey: "diagnostics.category.media",
+                messageKey: "diagnostics.media.player_fallback",
+                details: [
+                    "from": "AVPlayer",
+                    "to": "MobileVLCKit",
+                    "reason": "readyTimeout"
+                ]
+            )
+            didAutomaticallyFallback = true
+            selectEngine(.compatibility)
+        }
         .onDisappear {
             session.pause()
         }
@@ -3177,6 +3100,16 @@ struct BuiltInMediaPlayerView: View {
                 return
             }
             didAutomaticallyFallback = true
+            DiagnosticLogStore.shared.record(
+                .warning,
+                categoryKey: "diagnostics.category.media",
+                messageKey: "diagnostics.media.player_fallback",
+                details: [
+                    "from": "AVPlayer",
+                    "to": "MobileVLCKit",
+                    "reason": "playerError"
+                ]
+            )
             selectEngine(.compatibility)
         }
     }
@@ -3215,12 +3148,23 @@ struct BuiltInMediaPlayerView: View {
     }
 
     private func openExternal(_ target: ExternalOpenTarget) {
-        guard let targetURL = target.url(endpoint: request.url) else {
+        guard let targetURL = target.url(endpoint: request.url, filename: request.title) else {
             externalMessageKey = "external.unsupported_hint"
             showExternalHint = true
             return
         }
         UIApplication.shared.open(targetURL, options: [:]) { accepted in
+            DiagnosticLogStore.shared.record(
+                accepted ? .info : .error,
+                categoryKey: "diagnostics.category.media",
+                messageKey: accepted
+                    ? "diagnostics.media.external_handoff_accepted"
+                    : "diagnostics.media.external_handoff_failed",
+                details: [
+                    "targetApp": target.diagnosticName,
+                    "extension": request.fileExtensionHint.isEmpty ? "-" : request.fileExtensionHint
+                ]
+            )
             guard !accepted else { return }
             DispatchQueue.main.async {
                 externalMessageKey = target.failureMessageKey
@@ -3465,7 +3409,6 @@ private struct MediaLibraryView: View {
     let service: LaunchpadService
     @EnvironmentObject private var dataStore: AppDataStore
     @EnvironmentObject private var connectionStore: NASConnectionStore
-    @State private var sharePayload: ServiceSharePayload?
 
     var body: some View {
         List {
@@ -3480,7 +3423,7 @@ private struct MediaLibraryView: View {
                 .padding(.vertical, 8)
             }
 
-            if service.prefersCompanionApp || libraryItems.isEmpty {
+            if libraryItems.isEmpty {
                 Section {
                     if let endpoint = service.suggestedEndpoint {
                         NavigationLink {
@@ -3499,18 +3442,6 @@ private struct MediaLibraryView: View {
                         }
                     }
 
-                    if service.prefersCompanionApp {
-                        Button {
-                            guard service.suggestedEndpoint != nil else { return }
-                            sharePayload = service.suggestedEndpoint.map(ServiceSharePayload.init(url:))
-                        } label: {
-                            MediaActionRow(
-                                titleKey: service.companionAppTitleKey,
-                                detailKey: "media.service.companion_hint",
-                                systemImage: "apps.iphone"
-                            )
-                        }
-                    }
                 } header: {
                     Text("media.service.entry")
                 }
@@ -3537,9 +3468,6 @@ private struct MediaLibraryView: View {
             }
         }
         .navigationTitle(service.name)
-        .sheet(item: $sharePayload) { payload in
-            SystemShareView(items: [payload.url])
-        }
     }
 
     private var libraryItems: [MediaItem] {
@@ -3617,7 +3545,7 @@ private struct MediaShelfView: View {
             ),
             MediaPlaceholderEntry(
                 titleKey: "media.search.title",
-                detailKey: "media.service.companion_hint",
+                detailKey: "media.library.requires_integration",
                 systemImage: "magnifyingglass"
             )
         ]

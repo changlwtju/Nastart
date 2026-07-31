@@ -1,5 +1,6 @@
 import SwiftUI
 import UIKit
+import QuickLook
 
 struct DevicesView: View {
     @EnvironmentObject private var dataStore: AppDataStore
@@ -748,6 +749,8 @@ private struct FilePreviewView: View {
     @State private var showExternalHint = false
     @State private var playbackRequest: MediaPlaybackRequest?
     @State private var sharePayload: FileSharePayload?
+    @State private var localPreview: LocalFilePreview?
+    @State private var isPreparingPreview = false
 
     var body: some View {
         List {
@@ -768,8 +771,16 @@ private struct FilePreviewView: View {
                 Button {
                     previewFile()
                 } label: {
-                    Label("devices.files.preview", systemImage: "play.rectangle")
+                    if isPreparingPreview {
+                        HStack(spacing: 10) {
+                            ProgressView()
+                            Text("devices.files.preparing_preview")
+                        }
+                    } else {
+                        Label("devices.files.preview", systemImage: previewSymbolName)
+                    }
                 }
+                .disabled(isPreparingPreview)
                 Button {
                     openExternalPicker()
                 } label: {
@@ -790,9 +801,11 @@ private struct FilePreviewView: View {
             Button("action.ok", role: .cancel) {}
         }
         .confirmationDialog("service.external.title", isPresented: $showExternalPicker) {
-            Button("Infuse") { openExternal(.infuse) }
-            Button("VidHub") { openExternal(.vidhub) }
-            Button("VLC") { openExternal(.vlc) }
+            if item.kind == .video || item.kind == .audio {
+                Button("Infuse") { openExternal(.infuse) }
+                Button("VidHub") { openExternal(.vidhub) }
+                Button("VLC") { openExternal(.vlc) }
+            }
             Button("external.other_apps") { presentShareSheet() }
             Button("action.cancel", role: .cancel) {}
         }
@@ -806,6 +819,9 @@ private struct FilePreviewView: View {
             NavigationStack {
                 BuiltInMediaPlayerView(request: request)
             }
+        }
+        .fullScreenCover(item: $localPreview) { preview in
+            LocalFilePreviewScreen(preview: preview)
         }
     }
 
@@ -822,8 +838,32 @@ private struct FilePreviewView: View {
                 allowsSelfSignedCertificates: connectionStore.dsmSession?.allowsSelfSignedCertificates == true,
                 source: .dsmFile
             )
-        case .folder, .image, .text, .archive:
-            sharePayload = FileSharePayload(url: url)
+        case .image, .text, .archive:
+            prepareLocalPreview(from: url)
+        case .folder:
+            break
+        }
+    }
+
+    private func prepareLocalPreview(from url: URL) {
+        isPreparingPreview = true
+        Task {
+            do {
+                let fileURL = try await AuthenticatedFilePreviewLoader.download(
+                    from: url,
+                    filename: item.name,
+                    allowsSelfSignedCertificates: connectionStore.dsmSession?.allowsSelfSignedCertificates == true
+                )
+                await MainActor.run {
+                    isPreparingPreview = false
+                    localPreview = LocalFilePreview(url: fileURL)
+                }
+            } catch {
+                await MainActor.run {
+                    isPreparingPreview = false
+                    showFailure("devices.files.preview_failed")
+                }
+            }
         }
     }
 
@@ -836,12 +876,23 @@ private struct FilePreviewView: View {
     }
 
     private func openExternal(_ target: ExternalOpenTarget) {
-        guard let targetURL = target.url(endpoint: authenticatedURL) else {
+        guard let targetURL = target.url(endpoint: authenticatedURL, filename: item.name) else {
             showFailure("external.unsupported_hint")
             return
         }
         showExternalPicker = false
         UIApplication.shared.open(targetURL, options: [:]) { accepted in
+            DiagnosticLogStore.shared.record(
+                accepted ? .info : .error,
+                categoryKey: "diagnostics.category.media",
+                messageKey: accepted
+                    ? "diagnostics.media.external_handoff_accepted"
+                    : "diagnostics.media.external_handoff_failed",
+                details: [
+                    "targetApp": target.diagnosticName,
+                    "extension": (item.name as NSString).pathExtension.lowercased()
+                ]
+            )
             guard !accepted else { return }
             DispatchQueue.main.async {
                 showFailure(target.failureMessageKey)
@@ -866,11 +917,186 @@ private struct FilePreviewView: View {
     private var authenticatedURL: URL? {
         connectionStore.dsmSession?.fileStationOpenURL(path: item.subtitle)
     }
+
+    private var previewSymbolName: String {
+        item.kind == .video || item.kind == .audio ? "play.rectangle" : "doc.text.magnifyingglass"
+    }
 }
 
 private struct FileSharePayload: Identifiable {
     let id = UUID()
     let url: URL
+}
+
+private struct LocalFilePreview: Identifiable {
+    let id = UUID()
+    let url: URL
+}
+
+private final class FilePreviewTrustDelegate: NSObject, URLSessionDelegate {
+    let trustedHost: String?
+    let allowsSelfSignedCertificates: Bool
+
+    init(trustedHost: String?, allowsSelfSignedCertificates: Bool) {
+        self.trustedHost = trustedHost
+        self.allowsSelfSignedCertificates = allowsSelfSignedCertificates
+    }
+
+    func urlSession(
+        _ session: URLSession,
+        didReceive challenge: URLAuthenticationChallenge,
+        completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
+    ) {
+        guard
+            allowsSelfSignedCertificates,
+            challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust,
+            challenge.protectionSpace.host.caseInsensitiveCompare(trustedHost ?? "") == .orderedSame,
+            let trust = challenge.protectionSpace.serverTrust
+        else {
+            completionHandler(.performDefaultHandling, nil)
+            return
+        }
+        completionHandler(.useCredential, URLCredential(trust: trust))
+    }
+}
+
+private enum AuthenticatedFilePreviewLoader {
+    static func download(
+        from url: URL,
+        filename: String,
+        allowsSelfSignedCertificates: Bool
+    ) async throws -> URL {
+        let diagnostics = DiagnosticLogStore.shared
+        let details = [
+            "target": DiagnosticLogStore.redactedURL(url),
+            "extension": (filename as NSString).pathExtension.lowercased(),
+            "selfSigned": allowsSelfSignedCertificates ? "on" : "off"
+        ]
+        diagnostics.record(
+            .info,
+            categoryKey: "diagnostics.category.media",
+            messageKey: "diagnostics.files.preview_download_started",
+            details: details
+        )
+
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.timeoutIntervalForRequest = 20
+        configuration.timeoutIntervalForResource = 180
+        let delegate = FilePreviewTrustDelegate(
+            trustedHost: url.host,
+            allowsSelfSignedCertificates: allowsSelfSignedCertificates
+        )
+        let session = URLSession(configuration: configuration, delegate: delegate, delegateQueue: nil)
+        defer { session.finishTasksAndInvalidate() }
+
+        do {
+            let (temporaryURL, response) = try await session.download(from: url)
+            guard
+                let httpResponse = response as? HTTPURLResponse,
+                (200...299).contains(httpResponse.statusCode),
+                httpResponse.mimeType?.lowercased().contains("json") != true,
+                httpResponse.mimeType?.lowercased().contains("html") != true
+            else {
+                throw URLError(.badServerResponse)
+            }
+
+            let safeName = safeFilename(filename)
+            let directory = FileManager.default.temporaryDirectory
+                .appendingPathComponent("NastartPreviews", isDirectory: true)
+                .appendingPathComponent(UUID().uuidString, isDirectory: true)
+            try FileManager.default.createDirectory(
+                at: directory,
+                withIntermediateDirectories: true
+            )
+            let destination = directory.appendingPathComponent(safeName)
+            try FileManager.default.moveItem(at: temporaryURL, to: destination)
+            diagnostics.record(
+                .info,
+                categoryKey: "diagnostics.category.media",
+                messageKey: "diagnostics.files.preview_download_succeeded",
+                details: details.merging([
+                    "status": "\(httpResponse.statusCode)",
+                    "mime": httpResponse.mimeType ?? "-",
+                    "bytes": "\(httpResponse.expectedContentLength)"
+                ]) { current, _ in current }
+            )
+            return destination
+        } catch {
+            let nsError = error as NSError
+            diagnostics.record(
+                .error,
+                categoryKey: "diagnostics.category.media",
+                messageKey: "diagnostics.files.preview_download_failed",
+                details: details.merging([
+                    "errorDomain": nsError.domain,
+                    "errorCode": "\(nsError.code)"
+                ]) { current, _ in current }
+            )
+            throw error
+        }
+    }
+
+    private static func safeFilename(_ value: String) -> String {
+        let candidate = (value as NSString).lastPathComponent
+            .replacingOccurrences(of: ":", with: "-")
+        return candidate.isEmpty ? "preview" : candidate
+    }
+}
+
+private struct LocalFilePreviewScreen: View {
+    let preview: LocalFilePreview
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        NavigationStack {
+            QuickLookPreviewController(url: preview.url)
+                .ignoresSafeArea(edges: .bottom)
+                .navigationTitle(preview.url.lastPathComponent)
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Button("action.done") {
+                            dismiss()
+                        }
+                    }
+                }
+        }
+        .onDisappear {
+            try? FileManager.default.removeItem(at: preview.url.deletingLastPathComponent())
+        }
+    }
+}
+
+private struct QuickLookPreviewController: UIViewControllerRepresentable {
+    let url: URL
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(url: url)
+    }
+
+    func makeUIViewController(context: Context) -> QLPreviewController {
+        let controller = QLPreviewController()
+        controller.dataSource = context.coordinator
+        return controller
+    }
+
+    func updateUIViewController(_ controller: QLPreviewController, context: Context) {}
+
+    final class Coordinator: NSObject, QLPreviewControllerDataSource {
+        let url: URL
+
+        init(url: URL) {
+            self.url = url
+        }
+
+        func numberOfPreviewItems(in controller: QLPreviewController) -> Int {
+            1
+        }
+
+        func previewController(_ controller: QLPreviewController, previewItemAt index: Int) -> QLPreviewItem {
+            url as NSURL
+        }
+    }
 }
 
 private struct NetworkDetailView: View {

@@ -76,6 +76,7 @@
 "service.action.open_console" = "App 内打开";
 "service.action.open_unavailable" = "暂未识别到访问地址";
 "service.action.open_external" = "打开方式";
+"service.action.open_service_external" = "在其他浏览器中打开";
 "service.action.media_library" = "媒体资源库";
 "service.action.configure_endpoint" = "设置访问地址";
 "service.action.edit_endpoint" = "修改访问地址";
@@ -118,6 +119,7 @@
 "media.service.entry" = "服务入口";
 "media.service.open_web" = "打开资源库 Web";
 "media.service.companion_hint" = "从系统 App 面板选择配套客户端。";
+"media.library.requires_integration" = "需要接入对应服务的媒体库 API 后显示内容。";
 "connect.nav" = "添加 NAS";
 "connect.welcome.title" = "连接你的第一台 NAS";
 "connect.welcome.subtitle" = "添加群晖 DSM 后，启动台、设备状态和服务入口会自动使用 NAS 的真实数据。";
@@ -232,6 +234,8 @@
 "devices.files.favorites" = "文件夹";
 "devices.files.actions" = "操作";
 "devices.files.preview" = "预览";
+"devices.files.preparing_preview" = "正在准备预览";
+"devices.files.preview_failed" = "无法在 App 内准备此文件，请在开发诊断中查看响应详情。";
 "devices.files.open_external" = "外部打开";
 "devices.files.favorite" = "收藏";
 "devices.files.preview_hint" = "Nastart 会优先使用系统预览，不支持的文件再交给外部 App。";
@@ -548,6 +552,7 @@
 "web.retry" = "重新加载";
 "web.copy_url" = "复制当前地址";
 "web.open_safari" = "在 Safari 中打开";
+"web.open_compatibility_browser" = "使用系统 App 内浏览器";
 "web.share" = "分享";
 "player.title" = "播放器";
 "player.open_stream" = "打开媒体串流";
@@ -635,6 +640,9 @@
 
 "diagnostics.files.folder_loaded" = "文件夹已读取";
 "diagnostics.files.folder_failed" = "文件夹读取失败";
+"diagnostics.files.preview_download_started" = "开始准备 App 内文件预览";
+"diagnostics.files.preview_download_succeeded" = "App 内文件预览准备完成";
+"diagnostics.files.preview_download_failed" = "App 内文件预览准备失败";
 "diagnostics.media.probe_started" = "开始检查媒体响应";
 "diagnostics.media.probe_succeeded" = "媒体响应检查通过";
 "diagnostics.media.probe_invalid_response" = "媒体地址返回了非媒体内容";
@@ -643,6 +651,9 @@
 "diagnostics.media.player_ready" = "内置播放器已准备完成";
 "diagnostics.media.player_failed" = "内置播放器解码或加载失败";
 "diagnostics.media.player_state" = "内置播放器状态变化";
+"diagnostics.media.player_fallback" = "内置播放器已切换兼容引擎";
+"diagnostics.media.external_handoff_accepted" = "外部播放器已接受媒体地址";
+"diagnostics.media.external_handoff_failed" = "外部播放器未接受媒体地址";
 "diagnostics.web.started" = "App 内网页开始加载";
 "diagnostics.web.completed" = "App 内网页加载完成";
 "diagnostics.web.redirected" = "App 内网页发生重定向";

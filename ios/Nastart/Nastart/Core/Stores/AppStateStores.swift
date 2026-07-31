@@ -1825,7 +1825,10 @@ final class DSMClient {
             "mp3", "flac", "aac", "m4a", "wav", "ogg", "opus",
             "wma", "ape", "alac", "aiff", "aif", "amr", "ac3", "dts"
         ].contains(ext) { return .audio }
-        if ["jpg", "jpeg", "png", "gif", "heic", "webp"].contains(ext) { return .image }
+        if [
+            "jpg", "jpeg", "png", "gif", "heic", "heif", "webp",
+            "bmp", "tif", "tiff", "avif", "dng", "svg"
+        ].contains(ext) { return .image }
         if ["zip", "rar", "7z", "tar", "gz"].contains(ext) { return .archive }
         return .text
     }

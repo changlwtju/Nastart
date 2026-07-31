@@ -76,6 +76,7 @@
 "service.action.open_console" = "Open In App";
 "service.action.open_unavailable" = "No endpoint detected";
 "service.action.open_external" = "Open With";
+"service.action.open_service_external" = "Open in Another Browser";
 "service.action.media_library" = "Library";
 "service.action.configure_endpoint" = "Set Access Address";
 "service.action.edit_endpoint" = "Edit Access Address";
@@ -118,6 +119,7 @@
 "media.service.entry" = "Service Entry";
 "media.service.open_web" = "Open Library Web";
 "media.service.companion_hint" = "Choose the companion app from the system app sheet.";
+"media.library.requires_integration" = "Content requires integration with the service's media library API.";
 "connect.nav" = "Add NAS";
 "connect.welcome.title" = "Connect your first NAS";
 "connect.welcome.subtitle" = "After adding Synology DSM, the launchpad, device status, and service shortcuts use live data from your NAS.";
@@ -232,6 +234,8 @@
 "devices.files.favorites" = "Folders";
 "devices.files.actions" = "Actions";
 "devices.files.preview" = "Preview";
+"devices.files.preparing_preview" = "Preparing Preview";
+"devices.files.preview_failed" = "Could not prepare this file for in-app preview. Check Development Diagnostics for response details.";
 "devices.files.open_external" = "Open External";
 "devices.files.favorite" = "Favorite";
 "devices.files.preview_hint" = "Nastart uses system preview first, then external apps when needed.";
@@ -548,6 +552,7 @@
 "web.retry" = "Reload";
 "web.copy_url" = "Copy Current URL";
 "web.open_safari" = "Open in Safari";
+"web.open_compatibility_browser" = "Use System In-App Browser";
 "web.share" = "Share";
 "player.title" = "Player";
 "player.open_stream" = "Open Media Stream";
@@ -635,6 +640,9 @@
 
 "diagnostics.files.folder_loaded" = "Folder loaded";
 "diagnostics.files.folder_failed" = "Folder load failed";
+"diagnostics.files.preview_download_started" = "In-app file preview preparation started";
+"diagnostics.files.preview_download_succeeded" = "In-app file preview became ready";
+"diagnostics.files.preview_download_failed" = "In-app file preview preparation failed";
 "diagnostics.media.probe_started" = "Media response check started";
 "diagnostics.media.probe_succeeded" = "Media response check passed";
 "diagnostics.media.probe_invalid_response" = "Media URL returned non-media content";
@@ -643,6 +651,9 @@
 "diagnostics.media.player_ready" = "Built-in player became ready";
 "diagnostics.media.player_failed" = "Built-in player failed to load or decode";
 "diagnostics.media.player_state" = "Built-in player state changed";
+"diagnostics.media.player_fallback" = "Built-in player switched to compatibility engine";
+"diagnostics.media.external_handoff_accepted" = "External player accepted the media URL";
+"diagnostics.media.external_handoff_failed" = "External player did not accept the media URL";
 "diagnostics.web.started" = "In-app page load started";
 "diagnostics.web.completed" = "In-app page load completed";
 "diagnostics.web.redirected" = "In-app page redirected";
