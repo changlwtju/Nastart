@@ -98,6 +98,7 @@
 "service.metric.ports" = "端口";
 "service.open.hint" = "接入真实服务地址后，这里会打开对应的 WebUI。";
 "service.external.title" = "打开方式";
+"external.jellyfin_app" = "Jellyfin App";
 "service.console.title" = "开发控制台";
 "service.console.subtitle" = "为手机端保留常用控制键，适合发送指令和查看执行结果。";
 "web.mode.title" = "打开模式";
@@ -114,6 +115,9 @@
 "media.albums.title" = "专辑";
 "media.search.title" = "搜索资源库";
 "media.placeholder" = "接入服务后会显示真实资源库数据。";
+"media.service.entry" = "服务入口";
+"media.service.open_web" = "打开资源库 Web";
+"media.service.companion_hint" = "从系统 App 面板选择配套客户端。";
 "connect.nav" = "添加 NAS";
 "connect.welcome.title" = "连接你的第一台 NAS";
 "connect.welcome.subtitle" = "添加群晖 DSM 后，启动台、设备状态和服务入口会自动使用 NAS 的真实数据。";
@@ -123,7 +127,7 @@
 "connect.subtitle" = "默认使用 HTTPS 连接 DSM；未填写端口时自动使用 5001。";
 "connect.section.dsm" = "DSM";
 "connect.host" = "DSM 主机";
-"connect.host.example" = "例如：192.168.1.10 或 nas.example.com:5001";
+"connect.host.example" = "例如：https://192.168.1.10:5001";
 "connect.account" = "账号";
 "connect.account.example" = "例如：nastart";
 "connect.password" = "密码";
@@ -294,6 +298,7 @@
 "launchpad.services.manage" = "管理启动页服务";
 "launchpad.services.visible" = "启动页显示";
 "launchpad.services.hidden" = "已隐藏服务";
+"launchpad.services.hidden_count" = "可在这里恢复 %d 个已隐藏服务";
 "launchpad.services.search" = "搜索已识别服务";
 "launchpad.services.reset" = "恢复推荐显示";
 "launchpad.services.footer" = "Docker 容器默认全部显示；DSM 套件仅默认显示精选的用户入口。你可以在这里显示或隐藏任一已识别服务。";

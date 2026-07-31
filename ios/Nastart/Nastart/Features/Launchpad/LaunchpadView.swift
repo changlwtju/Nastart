@@ -31,14 +31,23 @@ struct LaunchpadView: View {
     @State private var showAddOptions = false
     @State private var showManualServiceEditor = false
     @State private var showServiceManager = false
+    @State private var refreshPulseID = UUID()
 
     var body: some View {
         NavigationStack {
             Group {
-                if connectionStore.isConnected || !launchpadServices.isEmpty {
+                if connectionStore.isConnected || !dataStore.services.isEmpty {
                     ScrollView {
                         VStack(alignment: .leading, spacing: 12) {
                             header
+                            if !hiddenLaunchpadServices.isEmpty {
+                                HiddenServicesRestoreStrip(
+                                    count: hiddenLaunchpadServices.count,
+                                    action: {
+                                        showServiceManager = true
+                                    }
+                                )
+                            }
                             launchpadContent
                                 .id("\(selectedTheme.rawValue)-\(groupExpansionSignature)-\(groupOrderSignature)-\(displayOptionsSignature)")
                         }
@@ -80,9 +89,19 @@ struct LaunchpadView: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     if connectionStore.isConnected {
                         Button {
-                            Task { await refreshLaunchpad() }
+                            refreshPulseID = UUID()
+                            Task(priority: .userInitiated) {
+                                await refreshLaunchpad()
+                            }
                         } label: {
-                            Image(systemName: "arrow.clockwise")
+                            if dataStore.isRefreshing {
+                                ProgressView()
+                                    .controlSize(.small)
+                            } else {
+                                Image(systemName: "arrow.clockwise")
+                                    .id(refreshPulseID)
+                                    .transition(.opacity)
+                            }
                         }
                         .disabled(dataStore.isRefreshing)
                         .accessibilityLabel(Text("action.refresh"))
@@ -139,6 +158,7 @@ struct LaunchpadView: View {
 
     @MainActor
     private func refreshLaunchpad() async {
+        guard !dataStore.isRefreshing else { return }
         if let session = connectionStore.dsmSession {
             await dataStore.refreshDSM(session: session, useAgent: connectionStore.usesAgent)
         } else {
@@ -160,6 +180,10 @@ struct LaunchpadView: View {
 
     private var launchpadServices: [LaunchpadService] {
         dataStore.services.filter(dataStore.isServiceVisibleOnLaunchpad)
+    }
+
+    private var hiddenLaunchpadServices: [LaunchpadService] {
+        dataStore.services.filter { !dataStore.isServiceVisibleOnLaunchpad($0) }
     }
 
     @ViewBuilder
@@ -305,6 +329,50 @@ private struct LaunchpadDisplayOptions {
     let showMemory: Bool
     let showPorts: Bool
     let showLibraryCounts: Bool
+}
+
+private struct HiddenServicesRestoreStrip: View {
+    let count: Int
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: 10) {
+                Image(systemName: "eye")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(AppTheme.accent)
+                    .frame(width: 30, height: 30)
+                    .background(AppTheme.accent.opacity(0.12))
+                    .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("launchpad.services.hidden")
+                        .font(.subheadline.weight(.semibold))
+                    Text(String.localizedStringWithFormat(
+                        NSLocalizedString("launchpad.services.hidden_count", comment: ""),
+                        count
+                    ))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                }
+
+                Spacer()
+
+                Text("launchpad.service.show")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(AppTheme.accent)
+            }
+            .padding(12)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(Color(.secondarySystemGroupedBackground))
+            .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+            .overlay {
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .stroke(AppTheme.hairline, lineWidth: 1)
+            }
+        }
+        .buttonStyle(.plain)
+    }
 }
 
 private enum LaunchpadReminderPolicy {
@@ -684,10 +752,12 @@ private struct GlassHeroPanel: View {
                 Label("launchpad.summary.normal", systemImage: "checkmark.circle.fill")
                     .font(.subheadline.weight(.semibold))
                 Spacer()
-                LiveUptimeText(baseText: device.uptimeText)
-                    .id(device.uptimeText)
-                    .font(.caption.weight(.medium))
-                    .foregroundStyle(.secondary)
+                if device.uptimeText != "-" {
+                    LiveUptimeText(baseText: device.uptimeText)
+                        .id(device.uptimeText)
+                        .font(.caption.weight(.medium))
+                        .foregroundStyle(.secondary)
+                }
             }
 
             if compact {
@@ -942,7 +1012,10 @@ private struct ServiceListRow: View {
                             InlineServiceMetric(titleKey: "metric.cpu", value: launchpadServicePercentText(cpu))
                         }
                         if options.showMemory, let memoryText = service.memoryText {
-                            InlineServiceMetric(titleKey: "metric.memory", value: memoryText)
+                            InlineServiceMetric(
+                                titleKey: "metric.memory",
+                                value: service.memory.map(launchpadServicePercentText) ?? memoryText
+                            )
                         }
                         if options.showPorts, !service.ports.isEmpty {
                             InlineServiceMetric(titleKey: "service.metric.ports", value: service.ports.prefix(2).joined(separator: " / "))
@@ -1408,20 +1481,15 @@ private struct ServiceDetailView: View {
             }
         }
         .confirmationDialog("service.external.title", isPresented: $showExternalPicker) {
+            if service.prefersCompanionApp {
+                Button {
+                    presentShareSheet()
+                } label: {
+                    Text(service.companionAppTitleKey)
+                }
+            }
             Button("external.browser") {
                 openExternal(.safari)
-            }
-
-            if service.isMedia {
-                Button("Infuse") {
-                    openExternal(.infuse)
-                }
-                Button("VidHub") {
-                    openExternal(.vidhub)
-                }
-                Button("VLC") {
-                    openExternal(.vlc)
-                }
             }
             Button("external.other_apps") {
                 presentShareSheet()
@@ -1494,7 +1562,26 @@ private struct ServiceDetailView: View {
         if service.source == .dsm {
             return dataStore.device.memoryDisplayText
         }
+        if let memory = service.memory {
+            return launchpadServicePercentText(memory)
+        }
         return service.memoryText ?? "-"
+    }
+}
+
+private extension LaunchpadService {
+    var prefersCompanionApp: Bool {
+        normalizedServiceName.contains("jellyfin")
+    }
+
+    var companionAppTitleKey: LocalizedStringKey {
+        normalizedServiceName.contains("jellyfin")
+            ? "external.jellyfin_app"
+            : "external.other_apps"
+    }
+
+    private var normalizedServiceName: String {
+        name.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
     }
 }
 
@@ -2042,6 +2129,7 @@ private struct WebContainerView: UIViewRepresentable {
         var lastCommandID: UUID?
         var lastRequestedURL: URL?
         private var progressObservation: NSKeyValueObservation?
+        private var visibleLoadFallback: DispatchWorkItem?
         private var downloadDestinations: [ObjectIdentifier: URL] = [:]
 
         init(parent: WebContainerView) {
@@ -2058,10 +2146,13 @@ private struct WebContainerView: UIViewRepresentable {
         func invalidateObservations() {
             progressObservation?.invalidate()
             progressObservation = nil
+            visibleLoadFallback?.cancel()
+            visibleLoadFallback = nil
         }
 
         func load(_ url: URL, in webView: WKWebView) {
             lastRequestedURL = url
+            visibleLoadFallback?.cancel()
             setLoading(true, error: nil)
             var request = URLRequest(url: url)
             request.timeoutInterval = 30
@@ -2098,15 +2189,18 @@ private struct WebContainerView: UIViewRepresentable {
         }
 
         func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+            visibleLoadFallback?.cancel()
             setLoading(true, error: nil)
             syncState(from: webView)
         }
 
         func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
+            scheduleVisibleLoadFallback(in: webView, after: 2.2)
             syncState(from: webView)
         }
 
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+            visibleLoadFallback?.cancel()
             setLoading(false, error: nil)
             syncState(from: webView)
         }
@@ -2326,6 +2420,7 @@ private struct WebContainerView: UIViewRepresentable {
             if nsError.domain == NSURLErrorDomain && nsError.code == NSURLErrorCancelled {
                 return
             }
+            visibleLoadFallback?.cancel()
             setLoading(false, error: error.localizedDescription)
         }
 
@@ -2338,6 +2433,17 @@ private struct WebContainerView: UIViewRepresentable {
                 self.parent.canGoBack = webView.canGoBack
                 self.parent.canGoForward = webView.canGoForward
             }
+        }
+
+        private func scheduleVisibleLoadFallback(in webView: WKWebView, after delay: TimeInterval) {
+            visibleLoadFallback?.cancel()
+            let workItem = DispatchWorkItem { [weak self, weak webView] in
+                guard let self, let webView, webView.url != nil else { return }
+                self.setLoading(false, error: nil)
+                self.syncState(from: webView)
+            }
+            visibleLoadFallback = workItem
+            DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: workItem)
         }
 
         private func present(_ controller: UIViewController, from webView: WKWebView) -> Bool {
@@ -2890,6 +2996,9 @@ private struct SystemPlayerController: UIViewControllerRepresentable {
 
 private struct MediaLibraryView: View {
     let service: LaunchpadService
+    @EnvironmentObject private var dataStore: AppDataStore
+    @EnvironmentObject private var connectionStore: NASConnectionStore
+    @State private var sharePayload: ServiceSharePayload?
 
     var body: some View {
         List {
@@ -2902,6 +3011,42 @@ private struct MediaLibraryView: View {
                         .foregroundStyle(.secondary)
                 }
                 .padding(.vertical, 8)
+            }
+
+            if service.prefersCompanionApp || libraryItems.isEmpty {
+                Section {
+                    if let endpoint = service.suggestedEndpoint {
+                        NavigationLink {
+                            ServiceWebUIView(
+                                service: service,
+                                endpoint: endpoint,
+                                allowsSelfSignedCertificates: connectionStore.dsmSession?.allowsSelfSignedCertificates == true,
+                                dsmSession: nil
+                            )
+                        } label: {
+                            MediaActionRow(
+                                titleKey: "media.service.open_web",
+                                detail: endpoint.absoluteString,
+                                systemImage: "safari"
+                            )
+                        }
+                    }
+
+                    if service.prefersCompanionApp {
+                        Button {
+                            guard service.suggestedEndpoint != nil else { return }
+                            sharePayload = service.suggestedEndpoint.map(ServiceSharePayload.init(url:))
+                        } label: {
+                            MediaActionRow(
+                                titleKey: service.companionAppTitleKey,
+                                detailKey: "media.service.companion_hint",
+                                systemImage: "apps.iphone"
+                            )
+                        }
+                    }
+                } header: {
+                    Text("media.service.entry")
+                }
             }
 
             Section {
@@ -2925,6 +3070,13 @@ private struct MediaLibraryView: View {
             }
         }
         .navigationTitle(service.name)
+        .sheet(item: $sharePayload) { payload in
+            SystemShareView(items: [payload.url])
+        }
+    }
+
+    private var libraryItems: [MediaItem] {
+        service.name == "Navidrome" ? dataStore.audioLibraryItems : dataStore.videoLibraryItems
     }
 }
 
@@ -2970,17 +3122,121 @@ private struct MediaShelfView: View {
             }
 
             Section {
-                ForEach(items) { item in
-                    NavigationLink {
-                        MediaItemDetailView(service: service, item: item)
-                    } label: {
-                        MediaItemRow(item: item)
+                if items.isEmpty {
+                    ForEach(emptyRows) { row in
+                        MediaPlaceholderRow(row: row)
+                    }
+                } else {
+                    ForEach(items) { item in
+                        NavigationLink {
+                            MediaItemDetailView(service: service, item: item)
+                        } label: {
+                            MediaItemRow(item: item)
+                        }
                     }
                 }
             }
         }
         .listStyle(.insetGrouped)
         .navigationTitle(shelf.titleKey)
+    }
+
+    private var emptyRows: [MediaPlaceholderEntry] {
+        [
+            MediaPlaceholderEntry(
+                titleKey: service.name == "Navidrome" ? "media.albums.title" : "media.movies.title",
+                detailKey: "media.service.open_web",
+                systemImage: service.name == "Navidrome" ? "music.note" : "film"
+            ),
+            MediaPlaceholderEntry(
+                titleKey: "media.search.title",
+                detailKey: "media.service.companion_hint",
+                systemImage: "magnifyingglass"
+            )
+        ]
+    }
+}
+
+private struct MediaActionRow: View {
+    let titleKey: LocalizedStringKey
+    let detail: String?
+    let detailKey: LocalizedStringKey?
+    let systemImage: String
+
+    init(titleKey: LocalizedStringKey, detail: String, systemImage: String) {
+        self.titleKey = titleKey
+        self.detail = detail
+        self.detailKey = nil
+        self.systemImage = systemImage
+    }
+
+    init(titleKey: LocalizedStringKey, detailKey: LocalizedStringKey, systemImage: String) {
+        self.titleKey = titleKey
+        self.detail = nil
+        self.detailKey = detailKey
+        self.systemImage = systemImage
+    }
+
+    var body: some View {
+        HStack(spacing: 12) {
+            Image(systemName: systemImage)
+                .font(.headline)
+                .foregroundStyle(AppTheme.accent)
+                .frame(width: 34, height: 34)
+                .background(AppTheme.accent.opacity(0.12))
+                .clipShape(RoundedRectangle(cornerRadius: 9, style: .continuous))
+
+            VStack(alignment: .leading, spacing: 3) {
+                Text(titleKey)
+                    .font(.body.weight(.medium))
+                if let detail {
+                    Text(detail)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.75)
+                } else if let detailKey {
+                    Text(detailKey)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(2)
+                }
+            }
+        }
+        .padding(.vertical, 3)
+    }
+}
+
+private struct MediaPlaceholderEntry: Identifiable {
+    let id = UUID()
+    let titleKey: LocalizedStringKey
+    let detailKey: LocalizedStringKey
+    let systemImage: String
+}
+
+private struct MediaPlaceholderRow: View {
+    let row: MediaPlaceholderEntry
+
+    var body: some View {
+        HStack(spacing: 12) {
+            Image(systemName: row.systemImage)
+                .font(.headline)
+                .foregroundStyle(.secondary)
+                .frame(width: 38, height: 38)
+                .background(AppTheme.secondarySurface)
+                .clipShape(RoundedRectangle(cornerRadius: 11, style: .continuous))
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text(row.titleKey)
+                    .font(.body.weight(.medium))
+                Text(row.detailKey)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            Spacer()
+        }
+        .padding(.vertical, 3)
     }
 }
 
@@ -3701,10 +3957,12 @@ private struct DeviceSummaryPanel: View {
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(.primary)
                 Spacer()
-                LiveUptimeText(baseText: device.uptimeText)
-                    .id(device.uptimeText)
-                    .font(.caption.weight(.medium))
-                    .foregroundStyle(.secondary)
+                if device.uptimeText != "-" {
+                    LiveUptimeText(baseText: device.uptimeText)
+                        .id(device.uptimeText)
+                        .font(.caption.weight(.medium))
+                        .foregroundStyle(.secondary)
+                }
             }
 
             if compact {

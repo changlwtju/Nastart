@@ -3125,7 +3125,9 @@ final class AppDataStore: ObservableObject {
     func reload(from provider: AppDataProviding) {
         self.provider = provider
         sourceKind = provider is DSMDataSnapshot ? .dsm : .mock
-        device = provider.device
+        device = provider is DSMDataSnapshot
+            ? Self.mergedDevice(fresh: provider.device, fallback: device)
+            : provider.device
         services = provider.services + manualServiceStore.load()
         containers = provider.containers
         files = provider.files
@@ -3134,6 +3136,29 @@ final class AppDataStore: ObservableObject {
         audioLibraryItems = provider.audioLibraryItems
         discoveredDevices = provider.discoveredDevices
         lastRefreshSummaryKey = provider is DSMDataSnapshot ? "data.refresh.dsm_done" : "data.refresh.mock_done"
+    }
+
+    private static func mergedDevice(fresh: NASDevice, fallback: NASDevice) -> NASDevice {
+        NASDevice(
+            id: fresh.id,
+            name: fresh.name,
+            subtitle: fresh.subtitle,
+            model: fresh.model ?? fallback.model,
+            dsmVersion: fresh.dsmVersion ?? fallback.dsmVersion,
+            mode: fresh.mode,
+            cpu: fresh.cpu ?? fallback.cpu,
+            memory: fresh.memory ?? fallback.memory,
+            memoryUsedText: fresh.memoryUsedText ?? fallback.memoryUsedText,
+            memoryTotalText: fresh.memoryTotalText ?? fallback.memoryTotalText,
+            storageUsed: fresh.storageUsed ?? fallback.storageUsed,
+            storageUsedText: fresh.storageUsedText ?? fallback.storageUsedText,
+            storageTotalText: fresh.storageTotalText ?? fallback.storageTotalText,
+            storageFreeText: fresh.storageFreeText == "-" ? fallback.storageFreeText : fresh.storageFreeText,
+            uptimeText: fresh.uptimeText == "-" ? fallback.uptimeText : fresh.uptimeText,
+            temperatureText: fresh.temperatureText ?? fallback.temperatureText,
+            certificate: fresh.certificate ?? fallback.certificate,
+            sshStatus: fresh.sshStatus == .unavailable ? fallback.sshStatus : fresh.sshStatus
+        )
     }
 
     func refreshAll() {

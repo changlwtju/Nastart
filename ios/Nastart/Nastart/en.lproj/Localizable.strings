@@ -98,6 +98,7 @@
 "service.metric.ports" = "Ports";
 "service.open.hint" = "This will open the configured Web UI once the real service URL is connected.";
 "service.external.title" = "Open with";
+"external.jellyfin_app" = "Jellyfin App";
 "service.console.title" = "Developer Console";
 "service.console.subtitle" = "Keeps common control keys close by for sending commands and watching output on mobile.";
 "web.mode.title" = "Open Mode";
@@ -114,6 +115,9 @@
 "media.albums.title" = "Albums";
 "media.search.title" = "Search Library";
 "media.placeholder" = "Real library data will appear after this service is connected.";
+"media.service.entry" = "Service Entry";
+"media.service.open_web" = "Open Library Web";
+"media.service.companion_hint" = "Choose the companion app from the system app sheet.";
 "connect.nav" = "Add NAS";
 "connect.welcome.title" = "Connect your first NAS";
 "connect.welcome.subtitle" = "After adding Synology DSM, the launchpad, device status, and service shortcuts use live data from your NAS.";
@@ -123,7 +127,7 @@
 "connect.subtitle" = "DSM uses HTTPS. Port 5001 is used automatically when no port is entered.";
 "connect.section.dsm" = "DSM";
 "connect.host" = "DSM host";
-"connect.host.example" = "Example: 192.168.1.10 or nas.example.com:5001";
+"connect.host.example" = "Example: https://192.168.1.10:5001";
 "connect.account" = "Account";
 "connect.account.example" = "Example: nastart";
 "connect.password" = "Password";
@@ -294,6 +298,7 @@
 "launchpad.services.manage" = "Manage Services";
 "launchpad.services.visible" = "Shown on Launchpad";
 "launchpad.services.hidden" = "Hidden Services";
+"launchpad.services.hidden_count" = "%d hidden service can be restored here";
 "launchpad.services.search" = "Search detected services";
 "launchpad.services.reset" = "Restore Recommended Visibility";
 "launchpad.services.footer" = "Docker containers are shown by default. DSM packages are limited to selected user-facing apps; any detected service can be shown or hidden here.";
