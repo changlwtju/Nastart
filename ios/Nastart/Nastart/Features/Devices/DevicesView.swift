@@ -11,40 +11,16 @@ struct DevicesView: View {
         NavigationStack {
             List {
                 Section {
-                    VStack(alignment: .leading, spacing: 12) {
-                        HStack {
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text(dataStore.device.name)
-                                    .font(.title2.weight(.bold))
-                                    .lineLimit(1)
-                                    .minimumScaleFactor(0.82)
-                                Text(dataStore.device.subtitle)
-                                    .font(.footnote)
-                                    .foregroundStyle(.secondary)
-                                    .lineLimit(1)
-                                    .minimumScaleFactor(0.82)
-                            }
-                            .layoutPriority(1)
-                            Spacer()
-                            Label {
-                                Text(LocalizedStringKey(connectionStore.isConnected ? "status.online" : "state.not_connected"))
-                            } icon: {
-                                Image(systemName: connectionStore.isConnected ? "checkmark.circle.fill" : "minus.circle")
-                            }
-                                .font(.caption.weight(.semibold))
-                                .foregroundStyle(connectionStore.isConnected ? Color.green : Color.secondary)
-                                .lineLimit(1)
-                                .minimumScaleFactor(0.78)
-                        }
+                    DeviceHealthHeader(
+                        device: dataStore.device,
+                        isConnected: connectionStore.isConnected
+                    )
+                    .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                }
 
-                        MetricPillRow(metrics: [
-                            MetricPillSpec("metric.cpu", value: devicePercentText(dataStore.device.cpu), progress: dataStore.device.cpu),
-                            MetricPillSpec("metric.memory_ram", value: devicePercentText(dataStore.device.memory), progress: dataStore.device.memory),
-                            MetricPillSpec("metric.storage_disk", value: devicePercentText(dataStore.device.storageUsed), progress: dataStore.device.storageUsed)
-                        ])
-                    }
-                    .padding(.vertical, 4)
-
+                Section {
                     NavigationLink {
                         DeviceStatusView(device: dataStore.device)
                     } label: {
@@ -90,6 +66,8 @@ struct DevicesView: View {
                     } label: {
                         Label("devices.resource.network", systemImage: "network")
                     }
+                } header: {
+                    Text("devices.section.resources")
                 }
 
                 Section {
@@ -145,6 +123,126 @@ struct DevicesView: View {
                 .font(.caption.weight(.medium))
                 .foregroundStyle(.secondary)
         }
+    }
+}
+
+private struct DeviceHealthHeader: View {
+    let device: NASDevice
+    let isConnected: Bool
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 18) {
+            HStack(alignment: .center, spacing: 12) {
+                Image(systemName: "server.rack")
+                    .font(.system(size: 19, weight: .semibold))
+                    .foregroundStyle(AppTheme.accent)
+                    .frame(width: 42, height: 42)
+                    .background(AppTheme.accent.opacity(0.11))
+                    .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                    .accessibilityHidden(true)
+
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(device.name)
+                        .font(.title3.weight(.bold))
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.82)
+                    Text(device.subtitle)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.82)
+                }
+                .layoutPriority(1)
+
+                Spacer(minLength: 8)
+
+                DeviceConnectionBadge(isConnected: isConnected)
+            }
+
+            HStack(alignment: .top, spacing: 10) {
+                DeviceHealthMetric(
+                    titleKey: "metric.cpu",
+                    value: devicePercentText(device.cpu),
+                    progress: device.cpu,
+                    symbol: "cpu"
+                )
+                DeviceHealthMetric(
+                    titleKey: "metric.memory_ram",
+                    value: devicePercentText(device.memory),
+                    progress: device.memory,
+                    symbol: "memorychip"
+                )
+                DeviceHealthMetric(
+                    titleKey: "metric.storage_disk",
+                    value: devicePercentText(device.storageUsed),
+                    progress: device.storageUsed,
+                    symbol: "internaldrive"
+                )
+            }
+        }
+        .padding(18)
+        .background(Color(.secondarySystemGroupedBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                .stroke(AppTheme.hairline, lineWidth: 1)
+        }
+    }
+}
+
+private struct DeviceConnectionBadge: View {
+    let isConnected: Bool
+
+    var body: some View {
+        HStack(spacing: 6) {
+            Circle()
+                .fill(isConnected ? Color.green : Color.secondary)
+                .frame(width: 7, height: 7)
+            Text(LocalizedStringKey(isConnected ? "status.online" : "state.not_connected"))
+                .lineLimit(1)
+        }
+        .font(.caption.weight(.semibold))
+        .foregroundStyle(isConnected ? Color.green : Color.secondary)
+        .padding(.horizontal, 10)
+        .padding(.vertical, 7)
+        .background((isConnected ? Color.green : Color.secondary).opacity(0.1))
+        .clipShape(Capsule())
+    }
+}
+
+private struct DeviceHealthMetric: View {
+    let titleKey: LocalizedStringKey
+    let value: String
+    let progress: Double?
+    let symbol: String
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 7) {
+            HStack(spacing: 5) {
+                Image(systemName: symbol)
+                    .font(.caption2.weight(.medium))
+                Text(titleKey)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.75)
+            }
+            .font(.caption)
+            .foregroundStyle(.secondary)
+
+            Text(value)
+                .font(.title3.weight(.semibold))
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
+
+            ProgressView(value: normalizedProgress)
+                .tint(AppTheme.accent)
+                .scaleEffect(x: 1, y: 0.72)
+                .opacity(progress == nil ? 0.35 : 1)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private var normalizedProgress: Double {
+        min(max(progress ?? 0, 0), 1)
     }
 }
 

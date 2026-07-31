@@ -2,7 +2,6 @@ import SwiftUI
 import UIKit
 
 struct MineView: View {
-    @EnvironmentObject private var profileStore: ProfileStore
     @EnvironmentObject private var connectionStore: NASConnectionStore
     @EnvironmentObject private var dataStore: AppDataStore
     @EnvironmentObject private var entitlementStore: EntitlementStore
@@ -12,47 +11,26 @@ struct MineView: View {
         NavigationStack {
             List {
                 Section {
-                    HStack(spacing: 14) {
-                        Text(profileStore.avatarInitial)
-                            .font(.title3.weight(.bold))
-                            .foregroundStyle(.secondary)
-                            .frame(width: 54, height: 54)
-                            .background(AppTheme.secondarySurface)
-                            .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
-
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(connectionStore.isConnected ? dataStore.device.name : profileStore.nickname)
-                                .font(.headline)
-                                .lineLimit(1)
-                                .minimumScaleFactor(0.82)
-                            HStack(spacing: 6) {
-                                Text(LocalizedStringKey(connectionStore.profileSubtitleKey))
-                                Text("-")
-                                Text(LocalizedStringKey(entitlementStore.plusStatus.titleKey))
-                            }
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                                .lineLimit(1)
-                                .minimumScaleFactor(0.82)
-                        }
-                        .layoutPriority(1)
-                    }
-                    .padding(.vertical, 8)
-                }
-
-                Section {
                     NavigationLink {
                         PlusView()
                     } label: {
-                        HStack(alignment: .center, spacing: 12) {
+                        HStack(alignment: .center, spacing: 14) {
+                            Image(systemName: "sparkles")
+                                .font(.system(size: 18, weight: .semibold))
+                                .foregroundStyle(AppTheme.accent)
+                                .frame(width: 44, height: 44)
+                                .background(AppTheme.primaryAction)
+                                .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                                .accessibilityHidden(true)
+
                             VStack(alignment: .leading, spacing: 5) {
                                 Text("mine.plus.title")
-                                    .font(.headline.weight(.medium))
+                                    .font(.headline.weight(.semibold))
                                     .lineLimit(1)
                                     .minimumScaleFactor(0.82)
-                                Text("mine.plus.subtitle")
+                                Text(LocalizedStringKey(entitlementStore.hasPlus ? entitlementStore.plusStatus.titleKey : "mine.plus.subtitle"))
                                     .font(.caption)
-                                    .foregroundStyle(.secondary)
+                                    .foregroundStyle(entitlementStore.hasPlus ? AppTheme.accent : Color.secondary)
                                     .lineLimit(2)
                                     .minimumScaleFactor(0.82)
                             }
@@ -100,7 +78,11 @@ struct MineView: View {
                     }
                     .disabled(!connectionStore.isConnected)
                 } footer: {
-                    Text("mine.sign_out.footer")
+                    if connectionStore.isConnected {
+                        Text(String(format: NSLocalizedString("mine.sign_out.connected_footer %@", comment: ""), dataStore.device.name))
+                    } else {
+                        Text("mine.sign_out.footer")
+                    }
                 }
             }
             .padding(.top, -12)
@@ -119,153 +101,101 @@ struct MineView: View {
     }
 }
 
-private struct ProfileEditView: View {
-    @EnvironmentObject private var profileStore: ProfileStore
-    @State private var showAvatarSheet = false
-    @State private var showSavedHint = false
-
-    var body: some View {
-        List {
-            Section {
-                Button {
-                    showAvatarSheet = true
-                } label: {
-                    VStack(spacing: 12) {
-                        Text(profileStore.avatarInitial)
-                            .font(.title.weight(.bold))
-                            .foregroundStyle(.secondary)
-                            .frame(width: 82, height: 82)
-                            .background(AppTheme.secondarySurface)
-                            .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
-                        Text("mine.profile.avatar")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 18)
-                }
-                .buttonStyle(.plain)
-            }
-
-            Section {
-                TextField("mine.profile.nickname", text: $profileStore.nickname)
-            }
-
-            Section {
-                Button {
-                    showSavedHint = true
-                } label: {
-                    Text("action.save")
-                        .font(.headline.weight(.semibold))
-                        .frame(maxWidth: .infinity)
-                }
-                .buttonStyle(.borderedProminent)
-                .tint(AppTheme.accent)
-            }
-        }
-        .listStyle(.insetGrouped)
-        .navigationTitle("mine.profile.edit")
-        .navigationBarTitleDisplayMode(.inline)
-        .confirmationDialog("mine.profile.avatar", isPresented: $showAvatarSheet) {
-            Button("mine.profile.use_system_avatar") {
-                profileStore.avatarInitial = "N"
-            }
-            Button("mine.profile.choose_photo") {
-                profileStore.avatarInitial = "P"
-            }
-            Button("mine.profile.take_photo") {
-                profileStore.avatarInitial = "C"
-            }
-            Button("action.cancel", role: .cancel) {}
-        }
-        .alert("mine.profile.saved_hint", isPresented: $showSavedHint) {
-            Button("action.ok", role: .cancel) {}
-        }
-    }
-}
-
 private struct PlusView: View {
     @Environment(\.openURL) private var openURL
     @EnvironmentObject private var entitlementStore: EntitlementStore
     @State private var showSubscribeHint = false
     @State private var showRestoreHint = false
+    @State private var selectedPlan: PlusBillingPlan = .yearly
 
     var body: some View {
-        List {
-            Section {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 24) {
+                PlusHeroPanel(
+                    statusKey: entitlementStore.plusStatus.titleKey,
+                    isActive: entitlementStore.hasPlus
+                )
+
                 VStack(alignment: .leading, spacing: 12) {
-                    Text("mine.plus.title")
-                        .font(.title2.weight(.bold))
-                    Text("plus.description")
-                        .font(.subheadline)
+                    Text("plus.pricing")
+                        .font(.headline.weight(.semibold))
+
+                    HStack(alignment: .top, spacing: 10) {
+                        ForEach(PlusBillingPlan.allCases) { plan in
+                            Button {
+                                selectedPlan = plan
+                            } label: {
+                                PlusPlanOption(
+                                    plan: plan,
+                                    isSelected: !entitlementStore.hasPlus && selectedPlan == plan
+                                )
+                            }
+                            .buttonStyle(.plain)
+                            .disabled(entitlementStore.hasPlus)
+                        }
+                    }
+
+                    Text("plus.pricing.note")
+                        .font(.caption)
                         .foregroundStyle(.secondary)
-                    Text(LocalizedStringKey(entitlementStore.plusStatus.titleKey))
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(entitlementStore.hasPlus ? AppTheme.accent : .secondary)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
-                .padding(.vertical, 8)
-            }
 
-            Section {
-                PlusPlanRow(
-                    titleKey: "plus.plan.monthly",
-                    priceKey: "plus.plan.monthly.price",
-                    badgeKey: nil
-                )
-                PlusPlanRow(
-                    titleKey: "plus.plan.yearly",
-                    priceKey: "plus.plan.yearly.price",
-                    badgeKey: "plus.plan.yearly.badge"
-                )
-            } header: {
-                Text("plus.pricing")
-            } footer: {
-                Text("plus.pricing.note")
-            }
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("plus.includes")
+                        .font(.headline.weight(.semibold))
 
-            Section {
-                PlusFeatureRow(titleKey: "plus.feature.cards", symbol: "square.grid.2x2")
-                PlusFeatureRow(titleKey: "plus.feature.icloud", symbol: "icloud")
-                PlusFeatureRow(titleKey: "plus.feature.themes", symbol: "paintpalette")
-                PlusFeatureRow(titleKey: "plus.feature.reminders", symbol: "bell.badge")
-            } header: {
-                Text("plus.includes")
-            }
-
-            Section {
-                Button {
-                    showSubscribeHint = true
-                } label: {
-                    HStack {
-                        Text("plus.action.subscribe")
-                            .font(.headline.weight(.semibold))
-                        Spacer()
-                        Image(systemName: "arrow.right")
-                            .font(.headline.weight(.semibold))
+                    LazyVGrid(
+                        columns: [
+                            GridItem(.flexible(), spacing: 10),
+                            GridItem(.flexible(), spacing: 10)
+                        ],
+                        spacing: 10
+                    ) {
+                        PlusFeatureTile(titleKey: "plus.feature.cards", symbol: "square.grid.2x2")
+                        PlusFeatureTile(titleKey: "plus.feature.icloud", symbol: "icloud")
+                        PlusFeatureTile(titleKey: "plus.feature.themes", symbol: "paintpalette")
+                        PlusFeatureTile(titleKey: "plus.feature.reminders", symbol: "bell.badge")
                     }
                 }
-                .buttonStyle(NastartPrimaryButtonStyle())
-                .listRowInsets(EdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0))
-                .listRowBackground(Color.clear)
-            }
 
-            Section {
-                Button("plus.action.restore") {
-                    entitlementStore.restorePurchases()
-                    showRestoreHint = true
-                }
-                Button("plus.action.manage") {
-                    if let url = URL(string: "https://apps.apple.com/account/subscriptions") {
-                        openURL(url)
+                VStack(spacing: 12) {
+                    Button {
+                        if entitlementStore.hasPlus {
+                            openSubscriptionManagement()
+                        } else {
+                            showSubscribeHint = true
+                        }
+                    } label: {
+                        HStack {
+                            Text(LocalizedStringKey(entitlementStore.hasPlus ? "plus.action.manage" : "plus.action.subscribe"))
+                            Spacer()
+                            Image(systemName: "arrow.right")
+                                .accessibilityHidden(true)
+                        }
                     }
+                    .buttonStyle(NastartPrimaryButtonStyle())
+
+                    Button("plus.action.restore") {
+                        entitlementStore.restorePurchases()
+                        showRestoreHint = true
+                    }
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(AppTheme.accent)
+                    .frame(minHeight: 44)
+
+                    Text("plus.subscription.footer")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
-            } header: {
-                Text("plus.subscription")
-            } footer: {
-                Text("plus.subscription.footer")
             }
+            .padding(.horizontal, 16)
+            .padding(.top, 12)
+            .padding(.bottom, 28)
         }
-        .listStyle(.insetGrouped)
+        .background(AppTheme.groupedBackground.ignoresSafeArea())
         .navigationTitle("mine.plus.title")
         .navigationBarTitleDisplayMode(.inline)
         .alert("plus.subscribe_hint", isPresented: $showSubscribeHint) {
@@ -275,44 +205,176 @@ private struct PlusView: View {
             Button("action.ok", role: .cancel) {}
         }
     }
-}
 
-private struct PlusPlanRow: View {
-    let titleKey: String
-    let priceKey: String
-    let badgeKey: String?
-
-    var body: some View {
-        HStack(spacing: 12) {
-            VStack(alignment: .leading, spacing: 4) {
-                Text(LocalizedStringKey(titleKey))
-                    .font(.body.weight(.medium))
-                Text(LocalizedStringKey(priceKey))
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(AppTheme.accent)
-            }
-            Spacer(minLength: 12)
-            if let badgeKey {
-                Text(LocalizedStringKey(badgeKey))
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(AppTheme.accent)
-                    .padding(.horizontal, 9)
-                    .padding(.vertical, 5)
-                    .background(AppTheme.accent.opacity(0.12))
-                    .clipShape(Capsule())
-            }
+    private func openSubscriptionManagement() {
+        if let url = URL(string: "https://apps.apple.com/account/subscriptions") {
+            openURL(url)
         }
-        .padding(.vertical, 4)
     }
 }
 
-private struct PlusFeatureRow: View {
+private enum PlusBillingPlan: String, CaseIterable, Identifiable {
+    case monthly
+    case yearly
+
+    var id: String { rawValue }
+
+    var titleKey: String {
+        switch self {
+        case .monthly: return "plus.plan.monthly"
+        case .yearly: return "plus.plan.yearly"
+        }
+    }
+
+    var priceKey: String {
+        switch self {
+        case .monthly: return "plus.plan.monthly.price"
+        case .yearly: return "plus.plan.yearly.price"
+        }
+    }
+
+    var detailKey: String {
+        switch self {
+        case .monthly: return "plus.plan.monthly.detail"
+        case .yearly: return "plus.plan.yearly.detail"
+        }
+    }
+
+    var badgeKey: String? {
+        self == .yearly ? "plus.plan.yearly.badge" : nil
+    }
+}
+
+private struct PlusHeroPanel: View {
+    let statusKey: String
+    let isActive: Bool
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 18) {
+            HStack(alignment: .top) {
+                Image(systemName: "sparkles")
+                    .font(.system(size: 24, weight: .semibold))
+                    .foregroundStyle(AppTheme.accent)
+                    .frame(width: 48, height: 48)
+                    .background(.white.opacity(0.08))
+                    .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                    .accessibilityHidden(true)
+
+                Spacer()
+
+                HStack(spacing: 6) {
+                    Circle()
+                        .fill(isActive ? Color.green : Color.secondary)
+                        .frame(width: 7, height: 7)
+                    Text(LocalizedStringKey(statusKey))
+                }
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.white.opacity(0.9))
+                .padding(.horizontal, 10)
+                .padding(.vertical, 7)
+                .background(.white.opacity(0.09))
+                .clipShape(Capsule())
+            }
+
+            VStack(alignment: .leading, spacing: 8) {
+                Text("mine.plus.title")
+                    .font(.title.weight(.bold))
+                    .foregroundStyle(.white)
+                Text("plus.description")
+                    .font(.subheadline)
+                    .foregroundStyle(.white.opacity(0.7))
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .padding(20)
+        .background(AppTheme.primaryAction)
+        .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+    }
+}
+
+private struct PlusPlanOption: View {
+    let plan: PlusBillingPlan
+    let isSelected: Bool
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(alignment: .top) {
+                Text(LocalizedStringKey(plan.titleKey))
+                    .font(.subheadline.weight(.semibold))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
+                Spacer(minLength: 4)
+                if isSelected {
+                    Image(systemName: "checkmark.circle.fill")
+                        .font(.body.weight(.semibold))
+                        .foregroundStyle(AppTheme.accent)
+                        .accessibilityHidden(true)
+                }
+            }
+
+            Text(LocalizedStringKey(plan.priceKey))
+                .font(.title3.weight(.bold))
+                .foregroundStyle(isSelected ? AppTheme.accent : Color.primary)
+                .lineLimit(1)
+                .minimumScaleFactor(0.72)
+
+            Text(LocalizedStringKey(plan.detailKey))
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .lineLimit(2)
+                .fixedSize(horizontal: false, vertical: true)
+
+            if let badgeKey = plan.badgeKey {
+                Text(LocalizedStringKey(badgeKey))
+                    .font(.caption2.weight(.semibold))
+                    .foregroundStyle(AppTheme.accent)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .background(AppTheme.accent.opacity(0.1))
+                    .clipShape(Capsule())
+            } else {
+                Spacer(minLength: 22)
+            }
+        }
+        .padding(14)
+        .frame(maxWidth: .infinity, minHeight: 154, alignment: .topLeading)
+        .background(Color(.secondarySystemGroupedBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                .stroke(isSelected ? AppTheme.accent : AppTheme.hairline, lineWidth: isSelected ? 2 : 1)
+        }
+        .contentShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+    }
+}
+
+private struct PlusFeatureTile: View {
     let titleKey: LocalizedStringKey
     let symbol: String
 
     var body: some View {
-        Label(titleKey, systemImage: symbol)
-            .padding(.vertical, 3)
+        VStack(alignment: .leading, spacing: 12) {
+            Image(systemName: symbol)
+                .font(.system(size: 18, weight: .medium))
+                .foregroundStyle(AppTheme.accent)
+                .frame(width: 34, height: 34)
+                .background(AppTheme.accent.opacity(0.1))
+                .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                .accessibilityHidden(true)
+
+            Text(titleKey)
+                .font(.subheadline.weight(.medium))
+                .lineLimit(2)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .padding(14)
+        .frame(maxWidth: .infinity, minHeight: 108, alignment: .topLeading)
+        .background(Color(.secondarySystemGroupedBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                .stroke(AppTheme.hairline, lineWidth: 1)
+        }
     }
 }
 
