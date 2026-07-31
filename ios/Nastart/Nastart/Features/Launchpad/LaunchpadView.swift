@@ -2125,7 +2125,7 @@ private struct WebContainerView: UIViewRepresentable {
         Coordinator(parent: self)
     }
 
-    private var preferredContentMode: WKContentMode {
+    private var preferredContentMode: WKWebpagePreferences.ContentMode {
         prefersDesktopMode ? .desktop : .mobile
     }
 
