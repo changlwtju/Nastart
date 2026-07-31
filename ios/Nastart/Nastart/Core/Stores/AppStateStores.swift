@@ -220,6 +220,13 @@ struct StoredNASCredential: Codable {
     }
 }
 
+struct StoredJellyfinSession: Codable {
+    let endpointString: String
+    let userID: String
+    let username: String
+    let accessToken: String
+}
+
 struct DSMDataSnapshot: AppDataProviding {
     let device: NASDevice
     let services: [LaunchpadService]
@@ -988,22 +995,54 @@ final class DSMClient {
                 URLQueryItem(name: "query", value: "SYNO.FileStation.List")
             ]
         )
-        let data = await firstSuccessfulCall(apiRequests(
-            session,
-            apiInfo: apiInfo,
-            apiName: "SYNO.FileStation.List",
-            fallbackPath: "/webapi/entry.cgi",
-            fallbackMaxVersion: 2,
-            method: "list",
-            extras: [[
-                URLQueryItem(name: "folder_path", value: normalizedPath),
-                URLQueryItem(name: "limit", value: "1000"),
-                URLQueryItem(name: "offset", value: "0"),
-                URLQueryItem(name: "additional", value: "size,time,type")
-            ]]
-        ))
-        guard let data else { throw DSMClientError.invalidResponse }
-        let items = DSMClient.mapFileItems(data, parentPath: normalizedPath)
+        let encodedPath = Self.jsonQueryValue(normalizedPath) ?? normalizedPath
+        let encodedAdditional = Self.jsonQueryValue(["real_path", "size", "time", "type"])
+            ?? "[\"real_path\",\"size\",\"time\",\"type\"]"
+        let pageSize = 500
+        var offset = 0
+        var allItems: [FileItem] = []
+
+        while offset < 25_000 {
+            let common = [
+                URLQueryItem(name: "limit", value: "\(pageSize)"),
+                URLQueryItem(name: "offset", value: "\(offset)"),
+                URLQueryItem(name: "sort_by", value: "name"),
+                URLQueryItem(name: "sort_direction", value: "asc")
+            ]
+            let parameterVariants = [
+                [
+                    URLQueryItem(name: "folder_path", value: encodedPath),
+                    URLQueryItem(name: "additional", value: encodedAdditional)
+                ] + common,
+                [
+                    URLQueryItem(name: "folder_path", value: normalizedPath),
+                    URLQueryItem(name: "additional", value: encodedAdditional)
+                ] + common,
+                [URLQueryItem(name: "folder_path", value: normalizedPath)] + common
+            ]
+            let data = await firstSuccessfulCall(apiRequests(
+                session,
+                apiInfo: apiInfo,
+                apiName: "SYNO.FileStation.List",
+                fallbackPath: "/webapi/entry.cgi",
+                fallbackMaxVersion: 2,
+                method: "list",
+                extras: parameterVariants
+            ))
+            guard let data else { throw DSMClientError.invalidResponse }
+
+            let page = DSMClient.mapFileItems(data, parentPath: normalizedPath)
+            allItems.append(contentsOf: page)
+            let total = Int(data.firstDouble(for: ["total", "total_count"]) ?? 0)
+            offset += page.count
+            if page.isEmpty || page.count < pageSize || (total > 0 && offset >= total) {
+                break
+            }
+        }
+
+        let items = Dictionary(grouping: allItems, by: \FileItem.path)
+            .compactMap { $0.value.first }
+            .sorted(by: DSMClient.sortFiles)
         record(
             .info,
             categoryKey: "diagnostics.category.dsm_api",
@@ -1011,6 +1050,14 @@ final class DSMClient {
             details: ["path": normalizedPath, "items": "\(items.count)"]
         )
         return items
+    }
+
+    private static func jsonQueryValue<T: Encodable>(_ value: T) -> String? {
+        guard
+            let data = try? JSONEncoder().encode(value),
+            let string = String(data: data, encoding: .utf8)
+        else { return nil }
+        return string
     }
 
     private func call(
@@ -1754,7 +1801,7 @@ final class DSMClient {
             let rawPath = nonEmptyString(share.firstString(for: ["path", "additional_path"]))
             guard let name = nonEmptyString(share.firstString(for: ["name", "display_name"])) ?? lastPathComponent(rawPath ?? "") else { return nil }
             let path = rawPath ?? "/\(name)"
-            return FileItem(id: UUID(), name: name, subtitle: path, kind: .folder, sizeText: nil, children: [])
+            return FileItem(id: UUID(), name: name, subtitle: path, path: path, kind: .folder, sizeText: nil, children: [])
         }
         .sorted(by: sortFiles)
     }
@@ -1768,6 +1815,7 @@ final class DSMClient {
                 id: UUID(),
                 name: name,
                 subtitle: path ?? normalizedChildPath(parentPath: parentPath, name: name),
+                path: path ?? normalizedChildPath(parentPath: parentPath, name: name),
                 kind: fileKind(for: name, item: item),
                 sizeText: fileSizeText(item),
                 children: []
@@ -3443,7 +3491,7 @@ final class AppDataStore: ObservableObject {
     }
 
     @MainActor
-    func loadFolder(path: String) async -> [FileItem] {
+    func loadFolder(path: String) async throws -> [FileItem] {
         if let dataSource = activeDataSource as? DSMNASDataSource {
             do {
                 return try await dataSource.loadFolder(path: path)
@@ -3454,7 +3502,9 @@ final class AppDataStore: ObservableObject {
                     messageKey: "diagnostics.files.folder_failed",
                     details: ["path": path, "error": "\(error)"]
                 )
-                return localChildren(for: path, in: files)
+                let localItems = localChildren(for: path, in: files)
+                if !localItems.isEmpty { return localItems }
+                throw error
             }
         }
         return localChildren(for: path, in: files)
@@ -3462,7 +3512,7 @@ final class AppDataStore: ObservableObject {
 
     private func localChildren(for path: String, in items: [FileItem]) -> [FileItem] {
         for item in items {
-            if item.subtitle == path { return item.children }
+            if item.path == path { return item.children }
             let nested = localChildren(for: path, in: item.children)
             if !nested.isEmpty { return nested }
         }
@@ -3919,6 +3969,7 @@ final class KeychainStore {
     static let shared = KeychainStore()
 
     private let service = "com.nastart.app.nas"
+    private let jellyfinService = "com.nastart.app.jellyfin"
     private let primaryNASAccount = "primary-nas"
 
     private init() {}
@@ -3950,11 +4001,42 @@ final class KeychainStore {
         ] as CFDictionary)
     }
 
+    func saveJellyfinSession(_ session: StoredJellyfinSession, endpoint: URL) {
+        guard let data = try? JSONEncoder().encode(session) else { return }
+        var item = jellyfinQuery(endpoint: endpoint)
+        SecItemDelete(item as CFDictionary)
+        item[kSecValueData as String] = data
+        item[kSecAttrAccessible as String] = kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly
+        SecItemAdd(item as CFDictionary, nil)
+    }
+
+    func loadJellyfinSession(endpoint: URL) -> StoredJellyfinSession? {
+        var query = jellyfinQuery(endpoint: endpoint)
+        query[kSecReturnData as String] = true
+        query[kSecMatchLimit as String] = kSecMatchLimitOne
+        var result: CFTypeRef?
+        let status = SecItemCopyMatching(query as CFDictionary, &result)
+        guard status == errSecSuccess, let data = result as? Data else { return nil }
+        return try? JSONDecoder().decode(StoredJellyfinSession.self, from: data)
+    }
+
+    func clearJellyfinSession(endpoint: URL) {
+        SecItemDelete(jellyfinQuery(endpoint: endpoint) as CFDictionary)
+    }
+
     private func baseQuery(account: String) -> [String: Any] {
         [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: service,
             kSecAttrAccount as String: account
+        ]
+    }
+
+    private func jellyfinQuery(endpoint: URL) -> [String: Any] {
+        [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: jellyfinService,
+            kSecAttrAccount as String: endpoint.absoluteString
         ]
     }
 }

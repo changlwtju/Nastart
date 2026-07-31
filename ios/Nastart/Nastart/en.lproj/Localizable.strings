@@ -33,6 +33,7 @@
 
 "action.edit" = "Edit";
 "action.refresh" = "Refresh";
+"action.retry" = "Retry";
 "action.expand" = "Expand";
 "action.open" = "Open";
 "action.open_external" = "Open In...";
@@ -606,3 +607,25 @@
 "diagnostics.web.script_error" = "In-app page reported a script error";
 "diagnostics.web.compatibility_fallback" = "Switched to the system in-app browser";
 "devices.files.empty" = "No files";
+"devices.files.folder_load_failed" = "Unable to load this folder. Check the DSM session and File Station permissions, then retry.";
+"jellyfin.library.connecting" = "Connecting to Jellyfin...";
+"jellyfin.library.connected" = "Jellyfin library connected";
+"jellyfin.library.mine" = "My media";
+"jellyfin.library.load_failed" = "Unable to load the Jellyfin library.";
+"jellyfin.library.empty" = "No media found";
+"jellyfin.library.empty_detail" = "This Jellyfin account has no visible libraries or playable items.";
+"jellyfin.login.title" = "Connect Jellyfin";
+"jellyfin.login.description" = "Sign in with a Jellyfin account to browse libraries, continue watching, and play media in Nastart.";
+"jellyfin.login.username" = "Username";
+"jellyfin.login.password" = "Password";
+"jellyfin.login.action" = "Sign in and load library";
+"jellyfin.login.required" = "Enter your Jellyfin username.";
+"jellyfin.login.failed" = "Jellyfin sign-in failed. Check the address, account, password, and reverse proxy settings.";
+"jellyfin.logout" = "Disconnect Jellyfin";
+"jellyfin.series.title" = "TV shows";
+"jellyfin.episodes.title" = "Episodes";
+"jellyfin.overview.title" = "Overview";
+"diagnostics.jellyfin.login_succeeded" = "Jellyfin sign-in succeeded";
+"diagnostics.jellyfin.login_failed" = "Jellyfin sign-in failed";
+"diagnostics.jellyfin.library_loaded" = "Jellyfin library loaded";
+"diagnostics.jellyfin.library_failed" = "Jellyfin library load failed";

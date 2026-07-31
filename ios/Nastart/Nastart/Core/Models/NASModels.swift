@@ -275,9 +275,28 @@ struct FileItem: Identifiable {
     let id: UUID
     let name: String
     let subtitle: String
+    let path: String
     let kind: FileKind
     let sizeText: String?
     let children: [FileItem]
+
+    init(
+        id: UUID,
+        name: String,
+        subtitle: String,
+        path: String? = nil,
+        kind: FileKind,
+        sizeText: String?,
+        children: [FileItem]
+    ) {
+        self.id = id
+        self.name = name
+        self.subtitle = subtitle
+        self.path = path ?? subtitle
+        self.kind = kind
+        self.sizeText = sizeText
+        self.children = children
+    }
 
     var isFolder: Bool {
         if case .folder = kind {

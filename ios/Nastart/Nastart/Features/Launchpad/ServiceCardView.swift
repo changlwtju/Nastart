@@ -152,6 +152,10 @@ extension LaunchpadService {
         return normalizedName.contains("code-server") || normalizedName.contains("codex-server")
     }
 
+    var isJellyfin: Bool {
+        name.lowercased().contains("jellyfin")
+    }
+
     var prefersEnhancedWebMode: Bool {
         let normalizedName = name.lowercased()
         let enhancedNames = [

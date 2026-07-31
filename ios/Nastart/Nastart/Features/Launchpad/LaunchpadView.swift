@@ -4,6 +4,7 @@ import WebKit
 import SafariServices
 import AVFoundation
 import AVKit
+import JellyfinAPI
 #if canImport(MobileVLCKit)
 import MobileVLCKit
 #endif
@@ -2774,20 +2775,26 @@ struct MediaPlaybackRequest: Identifiable {
     let title: String
     let allowsSelfSignedCertificates: Bool
     let source: MediaPlaybackSource
+    let fileExtensionOverride: String?
 
     init(
         url: URL,
         title: String,
         allowsSelfSignedCertificates: Bool = false,
-        source: MediaPlaybackSource = .directURL
+        source: MediaPlaybackSource = .directURL,
+        fileExtensionOverride: String? = nil
     ) {
         self.url = url
         self.title = title
         self.allowsSelfSignedCertificates = allowsSelfSignedCertificates
         self.source = source
+        self.fileExtensionOverride = fileExtensionOverride
     }
 
     var fileExtensionHint: String {
+        if let fileExtensionOverride, !fileExtensionOverride.isEmpty {
+            return fileExtensionOverride.lowercased()
+        }
         let titleExtension = URL(fileURLWithPath: title).pathExtension.lowercased()
         return titleExtension.isEmpty ? url.pathExtension.lowercased() : titleExtension
     }
@@ -2808,6 +2815,7 @@ struct MediaPlaybackRequest: Identifiable {
 enum MediaPlaybackSource: String {
     case directURL = "direct"
     case dsmFile = "dsmFile"
+    case jellyfin
 }
 
 private final class MediaProbeTrustDelegate: NSObject, URLSessionDelegate {
@@ -3571,12 +3579,1032 @@ private struct SystemPlayerController: UIViewControllerRepresentable {
     }
 }
 
+private enum JellyfinEntryKind: String {
+    case library
+    case movie
+    case series
+    case episode
+    case audio
+    case video
+    case unknown
+}
+
+private struct JellyfinMediaEntry: Identifiable, Hashable {
+    let id: String
+    let title: String
+    let subtitle: String
+    let overview: String
+    let kind: JellyfinEntryKind
+    let collectionType: String?
+    let imageItemID: String
+    let imageTag: String?
+    let container: String?
+    let mediaSourceID: String?
+    let progress: Double?
+    let playbackPositionTicks: Int?
+
+    var isPlayable: Bool {
+        [.movie, .episode, .audio, .video].contains(kind)
+    }
+}
+
+private final class JellyfinCertificateTrustDelegate: NSObject, URLSessionDelegate {
+    let trustedHost: String?
+    let allowsSelfSignedCertificates: Bool
+
+    init(trustedHost: String?, allowsSelfSignedCertificates: Bool) {
+        self.trustedHost = trustedHost
+        self.allowsSelfSignedCertificates = allowsSelfSignedCertificates
+    }
+
+    func urlSession(
+        _ session: URLSession,
+        didReceive challenge: URLAuthenticationChallenge,
+        completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
+    ) {
+        guard
+            allowsSelfSignedCertificates,
+            challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust,
+            challenge.protectionSpace.host.caseInsensitiveCompare(trustedHost ?? "") == .orderedSame,
+            let trust = challenge.protectionSpace.serverTrust
+        else {
+            completionHandler(.performDefaultHandling, nil)
+            return
+        }
+        completionHandler(.useCredential, URLCredential(trust: trust))
+    }
+}
+
+@MainActor
+private final class JellyfinLibraryStore: ObservableObject {
+    let endpoint: URL
+    let allowsSelfSignedCertificates: Bool
+
+    @Published private(set) var isAuthenticated = false
+    @Published private(set) var isLoading = true
+    @Published private(set) var username = ""
+    @Published private(set) var libraries: [JellyfinMediaEntry] = []
+    @Published private(set) var continueWatching: [JellyfinMediaEntry] = []
+    @Published private(set) var movies: [JellyfinMediaEntry] = []
+    @Published private(set) var series: [JellyfinMediaEntry] = []
+    @Published var errorMessage: String?
+
+    private var client: JellyfinClient?
+    private var userID: String?
+    private var didRestore = false
+    private var trustDelegate: JellyfinCertificateTrustDelegate?
+
+    init(endpoint: URL, allowsSelfSignedCertificates: Bool) {
+        self.endpoint = endpoint
+        self.allowsSelfSignedCertificates = allowsSelfSignedCertificates
+    }
+
+    func restoreIfNeeded() async {
+        guard !didRestore else { return }
+        didRestore = true
+        guard let stored = KeychainStore.shared.loadJellyfinSession(endpoint: endpoint) else {
+            isLoading = false
+            return
+        }
+        username = stored.username
+        userID = stored.userID
+        client = makeClient(accessToken: stored.accessToken)
+        isAuthenticated = true
+        await refresh()
+    }
+
+    func signIn(username: String, password: String) async {
+        let cleanedUsername = username.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !cleanedUsername.isEmpty else {
+            errorMessage = NSLocalizedString("jellyfin.login.required", comment: "")
+            return
+        }
+        isLoading = true
+        errorMessage = nil
+        do {
+            let newClient = makeClient(accessToken: nil)
+            let result = try await newClient.signIn(username: cleanedUsername, password: password)
+            guard
+                let accessToken = result.accessToken,
+                let authenticatedUserID = result.user?.id
+            else {
+                throw JellyfinLibraryError.missingSession
+            }
+            client = newClient
+            userID = authenticatedUserID
+            self.username = result.user?.name ?? cleanedUsername
+            isAuthenticated = true
+            KeychainStore.shared.saveJellyfinSession(
+                StoredJellyfinSession(
+                    endpointString: endpoint.absoluteString,
+                    userID: authenticatedUserID,
+                    username: self.username,
+                    accessToken: accessToken
+                ),
+                endpoint: endpoint
+            )
+            record("diagnostics.jellyfin.login_succeeded", level: .info)
+            await loadHome()
+        } catch {
+            isAuthenticated = false
+            errorMessage = NSLocalizedString("jellyfin.login.failed", comment: "")
+            isLoading = false
+            record(
+                "diagnostics.jellyfin.login_failed",
+                level: .error,
+                details: diagnosticDetails(for: error)
+            )
+        }
+    }
+
+    func refresh() async {
+        guard isAuthenticated else {
+            isLoading = false
+            return
+        }
+        isLoading = true
+        errorMessage = nil
+        await loadHome()
+    }
+
+    func signOut() async {
+        let activeClient = client
+        KeychainStore.shared.clearJellyfinSession(endpoint: endpoint)
+        client = nil
+        userID = nil
+        username = ""
+        isAuthenticated = false
+        isLoading = false
+        libraries = []
+        continueWatching = []
+        movies = []
+        series = []
+        try? await activeClient?.signOut()
+    }
+
+    func loadLibrary(_ library: JellyfinMediaEntry) async throws -> [JellyfinMediaEntry] {
+        let kinds: [BaseItemKind]
+        switch library.collectionType {
+        case CollectionType.tvshows.rawValue:
+            kinds = [.series]
+        case CollectionType.music.rawValue, CollectionType.musicvideos.rawValue:
+            kinds = [.musicAlbum, .audio, .musicVideo]
+        default:
+            kinds = [.movie, .series, .video]
+        }
+        return try await loadItems(parentID: library.id, kinds: kinds, limit: 250)
+    }
+
+    func loadEpisodes(seriesID: String) async throws -> [JellyfinMediaEntry] {
+        guard let client, let userID else { throw JellyfinLibraryError.missingSession }
+        var parameters = Paths.GetEpisodesParameters()
+        parameters.userID = userID
+        parameters.fields = itemFields
+        parameters.limit = 500
+        parameters.enableImages = true
+        parameters.enableImageTypes = [.primary, .thumb]
+        parameters.enableUserData = true
+        parameters.sortBy = .sortName
+        let response = try await client.send(
+            Paths.getEpisodes(seriesID: seriesID, parameters: parameters)
+        ).value
+        return (response.items ?? []).compactMap(mapItem)
+    }
+
+    func imageURL(for entry: JellyfinMediaEntry, width: Int = 480) -> URL? {
+        guard let client else { return nil }
+        var parameters = Paths.GetItemImageParameters()
+        parameters.maxWidth = width
+        parameters.quality = 88
+        parameters.tag = entry.imageTag
+        return client.url(
+            with: Paths.getItemImage(
+                itemID: entry.imageItemID,
+                imageType: ImageType.primary.rawValue,
+                parameters: parameters
+            ),
+            queryAPIKey: true
+        )
+    }
+
+    func playbackRequest(for entry: JellyfinMediaEntry) -> MediaPlaybackRequest? {
+        guard let client, entry.isPlayable else { return nil }
+        let streamURL: URL?
+        let extensionHint: String?
+        if entry.kind == .audio {
+            var parameters = Paths.GetAudioStreamParameters()
+            parameters.container = entry.container
+            parameters.isStatic = true
+            parameters.startTimeTicks = entry.playbackPositionTicks
+            streamURL = client.url(
+                with: Paths.getAudioStream(itemID: entry.id, parameters: parameters),
+                queryAPIKey: true
+            )
+            extensionHint = entry.container
+                .flatMap { $0.split(separator: ",", maxSplits: 1).first }
+                .map(String.init)
+        } else if shouldUseHLS(for: entry), let mediaSourceID = entry.mediaSourceID {
+            var parameters = Paths.GetMasterHlsVideoPlaylistParameters(
+                mediaSourceID: mediaSourceID
+            )
+            parameters.deviceID = Self.persistentDeviceID()
+            parameters.audioCodec = "aac"
+            parameters.videoCodec = "h264"
+            parameters.segmentContainer = "ts"
+            parameters.enableAdaptiveBitrateStreaming = true
+            parameters.enableAutoStreamCopy = true
+            parameters.allowVideoStreamCopy = true
+            parameters.allowAudioStreamCopy = true
+            parameters.maxAudioChannels = 2
+            parameters.videoBitRate = 20_000_000
+            parameters.audioBitRate = 320_000
+            parameters.startTimeTicks = entry.playbackPositionTicks
+            parameters.context = .streaming
+            streamURL = client.url(
+                with: Paths.getMasterHlsVideoPlaylist(
+                    itemID: entry.id,
+                    parameters: parameters
+                ),
+                queryAPIKey: true
+            )
+            extensionHint = "m3u8"
+        } else {
+            var parameters = Paths.GetVideoStreamParameters()
+            parameters.container = entry.container
+            parameters.isStatic = true
+            parameters.startTimeTicks = entry.playbackPositionTicks
+            streamURL = client.url(
+                with: Paths.getVideoStream(itemID: entry.id, parameters: parameters),
+                queryAPIKey: true
+            )
+            extensionHint = entry.container
+                .flatMap { $0.split(separator: ",", maxSplits: 1).first }
+                .map(String.init)
+        }
+        guard let streamURL else { return nil }
+        return MediaPlaybackRequest(
+            url: streamURL,
+            title: entry.title,
+            allowsSelfSignedCertificates: allowsSelfSignedCertificates,
+            source: .jellyfin,
+            fileExtensionOverride: extensionHint
+        )
+    }
+
+    private func shouldUseHLS(for entry: JellyfinMediaEntry) -> Bool {
+        guard let container = entry.container?.lowercased() else { return true }
+        let firstContainer = container.split(separator: ",", maxSplits: 1).first.map(String.init) ?? container
+        return !["mp4", "m4v", "mov"].contains(firstContainer)
+    }
+
+    private func loadHome() async {
+        do {
+            libraries = try await loadViews()
+            continueWatching = try await loadResumeItems()
+            movies = try await loadItems(parentID: nil, kinds: [.movie], limit: 36)
+            series = try await loadItems(parentID: nil, kinds: [.series], limit: 36)
+            isLoading = false
+            record(
+                "diagnostics.jellyfin.library_loaded",
+                level: .info,
+                details: [
+                    "libraries": "\(libraries.count)",
+                    "resume": "\(continueWatching.count)",
+                    "movies": "\(movies.count)",
+                    "series": "\(series.count)"
+                ]
+            )
+        } catch {
+            isLoading = false
+            errorMessage = NSLocalizedString("jellyfin.library.load_failed", comment: "")
+            record(
+                "diagnostics.jellyfin.library_failed",
+                level: .error,
+                details: diagnosticDetails(for: error)
+            )
+        }
+    }
+
+    private func loadViews() async throws -> [JellyfinMediaEntry] {
+        guard let client, let userID else { throw JellyfinLibraryError.missingSession }
+        var parameters = Paths.GetUserViewsParameters()
+        parameters.userID = userID
+        parameters.isIncludeHidden = false
+        let response = try await client.send(Paths.getUserViews(parameters: parameters)).value
+        return (response.items ?? []).compactMap(mapItem)
+    }
+
+    private func loadResumeItems() async throws -> [JellyfinMediaEntry] {
+        guard let client, let userID else { throw JellyfinLibraryError.missingSession }
+        var parameters = Paths.GetResumeItemsParameters()
+        parameters.userID = userID
+        parameters.limit = 20
+        parameters.fields = itemFields
+        parameters.mediaTypes = [.video, .audio]
+        parameters.enableUserData = true
+        parameters.enableImages = true
+        parameters.enableImageTypes = [.primary, .thumb]
+        parameters.includeItemTypes = [.movie, .episode, .audio, .video]
+        let response = try await client.send(Paths.getResumeItems(parameters: parameters)).value
+        return (response.items ?? []).compactMap(mapItem)
+    }
+
+    private func loadItems(
+        parentID: String?,
+        kinds: [BaseItemKind],
+        limit: Int
+    ) async throws -> [JellyfinMediaEntry] {
+        guard let client, let userID else { throw JellyfinLibraryError.missingSession }
+        var parameters = Paths.GetItemsParameters()
+        parameters.userID = userID
+        parameters.parentID = parentID
+        parameters.limit = limit
+        parameters.isRecursive = true
+        parameters.fields = itemFields
+        parameters.includeItemTypes = kinds
+        parameters.sortBy = [.sortName]
+        parameters.sortOrder = [.ascending]
+        parameters.enableUserData = true
+        parameters.enableImages = true
+        parameters.imageTypeLimit = 1
+        parameters.enableImageTypes = [.primary, .thumb]
+        let response = try await client.send(Paths.getItems(parameters: parameters)).value
+        return (response.items ?? []).compactMap(mapItem)
+    }
+
+    private var itemFields: [ItemFields] {
+        [.overview, .primaryImageAspectRatio, .mediaSources, .path, .genres]
+    }
+
+    private func mapItem(_ item: BaseItemDto) -> JellyfinMediaEntry? {
+        guard let id = item.id, let title = item.name, !title.isEmpty else { return nil }
+        let kind: JellyfinEntryKind
+        switch item.type {
+        case .collectionFolder, .folder: kind = .library
+        case .movie: kind = .movie
+        case .series: kind = .series
+        case .episode: kind = .episode
+        case .audio, .musicAlbum: kind = .audio
+        case .video, .musicVideo: kind = .video
+        default: kind = .unknown
+        }
+        let imageItemID = item.imageTags?[ImageType.primary.rawValue] == nil
+            ? (item.parentPrimaryImageItemID ?? id)
+            : id
+        let imageTag = item.imageTags?[ImageType.primary.rawValue] ?? item.parentPrimaryImageTag
+        return JellyfinMediaEntry(
+            id: id,
+            title: title,
+            subtitle: subtitle(for: item, kind: kind),
+            overview: item.overview ?? "",
+            kind: kind,
+            collectionType: item.collectionType?.rawValue,
+            imageItemID: imageItemID,
+            imageTag: imageTag,
+            container: item.container ?? item.mediaSources?.first?.container,
+            mediaSourceID: item.mediaSources?.first?.id,
+            progress: item.userData?.playedPercentage.map { min(max($0 / 100, 0), 1) },
+            playbackPositionTicks: item.userData?.playbackPositionTicks
+        )
+    }
+
+    private func subtitle(for item: BaseItemDto, kind: JellyfinEntryKind) -> String {
+        if kind == .episode {
+            let season = item.parentIndexNumber.map { "S\($0)" } ?? ""
+            let episode = item.indexNumber.map { "E\($0)" } ?? ""
+            return [item.seriesName, season + episode].compactMap { $0 }.filter { !$0.isEmpty }.joined(separator: " · ")
+        }
+        let duration = item.runTimeTicks.map { ticks -> String in
+            let minutes = Int(ticks / 600_000_000)
+            return minutes >= 60 ? "\(minutes / 60)h \(minutes % 60)m" : "\(minutes)m"
+        }
+        return [item.productionYear.map(String.init), duration]
+            .compactMap { $0 }
+            .joined(separator: " · ")
+    }
+
+    private func makeClient(accessToken: String?) -> JellyfinClient {
+        let delegate = JellyfinCertificateTrustDelegate(
+            trustedHost: endpoint.host,
+            allowsSelfSignedCertificates: allowsSelfSignedCertificates
+        )
+        trustDelegate = delegate
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.timeoutIntervalForRequest = 20
+        configuration.timeoutIntervalForResource = 60
+        configuration.waitsForConnectivity = false
+        let deviceID = Self.persistentDeviceID()
+        let appVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0.1"
+        return JellyfinClient(
+            configuration: .init(
+                url: endpoint,
+                accessToken: accessToken,
+                client: "Nastart",
+                deviceName: UIDevice.current.model,
+                deviceID: deviceID,
+                version: appVersion
+            ),
+            sessionConfiguration: configuration,
+            sessionDelegate: delegate
+        )
+    }
+
+    private static func persistentDeviceID() -> String {
+        let key = "jellyfin.client.device-id"
+        if let current = UserDefaults.standard.string(forKey: key) { return current }
+        let value = UIDevice.current.identifierForVendor?.uuidString ?? UUID().uuidString
+        UserDefaults.standard.set(value, forKey: key)
+        return value
+    }
+
+    private func record(
+        _ messageKey: String,
+        level: DiagnosticLogLevel,
+        details: [String: String] = [:]
+    ) {
+        DiagnosticLogStore.shared.record(
+            level,
+            categoryKey: "diagnostics.category.media",
+            messageKey: messageKey,
+            details: details.merging([
+                "target": DiagnosticLogStore.redactedURL(endpoint)
+            ]) { current, _ in current }
+        )
+    }
+
+    private func diagnosticDetails(for error: Error) -> [String: String] {
+        let value = error as NSError
+        return [
+            "errorDomain": value.domain,
+            "errorCode": "\(value.code)"
+        ]
+    }
+}
+
+private enum JellyfinLibraryError: Error {
+    case missingSession
+}
+
+private struct JellyfinLibraryView: View {
+    let service: LaunchpadService
+    @StateObject private var store: JellyfinLibraryStore
+
+    init(service: LaunchpadService, endpoint: URL, allowsSelfSignedCertificates: Bool) {
+        self.service = service
+        _store = StateObject(wrappedValue: JellyfinLibraryStore(
+            endpoint: endpoint,
+            allowsSelfSignedCertificates: allowsSelfSignedCertificates
+        ))
+    }
+
+    var body: some View {
+        Group {
+            if store.isLoading && !store.isAuthenticated {
+                ProgressView("jellyfin.library.connecting")
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else if !store.isAuthenticated {
+                JellyfinLoginView(store: store)
+            } else {
+                JellyfinHomeView(store: store)
+            }
+        }
+        .background(AppTheme.groupedBackground)
+        .task { await store.restoreIfNeeded() }
+        .toolbar {
+            if store.isAuthenticated {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Menu {
+                        Button {
+                            Task { await store.refresh() }
+                        } label: {
+                            Label("action.refresh", systemImage: "arrow.clockwise")
+                        }
+                        Button(role: .destructive) {
+                            Task { await store.signOut() }
+                        } label: {
+                            Label("jellyfin.logout", systemImage: "rectangle.portrait.and.arrow.right")
+                        }
+                    } label: {
+                        Image(systemName: "ellipsis.circle")
+                    }
+                }
+            }
+        }
+    }
+}
+
+private struct JellyfinLoginView: View {
+    @ObservedObject var store: JellyfinLibraryStore
+    @State private var username = ""
+    @State private var password = ""
+
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 24) {
+                VStack(alignment: .leading, spacing: 8) {
+                    Image(systemName: "play.rectangle.fill")
+                        .font(.system(size: 34))
+                        .foregroundStyle(AppTheme.accent)
+                    Text("jellyfin.login.title")
+                        .font(.title2.weight(.bold))
+                    Text("jellyfin.login.description")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+
+                VStack(spacing: 0) {
+                    TextField("jellyfin.login.username", text: $username)
+                        .textContentType(.username)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                        .padding(16)
+                    Divider()
+                    SecureField("jellyfin.login.password", text: $password)
+                        .textContentType(.password)
+                        .padding(16)
+                }
+                .background(Color(.secondarySystemGroupedBackground))
+                .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+
+                if let errorMessage = store.errorMessage {
+                    Label(errorMessage, systemImage: "exclamationmark.triangle")
+                        .font(.footnote)
+                        .foregroundStyle(.red)
+                }
+
+                Button {
+                    Task { await store.signIn(username: username, password: password) }
+                } label: {
+                    HStack {
+                        if store.isLoading { ProgressView().tint(.white) }
+                        Text("jellyfin.login.action")
+                            .fontWeight(.semibold)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 14)
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(AppTheme.primaryAction)
+                .disabled(store.isLoading || username.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+            }
+            .padding(24)
+        }
+    }
+}
+
+private struct JellyfinHomeView: View {
+    @ObservedObject var store: JellyfinLibraryStore
+
+    var body: some View {
+        ScrollView {
+            LazyVStack(alignment: .leading, spacing: 28) {
+                HStack(spacing: 12) {
+                    Image(systemName: "person.crop.circle.fill")
+                        .font(.system(size: 34))
+                        .foregroundStyle(AppTheme.accent)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(store.username)
+                            .font(.headline)
+                        Text("jellyfin.library.connected")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    Spacer()
+                    if store.isLoading { ProgressView() }
+                }
+
+                if let errorMessage = store.errorMessage {
+                    VStack(alignment: .leading, spacing: 10) {
+                        Label(errorMessage, systemImage: "exclamationmark.triangle")
+                            .font(.subheadline)
+                        Button("action.retry") {
+                            Task { await store.refresh() }
+                        }
+                        .buttonStyle(.bordered)
+                    }
+                }
+
+                if !store.libraries.isEmpty {
+                    JellyfinShelfHeader(titleKey: "jellyfin.library.mine")
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        LazyHStack(spacing: 12) {
+                            ForEach(store.libraries) { library in
+                                NavigationLink {
+                                    JellyfinCollectionView(store: store, library: library)
+                                } label: {
+                                    JellyfinLibraryCard(store: store, library: library)
+                                }
+                                .buttonStyle(.plain)
+                            }
+                        }
+                    }
+                }
+
+                if !store.continueWatching.isEmpty {
+                    JellyfinPosterShelf(
+                        store: store,
+                        titleKey: "media.continue.title",
+                        items: store.continueWatching,
+                        posterWidth: 230,
+                        landscape: true
+                    )
+                }
+
+                if !store.movies.isEmpty {
+                    JellyfinPosterShelf(
+                        store: store,
+                        titleKey: "media.movies.title",
+                        items: store.movies,
+                        posterWidth: 128,
+                        landscape: false
+                    )
+                }
+
+                if !store.series.isEmpty {
+                    JellyfinPosterShelf(
+                        store: store,
+                        titleKey: "jellyfin.series.title",
+                        items: store.series,
+                        posterWidth: 128,
+                        landscape: false
+                    )
+                }
+
+                if !store.isLoading,
+                   store.libraries.isEmpty,
+                   store.continueWatching.isEmpty,
+                   store.movies.isEmpty,
+                   store.series.isEmpty,
+                   store.errorMessage == nil {
+                    VStack(spacing: 12) {
+                        Image(systemName: "rectangle.stack.badge.play")
+                            .font(.system(size: 34))
+                            .foregroundStyle(.secondary)
+                        Text("jellyfin.library.empty")
+                            .font(.headline)
+                        Text("jellyfin.library.empty_detail")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                            .multilineTextAlignment(.center)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 44)
+                }
+            }
+            .padding(.horizontal, 18)
+            .padding(.vertical, 16)
+        }
+        .refreshable { await store.refresh() }
+    }
+}
+
+private struct JellyfinShelfHeader: View {
+    let titleKey: LocalizedStringKey
+
+    var body: some View {
+        Text(titleKey)
+            .font(.title3.weight(.bold))
+    }
+}
+
+private struct JellyfinLibraryCard: View {
+    @ObservedObject var store: JellyfinLibraryStore
+    let library: JellyfinMediaEntry
+
+    var body: some View {
+        ZStack(alignment: .bottomLeading) {
+            JellyfinPosterImage(url: store.imageURL(for: library, width: 560))
+            LinearGradient(
+                colors: [.clear, .black.opacity(0.72)],
+                startPoint: .center,
+                endPoint: .bottom
+            )
+            Text(library.title)
+                .font(.headline)
+                .foregroundStyle(.white)
+                .lineLimit(1)
+                .padding(12)
+        }
+        .frame(width: 220, height: 124)
+        .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+    }
+}
+
+private struct JellyfinPosterShelf: View {
+    @ObservedObject var store: JellyfinLibraryStore
+    let titleKey: LocalizedStringKey
+    let items: [JellyfinMediaEntry]
+    let posterWidth: CGFloat
+    let landscape: Bool
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            JellyfinShelfHeader(titleKey: titleKey)
+            ScrollView(.horizontal, showsIndicators: false) {
+                LazyHStack(alignment: .top, spacing: 12) {
+                    ForEach(items) { item in
+                        NavigationLink {
+                            JellyfinMediaRouteView(store: store, item: item)
+                        } label: {
+                            JellyfinPosterCard(
+                                store: store,
+                                item: item,
+                                width: posterWidth,
+                                landscape: landscape
+                            )
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+            }
+        }
+    }
+}
+
+private struct JellyfinPosterCard: View {
+    @ObservedObject var store: JellyfinLibraryStore
+    let item: JellyfinMediaEntry
+    let width: CGFloat
+    let landscape: Bool
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            ZStack(alignment: .bottomLeading) {
+                JellyfinPosterImage(url: store.imageURL(for: item, width: Int(width * 3)))
+                if let progress = item.progress, progress > 0 {
+                    GeometryReader { geometry in
+                        VStack {
+                            Spacer()
+                            Rectangle()
+                                .fill(Color.accentColor)
+                                .frame(width: geometry.size.width * progress, height: 4)
+                        }
+                    }
+                }
+            }
+            .frame(width: width, height: landscape ? width * 0.58 : width * 1.48)
+            .clipShape(RoundedRectangle(cornerRadius: 7, style: .continuous))
+
+            Text(item.title)
+                .font(.subheadline.weight(.medium))
+                .foregroundStyle(.primary)
+                .lineLimit(1)
+            if !item.subtitle.isEmpty {
+                Text(item.subtitle)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+            }
+        }
+        .frame(width: width, alignment: .leading)
+    }
+}
+
+private struct JellyfinPosterImage: View {
+    let url: URL?
+
+    var body: some View {
+        AsyncImage(url: url, transaction: Transaction(animation: .easeInOut(duration: 0.2))) { phase in
+            switch phase {
+            case .success(let image):
+                image.resizable().scaledToFill()
+            case .failure:
+                placeholder
+            case .empty:
+                ZStack {
+                    placeholder
+                    ProgressView()
+                }
+            @unknown default:
+                placeholder
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .clipped()
+    }
+
+    private var placeholder: some View {
+        Rectangle()
+            .fill(Color(.tertiarySystemFill))
+            .overlay {
+                Image(systemName: "play.rectangle")
+                    .font(.title2)
+                    .foregroundStyle(.secondary)
+            }
+    }
+}
+
+private struct JellyfinCollectionView: View {
+    @ObservedObject var store: JellyfinLibraryStore
+    let library: JellyfinMediaEntry
+    @State private var items: [JellyfinMediaEntry] = []
+    @State private var isLoading = true
+    @State private var failed = false
+
+    var body: some View {
+        Group {
+            if isLoading {
+                ProgressView()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else if failed {
+                VStack(spacing: 14) {
+                    Image(systemName: "exclamationmark.triangle")
+                        .font(.title2)
+                        .foregroundStyle(.secondary)
+                    Text("jellyfin.library.load_failed")
+                        .font(.headline)
+                    Button("action.retry") { Task { await load() } }
+                        .buttonStyle(.bordered)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else {
+                ScrollView {
+                    LazyVGrid(
+                        columns: [GridItem(.adaptive(minimum: 126), spacing: 14)],
+                        spacing: 18
+                    ) {
+                        ForEach(items) { item in
+                            NavigationLink {
+                                JellyfinMediaRouteView(store: store, item: item)
+                            } label: {
+                                JellyfinPosterCard(store: store, item: item, width: 126, landscape: false)
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+                    .padding(18)
+                }
+            }
+        }
+        .navigationTitle(library.title)
+        .task { await load() }
+    }
+
+    private func load() async {
+        isLoading = true
+        failed = false
+        do {
+            items = try await store.loadLibrary(library)
+        } catch {
+            failed = true
+        }
+        isLoading = false
+    }
+}
+
+private struct JellyfinMediaRouteView: View {
+    @ObservedObject var store: JellyfinLibraryStore
+    let item: JellyfinMediaEntry
+
+    var body: some View {
+        if item.kind == .series {
+            JellyfinSeriesView(store: store, series: item)
+        } else {
+            JellyfinMediaDetailView(store: store, item: item)
+        }
+    }
+}
+
+private struct JellyfinSeriesView: View {
+    @ObservedObject var store: JellyfinLibraryStore
+    let series: JellyfinMediaEntry
+    @State private var episodes: [JellyfinMediaEntry] = []
+    @State private var isLoading = true
+    @State private var failed = false
+
+    var body: some View {
+        List {
+            JellyfinDetailHeader(store: store, item: series)
+                .listRowInsets(EdgeInsets())
+                .listRowBackground(Color.clear)
+
+            Section {
+                if isLoading {
+                    HStack { Spacer(); ProgressView(); Spacer() }
+                } else if failed {
+                    Button("action.retry") { Task { await loadEpisodes() } }
+                } else {
+                    ForEach(episodes) { episode in
+                        NavigationLink {
+                            JellyfinMediaDetailView(store: store, item: episode)
+                        } label: {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(episode.title)
+                                    .font(.body.weight(.medium))
+                                Text(episode.subtitle)
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            .padding(.vertical, 4)
+                        }
+                    }
+                }
+            } header: {
+                Text("jellyfin.episodes.title")
+            }
+        }
+        .listStyle(.insetGrouped)
+        .navigationTitle(series.title)
+        .task { await loadEpisodes() }
+    }
+
+    private func loadEpisodes() async {
+        isLoading = true
+        failed = false
+        do {
+            episodes = try await store.loadEpisodes(seriesID: series.id)
+        } catch {
+            failed = true
+        }
+        isLoading = false
+    }
+}
+
+private struct JellyfinMediaDetailView: View {
+    @ObservedObject var store: JellyfinLibraryStore
+    let item: JellyfinMediaEntry
+    @State private var playbackRequest: MediaPlaybackRequest?
+
+    var body: some View {
+        List {
+            JellyfinDetailHeader(store: store, item: item)
+                .listRowInsets(EdgeInsets())
+                .listRowBackground(Color.clear)
+
+            if !item.overview.isEmpty {
+                Section {
+                    Text(item.overview)
+                        .font(.subheadline)
+                } header: {
+                    Text("jellyfin.overview.title")
+                }
+            }
+
+            if item.isPlayable {
+                Section {
+                    Button {
+                        playbackRequest = store.playbackRequest(for: item)
+                    } label: {
+                        Label("player.play_in_app", systemImage: "play.fill")
+                    }
+                }
+            }
+        }
+        .listStyle(.insetGrouped)
+        .navigationTitle(item.title)
+        .fullScreenCover(item: $playbackRequest) { request in
+            NavigationStack {
+                BuiltInMediaPlayerView(request: request)
+            }
+        }
+    }
+}
+
+private struct JellyfinDetailHeader: View {
+    @ObservedObject var store: JellyfinLibraryStore
+    let item: JellyfinMediaEntry
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 16) {
+            JellyfinPosterImage(url: store.imageURL(for: item, width: 480))
+                .frame(width: 118, height: 174)
+                .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+            VStack(alignment: .leading, spacing: 8) {
+                Text(item.title)
+                    .font(.title2.weight(.bold))
+                if !item.subtitle.isEmpty {
+                    Text(item.subtitle)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            Spacer()
+        }
+        .padding(.vertical, 12)
+    }
+}
+
 private struct MediaLibraryView: View {
     let service: LaunchpadService
     @EnvironmentObject private var dataStore: AppDataStore
     @EnvironmentObject private var connectionStore: NASConnectionStore
 
     var body: some View {
+        Group {
+            if service.isJellyfin, let endpoint = service.suggestedEndpoint {
+                JellyfinLibraryView(
+                    service: service,
+                    endpoint: endpoint,
+                    allowsSelfSignedCertificates: connectionStore.dsmSession?.allowsSelfSignedCertificates == true
+                )
+            } else {
+                fallbackLibrary
+            }
+        }
+        .navigationTitle(service.name)
+    }
+
+    private var fallbackLibrary: some View {
         List {
             Section {
                 VStack(alignment: .leading, spacing: 12) {
@@ -3633,7 +4661,6 @@ private struct MediaLibraryView: View {
                 Text("media.library.sections")
             }
         }
-        .navigationTitle(service.name)
     }
 
     private var libraryItems: [MediaItem] {

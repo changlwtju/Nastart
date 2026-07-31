@@ -740,6 +740,7 @@ private struct FileBrowserView: View {
     @State private var loadedItems: [FileItem] = []
     @State private var didLoad = false
     @State private var isLoading = false
+    @State private var loadErrorKey: String?
 
     init(titleKey: LocalizedStringKey, items: [FileItem], folderPath: String? = nil) {
         self.titleKey = titleKey
@@ -767,7 +768,26 @@ private struct FileBrowserView: View {
                     FileItemRowLink(item: item)
                 }
 
-                if !isLoading && visibleItems.isEmpty {
+                if let loadErrorKey, visibleItems.isEmpty {
+                    VStack(spacing: 12) {
+                        Image(systemName: "exclamationmark.folder")
+                            .font(.title2)
+                            .foregroundStyle(.secondary)
+                        Text(LocalizedStringKey(loadErrorKey))
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                            .multilineTextAlignment(.center)
+                        Button("action.retry") {
+                            didLoad = false
+                            Task { await loadIfNeeded() }
+                        }
+                        .buttonStyle(.bordered)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 24)
+                }
+
+                if !isLoading && visibleItems.isEmpty && loadErrorKey == nil {
                     VStack(spacing: 10) {
                         Image(systemName: "tray")
                             .font(.title2)
@@ -792,8 +812,13 @@ private struct FileBrowserView: View {
     private func loadIfNeeded() async {
         guard let folderPath, !didLoad else { return }
         isLoading = true
-        loadedItems = await dataStore.loadFolder(path: folderPath)
-        didLoad = true
+        loadErrorKey = nil
+        do {
+            loadedItems = try await dataStore.loadFolder(path: folderPath)
+            didLoad = true
+        } catch {
+            loadErrorKey = "devices.files.folder_load_failed"
+        }
         isLoading = false
     }
 }
@@ -804,7 +829,7 @@ private struct FileItemRowLink: View {
     var body: some View {
         if item.isFolder {
             NavigationLink {
-                FileBrowserView(titleKey: LocalizedStringKey(item.name), items: item.children, folderPath: item.subtitle)
+                FileBrowserView(titleKey: LocalizedStringKey(item.name), items: item.children, folderPath: item.path)
             } label: {
                 FileItemRow(item: item)
             }
@@ -1011,7 +1036,7 @@ private struct FilePreviewView: View {
     }
 
     private var authenticatedURL: URL? {
-        connectionStore.dsmSession?.fileStationOpenURL(path: item.subtitle)
+        connectionStore.dsmSession?.fileStationOpenURL(path: item.path)
     }
 
     private var previewSymbolName: String {
