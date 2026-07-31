@@ -1,6 +1,8 @@
 import SwiftUI
 import UIKit
 import WebKit
+import AVFoundation
+import AVKit
 
 struct LaunchpadView: View {
     @EnvironmentObject private var dataStore: AppDataStore
@@ -23,11 +25,14 @@ struct LaunchpadView: View {
     @AppStorage(AppearancePreferenceKeys.groupDefaultVersion) private var groupDefaultVersion = 0
     @State private var showSearch = false
     @State private var showConnectionFlow = false
+    @State private var showAddOptions = false
+    @State private var showManualServiceEditor = false
+    @State private var showServiceManager = false
 
     var body: some View {
         NavigationStack {
             Group {
-                if connectionStore.isConnected {
+                if connectionStore.isConnected || !launchpadServices.isEmpty {
                     ScrollView {
                         VStack(alignment: .leading, spacing: 12) {
                             header
@@ -40,19 +45,48 @@ struct LaunchpadView: View {
                     }
                     .background(launchpadBackground)
                 } else {
-                    NASConnectionWelcomeView {
-                        showConnectionFlow = true
-                    }
+                    NASConnectionWelcomeView(
+                        addNASAction: {
+                            showConnectionFlow = true
+                        },
+                        addManualServiceAction: {
+                            showManualServiceEditor = true
+                        }
+                    )
                 }
+            }
+            .confirmationDialog("launchpad.add.title", isPresented: $showAddOptions) {
+                Button("connect.welcome.action") {
+                    showConnectionFlow = true
+                }
+                Button("manual.service.add") {
+                    showManualServiceEditor = true
+                }
+                Button("action.cancel", role: .cancel) {}
             }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
+                    if !dataStore.services.isEmpty {
+                        Button {
+                            showServiceManager = true
+                        } label: {
+                            Image(systemName: "slider.horizontal.3")
+                        }
+                        .accessibilityLabel(Text("launchpad.services.manage"))
+                    }
+                }
+                ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
-                        showConnectionFlow = true
+                        if connectionStore.isConnected || !launchpadServices.isEmpty {
+                            showAddOptions = true
+                        } else {
+                            showConnectionFlow = true
+                        }
                     } label: {
                         Image(systemName: "plus")
                     }
+                    .accessibilityLabel(Text("launchpad.add.title"))
                 }
             }
             .sheet(isPresented: $showConnectionFlow) {
@@ -60,6 +94,16 @@ struct LaunchpadView: View {
                     DSMConnectionFlowView {
                         showConnectionFlow = false
                     }
+                }
+            }
+            .sheet(isPresented: $showManualServiceEditor) {
+                NavigationStack {
+                    ManualServiceEditorView()
+                }
+            }
+            .sheet(isPresented: $showServiceManager) {
+                NavigationStack {
+                    LaunchpadServiceManagementView()
                 }
             }
             .sheet(isPresented: $showSearch) {
@@ -84,7 +128,7 @@ struct LaunchpadView: View {
     }
 
     private var launchpadServices: [LaunchpadService] {
-        dataStore.services.filter(\.isLaunchpadVisible)
+        dataStore.services.filter(dataStore.isServiceVisibleOnLaunchpad)
     }
 
     @ViewBuilder
@@ -285,7 +329,7 @@ private struct CommandMetricRail: View {
         VStack(spacing: compact ? 6 : 8) {
             CommandRailMetric(titleKey: "metric.cpu", value: launchpadPercentText(device.cpu), symbolName: "cpu", progress: compact ? nil : device.cpu, compact: compact)
             CommandRailMetric(titleKey: "metric.memory", value: launchpadPercentText(device.memory), symbolName: "memorychip", progress: compact ? nil : device.memory, compact: compact)
-            CommandRailMetric(titleKey: "metric.storage", value: device.storageDisplayText, symbolName: "internaldrive", progress: compact ? nil : device.storageUsed, compact: compact)
+            CommandRailMetric(titleKey: "metric.storage", value: launchpadPercentText(device.storageUsed), symbolName: "internaldrive", progress: compact ? nil : device.storageUsed, compact: compact)
         }
         .frame(width: compact ? 52 : 60)
         .padding(.vertical, compact ? 10 : 12)
@@ -424,6 +468,7 @@ private struct CommandCollapsedGroupRow: View {
 private struct CommandServiceRailRow: View {
     let service: LaunchpadService
     let options: LaunchpadDisplayOptions
+    @EnvironmentObject private var dataStore: AppDataStore
 
     var body: some View {
         NavigationLink {
@@ -467,6 +512,13 @@ private struct CommandServiceRailRow: View {
         .overlay {
             RoundedRectangle(cornerRadius: 18, style: .continuous)
                 .stroke(AppTheme.hairline, lineWidth: 1)
+        }
+        .contextMenu {
+            Button(role: .destructive) {
+                dataStore.setService(service, visibleOnLaunchpad: false)
+            } label: {
+                Label("launchpad.service.hide", systemImage: "eye.slash")
+            }
         }
     }
 }
@@ -610,13 +662,13 @@ private struct GlassHeroPanel: View {
                 MetricPillRow(metrics: [
                     MetricPillSpec("metric.cpu", value: launchpadPercentText(device.cpu), symbolName: "cpu"),
                     MetricPillSpec("metric.memory", value: launchpadPercentText(device.memory), symbolName: "memorychip"),
-                    MetricPillSpec("metric.storage", value: device.storageDisplayText, symbolName: "internaldrive")
+                    MetricPillSpec("metric.storage", value: launchpadPercentText(device.storageUsed), symbolName: "internaldrive")
                 ])
             } else {
                 MetricPillRow(metrics: [
                     MetricPillSpec("metric.cpu", value: launchpadPercentText(device.cpu), progress: device.cpu, symbolName: "cpu"),
                     MetricPillSpec("metric.memory", value: launchpadPercentText(device.memory), progress: device.memory, symbolName: "memorychip"),
-                    MetricPillSpec("metric.storage", value: device.storageDisplayText, progress: device.storageUsed, symbolName: "internaldrive")
+                    MetricPillSpec("metric.storage", value: launchpadPercentText(device.storageUsed), progress: device.storageUsed, symbolName: "internaldrive")
                 ])
             }
         }
@@ -634,6 +686,7 @@ private struct GlassHeroPanel: View {
 private struct GlassServiceRow: View {
     let service: LaunchpadService
     let options: LaunchpadDisplayOptions
+    @EnvironmentObject private var dataStore: AppDataStore
 
     var body: some View {
         NavigationLink {
@@ -670,6 +723,13 @@ private struct GlassServiceRow: View {
             .contentShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
         }
         .buttonStyle(.plain)
+        .contextMenu {
+            Button(role: .destructive) {
+                dataStore.setService(service, visibleOnLaunchpad: false)
+            } label: {
+                Label("launchpad.service.hide", systemImage: "eye.slash")
+            }
+        }
     }
 }
 
@@ -816,6 +876,7 @@ private struct ServiceIconStack: View {
 private struct ServiceListRow: View {
     let service: LaunchpadService
     let options: LaunchpadDisplayOptions
+    @EnvironmentObject private var dataStore: AppDataStore
     @State private var actionMessageKey = "service.context.open_hint"
     @State private var showActionHint = false
 
@@ -846,7 +907,7 @@ private struct ServiceListRow: View {
 
                     HStack(spacing: 6) {
                         if options.showCPU, let cpu = service.cpu {
-                            InlineServiceMetric(titleKey: "metric.cpu", value: "\(Int(cpu * 100))%")
+                            InlineServiceMetric(titleKey: "metric.cpu", value: launchpadServicePercentText(cpu))
                         }
                         if options.showMemory, let memoryText = service.memoryText {
                             InlineServiceMetric(titleKey: "metric.memory", value: memoryText)
@@ -892,6 +953,11 @@ private struct ServiceListRow: View {
             }
             Button("action.edit") {
                 showAction("service.context.edit_hint")
+            }
+            Button(role: .destructive) {
+                dataStore.setService(service, visibleOnLaunchpad: false)
+            } label: {
+                Label("launchpad.service.hide", systemImage: "eye.slash")
             }
         }
         .alert(LocalizedStringKey(actionMessageKey), isPresented: $showActionHint) {
@@ -954,6 +1020,86 @@ private struct InlineServiceMetric: View {
         .padding(.vertical, 4)
         .background(.background)
         .clipShape(Capsule())
+    }
+}
+
+private struct LaunchpadServiceManagementView: View {
+    @EnvironmentObject private var dataStore: AppDataStore
+    @Environment(\.dismiss) private var dismiss
+    @State private var query = ""
+
+    var body: some View {
+        List {
+            serviceSection(
+                titleKey: "launchpad.services.visible",
+                services: filteredServices.filter(dataStore.isServiceVisibleOnLaunchpad)
+            )
+            serviceSection(
+                titleKey: "launchpad.services.hidden",
+                services: filteredServices.filter { !dataStore.isServiceVisibleOnLaunchpad($0) }
+            )
+
+            Section {
+                Button("launchpad.services.reset") {
+                    dataStore.resetLaunchpadServiceVisibility()
+                }
+            } footer: {
+                Text("launchpad.services.footer")
+            }
+        }
+        .navigationTitle("launchpad.services.manage")
+        .navigationBarTitleDisplayMode(.inline)
+        .searchable(text: $query, prompt: "launchpad.services.search")
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button("action.done") {
+                    dismiss()
+                }
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func serviceSection(titleKey: LocalizedStringKey, services: [LaunchpadService]) -> some View {
+        if !services.isEmpty {
+            Section {
+                ForEach(services) { service in
+                    Toggle(isOn: visibilityBinding(for: service)) {
+                        HStack(spacing: 12) {
+                            ServiceIconView(service: service, size: 36)
+                            VStack(alignment: .leading, spacing: 3) {
+                                Text(service.name)
+                                    .lineLimit(1)
+                                Text(LocalizedStringKey(service.sourceTitleKey))
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                    }
+                }
+            } header: {
+                Text(titleKey)
+            }
+        }
+    }
+
+    private var filteredServices: [LaunchpadService] {
+        dataStore.services
+            .filter {
+                query.isEmpty
+                    || $0.name.localizedCaseInsensitiveContains(query)
+                    || $0.detail.localizedCaseInsensitiveContains(query)
+            }
+            .sorted {
+                $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending
+            }
+    }
+
+    private func visibilityBinding(for service: LaunchpadService) -> Binding<Bool> {
+        Binding(
+            get: { dataStore.isServiceVisibleOnLaunchpad(service) },
+            set: { dataStore.setService(service, visibleOnLaunchpad: $0) }
+        )
     }
 }
 
@@ -1049,11 +1195,16 @@ private struct FlowPills: View {
 
 private struct ServiceDetailView: View {
     let service: LaunchpadService
-    @Environment(\.openURL) private var openURL
     @EnvironmentObject private var dataStore: AppDataStore
+    @EnvironmentObject private var connectionStore: NASConnectionStore
+    @Environment(\.dismiss) private var dismiss
     @State private var showExternalPicker = false
     @State private var externalMessageKey = "external.open_failed"
     @State private var showExternalHint = false
+    @State private var sharePayload: ServiceSharePayload?
+    @State private var endpointOverride: URL?
+    @State private var showEndpointEditor = false
+    @State private var showDeleteManualConfirmation = false
 
     var body: some View {
         List {
@@ -1074,8 +1225,8 @@ private struct ServiceDetailView: View {
                     }
 
                     MetricPillRow(metrics: [
-                        MetricPillSpec("metric.cpu", value: service.cpu.map { "\(Int($0 * 100))%" } ?? "-", progress: service.cpu),
-                        MetricPillSpec("metric.memory", value: service.memoryText ?? "-")
+                        MetricPillSpec("metric.cpu", value: launchpadServicePercentText(service.cpu), progress: service.cpu),
+                        MetricPillSpec("metric.memory", value: service.memoryText ?? "-", progress: service.memory)
                     ])
                 }
                 .padding(.vertical, 8)
@@ -1090,9 +1241,13 @@ private struct ServiceDetailView: View {
                     }
                 }
 
-                if let endpoint = service.suggestedEndpoint {
+                if let endpoint = effectiveEndpoint {
                     NavigationLink {
-                        ServiceWebUIView(service: service, endpoint: endpoint)
+                        ServiceWebUIView(
+                            service: service,
+                            endpoint: endpoint,
+                            allowsSelfSignedCertificates: connectionStore.dsmSession?.allowsSelfSignedCertificates == true
+                        )
                     } label: {
                         Label {
                             Text(LocalizedStringKey(service.isDeveloperConsole ? "service.action.open_console" : "service.action.open_web"))
@@ -1117,6 +1272,16 @@ private struct ServiceDetailView: View {
 
                 if service.isMedia {
                     NavigationLink {
+                        DirectMediaPlayerSetupView(
+                            suggestedURL: effectiveEndpoint.flatMap {
+                                DirectMediaURLPolicy.isLikelyMediaURL($0) ? $0 : nil
+                            }
+                        )
+                    } label: {
+                        Label("player.open_stream", systemImage: "play.rectangle")
+                    }
+
+                    NavigationLink {
                         MediaLibraryView(service: service)
                     } label: {
                         Label("service.action.media_library", systemImage: service.name == "Navidrome" ? "music.note.list" : "play.rectangle")
@@ -1127,18 +1292,73 @@ private struct ServiceDetailView: View {
             }
 
             Section {
-                LabeledContent("service.detail.endpoint", value: service.endpointText)
+                LabeledContent(
+                    "service.detail.endpoint",
+                    value: effectiveEndpoint?.absoluteString
+                        ?? NSLocalizedString("service.detail.endpoint_unavailable", comment: "")
+                )
                 LabeledContent("service.detail.source") {
-                    Text(LocalizedStringKey(service.sourceTitleKey))
+                    Text(LocalizedStringKey(endpointOverride == nil ? service.sourceTitleKey : "service.source.manual"))
                 }
                 LabeledContent("service.detail.status") {
                     Text(LocalizedStringKey(service.status.titleKey))
                 }
+                Button {
+                    showEndpointEditor = true
+                } label: {
+                    Label {
+                        Text(LocalizedStringKey(
+                            endpointOverride == nil
+                                ? "service.action.configure_endpoint"
+                                : "service.action.edit_endpoint"
+                        ))
+                    } icon: {
+                        Image(systemName: "link.badge.plus")
+                    }
+                }
             } header: {
                 Text("service.detail.connection")
             }
+
+            if service.source == .manual {
+                Section {
+                    Button(role: .destructive) {
+                        showDeleteManualConfirmation = true
+                    } label: {
+                        Label("manual.service.delete", systemImage: "trash")
+                    }
+                }
+            }
+
+            Section {
+                Button(role: .destructive) {
+                    dataStore.setService(service, visibleOnLaunchpad: false)
+                    dismiss()
+                } label: {
+                    Label("launchpad.service.hide", systemImage: "eye.slash")
+                }
+            }
         }
         .navigationTitle(service.name)
+        .onAppear {
+            endpointOverride = ServiceEndpointOverrides.load(
+                service: service,
+                deviceHost: connectionStore.dsmSession?.baseURL.host
+            )
+        }
+        .sheet(isPresented: $showEndpointEditor) {
+            ServiceEndpointEditor(
+                overrideURL: endpointOverride,
+                suggestedURL: service.suggestedEndpoint
+            ) { url in
+                endpointOverride = url
+                ServiceEndpointOverrides.save(
+                    url,
+                    service: service,
+                    deviceHost: connectionStore.dsmSession?.baseURL.host
+                )
+            }
+        }
         .confirmationDialog("service.external.title", isPresented: $showExternalPicker) {
             Button("external.browser") {
                 openExternal(.safari)
@@ -1155,27 +1375,174 @@ private struct ServiceDetailView: View {
                     openExternal(.vlc)
                 }
             }
+            Button("external.other_apps") {
+                presentShareSheet()
+            }
             Button("action.cancel", role: .cancel) {}
+        }
+        .sheet(item: $sharePayload) { payload in
+            SystemShareView(items: [payload.url])
         }
         .alert(LocalizedStringKey(externalMessageKey), isPresented: $showExternalHint) {
             Button("action.ok", role: .cancel) {}
         }
+        .confirmationDialog("manual.service.delete.confirm", isPresented: $showDeleteManualConfirmation) {
+            Button("manual.service.delete", role: .destructive) {
+                dataStore.deleteManualService(id: service.id)
+                dismiss()
+            }
+            Button("action.cancel", role: .cancel) {}
+        }
     }
 
     private func openExternal(_ target: ExternalOpenTarget) {
-        guard let url = target.url(for: service) else {
+        guard let url = target.url(endpoint: effectiveEndpoint) else {
             externalMessageKey = "external.unsupported_hint"
             showExternalHint = true
             return
         }
 
-        openURL(url) { accepted in
-            if !accepted {
-                externalMessageKey = target.failureMessageKey
-                showExternalHint = true
+        showExternalPicker = false
+        DispatchQueue.main.async {
+            UIApplication.shared.open(url, options: [:]) { accepted in
+                guard !accepted else { return }
+                DispatchQueue.main.async {
+                    externalMessageKey = target.failureMessageKey
+                    showExternalHint = true
+                }
             }
         }
     }
+
+    private func presentShareSheet() {
+        guard let endpoint = effectiveEndpoint else {
+            externalMessageKey = "external.unsupported_hint"
+            showExternalHint = true
+            return
+        }
+        showExternalPicker = false
+        DispatchQueue.main.async {
+            sharePayload = ServiceSharePayload(url: endpoint)
+        }
+    }
+
+    private var effectiveEndpoint: URL? {
+        endpointOverride ?? service.suggestedEndpoint
+    }
+}
+
+private enum ServiceEndpointOverrides {
+    static func load(service: LaunchpadService, deviceHost: String?) -> URL? {
+        guard
+            let value = UserDefaults.standard.string(forKey: key(service: service, deviceHost: deviceHost))
+        else {
+            return nil
+        }
+        return URL(string: value)
+    }
+
+    static func save(_ url: URL?, service: LaunchpadService, deviceHost: String?) {
+        let storageKey = key(service: service, deviceHost: deviceHost)
+        if let url {
+            UserDefaults.standard.set(url.absoluteString, forKey: storageKey)
+        } else {
+            UserDefaults.standard.removeObject(forKey: storageKey)
+        }
+    }
+
+    private static func key(service: LaunchpadService, deviceHost: String?) -> String {
+        let device = (deviceHost ?? "nas").lowercased()
+        let serviceName = service.name.lowercased()
+        return "nastart.service.endpoint.\(device).\(serviceName)"
+    }
+}
+
+private struct ServiceEndpointEditor: View {
+    let overrideURL: URL?
+    let suggestedURL: URL?
+    let onSave: (URL?) -> Void
+    @Environment(\.dismiss) private var dismiss
+    @State private var address = ""
+    @State private var showsValidationError = false
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section {
+                    TextField("service.endpoint.placeholder", text: $address)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                        .keyboardType(.URL)
+                } footer: {
+                    Text("service.endpoint.hint")
+                }
+
+                if overrideURL != nil {
+                    Section {
+                        Button("service.endpoint.restore_auto", role: .destructive) {
+                            onSave(nil)
+                            dismiss()
+                        }
+                    }
+                }
+            }
+            .navigationTitle("service.endpoint.title")
+            .navigationBarTitleDisplayMode(.inline)
+            .onAppear {
+                address = (overrideURL ?? suggestedURL)?.absoluteString ?? ""
+            }
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button("action.cancel") {
+                        dismiss()
+                    }
+                }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("action.save") {
+                        guard let url = normalizedURL else {
+                            showsValidationError = true
+                            return
+                        }
+                        onSave(url)
+                        dismiss()
+                    }
+                }
+            }
+            .alert("service.endpoint.invalid", isPresented: $showsValidationError) {
+                Button("action.ok", role: .cancel) {}
+            }
+        }
+    }
+
+    private var normalizedURL: URL? {
+        let trimmed = address.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return nil }
+        let value = trimmed.contains("://") ? trimmed : "http://\(trimmed)"
+        guard
+            let components = URLComponents(string: value),
+            let scheme = components.scheme?.lowercased(),
+            scheme == "http" || scheme == "https",
+            components.host?.isEmpty == false
+        else {
+            return nil
+        }
+        return components.url
+    }
+}
+
+private struct ServiceSharePayload: Identifiable {
+    let id = UUID()
+    let url: URL
+}
+
+private struct SystemShareView: UIViewControllerRepresentable {
+    let items: [Any]
+
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        UIActivityViewController(activityItems: items, applicationActivities: nil)
+    }
+
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }
 
 private enum ExternalOpenTarget {
@@ -1184,16 +1551,16 @@ private enum ExternalOpenTarget {
     case vidhub
     case vlc
 
-    func url(for service: LaunchpadService) -> URL? {
+    func url(endpoint: URL?) -> URL? {
         switch self {
         case .safari:
-            return service.suggestedEndpoint
+            return endpoint
         case .infuse:
-            return callbackURL(scheme: "infuse", action: "play", service: service)
+            return callbackURL(scheme: "infuse", action: "play", endpoint: endpoint)
         case .vidhub:
-            return callbackURL(scheme: "vidhub", action: "open", service: service)
+            return callbackURL(scheme: "open-vidhub", action: "open", endpoint: endpoint)
         case .vlc:
-            return callbackURL(scheme: "vlc-x-callback", action: "stream", service: service)
+            return callbackURL(scheme: "vlc-x-callback", action: "stream", endpoint: endpoint)
         }
     }
 
@@ -1206,8 +1573,8 @@ private enum ExternalOpenTarget {
         }
     }
 
-    private func callbackURL(scheme: String, action: String, service: LaunchpadService) -> URL? {
-        guard let endpoint = service.suggestedEndpoint else { return nil }
+    private func callbackURL(scheme: String, action: String, endpoint: URL?) -> URL? {
+        guard let endpoint else { return nil }
         var components = URLComponents()
         components.scheme = scheme
         components.host = "x-callback-url"
@@ -1222,10 +1589,27 @@ private enum ExternalOpenTarget {
 private struct ServiceWebUIView: View {
     let service: LaunchpadService
     let endpoint: URL
-    @Environment(\.openURL) private var openURL
+    let allowsSelfSignedCertificates: Bool
     @State private var selectedMode = ServiceWebMode.automatic
-    @State private var reloadToken = UUID()
+    @State private var browserCommand: WebBrowserCommand?
     @State private var showCopiedHint = false
+    @State private var isLoading = true
+    @State private var loadError: String?
+    @State private var currentURL: URL
+    @State private var estimatedProgress = 0.0
+    @State private var canGoBack = false
+    @State private var canGoForward = false
+    @State private var sharePayload: ServiceSharePayload?
+    @State private var showStreamSetup = false
+    @State private var playbackRequest: MediaPlaybackRequest?
+    @State private var downloadedFileURL: URL?
+
+    init(service: LaunchpadService, endpoint: URL, allowsSelfSignedCertificates: Bool) {
+        self.service = service
+        self.endpoint = endpoint
+        self.allowsSelfSignedCertificates = allowsSelfSignedCertificates
+        _currentURL = State(initialValue: endpoint)
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -1235,12 +1619,68 @@ private struct ServiceWebUIView: View {
                     .padding(.bottom, 10)
             }
 
-            WebContainerView(
-                url: endpoint,
-                prefersDesktopMode: resolvedMode.usesDesktopUserAgent,
-                reloadToken: reloadToken
-            )
+            ZStack {
+                WebContainerView(
+                    url: endpoint,
+                    prefersDesktopMode: resolvedMode.usesDesktopUserAgent,
+                    allowsSelfSignedCertificates: allowsSelfSignedCertificates,
+                    command: browserCommand,
+                    isLoading: $isLoading,
+                    loadError: $loadError,
+                    currentURL: $currentURL,
+                    estimatedProgress: $estimatedProgress,
+                    canGoBack: $canGoBack,
+                    canGoForward: $canGoForward,
+                    pendingMediaURL: Binding(
+                        get: { playbackRequest?.url },
+                        set: { url in
+                            guard let url else { return }
+                            playbackRequest = MediaPlaybackRequest(url: url, title: service.name)
+                        }
+                    ),
+                    downloadedFileURL: Binding(
+                        get: { downloadedFileURL },
+                        set: { url in
+                            downloadedFileURL = url
+                            if let url {
+                                sharePayload = ServiceSharePayload(url: url)
+                            }
+                        }
+                    )
+                )
                 .background(Color(.systemBackground))
+
+                if !isLoading, let loadError {
+                    VStack(spacing: 14) {
+                        Image(systemName: "exclamationmark.triangle")
+                            .font(.title2)
+                            .foregroundStyle(.secondary)
+                        Text("web.load_failed")
+                            .font(.headline)
+                        Text(loadError)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .multilineTextAlignment(.center)
+                            .lineLimit(4)
+                        Button {
+                            sendBrowserCommand(.reload)
+                        } label: {
+                            Label("web.retry", systemImage: "arrow.clockwise")
+                        }
+                        .buttonStyle(.borderedProminent)
+                    }
+                    .padding(22)
+                    .frame(maxWidth: 320)
+                    .background(Color(.secondarySystemBackground))
+                    .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                }
+            }
+
+            if isLoading {
+                ProgressView(value: max(estimatedProgress, 0.04))
+                    .progressViewStyle(.linear)
+                    .tint(AppTheme.accent)
+            }
         }
         .navigationTitle(service.name)
         .navigationBarTitleDisplayMode(.inline)
@@ -1259,25 +1699,93 @@ private struct ServiceWebUIView: View {
                 }
 
                 Button {
-                    reloadToken = UUID()
+                    sendBrowserCommand(isLoading ? .stop : .reload)
                 } label: {
-                    Image(systemName: "arrow.clockwise")
+                    Image(systemName: isLoading ? "xmark" : "arrow.clockwise")
                 }
-                Button {
-                    UIPasteboard.general.string = endpoint.absoluteString
-                    showCopiedHint = true
+
+                Menu {
+                    Button {
+                        UIPasteboard.general.string = currentURL.absoluteString
+                        showCopiedHint = true
+                    } label: {
+                        Label("web.copy_url", systemImage: "link")
+                    }
+                    Button {
+                        UIApplication.shared.open(currentURL)
+                    } label: {
+                        Label("web.open_safari", systemImage: "safari")
+                    }
+                    Button {
+                        sharePayload = ServiceSharePayload(url: currentURL)
+                    } label: {
+                        Label("web.share", systemImage: "square.and.arrow.up")
+                    }
+                    Button {
+                        showStreamSetup = true
+                    } label: {
+                        Label("player.open_stream", systemImage: "play.rectangle")
+                    }
                 } label: {
-                    Image(systemName: "link")
+                    Image(systemName: "ellipsis.circle")
                 }
+            }
+
+            ToolbarItemGroup(placement: .bottomBar) {
                 Button {
-                    openURL(endpoint)
+                    sendBrowserCommand(.back)
                 } label: {
-                    Image(systemName: "safari")
+                    Image(systemName: "chevron.backward")
+                }
+                .disabled(!canGoBack)
+
+                Button {
+                    sendBrowserCommand(.forward)
+                } label: {
+                    Image(systemName: "chevron.forward")
+                }
+                .disabled(!canGoForward)
+
+                Spacer()
+
+                Text(currentURL.host ?? service.name)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+
+                Spacer()
+
+                Button {
+                    sharePayload = ServiceSharePayload(url: currentURL)
+                } label: {
+                    Image(systemName: "square.and.arrow.up")
                 }
             }
         }
         .alert("web.copy.done", isPresented: $showCopiedHint) {
             Button("action.ok", role: .cancel) {}
+        }
+        .sheet(item: $sharePayload) { payload in
+            SystemShareView(items: [payload.url])
+        }
+        .sheet(isPresented: $showStreamSetup) {
+            NavigationStack {
+                DirectMediaPlayerSetupView(
+                    suggestedURL: DirectMediaURLPolicy.isLikelyMediaURL(currentURL) ? currentURL : nil
+                )
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Button("action.done") {
+                            showStreamSetup = false
+                        }
+                    }
+                }
+            }
+        }
+        .fullScreenCover(item: $playbackRequest) { request in
+            NavigationStack {
+                BuiltInMediaPlayerView(request: request)
+            }
         }
     }
 
@@ -1291,10 +1799,26 @@ private struct ServiceWebUIView: View {
             return ResolvedWebMode(usesDesktopUserAgent: true)
         }
     }
+
+    private func sendBrowserCommand(_ action: WebBrowserAction) {
+        browserCommand = WebBrowserCommand(action: action)
+    }
 }
 
 private struct ResolvedWebMode {
     let usesDesktopUserAgent: Bool
+}
+
+private enum WebBrowserAction {
+    case back
+    case forward
+    case reload
+    case stop
+}
+
+private struct WebBrowserCommand {
+    let id = UUID()
+    let action: WebBrowserAction
 }
 
 private struct DeveloperConsoleToolbar: View {
@@ -1351,7 +1875,16 @@ private struct ConsoleShortcutKey: View {
 private struct WebContainerView: UIViewRepresentable {
     let url: URL
     let prefersDesktopMode: Bool
-    let reloadToken: UUID
+    let allowsSelfSignedCertificates: Bool
+    let command: WebBrowserCommand?
+    @Binding var isLoading: Bool
+    @Binding var loadError: String?
+    @Binding var currentURL: URL
+    @Binding var estimatedProgress: Double
+    @Binding var canGoBack: Bool
+    @Binding var canGoForward: Bool
+    @Binding var pendingMediaURL: URL?
+    @Binding var downloadedFileURL: URL?
 
     private static let desktopUserAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15"
 
@@ -1361,6 +1894,7 @@ private struct WebContainerView: UIViewRepresentable {
         configuration.websiteDataStore = .default()
         configuration.preferences.javaScriptCanOpenWindowsAutomatically = true
         configuration.defaultWebpagePreferences.allowsContentJavaScript = true
+        configuration.mediaTypesRequiringUserActionForPlayback = []
 
         let webView = WKWebView(frame: .zero, configuration: configuration)
         webView.navigationDelegate = context.coordinator
@@ -1374,7 +1908,8 @@ private struct WebContainerView: UIViewRepresentable {
         webView.allowsBackForwardNavigationGestures = true
         webView.scrollView.keyboardDismissMode = .interactive
         webView.scrollView.contentInsetAdjustmentBehavior = .never
-        webView.load(URLRequest(url: url))
+        context.coordinator.attach(to: webView)
+        context.coordinator.load(url, in: webView)
         return webView
     }
 
@@ -1383,15 +1918,15 @@ private struct WebContainerView: UIViewRepresentable {
         let wantsDesktop = prefersDesktopMode ? Self.desktopUserAgent : nil
         if uiView.customUserAgent != wantsDesktop {
             uiView.customUserAgent = wantsDesktop
-            uiView.load(URLRequest(url: url))
-            context.coordinator.lastReloadToken = reloadToken
+            context.coordinator.load(url, in: uiView)
             return
         }
-        if uiView.url != url {
-            uiView.load(URLRequest(url: url))
-        } else if context.coordinator.lastReloadToken != reloadToken {
-            context.coordinator.lastReloadToken = reloadToken
-            uiView.reload()
+        if context.coordinator.lastRequestedURL != url {
+            context.coordinator.load(url, in: uiView)
+        }
+        if let command, context.coordinator.lastCommandID != command.id {
+            context.coordinator.lastCommandID = command.id
+            context.coordinator.perform(command.action, in: uiView)
         }
     }
 
@@ -1399,13 +1934,186 @@ private struct WebContainerView: UIViewRepresentable {
         Coordinator(parent: self)
     }
 
-    final class Coordinator: NSObject, WKNavigationDelegate, WKUIDelegate {
+    static func dismantleUIView(_ uiView: WKWebView, coordinator: Coordinator) {
+        uiView.stopLoading()
+        coordinator.invalidateObservations()
+        uiView.navigationDelegate = nil
+        uiView.uiDelegate = nil
+    }
+
+    final class Coordinator: NSObject, WKNavigationDelegate, WKUIDelegate, WKDownloadDelegate {
         var parent: WebContainerView
-        var lastReloadToken: UUID
+        var lastCommandID: UUID?
+        var lastRequestedURL: URL?
+        private var progressObservation: NSKeyValueObservation?
+        private var downloadDestinations: [ObjectIdentifier: URL] = [:]
 
         init(parent: WebContainerView) {
             self.parent = parent
-            self.lastReloadToken = parent.reloadToken
+        }
+
+        func attach(to webView: WKWebView) {
+            progressObservation = webView.observe(\.estimatedProgress, options: [.initial, .new]) { [weak self, weak webView] _, _ in
+                guard let self, let webView else { return }
+                self.syncState(from: webView)
+            }
+        }
+
+        func invalidateObservations() {
+            progressObservation?.invalidate()
+            progressObservation = nil
+        }
+
+        func load(_ url: URL, in webView: WKWebView) {
+            lastRequestedURL = url
+            setLoading(true, error: nil)
+            var request = URLRequest(url: url)
+            request.timeoutInterval = 30
+            webView.load(request)
+        }
+
+        func perform(_ action: WebBrowserAction, in webView: WKWebView) {
+            switch action {
+            case .back:
+                if webView.canGoBack { webView.goBack() }
+            case .forward:
+                if webView.canGoForward { webView.goForward() }
+            case .reload:
+                if webView.url == nil {
+                    load(parent.url, in: webView)
+                } else {
+                    setLoading(true, error: nil)
+                    webView.reload()
+                }
+            case .stop:
+                webView.stopLoading()
+                setLoading(false, error: nil)
+            }
+            syncState(from: webView)
+        }
+
+        func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+            setLoading(true, error: nil)
+            syncState(from: webView)
+        }
+
+        func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
+            syncState(from: webView)
+        }
+
+        func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+            setLoading(false, error: nil)
+            syncState(from: webView)
+        }
+
+        func webView(
+            _ webView: WKWebView,
+            didFail navigation: WKNavigation!,
+            withError error: Error
+        ) {
+            handleLoadError(error)
+        }
+
+        func webView(
+            _ webView: WKWebView,
+            didFailProvisionalNavigation navigation: WKNavigation!,
+            withError error: Error
+        ) {
+            handleLoadError(error)
+        }
+
+        func webView(
+            _ webView: WKWebView,
+            decidePolicyFor navigationAction: WKNavigationAction,
+            decisionHandler: @escaping (WKNavigationActionPolicy) -> Void
+        ) {
+            guard let targetURL = navigationAction.request.url else {
+                decisionHandler(.cancel)
+                return
+            }
+            let scheme = targetURL.scheme?.lowercased()
+            if scheme == "http" || scheme == "https" || scheme == "about" {
+                if navigationAction.navigationType == .linkActivated,
+                   DirectMediaURLPolicy.isLikelyMediaURL(targetURL) {
+                    decisionHandler(.cancel)
+                    DispatchQueue.main.async {
+                        self.parent.pendingMediaURL = targetURL
+                    }
+                    return
+                }
+                decisionHandler(navigationAction.shouldPerformDownload ? .download : .allow)
+            } else {
+                decisionHandler(.cancel)
+                DispatchQueue.main.async {
+                    UIApplication.shared.open(targetURL)
+                }
+            }
+        }
+
+        func webView(
+            _ webView: WKWebView,
+            decidePolicyFor navigationResponse: WKNavigationResponse,
+            decisionHandler: @escaping (WKNavigationResponsePolicy) -> Void
+        ) {
+            let contentDisposition = (navigationResponse.response as? HTTPURLResponse)?
+                .value(forHTTPHeaderField: "Content-Disposition")?
+                .lowercased()
+            let isAttachment = contentDisposition?.contains("attachment") == true
+            decisionHandler(isAttachment || !navigationResponse.canShowMIMEType ? .download : .allow)
+        }
+
+        func webView(
+            _ webView: WKWebView,
+            navigationAction: WKNavigationAction,
+            didBecome download: WKDownload
+        ) {
+            download.delegate = self
+        }
+
+        func webView(
+            _ webView: WKWebView,
+            navigationResponse: WKNavigationResponse,
+            didBecome download: WKDownload
+        ) {
+            download.delegate = self
+        }
+
+        func download(
+            _ download: WKDownload,
+            decideDestinationUsing response: URLResponse,
+            suggestedFilename: String,
+            completionHandler: @escaping (URL?) -> Void
+        ) {
+            let safeFilename = suggestedFilename.replacingOccurrences(of: "/", with: "-")
+            let directory = FileManager.default.temporaryDirectory
+                .appendingPathComponent("NastartDownloads", isDirectory: true)
+            try? FileManager.default.createDirectory(
+                at: directory,
+                withIntermediateDirectories: true
+            )
+            let destination = directory.appendingPathComponent(
+                "\(UUID().uuidString)-\(safeFilename.isEmpty ? "download" : safeFilename)"
+            )
+            downloadDestinations[ObjectIdentifier(download)] = destination
+            completionHandler(destination)
+        }
+
+        func downloadDidFinish(_ download: WKDownload) {
+            guard let destination = downloadDestinations.removeValue(forKey: ObjectIdentifier(download)) else {
+                return
+            }
+            DispatchQueue.main.async {
+                self.parent.downloadedFileURL = destination
+            }
+        }
+
+        func download(
+            _ download: WKDownload,
+            didFailWithError error: Error,
+            resumeData: Data?
+        ) {
+            downloadDestinations.removeValue(forKey: ObjectIdentifier(download))
+            setLoading(false, error: error.localizedDescription)
         }
 
         func webView(
@@ -1422,13 +2130,84 @@ private struct WebContainerView: UIViewRepresentable {
 
         func webView(
             _ webView: WKWebView,
+            runJavaScriptAlertPanelWithMessage message: String,
+            initiatedByFrame frame: WKFrameInfo,
+            completionHandler: @escaping () -> Void
+        ) {
+            let alert = UIAlertController(title: webView.title, message: message, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(
+                title: NSLocalizedString("action.ok", comment: ""),
+                style: .default
+            ) { _ in
+                completionHandler()
+            })
+            if !present(alert, from: webView) {
+                completionHandler()
+            }
+        }
+
+        func webView(
+            _ webView: WKWebView,
+            runJavaScriptConfirmPanelWithMessage message: String,
+            initiatedByFrame frame: WKFrameInfo,
+            completionHandler: @escaping (Bool) -> Void
+        ) {
+            let alert = UIAlertController(title: webView.title, message: message, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(
+                title: NSLocalizedString("action.cancel", comment: ""),
+                style: .cancel
+            ) { _ in
+                completionHandler(false)
+            })
+            alert.addAction(UIAlertAction(
+                title: NSLocalizedString("action.ok", comment: ""),
+                style: .default
+            ) { _ in
+                completionHandler(true)
+            })
+            if !present(alert, from: webView) {
+                completionHandler(false)
+            }
+        }
+
+        func webView(
+            _ webView: WKWebView,
+            runJavaScriptTextInputPanelWithPrompt prompt: String,
+            defaultText: String?,
+            initiatedByFrame frame: WKFrameInfo,
+            completionHandler: @escaping (String?) -> Void
+        ) {
+            let alert = UIAlertController(title: webView.title, message: prompt, preferredStyle: .alert)
+            alert.addTextField { textField in
+                textField.text = defaultText
+            }
+            alert.addAction(UIAlertAction(
+                title: NSLocalizedString("action.cancel", comment: ""),
+                style: .cancel
+            ) { _ in
+                completionHandler(nil)
+            })
+            alert.addAction(UIAlertAction(
+                title: NSLocalizedString("action.ok", comment: ""),
+                style: .default
+            ) { _ in
+                completionHandler(alert.textFields?.first?.text)
+            })
+            if !present(alert, from: webView) {
+                completionHandler(nil)
+            }
+        }
+
+        func webView(
+            _ webView: WKWebView,
             didReceive challenge: URLAuthenticationChallenge,
             completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
         ) {
             guard
                 challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust,
                 let trust = challenge.protectionSpace.serverTrust,
-                shouldTrustServer(host: challenge.protectionSpace.host)
+                parent.allowsSelfSignedCertificates,
+                challenge.protectionSpace.host.caseInsensitiveCompare(parent.url.host ?? "") == .orderedSame
             else {
                 completionHandler(.performDefaultHandling, nil)
                 return
@@ -1437,27 +2216,242 @@ private struct WebContainerView: UIViewRepresentable {
             completionHandler(.useCredential, URLCredential(trust: trust))
         }
 
-        private func shouldTrustServer(host: String) -> Bool {
-            let lowercasedHost = host.lowercased()
-            if lowercasedHost == "localhost" || lowercasedHost.hasSuffix(".local") {
-                return true
+        private func handleLoadError(_ error: Error) {
+            let nsError = error as NSError
+            if nsError.domain == NSURLErrorDomain && nsError.code == NSURLErrorCancelled {
+                return
             }
+            setLoading(false, error: error.localizedDescription)
+        }
 
-            let segments = lowercasedHost.split(separator: ".").compactMap { Int($0) }
-            guard segments.count == 4 else {
-                return false
+        private func syncState(from webView: WKWebView) {
+            DispatchQueue.main.async {
+                if let url = webView.url {
+                    self.parent.currentURL = url
+                }
+                self.parent.estimatedProgress = webView.estimatedProgress
+                self.parent.canGoBack = webView.canGoBack
+                self.parent.canGoForward = webView.canGoForward
             }
+        }
 
-            if segments[0] == 10 {
-                return true
+        private func present(_ controller: UIViewController, from webView: WKWebView) -> Bool {
+            guard var presenter = webView.window?.rootViewController else { return false }
+            while let presented = presenter.presentedViewController {
+                presenter = presented
             }
-            if segments[0] == 192 && segments[1] == 168 {
-                return true
+            presenter.present(controller, animated: true)
+            return true
+        }
+
+        private func setLoading(_ loading: Bool, error: String?) {
+            DispatchQueue.main.async {
+                self.parent.isLoading = loading
+                self.parent.loadError = error
             }
-            if segments[0] == 172 && (16...31).contains(segments[1]) {
-                return true
-            }
+        }
+    }
+}
+
+private enum DirectMediaURLPolicy {
+    private static let supportedExtensions = [
+        "m3u8", "mp4", "m4v", "mov",
+        "mp3", "m4a", "aac", "wav", "flac"
+    ]
+
+    static func canAttemptPlayback(_ url: URL) -> Bool {
+        guard let scheme = url.scheme?.lowercased(), scheme == "http" || scheme == "https" else {
             return false
+        }
+        return url.host?.isEmpty == false
+    }
+
+    static func isLikelyMediaURL(_ url: URL) -> Bool {
+        guard canAttemptPlayback(url) else { return false }
+        let normalizedURL = url.absoluteString.lowercased()
+        return supportedExtensions.contains(url.pathExtension.lowercased())
+            || supportedExtensions.contains { normalizedURL.contains(".\($0)?") }
+    }
+}
+
+private struct MediaPlaybackRequest: Identifiable {
+    let id = UUID()
+    let url: URL
+    let title: String
+}
+
+private struct DirectMediaPlayerSetupView: View {
+    @State private var address: String
+    @State private var playbackRequest: MediaPlaybackRequest?
+    @State private var showValidationError = false
+
+    init(suggestedURL: URL?) {
+        _address = State(initialValue: suggestedURL?.absoluteString ?? "")
+    }
+
+    var body: some View {
+        Form {
+            Section {
+                Text("player.direct.intro")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+
+            Section {
+                TextField("player.url.placeholder", text: $address)
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled()
+                    .keyboardType(.URL)
+
+                Button {
+                    guard let url = normalizedURL else {
+                        showValidationError = true
+                        return
+                    }
+                    playbackRequest = MediaPlaybackRequest(url: url, title: url.lastPathComponent)
+                } label: {
+                    Label("player.play_in_app", systemImage: "play.fill")
+                }
+            } footer: {
+                Text("player.direct.footer")
+            }
+        }
+        .navigationTitle("player.open_stream")
+        .navigationBarTitleDisplayMode(.inline)
+        .alert("player.url.invalid", isPresented: $showValidationError) {
+            Button("action.ok", role: .cancel) {}
+        }
+        .fullScreenCover(item: $playbackRequest) { request in
+            NavigationStack {
+                BuiltInMediaPlayerView(request: request)
+            }
+        }
+    }
+
+    private var normalizedURL: URL? {
+        let trimmed = address.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard
+            let url = URL(string: trimmed),
+            let scheme = url.scheme?.lowercased(),
+            scheme == "http" || scheme == "https",
+            url.host?.isEmpty == false,
+            DirectMediaURLPolicy.canAttemptPlayback(url)
+        else {
+            return nil
+        }
+        return url
+    }
+}
+
+private final class MediaPlayerSession: ObservableObject {
+    let player: AVPlayer
+    @Published private(set) var errorMessage: String?
+    private var statusObservation: NSKeyValueObservation?
+
+    init(url: URL) {
+        let item = AVPlayerItem(url: url)
+        player = AVPlayer(playerItem: item)
+        statusObservation = item.observe(\.status, options: [.initial, .new]) { [weak self] item, _ in
+            DispatchQueue.main.async {
+                self?.errorMessage = item.status == .failed
+                    ? item.error?.localizedDescription ?? NSLocalizedString("player.load_failed", comment: "")
+                    : nil
+            }
+        }
+    }
+
+    func play() {
+        try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .moviePlayback)
+        try? AVAudioSession.sharedInstance().setActive(true)
+        player.play()
+    }
+
+    func pause() {
+        player.pause()
+    }
+
+    deinit {
+        statusObservation?.invalidate()
+        player.pause()
+    }
+}
+
+private struct BuiltInMediaPlayerView: View {
+    let request: MediaPlaybackRequest
+    @Environment(\.dismiss) private var dismiss
+    @StateObject private var session: MediaPlayerSession
+
+    init(request: MediaPlaybackRequest) {
+        self.request = request
+        _session = StateObject(wrappedValue: MediaPlayerSession(url: request.url))
+    }
+
+    var body: some View {
+        ZStack {
+            Color.black.ignoresSafeArea()
+            SystemPlayerController(player: session.player)
+                .ignoresSafeArea(edges: .bottom)
+
+            if let errorMessage = session.errorMessage {
+                VStack(spacing: 12) {
+                    Image(systemName: "exclamationmark.triangle")
+                        .font(.title2)
+                    Text("player.load_failed")
+                        .font(.headline)
+                    Text(errorMessage)
+                        .font(.caption)
+                        .multilineTextAlignment(.center)
+                        .lineLimit(4)
+                }
+                .foregroundStyle(.white)
+                .padding(22)
+            }
+        }
+        .navigationTitle(request.title.isEmpty ? "player.title" : request.title)
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbarColorScheme(.dark, for: .navigationBar)
+        .toolbarBackground(Color.black, for: .navigationBar)
+        .toolbarBackground(.visible, for: .navigationBar)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button("action.done") {
+                    dismiss()
+                }
+            }
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button {
+                    UIApplication.shared.open(request.url)
+                } label: {
+                    Image(systemName: "safari")
+                }
+            }
+        }
+        .onAppear {
+            session.play()
+        }
+        .onDisappear {
+            session.pause()
+        }
+    }
+}
+
+private struct SystemPlayerController: UIViewControllerRepresentable {
+    let player: AVPlayer
+
+    func makeUIViewController(context: Context) -> AVPlayerViewController {
+        let controller = AVPlayerViewController()
+        controller.player = player
+        controller.showsPlaybackControls = true
+        controller.allowsPictureInPicturePlayback = true
+        controller.canStartPictureInPictureAutomaticallyFromInline = true
+        controller.videoGravity = .resizeAspect
+        return controller
+    }
+
+    func updateUIViewController(_ controller: AVPlayerViewController, context: Context) {
+        if controller.player !== player {
+            controller.player = player
         }
     }
 }
@@ -1621,8 +2615,15 @@ private struct MediaItemDetailView: View {
             }
 
             Section {
-                Button("media.item.play") {
+                NavigationLink {
+                    DirectMediaPlayerSetupView(suggestedURL: suggestedStreamURL)
+                } label: {
+                    Label("player.play_in_app", systemImage: "play.fill")
+                }
+                Button {
                     showPlayerPicker = true
+                } label: {
+                    Label("service.action.open_external", systemImage: "arrow.up.forward.app")
                 }
                 Button("media.item.favorite") {
                     show("media.item.favorite_hint")
@@ -1653,10 +2654,18 @@ private struct MediaItemDetailView: View {
         messageKey = key
         showHint = true
     }
+
+    private var suggestedStreamURL: URL? {
+        guard let url = URL(string: item.path), DirectMediaURLPolicy.canAttemptPlayback(url) else {
+            return nil
+        }
+        return url
+    }
 }
 
 private struct NASConnectionWelcomeView: View {
-    let addAction: () -> Void
+    let addNASAction: () -> Void
+    let addManualServiceAction: () -> Void
 
     var body: some View {
         ScrollView {
@@ -1677,10 +2686,15 @@ private struct NASConnectionWelcomeView: View {
                         .fixedSize(horizontal: false, vertical: true)
                 }
 
-                Button(action: addAction) {
+                Button(action: addNASAction) {
                     Label("connect.welcome.action", systemImage: "plus")
                 }
                 .buttonStyle(NastartPrimaryButtonStyle())
+
+                Button(action: addManualServiceAction) {
+                    Label("manual.service.add", systemImage: "link.badge.plus")
+                }
+                .buttonStyle(.bordered)
 
                 Label("connect.welcome.security", systemImage: "lock.shield")
                     .font(.footnote)
@@ -1691,6 +2705,94 @@ private struct NASConnectionWelcomeView: View {
             .padding(.top, 34)
         }
         .background(AppTheme.groupedBackground)
+    }
+}
+
+private struct ManualServiceEditorView: View {
+    @EnvironmentObject private var dataStore: AppDataStore
+    @Environment(\.dismiss) private var dismiss
+    @State private var name = ""
+    @State private var address = ""
+    @State private var category: ServiceCategory = .tools
+    @State private var iconText = ""
+    @State private var showsValidationError = false
+
+    var body: some View {
+        Form {
+            Section {
+                Text("manual.service.intro")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+
+            Section {
+                TextField("manual.service.name.placeholder", text: $name)
+                    .textInputAutocapitalization(.words)
+                    .autocorrectionDisabled()
+                TextField("manual.service.url.placeholder", text: $address)
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled()
+                    .keyboardType(.URL)
+                Picker("manual.service.category", selection: $category) {
+                    ForEach(ServiceCategory.defaultOrder.filter { $0 != .favorites }) { category in
+                        Label(LocalizedStringKey(category.titleKey), systemImage: category.symbolName)
+                            .tag(category)
+                    }
+                }
+                TextField("manual.service.icon.placeholder", text: $iconText)
+                    .textInputAutocapitalization(.characters)
+                    .autocorrectionDisabled()
+            } footer: {
+                Text("manual.service.footer")
+            }
+        }
+        .navigationTitle("manual.service.add")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button("action.cancel") {
+                    dismiss()
+                }
+            }
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button("action.save") {
+                    guard let endpoint = normalizedURL, !normalizedName.isEmpty else {
+                        showsValidationError = true
+                        return
+                    }
+                    dataStore.addManualService(
+                        name: normalizedName,
+                        endpoint: endpoint,
+                        category: category,
+                        iconText: iconText
+                    )
+                    dismiss()
+                }
+            }
+        }
+        .alert("manual.service.invalid", isPresented: $showsValidationError) {
+            Button("action.ok", role: .cancel) {}
+        }
+    }
+
+    private var normalizedName: String {
+        name.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    private var normalizedURL: URL? {
+        let trimmed = address.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return nil }
+        let value = trimmed.contains("://") ? trimmed : "http://\(trimmed)"
+        guard
+            let components = URLComponents(string: value),
+            let scheme = components.scheme?.lowercased(),
+            scheme == "http" || scheme == "https",
+            components.host?.isEmpty == false
+        else {
+            return nil
+        }
+        return components.url
     }
 }
 
@@ -2008,7 +3110,7 @@ private extension View {
     }
 }
 
-private struct AgentSetupGuideView: View {
+struct AgentSetupGuideView: View {
     @State private var showCopyHint = false
     private let command = "docker run -d --name nastart-agent -p 8787:8787 nastart/agent:latest"
 
@@ -2053,7 +3155,7 @@ private struct AgentSetupGuideView: View {
     }
 }
 
-private struct AgentStepRow: View {
+struct AgentStepRow: View {
     let number: Int
     let titleKey: LocalizedStringKey
     let detailKey: LocalizedStringKey
@@ -2133,13 +3235,13 @@ private struct DeviceSummaryPanel: View {
                 MetricPillRow(metrics: [
                     MetricPillSpec("metric.cpu", value: launchpadPercentText(device.cpu), symbolName: "cpu"),
                     MetricPillSpec("metric.memory", value: launchpadPercentText(device.memory), symbolName: "memorychip"),
-                    MetricPillSpec("metric.storage", value: device.storageDisplayText, symbolName: "internaldrive")
+                    MetricPillSpec("metric.storage", value: launchpadPercentText(device.storageUsed), symbolName: "internaldrive")
                 ])
             } else {
                 MetricPillRow(metrics: [
                     MetricPillSpec("metric.cpu", value: launchpadPercentText(device.cpu), progress: device.cpu, symbolName: "cpu"),
                     MetricPillSpec("metric.memory", value: launchpadPercentText(device.memory), progress: device.memory, symbolName: "memorychip"),
-                    MetricPillSpec("metric.storage", value: device.storageDisplayText, progress: device.storageUsed, symbolName: "internaldrive")
+                    MetricPillSpec("metric.storage", value: launchpadPercentText(device.storageUsed), progress: device.storageUsed, symbolName: "internaldrive")
                 ])
             }
         }
@@ -2151,4 +3253,13 @@ private struct DeviceSummaryPanel: View {
 private func launchpadPercentText(_ value: Double?) -> String {
     guard let value else { return "-" }
     return "\(Int((value * 100).rounded()))%"
+}
+
+private func launchpadServicePercentText(_ value: Double?) -> String {
+    guard let value else { return "-" }
+    let percentage = value * 100
+    if percentage > 0, percentage < 10 {
+        return String(format: "%.1f%%", percentage)
+    }
+    return "\(Int(percentage.rounded()))%"
 }

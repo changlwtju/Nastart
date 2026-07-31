@@ -9,7 +9,7 @@ enum ConnectionMode: String, CaseIterable, Identifiable {
     var id: String { rawValue }
 }
 
-enum ServiceCategory: String, CaseIterable, Identifiable {
+enum ServiceCategory: String, CaseIterable, Identifiable, Hashable {
     case favorites
     case media
     case downloads
@@ -152,6 +152,7 @@ struct LaunchpadService: Identifiable {
     let isMedia: Bool
     let cpu: Double?
     let memoryText: String?
+    let memory: Double?
     let ports: [String]
     let iconURL: URL?
     let endpoint: URL?
@@ -169,6 +170,7 @@ struct LaunchpadService: Identifiable {
         isMedia: Bool,
         cpu: Double?,
         memoryText: String?,
+        memory: Double? = nil,
         ports: [String] = [],
         iconURL: URL? = nil,
         endpoint: URL? = nil,
@@ -185,11 +187,28 @@ struct LaunchpadService: Identifiable {
         self.isMedia = isMedia
         self.cpu = cpu
         self.memoryText = memoryText
+        self.memory = memory
         self.ports = ports
         self.iconURL = iconURL
         self.endpoint = endpoint
         self.source = source
         self.isLaunchpadVisible = isLaunchpadVisible
+    }
+
+    var launchpadVisibilityKey: String {
+        let normalizedName = name.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        let normalizedDetail = detail.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+
+        switch source {
+        case .dsm:
+            return "dsm"
+        case .container, .reverseProxy:
+            return "container|\(normalizedName)|\(normalizedDetail)"
+        case .package:
+            return "package|\(normalizedDetail)"
+        case .manual:
+            return "manual|\(id.uuidString.lowercased())"
+        }
     }
 }
 
@@ -272,6 +291,8 @@ struct DockerContainer: Identifiable {
     let status: ServiceStatus
     let cpu: Double?
     let memoryText: String
+    let memoryBytes: Double?
+    let memoryPercent: Double?
     let ports: [String]
 }
 

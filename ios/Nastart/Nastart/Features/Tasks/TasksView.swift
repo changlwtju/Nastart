@@ -1,8 +1,8 @@
 import SwiftUI
 
 enum TaskSegment: String, CaseIterable, Identifiable {
-    case pending
     case watching
+    case pending
     case history
 
     var id: String { rawValue }
@@ -18,7 +18,7 @@ enum TaskSegment: String, CaseIterable, Identifiable {
 
 struct TasksView: View {
     @EnvironmentObject private var dataStore: AppDataStore
-    @State private var segment: TaskSegment = .pending
+    @State private var segment: TaskSegment = .watching
 
     var body: some View {
         NavigationStack {

@@ -23,6 +23,7 @@ dist/
 
 # Logs
 *.log
+/文本*.txt
 
 # Local secrets
 .env

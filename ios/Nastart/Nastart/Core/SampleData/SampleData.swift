@@ -39,9 +39,9 @@ enum SampleData {
     ]
 
     static let containers: [DockerContainer] = [
-        DockerContainer(id: UUID(uuidString: "39DA8F61-DB3B-45E4-BAB6-9EEAF1F02AD5")!, name: "jellyfin", image: "jellyfin/jellyfin:latest", status: .online, cpu: 0.08, memoryText: "504 MB", ports: ["8096 -> 8096", "8920 -> 8920"]),
-        DockerContainer(id: UUID(uuidString: "72B93F41-D66F-4048-967A-3F7087D05122")!, name: "navidrome", image: "deluan/navidrome:latest", status: .offline, cpu: 0.0, memoryText: "0 MB", ports: ["4533 -> 4533"]),
-        DockerContainer(id: UUID(uuidString: "07DF8AC3-4F74-4FB0-AF54-67572A5191B9")!, name: "qbittorrent", image: "linuxserver/qbittorrent", status: .online, cpu: 0.03, memoryText: "138 MB", ports: ["8080 -> 8080", "6881 -> 6881"])
+        DockerContainer(id: UUID(uuidString: "39DA8F61-DB3B-45E4-BAB6-9EEAF1F02AD5")!, name: "jellyfin", image: "jellyfin/jellyfin:latest", status: .online, cpu: 0.08, memoryText: "504 MB", memoryBytes: 528_482_304, memoryPercent: 0.064, ports: ["8096 -> 8096", "8920 -> 8920"]),
+        DockerContainer(id: UUID(uuidString: "72B93F41-D66F-4048-967A-3F7087D05122")!, name: "navidrome", image: "deluan/navidrome:latest", status: .offline, cpu: 0.0, memoryText: "0 MB", memoryBytes: 0, memoryPercent: 0, ports: ["4533 -> 4533"]),
+        DockerContainer(id: UUID(uuidString: "07DF8AC3-4F74-4FB0-AF54-67572A5191B9")!, name: "qbittorrent", image: "linuxserver/qbittorrent", status: .online, cpu: 0.03, memoryText: "138 MB", memoryBytes: 144_703_488, memoryPercent: 0.017, ports: ["8080 -> 8080", "6881 -> 6881"])
     ]
 
     static let files: [FileItem] = [

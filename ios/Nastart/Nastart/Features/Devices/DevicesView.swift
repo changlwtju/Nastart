@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 struct DevicesView: View {
     @EnvironmentObject private var dataStore: AppDataStore
@@ -37,8 +38,8 @@ struct DevicesView: View {
 
                         MetricPillRow(metrics: [
                             MetricPillSpec("metric.cpu", value: devicePercentText(dataStore.device.cpu), progress: dataStore.device.cpu),
-                            MetricPillSpec("metric.memory", value: dataStore.device.memoryDisplayText, progress: dataStore.device.memory),
-                            MetricPillSpec("metric.storage", value: dataStore.device.storageDisplayText, progress: dataStore.device.storageUsed)
+                            MetricPillSpec("metric.memory", value: devicePercentText(dataStore.device.memory), progress: dataStore.device.memory),
+                            MetricPillSpec("metric.storage", value: devicePercentText(dataStore.device.storageUsed), progress: dataStore.device.storageUsed)
                         ])
                     }
                     .padding(.vertical, 4)
@@ -47,6 +48,15 @@ struct DevicesView: View {
                         DeviceStatusView(device: dataStore.device)
                     } label: {
                         Label("devices.resource.overview", systemImage: "chart.line.uptrend.xyaxis")
+                    }
+                    NavigationLink {
+                        ServiceResourcesView()
+                    } label: {
+                        resourceLabel(
+                            "devices.resource.services",
+                            systemImage: "chart.bar.xaxis",
+                            count: runningContainers.count
+                        )
                     }
                     NavigationLink {
                         DockerContainersView(containers: dataStore.containers)
@@ -72,7 +82,10 @@ struct DevicesView: View {
                         Label("devices.resource.files", systemImage: "folder")
                     }
                     NavigationLink {
-                        NetworkDetailView(services: dataStore.services)
+                        NetworkDetailView(
+                            services: dataStore.services,
+                            baseURL: connectionStore.dsmSession?.baseURL
+                        )
                     } label: {
                         Label("devices.resource.network", systemImage: "network")
                     }
@@ -119,6 +132,10 @@ struct DevicesView: View {
         dataStore.services.filter { $0.source == .package }
     }
 
+    private var runningContainers: [DockerContainer] {
+        dataStore.containers.filter { $0.status == .online }
+    }
+
     private func resourceLabel(_ key: String, systemImage: String, count: Int) -> some View {
         HStack {
             Label(LocalizedStringKey(key), systemImage: systemImage)
@@ -136,19 +153,6 @@ struct DeviceStatusView: View {
     var body: some View {
         List {
             Section {
-                VStack(alignment: .leading, spacing: 14) {
-                    Text("devices.status.title")
-                        .font(.title2.weight(.bold))
-                    MetricPillRow(metrics: [
-                        MetricPillSpec("metric.cpu", value: devicePercentText(device.cpu), progress: device.cpu),
-                        MetricPillSpec("metric.memory", value: device.memoryDisplayText, progress: device.memory),
-                        MetricPillSpec("metric.storage", value: device.storageDisplayText, progress: device.storageUsed)
-                    ])
-                }
-                .padding(.vertical, 4)
-            }
-
-            Section {
                 LabeledContent("devices.detail.name", value: device.name)
                 if let model = device.model {
                     LabeledContent("devices.detail.model", value: model)
@@ -158,13 +162,19 @@ struct DeviceStatusView: View {
                 }
                 LabeledContent("metric.uptime", value: device.uptimeText)
                 LabeledContent("devices.detail.mode", value: deviceConnectionText(device.mode))
-                LabeledContent("metric.memory", value: device.memoryDisplayText)
-                LabeledContent("metric.storage", value: device.storageDisplayText)
                 LabeledContent("devices.detail.certificate", value: certificateDaysText(device.certificateDaysRemaining))
                 LabeledContent("devices.status.temperature", value: device.temperatureText ?? "-")
                 LabeledContent("devices.security.ssh", value: sshStatusText(device.sshStatus))
             } header: {
                 Text("devices.detail.status")
+            }
+
+            Section {
+                LabeledContent("metric.memory", value: device.memoryDisplayText)
+                LabeledContent("metric.storage", value: device.storageDisplayText)
+                LabeledContent("devices.status.storage_free", value: device.storageFreeText)
+            } header: {
+                Text("devices.status.capacity")
             }
 
             Section {
@@ -193,6 +203,15 @@ struct DeviceStatusView: View {
 private func devicePercentText(_ value: Double?) -> String {
     guard let value else { return "-" }
     return "\(Int((value * 100).rounded()))%"
+}
+
+private func containerPercentText(_ value: Double?) -> String {
+    guard let value else { return "-" }
+    let percentage = value * 100
+    if percentage > 0, percentage < 10 {
+        return String(format: "%.1f%%", percentage)
+    }
+    return "\(Int(percentage.rounded()))%"
 }
 
 private func certificateDaysText(_ days: Int?) -> String {
@@ -260,6 +279,164 @@ private struct DockerContainersView: View {
         }
         .listStyle(.insetGrouped)
         .navigationTitle("devices.resource.containers")
+    }
+}
+
+private enum ServiceResourceSort: String, CaseIterable, Identifiable {
+    case cpu
+    case memory
+
+    var id: String { rawValue }
+
+    var titleKey: LocalizedStringKey {
+        switch self {
+        case .cpu: return "metric.cpu"
+        case .memory: return "metric.memory"
+        }
+    }
+}
+
+private struct ServiceResourcesView: View {
+    @EnvironmentObject private var dataStore: AppDataStore
+    @EnvironmentObject private var connectionStore: NASConnectionStore
+    @State private var sort: ServiceResourceSort = .cpu
+
+    var body: some View {
+        List {
+            Section {
+                MetricPillRow(metrics: [
+                    MetricPillSpec(
+                        "metric.cpu",
+                        value: devicePercentText(dataStore.device.cpu),
+                        progress: dataStore.device.cpu
+                    ),
+                    MetricPillSpec(
+                        "metric.memory",
+                        value: devicePercentText(dataStore.device.memory),
+                        progress: dataStore.device.memory
+                    )
+                ])
+
+                LabeledContent(
+                    "devices.resources.running",
+                    value: "\(runningContainers.count)"
+                )
+            } header: {
+                Text("devices.resources.system")
+            }
+
+            Section {
+                Picker("devices.resources.sort", selection: $sort) {
+                    ForEach(ServiceResourceSort.allCases) { option in
+                        Text(option.titleKey).tag(option)
+                    }
+                }
+                .pickerStyle(.segmented)
+            }
+
+            Section {
+                if sortedContainers.isEmpty {
+                    VStack(spacing: 10) {
+                        Image(systemName: "chart.bar.xaxis")
+                            .font(.title2)
+                            .foregroundStyle(.secondary)
+                        Text("devices.resources.empty")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 24)
+                } else {
+                    ForEach(sortedContainers) { container in
+                        ServiceResourceRow(container: container)
+                    }
+                }
+            } header: {
+                Text("devices.resources.services")
+            } footer: {
+                Text("devices.resources.footer")
+            }
+        }
+        .listStyle(.insetGrouped)
+        .navigationTitle("devices.resource.services")
+        .navigationBarTitleDisplayMode(.inline)
+        .refreshable {
+            guard let session = connectionStore.dsmSession else { return }
+            await dataStore.refreshDSM(
+                session: session,
+                useAgent: connectionStore.usesAgent
+            )
+        }
+    }
+
+    private var runningContainers: [DockerContainer] {
+        dataStore.containers.filter { $0.status == .online }
+    }
+
+    private var sortedContainers: [DockerContainer] {
+        runningContainers.sorted { lhs, rhs in
+            switch sort {
+            case .cpu:
+                if lhs.cpu != rhs.cpu {
+                    return (lhs.cpu ?? -1) > (rhs.cpu ?? -1)
+                }
+            case .memory:
+                if lhs.memoryBytes != rhs.memoryBytes {
+                    return (lhs.memoryBytes ?? -1) > (rhs.memoryBytes ?? -1)
+                }
+            }
+            return lhs.name.localizedCaseInsensitiveCompare(rhs.name) == .orderedAscending
+        }
+    }
+}
+
+private struct ServiceResourceRow: View {
+    let container: DockerContainer
+
+    var body: some View {
+        HStack(spacing: 12) {
+            Image(systemName: "shippingbox")
+                .font(.headline)
+                .frame(width: 36, height: 36)
+                .background(AppTheme.secondarySurface)
+                .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+
+            VStack(alignment: .leading, spacing: 4) {
+                HStack(spacing: 7) {
+                    Text(container.name)
+                        .font(.body.weight(.medium))
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.82)
+                    StatusDot(status: container.status)
+                }
+                Text(container.image)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.82)
+            }
+            .layoutPriority(1)
+
+            Spacer(minLength: 8)
+
+            VStack(alignment: .trailing, spacing: 4) {
+                Text(containerPercentText(container.cpu))
+                    .font(.subheadline.monospacedDigit().weight(.semibold))
+                Text(memorySummary)
+                    .font(.caption.monospacedDigit())
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.78)
+            }
+        }
+        .padding(.vertical, 3)
+    }
+
+    private var memorySummary: String {
+        guard let memoryPercent = container.memoryPercent else {
+            return container.memoryText
+        }
+        return "\(container.memoryText) · \(containerPercentText(memoryPercent))"
     }
 }
 
@@ -346,8 +523,14 @@ private struct DockerContainerDetailView: View {
             }
 
             Section {
-                LabeledContent("metric.cpu", value: devicePercentText(container.cpu))
+                LabeledContent("metric.cpu", value: containerPercentText(container.cpu))
                 LabeledContent("metric.memory", value: container.memoryText)
+                if let memoryPercent = container.memoryPercent {
+                    LabeledContent(
+                        "devices.container.memory_percent",
+                        value: containerPercentText(memoryPercent)
+                    )
+                }
             } header: {
                 Text("devices.container.metrics")
             }
@@ -565,51 +748,89 @@ private struct FilePreviewView: View {
 
 private struct NetworkDetailView: View {
     let services: [LaunchpadService]
+    let baseURL: URL?
 
     var body: some View {
         List {
             Section {
-                ForEach(services) { service in
-                    HStack {
-                        Text(service.name)
-                        Spacer()
-                        StatusDot(status: service.status)
-                    }
+                LabeledContent("devices.network.address", value: baseURL?.absoluteString ?? "-")
+                LabeledContent("devices.network.protocol", value: baseURL?.scheme?.uppercased() ?? "-")
+                LabeledContent("devices.network.scope") {
+                    Text(LocalizedStringKey(networkScopeKey))
                 }
             } header: {
-                Text("devices.network.reachability")
+                Text("devices.network.connection")
             }
 
             Section {
-                if portRows.isEmpty {
-                    Text("devices.network.ports.empty")
+                LabeledContent("devices.network.online_count", value: "\(reachableEntries.count)")
+                LabeledContent("devices.network.proxy_count", value: "\(reverseProxyCount)")
+            } header: {
+                Text("devices.network.summary")
+            }
+
+            Section {
+                if reachableEntries.isEmpty {
+                    Text("devices.network.entries.empty")
                         .foregroundStyle(.secondary)
                 } else {
-                    ForEach(portRows, id: \.self) { row in
-                        LabeledContent(row.service, value: row.port)
+                    ForEach(reachableEntries) { service in
+                        LabeledContent(service.name, value: endpointSummary(service.suggestedEndpoint))
                     }
                 }
             } header: {
-                Text("devices.network.ports")
+                Text("devices.network.available_entries")
             }
         }
         .listStyle(.insetGrouped)
         .navigationTitle("devices.resource.network")
     }
 
-    private var portRows: [ServicePortRow] {
-        services.flatMap { service in
-            let ports = service.ports.isEmpty
-                ? service.endpoint?.port.map { ["\($0)"] } ?? []
-                : service.ports
-            return ports.map { ServicePortRow(service: service.name, port: $0) }
+    private var reachableEntries: [LaunchpadService] {
+        var seen = Set<String>()
+        return services.filter { service in
+            guard
+                service.status == .online,
+                let endpoint = service.suggestedEndpoint,
+                service.source == .dsm || service.source == .reverseProxy
+            else {
+                return false
+            }
+            return seen.insert(endpoint.absoluteString.lowercased()).inserted
         }
     }
-}
 
-private struct ServicePortRow: Hashable {
-    let service: String
-    let port: String
+    private var reverseProxyCount: Int {
+        reachableEntries.filter { $0.source == .reverseProxy }.count
+    }
+
+    private var networkScopeKey: String {
+        guard let host = baseURL?.host?.lowercased() else {
+            return "status.unknown"
+        }
+        if host == "localhost" || host.hasSuffix(".local") || isPrivateIPv4(host) {
+            return "devices.network.scope.lan"
+        }
+        return "devices.network.scope.remote"
+    }
+
+    private func isPrivateIPv4(_ host: String) -> Bool {
+        let parts = host.split(separator: ".").compactMap { Int($0) }
+        guard parts.count == 4 else { return false }
+        return parts[0] == 10
+            || (parts[0] == 192 && parts[1] == 168)
+            || (parts[0] == 172 && (16...31).contains(parts[1]))
+    }
+
+    private func endpointSummary(_ endpoint: URL?) -> String {
+        guard let endpoint else { return "-" }
+        let scheme = endpoint.scheme.map { "\($0)://" } ?? ""
+        let host = endpoint.host ?? endpoint.absoluteString
+        if let port = endpoint.port {
+            return "\(scheme)\(host):\(port)"
+        }
+        return "\(scheme)\(host)"
+    }
 }
 
 private struct CertificateSecurityView: View {
@@ -701,22 +922,166 @@ private struct CertificateSecurityView: View {
 }
 
 private struct AgentStatusView: View {
+    @EnvironmentObject private var connectionStore: NASConnectionStore
+
     var body: some View {
         List {
             Section {
                 LabeledContent(
                     "devices.agent.mode",
-                    value: NSLocalizedString("state.not_connected", comment: "")
+                    value: NSLocalizedString(connectionStore.usesAgent ? "state.connected" : "state.not_connected", comment: "")
+                )
+                LabeledContent(
+                    "devices.security.ssh",
+                    value: NSLocalizedString("devices.agent.ssh.available", comment: "")
                 )
             }
 
             Section {
+                NavigationLink {
+                    SSHAgentSetupView()
+                } label: {
+                    Label("devices.agent.ssh.in_app", systemImage: "terminal")
+                }
+                NavigationLink {
+                    AgentSetupGuideView()
+                } label: {
+                    Label("devices.agent.ssh.desktop", systemImage: "desktopcomputer")
+                }
+            } header: {
+                Text("devices.agent.setup_paths")
+            } footer: {
+                Text("devices.agent.ssh.footer")
+            }
+
+            Section {
                 Label("devices.agent.not_connected", systemImage: "antenna.radiowaves.left.and.right")
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(connectionStore.usesAgent ? .green : .secondary)
             }
         }
         .listStyle(.insetGrouped)
         .navigationTitle("devices.maintenance.agent")
         .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+private enum SSHAuthMethod: String, CaseIterable, Identifiable {
+    case password
+    case privateKey
+
+    var id: String { rawValue }
+
+    var titleKey: LocalizedStringKey {
+        switch self {
+        case .password: return "ssh.auth.password"
+        case .privateKey: return "ssh.auth.private_key"
+        }
+    }
+}
+
+private struct SSHAgentSetupView: View {
+    @EnvironmentObject private var connectionStore: NASConnectionStore
+    @State private var host = ""
+    @State private var port = "22"
+    @State private var username = ""
+    @State private var authMethod: SSHAuthMethod = .password
+    @State private var secret = ""
+    @State private var showCopyHint = false
+    @State private var showSavedHint = false
+
+    private let installCommand = "docker run -d --name nastart-agent -p 8787:8787 --restart unless-stopped nastart/agent:latest"
+
+    var body: some View {
+        List {
+            Section {
+                Text("ssh.in_app.intro")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+
+            Section {
+                TextField("ssh.host.placeholder", text: $host)
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled()
+                    .keyboardType(.URL)
+                TextField("ssh.port.placeholder", text: $port)
+                    .keyboardType(.numberPad)
+                TextField("ssh.username.placeholder", text: $username)
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled()
+                    .textContentType(.username)
+                Picker("ssh.auth.method", selection: $authMethod) {
+                    ForEach(SSHAuthMethod.allCases) { method in
+                        Text(method.titleKey).tag(method)
+                    }
+                }
+                if authMethod == .password {
+                    SecureField("ssh.password.placeholder", text: $secret)
+                        .textContentType(.password)
+                } else {
+                    SecureField("ssh.private_key.placeholder", text: $secret)
+                }
+            } header: {
+                Text("ssh.connection")
+            } footer: {
+                Text("ssh.security.footer")
+            }
+
+            Section {
+                AgentStepRow(number: 1, titleKey: "ssh.step.connect", detailKey: "ssh.step.connect_detail")
+                AgentStepRow(number: 2, titleKey: "ssh.step.detect", detailKey: "ssh.step.detect_detail")
+                AgentStepRow(number: 3, titleKey: "ssh.step.install", detailKey: "ssh.step.install_detail")
+                AgentStepRow(number: 4, titleKey: "ssh.step.verify", detailKey: "ssh.step.verify_detail")
+            } header: {
+                Text("connect.agent.steps")
+            }
+
+            Section {
+                Text(installCommand)
+                    .font(.system(.footnote, design: .monospaced))
+                    .textSelection(.enabled)
+                Button("connect.agent.copy") {
+                    UIPasteboard.general.string = installCommand
+                    showCopyHint = true
+                }
+            } header: {
+                Text("connect.agent.command")
+            }
+
+            Section {
+                Button {
+                    saveProfileHint()
+                } label: {
+                    Label("ssh.profile.save", systemImage: "lock.shield")
+                }
+                .disabled(host.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || username.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+            } footer: {
+                Text("ssh.profile.footer")
+            }
+        }
+        .listStyle(.insetGrouped)
+        .navigationTitle("devices.agent.ssh.in_app")
+        .navigationBarTitleDisplayMode(.inline)
+        .onAppear {
+            if host.isEmpty {
+                host = connectionStore.dsmSession?.baseURL.host ?? ""
+            }
+        }
+        .alert("connect.agent.copy_hint", isPresented: $showCopyHint) {
+            Button("action.ok", role: .cancel) {}
+        }
+        .alert("ssh.profile.saved_hint", isPresented: $showSavedHint) {
+            Button("action.ok", role: .cancel) {}
+        }
+    }
+
+    private func saveProfileHint() {
+        UserDefaults.standard.set(host.trimmingCharacters(in: .whitespacesAndNewlines), forKey: "nastart.ssh.host")
+        UserDefaults.standard.set(port.trimmingCharacters(in: .whitespacesAndNewlines), forKey: "nastart.ssh.port")
+        UserDefaults.standard.set(username.trimmingCharacters(in: .whitespacesAndNewlines), forKey: "nastart.ssh.username")
+        UserDefaults.standard.set(authMethod.rawValue, forKey: "nastart.ssh.authMethod")
+        secret = ""
+        showSavedHint = true
     }
 }

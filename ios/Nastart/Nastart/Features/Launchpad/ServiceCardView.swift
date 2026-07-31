@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ServiceCardView: View {
     let service: LaunchpadService
+    @EnvironmentObject private var dataStore: AppDataStore
     @State private var actionMessageKey = "service.context.open_hint"
     @State private var showActionHint = false
 
@@ -48,6 +49,11 @@ struct ServiceCardView: View {
             }
             Button("action.edit") {
                 showAction("service.context.edit_hint")
+            }
+            Button(role: .destructive) {
+                dataStore.setService(service, visibleOnLaunchpad: false)
+            } label: {
+                Label("launchpad.service.hide", systemImage: "eye.slash")
             }
         }
         .alert(LocalizedStringKey(actionMessageKey), isPresented: $showActionHint) {
@@ -156,7 +162,6 @@ extension LaunchpadService {
         let normalizedName = name.lowercased()
         let mappings: [(keywords: [String], symbol: String)] = [
             (["dsm"], "server.rack"),
-            (["container manager", "docker", "container"], "shippingbox"),
             (["file station", "file browser", "文件"], "folder"),
             (["synology drive", "cloud station"], "externaldrive"),
             (["synology photos", "photo station", "photos"], "photo"),
@@ -171,9 +176,11 @@ extension LaunchpadService {
             (["mariadb", "mysql", "postgres"], "cylinder"),
             (["nginx proxy", "reverse proxy", "traefik", "caddy"], "lock.rectangle"),
             (["adguard", "pihole", "pi-hole"], "shield"),
-            (["home assistant", "homebridge"], "house"),
+            (["home assistant", "homeassistant", "home-assistant", "homebridge"], "house"),
             (["portainer"], "square.stack.3d.up"),
             (["code-server", "codex-server", "jupyter", "terminal"], "terminal"),
+            (["tinymediamanager", "tiny media manager"], "film.stack"),
+            (["metacubexd", "metacube", "mihomo", "clash"], "network"),
             (["gitea", "gitlab", "github"], "point.3.connected.trianglepath.dotted"),
             (["uptime", "healthchecks"], "waveform.path.ecg"),
             (["vaultwarden", "bitwarden"], "key"),
@@ -182,7 +189,8 @@ extension LaunchpadService {
             (["contacts"], "person.crop.circle"),
             (["note station"], "note.text"),
             (["surveillance station"], "video"),
-            (["web station"], "globe")
+            (["web station"], "globe"),
+            (["container manager", "docker", "container"], "shippingbox")
         ]
 
         return mappings.first { mapping in

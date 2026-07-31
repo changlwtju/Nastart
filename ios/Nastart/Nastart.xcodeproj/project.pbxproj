@@ -45,6 +45,7 @@
 		020202020202020202020016 /* PlaceholderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceholderView.swift; sourceTree = "<group>"; };
 		020202020202020202020017 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		020202020202020202020018 /* AppStateStores.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStateStores.swift; sourceTree = "<group>"; };
+		020202020202020202020019 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		020202020202020202020099 /* Nastart.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Nastart.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -75,6 +76,7 @@
 				050505050505050505050004 /* Features */,
 				050505050505050505050005 /* Shared */,
 				020202020202020202020017 /* Assets.xcassets */,
+				020202020202020202020019 /* Info.plist */,
 				030303030303030303030001 /* Localizable.strings */,
 			);
 			path = Nastart;
@@ -427,6 +429,7 @@
 				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Nastart/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Nastart;
 				INFOPLIST_KEY_CFBundleIconName = AppIcon;
 				INFOPLIST_KEY_CFBundleLocalizations = (
@@ -472,6 +475,7 @@
 				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Nastart/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Nastart;
 				INFOPLIST_KEY_CFBundleIconName = AppIcon;
 				INFOPLIST_KEY_CFBundleLocalizations = (

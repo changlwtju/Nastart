@@ -784,10 +784,13 @@ final class DSMClient {
                         "SYNO.FileStation.List",
                         "SYNO.Core.Package",
                         "SYNO.Core.AppPortal.ReverseProxy",
+                        "SYNO.Core.Network.Interface",
                         "SYNO.Storage.CGI.Storage",
                         "SYNO.Storage.CGI.Volume",
                         "SYNO.ContainerManager.Container",
-                        "SYNO.Docker.Container"
+                        "SYNO.Docker.Container",
+                        "SYNO.ContainerManager.Container.Resource",
+                        "SYNO.Docker.Container.Resource"
                     ].joined(separator: ",")
                 )
             ]
@@ -850,8 +853,19 @@ final class DSMClient {
             fallbackMaxVersion: 1,
             method: "list"
         ))
+        async let networkInterfaceData = firstSuccessfulCall(apiRequests(
+            session,
+            apiInfo: apiInfo,
+            apiName: "SYNO.Core.Network.Interface",
+            fallbackPath: "/webapi/entry.cgi",
+            fallbackMaxVersion: 1,
+            method: "list"
+        ))
         async let storageData = firstSuccessfulCall(storageRequests(session, apiInfo: apiInfo))
         async let dockerData = firstSuccessfulContainerCall(containerRequests(session, apiInfo: apiInfo))
+        async let dockerResourceData = firstSuccessfulCall(
+            containerResourceRequests(session, apiInfo: apiInfo)
+        )
 
         let system = await systemData
         let utilization = await utilizationData
@@ -859,11 +873,24 @@ final class DSMClient {
         let terminal = await terminalData
         let storage = await storageData
         let files = DSMClient.mapSharedFolders(await sharedFolderData)
-        let containers = DSMClient.mapContainers(await dockerData)
+        let docker = await dockerData
+        let dockerResources = await dockerResourceData
+        let resourceSampleCount = DSMClient.mapContainerResources(dockerResources).count
+        let mappedContainers = DSMClient.mapContainers(
+            docker,
+            resourceData: dockerResources
+        )
+        let containers = await enrichContainers(
+            mappedContainers,
+            session: session,
+            apiInfo: apiInfo
+        )
+        let lanHosts = DSMClient.mapLANHosts(await networkInterfaceData)
         let services = await mapServices(
             containers: containers,
             packageData: await packageData,
             reverseProxyData: await reverseProxyData,
+            lanHosts: lanHosts,
             session: session
         )
 
@@ -875,8 +902,12 @@ final class DSMClient {
                 "services": "\(services.count)",
                 "launchpadServices": "\(services.filter(\.isLaunchpadVisible).count)",
                 "containers": "\(containers.count)",
+                "containerServices": "\(services.filter { $0.source == .container || $0.source == .reverseProxy }.count)",
+                "containerEndpoints": "\(services.filter { ($0.source == .container || $0.source == .reverseProxy) && $0.endpoint != nil }.count)",
                 "packages": "\(services.filter { $0.source == .package }.count)",
+                "lanHosts": "\(lanHosts.count)",
                 "publishedPorts": "\(containers.reduce(0) { $0 + $1.ports.count })",
+                "resourceSamples": "\(resourceSampleCount)",
                 "volumes": "\(Self.storageVolumeItems(storage).count)",
                 "folders": "\(files.count)"
             ]
@@ -1092,6 +1123,123 @@ final class DSMClient {
         ]
     }
 
+    private func containerResourceRequests(
+        _ session: DSMSession,
+        apiInfo: DSMJSONValue?
+    ) -> [(String, [URLQueryItem])] {
+        let apiNames = [
+            "SYNO.ContainerManager.Container.Resource",
+            "SYNO.Docker.Container.Resource"
+        ]
+        let availableEntries = apiNames.compactMap { apiName -> (String, String, Int)? in
+            guard let entry = apiInfoEntry(apiInfo, apiName: apiName) else { return nil }
+            return (apiName, normalizedAPIPath(entry.path), max(entry.maxVersion, 1))
+        }
+
+        if !availableEntries.isEmpty {
+            return availableEntries.map { apiName, path, version in
+                (
+                    path,
+                    sessionItems(
+                        session,
+                        api: apiName,
+                        version: "\(version)",
+                        method: "get"
+                    )
+                )
+            }
+        }
+
+        return apiNames.map { apiName in
+            (
+                "/webapi/entry.cgi",
+                sessionItems(
+                    session,
+                    api: apiName,
+                    version: "1",
+                    method: "get"
+                )
+            )
+        }
+    }
+
+    private func containerDetailRequests(
+        _ session: DSMSession,
+        apiInfo: DSMJSONValue?,
+        containerName: String
+    ) -> [(String, [URLQueryItem])] {
+        let apiNames = ["SYNO.ContainerManager.Container", "SYNO.Docker.Container"]
+        let availableEntries = apiNames.compactMap { apiName -> (String, String, Int)? in
+            guard let entry = apiInfoEntry(apiInfo, apiName: apiName) else { return nil }
+            return (apiName, normalizedAPIPath(entry.path), max(entry.maxVersion, 1))
+        }
+        let entries: [(String, String, Int)] = availableEntries.isEmpty
+            ? [("SYNO.Docker.Container", "/webapi/entry.cgi", 1)]
+            : availableEntries
+
+        return entries.map { apiName, path, version in
+            (
+                path,
+                sessionItems(
+                    session,
+                    api: apiName,
+                    version: "\(version)",
+                    method: "get",
+                    extra: [URLQueryItem(name: "name", value: containerName)]
+                )
+            )
+        }
+    }
+
+    private func enrichContainers(
+        _ containers: [DockerContainer],
+        session: DSMSession,
+        apiInfo: DSMJSONValue?
+    ) async -> [DockerContainer] {
+        let details = await withTaskGroup(
+            of: (UUID, DSMJSONValue?).self,
+            returning: [UUID: DSMJSONValue].self
+        ) { group in
+            for container in containers where container.status == .online {
+                group.addTask {
+                    let detail = await self.firstSuccessfulCall(
+                        self.containerDetailRequests(
+                            session,
+                            apiInfo: apiInfo,
+                            containerName: container.name
+                        )
+                    )
+                    return (container.id, detail)
+                }
+            }
+
+            var result: [UUID: DSMJSONValue] = [:]
+            for await (id, detail) in group {
+                if let detail {
+                    result[id] = detail
+                }
+            }
+            return result
+        }
+
+        return containers.map { container in
+            guard let detail = details[container.id] else { return container }
+            let ports = Self.uniqueStrings(container.ports + Self.mapPorts(detail))
+            guard ports != container.ports else { return container }
+            return DockerContainer(
+                id: container.id,
+                name: container.name,
+                image: container.image,
+                status: container.status,
+                cpu: container.cpu,
+                memoryText: container.memoryText,
+                memoryBytes: container.memoryBytes,
+                memoryPercent: container.memoryPercent,
+                ports: ports
+            )
+        }
+    }
+
     private func storageRequests(_ session: DSMSession, apiInfo: DSMJSONValue?) -> [(String, [URLQueryItem])] {
         var requests: [(String, [URLQueryItem])] = []
         if apiInfoEntry(apiInfo, apiName: "SYNO.Storage.CGI.Storage") != nil || apiInfo == nil {
@@ -1242,10 +1390,13 @@ final class DSMClient {
             "SYNO.FileStation.List",
             "SYNO.Core.Package",
             "SYNO.Core.AppPortal.ReverseProxy",
+            "SYNO.Core.Network.Interface",
             "SYNO.Storage.CGI.Storage",
             "SYNO.Storage.CGI.Volume",
             "SYNO.ContainerManager.Container",
-            "SYNO.Docker.Container"
+            "SYNO.Docker.Container",
+            "SYNO.ContainerManager.Container.Resource",
+            "SYNO.Docker.Container.Resource"
         ]
         guard let apiInfo else {
             record(
@@ -1343,12 +1494,16 @@ final class DSMClient {
         }
         let totalRaw = memory.firstDouble(for: ["memory_size", "total", "total_memory", "mem_total"])
         let availableRaw = memory.firstDouble(for: ["avail_real", "available", "available_memory", "mem_available"])
-        let usedRaw = memory.firstDouble(for: ["used", "used_memory", "mem_used"])
+        let measuredUsedRaw = memory.firstDouble(for: ["used", "used_memory", "mem_used"])
             ?? totalRaw.flatMap { total in availableRaw.map { max(total - $0, 0) } }
         let progress = reportedProgress
-            ?? totalRaw.flatMap { total in usedRaw.map { total > 0 ? min(max($0 / total, 0), 1) : 0 } }
+            ?? totalRaw.flatMap { total in measuredUsedRaw.map { total > 0 ? min(max($0 / total, 0), 1) : 0 } }
+        // DSM's real_usage excludes reclaimable cache. Use the same value for
+        // percentage and capacity text so separate screens cannot disagree.
+        let displayUsedRaw = totalRaw.flatMap { total in progress.map { total * $0 } }
+            ?? measuredUsedRaw
         let totalBytes = totalRaw.map(normalizedMemoryBytes)
-        let usedBytes = usedRaw.map(normalizedMemoryBytes)
+        let usedBytes = displayUsedRaw.map(normalizedMemoryBytes)
         return (progress, DSMFormatters.bytes(usedBytes), DSMFormatters.bytes(totalBytes))
     }
 
@@ -1448,19 +1603,29 @@ final class DSMClient {
 
     private static func mapUptime(_ value: DSMJSONValue?) -> String {
         guard let value else { return "-" }
-        if case .string(let text) = value, text.rangeOfCharacter(from: .letters) != nil {
-            return text
+        let totalMinutes: Int?
+        if let seconds = value.doubleValue, seconds >= 0 {
+            totalMinutes = Int(seconds) / 60
+        } else if let text = value.stringValue {
+            let parts = text.split(separator: ":").compactMap { Int($0) }
+            switch parts.count {
+            case 3:
+                totalMinutes = parts[0] * 60 + parts[1]
+            case 4:
+                totalMinutes = parts[0] * 1_440 + parts[1] * 60 + parts[2]
+            default:
+                totalMinutes = nil
+            }
+        } else {
+            totalMinutes = nil
         }
-        guard let seconds = value.doubleValue, seconds >= 0 else {
-            return value.stringValue ?? "-"
+        guard let totalMinutes else { return value.stringValue ?? "-" }
+        if totalMinutes >= 1_440 {
+            let days = totalMinutes / 1_440
+            let hours = (totalMinutes % 1_440) / 60
+            return "\(days)d + \(hours)h"
         }
-        let totalMinutes = Int(seconds) / 60
-        let days = totalMinutes / 1_440
-        let hours = (totalMinutes % 1_440) / 60
-        let minutes = totalMinutes % 60
-        if days > 0 { return "\(days)d \(hours)h" }
-        if hours > 0 { return "\(hours)h \(minutes)m" }
-        return "\(minutes)m"
+        return "\(totalMinutes / 60)h + \(totalMinutes % 60)min"
     }
 
     private static func mapTemperature(system: DSMJSONValue?, utilization: DSMJSONValue?) -> String? {
@@ -1629,8 +1794,18 @@ final class DSMClient {
         return trimmed?.isEmpty == false ? trimmed : nil
     }
 
-    private static func mapContainers(_ data: DSMJSONValue?) -> [DockerContainer] {
+    private struct ContainerResourceMetrics {
+        let cpu: Double?
+        let memoryBytes: Double?
+        let memoryPercent: Double?
+    }
+
+    private static func mapContainers(
+        _ data: DSMJSONValue?,
+        resourceData: DSMJSONValue? = nil
+    ) -> [DockerContainer] {
         let items = containerItems(from: data)
+        let resources = mapContainerResources(resourceData)
         var seen = Set<String>()
         return items.compactMap { item in
             guard let name = directTextValue(
@@ -1649,10 +1824,20 @@ final class DSMClient {
                 keys: ["status", "Status", "state", "State", "status_text", "display_status", "up_time", "health"]
             ) ?? ""
             let explicitRunning = item.firstDirectBool(for: ["running", "Running", "is_running", "started", "start"])
-            let cpu = item.firstDirectDouble(for: ["cpu", "CPU", "cpu_usage", "cpu_percent"]).map {
-                DSMFormatters.percentage($0)
-            }
-            let memoryText = directTextValue(in: item, keys: ["memory", "Memory", "memory_usage", "memory_text", "mem_usage"])
+            let resource = [
+                normalizedContainerIdentity(name),
+                normalizedContainerIdentity(identifier)
+            ]
+            .compactMap { resources[$0] }
+            .first
+            let cpu = resource?.cpu
+                ?? item.firstDirectDouble(for: ["cpu", "CPU", "cpu_usage", "cpu_percent"]).map {
+                    DSMFormatters.percentage($0)
+                }
+            let memoryBytes = resource?.memoryBytes
+                ?? item.firstDirectDouble(for: ["memory_bytes", "mem_usage", "memoryUsage"])
+            let memoryText = DSMFormatters.bytes(memoryBytes)
+                ?? directTextValue(in: item, keys: ["memory", "Memory", "memory_usage", "memory_text", "mem_usage"])
                 ?? DSMFormatters.bytes(item.firstDirectDouble(for: ["memory_bytes", "mem_usage", "memoryUsage"]))
                 ?? "-"
             return DockerContainer(
@@ -1662,9 +1847,51 @@ final class DSMClient {
                 status: explicitRunning.map { $0 ? .online : .offline } ?? serviceStatus(from: stateText),
                 cpu: cpu,
                 memoryText: memoryText,
+                memoryBytes: memoryBytes,
+                memoryPercent: resource?.memoryPercent,
                 ports: mapPorts(item)
             )
         }
+    }
+
+    private static func mapContainerResources(
+        _ data: DSMJSONValue?
+    ) -> [String: ContainerResourceMetrics] {
+        guard let data else { return [:] }
+        let items = data.firstArray(for: ["resources"]) ?? []
+        return items.reduce(into: [:]) { result, item in
+            guard let name = directTextValue(
+                in: item,
+                keys: ["name", "Name", "container_name", "containerName", "id", "Id"]
+            ) else { return }
+
+            let cpu = item.firstDirectDouble(
+                for: ["cpu", "CPU", "cpu_usage", "cpu_percent", "cpuPercent"]
+            )
+            .map { percentagePoints($0) }
+            let memoryBytes = item.firstDirectDouble(
+                for: ["memory", "Memory", "memory_bytes", "memoryUsage", "mem_usage"]
+            )
+            let memoryPercent = item.firstDirectDouble(
+                for: ["memoryPercent", "memory_percent", "mem_percent", "memoryPercentage"]
+            )
+            .map { percentagePoints($0) }
+            result[normalizedContainerIdentity(name)] = ContainerResourceMetrics(
+                cpu: cpu,
+                memoryBytes: memoryBytes,
+                memoryPercent: memoryPercent
+            )
+        }
+    }
+
+    private static func normalizedContainerIdentity(_ value: String) -> String {
+        value
+            .trimmingCharacters(in: CharacterSet(charactersIn: "/").union(.whitespacesAndNewlines))
+            .lowercased()
+    }
+
+    private static func percentagePoints(_ value: Double) -> Double {
+        min(max(value / 100, 0), 1)
     }
 
     private static func containerItems(from data: DSMJSONValue?) -> [DSMJSONValue] {
@@ -1723,6 +1950,7 @@ final class DSMClient {
         let sourceHost: String?
         let sourcePort: Int
         let sourceScheme: String
+        let sourcePath: String?
         let destinationPort: Int
     }
 
@@ -1735,6 +1963,7 @@ final class DSMClient {
         containers: [DockerContainer],
         packageData: DSMJSONValue?,
         reverseProxyData: DSMJSONValue?,
+        lanHosts: [String],
         session: DSMSession
     ) async -> [LaunchpadService] {
         let reverseProxyRules = Self.mapReverseProxyRules(reverseProxyData)
@@ -1749,6 +1978,7 @@ final class DSMClient {
         let containerEndpoints = await resolvedContainerEndpoints(
             containers,
             reverseProxyRules: reverseProxyRules,
+            lanHosts: lanHosts,
             baseURL: session.baseURL
         )
         var services: [LaunchpadService] = [
@@ -1781,10 +2011,11 @@ final class DSMClient {
                 isMedia: Self.isMedia(container.name),
                 cpu: container.cpu,
                 memoryText: container.memoryText,
+                memory: container.memoryPercent,
                 ports: container.ports,
                 endpoint: resolvedEndpoint?.url,
                 source: resolvedEndpoint?.source ?? .container,
-                isLaunchpadVisible: Self.shouldAutomaticallyAdd(container, endpoint: resolvedEndpoint?.url)
+                isLaunchpadVisible: true
             )
         }
 
@@ -1792,7 +2023,17 @@ final class DSMClient {
 
         var seen = Set<String>()
         return services.filter { service in
-            let key = service.name.lowercased()
+            let sourceKey: String
+            switch service.source {
+            case .dsm: sourceKey = "dsm"
+            case .container, .reverseProxy:
+                // The container list is already deduplicated by DSM identifier.
+                // Keep similarly named instances instead of collapsing them by display name.
+                return true
+            case .package: sourceKey = "package"
+            case .manual: sourceKey = "manual"
+            }
+            let key = "\(sourceKey)|\(service.name.lowercased())|\(service.detail.lowercased())"
             if seen.contains(key) { return false }
             seen.insert(key)
             return true
@@ -1838,7 +2079,7 @@ final class DSMClient {
                 memoryText: nil,
                 endpoint: endpoint,
                 source: .package,
-                isLaunchpadVisible: false
+                isLaunchpadVisible: shouldAutomaticallyAddPackageService(name)
             )
         }
     }
@@ -1846,6 +2087,7 @@ final class DSMClient {
     private func resolvedContainerEndpoints(
         _ containers: [DockerContainer],
         reverseProxyRules: [DSMReverseProxyRule],
+        lanHosts: [String],
         baseURL: URL
     ) async -> [UUID: ResolvedContainerEndpoint] {
         await withTaskGroup(
@@ -1864,7 +2106,14 @@ final class DSMClient {
                             ResolvedContainerEndpoint(url: endpoint, source: .reverseProxy)
                         )
                     }
-                    let endpoint = await self.firstReachableWebEndpoint(for: container, baseURL: baseURL)
+                    let candidates = Self.endpointCandidates(
+                        for: container,
+                        baseURL: baseURL,
+                        lanHosts: lanHosts
+                    )
+                    let reachableEndpoint = await self.firstReachableWebEndpoint(candidates)
+                    let endpoint = reachableEndpoint
+                        ?? (Self.isLikelyWebContainer(container) ? candidates.first : nil)
                     return (
                         container.id,
                         endpoint.map { ResolvedContainerEndpoint(url: $0, source: .container) }
@@ -1882,37 +2131,83 @@ final class DSMClient {
         }
     }
 
+    private static func mapLANHosts(_ data: DSMJSONValue?) -> [String] {
+        guard let data else { return [] }
+        let hosts = allObjects(in: data).compactMap { item -> String? in
+            let status = item.firstDirectString(for: ["status", "state", "link_status"])?.lowercased() ?? ""
+            if status.contains("down") || status.contains("disconnect") {
+                return nil
+            }
+            guard let rawAddress = item.firstDirectString(for: [
+                "ip", "ipv4", "ip_address", "ipaddr", "address"
+            ]) else {
+                return nil
+            }
+            let address = rawAddress.split(separator: "/").first.map(String.init) ?? rawAddress
+            return isPrivateIPv4(address) ? address : nil
+        }
+        return uniqueStrings(hosts)
+    }
+
+    private static func isPrivateIPv4(_ address: String) -> Bool {
+        let octets = address.split(separator: ".").compactMap { Int($0) }
+        guard octets.count == 4, octets.allSatisfy({ (0...255).contains($0) }) else {
+            return false
+        }
+        return octets[0] == 10
+            || (octets[0] == 172 && (16...31).contains(octets[1]))
+            || (octets[0] == 192 && octets[1] == 168)
+    }
+
     private static func mapReverseProxyRules(_ data: DSMJSONValue?) -> [DSMReverseProxyRule] {
         guard let data else { return [] }
         let root = data.firstDirectValue(for: ["data", "result"]) ?? data
-        let listedItems = root.firstDirectArray(for: ["rules", "items", "list"])
-            ?? arrays(in: root, matching: Set(["rules"])).flatMap { $0 }
+        let listedItems = root.firstDirectArray(for: ["entries", "rules", "items", "list"])
+            ?? arrays(in: root, matching: Set(["entries", "rules"])).flatMap { $0 }
         let items = listedItems.isEmpty
             ? allObjects(in: root).filter {
-                $0.firstDirectValue(for: ["frontend", "source", "incoming"]) != nil
+                let hasNestedRule = $0.firstDirectValue(for: ["frontend", "source", "incoming"]) != nil
                     && $0.firstDirectValue(for: ["backend", "destination", "target"]) != nil
+                let hasFlatRule = $0.firstDirectValue(for: ["src_port", "source_port", "frontend_port"]) != nil
+                    && $0.firstDirectValue(for: ["dest_port", "destination_port", "backend_port", "target_port"]) != nil
+                return hasNestedRule || hasFlatRule
             }
             : listedItems
         return items.compactMap { item in
+            let source = item.firstDirectValue(for: ["frontend", "source", "incoming"]) ?? item
+            let destination = item.firstDirectValue(for: ["backend", "destination", "target"]) ?? item
             guard
-                let source = item.firstDirectValue(for: ["frontend", "source", "incoming"]),
-                let destination = item.firstDirectValue(for: ["backend", "destination", "target"]),
-                let sourcePort = numericPort(source.firstDirectString(for: ["port", "source_port", "listen_port"])),
-                let destinationPort = numericPort(destination.firstDirectString(for: ["port", "destination_port", "target_port"]))
+                let sourcePort = numericPort(source.firstDirectString(for: [
+                    "port", "source_port", "src_port", "listen_port", "frontend_port"
+                ])),
+                let destinationPort = numericPort(destination.firstDirectString(for: [
+                    "port", "destination_port", "dest_port", "target_port", "backend_port"
+                ]))
             else {
                 return nil
             }
-            let rawProtocol = source.firstDirectString(for: ["protocol", "scheme", "type"])?.lowercased()
-            let sourceScheme = rawProtocol == "https" || rawProtocol == "1" || source.firstDirectValue(for: ["https"]) != nil
+            let rawProtocol = source.firstDirectString(for: [
+                "protocol", "scheme", "type",
+                "source_protocol", "src_protocol", "frontend_protocol"
+            ])?.lowercased()
+            let sourceScheme = rawProtocol == "https"
+                || rawProtocol == "1"
+                || source.firstDirectBool(for: ["https", "ssl", "tls"]) == true
                 ? "https"
                 : "http"
-            let sourceHost = nonEmptyString(source.firstDirectString(for: ["fqdn", "hostname", "host"]))
+            let sourceHost = nonEmptyString(source.firstDirectString(for: [
+                "fqdn", "hostname", "host", "source_host", "src_host", "src_hostname", "frontend_host"
+            ]))
+            let sourcePath = nonEmptyString(source.firstDirectString(for: [
+                "path", "source_path", "src_path", "frontend_path"
+            ]))
             let name = directTextValue(in: item, keys: ["description", "name", "title", "id"]) ?? ""
             return DSMReverseProxyRule(
                 name: name,
                 sourceHost: sourceHost,
                 sourcePort: sourcePort,
                 sourceScheme: sourceScheme,
+                sourcePath: sourcePath,
                 destinationPort: destinationPort
             )
         }
@@ -1953,6 +2248,9 @@ final class DSMClient {
         components.scheme = rule.sourceScheme
         components.host = host
         components.port = rule.sourcePort
+        if let sourcePath = rule.sourcePath {
+            components.path = sourcePath.hasPrefix("/") ? sourcePath : "/\(sourcePath)"
+        }
         return components.url
     }
 
@@ -1961,9 +2259,21 @@ final class DSMClient {
             "com", "cn", "net", "org", "www", "http", "https",
             "docker", "container", "latest", "linuxserver"
         ])
-        return Set(value.lowercased()
+        var tokens = Set(value.lowercased()
             .components(separatedBy: CharacterSet.alphanumerics.inverted)
             .filter { $0.count >= 3 && !ignored.contains($0) })
+        let compact = compactServiceIdentifier(value)
+        let aliases: [String: Set<String>] = [
+            "homeassistant": ["homeassistant", "hass", "ha"],
+            "codeserver": ["codeserver", "code", "vscode"],
+            "tinymediamanager": ["tinymediamanager", "tmm"],
+            "metacubexd": ["metacubexd", "metacube", "mihomo"],
+            "mihomo": ["mihomo", "metacube", "metacubexd"]
+        ]
+        for (identity, values) in aliases where compact.contains(identity) {
+            tokens.formUnion(values)
+        }
+        return tokens
     }
 
     private static func compactServiceIdentifier(_ value: String) -> String {
@@ -1972,38 +2282,47 @@ final class DSMClient {
             .joined()
     }
 
-    private func firstReachableWebEndpoint(for container: DockerContainer, baseURL: URL) async -> URL? {
-        for endpoint in Self.endpointCandidates(for: container, baseURL: baseURL) {
-            if await isReachableWebEndpoint(endpoint) {
-                return endpoint
+    private func firstReachableWebEndpoint(_ candidates: [URL]) async -> URL? {
+        await withTaskGroup(
+            of: (Int, URL?).self,
+            returning: URL?.self
+        ) { group in
+            for (index, endpoint) in candidates.prefix(8).enumerated() {
+                group.addTask {
+                    let reachable = await self.isReachableWebEndpoint(endpoint)
+                    return (index, reachable ? endpoint : nil)
+                }
             }
+
+            var reachable: [(Int, URL)] = []
+            for await (index, endpoint) in group {
+                if let endpoint {
+                    reachable.append((index, endpoint))
+                }
+            }
+            return reachable.min { $0.0 < $1.0 }?.1
         }
-        return nil
     }
 
     private func isReachableWebEndpoint(_ endpoint: URL) async -> Bool {
-        var request = URLRequest(url: endpoint)
-        request.httpMethod = "HEAD"
-        request.timeoutInterval = 2
-        request.cachePolicy = .reloadIgnoringLocalCacheData
-        do {
-            let (_, response) = try await urlSession.data(for: request)
-            return response is HTTPURLResponse
-        } catch {
-            return false
+        for method in ["HEAD", "GET"] {
+            var request = URLRequest(url: endpoint)
+            request.httpMethod = method
+            request.timeoutInterval = method == "HEAD" ? 1.5 : 2.5
+            request.cachePolicy = .reloadIgnoringLocalCacheData
+            if method == "GET" {
+                request.setValue("bytes=0-0", forHTTPHeaderField: "Range")
+            }
+            do {
+                let (_, response) = try await urlSession.data(for: request)
+                if response is HTTPURLResponse {
+                    return true
+                }
+            } catch {
+                continue
+            }
         }
-    }
-
-    private static func shouldAutomaticallyAdd(_ container: DockerContainer, endpoint: URL?) -> Bool {
-        guard container.status == .online, endpoint != nil else { return false }
-        let identity = "\(container.name) \(container.image)".lowercased()
-        let infrastructureTokens = [
-            "dockerproxy", "docker-proxy", "socket-proxy", "watchtower",
-            "postgres", "mariadb", "mysql", "mongodb", "redis",
-            "memcached", "elasticsearch", "influxdb",
-            "worker", "sidecar", "init-container"
-        ]
-        return !infrastructureTokens.contains { identity.contains($0) }
+        return false
     }
 
     private static func isInstalledPackage(_ item: DSMJSONValue) -> Bool {
@@ -2061,23 +2380,28 @@ final class DSMClient {
     }
 
     private static func shouldShowPackageService(_ name: String) -> Bool {
-        let lower = name.lowercased()
-        let importantTokens = [
+        shouldAutomaticallyAddPackageService(name)
+    }
+
+    private static func shouldAutomaticallyAddPackageService(_ name: String) -> Bool {
+        let compact = compactServiceIdentifier(name)
+        // Default to direct, user-facing workflows and service-management entry points.
+        // Other discovered packages remain available in launchpad service management.
+        let launchpadPackageTokens = [
             "container",
             "docker",
-            "file station",
-            "download station",
-            "synology photos",
-            "photo station",
-            "video station",
-            "audio station",
-            "synology drive",
-            "webdav",
-            "vpn server",
-            "active backup",
-            "virtual machine"
+            "filestation",
+            "downloadstation",
+            "synologyphotos",
+            "photostation",
+            "videostation",
+            "audiostation",
+            "synologydrive",
+            "cloudstation",
+            "surveillancestation",
+            "virtualmachinemanager"
         ]
-        return importantTokens.contains { lower.contains($0) }
+        return launchpadPackageTokens.contains { compact.contains($0) }
     }
 
     private static func serviceSortRank(_ service: LaunchpadService) -> Int {
@@ -2101,23 +2425,16 @@ final class DSMClient {
     }
 
     private static func mapPorts(_ item: DSMJSONValue) -> [String] {
-        let directPortKeys = [
+        let portKeys = [
             "ports", "Ports", "port_bindings", "PortBindings", "portBindings",
             "port_mappings", "portMappings", "PortMapping"
         ]
-        var ports = directPortKeys.flatMap { key -> [String] in
-            guard let value = item.firstDirectValue(for: [key]) else { return [] }
-            return publishedPortTexts(from: value)
-        }
-
-        for networkKey in ["networkSettings", "NetworkSettings"] {
-            guard let network = item.firstDirectValue(for: [networkKey]) else { continue }
-            for portKey in ["ports", "Ports", "port_bindings", "PortBindings"] {
-                guard let value = network.firstDirectValue(for: [portKey]) else { continue }
-                ports += publishedPortTexts(from: value)
+        let ports = allObjects(in: item).flatMap { object in
+            portKeys.flatMap { key -> [String] in
+                guard let value = object.firstDirectValue(for: [key]) else { return [] }
+                return publishedPortTexts(from: value)
             }
         }
-
         return uniqueStrings(ports)
     }
 
@@ -2239,11 +2556,15 @@ final class DSMClient {
     private static func displayName(for rawName: String) -> String {
         let name = rawName.trimmingCharacters(in: .whitespacesAndNewlines)
         let lower = name.lowercased()
-        if lower.contains("container") { return "Container" }
+        let compact = compactServiceIdentifier(name)
+        if ["container", "container manager", "docker"].contains(lower) { return "Container Manager" }
         if lower.contains("file station") { return "File Station" }
-        if lower.contains("synology photos") { return "Synology Photos" }
+        if lower.contains("synology photos") || compact.contains("synologyphotos") { return "Synology Photos" }
         if lower.contains("download station") { return "Download Station" }
-        if lower.contains("synology drive") { return "Synology Drive" }
+        if lower.contains("synology drive") || compact.contains("synologydrive")
+            || compact.contains("cloudstationserver") {
+            return "Synology Drive"
+        }
         if lower.contains("video station") { return "Video Station" }
         if lower.contains("audio station") { return "Audio Station" }
         if lower.contains("jellyfin") { return "Jellyfin" }
@@ -2251,21 +2572,32 @@ final class DSMClient {
         if lower.contains("plex") { return "Plex" }
         if lower.contains("navidrome") { return "Navidrome" }
         if lower.contains("qbittorrent") { return "qBittorrent" }
-        if lower.contains("code-server") { return "code-server" }
-        if lower.contains("codex-server") { return "codex-server" }
+        if compact.contains("homeassistant") { return "Home Assistant" }
+        if compact.contains("codeserver") { return "code-server" }
+        if compact.contains("codexserver") { return "codex-server" }
+        if compact.contains("tinymediamanager") { return "tinyMediaManager" }
+        if compact.contains("metacubexd") { return "MetaCubeXD" }
         return name.isEmpty ? "Service" : name
     }
 
     private static func iconText(for name: String) -> String {
         let lower = name.lowercased()
+        let compact = compactServiceIdentifier(name)
         if lower.contains("jellyfin") { return "JF" }
         if lower.contains("navidrome") { return "NV" }
         if lower.contains("qbittorrent") { return "QB" }
-        if lower.contains("container") { return "CT" }
+        if compact.contains("homeassistant") { return "HA" }
+        if compact.contains("codeserver") || compact.contains("codexserver") { return "</>" }
+        if compact.contains("tinymediamanager") { return "TM" }
+        if compact.contains("metacubexd") { return "MX" }
+        if ["container", "container manager", "docker"].contains(lower) { return "CT" }
         if lower.contains("file station") { return "FS" }
         if lower.contains("download station") { return "DL" }
-        if lower.contains("synology photos") { return "PH" }
-        if lower.contains("synology drive") { return "DR" }
+        if lower.contains("synology photos") || compact.contains("synologyphotos") { return "PH" }
+        if lower.contains("synology drive") || compact.contains("synologydrive")
+            || compact.contains("cloudstationserver") {
+            return "DR"
+        }
         if lower.contains("video station") { return "VD" }
         if lower.contains("audio station") { return "AU" }
         if lower.contains("code") { return "</>" }
@@ -2278,14 +2610,29 @@ final class DSMClient {
 
     private static func category(for name: String) -> ServiceCategory {
         let lower = name.lowercased()
+        let compact = compactServiceIdentifier(name)
         if lower.contains("dsm") || lower.contains("homepage") { return .favorites }
         if lower.contains("jellyfin") || lower.contains("emby") || lower.contains("plex") || lower.contains("navidrome") { return .media }
-        if lower.contains("photos") || lower.contains("video station") || lower.contains("audio station") { return .media }
+        if lower.contains("photos") || compact.contains("synologyphotos")
+            || lower.contains("video station") || lower.contains("audio station") {
+            return .media
+        }
         if lower.contains("torrent") || lower.contains("transmission") || lower.contains("aria") { return .downloads }
         if lower.contains("download station") { return .downloads }
-        if lower.contains("nginx") || lower.contains("adguard") || lower.contains("tailscale") { return .network }
+        if lower.contains("nginx") || lower.contains("adguard") || lower.contains("tailscale")
+            || lower.contains("mihomo") || lower.contains("metacube") || lower.contains("clash") {
+            return .network
+        }
         if lower.contains("webdav") || lower.contains("vpn") { return .network }
-        if lower.contains("container") || lower.contains("docker") || lower.contains("file station") || lower.contains("drive") { return .favorites }
+        if compact.contains("codeserver") || compact.contains("codexserver")
+            || compact.contains("tinymediamanager") || compact.contains("homeassistant") {
+            return .tools
+        }
+        if lower.contains("container") || lower.contains("docker") || lower.contains("file station")
+            || lower.contains("drive") || compact.contains("synologydrive")
+            || compact.contains("cloudstationserver") {
+            return .favorites
+        }
         return .tools
     }
 
@@ -2304,42 +2651,104 @@ final class DSMClient {
         return container.ports.joined(separator: " · ")
     }
 
-    private static func endpointCandidates(for container: DockerContainer, baseURL: URL) -> [URL] {
-        guard let host = baseURL.host else { return [] }
+    private static func endpointCandidates(
+        for container: DockerContainer,
+        baseURL: URL,
+        lanHosts: [String]
+    ) -> [URL] {
+        let hosts = uniqueStrings(lanHosts + [baseURL.host].compactMap { $0 })
+        guard !hosts.isEmpty else { return [] }
         let preferredContainerPorts = preferredWebPorts(for: container.name)
-        let sortedMappings = container.ports.compactMap(portMapping(from:)).filter { $0.transport == "tcp" }
+        var sortedMappings = container.ports.compactMap(portMapping(from:)).filter { $0.transport == "tcp" }
             .sorted { lhs, rhs in
                 let lhsRank = preferredContainerPorts.firstIndex(of: lhs.containerPort) ?? Int.max
                 let rhsRank = preferredContainerPorts.firstIndex(of: rhs.containerPort) ?? Int.max
                 if lhsRank != rhsRank { return lhsRank < rhsRank }
+                let lhsWebRank = isLikelyWebPort(lhs.containerPort) ? 0 : 1
+                let rhsWebRank = isLikelyWebPort(rhs.containerPort) ? 0 : 1
+                if lhsWebRank != rhsWebRank { return lhsWebRank < rhsWebRank }
                 return lhs.hostPort < rhs.hostPort
             }
-        let mappings = Array(sortedMappings.prefix(3))
+        if sortedMappings.isEmpty {
+            sortedMappings = knownWebPorts(for: container.name).map {
+                (hostPort: $0, containerPort: $0, transport: "tcp")
+            }
+        }
+        let mappings = Array(sortedMappings.prefix(6))
 
         var seen = Set<String>()
         return mappings.flatMap { mapping in
-            ["https", "http"].compactMap { scheme -> URL? in
-                var components = URLComponents()
-                components.scheme = scheme
-                components.host = host
-                components.port = mapping.hostPort
-                guard let url = components.url, seen.insert(url.absoluteString).inserted else { return nil }
-                return url
+            hosts.flatMap { host in
+                preferredSchemes(for: mapping.containerPort).compactMap { scheme -> URL? in
+                    var components = URLComponents()
+                    components.scheme = scheme
+                    components.host = host
+                    components.port = mapping.hostPort
+                    guard let url = components.url, seen.insert(url.absoluteString).inserted else { return nil }
+                    return url
+                }
             }
         }
     }
 
     private static func preferredWebPorts(for name: String) -> [Int] {
+        knownWebPorts(for: name) + [443, 8443, 9443, 80, 8080, 8000, 5000, 3000]
+    }
+
+    private static func knownWebPorts(for name: String) -> [Int] {
         let normalized = name.lowercased()
+        let compact = compactServiceIdentifier(name)
         if normalized.contains("homepage") { return [3000, 3001] }
         if normalized.contains("jellyfin") || normalized.contains("emby") { return [8096, 8920] }
         if normalized.contains("plex") { return [32400] }
         if normalized.contains("navidrome") { return [4533] }
         if normalized.contains("qbittorrent") { return [8080] }
-        if normalized.contains("homeassistant") || normalized.contains("home-assistant") { return [8123] }
+        if compact.contains("homeassistant") { return [8123] }
         if normalized.contains("portainer") { return [9443, 9000] }
-        if normalized.contains("code-server") || normalized.contains("codex-server") { return [8443, 8080, 8000] }
-        return [443, 8443, 9443, 80, 8080, 8000, 5000, 3000]
+        if compact.contains("codeserver") || compact.contains("codexserver") {
+            return [8443, 8080, 8000]
+        }
+        if compact.contains("tinymediamanager") {
+            return [5800, 4000]
+        }
+        if compact.contains("metacubexd") {
+            return [80, 8080]
+        }
+        if normalized.contains("mihomo") || normalized.contains("clash") {
+            return [9090]
+        }
+        return []
+    }
+
+    private static func isLikelyWebContainer(_ container: DockerContainer) -> Bool {
+        if !knownWebPorts(for: container.name).isEmpty {
+            return true
+        }
+        return container.ports
+            .compactMap(portMapping(from:))
+            .contains { $0.transport == "tcp" && isLikelyWebPort($0.containerPort) }
+    }
+
+    private static func isLikelyWebPort(_ port: Int) -> Bool {
+        let commonPorts: Set<Int> = [
+            80, 443, 3000, 3001, 4000, 5000, 5001, 5800,
+            8000, 8001, 8080, 8081, 8090, 8096, 8123,
+            8443, 8920, 9000, 9090, 9443
+        ]
+        if commonPorts.contains(port) {
+            return true
+        }
+        let nonWebPorts: Set<Int> = [
+            20, 21, 22, 23, 25, 53, 67, 68, 110, 123, 137, 138, 139,
+            143, 389, 445, 465, 514, 587, 636, 873, 993, 995, 1883,
+            3306, 5432, 6379, 6881, 27017
+        ]
+        return port >= 1024 && !nonWebPorts.contains(port)
+    }
+
+    private static func preferredSchemes(for port: Int) -> [String] {
+        let tlsPorts: Set<Int> = [443, 4443, 5001, 5443, 7443, 8443, 8920, 9443]
+        return tlsPorts.contains(port) ? ["https", "http"] : ["http", "https"]
     }
 
     private static func portMapping(from text: String) -> (hostPort: Int, containerPort: Int, transport: String)? {
@@ -2682,16 +3091,20 @@ final class AppDataStore: ObservableObject {
     @Published private(set) var isRefreshing = false
     @Published private(set) var lastRefreshSummaryKey = "data.refresh.ready"
     @Published private(set) var sourceKind: NASDataSourceKind
+    @Published private(set) var serviceVisibilityOverrides: [String: Bool]
 
     private var provider: AppDataProviding
     private var activeDataSource: NASDataSource
+    private var manualServiceStore = ManualLaunchpadServiceStore()
+    private let launchpadVisibilityStore = LaunchpadVisibilityStore()
 
     init(provider: AppDataProviding = DisconnectedAppDataProvider()) {
         self.provider = provider
+        serviceVisibilityOverrides = LaunchpadVisibilityStore().load()
         sourceKind = provider is DSMDataSnapshot ? .dsm : .mock
         activeDataSource = DisconnectedNASDataSource()
         device = provider.device
-        services = provider.services
+        services = provider.services + manualServiceStore.load()
         containers = provider.containers
         files = provider.files
         tasks = provider.tasks
@@ -2704,7 +3117,7 @@ final class AppDataStore: ObservableObject {
         self.provider = provider
         sourceKind = provider is DSMDataSnapshot ? .dsm : .mock
         device = provider.device
-        services = provider.services
+        services = provider.services + manualServiceStore.load()
         containers = provider.containers
         files = provider.files
         tasks = provider.tasks
@@ -2832,6 +3245,47 @@ final class AppDataStore: ObservableObject {
         services.filter { $0.category == category }
     }
 
+    func isServiceVisibleOnLaunchpad(_ service: LaunchpadService) -> Bool {
+        serviceVisibilityOverrides[service.launchpadVisibilityKey] ?? service.isLaunchpadVisible
+    }
+
+    @MainActor
+    func setService(_ service: LaunchpadService, visibleOnLaunchpad isVisible: Bool) {
+        if isVisible == service.isLaunchpadVisible {
+            serviceVisibilityOverrides.removeValue(forKey: service.launchpadVisibilityKey)
+        } else {
+            serviceVisibilityOverrides[service.launchpadVisibilityKey] = isVisible
+        }
+        launchpadVisibilityStore.save(serviceVisibilityOverrides)
+        lastRefreshSummaryKey = isVisible ? "launchpad.service.shown" : "launchpad.service.hidden"
+    }
+
+    @MainActor
+    func resetLaunchpadServiceVisibility() {
+        serviceVisibilityOverrides.removeAll()
+        launchpadVisibilityStore.save(serviceVisibilityOverrides)
+        lastRefreshSummaryKey = "launchpad.services.reset_done"
+    }
+
+    @MainActor
+    func addManualService(name: String, endpoint: URL, category: ServiceCategory, iconText: String) {
+        let service = manualServiceStore.add(
+            name: name,
+            endpoint: endpoint,
+            category: category,
+            iconText: iconText
+        )
+        services.append(service)
+        lastRefreshSummaryKey = "manual.service.added"
+    }
+
+    @MainActor
+    func deleteManualService(id: UUID) {
+        manualServiceStore.delete(id: id)
+        services.removeAll { $0.id == id && $0.source == .manual }
+        lastRefreshSummaryKey = "manual.service.deleted"
+    }
+
     func mediaItems(for service: LaunchpadService) -> [MediaItem] {
         service.name == "Navidrome" ? audioLibraryItems : videoLibraryItems
     }
@@ -2857,6 +3311,123 @@ final class AppDataStore: ObservableObject {
             certificate: device.certificate,
             sshStatus: device.sshStatus
         )
+    }
+}
+
+private struct LaunchpadVisibilityStore {
+    private let storageKey = "nastart.launchpadServiceVisibility.v1"
+
+    func load() -> [String: Bool] {
+        guard let data = UserDefaults.standard.data(forKey: storageKey) else {
+            return [:]
+        }
+        return (try? JSONDecoder().decode([String: Bool].self, from: data)) ?? [:]
+    }
+
+    func save(_ overrides: [String: Bool]) {
+        guard let data = try? JSONEncoder().encode(overrides) else { return }
+        UserDefaults.standard.set(data, forKey: storageKey)
+    }
+}
+
+private struct StoredManualLaunchpadService: Codable, Identifiable {
+    let id: UUID
+    let name: String
+    let endpointString: String
+    let categoryRawValue: String
+    let iconText: String
+    let createdAt: Date
+
+    var launchpadService: LaunchpadService? {
+        guard
+            let endpoint = URL(string: endpointString),
+            let category = ServiceCategory(rawValue: categoryRawValue)
+        else {
+            return nil
+        }
+        return LaunchpadService(
+            id: id,
+            name: name,
+            iconText: iconText,
+            category: category,
+            status: .online,
+            subtitle: endpoint.host ?? endpoint.absoluteString,
+            detail: "manual.service.detail",
+            isMedia: category == .media,
+            cpu: nil,
+            memoryText: nil,
+            ports: endpoint.port.map { ["\($0)"] } ?? [],
+            endpoint: endpoint,
+            source: .manual
+        )
+    }
+}
+
+private struct ManualLaunchpadServiceStore {
+    private let storageKey = "nastart.manualLaunchpadServices.v1"
+
+    func load() -> [LaunchpadService] {
+        loadStoredServices().compactMap(\.launchpadService)
+    }
+
+    func add(name: String, endpoint: URL, category: ServiceCategory, iconText: String) -> LaunchpadService {
+        let stored = StoredManualLaunchpadService(
+            id: UUID(),
+            name: name.trimmingCharacters(in: .whitespacesAndNewlines),
+            endpointString: endpoint.absoluteString,
+            categoryRawValue: category.rawValue,
+            iconText: Self.normalizedIconText(iconText, fallbackName: name),
+            createdAt: Date()
+        )
+        var services = loadStoredServices()
+        services.append(stored)
+        save(services)
+        return stored.launchpadService ?? LaunchpadService(
+            id: stored.id,
+            name: stored.name,
+            iconText: stored.iconText,
+            category: category,
+            status: .online,
+            subtitle: endpoint.host ?? endpoint.absoluteString,
+            detail: "manual.service.detail",
+            isMedia: category == .media,
+            cpu: nil,
+            memoryText: nil,
+            endpoint: endpoint,
+            source: .manual
+        )
+    }
+
+    func delete(id: UUID) {
+        save(loadStoredServices().filter { $0.id != id })
+    }
+
+    private func loadStoredServices() -> [StoredManualLaunchpadService] {
+        guard let data = UserDefaults.standard.data(forKey: storageKey) else {
+            return []
+        }
+        return (try? JSONDecoder().decode([StoredManualLaunchpadService].self, from: data)) ?? []
+    }
+
+    private func save(_ services: [StoredManualLaunchpadService]) {
+        guard let data = try? JSONEncoder().encode(services) else { return }
+        UserDefaults.standard.set(data, forKey: storageKey)
+    }
+
+    private static func normalizedIconText(_ value: String, fallbackName: String) -> String {
+        let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !trimmed.isEmpty {
+            return String(trimmed.prefix(3)).uppercased()
+        }
+        let letters = fallbackName
+            .split(separator: " ")
+            .compactMap(\.first)
+            .map { String($0) }
+            .joined()
+        if !letters.isEmpty {
+            return String(letters.prefix(3)).uppercased()
+        }
+        return "APP"
     }
 }
 
