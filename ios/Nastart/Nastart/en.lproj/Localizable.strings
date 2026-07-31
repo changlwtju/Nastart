@@ -308,7 +308,6 @@
 "manual.service.name.placeholder" = "Service name";
 "manual.service.url.placeholder" = "Example: http://192.168.1.10:8123";
 "manual.service.category" = "Category";
-"manual.service.icon.placeholder" = "Short icon text, optional";
 "manual.service.footer" = "Enter the complete Web UI address, including port and path when needed.";
 "manual.service.invalid" = "Enter a service name and a valid HTTP or HTTPS address.";
 "manual.service.detail" = "Manually added service";
@@ -474,8 +473,6 @@
 "mine.appearance.compact_metrics" = "Compact metrics";
 "mine.appearance.status_dot" = "Show status dots";
 "mine.appearance.cards" = "Cards";
-"mine.appearance.card_items" = "Card items";
-"mine.appearance.card_items_desc" = "Choose metadata shown on service cards.";
 "mine.appearance.group_order" = "Group order";
 "mine.appearance.group_order_desc" = "Reorder groups and choose defaults.";
 "launchpad.command.quick_actions" = "Quick Actions";
@@ -585,11 +582,6 @@
 "player.seek_forward" = "Forward 15 Seconds";
 
 "mine.appearance.item.subtitle" = "Subtitle";
-"mine.appearance.item.cpu" = "CPU";
-"mine.appearance.item.memory" = "Memory";
-"mine.appearance.item.ports" = "Ports";
-"mine.appearance.item.library" = "Library counts";
-"mine.appearance.card_items_footer" = "These options control default launchpad density.";
 "mine.appearance.group_default" = "Expanded by default";
 "mine.appearance.group_footer" = "Drag to reorder launchpad groups. Disabled groups open collapsed by default.";
 

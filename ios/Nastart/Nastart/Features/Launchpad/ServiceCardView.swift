@@ -76,24 +76,17 @@ struct ServiceIconView: View {
     var size: CGFloat = 36
 
     var body: some View {
-        fallbackIcon
-        .frame(width: size, height: size)
-        .background(AppTheme.secondarySurface)
-        .clipShape(RoundedRectangle(cornerRadius: size * 0.3, style: .continuous))
-        .overlay {
-            RoundedRectangle(cornerRadius: size * 0.3, style: .continuous)
-                .stroke(AppTheme.hairline, lineWidth: 1)
-        }
-    }
-
-    @ViewBuilder
-    private var fallbackIcon: some View {
-        Text(service.iconText)
-            .font(.system(size: size * 0.28, weight: .semibold, design: .rounded))
-            .foregroundStyle(.primary)
-            .lineLimit(1)
-            .minimumScaleFactor(0.65)
-            .padding(.horizontal, size * 0.1)
+        Image(systemName: service.symbolName)
+            .font(.system(size: size * 0.4, weight: .medium))
+            .foregroundStyle(AppTheme.accent)
+            .frame(width: size, height: size)
+            .background(AppTheme.accent.opacity(0.1))
+            .clipShape(RoundedRectangle(cornerRadius: size * 0.3, style: .continuous))
+            .overlay {
+                RoundedRectangle(cornerRadius: size * 0.3, style: .continuous)
+                    .stroke(AppTheme.hairline, lineWidth: 1)
+            }
+            .accessibilityHidden(true)
     }
 }
 

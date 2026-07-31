@@ -16,10 +16,6 @@ struct LaunchpadView: View {
     @AppStorage(AppearancePreferenceKeys.compactMetrics) private var compactMetrics = true
     @AppStorage(AppearancePreferenceKeys.showServiceStatus) private var showServiceStatus = true
     @AppStorage(AppearancePreferenceKeys.showCardSubtitle) private var showCardSubtitle = false
-    @AppStorage(AppearancePreferenceKeys.showCardCPU) private var showCardCPU = true
-    @AppStorage(AppearancePreferenceKeys.showCardMemory) private var showCardMemory = true
-    @AppStorage(AppearancePreferenceKeys.showCardPorts) private var showCardPorts = false
-    @AppStorage(AppearancePreferenceKeys.showCardLibraryCounts) private var showCardLibraryCounts = true
     @AppStorage(AppearancePreferenceKeys.groupFavoritesExpanded) private var groupFavoritesExpanded = true
     @AppStorage(AppearancePreferenceKeys.groupMediaExpanded) private var groupMediaExpanded = true
     @AppStorage(AppearancePreferenceKeys.groupDownloadsExpanded) private var groupDownloadsExpanded = true
@@ -225,11 +221,7 @@ struct LaunchpadView: View {
         LaunchpadDisplayOptions(
             compactMetrics: compactMetrics,
             showServiceStatus: showServiceStatus,
-            showSubtitle: showCardSubtitle,
-            showCPU: showCardCPU,
-            showMemory: showCardMemory,
-            showPorts: showCardPorts,
-            showLibraryCounts: showCardLibraryCounts
+            showSubtitle: showCardSubtitle
         )
     }
 
@@ -255,11 +247,7 @@ struct LaunchpadView: View {
         [
             compactMetrics,
             showServiceStatus,
-            showCardSubtitle,
-            showCardCPU,
-            showCardMemory,
-            showCardPorts,
-            showCardLibraryCounts
+            showCardSubtitle
         ].map { $0 ? "1" : "0" }.joined()
     }
 
@@ -323,10 +311,6 @@ private struct LaunchpadDisplayOptions {
     let compactMetrics: Bool
     let showServiceStatus: Bool
     let showSubtitle: Bool
-    let showCPU: Bool
-    let showMemory: Bool
-    let showPorts: Bool
-    let showLibraryCounts: Bool
 }
 
 private struct HiddenServicesRestoreStrip: View {
@@ -539,13 +523,11 @@ private struct CommandCollapsedGroupRow: View {
 
     var body: some View {
         HStack(spacing: 10) {
-            ServiceIconStack(services: services, size: 30)
+            CollapsedCategoryIcon(category: category, size: 30)
             VStack(alignment: .leading, spacing: 3) {
                 Text(LocalizedStringKey(category.titleKey))
                     .font(.body.weight(.medium))
-                Text("\(services.count)")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                CollapsedServiceNames(services: services)
             }
             Spacer()
             Text("launchpad.group.collapsed_hint")
@@ -716,13 +698,11 @@ private struct GlassCollapsedGroupRow: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            ServiceIconStack(services: services, size: 32)
+            CollapsedCategoryIcon(category: category, size: 32)
             VStack(alignment: .leading, spacing: 3) {
                 Text(LocalizedStringKey(category.titleKey))
                     .font(.body.weight(.medium))
-                Text("launchpad.group.collapsed_hint")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                CollapsedServiceNames(services: services)
             }
             Spacer()
             Text("\(services.count)")
@@ -915,7 +895,7 @@ private struct ServiceGroupSection: View {
                         isExpanded = true
                     }
                 } label: {
-                    CollapsedServicePreview(services: services)
+                    CollapsedServicePreview(category: category, services: services)
                 }
                 .buttonStyle(.plain)
             }
@@ -924,11 +904,13 @@ private struct ServiceGroupSection: View {
 }
 
 private struct CollapsedServicePreview: View {
+    let category: ServiceCategory
     let services: [LaunchpadService]
 
     var body: some View {
         HStack(spacing: 10) {
-            ServiceIconStack(services: services, size: 30)
+            CollapsedCategoryIcon(category: category, size: 30)
+            CollapsedServiceNames(services: services)
             Spacer()
             Text("launchpad.group.collapsed_hint")
                 .font(.caption)
@@ -941,35 +923,36 @@ private struct CollapsedServicePreview: View {
     }
 }
 
-private struct ServiceIconStack: View {
-    let services: [LaunchpadService]
+private struct CollapsedCategoryIcon: View {
+    let category: ServiceCategory
     let size: CGFloat
 
     var body: some View {
-        HStack(spacing: -8) {
-            ForEach(services.prefix(3)) { service in
-                ServiceIconView(service: service, size: size)
-                    .background(Color(.systemBackground))
-                    .clipShape(RoundedRectangle(cornerRadius: size * 0.28, style: .continuous))
-                    .overlay {
-                        RoundedRectangle(cornerRadius: size * 0.28, style: .continuous)
-                            .stroke(Color(.systemBackground), lineWidth: 2)
-                    }
-            }
+        Image(systemName: category.symbolName)
+            .font(.system(size: size * 0.42, weight: .medium))
+            .foregroundStyle(AppTheme.accent)
+            .frame(width: size, height: size)
+            .background(AppTheme.accent.opacity(0.1))
+            .clipShape(RoundedRectangle(cornerRadius: size * 0.28, style: .continuous))
+            .accessibilityHidden(true)
+    }
+}
 
-            if services.count > 3 {
-                Text("+\(services.count - 3)")
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(.secondary)
-                    .frame(width: size, height: size)
-                    .background(AppTheme.secondarySurface)
-                    .clipShape(RoundedRectangle(cornerRadius: size * 0.28, style: .continuous))
-                    .overlay {
-                        RoundedRectangle(cornerRadius: size * 0.28, style: .continuous)
-                            .stroke(Color(.systemBackground), lineWidth: 2)
-                    }
-            }
-        }
+private struct CollapsedServiceNames: View {
+    let services: [LaunchpadService]
+
+    var body: some View {
+        Text(summary)
+            .font(.caption)
+            .foregroundStyle(.secondary)
+            .lineLimit(1)
+            .minimumScaleFactor(0.78)
+    }
+
+    private var summary: String {
+        let visibleNames = services.prefix(2).map(\.name).joined(separator: " · ")
+        let remaining = services.count - min(services.count, 2)
+        return remaining > 0 ? "\(visibleNames) · +\(remaining)" : visibleNames
     }
 }
 
@@ -1005,23 +988,6 @@ private struct ServiceListRow: View {
                             .minimumScaleFactor(0.82)
                     }
 
-                    HStack(spacing: 6) {
-                        if options.showCPU, let cpu = service.cpu {
-                            InlineServiceMetric(titleKey: "metric.cpu", value: launchpadServicePercentText(cpu))
-                        }
-                        if options.showMemory, let memoryText = service.memoryText {
-                            InlineServiceMetric(
-                                titleKey: "metric.memory",
-                                value: service.memory.map(launchpadServicePercentText) ?? memoryText
-                            )
-                        }
-                        if options.showPorts, !service.ports.isEmpty {
-                            InlineServiceMetric(titleKey: "service.metric.ports", value: service.ports.prefix(2).joined(separator: " / "))
-                        }
-                        if options.showLibraryCounts, service.isMedia {
-                            InlineServiceMetric(titleKey: "service.metric.library", valueKey: service.name == "Navidrome" ? "media.albums.title" : "media.movies.title")
-                        }
-                    }
                 }
                 .layoutPriority(1)
 
@@ -1092,36 +1058,6 @@ private struct ServiceStatusBadge: View {
         .padding(.horizontal, 7)
         .padding(.vertical, 4)
         .background(AppTheme.secondarySurface)
-        .clipShape(Capsule())
-    }
-}
-
-private struct InlineServiceMetric: View {
-    let titleKey: LocalizedStringKey
-    let valueKey: LocalizedStringKey
-
-    init(titleKey: LocalizedStringKey, value: String) {
-        self.titleKey = titleKey
-        self.valueKey = LocalizedStringKey(value)
-    }
-
-    init(titleKey: LocalizedStringKey, valueKey: String) {
-        self.titleKey = titleKey
-        self.valueKey = LocalizedStringKey(valueKey)
-    }
-
-    var body: some View {
-        HStack(spacing: 3) {
-            Text(titleKey)
-            Text(valueKey)
-        }
-        .font(.caption2.weight(.medium))
-        .foregroundStyle(.secondary)
-        .lineLimit(1)
-        .minimumScaleFactor(0.78)
-        .padding(.horizontal, 7)
-        .padding(.vertical, 4)
-        .background(.background)
         .clipShape(Capsule())
     }
 }
@@ -3788,7 +3724,6 @@ private struct ManualServiceEditorView: View {
     @State private var name = ""
     @State private var address = ""
     @State private var category: ServiceCategory = .tools
-    @State private var iconText = ""
     @State private var showsValidationError = false
 
     var body: some View {
@@ -3814,9 +3749,6 @@ private struct ManualServiceEditorView: View {
                             .tag(category)
                     }
                 }
-                TextField("manual.service.icon.placeholder", text: $iconText)
-                    .textInputAutocapitalization(.characters)
-                    .autocorrectionDisabled()
             } footer: {
                 Text("manual.service.footer")
             }
@@ -3839,7 +3771,7 @@ private struct ManualServiceEditorView: View {
                         name: normalizedName,
                         endpoint: endpoint,
                         category: category,
-                        iconText: iconText
+                        iconText: ""
                     )
                     dismiss()
                 }

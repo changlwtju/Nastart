@@ -321,6 +321,7 @@ private struct AppearanceSettingsView: View {
     @AppStorage(LaunchpadTheme.storageKey) private var launchpadThemeRaw = LaunchpadTheme.cleanGrid.rawValue
     @AppStorage(AppLanguage.storageKey) private var appLanguageRaw = AppLanguage.system.rawValue
     @AppStorage(AppThemeMode.storageKey) private var appThemeModeRaw = AppThemeMode.system.rawValue
+    @AppStorage(AppearancePreferenceKeys.showCardSubtitle) private var showCardSubtitle = false
 
     var body: some View {
         Form {
@@ -357,10 +358,8 @@ private struct AppearanceSettingsView: View {
                 Toggle(isOn: $appearanceStore.showServiceStatus) {
                     Label("mine.appearance.status_dot", systemImage: "circle.circle")
                 }
-                NavigationLink {
-                    CardItemsSettingsView()
-                } label: {
-                    Label("mine.appearance.card_items", systemImage: "list.bullet.rectangle")
+                Toggle(isOn: $showCardSubtitle) {
+                    Label("mine.appearance.item.subtitle", systemImage: "text.alignleft")
                 }
                 NavigationLink {
                     LaunchpadGroupOrderView()
@@ -707,42 +706,6 @@ private struct LaunchpadThemePreviewArtwork: View {
         .frame(minHeight: expanded ? 52 : 30)
         .background(inverted ? Color.white.opacity(0.08) : Color(.systemBackground).opacity(0.82))
         .clipShape(RoundedRectangle(cornerRadius: expanded ? 16 : 10, style: .continuous))
-    }
-}
-
-private struct CardItemsSettingsView: View {
-    @AppStorage(AppearancePreferenceKeys.showCardSubtitle) private var showSubtitle = false
-    @AppStorage(AppearancePreferenceKeys.showCardCPU) private var showCPU = true
-    @AppStorage(AppearancePreferenceKeys.showCardMemory) private var showMemory = true
-    @AppStorage(AppearancePreferenceKeys.showCardPorts) private var showPorts = false
-    @AppStorage(AppearancePreferenceKeys.showCardLibraryCounts) private var showLibraryCounts = true
-
-    var body: some View {
-        Form {
-            Section {
-                Toggle(isOn: $showSubtitle) {
-                    Label("mine.appearance.item.subtitle", systemImage: "text.alignleft")
-                }
-                Toggle(isOn: $showCPU) {
-                    Label("mine.appearance.item.cpu", systemImage: "cpu")
-                }
-                Toggle(isOn: $showMemory) {
-                    Label("mine.appearance.item.memory", systemImage: "memorychip")
-                }
-                Toggle(isOn: $showPorts) {
-                    Label("mine.appearance.item.ports", systemImage: "network")
-                }
-                Toggle(isOn: $showLibraryCounts) {
-                    Label("mine.appearance.item.library", systemImage: "rectangle.stack")
-                }
-            } header: {
-                Text("mine.appearance.card_items")
-            } footer: {
-                Text("mine.appearance.card_items_footer")
-            }
-        }
-        .navigationTitle("mine.appearance.card_items")
-        .navigationBarTitleDisplayMode(.inline)
     }
 }
 

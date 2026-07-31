@@ -308,7 +308,6 @@
 "manual.service.name.placeholder" = "服务名称";
 "manual.service.url.placeholder" = "例如：http://192.168.1.10:8123";
 "manual.service.category" = "分类";
-"manual.service.icon.placeholder" = "图标短文本，可选";
 "manual.service.footer" = "请填写完整的 Web UI 地址；如服务需要端口或路径，也请一并填写。";
 "manual.service.invalid" = "请输入服务名称和有效的 HTTP 或 HTTPS 地址。";
 "manual.service.detail" = "手动添加的服务";
@@ -474,8 +473,6 @@
 "mine.appearance.compact_metrics" = "紧凑指标";
 "mine.appearance.status_dot" = "显示状态点";
 "mine.appearance.cards" = "卡片";
-"mine.appearance.card_items" = "卡片显示项";
-"mine.appearance.card_items_desc" = "选择启动台服务卡片中展示的元数据。";
 "mine.appearance.group_order" = "分组顺序";
 "mine.appearance.group_order_desc" = "调整启动台分组顺序和默认展开的分组。";
 "launchpad.command.quick_actions" = "快捷控制";
@@ -585,11 +582,6 @@
 "player.seek_forward" = "前进 15 秒";
 
 "mine.appearance.item.subtitle" = "副标题";
-"mine.appearance.item.cpu" = "CPU";
-"mine.appearance.item.memory" = "内存";
-"mine.appearance.item.ports" = "端口";
-"mine.appearance.item.library" = "媒体库数量";
-"mine.appearance.card_items_footer" = "这些设置会影响启动台卡片的默认信息密度。";
 "mine.appearance.group_default" = "默认展开";
 "mine.appearance.group_footer" = "拖拽可调整启动台分组顺序；关闭的分组默认以折叠态显示。";
 
