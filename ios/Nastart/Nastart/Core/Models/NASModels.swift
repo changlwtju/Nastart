@@ -90,7 +90,7 @@ struct NASDevice: Identifiable {
     let storageUsedText: String?
     let storageTotalText: String?
     let storageFreeText: String
-    let uptimeText: String
+    let uptimeMinutes: Int?
     let temperatureText: String?
     let certificate: NASCertificateInfo?
     let sshStatus: NASSSHStatus
@@ -109,6 +109,10 @@ struct NASDevice: Identifiable {
         return storageFreeText
     }
 
+    var uptimeText: String {
+        uptimeMinutes.map { NASUptimeFormatter.string(totalMinutes: $0) } ?? "-"
+    }
+
     var certificateDaysRemaining: Int? {
         certificate?.daysRemaining
     }
@@ -116,6 +120,24 @@ struct NASDevice: Identifiable {
     private func metricPercentText(_ value: Double?) -> String {
         guard let value else { return "-" }
         return "\(Int((value * 100).rounded()))%"
+    }
+}
+
+enum NASUptimeFormatter {
+    static func string(totalMinutes: Int) -> String {
+        let safeMinutes = max(totalMinutes, 0)
+        if safeMinutes >= 1_440 {
+            return String(
+                format: NSLocalizedString("uptime.days_hours", comment: ""),
+                Int64(safeMinutes / 1_440),
+                Int64((safeMinutes % 1_440) / 60)
+            )
+        }
+        return String(
+            format: NSLocalizedString("uptime.hours_minutes", comment: ""),
+            Int64(safeMinutes / 60),
+            Int64(safeMinutes % 60)
+        )
     }
 }
 

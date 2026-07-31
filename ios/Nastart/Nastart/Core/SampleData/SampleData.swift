@@ -16,7 +16,7 @@ enum SampleData {
         storageUsedText: "10.3 TB",
         storageTotalText: "13.2 TB",
         storageFreeText: "2.9 TB",
-        uptimeText: "6d 21h",
+        uptimeMinutes: 6 * 1_440 + 21 * 60,
         temperatureText: "41 C",
         certificate: NASCertificateInfo(
             subject: "nas.example.com",

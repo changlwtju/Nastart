@@ -128,7 +128,7 @@ struct DisconnectedAppDataProvider: AppDataProviding {
         storageUsedText: nil,
         storageTotalText: nil,
         storageFreeText: "-",
-        uptimeText: "-",
+        uptimeMinutes: nil,
         temperatureText: nil,
         certificate: nil,
         sshStatus: .unavailable
@@ -928,6 +928,14 @@ final class DSMClient {
             lanHosts: lanHosts,
             session: session
         )
+        let device = DSMClient.mapDevice(
+            system: system,
+            utilization: utilization,
+            storageData: storage,
+            certificateData: certificate,
+            terminalData: terminal,
+            session: session
+        )
 
         record(
             .info,
@@ -948,20 +956,14 @@ final class DSMClient {
                 "lanHosts": "\(lanHosts.count)",
                 "publishedPorts": "\(containers.reduce(0) { $0 + $1.ports.count })",
                 "resourceSamples": "\(resourceSampleCount)",
+                "uptimeMinutes": device.uptimeMinutes.map { String($0) } ?? "-",
                 "volumes": "\(Self.storageVolumeItems(storage).count)",
                 "folders": "\(files.count)"
             ]
         )
 
         return DSMDataSnapshot(
-            device: DSMClient.mapDevice(
-                system: system,
-                utilization: utilization,
-                storageData: storage,
-                certificateData: certificate,
-                terminalData: terminal,
-                session: session
-            ),
+            device: device,
             services: services,
             containers: containers,
             files: files,
@@ -1501,7 +1503,7 @@ final class DSMClient {
             storageUsedText: storage.usedText,
             storageTotalText: storage.totalText,
             storageFreeText: storage.freeText,
-            uptimeText: mapUptime(system?.firstValue(for: ["uptime", "up_time"])),
+            uptimeMinutes: mapUptimeMinutes(system?.firstValue(for: ["uptime", "up_time"])),
             temperatureText: mapTemperature(system: system, utilization: utilization),
             certificate: certificate,
             sshStatus: sshStatus
@@ -1644,8 +1646,8 @@ final class DSMClient {
         return value.lowercased().hasPrefix("dsm") ? value : "DSM \(value)"
     }
 
-    private static func mapUptime(_ value: DSMJSONValue?) -> String {
-        guard let value else { return "-" }
+    private static func mapUptimeMinutes(_ value: DSMJSONValue?) -> Int? {
+        guard let value else { return nil }
         let totalMinutes: Int?
         if let seconds = value.doubleValue, seconds >= 0 {
             totalMinutes = Int(seconds) / 60
@@ -1662,14 +1664,7 @@ final class DSMClient {
         } else {
             totalMinutes = nil
         }
-        guard let totalMinutes else { return value.stringValue ?? "-" }
-        if totalMinutes >= 1_440 {
-            let days = totalMinutes / 1_440
-            let hours = (totalMinutes % 1_440) / 60
-            let minutes = totalMinutes % 60
-            return "\(days)d\(hours)h\(minutes)min"
-        }
-        return "\(totalMinutes / 60)h\(totalMinutes % 60)min"
+        return totalMinutes
     }
 
     private static func mapTemperature(system: DSMJSONValue?, utilization: DSMJSONValue?) -> String? {
@@ -3355,7 +3350,7 @@ final class AppDataStore: ObservableObject {
             storageUsedText: fresh.storageUsedText ?? fallback.storageUsedText,
             storageTotalText: fresh.storageTotalText ?? fallback.storageTotalText,
             storageFreeText: fresh.storageFreeText == "-" ? fallback.storageFreeText : fresh.storageFreeText,
-            uptimeText: fresh.uptimeText == "-" ? fallback.uptimeText : fresh.uptimeText,
+            uptimeMinutes: fresh.uptimeMinutes ?? fallback.uptimeMinutes,
             temperatureText: fresh.temperatureText ?? fallback.temperatureText,
             certificate: fresh.certificate ?? fallback.certificate,
             sshStatus: fresh.sshStatus == .unavailable ? fallback.sshStatus : fresh.sshStatus
@@ -3542,7 +3537,7 @@ final class AppDataStore: ObservableObject {
             storageUsedText: device.storageUsedText,
             storageTotalText: device.storageTotalText,
             storageFreeText: device.storageFreeText,
-            uptimeText: device.uptimeText,
+            uptimeMinutes: device.uptimeMinutes,
             temperatureText: device.temperatureText,
             certificate: device.certificate,
             sshStatus: device.sshStatus

@@ -23,6 +23,8 @@
 "metric.storage_disk" = "Disk";
 "metric.tls" = "TLS";
 "metric.uptime" = "Uptime";
+"uptime.hours_minutes" = "%lld h %lld min";
+"uptime.days_hours" = "%lld d %lld h";
 
 "category.favorites" = "Favorites";
 "category.media" = "Media";

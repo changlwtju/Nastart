@@ -23,6 +23,8 @@
 "metric.storage_disk" = "硬盘";
 "metric.tls" = "证书";
 "metric.uptime" = "运行时间";
+"uptime.hours_minutes" = "%lld小时%lld分钟";
+"uptime.days_hours" = "%lld天%lld小时";
 
 "category.favorites" = "收藏";
 "category.media" = "媒体";

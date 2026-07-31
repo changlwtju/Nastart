@@ -750,9 +750,9 @@ private struct GlassHeroPanel: View {
                 Label("launchpad.summary.normal", systemImage: "checkmark.circle.fill")
                     .font(.subheadline.weight(.semibold))
                 Spacer()
-                if device.uptimeText != "-" {
-                    LiveUptimeText(baseText: device.uptimeText)
-                        .id(device.uptimeText)
+                if let uptimeMinutes = device.uptimeMinutes {
+                    LiveUptimeText(baseMinutes: uptimeMinutes)
+                        .id(device.id)
                         .font(.caption.weight(.medium))
                         .foregroundStyle(.secondary)
                 }
@@ -4361,7 +4361,7 @@ private struct CertificateReminderStrip: View {
 }
 
 private struct LiveUptimeText: View {
-    let baseText: String
+    let baseMinutes: Int
     @State private var startedAt = Date()
 
     var body: some View {
@@ -4371,35 +4371,8 @@ private struct LiveUptimeText: View {
     }
 
     private func displayText(at date: Date) -> String {
-        guard let baseMinutes = Self.minutes(from: baseText) else { return baseText }
         let elapsedMinutes = max(0, Int(date.timeIntervalSince(startedAt)) / 60)
-        let totalMinutes = baseMinutes + elapsedMinutes
-        if totalMinutes >= 1_440 {
-            return "\(totalMinutes / 1_440)d\((totalMinutes % 1_440) / 60)h\(totalMinutes % 60)min"
-        }
-        return "\(totalMinutes / 60)h\(totalMinutes % 60)min"
-    }
-
-    private static func minutes(from text: String) -> Int? {
-        let normalized = text.replacingOccurrences(of: " ", with: "")
-        let days: Int
-        let remainder: String
-        if let dayMarker = normalized.firstIndex(of: "d") {
-            guard let parsedDays = Int(normalized[..<dayMarker]) else { return nil }
-            days = parsedDays
-            remainder = String(normalized[normalized.index(after: dayMarker)...])
-        } else {
-            days = 0
-            remainder = normalized
-        }
-        guard let hourMarker = remainder.firstIndex(of: "h"), let hours = Int(remainder[..<hourMarker]) else {
-            return nil
-        }
-        let minuteText = String(remainder[remainder.index(after: hourMarker)...])
-            .replacingOccurrences(of: "min", with: "")
-        let minutes = minuteText.isEmpty ? 0 : Int(minuteText)
-        guard let minutes else { return nil }
-        return days * 1_440 + hours * 60 + minutes
+        return NASUptimeFormatter.string(totalMinutes: baseMinutes + elapsedMinutes)
     }
 }
 
@@ -4414,9 +4387,9 @@ private struct DeviceSummaryPanel: View {
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(.primary)
                 Spacer()
-                if device.uptimeText != "-" {
-                    LiveUptimeText(baseText: device.uptimeText)
-                        .id(device.uptimeText)
+                if let uptimeMinutes = device.uptimeMinutes {
+                    LiveUptimeText(baseMinutes: uptimeMinutes)
+                        .id(device.id)
                         .font(.caption.weight(.medium))
                         .foregroundStyle(.secondary)
                 }
