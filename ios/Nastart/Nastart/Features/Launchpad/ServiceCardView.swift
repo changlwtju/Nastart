@@ -3,8 +3,6 @@ import SwiftUI
 struct ServiceCardView: View {
     let service: LaunchpadService
     @EnvironmentObject private var dataStore: AppDataStore
-    @State private var actionMessageKey = "service.context.open_hint"
-    @State private var showActionHint = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -38,26 +36,11 @@ struct ServiceCardView: View {
         }
         .contentShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
         .contextMenu {
-            Button("action.open") {
-                showAction("service.context.open_hint")
-            }
-            Button("action.open_external") {
-                showAction("service.context.external_hint")
-            }
-            Button("action.details") {
-                showAction("service.context.details_hint")
-            }
-            Button("action.edit") {
-                showAction("service.context.edit_hint")
-            }
             Button(role: .destructive) {
                 dataStore.setService(service, visibleOnLaunchpad: false)
             } label: {
                 Label("launchpad.service.hide", systemImage: "eye.slash")
             }
-        }
-        .alert(LocalizedStringKey(actionMessageKey), isPresented: $showActionHint) {
-            Button("action.ok", role: .cancel) {}
         }
     }
 
@@ -65,10 +48,6 @@ struct ServiceCardView: View {
         AnyShapeStyle(Color(.secondarySystemGroupedBackground))
     }
 
-    private func showAction(_ key: String) {
-        actionMessageKey = key
-        showActionHint = true
-    }
 }
 
 struct ServiceIconView: View {

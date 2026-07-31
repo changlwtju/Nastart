@@ -26,6 +26,10 @@ dist/
 *.log
 /文本*.txt
 
+# Python tooling
+__pycache__/
+*.py[cod]
+
 # Local secrets
 .env
 .env.*

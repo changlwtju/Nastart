@@ -88,7 +88,7 @@ enum SampleData {
     ]
 
     static let discoveredDevices: [DiscoveredNASDevice] = [
-        DiscoveredNASDevice(id: UUID(uuidString: "BDF8F257-1DE2-4B96-9DA9-F467CA4B3084")!, name: "DS918+", host: "https://192.168.1.20:5001"),
-        DiscoveredNASDevice(id: UUID(uuidString: "9B2588CE-556C-4C75-A711-08A3587FE0B6")!, name: "Nastart Lab", host: "https://192.168.1.31:5001")
+        DiscoveredNASDevice(id: UUID(uuidString: "BDF8F257-1DE2-4B96-9DA9-F467CA4B3084")!, name: "DS918+", host: "http://192.168.1.20:5000"),
+        DiscoveredNASDevice(id: UUID(uuidString: "9B2588CE-556C-4C75-A711-08A3587FE0B6")!, name: "Nastart Lab", host: "http://192.168.1.31:5000")
     ]
 }

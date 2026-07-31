@@ -303,6 +303,7 @@ struct LaunchpadView: View {
                     .clipShape(Circle())
             }
             .buttonStyle(.plain)
+            .accessibilityLabel(Text("search.title"))
         }
     }
 }
@@ -960,8 +961,6 @@ private struct ServiceListRow: View {
     let service: LaunchpadService
     let options: LaunchpadDisplayOptions
     @EnvironmentObject private var dataStore: AppDataStore
-    @State private var actionMessageKey = "service.context.open_hint"
-    @State private var showActionHint = false
 
     var body: some View {
         NavigationLink {
@@ -1011,32 +1010,12 @@ private struct ServiceListRow: View {
         }
         .buttonStyle(.plain)
         .contextMenu {
-            Button("action.open") {
-                showAction("service.context.open_hint")
-            }
-            Button("action.open_external") {
-                showAction("service.context.external_hint")
-            }
-            Button("action.details") {
-                showAction("service.context.details_hint")
-            }
-            Button("action.edit") {
-                showAction("service.context.edit_hint")
-            }
             Button(role: .destructive) {
                 dataStore.setService(service, visibleOnLaunchpad: false)
             } label: {
                 Label("launchpad.service.hide", systemImage: "eye.slash")
             }
         }
-        .alert(LocalizedStringKey(actionMessageKey), isPresented: $showActionHint) {
-            Button("action.ok", role: .cancel) {}
-        }
-    }
-
-    private func showAction(_ key: String) {
-        actionMessageKey = key
-        showActionHint = true
     }
 
     private var rowBackground: some ShapeStyle {
@@ -1255,7 +1234,7 @@ private struct ServiceDetailView: View {
                                     .font(.title2.weight(.bold))
                                 StatusDot(status: service.status)
                             }
-                            Text(LocalizedStringKey(service.detail))
+                            Text(LocalizedStringKey(serviceDescriptionKey))
                                 .font(.subheadline)
                                 .foregroundStyle(.secondary)
                         }
@@ -1344,9 +1323,6 @@ private struct ServiceDetailView: View {
                         .fixedSize(horizontal: false, vertical: true)
                 }
                 .padding(.vertical, 4)
-                LabeledContent("service.detail.source") {
-                    Text(LocalizedStringKey(endpointOverride == nil ? service.sourceTitleKey : "service.source.manual"))
-                }
                 LabeledContent("service.detail.status") {
                     Text(LocalizedStringKey(service.status.titleKey))
                 }
@@ -1466,6 +1442,22 @@ private struct ServiceDetailView: View {
             return launchpadServicePercentText(memory)
         }
         return service.memoryText ?? "-"
+    }
+
+    private var serviceDescriptionKey: String {
+        if service.name == "DSM" {
+            return "service.dsm.detail"
+        }
+        if service.isMedia {
+            return "service.detail.media_service"
+        }
+        switch service.source {
+        case .container: return "service.detail.container_service"
+        case .reverseProxy: return "service.detail.web_service"
+        case .package: return "service.detail.package_service"
+        case .manual: return "manual.service.detail"
+        case .dsm: return "service.dsm.detail"
+        }
     }
 }
 
@@ -1771,12 +1763,16 @@ private struct ServiceWebUIView: View {
                 } label: {
                     Image(systemName: "rectangle.on.rectangle")
                 }
+                .accessibilityLabel(Text("web.mode.title"))
 
                 Button {
                     sendBrowserCommand(isLoading ? .stop : .reload)
                 } label: {
                     Image(systemName: isLoading ? "xmark" : "arrow.clockwise")
                 }
+                .accessibilityLabel(
+                    Text(LocalizedStringKey(isLoading ? "web.stop" : "action.refresh"))
+                )
 
                 Menu {
                     Button {
@@ -1808,6 +1804,7 @@ private struct ServiceWebUIView: View {
                 } label: {
                     Image(systemName: "ellipsis.circle")
                 }
+                .accessibilityLabel(Text("web.more"))
             }
 
             ToolbarItemGroup(placement: .bottomBar) {
@@ -1817,6 +1814,7 @@ private struct ServiceWebUIView: View {
                     Image(systemName: "chevron.backward")
                 }
                 .disabled(!canGoBack)
+                .accessibilityLabel(Text("web.back"))
 
                 Button {
                     sendBrowserCommand(.forward)
@@ -1824,6 +1822,7 @@ private struct ServiceWebUIView: View {
                     Image(systemName: "chevron.forward")
                 }
                 .disabled(!canGoForward)
+                .accessibilityLabel(Text("web.forward"))
 
                 Spacer()
 
@@ -1839,6 +1838,7 @@ private struct ServiceWebUIView: View {
                 } label: {
                     Image(systemName: "square.and.arrow.up")
                 }
+                .accessibilityLabel(Text("web.share"))
             }
         }
         .alert("web.copy.done", isPresented: $showCopiedHint) {
@@ -3604,8 +3604,9 @@ private struct MediaItemDetailView: View {
     let service: LaunchpadService
     let item: MediaItem
     @State private var showPlayerPicker = false
-    @State private var messageKey = "media.item.open_hint"
+    @State private var messageKey = "external.open_failed"
     @State private var showHint = false
+    @State private var sharePayload: MediaSharePayload?
 
     var body: some View {
         List {
@@ -3641,9 +3642,6 @@ private struct MediaItemDetailView: View {
                 } label: {
                     Label("service.action.open_external", systemImage: "arrow.up.forward.app")
                 }
-                Button("media.item.favorite") {
-                    show("media.item.favorite_hint")
-                }
             } header: {
                 Text("media.item.actions")
             }
@@ -3652,21 +3650,47 @@ private struct MediaItemDetailView: View {
         .navigationTitle(item.title)
         .confirmationDialog("service.external.title", isPresented: $showPlayerPicker) {
             if item.kind == .video {
-                Button("Infuse") { show("external.infuse_hint") }
-                Button("VidHub") { show("external.vidhub_hint") }
-                Button("VLC") { show("external.vlc_hint") }
+                Button("Infuse") { openExternal(.infuse) }
+                Button("VidHub") { openExternal(.vidhub) }
+                Button("VLC") { openExternal(.vlc) }
             } else {
-                Button("Navidrome") { show("external.navidrome_hint") }
-                Button("player.system") { show("external.system_player_hint") }
+                Button("VLC") { openExternal(.vlc) }
             }
+            Button("external.other_apps") { presentShareSheet() }
             Button("action.cancel", role: .cancel) {}
         }
         .alert(LocalizedStringKey(messageKey), isPresented: $showHint) {
             Button("action.ok", role: .cancel) {}
         }
+        .sheet(item: $sharePayload) { payload in
+            SystemShareView(items: [payload.url])
+        }
     }
 
-    private func show(_ key: String) {
+    private func openExternal(_ target: ExternalOpenTarget) {
+        guard let targetURL = target.url(endpoint: suggestedStreamURL, filename: item.title) else {
+            showFailure("external.unsupported_hint")
+            return
+        }
+        showPlayerPicker = false
+        UIApplication.shared.open(targetURL, options: [:]) { accepted in
+            guard !accepted else { return }
+            DispatchQueue.main.async {
+                showFailure(target.failureMessageKey)
+            }
+        }
+    }
+
+    private func presentShareSheet() {
+        guard let suggestedStreamURL else {
+            showFailure("external.unsupported_hint")
+            return
+        }
+        showPlayerPicker = false
+        sharePayload = MediaSharePayload(url: suggestedStreamURL)
+    }
+
+    private func showFailure(_ key: String) {
         messageKey = key
         showHint = true
     }
@@ -3677,6 +3701,11 @@ private struct MediaItemDetailView: View {
         }
         return url
     }
+}
+
+private struct MediaSharePayload: Identifiable {
+    let id = UUID()
+    let url: URL
 }
 
 private struct NASConnectionWelcomeView: View {
@@ -3971,6 +4000,7 @@ private struct DSMConnectionFlowView: View {
                 } label: {
                     Image(systemName: "xmark")
                 }
+                .accessibilityLabel(Text("action.cancel"))
             }
         }
         .alert("connect.review.done", isPresented: $showFinishHint) {

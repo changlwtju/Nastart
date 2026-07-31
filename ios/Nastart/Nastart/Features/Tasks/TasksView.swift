@@ -43,7 +43,7 @@ struct TasksView: View {
                         } else {
                             ForEach(dataStore.tasks) { task in
                                 NavigationLink {
-                                    TaskDetailView(task: task)
+                                    TaskDetailView(task: task, isHistory: false)
                                 } label: {
                                     TaskRow(task: task)
                                 }
@@ -66,11 +66,21 @@ struct TasksView: View {
                             Label("tasks.watch.agent", systemImage: "antenna.radiowaves.left.and.right")
                         }
                     case .history:
-                        TaskEmptyView(
-                            symbol: "archivebox",
-                            titleKey: "tasks.empty.history",
-                            descriptionKey: "tasks.empty.history.description"
-                        )
+                        if dataStore.completedTasks.isEmpty {
+                            TaskEmptyView(
+                                symbol: "archivebox",
+                                titleKey: "tasks.empty.history",
+                                descriptionKey: "tasks.empty.history.description"
+                            )
+                        } else {
+                            ForEach(dataStore.completedTasks) { task in
+                                NavigationLink {
+                                    TaskDetailView(task: task, isHistory: true)
+                                } label: {
+                                    TaskRow(task: task)
+                                }
+                            }
+                        }
                     }
                 } header: {
                     Text(segment.titleKey)
@@ -87,6 +97,7 @@ struct TasksView: View {
                     } label: {
                         Image(systemName: "plus")
                     }
+                    .accessibilityLabel(Text("reminder.create.title"))
                 }
             }
         }
@@ -153,6 +164,15 @@ private struct TaskRow: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
+
+            Spacer(minLength: 8)
+
+            if task.isMuted {
+                Image(systemName: "bell.slash")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .accessibilityLabel(Text("tasks.detail.mute"))
+            }
         }
         .padding(.vertical, 4)
     }
@@ -160,9 +180,16 @@ private struct TaskRow: View {
 
 private struct TaskDetailView: View {
     let task: TaskItem
-    @State private var isMuted = false
-    @State private var actionMessageKey = "tasks.detail.handle_hint"
-    @State private var showActionHint = false
+    let isHistory: Bool
+    @EnvironmentObject private var dataStore: AppDataStore
+    @Environment(\.dismiss) private var dismiss
+    @State private var isMuted: Bool
+
+    init(task: TaskItem, isHistory: Bool) {
+        self.task = task
+        self.isHistory = isHistory
+        _isMuted = State(initialValue: task.isMuted)
+    }
 
     var body: some View {
         List {
@@ -180,47 +207,50 @@ private struct TaskDetailView: View {
                 .padding(.vertical, 8)
             }
 
-            Section {
-                Button("tasks.detail.handle") {
-                    showAction("tasks.detail.handle_hint")
+            if !isHistory {
+                Section {
+                    Toggle("tasks.detail.mute", isOn: $isMuted)
+                        .onChange(of: isMuted) { newValue in
+                            dataStore.setTask(task, muted: newValue)
+                        }
+                    Button("tasks.detail.done") {
+                        dataStore.completeTask(task)
+                        dismiss()
+                    }
+                } header: {
+                    Text("tasks.detail.actions")
                 }
-                Toggle("tasks.detail.mute", isOn: $isMuted)
-                Button("tasks.detail.done") {
-                    showAction("tasks.detail.done_hint")
-                }
-            } header: {
-                Text("tasks.detail.actions")
             }
 
             Section {
                 LabeledContent("tasks.detail.created") {
-                    Text("state.today")
+                    Text(task.createdAt, style: .date)
                 }
-                LabeledContent("tasks.detail.next", value: task.isUrgent ? "19d" : "42d")
+                if let completedAt = task.completedAt {
+                    LabeledContent("tasks.detail.completed") {
+                        Text(completedAt, style: .date)
+                    }
+                } else if let nextReminderAt = task.nextReminderAt {
+                    LabeledContent("tasks.detail.next") {
+                        Text(nextReminderAt, style: .date)
+                    }
+                }
             } header: {
                 Text("tasks.detail.timeline")
             }
         }
         .listStyle(.insetGrouped)
         .navigationTitle("tasks.detail.title")
-        .alert(LocalizedStringKey(actionMessageKey), isPresented: $showActionHint) {
-            Button("action.ok", role: .cancel) {}
-        }
-    }
-
-    private func showAction(_ key: String) {
-        actionMessageKey = key
-        showActionHint = true
     }
 }
 
-private struct ReminderCreateView: View {
+struct ReminderCreateView: View {
+    @EnvironmentObject private var dataStore: AppDataStore
+    @Environment(\.dismiss) private var dismiss
     @State private var kind: ReminderKind
     @State private var title = ""
     @State private var target = ""
     @State private var daysBefore = 14
-    @State private var enablePush = true
-    @State private var showSavedHint = false
 
     init(defaultKind: ReminderKind) {
         _kind = State(initialValue: defaultKind)
@@ -245,16 +275,31 @@ private struct ReminderCreateView: View {
 
             Section {
                 Stepper(value: $daysBefore, in: 1...60) {
-                    LabeledContent("reminder.days_before", value: "\(daysBefore)d")
+                    LabeledContent(
+                        "reminder.days_before",
+                        value: String.localizedStringWithFormat(
+                            NSLocalizedString("reminder.days_value %lld", comment: ""),
+                            daysBefore
+                        )
+                    )
                 }
-                Toggle("reminder.push", isOn: $enablePush)
             } header: {
                 Text("reminder.section.notify")
             }
 
             Section {
                 Button {
-                    showSavedHint = true
+                    dataStore.addTask(
+                        TaskItem(
+                            id: UUID(),
+                            title: normalizedTitle,
+                            subtitle: normalizedTarget,
+                            symbol: kind.symbolName,
+                            isUrgent: daysBefore <= 7,
+                            daysBefore: daysBefore
+                        )
+                    )
+                    dismiss()
                 } label: {
                     Text("reminder.save")
                         .font(.headline.weight(.semibold))
@@ -262,12 +307,33 @@ private struct ReminderCreateView: View {
                 }
                 .buttonStyle(.borderedProminent)
                 .tint(AppTheme.accent)
+                .disabled(!canSave)
             }
         }
         .listStyle(.insetGrouped)
         .navigationTitle("reminder.create.title")
-        .alert("reminder.saved_hint", isPresented: $showSavedHint) {
-            Button("action.ok", role: .cancel) {}
+    }
+
+    private var normalizedTitle: String {
+        title.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    private var normalizedTarget: String {
+        target.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    private var canSave: Bool {
+        !normalizedTitle.isEmpty && !normalizedTarget.isEmpty
+    }
+}
+
+private extension ReminderKind {
+    var symbolName: String {
+        switch self {
+        case .certificate: return "lock.shield"
+        case .domain: return "globe"
+        case .service: return "antenna.radiowaves.left.and.right"
+        case .subscription: return "creditcard"
         }
     }
 }

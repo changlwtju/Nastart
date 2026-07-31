@@ -104,8 +104,6 @@ struct MineView: View {
 private struct PlusView: View {
     @Environment(\.openURL) private var openURL
     @EnvironmentObject private var entitlementStore: EntitlementStore
-    @State private var showSubscribeHint = false
-    @State private var showRestoreHint = false
     @State private var selectedPlan: PlusBillingPlan = .yearly
 
     var body: some View {
@@ -160,29 +158,26 @@ private struct PlusView: View {
                 }
 
                 VStack(spacing: 12) {
-                    Button {
-                        if entitlementStore.hasPlus {
+                    if entitlementStore.hasPlus {
+                        Button {
                             openSubscriptionManagement()
-                        } else {
-                            showSubscribeHint = true
+                        } label: {
+                            HStack {
+                                Text("plus.action.manage")
+                                Spacer()
+                                Image(systemName: "arrow.right")
+                                    .accessibilityHidden(true)
+                            }
                         }
-                    } label: {
-                        HStack {
-                            Text(LocalizedStringKey(entitlementStore.hasPlus ? "plus.action.manage" : "plus.action.subscribe"))
-                            Spacer()
-                            Image(systemName: "arrow.right")
-                                .accessibilityHidden(true)
-                        }
+                        .buttonStyle(NastartPrimaryButtonStyle())
+                    } else {
+                        Label("plus.purchase.unavailable", systemImage: "hammer")
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(.secondary)
+                            .frame(maxWidth: .infinity, minHeight: 52)
+                            .background(AppTheme.secondarySurface)
+                            .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
                     }
-                    .buttonStyle(NastartPrimaryButtonStyle())
-
-                    Button("plus.action.restore") {
-                        entitlementStore.restorePurchases()
-                        showRestoreHint = true
-                    }
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(AppTheme.accent)
-                    .frame(minHeight: 44)
 
                     Text("plus.subscription.footer")
                         .font(.caption)
@@ -198,12 +193,6 @@ private struct PlusView: View {
         .background(AppTheme.groupedBackground.ignoresSafeArea())
         .navigationTitle("mine.plus.title")
         .navigationBarTitleDisplayMode(.inline)
-        .alert("plus.subscribe_hint", isPresented: $showSubscribeHint) {
-            Button("action.ok", role: .cancel) {}
-        }
-        .alert("plus.restore_hint", isPresented: $showRestoreHint) {
-            Button("action.ok", role: .cancel) {}
-        }
     }
 
     private func openSubscriptionManagement() {
@@ -836,9 +825,10 @@ private struct LaunchpadGroupOrderView: View {
 }
 
 private struct PlayerSettingsView: View {
-    @State private var defaultVideo = "Infuse"
-    @State private var defaultAudio = "Navidrome"
-    @State private var preferExternal = true
+    @EnvironmentObject private var dataStore: AppDataStore
+    @AppStorage("player.defaultVideo") private var defaultVideo = "Infuse"
+    @AppStorage("player.defaultAudio") private var defaultAudio = "Navidrome"
+    @AppStorage("player.preferExternal") private var preferExternal = true
 
     var body: some View {
         Form {
@@ -866,10 +856,10 @@ private struct PlayerSettingsView: View {
             }
 
             Section {
-                PlayerIntegrationRow(name: "Jellyfin", detailKey: "state.connected")
-                PlayerIntegrationRow(name: "Emby", detailKey: "state.not_connected")
-                PlayerIntegrationRow(name: "Plex", detailKey: "state.planned")
-                PlayerIntegrationRow(name: "Navidrome", detailKey: "state.connected")
+                PlayerIntegrationRow(name: "Jellyfin", status: integrationStatus(for: "jellyfin"))
+                PlayerIntegrationRow(name: "Emby", status: integrationStatus(for: "emby"))
+                PlayerIntegrationRow(name: "Plex", status: integrationStatus(for: "plex"))
+                PlayerIntegrationRow(name: "Navidrome", status: integrationStatus(for: "navidrome"))
             } header: {
                 Text("mine.players.integrations")
             }
@@ -877,18 +867,37 @@ private struct PlayerSettingsView: View {
         .navigationTitle("mine.players.title")
         .navigationBarTitleDisplayMode(.inline)
     }
+
+    private func integrationStatus(for serviceName: String) -> ServiceStatus? {
+        dataStore.services.first {
+            $0.name.localizedCaseInsensitiveContains(serviceName)
+        }?.status
+    }
 }
 
 private struct PlayerIntegrationRow: View {
     let name: String
-    let detailKey: LocalizedStringKey
+    let status: ServiceStatus?
 
     var body: some View {
-        HStack {
+        HStack(spacing: 10) {
             Label(name, systemImage: symbolName)
             Spacer()
-            Text(detailKey)
+            StatusDot(status: status ?? .unknown)
+            Text(LocalizedStringKey(detailKey))
+                .font(.caption)
                 .foregroundStyle(.secondary)
+        }
+    }
+
+    private var detailKey: String {
+        guard let status else { return "state.not_connected" }
+        switch status {
+        case .online: return "status.online"
+        case .installed: return "status.installed"
+        case .warning: return "status.warning"
+        case .offline: return "status.offline"
+        case .unknown: return "status.unknown"
         }
     }
 
@@ -905,9 +914,9 @@ private struct PlayerIntegrationRow: View {
 
 private struct SyncSettingsView: View {
     @EnvironmentObject private var entitlementStore: EntitlementStore
-    @State private var iCloudSync = true
-    @State private var syncLaunchpad = true
-    @State private var syncReminders = true
+    @AppStorage("sync.icloud.enabled") private var iCloudSync = false
+    @AppStorage("sync.icloud.launchpad") private var syncLaunchpad = false
+    @AppStorage("sync.icloud.reminders") private var syncReminders = false
 
     var body: some View {
         Form {
@@ -919,11 +928,11 @@ private struct SyncSettingsView: View {
                 Toggle(isOn: $syncLaunchpad) {
                     Label("mine.sync.launchpad", systemImage: "square.grid.2x2")
                 }
-                    .disabled(!entitlementStore.canUse(.iCloudSync))
+                    .disabled(!entitlementStore.canUse(.iCloudSync) || !iCloudSync)
                 Toggle(isOn: $syncReminders) {
                     Label("mine.sync.reminders", systemImage: "bell")
                 }
-                    .disabled(!entitlementStore.canUse(.iCloudSync))
+                    .disabled(!entitlementStore.canUse(.iCloudSync) || !iCloudSync)
             } header: {
                 Text("mine.sync.icloud")
             }
@@ -932,13 +941,13 @@ private struct SyncSettingsView: View {
                 HStack {
                     Label("mine.sync.devices", systemImage: "iphone.and.arrow.forward")
                     Spacer()
-                    Text("2")
+                    Text(iCloudSync ? "1" : "-")
                         .foregroundStyle(.secondary)
                 }
                 HStack {
                     Label("mine.sync.last", systemImage: "clock.arrow.circlepath")
                     Spacer()
-                    Text("state.just_now")
+                    Text(LocalizedStringKey(iCloudSync ? "mine.sync.waiting" : "state.not_connected"))
                         .foregroundStyle(.secondary)
                 }
                 if !entitlementStore.hasPlus {
@@ -958,19 +967,11 @@ private struct SyncSettingsView: View {
 }
 
 private struct PrivacySecurityView: View {
-    @State private var biometricUnlock = true
-    @State private var clipboardCheck = true
     @State private var showCacheHint = false
 
     var body: some View {
         Form {
             Section {
-                Toggle(isOn: $biometricUnlock) {
-                    Label("mine.privacy.faceid", systemImage: "faceid")
-                }
-                Toggle(isOn: $clipboardCheck) {
-                    Label("mine.privacy.clipboard", systemImage: "doc.on.clipboard")
-                }
                 NavigationLink {
                     KeychainSettingsView()
                 } label: {
@@ -987,6 +988,7 @@ private struct PrivacySecurityView: View {
                     Label("mine.privacy.export", systemImage: "square.and.arrow.up")
                 }
                 Button {
+                    URLCache.shared.removeAllCachedResponses()
                     showCacheHint = true
                 } label: {
                     Label("mine.privacy.clear_cache", systemImage: "trash")
@@ -1004,8 +1006,9 @@ private struct PrivacySecurityView: View {
 }
 
 private struct KeychainSettingsView: View {
-    @State private var messageKey = "mine.privacy.keychain_rotate_hint"
-    @State private var showHint = false
+    @State private var hasDSMCredential = false
+    @State private var showClearConfirmation = false
+    @State private var showClearedHint = false
 
     var body: some View {
         List {
@@ -1017,25 +1020,21 @@ private struct KeychainSettingsView: View {
             }
 
             Section {
-                SecureItemRow(titleKey: "mine.privacy.keychain.dsm", detailKey: "state.connected")
-                SecureItemRow(titleKey: "mine.privacy.keychain.agent", detailKey: "state.connected")
-                SecureItemRow(titleKey: "mine.privacy.keychain.media", detailKey: "state.not_connected")
+                SecureItemRow(
+                    titleKey: "mine.privacy.keychain.dsm",
+                    detailKey: hasDSMCredential ? "state.connected" : "state.not_connected"
+                )
             } header: {
                 Text("mine.privacy.keychain_items")
             }
 
             Section {
-                Button {
-                    show("mine.privacy.keychain_rotate_hint")
-                } label: {
-                    Label("mine.privacy.keychain.rotate", systemImage: "arrow.triangle.2.circlepath")
-                }
                 Button(role: .destructive) {
-                    KeychainStore.shared.clearNASCredentials()
-                    show("mine.privacy.keychain_clear_hint")
+                    showClearConfirmation = true
                 } label: {
                     Label("mine.privacy.keychain.clear", systemImage: "trash")
                 }
+                .disabled(!hasDSMCredential)
             } header: {
                 Text("mine.privacy.keychain_actions")
             }
@@ -1043,14 +1042,24 @@ private struct KeychainSettingsView: View {
         .listStyle(.insetGrouped)
         .navigationTitle("mine.privacy.keychain")
         .navigationBarTitleDisplayMode(.inline)
-        .alert(LocalizedStringKey(messageKey), isPresented: $showHint) {
+        .onAppear {
+            hasDSMCredential = KeychainStore.shared.loadNASCredential() != nil
+        }
+        .confirmationDialog(
+            "mine.privacy.keychain.clear_confirm",
+            isPresented: $showClearConfirmation,
+            titleVisibility: .visible
+        ) {
+            Button("mine.privacy.keychain.clear", role: .destructive) {
+                KeychainStore.shared.clearNASCredentials()
+                hasDSMCredential = false
+                showClearedHint = true
+            }
+            Button("action.cancel", role: .cancel) {}
+        }
+        .alert("mine.privacy.keychain_clear_hint", isPresented: $showClearedHint) {
             Button("action.ok", role: .cancel) {}
         }
-    }
-
-    private func show(_ key: String) {
-        messageKey = key
-        showHint = true
     }
 }
 
@@ -1069,11 +1078,10 @@ private struct SecureItemRow: View {
 }
 
 private struct DataExportView: View {
+    @EnvironmentObject private var dataStore: AppDataStore
     @State private var includeLaunchpad = true
     @State private var includeReminders = true
     @State private var includeSettings = true
-    @State private var includeSecrets = false
-    @State private var showExportHint = false
 
     var body: some View {
         Form {
@@ -1087,9 +1095,6 @@ private struct DataExportView: View {
                 Toggle(isOn: $includeSettings) {
                     Label("mine.privacy.export.settings", systemImage: "gearshape")
                 }
-                Toggle(isOn: $includeSecrets) {
-                    Label("mine.privacy.export.secrets", systemImage: "key")
-                }
             } header: {
                 Text("mine.privacy.export_scope")
             } footer: {
@@ -1097,34 +1102,90 @@ private struct DataExportView: View {
             }
 
             Section {
-                Button {
-                    showExportHint = true
-                } label: {
+                ShareLink(item: exportText) {
                     Label("mine.privacy.export", systemImage: "square.and.arrow.up")
                         .font(.headline.weight(.semibold))
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.borderedProminent)
                 .tint(AppTheme.accent)
+                .disabled(!hasExportSelection)
             }
         }
         .navigationTitle("mine.privacy.export")
         .navigationBarTitleDisplayMode(.inline)
-        .alert("mine.privacy.export_hint", isPresented: $showExportHint) {
-            Button("action.ok", role: .cancel) {}
+    }
+
+    private var hasExportSelection: Bool {
+        includeLaunchpad || includeReminders || includeSettings
+    }
+
+    private var exportText: String {
+        var payload: [String: Any] = [
+            "formatVersion": 1,
+            "exportedAt": ISO8601DateFormatter().string(from: Date())
+        ]
+
+        if includeLaunchpad {
+            payload["launchpad"] = dataStore.services.map { service in
+                [
+                    "name": service.name,
+                    "category": service.category.rawValue,
+                    "visible": dataStore.isServiceVisibleOnLaunchpad(service)
+                ] as [String: Any]
+            }
         }
+
+        if includeReminders {
+            payload["reminders"] = [
+                "pending": dataStore.tasks.map { taskExportValue($0) },
+                "history": dataStore.completedTasks.map { taskExportValue($0) }
+            ]
+        }
+
+        if includeSettings {
+            payload["settings"] = [
+                "launchpadTheme": UserDefaults.standard.string(forKey: LaunchpadTheme.storageKey) ?? LaunchpadTheme.cleanGrid.rawValue,
+                "language": UserDefaults.standard.string(forKey: AppLanguage.storageKey) ?? AppLanguage.system.rawValue,
+                "displayMode": UserDefaults.standard.string(forKey: AppThemeMode.storageKey) ?? AppThemeMode.system.rawValue,
+                "compactMetrics": UserDefaults.standard.object(forKey: AppearancePreferenceKeys.compactMetrics) as? Bool ?? true,
+                "showServiceStatus": UserDefaults.standard.object(forKey: AppearancePreferenceKeys.showServiceStatus) as? Bool ?? true
+            ] as [String: Any]
+        }
+
+        guard
+            JSONSerialization.isValidJSONObject(payload),
+            let data = try? JSONSerialization.data(withJSONObject: payload, options: [.prettyPrinted, .sortedKeys]),
+            let text = String(data: data, encoding: .utf8)
+        else {
+            return "{}"
+        }
+        return text
+    }
+
+    private func taskExportValue(_ task: TaskItem) -> [String: Any] {
+        var value: [String: Any] = [
+            "id": task.id.uuidString,
+            "title": task.title,
+            "target": task.subtitle,
+            "createdAt": ISO8601DateFormatter().string(from: task.createdAt),
+            "daysBefore": task.daysBefore,
+            "muted": task.isMuted
+        ]
+        if let completedAt = task.completedAt {
+            value["completedAt"] = ISO8601DateFormatter().string(from: completedAt)
+        }
+        return value
     }
 }
 
 private struct HelpAboutView: View {
-    @EnvironmentObject private var diagnostics: DiagnosticLogStore
-    @State private var messageKey = "mine.about.feedback_hint"
-    @State private var showHint = false
+    @Environment(\.openURL) private var openURL
 
     var body: some View {
         List {
             Section {
-                LabeledContent("Nastart", value: "0.1.0")
+                LabeledContent("Nastart", value: versionText)
                 LabeledContent("mine.about.compatibility", value: "DSM 7.2+")
             }
 
@@ -1135,33 +1196,23 @@ private struct HelpAboutView: View {
                     Label("diagnostics.title", systemImage: "stethoscope")
                 }
                 Button {
-                    show("mine.about.feedback_hint")
+                    if let url = URL(string: "https://github.com/changlwtju/Nastart/issues") {
+                        openURL(url)
+                    }
                 } label: {
                     Label("mine.about.feedback", systemImage: "bubble.left.and.bubble.right")
-                }
-                Button {
-                    show("mine.about.privacy_hint")
-                } label: {
-                    Label("mine.about.privacy", systemImage: "hand.raised")
-                }
-                Button {
-                    show("mine.about.terms_hint")
-                } label: {
-                    Label("mine.about.terms", systemImage: "doc.text")
                 }
             }
         }
         .listStyle(.insetGrouped)
         .navigationTitle("mine.about.title")
         .navigationBarTitleDisplayMode(.inline)
-        .alert(LocalizedStringKey(messageKey), isPresented: $showHint) {
-            Button("action.ok", role: .cancel) {}
-        }
     }
 
-    private func show(_ key: String) {
-        messageKey = key
-        showHint = true
+    private var versionText: String {
+        let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "-"
+        let build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "-"
+        return "\(version) (\(build))"
     }
 }
 

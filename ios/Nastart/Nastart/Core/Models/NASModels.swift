@@ -319,12 +319,42 @@ struct DockerContainer: Identifiable {
     let ports: [String]
 }
 
-struct TaskItem: Identifiable {
+struct TaskItem: Identifiable, Codable {
     let id: UUID
     let title: String
     let subtitle: String
     let symbol: String
     let isUrgent: Bool
+    var isMuted: Bool
+    let createdAt: Date
+    let daysBefore: Int
+    var completedAt: Date?
+
+    init(
+        id: UUID,
+        title: String,
+        subtitle: String,
+        symbol: String,
+        isUrgent: Bool,
+        isMuted: Bool = false,
+        createdAt: Date = Date(),
+        daysBefore: Int = 14,
+        completedAt: Date? = nil
+    ) {
+        self.id = id
+        self.title = title
+        self.subtitle = subtitle
+        self.symbol = symbol
+        self.isUrgent = isUrgent
+        self.isMuted = isMuted
+        self.createdAt = createdAt
+        self.daysBefore = daysBefore
+        self.completedAt = completedAt
+    }
+
+    var nextReminderAt: Date? {
+        Calendar.current.date(byAdding: .day, value: daysBefore, to: createdAt)
+    }
 }
 
 enum MediaKind: Equatable {

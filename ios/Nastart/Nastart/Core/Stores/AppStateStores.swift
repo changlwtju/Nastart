@@ -3212,12 +3212,39 @@ extension LANDiscoveryService: NetServiceDelegate {
     }
 }
 
+private struct PersistedTaskState: Codable {
+    let pending: [TaskItem]
+    let history: [TaskItem]
+}
+
+private final class LocalTaskStore {
+    private let storageKey = "tasks.localState.v1"
+
+    func load() -> PersistedTaskState? {
+        guard
+            let data = UserDefaults.standard.data(forKey: storageKey),
+            let state = try? JSONDecoder().decode(PersistedTaskState.self, from: data)
+        else {
+            return nil
+        }
+        return state
+    }
+
+    func save(pending: [TaskItem], history: [TaskItem]) {
+        guard let data = try? JSONEncoder().encode(PersistedTaskState(pending: pending, history: history)) else {
+            return
+        }
+        UserDefaults.standard.set(data, forKey: storageKey)
+    }
+}
+
 final class AppDataStore: ObservableObject {
     @Published private(set) var device: NASDevice
     @Published private(set) var services: [LaunchpadService]
     @Published private(set) var containers: [DockerContainer]
     @Published private(set) var files: [FileItem]
     @Published private(set) var tasks: [TaskItem]
+    @Published private(set) var completedTasks: [TaskItem]
     @Published private(set) var videoLibraryItems: [MediaItem]
     @Published private(set) var audioLibraryItems: [MediaItem]
     @Published private(set) var discoveredDevices: [DiscoveredNASDevice]
@@ -3230,10 +3257,14 @@ final class AppDataStore: ObservableObject {
     private var activeDataSource: NASDataSource
     private var manualServiceStore = ManualLaunchpadServiceStore()
     private let launchpadVisibilityStore = LaunchpadVisibilityStore()
+    private let localTaskStore: LocalTaskStore
     private var preservedContainerInventoryOnLastMerge = false
 
     init(provider: AppDataProviding = DisconnectedAppDataProvider()) {
+        let taskStore = LocalTaskStore()
+        let persistedTasks = taskStore.load()
         self.provider = provider
+        localTaskStore = taskStore
         serviceVisibilityOverrides = LaunchpadVisibilityStore().load()
         sourceKind = provider is DSMDataSnapshot ? .dsm : .mock
         activeDataSource = DisconnectedNASDataSource()
@@ -3241,7 +3272,8 @@ final class AppDataStore: ObservableObject {
         services = provider.services + manualServiceStore.load()
         containers = provider.containers
         files = provider.files
-        tasks = provider.tasks
+        tasks = persistedTasks?.pending ?? provider.tasks
+        completedTasks = persistedTasks?.history ?? []
         videoLibraryItems = provider.videoLibraryItems
         audioLibraryItems = provider.audioLibraryItems
         discoveredDevices = provider.discoveredDevices
@@ -3269,7 +3301,10 @@ final class AppDataStore: ObservableObject {
             ? previousContainers
             : provider.containers
         files = provider.files
-        tasks = provider.tasks
+        if tasks.isEmpty, completedTasks.isEmpty, !provider.tasks.isEmpty {
+            tasks = provider.tasks
+            persistTasks()
+        }
         videoLibraryItems = provider.videoLibraryItems
         audioLibraryItems = provider.audioLibraryItems
         discoveredDevices = provider.discoveredDevices
@@ -3519,6 +3554,32 @@ final class AppDataStore: ObservableObject {
 
     func mediaItems(for service: LaunchpadService) -> [MediaItem] {
         service.name == "Navidrome" ? audioLibraryItems : videoLibraryItems
+    }
+
+    @MainActor
+    func addTask(_ task: TaskItem) {
+        tasks.insert(task, at: 0)
+        persistTasks()
+    }
+
+    @MainActor
+    func setTask(_ task: TaskItem, muted isMuted: Bool) {
+        guard let index = tasks.firstIndex(where: { $0.id == task.id }) else { return }
+        tasks[index].isMuted = isMuted
+        persistTasks()
+    }
+
+    @MainActor
+    func completeTask(_ task: TaskItem) {
+        guard let index = tasks.firstIndex(where: { $0.id == task.id }) else { return }
+        var completedTask = tasks.remove(at: index)
+        completedTask.completedAt = Date()
+        completedTasks.insert(completedTask, at: 0)
+        persistTasks()
+    }
+
+    private func persistTasks() {
+        localTaskStore.save(pending: tasks, history: completedTasks)
     }
 
     func selectDiscoveredDevice(_ discoveredDevice: DiscoveredNASDevice) -> NASDevice {
@@ -3806,28 +3867,6 @@ final class AppearanceStore: ObservableObject {
     }
 }
 
-final class ProfileStore: ObservableObject {
-    @Published var nickname: String {
-        didSet {
-            UserDefaults.standard.set(nickname, forKey: Self.nicknameKey)
-        }
-    }
-
-    @Published var avatarInitial: String {
-        didSet {
-            UserDefaults.standard.set(avatarInitial, forKey: Self.avatarInitialKey)
-        }
-    }
-
-    init() {
-        nickname = UserDefaults.standard.string(forKey: Self.nicknameKey) ?? NSLocalizedString("mine.profile.name", comment: "")
-        avatarInitial = UserDefaults.standard.string(forKey: Self.avatarInitialKey) ?? "N"
-    }
-
-    private static let nicknameKey = "profile.nickname"
-    private static let avatarInitialKey = "profile.avatarInitial"
-}
-
 final class NASConnectionStore: ObservableObject {
     @Published private(set) var connectedDevice: NASDevice?
     @Published private(set) var isConnected: Bool
@@ -3836,10 +3875,6 @@ final class NASConnectionStore: ObservableObject {
     init(device: NASDevice? = nil) {
         connectedDevice = device
         isConnected = device != nil
-    }
-
-    var profileSubtitleKey: String {
-        isConnected ? "mine.profile.connected" : "mine.profile.not_connected"
     }
 
     var usesAgent: Bool {
@@ -3862,9 +3897,8 @@ final class NASConnectionStore: ObservableObject {
 
 final class EntitlementStore: ObservableObject {
     @Published private(set) var plusStatus: PlusStatus
-    @Published private(set) var isRestoring = false
 
-    init(plusStatus: PlusStatus = .active) {
+    init(plusStatus: PlusStatus = .free) {
         self.plusStatus = plusStatus
     }
 
@@ -3879,19 +3913,6 @@ final class EntitlementStore: ObservableObject {
         }
     }
 
-    func activatePreviewPlus() {
-        plusStatus = .active
-    }
-
-    func restorePurchases() {
-        isRestoring = true
-        plusStatus = .active
-        isRestoring = false
-    }
-
-    func refreshEntitlements() {
-        // StoreKit 2 transaction refresh will update this state in the real purchase layer.
-    }
 }
 
 final class KeychainStore {
@@ -3927,7 +3948,6 @@ final class KeychainStore {
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: service
         ] as CFDictionary)
-        // Agent tokens and service API keys will be deleted here after those credential types land.
     }
 
     private func baseQuery(account: String) -> [String: Any] {

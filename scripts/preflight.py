@@ -227,6 +227,36 @@ def check_localizations() -> CheckResult:
     return CheckResult("Localization parity", errors, [])
 
 
+def check_localization_references() -> CheckResult:
+    errors: list[str] = []
+    defined_keys: set[str] = set()
+    for path in LOCALIZATION_FILES.values():
+        if path.exists():
+            values, _ = parse_localizable(path)
+            defined_keys.update(values)
+
+    call_patterns = [
+        re.compile(
+            r'\b(?:Text|Label|Button|TextField|SecureField|Toggle|Picker|LabeledContent)'
+            r'\(\s*"((?:\\.|[^"\\])*)"'
+        ),
+        re.compile(r'\.(?:navigationTitle|alert|confirmationDialog)\(\s*"((?:\\.|[^"\\])*)"'),
+        re.compile(r'\bNSLocalizedString\(\s*"((?:\\.|[^"\\])*)"'),
+    ]
+
+    for path in swift_files():
+        source = path.read_text(encoding="utf-8")
+        for pattern in call_patterns:
+            for match in pattern.finditer(source):
+                key = match.group(1)
+                if "\\(" in key or "." not in key or key in defined_keys:
+                    continue
+                line = source.count("\n", 0, match.start()) + 1
+                errors.append(f"{path.relative_to(ROOT)}:{line}: undefined localization key '{key}'")
+
+    return CheckResult("Localization references", sorted(set(errors)), [])
+
+
 def parse_size(size: str, scale: str) -> tuple[int, int]:
     width, height = [float(part) for part in size.split("x")]
     scale_number = int(scale.rstrip("x"))
@@ -316,6 +346,7 @@ def main() -> int:
         check_swift_balanced_delimiters(),
         check_ios16_static_patterns(),
         check_localizations(),
+        check_localization_references(),
         check_app_icon_asset(),
         check_project_settings(),
     ]

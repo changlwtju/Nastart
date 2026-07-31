@@ -77,17 +77,28 @@ struct DevicesView: View {
                         Label("devices.maintenance.certificate", systemImage: "lock.shield")
                     }
                     Button {
-                        if let session = connectionStore.dsmSession {
-                            Task {
+                        Task {
+                            if let session = connectionStore.dsmSession {
                                 await dataStore.refreshDSM(session: session, useAgent: connectionStore.usesAgent)
+                            } else {
+                                await MainActor.run {
+                                    dataStore.refreshAll()
+                                }
                             }
-                        } else {
-                            dataStore.refreshAll()
+                            await MainActor.run {
+                                showRediscoverHint = true
+                            }
                         }
-                        showRediscoverHint = true
                     } label: {
-                        Label("devices.maintenance.discovery", systemImage: "magnifyingglass")
+                        HStack {
+                            Label("devices.maintenance.discovery", systemImage: "magnifyingglass")
+                            Spacer()
+                            if dataStore.isRefreshing {
+                                ProgressView()
+                            }
+                        }
                     }
+                    .disabled(dataStore.isRefreshing)
                     NavigationLink {
                         AgentStatusView()
                     } label: {
@@ -495,7 +506,7 @@ private struct ServiceResourceRow: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            ContainerInitialIcon(name: container.name, size: 36)
+            ContainerServiceIcon(name: container.name, size: 36)
 
             VStack(alignment: .leading, spacing: 4) {
                 HStack(spacing: 7) {
@@ -558,35 +569,42 @@ private struct ServiceResourceRow: View {
 
 }
 
-private struct ContainerInitialIcon: View {
+private struct ContainerServiceIcon: View {
     let name: String
     let size: CGFloat
 
     var body: some View {
-        Text(initials)
-            .font(.system(size: size * 0.28, weight: .semibold, design: .rounded))
-            .foregroundStyle(.primary)
-            .lineLimit(1)
-            .minimumScaleFactor(0.65)
+        Image(systemName: symbolName)
+            .font(.system(size: size * 0.4, weight: .medium))
+            .foregroundStyle(AppTheme.accent)
             .frame(width: size, height: size)
-            .background(AppTheme.secondarySurface)
-            .clipShape(RoundedRectangle(cornerRadius: size * 0.3, style: .continuous))
+            .background(AppTheme.accent.opacity(0.1))
+            .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
             .overlay {
-                RoundedRectangle(cornerRadius: size * 0.3, style: .continuous)
+                RoundedRectangle(cornerRadius: 8, style: .continuous)
                     .stroke(AppTheme.hairline, lineWidth: 1)
             }
+            .accessibilityHidden(true)
     }
 
-    private var initials: String {
-        let cleaned = name
-            .replacingOccurrences(of: "_", with: "-")
-            .split(separator: "-")
-            .prefix(2)
-            .compactMap { $0.first }
-            .map { String($0).uppercased() }
-            .joined()
-        if !cleaned.isEmpty { return cleaned }
-        return String(name.prefix(2)).uppercased()
+    private var symbolName: String {
+        let normalizedName = name.lowercased()
+        let mappings: [(keywords: [String], symbol: String)] = [
+            (["jellyfin", "emby", "plex"], "play.rectangle"),
+            (["navidrome", "music"], "music.note.list"),
+            (["qbittorrent", "transmission", "aria2", "download"], "arrow.down.circle"),
+            (["homeassistant", "home-assistant", "home assistant", "homepage"], "house"),
+            (["code-server", "codex-server", "jupyter"], "terminal"),
+            (["sonarr", "radarr", "prowlarr", "mediamanager"], "film.stack"),
+            (["nginx", "traefik", "caddy", "proxy"], "lock.rectangle"),
+            (["adguard", "pihole", "pi-hole"], "shield"),
+            (["vaultwarden", "bitwarden"], "key"),
+            (["immich", "photo"], "photo"),
+            (["ddns", "tailscale", "zerotier", "mihomo", "clash"], "network")
+        ]
+        return mappings.first { mapping in
+            mapping.keywords.contains { normalizedName.contains($0) }
+        }?.symbol ?? "shippingbox"
     }
 }
 
@@ -606,7 +624,7 @@ private struct PackageServicesView: View {
                             VStack(alignment: .leading, spacing: 4) {
                                 Text(service.name)
                                     .font(.body.weight(.medium))
-                                Text(LocalizedStringKey(service.subtitle))
+                                Text(service.status.devicesTitleKey)
                                     .font(.caption)
                                     .foregroundStyle(.secondary)
                             }
@@ -631,7 +649,7 @@ private struct DockerContainerRow: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            ContainerInitialIcon(name: container.name, size: 36)
+            ContainerServiceIcon(name: container.name, size: 36)
             VStack(alignment: .leading, spacing: 4) {
                 HStack(spacing: 8) {
                     Text(container.name)
@@ -671,8 +689,6 @@ private extension ServiceStatus {
 
 private struct DockerContainerDetailView: View {
     let container: DockerContainer
-    @State private var actionMessageKey = "devices.container.action_hint"
-    @State private var showActionHint = false
 
     var body: some View {
         List {
@@ -692,37 +708,27 @@ private struct DockerContainerDetailView: View {
             }
 
             Section {
-                ForEach(container.ports, id: \.self) { port in
-                    Text(port)
+                if container.ports.isEmpty {
+                    Text("devices.container.ports.empty")
+                        .foregroundStyle(.secondary)
+                } else {
+                    ForEach(container.ports, id: \.self) { port in
+                        Text(port)
+                    }
                 }
             } header: {
                 Text("devices.container.ports")
             }
 
             Section {
-                Button("devices.container.open_logs") {
-                    showAction("devices.container.logs_hint")
-                }
-                Button("devices.container.restart") {
-                    showAction("devices.container.restart_hint")
-                }
-                Button("devices.container.stop", role: .destructive) {
-                    showAction("devices.container.stop_hint")
-                }
+                Label("devices.container.agent_required", systemImage: "lock.shield")
+                    .foregroundStyle(.secondary)
             } header: {
                 Text("devices.container.actions")
             }
         }
         .listStyle(.insetGrouped)
         .navigationTitle(container.name)
-        .alert(LocalizedStringKey(actionMessageKey), isPresented: $showActionHint) {
-            Button("action.ok", role: .cancel) {}
-        }
-    }
-
-    private func showAction(_ key: String) {
-        actionMessageKey = key
-        showActionHint = true
     }
 }
 
@@ -843,7 +849,6 @@ private struct FilePreviewView: View {
     let item: FileItem
     @EnvironmentObject private var connectionStore: NASConnectionStore
     @State private var showExternalPicker = false
-    @State private var showFavoriteHint = false
     @State private var externalMessageKey = "external.open_failed"
     @State private var showExternalHint = false
     @State private var playbackRequest: MediaPlaybackRequest?
@@ -885,20 +890,12 @@ private struct FilePreviewView: View {
                 } label: {
                     Label("devices.files.open_external", systemImage: "arrow.up.forward.app")
                 }
-                Button {
-                    showFavoriteHint = true
-                } label: {
-                    Label("devices.files.favorite", systemImage: "star")
-                }
             } header: {
                 Text("devices.files.actions")
             }
         }
         .listStyle(.insetGrouped)
         .navigationTitle("devices.files.preview")
-        .alert("devices.files.favorite_hint", isPresented: $showFavoriteHint) {
-            Button("action.ok", role: .cancel) {}
-        }
         .confirmationDialog("service.external.title", isPresented: $showExternalPicker) {
             if item.kind == .video || item.kind == .audio {
                 Button("Infuse") { openExternal(.infuse) }
@@ -1304,7 +1301,6 @@ private struct CertificateSecurityView: View {
     @EnvironmentObject private var connectionStore: NASConnectionStore
     @State private var isChecking = false
     @State private var showCheckResult = false
-    @State private var showReminderHint = false
 
     private var device: NASDevice {
         dataStore.device
@@ -1338,8 +1334,10 @@ private struct CertificateSecurityView: View {
             }
 
             Section {
-                Button("devices.cert.create_task") {
-                    showReminderHint = true
+                NavigationLink {
+                    ReminderCreateView(defaultKind: .certificate)
+                } label: {
+                    Label("devices.cert.create_task", systemImage: "bell.badge")
                 }
                 Button {
                     checkNow()
@@ -1361,9 +1359,6 @@ private struct CertificateSecurityView: View {
         .padding(.top, -12)
         .navigationTitle("devices.maintenance.certificate")
         .navigationBarTitleDisplayMode(.inline)
-        .alert("devices.cert.reminder_hint", isPresented: $showReminderHint) {
-            Button("action.ok", role: .cancel) {}
-        }
         .alert(
             LocalizedStringKey(
                 device.certificate == nil ? "devices.cert.check_unavailable" : "devices.cert.check_complete"
@@ -1389,6 +1384,7 @@ private struct CertificateSecurityView: View {
 
 private struct AgentStatusView: View {
     @EnvironmentObject private var connectionStore: NASConnectionStore
+    @EnvironmentObject private var dataStore: AppDataStore
 
     var body: some View {
         List {
@@ -1399,16 +1395,11 @@ private struct AgentStatusView: View {
                 )
                 LabeledContent(
                     "devices.security.ssh",
-                    value: NSLocalizedString("devices.agent.ssh.available", comment: "")
+                    value: sshStatusText(dataStore.device.sshStatus)
                 )
             }
 
             Section {
-                NavigationLink {
-                    SSHAgentSetupView()
-                } label: {
-                    Label("devices.agent.ssh.in_app", systemImage: "terminal")
-                }
                 NavigationLink {
                     AgentSetupGuideView()
                 } label: {
@@ -1421,133 +1412,20 @@ private struct AgentStatusView: View {
             }
 
             Section {
-                Label("devices.agent.not_connected", systemImage: "antenna.radiowaves.left.and.right")
+                Label {
+                    Text(LocalizedStringKey(
+                        connectionStore.usesAgent
+                            ? "devices.agent.connected"
+                            : "devices.agent.not_connected"
+                    ))
+                } icon: {
+                    Image(systemName: "antenna.radiowaves.left.and.right")
+                }
                     .foregroundStyle(connectionStore.usesAgent ? .green : .secondary)
             }
         }
         .listStyle(.insetGrouped)
         .navigationTitle("devices.maintenance.agent")
         .navigationBarTitleDisplayMode(.inline)
-    }
-}
-
-private enum SSHAuthMethod: String, CaseIterable, Identifiable {
-    case password
-    case privateKey
-
-    var id: String { rawValue }
-
-    var titleKey: LocalizedStringKey {
-        switch self {
-        case .password: return "ssh.auth.password"
-        case .privateKey: return "ssh.auth.private_key"
-        }
-    }
-}
-
-private struct SSHAgentSetupView: View {
-    @EnvironmentObject private var connectionStore: NASConnectionStore
-    @State private var host = ""
-    @State private var port = "22"
-    @State private var username = ""
-    @State private var authMethod: SSHAuthMethod = .password
-    @State private var secret = ""
-    @State private var showCopyHint = false
-    @State private var showSavedHint = false
-
-    private let installCommand = "docker run -d --name nastart-agent -p 8787:8787 --restart unless-stopped nastart/agent:latest"
-
-    var body: some View {
-        List {
-            Section {
-                Text("ssh.in_app.intro")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-
-            Section {
-                TextField("ssh.host.placeholder", text: $host)
-                    .textInputAutocapitalization(.never)
-                    .autocorrectionDisabled()
-                    .keyboardType(.URL)
-                TextField("ssh.port.placeholder", text: $port)
-                    .keyboardType(.numberPad)
-                TextField("ssh.username.placeholder", text: $username)
-                    .textInputAutocapitalization(.never)
-                    .autocorrectionDisabled()
-                    .textContentType(.username)
-                Picker("ssh.auth.method", selection: $authMethod) {
-                    ForEach(SSHAuthMethod.allCases) { method in
-                        Text(method.titleKey).tag(method)
-                    }
-                }
-                if authMethod == .password {
-                    SecureField("ssh.password.placeholder", text: $secret)
-                        .textContentType(.password)
-                } else {
-                    SecureField("ssh.private_key.placeholder", text: $secret)
-                }
-            } header: {
-                Text("ssh.connection")
-            } footer: {
-                Text("ssh.security.footer")
-            }
-
-            Section {
-                AgentStepRow(number: 1, titleKey: "ssh.step.connect", detailKey: "ssh.step.connect_detail")
-                AgentStepRow(number: 2, titleKey: "ssh.step.detect", detailKey: "ssh.step.detect_detail")
-                AgentStepRow(number: 3, titleKey: "ssh.step.install", detailKey: "ssh.step.install_detail")
-                AgentStepRow(number: 4, titleKey: "ssh.step.verify", detailKey: "ssh.step.verify_detail")
-            } header: {
-                Text("connect.agent.steps")
-            }
-
-            Section {
-                Text(installCommand)
-                    .font(.system(.footnote, design: .monospaced))
-                    .textSelection(.enabled)
-                Button("connect.agent.copy") {
-                    UIPasteboard.general.string = installCommand
-                    showCopyHint = true
-                }
-            } header: {
-                Text("connect.agent.command")
-            }
-
-            Section {
-                Button {
-                    saveProfileHint()
-                } label: {
-                    Label("ssh.profile.save", systemImage: "lock.shield")
-                }
-                .disabled(host.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || username.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
-            } footer: {
-                Text("ssh.profile.footer")
-            }
-        }
-        .listStyle(.insetGrouped)
-        .navigationTitle("devices.agent.ssh.in_app")
-        .navigationBarTitleDisplayMode(.inline)
-        .onAppear {
-            if host.isEmpty {
-                host = connectionStore.dsmSession?.baseURL.host ?? ""
-            }
-        }
-        .alert("connect.agent.copy_hint", isPresented: $showCopyHint) {
-            Button("action.ok", role: .cancel) {}
-        }
-        .alert("ssh.profile.saved_hint", isPresented: $showSavedHint) {
-            Button("action.ok", role: .cancel) {}
-        }
-    }
-
-    private func saveProfileHint() {
-        UserDefaults.standard.set(host.trimmingCharacters(in: .whitespacesAndNewlines), forKey: "nastart.ssh.host")
-        UserDefaults.standard.set(port.trimmingCharacters(in: .whitespacesAndNewlines), forKey: "nastart.ssh.port")
-        UserDefaults.standard.set(username.trimmingCharacters(in: .whitespacesAndNewlines), forKey: "nastart.ssh.username")
-        UserDefaults.standard.set(authMethod.rawValue, forKey: "nastart.ssh.authMethod")
-        secret = ""
-        showSavedHint = true
     }
 }
