@@ -3605,12 +3605,19 @@ struct BuiltInMediaPlayerView: View {
 }
 
 #if canImport(MobileVLCKit)
+private struct VLCSubtitleTrack: Identifiable, Equatable {
+    let id: Int32
+    let name: String
+}
+
 private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaPlayerDelegate {
     let player = VLCMediaPlayer()
     @Published private(set) var isPlaying = false
     @Published private(set) var position: Double = 0
     @Published private(set) var isSeekable = false
     @Published private(set) var errorMessage: String?
+    @Published private(set) var subtitleTracks: [VLCSubtitleTrack] = []
+    @Published private(set) var selectedSubtitleTrackID: Int32 = -1
     private var lastStateDescription = ""
 
     init(request: MediaPlaybackRequest) {
@@ -3657,6 +3664,11 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
         syncState()
     }
 
+    func selectSubtitle(_ track: VLCSubtitleTrack) {
+        player.currentVideoSubTitleIndex = track.id
+        syncState()
+    }
+
     func stop() {
         player.stop()
     }
@@ -3677,6 +3689,26 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
         let errorMessage = player.state == .error
             ? NSLocalizedString("player.compatibility_failed", comment: "")
             : nil
+        let subtitleNames = (player.videoSubTitlesNames ?? []).compactMap { $0 as? String }
+        let subtitleIndexes = (player.videoSubTitlesIndexes ?? []).compactMap { value -> Int32? in
+            (value as? NSNumber)?.int32Value
+        }
+        var subtitleTracks = zip(subtitleIndexes, subtitleNames).map { pair in
+            VLCSubtitleTrack(
+                id: pair.0,
+                name: pair.0 < 0 ? NSLocalizedString("player.subtitles.off", comment: "") : pair.1
+            )
+        }
+        if !subtitleTracks.contains(where: { $0.id < 0 }) {
+            subtitleTracks.insert(
+                VLCSubtitleTrack(
+                    id: -1,
+                    name: NSLocalizedString("player.subtitles.off", comment: "")
+                ),
+                at: 0
+            )
+        }
+        let selectedSubtitleTrackID = player.currentVideoSubTitleIndex
 
         if stateDescription != lastStateDescription {
             lastStateDescription = stateDescription
@@ -3699,6 +3731,10 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
             self?.position = position
             self?.isSeekable = isSeekable
             self?.errorMessage = errorMessage
+            if self?.subtitleTracks != subtitleTracks {
+                self?.subtitleTracks = subtitleTracks
+            }
+            self?.selectedSubtitleTrackID = selectedSubtitleTrackID
         }
     }
 
@@ -3711,6 +3747,8 @@ private struct VLCBuiltInPlayerView: View {
     let request: MediaPlaybackRequest
     let openExternal: () -> Void
     @StateObject private var session: VLCMediaPlayerSession
+    @State private var controlsVisible = true
+    @State private var controlsRevision = 0
 
     init(request: MediaPlaybackRequest, openExternal: @escaping () -> Void) {
         self.request = request
@@ -3719,83 +3757,189 @@ private struct VLCBuiltInPlayerView: View {
     }
 
     var body: some View {
-        ZStack {
-            VLCPlayerSurface(session: session)
-                .ignoresSafeArea(edges: .bottom)
+        GeometryReader { proxy in
+            let isLandscape = proxy.size.width > proxy.size.height
 
-            VStack(spacing: 0) {
-                Spacer()
-                VStack(spacing: 10) {
-                    Slider(
-                        value: Binding(
-                            get: { session.position },
-                            set: { session.seek(to: $0) }
-                        ),
-                        in: 0...1
-                    )
-                    .disabled(!session.isSeekable)
-                    .tint(AppTheme.accent)
+            ZStack {
+                VLCPlayerSurface(session: session)
+                    .ignoresSafeArea(edges: .bottom)
 
-                    HStack(spacing: 34) {
-                        Button {
-                            session.jump(by: -15)
-                        } label: {
-                            Image(systemName: "gobackward.15")
-                        }
-                        .accessibilityLabel(Text("player.seek_backward"))
-
-                        Button {
-                            session.togglePlayback()
-                        } label: {
-                            Image(systemName: session.isPlaying ? "pause.fill" : "play.fill")
-                                .font(.title2)
-                                .frame(width: 44, height: 44)
-                        }
-                        .accessibilityLabel(
-                            Text(LocalizedStringKey(session.isPlaying ? "player.pause" : "player.play"))
-                        )
-
-                        Button {
-                            session.jump(by: 15)
-                        } label: {
-                            Image(systemName: "goforward.15")
-                        }
-                        .accessibilityLabel(Text("player.seek_forward"))
+                Color.clear
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        toggleControls()
                     }
-                    .font(.title3)
-                }
-                .foregroundStyle(.white)
-                .padding(.horizontal, 24)
-                .padding(.top, 12)
-                .padding(.bottom, 18)
-                .background(.ultraThinMaterial)
-            }
 
-            if let errorMessage = session.errorMessage {
-                VStack(spacing: 12) {
-                    Image(systemName: "exclamationmark.triangle")
-                        .font(.title2)
-                    Text("player.load_failed")
-                        .font(.headline)
-                    Text(errorMessage)
-                        .font(.caption)
-                        .multilineTextAlignment(.center)
-                    Button(action: openExternal) {
-                        Label("devices.files.open_external", systemImage: "arrow.up.forward.app")
+                if controlsVisible {
+                    VStack(spacing: 0) {
+                        Spacer()
+                        playbackControls(isLandscape: isLandscape)
                     }
-                    .buttonStyle(.borderedProminent)
-                    .tint(AppTheme.accent)
+                    .transition(.opacity)
                 }
-                .foregroundStyle(.white)
-                .padding(22)
+
+                if let errorMessage = session.errorMessage {
+                    VStack(spacing: 12) {
+                        Image(systemName: "exclamationmark.triangle")
+                            .font(.title2)
+                        Text("player.load_failed")
+                            .font(.headline)
+                        Text(errorMessage)
+                            .font(.caption)
+                            .multilineTextAlignment(.center)
+                        Button(action: openExternal) {
+                            Label("devices.files.open_external", systemImage: "arrow.up.forward.app")
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .tint(AppTheme.accent)
+                    }
+                    .foregroundStyle(.white)
+                    .padding(22)
+                }
             }
         }
         .onAppear {
             session.play()
+            revealControls()
         }
         .onDisappear {
             session.stop()
         }
+        .onChange(of: session.isPlaying) { isPlaying in
+            if isPlaying {
+                revealControls()
+            } else {
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    controlsVisible = true
+                }
+            }
+        }
+        .task(id: controlsRevision) {
+            guard controlsVisible, session.isPlaying else { return }
+            try? await Task.sleep(nanoseconds: 4_000_000_000)
+            guard !Task.isCancelled, session.isPlaying else { return }
+            withAnimation(.easeInOut(duration: 0.25)) {
+                controlsVisible = false
+            }
+        }
+    }
+
+    private func playbackControls(isLandscape: Bool) -> some View {
+        VStack(spacing: isLandscape ? 6 : 10) {
+            Slider(
+                value: Binding(
+                    get: { session.position },
+                    set: { session.seek(to: $0) }
+                ),
+                in: 0...1,
+                onEditingChanged: { _ in revealControls() }
+            )
+            .disabled(!session.isSeekable)
+            .tint(AppTheme.accent)
+
+            HStack(spacing: isLandscape ? 24 : 8) {
+                controlButton(
+                    systemImage: "gobackward.15",
+                    accessibilityKey: "player.seek_backward"
+                ) {
+                    session.jump(by: -15)
+                    revealControls()
+                }
+
+                controlButton(
+                    systemImage: session.isPlaying ? "pause.fill" : "play.fill",
+                    accessibilityKey: session.isPlaying ? "player.pause" : "player.play",
+                    emphasized: true
+                ) {
+                    session.togglePlayback()
+                    revealControls()
+                }
+
+                controlButton(
+                    systemImage: "goforward.15",
+                    accessibilityKey: "player.seek_forward"
+                ) {
+                    session.jump(by: 15)
+                    revealControls()
+                }
+
+                Spacer(minLength: 4)
+
+                Menu {
+                    ForEach(session.subtitleTracks) { track in
+                        Button {
+                            session.selectSubtitle(track)
+                            revealControls()
+                        } label: {
+                            if session.selectedSubtitleTrackID == track.id {
+                                Label(track.name, systemImage: "checkmark")
+                            } else {
+                                Text(track.name)
+                            }
+                        }
+                    }
+                } label: {
+                    Image(systemName: session.selectedSubtitleTrackID < 0 ? "captions.bubble" : "captions.bubble.fill")
+                        .frame(width: 44, height: 44)
+                }
+                .disabled(session.subtitleTracks.count <= 1)
+                .accessibilityLabel(Text("player.subtitles"))
+
+                controlButton(
+                    systemImage: isLandscape
+                        ? "arrow.down.right.and.arrow.up.left"
+                        : "arrow.up.left.and.arrow.down.right",
+                    accessibilityKey: isLandscape ? "player.exit_fullscreen" : "player.fullscreen"
+                ) {
+                    PlayerOrientationController.requestPlayerOrientation(isLandscape ? .portrait : .landscape)
+                    revealControls()
+                }
+            }
+            .font(.title3)
+        }
+        .foregroundStyle(.white)
+        .padding(.horizontal, isLandscape ? 28 : 18)
+        .padding(.top, isLandscape ? 24 : 34)
+        .padding(.bottom, isLandscape ? 8 : 14)
+        .background(
+            LinearGradient(
+                colors: [.clear, .black.opacity(0.9)],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .ignoresSafeArea(edges: .bottom)
+        )
+    }
+
+    private func controlButton(
+        systemImage: String,
+        accessibilityKey: String,
+        emphasized: Bool = false,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            Image(systemName: systemImage)
+                .font(emphasized ? .title2 : .title3)
+                .frame(width: 44, height: 44)
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(Text(LocalizedStringKey(accessibilityKey)))
+    }
+
+    private func toggleControls() {
+        withAnimation(.easeInOut(duration: 0.2)) {
+            controlsVisible.toggle()
+        }
+        if controlsVisible {
+            controlsRevision += 1
+        }
+    }
+
+    private func revealControls() {
+        withAnimation(.easeInOut(duration: 0.2)) {
+            controlsVisible = true
+        }
+        controlsRevision += 1
     }
 }
 

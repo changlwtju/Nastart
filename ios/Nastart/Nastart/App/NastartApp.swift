@@ -27,11 +27,23 @@ enum PlayerOrientationController {
         }
         NastartAppDelegate.supportedOrientations = mask
 
+        updateScenes(preferredOrientation: isActive || UIDevice.current.userInterfaceIdiom == .pad ? nil : .portrait)
+    }
+
+    static func requestPlayerOrientation(_ orientation: UIInterfaceOrientationMask) {
+        NastartAppDelegate.supportedOrientations = UIDevice.current.userInterfaceIdiom == .pad
+            ? .all
+            : .allButUpsideDown
+        updateScenes(preferredOrientation: orientation)
+    }
+
+    private static func updateScenes(preferredOrientation: UIInterfaceOrientationMask?) {
         for case let scene as UIWindowScene in UIApplication.shared.connectedScenes {
             scene.windows.first(where: \.isKeyWindow)?
                 .rootViewController?
                 .setNeedsUpdateOfSupportedInterfaceOrientations()
-            scene.requestGeometryUpdate(.iOS(interfaceOrientations: mask)) { error in
+            guard let preferredOrientation else { continue }
+            scene.requestGeometryUpdate(.iOS(interfaceOrientations: preferredOrientation)) { error in
                 DiagnosticLogStore.shared.record(
                     .warning,
                     categoryKey: "diagnostics.category.media",

@@ -524,6 +524,10 @@
 "player.pause" = "Pause";
 "player.seek_backward" = "Back 15 Seconds";
 "player.seek_forward" = "Forward 15 Seconds";
+"player.subtitles" = "Subtitles";
+"player.subtitles.off" = "Subtitles Off";
+"player.fullscreen" = "Enter Full Screen";
+"player.exit_fullscreen" = "Exit Full Screen";
 
 "mine.appearance.item.subtitle" = "Subtitle";
 "mine.appearance.group_default" = "Expanded by default";

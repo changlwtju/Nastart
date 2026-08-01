@@ -524,6 +524,10 @@
 "player.pause" = "暂停";
 "player.seek_backward" = "后退 15 秒";
 "player.seek_forward" = "前进 15 秒";
+"player.subtitles" = "字幕";
+"player.subtitles.off" = "关闭字幕";
+"player.fullscreen" = "进入横屏";
+"player.exit_fullscreen" = "退出横屏";
 
 "mine.appearance.item.subtitle" = "副标题";
 "mine.appearance.group_default" = "默认展开";
