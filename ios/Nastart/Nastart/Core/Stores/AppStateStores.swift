@@ -1,7 +1,119 @@
 import Foundation
 import Combine
+import CryptoKit
 import Security
+import UserNotifications
 import Darwin
+
+private enum DSMURLBuilder {
+    static func url(baseURL: URL, appending path: String) -> URL? {
+        guard var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false) else {
+            return nil
+        }
+        let baseSegments = components.path.split(separator: "/", omittingEmptySubsequences: true)
+        let pathSegments = path.split(separator: "/", omittingEmptySubsequences: true)
+        components.path = "/" + (baseSegments + pathSegments).joined(separator: "/")
+        components.query = nil
+        components.fragment = nil
+        return components.url
+    }
+}
+
+private enum StableIdentifier {
+    static func uuid(_ value: String) -> UUID {
+        let digest = SHA256.hash(data: Data(value.utf8))
+        let hex = digest.prefix(16).map { String(format: "%02x", $0) }.joined()
+        let uuidString = "\(hex.prefix(8))-\(hex.dropFirst(8).prefix(4))-\(hex.dropFirst(12).prefix(4))-\(hex.dropFirst(16).prefix(4))-\(hex.dropFirst(20).prefix(12))"
+        return UUID(uuidString: uuidString) ?? UUID()
+    }
+}
+
+final class CertificatePinStore {
+    static let shared = CertificatePinStore()
+
+    private let service = "com.nastart.app.certificate-pins"
+    private let account = "trusted-hosts"
+    private let lock = NSLock()
+
+    private init() {}
+
+    func credential(
+        for challenge: URLAuthenticationChallenge,
+        expectedHost: String?
+    ) -> URLCredential? {
+        guard
+            challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust,
+            challenge.protectionSpace.host.caseInsensitiveCompare(expectedHost ?? "") == .orderedSame,
+            let trust = challenge.protectionSpace.serverTrust,
+            let certificates = SecTrustCopyCertificateChain(trust) as? [SecCertificate],
+            let leafCertificate = certificates.first
+        else {
+            return nil
+        }
+
+        let certificateData = SecCertificateCopyData(leafCertificate) as Data
+        let fingerprint = SHA256.hash(data: certificateData)
+            .map { String(format: "%02x", $0) }
+            .joined()
+        let key = "\(challenge.protectionSpace.host.lowercased()):\(challenge.protectionSpace.port)"
+
+        lock.lock()
+        defer { lock.unlock() }
+        var pins = loadPins()
+        if let storedFingerprint = pins[key] {
+            guard storedFingerprint == fingerprint else { return nil }
+        } else {
+            pins[key] = fingerprint
+            guard savePins(pins) else { return nil }
+        }
+        return URLCredential(trust: trust)
+    }
+
+    func clearAll() {
+        lock.lock()
+        defer { lock.unlock() }
+        SecItemDelete(baseQuery() as CFDictionary)
+    }
+
+    private func loadPins() -> [String: String] {
+        var query = baseQuery()
+        query[kSecReturnData as String] = true
+        query[kSecMatchLimit as String] = kSecMatchLimitOne
+        var result: CFTypeRef?
+        guard
+            SecItemCopyMatching(query as CFDictionary, &result) == errSecSuccess,
+            let data = result as? Data,
+            let pins = try? JSONDecoder().decode([String: String].self, from: data)
+        else {
+            return [:]
+        }
+        return pins
+    }
+
+    private func savePins(_ pins: [String: String]) -> Bool {
+        guard let data = try? JSONEncoder().encode(pins) else { return false }
+        let attributes: [String: Any] = [
+            kSecValueData as String: data,
+            kSecAttrAccessible as String: kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly
+        ]
+        let query = baseQuery()
+        let updateStatus = SecItemUpdate(query as CFDictionary, attributes as CFDictionary)
+        if updateStatus == errSecSuccess { return true }
+        guard updateStatus == errSecItemNotFound else { return false }
+
+        var item = query
+        attributes.forEach { item[$0.key] = $0.value }
+        return SecItemAdd(item as CFDictionary, nil) == errSecSuccess
+    }
+
+    private func baseQuery() -> [String: Any] {
+        [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: service,
+            kSecAttrAccount as String: account
+        ]
+    }
+}
 
 protocol AppDataProviding {
     var device: NASDevice { get }
@@ -155,12 +267,8 @@ struct DSMSession {
             let pathParameter = String(data: encodedPaths, encoding: .utf8),
             let encodedMode = try? JSONEncoder().encode("open"),
             let modeParameter = String(data: encodedMode, encoding: .utf8),
-            var components = URLComponents(
-                url: baseURL
-                    .appendingPathComponent("webapi")
-                    .appendingPathComponent("entry.cgi"),
-                resolvingAgainstBaseURL: false
-            )
+            let requestURL = DSMURLBuilder.url(baseURL: baseURL, appending: "/webapi/entry.cgi"),
+            var components = URLComponents(url: requestURL, resolvingAgainstBaseURL: false)
         else {
             return nil
         }
@@ -597,21 +705,32 @@ private enum DSMFormatters {
     }
 }
 
-private final class DSMCertificateTrustDelegate: NSObject, URLSessionDelegate {
+private final class DSMCertificateTrustDelegate: NSObject, URLSessionTaskDelegate {
+    private let trustedHost: String?
+
+    init(trustedHost: String? = nil) {
+        self.trustedHost = trustedHost
+    }
+
     func urlSession(
         _ session: URLSession,
+        task: URLSessionTask,
         didReceive challenge: URLAuthenticationChallenge,
         completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
     ) {
-        guard
-            challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust,
-            let trust = challenge.protectionSpace.serverTrust
-        else {
-            completionHandler(.performDefaultHandling, nil)
+        let expectedHost = trustedHost ?? task.originalRequest?.url?.host
+        guard let credential = CertificatePinStore.shared.credential(
+            for: challenge,
+            expectedHost: expectedHost
+        ) else {
+            let disposition: URLSession.AuthChallengeDisposition =
+                challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust
+                ? .cancelAuthenticationChallenge
+                : .performDefaultHandling
+            completionHandler(disposition, nil)
             return
         }
-
-        completionHandler(.useCredential, URLCredential(trust: trust))
+        completionHandler(.useCredential, credential)
     }
 }
 
@@ -634,7 +753,7 @@ final class DSMClient {
             self.urlSession = urlSession
             self.sessionDelegate = nil
         } else if allowsSelfSignedCertificates {
-            let delegate = DSMCertificateTrustDelegate()
+            let delegate = DSMCertificateTrustDelegate(trustedHost: baseURL.host)
             self.sessionDelegate = delegate
             self.urlSession = URLSession(
                 configuration: Self.sessionConfiguration(),
@@ -665,15 +784,12 @@ final class DSMClient {
         DiagnosticLogStore.shared.record(level, categoryKey: categoryKey, messageKey: messageKey, details: details)
     }
 
-    static func normalizedBaseURL(
-        from input: String,
-        defaultsToHTTPOnLocalNetwork: Bool = false
-    ) throws -> URL {
+    static func normalizedBaseURL(from input: String) throws -> URL {
         var value = input.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !value.isEmpty else { throw DSMClientError.invalidAddress }
         let hadExplicitScheme = value.contains("://")
         if !hadExplicitScheme {
-            value = "\(defaultsToHTTPOnLocalNetwork ? "http" : "https")://\(value)"
+            value = "https://\(value)"
         }
         guard var components = URLComponents(string: value), components.host != nil else {
             throw DSMClientError.invalidAddress
@@ -688,6 +804,8 @@ final class DSMClient {
         if components.path == "/" {
             components.path = ""
         }
+        components.query = nil
+        components.fragment = nil
         guard let url = components.url else { throw DSMClientError.invalidAddress }
         return url
     }
@@ -704,7 +822,7 @@ final class DSMClient {
             messageKey: "diagnostics.login.started",
             details: [
                 "target": DiagnosticLogStore.redactedURL(baseURL),
-                "account": DiagnosticLogStore.redactedHost(account),
+                "account": account.isEmpty ? "-" : "<redacted>",
                 "2fa": oneTimeCode.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? "off" : "on",
                 "selfSigned": allowsSelfSignedCertificates ? "on" : "off"
             ]
@@ -1061,7 +1179,10 @@ final class DSMClient {
             .info,
             categoryKey: "diagnostics.category.dsm_api",
             messageKey: "diagnostics.files.folder_loaded",
-            details: ["path": normalizedPath, "items": "\(items.count)"]
+            details: [
+                "pathDepth": "\(normalizedPath.split(separator: "/").count)",
+                "items": "\(items.count)"
+            ]
         )
         return items
     }
@@ -1079,10 +1200,12 @@ final class DSMClient {
         queryItems: [URLQueryItem],
         timeout: TimeInterval = requestTimeout
     ) async throws -> DSMJSONValue {
-        guard var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false) else {
+        guard
+            let requestURL = DSMURLBuilder.url(baseURL: baseURL, appending: path),
+            var components = URLComponents(url: requestURL, resolvingAgainstBaseURL: false)
+        else {
             throw DSMClientError.invalidAddress
         }
-        components.path = path
         components.queryItems = queryItems
         guard let url = components.url else { throw DSMClientError.invalidAddress }
 
@@ -1140,7 +1263,9 @@ final class DSMClient {
     ) -> [(String, [URLQueryItem])] {
         let entry = apiInfoEntry(apiInfo, apiName: "SYNO.API.Auth")
         let path = normalizedAPIPath(entry?.path ?? "/webapi/auth.cgi")
-        let versions = entry.map { [max($0.maxVersion, 1)] } ?? [7, 6, 3]
+        let versions = entry.map {
+            Array(stride(from: max($0.maxVersion, 1), through: 1, by: -1))
+        } ?? [7, 6, 3]
         return versions.map { version in
             var items = [
                 URLQueryItem(name: "api", value: "SYNO.API.Auth"),
@@ -1550,7 +1675,7 @@ final class DSMClient {
             ?? "DSM"
 
         return NASDevice(
-            id: UUID(),
+            id: StableIdentifier.uuid("device|\(session.baseURL.absoluteString)"),
             name: name,
             subtitle: subtitle,
             model: model,
@@ -1815,7 +1940,15 @@ final class DSMClient {
             let rawPath = nonEmptyString(share.firstString(for: ["path", "additional_path"]))
             guard let name = nonEmptyString(share.firstString(for: ["name", "display_name"])) ?? lastPathComponent(rawPath ?? "") else { return nil }
             let path = rawPath ?? "/\(name)"
-            return FileItem(id: UUID(), name: name, subtitle: path, path: path, kind: .folder, sizeText: nil, children: [])
+            return FileItem(
+                id: StableIdentifier.uuid("file|\(path)"),
+                name: name,
+                subtitle: path,
+                path: path,
+                kind: .folder,
+                sizeText: nil,
+                children: []
+            )
         }
         .sorted(by: sortFiles)
     }
@@ -1826,7 +1959,7 @@ final class DSMClient {
             let path = filePath(for: item, parentPath: parentPath)
             guard let name = fileName(for: item, path: path) else { return nil }
             return FileItem(
-                id: UUID(),
+                id: StableIdentifier.uuid("file|\(path ?? normalizedChildPath(parentPath: parentPath, name: name))"),
                 name: name,
                 subtitle: path ?? normalizedChildPath(parentPath: parentPath, name: name),
                 path: path ?? normalizedChildPath(parentPath: parentPath, name: name),
@@ -1900,7 +2033,10 @@ final class DSMClient {
     }
 
     private static func fileSizeText(_ item: DSMJSONValue) -> String? {
-        textValue(in: item, keys: ["size", "filesize", "size_text"]) ?? DSMFormatters.bytes(item.firstDouble(for: ["size", "filesize"]))
+        if let formatted = nonEmptyString(item.firstString(for: ["size_text", "formatted_size"])) {
+            return formatted
+        }
+        return DSMFormatters.bytes(item.firstDouble(for: ["size", "filesize"]))
     }
 
     private static func sortFiles(_ lhs: FileItem, _ rhs: FileItem) -> Bool {
@@ -1956,7 +2092,7 @@ final class DSMClient {
             let memoryBytes = resource?.memoryBytes
             let memoryText = DSMFormatters.bytes(memoryBytes) ?? "-"
             return DockerContainer(
-                id: UUID(),
+                id: StableIdentifier.uuid("container|\(identifier)"),
                 name: name,
                 image: image,
                 status: explicitRunning.map { $0 ? .online : .offline } ?? serviceStatus(from: stateText),
@@ -1973,7 +2109,7 @@ final class DSMClient {
         _ data: DSMJSONValue?
     ) -> [String: ContainerResourceMetrics] {
         guard let data else { return [:] }
-        let items = data.firstArray(for: ["resources"]) ?? []
+        let items = data.arrayValue ?? data.firstArray(for: ["resources"]) ?? []
         return items.reduce(into: [:]) { result, item in
             guard let name = directTextValue(
                 in: item,
@@ -2006,7 +2142,8 @@ final class DSMClient {
     }
 
     private static func percentagePoints(_ value: Double) -> Double {
-        min(max(value / 100, 0), 1)
+        let normalized = value > 1 ? value / 100 : value
+        return min(max(normalized, 0), 1)
     }
 
     private static func containerItems(from data: DSMJSONValue?) -> [DSMJSONValue] {
@@ -2113,7 +2250,7 @@ final class DSMClient {
         )
         var services: [LaunchpadService] = [
             LaunchpadService(
-                id: UUID(),
+                id: StableIdentifier.uuid("service|dsm|\(session.baseURL.absoluteString)"),
                 name: "DSM",
                 iconText: "DSM",
                 category: .favorites,
@@ -2131,7 +2268,7 @@ final class DSMClient {
         services += containers.map { container in
             let resolvedEndpoint = containerEndpoints[container.id]
             return LaunchpadService(
-                id: UUID(),
+                id: StableIdentifier.uuid("service|container|\(container.id.uuidString.lowercased())"),
                 name: Self.displayName(for: container.name),
                 iconText: Self.iconText(for: container.name),
                 category: Self.category(for: container.name),
@@ -2207,7 +2344,7 @@ final class DSMClient {
             guard endpoint != nil || !isBuiltIn || shouldShowPackageService(name) else { return nil }
             let status = packageStatus(item)
             return LaunchpadService(
-                id: UUID(),
+                id: StableIdentifier.uuid("service|package|\(name.lowercased())"),
                 name: displayName(for: name),
                 iconText: iconText(for: name),
                 category: category(for: name),
@@ -2516,11 +2653,7 @@ final class DSMClient {
         if let absolute = URL(string: text), absolute.scheme != nil {
             return absolute
         }
-        guard var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false) else {
-            return nil
-        }
-        components.path = text.hasPrefix("/") ? text : "/\(text)"
-        return components.url
+        return DSMURLBuilder.url(baseURL: baseURL, appending: text)
     }
 
     private static func packageStatus(_ item: DSMJSONValue) -> ServiceStatus {
@@ -3108,10 +3241,12 @@ final class LANDiscoveryService: NSObject, ObservableObject {
     }
 
     private func resolvedDSMBaseURL(at baseURL: URL) async -> URL? {
-        guard var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false) else {
+        guard
+            let probeURL = DSMURLBuilder.url(baseURL: baseURL, appending: "/webapi/query.cgi"),
+            var components = URLComponents(url: probeURL, resolvingAgainstBaseURL: false)
+        else {
             return nil
         }
-        components.path = "/webapi/query.cgi"
         components.queryItems = [
             URLQueryItem(name: "api", value: "SYNO.API.Info"),
             URLQueryItem(name: "version", value: "1"),
@@ -3140,7 +3275,12 @@ final class LANDiscoveryService: NSObject, ObservableObject {
             ) else {
                 return baseURL
             }
-            resolvedComponents.path = ""
+            let probeSuffix = "/webapi/query.cgi"
+            if resolvedComponents.path.hasSuffix(probeSuffix) {
+                resolvedComponents.path = String(resolvedComponents.path.dropLast(probeSuffix.count))
+            } else {
+                resolvedComponents.path = baseURL.path
+            }
             resolvedComponents.query = nil
             resolvedComponents.fragment = nil
             return resolvedComponents.url ?? baseURL
@@ -3169,8 +3309,8 @@ final class LANDiscoveryService: NSObject, ObservableObject {
     }
 
     private static func defaultDSMCandidates(host: String) -> [URL] {
-        serviceCandidates(scheme: "http", host: host, port: 5000)
-            + serviceCandidates(scheme: "https", host: host, port: 5001)
+        serviceCandidates(scheme: "https", host: host, port: 5001)
+            + serviceCandidates(scheme: "http", host: host, port: 5000)
     }
 
     private static func serviceCandidates(scheme: String, host: String, port: Int) -> [URL] {
@@ -3212,7 +3352,7 @@ final class LANDiscoveryService: NSObject, ObservableObject {
     }
 
     private func protocolRank(_ url: URL) -> Int {
-        url.scheme?.lowercased() == "http" ? 0 : 1
+        url.scheme?.lowercased() == "https" ? 0 : 1
     }
 
     private func recordDiscoveredDevice(_ url: URL) {
@@ -3318,6 +3458,49 @@ private struct PersistedTaskState: Codable {
     let history: [TaskItem]
 }
 
+private enum ReminderNotificationScheduler {
+    private static func identifier(for task: TaskItem) -> String {
+        "nastart.reminder.\(task.id.uuidString.lowercased())"
+    }
+
+    static func schedule(_ task: TaskItem, requestsAuthorization: Bool) {
+        let center = UNUserNotificationCenter.current()
+        let identifier = identifier(for: task)
+        center.removePendingNotificationRequests(withIdentifiers: [identifier])
+        guard !task.isMuted, let reminderDate = task.nextReminderAt, reminderDate > Date() else {
+            return
+        }
+
+        Task {
+            let settings = await center.notificationSettings()
+            var isAuthorized = settings.authorizationStatus == .authorized
+                || settings.authorizationStatus == .provisional
+            if settings.authorizationStatus == .notDetermined, requestsAuthorization {
+                isAuthorized = (try? await center.requestAuthorization(options: [.alert, .sound, .badge])) == true
+            }
+            guard isAuthorized else { return }
+
+            let content = UNMutableNotificationContent()
+            content.title = task.title
+            content.body = task.subtitle
+            content.sound = .default
+            let dateComponents = Calendar.current.dateComponents(
+                [.year, .month, .day, .hour, .minute],
+                from: reminderDate
+            )
+            let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
+            let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
+            try? await center.add(request)
+        }
+    }
+
+    static func cancel(_ task: TaskItem) {
+        UNUserNotificationCenter.current().removePendingNotificationRequests(
+            withIdentifiers: [identifier(for: task)]
+        )
+    }
+}
+
 private final class LocalTaskStore {
     private let storageKey = "tasks.localState.v1"
 
@@ -3378,8 +3561,12 @@ final class AppDataStore: ObservableObject {
         videoLibraryItems = provider.videoLibraryItems
         audioLibraryItems = provider.audioLibraryItems
         discoveredDevices = provider.discoveredDevices
+        tasks.forEach {
+            ReminderNotificationScheduler.schedule($0, requestsAuthorization: false)
+        }
     }
 
+    @MainActor
     func reload(from provider: AppDataProviding) {
         let previousServices = services
         let previousContainers = containers
@@ -3426,14 +3613,35 @@ final class AppDataStore: ObservableObject {
         let previousPackages = previous.filter { $0.source == .package }
         let freshPackages = fresh.filter { $0.source == .package }
 
-        // A total inventory collapse is much more likely to be a transient DSM
-        // response than the user deleting every service at once. Individual
-        // removals still apply whenever the refreshed inventory is non-empty.
-        let preserveContainers = freshContainers.isEmpty && !previousContainers.isEmpty
-        let preservePackages = freshPackages.isEmpty && !previousPackages.isEmpty
+        // Preserve the last known inventory only when the corresponding request
+        // failed. A successful empty response means the user removed all items.
+        let preserveContainers = !snapshot.containerInventoryAvailable
+            && freshContainers.isEmpty
+            && !previousContainers.isEmpty
+        let preservePackages = !snapshot.packageInventoryAvailable
+            && freshPackages.isEmpty
+            && !previousPackages.isEmpty
         preservedContainerInventoryOnLastMerge = preserveContainers
 
         var merged = fresh
+        if !snapshot.reverseProxyInventoryAvailable {
+            let previousByID = Dictionary(
+                uniqueKeysWithValues: previousContainers.map { ($0.id, $0) }
+            )
+            merged = merged.map { service in
+                guard
+                    service.source == .container || service.source == .reverseProxy,
+                    let previousService = previousByID[service.id],
+                    previousService.source == .reverseProxy
+                else {
+                    return service
+                }
+                return Self.service(
+                    service,
+                    preservingEndpointFrom: previousService
+                )
+            }
+        }
         if preserveContainers {
             merged.removeAll { $0.source == .container || $0.source == .reverseProxy }
             merged.append(contentsOf: previousContainers)
@@ -3470,6 +3678,31 @@ final class AppDataStore: ObservableObject {
         return merged
     }
 
+    private static func service(
+        _ fresh: LaunchpadService,
+        preservingEndpointFrom previous: LaunchpadService
+    ) -> LaunchpadService {
+        LaunchpadService(
+            id: fresh.id,
+            name: fresh.name,
+            iconText: fresh.iconText,
+            category: fresh.category,
+            status: fresh.status,
+            subtitle: fresh.subtitle,
+            detail: fresh.detail,
+            isMedia: fresh.isMedia,
+            cpu: fresh.cpu,
+            memoryText: fresh.memoryText,
+            memory: fresh.memory,
+            ports: fresh.ports,
+            iconURL: fresh.iconURL,
+            endpoint: previous.endpoint,
+            alternateEndpoint: previous.alternateEndpoint,
+            source: previous.source,
+            isLaunchpadVisible: fresh.isLaunchpadVisible
+        )
+    }
+
     private static func mergedDevice(fresh: NASDevice, fallback: NASDevice) -> NASDevice {
         NASDevice(
             id: fresh.id,
@@ -3493,6 +3726,7 @@ final class AppDataStore: ObservableObject {
         )
     }
 
+    @MainActor
     func refreshAll() {
         isRefreshing = true
         reload(from: provider)
@@ -3553,7 +3787,10 @@ final class AppDataStore: ObservableObject {
                     .warning,
                     categoryKey: "diagnostics.category.dsm_api",
                     messageKey: "diagnostics.files.folder_failed",
-                    details: ["path": path, "error": "\(error)"]
+                    details: [
+                        "pathDepth": "\(path.split(separator: "/").count)",
+                        "error": "\(error)"
+                    ]
                 )
                 let localItems = localChildren(for: path, in: files)
                 if !localItems.isEmpty { return localItems }
@@ -3577,6 +3814,7 @@ final class AppDataStore: ObservableObject {
         guard let credential = KeychainStore.shared.loadNASCredential() else { return }
         isRefreshing = true
         defer { isRefreshing = false }
+        var sessionToLogout: DSMSession?
 
         do {
             let baseURL = try DSMClient.normalizedBaseURL(from: credential.baseURLString)
@@ -3589,9 +3827,10 @@ final class AppDataStore: ObservableObject {
                 password: credential.password,
                 deviceID: credential.deviceID
             )
+            sessionToLogout = session
             let dataSource = DSMNASDataSource(session: session, useAgent: false)
             let snapshot = await dataSource.loadSnapshot()
-            KeychainStore.shared.saveNASCredential(
+            try KeychainStore.shared.saveNASCredential(
                 StoredNASCredential(
                     baseURLString: credential.baseURLString,
                     account: credential.account,
@@ -3605,7 +3844,15 @@ final class AppDataStore: ObservableObject {
             reload(from: snapshot)
             sourceKind = dataSource.kind
             connectionStore.connect(device: snapshot.device, session: session)
+            sessionToLogout = nil
         } catch {
+            if let session = sessionToLogout {
+                let client = DSMClient(
+                    baseURL: session.baseURL,
+                    allowsSelfSignedCertificates: session.allowsSelfSignedCertificates
+                )
+                await client.logout(session: session)
+            }
             lastRefreshSummaryKey = "data.refresh.restore_failed"
         }
     }
@@ -3663,6 +3910,7 @@ final class AppDataStore: ObservableObject {
     func addTask(_ task: TaskItem) {
         tasks.insert(task, at: 0)
         persistTasks()
+        ReminderNotificationScheduler.schedule(task, requestsAuthorization: true)
     }
 
     @MainActor
@@ -3670,6 +3918,7 @@ final class AppDataStore: ObservableObject {
         guard let index = tasks.firstIndex(where: { $0.id == task.id }) else { return }
         tasks[index].isMuted = isMuted
         persistTasks()
+        ReminderNotificationScheduler.schedule(tasks[index], requestsAuthorization: false)
     }
 
     @MainActor
@@ -3679,6 +3928,7 @@ final class AppDataStore: ObservableObject {
         completedTask.completedAt = Date()
         completedTasks.insert(completedTask, at: 0)
         persistTasks()
+        ReminderNotificationScheduler.cancel(completedTask)
     }
 
     private func persistTasks() {
@@ -3984,17 +4234,28 @@ final class NASConnectionStore: ObservableObject {
         connectedDevice?.mode == .dsmWithAgent || connectedDevice?.mode == .agentOnly
     }
 
+    @MainActor
     func connect(device: NASDevice, session: DSMSession? = nil) {
         connectedDevice = device
         dsmSession = session
         isConnected = true
     }
 
-    func signOut() {
+    @MainActor
+    func signOut() async {
+        let session = dsmSession
         connectedDevice = nil
         dsmSession = nil
         isConnected = false
         KeychainStore.shared.clearNASCredentials()
+
+        if let session {
+            let client = DSMClient(
+                baseURL: session.baseURL,
+                allowsSelfSignedCertificates: session.allowsSelfSignedCertificates
+            )
+            await client.logout(session: session)
+        }
     }
 }
 
@@ -4018,6 +4279,15 @@ final class EntitlementStore: ObservableObject {
 
 }
 
+enum KeychainStoreError: LocalizedError {
+    case encodingFailed
+    case unexpectedStatus(OSStatus)
+
+    var errorDescription: String? {
+        NSLocalizedString("keychain.save_failed", comment: "")
+    }
+}
+
 final class KeychainStore {
     static let shared = KeychainStore()
 
@@ -4027,13 +4297,11 @@ final class KeychainStore {
 
     private init() {}
 
-    func saveNASCredential(_ credential: StoredNASCredential) {
-        guard let data = try? JSONEncoder().encode(credential) else { return }
-        var item = baseQuery(account: primaryNASAccount)
-        SecItemDelete(item as CFDictionary)
-        item[kSecValueData as String] = data
-        item[kSecAttrAccessible as String] = kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly
-        SecItemAdd(item as CFDictionary, nil)
+    func saveNASCredential(_ credential: StoredNASCredential) throws {
+        guard let data = try? JSONEncoder().encode(credential) else {
+            throw KeychainStoreError.encodingFailed
+        }
+        try save(data: data, query: baseQuery(account: primaryNASAccount))
     }
 
     func loadNASCredential() -> StoredNASCredential? {
@@ -4054,13 +4322,11 @@ final class KeychainStore {
         ] as CFDictionary)
     }
 
-    func saveJellyfinSession(_ session: StoredJellyfinSession, endpoint: URL) {
-        guard let data = try? JSONEncoder().encode(session) else { return }
-        var item = jellyfinQuery(endpoint: endpoint)
-        SecItemDelete(item as CFDictionary)
-        item[kSecValueData as String] = data
-        item[kSecAttrAccessible as String] = kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly
-        SecItemAdd(item as CFDictionary, nil)
+    func saveJellyfinSession(_ session: StoredJellyfinSession, endpoint: URL) throws {
+        guard let data = try? JSONEncoder().encode(session) else {
+            throw KeychainStoreError.encodingFailed
+        }
+        try save(data: data, query: jellyfinQuery(endpoint: endpoint))
     }
 
     func loadJellyfinSession(endpoint: URL) -> StoredJellyfinSession? {
@@ -4075,6 +4341,27 @@ final class KeychainStore {
 
     func clearJellyfinSession(endpoint: URL) {
         SecItemDelete(jellyfinQuery(endpoint: endpoint) as CFDictionary)
+    }
+
+    private func save(data: Data, query: [String: Any]) throws {
+        let attributes: [String: Any] = [
+            kSecValueData as String: data,
+            kSecAttrAccessible as String: kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly
+        ]
+        let updateStatus = SecItemUpdate(query as CFDictionary, attributes as CFDictionary)
+        if updateStatus == errSecSuccess {
+            return
+        }
+        guard updateStatus == errSecItemNotFound else {
+            throw KeychainStoreError.unexpectedStatus(updateStatus)
+        }
+
+        var newItem = query
+        attributes.forEach { newItem[$0.key] = $0.value }
+        let addStatus = SecItemAdd(newItem as CFDictionary, nil)
+        guard addStatus == errSecSuccess else {
+            throw KeychainStoreError.unexpectedStatus(addStatus)
+        }
     }
 
     private func baseQuery(account: String) -> [String: Any] {

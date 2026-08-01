@@ -160,7 +160,7 @@
 "connect.trust_self_signed.protocol_hint" = "此开关仅用于 HTTPS 证书校验，对内网 HTTP 无效，也不会修改协议或端口。";
 "connect.trust_self_signed.footer" = "内网可使用 HTTP 5000 或 HTTPS 5001；外网应使用 HTTPS 与实际公网端口。仅在确认是自己的 NAS 时开启自签信任。";
 "connect.scan.title" = "局域网发现";
-"connect.scan.description" = "局域网发现会验证 DSM 的实际协议和端口；HTTP 与 HTTPS 均可用时优先显示内网 HTTP。";
+"connect.scan.description" = "局域网发现会验证 DSM 的实际协议和端口；HTTP 与 HTTPS 均可用时优先显示 HTTPS。";
 "connect.scan.empty" = "暂未发现可用 NAS。请手动填写 DSM 地址，或确认手机与 NAS 在同一局域网。";
 "connect.scan.searching" = "正在搜索局域网中的 DSM…";
 "connect.scan.retry" = "重新搜索";
@@ -225,7 +225,7 @@
 "devices.container.runtime_memory" = "运行内存";
 "devices.container.runtime_memory_value" = "运行内存 %@";
 "devices.container.runtime_memory_unavailable" = "暂无运行内存采样";
-"devices.discovery.hint" = "重新发现服务会扫描 DSM 套件、反向代理规则、Docker 端口和 Agent 元数据。";
+"devices.discovery.hint" = "重新发现服务会扫描 DSM 套件、反向代理规则、Docker 端口和资源数据。";
 "devices.detail.status" = "状态";
 "devices.detail.name" = "设备名称";
 "devices.detail.model" = "机型";
@@ -641,3 +641,9 @@
 "web.developer_workbench_missing" = "code-server 登录页已加载，但工作台没有启动。若 Safari 也为空白，问题位于 code-server 容器、静态脚本、证书或反向代理；请先测试内网直连，再更新或重建容器，并确认 WebSocket 与可信 HTTPS 配置。";
 "web.developer_script_failed" = "code-server 工作台脚本解析失败。若 Safari 也出现空白，这不是 Nastart 浏览器故障；请测试内网直连，并检查或重建 code-server 容器、反向代理和 HTTPS 证书。";
 "diagnostics.web.developer_workbench_missing" = "开发工具登录后未检测到工作台";
+"keychain.save_failed" = "Nastart 无法安全保存连接凭据，原有凭据未被删除。";
+"reminder.target_date" = "目标日期";
+"reminder.date_invalid" = "请选择更晚的目标日期，以满足当前提前提醒天数。";
+"tasks.detail.target" = "目标日期";
+"mine.privacy.reset_certificates" = "重置信任证书";
+"mine.privacy.reset_certificates_hint" = "已清除保存的自签名证书指纹。下次连接各服务器时，Nastart 将重新信任并记录其证书。";

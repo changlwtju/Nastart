@@ -350,6 +350,7 @@ struct TaskItem: Identifiable, Codable {
     var isMuted: Bool
     let createdAt: Date
     let daysBefore: Int
+    let targetDate: Date?
     var completedAt: Date?
 
     init(
@@ -361,6 +362,7 @@ struct TaskItem: Identifiable, Codable {
         isMuted: Bool = false,
         createdAt: Date = Date(),
         daysBefore: Int = 14,
+        targetDate: Date? = nil,
         completedAt: Date? = nil
     ) {
         self.id = id
@@ -371,11 +373,21 @@ struct TaskItem: Identifiable, Codable {
         self.isMuted = isMuted
         self.createdAt = createdAt
         self.daysBefore = daysBefore
+        self.targetDate = targetDate
         self.completedAt = completedAt
     }
 
     var nextReminderAt: Date? {
-        Calendar.current.date(byAdding: .day, value: daysBefore, to: createdAt)
+        if let targetDate {
+            return Calendar.current.date(byAdding: .day, value: -daysBefore, to: targetDate)
+        }
+        return Calendar.current.date(byAdding: .day, value: daysBefore, to: createdAt)
+    }
+
+    var requiresAttention: Bool {
+        guard completedAt == nil, let nextReminderAt else { return isUrgent }
+        let urgentThreshold = Calendar.current.date(byAdding: .day, value: 7, to: Date()) ?? Date()
+        return isUrgent || nextReminderAt <= urgentThreshold
     }
 }
 

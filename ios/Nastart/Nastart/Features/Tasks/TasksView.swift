@@ -152,7 +152,7 @@ private struct TaskRow: View {
         HStack(spacing: 12) {
             Image(systemName: task.symbol)
                 .font(.subheadline)
-                .foregroundStyle(task.isUrgent ? .orange : .primary)
+                .foregroundStyle(task.requiresAttention ? .orange : .primary)
                 .frame(width: 34, height: 34)
                 .background(AppTheme.secondarySurface)
                 .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
@@ -197,7 +197,7 @@ private struct TaskDetailView: View {
                 VStack(alignment: .leading, spacing: 12) {
                     Image(systemName: task.symbol)
                         .font(.system(size: 42, weight: .regular))
-                        .foregroundStyle(task.isUrgent ? .orange : .primary)
+                        .foregroundStyle(task.requiresAttention ? .orange : .primary)
                     Text(LocalizedStringKey(task.title))
                         .font(.title2.weight(.bold))
                     Text(LocalizedStringKey(task.subtitle))
@@ -230,9 +230,16 @@ private struct TaskDetailView: View {
                     LabeledContent("tasks.detail.completed") {
                         Text(completedAt, style: .date)
                     }
-                } else if let nextReminderAt = task.nextReminderAt {
-                    LabeledContent("tasks.detail.next") {
-                        Text(nextReminderAt, style: .date)
+                } else {
+                    if let targetDate = task.targetDate {
+                        LabeledContent("tasks.detail.target") {
+                            Text(targetDate, style: .date)
+                        }
+                    }
+                    if let nextReminderAt = task.nextReminderAt {
+                        LabeledContent("tasks.detail.next") {
+                            Text(nextReminderAt, style: .date)
+                        }
                     }
                 }
             } header: {
@@ -251,6 +258,7 @@ struct ReminderCreateView: View {
     @State private var title = ""
     @State private var target = ""
     @State private var daysBefore = 14
+    @State private var targetDate = Calendar.current.date(byAdding: .year, value: 1, to: Date()) ?? Date()
 
     init(defaultKind: ReminderKind) {
         _kind = State(initialValue: defaultKind)
@@ -274,6 +282,12 @@ struct ReminderCreateView: View {
             }
 
             Section {
+                DatePicker(
+                    "reminder.target_date",
+                    selection: $targetDate,
+                    in: Date()...,
+                    displayedComponents: .date
+                )
                 Stepper(value: $daysBefore, in: 1...60) {
                     LabeledContent(
                         "reminder.days_before",
@@ -285,6 +299,11 @@ struct ReminderCreateView: View {
                 }
             } header: {
                 Text("reminder.section.notify")
+            } footer: {
+                if !hasFutureReminder {
+                    Text("reminder.date_invalid")
+                        .foregroundStyle(.red)
+                }
             }
 
             Section {
@@ -295,8 +314,9 @@ struct ReminderCreateView: View {
                             title: normalizedTitle,
                             subtitle: normalizedTarget,
                             symbol: kind.symbolName,
-                            isUrgent: daysBefore <= 7,
-                            daysBefore: daysBefore
+                            isUrgent: false,
+                            daysBefore: daysBefore,
+                            targetDate: targetDate
                         )
                     )
                     dismiss()
@@ -323,7 +343,18 @@ struct ReminderCreateView: View {
     }
 
     private var canSave: Bool {
-        !normalizedTitle.isEmpty && !normalizedTarget.isEmpty
+        !normalizedTitle.isEmpty && !normalizedTarget.isEmpty && hasFutureReminder
+    }
+
+    private var hasFutureReminder: Bool {
+        guard let reminderDate = Calendar.current.date(
+            byAdding: .day,
+            value: -daysBefore,
+            to: targetDate
+        ) else {
+            return false
+        }
+        return reminderDate > Date()
     }
 }
 

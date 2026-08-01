@@ -160,7 +160,7 @@
 "connect.trust_self_signed.protocol_hint" = "This switch only changes HTTPS certificate validation. It has no effect on local HTTP and does not change the protocol or port.";
 "connect.trust_self_signed.footer" = "Local access can use HTTP 5000 or HTTPS 5001. Remote access should use HTTPS and the actual public port. Trust self-signed certificates only for your own NAS.";
 "connect.scan.title" = "Discover on LAN";
-"connect.scan.description" = "Local discovery verifies the actual DSM protocol and port. If both HTTP and HTTPS work, the local HTTP endpoint is shown first.";
+"connect.scan.description" = "Local discovery verifies the actual DSM protocol and port. If both HTTP and HTTPS work, the HTTPS endpoint is shown first.";
 "connect.scan.empty" = "No NAS was discovered yet. Enter the DSM address manually, or make sure your phone and NAS are on the same LAN.";
 "connect.scan.searching" = "Searching the local network for DSM…";
 "connect.scan.retry" = "Search Again";
@@ -225,7 +225,7 @@
 "devices.container.runtime_memory" = "Runtime RAM";
 "devices.container.runtime_memory_value" = "Runtime RAM %@";
 "devices.container.runtime_memory_unavailable" = "No runtime RAM sample";
-"devices.discovery.hint" = "Rescan checks DSM packages, reverse proxy rules, Docker ports, and Agent metadata.";
+"devices.discovery.hint" = "Rescan checks DSM packages, reverse proxy rules, Docker ports, and resource data.";
 "devices.detail.status" = "Status";
 "devices.detail.name" = "Device Name";
 "devices.detail.model" = "Model";
@@ -641,3 +641,9 @@
 "web.developer_workbench_missing" = "The code-server login page loaded, but its workbench did not start. If Safari is also blank, inspect the container, static scripts, certificate, and reverse proxy. Test the direct LAN address first, then update or recreate the container and verify WebSocket forwarding with trusted HTTPS.";
 "web.developer_script_failed" = "The code-server workbench script could not be parsed. If Safari is also blank, this is not a Nastart browser failure. Test the direct LAN address, then inspect or recreate the code-server container, reverse proxy, and HTTPS certificate.";
 "diagnostics.web.developer_workbench_missing" = "Developer workbench was missing after login";
+"keychain.save_failed" = "Nastart could not securely save the connection credentials. Your previous saved credentials were left unchanged.";
+"reminder.target_date" = "Target Date";
+"reminder.date_invalid" = "Choose a target date far enough ahead for this reminder interval.";
+"tasks.detail.target" = "Target Date";
+"mine.privacy.reset_certificates" = "Reset Trusted Certificates";
+"mine.privacy.reset_certificates_hint" = "Saved self-signed certificate fingerprints were cleared. Nastart will trust and save the next certificate presented by each server.";

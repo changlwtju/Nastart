@@ -1021,14 +1021,17 @@ private final class FilePreviewTrustDelegate: NSObject, URLSessionDelegate {
     ) {
         guard
             allowsSelfSignedCertificates,
-            challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust,
-            challenge.protectionSpace.host.caseInsensitiveCompare(trustedHost ?? "") == .orderedSame,
-            let trust = challenge.protectionSpace.serverTrust
+            let credential = CertificatePinStore.shared.credential(
+                for: challenge,
+                expectedHost: trustedHost
+            )
         else {
-            completionHandler(.performDefaultHandling, nil)
+            let shouldReject = allowsSelfSignedCertificates
+                && challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust
+            completionHandler(shouldReject ? .cancelAuthenticationChallenge : .performDefaultHandling, nil)
             return
         }
-        completionHandler(.useCredential, URLCredential(trust: trust))
+        completionHandler(.useCredential, credential)
     }
 }
 

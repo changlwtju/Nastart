@@ -1,5 +1,6 @@
 import SwiftUI
 import UIKit
+import WebKit
 
 struct MineView: View {
     @EnvironmentObject private var connectionStore: NASConnectionStore
@@ -90,8 +91,10 @@ struct MineView: View {
             .navigationBarTitleDisplayMode(.inline)
             .confirmationDialog("mine.sign_out.confirm", isPresented: $showSignOutConfirm, titleVisibility: .visible) {
                 Button("mine.sign_out", role: .destructive) {
-                    connectionStore.signOut()
-                    dataStore.clearConnectionData()
+                    Task {
+                        await connectionStore.signOut()
+                        dataStore.clearConnectionData()
+                    }
                 }
                 Button("action.cancel", role: .cancel) {}
             } message: {
@@ -968,6 +971,7 @@ private struct SyncSettingsView: View {
 
 private struct PrivacySecurityView: View {
     @State private var showCacheHint = false
+    @State private var showCertificateResetHint = false
 
     var body: some View {
         Form {
@@ -976,6 +980,12 @@ private struct PrivacySecurityView: View {
                     KeychainSettingsView()
                 } label: {
                     Label("mine.privacy.keychain", systemImage: "key")
+                }
+                Button {
+                    CertificatePinStore.shared.clearAll()
+                    showCertificateResetHint = true
+                } label: {
+                    Label("mine.privacy.reset_certificates", systemImage: "checkmark.shield")
                 }
             } header: {
                 Text("mine.privacy.security")
@@ -989,7 +999,15 @@ private struct PrivacySecurityView: View {
                 }
                 Button {
                     URLCache.shared.removeAllCachedResponses()
-                    showCacheHint = true
+                    clearTemporaryDownloads()
+                    WKWebsiteDataStore.default().removeData(
+                        ofTypes: WKWebsiteDataStore.allWebsiteDataTypes(),
+                        modifiedSince: .distantPast
+                    ) {
+                        DispatchQueue.main.async {
+                            showCacheHint = true
+                        }
+                    }
                 } label: {
                     Label("mine.privacy.clear_cache", systemImage: "trash")
                 }
@@ -1001,6 +1019,18 @@ private struct PrivacySecurityView: View {
         .navigationBarTitleDisplayMode(.inline)
         .alert("mine.privacy.clear_cache_hint", isPresented: $showCacheHint) {
             Button("action.ok", role: .cancel) {}
+        }
+        .alert("mine.privacy.reset_certificates_hint", isPresented: $showCertificateResetHint) {
+            Button("action.ok", role: .cancel) {}
+        }
+    }
+
+    private func clearTemporaryDownloads() {
+        let temporaryDirectory = FileManager.default.temporaryDirectory
+        for name in ["NastartDownloads", "NastartPreviews"] {
+            try? FileManager.default.removeItem(
+                at: temporaryDirectory.appendingPathComponent(name, isDirectory: true)
+            )
         }
     }
 }
@@ -1174,6 +1204,9 @@ private struct DataExportView: View {
         ]
         if let completedAt = task.completedAt {
             value["completedAt"] = ISO8601DateFormatter().string(from: completedAt)
+        }
+        if let targetDate = task.targetDate {
+            value["targetDate"] = ISO8601DateFormatter().string(from: targetDate)
         }
         return value
     }

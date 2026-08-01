@@ -165,11 +165,11 @@ struct LaunchpadView: View {
     private var launchpadContent: some View {
         switch selectedTheme {
         case .cleanGrid:
-            ProductLaunchpad(device: dataStore.device, services: launchpadServices, categories: orderedCategories, options: displayOptions, groupDefaultExpanded: isGroupExpandedByDefault)
+            ProductLaunchpad(device: dataStore.device, services: launchpadServices, categories: orderedCategories, options: displayOptions, isConnected: connectionStore.isConnected, groupDefaultExpanded: isGroupExpandedByDefault)
         case .commandCenter:
             CommandCenterLaunchpad(device: dataStore.device, services: launchpadServices, categories: orderedCategories, options: displayOptions, groupDefaultExpanded: isGroupExpandedByDefault)
         case .glassDeck:
-            GlassDeckLaunchpad(device: dataStore.device, services: launchpadServices, categories: orderedCategories, options: displayOptions, groupDefaultExpanded: isGroupExpandedByDefault)
+            GlassDeckLaunchpad(device: dataStore.device, services: launchpadServices, categories: orderedCategories, options: displayOptions, isConnected: connectionStore.isConnected, groupDefaultExpanded: isGroupExpandedByDefault)
         }
     }
 
@@ -609,11 +609,12 @@ private struct GlassDeckLaunchpad: View {
     let services: [LaunchpadService]
     let categories: [ServiceCategory]
     let options: LaunchpadDisplayOptions
+    let isConnected: Bool
     let groupDefaultExpanded: (ServiceCategory) -> Bool
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            GlassHeroPanel(device: device, compact: options.compactMetrics)
+            GlassHeroPanel(device: device, compact: options.compactMetrics, isConnected: isConnected)
 
             if shouldShowCertificateReminder {
                 NavigationLink {
@@ -725,11 +726,16 @@ private struct GlassCollapsedGroupRow: View {
 private struct GlassHeroPanel: View {
     let device: NASDevice
     let compact: Bool
+    let isConnected: Bool
 
     var body: some View {
         VStack(alignment: .leading, spacing: compact ? 12 : 16) {
             HStack {
-                Label("launchpad.summary.normal", systemImage: "checkmark.circle.fill")
+                Label {
+                    Text(LocalizedStringKey(summaryKey))
+                } icon: {
+                    Image(systemName: summarySymbol)
+                }
                     .font(.subheadline.weight(.semibold))
                 Spacer()
                 if let uptimeMinutes = device.uptimeMinutes {
@@ -762,6 +768,21 @@ private struct GlassHeroPanel: View {
                 .stroke(.white.opacity(0.74), lineWidth: 1)
         }
         .shadow(color: .black.opacity(0.07), radius: 20, y: 10)
+    }
+
+    private var summaryKey: String {
+        guard isConnected else { return "state.not_connected" }
+        return hasWarning ? "status.warning" : "launchpad.summary.normal"
+    }
+
+    private var summarySymbol: String {
+        guard isConnected else { return "wifi.slash" }
+        return hasWarning ? "exclamationmark.triangle.fill" : "checkmark.circle.fill"
+    }
+
+    private var hasWarning: Bool {
+        device.certificateDaysRemaining.map { $0 <= LaunchpadReminderPolicy.certificateWarningDays } == true
+            || [device.cpu, device.memory, device.storageUsed].compactMap { $0 }.contains { $0 >= 0.9 }
     }
 }
 
@@ -820,11 +841,12 @@ private struct ProductLaunchpad: View {
     let services: [LaunchpadService]
     let categories: [ServiceCategory]
     let options: LaunchpadDisplayOptions
+    let isConnected: Bool
     let groupDefaultExpanded: (ServiceCategory) -> Bool
 
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
-            DeviceSummaryPanel(device: device, compact: options.compactMetrics)
+            DeviceSummaryPanel(device: device, compact: options.compactMetrics, isConnected: isConnected)
 
             if shouldShowCertificateReminder {
                 NavigationLink {
@@ -1469,12 +1491,10 @@ private struct ServiceDetailView: View {
 
 private enum ServiceEndpointOverrides {
     static func load(service: LaunchpadService, deviceHost: String?) -> URL? {
-        guard
-            let value = UserDefaults.standard.string(forKey: key(service: service, deviceHost: deviceHost))
-        else {
-            return nil
-        }
-        return URL(string: value)
+        let defaults = UserDefaults.standard
+        let value = defaults.string(forKey: key(service: service, deviceHost: deviceHost))
+            ?? defaults.string(forKey: legacyKey(service: service, deviceHost: deviceHost))
+        return value.flatMap(URL.init(string:))
     }
 
     static func save(_ url: URL?, service: LaunchpadService, deviceHost: String?) {
@@ -1484,9 +1504,15 @@ private enum ServiceEndpointOverrides {
         } else {
             UserDefaults.standard.removeObject(forKey: storageKey)
         }
+        UserDefaults.standard.removeObject(forKey: legacyKey(service: service, deviceHost: deviceHost))
     }
 
     private static func key(service: LaunchpadService, deviceHost: String?) -> String {
+        let device = (deviceHost ?? "nas").lowercased()
+        return "nastart.service.endpoint.\(device).\(service.id.uuidString.lowercased())"
+    }
+
+    private static func legacyKey(service: LaunchpadService, deviceHost: String?) -> String {
         let device = (deviceHost ?? "nas").lowercased()
         let serviceName = service.name.lowercased()
         return "nastart.service.endpoint.\(device).\(serviceName)"
@@ -1553,7 +1579,7 @@ private struct ServiceEndpointEditor: View {
     private var normalizedURL: URL? {
         let trimmed = address.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return nil }
-        let value = trimmed.contains("://") ? trimmed : "http://\(trimmed)"
+        let value = trimmed.contains("://") ? trimmed : "https://\(trimmed)"
         guard
             let components = URLComponents(string: value),
             let scheme = components.scheme?.lowercased(),
@@ -2050,9 +2076,11 @@ private struct WebContainerView: UIViewRepresentable {
         let webView = WKWebView(frame: .zero, configuration: configuration)
         webView.navigationDelegate = context.coordinator
         webView.uiDelegate = context.coordinator
+#if DEBUG
         if #available(iOS 16.4, *) {
             webView.isInspectable = true
         }
+#endif
         webView.allowsBackForwardNavigationGestures = true
         webView.allowsLinkPreview = true
         webView.scrollView.keyboardDismissMode = .none
@@ -2145,9 +2173,18 @@ private struct WebContainerView: UIViewRepresentable {
       bodyChildCount: document.body?.children?.length || 0,
       htmlLength: document.documentElement?.outerHTML?.length || 0,
       title: document.title || '',
+      viewportWidth: window.innerWidth || 0,
+      viewportHeight: window.innerHeight || 0,
       hasLoginForm: Boolean(document.querySelector('input[type="password"]')),
-      hasWorkbench: Boolean(document.querySelector('.monaco-workbench')),
+      hasWorkbench: Boolean(document.querySelector(
+        '.monaco-workbench, .monaco-editor, [id="workbench.parts.editor"]'
+      )),
       nuxtChildCount: document.querySelector('#__nuxt')?.children?.length || 0,
+      appRootChildCount: (() => {
+        const root = document.querySelector('#__nuxt, #app, #root, [data-v-app]');
+        return root?.children?.length || 0;
+      })(),
+      canvasCount: document.querySelectorAll('canvas').length,
       codeServerVersion: (() => {
         try {
           const raw = document.querySelector('meta#coder-options')?.dataset?.settings;
@@ -2588,19 +2625,18 @@ private struct WebContainerView: UIViewRepresentable {
             completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
         ) {
             guard
-                challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust,
-                let trust = challenge.protectionSpace.serverTrust,
                 parent.allowsSelfSignedCertificates,
-                challenge.protectionSpace.host.caseInsensitiveCompare(parent.url.host ?? "") == .orderedSame
+                let credential = CertificatePinStore.shared.credential(
+                    for: challenge,
+                    expectedHost: parent.url.host
+                )
             else {
-                completionHandler(.performDefaultHandling, nil)
+                let shouldReject = parent.allowsSelfSignedCertificates
+                    && challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust
+                completionHandler(shouldReject ? .cancelAuthenticationChallenge : .performDefaultHandling, nil)
                 return
             }
-
-            DispatchQueue.global(qos: .userInitiated).async {
-                let credential = URLCredential(trust: trust)
-                completionHandler(.useCredential, credential)
-            }
+            completionHandler(.useCredential, credential)
         }
 
         private func inspectRenderedPage(in webView: WKWebView, trigger: String) {
@@ -2635,15 +2671,20 @@ private struct WebContainerView: UIViewRepresentable {
                     let bodyChildCount = (values["bodyChildCount"] as? NSNumber)?.intValue ?? 0
                     let htmlLength = (values["htmlLength"] as? NSNumber)?.intValue ?? 0
                     let title = values["title"] as? String ?? ""
+                    let viewportWidth = (values["viewportWidth"] as? NSNumber)?.intValue ?? 0
+                    let viewportHeight = (values["viewportHeight"] as? NSNumber)?.intValue ?? 0
                     let hasLoginForm = (values["hasLoginForm"] as? NSNumber)?.boolValue ?? false
                     let hasWorkbench = (values["hasWorkbench"] as? NSNumber)?.boolValue ?? false
                     let nuxtChildCount = (values["nuxtChildCount"] as? NSNumber)?.intValue ?? 0
+                    let appRootChildCount = (values["appRootChildCount"] as? NSNumber)?.intValue ?? 0
+                    let canvasCount = (values["canvasCount"] as? NSNumber)?.intValue ?? 0
                     let codeServerVersion = values["codeServerVersion"] as? String ?? ""
                     let hasRenderedContent: Bool
                     if self.parent.expectsDeveloperWorkbench {
                         hasRenderedContent = hasLoginForm || hasWorkbench
                     } else if self.parent.expectsMetaCubeDashboard {
-                        hasRenderedContent = nuxtChildCount > 0 && bodyTextLength > 0
+                        hasRenderedContent = appRootChildCount > 0
+                            && (bodyTextLength > 0 || canvasCount > 0)
                     } else {
                         hasRenderedContent = bodyChildCount > 0 && htmlLength >= 200
                     }
@@ -2657,22 +2698,18 @@ private struct WebContainerView: UIViewRepresentable {
                             "bodyChildCount": "\(bodyChildCount)",
                             "htmlLength": "\(htmlLength)",
                             "titleLength": "\(title.count)",
+                            "viewport": "\(viewportWidth)x\(viewportHeight)",
                             "loginForm": hasLoginForm ? "yes" : "no",
                             "workbench": hasWorkbench ? "yes" : "no",
                             "nuxtChildCount": "\(nuxtChildCount)",
+                            "appRootChildCount": "\(appRootChildCount)",
+                            "canvasCount": "\(canvasCount)",
                             "codeServerVersion": codeServerVersion.isEmpty ? "-" : codeServerVersion,
                             "rendered": hasRenderedContent ? "yes" : "no"
                         ]
                     )
 
                     if hasRenderedContent {
-                        if trigger == "commitTimeout", self.parent.prefersCompatibilityFallback {
-                            self.requestCompatibilityFallbackIfNeeded(
-                                webView: webView,
-                                reason: "loadTimeout"
-                            )
-                            return
-                        }
                         self.setLoading(false, error: nil)
                         self.syncState(from: webView, immediately: true)
                     } else if self.parent.expectsDeveloperWorkbench {
@@ -2896,7 +2933,12 @@ struct MediaPlaybackRequest: Identifiable {
     }
 
     var allowsExternalHandoff: Bool {
-        source == .directURL
+        guard source == .directURL else { return false }
+        let sensitiveQueryNames = Set([
+            "_sid", "api_key", "apikey", "token", "access_token", "authorization"
+        ])
+        let queryItems = URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems ?? []
+        return !queryItems.contains { sensitiveQueryNames.contains($0.name.lowercased()) }
     }
 }
 
@@ -2922,14 +2964,17 @@ private final class MediaProbeTrustDelegate: NSObject, URLSessionDelegate {
     ) {
         guard
             allowsSelfSignedCertificates,
-            challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust,
-            challenge.protectionSpace.host.caseInsensitiveCompare(trustedHost ?? "") == .orderedSame,
-            let trust = challenge.protectionSpace.serverTrust
+            let credential = CertificatePinStore.shared.credential(
+                for: challenge,
+                expectedHost: trustedHost
+            )
         else {
-            completionHandler(.performDefaultHandling, nil)
+            let shouldReject = allowsSelfSignedCertificates
+                && challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust
+            completionHandler(shouldReject ? .cancelAuthenticationChallenge : .performDefaultHandling, nil)
             return
         }
-        completionHandler(.useCredential, URLCredential(trust: trust))
+        completionHandler(.useCredential, credential)
     }
 }
 
@@ -3121,12 +3166,18 @@ private enum MediaPlaybackPolicy {
 
     static func preferredEngine(for request: MediaPlaybackRequest) -> MediaPlaybackEngine {
         guard hasCompatibilityEngine else { return .system }
+        if request.allowsSelfSignedCertificates {
+            return .compatibility
+        }
         let fileExtension = request.fileExtensionHint
         guard !fileExtension.isEmpty else { return .system }
         return systemPreferredExtensions.contains(fileExtension) ? .system : .compatibility
     }
 
     static func requiresCompatibilityEngine(for request: MediaPlaybackRequest) -> Bool {
+        if request.allowsSelfSignedCertificates {
+            return true
+        }
         let fileExtension = request.fileExtensionHint
         return !fileExtension.isEmpty && !systemPreferredExtensions.contains(fileExtension)
     }
@@ -3821,14 +3872,17 @@ private final class JellyfinCertificateTrustDelegate: NSObject, URLSessionDelega
     ) {
         guard
             allowsSelfSignedCertificates,
-            challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust,
-            challenge.protectionSpace.host.caseInsensitiveCompare(trustedHost ?? "") == .orderedSame,
-            let trust = challenge.protectionSpace.serverTrust
+            let credential = CertificatePinStore.shared.credential(
+                for: challenge,
+                expectedHost: trustedHost
+            )
         else {
-            completionHandler(.performDefaultHandling, nil)
+            let shouldReject = allowsSelfSignedCertificates
+                && challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust
+            completionHandler(shouldReject ? .cancelAuthenticationChallenge : .performDefaultHandling, nil)
             return
         }
-        completionHandler(.useCredential, URLCredential(trust: trust))
+        completionHandler(.useCredential, credential)
     }
 }
 
@@ -3907,7 +3961,7 @@ private final class JellyfinLibraryStore: ObservableObject {
             userID = authenticatedUserID
             self.username = result.user?.name ?? cleanedUsername
             isAuthenticated = true
-            KeychainStore.shared.saveJellyfinSession(
+            try KeychainStore.shared.saveJellyfinSession(
                 StoredJellyfinSession(
                     endpointString: endpoint.absoluteString,
                     userID: authenticatedUserID,
@@ -3919,6 +3973,10 @@ private final class JellyfinLibraryStore: ObservableObject {
             record("diagnostics.jellyfin.login_succeeded", level: .info)
             await loadHome()
         } catch {
+            try? await client?.signOut()
+            client = nil
+            userID = nil
+            username = ""
             isAuthenticated = false
             errorMessage = NSLocalizedString("jellyfin.login.failed", comment: "")
             isLoading = false
@@ -4386,7 +4444,7 @@ private struct JellyfinLibraryView: View {
         self.service = service
         _store = StateObject(wrappedValue: JellyfinLibraryStore(
             endpoint: endpoint,
-            playbackEndpoint: service.alternateEndpoint,
+            playbackEndpoint: nil,
             allowsSelfSignedCertificates: allowsSelfSignedCertificates
         ))
     }
@@ -5435,7 +5493,7 @@ private struct ManualServiceEditorView: View {
     private var normalizedURL: URL? {
         let trimmed = address.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return nil }
-        let value = trimmed.contains("://") ? trimmed : "http://\(trimmed)"
+        let value = trimmed.contains("://") ? trimmed : "https://\(trimmed)"
         guard
             let components = URLComponents(string: value),
             let scheme = components.scheme?.lowercased(),
@@ -5639,10 +5697,7 @@ private struct DSMConnectionFlowView: View {
         errorMessage = ""
         connectionTask = Task {
             do {
-                let baseURL = try DSMClient.normalizedBaseURL(
-                    from: host,
-                    defaultsToHTTPOnLocalNetwork: connectionLocation == .local
-                )
+                let baseURL = try DSMClient.normalizedBaseURL(from: host)
                 let client = DSMClient(
                     baseURL: baseURL,
                     allowsSelfSignedCertificates: allowsSelfSignedCertificates
@@ -5657,16 +5712,21 @@ private struct DSMConnectionFlowView: View {
                 }
                 let snapshot = await client.loadSnapshot(session: session, useAgent: false)
                 try Task.checkCancellation()
-                KeychainStore.shared.saveNASCredential(
-                    StoredNASCredential(
-                        baseURLString: baseURL.absoluteString,
-                        account: account,
-                        password: password,
-                        useAgent: false,
-                        allowsSelfSignedCertificates: allowsSelfSignedCertificates,
-                        deviceID: session.deviceID
+                do {
+                    try KeychainStore.shared.saveNASCredential(
+                        StoredNASCredential(
+                            baseURLString: baseURL.absoluteString,
+                            account: account,
+                            password: password,
+                            useAgent: false,
+                            allowsSelfSignedCertificates: allowsSelfSignedCertificates,
+                            deviceID: session.deviceID
+                        )
                     )
-                )
+                } catch {
+                    await client.logout(session: session)
+                    throw error
+                }
                 await MainActor.run {
                     dataStore.activateDSM(snapshot: snapshot, session: session, useAgent: false)
                     connectionStore.connect(device: snapshot.device, session: session)
@@ -5958,11 +6018,16 @@ private struct LiveUptimeText: View {
 private struct DeviceSummaryPanel: View {
     let device: NASDevice
     let compact: Bool
+    let isConnected: Bool
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
-                Label("launchpad.summary.normal", systemImage: "checkmark.circle.fill")
+                Label {
+                    Text(LocalizedStringKey(summaryKey))
+                } icon: {
+                    Image(systemName: summarySymbol)
+                }
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(.primary)
                 Spacer()
@@ -5990,6 +6055,21 @@ private struct DeviceSummaryPanel: View {
         }
         .padding(14)
         .nastartCard(cornerRadius: 22)
+    }
+
+    private var summaryKey: String {
+        guard isConnected else { return "state.not_connected" }
+        return hasWarning ? "status.warning" : "launchpad.summary.normal"
+    }
+
+    private var summarySymbol: String {
+        guard isConnected else { return "wifi.slash" }
+        return hasWarning ? "exclamationmark.triangle.fill" : "checkmark.circle.fill"
+    }
+
+    private var hasWarning: Bool {
+        device.certificateDaysRemaining.map { $0 <= LaunchpadReminderPolicy.certificateWarningDays } == true
+            || [device.cpu, device.memory, device.storageUsed].compactMap { $0 }.contains { $0 >= 0.9 }
     }
 }
 
