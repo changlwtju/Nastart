@@ -543,7 +543,7 @@
 "diagnostics.title" = "开发诊断";
 "diagnostics.recent" = "最近诊断";
 "diagnostics.empty" = "暂无需要排查的问题。";
-"diagnostics.footer" = "开发阶段会详细记录刷新、DSM API、容器、文件和媒体播放链路；密码、验证码、SID、完整地址和文件名不会写入日志。";
+"diagnostics.footer" = "开发阶段会详细记录刷新、DSM API、容器、文件和媒体播放链路，并保留最近 1000 条直到手动清除；密码、验证码、SID、完整地址和文件名不会写入日志。";
 "diagnostics.export" = "导出诊断摘要";
 "diagnostics.copy" = "复制诊断摘要";
 "diagnostics.clear" = "清空诊断";

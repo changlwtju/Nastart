@@ -543,7 +543,7 @@
 "diagnostics.title" = "Development Diagnostics";
 "diagnostics.recent" = "Recent Diagnostics";
 "diagnostics.empty" = "No issues need diagnosis yet.";
-"diagnostics.footer" = "During development, detailed refresh, DSM API, container, file, and media playback events are recorded. Passwords, one-time codes, SIDs, full addresses, and file names are never stored.";
+"diagnostics.footer" = "During development, detailed refresh, DSM API, container, file, and media playback events are recorded. The latest 1,000 entries remain until cleared manually. Passwords, one-time codes, SIDs, full addresses, and file names are never stored.";
 "diagnostics.export" = "Export Diagnostic Summary";
 "diagnostics.copy" = "Copy Diagnostic Summary";
 "diagnostics.clear" = "Clear Diagnostics";

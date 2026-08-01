@@ -241,7 +241,7 @@ struct DSMDataSnapshot: AppDataProviding {
     let reverseProxyInventoryAvailable: Bool
 }
 
-enum DiagnosticLogLevel: String {
+enum DiagnosticLogLevel: String, Codable {
     case info
     case warning
     case error
@@ -255,7 +255,7 @@ enum DiagnosticLogLevel: String {
     }
 }
 
-struct DiagnosticLogEntry: Identifiable {
+struct DiagnosticLogEntry: Identifiable, Codable {
     let id = UUID()
     let date: Date
     let level: DiagnosticLogLevel
@@ -298,8 +298,17 @@ final class DiagnosticLogStore: ObservableObject {
     @Published private(set) var entries: [DiagnosticLogEntry] = []
 
     private let maxEntries = 1000
+    private let persistenceKey = "diagnostics.entries.v1"
 
-    private init() {}
+    private init() {
+        guard
+            let data = UserDefaults.standard.data(forKey: persistenceKey),
+            let savedEntries = try? JSONDecoder().decode([DiagnosticLogEntry].self, from: data)
+        else {
+            return
+        }
+        entries = Array(savedEntries.suffix(maxEntries))
+    }
 
     func record(
         _ level: DiagnosticLogLevel,
@@ -327,6 +336,7 @@ final class DiagnosticLogStore: ObservableObject {
     @MainActor
     func clear() {
         entries.removeAll()
+        UserDefaults.standard.removeObject(forKey: persistenceKey)
     }
 
     @MainActor
@@ -361,6 +371,9 @@ final class DiagnosticLogStore: ObservableObject {
         entries.append(entry)
         if entries.count > maxEntries {
             entries.removeFirst(entries.count - maxEntries)
+        }
+        if let data = try? JSONEncoder().encode(entries) {
+            UserDefaults.standard.set(data, forKey: persistenceKey)
         }
     }
 }
