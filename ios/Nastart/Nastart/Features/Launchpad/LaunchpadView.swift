@@ -3645,9 +3645,9 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
 
     func jump(by seconds: Int) {
         if seconds < 0 {
-            player.jumpBackward(-seconds)
+            player.jumpBackward(Int32(clamping: -seconds))
         } else {
-            player.jumpForward(seconds)
+            player.jumpForward(Int32(clamping: seconds))
         }
     }
 
