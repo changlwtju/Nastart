@@ -629,3 +629,11 @@
 "diagnostics.jellyfin.login_failed" = "Jellyfin sign-in failed";
 "diagnostics.jellyfin.library_loaded" = "Jellyfin library loaded";
 "diagnostics.jellyfin.library_failed" = "Jellyfin library load failed";
+"jellyfin.player.retry_hint" = "This authenticated Jellyfin stream can only be played in Nastart. Close the player and retry to request a fresh stream.";
+"jellyfin.player.prepare_failed" = "Unable to Prepare Playback";
+"jellyfin.player.prepare_failed_detail" = "Jellyfin did not provide a compatible HLS stream. Check that server transcoding is enabled, then review Media Playback diagnostics.";
+"diagnostics.jellyfin.playback_preparing" = "Requested a Jellyfin playback plan";
+"diagnostics.jellyfin.playback_prepared" = "Jellyfin prepared a compatible playback stream";
+"diagnostics.jellyfin.playback_failed" = "Jellyfin playback preparation failed";
+"web.developer_workbench_missing" = "The login page loaded, but the code-server workbench did not start. Verify that the reverse proxy forwards WebSocket upgrades and that the external address uses trusted HTTPS.";
+"diagnostics.web.developer_workbench_missing" = "Developer workbench was missing after login";

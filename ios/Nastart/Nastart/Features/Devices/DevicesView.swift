@@ -15,7 +15,7 @@ struct DevicesView: View {
                         device: dataStore.device,
                         isConnected: connectionStore.isConnected
                     )
-                    .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+                    .listRowInsets(EdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0))
                     .listRowBackground(Color.clear)
                     .listRowSeparator(.hidden)
                 }

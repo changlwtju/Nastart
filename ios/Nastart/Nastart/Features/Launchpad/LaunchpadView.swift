@@ -1647,7 +1647,6 @@ private struct ServiceWebUIView: View {
     let dsmSession: DSMSession?
     @State private var selectedMode = ServiceWebMode.automatic
     @State private var showCompatibilityBrowser = false
-    @State private var didPresentPreferredBrowser = false
     @State private var browserCommand: WebBrowserCommand?
     @State private var showCopiedHint = false
     @State private var isLoading = true
@@ -1676,9 +1675,6 @@ private struct ServiceWebUIView: View {
 
     var body: some View {
         webKitBrowser
-            .onAppear {
-                presentPreferredBrowserIfNeeded()
-            }
             .fullScreenCover(isPresented: $showCompatibilityBrowser) {
                 SystemInAppBrowserView(url: currentURL) {
                     showCompatibilityBrowser = false
@@ -1694,6 +1690,7 @@ private struct ServiceWebUIView: View {
                     url: endpoint,
                     prefersDesktopMode: resolvedMode.usesDesktopUserAgent,
                     prefersCompatibilityFallback: service.isDeveloperConsole,
+                    expectsDeveloperWorkbench: service.isDeveloperConsole,
                     allowsSelfSignedCertificates: allowsSelfSignedCertificates,
                     authenticationCookie: authenticationCookie,
                     command: browserCommand,
@@ -1890,21 +1887,6 @@ private struct ServiceWebUIView: View {
         browserCommand = WebBrowserCommand(action: action)
     }
 
-    private func presentPreferredBrowserIfNeeded() {
-        guard service.isDeveloperConsole, !didPresentPreferredBrowser else { return }
-        didPresentPreferredBrowser = true
-        DiagnosticLogStore.shared.record(
-            .info,
-            categoryKey: "diagnostics.category.web",
-            messageKey: "diagnostics.web.compatibility_fallback",
-            details: [
-                "reason": "developerConsolePreferred",
-                "target": DiagnosticLogStore.redactedURL(endpoint)
-            ]
-        )
-        showCompatibilityBrowser = true
-    }
-
     private var authenticationCookie: HTTPCookie? {
         guard
             let dsmSession,
@@ -2023,6 +2005,7 @@ private struct WebContainerView: UIViewRepresentable {
     let url: URL
     let prefersDesktopMode: Bool
     let prefersCompatibilityFallback: Bool
+    let expectsDeveloperWorkbench: Bool
     let allowsSelfSignedCertificates: Bool
     let authenticationCookie: HTTPCookie?
     let command: WebBrowserCommand?
@@ -2141,7 +2124,9 @@ private struct WebContainerView: UIViewRepresentable {
       bodyTextLength: (document.body?.innerText || '').trim().length,
       bodyChildCount: document.body?.children?.length || 0,
       htmlLength: document.documentElement?.outerHTML?.length || 0,
-      title: document.title || ''
+      title: document.title || '',
+      hasLoginForm: Boolean(document.querySelector('input[type="password"]')),
+      hasWorkbench: Boolean(document.querySelector('.monaco-workbench'))
     }))();
     """
 
@@ -2276,7 +2261,11 @@ private struct WebContainerView: UIViewRepresentable {
                     } ?? "-"
                 ]
             )
-            scheduleRenderCheck(in: webView, after: 1.2, trigger: "didFinish")
+            scheduleRenderCheck(
+                in: webView,
+                after: parent.expectsDeveloperWorkbench ? 5 : 1.2,
+                trigger: "didFinish"
+            )
         }
 
         func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
@@ -2580,7 +2569,11 @@ private struct WebContainerView: UIViewRepresentable {
                     let bodyChildCount = (values["bodyChildCount"] as? NSNumber)?.intValue ?? 0
                     let htmlLength = (values["htmlLength"] as? NSNumber)?.intValue ?? 0
                     let title = values["title"] as? String ?? ""
-                    let hasRenderedContent = bodyChildCount > 0 && htmlLength >= 200
+                    let hasLoginForm = (values["hasLoginForm"] as? NSNumber)?.boolValue ?? false
+                    let hasWorkbench = (values["hasWorkbench"] as? NSNumber)?.boolValue ?? false
+                    let hasRenderedContent = self.parent.expectsDeveloperWorkbench
+                        ? hasLoginForm || hasWorkbench
+                        : bodyChildCount > 0 && htmlLength >= 200
 
                     self.recordRenderCheck(
                         webView: webView,
@@ -2591,6 +2584,8 @@ private struct WebContainerView: UIViewRepresentable {
                             "bodyChildCount": "\(bodyChildCount)",
                             "htmlLength": "\(htmlLength)",
                             "titleLength": "\(title.count)",
+                            "loginForm": hasLoginForm ? "yes" : "no",
+                            "workbench": hasWorkbench ? "yes" : "no",
                             "rendered": hasRenderedContent ? "yes" : "no"
                         ]
                     )
@@ -2605,6 +2600,20 @@ private struct WebContainerView: UIViewRepresentable {
                         }
                         self.setLoading(false, error: nil)
                         self.syncState(from: webView, immediately: true)
+                    } else if self.parent.expectsDeveloperWorkbench {
+                        DiagnosticLogStore.shared.record(
+                            .error,
+                            categoryKey: "diagnostics.category.web",
+                            messageKey: "diagnostics.web.developer_workbench_missing",
+                            details: [
+                                "reason": "loginCompletedWithoutWorkbench",
+                                "target": DiagnosticLogStore.redactedURL(webView.url ?? self.parent.url)
+                            ]
+                        )
+                        self.setLoading(
+                            false,
+                            error: NSLocalizedString("web.developer_workbench_missing", comment: "")
+                        )
                     } else {
                         self.requestCompatibilityFallbackIfNeeded(webView: webView, reason: "blankDOM")
                     }
@@ -2809,6 +2818,10 @@ struct MediaPlaybackRequest: Identifiable {
         case "wav": return "audio/wav"
         default: return nil
         }
+    }
+
+    var allowsExternalHandoff: Bool {
+        source != .jellyfin
     }
 }
 
@@ -3162,7 +3175,9 @@ struct BuiltInMediaPlayerView: View {
             case .compatibility:
 #if canImport(MobileVLCKit)
                 VLCBuiltInPlayerView(request: request) {
-                    showExternalPicker = true
+                    if request.allowsExternalHandoff {
+                        showExternalPicker = true
+                    }
                 }
 #else
                 playbackErrorView(NSLocalizedString("player.compatibility_unavailable", comment: ""))
@@ -3198,12 +3213,14 @@ struct BuiltInMediaPlayerView: View {
                 }
                 .accessibilityLabel(Text("player.engine.choose"))
 #endif
-                Button {
-                    showExternalPicker = true
-                } label: {
-                    Image(systemName: "arrow.up.forward.app")
+                if request.allowsExternalHandoff {
+                    Button {
+                        showExternalPicker = true
+                    } label: {
+                        Image(systemName: "arrow.up.forward.app")
+                    }
+                    .accessibilityLabel(Text("devices.files.open_external"))
                 }
-                .accessibilityLabel(Text("devices.files.open_external"))
             }
         }
         .confirmationDialog("service.external.title", isPresented: $showExternalPicker) {
@@ -3299,13 +3316,25 @@ struct BuiltInMediaPlayerView: View {
                 .font(.caption)
                 .multilineTextAlignment(.center)
                 .lineLimit(4)
-            Button {
-                showExternalPicker = true
-            } label: {
-                Label("devices.files.open_external", systemImage: "arrow.up.forward.app")
+            if request.allowsExternalHandoff {
+                Button {
+                    showExternalPicker = true
+                } label: {
+                    Label("devices.files.open_external", systemImage: "arrow.up.forward.app")
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(AppTheme.accent)
+            } else {
+                Text("jellyfin.player.retry_hint")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                Button("action.done") {
+                    dismiss()
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(AppTheme.accent)
             }
-            .buttonStyle(.borderedProminent)
-            .tint(AppTheme.accent)
         }
         .foregroundStyle(.white)
         .padding(22)
@@ -3787,75 +3816,143 @@ private final class JellyfinLibraryStore: ObservableObject {
         )
     }
 
-    func playbackRequest(for entry: JellyfinMediaEntry) -> MediaPlaybackRequest? {
+    func playbackRequest(for entry: JellyfinMediaEntry) async throws -> MediaPlaybackRequest? {
         guard let client, entry.isPlayable else { return nil }
-        let streamURL: URL?
-        let extensionHint: String?
         if entry.kind == .audio {
             var parameters = Paths.GetAudioStreamParameters()
             parameters.container = entry.container
             parameters.isStatic = true
             parameters.startTimeTicks = entry.playbackPositionTicks
-            streamURL = client.url(
+            guard let streamURL = client.url(
                 with: Paths.getAudioStream(itemID: entry.id, parameters: parameters),
                 queryAPIKey: true
-            )
-            extensionHint = entry.container
+            ) else {
+                throw JellyfinLibraryError.missingPlaybackURL
+            }
+            let extensionHint = entry.container
                 .flatMap { $0.split(separator: ",", maxSplits: 1).first }
                 .map(String.init)
-        } else if shouldUseHLS(for: entry), let mediaSourceID = entry.mediaSourceID {
-            var parameters = Paths.GetMasterHlsVideoPlaylistParameters(
-                mediaSourceID: mediaSourceID
+            return MediaPlaybackRequest(
+                url: streamURL,
+                title: entry.title,
+                allowsSelfSignedCertificates: allowsSelfSignedCertificates,
+                source: .jellyfin,
+                fileExtensionOverride: extensionHint
             )
-            parameters.deviceID = Self.persistentDeviceID()
-            parameters.audioCodec = "aac"
-            parameters.videoCodec = "h264"
-            parameters.segmentContainer = "ts"
-            parameters.enableAdaptiveBitrateStreaming = true
-            parameters.enableAutoStreamCopy = true
-            parameters.allowVideoStreamCopy = true
-            parameters.allowAudioStreamCopy = true
-            parameters.maxAudioChannels = 2
-            parameters.videoBitRate = 20_000_000
-            parameters.audioBitRate = 320_000
-            parameters.startTimeTicks = entry.playbackPositionTicks
-            parameters.context = .streaming
-            streamURL = client.url(
-                with: Paths.getMasterHlsVideoPlaylist(
-                    itemID: entry.id,
-                    parameters: parameters
-                ),
-                queryAPIKey: true
-            )
-            extensionHint = "m3u8"
-        } else {
-            var parameters = Paths.GetVideoStreamParameters()
-            parameters.container = entry.container
-            parameters.isStatic = true
-            parameters.startTimeTicks = entry.playbackPositionTicks
-            streamURL = client.url(
-                with: Paths.getVideoStream(itemID: entry.id, parameters: parameters),
-                queryAPIKey: true
-            )
-            extensionHint = entry.container
-                .flatMap { $0.split(separator: ",", maxSplits: 1).first }
-                .map(String.init)
         }
-        guard let streamURL else { return nil }
-        return MediaPlaybackRequest(
-            url: streamURL,
-            title: entry.title,
-            allowsSelfSignedCertificates: allowsSelfSignedCertificates,
-            source: .jellyfin,
-            fileExtensionOverride: extensionHint
+
+        record(
+            "diagnostics.jellyfin.playback_preparing",
+            level: .info,
+            details: [
+                "itemKind": entry.kind.rawValue,
+                "container": entry.container ?? "-"
+            ]
         )
+        do {
+            let profile = Self.iOSPlaybackProfile
+            let requestBody = PlaybackInfoDto(
+                allowAudioStreamCopy: false,
+                allowVideoStreamCopy: false,
+                deviceProfile: profile,
+                enableDirectPlay: false,
+                enableDirectStream: false,
+                enableTranscoding: true,
+                maxAudioChannels: 2,
+                maxStreamingBitrate: 20_000_000,
+                mediaSourceID: entry.mediaSourceID,
+                startTimeTicks: entry.playbackPositionTicks,
+                userID: userID
+            )
+            let response = try await client.send(
+                Paths.getPostedPlaybackInfo(
+                    itemID: entry.id,
+                    parameters: nil,
+                    requestBody
+                )
+            ).value
+            let mediaSource = response.mediaSources?.first(where: { source in
+                source.id == entry.mediaSourceID
+            }) ?? response.mediaSources?.first
+            guard
+                let transcodingPath = mediaSource?.transcodingURL,
+                let streamURL = authenticatedJellyfinURL(path: transcodingPath, client: client)
+            else {
+                throw JellyfinLibraryError.missingPlaybackURL
+            }
+            record(
+                "diagnostics.jellyfin.playback_prepared",
+                level: .info,
+                details: [
+                    "mode": "serverTranscode",
+                    "container": mediaSource?.transcodingContainer ?? "hls",
+                    "playSession": response.playSessionID == nil ? "missing" : "present"
+                ]
+            )
+            return MediaPlaybackRequest(
+                url: streamURL,
+                title: entry.title,
+                allowsSelfSignedCertificates: allowsSelfSignedCertificates,
+                source: .jellyfin,
+                fileExtensionOverride: "m3u8"
+            )
+        } catch {
+            record(
+                "diagnostics.jellyfin.playback_failed",
+                level: .error,
+                details: diagnosticDetails(for: error)
+            )
+            throw error
+        }
     }
 
-    private func shouldUseHLS(for entry: JellyfinMediaEntry) -> Bool {
-        guard let container = entry.container?.lowercased() else { return true }
-        let firstContainer = container.split(separator: ",", maxSplits: 1).first.map(String.init) ?? container
-        return !["mp4", "m4v", "mov"].contains(firstContainer)
+    private func authenticatedJellyfinURL(path: String, client: JellyfinClient) -> URL? {
+        guard
+            let url = client.url(path: path),
+            var components = URLComponents(url: url, resolvingAgainstBaseURL: false)
+        else {
+            return nil
+        }
+        if components.queryItems?.contains(where: { $0.name.caseInsensitiveCompare("api_key") == .orderedSame }) != true,
+           let accessToken = client.accessToken {
+            var queryItems = components.queryItems ?? []
+            queryItems.append(URLQueryItem(name: "api_key", value: accessToken))
+            components.queryItems = queryItems
+        }
+        return components.url
     }
+
+    private static let iOSPlaybackProfile = DeviceProfile(
+        directPlayProfiles: [],
+        maxStaticBitrate: 20_000_000,
+        maxStaticMusicBitrate: 2_000_000,
+        maxStreamingBitrate: 20_000_000,
+        musicStreamingTranscodingBitrate: 320_000,
+        name: "Nastart iOS",
+        subtitleProfiles: [
+            SubtitleProfile(format: "srt", method: .external),
+            SubtitleProfile(format: "vtt", method: .external),
+            SubtitleProfile(format: "ass", method: .encode),
+            SubtitleProfile(format: "ssa", method: .encode),
+            SubtitleProfile(format: "pgssub", method: .encode),
+            SubtitleProfile(format: "dvdsub", method: .encode)
+        ],
+        transcodingProfiles: [
+            TranscodingProfile(
+                protocol: .hls,
+                audioCodec: "aac",
+                container: "ts",
+                context: .streaming,
+                enableSubtitlesInManifest: false,
+                maxAudioChannels: "2",
+                minSegments: 1,
+                segmentLength: 6,
+                transcodeSeekInfo: .auto,
+                type: .video,
+                videoCodec: "h264"
+            )
+        ]
+    )
 
     private func loadHome() async {
         do {
@@ -4043,6 +4140,7 @@ private final class JellyfinLibraryStore: ObservableObject {
 
 private enum JellyfinLibraryError: Error {
     case missingSession
+    case missingPlaybackURL
 }
 
 private struct JellyfinLibraryView: View {
@@ -4524,6 +4622,8 @@ private struct JellyfinMediaDetailView: View {
     @ObservedObject var store: JellyfinLibraryStore
     let item: JellyfinMediaEntry
     @State private var playbackRequest: MediaPlaybackRequest?
+    @State private var isPreparingPlayback = false
+    @State private var showPlaybackError = false
 
     var body: some View {
         List {
@@ -4543,15 +4643,35 @@ private struct JellyfinMediaDetailView: View {
             if item.isPlayable {
                 Section {
                     Button {
-                        playbackRequest = store.playbackRequest(for: item)
+                        Task {
+                            isPreparingPlayback = true
+                            defer { isPreparingPlayback = false }
+                            do {
+                                playbackRequest = try await store.playbackRequest(for: item)
+                            } catch {
+                                showPlaybackError = true
+                            }
+                        }
                     } label: {
-                        Label("player.play_in_app", systemImage: "play.fill")
+                        HStack {
+                            Label("player.play_in_app", systemImage: "play.fill")
+                            Spacer()
+                            if isPreparingPlayback {
+                                ProgressView()
+                            }
+                        }
                     }
+                    .disabled(isPreparingPlayback)
                 }
             }
         }
         .listStyle(.insetGrouped)
         .navigationTitle(item.title)
+        .alert("jellyfin.player.prepare_failed", isPresented: $showPlaybackError) {
+            Button("action.ok", role: .cancel) {}
+        } message: {
+            Text("jellyfin.player.prepare_failed_detail")
+        }
         .fullScreenCover(item: $playbackRequest) { request in
             NavigationStack {
                 BuiltInMediaPlayerView(request: request)
