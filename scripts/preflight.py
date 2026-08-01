@@ -337,6 +337,12 @@ def check_project_settings() -> CheckResult:
     if not swift_versions:
         warnings.append("SWIFT_VERSION is not set")
 
+    script_sandboxing = re.findall(r"ENABLE_USER_SCRIPT_SANDBOXING = (YES|NO);", text)
+    if "YES" in script_sandboxing:
+        errors.append("User script sandboxing must be disabled for CocoaPods to embed MobileVLCKit")
+    elif script_sandboxing.count("NO") < 2:
+        errors.append("User script sandboxing must be disabled in Debug and Release configurations")
+
     return CheckResult("Xcode project settings", errors, warnings)
 
 

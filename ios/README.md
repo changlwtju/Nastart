@@ -30,6 +30,8 @@ open Nastart.xcworkspace
 Apple-native media first and uses MobileVLCKit for broader container and codec
 support. An AVPlayer decoding failure also switches to MobileVLCKit
 automatically. Every media item can still be handed to an external player.
+The project keeps Xcode user script sandboxing disabled so CocoaPods can embed
+the MobileVLCKit framework during device builds.
 
 Opening `Nastart.xcodeproj` remains useful for the lightweight AVPlayer-only
 build, but it does not include the compatibility player.
