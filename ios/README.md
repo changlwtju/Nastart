@@ -26,7 +26,7 @@ pod install
 open Nastart.xcworkspace
 ```
 
-`MobileVLCKit 3.6.0` is pinned in the `Podfile`. Nastart tries AVPlayer for
+`MobileVLCKit 3.7.2` is pinned in the `Podfile`. Nastart tries AVPlayer for
 Apple-native media first and uses MobileVLCKit for broader container and codec
 support. An AVPlayer decoding failure also switches to MobileVLCKit
 automatically. Every media item can still be handed to an external player.

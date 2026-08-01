@@ -32,6 +32,7 @@ final class CertificatePinStore {
     static let shared = CertificatePinStore()
 
     private let service = "com.nastart.app.certificate-pins"
+    private let certificateService = "com.nastart.app.trusted-certificates"
     private let account = "trusted-hosts"
     private let lock = NSLock()
 
@@ -66,13 +67,32 @@ final class CertificatePinStore {
             pins[key] = fingerprint
             guard savePins(pins) else { return nil }
         }
+        saveCertificate(certificateData, key: key)
         return URLCredential(trust: trust)
+    }
+
+    func trustedCertificateData(host: String?, port: Int?) -> Data? {
+        guard let host, !host.isEmpty else { return nil }
+        let key = "\(host.lowercased()):\(port ?? 443)"
+        var query = certificateQuery(key: key)
+        query[kSecReturnData as String] = true
+        query[kSecMatchLimit as String] = kSecMatchLimitOne
+        var result: CFTypeRef?
+        guard SecItemCopyMatching(query as CFDictionary, &result) == errSecSuccess else {
+            return nil
+        }
+        return result as? Data
     }
 
     func clearAll() {
         lock.lock()
         defer { lock.unlock() }
         SecItemDelete(baseQuery() as CFDictionary)
+        let certificatesQuery: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: certificateService
+        ]
+        SecItemDelete(certificatesQuery as CFDictionary)
     }
 
     private func loadPins() -> [String: String] {
@@ -104,6 +124,27 @@ final class CertificatePinStore {
         var item = query
         attributes.forEach { item[$0.key] = $0.value }
         return SecItemAdd(item as CFDictionary, nil) == errSecSuccess
+    }
+
+    private func saveCertificate(_ data: Data, key: String) {
+        let query = certificateQuery(key: key)
+        let attributes: [String: Any] = [
+            kSecValueData as String: data,
+            kSecAttrAccessible as String: kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly
+        ]
+        let updateStatus = SecItemUpdate(query as CFDictionary, attributes as CFDictionary)
+        guard updateStatus == errSecItemNotFound else { return }
+        var item = query
+        attributes.forEach { item[$0.key] = $0.value }
+        SecItemAdd(item as CFDictionary, nil)
+    }
+
+    private func certificateQuery(key: String) -> [String: Any] {
+        [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: certificateService,
+            kSecAttrAccount as String: key
+        ]
     }
 
     private func baseQuery() -> [String: Any] {
@@ -171,6 +212,10 @@ struct DSMNASDataSource: NASDataSource {
 
     func loadSnapshot() async -> AppDataProviding {
         await client.loadSnapshot(session: session, useAgent: false)
+    }
+
+    func isReachable() async -> Bool {
+        await client.isDSMEndpoint()
     }
 
     func loadFolder(path: String) async throws -> [FileItem] {
@@ -3533,6 +3578,7 @@ final class AppDataStore: ObservableObject {
     @Published private(set) var audioLibraryItems: [MediaItem]
     @Published private(set) var discoveredDevices: [DiscoveredNASDevice]
     @Published private(set) var isRefreshing = false
+    @Published private(set) var isDSMReachable = false
     @Published private(set) var lastRefreshSummaryKey = "data.refresh.ready"
     @Published private(set) var sourceKind: NASDataSourceKind
     @Published private(set) var serviceVisibilityOverrides: [String: Bool]
@@ -3755,6 +3801,7 @@ final class AppDataStore: ObservableObject {
         activeDataSource = MockNASDataSource()
         reload(from: MockAppDataProvider())
         sourceKind = .mock
+        isDSMReachable = false
     }
 
     @MainActor
@@ -3762,12 +3809,29 @@ final class AppDataStore: ObservableObject {
         activeDataSource = DisconnectedNASDataSource()
         reload(from: DisconnectedAppDataProvider())
         sourceKind = .mock
+        isDSMReachable = false
         lastRefreshSummaryKey = "data.refresh.disconnected"
     }
 
     @MainActor
-    func refreshDSM(session: DSMSession, useAgent: Bool) async {
-        await load(from: DSMNASDataSource(session: session, useAgent: useAgent))
+    @discardableResult
+    func refreshDSM(session: DSMSession, useAgent: Bool) async -> Bool {
+        guard !isRefreshing else { return isDSMReachable }
+        isRefreshing = true
+        defer { isRefreshing = false }
+
+        let dataSource = DSMNASDataSource(session: session, useAgent: useAgent)
+        activeDataSource = dataSource
+        guard await dataSource.isReachable() else {
+            markDSMUnavailable()
+            return false
+        }
+
+        let snapshot = await dataSource.loadSnapshot()
+        reload(from: snapshot)
+        sourceKind = dataSource.kind
+        isDSMReachable = true
+        return true
     }
 
     @MainActor
@@ -3775,6 +3839,7 @@ final class AppDataStore: ObservableObject {
         activeDataSource = DSMNASDataSource(session: session, useAgent: false)
         reload(from: snapshot)
         sourceKind = .dsm
+        isDSMReachable = true
     }
 
     @MainActor
@@ -3843,9 +3908,11 @@ final class AppDataStore: ObservableObject {
             activeDataSource = dataSource
             reload(from: snapshot)
             sourceKind = dataSource.kind
+            isDSMReachable = true
             connectionStore.connect(device: snapshot.device, session: session)
             sessionToLogout = nil
         } catch {
+            isDSMReachable = false
             if let session = sessionToLogout {
                 let client = DSMClient(
                     baseURL: session.baseURL,
@@ -3855,6 +3922,67 @@ final class AppDataStore: ObservableObject {
             }
             lastRefreshSummaryKey = "data.refresh.restore_failed"
         }
+    }
+
+    @MainActor
+    private func markDSMUnavailable() {
+        isDSMReachable = false
+        lastRefreshSummaryKey = "data.refresh.unreachable"
+        services = services.map { service in
+            let shouldMarkOffline = service.status == .online
+                && (service.source != .manual || Self.isPrivateNetworkHost(service.endpoint?.host))
+            guard shouldMarkOffline else { return service }
+            return LaunchpadService(
+                id: service.id,
+                name: service.name,
+                iconText: service.iconText,
+                category: service.category,
+                status: .offline,
+                subtitle: service.subtitle,
+                detail: service.detail,
+                isMedia: service.isMedia,
+                cpu: service.cpu,
+                memoryText: service.memoryText,
+                memory: service.memory,
+                ports: service.ports,
+                iconURL: service.iconURL,
+                endpoint: service.endpoint,
+                alternateEndpoint: service.alternateEndpoint,
+                source: service.source,
+                isLaunchpadVisible: service.isLaunchpadVisible
+            )
+        }
+        containers = containers.map { container in
+            DockerContainer(
+                id: container.id,
+                name: container.name,
+                image: container.image,
+                status: container.status == .online ? .offline : container.status,
+                cpu: container.cpu,
+                memoryText: container.memoryText,
+                memoryBytes: container.memoryBytes,
+                memoryPercent: container.memoryPercent,
+                ports: container.ports
+            )
+        }
+        DiagnosticLogStore.shared.record(
+            .warning,
+            categoryKey: "diagnostics.category.refresh",
+            messageKey: "diagnostics.refresh.unreachable",
+            details: ["target": "privateDSM"]
+        )
+    }
+
+    private static func isPrivateNetworkHost(_ host: String?) -> Bool {
+        guard let host = host?.lowercased() else { return false }
+        if host == "localhost" || host.hasSuffix(".local") || host.hasSuffix(".lan") {
+            return true
+        }
+        let parts = host.split(separator: ".").compactMap { Int($0) }
+        guard parts.count == 4 else { return false }
+        return parts[0] == 10
+            || (parts[0] == 192 && parts[1] == 168)
+            || (parts[0] == 172 && (16...31).contains(parts[1]))
     }
 
     func services(in category: ServiceCategory) -> [LaunchpadService] {

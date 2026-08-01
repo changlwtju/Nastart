@@ -165,11 +165,11 @@ struct LaunchpadView: View {
     private var launchpadContent: some View {
         switch selectedTheme {
         case .cleanGrid:
-            ProductLaunchpad(device: dataStore.device, services: launchpadServices, categories: orderedCategories, options: displayOptions, isConnected: connectionStore.isConnected, groupDefaultExpanded: isGroupExpandedByDefault)
+            ProductLaunchpad(device: dataStore.device, services: launchpadServices, categories: orderedCategories, options: displayOptions, isConnected: dataStore.isDSMReachable, groupDefaultExpanded: isGroupExpandedByDefault)
         case .commandCenter:
             CommandCenterLaunchpad(device: dataStore.device, services: launchpadServices, categories: orderedCategories, options: displayOptions, groupDefaultExpanded: isGroupExpandedByDefault)
         case .glassDeck:
-            GlassDeckLaunchpad(device: dataStore.device, services: launchpadServices, categories: orderedCategories, options: displayOptions, isConnected: connectionStore.isConnected, groupDefaultExpanded: isGroupExpandedByDefault)
+            GlassDeckLaunchpad(device: dataStore.device, services: launchpadServices, categories: orderedCategories, options: displayOptions, isConnected: dataStore.isDSMReachable, groupDefaultExpanded: isGroupExpandedByDefault)
         }
     }
 
@@ -2898,6 +2898,7 @@ struct MediaPlaybackRequest: Identifiable {
     let source: MediaPlaybackSource
     let fileExtensionOverride: String?
     let initialPosition: Double?
+    let externalSubtitleURL: URL?
 
     init(
         url: URL,
@@ -2905,7 +2906,8 @@ struct MediaPlaybackRequest: Identifiable {
         allowsSelfSignedCertificates: Bool = false,
         source: MediaPlaybackSource = .directURL,
         fileExtensionOverride: String? = nil,
-        initialPosition: Double? = nil
+        initialPosition: Double? = nil,
+        externalSubtitleURL: URL? = nil
     ) {
         self.url = url
         self.title = title
@@ -2913,6 +2915,7 @@ struct MediaPlaybackRequest: Identifiable {
         self.source = source
         self.fileExtensionOverride = fileExtensionOverride
         self.initialPosition = initialPosition.map { min(max($0, 0), 1) }
+        self.externalSubtitleURL = externalSubtitleURL
     }
 
     var fileExtensionHint: String {
@@ -3643,8 +3646,60 @@ private struct VLCSubtitleTrack: Identifiable, Equatable {
     let name: String
 }
 
+private enum VLCTrustDirectory {
+    static func options(for request: MediaPlaybackRequest) -> [String] {
+        guard
+            request.allowsSelfSignedCertificates,
+            let certificateData = CertificatePinStore.shared.trustedCertificateData(
+                host: request.url.host,
+                port: request.url.port
+            ),
+            let directory = writePEMCertificate(
+                certificateData,
+                host: request.url.host,
+                port: request.url.port
+            )
+        else {
+            return []
+        }
+        return ["--gnutls-dir-trust=\(directory.path)"]
+    }
+
+    private static func writePEMCertificate(
+        _ certificateData: Data,
+        host: String?,
+        port: Int?
+    ) -> URL? {
+        guard let cachesURL = FileManager.default.urls(
+            for: .cachesDirectory,
+            in: .userDomainMask
+        ).first else {
+            return nil
+        }
+        let safeHost = (host ?? "server").map { character in
+            character.isLetter || character.isNumber || character == "." ? character : "_"
+        }
+        let directory = cachesURL
+            .appendingPathComponent("VLCTrust", isDirectory: true)
+            .appendingPathComponent("\(String(safeHost))-\(port ?? 443)", isDirectory: true)
+        let certificateURL = directory.appendingPathComponent("certificate.pem")
+        let base64 = certificateData.base64EncodedString(options: .lineLength64Characters)
+        let pem = "-----BEGIN CERTIFICATE-----\n\(base64)\n-----END CERTIFICATE-----\n"
+        do {
+            try FileManager.default.createDirectory(
+                at: directory,
+                withIntermediateDirectories: true
+            )
+            try Data(pem.utf8).write(to: certificateURL, options: .atomic)
+            return directory
+        } catch {
+            return nil
+        }
+    }
+}
+
 private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaPlayerDelegate {
-    let player = VLCMediaPlayer()
+    let player: VLCMediaPlayer
     @Published private(set) var isPlaying = false
     @Published private(set) var position: Double = 0
     @Published private(set) var isSeekable = false
@@ -3656,16 +3711,26 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
     @Published private(set) var durationText = "--:--"
     private var lastStateDescription = ""
     private let initialPosition: Double?
+    private let externalSubtitleURL: URL?
     private var didApplyInitialPosition = false
     private var didApplySubtitleStyle = false
+    private var didAddExternalSubtitle = false
+    private var lastSubtitleTrackIDs: [Int32] = []
 
     init(request: MediaPlaybackRequest) {
         initialPosition = request.initialPosition
+        externalSubtitleURL = request.externalSubtitleURL
+        let trustOptions = VLCTrustDirectory.options(for: request)
+        player = trustOptions.isEmpty
+            ? VLCMediaPlayer()
+            : VLCMediaPlayer(options: trustOptions)
         super.init()
         player.delegate = self
         let media = VLCMedia(url: request.url)
-        media.addOption(":network-caching=750")
+        let networkCaching = request.source == .dsmFile ? 1_200 : 900
+        media.addOption(":network-caching=\(networkCaching)")
         media.addOption(":http-reconnect")
+        media.addOption(":http-continuous")
         media.addOption(":input-fast-seek")
         media.addOption(":avcodec-hw=any")
         media.addOption(":freetype-rel-fontsize=24")
@@ -3675,7 +3740,8 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
             categoryKey: "diagnostics.category.media",
             messageKey: "diagnostics.media.player_started",
             details: MediaPlaybackProbe.baseDetails(for: request).merging([
-                "engine": "MobileVLCKit"
+                "engine": "MobileVLCKit",
+                "customTLSRoot": trustOptions.isEmpty ? "off" : "on"
             ]) { current, _ in current }
         )
     }
@@ -3689,6 +3755,7 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
         try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .moviePlayback)
         try? AVAudioSession.sharedInstance().setActive(true)
         player.play()
+        addExternalSubtitleIfNeeded()
         syncState()
     }
 
@@ -3750,9 +3817,7 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
             ? NSLocalizedString("player.compatibility_failed", comment: "")
             : nil
         let subtitleNames = (player.videoSubTitlesNames ?? []).compactMap { $0 as? String }
-        let subtitleIndexes = (player.videoSubTitlesIndexes ?? []).compactMap { value -> Int32? in
-            (value as? NSNumber)?.int32Value
-        }
+        let subtitleIndexes = (player.videoSubTitlesIndexes ?? []).compactMap(Self.subtitleTrackID)
         var subtitleTracks = zip(subtitleIndexes, subtitleNames).map { pair in
             VLCSubtitleTrack(
                 id: pair.0,
@@ -3769,6 +3834,18 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
             )
         }
         let selectedSubtitleTrackID = player.currentVideoSubTitleIndex
+        if subtitleIndexes != lastSubtitleTrackIDs {
+            lastSubtitleTrackIDs = subtitleIndexes
+            DiagnosticLogStore.shared.record(
+                .info,
+                categoryKey: "diagnostics.category.media",
+                messageKey: "diagnostics.media.subtitle_tracks",
+                details: [
+                    "count": "\(subtitleIndexes.filter { $0 >= 0 }.count)",
+                    "selected": "\(player.currentVideoSubTitleIndex)"
+                ]
+            )
+        }
 
         if stateDescription != lastStateDescription {
             lastStateDescription = stateDescription
@@ -3807,6 +3884,30 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
         guard player.responds(to: selector) else { return }
         didApplySubtitleStyle = true
         _ = player.perform(selector, with: NSNumber(value: 24))
+    }
+
+    private func addExternalSubtitleIfNeeded() {
+        guard !didAddExternalSubtitle, let externalSubtitleURL else { return }
+        didAddExternalSubtitle = true
+        let result = player.addPlaybackSlave(
+            externalSubtitleURL,
+            type: .subtitle,
+            enforce: true
+        )
+        DiagnosticLogStore.shared.record(
+            result == 0 ? .info : .warning,
+            categoryKey: "diagnostics.category.media",
+            messageKey: "diagnostics.media.external_subtitle",
+            details: ["result": "\(result)"]
+        )
+    }
+
+    private static func subtitleTrackID(_ value: Any) -> Int32? {
+        if let number = value as? NSNumber { return number.int32Value }
+        if let value = value as? Int32 { return value }
+        if let value = value as? Int { return Int32(clamping: value) }
+        if let value = value as? String, let parsed = Int32(value) { return parsed }
+        return nil
     }
 
     deinit {
@@ -4321,7 +4422,7 @@ private final class JellyfinLibraryStore: ObservableObject {
             userID = nil
             self.username = ""
             isAuthenticated = false
-            errorMessage = NSLocalizedString("jellyfin.login.failed", comment: "")
+            errorMessage = loginErrorMessage(for: error)
             isLoading = false
             record(
                 "diagnostics.jellyfin.login_failed",
@@ -4517,7 +4618,8 @@ private final class JellyfinLibraryStore: ObservableObject {
                     allowsSelfSignedCertificates: requiresCertificateBypass(for: streamURL),
                     source: .jellyfin,
                     fileExtensionOverride: extensionHint,
-                    initialPosition: entry.progress
+                    initialPosition: entry.progress,
+                    externalSubtitleURL: externalSubtitleURL(for: entry, client: client)
                 )
             }
 #endif
@@ -4596,6 +4698,28 @@ private final class JellyfinLibraryStore: ObservableObject {
         components.queryItems = queryItems
         guard let path = components.string else { return nil }
         return authenticatedJellyfinURL(path: path, client: client)
+    }
+
+    private func externalSubtitleURL(
+        for entry: JellyfinMediaEntry,
+        client: JellyfinClient
+    ) -> URL? {
+        guard
+            let mediaSourceID = entry.mediaSourceID,
+            let subtitleIndex = entry.preferredSubtitleStreamIndex,
+            let url = client.url(
+                with: Paths.getSubtitle(
+                    routeItemID: entry.id,
+                    routeMediaSourceID: mediaSourceID,
+                    routeIndex: subtitleIndex,
+                    routeFormat: "srt"
+                ),
+                queryAPIKey: true
+            )
+        else {
+            return nil
+        }
+        return preferredPlaybackURL(url)
     }
 
     private func authenticatedJellyfinURL(path: String, client: JellyfinClient) -> URL? {
@@ -4900,10 +5024,41 @@ private final class JellyfinLibraryStore: ObservableObject {
 
     private func diagnosticDetails(for error: Error) -> [String: String] {
         let value = error as NSError
-        return [
+        var details = [
             "errorDomain": value.domain,
-            "errorCode": "\(value.code)"
+            "errorCode": "\(value.code)",
+            "description": value.localizedDescription,
+            "errorType": String(reflecting: type(of: error)),
+            "transport": endpoint.scheme?.lowercased() ?? "-"
         ]
+        if let status = httpStatusCode(for: error) {
+            details["httpStatus"] = "\(status)"
+        }
+        return details
+    }
+
+    private func loginErrorMessage(for error: Error) -> String {
+        switch httpStatusCode(for: error) {
+        case 401:
+            return NSLocalizedString("jellyfin.login.invalid_credentials", comment: "")
+        case 403:
+            return NSLocalizedString("jellyfin.login.denied", comment: "")
+        case 429:
+            return NSLocalizedString("jellyfin.login.rate_limited", comment: "")
+        default:
+            return NSLocalizedString("jellyfin.login.failed", comment: "")
+        }
+    }
+
+    private func httpStatusCode(for error: Error) -> Int? {
+        let descriptions = [String(describing: error), (error as NSError).localizedDescription]
+        for description in descriptions {
+            let tokens = description.components(separatedBy: CharacterSet.decimalDigits.inverted)
+            if let status = tokens.compactMap(Int.init).first(where: { (100...599).contains($0) }) {
+                return status
+            }
+        }
+        return nil
     }
 }
 
@@ -5166,7 +5321,7 @@ private struct JellyfinHomeView: View {
         var seen = Set<String>()
         return (store.continueWatching + store.movies + store.series)
             .filter { item in
-                guard item.backdropImageTag != nil || item.thumbImageTag != nil else { return false }
+                guard item.imageTag != nil else { return false }
                 return seen.insert(item.id).inserted
             }
             .prefix(6)
@@ -5241,8 +5396,8 @@ private struct JellyfinHeroSlide: View {
                 url: store.imageURL(
                     for: item,
                     width: 1600,
-                    landscape: true,
-                    prefersBackdrop: true
+                    landscape: false,
+                    prefersBackdrop: false
                 )
             )
             LinearGradient(

@@ -202,6 +202,7 @@
 "data.refresh.mock_done" = "Local data refreshed";
 "data.refresh.dsm_done" = "DSM data refreshed";
 "data.refresh.restore_failed" = "DSM auto-restore failed";
+"data.refresh.unreachable" = "DSM is unreachable on the current network";
 "data.refresh.disconnected" = "NAS disconnected";
 
 "devices.section.resources" = "Resources";
@@ -604,6 +605,9 @@
 "diagnostics.media.orientation_update_failed" = "Player orientation update failed";
 "diagnostics.media.external_handoff_accepted" = "External player accepted the media URL";
 "diagnostics.media.external_handoff_failed" = "External player did not accept the media URL";
+"diagnostics.media.subtitle_tracks" = "Player subtitle tracks updated";
+"diagnostics.media.external_subtitle" = "Jellyfin external subtitle loaded";
+"diagnostics.refresh.unreachable" = "DSM was unreachable on the current network; live statuses were marked offline";
 "diagnostics.web.started" = "In-app page load started";
 "diagnostics.web.committed" = "In-app page response committed";
 "diagnostics.web.completed" = "In-app page load completed";
@@ -628,6 +632,9 @@
 "jellyfin.login.action" = "Sign in and load library";
 "jellyfin.login.required" = "Enter your Jellyfin username.";
 "jellyfin.login.failed" = "Jellyfin sign-in failed. Check the address, account, password, and reverse proxy settings.";
+"jellyfin.login.invalid_credentials" = "Jellyfin rejected the username or password.";
+"jellyfin.login.denied" = "The Jellyfin server denied this sign-in request.";
+"jellyfin.login.rate_limited" = "Too many Jellyfin sign-in attempts. Wait a moment and try again.";
 "jellyfin.logout" = "Disconnect Jellyfin";
 "jellyfin.series.title" = "TV shows";
 "jellyfin.episodes.title" = "Episodes";

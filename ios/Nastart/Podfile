@@ -4,5 +4,5 @@ target 'Nastart' do
   use_frameworks!
 
   # Keep this exact version so codec coverage and binary size stay reproducible.
-  pod 'MobileVLCKit', '3.6.0'
+  pod 'MobileVLCKit', '3.7.2'
 end

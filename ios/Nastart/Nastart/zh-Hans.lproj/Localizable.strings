@@ -202,6 +202,7 @@
 "data.refresh.mock_done" = "已刷新本地数据";
 "data.refresh.dsm_done" = "已刷新 DSM 数据";
 "data.refresh.restore_failed" = "DSM 自动恢复失败";
+"data.refresh.unreachable" = "当前网络无法访问 DSM";
 "data.refresh.disconnected" = "已断开 NAS";
 
 "devices.section.resources" = "资源";
@@ -604,6 +605,9 @@
 "diagnostics.media.orientation_update_failed" = "播放器横竖屏切换失败";
 "diagnostics.media.external_handoff_accepted" = "外部播放器已接受媒体地址";
 "diagnostics.media.external_handoff_failed" = "外部播放器未接受媒体地址";
+"diagnostics.media.subtitle_tracks" = "播放器字幕轨道已更新";
+"diagnostics.media.external_subtitle" = "Jellyfin 外挂字幕已载入";
+"diagnostics.refresh.unreachable" = "DSM 在当前网络不可达，已将实时状态标记为离线";
 "diagnostics.web.started" = "App 内网页开始加载";
 "diagnostics.web.committed" = "App 内网页已收到主文档响应";
 "diagnostics.web.completed" = "App 内网页加载完成";
@@ -628,6 +632,9 @@
 "jellyfin.login.action" = "登录并载入资源库";
 "jellyfin.login.required" = "请输入 Jellyfin 用户名。";
 "jellyfin.login.failed" = "Jellyfin 登录失败，请检查访问地址、账号、密码及反向代理设置。";
+"jellyfin.login.invalid_credentials" = "Jellyfin 拒绝了当前用户名或密码。";
+"jellyfin.login.denied" = "Jellyfin 服务器拒绝了本次登录请求。";
+"jellyfin.login.rate_limited" = "Jellyfin 登录尝试过于频繁，请稍后再试。";
 "jellyfin.logout" = "断开 Jellyfin";
 "jellyfin.series.title" = "电视剧";
 "jellyfin.episodes.title" = "分集";

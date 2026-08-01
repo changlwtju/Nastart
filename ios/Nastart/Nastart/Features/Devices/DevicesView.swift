@@ -13,7 +13,7 @@ struct DevicesView: View {
                 Section {
                     DeviceHealthHeader(
                         device: dataStore.device,
-                        isConnected: connectionStore.isConnected
+                        isConnected: dataStore.isDSMReachable
                     )
                     .listRowInsets(EdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0))
                     .listRowBackground(Color.clear)
@@ -952,7 +952,8 @@ private struct FilePreviewView: View {
             details: [
                 "target": DiagnosticLogStore.redactedURL(url),
                 "extension": fileExtension.isEmpty ? "-" : fileExtension,
-                "selfSigned": connectionStore.dsmSession?.allowsSelfSignedCertificates == true ? "on" : "off"
+                "selfSigned": connectionStore.dsmSession?.allowsSelfSignedCertificates == true ? "on" : "off",
+                "transport": url.scheme?.lowercased() ?? "-"
             ]
         )
         playbackRequest = MediaPlaybackRequest(

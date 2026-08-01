@@ -57,6 +57,7 @@ enum PlayerOrientationController {
 
 @main
 struct NastartApp: App {
+    @Environment(\.scenePhase) private var scenePhase
     @UIApplicationDelegateAdaptor(NastartAppDelegate.self) private var appDelegate
     @StateObject private var appDataStore = AppDataStore()
     @StateObject private var connectionStore = NASConnectionStore()
@@ -81,6 +82,15 @@ struct NastartApp: App {
                     guard !didAttemptRestore else { return }
                     didAttemptRestore = true
                     await appDataStore.restoreDSMConnection(using: connectionStore)
+                }
+                .onChange(of: scenePhase) { phase in
+                    guard phase == .active, let session = connectionStore.dsmSession else { return }
+                    Task {
+                        await appDataStore.refreshDSM(
+                            session: session,
+                            useAgent: connectionStore.usesAgent
+                        )
+                    }
                 }
         }
     }
