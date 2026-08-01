@@ -3976,7 +3976,7 @@ private final class JellyfinLibraryStore: ObservableObject {
             try? await client?.signOut()
             client = nil
             userID = nil
-            username = ""
+            self.username = ""
             isAuthenticated = false
             errorMessage = NSLocalizedString("jellyfin.login.failed", comment: "")
             isLoading = false
