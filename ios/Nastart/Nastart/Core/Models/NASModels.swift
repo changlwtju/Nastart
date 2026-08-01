@@ -1,5 +1,70 @@
 import Foundation
 
+enum NetworkHostClassifier {
+    static func isPrivate(_ host: String?) -> Bool {
+        guard var host = host?
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .lowercased(),
+            !host.isEmpty
+        else {
+            return false
+        }
+
+        if host.hasPrefix("[") && host.hasSuffix("]") {
+            host.removeFirst()
+            host.removeLast()
+        }
+        host = host.split(separator: "%", maxSplits: 1).first.map(String.init) ?? host
+
+        if host == "localhost" || host.hasSuffix(".local") || host.hasSuffix(".lan") {
+            return true
+        }
+
+        let octets = host.split(separator: ".", omittingEmptySubsequences: false).compactMap { Int($0) }
+        if octets.count == 4, octets.allSatisfy({ (0...255).contains($0) }) {
+            return octets[0] == 10
+                || octets[0] == 127
+                || (octets[0] == 169 && octets[1] == 254)
+                || (octets[0] == 172 && (16...31).contains(octets[1]))
+                || (octets[0] == 192 && octets[1] == 168)
+        }
+
+        guard host.contains(":"), let firstHextet = host.split(separator: ":").first else {
+            return false
+        }
+        if host == "::1" {
+            return true
+        }
+        guard let value = UInt16(firstHextet, radix: 16) else { return false }
+        return value & 0xfe00 == 0xfc00 || value & 0xffc0 == 0xfe80
+    }
+}
+
+enum UserConfiguredServiceURLPolicy {
+    static func normalizedURL(from input: String) -> URL? {
+        let trimmed = input.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return nil }
+        let value = trimmed.contains("://") ? trimmed : "https://\(trimmed)"
+        guard
+            let components = URLComponents(string: value),
+            let scheme = components.scheme?.lowercased(),
+            scheme == "http" || scheme == "https",
+            let host = components.host,
+            !host.isEmpty,
+            components.user == nil,
+            components.password == nil,
+            scheme == "https" || NetworkHostClassifier.isPrivate(host)
+        else {
+            return nil
+        }
+        return components.url
+    }
+
+    static func allows(_ url: URL) -> Bool {
+        normalizedURL(from: url.absoluteString) != nil
+    }
+}
+
 enum ConnectionMode: String, CaseIterable, Identifiable {
     case dsmOnly
     case dsmWithAgent

@@ -1020,6 +1020,13 @@ private final class FilePreviewTrustDelegate: NSObject, URLSessionDelegate {
         didReceive challenge: URLAuthenticationChallenge,
         completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
     ) {
+        if challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust,
+           let trustedHost,
+           challenge.protectionSpace.host.caseInsensitiveCompare(trustedHost) != .orderedSame {
+            completionHandler(.performDefaultHandling, nil)
+            return
+        }
+
         guard
             allowsSelfSignedCertificates,
             let credential = CertificatePinStore.shared.credential(
@@ -1251,18 +1258,10 @@ private struct NetworkDetailView: View {
         guard let host = baseURL?.host?.lowercased() else {
             return "status.unknown"
         }
-        if host == "localhost" || host.hasSuffix(".local") || isPrivateIPv4(host) {
+        if NetworkHostClassifier.isPrivate(host) {
             return "devices.network.scope.lan"
         }
         return "devices.network.scope.remote"
-    }
-
-    private func isPrivateIPv4(_ host: String) -> Bool {
-        let parts = host.split(separator: ".").compactMap { Int($0) }
-        guard parts.count == 4 else { return false }
-        return parts[0] == 10
-            || (parts[0] == 192 && parts[1] == 168)
-            || (parts[0] == 172 && (16...31).contains(parts[1]))
     }
 
     private func endpointSummary(_ endpoint: URL?) -> String {

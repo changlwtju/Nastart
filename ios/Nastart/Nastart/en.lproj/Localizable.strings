@@ -38,6 +38,7 @@
 "action.open" = "Open";
 "action.open_external" = "Open In...";
 "action.details" = "Details";
+"action.info" = "More information";
 "action.view" = "View";
 "action.cancel" = "Cancel";
 "action.ok" = "OK";

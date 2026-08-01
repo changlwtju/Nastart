@@ -38,6 +38,7 @@
 "action.open" = "打开";
 "action.open_external" = "外部打开";
 "action.details" = "详情";
+"action.info" = "更多信息";
 "action.view" = "查看";
 "action.cancel" = "取消";
 "action.ok" = "好";

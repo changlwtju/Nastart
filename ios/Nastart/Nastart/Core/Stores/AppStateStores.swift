@@ -480,7 +480,7 @@ final class DiagnosticLogStore: ObservableObject {
         let detail = details
             .filter { !$0.value.isEmpty }
             .sorted { $0.key < $1.key }
-            .map { "\($0.key)=\($0.value)" }
+            .map { "\($0.key)=\(Self.redactedDetail($0.value))" }
             .joined(separator: ", ")
 
         Task { @MainActor in
@@ -526,6 +526,23 @@ final class DiagnosticLogStore: ObservableObject {
             return "\(url.scheme ?? "https")://\(host):\(port)"
         }
         return "\(url.scheme ?? "https")://\(host)"
+    }
+
+    static func redactedDetail(_ value: String) -> String {
+        let patterns: [(String, String)] = [
+            (
+                #"(?i)((?:_sid|api[_-]?key|apikey|token|access_token|authorization|password|passwd|cookie)\s*[=:]\s*)[^&,;\s]+"#,
+                "$1<redacted>"
+            ),
+            (#"(?i)(bearer\s+)[a-z0-9._~+/=-]+"#, "$1<redacted>")
+        ]
+        return patterns.reduce(value) { result, replacement in
+            result.replacingOccurrences(
+                of: replacement.0,
+                with: replacement.1,
+                options: .regularExpression
+            )
+        }
     }
 
     private func append(_ entry: DiagnosticLogEntry) {
@@ -771,7 +788,16 @@ private final class DSMCertificateTrustDelegate: NSObject, URLSessionTaskDelegat
         didReceive challenge: URLAuthenticationChallenge,
         completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
     ) {
-        let expectedHost = trustedHost ?? task.originalRequest?.url?.host
+        let expectedHost = trustedHost
+            ?? task.currentRequest?.url?.host
+            ?? task.originalRequest?.url?.host
+        if challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust,
+           let expectedHost,
+           challenge.protectionSpace.host.caseInsensitiveCompare(expectedHost) != .orderedSame {
+            completionHandler(.performDefaultHandling, nil)
+            return
+        }
+
         guard let credential = CertificatePinStore.shared.credential(
             for: challenge,
             expectedHost: expectedHost
@@ -2522,11 +2548,7 @@ final class DSMClient {
     }
 
     private static func isPrivateNetworkHost(_ host: String?) -> Bool {
-        guard let host = host?.lowercased() else { return false }
-        return isPrivateIPv4(host)
-            || host == "localhost"
-            || host.hasSuffix(".local")
-            || host.hasSuffix(".lan")
+        NetworkHostClassifier.isPrivate(host)
     }
 
     private static func mapReverseProxyRules(_ data: DSMJSONValue?) -> [DSMReverseProxyRule] {
@@ -3983,15 +4005,7 @@ final class AppDataStore: ObservableObject {
     }
 
     private static func isPrivateNetworkHost(_ host: String?) -> Bool {
-        guard let host = host?.lowercased() else { return false }
-        if host == "localhost" || host.hasSuffix(".local") || host.hasSuffix(".lan") {
-            return true
-        }
-        let parts = host.split(separator: ".").compactMap { Int($0) }
-        guard parts.count == 4 else { return false }
-        return parts[0] == 10
-            || (parts[0] == 192 && parts[1] == 168)
-            || (parts[0] == 172 && (16...31).contains(parts[1]))
+        NetworkHostClassifier.isPrivate(host)
     }
 
     func services(in category: ServiceCategory) -> [LaunchpadService] {
@@ -4123,6 +4137,7 @@ private struct StoredManualLaunchpadService: Codable, Identifiable {
     var launchpadService: LaunchpadService? {
         guard
             let endpoint = URL(string: endpointString),
+            UserConfiguredServiceURLPolicy.allows(endpoint),
             let category = ServiceCategory(rawValue: categoryRawValue)
         else {
             return nil

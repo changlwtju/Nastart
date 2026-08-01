@@ -211,16 +211,6 @@ extension LaunchpadService {
     }
 
     private static func isPrivateNetworkHost(_ host: String?) -> Bool {
-        guard let host = host?.lowercased() else { return false }
-        if host == "localhost" || host.hasSuffix(".local") || host.hasSuffix(".lan") {
-            return true
-        }
-        let octets = host.split(separator: ".").compactMap { Int($0) }
-        guard octets.count == 4, octets.allSatisfy({ (0...255).contains($0) }) else {
-            return false
-        }
-        return octets[0] == 10
-            || (octets[0] == 172 && (16...31).contains(octets[1]))
-            || (octets[0] == 192 && octets[1] == 168)
+        NetworkHostClassifier.isPrivate(host)
     }
 }

@@ -1285,7 +1285,10 @@ private struct ServiceDetailView: View {
                         ServiceWebUIView(
                             service: service,
                             endpoint: endpoint,
-                            allowsSelfSignedCertificates: connectionStore.dsmSession?.allowsSelfSignedCertificates == true,
+                            allowsSelfSignedCertificates: ServiceCertificatePolicy.allowsBypass(
+                                for: endpoint,
+                                session: connectionStore.dsmSession
+                            ),
                             dsmSession: service.source == .dsm || service.source == .package
                                 ? connectionStore.dsmSession
                                 : nil
@@ -1489,12 +1492,26 @@ private struct ServiceDetailView: View {
     }
 }
 
+private enum ServiceCertificatePolicy {
+    static func allowsBypass(for endpoint: URL, session: DSMSession?) -> Bool {
+        guard
+            let session,
+            session.allowsSelfSignedCertificates,
+            let endpointHost = endpoint.host
+        else {
+            return false
+        }
+        let isDSMHost = endpointHost.caseInsensitiveCompare(session.baseURL.host ?? "") == .orderedSame
+        return isDSMHost || NetworkHostClassifier.isPrivate(endpointHost)
+    }
+}
+
 private enum ServiceEndpointOverrides {
     static func load(service: LaunchpadService, deviceHost: String?) -> URL? {
         let defaults = UserDefaults.standard
         let value = defaults.string(forKey: key(service: service, deviceHost: deviceHost))
             ?? defaults.string(forKey: legacyKey(service: service, deviceHost: deviceHost))
-        return value.flatMap(URL.init(string:))
+        return value.flatMap(UserConfiguredServiceURLPolicy.normalizedURL)
     }
 
     static func save(_ url: URL?, service: LaunchpadService, deviceHost: String?) {
@@ -1577,18 +1594,7 @@ private struct ServiceEndpointEditor: View {
     }
 
     private var normalizedURL: URL? {
-        let trimmed = address.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmed.isEmpty else { return nil }
-        let value = trimmed.contains("://") ? trimmed : "https://\(trimmed)"
-        guard
-            let components = URLComponents(string: value),
-            let scheme = components.scheme?.lowercased(),
-            scheme == "http" || scheme == "https",
-            components.host?.isEmpty == false
-        else {
-            return nil
-        }
-        return components.url
+        UserConfiguredServiceURLPolicy.normalizedURL(from: address)
     }
 }
 
@@ -1924,7 +1930,8 @@ private struct ServiceWebUIView: View {
         guard
             let dsmSession,
             let host = endpoint.host,
-            host.caseInsensitiveCompare(dsmSession.baseURL.host ?? "") == .orderedSame
+            host.caseInsensitiveCompare(dsmSession.baseURL.host ?? "") == .orderedSame,
+            endpoint.scheme?.lowercased() == "https" || NetworkHostClassifier.isPrivate(host)
         else {
             return nil
         }
@@ -2401,6 +2408,7 @@ private struct WebContainerView: UIViewRepresentable {
                 decisionHandler(navigationAction.shouldPerformDownload ? .download : .allow)
             } else {
                 decisionHandler(.cancel)
+                guard navigationAction.navigationType == .linkActivated else { return }
                 DispatchQueue.main.async {
                     UIApplication.shared.open(targetURL)
                 }
@@ -2624,6 +2632,13 @@ private struct WebContainerView: UIViewRepresentable {
             didReceive challenge: URLAuthenticationChallenge,
             completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
         ) {
+            if challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust,
+               let trustedHost = parent.url.host,
+               challenge.protectionSpace.host.caseInsensitiveCompare(trustedHost) != .orderedSame {
+                completionHandler(.performDefaultHandling, nil)
+                return
+            }
+
             guard
                 parent.allowsSelfSignedCertificates,
                 let credential = CertificatePinStore.shared.credential(
@@ -2968,6 +2983,13 @@ private final class MediaProbeTrustDelegate: NSObject, URLSessionDelegate {
         didReceive challenge: URLAuthenticationChallenge,
         completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
     ) {
+        if challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust,
+           let trustedHost,
+           challenge.protectionSpace.host.caseInsensitiveCompare(trustedHost) != .orderedSame {
+            completionHandler(.performDefaultHandling, nil)
+            return
+        }
+
         guard
             allowsSelfSignedCertificates,
             let credential = CertificatePinStore.shared.credential(
@@ -3667,19 +3689,7 @@ private enum VLCTrustDirectory {
     }
 
     private static func isPrivateNetworkHost(_ host: String?) -> Bool {
-        guard let host = host?.lowercased() else { return false }
-        if host == "localhost" || host.hasSuffix(".local") || host.hasSuffix(".lan") {
-            return true
-        }
-        if host.contains(":"),
-           (host == "::1" || host.hasPrefix("fe80:") || host.hasPrefix("fc") || host.hasPrefix("fd")) {
-            return true
-        }
-        let parts = host.split(separator: ".").compactMap { Int($0) }
-        guard parts.count == 4 else { return false }
-        return parts[0] == 10
-            || (parts[0] == 192 && parts[1] == 168)
-            || (parts[0] == 172 && (16...31).contains(parts[1]))
+        NetworkHostClassifier.isPrivate(host)
     }
 
     private static func writePEMCertificate(
@@ -4340,6 +4350,13 @@ private final class JellyfinCertificateTrustDelegate: NSObject, URLSessionDelega
         didReceive challenge: URLAuthenticationChallenge,
         completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
     ) {
+        if challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust,
+           let trustedHost,
+           challenge.protectionSpace.host.caseInsensitiveCompare(trustedHost) != .orderedSame {
+            completionHandler(.performDefaultHandling, nil)
+            return
+        }
+
         guard
             allowsSelfSignedCertificates,
             let credential = CertificatePinStore.shared.credential(
@@ -6084,7 +6101,10 @@ private struct MediaLibraryView: View {
                 JellyfinLibraryView(
                     service: service,
                     endpoint: endpoint,
-                    allowsSelfSignedCertificates: connectionStore.dsmSession?.allowsSelfSignedCertificates == true
+                    allowsSelfSignedCertificates: ServiceCertificatePolicy.allowsBypass(
+                        for: endpoint,
+                        session: connectionStore.dsmSession
+                    )
                 )
             } else {
                 fallbackLibrary
@@ -6113,7 +6133,10 @@ private struct MediaLibraryView: View {
                             ServiceWebUIView(
                                 service: service,
                                 endpoint: endpoint,
-                                allowsSelfSignedCertificates: connectionStore.dsmSession?.allowsSelfSignedCertificates == true,
+                                allowsSelfSignedCertificates: ServiceCertificatePolicy.allowsBypass(
+                                    for: endpoint,
+                                    session: connectionStore.dsmSession
+                                ),
                                 dsmSession: nil
                             )
                         } label: {
@@ -6566,18 +6589,7 @@ private struct ManualServiceEditorView: View {
     }
 
     private var normalizedURL: URL? {
-        let trimmed = address.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmed.isEmpty else { return nil }
-        let value = trimmed.contains("://") ? trimmed : "https://\(trimmed)"
-        guard
-            let components = URLComponents(string: value),
-            let scheme = components.scheme?.lowercased(),
-            scheme == "http" || scheme == "https",
-            components.host?.isEmpty == false
-        else {
-            return nil
-        }
-        return components.url
+        UserConfiguredServiceURLPolicy.normalizedURL(from: address)
     }
 }
 

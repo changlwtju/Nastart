@@ -72,17 +72,17 @@ struct MineView: View {
                 }
 
                 Section {
-                    Button(role: .destructive) {
-                        showSignOutConfirm = true
-                    } label: {
-                        Label("mine.sign_out", systemImage: "rectangle.portrait.and.arrow.right")
-                    }
-                    .disabled(!connectionStore.isConnected)
-                } footer: {
-                    if connectionStore.isConnected {
-                        Text(String(format: NSLocalizedString("mine.sign_out.connected_footer %@", comment: ""), dataStore.device.name))
-                    } else {
-                        Text("mine.sign_out.footer")
+                    HStack(spacing: 8) {
+                        Button(role: .destructive) {
+                            showSignOutConfirm = true
+                        } label: {
+                            Label("mine.sign_out", systemImage: "rectangle.portrait.and.arrow.right")
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .contentShape(Rectangle())
+                        }
+                        .disabled(!connectionStore.isConnected)
+
+                        ContextInfoButton(message: signOutInfoText)
                     }
                 }
             }
@@ -100,6 +100,61 @@ struct MineView: View {
             } message: {
                 Text("mine.sign_out.message")
             }
+        }
+    }
+
+    private var signOutInfoText: String {
+        if connectionStore.isConnected {
+            return String(
+                format: NSLocalizedString("mine.sign_out.connected_footer %@", comment: ""),
+                dataStore.device.name
+            )
+        }
+        return NSLocalizedString("mine.sign_out.footer", comment: "")
+    }
+}
+
+private struct ContextInfoButton: View {
+    let message: String
+    @State private var isPresented = false
+
+    var body: some View {
+        Button {
+            isPresented = true
+        } label: {
+            Image(systemName: "exclamationmark.circle")
+                .font(.system(size: 17, weight: .medium))
+                .foregroundStyle(AppTheme.accent)
+                .frame(width: 32, height: 32)
+                .contentShape(Circle())
+        }
+        .buttonStyle(.plain)
+        .hoverEffect(.highlight)
+        .onHover { isHovering in
+            if isHovering {
+                isPresented = true
+            }
+        }
+        .accessibilityLabel(Text("action.info"))
+        .accessibilityHint(Text(message))
+        .popover(isPresented: $isPresented, arrowEdge: .bottom) {
+            popoverContent
+        }
+    }
+
+    @ViewBuilder
+    private var popoverContent: some View {
+        let content = Text(message)
+            .font(.footnote)
+            .foregroundStyle(.secondary)
+            .fixedSize(horizontal: false, vertical: true)
+            .padding(14)
+            .frame(maxWidth: 280, alignment: .leading)
+
+        if #available(iOS 16.4, *) {
+            content.presentationCompactAdaptation(.popover)
+        } else {
+            content
         }
     }
 }
