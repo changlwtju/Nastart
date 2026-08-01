@@ -179,6 +179,7 @@ struct LaunchpadService: Identifiable {
     let ports: [String]
     let iconURL: URL?
     let endpoint: URL?
+    let alternateEndpoint: URL?
     let source: LaunchpadServiceSource
     let isLaunchpadVisible: Bool
 
@@ -197,6 +198,7 @@ struct LaunchpadService: Identifiable {
         ports: [String] = [],
         iconURL: URL? = nil,
         endpoint: URL? = nil,
+        alternateEndpoint: URL? = nil,
         source: LaunchpadServiceSource = .manual,
         isLaunchpadVisible: Bool = true
     ) {
@@ -214,6 +216,7 @@ struct LaunchpadService: Identifiable {
         self.ports = ports
         self.iconURL = iconURL
         self.endpoint = endpoint
+        self.alternateEndpoint = alternateEndpoint
         self.source = source
         self.isLaunchpadVisible = isLaunchpadVisible
     }

@@ -635,5 +635,6 @@
 "diagnostics.jellyfin.playback_preparing" = "开始请求 Jellyfin 播放方案";
 "diagnostics.jellyfin.playback_prepared" = "Jellyfin 已生成兼容播放流";
 "diagnostics.jellyfin.playback_failed" = "Jellyfin 播放准备失败";
-"web.developer_workbench_missing" = "登录页已正常加载，但 code-server 工作台没有启动。请检查反向代理是否转发 WebSocket Upgrade，并确认外网地址使用可信 HTTPS。";
+"web.developer_workbench_missing" = "code-server 登录页已加载，但工作台没有启动。若 Safari 也为空白，问题位于 code-server 容器、静态脚本、证书或反向代理；请先测试内网直连，再更新或重建容器，并确认 WebSocket 与可信 HTTPS 配置。";
+"web.developer_script_failed" = "code-server 工作台脚本解析失败。若 Safari 也出现空白，这不是 Nastart 浏览器故障；请测试内网直连，并检查或重建 code-server 容器、反向代理和 HTTPS 证书。";
 "diagnostics.web.developer_workbench_missing" = "开发工具登录后未检测到工作台";

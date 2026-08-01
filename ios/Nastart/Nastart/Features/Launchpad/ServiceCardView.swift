@@ -174,11 +174,12 @@ extension LaunchpadService {
     }
 
     var suggestedEndpoint: URL? {
-        endpoint
+        alternateEndpoint ?? endpoint
     }
 
     var endpointText: String {
-        endpoint?.absoluteString ?? NSLocalizedString("service.detail.endpoint_unavailable", comment: "")
+        suggestedEndpoint?.absoluteString
+            ?? NSLocalizedString("service.detail.endpoint_unavailable", comment: "")
     }
 
     var resolvedIconURL: URL? {

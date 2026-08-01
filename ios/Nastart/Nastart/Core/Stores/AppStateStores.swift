@@ -955,6 +955,7 @@ final class DSMClient {
                 "containerServices": "\(services.filter { $0.source == .container || $0.source == .reverseProxy }.count)",
                 "containerEndpoints": "\(services.filter { ($0.source == .container || $0.source == .reverseProxy) && $0.endpoint != nil }.count)",
                 "lanContainerEndpoints": "\(services.filter { $0.source == .container && $0.endpoint != nil }.count)",
+                "alternateLANEndpoints": "\(services.filter { $0.alternateEndpoint != nil }.count)",
                 "reverseProxyEndpoints": "\(services.filter { $0.source == .reverseProxy && $0.endpoint != nil }.count)",
                 "httpEndpoints": "\(services.filter { $0.endpoint?.scheme?.lowercased() == "http" }.count)",
                 "httpsEndpoints": "\(services.filter { $0.endpoint?.scheme?.lowercased() == "https" }.count)",
@@ -2058,6 +2059,17 @@ final class DSMClient {
     private struct ResolvedContainerEndpoint {
         let url: URL
         let source: LaunchpadServiceSource
+        let alternateURL: URL?
+
+        init(
+            url: URL,
+            source: LaunchpadServiceSource,
+            alternateURL: URL? = nil
+        ) {
+            self.url = url
+            self.source = source
+            self.alternateURL = alternateURL
+        }
     }
 
     private func mapServices(
@@ -2119,6 +2131,7 @@ final class DSMClient {
                 memory: container.memoryPercent,
                 ports: container.ports,
                 endpoint: resolvedEndpoint?.url,
+                alternateEndpoint: resolvedEndpoint?.alternateURL,
                 source: resolvedEndpoint?.source ?? .container,
                 isLaunchpadVisible: true
             )
@@ -2234,9 +2247,26 @@ final class DSMClient {
                         rules: reverseProxyRules,
                         baseURL: baseURL
                     ) {
+                        let localCandidates = candidates.filter {
+                            Self.isPrivateNetworkHost($0.host)
+                                && $0.scheme?.lowercased() == "http"
+                        }
+                        let discoveredLocalEndpoint = await self.firstReachableWebEndpoint(
+                            Array(localCandidates.prefix(4))
+                        )
+                        let localEndpoint = discoveredLocalEndpoint.flatMap { discovered in
+                            Self.isPrivateNetworkHost(discovered.host)
+                                && discovered.scheme?.lowercased() == "http"
+                                ? discovered
+                                : nil
+                        }
                         return (
                             container.id,
-                            ResolvedContainerEndpoint(url: endpoint, source: .reverseProxy)
+                            ResolvedContainerEndpoint(
+                                url: endpoint,
+                                source: .reverseProxy,
+                                alternateURL: localEndpoint
+                            )
                         )
                     }
                     let reachableEndpoint = await self.firstReachableWebEndpoint(candidates)

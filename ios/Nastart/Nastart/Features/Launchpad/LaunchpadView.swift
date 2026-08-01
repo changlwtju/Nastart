@@ -2126,7 +2126,15 @@ private struct WebContainerView: UIViewRepresentable {
       htmlLength: document.documentElement?.outerHTML?.length || 0,
       title: document.title || '',
       hasLoginForm: Boolean(document.querySelector('input[type="password"]')),
-      hasWorkbench: Boolean(document.querySelector('.monaco-workbench'))
+      hasWorkbench: Boolean(document.querySelector('.monaco-workbench')),
+      codeServerVersion: (() => {
+        try {
+          const raw = document.querySelector('meta#coder-options')?.dataset?.settings;
+          return raw ? String(JSON.parse(raw).codeServerVersion || '') : '';
+        } catch (_) {
+          return '';
+        }
+      })()
     }))();
     """
 
@@ -2503,6 +2511,16 @@ private struct WebContainerView: UIViewRepresentable {
                     "target": DiagnosticLogStore.redactedURL(parent.currentURL)
                 ]
             )
+            if parent.expectsDeveloperWorkbench,
+               (kind == "window.error" || kind == "promise.rejection"),
+               (text.localizedCaseInsensitiveContains("syntaxerror")
+                || text.localizedCaseInsensitiveContains("unexpected token")) {
+                renderCheckWorkItem?.cancel()
+                setLoading(
+                    false,
+                    error: NSLocalizedString("web.developer_script_failed", comment: "")
+                )
+            }
         }
 
         private func sanitizedScriptDiagnostic(_ value: String) -> String {
@@ -2534,7 +2552,10 @@ private struct WebContainerView: UIViewRepresentable {
                 return
             }
 
-            completionHandler(.useCredential, URLCredential(trust: trust))
+            DispatchQueue.global(qos: .userInitiated).async {
+                let credential = URLCredential(trust: trust)
+                completionHandler(.useCredential, credential)
+            }
         }
 
         private func inspectRenderedPage(in webView: WKWebView, trigger: String) {
@@ -2571,6 +2592,7 @@ private struct WebContainerView: UIViewRepresentable {
                     let title = values["title"] as? String ?? ""
                     let hasLoginForm = (values["hasLoginForm"] as? NSNumber)?.boolValue ?? false
                     let hasWorkbench = (values["hasWorkbench"] as? NSNumber)?.boolValue ?? false
+                    let codeServerVersion = values["codeServerVersion"] as? String ?? ""
                     let hasRenderedContent = self.parent.expectsDeveloperWorkbench
                         ? hasLoginForm || hasWorkbench
                         : bodyChildCount > 0 && htmlLength >= 200
@@ -2586,6 +2608,7 @@ private struct WebContainerView: UIViewRepresentable {
                             "titleLength": "\(title.count)",
                             "loginForm": hasLoginForm ? "yes" : "no",
                             "workbench": hasWorkbench ? "yes" : "no",
+                            "codeServerVersion": codeServerVersion.isEmpty ? "-" : codeServerVersion,
                             "rendered": hasRenderedContent ? "yes" : "no"
                         ]
                     )
@@ -2881,11 +2904,13 @@ private enum MediaPlaybackProbe {
 
         var request = URLRequest(url: playback.url)
         request.timeoutInterval = 15
-        request.setValue("bytes=0-1", forHTTPHeaderField: "Range")
+        if playback.fileExtensionHint != "m3u8" {
+            request.setValue("bytes=0-1", forHTTPHeaderField: "Range")
+        }
         request.setValue("identity", forHTTPHeaderField: "Accept-Encoding")
 
         do {
-            let (bytes, response) = try await session.bytes(for: request)
+            let (data, response) = try await session.data(for: request)
             guard let httpResponse = response as? HTTPURLResponse else {
                 diagnostics.record(
                     .error,
@@ -2896,8 +2921,6 @@ private enum MediaPlaybackProbe {
                 return
             }
 
-            var iterator = bytes.makeAsyncIterator()
-            _ = try await iterator.next()
             let mimeType = httpResponse.mimeType?.lowercased() ?? "-"
             let looksLikeAPIError = mimeType.contains("json") || mimeType.contains("html")
             let accepted = (200...299).contains(httpResponse.statusCode) && !looksLikeAPIError
@@ -2918,6 +2941,17 @@ private enum MediaPlaybackProbe {
                     )
                 ]) { current, _ in current }
             )
+            if accepted,
+               playback.fileExtensionHint == "m3u8",
+               let playlist = String(data: data, encoding: .utf8),
+               let childURL = firstPlaylistURL(in: playlist, relativeTo: playback.url) {
+                await probePlaylistChild(
+                    childURL,
+                    playback: playback,
+                    session: session,
+                    diagnostics: diagnostics
+                )
+            }
         } catch is CancellationError {
             return
         } catch {
@@ -2941,6 +2975,61 @@ private enum MediaPlaybackProbe {
             "extension": playback.fileExtensionHint.isEmpty ? "-" : playback.fileExtensionHint,
             "selfSigned": playback.allowsSelfSignedCertificates ? "on" : "off"
         ]
+    }
+
+    private static func firstPlaylistURL(in playlist: String, relativeTo baseURL: URL) -> URL? {
+        for rawLine in playlist.split(whereSeparator: { $0.isNewline }) {
+            let line = rawLine.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !line.isEmpty, !line.hasPrefix("#") else { continue }
+            return URL(string: line, relativeTo: baseURL)?.absoluteURL
+        }
+        return nil
+    }
+
+    private static func probePlaylistChild(
+        _ url: URL,
+        playback: MediaPlaybackRequest,
+        session: URLSession,
+        diagnostics: DiagnosticLogStore
+    ) async {
+        var request = URLRequest(url: url)
+        request.timeoutInterval = 15
+        request.setValue("identity", forHTTPHeaderField: "Accept-Encoding")
+        do {
+            let (data, response) = try await session.data(for: request)
+            guard let response = response as? HTTPURLResponse else { return }
+            let mimeType = response.mimeType?.lowercased() ?? "-"
+            let accepted = (200...299).contains(response.statusCode)
+                && !mimeType.contains("json")
+                && !mimeType.contains("html")
+            diagnostics.record(
+                accepted ? .info : .error,
+                categoryKey: "diagnostics.category.media",
+                messageKey: accepted
+                    ? "diagnostics.media.probe_succeeded"
+                    : "diagnostics.media.probe_invalid_response",
+                details: baseDetails(for: playback).merging([
+                    "stage": "hlsChild",
+                    "target": DiagnosticLogStore.redactedURL(url),
+                    "status": "\(response.statusCode)",
+                    "mime": mimeType,
+                    "bytesReceived": "\(data.count)"
+                ]) { _, new in new }
+            )
+        } catch {
+            let nsError = error as NSError
+            diagnostics.record(
+                .error,
+                categoryKey: "diagnostics.category.media",
+                messageKey: "diagnostics.media.probe_failed",
+                details: baseDetails(for: playback).merging([
+                    "stage": "hlsChild",
+                    "target": DiagnosticLogStore.redactedURL(url),
+                    "errorDomain": nsError.domain,
+                    "errorCode": "\(nsError.code)"
+                ]) { _, new in new }
+            )
+        }
     }
 
     private static func normalizedDisposition(_ value: String?) -> String {
@@ -3667,6 +3756,7 @@ private final class JellyfinCertificateTrustDelegate: NSObject, URLSessionDelega
 @MainActor
 private final class JellyfinLibraryStore: ObservableObject {
     let endpoint: URL
+    let playbackEndpoint: URL?
     let allowsSelfSignedCertificates: Bool
 
     @Published private(set) var isAuthenticated = false
@@ -3683,8 +3773,13 @@ private final class JellyfinLibraryStore: ObservableObject {
     private var didRestore = false
     private var trustDelegate: JellyfinCertificateTrustDelegate?
 
-    init(endpoint: URL, allowsSelfSignedCertificates: Bool) {
+    init(
+        endpoint: URL,
+        playbackEndpoint: URL?,
+        allowsSelfSignedCertificates: Bool
+    ) {
         self.endpoint = endpoint
+        self.playbackEndpoint = playbackEndpoint
         self.allowsSelfSignedCertificates = allowsSelfSignedCertificates
     }
 
@@ -3823,19 +3918,20 @@ private final class JellyfinLibraryStore: ObservableObject {
             parameters.container = entry.container
             parameters.isStatic = true
             parameters.startTimeTicks = entry.playbackPositionTicks
-            guard let streamURL = client.url(
+            guard let apiStreamURL = client.url(
                 with: Paths.getAudioStream(itemID: entry.id, parameters: parameters),
                 queryAPIKey: true
             ) else {
                 throw JellyfinLibraryError.missingPlaybackURL
             }
+            let streamURL = preferredPlaybackURL(apiStreamURL)
             let extensionHint = entry.container
                 .flatMap { $0.split(separator: ",", maxSplits: 1).first }
                 .map(String.init)
             return MediaPlaybackRequest(
                 url: streamURL,
                 title: entry.title,
-                allowsSelfSignedCertificates: allowsSelfSignedCertificates,
+                allowsSelfSignedCertificates: requiresCertificateBypass(for: streamURL),
                 source: .jellyfin,
                 fileExtensionOverride: extensionHint
             )
@@ -3886,13 +3982,14 @@ private final class JellyfinLibraryStore: ObservableObject {
                 details: [
                     "mode": "serverTranscode",
                     "container": mediaSource?.transcodingContainer ?? "hls",
-                    "playSession": response.playSessionID == nil ? "missing" : "present"
+                    "playSession": response.playSessionID == nil ? "missing" : "present",
+                    "transport": playbackEndpoint == nil ? "primary" : "reachableLAN"
                 ]
             )
             return MediaPlaybackRequest(
                 url: streamURL,
                 title: entry.title,
-                allowsSelfSignedCertificates: allowsSelfSignedCertificates,
+                allowsSelfSignedCertificates: requiresCertificateBypass(for: streamURL),
                 source: .jellyfin,
                 fileExtensionOverride: "m3u8"
             )
@@ -3919,7 +4016,32 @@ private final class JellyfinLibraryStore: ObservableObject {
             queryItems.append(URLQueryItem(name: "api_key", value: accessToken))
             components.queryItems = queryItems
         }
-        return components.url
+        return components.url.map(preferredPlaybackURL)
+    }
+
+    private func preferredPlaybackURL(_ url: URL) -> URL {
+        guard
+            let playbackEndpoint,
+            var streamComponents = URLComponents(url: url, resolvingAgainstBaseURL: false),
+            let playbackComponents = URLComponents(
+                url: playbackEndpoint,
+                resolvingAgainstBaseURL: false
+            )
+        else {
+            return url
+        }
+        streamComponents.scheme = playbackComponents.scheme
+        streamComponents.host = playbackComponents.host
+        streamComponents.port = playbackComponents.port
+        let prefix = playbackComponents.path.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
+        if !prefix.isEmpty, !streamComponents.path.hasPrefix("/\(prefix)/") {
+            streamComponents.path = "/\(prefix)" + streamComponents.path
+        }
+        return streamComponents.url ?? url
+    }
+
+    private func requiresCertificateBypass(for url: URL) -> Bool {
+        allowsSelfSignedCertificates && url.scheme?.lowercased() == "https"
     }
 
     private static let iOSPlaybackProfile = DeviceProfile(
@@ -4151,6 +4273,7 @@ private struct JellyfinLibraryView: View {
         self.service = service
         _store = StateObject(wrappedValue: JellyfinLibraryStore(
             endpoint: endpoint,
+            playbackEndpoint: service.alternateEndpoint,
             allowsSelfSignedCertificates: allowsSelfSignedCertificates
         ))
     }
@@ -4711,7 +4834,7 @@ private struct MediaLibraryView: View {
 
     var body: some View {
         Group {
-            if service.isJellyfin, let endpoint = service.suggestedEndpoint {
+            if service.isJellyfin, let endpoint = service.endpoint ?? service.suggestedEndpoint {
                 JellyfinLibraryView(
                     service: service,
                     endpoint: endpoint,
