@@ -962,29 +962,25 @@ private struct FilePreviewView: View {
     }
 
     private func prepareMediaPlayback(from url: URL) {
-        isPreparingPreview = true
-        Task {
-            do {
-                let fileURL = try await AuthenticatedFilePreviewLoader.download(
-                    from: url,
-                    filename: item.name,
-                    allowsSelfSignedCertificates: connectionStore.dsmSession?.allowsSelfSignedCertificates == true
-                )
-                await MainActor.run {
-                    isPreparingPreview = false
-                    playbackRequest = MediaPlaybackRequest(
-                        url: fileURL,
-                        title: item.name,
-                        source: .dsmFile
-                    )
-                }
-            } catch {
-                await MainActor.run {
-                    isPreparingPreview = false
-                    showFailure("devices.files.preview_failed")
-                }
-            }
-        }
+        isPreparingPreview = false
+        let fileExtension = (item.name as NSString).pathExtension.lowercased()
+        DiagnosticLogStore.shared.record(
+            .info,
+            categoryKey: "diagnostics.category.media",
+            messageKey: "diagnostics.files.preview_stream_started",
+            details: [
+                "target": DiagnosticLogStore.redactedURL(url),
+                "extension": fileExtension.isEmpty ? "-" : fileExtension,
+                "selfSigned": connectionStore.dsmSession?.allowsSelfSignedCertificates == true ? "on" : "off"
+            ]
+        )
+        playbackRequest = MediaPlaybackRequest(
+            url: url,
+            title: item.name,
+            allowsSelfSignedCertificates: connectionStore.dsmSession?.allowsSelfSignedCertificates == true,
+            source: .dsmFile,
+            fileExtensionOverride: fileExtension.isEmpty ? nil : fileExtension
+        )
     }
 
     private func prepareLocalPreview(from url: URL) {

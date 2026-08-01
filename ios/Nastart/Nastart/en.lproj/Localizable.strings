@@ -586,6 +586,7 @@
 "diagnostics.files.preview_download_started" = "In-app file preview preparation started";
 "diagnostics.files.preview_download_succeeded" = "In-app file preview became ready";
 "diagnostics.files.preview_download_failed" = "In-app file preview preparation failed";
+"diagnostics.files.preview_stream_started" = "DSM media streaming started";
 "diagnostics.media.probe_started" = "Media response check started";
 "diagnostics.media.probe_succeeded" = "Media response check passed";
 "diagnostics.media.probe_invalid_response" = "Media URL returned non-media content";
@@ -595,6 +596,7 @@
 "diagnostics.media.player_failed" = "Built-in player failed to load or decode";
 "diagnostics.media.player_state" = "Built-in player state changed";
 "diagnostics.media.player_fallback" = "Built-in player switched to compatibility engine";
+"diagnostics.media.orientation_update_failed" = "Player orientation update failed";
 "diagnostics.media.external_handoff_accepted" = "External player accepted the media URL";
 "diagnostics.media.external_handoff_failed" = "External player did not accept the media URL";
 "diagnostics.web.started" = "In-app page load started";

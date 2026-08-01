@@ -3379,6 +3379,7 @@ struct BuiltInMediaPlayerView: View {
             Button("action.ok", role: .cancel) {}
         }
         .onAppear {
+            PlayerOrientationController.setPlayerActive(true)
             if activeEngine == .system {
                 session.play()
             }
@@ -3419,6 +3420,7 @@ struct BuiltInMediaPlayerView: View {
         }
         .onDisappear {
             session.pause()
+            PlayerOrientationController.setPlayerActive(false)
         }
         .onChange(of: session.errorMessage) { errorMessage in
             guard
@@ -3768,6 +3770,8 @@ private struct JellyfinMediaEntry: Identifiable, Hashable {
     let imageTag: String?
     let container: String?
     let mediaSourceID: String?
+    let preferredSubtitleStreamIndex: Int?
+    let preferredSubtitleCodec: String?
     let progress: Double?
     let playbackPositionTicks: Int?
 
@@ -4002,7 +4006,9 @@ private final class JellyfinLibraryStore: ObservableObject {
             level: .info,
             details: [
                 "itemKind": entry.kind.rawValue,
-                "container": entry.container ?? "-"
+                "container": entry.container ?? "-",
+                "subtitleCodec": entry.preferredSubtitleCodec ?? "-",
+                "subtitleStreamIndex": entry.preferredSubtitleStreamIndex.map(String.init) ?? "none"
             ]
         )
         do {
@@ -4014,10 +4020,12 @@ private final class JellyfinLibraryStore: ObservableObject {
                 enableDirectPlay: false,
                 enableDirectStream: false,
                 enableTranscoding: true,
+                isAlwaysBurnInSubtitleWhenTranscoding: entry.preferredSubtitleStreamIndex != nil,
                 maxAudioChannels: 2,
                 maxStreamingBitrate: 20_000_000,
                 mediaSourceID: entry.mediaSourceID,
                 startTimeTicks: entry.playbackPositionTicks,
+                subtitleStreamIndex: entry.preferredSubtitleStreamIndex,
                 userID: userID
             )
             let response = try await client.send(
@@ -4043,6 +4051,8 @@ private final class JellyfinLibraryStore: ObservableObject {
                     "mode": "serverTranscode",
                     "container": mediaSource?.transcodingContainer ?? "hls",
                     "playSession": response.playSessionID == nil ? "missing" : "present",
+                    "subtitleCodec": entry.preferredSubtitleCodec ?? "-",
+                    "subtitleStreamIndex": entry.preferredSubtitleStreamIndex.map(String.init) ?? "none",
                     "transport": playbackEndpoint == nil ? "primary" : "reachableLAN"
                 ]
             )
@@ -4112,8 +4122,9 @@ private final class JellyfinLibraryStore: ObservableObject {
         musicStreamingTranscodingBitrate: 320_000,
         name: "Nastart iOS",
         subtitleProfiles: [
-            SubtitleProfile(format: "srt", method: .external),
-            SubtitleProfile(format: "vtt", method: .external),
+            SubtitleProfile(format: "srt", method: .encode),
+            SubtitleProfile(format: "subrip", method: .encode),
+            SubtitleProfile(format: "vtt", method: .encode),
             SubtitleProfile(format: "ass", method: .encode),
             SubtitleProfile(format: "ssa", method: .encode),
             SubtitleProfile(format: "pgssub", method: .encode),
@@ -4240,6 +4251,12 @@ private final class JellyfinLibraryStore: ObservableObject {
             ? (item.parentPrimaryImageItemID ?? id)
             : id
         let imageTag = item.imageTags?[ImageType.primary.rawValue] ?? item.parentPrimaryImageTag
+        let mediaSource = item.mediaSources?.first
+        let subtitleStreams = mediaSource?.mediaStreams?.filter { $0.type == .subtitle } ?? []
+        let preferredSubtitle = subtitleStreams.first(where: { $0.index == mediaSource?.defaultSubtitleStreamIndex })
+            ?? subtitleStreams.first(where: { $0.isForced == true })
+            ?? subtitleStreams.first(where: { $0.isDefault == true })
+            ?? subtitleStreams.first
         return JellyfinMediaEntry(
             id: id,
             title: title,
@@ -4249,8 +4266,10 @@ private final class JellyfinLibraryStore: ObservableObject {
             collectionType: item.collectionType?.rawValue,
             imageItemID: imageItemID,
             imageTag: imageTag,
-            container: item.container ?? item.mediaSources?.first?.container,
-            mediaSourceID: item.mediaSources?.first?.id,
+            container: item.container ?? mediaSource?.container,
+            mediaSourceID: mediaSource?.id,
+            preferredSubtitleStreamIndex: preferredSubtitle?.index,
+            preferredSubtitleCodec: preferredSubtitle?.codec,
             progress: item.userData?.playedPercentage.map { min(max($0 / 100, 0), 1) },
             playbackPositionTicks: item.userData?.playbackPositionTicks
         )

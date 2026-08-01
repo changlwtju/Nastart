@@ -586,6 +586,7 @@
 "diagnostics.files.preview_download_started" = "开始准备 App 内文件预览";
 "diagnostics.files.preview_download_succeeded" = "App 内文件预览准备完成";
 "diagnostics.files.preview_download_failed" = "App 内文件预览准备失败";
+"diagnostics.files.preview_stream_started" = "开始流式播放 DSM 媒体文件";
 "diagnostics.media.probe_started" = "开始检查媒体响应";
 "diagnostics.media.probe_succeeded" = "媒体响应检查通过";
 "diagnostics.media.probe_invalid_response" = "媒体地址返回了非媒体内容";
@@ -595,6 +596,7 @@
 "diagnostics.media.player_failed" = "内置播放器解码或加载失败";
 "diagnostics.media.player_state" = "内置播放器状态变化";
 "diagnostics.media.player_fallback" = "内置播放器已切换兼容引擎";
+"diagnostics.media.orientation_update_failed" = "播放器横竖屏切换失败";
 "diagnostics.media.external_handoff_accepted" = "外部播放器已接受媒体地址";
 "diagnostics.media.external_handoff_failed" = "外部播放器未接受媒体地址";
 "diagnostics.web.started" = "App 内网页开始加载";
