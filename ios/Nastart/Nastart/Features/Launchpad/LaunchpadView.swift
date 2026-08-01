@@ -3169,6 +3169,9 @@ private enum MediaPlaybackPolicy {
 
     static func preferredEngine(for request: MediaPlaybackRequest) -> MediaPlaybackEngine {
         guard hasCompatibilityEngine else { return .system }
+        if request.source == .jellyfin || request.source == .dsmFile {
+            return .compatibility
+        }
         if request.allowsSelfSignedCertificates {
             return .compatibility
         }
@@ -3378,8 +3381,6 @@ struct BuiltInMediaPlayerView: View {
     @State private var sharePayload: ServiceSharePayload?
     @State private var externalMessageKey = "external.open_failed"
     @State private var showExternalHint = false
-    @State private var compatibilityControlsVisible = true
-    @State private var compatibilityPlayerIsLandscape = false
 
     init(request: MediaPlaybackRequest) {
         self.request = request
@@ -3408,13 +3409,13 @@ struct BuiltInMediaPlayerView: View {
 #if canImport(MobileVLCKit)
                 VLCBuiltInPlayerView(
                     request: request,
+                    close: { dismiss() },
+                    useSystemPlayer: { selectEngine(.system) },
                     openExternal: {
                         if request.allowsExternalHandoff {
                             showExternalPicker = true
                         }
-                    },
-                    controlsVisible: $compatibilityControlsVisible,
-                    isLandscape: $compatibilityPlayerIsLandscape
+                    }
                 )
 #else
                 playbackErrorView(NSLocalizedString("player.compatibility_unavailable", comment: ""))
@@ -3426,12 +3427,7 @@ struct BuiltInMediaPlayerView: View {
         .toolbarColorScheme(.dark, for: .navigationBar)
         .toolbarBackground(Color.black, for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
-        .toolbar(
-            activeEngine == .compatibility
-                && compatibilityPlayerIsLandscape
-                && !compatibilityControlsVisible ? .hidden : .visible,
-            for: .navigationBar
-        )
+        .toolbar(activeEngine == .compatibility ? .hidden : .visible, for: .navigationBar)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 Button("action.done") {
@@ -3487,9 +3483,6 @@ struct BuiltInMediaPlayerView: View {
             if activeEngine == .system {
                 session.play()
             }
-        }
-        .task {
-            await MediaPlaybackProbe.run(request)
         }
         .task(id: activeEngine) {
             guard
@@ -3652,15 +3645,18 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
     private var lastStateDescription = ""
     private let initialPosition: Double?
     private var didApplyInitialPosition = false
+    private var didApplySubtitleStyle = false
 
     init(request: MediaPlaybackRequest) {
         initialPosition = request.initialPosition
         super.init()
         player.delegate = self
         let media = VLCMedia(url: request.url)
-        media.addOption(":network-caching=1000")
+        media.addOption(":network-caching=750")
         media.addOption(":http-reconnect")
+        media.addOption(":input-fast-seek")
         media.addOption(":avcodec-hw=any")
+        media.addOption(":freetype-rel-fontsize=24")
         player.media = media
         DiagnosticLogStore.shared.record(
             .info,
@@ -3674,6 +3670,7 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
 
     func attach(to view: UIView) {
         player.drawable = view
+        player.scaleFactor = 0
     }
 
     func play() {
@@ -3689,6 +3686,7 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
     }
 
     func jump(by seconds: Int) {
+        isBuffering = true
         if seconds < 0 {
             player.jumpBackward(Int32(clamping: -seconds))
         } else {
@@ -3698,8 +3696,8 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
 
     func seek(to newPosition: Double) {
         guard player.isSeekable else { return }
+        isBuffering = true
         player.position = Float(min(max(newPosition, 0), 1))
-        syncState()
     }
 
     func selectSubtitle(_ track: VLCSubtitleTrack) {
@@ -3733,6 +3731,7 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
         let stateDescription = String(describing: player.state)
         let normalizedState = stateDescription.lowercased()
         let isBuffering = normalizedState.contains("opening") || normalizedState.contains("buffering")
+        applySubtitleStyleIfNeeded(isRendererReady: isBuffering || player.isPlaying)
         let currentTimeText = player.time.stringValue
         let durationText = player.media?.length.stringValue ?? "--:--"
         let errorMessage = player.state == .error
@@ -3790,6 +3789,14 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
         }
     }
 
+    private func applySubtitleStyleIfNeeded(isRendererReady: Bool) {
+        guard isRendererReady, !didApplySubtitleStyle else { return }
+        let selector = NSSelectorFromString("setTextRendererFontSize:")
+        guard player.responds(to: selector) else { return }
+        didApplySubtitleStyle = true
+        _ = player.perform(selector, with: NSNumber(value: 24))
+    }
+
     deinit {
         player.stop()
     }
@@ -3797,23 +3804,26 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
 
 private struct VLCBuiltInPlayerView: View {
     let request: MediaPlaybackRequest
+    let close: () -> Void
+    let useSystemPlayer: () -> Void
     let openExternal: () -> Void
     @StateObject private var session: VLCMediaPlayerSession
-    @Binding private var controlsVisible: Bool
-    @Binding private var isLandscape: Bool
+    @State private var controlsVisible = true
     @State private var controlsRevision = 0
+    @State private var scrubPosition = 0.0
+    @State private var isScrubbing = false
 
     init(
         request: MediaPlaybackRequest,
-        openExternal: @escaping () -> Void,
-        controlsVisible: Binding<Bool>,
-        isLandscape: Binding<Bool>
+        close: @escaping () -> Void,
+        useSystemPlayer: @escaping () -> Void,
+        openExternal: @escaping () -> Void
     ) {
         self.request = request
+        self.close = close
+        self.useSystemPlayer = useSystemPlayer
         self.openExternal = openExternal
         _session = StateObject(wrappedValue: VLCMediaPlayerSession(request: request))
-        _controlsVisible = controlsVisible
-        _isLandscape = isLandscape
     }
 
     var body: some View {
@@ -3822,7 +3832,7 @@ private struct VLCBuiltInPlayerView: View {
 
             ZStack {
                 VLCPlayerSurface(session: session)
-                    .ignoresSafeArea(edges: .bottom)
+                    .ignoresSafeArea()
 
                 Color.clear
                     .contentShape(Rectangle())
@@ -3832,6 +3842,7 @@ private struct VLCBuiltInPlayerView: View {
 
                 if controlsVisible {
                     VStack(spacing: 0) {
+                        topControls
                         Spacer()
                         playbackControls(isLandscape: landscapeLayout)
                     }
@@ -3847,11 +3858,19 @@ private struct VLCBuiltInPlayerView: View {
                         Text(errorMessage)
                             .font(.caption)
                             .multilineTextAlignment(.center)
-                        Button(action: openExternal) {
-                            Label("devices.files.open_external", systemImage: "arrow.up.forward.app")
+                        if request.allowsExternalHandoff {
+                            Button(action: openExternal) {
+                                Label("devices.files.open_external", systemImage: "arrow.up.forward.app")
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .tint(AppTheme.accent)
+                        } else {
+                            Button(action: useSystemPlayer) {
+                                Label("player.engine.system", systemImage: "play.rectangle")
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .tint(AppTheme.accent)
                         }
-                        .buttonStyle(.borderedProminent)
-                        .tint(AppTheme.accent)
                     }
                     .foregroundStyle(.white)
                     .padding(22)
@@ -3861,12 +3880,6 @@ private struct VLCBuiltInPlayerView: View {
                         .tint(.white)
                 }
             }
-            .onAppear {
-                isLandscape = landscapeLayout
-            }
-            .onChange(of: proxy.size) { size in
-                isLandscape = size.width > size.height
-            }
         }
         .onAppear {
             session.play()
@@ -3874,7 +3887,10 @@ private struct VLCBuiltInPlayerView: View {
         }
         .onDisappear {
             session.stop()
-            isLandscape = false
+        }
+        .onChange(of: session.position) { position in
+            guard !isScrubbing else { return }
+            scrubPosition = position
         }
         .onChange(of: session.isPlaying) { isPlaying in
             if isPlaying {
@@ -3887,7 +3903,7 @@ private struct VLCBuiltInPlayerView: View {
         }
         .task(id: controlsRevision) {
             guard controlsVisible, session.isPlaying else { return }
-            try? await Task.sleep(nanoseconds: 4_000_000_000)
+            try? await Task.sleep(nanoseconds: 4_500_000_000)
             guard !Task.isCancelled, session.isPlaying else { return }
             withAnimation(.easeInOut(duration: 0.25)) {
                 controlsVisible = false
@@ -3895,17 +3911,64 @@ private struct VLCBuiltInPlayerView: View {
         }
     }
 
+    private var topControls: some View {
+        HStack(spacing: 12) {
+            playerChromeButton(
+                systemImage: "xmark",
+                accessibilityKey: "action.done",
+                action: close
+            )
+
+            Text(request.title.isEmpty ? NSLocalizedString("player.title", comment: "") : request.title)
+                .font(.subheadline.weight(.semibold))
+                .lineLimit(1)
+                .foregroundStyle(.white)
+                .frame(maxWidth: .infinity)
+
+            Menu {
+                Button(action: useSystemPlayer) {
+                    Label("player.engine.system", systemImage: "play.rectangle")
+                }
+                if request.allowsExternalHandoff {
+                    Button(action: openExternal) {
+                        Label("devices.files.open_external", systemImage: "arrow.up.forward.app")
+                    }
+                }
+            } label: {
+                Image(systemName: "ellipsis")
+                    .font(.title3.weight(.semibold))
+                    .foregroundStyle(.white)
+                    .frame(width: 44, height: 44)
+                    .background(.black.opacity(0.46), in: Circle())
+            }
+            .accessibilityLabel(Text("player.engine.choose"))
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 10)
+        .background(
+            LinearGradient(
+                colors: [.black.opacity(0.76), .clear],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .ignoresSafeArea(edges: .top)
+        )
+    }
+
     private func playbackControls(isLandscape: Bool) -> some View {
         VStack(spacing: isLandscape ? 6 : 10) {
             HStack(spacing: 10) {
                 Text(session.currentTimeText)
                 Slider(
-                    value: Binding(
-                        get: { session.position },
-                        set: { session.seek(to: $0) }
-                    ),
+                    value: $scrubPosition,
                     in: 0...1,
-                    onEditingChanged: { _ in revealControls() }
+                    onEditingChanged: { editing in
+                        isScrubbing = editing
+                        if !editing {
+                            session.seek(to: scrubPosition)
+                        }
+                        revealControls()
+                    }
                 )
                 .disabled(!session.isSeekable)
                 .tint(AppTheme.accent)
@@ -4002,6 +4065,22 @@ private struct VLCBuiltInPlayerView: View {
         .accessibilityLabel(Text(LocalizedStringKey(accessibilityKey)))
     }
 
+    private func playerChromeButton(
+        systemImage: String,
+        accessibilityKey: String,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            Image(systemName: systemImage)
+                .font(.title3.weight(.semibold))
+                .frame(width: 44, height: 44)
+                .background(.black.opacity(0.46), in: Circle())
+        }
+        .buttonStyle(.plain)
+        .foregroundStyle(.white)
+        .accessibilityLabel(Text(LocalizedStringKey(accessibilityKey)))
+    }
+
     private func toggleControls() {
         withAnimation(.easeInOut(duration: 0.2)) {
             controlsVisible.toggle()
@@ -4075,12 +4154,14 @@ private struct JellyfinMediaEntry: Identifiable, Hashable {
     let imageItemID: String
     let imageTag: String?
     let thumbImageTag: String?
+    let backdropImageTag: String?
     let container: String?
     let mediaSourceID: String?
     let preferredSubtitleStreamIndex: Int?
     let preferredSubtitleCodec: String?
     let progress: Double?
     let playbackPositionTicks: Int?
+    let isFavorite: Bool
 
     var isPlayable: Bool {
         [.movie, .episode, .audio, .video].contains(kind)
@@ -4130,6 +4211,8 @@ private final class JellyfinLibraryStore: ObservableObject {
     @Published private(set) var continueWatching: [JellyfinMediaEntry] = []
     @Published private(set) var movies: [JellyfinMediaEntry] = []
     @Published private(set) var series: [JellyfinMediaEntry] = []
+    @Published private(set) var favorites: [JellyfinMediaEntry] = []
+    @Published private(set) var favoriteItemIDs: Set<String> = []
     @Published var errorMessage: String?
 
     private var client: JellyfinClient?
@@ -4241,6 +4324,8 @@ private final class JellyfinLibraryStore: ObservableObject {
         continueWatching = []
         movies = []
         series = []
+        favorites = []
+        favoriteItemIDs = []
         try? await activeClient?.signOut()
     }
 
@@ -4254,7 +4339,9 @@ private final class JellyfinLibraryStore: ObservableObject {
         default:
             kinds = [.movie, .series, .video]
         }
-        return try await loadItems(parentID: library.id, kinds: kinds, limit: 250)
+        let items = try await loadItems(parentID: library.id, kinds: kinds, limit: 250)
+        registerFavoriteState(from: items)
+        return items
     }
 
     func loadEpisodes(seriesID: String) async throws -> [JellyfinMediaEntry] {
@@ -4264,34 +4351,83 @@ private final class JellyfinLibraryStore: ObservableObject {
         parameters.fields = itemFields
         parameters.limit = 500
         parameters.enableImages = true
-        parameters.enableImageTypes = [.primary, .thumb]
+        parameters.enableImageTypes = [.primary, .thumb, .backdrop]
         parameters.enableUserData = true
         parameters.sortBy = .sortName
         let response = try await client.send(
             Paths.getEpisodes(seriesID: seriesID, parameters: parameters)
         ).value
-        return (response.items ?? []).compactMap(mapItem)
+        let items = (response.items ?? []).compactMap(mapItem)
+        registerFavoriteState(from: items)
+        return items
     }
 
     func imageURL(
         for entry: JellyfinMediaEntry,
         width: Int = 480,
-        landscape: Bool = false
+        landscape: Bool = false,
+        prefersBackdrop: Bool = false
     ) -> URL? {
         guard let client else { return nil }
-        let useThumb = landscape && entry.thumbImageTag != nil
+        let useBackdrop = prefersBackdrop && entry.backdropImageTag != nil
+        let useThumb = !useBackdrop && landscape && entry.thumbImageTag != nil
+        let imageType: ImageType = useBackdrop ? .backdrop : (useThumb ? .thumb : .primary)
+        let imageTag = useBackdrop
+            ? entry.backdropImageTag
+            : (useThumb ? entry.thumbImageTag : entry.imageTag)
         var parameters = Paths.GetItemImageParameters()
         parameters.maxWidth = width
-        parameters.quality = 88
-        parameters.tag = useThumb ? entry.thumbImageTag : entry.imageTag
+        parameters.quality = prefersBackdrop ? 94 : 88
+        parameters.tag = imageTag
         return client.url(
             with: Paths.getItemImage(
-                itemID: useThumb ? entry.id : entry.imageItemID,
-                imageType: useThumb ? ImageType.thumb.rawValue : ImageType.primary.rawValue,
+                itemID: useBackdrop || useThumb ? entry.id : entry.imageItemID,
+                imageType: imageType.rawValue,
                 parameters: parameters
             ),
             queryAPIKey: true
         )
+    }
+
+    func isFavorite(_ entry: JellyfinMediaEntry) -> Bool {
+        favoriteItemIDs.contains(entry.id)
+    }
+
+    func toggleFavorite(_ entry: JellyfinMediaEntry) async {
+        guard let client, let userID else { return }
+        let shouldFavorite = !isFavorite(entry)
+        do {
+            if shouldFavorite {
+                _ = try await client.send(
+                    Paths.markFavoriteItem(itemID: entry.id, userID: userID)
+                ).value
+                favoriteItemIDs.insert(entry.id)
+                if !favorites.contains(where: { $0.id == entry.id }) {
+                    favorites.insert(entry, at: 0)
+                }
+            } else {
+                _ = try await client.send(
+                    Paths.unmarkFavoriteItem(itemID: entry.id, userID: userID)
+                ).value
+                favoriteItemIDs.remove(entry.id)
+                favorites.removeAll { $0.id == entry.id }
+            }
+        } catch {
+            errorMessage = NSLocalizedString("jellyfin.favorite.failed", comment: "")
+        }
+    }
+
+    func search(query: String) async throws -> [JellyfinMediaEntry] {
+        let cleanedQuery = query.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !cleanedQuery.isEmpty else { return [] }
+        let items = try await loadItems(
+            parentID: nil,
+            kinds: [.movie, .series, .episode, .audio, .video, .musicAlbum, .musicVideo],
+            limit: 80,
+            searchTerm: cleanedQuery
+        )
+        registerFavoriteState(from: items)
+        return items
     }
 
     func playbackRequest(for entry: JellyfinMediaEntry) async throws -> MediaPlaybackRequest? {
@@ -4513,16 +4649,28 @@ private final class JellyfinLibraryStore: ObservableObject {
             async let loadedContinueWatching = loadResumeItems()
             async let loadedMovies = loadItems(parentID: nil, kinds: [.movie], limit: 36)
             async let loadedSeries = loadItems(parentID: nil, kinds: [.series], limit: 36)
+            async let loadedFavorites = loadItems(
+                parentID: nil,
+                kinds: [.movie, .series, .episode, .audio, .video, .musicAlbum, .musicVideo],
+                limit: 60,
+                favoriteOnly: true
+            )
             let home = try await (
                 loadedLibraries,
                 loadedContinueWatching,
                 loadedMovies,
-                loadedSeries
+                loadedSeries,
+                loadedFavorites
             )
             libraries = home.0
             continueWatching = home.1
             movies = home.2
             series = home.3
+            favorites = home.4
+            let serverFavoriteIDs = (home.1 + home.2 + home.3 + home.4)
+                .filter(\.isFavorite)
+                .map(\.id)
+            favoriteItemIDs = Set(serverFavoriteIDs + home.4.map(\.id))
             isLoading = false
             record(
                 "diagnostics.jellyfin.library_loaded",
@@ -4531,7 +4679,8 @@ private final class JellyfinLibraryStore: ObservableObject {
                     "libraries": "\(libraries.count)",
                     "resume": "\(continueWatching.count)",
                     "movies": "\(movies.count)",
-                    "series": "\(series.count)"
+                    "series": "\(series.count)",
+                    "favorites": "\(favorites.count)"
                 ]
             )
         } catch {
@@ -4572,7 +4721,7 @@ private final class JellyfinLibraryStore: ObservableObject {
         parameters.mediaTypes = [.video, .audio]
         parameters.enableUserData = true
         parameters.enableImages = true
-        parameters.enableImageTypes = [.primary, .thumb]
+        parameters.enableImageTypes = [.primary, .thumb, .backdrop]
         parameters.includeItemTypes = [.movie, .episode, .audio, .video]
         let response = try await client.send(Paths.getResumeItems(parameters: parameters)).value
         return (response.items ?? []).compactMap(mapItem)
@@ -4581,7 +4730,9 @@ private final class JellyfinLibraryStore: ObservableObject {
     private func loadItems(
         parentID: String?,
         kinds: [BaseItemKind],
-        limit: Int
+        limit: Int,
+        searchTerm: String? = nil,
+        favoriteOnly: Bool? = nil
     ) async throws -> [JellyfinMediaEntry] {
         guard let client, let userID else { throw JellyfinLibraryError.missingSession }
         var parameters = Paths.GetItemsParameters()
@@ -4589,6 +4740,8 @@ private final class JellyfinLibraryStore: ObservableObject {
         parameters.parentID = parentID
         parameters.limit = limit
         parameters.isRecursive = true
+        parameters.searchTerm = searchTerm
+        parameters.isFavorite = favoriteOnly
         parameters.fields = itemFields
         parameters.includeItemTypes = kinds
         parameters.sortBy = [.sortName]
@@ -4596,13 +4749,17 @@ private final class JellyfinLibraryStore: ObservableObject {
         parameters.enableUserData = true
         parameters.enableImages = true
         parameters.imageTypeLimit = 1
-        parameters.enableImageTypes = [.primary, .thumb]
+        parameters.enableImageTypes = [.primary, .thumb, .backdrop]
         let response = try await client.send(Paths.getItems(parameters: parameters)).value
         return (response.items ?? []).compactMap(mapItem)
     }
 
     private var itemFields: [ItemFields] {
         [.overview, .primaryImageAspectRatio, .mediaSources, .path, .genres]
+    }
+
+    private func registerFavoriteState(from items: [JellyfinMediaEntry]) {
+        favoriteItemIDs.formUnion(items.filter(\.isFavorite).map(\.id))
     }
 
     private func mapItem(_ item: BaseItemDto) -> JellyfinMediaEntry? {
@@ -4637,12 +4794,14 @@ private final class JellyfinLibraryStore: ObservableObject {
             imageItemID: imageItemID,
             imageTag: imageTag,
             thumbImageTag: item.imageTags?[ImageType.thumb.rawValue],
+            backdropImageTag: item.backdropImageTags?.first,
             container: item.container ?? mediaSource?.container,
             mediaSourceID: mediaSource?.id,
             preferredSubtitleStreamIndex: preferredSubtitle?.index,
             preferredSubtitleCodec: preferredSubtitle?.codec,
             progress: item.userData?.playedPercentage.map { min(max($0 / 100, 0), 1) },
-            playbackPositionTicks: item.userData?.playbackPositionTicks
+            playbackPositionTicks: item.userData?.playbackPositionTicks,
+            isFavorite: item.userData?.isFavorite == true
         )
     }
 
@@ -4752,7 +4911,21 @@ private struct JellyfinLibraryView: View {
         .task { await store.restoreIfNeeded() }
         .toolbar {
             if store.isAuthenticated {
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItemGroup(placement: .navigationBarTrailing) {
+                    NavigationLink {
+                        JellyfinFavoritesView(store: store)
+                    } label: {
+                        Image(systemName: "heart")
+                    }
+                    .accessibilityLabel(Text("jellyfin.favorites.title"))
+
+                    NavigationLink {
+                        JellyfinSearchView(store: store)
+                    } label: {
+                        Image(systemName: "magnifyingglass")
+                    }
+                    .accessibilityLabel(Text("jellyfin.search.title"))
+
                     Menu {
                         Button {
                             Task { await store.refresh() }
@@ -4864,13 +5037,8 @@ private struct JellyfinHomeView: View {
                     }
                 }
 
-                if let featuredItem {
-                    NavigationLink {
-                        JellyfinMediaRouteView(store: store, item: featuredItem)
-                    } label: {
-                        JellyfinFeaturedCard(store: store, item: featuredItem)
-                    }
-                    .buttonStyle(.plain)
+                if !featuredItems.isEmpty {
+                    JellyfinHeroCarousel(store: store, items: featuredItems)
                 }
 
                 if !store.libraries.isEmpty {
@@ -4901,6 +5069,16 @@ private struct JellyfinHomeView: View {
                         items: store.continueWatching,
                         posterWidth: 230,
                         landscape: true
+                    )
+                }
+
+                if !store.favorites.isEmpty {
+                    JellyfinPosterShelf(
+                        store: store,
+                        titleKey: "jellyfin.favorites.title",
+                        items: Array(store.favorites.prefix(18)),
+                        posterWidth: 128,
+                        landscape: false
                     )
                 }
 
@@ -4955,8 +5133,15 @@ private struct JellyfinHomeView: View {
         .refreshable { await store.refresh() }
     }
 
-    private var featuredItem: JellyfinMediaEntry? {
-        store.continueWatching.first ?? store.movies.first ?? store.series.first
+    private var featuredItems: [JellyfinMediaEntry] {
+        var seen = Set<String>()
+        return (store.continueWatching + store.movies + store.series)
+            .filter { item in
+                guard item.backdropImageTag != nil || item.thumbImageTag != nil else { return false }
+                return seen.insert(item.id).inserted
+            }
+            .prefix(6)
+            .map { $0 }
     }
 }
 
@@ -4983,17 +5168,68 @@ private struct JellyfinShelfHeader: View {
     }
 }
 
-private struct JellyfinFeaturedCard: View {
+private struct JellyfinHeroCarousel: View {
+    @ObservedObject var store: JellyfinLibraryStore
+    let items: [JellyfinMediaEntry]
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @State private var selection = 0
+
+    var body: some View {
+        TabView(selection: $selection) {
+            ForEach(Array(items.enumerated()), id: \.element.id) { index, item in
+                NavigationLink {
+                    JellyfinMediaRouteView(store: store, item: item)
+                } label: {
+                    JellyfinHeroSlide(store: store, item: item)
+                }
+                .buttonStyle(.plain)
+                .tag(index)
+            }
+        }
+        .tabViewStyle(.page(indexDisplayMode: items.count > 1 ? .always : .never))
+        .frame(height: horizontalSizeClass == .regular ? 400 : 290)
+        .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+        .task(id: items.map(\.id)) {
+            guard items.count > 1 else { return }
+            while !Task.isCancelled {
+                try? await Task.sleep(nanoseconds: 6_000_000_000)
+                guard !Task.isCancelled else { return }
+                withAnimation(.easeInOut(duration: 0.35)) {
+                    selection = (selection + 1) % items.count
+                }
+            }
+        }
+    }
+}
+
+private struct JellyfinHeroSlide: View {
     @ObservedObject var store: JellyfinLibraryStore
     let item: JellyfinMediaEntry
 
     var body: some View {
         ZStack(alignment: .bottomLeading) {
             JellyfinPosterImage(
-                url: store.imageURL(for: item, width: 1200, landscape: true)
+                url: store.imageURL(
+                    for: item,
+                    width: 1600,
+                    landscape: true,
+                    prefersBackdrop: true
+                )
             )
-            Color.black.opacity(0.34)
-            VStack(alignment: .leading, spacing: 6) {
+            LinearGradient(
+                colors: [.clear, .black.opacity(0.18), .black.opacity(0.82)],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            VStack(alignment: .leading, spacing: 7) {
+                Text(item.title)
+                    .font(.title2.weight(.bold))
+                    .lineLimit(2)
+                if !item.subtitle.isEmpty {
+                    Text(item.subtitle)
+                        .font(.subheadline)
+                        .opacity(0.88)
+                }
                 Label {
                     Text(
                         LocalizedStringKey(
@@ -5006,18 +5242,10 @@ private struct JellyfinFeaturedCard: View {
                     Image(systemName: "play.fill")
                 }
                 .font(.caption.weight(.semibold))
-                .textCase(.uppercase)
-                Text(item.title)
-                    .font(.title2.weight(.bold))
-                    .lineLimit(2)
-                if !item.subtitle.isEmpty {
-                    Text(item.subtitle)
-                        .font(.subheadline)
-                        .opacity(0.86)
-                }
             }
             .foregroundStyle(.white)
-            .padding(16)
+            .padding(18)
+            .padding(.bottom, 14)
 
             if let progress = item.progress, progress > 0 {
                 VStack {
@@ -5031,9 +5259,7 @@ private struct JellyfinFeaturedCard: View {
                 }
             }
         }
-        .frame(maxWidth: .infinity)
-        .aspectRatio(16 / 8.5, contentMode: .fit)
-        .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+        .contentShape(Rectangle())
     }
 }
 
@@ -5172,6 +5398,141 @@ private struct JellyfinPosterImage: View {
     }
 }
 
+private struct JellyfinFavoritesView: View {
+    @ObservedObject var store: JellyfinLibraryStore
+
+    var body: some View {
+        Group {
+            if store.favorites.isEmpty {
+                JellyfinEmptyState(
+                    systemImage: "heart",
+                    titleKey: "jellyfin.favorites.empty",
+                    detailKey: "jellyfin.favorites.empty_detail"
+                )
+            } else {
+                JellyfinResultGrid(store: store, items: store.favorites)
+            }
+        }
+        .navigationTitle("jellyfin.favorites.title")
+        .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+private struct JellyfinSearchView: View {
+    @ObservedObject var store: JellyfinLibraryStore
+    @State private var query = ""
+    @State private var results: [JellyfinMediaEntry] = []
+    @State private var isSearching = false
+    @State private var searchFailed = false
+
+    var body: some View {
+        Group {
+            if isSearching {
+                ProgressView()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else if searchFailed {
+                JellyfinEmptyState(
+                    systemImage: "exclamationmark.magnifyingglass",
+                    titleKey: "jellyfin.search.failed",
+                    detailKey: "jellyfin.search.failed_detail"
+                )
+            } else if query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                JellyfinEmptyState(
+                    systemImage: "magnifyingglass",
+                    titleKey: "jellyfin.search.start",
+                    detailKey: "jellyfin.search.start_detail"
+                )
+            } else if results.isEmpty {
+                JellyfinEmptyState(
+                    systemImage: "rectangle.stack.badge.minus",
+                    titleKey: "jellyfin.search.empty",
+                    detailKey: "jellyfin.search.empty_detail"
+                )
+            } else {
+                JellyfinResultGrid(store: store, items: results)
+            }
+        }
+        .navigationTitle("jellyfin.search.title")
+        .navigationBarTitleDisplayMode(.inline)
+        .searchable(text: $query, prompt: "jellyfin.search.placeholder")
+        .task(id: query) {
+            let cleanedQuery = query.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !cleanedQuery.isEmpty else {
+                results = []
+                searchFailed = false
+                isSearching = false
+                return
+            }
+            isSearching = true
+            searchFailed = false
+            try? await Task.sleep(nanoseconds: 350_000_000)
+            guard !Task.isCancelled else { return }
+            do {
+                results = try await store.search(query: cleanedQuery)
+            } catch {
+                guard !Task.isCancelled else { return }
+                results = []
+                searchFailed = true
+            }
+            isSearching = false
+        }
+    }
+}
+
+private struct JellyfinResultGrid: View {
+    @ObservedObject var store: JellyfinLibraryStore
+    let items: [JellyfinMediaEntry]
+
+    var body: some View {
+        ScrollView {
+            LazyVGrid(
+                columns: [GridItem(.adaptive(minimum: 136), spacing: 14)],
+                spacing: 18
+            ) {
+                ForEach(items) { item in
+                    NavigationLink {
+                        JellyfinMediaRouteView(store: store, item: item)
+                    } label: {
+                        JellyfinPosterCard(
+                            store: store,
+                            item: item,
+                            width: 136,
+                            landscape: false
+                        )
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .frame(maxWidth: 960)
+            .padding(18)
+            .frame(maxWidth: .infinity)
+        }
+        .background(Color(.systemBackground))
+    }
+}
+
+private struct JellyfinEmptyState: View {
+    let systemImage: String
+    let titleKey: LocalizedStringKey
+    let detailKey: LocalizedStringKey
+
+    var body: some View {
+        VStack(spacing: 12) {
+            Image(systemName: systemImage)
+                .font(.system(size: 34))
+                .foregroundStyle(.secondary)
+            Text(titleKey)
+                .font(.headline)
+            Text(detailKey)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+        }
+        .padding(28)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+}
+
 private struct JellyfinCollectionView: View {
     @ObservedObject var store: JellyfinLibraryStore
     let library: JellyfinMediaEntry
@@ -5252,38 +5613,41 @@ private struct JellyfinSeriesView: View {
     @State private var failed = false
 
     var body: some View {
-        ScrollView {
-            LazyVStack(alignment: .leading, spacing: 22) {
-                JellyfinDetailHeader(store: store, item: series)
+        GeometryReader { proxy in
+            let contentWidth = min(max(proxy.size.width - 36, 0), 820)
 
-                JellyfinShelfHeader(
-                    titleKey: "jellyfin.episodes.title",
-                    count: isLoading ? nil : episodes.count
-                )
+            ScrollView {
+                LazyVStack(alignment: .leading, spacing: 22) {
+                    JellyfinDetailHeader(store: store, item: series)
 
-                if isLoading {
-                    ProgressView()
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 36)
-                } else if failed {
-                    Button("action.retry") { Task { await loadEpisodes() } }
-                        .buttonStyle(.bordered)
-                } else {
-                    ForEach(episodes) { episode in
-                        NavigationLink {
-                            JellyfinMediaDetailView(store: store, item: episode)
-                        } label: {
-                            JellyfinEpisodeRow(store: store, episode: episode)
+                    JellyfinShelfHeader(
+                        titleKey: "jellyfin.episodes.title",
+                        count: isLoading ? nil : episodes.count
+                    )
+
+                    if isLoading {
+                        ProgressView()
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 36)
+                    } else if failed {
+                        Button("action.retry") { Task { await loadEpisodes() } }
+                            .buttonStyle(.bordered)
+                    } else {
+                        ForEach(episodes) { episode in
+                            NavigationLink {
+                                JellyfinMediaDetailView(store: store, item: episode)
+                            } label: {
+                                JellyfinEpisodeRow(store: store, episode: episode)
+                            }
+                            .buttonStyle(.plain)
+                            Divider()
                         }
-                        .buttonStyle(.plain)
-                        Divider()
                     }
                 }
+                .frame(width: contentWidth, alignment: .leading)
+                .padding(.bottom, 32)
+                .frame(maxWidth: .infinity)
             }
-            .frame(maxWidth: 820, alignment: .leading)
-            .padding(.horizontal, 18)
-            .padding(.bottom, 32)
-            .frame(maxWidth: .infinity)
         }
         .background(Color(.systemBackground))
         .navigationTitle(series.title)
@@ -5356,52 +5720,56 @@ private struct JellyfinMediaDetailView: View {
     @State private var showPlaybackError = false
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 24) {
-                JellyfinDetailHeader(store: store, item: item)
+        GeometryReader { proxy in
+            let contentWidth = min(max(proxy.size.width - 36, 0), 820)
 
-                if item.isPlayable {
-                    Button(action: preparePlayback) {
-                        HStack(spacing: 10) {
-                            if isPreparingPlayback {
-                                ProgressView()
-                                    .tint(.white)
-                            } else {
-                                Image(systemName: "play.fill")
-                            }
-                            Text(
-                                LocalizedStringKey(
-                                    (item.progress ?? 0) > 0
-                                        ? "media.continue.title"
-                                        : "player.play_in_app"
+            ScrollView {
+                VStack(alignment: .leading, spacing: 24) {
+                    JellyfinDetailHeader(store: store, item: item)
+
+                    if item.isPlayable {
+                        Button(action: preparePlayback) {
+                            HStack(spacing: 10) {
+                                if isPreparingPlayback {
+                                    ProgressView()
+                                        .tint(.white)
+                                } else {
+                                    Image(systemName: "play.fill")
+                                }
+                                Text(
+                                    LocalizedStringKey(
+                                        (item.progress ?? 0) > 0
+                                            ? "media.continue.title"
+                                            : "player.play_in_app"
+                                    )
                                 )
-                            )
-                                .font(.headline.weight(.semibold))
+                                    .font(.headline.weight(.semibold))
+                            }
+                            .foregroundStyle(.white)
+                            .frame(maxWidth: .infinity, minHeight: 52)
+                            .background(AppTheme.accent)
+                            .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
                         }
-                        .foregroundStyle(.white)
-                        .frame(maxWidth: .infinity, minHeight: 52)
-                        .background(AppTheme.accent)
-                        .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                        .buttonStyle(.plain)
+                        .disabled(isPreparingPlayback)
                     }
-                    .buttonStyle(.plain)
-                    .disabled(isPreparingPlayback)
-                }
 
-                if !item.overview.isEmpty {
-                    VStack(alignment: .leading, spacing: 10) {
-                        Text("jellyfin.overview.title")
-                            .font(.title3.weight(.bold))
-                        Text(item.overview)
-                            .font(.subheadline)
-                            .foregroundStyle(.primary)
-                            .fixedSize(horizontal: false, vertical: true)
+                    if !item.overview.isEmpty {
+                        VStack(alignment: .leading, spacing: 10) {
+                            Text("jellyfin.overview.title")
+                                .font(.title3.weight(.bold))
+                            Text(item.overview)
+                                .font(.subheadline)
+                                .foregroundStyle(.primary)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
                     }
                 }
+                .frame(width: contentWidth, alignment: .leading)
+                .padding(.bottom, 36)
+                .frame(maxWidth: .infinity)
             }
-            .frame(maxWidth: 820, alignment: .leading)
-            .padding(.horizontal, 18)
-            .padding(.bottom, 36)
-            .frame(maxWidth: .infinity)
         }
         .background(Color(.systemBackground))
         .navigationTitle(item.title)
@@ -5434,13 +5802,23 @@ private struct JellyfinMediaDetailView: View {
 private struct JellyfinDetailHeader: View {
     @ObservedObject var store: JellyfinLibraryStore
     let item: JellyfinMediaEntry
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     var body: some View {
         ZStack(alignment: .bottomLeading) {
             JellyfinPosterImage(
-                url: store.imageURL(for: item, width: 1200, landscape: true)
+                url: store.imageURL(
+                    for: item,
+                    width: 1600,
+                    landscape: true,
+                    prefersBackdrop: true
+                )
             )
-            Color.black.opacity(0.38)
+            LinearGradient(
+                colors: [.clear, .black.opacity(0.72)],
+                startPoint: .center,
+                endPoint: .bottom
+            )
             VStack(alignment: .leading, spacing: 8) {
                 Text(item.title)
                     .font(.title.weight(.bold))
@@ -5456,9 +5834,24 @@ private struct JellyfinDetailHeader: View {
             .padding(18)
         }
         .frame(maxWidth: .infinity)
-        .frame(height: 260)
+        .frame(height: horizontalSizeClass == .regular ? 340 : 250)
         .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
         .padding(.top, 8)
+        .overlay(alignment: .topTrailing) {
+            Button {
+                Task { await store.toggleFavorite(item) }
+            } label: {
+                Image(systemName: store.isFavorite(item) ? "heart.fill" : "heart")
+                    .font(.title3.weight(.semibold))
+                    .foregroundStyle(store.isFavorite(item) ? AppTheme.accent : .white)
+                    .frame(width: 44, height: 44)
+                    .background(.black.opacity(0.42), in: Circle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(Text("jellyfin.favorite.toggle"))
+            .padding(.top, 20)
+            .padding(.trailing, 12)
+        }
     }
 }
 
