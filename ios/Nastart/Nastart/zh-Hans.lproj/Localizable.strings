@@ -633,6 +633,7 @@
 "diagnostics.jellyfin.library_loaded" = "Jellyfin 资源库载入完成";
 "diagnostics.jellyfin.library_failed" = "Jellyfin 资源库载入失败";
 "jellyfin.player.retry_hint" = "这是带鉴权的 Jellyfin 临时播放流，只能在 Nastart 内播放。请关闭播放器后重试，以重新获取播放地址。";
+"dsm.player.retry_hint" = "这是带鉴权的 DSM 文件，仅在 Nastart 内使用。请安装兼容播放器，以播放 AVPlayer 不支持的格式。";
 "jellyfin.player.prepare_failed" = "无法准备播放";
 "jellyfin.player.prepare_failed_detail" = "Jellyfin 未返回兼容的 HLS 播放流。请确认服务端已启用转码，并查看“媒体播放”诊断。";
 "diagnostics.jellyfin.playback_preparing" = "开始请求 Jellyfin 播放方案";

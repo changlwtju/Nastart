@@ -3542,10 +3542,20 @@ struct BuiltInMediaPlayerView: View {
                 .buttonStyle(.borderedProminent)
                 .tint(AppTheme.accent)
             } else {
-                Text("jellyfin.player.retry_hint")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
+                switch request.source {
+                case .jellyfin:
+                    Text("jellyfin.player.retry_hint")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                case .dsmFile:
+                    Text("dsm.player.retry_hint")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                case .directURL:
+                    EmptyView()
+                }
                 Button("action.done") {
                     dismiss()
                 }
