@@ -3180,6 +3180,14 @@ private enum MediaPlaybackPolicy {
         return systemPreferredExtensions.contains(fileExtension) ? .system : .compatibility
     }
 
+    static func allowsSystemPlayer(for request: MediaPlaybackRequest) -> Bool {
+        guard request.source == .directURL, !request.allowsSelfSignedCertificates else {
+            return false
+        }
+        let fileExtension = request.fileExtensionHint
+        return fileExtension.isEmpty || systemPreferredExtensions.contains(fileExtension)
+    }
+
     static func requiresCompatibilityEngine(for request: MediaPlaybackRequest) -> Bool {
         if request.allowsSelfSignedCertificates {
             return true
@@ -3410,7 +3418,9 @@ struct BuiltInMediaPlayerView: View {
                 VLCBuiltInPlayerView(
                     request: request,
                     close: { dismiss() },
-                    useSystemPlayer: { selectEngine(.system) },
+                    useSystemPlayer: MediaPlaybackPolicy.allowsSystemPlayer(for: request)
+                        ? { selectEngine(.system) }
+                        : nil,
                     openExternal: {
                         if request.allowsExternalHandoff {
                             showExternalPicker = true
@@ -3436,21 +3446,23 @@ struct BuiltInMediaPlayerView: View {
             }
             ToolbarItemGroup(placement: .navigationBarTrailing) {
 #if canImport(MobileVLCKit)
-                Menu {
-                    Button {
-                        selectEngine(.system)
+                if MediaPlaybackPolicy.allowsSystemPlayer(for: request) {
+                    Menu {
+                        Button {
+                            selectEngine(.system)
+                        } label: {
+                            Label("player.engine.system", systemImage: activeEngine == .system ? "checkmark" : "play.rectangle")
+                        }
+                        Button {
+                            selectEngine(.compatibility)
+                        } label: {
+                            Label("player.engine.compatibility", systemImage: activeEngine == .compatibility ? "checkmark" : "rectangle.stack")
+                        }
                     } label: {
-                        Label("player.engine.system", systemImage: activeEngine == .system ? "checkmark" : "play.rectangle")
+                        Image(systemName: "rectangle.stack")
                     }
-                    Button {
-                        selectEngine(.compatibility)
-                    } label: {
-                        Label("player.engine.compatibility", systemImage: activeEngine == .compatibility ? "checkmark" : "rectangle.stack")
-                    }
-                } label: {
-                    Image(systemName: "rectangle.stack")
+                    .accessibilityLabel(Text("player.engine.choose"))
                 }
-                .accessibilityLabel(Text("player.engine.choose"))
 #endif
                 if request.allowsExternalHandoff {
                     Button {
@@ -3805,7 +3817,7 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
 private struct VLCBuiltInPlayerView: View {
     let request: MediaPlaybackRequest
     let close: () -> Void
-    let useSystemPlayer: () -> Void
+    let useSystemPlayer: (() -> Void)?
     let openExternal: () -> Void
     @StateObject private var session: VLCMediaPlayerSession
     @State private var controlsVisible = true
@@ -3816,7 +3828,7 @@ private struct VLCBuiltInPlayerView: View {
     init(
         request: MediaPlaybackRequest,
         close: @escaping () -> Void,
-        useSystemPlayer: @escaping () -> Void,
+        useSystemPlayer: (() -> Void)?,
         openExternal: @escaping () -> Void
     ) {
         self.request = request
@@ -3864,12 +3876,22 @@ private struct VLCBuiltInPlayerView: View {
                             }
                             .buttonStyle(.borderedProminent)
                             .tint(AppTheme.accent)
-                        } else {
+                        } else if let useSystemPlayer {
                             Button(action: useSystemPlayer) {
                                 Label("player.engine.system", systemImage: "play.rectangle")
                             }
                             .buttonStyle(.borderedProminent)
                             .tint(AppTheme.accent)
+                        } else {
+                            Text(LocalizedStringKey(request.source == .jellyfin
+                                ? "jellyfin.player.retry_hint"
+                                : "dsm.player.retry_hint"))
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .multilineTextAlignment(.center)
+                            Button("action.done", action: close)
+                                .buttonStyle(.borderedProminent)
+                                .tint(AppTheme.accent)
                         }
                     }
                     .foregroundStyle(.white)
@@ -3925,23 +3947,30 @@ private struct VLCBuiltInPlayerView: View {
                 .foregroundStyle(.white)
                 .frame(maxWidth: .infinity)
 
-            Menu {
-                Button(action: useSystemPlayer) {
-                    Label("player.engine.system", systemImage: "play.rectangle")
-                }
-                if request.allowsExternalHandoff {
-                    Button(action: openExternal) {
-                        Label("devices.files.open_external", systemImage: "arrow.up.forward.app")
+            if useSystemPlayer != nil || request.allowsExternalHandoff {
+                Menu {
+                    if let useSystemPlayer {
+                        Button(action: useSystemPlayer) {
+                            Label("player.engine.system", systemImage: "play.rectangle")
+                        }
                     }
+                    if request.allowsExternalHandoff {
+                        Button(action: openExternal) {
+                            Label("devices.files.open_external", systemImage: "arrow.up.forward.app")
+                        }
+                    }
+                } label: {
+                    Image(systemName: "ellipsis")
+                        .font(.title3.weight(.semibold))
+                        .foregroundStyle(.white)
+                        .frame(width: 44, height: 44)
+                        .background(.black.opacity(0.46), in: Circle())
                 }
-            } label: {
-                Image(systemName: "ellipsis")
-                    .font(.title3.weight(.semibold))
-                    .foregroundStyle(.white)
+                .accessibilityLabel(Text("player.engine.choose"))
+            } else {
+                Color.clear
                     .frame(width: 44, height: 44)
-                    .background(.black.opacity(0.46), in: Circle())
             }
-            .accessibilityLabel(Text("player.engine.choose"))
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 10)
@@ -6271,7 +6300,8 @@ private struct NASConnectionWelcomeView: View {
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             }
-            .frame(maxWidth: 520, alignment: .leading)
+            .frame(maxWidth: 760, alignment: .leading)
+            .frame(maxWidth: .infinity)
             .padding(.horizontal, 24)
             .padding(.top, 34)
         }
@@ -6516,7 +6546,8 @@ private struct DSMConnectionFlowView: View {
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
             }
-            .frame(maxWidth: 560)
+            .frame(maxWidth: 760)
+            .frame(maxWidth: .infinity)
             .padding(.horizontal, 18)
             .padding(.top, 8)
             .padding(.bottom, 28)
