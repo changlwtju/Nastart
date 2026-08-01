@@ -1327,6 +1327,11 @@ private struct ServiceDetailView: View {
                 LabeledContent("service.detail.status") {
                     Text(LocalizedStringKey(service.status.titleKey))
                 }
+                if service.usesLANOnlyEndpoint(for: connectionStore.dsmSession?.baseURL) {
+                    Label("service.endpoint.lan_only", systemImage: "house.and.flag")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
                 Button {
                     showEndpointEditor = true
                 } label: {
@@ -1379,7 +1384,7 @@ private struct ServiceDetailView: View {
         .sheet(isPresented: $showEndpointEditor) {
             ServiceEndpointEditor(
                 overrideURL: endpointOverride,
-                suggestedURL: service.suggestedEndpoint
+                suggestedURL: service.preferredEndpoint(for: connectionStore.dsmSession?.baseURL)
             ) { url in
                 endpointOverride = url
                 ServiceEndpointOverrides.save(
@@ -1420,7 +1425,7 @@ private struct ServiceDetailView: View {
     }
 
     private var effectiveEndpoint: URL? {
-        endpointOverride ?? service.suggestedEndpoint
+        endpointOverride ?? service.preferredEndpoint(for: connectionStore.dsmSession?.baseURL)
     }
 
     private var isVisibleOnLaunchpad: Bool {
@@ -1691,6 +1696,8 @@ private struct ServiceWebUIView: View {
                     prefersDesktopMode: resolvedMode.usesDesktopUserAgent,
                     prefersCompatibilityFallback: service.isDeveloperConsole,
                     expectsDeveloperWorkbench: service.isDeveloperConsole,
+                    expectsMetaCubeDashboard: service.isMetaCubeXD,
+                    bypassesPersistentWebCache: service.isMetaCubeXD,
                     allowsSelfSignedCertificates: allowsSelfSignedCertificates,
                     authenticationCookie: authenticationCookie,
                     command: browserCommand,
@@ -2006,6 +2013,8 @@ private struct WebContainerView: UIViewRepresentable {
     let prefersDesktopMode: Bool
     let prefersCompatibilityFallback: Bool
     let expectsDeveloperWorkbench: Bool
+    let expectsMetaCubeDashboard: Bool
+    let bypassesPersistentWebCache: Bool
     let allowsSelfSignedCertificates: Bool
     let authenticationCookie: HTTPCookie?
     let command: WebBrowserCommand?
@@ -2022,7 +2031,7 @@ private struct WebContainerView: UIViewRepresentable {
     func makeUIView(context: Context) -> WKWebView {
         let configuration = WKWebViewConfiguration()
         configuration.allowsInlineMediaPlayback = true
-        configuration.websiteDataStore = .default()
+        configuration.websiteDataStore = bypassesPersistentWebCache ? .nonPersistent() : .default()
         configuration.preferences.javaScriptCanOpenWindowsAutomatically = true
         configuration.preferences.isTextInteractionEnabled = true
         configuration.defaultWebpagePreferences.allowsContentJavaScript = true
@@ -2138,6 +2147,7 @@ private struct WebContainerView: UIViewRepresentable {
       title: document.title || '',
       hasLoginForm: Boolean(document.querySelector('input[type="password"]')),
       hasWorkbench: Boolean(document.querySelector('.monaco-workbench')),
+      nuxtChildCount: document.querySelector('#__nuxt')?.children?.length || 0,
       codeServerVersion: (() => {
         try {
           const raw = document.querySelector('meta#coder-options')?.dataset?.settings;
@@ -2202,12 +2212,16 @@ private struct WebContainerView: UIViewRepresentable {
                     "engine": "WKWebView",
                     "target": DiagnosticLogStore.redactedURL(url),
                     "desktop": parent.prefersDesktopMode ? "on" : "off",
+                    "persistentCache": parent.bypassesPersistentWebCache ? "off" : "on",
                     "selfSigned": parent.allowsSelfSignedCertificates ? "on" : "off",
                     "sessionCookie": parent.authenticationCookie == nil ? "off" : "on"
                 ]
             )
             var request = URLRequest(url: url)
             request.timeoutInterval = 30
+            if parent.bypassesPersistentWebCache {
+                request.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData
+            }
             guard let cookie = parent.authenticationCookie else {
                 webView.load(request)
                 return
@@ -2234,7 +2248,11 @@ private struct WebContainerView: UIViewRepresentable {
                     load(parent.url, in: webView)
                 } else {
                     setLoading(true, error: nil)
-                    webView.reload()
+                    if parent.bypassesPersistentWebCache {
+                        webView.reloadFromOrigin()
+                    } else {
+                        webView.reload()
+                    }
                 }
             case .stop:
                 webView.stopLoading()
@@ -2619,10 +2637,16 @@ private struct WebContainerView: UIViewRepresentable {
                     let title = values["title"] as? String ?? ""
                     let hasLoginForm = (values["hasLoginForm"] as? NSNumber)?.boolValue ?? false
                     let hasWorkbench = (values["hasWorkbench"] as? NSNumber)?.boolValue ?? false
+                    let nuxtChildCount = (values["nuxtChildCount"] as? NSNumber)?.intValue ?? 0
                     let codeServerVersion = values["codeServerVersion"] as? String ?? ""
-                    let hasRenderedContent = self.parent.expectsDeveloperWorkbench
-                        ? hasLoginForm || hasWorkbench
-                        : bodyChildCount > 0 && htmlLength >= 200
+                    let hasRenderedContent: Bool
+                    if self.parent.expectsDeveloperWorkbench {
+                        hasRenderedContent = hasLoginForm || hasWorkbench
+                    } else if self.parent.expectsMetaCubeDashboard {
+                        hasRenderedContent = nuxtChildCount > 0 && bodyTextLength > 0
+                    } else {
+                        hasRenderedContent = bodyChildCount > 0 && htmlLength >= 200
+                    }
 
                     self.recordRenderCheck(
                         webView: webView,
@@ -2635,6 +2659,7 @@ private struct WebContainerView: UIViewRepresentable {
                             "titleLength": "\(title.count)",
                             "loginForm": hasLoginForm ? "yes" : "no",
                             "workbench": hasWorkbench ? "yes" : "no",
+                            "nuxtChildCount": "\(nuxtChildCount)",
                             "codeServerVersion": codeServerVersion.isEmpty ? "-" : codeServerVersion,
                             "rendered": hasRenderedContent ? "yes" : "no"
                         ]
@@ -2871,7 +2896,7 @@ struct MediaPlaybackRequest: Identifiable {
     }
 
     var allowsExternalHandoff: Bool {
-        source != .jellyfin
+        source == .directURL
     }
 }
 
@@ -4922,7 +4947,8 @@ private struct MediaLibraryView: View {
 
     var body: some View {
         Group {
-            if service.isJellyfin, let endpoint = service.endpoint ?? service.suggestedEndpoint {
+            if service.isJellyfin,
+               let endpoint = service.preferredEndpoint(for: connectionStore.dsmSession?.baseURL) {
                 JellyfinLibraryView(
                     service: service,
                     endpoint: endpoint,
@@ -4950,7 +4976,7 @@ private struct MediaLibraryView: View {
 
             if libraryItems.isEmpty {
                 Section {
-                    if let endpoint = service.suggestedEndpoint {
+                    if let endpoint = service.preferredEndpoint(for: connectionStore.dsmSession?.baseURL) {
                         NavigationLink {
                             ServiceWebUIView(
                                 service: service,

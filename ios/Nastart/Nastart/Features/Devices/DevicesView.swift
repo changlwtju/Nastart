@@ -873,11 +873,9 @@ private struct FileItemRow: View {
 private struct FilePreviewView: View {
     let item: FileItem
     @EnvironmentObject private var connectionStore: NASConnectionStore
-    @State private var showExternalPicker = false
     @State private var externalMessageKey = "external.open_failed"
     @State private var showExternalHint = false
     @State private var playbackRequest: MediaPlaybackRequest?
-    @State private var sharePayload: FileSharePayload?
     @State private var localPreview: LocalFilePreview?
     @State private var isPreparingPreview = false
 
@@ -910,31 +908,14 @@ private struct FilePreviewView: View {
                     }
                 }
                 .disabled(isPreparingPreview)
-                Button {
-                    openExternalPicker()
-                } label: {
-                    Label("devices.files.open_external", systemImage: "arrow.up.forward.app")
-                }
             } header: {
                 Text("devices.files.actions")
             }
         }
         .listStyle(.insetGrouped)
         .navigationTitle("devices.files.preview")
-        .confirmationDialog("service.external.title", isPresented: $showExternalPicker) {
-            if item.kind == .video || item.kind == .audio {
-                Button("Infuse") { openExternal(.infuse) }
-                Button("VidHub") { openExternal(.vidhub) }
-                Button("VLC") { openExternal(.vlc) }
-            }
-            Button("external.other_apps") { presentShareSheet() }
-            Button("action.cancel", role: .cancel) {}
-        }
         .alert(LocalizedStringKey(externalMessageKey), isPresented: $showExternalHint) {
             Button("action.ok", role: .cancel) {}
-        }
-        .sheet(item: $sharePayload) { payload in
-            SystemShareView(items: [payload.url])
         }
         .fullScreenCover(item: $playbackRequest) { request in
             NavigationStack {
@@ -1005,48 +986,6 @@ private struct FilePreviewView: View {
         }
     }
 
-    private func openExternalPicker() {
-        guard authenticatedURL != nil else {
-            showFailure("devices.files.session_required")
-            return
-        }
-        showExternalPicker = true
-    }
-
-    private func openExternal(_ target: ExternalOpenTarget) {
-        guard let targetURL = target.url(endpoint: authenticatedURL, filename: item.name) else {
-            showFailure("external.unsupported_hint")
-            return
-        }
-        showExternalPicker = false
-        UIApplication.shared.open(targetURL, options: [:]) { accepted in
-            DiagnosticLogStore.shared.record(
-                accepted ? .info : .error,
-                categoryKey: "diagnostics.category.media",
-                messageKey: accepted
-                    ? "diagnostics.media.external_handoff_accepted"
-                    : "diagnostics.media.external_handoff_failed",
-                details: [
-                    "targetApp": target.diagnosticName,
-                    "extension": (item.name as NSString).pathExtension.lowercased()
-                ]
-            )
-            guard !accepted else { return }
-            DispatchQueue.main.async {
-                showFailure(target.failureMessageKey)
-            }
-        }
-    }
-
-    private func presentShareSheet() {
-        guard let authenticatedURL else {
-            showFailure("devices.files.session_required")
-            return
-        }
-        showExternalPicker = false
-        sharePayload = FileSharePayload(url: authenticatedURL)
-    }
-
     private func showFailure(_ key: String) {
         externalMessageKey = key
         showExternalHint = true
@@ -1059,11 +998,6 @@ private struct FilePreviewView: View {
     private var previewSymbolName: String {
         item.kind == .video || item.kind == .audio ? "play.rectangle" : "doc.text.magnifyingglass"
     }
-}
-
-private struct FileSharePayload: Identifiable {
-    let id = UUID()
-    let url: URL
 }
 
 private struct LocalFilePreview: Identifiable {
@@ -1275,7 +1209,7 @@ private struct NetworkDetailView: View {
                                     .font(.caption)
                                     .foregroundStyle(.secondary)
                             }
-                            Text(endpointSummary(service.suggestedEndpoint))
+                            Text(endpointSummary(service.preferredEndpoint(for: baseURL)))
                                 .font(.footnote.monospaced())
                                 .foregroundStyle(.secondary)
                                 .textSelection(.enabled)
@@ -1297,7 +1231,7 @@ private struct NetworkDetailView: View {
         return services.filter { service in
             guard
                 service.status == .online,
-                let endpoint = service.suggestedEndpoint
+                let endpoint = service.preferredEndpoint(for: baseURL)
             else {
                 return false
             }

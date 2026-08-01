@@ -95,6 +95,7 @@
 "service.endpoint.hint" = "请填写完整的 WebUI 地址；如服务需要端口或路径，也请一并填写。";
 "service.endpoint.restore_auto" = "恢复自动识别地址";
 "service.endpoint.invalid" = "请输入有效的 HTTP 或 HTTPS 地址。";
+"service.endpoint.lan_only" = "未发现外网入口，仅在局域网中可用";
 "service.source.dsm" = "DSM API";
 "service.source.container" = "Docker 端口直连";
 "service.source.reverse_proxy" = "DSM 反向代理";

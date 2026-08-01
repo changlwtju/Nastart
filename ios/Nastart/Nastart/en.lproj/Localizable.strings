@@ -95,6 +95,7 @@
 "service.endpoint.hint" = "Use the complete Web UI address, including its port and path when required.";
 "service.endpoint.restore_auto" = "Use Automatically Detected Address";
 "service.endpoint.invalid" = "Enter a valid HTTP or HTTPS address.";
+"service.endpoint.lan_only" = "No remote endpoint found; available only on the local network";
 "service.source.dsm" = "DSM API";
 "service.source.container" = "Docker Port Mapping";
 "service.source.reverse_proxy" = "DSM Reverse Proxy";

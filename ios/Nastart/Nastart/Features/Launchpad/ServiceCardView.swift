@@ -156,6 +156,11 @@ extension LaunchpadService {
         name.lowercased().contains("jellyfin")
     }
 
+    var isMetaCubeXD: Bool {
+        let normalizedName = name.lowercased()
+        return normalizedName.contains("metacubexd") || normalizedName.contains("metacube xd")
+    }
+
     var prefersEnhancedWebMode: Bool {
         let normalizedName = name.lowercased()
         let enhancedNames = [
@@ -168,13 +173,32 @@ extension LaunchpadService {
             "npm",
             "gitea",
             "gitlab",
-            "home assistant"
+            "home assistant",
+            "metacubexd",
+            "metacube xd"
         ]
         return enhancedNames.contains { normalizedName.contains($0) }
     }
 
     var suggestedEndpoint: URL? {
-        alternateEndpoint ?? endpoint
+        endpoint ?? alternateEndpoint
+    }
+
+    func preferredEndpoint(for dsmBaseURL: URL?) -> URL? {
+        guard Self.isPrivateNetworkHost(dsmBaseURL?.host) else {
+            return endpoint ?? alternateEndpoint
+        }
+        return alternateEndpoint ?? endpoint
+    }
+
+    func usesLANOnlyEndpoint(for dsmBaseURL: URL?) -> Bool {
+        guard
+            !Self.isPrivateNetworkHost(dsmBaseURL?.host),
+            let selectedEndpoint = preferredEndpoint(for: dsmBaseURL)
+        else {
+            return false
+        }
+        return Self.isPrivateNetworkHost(selectedEndpoint.host)
     }
 
     var endpointText: String {
@@ -184,5 +208,19 @@ extension LaunchpadService {
 
     var resolvedIconURL: URL? {
         iconURL
+    }
+
+    private static func isPrivateNetworkHost(_ host: String?) -> Bool {
+        guard let host = host?.lowercased() else { return false }
+        if host == "localhost" || host.hasSuffix(".local") || host.hasSuffix(".lan") {
+            return true
+        }
+        let octets = host.split(separator: ".").compactMap { Int($0) }
+        guard octets.count == 4, octets.allSatisfy({ (0...255).contains($0) }) else {
+            return false
+        }
+        return octets[0] == 10
+            || (octets[0] == 172 && (16...31).contains(octets[1]))
+            || (octets[0] == 192 && octets[1] == 168)
     }
 }
