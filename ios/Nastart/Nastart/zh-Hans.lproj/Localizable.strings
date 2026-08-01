@@ -514,7 +514,7 @@
 "player.url.placeholder" = "https://nas.example/media/stream.m3u8";
 "player.url.invalid" = "请输入有效的 HTTP 或 HTTPS 媒体串流地址。";
 "player.load_failed" = "无法播放媒体";
-"player.compatibility_unavailable" = "当前构建未安装兼容播放器。";
+"player.compatibility_unavailable" = "当前构建未包含 MobileVLCKit，无法解码此格式。请执行 pod install，并使用 Nastart.xcworkspace 构建。";
 "player.compatibility_failed" = "兼容播放器仍无法解码或载入此媒体。";
 "player.engine.choose" = "选择播放器";
 "player.engine.system" = "系统播放器";

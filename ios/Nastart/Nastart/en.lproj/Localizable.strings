@@ -514,7 +514,7 @@
 "player.url.placeholder" = "https://nas.example/media/stream.m3u8";
 "player.url.invalid" = "Enter a valid HTTP or HTTPS media stream URL.";
 "player.load_failed" = "Could Not Play Media";
-"player.compatibility_unavailable" = "The compatibility player is not installed in this build.";
+"player.compatibility_unavailable" = "This build does not include MobileVLCKit and cannot decode this format. Run pod install and build Nastart.xcworkspace.";
 "player.compatibility_failed" = "The compatibility player could not decode or load this media.";
 "player.engine.choose" = "Choose Player";
 "player.engine.system" = "System Player";

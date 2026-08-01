@@ -2910,6 +2910,12 @@ private final class MediaProbeTrustDelegate: NSObject, URLSessionDelegate {
 
 private enum MediaPlaybackProbe {
     static func run(_ playback: MediaPlaybackRequest) async {
+        guard
+            let scheme = playback.url.scheme?.lowercased(),
+            scheme == "http" || scheme == "https"
+        else {
+            return
+        }
         let diagnostics = DiagnosticLogStore.shared
         diagnostics.record(
             .info,
@@ -3000,7 +3006,8 @@ private enum MediaPlaybackProbe {
             "target": DiagnosticLogStore.redactedURL(playback.url),
             "source": playback.source.rawValue,
             "extension": playback.fileExtensionHint.isEmpty ? "-" : playback.fileExtensionHint,
-            "selfSigned": playback.allowsSelfSignedCertificates ? "on" : "off"
+            "selfSigned": playback.allowsSelfSignedCertificates ? "on" : "off",
+            "compatibilityEngine": MediaPlaybackPolicy.hasCompatibilityEngine ? "available" : "unavailable"
         ]
     }
 
@@ -3092,6 +3099,11 @@ private enum MediaPlaybackPolicy {
         let fileExtension = request.fileExtensionHint
         guard !fileExtension.isEmpty else { return .system }
         return systemPreferredExtensions.contains(fileExtension) ? .system : .compatibility
+    }
+
+    static func requiresCompatibilityEngine(for request: MediaPlaybackRequest) -> Bool {
+        let fileExtension = request.fileExtensionHint
+        return !fileExtension.isEmpty && !systemPreferredExtensions.contains(fileExtension)
     }
 }
 
@@ -3293,7 +3305,11 @@ struct BuiltInMediaPlayerView: View {
 
                 if let errorMessage = session.errorMessage,
                    !MediaPlaybackPolicy.hasCompatibilityEngine {
-                    playbackErrorView(errorMessage)
+                    playbackErrorView(
+                        MediaPlaybackPolicy.requiresCompatibilityEngine(for: request)
+                            ? NSLocalizedString("player.compatibility_unavailable", comment: "")
+                            : errorMessage
+                    )
                 }
             case .compatibility:
 #if canImport(MobileVLCKit)
@@ -3813,8 +3829,18 @@ private final class JellyfinLibraryStore: ObservableObject {
         allowsSelfSignedCertificates: Bool
     ) {
         self.endpoint = endpoint
-        self.playbackEndpoint = playbackEndpoint
+        self.playbackEndpoint = playbackEndpoint.flatMap(Self.originURL)
         self.allowsSelfSignedCertificates = allowsSelfSignedCertificates
+    }
+
+    private static func originURL(for url: URL) -> URL? {
+        guard var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
+            return nil
+        }
+        components.path = ""
+        components.query = nil
+        components.fragment = nil
+        return components.url
     }
 
     func restoreIfNeeded() async {

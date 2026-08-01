@@ -953,16 +953,37 @@ private struct FilePreviewView: View {
         }
         switch item.kind {
         case .video, .audio:
-            playbackRequest = MediaPlaybackRequest(
-                url: url,
-                title: item.name,
-                allowsSelfSignedCertificates: connectionStore.dsmSession?.allowsSelfSignedCertificates == true,
-                source: .dsmFile
-            )
+            prepareMediaPlayback(from: url)
         case .image, .text, .archive:
             prepareLocalPreview(from: url)
         case .folder:
             break
+        }
+    }
+
+    private func prepareMediaPlayback(from url: URL) {
+        isPreparingPreview = true
+        Task {
+            do {
+                let fileURL = try await AuthenticatedFilePreviewLoader.download(
+                    from: url,
+                    filename: item.name,
+                    allowsSelfSignedCertificates: connectionStore.dsmSession?.allowsSelfSignedCertificates == true
+                )
+                await MainActor.run {
+                    isPreparingPreview = false
+                    playbackRequest = MediaPlaybackRequest(
+                        url: fileURL,
+                        title: item.name,
+                        source: .dsmFile
+                    )
+                }
+            } catch {
+                await MainActor.run {
+                    isPreparingPreview = false
+                    showFailure("devices.files.preview_failed")
+                }
+            }
         }
     }
 

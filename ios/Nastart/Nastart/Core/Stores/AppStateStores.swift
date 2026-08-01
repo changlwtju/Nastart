@@ -2257,7 +2257,7 @@ final class DSMClient {
                         let localEndpoint = discoveredLocalEndpoint.flatMap { discovered in
                             Self.isPrivateNetworkHost(discovered.host)
                                 && discovered.scheme?.lowercased() == "http"
-                                ? discovered
+                                ? Self.originURL(for: discovered)
                                 : nil
                         }
                         return (
@@ -2404,6 +2404,16 @@ final class DSMClient {
         if let sourcePath = rule.sourcePath {
             components.path = sourcePath.hasPrefix("/") ? sourcePath : "/\(sourcePath)"
         }
+        return components.url
+    }
+
+    private static func originURL(for url: URL) -> URL? {
+        guard var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
+            return nil
+        }
+        components.path = ""
+        components.query = nil
+        components.fragment = nil
         return components.url
     }
 
