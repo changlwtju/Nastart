@@ -2094,11 +2094,15 @@ private struct WebContainerView: UIViewRepresentable {
     (() => {
       if (window.__nastartDiagnosticsInstalled) return;
       window.__nastartDiagnosticsInstalled = true;
-      const send = (kind, value) => {
+      const send = (kind, value, details = {}) => {
         try {
           window.webkit.messageHandlers.nastartWebDiagnostics.postMessage({
             kind,
-            message: String(value ?? '').slice(0, 600)
+            message: String(value ?? '').slice(0, 600),
+            source: String(details.source || '').slice(0, 600),
+            line: Number(details.line || 0),
+            column: Number(details.column || 0),
+            stack: String(details.stack || '').slice(0, 1200)
           });
         } catch (_) {}
       };
@@ -2110,10 +2114,17 @@ private struct WebContainerView: UIViewRepresentable {
         };
       });
       window.addEventListener('error', (event) => {
-        send('window.error', event.message || event.error || 'Unknown script error');
+        send('window.error', event.message || event.error || 'Unknown script error', {
+          source: event.filename,
+          line: event.lineno,
+          column: event.colno,
+          stack: event.error?.stack
+        });
       });
       window.addEventListener('unhandledrejection', (event) => {
-        send('promise.rejection', event.reason || 'Unhandled promise rejection');
+        send('promise.rejection', event.reason || 'Unhandled promise rejection', {
+          stack: event.reason?.stack
+        });
       });
     })();
     """
@@ -2501,6 +2512,10 @@ private struct WebContainerView: UIViewRepresentable {
             scriptDiagnosticCount += 1
             let kind = payload["kind"] as? String ?? "script"
             let text = payload["message"] as? String ?? "-"
+            let source = payload["source"] as? String ?? ""
+            let line = (payload["line"] as? NSNumber)?.intValue ?? 0
+            let column = (payload["column"] as? NSNumber)?.intValue ?? 0
+            let stack = payload["stack"] as? String ?? ""
             DiagnosticLogStore.shared.record(
                 .error,
                 categoryKey: "diagnostics.category.web",
@@ -2508,6 +2523,10 @@ private struct WebContainerView: UIViewRepresentable {
                 details: [
                     "kind": String(kind.prefix(80)),
                     "message": sanitizedScriptDiagnostic(text),
+                    "source": sanitizedScriptSource(source),
+                    "line": line > 0 ? "\(line)" : "-",
+                    "column": column > 0 ? "\(column)" : "-",
+                    "stack": stack.isEmpty ? "-" : sanitizedScriptDiagnostic(stack),
                     "target": DiagnosticLogStore.redactedURL(parent.currentURL)
                 ]
             )
@@ -2535,6 +2554,14 @@ private struct WebContainerView: UIViewRepresentable {
                 options: [.regularExpression, .caseInsensitive]
             )
             return String(withoutSecrets.prefix(600))
+        }
+
+        private func sanitizedScriptSource(_ value: String) -> String {
+            guard !value.isEmpty else { return "-" }
+            if let url = URL(string: value), !url.lastPathComponent.isEmpty {
+                return String(url.lastPathComponent.prefix(160))
+            }
+            return String(sanitizedScriptDiagnostic(value).prefix(160))
         }
 
         func webView(
@@ -3136,17 +3163,23 @@ private final class MediaPlayerSession: ObservableObject {
     let player: AVPlayer
     @Published private(set) var errorMessage: String?
     @Published private(set) var isReady = false
+    private let request: MediaPlaybackRequest
     private var statusObservation: NSKeyValueObservation?
     private var timeControlObservation: NSKeyValueObservation?
     private var lastTimeControlStatus: AVPlayer.TimeControlStatus?
 
     init(request: MediaPlaybackRequest) {
+        self.request = request
         let options: [String: Any]? = request.mimeTypeHint.map {
             ["AVURLAssetOutOfBandMIMETypeKey": $0 as Any]
         }
         let asset = AVURLAsset(url: request.url, options: options)
         let item = AVPlayerItem(asset: asset)
         player = AVPlayer(playerItem: item)
+    }
+
+    private func activateIfNeeded() {
+        guard statusObservation == nil, let item = player.currentItem else { return }
         DiagnosticLogStore.shared.record(
             .info,
             categoryKey: "diagnostics.category.media",
@@ -3215,6 +3248,7 @@ private final class MediaPlayerSession: ObservableObject {
     }
 
     func play() {
+        activateIfNeeded()
         try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .moviePlayback)
         try? AVAudioSession.sharedInstance().setActive(true)
         player.play()
@@ -4095,6 +4129,9 @@ private final class JellyfinLibraryStore: ObservableObject {
             )
         } catch {
             isLoading = false
+            if isExpectedCancellation(error) {
+                return
+            }
             errorMessage = NSLocalizedString("jellyfin.library.load_failed", comment: "")
             record(
                 "diagnostics.jellyfin.library_failed",
@@ -4102,6 +4139,12 @@ private final class JellyfinLibraryStore: ObservableObject {
                 details: diagnosticDetails(for: error)
             )
         }
+    }
+
+    private func isExpectedCancellation(_ error: Error) -> Bool {
+        if error is CancellationError { return true }
+        let value = error as NSError
+        return value.domain == NSURLErrorDomain && value.code == NSURLErrorCancelled
     }
 
     private func loadViews() async throws -> [JellyfinMediaEntry] {
