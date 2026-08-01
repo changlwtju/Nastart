@@ -67,7 +67,11 @@ final class CertificatePinStore {
             pins[key] = fingerprint
             guard savePins(pins) else { return nil }
         }
-        saveCertificate(certificateData, key: key)
+        if SecTrustEvaluateWithError(trust, nil) {
+            deleteCertificate(key: key)
+        } else {
+            saveCertificate(certificateData, key: key)
+        }
         return URLCredential(trust: trust)
     }
 
@@ -137,6 +141,10 @@ final class CertificatePinStore {
         var item = query
         attributes.forEach { item[$0.key] = $0.value }
         SecItemAdd(item as CFDictionary, nil)
+    }
+
+    private func deleteCertificate(key: String) {
+        SecItemDelete(certificateQuery(key: key) as CFDictionary)
     }
 
     private func certificateQuery(key: String) -> [String: Any] {
@@ -2003,13 +2011,14 @@ final class DSMClient {
         return entries.compactMap { item in
             let path = filePath(for: item, parentPath: parentPath)
             guard let name = fileName(for: item, path: path) else { return nil }
+            let kind = fileKind(for: name, item: item)
             return FileItem(
                 id: StableIdentifier.uuid("file|\(path ?? normalizedChildPath(parentPath: parentPath, name: name))"),
                 name: name,
                 subtitle: path ?? normalizedChildPath(parentPath: parentPath, name: name),
                 path: path ?? normalizedChildPath(parentPath: parentPath, name: name),
-                kind: fileKind(for: name, item: item),
-                sizeText: fileSizeText(item),
+                kind: kind,
+                sizeText: kind == .folder ? nil : fileSizeText(item),
                 children: []
             )
         }

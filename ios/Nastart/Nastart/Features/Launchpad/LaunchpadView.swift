@@ -3650,6 +3650,7 @@ private enum VLCTrustDirectory {
     static func options(for request: MediaPlaybackRequest) -> [String] {
         guard
             request.allowsSelfSignedCertificates,
+            isPrivateNetworkHost(request.url.host),
             let certificateData = CertificatePinStore.shared.trustedCertificateData(
                 host: request.url.host,
                 port: request.url.port
@@ -3663,6 +3664,22 @@ private enum VLCTrustDirectory {
             return []
         }
         return ["--gnutls-dir-trust=\(directory.path)"]
+    }
+
+    private static func isPrivateNetworkHost(_ host: String?) -> Bool {
+        guard let host = host?.lowercased() else { return false }
+        if host == "localhost" || host.hasSuffix(".local") || host.hasSuffix(".lan") {
+            return true
+        }
+        if host.contains(":"),
+           (host == "::1" || host.hasPrefix("fe80:") || host.hasPrefix("fc") || host.hasPrefix("fd")) {
+            return true
+        }
+        let parts = host.split(separator: ".").compactMap { Int($0) }
+        guard parts.count == 4 else { return false }
+        return parts[0] == 10
+            || (parts[0] == 192 && parts[1] == 168)
+            || (parts[0] == 172 && (16...31).contains(parts[1]))
     }
 
     private static func writePEMCertificate(
@@ -3716,6 +3733,8 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
     private var didApplySubtitleStyle = false
     private var didAddExternalSubtitle = false
     private var lastSubtitleTrackIDs: [Int32] = []
+    private var pendingJumpSeconds = 0
+    private var pendingJumpWorkItem: DispatchWorkItem?
 
     init(request: MediaPlaybackRequest) {
         initialPosition = request.initialPosition
@@ -3727,10 +3746,8 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
         super.init()
         player.delegate = self
         let media = VLCMedia(url: request.url)
-        let networkCaching = request.source == .dsmFile ? 1_200 : 900
-        media.addOption(":network-caching=\(networkCaching)")
+        media.addOption(":network-caching=750")
         media.addOption(":http-reconnect")
-        media.addOption(":http-continuous")
         media.addOption(":input-fast-seek")
         media.addOption(":avcodec-hw=any")
         media.addOption(":freetype-rel-fontsize=24")
@@ -3766,11 +3783,21 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
 
     func jump(by seconds: Int) {
         isBuffering = true
-        if seconds < 0 {
-            player.jumpBackward(Int32(clamping: -seconds))
-        } else {
-            player.jumpForward(Int32(clamping: seconds))
+        pendingJumpSeconds += seconds
+        pendingJumpWorkItem?.cancel()
+        let workItem = DispatchWorkItem { [weak self] in
+            guard let self else { return }
+            let seconds = self.pendingJumpSeconds
+            self.pendingJumpSeconds = 0
+            self.pendingJumpWorkItem = nil
+            if seconds < 0 {
+                self.player.jumpBackward(Int32(clamping: -seconds))
+            } else if seconds > 0 {
+                self.player.jumpForward(Int32(clamping: seconds))
+            }
         }
+        pendingJumpWorkItem = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.18, execute: workItem)
     }
 
     func seek(to newPosition: Double) {
@@ -3911,6 +3938,7 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
     }
 
     deinit {
+        pendingJumpWorkItem?.cancel()
         player.stop()
     }
 }
@@ -4496,7 +4524,8 @@ private final class JellyfinLibraryStore: ObservableObject {
         for entry: JellyfinMediaEntry,
         width: Int = 480,
         landscape: Bool = false,
-        prefersBackdrop: Bool = false
+        prefersBackdrop: Bool = false,
+        quality: Int? = nil
     ) -> URL? {
         guard let client else { return nil }
         let useBackdrop = prefersBackdrop && entry.backdropImageTag != nil
@@ -4507,7 +4536,7 @@ private final class JellyfinLibraryStore: ObservableObject {
             : (useThumb ? entry.thumbImageTag : entry.imageTag)
         var parameters = Paths.GetItemImageParameters()
         parameters.maxWidth = width
-        parameters.quality = prefersBackdrop ? 94 : 88
+        parameters.quality = quality ?? (prefersBackdrop ? 94 : 88)
         parameters.tag = imageTag
         return client.url(
             with: Paths.getItemImage(
@@ -5319,9 +5348,14 @@ private struct JellyfinHomeView: View {
 
     private var featuredItems: [JellyfinMediaEntry] {
         var seen = Set<String>()
-        return (store.continueWatching + store.movies + store.series)
+        return (store.movies + store.series)
             .filter { item in
-                guard item.imageTag != nil else { return false }
+                guard
+                    item.kind == .movie || item.kind == .series,
+                    item.imageTag != nil
+                else {
+                    return false
+                }
                 return seen.insert(item.id).inserted
             }
             .prefix(6)
@@ -5391,58 +5425,52 @@ private struct JellyfinHeroSlide: View {
     let item: JellyfinMediaEntry
 
     var body: some View {
-        ZStack(alignment: .bottomLeading) {
-            JellyfinPosterImage(
-                url: store.imageURL(
-                    for: item,
-                    width: 1600,
-                    landscape: false,
-                    prefersBackdrop: false
-                )
-            )
-            LinearGradient(
-                colors: [.clear, .black.opacity(0.18), .black.opacity(0.82)],
-                startPoint: .top,
-                endPoint: .bottom
-            )
-            VStack(alignment: .leading, spacing: 7) {
-                Text(item.title)
-                    .font(.title2.weight(.bold))
-                    .lineLimit(2)
-                if !item.subtitle.isEmpty {
-                    Text(item.subtitle)
-                        .font(.subheadline)
-                        .opacity(0.88)
-                }
-                Label {
-                    Text(
-                        LocalizedStringKey(
-                            (item.progress ?? 0) > 0
-                                ? "media.continue.title"
-                                : "player.play_in_app"
-                        )
-                    )
-                } icon: {
-                    Image(systemName: "play.fill")
-                }
-                .font(.caption.weight(.semibold))
-            }
-            .foregroundStyle(.white)
-            .padding(18)
-            .padding(.bottom, 14)
+        GeometryReader { proxy in
+            let posterHeight = max(proxy.size.height - 28, 0)
+            let posterWidth = min(posterHeight * 2 / 3, proxy.size.width * 0.48)
 
-            if let progress = item.progress, progress > 0 {
-                VStack {
-                    Spacer()
-                    GeometryReader { geometry in
-                        Rectangle()
-                            .fill(AppTheme.accent)
-                            .frame(width: geometry.size.width * progress, height: 4)
+            HStack(spacing: 18) {
+                JellyfinPosterImage(
+                    url: store.imageURL(
+                        for: item,
+                        width: 1_200,
+                        landscape: false,
+                        prefersBackdrop: false,
+                        quality: 96
+                    ),
+                    scalesToFit: true
+                )
+                .frame(width: posterWidth, height: posterHeight)
+                .background(Color.black)
+                .clipShape(RoundedRectangle(cornerRadius: 7, style: .continuous))
+
+                VStack(alignment: .leading, spacing: 10) {
+                    Spacer(minLength: 0)
+                    Text(LocalizedStringKey(
+                        item.kind == .series ? "jellyfin.series.title" : "media.movies.title"
+                    ))
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(AppTheme.accent)
+                    Text(item.title)
+                        .font(.title2.weight(.bold))
+                        .foregroundStyle(.primary)
+                        .lineLimit(3)
+                    if !item.subtitle.isEmpty {
+                        Text(item.subtitle)
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                            .lineLimit(2)
                     }
-                    .frame(height: 4)
+                    Label("player.play_in_app", systemImage: "play.fill")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.primary)
+                    Spacer(minLength: 18)
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
+            .padding(14)
         }
+        .background(Color(.secondarySystemBackground))
         .contentShape(Rectangle())
     }
 }
@@ -5550,12 +5578,17 @@ private struct JellyfinPosterCard: View {
 
 private struct JellyfinPosterImage: View {
     let url: URL?
+    var scalesToFit = false
 
     var body: some View {
         AsyncImage(url: url, transaction: Transaction(animation: .easeInOut(duration: 0.2))) { phase in
             switch phase {
             case .success(let image):
-                image.resizable().scaledToFill()
+                if scalesToFit {
+                    image.resizable().scaledToFit()
+                } else {
+                    image.resizable().scaledToFill()
+                }
             case .failure:
                 placeholder
             case .empty:

@@ -860,7 +860,7 @@ private struct FileItemRow: View {
                     .foregroundStyle(.secondary)
             }
             Spacer()
-            if let sizeText = item.sizeText {
+            if !item.isFolder, let sizeText = item.sizeText {
                 Text(sizeText)
                     .font(.caption)
                     .foregroundStyle(.secondary)
