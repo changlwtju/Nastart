@@ -2951,6 +2951,7 @@ struct MediaPlaybackRequest: Identifiable {
     let fileExtensionOverride: String?
     let initialPosition: Double?
     let externalSubtitleURL: URL?
+    let playbackTracker: MediaPlaybackTracker?
 
     init(
         url: URL,
@@ -2959,7 +2960,8 @@ struct MediaPlaybackRequest: Identifiable {
         source: MediaPlaybackSource = .directURL,
         fileExtensionOverride: String? = nil,
         initialPosition: Double? = nil,
-        externalSubtitleURL: URL? = nil
+        externalSubtitleURL: URL? = nil,
+        playbackTracker: MediaPlaybackTracker? = nil
     ) {
         self.url = url
         self.title = title
@@ -2968,6 +2970,7 @@ struct MediaPlaybackRequest: Identifiable {
         self.fileExtensionOverride = fileExtensionOverride
         self.initialPosition = initialPosition.map { min(max($0, 0), 1) }
         self.externalSubtitleURL = externalSubtitleURL
+        self.playbackTracker = playbackTracker
     }
 
     var fileExtensionHint: String {
@@ -3014,6 +3017,75 @@ struct MediaPlaybackRequest: Identifiable {
     }
 }
 
+enum MediaPlaybackTrackingEvent {
+    case started(positionSeconds: Double)
+    case progressed(positionSeconds: Double, isPaused: Bool)
+    case stopped(positionSeconds: Double, failed: Bool)
+}
+
+final class MediaPlaybackTracker {
+    private let lock = NSLock()
+    private let eventHandler: (MediaPlaybackTrackingEvent) -> Void
+    private var didStart = false
+    private var didStop = false
+    private var lastPositionSeconds = 0.0
+    private var lastReportedPositionSeconds = -Double.infinity
+    private var lastPausedState: Bool?
+
+    init(eventHandler: @escaping (MediaPlaybackTrackingEvent) -> Void) {
+        self.eventHandler = eventHandler
+    }
+
+    func started(positionSeconds: Double) {
+        let position = max(positionSeconds, 0)
+        lock.lock()
+        guard !didStart, !didStop else {
+            lock.unlock()
+            return
+        }
+        didStart = true
+        lastPositionSeconds = position
+        lastReportedPositionSeconds = position
+        lock.unlock()
+        eventHandler(.started(positionSeconds: position))
+    }
+
+    func progressed(positionSeconds: Double, isPaused: Bool, force: Bool = false) {
+        let position = max(positionSeconds, 0)
+        lock.lock()
+        guard !didStop else {
+            lock.unlock()
+            return
+        }
+        lastPositionSeconds = position
+        let shouldReport = didStart && (
+            force
+                || abs(position - lastReportedPositionSeconds) >= 10
+                || lastPausedState != isPaused
+        )
+        if shouldReport {
+            lastReportedPositionSeconds = position
+            lastPausedState = isPaused
+        }
+        lock.unlock()
+        if shouldReport {
+            eventHandler(.progressed(positionSeconds: position, isPaused: isPaused))
+        }
+    }
+
+    func stopped(failed: Bool = false) {
+        lock.lock()
+        guard didStart, !didStop else {
+            lock.unlock()
+            return
+        }
+        didStop = true
+        let position = lastPositionSeconds
+        lock.unlock()
+        eventHandler(.stopped(positionSeconds: position, failed: failed))
+    }
+}
+
 enum MediaPlaybackSource: String {
     case directURL = "direct"
     case dsmFile = "dsmFile"
@@ -3048,9 +3120,7 @@ private final class MediaProbeTrustDelegate: NSObject, URLSessionDelegate {
                 expectedHost: trustedHost
             )
         else {
-            let shouldReject = allowsSelfSignedCertificates
-                && challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust
-            completionHandler(shouldReject ? .cancelAuthenticationChallenge : .performDefaultHandling, nil)
+            completionHandler(.performDefaultHandling, nil)
             return
         }
         completionHandler(.useCredential, credential)
@@ -3356,6 +3426,7 @@ private final class MediaPlayerSession: ObservableObject {
     private let request: MediaPlaybackRequest
     private var statusObservation: NSKeyValueObservation?
     private var timeControlObservation: NSKeyValueObservation?
+    private var periodicTimeObserver: Any?
     private var lastTimeControlStatus: AVPlayer.TimeControlStatus?
     private var didApplyInitialPosition = false
 
@@ -3446,6 +3517,30 @@ private final class MediaPlayerSession: ObservableObject {
                     "waitingReason": player.reasonForWaitingToPlay?.rawValue ?? "-"
                 ]
             )
+            let currentSeconds = player.currentTime().seconds
+            if currentSeconds.isFinite {
+                if player.timeControlStatus == .playing {
+                    self.request.playbackTracker?.started(positionSeconds: currentSeconds)
+                }
+                self.request.playbackTracker?.progressed(
+                    positionSeconds: currentSeconds,
+                    isPaused: player.timeControlStatus != .playing,
+                    force: true
+                )
+            }
+        }
+        periodicTimeObserver = player.addPeriodicTimeObserver(
+            forInterval: CMTime(seconds: 5, preferredTimescale: 600),
+            queue: .main
+        ) { [weak self] time in
+            guard let self, time.seconds.isFinite else { return }
+            if self.player.timeControlStatus == .playing {
+                self.request.playbackTracker?.started(positionSeconds: time.seconds)
+            }
+            self.request.playbackTracker?.progressed(
+                positionSeconds: time.seconds,
+                isPaused: self.player.timeControlStatus != .playing
+            )
         }
     }
 
@@ -3463,6 +3558,9 @@ private final class MediaPlayerSession: ObservableObject {
     deinit {
         statusObservation?.invalidate()
         timeControlObservation?.invalidate()
+        if let periodicTimeObserver {
+            player.removeTimeObserver(periodicTimeObserver)
+        }
         player.pause()
     }
 }
@@ -3644,6 +3742,7 @@ struct BuiltInMediaPlayerView: View {
         }
         .onDisappear {
             session.pause()
+            request.playbackTracker?.stopped(failed: session.errorMessage != nil)
             PlayerOrientationController.setPlayerActive(false)
         }
         .onChange(of: session.errorMessage) { errorMessage in
@@ -3990,6 +4089,14 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
         applySubtitleStyleIfNeeded(isRendererReady: isBuffering || player.isPlaying)
         let currentTimeText = player.time.stringValue
         let durationText = player.media?.length.stringValue ?? "--:--"
+        let currentSeconds = max(Double(player.time.intValue) / 1_000, 0)
+        if isPlaying {
+            request.playbackTracker?.started(positionSeconds: currentSeconds)
+        }
+        request.playbackTracker?.progressed(
+            positionSeconds: currentSeconds,
+            isPaused: !isPlaying
+        )
         let errorMessage = player.state == .error
             ? NSLocalizedString("player.compatibility_failed", comment: "")
             : nil
@@ -4491,6 +4598,11 @@ private struct JellyfinMediaEntry: Identifiable, Hashable {
     let seasonNumber: Int?
     let episodeNumber: Int?
     let isFavorite: Bool
+    let genres: [String]
+    let communityRating: Double?
+    let officialRating: String?
+    let videoDescription: String?
+    let audioDescription: String?
 
     var isPlayable: Bool {
         [.movie, .episode, .audio, .video].contains(kind)
@@ -4525,9 +4637,7 @@ private final class JellyfinCertificateTrustDelegate: NSObject, URLSessionDelega
                 expectedHost: trustedHost
             )
         else {
-            let shouldReject = allowsSelfSignedCertificates
-                && challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust
-            completionHandler(shouldReject ? .cancelAuthenticationChallenge : .performDefaultHandling, nil)
+            completionHandler(.performDefaultHandling, nil)
             return
         }
         completionHandler(.useCredential, credential)
@@ -4547,6 +4657,7 @@ private final class JellyfinLibraryStore: ObservableObject {
     @Published private(set) var continueWatching: [JellyfinMediaEntry] = []
     @Published private(set) var movies: [JellyfinMediaEntry] = []
     @Published private(set) var series: [JellyfinMediaEntry] = []
+    @Published private(set) var recentlyAdded: [JellyfinMediaEntry] = []
     @Published private(set) var favorites: [JellyfinMediaEntry] = []
     @Published private(set) var favoriteItemIDs: Set<String> = []
     @Published var errorMessage: String?
@@ -4717,6 +4828,7 @@ private final class JellyfinLibraryStore: ObservableObject {
         continueWatching = []
         movies = []
         series = []
+        recentlyAdded = []
         favorites = []
         favoriteItemIDs = []
         try? await activeClient?.signOut()
@@ -4838,7 +4950,6 @@ private final class JellyfinLibraryStore: ObservableObject {
             var parameters = Paths.GetAudioStreamParameters()
             parameters.container = entry.container
             parameters.isStatic = true
-            parameters.startTimeTicks = entry.playbackPositionTicks
             guard let apiStreamURL = client.url(
                 with: Paths.getAudioStream(itemID: entry.id, parameters: parameters),
                 queryAPIKey: true
@@ -4855,7 +4966,13 @@ private final class JellyfinLibraryStore: ObservableObject {
                 allowsSelfSignedCertificates: requiresCertificateBypass(for: streamURL),
                 source: .jellyfin,
                 fileExtensionOverride: extensionHint,
-                initialPosition: entry.progress
+                initialPosition: entry.progress,
+                playbackTracker: makePlaybackTracker(
+                    for: entry,
+                    playMethod: .directPlay,
+                    playSessionID: nil,
+                    mediaSourceID: entry.mediaSourceID
+                )
             )
         }
 
@@ -4892,7 +5009,13 @@ private final class JellyfinLibraryStore: ObservableObject {
                     source: .jellyfin,
                     fileExtensionOverride: extensionHint,
                     initialPosition: entry.progress,
-                    externalSubtitleURL: externalSubtitleURL(for: entry, client: client)
+                    externalSubtitleURL: externalSubtitleURL(for: entry, client: client),
+                    playbackTracker: makePlaybackTracker(
+                        for: entry,
+                        playMethod: .directPlay,
+                        playSessionID: nil,
+                        mediaSourceID: entry.mediaSourceID
+                    )
                 )
             }
 #endif
@@ -4908,7 +5031,6 @@ private final class JellyfinLibraryStore: ObservableObject {
                 maxAudioChannels: 2,
                 maxStreamingBitrate: prefersDirectVideoPlayback ? 20_000_000 : 10_000_000,
                 mediaSourceID: entry.mediaSourceID,
-                startTimeTicks: entry.playbackPositionTicks,
                 subtitleStreamIndex: entry.preferredSubtitleStreamIndex,
                 userID: userID
             )
@@ -4946,7 +5068,13 @@ private final class JellyfinLibraryStore: ObservableObject {
                 allowsSelfSignedCertificates: requiresCertificateBypass(for: streamURL),
                 source: .jellyfin,
                 fileExtensionOverride: "m3u8",
-                initialPosition: entry.progress
+                initialPosition: entry.progress,
+                playbackTracker: makePlaybackTracker(
+                    for: entry,
+                    playMethod: .transcode,
+                    playSessionID: response.playSessionID,
+                    mediaSourceID: mediaSource?.id ?? entry.mediaSourceID
+                )
             )
         } catch {
             record(
@@ -5025,6 +5153,89 @@ private final class JellyfinLibraryStore: ObservableObject {
             return nil
         }
         return preferredPlaybackURL(url)
+    }
+
+    private func makePlaybackTracker(
+        for entry: JellyfinMediaEntry,
+        playMethod: PlayMethod,
+        playSessionID: String?,
+        mediaSourceID: String?
+    ) -> MediaPlaybackTracker {
+        MediaPlaybackTracker { [weak self] event in
+            Task { @MainActor [weak self] in
+                await self?.reportPlayback(
+                    event,
+                    entry: entry,
+                    playMethod: playMethod,
+                    playSessionID: playSessionID,
+                    mediaSourceID: mediaSourceID
+                )
+            }
+        }
+    }
+
+    private func reportPlayback(
+        _ event: MediaPlaybackTrackingEvent,
+        entry: JellyfinMediaEntry,
+        playMethod: PlayMethod,
+        playSessionID: String?,
+        mediaSourceID: String?
+    ) async {
+        guard let client else { return }
+        do {
+            switch event {
+            case .started(let positionSeconds):
+                let body = PlaybackStateInfo(
+                    canSeek: true,
+                    isPaused: false,
+                    itemID: entry.id,
+                    mediaSourceID: mediaSourceID,
+                    playMethod: playMethod,
+                    playSessionID: playSessionID,
+                    positionTicks: Self.jellyfinTicks(for: positionSeconds),
+                    subtitleStreamIndex: entry.preferredSubtitleStreamIndex,
+                    volumeLevel: 100
+                )
+                _ = try await client.send(Paths.reportPlaybackStart(body)).value
+            case .progressed(let positionSeconds, let isPaused):
+                let body = PlaybackStateInfo(
+                    canSeek: true,
+                    isPaused: isPaused,
+                    itemID: entry.id,
+                    mediaSourceID: mediaSourceID,
+                    playMethod: playMethod,
+                    playSessionID: playSessionID,
+                    positionTicks: Self.jellyfinTicks(for: positionSeconds),
+                    subtitleStreamIndex: entry.preferredSubtitleStreamIndex,
+                    volumeLevel: 100
+                )
+                _ = try await client.send(Paths.reportPlaybackProgress(body)).value
+            case .stopped(let positionSeconds, let failed):
+                let body = PlaybackStopInfo(
+                    isFailed: failed,
+                    itemID: entry.id,
+                    mediaSourceID: mediaSourceID,
+                    playSessionID: playSessionID,
+                    positionTicks: Self.jellyfinTicks(for: positionSeconds)
+                )
+                _ = try await client.send(Paths.reportPlaybackStopped(body)).value
+                continueWatching = try await loadResumeItems()
+                registerFavoriteState(from: continueWatching)
+            }
+        } catch {
+            if !isExpectedCancellation(error) {
+                record(
+                    "diagnostics.jellyfin.playback_report_failed",
+                    level: .warning,
+                    details: diagnosticDetails(for: error)
+                )
+            }
+        }
+    }
+
+    private static func jellyfinTicks(for seconds: Double) -> Int {
+        guard seconds.isFinite, seconds > 0 else { return 0 }
+        return Int(min(seconds * 10_000_000, Double(Int.max)))
     }
 
     private func authenticatedJellyfinURL(path: String, client: JellyfinClient) -> URL? {
@@ -5117,6 +5328,13 @@ private final class JellyfinLibraryStore: ObservableObject {
             async let loadedContinueWatching = loadResumeItems()
             async let loadedMovies = loadItems(parentID: nil, kinds: [.movie], limit: 36)
             async let loadedSeries = loadItems(parentID: nil, kinds: [.series], limit: 36)
+            async let loadedRecentlyAdded = loadItems(
+                parentID: nil,
+                kinds: [.movie, .series],
+                limit: 24,
+                sortBy: [.dateCreated],
+                sortOrder: [.descending]
+            )
             async let loadedFavorites = loadItems(
                 parentID: nil,
                 kinds: [.movie, .series, .episode, .audio, .video, .musicAlbum, .musicVideo],
@@ -5128,17 +5346,19 @@ private final class JellyfinLibraryStore: ObservableObject {
                 loadedContinueWatching,
                 loadedMovies,
                 loadedSeries,
+                loadedRecentlyAdded,
                 loadedFavorites
             )
             libraries = home.0
             continueWatching = home.1
             movies = home.2
             series = home.3
-            favorites = home.4
-            let serverFavoriteIDs = (home.1 + home.2 + home.3 + home.4)
+            recentlyAdded = home.4
+            favorites = home.5
+            let serverFavoriteIDs = (home.1 + home.2 + home.3 + home.4 + home.5)
                 .filter(\.isFavorite)
                 .map(\.id)
-            favoriteItemIDs = Set(serverFavoriteIDs + home.4.map(\.id))
+            favoriteItemIDs = Set(serverFavoriteIDs + home.5.map(\.id))
             isLoading = false
             record(
                 "diagnostics.jellyfin.library_loaded",
@@ -5148,6 +5368,7 @@ private final class JellyfinLibraryStore: ObservableObject {
                     "resume": "\(continueWatching.count)",
                     "movies": "\(movies.count)",
                     "series": "\(series.count)",
+                    "recentlyAdded": "\(recentlyAdded.count)",
                     "favorites": "\(favorites.count)"
                 ]
             )
@@ -5200,7 +5421,9 @@ private final class JellyfinLibraryStore: ObservableObject {
         kinds: [BaseItemKind],
         limit: Int,
         searchTerm: String? = nil,
-        favoriteOnly: Bool? = nil
+        favoriteOnly: Bool? = nil,
+        sortBy: [ItemSortBy] = [.sortName],
+        sortOrder: [JellyfinAPI.SortOrder] = [.ascending]
     ) async throws -> [JellyfinMediaEntry] {
         guard let client, let userID else { throw JellyfinLibraryError.missingSession }
         var parameters = Paths.GetItemsParameters()
@@ -5212,8 +5435,8 @@ private final class JellyfinLibraryStore: ObservableObject {
         parameters.isFavorite = favoriteOnly
         parameters.fields = itemFields
         parameters.includeItemTypes = kinds
-        parameters.sortBy = [.sortName]
-        parameters.sortOrder = [.ascending]
+        parameters.sortBy = sortBy
+        parameters.sortOrder = sortOrder
         parameters.enableUserData = true
         parameters.enableImages = true
         parameters.imageTypeLimit = 1
@@ -5223,7 +5446,15 @@ private final class JellyfinLibraryStore: ObservableObject {
     }
 
     private var itemFields: [ItemFields] {
-        [.overview, .primaryImageAspectRatio, .mediaSources, .path, .genres]
+        [
+            .overview,
+            .primaryImageAspectRatio,
+            .mediaSources,
+            .mediaStreams,
+            .path,
+            .genres,
+            .dateCreated
+        ]
     }
 
     private func registerFavoriteState(from items: [JellyfinMediaEntry]) {
@@ -5247,6 +5478,9 @@ private final class JellyfinLibraryStore: ObservableObject {
             : id
         let imageTag = item.imageTags?[ImageType.primary.rawValue] ?? item.parentPrimaryImageTag
         let mediaSource = item.mediaSources?.first
+        let mediaStreams = mediaSource?.mediaStreams ?? item.mediaStreams ?? []
+        let videoStream = mediaStreams.first { $0.type == .video }
+        let audioStream = mediaStreams.first { $0.type == .audio }
         let subtitleStreams = mediaSource?.mediaStreams?.filter { $0.type == .subtitle } ?? []
         let preferredSubtitle = subtitleStreams.first(where: { $0.index == mediaSource?.defaultSubtitleStreamIndex })
             ?? subtitleStreams.first(where: { $0.isForced == true })
@@ -5271,8 +5505,62 @@ private final class JellyfinLibraryStore: ObservableObject {
             playbackPositionTicks: item.userData?.playbackPositionTicks,
             seasonNumber: item.parentIndexNumber,
             episodeNumber: item.indexNumber,
-            isFavorite: item.userData?.isFavorite == true
+            isFavorite: item.userData?.isFavorite == true,
+            genres: item.genres ?? [],
+            communityRating: item.communityRating.map(Double.init),
+            officialRating: item.officialRating,
+            videoDescription: Self.videoDescription(for: videoStream),
+            audioDescription: Self.audioDescription(for: audioStream)
         )
+    }
+
+    private static func videoDescription(for stream: MediaStream?) -> String? {
+        guard let stream else { return nil }
+        var components: [String] = []
+        if let height = stream.height {
+            if height >= 2_000 {
+                components.append("4K")
+            } else if height >= 1_000 {
+                components.append("1080p")
+            } else if height >= 700 {
+                components.append("720p")
+            } else {
+                components.append("\(height)p")
+            }
+        }
+        if let codec = stream.codec?.uppercased() {
+            switch codec {
+            case "HEVC", "H265": components.append("H.265")
+            case "H264", "AVC": components.append("H.264")
+            default: components.append(codec)
+            }
+        }
+        if let videoRangeType = stream.videoRangeType,
+           videoRangeType != .unknown,
+           videoRangeType != .sdr {
+            components.append("HDR")
+        }
+        let description = components.joined(separator: " · ")
+        return description.isEmpty ? stream.displayTitle : description
+    }
+
+    private static func audioDescription(for stream: MediaStream?) -> String? {
+        guard let stream else { return nil }
+        var components: [String] = []
+        if let codec = stream.codec?.uppercased() {
+            components.append(codec == "EAC3" ? "E-AC3" : codec)
+        }
+        if let channels = stream.channels {
+            switch channels {
+            case 1: components.append("Mono")
+            case 2: components.append("2.0")
+            case 6: components.append("5.1")
+            case 8: components.append("7.1")
+            default: components.append("\(channels) ch")
+            }
+        }
+        let description = components.joined(separator: " · ")
+        return description.isEmpty ? stream.displayTitle : description
     }
 
     private func subtitle(for item: BaseItemDto, kind: JellyfinEntryKind) -> String {
@@ -5643,7 +5931,7 @@ private struct JellyfinHomeView: View {
     private var featuredItems: [JellyfinMediaEntry] {
         var seen = Set<String>()
         let resumableMovies = store.continueWatching.filter { $0.kind == .movie }
-        return (resumableMovies + store.favorites + store.movies + store.series)
+        return (resumableMovies + store.recentlyAdded + store.favorites + store.movies + store.series)
             .filter { item in
                 guard
                     item.kind == .movie || item.kind == .series,
@@ -6218,6 +6506,8 @@ private struct JellyfinSeriesView: View {
                     JellyfinDetailHeader(store: store, item: series)
 
                     LazyVStack(alignment: .leading, spacing: 22) {
+                        JellyfinMetadataStrip(item: series)
+
                         if !series.overview.isEmpty {
                             VStack(alignment: .leading, spacing: 10) {
                                 Text("jellyfin.overview.title")
@@ -6382,6 +6672,8 @@ private struct JellyfinMediaDetailView: View {
                     JellyfinDetailHeader(store: store, item: item)
 
                     VStack(alignment: .leading, spacing: 24) {
+                        JellyfinMetadataStrip(item: item)
+
                         if item.isPlayable {
                             HStack(spacing: 10) {
                                 Button(action: preparePlayback) {
@@ -6614,16 +6906,35 @@ private struct JellyfinDetailHeader: View {
                 startPoint: .center,
                 endPoint: .bottom
             )
-            VStack(alignment: .leading, spacing: 8) {
-                Text(item.title)
-                    .font(.title.weight(.bold))
-                    .foregroundStyle(.white)
-                    .lineLimit(2)
-                    .minimumScaleFactor(0.72)
-                if !item.subtitle.isEmpty {
-                    Text(item.subtitle)
-                        .font(.subheadline)
-                        .foregroundStyle(.white.opacity(0.86))
+            HStack(alignment: .bottom, spacing: 14) {
+                if item.imageTag != nil {
+                    JellyfinPosterImage(
+                        url: store.imageURL(for: item, width: 360),
+                        scalesToFit: true
+                    )
+                    .frame(width: horizontalSizeClass == .regular ? 104 : 82)
+                    .aspectRatio(2.0 / 3.0, contentMode: .fit)
+                    .background(Color.black.opacity(0.24))
+                    .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 6, style: .continuous)
+                            .stroke(.white.opacity(0.28), lineWidth: 0.5)
+                    }
+                    .shadow(color: .black.opacity(0.28), radius: 6, y: 2)
+                }
+
+                VStack(alignment: .leading, spacing: 8) {
+                    Text(item.title)
+                        .font(.title.weight(.bold))
+                        .foregroundStyle(.white)
+                        .lineLimit(2)
+                        .minimumScaleFactor(0.72)
+                    if !item.subtitle.isEmpty {
+                        Text(item.subtitle)
+                            .font(.subheadline)
+                            .foregroundStyle(.white.opacity(0.86))
+                            .lineLimit(2)
+                    }
                 }
             }
             .padding(18)
@@ -6648,6 +6959,49 @@ private struct JellyfinDetailHeader: View {
     }
 }
 
+private struct JellyfinMetadataStrip: View {
+    let item: JellyfinMediaEntry
+
+    var body: some View {
+        if hasMetadata {
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 14) {
+                    if let communityRating = item.communityRating {
+                        Label {
+                            Text(communityRating, format: .number.precision(.fractionLength(1)))
+                        } icon: {
+                            Image(systemName: "star.fill")
+                                .foregroundStyle(.yellow)
+                        }
+                    }
+                    if let officialRating = item.officialRating, !officialRating.isEmpty {
+                        Label(officialRating, systemImage: "person.crop.rectangle")
+                    }
+                    if !item.genres.isEmpty {
+                        Label(item.genres.prefix(3).joined(separator: " · "), systemImage: "tag")
+                    }
+                    if let videoDescription = item.videoDescription, !videoDescription.isEmpty {
+                        Label(videoDescription, systemImage: "film")
+                    }
+                    if let audioDescription = item.audioDescription, !audioDescription.isEmpty {
+                        Label(audioDescription, systemImage: "speaker.wave.2")
+                    }
+                }
+                .font(.subheadline.weight(.medium))
+                .foregroundStyle(.secondary)
+            }
+        }
+    }
+
+    private var hasMetadata: Bool {
+        item.communityRating != nil
+            || item.officialRating?.isEmpty == false
+            || !item.genres.isEmpty
+            || item.videoDescription?.isEmpty == false
+            || item.audioDescription?.isEmpty == false
+    }
+}
+
 private struct MediaLibraryView: View {
     let service: LaunchpadService
     @EnvironmentObject private var dataStore: AppDataStore
@@ -6656,21 +7010,34 @@ private struct MediaLibraryView: View {
     var body: some View {
         Group {
             if service.isJellyfin,
-               let endpoint = service.preferredEndpoint(for: connectionStore.dsmSession?.baseURL) {
+               let endpoint = effectiveJellyfinEndpoint {
                 JellyfinLibraryView(
                     service: service,
                     endpoint: endpoint,
-                    allowsSelfSignedCertificates: ServiceCertificatePolicy.allowsBypass(
-                        for: endpoint,
-                        session: connectionStore.dsmSession
-                    ),
-                    fallbackEndpoints: [service.endpoint, service.alternateEndpoint].compactMap { $0 }
+                    allowsSelfSignedCertificates: jellyfinEndpointCandidates.contains { candidate in
+                        ServiceCertificatePolicy.allowsBypass(
+                            for: candidate,
+                            session: connectionStore.dsmSession
+                        )
+                    },
+                    fallbackEndpoints: jellyfinEndpointCandidates
                 )
             } else {
                 fallbackLibrary
             }
         }
         .navigationTitle(service.name)
+    }
+
+    private var effectiveJellyfinEndpoint: URL? {
+        ServiceEndpointOverrides.load(
+            service: service,
+            deviceHost: connectionStore.dsmSession?.baseURL.host
+        ) ?? service.preferredEndpoint(for: connectionStore.dsmSession?.baseURL)
+    }
+
+    private var jellyfinEndpointCandidates: [URL] {
+        [effectiveJellyfinEndpoint, service.endpoint, service.alternateEndpoint].compactMap { $0 }
     }
 
     private var fallbackLibrary: some View {

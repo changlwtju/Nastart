@@ -673,6 +673,7 @@
 "diagnostics.jellyfin.playback_preparing" = "Requested a Jellyfin playback plan";
 "diagnostics.jellyfin.playback_prepared" = "Jellyfin prepared a compatible playback stream";
 "diagnostics.jellyfin.playback_failed" = "Jellyfin playback preparation failed";
+"diagnostics.jellyfin.playback_report_failed" = "Jellyfin playback progress could not be updated";
 "web.developer_workbench_missing" = "The code-server login page loaded, but its workbench did not start. If Safari is also blank, inspect the container, static scripts, certificate, and reverse proxy. Test the direct LAN address first, then update or recreate the container and verify WebSocket forwarding with trusted HTTPS.";
 "web.developer_script_failed" = "The code-server workbench script could not be parsed. If Safari is also blank, this is not a Nastart browser failure. Test the direct LAN address, then inspect or recreate the code-server container, reverse proxy, and HTTPS certificate.";
 "diagnostics.web.developer_workbench_missing" = "Developer workbench was missing after login";
