@@ -1613,13 +1613,45 @@ struct SystemShareView: UIViewControllerRepresentable {
     func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }
 
-enum ExternalOpenTarget {
+enum ExternalOpenTarget: String, CaseIterable, Identifiable {
     case safari
     case infuse
     case vidhub
     case vlc
 
-    func url(endpoint: URL?, filename: String? = nil) -> URL? {
+    var id: String { rawValue }
+
+    var displayName: String {
+        switch self {
+        case .safari: return "Safari"
+        case .infuse: return "Infuse"
+        case .vidhub: return "VidHub"
+        case .vlc: return "VLC"
+        }
+    }
+
+    @MainActor
+    static var installedPlayers: [ExternalOpenTarget] {
+        allCases.filter { target in
+            guard target != .safari, let probeURL = target.probeURL else { return false }
+            return UIApplication.shared.canOpenURL(probeURL)
+        }
+    }
+
+    private var probeURL: URL? {
+        switch self {
+        case .safari: return nil
+        case .infuse: return URL(string: "infuse://")
+        case .vidhub: return URL(string: "open-vidhub://")
+        case .vlc: return URL(string: "vlc-x-callback://")
+        }
+    }
+
+    func url(
+        endpoint: URL?,
+        filename: String? = nil,
+        subtitleURL: URL? = nil
+    ) -> URL? {
         switch self {
         case .safari:
             return endpoint
@@ -1628,7 +1660,8 @@ enum ExternalOpenTarget {
                 scheme: "infuse",
                 action: "play",
                 endpoint: endpoint,
-                filename: filename
+                filename: filename,
+                subtitleURL: subtitleURL
             )
         case .vidhub:
             return callbackURL(scheme: "open-vidhub", action: "open", endpoint: endpoint)
@@ -1659,7 +1692,8 @@ enum ExternalOpenTarget {
         scheme: String,
         action: String,
         endpoint: URL?,
-        filename: String? = nil
+        filename: String? = nil,
+        subtitleURL: URL? = nil
     ) -> URL? {
         guard let endpoint else { return nil }
         var components = URLComponents()
@@ -1671,6 +1705,9 @@ enum ExternalOpenTarget {
         ]
         if let filename, !filename.isEmpty {
             queryItems.append(URLQueryItem(name: "filename", value: filename))
+        }
+        if let subtitleURL {
+            queryItems.append(URLQueryItem(name: "sub", value: subtitleURL.absoluteString))
         }
         components.queryItems = queryItems
         return components.url
@@ -2954,12 +2991,18 @@ struct MediaPlaybackRequest: Identifiable {
     }
 
     var allowsExternalHandoff: Bool {
-        guard source == .directURL else { return false }
+        guard let scheme = url.scheme?.lowercased(), scheme == "http" || scheme == "https" else {
+            return false
+        }
+        return true
+    }
+
+    var containsSensitiveCredential: Bool {
         let sensitiveQueryNames = Set([
             "_sid", "api_key", "apikey", "token", "access_token", "authorization"
         ])
         let queryItems = URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems ?? []
-        return !queryItems.contains { sensitiveQueryNames.contains($0.name.lowercased()) }
+        return queryItems.contains { sensitiveQueryNames.contains($0.name.lowercased()) }
     }
 }
 
@@ -3414,6 +3457,9 @@ struct BuiltInMediaPlayerView: View {
     @State private var sharePayload: ServiceSharePayload?
     @State private var externalMessageKey = "external.open_failed"
     @State private var showExternalHint = false
+    @State private var pendingExternalTarget: ExternalOpenTarget?
+    @State private var pendingShareHandoff = false
+    @State private var showCredentialHandoffWarning = false
 
     init(request: MediaPlaybackRequest) {
         self.request = request
@@ -3500,12 +3546,12 @@ struct BuiltInMediaPlayerView: View {
             }
         }
         .confirmationDialog("service.external.title", isPresented: $showExternalPicker) {
-            Button("Infuse") { openExternal(.infuse) }
-            Button("VidHub") { openExternal(.vidhub) }
-            Button("VLC") { openExternal(.vlc) }
-            Button("external.browser") { openExternal(.safari) }
+            ForEach(ExternalOpenTarget.installedPlayers) { target in
+                Button(target.displayName) { requestExternalOpen(target) }
+            }
+            Button("external.browser") { requestExternalOpen(.safari) }
             Button("external.other_apps") {
-                sharePayload = ServiceSharePayload(url: request.url)
+                requestExternalShare()
             }
             Button("action.cancel", role: .cancel) {}
         }
@@ -3514,6 +3560,27 @@ struct BuiltInMediaPlayerView: View {
         }
         .alert(LocalizedStringKey(externalMessageKey), isPresented: $showExternalHint) {
             Button("action.ok", role: .cancel) {}
+        }
+        .confirmationDialog(
+            "external.credential_warning.title",
+            isPresented: $showCredentialHandoffWarning,
+            titleVisibility: .visible
+        ) {
+            Button("external.credential_warning.continue") {
+                if let target = pendingExternalTarget {
+                    openExternal(target)
+                } else if pendingShareHandoff {
+                    sharePayload = ServiceSharePayload(url: request.url)
+                }
+                pendingExternalTarget = nil
+                pendingShareHandoff = false
+            }
+            Button("action.cancel", role: .cancel) {
+                pendingExternalTarget = nil
+                pendingShareHandoff = false
+            }
+        } message: {
+            Text("external.credential_warning.message")
         }
         .onAppear {
             PlayerOrientationController.setPlayerActive(true)
@@ -3636,7 +3703,11 @@ struct BuiltInMediaPlayerView: View {
     }
 
     private func openExternal(_ target: ExternalOpenTarget) {
-        guard let targetURL = target.url(endpoint: request.url, filename: request.title) else {
+        guard let targetURL = target.url(
+            endpoint: request.url,
+            filename: request.title,
+            subtitleURL: request.externalSubtitleURL
+        ) else {
             externalMessageKey = "external.unsupported_hint"
             showExternalHint = true
             return
@@ -3659,6 +3730,25 @@ struct BuiltInMediaPlayerView: View {
                 showExternalHint = true
             }
         }
+    }
+
+    private func requestExternalOpen(_ target: ExternalOpenTarget) {
+        guard request.containsSensitiveCredential else {
+            openExternal(target)
+            return
+        }
+        pendingExternalTarget = target
+        showCredentialHandoffWarning = true
+    }
+
+    private func requestExternalShare() {
+        guard request.containsSensitiveCredential else {
+            sharePayload = ServiceSharePayload(url: request.url)
+            return
+        }
+        pendingExternalTarget = nil
+        pendingShareHandoff = true
+        showCredentialHandoffWarning = true
     }
 }
 
@@ -3756,11 +3846,13 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
         super.init()
         player.delegate = self
         let media = VLCMedia(url: request.url)
-        media.addOption(":network-caching=750")
+        let networkCaching = NetworkHostClassifier.isPrivate(request.url.host) ? 900 : 1_500
+        media.addOption(":network-caching=\(networkCaching)")
         media.addOption(":http-reconnect")
+        media.addOption(":http-continuous")
         media.addOption(":input-fast-seek")
         media.addOption(":avcodec-hw=any")
-        media.addOption(":freetype-rel-fontsize=24")
+        media.addOption(":freetype-rel-fontsize=18")
         player.media = media
         DiagnosticLogStore.shared.record(
             .info,
@@ -3920,7 +4012,7 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
         let selector = NSSelectorFromString("setTextRendererFontSize:")
         guard player.responds(to: selector) else { return }
         didApplySubtitleStyle = true
-        _ = player.perform(selector, with: NSNumber(value: 24))
+        _ = player.perform(selector, with: NSNumber(value: 18))
     }
 
     private func addExternalSubtitleIfNeeded() {
@@ -4375,7 +4467,7 @@ private final class JellyfinCertificateTrustDelegate: NSObject, URLSessionDelega
 
 @MainActor
 private final class JellyfinLibraryStore: ObservableObject {
-    let endpoint: URL
+    @Published private(set) var endpoint: URL
     let playbackEndpoint: URL?
     let allowsSelfSignedCertificates: Bool
 
@@ -4394,15 +4486,41 @@ private final class JellyfinLibraryStore: ObservableObject {
     private var userID: String?
     private var didRestore = false
     private var trustDelegate: JellyfinCertificateTrustDelegate?
+    private let endpointCandidates: [URL]
 
     init(
         endpoint: URL,
         playbackEndpoint: URL?,
-        allowsSelfSignedCertificates: Bool
+        allowsSelfSignedCertificates: Bool,
+        fallbackEndpoints: [URL] = []
     ) {
         self.endpoint = endpoint
         self.playbackEndpoint = playbackEndpoint.flatMap(Self.originURL)
         self.allowsSelfSignedCertificates = allowsSelfSignedCertificates
+        self.endpointCandidates = Self.jellyfinEndpointCandidates(
+            from: [endpoint] + fallbackEndpoints
+        )
+    }
+
+    private static func jellyfinEndpointCandidates(from endpoints: [URL]) -> [URL] {
+        var result: [URL] = []
+        var seen = Set<String>()
+        for endpoint in endpoints {
+            for path in [endpoint.path, "/jellyfin", "/emby"] {
+                guard var components = URLComponents(url: endpoint, resolvingAgainstBaseURL: false) else {
+                    continue
+                }
+                components.path = path == "/" ? "" : path
+                components.query = nil
+                components.fragment = nil
+                guard let candidate = components.url,
+                      seen.insert(candidate.absoluteString).inserted else {
+                    continue
+                }
+                result.append(candidate)
+            }
+        }
+        return result
     }
 
     private static func originURL(for url: URL) -> URL? {
@@ -4418,10 +4536,16 @@ private final class JellyfinLibraryStore: ObservableObject {
     func restoreIfNeeded() async {
         guard !didRestore else { return }
         didRestore = true
-        guard let stored = KeychainStore.shared.loadJellyfinSession(endpoint: endpoint) else {
+        guard let restored = endpointCandidates.compactMap({ candidate in
+            KeychainStore.shared.loadJellyfinSession(endpoint: candidate).map {
+                (endpoint: candidate, session: $0)
+            }
+        }).first else {
             isLoading = false
             return
         }
+        endpoint = restored.endpoint
+        let stored = restored.session
         username = stored.username
         userID = stored.userID
         client = makeClient(accessToken: stored.accessToken)
@@ -4438,17 +4562,42 @@ private final class JellyfinLibraryStore: ObservableObject {
         isLoading = true
         errorMessage = nil
         do {
-            let newClient = makeClient(accessToken: nil)
-            let result = try await newClient.signIn(username: cleanedUsername, password: password)
+            var authenticatedClient: JellyfinClient?
+            var authenticatedAccessToken: String?
+            var authenticatedUserID: String?
+            var authenticatedUsername: String?
+            var lastError: Error?
+            for candidate in endpointCandidates {
+                endpoint = candidate
+                let candidateClient = makeClient(accessToken: nil)
+                do {
+                    let result = try await candidateClient.signIn(
+                        username: cleanedUsername,
+                        password: password
+                    )
+                    guard let accessToken = result.accessToken,
+                          let userID = result.user?.id else {
+                        throw JellyfinLibraryError.missingSession
+                    }
+                    authenticatedClient = candidateClient
+                    authenticatedAccessToken = accessToken
+                    authenticatedUserID = userID
+                    authenticatedUsername = result.user?.name
+                    break
+                } catch {
+                    lastError = error
+                }
+            }
             guard
-                let accessToken = result.accessToken,
-                let authenticatedUserID = result.user?.id
+                let newClient = authenticatedClient,
+                let accessToken = authenticatedAccessToken,
+                let authenticatedUserID
             else {
-                throw JellyfinLibraryError.missingSession
+                throw lastError ?? JellyfinLibraryError.missingSession
             }
             client = newClient
             userID = authenticatedUserID
-            self.username = result.user?.name ?? cleanedUsername
+            self.username = authenticatedUsername ?? cleanedUsername
             isAuthenticated = true
             try KeychainStore.shared.saveJellyfinSession(
                 StoredJellyfinSession(
@@ -4645,7 +4794,8 @@ private final class JellyfinLibraryStore: ObservableObject {
         )
         do {
 #if canImport(MobileVLCKit)
-            if let streamURL = directVideoURL(for: entry, client: client) {
+            if prefersDirectVideoPlayback,
+               let streamURL = directVideoURL(for: entry, client: client) {
                 let extensionHint = entry.container
                     .flatMap { $0.split(separator: ",", maxSplits: 1).first }
                     .map(String.init)
@@ -4679,7 +4829,7 @@ private final class JellyfinLibraryStore: ObservableObject {
                 enableTranscoding: true,
                 isAlwaysBurnInSubtitleWhenTranscoding: entry.preferredSubtitleStreamIndex != nil,
                 maxAudioChannels: 2,
-                maxStreamingBitrate: 20_000_000,
+                maxStreamingBitrate: prefersDirectVideoPlayback ? 20_000_000 : 10_000_000,
                 mediaSourceID: entry.mediaSourceID,
                 startTimeTicks: entry.playbackPositionTicks,
                 subtitleStreamIndex: entry.preferredSubtitleStreamIndex,
@@ -4803,6 +4953,10 @@ private final class JellyfinLibraryStore: ObservableObject {
             streamComponents.path = "/\(prefix)" + streamComponents.path
         }
         return streamComponents.url ?? url
+    }
+
+    private var prefersDirectVideoPlayback: Bool {
+        NetworkHostClassifier.isPrivate((playbackEndpoint ?? endpoint).host)
     }
 
     private func requiresCertificateBypass(for url: URL) -> Bool {
@@ -5117,12 +5271,18 @@ private struct JellyfinLibraryView: View {
     let service: LaunchpadService
     @StateObject private var store: JellyfinLibraryStore
 
-    init(service: LaunchpadService, endpoint: URL, allowsSelfSignedCertificates: Bool) {
+    init(
+        service: LaunchpadService,
+        endpoint: URL,
+        allowsSelfSignedCertificates: Bool,
+        fallbackEndpoints: [URL] = []
+    ) {
         self.service = service
         _store = StateObject(wrappedValue: JellyfinLibraryStore(
             endpoint: endpoint,
             playbackEndpoint: nil,
-            allowsSelfSignedCertificates: allowsSelfSignedCertificates
+            allowsSelfSignedCertificates: allowsSelfSignedCertificates,
+            fallbackEndpoints: fallbackEndpoints
         ))
     }
 
@@ -5240,7 +5400,7 @@ private struct JellyfinHomeView: View {
 
     var body: some View {
         ScrollView {
-            LazyVStack(alignment: .leading, spacing: 30) {
+            LazyVStack(alignment: .leading, spacing: 26) {
                 HStack(spacing: 12) {
                     Image(systemName: "person.crop.circle.fill")
                         .font(.system(size: 32))
@@ -5354,7 +5514,7 @@ private struct JellyfinHomeView: View {
                 }
             }
             .frame(maxWidth: 960, alignment: .leading)
-            .padding(.horizontal, 18)
+            .padding(.horizontal, 16)
             .padding(.top, 12)
             .padding(.bottom, 32)
             .frame(maxWidth: .infinity)
@@ -5369,7 +5529,7 @@ private struct JellyfinHomeView: View {
             .filter { item in
                 guard
                     item.kind == .movie || item.kind == .series,
-                    item.imageTag != nil
+                    item.backdropImageTag != nil
                 else {
                     return false
                 }
@@ -5442,52 +5602,53 @@ private struct JellyfinHeroSlide: View {
     let item: JellyfinMediaEntry
 
     var body: some View {
-        GeometryReader { proxy in
-            let posterHeight = max(proxy.size.height - 28, 0)
-            let posterWidth = min(posterHeight * 2 / 3, proxy.size.width * 0.48)
-
-            HStack(spacing: 18) {
-                JellyfinPosterImage(
-                    url: store.imageURL(
-                        for: item,
-                        width: 1_200,
-                        landscape: false,
-                        prefersBackdrop: false,
-                        quality: 96
-                    ),
-                    scalesToFit: true
+        ZStack(alignment: .bottomLeading) {
+            JellyfinPosterImage(
+                url: store.imageURL(
+                    for: item,
+                    width: 1_920,
+                    landscape: true,
+                    prefersBackdrop: true,
+                    quality: 96
                 )
-                .frame(width: posterWidth, height: posterHeight)
-                .background(Color.black)
-                .clipShape(RoundedRectangle(cornerRadius: 7, style: .continuous))
+            )
 
-                VStack(alignment: .leading, spacing: 10) {
-                    Spacer(minLength: 0)
-                    Text(LocalizedStringKey(
-                        item.kind == .series ? "jellyfin.series.title" : "media.movies.title"
-                    ))
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(AppTheme.accent)
-                    Text(item.title)
-                        .font(.title2.weight(.bold))
-                        .foregroundStyle(.primary)
-                        .lineLimit(3)
+            LinearGradient(
+                stops: [
+                    .init(color: .clear, location: 0.28),
+                    .init(color: .black.opacity(0.18), location: 0.52),
+                    .init(color: .black.opacity(0.88), location: 1)
+                ],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+
+            VStack(alignment: .leading, spacing: 7) {
+                Text(LocalizedStringKey(
+                    item.kind == .series ? "jellyfin.series.title" : "media.movies.title"
+                ))
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.white.opacity(0.78))
+                Text(item.title)
+                    .font(.title2.weight(.bold))
+                    .foregroundStyle(.white)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.8)
+                HStack(spacing: 12) {
                     if !item.subtitle.isEmpty {
                         Text(item.subtitle)
                             .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                            .lineLimit(2)
+                            .foregroundStyle(.white.opacity(0.82))
+                            .lineLimit(1)
                     }
                     Label("player.play_in_app", systemImage: "play.fill")
                         .font(.caption.weight(.semibold))
-                        .foregroundStyle(.primary)
-                    Spacer(minLength: 18)
+                        .foregroundStyle(.white)
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .padding(14)
+            .padding(18)
         }
-        .background(Color(.secondarySystemBackground))
+        .background(Color.black)
         .contentShape(Rectangle())
     }
 }
@@ -5851,35 +6012,39 @@ private struct JellyfinSeriesView: View {
             let contentWidth = min(max(proxy.size.width - 36, 0), 820)
 
             ScrollView {
-                LazyVStack(alignment: .leading, spacing: 22) {
+                LazyVStack(alignment: .leading, spacing: 0) {
                     JellyfinDetailHeader(store: store, item: series)
 
-                    JellyfinShelfHeader(
-                        titleKey: "jellyfin.episodes.title",
-                        count: isLoading ? nil : episodes.count
-                    )
+                    LazyVStack(alignment: .leading, spacing: 22) {
+                        JellyfinShelfHeader(
+                            titleKey: "jellyfin.episodes.title",
+                            count: isLoading ? nil : episodes.count
+                        )
 
-                    if isLoading {
-                        ProgressView()
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 36)
-                    } else if failed {
-                        Button("action.retry") { Task { await loadEpisodes() } }
-                            .buttonStyle(.bordered)
-                    } else {
-                        ForEach(episodes) { episode in
-                            NavigationLink {
-                                JellyfinMediaDetailView(store: store, item: episode)
-                            } label: {
-                                JellyfinEpisodeRow(store: store, episode: episode)
+                        if isLoading {
+                            ProgressView()
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 36)
+                        } else if failed {
+                            Button("action.retry") { Task { await loadEpisodes() } }
+                                .buttonStyle(.bordered)
+                        } else {
+                            ForEach(episodes) { episode in
+                                NavigationLink {
+                                    JellyfinMediaDetailView(store: store, item: episode)
+                                } label: {
+                                    JellyfinEpisodeRow(store: store, episode: episode)
+                                }
+                                .buttonStyle(.plain)
+                                Divider()
                             }
-                            .buttonStyle(.plain)
-                            Divider()
                         }
                     }
+                    .frame(width: contentWidth, alignment: .leading)
+                    .padding(.top, 22)
+                    .padding(.bottom, 32)
+                    .frame(maxWidth: .infinity)
                 }
-                .frame(width: contentWidth, alignment: .leading)
-                .padding(.bottom, 32)
                 .frame(maxWidth: .infinity)
             }
         }
@@ -5952,56 +6117,85 @@ private struct JellyfinMediaDetailView: View {
     @State private var playbackRequest: MediaPlaybackRequest?
     @State private var isPreparingPlayback = false
     @State private var showPlaybackError = false
+    @State private var pendingExternalPlayback: PendingExternalPlayback?
+    @State private var pendingShareRequest: MediaPlaybackRequest?
+    @State private var showCredentialHandoffWarning = false
+    @State private var sharePayload: ServiceSharePayload?
 
     var body: some View {
         GeometryReader { proxy in
             let contentWidth = min(max(proxy.size.width - 36, 0), 820)
 
             ScrollView {
-                VStack(alignment: .leading, spacing: 24) {
+                VStack(alignment: .leading, spacing: 0) {
                     JellyfinDetailHeader(store: store, item: item)
 
-                    if item.isPlayable {
-                        Button(action: preparePlayback) {
+                    VStack(alignment: .leading, spacing: 24) {
+                        if item.isPlayable {
                             HStack(spacing: 10) {
-                                if isPreparingPlayback {
-                                    ProgressView()
-                                        .tint(.white)
-                                } else {
-                                    Image(systemName: "play.fill")
+                                Button(action: preparePlayback) {
+                                    HStack(spacing: 10) {
+                                        if isPreparingPlayback {
+                                            ProgressView()
+                                                .tint(.white)
+                                        } else {
+                                            Image(systemName: "play.fill")
+                                        }
+                                        Text(
+                                            LocalizedStringKey(
+                                                (item.progress ?? 0) > 0
+                                                    ? "media.continue.title"
+                                                    : "player.play_in_app"
+                                            )
+                                        )
+                                            .font(.headline.weight(.semibold))
+                                    }
+                                    .foregroundStyle(.white)
+                                    .frame(maxWidth: .infinity, minHeight: 52)
+                                    .background(AppTheme.accent)
+                                    .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
                                 }
-                                Text(
-                                    LocalizedStringKey(
-                                        (item.progress ?? 0) > 0
-                                            ? "media.continue.title"
-                                            : "player.play_in_app"
-                                    )
-                                )
-                                    .font(.headline.weight(.semibold))
-                            }
-                            .foregroundStyle(.white)
-                            .frame(maxWidth: .infinity, minHeight: 52)
-                            .background(AppTheme.accent)
-                            .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-                        }
-                        .buttonStyle(.plain)
-                        .disabled(isPreparingPlayback)
-                    }
+                                .buttonStyle(.plain)
 
-                    if !item.overview.isEmpty {
-                        VStack(alignment: .leading, spacing: 10) {
-                            Text("jellyfin.overview.title")
-                                .font(.title3.weight(.bold))
-                            Text(item.overview)
-                                .font(.subheadline)
-                                .foregroundStyle(.primary)
-                                .fixedSize(horizontal: false, vertical: true)
+                                Menu {
+                                    ForEach(ExternalOpenTarget.installedPlayers) { target in
+                                        Button(target.displayName) {
+                                            prepareExternalPlayback(target)
+                                        }
+                                    }
+                                    Button("external.other_apps") {
+                                        prepareSharePlayback()
+                                    }
+                                } label: {
+                                    Image(systemName: "arrow.up.forward.app")
+                                        .font(.title3.weight(.semibold))
+                                        .foregroundStyle(AppTheme.accent)
+                                        .frame(width: 52, height: 52)
+                                        .background(AppTheme.secondarySurface)
+                                        .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                                }
+                                .accessibilityLabel(Text("devices.files.open_external"))
+                            }
+                            .disabled(isPreparingPlayback)
                         }
-                        .frame(maxWidth: .infinity, alignment: .leading)
+
+                        if !item.overview.isEmpty {
+                            VStack(alignment: .leading, spacing: 10) {
+                                Text("jellyfin.overview.title")
+                                    .font(.title3.weight(.bold))
+                                Text(item.overview)
+                                    .font(.subheadline)
+                                    .foregroundStyle(.primary)
+                                    .fixedSize(horizontal: false, vertical: true)
+                            }
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        }
                     }
+                    .frame(width: contentWidth, alignment: .leading)
+                    .padding(.top, 20)
+                    .padding(.bottom, 36)
+                    .frame(maxWidth: .infinity)
                 }
-                .frame(width: contentWidth, alignment: .leading)
-                .padding(.bottom, 36)
                 .frame(maxWidth: .infinity)
             }
         }
@@ -6012,6 +6206,30 @@ private struct JellyfinMediaDetailView: View {
             Button("action.ok", role: .cancel) {}
         } message: {
             Text("jellyfin.player.prepare_failed_detail")
+        }
+        .confirmationDialog(
+            "external.credential_warning.title",
+            isPresented: $showCredentialHandoffWarning,
+            titleVisibility: .visible
+        ) {
+            Button("external.credential_warning.continue") {
+                if let pendingExternalPlayback {
+                    openExternalPlayback(pendingExternalPlayback)
+                } else if let pendingShareRequest {
+                    sharePayload = ServiceSharePayload(url: pendingShareRequest.url)
+                }
+                pendingExternalPlayback = nil
+                pendingShareRequest = nil
+            }
+            Button("action.cancel", role: .cancel) {
+                pendingExternalPlayback = nil
+                pendingShareRequest = nil
+            }
+        } message: {
+            Text("external.credential_warning.message")
+        }
+        .sheet(item: $sharePayload) { payload in
+            SystemShareView(items: [payload.url])
         }
         .fullScreenCover(item: $playbackRequest) { request in
             NavigationStack {
@@ -6031,6 +6249,69 @@ private struct JellyfinMediaDetailView: View {
             }
         }
     }
+
+    private func prepareExternalPlayback(_ target: ExternalOpenTarget) {
+        Task {
+            isPreparingPlayback = true
+            defer { isPreparingPlayback = false }
+            do {
+                guard let request = try await store.playbackRequest(for: item) else {
+                    throw JellyfinLibraryError.missingPlaybackURL
+                }
+                let pending = PendingExternalPlayback(request: request, target: target)
+                if request.containsSensitiveCredential {
+                    pendingExternalPlayback = pending
+                    showCredentialHandoffWarning = true
+                } else {
+                    openExternalPlayback(pending)
+                }
+            } catch {
+                showPlaybackError = true
+            }
+        }
+    }
+
+    private func prepareSharePlayback() {
+        Task {
+            isPreparingPlayback = true
+            defer { isPreparingPlayback = false }
+            do {
+                guard let request = try await store.playbackRequest(for: item) else {
+                    throw JellyfinLibraryError.missingPlaybackURL
+                }
+                if request.containsSensitiveCredential {
+                    pendingExternalPlayback = nil
+                    pendingShareRequest = request
+                    showCredentialHandoffWarning = true
+                } else {
+                    sharePayload = ServiceSharePayload(url: request.url)
+                }
+            } catch {
+                showPlaybackError = true
+            }
+        }
+    }
+
+    private func openExternalPlayback(_ pending: PendingExternalPlayback) {
+        guard let targetURL = pending.target.url(
+            endpoint: pending.request.url,
+            filename: pending.request.title,
+            subtitleURL: pending.request.externalSubtitleURL
+        ) else {
+            showPlaybackError = true
+            return
+        }
+        UIApplication.shared.open(targetURL, options: [:]) { accepted in
+            if !accepted {
+                DispatchQueue.main.async { showPlaybackError = true }
+            }
+        }
+    }
+}
+
+private struct PendingExternalPlayback {
+    let request: MediaPlaybackRequest
+    let target: ExternalOpenTarget
 }
 
 private struct JellyfinDetailHeader: View {
@@ -6069,8 +6350,6 @@ private struct JellyfinDetailHeader: View {
         }
         .frame(maxWidth: .infinity)
         .frame(height: horizontalSizeClass == .regular ? 340 : 250)
-        .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-        .padding(.top, 8)
         .overlay(alignment: .topTrailing) {
             Button {
                 Task { await store.toggleFavorite(item) }
@@ -6083,7 +6362,7 @@ private struct JellyfinDetailHeader: View {
             }
             .buttonStyle(.plain)
             .accessibilityLabel(Text("jellyfin.favorite.toggle"))
-            .padding(.top, 20)
+            .padding(.top, 12)
             .padding(.trailing, 12)
         }
     }
@@ -6104,7 +6383,8 @@ private struct MediaLibraryView: View {
                     allowsSelfSignedCertificates: ServiceCertificatePolicy.allowsBypass(
                         for: endpoint,
                         session: connectionStore.dsmSession
-                    )
+                    ),
+                    fallbackEndpoints: [service.endpoint, service.alternateEndpoint].compactMap { $0 }
                 )
             } else {
                 fallbackLibrary
@@ -6607,6 +6887,14 @@ private enum DSMConnectionLocation: String, CaseIterable, Identifiable {
     }
 }
 
+private enum DSMConnectionProtocol: String, CaseIterable, Identifiable {
+    case http
+    case https
+
+    var id: String { rawValue }
+    var title: String { rawValue.uppercased() }
+}
+
 private struct DSMConnectionFlowView: View {
     let onConnected: () -> Void
     @EnvironmentObject private var dataStore: AppDataStore
@@ -6617,6 +6905,7 @@ private struct DSMConnectionFlowView: View {
     @State private var password = ""
     @State private var oneTimeCode = ""
     @State private var connectionLocation: DSMConnectionLocation = .local
+    @State private var connectionProtocol: DSMConnectionProtocol = .https
     @State private var allowsSelfSignedCertificates = false
     @State private var isConnecting = false
     @State private var connectionStatusKey = "connect.review.authenticating"
@@ -6650,6 +6939,19 @@ private struct DSMConnectionFlowView: View {
                         }
                     }
                     .pickerStyle(.segmented)
+                    .onChange(of: connectionLocation) { location in
+                        if location == .remote {
+                            connectionProtocol = .https
+                        }
+                    }
+
+                    Picker("connect.protocol", selection: $connectionProtocol) {
+                        ForEach(DSMConnectionProtocol.allCases) { connectionProtocol in
+                            Text(connectionProtocol.title).tag(connectionProtocol)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                    .disabled(connectionLocation == .remote)
 
                     if connectionLocation == .local {
                         NavigationLink {
@@ -6679,6 +6981,12 @@ private struct DSMConnectionFlowView: View {
                             Text("connect.trust_self_signed.inline_hint")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
+                        }
+                    }
+                    .disabled(connectionProtocol == .http)
+                    .onChange(of: connectionProtocol) { connectionProtocol in
+                        if connectionProtocol == .http {
+                            allowsSelfSignedCertificates = false
                         }
                     }
 
@@ -6746,7 +7054,7 @@ private struct DSMConnectionFlowView: View {
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
             }
-            .frame(maxWidth: 760)
+            .frame(maxWidth: 960)
             .frame(maxWidth: .infinity)
             .padding(.horizontal, 18)
             .padding(.top, 8)
@@ -6785,7 +7093,10 @@ private struct DSMConnectionFlowView: View {
         errorMessage = ""
         connectionTask = Task {
             do {
-                let baseURL = try DSMClient.normalizedBaseURL(from: host)
+                let baseURL = try DSMClient.normalizedBaseURL(
+                    from: protocolAdjustedHost,
+                    defaultScheme: connectionProtocol.rawValue
+                )
                 let client = DSMClient(
                     baseURL: baseURL,
                     allowsSelfSignedCertificates: allowsSelfSignedCertificates
@@ -6836,6 +7147,24 @@ private struct DSMConnectionFlowView: View {
                 }
             }
         }
+    }
+
+    private var protocolAdjustedHost: String {
+        let trimmed = host.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard
+            var components = URLComponents(string: trimmed),
+            let scheme = components.scheme?.lowercased(),
+            scheme == "http" || scheme == "https"
+        else {
+            return trimmed
+        }
+        components.scheme = connectionProtocol.rawValue
+        if connectionProtocol == .http, components.port == 5001 {
+            components.port = 5000
+        } else if connectionProtocol == .https, components.port == 5000 {
+            components.port = 5001
+        }
+        return components.string ?? trimmed
     }
 
     private var hostExampleKey: String {

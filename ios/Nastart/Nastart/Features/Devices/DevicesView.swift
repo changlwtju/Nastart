@@ -943,26 +943,38 @@ private struct FilePreviewView: View {
     }
 
     private func prepareMediaPlayback(from url: URL) {
-        isPreparingPreview = false
+        isPreparingPreview = true
         let fileExtension = (item.name as NSString).pathExtension.lowercased()
-        DiagnosticLogStore.shared.record(
-            .info,
-            categoryKey: "diagnostics.category.media",
-            messageKey: "diagnostics.files.preview_stream_started",
-            details: [
-                "target": DiagnosticLogStore.redactedURL(url),
-                "extension": fileExtension.isEmpty ? "-" : fileExtension,
-                "selfSigned": connectionStore.dsmSession?.allowsSelfSignedCertificates == true ? "on" : "off",
-                "transport": url.scheme?.lowercased() ?? "-"
-            ]
-        )
-        playbackRequest = MediaPlaybackRequest(
-            url: url,
-            title: item.name,
-            allowsSelfSignedCertificates: connectionStore.dsmSession?.allowsSelfSignedCertificates == true,
-            source: .dsmFile,
-            fileExtensionOverride: fileExtension.isEmpty ? nil : fileExtension
-        )
+        let session = connectionStore.dsmSession
+        let candidates = session?.fileStationOpenURLs(path: item.path) ?? [url]
+        Task {
+            let selectedURL = await DSMFilePlaybackResolver.firstPlayableURL(
+                candidates: candidates,
+                allowsSelfSignedCertificates: session?.allowsSelfSignedCertificates == true
+            ) ?? url
+            await MainActor.run {
+                isPreparingPreview = false
+                DiagnosticLogStore.shared.record(
+                    .info,
+                    categoryKey: "diagnostics.category.media",
+                    messageKey: "diagnostics.files.preview_stream_started",
+                    details: [
+                        "target": DiagnosticLogStore.redactedURL(selectedURL),
+                        "extension": fileExtension.isEmpty ? "-" : fileExtension,
+                        "selfSigned": session?.allowsSelfSignedCertificates == true ? "on" : "off",
+                        "transport": selectedURL.scheme?.lowercased() ?? "-"
+                    ]
+                )
+                playbackRequest = MediaPlaybackRequest(
+                    url: selectedURL,
+                    title: item.name,
+                    allowsSelfSignedCertificates: session?.allowsSelfSignedCertificates == true
+                        && selectedURL.scheme?.lowercased() == "https",
+                    source: .dsmFile,
+                    fileExtensionOverride: fileExtension.isEmpty ? nil : fileExtension
+                )
+            }
+        }
     }
 
     private func prepareLocalPreview(from url: URL) {
@@ -998,6 +1010,71 @@ private struct FilePreviewView: View {
 
     private var previewSymbolName: String {
         item.kind == .video || item.kind == .audio ? "play.rectangle" : "doc.text.magnifyingglass"
+    }
+}
+
+private enum DSMFilePlaybackResolver {
+    static func firstPlayableURL(
+        candidates: [URL],
+        allowsSelfSignedCertificates: Bool
+    ) async -> URL? {
+        for candidate in candidates {
+            let delegate = FilePreviewTrustDelegate(
+                trustedHost: candidate.host,
+                allowsSelfSignedCertificates: allowsSelfSignedCertificates
+                    && candidate.scheme?.lowercased() == "https"
+            )
+            let configuration = URLSessionConfiguration.ephemeral
+            configuration.timeoutIntervalForRequest = 8
+            configuration.timeoutIntervalForResource = 12
+            configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
+            let session = URLSession(
+                configuration: configuration,
+                delegate: delegate,
+                delegateQueue: nil
+            )
+            defer { session.invalidateAndCancel() }
+            var request = URLRequest(url: candidate)
+            request.setValue("bytes=0-1", forHTTPHeaderField: "Range")
+            request.setValue("identity", forHTTPHeaderField: "Accept-Encoding")
+            do {
+                let (_, response) = try await session.bytes(for: request)
+                guard let response = response as? HTTPURLResponse else { continue }
+                let mimeType = response.mimeType?.lowercased() ?? ""
+                let isMediaResponse = (response.statusCode == 200 || response.statusCode == 206)
+                    && !mimeType.contains("json")
+                    && !mimeType.contains("html")
+                DiagnosticLogStore.shared.record(
+                    isMediaResponse ? .info : .warning,
+                    categoryKey: "diagnostics.category.media",
+                    messageKey: isMediaResponse
+                        ? "diagnostics.media.probe_succeeded"
+                        : "diagnostics.media.probe_invalid_response",
+                    details: [
+                        "target": DiagnosticLogStore.redactedURL(candidate),
+                        "stage": "dsmRange",
+                        "status": "\(response.statusCode)",
+                        "mime": mimeType.isEmpty ? "-" : mimeType,
+                        "acceptRanges": response.value(forHTTPHeaderField: "Accept-Ranges") ?? "-"
+                    ]
+                )
+                if isMediaResponse { return response.url ?? candidate }
+            } catch {
+                let value = error as NSError
+                DiagnosticLogStore.shared.record(
+                    .warning,
+                    categoryKey: "diagnostics.category.media",
+                    messageKey: "diagnostics.media.probe_failed",
+                    details: [
+                        "target": DiagnosticLogStore.redactedURL(candidate),
+                        "stage": "dsmRange",
+                        "errorDomain": value.domain,
+                        "errorCode": "\(value.code)"
+                    ]
+                )
+            }
+        }
+        return nil
     }
 }
 

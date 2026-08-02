@@ -315,6 +315,29 @@ struct DSMSession {
     let deviceID: String?
 
     func fileStationOpenURL(path: String) -> URL? {
+        fileStationOpenURLs(path: path).first
+    }
+
+    func fileStationOpenURLs(path: String) -> [URL] {
+        var baseURLs = [baseURL]
+        if NetworkHostClassifier.isPrivate(baseURL.host),
+           baseURL.scheme?.lowercased() == "https",
+           var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false) {
+            components.scheme = "http"
+            if components.port == nil || components.port == 5001 {
+                components.port = 5000
+            }
+            if let httpBaseURL = components.url {
+                baseURLs.append(httpBaseURL)
+            }
+        }
+
+        var seen = Set<String>()
+        return baseURLs.compactMap { fileStationOpenURL(path: path, baseURL: $0) }
+            .filter { seen.insert($0.absoluteString).inserted }
+    }
+
+    private func fileStationOpenURL(path: String, baseURL: URL) -> URL? {
         guard
             let encodedPaths = try? JSONEncoder().encode([path]),
             let pathParameter = String(data: encodedPaths, encoding: .utf8),
@@ -863,12 +886,19 @@ final class DSMClient {
         DiagnosticLogStore.shared.record(level, categoryKey: categoryKey, messageKey: messageKey, details: details)
     }
 
-    static func normalizedBaseURL(from input: String) throws -> URL {
+    static func normalizedBaseURL(
+        from input: String,
+        defaultScheme: String = "https"
+    ) throws -> URL {
         var value = input.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !value.isEmpty else { throw DSMClientError.invalidAddress }
         let hadExplicitScheme = value.contains("://")
         if !hadExplicitScheme {
-            value = "https://\(value)"
+            let normalizedDefaultScheme = defaultScheme.lowercased()
+            guard normalizedDefaultScheme == "http" || normalizedDefaultScheme == "https" else {
+                throw DSMClientError.invalidAddress
+            }
+            value = "\(normalizedDefaultScheme)://\(value)"
         }
         guard var components = URLComponents(string: value), components.host != nil else {
             throw DSMClientError.invalidAddress
@@ -1127,10 +1157,15 @@ final class DSMClient {
         let dockerResources = await dockerResourceData
         let packages = await packageData
         let reverseProxies = await reverseProxyData
-        let resourceSampleCount = DSMClient.mapContainerResources(dockerResources).count
+        let hostTotalMemoryBytes = DSMClient.mapMemoryTotalBytes(utilization)
+        let resourceSampleCount = DSMClient.mapContainerResources(
+            dockerResources,
+            hostTotalMemoryBytes: hostTotalMemoryBytes
+        ).count
         let mappedContainers = DSMClient.mapContainers(
             docker,
-            resourceData: dockerResources
+            resourceData: dockerResources,
+            hostTotalMemoryBytes: hostTotalMemoryBytes
         )
         let containers = await enrichContainers(
             mappedContainers,
@@ -1817,6 +1852,13 @@ final class DSMClient {
         return (progress, DSMFormatters.bytes(usedBytes), DSMFormatters.bytes(totalBytes))
     }
 
+    private static func mapMemoryTotalBytes(_ utilization: DSMJSONValue?) -> Double? {
+        utilization?
+            .firstValue(for: ["memory"])?
+            .firstDouble(for: ["memory_size", "total", "total_memory", "mem_total"])
+            .map(normalizedMemoryBytes)
+    }
+
     private static func mapStorage(
         storageData: DSMJSONValue?,
         utilization: DSMJSONValue?
@@ -2137,10 +2179,14 @@ final class DSMClient {
 
     private static func mapContainers(
         _ data: DSMJSONValue?,
-        resourceData: DSMJSONValue? = nil
+        resourceData: DSMJSONValue? = nil,
+        hostTotalMemoryBytes: Double? = nil
     ) -> [DockerContainer] {
         let items = containerItems(from: data)
-        let resources = mapContainerResources(resourceData)
+        let resources = mapContainerResources(
+            resourceData,
+            hostTotalMemoryBytes: hostTotalMemoryBytes
+        )
         var seen = Set<String>()
         return items.compactMap { item in
             guard let name = directTextValue(
@@ -2186,7 +2232,8 @@ final class DSMClient {
     }
 
     private static func mapContainerResources(
-        _ data: DSMJSONValue?
+        _ data: DSMJSONValue?,
+        hostTotalMemoryBytes: Double? = nil
     ) -> [String: ContainerResourceMetrics] {
         guard let data else { return [:] }
         let items = data.arrayValue ?? data.firstArray(for: ["resources"]) ?? []
@@ -2199,14 +2246,19 @@ final class DSMClient {
             let cpu = item.firstDirectDouble(
                 for: ["cpu", "CPU", "cpu_usage", "cpu_percent", "cpuPercent"]
             )
-            .map { percentagePoints($0) }
-            let memoryBytes = item.firstDirectDouble(
+            .map { dsmPercentage($0) }
+            let reportedMemoryBytes = item.firstDirectDouble(
                 for: ["memory", "Memory", "memory_bytes", "memoryUsage", "mem_usage"]
             )
             let memoryPercent = item.firstDirectDouble(
                 for: ["memoryPercent", "memory_percent", "mem_percent", "memoryPercentage"]
             )
-            .map { percentagePoints($0) }
+            .map { dsmPercentage($0) }
+            // DSM's raw counter may include reclaimable file cache. Its percentage
+            // tracks active host memory, so derive a matching byte value when possible.
+            let memoryBytes = hostTotalMemoryBytes.flatMap { total in
+                memoryPercent.map { total * $0 }
+            } ?? reportedMemoryBytes
             result[normalizedContainerIdentity(name)] = ContainerResourceMetrics(
                 cpu: cpu,
                 memoryBytes: memoryBytes,
@@ -2221,9 +2273,8 @@ final class DSMClient {
             .lowercased()
     }
 
-    private static func percentagePoints(_ value: Double) -> Double {
-        let normalized = value > 1 ? value / 100 : value
-        return min(max(normalized, 0), 1)
+    private static func dsmPercentage(_ value: Double) -> Double {
+        min(max(value / 100, 0), 1)
     }
 
     private static func containerItems(from data: DSMJSONValue?) -> [DSMJSONValue] {
@@ -2462,9 +2513,12 @@ final class DSMClient {
                         lanHosts: lanHosts
                     )
                     if Self.isPrivateNetworkHost(baseURL.host) {
-                        let reachableEndpoint = await self.firstReachableWebEndpoint(candidates)
+                        let reachableEndpoint = await self.firstReachableWebEndpoint(
+                            candidates,
+                            serviceName: container.name
+                        )
                         let endpoint = reachableEndpoint
-                            ?? (Self.isLikelyWebContainer(container) ? candidates.first : nil)
+                            ?? Self.unverifiedFallbackEndpoint(for: container, candidates: candidates)
                         if let endpoint {
                             return (
                                 container.id,
@@ -2482,7 +2536,8 @@ final class DSMClient {
                                 && $0.scheme?.lowercased() == "http"
                         }
                         let discoveredLocalEndpoint = await self.firstReachableWebEndpoint(
-                            Array(localCandidates.prefix(4))
+                            Array(localCandidates.prefix(4)),
+                            serviceName: container.name
                         )
                         let localEndpoint = discoveredLocalEndpoint.flatMap { discovered in
                             Self.isPrivateNetworkHost(discovered.host)
@@ -2499,9 +2554,12 @@ final class DSMClient {
                             )
                         )
                     }
-                    let reachableEndpoint = await self.firstReachableWebEndpoint(candidates)
+                    let reachableEndpoint = await self.firstReachableWebEndpoint(
+                        candidates,
+                        serviceName: container.name
+                    )
                     let endpoint = reachableEndpoint
-                        ?? (Self.isLikelyWebContainer(container) ? candidates.first : nil)
+                        ?? Self.unverifiedFallbackEndpoint(for: container, candidates: candidates)
                     return (
                         container.id,
                         endpoint.map { ResolvedContainerEndpoint(url: $0, source: .container) }
@@ -2649,7 +2707,23 @@ final class DSMClient {
             .joined()
     }
 
-    private func firstReachableWebEndpoint(_ candidates: [URL]) async -> URL? {
+    private static func unverifiedFallbackEndpoint(
+        for container: DockerContainer,
+        candidates: [URL]
+    ) -> URL? {
+        let name = container.name.lowercased()
+        guard !name.contains("jellyfin"), !name.contains("emby") else { return nil }
+        return isLikelyWebContainer(container) ? candidates.first : nil
+    }
+
+    private func firstReachableWebEndpoint(
+        _ candidates: [URL],
+        serviceName: String? = nil
+    ) async -> URL? {
+        if serviceName?.lowercased().contains("jellyfin") == true
+            || serviceName?.lowercased().contains("emby") == true {
+            return await firstReachableJellyfinEndpoint(candidates)
+        }
         await withTaskGroup(
             of: (Int, URL?).self,
             returning: URL?.self
@@ -2671,6 +2745,63 @@ final class DSMClient {
         }
     }
 
+    private func firstReachableJellyfinEndpoint(_ candidates: [URL]) async -> URL? {
+        var bases: [URL] = []
+        var seen = Set<String>()
+        for candidate in candidates.prefix(8) {
+            let existingPath = candidate.path == "/" ? "" : candidate.path
+            for path in [existingPath, "/jellyfin", "/emby"] {
+                guard var components = URLComponents(url: candidate, resolvingAgainstBaseURL: false) else {
+                    continue
+                }
+                components.path = path
+                components.query = nil
+                components.fragment = nil
+                guard let base = components.url, seen.insert(base.absoluteString).inserted else {
+                    continue
+                }
+                bases.append(base)
+            }
+        }
+
+        return await withTaskGroup(of: (Int, URL?).self, returning: URL?.self) { group in
+            for (index, base) in bases.enumerated() {
+                group.addTask {
+                    guard let probeURL = DSMURLBuilder.url(
+                        baseURL: base,
+                        appending: "/System/Info/Public"
+                    ) else {
+                        return (index, nil)
+                    }
+                    var request = URLRequest(url: probeURL)
+                    request.timeoutInterval = 3
+                    request.cachePolicy = .reloadIgnoringLocalCacheData
+                    request.setValue("application/json", forHTTPHeaderField: "Accept")
+                    do {
+                        let (_, response) = try await self.urlSession.data(for: request)
+                        guard
+                            let response = response as? HTTPURLResponse,
+                            (200..<300).contains(response.statusCode)
+                        else {
+                            return (index, nil)
+                        }
+                        return (index, base)
+                    } catch {
+                        return (index, nil)
+                    }
+                }
+            }
+
+            var reachable: [(Int, URL)] = []
+            for await result in group {
+                if let endpoint = result.1 {
+                    reachable.append((result.0, endpoint))
+                }
+            }
+            return reachable.min { $0.0 < $1.0 }?.1
+        }
+    }
+
     private func reachableWebEndpoint(_ endpoint: URL) async -> URL? {
         for method in ["HEAD", "GET"] {
             var request = URLRequest(url: endpoint)
@@ -2682,7 +2813,10 @@ final class DSMClient {
             }
             do {
                 let (_, response) = try await urlSession.data(for: request)
-                if let response = response as? HTTPURLResponse {
+                if let response = response as? HTTPURLResponse,
+                   (200..<400).contains(response.statusCode)
+                    || response.statusCode == 401
+                    || response.statusCode == 403 {
                     return response.url ?? endpoint
                 }
             } catch {

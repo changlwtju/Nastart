@@ -143,6 +143,7 @@
 "connect.location" = "访问位置";
 "connect.location.local" = "内网";
 "connect.location.remote" = "外网";
+"connect.protocol" = "连接协议";
 "connect.host" = "DSM 地址（内网或外网）";
 "connect.host.example" = "例如：https://192.168.1.10:5001";
 "connect.host.example.local" = "例如：http://192.168.1.10:5000";
@@ -222,11 +223,11 @@
 "devices.resources.sort" = "排序方式";
 "devices.resources.services" = "容器服务";
 "devices.resources.empty" = "暂无运行中的服务";
-"devices.resources.footer" = "CPU 与运行内存使用率来自 Container Manager 的资源采样；没有采样时显示为 -。";
-"devices.container.memory_percent" = "运行内存使用率";
-"devices.container.runtime_memory" = "运行内存";
-"devices.container.runtime_memory_value" = "运行内存 %@";
-"devices.container.runtime_memory_unavailable" = "暂无运行内存采样";
+"devices.resources.footer" = "CPU 与内存占用来自 Container Manager 的资源采样；内存容量按 DSM 使用率估算，以排除可回收文件缓存，没有采样时显示为 -。";
+"devices.container.memory_percent" = "内存占用率";
+"devices.container.runtime_memory" = "估算内存占用";
+"devices.container.runtime_memory_value" = "估算内存 %@";
+"devices.container.runtime_memory_unavailable" = "暂无内存采样";
 "devices.discovery.hint" = "重新发现服务会扫描 DSM 套件、反向代理规则、Docker 端口和资源数据。";
 "devices.detail.status" = "状态";
 "devices.detail.name" = "设备名称";
@@ -472,6 +473,9 @@
 "external.open_failed" = "未能打开该服务，请检查目标 App 是否已安装，或改用 Safari 打开。";
 "external.browser" = "Safari / 浏览器";
 "external.other_apps" = "其他 App";
+"external.credential_warning.title" = "将播放凭据交给第三方播放器？";
+"external.credential_warning.message" = "此播放地址包含当前 DSM 或 Jellyfin 会话凭据。仅继续使用你信任的播放器，并在播放完成后返回 Nastart。";
+"external.credential_warning.continue" = "继续播放";
 "external.safari_failed" = "未能用 Safari 打开该服务，请检查服务地址是否可访问。";
 "external.player_failed" = "未能打开对应播放器，请确认已安装该 App，或先使用 App 内浏览器 / Safari 打开。";
 "external.unsupported_hint" = "当前服务暂不支持这种打开方式。";

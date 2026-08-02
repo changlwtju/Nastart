@@ -143,6 +143,7 @@
 "connect.location" = "Access location";
 "connect.location.local" = "Local";
 "connect.location.remote" = "Remote";
+"connect.protocol" = "Connection protocol";
 "connect.host" = "DSM address (local or remote)";
 "connect.host.example" = "Example: https://192.168.1.10:5001";
 "connect.host.example.local" = "Example: http://192.168.1.10:5000";
@@ -222,11 +223,11 @@
 "devices.resources.sort" = "Sort by";
 "devices.resources.services" = "Container services";
 "devices.resources.empty" = "No running services";
-"devices.resources.footer" = "CPU and runtime RAM usage come from Container Manager resource samples. Missing samples are shown as -.";
-"devices.container.memory_percent" = "Runtime RAM Usage";
-"devices.container.runtime_memory" = "Runtime RAM";
-"devices.container.runtime_memory_value" = "Runtime RAM %@";
-"devices.container.runtime_memory_unavailable" = "No runtime RAM sample";
+"devices.resources.footer" = "CPU and memory use come from Container Manager samples. Memory bytes are estimated from DSM usage to exclude reclaimable file cache; missing samples are shown as -.";
+"devices.container.memory_percent" = "Memory use";
+"devices.container.runtime_memory" = "Estimated memory use";
+"devices.container.runtime_memory_value" = "Estimated memory %@";
+"devices.container.runtime_memory_unavailable" = "No memory sample";
 "devices.discovery.hint" = "Rescan checks DSM packages, reverse proxy rules, Docker ports, and resource data.";
 "devices.detail.status" = "Status";
 "devices.detail.name" = "Device Name";
@@ -472,6 +473,9 @@
 "external.open_failed" = "Could not open this service. Check whether the target app is installed, or open it in Safari instead.";
 "external.browser" = "Safari / Browser";
 "external.other_apps" = "Other Apps";
+"external.credential_warning.title" = "Share playback credentials?";
+"external.credential_warning.message" = "This media URL contains the current DSM or Jellyfin session credential. Continue only with a player you trust, then return to Nastart when playback ends.";
+"external.credential_warning.continue" = "Continue Playing";
 "external.safari_failed" = "Could not open this service in Safari. Check whether the service URL is reachable.";
 "external.player_failed" = "Could not open the selected player. Make sure the app is installed, or use the in-app browser / Safari first.";
 "external.unsupported_hint" = "This open route is not supported for the current service.";

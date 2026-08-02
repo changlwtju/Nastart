@@ -7,6 +7,7 @@ struct MineView: View {
     @EnvironmentObject private var dataStore: AppDataStore
     @EnvironmentObject private var entitlementStore: EntitlementStore
     @State private var showSignOutConfirm = false
+    @State private var showSignOutInfo = false
 
     var body: some View {
         NavigationStack {
@@ -72,18 +73,36 @@ struct MineView: View {
                 }
 
                 Section {
-                    HStack(spacing: 8) {
-                        Button(role: .destructive) {
-                            showSignOutConfirm = true
-                        } label: {
-                            Label("mine.sign_out", systemImage: "rectangle.portrait.and.arrow.right")
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .contentShape(Rectangle())
-                        }
-                        .disabled(!connectionStore.isConnected)
+                    VStack(alignment: .leading, spacing: 8) {
+                        HStack(spacing: 8) {
+                            Button(role: .destructive) {
+                                showSignOutConfirm = true
+                            } label: {
+                                Label("mine.sign_out", systemImage: "rectangle.portrait.and.arrow.right")
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .contentShape(Rectangle())
+                            }
+                            .disabled(!connectionStore.isConnected)
 
-                        ContextInfoButton(message: signOutInfoText)
+                            ContextInfoButton(
+                                isPresented: $showSignOutInfo,
+                                message: signOutInfoText
+                            )
+                        }
+
+                        if showSignOutInfo {
+                            Text(signOutInfoText)
+                                .font(.footnote)
+                                .foregroundStyle(.secondary)
+                                .fixedSize(horizontal: false, vertical: true)
+                                .padding(10)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .background(AppTheme.secondarySurface)
+                                .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                                .transition(.opacity.combined(with: .move(edge: .top)))
+                        }
                     }
+                    .animation(.easeInOut(duration: 0.2), value: showSignOutInfo)
                 }
             }
             .padding(.top, -12)
@@ -115,12 +134,12 @@ struct MineView: View {
 }
 
 private struct ContextInfoButton: View {
+    @Binding var isPresented: Bool
     let message: String
-    @State private var isPresented = false
 
     var body: some View {
         Button {
-            isPresented = true
+            isPresented.toggle()
         } label: {
             Image(systemName: "exclamationmark.circle")
                 .font(.system(size: 17, weight: .medium))
@@ -131,31 +150,10 @@ private struct ContextInfoButton: View {
         .buttonStyle(.plain)
         .hoverEffect(.highlight)
         .onHover { isHovering in
-            if isHovering {
-                isPresented = true
-            }
+            isPresented = isHovering
         }
         .accessibilityLabel(Text("action.info"))
         .accessibilityHint(Text(message))
-        .popover(isPresented: $isPresented, arrowEdge: .bottom) {
-            popoverContent
-        }
-    }
-
-    @ViewBuilder
-    private var popoverContent: some View {
-        let content = Text(message)
-            .font(.footnote)
-            .foregroundStyle(.secondary)
-            .fixedSize(horizontal: false, vertical: true)
-            .padding(14)
-            .frame(maxWidth: 280, alignment: .leading)
-
-        if #available(iOS 16.4, *) {
-            content.presentationCompactAdaptation(.popover)
-        } else {
-            content
-        }
     }
 }
 
