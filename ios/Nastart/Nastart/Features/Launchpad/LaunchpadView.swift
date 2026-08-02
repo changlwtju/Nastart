@@ -3004,6 +3004,14 @@ struct MediaPlaybackRequest: Identifiable {
         let queryItems = URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems ?? []
         return queryItems.contains { sensitiveQueryNames.contains($0.name.lowercased()) }
     }
+
+    var externalFilename: String {
+        guard !fileExtensionHint.isEmpty,
+              URL(fileURLWithPath: title).pathExtension.isEmpty else {
+            return title
+        }
+        return "\(title).\(fileExtensionHint)"
+    }
 }
 
 enum MediaPlaybackSource: String {
@@ -3237,6 +3245,11 @@ private enum MediaPlaybackPolicy {
 
     static func preferredEngine(for request: MediaPlaybackRequest) -> MediaPlaybackEngine {
         guard hasCompatibilityEngine else { return .system }
+        if request.source == .jellyfin,
+           request.fileExtensionHint == "m3u8",
+           !request.allowsSelfSignedCertificates {
+            return .system
+        }
         if request.source == .jellyfin || request.source == .dsmFile {
             return .compatibility
         }
@@ -3249,9 +3262,13 @@ private enum MediaPlaybackPolicy {
     }
 
     static func allowsSystemPlayer(for request: MediaPlaybackRequest) -> Bool {
-        guard request.source == .directURL, !request.allowsSelfSignedCertificates else {
+        guard !request.allowsSelfSignedCertificates else {
             return false
         }
+        if request.source == .jellyfin {
+            return request.fileExtensionHint == "m3u8"
+        }
+        guard request.source == .directURL else { return false }
         let fileExtension = request.fileExtensionHint
         return fileExtension.isEmpty || systemPreferredExtensions.contains(fileExtension)
     }
@@ -3259,6 +3276,9 @@ private enum MediaPlaybackPolicy {
     static func requiresCompatibilityEngine(for request: MediaPlaybackRequest) -> Bool {
         if request.allowsSelfSignedCertificates {
             return true
+        }
+        if request.source == .jellyfin, request.fileExtensionHint == "m3u8" {
+            return false
         }
         let fileExtension = request.fileExtensionHint
         return !fileExtension.isEmpty && !systemPreferredExtensions.contains(fileExtension)
@@ -3588,6 +3608,9 @@ struct BuiltInMediaPlayerView: View {
                 session.play()
             }
         }
+        .task {
+            await MediaPlaybackProbe.run(request)
+        }
         .task(id: activeEngine) {
             guard
                 activeEngine == .system,
@@ -3705,7 +3728,7 @@ struct BuiltInMediaPlayerView: View {
     private func openExternal(_ target: ExternalOpenTarget) {
         guard let targetURL = target.url(
             endpoint: request.url,
-            filename: request.title,
+            filename: request.externalFilename,
             subtitleURL: request.externalSubtitleURL
         ) else {
             externalMessageKey = "external.unsupported_hint"
@@ -3762,7 +3785,6 @@ private enum VLCTrustDirectory {
     static func options(for request: MediaPlaybackRequest) -> [String] {
         guard
             request.allowsSelfSignedCertificates,
-            isPrivateNetworkHost(request.url.host),
             let certificateData = CertificatePinStore.shared.trustedCertificateData(
                 host: request.url.host,
                 port: request.url.port
@@ -3776,10 +3798,6 @@ private enum VLCTrustDirectory {
             return []
         }
         return ["--gnutls-dir-trust=\(directory.path)"]
-    }
-
-    private static func isPrivateNetworkHost(_ host: String?) -> Bool {
-        NetworkHostClassifier.isPrivate(host)
     }
 
     private static func writePEMCertificate(
@@ -3826,6 +3844,8 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
     @Published private(set) var isBuffering = true
     @Published private(set) var currentTimeText = "00:00"
     @Published private(set) var durationText = "--:--"
+    private let request: MediaPlaybackRequest
+    private let hasCustomTLSRoot: Bool
     private var lastStateDescription = ""
     private let initialPosition: Double?
     private let externalSubtitleURL: URL?
@@ -3835,11 +3855,15 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
     private var lastSubtitleTrackIDs: [Int32] = []
     private var pendingJumpSeconds = 0
     private var pendingJumpWorkItem: DispatchWorkItem?
+    private var didRecordStart = false
+    private var didReachPlayback = false
 
     init(request: MediaPlaybackRequest) {
+        self.request = request
         initialPosition = request.initialPosition
         externalSubtitleURL = request.externalSubtitleURL
         let trustOptions = VLCTrustDirectory.options(for: request)
+        hasCustomTLSRoot = !trustOptions.isEmpty
         player = trustOptions.isEmpty
             ? VLCMediaPlayer()
             : VLCMediaPlayer(options: trustOptions)
@@ -3854,15 +3878,6 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
         media.addOption(":avcodec-hw=any")
         media.addOption(":freetype-rel-fontsize=18")
         player.media = media
-        DiagnosticLogStore.shared.record(
-            .info,
-            categoryKey: "diagnostics.category.media",
-            messageKey: "diagnostics.media.player_started",
-            details: MediaPlaybackProbe.baseDetails(for: request).merging([
-                "engine": "MobileVLCKit",
-                "customTLSRoot": trustOptions.isEmpty ? "off" : "on"
-            ]) { current, _ in current }
-        )
     }
 
     func attach(to view: UIView) {
@@ -3871,6 +3886,18 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
     }
 
     func play() {
+        if !didRecordStart {
+            didRecordStart = true
+            DiagnosticLogStore.shared.record(
+                .info,
+                categoryKey: "diagnostics.category.media",
+                messageKey: "diagnostics.media.player_started",
+                details: MediaPlaybackProbe.baseDetails(for: request).merging([
+                    "engine": "MobileVLCKit",
+                    "customTLSRoot": hasCustomTLSRoot ? "on" : "off"
+                ]) { current, _ in current }
+            )
+        }
         try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .moviePlayback)
         try? AVAudioSession.sharedInstance().setActive(true)
         player.play()
@@ -3917,6 +3944,24 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
         player.stop()
     }
 
+    func failIfStillLoading() {
+        guard !didReachPlayback, errorMessage == nil else { return }
+        let state = Self.stateDescription(player.state)
+        errorMessage = NSLocalizedString("player.load_timeout", comment: "")
+        isBuffering = false
+        player.stop()
+        DiagnosticLogStore.shared.record(
+            .error,
+            categoryKey: "diagnostics.category.media",
+            messageKey: "diagnostics.media.player_failed",
+            details: [
+                "engine": "MobileVLCKit",
+                "state": state,
+                "reason": "loadTimeout"
+            ]
+        )
+    }
+
     func mediaPlayerStateChanged(_ notification: Notification) {
         syncState()
     }
@@ -3927,6 +3972,9 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
 
     private func syncState() {
         let isPlaying = player.isPlaying
+        if isPlaying {
+            didReachPlayback = true
+        }
         let isSeekable = player.isSeekable
         if !didApplyInitialPosition,
            isSeekable,
@@ -3936,7 +3984,7 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
             player.position = Float(initialPosition)
         }
         let position = Double(max(player.position, 0))
-        let stateDescription = String(describing: player.state)
+        let stateDescription = Self.stateDescription(player.state)
         let normalizedState = stateDescription.lowercased()
         let isBuffering = normalizedState.contains("opening") || normalizedState.contains("buffering")
         applySubtitleStyleIfNeeded(isRendererReady: isBuffering || player.isPlaying)
@@ -3945,8 +3993,8 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
         let errorMessage = player.state == .error
             ? NSLocalizedString("player.compatibility_failed", comment: "")
             : nil
-        let subtitleNames = (player.videoSubTitlesNames ?? []).compactMap { $0 as? String }
-        let subtitleIndexes = (player.videoSubTitlesIndexes ?? []).compactMap(Self.subtitleTrackID)
+        let subtitleNames = player.videoSubTitlesNames.compactMap { $0 as? String }
+        let subtitleIndexes = player.videoSubTitlesIndexes.compactMap(Self.subtitleTrackID)
         var subtitleTracks = zip(subtitleIndexes, subtitleNames).map { pair in
             VLCSubtitleTrack(
                 id: pair.0,
@@ -4037,6 +4085,20 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
         if let value = value as? Int { return Int32(clamping: value) }
         if let value = value as? String, let parsed = Int32(value) { return parsed }
         return nil
+    }
+
+    private static func stateDescription(_ state: VLCMediaPlayerState) -> String {
+        switch state {
+        case .stopped: return "stopped"
+        case .opening: return "opening"
+        case .buffering: return "buffering"
+        case .ended: return "ended"
+        case .error: return "error"
+        case .playing: return "playing"
+        case .paused: return "paused"
+        case .esAdded: return "elementaryStreamAdded"
+        @unknown default: return "unknown(\(state.rawValue))"
+        }
     }
 
     deinit {
@@ -4153,6 +4215,11 @@ private struct VLCBuiltInPlayerView: View {
                     controlsVisible = true
                 }
             }
+        }
+        .task {
+            try? await Task.sleep(nanoseconds: 20_000_000_000)
+            guard !Task.isCancelled else { return }
+            session.failIfStillLoading()
         }
         .task(id: controlsRevision) {
             guard controlsVisible, session.isPlaying else { return }
@@ -4421,6 +4488,8 @@ private struct JellyfinMediaEntry: Identifiable, Hashable {
     let preferredSubtitleCodec: String?
     let progress: Double?
     let playbackPositionTicks: Int?
+    let seasonNumber: Int?
+    let episodeNumber: Int?
     let isFavorite: Bool
 
     var isPlayable: Bool {
@@ -4681,7 +4750,15 @@ private final class JellyfinLibraryStore: ObservableObject {
         let response = try await client.send(
             Paths.getEpisodes(seriesID: seriesID, parameters: parameters)
         ).value
-        let items = (response.items ?? []).compactMap(mapItem)
+        let items = (response.items ?? [])
+            .compactMap(mapItem)
+            .sorted { lhs, rhs in
+                let left = (lhs.seasonNumber ?? Int.max, lhs.episodeNumber ?? Int.max, lhs.title)
+                let right = (rhs.seasonNumber ?? Int.max, rhs.episodeNumber ?? Int.max, rhs.title)
+                if left.0 != right.0 { return left.0 < right.0 }
+                if left.1 != right.1 { return left.1 < right.1 }
+                return left.2.localizedStandardCompare(right.2) == .orderedAscending
+            }
         registerFavoriteState(from: items)
         return items
     }
@@ -4881,6 +4958,38 @@ private final class JellyfinLibraryStore: ObservableObject {
         }
     }
 
+    func externalPlaybackRequest(for entry: JellyfinMediaEntry) async throws -> MediaPlaybackRequest? {
+        guard let client, entry.isPlayable else { return nil }
+        if entry.kind == .audio {
+            return try await playbackRequest(for: entry)
+        }
+        guard let streamURL = directVideoURL(for: entry, client: client) else {
+            return try await playbackRequest(for: entry)
+        }
+        let extensionHint = entry.container?
+            .split(separator: ",", maxSplits: 1)
+            .first
+            .map(String.init)
+        record(
+            "diagnostics.jellyfin.playback_prepared",
+            level: .info,
+            details: [
+                "mode": "externalDirectPlay",
+                "container": extensionHint ?? "-",
+                "transport": playbackEndpoint == nil ? "primary" : "reachableLAN"
+            ]
+        )
+        return MediaPlaybackRequest(
+            url: streamURL,
+            title: entry.title,
+            allowsSelfSignedCertificates: requiresCertificateBypass(for: streamURL),
+            source: .jellyfin,
+            fileExtensionOverride: extensionHint,
+            initialPosition: entry.progress,
+            externalSubtitleURL: externalSubtitleURL(for: entry, client: client)
+        )
+    }
+
     private func directVideoURL(for entry: JellyfinMediaEntry, client: JellyfinClient) -> URL? {
         var components = URLComponents()
         components.path = "/Videos/\(entry.id)/stream"
@@ -4960,7 +5069,13 @@ private final class JellyfinLibraryStore: ObservableObject {
     }
 
     private func requiresCertificateBypass(for url: URL) -> Bool {
-        allowsSelfSignedCertificates && url.scheme?.lowercased() == "https"
+        guard allowsSelfSignedCertificates, url.scheme?.lowercased() == "https" else {
+            return false
+        }
+        return CertificatePinStore.shared.trustedCertificateData(
+            host: url.host,
+            port: url.port
+        ) != nil
     }
 
     private static let iOSPlaybackProfile = DeviceProfile(
@@ -5154,6 +5269,8 @@ private final class JellyfinLibraryStore: ObservableObject {
             preferredSubtitleCodec: preferredSubtitle?.codec,
             progress: item.userData?.playedPercentage.map { min(max($0 / 100, 0), 1) },
             playbackPositionTicks: item.userData?.playbackPositionTicks,
+            seasonNumber: item.parentIndexNumber,
+            episodeNumber: item.indexNumber,
             isFavorite: item.userData?.isFavorite == true
         )
     }
@@ -5525,7 +5642,8 @@ private struct JellyfinHomeView: View {
 
     private var featuredItems: [JellyfinMediaEntry] {
         var seen = Set<String>()
-        return (store.movies + store.series)
+        let resumableMovies = store.continueWatching.filter { $0.kind == .movie }
+        return (resumableMovies + store.favorites + store.movies + store.series)
             .filter { item in
                 guard
                     item.kind == .movie || item.kind == .series,
@@ -5570,21 +5688,42 @@ private struct JellyfinHeroCarousel: View {
     @State private var selection = 0
 
     var body: some View {
-        TabView(selection: $selection) {
-            ForEach(Array(items.enumerated()), id: \.element.id) { index, item in
-                NavigationLink {
-                    JellyfinMediaRouteView(store: store, item: item)
-                } label: {
-                    JellyfinHeroSlide(store: store, item: item)
+        GeometryReader { proxy in
+            TabView(selection: $selection) {
+                ForEach(Array(items.enumerated()), id: \.element.id) { index, item in
+                    NavigationLink {
+                        JellyfinMediaRouteView(store: store, item: item)
+                    } label: {
+                        JellyfinHeroSlide(store: store, item: item)
+                            .frame(width: proxy.size.width, height: proxy.size.height)
+                    }
+                    .buttonStyle(.plain)
+                    .tag(index)
                 }
-                .buttonStyle(.plain)
-                .tag(index)
             }
+            .tabViewStyle(.page(indexDisplayMode: .never))
+            .frame(width: proxy.size.width, height: proxy.size.height)
         }
-        .tabViewStyle(.page(indexDisplayMode: items.count > 1 ? .always : .never))
         .frame(height: horizontalSizeClass == .regular ? 400 : 290)
         .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+        .overlay(alignment: .topTrailing) {
+            if items.count > 1 {
+                HStack(spacing: 6) {
+                    ForEach(items.indices, id: \.self) { index in
+                        Capsule()
+                            .fill(.white.opacity(index == selection ? 0.95 : 0.48))
+                            .frame(width: index == selection ? 18 : 6, height: 6)
+                    }
+                }
+                .padding(.horizontal, 10)
+                .padding(.vertical, 8)
+                .background(.black.opacity(0.32), in: Capsule())
+                .padding(14)
+                .accessibilityHidden(true)
+            }
+        }
         .task(id: items.map(\.id)) {
+            selection = min(selection, max(items.count - 1, 0))
             guard items.count > 1 else { return }
             while !Task.isCancelled {
                 try? await Task.sleep(nanoseconds: 6_000_000_000)
@@ -5641,7 +5780,13 @@ private struct JellyfinHeroSlide: View {
                             .foregroundStyle(.white.opacity(0.82))
                             .lineLimit(1)
                     }
-                    Label("player.play_in_app", systemImage: "play.fill")
+                    Label {
+                        Text(LocalizedStringKey(
+                            item.isPlayable ? "player.play_in_app" : "jellyfin.view_details"
+                        ))
+                    } icon: {
+                        Image(systemName: item.isPlayable ? "play.fill" : "arrow.right")
+                    }
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(.white)
                 }
@@ -5751,6 +5896,45 @@ private struct JellyfinPosterCard: View {
             }
         }
         .frame(width: width, alignment: .leading)
+    }
+}
+
+private struct JellyfinGridPosterCard: View {
+    @ObservedObject var store: JellyfinLibraryStore
+    let item: JellyfinMediaEntry
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 7) {
+            ZStack(alignment: .bottomLeading) {
+                JellyfinPosterImage(
+                    url: store.imageURL(for: item, width: 660)
+                )
+                if let progress = item.progress, progress > 0 {
+                    GeometryReader { geometry in
+                        VStack(spacing: 0) {
+                            Spacer()
+                            Rectangle()
+                                .fill(AppTheme.accent)
+                                .frame(width: geometry.size.width * progress, height: 4)
+                        }
+                    }
+                }
+            }
+            .aspectRatio(2.0 / 3.0, contentMode: .fit)
+            .clipShape(RoundedRectangle(cornerRadius: 7, style: .continuous))
+
+            Text(item.title)
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(.primary)
+                .lineLimit(2)
+            if !item.subtitle.isEmpty {
+                Text(item.subtitle)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
@@ -5881,19 +6065,14 @@ private struct JellyfinResultGrid: View {
     var body: some View {
         ScrollView {
             LazyVGrid(
-                columns: [GridItem(.adaptive(minimum: 136), spacing: 14)],
+                columns: [GridItem(.adaptive(minimum: 150, maximum: 220), spacing: 14, alignment: .top)],
                 spacing: 18
             ) {
                 ForEach(items) { item in
                     NavigationLink {
                         JellyfinMediaRouteView(store: store, item: item)
                     } label: {
-                        JellyfinPosterCard(
-                            store: store,
-                            item: item,
-                            width: 136,
-                            landscape: false
-                        )
+                        JellyfinGridPosterCard(store: store, item: item)
                     }
                     .buttonStyle(.plain)
                 }
@@ -5934,6 +6113,7 @@ private struct JellyfinCollectionView: View {
     @State private var items: [JellyfinMediaEntry] = []
     @State private var isLoading = true
     @State private var failed = false
+    @State private var query = ""
 
     var body: some View {
         Group {
@@ -5953,26 +6133,48 @@ private struct JellyfinCollectionView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
                 ScrollView {
-                    LazyVGrid(
-                        columns: [GridItem(.adaptive(minimum: 136), spacing: 14)],
-                        spacing: 18
-                    ) {
-                        ForEach(items) { item in
-                            NavigationLink {
-                                JellyfinMediaRouteView(store: store, item: item)
-                            } label: {
-                                JellyfinPosterCard(store: store, item: item, width: 136, landscape: false)
+                    if visibleItems.isEmpty {
+                        JellyfinEmptyState(
+                            systemImage: query.isEmpty ? "rectangle.stack.badge.minus" : "magnifyingglass",
+                            titleKey: query.isEmpty ? "jellyfin.library.empty" : "jellyfin.search.empty",
+                            detailKey: query.isEmpty ? "jellyfin.library.empty_detail" : "jellyfin.search.empty_detail"
+                        )
+                        .frame(minHeight: 420)
+                    } else {
+                        LazyVGrid(
+                            columns: [GridItem(.adaptive(minimum: 150, maximum: 220), spacing: 14, alignment: .top)],
+                            spacing: 20
+                        ) {
+                            ForEach(visibleItems) { item in
+                                NavigationLink {
+                                    JellyfinMediaRouteView(store: store, item: item)
+                                } label: {
+                                    JellyfinGridPosterCard(store: store, item: item)
+                                }
+                                .buttonStyle(.plain)
                             }
-                            .buttonStyle(.plain)
                         }
+                        .frame(maxWidth: 960)
+                        .padding(18)
+                        .frame(maxWidth: .infinity)
                     }
-                    .padding(18)
                 }
                 .background(Color(.systemBackground))
             }
         }
         .navigationTitle(library.title)
+        .navigationBarTitleDisplayMode(.inline)
+        .searchable(text: $query, prompt: "jellyfin.search.placeholder")
         .task { await load() }
+    }
+
+    private var visibleItems: [JellyfinMediaEntry] {
+        let cleanedQuery = query.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !cleanedQuery.isEmpty else { return items }
+        return items.filter {
+            $0.title.localizedCaseInsensitiveContains(cleanedQuery)
+                || $0.subtitle.localizedCaseInsensitiveContains(cleanedQuery)
+        }
     }
 
     private func load() async {
@@ -6016,6 +6218,19 @@ private struct JellyfinSeriesView: View {
                     JellyfinDetailHeader(store: store, item: series)
 
                     LazyVStack(alignment: .leading, spacing: 22) {
+                        if !series.overview.isEmpty {
+                            VStack(alignment: .leading, spacing: 10) {
+                                Text("jellyfin.overview.title")
+                                    .font(.title3.weight(.bold))
+                                Text(series.overview)
+                                    .font(.subheadline)
+                                    .foregroundStyle(.secondary)
+                                    .lineSpacing(4)
+                                    .fixedSize(horizontal: false, vertical: true)
+                            }
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        }
+
                         JellyfinShelfHeader(
                             titleKey: "jellyfin.episodes.title",
                             count: isLoading ? nil : episodes.count
@@ -6028,15 +6243,31 @@ private struct JellyfinSeriesView: View {
                         } else if failed {
                             Button("action.retry") { Task { await loadEpisodes() } }
                                 .buttonStyle(.bordered)
+                        } else if episodes.isEmpty {
+                            JellyfinEmptyState(
+                                systemImage: "rectangle.stack.badge.minus",
+                                titleKey: "jellyfin.library.empty",
+                                detailKey: "jellyfin.library.empty_detail"
+                            )
+                            .frame(minHeight: 240)
                         } else {
-                            ForEach(episodes) { episode in
-                                NavigationLink {
-                                    JellyfinMediaDetailView(store: store, item: episode)
-                                } label: {
-                                    JellyfinEpisodeRow(store: store, episode: episode)
+                            ForEach(seasonGroups, id: \.number) { season in
+                                VStack(alignment: .leading, spacing: 12) {
+                                    Text(seasonTitle(season.number))
+                                        .font(.headline.weight(.bold))
+
+                                    ForEach(season.episodes) { episode in
+                                        NavigationLink {
+                                            JellyfinMediaDetailView(store: store, item: episode)
+                                        } label: {
+                                            JellyfinEpisodeRow(store: store, episode: episode)
+                                        }
+                                        .buttonStyle(.plain)
+                                        if episode.id != season.episodes.last?.id {
+                                            Divider()
+                                        }
+                                    }
                                 }
-                                .buttonStyle(.plain)
-                                Divider()
                             }
                         }
                     }
@@ -6063,6 +6294,26 @@ private struct JellyfinSeriesView: View {
             failed = true
         }
         isLoading = false
+    }
+
+    private var seasonGroups: [(number: Int?, episodes: [JellyfinMediaEntry])] {
+        let grouped = Dictionary(grouping: episodes, by: \.seasonNumber)
+        return grouped
+            .map { (number: $0.key, episodes: $0.value) }
+            .sorted { ($0.number ?? Int.max) < ($1.number ?? Int.max) }
+    }
+
+    private func seasonTitle(_ number: Int?) -> String {
+        guard let number else {
+            return NSLocalizedString("jellyfin.season.unknown", comment: "")
+        }
+        if number == 0 {
+            return NSLocalizedString("jellyfin.season.specials", comment: "")
+        }
+        return String.localizedStringWithFormat(
+            NSLocalizedString("jellyfin.season.format", comment: ""),
+            number
+        )
     }
 }
 
@@ -6186,6 +6437,7 @@ private struct JellyfinMediaDetailView: View {
                                 Text(item.overview)
                                     .font(.subheadline)
                                     .foregroundStyle(.primary)
+                                    .lineSpacing(4)
                                     .fixedSize(horizontal: false, vertical: true)
                             }
                             .frame(maxWidth: .infinity, alignment: .leading)
@@ -6255,7 +6507,7 @@ private struct JellyfinMediaDetailView: View {
             isPreparingPlayback = true
             defer { isPreparingPlayback = false }
             do {
-                guard let request = try await store.playbackRequest(for: item) else {
+                guard let request = try await store.externalPlaybackRequest(for: item) else {
                     throw JellyfinLibraryError.missingPlaybackURL
                 }
                 let pending = PendingExternalPlayback(request: request, target: target)
@@ -6276,7 +6528,7 @@ private struct JellyfinMediaDetailView: View {
             isPreparingPlayback = true
             defer { isPreparingPlayback = false }
             do {
-                guard let request = try await store.playbackRequest(for: item) else {
+                guard let request = try await store.externalPlaybackRequest(for: item) else {
                     throw JellyfinLibraryError.missingPlaybackURL
                 }
                 if request.containsSensitiveCredential {
@@ -6295,17 +6547,45 @@ private struct JellyfinMediaDetailView: View {
     private func openExternalPlayback(_ pending: PendingExternalPlayback) {
         guard let targetURL = pending.target.url(
             endpoint: pending.request.url,
-            filename: pending.request.title,
+            filename: pending.request.externalFilename,
             subtitleURL: pending.request.externalSubtitleURL
         ) else {
+            recordExternalHandoff(accepted: false, pending: pending, reason: "invalidCallbackURL")
             showPlaybackError = true
             return
         }
         UIApplication.shared.open(targetURL, options: [:]) { accepted in
+            recordExternalHandoff(
+                accepted: accepted,
+                pending: pending,
+                reason: accepted ? "accepted" : "applicationRejectedURL"
+            )
             if !accepted {
                 DispatchQueue.main.async { showPlaybackError = true }
             }
         }
+    }
+
+    private func recordExternalHandoff(
+        accepted: Bool,
+        pending: PendingExternalPlayback,
+        reason: String
+    ) {
+        DiagnosticLogStore.shared.record(
+            accepted ? .info : .error,
+            categoryKey: "diagnostics.category.media",
+            messageKey: accepted
+                ? "diagnostics.media.external_handoff_accepted"
+                : "diagnostics.media.external_handoff_failed",
+            details: [
+                "targetApp": pending.target.diagnosticName,
+                "extension": pending.request.fileExtensionHint.isEmpty
+                    ? "-"
+                    : pending.request.fileExtensionHint,
+                "mode": "jellyfinDirectPlay",
+                "reason": reason
+            ]
+        )
     }
 }
 

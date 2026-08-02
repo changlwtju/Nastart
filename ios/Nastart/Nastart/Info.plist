@@ -8,6 +8,12 @@
 		<string>open-vidhub</string>
 		<string>vlc-x-callback</string>
 	</array>
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_https._tcp.</string>
+		<string>_http._tcp.</string>
+		<string>_smb._tcp.</string>
+	</array>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoadsInWebContent</key>

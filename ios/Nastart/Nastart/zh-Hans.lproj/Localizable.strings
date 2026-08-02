@@ -521,6 +521,7 @@
 "player.url.placeholder" = "https://nas.example/media/stream.m3u8";
 "player.url.invalid" = "请输入有效的 HTTP 或 HTTPS 媒体串流地址。";
 "player.load_failed" = "无法播放媒体";
+"player.load_timeout" = "播放器等待媒体数据超时，请重试或改用其他播放器。";
 "player.compatibility_unavailable" = "当前构建未包含 MobileVLCKit，无法解码此格式。请执行 pod install，并使用 Nastart.xcworkspace 构建。";
 "player.compatibility_failed" = "兼容播放器仍无法解码或载入此媒体。";
 "player.engine.choose" = "选择播放器";
@@ -643,6 +644,10 @@
 "jellyfin.logout" = "断开 Jellyfin";
 "jellyfin.series.title" = "电视剧";
 "jellyfin.episodes.title" = "分集";
+"jellyfin.view_details" = "查看详情";
+"jellyfin.season.format" = "第 %d 季";
+"jellyfin.season.specials" = "特别篇";
+"jellyfin.season.unknown" = "其他分集";
 "jellyfin.overview.title" = "简介";
 "jellyfin.favorites.title" = "我的收藏";
 "jellyfin.favorites.empty" = "还没有收藏内容";
@@ -661,7 +666,7 @@
 "diagnostics.jellyfin.login_failed" = "Jellyfin 登录失败";
 "diagnostics.jellyfin.library_loaded" = "Jellyfin 资源库载入完成";
 "diagnostics.jellyfin.library_failed" = "Jellyfin 资源库载入失败";
-"jellyfin.player.retry_hint" = "这是带鉴权的 Jellyfin 临时播放流，只能在 Nastart 内播放。请关闭播放器后重试，以重新获取播放地址。";
+"jellyfin.player.retry_hint" = "请关闭播放器后重试以获取新的 Jellyfin 播放流，也可以从详情页选择 Infuse、VidHub 或 VLC 直连播放。";
 "dsm.player.retry_hint" = "这是带鉴权的 DSM 文件，仅在 Nastart 内使用。请安装兼容播放器，以播放 AVPlayer 不支持的格式。";
 "jellyfin.player.prepare_failed" = "无法准备播放";
 "jellyfin.player.prepare_failed_detail" = "Jellyfin 未返回兼容的 HLS 播放流。请确认服务端已启用转码，并查看“媒体播放”诊断。";

@@ -25,6 +25,7 @@
 		010101010101010101010016 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020017 /* Assets.xcassets */; };
 		010101010101010101010017 /* AppStateStores.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020018 /* AppStateStores.swift */; };
 		010101010101010101010018 /* JellyfinAPI in Frameworks */ = {isa = PBXBuildFile; productRef = 0B0B0B0B0B0B0B0B0B0B0002 /* JellyfinAPI */; };
+		EDD2AEF5B14DC4128B8A2308 /* Pods_Nastart.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F0A427A98EF409A9FC1D1C04 /* Pods_Nastart.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -48,6 +49,9 @@
 		020202020202020202020018 /* AppStateStores.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStateStores.swift; sourceTree = "<group>"; };
 		020202020202020202020019 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		020202020202020202020099 /* Nastart.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Nastart.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		6EE295E3449845D6FE9490F6 /* Pods-Nastart.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Nastart.release.xcconfig"; path = "Target Support Files/Pods-Nastart/Pods-Nastart.release.xcconfig"; sourceTree = "<group>"; };
+		D447A0A76105EFDD2D985714 /* Pods-Nastart.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Nastart.debug.xcconfig"; path = "Target Support Files/Pods-Nastart/Pods-Nastart.debug.xcconfig"; sourceTree = "<group>"; };
+		F0A427A98EF409A9FC1D1C04 /* Pods_Nastart.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Nastart.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +60,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				010101010101010101010018 /* JellyfinAPI in Frameworks */,
+				EDD2AEF5B14DC4128B8A2308 /* Pods_Nastart.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -67,6 +72,8 @@
 			children = (
 				050505050505050505050001 /* Nastart */,
 				050505050505050505050099 /* Products */,
+				449565943B579E90D5135CAF /* Pods */,
+				C5553F8E7678649EE925E94C /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -150,14 +157,6 @@
 			path = Design;
 			sourceTree = "<group>";
 		};
-		050505050505050505050013 /* Stores */ = {
-			isa = PBXGroup;
-			children = (
-				020202020202020202020018 /* AppStateStores.swift */,
-			);
-			path = Stores;
-			sourceTree = "<group>";
-		};
 		050505050505050505050009 /* Launchpad */ = {
 			isa = PBXGroup;
 			children = (
@@ -191,12 +190,37 @@
 			path = Mine;
 			sourceTree = "<group>";
 		};
+		050505050505050505050013 /* Stores */ = {
+			isa = PBXGroup;
+			children = (
+				020202020202020202020018 /* AppStateStores.swift */,
+			);
+			path = Stores;
+			sourceTree = "<group>";
+		};
 		050505050505050505050099 /* Products */ = {
 			isa = PBXGroup;
 			children = (
 				020202020202020202020099 /* Nastart.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		449565943B579E90D5135CAF /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				D447A0A76105EFDD2D985714 /* Pods-Nastart.debug.xcconfig */,
+				6EE295E3449845D6FE9490F6 /* Pods-Nastart.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		C5553F8E7678649EE925E94C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F0A427A98EF409A9FC1D1C04 /* Pods_Nastart.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -206,9 +230,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 090909090909090909090002 /* Build configuration list for PBXNativeTarget "Nastart" */;
 			buildPhases = (
+				835A6F937B9C08DBFC12A29F /* [CP] Check Pods Manifest.lock */,
 				070707070707070707070001 /* Sources */,
 				040404040404040404040001 /* Frameworks */,
 				080808080808080808080001 /* Resources */,
+				A2A8DEC79C028960F711EA2C /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -247,10 +273,10 @@
 				"zh-Hans",
 			);
 			mainGroup = 050505050505050505050000;
-			productRefGroup = 050505050505050505050099 /* Products */;
 			packageReferences = (
 				0B0B0B0B0B0B0B0B0B0B0001 /* XCRemoteSwiftPackageReference "jellyfin-sdk-swift" */,
 			);
+			productRefGroup = 050505050505050505050099 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -270,6 +296,48 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		835A6F937B9C08DBFC12A29F /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Nastart-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A2A8DEC79C028960F711EA2C /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Nastart/Pods-Nastart-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Nastart/Pods-Nastart-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Nastart/Pods-Nastart-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		070707070707070707070001 /* Sources */ = {
@@ -312,7 +380,6 @@
 		090909090909090909090003 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				DEVELOPMENT_LANGUAGE = en;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -344,6 +411,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_LANGUAGE = en;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
@@ -374,7 +442,6 @@
 		090909090909090909090004 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				DEVELOPMENT_LANGUAGE = en;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -406,6 +473,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_LANGUAGE = en;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
@@ -428,6 +496,7 @@
 		};
 		090909090909090909090005 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = D447A0A76105EFDD2D985714 /* Pods-Nastart.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
@@ -440,15 +509,8 @@
 				INFOPLIST_FILE = Nastart/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Nastart;
 				INFOPLIST_KEY_CFBundleIconName = AppIcon;
-				INFOPLIST_KEY_CFBundleLocalizations = (
-					en,
-					"zh-Hans",
-				);
-				INFOPLIST_KEY_NSBonjourServices = (
-					"_https._tcp",
-					"_http._tcp",
-					"_smb._tcp",
-				);
+				INFOPLIST_KEY_CFBundleLocalizations = "en zh-Hans";
+				INFOPLIST_KEY_NSBonjourServices = "_https._tcp _http._tcp _smb._tcp";
 				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "Nastart uses the local network to discover your NAS. Nastart 使用本地网络发现 NAS。";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -474,6 +536,7 @@
 		};
 		090909090909090909090006 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6EE295E3449845D6FE9490F6 /* Pods-Nastart.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
@@ -486,15 +549,8 @@
 				INFOPLIST_FILE = Nastart/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Nastart;
 				INFOPLIST_KEY_CFBundleIconName = AppIcon;
-				INFOPLIST_KEY_CFBundleLocalizations = (
-					en,
-					"zh-Hans",
-				);
-				INFOPLIST_KEY_NSBonjourServices = (
-					"_https._tcp",
-					"_http._tcp",
-					"_smb._tcp",
-				);
+				INFOPLIST_KEY_CFBundleLocalizations = "en zh-Hans";
+				INFOPLIST_KEY_NSBonjourServices = "_https._tcp _http._tcp _smb._tcp";
 				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "Nastart uses the local network to discover your NAS. Nastart 使用本地网络发现 NAS。";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

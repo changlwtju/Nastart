@@ -440,12 +440,28 @@ enum DiagnosticLogLevel: String, Codable {
 }
 
 struct DiagnosticLogEntry: Identifiable, Codable {
-    let id = UUID()
+    let id: UUID
     let date: Date
     let level: DiagnosticLogLevel
     let categoryKey: String
     let messageKey: String
     let detail: String
+
+    init(
+        id: UUID = UUID(),
+        date: Date,
+        level: DiagnosticLogLevel,
+        categoryKey: String,
+        messageKey: String,
+        detail: String
+    ) {
+        self.id = id
+        self.date = date
+        self.level = level
+        self.categoryKey = categoryKey
+        self.messageKey = messageKey
+        self.detail = detail
+    }
 
     var exportLine: String {
         let timestamp = Self.timestampFormatter.string(from: date)
@@ -2724,7 +2740,7 @@ final class DSMClient {
             || serviceName?.lowercased().contains("emby") == true {
             return await firstReachableJellyfinEndpoint(candidates)
         }
-        await withTaskGroup(
+        return await withTaskGroup(
             of: (Int, URL?).self,
             returning: URL?.self
         ) { group in

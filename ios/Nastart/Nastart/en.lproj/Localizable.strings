@@ -521,6 +521,7 @@
 "player.url.placeholder" = "https://nas.example/media/stream.m3u8";
 "player.url.invalid" = "Enter a valid HTTP or HTTPS media stream URL.";
 "player.load_failed" = "Could Not Play Media";
+"player.load_timeout" = "The player timed out while waiting for media data. Retry or use another player.";
 "player.compatibility_unavailable" = "This build does not include MobileVLCKit and cannot decode this format. Run pod install and build Nastart.xcworkspace.";
 "player.compatibility_failed" = "The compatibility player could not decode or load this media.";
 "player.engine.choose" = "Choose Player";
@@ -643,6 +644,10 @@
 "jellyfin.logout" = "Disconnect Jellyfin";
 "jellyfin.series.title" = "TV shows";
 "jellyfin.episodes.title" = "Episodes";
+"jellyfin.view_details" = "View details";
+"jellyfin.season.format" = "Season %d";
+"jellyfin.season.specials" = "Specials";
+"jellyfin.season.unknown" = "Other episodes";
 "jellyfin.overview.title" = "Overview";
 "jellyfin.favorites.title" = "Favorites";
 "jellyfin.favorites.empty" = "No favorites yet";
@@ -661,7 +666,7 @@
 "diagnostics.jellyfin.login_failed" = "Jellyfin sign-in failed";
 "diagnostics.jellyfin.library_loaded" = "Jellyfin library loaded";
 "diagnostics.jellyfin.library_failed" = "Jellyfin library load failed";
-"jellyfin.player.retry_hint" = "This authenticated Jellyfin stream can only be played in Nastart. Close the player and retry to request a fresh stream.";
+"jellyfin.player.retry_hint" = "Close the player and retry for a fresh Jellyfin stream, or choose Infuse, VidHub, or VLC from the detail screen for direct playback.";
 "dsm.player.retry_hint" = "This authenticated DSM file stays inside Nastart. Install the compatibility player to play formats unsupported by AVPlayer.";
 "jellyfin.player.prepare_failed" = "Unable to Prepare Playback";
 "jellyfin.player.prepare_failed_detail" = "Jellyfin did not provide a compatible HLS stream. Check that server transcoding is enabled, then review Media Playback diagnostics.";
