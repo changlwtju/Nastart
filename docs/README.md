@@ -25,6 +25,7 @@ security, research, and project planning documents.
 | `docs/design/UI_WORKFLOW.md` | Required staged UI workflow from IA/style to wireframes, imagegen references, SwiftUI prototypes, and real-device testing |
 | `docs/design/MEDIA_SERVICE_FLOWS.md` | Jellyfin, Emby, Navidrome, media resource, and external handoff UX flows |
 | `docs/design/LAUNCHPAD_THEME_STRATEGY.md` | Quality-first launchpad theme strategy across Apple platforms |
+| `docs/handoffs/2026-08-02-NAS-MEDIA-JELLYFIN-THREAD.md` | NAS connectivity, media playback, Jellyfin redesign, diagnostics, and Mac handoff context |
 
 ## Future Directories
 
