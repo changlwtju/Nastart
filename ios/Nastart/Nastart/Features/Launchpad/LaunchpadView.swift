@@ -4,6 +4,8 @@ import WebKit
 import SafariServices
 import AVFoundation
 import AVKit
+import CoreText
+import Network
 import JellyfinAPI
 #if canImport(MobileVLCKit)
 import MobileVLCKit
@@ -26,7 +28,6 @@ struct LaunchpadView: View {
     @AppStorage(AppearancePreferenceKeys.groupDefaultVersion) private var groupDefaultVersion = 0
     @State private var showSearch = false
     @State private var showConnectionFlow = false
-    @State private var showAddOptions = false
     @State private var showManualServiceEditor = false
     @State private var showServiceManager = false
     @State private var refreshPulseID = UUID()
@@ -65,20 +66,6 @@ struct LaunchpadView: View {
                     )
                 }
             }
-            .confirmationDialog("launchpad.add.title", isPresented: $showAddOptions) {
-                Button("connect.welcome.action") {
-                    showConnectionFlow = true
-                }
-                Button("manual.service.add") {
-                    showManualServiceEditor = true
-                }
-                if !dataStore.services.isEmpty {
-                    Button("launchpad.services.manage") {
-                        showServiceManager = true
-                    }
-                }
-                Button("action.cancel", role: .cancel) {}
-            }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -113,11 +100,17 @@ struct LaunchpadView: View {
                     }
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button {
-                        if connectionStore.isConnected || !launchpadServices.isEmpty {
-                            showAddOptions = true
-                        } else {
+                    Menu {
+                        Button("connect.welcome.action") {
                             showConnectionFlow = true
+                        }
+                        Button("manual.service.add") {
+                            showManualServiceEditor = true
+                        }
+                        if !dataStore.services.isEmpty {
+                            Button("launchpad.services.manage") {
+                                showServiceManager = true
+                            }
                         }
                     } label: {
                         Image(systemName: "plus")
@@ -165,11 +158,11 @@ struct LaunchpadView: View {
     private var launchpadContent: some View {
         switch selectedTheme {
         case .cleanGrid:
-            ProductLaunchpad(device: dataStore.device, services: launchpadServices, categories: orderedCategories, options: displayOptions, isConnected: dataStore.isDSMReachable, groupDefaultExpanded: isGroupExpandedByDefault)
+            ProductLaunchpad(device: dataStore.device, services: launchpadServices, categories: orderedCategories, options: displayOptions, isConnected: dataStore.isDSMAvailableForDisplay, groupDefaultExpanded: isGroupExpandedByDefault)
         case .commandCenter:
             CommandCenterLaunchpad(device: dataStore.device, services: launchpadServices, categories: orderedCategories, options: displayOptions, groupDefaultExpanded: isGroupExpandedByDefault)
         case .glassDeck:
-            GlassDeckLaunchpad(device: dataStore.device, services: launchpadServices, categories: orderedCategories, options: displayOptions, isConnected: dataStore.isDSMReachable, groupDefaultExpanded: isGroupExpandedByDefault)
+            GlassDeckLaunchpad(device: dataStore.device, services: launchpadServices, categories: orderedCategories, options: displayOptions, isConnected: dataStore.isDSMAvailableForDisplay, groupDefaultExpanded: isGroupExpandedByDefault)
         }
     }
 
@@ -227,7 +220,7 @@ struct LaunchpadView: View {
     }
 
     private var groupExpansionSignature: String {
-        [
+        return [
             groupFavoritesExpanded,
             groupMediaExpanded,
             groupDownloadsExpanded,
@@ -1616,8 +1609,10 @@ struct SystemShareView: UIViewControllerRepresentable {
 enum ExternalOpenTarget: String, CaseIterable, Identifiable {
     case safari
     case infuse
+    case fileball
     case vidhub
     case vlc
+    case outplayer
 
     var id: String { rawValue }
 
@@ -1625,8 +1620,10 @@ enum ExternalOpenTarget: String, CaseIterable, Identifiable {
         switch self {
         case .safari: return "Safari"
         case .infuse: return "Infuse"
+        case .fileball: return "Fileball"
         case .vidhub: return "VidHub"
         case .vlc: return "VLC"
+        case .outplayer: return "Outplayer"
         }
     }
 
@@ -1642,8 +1639,10 @@ enum ExternalOpenTarget: String, CaseIterable, Identifiable {
         switch self {
         case .safari: return nil
         case .infuse: return URL(string: "infuse://")
+        case .fileball: return URL(string: "filebox://")
         case .vidhub: return URL(string: "open-vidhub://")
         case .vlc: return URL(string: "vlc-x-callback://")
+        case .outplayer: return URL(string: "outplayer://")
         }
     }
 
@@ -1663,10 +1662,31 @@ enum ExternalOpenTarget: String, CaseIterable, Identifiable {
                 filename: filename,
                 subtitleURL: subtitleURL
             )
+        case .fileball:
+            return simplePlaybackURL(scheme: "filebox", endpoint: endpoint)
         case .vidhub:
-            return callbackURL(scheme: "open-vidhub", action: "open", endpoint: endpoint)
+            return callbackURL(
+                scheme: "open-vidhub",
+                action: "play",
+                endpoint: endpoint,
+                filename: filename,
+                subtitleURL: subtitleURL
+            )
         case .vlc:
-            return callbackURL(scheme: "vlc-x-callback", action: "stream", endpoint: endpoint)
+            return callbackURL(
+                scheme: "vlc-x-callback",
+                action: "stream",
+                endpoint: endpoint,
+                filename: filename,
+                subtitleURL: subtitleURL
+            )
+        case .outplayer:
+            return callbackURL(
+                scheme: "outplayer",
+                action: "play",
+                endpoint: endpoint,
+                subtitleURL: subtitleURL
+            )
         }
     }
 
@@ -1674,7 +1694,7 @@ enum ExternalOpenTarget: String, CaseIterable, Identifiable {
         switch self {
         case .safari:
             return "external.safari_failed"
-        case .infuse, .vidhub, .vlc:
+        case .infuse, .fileball, .vidhub, .vlc, .outplayer:
             return "external.player_failed"
         }
     }
@@ -1683,8 +1703,10 @@ enum ExternalOpenTarget: String, CaseIterable, Identifiable {
         switch self {
         case .safari: return "Safari"
         case .infuse: return "Infuse"
+        case .fileball: return "Fileball"
         case .vidhub: return "VidHub"
         case .vlc: return "VLC"
+        case .outplayer: return "Outplayer"
         }
     }
 
@@ -1709,8 +1731,127 @@ enum ExternalOpenTarget: String, CaseIterable, Identifiable {
         if let subtitleURL {
             queryItems.append(URLQueryItem(name: "sub", value: subtitleURL.absoluteString))
         }
-        components.queryItems = queryItems
+        if scheme == "infuse" || scheme == "open-vidhub" {
+            let requestID = UUID().uuidString
+            let target = scheme == "infuse" ? "Infuse" : "VidHub"
+            if scheme == "open-vidhub" {
+                queryItems.append(URLQueryItem(name: "request-id", value: requestID))
+                queryItems.append(URLQueryItem(name: "x-source", value: "Nastart"))
+            }
+            queryItems.append(URLQueryItem(
+                name: "x-success",
+                value: Self.externalCallbackURL(
+                    outcome: "success",
+                    target: target,
+                    requestID: requestID
+                )?.absoluteString
+            ))
+            queryItems.append(URLQueryItem(
+                name: "x-error",
+                value: Self.externalCallbackURL(
+                    outcome: "error",
+                    target: target,
+                    requestID: requestID
+                )?.absoluteString
+            ))
+            if scheme == "open-vidhub" {
+                queryItems.append(URLQueryItem(
+                    name: "x-cancel",
+                    value: Self.externalCallbackURL(
+                        outcome: "cancel",
+                        target: target,
+                        requestID: requestID
+                    )?.absoluteString
+                ))
+            }
+        }
+        let queryValueCharacters = CharacterSet.alphanumerics
+            .union(CharacterSet(charactersIn: "-._~"))
+        components.percentEncodedQuery = queryItems.compactMap { item in
+            guard
+                let encodedName = item.name.addingPercentEncoding(
+                    withAllowedCharacters: queryValueCharacters
+                ),
+                let encodedValue = item.value?.addingPercentEncoding(
+                    withAllowedCharacters: queryValueCharacters
+                )
+            else {
+                return nil
+            }
+            return "\(encodedName)=\(encodedValue)"
+        }.joined(separator: "&")
         return components.url
+    }
+
+    private static func externalCallbackURL(
+        outcome: String,
+        target: String,
+        requestID: String
+    ) -> URL? {
+        var components = URLComponents()
+        components.scheme = "nastart"
+        components.host = "external-playback"
+        components.path = "/\(outcome)"
+        components.queryItems = [
+            URLQueryItem(name: "target", value: target),
+            URLQueryItem(name: "request-id", value: requestID)
+        ]
+        return components.url
+    }
+
+    private func simplePlaybackURL(scheme: String, endpoint: URL?) -> URL? {
+        guard let endpoint else { return nil }
+        var components = URLComponents()
+        components.scheme = scheme
+        components.host = "play"
+        let queryValueCharacters = CharacterSet.alphanumerics
+            .union(CharacterSet(charactersIn: "-._~"))
+        guard let encodedEndpoint = endpoint.absoluteString.addingPercentEncoding(
+            withAllowedCharacters: queryValueCharacters
+        ) else {
+            return nil
+        }
+        components.percentEncodedQuery = "url=\(encodedEndpoint)"
+        return components.url
+    }
+
+}
+
+enum ExternalPlaybackCallbackHandler {
+    static func handle(_ url: URL) {
+        guard url.scheme?.lowercased() == "nastart",
+              url.host?.lowercased() == "external-playback" else {
+            return
+        }
+        let outcome = url.path.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
+        let queryItems = URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems ?? []
+        let values = Dictionary(
+            queryItems.map { ($0.name, $0.value ?? "") },
+            uniquingKeysWith: { current, _ in current }
+        )
+        let level: DiagnosticLogLevel = outcome == "error" ? .error : .info
+        let messageKey: String
+        switch outcome {
+        case "success":
+            messageKey = "diagnostics.media.external_handoff_completed"
+        case "error":
+            messageKey = "diagnostics.media.external_handoff_playback_failed"
+        default:
+            messageKey = "diagnostics.media.external_handoff_cancelled"
+        }
+        DiagnosticLogStore.shared.record(
+            level,
+            categoryKey: "diagnostics.category.media",
+            messageKey: messageKey,
+            details: [
+                "targetApp": values["target"] ?? "-",
+                "requestID": values["request-id"] ?? "-",
+                "status": values["status"] ?? outcome,
+                "position": values["position"] ?? "-",
+                "duration": values["duration"] ?? "-",
+                "errorCode": values["errorCode"] ?? "-"
+            ]
+        )
     }
 }
 
@@ -1941,7 +2082,9 @@ private struct ServiceWebUIView: View {
                 }
             }
         }
-        .fullScreenCover(item: $playbackRequest) { request in
+        .fullScreenCover(item: $playbackRequest, onDismiss: {
+            PlayerOrientationController.setPlayerActive(false)
+        }) { request in
             NavigationStack {
                 BuiltInMediaPlayerView(request: request)
             }
@@ -2942,35 +3085,242 @@ enum DirectMediaURLPolicy {
     }
 }
 
+private struct PlaybackNetworkSnapshot: Sendable {
+    let cacheKey: String
+    let bitrateCap: Int?
+    let fallbackBitrate: Int
+}
+
+private final class PlaybackNetworkObserver: @unchecked Sendable {
+    static let shared = PlaybackNetworkObserver()
+
+    private let monitor = NWPathMonitor()
+    private let lock = NSLock()
+    private var currentSnapshot = PlaybackNetworkSnapshot(
+        cacheKey: "unknown",
+        bitrateCap: 20_000_000,
+        fallbackBitrate: 6_000_000
+    )
+
+    private init() {
+        monitor.pathUpdateHandler = { [weak self] path in
+            let snapshot: PlaybackNetworkSnapshot
+            if path.isConstrained {
+                snapshot = PlaybackNetworkSnapshot(
+                    cacheKey: "constrained",
+                    bitrateCap: 6_000_000,
+                    fallbackBitrate: 2_500_000
+                )
+            } else if path.usesInterfaceType(.cellular) {
+                snapshot = PlaybackNetworkSnapshot(
+                    cacheKey: "cellular",
+                    bitrateCap: path.isExpensive ? 12_000_000 : 16_000_000,
+                    fallbackBitrate: 4_000_000
+                )
+            } else if path.usesInterfaceType(.wifi) || path.usesInterfaceType(.wiredEthernet) {
+                snapshot = PlaybackNetworkSnapshot(
+                    cacheKey: "wifi",
+                    bitrateCap: 80_000_000,
+                    fallbackBitrate: 8_000_000
+                )
+            } else {
+                snapshot = PlaybackNetworkSnapshot(
+                    cacheKey: path.isExpensive ? "expensive" : "other",
+                    bitrateCap: path.isExpensive ? 10_000_000 : 20_000_000,
+                    fallbackBitrate: path.isExpensive ? 3_500_000 : 6_000_000
+                )
+            }
+            self?.lock.lock()
+            self?.currentSnapshot = snapshot
+            self?.lock.unlock()
+        }
+        monitor.start(queue: DispatchQueue(label: "com.changliwen.nastart.playback-network"))
+    }
+
+    func snapshot() -> PlaybackNetworkSnapshot {
+        lock.lock()
+        defer { lock.unlock() }
+        return currentSnapshot
+    }
+}
+
+struct MediaPlaybackResource {
+    let url: URL
+    let fileExtensionOverride: String?
+    let subtitleURL: URL?
+    let playbackTracker: MediaPlaybackTracker?
+    let forcesSoftwareDecoding: Bool
+    let allowsSelfSignedCertificates: Bool?
+    let timelineOffsetSeconds: Double?
+    let totalDurationSeconds: Double?
+
+    init(
+        url: URL,
+        fileExtensionOverride: String? = nil,
+        subtitleURL: URL? = nil,
+        playbackTracker: MediaPlaybackTracker? = nil,
+        forcesSoftwareDecoding: Bool = false,
+        allowsSelfSignedCertificates: Bool? = nil,
+        timelineOffsetSeconds: Double? = nil,
+        totalDurationSeconds: Double? = nil
+    ) {
+        self.url = url
+        self.fileExtensionOverride = fileExtensionOverride
+        self.subtitleURL = subtitleURL
+        self.playbackTracker = playbackTracker
+        self.forcesSoftwareDecoding = forcesSoftwareDecoding
+        self.allowsSelfSignedCertificates = allowsSelfSignedCertificates
+        self.timelineOffsetSeconds = timelineOffsetSeconds
+        self.totalDurationSeconds = totalDurationSeconds
+    }
+}
+
+struct MediaPlaybackRuntimeState {
+    let normalizedPosition: Double?
+    let positionSeconds: Double?
+    let playbackRate: Float
+    let audioTrackOrdinal: Int?
+    let subtitleTrackOrdinal: Int?
+    let subtitlesDisabled: Bool
+    let subtitleSelectionKnown: Bool
+    let orientationMode: PlayerOrientationMode
+}
+
+struct MediaPlaybackSourceTrack: Identifiable, Equatable {
+    let id: Int
+    let name: String
+    let externalURL: URL?
+
+    init(id: Int, name: String, externalURL: URL? = nil) {
+        self.id = id
+        self.name = name
+        self.externalURL = externalURL
+    }
+}
+
+enum MediaPlaybackContentKind {
+    case automatic
+    case video
+    case audio
+    case discImage
+}
+
+struct MediaPlaybackQualityOption: Identifiable, Equatable {
+    let id: String
+    let title: String
+    let detail: String?
+}
+
 struct MediaPlaybackRequest: Identifiable {
     let id = UUID()
+    let requestedAt: Date
     let url: URL
     let title: String
     let allowsSelfSignedCertificates: Bool
     let source: MediaPlaybackSource
+    let contentKind: MediaPlaybackContentKind
     let fileExtensionOverride: String?
     let initialPosition: Double?
     let externalSubtitleURL: URL?
+    let preferredAudioTrackOrdinal: Int?
+    let preferredSubtitleTrackOrdinal: Int?
+    let prefersSubtitlesDisabled: Bool
+    let initialOrientationMode: PlayerOrientationMode
+    let initialPlaybackRate: Float
+    let timelineOffsetSeconds: Double
+    let totalDurationSeconds: Double?
+    let isPrivateNetworkRoute: Bool?
+    let forcesSoftwareDecoding: Bool
     let playbackTracker: MediaPlaybackTracker?
+    let compatibilityResource: MediaPlaybackResource?
+    let compatibilityFallbackResource: MediaPlaybackResource?
+    let externalHandoffResource: MediaPlaybackResource?
+    let compatibilityResourceLoader: (() async -> MediaPlaybackResource?)?
+    let compatibilityFallbackResourceLoader: ((MediaPlaybackRuntimeState?) async -> MediaPlaybackResource?)?
+    let compatibilityFallbackRequestLoader: ((MediaPlaybackRuntimeState?) async -> MediaPlaybackRequest?)?
+    let externalHandoffResourceLoader: (() async -> MediaPlaybackResource?)?
+    let sourceAudioTracks: [MediaPlaybackSourceTrack]
+    let sourceSubtitleTracks: [MediaPlaybackSourceTrack]
+    let selectedSourceAudioTrackID: Int?
+    let selectedSourceSubtitleTrackID: Int?
+    let sourceTrackRequestLoader: ((Int?, Int?, MediaPlaybackRuntimeState) async -> MediaPlaybackRequest?)?
+    let serverSeekRequestLoader: ((Double, MediaPlaybackRuntimeState) async -> MediaPlaybackRequest?)?
+    let qualityOptions: [MediaPlaybackQualityOption]
+    let selectedQualityID: String?
+    let qualityRequestLoader: ((String, MediaPlaybackRuntimeState) async -> MediaPlaybackRequest?)?
 
     init(
+        requestedAt: Date = Date(),
         url: URL,
         title: String,
         allowsSelfSignedCertificates: Bool = false,
         source: MediaPlaybackSource = .directURL,
+        contentKind: MediaPlaybackContentKind = .automatic,
         fileExtensionOverride: String? = nil,
         initialPosition: Double? = nil,
         externalSubtitleURL: URL? = nil,
-        playbackTracker: MediaPlaybackTracker? = nil
+        preferredAudioTrackOrdinal: Int? = nil,
+        preferredSubtitleTrackOrdinal: Int? = nil,
+        prefersSubtitlesDisabled: Bool = false,
+        initialOrientationMode: PlayerOrientationMode = .landscape,
+        initialPlaybackRate: Float = 1,
+        timelineOffsetSeconds: Double = 0,
+        totalDurationSeconds: Double? = nil,
+        isPrivateNetworkRoute: Bool? = nil,
+        forcesSoftwareDecoding: Bool = false,
+        playbackTracker: MediaPlaybackTracker? = nil,
+        compatibilityResource: MediaPlaybackResource? = nil,
+        compatibilityFallbackResource: MediaPlaybackResource? = nil,
+        externalHandoffResource: MediaPlaybackResource? = nil,
+        compatibilityResourceLoader: (() async -> MediaPlaybackResource?)? = nil,
+        compatibilityFallbackResourceLoader: ((MediaPlaybackRuntimeState?) async -> MediaPlaybackResource?)? = nil,
+        compatibilityFallbackRequestLoader: ((MediaPlaybackRuntimeState?) async -> MediaPlaybackRequest?)? = nil,
+        externalHandoffResourceLoader: (() async -> MediaPlaybackResource?)? = nil,
+        sourceAudioTracks: [MediaPlaybackSourceTrack] = [],
+        sourceSubtitleTracks: [MediaPlaybackSourceTrack] = [],
+        selectedSourceAudioTrackID: Int? = nil,
+        selectedSourceSubtitleTrackID: Int? = nil,
+        sourceTrackRequestLoader: ((Int?, Int?, MediaPlaybackRuntimeState) async -> MediaPlaybackRequest?)? = nil,
+        serverSeekRequestLoader: ((Double, MediaPlaybackRuntimeState) async -> MediaPlaybackRequest?)? = nil,
+        qualityOptions: [MediaPlaybackQualityOption] = [],
+        selectedQualityID: String? = nil,
+        qualityRequestLoader: ((String, MediaPlaybackRuntimeState) async -> MediaPlaybackRequest?)? = nil
     ) {
+        self.requestedAt = requestedAt
         self.url = url
         self.title = title
         self.allowsSelfSignedCertificates = allowsSelfSignedCertificates
         self.source = source
+        self.contentKind = contentKind
         self.fileExtensionOverride = fileExtensionOverride
         self.initialPosition = initialPosition.map { min(max($0, 0), 1) }
         self.externalSubtitleURL = externalSubtitleURL
+        self.preferredAudioTrackOrdinal = preferredAudioTrackOrdinal
+        self.preferredSubtitleTrackOrdinal = preferredSubtitleTrackOrdinal
+        self.prefersSubtitlesDisabled = prefersSubtitlesDisabled
+        self.initialOrientationMode = initialOrientationMode
+        self.initialPlaybackRate = min(max(initialPlaybackRate, 0.25), 4)
+        self.timelineOffsetSeconds = max(timelineOffsetSeconds, 0)
+        self.totalDurationSeconds = totalDurationSeconds.flatMap { $0 > 0 ? $0 : nil }
+        self.isPrivateNetworkRoute = isPrivateNetworkRoute
+        self.forcesSoftwareDecoding = forcesSoftwareDecoding
         self.playbackTracker = playbackTracker
+        self.compatibilityResource = compatibilityResource
+        self.compatibilityFallbackResource = compatibilityFallbackResource
+        self.externalHandoffResource = externalHandoffResource
+        self.compatibilityResourceLoader = compatibilityResourceLoader
+        self.compatibilityFallbackResourceLoader = compatibilityFallbackResourceLoader
+        self.compatibilityFallbackRequestLoader = compatibilityFallbackRequestLoader
+        self.externalHandoffResourceLoader = externalHandoffResourceLoader
+        self.sourceAudioTracks = sourceAudioTracks
+        self.sourceSubtitleTracks = sourceSubtitleTracks
+        self.selectedSourceAudioTrackID = selectedSourceAudioTrackID
+        self.selectedSourceSubtitleTrackID = selectedSourceSubtitleTrackID
+        self.sourceTrackRequestLoader = sourceTrackRequestLoader
+        self.serverSeekRequestLoader = serverSeekRequestLoader
+        self.qualityOptions = qualityOptions
+        self.selectedQualityID = selectedQualityID
+        self.qualityRequestLoader = qualityRequestLoader
     }
 
     var fileExtensionHint: String {
@@ -2986,6 +3336,7 @@ struct MediaPlaybackRequest: Identifiable {
         case "mp4", "m4v": return "video/mp4"
         case "mov": return "video/quicktime"
         case "m3u8": return "application/vnd.apple.mpegurl"
+        case "ts", "m2ts": return "video/mp2t"
         case "mp3": return "audio/mpeg"
         case "m4a", "aac": return "audio/mp4"
         case "wav": return "audio/wav"
@@ -2993,8 +3344,25 @@ struct MediaPlaybackRequest: Identifiable {
         }
     }
 
+    var isAudioOnly: Bool {
+        switch contentKind {
+        case .audio:
+            return true
+        case .video, .discImage:
+            return false
+        case .automatic:
+            return Self.audioExtensions.contains(fileExtensionHint)
+        }
+    }
+
+    private static let audioExtensions: Set<String> = [
+        "mp3", "m4a", "aac", "wav", "flac", "ogg", "opus", "wma",
+        "ape", "alac", "aiff", "aif", "amr", "ac3", "dts"
+    ]
+
     var allowsExternalHandoff: Bool {
-        guard let scheme = url.scheme?.lowercased(), scheme == "http" || scheme == "https" else {
+        let handoffURL = externalHandoffResource?.url ?? url
+        guard let scheme = handoffURL.scheme?.lowercased(), scheme == "http" || scheme == "https" else {
             return false
         }
         return true
@@ -3004,16 +3372,143 @@ struct MediaPlaybackRequest: Identifiable {
         let sensitiveQueryNames = Set([
             "_sid", "api_key", "apikey", "token", "access_token", "authorization"
         ])
-        let queryItems = URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems ?? []
+        let handoffURL = externalHandoffResource?.url ?? url
+        let queryItems = URLComponents(url: handoffURL, resolvingAgainstBaseURL: false)?.queryItems ?? []
         return queryItems.contains { sensitiveQueryNames.contains($0.name.lowercased()) }
     }
 
     var externalFilename: String {
-        guard !fileExtensionHint.isEmpty,
+        let extensionHint = externalHandoffFileExtensionHint
+        guard !extensionHint.isEmpty,
               URL(fileURLWithPath: title).pathExtension.isEmpty else {
             return title
         }
-        return "\(title).\(fileExtensionHint)"
+        return "\(title).\(extensionHint)"
+    }
+
+    var externalHandoffURL: URL {
+        externalHandoffResource?.url ?? url
+    }
+
+    var externalHandoffSubtitleURL: URL? {
+        externalHandoffResource?.subtitleURL ?? externalSubtitleURL
+    }
+
+    var externalHandoffFileExtensionHint: String {
+        if let override = externalHandoffResource?.fileExtensionOverride, !override.isEmpty {
+            return override.lowercased()
+        }
+        return fileExtensionHint
+    }
+
+    var networkOriginURL: URL {
+        externalHandoffResource?.url ?? url
+    }
+
+    var compatibilityPlaybackRequest: MediaPlaybackRequest {
+        guard let compatibilityResource else { return self }
+        return playbackRequest(using: compatibilityResource)
+    }
+
+    func playbackRequest(
+        using resource: MediaPlaybackResource,
+        initialPositionOverride: Double? = nil,
+        runtimeState: MediaPlaybackRuntimeState? = nil,
+        retainsFallback: Bool = true
+    ) -> MediaPlaybackRequest {
+        return MediaPlaybackRequest(
+            requestedAt: requestedAt,
+            url: resource.url,
+            title: title,
+            allowsSelfSignedCertificates: resource.allowsSelfSignedCertificates
+                ?? allowsSelfSignedCertificates,
+            source: source,
+            contentKind: contentKind,
+            fileExtensionOverride: resource.fileExtensionOverride,
+            initialPosition: resource.timelineOffsetSeconds == nil
+                ? runtimeState?.normalizedPosition ?? initialPositionOverride ?? initialPosition
+                : nil,
+            externalSubtitleURL: resource.subtitleURL,
+            preferredAudioTrackOrdinal: runtimeState?.audioTrackOrdinal ?? preferredAudioTrackOrdinal,
+            preferredSubtitleTrackOrdinal: runtimeState?.subtitleTrackOrdinal ?? preferredSubtitleTrackOrdinal,
+            prefersSubtitlesDisabled: runtimeState.map {
+                $0.subtitleSelectionKnown ? $0.subtitlesDisabled : prefersSubtitlesDisabled
+            } ?? prefersSubtitlesDisabled,
+            initialOrientationMode: runtimeState?.orientationMode ?? initialOrientationMode,
+            initialPlaybackRate: runtimeState?.playbackRate ?? initialPlaybackRate,
+            timelineOffsetSeconds: resource.timelineOffsetSeconds ?? timelineOffsetSeconds,
+            totalDurationSeconds: resource.totalDurationSeconds ?? totalDurationSeconds,
+            isPrivateNetworkRoute: isPrivateNetworkRoute,
+            forcesSoftwareDecoding: resource.forcesSoftwareDecoding,
+            playbackTracker: resource.playbackTracker ?? playbackTracker,
+            compatibilityFallbackResource: retainsFallback ? compatibilityFallbackResource : nil,
+            externalHandoffResource: externalHandoffResource,
+            compatibilityFallbackResourceLoader: retainsFallback
+                ? compatibilityFallbackResourceLoader
+                : nil,
+            compatibilityFallbackRequestLoader: retainsFallback
+                ? compatibilityFallbackRequestLoader
+                : nil,
+            externalHandoffResourceLoader: externalHandoffResourceLoader,
+            sourceAudioTracks: sourceAudioTracks,
+            sourceSubtitleTracks: sourceSubtitleTracks,
+            selectedSourceAudioTrackID: selectedSourceAudioTrackID,
+            selectedSourceSubtitleTrackID: selectedSourceSubtitleTrackID,
+            sourceTrackRequestLoader: sourceTrackRequestLoader,
+            serverSeekRequestLoader: serverSeekRequestLoader,
+            qualityOptions: qualityOptions,
+            selectedQualityID: selectedQualityID,
+            qualityRequestLoader: qualityRequestLoader
+        )
+    }
+
+    func applyingRuntimePreferences(_ runtimeState: MediaPlaybackRuntimeState) -> MediaPlaybackRequest {
+        MediaPlaybackRequest(
+            requestedAt: requestedAt,
+            url: url,
+            title: title,
+            allowsSelfSignedCertificates: allowsSelfSignedCertificates,
+            source: source,
+            contentKind: contentKind,
+            fileExtensionOverride: fileExtensionOverride,
+            // A replacement resource must resume at the live playhead. Keeping
+            // the request's original entry.progress here makes a quality or
+            // source-track switch jump back to where playback initially began.
+            // Transcoded HLS carries an absolute server start time instead, so
+            // its relative playhead intentionally remains nil.
+            initialPosition: timelineOffsetSeconds > 0
+                ? nil
+                : runtimeState.normalizedPosition ?? initialPosition,
+            externalSubtitleURL: externalSubtitleURL,
+            preferredAudioTrackOrdinal: preferredAudioTrackOrdinal,
+            preferredSubtitleTrackOrdinal: preferredSubtitleTrackOrdinal,
+            prefersSubtitlesDisabled: runtimeState.subtitleSelectionKnown
+                ? runtimeState.subtitlesDisabled
+                : prefersSubtitlesDisabled,
+            initialOrientationMode: runtimeState.orientationMode,
+            initialPlaybackRate: runtimeState.playbackRate,
+            timelineOffsetSeconds: timelineOffsetSeconds,
+            totalDurationSeconds: totalDurationSeconds,
+            isPrivateNetworkRoute: isPrivateNetworkRoute,
+            forcesSoftwareDecoding: forcesSoftwareDecoding,
+            playbackTracker: playbackTracker,
+            compatibilityResource: compatibilityResource,
+            compatibilityFallbackResource: compatibilityFallbackResource,
+            externalHandoffResource: externalHandoffResource,
+            compatibilityResourceLoader: compatibilityResourceLoader,
+            compatibilityFallbackResourceLoader: compatibilityFallbackResourceLoader,
+            compatibilityFallbackRequestLoader: compatibilityFallbackRequestLoader,
+            externalHandoffResourceLoader: externalHandoffResourceLoader,
+            sourceAudioTracks: sourceAudioTracks,
+            sourceSubtitleTracks: sourceSubtitleTracks,
+            selectedSourceAudioTrackID: selectedSourceAudioTrackID,
+            selectedSourceSubtitleTrackID: selectedSourceSubtitleTrackID,
+            sourceTrackRequestLoader: sourceTrackRequestLoader,
+            serverSeekRequestLoader: serverSeekRequestLoader,
+            qualityOptions: qualityOptions,
+            selectedQualityID: selectedQualityID,
+            qualityRequestLoader: qualityRequestLoader
+        )
     }
 }
 
@@ -3127,7 +3622,7 @@ private final class MediaProbeTrustDelegate: NSObject, URLSessionDelegate {
     }
 }
 
-private enum MediaPlaybackProbe {
+enum MediaPlaybackProbe {
     static func run(_ playback: MediaPlaybackRequest) async {
         guard
             let scheme = playback.url.scheme?.lowercased(),
@@ -3147,6 +3642,9 @@ private enum MediaPlaybackProbe {
         configuration.timeoutIntervalForRequest = 15
         configuration.timeoutIntervalForResource = 20
         configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
+        configuration.allowsCellularAccess = true
+        configuration.allowsExpensiveNetworkAccess = true
+        configuration.waitsForConnectivity = true
         let delegate = MediaProbeTrustDelegate(
             trustedHost: playback.url.host,
             allowsSelfSignedCertificates: playback.allowsSelfSignedCertificates
@@ -3162,7 +3660,7 @@ private enum MediaPlaybackProbe {
         request.setValue("identity", forHTTPHeaderField: "Accept-Encoding")
 
         do {
-            let (data, response) = try await session.data(for: request)
+            let (bytes, response) = try await session.bytes(for: request)
             guard let httpResponse = response as? HTTPURLResponse else {
                 diagnostics.record(
                     .error,
@@ -3195,7 +3693,8 @@ private enum MediaPlaybackProbe {
             )
             if accepted,
                playback.fileExtensionHint == "m3u8",
-               let playlist = String(data: data, encoding: .utf8),
+               let playlistData = try? await prefixData(from: bytes, limit: 256 * 1024),
+               let playlist = String(data: playlistData, encoding: .utf8),
                let childURL = firstPlaylistURL(in: playlist, relativeTo: playback.url) {
                 await probePlaylistChild(
                     childURL,
@@ -3222,10 +3721,13 @@ private enum MediaPlaybackProbe {
 
     static func baseDetails(for playback: MediaPlaybackRequest) -> [String: String] {
         [
-            "target": DiagnosticLogStore.redactedURL(playback.url),
+            "target": DiagnosticLogStore.redactedURL(playback.networkOriginURL),
             "source": playback.source.rawValue,
             "extension": playback.fileExtensionHint.isEmpty ? "-" : playback.fileExtensionHint,
             "selfSigned": playback.allowsSelfSignedCertificates ? "on" : "off",
+            "transport": playback.url.host == "127.0.0.1"
+                ? "localRangeProxy"
+                : "sourceURL",
             "compatibilityEngine": MediaPlaybackPolicy.hasCompatibilityEngine ? "available" : "unavailable"
         ]
     }
@@ -3248,8 +3750,9 @@ private enum MediaPlaybackProbe {
         var request = URLRequest(url: url)
         request.timeoutInterval = 15
         request.setValue("identity", forHTTPHeaderField: "Accept-Encoding")
+        request.setValue("bytes=0-1023", forHTTPHeaderField: "Range")
         do {
-            let (data, response) = try await session.data(for: request)
+            let (_, response) = try await session.bytes(for: request)
             guard let response = response as? HTTPURLResponse else { return }
             let mimeType = response.mimeType?.lowercased() ?? "-"
             let accepted = (200...299).contains(response.statusCode)
@@ -3266,7 +3769,7 @@ private enum MediaPlaybackProbe {
                     "target": DiagnosticLogStore.redactedURL(url),
                     "status": "\(response.statusCode)",
                     "mime": mimeType,
-                    "bytesReceived": "\(data.count)"
+                    "bytesReceived": "headersOnly"
                 ]) { _, new in new }
             )
         } catch {
@@ -3292,6 +3795,19 @@ private enum MediaPlaybackProbe {
         if lowercased.contains("inline") { return "inline" }
         return "present"
     }
+
+    private static func prefixData(
+        from bytes: URLSession.AsyncBytes,
+        limit: Int
+    ) async throws -> Data {
+        var data = Data()
+        data.reserveCapacity(min(limit, 32 * 1024))
+        for try await byte in bytes {
+            data.append(byte)
+            if data.count >= limit { break }
+        }
+        return data
+    }
 }
 
 private enum MediaPlaybackEngine: Equatable {
@@ -3313,11 +3829,29 @@ private enum MediaPlaybackPolicy {
 #endif
     }
 
+    static func allowsCompatibilityPlayer(for request: MediaPlaybackRequest) -> Bool {
+        guard hasCompatibilityEngine else { return false }
+        if request.source == .jellyfin || request.source == .dsmFile { return true }
+        return request.fileExtensionHint != "m3u8"
+            || request.compatibilityResource != nil
+            || request.compatibilityResourceLoader != nil
+    }
+
     static func preferredEngine(for request: MediaPlaybackRequest) -> MediaPlaybackEngine {
-        guard hasCompatibilityEngine else { return .system }
+        guard allowsCompatibilityPlayer(for: request) else { return .system }
+        // Public Jellyfin HLS is authenticated through the local playlist
+        // proxy. MobileVLCKit is the more tolerant decoder for the resulting
+        // MPEG-TS/fMP4 output on iOS 16 devices; AVPlayer can report a
+        // playing/ready state while rendering a black frame for the same
+        // stream. Keep AVPlayer for private HLS so PiP/AirPlay remain on the
+        // fast system path, and use VLC only where remote reliability matters.
         if request.source == .jellyfin,
            request.fileExtensionHint == "m3u8",
-           !request.allowsSelfSignedCertificates {
+           request.isPrivateNetworkRoute != true {
+            return .compatibility
+        }
+        if request.fileExtensionHint == "m3u8",
+           allowsSystemPlayer(for: request) {
             return .system
         }
         if request.source == .jellyfin || request.source == .dsmFile {
@@ -3335,23 +3869,42 @@ private enum MediaPlaybackPolicy {
         guard !request.allowsSelfSignedCertificates else {
             return false
         }
-        if request.source == .jellyfin {
-            return request.fileExtensionHint == "m3u8"
-        }
-        guard request.source == .directURL else { return false }
         let fileExtension = request.fileExtensionHint
-        return fileExtension.isEmpty || systemPreferredExtensions.contains(fileExtension)
+        guard fileExtension.isEmpty || systemPreferredExtensions.contains(fileExtension) else {
+            return false
+        }
+        return request.source == .directURL
+            || request.source == .dsmFile
+            || request.source == .jellyfin
     }
 
     static func requiresCompatibilityEngine(for request: MediaPlaybackRequest) -> Bool {
         if request.allowsSelfSignedCertificates {
             return true
         }
-        if request.source == .jellyfin, request.fileExtensionHint == "m3u8" {
-            return false
+        if request.source == .jellyfin {
+            return hasCompatibilityEngine || request.fileExtensionHint != "m3u8"
         }
+        if request.source == .dsmFile, hasCompatibilityEngine { return true }
         let fileExtension = request.fileExtensionHint
         return !fileExtension.isEmpty && !systemPreferredExtensions.contains(fileExtension)
+    }
+
+    static func shouldAutomaticallyFallback(for request: MediaPlaybackRequest) -> Bool {
+        guard allowsCompatibilityPlayer(for: request) else { return false }
+        // Jellyfin HLS is the preferred remote transport and normally uses
+        // AVPlayer for PiP/background playback.  Keep MobileVLCKit as a
+        // bounded in-place fallback as well: AVPlayer can reject a valid
+        // Jellyfin playlist because of a transient child-segment response or
+        // a server-specific HLS tag.  Without this branch the player stays
+        // black until the cover is dismissed, even though VLC can open the
+        // same authenticated playlist.
+        if request.source == .jellyfin, request.fileExtensionHint == "m3u8" {
+            return true
+        }
+        return request.fileExtensionHint != "m3u8"
+            || request.compatibilityResource != nil
+            || request.compatibilityResourceLoader != nil
     }
 }
 
@@ -3397,7 +3950,9 @@ private struct DirectMediaPlayerSetupView: View {
         .alert("player.url.invalid", isPresented: $showValidationError) {
             Button("action.ok", role: .cancel) {}
         }
-        .fullScreenCover(item: $playbackRequest) { request in
+        .fullScreenCover(item: $playbackRequest, onDismiss: {
+            PlayerOrientationController.setPlayerActive(false)
+        }) { request in
             NavigationStack {
                 BuiltInMediaPlayerView(request: request)
             }
@@ -3423,21 +3978,62 @@ private final class MediaPlayerSession: ObservableObject {
     let player: AVPlayer
     @Published private(set) var errorMessage: String?
     @Published private(set) var isReady = false
-    private let request: MediaPlaybackRequest
+    @Published private(set) var fallbackReason: String?
+    private var request: MediaPlaybackRequest
     private var statusObservation: NSKeyValueObservation?
     private var timeControlObservation: NSKeyValueObservation?
     private var periodicTimeObserver: Any?
     private var lastTimeControlStatus: AVPlayer.TimeControlStatus?
     private var didApplyInitialPosition = false
+    private var pendingInitialPosition: Double?
+    private var stallWorkItem: DispatchWorkItem?
+    private var startupWorkItem: DispatchWorkItem?
 
     init(request: MediaPlaybackRequest) {
         self.request = request
+        pendingInitialPosition = request.initialPosition
+        player = AVPlayer(playerItem: Self.makePlayerItem(for: request))
+        Self.configure(player, for: request)
+    }
+
+    private static func makePlayerItem(for request: MediaPlaybackRequest) -> AVPlayerItem {
         let options: [String: Any]? = request.mimeTypeHint.map {
             ["AVURLAssetOutOfBandMIMETypeKey": $0 as Any]
         }
         let asset = AVURLAsset(url: request.url, options: options)
         let item = AVPlayerItem(asset: asset)
-        player = AVPlayer(playerItem: item)
+        // AVPlayer's default anti-stall policy deliberately waits for a larger
+        // buffer before starting HLS. That is safe for VOD but makes a newly
+        // negotiated Jellyfin stream feel frozen. A small explicit forward
+        // buffer keeps startup and seeks responsive while VLC remains the
+        // engine for raw NAS files.
+        item.preferredForwardBufferDuration = request.fileExtensionHint == "m3u8"
+            ? 1.5
+            : 0.5
+        return item
+    }
+
+    private static func configure(_ player: AVPlayer, for request: MediaPlaybackRequest) {
+        player.automaticallyWaitsToMinimizeStalling = request.fileExtensionHint != "m3u8"
+    }
+
+    func replaceRequest(
+        _ request: MediaPlaybackRequest,
+        normalizedPosition: Double?
+    ) {
+        pause()
+        removeObservers()
+        self.request = request
+        pendingInitialPosition = normalizedPosition ?? request.initialPosition
+        didApplyInitialPosition = false
+        lastTimeControlStatus = nil
+        errorMessage = nil
+        fallbackReason = nil
+        isReady = false
+        startupWorkItem?.cancel()
+        startupWorkItem = nil
+        Self.configure(player, for: request)
+        player.replaceCurrentItem(with: Self.makePlayerItem(for: request))
     }
 
     private func activateIfNeeded() {
@@ -3457,14 +4053,15 @@ private final class MediaPlayerSession: ObservableObject {
                 switch item.status {
                 case .readyToPlay:
                     if !self.didApplyInitialPosition,
-                       let progress = self.request.initialPosition,
+                       let progress = self.pendingInitialPosition,
                        item.duration.seconds.isFinite,
                        item.duration.seconds > 0 {
                         self.didApplyInitialPosition = true
+                        self.pendingInitialPosition = nil
                         self.player.seek(
                             to: CMTime(seconds: item.duration.seconds * progress, preferredTimescale: 600),
-                            toleranceBefore: .zero,
-                            toleranceAfter: .zero
+                            toleranceBefore: CMTime(seconds: 0.5, preferredTimescale: 600),
+                            toleranceAfter: CMTime(seconds: 0.5, preferredTimescale: 600)
                         )
                     }
                     self.isReady = true
@@ -3480,6 +4077,7 @@ private final class MediaPlayerSession: ObservableObject {
                     let error = item.error as NSError?
                     self.errorMessage = item.error?.localizedDescription
                         ?? NSLocalizedString("player.load_failed", comment: "")
+                    self.fallbackReason = "playerError"
                     DiagnosticLogStore.shared.record(
                         .error,
                         categoryKey: "diagnostics.category.media",
@@ -3498,35 +4096,38 @@ private final class MediaPlayerSession: ObservableObject {
             }
         }
         timeControlObservation = player.observe(\.timeControlStatus, options: [.initial, .new]) { [weak self] player, _ in
-            guard let self, player.timeControlStatus != self.lastTimeControlStatus else { return }
-            self.lastTimeControlStatus = player.timeControlStatus
-            let state: String
-            switch player.timeControlStatus {
-            case .paused: state = "paused"
-            case .playing: state = "playing"
-            case .waitingToPlayAtSpecifiedRate: state = "waiting"
-            @unknown default: state = "unknown"
-            }
-            DiagnosticLogStore.shared.record(
-                state == "waiting" ? .warning : .info,
-                categoryKey: "diagnostics.category.media",
-                messageKey: "diagnostics.media.player_state",
-                details: [
-                    "engine": "AVPlayer",
-                    "state": state,
-                    "waitingReason": player.reasonForWaitingToPlay?.rawValue ?? "-"
-                ]
-            )
-            let currentSeconds = player.currentTime().seconds
-            if currentSeconds.isFinite {
-                if player.timeControlStatus == .playing {
-                    self.request.playbackTracker?.started(positionSeconds: currentSeconds)
+            DispatchQueue.main.async {
+                guard let self, player.timeControlStatus != self.lastTimeControlStatus else { return }
+                self.lastTimeControlStatus = player.timeControlStatus
+                let state: String
+                switch player.timeControlStatus {
+                case .paused: state = "paused"
+                case .playing: state = "playing"
+                case .waitingToPlayAtSpecifiedRate: state = "waiting"
+                @unknown default: state = "unknown"
                 }
-                self.request.playbackTracker?.progressed(
-                    positionSeconds: currentSeconds,
-                    isPaused: player.timeControlStatus != .playing,
-                    force: true
+                DiagnosticLogStore.shared.record(
+                    state == "waiting" ? .warning : .info,
+                    categoryKey: "diagnostics.category.media",
+                    messageKey: "diagnostics.media.player_state",
+                    details: [
+                        "engine": "AVPlayer",
+                        "state": state,
+                        "waitingReason": player.reasonForWaitingToPlay?.rawValue ?? "-"
+                    ]
                 )
+                let currentSeconds = player.currentTime().seconds
+                if currentSeconds.isFinite {
+                    if player.timeControlStatus == .playing {
+                        self.request.playbackTracker?.started(positionSeconds: currentSeconds)
+                    }
+                    self.request.playbackTracker?.progressed(
+                        positionSeconds: currentSeconds,
+                        isPaused: player.timeControlStatus != .playing,
+                        force: true
+                    )
+                }
+                self.updateStallDetection(for: player.timeControlStatus)
             }
         }
         periodicTimeObserver = player.addPeriodicTimeObserver(
@@ -3544,23 +4145,125 @@ private final class MediaPlayerSession: ObservableObject {
         }
     }
 
-    func play() {
+    func play(from normalizedPosition: Double? = nil) {
+        if let normalizedPosition {
+            pendingInitialPosition = min(max(normalizedPosition, 0), 1)
+            didApplyInitialPosition = false
+        }
         activateIfNeeded()
         try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .moviePlayback)
         try? AVAudioSession.sharedInstance().setActive(true)
+        applyPendingPositionIfReady()
         player.play()
+        scheduleStartupFrameWatchdog()
     }
 
     func pause() {
+        stallWorkItem?.cancel()
+        startupWorkItem?.cancel()
         player.pause()
     }
 
-    deinit {
+    private func scheduleStartupFrameWatchdog() {
+        startupWorkItem?.cancel()
+        guard request.fileExtensionHint == "m3u8" else { return }
+        let workItem = DispatchWorkItem { [weak self] in
+            guard let self,
+                  self.fallbackReason == nil,
+                  let item = self.player.currentItem,
+                  self.player.timeControlStatus != .paused,
+                  item.presentationSize == .zero else {
+                return
+            }
+            self.fallbackReason = "startupNoVideoFrame"
+            DiagnosticLogStore.shared.record(
+                .warning,
+                categoryKey: "diagnostics.category.media",
+                messageKey: "diagnostics.media.player_fallback",
+                details: [
+                    "from": "AVPlayer",
+                    "to": "MobileVLCKit",
+                    "reason": "startupNoVideoFrame",
+                    "watchdogSeconds": "8"
+                ]
+            )
+        }
+        startupWorkItem = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + 8, execute: workItem)
+    }
+
+    var normalizedPosition: Double? {
+        guard let item = player.currentItem else { return nil }
+        let duration = item.duration.seconds
+        let current = player.currentTime().seconds
+        guard duration.isFinite, duration > 0, current.isFinite else { return nil }
+        return min(max(current / duration, 0), 1)
+    }
+
+    private func applyPendingPositionIfReady() {
+        guard
+            !didApplyInitialPosition,
+            let progress = pendingInitialPosition,
+            let item = player.currentItem,
+            item.status == .readyToPlay,
+            item.duration.seconds.isFinite,
+            item.duration.seconds > 0
+        else {
+            return
+        }
+        didApplyInitialPosition = true
+        pendingInitialPosition = nil
+        player.seek(
+            to: CMTime(seconds: item.duration.seconds * progress, preferredTimescale: 600),
+            toleranceBefore: CMTime(seconds: 0.5, preferredTimescale: 600),
+            toleranceAfter: CMTime(seconds: 0.5, preferredTimescale: 600)
+        )
+    }
+
+    private func updateStallDetection(for status: AVPlayer.TimeControlStatus) {
+        stallWorkItem?.cancel()
+        stallWorkItem = nil
+        guard status == .waitingToPlayAtSpecifiedRate, fallbackReason == nil else { return }
+        let workItem = DispatchWorkItem { [weak self] in
+            guard let self,
+                  self.player.timeControlStatus == .waitingToPlayAtSpecifiedRate,
+                  self.fallbackReason == nil else {
+                return
+            }
+            self.fallbackReason = "playbackStall"
+            DiagnosticLogStore.shared.record(
+                .warning,
+                categoryKey: "diagnostics.category.media",
+                messageKey: "diagnostics.media.player_fallback",
+                details: [
+                    "from": "AVPlayer",
+                    "to": "MobileVLCKit",
+                    "reason": "playbackStall",
+                    "waitingReason": self.player.reasonForWaitingToPlay?.rawValue ?? "-"
+                ]
+            )
+        }
+        stallWorkItem = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + 15, execute: workItem)
+    }
+
+    private func removeObservers() {
+        stallWorkItem?.cancel()
+        stallWorkItem = nil
+        startupWorkItem?.cancel()
+        startupWorkItem = nil
         statusObservation?.invalidate()
+        statusObservation = nil
         timeControlObservation?.invalidate()
+        timeControlObservation = nil
         if let periodicTimeObserver {
             player.removeTimeObserver(periodicTimeObserver)
+            self.periodicTimeObserver = nil
         }
+    }
+
+    deinit {
+        removeObservers()
         player.pause()
     }
 }
@@ -3573,29 +4276,100 @@ struct BuiltInMediaPlayerView: View {
     @State private var didAutomaticallyFallback = false
     @State private var showExternalPicker = false
     @State private var sharePayload: ServiceSharePayload?
-    @State private var externalMessageKey = "external.open_failed"
-    @State private var showExternalHint = false
     @State private var pendingExternalTarget: ExternalOpenTarget?
     @State private var pendingShareHandoff = false
     @State private var showCredentialHandoffWarning = false
+    @State private var resolvedCompatibilityRequest: MediaPlaybackRequest?
+    @State private var resolvedExternalHandoffRequest: MediaPlaybackRequest?
+    @State private var compatibilityLoadTask: Task<MediaPlaybackResource?, Never>?
+    @State private var compatibilityFallbackLoadTask: Task<MediaPlaybackResource?, Never>?
+    @State private var compatibilityFallbackRequestLoadTask: Task<MediaPlaybackRequest?, Never>?
+    @State private var externalHandoffLoadTask: Task<MediaPlaybackResource?, Never>?
+    @State private var sourceTrackLoadTask: Task<Void, Never>?
+    @State private var serverSeekLoadTask: Task<Void, Never>?
+    @State private var qualityLoadTask: Task<Void, Never>?
+    @State private var isPreparingAlternative = false
+    @State private var didUseCompatibilityFallback = false
+    @State private var compatibilityFallbackAttemptCount = 0
+    @State private var compatibilityResumePosition: Double?
+    @State private var compatibilityDidFail = false
+    @State private var systemQualityPanelPresented = false
+    @State private var shouldStartPictureInPicture = false
 
     init(request: MediaPlaybackRequest) {
         self.request = request
         _session = StateObject(wrappedValue: MediaPlayerSession(request: request))
         _activeEngine = State(initialValue: MediaPlaybackPolicy.preferredEngine(for: request))
+        if request.compatibilityResourceLoader == nil {
+            _resolvedCompatibilityRequest = State(
+                initialValue: request.compatibilityPlaybackRequest
+            )
+        }
     }
 
     var body: some View {
+        if request.isAudioOnly {
+            DedicatedAudioPlayerView(request: request)
+        } else {
+            videoPlayerBody
+        }
+    }
+
+    private var videoPlayerBody: some View {
         ZStack {
             Color.black.ignoresSafeArea()
 
             switch activeEngine {
             case .system:
-                SystemPlayerController(player: session.player)
+                ZStack {
+                    SystemPlayerController(
+                        player: session.player,
+                        startPictureInPicture: shouldStartPictureInPicture,
+                        onSeekCommitted: {
+                            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                        },
+                        onPictureInPictureEvent: { phase, error in
+                            var details = ["phase": phase]
+                            if let error {
+                                details["error"] = error.localizedDescription
+                            }
+                            DiagnosticLogStore.shared.record(
+                                phase == "failed" ? .warning : .info,
+                                categoryKey: "diagnostics.category.media",
+                                messageKey: "diagnostics.media.player_switch",
+                                details: details.merging(["target": "pictureInPicture"]) { _, new in new }
+                            )
+                            if phase == "didStart" {
+                                shouldStartPictureInPicture = false
+                            }
+                        }
+                    )
                     .ignoresSafeArea(edges: .bottom)
 
-                if let errorMessage = session.errorMessage,
-                   !MediaPlaybackPolicy.hasCompatibilityEngine {
+                    if request.qualityOptions.count > 1 {
+                        VStack {
+                            HStack {
+                                Spacer()
+                                Button {
+                                    systemQualityPanelPresented = true
+                                } label: {
+                                    Image(systemName: "4k.tv")
+                                        .font(.title3.weight(.semibold))
+                                        .frame(width: 44, height: 44)
+                                        .background(.black.opacity(0.48), in: Circle())
+                                }
+                                .buttonStyle(.plain)
+                                .foregroundStyle(.white)
+                                .accessibilityLabel(Text("player.quality"))
+                            }
+                            Spacer()
+                        }
+                        .padding(.top, 22)
+                        .padding(.trailing, 18)
+                    }
+                }
+
+                if let errorMessage = session.errorMessage {
                     playbackErrorView(
                         MediaPlaybackPolicy.requiresCompatibilityEngine(for: request)
                             ? NSLocalizedString("player.compatibility_unavailable", comment: "")
@@ -3604,21 +4378,62 @@ struct BuiltInMediaPlayerView: View {
                 }
             case .compatibility:
 #if canImport(MobileVLCKit)
-                VLCBuiltInPlayerView(
-                    request: request,
-                    close: { dismiss() },
-                    useSystemPlayer: MediaPlaybackPolicy.allowsSystemPlayer(for: request)
-                        ? { selectEngine(.system) }
-                        : nil,
-                    openExternal: {
-                        if request.allowsExternalHandoff {
-                            showExternalPicker = true
+                if let compatibilityRequest = activeCompatibilityRequest {
+                    VLCBuiltInPlayerView(
+                        request: compatibilityRequest,
+                        close: { dismiss() },
+                        useSystemPlayer: canPrepareSystemPlayback(from: compatibilityRequest)
+                            ? prepareSystemPlayback
+                            : nil,
+                        compatibilityFailed: handleCompatibilityFailure,
+                        sourceTrackChange: compatibilityRequest.sourceTrackRequestLoader == nil
+                            ? nil
+                            : handleSourceTrackChange,
+                        serverSeek: compatibilityRequest.serverSeekRequestLoader == nil
+                            ? nil
+                            : handleServerSeek,
+                        qualityChange: compatibilityRequest.qualityRequestLoader == nil
+                            ? nil
+                            : handleQualityChange,
+                        openExternal: {
+                            if request.allowsExternalHandoff {
+                                showExternalPicker = true
+                            }
                         }
-                    }
-                )
+                    )
+                    .id(compatibilityRequest.id)
+                } else {
+                    ProgressView()
+                        .tint(.white)
+                }
 #else
                 playbackErrorView(NSLocalizedString("player.compatibility_unavailable", comment: ""))
 #endif
+            }
+
+            if isPreparingAlternative {
+                ProgressView()
+                    .tint(.white)
+                    .padding(14)
+                    .background(.black.opacity(0.72), in: RoundedRectangle(cornerRadius: 8))
+            }
+
+            if showExternalPicker {
+                externalPlayerPicker
+                    .transition(.opacity.combined(with: .scale(scale: 0.96)))
+                    .zIndex(2)
+            }
+
+            if showCredentialHandoffWarning {
+                credentialHandoffWarning
+                    .transition(.opacity.combined(with: .scale(scale: 0.96)))
+                    .zIndex(3)
+            }
+
+            if systemQualityPanelPresented {
+                systemQualityPanel
+                    .transition(.move(edge: .trailing).combined(with: .opacity))
+                    .zIndex(4)
             }
         }
         .navigationTitle(request.title.isEmpty ? "player.title" : request.title)
@@ -3635,7 +4450,8 @@ struct BuiltInMediaPlayerView: View {
             }
             ToolbarItemGroup(placement: .navigationBarTrailing) {
 #if canImport(MobileVLCKit)
-                if MediaPlaybackPolicy.allowsSystemPlayer(for: request) {
+                if MediaPlaybackPolicy.allowsSystemPlayer(for: request)
+                    && MediaPlaybackPolicy.allowsCompatibilityPlayer(for: request) {
                     Menu {
                         Button {
                             selectEngine(.system)
@@ -3661,95 +4477,61 @@ struct BuiltInMediaPlayerView: View {
                     }
                     .accessibilityLabel(Text("devices.files.open_external"))
                 }
+                if activeEngine == .system {
+                    Button {
+                        togglePlayerOrientation()
+                    } label: {
+                        Image(systemName: "arrow.up.left.and.arrow.down.right")
+                    }
+                    .accessibilityLabel(Text("player.fullscreen"))
+                }
             }
-        }
-        .confirmationDialog("service.external.title", isPresented: $showExternalPicker) {
-            ForEach(ExternalOpenTarget.installedPlayers) { target in
-                Button(target.displayName) { requestExternalOpen(target) }
-            }
-            Button("external.browser") { requestExternalOpen(.safari) }
-            Button("external.other_apps") {
-                requestExternalShare()
-            }
-            Button("action.cancel", role: .cancel) {}
         }
         .sheet(item: $sharePayload) { payload in
             SystemShareView(items: [payload.url])
         }
-        .alert(LocalizedStringKey(externalMessageKey), isPresented: $showExternalHint) {
-            Button("action.ok", role: .cancel) {}
-        }
-        .confirmationDialog(
-            "external.credential_warning.title",
-            isPresented: $showCredentialHandoffWarning,
-            titleVisibility: .visible
-        ) {
-            Button("external.credential_warning.continue") {
-                if let target = pendingExternalTarget {
-                    openExternal(target)
-                } else if pendingShareHandoff {
-                    sharePayload = ServiceSharePayload(url: request.url)
-                }
-                pendingExternalTarget = nil
-                pendingShareHandoff = false
-            }
-            Button("action.cancel", role: .cancel) {
-                pendingExternalTarget = nil
-                pendingShareHandoff = false
-            }
-        } message: {
-            Text("external.credential_warning.message")
-        }
         .onAppear {
-            PlayerOrientationController.setPlayerActive(true)
+            PlayerOrientationController.setPlayerActive(
+                true,
+                initialMode: request.initialOrientationMode
+            )
             if activeEngine == .system {
                 session.play()
+            } else if activeCompatibilityRequest == nil {
+                Task { _ = await resolveCompatibilityRequest() }
             }
         }
         .task {
-            await MediaPlaybackProbe.run(request)
-        }
-        .task(id: activeEngine) {
-            guard
-                activeEngine == .system,
-                MediaPlaybackPolicy.hasCompatibilityEngine,
-                !didAutomaticallyFallback
-            else {
-                return
+            // Jellyfin and DSM resources are validated while their final playback route is
+            // prepared. A second probe would compete with the player's first-frame request.
+            if request.source == .directURL, request.url.host != "127.0.0.1" {
+                await MediaPlaybackProbe.run(request)
             }
-            try? await Task.sleep(nanoseconds: 8_000_000_000)
-            guard
-                !Task.isCancelled,
-                activeEngine == .system,
-                !session.isReady,
-                session.errorMessage == nil,
-                !didAutomaticallyFallback
-            else {
-                return
-            }
-            DiagnosticLogStore.shared.record(
-                .warning,
-                categoryKey: "diagnostics.category.media",
-                messageKey: "diagnostics.media.player_fallback",
-                details: [
-                    "from": "AVPlayer",
-                    "to": "MobileVLCKit",
-                    "reason": "readyTimeout"
-                ]
-            )
-            didAutomaticallyFallback = true
-            selectEngine(.compatibility)
         }
         .onDisappear {
+            compatibilityLoadTask?.cancel()
+            compatibilityFallbackLoadTask?.cancel()
+            compatibilityFallbackRequestLoadTask?.cancel()
+            externalHandoffLoadTask?.cancel()
+            sourceTrackLoadTask?.cancel()
+            serverSeekLoadTask?.cancel()
+            qualityLoadTask?.cancel()
             session.pause()
-            request.playbackTracker?.stopped(failed: session.errorMessage != nil)
+            let activeTracker = activeEngine == .compatibility
+                ? activeCompatibilityRequest?.playbackTracker
+                : request.playbackTracker
+            activeTracker?.stopped(
+                failed: activeEngine == .system
+                    ? session.errorMessage != nil
+                    : compatibilityDidFail
+            )
             PlayerOrientationController.setPlayerActive(false)
         }
         .onChange(of: session.errorMessage) { errorMessage in
             guard
                 errorMessage != nil,
                 activeEngine == .system,
-                MediaPlaybackPolicy.hasCompatibilityEngine,
+                MediaPlaybackPolicy.shouldAutomaticallyFallback(for: request),
                 !didAutomaticallyFallback
             else {
                 return
@@ -3763,6 +4545,28 @@ struct BuiltInMediaPlayerView: View {
                     "from": "AVPlayer",
                     "to": "MobileVLCKit",
                     "reason": "playerError"
+                ]
+            )
+            selectEngine(.compatibility)
+        }
+        .onChange(of: session.fallbackReason) { reason in
+            guard
+                let reason,
+                activeEngine == .system,
+                MediaPlaybackPolicy.shouldAutomaticallyFallback(for: request),
+                !didAutomaticallyFallback
+            else {
+                return
+            }
+            didAutomaticallyFallback = true
+            DiagnosticLogStore.shared.record(
+                .warning,
+                categoryKey: "diagnostics.category.media",
+                messageKey: "diagnostics.media.player_fallback",
+                details: [
+                    "from": "AVPlayer",
+                    "to": "MobileVLCKit",
+                    "reason": reason
                 ]
             )
             selectEngine(.compatibility)
@@ -3814,24 +4618,652 @@ struct BuiltInMediaPlayerView: View {
         .padding(22)
     }
 
-    private func selectEngine(_ engine: MediaPlaybackEngine) {
+    private var externalPlayerPicker: some View {
+        ZStack {
+            Color.black.opacity(0.42)
+                .ignoresSafeArea()
+                .onTapGesture { dismissExternalPicker() }
+
+            VStack(spacing: 0) {
+                HStack(spacing: 12) {
+                    Text("service.external.title")
+                        .font(.headline)
+                    Spacer()
+                    Button(action: dismissExternalPicker) {
+                        Image(systemName: "xmark")
+                            .frame(width: 36, height: 36)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(Text("action.cancel"))
+                }
+                .padding(.leading, 16)
+                .padding(.trailing, 8)
+                .padding(.vertical, 8)
+
+                Divider()
+
+                ScrollView {
+                    VStack(spacing: 0) {
+                        ForEach(ExternalOpenTarget.installedPlayers) { target in
+                            externalPickerRow(
+                                title: target.displayName,
+                                systemImage: "play.rectangle"
+                            ) {
+                                dismissExternalPicker()
+                                requestExternalOpen(target)
+                            }
+                        }
+                        externalPickerRow(
+                            title: NSLocalizedString("external.browser", comment: ""),
+                            systemImage: "safari"
+                        ) {
+                            dismissExternalPicker()
+                            requestExternalOpen(.safari)
+                        }
+                        externalPickerRow(
+                            title: NSLocalizedString("external.other_apps", comment: ""),
+                            systemImage: "square.and.arrow.up"
+                        ) {
+                            dismissExternalPicker()
+                            requestExternalShare()
+                        }
+                    }
+                }
+                .frame(maxHeight: 320)
+            }
+            .foregroundStyle(.primary)
+            .frame(maxWidth: 360)
+            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 8))
+            .padding(24)
+        }
+    }
+
+    private var credentialHandoffWarning: some View {
+        ZStack {
+            Color.black.opacity(0.48).ignoresSafeArea()
+
+            VStack(alignment: .leading, spacing: 16) {
+                HStack(spacing: 12) {
+                    Image(systemName: "exclamationmark.shield")
+                        .font(.title3)
+                    Text("external.credential_warning.title")
+                        .font(.headline)
+                }
+
+                Text("external.credential_warning.message")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                HStack(spacing: 12) {
+                    Button("action.cancel") {
+                        cancelCredentialHandoff()
+                    }
+                    .buttonStyle(.bordered)
+
+                    Spacer()
+
+                    Button("external.credential_warning.continue") {
+                        continueCredentialHandoff()
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(AppTheme.accent)
+                }
+            }
+            .foregroundStyle(.primary)
+            .padding(20)
+            .frame(maxWidth: 420)
+            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 8))
+            .padding(24)
+        }
+    }
+
+    @ViewBuilder
+    private func externalPickerRow(
+        title: String,
+        systemImage: String,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            HStack(spacing: 12) {
+                Image(systemName: systemImage)
+                    .frame(width: 24)
+                Text(title)
+                    .lineLimit(1)
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+            }
+            .padding(.horizontal, 16)
+            .frame(minHeight: 50)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        Divider().padding(.leading, 52)
+    }
+
+    private func dismissExternalPicker() {
+        withAnimation(.easeOut(duration: 0.16)) {
+            showExternalPicker = false
+        }
+    }
+
+    private func continueCredentialHandoff() {
+        showCredentialHandoffWarning = false
+        if let target = pendingExternalTarget {
+            openExternal(target)
+        } else if pendingShareHandoff {
+            sharePayload = ServiceSharePayload(url: handoffRequest.externalHandoffURL)
+        }
+        pendingExternalTarget = nil
+        pendingShareHandoff = false
+    }
+
+    private func cancelCredentialHandoff() {
+        showCredentialHandoffWarning = false
+        pendingExternalTarget = nil
+        pendingShareHandoff = false
+    }
+
+    private func selectEngine(
+        _ engine: MediaPlaybackEngine,
+        resumePosition: Double? = nil
+    ) {
         guard activeEngine != engine else { return }
         didAutomaticallyFallback = true
+        if engine == .compatibility {
+            compatibilityResumePosition = resumePosition
+                ?? session.normalizedPosition
+                ?? request.initialPosition
+        }
         session.pause()
+        if engine == .compatibility,
+           request.compatibilityResourceLoader != nil,
+           resolvedCompatibilityRequest == nil {
+            Task {
+                _ = await resolveCompatibilityRequest()
+                activeEngine = .compatibility
+            }
+            return
+        }
+        if engine == .compatibility,
+           let currentRequest = resolvedCompatibilityRequest {
+            let resource = MediaPlaybackResource(
+                url: currentRequest.url,
+                fileExtensionOverride: currentRequest.fileExtensionOverride,
+                subtitleURL: currentRequest.externalSubtitleURL
+            )
+            // Build from the active replacement, not the original request.
+            // This preserves timelineOffsetSeconds for a transcode stream and
+            // carries the selected source tracks/quality into VLC.
+            resolvedCompatibilityRequest = currentRequest.playbackRequest(
+                using: resource,
+                initialPositionOverride: compatibilityResumePosition
+            )
+        }
         activeEngine = engine
         if engine == .system {
-            session.play()
+            session.replaceRequest(
+                activeCompatibilityRequest ?? request,
+                normalizedPosition: resumePosition
+            )
+            session.play(from: resumePosition)
+        }
+    }
+
+    private func canPrepareSystemPlayback(from activeRequest: MediaPlaybackRequest) -> Bool {
+        MediaPlaybackPolicy.allowsSystemPlayer(for: activeRequest)
+            || (activeRequest.source == .jellyfin
+                && activeRequest.qualityRequestLoader != nil
+                && activeRequest.qualityOptions.contains { $0.id == "12000000" })
+    }
+
+    private func prepareSystemPlayback(
+        runtimeState: MediaPlaybackRuntimeState,
+        startsPictureInPicture: Bool
+    ) {
+        guard let activeRequest = activeCompatibilityRequest else { return }
+        if MediaPlaybackPolicy.allowsSystemPlayer(for: activeRequest) {
+            shouldStartPictureInPicture = startsPictureInPicture
+            selectEngine(.system, resumePosition: runtimeState.normalizedPosition)
+            return
+        }
+        guard
+            activeRequest.source == .jellyfin,
+            let loader = activeRequest.qualityRequestLoader,
+            activeRequest.qualityOptions.contains(where: { $0.id == "12000000" })
+        else {
+            return
+        }
+
+        sourceTrackLoadTask?.cancel()
+        serverSeekLoadTask?.cancel()
+        qualityLoadTask?.cancel()
+        isPreparingAlternative = true
+        DiagnosticLogStore.shared.record(
+            .info,
+            categoryKey: "diagnostics.category.media",
+            messageKey: "diagnostics.media.player_switch",
+            details: [
+                "from": "MobileVLCKit",
+                "to": "AVPlayer",
+                "reason": "pictureInPicture",
+                "preparation": "serverHLS"
+            ]
+        )
+        qualityLoadTask = Task { @MainActor in
+            let startedAt = Date()
+            let replacement = await loader("12000000", runtimeState)
+            guard !Task.isCancelled else { return }
+            qualityLoadTask = nil
+            isPreparingAlternative = false
+            guard let replacement,
+                  MediaPlaybackPolicy.allowsSystemPlayer(for: replacement) else {
+                DiagnosticLogStore.shared.record(
+                    .error,
+                    categoryKey: "diagnostics.category.media",
+                    messageKey: "diagnostics.media.quality_switch_failed",
+                    details: ["target": "pictureInPicture"]
+                )
+                return
+            }
+            compatibilityDidFail = false
+            compatibilityResumePosition = replacement.initialPosition
+            resolvedCompatibilityRequest = replacement
+            DiagnosticLogStore.shared.record(
+                .info,
+                categoryKey: "diagnostics.category.media",
+                messageKey: "diagnostics.media.quality_switch_ready",
+                details: [
+                    "target": "pictureInPicture",
+                    "prepareMs": String(Int(max(Date().timeIntervalSince(startedAt), 0) * 1_000)),
+                    "extension": replacement.fileExtensionHint
+                ]
+            )
+            activateSystemPlayback(
+                with: replacement,
+                runtimeState: runtimeState,
+                startsPictureInPicture: startsPictureInPicture
+            )
+        }
+    }
+
+    private func activateSystemPlayback(
+        with replacement: MediaPlaybackRequest,
+        runtimeState: MediaPlaybackRuntimeState,
+        startsPictureInPicture: Bool
+    ) {
+        shouldStartPictureInPicture = startsPictureInPicture
+        compatibilityResumePosition = replacement.initialPosition
+        resolvedCompatibilityRequest = replacement
+        let resumePosition = replacement.timelineOffsetSeconds > 0
+            ? nil
+            : runtimeState.normalizedPosition ?? replacement.initialPosition
+        activeEngine = .system
+        session.replaceRequest(replacement, normalizedPosition: resumePosition)
+        session.play(from: resumePosition)
+    }
+
+    private var systemRuntimeState: MediaPlaybackRuntimeState {
+        let currentSeconds = session.player.currentTime().seconds
+        return MediaPlaybackRuntimeState(
+            normalizedPosition: session.normalizedPosition,
+            positionSeconds: currentSeconds.isFinite ? currentSeconds : nil,
+            playbackRate: session.player.rate,
+            audioTrackOrdinal: nil,
+            subtitleTrackOrdinal: nil,
+            subtitlesDisabled: false,
+            subtitleSelectionKnown: false,
+            orientationMode: request.initialOrientationMode
+        )
+    }
+
+    private var systemQualityPanel: some View {
+        ZStack {
+            Color.black.opacity(0.42)
+                .ignoresSafeArea()
+                .onTapGesture { systemQualityPanelPresented = false }
+
+            HStack {
+                Spacer()
+                VStack(alignment: .leading, spacing: 0) {
+                    HStack {
+                        Text("player.quality")
+                            .font(.headline)
+                        Spacer()
+                        Button {
+                            systemQualityPanelPresented = false
+                        } label: {
+                            Image(systemName: "xmark")
+                                .frame(width: 36, height: 36)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 10)
+
+                    Divider()
+
+                    ScrollView {
+                        VStack(spacing: 0) {
+                            ForEach((activeCompatibilityRequest ?? request).qualityOptions) { option in
+                                Button {
+                                    systemQualityPanelPresented = false
+                                    handleQualityChange(
+                                        qualityID: option.id,
+                                        runtimeState: systemRuntimeState
+                                    )
+                                } label: {
+                                    HStack(spacing: 10) {
+                                        Image(systemName: (activeCompatibilityRequest ?? request).selectedQualityID == option.id
+                                              ? "checkmark.circle.fill"
+                                              : "circle")
+                                        Text(option.title)
+                                            .lineLimit(1)
+                                        Spacer()
+                                    }
+                                    .padding(.horizontal, 16)
+                                    .frame(minHeight: 48)
+                                    .contentShape(Rectangle())
+                                }
+                                .buttonStyle(.plain)
+                            }
+                        }
+                    }
+                }
+                .frame(width: 320)
+                .foregroundStyle(.primary)
+                .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 10))
+                .padding(.trailing, 18)
+            }
+        }
+    }
+
+    private func handleCompatibilityFailure(runtimeState: MediaPlaybackRuntimeState) {
+        compatibilityDidFail = true
+        guard
+            compatibilityFallbackAttemptCount < 2,
+            !isPreparingAlternative,
+            let failingRequest = activeCompatibilityRequest,
+            failingRequest.compatibilityFallbackResource != nil
+                || failingRequest.compatibilityFallbackResourceLoader != nil
+                || failingRequest.compatibilityFallbackRequestLoader != nil
+        else {
+            return
+        }
+
+        // The automatic path is intentionally bounded: one direct reconnect
+        // may be followed by one server fallback. The replacement itself does
+        // not create an unbounded retry loop.
+        compatibilityFallbackAttemptCount += 1
+        didUseCompatibilityFallback = true
+        let resumePosition = runtimeState.normalizedPosition
+            ?? failingRequest.initialPosition
+            ?? compatibilityResumePosition
+        DiagnosticLogStore.shared.record(
+            .warning,
+            categoryKey: "diagnostics.category.media",
+            messageKey: "diagnostics.media.player_fallback",
+            details: [
+                "from": "MobileVLCKit",
+                "to": "compatibilityReplacement",
+                "reason": "originalPlaybackFailed",
+                "position": runtimeState.positionSeconds.map { String(format: "%.1f", $0) } ?? "-",
+                "attempt": "\(compatibilityFallbackAttemptCount)"
+            ]
+        )
+
+        // A direct NAS/Jellyfin stream can fail because its HTTP connection
+        // was dropped even though the media itself is healthy. Reopen that
+        // same direct resource once at the live playhead before asking
+        // Jellyfin to create a new transcoder. This keeps the common recovery
+        // on the fast path and avoids a needless HLS restart.
+        if compatibilityFallbackAttemptCount == 1,
+           failingRequest.fileExtensionHint != "m3u8" {
+            let resource = MediaPlaybackResource(
+                url: failingRequest.url,
+                fileExtensionOverride: failingRequest.fileExtensionOverride,
+                subtitleURL: failingRequest.externalSubtitleURL
+            )
+            let replacement = failingRequest.playbackRequest(
+                using: resource,
+                initialPositionOverride: resumePosition,
+                runtimeState: runtimeState,
+                retainsFallback: true
+            )
+            compatibilityDidFail = false
+            compatibilityResumePosition = replacement.initialPosition ?? resumePosition
+            resolvedCompatibilityRequest = replacement
+            DiagnosticLogStore.shared.record(
+                .info,
+                categoryKey: "diagnostics.category.media",
+                messageKey: "diagnostics.media.player_fallback",
+                details: [
+                    "from": "MobileVLCKit",
+                    "to": "MobileVLCKit",
+                    "reason": "directResourceReconnect",
+                    "position": resumePosition.map { String(format: "%.1f", $0) } ?? "-"
+                ]
+            )
+            return
+        }
+
+        Task { @MainActor in
+            let startedAt = Date()
+            let replacement = await resolveCompatibilityFallbackRequest(
+                from: failingRequest,
+                resumePosition: resumePosition,
+                runtimeState: runtimeState
+            )
+            guard !Task.isCancelled else { return }
+            guard let replacement else {
+                DiagnosticLogStore.shared.record(
+                    .error,
+                    categoryKey: "diagnostics.category.media",
+                    messageKey: "diagnostics.media.player_failed",
+                    details: [
+                        "engine": "MobileVLCKit",
+                        "reason": "compatibilityReplacementUnavailable"
+                    ]
+                )
+                return
+            }
+            compatibilityDidFail = false
+            let preparedReplacement = replacement.applyingRuntimePreferences(runtimeState)
+            compatibilityResumePosition = preparedReplacement.initialPosition ?? resumePosition
+            resolvedCompatibilityRequest = preparedReplacement
+            DiagnosticLogStore.shared.record(
+                .info,
+                categoryKey: "diagnostics.category.media",
+                messageKey: "diagnostics.media.player_fallback",
+                details: [
+                    "from": "MobileVLCKit",
+                    "to": "MobileVLCKit",
+                    "reason": "compatibilityReplacementReady",
+                    "prepareMs": String(Int(max(Date().timeIntervalSince(startedAt), 0) * 1_000)),
+                    "extension": replacement.fileExtensionHint
+                ]
+            )
+        }
+    }
+
+    private func handleSourceTrackChange(
+        audioTrackID: Int?,
+        subtitleTrackID: Int?,
+        runtimeState: MediaPlaybackRuntimeState
+    ) {
+        guard let activeRequest = activeCompatibilityRequest,
+              let loader = activeRequest.sourceTrackRequestLoader,
+              activeRequest.selectedSourceAudioTrackID != audioTrackID
+                || activeRequest.selectedSourceSubtitleTrackID != subtitleTrackID else {
+            return
+        }
+        sourceTrackLoadTask?.cancel()
+        serverSeekLoadTask?.cancel()
+        isPreparingAlternative = true
+        DiagnosticLogStore.shared.record(
+            .info,
+            categoryKey: "diagnostics.category.media",
+            messageKey: "diagnostics.media.source_track_switch_requested",
+            details: [
+                "audioStreamIndex": audioTrackID.map(String.init) ?? "default",
+                "subtitleStreamIndex": subtitleTrackID.map(String.init) ?? "none",
+                "position": runtimeState.normalizedPosition.map { String(format: "%.4f", $0) } ?? "-"
+            ]
+        )
+        sourceTrackLoadTask = Task { @MainActor in
+            let startedAt = Date()
+            let replacement = await loader(audioTrackID, subtitleTrackID, runtimeState)
+            guard !Task.isCancelled else { return }
+            isPreparingAlternative = false
+            sourceTrackLoadTask = nil
+            guard let replacement else {
+                DiagnosticLogStore.shared.record(
+                    .error,
+                    categoryKey: "diagnostics.category.media",
+                    messageKey: "diagnostics.media.source_track_switch_failed"
+                )
+                return
+            }
+            compatibilityDidFail = false
+            didUseCompatibilityFallback = false
+            compatibilityFallbackAttemptCount = 0
+            compatibilityResumePosition = replacement.initialPosition
+            resolvedCompatibilityRequest = replacement
+            DiagnosticLogStore.shared.record(
+                .info,
+                categoryKey: "diagnostics.category.media",
+                messageKey: "diagnostics.media.source_track_switch_ready",
+                details: [
+                    "audioStreamIndex": audioTrackID.map(String.init) ?? "default",
+                    "subtitleStreamIndex": subtitleTrackID.map(String.init) ?? "none",
+                    "prepareMs": String(Int(max(Date().timeIntervalSince(startedAt), 0) * 1_000)),
+                    "extension": replacement.fileExtensionHint
+                ]
+            )
+        }
+    }
+
+    private func handleServerSeek(
+        targetSeconds: Double,
+        runtimeState: MediaPlaybackRuntimeState
+    ) {
+        guard let activeRequest = activeCompatibilityRequest,
+              let loader = activeRequest.serverSeekRequestLoader,
+              targetSeconds.isFinite else {
+            return
+        }
+        sourceTrackLoadTask?.cancel()
+        serverSeekLoadTask?.cancel()
+        isPreparingAlternative = true
+        DiagnosticLogStore.shared.record(
+            .info,
+            categoryKey: "diagnostics.category.media",
+            messageKey: "diagnostics.media.server_seek_requested",
+            details: [
+                "fromSeconds": runtimeState.positionSeconds.map { String(format: "%.1f", $0) } ?? "-",
+                "targetSeconds": String(format: "%.1f", targetSeconds)
+            ]
+        )
+        serverSeekLoadTask = Task { @MainActor in
+            let startedAt = Date()
+            let replacement = await loader(targetSeconds, runtimeState)
+            guard !Task.isCancelled else { return }
+            isPreparingAlternative = false
+            serverSeekLoadTask = nil
+            guard let replacement else {
+                DiagnosticLogStore.shared.record(
+                    .error,
+                    categoryKey: "diagnostics.category.media",
+                    messageKey: "diagnostics.media.server_seek_failed"
+                )
+                return
+            }
+            compatibilityDidFail = false
+            didUseCompatibilityFallback = false
+            compatibilityFallbackAttemptCount = 0
+            compatibilityResumePosition = replacement.initialPosition
+            resolvedCompatibilityRequest = replacement
+            DiagnosticLogStore.shared.record(
+                .info,
+                categoryKey: "diagnostics.category.media",
+                messageKey: "diagnostics.media.server_seek_ready",
+                details: [
+                    "targetSeconds": String(format: "%.1f", targetSeconds),
+                    "prepareMs": String(Int(max(Date().timeIntervalSince(startedAt), 0) * 1_000)),
+                    "extension": replacement.fileExtensionHint
+                ]
+            )
+        }
+    }
+
+    private func handleQualityChange(
+        qualityID: String,
+        runtimeState: MediaPlaybackRuntimeState
+    ) {
+        guard let activeRequest = activeCompatibilityRequest,
+              let loader = activeRequest.qualityRequestLoader,
+              activeRequest.selectedQualityID != qualityID else {
+            return
+        }
+        sourceTrackLoadTask?.cancel()
+        serverSeekLoadTask?.cancel()
+        qualityLoadTask?.cancel()
+        isPreparingAlternative = true
+        DiagnosticLogStore.shared.record(
+            .info,
+            categoryKey: "diagnostics.category.media",
+            messageKey: "diagnostics.media.quality_switch_requested",
+            details: [
+                "from": activeRequest.selectedQualityID ?? "auto",
+                "target": qualityID,
+                "positionSeconds": runtimeState.positionSeconds.map {
+                    String(format: "%.1f", $0)
+                } ?? "-"
+            ]
+        )
+        qualityLoadTask = Task { @MainActor in
+            let startedAt = Date()
+            let replacement = await loader(qualityID, runtimeState)
+            guard !Task.isCancelled else { return }
+            isPreparingAlternative = false
+            qualityLoadTask = nil
+            guard let replacement else {
+                DiagnosticLogStore.shared.record(
+                    .error,
+                    categoryKey: "diagnostics.category.media",
+                    messageKey: "diagnostics.media.quality_switch_failed",
+                    details: ["target": qualityID]
+                )
+                return
+            }
+            compatibilityDidFail = false
+            didUseCompatibilityFallback = false
+            compatibilityFallbackAttemptCount = 0
+            compatibilityResumePosition = replacement.initialPosition
+            resolvedCompatibilityRequest = replacement
+            DiagnosticLogStore.shared.record(
+                .info,
+                categoryKey: "diagnostics.category.media",
+                messageKey: "diagnostics.media.quality_switch_ready",
+                details: [
+                    "target": qualityID,
+                    "prepareMs": String(Int(max(Date().timeIntervalSince(startedAt), 0) * 1_000)),
+                    "extension": replacement.fileExtensionHint
+                ]
+            )
         }
     }
 
     private func openExternal(_ target: ExternalOpenTarget) {
+        session.pause()
         guard let targetURL = target.url(
-            endpoint: request.url,
-            filename: request.externalFilename,
-            subtitleURL: request.externalSubtitleURL
+            endpoint: handoffRequest.externalHandoffURL,
+            filename: handoffRequest.externalFilename,
+            subtitleURL: handoffRequest.externalHandoffSubtitleURL
         ) else {
-            externalMessageKey = "external.unsupported_hint"
-            showExternalHint = true
+            sharePayload = ServiceSharePayload(url: handoffRequest.externalHandoffURL)
             return
         }
         UIApplication.shared.open(targetURL, options: [:]) { accepted in
@@ -3843,34 +5275,192 @@ struct BuiltInMediaPlayerView: View {
                     : "diagnostics.media.external_handoff_failed",
                 details: [
                     "targetApp": target.diagnosticName,
-                    "extension": request.fileExtensionHint.isEmpty ? "-" : request.fileExtensionHint
+                    "extension": handoffRequest.externalHandoffFileExtensionHint.isEmpty
+                        ? "-"
+                        : handoffRequest.externalHandoffFileExtensionHint,
+                    "mode": externalHandoffMode(for: handoffRequest)
                 ]
             )
             guard !accepted else { return }
             DispatchQueue.main.async {
-                externalMessageKey = target.failureMessageKey
-                showExternalHint = true
+                sharePayload = ServiceSharePayload(url: handoffRequest.externalHandoffURL)
             }
         }
     }
 
     private func requestExternalOpen(_ target: ExternalOpenTarget) {
-        guard request.containsSensitiveCredential else {
-            openExternal(target)
-            return
+        Task {
+            _ = await resolveExternalHandoffRequest()
+            guard handoffRequest.containsSensitiveCredential else {
+                openExternal(target)
+                return
+            }
+            pendingExternalTarget = target
+            showCredentialHandoffWarning = true
         }
-        pendingExternalTarget = target
-        showCredentialHandoffWarning = true
+    }
+
+    private func externalHandoffMode(for request: MediaPlaybackRequest) -> String {
+        switch request.externalHandoffFileExtensionHint {
+        case "m3u8": return "serverNegotiatedHLS"
+        case "ts": return "serverNegotiatedTransportStream"
+        default: return "directHandoff"
+        }
     }
 
     private func requestExternalShare() {
-        guard request.containsSensitiveCredential else {
-            sharePayload = ServiceSharePayload(url: request.url)
-            return
+        Task {
+            _ = await resolveExternalHandoffRequest()
+            guard handoffRequest.containsSensitiveCredential else {
+                sharePayload = ServiceSharePayload(url: handoffRequest.externalHandoffURL)
+                return
+            }
+            pendingExternalTarget = nil
+            pendingShareHandoff = true
+            showCredentialHandoffWarning = true
         }
-        pendingExternalTarget = nil
-        pendingShareHandoff = true
-        showCredentialHandoffWarning = true
+    }
+
+    private var activeCompatibilityRequest: MediaPlaybackRequest? {
+        resolvedCompatibilityRequest
+    }
+
+    private var handoffRequest: MediaPlaybackRequest {
+        resolvedExternalHandoffRequest ?? request
+    }
+
+    @MainActor
+    private func resolveCompatibilityRequest() async -> MediaPlaybackRequest {
+        if let resolvedCompatibilityRequest { return resolvedCompatibilityRequest }
+        guard let loader = request.compatibilityResourceLoader else {
+            return request.compatibilityPlaybackRequest
+        }
+        isPreparingAlternative = true
+        defer { isPreparingAlternative = false }
+        let task: Task<MediaPlaybackResource?, Never>
+        if let compatibilityLoadTask {
+            task = compatibilityLoadTask
+        } else {
+            task = Task { await loader() }
+            compatibilityLoadTask = task
+        }
+        let resource = await task.value
+        compatibilityLoadTask = nil
+        let resolved = resource.map {
+            request.playbackRequest(
+                using: $0,
+                initialPositionOverride: compatibilityResumePosition
+            )
+        }
+            ?? request.compatibilityPlaybackRequest
+        resolvedCompatibilityRequest = resolved
+        return resolved
+    }
+
+    @MainActor
+    private func resolveCompatibilityFallbackRequest(
+        from failingRequest: MediaPlaybackRequest,
+        resumePosition: Double?,
+        runtimeState: MediaPlaybackRuntimeState?
+    ) async -> MediaPlaybackRequest? {
+        if let loader = failingRequest.compatibilityFallbackRequestLoader {
+            isPreparingAlternative = true
+            defer { isPreparingAlternative = false }
+            let task: Task<MediaPlaybackRequest?, Never>
+            if let compatibilityFallbackRequestLoadTask {
+                task = compatibilityFallbackRequestLoadTask
+            } else {
+                task = Task { await loader(runtimeState) }
+                compatibilityFallbackRequestLoadTask = task
+            }
+            let replacement = await task.value
+            compatibilityFallbackRequestLoadTask = nil
+            return replacement
+        }
+        if let resource = failingRequest.compatibilityFallbackResource {
+            return failingRequest.playbackRequest(
+                using: resource,
+                initialPositionOverride: resumePosition,
+                runtimeState: runtimeState,
+                retainsFallback: false
+            )
+        }
+        guard let loader = failingRequest.compatibilityFallbackResourceLoader else { return nil }
+        isPreparingAlternative = true
+        defer { isPreparingAlternative = false }
+        let task: Task<MediaPlaybackResource?, Never>
+        if let compatibilityFallbackLoadTask {
+            task = compatibilityFallbackLoadTask
+        } else {
+            task = Task { await loader(runtimeState) }
+            compatibilityFallbackLoadTask = task
+        }
+        let resource = await task.value
+        compatibilityFallbackLoadTask = nil
+        return resource.map {
+            failingRequest.playbackRequest(
+                using: $0,
+                initialPositionOverride: resumePosition,
+                runtimeState: runtimeState,
+                retainsFallback: false
+            )
+        }
+    }
+
+    @MainActor
+    private func resolveExternalHandoffRequest() async -> MediaPlaybackRequest {
+        if let resolvedExternalHandoffRequest { return resolvedExternalHandoffRequest }
+        if request.externalHandoffResource != nil {
+            resolvedExternalHandoffRequest = request
+            return request
+        }
+        guard let loader = request.externalHandoffResourceLoader else {
+            return request
+        }
+        isPreparingAlternative = true
+        defer { isPreparingAlternative = false }
+        let task: Task<MediaPlaybackResource?, Never>
+        if let externalHandoffLoadTask {
+            task = externalHandoffLoadTask
+        } else {
+            task = Task { await loader() }
+            externalHandoffLoadTask = task
+        }
+        let resource = await task.value
+        externalHandoffLoadTask = nil
+        let resolved = resource.map { resource in
+            MediaPlaybackRequest(
+                url: request.url,
+                title: request.title,
+                allowsSelfSignedCertificates: request.allowsSelfSignedCertificates,
+                source: request.source,
+                fileExtensionOverride: request.fileExtensionOverride,
+                initialPosition: request.initialPosition,
+                externalSubtitleURL: request.externalSubtitleURL,
+                preferredAudioTrackOrdinal: request.preferredAudioTrackOrdinal,
+                preferredSubtitleTrackOrdinal: request.preferredSubtitleTrackOrdinal,
+                prefersSubtitlesDisabled: request.prefersSubtitlesDisabled,
+                initialOrientationMode: request.initialOrientationMode,
+                initialPlaybackRate: request.initialPlaybackRate,
+                isPrivateNetworkRoute: request.isPrivateNetworkRoute,
+                playbackTracker: request.playbackTracker,
+                compatibilityResource: request.compatibilityResource,
+                compatibilityFallbackResource: request.compatibilityFallbackResource,
+                externalHandoffResource: resource,
+                compatibilityResourceLoader: request.compatibilityResourceLoader,
+                compatibilityFallbackResourceLoader: request.compatibilityFallbackResourceLoader,
+                compatibilityFallbackRequestLoader: request.compatibilityFallbackRequestLoader
+            )
+        } ?? request
+        resolvedExternalHandoffRequest = resolved
+        return resolved
+    }
+
+    private func togglePlayerOrientation() {
+        let isLandscape = UIApplication.shared.connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .contains { $0.interfaceOrientation.isLandscape }
+        PlayerOrientationController.requestPlayerOrientation(isLandscape ? .portrait : .landscape)
     }
 }
 
@@ -3880,7 +5470,12 @@ private struct VLCSubtitleTrack: Identifiable, Equatable {
     let name: String
 }
 
-private enum VLCTrustDirectory {
+private struct VLCAudioTrack: Identifiable, Equatable {
+    let id: Int32
+    let name: String
+}
+
+enum VLCTrustDirectory {
     static func options(for request: MediaPlaybackRequest) -> [String] {
         guard
             request.allowsSelfSignedCertificates,
@@ -3932,35 +5527,122 @@ private enum VLCTrustDirectory {
     }
 }
 
+private enum VLCPlaybackRuntime {
+    static let configureEventDelivery: Void = {
+        VLCLibrary.sharedEventsConfiguration = VLCEventsLegacyConfiguration()
+    }()
+}
+
+private enum VLCTrackSelectionKind: String {
+    case audio
+    case subtitle
+}
+
+private struct PendingVLCTrackSelection {
+    let targetID: Int32
+    let previousID: Int32
+    let startedAt: Date
+}
+
 private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaPlayerDelegate {
     let player: VLCMediaPlayer
     @Published private(set) var isPlaying = false
+    @Published private(set) var isMuted = false
     @Published private(set) var position: Double = 0
     @Published private(set) var isSeekable = false
     @Published private(set) var errorMessage: String?
     @Published private(set) var subtitleTracks: [VLCSubtitleTrack] = []
     @Published private(set) var selectedSubtitleTrackID: Int32 = -1
+    @Published private(set) var audioTracks: [VLCAudioTrack] = []
+    @Published private(set) var selectedAudioTrackID: Int32 = -1
     @Published private(set) var isBuffering = true
+    @Published private(set) var hasStartedPlayback = false
     @Published private(set) var currentTimeText = "00:00"
+    @Published private(set) var currentTimeSeconds = 0.0
     @Published private(set) var durationText = "--:--"
+    @Published private(set) var durationSeconds = 0.0
+    @Published private(set) var playbackRate: Float = 1
     private let request: MediaPlaybackRequest
     private let hasCustomTLSRoot: Bool
     private var lastStateDescription = ""
     private let initialPosition: Double?
     private let externalSubtitleURL: URL?
+    private let preferredAudioTrackOrdinal: Int?
+    private let preferredSubtitleTrackOrdinal: Int?
+    private let prefersSubtitlesDisabled: Bool
     private var didApplyInitialPosition = false
+    private var didApplyInitialAudioTrack = false
+    private var didApplyInitialSubtitleTrack = false
+    private var didApplyPlaybackRate = false
+    private var desiredAudioTrackID: Int32?
+    private var desiredSubtitleTrackID: Int32?
+    private var pendingAudioTrackSelection: PendingVLCTrackSelection?
+    private var pendingSubtitleTrackSelection: PendingVLCTrackSelection?
+    private var audioTrackSelectionCheckWorkItem: DispatchWorkItem?
+    private var subtitleTrackSelectionCheckWorkItem: DispatchWorkItem?
+    private var desiredPlaybackRate: Float
     private var didApplySubtitleStyle = false
     private var didAddExternalSubtitle = false
     private var lastSubtitleTrackIDs: [Int32] = []
+    private var lastAudioTrackIDs: [Int32] = []
+    private var cachedSubtitleTracks: [VLCSubtitleTrack] = []
+    private var cachedAudioTracks: [VLCAudioTrack] = []
+    private var trackInventoryNeedsRefresh = true
+    private var trackInventoryRefreshDeadline = Date.distantPast
+    private var lastTrackInventoryRefreshAt: Date?
     private var pendingJumpSeconds = 0
     private var pendingJumpWorkItem: DispatchWorkItem?
     private var didRecordStart = false
     private var didReachPlayback = false
+    private var didRequestStop = false
+    private var didFinishPlaybackNaturally = false
+    private var reconnectAttempts = 0
+    private var reconnectWorkItem: DispatchWorkItem?
+    private var isReconnecting = false
+    private var reconnectStartedAt: Date?
+    private var reconnectRecoveryBaselineSeconds = 0.0
+    private var highestPlaybackSeconds = 0.0
+    private var lastObservedPlaybackSeconds: Double?
+    private var lastPlaybackProgressAt: Date?
+    private var pendingResumePosition: Double?
+    private var isUserPaused = false
+    private var didRecordFirstFrame = false
+    private var pendingSeekStartedAt: Date?
+    private var pendingSeekOriginSeconds: Double?
+    private var pendingSeekTargetSeconds: Double?
+    private var bufferingStartedAt: Date?
+    private var lastBufferingState = true
+    private var lastTimeStateSyncAt = Date.distantPast
+    private var pendingTimeStateSyncWorkItem: DispatchWorkItem?
+    private let minimumTimeStateSyncInterval: TimeInterval = 0.25
+    private let reconnectTimeout: TimeInterval = 24
+
+    var initialLoadTimeoutNanoseconds: UInt64 {
+        let isPrivateHost = request.isPrivateNetworkRoute
+            ?? NetworkHostClassifier.isPrivate(request.networkOriginURL.host)
+        switch request.source {
+        case .jellyfin where request.fileExtensionHint == "m3u8" && hasAlternateTransport:
+            return isPrivateHost ? 12_000_000_000 : 15_000_000_000
+        case .jellyfin, .dsmFile:
+            // Original Jellyfin/DSM files get a short first-frame budget. If
+            // the original route cannot open promptly, the request's existing
+            // fallback loader renegotiates HLS (or the alternate transport)
+            // instead of leaving a black player for half a minute.
+            return isPrivateHost ? 12_000_000_000 : 10_000_000_000
+        case .directURL:
+            return 30_000_000_000
+        }
+    }
 
     init(request: MediaPlaybackRequest) {
+        _ = VLCPlaybackRuntime.configureEventDelivery
         self.request = request
         initialPosition = request.initialPosition
         externalSubtitleURL = request.externalSubtitleURL
+        preferredAudioTrackOrdinal = request.preferredAudioTrackOrdinal
+        preferredSubtitleTrackOrdinal = request.preferredSubtitleTrackOrdinal
+        prefersSubtitlesDisabled = request.prefersSubtitlesDisabled
+        desiredPlaybackRate = request.initialPlaybackRate
         let trustOptions = VLCTrustDirectory.options(for: request)
         hasCustomTLSRoot = !trustOptions.isEmpty
         player = trustOptions.isEmpty
@@ -3968,23 +5650,90 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
             : VLCMediaPlayer(options: trustOptions)
         super.init()
         player.delegate = self
+        player.media = makeMedia()
+        resetTrackInventoryRefreshWindow()
+    }
+
+    private func makeMedia() -> VLCMedia {
         let media = VLCMedia(url: request.url)
-        let networkCaching = NetworkHostClassifier.isPrivate(request.url.host) ? 900 : 1_500
+        let networkCaching = networkCachingMilliseconds
         media.addOption(":network-caching=\(networkCaching)")
+        media.addOption(":file-caching=\(networkCaching)")
         media.addOption(":http-reconnect")
-        media.addOption(":http-continuous")
         media.addOption(":input-fast-seek")
-        media.addOption(":avcodec-hw=any")
+        if usesAVFormatDemux {
+            media.addOption(":demux=avformat")
+        }
+        media.addOption(request.forcesSoftwareDecoding ? ":avcodec-hw=none" : ":avcodec-hw=any")
+        // VLC's iOS build expects a font file (not a CoreText family name), and
+        // its bundled FreeSerif fallback has no CJK glyphs. Prefer the system
+        // CJK collection so embedded ASS/SSA and external SRT/ASS subtitles
+        // render Chinese instead of tofu boxes.
+        if let cjkFontPath = Self.cjkFontPath {
+            media.addOption(":freetype-font=\(cjkFontPath)")
+        }
+        // Chinese subtitle files in real NAS libraries are a mixture of UTF-8,
+        // GBK and legacy GB18030.  Forcing UTF-8 makes the latter render as
+        // mojibake (the problem seen in the Mission: Impossible 3 sample).
+        // Keep GB18030 as the fallback while asking VLC to auto-detect UTF-8;
+        // this preserves modern ASS/SRT files and decodes older ANSI files.
+        media.addOption(":subsdec-encoding=GB18030")
+        media.addOption(":subsdec-autodetect-utf8=1")
+        // Keep text subtitles inside the safe video area. This prevents the
+        // second Chinese line from being clipped by the iPhone/iPad bottom
+        // inset while retaining a visible outline on bright scenes.
+        media.addOption(":sub-margin=32")
+        media.addOption(":freetype-outline-thickness=2")
+        media.addOption(":freetype-shadow-opacity=128")
         media.addOption(":freetype-rel-fontsize=18")
-        player.media = media
+        return media
+    }
+
+    private var networkCachingMilliseconds: Int {
+        let isPrivateRoute = request.isPrivateNetworkRoute
+            ?? NetworkHostClassifier.isPrivate(request.networkOriginURL.host)
+        // This is the last cache envelope validated as smooth on the iPhone
+        // before the iPad playback work began. Values below this caused both
+        // direct Range inputs and HLS playlists to underrun on real Wi-Fi.
+        return isPrivateRoute ? 900 : 1_500
+    }
+
+    private static var cjkFontPath: String? {
+        for family in ["PingFangSC-Regular", "HiraginoSansGB-W3"] {
+            let font = CTFontCreateWithName(family as CFString, 18, nil)
+            if let url = CTFontCopyAttribute(font, kCTFontURLAttribute) as? URL {
+                return url.path
+            }
+        }
+        return [
+            "/System/Library/Fonts/PingFang.ttc",
+            "/System/Library/Fonts/Hiragino Sans GB.ttc"
+        ].first { FileManager.default.fileExists(atPath: $0) }
+    }
+
+    private var usesAVFormatDemux: Bool {
+        request.fileExtensionHint == "ts" || request.fileExtensionHint == "m2ts"
     }
 
     func attach(to view: UIView) {
+        if let drawable = player.drawable as AnyObject?, drawable === view {
+            return
+        }
         player.drawable = view
         player.scaleFactor = 0
     }
 
+    func detach(from view: UIView) {
+        guard let drawable = player.drawable as AnyObject?, drawable === view else {
+            return
+        }
+        player.drawable = nil
+    }
+
     func play() {
+        didRequestStop = false
+        didFinishPlaybackNaturally = false
+        isUserPaused = false
         if !didRecordStart {
             didRecordStart = true
             DiagnosticLogStore.shared.record(
@@ -3993,7 +5742,13 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
                 messageKey: "diagnostics.media.player_started",
                 details: MediaPlaybackProbe.baseDetails(for: request).merging([
                     "engine": "MobileVLCKit",
-                    "customTLSRoot": hasCustomTLSRoot ? "on" : "off"
+                    "customTLSRoot": hasCustomTLSRoot ? "on" : "off",
+                    "decoder": request.forcesSoftwareDecoding ? "software" : "automatic",
+                    "demux": usesAVFormatDemux ? "avformat" : "default",
+                    "networkCachingMs": "\(networkCachingMilliseconds)",
+                    "httpMode": "file",
+                    "subtitleFont": Self.cjkFontPath ?? "default",
+                    "subtitleEncoding": "GB18030+UTF8Autodetect"
                 ]) { current, _ in current }
             )
         }
@@ -4005,13 +5760,34 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
     }
 
     func togglePlayback() {
-        player.isPlaying ? player.pause() : player.play()
+        if player.isPlaying {
+            isUserPaused = true
+            reconnectWorkItem?.cancel()
+            reconnectWorkItem = nil
+            player.pause()
+        } else {
+            isUserPaused = false
+            lastPlaybackProgressAt = Date()
+            player.play()
+        }
         syncState()
     }
 
     func jump(by seconds: Int) {
         isBuffering = true
+        cancelPendingReconnectForUserSeek()
         pendingJumpSeconds += seconds
+        if pendingJumpWorkItem == nil {
+            let originSeconds = max(Double(player.time.intValue) / 1_000, 0)
+            beginSeekMeasurement(
+                targetSeconds: max(originSeconds + Double(pendingJumpSeconds), 0)
+            )
+        } else if let pendingSeekOriginSeconds {
+            pendingSeekTargetSeconds = max(
+                pendingSeekOriginSeconds + Double(pendingJumpSeconds),
+                0
+            )
+        }
         pendingJumpWorkItem?.cancel()
         let workItem = DispatchWorkItem { [weak self] in
             guard let self else { return }
@@ -4025,27 +5801,163 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
             }
         }
         pendingJumpWorkItem = workItem
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.18, execute: workItem)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.06, execute: workItem)
     }
 
     func seek(to newPosition: Double) {
         guard player.isSeekable else { return }
         isBuffering = true
-        player.position = Float(min(max(newPosition, 0), 1))
+        cancelPendingReconnectForUserSeek()
+        let position = min(max(newPosition, 0), 1)
+        let runtime = max(Double(player.media?.length.intValue ?? 0) / 1_000, 0)
+        beginSeekMeasurement(targetSeconds: runtime > 0 ? runtime * position : nil)
+        player.position = Float(position)
+    }
+
+    @discardableResult
+    func seek(toAbsoluteSeconds targetSeconds: Double) -> Bool {
+        guard player.isSeekable, targetSeconds.isFinite else { return false }
+        let rawDuration = max(Double(player.media?.length.intValue ?? 0) / 1_000, 0)
+        let rawTarget = targetSeconds - request.timelineOffsetSeconds
+        guard rawDuration > 0, rawTarget >= 0, rawTarget <= rawDuration else { return false }
+        isBuffering = true
+        cancelPendingReconnectForUserSeek()
+        beginSeekMeasurement(targetSeconds: targetSeconds)
+        player.position = Float(min(max(rawTarget / rawDuration, 0), 1))
+        return true
+    }
+
+    func setPlaybackRate(_ rate: Float) {
+        let normalizedRate = min(max(rate, 0.25), 4)
+        desiredPlaybackRate = normalizedRate
+        didApplyPlaybackRate = true
+        player.rate = normalizedRate
+        playbackRate = normalizedRate
+        DiagnosticLogStore.shared.record(
+            .info,
+            categoryKey: "diagnostics.category.media",
+            messageKey: "diagnostics.media.playback_rate_changed",
+            details: ["rate": String(format: "%.2f", normalizedRate)]
+        )
+    }
+
+    func toggleMute() {
+        guard let audio = player.audio else { return }
+        let muted = !audio.isMuted
+        audio.isMuted = muted
+        isMuted = muted
+        DiagnosticLogStore.shared.record(
+            .info,
+            categoryKey: "diagnostics.category.media",
+            messageKey: "diagnostics.media.mute_changed",
+            details: ["muted": muted ? "yes" : "no"]
+        )
     }
 
     func selectSubtitle(_ track: VLCSubtitleTrack) {
+        guard pendingSubtitleTrackSelection?.targetID != track.id,
+              selectedSubtitleTrackID != track.id else {
+            return
+        }
+        let selection = PendingVLCTrackSelection(
+            targetID: track.id,
+            previousID: player.currentVideoSubTitleIndex,
+            startedAt: Date()
+        )
+        desiredSubtitleTrackID = track.id
+        didApplyInitialSubtitleTrack = true
+        pendingSubtitleTrackSelection = selection
+        selectedSubtitleTrackID = track.id
+        recordTrackSelectionRequested(selection, kind: .subtitle)
         player.currentVideoSubTitleIndex = track.id
-        syncState()
+        scheduleTrackSelectionCheck(kind: .subtitle)
+    }
+
+    @discardableResult
+    func selectExternalSubtitle(_ url: URL?) -> Bool {
+        didApplyInitialSubtitleTrack = true
+        if let url {
+            let startedAt = Date()
+            let result = player.addPlaybackSlave(url, type: .subtitle, enforce: true)
+            trackInventoryNeedsRefresh = true
+            trackInventoryRefreshDeadline = Date().addingTimeInterval(4)
+            DiagnosticLogStore.shared.record(
+                result == 0 ? .info : .warning,
+                categoryKey: "diagnostics.category.media",
+                messageKey: "diagnostics.media.external_subtitle",
+                details: [
+                    "result": "\(result)",
+                    "operation": "runtimeSelection",
+                    "selectionMs": Self.elapsedMilliseconds(since: startedAt)
+                ]
+            )
+            return result == 0
+        }
+        desiredSubtitleTrackID = -1
+        selectedSubtitleTrackID = -1
+        player.currentVideoSubTitleIndex = -1
+        return true
+    }
+
+    func selectAudio(_ track: VLCAudioTrack) {
+        guard pendingAudioTrackSelection?.targetID != track.id,
+              selectedAudioTrackID != track.id else {
+            return
+        }
+        let selection = PendingVLCTrackSelection(
+            targetID: track.id,
+            previousID: player.currentAudioTrackIndex,
+            startedAt: Date()
+        )
+        desiredAudioTrackID = track.id
+        didApplyInitialAudioTrack = true
+        pendingAudioTrackSelection = selection
+        selectedAudioTrackID = track.id
+        recordTrackSelectionRequested(selection, kind: .audio)
+        player.currentAudioTrackIndex = track.id
+        scheduleTrackSelectionCheck(kind: .audio)
     }
 
     func stop() {
+        didRequestStop = true
+        isUserPaused = false
+        reconnectWorkItem?.cancel()
+        audioTrackSelectionCheckWorkItem?.cancel()
+        subtitleTrackSelectionCheckWorkItem?.cancel()
         player.stop()
+    }
+
+    func pauseForExternalHandoff() {
+        isUserPaused = true
+        reconnectWorkItem?.cancel()
+        reconnectWorkItem = nil
+        player.pause()
+        syncState()
+    }
+
+    func runtimeState(orientationMode: PlayerOrientationMode) -> MediaPlaybackRuntimeState {
+        let selectableAudioIDs = audioTracks.map(\.id).filter { $0 >= 0 }
+        let selectableSubtitleIDs = subtitleTracks.map(\.id).filter { $0 >= 0 }
+        let audioOrdinal = selectableAudioIDs.firstIndex(of: selectedAudioTrackID)
+        let subtitlesDisabled = selectedSubtitleTrackID < 0
+        return MediaPlaybackRuntimeState(
+            normalizedPosition: position,
+            positionSeconds: currentTimeSeconds,
+            playbackRate: desiredPlaybackRate,
+            audioTrackOrdinal: audioOrdinal,
+            subtitleTrackOrdinal: subtitlesDisabled
+                ? nil
+                : selectableSubtitleIDs.firstIndex(of: selectedSubtitleTrackID),
+            subtitlesDisabled: subtitlesDisabled,
+            subtitleSelectionKnown: didApplyInitialSubtitleTrack || !lastSubtitleTrackIDs.isEmpty,
+            orientationMode: orientationMode
+        )
     }
 
     func failIfStillLoading() {
         guard !didReachPlayback, errorMessage == nil else { return }
         let state = Self.stateDescription(player.state)
+        let reason = player.isPlaying ? "playbackClockTimeout" : "loadTimeout"
         errorMessage = NSLocalizedString("player.load_timeout", comment: "")
         isBuffering = false
         player.stop()
@@ -4056,40 +5968,219 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
             details: [
                 "engine": "MobileVLCKit",
                 "state": state,
-                "reason": "loadTimeout"
+                "reason": reason,
+                "decoder": request.forcesSoftwareDecoding ? "software" : "automatic"
             ]
         )
     }
 
+    func initialLoadGraceNanosecondsIfNeeded() -> UInt64 {
+        guard !didReachPlayback, errorMessage == nil else { return 0 }
+        // An elementary-stream notification is not a rendered frame for an
+        // original file. Only HLS is allowed the longer segment-start grace.
+        guard request.fileExtensionHint == "m3u8" else { return 0 }
+        let state = Self.stateDescription(player.state).lowercased()
+        let hasActiveInput = player.isPlaying
+            || state.contains("elementarystreamadded")
+        guard hasActiveInput else { return 0 }
+        DiagnosticLogStore.shared.record(
+            .info,
+            categoryKey: "diagnostics.category.media",
+            messageKey: "diagnostics.media.player_state",
+            details: [
+                "engine": "MobileVLCKit",
+                "state": "initialLoadGrace",
+                "observedState": state,
+                "graceSeconds": "20"
+            ]
+        )
+        return 20_000_000_000
+    }
+
+    func recoverIfStalled() {
+        guard
+            !didRequestStop,
+            !didFinishPlaybackNaturally,
+            !isUserPaused,
+            player.state != .paused,
+            errorMessage == nil
+        else {
+            return
+        }
+        // Direct Range playback already uses VLC's HTTP reconnect. Rebuilding a
+        // visible direct stream from a stale buffering state causes a real stall.
+        guard request.fileExtensionHint == "m3u8", hasAlternateTransport else { return }
+        let now = Date()
+        let normalizedState = Self.stateDescription(player.state).lowercased()
+        let reportsBuffering = normalizedState.contains("opening")
+            || normalizedState.contains("buffering")
+        if didReachPlayback,
+           let lastPlaybackProgressAt,
+           now.timeIntervalSince(lastPlaybackProgressAt) >= 1.5,
+           (reportsBuffering || !player.isPlaying),
+           !isBuffering {
+            isBuffering = true
+            recordBufferingTransition(isBuffering: true)
+        }
+        guard didReachPlayback else { return }
+        if isReconnecting {
+            guard let reconnectStartedAt,
+                  Date().timeIntervalSince(reconnectStartedAt) >= reconnectTimeout else {
+                return
+            }
+            isReconnecting = false
+            self.reconnectStartedAt = nil
+            if reconnectAttempts < maximumReconnectAttempts {
+                scheduleReconnect(reason: "reconnectTimeout")
+            } else {
+                fail(reason: "reconnectLimit")
+            }
+            return
+        }
+        guard let lastPlaybackProgressAt,
+              now.timeIntervalSince(lastPlaybackProgressAt) >= stallTimeout,
+              isBuffering || !player.isPlaying else {
+            return
+        }
+        if hasAlternateTransport {
+            fail(reason: "alternateTransportPreferred")
+            return
+        }
+        if reconnectAttempts < maximumReconnectAttempts {
+            scheduleReconnect(reason: "playbackStall")
+        } else {
+            fail(reason: "reconnectLimit")
+        }
+    }
+
     func mediaPlayerStateChanged(_ notification: Notification) {
+        if player.state == .esAdded {
+            trackInventoryNeedsRefresh = true
+        }
+        pendingTimeStateSyncWorkItem?.cancel()
+        pendingTimeStateSyncWorkItem = nil
+        lastTimeStateSyncAt = Date()
         syncState()
     }
 
     func mediaPlayerTimeChanged(_ notification: Notification) {
-        syncState()
+        let elapsed = Date().timeIntervalSince(lastTimeStateSyncAt)
+        if elapsed >= minimumTimeStateSyncInterval {
+            pendingTimeStateSyncWorkItem?.cancel()
+            pendingTimeStateSyncWorkItem = nil
+            lastTimeStateSyncAt = Date()
+            syncState()
+            return
+        }
+        guard pendingTimeStateSyncWorkItem == nil else { return }
+        let workItem = DispatchWorkItem { [weak self] in
+            guard let self else { return }
+            self.pendingTimeStateSyncWorkItem = nil
+            self.lastTimeStateSyncAt = Date()
+            self.syncState()
+        }
+        pendingTimeStateSyncWorkItem = workItem
+        DispatchQueue.main.asyncAfter(
+            deadline: .now() + max(minimumTimeStateSyncInterval - elapsed, 0),
+            execute: workItem
+        )
     }
 
     private func syncState() {
         let isPlaying = player.isPlaying
-        if isPlaying {
-            didReachPlayback = true
-        }
         let isSeekable = player.isSeekable
-        if !didApplyInitialPosition,
-           isSeekable,
-           let initialPosition,
-           initialPosition > 0 {
-            didApplyInitialPosition = true
-            player.position = Float(initialPosition)
-        }
-        let position = Double(max(player.position, 0))
+        let rawPosition = Double(max(player.position, 0))
         let stateDescription = Self.stateDescription(player.state)
         let normalizedState = stateDescription.lowercased()
-        let isBuffering = normalizedState.contains("opening") || normalizedState.contains("buffering")
-        applySubtitleStyleIfNeeded(isRendererReady: isBuffering || player.isPlaying)
-        let currentTimeText = player.time.stringValue
-        let durationText = player.media?.length.stringValue ?? "--:--"
-        let currentSeconds = max(Double(player.time.intValue) / 1_000, 0)
+        let inputIsReadyForInitialSeek = isPlaying
+            || player.state == .esAdded
+            || didReachPlayback
+        if !didApplyInitialPosition,
+           request.timelineOffsetSeconds == 0,
+           isSeekable,
+           inputIsReadyForInitialSeek,
+           let resumePosition = pendingResumePosition ?? initialPosition,
+           resumePosition > 0 {
+            didApplyInitialPosition = true
+            pendingResumePosition = nil
+            player.position = Float(resumePosition)
+        }
+        let reportsBuffering = normalizedState.contains("opening") || normalizedState.contains("buffering")
+        applySubtitleStyleIfNeeded(isRendererReady: reportsBuffering || player.isPlaying)
+        let rawCurrentSeconds = max(Double(player.time.intValue) / 1_000, 0)
+        let rawDurationSeconds = max(Double(player.media?.length.intValue ?? 0) / 1_000, 0)
+        let durationSeconds = request.totalDurationSeconds ?? rawDurationSeconds
+        let currentSeconds = min(
+            request.timelineOffsetSeconds + rawCurrentSeconds,
+            durationSeconds > 0 ? durationSeconds : .greatestFiniteMagnitude
+        )
+        let position = durationSeconds > 0
+            ? min(max(currentSeconds / durationSeconds, 0), 1)
+            : rawPosition
+        let currentTimeText = Self.timeText(seconds: currentSeconds)
+        let durationText = durationSeconds > 0
+            ? Self.timeText(seconds: durationSeconds)
+            : "--:--"
+        let videoSize = player.videoSize
+        let hasVideoOutput = player.hasVideoOut
+            && videoSize.width > 0
+            && videoSize.height > 0
+        let playbackClockAdvanced = lastObservedPlaybackSeconds.map {
+            abs(currentSeconds - $0) >= 0.2
+        } ?? false
+        let now = Date()
+        if playbackClockAdvanced {
+            lastPlaybackProgressAt = now
+            if isReconnecting {
+                isReconnecting = false
+                reconnectStartedAt = nil
+            }
+        }
+        let presentedMedia = request.isAudioOnly ? playbackClockAdvanced : hasVideoOutput
+        if presentedMedia, !didReachPlayback {
+            didReachPlayback = true
+            lastPlaybackProgressAt = now
+        }
+        let playbackClockRecentlyAdvanced = playbackClockAdvanced
+            // MobileVLCKit can publish its media clock at roughly one-second
+            // intervals for HLS even while decoded frames continue flowing.
+            // Keep the grace window above that cadence so the UI and
+            // diagnostics do not report a 250 ms "buffer" once per second.
+            || lastPlaybackProgressAt.map { now.timeIntervalSince($0) < 1.5 } == true
+        let isWaitingForSeekRecovery = pendingSeekStartedAt != nil && !playbackClockAdvanced
+        let hasActionableBufferingState = request.fileExtensionHint == "m3u8"
+        let isBuffering = reportsBuffering
+            && (!didReachPlayback
+                || (hasActionableBufferingState
+                    && (isWaitingForSeekRecovery || !playbackClockRecentlyAdvanced)))
+        if player.isPlaying, !didApplyPlaybackRate {
+            didApplyPlaybackRate = true
+            player.rate = desiredPlaybackRate
+        }
+        if didReachPlayback, !didRecordFirstFrame {
+            didRecordFirstFrame = true
+            DiagnosticLogStore.shared.record(
+                .info,
+                categoryKey: "diagnostics.category.media",
+                messageKey: "diagnostics.media.player_ready",
+                details: MediaPlaybackProbe.baseDetails(for: request).merging([
+                    "engine": "MobileVLCKit",
+                    "readySignal": hasVideoOutput ? "videoOutput" : "playbackClock",
+                    "tapToFirstFrameMs": Self.elapsedMilliseconds(since: request.requestedAt)
+                ]) { current, _ in current }
+            )
+        }
+        recordBufferingTransition(isBuffering: isBuffering)
+        recordSeekRecoveryIfNeeded(currentSeconds: currentSeconds, isBuffering: isBuffering)
+        lastObservedPlaybackSeconds = currentSeconds
+        if currentSeconds > highestPlaybackSeconds + 0.2 {
+            highestPlaybackSeconds = currentSeconds
+            if reconnectAttempts > 0,
+               currentSeconds >= reconnectRecoveryBaselineSeconds + 10 {
+                reconnectAttempts = 0
+                reconnectRecoveryBaselineSeconds = currentSeconds
+            }
+        }
         if isPlaying {
             request.playbackTracker?.started(positionSeconds: currentSeconds)
         }
@@ -4097,38 +6188,85 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
             positionSeconds: currentSeconds,
             isPaused: !isPlaying
         )
-        let errorMessage = player.state == .error
+        let stateErrorMessage = player.state == .error
             ? NSLocalizedString("player.compatibility_failed", comment: "")
             : nil
-        let subtitleNames = player.videoSubTitlesNames.compactMap { $0 as? String }
-        let subtitleIndexes = player.videoSubTitlesIndexes.compactMap(Self.subtitleTrackID)
-        var subtitleTracks = zip(subtitleIndexes, subtitleNames).map { pair in
-            VLCSubtitleTrack(
-                id: pair.0,
-                name: pair.0 < 0 ? NSLocalizedString("player.subtitles.off", comment: "") : pair.1
+        refreshTrackInventoryIfNeeded()
+        applyInitialTrackSelectionIfNeeded(
+            audioIndexes: lastAudioTrackIDs,
+            subtitleIndexes: lastSubtitleTrackIDs
+        )
+        let actualSubtitleTrackID = player.currentVideoSubTitleIndex
+        let actualAudioTrackID = player.currentAudioTrackIndex
+        let selectedSubtitleTrackID = reconciledTrackSelectionID(
+            actualID: actualSubtitleTrackID,
+            kind: .subtitle
+        )
+        let selectedAudioTrackID = reconciledTrackSelectionID(
+            actualID: actualAudioTrackID,
+            kind: .audio
+        )
+        let furthestPlaybackSeconds = max(currentSeconds, highestPlaybackSeconds)
+        let naturalEndToleranceSeconds = min(max(durationSeconds * 0.01, 3), 10)
+        let reachedNaturalEnd = durationSeconds > 0
+            && furthestPlaybackSeconds >= max(
+                durationSeconds - naturalEndToleranceSeconds,
+                0
             )
+        let finiteInputEnded = player.state == .ended
+            && request.fileExtensionHint != "m3u8"
+        let completedNaturally = reachedNaturalEnd || finiteInputEnded
+        if completedNaturally
+            && (player.state == .ended || player.state == .stopped) {
+            didFinishPlaybackNaturally = true
         }
-        if !subtitleTracks.contains(where: { $0.id < 0 }) {
-            subtitleTracks.insert(
-                VLCSubtitleTrack(
-                    id: -1,
-                    name: NSLocalizedString("player.subtitles.off", comment: "")
-                ),
-                at: 0
-            )
+        let endedPrematurely = player.state == .ended
+            && !completedNaturally
+            && didRecordStart
+            && didReachPlayback
+            && !didRequestStop
+            && !isUserPaused
+            && errorMessage == nil
+        if endedPrematurely {
+            if hasAlternateTransport {
+                fail(reason: "prematureEnd")
+            } else if !isReconnecting,
+                      reconnectAttempts < maximumReconnectAttempts,
+                      reconnectWorkItem == nil {
+                scheduleReconnect(reason: "prematureEnd")
+            }
         }
-        let selectedSubtitleTrackID = player.currentVideoSubTitleIndex
-        if subtitleIndexes != lastSubtitleTrackIDs {
-            lastSubtitleTrackIDs = subtitleIndexes
-            DiagnosticLogStore.shared.record(
-                .info,
-                categoryKey: "diagnostics.category.media",
-                messageKey: "diagnostics.media.subtitle_tracks",
-                details: [
-                    "count": "\(subtitleIndexes.filter { $0 >= 0 }.count)",
-                    "selected": "\(player.currentVideoSubTitleIndex)"
-                ]
-            )
+        let previousState = lastStateDescription.lowercased()
+        let inputEndedBeforeFirstFrame = (player.state == .ended || player.state == .stopped)
+            && !didReachPlayback
+            && didRecordStart
+            && !didRequestStop
+            && !isUserPaused
+            && errorMessage == nil
+            && (!lastAudioTrackIDs.isEmpty
+                || previousState.contains("playing")
+                || previousState.contains("elementarystreamadded")
+                || previousState.contains("opening")
+                || previousState.contains("buffering"))
+        if inputEndedBeforeFirstFrame {
+            if hasAlternateTransport {
+                fail(reason: "prematureEndBeforeFirstFrame")
+            } else if !isReconnecting,
+                      reconnectAttempts < maximumReconnectAttempts,
+                      reconnectWorkItem == nil {
+                scheduleReconnect(reason: "prematureEndBeforeFirstFrame")
+            }
+        }
+        let stoppedUnexpectedly = player.state == .stopped && !didFinishPlaybackNaturally
+        if stoppedUnexpectedly,
+           didRecordStart,
+           didReachPlayback,
+           !didRequestStop,
+           errorMessage == nil,
+           !isReconnecting,
+           reconnectAttempts < maximumReconnectAttempts,
+           reconnectWorkItem == nil {
+            scheduleReconnect(reason: "unexpectedStop")
         }
 
         if stateDescription != lastStateDescription {
@@ -4147,18 +6285,479 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
             )
         }
 
-        DispatchQueue.main.async { [weak self] in
-            self?.isPlaying = isPlaying
-            self?.position = position
-            self?.isSeekable = isSeekable
-            self?.errorMessage = errorMessage
-            if self?.subtitleTracks != subtitleTracks {
-                self?.subtitleTracks = subtitleTracks
+        if self.isPlaying != isPlaying { self.isPlaying = isPlaying }
+        let isMuted = player.audio?.isMuted ?? false
+        if self.isMuted != isMuted { self.isMuted = isMuted }
+        if abs(self.position - position) >= 0.0001 { self.position = position }
+        if self.isSeekable != isSeekable { self.isSeekable = isSeekable }
+        if let stateErrorMessage {
+            if self.errorMessage != stateErrorMessage { self.errorMessage = stateErrorMessage }
+        }
+        if subtitleTracks != cachedSubtitleTracks {
+            subtitleTracks = cachedSubtitleTracks
+        }
+        if self.selectedSubtitleTrackID != selectedSubtitleTrackID {
+            self.selectedSubtitleTrackID = selectedSubtitleTrackID
+        }
+        if audioTracks != cachedAudioTracks {
+            audioTracks = cachedAudioTracks
+        }
+        if self.selectedAudioTrackID != selectedAudioTrackID {
+            self.selectedAudioTrackID = selectedAudioTrackID
+        }
+        if self.isBuffering != isBuffering { self.isBuffering = isBuffering }
+        if hasStartedPlayback != didReachPlayback { hasStartedPlayback = didReachPlayback }
+        if self.currentTimeText != currentTimeText { self.currentTimeText = currentTimeText }
+        if abs(self.currentTimeSeconds - currentSeconds) >= 0.05 {
+            self.currentTimeSeconds = currentSeconds
+        }
+        if self.durationText != durationText { self.durationText = durationText }
+        if abs(self.durationSeconds - durationSeconds) >= 0.05 {
+            self.durationSeconds = durationSeconds
+        }
+        let currentRate = player.rate
+        if playbackRate != currentRate { playbackRate = currentRate }
+    }
+
+    private static func timeText(seconds: Double) -> String {
+        guard seconds.isFinite, seconds >= 0 else { return "--:--" }
+        let totalSeconds = Int(seconds.rounded(.down))
+        let hours = totalSeconds / 3_600
+        let minutes = totalSeconds % 3_600 / 60
+        let remainingSeconds = totalSeconds % 60
+        if hours > 0 {
+            return String(format: "%d:%02d:%02d", hours, minutes, remainingSeconds)
+        }
+        return String(format: "%02d:%02d", minutes, remainingSeconds)
+    }
+
+    private func applyInitialTrackSelectionIfNeeded(
+        audioIndexes: [Int32],
+        subtitleIndexes: [Int32]
+    ) {
+        let selectableAudioIndexes = audioIndexes.filter { $0 >= 0 }
+        if !didApplyInitialAudioTrack {
+            if let desiredAudioTrackID,
+               selectableAudioIndexes.contains(desiredAudioTrackID) {
+                didApplyInitialAudioTrack = true
+                player.currentAudioTrackIndex = desiredAudioTrackID
+            } else if let preferredAudioTrackOrdinal,
+                      selectableAudioIndexes.indices.contains(preferredAudioTrackOrdinal) {
+                didApplyInitialAudioTrack = true
+                player.currentAudioTrackIndex = selectableAudioIndexes[preferredAudioTrackOrdinal]
             }
-            self?.selectedSubtitleTrackID = selectedSubtitleTrackID
-            self?.isBuffering = isBuffering
-            self?.currentTimeText = currentTimeText
-            self?.durationText = durationText
+        }
+
+        guard !didApplyInitialSubtitleTrack else { return }
+        if let desiredSubtitleTrackID {
+            guard desiredSubtitleTrackID < 0 || subtitleIndexes.contains(desiredSubtitleTrackID) else {
+                return
+            }
+            didApplyInitialSubtitleTrack = true
+            player.currentVideoSubTitleIndex = desiredSubtitleTrackID
+            return
+        }
+        if prefersSubtitlesDisabled {
+            didApplyInitialSubtitleTrack = true
+            player.currentVideoSubTitleIndex = -1
+            return
+        }
+        guard externalSubtitleURL == nil,
+              let preferredSubtitleTrackOrdinal else {
+            return
+        }
+        let selectableSubtitleIndexes = subtitleIndexes.filter { $0 >= 0 }
+        guard selectableSubtitleIndexes.indices.contains(preferredSubtitleTrackOrdinal) else {
+            return
+        }
+        didApplyInitialSubtitleTrack = true
+        player.currentVideoSubTitleIndex = selectableSubtitleIndexes[preferredSubtitleTrackOrdinal]
+    }
+
+    private func resetTrackInventoryRefreshWindow() {
+        trackInventoryNeedsRefresh = true
+        trackInventoryRefreshDeadline = Date().addingTimeInterval(8)
+        lastTrackInventoryRefreshAt = nil
+    }
+
+    private func refreshTrackInventoryIfNeeded() {
+        let now = Date()
+        let isWithinStartupWindow = now < trackInventoryRefreshDeadline
+        let startupRetryIsDue = isWithinStartupWindow
+            && (lastTrackInventoryRefreshAt.map { now.timeIntervalSince($0) >= 0.75 } ?? true)
+        guard trackInventoryNeedsRefresh || startupRetryIsDue else { return }
+        trackInventoryNeedsRefresh = false
+        lastTrackInventoryRefreshAt = now
+
+        let subtitleNames = player.videoSubTitlesNames.compactMap { $0 as? String }
+        let subtitleIndexes = player.videoSubTitlesIndexes.compactMap(Self.subtitleTrackID)
+        let selectableSubtitleIndexes = subtitleIndexes.filter { $0 >= 0 }
+        let subtitleDisplayNames = trackDisplayNames(
+            rawNames: subtitleNames,
+            allIndexes: subtitleIndexes,
+            selectableIndexes: selectableSubtitleIndexes,
+            sourceTracks: request.sourceSubtitleTracks,
+            fallbackPrefix: NSLocalizedString("player.subtitles", comment: "")
+        )
+        let subtitleTracks = [VLCSubtitleTrack(
+            id: -1,
+            name: NSLocalizedString("player.subtitles.off", comment: "")
+        )] + selectableSubtitleIndexes.enumerated().map { ordinal, id in
+            VLCSubtitleTrack(id: id, name: subtitleDisplayNames[ordinal])
+        }
+
+        let audioNames = player.audioTrackNames.compactMap { $0 as? String }
+        let audioIndexes = player.audioTrackIndexes.compactMap(Self.subtitleTrackID)
+        let selectableAudioIndexes = audioIndexes.filter { $0 >= 0 }
+        let audioDisplayNames = trackDisplayNames(
+            rawNames: audioNames,
+            allIndexes: audioIndexes,
+            selectableIndexes: selectableAudioIndexes,
+            sourceTracks: request.sourceAudioTracks,
+            fallbackPrefix: NSLocalizedString("player.audio_tracks", comment: "")
+        )
+        let audioTracks = selectableAudioIndexes.enumerated().map { ordinal, id in
+            VLCAudioTrack(id: id, name: audioDisplayNames[ordinal])
+        }
+
+        cachedSubtitleTracks = subtitleTracks
+        cachedAudioTracks = audioTracks
+        if didReachPlayback, !audioIndexes.isEmpty {
+            trackInventoryRefreshDeadline = .distantPast
+        }
+        if subtitleIndexes != lastSubtitleTrackIDs {
+            lastSubtitleTrackIDs = subtitleIndexes
+            DiagnosticLogStore.shared.record(
+                .info,
+                categoryKey: "diagnostics.category.media",
+                messageKey: "diagnostics.media.subtitle_tracks",
+                details: [
+                    "count": "\(subtitleIndexes.filter { $0 >= 0 }.count)",
+                    "selected": "\(player.currentVideoSubTitleIndex)"
+                ]
+            )
+        }
+        if audioIndexes != lastAudioTrackIDs {
+            lastAudioTrackIDs = audioIndexes
+            DiagnosticLogStore.shared.record(
+                .info,
+                categoryKey: "diagnostics.category.media",
+                messageKey: "diagnostics.media.audio_tracks",
+                details: [
+                    "count": "\(selectableAudioIndexes.count)",
+                    "selected": "\(player.currentAudioTrackIndex)"
+                ]
+            )
+        }
+    }
+
+    private func trackDisplayNames(
+        rawNames: [String],
+        allIndexes: [Int32],
+        selectableIndexes: [Int32],
+        sourceTracks: [MediaPlaybackSourceTrack],
+        fallbackPrefix: String
+    ) -> [String] {
+        let indexedNames = Dictionary(
+            uniqueKeysWithValues: zip(allIndexes, rawNames).map { ($0.0, $0.1) }
+        )
+        return selectableIndexes.enumerated().map { ordinal, id in
+            if sourceTracks.indices.contains(ordinal) {
+                return sourceTracks[ordinal].name
+            }
+            if let indexedName = indexedNames[id], !indexedName.isEmpty {
+                return indexedName
+            }
+            return "\(fallbackPrefix) \(ordinal + 1)"
+        }
+    }
+
+    private func reconciledTrackSelectionID(
+        actualID: Int32,
+        kind: VLCTrackSelectionKind
+    ) -> Int32 {
+        let pendingSelection = kind == .audio
+            ? pendingAudioTrackSelection
+            : pendingSubtitleTrackSelection
+        guard let pendingSelection else { return actualID }
+        if actualID == pendingSelection.targetID {
+            finishTrackSelection(pendingSelection, kind: kind, didConfirm: true)
+            return actualID
+        }
+        if Date().timeIntervalSince(pendingSelection.startedAt) >= 4 {
+            finishTrackSelection(pendingSelection, kind: kind, didConfirm: false)
+            return actualID
+        }
+        return pendingSelection.targetID
+    }
+
+    private func recordTrackSelectionRequested(
+        _ selection: PendingVLCTrackSelection,
+        kind: VLCTrackSelectionKind
+    ) {
+        DiagnosticLogStore.shared.record(
+            .info,
+            categoryKey: "diagnostics.category.media",
+            messageKey: "diagnostics.media.track_switch_requested",
+            details: [
+                "engine": "MobileVLCKit",
+                "kind": kind.rawValue,
+                "from": "\(selection.previousID)",
+                "target": "\(selection.targetID)"
+            ]
+        )
+    }
+
+    private func scheduleTrackSelectionCheck(kind: VLCTrackSelectionKind) {
+        let pendingSelection = kind == .audio
+            ? pendingAudioTrackSelection
+            : pendingSubtitleTrackSelection
+        guard pendingSelection != nil else { return }
+
+        let workItem = DispatchWorkItem { [weak self] in
+            guard let self else { return }
+            if kind == .audio {
+                self.audioTrackSelectionCheckWorkItem = nil
+            } else {
+                self.subtitleTrackSelectionCheckWorkItem = nil
+            }
+            let actualID = kind == .audio
+                ? self.player.currentAudioTrackIndex
+                : self.player.currentVideoSubTitleIndex
+            let selectedID = self.reconciledTrackSelectionID(actualID: actualID, kind: kind)
+            if kind == .audio {
+                self.selectedAudioTrackID = selectedID
+                if self.pendingAudioTrackSelection != nil {
+                    self.scheduleTrackSelectionCheck(kind: kind)
+                }
+            } else {
+                self.selectedSubtitleTrackID = selectedID
+                if self.pendingSubtitleTrackSelection != nil {
+                    self.scheduleTrackSelectionCheck(kind: kind)
+                }
+            }
+        }
+        if kind == .audio {
+            audioTrackSelectionCheckWorkItem?.cancel()
+            audioTrackSelectionCheckWorkItem = workItem
+        } else {
+            subtitleTrackSelectionCheckWorkItem?.cancel()
+            subtitleTrackSelectionCheckWorkItem = workItem
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.08, execute: workItem)
+    }
+
+    private func finishTrackSelection(
+        _ selection: PendingVLCTrackSelection,
+        kind: VLCTrackSelectionKind,
+        didConfirm: Bool
+    ) {
+        if kind == .audio {
+            pendingAudioTrackSelection = nil
+            audioTrackSelectionCheckWorkItem?.cancel()
+            audioTrackSelectionCheckWorkItem = nil
+        } else {
+            pendingSubtitleTrackSelection = nil
+            subtitleTrackSelectionCheckWorkItem?.cancel()
+            subtitleTrackSelectionCheckWorkItem = nil
+        }
+        DiagnosticLogStore.shared.record(
+            didConfirm ? .info : .warning,
+            categoryKey: "diagnostics.category.media",
+            messageKey: didConfirm
+                ? "diagnostics.media.track_switch_confirmed"
+                : "diagnostics.media.track_switch_timeout",
+            details: [
+                "engine": "MobileVLCKit",
+                "kind": kind.rawValue,
+                "target": "\(selection.targetID)",
+                "selectionMs": Self.elapsedMilliseconds(since: selection.startedAt)
+            ]
+        )
+    }
+
+    private func scheduleReconnect(reason: String) {
+        guard
+            reconnectWorkItem == nil,
+            !isReconnecting,
+            !isUserPaused,
+            !didRequestStop
+        else {
+            return
+        }
+        reconnectAttempts += 1
+        let resumePosition = max(Double(player.position), 0)
+        let workItem = DispatchWorkItem { [weak self] in
+            guard let self else { return }
+            self.reconnectWorkItem = nil
+            guard !self.didRequestStop, !self.isUserPaused else { return }
+            self.isReconnecting = true
+            self.reconnectStartedAt = Date()
+            self.reconnectRecoveryBaselineSeconds = self.highestPlaybackSeconds
+            DiagnosticLogStore.shared.record(
+                .warning,
+                categoryKey: "diagnostics.category.media",
+                messageKey: "diagnostics.media.player_state",
+                details: [
+                    "engine": "MobileVLCKit",
+                    "state": "reconnecting",
+                    "attempt": "\(self.reconnectAttempts)",
+                    "reason": reason
+                ]
+            )
+            self.pendingResumePosition = resumePosition
+            if self.desiredAudioTrackID == nil, self.player.currentAudioTrackIndex >= 0 {
+                self.desiredAudioTrackID = self.player.currentAudioTrackIndex
+            }
+            if self.desiredSubtitleTrackID == nil {
+                self.desiredSubtitleTrackID = self.player.currentVideoSubTitleIndex
+            }
+            self.desiredPlaybackRate = self.player.rate
+            self.lastPlaybackProgressAt = Date()
+            self.lastObservedPlaybackSeconds = nil
+            self.didApplyInitialPosition = false
+            self.didApplyInitialAudioTrack = false
+            self.didApplyInitialSubtitleTrack = false
+            self.didApplyPlaybackRate = false
+            self.didAddExternalSubtitle = false
+            self.pendingAudioTrackSelection = nil
+            self.pendingSubtitleTrackSelection = nil
+            self.audioTrackSelectionCheckWorkItem?.cancel()
+            self.subtitleTrackSelectionCheckWorkItem?.cancel()
+            self.audioTrackSelectionCheckWorkItem = nil
+            self.subtitleTrackSelectionCheckWorkItem = nil
+            self.resetTrackInventoryRefreshWindow()
+            self.player.stop()
+            self.player.media = self.makeMedia()
+            self.player.play()
+            self.addExternalSubtitleIfNeeded()
+        }
+        reconnectWorkItem = workItem
+        let delay = min(Double(reconnectAttempts), 3) * 0.75
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: workItem)
+    }
+
+    private func fail(reason: String) {
+        guard errorMessage == nil else { return }
+        errorMessage = NSLocalizedString("player.compatibility_failed", comment: "")
+        isBuffering = false
+        player.stop()
+        DiagnosticLogStore.shared.record(
+            .error,
+            categoryKey: "diagnostics.category.media",
+            messageKey: "diagnostics.media.player_failed",
+            details: [
+                "engine": "MobileVLCKit",
+                "reason": reason,
+                "reconnectAttempts": "\(reconnectAttempts)",
+                "decoder": request.forcesSoftwareDecoding ? "software" : "automatic"
+            ]
+        )
+    }
+
+    private func cancelPendingReconnectForUserSeek() {
+        reconnectWorkItem?.cancel()
+        reconnectWorkItem = nil
+        isReconnecting = false
+        reconnectStartedAt = nil
+        pendingResumePosition = nil
+        lastObservedPlaybackSeconds = nil
+        lastPlaybackProgressAt = Date()
+    }
+
+    private func beginSeekMeasurement(targetSeconds: Double?) {
+        pendingSeekStartedAt = Date()
+        pendingSeekOriginSeconds = max(Double(player.time.intValue) / 1_000, 0)
+        pendingSeekTargetSeconds = targetSeconds
+        DiagnosticLogStore.shared.record(
+            .info,
+            categoryKey: "diagnostics.category.media",
+            messageKey: "diagnostics.media.seek_requested",
+            details: [
+                "engine": "MobileVLCKit",
+                "fromSeconds": String(format: "%.1f", pendingSeekOriginSeconds ?? 0),
+                "targetSeconds": targetSeconds.map { String(format: "%.1f", $0) } ?? "-"
+            ]
+        )
+    }
+
+    private func recordSeekRecoveryIfNeeded(currentSeconds: Double, isBuffering: Bool) {
+        guard
+            let pendingSeekStartedAt,
+            let pendingSeekOriginSeconds,
+            !isBuffering,
+            player.isPlaying
+        else {
+            return
+        }
+        let reachedRequestedRegion = pendingSeekTargetSeconds.map {
+            abs(currentSeconds - $0) <= 1.5
+        } ?? (abs(currentSeconds - pendingSeekOriginSeconds) >= 0.2)
+        guard reachedRequestedRegion else { return }
+        DiagnosticLogStore.shared.record(
+            .info,
+            categoryKey: "diagnostics.category.media",
+            messageKey: "diagnostics.media.seek_ready",
+            details: [
+                "engine": "MobileVLCKit",
+                "recoveryMs": Self.elapsedMilliseconds(since: pendingSeekStartedAt),
+                "fromSeconds": String(format: "%.1f", pendingSeekOriginSeconds),
+                "targetSeconds": pendingSeekTargetSeconds.map { String(format: "%.1f", $0) } ?? "-",
+                "actualSeconds": String(format: "%.1f", currentSeconds)
+            ]
+        )
+        self.pendingSeekStartedAt = nil
+        self.pendingSeekOriginSeconds = nil
+        self.pendingSeekTargetSeconds = nil
+    }
+
+    private func recordBufferingTransition(isBuffering: Bool) {
+        guard isBuffering != lastBufferingState else { return }
+        lastBufferingState = isBuffering
+        if isBuffering {
+            if didReachPlayback { bufferingStartedAt = Date() }
+            return
+        }
+        guard let bufferingStartedAt else { return }
+        DiagnosticLogStore.shared.record(
+            .info,
+            categoryKey: "diagnostics.category.media",
+            messageKey: "diagnostics.media.buffer_recovered",
+            details: [
+                "engine": "MobileVLCKit",
+                "bufferingMs": Self.elapsedMilliseconds(since: bufferingStartedAt)
+            ]
+        )
+        self.bufferingStartedAt = nil
+    }
+
+    private static func elapsedMilliseconds(since date: Date) -> String {
+        String(Int(max(Date().timeIntervalSince(date), 0) * 1_000))
+    }
+
+    private var hasAlternateTransport: Bool {
+        request.compatibilityFallbackResource != nil
+            || request.compatibilityFallbackResourceLoader != nil
+            || request.compatibilityFallbackRequestLoader != nil
+    }
+
+    private var maximumReconnectAttempts: Int {
+        request.source == .directURL ? 2 : 1
+    }
+
+    private var stallTimeout: TimeInterval {
+        let isPrivateHost = request.isPrivateNetworkRoute
+            ?? NetworkHostClassifier.isPrivate(request.networkOriginURL.host)
+        switch request.source {
+        case .jellyfin:
+            if request.fileExtensionHint == "m3u8", hasAlternateTransport {
+                return isPrivateHost ? 12 : 10
+            }
+            return isPrivateHost ? 18 : 30
+        case .dsmFile:
+            return isPrivateHost ? 18 : 30
+        case .directURL:
+            return 20
         }
     }
 
@@ -4210,32 +6809,82 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
 
     deinit {
         pendingJumpWorkItem?.cancel()
+        pendingTimeStateSyncWorkItem?.cancel()
+        reconnectWorkItem?.cancel()
         player.stop()
     }
+}
+
+private struct VLCPlayerTrackOption: Identifiable {
+    let id: Int32
+    let name: String
+}
+
+private enum VLCPlayerPanel: String, Identifiable {
+    case settings
+    case audio
+    case subtitles
+    case quality
+
+    var id: String { rawValue }
+}
+
+private enum VLCPlayerPanMode {
+    case seeking
+    case brightness
 }
 
 private struct VLCBuiltInPlayerView: View {
     let request: MediaPlaybackRequest
     let close: () -> Void
-    let useSystemPlayer: (() -> Void)?
+    let useSystemPlayer: ((MediaPlaybackRuntimeState, Bool) -> Void)?
+    let compatibilityFailed: (MediaPlaybackRuntimeState) -> Void
+    let sourceTrackChange: ((Int?, Int?, MediaPlaybackRuntimeState) -> Void)?
+    let serverSeek: ((Double, MediaPlaybackRuntimeState) -> Void)?
+    let qualityChange: ((String, MediaPlaybackRuntimeState) -> Void)?
     let openExternal: () -> Void
     @StateObject private var session: VLCMediaPlayerSession
     @State private var controlsVisible = true
+    @State private var controlsLocked = false
     @State private var controlsRevision = 0
     @State private var scrubPosition = 0.0
     @State private var isScrubbing = false
+    @State private var gestureStartPosition: Double?
+    @State private var gestureTargetPosition: Double?
+    @State private var panMode: VLCPlayerPanMode?
+    @State private var brightnessGestureStart: CGFloat?
+    @State private var displayBrightness: CGFloat
+    @State private var brightnessHUDVisible = false
+    @State private var brightnessHUDRevision = 0
+    @State private var activePanel: VLCPlayerPanel?
+    @State private var orientationMode: PlayerOrientationMode
+    @State private var selectedSourceSubtitleTrackID: Int?
+    @State private var showPiPUnavailableHint = false
 
     init(
         request: MediaPlaybackRequest,
         close: @escaping () -> Void,
-        useSystemPlayer: (() -> Void)?,
+        useSystemPlayer: ((MediaPlaybackRuntimeState, Bool) -> Void)?,
+        compatibilityFailed: @escaping (MediaPlaybackRuntimeState) -> Void,
+        sourceTrackChange: ((Int?, Int?, MediaPlaybackRuntimeState) -> Void)?,
+        serverSeek: ((Double, MediaPlaybackRuntimeState) -> Void)?,
+        qualityChange: ((String, MediaPlaybackRuntimeState) -> Void)?,
         openExternal: @escaping () -> Void
     ) {
         self.request = request
         self.close = close
         self.useSystemPlayer = useSystemPlayer
+        self.compatibilityFailed = compatibilityFailed
+        self.sourceTrackChange = sourceTrackChange
+        self.serverSeek = serverSeek
+        self.qualityChange = qualityChange
         self.openExternal = openExternal
         _session = StateObject(wrappedValue: VLCMediaPlayerSession(request: request))
+        _orientationMode = State(initialValue: request.initialOrientationMode)
+        _displayBrightness = State(initialValue: UIScreen.main.brightness)
+        _selectedSourceSubtitleTrackID = State(
+            initialValue: request.selectedSourceSubtitleTrackID
+        )
     }
 
     var body: some View {
@@ -4248,11 +6897,57 @@ private struct VLCBuiltInPlayerView: View {
 
                 Color.clear
                     .contentShape(Rectangle())
+                    .accessibilityElement()
+                    .accessibilityLabel(Text("player.controls.toggle"))
+                    .accessibilityAddTraits(.isButton)
+                    .accessibilityAction {
+                        toggleControls()
+                    }
                     .onTapGesture {
                         toggleControls()
                     }
+                    .simultaneousGesture(
+                        DragGesture(minimumDistance: 18)
+                            .onChanged { value in
+                                updatePlayerGesture(value, playerSize: proxy.size)
+                            }
+                            .onEnded { _ in
+                                finishPlayerGesture()
+                            }
+                    )
+                    .allowsHitTesting(!controlsLocked)
 
-                if controlsVisible {
+                if brightnessHUDVisible {
+                    VStack(spacing: 8) {
+                        Image(systemName: "sun.max.fill")
+                            .font(.title2)
+                        Text("\(Int((displayBrightness * 100).rounded()))%")
+                            .font(.subheadline.monospacedDigit().weight(.semibold))
+                    }
+                    .foregroundStyle(.white)
+                    .frame(width: 92, height: 82)
+                    .background(.black.opacity(0.72), in: RoundedRectangle(cornerRadius: 8))
+                    .allowsHitTesting(false)
+                    .transition(.opacity)
+                }
+
+                if controlsLocked {
+                    HStack {
+                        playerChromeButton(
+                            systemImage: "lock.fill",
+                            accessibilityKey: "player.controls.unlock"
+                        ) {
+                            controlsLocked = false
+                            recordControlsLockChange(locked: false)
+                            revealControls()
+                        }
+                        Spacer()
+                    }
+                    .padding(.horizontal, 16)
+                    .transition(.opacity)
+                }
+
+                if controlsVisible && !controlsLocked {
                     VStack(spacing: 0) {
                         topControls
                         Spacer()
@@ -4271,13 +6966,21 @@ private struct VLCBuiltInPlayerView: View {
                             .font(.caption)
                             .multilineTextAlignment(.center)
                         if request.allowsExternalHandoff {
-                            Button(action: openExternal) {
+                            Button {
+                                session.pauseForExternalHandoff()
+                                openExternal()
+                            } label: {
                                 Label("devices.files.open_external", systemImage: "arrow.up.forward.app")
                             }
                             .buttonStyle(.borderedProminent)
                             .tint(AppTheme.accent)
                         } else if let useSystemPlayer {
-                            Button(action: useSystemPlayer) {
+                            Button {
+                                useSystemPlayer(
+                                    session.runtimeState(orientationMode: orientationMode),
+                                    false
+                                )
+                            } label: {
                                 Label("player.engine.system", systemImage: "play.rectangle")
                             }
                             .buttonStyle(.borderedProminent)
@@ -4296,14 +6999,29 @@ private struct VLCBuiltInPlayerView: View {
                     }
                     .foregroundStyle(.white)
                     .padding(22)
-                } else if session.isBuffering {
+                } else if session.isBuffering && !session.hasStartedPlayback {
                     ProgressView()
                         .controlSize(.large)
                         .tint(.white)
                 }
+
+                if let activePanel, session.errorMessage == nil {
+                    VStack {
+                        Spacer()
+                        HStack {
+                            Spacer()
+                            playerPanel(activePanel, isLandscape: landscapeLayout)
+                        }
+                    }
+                    .padding(.horizontal, 12)
+                    .padding(.bottom, landscapeLayout ? 56 : 92)
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                }
+
             }
         }
         .onAppear {
+            displayBrightness = UIScreen.main.brightness
             session.play()
             revealControls()
         }
@@ -4323,18 +7041,48 @@ private struct VLCBuiltInPlayerView: View {
                 }
             }
         }
+        .onChange(of: session.errorMessage) { errorMessage in
+            if errorMessage != nil {
+                compatibilityFailed(session.runtimeState(orientationMode: orientationMode))
+            }
+        }
         .task {
-            try? await Task.sleep(nanoseconds: 20_000_000_000)
+            try? await Task.sleep(nanoseconds: session.initialLoadTimeoutNanoseconds)
             guard !Task.isCancelled else { return }
+            let grace = session.initialLoadGraceNanosecondsIfNeeded()
+            if grace > 0 {
+                try? await Task.sleep(nanoseconds: grace)
+                guard !Task.isCancelled else { return }
+            }
             session.failIfStillLoading()
         }
+        .task {
+            while !Task.isCancelled {
+                try? await Task.sleep(nanoseconds: 5_000_000_000)
+                guard !Task.isCancelled else { return }
+                session.recoverIfStalled()
+            }
+        }
         .task(id: controlsRevision) {
-            guard controlsVisible, session.isPlaying else { return }
+            guard controlsVisible, session.isPlaying, activePanel == nil else { return }
             try? await Task.sleep(nanoseconds: 4_500_000_000)
-            guard !Task.isCancelled, session.isPlaying else { return }
+            guard !Task.isCancelled, session.isPlaying, activePanel == nil else { return }
             withAnimation(.easeInOut(duration: 0.25)) {
                 controlsVisible = false
             }
+        }
+        .task(id: brightnessHUDRevision) {
+            guard brightnessHUDVisible, panMode == nil else { return }
+            try? await Task.sleep(nanoseconds: 900_000_000)
+            guard !Task.isCancelled, panMode == nil else { return }
+            withAnimation(.easeInOut(duration: 0.2)) {
+                brightnessHUDVisible = false
+            }
+        }
+        .alert("player.picture_in_picture", isPresented: $showPiPUnavailableHint) {
+            Button("action.done", role: .cancel) {}
+        } message: {
+            Text("player.picture_in_picture_unavailable")
         }
     }
 
@@ -4352,30 +7100,35 @@ private struct VLCBuiltInPlayerView: View {
                 .foregroundStyle(.white)
                 .frame(maxWidth: .infinity)
 
-            if useSystemPlayer != nil || request.allowsExternalHandoff {
-                Menu {
-                    if let useSystemPlayer {
-                        Button(action: useSystemPlayer) {
-                            Label("player.engine.system", systemImage: "play.rectangle")
-                        }
-                    }
-                    if request.allowsExternalHandoff {
-                        Button(action: openExternal) {
-                            Label("devices.files.open_external", systemImage: "arrow.up.forward.app")
-                        }
-                    }
-                } label: {
-                    Image(systemName: "ellipsis")
-                        .font(.title3.weight(.semibold))
-                        .foregroundStyle(.white)
-                        .frame(width: 44, height: 44)
-                        .background(.black.opacity(0.46), in: Circle())
-                }
-                .accessibilityLabel(Text("player.engine.choose"))
-            } else {
-                Color.clear
-                    .frame(width: 44, height: 44)
+            playerChromeButton(
+                systemImage: session.isMuted ? "speaker.slash.fill" : "speaker.wave.2.fill",
+                accessibilityKey: session.isMuted ? "player.unmute" : "player.mute"
+            ) {
+                session.toggleMute()
+                revealControls()
             }
+
+            playerChromeButton(
+                systemImage: "lock.open",
+                accessibilityKey: "player.controls.lock"
+            ) {
+                activePanel = nil
+                controlsLocked = true
+                controlsVisible = false
+                recordControlsLockChange(locked: true)
+            }
+
+            Button {
+                presentPanel(.settings)
+            } label: {
+                Image(systemName: "ellipsis")
+                    .font(.title3.weight(.semibold))
+                    .foregroundStyle(.white)
+                    .frame(width: 44, height: 44)
+                    .background(.black.opacity(0.46), in: Circle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(Text("player.more_controls"))
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 10)
@@ -4399,12 +7152,12 @@ private struct VLCBuiltInPlayerView: View {
                     onEditingChanged: { editing in
                         isScrubbing = editing
                         if !editing {
-                            session.seek(to: scrubPosition)
+                            commitSeek(to: scrubPosition)
                         }
                         revealControls()
                     }
                 )
-                .disabled(!session.isSeekable)
+                .disabled(!canSeek)
                 .tint(AppTheme.accent)
                 Text(session.durationText)
             }
@@ -4415,7 +7168,7 @@ private struct VLCBuiltInPlayerView: View {
                     systemImage: "gobackward.15",
                     accessibilityKey: "player.seek_backward"
                 ) {
-                    session.jump(by: -15)
+                    jump(by: -15)
                     revealControls()
                 }
 
@@ -4432,31 +7185,61 @@ private struct VLCBuiltInPlayerView: View {
                     systemImage: "goforward.15",
                     accessibilityKey: "player.seek_forward"
                 ) {
-                    session.jump(by: 15)
+                    jump(by: 15)
                     revealControls()
                 }
 
                 Spacer(minLength: 4)
 
-                Menu {
-                    ForEach(session.subtitleTracks) { track in
-                        Button {
-                            session.selectSubtitle(track)
-                            revealControls()
-                        } label: {
-                            if session.selectedSubtitleTrackID == track.id {
-                                Label(track.name, systemImage: "checkmark")
-                            } else {
-                                Text(track.name)
-                            }
-                        }
-                    }
+                Button {
+                    presentPanel(.audio)
                 } label: {
-                    Image(systemName: session.selectedSubtitleTrackID < 0 ? "captions.bubble" : "captions.bubble.fill")
+                    Image(systemName: "waveform")
                         .frame(width: 44, height: 44)
                 }
-                .disabled(session.subtitleTracks.count <= 1)
+                .buttonStyle(.plain)
+                .disabled(availableAudioTrackCount <= 1)
+                .accessibilityLabel(Text("player.audio_tracks"))
+
+                Button {
+                    presentPanel(.subtitles)
+                } label: {
+                    Image(systemName: hasSelectedSubtitle ? "captions.bubble.fill" : "captions.bubble")
+                        .frame(width: 44, height: 44)
+                }
+                .buttonStyle(.plain)
+                .disabled(availableSubtitleTrackCount == 0)
                 .accessibilityLabel(Text("player.subtitles"))
+
+                if qualityChange != nil, !request.qualityOptions.isEmpty {
+                    Button {
+                        presentPanel(.quality)
+                    } label: {
+                        Image(systemName: "4k.tv")
+                            .frame(width: 44, height: 44)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(Text("player.quality"))
+                }
+
+                if showsPictureInPictureControl {
+                    Button {
+                        if let useSystemPlayer {
+                            useSystemPlayer(
+                                session.runtimeState(orientationMode: orientationMode),
+                                true
+                            )
+                        } else {
+                            showPiPUnavailableHint = true
+                        }
+                    } label: {
+                        Image(systemName: "pip.enter")
+                            .frame(width: 44, height: 44)
+                    }
+                    .buttonStyle(.plain)
+                    .foregroundStyle(useSystemPlayer == nil ? .white.opacity(0.45) : .white)
+                    .accessibilityLabel(Text("player.picture_in_picture"))
+                }
 
                 controlButton(
                     systemImage: isLandscape
@@ -4464,7 +7247,9 @@ private struct VLCBuiltInPlayerView: View {
                         : "arrow.up.left.and.arrow.down.right",
                     accessibilityKey: isLandscape ? "player.exit_fullscreen" : "player.fullscreen"
                 ) {
-                    PlayerOrientationController.requestPlayerOrientation(isLandscape ? .portrait : .landscape)
+                    let mode: PlayerOrientationMode = isLandscape ? .portrait : .landscape
+                    orientationMode = mode
+                    PlayerOrientationController.applyPlayerOrientationMode(mode)
                     revealControls()
                 }
             }
@@ -4482,6 +7267,363 @@ private struct VLCBuiltInPlayerView: View {
             )
             .ignoresSafeArea(edges: .bottom)
         )
+    }
+
+    private func playerPanel(
+        _ panel: VLCPlayerPanel,
+        isLandscape: Bool
+    ) -> some View {
+        VStack(spacing: 0) {
+            HStack(spacing: 10) {
+                Image(systemName: panelSystemImage(panel))
+                    .foregroundStyle(.secondary)
+                Text(panelTitle(panel))
+                    .font(.subheadline.weight(.semibold))
+                Spacer()
+                Button {
+                    dismissPanel()
+                } label: {
+                    Image(systemName: "xmark")
+                        .frame(width: 36, height: 36)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(Text("action.cancel"))
+            }
+            .padding(.leading, 16)
+            .padding(.trailing, 8)
+            .frame(height: 48)
+
+            Divider()
+
+            panelContent(panel)
+        }
+        .foregroundStyle(.primary)
+        .frame(maxWidth: isLandscape ? 360 : 420)
+        .frame(maxHeight: isLandscape ? 270 : 360)
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 8))
+        .overlay {
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(.white.opacity(0.14), lineWidth: 1)
+        }
+        .environment(\.colorScheme, .dark)
+    }
+
+    @ViewBuilder
+    private func panelContent(_ panel: VLCPlayerPanel) -> some View {
+        switch panel {
+        case .settings:
+            settingsPanel
+        case .audio:
+            if let sourceTrackChange {
+                trackList(
+                    tracks: request.sourceAudioTracks.map {
+                        VLCPlayerTrackOption(id: Int32(clamping: $0.id), name: $0.name)
+                    },
+                    selectedID: Int32(clamping: request.selectedSourceAudioTrackID ?? -1)
+                ) { id in
+                    sourceTrackChange(
+                        Int(id),
+                        selectedSourceSubtitleTrackID,
+                        session.runtimeState(orientationMode: orientationMode)
+                    )
+                    dismissPanel()
+                }
+            } else {
+                trackList(
+                    tracks: session.audioTracks.map {
+                        VLCPlayerTrackOption(id: $0.id, name: $0.name)
+                    },
+                    selectedID: session.selectedAudioTrackID
+                ) { id in
+                    guard let track = session.audioTracks.first(where: { $0.id == id }) else { return }
+                    session.selectAudio(track)
+                    dismissPanel()
+                }
+            }
+        case .subtitles:
+            if let sourceTrackChange {
+                trackList(
+                    tracks: [VLCPlayerTrackOption(
+                        id: -1,
+                        name: NSLocalizedString("player.subtitles.off", comment: "")
+                    )] + request.sourceSubtitleTracks.map {
+                        VLCPlayerTrackOption(id: Int32(clamping: $0.id), name: $0.name)
+                    },
+                    selectedID: Int32(clamping: selectedSourceSubtitleTrackID ?? -1)
+                ) { id in
+                    let sourceID = id < 0 ? nil : Int(id)
+                    let sourceTrack = sourceID.flatMap { selectedID in
+                        request.sourceSubtitleTracks.first { $0.id == selectedID }
+                    }
+                    if sourceID == nil || sourceTrack?.externalURL != nil {
+                        if session.selectExternalSubtitle(sourceTrack?.externalURL) {
+                            selectedSourceSubtitleTrackID = sourceID
+                        }
+                    } else {
+                        sourceTrackChange(
+                            request.selectedSourceAudioTrackID,
+                            sourceID,
+                            session.runtimeState(orientationMode: orientationMode)
+                        )
+                    }
+                    dismissPanel()
+                }
+            } else {
+                trackList(
+                    tracks: session.subtitleTracks.map {
+                        VLCPlayerTrackOption(id: $0.id, name: $0.name)
+                    },
+                    selectedID: session.selectedSubtitleTrackID
+                ) { id in
+                    guard let track = session.subtitleTracks.first(where: { $0.id == id }) else { return }
+                    session.selectSubtitle(track)
+                    dismissPanel()
+                }
+            }
+        case .quality:
+            qualityList
+        }
+    }
+
+    private var qualityList: some View {
+        ScrollView {
+            LazyVStack(spacing: 0) {
+                ForEach(request.qualityOptions) { option in
+                    Button {
+                        qualityChange?(
+                            option.id,
+                            session.runtimeState(orientationMode: orientationMode)
+                        )
+                        dismissPanel()
+                    } label: {
+                        HStack(spacing: 12) {
+                            Image(systemName: request.selectedQualityID == option.id
+                                  ? "checkmark.circle.fill"
+                                  : "circle")
+                                .foregroundStyle(request.selectedQualityID == option.id
+                                                 ? AppTheme.accent
+                                                 : .secondary)
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(option.title)
+                                    .font(.subheadline)
+                                if let detail = option.detail {
+                                    Text(detail)
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                            }
+                            Spacer(minLength: 8)
+                        }
+                        .padding(.horizontal, 16)
+                        .frame(minHeight: 50)
+                        .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    if option.id != request.qualityOptions.last?.id {
+                        Divider().padding(.leading, 44)
+                    }
+                }
+            }
+        }
+    }
+
+    private var availableAudioTrackCount: Int {
+        sourceTrackChange == nil ? session.audioTracks.count : request.sourceAudioTracks.count
+    }
+
+    private var showsPictureInPictureControl: Bool {
+        useSystemPlayer != nil
+    }
+
+    private func recordControlsLockChange(locked: Bool) {
+        DiagnosticLogStore.shared.record(
+            .info,
+            categoryKey: "diagnostics.category.media",
+            messageKey: "diagnostics.media.controls_lock_changed",
+            details: ["locked": locked ? "yes" : "no"]
+        )
+    }
+
+    private var availableSubtitleTrackCount: Int {
+        sourceTrackChange == nil
+            ? max(session.subtitleTracks.count - 1, 0)
+            : request.sourceSubtitleTracks.count
+    }
+
+    private var hasSelectedSubtitle: Bool {
+        sourceTrackChange == nil
+            ? session.selectedSubtitleTrackID >= 0
+            : selectedSourceSubtitleTrackID != nil
+    }
+
+    private var settingsPanel: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 14) {
+                Text("player.speed")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 8) {
+                        ForEach(playbackRates, id: \.self) { rate in
+                            Button(playbackRateLabel(rate)) {
+                                session.setPlaybackRate(rate)
+                                revealControls()
+                            }
+                            .buttonStyle(.plain)
+                            .font(.subheadline.weight(.medium))
+                            .padding(.horizontal, 12)
+                            .frame(height: 36)
+                            .background(
+                                abs(session.playbackRate - rate) < 0.01
+                                    ? AppTheme.accent
+                                    : Color.white.opacity(0.1),
+                                in: RoundedRectangle(cornerRadius: 6)
+                            )
+                        }
+                    }
+                }
+
+                Text("player.orientation")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+
+                HStack(spacing: 0) {
+                    ForEach(PlayerOrientationMode.allCases) { mode in
+                        Button {
+                            orientationMode = mode
+                            PlayerOrientationController.applyPlayerOrientationMode(mode)
+                            DiagnosticLogStore.shared.record(
+                                .info,
+                                categoryKey: "diagnostics.category.media",
+                                messageKey: "diagnostics.media.orientation_changed",
+                                details: ["mode": mode.rawValue]
+                            )
+                            revealControls()
+                        } label: {
+                            VStack(spacing: 4) {
+                                Image(systemName: mode.systemImage)
+                                Text(mode.localizationKey)
+                                    .font(.caption2)
+                                    .lineLimit(1)
+                            }
+                            .frame(maxWidth: .infinity, minHeight: 48)
+                            .background(
+                                orientationMode == mode
+                                    ? Color.white.opacity(0.18)
+                                    : Color.clear
+                            )
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+                .background(Color.white.opacity(0.08), in: RoundedRectangle(cornerRadius: 6))
+                .clipShape(RoundedRectangle(cornerRadius: 6))
+
+                if showsPictureInPictureControl || request.allowsExternalHandoff {
+                    Divider()
+                }
+
+                if showsPictureInPictureControl {
+                    panelCommand(
+                        titleKey: "player.picture_in_picture",
+                        systemImage: "pip.enter"
+                    ) {
+                        dismissPanel()
+                        if let useSystemPlayer {
+                            useSystemPlayer(
+                                session.runtimeState(orientationMode: orientationMode),
+                                true
+                            )
+                        } else {
+                            showPiPUnavailableHint = true
+                        }
+                    }
+                }
+
+                if request.allowsExternalHandoff {
+                    panelCommand(
+                        titleKey: "devices.files.open_external",
+                        systemImage: "arrow.up.forward.app"
+                    ) {
+                        dismissPanel()
+                        session.pauseForExternalHandoff()
+                        Task { @MainActor in
+                            try? await Task.sleep(nanoseconds: 300_000_000)
+                            openExternal()
+                        }
+                    }
+                }
+            }
+            .padding(16)
+        }
+    }
+
+    private func trackList(
+        tracks: [VLCPlayerTrackOption],
+        selectedID: Int32,
+        select: @escaping (Int32) -> Void
+    ) -> some View {
+        ScrollView {
+            LazyVStack(spacing: 0) {
+                ForEach(tracks, id: \.id) { track in
+                    Button {
+                        select(track.id)
+                    } label: {
+                        HStack(spacing: 12) {
+                            Image(systemName: selectedID == track.id ? "checkmark.circle.fill" : "circle")
+                                .foregroundStyle(selectedID == track.id ? AppTheme.accent : .secondary)
+                            Text(track.name)
+                                .font(.subheadline)
+                                .multilineTextAlignment(.leading)
+                                .lineLimit(2)
+                            Spacer(minLength: 8)
+                        }
+                        .padding(.horizontal, 16)
+                        .frame(minHeight: 46)
+                        .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+
+                    if track.id != tracks.last?.id {
+                        Divider().padding(.leading, 44)
+                    }
+                }
+            }
+        }
+    }
+
+    private func panelCommand(
+        titleKey: LocalizedStringKey,
+        systemImage: String,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            Label(titleKey, systemImage: systemImage)
+                .font(.subheadline)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .frame(height: 38)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func panelTitle(_ panel: VLCPlayerPanel) -> LocalizedStringKey {
+        switch panel {
+        case .settings: return "player.more_controls"
+        case .audio: return "player.audio_tracks"
+        case .subtitles: return "player.subtitles"
+        case .quality: return "player.quality"
+        }
+    }
+
+    private func panelSystemImage(_ panel: VLCPlayerPanel) -> String {
+        switch panel {
+        case .settings: return "gearshape"
+        case .audio: return "waveform"
+        case .subtitles: return "captions.bubble"
+        case .quality: return "4k.tv"
+        }
     }
 
     private func controlButton(
@@ -4516,12 +7658,183 @@ private struct VLCBuiltInPlayerView: View {
     }
 
     private func toggleControls() {
+        if activePanel != nil {
+            dismissPanel()
+            return
+        }
         withAnimation(.easeInOut(duration: 0.2)) {
             controlsVisible.toggle()
         }
         if controlsVisible {
             controlsRevision += 1
         }
+    }
+
+    private func presentPanel(_ panel: VLCPlayerPanel) {
+        withAnimation(.easeInOut(duration: 0.2)) {
+            controlsVisible = true
+            activePanel = activePanel == panel ? nil : panel
+        }
+        controlsRevision += 1
+    }
+
+    private func dismissPanel() {
+        withAnimation(.easeInOut(duration: 0.2)) {
+            activePanel = nil
+            controlsVisible = true
+        }
+        controlsRevision += 1
+    }
+
+    private var playbackRates: [Float] {
+        [0.5, 0.75, 1, 1.25, 1.5, 2]
+    }
+
+    private func playbackRateLabel(_ rate: Float) -> String {
+        switch rate {
+        case 0.5: return "0.5x"
+        case 0.75: return "0.75x"
+        case 1: return "1x"
+        case 1.25: return "1.25x"
+        case 1.5: return "1.5x"
+        case 2: return "2x"
+        default: return "\(rate)x"
+        }
+    }
+
+    private func updatePlayerGesture(_ value: DragGesture.Value, playerSize: CGSize) {
+        guard activePanel == nil, session.errorMessage == nil else { return }
+        if panMode == nil {
+            let horizontalDistance = abs(value.translation.width)
+            let verticalDistance = abs(value.translation.height)
+            if horizontalDistance > verticalDistance * 1.2 {
+                panMode = .seeking
+            } else if verticalDistance > horizontalDistance * 1.2 {
+                panMode = .brightness
+                brightnessGestureStart = UIScreen.main.brightness
+                displayBrightness = UIScreen.main.brightness
+                withAnimation(.easeInOut(duration: 0.15)) {
+                    brightnessHUDVisible = true
+                }
+            } else {
+                return
+            }
+        }
+
+        switch panMode {
+        case .seeking:
+            updateSeekGesture(value, playerWidth: playerSize.width)
+        case .brightness:
+            updateBrightnessGesture(value, playerHeight: playerSize.height)
+        case nil:
+            break
+        }
+    }
+
+    private func finishPlayerGesture() {
+        let completedMode = panMode
+        panMode = nil
+        switch completedMode {
+        case .seeking:
+            finishSeekGesture()
+        case .brightness:
+            brightnessGestureStart = nil
+            brightnessHUDRevision += 1
+            DiagnosticLogStore.shared.record(
+                .info,
+                categoryKey: "diagnostics.category.media",
+                messageKey: "diagnostics.media.brightness_changed",
+                details: [
+                    "percent": "\(Int((displayBrightness * 100).rounded()))"
+                ]
+            )
+        case nil:
+            break
+        }
+    }
+
+    private func updateSeekGesture(_ value: DragGesture.Value, playerWidth: CGFloat) {
+        guard
+            canSeek,
+            session.durationSeconds > 0,
+            playerWidth > 0
+        else {
+            return
+        }
+        let startPosition = gestureStartPosition ?? session.position
+        gestureStartPosition = startPosition
+        let secondsPerPoint = min(max(session.durationSeconds / 7_200, 0.35), 1.2)
+        let rawOffset = Double(value.translation.width) * secondsPerPoint
+        let boundedOffset = min(max(rawOffset, -300), 300)
+        let targetPosition = min(
+            max(startPosition + boundedOffset / session.durationSeconds, 0),
+            1
+        )
+        gestureTargetPosition = targetPosition
+        controlsVisible = true
+        controlsRevision += 1
+    }
+
+    private func finishSeekGesture() {
+        defer { gestureStartPosition = nil }
+        guard let targetPosition = gestureTargetPosition else { return }
+        commitSeek(to: targetPosition)
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        revealControls()
+        gestureTargetPosition = nil
+    }
+
+    private var canSeek: Bool {
+        session.isSeekable || (serverSeek != nil && session.durationSeconds > 0)
+    }
+
+    private func commitSeek(to normalizedPosition: Double) {
+        let position = min(max(normalizedPosition, 0), 1)
+        let targetSeconds = session.durationSeconds * position
+        if serverSeek != nil, session.seek(toAbsoluteSeconds: targetSeconds) {
+            return
+        }
+        guard let serverSeek else {
+            session.seek(to: position)
+            return
+        }
+        serverSeek(
+            targetSeconds,
+            session.runtimeState(orientationMode: orientationMode)
+        )
+    }
+
+    private func jump(by seconds: Int) {
+        let targetSeconds = min(
+            max(session.currentTimeSeconds + Double(seconds), 0),
+            session.durationSeconds
+        )
+        if serverSeek != nil, session.seek(toAbsoluteSeconds: targetSeconds) {
+            return
+        }
+        guard let serverSeek else {
+            session.jump(by: seconds)
+            return
+        }
+        serverSeek(
+            targetSeconds,
+            session.runtimeState(orientationMode: orientationMode)
+        )
+    }
+
+    private func updateBrightnessGesture(_ value: DragGesture.Value, playerHeight: CGFloat) {
+        guard playerHeight > 0 else { return }
+        let startBrightness = brightnessGestureStart ?? UIScreen.main.brightness
+        brightnessGestureStart = startBrightness
+        let dragRange = max(playerHeight * 0.7, 180)
+        let targetBrightness = min(
+            max(startBrightness - value.translation.height / dragRange, 0),
+            1
+        )
+        displayBrightness = targetBrightness
+        UIScreen.main.brightness = targetBrightness
+        brightnessHUDVisible = true
+        brightnessHUDRevision += 1
     }
 
     private func revealControls() {
@@ -4533,7 +7846,11 @@ private struct VLCBuiltInPlayerView: View {
 }
 
 private struct VLCPlayerSurface: UIViewRepresentable {
-    @ObservedObject var session: VLCMediaPlayerSession
+    let session: VLCMediaPlayerSession
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(session: session)
+    }
 
     func makeUIView(context: Context) -> UIView {
         let view = UIView()
@@ -4545,11 +7862,30 @@ private struct VLCPlayerSurface: UIViewRepresentable {
     func updateUIView(_ view: UIView, context: Context) {
         session.attach(to: view)
     }
+
+    static func dismantleUIView(_ view: UIView, coordinator: Coordinator) {
+        coordinator.session?.detach(from: view)
+    }
+
+    final class Coordinator {
+        weak var session: VLCMediaPlayerSession?
+
+        init(session: VLCMediaPlayerSession) {
+            self.session = session
+        }
+    }
 }
 #endif
 
 private struct SystemPlayerController: UIViewControllerRepresentable {
     let player: AVPlayer
+    let startPictureInPicture: Bool
+    let onSeekCommitted: () -> Void
+    let onPictureInPictureEvent: (String, Error?) -> Void
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(parent: self)
+    }
 
     func makeUIViewController(context: Context) -> AVPlayerViewController {
         let controller = AVPlayerViewController()
@@ -4558,12 +7894,233 @@ private struct SystemPlayerController: UIViewControllerRepresentable {
         controller.allowsPictureInPicturePlayback = true
         controller.canStartPictureInPictureAutomaticallyFromInline = true
         controller.videoGravity = .resizeAspect
+        context.coordinator.installGesture(on: controller)
+        context.coordinator.installPictureInPicture(on: controller)
         return controller
     }
 
     func updateUIViewController(_ controller: AVPlayerViewController, context: Context) {
+        context.coordinator.parent = self
         if controller.player !== player {
             controller.player = player
+        }
+        context.coordinator.updatePictureInPictureRequest(startPictureInPicture)
+    }
+
+    final class Coordinator: NSObject, UIGestureRecognizerDelegate, AVPictureInPictureControllerDelegate {
+        var parent: SystemPlayerController
+        private weak var controller: AVPlayerViewController?
+        private var gestureStartSeconds: Double?
+        private var gestureTargetSeconds: Double?
+        private var wasPlaying = false
+        private var pictureInPictureController: AVPictureInPictureController?
+        private var pictureInPictureLayer: AVPlayerLayer?
+        private var pictureInPictureStartWorkItem: DispatchWorkItem?
+        private var pictureInPictureStartRequested = false
+
+        init(parent: SystemPlayerController) {
+            self.parent = parent
+        }
+
+        func installGesture(on controller: AVPlayerViewController) {
+            self.controller = controller
+            let gesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
+            gesture.maximumNumberOfTouches = 1
+            gesture.cancelsTouchesInView = false
+            gesture.delegate = self
+            controller.view.addGestureRecognizer(gesture)
+        }
+
+        func installPictureInPicture(on controller: AVPlayerViewController) {
+            let layer = AVPlayerLayer(player: parent.player)
+            layer.videoGravity = .resizeAspect
+            layer.opacity = 0.01
+            layer.frame = controller.view.bounds
+            controller.view.layer.insertSublayer(layer, at: 0)
+            pictureInPictureLayer = layer
+
+            guard AVPictureInPictureController.isPictureInPictureSupported() else {
+                return
+            }
+            guard let pictureInPictureController = AVPictureInPictureController(playerLayer: layer) else {
+                return
+            }
+            pictureInPictureController.delegate = self
+            self.pictureInPictureController = pictureInPictureController
+            updatePictureInPictureRequest(parent.startPictureInPicture)
+        }
+
+        func updatePictureInPictureRequest(_ requested: Bool) {
+            guard requested else { return }
+            guard let pictureInPictureController,
+                  !pictureInPictureController.isPictureInPictureActive,
+                  !pictureInPictureStartRequested else {
+                return
+            }
+            pictureInPictureStartRequested = true
+            attemptPictureInPictureStart(controller: pictureInPictureController, remainingAttempts: 40)
+        }
+
+        private func attemptPictureInPictureStart(
+            controller: AVPictureInPictureController,
+            remainingAttempts: Int
+        ) {
+            guard remainingAttempts > 0,
+                  !controller.isPictureInPictureActive else {
+                pictureInPictureStartRequested = false
+                return
+            }
+            let ready = parent.player.currentItem?.status == .readyToPlay
+                && pictureInPictureLayer?.isReadyForDisplay == true
+            if ready, controller.isPictureInPicturePossible {
+                parent.onPictureInPictureEvent("willStart", nil)
+                controller.startPictureInPicture()
+                return
+            }
+            pictureInPictureStartWorkItem?.cancel()
+            let workItem = DispatchWorkItem { [weak self, weak controller] in
+                guard let self, let controller else { return }
+                self.attemptPictureInPictureStart(
+                    controller: controller,
+                    remainingAttempts: remainingAttempts - 1
+                )
+            }
+            pictureInPictureStartWorkItem = workItem
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.25, execute: workItem)
+        }
+
+        func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+            guard
+                let pan = gestureRecognizer as? UIPanGestureRecognizer,
+                let view = pan.view,
+                playbackDuration > 0
+            else {
+                return false
+            }
+            let velocity = pan.velocity(in: view)
+            return abs(velocity.x) > abs(velocity.y) * 1.2
+        }
+
+        func gestureRecognizer(
+            _ gestureRecognizer: UIGestureRecognizer,
+            shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer
+        ) -> Bool {
+            true
+        }
+
+        func gestureRecognizer(
+            _ gestureRecognizer: UIGestureRecognizer,
+            shouldReceive touch: UITouch
+        ) -> Bool {
+            var view = touch.view
+            while let currentView = view, currentView !== controller?.view {
+                if currentView is UIControl { return false }
+                view = currentView.superview
+            }
+            return true
+        }
+
+        @objc
+        private func handlePan(_ gesture: UIPanGestureRecognizer) {
+            guard let view = gesture.view else { return }
+            let duration = playbackDuration
+            guard duration > 0 else { return }
+
+            switch gesture.state {
+            case .began:
+                let currentSeconds = parent.player.currentTime().seconds
+                gestureStartSeconds = currentSeconds.isFinite ? max(currentSeconds, 0) : 0
+                gestureTargetSeconds = gestureStartSeconds
+                wasPlaying = parent.player.timeControlStatus == .playing
+            case .changed:
+                guard let startSeconds = gestureStartSeconds else { return }
+                let translation = gesture.translation(in: view)
+                guard abs(translation.x) > abs(translation.y) * 1.2 else { return }
+                let secondsPerPoint = min(max(duration / 7_200, 0.35), 1.2)
+                let offset = min(max(Double(translation.x) * secondsPerPoint, -300), 300)
+                let target = min(max(startSeconds + offset, 0), duration)
+                gestureTargetSeconds = target
+            case .ended:
+                commitSeek()
+            case .cancelled, .failed:
+                gestureStartSeconds = nil
+                gestureTargetSeconds = nil
+            default:
+                break
+            }
+        }
+
+        private func commitSeek() {
+            defer {
+                gestureStartSeconds = nil
+                gestureTargetSeconds = nil
+            }
+            guard
+                let startSeconds = gestureStartSeconds,
+                let targetSeconds = gestureTargetSeconds,
+                abs(targetSeconds - startSeconds) >= 0.5
+            else {
+                return
+            }
+            let targetTime = CMTime(seconds: targetSeconds, preferredTimescale: 600)
+            parent.player.seek(
+                to: targetTime,
+                toleranceBefore: CMTime(seconds: 0.25, preferredTimescale: 600),
+                toleranceAfter: CMTime(seconds: 0.25, preferredTimescale: 600)
+            ) { [weak self] _ in
+                guard let self, self.wasPlaying else { return }
+                self.parent.player.play()
+            }
+            parent.onSeekCommitted()
+        }
+
+        private var playbackDuration: Double {
+            guard let item = parent.player.currentItem else { return 0 }
+            let seconds = item.duration.seconds
+            guard seconds.isFinite, seconds > 0 else { return 0 }
+            return seconds
+        }
+
+        func pictureInPictureControllerWillStartPictureInPicture(
+            _ pictureInPictureController: AVPictureInPictureController
+        ) {
+            parent.onPictureInPictureEvent("willStart", nil)
+        }
+
+        func pictureInPictureControllerDidStartPictureInPicture(
+            _ pictureInPictureController: AVPictureInPictureController
+        ) {
+            pictureInPictureStartRequested = false
+            parent.onPictureInPictureEvent("didStart", nil)
+        }
+
+        func pictureInPictureController(
+            _ pictureInPictureController: AVPictureInPictureController,
+            failedToStartPictureInPictureWithError error: Error
+        ) {
+            pictureInPictureStartRequested = false
+            parent.onPictureInPictureEvent("failed", error)
+        }
+
+        func pictureInPictureControllerWillStopPictureInPicture(
+            _ pictureInPictureController: AVPictureInPictureController
+        ) {
+            parent.onPictureInPictureEvent("willStop", nil)
+        }
+
+        func pictureInPictureControllerDidStopPictureInPicture(
+            _ pictureInPictureController: AVPictureInPictureController
+        ) {
+            pictureInPictureStartRequested = false
+            parent.onPictureInPictureEvent("didStop", nil)
+        }
+
+        func pictureInPictureController(
+            _ pictureInPictureController: AVPictureInPictureController,
+            restoreUserInterfaceForPictureInPictureStopWithCompletionHandler completionHandler: @escaping (Bool) -> Void
+        ) {
+            parent.onPictureInPictureEvent("restore", nil)
+            completionHandler(true)
         }
     }
 }
@@ -4576,6 +8133,64 @@ private enum JellyfinEntryKind: String {
     case audio
     case video
     case unknown
+}
+
+private struct JellyfinMediaTrack: Identifiable, Hashable {
+    let index: Int
+    let title: String
+    let codec: String?
+    let isDefault: Bool
+    let isForced: Bool
+
+    var id: Int { index }
+}
+
+private struct JellyfinPlaybackSelection: Equatable {
+    let audioStreamIndex: Int?
+    let subtitleStreamIndex: Int?
+}
+
+private struct JellyfinPreparedPlayback {
+    let resource: MediaPlaybackResource
+    let externalHandoffResource: MediaPlaybackResource
+    let playSessionID: String?
+    let mediaSourceID: String?
+    let playMethod: PlayMethod
+    let mode: String
+    let isPrivateNetworkRoute: Bool
+    let allowsSelfSignedCertificates: Bool
+}
+
+private struct JellyfinDirectPlaybackRoute {
+    let url: URL
+    let handoffURL: URL
+    let source: String
+    let allowsSelfSignedCertificates: Bool
+    let isPrivateNetworkRoute: Bool
+}
+
+private struct JellyfinPlaybackBitrateDecision {
+    let maximumBitrate: Int
+    let directPlayMaximumBitrate: Int
+    let isPrivateRoute: Bool
+    let basis: String
+    let networkKey: String
+}
+
+private struct JellyfinPersonEntry: Identifiable, Hashable {
+    let id: String
+    let imageItemID: String?
+    let name: String
+    let role: String?
+    let type: String?
+    let imageTag: String?
+}
+
+private struct JellyfinExternalLink: Identifiable, Hashable {
+    let name: String
+    let url: URL
+
+    var id: String { url.absoluteString }
 }
 
 private struct JellyfinMediaEntry: Identifiable, Hashable {
@@ -4591,10 +8206,14 @@ private struct JellyfinMediaEntry: Identifiable, Hashable {
     let backdropImageTag: String?
     let container: String?
     let mediaSourceID: String?
+    let defaultAudioStreamIndex: Int?
     let preferredSubtitleStreamIndex: Int?
     let preferredSubtitleCodec: String?
+    let audioTracks: [JellyfinMediaTrack]
+    let subtitleTracks: [JellyfinMediaTrack]
     let progress: Double?
     let playbackPositionTicks: Int?
+    let runTimeTicks: Int?
     let seasonNumber: Int?
     let episodeNumber: Int?
     let isFavorite: Bool
@@ -4603,6 +8222,16 @@ private struct JellyfinMediaEntry: Identifiable, Hashable {
     let officialRating: String?
     let videoDescription: String?
     let audioDescription: String?
+    let originalTitle: String?
+    let tagline: String?
+    let productionYear: Int?
+    let premiereDate: Date?
+    let people: [JellyfinPersonEntry]
+    let studios: [String]
+    let externalLinks: [JellyfinExternalLink]
+    let mediaPath: String?
+    let mediaSize: Int?
+    let mediaBitrate: Int?
 
     var isPlayable: Bool {
         [.movie, .episode, .audio, .video].contains(kind)
@@ -4667,19 +8296,47 @@ private final class JellyfinLibraryStore: ObservableObject {
     private var didRestore = false
     private var trustDelegate: JellyfinCertificateTrustDelegate?
     private let endpointCandidates: [URL]
+    private var bitrateMeasurements: [String: (bitrate: Int, rawBitrate: Int, measuredAt: Date)] = [:]
+    private var bitrateMeasurementTasks: [String: Task<Void, Never>] = [:]
+    private var resolvedPlaybackRouteIsPrivate: Bool?
+    private var dsmSession: DSMSession?
+    private var dsmSharedFolderPaths: [String]
+    private var unavailableDSMPlaybackPaths: [String: Date] = [:]
 
     init(
         endpoint: URL,
         playbackEndpoint: URL?,
         allowsSelfSignedCertificates: Bool,
+        dsmSession: DSMSession? = nil,
+        dsmSharedFolderPaths: [String] = [],
         fallbackEndpoints: [URL] = []
     ) {
         self.endpoint = endpoint
         self.playbackEndpoint = playbackEndpoint.flatMap(Self.originURL)
         self.allowsSelfSignedCertificates = allowsSelfSignedCertificates
+        self.dsmSession = dsmSession
+        self.dsmSharedFolderPaths = dsmSharedFolderPaths
         self.endpointCandidates = Self.jellyfinEndpointCandidates(
             from: [endpoint] + fallbackEndpoints
         )
+        Task { @MainActor [weak self] in
+            await self?.refreshPlaybackRouteClassification()
+        }
+    }
+
+    func updateDSMPlaybackContext(
+        session: DSMSession?,
+        sharedFolderPaths: [String]
+    ) {
+        let normalizedSharedFolderPaths = Array(Set(sharedFolderPaths)).sorted()
+        guard dsmSession?.sid != session?.sid
+            || dsmSession?.baseURL != session?.baseURL
+            || dsmSharedFolderPaths != normalizedSharedFolderPaths else {
+            return
+        }
+        dsmSession = session
+        dsmSharedFolderPaths = normalizedSharedFolderPaths
+        unavailableDSMPlaybackPaths.removeAll()
     }
 
     private static func jellyfinEndpointCandidates(from endpoints: [URL]) -> [URL] {
@@ -4725,6 +8382,7 @@ private final class JellyfinLibraryStore: ObservableObject {
             return
         }
         endpoint = restored.endpoint
+        await refreshPlaybackRouteClassification()
         let stored = restored.session
         username = stored.username
         userID = stored.userID
@@ -4789,6 +8447,7 @@ private final class JellyfinLibraryStore: ObservableObject {
                 endpoint: endpoint
             )
             record("diagnostics.jellyfin.login_succeeded", level: .info)
+            await refreshPlaybackRouteClassification()
             await loadHome()
         } catch {
             try? await client?.signOut()
@@ -4944,8 +8603,61 @@ private final class JellyfinLibraryStore: ObservableObject {
         return items
     }
 
-    func playbackRequest(for entry: JellyfinMediaEntry) async throws -> MediaPlaybackRequest? {
+    func loadDetail(itemID: String) async throws -> JellyfinMediaEntry {
+        guard let client, let userID else { throw JellyfinLibraryError.missingSession }
+        let response = try await client.send(
+            Paths.getItem(itemID: itemID, userID: userID)
+        ).value
+        guard let item = mapItem(response) else {
+            throw JellyfinLibraryError.missingItem
+        }
+        registerFavoriteState(from: [item])
+        return item
+    }
+
+    func loadSimilarItems(itemID: String) async throws -> [JellyfinMediaEntry] {
+        guard let client, let userID else { throw JellyfinLibraryError.missingSession }
+        var parameters = Paths.GetSimilarItemsParameters()
+        parameters.userID = userID
+        parameters.limit = 12
+        parameters.fields = itemFields
+        let response = try await client.send(
+            Paths.getSimilarItems(itemID: itemID, parameters: parameters)
+        ).value
+        let items = (response.items ?? []).compactMap(mapItem)
+        registerFavoriteState(from: items)
+        return items
+    }
+
+    func personImageURL(for person: JellyfinPersonEntry, width: Int = 320) -> URL? {
+        guard let client, let imageItemID = person.imageItemID, person.imageTag != nil else {
+            return nil
+        }
+        var parameters = Paths.GetItemImageParameters()
+        parameters.maxWidth = width
+        parameters.quality = 88
+        parameters.tag = person.imageTag
+        return client.url(
+            with: Paths.getItemImage(
+                itemID: imageItemID,
+                imageType: ImageType.primary.rawValue,
+                parameters: parameters
+            ),
+            queryAPIKey: true
+        )
+    }
+
+    func playbackRequest(
+        for entry: JellyfinMediaEntry,
+        selection: JellyfinPlaybackSelection? = nil,
+        forcedServerBitrate: Int? = nil,
+        forcedStartTimeTicks: Int? = nil,
+        forcedServerReason: String? = nil,
+        forcesOriginalPlayback: Bool = false,
+        selectedQualityID: String? = nil
+    ) async throws -> MediaPlaybackRequest? {
         guard let client, entry.isPlayable else { return nil }
+        let requestedAt = Date()
         if entry.kind == .audio {
             var parameters = Paths.GetAudioStreamParameters()
             parameters.container = entry.container
@@ -4961,120 +8673,410 @@ private final class JellyfinLibraryStore: ObservableObject {
                 .flatMap { $0.split(separator: ",", maxSplits: 1).first }
                 .map(String.init)
             return MediaPlaybackRequest(
+                requestedAt: requestedAt,
                 url: streamURL,
                 title: entry.title,
                 allowsSelfSignedCertificates: requiresCertificateBypass(for: streamURL),
                 source: .jellyfin,
+                contentKind: .audio,
                 fileExtensionOverride: extensionHint,
                 initialPosition: entry.progress,
+                initialOrientationMode: .automatic,
+                isPrivateNetworkRoute: playbackRouteIsPrivate,
                 playbackTracker: makePlaybackTracker(
                     for: entry,
                     playMethod: .directPlay,
                     playSessionID: nil,
-                    mediaSourceID: entry.mediaSourceID
+                    mediaSourceID: entry.mediaSourceID,
+                    subtitleStreamIndex: nil
                 )
             )
         }
 
+        let selectedAudioStreamIndex = selection?.audioStreamIndex
+            ?? entry.defaultAudioStreamIndex
+        let selectedSubtitleStreamIndex = selection == nil
+            ? entry.preferredSubtitleStreamIndex
+            : selection?.subtitleStreamIndex
+        let selectedSubtitleCodec = entry.subtitleTracks
+            .first(where: { $0.index == selectedSubtitleStreamIndex })?
+            .codec
+        let selectedAudioCodec = entry.audioTracks
+            .first(where: { $0.index == selectedAudioStreamIndex })?
+            .codec
+        let selectedAudioTrackOrdinal = selectedAudioStreamIndex.flatMap { selectedIndex in
+            entry.audioTracks.firstIndex { $0.index == selectedIndex }
+        }
+        let selectedSubtitleTrackOrdinal = selectedSubtitleStreamIndex.flatMap { selectedIndex in
+            entry.subtitleTracks.firstIndex { $0.index == selectedIndex }
+        }
+
+        let bitrateDecision = playbackBitrateDecision()
+        // Direct-play eligibility and the server transcoding target solve two
+        // different problems. A measured 60+ Mbps Wi-Fi route should be allowed
+        // to direct-play a matching source instead of being forced through the
+        // old 30 Mbps transcoding ceiling. When transcoding really is needed,
+        // cap automatic remote HLS at 20 Mbps so the server can produce the first
+        // segment quickly; explicit quality choices remain exact.
+        let directPlayBudget = bitrateDecision.directPlayMaximumBitrate
+        let maxBitrate = forcedServerBitrate ?? (playbackRouteIsPrivate
+            ? directPlayBudget
+            : min(directPlayBudget, 20_000_000))
         record(
             "diagnostics.jellyfin.playback_preparing",
             level: .info,
             details: [
                 "itemKind": entry.kind.rawValue,
                 "container": entry.container ?? "-",
-                "subtitleCodec": entry.preferredSubtitleCodec ?? "-",
-                "subtitleStreamIndex": entry.preferredSubtitleStreamIndex.map(String.init) ?? "none"
+                "subtitleCodec": selectedSubtitleCodec ?? "-",
+                "audioCodec": selectedAudioCodec ?? "-",
+                "subtitleStreamIndex": selectedSubtitleStreamIndex.map(String.init) ?? "none",
+                "audioStreamIndex": selectedAudioStreamIndex.map(String.init) ?? "default",
+                "bitrateBasis": bitrateDecision.basis,
+                "maximumBitrate": "\(maxBitrate)",
+                "networkMaximumBitrate": "\(bitrateDecision.maximumBitrate)",
+                "directPlayMaximumBitrate": "\(directPlayBudget)",
+                "requestReason": forcedServerReason ?? "initialPlayback",
+                "allowsDirectPlay": "preferred",
+                "defaultMode": "adaptiveAuto"
             ]
         )
         do {
-#if canImport(MobileVLCKit)
-            if prefersDirectVideoPlayback,
-               let streamURL = directVideoURL(for: entry, client: client) {
-                let extensionHint = entry.container
-                    .flatMap { $0.split(separator: ",", maxSplits: 1).first }
-                    .map(String.init)
+            let requestedStartTimeTicks = max(
+                forcedStartTimeTicks ?? entry.playbackPositionTicks ?? 0,
+                0
+            )
+            let prepared: JellyfinPreparedPlayback
+            // Treat Jellyfin's original stream like a device-file playback
+            // route when the transport is cellular. This lets VLC start from
+            // the authenticated Range proxy instead of waiting for Jellyfin
+            // to create the first HLS segment. The probe is bounded and the
+            // existing HLS branch remains the fallback when the source cannot
+            // be opened or the selected audio needs server conversion.
+            let prefersRemoteOriginalPlayback = bitrateDecision.networkKey == "cellular"
+                && !Self.requiresAudioTranscode(audioCodec: selectedAudioCodec)
+            let shouldAttemptDirectPlayback = forcedServerBitrate == nil
+                && !Self.requiresAudioTranscode(audioCodec: selectedAudioCodec)
+                && (playbackRouteIsPrivate || forcesOriginalPlayback || prefersRemoteOriginalPlayback)
+            let directRoute = shouldAttemptDirectPlayback
+                ? await preferredOriginalPlaybackRoute(for: entry, client: client)
+                : nil
+            if let directRoute {
+                let directURL = directRoute.url
+                let extensionHint = Self.firstContainer(entry.container) ?? "mp4"
+                let directSubtitleURL = Self.requiresBurnIn(subtitleCodec: selectedSubtitleCodec)
+                    ? nil
+                    : externalSubtitleURL(
+                        for: entry,
+                        subtitleStreamIndex: selectedSubtitleStreamIndex,
+                        client: client
+                )
+                let externalResource = MediaPlaybackResource(
+                    url: directRoute.handoffURL,
+                    fileExtensionOverride: extensionHint,
+                    subtitleURL: directSubtitleURL
+                )
+                let internalResource = MediaPlaybackResource(
+                    url: directURL,
+                    fileExtensionOverride: extensionHint,
+                    // Use Jellyfin's UTF-8 SRT conversion for text subtitles
+                    // in the in-app VLC path as well as external handoff. This
+                    // avoids relying on an embedded ASS font/style that can
+                    // render Chinese glyphs as tofu boxes on iOS.
+                    subtitleURL: directSubtitleURL,
+                    allowsSelfSignedCertificates: directRoute.allowsSelfSignedCertificates
+                )
+                let mode = "\(directRoute.source)DirectPlay"
+                prepared = JellyfinPreparedPlayback(
+                    resource: internalResource,
+                    externalHandoffResource: externalResource,
+                    playSessionID: nil,
+                    mediaSourceID: entry.mediaSourceID,
+                    playMethod: .directPlay,
+                    mode: mode,
+                    isPrivateNetworkRoute: directRoute.isPrivateNetworkRoute,
+                    allowsSelfSignedCertificates: directRoute.allowsSelfSignedCertificates
+                )
                 record(
                     "diagnostics.jellyfin.playback_prepared",
                     level: .info,
                     details: [
-                        "mode": "directPlay",
-                        "container": extensionHint ?? "-",
-                        "transport": playbackEndpoint == nil ? "primary" : "reachableLAN"
+                        "mode": mode,
+                        "container": extensionHint,
+                        "playSession": "notRequired",
+                        "subtitleCodec": selectedSubtitleCodec ?? "-",
+                        "audioCodec": selectedAudioCodec ?? "-",
+                        "subtitleStreamIndex": selectedSubtitleStreamIndex.map(String.init) ?? "none",
+                        "audioStreamIndex": selectedAudioStreamIndex.map(String.init) ?? "default",
+                        "maxBitrate": "unlimitedOriginal",
+                        "directPlay": "selected",
+                        "remoteOriginalPreferred": prefersRemoteOriginalPlayback ? "yes" : "no",
+                        "sourceBitrate": entry.mediaBitrate.map(String.init) ?? "-",
+                        "upstream": directRoute.source,
+                        "transport": directURL.host == "127.0.0.1" ? "localRangeProxy" : "sourceURL",
+                        "prepareMs": Self.elapsedMilliseconds(since: requestedAt)
                     ]
                 )
-                return MediaPlaybackRequest(
-                    url: streamURL,
-                    title: entry.title,
-                    allowsSelfSignedCertificates: requiresCertificateBypass(for: streamURL),
-                    source: .jellyfin,
-                    fileExtensionOverride: extensionHint,
-                    initialPosition: entry.progress,
-                    externalSubtitleURL: externalSubtitleURL(for: entry, client: client),
-                    playbackTracker: makePlaybackTracker(
-                        for: entry,
-                        playMethod: .directPlay,
-                        playSessionID: nil,
-                        mediaSourceID: entry.mediaSourceID
-                    )
+            } else {
+                let isForcedServerPlayback = forcedServerBitrate != nil
+                let originalRouteWasSkipped = !shouldAttemptDirectPlayback
+                record(
+                    "diagnostics.jellyfin.playback_preparing",
+                    level: originalRouteWasSkipped || isForcedServerPlayback ? .info : .warning,
+                    details: [
+                        "mode": isForcedServerPlayback
+                            ? "serverHLSRequested"
+                            : originalRouteWasSkipped
+                                ? "originalRangeSkipped"
+                                : "originalRangeUnavailable",
+                        "reason": isForcedServerPlayback
+                            ? forcedServerReason ?? "runtimeReconfigure"
+                                : originalRouteWasSkipped
+                                    ? "automaticBitrateBudget"
+                                : "routeUnavailable",
+                        "fallback": "serverHLS",
+                        "remoteOriginalPreferred": prefersRemoteOriginalPlayback ? "yes" : "no",
+                        "maximumBitrate": "\(maxBitrate)",
+                        "sourceBitrate": entry.mediaBitrate.map(String.init) ?? "-",
+                        "audioCodec": selectedAudioCodec ?? "-",
+                        "network": bitrateDecision.networkKey,
+                        "directSource": directRoute?.source ?? "-"
+                    ]
                 )
-            }
-#endif
-            let profile = Self.iOSPlaybackProfile
-            let requestBody = PlaybackInfoDto(
-                allowAudioStreamCopy: false,
-                allowVideoStreamCopy: false,
-                deviceProfile: profile,
-                enableDirectPlay: false,
-                enableDirectStream: false,
-                enableTranscoding: true,
-                isAlwaysBurnInSubtitleWhenTranscoding: entry.preferredSubtitleStreamIndex != nil,
-                maxAudioChannels: 2,
-                maxStreamingBitrate: prefersDirectVideoPlayback ? 20_000_000 : 10_000_000,
-                mediaSourceID: entry.mediaSourceID,
-                subtitleStreamIndex: entry.preferredSubtitleStreamIndex,
-                userID: userID
-            )
-            let response = try await client.send(
-                Paths.getPostedPlaybackInfo(
-                    itemID: entry.id,
-                    parameters: nil,
-                    requestBody
-                )
-            ).value
-            let mediaSource = response.mediaSources?.first(where: { source in
-                source.id == entry.mediaSourceID
-            }) ?? response.mediaSources?.first
-            guard
-                let transcodingPath = mediaSource?.transcodingURL,
-                let streamURL = authenticatedJellyfinURL(path: transcodingPath, client: client)
-            else {
-                throw JellyfinLibraryError.missingPlaybackURL
-            }
-            record(
-                "diagnostics.jellyfin.playback_prepared",
-                level: .info,
-                details: [
-                    "mode": "serverTranscode",
-                    "container": mediaSource?.transcodingContainer ?? "hls",
-                    "playSession": response.playSessionID == nil ? "missing" : "present",
-                    "subtitleCodec": entry.preferredSubtitleCodec ?? "-",
-                    "subtitleStreamIndex": entry.preferredSubtitleStreamIndex.map(String.init) ?? "none",
-                    "transport": playbackEndpoint == nil ? "primary" : "reachableLAN"
-                ]
-            )
-            return MediaPlaybackRequest(
-                url: streamURL,
-                title: entry.title,
-                allowsSelfSignedCertificates: requiresCertificateBypass(for: streamURL),
-                source: .jellyfin,
-                fileExtensionOverride: "m3u8",
-                initialPosition: entry.progress,
-                playbackTracker: makePlaybackTracker(
+                prepared = try await negotiatedVideoPlayback(
                     for: entry,
-                    playMethod: .transcode,
-                    playSessionID: response.playSessionID,
-                    mediaSourceID: mediaSource?.id ?? entry.mediaSourceID
+                    audioStreamIndex: selectedAudioStreamIndex,
+                    subtitleStreamIndex: selectedSubtitleStreamIndex,
+                    subtitleCodec: selectedSubtitleCodec,
+                    client: client,
+                    maxStreamingBitrate: maxBitrate,
+                    allowsDirectPlay: false,
+                    startTimeTicks: requestedStartTimeTicks,
+                    requestedAt: requestedAt
                 )
+            }
+            let playbackTracker = makePlaybackTracker(
+                for: entry,
+                playMethod: prepared.playMethod,
+                playSessionID: prepared.playSessionID,
+                mediaSourceID: prepared.mediaSourceID ?? entry.mediaSourceID,
+                subtitleStreamIndex: selectedSubtitleStreamIndex
+            )
+            // A private original route may carry the 360 Mbps direct-play
+            // budget. Feeding half of that value into a compatibility HLS
+            // request would ask Jellyfin for an impractical 180 Mbps
+            // transcode. Compatibility startup is latency-oriented, so cap
+            // the direct-play fallback envelope before applying the one-step
+            // bitrate reduction. Explicit quality choices remain unchanged.
+            let compatibilityFallbackInitialBitrate = prepared.playMethod == .directPlay
+                ? min(maxBitrate, 20_000_000)
+                : maxBitrate
+            let compatibilityFallbackRequestLoader: ((MediaPlaybackRuntimeState?) async -> MediaPlaybackRequest?)? =
+                compatibilityFallbackInitialBitrate > 1_750_000
+                ? { [weak self] runtimeState in
+                    let runtimeAudioStreamIndex: Int?
+                    let runtimeSubtitleStreamIndex: Int?
+                    if prepared.playMethod == .transcode {
+                        runtimeAudioStreamIndex = selectedAudioStreamIndex
+                        runtimeSubtitleStreamIndex = selectedSubtitleStreamIndex
+                    } else {
+                        runtimeAudioStreamIndex = runtimeState?.audioTrackOrdinal.flatMap { ordinal in
+                            entry.audioTracks.indices.contains(ordinal)
+                                ? entry.audioTracks[ordinal].index
+                                : nil
+                        } ?? selectedAudioStreamIndex
+                        if runtimeState?.subtitlesDisabled == true,
+                           runtimeState?.subtitleSelectionKnown == true {
+                            runtimeSubtitleStreamIndex = nil
+                        } else {
+                            runtimeSubtitleStreamIndex = runtimeState?.subtitleTrackOrdinal.flatMap { ordinal in
+                                entry.subtitleTracks.indices.contains(ordinal)
+                                    ? entry.subtitleTracks[ordinal].index
+                                    : nil
+                            } ?? selectedSubtitleStreamIndex
+                        }
+                    }
+                    let runtimeSubtitleCodec = entry.subtitleTracks
+                        .first(where: { $0.index == runtimeSubtitleStreamIndex })?
+                        .codec
+                    let fallbackPositionSeconds = runtimeState?.positionSeconds
+                        .flatMap { $0 > 0.5 ? $0 : nil }
+                        ?? Double(requestedStartTimeTicks) / 10_000_000
+                    return await self?.adaptiveFallbackRequest(
+                        for: entry,
+                        audioStreamIndex: runtimeAudioStreamIndex,
+                        subtitleStreamIndex: runtimeSubtitleStreamIndex,
+                        subtitleCodec: runtimeSubtitleCodec,
+                        initialBitrate: compatibilityFallbackInitialBitrate,
+                        startTimeTicks: Self.jellyfinTicks(for: fallbackPositionSeconds),
+                        runtimeState: runtimeState
+                    )
+                }
+                : nil
+            let sourceTrackRequestLoader: ((Int?, Int?, MediaPlaybackRuntimeState) async -> MediaPlaybackRequest?)?
+            if prepared.playMethod == .transcode {
+                sourceTrackRequestLoader = { [weak self] audioStreamIndex, subtitleStreamIndex, runtimeState in
+                    guard let self else { return nil }
+                    do {
+                        let replacement = try await self.playbackRequest(
+                            for: entry,
+                            selection: JellyfinPlaybackSelection(
+                                audioStreamIndex: audioStreamIndex,
+                                subtitleStreamIndex: subtitleStreamIndex
+                            ),
+                            forcedServerBitrate: maxBitrate,
+                            forcedStartTimeTicks: runtimeState.positionSeconds.map {
+                                Self.jellyfinTicks(for: $0)
+                            },
+                            forcedServerReason: "sourceTrackSwitch"
+                        )
+                        return replacement?.applyingRuntimePreferences(runtimeState)
+                    } catch {
+                        self.record(
+                            "diagnostics.jellyfin.playback_failed",
+                            level: .error,
+                            details: self.diagnosticDetails(for: error).merging([
+                                "stage": "sourceTrackSwitch",
+                                "audioStreamIndex": audioStreamIndex.map(String.init) ?? "default",
+                                "subtitleStreamIndex": subtitleStreamIndex.map(String.init) ?? "none"
+                            ]) { current, _ in current }
+                        )
+                        return nil
+                    }
+                }
+            } else {
+                sourceTrackRequestLoader = nil
+            }
+            let serverSeekRequestLoader: ((Double, MediaPlaybackRuntimeState) async -> MediaPlaybackRequest?)?
+            if prepared.playMethod == .transcode {
+                serverSeekRequestLoader = { [weak self] targetSeconds, runtimeState in
+                    guard let self else { return nil }
+                    do {
+                        let replacement = try await self.playbackRequest(
+                            for: entry,
+                            selection: JellyfinPlaybackSelection(
+                                audioStreamIndex: selectedAudioStreamIndex,
+                                subtitleStreamIndex: selectedSubtitleStreamIndex
+                            ),
+                            forcedServerBitrate: maxBitrate,
+                            forcedStartTimeTicks: Self.jellyfinTicks(for: targetSeconds),
+                            forcedServerReason: "serverSeek"
+                        )
+                        return replacement?.applyingRuntimePreferences(runtimeState)
+                    } catch {
+                        self.record(
+                            "diagnostics.jellyfin.playback_failed",
+                            level: .error,
+                            details: self.diagnosticDetails(for: error).merging([
+                                "stage": "serverSeek",
+                                "targetSeconds": String(format: "%.1f", targetSeconds)
+                            ]) { current, _ in current }
+                        )
+                        return nil
+                    }
+                }
+            } else {
+                serverSeekRequestLoader = nil
+            }
+            let qualityOptions = Self.videoQualityOptions(sourceBitrate: entry.mediaBitrate)
+            let effectiveQualityID = selectedQualityID ?? "auto"
+            let qualityRequestLoader: ((String, MediaPlaybackRuntimeState) async -> MediaPlaybackRequest?) = {
+                [weak self] qualityID, runtimeState in
+                guard let self else { return nil }
+                let runtimeAudioStreamIndex = runtimeState.audioTrackOrdinal.flatMap { ordinal in
+                    entry.audioTracks.indices.contains(ordinal) ? entry.audioTracks[ordinal].index : nil
+                } ?? selectedAudioStreamIndex
+                let runtimeSubtitleStreamIndex: Int?
+                if runtimeState.subtitlesDisabled, runtimeState.subtitleSelectionKnown {
+                    runtimeSubtitleStreamIndex = nil
+                } else {
+                    runtimeSubtitleStreamIndex = runtimeState.subtitleTrackOrdinal.flatMap { ordinal in
+                        entry.subtitleTracks.indices.contains(ordinal)
+                            ? entry.subtitleTracks[ordinal].index
+                            : nil
+                    } ?? selectedSubtitleStreamIndex
+                }
+                let bitrate = Int(qualityID)
+                do {
+                    let replacement = try await self.playbackRequest(
+                        for: entry,
+                        selection: JellyfinPlaybackSelection(
+                            audioStreamIndex: runtimeAudioStreamIndex,
+                            subtitleStreamIndex: runtimeSubtitleStreamIndex
+                        ),
+                        forcedServerBitrate: bitrate,
+                        forcedStartTimeTicks: runtimeState.positionSeconds.map(Self.jellyfinTicks(for:)),
+                        forcedServerReason: "qualitySwitch",
+                        forcesOriginalPlayback: qualityID == "original",
+                        selectedQualityID: qualityID
+                    )
+                    return replacement?.applyingRuntimePreferences(runtimeState)
+                } catch {
+                    self.record(
+                        "diagnostics.jellyfin.playback_failed",
+                        level: .error,
+                        details: self.diagnosticDetails(for: error).merging([
+                            "stage": "qualitySwitch",
+                            "quality": qualityID
+                        ]) { current, _ in current }
+                    )
+                    return nil
+                }
+            }
+            let timelineOffsetSeconds = prepared.playMethod == .transcode
+                ? Double(requestedStartTimeTicks) / 10_000_000
+                : 0
+            let totalDurationSeconds = entry.runTimeTicks.map { Double($0) / 10_000_000 }
+            return MediaPlaybackRequest(
+                requestedAt: requestedAt,
+                url: prepared.resource.url,
+                title: entry.title,
+                allowsSelfSignedCertificates: prepared.allowsSelfSignedCertificates,
+                source: .jellyfin,
+                contentKind: .video,
+                fileExtensionOverride: prepared.resource.fileExtensionOverride,
+                initialPosition: prepared.playMethod == .transcode ? nil : entry.progress,
+                externalSubtitleURL: prepared.resource.subtitleURL,
+                // Jellyfin has already selected the requested source audio track for HLS.
+                // Its single output track can receive a transient VLC identifier while the
+                // playlist is opening, so selecting ordinal zero here can abort startup with
+                // "Track identifier not found". Let VLC adopt that sole output track itself.
+                preferredAudioTrackOrdinal: prepared.playMethod == .transcode
+                    ? nil
+                    : selectedAudioTrackOrdinal,
+                preferredSubtitleTrackOrdinal: prepared.playMethod == .transcode
+                    ? nil
+                    : selectedSubtitleTrackOrdinal,
+                prefersSubtitlesDisabled: selectedSubtitleStreamIndex == nil,
+                timelineOffsetSeconds: timelineOffsetSeconds,
+                totalDurationSeconds: totalDurationSeconds,
+                isPrivateNetworkRoute: prepared.isPrivateNetworkRoute,
+                playbackTracker: playbackTracker,
+                externalHandoffResource: prepared.externalHandoffResource,
+                compatibilityFallbackRequestLoader: compatibilityFallbackRequestLoader,
+                sourceAudioTracks: entry.audioTracks.map {
+                    MediaPlaybackSourceTrack(id: $0.index, name: $0.title)
+                },
+                sourceSubtitleTracks: entry.subtitleTracks.map { track in
+                    MediaPlaybackSourceTrack(
+                        id: track.index,
+                        name: track.title,
+                        externalURL: Self.requiresBurnIn(subtitleCodec: track.codec)
+                            ? nil
+                            : externalSubtitleURL(
+                                for: entry,
+                                subtitleStreamIndex: track.index,
+                                client: client
+                            )
+                    )
+                },
+                selectedSourceAudioTrackID: selectedAudioStreamIndex,
+                selectedSourceSubtitleTrackID: selectedSubtitleStreamIndex,
+                sourceTrackRequestLoader: sourceTrackRequestLoader,
+                serverSeekRequestLoader: serverSeekRequestLoader,
+                qualityOptions: qualityOptions,
+                selectedQualityID: effectiveQualityID,
+                qualityRequestLoader: qualityRequestLoader
             )
         } catch {
             record(
@@ -5086,60 +9088,678 @@ private final class JellyfinLibraryStore: ObservableObject {
         }
     }
 
-    func externalPlaybackRequest(for entry: JellyfinMediaEntry) async throws -> MediaPlaybackRequest? {
-        guard let client, entry.isPlayable else { return nil }
-        if entry.kind == .audio {
-            return try await playbackRequest(for: entry)
+    private static func videoQualityOptions(sourceBitrate: Int?) -> [MediaPlaybackQualityOption] {
+        var options = [
+            MediaPlaybackQualityOption(
+                id: "auto",
+                title: NSLocalizedString("player.quality.auto", comment: ""),
+                detail: NSLocalizedString("player.quality.auto.detail", comment: "")
+            ),
+            MediaPlaybackQualityOption(
+                id: "original",
+                title: NSLocalizedString("player.quality.original", comment: ""),
+                detail: sourceBitrate.map { Self.bitrateLabel($0) }
+            )
+        ]
+        let bitrates = [30_000_000, 20_000_000, 12_000_000, 8_000_000, 4_000_000, 2_000_000]
+        options.append(contentsOf: bitrates.map { bitrate in
+            MediaPlaybackQualityOption(
+                id: String(bitrate),
+                title: Self.qualityTitle(for: bitrate),
+                detail: Self.bitrateLabel(bitrate)
+            )
+        })
+        return options
+    }
+
+    private static func qualityTitle(for bitrate: Int) -> String {
+        switch bitrate {
+        case 25_000_000...: return "4K"
+        case 10_000_000...: return "1080p"
+        case 5_000_000...: return "720p"
+        default: return "480p"
         }
-        guard let streamURL = directVideoURL(for: entry, client: client) else {
-            return try await playbackRequest(for: entry)
+    }
+
+    private static func bitrateLabel(_ bitrate: Int) -> String {
+        String(format: "%.0f Mbps", Double(bitrate) / 1_000_000)
+    }
+
+    private func adaptiveFallbackRequest(
+        for entry: JellyfinMediaEntry,
+        audioStreamIndex: Int?,
+        subtitleStreamIndex: Int?,
+        subtitleCodec: String?,
+        initialBitrate: Int,
+        startTimeTicks: Int?,
+        runtimeState: MediaPlaybackRuntimeState?
+    ) async -> MediaPlaybackRequest? {
+        guard client != nil else { return nil }
+        let network = PlaybackNetworkObserver.shared.snapshot()
+        let fallbackBitrate = max(1_500_000, initialBitrate / 2)
+        guard fallbackBitrate < initialBitrate else { return nil }
+        do {
+            let replacement = try await playbackRequest(
+                for: entry,
+                selection: JellyfinPlaybackSelection(
+                    audioStreamIndex: audioStreamIndex,
+                    subtitleStreamIndex: subtitleStreamIndex
+                ),
+                forcedServerBitrate: fallbackBitrate,
+                forcedStartTimeTicks: startTimeTicks,
+                forcedServerReason: "bitrateFallback"
+            )
+            guard let replacement else { return nil }
+            record(
+                "diagnostics.jellyfin.playback_downshifted",
+                level: .warning,
+                details: [
+                    "fromBitrate": "\(initialBitrate)",
+                    "toBitrate": "\(fallbackBitrate)",
+                    "network": network.cacheKey,
+                    "mode": "serverNegotiatedHLS",
+                    "subtitleCodec": subtitleCodec ?? "-"
+                ]
+            )
+            return runtimeState.map { replacement.applyingRuntimePreferences($0) } ?? replacement
+        } catch {
+            record(
+                "diagnostics.jellyfin.playback_downshift_failed",
+                level: .error,
+                details: diagnosticDetails(for: error).merging([
+                    "fromBitrate": "\(initialBitrate)",
+                    "toBitrate": "\(fallbackBitrate)",
+                    "network": network.cacheKey
+                ]) { current, _ in current }
+            )
+            return nil
         }
-        let extensionHint = entry.container?
-            .split(separator: ",", maxSplits: 1)
-            .first
-            .map(String.init)
+    }
+
+    func externalPlaybackRequest(
+        for entry: JellyfinMediaEntry,
+        selection: JellyfinPlaybackSelection? = nil
+    ) async throws -> MediaPlaybackRequest? {
+        guard let prepared = try await playbackRequest(for: entry, selection: selection) else {
+            return nil
+        }
+        let resource = prepared.externalHandoffResource ?? MediaPlaybackResource(
+            url: prepared.url,
+            fileExtensionOverride: prepared.fileExtensionOverride,
+            subtitleURL: prepared.externalSubtitleURL
+        )
+        return MediaPlaybackRequest(
+            requestedAt: prepared.requestedAt,
+            url: resource.url,
+            title: entry.title,
+            allowsSelfSignedCertificates: requiresCertificateBypass(for: resource.url),
+            source: .jellyfin,
+            fileExtensionOverride: resource.fileExtensionOverride,
+            initialPosition: entry.progress,
+            externalSubtitleURL: resource.subtitleURL,
+            preferredAudioTrackOrdinal: prepared.preferredAudioTrackOrdinal,
+            preferredSubtitleTrackOrdinal: prepared.preferredSubtitleTrackOrdinal,
+            prefersSubtitlesDisabled: prepared.prefersSubtitlesDisabled,
+            initialOrientationMode: prepared.initialOrientationMode,
+            initialPlaybackRate: prepared.initialPlaybackRate,
+            isPrivateNetworkRoute: prepared.isPrivateNetworkRoute
+        )
+    }
+
+    private func negotiatedVideoPlayback(
+        for entry: JellyfinMediaEntry,
+        audioStreamIndex: Int?,
+        subtitleStreamIndex: Int?,
+        subtitleCodec: String?,
+        client: JellyfinClient,
+        maxStreamingBitrate: Int,
+        allowsDirectPlay: Bool,
+        startTimeTicks: Int?,
+        requestedAt: Date
+    ) async throws -> JellyfinPreparedPlayback {
+        let requestBody = PlaybackInfoDto(
+            allowAudioStreamCopy: false,
+            allowVideoStreamCopy: false,
+            audioStreamIndex: audioStreamIndex,
+            deviceProfile: Self.vlcPlaybackProfile(maxBitrate: maxStreamingBitrate),
+            enableDirectPlay: allowsDirectPlay,
+            // Public routes must stay on Jellyfin's segmented HLS path. A
+            // direct-stream/remux response can still be a long-lived raw
+            // connection and defeats the cellular startup policy.
+            enableDirectStream: playbackRouteIsPrivate,
+            enableTranscoding: true,
+            // HLS transcoding is the compatibility path. Keep the selected
+            // subtitle in the server-rendered video so ASS/SSA/legacy CJK
+            // glyphs do not depend on VLC's iOS text renderer or a child
+            // playlist subtitle encoding.
+            isAlwaysBurnInSubtitleWhenTranscoding: subtitleStreamIndex != nil,
+            maxStreamingBitrate: maxStreamingBitrate,
+            mediaSourceID: entry.mediaSourceID,
+            startTimeTicks: startTimeTicks,
+            subtitleStreamIndex: subtitleStreamIndex,
+            userID: userID
+        )
+        let response = try await client.send(
+            Paths.getPostedPlaybackInfo(
+                itemID: entry.id,
+                parameters: nil,
+                requestBody
+            )
+        ).value
+        let mediaSource = response.mediaSources?.first(where: { source in
+            source.id == entry.mediaSourceID
+        }) ?? response.mediaSources?.first
+        guard let mediaSource else {
+            throw JellyfinLibraryError.missingPlaybackURL
+        }
+        let streamURL: URL
+        let extensionHint: String
+        let playMethod: PlayMethod
+        let mode: String
+        if let transcodingPath = mediaSource.transcodingURL,
+           let transcodingURL = authenticatedJellyfinURL(path: transcodingPath, client: client) {
+            streamURL = transcodingURL
+            extensionHint = mediaSource.transcodingSubProtocol == .hls
+                ? "m3u8"
+                : Self.firstContainer(mediaSource.transcodingContainer) ?? "mp4"
+            playMethod = .transcode
+            mode = mediaSource.transcodingSubProtocol == .hls
+                ? "serverNegotiatedHLS"
+                : "serverNegotiatedTranscode"
+        } else {
+            guard let directURL = negotiatedDirectURL(
+                for: entry,
+                mediaSource: mediaSource,
+                playSessionID: response.playSessionID,
+                client: client
+            ) else {
+                throw JellyfinLibraryError.missingPlaybackURL
+            }
+            streamURL = directURL
+            extensionHint = Self.firstContainer(mediaSource.container)
+                ?? Self.firstContainer(entry.container)
+                ?? "mp4"
+            playMethod = .directPlay
+            mode = "serverNegotiatedDirectPlay"
+        }
+        // AVPlayer must be able to request every child playlist/segment with
+        // the Jellyfin credentials. A plain authenticated m3u8 URL is not
+        // sufficient on cellular routes because AVPlayer does not inherit the
+        // client's X-Emby-Token header for child requests. The local proxy
+        // rewrites child URIs and forwards the authenticated requests while
+        // keeping external handoff on the original server URL.
+        let internalStreamURL: URL
+        if playMethod == .transcode,
+           extensionHint == "m3u8",
+           !playbackRouteIsPrivate {
+            internalStreamURL = (try? await AuthenticatedMediaStreamProxy.shared.register(
+                upstreamURL: streamURL,
+                filename: entry.title + ".m3u8",
+                allowsSelfSignedCertificates: requiresCertificateBypass(for: streamURL)
+            )) ?? streamURL
+        } else {
+            internalStreamURL = streamURL
+        }
+        let externalHandoffResource = MediaPlaybackResource(
+            url: streamURL,
+            fileExtensionOverride: extensionHint,
+            subtitleURL: Self.requiresBurnIn(subtitleCodec: subtitleCodec)
+                ? nil
+                : externalSubtitleURL(
+                    for: entry,
+                    subtitleStreamIndex: subtitleStreamIndex,
+                    client: client
+                )
+        )
+        let resource: MediaPlaybackResource
+        if playMethod == .directPlay {
+            resource = MediaPlaybackResource(
+                url: internalStreamURL,
+                fileExtensionOverride: extensionHint,
+                // Keep direct-play subtitle behavior identical to the
+                // handoff path: text tracks use Jellyfin's normalized SRT,
+                // image tracks stay on the server burn-in path.
+                subtitleURL: externalHandoffResource.subtitleURL,
+                allowsSelfSignedCertificates: requiresCertificateBypass(for: streamURL)
+            )
+        } else {
+            resource = MediaPlaybackResource(
+                url: internalStreamURL,
+                fileExtensionOverride: extensionHint,
+                // The server burns subtitles into HLS for consistent CJK
+                // rendering; adding the same track as a VLC slave would
+                // duplicate it and reintroduce the missing-glyph path.
+                subtitleURL: nil,
+                allowsSelfSignedCertificates: false
+            )
+        }
         record(
             "diagnostics.jellyfin.playback_prepared",
             level: .info,
             details: [
-                "mode": "externalDirectPlay",
-                "container": extensionHint ?? "-",
-                "transport": playbackEndpoint == nil ? "primary" : "reachableLAN"
+                "mode": mode,
+                "container": extensionHint,
+                "playSession": response.playSessionID == nil ? "missing" : "present",
+                "subtitleCodec": subtitleCodec ?? "-",
+                "subtitleStreamIndex": subtitleStreamIndex.map(String.init) ?? "none",
+                "audioStreamIndex": audioStreamIndex.map(String.init) ?? "default",
+                "startTimeTicks": startTimeTicks.map(String.init) ?? "0",
+                "maxBitrate": "\(maxStreamingBitrate)",
+                "directPlay": allowsDirectPlay ? "allowed" : "disabled",
+                "sourceBitrate": mediaSource.bitrate.map(String.init) ?? "-",
+                "transport": resource.url.host == "127.0.0.1"
+                    ? "localHLSProxy"
+                    : resource.url.scheme?.lowercased() ?? "serverURL",
+                "prepareMs": Self.elapsedMilliseconds(since: requestedAt)
             ]
         )
-        return MediaPlaybackRequest(
-            url: streamURL,
-            title: entry.title,
-            allowsSelfSignedCertificates: requiresCertificateBypass(for: streamURL),
-            source: .jellyfin,
-            fileExtensionOverride: extensionHint,
-            initialPosition: entry.progress,
-            externalSubtitleURL: externalSubtitleURL(for: entry, client: client)
+        return JellyfinPreparedPlayback(
+            resource: resource,
+            externalHandoffResource: externalHandoffResource,
+            playSessionID: response.playSessionID,
+            mediaSourceID: mediaSource.id,
+            playMethod: playMethod,
+            mode: mode,
+            isPrivateNetworkRoute: playbackRouteIsPrivate,
+            allowsSelfSignedCertificates: requiresCertificateBypass(for: resource.url)
         )
     }
 
-    private func directVideoURL(for entry: JellyfinMediaEntry, client: JellyfinClient) -> URL? {
-        var components = URLComponents()
-        components.path = "/Videos/\(entry.id)/stream"
-        var queryItems = [URLQueryItem(name: "Static", value: "true")]
-        if let mediaSourceID = entry.mediaSourceID {
-            queryItems.append(URLQueryItem(name: "MediaSourceId", value: mediaSourceID))
+    private var playbackRouteIsPrivate: Bool {
+        resolvedPlaybackRouteIsPrivate
+            ?? NetworkHostClassifier.isPrivate((playbackEndpoint ?? endpoint).host)
+    }
+
+    private func refreshPlaybackRouteClassification() async {
+        let isPrivate = NetworkHostClassifier.isPrivate((playbackEndpoint ?? endpoint).host)
+        resolvedPlaybackRouteIsPrivate = isPrivate
+        if isPrivate {
+            bitrateMeasurementTasks.values.forEach { $0.cancel() }
+            bitrateMeasurementTasks.removeAll()
         }
-        if let container = entry.container?.split(separator: ",", maxSplits: 1).first {
-            queryItems.append(URLQueryItem(name: "Container", value: String(container)))
+    }
+
+    private func playbackBitrateDecision() -> JellyfinPlaybackBitrateDecision {
+        let route = playbackEndpoint ?? endpoint
+        let network = PlaybackNetworkObserver.shared.snapshot()
+        if playbackRouteIsPrivate {
+            return JellyfinPlaybackBitrateDecision(
+                maximumBitrate: 360_000_000,
+                directPlayMaximumBitrate: 360_000_000,
+                isPrivateRoute: true,
+                basis: "privateRoute",
+                networkKey: network.cacheKey
+            )
         }
-        components.queryItems = queryItems
-        guard let path = components.string else { return nil }
-        return authenticatedJellyfinURL(path: path, client: client)
+        let originKey = Self.originURL(for: route)?.absoluteString ?? route.absoluteString
+        let cacheKey = "\(originKey)|\(network.cacheKey)"
+        if let cached = bitrateMeasurements[cacheKey],
+           Date().timeIntervalSince(cached.measuredAt) < 10 * 60 {
+            // A short throughput sample is deliberately reduced for an HLS
+            // target, but applying that same safety factor to direct play makes
+            // a 50-55 Mbps Wi-Fi sample reject a 60-65 Mbps source and pay the
+            // full server-transcode startup cost. Direct playback can absorb
+            // short bursts in its local cache, so use the raw Wi-Fi sample with
+            // a small burst allowance while keeping cellular conservative.
+            let directPlayMaximumBitrate: Int
+            if network.cacheKey == "wifi" {
+                directPlayMaximumBitrate = min(
+                    max(Int(Double(cached.rawBitrate) * 1.25), cached.bitrate),
+                    network.bitrateCap ?? 80_000_000
+                )
+            } else {
+                directPlayMaximumBitrate = cached.bitrate
+            }
+            return JellyfinPlaybackBitrateDecision(
+                maximumBitrate: cached.bitrate,
+                directPlayMaximumBitrate: directPlayMaximumBitrate,
+                isPrivateRoute: false,
+                basis: "measured",
+                networkKey: network.cacheKey
+            )
+        }
+        // On Wi-Fi, prefer the source stream and fall back only after an actual
+        // playback failure. Treating the conservative 8 Mbps bootstrap value as
+        // a hard gate forced ordinary 9-20 Mbps files through full H.264/AAC
+        // transcoding before the bandwidth probe had completed.
+        let fallbackBitrate = network.cacheKey == "wifi"
+            ? (network.bitrateCap ?? network.fallbackBitrate)
+            : min(
+                network.bitrateCap ?? network.fallbackBitrate,
+                network.fallbackBitrate
+            )
+        return JellyfinPlaybackBitrateDecision(
+            maximumBitrate: fallbackBitrate,
+            directPlayMaximumBitrate: fallbackBitrate,
+            isPrivateRoute: false,
+            basis: "networkFallback",
+            networkKey: network.cacheKey
+        )
+    }
+
+    private func scheduleBitrateMeasurementIfNeeded(client: JellyfinClient) {
+        let route = playbackEndpoint ?? endpoint
+        guard !playbackRouteIsPrivate else { return }
+        let network = PlaybackNetworkObserver.shared.snapshot()
+        let originKey = Self.originURL(for: route)?.absoluteString ?? route.absoluteString
+        let cacheKey = "\(originKey)|\(network.cacheKey)"
+        if let cached = bitrateMeasurements[cacheKey],
+           Date().timeIntervalSince(cached.measuredAt) < 10 * 60 {
+            return
+        }
+        guard bitrateMeasurementTasks[cacheKey] == nil else { return }
+        bitrateMeasurementTasks[cacheKey] = Task { @MainActor [weak self] in
+            guard let self else { return }
+            await self.measureMaximumBitrate(
+                client: client,
+                network: network,
+                cacheKey: cacheKey
+            )
+            self.bitrateMeasurementTasks[cacheKey] = nil
+        }
+    }
+
+    private func ensureBitrateMeasurementIfNeeded(client: JellyfinClient) async {
+        let route = playbackEndpoint ?? endpoint
+        guard !playbackRouteIsPrivate else { return }
+        let network = PlaybackNetworkObserver.shared.snapshot()
+        let originKey = Self.originURL(for: route)?.absoluteString ?? route.absoluteString
+        let cacheKey = "\(originKey)|\(network.cacheKey)"
+        if let cached = bitrateMeasurements[cacheKey],
+           Date().timeIntervalSince(cached.measuredAt) < 10 * 60 {
+            return
+        }
+        scheduleBitrateMeasurementIfNeeded(client: client)
+        let task = bitrateMeasurementTasks[cacheKey]
+        await task?.value
+    }
+
+    private func measureMaximumBitrate(
+        client: JellyfinClient,
+        network: PlaybackNetworkSnapshot,
+        cacheKey: String
+    ) async {
+        let testSize: Int
+        switch network.cacheKey {
+        case "wifi": testSize = 4 * 1024 * 1024
+        case "cellular": testSize = 1024 * 1024
+        default: testSize = 512 * 1024
+        }
+        let startedAt = Date()
+        do {
+            let data = try await client.send(Paths.getBitrateTestBytes(size: testSize)).value
+            guard !data.isEmpty else { throw URLError(.zeroByteResource) }
+            let elapsed = max(Date().timeIntervalSince(startedAt), 0.05)
+            let measured = Double(data.count * 8) / elapsed
+            let measuredSafeBitrate = max(Int(measured * 0.80), 1_500_000)
+            let safeBitrate = min(measuredSafeBitrate, network.bitrateCap ?? 80_000_000)
+            bitrateMeasurements[cacheKey] = (safeBitrate, Int(measured), Date())
+            record(
+                "diagnostics.jellyfin.bitrate_measured",
+                level: .info,
+                details: [
+                    "measuredBitrate": "\(Int(measured))",
+                    "selectedBitrate": "\(safeBitrate)",
+                    "durationMs": Self.elapsedMilliseconds(since: startedAt),
+                    "sampleBytes": "\(data.count)",
+                    "network": network.cacheKey
+                ]
+            )
+        } catch {
+            guard !Task.isCancelled else { return }
+            let fallbackBitrate = min(
+                network.bitrateCap ?? network.fallbackBitrate,
+                network.fallbackBitrate
+            )
+            record(
+                "diagnostics.jellyfin.bitrate_measured",
+                level: .warning,
+                details: diagnosticDetails(for: error).merging([
+                    "selectedBitrate": "\(fallbackBitrate)",
+                    "mode": "fallback",
+                    "network": network.cacheKey
+                ]) { current, _ in current }
+            )
+        }
+    }
+
+    private func negotiatedDirectURL(
+        for entry: JellyfinMediaEntry,
+        mediaSource: MediaSourceInfo,
+        playSessionID: String?,
+        client: JellyfinClient
+    ) -> URL? {
+        guard let container = Self.firstContainer(mediaSource.container)
+            ?? Self.firstContainer(entry.container) else { return nil }
+        var parameters = Paths.GetVideoStreamByContainerParameters()
+        parameters.isStatic = true
+        parameters.tag = mediaSource.eTag
+        parameters.playSessionID = playSessionID
+        parameters.mediaSourceID = mediaSource.id ?? entry.mediaSourceID
+        return client.url(
+            with: Paths.getVideoStreamByContainer(
+                itemID: entry.id,
+                container: container,
+                parameters: parameters
+            ),
+            queryAPIKey: true
+        ).map(preferredPlaybackURL)
+    }
+
+    private func originalVideoPlaybackURLs(
+        for entry: JellyfinMediaEntry,
+        client: JellyfinClient
+    ) -> [URL] {
+        guard let container = Self.firstContainer(entry.container) else { return [] }
+        var parameters = Paths.GetVideoStreamByContainerParameters()
+        parameters.isStatic = true
+        parameters.mediaSourceID = entry.mediaSourceID
+        guard let serverURL = client.url(
+            with: Paths.getVideoStreamByContainer(
+                itemID: entry.id,
+                container: container,
+                parameters: parameters
+            ),
+            queryAPIKey: true
+        ) else {
+            return []
+        }
+        var result: [URL] = []
+        var seen = Set<String>()
+        for candidate in [preferredPlaybackURL(serverURL), serverURL] {
+            if seen.insert(candidate.absoluteString).inserted {
+                result.append(candidate)
+            }
+        }
+        return result
+    }
+
+    private func preferredOriginalPlaybackRoute(
+        for entry: JellyfinMediaEntry,
+        client: JellyfinClient
+    ) async -> JellyfinDirectPlaybackRoute? {
+        let jellyfinCandidates = originalVideoPlaybackURLs(for: entry, client: client)
+        if let url = await AuthenticatedMediaPlaybackResolver.firstPlayableURL(
+            candidates: jellyfinCandidates,
+            allowsSelfSignedCertificates: allowsSelfSignedCertificates,
+            diagnosticStage: "jellyfinRange",
+            timeout: 4,
+            expectedContentLength: entry.mediaSize
+        ) {
+            return JellyfinDirectPlaybackRoute(
+                url: await preferredDirectPlaybackURL(
+                    url,
+                    filename: entry.title,
+                    allowsSelfSignedCertificates: requiresCertificateBypass(for: url)
+                ),
+                handoffURL: url,
+                source: "jellyfinOriginal",
+                allowsSelfSignedCertificates: requiresCertificateBypass(for: url),
+                isPrivateNetworkRoute: NetworkHostClassifier.isPrivate(url.host)
+            )
+        }
+
+        if let dsmSession,
+           let mediaPath = entry.mediaPath,
+           !shouldSkipDSMPlaybackPath(mediaPath) {
+            let candidates = dsmOriginalVideoPlaybackURLs(
+                mediaPath: mediaPath,
+                session: dsmSession
+            )
+            if !candidates.isEmpty,
+               let url = await AuthenticatedMediaPlaybackResolver.firstPlayableURL(
+                   candidates: candidates,
+                   allowsSelfSignedCertificates: dsmSession.allowsSelfSignedCertificates,
+                   diagnosticStage: "jellyfinDSMRange",
+                   timeout: 3,
+                   expectedContentLength: entry.mediaSize
+               ) {
+                unavailableDSMPlaybackPaths.removeValue(forKey: mediaPath)
+                return JellyfinDirectPlaybackRoute(
+                    url: await preferredDirectPlaybackURL(
+                        url,
+                        filename: entry.title,
+                        allowsSelfSignedCertificates: dsmSession.allowsSelfSignedCertificates
+                    ),
+                    handoffURL: url,
+                    source: "dsmFileStation",
+                    allowsSelfSignedCertificates: dsmSession.allowsSelfSignedCertificates,
+                    isPrivateNetworkRoute: NetworkHostClassifier.isPrivate(url.host)
+                )
+            }
+            unavailableDSMPlaybackPaths[mediaPath] = Date()
+            record(
+                "diagnostics.jellyfin.playback_preparing",
+                level: .warning,
+                details: [
+                    "mode": "dsmPathUnavailable",
+                    "fallback": "serverHLS",
+                    "candidateCount": "\(candidates.count)"
+                ]
+            )
+        }
+        return nil
+    }
+
+    private func dsmOriginalVideoPlaybackURLs(
+        mediaPath: String,
+        session: DSMSession
+    ) -> [URL] {
+        var result: [URL] = []
+        var seen = Set<String>()
+        for path in Self.dsmFileStationPathCandidates(
+            mediaPath,
+            sharedFolderPaths: dsmSharedFolderPaths
+        ) {
+            for url in session.fileStationOpenURLs(path: path)
+            where seen.insert(url.absoluteString).inserted {
+                result.append(url)
+            }
+        }
+        return result
+    }
+
+    private func preferredDirectPlaybackURL(
+        _ url: URL,
+        filename: String,
+        allowsSelfSignedCertificates: Bool
+    ) async -> URL {
+        guard !NetworkHostClassifier.isPrivate(url.host) else { return url }
+        return (try? await AuthenticatedMediaStreamProxy.shared.register(
+            upstreamURL: url,
+            filename: filename,
+            allowsSelfSignedCertificates: allowsSelfSignedCertificates
+        )) ?? url
+    }
+
+    private func shouldSkipDSMPlaybackPath(_ mediaPath: String) -> Bool {
+        guard let failedAt = unavailableDSMPlaybackPaths[mediaPath] else { return false }
+        if Date().timeIntervalSince(failedAt) < 5 * 60 {
+            return true
+        }
+        unavailableDSMPlaybackPaths.removeValue(forKey: mediaPath)
+        return false
+    }
+
+    private static func dsmFileStationPathCandidates(
+        _ mediaPath: String,
+        sharedFolderPaths: [String]
+    ) -> [String] {
+        let normalized = mediaPath
+            .replacingOccurrences(of: "\\", with: "/")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        guard normalized.hasPrefix("/") else { return [] }
+
+        var result: [String] = []
+        var seen = Set<String>()
+        func append(_ path: String) {
+            let cleaned = path.replacingOccurrences(of: "//", with: "/")
+            guard cleaned.hasPrefix("/"), seen.insert(cleaned).inserted else { return }
+            result.append(cleaned)
+        }
+        let components = normalized.split(separator: "/", omittingEmptySubsequences: true)
+        let isVolumePath: Bool
+        if let volume = components.first?.lowercased(),
+           volume.hasPrefix("volume"),
+           !volume.dropFirst("volume".count).isEmpty,
+           volume.dropFirst("volume".count).allSatisfy(\.isNumber),
+           components.count > 1 {
+            append("/" + components.dropFirst().joined(separator: "/"))
+            isVolumePath = true
+        } else {
+            isVolumePath = false
+        }
+        append(normalized)
+        guard !isVolumePath, components.count > 1 else { return result }
+
+        let sharedRoots = sharedFolderPaths.compactMap { path -> String? in
+            let normalizedShare = path
+                .replacingOccurrences(of: "\\", with: "/")
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+            guard normalizedShare.hasPrefix("/") else { return nil }
+            let shareComponents = normalizedShare.split(separator: "/", omittingEmptySubsequences: true)
+            if let first = shareComponents.first?.lowercased(),
+               first.hasPrefix("volume"),
+               !first.dropFirst("volume".count).isEmpty,
+               first.dropFirst("volume".count).allSatisfy(\.isNumber),
+               shareComponents.count > 1 {
+                return "/" + shareComponents.dropFirst().joined(separator: "/")
+            }
+            return normalizedShare
+        }
+        for sharedRoot in sharedRoots {
+            let sharedName = sharedRoot.split(separator: "/").last?.lowercased()
+            if let sharedName,
+               let matchingIndex = components.firstIndex(where: {
+                   $0.lowercased() == sharedName
+               }) {
+                let suffix = components.dropFirst(matchingIndex + 1).joined(separator: "/")
+                append(suffix.isEmpty ? sharedRoot : "\(sharedRoot)/\(suffix)")
+            }
+            append("\(sharedRoot)/\(components.dropFirst().joined(separator: "/"))")
+        }
+
+        let commonContainerRoots: Set<String> = [
+            "data", "media", "mnt", "movie", "movies", "storage", "tv", "video", "videos"
+        ]
+        if components.count > 2,
+           let first = components.first?.lowercased(),
+           commonContainerRoots.contains(first) {
+            for sharedRoot in sharedRoots {
+                append("\(sharedRoot)/\(components.dropFirst(2).joined(separator: "/"))")
+            }
+        }
+        return result
     }
 
     private func externalSubtitleURL(
         for entry: JellyfinMediaEntry,
+        subtitleStreamIndex: Int?,
         client: JellyfinClient
     ) -> URL? {
         guard
             let mediaSourceID = entry.mediaSourceID,
-            let subtitleIndex = entry.preferredSubtitleStreamIndex,
+            let subtitleIndex = subtitleStreamIndex,
             let url = client.url(
                 with: Paths.getSubtitle(
                     routeItemID: entry.id,
@@ -5155,11 +9775,34 @@ private final class JellyfinLibraryStore: ObservableObject {
         return preferredPlaybackURL(url)
     }
 
+    private static func requiresBurnIn(subtitleCodec: String?) -> Bool {
+        guard let subtitleCodec = subtitleCodec?.lowercased() else { return false }
+        return [
+            "dvbsub", "dvb_subtitle",
+            "pgssub", "hdmv_pgs_subtitle",
+            "dvdsub", "dvd_subtitle",
+            "xsub"
+        ].contains(subtitleCodec)
+    }
+
+    private static func requiresAudioTranscode(audioCodec: String?) -> Bool {
+        guard let audioCodec = audioCodec?.lowercased() else { return false }
+        // MobileVLCKit on iOS can enumerate these streams but may not expose
+        // a usable PCM output, especially for TrueHD/MLP in MKV/BD sources.
+        // Ask Jellyfin for AAC HLS so the video keeps its position while the
+        // server performs the audio-only compatibility conversion.
+        return [
+            "truehd", "mlp", "ac4", "dts-hd", "dtshd", "dts-hd ma",
+            "eac3-joc", "atmos"
+        ].contains(audioCodec)
+    }
+
     private func makePlaybackTracker(
         for entry: JellyfinMediaEntry,
         playMethod: PlayMethod,
         playSessionID: String?,
-        mediaSourceID: String?
+        mediaSourceID: String?,
+        subtitleStreamIndex: Int?
     ) -> MediaPlaybackTracker {
         MediaPlaybackTracker { [weak self] event in
             Task { @MainActor [weak self] in
@@ -5168,7 +9811,8 @@ private final class JellyfinLibraryStore: ObservableObject {
                     entry: entry,
                     playMethod: playMethod,
                     playSessionID: playSessionID,
-                    mediaSourceID: mediaSourceID
+                    mediaSourceID: mediaSourceID,
+                    subtitleStreamIndex: subtitleStreamIndex
                 )
             }
         }
@@ -5179,7 +9823,8 @@ private final class JellyfinLibraryStore: ObservableObject {
         entry: JellyfinMediaEntry,
         playMethod: PlayMethod,
         playSessionID: String?,
-        mediaSourceID: String?
+        mediaSourceID: String?,
+        subtitleStreamIndex: Int?
     ) async {
         guard let client else { return }
         do {
@@ -5193,7 +9838,7 @@ private final class JellyfinLibraryStore: ObservableObject {
                     playMethod: playMethod,
                     playSessionID: playSessionID,
                     positionTicks: Self.jellyfinTicks(for: positionSeconds),
-                    subtitleStreamIndex: entry.preferredSubtitleStreamIndex,
+                    subtitleStreamIndex: subtitleStreamIndex,
                     volumeLevel: 100
                 )
                 _ = try await client.send(Paths.reportPlaybackStart(body)).value
@@ -5206,7 +9851,7 @@ private final class JellyfinLibraryStore: ObservableObject {
                     playMethod: playMethod,
                     playSessionID: playSessionID,
                     positionTicks: Self.jellyfinTicks(for: positionSeconds),
-                    subtitleStreamIndex: entry.preferredSubtitleStreamIndex,
+                    subtitleStreamIndex: subtitleStreamIndex,
                     volumeLevel: 100
                 )
                 _ = try await client.send(Paths.reportPlaybackProgress(body)).value
@@ -5236,6 +9881,18 @@ private final class JellyfinLibraryStore: ObservableObject {
     private static func jellyfinTicks(for seconds: Double) -> Int {
         guard seconds.isFinite, seconds > 0 else { return 0 }
         return Int(min(seconds * 10_000_000, Double(Int.max)))
+    }
+
+    private static func firstContainer(_ value: String?) -> String? {
+        value?
+            .split(separator: ",", maxSplits: 1)
+            .first
+            .map(String.init)
+            .flatMap { $0.isEmpty ? nil : $0.lowercased() }
+    }
+
+    private static func elapsedMilliseconds(since date: Date) -> String {
+        String(Int(max(Date().timeIntervalSince(date), 0) * 1_000))
     }
 
     private func authenticatedJellyfinURL(path: String, client: JellyfinClient) -> URL? {
@@ -5275,10 +9932,6 @@ private final class JellyfinLibraryStore: ObservableObject {
         return streamComponents.url ?? url
     }
 
-    private var prefersDirectVideoPlayback: Bool {
-        NetworkHostClassifier.isPrivate((playbackEndpoint ?? endpoint).host)
-    }
-
     private func requiresCertificateBypass(for url: URL) -> Bool {
         guard allowsSelfSignedCertificates, url.scheme?.lowercased() == "https" else {
             return false
@@ -5289,41 +9942,90 @@ private final class JellyfinLibraryStore: ObservableObject {
         ) != nil
     }
 
-    private static let iOSPlaybackProfile = DeviceProfile(
-        directPlayProfiles: [],
-        maxStaticBitrate: 20_000_000,
-        maxStaticMusicBitrate: 2_000_000,
-        maxStreamingBitrate: 20_000_000,
-        musicStreamingTranscodingBitrate: 320_000,
-        name: "Nastart iOS",
-        subtitleProfiles: [
-            SubtitleProfile(format: "srt", method: .encode),
-            SubtitleProfile(format: "subrip", method: .encode),
-            SubtitleProfile(format: "vtt", method: .encode),
-            SubtitleProfile(format: "ass", method: .encode),
-            SubtitleProfile(format: "ssa", method: .encode),
-            SubtitleProfile(format: "pgssub", method: .encode),
-            SubtitleProfile(format: "dvdsub", method: .encode)
-        ],
-        transcodingProfiles: [
-            TranscodingProfile(
-                protocol: .hls,
-                audioCodec: "aac",
-                container: "ts",
-                context: .streaming,
-                enableSubtitlesInManifest: false,
-                maxAudioChannels: "2",
-                minSegments: 1,
-                segmentLength: 3,
-                transcodeSeekInfo: .auto,
-                type: .video,
-                videoCodec: "h264"
-            )
+    private static func vlcPlaybackProfile(maxBitrate: Int) -> DeviceProfile {
+        let audioCodecs = [
+            "aac", "ac3", "alac", "amr_nb", "amr_wb", "dts", "eac3", "flac",
+            "mp1", "mp2", "mp3", "opus", "pcm_alaw", "pcm_bluray", "pcm_dvd",
+            "pcm_mulaw", "pcm_s16be", "pcm_s16le", "pcm_s24be", "pcm_s24le",
+            "pcm_u8", "speex", "vorbis", "wavpack", "wmalossless", "wmapro",
+            "wmav1", "wmav2"
+        ].joined(separator: ",")
+        let videoCodecs = [
+            "av1", "dirac", "dv", "ffv1", "flv1", "h261", "h263", "h264", "hevc",
+            "mjpeg", "mpeg1video", "mpeg2video", "mpeg4", "msmpeg4v1",
+            "msmpeg4v2", "msmpeg4v3", "prores", "theora", "vc1", "vp8", "vp9",
+            "wmv1", "wmv2", "wmv3"
+        ].joined(separator: ",")
+        let videoContainers = [
+            "3g2", "3gp", "avi", "flv", "m2ts", "m4v", "mkv", "mov", "mp4",
+            "mpeg", "mpegts", "mts", "ogm", "ogv", "ts", "vob", "webm", "wmv"
+        ].joined(separator: ",")
+        let textSubtitles = [
+            "ass", "cc_dec", "mov_text", "mpl2", "pjs", "realtext", "sami",
+            "srt", "ssa", "subrip", "subviewer", "subviewer1", "text", "ttml",
+            "vplayer", "vtt"
         ]
-    )
+        let imageSubtitles = ["dvbsub", "dvdsub", "pgssub", "xsub"]
+        return DeviceProfile(
+            codecProfiles: ["h264", "hevc", "vp9", "av1"].map { codec in
+                CodecProfile(
+                    codec: codec,
+                    conditions: [
+                        ProfileCondition(
+                            condition: .equalsAny,
+                            isRequired: false,
+                            property: .videoRangeType,
+                            value: "SDR|Unknown"
+                        )
+                    ],
+                    type: .video
+                )
+            },
+            directPlayProfiles: [
+                DirectPlayProfile(
+                    audioCodec: audioCodecs,
+                    container: videoContainers,
+                    type: .video,
+                    videoCodec: videoCodecs
+                ),
+                DirectPlayProfile(
+                    audioCodec: audioCodecs,
+                    container: "aac,ac3,alac,flac,m4a,mp3,ogg,opus,wav,wma",
+                    type: .audio
+                )
+            ],
+            maxStaticBitrate: 360_000_000,
+            maxStaticMusicBitrate: min(maxBitrate, 8_000_000),
+            maxStreamingBitrate: maxBitrate,
+            musicStreamingTranscodingBitrate: 320_000,
+            name: "Nastart MobileVLCKit",
+            subtitleProfiles: textSubtitles.map {
+                SubtitleProfile(format: $0, method: .embed)
+            } + textSubtitles.map {
+                SubtitleProfile(format: $0, method: .external)
+            } + imageSubtitles.map {
+                SubtitleProfile(format: $0, method: .embed)
+            },
+            transcodingProfiles: [
+                TranscodingProfile(
+                    protocol: .hls,
+                    audioCodec: "aac",
+                    container: "mp4",
+                    context: .streaming,
+                    isBreakOnNonKeyFrames: true,
+                    maxAudioChannels: "8",
+                    minSegments: 2,
+                    transcodeSeekInfo: .auto,
+                    type: .video,
+                    videoCodec: "h264"
+                )
+            ]
+        )
+    }
 
     private func loadHome() async {
         do {
+            let startedAt = Date()
             async let loadedLibraries = loadViews()
             async let loadedContinueWatching = loadResumeItems()
             async let loadedMovies = loadItems(parentID: nil, kinds: [.movie], limit: 36)
@@ -5341,25 +10043,27 @@ private final class JellyfinLibraryStore: ObservableObject {
                 limit: 60,
                 favoriteOnly: true
             )
-            let home = try await (
-                loadedLibraries,
-                loadedContinueWatching,
-                loadedMovies,
-                loadedSeries,
-                loadedRecentlyAdded,
-                loadedFavorites
+            movies = try await loadedMovies
+            series = try await loadedSeries
+            record(
+                "diagnostics.jellyfin.library_loaded",
+                level: .info,
+                details: [
+                    "stage": "primaryShelves",
+                    "movies": "\(movies.count)",
+                    "series": "\(series.count)",
+                    "durationMs": Self.elapsedMilliseconds(since: startedAt)
+                ]
             )
-            libraries = home.0
-            continueWatching = home.1
-            movies = home.2
-            series = home.3
-            recentlyAdded = home.4
-            favorites = home.5
-            let serverFavoriteIDs = (home.1 + home.2 + home.3 + home.4 + home.5)
+            libraries = try await loadedLibraries
+            isLoading = false
+            continueWatching = try await loadedContinueWatching
+            recentlyAdded = try await loadedRecentlyAdded
+            favorites = try await loadedFavorites
+            let serverFavoriteIDs = (continueWatching + movies + series + recentlyAdded + favorites)
                 .filter(\.isFavorite)
                 .map(\.id)
-            favoriteItemIDs = Set(serverFavoriteIDs + home.5.map(\.id))
-            isLoading = false
+            favoriteItemIDs = Set(serverFavoriteIDs + favorites.map(\.id))
             record(
                 "diagnostics.jellyfin.library_loaded",
                 level: .info,
@@ -5369,9 +10073,13 @@ private final class JellyfinLibraryStore: ObservableObject {
                     "movies": "\(movies.count)",
                     "series": "\(series.count)",
                     "recentlyAdded": "\(recentlyAdded.count)",
-                    "favorites": "\(favorites.count)"
+                    "favorites": "\(favorites.count)",
+                    "durationMs": Self.elapsedMilliseconds(since: startedAt)
                 ]
             )
+            if let client {
+                scheduleBitrateMeasurementIfNeeded(client: client)
+            }
         } catch {
             isLoading = false
             if isExpectedCancellation(error) {
@@ -5477,15 +10185,34 @@ private final class JellyfinLibraryStore: ObservableObject {
             ? (item.parentPrimaryImageItemID ?? id)
             : id
         let imageTag = item.imageTags?[ImageType.primary.rawValue] ?? item.parentPrimaryImageTag
-        let mediaSource = item.mediaSources?.first
+        let mediaSource = preferredMediaSource(from: item.mediaSources ?? [])
         let mediaStreams = mediaSource?.mediaStreams ?? item.mediaStreams ?? []
         let videoStream = mediaStreams.first { $0.type == .video }
-        let audioStream = mediaStreams.first { $0.type == .audio }
-        let subtitleStreams = mediaSource?.mediaStreams?.filter { $0.type == .subtitle } ?? []
+        let audioStreams = mediaStreams.filter { $0.type == .audio }
+        let audioStream = audioStreams.first
+        let subtitleStreams = mediaStreams.filter { $0.type == .subtitle }
+        let audioTracks = audioStreams.compactMap(Self.mediaTrack)
+        let subtitleTracks = subtitleStreams.compactMap(Self.mediaTrack)
+        let defaultAudioStreamIndex = mediaSource?.defaultAudioStreamIndex
+            ?? audioStreams.first(where: { $0.isDefault == true })?.index
+            ?? audioStreams.first?.index
         let preferredSubtitle = subtitleStreams.first(where: { $0.index == mediaSource?.defaultSubtitleStreamIndex })
             ?? subtitleStreams.first(where: { $0.isForced == true })
             ?? subtitleStreams.first(where: { $0.isDefault == true })
-            ?? subtitleStreams.first
+        let people = (item.people ?? []).compactMap { person -> JellyfinPersonEntry? in
+            guard let name = person.name?.trimmingCharacters(in: .whitespacesAndNewlines),
+                  !name.isEmpty else {
+                return nil
+            }
+            return JellyfinPersonEntry(
+                id: person.id ?? "\(name)|\(person.role ?? "")",
+                imageItemID: person.id,
+                name: name,
+                role: person.role,
+                type: person.type?.rawValue,
+                imageTag: person.primaryImageTag
+            )
+        }
         return JellyfinMediaEntry(
             id: id,
             title: title,
@@ -5499,10 +10226,14 @@ private final class JellyfinLibraryStore: ObservableObject {
             backdropImageTag: item.backdropImageTags?.first,
             container: item.container ?? mediaSource?.container,
             mediaSourceID: mediaSource?.id,
+            defaultAudioStreamIndex: defaultAudioStreamIndex,
             preferredSubtitleStreamIndex: preferredSubtitle?.index,
             preferredSubtitleCodec: preferredSubtitle?.codec,
+            audioTracks: audioTracks,
+            subtitleTracks: subtitleTracks,
             progress: item.userData?.playedPercentage.map { min(max($0 / 100, 0), 1) },
             playbackPositionTicks: item.userData?.playbackPositionTicks,
+            runTimeTicks: item.runTimeTicks ?? mediaSource?.runTimeTicks,
             seasonNumber: item.parentIndexNumber,
             episodeNumber: item.indexNumber,
             isFavorite: item.userData?.isFavorite == true,
@@ -5510,7 +10241,79 @@ private final class JellyfinLibraryStore: ObservableObject {
             communityRating: item.communityRating.map(Double.init),
             officialRating: item.officialRating,
             videoDescription: Self.videoDescription(for: videoStream),
-            audioDescription: Self.audioDescription(for: audioStream)
+            audioDescription: Self.audioDescription(for: audioStream),
+            originalTitle: item.originalTitle,
+            tagline: item.taglines?.first(where: { !$0.isEmpty }),
+            productionYear: item.productionYear,
+            premiereDate: item.premiereDate,
+            people: people,
+            studios: (item.studios ?? []).compactMap(\.name).filter { !$0.isEmpty },
+            externalLinks: Self.externalLinks(for: item),
+            mediaPath: mediaSource?.path ?? item.path,
+            mediaSize: mediaSource?.size,
+            mediaBitrate: mediaSource?.bitrate
+        )
+    }
+
+    private func preferredMediaSource(from sources: [MediaSourceInfo]) -> MediaSourceInfo? {
+        guard !sources.isEmpty else { return nil }
+        // Automatic playback must describe the original asset consistently.
+        // Never choose a lower-bitrate MediaSource just because a previous
+        // throughput sample was conservative; that silently changes the title
+        // before the player has had a chance to try the original route. Manual
+        // quality selection is the only place that should request HLS.
+        return sources.max { lhs, rhs in
+            (lhs.bitrate ?? 0) < (rhs.bitrate ?? 0)
+        } ?? sources.first
+    }
+
+    private static func externalLinks(for item: BaseItemDto) -> [JellyfinExternalLink] {
+        var links: [JellyfinExternalLink] = []
+        var seen = Set<String>()
+
+        for link in item.externalURLs ?? [] {
+            guard let value = link.url,
+                  let url = URL(string: value),
+                  ["http", "https"].contains(url.scheme?.lowercased() ?? ""),
+                  seen.insert(url.absoluteString).inserted else {
+                continue
+            }
+            links.append(JellyfinExternalLink(name: link.name ?? url.host ?? value, url: url))
+        }
+
+        let providers = item.providerIDs ?? [:]
+        let providerLinks: [(String, String?)] = [
+            ("IMDb", providers.first { $0.key.caseInsensitiveCompare("imdb") == .orderedSame }
+                .map { "https://www.imdb.com/title/\($0.value)/" }),
+            ("TMDB", providers.first { $0.key.caseInsensitiveCompare("tmdb") == .orderedSame }
+                .map { "https://www.themoviedb.org/\(item.type == .series ? "tv" : "movie")/\($0.value)" })
+        ]
+        for (name, value) in providerLinks {
+            guard let value,
+                  let url = URL(string: value),
+                  seen.insert(url.absoluteString).inserted else {
+                continue
+            }
+            links.append(JellyfinExternalLink(name: name, url: url))
+        }
+        return links
+    }
+
+    private static func mediaTrack(_ stream: MediaStream) -> JellyfinMediaTrack? {
+        guard let index = stream.index else { return nil }
+        let fallbackTitle = [stream.language, stream.codec?.uppercased()]
+            .compactMap { $0 }
+            .filter { !$0.isEmpty }
+            .joined(separator: " · ")
+        let displayTitle = stream.displayTitle
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .flatMap { $0.isEmpty ? nil : $0 }
+        return JellyfinMediaTrack(
+            index: index,
+            title: displayTitle ?? (fallbackTitle.isEmpty ? "#\(index)" : fallbackTitle),
+            codec: stream.codec,
+            isDefault: stream.isDefault == true,
+            isForced: stream.isForced == true
         )
     }
 
@@ -5569,8 +10372,10 @@ private final class JellyfinLibraryStore: ObservableObject {
             let episode = item.indexNumber.map { "E\($0)" } ?? ""
             return [item.seriesName, season + episode].compactMap { $0 }.filter { !$0.isEmpty }.joined(separator: " · ")
         }
-        let duration = item.runTimeTicks.map { ticks -> String in
+        let duration = item.runTimeTicks.flatMap { ticks -> String? in
+            guard ticks > 0 else { return nil }
             let minutes = Int(ticks / 600_000_000)
+            guard minutes > 0 else { return nil }
             return minutes >= 60 ? "\(minutes / 60)h \(minutes % 60)m" : "\(minutes)m"
         }
         return [item.productionYear.map(String.init), duration]
@@ -5669,24 +10474,33 @@ private final class JellyfinLibraryStore: ObservableObject {
 
 private enum JellyfinLibraryError: Error {
     case missingSession
+    case missingItem
     case missingPlaybackURL
 }
 
 private struct JellyfinLibraryView: View {
     let service: LaunchpadService
+    let dsmSession: DSMSession?
+    let dsmSharedFolderPaths: [String]
     @StateObject private var store: JellyfinLibraryStore
 
     init(
         service: LaunchpadService,
         endpoint: URL,
         allowsSelfSignedCertificates: Bool,
+        dsmSession: DSMSession? = nil,
+        dsmSharedFolderPaths: [String] = [],
         fallbackEndpoints: [URL] = []
     ) {
         self.service = service
+        self.dsmSession = dsmSession
+        self.dsmSharedFolderPaths = dsmSharedFolderPaths
         _store = StateObject(wrappedValue: JellyfinLibraryStore(
             endpoint: endpoint,
             playbackEndpoint: nil,
             allowsSelfSignedCertificates: allowsSelfSignedCertificates,
+            dsmSession: dsmSession,
+            dsmSharedFolderPaths: dsmSharedFolderPaths,
             fallbackEndpoints: fallbackEndpoints
         ))
     }
@@ -5703,7 +10517,13 @@ private struct JellyfinLibraryView: View {
             }
         }
         .background(AppTheme.groupedBackground)
-        .task { await store.restoreIfNeeded() }
+        .task(id: dsmPlaybackContextID) {
+            store.updateDSMPlaybackContext(
+                session: dsmSession,
+                sharedFolderPaths: dsmSharedFolderPaths
+            )
+            await store.restoreIfNeeded()
+        }
         .toolbar {
             if store.isAuthenticated {
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
@@ -5738,6 +10558,10 @@ private struct JellyfinLibraryView: View {
                 }
             }
         }
+    }
+
+    private var dsmPlaybackContextID: String {
+        ([dsmSession?.sid ?? "-"] + dsmSharedFolderPaths.sorted()).joined(separator: "|")
     }
 }
 
@@ -5976,23 +10800,20 @@ private struct JellyfinHeroCarousel: View {
     @State private var selection = 0
 
     var body: some View {
-        GeometryReader { proxy in
-            TabView(selection: $selection) {
-                ForEach(Array(items.enumerated()), id: \.element.id) { index, item in
-                    NavigationLink {
-                        JellyfinMediaRouteView(store: store, item: item)
-                    } label: {
-                        JellyfinHeroSlide(store: store, item: item)
-                            .frame(width: proxy.size.width, height: proxy.size.height)
-                    }
-                    .buttonStyle(.plain)
-                    .tag(index)
+        TabView(selection: $selection) {
+            ForEach(Array(items.enumerated()), id: \.element.id) { index, item in
+                NavigationLink {
+                    JellyfinMediaRouteView(store: store, item: item)
+                } label: {
+                    JellyfinHeroSlide(store: store, item: item)
                 }
+                .buttonStyle(.plain)
+                .tag(index)
             }
-            .tabViewStyle(.page(indexDisplayMode: .never))
-            .frame(width: proxy.size.width, height: proxy.size.height)
         }
-        .frame(height: horizontalSizeClass == .regular ? 400 : 290)
+        .tabViewStyle(.page(indexDisplayMode: .never))
+        .aspectRatio(16.0 / 9.0, contentMode: .fit)
+        .frame(maxHeight: horizontalSizeClass == .regular ? 400 : 240)
         .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
         .overlay(alignment: .topTrailing) {
             if items.count > 1 {
@@ -6027,16 +10848,17 @@ private struct JellyfinHeroCarousel: View {
 private struct JellyfinHeroSlide: View {
     @ObservedObject var store: JellyfinLibraryStore
     let item: JellyfinMediaEntry
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     var body: some View {
         ZStack(alignment: .bottomLeading) {
             JellyfinPosterImage(
                 url: store.imageURL(
                     for: item,
-                    width: 1_920,
+                    width: 1_280,
                     landscape: true,
                     prefersBackdrop: true,
-                    quality: 96
+                    quality: 90
                 )
             )
 
@@ -6057,29 +10879,31 @@ private struct JellyfinHeroSlide: View {
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(.white.opacity(0.78))
                 Text(item.title)
-                    .font(.title2.weight(.bold))
+                    .font(
+                        horizontalSizeClass == .regular
+                            ? .title2.weight(.bold)
+                            : .title3.weight(.bold)
+                    )
                     .foregroundStyle(.white)
                     .lineLimit(2)
-                    .minimumScaleFactor(0.8)
-                HStack(spacing: 12) {
-                    if !item.subtitle.isEmpty {
-                        Text(item.subtitle)
-                            .font(.subheadline)
-                            .foregroundStyle(.white.opacity(0.82))
-                            .lineLimit(1)
-                    }
-                    Label {
-                        Text(LocalizedStringKey(
-                            item.isPlayable ? "player.play_in_app" : "jellyfin.view_details"
-                        ))
-                    } icon: {
-                        Image(systemName: item.isPlayable ? "play.fill" : "arrow.right")
-                    }
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(.white)
+                if !item.subtitle.isEmpty {
+                    Text(item.subtitle)
+                        .font(.caption)
+                        .foregroundStyle(.white.opacity(0.82))
+                        .lineLimit(1)
                 }
+                Label {
+                    Text(LocalizedStringKey(
+                        item.isPlayable ? "player.play_in_app" : "jellyfin.view_details"
+                    ))
+                } icon: {
+                    Image(systemName: item.isPlayable ? "play.fill" : "arrow.right")
+                }
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.white)
             }
-            .padding(18)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(horizontalSizeClass == .regular ? 20 : 14)
         }
         .background(Color.black)
         .contentShape(Rectangle())
@@ -6093,7 +10917,7 @@ private struct JellyfinLibraryCard: View {
     var body: some View {
         ZStack(alignment: .bottomLeading) {
             JellyfinPosterImage(
-                url: store.imageURL(for: library, width: 640, landscape: true)
+                url: store.imageURL(for: library, width: 560, landscape: true)
             )
             LinearGradient(
                 colors: [.clear, .black.opacity(0.72)],
@@ -6190,12 +11014,13 @@ private struct JellyfinPosterCard: View {
 private struct JellyfinGridPosterCard: View {
     @ObservedObject var store: JellyfinLibraryStore
     let item: JellyfinMediaEntry
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     var body: some View {
         VStack(alignment: .leading, spacing: 7) {
             ZStack(alignment: .bottomLeading) {
                 JellyfinPosterImage(
-                    url: store.imageURL(for: item, width: 660)
+                    url: store.imageURL(for: item, width: 540)
                 )
                 if let progress = item.progress, progress > 0 {
                     GeometryReader { geometry in
@@ -6212,12 +11037,16 @@ private struct JellyfinGridPosterCard: View {
             .clipShape(RoundedRectangle(cornerRadius: 7, style: .continuous))
 
             Text(item.title)
-                .font(.subheadline.weight(.semibold))
+                .font(
+                    horizontalSizeClass == .compact
+                        ? .caption.weight(.semibold)
+                        : .subheadline.weight(.semibold)
+                )
                 .foregroundStyle(.primary)
                 .lineLimit(2)
             if !item.subtitle.isEmpty {
                 Text(item.subtitle)
-                    .font(.caption)
+                    .font(horizontalSizeClass == .compact ? .caption2 : .caption)
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
             }
@@ -6226,32 +11055,98 @@ private struct JellyfinGridPosterCard: View {
     }
 }
 
+private final class JellyfinImagePipeline: @unchecked Sendable {
+    static let shared = JellyfinImagePipeline()
+
+    private let memoryCache = NSCache<NSURL, UIImage>()
+    private let session: URLSession
+
+    private init() {
+        memoryCache.countLimit = 240
+        memoryCache.totalCostLimit = 64 * 1_024 * 1_024
+        let configuration = URLSessionConfiguration.default
+        configuration.urlCache = URLCache(
+            memoryCapacity: 64 * 1_024 * 1_024,
+            diskCapacity: 320 * 1_024 * 1_024,
+            diskPath: "nastart-jellyfin-images"
+        )
+        configuration.requestCachePolicy = .returnCacheDataElseLoad
+        configuration.timeoutIntervalForRequest = 20
+        configuration.timeoutIntervalForResource = 60
+        configuration.httpMaximumConnectionsPerHost = 8
+        session = URLSession(configuration: configuration)
+    }
+
+    func image(for url: URL) async -> UIImage? {
+        let key = url as NSURL
+        if let cached = memoryCache.object(forKey: key) {
+            return cached
+        }
+        var request = URLRequest(url: url)
+        request.cachePolicy = .returnCacheDataElseLoad
+        do {
+            let (data, response) = try await session.data(for: request)
+            guard
+                let response = response as? HTTPURLResponse,
+                (200..<300).contains(response.statusCode),
+                let image = UIImage(data: data)
+            else {
+                return nil
+            }
+            memoryCache.setObject(image, forKey: key, cost: data.count)
+            return image
+        } catch {
+            return nil
+        }
+    }
+}
+
+@MainActor
+private final class JellyfinPosterImageLoader: ObservableObject {
+    @Published private(set) var image: UIImage?
+    @Published private(set) var didFail = false
+    private var currentURL: URL?
+
+    func load(_ url: URL?) async {
+        guard currentURL != url || image == nil else { return }
+        currentURL = url
+        image = nil
+        didFail = false
+        guard let url else { return }
+        let loadedImage = await JellyfinImagePipeline.shared.image(for: url)
+        guard currentURL == url, !Task.isCancelled else { return }
+        image = loadedImage
+        didFail = loadedImage == nil
+    }
+}
+
 private struct JellyfinPosterImage: View {
     let url: URL?
     var scalesToFit = false
+    @StateObject private var loader = JellyfinPosterImageLoader()
 
     var body: some View {
-        AsyncImage(url: url, transaction: Transaction(animation: .easeInOut(duration: 0.2))) { phase in
-            switch phase {
-            case .success(let image):
+        Group {
+            if let image = loader.image {
                 if scalesToFit {
-                    image.resizable().scaledToFit()
+                    Image(uiImage: image).resizable().scaledToFit()
                 } else {
-                    image.resizable().scaledToFill()
+                    Image(uiImage: image).resizable().scaledToFill()
                 }
-            case .failure:
+            } else if loader.didFail || url == nil {
                 placeholder
-            case .empty:
+            } else {
                 ZStack {
                     placeholder
                     ProgressView()
                 }
-            @unknown default:
-                placeholder
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .clipped()
+        .task(id: url) {
+            await loader.load(url)
+        }
     }
 
     private var placeholder: some View {
@@ -6349,11 +11244,12 @@ private struct JellyfinSearchView: View {
 private struct JellyfinResultGrid: View {
     @ObservedObject var store: JellyfinLibraryStore
     let items: [JellyfinMediaEntry]
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     var body: some View {
         ScrollView {
             LazyVGrid(
-                columns: [GridItem(.adaptive(minimum: 150, maximum: 220), spacing: 14, alignment: .top)],
+                columns: gridColumns,
                 spacing: 18
             ) {
                 ForEach(items) { item in
@@ -6366,10 +11262,21 @@ private struct JellyfinResultGrid: View {
                 }
             }
             .frame(maxWidth: 960)
-            .padding(18)
+            .padding(.horizontal, horizontalSizeClass == .compact ? 12 : 18)
+            .padding(.vertical, 18)
             .frame(maxWidth: .infinity)
         }
         .background(Color(.systemBackground))
+    }
+
+    private var gridColumns: [GridItem] {
+        if horizontalSizeClass == .compact {
+            return Array(
+                repeating: GridItem(.flexible(), spacing: 10, alignment: .top),
+                count: 3
+            )
+        }
+        return [GridItem(.adaptive(minimum: 150, maximum: 220), spacing: 14, alignment: .top)]
     }
 }
 
@@ -6402,6 +11309,7 @@ private struct JellyfinCollectionView: View {
     @State private var isLoading = true
     @State private var failed = false
     @State private var query = ""
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     var body: some View {
         Group {
@@ -6430,7 +11338,7 @@ private struct JellyfinCollectionView: View {
                         .frame(minHeight: 420)
                     } else {
                         LazyVGrid(
-                            columns: [GridItem(.adaptive(minimum: 150, maximum: 220), spacing: 14, alignment: .top)],
+                            columns: gridColumns,
                             spacing: 20
                         ) {
                             ForEach(visibleItems) { item in
@@ -6443,7 +11351,8 @@ private struct JellyfinCollectionView: View {
                             }
                         }
                         .frame(maxWidth: 960)
-                        .padding(18)
+                        .padding(.horizontal, horizontalSizeClass == .compact ? 12 : 18)
+                        .padding(.vertical, 18)
                         .frame(maxWidth: .infinity)
                     }
                 }
@@ -6463,6 +11372,16 @@ private struct JellyfinCollectionView: View {
             $0.title.localizedCaseInsensitiveContains(cleanedQuery)
                 || $0.subtitle.localizedCaseInsensitiveContains(cleanedQuery)
         }
+    }
+
+    private var gridColumns: [GridItem] {
+        if horizontalSizeClass == .compact {
+            return Array(
+                repeating: GridItem(.flexible(), spacing: 10, alignment: .top),
+                count: 3
+            )
+        }
+        return [GridItem(.adaptive(minimum: 150, maximum: 220), spacing: 14, alignment: .top)]
     }
 
     private func load() async {
@@ -6662,90 +11581,165 @@ private struct JellyfinMediaDetailView: View {
     @State private var pendingShareRequest: MediaPlaybackRequest?
     @State private var showCredentialHandoffWarning = false
     @State private var sharePayload: ServiceSharePayload?
+    @State private var selectedAudioStreamIndex: Int?
+    @State private var selectedSubtitleStreamIndex: Int?
+    @State private var detailedItem: JellyfinMediaEntry?
+    @State private var similarItems: [JellyfinMediaEntry] = []
+    @State private var isLoadingDetails = false
+    @State private var isOverviewExpanded = false
+
+    init(store: JellyfinLibraryStore, item: JellyfinMediaEntry) {
+        self.store = store
+        self.item = item
+        _selectedAudioStreamIndex = State(initialValue: item.defaultAudioStreamIndex)
+        _selectedSubtitleStreamIndex = State(initialValue: item.preferredSubtitleStreamIndex)
+    }
 
     var body: some View {
-        GeometryReader { proxy in
-            let contentWidth = min(max(proxy.size.width - 36, 0), 820)
-
+        GeometryReader { geometry in
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
-                    JellyfinDetailHeader(store: store, item: item)
+                    JellyfinDetailHeader(store: store, item: mediaItem)
 
-                    VStack(alignment: .leading, spacing: 24) {
-                        JellyfinMetadataStrip(item: item)
+                    VStack(alignment: .leading, spacing: 26) {
+                        JellyfinMetadataStrip(item: mediaItem)
 
-                        if item.isPlayable {
-                            HStack(spacing: 10) {
-                                Button(action: preparePlayback) {
-                                    HStack(spacing: 10) {
-                                        if isPreparingPlayback {
-                                            ProgressView()
-                                                .tint(.white)
-                                        } else {
-                                            Image(systemName: "play.fill")
-                                        }
-                                        Text(
-                                            LocalizedStringKey(
-                                                (item.progress ?? 0) > 0
-                                                    ? "media.continue.title"
-                                                    : "player.play_in_app"
-                                            )
+                    if let tagline = mediaItem.tagline, !tagline.isEmpty {
+                        Text(tagline)
+                            .font(.headline)
+                            .foregroundStyle(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+
+                    if mediaItem.isPlayable {
+                        if mediaItem.audioTracks.count > 1 || !mediaItem.subtitleTracks.isEmpty {
+                            playbackTrackControls
+                        }
+
+                        HStack(spacing: 10) {
+                            Button(action: preparePlayback) {
+                                HStack(spacing: 10) {
+                                    if isPreparingPlayback {
+                                        ProgressView()
+                                            .tint(.white)
+                                    } else {
+                                        Image(systemName: "play.fill")
+                                    }
+                                    Text(
+                                        LocalizedStringKey(
+                                            (mediaItem.progress ?? 0) > 0
+                                                ? "media.continue.title"
+                                                : "player.play_in_app"
                                         )
-                                            .font(.headline.weight(.semibold))
-                                    }
-                                    .foregroundStyle(.white)
-                                    .frame(maxWidth: .infinity, minHeight: 52)
-                                    .background(AppTheme.accent)
-                                    .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                                    )
+                                        .font(.headline.weight(.semibold))
                                 }
-                                .buttonStyle(.plain)
+                                .foregroundStyle(.white)
+                                .frame(maxWidth: .infinity, minHeight: 54)
+                                .background(AppTheme.accent)
+                                .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                            }
+                            .buttonStyle(.plain)
 
-                                Menu {
-                                    ForEach(ExternalOpenTarget.installedPlayers) { target in
-                                        Button(target.displayName) {
-                                            prepareExternalPlayback(target)
+                            Menu {
+                                if !ExternalOpenTarget.installedPlayers.isEmpty {
+                                    Section {
+                                        ForEach(ExternalOpenTarget.installedPlayers) { target in
+                                            Button(target.displayName) {
+                                                prepareExternalPlayback(target)
+                                            }
                                         }
+                                    } header: {
+                                        Text("external.installed_players")
                                     }
+                                }
+                                Section {
                                     Button("external.other_apps") {
                                         prepareSharePlayback()
                                     }
-                                } label: {
-                                    Image(systemName: "arrow.up.forward.app")
-                                        .font(.title3.weight(.semibold))
-                                        .foregroundStyle(AppTheme.accent)
-                                        .frame(width: 52, height: 52)
-                                        .background(AppTheme.secondarySurface)
-                                        .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
                                 }
-                                .accessibilityLabel(Text("devices.files.open_external"))
+                            } label: {
+                                Image(systemName: "arrow.up.forward.app")
+                                    .font(.title3.weight(.semibold))
+                                    .foregroundStyle(AppTheme.accent)
+                                    .frame(width: 54, height: 54)
+                                    .background(AppTheme.secondarySurface)
+                                    .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
                             }
-                            .disabled(isPreparingPlayback)
+                            .accessibilityLabel(Text("devices.files.open_external"))
                         }
+                        .disabled(isPreparingPlayback)
+                    }
 
-                        if !item.overview.isEmpty {
-                            VStack(alignment: .leading, spacing: 10) {
-                                Text("jellyfin.overview.title")
-                                    .font(.title3.weight(.bold))
-                                Text(item.overview)
-                                    .font(.subheadline)
-                                    .foregroundStyle(.primary)
-                                    .lineSpacing(4)
-                                    .fixedSize(horizontal: false, vertical: true)
+                    if !mediaItem.overview.isEmpty {
+                        JellyfinDetailSection(titleKey: "jellyfin.overview.title") {
+                            Text(mediaItem.overview)
+                                .font(.body)
+                                .foregroundStyle(.primary)
+                                .lineSpacing(5)
+                                .lineLimit(isOverviewExpanded ? nil : 6)
+                                .fixedSize(horizontal: false, vertical: true)
+                            if mediaItem.overview.count > 180 {
+                                Button(isOverviewExpanded ? "jellyfin.overview.collapse" : "jellyfin.overview.expand") {
+                                    withAnimation(.easeInOut(duration: 0.2)) {
+                                        isOverviewExpanded.toggle()
+                                    }
+                                }
+                                .font(.subheadline.weight(.semibold))
+                                .foregroundStyle(AppTheme.accent)
                             }
-                            .frame(maxWidth: .infinity, alignment: .leading)
                         }
                     }
-                    .frame(width: contentWidth, alignment: .leading)
+
+                    if !mediaItem.people.isEmpty {
+                        JellyfinPeopleShelf(store: store, people: Array(mediaItem.people.prefix(18)))
+                    }
+
+                    if !similarItems.isEmpty {
+                        JellyfinSimilarShelf(store: store, items: similarItems)
+                    }
+
+                    if !mediaItem.studios.isEmpty {
+                        JellyfinDetailSection(titleKey: "jellyfin.studios.title") {
+                            Text(mediaItem.studios.joined(separator: " · "))
+                                .font(.body)
+                                .foregroundStyle(.secondary)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                    }
+
+                    if !mediaItem.externalLinks.isEmpty {
+                        JellyfinExternalLinksSection(links: mediaItem.externalLinks)
+                    }
+
+                    if mediaItem.mediaPath != nil || mediaItem.mediaSize != nil || mediaItem.mediaBitrate != nil {
+                        JellyfinFileInformation(item: mediaItem)
+                    }
+
+                    if isLoadingDetails {
+                        ProgressView()
+                            .frame(maxWidth: .infinity)
+                            .accessibilityLabel(Text("jellyfin.details.loading"))
+                    }
+                    }
+                    .frame(
+                        width: min(820, max(geometry.size.width - 36, 0)),
+                        alignment: .leading
+                    )
+                    .padding(.horizontal, 18)
                     .padding(.top, 20)
                     .padding(.bottom, 36)
                     .frame(maxWidth: .infinity)
                 }
-                .frame(maxWidth: .infinity)
+                .frame(width: geometry.size.width, alignment: .leading)
             }
         }
         .background(Color(.systemBackground))
-        .navigationTitle(item.title)
+        .navigationTitle(mediaItem.title)
         .navigationBarTitleDisplayMode(.inline)
+        .task(id: item.id) {
+            await loadDetailContent()
+        }
         .alert("jellyfin.player.prepare_failed", isPresented: $showPlaybackError) {
             Button("action.ok", role: .cancel) {}
         } message: {
@@ -6775,10 +11769,39 @@ private struct JellyfinMediaDetailView: View {
         .sheet(item: $sharePayload) { payload in
             SystemShareView(items: [payload.url])
         }
-        .fullScreenCover(item: $playbackRequest) { request in
+        .fullScreenCover(item: $playbackRequest, onDismiss: {
+            PlayerOrientationController.setPlayerActive(false)
+        }) { request in
             NavigationStack {
                 BuiltInMediaPlayerView(request: request)
             }
+        }
+    }
+
+    private var mediaItem: JellyfinMediaEntry {
+        detailedItem ?? item
+    }
+
+    @MainActor
+    private func loadDetailContent() async {
+        isLoadingDetails = true
+        defer { isLoadingDetails = false }
+        do {
+            let loadedItem = try await store.loadDetail(itemID: item.id)
+            detailedItem = loadedItem
+            if selectedAudioStreamIndex == nil {
+                selectedAudioStreamIndex = loadedItem.defaultAudioStreamIndex
+            }
+            if selectedSubtitleStreamIndex == nil {
+                selectedSubtitleStreamIndex = loadedItem.preferredSubtitleStreamIndex
+            }
+        } catch {
+            detailedItem = nil
+        }
+        do {
+            similarItems = try await store.loadSimilarItems(itemID: item.id)
+        } catch {
+            similarItems = []
         }
     }
 
@@ -6787,11 +11810,120 @@ private struct JellyfinMediaDetailView: View {
             isPreparingPlayback = true
             defer { isPreparingPlayback = false }
             do {
-                playbackRequest = try await store.playbackRequest(for: item)
+                let request = try await store.playbackRequest(
+                    for: mediaItem,
+                    selection: JellyfinPlaybackSelection(
+                        audioStreamIndex: selectedAudioStreamIndex,
+                        subtitleStreamIndex: selectedSubtitleStreamIndex
+                    )
+                )
+                if let request {
+                    PlayerOrientationController.prepareForPresentation(
+                        request.initialOrientationMode
+                    )
+                    playbackRequest = request
+                }
             } catch {
                 showPlaybackError = true
             }
         }
+    }
+
+    private var playbackTrackControls: some View {
+        LazyVGrid(
+            columns: [GridItem(.adaptive(minimum: 240), spacing: 10, alignment: .leading)],
+            alignment: .leading,
+            spacing: 10
+        ) {
+            if mediaItem.audioTracks.count > 1 {
+                Menu {
+                    ForEach(mediaItem.audioTracks) { track in
+                        Button {
+                            selectedAudioStreamIndex = track.index
+                        } label: {
+                            if selectedAudioStreamIndex == track.index {
+                                Label(track.title, systemImage: "checkmark")
+                            } else {
+                                Text(track.title)
+                            }
+                        }
+                    }
+                } label: {
+                    playbackTrackLabel(
+                        systemImage: "waveform",
+                        titleKey: "player.audio_tracks",
+                        value: mediaItem.audioTracks
+                            .first(where: { $0.index == selectedAudioStreamIndex })?
+                            .title
+                    )
+                }
+                .frame(maxWidth: .infinity)
+            }
+
+            if !mediaItem.subtitleTracks.isEmpty {
+                Menu {
+                    Button {
+                        selectedSubtitleStreamIndex = nil
+                    } label: {
+                        if selectedSubtitleStreamIndex == nil {
+                            Label("player.subtitles.off", systemImage: "checkmark")
+                        } else {
+                            Text("player.subtitles.off")
+                        }
+                    }
+                    ForEach(mediaItem.subtitleTracks) { track in
+                        Button {
+                            selectedSubtitleStreamIndex = track.index
+                        } label: {
+                            if selectedSubtitleStreamIndex == track.index {
+                                Label(track.title, systemImage: "checkmark")
+                            } else {
+                                Text(track.title)
+                            }
+                        }
+                    }
+                } label: {
+                    playbackTrackLabel(
+                        systemImage: "captions.bubble",
+                        titleKey: "player.subtitles",
+                        value: mediaItem.subtitleTracks
+                            .first(where: { $0.index == selectedSubtitleStreamIndex })?
+                            .title
+                            ?? NSLocalizedString("player.subtitles.off", comment: "")
+                    )
+                }
+                .frame(maxWidth: .infinity)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private func playbackTrackLabel(
+        systemImage: String,
+        titleKey: LocalizedStringKey,
+        value: String?
+    ) -> some View {
+        HStack(spacing: 8) {
+            Image(systemName: systemImage)
+            VStack(alignment: .leading, spacing: 1) {
+                Text(titleKey)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                Text(value ?? "-")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.primary)
+                    .lineLimit(1)
+                    .truncationMode(.tail)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            Image(systemName: "chevron.up.chevron.down")
+                .font(.caption2.weight(.semibold))
+                .foregroundStyle(.secondary)
+        }
+        .padding(.horizontal, 12)
+        .frame(maxWidth: .infinity, minHeight: 48)
+        .background(AppTheme.secondarySurface)
+        .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
     }
 
     private func prepareExternalPlayback(_ target: ExternalOpenTarget) {
@@ -6799,7 +11931,13 @@ private struct JellyfinMediaDetailView: View {
             isPreparingPlayback = true
             defer { isPreparingPlayback = false }
             do {
-                guard let request = try await store.externalPlaybackRequest(for: item) else {
+                guard let request = try await store.externalPlaybackRequest(
+                    for: mediaItem,
+                    selection: JellyfinPlaybackSelection(
+                        audioStreamIndex: selectedAudioStreamIndex,
+                        subtitleStreamIndex: selectedSubtitleStreamIndex
+                    )
+                ) else {
                     throw JellyfinLibraryError.missingPlaybackURL
                 }
                 let pending = PendingExternalPlayback(request: request, target: target)
@@ -6820,7 +11958,13 @@ private struct JellyfinMediaDetailView: View {
             isPreparingPlayback = true
             defer { isPreparingPlayback = false }
             do {
-                guard let request = try await store.externalPlaybackRequest(for: item) else {
+                guard let request = try await store.externalPlaybackRequest(
+                    for: mediaItem,
+                    selection: JellyfinPlaybackSelection(
+                        audioStreamIndex: selectedAudioStreamIndex,
+                        subtitleStreamIndex: selectedSubtitleStreamIndex
+                    )
+                ) else {
                     throw JellyfinLibraryError.missingPlaybackURL
                 }
                 if request.containsSensitiveCredential {
@@ -6843,7 +11987,7 @@ private struct JellyfinMediaDetailView: View {
             subtitleURL: pending.request.externalSubtitleURL
         ) else {
             recordExternalHandoff(accepted: false, pending: pending, reason: "invalidCallbackURL")
-            showPlaybackError = true
+            sharePayload = ServiceSharePayload(url: pending.request.url)
             return
         }
         UIApplication.shared.open(targetURL, options: [:]) { accepted in
@@ -6853,7 +11997,9 @@ private struct JellyfinMediaDetailView: View {
                 reason: accepted ? "accepted" : "applicationRejectedURL"
             )
             if !accepted {
-                DispatchQueue.main.async { showPlaybackError = true }
+                DispatchQueue.main.async {
+                    sharePayload = ServiceSharePayload(url: pending.request.url)
+                }
             }
         }
     }
@@ -6874,7 +12020,9 @@ private struct JellyfinMediaDetailView: View {
                 "extension": pending.request.fileExtensionHint.isEmpty
                     ? "-"
                     : pending.request.fileExtensionHint,
-                "mode": "jellyfinDirectPlay",
+                "mode": pending.request.fileExtensionHint == "m3u8"
+                    ? "serverNegotiatedHLS"
+                    : "serverNegotiatedMedia",
                 "reason": reason
             ]
         )
@@ -6902,8 +12050,8 @@ private struct JellyfinDetailHeader: View {
                 )
             )
             LinearGradient(
-                colors: [.clear, .black.opacity(0.72)],
-                startPoint: .center,
+                colors: [.black.opacity(0.08), .clear, .black.opacity(0.86)],
+                startPoint: .top,
                 endPoint: .bottom
             )
             HStack(alignment: .bottom, spacing: 14) {
@@ -6912,7 +12060,7 @@ private struct JellyfinDetailHeader: View {
                         url: store.imageURL(for: item, width: 360),
                         scalesToFit: true
                     )
-                    .frame(width: horizontalSizeClass == .regular ? 104 : 82)
+                    .frame(width: horizontalSizeClass == .regular ? 118 : 92)
                     .aspectRatio(2.0 / 3.0, contentMode: .fit)
                     .background(Color.black.opacity(0.24))
                     .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
@@ -6927,20 +12075,28 @@ private struct JellyfinDetailHeader: View {
                     Text(item.title)
                         .font(.title.weight(.bold))
                         .foregroundStyle(.white)
-                        .lineLimit(2)
-                        .minimumScaleFactor(0.72)
+                        .lineLimit(3)
+                        .minimumScaleFactor(0.7)
                     if !item.subtitle.isEmpty {
                         Text(item.subtitle)
                             .font(.subheadline)
                             .foregroundStyle(.white.opacity(0.86))
                             .lineLimit(2)
                     }
+                    if let originalTitle = item.originalTitle,
+                       !originalTitle.isEmpty,
+                       originalTitle.caseInsensitiveCompare(item.title) != .orderedSame {
+                        Text(originalTitle)
+                            .font(.caption)
+                            .foregroundStyle(.white.opacity(0.7))
+                            .lineLimit(1)
+                    }
                 }
             }
             .padding(18)
         }
         .frame(maxWidth: .infinity)
-        .frame(height: horizontalSizeClass == .regular ? 340 : 250)
+        .frame(height: horizontalSizeClass == .regular ? 390 : 310)
         .overlay(alignment: .topTrailing) {
             Button {
                 Task { await store.toggleFavorite(item) }
@@ -6964,31 +12120,43 @@ private struct JellyfinMetadataStrip: View {
 
     var body: some View {
         if hasMetadata {
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 14) {
-                    if let communityRating = item.communityRating {
-                        Label {
-                            Text(communityRating, format: .number.precision(.fractionLength(1)))
-                        } icon: {
-                            Image(systemName: "star.fill")
-                                .foregroundStyle(.yellow)
-                        }
-                    }
-                    if let officialRating = item.officialRating, !officialRating.isEmpty {
-                        Label(officialRating, systemImage: "person.crop.rectangle")
-                    }
-                    if !item.genres.isEmpty {
-                        Label(item.genres.prefix(3).joined(separator: " · "), systemImage: "tag")
-                    }
-                    if let videoDescription = item.videoDescription, !videoDescription.isEmpty {
-                        Label(videoDescription, systemImage: "film")
-                    }
-                    if let audioDescription = item.audioDescription, !audioDescription.isEmpty {
-                        Label(audioDescription, systemImage: "speaker.wave.2")
-                    }
+            LazyVGrid(
+                columns: [GridItem(.adaptive(minimum: 132), spacing: 14, alignment: .leading)],
+                alignment: .leading,
+                spacing: 12
+            ) {
+                if let communityRating = item.communityRating {
+                    JellyfinMetadataFact(
+                        value: communityRating.formatted(.number.precision(.fractionLength(1))),
+                        systemImage: "star.fill",
+                        iconColor: .yellow
+                    )
                 }
-                .font(.subheadline.weight(.medium))
-                .foregroundStyle(.secondary)
+                if let officialRating = item.officialRating, !officialRating.isEmpty {
+                    JellyfinMetadataFact(value: officialRating, systemImage: "person.crop.rectangle")
+                }
+                if let videoDescription = item.videoDescription, !videoDescription.isEmpty {
+                    JellyfinMetadataFact(value: videoDescription, systemImage: "film")
+                }
+                if let audioDescription = item.audioDescription, !audioDescription.isEmpty {
+                    JellyfinMetadataFact(value: audioDescription, systemImage: "speaker.wave.2")
+                }
+                if let premiereDate = item.premiereDate {
+                    JellyfinMetadataFact(
+                        value: premiereDate.formatted(date: .abbreviated, time: .omitted),
+                        systemImage: "calendar"
+                    )
+                } else if let productionYear = item.productionYear {
+                    JellyfinMetadataFact(value: String(productionYear), systemImage: "calendar")
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+
+            if !item.genres.isEmpty {
+                Label(item.genres.joined(separator: " · "), systemImage: "tag")
+                    .font(.subheadline.weight(.medium))
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
         }
     }
@@ -6999,6 +12167,181 @@ private struct JellyfinMetadataStrip: View {
             || !item.genres.isEmpty
             || item.videoDescription?.isEmpty == false
             || item.audioDescription?.isEmpty == false
+            || item.productionYear != nil
+            || item.premiereDate != nil
+    }
+}
+
+private struct JellyfinMetadataFact: View {
+    let value: String
+    let systemImage: String
+    var iconColor: Color = .secondary
+
+    var body: some View {
+        Label {
+            Text(value)
+                .lineLimit(2)
+                .fixedSize(horizontal: false, vertical: true)
+        } icon: {
+            Image(systemName: systemImage)
+                .foregroundStyle(iconColor)
+        }
+        .font(.subheadline.weight(.medium))
+        .foregroundStyle(.secondary)
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+private struct JellyfinDetailSection<Content: View>: View {
+    let titleKey: LocalizedStringKey
+    let content: Content
+
+    init(titleKey: LocalizedStringKey, @ViewBuilder content: () -> Content) {
+        self.titleKey = titleKey
+        self.content = content()
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text(titleKey)
+                .font(.title3.weight(.bold))
+            content
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+private struct JellyfinPeopleShelf: View {
+    @ObservedObject var store: JellyfinLibraryStore
+    let people: [JellyfinPersonEntry]
+
+    var body: some View {
+        JellyfinDetailSection(titleKey: "jellyfin.people.title") {
+            ScrollView(.horizontal, showsIndicators: false) {
+                LazyHStack(alignment: .top, spacing: 12) {
+                    ForEach(people) { person in
+                        VStack(alignment: .leading, spacing: 7) {
+                            JellyfinPosterImage(url: store.personImageURL(for: person, width: 280))
+                                .frame(width: 104, height: 132)
+                                .clipShape(RoundedRectangle(cornerRadius: 7, style: .continuous))
+                            Text(person.name)
+                                .font(.caption.weight(.semibold))
+                                .foregroundStyle(.primary)
+                                .lineLimit(2)
+                            Text(person.role.flatMap { $0.isEmpty ? nil : $0 } ?? (person.type ?? ""))
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                                .lineLimit(2)
+                        }
+                        .frame(width: 104, alignment: .leading)
+                    }
+                }
+            }
+        }
+    }
+}
+
+private struct JellyfinSimilarShelf: View {
+    @ObservedObject var store: JellyfinLibraryStore
+    let items: [JellyfinMediaEntry]
+
+    var body: some View {
+        JellyfinDetailSection(titleKey: "jellyfin.similar.title") {
+            ScrollView(.horizontal, showsIndicators: false) {
+                LazyHStack(alignment: .top, spacing: 12) {
+                    ForEach(items) { item in
+                        NavigationLink {
+                            JellyfinMediaDetailView(store: store, item: item)
+                        } label: {
+                            VStack(alignment: .leading, spacing: 7) {
+                                JellyfinPosterImage(url: store.imageURL(for: item, width: 360))
+                                    .frame(width: 126, height: 186)
+                                    .clipShape(RoundedRectangle(cornerRadius: 7, style: .continuous))
+                                Text(item.title)
+                                    .font(.caption.weight(.semibold))
+                                    .foregroundStyle(.primary)
+                                    .lineLimit(2)
+                                if !item.subtitle.isEmpty {
+                                    Text(item.subtitle)
+                                        .font(.caption2)
+                                        .foregroundStyle(.secondary)
+                                        .lineLimit(1)
+                                }
+                            }
+                            .frame(width: 126, alignment: .leading)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+            }
+        }
+    }
+}
+
+private struct JellyfinExternalLinksSection: View {
+    let links: [JellyfinExternalLink]
+
+    var body: some View {
+        JellyfinDetailSection(titleKey: "jellyfin.links.title") {
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 14) {
+                    ForEach(links) { link in
+                        Link(destination: link.url) {
+                            Label(link.name, systemImage: "arrow.up.right.square")
+                                .font(.subheadline.weight(.semibold))
+                                .foregroundStyle(AppTheme.accent)
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+private struct JellyfinFileInformation: View {
+    let item: JellyfinMediaEntry
+
+    var body: some View {
+        JellyfinDetailSection(titleKey: "jellyfin.file.title") {
+            VStack(spacing: 0) {
+                if let path = item.mediaPath, !path.isEmpty {
+                    row(titleKey: "jellyfin.file.name", value: URL(fileURLWithPath: path).lastPathComponent)
+                }
+                if let container = item.container, !container.isEmpty {
+                    row(titleKey: "jellyfin.file.container", value: container.uppercased())
+                }
+                if let size = item.mediaSize, size > 0 {
+                    row(
+                        titleKey: "jellyfin.file.size",
+                        value: ByteCountFormatter.string(fromByteCount: Int64(size), countStyle: .file)
+                    )
+                }
+                if let bitrate = item.mediaBitrate, bitrate > 0 {
+                    row(
+                        titleKey: "jellyfin.file.bitrate",
+                        value: String(format: "%.1f Mbps", Double(bitrate) / 1_000_000)
+                    )
+                }
+            }
+            .background(AppTheme.secondarySurface)
+            .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+        }
+    }
+
+    private func row(titleKey: LocalizedStringKey, value: String) -> some View {
+        HStack(alignment: .top, spacing: 16) {
+            Text(titleKey)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .frame(width: 72, alignment: .leading)
+            Text(value)
+                .font(.subheadline.weight(.medium))
+                .foregroundStyle(.primary)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .padding(.horizontal, 14)
+        .padding(.vertical, 12)
     }
 }
 
@@ -7020,6 +12363,10 @@ private struct MediaLibraryView: View {
                             session: connectionStore.dsmSession
                         )
                     },
+                    dsmSession: connectionStore.dsmSession,
+                    dsmSharedFolderPaths: dataStore.files
+                        .filter { $0.kind == .folder }
+                        .map(\.path),
                     fallbackEndpoints: jellyfinEndpointCandidates
                 )
             } else {
@@ -7958,8 +13305,20 @@ private extension View {
 }
 
 struct AgentSetupGuideView: View {
+    @EnvironmentObject private var connectionStore: NASConnectionStore
+    @EnvironmentObject private var dataStore: AppDataStore
+    @State private var agentAddress = ""
+    @State private var pairingCode = ""
+    @State private var allowsSelfSignedCertificates = false
+    @State private var isPairing = false
+    @State private var resultMessage: String?
+    @State private var errorMessage: String?
     @State private var showCopyHint = false
-    private let command = "docker run -d --name nastart-agent -p 8787:8787 nastart/agent:latest"
+
+    private var desktopCommand: String {
+        let host = connectionStore.dsmSession?.baseURL.host ?? "NAS_HOST"
+        return "./scripts/install_agent_via_ssh.sh --host \(host) --user SSH_USER --pairing-code 123456"
+    }
 
     var body: some View {
         List {
@@ -7975,29 +13334,372 @@ struct AgentSetupGuideView: View {
             }
 
             Section {
-                AgentStepRow(number: 1, titleKey: "connect.agent.step.package", detailKey: "connect.agent.step.package_detail")
-                AgentStepRow(number: 2, titleKey: "connect.agent.step.token", detailKey: "connect.agent.step.token_detail")
-                AgentStepRow(number: 3, titleKey: "connect.agent.step.verify", detailKey: "connect.agent.step.verify_detail")
+                TextField("agent.address.placeholder", text: $agentAddress)
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled()
+                    .keyboardType(.URL)
+                TextField("agent.pairing_code.placeholder", text: $pairingCode)
+                    .keyboardType(.numberPad)
+                Toggle("connect.trust_self_signed", isOn: $allowsSelfSignedCertificates)
+
+                Button {
+                    pairAgent()
+                } label: {
+                    HStack {
+                        if isPairing { ProgressView() }
+                        Label(
+                            connectionStore.usesAgent ? "agent.action.repair" : "agent.action.pair",
+                            systemImage: "link"
+                        )
+                    }
+                }
+                .disabled(
+                    isPairing
+                        || agentAddress.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+                        || pairingCode.count != 6
+                )
+
+                if connectionStore.usesAgent {
+                    LabeledContent("agent.connected_host") {
+                        Text(connectionStore.agentConnection?.hostIdentity ?? "-")
+                            .foregroundStyle(.green)
+                    }
+                    Button(role: .destructive) {
+                        connectionStore.disconnectAgent()
+                        resultMessage = NSLocalizedString("agent.disconnected", comment: "")
+                    } label: {
+                        Label("agent.action.disconnect", systemImage: "link.badge.minus")
+                    }
+                }
+
+                if let resultMessage {
+                    Label(resultMessage, systemImage: "checkmark.circle.fill")
+                        .foregroundStyle(.green)
+                }
+                if let errorMessage {
+                    Label(errorMessage, systemImage: "exclamationmark.triangle.fill")
+                        .foregroundStyle(.orange)
+                }
             } header: {
-                Text("connect.agent.steps")
+                Text("agent.pairing.section")
+            } footer: {
+                Text("agent.pairing.footer")
             }
 
             Section {
-                Text(command)
+                AgentStepRow(number: 1, titleKey: "connect.agent.step.package", detailKey: "connect.agent.step.package_detail")
+                AgentStepRow(number: 2, titleKey: "connect.agent.step.token", detailKey: "connect.agent.step.token_detail")
+                AgentStepRow(number: 3, titleKey: "connect.agent.step.verify", detailKey: "connect.agent.step.verify_detail")
+
+                Text(desktopCommand)
                     .font(.system(.footnote, design: .monospaced))
                     .textSelection(.enabled)
                 Button("connect.agent.copy") {
-                    UIPasteboard.general.string = command
+                    UIPasteboard.general.string = desktopCommand
                     showCopyHint = true
                 }
             } header: {
-                Text("connect.agent.command")
+                Text("agent.desktop_ssh.section")
+            } footer: {
+                Text("agent.desktop_ssh.footer")
+            }
+
+            Section {
+                NavigationLink {
+                    MobileSSHAgentInstallerView()
+                } label: {
+                    Label("agent.mobile_ssh.title", systemImage: "iphone.and.arrow.forward")
+                }
+            } header: {
+                Text("agent.mobile_ssh.section")
+            } footer: {
+                Text("agent.mobile_ssh.footer")
             }
         }
         .listStyle(.insetGrouped)
         .navigationTitle("connect.agent.guide")
+        .task {
+            guard agentAddress.isEmpty, let host = connectionStore.dsmSession?.baseURL.host else { return }
+            agentAddress = "http://\(host):8787"
+        }
         .alert("connect.agent.copy_hint", isPresented: $showCopyHint) {
             Button("action.ok", role: .cancel) {}
+        }
+    }
+
+    private func pairAgent() {
+        errorMessage = nil
+        resultMessage = nil
+        isPairing = true
+        Task {
+            do {
+                guard let url = UserConfiguredServiceURLPolicy.normalizedURL(from: agentAddress) else {
+                    throw AgentClientError.invalidAddress
+                }
+                let client = try AgentClient(
+                    baseURL: url,
+                    allowsSelfSignedCertificates: allowsSelfSignedCertificates
+                )
+                let connection = try await client.pair(
+                    code: pairingCode,
+                    allowsSelfSignedCertificates: allowsSelfSignedCertificates
+                )
+                _ = try await client.handshake(connection: connection)
+                try await MainActor.run {
+                    try connectionStore.connectAgent(connection)
+                }
+                if let session = connectionStore.dsmSession {
+                    await dataStore.refreshDSM(session: session, useAgent: true)
+                }
+                await MainActor.run {
+                    pairingCode = ""
+                    resultMessage = NSLocalizedString("agent.pairing.success", comment: "")
+                    isPairing = false
+                }
+            } catch {
+                await MainActor.run {
+                    errorMessage = error.localizedDescription
+                    isPairing = false
+                }
+            }
+        }
+    }
+}
+
+struct MobileSSHAgentInstallerView: View {
+    @EnvironmentObject private var connectionStore: NASConnectionStore
+    @EnvironmentObject private var dataStore: AppDataStore
+    @State private var host = ""
+    @State private var port = "22"
+    @State private var username = ""
+    @State private var password = ""
+    @State private var pairingCode = ""
+    @State private var inspectedIdentity: SSHHostIdentity?
+    @State private var trustedHostKey: String?
+    @State private var isInspecting = false
+    @State private var isInstalling = false
+    @State private var resultMessage: String?
+    @State private var errorMessage: String?
+
+    private var normalizedHost: String {
+        let value = host.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard value.hasPrefix("["), value.hasSuffix("]") else { return value }
+        return String(value.dropFirst().dropLast())
+    }
+
+    private var sshPort: Int? {
+        Int(port).flatMap { (1...65_535).contains($0) ? $0 : nil }
+    }
+
+    private var hasTrustedCurrentKey: Bool {
+        guard let inspectedIdentity, let trustedHostKey else { return false }
+        return inspectedIdentity.openSSHKey == trustedHostKey
+    }
+
+    var body: some View {
+        Form {
+            Section {
+                TextField("agent.ssh.host", text: $host)
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled()
+                TextField("agent.ssh.port", text: $port)
+                    .keyboardType(.numberPad)
+                TextField("agent.ssh.username", text: $username)
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled()
+                SecureField("agent.ssh.password", text: $password)
+                TextField("agent.pairing_code.placeholder", text: $pairingCode)
+                    .keyboardType(.numberPad)
+            } header: {
+                Text("agent.ssh.connection.section")
+            } footer: {
+                Text("agent.ssh.connection.footer")
+            }
+
+            Section {
+                Button {
+                    inspectHostKey()
+                } label: {
+                    HStack {
+                        if isInspecting { ProgressView() }
+                        Label("agent.ssh.inspect", systemImage: "checkmark.shield")
+                    }
+                }
+                .disabled(isInspecting || isInstalling || normalizedHost.isEmpty || sshPort == nil)
+
+                if let identity = inspectedIdentity {
+                    LabeledContent("agent.ssh.fingerprint") {
+                        Text(identity.fingerprint)
+                            .font(.caption.monospaced())
+                            .textSelection(.enabled)
+                    }
+                    if hasTrustedCurrentKey {
+                        Label("agent.ssh.trusted", systemImage: "checkmark.shield.fill")
+                            .foregroundStyle(.green)
+                    } else {
+                        Button("agent.ssh.trust") {
+                            trustInspectedHostKey()
+                        }
+                    }
+                }
+            } header: {
+                Text("agent.ssh.host_key.section")
+            } footer: {
+                Text("agent.ssh.host_key.footer")
+            }
+
+            Section {
+                Button {
+                    installAndPair()
+                } label: {
+                    HStack {
+                        if isInstalling { ProgressView() }
+                        Label("agent.ssh.install", systemImage: "shippingbox.and.arrow.backward")
+                    }
+                }
+                .disabled(
+                    isInstalling
+                        || !hasTrustedCurrentKey
+                        || username.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+                        || password.isEmpty
+                        || pairingCode.count != 6
+                )
+
+                if let resultMessage {
+                    Label(resultMessage, systemImage: "checkmark.circle.fill")
+                        .foregroundStyle(.green)
+                }
+                if let errorMessage {
+                    Label(errorMessage, systemImage: "exclamationmark.triangle.fill")
+                        .foregroundStyle(.orange)
+                }
+            } header: {
+                Text("agent.ssh.install.section")
+            } footer: {
+                Text("agent.ssh.install.footer")
+            }
+        }
+        .navigationTitle("agent.mobile_ssh.title")
+        .navigationBarTitleDisplayMode(.inline)
+        .task {
+            guard host.isEmpty, let dsmHost = connectionStore.dsmSession?.baseURL.host else { return }
+            host = dsmHost
+            reloadTrustedHostKey()
+        }
+        .onChange(of: host) { _ in
+            inspectedIdentity = nil
+            reloadTrustedHostKey()
+        }
+        .onChange(of: port) { _ in
+            inspectedIdentity = nil
+            reloadTrustedHostKey()
+        }
+    }
+
+    private func reloadTrustedHostKey() {
+        guard let sshPort, !normalizedHost.isEmpty else {
+            trustedHostKey = nil
+            return
+        }
+        trustedHostKey = KeychainStore.shared.loadSSHHostKey(host: normalizedHost, port: sshPort)
+    }
+
+    private func inspectHostKey() {
+        guard let sshPort else { return }
+        isInspecting = true
+        errorMessage = nil
+        resultMessage = nil
+        Task {
+            do {
+                let identity = try await SSHAgentInstaller.inspectHost(host: normalizedHost, port: sshPort)
+                await MainActor.run {
+                    inspectedIdentity = identity
+                    reloadTrustedHostKey()
+                    isInspecting = false
+                }
+            } catch {
+                await MainActor.run {
+                    errorMessage = error.localizedDescription
+                    isInspecting = false
+                }
+            }
+        }
+    }
+
+    private func trustInspectedHostKey() {
+        guard let identity = inspectedIdentity, let sshPort else { return }
+        do {
+            try KeychainStore.shared.saveSSHHostKey(
+                identity.openSSHKey,
+                host: normalizedHost,
+                port: sshPort
+            )
+            trustedHostKey = identity.openSSHKey
+            errorMessage = nil
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    private func installAndPair() {
+        guard let sshPort, let trustedHostKey else { return }
+        isInstalling = true
+        errorMessage = nil
+        resultMessage = nil
+        let installationPassword = password
+        Task {
+            do {
+                _ = try await SSHAgentInstaller.install(
+                    host: normalizedHost,
+                    port: sshPort,
+                    username: username,
+                    password: installationPassword,
+                    pairingCode: pairingCode,
+                    trustedHostKey: trustedHostKey
+                )
+                var components = URLComponents()
+                components.scheme = "http"
+                components.host = normalizedHost
+                components.port = 8_787
+                guard let baseURL = components.url else {
+                    throw AgentClientError.invalidAddress
+                }
+                let client = try AgentClient(baseURL: baseURL, allowsSelfSignedCertificates: false)
+                let connection = try await client.pair(
+                    code: pairingCode,
+                    allowsSelfSignedCertificates: false
+                )
+                _ = try await client.handshake(connection: connection)
+                try await MainActor.run {
+                    try connectionStore.connectAgent(connection)
+                }
+                if let session = connectionStore.dsmSession {
+                    await dataStore.refreshDSM(session: session, useAgent: true)
+                }
+                await MainActor.run {
+                    password = ""
+                    pairingCode = ""
+                    resultMessage = NSLocalizedString("agent.ssh.install.success", comment: "")
+                    isInstalling = false
+                }
+                DiagnosticLogStore.shared.record(
+                    .info,
+                    categoryKey: "diagnostics.category.agent",
+                    messageKey: "diagnostics.agent.install_succeeded"
+                )
+            } catch {
+                await MainActor.run {
+                    password = ""
+                    errorMessage = error.localizedDescription
+                    isInstalling = false
+                }
+                DiagnosticLogStore.shared.record(
+                    .warning,
+                    categoryKey: "diagnostics.category.agent",
+                    messageKey: "diagnostics.agent.install_failed",
+                    details: ["error": String(describing: error)]
+                )
+            }
         }
     }
 }

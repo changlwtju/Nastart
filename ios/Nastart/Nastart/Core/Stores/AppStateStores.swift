@@ -205,13 +205,15 @@ struct DisconnectedNASDataSource: NASDataSource {
 struct DSMNASDataSource: NASDataSource {
     let session: DSMSession
     let client: DSMClient
+    let useAgent: Bool
 
     var kind: NASDataSourceKind {
         .dsm
     }
 
-    init(session: DSMSession, useAgent _: Bool) {
+    init(session: DSMSession, useAgent: Bool) {
         self.session = session
+        self.useAgent = useAgent
         self.client = DSMClient(
             baseURL: session.baseURL,
             allowsSelfSignedCertificates: session.allowsSelfSignedCertificates
@@ -219,7 +221,44 @@ struct DSMNASDataSource: NASDataSource {
     }
 
     func loadSnapshot() async -> AppDataProviding {
-        await client.loadSnapshot(session: session, useAgent: false)
+        let dsmSnapshot = await client.loadSnapshot(session: session, useAgent: false)
+        guard
+            useAgent,
+            let connection = KeychainStore.shared.loadAgentConnection(),
+            let baseURL = connection.baseURL
+        else {
+            return dsmSnapshot
+        }
+        do {
+            let agentClient = try AgentClient(
+                baseURL: baseURL,
+                allowsSelfSignedCertificates: connection.allowsSelfSignedCertificates
+            )
+            _ = try await agentClient.handshake(connection: connection)
+            let agentSnapshot = try await agentClient.snapshot(connection: connection)
+            DiagnosticLogStore.shared.record(
+                .info,
+                categoryKey: "diagnostics.category.agent",
+                messageKey: "diagnostics.agent.refresh_succeeded",
+                details: [
+                    "containers": "\(agentSnapshot.containers.count)",
+                    "host": DiagnosticLogStore.redactedHost(baseURL.host)
+                ]
+            )
+            return AgentSnapshotMerger.merge(
+                dsm: dsmSnapshot,
+                agent: agentSnapshot,
+                agentBaseURL: baseURL
+            )
+        } catch {
+            DiagnosticLogStore.shared.record(
+                .warning,
+                categoryKey: "diagnostics.category.agent",
+                messageKey: "diagnostics.agent.refresh_failed",
+                details: ["error": String(describing: error)]
+            )
+            return dsmSnapshot
+        }
     }
 
     func isReachable() async -> Bool {
@@ -411,7 +450,7 @@ struct StoredJellyfinSession: Codable {
     let accessToken: String
 }
 
-struct DSMDataSnapshot: AppDataProviding {
+struct DSMDataSnapshot: AppDataProviding, Codable {
     let device: NASDevice
     let services: [LaunchpadService]
     let containers: [DockerContainer]
@@ -499,6 +538,11 @@ final class DiagnosticLogStore: ObservableObject {
 
     private let maxEntries = 1000
     private let persistenceKey = "diagnostics.entries.v1"
+    private let persistenceQueue = DispatchQueue(
+        label: "com.changliwen.nastart.diagnostics-persistence",
+        qos: .utility
+    )
+    private var pendingPersistenceTask: Task<Void, Never>?
 
     private init() {
         guard
@@ -536,7 +580,12 @@ final class DiagnosticLogStore: ObservableObject {
     @MainActor
     func clear() {
         entries.removeAll()
-        UserDefaults.standard.removeObject(forKey: persistenceKey)
+        pendingPersistenceTask?.cancel()
+        pendingPersistenceTask = nil
+        let persistenceKey = self.persistenceKey
+        persistenceQueue.async {
+            UserDefaults.standard.removeObject(forKey: persistenceKey)
+        }
     }
 
     @MainActor
@@ -584,13 +633,29 @@ final class DiagnosticLogStore: ObservableObject {
         }
     }
 
+    @MainActor
     private func append(_ entry: DiagnosticLogEntry) {
         entries.append(entry)
         if entries.count > maxEntries {
             entries.removeFirst(entries.count - maxEntries)
         }
-        if let data = try? JSONEncoder().encode(entries) {
-            UserDefaults.standard.set(data, forKey: persistenceKey)
+        schedulePersistence(immediately: entry.level == .error)
+    }
+
+    @MainActor
+    private func schedulePersistence(immediately: Bool) {
+        pendingPersistenceTask?.cancel()
+        pendingPersistenceTask = Task { @MainActor [weak self] in
+            if !immediately {
+                try? await Task.sleep(nanoseconds: 750_000_000)
+            }
+            guard !Task.isCancelled, let self else { return }
+            let snapshot = self.entries
+            let persistenceKey = self.persistenceKey
+            self.persistenceQueue.async {
+                guard let data = try? JSONEncoder().encode(snapshot) else { return }
+                UserDefaults.standard.set(data, forKey: persistenceKey)
+            }
         }
     }
 }
@@ -858,6 +923,8 @@ final class DSMClient {
     private let urlSession: URLSession
     private let allowsSelfSignedCertificates: Bool
     private let sessionDelegate: URLSessionDelegate?
+    private let apiInfoCacheLock = NSLock()
+    private var cachedFileStationAPIInfo: DSMJSONValue?
 
     init(
         baseURL: URL,
@@ -888,7 +955,9 @@ final class DSMClient {
         let configuration = URLSessionConfiguration.ephemeral
         configuration.timeoutIntervalForRequest = requestTimeout
         configuration.timeoutIntervalForResource = 65
-        configuration.waitsForConnectivity = false
+        configuration.waitsForConnectivity = true
+        configuration.allowsCellularAccess = true
+        configuration.allowsExpensiveNetworkAccess = true
         configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
         return configuration
     }
@@ -979,7 +1048,14 @@ final class DSMClient {
             apiInfo: apiInfo
         ) {
             do {
-                let data = try await call(path: request.0, queryItems: request.1, timeout: 60)
+                // Authentication values must stay out of the URL. Apart from showing up
+                // in proxy history, URLSession can include a failed request URL in system
+                // diagnostics, which would expose the DSM account password and OTP.
+                let data = try await postFormCall(
+                    path: request.0,
+                    formItems: request.1,
+                    timeout: 60
+                )
                 if let sid = data.firstString(for: ["sid"]) {
                     let trustedDeviceID = data.firstString(
                         for: ["device_id", "deviceId", "did", "device_token"]
@@ -1091,6 +1167,7 @@ final class DSMClient {
                 )
             ]
         )
+        cacheFileStationAPIInfo(apiInfo)
         recordAPIInfoCoverage(apiInfo)
 
         async let systemData = firstSuccessfulCall(apiRequests(
@@ -1248,21 +1325,31 @@ final class DSMClient {
 
     func listFolder(session: DSMSession, folderPath: String) async throws -> [FileItem] {
         let normalizedPath = folderPath.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? "/" : folderPath
-        let apiInfo = await optionalCall(
-            path: "/webapi/query.cgi",
-            queryItems: [
-                URLQueryItem(name: "api", value: "SYNO.API.Info"),
-                URLQueryItem(name: "version", value: "1"),
-                URLQueryItem(name: "method", value: "query"),
-                URLQueryItem(name: "query", value: "SYNO.FileStation.List")
-            ]
-        )
+        let startedAt = Date()
+        let cachedAPIInfo = fileStationAPIInfo()
+        let apiInfo: DSMJSONValue?
+        if let cachedAPIInfo {
+            apiInfo = cachedAPIInfo
+        } else {
+            let loadedAPIInfo = await optionalCall(
+                path: "/webapi/query.cgi",
+                queryItems: [
+                    URLQueryItem(name: "api", value: "SYNO.API.Info"),
+                    URLQueryItem(name: "version", value: "1"),
+                    URLQueryItem(name: "method", value: "query"),
+                    URLQueryItem(name: "query", value: "SYNO.FileStation.List")
+                ]
+            )
+            cacheFileStationAPIInfo(loadedAPIInfo)
+            apiInfo = loadedAPIInfo
+        }
         let encodedPath = Self.jsonQueryValue(normalizedPath) ?? normalizedPath
-        let encodedAdditional = Self.jsonQueryValue(["real_path", "size", "time", "type"])
-            ?? "[\"real_path\",\"size\",\"time\",\"type\"]"
+        let encodedAdditional = Self.jsonQueryValue(["real_path", "size", "type"])
+            ?? "[\"real_path\",\"size\",\"type\"]"
         let pageSize = 500
         var offset = 0
         var allItems: [FileItem] = []
+        var pageCount = 0
 
         while offset < 25_000 {
             let common = [
@@ -1294,6 +1381,7 @@ final class DSMClient {
             guard let data else { throw DSMClientError.invalidResponse }
 
             let page = DSMClient.mapFileItems(data, parentPath: normalizedPath)
+            pageCount += 1
             allItems.append(contentsOf: page)
             let total = Int(data.firstDouble(for: ["total", "total_count"]) ?? 0)
             offset += page.count
@@ -1311,7 +1399,10 @@ final class DSMClient {
             messageKey: "diagnostics.files.folder_loaded",
             details: [
                 "pathDepth": "\(normalizedPath.split(separator: "/").count)",
-                "items": "\(items.count)"
+                "items": "\(items.count)",
+                "pages": "\(pageCount)",
+                "apiInfo": cachedAPIInfo == nil ? "network" : "cache",
+                "durationMs": "\(Int(max(Date().timeIntervalSince(startedAt), 0) * 1_000))"
             ]
         )
         return items
@@ -1354,8 +1445,59 @@ final class DSMClient {
         return envelope.data ?? .object([:])
     }
 
+    private func postFormCall(
+        path: String,
+        formItems: [URLQueryItem],
+        timeout: TimeInterval = requestTimeout
+    ) async throws -> DSMJSONValue {
+        guard let url = DSMURLBuilder.url(baseURL: baseURL, appending: path) else {
+            throw DSMClientError.invalidAddress
+        }
+        var formComponents = URLComponents()
+        formComponents.queryItems = formItems
+        guard let body = formComponents.percentEncodedQuery?.data(using: .utf8) else {
+            throw DSMClientError.invalidAddress
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.httpBody = body
+        request.timeoutInterval = timeout
+        request.cachePolicy = .reloadIgnoringLocalCacheData
+        request.setValue(
+            "application/x-www-form-urlencoded; charset=utf-8",
+            forHTTPHeaderField: "Content-Type"
+        )
+        let (data, response) = try await urlSession.data(for: request)
+        guard let httpResponse = response as? HTTPURLResponse,
+              (200..<300).contains(httpResponse.statusCode) else {
+            throw DSMClientError.invalidResponse
+        }
+
+        let envelope = try JSONDecoder().decode(DSMAPIEnvelope.self, from: data)
+        guard envelope.success else {
+            throw DSMClientError.apiFailed(code: envelope.error?.code)
+        }
+        return envelope.data ?? .object([:])
+    }
+
     private func optionalCall(path: String, queryItems: [URLQueryItem]) async -> DSMJSONValue? {
         try? await call(path: path, queryItems: queryItems)
+    }
+
+    private func fileStationAPIInfo() -> DSMJSONValue? {
+        apiInfoCacheLock.lock()
+        defer { apiInfoCacheLock.unlock() }
+        return cachedFileStationAPIInfo
+    }
+
+    private func cacheFileStationAPIInfo(_ apiInfo: DSMJSONValue?) {
+        guard let apiInfo, apiInfoEntry(apiInfo, apiName: "SYNO.FileStation.List") != nil else {
+            return
+        }
+        apiInfoCacheLock.lock()
+        cachedFileStationAPIInfo = apiInfo
+        apiInfoCacheLock.unlock()
     }
 
     private func firstSuccessfulCall(_ requests: [(String, [URLQueryItem])]) async -> DSMJSONValue? {
@@ -2166,6 +2308,7 @@ final class DSMClient {
             "jpg", "jpeg", "png", "gif", "heic", "heif", "webp",
             "bmp", "tif", "tiff", "avif", "dng", "svg"
         ].contains(ext) { return .image }
+        if ext == "iso" { return .discImage }
         if ["zip", "rar", "7z", "tar", "gz"].contains(ext) { return .archive }
         return .text
     }
@@ -3749,6 +3892,7 @@ private final class LocalTaskStore {
 }
 
 final class AppDataStore: ObservableObject {
+    private static let persistedDSMSnapshotKey = "dsm.cachedSnapshot.v1"
     @Published private(set) var device: NASDevice
     @Published private(set) var services: [LaunchpadService]
     @Published private(set) var containers: [DockerContainer]
@@ -3764,30 +3908,59 @@ final class AppDataStore: ObservableObject {
     @Published private(set) var sourceKind: NASDataSourceKind
     @Published private(set) var serviceVisibilityOverrides: [String: Bool]
 
+    /// A previously successful snapshot is safe to render while the session is
+    /// being restored. Network refresh still replaces it once available.
+    var hasCachedDSMSnapshot: Bool {
+        provider is DSMDataSnapshot
+    }
+
+    /// The launchpad can render a persisted NAS snapshot before the current
+    /// session has finished restoring. This is deliberately a display-only
+    /// state: file operations still require `NASConnectionStore.dsmSession`.
+    var isDSMAvailableForDisplay: Bool {
+        isDSMReachable || hasCachedDSMSnapshot
+    }
+
     private var provider: AppDataProviding
     private var activeDataSource: NASDataSource
     private var manualServiceStore = ManualLaunchpadServiceStore()
     private let launchpadVisibilityStore = LaunchpadVisibilityStore()
     private let localTaskStore: LocalTaskStore
     private var preservedContainerInventoryOnLastMerge = false
+    private var consecutiveDSMReachabilityFailures = 0
+    private var lastSuccessfulDSMContactAt: Date?
+    private struct FolderCacheEntry {
+        let items: [FileItem]
+        let loadedAt: Date
+    }
+    private var folderCache: [String: FolderCacheEntry] = [:]
+    private var folderLoadTasks: [String: Task<[FileItem], Error>] = [:]
+    private var folderCacheScope: String?
 
-    init(provider: AppDataProviding = DisconnectedAppDataProvider()) {
+    private static let dsmReachabilityFailureThreshold = 2
+    private static let dsmReachabilityGraceInterval: TimeInterval = 180
+    private static let folderCacheLifetime: TimeInterval = 5 * 60
+
+    init(provider: AppDataProviding? = nil) {
         let taskStore = LocalTaskStore()
         let persistedTasks = taskStore.load()
-        self.provider = provider
+        let initialProvider = provider
+            ?? Self.loadPersistedDSMSnapshot()
+            ?? DisconnectedAppDataProvider()
+        self.provider = initialProvider
         localTaskStore = taskStore
         serviceVisibilityOverrides = LaunchpadVisibilityStore().load()
-        sourceKind = provider is DSMDataSnapshot ? .dsm : .mock
+        sourceKind = initialProvider is DSMDataSnapshot ? .dsm : .mock
         activeDataSource = DisconnectedNASDataSource()
-        device = provider.device
-        services = provider.services + manualServiceStore.load()
-        containers = provider.containers
-        files = provider.files
-        tasks = persistedTasks?.pending ?? provider.tasks
+        device = initialProvider.device
+        services = initialProvider.services + manualServiceStore.load()
+        containers = initialProvider.containers
+        files = initialProvider.files
+        tasks = persistedTasks?.pending ?? initialProvider.tasks
         completedTasks = persistedTasks?.history ?? []
-        videoLibraryItems = provider.videoLibraryItems
-        audioLibraryItems = provider.audioLibraryItems
-        discoveredDevices = provider.discoveredDevices
+        videoLibraryItems = initialProvider.videoLibraryItems
+        audioLibraryItems = initialProvider.audioLibraryItems
+        discoveredDevices = initialProvider.discoveredDevices
         tasks.forEach {
             ReminderNotificationScheduler.schedule($0, requestsAuthorization: false)
         }
@@ -3824,6 +3997,24 @@ final class AppDataStore: ObservableObject {
         audioLibraryItems = provider.audioLibraryItems
         discoveredDevices = provider.discoveredDevices
         lastRefreshSummaryKey = provider is DSMDataSnapshot ? "data.refresh.dsm_done" : "data.refresh.mock_done"
+        if let snapshot = provider as? DSMDataSnapshot {
+            Self.persistDSMSnapshot(snapshot)
+        }
+    }
+
+    private static func loadPersistedDSMSnapshot() -> DSMDataSnapshot? {
+        guard
+            let data = UserDefaults.standard.data(forKey: persistedDSMSnapshotKey),
+            let snapshot = try? JSONDecoder().decode(DSMDataSnapshot.self, from: data)
+        else {
+            return nil
+        }
+        return snapshot
+    }
+
+    private static func persistDSMSnapshot(_ snapshot: DSMDataSnapshot) {
+        guard let data = try? JSONEncoder().encode(snapshot) else { return }
+        UserDefaults.standard.set(data, forKey: persistedDSMSnapshotKey)
     }
 
     private func mergedServices(
@@ -3971,6 +4162,7 @@ final class AppDataStore: ObservableObject {
         isRefreshing = true
         defer { isRefreshing = false }
 
+        prepareFolderCache(for: dataSource)
         activeDataSource = dataSource
         let snapshot = await dataSource.loadSnapshot()
         reload(from: snapshot)
@@ -3979,18 +4171,25 @@ final class AppDataStore: ObservableObject {
 
     @MainActor
     func resetToMockData() {
-        activeDataSource = MockNASDataSource()
+        let dataSource = MockNASDataSource()
+        prepareFolderCache(for: dataSource)
+        activeDataSource = dataSource
         reload(from: MockAppDataProvider())
         sourceKind = .mock
         isDSMReachable = false
+        resetDSMReachabilityHistory()
     }
 
     @MainActor
     func clearConnectionData() {
-        activeDataSource = DisconnectedNASDataSource()
+        UserDefaults.standard.removeObject(forKey: Self.persistedDSMSnapshotKey)
+        let dataSource = DisconnectedNASDataSource()
+        prepareFolderCache(for: dataSource)
+        activeDataSource = dataSource
         reload(from: DisconnectedAppDataProvider())
         sourceKind = .mock
         isDSMReachable = false
+        resetDSMReachabilityHistory()
         lastRefreshSummaryKey = "data.refresh.disconnected"
     }
 
@@ -4002,48 +4201,104 @@ final class AppDataStore: ObservableObject {
         defer { isRefreshing = false }
 
         let dataSource = DSMNASDataSource(session: session, useAgent: useAgent)
+        prepareFolderCache(for: dataSource)
         activeDataSource = dataSource
         guard await dataSource.isReachable() else {
-            markDSMUnavailable()
+            handleDSMReachabilityFailure(target: session.baseURL)
             return false
         }
 
+        recordSuccessfulDSMContact()
         let snapshot = await dataSource.loadSnapshot()
         reload(from: snapshot)
         sourceKind = dataSource.kind
-        isDSMReachable = true
+        recordSuccessfulDSMContact()
         return true
     }
 
     @MainActor
-    func activateDSM(snapshot: DSMDataSnapshot, session: DSMSession, useAgent _: Bool) {
-        activeDataSource = DSMNASDataSource(session: session, useAgent: false)
+    func activateDSM(snapshot: DSMDataSnapshot, session: DSMSession, useAgent: Bool) {
+        let dataSource = DSMNASDataSource(session: session, useAgent: useAgent)
+        prepareFolderCache(for: dataSource)
+        activeDataSource = dataSource
         reload(from: snapshot)
         sourceKind = .dsm
-        isDSMReachable = true
+        recordSuccessfulDSMContact()
     }
 
     @MainActor
-    func loadFolder(path: String) async throws -> [FileItem] {
+    func loadFolder(path: String, forceRefresh: Bool = false) async throws -> [FileItem] {
+        let normalizedPath = path.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            ? "/"
+            : path
+        let cachedEntry = folderCache[normalizedPath]
+        if !forceRefresh,
+           let cachedEntry,
+           Date().timeIntervalSince(cachedEntry.loadedAt) < Self.folderCacheLifetime {
+            DiagnosticLogStore.shared.record(
+                .info,
+                categoryKey: "diagnostics.category.dsm_api",
+                messageKey: "diagnostics.files.folder_loaded",
+                details: [
+                    "pathDepth": "\(normalizedPath.split(separator: "/").count)",
+                    "items": "\(cachedEntry.items.count)",
+                    "source": "memoryCache",
+                    "durationMs": "0"
+                ]
+            )
+            return cachedEntry.items
+        }
+        if let existingTask = folderLoadTasks[normalizedPath] {
+            return try await existingTask.value
+        }
         if let dataSource = activeDataSource as? DSMNASDataSource {
+            let requestScope = folderCacheScope
+            let task = Task {
+                try await dataSource.loadFolder(path: normalizedPath)
+            }
+            folderLoadTasks[normalizedPath] = task
             do {
-                return try await dataSource.loadFolder(path: path)
+                let items = try await task.value
+                guard requestScope == folderCacheScope else {
+                    throw CancellationError()
+                }
+                folderLoadTasks[normalizedPath] = nil
+                folderCache[normalizedPath] = FolderCacheEntry(items: items, loadedAt: Date())
+                return items
             } catch {
+                folderLoadTasks[normalizedPath] = nil
+                guard requestScope == folderCacheScope else { throw CancellationError() }
                 DiagnosticLogStore.shared.record(
                     .warning,
                     categoryKey: "diagnostics.category.dsm_api",
                     messageKey: "diagnostics.files.folder_failed",
                     details: [
-                        "pathDepth": "\(path.split(separator: "/").count)",
+                        "pathDepth": "\(normalizedPath.split(separator: "/").count)",
                         "error": "\(error)"
                     ]
                 )
-                let localItems = localChildren(for: path, in: files)
+                if let cachedEntry { return cachedEntry.items }
+                let localItems = localChildren(for: normalizedPath, in: files)
                 if !localItems.isEmpty { return localItems }
                 throw error
             }
         }
-        return localChildren(for: path, in: files)
+        return localChildren(for: normalizedPath, in: files)
+    }
+
+    @MainActor
+    private func prepareFolderCache(for dataSource: NASDataSource) {
+        let newScope: String?
+        if let dsmDataSource = dataSource as? DSMNASDataSource {
+            newScope = "\(dsmDataSource.session.baseURL.absoluteString)|\(dsmDataSource.session.account)"
+        } else {
+            newScope = nil
+        }
+        guard newScope != folderCacheScope else { return }
+        folderLoadTasks.values.forEach { $0.cancel() }
+        folderLoadTasks.removeAll()
+        folderCache.removeAll()
+        folderCacheScope = newScope
     }
 
     private func localChildren(for path: String, in items: [FileItem]) -> [FileItem] {
@@ -4074,22 +4329,24 @@ final class AppDataStore: ObservableObject {
                 deviceID: credential.deviceID
             )
             sessionToLogout = session
-            let dataSource = DSMNASDataSource(session: session, useAgent: false)
+            let usesStoredAgent = KeychainStore.shared.loadAgentConnection() != nil
+            let dataSource = DSMNASDataSource(session: session, useAgent: usesStoredAgent)
             let snapshot = await dataSource.loadSnapshot()
             try KeychainStore.shared.saveNASCredential(
                 StoredNASCredential(
                     baseURLString: credential.baseURLString,
                     account: credential.account,
                     password: credential.password,
-                    useAgent: false,
+                    useAgent: usesStoredAgent,
                     allowsSelfSignedCertificates: credential.allowsSelfSignedCertificates,
                     deviceID: session.deviceID ?? credential.deviceID
                 )
             )
+            prepareFolderCache(for: dataSource)
             activeDataSource = dataSource
+            recordSuccessfulDSMContact()
             reload(from: snapshot)
             sourceKind = dataSource.kind
-            isDSMReachable = true
             connectionStore.connect(device: snapshot.device, session: session)
             sessionToLogout = nil
         } catch {
@@ -4106,7 +4363,51 @@ final class AppDataStore: ObservableObject {
     }
 
     @MainActor
-    private func markDSMUnavailable() {
+    private func recordSuccessfulDSMContact() {
+        consecutiveDSMReachabilityFailures = 0
+        lastSuccessfulDSMContactAt = Date()
+        isDSMReachable = true
+    }
+
+    @MainActor
+    private func resetDSMReachabilityHistory() {
+        consecutiveDSMReachabilityFailures = 0
+        lastSuccessfulDSMContactAt = nil
+    }
+
+    @MainActor
+    private func handleDSMReachabilityFailure(target: URL) {
+        consecutiveDSMReachabilityFailures += 1
+        let secondsSinceSuccess = lastSuccessfulDSMContactAt.map {
+            max(Date().timeIntervalSince($0), 0)
+        }
+        let isWithinGracePeriod = secondsSinceSuccess.map {
+            $0 < Self.dsmReachabilityGraceInterval
+        } ?? false
+        let shouldKeepLastKnownState = isDSMReachable
+            && (consecutiveDSMReachabilityFailures < Self.dsmReachabilityFailureThreshold
+                || isWithinGracePeriod)
+
+        guard !shouldKeepLastKnownState else {
+            lastRefreshSummaryKey = "data.refresh.connection_fluctuation"
+            DiagnosticLogStore.shared.record(
+                .warning,
+                categoryKey: "diagnostics.category.refresh",
+                messageKey: "diagnostics.refresh.transient_unreachable",
+                details: [
+                    "target": DiagnosticLogStore.redactedURL(target),
+                    "consecutiveFailures": "\(consecutiveDSMReachabilityFailures)",
+                    "secondsSinceSuccess": secondsSinceSuccess.map { "\(Int($0))" } ?? "unknown"
+                ]
+            )
+            return
+        }
+
+        markDSMUnavailable(target: target)
+    }
+
+    @MainActor
+    private func markDSMUnavailable(target: URL) {
         isDSMReachable = false
         lastRefreshSummaryKey = "data.refresh.unreachable"
         services = services.map { service in
@@ -4150,7 +4451,10 @@ final class AppDataStore: ObservableObject {
             .warning,
             categoryKey: "diagnostics.category.refresh",
             messageKey: "diagnostics.refresh.unreachable",
-            details: ["target": "privateDSM"]
+            details: [
+                "target": DiagnosticLogStore.redactedURL(target),
+                "consecutiveFailures": "\(consecutiveDSMReachabilityFailures)"
+            ]
         )
     }
 
@@ -4174,6 +4478,7 @@ final class AppDataStore: ObservableObject {
             serviceVisibilityOverrides[service.launchpadVisibilityKey] = isVisible
         }
         launchpadVisibilityStore.save(serviceVisibilityOverrides)
+        CloudSyncStore.noteLocalChange()
         lastRefreshSummaryKey = isVisible ? "launchpad.service.shown" : "launchpad.service.hidden"
     }
 
@@ -4181,6 +4486,7 @@ final class AppDataStore: ObservableObject {
     func resetLaunchpadServiceVisibility() {
         serviceVisibilityOverrides.removeAll()
         launchpadVisibilityStore.save(serviceVisibilityOverrides)
+        CloudSyncStore.noteLocalChange()
         lastRefreshSummaryKey = "launchpad.services.reset_done"
     }
 
@@ -4193,6 +4499,7 @@ final class AppDataStore: ObservableObject {
             iconText: iconText
         )
         services.append(service)
+        CloudSyncStore.noteLocalChange()
         lastRefreshSummaryKey = "manual.service.added"
     }
 
@@ -4200,6 +4507,7 @@ final class AppDataStore: ObservableObject {
     func deleteManualService(id: UUID) {
         manualServiceStore.delete(id: id)
         services.removeAll { $0.id == id && $0.source == .manual }
+        CloudSyncStore.noteLocalChange()
         lastRefreshSummaryKey = "manual.service.deleted"
     }
 
@@ -4234,6 +4542,60 @@ final class AppDataStore: ObservableObject {
 
     private func persistTasks() {
         localTaskStore.save(pending: tasks, history: completedTasks)
+        CloudSyncStore.noteLocalChange()
+    }
+
+    @MainActor
+    func makeCloudSyncSnapshot(updatedAt: Date) -> CloudSyncSnapshot {
+        let defaults = UserDefaults.standard
+        let stringKeys = [
+            LaunchpadTheme.storageKey,
+            AppLanguage.storageKey,
+            AppThemeMode.storageKey,
+            AppearancePreferenceKeys.groupOrder
+        ]
+        let booleanKeys = [
+            AppearancePreferenceKeys.compactMetrics,
+            AppearancePreferenceKeys.showServiceStatus,
+            AppearancePreferenceKeys.showCardSubtitle,
+            AppearancePreferenceKeys.groupFavoritesExpanded,
+            AppearancePreferenceKeys.groupMediaExpanded,
+            AppearancePreferenceKeys.groupDownloadsExpanded,
+            AppearancePreferenceKeys.groupNetworkExpanded,
+            AppearancePreferenceKeys.groupToolsExpanded
+        ]
+        return CloudSyncSnapshot(
+            updatedAt: updatedAt,
+            manualServices: manualServiceStore.exportForSync(),
+            serviceVisibilityOverrides: serviceVisibilityOverrides,
+            pendingTasks: tasks,
+            completedTasks: completedTasks,
+            stringPreferences: Dictionary(uniqueKeysWithValues: stringKeys.compactMap { key in
+                defaults.string(forKey: key).map { (key, $0) }
+            }),
+            booleanPreferences: Dictionary(uniqueKeysWithValues: booleanKeys.compactMap { key in
+                defaults.object(forKey: key).map { _ in (key, defaults.bool(forKey: key)) }
+            })
+        )
+    }
+
+    @MainActor
+    func applyCloudSyncSnapshot(_ snapshot: CloudSyncSnapshot) {
+        snapshot.stringPreferences.forEach { UserDefaults.standard.set($0.value, forKey: $0.key) }
+        snapshot.booleanPreferences.forEach { UserDefaults.standard.set($0.value, forKey: $0.key) }
+        manualServiceStore.replaceFromSync(snapshot.manualServices)
+        serviceVisibilityOverrides = snapshot.serviceVisibilityOverrides
+        launchpadVisibilityStore.save(serviceVisibilityOverrides)
+        tasks.forEach(ReminderNotificationScheduler.cancel)
+        tasks = snapshot.pendingTasks
+        completedTasks = snapshot.completedTasks
+        localTaskStore.save(pending: tasks, history: completedTasks)
+        tasks.forEach {
+            ReminderNotificationScheduler.schedule($0, requestsAuthorization: false)
+        }
+        let nonManualServices = services.filter { $0.source != .manual }
+        services = nonManualServices + manualServiceStore.load()
+        lastRefreshSummaryKey = "mine.sync.applied"
     }
 
     func selectDiscoveredDevice(_ discoveredDevice: DiscoveredNASDevice) -> NASDevice {
@@ -4276,7 +4638,7 @@ private struct LaunchpadVisibilityStore {
     }
 }
 
-private struct StoredManualLaunchpadService: Codable, Identifiable {
+struct StoredManualLaunchpadService: Codable, Identifiable {
     let id: UUID
     let name: String
     let endpointString: String
@@ -4347,6 +4709,43 @@ private struct ManualLaunchpadServiceStore {
 
     func delete(id: UUID) {
         save(loadStoredServices().filter { $0.id != id })
+    }
+
+    func exportForSync() -> [StoredManualLaunchpadService] {
+        loadStoredServices().compactMap { service in
+            guard var components = URLComponents(string: service.endpointString) else {
+                return nil
+            }
+            // A manually entered URL may contain Basic Auth credentials or
+            // token-bearing query values. They are useful locally, but must
+            // never be serialized into the CloudKit snapshot.
+            components.user = nil
+            components.password = nil
+            components.query = nil
+            components.fragment = nil
+            guard
+                let sanitizedURL = components.url,
+                UserConfiguredServiceURLPolicy.allows(sanitizedURL)
+            else {
+                return nil
+            }
+            return StoredManualLaunchpadService(
+                id: service.id,
+                name: service.name,
+                endpointString: sanitizedURL.absoluteString,
+                categoryRawValue: service.categoryRawValue,
+                iconText: service.iconText,
+                createdAt: service.createdAt
+            )
+        }
+    }
+
+    func replaceFromSync(_ services: [StoredManualLaunchpadService]) {
+        let safeServices = services.filter { stored in
+            guard let url = URL(string: stored.endpointString) else { return false }
+            return UserConfiguredServiceURLPolicy.allows(url)
+        }
+        save(safeServices)
     }
 
     private func loadStoredServices() -> [StoredManualLaunchpadService] {
@@ -4499,18 +4898,21 @@ final class AppearanceStore: ObservableObject {
     @Published var launchpadTheme: LaunchpadTheme {
         didSet {
             UserDefaults.standard.set(launchpadTheme.rawValue, forKey: LaunchpadTheme.storageKey)
+            CloudSyncStore.noteLocalChange()
         }
     }
 
     @Published var compactMetrics: Bool {
         didSet {
             UserDefaults.standard.set(compactMetrics, forKey: AppearancePreferenceKeys.compactMetrics)
+            CloudSyncStore.noteLocalChange()
         }
     }
 
     @Published var showServiceStatus: Bool {
         didSet {
             UserDefaults.standard.set(showServiceStatus, forKey: AppearancePreferenceKeys.showServiceStatus)
+            CloudSyncStore.noteLocalChange()
         }
     }
 
@@ -4520,20 +4922,31 @@ final class AppearanceStore: ObservableObject {
         compactMetrics = UserDefaults.standard.object(forKey: AppearancePreferenceKeys.compactMetrics) as? Bool ?? true
         showServiceStatus = UserDefaults.standard.object(forKey: AppearancePreferenceKeys.showServiceStatus) as? Bool ?? true
     }
+
+    @MainActor
+    func reloadFromDefaults() {
+        let defaults = UserDefaults.standard
+        launchpadTheme = defaults.string(forKey: LaunchpadTheme.storageKey)
+            .flatMap(LaunchpadTheme.init(rawValue:)) ?? .cleanGrid
+        compactMetrics = defaults.object(forKey: AppearancePreferenceKeys.compactMetrics) as? Bool ?? true
+        showServiceStatus = defaults.object(forKey: AppearancePreferenceKeys.showServiceStatus) as? Bool ?? true
+    }
 }
 
 final class NASConnectionStore: ObservableObject {
     @Published private(set) var connectedDevice: NASDevice?
     @Published private(set) var isConnected: Bool
     @Published private(set) var dsmSession: DSMSession?
+    @Published private(set) var agentConnection: StoredAgentConnection?
 
     init(device: NASDevice? = nil) {
         connectedDevice = device
         isConnected = device != nil
+        agentConnection = KeychainStore.shared.loadAgentConnection()
     }
 
     var usesAgent: Bool {
-        connectedDevice?.mode == .dsmWithAgent || connectedDevice?.mode == .agentOnly
+        agentConnection != nil
     }
 
     @MainActor
@@ -4544,12 +4957,25 @@ final class NASConnectionStore: ObservableObject {
     }
 
     @MainActor
+    func connectAgent(_ connection: StoredAgentConnection) throws {
+        try KeychainStore.shared.saveAgentConnection(connection)
+        agentConnection = connection
+    }
+
+    @MainActor
+    func disconnectAgent() {
+        agentConnection = nil
+        KeychainStore.shared.clearAgentConnection()
+    }
+
+    @MainActor
     func signOut() async {
         let session = dsmSession
         connectedDevice = nil
         dsmSession = nil
         isConnected = false
         KeychainStore.shared.clearNASCredentials()
+        disconnectAgent()
 
         if let session {
             let client = DSMClient(
@@ -4565,11 +4991,19 @@ final class EntitlementStore: ObservableObject {
     @Published private(set) var plusStatus: PlusStatus
 
     init(plusStatus: PlusStatus = .free) {
+#if DEBUG
+        self.plusStatus = .active
+#else
         self.plusStatus = plusStatus
+#endif
     }
 
     var hasPlus: Bool {
+#if DEBUG
+        true
+#else
         plusStatus == .active
+#endif
     }
 
     func canUse(_ feature: PlusFeature) -> Bool {
@@ -4595,6 +5029,8 @@ final class KeychainStore {
 
     private let service = "com.nastart.app.nas"
     private let jellyfinService = "com.nastart.app.jellyfin"
+    private let agentService = "com.nastart.app.agent"
+    private let sshHostKeyService = "com.nastart.app.ssh-host-keys"
     private let primaryNASAccount = "primary-nas"
 
     private init() {}
@@ -4645,6 +5081,52 @@ final class KeychainStore {
         SecItemDelete(jellyfinQuery(endpoint: endpoint) as CFDictionary)
     }
 
+    func saveAgentConnection(_ connection: StoredAgentConnection) throws {
+        guard let data = try? JSONEncoder().encode(connection) else {
+            throw KeychainStoreError.encodingFailed
+        }
+        try save(data: data, query: agentQuery())
+    }
+
+    func loadAgentConnection() -> StoredAgentConnection? {
+        var query = agentQuery()
+        query[kSecReturnData as String] = true
+        query[kSecMatchLimit as String] = kSecMatchLimitOne
+        var result: CFTypeRef?
+        guard
+            SecItemCopyMatching(query as CFDictionary, &result) == errSecSuccess,
+            let data = result as? Data
+        else {
+            return nil
+        }
+        return try? JSONDecoder().decode(StoredAgentConnection.self, from: data)
+    }
+
+    func clearAgentConnection() {
+        SecItemDelete(agentQuery() as CFDictionary)
+    }
+
+    func saveSSHHostKey(_ openSSHKey: String, host: String, port: Int) throws {
+        guard let data = openSSHKey.data(using: .utf8) else {
+            throw KeychainStoreError.encodingFailed
+        }
+        try save(data: data, query: sshHostKeyQuery(host: host, port: port))
+    }
+
+    func loadSSHHostKey(host: String, port: Int) -> String? {
+        var query = sshHostKeyQuery(host: host, port: port)
+        query[kSecReturnData as String] = true
+        query[kSecMatchLimit as String] = kSecMatchLimitOne
+        var result: CFTypeRef?
+        guard
+            SecItemCopyMatching(query as CFDictionary, &result) == errSecSuccess,
+            let data = result as? Data
+        else {
+            return nil
+        }
+        return String(data: data, encoding: .utf8)
+    }
+
     private func save(data: Data, query: [String: Any]) throws {
         let attributes: [String: Any] = [
             kSecValueData as String: data,
@@ -4679,6 +5161,22 @@ final class KeychainStore {
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: jellyfinService,
             kSecAttrAccount as String: endpoint.absoluteString
+        ]
+    }
+
+    private func agentQuery() -> [String: Any] {
+        [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: agentService,
+            kSecAttrAccount as String: "primary-agent"
+        ]
+    }
+
+    private func sshHostKeyQuery(host: String, port: Int) -> [String: Any] {
+        [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: sshHostKeyService,
+            kSecAttrAccount as String: "\(host.lowercased()):\(port)"
         ]
     }
 }

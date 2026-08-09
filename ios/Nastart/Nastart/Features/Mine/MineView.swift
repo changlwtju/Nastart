@@ -882,33 +882,39 @@ private struct LaunchpadGroupOrderView: View {
 
 private struct PlayerSettingsView: View {
     @EnvironmentObject private var dataStore: AppDataStore
-    @AppStorage("player.defaultVideo") private var defaultVideo = "Infuse"
-    @AppStorage("player.defaultAudio") private var defaultAudio = "Navidrome"
-    @AppStorage("player.preferExternal") private var preferExternal = true
 
     var body: some View {
         Form {
             Section {
-                Picker(selection: $defaultVideo) {
-                    Text("Infuse").tag("Infuse")
-                    Text("VidHub").tag("VidHub")
-                    Text("VLC").tag("VLC")
-                    Text("player.system").tag("System Player")
+                LabeledContent {
+                    Text("MobileVLCKit")
+                        .foregroundStyle(.secondary)
                 } label: {
-                    Label("mine.players.video", systemImage: "play.rectangle")
+                    Label("mine.players.builtin_engine", systemImage: "play.rectangle")
                 }
-                Picker(selection: $defaultAudio) {
-                    Text("Navidrome").tag("Navidrome")
-                    Text("player.system").tag("System Player")
-                    Text("player.custom_scheme").tag("Custom Scheme")
+                LabeledContent {
+                    Text("mine.players.internal_first")
+                        .foregroundStyle(.secondary)
                 } label: {
-                    Label("mine.players.audio", systemImage: "music.note")
-                }
-                Toggle(isOn: $preferExternal) {
-                    Label("mine.players.prefer_external", systemImage: "arrow.up.forward.app")
+                    Label("mine.players.opening_mode", systemImage: "arrow.up.forward.app")
                 }
             } header: {
                 Text("mine.players.defaults")
+            } footer: {
+                Text("mine.players.behavior_footer")
+            }
+
+            Section {
+                if ExternalOpenTarget.installedPlayers.isEmpty {
+                    Label("mine.players.external_none", systemImage: "app.dashed")
+                        .foregroundStyle(.secondary)
+                } else {
+                    ForEach(ExternalOpenTarget.installedPlayers) { target in
+                        Label(target.displayName, systemImage: "checkmark.circle")
+                    }
+                }
+            } header: {
+                Text("mine.players.external_installed")
             }
 
             Section {
@@ -970,55 +976,111 @@ private struct PlayerIntegrationRow: View {
 
 private struct SyncSettingsView: View {
     @EnvironmentObject private var entitlementStore: EntitlementStore
-    @AppStorage("sync.icloud.enabled") private var iCloudSync = false
-    @AppStorage("sync.icloud.launchpad") private var syncLaunchpad = false
-    @AppStorage("sync.icloud.reminders") private var syncReminders = false
+    @EnvironmentObject private var cloudSyncStore: CloudSyncStore
+    @EnvironmentObject private var dataStore: AppDataStore
+    @EnvironmentObject private var appearanceStore: AppearanceStore
 
     var body: some View {
         Form {
             Section {
-                Toggle(isOn: $iCloudSync) {
+                Toggle(isOn: syncBinding) {
                     Label("mine.sync.enable", systemImage: "icloud")
                 }
-                    .disabled(!entitlementStore.canUse(.iCloudSync))
-                Toggle(isOn: $syncLaunchpad) {
-                    Label("mine.sync.launchpad", systemImage: "square.grid.2x2")
+                .disabled(!entitlementStore.canUse(.iCloudSync))
+
+                LabeledContent("mine.sync.status") {
+                    HStack(spacing: 7) {
+                        if cloudSyncStore.status == .checking || cloudSyncStore.status == .syncing {
+                            ProgressView()
+                                .controlSize(.small)
+                        }
+                        Text(LocalizedStringKey(cloudSyncStore.status.titleKey))
+                            .foregroundStyle(syncStatusColor)
+                    }
                 }
-                    .disabled(!entitlementStore.canUse(.iCloudSync) || !iCloudSync)
-                Toggle(isOn: $syncReminders) {
-                    Label("mine.sync.reminders", systemImage: "bell")
+
+                if let lastSync = cloudSyncStore.lastSuccessfulSyncAt {
+                    LabeledContent("mine.sync.last_success") {
+                        Text(lastSync, style: .relative)
+                            .foregroundStyle(.secondary)
+                    }
                 }
-                    .disabled(!entitlementStore.canUse(.iCloudSync) || !iCloudSync)
+
+                if case .failed = cloudSyncStore.status,
+                   let detail = syncErrorDetail {
+                    Text(detail)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .textSelection(.enabled)
+                }
             } header: {
                 Text("mine.sync.icloud")
+            } footer: {
+                Text("mine.sync.scope_detail")
             }
 
-            Section {
-                HStack {
-                    Label("mine.sync.devices", systemImage: "iphone.and.arrow.forward")
-                    Spacer()
-                    Text(iCloudSync ? "1" : "-")
-                        .foregroundStyle(.secondary)
+            if cloudSyncStore.isEnabled {
+                Section {
+                    Button {
+                        Task {
+                            await cloudSyncStore.syncNow(
+                                dataStore: dataStore,
+                                appearanceStore: appearanceStore
+                            )
+                        }
+                    } label: {
+                        Label("mine.sync.now", systemImage: "arrow.triangle.2.circlepath")
+                    }
+                    .disabled(cloudSyncStore.status == .syncing)
                 }
-                HStack {
-                    Label("mine.sync.last", systemImage: "clock.arrow.circlepath")
-                    Spacer()
-                    Text(LocalizedStringKey(iCloudSync ? "mine.sync.waiting" : "state.not_connected"))
-                        .foregroundStyle(.secondary)
-                }
-                if !entitlementStore.hasPlus {
+            }
+
+            if !entitlementStore.canUse(.iCloudSync) {
+                Section {
                     NavigationLink {
                         PlusView()
                     } label: {
                         Label("plus.locked.icloud", systemImage: "lock")
                     }
+                } header: {
+                    Text("mine.sync.scope")
                 }
-            } header: {
-                Text("mine.sync.scope")
             }
         }
         .navigationTitle("mine.sync.title")
         .navigationBarTitleDisplayMode(.inline)
+        .task {
+            await cloudSyncStore.refreshAccountStatus()
+        }
+    }
+
+    private var syncErrorDetail: String? {
+        guard let detail = cloudSyncStore.lastErrorDetail else { return nil }
+        if detail == "missing-icloud-entitlement" {
+            return NSLocalizedString("mine.sync.error.missing_entitlement", comment: "")
+        }
+        return detail
+    }
+
+    private var syncBinding: Binding<Bool> {
+        Binding(
+            get: { cloudSyncStore.isEnabled },
+            set: { enabled in
+                cloudSyncStore.setEnabled(
+                    enabled,
+                    dataStore: dataStore,
+                    appearanceStore: appearanceStore
+                )
+            }
+        )
+    }
+
+    private var syncStatusColor: Color {
+        switch cloudSyncStore.status {
+        case .available: return .green
+        case .failed, .noAccount, .restricted: return .orange
+        case .disabled, .checking, .syncing: return .secondary
+        }
     }
 }
 

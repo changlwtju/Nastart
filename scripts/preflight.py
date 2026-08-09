@@ -9,6 +9,7 @@ already cost us time during device builds.
 from __future__ import annotations
 
 import json
+import plistlib
 import re
 import struct
 import subprocess
@@ -20,11 +21,20 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 IOS_ROOT = ROOT / "ios" / "Nastart" / "Nastart"
 PROJECT_FILE = ROOT / "ios" / "Nastart" / "Nastart.xcodeproj" / "project.pbxproj"
+PODFILE = ROOT / "ios" / "Nastart" / "Podfile"
+PODFILE_LOCK = ROOT / "ios" / "Nastart" / "Podfile.lock"
+THIRD_PARTY_NOTICES = ROOT / "ios" / "Nastart" / "THIRD_PARTY_NOTICES.md"
 APP_ICON_CONTENTS = IOS_ROOT / "Assets.xcassets" / "AppIcon.appiconset" / "Contents.json"
 LOCALIZATION_FILES = {
     "en": IOS_ROOT / "en.lproj" / "Localizable.strings",
     "zh-Hans": IOS_ROOT / "zh-Hans.lproj" / "Localizable.strings",
 }
+LAUNCHPAD_VIEW = IOS_ROOT / "Features" / "Launchpad" / "LaunchpadView.swift"
+DEVICES_VIEW = IOS_ROOT / "Features" / "Devices" / "DevicesView.swift"
+INFO_PLIST = IOS_ROOT / "Info.plist"
+APP_ENTRY = IOS_ROOT / "App" / "NastartApp.swift"
+NAS_MODELS = IOS_ROOT / "Core" / "Models" / "NASModels.swift"
+APP_STATE_STORES = IOS_ROOT / "Core" / "Stores" / "AppStateStores.swift"
 
 
 @dataclass
@@ -343,7 +353,598 @@ def check_project_settings() -> CheckResult:
     elif script_sandboxing.count("NO") < 2:
         errors.append("User script sandboxing must be disabled in Debug and Release configurations")
 
+    vlc_version = "3.7.3"
+    dependency_files = {
+        "Podfile": PODFILE,
+        "Podfile.lock": PODFILE_LOCK,
+        "THIRD_PARTY_NOTICES.md": THIRD_PARTY_NOTICES,
+    }
+    for label, path in dependency_files.items():
+        contents = path.read_text(encoding="utf-8") if path.exists() else ""
+        if "MobileVLCKit" not in contents or vlc_version not in contents:
+            errors.append(f"{label} must pin MobileVLCKit {vlc_version}")
+
     return CheckResult("Xcode project settings", errors, warnings)
+
+
+def check_playback_routing_invariants() -> CheckResult:
+    errors: list[str] = []
+    launchpad = LAUNCHPAD_VIEW.read_text(encoding="utf-8")
+    devices = DEVICES_VIEW.read_text(encoding="utf-8")
+    app_entry = APP_ENTRY.read_text(encoding="utf-8")
+    nas_models = NAS_MODELS.read_text(encoding="utf-8")
+    stores = APP_STATE_STORES.read_text(encoding="utf-8")
+
+    required_launchpad_fragments = {
+        "Media probes must stream bounded data instead of buffering full media responses": (
+            "let (bytes, response) = try await session.bytes(for: request)"
+        ),
+        "Jellyfin and DSM must expose one compatibility-backed player strategy": (
+            "if request.source == .jellyfin || request.source == .dsmFile { return true }"
+        ),
+        "Playback must retain the last real-device validated VLC cache window": (
+            "return isPrivateRoute ? 900 : 1_500"
+        ),
+        "Finite media playback must retain VLC HTTP file semantics": (
+            '"httpMode": "file"'
+        ),
+        "Direct playback must not be restarted by the HLS stall fallback": (
+            "guard request.fileExtensionHint == \"m3u8\", hasAlternateTransport else { return }"
+        ),
+        "VLC time callbacks must be coalesced before publishing SwiftUI state": (
+            "minimumTimeStateSyncInterval: TimeInterval = 0.25"
+        ),
+        "Playback jump controls must not retain the old 180ms input delay": (
+            "deadline: .now() + 0.06"
+        ),
+        "Finite MPEG-TS Range playback must retain the fast avformat demux path": (
+            'if usesAVFormatDemux {\n            media.addOption(":demux=avformat")'
+        ),
+        "VLC video output must not observe and rebind on every player update": (
+            "private struct VLCPlayerSurface: UIViewRepresentable {\n    let session: VLCMediaPlayerSession"
+        ),
+        "Automatic compatibility recovery must be bounded to two attempts": (
+            "compatibilityFallbackAttemptCount < 2"
+        ),
+        "Jellyfin resume must wait until VLC has opened the input": (
+            "let inputIsReadyForInitialSeek = isPlaying\n            || player.state == .esAdded"
+        ),
+        "Jellyfin original playback must use the proven DSM stall tolerance": (
+            "return isPrivateHost ? 18 : 30\n        case .dsmFile:"
+        ),
+        "System-compatible Jellyfin streams must expose native Picture in Picture": (
+            '|| request.source == .jellyfin'
+        ),
+        "Jellyfin playback must always submit a VLC device profile": (
+            "deviceProfile: Self.vlcPlaybackProfile(maxBitrate: maxStreamingBitrate)"
+        ),
+        "Jellyfin playback negotiation must make direct play an explicit policy": (
+            "enableDirectPlay: allowsDirectPlay"
+        ),
+        "Jellyfin compatibility HLS must not create unstable copied-video transcoded-audio streams": (
+            "allowVideoStreamCopy: false"
+        ),
+        "Jellyfin automatic playback must resolve the preferred original route": (
+            "preferredOriginalPlaybackRoute(for: entry, client: client)"
+        ),
+        "Jellyfin automatic playback must use an adaptive route policy": (
+            '"defaultMode": "adaptiveAuto"'
+        ),
+        "Jellyfin original playback must prefer the server static Range endpoint": (
+            'diagnosticStage: "jellyfinRange"'
+        ),
+        "Jellyfin original playback must retain DSM FileStation as a fallback": (
+            'diagnosticStage: "jellyfinDSMRange"'
+        ),
+        "Jellyfin DSM playback must derive FileStation paths from Jellyfin metadata": (
+            "dsmFileStationPathCandidates("
+        ),
+        "Containerized Jellyfin paths must be mapped against DSM shared folders": (
+            "dsmSharedFolderPaths: dataStore.files"
+        ),
+        "Jellyfin DSM path candidates must be verified against the source file size": (
+            "expectedContentLength: entry.mediaSize"
+        ),
+        "Jellyfin playback must retain HLS as a final compatibility fallback": (
+            "prepared = try await negotiatedVideoPlayback("
+        ),
+        "Jellyfin and DSM must share the authenticated Range route validator": (
+            "AuthenticatedMediaPlaybackResolver.firstPlayableURL("
+        ),
+        "Jellyfin original streams must be Range-validated before playback": (
+            'diagnosticStage: "jellyfinRange"'
+        ),
+        "Jellyfin direct play must not inherit the WAN transcode bitrate cap": (
+            "maxStaticBitrate: 360_000_000"
+        ),
+        "VLC-compatible image subtitles must remain embedded for direct play": (
+            "imageSubtitles.map {\n                SubtitleProfile(format: $0, method: .embed)"
+        ),
+        "The Jellyfin bitrate downshift must disable direct play": (
+            "allowsDirectPlay: false"
+        ),
+        "Jellyfin must measure and cache WAN bitrate": (
+            "Paths.getBitrateTestBytes(size: testSize)"
+        ),
+        "Jellyfin playback must start without waiting for a bitrate probe": (
+            "scheduleBitrateMeasurementIfNeeded(client: client)"
+        ),
+        "Jellyfin bitrate probes must be deduplicated in the background": (
+            "bitrateMeasurementTasks[cacheKey] = Task"
+        ),
+        "Jellyfin bitrate cache must be isolated by active network class": (
+            'let cacheKey = "\\(originKey)|\\(network.cacheKey)"'
+        ),
+        "Constrained networks must have a conservative bitrate cap": (
+            'cacheKey: "constrained",\n                    bitrateCap: 6_000_000'
+        ),
+        "Remote Jellyfin playback must expose a complete-request bitrate downshift": (
+            "compatibilityFallbackRequestLoader: compatibilityFallbackRequestLoader"
+        ),
+        "Remote automatic Jellyfin HLS must use the fast-start transcoding ceiling": (
+            ": min(directPlayBudget, 20_000_000)"
+        ),
+        "A bitrate downshift must renegotiate through PlaybackInfo": (
+            "adaptiveFallbackRequest("
+        ),
+        "A bitrate downshift must preserve the requested server bitrate": (
+            "forcedServerBitrate: fallbackBitrate"
+        ),
+        "A bitrate downshift must preserve the absolute playback time": (
+            "forcedStartTimeTicks: startTimeTicks"
+        ),
+        "The player must distinguish a stalled clock from an unopened input": (
+            'player.isPlaying ? "playbackClockTimeout" : "loadTimeout"'
+        ),
+        "An ended HLS input must not receive grace solely because it once exposed tracks": (
+            'let hasActiveInput = player.isPlaying\n            || state.contains("elementarystreamadded")'
+        ),
+        "A playlist that ends before its first frame must fall back immediately": (
+            'fail(reason: "prematureEndBeforeFirstFrame")'
+        ),
+        "A rendered VLC video frame must dismiss the initial loading indicator": (
+            "let hasVideoOutput = player.hasVideoOut"
+        ),
+        "Jellyfin external handoff must use the negotiated resource": (
+            "externalHandoffResource: prepared.externalHandoffResource"
+        ),
+        "Jellyfin direct play must keep the validated upstream URL for handoff": (
+            "url: directRoute.handoffURL,\n                    fileExtensionOverride: extensionHint,\n                    subtitleURL: directSubtitleURL"
+        ),
+        "Jellyfin remote direct play must use a loopback Range proxy in-app": (
+            'url: directURL,\n                    fileExtensionOverride: extensionHint'
+        ),
+        "Jellyfin direct play must normalize text subtitles before VLC renders them": (
+            "subtitleURL: directSubtitleURL"
+        ),
+        "Jellyfin negotiated direct play must reuse its normalized subtitle resource": (
+            "subtitleURL: externalHandoffResource.subtitleURL"
+        ),
+        "Jellyfin playback resources must retain route-specific certificate trust": (
+            "allowsSelfSignedCertificates: directRoute.allowsSelfSignedCertificates"
+        ),
+        "Jellyfin HLS and external players must retain the server URL": (
+            "externalHandoffResource: externalHandoffResource"
+        ),
+        "Playback diagnostics must report the upstream instead of localhost": (
+            "DiagnosticLogStore.redactedURL(playback.networkOriginURL)"
+        ),
+        "Jellyfin HLS must wait for the same two-segment startup window as Swiftfin": (
+            "minSegments: 2"
+        ),
+        "Jellyfin compatibility HLS must avoid unstable HEVC video-copy plus audio-transcode streams": (
+            'type: .video,\n                    videoCodec: "h264"'
+        ),
+        "Jellyfin compatibility HLS must preserve multichannel audio layout": (
+            'maxAudioChannels: "8"'
+        ),
+        "HLS must support keyframe-independent segment boundaries": (
+            "isBreakOnNonKeyFrames: true"
+        ),
+        "Playback diagnostics must measure tap-to-first-frame": "tapToFirstFrameMs",
+        "Playback diagnostics must measure seek recovery": "recoveryMs",
+        "Seek diagnostics must wait for the requested timeline region": (
+            "abs(currentSeconds - $0) <= 1.5"
+        ),
+        "Paused compatibility playback must not trigger reconnect": "player.state != .paused",
+        "HLS that stops during opening must fail over without waiting for the load timeout": (
+            'previousState.contains("opening")\n                || previousState.contains("buffering")'
+        ),
+        "Compatibility caching must classify the upstream rather than localhost proxy": (
+            "request.isPrivateNetworkRoute"
+        ),
+        "Infuse callback must use its documented play action": (
+            'scheme: "infuse",\n                action: "play"'
+        ),
+        "VidHub callback must use its documented play action": (
+            'scheme: "open-vidhub",\n                action: "play"'
+        ),
+        "Supported external players must receive completion callbacks": (
+            'name: "x-success"'
+        ),
+        "Fileball callback must use the filebox play route": (
+            'simplePlaybackURL(scheme: "filebox", endpoint: endpoint)'
+        ),
+        "Simple external player URLs must strictly encode nested credentials": (
+            'components.percentEncodedQuery = "url=\\(encodedEndpoint)"'
+        ),
+        "Jellyfin HLS must let VLC adopt its transient negotiated audio output": (
+            "preferredAudioTrackOrdinal: prepared.playMethod == .transcode\n                    ? nil"
+        ),
+        "Jellyfin HLS must expose every source audio track": (
+            "sourceAudioTracks: entry.audioTracks.map"
+        ),
+        "Jellyfin HLS must expose every source subtitle track": (
+            "sourceSubtitleTracks: entry.subtitleTracks.map"
+        ),
+        "Text subtitles must switch through VLC without rebuilding Jellyfin video HLS": (
+            "session.selectExternalSubtitle(sourceTrack?.externalURL)"
+        ),
+        "Image subtitles must remain on the Jellyfin burn-in path": (
+            "Self.requiresBurnIn(subtitleCodec: track.codec)"
+        ),
+        "Jellyfin source track changes must renegotiate while retaining runtime state": (
+            "return replacement?.applyingRuntimePreferences(runtimeState)"
+        ),
+        "Jellyfin source track changes must not probe the original route again": (
+            "forcedServerBitrate: maxBitrate"
+        ),
+        "Jellyfin diagnostics must distinguish effective and network bitrates": (
+            '"networkMaximumBitrate": "\\(bitrateDecision.maximumBitrate)"'
+        ),
+        "Jellyfin direct play must use the measured route budget instead of the HLS ceiling": (
+            "let directPlayBudget = bitrateDecision.directPlayMaximumBitrate"
+        ),
+        "Wi-Fi direct play must tolerate short throughput-sample variance": (
+            "max(Int(Double(cached.rawBitrate) * 1.25), cached.bitrate)"
+        ),
+        "Automatic remote HLS must retain the fast-start server ceiling": (
+            "min(directPlayBudget, 20_000_000)"
+        ),
+        "Jellyfin Picture in Picture must prepare a system-compatible stream in place": (
+            'let replacement = await loader("12000000", runtimeState)'
+        ),
+        "VLC subtitles must select an iOS CJK font": (
+            '"/System/Library/Fonts/Hiragino Sans GB.ttc"'
+        ),
+        "VLC subtitle decoding must be deterministic": (
+            ":subsdec-encoding=GB18030"
+        ),
+        "VLC subtitle decoding must auto-detect UTF-8 before the GB18030 fallback": (
+            ":subsdec-autodetect-utf8=1"
+        ),
+        "VLC diagnostics must expose the active subtitle font and encoding": (
+            '"subtitleFont": Self.cjkFontPath ?? "default"'
+        ),
+        "Jellyfin automatic playback must try the original route first": (
+            "let shouldAttemptDirectPlayback = forcedServerBitrate == nil"
+        ),
+        "Jellyfin automatic metadata must retain the highest-bitrate original source": (
+            "return sources.max { lhs, rhs in"
+        ),
+        "Jellyfin automatic fallback must preserve a resume position before VLC has a clock": (
+            "Double(requestedStartTimeTicks) / 10_000_000"
+        ),
+        "Jellyfin source-track requests must identify their reconfiguration reason": (
+            'forcedServerReason: "sourceTrackSwitch"'
+        ),
+        "Jellyfin server seeks must identify their reconfiguration reason": (
+            'forcedServerReason: "serverSeek"'
+        ),
+        "Jellyfin bitrate fallback must identify its reconfiguration reason": (
+            'forcedServerReason: "bitrateFallback"'
+        ),
+        "Jellyfin HLS must use deterministic AAC audio": (
+            'allowAudioStreamCopy: false'
+        ),
+        "Jellyfin HLS profile must not advertise variable output audio codecs": (
+            'audioCodec: "aac"'
+        ),
+        "Jellyfin runtime reconfiguration must start at the absolute server time": (
+            "startTimeTicks: requestedStartTimeTicks"
+        ),
+        "Jellyfin HLS seeking must request a replacement server stream": (
+            "serverSeekRequestLoader: serverSeekRequestLoader"
+        ),
+        "Jellyfin HLS timelines must retain their absolute offset": (
+            "timelineOffsetSeconds: timelineOffsetSeconds"
+        ),
+        "Wi-Fi throughput sampling must be long enough for route selection": (
+            "case \"wifi\": testSize = 4 * 1024 * 1024"
+        ),
+        "The shared player must provide one-tap mute": "func toggleMute()",
+        "The shared player must provide an accidental-touch lock": (
+            "accessibilityKey: \"player.controls.lock\""
+        ),
+        "Every video playback request must default to landscape": (
+            "initialOrientationMode: PlayerOrientationMode = .landscape"
+        ),
+        "The player must apply the request's initial orientation": (
+            "initialMode: request.initialOrientationMode"
+        ),
+        "Closing the player must restore the app orientation policy": (
+            "PlayerOrientationController.setPlayerActive(false)"
+        ),
+        "The orientation panel must reflect the applied initial mode": (
+            "State(initialValue: request.initialOrientationMode)"
+        ),
+        "VLC must map Jellyfin selections onto runtime track IDs": (
+            "applyInitialTrackSelectionIfNeeded("
+        ),
+        "Runtime subtitle selection must update without a synchronous track rescan": (
+            "selectedSubtitleTrackID = track.id"
+        ),
+        "Runtime audio selection must update without a synchronous track rescan": (
+            "selectedAudioTrackID = track.id"
+        ),
+        "Runtime track changes must stay on the player-owning thread": (
+            "player.currentAudioTrackIndex = track.id\n        scheduleTrackSelectionCheck(kind: .audio)"
+        ),
+        "Jellyfin home shelves must publish before secondary collections": (
+            '"stage": "primaryShelves"'
+        ),
+        "Jellyfin posters must use the persistent image pipeline": (
+            'diskPath: "nastart-jellyfin-images"'
+        ),
+        "Unknown Jellyfin durations must not render as zero minutes": (
+            "guard ticks > 0 else { return nil }"
+        ),
+        "VLC reconnects must reattach external subtitles": (
+            "self.didAddExternalSubtitle = false"
+        ),
+        "Jellyfin direct play must advertise AV1 when VLC supports it": (
+            '"av1", "dirac", "dv"'
+        ),
+        "Known HDR streams must be left to server tone mapping": (
+            'value: "SDR|Unknown"'
+        ),
+        "Fallback playback must restore the runtime rate and track state": (
+            "runtimeState?.playbackRate ?? initialPlaybackRate"
+        ),
+        "VLC failures must capture runtime state before transport fallback": (
+            "compatibilityFailed(session.runtimeState(orientationMode: orientationMode))"
+        ),
+        "External handoff must pause compatibility playback": (
+            "session.pauseForExternalHandoff()"
+        ),
+        "Playback pan gestures must lock onto one axis": (
+            "private enum VLCPlayerPanMode"
+        ),
+        "Vertical playback gestures must adjust screen brightness": (
+            "UIScreen.main.brightness = targetBrightness"
+        ),
+        "Natural playback completion must not trigger stall recovery": (
+            "let naturalEndToleranceSeconds = min(max(durationSeconds * 0.01, 3), 10)"
+        ),
+        "A finite VLC input that reaches ended must not trigger compatibility fallback": (
+            'let finiteInputEnded = player.state == .ended\n            && request.fileExtensionHint != "m3u8"'
+        ),
+        "VLC external handoff must preserve subtitle URLs": (
+            'scheme: "vlc-x-callback",\n                action: "stream",\n                endpoint: endpoint,\n                filename: filename,\n                subtitleURL: subtitleURL'
+        ),
+        "Rejected player handoffs must fall back to system sharing": (
+            "sharePayload = ServiceSharePayload(url: pending.request.url)"
+        ),
+        "External player picker must wait for the settings panel to dismiss on iPad": (
+            "try? await Task.sleep(nanoseconds: 300_000_000)\n                            openExternal()"
+        ),
+        "External player picker must use an in-player panel on iPad": (
+            "if showExternalPicker {\n                externalPlayerPicker"
+        ),
+        "Credential handoff warning must use an in-player panel on iPad": (
+            "if showCredentialHandoffWarning {\n                credentialHandoffWarning"
+        ),
+    }
+    for message, fragment in required_launchpad_fragments.items():
+        if fragment not in launchpad:
+            errors.append(message)
+
+    forbidden_launchpad_fragments = {
+        "Jellyfin must not bypass PlaybackInfo through a local proxy": "localDirectProxy",
+        "Jellyfin must not retain the old runtime TS fallback": "compatibilityTransportStream",
+        "Jellyfin must not retain the forced-HLS preparation path": "transcodedHLSPlayback",
+        "Jellyfin playback must not synchronously wait for a bitrate test": (
+            "let maxBitrate = await negotiatedMaximumBitrate"
+        ),
+        "Jellyfin must not enable an arbitrary first subtitle": "?? subtitleStreams.first?.index",
+        "Jellyfin direct-play negotiation must not claim stereo-only audio": (
+            "maxAudioChannels: 2,"
+        ),
+        "Jellyfin original playback must not be gated by a bitrate estimate": (
+            "bitrateDecision.allowsDirectPlay"
+        ),
+        "Jellyfin posters must not fall back to uncached AsyncImage loading": "AsyncImage(url:",
+        "Finite media playback must not enable VLC's live HTTP helper": (
+            'media.addOption(":http-continuous")'
+        ),
+    }
+    for message, fragment in forbidden_launchpad_fragments.items():
+        if fragment in launchpad:
+            errors.append(message)
+
+    required_device_fragments = {
+        "DSM file details must retain an explicit preview action": "previewFile()",
+        "DSM playback must use the prepared playback route": (
+            "url: playbackURL,\n                    title: item.name"
+        ),
+        "DSM direct playback must retain self-signed certificate trust": (
+            "allowsSelfSignedCertificates: session?.allowsSelfSignedCertificates == true"
+        ),
+        "DSM input failures must not restart the same URL with software decoding": (
+            "compatibilityFallbackResource: MediaPlaybackResource("
+        ),
+        "DSM video must default to landscape without rotating audio": (
+            "initialOrientationMode: item.kind == .video ? .landscape : .automatic"
+        ),
+        "DSM validated playback routes must be cached": "MediaPlaybackRouteCache.shared",
+        "ISO images must use the dedicated Range playback adapter": (
+            "case .discImage:\n            prepareDiscImagePlayback(from: url)"
+        ),
+        "Non-zero seek ranges must be validated upstream": "response.statusCode != 206",
+        "Range retries must validate the active retry offset": "activeRequestedRangeStart",
+        "The proxy must not advertise byte ranges that upstream omitted": (
+            'response.value(forHTTPHeaderField: "Accept-Ranges") == nil'
+        ),
+    }
+    for message, fragment in required_device_fragments.items():
+        if message.startswith("The proxy must not advertise"):
+            if fragment in devices:
+                errors.append(message)
+        elif message.startswith("DSM input failures must not restart"):
+            if fragment in devices:
+                errors.append(message)
+        elif fragment not in devices:
+            errors.append(message)
+
+    if "didAutoStartMedia" in devices:
+        errors.append("DSM media preview must require an explicit user action")
+    premature_end_fragments = {
+        "A VLC ended state must distinguish a premature end from the natural end": (
+            "let endedPrematurely = player.state == .ended"
+        ),
+        "A premature VLC end must prefer the complete alternate transport": (
+            'fail(reason: "prematureEnd")'
+        ),
+        "A premature VLC end without an alternate transport must reconnect": (
+            'scheduleReconnect(reason: "prematureEnd")'
+        ),
+        "Only completed finite or near-duration playback may be marked naturally finished": (
+            "if completedNaturally\n            && (player.state == .ended || player.state == .stopped)"
+        ),
+    }
+    for message, fragment in premature_end_fragments.items():
+        if fragment not in launchpad:
+            errors.append(message)
+    if ".fullScreenCover(item: $playbackRequest, onDismiss:" not in devices:
+        errors.append("DSM playback dismissal must restore portrait after the cover closes")
+    if launchpad.count(".fullScreenCover(item: $playbackRequest, onDismiss:") < 3:
+        errors.append("Every launchpad playback cover must restore portrait after dismissal")
+    if "value.code == NSURLErrorCancelled" not in devices:
+        errors.append("Cancelled playback-route races must not be reported as failures")
+    if 'if ext == "iso" { return .discImage }' not in stores:
+        errors.append("ISO images must not be downloaded as ordinary text previews")
+    if "case discImage" not in nas_models:
+        errors.append("File kinds must distinguish ISO disc images")
+    if "let data = try await postFormCall(" not in stores:
+        errors.append("DSM authentication secrets must be sent in a POST form body")
+    if "let data = try await call(path: request.0, queryItems: request.1, timeout: 60)" in stores:
+        errors.append("DSM authentication secrets must never be placed in a request URL")
+
+    required_orientation_fragments = {
+        "Playback must offer automatic orientation": "case automatic",
+        "Playback must support a portrait lock": "case portrait",
+        "Playback must support a landscape lock": "case landscape",
+        "Manual orientation choices must update the supported mask": (
+            "applyPlayerOrientationMode(_ mode: PlayerOrientationMode)"
+        ),
+        "Orientation updates must retry across full-screen transitions": (
+            "retryDelays: [0, 150_000_000, 350_000_000, 700_000_000]"
+        ),
+        "Stale orientation transitions must be cancelled": (
+            "revision == updateRevision"
+        ),
+        "Orientation updates must reach the presented player controller": (
+            "markOrientationUpdate(in: viewController.presentedViewController)"
+        ),
+        "Video orientation support must be set before full-screen presentation": (
+            "prepareForPresentation(_ mode: PlayerOrientationMode)"
+        ),
+        "Closing the player must request portrait on every iOS device": (
+            "NastartAppDelegate.supportedOrientations = .portrait\n        updateScenes(\n            preferredOrientation: .portrait"
+        ),
+    }
+    for message, fragment in required_orientation_fragments.items():
+        if fragment not in app_entry:
+            errors.append(message)
+    if "<key>UIRequiresFullScreen</key>\n\t\t<true/>" not in INFO_PLIST.read_text(
+        encoding="utf-8"
+    ):
+        errors.append("iPad must run full screen so player orientation requests are honored")
+
+    required_route_fragments = {
+        "Playback route classification must recognize private literal addresses": (
+            "enum NetworkHostClassifier"
+        ),
+    }
+    for message, fragment in required_route_fragments.items():
+        if fragment not in nas_models:
+            errors.append(message)
+    if "getaddrinfo(" in nas_models or "NetworkRouteClassificationCache" in nas_models:
+        errors.append("Domain-and-port playback routes must not be reclassified by DNS")
+    if "NetworkHostClassifier.isPrivate((playbackEndpoint ?? endpoint).host)" not in launchpad:
+        errors.append("Jellyfin LAN/WAN policy must classify the configured host literally")
+
+    if "ExternalPlaybackCallbackHandler.handle(url)" not in app_entry:
+        errors.append("The app must receive external-player callback URLs")
+    if "#if DEBUG\nprivate enum PlaybackLabLaunchRequest" not in app_entry:
+        errors.append("The playback lab entry point must remain Debug-only")
+
+    with INFO_PLIST.open("rb") as handle:
+        info = plistlib.load(handle)
+    schemes = set(info.get("LSApplicationQueriesSchemes", []))
+    required_schemes = {"infuse", "filebox", "open-vidhub", "vlc-x-callback", "outplayer"}
+    missing_schemes = sorted(required_schemes - schemes)
+    if missing_schemes:
+        errors.append("Missing external player query schemes: " + ", ".join(missing_schemes))
+
+    callback_schemes = {
+        scheme
+        for entry in info.get("CFBundleURLTypes", [])
+        for scheme in entry.get("CFBundleURLSchemes", [])
+    }
+    if "nastart" not in callback_schemes:
+        errors.append("Missing Nastart callback URL scheme")
+
+    return CheckResult("Playback routing invariants", errors, [])
+
+
+def check_file_browser_performance_invariants() -> CheckResult:
+    errors: list[str] = []
+    stores = APP_STATE_STORES.read_text(encoding="utf-8")
+    devices = DEVICES_VIEW.read_text(encoding="utf-8")
+
+    required_store_fragments = {
+        "File Station API metadata must be reused between folder requests": (
+            "cachedFileStationAPIInfo"
+        ),
+        "Snapshot discovery must warm the File Station API cache": (
+            "cacheFileStationAPIInfo(apiInfo)"
+        ),
+        "Folder results must have a bounded memory cache": (
+            "folderCacheLifetime: TimeInterval = 5 * 60"
+        ),
+        "Concurrent requests for the same folder must be coalesced": (
+            "folderLoadTasks[normalizedPath]"
+        ),
+        "Folder caches must be isolated by NAS and account": (
+            "prepareFolderCache(for: dataSource)"
+        ),
+        "Folder diagnostics must include request duration": (
+            '"durationMs"'
+        ),
+        "Diagnostic persistence must coalesce rapid playback events": (
+            "pendingPersistenceTask = Task"
+        ),
+        "Diagnostic encoding must run outside the main actor": (
+            "persistenceQueue.async"
+        ),
+    }
+    for message, fragment in required_store_fragments.items():
+        if fragment not in stores:
+            errors.append(message)
+
+    required_device_fragments = {
+        "Folder lists must expose pull-to-refresh": ".refreshable {",
+        "Pull-to-refresh must bypass the memory cache": "forceRefresh: true",
+    }
+    for message, fragment in required_device_fragments.items():
+        if fragment not in devices:
+            errors.append(message)
+
+    if '["real_path", "size", "time", "type"]' in stores:
+        errors.append("Folder listing must not request unused modification-time metadata")
+
+    return CheckResult("File browser performance invariants", errors, [])
 
 
 def main() -> int:
@@ -355,6 +956,8 @@ def main() -> int:
         check_localization_references(),
         check_app_icon_asset(),
         check_project_settings(),
+        check_playback_routing_invariants(),
+        check_file_browser_performance_invariants(),
     ]
 
     print("Nastart local preflight")

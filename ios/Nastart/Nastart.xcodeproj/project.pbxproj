@@ -25,6 +25,15 @@
 		010101010101010101010016 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020017 /* Assets.xcassets */; };
 		010101010101010101010017 /* AppStateStores.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020018 /* AppStateStores.swift */; };
 		010101010101010101010018 /* JellyfinAPI in Frameworks */ = {isa = PBXBuildFile; productRef = 0B0B0B0B0B0B0B0B0B0B0002 /* JellyfinAPI */; };
+		010101010101010101010019 /* AudioPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020020 /* AudioPlayerView.swift */; };
+		010101010101010101010020 /* ISOPlaybackAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020021 /* ISOPlaybackAdapter.swift */; };
+		010101010101010101010021 /* CloudSyncStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020022 /* CloudSyncStore.swift */; };
+		010101010101010101010022 /* AgentClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020024 /* AgentClient.swift */; };
+		010101010101010101010023 /* SSHAgentInstaller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020025 /* SSHAgentInstaller.swift */; };
+		010101010101010101010024 /* nastart_agent.py in Resources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020026 /* nastart_agent.py */; };
+		010101010101010101010025 /* Dockerfile in Resources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020027 /* Dockerfile */; };
+		010101010101010101010026 /* compose.yaml in Resources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020028 /* compose.yaml */; };
+		010101010101010101010027 /* NIOSSH in Frameworks */ = {isa = PBXBuildFile; productRef = 0B0B0B0B0B0B0B0B0B0B0004 /* NIOSSH */; };
 		EDD2AEF5B14DC4128B8A2308 /* Pods_Nastart.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F0A427A98EF409A9FC1D1C04 /* Pods_Nastart.framework */; };
 /* End PBXBuildFile section */
 
@@ -48,6 +57,16 @@
 		020202020202020202020017 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		020202020202020202020018 /* AppStateStores.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStateStores.swift; sourceTree = "<group>"; };
 		020202020202020202020019 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		020202020202020202020020 /* AudioPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerView.swift; sourceTree = "<group>"; };
+		020202020202020202020021 /* ISOPlaybackAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ISOPlaybackAdapter.swift; sourceTree = "<group>"; };
+		020202020202020202020022 /* CloudSyncStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudSyncStore.swift; sourceTree = "<group>"; };
+		020202020202020202020023 /* Nastart.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Nastart.entitlements; sourceTree = "<group>"; };
+		020202020202020202020024 /* AgentClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentClient.swift; sourceTree = "<group>"; };
+		020202020202020202020025 /* SSHAgentInstaller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SSHAgentInstaller.swift; sourceTree = "<group>"; };
+		020202020202020202020026 /* nastart_agent.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; name = nastart_agent.py; path = ../../agent/nastart_agent.py; sourceTree = SOURCE_ROOT; };
+		020202020202020202020027 /* Dockerfile */ = {isa = PBXFileReference; lastKnownFileType = text; name = Dockerfile; path = ../../agent/Dockerfile; sourceTree = SOURCE_ROOT; };
+		020202020202020202020028 /* compose.yaml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; name = compose.yaml; path = ../../agent/compose.yaml; sourceTree = SOURCE_ROOT; };
+		020202020202020202020029 /* Nastart.Debug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Nastart.Debug.entitlements; sourceTree = "<group>"; };
 		020202020202020202020099 /* Nastart.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Nastart.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6EE295E3449845D6FE9490F6 /* Pods-Nastart.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Nastart.release.xcconfig"; path = "Target Support Files/Pods-Nastart/Pods-Nastart.release.xcconfig"; sourceTree = "<group>"; };
 		D447A0A76105EFDD2D985714 /* Pods-Nastart.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Nastart.debug.xcconfig"; path = "Target Support Files/Pods-Nastart/Pods-Nastart.debug.xcconfig"; sourceTree = "<group>"; };
@@ -60,6 +79,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				010101010101010101010018 /* JellyfinAPI in Frameworks */,
+				010101010101010101010027 /* NIOSSH in Frameworks */,
 				EDD2AEF5B14DC4128B8A2308 /* Pods_Nastart.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -71,6 +91,7 @@
 			isa = PBXGroup;
 			children = (
 				050505050505050505050001 /* Nastart */,
+				050505050505050505050014 /* Agent Payload */,
 				050505050505050505050099 /* Products */,
 				449565943B579E90D5135CAF /* Pods */,
 				C5553F8E7678649EE925E94C /* Frameworks */,
@@ -86,6 +107,8 @@
 				050505050505050505050005 /* Shared */,
 				020202020202020202020017 /* Assets.xcassets */,
 				020202020202020202020019 /* Info.plist */,
+				020202020202020202020023 /* Nastart.entitlements */,
+				020202020202020202020029 /* Nastart.Debug.entitlements */,
 				030303030303030303030001 /* Localizable.strings */,
 			);
 			path = Nastart;
@@ -162,6 +185,8 @@
 			children = (
 				020202020202020202020009 /* ServiceCardView.swift */,
 				020202020202020202020010 /* LaunchpadView.swift */,
+				020202020202020202020020 /* AudioPlayerView.swift */,
+				020202020202020202020021 /* ISOPlaybackAdapter.swift */,
 			);
 			path = Launchpad;
 			sourceTree = "<group>";
@@ -194,8 +219,21 @@
 			isa = PBXGroup;
 			children = (
 				020202020202020202020018 /* AppStateStores.swift */,
+				020202020202020202020022 /* CloudSyncStore.swift */,
+				020202020202020202020024 /* AgentClient.swift */,
+				020202020202020202020025 /* SSHAgentInstaller.swift */,
 			);
 			path = Stores;
+			sourceTree = "<group>";
+		};
+		050505050505050505050014 /* Agent Payload */ = {
+			isa = PBXGroup;
+			children = (
+				020202020202020202020026 /* nastart_agent.py */,
+				020202020202020202020027 /* Dockerfile */,
+				020202020202020202020028 /* compose.yaml */,
+			);
+			name = "Agent Payload";
 			sourceTree = "<group>";
 		};
 		050505050505050505050099 /* Products */ = {
@@ -243,6 +281,7 @@
 			name = Nastart;
 			packageProductDependencies = (
 				0B0B0B0B0B0B0B0B0B0B0002 /* JellyfinAPI */,
+				0B0B0B0B0B0B0B0B0B0B0004 /* NIOSSH */,
 			);
 			productName = Nastart;
 			productReference = 020202020202020202020099 /* Nastart.app */;
@@ -256,7 +295,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1600;
-				LastUpgradeCheck = 1600;
+				LastUpgradeCheck = 2660;
 				TargetAttributes = {
 					060606060606060606060001 = {
 						CreatedOnToolsVersion = 16.0;
@@ -275,6 +314,7 @@
 			mainGroup = 050505050505050505050000;
 			packageReferences = (
 				0B0B0B0B0B0B0B0B0B0B0001 /* XCRemoteSwiftPackageReference "jellyfin-sdk-swift" */,
+				0B0B0B0B0B0B0B0B0B0B0003 /* XCRemoteSwiftPackageReference "swift-nio-ssh" */,
 			);
 			productRefGroup = 050505050505050505050099 /* Products */;
 			projectDirPath = "";
@@ -292,6 +332,9 @@
 			files = (
 				010101010101010101010016 /* Assets.xcassets in Resources */,
 				010101010101010101010014 /* Localizable.strings in Resources */,
+				010101010101010101010024 /* nastart_agent.py in Resources */,
+				010101010101010101010025 /* Dockerfile in Resources */,
+				010101010101010101010026 /* compose.yaml in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -328,13 +371,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Nastart/Pods-Nastart-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Nastart/Pods-Nastart-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -363,6 +402,11 @@
 				010101010101010101010013 /* MineView.swift in Sources */,
 				010101010101010101010015 /* PlaceholderView.swift in Sources */,
 				010101010101010101010017 /* AppStateStores.swift in Sources */,
+				010101010101010101010019 /* AudioPlayerView.swift in Sources */,
+				010101010101010101010020 /* ISOPlaybackAdapter.swift in Sources */,
+				010101010101010101010021 /* CloudSyncStore.swift in Sources */,
+				010101010101010101010022 /* AgentClient.swift in Sources */,
+				010101010101010101010023 /* SSHAgentInstaller.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -385,6 +429,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -416,6 +461,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_LANGUAGE = en;
+				DEVELOPMENT_TEAM = 5436TB5498;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
@@ -438,6 +484,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -447,6 +494,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -478,6 +526,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_LANGUAGE = en;
+				DEVELOPMENT_TEAM = 5436TB5498;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
@@ -493,6 +542,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -504,10 +554,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				CODE_SIGN_ENTITLEMENTS = Nastart/Nastart.Debug.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
-				DEVELOPMENT_TEAM = 5436TB5498;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Nastart/Info.plist;
@@ -544,10 +594,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				CODE_SIGN_ENTITLEMENTS = Nastart/Nastart.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
-				DEVELOPMENT_TEAM = 5436TB5498;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Nastart/Info.plist;
@@ -610,6 +660,14 @@
 				minimumVersion = 2.1.0;
 			};
 		};
+		0B0B0B0B0B0B0B0B0B0B0003 /* XCRemoteSwiftPackageReference "swift-nio-ssh" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-nio-ssh.git";
+			requirement = {
+				kind = upToNextMinorVersion;
+				minimumVersion = 0.11.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -617,6 +675,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 0B0B0B0B0B0B0B0B0B0B0001 /* XCRemoteSwiftPackageReference "jellyfin-sdk-swift" */;
 			productName = JellyfinAPI;
+		};
+		0B0B0B0B0B0B0B0B0B0B0004 /* NIOSSH */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0B0B0B0B0B0B0B0B0B0B0003 /* XCRemoteSwiftPackageReference "swift-nio-ssh" */;
+			productName = NIOSSH;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

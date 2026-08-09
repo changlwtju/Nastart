@@ -8,7 +8,9 @@ incomplete or unstable for Docker/system discovery. It also reserves the future
 compatibility path for other Docker-capable NAS platforms, but deep
 non-Synology support is not a v1 requirement.
 
-Recommended language: Go.
+The first executable implementation is dependency-free Python so it can run on
+DSM/Linux hosts and be validated without installing a toolchain. A hardened
+Docker image and Compose definition are included.
 
 Initial responsibilities:
 
@@ -24,5 +26,30 @@ Security defaults:
 - read-only first
 - minimal permissions
 - explicit pairing
-- scoped tokens
+- scoped tokens stored as one-way SHA-256 digests
+- one-time pairing codes with per-client attempt throttling
 - no secrets in logs
+
+## Run directly
+
+```sh
+NASTART_PAIRING_CODE=123456 python3 nastart_agent.py --data-dir ./data
+```
+
+Health check: `GET /healthz`. Pair once with `POST /v1/pair`, then use the
+returned Bearer token for `GET /v1/handshake`, `GET /v1/snapshot`, and
+`GET /v1/diagnostics`.
+
+A consumed pairing code stays disabled across restarts. Deploying with a new
+six-digit code explicitly rotates pairing; failed attempts are limited to five
+per client address per minute.
+
+## Run with Docker Compose
+
+```sh
+NASTART_PAIRING_CODE=123456 docker compose up -d --build
+```
+
+The container is read-only, drops Linux capabilities, uses
+`no-new-privileges`, and mounts the Docker socket read-only. The Agent API does
+not expose container mutation or arbitrary command execution.

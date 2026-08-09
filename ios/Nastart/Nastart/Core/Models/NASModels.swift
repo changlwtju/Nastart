@@ -65,7 +65,7 @@ enum UserConfiguredServiceURLPolicy {
     }
 }
 
-enum ConnectionMode: String, CaseIterable, Identifiable {
+enum ConnectionMode: String, CaseIterable, Identifiable, Codable {
     case dsmOnly
     case dsmWithAgent
     case agentOnly
@@ -74,7 +74,7 @@ enum ConnectionMode: String, CaseIterable, Identifiable {
     var id: String { rawValue }
 }
 
-enum ServiceCategory: String, CaseIterable, Identifiable, Hashable {
+enum ServiceCategory: String, CaseIterable, Identifiable, Hashable, Codable {
     case favorites
     case media
     case downloads
@@ -124,7 +124,7 @@ enum ServiceCategory: String, CaseIterable, Identifiable, Hashable {
     }
 }
 
-enum ServiceStatus: String, Equatable {
+enum ServiceStatus: String, Equatable, Codable {
     case online
     case installed
     case warning
@@ -132,7 +132,7 @@ enum ServiceStatus: String, Equatable {
     case unknown
 }
 
-enum LaunchpadServiceSource: Equatable {
+enum LaunchpadServiceSource: String, Equatable, Codable {
     case dsm
     case container
     case reverseProxy
@@ -140,7 +140,7 @@ enum LaunchpadServiceSource: Equatable {
     case manual
 }
 
-struct NASDevice: Identifiable {
+struct NASDevice: Identifiable, Codable {
     let id: UUID
     let name: String
     let subtitle: String
@@ -206,7 +206,7 @@ enum NASUptimeFormatter {
     }
 }
 
-struct NASCertificateInfo {
+struct NASCertificateInfo: Codable {
     let subject: String?
     let issuer: String?
     let validFrom: Date?
@@ -223,13 +223,13 @@ struct NASCertificateInfo {
     }
 }
 
-enum NASSSHStatus {
+enum NASSSHStatus: String, Codable {
     case enabled
     case disabled
     case unavailable
 }
 
-struct LaunchpadService: Identifiable {
+struct LaunchpadService: Identifiable, Codable {
     let id: UUID
     let name: String
     let iconText: String
@@ -339,7 +339,7 @@ enum ServiceWebMode: String, CaseIterable, Identifiable {
     }
 }
 
-struct FileItem: Identifiable {
+struct FileItem: Identifiable, Codable {
     let id: UUID
     let name: String
     let subtitle: String
@@ -374,13 +374,14 @@ struct FileItem: Identifiable {
     }
 }
 
-enum FileKind: Equatable {
+enum FileKind: String, Equatable, Codable {
     case folder
     case video
     case audio
     case image
     case text
     case archive
+    case discImage
 
     var symbolName: String {
         switch self {
@@ -390,11 +391,12 @@ enum FileKind: Equatable {
         case .image: return "photo"
         case .text: return "doc.text"
         case .archive: return "archivebox"
+        case .discImage: return "opticaldisc"
         }
     }
 }
 
-struct DockerContainer: Identifiable {
+struct DockerContainer: Identifiable, Codable {
     let id: UUID
     let name: String
     let image: String
@@ -456,12 +458,12 @@ struct TaskItem: Identifiable, Codable {
     }
 }
 
-enum MediaKind: Equatable {
+enum MediaKind: String, Equatable, Codable {
     case video
     case audio
 }
 
-struct MediaItem: Identifiable {
+struct MediaItem: Identifiable, Codable {
     let id: UUID
     let title: String
     let subtitle: String
@@ -477,7 +479,7 @@ struct MediaItem: Identifiable {
     }
 }
 
-struct DiscoveredNASDevice: Identifiable {
+struct DiscoveredNASDevice: Identifiable, Codable {
     let id: UUID
     let name: String
     let host: String

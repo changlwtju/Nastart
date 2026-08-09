@@ -2,7 +2,7 @@
 
 ## MobileVLCKit
 
-Nastart optionally includes MobileVLCKit 3.6.0 for media formats and codecs
+Nastart optionally includes MobileVLCKit 3.7.3 for media formats and codecs
 that AVPlayer cannot decode.
 
 - Project: https://code.videolan.org/videolan/VLCKit

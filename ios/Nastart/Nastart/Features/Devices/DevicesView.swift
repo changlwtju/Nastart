@@ -1,6 +1,7 @@
 import SwiftUI
 import UIKit
 import QuickLook
+import Network
 
 struct DevicesView: View {
     @EnvironmentObject private var dataStore: AppDataStore
@@ -13,7 +14,7 @@ struct DevicesView: View {
                 Section {
                     DeviceHealthHeader(
                         device: dataStore.device,
-                        isConnected: dataStore.isDSMReachable
+                        isConnected: dataStore.isDSMAvailableForDisplay
                     )
                     .listRowInsets(EdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0))
                     .listRowBackground(Color.clear)
@@ -806,6 +807,9 @@ private struct FileBrowserView: View {
         .listStyle(.insetGrouped)
         .navigationTitle(titleKey)
         .task { await loadIfNeeded() }
+        .refreshable {
+            await reloadFolder()
+        }
     }
 
     @MainActor
@@ -820,6 +824,21 @@ private struct FileBrowserView: View {
             loadErrorKey = "devices.files.folder_load_failed"
         }
         isLoading = false
+    }
+
+    @MainActor
+    private func reloadFolder() async {
+        guard let folderPath else { return }
+        loadErrorKey = nil
+        do {
+            loadedItems = try await dataStore.loadFolder(
+                path: folderPath,
+                forceRefresh: true
+            )
+            didLoad = true
+        } catch {
+            loadErrorKey = "devices.files.folder_load_failed"
+        }
     }
 }
 
@@ -872,12 +891,19 @@ private struct FileItemRow: View {
 
 private struct FilePreviewView: View {
     let item: FileItem
+    @EnvironmentObject private var dataStore: AppDataStore
     @EnvironmentObject private var connectionStore: NASConnectionStore
     @State private var externalMessageKey = "external.open_failed"
     @State private var showExternalHint = false
     @State private var playbackRequest: MediaPlaybackRequest?
     @State private var localPreview: LocalFilePreview?
     @State private var isPreparingPreview = false
+    @State private var externalPlaybackURL: URL?
+    @State private var showExternalPicker = false
+    @State private var externalSharePayload: FileExternalSharePayload?
+    @State private var pendingExternalTarget: ExternalOpenTarget?
+    @State private var pendingExternalShare = false
+    @State private var showCredentialHandoffWarning = false
 
     var body: some View {
         List {
@@ -910,6 +936,10 @@ private struct FilePreviewView: View {
                 .disabled(isPreparingPreview)
             } header: {
                 Text("devices.files.actions")
+            } footer: {
+                if item.kind == .discImage {
+                    Text("devices.files.iso_playback_hint")
+                }
             }
         }
         .listStyle(.insetGrouped)
@@ -917,13 +947,46 @@ private struct FilePreviewView: View {
         .alert(LocalizedStringKey(externalMessageKey), isPresented: $showExternalHint) {
             Button("action.ok", role: .cancel) {}
         }
-        .fullScreenCover(item: $playbackRequest) { request in
+        .fullScreenCover(item: $playbackRequest, onDismiss: {
+            PlayerOrientationController.setPlayerActive(false)
+        }) { request in
             NavigationStack {
                 BuiltInMediaPlayerView(request: request)
             }
         }
         .fullScreenCover(item: $localPreview) { preview in
             LocalFilePreviewScreen(preview: preview)
+        }
+        .confirmationDialog("service.external.title", isPresented: $showExternalPicker) {
+            ForEach(ExternalOpenTarget.installedPlayers) { target in
+                Button(target.displayName) { requestExternalOpen(target) }
+            }
+            Button("external.other_apps") { requestExternalShare() }
+            Button("action.cancel", role: .cancel) {}
+        }
+        .sheet(item: $externalSharePayload) { payload in
+            SystemShareView(items: [payload.url])
+        }
+        .confirmationDialog(
+            "external.credential_warning.title",
+            isPresented: $showCredentialHandoffWarning,
+            titleVisibility: .visible
+        ) {
+            Button("external.credential_warning.continue") {
+                if let target = pendingExternalTarget {
+                    openExternal(target)
+                } else if pendingExternalShare, let externalPlaybackURL {
+                    externalSharePayload = FileExternalSharePayload(url: externalPlaybackURL)
+                }
+                pendingExternalTarget = nil
+                pendingExternalShare = false
+            }
+            Button("action.cancel", role: .cancel) {
+                pendingExternalTarget = nil
+                pendingExternalShare = false
+            }
+        } message: {
+            Text("external.credential_warning.message")
         }
     }
 
@@ -937,23 +1000,120 @@ private struct FilePreviewView: View {
             prepareMediaPlayback(from: url)
         case .image, .text, .archive:
             prepareLocalPreview(from: url)
+        case .discImage:
+            prepareDiscImagePlayback(from: url)
         case .folder:
             break
         }
     }
 
+    private func prepareDiscImagePlayback(from fallbackURL: URL) {
+        isPreparingPreview = true
+        let session = connectionStore.dsmSession
+        let candidates = session?.fileStationOpenURLs(path: item.path) ?? [fallbackURL]
+        Task {
+            let selectedURL = await AuthenticatedMediaPlaybackResolver.firstPlayableURL(
+                candidates: candidates,
+                allowsSelfSignedCertificates: session?.allowsSelfSignedCertificates == true,
+                diagnosticStage: "dsmDiscImageRange"
+            ) ?? fallbackURL
+            do {
+                let prepared = try await ISOPlaybackAdapter.prepare(
+                    sourceURL: selectedURL,
+                    allowsSelfSignedCertificates: session?.allowsSelfSignedCertificates == true
+                )
+                await MainActor.run {
+                    isPreparingPreview = false
+                    externalPlaybackURL = selectedURL
+                    PlayerOrientationController.prepareForPresentation(.landscape)
+                    playbackRequest = MediaPlaybackRequest(
+                        url: prepared.playbackURL,
+                        title: item.name,
+                        source: .dsmFile,
+                        contentKind: .discImage,
+                        fileExtensionOverride: prepared.fileExtension,
+                        initialOrientationMode: .landscape,
+                        isPrivateNetworkRoute: NetworkHostClassifier.isPrivate(selectedURL.host),
+                        externalHandoffResource: MediaPlaybackResource(
+                            url: selectedURL,
+                            fileExtensionOverride: "iso",
+                            allowsSelfSignedCertificates: session?.allowsSelfSignedCertificates
+                        )
+                    )
+                    DiagnosticLogStore.shared.record(
+                        .info,
+                        categoryKey: "diagnostics.category.media",
+                        messageKey: "diagnostics.files.preview_stream_started",
+                        details: [
+                            "target": DiagnosticLogStore.redactedURL(selectedURL),
+                            "extension": "iso",
+                            "mode": "builtInDiscImage",
+                            "selectedPath": prepared.selectedPath,
+                            "titleCount": String(prepared.titleCount)
+                        ]
+                    )
+                }
+            } catch {
+                await MainActor.run {
+                    isPreparingPreview = false
+                    externalPlaybackURL = selectedURL
+                    showExternalPicker = true
+                    DiagnosticLogStore.shared.record(
+                        .warning,
+                        categoryKey: "diagnostics.category.media",
+                        messageKey: "diagnostics.media.iso_failed",
+                        details: [
+                            "target": DiagnosticLogStore.redactedURL(selectedURL),
+                            "error": String(describing: error),
+                            "fallback": "externalDiscImage"
+                        ]
+                    )
+                }
+            }
+        }
+    }
+
     private func prepareMediaPlayback(from url: URL) {
         isPreparingPreview = true
+        let requestedAt = Date()
         let fileExtension = (item.name as NSString).pathExtension.lowercased()
         let session = connectionStore.dsmSession
         let candidates = session?.fileStationOpenURLs(path: item.path) ?? [url]
         Task {
-            let selectedURL = await DSMFilePlaybackResolver.firstPlayableURL(
+            let directory = (item.path as NSString).deletingLastPathComponent
+            let siblingItems = try? await dataStore.loadFolder(path: directory)
+            async let sidecarSubtitle = NASSubtitleAssetResolver.resolve(
+                videoPath: item.path,
+                videoName: item.name,
+                session: session,
+                siblingItems: siblingItems
+            )
+            let selectedURL = await AuthenticatedMediaPlaybackResolver.firstPlayableURL(
                 candidates: candidates,
-                allowsSelfSignedCertificates: session?.allowsSelfSignedCertificates == true
+                allowsSelfSignedCertificates: session?.allowsSelfSignedCertificates == true,
+                diagnosticStage: "dsmRange"
             ) ?? url
+            let subtitleAsset = await sidecarSubtitle
+            let isPrivateRoute = NetworkHostClassifier.isPrivate(selectedURL.host)
+            // A remote FileStation connection is a fragile long-lived HTTP
+            // connection on cellular networks. Keep VLC on a loopback URL so
+            // every seek/reconnect is handled by the authenticated proxy and
+            // the NAS session credentials never need to be re-created by VLC.
+            let playbackURL: URL
+            if isPrivateRoute {
+                playbackURL = selectedURL
+            } else {
+                playbackURL = (try? await AuthenticatedMediaStreamProxy.shared.register(
+                    upstreamURL: selectedURL,
+                    filename: item.name,
+                    allowsSelfSignedCertificates: session?.allowsSelfSignedCertificates == true
+                )) ?? selectedURL
+            }
             await MainActor.run {
                 isPreparingPreview = false
+                PlayerOrientationController.prepareForPresentation(
+                    item.kind == .video ? .landscape : .automatic
+                )
                 DiagnosticLogStore.shared.record(
                     .info,
                     categoryKey: "diagnostics.category.media",
@@ -961,17 +1121,42 @@ private struct FilePreviewView: View {
                     details: [
                         "target": DiagnosticLogStore.redactedURL(selectedURL),
                         "extension": fileExtension.isEmpty ? "-" : fileExtension,
+                        "sidecarSubtitle": subtitleAsset == nil ? "none" : "normalizedUTF8",
                         "selfSigned": session?.allowsSelfSignedCertificates == true ? "on" : "off",
-                        "transport": selectedURL.scheme?.lowercased() ?? "-"
+                        "transport": playbackURL.host == "127.0.0.1"
+                            ? "localRangeProxy"
+                            : selectedURL.scheme?.lowercased() ?? "-"
                     ]
                 )
                 playbackRequest = MediaPlaybackRequest(
-                    url: selectedURL,
+                    requestedAt: requestedAt,
+                    url: playbackURL,
                     title: item.name,
                     allowsSelfSignedCertificates: session?.allowsSelfSignedCertificates == true
                         && selectedURL.scheme?.lowercased() == "https",
                     source: .dsmFile,
-                    fileExtensionOverride: fileExtension.isEmpty ? nil : fileExtension
+                    contentKind: item.kind == .audio ? .audio : .video,
+                    fileExtensionOverride: fileExtension.isEmpty ? nil : fileExtension,
+                    externalSubtitleURL: subtitleAsset?.playbackURL,
+                    initialOrientationMode: item.kind == .video ? .landscape : .automatic,
+                    isPrivateNetworkRoute: isPrivateRoute,
+                    compatibilityFallbackResource: item.kind == .video
+                        ? MediaPlaybackResource(
+                            url: playbackURL,
+                            fileExtensionOverride: fileExtension.isEmpty ? nil : fileExtension,
+                            subtitleURL: subtitleAsset?.playbackURL,
+                            forcesSoftwareDecoding: true,
+                            allowsSelfSignedCertificates: session?.allowsSelfSignedCertificates == true
+                                && selectedURL.scheme?.lowercased() == "https"
+                        )
+                        : nil,
+                    externalHandoffResource: MediaPlaybackResource(
+                        url: selectedURL,
+                        fileExtensionOverride: fileExtension.isEmpty ? nil : fileExtension,
+                        subtitleURL: subtitleAsset?.sourceURL,
+                        allowsSelfSignedCertificates: session?.allowsSelfSignedCertificates == true
+                            && selectedURL.scheme?.lowercased() == "https"
+                    )
                 )
             }
         }
@@ -1004,77 +1189,1273 @@ private struct FilePreviewView: View {
         showExternalHint = true
     }
 
+    private func requestExternalOpen(_ target: ExternalOpenTarget) {
+        guard let externalPlaybackURL else {
+            showFailure("external.open_failed")
+            return
+        }
+        guard !externalRequest(for: externalPlaybackURL).containsSensitiveCredential else {
+            pendingExternalTarget = target
+            pendingExternalShare = false
+            showCredentialHandoffWarning = true
+            return
+        }
+        openExternal(target)
+    }
+
+    private func requestExternalShare() {
+        guard let externalPlaybackURL else {
+            showFailure("external.open_failed")
+            return
+        }
+        guard !externalRequest(for: externalPlaybackURL).containsSensitiveCredential else {
+            pendingExternalTarget = nil
+            pendingExternalShare = true
+            showCredentialHandoffWarning = true
+            return
+        }
+        externalSharePayload = FileExternalSharePayload(url: externalPlaybackURL)
+    }
+
+    private func openExternal(_ target: ExternalOpenTarget) {
+        guard let externalPlaybackURL,
+              let targetURL = target.url(endpoint: externalPlaybackURL, filename: item.name) else {
+            showFailure("external.open_failed")
+            return
+        }
+        UIApplication.shared.open(targetURL, options: [:]) { accepted in
+            guard !accepted else { return }
+            DispatchQueue.main.async {
+                externalSharePayload = FileExternalSharePayload(url: externalPlaybackURL)
+            }
+        }
+    }
+
+    private func externalRequest(for url: URL) -> MediaPlaybackRequest {
+        MediaPlaybackRequest(
+            url: url,
+            title: item.name,
+            source: .dsmFile,
+            fileExtensionOverride: "iso",
+            externalHandoffResource: MediaPlaybackResource(
+                url: url,
+                fileExtensionOverride: "iso"
+            )
+        )
+    }
+
     private var authenticatedURL: URL? {
         connectionStore.dsmSession?.fileStationOpenURL(path: item.path)
     }
 
     private var previewSymbolName: String {
-        item.kind == .video || item.kind == .audio ? "play.rectangle" : "doc.text.magnifyingglass"
+        item.kind == .video || item.kind == .audio || item.kind == .discImage
+            ? "play.rectangle"
+            : "doc.text.magnifyingglass"
     }
 }
 
-private enum DSMFilePlaybackResolver {
-    static func firstPlayableURL(
-        candidates: [URL],
-        allowsSelfSignedCertificates: Bool
-    ) async -> URL? {
-        for candidate in candidates {
-            let delegate = FilePreviewTrustDelegate(
-                trustedHost: candidate.host,
-                allowsSelfSignedCertificates: allowsSelfSignedCertificates
-                    && candidate.scheme?.lowercased() == "https"
-            )
-            let configuration = URLSessionConfiguration.ephemeral
-            configuration.timeoutIntervalForRequest = 8
-            configuration.timeoutIntervalForResource = 12
-            configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
-            let session = URLSession(
-                configuration: configuration,
-                delegate: delegate,
-                delegateQueue: nil
-            )
-            defer { session.invalidateAndCancel() }
-            var request = URLRequest(url: candidate)
-            request.setValue("bytes=0-1", forHTTPHeaderField: "Range")
-            request.setValue("identity", forHTTPHeaderField: "Accept-Encoding")
-            do {
-                let (_, response) = try await session.bytes(for: request)
-                guard let response = response as? HTTPURLResponse else { continue }
-                let mimeType = response.mimeType?.lowercased() ?? ""
-                let isMediaResponse = (response.statusCode == 200 || response.statusCode == 206)
-                    && !mimeType.contains("json")
-                    && !mimeType.contains("html")
-                DiagnosticLogStore.shared.record(
-                    isMediaResponse ? .info : .warning,
-                    categoryKey: "diagnostics.category.media",
-                    messageKey: isMediaResponse
-                        ? "diagnostics.media.probe_succeeded"
-                        : "diagnostics.media.probe_invalid_response",
-                    details: [
-                        "target": DiagnosticLogStore.redactedURL(candidate),
-                        "stage": "dsmRange",
-                        "status": "\(response.statusCode)",
-                        "mime": mimeType.isEmpty ? "-" : mimeType,
-                        "acceptRanges": response.value(forHTTPHeaderField: "Accept-Ranges") ?? "-"
-                    ]
-                )
-                if isMediaResponse { return response.url ?? candidate }
-            } catch {
-                let value = error as NSError
-                DiagnosticLogStore.shared.record(
-                    .warning,
-                    categoryKey: "diagnostics.category.media",
-                    messageKey: "diagnostics.media.probe_failed",
-                    details: [
-                        "target": DiagnosticLogStore.redactedURL(candidate),
-                        "stage": "dsmRange",
-                        "errorDomain": value.domain,
-                        "errorCode": "\(value.code)"
-                    ]
-                )
+private struct FileExternalSharePayload: Identifiable {
+    let id = UUID()
+    let url: URL
+}
+
+private struct NASSubtitleAsset {
+    let sourceURL: URL
+    let playbackURL: URL
+}
+
+/// File Station does not expose sidecar subtitles as part of the video item.
+/// Probe same-directory basename variants and normalize legacy Chinese
+/// encodings before handing the subtitle to VLC. The original authenticated
+/// URL remains available for external-player handoff.
+private enum NASSubtitleAssetResolver {
+    private static let sidecarExtensions = ["srt", "ass", "ssa", "vtt", "sub"]
+    private static let maximumSubtitleBytes = 16 * 1024 * 1024
+
+    static func resolve(
+        videoPath: String,
+        videoName: String,
+        session: DSMSession?,
+        siblingItems: [FileItem]? = nil
+    ) async -> NASSubtitleAsset? {
+        guard let session else { return nil }
+        let basename = (videoName as NSString).deletingPathExtension
+        guard !basename.isEmpty else { return nil }
+        let directory = (videoPath as NSString).deletingLastPathComponent
+        let suffixes = [
+            "",
+            ".zh", ".zh-cn", ".zh-tw", ".zh-hans", ".zh-hant",
+            ".zh_cn", ".zh_tw", ".chs", ".cht", ".chi", ".sc", ".tc",
+            ".简", ".繁", "-zh", "-chs", "-cht"
+        ]
+        var paths: [(path: String, name: String)] = []
+        var seen = Set<String>()
+        if let siblingItems {
+            for item in siblingItems where !item.isFolder && sidecarExtensions.contains(
+                (item.name as NSString).pathExtension.lowercased()
+            ) && subtitleNameMatches(videoBaseName: basename, subtitleName: item.name) {
+                guard seen.insert(item.path.lowercased()).inserted else { continue }
+                paths.append((path: item.path, name: item.name))
             }
         }
-        return nil
+        // When File Station returned a directory listing, it is authoritative.
+        // Do not fan out dozens of 404 probes over a cellular route after the
+        // directory has already proved that no matching sidecar exists.
+        if siblingItems == nil {
+            for suffix in suffixes {
+                for fileExtension in sidecarExtensions {
+                    let name = "\(basename)\(suffix).\(fileExtension)"
+                    let path = directory == "." || directory.isEmpty ? "/\(name)" : "\(directory)/\(name)"
+                    guard seen.insert(path.lowercased()).inserted else { continue }
+                    paths.append((path, name))
+                }
+            }
+        }
+
+        return await withTaskGroup(of: NASSubtitleAsset?.self, returning: NASSubtitleAsset?.self) { group in
+            for candidate in paths {
+                group.addTask {
+                    let urls = session.fileStationOpenURLs(path: candidate.path)
+                    guard let sourceURL = await AuthenticatedMediaPlaybackResolver.firstPlayableURL(
+                        candidates: urls,
+                        allowsSelfSignedCertificates: session.allowsSelfSignedCertificates,
+                        diagnosticStage: "dsmSidecarSubtitle",
+                        timeout: 1.5
+                    ) else {
+                        return nil
+                    }
+                    return await normalize(
+                        sourceURL: sourceURL,
+                        filename: candidate.name,
+                        allowsSelfSignedCertificates: session.allowsSelfSignedCertificates
+                    )
+                }
+            }
+            while let asset = await group.next() {
+                if let asset {
+                    group.cancelAll()
+                    return asset
+                }
+            }
+            return nil
+        }
+    }
+
+    private static func subtitleNameMatches(videoBaseName: String, subtitleName: String) -> Bool {
+        let video = normalizedName(videoBaseName)
+        let subtitle = normalizedName((subtitleName as NSString).deletingPathExtension)
+        guard !video.isEmpty, !subtitle.isEmpty else { return false }
+        return subtitle == video
+            || subtitle.hasPrefix(video + ".")
+            || subtitle.hasPrefix(video + "_")
+            || subtitle.hasPrefix(video + "-")
+            || subtitle.hasPrefix(video + " ")
+    }
+
+    private static func normalizedName(_ value: String) -> String {
+        value
+            .folding(options: [.caseInsensitive, .diacriticInsensitive], locale: .current)
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .lowercased()
+    }
+
+    private static func normalize(
+        sourceURL: URL,
+        filename: String,
+        allowsSelfSignedCertificates: Bool
+    ) async -> NASSubtitleAsset? {
+        let delegate = FilePreviewTrustDelegate(
+            trustedHost: sourceURL.host,
+            allowsSelfSignedCertificates: allowsSelfSignedCertificates
+                && sourceURL.scheme?.lowercased() == "https"
+        )
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.timeoutIntervalForRequest = 5
+        configuration.timeoutIntervalForResource = 8
+        configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
+        configuration.allowsCellularAccess = true
+        configuration.allowsExpensiveNetworkAccess = true
+        configuration.waitsForConnectivity = true
+        let session = URLSession(configuration: configuration, delegate: delegate, delegateQueue: nil)
+        defer { session.invalidateAndCancel() }
+
+        var request = URLRequest(url: sourceURL)
+        request.setValue("identity", forHTTPHeaderField: "Accept-Encoding")
+        do {
+            let (data, response) = try await session.data(for: request)
+            guard let httpResponse = response as? HTTPURLResponse,
+                  (200...299).contains(httpResponse.statusCode),
+                  data.count <= maximumSubtitleBytes,
+                  let decoded = decode(data),
+                  looksLikeSubtitle(decoded) else {
+                return nil
+            }
+            let directory = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0]
+                .appendingPathComponent("Nastart/Subtitles", isDirectory: true)
+            try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+            let outputExtension = (filename as NSString).pathExtension.isEmpty
+                ? "srt"
+                : (filename as NSString).pathExtension
+            let outputURL = directory.appendingPathComponent("\(UUID().uuidString).utf8.\(outputExtension)")
+            guard let outputData = decoded
+                .replacingOccurrences(of: "\r\n", with: "\n")
+                .replacingOccurrences(of: "\r", with: "\n")
+                .data(using: .utf8) else {
+                return nil
+            }
+            try outputData.write(to: outputURL, options: .atomic)
+            DiagnosticLogStore.shared.record(
+                .info,
+                categoryKey: "diagnostics.category.media",
+                messageKey: "diagnostics.media.subtitle_normalized",
+                details: [
+                    "source": DiagnosticLogStore.redactedURL(sourceURL),
+                    "encoding": detectedEncoding(data),
+                    "bytes": "\(data.count)"
+                ]
+            )
+            return NASSubtitleAsset(sourceURL: sourceURL, playbackURL: outputURL)
+        } catch is CancellationError {
+            return nil
+        } catch {
+            return nil
+        }
+    }
+
+    private static func decode(_ data: Data) -> String? {
+        if data.starts(with: [0xFF, 0xFE]) {
+            return String(data: data, encoding: .utf16LittleEndian)
+        }
+        if data.starts(with: [0xFE, 0xFF]) {
+            return String(data: data, encoding: .utf16BigEndian)
+        }
+        if data.starts(with: [0xEF, 0xBB, 0xBF]) {
+            return String(data: data.dropFirst(3), encoding: .utf8)
+        }
+        if let utf8 = String(data: data, encoding: .utf8) {
+            return utf8
+        }
+        let gb18030 = String.Encoding(rawValue: CFStringConvertEncodingToNSStringEncoding(
+            CFStringEncoding(CFStringEncodings.GB_18030_2000.rawValue)
+        ))
+        return String(data: data, encoding: gb18030)
+            ?? String(data: data, encoding: .isoLatin1)
+    }
+
+    private static func detectedEncoding(_ data: Data) -> String {
+        if data.starts(with: [0xFF, 0xFE]) { return "UTF-16LE" }
+        if data.starts(with: [0xFE, 0xFF]) { return "UTF-16BE" }
+        if data.starts(with: [0xEF, 0xBB, 0xBF]) { return "UTF-8-BOM" }
+        if String(data: data, encoding: .utf8) != nil { return "UTF-8" }
+        return "GB18030-or-ISO-8859-1"
+    }
+
+    private static func looksLikeSubtitle(_ value: String) -> Bool {
+        let text = value.lowercased()
+        return text.contains("-->")
+            || text.contains("[script info]")
+            || text.contains("[v4+ styles]")
+            || text.contains("{\\an")
+    }
+}
+
+actor MediaPlaybackRouteCache {
+    static let shared = MediaPlaybackRouteCache()
+
+    private var entries: [String: (url: URL, validatedAt: Date)] = [:]
+
+    func url(for key: String, candidates: [URL]) -> URL? {
+        guard let entry = entries[key],
+              Date().timeIntervalSince(entry.validatedAt) < 5 * 60,
+              candidates.contains(entry.url) else {
+            entries[key] = nil
+            return nil
+        }
+        return entry.url
+    }
+
+    func store(_ url: URL, for key: String) {
+        entries[key] = (url, Date())
+    }
+}
+
+enum AuthenticatedMediaPlaybackResolver {
+    static func firstPlayableURL(
+        candidates: [URL],
+        allowsSelfSignedCertificates: Bool,
+        diagnosticStage: String,
+        timeout: TimeInterval = 8,
+        expectedContentLength: Int? = nil
+    ) async -> URL? {
+        let cacheKey = candidates.map(\.absoluteString).joined(separator: "|")
+            + "|length=\(expectedContentLength.map(String.init) ?? "unknown")"
+        if let cached = await MediaPlaybackRouteCache.shared.url(
+            for: cacheKey,
+            candidates: candidates
+        ) {
+            return cached
+        }
+        let selected: URL? = await withTaskGroup(
+            of: URL?.self,
+            returning: URL?.self
+        ) { group in
+            for candidate in candidates {
+                group.addTask {
+                    return await playableURL(
+                        candidate,
+                        allowsSelfSignedCertificates: allowsSelfSignedCertificates,
+                        diagnosticStage: diagnosticStage,
+                        timeout: timeout,
+                        expectedContentLength: expectedContentLength
+                    )
+                }
+            }
+            while let url = await group.next() {
+                if let url {
+                    group.cancelAll()
+                    return url
+                }
+            }
+            return nil
+        }
+        if let selected {
+            await MediaPlaybackRouteCache.shared.store(selected, for: cacheKey)
+        }
+        return selected
+    }
+
+    private static func playableURL(
+        _ candidate: URL,
+        allowsSelfSignedCertificates: Bool,
+        diagnosticStage: String,
+        timeout: TimeInterval,
+        expectedContentLength: Int?
+    ) async -> URL? {
+        let delegate = FilePreviewTrustDelegate(
+            trustedHost: candidate.host,
+            allowsSelfSignedCertificates: allowsSelfSignedCertificates
+                && candidate.scheme?.lowercased() == "https"
+        )
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.timeoutIntervalForRequest = timeout
+        configuration.timeoutIntervalForResource = timeout + 4
+        configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
+        configuration.allowsCellularAccess = true
+        configuration.allowsExpensiveNetworkAccess = true
+        configuration.waitsForConnectivity = true
+        let session = URLSession(
+            configuration: configuration,
+            delegate: delegate,
+            delegateQueue: nil
+        )
+        defer { session.invalidateAndCancel() }
+        var request = URLRequest(url: candidate)
+        request.setValue("bytes=0-1", forHTTPHeaderField: "Range")
+        request.setValue("identity", forHTTPHeaderField: "Accept-Encoding")
+        do {
+            let (_, response) = try await session.bytes(for: request)
+            guard let response = response as? HTTPURLResponse else { return nil }
+            let mimeType = response.mimeType?.lowercased() ?? ""
+            let responseContentLength = totalContentLength(from: response)
+            let contentLengthMatches = expectedContentLength.map { expectedLength in
+                guard expectedLength > 0, let responseContentLength else { return true }
+                return Int64(expectedLength) == responseContentLength
+            } ?? true
+            let isMediaResponse = contentLengthMatches
+                && (response.statusCode == 200 || response.statusCode == 206)
+                && !mimeType.contains("json")
+                && !mimeType.contains("html")
+            DiagnosticLogStore.shared.record(
+                isMediaResponse ? .info : .warning,
+                categoryKey: "diagnostics.category.media",
+                messageKey: isMediaResponse
+                    ? "diagnostics.media.probe_succeeded"
+                    : "diagnostics.media.probe_invalid_response",
+                details: [
+                    "target": DiagnosticLogStore.redactedURL(candidate),
+                    "stage": diagnosticStage,
+                    "status": "\(response.statusCode)",
+                    "mime": mimeType.isEmpty ? "-" : mimeType,
+                    "acceptRanges": response.value(forHTTPHeaderField: "Accept-Ranges") ?? "-",
+                    "lengthCheck": contentLengthMatches ? "matchedOrUnavailable" : "mismatch"
+                ]
+            )
+            return isMediaResponse ? (response.url ?? candidate) : nil
+        } catch is CancellationError {
+            return nil
+        } catch {
+            let value = error as NSError
+            guard !Task.isCancelled,
+                  !(value.domain == NSURLErrorDomain && value.code == NSURLErrorCancelled) else {
+                return nil
+            }
+            DiagnosticLogStore.shared.record(
+                .warning,
+                categoryKey: "diagnostics.category.media",
+                messageKey: "diagnostics.media.probe_failed",
+                details: [
+                    "target": DiagnosticLogStore.redactedURL(candidate),
+                    "stage": diagnosticStage,
+                    "errorDomain": value.domain,
+                    "errorCode": "\(value.code)"
+                ]
+            )
+            return nil
+        }
+    }
+
+    private static func totalContentLength(from response: HTTPURLResponse) -> Int64? {
+        if let contentRange = response.value(forHTTPHeaderField: "Content-Range"),
+           let total = contentRange.split(separator: "/").last,
+           total != "*" {
+            return Int64(total)
+        }
+        guard response.statusCode == 200,
+              let value = response.value(forHTTPHeaderField: "Content-Length") else {
+            return nil
+        }
+        return Int64(value)
+    }
+}
+
+final class AuthenticatedMediaStreamProxy: @unchecked Sendable {
+    static let shared = AuthenticatedMediaStreamProxy()
+
+    private struct Route {
+        let upstreamURL: URL
+        let allowsSelfSignedCertificates: Bool
+        let filename: String
+        let isPlaylist: Bool
+        let localPort: NWEndpoint.Port
+        let createdAt: Date
+    }
+
+    private let queue = DispatchQueue(label: "com.nastart.authenticated-media-stream-proxy")
+    private var listener: NWListener?
+    private var port: NWEndpoint.Port?
+    private var routes: [String: Route] = [:]
+    private var transfers: [UUID: AuthenticatedMediaProxyTransfer] = [:]
+    private var listenerWaiters: [(Result<NWEndpoint.Port, Error>) -> Void] = []
+
+    private init() {}
+
+    func register(
+        upstreamURL: URL,
+        filename: String,
+        allowsSelfSignedCertificates: Bool
+    ) async throws -> URL {
+        let port = try await listenerPort()
+        let token = UUID().uuidString.lowercased()
+        let safeFilename = filename
+            .replacingOccurrences(of: "/", with: "_")
+            .replacingOccurrences(of: "\\", with: "_")
+        await withCheckedContinuation { continuation in
+            queue.async {
+                let cutoff = Date().addingTimeInterval(-6 * 60 * 60)
+                self.routes = self.routes.filter { $0.value.createdAt > cutoff }
+                self.routes[token] = Route(
+                    upstreamURL: upstreamURL,
+                    allowsSelfSignedCertificates: allowsSelfSignedCertificates,
+                    filename: safeFilename,
+                    isPlaylist: upstreamURL.pathExtension.lowercased() == "m3u8",
+                    localPort: port,
+                    createdAt: Date()
+                )
+                continuation.resume()
+            }
+        }
+        var components = URLComponents()
+        components.scheme = "http"
+        components.host = "127.0.0.1"
+        components.port = Int(port.rawValue)
+        components.path = "/media/\(token)/\(safeFilename)"
+        guard let url = components.url else { throw URLError(.badURL) }
+        return url
+    }
+
+    private func listenerPort() async throws -> NWEndpoint.Port {
+        try await withCheckedThrowingContinuation { continuation in
+            queue.async {
+                if let port = self.port {
+                    continuation.resume(returning: port)
+                    return
+                }
+                self.listenerWaiters.append { result in
+                    continuation.resume(with: result)
+                }
+                guard self.listener == nil else { return }
+                self.startListener()
+            }
+        }
+    }
+
+    private func startListener() {
+        do {
+            let parameters = NWParameters.tcp
+            parameters.allowLocalEndpointReuse = true
+            parameters.requiredLocalEndpoint = .hostPort(host: "127.0.0.1", port: .any)
+            let listener = try NWListener(using: parameters, on: .any)
+            self.listener = listener
+            listener.stateUpdateHandler = { [weak self, weak listener] state in
+                guard let self else { return }
+                switch state {
+                case .ready:
+                    guard let port = listener?.port else {
+                        self.failListener(URLError(.cannotCreateFile))
+                        return
+                    }
+                    self.port = port
+                    let waiters = self.listenerWaiters
+                    self.listenerWaiters.removeAll()
+                    waiters.forEach { $0(.success(port)) }
+                case .failed(let error):
+                    self.failListener(error)
+                default:
+                    break
+                }
+            }
+            listener.newConnectionHandler = { [weak self] connection in
+                self?.accept(connection)
+            }
+            listener.start(queue: queue)
+        } catch {
+            failListener(error)
+        }
+    }
+
+    private func failListener(_ error: Error) {
+        listener?.cancel()
+        listener = nil
+        port = nil
+        let waiters = listenerWaiters
+        listenerWaiters.removeAll()
+        waiters.forEach { $0(.failure(error)) }
+    }
+
+    private func accept(_ connection: NWConnection) {
+        connection.start(queue: queue)
+        receiveRequest(on: connection, buffer: Data())
+    }
+
+    private func receiveRequest(on connection: NWConnection, buffer: Data) {
+        connection.receive(minimumIncompleteLength: 1, maximumLength: 32 * 1024) {
+            [weak self] data, _, isComplete, error in
+            guard let self else { return }
+            var requestData = buffer
+            if let data { requestData.append(data) }
+            let headerDelimiter = Data([13, 10, 13, 10])
+            if requestData.range(of: headerDelimiter) != nil {
+                self.handleRequest(requestData, on: connection)
+                return
+            }
+            if error != nil || isComplete || requestData.count > 64 * 1024 {
+                self.sendError(400, on: connection)
+                return
+            }
+            self.receiveRequest(on: connection, buffer: requestData)
+        }
+    }
+
+    private func handleRequest(_ data: Data, on connection: NWConnection) {
+        guard
+            let header = String(data: data, encoding: .isoLatin1),
+            let requestLine = header.components(separatedBy: "\r\n").first
+        else {
+            sendError(400, on: connection)
+            return
+        }
+        let requestParts = requestLine.split(separator: " ", maxSplits: 2).map(String.init)
+        guard requestParts.count == 3,
+              requestParts[0] == "GET" || requestParts[0] == "HEAD" else {
+            sendError(405, on: connection)
+            return
+        }
+        let requestTarget = requestParts[1]
+        let requestComponents = URLComponents(
+            string: "http://127.0.0.1\(requestTarget.hasPrefix("/") ? requestTarget : "/\(requestTarget)")"
+        )
+        let path = requestComponents?.path ?? requestTarget.split(separator: "?", maxSplits: 1).first.map(String.init) ?? ""
+        let pathParts = path.split(separator: "/", omittingEmptySubsequences: true)
+        guard pathParts.count >= 2, pathParts[0] == "media" else {
+            sendError(404, on: connection)
+            return
+        }
+        let token = String(pathParts[1])
+        guard let route = routes[token] else {
+            sendError(404, on: connection)
+            return
+        }
+        let requestedUpstreamURL: URL
+        if let redirected = requestComponents?.queryItems?.first(where: {
+            $0.name.caseInsensitiveCompare("u") == .orderedSame
+        })?.value,
+           let redirectedURL = URL(string: redirected),
+           ["http", "https"].contains(redirectedURL.scheme?.lowercased() ?? "") {
+            requestedUpstreamURL = redirectedURL
+        } else {
+            requestedUpstreamURL = route.upstreamURL
+        }
+        var headers: [String: String] = [:]
+        for line in header.components(separatedBy: "\r\n").dropFirst() {
+            guard let separator = line.firstIndex(of: ":") else { continue }
+            let key = line[..<separator].trimmingCharacters(in: .whitespaces).lowercased()
+            let value = line[line.index(after: separator)...].trimmingCharacters(in: .whitespaces)
+            headers[key] = value
+        }
+
+        let transferID = UUID()
+        let transfer = AuthenticatedMediaProxyTransfer(
+            connection: connection,
+            upstreamURL: requestedUpstreamURL,
+            method: requestParts[0],
+            requestHeaders: headers,
+            allowsSelfSignedCertificates: route.allowsSelfSignedCertificates,
+            isPlaylist: route.isPlaylist
+                && requestedUpstreamURL.pathExtension.lowercased() == "m3u8",
+            isHLSChildRequest: route.isPlaylist
+                && requestedUpstreamURL.pathExtension.lowercased() != "m3u8",
+            playlistToken: token,
+            playlistFilename: route.filename,
+            playlistPort: route.localPort
+        ) { [weak self] in
+            self?.queue.async { self?.transfers[transferID] = nil }
+        }
+        transfers[transferID] = transfer
+        transfer.start()
+    }
+
+    private func sendError(_ statusCode: Int, on connection: NWConnection) {
+        let reason = HTTPURLResponse.localizedString(forStatusCode: statusCode).capitalized
+        let response = "HTTP/1.1 \(statusCode) \(reason)\r\nContent-Length: 0\r\nConnection: close\r\n\r\n"
+        connection.send(content: Data(response.utf8), isComplete: true, completion: .contentProcessed { _ in
+            connection.cancel()
+        })
+    }
+}
+
+private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDelegate, URLSessionTaskDelegate {
+    private let connection: NWConnection
+    private let upstreamURL: URL
+    private let method: String
+    private let requestHeaders: [String: String]
+    private let allowsSelfSignedCertificates: Bool
+    private let isPlaylist: Bool
+    private let isHLSChildRequest: Bool
+    private let playlistToken: String?
+    private let playlistFilename: String?
+    private let playlistPort: NWEndpoint.Port?
+    private let completion: () -> Void
+    private let finishLock = NSLock()
+    private var session: URLSession?
+    private var task: URLSessionDataTask?
+    private var finished = false
+    private var didSendResponseHeaders = false
+    private var responseStartOffset: Int64?
+    private var responseEndOffset: Int64?
+    private var expectedBodyBytes: Int64?
+    private var deliveredBodyBytes: Int64 = 0
+    private var retryAttempts = 0
+    private var consecutiveRetryFailures = 0
+    private var bodyBytesAtTaskStart: Int64 = 0
+    private var activeRequestedRange: String?
+    private var activeRequestedRangeStart: Int64?
+    private var lastStatusCode: Int?
+    private let startedAt = Date()
+    private let bufferLock = NSLock()
+    private var pendingBody = Data()
+    private var playlistBody = Data()
+    private var playlistStatusCode = 200
+    private var playlistContentType = "application/vnd.apple.mpegurl"
+    private var isSendingBody = false
+    private var suspendedDataTask: URLSessionDataTask?
+    private var upstreamCompleted = false
+    private var didScheduleConnectionClose = false
+    private let sendChunkSize = 512 * 1024
+    private let highWaterMark = 4 * 1024 * 1024
+    private let lowWaterMark = 1 * 1024 * 1024
+    private let maximumConsecutiveRetryFailures = 5
+    // Keep WAN reads bounded.  A File Station open-ended range can otherwise
+    // make URLSession try to pull the entire multi-GB file before AVPlayer
+    // gets a useful response or issues its next seek range.
+    private let maximumMediaSegmentBytes: Int64 = 8 * 1024 * 1024
+
+    init(
+        connection: NWConnection,
+        upstreamURL: URL,
+        method: String,
+        requestHeaders: [String: String],
+        allowsSelfSignedCertificates: Bool,
+        isPlaylist: Bool,
+        isHLSChildRequest: Bool,
+        playlistToken: String?,
+        playlistFilename: String?,
+        playlistPort: NWEndpoint.Port?,
+        completion: @escaping () -> Void
+    ) {
+        self.connection = connection
+        self.upstreamURL = upstreamURL
+        self.method = method
+        self.requestHeaders = requestHeaders
+        self.allowsSelfSignedCertificates = allowsSelfSignedCertificates
+        self.isPlaylist = isPlaylist
+        self.isHLSChildRequest = isHLSChildRequest
+        self.playlistToken = playlistToken
+        self.playlistFilename = playlistFilename
+        self.playlistPort = playlistPort
+        self.completion = completion
+    }
+
+    func start() {
+        connection.stateUpdateHandler = { [weak self] state in
+            switch state {
+            case .cancelled, .failed:
+                self?.finish(with: URLError(.networkConnectionLost))
+            default:
+                break
+            }
+        }
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.timeoutIntervalForRequest = 30
+        configuration.timeoutIntervalForResource = 24 * 60 * 60
+        configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
+        configuration.httpMaximumConnectionsPerHost = 4
+        configuration.allowsCellularAccess = true
+        configuration.allowsExpensiveNetworkAccess = true
+        configuration.waitsForConnectivity = true
+        let delegateQueue = OperationQueue()
+        delegateQueue.maxConcurrentOperationCount = 1
+        let session = URLSession(configuration: configuration, delegate: self, delegateQueue: delegateQueue)
+        self.session = session
+        startUpstreamTask()
+    }
+
+    private func startUpstreamTask(rangeOverride: String? = nil) {
+        bodyBytesAtTaskStart = deliveredBodyBytes
+        let activeRange: String?
+        if isPlaylist || isHLSChildRequest {
+            activeRange = rangeOverride ?? requestHeaders["range"]
+        } else {
+            let requestedRange = rangeOverride ?? requestHeaders["range"] ?? "bytes=0-"
+            // VLC commonly opens a remote file with an open-ended Range and
+            // keeps that HTTP response alive while it advances playback. Do
+            // not turn that request into an artificial 8 MiB EOF: the local
+            // proxy must remain a continuous stream, otherwise VLC reaches a
+            // false stopped/ended state after the first segment. Explicit
+            // start-end seeks remain bounded to protect WAN prefetch.
+            activeRange = Self.isOpenEndedRange(requestedRange)
+                ? requestedRange
+                : Self.boundedRange(
+                    requestedRange,
+                    maximumLength: maximumMediaSegmentBytes
+                )
+        }
+        activeRequestedRange = activeRange
+        activeRequestedRangeStart = Self.requestedRangeStart(from: activeRange)
+        var request = URLRequest(url: upstreamURL)
+        request.httpMethod = method
+        request.setValue("identity", forHTTPHeaderField: "Accept-Encoding")
+        for name in ["range", "if-range", "if-none-match", "if-modified-since"] {
+            if let value = requestHeaders[name] {
+                request.setValue(value, forHTTPHeaderField: name)
+            }
+        }
+        if let activeRange {
+            request.setValue(activeRange, forHTTPHeaderField: "Range")
+        }
+        guard let session else {
+            finish(with: URLError(.cancelled))
+            return
+        }
+        let task = session.dataTask(with: request)
+        self.task = task
+        task.resume()
+    }
+
+    func urlSession(
+        _ session: URLSession,
+        dataTask: URLSessionDataTask,
+        didReceive response: URLResponse,
+        completionHandler: @escaping (URLSession.ResponseDisposition) -> Void
+    ) {
+        guard !isFinished else {
+            completionHandler(.cancel)
+            return
+        }
+        guard let response = response as? HTTPURLResponse else {
+            completionHandler(.cancel)
+            finish(with: URLError(.badServerResponse))
+            return
+        }
+        lastStatusCode = response.statusCode
+        if isPlaylist {
+            playlistStatusCode = response.statusCode
+            playlistContentType = response.value(forHTTPHeaderField: "Content-Type")
+                ?? "application/vnd.apple.mpegurl"
+            completionHandler(.allow)
+            return
+        }
+        let contentRange = response.value(forHTTPHeaderField: "Content-Range")
+        let parsedRange = Self.byteRange(from: contentRange)
+        if !isHLSChildRequest,
+           let requestedStart = activeRequestedRangeStart,
+           (response.statusCode != 206 || parsedRange?.start != requestedStart) {
+            completionHandler(.cancel)
+            rejectUpstreamResponse()
+            return
+        }
+        if didSendResponseHeaders {
+            let expectedStart = responseStartOffset.map { $0 + deliveredBodyBytes }
+            guard response.statusCode == 206,
+                  let expectedStart,
+                  parsedRange?.start == expectedStart else {
+                completionHandler(.cancel)
+                finish(with: URLError(.cannotParseResponse))
+                return
+            }
+            completionHandler(.allow)
+            return
+        }
+
+        didSendResponseHeaders = true
+        responseStartOffset = parsedRange?.start ?? 0
+        responseEndOffset = parsedRange?.end
+        if let contentLength = response.value(forHTTPHeaderField: "Content-Length"),
+           let parsedLength = Int64(contentLength), parsedLength >= 0 {
+            expectedBodyBytes = parsedLength
+        }
+        DiagnosticLogStore.shared.record(
+            .info,
+            categoryKey: "diagnostics.category.media",
+            messageKey: "diagnostics.media.proxy_transfer_started",
+            details: [
+                "method": method,
+                "range": activeRequestedRange ?? "full",
+                "status": "\(response.statusCode)",
+                "contentLength": expectedBodyBytes.map(String.init) ?? "-",
+                "contentRange": contentRange ?? "-"
+            ]
+        )
+        let reason = HTTPURLResponse.localizedString(forStatusCode: response.statusCode).capitalized
+        var lines = ["HTTP/1.1 \(response.statusCode) \(reason)"]
+        for name in [
+            "Content-Type", "Content-Length", "Content-Range", "Accept-Ranges",
+            "ETag", "Last-Modified", "Content-Disposition"
+        ] {
+            if let value = response.value(forHTTPHeaderField: name) {
+                lines.append("\(name): \(value)")
+            }
+        }
+        lines.append("Connection: close")
+        let header = lines.joined(separator: "\r\n") + "\r\n\r\n"
+        connection.send(content: Data(header.utf8), completion: .contentProcessed { [weak self] error in
+            if let error { self?.finish(with: error) }
+        })
+        completionHandler(.allow)
+    }
+
+    func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
+        guard !isFinished else { return }
+        if isPlaylist {
+            playlistBody.append(data)
+            return
+        }
+        deliveredBodyBytes += Int64(data.count)
+        bufferLock.lock()
+        pendingBody.append(data)
+        if pendingBody.count >= highWaterMark, suspendedDataTask == nil {
+            suspendedDataTask = dataTask
+            dataTask.suspend()
+        }
+        bufferLock.unlock()
+        drainBufferedBody()
+    }
+
+    func urlSession(
+        _ session: URLSession,
+        task: URLSessionTask,
+        didFinishCollecting metrics: URLSessionTaskMetrics
+    ) {
+        guard let transaction = metrics.transactionMetrics.last else { return }
+        func milliseconds(_ start: Date?, _ end: Date?) -> String {
+            guard let start, let end else { return "-" }
+            return String(Int(max(end.timeIntervalSince(start), 0) * 1_000))
+        }
+        DiagnosticLogStore.shared.record(
+            .info,
+            categoryKey: "diagnostics.category.media",
+            messageKey: "diagnostics.media.proxy_transfer_finished",
+            details: [
+                "stage": "urlSessionTaskMetrics",
+                "target": DiagnosticLogStore.redactedURL(upstreamURL),
+                "dnsMs": milliseconds(
+                    transaction.domainLookupStartDate,
+                    transaction.domainLookupEndDate
+                ),
+                "tcpMs": milliseconds(
+                    transaction.connectStartDate,
+                    transaction.connectEndDate
+                ),
+                "tlsMs": milliseconds(
+                    transaction.secureConnectionStartDate,
+                    transaction.secureConnectionEndDate
+                ),
+                "requestMs": milliseconds(
+                    transaction.requestStartDate,
+                    transaction.responseStartDate
+                ),
+                "responseMs": milliseconds(
+                    transaction.responseStartDate,
+                    transaction.responseEndDate
+                ),
+                "totalMs": milliseconds(
+                    transaction.fetchStartDate,
+                    transaction.responseEndDate
+                ),
+                "protocol": transaction.networkProtocolName ?? "-",
+                "cellular": transaction.isCellular ? "yes" : "no",
+                "expensive": transaction.isExpensive ? "yes" : "no",
+                "constrained": transaction.isConstrained ? "yes" : "no",
+                "remoteAddress": transaction.remoteAddress ?? "-"
+            ]
+        )
+    }
+
+    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+        guard !isFinished else { return }
+        if isPlaylist {
+            guard error == nil else {
+                finish(with: error)
+                return
+            }
+            sendPlaylist()
+            return
+        }
+        if retryInterruptedTransfer(after: error) {
+            return
+        }
+        guard error == nil else {
+            finish(with: error)
+            return
+        }
+        bufferLock.lock()
+        upstreamCompleted = true
+        bufferLock.unlock()
+        drainBufferedBody()
+    }
+
+    private func sendPlaylist() {
+        guard !isFinished else { return }
+        let body = rewritePlaylist(playlistBody)
+        let reason = HTTPURLResponse.localizedString(forStatusCode: playlistStatusCode).capitalized
+        let header = [
+            "HTTP/1.1 \(playlistStatusCode) \(reason)",
+            "Content-Type: \(playlistContentType)",
+            "Content-Length: \(body.count)",
+            "Cache-Control: no-store",
+            "Connection: close",
+            "",
+            ""
+        ].joined(separator: "\r\n")
+        connection.send(content: Data(header.utf8), completion: .contentProcessed { [weak self] error in
+            guard let self else { return }
+            if let error {
+                self.finish(with: error)
+                return
+            }
+            self.connection.send(content: body, isComplete: true, completion: .contentProcessed { [weak self] error in
+                if let error { self?.finish(with: error) } else { self?.finish(with: nil) }
+            })
+        })
+    }
+
+    private func rewritePlaylist(_ data: Data) -> Data {
+        guard
+            let token = playlistToken,
+            let filename = playlistFilename,
+            let port = playlistPort,
+            let playlist = String(data: data, encoding: .utf8)
+        else { return data }
+
+        let lines = playlist.components(separatedBy: "\n").map { line -> String in
+            let trimmed = line.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !trimmed.isEmpty else { return line }
+            if trimmed.hasPrefix("#") {
+                return rewriteURIAttributes(
+                    in: line,
+                    token: token,
+                    filename: filename,
+                    port: port
+                )
+            }
+            return localPlaylistURL(
+                for: trimmed,
+                token: token,
+                filename: filename,
+                port: port
+            ) ?? line
+        }
+        return Data(lines.joined(separator: "\n").utf8)
+    }
+
+    private func rewriteURIAttributes(
+        in line: String,
+        token: String,
+        filename: String,
+        port: NWEndpoint.Port
+    ) -> String {
+        var result = line
+        var searchStart = result.startIndex
+        while let start = result.range(of: "URI=\"", range: searchStart..<result.endIndex) {
+            guard let end = result[start.upperBound...].firstIndex(of: "\"") else { break }
+            let uri = String(result[start.upperBound..<end])
+            guard let localURL = localPlaylistURL(
+                for: uri,
+                token: token,
+                filename: filename,
+                port: port
+            ) else {
+                searchStart = result.index(after: end)
+                continue
+            }
+            result.replaceSubrange(start.lowerBound..<result.index(after: end), with: "URI=\"\(localURL)\"")
+            searchStart = result.index(start.lowerBound, offsetBy: "URI=\"\(localURL)\"".count, limitedBy: result.endIndex)
+                ?? result.endIndex
+        }
+        return result
+    }
+
+    private func localPlaylistURL(
+        for uri: String,
+        token: String,
+        filename: String,
+        port: NWEndpoint.Port
+    ) -> String? {
+        guard
+            let target = URL(string: uri, relativeTo: upstreamURL)?.absoluteURL,
+            ["http", "https"].contains(target.scheme?.lowercased() ?? "")
+        else { return nil }
+
+        var components = URLComponents()
+        components.scheme = "http"
+        components.host = "127.0.0.1"
+        components.port = Int(port.rawValue)
+        components.path = "/media/\(token)/\(filename)"
+        components.queryItems = [URLQueryItem(name: "u", value: target.absoluteString)]
+        return components.url?.absoluteString
+    }
+
+    private func drainBufferedBody() {
+        var chunk: Data?
+        var taskToResume: URLSessionDataTask?
+        var shouldClose = false
+
+        bufferLock.lock()
+        if !isSendingBody, !pendingBody.isEmpty {
+            let count = min(sendChunkSize, pendingBody.count)
+            chunk = Data(pendingBody.prefix(count))
+            pendingBody.removeFirst(count)
+            isSendingBody = true
+        }
+        if pendingBody.count <= lowWaterMark, let suspendedDataTask {
+            taskToResume = suspendedDataTask
+            self.suspendedDataTask = nil
+        }
+        if pendingBody.isEmpty,
+           !isSendingBody,
+           upstreamCompleted,
+           !didScheduleConnectionClose {
+            didScheduleConnectionClose = true
+            shouldClose = true
+        }
+        bufferLock.unlock()
+
+        taskToResume?.resume()
+        if let chunk {
+            connection.send(content: chunk, completion: .contentProcessed { [weak self] error in
+                guard let self else { return }
+                if let error {
+                    self.finish(with: error)
+                    return
+                }
+                self.bufferLock.lock()
+                self.isSendingBody = false
+                self.bufferLock.unlock()
+                self.drainBufferedBody()
+            })
+        } else if shouldClose {
+            connection.send(content: nil, isComplete: true, completion: .contentProcessed { [weak self] error in
+                self?.finish(with: error)
+            })
+        }
+    }
+
+    private func retryInterruptedTransfer(after error: Error?) -> Bool {
+        let madeProgress = deliveredBodyBytes > bodyBytesAtTaskStart
+        if madeProgress {
+            consecutiveRetryFailures = 0
+        } else {
+            consecutiveRetryFailures += 1
+        }
+        guard !isFinished,
+              method == "GET",
+              let expectedBodyBytes,
+              deliveredBodyBytes < expectedBodyBytes,
+              consecutiveRetryFailures < maximumConsecutiveRetryFailures,
+              let responseStartOffset else {
+            return false
+        }
+        retryAttempts += 1
+        let nextOffset = responseStartOffset + deliveredBodyBytes
+        let range = responseEndOffset.map { "bytes=\(nextOffset)-\($0)" }
+            ?? "bytes=\(nextOffset)-"
+        DiagnosticLogStore.shared.record(
+            .warning,
+            categoryKey: "diagnostics.category.media",
+            messageKey: "diagnostics.media.proxy_transfer_retry",
+            details: [
+                "attempt": "\(retryAttempts)",
+                "consecutiveFailures": "\(consecutiveRetryFailures)",
+                "deliveredBytes": "\(deliveredBodyBytes)",
+                "expectedBytes": "\(expectedBodyBytes)",
+                "reason": error?.localizedDescription ?? "prematureEOF"
+            ]
+        )
+        startUpstreamTask(rangeOverride: range)
+        return true
+    }
+
+    private func rejectUpstreamResponse() {
+        let response = "HTTP/1.1 502 Bad Gateway\r\nContent-Length: 0\r\nConnection: close\r\n\r\n"
+        connection.send(
+            content: Data(response.utf8),
+            isComplete: true,
+            completion: .contentProcessed { [weak self] _ in
+                self?.finish(with: URLError(.cannotParseResponse))
+            }
+        )
+        lastStatusCode = 502
+    }
+
+    func urlSession(
+        _ session: URLSession,
+        didReceive challenge: URLAuthenticationChallenge,
+        completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
+    ) {
+        guard
+            allowsSelfSignedCertificates,
+            let credential = CertificatePinStore.shared.credential(
+                for: challenge,
+                expectedHost: upstreamURL.host
+            )
+        else {
+            let shouldReject = allowsSelfSignedCertificates
+                && challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust
+            completionHandler(shouldReject ? .cancelAuthenticationChallenge : .performDefaultHandling, nil)
+            return
+        }
+        completionHandler(.useCredential, credential)
+    }
+
+    private func finish(with error: Error?) {
+        finishLock.lock()
+        guard !finished else {
+            finishLock.unlock()
+            return
+        }
+        finished = true
+        finishLock.unlock()
+        bufferLock.lock()
+        suspendedDataTask = nil
+        pendingBody.removeAll(keepingCapacity: false)
+        bufferLock.unlock()
+        DiagnosticLogStore.shared.record(
+            error == nil ? .info : .warning,
+            categoryKey: "diagnostics.category.media",
+            messageKey: "diagnostics.media.proxy_transfer_finished",
+            details: [
+                "status": lastStatusCode.map(String.init) ?? "-",
+                "deliveredBytes": "\(deliveredBodyBytes)",
+                "expectedBytes": expectedBodyBytes.map(String.init) ?? "-",
+                "durationMs": "\(Int(Date().timeIntervalSince(startedAt) * 1_000))",
+                "retries": "\(retryAttempts)",
+                "result": error?.localizedDescription ?? "complete"
+            ]
+        )
+        connection.stateUpdateHandler = nil
+        connection.cancel()
+        task = nil
+        session?.invalidateAndCancel()
+        session = nil
+        completion()
+    }
+
+    private static func byteRange(from value: String?) -> (start: Int64, end: Int64)? {
+        guard let value else { return nil }
+        let components = value.split(separator: " ", maxSplits: 1)
+        guard components.count == 2,
+              components[0].lowercased() == "bytes",
+              let rangePart = components[1].split(separator: "/", maxSplits: 1).first else {
+            return nil
+        }
+        let bounds = rangePart.split(separator: "-", maxSplits: 1)
+        guard bounds.count == 2,
+              let start = Int64(bounds[0]),
+              let end = Int64(bounds[1]) else {
+            return nil
+        }
+        return (start, end)
+    }
+
+    private static func requestedRangeStart(from value: String?) -> Int64? {
+        guard let value else { return nil }
+        let normalized = value.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        guard normalized.hasPrefix("bytes=") else { return nil }
+        let range = normalized.dropFirst("bytes=".count)
+        guard let firstRange = range.split(separator: ",", maxSplits: 1).first,
+              let separator = firstRange.firstIndex(of: "-") else {
+            return nil
+        }
+        let startValue = firstRange[..<separator]
+        guard !startValue.isEmpty else { return nil }
+        return Int64(startValue)
+    }
+
+    private static func boundedRange(_ value: String, maximumLength: Int64) -> String {
+        let fallbackEnd = max(maximumLength - 1, 0)
+        let components = value.trimmingCharacters(in: .whitespacesAndNewlines)
+            .split(separator: " ", maxSplits: 1)
+        guard components.count == 2,
+              components[0].lowercased() == "bytes",
+              let firstRange = components[1].split(separator: ",", maxSplits: 1).first,
+              let separator = firstRange.firstIndex(of: "-"),
+              let start = Int64(firstRange[..<separator]),
+              start >= 0 else {
+            return "bytes=0-\(fallbackEnd)"
+        }
+        let endText = firstRange[firstRange.index(after: separator)...]
+        let requestedEnd = Int64(endText)
+        let maximumEnd = start + fallbackEnd
+        let end = min(requestedEnd ?? maximumEnd, maximumEnd)
+        return "bytes=\(start)-\(max(start, end))"
+    }
+
+    private static func isOpenEndedRange(_ value: String) -> Bool {
+        let normalized = value.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        guard normalized.hasPrefix("bytes=") else { return false }
+        guard let firstRange = normalized.dropFirst("bytes=".count)
+            .split(separator: ",", maxSplits: 1)
+            .first,
+            let separator = firstRange.firstIndex(of: "-") else {
+            return false
+        }
+        return firstRange[firstRange.index(after: separator)...].isEmpty
+    }
+
+    private var isFinished: Bool {
+        finishLock.lock()
+        defer { finishLock.unlock() }
+        return finished
     }
 }
 
@@ -1151,11 +2532,14 @@ private enum AuthenticatedFilePreviewLoader {
 
         do {
             let (temporaryURL, response) = try await session.download(from: url)
+            let expectedExtension = (filename as NSString).pathExtension.lowercased()
+            let mimeType = response.mimeType?.lowercased() ?? ""
+            let expectsJSON = expectedExtension == "json" || expectedExtension == "geojson"
             guard
                 let httpResponse = response as? HTTPURLResponse,
                 (200...299).contains(httpResponse.statusCode),
-                httpResponse.mimeType?.lowercased().contains("json") != true,
-                httpResponse.mimeType?.lowercased().contains("html") != true
+                expectsJSON || !mimeType.contains("json"),
+                !mimeType.contains("html")
             else {
                 throw URLError(.badServerResponse)
             }

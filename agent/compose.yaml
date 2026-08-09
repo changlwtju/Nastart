@@ -1,0 +1,23 @@
+services:
+  nastart-agent:
+    build: .
+    container_name: nastart-agent
+    restart: unless-stopped
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    environment:
+      NASTART_PAIRING_CODE: ${NASTART_PAIRING_CODE:?set NASTART_PAIRING_CODE}
+      NASTART_PROVIDER_HINT: ${NASTART_PROVIDER_HINT:-generic-linux}
+    ports:
+      - "8787:8787"
+    volumes:
+      - nastart-agent-data:/data
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    tmpfs:
+      - /tmp:size=16m,mode=1777
+
+volumes:
+  nastart-agent-data:

@@ -24,6 +24,7 @@ dist/
 
 # Logs
 *.log
+*.trace/
 /文本*.txt
 
 # Python tooling
