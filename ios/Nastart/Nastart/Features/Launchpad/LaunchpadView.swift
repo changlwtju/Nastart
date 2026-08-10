@@ -7904,6 +7904,16 @@ private struct SystemPlayerController: UIViewControllerRepresentable {
         if controller.player !== player {
             controller.player = player
         }
+        // The representable can be created before AVPlayerViewController has
+        // its final bounds.  A zero-sized auxiliary layer is still eligible
+        // for PiP, so AVPictureInPictureController may report success while
+        // capturing a black frame. Keep the PiP source layer in sync with the
+        // actual controller bounds on every SwiftUI update.
+        controller.view.layoutIfNeeded()
+        context.coordinator.updatePictureInPictureLayerFrame(
+            controller.view.bounds,
+            player: player
+        )
         context.coordinator.updatePictureInPictureRequest(startPictureInPicture)
     }
 
@@ -7950,6 +7960,12 @@ private struct SystemPlayerController: UIViewControllerRepresentable {
             updatePictureInPictureRequest(parent.startPictureInPicture)
         }
 
+        func updatePictureInPictureLayerFrame(_ frame: CGRect, player: AVPlayer) {
+            pictureInPictureLayer?.player = player
+            guard frame.width > 0, frame.height > 0 else { return }
+            pictureInPictureLayer?.frame = frame
+        }
+
         func updatePictureInPictureRequest(_ requested: Bool) {
             guard requested else { return }
             guard let pictureInPictureController,
@@ -7971,7 +7987,11 @@ private struct SystemPlayerController: UIViewControllerRepresentable {
                 return
             }
             let ready = parent.player.currentItem?.status == .readyToPlay
+                && (parent.player.currentItem?.presentationSize.width ?? 0) > 0
+                && (parent.player.currentItem?.presentationSize.height ?? 0) > 0
                 && pictureInPictureLayer?.isReadyForDisplay == true
+                && (pictureInPictureLayer?.bounds.width ?? 0) > 0
+                && (pictureInPictureLayer?.bounds.height ?? 0) > 0
             if ready, controller.isPictureInPicturePossible {
                 parent.onPictureInPictureEvent("willStart", nil)
                 controller.startPictureInPicture()
