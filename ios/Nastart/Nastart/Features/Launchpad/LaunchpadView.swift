@@ -5583,6 +5583,8 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
     private var desiredPlaybackRate: Float
     private var didApplySubtitleStyle = false
     private var didAddExternalSubtitle = false
+    private var externalSubtitleSelectionWorkItem: DispatchWorkItem?
+    private var subtitleTrackIDsBeforeExternalAdd: Set<Int32> = []
     private var lastSubtitleTrackIDs: [Int32] = []
     private var lastAudioTrackIDs: [Int32] = []
     private var cachedSubtitleTracks: [VLCSubtitleTrack] = []
@@ -6803,6 +6805,9 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
     private func addExternalSubtitleIfNeeded() {
         guard !didAddExternalSubtitle, let externalSubtitleURL else { return }
         didAddExternalSubtitle = true
+        subtitleTrackIDsBeforeExternalAdd = Set(
+            player.videoSubTitlesIndexes.compactMap(Self.subtitleTrackID)
+        )
         let result = player.addPlaybackSlave(
             externalSubtitleURL,
             type: .subtitle,
@@ -6812,8 +6817,76 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
             result == 0 ? .info : .warning,
             categoryKey: "diagnostics.category.media",
             messageKey: "diagnostics.media.external_subtitle",
-            details: ["result": "\(result)"]
+                details: ["result": "\(result)"]
         )
+        if result == 0 {
+            selectNewExternalSubtitleTrack(after: 0.35, remainingAttempts: 12)
+        }
+    }
+
+    private func selectNewExternalSubtitleTrack(
+        after delay: TimeInterval,
+        remainingAttempts: Int
+    ) {
+        externalSubtitleSelectionWorkItem?.cancel()
+        guard remainingAttempts > 0 else { return }
+        let workItem = DispatchWorkItem { [weak self] in
+            guard let self, !self.didRequestStop else { return }
+            let indexes = self.player.videoSubTitlesIndexes.compactMap(Self.subtitleTrackID)
+            let names = self.player.videoSubTitlesNames.compactMap { $0 as? String }
+            let externalFilename = self.externalSubtitleURL?.lastPathComponent.lowercased() ?? ""
+            let newIndexes = indexes.filter {
+                !self.subtitleTrackIDsBeforeExternalAdd.contains($0)
+            }
+            var namedExternalIndex: Int32?
+            for (ordinal, index) in indexes.enumerated() {
+                if names.indices.contains(ordinal) {
+                    let name = names[ordinal].lowercased()
+                    if (!externalFilename.isEmpty && name.contains(externalFilename))
+                        || name.contains("jellyfin.utf8")
+                        || name.contains("nastart") {
+                        namedExternalIndex = index
+                    }
+                }
+            }
+            if let externalTrackID = namedExternalIndex ?? newIndexes.last {
+                // When the media stream has not exposed its embedded subtitle
+                // IDs before addPlaybackSlave, a transient inventory can make
+                // every track look new. Do not select the last embedded track
+                // until VLC identifies the added file by name, or until there
+                // was a pre-existing inventory to compare against.
+                guard !self.subtitleTrackIDsBeforeExternalAdd.isEmpty
+                    || namedExternalIndex != nil else {
+                    self.selectNewExternalSubtitleTrack(
+                        after: 0.35,
+                        remainingAttempts: remainingAttempts - 1
+                    )
+                    return
+                }
+                self.didApplyInitialSubtitleTrack = true
+                self.desiredSubtitleTrackID = externalTrackID
+                self.selectedSubtitleTrackID = externalTrackID
+                self.player.currentVideoSubTitleIndex = externalTrackID
+                DiagnosticLogStore.shared.record(
+                    .info,
+                    categoryKey: "diagnostics.category.media",
+                    messageKey: "diagnostics.media.external_subtitle",
+                    details: [
+                        "operation": "selectAddedTrack",
+                        "trackID": "\(externalTrackID)",
+                        "trackCount": "\(indexes.count)"
+                    ]
+                )
+                self.syncState()
+                return
+            }
+            self.selectNewExternalSubtitleTrack(
+                after: 0.35,
+                remainingAttempts: remainingAttempts - 1
+            )
+        }
+        externalSubtitleSelectionWorkItem = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: workItem)
     }
 
     private static func subtitleTrackID(_ value: Any) -> Int32? {
@@ -6842,6 +6915,7 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
         pendingJumpWorkItem?.cancel()
         pendingTimeStateSyncWorkItem?.cancel()
         reconnectWorkItem?.cancel()
+        externalSubtitleSelectionWorkItem?.cancel()
         player.stop()
     }
 }
