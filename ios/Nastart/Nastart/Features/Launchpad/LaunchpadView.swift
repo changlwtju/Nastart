@@ -8775,8 +8775,11 @@ private final class JellyfinLibraryStore: ObservableObject {
             // be opened or the selected audio needs server conversion.
             let prefersRemoteOriginalPlayback = bitrateDecision.networkKey == "cellular"
                 && !Self.requiresAudioTranscode(audioCodec: selectedAudioCodec)
+            let requiresServerSubtitleRendering = selectedSubtitleStreamIndex != nil
+                && Self.requiresBurnIn(subtitleCodec: selectedSubtitleCodec)
             let shouldAttemptDirectPlayback = forcedServerBitrate == nil
                 && !Self.requiresAudioTranscode(audioCodec: selectedAudioCodec)
+                && !requiresServerSubtitleRendering
                 && (playbackRouteIsPrivate || forcesOriginalPlayback || prefersRemoteOriginalPlayback)
             let directRoute = shouldAttemptDirectPlayback
                 ? await preferredOriginalPlaybackRoute(for: entry, client: client)
@@ -9047,6 +9050,8 @@ private final class JellyfinLibraryStore: ObservableObject {
                 ? Double(requestedStartTimeTicks) / 10_000_000
                 : 0
             let totalDurationSeconds = entry.runTimeTicks.map { Double($0) / 10_000_000 }
+            let usesExternalNormalizedSubtitle = prepared.playMethod == .directPlay
+                && prepared.resource.subtitleURL != nil
             return MediaPlaybackRequest(
                 requestedAt: requestedAt,
                 url: prepared.resource.url,
@@ -9067,7 +9072,12 @@ private final class JellyfinLibraryStore: ObservableObject {
                 preferredSubtitleTrackOrdinal: prepared.playMethod == .transcode
                     ? nil
                     : selectedSubtitleTrackOrdinal,
-                prefersSubtitlesDisabled: selectedSubtitleStreamIndex == nil,
+                // When Jellyfin supplies a normalized SRT for an ASS/SSA
+                // source, disable the embedded styled track first. VLC then
+                // renders only the external text track, avoiding tofu boxes
+                // and duplicate subtitle lines.
+                prefersSubtitlesDisabled: selectedSubtitleStreamIndex == nil
+                    || usesExternalNormalizedSubtitle,
                 timelineOffsetSeconds: timelineOffsetSeconds,
                 totalDurationSeconds: totalDurationSeconds,
                 isPrivateNetworkRoute: prepared.isPrivateNetworkRoute,
