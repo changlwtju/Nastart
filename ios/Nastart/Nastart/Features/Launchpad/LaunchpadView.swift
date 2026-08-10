@@ -3839,15 +3839,14 @@ private enum MediaPlaybackPolicy {
 
     static func preferredEngine(for request: MediaPlaybackRequest) -> MediaPlaybackEngine {
         guard allowsCompatibilityPlayer(for: request) else { return .system }
-        // Public Jellyfin HLS is authenticated through the local playlist
-        // proxy. MobileVLCKit is the more tolerant decoder for the resulting
-        // MPEG-TS/fMP4 output on iOS 16 devices; AVPlayer can report a
-        // playing/ready state while rendering a black frame for the same
-        // stream. Keep AVPlayer for private HLS so PiP/AirPlay remain on the
-        // fast system path, and use VLC only where remote reliability matters.
+        // Jellyfin HLS is authenticated through the local playlist proxy.
+        // MobileVLCKit is the more tolerant decoder for the resulting
+        // MPEG-TS/fMP4 output on iPadOS; AVPlayer can report a playing/ready
+        // state while rendering a black frame for the same stream. Keep VLC
+        // as the visible playback engine for every Jellyfin HLS route; PiP
+        // explicitly prepares a system-compatible HLS replacement in place.
         if request.source == .jellyfin,
-           request.fileExtensionHint == "m3u8",
-           request.isPrivateNetworkRoute != true {
+           request.fileExtensionHint == "m3u8" {
             return .compatibility
         }
         if request.fileExtensionHint == "m3u8",
@@ -4184,12 +4183,12 @@ private final class MediaPlayerSession: ObservableObject {
                     "from": "AVPlayer",
                     "to": "MobileVLCKit",
                     "reason": "startupNoVideoFrame",
-                    "watchdogSeconds": "8"
+                    "watchdogSeconds": "4"
                 ]
             )
         }
         startupWorkItem = workItem
-        DispatchQueue.main.asyncAfter(deadline: .now() + 8, execute: workItem)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 4, execute: workItem)
     }
 
     var normalizedPosition: Double? {
@@ -4517,9 +4516,13 @@ struct BuiltInMediaPlayerView: View {
             serverSeekLoadTask?.cancel()
             qualityLoadTask?.cancel()
             session.pause()
-            let activeTracker = activeEngine == .compatibility
-                ? activeCompatibilityRequest?.playbackTracker
-                : request.playbackTracker
+            // A Jellyfin direct-play request can be replaced by a negotiated
+            // HLS request before the user enters system AVPlayer/PiP.  The
+            // replacement owns the live tracker; using the original direct
+            // tracker here reports the stale zero position on close, so the
+            // next "Continue Watching" launch starts from the beginning.
+            let activeTracker = activeCompatibilityRequest?.playbackTracker
+                ?? request.playbackTracker
             activeTracker?.stopped(
                 failed: activeEngine == .system
                     ? session.errorMessage != nil
@@ -5595,6 +5598,7 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
     private var pendingJumpSeconds = 0
     private var pendingJumpWorkItem: DispatchWorkItem?
     private var didRecordStart = false
+    private var didReissueStartupPlay = false
     private var didReachPlayback = false
     private var didRequestStop = false
     private var didFinishPlaybackNaturally = false
@@ -5625,12 +5629,18 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
         switch request.source {
         case .jellyfin where request.fileExtensionHint == "m3u8" && hasAlternateTransport:
             return isPrivateHost ? 12_000_000_000 : 15_000_000_000
-        case .jellyfin, .dsmFile:
-            // Original Jellyfin/DSM files get a short first-frame budget. If
-            // the original route cannot open promptly, the request's existing
-            // fallback loader renegotiates HLS (or the alternate transport)
-            // instead of leaving a black player for half a minute.
-            return isPrivateHost ? 12_000_000_000 : 10_000_000_000
+        case .jellyfin:
+            // A Jellyfin original can be a very large Matroska file whose
+            // index is near the end of the object. Waiting 10–12 seconds for
+            // VLC to open that Range input makes the player look black before
+            // the already-available HLS fallback is even requested. Keep a
+            // small direct-play grace for fast local files, then hand off to
+            // the compatibility HLS route so the first visible frame wins.
+            return isPrivateHost ? 6_000_000_000 : 5_000_000_000
+        case .dsmFile:
+            // Device-file playback stays original-first, but must not leave a
+            // remote NAS stream black for half a minute before its fallback.
+            return isPrivateHost ? 8_000_000_000 : 6_000_000_000
         case .directURL:
             return 30_000_000_000
         }
@@ -5667,13 +5677,18 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
             media.addOption(":demux=avformat")
         }
         media.addOption(request.forcesSoftwareDecoding ? ":avcodec-hw=none" : ":avcodec-hw=any")
-        // VLC's iOS build expects a font file (not a CoreText family name), and
-        // its bundled FreeSerif fallback has no CJK glyphs. Prefer the system
-        // CJK collection so embedded ASS/SSA and external SRT/ASS subtitles
-        // render Chinese instead of tofu boxes.
+        // MobileVLCKit's freetype-font option expects a readable font file.
+        // Copy the system CJK collection into the app cache once so embedded
+        // subtitles can render on iOS without relying on a protected system
+        // path. External normalized subtitles use the UIKit overlay below.
         media.addOption(":text-renderer=freetype")
         if let cjkFontPath = Self.cjkFontPath {
             media.addOption(":freetype-font=\(cjkFontPath)")
+        }
+        if request.externalSubtitleURL != nil {
+            // External SRT/ASS is rendered by UIKit with a guaranteed CJK
+            // font. Prevent VLC from drawing a second tofu/duplicate line.
+            media.addOption(":no-spu")
         }
         // Chinese subtitle files in real NAS libraries are a mixture of UTF-8,
         // GBK and legacy GB18030.  Forcing UTF-8 makes the latter render as
@@ -5720,10 +5735,6 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
             return nil
         }
 
-        // libfreetype can resolve the system font name through CoreText, but
-        // its file loader is not guaranteed to read a private system-framework
-        // path from the app sandbox. Make a private, readable copy once so
-        // VLC receives a normal file URL rather than a protected font path.
         let cacheDirectory = FileManager.default.urls(
             for: .cachesDirectory,
             in: .userDomainMask
@@ -5767,6 +5778,7 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
         didRequestStop = false
         didFinishPlaybackNaturally = false
         isUserPaused = false
+        didReissueStartupPlay = false
         if !didRecordStart {
             didRecordStart = true
             DiagnosticLogStore.shared.record(
@@ -6139,6 +6151,29 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
             player.position = Float(resumePosition)
         }
         let reportsBuffering = normalizedState.contains("opening") || normalizedState.contains("buffering")
+        if reportsBuffering,
+           !didReachPlayback,
+           !isUserPaused,
+           !didRequestStop,
+           !player.isPlaying,
+           !didReissueStartupPlay {
+            // Some authenticated Jellyfin Range responses enter VLC's
+            // buffering state without retaining the initial play command.
+            // Reissue it once during startup so the user does not have to
+            // tap Play manually after an otherwise valid first response.
+            didReissueStartupPlay = true
+            player.play()
+            DiagnosticLogStore.shared.record(
+                .info,
+                categoryKey: "diagnostics.category.media",
+                messageKey: "diagnostics.media.player_state",
+                details: [
+                    "engine": "MobileVLCKit",
+                    "state": "startupPlayReissued",
+                    "reason": "bufferingWithoutPlaying"
+                ]
+            )
+        }
         applySubtitleStyleIfNeeded(isRendererReady: reportsBuffering || player.isPlaying)
         let rawCurrentSeconds = max(Double(player.time.intValue) / 1_000, 0)
         let rawDurationSeconds = max(Double(player.media?.length.intValue ?? 0) / 1_000, 0)
@@ -6832,7 +6867,9 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
         guard remainingAttempts > 0 else { return }
         let workItem = DispatchWorkItem { [weak self] in
             guard let self, !self.didRequestStop else { return }
-            let indexes = self.player.videoSubTitlesIndexes.compactMap(Self.subtitleTrackID)
+            let indexes = self.player.videoSubTitlesIndexes
+                .compactMap(Self.subtitleTrackID)
+                .filter { $0 >= 0 }
             let names = self.player.videoSubTitlesNames.compactMap { $0 as? String }
             let externalFilename = self.externalSubtitleURL?.lastPathComponent.lowercased() ?? ""
             let newIndexes = indexes.filter {
@@ -6849,14 +6886,18 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
                     }
                 }
             }
-            if let externalTrackID = namedExternalIndex ?? newIndexes.last {
+            let onlyTrackIsNew = self.subtitleTrackIDsBeforeExternalAdd.isEmpty
+                && indexes.count == 1
+            if let externalTrackID = namedExternalIndex
+                ?? (onlyTrackIsNew ? indexes.first : newIndexes.last) {
                 // When the media stream has not exposed its embedded subtitle
                 // IDs before addPlaybackSlave, a transient inventory can make
                 // every track look new. Do not select the last embedded track
                 // until VLC identifies the added file by name, or until there
                 // was a pre-existing inventory to compare against.
                 guard !self.subtitleTrackIDsBeforeExternalAdd.isEmpty
-                    || namedExternalIndex != nil else {
+                    || namedExternalIndex != nil
+                    || onlyTrackIsNew else {
                     self.selectNewExternalSubtitleTrack(
                         after: 0.35,
                         remainingAttempts: remainingAttempts - 1
@@ -6939,6 +6980,132 @@ private enum VLCPlayerPanMode {
     case brightness
 }
 
+private struct CJKSubtitleCue {
+    let start: Double
+    let end: Double
+    let text: String
+}
+
+private final class CJKSubtitleOverlayModel: ObservableObject {
+    @Published private(set) var text: String?
+    private var cues: [CJKSubtitleCue] = []
+    private var loadTask: Task<Void, Never>?
+    private var subtitleURL: URL?
+    private var currentTime = 0.0
+
+    deinit {
+        loadTask?.cancel()
+    }
+
+    func setURL(_ url: URL?) {
+        guard subtitleURL != url else { return }
+        subtitleURL = url
+        text = nil
+        cues = []
+        loadTask?.cancel()
+        guard let url else { return }
+        loadTask = Task { [weak self] in
+            guard let self else { return }
+            let loadedCues = await Self.loadCues(from: url)
+            guard !Task.isCancelled else { return }
+            cues = loadedCues
+            applyCurrentTime()
+        }
+    }
+
+    func update(time: Double) {
+        currentTime = time
+        applyCurrentTime()
+    }
+
+    private func applyCurrentTime() {
+        guard !cues.isEmpty, currentTime.isFinite else {
+            text = nil
+            return
+        }
+        text = cues.first(where: { currentTime >= $0.start && currentTime < $0.end })?.text
+    }
+
+    private static func loadCues(from url: URL) async -> [CJKSubtitleCue] {
+        await Task.detached(priority: .userInitiated) {
+            guard let data = try? Data(contentsOf: url),
+                  let value = decode(data) else { return [] }
+            return parse(value)
+        }.value
+    }
+
+    private static func decode(_ data: Data) -> String? {
+        if data.starts(with: [0xFF, 0xFE]) {
+            return String(data: data.dropFirst(2), encoding: .utf16LittleEndian)
+        }
+        if data.starts(with: [0xFE, 0xFF]) {
+            return String(data: data.dropFirst(2), encoding: .utf16BigEndian)
+        }
+        if data.starts(with: [0xEF, 0xBB, 0xBF]) {
+            return String(data: data.dropFirst(3), encoding: .utf8)
+        }
+        return String(data: data, encoding: .utf8)
+    }
+
+    private static func parse(_ value: String) -> [CJKSubtitleCue] {
+        value
+            .replacingOccurrences(of: "\r\n", with: "\n")
+            .replacingOccurrences(of: "\r", with: "\n")
+            .components(separatedBy: "\n\n")
+            .compactMap { block in
+                let lines = block.components(separatedBy: "\n")
+                guard let timeIndex = lines.firstIndex(where: { $0.contains("-->") }) else {
+                    return nil
+                }
+                let times = lines[timeIndex].components(separatedBy: "-->")
+                    .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+                guard times.count == 2,
+                      let start = timestamp(times[0]),
+                      let end = timestamp(times[1]) else { return nil }
+                let text = lines.dropFirst(timeIndex + 1)
+                    .joined(separator: "\n")
+                    .replacingOccurrences(of: #"<[^>]+>"#, with: "", options: .regularExpression)
+                    .replacingOccurrences(of: #"\{\\[^}]+\}"#, with: "", options: .regularExpression)
+                    .trimmingCharacters(in: .whitespacesAndNewlines)
+                guard !text.isEmpty else { return nil }
+                return CJKSubtitleCue(start: start, end: max(end, start), text: text)
+            }
+            .sorted { $0.start < $1.start }
+    }
+
+    private static func timestamp(_ value: String) -> Double? {
+        let parts = value.replacingOccurrences(of: ",", with: ".").split(separator: ":")
+        guard parts.count == 3,
+              let hours = Double(parts[0]),
+              let minutes = Double(parts[1]),
+              let seconds = Double(parts[2]) else { return nil }
+        return hours * 3_600 + minutes * 60 + seconds
+    }
+}
+
+private struct CJKSubtitleOverlay: View {
+    @ObservedObject var model: CJKSubtitleOverlayModel
+
+    var body: some View {
+        Group {
+            if let text = model.text, !text.isEmpty {
+                Text(text)
+                    .font(.system(size: 20, weight: .semibold, design: .default))
+                    .multilineTextAlignment(.center)
+                    .foregroundStyle(.white)
+                    .shadow(color: .black, radius: 0, x: 1, y: 1)
+                    .shadow(color: .black, radius: 3)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 5)
+                    .background(.black.opacity(0.24), in: RoundedRectangle(cornerRadius: 5))
+                    .frame(maxWidth: 720)
+                    .accessibilityLabel(Text(text))
+            }
+        }
+        .allowsHitTesting(false)
+    }
+}
+
 private struct VLCBuiltInPlayerView: View {
     let request: MediaPlaybackRequest
     let close: () -> Void
@@ -6965,6 +7132,7 @@ private struct VLCBuiltInPlayerView: View {
     @State private var orientationMode: PlayerOrientationMode
     @State private var selectedSourceSubtitleTrackID: Int?
     @State private var showPiPUnavailableHint = false
+    @StateObject private var subtitleOverlayModel: CJKSubtitleOverlayModel
 
     init(
         request: MediaPlaybackRequest,
@@ -6990,6 +7158,9 @@ private struct VLCBuiltInPlayerView: View {
         _selectedSourceSubtitleTrackID = State(
             initialValue: request.selectedSourceSubtitleTrackID
         )
+        _subtitleOverlayModel = StateObject(
+            wrappedValue: CJKSubtitleOverlayModel()
+        )
     }
 
     var body: some View {
@@ -6999,6 +7170,15 @@ private struct VLCBuiltInPlayerView: View {
             ZStack {
                 VLCPlayerSurface(session: session)
                     .ignoresSafeArea()
+
+                if request.externalSubtitleURL != nil {
+                    VStack {
+                        Spacer()
+                        CJKSubtitleOverlay(model: subtitleOverlayModel)
+                            .padding(.horizontal, 24)
+                            .padding(.bottom, landscapeLayout ? 72 : 118)
+                    }
+                }
 
                 Color.clear
                     .contentShape(Rectangle())
@@ -7127,6 +7307,7 @@ private struct VLCBuiltInPlayerView: View {
         }
         .onAppear {
             displayBrightness = UIScreen.main.brightness
+            subtitleOverlayModel.setURL(request.externalSubtitleURL)
             session.play()
             revealControls()
         }
@@ -7136,6 +7317,9 @@ private struct VLCBuiltInPlayerView: View {
         .onChange(of: session.position) { position in
             guard !isScrubbing else { return }
             scrubPosition = position
+        }
+        .onChange(of: session.currentTimeSeconds) { seconds in
+            subtitleOverlayModel.update(time: seconds)
         }
         .onChange(of: session.isPlaying) { isPlaying in
             if isPlaying {
@@ -7461,10 +7645,12 @@ private struct VLCBuiltInPlayerView: View {
                         request.sourceSubtitleTracks.first { $0.id == selectedID }
                     }
                     if sourceID == nil || sourceTrack?.externalURL != nil {
+                        subtitleOverlayModel.setURL(sourceTrack?.externalURL)
                         if session.selectExternalSubtitle(sourceTrack?.externalURL) {
                             selectedSourceSubtitleTrackID = sourceID
                         }
                     } else {
+                        subtitleOverlayModel.setURL(nil)
                         sourceTrackChange(
                             request.selectedSourceAudioTrackID,
                             sourceID,
@@ -8049,7 +8235,10 @@ private struct SystemPlayerController: UIViewControllerRepresentable {
         func installPictureInPicture(on controller: AVPlayerViewController) {
             let layer = AVPlayerLayer(player: parent.player)
             layer.videoGravity = .resizeAspect
-            layer.opacity = 0.01
+            // Keep this as a real rendered layer. A transparent auxiliary
+            // layer can make AVPictureInPictureController report a successful
+            // transition while capturing a black frame on iPadOS.
+            layer.opacity = 1
             layer.frame = controller.view.bounds
             controller.view.layer.insertSublayer(layer, at: 0)
             pictureInPictureLayer = layer
@@ -9057,14 +9246,19 @@ private final class JellyfinLibraryStore: ObservableObject {
                 0
             )
             let prepared: JellyfinPreparedPlayback
-            // Treat Jellyfin's original stream like a device-file playback
-            // route when the transport is cellular. This lets VLC start from
+            // Treat a measured, bitrate-safe original stream like a device-file
+            // playback route on Wi-Fi and cellular. This lets VLC start from
             // the authenticated Range proxy instead of waiting for Jellyfin
             // to create the first HLS segment. The probe is bounded and the
             // existing HLS branch remains the fallback when the source cannot
             // be opened or the selected audio needs server conversion.
-            let prefersRemoteOriginalPlayback = bitrateDecision.networkKey == "cellular"
-                && !Self.requiresAudioTranscode(audioCodec: selectedAudioCodec)
+            let sourceBitrateFitsDirectBudget = entry.mediaBitrate.map {
+                $0 <= directPlayBudget
+            } ?? false
+            let prefersRemoteOriginalPlayback = (
+                bitrateDecision.networkKey == "cellular"
+                    || (bitrateDecision.networkKey == "wifi" && sourceBitrateFitsDirectBudget)
+            ) && !Self.requiresAudioTranscode(audioCodec: selectedAudioCodec)
             let requiresServerSubtitleRendering = selectedSubtitleStreamIndex != nil
                 && Self.requiresBurnIn(subtitleCodec: selectedSubtitleCodec)
             let shouldAttemptDirectPlayback = forcedServerBitrate == nil
@@ -9196,6 +9390,13 @@ private final class JellyfinLibraryStore: ObservableObject {
             let compatibilityFallbackInitialBitrate = prepared.playMethod == .directPlay
                 ? min(maxBitrate, 20_000_000)
                 : maxBitrate
+            // Direct-play ASS/SSA subtitles are normalized to an external SRT
+            // so VLC does not draw tofu glyphs from the embedded styled track.
+            // That also makes VLC report the native subtitle track as disabled.
+            // A server HLS fallback still needs the original Jellyfin stream
+            // index, otherwise the fallback silently starts without subtitles.
+            let preservesServerSubtitleSelection = prepared.playMethod == .directPlay
+                && prepared.resource.subtitleURL != nil
             let compatibilityFallbackRequestLoader: ((MediaPlaybackRuntimeState?) async -> MediaPlaybackRequest?)? =
                 compatibilityFallbackInitialBitrate > 1_750_000
                 ? { [weak self] runtimeState in
@@ -9211,7 +9412,8 @@ private final class JellyfinLibraryStore: ObservableObject {
                                 : nil
                         } ?? selectedAudioStreamIndex
                         if runtimeState?.subtitlesDisabled == true,
-                           runtimeState?.subtitleSelectionKnown == true {
+                           runtimeState?.subtitleSelectionKnown == true,
+                           !preservesServerSubtitleSelection {
                             runtimeSubtitleStreamIndex = nil
                         } else {
                             runtimeSubtitleStreamIndex = runtimeState?.subtitleTrackOrdinal.flatMap { ordinal in
@@ -9312,7 +9514,9 @@ private final class JellyfinLibraryStore: ObservableObject {
                     entry.audioTracks.indices.contains(ordinal) ? entry.audioTracks[ordinal].index : nil
                 } ?? selectedAudioStreamIndex
                 let runtimeSubtitleStreamIndex: Int?
-                if runtimeState.subtitlesDisabled, runtimeState.subtitleSelectionKnown {
+                if runtimeState.subtitlesDisabled,
+                   runtimeState.subtitleSelectionKnown,
+                   !preservesServerSubtitleSelection {
                     runtimeSubtitleStreamIndex = nil
                 } else {
                     runtimeSubtitleStreamIndex = runtimeState.subtitleTrackOrdinal.flatMap { ordinal in

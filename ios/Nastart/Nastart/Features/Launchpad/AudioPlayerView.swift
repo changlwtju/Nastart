@@ -174,6 +174,8 @@ final class AudioPlaybackSession: NSObject, ObservableObject, VLCMediaPlayerDele
     private let player: VLCMediaPlayer
     private var didApplyInitialPosition = false
     private var didStartTracking = false
+    private var didReissueStartupPlay = false
+    private var startupWorkItem: DispatchWorkItem?
     private var remoteCommandsInstalled = false
 
     init(request: MediaPlaybackRequest) {
@@ -190,19 +192,31 @@ final class AudioPlaybackSession: NSObject, ObservableObject, VLCMediaPlayerDele
 
     private func makeMedia() -> VLCMedia {
         let media = VLCMedia(url: request.url)
-        let cache = NetworkHostClassifier.isPrivate(request.networkOriginURL.host) ? 500 : 1_000
+        let cache = NetworkHostClassifier.isPrivate(request.networkOriginURL.host) ? 900 : 1_500
         media.addOption(":network-caching=\(cache)")
         media.addOption(":file-caching=\(cache)")
         media.addOption(":http-reconnect")
         media.addOption(":http-continuous")
         media.addOption(":input-fast-seek")
-        media.addOption(":no-video")
+        // File Station/Jellyfin stream URLs are often API endpoints without
+        // the original filename extension. Give FFmpeg the container hint so
+        // FLAC/ALAC/APE/WMA and remote MP4 audio are demuxed deterministically
+        // instead of waiting for VLC's URL/content-type guesser.
+        if Self.avFormatAudioExtensions.contains(request.fileExtensionHint) {
+            media.addOption(":demux=avformat")
+        }
         return media
     }
+
+    private static let avFormatAudioExtensions: Set<String> = [
+        "mp3", "m4a", "aac", "wav", "flac", "ogg", "opus", "wma",
+        "ape", "alac", "aiff", "aif", "amr", "ac3", "dts", "caf"
+    ]
 
     func play() {
         configureAudioSession()
         installRemoteCommandsIfNeeded()
+        didReissueStartupPlay = false
         if !didStartTracking {
             didStartTracking = true
             DiagnosticLogStore.shared.record(
@@ -211,15 +225,24 @@ final class AudioPlaybackSession: NSObject, ObservableObject, VLCMediaPlayerDele
                 messageKey: "diagnostics.media.player_started",
                 details: MediaPlaybackProbe.baseDetails(for: request).merging([
                     "engine": "MobileVLCKitAudio",
-                    "content": "audio"
+                    "content": "audio",
+                    "demux": Self.avFormatAudioExtensions.contains(request.fileExtensionHint)
+                        ? "avformat"
+                        : "auto",
+                    "cacheMs": NetworkHostClassifier.isPrivate(request.networkOriginURL.host)
+                        ? "900"
+                        : "1500"
                 ]) { current, _ in current }
             )
         }
         player.play()
+        scheduleStartupPlayRetry()
         updateNowPlaying()
     }
 
     func stop() {
+        startupWorkItem?.cancel()
+        startupWorkItem = nil
         player.stop()
         request.playbackTracker?.progressed(
             positionSeconds: currentSeconds,
@@ -283,10 +306,42 @@ final class AudioPlaybackSession: NSObject, ObservableObject, VLCMediaPlayerDele
             errorMessage = NSLocalizedString("audio.player.load_failed", comment: "")
         }
         if isPlaying {
+            startupWorkItem?.cancel()
+            startupWorkItem = nil
+            errorMessage = nil
+            if !didStartTracking {
+                didStartTracking = true
+            }
             request.playbackTracker?.started(positionSeconds: current)
         }
         request.playbackTracker?.progressed(positionSeconds: current, isPaused: !isPlaying)
         updateNowPlaying()
+    }
+
+    private func scheduleStartupPlayRetry() {
+        startupWorkItem?.cancel()
+        let workItem = DispatchWorkItem { [weak self] in
+            guard let self,
+                  !self.didReissueStartupPlay,
+                  !self.player.isPlaying,
+                  self.player.state == .opening || self.player.state == .buffering else {
+                return
+            }
+            self.didReissueStartupPlay = true
+            self.player.play()
+            DiagnosticLogStore.shared.record(
+                .info,
+                categoryKey: "diagnostics.category.media",
+                messageKey: "diagnostics.media.player_state",
+                details: [
+                    "engine": "MobileVLCKitAudio",
+                    "state": "startupPlayReissued",
+                    "reason": "audioBufferingWithoutClock"
+                ]
+            )
+        }
+        startupWorkItem = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5, execute: workItem)
     }
 
     private func configureAudioSession() {
