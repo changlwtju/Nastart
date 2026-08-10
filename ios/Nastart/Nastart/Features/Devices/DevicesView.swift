@@ -2236,13 +2236,44 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
             ["http", "https"].contains(target.scheme?.lowercased() ?? "")
         else { return nil }
 
+        // Jellyfin commonly puts api_key/DeviceId/PlaySessionId on the
+        // master playlist URL only. AVPlayer requests rewritten child
+        // playlists and segments independently, so inherit only the
+        // authentication/session query items instead of relying on headers
+        // that AVPlayer will not propagate.
+        let authenticatedTarget = targetWithInheritedAuthenticationQuery(target)
+
         var components = URLComponents()
         components.scheme = "http"
         components.host = "127.0.0.1"
         components.port = Int(port.rawValue)
         components.path = "/media/\(token)/\(filename)"
-        components.queryItems = [URLQueryItem(name: "u", value: target.absoluteString)]
+        components.queryItems = [URLQueryItem(name: "u", value: authenticatedTarget.absoluteString)]
         return components.url?.absoluteString
+    }
+
+    private func targetWithInheritedAuthenticationQuery(_ target: URL) -> URL {
+        guard
+            let upstreamComponents = URLComponents(url: upstreamURL, resolvingAgainstBaseURL: false),
+            var targetComponents = URLComponents(url: target, resolvingAgainstBaseURL: false)
+        else {
+            return target
+        }
+        let inheritedNames = Set([
+            "api_key", "apikey", "token", "access_token",
+            "deviceid", "mediasourceid", "playsessionid"
+        ])
+        var queryItems = targetComponents.queryItems ?? []
+        let existingNames = Set(queryItems.map { $0.name.lowercased() })
+        for item in upstreamComponents.queryItems ?? [] {
+            guard inheritedNames.contains(item.name.lowercased()),
+                  !existingNames.contains(item.name.lowercased()) else {
+                continue
+            }
+            queryItems.append(item)
+        }
+        targetComponents.queryItems = queryItems.isEmpty ? nil : queryItems
+        return targetComponents.url ?? target
     }
 
     private func drainBufferedBody() {

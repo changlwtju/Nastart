@@ -9320,8 +9320,7 @@ private final class JellyfinLibraryStore: ObservableObject {
         // keeping external handoff on the original server URL.
         let internalStreamURL: URL
         if playMethod == .transcode,
-           extensionHint == "m3u8",
-           !playbackRouteIsPrivate {
+           extensionHint == "m3u8" {
             internalStreamURL = (try? await AuthenticatedMediaStreamProxy.shared.register(
                 upstreamURL: streamURL,
                 filename: entry.title + ".m3u8",
