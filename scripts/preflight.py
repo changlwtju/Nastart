@@ -509,7 +509,7 @@ def check_playback_routing_invariants() -> CheckResult:
             "externalHandoffResource: prepared.externalHandoffResource"
         ),
         "Jellyfin direct play must keep the validated upstream URL for handoff": (
-            "url: directRoute.handoffURL,\n                    fileExtensionOverride: extensionHint,\n                    subtitleURL: directSubtitleURL"
+            "url: directRoute.handoffURL,\n                    fileExtensionOverride: extensionHint,\n                    subtitleURL: directSubtitleSourceURL"
         ),
         "Jellyfin remote direct play must use a loopback Range proxy in-app": (
             'url: directURL,\n                    fileExtensionOverride: extensionHint'

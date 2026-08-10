@@ -5669,6 +5669,7 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
         // its bundled FreeSerif fallback has no CJK glyphs. Prefer the system
         // CJK collection so embedded ASS/SSA and external SRT/ASS subtitles
         // render Chinese instead of tofu boxes.
+        media.addOption(":text-renderer=freetype")
         if let cjkFontPath = Self.cjkFontPath {
             media.addOption(":freetype-font=\(cjkFontPath)")
         }
@@ -5699,16 +5700,46 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
     }
 
     private static var cjkFontPath: String? {
+        var sourcePath: String?
         for family in ["PingFangSC-Regular", "HiraginoSansGB-W3"] {
             let font = CTFontCreateWithName(family as CFString, 18, nil)
             if let url = CTFontCopyAttribute(font, kCTFontURLAttribute) as? URL {
-                return url.path
+                sourcePath = url.path
+                break
             }
         }
-        return [
+        sourcePath = sourcePath ?? [
+            "/System/Library/Fonts/LanguageSupport/PingFang.ttc",
+            "/System/Library/Fonts/LanguageSupport/Hiragino Sans GB.ttc",
             "/System/Library/Fonts/PingFang.ttc",
             "/System/Library/Fonts/Hiragino Sans GB.ttc"
         ].first { FileManager.default.fileExists(atPath: $0) }
+        guard let sourcePath, FileManager.default.fileExists(atPath: sourcePath) else {
+            return nil
+        }
+
+        // libfreetype can resolve the system font name through CoreText, but
+        // its file loader is not guaranteed to read a private system-framework
+        // path from the app sandbox. Make a private, readable copy once so
+        // VLC receives a normal file URL rather than a protected font path.
+        let cacheDirectory = FileManager.default.urls(
+            for: .cachesDirectory,
+            in: .userDomainMask
+        )[0].appendingPathComponent("Nastart/Fonts", isDirectory: true)
+        let cachedFontURL = cacheDirectory.appendingPathComponent("NastartCJK.ttc")
+        if !FileManager.default.fileExists(atPath: cachedFontURL.path) {
+            do {
+                try FileManager.default.createDirectory(
+                    at: cacheDirectory,
+                    withIntermediateDirectories: true
+                )
+                let fontData = try Data(contentsOf: URL(fileURLWithPath: sourcePath))
+                try fontData.write(to: cachedFontURL, options: .atomic)
+            } catch {
+                return sourcePath
+            }
+        }
+        return cachedFontURL.path
     }
 
     private var usesAVFormatDemux: Bool {
@@ -8293,6 +8324,191 @@ private final class JellyfinCertificateTrustDelegate: NSObject, URLSessionDelega
     }
 }
 
+/// Jellyfin can expose an ASS/SSA subtitle as an SRT endpoint, but the
+/// returned bytes may still carry legacy Chinese encoding or styling that
+/// MobileVLCKit renders as tofu on iOS.  Normalize only the problematic text
+/// codecs to a local UTF-8 SRT; image subtitles and ordinary SRT tracks keep
+/// their original path.
+private enum JellyfinSubtitleNormalizer {
+    private static let maximumSubtitleBytes = 16 * 1024 * 1024
+
+    static func normalize(
+        url: URL,
+        sourceCodec: String?,
+        allowsSelfSignedCertificates: Bool
+    ) async -> URL? {
+        let codec = sourceCodec?.lowercased()
+        guard codec == "ass" || codec == "ssa" else { return nil }
+
+        let delegate = JellyfinCertificateTrustDelegate(
+            trustedHost: url.host,
+            allowsSelfSignedCertificates: allowsSelfSignedCertificates
+        )
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.timeoutIntervalForRequest = 8
+        configuration.timeoutIntervalForResource = 12
+        configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
+        configuration.allowsCellularAccess = true
+        configuration.allowsExpensiveNetworkAccess = true
+        configuration.waitsForConnectivity = true
+        let session = URLSession(
+            configuration: configuration,
+            delegate: delegate,
+            delegateQueue: nil
+        )
+        defer { session.invalidateAndCancel() }
+
+        var request = URLRequest(url: url)
+        request.setValue("identity", forHTTPHeaderField: "Accept-Encoding")
+        do {
+            let (data, response) = try await session.data(for: request)
+            guard let httpResponse = response as? HTTPURLResponse,
+                  (200...299).contains(httpResponse.statusCode),
+                  data.count <= maximumSubtitleBytes,
+                  let decoded = decode(data),
+                  let normalized = normalizeToSRT(decoded),
+                  !normalized.isEmpty else {
+                return nil
+            }
+            let cacheDirectory = FileManager.default.urls(
+                for: .cachesDirectory,
+                in: .userDomainMask
+            )[0].appendingPathComponent("Nastart/Subtitles", isDirectory: true)
+            try FileManager.default.createDirectory(
+                at: cacheDirectory,
+                withIntermediateDirectories: true
+            )
+            let outputURL = cacheDirectory.appendingPathComponent(
+                "\(UUID().uuidString).jellyfin.utf8.srt"
+            )
+            guard let outputData = normalized.data(using: .utf8) else { return nil }
+            try outputData.write(to: outputURL, options: .atomic)
+            DiagnosticLogStore.shared.record(
+                .info,
+                categoryKey: "diagnostics.category.media",
+                messageKey: "diagnostics.media.subtitle_normalized",
+                details: [
+                    "source": DiagnosticLogStore.redactedURL(url),
+                    "sourceCodec": codec ?? "-",
+                    "encoding": detectedEncoding(data),
+                    "bytes": "\(data.count)",
+                    "format": "utf8-srt",
+                    "convertedASS": decoded.lowercased().contains("[events]") ? "yes" : "no"
+                ]
+            )
+            return outputURL
+        } catch is CancellationError {
+            return nil
+        } catch {
+            return nil
+        }
+    }
+
+    private static func decode(_ data: Data) -> String? {
+        if data.starts(with: [0xFF, 0xFE]) {
+            return String(data: data, encoding: .utf16LittleEndian)
+        }
+        if data.starts(with: [0xFE, 0xFF]) {
+            return String(data: data, encoding: .utf16BigEndian)
+        }
+        if data.starts(with: [0xEF, 0xBB, 0xBF]) {
+            return String(data: data.dropFirst(3), encoding: .utf8)
+        }
+        if let utf8 = String(data: data, encoding: .utf8) { return utf8 }
+        let gb18030 = String.Encoding(rawValue: CFStringConvertEncodingToNSStringEncoding(
+            CFStringEncoding(CFStringEncodings.GB_18030_2000.rawValue)
+        ))
+        return String(data: data, encoding: gb18030)
+            ?? String(data: data, encoding: .isoLatin1)
+    }
+
+    private static func detectedEncoding(_ data: Data) -> String {
+        if data.starts(with: [0xFF, 0xFE]) { return "UTF-16LE" }
+        if data.starts(with: [0xFE, 0xFF]) { return "UTF-16BE" }
+        if data.starts(with: [0xEF, 0xBB, 0xBF]) { return "UTF-8-BOM" }
+        if String(data: data, encoding: .utf8) != nil { return "UTF-8" }
+        return "GB18030-or-ISO-8859-1"
+    }
+
+    private static func normalizeToSRT(_ value: String) -> String? {
+        let normalized = value
+            .replacingOccurrences(of: "\r\n", with: "\n")
+            .replacingOccurrences(of: "\r", with: "\n")
+        if normalized.contains("-->") {
+            // Jellyfin's ASS endpoint can return an SRT-shaped document while
+            // retaining ASS override tags such as {\\blur3}. Strip those
+            // tags even on the SRT-shaped path; otherwise VLC treats them as
+            // literal subtitle text and CJK rendering falls back to tofu.
+            return normalized
+                .components(separatedBy: "\n")
+                .map { assTextToPlainText($0) }
+                .joined(separator: "\n")
+                .trimmingCharacters(in: .whitespacesAndNewlines) + "\n"
+        }
+
+        let lines = normalized.components(separatedBy: "\n")
+        let formatLine = lines.first {
+            $0.trimmingCharacters(in: .whitespaces).lowercased().hasPrefix("format:")
+        }
+        let formatFields = formatLine.map {
+            String($0.drop { $0 != ":" }.dropFirst())
+                .split(separator: ",")
+                .map { $0.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() }
+        } ?? []
+        guard let startIndex = formatFields.firstIndex(of: "start"),
+              let endIndex = formatFields.firstIndex(of: "end"),
+              let textIndex = formatFields.firstIndex(of: "text") else {
+            return nil
+        }
+
+        var cues: [(start: String, end: String, text: String)] = []
+        for line in lines {
+            guard line.lowercased().hasPrefix("dialogue:") else { continue }
+            let payload = String(line.drop { $0 != ":" }.dropFirst())
+            let fields = payload.split(separator: ",", maxSplits: max(formatFields.count - 1, 0))
+                .map(String.init)
+            guard fields.indices.contains(startIndex),
+                  fields.indices.contains(endIndex),
+                  fields.indices.contains(textIndex),
+                  let start = assTimestamp(fields[startIndex]),
+                  let end = assTimestamp(fields[endIndex]) else { continue }
+            let text = assTextToPlainText(fields[textIndex])
+            guard !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { continue }
+            cues.append((start, end, text))
+        }
+        guard !cues.isEmpty else { return nil }
+        return cues.enumerated().map { index, cue in
+            "\(index + 1)\n\(cue.start) --> \(cue.end)\n\(cue.text)"
+        }.joined(separator: "\n\n") + "\n"
+    }
+
+    private static func assTimestamp(_ value: String) -> String? {
+        let fields = value.trimmingCharacters(in: .whitespacesAndNewlines).split(separator: ":")
+        guard fields.count == 3,
+              let hours = Int(fields[0]),
+              let minutes = Int(fields[1]) else { return nil }
+        let secondParts = fields[2].split(separator: ".", maxSplits: 1).map(String.init)
+        guard let seconds = Int(secondParts[0]), seconds < 60 else { return nil }
+        let centiseconds = secondParts.count > 1
+            ? Int(String(secondParts[1].prefix(2)).padding(toLength: 2, withPad: "0", startingAt: 0)) ?? 0
+            : 0
+        return String(format: "%02d:%02d:%02d,%03d", hours, minutes, seconds, centiseconds * 10)
+    }
+
+    private static func assTextToPlainText(_ value: String) -> String {
+        var text = value
+        while let start = text.firstIndex(of: "{") {
+            guard let end = text[start...].firstIndex(of: "}") else { break }
+            text.removeSubrange(start...end)
+        }
+        return text
+            .replacingOccurrences(of: "\\N", with: "\n")
+            .replacingOccurrences(of: "\\n", with: "\n")
+            .replacingOccurrences(of: "\\h", with: " ")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+}
+
 @MainActor
 private final class JellyfinLibraryStore: ObservableObject {
     @Published private(set) var endpoint: URL
@@ -8787,17 +9003,29 @@ private final class JellyfinLibraryStore: ObservableObject {
             if let directRoute {
                 let directURL = directRoute.url
                 let extensionHint = Self.firstContainer(entry.container) ?? "mp4"
-                let directSubtitleURL = Self.requiresBurnIn(subtitleCodec: selectedSubtitleCodec)
+                let directSubtitleSourceURL = Self.requiresBurnIn(subtitleCodec: selectedSubtitleCodec)
                     ? nil
                     : externalSubtitleURL(
                         for: entry,
                         subtitleStreamIndex: selectedSubtitleStreamIndex,
                         client: client
                 )
+                let directSubtitleURL: URL?
+                if let directSubtitleSourceURL {
+                    directSubtitleURL = await JellyfinSubtitleNormalizer.normalize(
+                        url: directSubtitleSourceURL,
+                        sourceCodec: selectedSubtitleCodec,
+                        allowsSelfSignedCertificates: requiresCertificateBypass(
+                            for: directSubtitleSourceURL
+                        )
+                    ) ?? directSubtitleSourceURL
+                } else {
+                    directSubtitleURL = nil
+                }
                 let externalResource = MediaPlaybackResource(
                     url: directRoute.handoffURL,
                     fileExtensionOverride: extensionHint,
-                    subtitleURL: directSubtitleURL
+                    subtitleURL: directSubtitleSourceURL
                 )
                 let internalResource = MediaPlaybackResource(
                     url: directURL,

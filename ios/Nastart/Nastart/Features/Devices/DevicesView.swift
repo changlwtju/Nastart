@@ -1960,6 +1960,16 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
                 request.setValue(value, forHTTPHeaderField: name)
             }
         }
+        // AVPlayer does not propagate custom headers from the master HLS
+        // request to child playlists or segments. Query authentication is
+        // already inherited when the local playlist is rewritten, but some
+        // Jellyfin reverse proxies only honor X-Emby-Token on the media
+        // request itself. Re-emit the token for every upstream HLS request;
+        // never include it in diagnostics or the local response URL.
+        if requestHeaders["x-emby-token"] == nil,
+           let token = Self.authenticationToken(from: upstreamURL) {
+            request.setValue(token, forHTTPHeaderField: "X-Emby-Token")
+        }
         if let activeRange {
             request.setValue(activeRange, forHTTPHeaderField: "Range")
         }
@@ -2167,6 +2177,19 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
                 if let error { self?.finish(with: error) } else { self?.finish(with: nil) }
             })
         })
+    }
+
+    private static func authenticationToken(from url: URL) -> String? {
+        guard let queryItems = URLComponents(
+            url: url,
+            resolvingAgainstBaseURL: false
+        )?.queryItems else {
+            return nil
+        }
+        let names = Set(["api_key", "apikey", "token", "access_token"])
+        return queryItems.first {
+            names.contains($0.name.lowercased()) && !($0.value ?? "").isEmpty
+        }?.value
     }
 
     private func rewritePlaylist(_ data: Data) -> Data {
