@@ -5123,6 +5123,20 @@ struct BuiltInMediaPlayerView: View {
                     "extension": replacement.fileExtensionHint
                 ]
             )
+
+            // A Jellyfin fallback is a negotiated HLS stream. Let AVPlayer own
+            // the native HLS playlist/segment pipeline on both iPhone and iPad;
+            // keep VLC only as the bounded fallback if AVPlayer cannot produce
+            // a frame. Reopening the HLS stream in VLC here can report
+            // `playing` while never advancing its playback clock on iPad.
+            if preparedReplacement.fileExtensionHint == "m3u8",
+               MediaPlaybackPolicy.allowsSystemPlayer(for: preparedReplacement) {
+                activateSystemPlayback(
+                    with: preparedReplacement,
+                    runtimeState: runtimeState,
+                    startsPictureInPicture: false
+                )
+            }
         }
     }
 
@@ -7712,19 +7726,16 @@ private struct VLCBuiltInPlayerView: View {
                     let sourceTrack = sourceID.flatMap { selectedID in
                         request.sourceSubtitleTracks.first { $0.id == selectedID }
                     }
-                    if sourceID == nil || sourceTrack?.externalURL != nil {
-                        subtitleOverlayModel.setURL(sourceTrack?.externalURL)
-                        if session.selectExternalSubtitle(sourceTrack?.externalURL) {
-                            selectedSourceSubtitleTrackID = sourceID
-                        }
-                    } else {
-                        subtitleOverlayModel.setURL(nil)
-                        sourceTrackChange(
-                            request.selectedSourceAudioTrackID,
-                            sourceID,
-                            session.runtimeState(orientationMode: orientationMode)
-                        )
-                    }
+                    // Re-negotiate every source subtitle change, including an
+                    // external normalized subtitle. This keeps the selected
+                    // source ID, resume position and server play session in one
+                    // request instead of changing only the local VLC slave.
+                    subtitleOverlayModel.setURL(sourceTrack?.externalURL)
+                    sourceTrackChange(
+                        request.selectedSourceAudioTrackID,
+                        sourceID,
+                        session.runtimeState(orientationMode: orientationMode)
+                    )
                     dismissPanel()
                 }
             } else {
@@ -8618,6 +8629,34 @@ private struct JellyfinMediaEntry: Identifiable, Hashable {
     var isPlayable: Bool {
         [.movie, .episode, .audio, .video].contains(kind)
     }
+
+    /// Jellyfin normally returns both playedPercentage and playbackPositionTicks,
+    /// but older sessions can contain only one of them. Keep resume behavior
+    /// deterministic for both the direct and server-HLS routes.
+    var effectivePlaybackProgress: Double? {
+        if let progress, progress > 0 {
+            return min(max(progress, 0), 1)
+        }
+        if let positionTicks = playbackPositionTicks,
+              let runTimeTicks,
+              runTimeTicks > 0,
+              positionTicks > 0 {
+            return min(max(Double(positionTicks) / Double(runTimeTicks), 0), 1)
+        }
+        return progress.map { min(max($0, 0), 1) }
+    }
+
+    var effectivePlaybackPositionTicks: Int? {
+        if let playbackPositionTicks, playbackPositionTicks > 0 {
+            return playbackPositionTicks
+        }
+        guard let effectivePlaybackProgress,
+              let runTimeTicks,
+              runTimeTicks > 0 else {
+            return playbackPositionTicks
+        }
+        return Int((Double(runTimeTicks) * effectivePlaybackProgress).rounded())
+    }
 }
 
 private final class JellyfinCertificateTrustDelegate: NSObject, URLSessionDelegate {
@@ -9247,7 +9286,7 @@ private final class JellyfinLibraryStore: ObservableObject {
                 source: .jellyfin,
                 contentKind: .audio,
                 fileExtensionOverride: extensionHint,
-                initialPosition: entry.progress,
+                initialPosition: entry.effectivePlaybackProgress,
                 initialOrientationMode: .automatic,
                 isPrivateNetworkRoute: playbackRouteIsPrivate,
                 playbackTracker: makePlaybackTracker(
@@ -9312,7 +9351,7 @@ private final class JellyfinLibraryStore: ObservableObject {
         )
         do {
             let requestedStartTimeTicks = max(
-                forcedStartTimeTicks ?? entry.playbackPositionTicks ?? 0,
+                forcedStartTimeTicks ?? entry.effectivePlaybackPositionTicks ?? 0,
                 0
             )
             let prepared: JellyfinPreparedPlayback
@@ -9329,10 +9368,14 @@ private final class JellyfinLibraryStore: ObservableObject {
                 bitrateDecision.networkKey == "cellular"
                     || (bitrateDecision.networkKey == "wifi" && sourceBitrateFitsDirectBudget)
             ) && !Self.requiresAudioTranscode(audioCodec: selectedAudioCodec)
+            let requiresDeviceCompatibilityTranscode = Self.requiresDeviceCompatibilityTranscode(
+                audioCodec: selectedAudioCodec
+            )
             let requiresServerSubtitleRendering = selectedSubtitleStreamIndex != nil
                 && Self.requiresBurnIn(subtitleCodec: selectedSubtitleCodec)
             let shouldAttemptDirectPlayback = forcedServerBitrate == nil
                 && !Self.requiresAudioTranscode(audioCodec: selectedAudioCodec)
+                && !requiresDeviceCompatibilityTranscode
                 && !requiresServerSubtitleRendering
                 && (playbackRouteIsPrivate || forcesOriginalPlayback || prefersRemoteOriginalPlayback)
             let directRoute = shouldAttemptDirectPlayback
@@ -9395,6 +9438,7 @@ private final class JellyfinLibraryStore: ObservableObject {
                         "playSession": "notRequired",
                         "subtitleCodec": selectedSubtitleCodec ?? "-",
                         "audioCodec": selectedAudioCodec ?? "-",
+                        "deviceCompatibilityTranscode": requiresDeviceCompatibilityTranscode ? "yes" : "no",
                         "subtitleStreamIndex": selectedSubtitleStreamIndex.map(String.init) ?? "none",
                         "audioStreamIndex": selectedAudioStreamIndex.map(String.init) ?? "default",
                         "maxBitrate": "unlimitedOriginal",
@@ -9510,39 +9554,41 @@ private final class JellyfinLibraryStore: ObservableObject {
                     )
                 }
                 : nil
-            let sourceTrackRequestLoader: ((Int?, Int?, MediaPlaybackRuntimeState) async -> MediaPlaybackRequest?)?
-            if prepared.playMethod == .transcode {
-                sourceTrackRequestLoader = { [weak self] audioStreamIndex, subtitleStreamIndex, runtimeState in
-                    guard let self else { return nil }
-                    do {
-                        let replacement = try await self.playbackRequest(
-                            for: entry,
-                            selection: JellyfinPlaybackSelection(
-                                audioStreamIndex: audioStreamIndex,
-                                subtitleStreamIndex: subtitleStreamIndex
-                            ),
-                            forcedServerBitrate: maxBitrate,
-                            forcedStartTimeTicks: runtimeState.positionSeconds.map {
-                                Self.jellyfinTicks(for: $0)
-                            },
-                            forcedServerReason: "sourceTrackSwitch"
-                        )
-                        return replacement?.applyingRuntimePreferences(runtimeState)
-                    } catch {
-                        self.record(
-                            "diagnostics.jellyfin.playback_failed",
-                            level: .error,
-                            details: self.diagnosticDetails(for: error).merging([
-                                "stage": "sourceTrackSwitch",
-                                "audioStreamIndex": audioStreamIndex.map(String.init) ?? "default",
-                                "subtitleStreamIndex": subtitleStreamIndex.map(String.init) ?? "none"
-                            ]) { current, _ in current }
-                        )
-                        return nil
-                    }
+            // Track changes must use the same negotiated request path for
+            // original and transcoded playback. Re-opening the current source
+            // with the live playhead prevents a direct-play selection from
+            // updating only the VLC menu while the old stream keeps playing.
+            let sourceTrackRequestLoader: ((Int?, Int?, MediaPlaybackRuntimeState) async -> MediaPlaybackRequest?) = {
+                [weak self] audioStreamIndex, subtitleStreamIndex, runtimeState in
+                guard let self else { return nil }
+                do {
+                    let replacement = try await self.playbackRequest(
+                        for: entry,
+                        selection: JellyfinPlaybackSelection(
+                            audioStreamIndex: audioStreamIndex,
+                            subtitleStreamIndex: subtitleStreamIndex
+                        ),
+                        forcedServerBitrate: prepared.playMethod == .transcode
+                            ? maxBitrate
+                            : nil,
+                        forcedStartTimeTicks: runtimeState.positionSeconds.map {
+                            Self.jellyfinTicks(for: $0)
+                        },
+                        forcedServerReason: "sourceTrackSwitch"
+                    )
+                    return replacement?.applyingRuntimePreferences(runtimeState)
+                } catch {
+                    self.record(
+                        "diagnostics.jellyfin.playback_failed",
+                        level: .error,
+                        details: self.diagnosticDetails(for: error).merging([
+                            "stage": "sourceTrackSwitch",
+                            "audioStreamIndex": audioStreamIndex.map(String.init) ?? "default",
+                            "subtitleStreamIndex": subtitleStreamIndex.map(String.init) ?? "none"
+                        ]) { current, _ in current }
+                    )
+                    return nil
                 }
-            } else {
-                sourceTrackRequestLoader = nil
             }
             let serverSeekRequestLoader: ((Double, MediaPlaybackRuntimeState) async -> MediaPlaybackRequest?)?
             if prepared.playMethod == .transcode {
@@ -9636,7 +9682,9 @@ private final class JellyfinLibraryStore: ObservableObject {
                 source: .jellyfin,
                 contentKind: .video,
                 fileExtensionOverride: prepared.resource.fileExtensionOverride,
-                initialPosition: prepared.playMethod == .transcode ? nil : entry.progress,
+                initialPosition: prepared.playMethod == .transcode
+                    ? nil
+                    : entry.effectivePlaybackProgress,
                 externalSubtitleURL: prepared.resource.subtitleURL,
                 // Jellyfin has already selected the requested source audio track for HLS.
                 // Its single output track can receive a transient VLC identifier while the
@@ -9801,7 +9849,7 @@ private final class JellyfinLibraryStore: ObservableObject {
             allowsSelfSignedCertificates: requiresCertificateBypass(for: resource.url),
             source: .jellyfin,
             fileExtensionOverride: resource.fileExtensionOverride,
-            initialPosition: entry.progress,
+            initialPosition: entry.effectivePlaybackProgress,
             externalSubtitleURL: resource.subtitleURL,
             preferredAudioTrackOrdinal: prepared.preferredAudioTrackOrdinal,
             preferredSubtitleTrackOrdinal: prepared.preferredSubtitleTrackOrdinal,
@@ -10400,6 +10448,19 @@ private final class JellyfinLibraryStore: ObservableObject {
             "truehd", "mlp", "ac4", "dts-hd", "dtshd", "dts-hd ma",
             "eac3-joc", "atmos"
         ].contains(audioCodec)
+    }
+
+    private static func requiresDeviceCompatibilityTranscode(audioCodec: String?) -> Bool {
+#if os(iOS)
+        // iPad's native playback path is less tolerant of FLAC carried in a
+        // remote Matroska stream than iPhone's path. Restrict this decision to
+        // that codec/device combination; ordinary MP4/MKV playback remains
+        // original-first and can still fall back if the real stream fails.
+        return UIDevice.current.userInterfaceIdiom == .pad
+            && audioCodec?.lowercased() == "flac"
+#else
+        return false
+#endif
     }
 
     private func makePlaybackTracker(
@@ -11587,7 +11648,7 @@ private struct JellyfinPosterCard: View {
                         landscape: landscape
                     )
                 )
-                if let progress = item.progress, progress > 0 {
+                if let progress = item.effectivePlaybackProgress, progress > 0 {
                     GeometryReader { geometry in
                         VStack {
                             Spacer()
@@ -11627,7 +11688,7 @@ private struct JellyfinGridPosterCard: View {
                 JellyfinPosterImage(
                     url: store.imageURL(for: item, width: 540)
                 )
-                if let progress = item.progress, progress > 0 {
+                if let progress = item.effectivePlaybackProgress, progress > 0 {
                     GeometryReader { geometry in
                         VStack(spacing: 0) {
                             Spacer()
@@ -12141,7 +12202,7 @@ private struct JellyfinEpisodeRow: View {
                 JellyfinPosterImage(
                     url: store.imageURL(for: episode, width: 480, landscape: true)
                 )
-                if let progress = episode.progress, progress > 0 {
+                if let progress = episode.effectivePlaybackProgress, progress > 0 {
                     GeometryReader { geometry in
                         VStack {
                             Spacer()
@@ -12232,7 +12293,7 @@ private struct JellyfinMediaDetailView: View {
                                     }
                                     Text(
                                         LocalizedStringKey(
-                                            (mediaItem.progress ?? 0) > 0
+                                            (mediaItem.effectivePlaybackProgress ?? 0) > 0
                                                 ? "media.continue.title"
                                                 : "player.play_in_app"
                                         )

@@ -828,11 +828,11 @@ private struct FileBrowserView: View {
         do {
             loadedItems = try await dataStore.loadFolder(path: folderPath)
             if loadedItems.isEmpty,
-               folderPath == "/",
                let session = connectionStore.dsmSession {
-                // A device can render a persisted empty snapshot while the
-                // DSM session is still being restored. Rebuild the active
-                // source once before treating the shared root as empty.
+                // A device can render a persisted empty snapshot, or a nested
+                // folder can arrive while the DSM source is still restoring.
+                // Rebuild the active source once before treating any folder
+                // as genuinely empty.
                 _ = await dataStore.refreshDSM(
                     session: session,
                     useAgent: connectionStore.usesAgent
@@ -841,6 +841,13 @@ private struct FileBrowserView: View {
                     path: folderPath,
                     forceRefresh: true
                 )
+            }
+            if loadedItems.isEmpty, folderPath == "/", !dataStore.files.isEmpty {
+                // File Station can acknowledge list_share with an empty
+                // payload while the authenticated snapshot already contains
+                // the same live shared-folder inventory. Keep the DSM root
+                // navigable instead of presenting a false empty directory.
+                loadedItems = dataStore.files
             }
             didLoad = true
         } catch {
@@ -1118,20 +1125,13 @@ private struct FilePreviewView: View {
             ) ?? url
             let subtitleAsset = await sidecarSubtitle
             let isPrivateRoute = NetworkHostClassifier.isPrivate(selectedURL.host)
-            // A remote FileStation connection is a fragile long-lived HTTP
-            // connection on cellular networks. Keep VLC on a loopback URL so
-            // every seek/reconnect is handled by the authenticated proxy and
-            // the NAS session credentials never need to be re-created by VLC.
-            let playbackURL: URL
-            if isPrivateRoute {
-                playbackURL = selectedURL
-            } else {
-                playbackURL = (try? await AuthenticatedMediaStreamProxy.shared.register(
-                    upstreamURL: selectedURL,
-                    filename: item.name,
-                    allowsSelfSignedCertificates: session?.allowsSelfSignedCertificates == true
-                )) ?? selectedURL
-            }
+            // File Station's authenticated download URL already carries the
+            // short-lived session needed by the in-app player. Prefer that
+            // URL for DSM files: on iPad, VLC can issue its own Range seeks
+            // more reliably than a loopback proxy that has to translate an
+            // open-ended request into a second HTTP stream. Jellyfin's HLS
+            // path continues to use its own authenticated proxy.
+            let playbackURL = selectedURL
             await MainActor.run {
                 isPreparingPreview = false
                 PlayerOrientationController.prepareForPresentation(
@@ -1960,18 +1960,15 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
             activeRange = rangeOverride ?? requestHeaders["range"]
         } else {
             let requestedRange = rangeOverride ?? requestHeaders["range"] ?? "bytes=0-"
-            // VLC commonly opens a remote file with an open-ended Range and
-            // keeps that HTTP response alive while it advances playback. Do
-            // not turn that request into an artificial 8 MiB EOF: the local
-            // proxy must remain a continuous stream, otherwise VLC reaches a
-            // false stopped/ended state after the first segment. Explicit
-            // start-end seeks remain bounded to protect WAN prefetch.
-            activeRange = Self.isOpenEndedRange(requestedRange)
-                ? requestedRange
-                : Self.boundedRange(
-                    requestedRange,
-                    maximumLength: maximumMediaSegmentBytes
-                )
+            // VLC commonly opens a remote file with an open-ended Range.
+            // Never let that become a multi-GB upstream response: the remote
+            // File Station connection can be closed before VLC receives the
+            // metadata it needs. Return a bounded segment so the player can
+            // issue the next Range request as it advances or seeks.
+            activeRange = Self.boundedRange(
+                requestedRange,
+                maximumLength: maximumMediaSegmentBytes
+            )
         }
         activeRequestedRange = activeRange
         activeRequestedRangeStart = Self.requestedRangeStart(from: activeRange)
