@@ -3873,14 +3873,14 @@ private enum MediaPlaybackPolicy {
     static func preferredEngine(for request: MediaPlaybackRequest) -> MediaPlaybackEngine {
         guard allowsCompatibilityPlayer(for: request) else { return .system }
         // Jellyfin HLS is authenticated through the local playlist proxy.
-        // MobileVLCKit is the more tolerant decoder for the resulting
-        // MPEG-TS/fMP4 output on iPadOS; AVPlayer can report a playing/ready
-        // state while rendering a black frame for the same stream. Keep VLC
-        // as the visible playback engine for every Jellyfin HLS route; PiP
-        // explicitly prepares a system-compatible HLS replacement in place.
+        // Once the playlist is local, AVPlayer is the common native HLS path
+        // on both iPhone and iPad: it owns the platform's HLS buffering,
+        // hardware decode and rendering behavior. MobileVLCKit remains the
+        // bounded fallback when AVPlayer reports an error, a black startup
+        // surface or a sustained stall.
         if request.source == .jellyfin,
            request.fileExtensionHint == "m3u8" {
-            return .compatibility
+            return .system
         }
         if request.fileExtensionHint == "m3u8",
            allowsSystemPlayer(for: request) {
