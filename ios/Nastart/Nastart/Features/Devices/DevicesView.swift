@@ -1118,26 +1118,25 @@ private struct FilePreviewView: View {
                 session: session,
                 siblingItems: siblingItems
             )
-            let selectedURL = await AuthenticatedMediaPlaybackResolver.firstPlayableURL(
-                candidates: candidates,
-                allowsSelfSignedCertificates: session?.allowsSelfSignedCertificates == true,
-                diagnosticStage: "dsmRange"
-            ) ?? url
+            // Do not spend the startup path on a 0-1 byte probe. VLC already
+            // performs the real authenticated read and can begin demuxing as
+            // soon as the first media bytes arrive. The candidate resolver is
+            // kept for the failure path below, where selecting a working
+            // scheme is useful and no first-frame latency is at stake.
+            let selectedURL = candidates.first ?? url
             let subtitleAsset = await sidecarSubtitle
             let isPrivateRoute = NetworkHostClassifier.isPrivate(selectedURL.host)
-            // Keep DSM's short-lived File Station URL private to the
-            // authenticated range proxy. Some WAN routes close an open-ended
-            // media response after roughly 32 KiB; VLC then reports a media
-            // timeout even though the one-byte probe succeeded. The proxy
-            // converts each request into a bounded, resumable range so the
-            // same source remains direct-playable without transcoding.
-            let playbackURL = item.kind == .video
-                ? ((try? await AuthenticatedMediaStreamProxy.shared.register(
-                    upstreamURL: selectedURL,
-                    filename: item.name,
-                    allowsSelfSignedCertificates: session?.allowsSelfSignedCertificates == true
-                )) ?? selectedURL)
-                : selectedURL
+            // Keep one playback chain for both iPhone and iPad. The direct
+            // File Station URL is always the first attempt; the authenticated
+            // Range proxy is created only if the player reports a real
+            // startup/read failure. This avoids changing a healthy iPhone
+            // stream while still handling the NAS responses that can close
+            // early on some device/network combinations.
+            let fallbackCandidates = candidates
+            let fallbackUpstreamURL = selectedURL
+            let fallbackFilename = item.name
+            let fallbackAllowsSelfSigned = session?.allowsSelfSignedCertificates == true
+            let fallbackSubtitleURL = subtitleAsset?.playbackURL
             await MainActor.run {
                 isPreparingPreview = false
                 PlayerOrientationController.prepareForPresentation(
@@ -1152,14 +1151,13 @@ private struct FilePreviewView: View {
                         "extension": fileExtension.isEmpty ? "-" : fileExtension,
                         "sidecarSubtitle": subtitleAsset == nil ? "none" : "normalizedUTF8",
                         "selfSigned": session?.allowsSelfSignedCertificates == true ? "on" : "off",
-                        "transport": playbackURL.host == "127.0.0.1"
-                            ? "localRangeProxy"
-                            : selectedURL.scheme?.lowercased() ?? "-"
+                        "transport": selectedURL.scheme?.lowercased() ?? "-",
+                        "fallbackTransport": item.kind == .video ? "lazyLocalRangeProxy" : "none"
                     ]
                 )
                 playbackRequest = MediaPlaybackRequest(
                     requestedAt: requestedAt,
-                    url: playbackURL,
+                    url: selectedURL,
                     title: item.name,
                     allowsSelfSignedCertificates: session?.allowsSelfSignedCertificates == true
                         && selectedURL.scheme?.lowercased() == "https",
@@ -1169,23 +1167,36 @@ private struct FilePreviewView: View {
                     externalSubtitleURL: subtitleAsset?.playbackURL,
                     initialOrientationMode: item.kind == .video ? .landscape : .automatic,
                     isPrivateNetworkRoute: isPrivateRoute,
-                    compatibilityFallbackResource: item.kind == .video
-                        ? MediaPlaybackResource(
-                            url: playbackURL,
-                            fileExtensionOverride: fileExtension.isEmpty ? nil : fileExtension,
-                            subtitleURL: subtitleAsset?.playbackURL,
-                            forcesSoftwareDecoding: true,
-                            allowsSelfSignedCertificates: session?.allowsSelfSignedCertificates == true
-                                && selectedURL.scheme?.lowercased() == "https"
-                        )
-                        : nil,
                     externalHandoffResource: MediaPlaybackResource(
                         url: selectedURL,
                         fileExtensionOverride: fileExtension.isEmpty ? nil : fileExtension,
                         subtitleURL: subtitleAsset?.sourceURL,
                         allowsSelfSignedCertificates: session?.allowsSelfSignedCertificates == true
                             && selectedURL.scheme?.lowercased() == "https"
-                    )
+                    ),
+                    compatibilityFallbackResourceLoader: item.kind == .video
+                        ? { _ in
+                            let resolvedFallbackURL = await AuthenticatedMediaPlaybackResolver.firstPlayableURL(
+                                candidates: fallbackCandidates,
+                                allowsSelfSignedCertificates: fallbackAllowsSelfSigned,
+                                diagnosticStage: "dsmRangeFallback",
+                                timeout: 3
+                            ) ?? fallbackUpstreamURL
+                            guard let proxyURL = try? await AuthenticatedMediaStreamProxy.shared.register(
+                                upstreamURL: resolvedFallbackURL,
+                                filename: fallbackFilename,
+                                allowsSelfSignedCertificates: fallbackAllowsSelfSigned
+                            ) else {
+                                return nil
+                            }
+                            return MediaPlaybackResource(
+                                url: proxyURL,
+                                fileExtensionOverride: fileExtension.isEmpty ? nil : fileExtension,
+                                subtitleURL: fallbackSubtitleURL,
+                                forcesSoftwareDecoding: true
+                            )
+                        }
+                        : nil
                 )
             }
         }

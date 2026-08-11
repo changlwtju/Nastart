@@ -5687,9 +5687,13 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
             // small direct-play grace for fast local files, then hand off to
             // the compatibility HLS route so the first visible frame wins.
             return isPrivateHost ? 6_000_000_000 : 5_000_000_000
+        case .dsmFile where hasAlternateTransport:
+            // DSM video is direct-first. Once the real player has had a
+            // short opportunity to produce a frame, the compatibility loader
+            // can take over. This avoids adding a probe delay while keeping a
+            // bounded recovery path for a black/never-starting stream.
+            return isPrivateHost ? 5_000_000_000 : 4_000_000_000
         case .dsmFile:
-            // Device-file playback stays original-first, but must not leave a
-            // remote NAS stream black for half a minute before its fallback.
             return isPrivateHost ? 8_000_000_000 : 6_000_000_000
         case .directURL:
             return 30_000_000_000
@@ -5721,11 +5725,14 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
         let networkCaching = networkCachingMilliseconds
         media.addOption(":network-caching=\(networkCaching)")
         media.addOption(":file-caching=\(networkCaching)")
-        // The authenticated local range proxy may expose a large remote file
-        // as a sequence of bounded 206 responses. Keep VLC's HTTP input
-        // continuous across those ranges so a Matroska header-only first
-        // response does not get treated as end-of-input on iPad.
-        media.addOption(":http-continuous")
+        // The local URL identifies the authenticated Range compatibility
+        // transport. It is selected only after the shared direct-first
+        // playback path reports a real failure, so this option is identical
+        // on iPhone and iPad and never depends on the device idiom.
+        if request.source.rawValue == MediaPlaybackSource.dsmFile.rawValue,
+           request.url.host == "127.0.0.1" {
+            media.addOption(":http-continuous")
+        }
         media.addOption(":http-reconnect")
         media.addOption(":input-fast-seek")
         if usesAVFormatDemux {
