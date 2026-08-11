@@ -5710,10 +5710,20 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
     private var networkCachingMilliseconds: Int {
         let isPrivateRoute = request.isPrivateNetworkRoute
             ?? NetworkHostClassifier.isPrivate(request.networkOriginURL.host)
-        // This is the last cache envelope validated as smooth on the iPhone
-        // before the iPad playback work began. Values below this caused both
-        // direct Range inputs and HLS playlists to underrun on real Wi-Fi.
+        // Direct HTTP Range files benefit from a short buffer: it keeps
+        // startup and seeking responsive. A Jellyfin HLS fallback, however,
+        // gets its data one transcoded segment at a time. The old shared
+        // 900 ms private-LAN value made a brief NAS transcoder or Wi-Fi jitter
+        // immediately visible as repeated stalls. Give HLS enough runway to
+        // bridge several segment boundaries without penalising direct play.
+        if isHLSCompatibilityStream {
+            return isPrivateRoute ? 5_000 : 7_500
+        }
         return isPrivateRoute ? 900 : 1_500
+    }
+
+    private var isHLSCompatibilityStream: Bool {
+        request.source == .jellyfin && request.fileExtensionHint == "m3u8"
     }
 
     private static var cjkFontPath: String? {
@@ -5791,6 +5801,7 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
                     "decoder": request.forcesSoftwareDecoding ? "software" : "automatic",
                     "demux": usesAVFormatDemux ? "avformat" : "default",
                     "networkCachingMs": "\(networkCachingMilliseconds)",
+                    "transport": isHLSCompatibilityStream ? "jellyfinHLS" : "directHTTP",
                     "httpMode": "file",
                     "subtitleFont": Self.cjkFontPath ?? "default",
                     "subtitleEncoding": "GB18030+UTF8Autodetect"
