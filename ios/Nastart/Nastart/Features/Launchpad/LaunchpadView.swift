@@ -3091,6 +3091,39 @@ private struct PlaybackNetworkSnapshot: Sendable {
     let fallbackBitrate: Int
 }
 
+/// The source media and the device runtime are separate capability inputs.
+/// Keep the runtime facts in diagnostics so an iPhone/iPad comparison can
+/// prove whether the server plan or the local player is the diverging side.
+private struct MediaPlaybackCapabilities {
+    let deviceFamily: String
+    let osVersion: String
+    let compatibilityEngineAvailable: Bool
+
+    static var current: MediaPlaybackCapabilities {
+        let device = UIDevice.current
+        let family: String
+        switch device.userInterfaceIdiom {
+        case .pad: family = "iPad"
+        case .phone: family = "iPhone"
+        case .tv: family = "AppleTV"
+        default: family = "other"
+        }
+        return MediaPlaybackCapabilities(
+            deviceFamily: family,
+            osVersion: device.systemVersion,
+            compatibilityEngineAvailable: MediaPlaybackPolicy.hasCompatibilityEngine
+        )
+    }
+
+    var diagnosticDetails: [String: String] {
+        [
+            "deviceFamily": deviceFamily,
+            "osVersion": osVersion,
+            "compatibilityEngine": compatibilityEngineAvailable ? "available" : "unavailable"
+        ]
+    }
+}
+
 private final class PlaybackNetworkObserver: @unchecked Sendable {
     static let shared = PlaybackNetworkObserver()
 
@@ -3720,7 +3753,7 @@ enum MediaPlaybackProbe {
     }
 
     static func baseDetails(for playback: MediaPlaybackRequest) -> [String: String] {
-        [
+        MediaPlaybackCapabilities.current.diagnosticDetails.merging([
             "target": DiagnosticLogStore.redactedURL(playback.networkOriginURL),
             "source": playback.source.rawValue,
             "extension": playback.fileExtensionHint.isEmpty ? "-" : playback.fileExtensionHint,
@@ -3728,8 +3761,8 @@ enum MediaPlaybackProbe {
             "transport": playback.url.host == "127.0.0.1"
                 ? "localRangeProxy"
                 : "sourceURL",
-            "compatibilityEngine": MediaPlaybackPolicy.hasCompatibilityEngine ? "available" : "unavailable"
-        ]
+            "routePrivate": playback.isPrivateNetworkRoute.map { $0 ? "yes" : "no" } ?? "unknown"
+        ]) { _, new in new }
     }
 
     private static func firstPlaylistURL(in playlist: String, relativeTo baseURL: URL) -> URL? {
@@ -5017,13 +5050,15 @@ struct BuiltInMediaPlayerView: View {
             ]
         )
 
-        // A direct NAS/Jellyfin stream can fail because its HTTP connection
-        // was dropped even though the media itself is healthy. Reopen that
-        // same direct resource once at the live playhead before asking
-        // Jellyfin to create a new transcoder. This keeps the common recovery
-        // on the fast path and avoids a needless HLS restart.
+        // A DSM/direct stream can fail because its HTTP connection was dropped
+        // even though the media itself is healthy. Reopen that same resource
+        // once at the live playhead. A Jellyfin original has already passed
+        // the server probe, so reopening its large Range resource after a
+        // decoder/seek failure would repeat the iPad failure; Jellyfin switches
+        // to its prepared compatibility request on the first real failure.
         if compatibilityFallbackAttemptCount == 1,
-           failingRequest.fileExtensionHint != "m3u8" {
+           failingRequest.fileExtensionHint != "m3u8",
+           failingRequest.source != .jellyfin {
             let resource = MediaPlaybackResource(
                 url: failingRequest.url,
                 fileExtensionOverride: failingRequest.fileExtensionOverride,
@@ -5611,6 +5646,7 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
     private var lastObservedPlaybackSeconds: Double?
     private var lastPlaybackProgressAt: Date?
     private var pendingResumePosition: Double?
+    private var suppressNextClockAdvanceForInitialSeek = false
     private var isUserPaused = false
     private var didRecordFirstFrame = false
     private var pendingSeekStartedAt: Date?
@@ -6063,9 +6099,15 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
         else {
             return
         }
-        // Direct Range playback already uses VLC's HTTP reconnect. Rebuilding a
-        // visible direct stream from a stale buffering state causes a real stall.
-        guard request.fileExtensionHint == "m3u8", hasAlternateTransport else { return }
+        // Jellyfin original playback is deliberately attempted first, but a
+        // device-specific decoder or a large Matroska seek can stop after the
+        // first frame. In that case the already-negotiated server fallback is
+        // the safe recovery. Do not wait forever just because the URL is not
+        // an HLS playlist.
+        guard hasAlternateTransport,
+              request.source == .jellyfin || request.source == .dsmFile else {
+            return
+        }
         let now = Date()
         let normalizedState = Self.stateDescription(player.state).lowercased()
         let reportsBuffering = normalizedState.contains("opening")
@@ -6073,7 +6115,6 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
         if didReachPlayback,
            let lastPlaybackProgressAt,
            now.timeIntervalSince(lastPlaybackProgressAt) >= 1.5,
-           (reportsBuffering || !player.isPlaying),
            !isBuffering {
             isBuffering = true
             recordBufferingTransition(isBuffering: true)
@@ -6098,15 +6139,9 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
               isBuffering || !player.isPlaying else {
             return
         }
-        if hasAlternateTransport {
-            fail(reason: "alternateTransportPreferred")
-            return
-        }
-        if reconnectAttempts < maximumReconnectAttempts {
-            scheduleReconnect(reason: "playbackStall")
-        } else {
-            fail(reason: "reconnectLimit")
-        }
+        fail(reason: request.fileExtensionHint == "m3u8"
+            ? "alternateTransportPreferred"
+            : "originalPlaybackStall")
     }
 
     func mediaPlayerStateChanged(_ notification: Notification) {
@@ -6159,6 +6194,7 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
            resumePosition > 0 {
             didApplyInitialPosition = true
             pendingResumePosition = nil
+            suppressNextClockAdvanceForInitialSeek = true
             player.position = Float(resumePosition)
         }
         let reportsBuffering = normalizedState.contains("opening") || normalizedState.contains("buffering")
@@ -6204,9 +6240,19 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
         let hasVideoOutput = player.hasVideoOut
             && videoSize.width > 0
             && videoSize.height > 0
-        let playbackClockAdvanced = lastObservedPlaybackSeconds.map {
+        let rawPlaybackClockAdvanced = lastObservedPlaybackSeconds.map {
             abs(currentSeconds - $0) >= 0.2
         } ?? false
+        let playbackClockAdvanced: Bool
+        if suppressNextClockAdvanceForInitialSeek {
+            // A resume seek can move VLC's clock by several minutes before a
+            // single frame is rendered. Do not count that jump as first-frame
+            // evidence; wait for the next real playback tick.
+            suppressNextClockAdvanceForInitialSeek = false
+            playbackClockAdvanced = false
+        } else {
+            playbackClockAdvanced = rawPlaybackClockAdvanced
+        }
         let now = Date()
         if playbackClockAdvanced {
             lastPlaybackProgressAt = now
@@ -6215,7 +6261,13 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
                 reconnectStartedAt = nil
             }
         }
-        let presentedMedia = request.isAudioOnly ? playbackClockAdvanced : hasVideoOutput
+        // hasVideoOut only means that VLC created a video output object. It is
+        // not proof that a frame reached the screen. Requiring the media clock
+        // to advance prevents a black iPad surface from being marked ready and
+        // lets the bounded Jellyfin fallback run.
+        let presentedMedia = request.isAudioOnly
+            ? playbackClockAdvanced
+            : hasVideoOutput && playbackClockAdvanced
         if presentedMedia, !didReachPlayback {
             didReachPlayback = true
             lastPlaybackProgressAt = now
@@ -6244,7 +6296,9 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
                 messageKey: "diagnostics.media.player_ready",
                 details: MediaPlaybackProbe.baseDetails(for: request).merging([
                     "engine": "MobileVLCKit",
-                    "readySignal": hasVideoOutput ? "videoOutput" : "playbackClock",
+                    "readySignal": request.isAudioOnly
+                        ? "playbackClock"
+                        : "videoOutput+playbackClock",
                     "tapToFirstFrameMs": Self.elapsedMilliseconds(since: request.requestedAt)
                 ]) { current, _ in current }
             )
@@ -6342,10 +6396,13 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
            didReachPlayback,
            !didRequestStop,
            errorMessage == nil,
-           !isReconnecting,
-           reconnectAttempts < maximumReconnectAttempts,
-           reconnectWorkItem == nil {
-            scheduleReconnect(reason: "unexpectedStop")
+           !isReconnecting {
+            if hasAlternateTransport {
+                fail(reason: "unexpectedStop")
+            } else if reconnectAttempts < maximumReconnectAttempts,
+                      reconnectWorkItem == nil {
+                scheduleReconnect(reason: "unexpectedStop")
+            }
         }
 
         if stateDescription != lastStateDescription {
@@ -6832,7 +6889,10 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
             if request.fileExtensionHint == "m3u8", hasAlternateTransport {
                 return isPrivateHost ? 12 : 10
             }
-            return isPrivateHost ? 18 : 30
+            // An original Jellyfin file is allowed to start slowly, but a
+            // post-first-frame clock stop must not leave the player frozen for
+            // half a minute before the server fallback is requested.
+            return isPrivateHost ? 12 : 15
         case .dsmFile:
             return isPrivateHost ? 18 : 30
         case .directURL:
@@ -9248,7 +9308,9 @@ private final class JellyfinLibraryStore: ObservableObject {
                 "directPlayMaximumBitrate": "\(directPlayBudget)",
                 "requestReason": forcedServerReason ?? "initialPlayback",
                 "allowsDirectPlay": "preferred",
-                "defaultMode": "adaptiveAuto"
+                "defaultMode": "adaptiveAuto",
+                "deviceFamily": MediaPlaybackCapabilities.current.deviceFamily,
+                "osVersion": MediaPlaybackCapabilities.current.osVersion
             ]
         )
         do {
@@ -10544,7 +10606,7 @@ private final class JellyfinLibraryStore: ObservableObject {
             maxStaticMusicBitrate: min(maxBitrate, 8_000_000),
             maxStreamingBitrate: maxBitrate,
             musicStreamingTranscodingBitrate: 320_000,
-            name: "Nastart MobileVLCKit",
+            name: "Nastart MobileVLCKit \(MediaPlaybackCapabilities.current.deviceFamily)",
             subtitleProfiles: textSubtitles.map {
                 SubtitleProfile(format: $0, method: .embed)
             } + textSubtitles.map {
