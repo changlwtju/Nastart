@@ -6109,9 +6109,6 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
             return
         }
         let now = Date()
-        let normalizedState = Self.stateDescription(player.state).lowercased()
-        let reportsBuffering = normalizedState.contains("opening")
-            || normalizedState.contains("buffering")
         if didReachPlayback,
            let lastPlaybackProgressAt,
            now.timeIntervalSince(lastPlaybackProgressAt) >= 1.5,
