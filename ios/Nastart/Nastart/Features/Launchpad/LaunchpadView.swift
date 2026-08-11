@@ -6119,6 +6119,8 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
         guard !didReachPlayback, errorMessage == nil else { return }
         let state = Self.stateDescription(player.state)
         let reason = player.isPlaying ? "playbackClockTimeout" : "loadTimeout"
+        let videoSize = player.videoSize
+        let hasVideoOutput = player.hasVideoOut
         errorMessage = NSLocalizedString("player.load_timeout", comment: "")
         isBuffering = false
         player.stop()
@@ -6132,7 +6134,14 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
                 "engine": "MobileVLCKit",
                 "state": state,
                 "reason": reason,
-                "decoder": request.forcesSoftwareDecoding ? "software" : "automatic"
+                "decoder": request.forcesSoftwareDecoding ? "software" : "automatic",
+                "hasVideoOutput": hasVideoOutput ? "yes" : "no",
+                "videoSize": "\(Int(videoSize.width))x\(Int(videoSize.height))",
+                "playbackClockSeconds": lastObservedPlaybackSeconds.map {
+                    String(format: "%.1f", $0)
+                } ?? "-",
+                "fallbackAvailable": hasAlternateTransport ? "yes" : "no",
+                "reconnectAttempts": "\(reconnectAttempts)"
             ]
         )
     }
