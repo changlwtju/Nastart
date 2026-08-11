@@ -5721,6 +5721,11 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
         let networkCaching = networkCachingMilliseconds
         media.addOption(":network-caching=\(networkCaching)")
         media.addOption(":file-caching=\(networkCaching)")
+        // The authenticated local range proxy may expose a large remote file
+        // as a sequence of bounded 206 responses. Keep VLC's HTTP input
+        // continuous across those ranges so a Matroska header-only first
+        // response does not get treated as end-of-input on iPad.
+        media.addOption(":http-continuous")
         media.addOption(":http-reconnect")
         media.addOption(":input-fast-seek")
         if usesAVFormatDemux {

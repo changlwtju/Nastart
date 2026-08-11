@@ -1125,13 +1125,19 @@ private struct FilePreviewView: View {
             ) ?? url
             let subtitleAsset = await sidecarSubtitle
             let isPrivateRoute = NetworkHostClassifier.isPrivate(selectedURL.host)
-            // File Station's authenticated download URL already carries the
-            // short-lived session needed by the in-app player. Prefer that
-            // URL for DSM files: on iPad, VLC can issue its own Range seeks
-            // more reliably than a loopback proxy that has to translate an
-            // open-ended request into a second HTTP stream. Jellyfin's HLS
-            // path continues to use its own authenticated proxy.
-            let playbackURL = selectedURL
+            // Keep DSM's short-lived File Station URL private to the
+            // authenticated range proxy. Some WAN routes close an open-ended
+            // media response after roughly 32 KiB; VLC then reports a media
+            // timeout even though the one-byte probe succeeded. The proxy
+            // converts each request into a bounded, resumable range so the
+            // same source remains direct-playable without transcoding.
+            let playbackURL = item.kind == .video
+                ? ((try? await AuthenticatedMediaStreamProxy.shared.register(
+                    upstreamURL: selectedURL,
+                    filename: item.name,
+                    allowsSelfSignedCertificates: session?.allowsSelfSignedCertificates == true
+                )) ?? selectedURL)
+                : selectedURL
             await MainActor.run {
                 isPreparingPreview = false
                 PlayerOrientationController.prepareForPresentation(
@@ -1898,10 +1904,13 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
     private let highWaterMark = 4 * 1024 * 1024
     private let lowWaterMark = 1 * 1024 * 1024
     private let maximumConsecutiveRetryFailures = 5
-    // Keep WAN reads bounded.  A File Station open-ended range can otherwise
-    // make URLSession try to pull the entire multi-GB file before AVPlayer
-    // gets a useful response or issues its next seek range.
-    private let maximumMediaSegmentBytes: Int64 = 8 * 1024 * 1024
+    // Keep WAN reads bounded. The remote route used by this NAS has been
+    // observed to close a larger response after roughly 32 KiB. Requesting
+    // exactly that stable window lets URLSession finish normally; VLC can
+    // then issue the next range instead of treating the early close as a
+    // fatal media timeout. This is a transport window, not a transcoding
+    // limit, and it applies to every file format uniformly.
+    private let maximumMediaSegmentBytes: Int64 = 32 * 1024
 
     init(
         connection: NWConnection,
@@ -1960,15 +1969,20 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
             activeRange = rangeOverride ?? requestHeaders["range"]
         } else {
             let requestedRange = rangeOverride ?? requestHeaders["range"] ?? "bytes=0-"
-            // VLC commonly opens a remote file with an open-ended Range.
-            // Never let that become a multi-GB upstream response: the remote
-            // File Station connection can be closed before VLC receives the
-            // metadata it needs. Return a bounded segment so the player can
-            // issue the next Range request as it advances or seeks.
-            activeRange = Self.boundedRange(
-                requestedRange,
-                maximumLength: maximumMediaSegmentBytes
-            )
+            // For the initial read, deliberately remove the client's small
+            // Range end and let the upstream return a progressive 200 stream.
+            // VLC otherwise repeats bytes=0-32767 on iPad: that window contains
+            // Matroska metadata but not the first video cluster. URLSession's
+            // back-pressure keeps this streaming (it does not download the
+            // multi-GB file up front), while an interrupted response resumes
+            // from the received offset below. Non-zero seeks remain bounded.
+            let startsAtZero = Self.requestedRangeStart(from: requestedRange) == 0
+            activeRange = startsAtZero
+                ? nil
+                : Self.boundedRange(
+                    requestedRange,
+                    maximumLength: maximumMediaSegmentBytes
+                )
         }
         activeRequestedRange = activeRange
         activeRequestedRangeStart = Self.requestedRangeStart(from: activeRange)

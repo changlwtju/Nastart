@@ -920,6 +920,10 @@ private final class DSMCertificateTrustDelegate: NSObject, URLSessionTaskDelegat
 
 final class DSMClient {
     private static let requestTimeout: TimeInterval = 18
+    // Snapshot enrichment is deliberately best-effort. A slow optional DSM
+    // package/container endpoint must not keep the login sheet spinning after
+    // authentication and shared folders are already available.
+    private static let snapshotRequestTimeout: TimeInterval = 8
     private let baseURL: URL
     private let urlSession: URLSession
     private let allowsSelfSignedCertificates: Bool
@@ -1541,7 +1545,11 @@ final class DSMClient {
     }
 
     private func optionalCall(path: String, queryItems: [URLQueryItem]) async -> DSMJSONValue? {
-        try? await call(path: path, queryItems: queryItems)
+        try? await call(
+            path: path,
+            queryItems: queryItems,
+            timeout: Self.snapshotRequestTimeout
+        )
     }
 
     private func fileStationAPIInfo() -> DSMJSONValue? {
@@ -1562,7 +1570,11 @@ final class DSMClient {
     private func firstSuccessfulCall(_ requests: [(String, [URLQueryItem])]) async -> DSMJSONValue? {
         for request in requests {
             do {
-                let value = try await call(path: request.0, queryItems: request.1)
+                let value = try await call(
+                    path: request.0,
+                    queryItems: request.1,
+                    timeout: Self.snapshotRequestTimeout
+                )
                 return value
             } catch {
                 record(
@@ -1889,7 +1901,11 @@ final class DSMClient {
         for request in requests {
             let value: DSMJSONValue
             do {
-                value = try await call(path: request.0, queryItems: request.1)
+                value = try await call(
+                    path: request.0,
+                    queryItems: request.1,
+                    timeout: Self.snapshotRequestTimeout
+                )
             } catch {
                 record(
                     .warning,
