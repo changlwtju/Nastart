@@ -13641,7 +13641,13 @@ private struct DSMConnectionFlowView: View {
                     baseURL: baseURL,
                     allowsSelfSignedCertificates: allowsSelfSignedCertificates
                 )
-                let session = try await client.login(
+                let mainSession = try await client.login(
+                    account: account,
+                    password: password,
+                    oneTimeCode: oneTimeCode
+                )
+                let session = await client.addingFileStationSession(
+                    to: mainSession,
                     account: account,
                     password: password,
                     oneTimeCode: oneTimeCode

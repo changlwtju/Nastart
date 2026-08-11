@@ -349,6 +349,7 @@ struct DisconnectedAppDataProvider: AppDataProviding {
 struct DSMSession {
     let baseURL: URL
     let sid: String
+    let fileStationSID: String?
     let account: String
     let allowsSelfSignedCertificates: Bool
     let deviceID: String?
@@ -1008,7 +1009,8 @@ final class DSMClient {
         account: String,
         password: String,
         oneTimeCode: String = "",
-        deviceID: String? = nil
+        deviceID: String? = nil,
+        sessionName: String = "Nastart"
     ) async throws -> DSMSession {
         record(
             .info,
@@ -1045,7 +1047,8 @@ final class DSMClient {
             password: password,
             oneTimeCode: cleanedCode,
             deviceID: deviceID,
-            apiInfo: apiInfo
+            apiInfo: apiInfo,
+            sessionName: sessionName
         ) {
             do {
                 // Authentication values must stay out of the URL. Apart from showing up
@@ -1069,6 +1072,7 @@ final class DSMClient {
                     return DSMSession(
                         baseURL: baseURL,
                         sid: sid,
+                        fileStationSID: nil,
                         account: account,
                         allowsSelfSignedCertificates: allowsSelfSignedCertificates,
                         deviceID: trustedDeviceID
@@ -1107,14 +1111,44 @@ final class DSMClient {
     }
 
     func logout(session: DSMSession) async {
-        _ = try? await call(
+        _ = try? await logout(sid: session.sid, sessionName: "Nastart")
+        if let fileStationSID = session.fileStationSID {
+            _ = try? await logout(sid: fileStationSID, sessionName: "FileStation")
+        }
+    }
+
+    func addingFileStationSession(
+        to session: DSMSession,
+        account: String,
+        password: String,
+        oneTimeCode: String = ""
+    ) async -> DSMSession {
+        let fileStationSession = try? await login(
+            account: account,
+            password: password,
+            oneTimeCode: oneTimeCode,
+            deviceID: session.deviceID,
+            sessionName: "FileStation"
+        )
+        return DSMSession(
+            baseURL: session.baseURL,
+            sid: session.sid,
+            fileStationSID: fileStationSession?.sid,
+            account: session.account,
+            allowsSelfSignedCertificates: session.allowsSelfSignedCertificates,
+            deviceID: fileStationSession?.deviceID ?? session.deviceID
+        )
+    }
+
+    private func logout(sid: String, sessionName: String) async throws {
+        _ = try await call(
             path: "/webapi/auth.cgi",
             queryItems: [
                 URLQueryItem(name: "api", value: "SYNO.API.Auth"),
                 URLQueryItem(name: "version", value: "6"),
                 URLQueryItem(name: "method", value: "logout"),
-                URLQueryItem(name: "session", value: "Nastart"),
-                URLQueryItem(name: "_sid", value: session.sid)
+                URLQueryItem(name: "session", value: sessionName),
+                URLQueryItem(name: "_sid", value: sid)
             ]
         )
     }
@@ -1343,6 +1377,31 @@ final class DSMClient {
             cacheFileStationAPIInfo(loadedAPIInfo)
             apiInfo = loadedAPIInfo
         }
+        if normalizedPath == "/" {
+            let data = await firstSuccessfulCall(apiRequests(
+                session,
+                apiInfo: apiInfo,
+                apiName: "SYNO.FileStation.List",
+                fallbackPath: "/webapi/entry.cgi",
+                fallbackMaxVersion: 2,
+                method: "list_share"
+            ))
+            guard let data else { throw DSMClientError.invalidResponse }
+            let items = DSMClient.mapSharedFolders(data)
+            record(
+                .info,
+                categoryKey: "diagnostics.category.dsm_api",
+                messageKey: "diagnostics.files.folder_loaded",
+                details: [
+                    "pathDepth": "0",
+                    "items": "\(items.count)",
+                    "pages": "1",
+                    "apiInfo": cachedAPIInfo == nil ? "network" : "cache",
+                    "durationMs": "\(Int(max(Date().timeIntervalSince(startedAt), 0) * 1_000))"
+                ]
+            )
+            return items
+        }
         let encodedPath = Self.jsonQueryValue(normalizedPath) ?? normalizedPath
         let encodedAdditional = Self.jsonQueryValue(["real_path", "size", "type"])
             ?? "[\"real_path\",\"size\",\"type\"]"
@@ -1518,11 +1577,14 @@ final class DSMClient {
     }
 
     private func sessionItems(_ session: DSMSession, api: String, version: String, method: String, extra: [URLQueryItem] = []) -> [URLQueryItem] {
-        [
+        let sid = api.hasPrefix("SYNO.FileStation.")
+            ? session.fileStationSID ?? session.sid
+            : session.sid
+        return [
             URLQueryItem(name: "api", value: api),
             URLQueryItem(name: "version", value: version),
             URLQueryItem(name: "method", value: method),
-            URLQueryItem(name: "_sid", value: session.sid)
+            URLQueryItem(name: "_sid", value: sid)
         ] + extra
     }
 
@@ -1531,7 +1593,8 @@ final class DSMClient {
         password: String,
         oneTimeCode: String,
         deviceID: String?,
-        apiInfo: DSMJSONValue?
+        apiInfo: DSMJSONValue?,
+        sessionName: String
     ) -> [(String, [URLQueryItem])] {
         let entry = apiInfoEntry(apiInfo, apiName: "SYNO.API.Auth")
         let path = normalizedAPIPath(entry?.path ?? "/webapi/auth.cgi")
@@ -1545,7 +1608,7 @@ final class DSMClient {
                 URLQueryItem(name: "method", value: "login"),
                 URLQueryItem(name: "account", value: account),
                 URLQueryItem(name: "passwd", value: password),
-                URLQueryItem(name: "session", value: "Nastart"),
+                URLQueryItem(name: "session", value: sessionName),
                 URLQueryItem(name: "format", value: "sid")
             ]
             if !oneTimeCode.isEmpty {
@@ -4323,13 +4386,32 @@ final class AppDataStore: ObservableObject {
                 baseURL: baseURL,
                 allowsSelfSignedCertificates: credential.allowsSelfSignedCertificates
             )
-            let session = try await client.login(
+            let usesStoredAgent = KeychainStore.shared.loadAgentConnection() != nil
+            let mainSession = try await client.login(
                 account: credential.account,
                 password: credential.password,
                 deviceID: credential.deviceID
             )
+            // The authentication session is already usable for live NAS actions.
+            // Publish it before the optional File Station session and the full
+            // service snapshot, so the UI does not confuse a slow refresh with
+            // a disconnected NAS.
+            sessionToLogout = mainSession
+            let provisionalDataSource = DSMNASDataSource(
+                session: mainSession,
+                useAgent: usesStoredAgent
+            )
+            prepareFolderCache(for: provisionalDataSource)
+            activeDataSource = provisionalDataSource
+            recordSuccessfulDSMContact()
+            connectionStore.connect(device: device, session: mainSession)
+
+            let session = await client.addingFileStationSession(
+                to: mainSession,
+                account: credential.account,
+                password: credential.password
+            )
             sessionToLogout = session
-            let usesStoredAgent = KeychainStore.shared.loadAgentConnection() != nil
             let dataSource = DSMNASDataSource(session: session, useAgent: usesStoredAgent)
             let snapshot = await dataSource.loadSnapshot()
             try KeychainStore.shared.saveNASCredential(

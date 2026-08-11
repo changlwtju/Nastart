@@ -55,7 +55,14 @@ struct DevicesView: View {
                         )
                     }
                     NavigationLink {
-                        FileBrowserView(titleKey: "devices.resource.files", items: dataStore.files)
+                        // The persisted snapshot may contain an empty or stale
+                        // root on a second device. Treat the root like every
+                        // nested folder and load `/` from the active DSM session.
+                        FileBrowserView(
+                            titleKey: "devices.resource.files",
+                            items: dataStore.files,
+                            folderPath: "/"
+                        )
                     } label: {
                         Label("devices.resource.files", systemImage: "folder")
                     }
@@ -735,6 +742,7 @@ private struct DockerContainerDetailView: View {
 
 private struct FileBrowserView: View {
     @EnvironmentObject private var dataStore: AppDataStore
+    @EnvironmentObject private var connectionStore: NASConnectionStore
     let titleKey: LocalizedStringKey
     let items: [FileItem]
     let folderPath: String?
@@ -819,6 +827,21 @@ private struct FileBrowserView: View {
         loadErrorKey = nil
         do {
             loadedItems = try await dataStore.loadFolder(path: folderPath)
+            if loadedItems.isEmpty,
+               folderPath == "/",
+               let session = connectionStore.dsmSession {
+                // A device can render a persisted empty snapshot while the
+                // DSM session is still being restored. Rebuild the active
+                // source once before treating the shared root as empty.
+                _ = await dataStore.refreshDSM(
+                    session: session,
+                    useAgent: connectionStore.usesAgent
+                )
+                loadedItems = try await dataStore.loadFolder(
+                    path: folderPath,
+                    forceRefresh: true
+                )
+            }
             didLoad = true
         } catch {
             loadErrorKey = "devices.files.folder_load_failed"
