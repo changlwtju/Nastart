@@ -737,9 +737,10 @@
 "player.controls.unlock" = "Unlock controls";
 "player.controls.toggle" = "Show or hide playback controls";
 "diagnostics.media.external_subtitle" = "Jellyfin external subtitle loaded";
-"diagnostics.media.proxy_transfer_started" = "Media range transfer started";
-"diagnostics.media.proxy_transfer_retry" = "Media range transfer resumed";
-"diagnostics.media.proxy_transfer_finished" = "Media range transfer finished";
+"diagnostics.media.proxy_transfer_started" = "Media compatibility transfer started";
+"diagnostics.media.proxy_transfer_retry" = "Media compatibility transfer resumed";
+"diagnostics.media.proxy_transfer_finished" = "Media compatibility transfer finished";
+"mine.sign_out.restoring" = "Restoring the NAS session; connection actions will be available when it completes";
 "diagnostics.refresh.transient_unreachable" = "DSM reachability probe failed temporarily; kept the last confirmed connected state";
 "diagnostics.refresh.unreachable" = "DSM was unreachable on the current network; live statuses were marked offline";
 "diagnostics.web.started" = "In-app page load started";

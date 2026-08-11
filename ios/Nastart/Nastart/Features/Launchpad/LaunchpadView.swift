@@ -158,12 +158,19 @@ struct LaunchpadView: View {
     private var launchpadContent: some View {
         switch selectedTheme {
         case .cleanGrid:
-            ProductLaunchpad(device: dataStore.device, services: launchpadServices, categories: orderedCategories, options: displayOptions, isConnected: dataStore.isDSMAvailableForDisplay, groupDefaultExpanded: isGroupExpandedByDefault)
+            ProductLaunchpad(device: dataStore.device, services: launchpadServices, categories: orderedCategories, options: displayOptions, isConnected: liveNASConnectionState, groupDefaultExpanded: isGroupExpandedByDefault)
         case .commandCenter:
-            CommandCenterLaunchpad(device: dataStore.device, services: launchpadServices, categories: orderedCategories, options: displayOptions, groupDefaultExpanded: isGroupExpandedByDefault)
+            CommandCenterLaunchpad(device: dataStore.device, services: launchpadServices, categories: orderedCategories, options: displayOptions, isConnected: liveNASConnectionState, groupDefaultExpanded: isGroupExpandedByDefault)
         case .glassDeck:
-            GlassDeckLaunchpad(device: dataStore.device, services: launchpadServices, categories: orderedCategories, options: displayOptions, isConnected: dataStore.isDSMAvailableForDisplay, groupDefaultExpanded: isGroupExpandedByDefault)
+            GlassDeckLaunchpad(device: dataStore.device, services: launchpadServices, categories: orderedCategories, options: displayOptions, isConnected: liveNASConnectionState, groupDefaultExpanded: isGroupExpandedByDefault)
         }
+    }
+
+    /// Cached DSM data may be rendered while the app restores its live
+    /// session. It must never make the launchpad claim that NAS actions are
+    /// online before the same live session has reached the connection store.
+    private var liveNASConnectionState: Bool {
+        connectionStore.isConnected && dataStore.isDSMAvailableForDisplay
     }
 
     private var launchpadServices: [LaunchpadService] {
@@ -361,10 +368,16 @@ private struct CommandCenterLaunchpad: View {
     let services: [LaunchpadService]
     let categories: [ServiceCategory]
     let options: LaunchpadDisplayOptions
+    let isConnected: Bool
     let groupDefaultExpanded: (ServiceCategory) -> Bool
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
+            if !isConnected {
+                Label("state.not_connected", systemImage: "wifi.slash")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+            }
             HStack(alignment: .top, spacing: options.compactMetrics ? 8 : 10) {
                 CommandMetricRail(device: device, compact: options.compactMetrics)
 
@@ -3754,6 +3767,18 @@ enum MediaPlaybackProbe {
 
     static func baseDetails(for playback: MediaPlaybackRequest) -> [String: String] {
         MediaPlaybackCapabilities.current.diagnosticDetails.merging([
+            "requestID": String(playback.id.uuidString.prefix(8)),
+            "title": playback.title
+                .replacingOccurrences(of: "\n", with: " ")
+                .replacingOccurrences(of: ",", with: "，"),
+            "contentKind": {
+                switch playback.contentKind {
+                case .automatic: return "automatic"
+                case .video: return "video"
+                case .audio: return "audio"
+                case .discImage: return "discImage"
+                }
+            }(),
             "target": DiagnosticLogStore.redactedURL(playback.networkOriginURL),
             "source": playback.source.rawValue,
             "extension": playback.fileExtensionHint.isEmpty ? "-" : playback.fileExtensionHint,
@@ -4102,7 +4127,14 @@ private final class MediaPlayerSession: ObservableObject {
                         .info,
                         categoryKey: "diagnostics.category.media",
                         messageKey: "diagnostics.media.player_ready",
-                        details: ["engine": "AVPlayer"]
+                        details: MediaPlaybackProbe.baseDetails(for: self.request).merging([
+                            "engine": "AVPlayer",
+                            "durationSeconds": item.duration.seconds.isFinite
+                                ? String(format: "%.1f", item.duration.seconds)
+                                : "-",
+                            "presentationSize": "\(Int(item.presentationSize.width))x\(Int(item.presentationSize.height))",
+                            "initialPositionApplied": self.didApplyInitialPosition ? "yes" : "no"
+                        ]) { current, _ in current }
                     )
                 case .failed:
                     self.isReady = false
@@ -4114,11 +4146,12 @@ private final class MediaPlayerSession: ObservableObject {
                         .error,
                         categoryKey: "diagnostics.category.media",
                         messageKey: "diagnostics.media.player_failed",
-                        details: [
+                        details: MediaPlaybackProbe.baseDetails(for: self.request).merging([
                             "engine": "AVPlayer",
                             "errorDomain": error?.domain ?? "-",
-                            "errorCode": error.map { "\($0.code)" } ?? "-"
-                        ]
+                            "errorCode": error.map { "\($0.code)" } ?? "-",
+                            "errorDescription": item.error?.localizedDescription ?? "-"
+                        ]) { current, _ in current }
                     )
                 case .unknown:
                     break
@@ -4142,11 +4175,14 @@ private final class MediaPlayerSession: ObservableObject {
                     state == "waiting" ? .warning : .info,
                     categoryKey: "diagnostics.category.media",
                     messageKey: "diagnostics.media.player_state",
-                    details: [
+                    details: MediaPlaybackProbe.baseDetails(for: self.request).merging([
                         "engine": "AVPlayer",
                         "state": state,
-                        "waitingReason": player.reasonForWaitingToPlay?.rawValue ?? "-"
-                    ]
+                        "waitingReason": player.reasonForWaitingToPlay?.rawValue ?? "-",
+                        "currentSeconds": player.currentTime().seconds.isFinite
+                            ? String(format: "%.1f", player.currentTime().seconds)
+                            : "-"
+                    ]) { current, _ in current }
                 )
                 let currentSeconds = player.currentTime().seconds
                 if currentSeconds.isFinite {
@@ -5710,11 +5746,17 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
         preferredSubtitleTrackOrdinal = request.preferredSubtitleTrackOrdinal
         prefersSubtitlesDisabled = request.prefersSubtitlesDisabled
         desiredPlaybackRate = request.initialPlaybackRate
-        let trustOptions = VLCTrustDirectory.options(for: request)
-        hasCustomTLSRoot = !trustOptions.isEmpty
-        player = trustOptions.isEmpty
-            ? VLCMediaPlayer()
-            : VLCMediaPlayer(options: trustOptions)
+        // MobileVLCKit's `VLCMediaPlayer(options:)` is not safe on all iPad
+        // runtime/library combinations when passed the GnuTLS trust
+        // directory option: the native libvlc constructor can dereference a
+        // null pointer before Swift receives an error.  This was the actual
+        // device-file crash on iPad.  Keep player construction option-free;
+        // self-signed HTTPS is handled by the authenticated URLSession-based
+        // Range compatibility proxy, which is already the bounded fallback
+        // for DSM files.  Plain HTTP and trusted HTTPS still use the same
+        // direct-first player path on both device families.
+        hasCustomTLSRoot = false
+        player = VLCMediaPlayer()
         super.init()
         player.delegate = self
         player.media = makeMedia()
@@ -6085,6 +6127,8 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
             categoryKey: "diagnostics.category.media",
             messageKey: "diagnostics.media.player_failed",
             details: [
+                "requestID": String(request.id.uuidString.prefix(8)),
+                "title": request.title,
                 "engine": "MobileVLCKit",
                 "state": state,
                 "reason": reason,
@@ -6107,6 +6151,8 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
             categoryKey: "diagnostics.category.media",
             messageKey: "diagnostics.media.player_state",
             details: [
+                "requestID": String(request.id.uuidString.prefix(8)),
+                "title": request.title,
                 "engine": "MobileVLCKit",
                 "state": "initialLoadGrace",
                 "observedState": state,
@@ -6660,6 +6706,8 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
             categoryKey: "diagnostics.category.media",
             messageKey: "diagnostics.media.track_switch_requested",
             details: [
+                "requestID": String(request.id.uuidString.prefix(8)),
+                "title": request.title,
                 "engine": "MobileVLCKit",
                 "kind": kind.rawValue,
                 "from": "\(selection.previousID)",
@@ -6728,6 +6776,8 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
                 ? "diagnostics.media.track_switch_confirmed"
                 : "diagnostics.media.track_switch_timeout",
             details: [
+                "requestID": String(request.id.uuidString.prefix(8)),
+                "title": request.title,
                 "engine": "MobileVLCKit",
                 "kind": kind.rawValue,
                 "target": "\(selection.targetID)",
@@ -6807,6 +6857,8 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
             categoryKey: "diagnostics.category.media",
             messageKey: "diagnostics.media.player_failed",
             details: [
+                "requestID": String(request.id.uuidString.prefix(8)),
+                "title": request.title,
                 "engine": "MobileVLCKit",
                 "reason": reason,
                 "reconnectAttempts": "\(reconnectAttempts)",

@@ -737,9 +737,10 @@
 "player.controls.unlock" = "解锁播放控制";
 "player.controls.toggle" = "显示或隐藏播放控制";
 "diagnostics.media.external_subtitle" = "Jellyfin 外挂字幕已载入";
-"diagnostics.media.proxy_transfer_started" = "媒体分段传输已开始";
-"diagnostics.media.proxy_transfer_retry" = "媒体分段传输已续传";
-"diagnostics.media.proxy_transfer_finished" = "媒体分段传输已结束";
+"diagnostics.media.proxy_transfer_started" = "媒体兼容传输已开始";
+"diagnostics.media.proxy_transfer_retry" = "媒体兼容传输已续传";
+"diagnostics.media.proxy_transfer_finished" = "媒体兼容传输已结束";
+"mine.sign_out.restoring" = "正在恢复 NAS 会话，连接按钮将在恢复完成后可用";
 "diagnostics.refresh.transient_unreachable" = "DSM 连通性探测暂时失败，已保留最近确认的连接状态";
 "diagnostics.refresh.unreachable" = "DSM 在当前网络不可达，已将实时状态标记为离线";
 "diagnostics.web.started" = "App 内网页开始加载";
