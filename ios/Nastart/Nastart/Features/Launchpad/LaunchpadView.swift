@@ -4403,7 +4403,8 @@ struct BuiltInMediaPlayerView: View {
 
                 if let errorMessage = session.errorMessage {
                     playbackErrorView(
-                        MediaPlaybackPolicy.requiresCompatibilityEngine(for: request)
+                        (!MediaPlaybackPolicy.hasCompatibilityEngine
+                            && MediaPlaybackPolicy.requiresCompatibilityEngine(for: request))
                             ? NSLocalizedString("player.compatibility_unavailable", comment: "")
                             : errorMessage
                     )
