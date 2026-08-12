@@ -13607,20 +13607,6 @@ private struct ManualServiceEditorView: View {
     }
 }
 
-private enum DSMConnectionLocation: String, CaseIterable, Identifiable {
-    case local
-    case remote
-
-    var id: String { rawValue }
-
-    var titleKey: String {
-        switch self {
-        case .local: return "connect.location.local"
-        case .remote: return "connect.location.remote"
-        }
-    }
-}
-
 private enum DSMConnectionProtocol: String, CaseIterable, Identifiable {
     case http
     case https
@@ -13638,9 +13624,9 @@ private struct DSMConnectionFlowView: View {
     @State private var account = ""
     @State private var password = ""
     @State private var oneTimeCode = ""
-    @State private var connectionLocation: DSMConnectionLocation = .local
     @State private var connectionProtocol: DSMConnectionProtocol = .https
     @State private var allowsSelfSignedCertificates = false
+    @State private var showsAdvancedSettings = false
     @State private var isConnecting = false
     @State private var connectionStatusKey = "connect.review.authenticating"
     @State private var errorMessage = ""
@@ -13653,8 +13639,11 @@ private struct DSMConnectionFlowView: View {
             VStack(alignment: .leading, spacing: 20) {
                 VStack(alignment: .leading, spacing: 8) {
                     Image(systemName: "externaldrive.connected.to.line.below")
-                        .font(.system(size: 24, weight: .medium))
-                        .foregroundStyle(AppTheme.accent)
+                        .font(.system(size: 22, weight: .semibold))
+                        .foregroundStyle(.white)
+                        .frame(width: 48, height: 48)
+                        .background(AppTheme.accent.gradient)
+                        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
                     Text("connect.title")
                         .font(.title2.weight(.bold))
                     Text("connect.subtitle")
@@ -13664,72 +13653,64 @@ private struct DSMConnectionFlowView: View {
                 }
 
                 VStack(alignment: .leading, spacing: 14) {
-                    Text("connect.section.dsm")
+                    Text("connect.section.target")
                         .font(.headline)
 
-                    Picker("connect.location", selection: $connectionLocation) {
-                        ForEach(DSMConnectionLocation.allCases) { location in
-                            Text(LocalizedStringKey(location.titleKey)).tag(location)
+                    NavigationLink {
+                        LANDiscoveryView(selectedHost: $host)
+                    } label: {
+                        HStack(spacing: 12) {
+                            Image(systemName: "dot.radiowaves.left.and.right")
+                                .font(.title3.weight(.semibold))
+                                .foregroundStyle(AppTheme.accent)
+                                .frame(width: 36, height: 36)
+                                .background(AppTheme.accent.opacity(0.12))
+                                .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                            VStack(alignment: .leading, spacing: 3) {
+                                Text("connect.scan.title")
+                                    .font(.body.weight(.semibold))
+                                Text("connect.scan.card_hint")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption.weight(.bold))
+                                .foregroundStyle(.tertiary)
                         }
+                        .contentShape(Rectangle())
                     }
-                    .pickerStyle(.segmented)
-                    .onChange(of: connectionLocation) { location in
-                        if location == .remote {
-                            connectionProtocol = .https
-                        }
-                    }
+                    .buttonStyle(.plain)
 
-                    Picker("connect.protocol", selection: $connectionProtocol) {
-                        ForEach(DSMConnectionProtocol.allCases) { connectionProtocol in
-                            Text(connectionProtocol.title).tag(connectionProtocol)
-                        }
-                    }
-                    .pickerStyle(.segmented)
-                    .disabled(connectionLocation == .remote)
-
-                    if connectionLocation == .local {
-                        NavigationLink {
-                            LANDiscoveryView(selectedHost: $host)
-                        } label: {
-                            Label("connect.scan.title", systemImage: "magnifyingglass")
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                        }
-                        Divider()
+                    HStack(spacing: 10) {
+                        Rectangle()
+                            .fill(AppTheme.hairline)
+                            .frame(height: 1)
+                        Text("connect.or_manual")
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
+                        Rectangle()
+                            .fill(AppTheme.hairline)
+                            .frame(height: 1)
                     }
 
                     connectionFieldLabel("connect.host")
-                    TextField(LocalizedStringKey(hostExampleKey), text: $host)
+                    TextField("connect.host.example", text: $host)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
                         .keyboardType(.URL)
                         .connectionInputStyle()
 
-                    Text(LocalizedStringKey(addressHintKey))
+                    Text("connect.host.hint")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
+                }
+                .connectionSectionStyle()
 
-                    Toggle(isOn: $allowsSelfSignedCertificates) {
-                        VStack(alignment: .leading, spacing: 3) {
-                            Text("connect.trust_self_signed")
-                            Text("connect.trust_self_signed.inline_hint")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
-                    }
-                    .disabled(connectionProtocol == .http)
-                    .onChange(of: connectionProtocol) { connectionProtocol in
-                        if connectionProtocol == .http {
-                            allowsSelfSignedCertificates = false
-                        }
-                    }
-
-                    Text("connect.trust_self_signed.protocol_hint")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
-
-                    Divider()
+                VStack(alignment: .leading, spacing: 14) {
+                    Text("connect.section.account")
+                        .font(.headline)
 
                     connectionFieldLabel("connect.account")
                     TextField("connect.account.example", text: $account)
@@ -13752,21 +13733,52 @@ private struct DSMConnectionFlowView: View {
                 }
                 .connectionSectionStyle()
 
-                VStack(alignment: .leading, spacing: 14) {
-                    Text("connect.section.agent")
-                        .font(.headline)
-                    Text("connect.agent.not_connected")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                    Divider()
-                    NavigationLink {
-                        AgentSetupGuideView()
-                    } label: {
-                        Label("connect.agent.guide", systemImage: "shippingbox")
-                            .frame(maxWidth: .infinity, alignment: .leading)
+                DisclosureGroup(isExpanded: $showsAdvancedSettings) {
+                    VStack(alignment: .leading, spacing: 14) {
+                        Picker("connect.protocol", selection: $connectionProtocol) {
+                            ForEach(DSMConnectionProtocol.allCases) { connectionProtocol in
+                                Text(connectionProtocol.title).tag(connectionProtocol)
+                            }
+                        }
+                        .pickerStyle(.segmented)
+
+                        Toggle(isOn: $allowsSelfSignedCertificates) {
+                            VStack(alignment: .leading, spacing: 3) {
+                                Text("connect.trust_self_signed")
+                                Text("connect.trust_self_signed.inline_hint")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                        .disabled(connectionProtocol == .http)
+                        .onChange(of: connectionProtocol) { connectionProtocol in
+                            if connectionProtocol == .http {
+                                allowsSelfSignedCertificates = false
+                            }
+                        }
+
+                        Text("connect.trust_self_signed.protocol_hint")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
+
+                        Divider()
+
+                        NavigationLink {
+                            AgentSetupGuideView()
+                        } label: {
+                            Label("connect.agent.guide", systemImage: "shippingbox")
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        }
                     }
+                    .padding(.top, 12)
+                } label: {
+                    Label("connect.advanced", systemImage: "slider.horizontal.3")
+                        .font(.headline)
                 }
-                .connectionSectionStyle()
+                .padding(16)
+                .background(Color(.secondarySystemGroupedBackground))
+                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
 
                 Button {
                     connectDSM()
@@ -13892,31 +13904,15 @@ private struct DSMConnectionFlowView: View {
     private var protocolAdjustedHost: String {
         let trimmed = host.trimmingCharacters(in: .whitespacesAndNewlines)
         guard
-            var components = URLComponents(string: trimmed),
+            let components = URLComponents(string: trimmed),
             let scheme = components.scheme?.lowercased(),
             scheme == "http" || scheme == "https"
         else {
             return trimmed
         }
-        components.scheme = connectionProtocol.rawValue
-        if connectionProtocol == .http, components.port == 5001 {
-            components.port = 5000
-        } else if connectionProtocol == .https, components.port == 5000 {
-            components.port = 5001
-        }
-        return components.string ?? trimmed
-    }
-
-    private var hostExampleKey: String {
-        connectionLocation == .local
-            ? "connect.host.example.local"
-            : "connect.host.example.remote"
-    }
-
-    private var addressHintKey: String {
-        connectionLocation == .local
-            ? "connect.host.hint.local"
-            : "connect.host.hint.remote"
+        // Respect an explicitly entered scheme. The protocol picker only
+        // applies when the user enters a bare host or IP address.
+        return trimmed
     }
 
     private func connectionErrorMessage(for error: Error) -> String {
@@ -13925,12 +13921,7 @@ private struct DSMConnectionFlowView: View {
         }
         switch urlError.code {
         case .networkConnectionLost, .cannotConnectToHost, .timedOut, .notConnectedToInternet:
-            return NSLocalizedString(
-                connectionLocation == .remote
-                    ? "connect.error.remote_unreachable"
-                    : "connect.error.local_unreachable",
-                comment: ""
-            )
+            return NSLocalizedString("connect.error.unreachable", comment: "")
         case .serverCertificateUntrusted, .serverCertificateHasBadDate,
                 .serverCertificateHasUnknownRoot, .secureConnectionFailed:
             return NSLocalizedString("connect.error.certificate", comment: "")

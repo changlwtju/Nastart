@@ -137,14 +137,17 @@
 "connect.welcome.subtitle" = "添加群晖 DSM 后，启动台、设备状态和服务入口会自动使用 NAS 的真实数据。";
 "connect.welcome.action" = "添加 NAS";
 "connect.welcome.security" = "登录凭据仅保存在系统钥匙串中";
-"connect.title" = "连接群晖 DSM";
-"connect.subtitle" = "选择当前访问位置，并填写手机实际可访问的 DSM 地址。";
-"connect.section.dsm" = "DSM";
+"connect.title" = "连接 NAS";
+"connect.subtitle" = "自动发现局域网 NAS，或输入域名与 IP 地址。Nastart 会根据当前网络选择合适的访问链路。";
+"connect.section.target" = "NAS 地址";
+"connect.section.account" = "登录信息";
+"connect.or_manual" = "或手动输入";
 "connect.location" = "访问位置";
 "connect.location.local" = "内网";
 "connect.location.remote" = "外网";
 "connect.protocol" = "连接协议";
-"connect.host" = "DSM 地址（内网或外网）";
+"connect.host" = "地址";
+"connect.host.hint" = "支持域名、局域网 IP 和完整地址，例如 nas.example.com:5001 或 192.168.1.10:5000。";
 "connect.host.example" = "例如：https://192.168.1.10:5001";
 "connect.host.example.local" = "例如：http://192.168.1.10:5000";
 "connect.host.example.remote" = "例如：https://nas.example.com:5001";
@@ -162,6 +165,7 @@
 "connect.trust_self_signed.protocol_hint" = "此开关仅用于 HTTPS 证书校验，对内网 HTTP 无效，也不会修改协议或端口。";
 "connect.trust_self_signed.footer" = "内网可使用 HTTP 5000 或 HTTPS 5001；外网应使用 HTTPS 与实际公网端口。仅在确认是自己的 NAS 时开启自签信任。";
 "connect.scan.title" = "局域网发现";
+"connect.scan.card_hint" = "搜索当前 Wi-Fi 中可用的 DSM";
 "connect.scan.description" = "局域网发现会验证 DSM 的实际协议和端口；HTTP 与 HTTPS 均可用时优先显示 HTTPS。";
 "connect.scan.empty" = "暂未发现可用 NAS。请手动填写 DSM 地址，或确认手机与 NAS 在同一局域网。";
 "connect.scan.searching" = "正在搜索局域网中的 DSM…";
@@ -174,6 +178,7 @@
 "connect.agent.description" = "Agent 可增强 Docker 指标、端口和服务发现能力，也为后续兼容其他 NAS 品牌预留空间。";
 "connect.action" = "连接";
 "connect.scope.footer" = "连接后会读取系统状态、共享文件夹、Docker 容器与服务发现数据，用于生成启动台和设备页面。";
+"connect.advanced" = "高级设置";
 "connect.review.nav" = "确认";
 "connect.review.title" = "确认访问范围";
 "connect.review.subtitle" = "Nastart 会用这些权限生成启动台和设备页面。";
@@ -198,6 +203,7 @@
 "connect.error.otp_required" = "DSM 需要双重验证代码，或验证码已失效，请重新输入 2FA 验证码后再连接。";
 "connect.error.local_unreachable" = "无法连接内网 DSM。请确认手机与 NAS 在同一网络、HTTP/HTTPS 地址和端口正确，并允许 Nastart 访问本地网络。";
 "connect.error.remote_unreachable" = "公网 DSM 在登录前断开连接。请检查域名解析、公网端口映射或反向代理，并确认其能转发 DSM 的 /webapi 路径；在内网测试公网域名时还需路由器支持 NAT 回环。";
+"connect.error.unreachable" = "暂时无法连接 NAS。请检查地址、端口、网络连接和 NAS 防火墙设置。";
 "connect.error.certificate" = "DSM HTTPS 证书校验失败。请确认域名与证书匹配；仅在确认是自己的 NAS 时开启自签证书信任。";
 
 "data.refresh.ready" = "数据已准备";

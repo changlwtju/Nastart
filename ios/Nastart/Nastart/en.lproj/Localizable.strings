@@ -137,14 +137,17 @@
 "connect.welcome.subtitle" = "After adding Synology DSM, the launchpad, device status, and service shortcuts use live data from your NAS.";
 "connect.welcome.action" = "Add NAS";
 "connect.welcome.security" = "Login credentials are stored only in the system Keychain";
-"connect.title" = "Connect Synology DSM";
-"connect.subtitle" = "Choose where you are connecting from and enter the DSM address reachable by this device.";
-"connect.section.dsm" = "DSM";
+"connect.title" = "Connect NAS";
+"connect.subtitle" = "Discover a NAS on the local network, or enter a domain or IP address. Nastart will use the best available route.";
+"connect.section.target" = "NAS address";
+"connect.section.account" = "Login details";
+"connect.or_manual" = "Or enter manually";
 "connect.location" = "Access location";
 "connect.location.local" = "Local";
 "connect.location.remote" = "Remote";
 "connect.protocol" = "Connection protocol";
-"connect.host" = "DSM address (local or remote)";
+"connect.host" = "Address";
+"connect.host.hint" = "Supports domains, local IP addresses, and complete URLs, such as nas.example.com:5001 or 192.168.1.10:5000.";
 "connect.host.example" = "Example: https://192.168.1.10:5001";
 "connect.host.example.local" = "Example: http://192.168.1.10:5000";
 "connect.host.example.remote" = "Example: https://nas.example.com:5001";
@@ -162,6 +165,7 @@
 "connect.trust_self_signed.protocol_hint" = "This switch only changes HTTPS certificate validation. It has no effect on local HTTP and does not change the protocol or port.";
 "connect.trust_self_signed.footer" = "Local access can use HTTP 5000 or HTTPS 5001. Remote access should use HTTPS and the actual public port. Trust self-signed certificates only for your own NAS.";
 "connect.scan.title" = "Discover on LAN";
+"connect.scan.card_hint" = "Search for DSM devices on the current Wi-Fi";
 "connect.scan.description" = "Local discovery verifies the actual DSM protocol and port. If both HTTP and HTTPS work, the HTTPS endpoint is shown first.";
 "connect.scan.empty" = "No NAS was discovered yet. Enter the DSM address manually, or make sure your phone and NAS are on the same LAN.";
 "connect.scan.searching" = "Searching the local network for DSM…";
@@ -174,6 +178,7 @@
 "connect.agent.description" = "Agent adds Docker metrics, ports, and discovery, with room for more NAS brands.";
 "connect.action" = "Connect";
 "connect.scope.footer" = "After connecting, Nastart reads system status, shared folders, Docker containers, and service discovery data to build the launchpad and device views.";
+"connect.advanced" = "Advanced settings";
 "connect.review.nav" = "Confirm";
 "connect.review.title" = "Confirm Access";
 "connect.review.subtitle" = "These permissions build the launchpad and device views.";
@@ -198,6 +203,7 @@
 "connect.error.otp_required" = "DSM requires a 2FA code, or the code has expired. Enter a fresh code and connect again.";
 "connect.error.local_unreachable" = "Could not reach DSM on the local network. Confirm this device and the NAS are on the same network, verify the HTTP/HTTPS address and port, and allow Nastart local-network access.";
 "connect.error.remote_unreachable" = "The remote DSM connection ended before login. Check DNS, public port forwarding or the reverse proxy, and make sure it forwards DSM /webapi paths. Testing a public hostname from the LAN also requires NAT loopback support.";
+"connect.error.unreachable" = "Nastart could not reach the NAS. Check the address, port, network connection, and NAS firewall settings.";
 "connect.error.certificate" = "DSM HTTPS certificate validation failed. Confirm the certificate matches the hostname; trust a self-signed certificate only for your own NAS.";
 
 "data.refresh.ready" = "Data ready";
