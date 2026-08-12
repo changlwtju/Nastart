@@ -168,6 +168,10 @@
 "connect.scan.card_hint" = "Search for DSM devices on the current Wi-Fi";
 "connect.scan.description" = "Local discovery verifies the actual DSM protocol and port. If both HTTP and HTTPS work, the HTTPS endpoint is shown first.";
 "connect.scan.empty" = "No NAS was discovered yet. Enter the DSM address manually, or make sure your phone and NAS are on the same LAN.";
+"connect.route.lan" = "Local network";
+"connect.route.vpn" = "VPN";
+"connect.route.nat_loopback" = "NAT loopback";
+"connect.route.external" = "External network";
 "connect.scan.searching" = "Searching the local network for DSM…";
 "connect.scan.retry" = "Search Again";
 "connect.scan.permission" = "Local network access is unavailable. Allow Nastart to access the local network in Settings, then try again.";
@@ -275,6 +279,11 @@
 "devices.network.address" = "DSM Address";
 "devices.network.protocol" = "Protocol";
 "devices.network.scope" = "Network Scope";
+"devices.network.actual_route" = "Actual route";
+"devices.network.endpoints" = "Connection endpoints";
+"devices.network.primary_domain" = "Primary domain";
+"devices.network.lan_address" = "LAN fallback";
+"devices.network.public_address" = "Public address";
 "devices.network.scope.lan" = "Local Network";
 "devices.network.scope.remote" = "Remote Network";
 "devices.network.summary" = "Entry Summary";
@@ -676,6 +685,10 @@
 "diagnostics.login.succeeded" = "DSM login succeeded";
 "diagnostics.login.attempt_failed" = "Login compatibility attempt failed";
 "diagnostics.login.failed" = "DSM login failed";
+"diagnostics.restore.missing_credentials" = "DSM restore skipped because no saved credentials were found";
+"diagnostics.restore.fallback_started" = "Stored DSM endpoint failed; starting LAN fallback discovery";
+"diagnostics.restore.fallback_found" = "LAN fallback DSM endpoint found";
+"diagnostics.restore.failed" = "DSM session restore failed";
 "diagnostics.discovery.started" = "LAN discovery started";
 "diagnostics.discovery.subnet_started" = "Private subnet fallback scan started";
 "diagnostics.discovery.completed" = "LAN discovery completed";
@@ -707,6 +720,7 @@
 "diagnostics.media.probe_invalid_response" = "Media URL returned non-media content";
 "diagnostics.media.probe_failed" = "Media response check failed";
 "diagnostics.media.player_started" = "Built-in player started";
+"diagnostics.media.player_autoplay" = "Built-in player started automatically";
 "diagnostics.media.player_ready" = "Built-in player became ready";
 "diagnostics.media.seek_requested" = "Player seek requested";
 "diagnostics.media.seek_ready" = "Player recovered after seeking";

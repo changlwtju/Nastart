@@ -353,6 +353,32 @@ struct DSMSession {
     let account: String
     let allowsSelfSignedCertificates: Bool
     let deviceID: String?
+    let endpoints: DSMConnectionEndpoints
+    let actualRoute: DSMConnectionRoute
+
+    init(
+        baseURL: URL,
+        sid: String,
+        fileStationSID: String?,
+        account: String,
+        allowsSelfSignedCertificates: Bool,
+        deviceID: String?,
+        endpoints: DSMConnectionEndpoints? = nil,
+        actualRoute: DSMConnectionRoute? = nil
+    ) {
+        let resolvedEndpoints = endpoints ?? DSMConnectionEndpoints(legacyBaseURL: baseURL)
+        self.baseURL = baseURL
+        self.sid = sid
+        self.fileStationSID = fileStationSID
+        self.account = account
+        self.allowsSelfSignedCertificates = allowsSelfSignedCertificates
+        self.deviceID = deviceID
+        self.endpoints = resolvedEndpoints
+        self.actualRoute = actualRoute ?? DSMConnectionRouteResolver.route(
+            for: baseURL,
+            endpoints: resolvedEndpoints
+        )
+    }
 
     func fileStationOpenURL(path: String) -> URL? {
         fileStationOpenURLs(path: path).first
@@ -407,6 +433,8 @@ struct StoredNASCredential: Codable {
     let useAgent: Bool
     let allowsSelfSignedCertificates: Bool
     let deviceID: String?
+    let endpoints: DSMConnectionEndpoints
+    let lastKnownRoute: DSMConnectionRoute
 
     init(
         baseURLString: String,
@@ -414,7 +442,9 @@ struct StoredNASCredential: Codable {
         password: String,
         useAgent: Bool,
         allowsSelfSignedCertificates: Bool = false,
-        deviceID: String? = nil
+        deviceID: String? = nil,
+        endpoints: DSMConnectionEndpoints? = nil,
+        lastKnownRoute: DSMConnectionRoute? = nil
     ) {
         self.baseURLString = baseURLString
         self.account = account
@@ -422,6 +452,16 @@ struct StoredNASCredential: Codable {
         self.useAgent = useAgent
         self.allowsSelfSignedCertificates = allowsSelfSignedCertificates
         self.deviceID = deviceID
+        let legacyURL = URL(string: baseURLString)
+        let resolvedEndpoints = endpoints
+            ?? legacyURL.map(DSMConnectionEndpoints.init(legacyBaseURL:))
+            ?? DSMConnectionEndpoints()
+        self.endpoints = resolvedEndpoints
+        self.lastKnownRoute = lastKnownRoute
+            ?? legacyURL.map {
+                DSMConnectionRouteResolver.route(for: $0, endpoints: resolvedEndpoints)
+            }
+            ?? .external
     }
 
     enum CodingKeys: String, CodingKey {
@@ -431,6 +471,8 @@ struct StoredNASCredential: Codable {
         case useAgent
         case allowsSelfSignedCertificates
         case deviceID
+        case endpoints
+        case lastKnownRoute
     }
 
     init(from decoder: Decoder) throws {
@@ -441,6 +483,16 @@ struct StoredNASCredential: Codable {
         useAgent = try container.decode(Bool.self, forKey: .useAgent)
         allowsSelfSignedCertificates = try container.decodeIfPresent(Bool.self, forKey: .allowsSelfSignedCertificates) ?? false
         deviceID = try container.decodeIfPresent(String.self, forKey: .deviceID)
+        let legacyURL = URL(string: baseURLString)
+        let decodedEndpoints = try container.decodeIfPresent(DSMConnectionEndpoints.self, forKey: .endpoints)
+            ?? legacyURL.map(DSMConnectionEndpoints.init(legacyBaseURL:))
+            ?? DSMConnectionEndpoints()
+        endpoints = decodedEndpoints
+        lastKnownRoute = try container.decodeIfPresent(DSMConnectionRoute.self, forKey: .lastKnownRoute)
+            ?? legacyURL.map {
+                DSMConnectionRouteResolver.route(for: $0, endpoints: decodedEndpoints)
+            }
+            ?? .external
     }
 }
 
@@ -918,6 +970,11 @@ private final class DSMCertificateTrustDelegate: NSObject, URLSessionTaskDelegat
     }
 }
 
+struct DSMLoginResult {
+    let client: DSMClient
+    let session: DSMSession
+}
+
 final class DSMClient {
     private static let requestTimeout: TimeInterval = 18
     // Snapshot enrichment is deliberately best-effort. A slow optional DSM
@@ -1009,6 +1066,70 @@ final class DSMClient {
         return url
     }
 
+    /// Try the configured endpoint graph in order. We never rewrite a domain
+    /// URL to an IP address, so HTTPS certificate matching remains correct.
+    static func login(
+        endpoints: DSMConnectionEndpoints,
+        allowsSelfSignedCertificates: Bool = false,
+        account: String,
+        password: String,
+        oneTimeCode: String = "",
+        deviceID: String? = nil,
+        sessionName: String = "Nastart"
+    ) async throws -> DSMLoginResult {
+        let candidates = endpoints.candidates
+        guard !candidates.isEmpty else {
+            throw DSMClientError.invalidAddress
+        }
+
+        var lastError: Error?
+        for candidate in candidates {
+            let client = DSMClient(
+                baseURL: candidate.url,
+                allowsSelfSignedCertificates: allowsSelfSignedCertificates
+            )
+            do {
+                let authenticatedSession = try await client.login(
+                    account: account,
+                    password: password,
+                    oneTimeCode: oneTimeCode,
+                    deviceID: deviceID,
+                    sessionName: sessionName
+                )
+                let session = DSMSession(
+                    baseURL: authenticatedSession.baseURL,
+                    sid: authenticatedSession.sid,
+                    fileStationSID: authenticatedSession.fileStationSID,
+                    account: authenticatedSession.account,
+                    allowsSelfSignedCertificates: authenticatedSession.allowsSelfSignedCertificates,
+                    deviceID: authenticatedSession.deviceID,
+                    endpoints: endpoints,
+                    actualRoute: DSMConnectionRouteResolver.route(
+                        for: candidate.url,
+                        endpoints: endpoints
+                    )
+                )
+                return DSMLoginResult(client: client, session: session)
+            } catch {
+                lastError = error
+                guard shouldRetryLogin(on: error) else { throw error }
+            }
+        }
+        throw lastError ?? DSMClientError.missingSession
+    }
+
+    private static func shouldRetryLogin(on error: Error) -> Bool {
+        if let dsmError = error as? DSMClientError {
+            switch dsmError {
+            case .invalidResponse:
+                return true
+            case .invalidAddress, .insecureHTTP, .apiFailed, .missingSession:
+                return false
+            }
+        }
+        return error is URLError
+    }
+
     func login(
         account: String,
         password: String,
@@ -1061,7 +1182,7 @@ final class DSMClient {
                 let data = try await postFormCall(
                     path: request.0,
                     formItems: request.1,
-                    timeout: 60
+                    timeout: Self.requestTimeout
                 )
                 if let sid = data.firstString(for: ["sid"]) {
                     let trustedDeviceID = data.firstString(
@@ -1140,7 +1261,9 @@ final class DSMClient {
             fileStationSID: fileStationSession?.sid,
             account: session.account,
             allowsSelfSignedCertificates: session.allowsSelfSignedCertificates,
-            deviceID: fileStationSession?.deviceID ?? session.deviceID
+            deviceID: fileStationSession?.deviceID ?? session.deviceID,
+            endpoints: session.endpoints,
+            actualRoute: session.actualRoute
         )
     }
 
@@ -3548,6 +3671,20 @@ final class LANDiscoveryService: NSObject, ObservableObject {
         )
     }()
 
+    /// Reuse the verified Bonjour/subnet discovery for automatic credential
+    /// restoration. Credentials are only sent after discovery identifies a
+    /// DSM-compatible private endpoint.
+    @MainActor
+    static func discoverDSMEndpoints(timeout: TimeInterval = 12) async -> [URL] {
+        let service = LANDiscoveryService()
+        service.start()
+        let nanoseconds = UInt64(max(timeout, 0.5) * 1_000_000_000)
+        try? await Task.sleep(nanoseconds: nanoseconds)
+        let endpoints = service.devices.compactMap { URL(string: $0.host) }
+        service.stop()
+        return endpoints
+    }
+
     func start() {
         stop()
         devices = []
@@ -4391,23 +4528,74 @@ final class AppDataStore: ObservableObject {
 
     @MainActor
     func restoreDSMConnection(using connectionStore: NASConnectionStore) async {
-        guard let credential = KeychainStore.shared.loadNASCredential() else { return }
+        guard let credential = KeychainStore.shared.loadNASCredential() else {
+            DiagnosticLogStore.shared.record(
+                .warning,
+                categoryKey: "diagnostics.category.connection",
+                messageKey: "diagnostics.restore.missing_credentials"
+            )
+            return
+        }
         isRefreshing = true
         defer { isRefreshing = false }
         var sessionToLogout: DSMSession?
 
         do {
             let baseURL = try DSMClient.normalizedBaseURL(from: credential.baseURLString)
-            let client = DSMClient(
-                baseURL: baseURL,
-                allowsSelfSignedCertificates: credential.allowsSelfSignedCertificates
-            )
+            var endpoints = credential.endpoints.candidates.isEmpty
+                ? DSMConnectionEndpoints(legacyBaseURL: baseURL)
+                : credential.endpoints
             let usesStoredAgent = KeychainStore.shared.loadAgentConnection() != nil
-            let mainSession = try await client.login(
-                account: credential.account,
-                password: credential.password,
-                deviceID: credential.deviceID
-            )
+            let loginResult: DSMLoginResult
+            do {
+                loginResult = try await DSMClient.login(
+                    endpoints: endpoints,
+                    allowsSelfSignedCertificates: credential.allowsSelfSignedCertificates,
+                    account: credential.account,
+                    password: credential.password,
+                    deviceID: credential.deviceID
+                )
+            } catch {
+                // Older credentials may contain only a stale address. Discover
+                // a verified private DSM endpoint before retrying credentials.
+                DiagnosticLogStore.shared.record(
+                    .warning,
+                    categoryKey: "diagnostics.category.connection",
+                    messageKey: "diagnostics.restore.fallback_started",
+                    details: [
+                        "error": Self.restoreDiagnosticMessage(for: error),
+                        "configuredEndpoints": "\(endpoints.candidates.count)"
+                    ]
+                )
+                let discoveredEndpoints = await LANDiscoveryService.discoverDSMEndpoints()
+                let knownURLs = Set(endpoints.candidates.map { $0.url.absoluteString })
+                guard let discoveredLAN = discoveredEndpoints.first(where: {
+                    NetworkHostClassifier.isPrivate($0.host)
+                        && !knownURLs.contains($0.absoluteString)
+                }) else {
+                    throw error
+                }
+                endpoints = DSMConnectionEndpoints(
+                    primaryDomain: endpoints.primaryDomain,
+                    lanAddress: discoveredLAN,
+                    publicAddress: endpoints.publicAddress
+                )
+                DiagnosticLogStore.shared.record(
+                    .info,
+                    categoryKey: "diagnostics.category.connection",
+                    messageKey: "diagnostics.restore.fallback_found",
+                    details: ["target": DiagnosticLogStore.redactedURL(discoveredLAN)]
+                )
+                loginResult = try await DSMClient.login(
+                    endpoints: endpoints,
+                    allowsSelfSignedCertificates: credential.allowsSelfSignedCertificates,
+                    account: credential.account,
+                    password: credential.password,
+                    deviceID: credential.deviceID
+                )
+            }
+            let client = loginResult.client
+            let mainSession = loginResult.session
             // The authentication session is already usable for live NAS actions.
             // Publish it before the optional File Station session and the full
             // service snapshot, so the UI does not confuse a slow refresh with
@@ -4437,7 +4625,9 @@ final class AppDataStore: ObservableObject {
                     password: credential.password,
                     useAgent: usesStoredAgent,
                     allowsSelfSignedCertificates: credential.allowsSelfSignedCertificates,
-                    deviceID: session.deviceID ?? credential.deviceID
+                    deviceID: session.deviceID ?? credential.deviceID,
+                    endpoints: session.endpoints,
+                    lastKnownRoute: session.actualRoute
                 )
             )
             prepareFolderCache(for: dataSource)
@@ -4457,7 +4647,29 @@ final class AppDataStore: ObservableObject {
                 await client.logout(session: session)
             }
             lastRefreshSummaryKey = "data.refresh.restore_failed"
+            DiagnosticLogStore.shared.record(
+                .error,
+                categoryKey: "diagnostics.category.connection",
+                messageKey: "diagnostics.restore.failed",
+                details: ["error": Self.restoreDiagnosticMessage(for: error)]
+            )
         }
+    }
+
+    private static func restoreDiagnosticMessage(for error: Error) -> String {
+        if let urlError = error as? URLError {
+            return "urlError:\(urlError.code.rawValue)"
+        }
+        if let dsmError = error as? DSMClientError {
+            switch dsmError {
+            case .invalidAddress: return "invalidAddress"
+            case .insecureHTTP: return "insecureHTTP"
+            case .invalidResponse: return "invalidResponse"
+            case .apiFailed(let code): return "apiFailed:\(code.map(String.init) ?? "-")"
+            case .missingSession: return "missingSession"
+            }
+        }
+        return String(describing: type(of: error))
     }
 
     @MainActor
@@ -5035,11 +5247,15 @@ final class NASConnectionStore: ObservableObject {
     @Published private(set) var connectedDevice: NASDevice?
     @Published private(set) var isConnected: Bool
     @Published private(set) var dsmSession: DSMSession?
+    @Published private(set) var connectionEndpoints: DSMConnectionEndpoints?
+    @Published private(set) var actualRoute: DSMConnectionRoute?
     @Published private(set) var agentConnection: StoredAgentConnection?
 
     init(device: NASDevice? = nil) {
         connectedDevice = device
         isConnected = device != nil
+        connectionEndpoints = nil
+        actualRoute = nil
         agentConnection = KeychainStore.shared.loadAgentConnection()
     }
 
@@ -5051,6 +5267,8 @@ final class NASConnectionStore: ObservableObject {
     func connect(device: NASDevice, session: DSMSession? = nil) {
         connectedDevice = device
         dsmSession = session
+        connectionEndpoints = session?.endpoints
+        actualRoute = session?.actualRoute
         isConnected = true
     }
 
@@ -5071,6 +5289,8 @@ final class NASConnectionStore: ObservableObject {
         let session = dsmSession
         connectedDevice = nil
         dsmSession = nil
+        connectionEndpoints = nil
+        actualRoute = nil
         isConnected = false
         KeychainStore.shared.clearNASCredentials()
         disconnectAgent()

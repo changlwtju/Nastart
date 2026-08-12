@@ -4043,6 +4043,8 @@ private final class MediaPlayerSession: ObservableObject {
     private var lastTimeControlStatus: AVPlayer.TimeControlStatus?
     private var didApplyInitialPosition = false
     private var pendingInitialPosition: Double?
+    private var autoplayPending = false
+    private var didAutoplayAfterReady = false
     private var stallWorkItem: DispatchWorkItem?
     private var startupWorkItem: DispatchWorkItem?
 
@@ -4083,6 +4085,7 @@ private final class MediaPlayerSession: ObservableObject {
         self.request = request
         pendingInitialPosition = normalizedPosition ?? request.initialPosition
         didApplyInitialPosition = false
+        didAutoplayAfterReady = false
         lastTimeControlStatus = nil
         errorMessage = nil
         fallbackReason = nil
@@ -4109,20 +4112,29 @@ private final class MediaPlayerSession: ObservableObject {
                 guard let self else { return }
                 switch item.status {
                 case .readyToPlay:
-                    if !self.didApplyInitialPosition,
-                       let progress = self.pendingInitialPosition,
-                       item.duration.seconds.isFinite,
-                       item.duration.seconds > 0 {
+                    let shouldSeek = !self.didApplyInitialPosition
+                        && self.pendingInitialPosition != nil
+                        && item.duration.seconds.isFinite
+                        && item.duration.seconds > 0
+                    if shouldSeek,
+                       let progress = self.pendingInitialPosition {
                         self.didApplyInitialPosition = true
                         self.pendingInitialPosition = nil
                         self.player.seek(
                             to: CMTime(seconds: item.duration.seconds * progress, preferredTimescale: 600),
                             toleranceBefore: CMTime(seconds: 0.5, preferredTimescale: 600),
                             toleranceAfter: CMTime(seconds: 0.5, preferredTimescale: 600)
-                        )
+                        ) { [weak self] _ in
+                            DispatchQueue.main.async {
+                                self?.autoplayAfterReadyIfNeeded(reason: "initialSeekCompleted")
+                            }
+                        }
                     }
                     self.isReady = true
                     self.errorMessage = nil
+                    if !shouldSeek {
+                        self.autoplayAfterReadyIfNeeded(reason: "itemReady")
+                    }
                     DiagnosticLogStore.shared.record(
                         .info,
                         categoryKey: "diagnostics.category.media",
@@ -4214,6 +4226,8 @@ private final class MediaPlayerSession: ObservableObject {
     }
 
     func play(from normalizedPosition: Double? = nil) {
+        autoplayPending = true
+        didAutoplayAfterReady = false
         if let normalizedPosition {
             pendingInitialPosition = min(max(normalizedPosition, 0), 1)
             didApplyInitialPosition = false
@@ -4227,9 +4241,32 @@ private final class MediaPlayerSession: ObservableObject {
     }
 
     func pause() {
+        autoplayPending = false
         stallWorkItem?.cancel()
         startupWorkItem?.cancel()
         player.pause()
+    }
+
+    private func autoplayAfterReadyIfNeeded(reason: String) {
+        guard autoplayPending,
+              !didAutoplayAfterReady,
+              player.currentItem?.status == .readyToPlay else {
+            return
+        }
+        didAutoplayAfterReady = true
+        player.play()
+        DiagnosticLogStore.shared.record(
+            .info,
+            categoryKey: "diagnostics.category.media",
+            messageKey: "diagnostics.media.player_autoplay",
+            details: MediaPlaybackProbe.baseDetails(for: request).merging([
+                "engine": "AVPlayer",
+                "reason": reason,
+                "position": player.currentTime().seconds.isFinite
+                    ? String(format: "%.1f", player.currentTime().seconds)
+                    : "-"
+            ]) { current, _ in current }
+        )
     }
 
     private func scheduleStartupFrameWatchdog() {
@@ -7344,9 +7381,18 @@ private struct VLCBuiltInPlayerView: View {
                     .accessibilityAction {
                         toggleControls()
                     }
-                    .onTapGesture {
-                        toggleControls()
-                    }
+                    .gesture(
+                        TapGesture(count: 2)
+                            .exclusively(before: TapGesture())
+                            .onEnded { value in
+                                switch value {
+                                case .first(_):
+                                    togglePlaybackFromGesture()
+                                case .second(_):
+                                    toggleControls()
+                                }
+                            }
+                    )
                     .simultaneousGesture(
                         DragGesture(minimumDistance: 18)
                             .onChanged { value in
@@ -7590,7 +7636,7 @@ private struct VLCBuiltInPlayerView: View {
     private func playbackControls(isLandscape: Bool) -> some View {
         VStack(spacing: isLandscape ? 6 : 10) {
             HStack(spacing: 10) {
-                Text(session.currentTimeText)
+                Text(scrubbingTimeText)
                 Slider(
                     value: $scrubPosition,
                     in: 0...1,
@@ -7604,6 +7650,8 @@ private struct VLCBuiltInPlayerView: View {
                 )
                 .disabled(!canSeek)
                 .tint(AppTheme.accent)
+                .frame(minHeight: 44)
+                .contentShape(Rectangle())
                 Text(session.durationText)
             }
             .font(.caption.monospacedDigit())
@@ -8226,6 +8274,32 @@ private struct VLCBuiltInPlayerView: View {
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
         revealControls()
         gestureTargetPosition = nil
+    }
+
+    private var scrubbingTimeText: String {
+        guard isScrubbing,
+              session.durationSeconds > 0,
+              scrubPosition.isFinite else {
+            return session.currentTimeText
+        }
+        return Self.formatPlayerTime(session.durationSeconds * scrubPosition)
+    }
+
+    private static func formatPlayerTime(_ seconds: Double) -> String {
+        let totalSeconds = max(Int(seconds.rounded(.down)), 0)
+        let hours = totalSeconds / 3_600
+        let minutes = (totalSeconds % 3_600) / 60
+        let remainder = totalSeconds % 60
+        if hours > 0 {
+            return String(format: "%d:%02d:%02d", hours, minutes, remainder)
+        }
+        return String(format: "%02d:%02d", minutes, remainder)
+    }
+
+    private func togglePlaybackFromGesture() {
+        guard activePanel == nil, session.errorMessage == nil else { return }
+        session.togglePlayback()
+        revealControls()
     }
 
     private var canSeek: Bool {
@@ -13843,15 +13917,19 @@ private struct DSMConnectionFlowView: View {
                     from: protocolAdjustedHost,
                     defaultScheme: connectionProtocol.rawValue
                 )
-                let client = DSMClient(
-                    baseURL: baseURL,
-                    allowsSelfSignedCertificates: allowsSelfSignedCertificates
+                let endpoints = DSMConnectionEndpoints(
+                    primaryDomain: NetworkHostClassifier.isPrivate(baseURL.host) ? nil : baseURL,
+                    lanAddress: NetworkHostClassifier.isPrivate(baseURL.host) ? baseURL : nil
                 )
-                let mainSession = try await client.login(
+                let loginResult = try await DSMClient.login(
+                    endpoints: endpoints,
+                    allowsSelfSignedCertificates: allowsSelfSignedCertificates,
                     account: account,
                     password: password,
                     oneTimeCode: oneTimeCode
                 )
+                let client = loginResult.client
+                let mainSession = loginResult.session
                 let session = await client.addingFileStationSession(
                     to: mainSession,
                     account: account,
@@ -13871,7 +13949,9 @@ private struct DSMConnectionFlowView: View {
                             password: password,
                             useAgent: false,
                             allowsSelfSignedCertificates: allowsSelfSignedCertificates,
-                            deviceID: session.deviceID
+                            deviceID: session.deviceID,
+                            endpoints: session.endpoints,
+                            lastKnownRoute: session.actualRoute
                         )
                     )
                 } catch {

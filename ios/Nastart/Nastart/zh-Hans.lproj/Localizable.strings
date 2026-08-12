@@ -168,6 +168,10 @@
 "connect.scan.card_hint" = "搜索当前 Wi-Fi 中可用的 DSM";
 "connect.scan.description" = "局域网发现会验证 DSM 的实际协议和端口；HTTP 与 HTTPS 均可用时优先显示 HTTPS。";
 "connect.scan.empty" = "暂未发现可用 NAS。请手动填写 DSM 地址，或确认手机与 NAS 在同一局域网。";
+"connect.route.lan" = "局域网";
+"connect.route.vpn" = "VPN";
+"connect.route.nat_loopback" = "NAT 回环";
+"connect.route.external" = "外网";
 "connect.scan.searching" = "正在搜索局域网中的 DSM…";
 "connect.scan.retry" = "重新搜索";
 "connect.scan.permission" = "无法访问本地网络。请在系统设置中允许 Nastart 访问本地网络后重试。";
@@ -275,6 +279,11 @@
 "devices.network.address" = "DSM 地址";
 "devices.network.protocol" = "协议";
 "devices.network.scope" = "连接范围";
+"devices.network.actual_route" = "实际链路";
+"devices.network.endpoints" = "连接地址";
+"devices.network.primary_domain" = "主域名";
+"devices.network.lan_address" = "局域网备用地址";
+"devices.network.public_address" = "公网地址";
 "devices.network.scope.lan" = "局域网";
 "devices.network.scope.remote" = "远程网络";
 "devices.network.summary" = "入口概览";
@@ -676,6 +685,10 @@
 "diagnostics.login.succeeded" = "DSM 登录成功";
 "diagnostics.login.attempt_failed" = "登录兼容尝试失败";
 "diagnostics.login.failed" = "DSM 登录失败";
+"diagnostics.restore.missing_credentials" = "未找到已保存的 DSM 凭据，跳过会话恢复";
+"diagnostics.restore.fallback_started" = "已保存的 DSM 地址失败，开始局域网备用发现";
+"diagnostics.restore.fallback_found" = "发现局域网备用 DSM 地址";
+"diagnostics.restore.failed" = "DSM 会话恢复失败";
 "diagnostics.discovery.started" = "开始局域网发现";
 "diagnostics.discovery.subnet_started" = "开始私有网段回退扫描";
 "diagnostics.discovery.completed" = "局域网发现完成";
@@ -707,6 +720,7 @@
 "diagnostics.media.probe_invalid_response" = "媒体地址返回了非媒体内容";
 "diagnostics.media.probe_failed" = "媒体响应检查失败";
 "diagnostics.media.player_started" = "内置播放器已启动";
+"diagnostics.media.player_autoplay" = "内置播放器已自动开始播放";
 "diagnostics.media.player_ready" = "内置播放器已准备完成";
 "diagnostics.media.seek_requested" = "播放器已请求快进或回退";
 "diagnostics.media.seek_ready" = "播放器快进回退后已恢复";

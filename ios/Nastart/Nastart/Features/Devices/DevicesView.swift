@@ -69,7 +69,9 @@ struct DevicesView: View {
                     NavigationLink {
                         NetworkDetailView(
                             services: dataStore.services,
-                            baseURL: connectionStore.dsmSession?.baseURL
+                            baseURL: connectionStore.dsmSession?.baseURL,
+                            endpoints: connectionStore.connectionEndpoints,
+                            actualRoute: connectionStore.actualRoute
                         )
                     } label: {
                         Label("devices.resource.network", systemImage: "network")
@@ -1126,17 +1128,35 @@ private struct FilePreviewView: View {
             let selectedURL = candidates.first ?? url
             let subtitleAsset = await sidecarSubtitle
             let isPrivateRoute = NetworkHostClassifier.isPrivate(selectedURL.host)
-            // Keep one playback chain for both iPhone and iPad. The direct
-            // File Station URL is always the first attempt; the authenticated
-            // Range proxy is created only if the player reports a real
-            // startup/read failure. This avoids changing a healthy iPhone
-            // stream while still handling the NAS responses that can close
-            // early on some device/network combinations.
+            // iPadOS VLC is less tolerant of NAS Range responses when the
+            // session uses a literal LAN IP (and it cannot validate a
+            // self-signed HTTPS certificate for that IP). Put private-route
+            // video through the authenticated local Range proxy before VLC
+            // is created. Domain-based/public playback keeps the direct URL
+            // path used successfully by iPhone, including HTTPS routes whose
+            // certificate is trusted through the existing session setting.
+            // The lazy fallback below remains available if direct playback
+            // cannot be prepared or later stalls.
             let fallbackCandidates = candidates
             let fallbackUpstreamURL = selectedURL
             let fallbackFilename = item.name
             let fallbackAllowsSelfSigned = session?.allowsSelfSignedCertificates == true
             let fallbackSubtitleURL = subtitleAsset?.playbackURL
+            let shouldPrepareLocalProxy = item.kind == .video
+                && (isPrivateRoute
+                    || NetworkHostClassifier.isLiteralAddress(selectedURL.host))
+            let preparedProxyURL: URL?
+            if shouldPrepareLocalProxy {
+                preparedProxyURL = try? await AuthenticatedMediaStreamProxy.shared.register(
+                    upstreamURL: selectedURL,
+                    filename: item.name,
+                    allowsSelfSignedCertificates: fallbackAllowsSelfSigned
+                )
+            } else {
+                preparedProxyURL = nil
+            }
+            let playbackURL = preparedProxyURL ?? selectedURL
+            let playbackUsesLocalProxy = preparedProxyURL != nil
             await MainActor.run {
                 isPreparingPreview = false
                 PlayerOrientationController.prepareForPresentation(
@@ -1147,19 +1167,21 @@ private struct FilePreviewView: View {
                     categoryKey: "diagnostics.category.media",
                     messageKey: "diagnostics.files.preview_stream_started",
                     details: [
-                        "target": DiagnosticLogStore.redactedURL(selectedURL),
+                        "target": DiagnosticLogStore.redactedURL(playbackURL),
                         "extension": fileExtension.isEmpty ? "-" : fileExtension,
                         "sidecarSubtitle": subtitleAsset == nil ? "none" : "normalizedUTF8",
                         "selfSigned": session?.allowsSelfSignedCertificates == true ? "on" : "off",
-                        "transport": selectedURL.scheme?.lowercased() ?? "-",
+                        "transport": playbackUsesLocalProxy ? "localRangeProxy" : (selectedURL.scheme?.lowercased() ?? "-"),
+                        "upstream": DiagnosticLogStore.redactedURL(selectedURL),
                         "fallbackTransport": item.kind == .video ? "lazyLocalRangeProxy" : "none"
                     ]
                 )
                 playbackRequest = MediaPlaybackRequest(
                     requestedAt: requestedAt,
-                    url: selectedURL,
+                    url: playbackURL,
                     title: item.name,
-                    allowsSelfSignedCertificates: session?.allowsSelfSignedCertificates == true
+                    allowsSelfSignedCertificates: !playbackUsesLocalProxy
+                        && session?.allowsSelfSignedCertificates == true
                         && selectedURL.scheme?.lowercased() == "https",
                     source: .dsmFile,
                     contentKind: item.kind == .audio ? .audio : .video,
@@ -1915,13 +1937,11 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
     private let highWaterMark = 4 * 1024 * 1024
     private let lowWaterMark = 1 * 1024 * 1024
     private let maximumConsecutiveRetryFailures = 5
-    // Keep WAN reads bounded. The remote route used by this NAS has been
-    // observed to close a larger response after roughly 32 KiB. Requesting
-    // exactly that stable window lets URLSession finish normally; VLC can
-    // then issue the next range instead of treating the early close as a
-    // fatal media timeout. This is a transport window, not a transcoding
-    // limit, and it applies to every file format uniformly.
-    private let maximumMediaSegmentBytes: Int64 = 32 * 1024
+    // Keep WAN reads bounded without returning a progressive full-file 200.
+    // iPadOS VLC needs more than the Matroska header window to reach its first
+    // video cluster; 1 MiB is enough for that probe while completing quickly
+    // on the NAS route that can close larger responses before EOF.
+    private let maximumMediaSegmentBytes: Int64 = 1 * 1024 * 1024
 
     init(
         connection: NWConnection,
@@ -1980,20 +2000,16 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
             activeRange = rangeOverride ?? requestHeaders["range"]
         } else {
             let requestedRange = rangeOverride ?? requestHeaders["range"] ?? "bytes=0-"
-            // For the initial read, deliberately remove the client's small
-            // Range end and let the upstream return a progressive 200 stream.
-            // VLC otherwise repeats bytes=0-32767 on iPad: that window contains
-            // Matroska metadata but not the first video cluster. URLSession's
-            // back-pressure keeps this streaming (it does not download the
-            // multi-GB file up front), while an interrupted response resumes
-            // from the received offset below. Non-zero seeks remain bounded.
-            let startsAtZero = Self.requestedRangeStart(from: requestedRange) == 0
-            activeRange = startsAtZero
-                ? nil
-                : Self.boundedRange(
-                    requestedRange,
-                    maximumLength: maximumMediaSegmentBytes
-                )
+            // Never turn a client's open-ended first request into a
+            // progressive 200 response. VLC can retain the resulting
+            // Matroska stream while probing/seeking and push the app past
+            // iOS's per-process memory limit. Every media request therefore
+            // starts with a finite Range window; interrupted transfers are
+            // resumed from the received offset below.
+            activeRange = Self.boundedRange(
+                requestedRange,
+                maximumLength: maximumMediaSegmentBytes
+            )
         }
         activeRequestedRange = activeRange
         activeRequestedRangeStart = Self.requestedRangeStart(from: activeRange)
@@ -2745,6 +2761,8 @@ private struct QuickLookPreviewController: UIViewControllerRepresentable {
 private struct NetworkDetailView: View {
     let services: [LaunchpadService]
     let baseURL: URL?
+    let endpoints: DSMConnectionEndpoints?
+    let actualRoute: DSMConnectionRoute?
 
     var body: some View {
         List {
@@ -2754,8 +2772,19 @@ private struct NetworkDetailView: View {
                 LabeledContent("devices.network.scope") {
                     Text(LocalizedStringKey(networkScopeKey))
                 }
+                LabeledContent("devices.network.actual_route") {
+                    Text(LocalizedStringKey(actualRoute?.titleKey ?? "status.unknown"))
+                }
             } header: {
                 Text("devices.network.connection")
+            }
+
+            Section {
+                LabeledContent("devices.network.primary_domain", value: endpointSummary(endpoints?.primaryDomain))
+                LabeledContent("devices.network.lan_address", value: endpointSummary(endpoints?.lanAddress))
+                LabeledContent("devices.network.public_address", value: endpointSummary(endpoints?.publicAddress))
+            } header: {
+                Text("devices.network.endpoints")
             }
 
             Section {

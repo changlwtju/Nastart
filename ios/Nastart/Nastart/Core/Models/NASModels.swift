@@ -1,6 +1,37 @@
 import Foundation
 
 enum NetworkHostClassifier {
+    static func isLiteralAddress(_ host: String?) -> Bool {
+        guard var host = host?
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .lowercased(),
+            !host.isEmpty
+        else {
+            return false
+        }
+
+        if host.hasPrefix("[") && host.hasSuffix("]") {
+            host.removeFirst()
+            host.removeLast()
+        }
+        host = host.split(separator: "%", maxSplits: 1).first.map(String.init) ?? host
+
+        let octets = host.split(separator: ".", omittingEmptySubsequences: false)
+        if octets.count == 4 {
+            return octets.allSatisfy { part in
+                guard let value = Int(part) else { return false }
+                return (0...255).contains(value)
+            }
+        }
+
+        guard host.contains(":"),
+              host.split(separator: ":", omittingEmptySubsequences: false).count >= 3
+        else {
+            return false
+        }
+        return host.allSatisfy { $0.isHexDigit || $0 == ":" }
+    }
+
     static func isPrivate(_ host: String?) -> Bool {
         guard var host = host?
             .trimmingCharacters(in: .whitespacesAndNewlines)
@@ -37,6 +68,95 @@ enum NetworkHostClassifier {
         }
         guard let value = UInt16(firstHextet, radix: 16) else { return false }
         return value & 0xfe00 == 0xfc00 || value & 0xffc0 == 0xfe80
+    }
+}
+
+enum DSMConnectionRoute: String, CaseIterable, Codable, Identifiable {
+    case lan
+    case vpn
+    case natLoopback
+    case external
+
+    var id: String { rawValue }
+
+    var titleKey: String {
+        switch self {
+        case .lan: return "connect.route.lan"
+        case .vpn: return "connect.route.vpn"
+        case .natLoopback: return "connect.route.nat_loopback"
+        case .external: return "connect.route.external"
+        }
+    }
+}
+
+struct DSMConnectionEndpoints: Codable, Equatable {
+    let primaryDomain: URL?
+    let lanAddress: URL?
+    let publicAddress: URL?
+
+    init(
+        primaryDomain: URL? = nil,
+        lanAddress: URL? = nil,
+        publicAddress: URL? = nil
+    ) {
+        self.primaryDomain = primaryDomain
+        self.lanAddress = lanAddress
+        self.publicAddress = publicAddress
+    }
+
+    init(legacyBaseURL: URL) {
+        if NetworkHostClassifier.isPrivate(legacyBaseURL.host) {
+            primaryDomain = nil
+            lanAddress = legacyBaseURL
+            publicAddress = nil
+        } else {
+            primaryDomain = legacyBaseURL
+            lanAddress = nil
+            publicAddress = nil
+        }
+    }
+
+    /// Keep each candidate's hostname intact so HTTPS certificate validation
+    /// continues to match the host used for the actual request.
+    var candidates: [(route: DSMConnectionRoute, url: URL)] {
+        var result: [(DSMConnectionRoute, URL)] = []
+        if let primaryDomain {
+            result.append((.external, primaryDomain))
+        }
+        if let lanAddress {
+            result.append((.lan, lanAddress))
+        }
+        if let publicAddress {
+            result.append((.external, publicAddress))
+        }
+
+        var seen = Set<String>()
+        return result.filter { seen.insert($0.1.absoluteString).inserted }
+    }
+
+    var activeFallbackURL: URL? {
+        lanAddress ?? publicAddress ?? primaryDomain
+    }
+}
+
+enum DSMConnectionRouteResolver {
+    static func route(
+        for endpoint: URL,
+        endpoints: DSMConnectionEndpoints,
+        verifiedVPN: Bool = false,
+        verifiedNATLoopback: Bool = false
+    ) -> DSMConnectionRoute {
+        if verifiedVPN {
+            return .vpn
+        }
+        if verifiedNATLoopback {
+            return .natLoopback
+        }
+        if endpoint.absoluteString.caseInsensitiveCompare(endpoints.lanAddress?.absoluteString ?? "") == .orderedSame
+            || NetworkHostClassifier.isPrivate(endpoint.host) {
+            return .lan
+        }
+        return .external
     }
 }
 
