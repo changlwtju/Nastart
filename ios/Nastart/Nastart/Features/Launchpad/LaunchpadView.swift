@@ -39,19 +39,6 @@ struct LaunchpadView: View {
                     ScrollView {
                         VStack(alignment: .leading, spacing: 12) {
                             header
-                            if shouldShowConnectionStatus {
-                                NASConnectionStatusBanner(
-                                    dataStore: dataStore,
-                                    retryAction: {
-                                        Task {
-                                            await dataStore.reconnectDSM(using: connectionStore)
-                                        }
-                                    },
-                                    connectAction: {
-                                        showConnectionFlow = true
-                                    }
-                                )
-                            }
                             if !hiddenLaunchpadServices.isEmpty {
                                 HiddenServicesRestoreStrip(
                                     count: hiddenLaunchpadServices.count,
@@ -60,32 +47,8 @@ struct LaunchpadView: View {
                                     }
                                 )
                             }
-                            if !serviceIssues.isEmpty {
-                                LaunchpadServiceHealthBanner(
-                                    offlineCount: serviceIssues.filter { $0.status == .offline }.count,
-                                    warningCount: serviceIssues.filter { $0.status == .warning || $0.status == .unknown }.count,
-                                    isRefreshing: dataStore.isRefreshing,
-                                    retryAction: {
-                                        Task {
-                                            await refreshLaunchpad()
-                                        }
-                                    }
-                                )
-                            }
-                            if launchpadServices.isEmpty {
-                                LaunchpadEmptyState(
-                                    hasHiddenServices: !hiddenLaunchpadServices.isEmpty,
-                                    addAction: {
-                                        showManualServiceEditor = true
-                                    },
-                                    manageAction: {
-                                        showServiceManager = true
-                                    }
-                                )
-                            } else {
-                                launchpadContent
-                                    .id("\(selectedTheme.rawValue)-\(groupExpansionSignature)-\(groupOrderSignature)-\(displayOptionsSignature)-\(dataStore.launchpadServiceOrder.hashValue)")
-                            }
+                            launchpadContent
+                                .id("\(selectedTheme.rawValue)-\(groupExpansionSignature)-\(groupOrderSignature)-\(displayOptionsSignature)")
                         }
                         .padding(.horizontal, 18)
                         .padding(.top, 6)
@@ -104,8 +67,6 @@ struct LaunchpadView: View {
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
-            .toolbarBackground(.visible, for: .navigationBar)
-            .toolbarBackground(AppTheme.groupedBackground, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     if connectionStore.isConnected {
@@ -213,17 +174,7 @@ struct LaunchpadView: View {
     }
 
     private var launchpadServices: [LaunchpadService] {
-        dataStore.orderedLaunchpadServices(
-            dataStore.services.filter(dataStore.isServiceVisibleOnLaunchpad)
-        )
-    }
-
-    private var serviceIssues: [LaunchpadService] {
-        launchpadServices.filter { $0.status == .offline || $0.status == .warning || $0.status == .unknown }
-    }
-
-    private var shouldShowConnectionStatus: Bool {
-        dataStore.shouldShowDataStatus
+        dataStore.services.filter(dataStore.isServiceVisibleOnLaunchpad)
     }
 
     private var hiddenLaunchpadServices: [LaunchpadService] {
@@ -328,21 +279,7 @@ struct LaunchpadView: View {
 
     private var header: some View {
         HStack(alignment: .center, spacing: 12) {
-            Image(systemName: "server.rack")
-                .font(.system(size: 17, weight: .semibold))
-                .foregroundStyle(.white)
-                .frame(width: 40, height: 40)
-                .background(AppTheme.accentGradient)
-                .clipShape(RoundedRectangle(cornerRadius: 13, style: .continuous))
-                .shadow(color: AppTheme.accent.opacity(0.22), radius: 8, y: 4)
-                .accessibilityHidden(true)
-
             VStack(alignment: .leading, spacing: 2) {
-                Text("Nastart")
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(AppTheme.accent)
-                    .textCase(.uppercase)
-                    .tracking(0.8)
                 Text(dataStore.device.name)
                     .font(.title2.weight(.semibold))
                     .lineLimit(1)
@@ -363,17 +300,12 @@ struct LaunchpadView: View {
                 Image(systemName: "magnifyingglass")
                     .font(.body.weight(.semibold))
                     .frame(width: 38, height: 38)
-                    .background(.thinMaterial)
+                    .background(Color(.secondarySystemGroupedBackground))
                     .clipShape(Circle())
-                    .overlay {
-                        Circle().stroke(AppTheme.hairline, lineWidth: 1)
-                    }
             }
             .buttonStyle(.plain)
             .accessibilityLabel(Text("search.title"))
         }
-        .padding(13)
-        .nastartCard(cornerRadius: 22, elevated: true)
     }
 }
 
@@ -416,7 +348,7 @@ private struct HiddenServicesRestoreStrip: View {
             }
             .padding(12)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(.thinMaterial)
+            .background(Color(.secondarySystemGroupedBackground))
             .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
             .overlay {
                 RoundedRectangle(cornerRadius: 14, style: .continuous)
@@ -424,103 +356,6 @@ private struct HiddenServicesRestoreStrip: View {
             }
         }
         .buttonStyle(.plain)
-    }
-}
-
-private struct LaunchpadEmptyState: View {
-    let hasHiddenServices: Bool
-    let addAction: () -> Void
-    let manageAction: () -> Void
-
-    var body: some View {
-        VStack(spacing: 14) {
-            Image(systemName: hasHiddenServices ? "eye.slash" : "square.grid.2x2")
-                .font(.system(size: 30, weight: .medium))
-                .foregroundStyle(AppTheme.accent)
-                .frame(width: 64, height: 64)
-                .background(AppTheme.accent.opacity(0.12))
-                .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-
-            VStack(spacing: 5) {
-                Text(LocalizedStringKey(hasHiddenServices ? "launchpad.empty.hidden_title" : "launchpad.empty.title"))
-                    .font(.headline)
-                Text(LocalizedStringKey(hasHiddenServices ? "launchpad.empty.hidden_message" : "launchpad.empty.message"))
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-
-            HStack(spacing: 10) {
-                if hasHiddenServices {
-                    Button(action: manageAction) {
-                        Label("launchpad.services.manage", systemImage: "slider.horizontal.3")
-                    }
-                    .buttonStyle(.bordered)
-                }
-                Button(action: addAction) {
-                    Label("manual.service.add", systemImage: "plus")
-                }
-                .buttonStyle(.borderedProminent)
-            }
-        }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, 34)
-        .padding(.horizontal, 20)
-        .background(.regularMaterial)
-        .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
-        .overlay {
-                RoundedRectangle(cornerRadius: 22, style: .continuous)
-                    .stroke(AppTheme.hairline, lineWidth: 1)
-            }
-            .shadow(color: AppTheme.accent.opacity(0.08), radius: 18, y: 8)
-    }
-}
-
-private struct LaunchpadServiceHealthBanner: View {
-    let offlineCount: Int
-    let warningCount: Int
-    let isRefreshing: Bool
-    let retryAction: () -> Void
-
-    var body: some View {
-        HStack(alignment: .top, spacing: 10) {
-            Image(systemName: offlineCount > 0 ? "exclamationmark.triangle.fill" : "info.circle.fill")
-                .foregroundStyle(offlineCount > 0 ? .orange : .yellow)
-                .padding(.top, 2)
-
-            VStack(alignment: .leading, spacing: 3) {
-                Text(LocalizedStringKey(offlineCount > 0 ? "launchpad.services.error_title" : "launchpad.services.warning_title"))
-                    .font(.subheadline.weight(.semibold))
-                Text(String.localizedStringWithFormat(
-                    NSLocalizedString("launchpad.services.issue_count", comment: ""),
-                    offlineCount + warningCount
-                ))
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-
-            Spacer(minLength: 8)
-
-            Button(action: retryAction) {
-                if isRefreshing {
-                    ProgressView()
-                        .controlSize(.small)
-                } else {
-                    Text("action.retry")
-                        .font(.caption.weight(.semibold))
-                }
-            }
-            .disabled(isRefreshing)
-        }
-        .padding(12)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background((offlineCount > 0 ? Color.orange : Color.yellow).opacity(0.12))
-        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
-        .overlay {
-            RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .stroke((offlineCount > 0 ? Color.orange : Color.yellow).opacity(0.28), lineWidth: 1)
-        }
     }
 }
 
@@ -750,10 +585,6 @@ private struct CommandServiceRailRow: View {
                     StatusDot(status: service.status)
                 }
 
-                if requiresLiveConnection {
-                    ServiceDataFreshnessBadge()
-                }
-
                 Image(systemName: "chevron.right")
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(.tertiary)
@@ -776,10 +607,6 @@ private struct CommandServiceRailRow: View {
                 Label("launchpad.service.hide", systemImage: "eye.slash")
             }
         }
-    }
-
-    private var requiresLiveConnection: Bool {
-        service.source != .manual && dataStore.dataRefreshState != .current
     }
 }
 
@@ -992,9 +819,6 @@ private struct GlassServiceRow: View {
                 if options.showServiceStatus {
                     StatusDot(status: service.status)
                 }
-                if requiresLiveConnection {
-                    ServiceDataFreshnessBadge()
-                }
             }
             .padding(15)
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -1015,10 +839,6 @@ private struct GlassServiceRow: View {
                 Label("launchpad.service.hide", systemImage: "eye.slash")
             }
         }
-    }
-
-    private var requiresLiveConnection: Bool {
-        service.source != .manual && dataStore.dataRefreshState != .current
     }
 }
 
@@ -1187,9 +1007,6 @@ private struct ServiceListRow: View {
                         if options.showServiceStatus {
                             ServiceStatusBadge(status: service.status)
                         }
-                        if requiresLiveConnection {
-                            ServiceDataFreshnessBadge()
-                        }
                     }
                     if options.showSubtitle {
                         Text(LocalizedStringKey(service.detail))
@@ -1230,10 +1047,6 @@ private struct ServiceListRow: View {
         }
     }
 
-    private var requiresLiveConnection: Bool {
-        service.source != .manual && dataStore.dataRefreshState != .current
-    }
-
     private var rowBackground: some ShapeStyle {
         AnyShapeStyle(Color(.systemBackground))
     }
@@ -1257,15 +1070,6 @@ private struct ServiceStatusBadge: View {
     }
 }
 
-private struct ServiceDataFreshnessBadge: View {
-    var body: some View {
-        Image(systemName: "clock.badge.exclamationmark")
-            .font(.caption2.weight(.semibold))
-            .foregroundStyle(.orange)
-            .accessibilityLabel(Text("service.data.cached"))
-    }
-}
-
 private struct LaunchpadServiceManagementView: View {
     @EnvironmentObject private var dataStore: AppDataStore
     @Environment(\.dismiss) private var dismiss
@@ -1273,15 +1077,13 @@ private struct LaunchpadServiceManagementView: View {
 
     var body: some View {
         List {
-            serviceSections(
+            serviceSection(
                 titleKey: "launchpad.services.visible",
-                services: filteredServices.filter(dataStore.isServiceVisibleOnLaunchpad),
-                allowsReordering: query.isEmpty
+                services: filteredServices.filter(dataStore.isServiceVisibleOnLaunchpad)
             )
-            serviceSections(
+            serviceSection(
                 titleKey: "launchpad.services.hidden",
-                services: filteredServices.filter { !dataStore.isServiceVisibleOnLaunchpad($0) },
-                allowsReordering: false
+                services: filteredServices.filter { !dataStore.isServiceVisibleOnLaunchpad($0) }
             )
 
             Section {
@@ -1297,70 +1099,33 @@ private struct LaunchpadServiceManagementView: View {
         .searchable(text: $query, prompt: "launchpad.services.search")
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                HStack(spacing: 12) {
-                    EditButton()
-                    Button("action.done") {
-                        dismiss()
-                    }
+                Button("action.done") {
+                    dismiss()
                 }
             }
         }
     }
 
     @ViewBuilder
-    private func serviceSections(
-        titleKey: LocalizedStringKey,
-        services: [LaunchpadService],
-        allowsReordering: Bool
-    ) -> some View {
+    private func serviceSection(titleKey: LocalizedStringKey, services: [LaunchpadService]) -> some View {
         if !services.isEmpty {
-            ForEach(ServiceCategory.allCases) { category in
-                let categoryServices = dataStore.orderedLaunchpadServices(
-                    services.filter { $0.category == category }
-                )
-                if !categoryServices.isEmpty {
-                    Section {
-                        if allowsReordering {
-                            ForEach(categoryServices) { service in
-                                serviceManagementRow(service)
+            Section {
+                ForEach(services) { service in
+                    Toggle(isOn: visibilityBinding(for: service)) {
+                        HStack(spacing: 12) {
+                            ServiceIconView(service: service, size: 36)
+                            VStack(alignment: .leading, spacing: 3) {
+                                Text(service.name)
+                                    .lineLimit(1)
+                                Text(LocalizedStringKey(service.sourceTitleKey))
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
                             }
-                            .onMove { source, destination in
-                                dataStore.moveLaunchpadServices(
-                                    in: category,
-                                    services: categoryServices,
-                                    from: source,
-                                    to: destination
-                                )
-                            }
-                        } else {
-                            ForEach(categoryServices) { service in
-                                serviceManagementRow(service)
-                            }
-                        }
-                    } header: {
-                        HStack {
-                            Text(titleKey)
-                            Spacer()
-                            Label(LocalizedStringKey(category.titleKey), systemImage: category.symbolName)
-                                .foregroundStyle(.secondary)
                         }
                     }
                 }
-            }
-        }
-    }
-
-    private func serviceManagementRow(_ service: LaunchpadService) -> some View {
-        Toggle(isOn: visibilityBinding(for: service)) {
-            HStack(spacing: 12) {
-                ServiceIconView(service: service, size: 36)
-                VStack(alignment: .leading, spacing: 3) {
-                    Text(service.name)
-                        .lineLimit(1)
-                    Text(LocalizedStringKey(service.sourceTitleKey))
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
+            } header: {
+                Text(titleKey)
             }
         }
     }
@@ -1372,7 +1137,9 @@ private struct LaunchpadServiceManagementView: View {
                     || $0.name.localizedCaseInsensitiveContains(query)
                     || $0.detail.localizedCaseInsensitiveContains(query)
             }
-            .sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
+            .sorted {
+                $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending
+            }
     }
 
     private func visibilityBinding(for service: LaunchpadService) -> Binding<Bool> {
@@ -1437,7 +1204,6 @@ private struct LaunchpadSearchView: View {
 
 private struct ServiceSearchRow: View {
     let service: LaunchpadService
-    @EnvironmentObject private var dataStore: AppDataStore
 
     var body: some View {
         HStack(spacing: 12) {
@@ -1449,15 +1215,8 @@ private struct ServiceSearchRow: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
-            if requiresLiveConnection {
-                ServiceDataFreshnessBadge()
-            }
         }
         .padding(.vertical, 3)
-    }
-
-    private var requiresLiveConnection: Bool {
-        service.source != .manual && dataStore.dataRefreshState != .current
     }
 }
 
@@ -1515,36 +1274,7 @@ private struct ServiceDetailView: View {
                         MetricPillSpec("metric.memory_ram", value: effectiveMemoryText, progress: effectiveMemory)
                     ])
                 }
-                .padding(16)
-                .nastartCard(cornerRadius: 24, elevated: true)
-                .listRowInsets(EdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0))
-                .listRowBackground(Color.clear)
-                .listRowSeparator(.hidden)
-            }
-
-            if requiresLiveConnection && !dataStore.isDSMReachable {
-                Section {
-                    VStack(alignment: .leading, spacing: 10) {
-                        Label("service.detail.live_required_title", systemImage: "wifi.exclamationmark")
-                            .font(.subheadline.weight(.semibold))
-                            .foregroundStyle(.orange)
-                        Text("service.detail.live_required_detail")
-                            .font(.footnote)
-                            .foregroundStyle(.secondary)
-                            .fixedSize(horizontal: false, vertical: true)
-                        Button {
-                            Task {
-                                await dataStore.reconnectDSM(using: connectionStore)
-                            }
-                        } label: {
-                            Label("connect.status.retry", systemImage: "arrow.clockwise")
-                        }
-                        .buttonStyle(.borderedProminent)
-                        .tint(AppTheme.accent)
-                        .disabled(dataStore.isRefreshing)
-                    }
-                    .padding(.vertical, 4)
-                }
+                .padding(.vertical, 8)
             }
 
             Section {
@@ -1576,7 +1306,6 @@ private struct ServiceDetailView: View {
                             Image(systemName: service.isDeveloperConsole ? "terminal" : "safari")
                         }
                     }
-                    .disabled(requiresLiveConnection && !dataStore.isDSMReachable)
                 } else {
                     Label {
                         Text("service.action.open_unavailable")
@@ -1591,7 +1320,6 @@ private struct ServiceDetailView: View {
                 } label: {
                     Label("service.action.open_service_external", systemImage: "arrow.up.forward.app")
                 }
-                .disabled(requiresLiveConnection && !dataStore.isDSMReachable)
 
                 if service.isMedia {
                     NavigationLink {
@@ -1677,8 +1405,6 @@ private struct ServiceDetailView: View {
                 }
             }
         }
-        .scrollContentBackground(.hidden)
-        .background(AppTheme.groupedBackground)
         .navigationTitle(service.name)
         .onAppear {
             endpointOverride = ServiceEndpointOverrides.load(
@@ -1712,11 +1438,6 @@ private struct ServiceDetailView: View {
     }
 
     private func openExternal(_ target: ExternalOpenTarget) {
-        guard !requiresLiveConnection || dataStore.isDSMReachable else {
-            externalMessageKey = "service.action.connection_required"
-            showExternalHint = true
-            return
-        }
         guard let url = target.url(endpoint: effectiveEndpoint) else {
             externalMessageKey = "external.unsupported_hint"
             showExternalHint = true
@@ -1736,10 +1457,6 @@ private struct ServiceDetailView: View {
 
     private var effectiveEndpoint: URL? {
         endpointOverride ?? service.preferredEndpoint(for: connectionStore.dsmSession?.baseURL)
-    }
-
-    private var requiresLiveConnection: Bool {
-        service.source != .manual
     }
 
     private var isVisibleOnLaunchpad: Bool {
@@ -6003,6 +5720,9 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
     private var lastTrackInventoryRefreshAt: Date?
     private var pendingJumpSeconds = 0
     private var pendingJumpWorkItem: DispatchWorkItem?
+    private var startupPlayRetryWorkItem: DispatchWorkItem?
+    private var startupPlayRetryCount = 0
+    private var unexpectedPauseRecoveryWorkItem: DispatchWorkItem?
     private var didRecordStart = false
     private var didReissueStartupPlay = false
     private var didReachPlayback = false
@@ -6088,14 +5808,11 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
         let networkCaching = networkCachingMilliseconds
         media.addOption(":network-caching=\(networkCaching)")
         media.addOption(":file-caching=\(networkCaching)")
-        // The local URL identifies the authenticated Range compatibility
-        // transport. It is selected only after the shared direct-first
-        // playback path reports a real failure, so this option is identical
-        // on iPhone and iPad and never depends on the device idiom.
-        if request.source.rawValue == MediaPlaybackSource.dsmFile.rawValue,
-           request.url.host == "127.0.0.1" {
-            media.addOption(":http-continuous")
-        }
+        // Keep finite media as a seekable HTTP file even when it comes from
+        // the authenticated localhost Range compatibility transport. VLC's
+        // live/continuous HTTP helper is intended for an unbounded stream;
+        // enabling it here makes a finite Matroska input look non-seekable
+        // and can leave iPadOS waiting on a black surface after a Range hop.
         media.addOption(":http-reconnect")
         media.addOption(":input-fast-seek")
         if usesAVFormatDemux {
@@ -6237,6 +5954,7 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
         try? AVAudioSession.sharedInstance().setActive(true)
         player.play()
         addExternalSubtitleIfNeeded()
+        scheduleStartupPlayRetries()
         syncState()
     }
 
@@ -6245,11 +5963,16 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
             isUserPaused = true
             reconnectWorkItem?.cancel()
             reconnectWorkItem = nil
+            startupPlayRetryWorkItem?.cancel()
+            startupPlayRetryWorkItem = nil
+            unexpectedPauseRecoveryWorkItem?.cancel()
+            unexpectedPauseRecoveryWorkItem = nil
             player.pause()
         } else {
             isUserPaused = false
             lastPlaybackProgressAt = Date()
             player.play()
+            scheduleStartupPlayRetries()
         }
         syncState()
     }
@@ -6403,9 +6126,125 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
         didRequestStop = true
         isUserPaused = false
         reconnectWorkItem?.cancel()
+        startupPlayRetryWorkItem?.cancel()
+        unexpectedPauseRecoveryWorkItem?.cancel()
         audioTrackSelectionCheckWorkItem?.cancel()
         subtitleTrackSelectionCheckWorkItem?.cancel()
         player.stop()
+    }
+
+    private func scheduleStartupPlayRetries() {
+        startupPlayRetryWorkItem?.cancel()
+        startupPlayRetryWorkItem = nil
+        startupPlayRetryCount = 0
+
+        guard !didRequestStop, !isUserPaused, !didReachPlayback else { return }
+        let workItem = DispatchWorkItem { [weak self] in
+            guard let self else { return }
+            self.startupPlayRetryWorkItem = nil
+            guard
+                !self.didRequestStop,
+                !self.isUserPaused,
+                !self.didReachPlayback,
+                !self.player.isPlaying,
+                self.errorMessage == nil,
+                self.startupPlayRetryCount < 12
+            else {
+                return
+            }
+
+            self.startupPlayRetryCount += 1
+            self.player.play()
+            DiagnosticLogStore.shared.record(
+                .info,
+                categoryKey: "diagnostics.category.media",
+                messageKey: "diagnostics.media.player_state",
+                details: [
+                    "engine": "MobileVLCKit",
+                    "state": "startupPlayRetry",
+                    "attempt": "\(self.startupPlayRetryCount)",
+                    "reason": "playbackNotStarted"
+                ]
+            )
+            self.scheduleNextStartupPlayRetry()
+        }
+        startupPlayRetryWorkItem = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25, execute: workItem)
+    }
+
+    private func scheduleNextStartupPlayRetry() {
+        guard
+            !didRequestStop,
+            !isUserPaused,
+            !didReachPlayback,
+            !player.isPlaying,
+            startupPlayRetryCount < 12
+        else {
+            return
+        }
+        let workItem = DispatchWorkItem { [weak self] in
+            guard let self else { return }
+            self.startupPlayRetryWorkItem = nil
+            guard
+                !self.didRequestStop,
+                !self.isUserPaused,
+                !self.didReachPlayback,
+                !self.player.isPlaying,
+                self.errorMessage == nil,
+                self.startupPlayRetryCount < 12
+            else {
+                return
+            }
+            self.startupPlayRetryCount += 1
+            self.player.play()
+            DiagnosticLogStore.shared.record(
+                .info,
+                categoryKey: "diagnostics.category.media",
+                messageKey: "diagnostics.media.player_state",
+                details: [
+                    "engine": "MobileVLCKit",
+                    "state": "startupPlayRetry",
+                    "attempt": "\(self.startupPlayRetryCount)",
+                    "reason": "playbackNotStarted"
+                ]
+            )
+            self.scheduleNextStartupPlayRetry()
+        }
+        startupPlayRetryWorkItem = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: workItem)
+    }
+
+    private func scheduleUnexpectedPauseRecovery() {
+        guard
+            unexpectedPauseRecoveryWorkItem == nil,
+            !didRequestStop,
+            !didFinishPlaybackNaturally,
+            !isUserPaused,
+            didReachPlayback || player.time.intValue > 500,
+            hasAlternateTransport,
+            errorMessage == nil
+        else {
+            return
+        }
+
+        let workItem = DispatchWorkItem { [weak self] in
+            guard let self else { return }
+            self.unexpectedPauseRecoveryWorkItem = nil
+            guard
+                !self.didRequestStop,
+                !self.didFinishPlaybackNaturally,
+                !self.isUserPaused,
+                self.didReachPlayback || self.player.time.intValue > 500,
+                self.hasAlternateTransport,
+                self.errorMessage == nil,
+                !self.player.isPlaying
+            else {
+                return
+            }
+            self.fail(reason: "unexpectedPause")
+        }
+        unexpectedPauseRecoveryWorkItem = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.2, execute: workItem)
     }
 
     func pauseForExternalHandoff() {
@@ -6496,7 +6335,6 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
             !didRequestStop,
             !didFinishPlaybackNaturally,
             !isUserPaused,
-            player.state != .paused,
             errorMessage == nil
         else {
             return
@@ -6582,6 +6420,13 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
         let rawPosition = Double(max(player.position, 0))
         let stateDescription = Self.stateDescription(player.state)
         let normalizedState = stateDescription.lowercased()
+        if !isPlaying,
+           didReachPlayback || player.time.intValue > 500 {
+            scheduleUnexpectedPauseRecovery()
+        } else if isPlaying {
+            unexpectedPauseRecoveryWorkItem?.cancel()
+            unexpectedPauseRecoveryWorkItem = nil
+        }
         let inputIsReadyForInitialSeek = isPlaying
             || player.state == .esAdded
             || didReachPlayback
@@ -9943,8 +9788,7 @@ private final class JellyfinLibraryStore: ObservableObject {
             let preservesServerSubtitleSelection = prepared.playMethod == .directPlay
                 && prepared.resource.subtitleURL != nil
             let compatibilityFallbackRequestLoader: ((MediaPlaybackRuntimeState?) async -> MediaPlaybackRequest?)? =
-                compatibilityFallbackInitialBitrate > 1_750_000
-                ? { [weak self] runtimeState in
+                { [weak self] runtimeState in
                     let runtimeAudioStreamIndex: Int?
                     let runtimeSubtitleStreamIndex: Int?
                     if prepared.playMethod == .transcode {
@@ -9984,7 +9828,6 @@ private final class JellyfinLibraryStore: ObservableObject {
                         runtimeState: runtimeState
                     )
                 }
-                : nil
             // Track changes must use the same negotiated request path for
             // original and transcoded playback. Re-opening the current source
             // with the live playhead prevents a direct-play selection from
@@ -13972,7 +13815,7 @@ private enum DSMConnectionProtocol: String, CaseIterable, Identifiable {
     var title: String { rawValue.uppercased() }
 }
 
-struct DSMConnectionFlowView: View {
+private struct DSMConnectionFlowView: View {
     let onConnected: () -> Void
     @EnvironmentObject private var dataStore: AppDataStore
     @EnvironmentObject private var connectionStore: NASConnectionStore
@@ -14279,21 +14122,12 @@ struct DSMConnectionFlowView: View {
     }
 
     private func connectionErrorMessage(for error: Error) -> String {
-        if let dsmError = error as? DSMClientError {
-            return dsmError.errorDescription ?? NSLocalizedString("connect.error.unreachable", comment: "")
-        }
         guard let urlError = error as? URLError else {
             return error.localizedDescription
         }
         switch urlError.code {
         case .networkConnectionLost, .cannotConnectToHost, .timedOut, .notConnectedToInternet:
-            let host = URL(string: protocolAdjustedHost)?.host
-            return NSLocalizedString(
-                NetworkHostClassifier.isPrivate(host)
-                    ? "connect.error.local_unreachable"
-                    : "connect.error.remote_unreachable",
-                comment: ""
-            )
+            return NSLocalizedString("connect.error.unreachable", comment: "")
         case .serverCertificateUntrusted, .serverCertificateHasBadDate,
                 .serverCertificateHasUnknownRoot, .secureConnectionFailed:
             return NSLocalizedString("connect.error.certificate", comment: "")
@@ -14361,18 +14195,9 @@ private struct LANDiscoveryView: View {
                             VStack(alignment: .leading, spacing: 4) {
                                 Text(device.name)
                                     .font(.body.weight(.medium))
-                                HStack(spacing: 6) {
-                                    Text(device.host)
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
-                                    Text(endpointScheme(for: device.host))
-                                        .font(.caption2.weight(.semibold))
-                                        .foregroundStyle(.secondary)
-                                        .padding(.horizontal, 5)
-                                        .padding(.vertical, 2)
-                                        .background(AppTheme.secondarySurface)
-                                        .clipShape(Capsule())
-                                }
+                                Text(device.host)
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
                             }
                             Spacer()
                             Button("connect.scan.use") {
@@ -14381,12 +14206,7 @@ private struct LANDiscoveryView: View {
                             }
                             .buttonStyle(.bordered)
                             .tint(AppTheme.accent)
-                            .accessibilityHint(Text(String.localizedStringWithFormat(
-                                NSLocalizedString("connect.scan.use_hint %@", comment: ""),
-                                device.host
-                            )))
                         }
-                        .accessibilityElement(children: .contain)
                         .padding(.vertical, 3)
                     }
                 }
@@ -14403,10 +14223,6 @@ private struct LANDiscoveryView: View {
         .onDisappear {
             discoveryService.stop()
         }
-    }
-
-    private func endpointScheme(for host: String) -> String {
-        URL(string: host)?.scheme?.uppercased() ?? "DSM"
     }
 }
 

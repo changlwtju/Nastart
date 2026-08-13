@@ -18,23 +18,11 @@ enum TaskSegment: String, CaseIterable, Identifiable {
 
 struct TasksView: View {
     @EnvironmentObject private var dataStore: AppDataStore
-    @EnvironmentObject private var connectionStore: NASConnectionStore
     @State private var segment: TaskSegment = .watching
 
     var body: some View {
         NavigationStack {
             List {
-                Section {
-                    TasksOverviewHeader(
-                        pendingCount: dataStore.tasks.count,
-                        completedCount: dataStore.completedTasks.count,
-                        refreshState: dataStore.dataRefreshState
-                    )
-                    .listRowInsets(EdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0))
-                    .listRowBackground(Color.clear)
-                    .listRowSeparator(.hidden)
-                }
-
                 Picker("tasks.segment.title", selection: $segment) {
                     ForEach(TaskSegment.allCases) { segment in
                         Text(segment.titleKey).tag(segment)
@@ -44,20 +32,6 @@ struct TasksView: View {
                 .listRowBackground(Color.clear)
 
                 Section {
-                    if dataStore.shouldShowDataStatus {
-                        NASConnectionStatusBanner(
-                            dataStore: dataStore,
-                            retryAction: {
-                                Task {
-                                    await dataStore.reconnectDSM(using: connectionStore)
-                                }
-                            }
-                        )
-                        .listRowInsets(EdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0))
-                        .listRowBackground(Color.clear)
-                        .listRowSeparator(.hidden)
-                    }
-
                     switch segment {
                     case .pending:
                         if dataStore.tasks.isEmpty {
@@ -76,7 +50,21 @@ struct TasksView: View {
                             }
                         }
                     case .watching:
-                        watchingContent
+                        NavigationLink {
+                            ReminderCreateView(defaultKind: .certificate)
+                        } label: {
+                            Label("tasks.watch.certificates", systemImage: "lock.shield")
+                        }
+                        NavigationLink {
+                            ReminderCreateView(defaultKind: .domain)
+                        } label: {
+                            Label("tasks.watch.domains", systemImage: "globe")
+                        }
+                        NavigationLink {
+                            ReminderCreateView(defaultKind: .service)
+                        } label: {
+                            Label("tasks.watch.agent", systemImage: "antenna.radiowaves.left.and.right")
+                        }
                     case .history:
                         if dataStore.completedTasks.isEmpty {
                             TaskEmptyView(
@@ -99,13 +87,9 @@ struct TasksView: View {
                 }
             }
             .listStyle(.insetGrouped)
-            .scrollContentBackground(.hidden)
-            .background(AppTheme.groupedBackground)
             .padding(.top, -12)
             .navigationTitle("tab.tasks")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbarBackground(.visible, for: .navigationBar)
-            .toolbarBackground(AppTheme.groupedBackground, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     NavigationLink {
@@ -116,37 +100,6 @@ struct TasksView: View {
                     .accessibilityLabel(Text("reminder.create.title"))
                 }
             }
-        }
-    }
-
-    @ViewBuilder
-    private var watchingContent: some View {
-        NavigationLink {
-            ReminderCreateView(defaultKind: .certificate)
-        } label: {
-            ReminderWatchRow(
-                kind: .certificate,
-                statusKey: certificateStatusKey,
-                detail: certificateDetail
-            )
-        }
-        NavigationLink {
-            ReminderCreateView(defaultKind: .domain)
-        } label: {
-            ReminderWatchRow(
-                kind: .domain,
-                statusKey: domainStatusKey,
-                detail: domainDetail
-            )
-        }
-        NavigationLink {
-            ReminderCreateView(defaultKind: .service)
-        } label: {
-            ReminderWatchRow(
-                kind: .service,
-                statusKey: agentStatusKey,
-                detail: agentDetail
-            )
         }
     }
 
@@ -165,53 +118,6 @@ struct TasksView: View {
         }
     }
 
-    private var certificateStatusKey: LocalizedStringKey {
-        guard let days = dataStore.device.certificateDaysRemaining else {
-            return "tasks.watch.status.unknown"
-        }
-        if days < 0 { return "tasks.watch.status.expired" }
-        if days <= 14 { return "tasks.watch.status.expiring" }
-        return "tasks.watch.status.healthy"
-    }
-
-    private var certificateDetail: String {
-        guard let days = dataStore.device.certificateDaysRemaining else {
-            return NSLocalizedString("tasks.watch.certificate.detail_unknown", comment: "")
-        }
-        return String.localizedStringWithFormat(
-            NSLocalizedString("tasks.watch.certificate.days", comment: ""),
-            days
-        )
-    }
-
-    private var domainStatusKey: LocalizedStringKey {
-        connectionStore.connectionEndpoints?.primaryDomain == nil
-            ? "tasks.watch.status.not_configured"
-            : "tasks.watch.status.configured"
-    }
-
-    private var domainDetail: String {
-        connectionStore.connectionEndpoints?.primaryDomain?.host
-            ?? NSLocalizedString("tasks.watch.domain.detail_unknown", comment: "")
-    }
-
-    private var agentStatusKey: LocalizedStringKey {
-        guard connectionStore.usesAgent else { return "tasks.watch.status.not_connected" }
-        guard let health = dataStore.agentHealth else { return "devices.agent.state.awaiting" }
-        switch health.state {
-        case .connected: return "tasks.watch.status.connected"
-        case .stale: return "devices.agent.state.stale"
-        case .failed: return "devices.agent.state.failed"
-        }
-    }
-
-    private var agentDetail: String {
-        if let failureReasonKey = dataStore.agentHealth?.failureReasonKey {
-            return NSLocalizedString(failureReasonKey, comment: "")
-        }
-        return connectionStore.agentConnection?.hostIdentity
-            ?? NSLocalizedString("tasks.watch.agent.detail", comment: "")
-    }
 }
 
 private struct TasksOverviewHeader: View {
@@ -378,13 +284,7 @@ private struct TaskRow: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(LocalizedStringKey(task.title))
                     .font(.body)
-                HStack(spacing: 5) {
-                    Text(LocalizedStringKey(task.subtitle))
-                    if let kind = task.kindRawValue.flatMap(ReminderKind.init(rawValue:)) {
-                        Text("·")
-                        Text(kind.titleKey)
-                    }
-                }
+                Text(LocalizedStringKey(task.subtitle))
                 .font(.caption)
                 .foregroundStyle(.secondary)
             }
@@ -398,12 +298,6 @@ private struct TaskRow: View {
                     .accessibilityLabel(Text("tasks.detail.mute"))
             }
 
-            if let nextReminderAt = task.nextReminderAt, task.completedAt == nil {
-                Text(nextReminderAt, style: .relative)
-                    .font(.caption2)
-                    .foregroundStyle(task.requiresAttention ? .orange : .secondary)
-                    .lineLimit(1)
-            }
         }
         .padding(.vertical, 4)
     }
@@ -454,11 +348,6 @@ private struct TaskDetailView: View {
             }
 
             Section {
-                if let kind = task.kindRawValue.flatMap(ReminderKind.init(rawValue:)) {
-                    LabeledContent("reminder.kind.title") {
-                        Text(kind.titleKey)
-                    }
-                }
                 LabeledContent("tasks.detail.created") {
                     Text(task.createdAt, style: .date)
                 }

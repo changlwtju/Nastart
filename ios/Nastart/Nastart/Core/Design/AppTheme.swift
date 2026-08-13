@@ -7,7 +7,7 @@ enum AppTheme {
     static let accent = Color(red: 0.96, green: 0.56, blue: 0.19)
     static let accentDeep = Color(red: 0.72, green: 0.31, blue: 0.08)
     static let softAccent = Color(red: 1.0, green: 0.94, blue: 0.86)
-    static let primaryAction = Color(red: 0.10, green: 0.11, blue: 0.13)
+    static let primaryAction = Color(red: 0.13, green: 0.14, blue: 0.16)
     static let background = Color(.systemBackground)
     static let groupedBackground = Color(.systemGroupedBackground)
     static let secondarySurface = Color(.secondarySystemGroupedBackground)
@@ -106,19 +106,14 @@ struct NastartStatusChip: View {
 }
 
 extension View {
-    func nastartCard(cornerRadius: CGFloat = 20, elevated: Bool = false) -> some View {
+    func nastartCard(cornerRadius: CGFloat = 22, elevated: Bool = false) -> some View {
         self
-            .background(elevated ? AnyShapeStyle(.regularMaterial) : AnyShapeStyle(AppTheme.elevatedSurface))
+            .background(.background)
             .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
             .overlay {
                 RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                     .stroke(AppTheme.hairline, lineWidth: 1)
             }
-            .shadow(
-                color: .black.opacity(elevated ? 0.10 : 0.045),
-                radius: elevated ? 18 : 8,
-                y: elevated ? 9 : 4
-            )
     }
 
     func nastartScreenBackground() -> some View {

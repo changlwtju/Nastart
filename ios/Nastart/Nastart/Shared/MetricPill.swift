@@ -34,8 +34,9 @@ struct MetricPill: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(13)
-        .nastartCard(cornerRadius: 16)
+        .padding(12)
+        .background(AppTheme.secondarySurface)
+        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
     }
 }
 
