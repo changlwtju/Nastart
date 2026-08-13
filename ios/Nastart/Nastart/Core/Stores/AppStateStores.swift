@@ -173,12 +173,22 @@ protocol AppDataProviding {
     var videoLibraryItems: [MediaItem] { get }
     var audioLibraryItems: [MediaItem] { get }
     var discoveredDevices: [DiscoveredNASDevice] { get }
+    var agentHealth: AgentHealthSnapshot? { get }
 }
 
-enum NASDataSourceKind {
+enum NASDataSourceKind: Equatable {
     case mock
     case dsm
     case agent
+}
+
+enum AppDataRefreshState: Equatable {
+    case localPreview
+    case refreshing
+    case current
+    case cached
+    case stale
+    case unavailable
 }
 
 protocol NASDataSource {
@@ -234,7 +244,7 @@ struct DSMNASDataSource: NASDataSource {
                 baseURL: baseURL,
                 allowsSelfSignedCertificates: connection.allowsSelfSignedCertificates
             )
-            _ = try await agentClient.handshake(connection: connection)
+            let handshake = try await agentClient.handshake(connection: connection)
             let agentSnapshot = try await agentClient.snapshot(connection: connection)
             DiagnosticLogStore.shared.record(
                 .info,
@@ -248,8 +258,17 @@ struct DSMNASDataSource: NASDataSource {
             return AgentSnapshotMerger.merge(
                 dsm: dsmSnapshot,
                 agent: agentSnapshot,
-                agentBaseURL: baseURL
+                agentBaseURL: baseURL,
+                health: AgentHealthSnapshot(handshake: handshake)
             )
+        } catch let error as AgentClientError {
+            DiagnosticLogStore.shared.record(
+                .warning,
+                categoryKey: "diagnostics.category.agent",
+                messageKey: "diagnostics.agent.refresh_failed",
+                details: ["error": String(describing: error)]
+            )
+            return dsmSnapshot.withAgentHealth(AgentHealthSnapshot(connection: connection, failure: error))
         } catch {
             DiagnosticLogStore.shared.record(
                 .warning,
@@ -257,7 +276,9 @@ struct DSMNASDataSource: NASDataSource {
                 messageKey: "diagnostics.agent.refresh_failed",
                 details: ["error": String(describing: error)]
             )
-            return dsmSnapshot
+            return dsmSnapshot.withAgentHealth(
+                AgentHealthSnapshot(connection: connection, failure: .invalidResponse)
+            )
         }
     }
 
@@ -305,6 +326,7 @@ struct MockAppDataProvider: AppDataProviding, NASDeviceProviding, LaunchpadServi
     let videoLibraryItems = SampleData.videoLibraryItems
     let audioLibraryItems = SampleData.audioLibraryItems
     let discoveredDevices: [DiscoveredNASDevice] = []
+    let agentHealth: AgentHealthSnapshot? = nil
 
     func loadDevice() -> NASDevice { device }
     func discoverDevices() -> [DiscoveredNASDevice] { discoveredDevices }
@@ -344,6 +366,7 @@ struct DisconnectedAppDataProvider: AppDataProviding {
     let videoLibraryItems: [MediaItem] = []
     let audioLibraryItems: [MediaItem] = []
     let discoveredDevices: [DiscoveredNASDevice] = []
+    let agentHealth: AgentHealthSnapshot? = nil
 }
 
 struct DSMSession {
@@ -515,6 +538,7 @@ struct DSMDataSnapshot: AppDataProviding, Codable {
     let containerInventoryAvailable: Bool
     let packageInventoryAvailable: Bool
     let reverseProxyInventoryAvailable: Bool
+    let agentHealth: AgentHealthSnapshot?
 }
 
 enum DiagnosticLogLevel: String, Codable {
@@ -563,7 +587,7 @@ struct DiagnosticLogEntry: Identifiable, Codable {
         if trimmedDetail.isEmpty {
             return "[\(timestamp)] \(level.rawValue.uppercased()) \(localizedCategory) - \(localizedMessage)"
         }
-        return "[\(timestamp)] \(level.rawValue.uppercased()) \(localizedCategory) - \(localizedMessage) | \(trimmedDetail)"
+        return "[\(timestamp)] \(level.rawValue.uppercased()) \(localizedCategory) - \(localizedMessage) | \(DiagnosticLogStore.redactedDetail(trimmedDetail))"
     }
 
     var displayTime: String {
@@ -646,7 +670,13 @@ final class DiagnosticLogStore: ObservableObject {
         if entries.isEmpty {
             return NSLocalizedString("diagnostics.empty", comment: "")
         }
-        return entries.map(\.exportLine).joined(separator: "\n")
+        let header = String.localizedStringWithFormat(
+            NSLocalizedString("diagnostics.export.header", comment: ""),
+            entries.count,
+            entries.filter { $0.level == .warning }.count,
+            entries.filter { $0.level == .error }.count
+        )
+        return ([header] + entries.map(\.exportLine)).joined(separator: "\n")
     }
 
     static func redactedHost(_ host: String?) -> String {
@@ -672,7 +702,7 @@ final class DiagnosticLogStore: ObservableObject {
     static func redactedDetail(_ value: String) -> String {
         let patterns: [(String, String)] = [
             (
-                #"(?i)((?:_sid|api[_-]?key|apikey|token|access_token|authorization|password|passwd|cookie)\s*[=:]\s*)[^&,;\s]+"#,
+                #"(?i)((?:[\"']?)(?:_sid|api[_-]?key|apikey|token|access_token|authorization|password|passwd|cookie|path|filepath|filename|file_name)(?:[\"']?)\s*[=:]\s*[\"']?)[^\"',;&\s}]+"#,
                 "$1<redacted>"
             ),
             (#"(?i)(bearer\s+)[a-z0-9._~+/=-]+"#, "$1<redacted>")
@@ -1075,9 +1105,10 @@ final class DSMClient {
         password: String,
         oneTimeCode: String = "",
         deviceID: String? = nil,
+        preferredRoute: DSMConnectionRoute? = nil,
         sessionName: String = "Nastart"
     ) async throws -> DSMLoginResult {
-        let candidates = endpoints.candidates
+        let candidates = endpoints.candidates(preferredRoute: preferredRoute)
         guard !candidates.isEmpty else {
             throw DSMClientError.invalidAddress
         }
@@ -1480,7 +1511,8 @@ final class DSMClient {
             discoveredDevices: [],
             containerInventoryAvailable: docker != nil,
             packageInventoryAvailable: packages != nil,
-            reverseProxyInventoryAvailable: reverseProxies != nil
+            reverseProxyInventoryAvailable: reverseProxies != nil,
+            agentHealth: nil
         )
     }
 
@@ -4109,6 +4141,8 @@ private final class LocalTaskStore {
 
 final class AppDataStore: ObservableObject {
     private static let persistedDSMSnapshotKey = "dsm.cachedSnapshot.v1"
+    private static let persistedDSMSnapshotFormatVersion = 2
+    private static let cachedSnapshotStaleInterval: TimeInterval = 24 * 60 * 60
     @Published private(set) var device: NASDevice
     @Published private(set) var services: [LaunchpadService]
     @Published private(set) var containers: [DockerContainer]
@@ -4120,14 +4154,29 @@ final class AppDataStore: ObservableObject {
     @Published private(set) var discoveredDevices: [DiscoveredNASDevice]
     @Published private(set) var isRefreshing = false
     @Published private(set) var isDSMReachable = false
-    @Published private(set) var lastRefreshSummaryKey = "data.refresh.ready"
+    @Published private(set) var cachedDSMSnapshotSavedAt: Date?
+    @Published private(set) var agentHealth: AgentHealthSnapshot?
+    @Published private(set) var lastRefreshEventAt: Date? = nil
+    @Published private(set) var lastRefreshSummaryKey = "data.refresh.ready" {
+        didSet {
+            lastRefreshEventAt = Date()
+        }
+    }
     @Published private(set) var sourceKind: NASDataSourceKind
     @Published private(set) var serviceVisibilityOverrides: [String: Bool]
+    @Published private(set) var launchpadServiceOrder: [String: [String]]
 
     /// A previously successful snapshot is safe to render while the session is
     /// being restored. Network refresh still replaces it once available.
     var hasCachedDSMSnapshot: Bool {
         provider is DSMDataSnapshot
+    }
+
+    var isCachedDSMSnapshotStale: Bool {
+        guard hasCachedDSMSnapshot, let savedAt = cachedDSMSnapshotSavedAt else {
+            return false
+        }
+        return Date().timeIntervalSince(savedAt) >= Self.cachedSnapshotStaleInterval
     }
 
     /// The launchpad can render a persisted NAS snapshot before the current
@@ -4137,14 +4186,69 @@ final class AppDataStore: ObservableObject {
         isDSMReachable || hasCachedDSMSnapshot
     }
 
+    /// A single availability state used by pages that render the same NAS
+    /// snapshot. It deliberately separates cached data from live data so an
+    /// offline screen never presents old values as current.
+    var dataRefreshState: AppDataRefreshState {
+        if isRefreshing { return .refreshing }
+        if sourceKind == .mock {
+            return provider is DisconnectedAppDataProvider ? .unavailable : .localPreview
+        }
+        if isDSMReachable { return .current }
+        if hasCachedDSMSnapshot {
+            return isCachedDSMSnapshotStale ? .stale : .cached
+        }
+        return .unavailable
+    }
+
+    var dataSourceLabelKey: String {
+        if sourceKind == .dsm, agentHealth != nil {
+            return "data.refresh.source.dsm_agent"
+        }
+        switch sourceKind {
+        case .mock:
+            return provider is DisconnectedAppDataProvider
+                ? "data.refresh.source.none"
+                : "data.refresh.source.preview"
+        case .dsm:
+            return "data.refresh.source.dsm"
+        case .agent:
+            return "data.refresh.source.agent"
+        }
+    }
+
+    var shouldShowDataStatus: Bool {
+        switch dataRefreshState {
+        case .localPreview, .current, .refreshing:
+            return false
+        case .cached, .stale, .unavailable:
+            return true
+        }
+    }
+
+    var cachedSnapshotStatusKey: String {
+        guard hasCachedDSMSnapshot, hasPersistedCachedSnapshot else {
+            return "mine.privacy.cache.none"
+        }
+        return isCachedDSMSnapshotStale
+            ? "mine.privacy.cache.stale"
+            : "mine.privacy.cache.available"
+    }
+
+    var hasPersistedCachedSnapshot: Bool {
+        UserDefaults.standard.data(forKey: Self.persistedDSMSnapshotKey) != nil
+    }
+
     private var provider: AppDataProviding
     private var activeDataSource: NASDataSource
     private var manualServiceStore = ManualLaunchpadServiceStore()
     private let launchpadVisibilityStore = LaunchpadVisibilityStore()
+    private let launchpadOrderStore = LaunchpadOrderStore()
     private let localTaskStore: LocalTaskStore
     private var preservedContainerInventoryOnLastMerge = false
     private var consecutiveDSMReachabilityFailures = 0
     private var lastSuccessfulDSMContactAt: Date?
+    private var lastForegroundRefreshAt: Date?
     private struct FolderCacheEntry {
         let items: [FileItem]
         let loadedAt: Date
@@ -4155,20 +4259,26 @@ final class AppDataStore: ObservableObject {
 
     private static let dsmReachabilityFailureThreshold = 2
     private static let dsmReachabilityGraceInterval: TimeInterval = 180
+    private static let foregroundRefreshCooldown: TimeInterval = 90
+    private static let foregroundFreshnessInterval: TimeInterval = 5 * 60
     private static let folderCacheLifetime: TimeInterval = 5 * 60
 
     init(provider: AppDataProviding? = nil) {
         let taskStore = LocalTaskStore()
         let persistedTasks = taskStore.load()
+        let persistedSnapshot = Self.loadPersistedDSMSnapshot()
         let initialProvider = provider
-            ?? Self.loadPersistedDSMSnapshot()
+            ?? persistedSnapshot?.snapshot
             ?? DisconnectedAppDataProvider()
         self.provider = initialProvider
         localTaskStore = taskStore
         serviceVisibilityOverrides = LaunchpadVisibilityStore().load()
+        launchpadServiceOrder = LaunchpadOrderStore().load()
         sourceKind = initialProvider is DSMDataSnapshot ? .dsm : .mock
+        cachedDSMSnapshotSavedAt = provider == nil ? persistedSnapshot?.savedAt : nil
         activeDataSource = DisconnectedNASDataSource()
         device = initialProvider.device
+        agentHealth = initialProvider.agentHealth
         services = initialProvider.services + manualServiceStore.load()
         containers = initialProvider.containers
         files = initialProvider.files
@@ -4188,6 +4298,7 @@ final class AppDataStore: ObservableObject {
         let previousContainers = containers
         self.provider = provider
         sourceKind = provider is DSMDataSnapshot ? .dsm : .mock
+        agentHealth = provider.agentHealth
         device = provider is DSMDataSnapshot
             ? Self.mergedDevice(fresh: provider.device, fallback: device)
             : provider.device
@@ -4214,22 +4325,43 @@ final class AppDataStore: ObservableObject {
         discoveredDevices = provider.discoveredDevices
         lastRefreshSummaryKey = provider is DSMDataSnapshot ? "data.refresh.dsm_done" : "data.refresh.mock_done"
         if let snapshot = provider as? DSMDataSnapshot {
-            Self.persistDSMSnapshot(snapshot)
+            cachedDSMSnapshotSavedAt = Date()
+            Self.persistDSMSnapshot(snapshot, savedAt: cachedDSMSnapshotSavedAt ?? Date())
+        } else {
+            cachedDSMSnapshotSavedAt = nil
         }
     }
 
-    private static func loadPersistedDSMSnapshot() -> DSMDataSnapshot? {
-        guard
-            let data = UserDefaults.standard.data(forKey: persistedDSMSnapshotKey),
-            let snapshot = try? JSONDecoder().decode(DSMDataSnapshot.self, from: data)
-        else {
+    private struct PersistedDSMSnapshot: Codable {
+        let version: Int?
+        let snapshot: DSMDataSnapshot
+        let savedAt: Date
+    }
+
+    private static func loadPersistedDSMSnapshot() -> (snapshot: DSMDataSnapshot, savedAt: Date)? {
+        guard let data = UserDefaults.standard.data(forKey: persistedDSMSnapshotKey) else {
             return nil
         }
-        return snapshot
+        if let persisted = try? JSONDecoder().decode(PersistedDSMSnapshot.self, from: data),
+           (persisted.version ?? 1) <= Self.persistedDSMSnapshotFormatVersion {
+            return (persisted.snapshot, persisted.savedAt)
+        }
+        // Migrate snapshots written before the timestamp envelope existed. The
+        // contents remain useful, but their age is unknown and is therefore
+        // intentionally treated as stale until a fresh snapshot is saved.
+        guard let snapshot = try? JSONDecoder().decode(DSMDataSnapshot.self, from: data) else {
+            return nil
+        }
+        return (snapshot, .distantPast)
     }
 
-    private static func persistDSMSnapshot(_ snapshot: DSMDataSnapshot) {
-        guard let data = try? JSONEncoder().encode(snapshot) else { return }
+    private static func persistDSMSnapshot(_ snapshot: DSMDataSnapshot, savedAt: Date) {
+        let persisted = PersistedDSMSnapshot(
+            version: Self.persistedDSMSnapshotFormatVersion,
+            snapshot: snapshot,
+            savedAt: savedAt
+        )
+        guard let data = try? JSONEncoder().encode(persisted) else { return }
         UserDefaults.standard.set(data, forKey: persistedDSMSnapshotKey)
     }
 
@@ -4362,6 +4494,7 @@ final class AppDataStore: ObservableObject {
 
     @MainActor
     func refreshAll() {
+        guard !isRefreshing else { return }
         isRefreshing = true
         reload(from: provider)
         isRefreshing = false
@@ -4405,8 +4538,63 @@ final class AppDataStore: ObservableObject {
         reload(from: DisconnectedAppDataProvider())
         sourceKind = .mock
         isDSMReachable = false
+        cachedDSMSnapshotSavedAt = nil
         resetDSMReachabilityHistory()
         lastRefreshSummaryKey = "data.refresh.disconnected"
+    }
+
+    @MainActor
+    func clearCachedSnapshot() {
+        UserDefaults.standard.removeObject(forKey: Self.persistedDSMSnapshotKey)
+        folderLoadTasks.values.forEach { $0.cancel() }
+        folderLoadTasks.removeAll()
+        folderCache.removeAll()
+        folderCacheScope = nil
+        cachedDSMSnapshotSavedAt = nil
+
+        if !isDSMReachable {
+            reload(from: DisconnectedAppDataProvider())
+            sourceKind = .mock
+            resetDSMReachabilityHistory()
+        }
+        lastRefreshSummaryKey = "data.refresh.cache_cleared"
+    }
+
+    @MainActor
+    func reconnectDSM(using connectionStore: NASConnectionStore) async {
+        if let session = connectionStore.dsmSession {
+            _ = await refreshDSM(session: session, useAgent: connectionStore.usesAgent)
+        } else {
+            await restoreDSMConnection(using: connectionStore)
+        }
+    }
+
+    @MainActor
+    func refreshForForeground(using connectionStore: NASConnectionStore) async {
+        guard !isRefreshing else { return }
+        let now = Date()
+        if let lastForegroundRefreshAt,
+           now.timeIntervalSince(lastForegroundRefreshAt) < Self.foregroundRefreshCooldown {
+            return
+        }
+        lastForegroundRefreshAt = now
+
+        if let session = connectionStore.dsmSession {
+            let secondsSinceContact = lastSuccessfulDSMContactAt.map {
+                now.timeIntervalSince($0)
+            } ?? .infinity
+            guard dataRefreshState != .current
+                || secondsSinceContact >= Self.foregroundFreshnessInterval else {
+                return
+            }
+            _ = await refreshDSM(session: session, useAgent: connectionStore.usesAgent)
+            return
+        }
+
+        guard KeychainStore.shared.loadNASCredential() != nil else {
+            return
+        }
+        await restoreDSMConnection(using: connectionStore)
     }
 
     @MainActor
@@ -4528,6 +4716,7 @@ final class AppDataStore: ObservableObject {
 
     @MainActor
     func restoreDSMConnection(using connectionStore: NASConnectionStore) async {
+        guard !isRefreshing else { return }
         guard let credential = KeychainStore.shared.loadNASCredential() else {
             DiagnosticLogStore.shared.record(
                 .warning,
@@ -4553,7 +4742,8 @@ final class AppDataStore: ObservableObject {
                     allowsSelfSignedCertificates: credential.allowsSelfSignedCertificates,
                     account: credential.account,
                     password: credential.password,
-                    deviceID: credential.deviceID
+                    deviceID: credential.deviceID,
+                    preferredRoute: credential.lastKnownRoute
                 )
             } catch {
                 // Older credentials may contain only a stale address. Discover
@@ -4591,7 +4781,8 @@ final class AppDataStore: ObservableObject {
                     allowsSelfSignedCertificates: credential.allowsSelfSignedCertificates,
                     account: credential.account,
                     password: credential.password,
-                    deviceID: credential.deviceID
+                    deviceID: credential.deviceID,
+                    preferredRoute: credential.lastKnownRoute
                 )
             }
             let client = loginResult.client
@@ -4780,6 +4971,35 @@ final class AppDataStore: ObservableObject {
         serviceVisibilityOverrides[service.launchpadVisibilityKey] ?? service.isLaunchpadVisible
     }
 
+    func orderedLaunchpadServices(_ services: [LaunchpadService]) -> [LaunchpadService] {
+        ServiceCategory.allCases.flatMap { category in
+            let categoryServices = services.filter { $0.category == category }
+            let savedKeys = launchpadServiceOrder[category.rawValue] ?? []
+            let servicesByKey = categoryServices.reduce(into: [String: LaunchpadService]()) { result, service in
+                result[service.launchpadOrderingKey] = service
+            }
+            let savedServices = savedKeys.compactMap { servicesByKey[$0] }
+            let savedKeySet = Set(savedKeys)
+            let newServices = categoryServices.filter { !savedKeySet.contains($0.launchpadOrderingKey) }
+            return savedServices + newServices
+        }
+    }
+
+    @MainActor
+    func moveLaunchpadServices(
+        in category: ServiceCategory,
+        services: [LaunchpadService],
+        from source: IndexSet,
+        to destination: Int
+    ) {
+        guard services.allSatisfy({ $0.category == category }) else { return }
+        var orderedKeys = services.map(\.launchpadOrderingKey)
+        orderedKeys.move(fromOffsets: source, toOffset: destination)
+        launchpadServiceOrder[category.rawValue] = orderedKeys
+        launchpadOrderStore.save(launchpadServiceOrder)
+        CloudSyncStore.noteLocalChange()
+    }
+
     @MainActor
     func setService(_ service: LaunchpadService, visibleOnLaunchpad isVisible: Bool) {
         if isVisible == service.isLaunchpadVisible {
@@ -4944,6 +5164,22 @@ private struct LaunchpadVisibilityStore {
 
     func save(_ overrides: [String: Bool]) {
         guard let data = try? JSONEncoder().encode(overrides) else { return }
+        UserDefaults.standard.set(data, forKey: storageKey)
+    }
+}
+
+private struct LaunchpadOrderStore {
+    private let storageKey = "nastart.launchpadServiceOrder.v1"
+
+    func load() -> [String: [String]] {
+        guard let data = UserDefaults.standard.data(forKey: storageKey) else {
+            return [:]
+        }
+        return (try? JSONDecoder().decode([String: [String]].self, from: data)) ?? [:]
+    }
+
+    func save(_ order: [String: [String]]) {
+        guard let data = try? JSONEncoder().encode(order) else { return }
         UserDefaults.standard.set(data, forKey: storageKey)
     }
 }

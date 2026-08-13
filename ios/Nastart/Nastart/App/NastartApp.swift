@@ -222,12 +222,7 @@ struct NastartApp: App {
                 .onChange(of: scenePhase) { phase in
                     guard phase == .active, didCompleteRestore else { return }
                     Task {
-                        if let session = connectionStore.dsmSession {
-                            await appDataStore.refreshDSM(
-                                session: session,
-                                useAgent: connectionStore.usesAgent
-                            )
-                        }
+                        await appDataStore.refreshForForeground(using: connectionStore)
                         if cloudSyncStore.isEnabled {
                             await cloudSyncStore.syncNow(
                                 dataStore: appDataStore,

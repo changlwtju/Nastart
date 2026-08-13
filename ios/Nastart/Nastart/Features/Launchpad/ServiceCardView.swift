@@ -32,8 +32,12 @@ struct ServiceCardView: View {
         .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
         .overlay {
             RoundedRectangle(cornerRadius: 22, style: .continuous)
-                .stroke(AppTheme.hairline, lineWidth: 1)
+                .stroke(
+                    service.isMedia ? AppTheme.accent.opacity(0.34) : AppTheme.hairline,
+                    lineWidth: service.isMedia ? 1.2 : 1
+                )
         }
+        .shadow(color: service.isMedia ? AppTheme.accent.opacity(0.10) : .black.opacity(0.045), radius: 12, y: 6)
         .contentShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
         .contextMenu {
             Button(role: .destructive) {
@@ -45,7 +49,16 @@ struct ServiceCardView: View {
     }
 
     private var cardBackground: some ShapeStyle {
-        AnyShapeStyle(Color(.secondarySystemGroupedBackground))
+        if service.isMedia {
+            return AnyShapeStyle(
+                LinearGradient(
+                    colors: [AppTheme.accent.opacity(0.16), AppTheme.elevatedSurface],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+            )
+        }
+        return AnyShapeStyle(AppTheme.elevatedSurface)
     }
 
 }
@@ -59,7 +72,7 @@ struct ServiceIconView: View {
             .font(.system(size: size * 0.4, weight: .medium))
             .foregroundStyle(AppTheme.accent)
             .frame(width: size, height: size)
-            .background(AppTheme.accent.opacity(0.1))
+            .background(AppTheme.accent.opacity(0.12))
             .clipShape(RoundedRectangle(cornerRadius: size * 0.3, style: .continuous))
             .overlay {
                 RoundedRectangle(cornerRadius: size * 0.3, style: .continuous)

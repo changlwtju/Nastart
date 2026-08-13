@@ -16,6 +16,57 @@ struct StoredAgentConnection: Codable, Equatable {
     }
 }
 
+enum AgentHealthState: String, Codable, Equatable {
+    case connected
+    case stale
+    case failed
+}
+
+struct AgentHealthSnapshot: Codable, Equatable {
+    static let staleInterval: TimeInterval = 15 * 60
+
+    let agentID: String
+    let hostIdentity: String
+    let providerHint: String
+    let agentVersion: String?
+    let apiVersion: Int?
+    let capabilities: [String]
+    let lastSeenAt: Date?
+    let failureReasonKey: String?
+
+    var state: AgentHealthState {
+        if failureReasonKey != nil { return .failed }
+        guard let lastSeenAt else { return .stale }
+        return Date().timeIntervalSince(lastSeenAt) >= Self.staleInterval ? .stale : .connected
+    }
+
+    var isExpired: Bool {
+        state == .stale
+    }
+
+    init(handshake: AgentHandshake, seenAt: Date = Date()) {
+        agentID = handshake.agentId
+        hostIdentity = handshake.hostIdentity
+        providerHint = handshake.providerHint
+        agentVersion = handshake.agentVersion
+        apiVersion = handshake.apiVersion
+        capabilities = handshake.capabilities
+        lastSeenAt = seenAt
+        failureReasonKey = nil
+    }
+
+    init(connection: StoredAgentConnection, failure: AgentClientError) {
+        agentID = connection.agentID
+        hostIdentity = connection.hostIdentity
+        providerHint = connection.providerHint
+        agentVersion = nil
+        apiVersion = nil
+        capabilities = connection.capabilities
+        lastSeenAt = nil
+        failureReasonKey = failure.healthReasonKey
+    }
+}
+
 struct AgentHandshake: Decodable {
     let agentId: String
     let apiVersion: Int
@@ -94,6 +145,19 @@ enum AgentClientError: LocalizedError {
     case pairingRejected
     case unauthorized
     case unsupportedAPIVersion
+
+    var healthReasonKey: String {
+        switch self {
+        case .unauthorized, .pairingRejected:
+            return "agent.health.auth_failed"
+        case .unsupportedAPIVersion:
+            return "agent.health.unsupported"
+        case .invalidAddress, .insecureAddress:
+            return "agent.health.invalid_address"
+        case .invalidResponse:
+            return "agent.health.unreachable"
+        }
+    }
 
     var errorDescription: String? {
         switch self {
@@ -244,7 +308,8 @@ enum AgentSnapshotMerger {
     static func merge(
         dsm: DSMDataSnapshot,
         agent: AgentSnapshot,
-        agentBaseURL: URL
+        agentBaseURL: URL,
+        health: AgentHealthSnapshot
     ) -> DSMDataSnapshot {
         let agentContainers = agent.containers.map(container(from:))
         let agentServices = services(from: agent, baseURL: agentBaseURL)
@@ -287,7 +352,8 @@ enum AgentSnapshotMerger {
             discoveredDevices: dsm.discoveredDevices,
             containerInventoryAvailable: agent.inventory.dockerAvailable || dsm.containerInventoryAvailable,
             packageInventoryAvailable: dsm.packageInventoryAvailable,
-            reverseProxyInventoryAvailable: dsm.reverseProxyInventoryAvailable
+            reverseProxyInventoryAvailable: dsm.reverseProxyInventoryAvailable,
+            agentHealth: health
         )
     }
 
@@ -361,5 +427,24 @@ enum AgentSnapshotMerger {
 
     private static func byteText(_ value: Double) -> String {
         ByteCountFormatter.string(fromByteCount: Int64(max(value, 0)), countStyle: .file)
+    }
+}
+
+extension DSMDataSnapshot {
+    func withAgentHealth(_ health: AgentHealthSnapshot) -> DSMDataSnapshot {
+        DSMDataSnapshot(
+            device: device,
+            services: services,
+            containers: containers,
+            files: files,
+            tasks: tasks,
+            videoLibraryItems: videoLibraryItems,
+            audioLibraryItems: audioLibraryItems,
+            discoveredDevices: discoveredDevices,
+            containerInventoryAvailable: containerInventoryAvailable,
+            packageInventoryAvailable: packageInventoryAvailable,
+            reverseProxyInventoryAvailable: reverseProxyInventoryAvailable,
+            agentHealth: health
+        )
     }
 }

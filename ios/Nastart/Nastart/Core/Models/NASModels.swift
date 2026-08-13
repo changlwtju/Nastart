@@ -119,6 +119,10 @@ struct DSMConnectionEndpoints: Codable, Equatable {
     /// Keep each candidate's hostname intact so HTTPS certificate validation
     /// continues to match the host used for the actual request.
     var candidates: [(route: DSMConnectionRoute, url: URL)] {
+        candidates(preferredRoute: nil)
+    }
+
+    func candidates(preferredRoute: DSMConnectionRoute?) -> [(route: DSMConnectionRoute, url: URL)] {
         var result: [(DSMConnectionRoute, URL)] = []
         if let primaryDomain {
             result.append((.external, primaryDomain))
@@ -131,7 +135,9 @@ struct DSMConnectionEndpoints: Codable, Equatable {
         }
 
         var seen = Set<String>()
-        return result.filter { seen.insert($0.1.absoluteString).inserted }
+        let unique = result.filter { seen.insert($0.1.absoluteString).inserted }
+        guard let preferredRoute else { return unique }
+        return unique.filter { $0.0 == preferredRoute } + unique.filter { $0.0 != preferredRoute }
     }
 
     var activeFallbackURL: URL? {
@@ -421,6 +427,18 @@ struct LaunchpadService: Identifiable, Codable {
             return "manual|\(id.uuidString.lowercased())"
         }
     }
+
+    /// Stable enough for a refreshed DSM snapshot to keep the user's card
+    /// order. Unlike `launchpadVisibilityKey`, this must distinguish services
+    /// that share the same source (for example multiple DSM packages).
+    var launchpadOrderingKey: String {
+        let normalizedName = name.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        let normalizedDetail = detail.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        let endpointValue = endpoint?.absoluteString.lowercased() ?? ""
+        let manualIdentity = source == .manual ? id.uuidString.lowercased() : ""
+        return [source.rawValue, category.rawValue, normalizedName, normalizedDetail, endpointValue, manualIdentity]
+            .joined(separator: "|")
+    }
 }
 
 enum ServiceDisplayRole {
@@ -538,6 +556,7 @@ struct TaskItem: Identifiable, Codable {
     let createdAt: Date
     let daysBefore: Int
     let targetDate: Date?
+    let kindRawValue: String?
     var completedAt: Date?
 
     init(
@@ -550,6 +569,7 @@ struct TaskItem: Identifiable, Codable {
         createdAt: Date = Date(),
         daysBefore: Int = 14,
         targetDate: Date? = nil,
+        kindRawValue: String? = nil,
         completedAt: Date? = nil
     ) {
         self.id = id
@@ -561,6 +581,7 @@ struct TaskItem: Identifiable, Codable {
         self.createdAt = createdAt
         self.daysBefore = daysBefore
         self.targetDate = targetDate
+        self.kindRawValue = kindRawValue
         self.completedAt = completedAt
     }
 
@@ -572,7 +593,8 @@ struct TaskItem: Identifiable, Codable {
     }
 
     var requiresAttention: Bool {
-        guard completedAt == nil, let nextReminderAt else { return isUrgent }
+        guard completedAt == nil else { return false }
+        guard let nextReminderAt else { return isUrgent }
         let urgentThreshold = Calendar.current.date(byAdding: .day, value: 7, to: Date()) ?? Date()
         return isUrgent || nextReminderAt <= urgentThreshold
     }

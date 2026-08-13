@@ -14,11 +14,30 @@ struct DevicesView: View {
                 Section {
                     DeviceHealthHeader(
                         device: dataStore.device,
-                        isConnected: dataStore.isDSMAvailableForDisplay
+                        isConnected: dataStore.isDSMAvailableForDisplay,
+                        services: dataStore.services.filter { $0.source != .manual },
+                        containers: dataStore.containers,
+                        isRefreshing: dataStore.isRefreshing
                     )
                     .listRowInsets(EdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0))
                     .listRowBackground(Color.clear)
                     .listRowSeparator(.hidden)
+                }
+
+                if shouldShowConnectionStatus {
+                    Section {
+                        NASConnectionStatusBanner(
+                            dataStore: dataStore,
+                            retryAction: {
+                                Task {
+                                    await dataStore.reconnectDSM(using: connectionStore)
+                                }
+                            }
+                        )
+                        .listRowInsets(EdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0))
+                        .listRowBackground(Color.clear)
+                        .listRowSeparator(.hidden)
+                    }
                 }
 
                 Section {
@@ -119,9 +138,13 @@ struct DevicesView: View {
                 }
             }
             .listStyle(.insetGrouped)
+            .scrollContentBackground(.hidden)
+            .background(AppTheme.groupedBackground)
             .padding(.top, -12)
             .navigationTitle("tab.devices")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbarBackground(.visible, for: .navigationBar)
+            .toolbarBackground(AppTheme.groupedBackground, for: .navigationBar)
             .alert("devices.discovery.hint", isPresented: $showRediscoverHint) {
                 Button("action.ok", role: .cancel) {}
             }
@@ -136,6 +159,10 @@ struct DevicesView: View {
         dataStore.containers.filter { $0.status == .online }
     }
 
+    private var shouldShowConnectionStatus: Bool {
+        dataStore.shouldShowDataStatus
+    }
+
     private func resourceLabel(_ key: String, systemImage: String, count: Int) -> some View {
         HStack {
             Label(LocalizedStringKey(key), systemImage: systemImage)
@@ -147,9 +174,94 @@ struct DevicesView: View {
     }
 }
 
+struct NASConnectionStatusBanner: View {
+    @ObservedObject var dataStore: AppDataStore
+    let retryAction: () -> Void
+    var connectAction: (() -> Void)? = nil
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Label(titleKey, systemImage: dataStore.isCachedDSMSnapshotStale ? "clock.badge.exclamationmark" : "wifi.exclamationmark")
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(.orange)
+
+            Text(detailKey)
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            if let savedAt = dataStore.cachedDSMSnapshotSavedAt {
+                HStack(spacing: 4) {
+                    Text("connect.status.last_updated")
+                    Text(savedAt, style: .relative)
+                }
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            }
+
+            HStack(spacing: 4) {
+                Text("connect.status.source")
+                Text(LocalizedStringKey(dataStore.dataSourceLabelKey))
+            }
+            .font(.caption)
+            .foregroundStyle(.secondary)
+
+            HStack(spacing: 10) {
+                Button(action: retryAction) {
+                    Label("connect.status.retry", systemImage: "arrow.clockwise")
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(AppTheme.accent)
+                .disabled(dataStore.isRefreshing)
+
+                if let connectAction {
+                    Button(action: connectAction) {
+                        Label("connect.status.edit", systemImage: "slider.horizontal.3")
+                    }
+                    .buttonStyle(.bordered)
+                }
+            }
+        }
+        .padding(14)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color.orange.opacity(0.10))
+        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .stroke(Color.orange.opacity(0.25), lineWidth: 1)
+        }
+        .accessibilityElement(children: .contain)
+    }
+
+    private var titleKey: LocalizedStringKey {
+        switch dataStore.dataRefreshState {
+        case .stale:
+            return "connect.status.stale_title"
+        case .unavailable:
+            return "connect.status.unavailable_title"
+        default:
+            return "connect.status.cached_title"
+        }
+    }
+
+    private var detailKey: LocalizedStringKey {
+        switch dataStore.dataRefreshState {
+        case .stale:
+            return "connect.status.stale_detail"
+        case .unavailable:
+            return "connect.status.unavailable_detail"
+        default:
+            return "connect.status.cached_detail"
+        }
+    }
+}
+
 private struct DeviceHealthHeader: View {
     let device: NASDevice
     let isConnected: Bool
+    let services: [LaunchpadService]
+    let containers: [DockerContainer]
+    let isRefreshing: Bool
 
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
@@ -200,14 +312,70 @@ private struct DeviceHealthHeader: View {
                     symbol: "internaldrive"
                 )
             }
+
+            HStack(spacing: 14) {
+                DeviceHealthCount(
+                    titleKey: "devices.health.services",
+                    value: "\(onlineServices)/\(services.count)",
+                    symbol: "square.stack.3d.up"
+                )
+                DeviceHealthCount(
+                    titleKey: "devices.health.containers",
+                    value: "\(onlineContainers)/\(containers.count)",
+                    symbol: "shippingbox"
+                )
+                if isRefreshing {
+                    Spacer(minLength: 0)
+                    ProgressView()
+                        .controlSize(.small)
+                        .accessibilityLabel(Text("devices.health.refreshing"))
+                }
+            }
         }
         .padding(18)
-        .background(Color(.secondarySystemGroupedBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+        .background(
+            LinearGradient(
+                colors: [AppTheme.elevatedSurface, AppTheme.accent.opacity(0.045)],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        )
+        .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
         .overlay {
-            RoundedRectangle(cornerRadius: 8, style: .continuous)
+            RoundedRectangle(cornerRadius: 24, style: .continuous)
                 .stroke(AppTheme.hairline, lineWidth: 1)
         }
+        .shadow(color: .black.opacity(0.06), radius: 16, y: 7)
+    }
+
+    private var onlineServices: Int {
+        services.filter { $0.status == .online }.count
+    }
+
+    private var onlineContainers: Int {
+        containers.filter { $0.status == .online }.count
+    }
+}
+
+private struct DeviceHealthCount: View {
+    let titleKey: LocalizedStringKey
+    let value: String
+    let symbol: String
+
+    var body: some View {
+        HStack(spacing: 6) {
+            Image(systemName: symbol)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            VStack(alignment: .leading, spacing: 1) {
+                Text(titleKey)
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                Text(value)
+                    .font(.subheadline.weight(.semibold))
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
@@ -273,6 +441,13 @@ struct DeviceStatusView: View {
     var body: some View {
         List {
             Section {
+                DeviceDetailHero(device: device)
+                    .listRowInsets(EdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0))
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+            }
+
+            Section {
                 LabeledContent("devices.detail.name", value: device.name)
                 if let model = device.model {
                     LabeledContent("devices.detail.model", value: model)
@@ -314,9 +489,49 @@ struct DeviceStatusView: View {
             }
         }
         .listStyle(.insetGrouped)
+        .scrollContentBackground(.hidden)
+        .background(AppTheme.groupedBackground)
         .padding(.top, -12)
         .navigationTitle(device.name)
         .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+private struct DeviceDetailHero: View {
+    let device: NASDevice
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            HStack(spacing: 13) {
+                Image(systemName: "server.rack")
+                    .font(.title2.weight(.semibold))
+                    .foregroundStyle(.white)
+                    .frame(width: 50, height: 50)
+                    .background(AppTheme.accentGradient)
+                    .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                    .accessibilityHidden(true)
+
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(device.name)
+                        .font(.title3.weight(.bold))
+                        .lineLimit(1)
+                    Text(device.subtitle)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                }
+                Spacer(minLength: 8)
+                DeviceConnectionBadge(isConnected: device.mode != .manualOnly)
+            }
+
+            MetricPillRow(metrics: [
+                MetricPillSpec("metric.cpu", value: devicePercentText(device.cpu), progress: device.cpu),
+                MetricPillSpec("metric.memory_ram", value: devicePercentText(device.memory), progress: device.memory),
+                MetricPillSpec("metric.storage_disk", value: devicePercentText(device.storageUsed), progress: device.storageUsed)
+            ])
+        }
+        .padding(16)
+        .nastartCard(cornerRadius: 24, elevated: true)
     }
 }
 
@@ -423,6 +638,22 @@ private struct ServiceResourcesView: View {
 
     var body: some View {
         List {
+            if dataStore.shouldShowDataStatus {
+                Section {
+                    NASConnectionStatusBanner(
+                        dataStore: dataStore,
+                        retryAction: {
+                            Task {
+                                await dataStore.reconnectDSM(using: connectionStore)
+                            }
+                        }
+                    )
+                    .listRowInsets(EdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0))
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                }
+            }
+
             Section {
                 MetricPillRow(metrics: [
                     MetricPillSpec(
@@ -766,6 +997,22 @@ private struct FileBrowserView: View {
 
     var body: some View {
         List {
+            if dataStore.shouldShowDataStatus {
+                Section {
+                    NASConnectionStatusBanner(
+                        dataStore: dataStore,
+                        retryAction: {
+                            Task {
+                                await dataStore.reconnectDSM(using: connectionStore)
+                            }
+                        }
+                    )
+                    .listRowInsets(EdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0))
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                }
+            }
+
             Section {
                 if isLoading && visibleItems.isEmpty {
                     HStack {
@@ -2876,6 +3123,8 @@ private struct CertificateSecurityView: View {
 
     var body: some View {
         List {
+            CertificateSecuritySummary(certificate: device.certificate)
+
             Section {
                 LabeledContent("devices.detail.certificate", value: certificateDaysText(device.certificateDaysRemaining))
                 LabeledContent("devices.cert.domain", value: device.certificate?.subject ?? "-")
@@ -2950,50 +3199,252 @@ private struct CertificateSecurityView: View {
     }
 }
 
+private struct CertificateSecuritySummary: View {
+    let certificate: NASCertificateInfo?
+
+    var body: some View {
+        Section {
+            HStack(spacing: 12) {
+                Image(systemName: stateSymbol)
+                    .font(.title3.weight(.semibold))
+                    .foregroundStyle(stateColor)
+                    .frame(width: 38, height: 38)
+                    .background(stateColor.opacity(0.12))
+                    .clipShape(RoundedRectangle(cornerRadius: 11, style: .continuous))
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(LocalizedStringKey(stateTitleKey))
+                        .font(.headline)
+                    Text(stateDetail)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+
+                Spacer(minLength: 8)
+            }
+            .accessibilityElement(children: .combine)
+        } header: {
+            Text("devices.cert.status")
+        }
+    }
+
+    private var stateTitleKey: String {
+        guard let days = certificate?.daysRemaining else {
+            return "devices.cert.state.unknown"
+        }
+        if days < 0 { return "devices.cert.state.expired" }
+        if days <= 14 { return "devices.cert.state.expiring" }
+        return "devices.cert.state.valid"
+    }
+
+    private var stateDetail: String {
+        guard let certificate else {
+            return NSLocalizedString("devices.cert.state.unknown_detail", comment: "")
+        }
+        guard let days = certificate.daysRemaining else {
+            return NSLocalizedString("devices.cert.state.date_unknown", comment: "")
+        }
+        return String.localizedStringWithFormat(
+            NSLocalizedString("devices.cert.state.days", comment: ""),
+            days
+        )
+    }
+
+    private var stateSymbol: String {
+        guard let days = certificate?.daysRemaining else { return "questionmark.shield" }
+        if days < 0 { return "xmark.shield.fill" }
+        if days <= 14 { return "exclamationmark.shield.fill" }
+        return "checkmark.shield.fill"
+    }
+
+    private var stateColor: Color {
+        guard let days = certificate?.daysRemaining else { return .secondary }
+        if days < 0 { return .red }
+        if days <= 14 { return .orange }
+        return .green
+    }
+}
+
 private struct AgentStatusView: View {
     @EnvironmentObject private var connectionStore: NASConnectionStore
     @EnvironmentObject private var dataStore: AppDataStore
+    @State private var isRefreshing = false
 
     var body: some View {
-        List {
-            Section {
-                LabeledContent(
-                    "devices.agent.mode",
-                    value: NSLocalizedString(connectionStore.usesAgent ? "state.connected" : "state.not_connected", comment: "")
-                )
-                LabeledContent(
-                    "devices.security.ssh",
-                    value: sshStatusText(dataStore.device.sshStatus)
-                )
-            }
+        TimelineView(.periodic(from: Date(), by: 60)) { _ in
+            List {
+                Section {
+                    VStack(alignment: .leading, spacing: 12) {
+                        AgentHealthSummary(
+                            health: dataStore.agentHealth,
+                            isConfigured: connectionStore.usesAgent
+                        )
 
-            Section {
-                NavigationLink {
-                    AgentSetupGuideView()
-                } label: {
-                    Label("devices.agent.ssh.desktop", systemImage: "desktopcomputer")
+                        Button {
+                            guard let session = connectionStore.dsmSession else { return }
+                            isRefreshing = true
+                            Task {
+                                await dataStore.refreshDSM(session: session, useAgent: true)
+                                isRefreshing = false
+                            }
+                        } label: {
+                            HStack {
+                                Label(
+                                    isRefreshing ? "devices.agent.refreshing" : "devices.agent.refresh",
+                                    systemImage: "arrow.clockwise"
+                                )
+                                Spacer()
+                                if isRefreshing {
+                                    ProgressView()
+                                }
+                            }
+                        }
+                        .disabled(
+                            isRefreshing ||
+                            dataStore.isRefreshing ||
+                            !connectionStore.usesAgent ||
+                            connectionStore.dsmSession == nil
+                        )
+                    }
+                    .padding(16)
+                    .nastartCard(cornerRadius: 24, elevated: true)
+                    .listRowInsets(EdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0))
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                } header: {
+                    Text("devices.agent.health")
                 }
-            } header: {
-                Text("devices.agent.setup_paths")
-            } footer: {
-                Text("devices.agent.ssh.footer")
-            }
 
-            Section {
-                Label {
-                    Text(LocalizedStringKey(
-                        connectionStore.usesAgent
-                            ? "devices.agent.connected"
-                            : "devices.agent.not_connected"
-                    ))
-                } icon: {
-                    Image(systemName: "antenna.radiowaves.left.and.right")
+                Section {
+                    LabeledContent(
+                        "devices.agent.mode",
+                        value: NSLocalizedString(
+                            connectionStore.usesAgent ? "state.connected" : "state.not_connected",
+                            comment: ""
+                        )
+                    )
+                    LabeledContent(
+                        "devices.security.ssh",
+                        value: sshStatusText(dataStore.device.sshStatus)
+                    )
+                    if let health = dataStore.agentHealth {
+                        LabeledContent("devices.agent.version", value: health.agentVersion ?? "-")
+                        LabeledContent("devices.agent.last_seen") {
+                            if let lastSeenAt = health.lastSeenAt {
+                                Text(lastSeenAt, style: .relative)
+                            } else {
+                                Text("devices.agent.never_seen")
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                        LabeledContent("devices.agent.provider", value: health.providerHint)
+                    }
+                } header: {
+                    Text("devices.agent.details")
                 }
-                    .foregroundStyle(connectionStore.usesAgent ? .green : .secondary)
+
+                Section {
+                    if let health = dataStore.agentHealth, !health.capabilities.isEmpty {
+                        ForEach(health.capabilities, id: \.self) { capability in
+                            Label(capability, systemImage: "checkmark.circle")
+                        }
+                    } else {
+                        Text("devices.agent.scope.empty")
+                            .foregroundStyle(.secondary)
+                    }
+                } header: {
+                    Text("devices.agent.scope")
+                }
+
+                Section {
+                    NavigationLink {
+                        AgentSetupGuideView()
+                    } label: {
+                        Label("devices.agent.ssh.desktop", systemImage: "desktopcomputer")
+                    }
+                } header: {
+                    Text("devices.agent.setup_paths")
+                } footer: {
+                    Text("devices.agent.ssh.footer")
+                }
             }
+            .listStyle(.insetGrouped)
+            .scrollContentBackground(.hidden)
+            .background(AppTheme.groupedBackground)
         }
-        .listStyle(.insetGrouped)
         .navigationTitle("devices.maintenance.agent")
         .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+private struct AgentHealthSummary: View {
+    let health: AgentHealthSnapshot?
+    let isConfigured: Bool
+
+    var body: some View {
+        HStack(spacing: 12) {
+            Image(systemName: symbolName)
+                .font(.title3.weight(.semibold))
+                .foregroundStyle(stateColor)
+                .frame(width: 40, height: 40)
+                .background(stateColor.opacity(0.12))
+                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text(LocalizedStringKey(titleKey))
+                    .font(.headline)
+                Text(LocalizedStringKey(detailKey))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+
+            Spacer(minLength: 8)
+        }
+        .accessibilityElement(children: .combine)
+    }
+
+    private var titleKey: String {
+        guard isConfigured else { return "devices.agent.state.not_configured" }
+        guard let health else { return "devices.agent.state.awaiting" }
+        switch health.state {
+        case .connected: return "devices.agent.state.connected"
+        case .stale: return "devices.agent.state.stale"
+        case .failed: return "devices.agent.state.failed"
+        }
+    }
+
+    private var detailKey: String {
+        guard isConfigured else { return "devices.agent.state.not_configured_detail" }
+        guard let health else { return "devices.agent.state.awaiting_detail" }
+        if health.state == .failed, let failureReasonKey = health.failureReasonKey {
+            return failureReasonKey
+        }
+        switch health.state {
+        case .connected: return "devices.agent.state.connected_detail"
+        case .stale: return "devices.agent.state.stale_detail"
+        case .failed: return "agent.health.unreachable"
+        }
+    }
+
+    private var symbolName: String {
+        guard isConfigured else { return "antenna.radiowaves.left.and.right.slash" }
+        guard let health else { return "clock.badge.questionmark" }
+        switch health.state {
+        case .connected: return "checkmark.circle.fill"
+        case .stale: return "clock.badge.exclamationmark"
+        case .failed: return "exclamationmark.triangle.fill"
+        }
+    }
+
+    private var stateColor: Color {
+        guard isConfigured else { return .secondary }
+        guard let health else { return .secondary }
+        switch health.state {
+        case .connected: return .green
+        case .stale: return .orange
+        case .failed: return .red
+        }
     }
 }

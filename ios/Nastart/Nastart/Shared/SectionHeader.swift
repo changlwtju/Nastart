@@ -7,7 +7,7 @@ struct SectionHeader: View {
     var body: some View {
         HStack(alignment: .firstTextBaseline) {
             Text(titleKey)
-                .font(.headline.weight(.semibold))
+                .nastartSectionTitle()
             Spacer()
             if let trailingKey {
                 Text(trailingKey)
@@ -15,6 +15,7 @@ struct SectionHeader: View {
                     .foregroundStyle(.secondary)
             }
         }
-        .padding(.horizontal, 2)
+        .padding(.horizontal, 3)
+        .padding(.vertical, 2)
     }
 }

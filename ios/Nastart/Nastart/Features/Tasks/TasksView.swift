@@ -18,11 +18,23 @@ enum TaskSegment: String, CaseIterable, Identifiable {
 
 struct TasksView: View {
     @EnvironmentObject private var dataStore: AppDataStore
+    @EnvironmentObject private var connectionStore: NASConnectionStore
     @State private var segment: TaskSegment = .watching
 
     var body: some View {
         NavigationStack {
             List {
+                Section {
+                    TasksOverviewHeader(
+                        pendingCount: dataStore.tasks.count,
+                        completedCount: dataStore.completedTasks.count,
+                        refreshState: dataStore.dataRefreshState
+                    )
+                    .listRowInsets(EdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0))
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                }
+
                 Picker("tasks.segment.title", selection: $segment) {
                     ForEach(TaskSegment.allCases) { segment in
                         Text(segment.titleKey).tag(segment)
@@ -32,6 +44,20 @@ struct TasksView: View {
                 .listRowBackground(Color.clear)
 
                 Section {
+                    if dataStore.shouldShowDataStatus {
+                        NASConnectionStatusBanner(
+                            dataStore: dataStore,
+                            retryAction: {
+                                Task {
+                                    await dataStore.reconnectDSM(using: connectionStore)
+                                }
+                            }
+                        )
+                        .listRowInsets(EdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0))
+                        .listRowBackground(Color.clear)
+                        .listRowSeparator(.hidden)
+                    }
+
                     switch segment {
                     case .pending:
                         if dataStore.tasks.isEmpty {
@@ -41,7 +67,7 @@ struct TasksView: View {
                                 descriptionKey: "tasks.empty.pending.description"
                             )
                         } else {
-                            ForEach(dataStore.tasks) { task in
+                            ForEach(sortedPendingTasks) { task in
                                 NavigationLink {
                                     TaskDetailView(task: task, isHistory: false)
                                 } label: {
@@ -50,21 +76,7 @@ struct TasksView: View {
                             }
                         }
                     case .watching:
-                        NavigationLink {
-                            ReminderCreateView(defaultKind: .certificate)
-                        } label: {
-                            Label("tasks.watch.certificates", systemImage: "lock.shield")
-                        }
-                        NavigationLink {
-                            ReminderCreateView(defaultKind: .domain)
-                        } label: {
-                            Label("tasks.watch.domains", systemImage: "globe")
-                        }
-                        NavigationLink {
-                            ReminderCreateView(defaultKind: .service)
-                        } label: {
-                            Label("tasks.watch.agent", systemImage: "antenna.radiowaves.left.and.right")
-                        }
+                        watchingContent
                     case .history:
                         if dataStore.completedTasks.isEmpty {
                             TaskEmptyView(
@@ -73,7 +85,7 @@ struct TasksView: View {
                                 descriptionKey: "tasks.empty.history.description"
                             )
                         } else {
-                            ForEach(dataStore.completedTasks) { task in
+                            ForEach(sortedHistoryTasks) { task in
                                 NavigationLink {
                                     TaskDetailView(task: task, isHistory: true)
                                 } label: {
@@ -87,9 +99,13 @@ struct TasksView: View {
                 }
             }
             .listStyle(.insetGrouped)
+            .scrollContentBackground(.hidden)
+            .background(AppTheme.groupedBackground)
             .padding(.top, -12)
             .navigationTitle("tab.tasks")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbarBackground(.visible, for: .navigationBar)
+            .toolbarBackground(AppTheme.groupedBackground, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     NavigationLink {
@@ -101,6 +117,208 @@ struct TasksView: View {
                 }
             }
         }
+    }
+
+    @ViewBuilder
+    private var watchingContent: some View {
+        NavigationLink {
+            ReminderCreateView(defaultKind: .certificate)
+        } label: {
+            ReminderWatchRow(
+                kind: .certificate,
+                statusKey: certificateStatusKey,
+                detail: certificateDetail
+            )
+        }
+        NavigationLink {
+            ReminderCreateView(defaultKind: .domain)
+        } label: {
+            ReminderWatchRow(
+                kind: .domain,
+                statusKey: domainStatusKey,
+                detail: domainDetail
+            )
+        }
+        NavigationLink {
+            ReminderCreateView(defaultKind: .service)
+        } label: {
+            ReminderWatchRow(
+                kind: .service,
+                statusKey: agentStatusKey,
+                detail: agentDetail
+            )
+        }
+    }
+
+    private var sortedPendingTasks: [TaskItem] {
+        dataStore.tasks.sorted { lhs, rhs in
+            if lhs.requiresAttention != rhs.requiresAttention {
+                return lhs.requiresAttention && !rhs.requiresAttention
+            }
+            return (lhs.nextReminderAt ?? .distantFuture) < (rhs.nextReminderAt ?? .distantFuture)
+        }
+    }
+
+    private var sortedHistoryTasks: [TaskItem] {
+        dataStore.completedTasks.sorted { lhs, rhs in
+            (lhs.completedAt ?? .distantPast) > (rhs.completedAt ?? .distantPast)
+        }
+    }
+
+    private var certificateStatusKey: LocalizedStringKey {
+        guard let days = dataStore.device.certificateDaysRemaining else {
+            return "tasks.watch.status.unknown"
+        }
+        if days < 0 { return "tasks.watch.status.expired" }
+        if days <= 14 { return "tasks.watch.status.expiring" }
+        return "tasks.watch.status.healthy"
+    }
+
+    private var certificateDetail: String {
+        guard let days = dataStore.device.certificateDaysRemaining else {
+            return NSLocalizedString("tasks.watch.certificate.detail_unknown", comment: "")
+        }
+        return String.localizedStringWithFormat(
+            NSLocalizedString("tasks.watch.certificate.days", comment: ""),
+            days
+        )
+    }
+
+    private var domainStatusKey: LocalizedStringKey {
+        connectionStore.connectionEndpoints?.primaryDomain == nil
+            ? "tasks.watch.status.not_configured"
+            : "tasks.watch.status.configured"
+    }
+
+    private var domainDetail: String {
+        connectionStore.connectionEndpoints?.primaryDomain?.host
+            ?? NSLocalizedString("tasks.watch.domain.detail_unknown", comment: "")
+    }
+
+    private var agentStatusKey: LocalizedStringKey {
+        guard connectionStore.usesAgent else { return "tasks.watch.status.not_connected" }
+        guard let health = dataStore.agentHealth else { return "devices.agent.state.awaiting" }
+        switch health.state {
+        case .connected: return "tasks.watch.status.connected"
+        case .stale: return "devices.agent.state.stale"
+        case .failed: return "devices.agent.state.failed"
+        }
+    }
+
+    private var agentDetail: String {
+        if let failureReasonKey = dataStore.agentHealth?.failureReasonKey {
+            return NSLocalizedString(failureReasonKey, comment: "")
+        }
+        return connectionStore.agentConnection?.hostIdentity
+            ?? NSLocalizedString("tasks.watch.agent.detail", comment: "")
+    }
+}
+
+private struct TasksOverviewHeader: View {
+    let pendingCount: Int
+    let completedCount: Int
+    let refreshState: AppDataRefreshState
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 15) {
+            HStack(alignment: .top) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("tasks.overview.eyebrow")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(AppTheme.accent)
+                        .textCase(.uppercase)
+                        .tracking(0.8)
+                    Text("tasks.overview.title")
+                        .font(.title2.weight(.bold))
+                    Text("tasks.overview.subtitle")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                Spacer()
+                Image(systemName: "checklist")
+                    .font(.title2.weight(.semibold))
+                    .foregroundStyle(.white)
+                    .frame(width: 46, height: 46)
+                    .background(AppTheme.accentGradient)
+                    .clipShape(RoundedRectangle(cornerRadius: 15, style: .continuous))
+                    .shadow(color: AppTheme.accent.opacity(0.20), radius: 8, y: 4)
+                    .accessibilityHidden(true)
+            }
+
+            HStack(spacing: 9) {
+                TaskOverviewMetric(value: "\(pendingCount)", titleKey: "tasks.overview.pending", symbol: "bell")
+                TaskOverviewMetric(value: "\(completedCount)", titleKey: "tasks.overview.completed", symbol: "checkmark.circle")
+                Spacer(minLength: 0)
+            }
+
+            NastartStatusChip(
+                titleKey: refreshState == .current ? "tasks.overview.live" : "tasks.overview.cached",
+                symbol: refreshState == .current ? "bolt.fill" : "clock",
+                color: refreshState == .current ? .green : .orange
+            )
+        }
+        .padding(17)
+        .nastartCard(cornerRadius: 24, elevated: true)
+    }
+}
+
+private struct TaskOverviewMetric: View {
+    let value: String
+    let titleKey: LocalizedStringKey
+    let symbol: String
+
+    var body: some View {
+        HStack(spacing: 7) {
+            Image(systemName: symbol)
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(AppTheme.accent)
+            VStack(alignment: .leading, spacing: 1) {
+                Text(value)
+                    .font(.headline.weight(.bold).monospacedDigit())
+                Text(titleKey)
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+private struct ReminderWatchRow: View {
+    let kind: ReminderKind
+    let statusKey: LocalizedStringKey
+    let detail: String
+
+    var body: some View {
+        HStack(spacing: 12) {
+            Image(systemName: kind.symbolName)
+                .font(.subheadline.weight(.medium))
+                .foregroundStyle(AppTheme.accent)
+                .frame(width: 36, height: 36)
+                .background(AppTheme.accent.opacity(0.12))
+                .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+
+            VStack(alignment: .leading, spacing: 3) {
+                Text(kind.titleKey)
+                    .font(.body.weight(.medium))
+                Text(detail)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+            }
+
+            Spacer(minLength: 8)
+
+            Text(statusKey)
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.trailing)
+        }
+        .contentShape(Rectangle())
+        .accessibilityElement(children: .combine)
+        .padding(.vertical, 7)
+        .padding(.horizontal, 5)
+        .nastartCard(cornerRadius: 16)
     }
 }
 
@@ -160,9 +378,15 @@ private struct TaskRow: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(LocalizedStringKey(task.title))
                     .font(.body)
-                Text(LocalizedStringKey(task.subtitle))
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                HStack(spacing: 5) {
+                    Text(LocalizedStringKey(task.subtitle))
+                    if let kind = task.kindRawValue.flatMap(ReminderKind.init(rawValue:)) {
+                        Text("·")
+                        Text(kind.titleKey)
+                    }
+                }
+                .font(.caption)
+                .foregroundStyle(.secondary)
             }
 
             Spacer(minLength: 8)
@@ -172,6 +396,13 @@ private struct TaskRow: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .accessibilityLabel(Text("tasks.detail.mute"))
+            }
+
+            if let nextReminderAt = task.nextReminderAt, task.completedAt == nil {
+                Text(nextReminderAt, style: .relative)
+                    .font(.caption2)
+                    .foregroundStyle(task.requiresAttention ? .orange : .secondary)
+                    .lineLimit(1)
             }
         }
         .padding(.vertical, 4)
@@ -223,6 +454,11 @@ private struct TaskDetailView: View {
             }
 
             Section {
+                if let kind = task.kindRawValue.flatMap(ReminderKind.init(rawValue:)) {
+                    LabeledContent("reminder.kind.title") {
+                        Text(kind.titleKey)
+                    }
+                }
                 LabeledContent("tasks.detail.created") {
                     Text(task.createdAt, style: .date)
                 }
@@ -253,12 +489,14 @@ private struct TaskDetailView: View {
 
 struct ReminderCreateView: View {
     @EnvironmentObject private var dataStore: AppDataStore
+    @EnvironmentObject private var connectionStore: NASConnectionStore
     @Environment(\.dismiss) private var dismiss
     @State private var kind: ReminderKind
     @State private var title = ""
     @State private var target = ""
     @State private var daysBefore = 14
     @State private var targetDate = Calendar.current.date(byAdding: .year, value: 1, to: Date()) ?? Date()
+    @State private var hasAppliedContextDefaults = false
 
     init(defaultKind: ReminderKind) {
         _kind = State(initialValue: defaultKind)
@@ -316,7 +554,8 @@ struct ReminderCreateView: View {
                             symbol: kind.symbolName,
                             isUrgent: false,
                             daysBefore: daysBefore,
-                            targetDate: targetDate
+                            targetDate: targetDate,
+                            kindRawValue: kind.rawValue
                         )
                     )
                     dismiss()
@@ -332,6 +571,9 @@ struct ReminderCreateView: View {
         }
         .listStyle(.insetGrouped)
         .navigationTitle("reminder.create.title")
+        .onAppear {
+            applyContextDefaultsIfNeeded()
+        }
     }
 
     private var normalizedTitle: String {
@@ -355,6 +597,38 @@ struct ReminderCreateView: View {
             return false
         }
         return reminderDate > Date()
+    }
+
+    private func applyContextDefaultsIfNeeded() {
+        guard !hasAppliedContextDefaults else { return }
+        hasAppliedContextDefaults = true
+
+        switch kind {
+        case .certificate:
+            title = NSLocalizedString("reminder.default.certificate.title", comment: "")
+            target = dataStore.device.name
+            if let validUntil = dataStore.device.certificate?.validUntil,
+               validUntil > Date() {
+                targetDate = validUntil
+                let daysRemaining = Calendar.current.dateComponents(
+                    [.day],
+                    from: Date(),
+                    to: validUntil
+                ).day ?? daysBefore
+                daysBefore = min(daysBefore, max(1, daysRemaining / 2))
+            }
+        case .domain:
+            title = NSLocalizedString("reminder.default.domain.title", comment: "")
+            target = connectionStore.connectionEndpoints?.primaryDomain?.host
+                ?? NSLocalizedString("reminder.default.domain.target", comment: "")
+        case .service:
+            title = NSLocalizedString("reminder.default.agent.title", comment: "")
+            target = connectionStore.agentConnection?.hostIdentity
+                ?? dataStore.device.name
+            targetDate = Calendar.current.date(byAdding: .month, value: 1, to: Date()) ?? targetDate
+        case .subscription:
+            break
+        }
     }
 }
 

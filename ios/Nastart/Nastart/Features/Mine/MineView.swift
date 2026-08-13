@@ -13,6 +13,17 @@ struct MineView: View {
         NavigationStack {
             List {
                 Section {
+                    MineIdentityCard(
+                        device: dataStore.device,
+                        isConnected: connectionStore.isConnected,
+                        agentHealth: dataStore.agentHealth
+                    )
+                    .listRowInsets(EdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0))
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                }
+
+                Section {
                     NavigationLink {
                         PlusView()
                     } label: {
@@ -111,9 +122,13 @@ struct MineView: View {
                     .animation(.easeInOut(duration: 0.2), value: showSignOutInfo)
                 }
             }
+            .scrollContentBackground(.hidden)
+            .background(AppTheme.groupedBackground)
             .padding(.top, -12)
             .navigationTitle("tab.mine")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbarBackground(.visible, for: .navigationBar)
+            .toolbarBackground(AppTheme.groupedBackground, for: .navigationBar)
             .confirmationDialog("mine.sign_out.confirm", isPresented: $showSignOutConfirm, titleVisibility: .visible) {
                 Button("mine.sign_out", role: .destructive) {
                     Task {
@@ -136,6 +151,98 @@ struct MineView: View {
             )
         }
         return NSLocalizedString("mine.sign_out.footer", comment: "")
+    }
+}
+
+private struct MineIdentityCard: View {
+    let device: NASDevice
+    let isConnected: Bool
+    let agentHealth: AgentHealthSnapshot?
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            HStack(alignment: .top, spacing: 12) {
+                Image(systemName: "server.rack")
+                    .font(.system(size: 22, weight: .semibold))
+                    .foregroundStyle(.white)
+                    .frame(width: 48, height: 48)
+                    .background(.white.opacity(0.16))
+                    .clipShape(RoundedRectangle(cornerRadius: 15, style: .continuous))
+                    .accessibilityHidden(true)
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Nastart")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.white.opacity(0.72))
+                        .textCase(.uppercase)
+                        .tracking(0.8)
+                    Text(device.name)
+                        .font(.title3.weight(.bold))
+                        .foregroundStyle(.white)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.8)
+                    Text(device.subtitle)
+                        .font(.caption)
+                        .foregroundStyle(.white.opacity(0.72))
+                        .lineLimit(1)
+                }
+
+                Spacer(minLength: 8)
+                Image(systemName: isConnected ? "checkmark.circle.fill" : "wifi.slash")
+                    .font(.title3)
+                    .foregroundStyle(.white.opacity(0.92))
+                    .accessibilityLabel(Text(isConnected ? "state.connected" : "state.not_connected"))
+            }
+
+            HStack(spacing: 8) {
+                MineStatusPill(
+                    titleKey: isConnected ? "state.connected" : "state.not_connected",
+                    symbol: isConnected ? "checkmark" : "wifi.slash"
+                )
+                if let agentHealth {
+                    MineStatusPill(
+                        titleKey: agentHealth.state == .connected
+                            ? "devices.agent.state.connected"
+                            : "devices.agent.state.stale",
+                        symbol: agentHealth.state == .connected ? "antenna.radiowaves.left.and.right" : "clock"
+                    )
+                }
+                Spacer(minLength: 0)
+            }
+        }
+        .padding(18)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(AppTheme.primaryAction)
+        .overlay(alignment: .topTrailing) {
+            Circle()
+                .fill(AppTheme.accent.opacity(0.38))
+                .frame(width: 110, height: 110)
+                .blur(radius: 4)
+                .offset(x: 32, y: -42)
+                .accessibilityHidden(true)
+        }
+        .clipShape(RoundedRectangle(cornerRadius: 26, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 26, style: .continuous)
+                .stroke(.white.opacity(0.12), lineWidth: 1)
+        }
+        .shadow(color: AppTheme.accent.opacity(0.16), radius: 20, y: 10)
+        .accessibilityElement(children: .contain)
+    }
+}
+
+private struct MineStatusPill: View {
+    let titleKey: LocalizedStringKey
+    let symbol: String
+
+    var body: some View {
+        Label(titleKey, systemImage: symbol)
+            .font(.caption.weight(.semibold))
+            .foregroundStyle(.white.opacity(0.9))
+            .padding(.horizontal, 10)
+            .padding(.vertical, 7)
+            .background(.white.opacity(0.12))
+            .clipShape(Capsule())
     }
 }
 
@@ -1091,8 +1198,10 @@ private struct SyncSettingsView: View {
 }
 
 private struct PrivacySecurityView: View {
+    @EnvironmentObject private var dataStore: AppDataStore
     @State private var showCacheHint = false
     @State private var showCertificateResetHint = false
+    @State private var showCacheConfirmation = false
 
     var body: some View {
         Form {
@@ -1118,28 +1227,50 @@ private struct PrivacySecurityView: View {
                 } label: {
                     Label("mine.privacy.export", systemImage: "square.and.arrow.up")
                 }
-                Button {
-                    URLCache.shared.removeAllCachedResponses()
-                    clearTemporaryDownloads()
-                    WKWebsiteDataStore.default().removeData(
-                        ofTypes: WKWebsiteDataStore.allWebsiteDataTypes(),
-                        modifiedSince: .distantPast
-                    ) {
-                        DispatchQueue.main.async {
-                            showCacheHint = true
-                        }
+                LabeledContent("mine.privacy.cache.status") {
+                    Text(LocalizedStringKey(dataStore.cachedSnapshotStatusKey))
+                        .foregroundStyle(.secondary)
+                }
+                if let savedAt = dataStore.cachedDSMSnapshotSavedAt {
+                    LabeledContent("mine.privacy.cache.updated") {
+                        Text(savedAt, style: .relative)
                     }
+                }
+                Button {
+                    showCacheConfirmation = true
                 } label: {
                     Label("mine.privacy.clear_cache", systemImage: "trash")
                 }
             } header: {
                 Text("mine.privacy.data")
+            } footer: {
+                Text("mine.privacy.cache.footer")
             }
         }
         .navigationTitle("mine.privacy.title")
         .navigationBarTitleDisplayMode(.inline)
         .alert("mine.privacy.clear_cache_hint", isPresented: $showCacheHint) {
             Button("action.ok", role: .cancel) {}
+        }
+        .confirmationDialog(
+            "mine.privacy.clear_cache_confirm",
+            isPresented: $showCacheConfirmation,
+            titleVisibility: .visible
+        ) {
+            Button("mine.privacy.clear_cache", role: .destructive) {
+                dataStore.clearCachedSnapshot()
+                URLCache.shared.removeAllCachedResponses()
+                clearTemporaryDownloads()
+                WKWebsiteDataStore.default().removeData(
+                    ofTypes: WKWebsiteDataStore.allWebsiteDataTypes(),
+                    modifiedSince: .distantPast
+                ) {
+                    DispatchQueue.main.async {
+                        showCacheHint = true
+                    }
+                }
+            }
+            Button("action.cancel", role: .cancel) {}
         }
         .alert("mine.privacy.reset_certificates_hint", isPresented: $showCertificateResetHint) {
             Button("action.ok", role: .cancel) {}
@@ -1280,7 +1411,7 @@ private struct DataExportView: View {
         if includeLaunchpad {
             payload["launchpad"] = dataStore.services.map { service in
                 [
-                    "name": service.name,
+                    "name": redactedExportText(service.name),
                     "category": service.category.rawValue,
                     "visible": dataStore.isServiceVisibleOnLaunchpad(service)
                 ] as [String: Any]
@@ -1317,12 +1448,15 @@ private struct DataExportView: View {
     private func taskExportValue(_ task: TaskItem) -> [String: Any] {
         var value: [String: Any] = [
             "id": task.id.uuidString,
-            "title": task.title,
-            "target": task.subtitle,
+            "title": redactedExportText(task.title),
+            "target": redactedExportText(task.subtitle),
             "createdAt": ISO8601DateFormatter().string(from: task.createdAt),
             "daysBefore": task.daysBefore,
             "muted": task.isMuted
         ]
+        if let kindRawValue = task.kindRawValue {
+            value["kind"] = kindRawValue
+        }
         if let completedAt = task.completedAt {
             value["completedAt"] = ISO8601DateFormatter().string(from: completedAt)
         }
@@ -1330,6 +1464,17 @@ private struct DataExportView: View {
             value["targetDate"] = ISO8601DateFormatter().string(from: targetDate)
         }
         return value
+    }
+
+    private func redactedExportText(_ value: String) -> String {
+        let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
+        if let url = URL(string: trimmed), url.scheme != nil, url.host != nil {
+            return DiagnosticLogStore.redactedURL(url)
+        }
+        if !trimmed.contains(" "), trimmed.contains(".") {
+            return DiagnosticLogStore.redactedHost(trimmed)
+        }
+        return DiagnosticLogStore.redactedDetail(value)
     }
 }
 
@@ -1373,6 +1518,7 @@ private struct HelpAboutView: View {
 private struct DiagnosticLogsView: View {
     @EnvironmentObject private var diagnostics: DiagnosticLogStore
     @State private var showCopiedHint = false
+    @State private var showClearConfirmation = false
 
     private var reversedEntries: [DiagnosticLogEntry] {
         Array(diagnostics.entries.reversed())
@@ -1380,6 +1526,17 @@ private struct DiagnosticLogsView: View {
 
     var body: some View {
         List {
+            Section {
+                DiagnosticSummaryView(
+                    total: diagnostics.entries.count,
+                    warnings: diagnostics.entries.filter { $0.level == .warning }.count,
+                    errors: diagnostics.entries.filter { $0.level == .error }.count,
+                    latestTime: reversedEntries.first?.displayTime
+                )
+            } header: {
+                Text("diagnostics.summary")
+            }
+
             Section {
                 if reversedEntries.isEmpty {
                     VStack(spacing: 10) {
@@ -1413,13 +1570,15 @@ private struct DiagnosticLogsView: View {
                             .foregroundStyle(levelColor(entry.level))
 
                             if !entry.detail.isEmpty {
-                                Text(entry.detail)
+                                Text(DiagnosticLogStore.redactedDetail(entry.detail))
                                     .font(.caption)
                                     .foregroundStyle(.secondary)
                                     .textSelection(.enabled)
                             }
                         }
                         .padding(.vertical, 5)
+                        .accessibilityElement(children: .combine)
+                        .accessibilityHint(Text("diagnostics.entry.hint"))
                     }
                 }
             } header: {
@@ -1439,7 +1598,7 @@ private struct DiagnosticLogsView: View {
                     Label("diagnostics.copy", systemImage: "doc.on.doc")
                 }
                 Button(role: .destructive) {
-                    diagnostics.clear()
+                    showClearConfirmation = true
                 } label: {
                     Label("diagnostics.clear", systemImage: "trash")
                 }
@@ -1452,6 +1611,16 @@ private struct DiagnosticLogsView: View {
         .alert("diagnostics.copy_done", isPresented: $showCopiedHint) {
             Button("action.ok", role: .cancel) {}
         }
+        .confirmationDialog(
+            "diagnostics.clear.confirm",
+            isPresented: $showClearConfirmation,
+            titleVisibility: .visible
+        ) {
+            Button("diagnostics.clear", role: .destructive) {
+                diagnostics.clear()
+            }
+            Button("action.cancel", role: .cancel) {}
+        }
     }
 
     private func levelColor(_ level: DiagnosticLogLevel) -> Color {
@@ -1460,5 +1629,65 @@ private struct DiagnosticLogsView: View {
         case .warning: return AppTheme.accent
         case .error: return .red
         }
+    }
+}
+
+private struct DiagnosticSummaryView: View {
+    let total: Int
+    let warnings: Int
+    let errors: Int
+    let latestTime: String?
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 10) {
+                DiagnosticSummaryMetric(
+                    titleKey: "diagnostics.summary.total",
+                    value: total,
+                    color: .secondary
+                )
+                DiagnosticSummaryMetric(
+                    titleKey: "diagnostics.summary.warnings",
+                    value: warnings,
+                    color: AppTheme.accent
+                )
+                DiagnosticSummaryMetric(
+                    titleKey: "diagnostics.summary.errors",
+                    value: errors,
+                    color: .red
+                )
+            }
+
+            if let latestTime {
+                Label {
+                    Text(latestTime)
+                } icon: {
+                    Image(systemName: "clock")
+                }
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .accessibilityLabel(Text("diagnostics.summary.latest"))
+            }
+        }
+        .padding(.vertical, 4)
+    }
+}
+
+private struct DiagnosticSummaryMetric: View {
+    let titleKey: LocalizedStringKey
+    let value: Int
+    let color: Color
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 3) {
+            Text("\(value)")
+                .font(.title3.weight(.semibold))
+                .foregroundStyle(color)
+            Text(titleKey)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .accessibilityElement(children: .combine)
     }
 }
