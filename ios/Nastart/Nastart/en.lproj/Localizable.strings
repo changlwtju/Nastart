@@ -108,6 +108,8 @@
 "service.detail.live_required_detail" = "The service entry is still visible from the last snapshot, but opening it requires a current DSM connection.";
 "service.action.connection_required" = "Reconnect NAS before opening this service.";
 "service.detail.status" = "Status";
+"service.detail.latency" = "Response time";
+"service.detail.last_checked" = "Last checked";
 "service.metric.library" = "Library";
 "service.metric.ports" = "Ports";
 "service.open.hint" = "This will open the configured Web UI once the real service URL is connected.";
@@ -237,6 +239,10 @@
 "data.refresh.source.agent" = "Agent";
 "data.refresh.source.preview" = "Preview data";
 "data.refresh.source.none" = "No data";
+"data.refresh.cached" = "Showing cached data";
+"data.refresh.stale" = "Cached data may be outdated";
+"data.refresh.unavailable" = "NAS data is unavailable";
+"diagnostics.manual_service.rejected" = "Rejected an invalid manual service entry";
 
 "devices.section.resources" = "Resources";
 "devices.section.maintenance" = "Maintenance";
@@ -573,6 +579,9 @@
 "mine.sync.applied" = "iCloud changes applied";
 "mine.sync.error.payload_too_large" = "The sync snapshot is too large for a single CloudKit record.";
 "mine.sync.error.missing_entitlement" = "This build was not signed with the iCloud capability. Select a paid Apple Developer team and rebuild.";
+"mine.sync.error.conflict_retry_limit" = "iCloud changed on another device repeatedly. Try syncing again.";
+"mine.sync.error.incompatible_remote_snapshot" = "The iCloud data was created by a newer app version. Update Nastart before syncing.";
+"mine.sync.error.local_changes_during_sync" = "Local changes are still being made. Try syncing again when editing is complete.";
 "mine.privacy.security" = "Security";
 "mine.privacy.keychain" = "Keychain";
 "mine.privacy.keychain_desc" = "The saved DSM login is stored in the system Keychain and is not included in exports.";
@@ -775,6 +784,7 @@
 "diagnostics.category.media" = "Media Playback";
 "diagnostics.category.web" = "In-App Browser";
 "diagnostics.category.sync" = "iCloud Sync";
+"diagnostics.category.launchpad" = "Launchpad";
 "diagnostics.sync.completed" = "iCloud sync completed";
 "diagnostics.sync.failed" = "iCloud sync failed";
 "diagnostics.login.started" = "Started DSM connection";

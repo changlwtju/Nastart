@@ -35,6 +35,10 @@ INFO_PLIST = IOS_ROOT / "Info.plist"
 APP_ENTRY = IOS_ROOT / "App" / "NastartApp.swift"
 NAS_MODELS = IOS_ROOT / "Core" / "Models" / "NASModels.swift"
 APP_STATE_STORES = IOS_ROOT / "Core" / "Stores" / "AppStateStores.swift"
+DSM_CLIENT = IOS_ROOT / "Core" / "Stores" / "DSMClient.swift"
+DIAGNOSTIC_STORE = IOS_ROOT / "Core" / "Stores" / "DiagnosticLogStore.swift"
+LOCAL_TASK_STORE = IOS_ROOT / "Core" / "Stores" / "LocalTaskStore.swift"
+NETWORK_ERROR_CLASSIFICATION = IOS_ROOT / "Core" / "Stores" / "NetworkErrorClassification.swift"
 
 
 @dataclass
@@ -343,9 +347,42 @@ def check_project_settings() -> CheckResult:
     if "ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;" not in text:
         errors.append("AppIcon asset catalog is not assigned to the target")
 
+    test_file = ROOT / "ios" / "Nastart" / "NastartTests" / "NonPlaybackPolicyTests.swift"
+    required_test_fragments = {
+        "Swift unit-test target is missing": "productType = \"com.apple.product-type.bundle.unit-test\";",
+        "Swift unit tests must depend on the app target": "TestTargetID = 060606060606060606060001;",
+        "Swift unit-test source is not included": "NonPlaybackPolicyTests.swift in Sources",
+        "Swift unit tests must link XCTest": "XCTest.framework in Frameworks",
+    }
+    for message, fragment in required_test_fragments.items():
+        if fragment not in text:
+            errors.append(message)
+    if not test_file.exists():
+        errors.append(f"Missing {test_file.relative_to(ROOT)}")
+
+    for filename in (
+        "DSMClient.swift",
+        "LANDiscoveryService.swift",
+        "ManualLaunchpadServiceStore.swift",
+        "ServiceHealthProbe.swift",
+        "DiagnosticLogStore.swift",
+        "LocalTaskStore.swift",
+        "NASConnectionStore.swift",
+        "KeychainStore.swift",
+        "NetworkErrorClassification.swift",
+    ):
+        source_path = IOS_ROOT / "Core" / "Stores" / filename
+        if not source_path.exists():
+            errors.append(f"Missing {source_path.relative_to(ROOT)}")
+        if f"{filename} in Sources" not in text:
+            errors.append(f"{filename} is not included in the Xcode Sources phase")
+
     swift_versions = sorted(set(re.findall(r"SWIFT_VERSION = ([0-9.]+);", text)))
     if not swift_versions:
         warnings.append("SWIFT_VERSION is not set")
+
+    if 'SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG NASTART_NO_ICLOUD";' not in text:
+        errors.append("Debug builds without CloudKit entitlements must define NASTART_NO_ICLOUD")
 
     script_sandboxing = re.findall(r"ENABLE_USER_SCRIPT_SANDBOXING = (YES|NO);", text)
     if "YES" in script_sandboxing:
@@ -367,6 +404,29 @@ def check_project_settings() -> CheckResult:
     return CheckResult("Xcode project settings", errors, warnings)
 
 
+def check_transport_security_configuration() -> CheckResult:
+    errors: list[str] = []
+    warnings: list[str] = []
+    if not INFO_PLIST.exists():
+        return CheckResult("Transport security configuration", [f"Missing {INFO_PLIST.relative_to(ROOT)}"], [])
+
+    try:
+        plist = plistlib.loads(INFO_PLIST.read_bytes())
+    except (OSError, plistlib.InvalidFileException) as error:
+        return CheckResult("Transport security configuration", [f"Could not parse Info.plist: {error}"], [])
+
+    ats = plist.get("NSAppTransportSecurity", {})
+    if not isinstance(ats, dict):
+        return CheckResult("Transport security configuration", ["NSAppTransportSecurity must be a dictionary"], [])
+    if ats.get("NSAllowsArbitraryLoads") is True:
+        errors.append("ATS must not allow arbitrary network loads")
+    if ats.get("NSAllowsArbitraryLoadsInWebContent") is True:
+        errors.append("Web content must not bypass ATS globally")
+    if ats.get("NSAllowsLocalNetworking") is not True:
+        warnings.append("Local networking ATS exception is not declared")
+    return CheckResult("Transport security configuration", errors, warnings)
+
+
 def check_playback_routing_invariants() -> CheckResult:
     errors: list[str] = []
     launchpad = LAUNCHPAD_VIEW.read_text(encoding="utf-8")
@@ -374,6 +434,10 @@ def check_playback_routing_invariants() -> CheckResult:
     app_entry = APP_ENTRY.read_text(encoding="utf-8")
     nas_models = NAS_MODELS.read_text(encoding="utf-8")
     stores = APP_STATE_STORES.read_text(encoding="utf-8")
+    dsm_client = DSM_CLIENT.read_text(encoding="utf-8") if DSM_CLIENT.exists() else ""
+    diagnostic_store = DIAGNOSTIC_STORE.read_text(encoding="utf-8") if DIAGNOSTIC_STORE.exists() else ""
+    local_task_store = LOCAL_TASK_STORE.read_text(encoding="utf-8") if LOCAL_TASK_STORE.exists() else ""
+    store_sources = "\n".join((stores, dsm_client, diagnostic_store, local_task_store))
 
     required_launchpad_fragments = {
         "Media probes must stream bounded data instead of buffering full media responses": (
@@ -821,13 +885,13 @@ def check_playback_routing_invariants() -> CheckResult:
         errors.append("Every launchpad playback cover must restore portrait after dismissal")
     if "value.code == NSURLErrorCancelled" not in devices:
         errors.append("Cancelled playback-route races must not be reported as failures")
-    if 'if ext == "iso" { return .discImage }' not in stores:
+    if 'if ext == "iso" { return .discImage }' not in store_sources:
         errors.append("ISO images must not be downloaded as ordinary text previews")
     if "case discImage" not in nas_models:
         errors.append("File kinds must distinguish ISO disc images")
-    if "let data = try await postFormCall(" not in stores:
+    if "let data = try await postFormCall(" not in store_sources:
         errors.append("DSM authentication secrets must be sent in a POST form body")
-    if "let data = try await call(path: request.0, queryItems: request.1, timeout: 60)" in stores:
+    if "let data = try await call(path: request.0, queryItems: request.1, timeout: 60)" in store_sources:
         errors.append("DSM authentication secrets must never be placed in a request URL")
 
     required_orientation_fragments = {
@@ -901,6 +965,10 @@ def check_playback_routing_invariants() -> CheckResult:
 def check_file_browser_performance_invariants() -> CheckResult:
     errors: list[str] = []
     stores = APP_STATE_STORES.read_text(encoding="utf-8")
+    dsm_client = DSM_CLIENT.read_text(encoding="utf-8") if DSM_CLIENT.exists() else ""
+    diagnostic_store = DIAGNOSTIC_STORE.read_text(encoding="utf-8") if DIAGNOSTIC_STORE.exists() else ""
+    local_task_store = LOCAL_TASK_STORE.read_text(encoding="utf-8") if LOCAL_TASK_STORE.exists() else ""
+    store_sources = "\n".join((stores, dsm_client, diagnostic_store, local_task_store))
     devices = DEVICES_VIEW.read_text(encoding="utf-8")
 
     required_store_fragments = {
@@ -930,7 +998,7 @@ def check_file_browser_performance_invariants() -> CheckResult:
         ),
     }
     for message, fragment in required_store_fragments.items():
-        if fragment not in stores:
+        if fragment not in store_sources:
             errors.append(message)
 
     required_device_fragments = {
@@ -947,6 +1015,51 @@ def check_file_browser_performance_invariants() -> CheckResult:
     return CheckResult("File browser performance invariants", errors, [])
 
 
+def check_persistence_invariants() -> CheckResult:
+    errors: list[str] = []
+    local_tasks = LOCAL_TASK_STORE.read_text(encoding="utf-8") if LOCAL_TASK_STORE.exists() else ""
+    stores = APP_STATE_STORES.read_text(encoding="utf-8")
+    tests = (ROOT / "ios" / "Nastart" / "NastartTests" / "NonPlaybackPolicyTests.swift").read_text(
+        encoding="utf-8"
+    )
+
+    required_fragments = {
+        "Task history must have a bounded retention policy": "maxHistoryCount = 500",
+        "Task persistence must normalize pending and completed state": "normalizedState(pending: pending, history: history)",
+        "Cloud sync must normalize task payloads": "LocalTaskStore.normalizedState(pending: tasks, history: completedTasks)",
+        "Task retention behavior must have a regression test": "testLocalTaskStateDeduplicatesAndBoundsHistory",
+    }
+    source = "\n".join((local_tasks, stores, tests))
+    for message, fragment in required_fragments.items():
+        if fragment not in source:
+            errors.append(message)
+    return CheckResult("Persistence invariants", errors, [])
+
+
+def check_cloud_sync_invariants() -> CheckResult:
+    errors: list[str] = []
+    cloud_sync = IOS_ROOT / "Core" / "Stores" / "CloudSyncStore.swift"
+    tests = ROOT / "ios" / "Nastart" / "NastartTests" / "NonPlaybackPolicyTests.swift"
+    source = "\n".join(
+        (
+            cloud_sync.read_text(encoding="utf-8") if cloud_sync.exists() else "",
+            tests.read_text(encoding="utf-8") if tests.exists() else "",
+        )
+    )
+    required_fragments = {
+        "Cloud sync must prevent overlapping sync operations": "isSyncInFlight",
+        "Cloud sync must retry a bounded number of times": "maxSyncAttempts = 3",
+        "Cloud sync must handle server record conflicts": "serverRecordChanged",
+        "Cloud sync must reject incompatible remote snapshots": "incompatibleRemoteSnapshot",
+        "Cloud sync must preserve changes made during sync": "localChangesDuringSync",
+        "Cloud sync merge policy must have a regression test": "testCloudSyncMergePolicyProtectsNewerLocalChanges",
+    }
+    for message, fragment in required_fragments.items():
+        if fragment not in source:
+            errors.append(message)
+    return CheckResult("Cloud sync invariants", errors, [])
+
+
 def main() -> int:
     checks = [
         run_command("Git whitespace", ["git", "diff", "--check"]),
@@ -956,6 +1069,9 @@ def main() -> int:
         check_localization_references(),
         check_app_icon_asset(),
         check_project_settings(),
+        check_transport_security_configuration(),
+        check_persistence_invariants(),
+        check_cloud_sync_invariants(),
         check_playback_routing_invariants(),
         check_file_browser_performance_invariants(),
     ]

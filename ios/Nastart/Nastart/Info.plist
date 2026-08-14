@@ -40,8 +40,6 @@
 	<string>Nastart uses your local network to discover and connect to your NAS and Nastart Agent.</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
-		<key>NSAllowsArbitraryLoadsInWebContent</key>
-		<true/>
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>

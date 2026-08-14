@@ -221,8 +221,9 @@ enum ServiceCategory: String, CaseIterable, Identifiable, Hashable, Codable {
         let savedCategories = storageValue
             .split(separator: ",")
             .compactMap { ServiceCategory(rawValue: String($0)) }
-        let savedSet = Set(savedCategories)
-        return savedCategories + defaultOrder.filter { !savedSet.contains($0) }
+        var seen = Set<ServiceCategory>()
+        let uniqueSavedCategories = savedCategories.filter { seen.insert($0).inserted }
+        return uniqueSavedCategories + defaultOrder.filter { !seen.contains($0) }
     }
 
     static func storageValue(for categories: [ServiceCategory]) -> String {
@@ -250,7 +251,7 @@ enum ServiceCategory: String, CaseIterable, Identifiable, Hashable, Codable {
     }
 }
 
-enum ServiceStatus: String, Equatable, Codable {
+enum ServiceStatus: String, Equatable, Codable, Sendable {
     case online
     case installed
     case warning

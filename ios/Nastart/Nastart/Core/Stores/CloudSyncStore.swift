@@ -55,6 +55,20 @@ struct CloudSyncSnapshot: Codable {
     }
 }
 
+enum CloudSyncMergeDecision: Equatable {
+    case applyRemote
+    case uploadLocal
+}
+
+enum CloudSyncMergePolicy {
+    static func decision(remoteUpdatedAt: Date?, localChangedAt: Date) -> CloudSyncMergeDecision {
+        guard let remoteUpdatedAt, remoteUpdatedAt > localChangedAt else {
+            return .uploadLocal
+        }
+        return .applyRemote
+    }
+}
+
 @MainActor
 final class CloudSyncStore: ObservableObject {
     static let shared = CloudSyncStore()
@@ -84,6 +98,9 @@ final class CloudSyncStore: ObservableObject {
     private var database: CKDatabase?
     private var synchronizationTask: Task<Void, Never>?
     private var isApplyingRemoteSnapshot = false
+    private var isSyncInFlight = false
+
+    private static let maxSyncAttempts = 3
 
     private init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
@@ -197,6 +214,10 @@ final class CloudSyncStore: ObservableObject {
             status = .disabled
             return
         }
+        guard !isSyncInFlight else { return }
+        isSyncInFlight = true
+        defer { isSyncInFlight = false }
+
         await refreshAccountStatus()
         guard status == .available else { return }
 
@@ -205,26 +226,55 @@ final class CloudSyncStore: ObservableObject {
             guard let database else {
                 throw CloudSyncError.missingEntitlement
             }
-            let recordID = CKRecord.ID(recordName: Self.recordName)
-            let remoteRecord: CKRecord?
-            do {
-                remoteRecord = try await database.record(for: recordID)
-            } catch let error as CKError where error.code == .unknownItem {
-                remoteRecord = nil
+            let syncedAt = try await syncRecord(
+                database: database,
+                dataStore: dataStore,
+                appearanceStore: appearanceStore
+            )
+            completeSync(at: syncedAt)
+        } catch is CancellationError {
+            if isEnabled {
+                status = .available
+            }
+        } catch {
+            isApplyingRemoteSnapshot = false
+            recordFailure(error)
+        }
+    }
+
+    private func syncRecord(
+        database: CKDatabase,
+        dataStore: AppDataStore,
+        appearanceStore: AppearanceStore
+    ) async throws -> Date {
+        let recordID = CKRecord.ID(recordName: Self.recordName)
+        var remoteRecord: CKRecord?
+        var hasFetchedRemoteRecord = false
+
+        for attempt in 0..<Self.maxSyncAttempts {
+            try Task.checkCancellation()
+            if !hasFetchedRemoteRecord {
+                do {
+                    remoteRecord = try await fetchRemoteRecord(database: database, recordID: recordID)
+                    hasFetchedRemoteRecord = true
+                } catch let error as CKError where Self.isRetryable(error) {
+                    guard attempt + 1 < Self.maxSyncAttempts else { throw error }
+                    try await Task.sleep(nanoseconds: UInt64(attempt + 1) * 500_000_000)
+                    continue
+                }
             }
 
             let localChangedAt = defaults.object(forKey: Self.localChangeKey) as? Date ?? .distantPast
-            if let remoteRecord,
-               let remoteData = remoteRecord[Self.payloadField] as? Data,
-               let remoteSnapshot = try? JSONDecoder().decode(CloudSyncSnapshot.self, from: remoteData),
-               remoteSnapshot.schemaVersion <= CloudSyncSnapshot.currentSchemaVersion,
-               remoteSnapshot.updatedAt > localChangedAt {
+            if let remoteSnapshot = try decodeRemoteSnapshot(from: remoteRecord),
+               CloudSyncMergePolicy.decision(
+                   remoteUpdatedAt: remoteSnapshot.updatedAt,
+                   localChangedAt: localChangedAt
+               ) == .applyRemote {
                 isApplyingRemoteSnapshot = true
                 dataStore.applyCloudSyncSnapshot(remoteSnapshot)
                 appearanceStore.reloadFromDefaults()
                 isApplyingRemoteSnapshot = false
-                completeSync(at: remoteSnapshot.updatedAt)
-                return
+                return remoteSnapshot.updatedAt
             }
 
             let uploadDate = max(Date(), localChangedAt)
@@ -236,11 +286,64 @@ final class CloudSyncStore: ObservableObject {
             let record = remoteRecord ?? CKRecord(recordType: Self.recordType, recordID: recordID)
             record[Self.payloadField] = payload as CKRecordValue
             record[Self.updatedAtField] = uploadDate as CKRecordValue
-            _ = try await database.save(record)
-            completeSync(at: uploadDate)
-        } catch {
-            isApplyingRemoteSnapshot = false
-            recordFailure(error)
+
+            do {
+                _ = try await database.save(record)
+                let newerLocalChangeExists =
+                    (defaults.object(forKey: Self.localChangeKey) as? Date ?? .distantPast) > localChangedAt
+                if newerLocalChangeExists {
+                    guard attempt + 1 < Self.maxSyncAttempts else {
+                        throw CloudSyncError.localChangesDuringSync
+                    }
+                    hasFetchedRemoteRecord = false
+                    continue
+                }
+                return uploadDate
+            } catch let error as CKError where error.code == .serverRecordChanged {
+                guard attempt + 1 < Self.maxSyncAttempts else {
+                    throw CloudSyncError.conflictRetryLimit
+                }
+                if let serverRecord = error.serverRecord {
+                    remoteRecord = serverRecord
+                    hasFetchedRemoteRecord = true
+                } else {
+                    hasFetchedRemoteRecord = false
+                }
+            } catch let error as CKError where Self.isRetryable(error) {
+                guard attempt + 1 < Self.maxSyncAttempts else { throw error }
+                hasFetchedRemoteRecord = false
+                try await Task.sleep(nanoseconds: UInt64(attempt + 1) * 500_000_000)
+            }
+        }
+
+        throw CloudSyncError.conflictRetryLimit
+    }
+
+    private func fetchRemoteRecord(database: CKDatabase, recordID: CKRecord.ID) async throws -> CKRecord? {
+        do {
+            return try await database.record(for: recordID)
+        } catch let error as CKError where error.code == .unknownItem {
+            return nil
+        }
+    }
+
+    private func decodeRemoteSnapshot(from record: CKRecord?) throws -> CloudSyncSnapshot? {
+        guard let data = record?[Self.payloadField] as? Data else { return nil }
+        guard let snapshot = try? JSONDecoder().decode(CloudSyncSnapshot.self, from: data) else {
+            throw CloudSyncError.incompatibleRemoteSnapshot
+        }
+        guard snapshot.schemaVersion <= CloudSyncSnapshot.currentSchemaVersion else {
+            throw CloudSyncError.incompatibleRemoteSnapshot
+        }
+        return snapshot
+    }
+
+    private static func isRetryable(_ error: CKError) -> Bool {
+        switch error.code {
+        case .networkUnavailable, .networkFailure, .serviceUnavailable, .requestRateLimited, .zoneBusy:
+            return true
+        default:
+            return false
         }
     }
 
@@ -258,12 +361,7 @@ final class CloudSyncStore: ObservableObject {
     }
 
     private func recordFailure(_ error: Error) {
-        let detail: String
-        if let cloudError = error as? CKError {
-            detail = "CloudKit(\(cloudError.code.rawValue))"
-        } else {
-            detail = String(describing: error)
-        }
+        let detail = Self.diagnosticDetail(for: error)
         lastErrorDetail = detail
         status = .failed(detail)
         DiagnosticLogStore.shared.record(
@@ -273,11 +371,34 @@ final class CloudSyncStore: ObservableObject {
             details: ["error": detail]
         )
     }
+
+    private static func diagnosticDetail(for error: Error) -> String {
+        if let cloudError = error as? CKError {
+            return "cloudkit:\(cloudError.code.rawValue)"
+        }
+        if let syncError = error as? CloudSyncError {
+            return syncError.diagnosticCode
+        }
+        return NetworkErrorKind.diagnosticMessage(for: error)
+    }
 }
 
 private enum CloudSyncError: LocalizedError {
     case payloadTooLarge
     case missingEntitlement
+    case conflictRetryLimit
+    case incompatibleRemoteSnapshot
+    case localChangesDuringSync
+
+    var diagnosticCode: String {
+        switch self {
+        case .payloadTooLarge: return "payload_too_large"
+        case .missingEntitlement: return "missing_entitlement"
+        case .conflictRetryLimit: return "conflict_retry_limit"
+        case .incompatibleRemoteSnapshot: return "incompatible_remote_snapshot"
+        case .localChangesDuringSync: return "local_changes_during_sync"
+        }
+    }
 
     var errorDescription: String? {
         switch self {
@@ -285,6 +406,12 @@ private enum CloudSyncError: LocalizedError {
             return NSLocalizedString("mine.sync.error.payload_too_large", comment: "")
         case .missingEntitlement:
             return NSLocalizedString("mine.sync.error.missing_entitlement", comment: "")
+        case .conflictRetryLimit:
+            return NSLocalizedString("mine.sync.error.conflict_retry_limit", comment: "")
+        case .incompatibleRemoteSnapshot:
+            return NSLocalizedString("mine.sync.error.incompatible_remote_snapshot", comment: "")
+        case .localChangesDuringSync:
+            return NSLocalizedString("mine.sync.error.local_changes_during_sync", comment: "")
         }
     }
 }

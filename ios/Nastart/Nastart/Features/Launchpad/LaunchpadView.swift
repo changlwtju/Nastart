@@ -39,6 +39,15 @@ struct LaunchpadView: View {
                     ScrollView {
                         VStack(alignment: .leading, spacing: 12) {
                             header
+                            if dataStore.shouldShowDataStatus {
+                                LaunchpadDataStatusBanner(
+                                    state: dataStore.dataRefreshState,
+                                    sourceKey: dataStore.dataSourceLabelKey,
+                                    retry: {
+                                        Task { await refreshLaunchpad() }
+                                    }
+                                )
+                            }
                             if !hiddenLaunchpadServices.isEmpty {
                                 HiddenServicesRestoreStrip(
                                     count: hiddenLaunchpadServices.count,
@@ -141,6 +150,9 @@ struct LaunchpadView: View {
             .onAppear {
                 applyGroupDefaultMigrationIfNeeded()
             }
+            .task {
+                await dataStore.refreshServiceHealth()
+            }
         }
     }
 
@@ -152,6 +164,7 @@ struct LaunchpadView: View {
         } else {
             dataStore.refreshAll()
         }
+        await dataStore.refreshServiceHealth()
     }
 
     @ViewBuilder
@@ -313,6 +326,75 @@ private struct LaunchpadDisplayOptions {
     let compactMetrics: Bool
     let showServiceStatus: Bool
     let showSubtitle: Bool
+}
+
+private struct LaunchpadDataStatusBanner: View {
+    let state: AppDataRefreshState
+    let sourceKey: String
+    let retry: () -> Void
+
+    var body: some View {
+        Button(action: retry) {
+            HStack(spacing: 10) {
+                Image(systemName: symbolName)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(color)
+                    .frame(width: 30, height: 30)
+                    .background(color.opacity(0.12))
+                    .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(titleKey)
+                        .font(.subheadline.weight(.semibold))
+                    Text(LocalizedStringKey(sourceKey))
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+
+                Spacer(minLength: 8)
+
+                Image(systemName: "arrow.clockwise")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(AppTheme.accent)
+            }
+            .padding(12)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(Color(.secondarySystemGroupedBackground))
+            .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+            .overlay {
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .stroke(color.opacity(0.35), lineWidth: 1)
+            }
+        }
+        .buttonStyle(.plain)
+        .accessibilityHint(Text("action.refresh"))
+    }
+
+    private var titleKey: LocalizedStringKey {
+        switch state {
+        case .cached: return "data.refresh.cached"
+        case .stale: return "data.refresh.stale"
+        case .unavailable: return "data.refresh.unavailable"
+        case .localPreview, .current, .refreshing: return "data.refresh.ready"
+        }
+    }
+
+    private var symbolName: String {
+        switch state {
+        case .cached: return "clock"
+        case .stale: return "exclamationmark.triangle"
+        case .unavailable: return "wifi.slash"
+        case .localPreview, .current, .refreshing: return "info.circle"
+        }
+    }
+
+    private var color: Color {
+        switch state {
+        case .cached: return .orange
+        case .stale, .unavailable: return .red
+        case .localPreview, .current, .refreshing: return .secondary
+        }
+    }
 }
 
 private struct HiddenServicesRestoreStrip: View {
@@ -1357,6 +1439,16 @@ private struct ServiceDetailView: View {
                 .padding(.vertical, 4)
                 LabeledContent("service.detail.status") {
                     Text(LocalizedStringKey(service.status.titleKey))
+                }
+                if let health = dataStore.healthSnapshot(for: service) {
+                    if let latency = health.latencyMilliseconds {
+                        LabeledContent("service.detail.latency") {
+                            Text("\(latency) ms")
+                        }
+                    }
+                    LabeledContent("service.detail.last_checked") {
+                        Text(health.checkedAt, style: .relative)
+                    }
                 }
                 if service.usesLANOnlyEndpoint(for: connectionStore.dsmSession?.baseURL) {
                     Label("service.endpoint.lan_only", systemImage: "house.and.flag")

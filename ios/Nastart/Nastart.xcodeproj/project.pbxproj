@@ -30,6 +30,17 @@
 		010101010101010101010021 /* CloudSyncStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020022 /* CloudSyncStore.swift */; };
 		010101010101010101010022 /* AgentClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020024 /* AgentClient.swift */; };
 		010101010101010101010023 /* SSHAgentInstaller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020025 /* SSHAgentInstaller.swift */; };
+		010101010101010101010030 /* ServiceHealthProbe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020030 /* ServiceHealthProbe.swift */; };
+		010101010101010101010031 /* NonPlaybackPolicyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020031 /* NonPlaybackPolicyTests.swift */; };
+		010101010101010101010032 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 020202020202020202020032 /* XCTest.framework */; };
+		010101010101010101010033 /* DSMClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020033 /* DSMClient.swift */; };
+		010101010101010101010034 /* LANDiscoveryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020034 /* LANDiscoveryService.swift */; };
+		010101010101010101010035 /* ManualLaunchpadServiceStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020035 /* ManualLaunchpadServiceStore.swift */; };
+		010101010101010101010036 /* DiagnosticLogStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020036 /* DiagnosticLogStore.swift */; };
+		010101010101010101010037 /* LocalTaskStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020037 /* LocalTaskStore.swift */; };
+		010101010101010101010038 /* NASConnectionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020038 /* NASConnectionStore.swift */; };
+		010101010101010101010039 /* KeychainStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020039 /* KeychainStore.swift */; };
+		010101010101010101010040 /* NetworkErrorClassification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020040 /* NetworkErrorClassification.swift */; };
 		010101010101010101010024 /* nastart_agent.py in Resources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020026 /* nastart_agent.py */; };
 		010101010101010101010025 /* Dockerfile in Resources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020027 /* Dockerfile */; };
 		010101010101010101010026 /* compose.yaml in Resources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020028 /* compose.yaml */; };
@@ -63,11 +74,23 @@
 		020202020202020202020023 /* Nastart.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Nastart.entitlements; sourceTree = "<group>"; };
 		020202020202020202020024 /* AgentClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentClient.swift; sourceTree = "<group>"; };
 		020202020202020202020025 /* SSHAgentInstaller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SSHAgentInstaller.swift; sourceTree = "<group>"; };
+		020202020202020202020030 /* ServiceHealthProbe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceHealthProbe.swift; sourceTree = "<group>"; };
+		020202020202020202020031 /* NonPlaybackPolicyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NonPlaybackPolicyTests.swift; sourceTree = "<group>"; };
+		020202020202020202020032 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = System/Library/Frameworks/XCTest.framework; sourceTree = SDKROOT; };
+		020202020202020202020033 /* DSMClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DSMClient.swift; sourceTree = "<group>"; };
+		020202020202020202020034 /* LANDiscoveryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LANDiscoveryService.swift; sourceTree = "<group>"; };
+		020202020202020202020035 /* ManualLaunchpadServiceStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualLaunchpadServiceStore.swift; sourceTree = "<group>"; };
+		020202020202020202020036 /* DiagnosticLogStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiagnosticLogStore.swift; sourceTree = "<group>"; };
+		020202020202020202020037 /* LocalTaskStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalTaskStore.swift; sourceTree = "<group>"; };
+		020202020202020202020038 /* NASConnectionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NASConnectionStore.swift; sourceTree = "<group>"; };
+		020202020202020202020039 /* KeychainStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainStore.swift; sourceTree = "<group>"; };
+		020202020202020202020040 /* NetworkErrorClassification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkErrorClassification.swift; sourceTree = "<group>"; };
 		020202020202020202020026 /* nastart_agent.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; name = nastart_agent.py; path = ../../agent/nastart_agent.py; sourceTree = SOURCE_ROOT; };
 		020202020202020202020027 /* Dockerfile */ = {isa = PBXFileReference; lastKnownFileType = text; name = Dockerfile; path = ../../agent/Dockerfile; sourceTree = SOURCE_ROOT; };
 		020202020202020202020028 /* compose.yaml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; name = compose.yaml; path = ../../agent/compose.yaml; sourceTree = SOURCE_ROOT; };
 		020202020202020202020029 /* Nastart.Debug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Nastart.Debug.entitlements; sourceTree = "<group>"; };
 		020202020202020202020099 /* Nastart.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Nastart.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		020202020202020202020100 /* NastartTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NastartTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6EE295E3449845D6FE9490F6 /* Pods-Nastart.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Nastart.release.xcconfig"; path = "Target Support Files/Pods-Nastart/Pods-Nastart.release.xcconfig"; sourceTree = "<group>"; };
 		D447A0A76105EFDD2D985714 /* Pods-Nastart.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Nastart.debug.xcconfig"; path = "Target Support Files/Pods-Nastart/Pods-Nastart.debug.xcconfig"; sourceTree = "<group>"; };
 		F0A427A98EF409A9FC1D1C04 /* Pods_Nastart.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Nastart.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -84,18 +107,53 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		040404040404040404040002 /* NastartTests Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				010101010101010101010032 /* XCTest.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXContainerItemProxy section */
+		0C0C0C0C0C0C0C0C0C0C0002 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 060606060606060606060000 /* Project object */;
+			proxyType = 1;
+			remoteGlobalID = 060606060606060606060001;
+			remoteInfo = Nastart;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXTargetDependency section */
+		0D0D0D0D0D0D0D0D0D0D0002 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 060606060606060606060001 /* Nastart */;
+			targetProxy = 0C0C0C0C0C0C0C0C0C0C0002 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXGroup section */
 		050505050505050505050000 = {
 			isa = PBXGroup;
 			children = (
 				050505050505050505050001 /* Nastart */,
+				050505050505050505050015 /* NastartTests */,
 				050505050505050505050014 /* Agent Payload */,
 				050505050505050505050099 /* Products */,
 				449565943B579E90D5135CAF /* Pods */,
 				C5553F8E7678649EE925E94C /* Frameworks */,
 			);
+			sourceTree = "<group>";
+		};
+		050505050505050505050015 /* NastartTests */ = {
+			isa = PBXGroup;
+			children = (
+				020202020202020202020031 /* NonPlaybackPolicyTests.swift */,
+			);
+			path = NastartTests;
 			sourceTree = "<group>";
 		};
 		050505050505050505050001 /* Nastart */ = {
@@ -222,6 +280,15 @@
 				020202020202020202020022 /* CloudSyncStore.swift */,
 				020202020202020202020024 /* AgentClient.swift */,
 				020202020202020202020025 /* SSHAgentInstaller.swift */,
+				020202020202020202020030 /* ServiceHealthProbe.swift */,
+				020202020202020202020033 /* DSMClient.swift */,
+				020202020202020202020034 /* LANDiscoveryService.swift */,
+				020202020202020202020035 /* ManualLaunchpadServiceStore.swift */,
+				020202020202020202020036 /* DiagnosticLogStore.swift */,
+				020202020202020202020037 /* LocalTaskStore.swift */,
+				020202020202020202020038 /* NASConnectionStore.swift */,
+				020202020202020202020039 /* KeychainStore.swift */,
+				020202020202020202020040 /* NetworkErrorClassification.swift */,
 			);
 			path = Stores;
 			sourceTree = "<group>";
@@ -240,6 +307,7 @@
 			isa = PBXGroup;
 			children = (
 				020202020202020202020099 /* Nastart.app */,
+				020202020202020202020100 /* NastartTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -287,6 +355,23 @@
 			productReference = 020202020202020202020099 /* Nastart.app */;
 			productType = "com.apple.product-type.application";
 		};
+		060606060606060606060002 /* NastartTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 090909090909090909090007 /* Build configuration list for PBXNativeTarget "NastartTests" */;
+			buildPhases = (
+				070707070707070707070002 /* NastartTests Sources */,
+				040404040404040404040002 /* NastartTests Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				0D0D0D0D0D0D0D0D0D0D0002 /* PBXTargetDependency */,
+			);
+			name = NastartTests;
+			productName = NastartTests;
+			productReference = 020202020202020202020100 /* NastartTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -299,6 +384,10 @@
 				TargetAttributes = {
 					060606060606060606060001 = {
 						CreatedOnToolsVersion = 16.0;
+					};
+					060606060606060606060002 = {
+						CreatedOnToolsVersion = 16.0;
+						TestTargetID = 060606060606060606060001;
 					};
 				};
 			};
@@ -321,6 +410,7 @@
 			projectRoot = "";
 			targets = (
 				060606060606060606060001 /* Nastart */,
+				060606060606060606060002 /* NastartTests */,
 			);
 		};
 /* End PBXProject section */
@@ -407,6 +497,23 @@
 				010101010101010101010021 /* CloudSyncStore.swift in Sources */,
 				010101010101010101010022 /* AgentClient.swift in Sources */,
 				010101010101010101010023 /* SSHAgentInstaller.swift in Sources */,
+				010101010101010101010030 /* ServiceHealthProbe.swift in Sources */,
+				010101010101010101010033 /* DSMClient.swift in Sources */,
+				010101010101010101010034 /* LANDiscoveryService.swift in Sources */,
+				010101010101010101010035 /* ManualLaunchpadServiceStore.swift in Sources */,
+				010101010101010101010036 /* DiagnosticLogStore.swift in Sources */,
+				010101010101010101010037 /* LocalTaskStore.swift in Sources */,
+				010101010101010101010038 /* NASConnectionStore.swift in Sources */,
+				010101010101010101010039 /* KeychainStore.swift in Sources */,
+				010101010101010101010040 /* NetworkErrorClassification.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		070707070707070707070002 /* NastartTests Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				010101010101010101010031 /* NonPlaybackPolicyTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -485,7 +592,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG NASTART_NO_ICLOUD";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -628,6 +735,52 @@
 			};
 			name = Release;
 		};
+		090909090909090909090009 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 5436TB5498;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.changliwen.nastart.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Nastart.app/Nastart";
+			};
+			name = Debug;
+		};
+		090909090909090909090010 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 5436TB5498;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.changliwen.nastart.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Nastart.app/Nastart";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -645,6 +798,15 @@
 			buildConfigurations = (
 				090909090909090909090005 /* Debug */,
 				090909090909090909090006 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		090909090909090909090007 /* Build configuration list for PBXNativeTarget "NastartTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				090909090909090909090009 /* Debug */,
+				090909090909090909090010 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

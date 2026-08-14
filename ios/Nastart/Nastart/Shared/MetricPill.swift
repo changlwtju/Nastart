@@ -28,7 +28,7 @@ struct MetricPill: View {
                 .minimumScaleFactor(0.78)
 
             if let progress {
-                ProgressView(value: progress)
+                ProgressView(value: min(max(progress, 0), 1))
                     .tint(AppTheme.accent)
                     .scaleEffect(x: 1, y: 0.72)
             }

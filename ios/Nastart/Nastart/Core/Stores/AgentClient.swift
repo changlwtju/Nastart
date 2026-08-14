@@ -180,7 +180,12 @@ final class AgentClient {
             let scheme = baseURL.scheme?.lowercased(),
             ["http", "https"].contains(scheme),
             let host = baseURL.host,
-            !host.isEmpty
+            !host.isEmpty,
+            baseURL.user == nil,
+            baseURL.password == nil,
+            baseURL.query == nil,
+            baseURL.fragment == nil,
+            baseURL.port.map { (1...65_535).contains($0) } ?? true
         else {
             throw AgentClientError.invalidAddress
         }
@@ -313,8 +318,14 @@ enum AgentSnapshotMerger {
     ) -> DSMDataSnapshot {
         let agentContainers = agent.containers.map(container(from:))
         let agentServices = services(from: agent, baseURL: agentBaseURL)
-        let existingNames = Set(dsm.services.map { $0.name.lowercased() })
-        let uniqueAgentServices = agentServices.filter { !existingNames.contains($0.name.lowercased()) }
+        var mergedServices = dsm.services
+        for agentService in agentServices {
+            guard let index = mergedServices.firstIndex(where: { matches($0, agentService) }) else {
+                mergedServices.append(agentService)
+                continue
+            }
+            mergedServices[index] = enrichedService(mergedServices[index], with: agentService)
+        }
         let memory = agent.host.memory.map { memory in
             memory.totalBytes > 0 ? memory.usedBytes / memory.totalBytes : 0
         }
@@ -343,7 +354,7 @@ enum AgentSnapshotMerger {
         )
         return DSMDataSnapshot(
             device: device,
-            services: dsm.services + uniqueAgentServices,
+            services: mergedServices,
             containers: agent.inventory.dockerAvailable ? agentContainers : dsm.containers,
             files: dsm.files,
             tasks: dsm.tasks,
@@ -382,7 +393,10 @@ enum AgentSnapshotMerger {
             components.path = ""
             components.query = nil
             components.fragment = nil
-            guard let url = components.url else { return nil }
+            guard
+                let url = components.url,
+                UserConfiguredServiceURLPolicy.allows(url)
+            else { return nil }
             let category = serviceCategory(name: container.name, image: container.image)
             return LaunchpadService(
                 id: stableUUID("agent-service|\(container.id)|\(endpoint.port)"),
@@ -400,6 +414,47 @@ enum AgentSnapshotMerger {
                 source: .container
             )
         }
+    }
+
+    private static func matches(_ lhs: LaunchpadService, _ rhs: LaunchpadService) -> Bool {
+        if lhs.name.trimmingCharacters(in: .whitespacesAndNewlines)
+            .caseInsensitiveCompare(rhs.name.trimmingCharacters(in: .whitespacesAndNewlines)) == .orderedSame {
+            return true
+        }
+        guard
+            let lhsEndpoint = lhs.endpoint,
+            let rhsEndpoint = rhs.endpoint,
+            lhsEndpoint.host?.lowercased() == rhsEndpoint.host?.lowercased(),
+            lhsEndpoint.port == rhsEndpoint.port
+        else {
+            return false
+        }
+        return true
+    }
+
+    private static func enrichedService(
+        _ existing: LaunchpadService,
+        with agent: LaunchpadService
+    ) -> LaunchpadService {
+        LaunchpadService(
+            id: existing.id,
+            name: existing.name,
+            iconText: existing.iconText,
+            category: existing.category,
+            status: agent.status,
+            subtitle: existing.subtitle.isEmpty ? agent.subtitle : existing.subtitle,
+            detail: existing.detail.isEmpty ? agent.detail : existing.detail,
+            isMedia: existing.isMedia || agent.isMedia,
+            cpu: agent.cpu ?? existing.cpu,
+            memoryText: agent.memoryText ?? existing.memoryText,
+            memory: agent.memory ?? existing.memory,
+            ports: Array(Set(existing.ports + agent.ports)).sorted(),
+            iconURL: existing.iconURL ?? agent.iconURL,
+            endpoint: existing.endpoint ?? agent.endpoint,
+            alternateEndpoint: existing.alternateEndpoint ?? agent.alternateEndpoint,
+            source: existing.source,
+            isLaunchpadVisible: existing.isLaunchpadVisible
+        )
     }
 
     private static func serviceCategory(name: String, image: String) -> ServiceCategory {

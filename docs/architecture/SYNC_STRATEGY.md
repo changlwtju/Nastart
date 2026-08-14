@@ -111,6 +111,12 @@ V1 should keep conflict handling simple:
 - Each record has stable `id`, `createdAt`, and `updatedAt`.
 - Last-writer-wins is acceptable for most display preferences.
 - Reminders should preserve completion state carefully.
+- Local completed-reminder history is bounded to 500 records before it is
+  persisted or included in a CloudKit snapshot, keeping local storage and
+  sync payloads predictable.
+- CloudKit `serverRecordChanged` conflicts must re-read the remote record and
+  retry only when the local snapshot is still newer; incompatible remote
+  schemas must fail safely without overwriting local data.
 - Deleted records should use tombstones or soft delete if CloudKit requires it.
 - Dangerous automatic merges should be avoided.
 

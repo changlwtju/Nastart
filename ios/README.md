@@ -26,7 +26,7 @@ pod install
 open Nastart.xcworkspace
 ```
 
-`MobileVLCKit 3.7.2` is pinned in the `Podfile`. Nastart tries AVPlayer for
+`MobileVLCKit 3.7.3` is pinned in the `Podfile`. Nastart tries AVPlayer for
 Apple-native media first and uses MobileVLCKit for broader container and codec
 support. An AVPlayer decoding failure also switches to MobileVLCKit
 automatically. Every media item can still be handed to an external player.
@@ -58,6 +58,25 @@ In Xcode:
 
 The NAS workspace cannot compile this project because Xcode is only available
 on macOS.
+
+Debug builds use an empty entitlement file and define `NASTART_NO_ICLOUD`, so
+CloudKit is intentionally disabled in Debug. Release builds use the production
+CloudKit entitlement; configure the signing team and container before testing
+Release sync behavior.
+
+## Swift Unit Tests
+
+The `NastartTests` target covers non-playback policies such as URL validation,
+network-host classification, service status replacement, and launchpad category
+ordering. On macOS, run it from the workspace after installing CocoaPods:
+
+```bash
+xcodebuild -workspace Nastart.xcworkspace -scheme Nastart \
+  -destination 'platform=iOS Simulator,name=iPhone 16' test
+```
+
+Playback tests remain intentionally outside this target until they can be
+validated on the physical Mac-connected device.
 
 ## Measuring App Size
 

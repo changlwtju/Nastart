@@ -5,10 +5,19 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from nastart_agent import AgentState, handshake, host_snapshot
+from nastart_agent import AgentState, handshake, host_snapshot, valid_pairing_code
 
 
 class AgentStateTests(unittest.TestCase):
+    def test_pairing_code_requires_six_ascii_digits(self):
+        self.assertTrue(valid_pairing_code("123456"))
+        self.assertFalse(valid_pairing_code("12345"))
+        self.assertFalse(valid_pairing_code("１２３４５６"))
+        self.assertFalse(valid_pairing_code("123456 "))
+        with tempfile.TemporaryDirectory() as directory:
+            with self.assertRaises(ValueError):
+                AgentState(Path(directory), "not-six-digits")
+
     def test_pairing_code_is_one_time_and_token_is_persisted(self):
         with tempfile.TemporaryDirectory() as directory:
             state = AgentState(Path(directory), "123456")

@@ -33,6 +33,8 @@ DEFAULT_DATA_DIR = Path(os.environ.get("NASTART_DATA_DIR", "/data"))
 DOCKER_SOCKET = os.environ.get("NASTART_DOCKER_SOCKET", "/var/run/docker.sock")
 PAIRING_ATTEMPT_LIMIT = 5
 PAIRING_ATTEMPT_WINDOW_SECONDS = 60
+MAX_PAIRING_BODY_BYTES = 4 * 1024
+MAX_TRACKED_PAIRING_SOURCES = 2_048
 
 
 def json_bytes(value: Any) -> bytes:
@@ -58,8 +60,14 @@ def atomic_write(path: Path, payload: bytes) -> None:
     temporary.replace(path)
 
 
+def valid_pairing_code(value: str | None) -> bool:
+    return bool(value) and len(value) == 6 and all("0" <= character <= "9" for character in value)
+
+
 class AgentState:
     def __init__(self, data_dir: Path, pairing_code: str | None) -> None:
+        if pairing_code is not None and not valid_pairing_code(pairing_code):
+            raise ValueError("pairing code must contain exactly six ASCII digits")
         self.data_dir = data_dir
         self.data_dir.mkdir(parents=True, exist_ok=True)
         self.agent_id = stable_agent_id(data_dir)
@@ -92,7 +100,10 @@ class AgentState:
         if not persisted:
             return None
         if persisted.startswith("sha256:"):
-            return persisted.removeprefix("sha256:")
+            digest = persisted.removeprefix("sha256:")
+            if len(digest) == 64 and all(character in "0123456789abcdef" for character in digest.lower()):
+                return digest.lower()
+            return None
         # Migrate the early plaintext-token format in place.
         digest = self._digest(persisted)
         atomic_write(self.token_path, f"sha256:{digest}".encode("utf-8"))
@@ -107,6 +118,14 @@ class AgentState:
                 if now - attempted_at < PAIRING_ATTEMPT_WINDOW_SECONDS
             ]
             self.failed_pairing_attempts[source] = recent_failures
+            if len(self.failed_pairing_attempts) > MAX_TRACKED_PAIRING_SOURCES:
+                oldest_source = min(
+                    self.failed_pairing_attempts,
+                    key=lambda key: self.failed_pairing_attempts[key][-1]
+                    if self.failed_pairing_attempts[key]
+                    else now,
+                )
+                self.failed_pairing_attempts.pop(oldest_source, None)
             if len(recent_failures) >= PAIRING_ATTEMPT_LIMIT:
                 return None
             if not self.pairing_code or not hmac.compare_digest(self.pairing_code, supplied_code):
@@ -160,13 +179,22 @@ def docker_containers() -> tuple[list[dict[str, Any]], str | None]:
 
     containers: list[dict[str, Any]] = []
     for item in raw if isinstance(raw, list) else []:
+        if not isinstance(item, dict):
+            continue
         names = item.get("Names") or []
+        if not isinstance(names, list):
+            names = []
         name = str(names[0]).lstrip("/") if names else str(item.get("Id", ""))[:12]
         ports = []
         endpoints = []
         for port in item.get("Ports") or []:
-            private_port = int(port.get("PrivatePort", 0) or 0)
-            public_port = int(port.get("PublicPort", 0) or 0)
+            if not isinstance(port, dict):
+                continue
+            try:
+                private_port = int(port.get("PrivatePort", 0) or 0)
+                public_port = int(port.get("PublicPort", 0) or 0)
+            except (TypeError, ValueError):
+                continue
             protocol = str(port.get("Type", "tcp"))
             if public_port:
                 ports.append(f"{public_port}:{private_port}/{protocol}")
@@ -194,7 +222,11 @@ def memory_summary() -> dict[str, int] | None:
     if not meminfo.exists():
         return None
     values: dict[str, int] = {}
-    for line in meminfo.read_text(encoding="utf-8", errors="ignore").splitlines():
+    try:
+        lines = meminfo.read_text(encoding="utf-8", errors="ignore").splitlines()
+    except OSError:
+        return None
+    for line in lines:
         if ":" not in line:
             continue
         key, raw_value = line.split(":", 1)
@@ -210,7 +242,15 @@ def memory_summary() -> dict[str, int] | None:
 
 def host_snapshot(state: AgentState) -> dict[str, Any]:
     containers, docker_error = docker_containers()
-    disk = shutil.disk_usage("/")
+    try:
+        disk = shutil.disk_usage("/")
+        storage = {
+            "totalBytes": disk.total,
+            "usedBytes": disk.used,
+            "freeBytes": disk.free,
+        }
+    except OSError:
+        storage = {"totalBytes": 0, "usedBytes": 0, "freeBytes": 0}
     load = os.getloadavg() if hasattr(os, "getloadavg") else (0.0, 0.0, 0.0)
     return {
         "agentId": state.agent_id,
@@ -224,11 +264,7 @@ def host_snapshot(state: AgentState) -> dict[str, Any]:
             "architecture": platform.machine(),
             "loadAverage": [round(value, 3) for value in load],
             "memory": memory_summary(),
-            "storage": {
-                "totalBytes": disk.total,
-                "usedBytes": disk.used,
-                "freeBytes": disk.free,
-            },
+            "storage": storage,
         },
         "containers": containers,
         "inventory": {
@@ -260,7 +296,12 @@ def handshake(state: AgentState) -> dict[str, Any]:
 
 
 class AgentHandler(http.server.BaseHTTPRequestHandler):
-    server_version = "NastartAgent/0.1"
+    server_version = "NastartAgent"
+    sys_version = ""
+
+    def setup(self) -> None:
+        super().setup()
+        self.connection.settimeout(10)
 
     @property
     def state(self) -> AgentState:
@@ -304,13 +345,31 @@ class AgentHandler(http.server.BaseHTTPRequestHandler):
             self.respond(415, {"error": "json-required"})
             return
         try:
-            length = min(int(self.headers.get("Content-Length", "0")), 4096)
+            raw_length = self.headers.get("Content-Length")
+            length = int(raw_length) if raw_length is not None else 0
+        except ValueError:
+            self.respond(400, {"error": "invalid-content-length"})
+            return
+        if length <= 0:
+            self.respond(400, {"error": "invalid-body"})
+            return
+        if length > MAX_PAIRING_BODY_BYTES:
+            self.respond(413, {"error": "request-too-large"})
+            return
+        try:
             body = json.loads(self.rfile.read(length))
-            supplied_code = str(body.get("code", ""))
+            supplied_code = body.get("code") if isinstance(body, dict) else None
         except (ValueError, json.JSONDecodeError):
             self.respond(400, {"error": "invalid-json"})
             return
-        token = self.state.pair(supplied_code, source=self.client_address[0])
+        if not isinstance(supplied_code, str) or not valid_pairing_code(supplied_code):
+            self.respond(400, {"error": "invalid-pairing-code"})
+            return
+        try:
+            token = self.state.pair(supplied_code, source=self.client_address[0])
+        except (OSError, ValueError):
+            self.respond(500, {"error": "pairing-failed"})
+            return
         if not token:
             self.respond(401, {"error": "invalid-or-used-pairing-code"})
             return
@@ -332,7 +391,10 @@ class AgentHandler(http.server.BaseHTTPRequestHandler):
         self.send_header("Cache-Control", "no-store")
         self.send_header("X-Content-Type-Options", "nosniff")
         self.end_headers()
-        self.wfile.write(payload)
+        try:
+            self.wfile.write(payload)
+        except (BrokenPipeError, ConnectionResetError):
+            return
 
     def log_message(self, message: str, *args: Any) -> None:
         print(f"{self.address_string()} - {message % args}", flush=True)
@@ -358,7 +420,10 @@ def main() -> None:
     args = parser.parse_args()
 
     pairing_code = args.pairing_code or f"{secrets.randbelow(1_000_000):06d}"
-    state = AgentState(args.data_dir, pairing_code)
+    try:
+        state = AgentState(args.data_dir, pairing_code)
+    except ValueError as error:
+        parser.error(str(error))
     server = AgentServer((args.host, args.port), state)
     scheme = "http"
     if args.tls_cert and args.tls_key:
