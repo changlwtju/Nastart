@@ -69,3 +69,11 @@
 | iPad 9 / iPadOS 18.3.1 | 保留同一 WDA 包，使用 `--userspace` DVT 启动 | `127.0.0.1:8200 -> device:8100` | `ready: true`，WDA 16.1.5 |
 
 当前两个 DVT 会话和两个 `iproxy` 均由保持前台的独立 Mac 会话承载，避免非交互 shell 回收端口转发。iPad 使用 8200，未占用或停止 iPhone 的 8100。根隧道命令对 iOS 16.3.1 的 iPhone 不需要；终端中出现的 QUIC 警告属于 iOS 18.2+ 的隧道兼容提示，不代表 iPhone 系统被修改。
+
+## WDA 历史链路复核（2026-08-15）
+
+- 当前标准 Xcode 26.6 `xcodebuild test` 仍会因旧 iOS 16 设备返回 `DVTBuildVersion` 空值和 `Logic Testing Unavailable`，但这不是“iPhone WDA 本身不可用”。
+- 通过隔离环境安装 `pymobiledevice3` 后，USB 枚举到 iPhone `00008110-001E543122E0401E`，DVT 进程列表确认设备仍安装历史 host `com.changliwen.nastart.WebDriverAgentRunner.xctrunner`。
+- 用 `pymobiledevice3 developer dvt launch --udid 00008110-001E543122E0401E com.changliwen.nastart.WebDriverAgentRunner.xctrunner` 启动后，`iproxy 8102:8100 -u 00008110-001E543122E0401E` 建立转发；`/status` 返回 WDA 16.1.5、iOS 16.3.1、`ready=true`。新 session 已成功读取 `/source`、`/screenshot`，并完成“启动台→设备→文件”页面点击。
+- 诊断期间用 DVT 直接启动 Nastart 会让 WDA 转发短暂 reset；重新启动同一个历史 WDA Bundle ID 后 `/status` 恢复。后续应优先通过 WDA 的 App 启动/操作接口切换 Nastart，DVT 直接启动 App 只作为隔离诊断步骤，并在每次切换后重新验证 `/status`。
+- 这次复核只证明历史 WDA 链路恢复，不把 iPhone S01 播放结果提前记为通过；iPhone 仍需按矩阵补齐首帧、连续播放、字幕/音频、控制项、进程稳定性和并发证据。

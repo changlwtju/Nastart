@@ -1,17 +1,17 @@
 # Nastart 真机视频调试续接记录
 
-更新时间：2026-08-13 05:40（Asia/Shanghai）
+更新时间：2026-08-15 09:05（Asia/Shanghai）
 
 ## 用户目标
 
-固定同一 18 部电影，完成 iPhone/iPad × 设备文件/Jellyfin 的 18×4=72 个基础播放单元，并重复检查指定网络链路。重点验收：首帧速度、连续播放是否卡顿/黑屏、快进快退、暂停续播、字幕/音轨、Jellyfin 清晰度、画中画及退出后的断点续播。ISO 为独立专项；目前没有可重复访问的 ISO 样本，必须记为“样本缺失，未验证”。
+固定同一 18 部电影，完成 iPhone/iPad × 设备文件/Jellyfin 的 18×4=72 个基础播放单元，并重复检查指定网络链路。重点验收：首帧速度、连续播放是否卡顿/黑屏、快进快退、暂停续播、字幕/音轨、字幕实际显示与音频实际输出（`SA=SUB/AUD`）、Jellyfin 清晰度、画中画及退出后的断点续播。ISO 为独立专项；目前没有可重复访问的 ISO 样本，必须记为“样本缺失，未验证”。
 
 ## 已完成的本地恢复
 
 - iPhone：UDID `00008110-001E543122E0401E`，iOS 16.3.1；WDA 端口 `8102`。
 - iPad：UDID `00008030-001168403C43C02E`，iPadOS 18.3.1；WDA 端口 `8101`。
-- 两台设备 WDA 16.1.5 均可通过 `/status` 返回 ready；不要更新任一设备系统。
-- WDA 应用历史包已经安装；后续失效优先重启 DVT/iproxy，不要每天重新安装 WDA。
+- 历史记录中两台设备曾使用 WDA 16.1.5；当前 iPad 已由标准 XCTest 链路启动 WDA 16.2.0 并通过 `/status`，iPhone 尚未恢复新的 `/status`。不要更新任一设备系统。
+- WDA 应用包、签名、XCTest runner、iproxy 和 `/status` 必须按 `PLAYBACK-DEBUG-RUNBOOK.md` 固定链路核验；不要按样本或按天重复安装 WDA。
 
 ## 已冻结样本和结果文件
 
@@ -58,5 +58,17 @@
 ## 2026-08-13 播放规范与手势
 
 - 已新增 [PLAYBACK-DEBUG-RUNBOOK.md](./PLAYBACK-DEBUG-RUNBOOK.md)，固定设备文件/Jellyfin 播放链路、历史故障、并发回归顺序和日志要求。
-- 已新增 [PLAYBACK-FUNCTION-MATRIX.md](./PLAYBACK-FUNCTION-MATRIX.md)，把 18×4 单元拆成首帧、连续播放、暂停/继续、seek、音轨、字幕、清晰度、PiP、退出断点和内存稳定性逐项验收。
+- 已新增 [PLAYBACK-FUNCTION-MATRIX.md](./PLAYBACK-FUNCTION-MATRIX.md)，把 18×4 单元拆成首帧、连续播放、暂停/继续、seek、音轨、字幕、`SA=SUB/AUD` 实际输出、清晰度、PiP、退出断点和内存稳定性逐项验收。
 - 内置 VLC 播放器手势约定：双击视频画面暂停/继续；单击只显示/隐藏控制栏；横向拖动快进/快退；纵向拖动调节亮度。代码已通过 `swiftc -parse` 和 `git diff --check`，尚未随本轮手势改动重新安装真机。
+
+## 2026-08-15 本轮继续结果
+
+- 通用修复：`MediaRangePolicy` 现在接受标准 `bytes=` Range，代理在上游每个有限窗口切换时重置窗口期望值，并按当前窗口的实际交付量判断短 EOF/续段；继续保持客户端连续 chunked 响应和完整总长度，禁止整文件渐进式 `200`。
+- 同步修复诊断脱敏顺序：先处理 Bearer token，再处理通用键值，避免输出中残留 token 内容。
+- 验证：`scripts/preflight.py` 通过；iOS simulator `NastartTests` 15/15 通过；iphoneos 最终签名构建通过，二进制 SHA-256 为 `0e34e830097371fd19ac055c7301653dfc63cbdb99efae4f21302b82607f91d3`；playback-lab 取得连续 `206` Range 和 malformed Range `416` 证据。
+- WDA 恢复：重新核对了历史包、`.xctestrun`、Bundle ID、签名和两台设备 DeviceSupport；直接 `devicectl process launch` 会绕过 XCTest 并触发 `testmanagerd` 错误，因此不再作为正式启动方法。
+- iPad `00008030-001168403C43C02E` 已改用标准 `xcodebuild test` 完成构建/签名/安装/XCTest 启动；日志出现 `ServerURLHere->http://192.168.1.93:8100<-ServerURLHere`，`iproxy 8101:8100 -u ...` 后 `/status` 返回 `ready: true`，WDA 版本 `16.2.0`。
+- WDA 验证后已实际走元素链路进入 `/video/media/movie` 的 S01 文件并点击“预览”。证据目录 `/tmp/nastart-s01-wda-retry/`：t=0/3/10 为片源真实画面，t=30 已切换到飞行城堡画面；这证明 WDA 恢复和播放器首帧/持续渲染链路均重新可采集，但不等于 S01 四单元完整通过。
+- iPhone `00008110-001E543122E0401E` 在同一 Xcode 26.6 下仍被 `DVTBuildVersion` 空值和 `Logic Testing Unavailable` 阻塞，尚未取得新的 `/status`；不能用 iPad 的 ready 状态代替 iPhone 结论。
+- 已将固定 WDA 安装/启动/端口/验证链路和故障分支写入 `PLAYBACK-DEBUG-RUNBOOK.md`，并修正 `scripts/prepare_wda_recovery.sh`：校验实际 `WebDriverAgentRunner.xctest` 路径、host/test Bundle ID、签名，优先打印标准 `xcodebuild test` 命令，使用正确的 `iproxy LOCAL:DEVICE -u UDID` 语法。
+- 当前状态：iPad WDA 工具已恢复，iPhone WDA 仍为工具阻塞；S01 仍不能签收，S02→S18 继续不启动正式样本操作。下一步先完成 iPhone WDA 或记录兼容 Xcode 版本，再按 S01 四单元闭环和双端并发顺序推进。

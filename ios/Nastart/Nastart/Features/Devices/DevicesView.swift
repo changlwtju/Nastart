@@ -1681,6 +1681,58 @@ enum AuthenticatedMediaPlaybackResolver {
     }
 }
 
+enum MediaRangePolicy {
+    // The client-facing response stays open; this is only the maximum amount
+    // fetched from the upstream in one URLSession task. It bounds memory and
+    // remote connection lifetime without making a playback decision based on
+    // a particular title, container, or bitrate.
+    static let upstreamWindowBytes: Int64 = 32 * 1024 * 1024
+
+    static func boundedRange(_ value: String, maximumLength: Int64 = upstreamWindowBytes) -> String {
+        let fallbackEnd = max(maximumLength - 1, 0)
+        let normalized = value.trimmingCharacters(in: .whitespacesAndNewlines)
+        let rangeText: Substring?
+        if normalized.lowercased().hasPrefix("bytes=") {
+            rangeText = normalized.dropFirst("bytes=".count)
+        } else {
+            let components = normalized.split(
+                maxSplits: 1,
+                whereSeparator: { $0 == " " || $0 == "\t" }
+            )
+            rangeText = components.count == 2 && components[0].lowercased() == "bytes"
+                ? components[1]
+                : nil
+        }
+        guard let firstRange = rangeText?.split(separator: ",", maxSplits: 1).first,
+              let separator = firstRange.firstIndex(of: "-"),
+              let start = Int64(firstRange[..<separator]),
+              start >= 0 else {
+            return "bytes=0-\(fallbackEnd)"
+        }
+        let endText = firstRange[firstRange.index(after: separator)...]
+        let requestedEnd = Int64(endText)
+        let maximumEnd = start + fallbackEnd
+        let end = min(requestedEnd ?? maximumEnd, maximumEnd)
+        return "bytes=\(start)-\(max(start, end))"
+    }
+
+    static func isOpenEnded(_ value: String) -> Bool {
+        let normalized = value.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        guard normalized.hasPrefix("bytes=") else { return false }
+        guard let firstRange = normalized.dropFirst("bytes=".count)
+            .split(separator: ",", maxSplits: 1)
+            .first,
+            let separator = firstRange.firstIndex(of: "-") else {
+            return false
+        }
+        guard firstRange[firstRange.index(after: separator)...].isEmpty,
+              let start = Int64(firstRange[..<separator]) else {
+            return false
+        }
+        return start >= 0
+    }
+}
+
 final class AuthenticatedMediaStreamProxy: @unchecked Sendable {
     static let shared = AuthenticatedMediaStreamProxy()
 
@@ -1925,10 +1977,16 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
     private var lastStatusCode: Int?
     private let startedAt = Date()
     private let bufferLock = NSLock()
-    private var pendingBody = Data()
+    // Keep received chunks independent after they leave the URLSession
+    // callback. Mutating one large Data buffer while a slice is still owned by
+    // NWConnection.send can trip Swift Data's copy-on-write assertion during
+    // long Range transfers.
+    private var pendingBodyChunks: [Data] = []
+    private var pendingBodyBytes = 0
     private var playlistBody = Data()
     private var playlistStatusCode = 200
     private var playlistContentType = "application/vnd.apple.mpegurl"
+    private var responseTotalLength: Int64?
     private var isSendingBody = false
     private var suspendedDataTask: URLSessionDataTask?
     private var upstreamCompleted = false
@@ -1937,11 +1995,12 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
     private let highWaterMark = 4 * 1024 * 1024
     private let lowWaterMark = 1 * 1024 * 1024
     private let maximumConsecutiveRetryFailures = 5
-    // Keep WAN reads bounded without returning a progressive full-file 200.
-    // iPadOS VLC needs more than the Matroska header window to reach its first
-    // video cluster; 1 MiB is enough for that probe while completing quickly
-    // on the NAS route that can close larger responses before EOF.
-    private let maximumMediaSegmentBytes: Int64 = 1 * 1024 * 1024
+    private let maximumMediaSegmentBytes = MediaRangePolicy.upstreamWindowBytes
+
+    private var clientUsesChunkedMediaResponse: Bool {
+        guard !isPlaylist, !isHLSChildRequest else { return false }
+        return MediaRangePolicy.isOpenEnded(requestHeaders["range"] ?? "bytes=0-")
+    }
 
     init(
         connection: NWConnection,
@@ -1995,6 +2054,8 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
 
     private func startUpstreamTask(rangeOverride: String? = nil) {
         bodyBytesAtTaskStart = deliveredBodyBytes
+        expectedBodyBytes = nil
+        responseEndOffset = nil
         let activeRange: String?
         if isPlaylist || isHLSChildRequest {
             activeRange = rangeOverride ?? requestHeaders["range"]
@@ -2006,7 +2067,7 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
             // iOS's per-process memory limit. Every media request therefore
             // starts with a finite Range window; interrupted transfers are
             // resumed from the received offset below.
-            activeRange = Self.boundedRange(
+            activeRange = MediaRangePolicy.boundedRange(
                 requestedRange,
                 maximumLength: maximumMediaSegmentBytes
             )
@@ -2068,6 +2129,7 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
         }
         let contentRange = response.value(forHTTPHeaderField: "Content-Range")
         let parsedRange = Self.byteRange(from: contentRange)
+        responseTotalLength = Self.totalLength(from: contentRange)
         if !isHLSChildRequest,
            let requestedStart = activeRequestedRangeStart,
            (response.statusCode != 206 || parsedRange?.start != requestedStart) {
@@ -2084,6 +2146,18 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
                 finish(with: URLError(.cannotParseResponse))
                 return
             }
+            // Each finite upstream window has its own body length. Keep that
+            // per-task expectation current so an interrupted continuation is
+            // resumed from the exact delivered offset instead of being
+            // mistaken for a completed first window.
+            responseEndOffset = parsedRange?.end
+            if let contentLength = response.value(forHTTPHeaderField: "Content-Length"),
+               let parsedLength = Int64(contentLength), parsedLength >= 0 {
+                expectedBodyBytes = parsedLength
+            } else {
+                expectedBodyBytes = parsedRange.map { $0.end - $0.start + 1 }
+            }
+            responseTotalLength = Self.totalLength(from: contentRange)
             completionHandler(.allow)
             return
         }
@@ -2113,9 +2187,18 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
             "Content-Type", "Content-Length", "Content-Range", "Accept-Ranges",
             "ETag", "Last-Modified", "Content-Disposition"
         ] {
+            if clientUsesChunkedMediaResponse && (name == "Content-Length" || name == "Content-Range") {
+                continue
+            }
             if let value = response.value(forHTTPHeaderField: name) {
                 lines.append("\(name): \(value)")
             }
+        }
+        if clientUsesChunkedMediaResponse {
+            if let start = parsedRange?.start, let total = responseTotalLength, total > start {
+                lines.append("Content-Range: bytes \(start)-\(total - 1)/\(total)")
+            }
+            lines.append("Transfer-Encoding: chunked")
         }
         lines.append("Connection: close")
         let header = lines.joined(separator: "\r\n") + "\r\n\r\n"
@@ -2133,8 +2216,9 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
         }
         deliveredBodyBytes += Int64(data.count)
         bufferLock.lock()
-        pendingBody.append(data)
-        if pendingBody.count >= highWaterMark, suspendedDataTask == nil {
+        pendingBodyChunks.append(Data(data))
+        pendingBodyBytes += data.count
+        if pendingBodyBytes >= highWaterMark, suspendedDataTask == nil {
             suspendedDataTask = dataTask
             dataTask.suspend()
         }
@@ -2207,6 +2291,9 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
         }
         guard error == nil else {
             finish(with: error)
+            return
+        }
+        if continueChunkedMediaResponseIfNeeded() {
             return
         }
         bufferLock.lock()
@@ -2366,17 +2453,26 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
         var shouldClose = false
 
         bufferLock.lock()
-        if !isSendingBody, !pendingBody.isEmpty {
-            let count = min(sendChunkSize, pendingBody.count)
-            chunk = Data(pendingBody.prefix(count))
-            pendingBody.removeFirst(count)
+        if !isSendingBody, pendingBodyBytes > 0, !pendingBodyChunks.isEmpty {
+            let count = min(sendChunkSize, pendingBodyBytes)
+            if let first = pendingBodyChunks.first {
+                if first.count <= count {
+                    chunk = first
+                    pendingBodyChunks.removeFirst()
+                    pendingBodyBytes -= first.count
+                } else {
+                    chunk = first.subdata(in: 0..<count)
+                    pendingBodyChunks[0] = first.subdata(in: count..<first.count)
+                    pendingBodyBytes -= count
+                }
+            }
             isSendingBody = true
         }
-        if pendingBody.count <= lowWaterMark, let suspendedDataTask {
+        if pendingBodyBytes <= lowWaterMark, let suspendedDataTask {
             taskToResume = suspendedDataTask
             self.suspendedDataTask = nil
         }
-        if pendingBody.isEmpty,
+        if pendingBodyBytes == 0,
            !isSendingBody,
            upstreamCompleted,
            !didScheduleConnectionClose {
@@ -2387,7 +2483,15 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
 
         taskToResume?.resume()
         if let chunk {
-            connection.send(content: chunk, completion: .contentProcessed { [weak self] error in
+            let wireChunk: Data
+            if clientUsesChunkedMediaResponse {
+                wireChunk = Data("\(String(chunk.count, radix: 16))\r\n".utf8)
+                    + chunk
+                    + Data("\r\n".utf8)
+            } else {
+                wireChunk = chunk
+            }
+            connection.send(content: wireChunk, completion: .contentProcessed { [weak self] error in
                 guard let self else { return }
                 if let error {
                     self.finish(with: error)
@@ -2399,10 +2503,29 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
                 self.drainBufferedBody()
             })
         } else if shouldClose {
-            connection.send(content: nil, isComplete: true, completion: .contentProcessed { [weak self] error in
+            let terminalChunk = clientUsesChunkedMediaResponse
+                ? Data("0\r\n\r\n".utf8)
+                : nil
+            connection.send(content: terminalChunk, isComplete: true, completion: .contentProcessed { [weak self] error in
                 self?.finish(with: error)
             })
         }
+    }
+
+    private func continueChunkedMediaResponseIfNeeded() -> Bool {
+        guard clientUsesChunkedMediaResponse,
+              let total = responseTotalLength,
+              let responseStartOffset else {
+            return false
+        }
+        let (nextOffset, overflow) = responseStartOffset.addingReportingOverflow(deliveredBodyBytes)
+        guard !overflow, nextOffset < total else {
+            return false
+        }
+        upstreamCompleted = false
+        let nextRange = "bytes=\(nextOffset)-\(min(nextOffset + maximumMediaSegmentBytes - 1, total - 1))"
+        startUpstreamTask(rangeOverride: nextRange)
+        return true
     }
 
     private func retryInterruptedTransfer(after error: Error?) -> Bool {
@@ -2412,18 +2535,23 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
         } else {
             consecutiveRetryFailures += 1
         }
+        let deliveredBytesInTask = max(deliveredBodyBytes - bodyBytesAtTaskStart, 0)
         guard !isFinished,
               method == "GET",
               let expectedBodyBytes,
-              deliveredBodyBytes < expectedBodyBytes,
+              deliveredBytesInTask < expectedBodyBytes,
               consecutiveRetryFailures < maximumConsecutiveRetryFailures,
               let responseStartOffset else {
             return false
         }
         retryAttempts += 1
         let nextOffset = responseStartOffset + deliveredBodyBytes
-        let range = responseEndOffset.map { "bytes=\(nextOffset)-\($0)" }
-            ?? "bytes=\(nextOffset)-"
+        let rangeEnd = responseEndOffset.flatMap { end in
+            end >= nextOffset ? end : nil
+        } ?? responseTotalLength.map { total in
+            min(nextOffset + maximumMediaSegmentBytes - 1, total - 1)
+        }
+        let range = "bytes=\(nextOffset)-\(rangeEnd.map { String($0) } ?? "")"
         DiagnosticLogStore.shared.record(
             .warning,
             categoryKey: "diagnostics.category.media",
@@ -2482,7 +2610,8 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
         finishLock.unlock()
         bufferLock.lock()
         suspendedDataTask = nil
-        pendingBody.removeAll(keepingCapacity: false)
+        pendingBodyChunks.removeAll(keepingCapacity: false)
+        pendingBodyBytes = 0
         bufferLock.unlock()
         DiagnosticLogStore.shared.record(
             error == nil ? .info : .warning,
@@ -2536,35 +2665,11 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
         return Int64(startValue)
     }
 
-    private static func boundedRange(_ value: String, maximumLength: Int64) -> String {
-        let fallbackEnd = max(maximumLength - 1, 0)
-        let components = value.trimmingCharacters(in: .whitespacesAndNewlines)
-            .split(separator: " ", maxSplits: 1)
-        guard components.count == 2,
-              components[0].lowercased() == "bytes",
-              let firstRange = components[1].split(separator: ",", maxSplits: 1).first,
-              let separator = firstRange.firstIndex(of: "-"),
-              let start = Int64(firstRange[..<separator]),
-              start >= 0 else {
-            return "bytes=0-\(fallbackEnd)"
-        }
-        let endText = firstRange[firstRange.index(after: separator)...]
-        let requestedEnd = Int64(endText)
-        let maximumEnd = start + fallbackEnd
-        let end = min(requestedEnd ?? maximumEnd, maximumEnd)
-        return "bytes=\(start)-\(max(start, end))"
-    }
-
-    private static func isOpenEndedRange(_ value: String) -> Bool {
-        let normalized = value.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
-        guard normalized.hasPrefix("bytes=") else { return false }
-        guard let firstRange = normalized.dropFirst("bytes=".count)
-            .split(separator: ",", maxSplits: 1)
-            .first,
-            let separator = firstRange.firstIndex(of: "-") else {
-            return false
-        }
-        return firstRange[firstRange.index(after: separator)...].isEmpty
+    private static func totalLength(from value: String?) -> Int64? {
+        guard let value,
+              let total = value.split(separator: "/", maxSplits: 1).last,
+              total != "*" else { return nil }
+        return Int64(total)
     }
 
     private var isFinished: Bool {

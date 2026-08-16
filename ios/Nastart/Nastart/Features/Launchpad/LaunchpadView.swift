@@ -4420,6 +4420,7 @@ private final class MediaPlayerSession: ObservableObject {
     private func updateStallDetection(for status: AVPlayer.TimeControlStatus) {
         stallWorkItem?.cancel()
         stallWorkItem = nil
+        guard request.fileExtensionHint == "m3u8", hasAlternateTransport else { return }
         guard status == .waitingToPlayAtSpecifiedRate, fallbackReason == nil else { return }
         let workItem = DispatchWorkItem { [weak self] in
             guard let self,
@@ -4457,6 +4458,14 @@ private final class MediaPlayerSession: ObservableObject {
             player.removeTimeObserver(periodicTimeObserver)
             self.periodicTimeObserver = nil
         }
+    }
+
+    private var hasAlternateTransport: Bool {
+        request.compatibilityResource != nil
+            || request.compatibilityResourceLoader != nil
+            || request.compatibilityFallbackResource != nil
+            || request.compatibilityFallbackResourceLoader != nil
+            || request.compatibilityFallbackRequestLoader != nil
     }
 
     deinit {
@@ -6045,7 +6054,10 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
         try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .moviePlayback)
         try? AVAudioSession.sharedInstance().setActive(true)
         player.play()
-        addExternalSubtitleIfNeeded()
+        // External normalized subtitles are rendered by CJKSubtitleOverlay.
+        // Do not add the same file as a VLC playback slave as well: that
+        // produces a second subtitle layer (often tofu boxes) underneath the
+        // UIKit-rendered Chinese text.
         scheduleStartupPlayRetries()
         syncState()
     }
@@ -6172,26 +6184,18 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
     @discardableResult
     func selectExternalSubtitle(_ url: URL?) -> Bool {
         didApplyInitialSubtitleTrack = true
-        if let url {
-            let startedAt = Date()
-            let result = player.addPlaybackSlave(url, type: .subtitle, enforce: true)
-            trackInventoryNeedsRefresh = true
-            trackInventoryRefreshDeadline = Date().addingTimeInterval(4)
-            DiagnosticLogStore.shared.record(
-                result == 0 ? .info : .warning,
-                categoryKey: "diagnostics.category.media",
-                messageKey: "diagnostics.media.external_subtitle",
-                details: [
-                    "result": "\(result)",
-                    "operation": "runtimeSelection",
-                    "selectionMs": Self.elapsedMilliseconds(since: startedAt)
-                ]
-            )
-            return result == 0
-        }
         desiredSubtitleTrackID = -1
         selectedSubtitleTrackID = -1
         player.currentVideoSubTitleIndex = -1
+        DiagnosticLogStore.shared.record(
+            .info,
+            categoryKey: "diagnostics.category.media",
+            messageKey: "diagnostics.media.external_subtitle",
+            details: [
+                "operation": "runtimeOverlaySelection",
+                "selected": url == nil ? "off" : "normalizedUTF8"
+            ]
+        )
         return true
     }
 
@@ -6427,6 +6431,7 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
             !didRequestStop,
             !didFinishPlaybackNaturally,
             !isUserPaused,
+            player.state != .paused,
             errorMessage == nil
         else {
             return
@@ -6682,8 +6687,13 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
                 durationSeconds - naturalEndToleranceSeconds,
                 0
             )
+        // A finite input can report `ended` when its current HTTP window is
+        // exhausted. It is only a natural completion when the duration is
+        // unknown; known-duration media must still pass the near-end check
+        // above or recovery would be suppressed at a mid-stream EOF.
         let finiteInputEnded = player.state == .ended
             && request.fileExtensionHint != "m3u8"
+            && durationSeconds <= 0
         let completedNaturally = reachedNaturalEnd || finiteInputEnded
         if completedNaturally
             && (player.state == .ended || player.state == .stopped) {
@@ -7106,7 +7116,6 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
             self.player.stop()
             self.player.media = self.makeMedia()
             self.player.play()
-            self.addExternalSubtitleIfNeeded()
         }
         reconnectWorkItem = workItem
         let delay = min(Double(reconnectAttempts), 3) * 0.75
@@ -7231,10 +7240,9 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
             if request.fileExtensionHint == "m3u8", hasAlternateTransport {
                 return isPrivateHost ? 12 : 10
             }
-            // An original Jellyfin file is allowed to start slowly, but a
-            // post-first-frame clock stop must not leave the player frozen for
-            // half a minute before the server fallback is requested.
-            return isPrivateHost ? 12 : 15
+            // Keep original-stream grace aligned with the proven DSM route.
+            // This is a transport policy, not a title-specific tuning knob.
+            return isPrivateHost ? 18 : 30
         case .dsmFile:
             return isPrivateHost ? 18 : 30
         case .directURL:
@@ -7401,6 +7409,7 @@ private struct CJKSubtitleCue {
 
 private final class CJKSubtitleOverlayModel: ObservableObject {
     @Published private(set) var text: String?
+    @Published private(set) var isEnabled = false
     private var cues: [CJKSubtitleCue] = []
     private var loadTask: Task<Void, Never>?
     private var subtitleURL: URL?
@@ -7413,6 +7422,7 @@ private final class CJKSubtitleOverlayModel: ObservableObject {
     func setURL(_ url: URL?) {
         guard subtitleURL != url else { return }
         subtitleURL = url
+        isEnabled = url != nil
         text = nil
         cues = []
         loadTask?.cancel()
@@ -7584,7 +7594,7 @@ private struct VLCBuiltInPlayerView: View {
                 VLCPlayerSurface(session: session)
                     .ignoresSafeArea()
 
-                if request.externalSubtitleURL != nil {
+                if subtitleOverlayModel.isEnabled {
                     VStack {
                         Spacer()
                         CJKSubtitleOverlay(model: subtitleOverlayModel)
@@ -8068,16 +8078,21 @@ private struct VLCBuiltInPlayerView: View {
                     let sourceTrack = sourceID.flatMap { selectedID in
                         request.sourceSubtitleTracks.first { $0.id == selectedID }
                     }
-                    // Re-negotiate every source subtitle change, including an
-                    // external normalized subtitle. This keeps the selected
-                    // source ID, resume position and server play session in one
-                    // request instead of changing only the local VLC slave.
+                    selectedSourceSubtitleTrackID = sourceID
                     subtitleOverlayModel.setURL(sourceTrack?.externalURL)
-                    sourceTrackChange(
-                        request.selectedSourceAudioTrackID,
-                        sourceID,
-                        session.runtimeState(orientationMode: orientationMode)
-                    )
+                    if sourceTrack?.externalURL == nil {
+                        sourceTrackChange(
+                            request.selectedSourceAudioTrackID,
+                            sourceID,
+                            session.runtimeState(orientationMode: orientationMode)
+                        )
+                    } else {
+                        // Text subtitles are already normalized to a local
+                        // UTF-8 sidecar and rendered by the common overlay.
+                        // Keep the video HLS session and its absolute clock;
+                        // only image/burn-in tracks need server renegotiation.
+                        _ = session.selectExternalSubtitle(sourceTrack?.externalURL)
+                    }
                     dismissPanel()
                 }
             } else {

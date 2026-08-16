@@ -827,6 +827,24 @@ def check_playback_routing_invariants() -> CheckResult:
             errors.append(message)
 
     required_device_fragments = {
+        "Authenticated media proxy must keep client-facing open responses continuous": (
+            "Transfer-Encoding: chunked"
+        ),
+        "Authenticated media proxy must continue finite upstream windows": (
+            "continueChunkedMediaResponseIfNeeded()"
+        ),
+        "Authenticated media proxy must count each upstream window independently": (
+            "let deliveredBytesInTask = max(deliveredBodyBytes - bodyBytesAtTaskStart, 0)"
+        ),
+        "Authenticated media proxy must reset per-window expectations": (
+            "expectedBodyBytes = nil\n        responseEndOffset = nil"
+        ),
+        "Authenticated media proxy must expose the complete media length": (
+            'Content-Range: bytes \\(start)-\\(total - 1)/\\(total)'
+        ),
+        "Authenticated media proxy window policy must be sample-independent": (
+            "static let upstreamWindowBytes"
+        ),
         "DSM file details must retain an explicit preview action": "previewFile()",
         "DSM playback must use the prepared playback route": (
             "url: playbackURL,\n                    title: item.name"

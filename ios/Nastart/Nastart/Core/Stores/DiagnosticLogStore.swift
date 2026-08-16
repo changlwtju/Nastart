@@ -164,6 +164,7 @@ final class DiagnosticLogStore: ObservableObject {
                 #"(?i)(https?://)[^/@\s]+@"#,
                 "$1<redacted>@"
             ),
+            (#"(?i)(bearer\s+)[a-z0-9._~+/=-]+"#, "$1<redacted>"),
             (
                 #"(?i)((?:[\"']?)(?:_sid|api[_-]?key|apikey|token|access_token|authorization|password|passwd|cookie|path|filepath|filename|file_name)(?:[\"']?)\s*[=:]\s*[\"']?)[^\"',;&\s}]+"#,
                 "$1<redacted>"
@@ -171,8 +172,7 @@ final class DiagnosticLogStore: ObservableObject {
             (
                 #"(?i)((?:pairing[_ -]?code|pairing)\s*[=:]\s*)[0-9]{6}\b"#,
                 "$1<redacted>"
-            ),
-            (#"(?i)(bearer\s+)[a-z0-9._~+/=-]+"#, "$1<redacted>")
+            )
         ]
         return patterns.reduce(value) { result, replacement in
             result.replacingOccurrences(

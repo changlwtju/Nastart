@@ -2,6 +2,31 @@ import XCTest
 @testable import Nastart
 
 final class NonPlaybackPolicyTests: XCTestCase {
+    func testMediaRangePolicyKeepsOpenResponsesFiniteUpstreamAndDetectsContinuation() {
+        XCTAssertEqual(
+            MediaRangePolicy.boundedRange("bytes=0-"),
+            "bytes=0-33554431"
+        )
+        XCTAssertEqual(
+            MediaRangePolicy.boundedRange("bytes=90000000-"),
+            "bytes=90000000-123554431"
+        )
+        XCTAssertTrue(MediaRangePolicy.isOpenEnded("bytes=0-"))
+        XCTAssertFalse(MediaRangePolicy.isOpenEnded("bytes=0-4095"))
+        XCTAssertFalse(MediaRangePolicy.isOpenEnded("bytes=abc-"))
+    }
+
+    func testMediaRangePolicyDoesNotTurnMalformedRangesIntoAnOpenResponse() {
+        XCTAssertEqual(
+            MediaRangePolicy.boundedRange("invalid"),
+            "bytes=0-33554431"
+        )
+        XCTAssertEqual(
+            MediaRangePolicy.boundedRange("bytes=12-999", maximumLength: 128),
+            "bytes=12-139"
+        )
+    }
+
     func testPrivateNetworkClassification() {
         XCTAssertTrue(NetworkHostClassifier.isPrivate("192.168.1.20"))
         XCTAssertTrue(NetworkHostClassifier.isPrivate("nas.local"))
