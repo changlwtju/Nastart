@@ -2,7 +2,7 @@
 
 Version: 0.1  
 Status: Draft  
-Last updated: 2026-07-25
+Last updated: 2026-08-26
 
 ## 1. Purpose
 
@@ -314,7 +314,9 @@ Required:
 
 - Include basic system playback for common video and audio resources where
   platform frameworks make it practical.
-- Do not build a full custom DS One/Lenna-class playback engine in v1.
+- Do not copy a competitor's implementation or build a proprietary codec/DRM
+  bypass. The in-app player should use independently implemented, documented
+  platform and open-source playback components.
 - Allow supported service cards and resource endpoints to expose "Open in..."
   actions.
 - Support media-service card actions from Jellyfin, Emby, Plex, Navidrome,
@@ -382,15 +384,16 @@ Implementation notes:
 
 Deferred:
 
-- Full custom video playback engine.
+- A full custom codec/rendering stack beyond the platform and compatibility
+  engines selected by the app.
 - Full custom audio playback engine.
-- Advanced subtitle/audio-track/quality controls.
+- Advanced media scraping and automatic metadata matching.
 - Media scraping.
 - Watch progress sync.
 - Subtitle management.
 - App-specific advanced automation.
 
-### 7.5 Lightweight Media Browser
+### 7.5 Lightweight Media Browser and Evidence-Driven Video Playback
 
 Required:
 
@@ -406,6 +409,65 @@ Required:
 - Keep this feature focused on "find media, play common formats, and hand off
   complex cases"; do not add full player-engine or full file-management
   operations.
+
+#### Video playback optimization requirements
+
+The playback path is informed by static analysis of DS One 2.4.5, but must be
+implemented independently and verified against Nastart's own supported services.
+The requirement is a measurable playback chain, not source-code or behavior
+cloning:
+
+```text
+media source negotiation
+  -> direct play / HLS / service-side transcode selection
+  -> track and subtitle selection
+  -> bounded, authenticated Range transport
+  -> system player or compatibility engine
+  -> first-frame / buffer / seek / stall state reporting
+  -> progress persistence and recoverable fallback
+```
+
+Required:
+
+- Negotiate or validate the media source before playback when the provider
+  exposes source capabilities; preserve source, session, track, and quality
+  selection in the playback request.
+- Prefer the system player for common files and HLS where it provides native
+  hardware decode, background playback, and Picture in Picture. Use the
+  compatibility engine for unsupported containers, NAS-specific transport, or
+  a bounded system-player failure, with resume position preserved.
+- For remote original files, use an authenticated local compatibility route that
+  presents a continuous client stream while requesting finite upstream Range
+  windows. Validate `206`, `Content-Range`, offsets, total length, retries, and
+  short EOF responses; never turn a seekable file into an unbounded download.
+- Coalesce rapid seeks, cancel obsolete requests, resume from the requested
+  offset, and keep the playback position/selected tracks when a source or engine
+  is replaced.
+- Record first-frame time, current position, playable/buffered range,
+  buffer-ahead duration, stall duration, seek recovery time, decode/player
+  errors, and the final transport/engine. Logs must redact credentials and
+  signed query values.
+- Support pause/resume, accurate enough fast-forward/rewind, audio tracks,
+  subtitle tracks (including external CJK subtitles), quality changes where
+  the provider supports them, background/Picture in Picture behavior, and
+  continue-watching persistence.
+- Treat subscription, authorization, certificate validation, and DRM as
+  provider/security boundaries. Nastart may play only resources authorized by
+  the user's configured account or file service and must not bypass those
+  controls.
+
+Acceptance baseline:
+
+- For each supported format family and service route, record cold-start to first
+  frame, 30-second continuous playback, pause/resume, 15-second seek, subtitle
+  and audio output, exit/resume, and memory/process stability on both iPhone and
+  iPad.
+- A source or engine fallback is successful only when a real video frame is
+  presented and playback time advances; a created decoder/output object alone
+  is not a pass.
+- Any change to Range windows, fallback thresholds, track handling, or subtitle
+  rendering must rerun the affected device/format matrix instead of reusing an
+  older result.
 
 Recommended v1 media roots:
 
@@ -431,7 +493,7 @@ Deferred:
 - Upload, move, rename, delete, or batch file operations.
 - Full NAS file manager.
 - Media scraping, posters, metadata matching, subtitles, and watch progress.
-- Transcoding, streaming proxy, or in-app player.
+- Provider-owned transcoding policy and a general-purpose streaming proxy.
 
 ### 7.6 Basic Health Checks
 
@@ -537,8 +599,7 @@ Pricing posture:
 - No deep non-Synology NAS support in v1.
 - No SSH terminal.
 - No general-purpose SFTP/file manager.
-- No media playback.
-- No first-party video decoder or media library scraper in v1.
+- No proprietary first-party codec stack or media library scraper in v1.
 - No full Docker control.
 - No public web search or general-purpose browser.
 - No automation that modifies NAS state.

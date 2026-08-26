@@ -77,3 +77,10 @@
 - 用 `pymobiledevice3 developer dvt launch --udid 00008110-001E543122E0401E com.changliwen.nastart.WebDriverAgentRunner.xctrunner` 启动后，`iproxy 8102:8100 -u 00008110-001E543122E0401E` 建立转发；`/status` 返回 WDA 16.1.5、iOS 16.3.1、`ready=true`。新 session 已成功读取 `/source`、`/screenshot`，并完成“启动台→设备→文件”页面点击。
 - 诊断期间用 DVT 直接启动 Nastart 会让 WDA 转发短暂 reset；重新启动同一个历史 WDA Bundle ID 后 `/status` 恢复。后续应优先通过 WDA 的 App 启动/操作接口切换 Nastart，DVT 直接启动 App 只作为隔离诊断步骤，并在每次切换后重新验证 `/status`。
 - 这次复核只证明历史 WDA 链路恢复，不把 iPhone S01 播放结果提前记为通过；iPhone 仍需按矩阵补齐首帧、连续播放、字幕/音频、控制项、进程稳定性和并发证据。
+
+## WDA 恢复审计（2026-08-26）
+
+- 历史日志再次确认：2026-08-06/08-15 的 iPhone 会话确实使用过正确的 `com.changliwen.nastart.WebDriverAgentRunner.xctrunner`，并成功返回 `ServerURLHere`、`/status ready=true`、`/source` 和 `/screenshot`；用户此前无需下载旧版 Xcode 的判断成立。
+- 当前本机仍可找到的 WDA 构建目录只有错误 Bundle ID `com.changliwen.nastart.WDARunner.xctrunner` 的旧产物，以及本轮用 Xcode `26.6 (17F113)` 新建的产物；历史 iPhone 正确 `.app/.xctestrun`（对应 Xcode build `17F109`）及其缓存已不在本机可用路径中。
+- 本轮重新构建并安装了正确 Bundle ID 的 WDA，但 DVT 启动日志显示 Xcode 26.6 正式版的 `Testing.framework` 依赖 `lib_TestingInterop.dylib`，该库在 iOS 16.3.1 中不存在；因此本轮包已安装但不可用，不能替代历史 WDA 会话。
+- 结论：旧版 Xcode 并非原理上的必需条件；目前缺少的是历史兼容构建产物，或能生成同等产物的 Xcode `17F109` 工具链。未找到这两者前，不继续修改 iPhone 系统、不反复安装 WDA，也不把当前包标记为 ready。

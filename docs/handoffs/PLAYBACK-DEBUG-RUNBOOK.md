@@ -167,3 +167,25 @@ iPhone iOS 16 的历史成功证据不是“直接启动 Runner App”，而是 
 - 结果表：[2026-08-12-PLAYBACK-MATRIX-RESULTS.md](./2026-08-12-PLAYBACK-MATRIX-RESULTS.md)
 - 功能验收矩阵：[PLAYBACK-FUNCTION-MATRIX.md](./PLAYBACK-FUNCTION-MATRIX.md)
 - 当前续接记录：[2026-08-12-CONTINUE-REAL-DEVICE-DEBUG.md](./2026-08-12-CONTINUE-REAL-DEVICE-DEBUG.md)
+
+## WDA iPhone 固化链路（2026-08-27，已在真机验证）
+
+这条链路已在 iPhone 13 / iOS 16.3.1（UDID `00008110-001E543122E0401E`）上验证通过，未升级、重启或修改系统。WDA host Bundle ID 固定为 `com.changliwen.nastart.WebDriverAgentRunner.xctrunner`，test Bundle ID 固定为 `com.changliwen.nastart.WebDriverAgentRunner`。
+
+- 持久化包目录：`/Users/lagransun/Library/Application Support/Nastart/WDA/iPhone-16.3.1`
+- WDA 包：`WebDriverAgentRunner-Runner.app`，WDA 源码版本 16.8.0
+- 使用的 XCTest 兼容包：Xcode 26.6（build 17F113），设备端精确 iOS 16.3 开发者镜像
+- 持久化内容还包括 `.xctestrun`、provisioning profile、iOS 16.3 DDI 压缩包和安装 receipt
+- 本轮真实验证：`/status ready=true`、DS One session、`/source`、`/screenshot`；截图为 1170×2532 PNG，界面树长度约 3462 字节
+
+以后优先执行以下脚本，不按样本或按天重装 WDA：
+
+```sh
+scripts/prepare_wda_recovery.sh
+scripts/install_wda_iphone_once.sh
+scripts/start_wda_iphone.sh
+```
+
+`install_wda_iphone_once.sh` 检测到设备中已有 `ProfileValidated=true` 时只做校验，不重新安装；`start_wda_iphone.sh` 使用 XCTest `tidevice xcuitest` 建立 testmanagerd 会话，再以 `iproxy 8102:8100` 暴露 WDA。只有 `ready=true` 后才开始 UI 自动化。设备必须处于解锁状态；解锁是使用 DVT/开发者服务的前置条件，不代表需要改动系统。
+
+本轮 WDA 运行时日志保存在上述目录的 `runtime/` 下；安装摘要在 `install-receipt.txt`。若 WDA 已在 8102 端口运行，启动脚本会直接复用，不会再次安装。

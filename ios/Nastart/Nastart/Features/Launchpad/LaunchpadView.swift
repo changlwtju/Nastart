@@ -4130,9 +4130,14 @@ private final class MediaPlayerSession: ObservableObject {
     @Published private(set) var fallbackReason: String?
     private var request: MediaPlaybackRequest
     private var statusObservation: NSKeyValueObservation?
+    private var bufferObservation: NSKeyValueObservation?
+    private var presentationObservation: NSKeyValueObservation?
     private var timeControlObservation: NSKeyValueObservation?
     private var periodicTimeObserver: Any?
     private var lastTimeControlStatus: AVPlayer.TimeControlStatus?
+    private var lastObservedBufferEnd: Double?
+    private var didRecordFirstFrame = false
+    private var playbackStartedAt: Date?
     private var didApplyInitialPosition = false
     private var pendingInitialPosition: Double?
     private var autoplayPending = false
@@ -4179,6 +4184,9 @@ private final class MediaPlayerSession: ObservableObject {
         didApplyInitialPosition = false
         didAutoplayAfterReady = false
         lastTimeControlStatus = nil
+        lastObservedBufferEnd = nil
+        didRecordFirstFrame = false
+        playbackStartedAt = nil
         errorMessage = nil
         fallbackReason = nil
         isReady = false
@@ -4264,6 +4272,65 @@ private final class MediaPlayerSession: ObservableObject {
                 }
             }
         }
+        bufferObservation = item.observe(\.loadedTimeRanges, options: [.initial, .new]) { [weak self] item, _ in
+            DispatchQueue.main.async {
+                guard let self,
+                      let timeRange = Self.bufferRange(for: item),
+                      timeRange.isValid,
+                      timeRange.start.seconds.isFinite,
+                      timeRange.duration.seconds.isFinite else {
+                    return
+                }
+                let bufferedEnd = timeRange.start.seconds + timeRange.duration.seconds
+                guard bufferedEnd.isFinite else { return }
+                if let previousEnd = self.lastObservedBufferEnd,
+                   abs(bufferedEnd - previousEnd) < 0.5 {
+                    return
+                }
+                self.lastObservedBufferEnd = bufferedEnd
+                let currentSeconds = self.player.currentTime().seconds
+                let bufferAhead = currentSeconds.isFinite
+                    ? max(bufferedEnd - currentSeconds, 0)
+                    : 0
+                DiagnosticLogStore.shared.record(
+                    .info,
+                    categoryKey: "diagnostics.category.media",
+                    messageKey: "diagnostics.media.player_state",
+                    details: MediaPlaybackProbe.baseDetails(for: self.request).merging([
+                        "engine": "AVPlayer",
+                        "state": "bufferUpdated",
+                        "bufferStartSeconds": String(format: "%.1f", timeRange.start.seconds),
+                        "bufferEndSeconds": String(format: "%.1f", bufferedEnd),
+                        "bufferAheadSeconds": String(format: "%.1f", bufferAhead),
+                        "bufferEmpty": item.isPlaybackBufferEmpty ? "yes" : "no",
+                        "likelyToKeepUp": item.isPlaybackLikelyToKeepUp ? "yes" : "no"
+                    ]) { current, _ in current }
+                )
+            }
+        }
+        presentationObservation = item.observe(\.presentationSize, options: [.initial, .new]) { [weak self] item, _ in
+            DispatchQueue.main.async {
+                guard let self,
+                      !self.didRecordFirstFrame,
+                      item.presentationSize.width > 0,
+                      item.presentationSize.height > 0 else {
+                    return
+                }
+                self.didRecordFirstFrame = true
+                DiagnosticLogStore.shared.record(
+                    .info,
+                    categoryKey: "diagnostics.category.media",
+                    messageKey: "diagnostics.media.first_frame",
+                    details: MediaPlaybackProbe.baseDetails(for: self.request).merging([
+                        "engine": "AVPlayer",
+                        "firstFrameMs": self.playbackStartedAt.map {
+                            String(Int(max(Date().timeIntervalSince($0), 0) * 1_000))
+                        } ?? "-",
+                        "presentationSize": "\(Int(item.presentationSize.width))x\(Int(item.presentationSize.height))"
+                    ]) { current, _ in current }
+                )
+            }
+        }
         timeControlObservation = player.observe(\.timeControlStatus, options: [.initial, .new]) { [weak self] player, _ in
             DispatchQueue.main.async {
                 guard let self, player.timeControlStatus != self.lastTimeControlStatus else { return }
@@ -4320,6 +4387,9 @@ private final class MediaPlayerSession: ObservableObject {
     func play(from normalizedPosition: Double? = nil) {
         autoplayPending = true
         didAutoplayAfterReady = false
+        if playbackStartedAt == nil {
+            playbackStartedAt = Date()
+        }
         if let normalizedPosition {
             pendingInitialPosition = min(max(normalizedPosition, 0), 1)
             didApplyInitialPosition = false
@@ -4452,12 +4522,30 @@ private final class MediaPlayerSession: ObservableObject {
         startupWorkItem = nil
         statusObservation?.invalidate()
         statusObservation = nil
+        bufferObservation?.invalidate()
+        bufferObservation = nil
+        presentationObservation?.invalidate()
+        presentationObservation = nil
         timeControlObservation?.invalidate()
         timeControlObservation = nil
         if let periodicTimeObserver {
             player.removeTimeObserver(periodicTimeObserver)
             self.periodicTimeObserver = nil
         }
+    }
+
+    private static func bufferRange(for item: AVPlayerItem) -> CMTimeRange? {
+        let currentSeconds = item.currentTime().seconds
+        let ranges = item.loadedTimeRanges.compactMap(\.timeRangeValue).filter {
+            $0.isValid && $0.start.seconds.isFinite && $0.duration.seconds.isFinite
+        }
+        guard !ranges.isEmpty else { return nil }
+        guard currentSeconds.isFinite else { return ranges.first }
+        return ranges.first(where: { range in
+            let start = range.start.seconds
+            let end = start + range.duration.seconds
+            return currentSeconds >= start && currentSeconds <= end
+        }) ?? ranges.first
     }
 
     private var hasAlternateTransport: Bool {
@@ -8706,9 +8794,11 @@ private struct SystemPlayerController: UIViewControllerRepresentable {
             pictureInPictureLayer = layer
 
             guard AVPictureInPictureController.isPictureInPictureSupported() else {
+                parent.onPictureInPictureEvent("unavailable", nil)
                 return
             }
             guard let pictureInPictureController = AVPictureInPictureController(playerLayer: layer) else {
+                parent.onPictureInPictureEvent("unavailable", nil)
                 return
             }
             pictureInPictureController.delegate = self
@@ -8740,6 +8830,9 @@ private struct SystemPlayerController: UIViewControllerRepresentable {
             guard remainingAttempts > 0,
                   !controller.isPictureInPictureActive else {
                 pictureInPictureStartRequested = false
+                if !controller.isPictureInPictureActive {
+                    parent.onPictureInPictureEvent("unavailable", nil)
+                }
                 return
             }
             let ready = parent.player.currentItem?.status == .readyToPlay
