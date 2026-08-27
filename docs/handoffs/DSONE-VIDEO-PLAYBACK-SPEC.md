@@ -4,6 +4,10 @@
 
 日期：2026-08-17
 
+> 2026-08-27 证据基线：本说明的静态模型和真机边界已汇总到[DS One 视频播放链路证据基线](./2026-08-27-DSONE-PLAYBACK-CHAIN-BASELINE.md)。后续新增结论必须区分静态已确认、真机已观察、运行时待补和工具/环境受限。
+
+> PiP 自动化固定流程：DS One 播放器右上角第一按钮负责进入；进入后必须切换到 SpringBoard WDA session，通过系统树的 `恢复全屏幕` 按钮退出。不要在 DS One session 中猜测 PiP 退出坐标。完整命令、元素几何和证据要求见 [真机调试运行手册](./PLAYBACK-DEBUG-RUNBOOK.md) 的“DS One PiP 自动化进入与退出”。
+
 ## 1. 目标与边界
 
 本说明只关注 DS One 的视频播放链路，目标是为 Nastart 提炼可验证、可实现的播放能力和策略。
@@ -245,7 +249,7 @@ DSVideoKsPlayerView
 
 ### 3.7 Nastart 基线核对
 
-在任何 Nastart 源码修改前已执行远端核对：本地 `main` 与 GitHub `origin/main` 均为 `197dba40b0a8bc9e7110f456bf591ec1dd3ac152`，双方没有提交差异，也不存在本地落后、超前或分叉。工作树中仅有本分析过程生成的 3 份未跟踪交接文档；这些文档不属于 Nastart 播放源码基线。
+在任何 Nastart 源码修改前已执行远端核对：当时本地 `main` 与 GitHub `origin/main` 均为 `197dba40b0a8bc9e7110f456bf591ec1dd3ac152`，双方没有提交差异，也不存在本地落后、超前或分叉。后续播放诊断与 WDA 恢复改动已在 `e759a4507375f018be2174ab9768be438b90abad` 纳入并同步到 `origin/main`；本段历史基线不应再被当作当前 HEAD。
 
 本节结论的含义是“可以在最新源码基线上继续独立实现和验证”，不是 DS One 源码已经恢复，也不是 DS One 2.4.5 的运行时调用顺序已经完全证明。
 

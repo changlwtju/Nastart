@@ -164,3 +164,5 @@ IPA 内的 `DSCloudH00k.dylib`：
 可复用的包和凭据已经保存到：`/Users/lagransun/Library/Application Support/Nastart/WDA/iPhone-16.3.1`。项目脚本入口为 `scripts/install_wda_iphone_once.sh`、`scripts/start_wda_iphone.sh` 和 `scripts/prepare_wda_recovery.sh`；以后先校验 receipt 和 `/status`，不要重复构建或安装。
 
 这解决的是动态采集工具链，不等于 DS One 播放链路已经被完整还原。下一阶段可以在不绕过 DRM/订阅保护的前提下，使用 WDA 对同一视频执行可重复操作，并把操作时间点与 HTTP Range、播放器日志和首帧/seek 时间对齐，继续验证 2.4.5 的缓存、预加载、转码和 seek 分支。
+
+PiP 动态操作的固定方法已补充到[真机调试运行手册](./PLAYBACK-DEBUG-RUNBOOK.md)：进入使用 DS One 播放器右上角第一按钮；退出时切换到 SpringBoard WDA session，在 `PIP-SBInteractionPassThroughView` 控件树中点击 `恢复全屏幕`。该方法已在 S03《碟中谍3》上自动化验证，不能用 Home 或重新启动 DS One 替代退出按钮验收。

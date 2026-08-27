@@ -189,3 +189,32 @@ scripts/start_wda_iphone.sh
 `install_wda_iphone_once.sh` 检测到设备中已有 `ProfileValidated=true` 时只做校验，不重新安装；`start_wda_iphone.sh` 使用 XCTest `tidevice xcuitest` 建立 testmanagerd 会话，再以 `iproxy 8102:8100` 暴露 WDA。只有 `ready=true` 后才开始 UI 自动化。设备必须处于解锁状态；解锁是使用 DVT/开发者服务的前置条件，不代表需要改动系统。
 
 本轮 WDA 运行时日志保存在上述目录的 `runtime/` 下；安装摘要在 `install-receipt.txt`。若 WDA 已在 8102 端口运行，启动脚本会直接复用，不会再次安装。
+
+## DS One PiP 自动化进入与退出（2026-08-27，已在 S03 真机验证）
+
+PiP 的播放器入口和系统退出控件属于两个不同的 UI 会话，必须分别操作：DS One 会话只负责进入，SpringBoard 会话负责 PiP 浮窗控件。不能在 DS One 会话中直接寻找或点击系统 PiP 的退出按钮。
+
+### 进入 PiP
+
+1. 在 DS One 播放同一待测视频并显示播放器控制层。2.4.5 Build 4 的播放器右上角第一按钮由 XCUI 树定位为 `x=603..633, y=68..92`；优先使用元素 XPath `//XCUIElementTypeButton[@x="603"]` 获取后立即点击，不要使用失效的元素 ID。
+2. 等待约 1–2 秒，保存 DS One 的 `/source` 和 `/screenshot`。进入成功的证据是主播放器窗口隐藏，树中出现 `PIPUIView`（约 `270×152`，`StartsMediaSession`），屏幕出现带视频画面的系统浮窗。
+3. 不要把“按 Home 后出现浮窗”当作播放器入口按钮验证；Home 只可作为后台/PiP 行为的补充场景。优先记录真正的播放器按钮点击时间。
+
+### 退出 PiP / 恢复全屏
+
+1. PiP 出现后建立一个临时 SpringBoard WDA session。当前已验证的 W3C 请求形式为：
+
+   ```json
+   {"capabilities":{"alwaysMatch":{"platformName":"iOS","appium:bundleId":"com.apple.springboard","appium:noReset":true}}}
+   ```
+
+   这一步只切换 WDA 的自动化目标，不安装 WDA、不更新或重启设备。
+2. 用 SpringBoard session `/source` 确认 `PIP-SBInteractionPassThroughView`，其已验证几何为 `x=110, y=47, width=270, height=152`。点击浮窗中心（约 `245,123`）显示 PiP 控件。
+3. 重新读取 `/source`，不要猜坐标；系统树会暴露：`关闭画中画`、`恢复全屏幕`、`向后跳10秒钟`、`暂停`、`向前跳10秒钟`。用 XPath `//XCUIElementTypeButton[@name="恢复全屏幕"]` 获取元素并立即点击。
+4. 退出成功的证据是 SpringBoard 树不再出现 `PIP-SBInteractionPassThroughView`，截图回到 DS One 全屏播放器，播放位置继续推进且没有回到 `00:00`。同时保存点击前后的 wall-clock、两个 session 的 `/source` 和截图。
+
+### 坐标与会话陷阱
+
+- DS One session 的 `window/size` 可能仍是横屏 `844×390`，而原始截图是竖屏 `1170×2532`；不要把截图像素直接当作 DS One 的坐标。
+- PiP 控件属于 SpringBoard；DS One 树中的 `PIPUIView` 可能是 `visible=false`，这不表示 PiP 不存在。
+- 自动点击失败时，先区分“控件不在当前会话树”和“元素点击失败”，不能通过重新启动 DS One 代替 PiP 退出验收。完整复现记录见 [DS One 视频播放链路证据基线](./2026-08-27-DSONE-PLAYBACK-CHAIN-BASELINE.md)。

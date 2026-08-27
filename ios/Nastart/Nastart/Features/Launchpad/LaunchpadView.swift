@@ -4135,7 +4135,9 @@ private final class MediaPlayerSession: ObservableObject {
     private var timeControlObservation: NSKeyValueObservation?
     private var periodicTimeObserver: Any?
     private var lastTimeControlStatus: AVPlayer.TimeControlStatus?
+    private var lastObservedBufferStart: Double?
     private var lastObservedBufferEnd: Double?
+    private var lastObservedBufferPlayhead: Double?
     private var didRecordFirstFrame = false
     private var playbackStartedAt: Date?
     private var didApplyInitialPosition = false
@@ -4184,7 +4186,9 @@ private final class MediaPlayerSession: ObservableObject {
         didApplyInitialPosition = false
         didAutoplayAfterReady = false
         lastTimeControlStatus = nil
+        lastObservedBufferStart = nil
         lastObservedBufferEnd = nil
+        lastObservedBufferPlayhead = nil
         didRecordFirstFrame = false
         playbackStartedAt = nil
         errorMessage = nil
@@ -4283,12 +4287,18 @@ private final class MediaPlayerSession: ObservableObject {
                 }
                 let bufferedEnd = timeRange.start.seconds + timeRange.duration.seconds
                 guard bufferedEnd.isFinite else { return }
-                if let previousEnd = self.lastObservedBufferEnd,
-                   abs(bufferedEnd - previousEnd) < 0.5 {
+                let currentSeconds = self.player.currentTime().seconds
+                if let previousStart = self.lastObservedBufferStart,
+                   let previousEnd = self.lastObservedBufferEnd,
+                   let previousPlayhead = self.lastObservedBufferPlayhead,
+                   abs(timeRange.start.seconds - previousStart) < 0.5,
+                   abs(bufferedEnd - previousEnd) < 0.5,
+                   (!currentSeconds.isFinite || abs(currentSeconds - previousPlayhead) < 1.0) {
                     return
                 }
+                self.lastObservedBufferStart = timeRange.start.seconds
                 self.lastObservedBufferEnd = bufferedEnd
-                let currentSeconds = self.player.currentTime().seconds
+                self.lastObservedBufferPlayhead = currentSeconds.isFinite ? currentSeconds : nil
                 let bufferAhead = currentSeconds.isFinite
                     ? max(bufferedEnd - currentSeconds, 0)
                     : 0
