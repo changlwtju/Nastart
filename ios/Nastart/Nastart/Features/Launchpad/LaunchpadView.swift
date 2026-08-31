@@ -3253,7 +3253,7 @@ private final class PlaybackNetworkObserver: @unchecked Sendable {
                 snapshot = PlaybackNetworkSnapshot(
                     cacheKey: "cellular",
                     bitrateCap: path.isExpensive ? 12_000_000 : 16_000_000,
-                    fallbackBitrate: 4_000_000
+                    fallbackBitrate: 2_000_000
                 )
             } else if path.usesInterfaceType(.wifi) || path.usesInterfaceType(.wiredEthernet) {
                 snapshot = PlaybackNetworkSnapshot(
@@ -9809,10 +9809,7 @@ private final class JellyfinLibraryStore: ObservableObject {
         } ?? false
         let routeCanAttemptOriginalPlayback = playbackRouteIsPrivate
             || forcesOriginalPlayback
-            || (
-                bitrateDecision.networkKey == "cellular"
-                    || (bitrateDecision.networkKey == "wifi" && sourceBitrateFitsDirectBudget)
-            )
+            || sourceBitrateFitsDirectBudget
         if routeCanAttemptOriginalPlayback,
            forcedServerBitrate == nil,
            forcedServerReason == nil,
@@ -9867,16 +9864,11 @@ private final class JellyfinLibraryStore: ObservableObject {
                 0
             )
             let prepared: JellyfinPreparedPlayback
-            // Treat a measured, bitrate-safe original stream like a device-file
-            // playback route on Wi-Fi and cellular. This lets VLC start from
-            // the authenticated Range proxy instead of waiting for Jellyfin
-            // to create the first HLS segment. The probe is bounded and the
-            // existing HLS branch remains the fallback when the source cannot
-            // be opened or the selected audio needs server conversion.
-            let prefersRemoteOriginalPlayback = (
-                bitrateDecision.networkKey == "cellular"
-                    || (bitrateDecision.networkKey == "wifi" && sourceBitrateFitsDirectBudget)
-            ) && !Self.requiresAudioTranscode(audioCodec: selectedAudioCodec)
+            // Treat a bitrate-safe original stream like a device-file route.
+            // Oversized public cellular playback should enter Jellyfin HLS
+            // before VLC opens the raw file, not after a startup watchdog fires.
+            let prefersRemoteOriginalPlayback = sourceBitrateFitsDirectBudget
+                && !Self.requiresAudioTranscode(audioCodec: selectedAudioCodec)
             let requiresDeviceCompatibilityTranscode = Self.requiresDeviceCompatibilityTranscode(
                 audioCodec: selectedAudioCodec
             )
@@ -14073,17 +14065,55 @@ private enum DSMConnectionProtocol: String, CaseIterable, Identifiable {
     var title: String { rawValue.uppercased() }
 }
 
+private enum DSMConnectionLocation: String, CaseIterable, Identifiable {
+    case local
+    case remote
+
+    var id: String { rawValue }
+
+    var titleKey: String {
+        switch self {
+        case .local: return "connect.location.local"
+        case .remote: return "connect.location.remote"
+        }
+    }
+
+    var hostPlaceholderKey: String {
+        switch self {
+        case .local: return "connect.host.example.local"
+        case .remote: return "connect.host.example.remote"
+        }
+    }
+
+    var hostHintKey: String {
+        switch self {
+        case .local: return "connect.host.hint.local"
+        case .remote: return "connect.host.hint.remote"
+        }
+    }
+}
+
 private struct DSMConnectionFlowView: View {
     let onConnected: () -> Void
     @EnvironmentObject private var dataStore: AppDataStore
     @EnvironmentObject private var connectionStore: NASConnectionStore
     @Environment(\.dismiss) private var dismiss
+    @AppStorage("connect.remember.nas") private var rememberNAS = true
+    @AppStorage("connect.remember.account") private var rememberAccount = true
+    @AppStorage("connect.remember.password") private var rememberPassword = true
+    @AppStorage("connect.remembered.host") private var rememberedHost = ""
+    @AppStorage("connect.remembered.account") private var rememberedAccount = ""
+    @AppStorage("connect.remembered.location") private var rememberedLocationRaw = DSMConnectionLocation.remote.rawValue
+    @AppStorage("connect.remembered.protocol") private var rememberedProtocolRaw = DSMConnectionProtocol.https.rawValue
+    @AppStorage("connect.remembered.self_signed") private var rememberedAllowsSelfSignedCertificates = false
     @State private var host = ""
     @State private var account = ""
     @State private var password = ""
     @State private var oneTimeCode = ""
+    @State private var accessLocation: DSMConnectionLocation = .remote
     @State private var connectionProtocol: DSMConnectionProtocol = .https
     @State private var allowsSelfSignedCertificates = false
+    @State private var showsPassword = false
     @State private var showsAdvancedSettings = false
     @State private var isConnecting = false
     @State private var connectionStatusKey = "connect.review.authenticating"
@@ -14091,6 +14121,7 @@ private struct DSMConnectionFlowView: View {
     @State private var showError = false
     @State private var showFinishHint = false
     @State private var connectionTask: Task<Void, Never>?
+    @State private var didLoadRememberedLogin = false
 
     var body: some View {
         ScrollView {
@@ -14114,52 +14145,69 @@ private struct DSMConnectionFlowView: View {
                     Text("connect.section.target")
                         .font(.headline)
 
-                    NavigationLink {
-                        LANDiscoveryView(selectedHost: $host)
-                    } label: {
-                        HStack(spacing: 12) {
-                            Image(systemName: "dot.radiowaves.left.and.right")
-                                .font(.title3.weight(.semibold))
-                                .foregroundStyle(AppTheme.accent)
-                                .frame(width: 36, height: 36)
-                                .background(AppTheme.accent.opacity(0.12))
-                                .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
-                            VStack(alignment: .leading, spacing: 3) {
-                                Text("connect.scan.title")
-                                    .font(.body.weight(.semibold))
-                                Text("connect.scan.card_hint")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                            }
-                            Spacer()
-                            Image(systemName: "chevron.right")
-                                .font(.caption.weight(.bold))
-                                .foregroundStyle(.tertiary)
+                    Picker("connect.location", selection: $accessLocation) {
+                        ForEach(DSMConnectionLocation.allCases) { location in
+                            Text(LocalizedStringKey(location.titleKey)).tag(location)
                         }
-                        .contentShape(Rectangle())
                     }
-                    .buttonStyle(.plain)
+                    .pickerStyle(.segmented)
+                    .onChange(of: accessLocation) { location in
+                        if location == .remote {
+                            connectionProtocol = .https
+                        }
+                    }
 
-                    HStack(spacing: 10) {
-                        Rectangle()
-                            .fill(AppTheme.hairline)
-                            .frame(height: 1)
-                        Text("connect.or_manual")
-                            .font(.caption)
-                            .foregroundStyle(.tertiary)
-                        Rectangle()
-                            .fill(AppTheme.hairline)
-                            .frame(height: 1)
+                    if accessLocation == .local {
+                        NavigationLink {
+                            LANDiscoveryView(selectedHost: $host)
+                        } label: {
+                            HStack(spacing: 12) {
+                                Image(systemName: "dot.radiowaves.left.and.right")
+                                    .font(.title3.weight(.semibold))
+                                    .foregroundStyle(AppTheme.accent)
+                                    .frame(width: 36, height: 36)
+                                    .background(AppTheme.accent.opacity(0.12))
+                                    .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                                VStack(alignment: .leading, spacing: 3) {
+                                    Text("connect.scan.title")
+                                        .font(.body.weight(.semibold))
+                                    Text("connect.scan.card_hint")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                Spacer()
+                                Image(systemName: "chevron.right")
+                                    .font(.caption.weight(.bold))
+                                    .foregroundStyle(.tertiary)
+                            }
+                            .contentShape(Rectangle())
+                        }
+                        .buttonStyle(.plain)
+
+                        HStack(spacing: 10) {
+                            Rectangle()
+                                .fill(AppTheme.hairline)
+                                .frame(height: 1)
+                            Text("connect.or_manual")
+                                .font(.caption)
+                                .foregroundStyle(.tertiary)
+                            Rectangle()
+                                .fill(AppTheme.hairline)
+                                .frame(height: 1)
+                        }
                     }
 
                     connectionFieldLabel("connect.host")
-                    TextField("connect.host.example", text: $host)
+                    TextField(LocalizedStringKey(accessLocation.hostPlaceholderKey), text: $host)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
                         .keyboardType(.URL)
                         .connectionInputStyle()
+                        .onChange(of: host) { value in
+                            adoptLocation(from: value)
+                        }
 
-                    Text("connect.host.hint")
+                    Text(LocalizedStringKey(accessLocation.hostHintKey))
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
@@ -14179,8 +14227,7 @@ private struct DSMConnectionFlowView: View {
                         .connectionInputStyle()
 
                     connectionFieldLabel("connect.password")
-                    SecureField("connect.password.example", text: $password)
-                        .textContentType(.password)
+                    passwordInput
                         .connectionInputStyle()
 
                     connectionFieldLabel("connect.otp", optional: true)
@@ -14188,6 +14235,8 @@ private struct DSMConnectionFlowView: View {
                         .textContentType(.oneTimeCode)
                         .keyboardType(.numberPad)
                         .connectionInputStyle()
+
+                    rememberOptions
                 }
                 .connectionSectionStyle()
 
@@ -14199,6 +14248,7 @@ private struct DSMConnectionFlowView: View {
                             }
                         }
                         .pickerStyle(.segmented)
+                        .disabled(accessLocation == .remote)
 
                         Toggle(isOn: $allowsSelfSignedCertificates) {
                             VStack(alignment: .leading, spacing: 3) {
@@ -14238,21 +14288,6 @@ private struct DSMConnectionFlowView: View {
                 .background(Color(.secondarySystemGroupedBackground))
                 .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
 
-                Button {
-                    connectDSM()
-                } label: {
-                    HStack {
-                        if isConnecting {
-                            ProgressView()
-                                .tint(.white)
-                        }
-                        Text(LocalizedStringKey(isConnecting ? connectionStatusKey : "connect.action"))
-                            .font(.headline.weight(.semibold))
-                    }
-                }
-                .buttonStyle(NastartPrimaryButtonStyle())
-                .disabled(isConnecting || host.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || account.isEmpty || password.isEmpty)
-
                 Label("connect.scope.footer", systemImage: "lock.shield")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
@@ -14265,6 +14300,13 @@ private struct DSMConnectionFlowView: View {
             .padding(.bottom, 28)
         }
         .background(AppTheme.groupedBackground)
+        .safeAreaInset(edge: .bottom) {
+            connectButton
+                .padding(.horizontal, 18)
+                .padding(.top, 10)
+                .padding(.bottom, 8)
+                .background(.regularMaterial)
+        }
         .navigationTitle("connect.nav")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -14289,6 +14331,94 @@ private struct DSMConnectionFlowView: View {
         } message: {
             Text(errorMessage)
         }
+        .onAppear {
+            loadRememberedLoginIfNeeded()
+        }
+    }
+
+    private var connectButton: some View {
+        Button {
+            connectDSM()
+        } label: {
+            HStack {
+                if isConnecting {
+                    ProgressView()
+                        .tint(.white)
+                }
+                Text(LocalizedStringKey(isConnecting ? connectionStatusKey : "connect.action"))
+                    .font(.headline.weight(.semibold))
+            }
+        }
+        .buttonStyle(NastartPrimaryButtonStyle())
+        .disabled(!canConnect)
+    }
+
+    private var canConnect: Bool {
+        !isConnecting
+            && !host.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            && !account.isEmpty
+            && !password.isEmpty
+    }
+
+    private var rememberOptions: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Toggle("connect.remember.nas", isOn: $rememberNAS)
+                .onChange(of: rememberNAS) { value in
+                    if !value {
+                        rememberAccount = false
+                        rememberPassword = false
+                        rememberedHost = ""
+                    }
+                }
+            Toggle("connect.remember.account", isOn: $rememberAccount)
+                .disabled(!rememberNAS)
+                .onChange(of: rememberAccount) { value in
+                    if !value {
+                        rememberPassword = false
+                        rememberedAccount = ""
+                    }
+                }
+            Toggle("connect.remember.password", isOn: $rememberPassword)
+                .disabled(!rememberNAS || !rememberAccount)
+                .onChange(of: rememberPassword) { value in
+                    if value {
+                        rememberNAS = true
+                        rememberAccount = true
+                    } else {
+                        KeychainStore.shared.clearNASCredentials()
+                    }
+                }
+            Text("connect.remember.hint")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+    }
+
+    private var passwordInput: some View {
+        HStack(spacing: 8) {
+            Group {
+                if showsPassword {
+                    TextField("connect.password.example", text: $password)
+                } else {
+                    SecureField("connect.password.example", text: $password)
+                }
+            }
+            .textContentType(.password)
+            .textInputAutocapitalization(.never)
+            .autocorrectionDisabled()
+
+            Button {
+                showsPassword.toggle()
+            } label: {
+                Image(systemName: showsPassword ? "eye.slash" : "eye")
+                    .font(.body.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                    .frame(width: 34, height: 34)
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(Text(showsPassword ? "connect.password.hide" : "connect.password.show"))
+        }
     }
 
     private func connectDSM() {
@@ -14299,7 +14429,7 @@ private struct DSMConnectionFlowView: View {
             do {
                 let baseURL = try DSMClient.normalizedBaseURL(
                     from: protocolAdjustedHost,
-                    defaultScheme: connectionProtocol.rawValue
+                    defaultScheme: defaultSchemeForCurrentLocation
                 )
                 let endpoints = DSMConnectionEndpoints(
                     primaryDomain: NetworkHostClassifier.isPrivate(baseURL.host) ? nil : baseURL,
@@ -14325,7 +14455,8 @@ private struct DSMConnectionFlowView: View {
                 }
                 let snapshot = await client.loadSnapshot(session: session, useAgent: false)
                 try Task.checkCancellation()
-                do {
+                rememberSuccessfulConnection(baseURL: baseURL, account: account)
+                if rememberPassword {
                     try KeychainStore.shared.saveNASCredential(
                         StoredNASCredential(
                             baseURLString: baseURL.absoluteString,
@@ -14338,9 +14469,8 @@ private struct DSMConnectionFlowView: View {
                             lastKnownRoute: session.actualRoute
                         )
                     )
-                } catch {
-                    await client.logout(session: session)
-                    throw error
+                } else {
+                    KeychainStore.shared.clearNASCredentials()
                 }
                 await MainActor.run {
                     dataStore.activateDSM(snapshot: snapshot, session: session, useAgent: false)
@@ -14365,6 +14495,10 @@ private struct DSMConnectionFlowView: View {
         }
     }
 
+    private var defaultSchemeForCurrentLocation: String {
+        accessLocation == .remote ? DSMConnectionProtocol.https.rawValue : connectionProtocol.rawValue
+    }
+
     private var protocolAdjustedHost: String {
         let trimmed = host.trimmingCharacters(in: .whitespacesAndNewlines)
         guard
@@ -14377,6 +14511,78 @@ private struct DSMConnectionFlowView: View {
         // Respect an explicitly entered scheme. The protocol picker only
         // applies when the user enters a bare host or IP address.
         return trimmed
+    }
+
+    private func loadRememberedLoginIfNeeded() {
+        guard !didLoadRememberedLogin else { return }
+        didLoadRememberedLogin = true
+
+        if let location = DSMConnectionLocation(rawValue: rememberedLocationRaw) {
+            accessLocation = location
+        }
+        if let rememberedProtocol = DSMConnectionProtocol(rawValue: rememberedProtocolRaw) {
+            connectionProtocol = rememberedProtocol
+        }
+        allowsSelfSignedCertificates = rememberedAllowsSelfSignedCertificates
+        if accessLocation == .remote {
+            connectionProtocol = .https
+        }
+
+        let credential = KeychainStore.shared.loadNASCredential()
+        if rememberNAS, host.isEmpty {
+            host = credential?.baseURLString ?? rememberedHost
+            adoptLocation(from: host)
+        }
+        if rememberAccount, account.isEmpty {
+            account = credential?.account ?? rememberedAccount
+        }
+        if rememberPassword, password.isEmpty {
+            password = credential?.password ?? ""
+        }
+    }
+
+    private func rememberSuccessfulConnection(baseURL: URL, account: String) {
+        if rememberNAS {
+            rememberedHost = baseURL.absoluteString
+            rememberedLocationRaw = NetworkHostClassifier.isPrivate(baseURL.host)
+                ? DSMConnectionLocation.local.rawValue
+                : DSMConnectionLocation.remote.rawValue
+            rememberedProtocolRaw = baseURL.scheme?.lowercased() ?? defaultSchemeForCurrentLocation
+            rememberedAllowsSelfSignedCertificates = allowsSelfSignedCertificates
+        } else {
+            rememberedHost = ""
+        }
+
+        if rememberAccount {
+            rememberedAccount = account
+        } else {
+            rememberedAccount = ""
+        }
+    }
+
+    private func adoptLocation(from value: String) {
+        let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return }
+        let hasExplicitScheme = trimmed.contains("://")
+        let urlText = hasExplicitScheme ? trimmed : "https://\(trimmed)"
+        guard
+            let components = URLComponents(string: urlText),
+            let host = components.host,
+            !host.isEmpty
+        else {
+            return
+        }
+        accessLocation = NetworkHostClassifier.isPrivate(host) ? .local : .remote
+        if hasExplicitScheme,
+           let scheme = components.scheme?.lowercased(),
+           let parsedProtocol = DSMConnectionProtocol(rawValue: scheme) {
+            connectionProtocol = parsedProtocol
+        } else if accessLocation == .local,
+                  components.port == 5_000 {
+            connectionProtocol = .http
+        } else if accessLocation == .remote {
+            connectionProtocol = .https
+        }
     }
 
     private func connectionErrorMessage(for error: Error) -> String {

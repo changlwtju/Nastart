@@ -96,6 +96,11 @@ The MVP is successful if:
 - a user can add one NAS and several services in under 5 minutes
 - service cards are attractive enough to replace a mobile Homepage/Homarr page
 - the app can remember local and remote access URLs for the same service
+- DSM login supports both LAN IP + port and HTTPS domain + port entry, with
+  clear remote-access guidance before the first network request.
+- Users can explicitly choose whether to remember the NAS address, account, and
+  password. Saved passwords must stay in Keychain; address/account-only memory
+  must not create an unusable auto-login credential.
 - credentials and secrets are stored safely in Keychain
 - the app can warn about obvious reachability or certificate problems
 - the launchpad works well on both iPhone and iPad
@@ -446,6 +451,15 @@ Required:
   start the original file quickly through the compatibility engine; explicit
   user track changes and failed direct playback still use the existing
   renegotiation/fallback path.
+- For cellular playback through a public domain-and-port route, skip high-bitrate
+  original files before the player opens them unless the source bitrate fits the
+  current measured or conservative network budget. Jellyfin should negotiate HLS
+  immediately for oversized originals instead of waiting for a VLC startup
+  watchdog to fail.
+- On public cellular routes without a fresh throughput measurement, start
+  automatic Jellyfin HLS at a conservative 2 Mbps target so the first playable
+  segment can arrive on unstable networks; raise quality only after measurement
+  or explicit user selection.
 - For remote original files, use an authenticated local compatibility route that
   presents a continuous client stream while requesting finite upstream Range
   windows. Validate `206`, `Content-Range`, offsets, total length, retries, and

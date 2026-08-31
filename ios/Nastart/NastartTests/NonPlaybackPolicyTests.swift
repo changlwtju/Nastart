@@ -93,6 +93,18 @@ final class NonPlaybackPolicyTests: XCTestCase {
         XCTAssertNil(url.fragment)
     }
 
+    func testDSMBaseURLAcceptsRemoteHTTPSDomainWithExplicitPort() throws {
+        let bareDomain = try DSMClient.normalizedBaseURL(from: "nas.example.com:5443", defaultScheme: "https")
+        XCTAssertEqual(bareDomain.scheme, "https")
+        XCTAssertEqual(bareDomain.host, "nas.example.com")
+        XCTAssertEqual(bareDomain.port, 5443)
+
+        let fullURL = try DSMClient.normalizedBaseURL(from: "https://nas.example.com:5001")
+        XCTAssertEqual(fullURL.scheme, "https")
+        XCTAssertEqual(fullURL.host, "nas.example.com")
+        XCTAssertEqual(fullURL.port, 5001)
+    }
+
     func testDSMBaseURLRejectsPublicHTTP() {
         XCTAssertThrowsError(try DSMClient.normalizedBaseURL(from: "http://203.0.113.10:5000")) { error in
             guard case DSMClientError.insecureHTTP = error else {

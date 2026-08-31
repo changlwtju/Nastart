@@ -542,6 +542,9 @@ def check_playback_routing_invariants() -> CheckResult:
         "Constrained networks must have a conservative bitrate cap": (
             'cacheKey: "constrained",\n                    bitrateCap: 6_000_000'
         ),
+        "Cellular HLS startup must use a weak-network fallback": (
+            'cacheKey: "cellular",\n                    bitrateCap: path.isExpensive ? 12_000_000 : 16_000_000,\n                    fallbackBitrate: 2_000_000'
+        ),
         "Remote Jellyfin playback must expose a complete-request bitrate downshift": (
             "compatibilityFallbackRequestLoader: compatibilityFallbackRequestLoader"
         ),
@@ -680,8 +683,11 @@ def check_playback_routing_invariants() -> CheckResult:
         "VLC diagnostics must expose the active subtitle font and encoding": (
             '"subtitleFont": Self.cjkFontPath ?? "default"'
         ),
-        "Jellyfin automatic playback must try the original route first": (
-            "let shouldAttemptDirectPlayback = forcedServerBitrate == nil"
+        "Jellyfin automatic playback must gate remote original attempts by route or direct budget": (
+            "let routeCanAttemptOriginalPlayback = playbackRouteIsPrivate\n            || forcesOriginalPlayback\n            || sourceBitrateFitsDirectBudget"
+        ),
+        "Jellyfin remote original playback must require the source bitrate budget": (
+            "let prefersRemoteOriginalPlayback = sourceBitrateFitsDirectBudget\n                && !Self.requiresAudioTranscode(audioCodec: selectedAudioCodec)"
         ),
         "Jellyfin automatic metadata must retain the highest-bitrate original source": (
             "return sources.max { lhs, rhs in"
@@ -816,6 +822,9 @@ def check_playback_routing_invariants() -> CheckResult:
         ),
         "Jellyfin original playback must not be gated by a bitrate estimate": (
             "bitrateDecision.allowsDirectPlay"
+        ),
+        "Cellular routes must not unconditionally attempt original playback": (
+            'bitrateDecision.networkKey == "cellular"'
         ),
         "Jellyfin posters must not fall back to uncached AsyncImage loading": "AsyncImage(url:",
         "Finite media playback must not enable VLC's live HTTP helper": (
