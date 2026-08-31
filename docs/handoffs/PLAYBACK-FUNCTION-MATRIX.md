@@ -1,6 +1,6 @@
 # Nastart 18×4 播放功能验收矩阵
 
-更新时间：2026-08-14（Asia/Shanghai）
+更新时间：2026-08-29（Asia/Shanghai）
 
 本表把“18×4 播放单元”和“每个单元要测什么”分开固定。结果填写在 18×4 单元格中，不能只写“能播放”。状态顺序固定为：
 
@@ -68,6 +68,63 @@
 | `MEM` | 采样期间 App 未被 Jetsam/崩溃；记录设备日志和关键内存现象 |
 
 ## 当前已知填写
+
+### 2026-08-31 Nastart S03 播放引擎优化验证
+
+- 在源码修改前已执行远端/工作区核对，本地 `main` 与 `origin/main` 没有提交差异，
+  但工作区存在既有未提交文档、WDA 脚本和播放相关改动；本轮未回退这些改动。
+- 先将当时工作区构建出的 Nastart Debug 包安装到 iPhone 13，再应用本轮播放协商改动，
+  重新构建 `/tmp/NastartEngineOptIPhoneDerived/Build/Products/Debug-iphoneos/Nastart.app`
+  并安装到同一设备；`ios-deploy` 返回 `InstallComplete`，WDA 16.8.0 在 `127.0.0.1:8102`
+  返回 `ready=true`，Nastart session 可读取首页 XML。
+- S03《碟中谍3》详情页在 Nastart 中显示 `4K · H.265 · HDR`，默认音轨为
+  `TRUEHD - 5.1 - 默认`，字幕为 `ASS`，源文件名含
+  `Mission.Impossible.III.2006.2160p.BluRay.REMUX.DV.HEVC.TrueHD.5.1.mkv`，大小
+  `54.01 GB`。本轮新增策略让私网/码率安全原始文件在默认音轨触发 HLS 但存在可直放音轨时，
+  初始播放先选择可直放音轨，避免不必要的 Jellyfin HLS 首段等待。
+- 验证结果：点击“在 Nastart 中播放”后进入内置播放器并取得真实画面；两个延后截图
+  `/tmp/nastart-engine-opt-s03-now.png` 与 `/tmp/nastart-engine-opt-s03-later.png`
+  内容不同且后者字幕文本变化，证明画面持续推进。syslog 出现 `MobileVLCKit` player instance
+  创建；AVPlayer 初始化日志仍存在，但这是系统 player session 目前无条件构造的副作用。
+- 继续优化：compatibility 初始路由已延迟 `AVURLAsset`/`AVPlayerItem` 创建，系统播放器资源
+  只在实际选择 AVPlayer/PiP/HLS fallback 时准备。新包重采 S03 时，`t=2.3s` 进入播放器
+  loading，`t=6.2s` 出现可辨认真实帧，`t=8.3s/12.3s` 画面继续推进；起播阶段 syslog
+  仍记录 `MobileVLCKit` player instance，未见 `AVURLAsset`/`AVPlayerItem` 媒体加载关键字。
+- 自动化注意：详情页播放按钮曾因中心点与底部 tab bar 重叠导致一次误点，本轮已将播放主操作
+  移到音轨/字幕选择之前，减少小屏和 WDA 坐标点击污染。
+- 控制层修复：MobileVLCKit 内置播放器自动隐藏控制条后，单击视频画面可重新显示控制项。iPhone 13
+  WDA session `66B27E04-DEC4-459D-A8C9-30F57280F274` 用 Jellyfin 样本《哈尔的移动城堡》
+  验证：隐藏态只保留 `显示或隐藏播放控制` 命中层，单击后 `完成`、`暂停`、`前进 15 秒`、
+  `后退 15 秒`、`音轨`、`字幕`、`更多播放控制` 等按钮重新可见。截图：
+  `/tmp/nastart-controls-hidden.png`、`/tmp/nastart-controls-after-tap.png`。
+- 未完成项：首次精确分秒采样脚本失败，因此本轮不能填写准确 FF 秒数；未完成
+  `PA/SK/AT/SU/AUD/Q/PP/EX/MEM` 全矩阵；HTTP Range/Content-Range 仍需服务端或代理日志补齐。
+
+### 2026-08-29 DS One S03 大文件动态续采
+
+- DS One 2.4.5 Build 4 在 iPhone 13 上继续采集 S03《碟中谍3》
+  `50.3 GB` Jellyfin 样本，证据见
+  [2026-08-29-DSONE-S03-DYNAMIC-CONTINUATION.md](./2026-08-29-DSONE-S03-DYNAMIC-CONTINUATION.md)。
+- 本轮已确认：首个真实视频帧约在点击播放后 3 秒出现；`HEVC / 2160P /
+  23FPS / 57.42mbps` 画面连续推进至少 30 秒；暂停 5 秒定帧且吞吐降到
+  `0 B/s`；恢复后从相近位置继续；进度条前跳/回跳后不回到 `00:00`；音轨菜单列出
+  AC-3/TrueHD 四轨且选择 TrueHD 后位置保持；字幕菜单列出 PGS/ASS 且切到 ASS 后播放不中断；
+  后续自然画面已看到 ASS 双语字幕实际渲染；PiP 进入后出现 iOS 系统 PiP 浮窗，并在恢复后
+  回到 S03 全屏播放器且位置、字幕保持。
+- 本轮不能升级为完整 `P` 的项：精确 +/-15 秒 seek、按固定采样点完成的字幕完整性、实际音频听测、
+  Jellyfin 清晰度切换、HTTP Range/Content-Range、服务端 Range 日志和 PiP 退出闭环。
+  PiP 入口与恢复均有截图证据，但 SpringBoard `恢复全屏幕` XPath 退出步骤仍被 WDA 设备锁定状态阻塞；
+  该项应继续记为 `TOOL/U`，待下一次稳定解锁状态下重跑。
+
+### 2026-08-29 Range 响应校验实现状态
+
+- Nastart 本地认证 Range proxy 已将上游 `206` / `Content-Range` / 请求起始偏移 /
+  文件总长度校验收敛到 `MediaRangePolicy.validatedPartialResponse`，并在交付 body 前拒绝
+  `200`、缺失或 wildcard 总长度、起始偏移不匹配、反向区间和超出文件长度的区间。
+- 本次只更新跨样本传输前置策略和单元测试覆盖；未执行 DS One 2.4.5 真机动态采集，也未执行
+  Nastart 四入口播放矩阵回归，因此 18×4 单元格状态不变。
+- 验证状态：`preflight`、`git diff --check`、generic iphoneos app build 通过；simulator 单测仍被
+  `NastartTests` target 无法解析 `MobileVLCKit` 模块阻塞，需单独修测试工程依赖后重跑。
 
 ### 2026-08-15 通用传输策略验收状态
 

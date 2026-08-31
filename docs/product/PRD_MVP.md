@@ -436,10 +436,21 @@ Required:
   hardware decode, background playback, and Picture in Picture. Use the
   compatibility engine for unsupported containers, NAS-specific transport, or
   a bounded system-player failure, with resume position preserved.
+- When the compatibility engine is the initial route, do not prepare an
+  `AVPlayerItem` or start AVFoundation media loading until the user or fallback
+  flow explicitly switches to the system player.
+- For private or bitrate-safe Jellyfin originals, do not force the whole video
+  into server HLS solely because the default audio track is a high-compatibility
+  codec such as TrueHD/MLP when another source audio track can direct-play. On
+  initial playback, the app may choose a direct-playable source audio track to
+  start the original file quickly through the compatibility engine; explicit
+  user track changes and failed direct playback still use the existing
+  renegotiation/fallback path.
 - For remote original files, use an authenticated local compatibility route that
   presents a continuous client stream while requesting finite upstream Range
   windows. Validate `206`, `Content-Range`, offsets, total length, retries, and
-  short EOF responses; never turn a seekable file into an unbounded download.
+  short EOF responses with shared policy tests before the proxy sends bytes to
+  the player; never turn a seekable file into an unbounded download.
 - Coalesce rapid seeks, cancel obsolete requests, resume from the requested
   offset, and keep the playback position/selected tracks when a source or engine
   is replaced.
@@ -451,6 +462,8 @@ Required:
   subtitle tracks (including external CJK subtitles), quality changes where
   the provider supports them, background/Picture in Picture behavior, and
   continue-watching persistence.
+- When in-player controls auto-hide, a single tap on the video surface must
+  reveal them again without requiring seek, fast-forward, or another command.
 - Treat subscription, authorization, certificate validation, and DRM as
   provider/security boundaries. Nastart may play only resources authorized by
   the user's configured account or file service and must not bypass those

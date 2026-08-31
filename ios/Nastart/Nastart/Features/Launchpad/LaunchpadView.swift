@@ -4150,8 +4150,7 @@ private final class MediaPlayerSession: ObservableObject {
     init(request: MediaPlaybackRequest) {
         self.request = request
         pendingInitialPosition = request.initialPosition
-        player = AVPlayer(playerItem: Self.makePlayerItem(for: request))
-        Self.configure(player, for: request)
+        player = AVPlayer()
     }
 
     private static func makePlayerItem(for request: MediaPlaybackRequest) -> AVPlayerItem {
@@ -4196,6 +4195,12 @@ private final class MediaPlayerSession: ObservableObject {
         isReady = false
         startupWorkItem?.cancel()
         startupWorkItem = nil
+        Self.configure(player, for: request)
+        player.replaceCurrentItem(with: Self.makePlayerItem(for: request))
+    }
+
+    private func prepareCurrentItemIfNeeded() {
+        guard player.currentItem == nil else { return }
         Self.configure(player, for: request)
         player.replaceCurrentItem(with: Self.makePlayerItem(for: request))
     }
@@ -4404,6 +4409,7 @@ private final class MediaPlayerSession: ObservableObject {
             pendingInitialPosition = min(max(normalizedPosition, 0), 1)
             didApplyInitialPosition = false
         }
+        prepareCurrentItemIfNeeded()
         activateIfNeeded()
         try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .moviePlayback)
         try? AVAudioSession.sharedInstance().setActive(true)
@@ -7701,7 +7707,8 @@ private struct VLCBuiltInPlayerView: View {
                     }
                 }
 
-                Color.clear
+                Rectangle()
+                    .fill(Color.black.opacity(0.001))
                     .contentShape(Rectangle())
                     .accessibilityElement()
                     .accessibilityLabel(Text("player.controls.toggle"))
@@ -7709,18 +7716,9 @@ private struct VLCBuiltInPlayerView: View {
                     .accessibilityAction {
                         toggleControls()
                     }
-                    .gesture(
-                        TapGesture(count: 2)
-                            .exclusively(before: TapGesture())
-                            .onEnded { value in
-                                switch value {
-                                case .first(_):
-                                    togglePlaybackFromGesture()
-                                case .second(_):
-                                    toggleControls()
-                                }
-                            }
-                    )
+                    .onTapGesture {
+                        toggleControls()
+                    }
                     .simultaneousGesture(
                         DragGesture(minimumDistance: 18)
                             .onChanged { value in
@@ -8627,12 +8625,6 @@ private struct VLCBuiltInPlayerView: View {
             return String(format: "%d:%02d:%02d", hours, minutes, remainder)
         }
         return String(format: "%02d:%02d", minutes, remainder)
-    }
-
-    private func togglePlaybackFromGesture() {
-        guard activePanel == nil, session.errorMessage == nil else { return }
-        session.togglePlayback()
-        revealControls()
     }
 
     private var canSeek: Bool {
@@ -9785,7 +9777,7 @@ private final class JellyfinLibraryStore: ObservableObject {
             )
         }
 
-        let selectedAudioStreamIndex = selection?.audioStreamIndex
+        let requestedAudioStreamIndex = selection?.audioStreamIndex
             ?? entry.defaultAudioStreamIndex
         let selectedSubtitleStreamIndex = selection == nil
             ? entry.preferredSubtitleStreamIndex
@@ -9793,12 +9785,10 @@ private final class JellyfinLibraryStore: ObservableObject {
         let selectedSubtitleCodec = entry.subtitleTracks
             .first(where: { $0.index == selectedSubtitleStreamIndex })?
             .codec
-        let selectedAudioCodec = entry.audioTracks
+        var selectedAudioStreamIndex = requestedAudioStreamIndex
+        var selectedAudioCodec = entry.audioTracks
             .first(where: { $0.index == selectedAudioStreamIndex })?
             .codec
-        let selectedAudioTrackOrdinal = selectedAudioStreamIndex.flatMap { selectedIndex in
-            entry.audioTracks.firstIndex { $0.index == selectedIndex }
-        }
         let selectedSubtitleTrackOrdinal = selectedSubtitleStreamIndex.flatMap { selectedIndex in
             entry.subtitleTracks.firstIndex { $0.index == selectedIndex }
         }
@@ -9814,6 +9804,42 @@ private final class JellyfinLibraryStore: ObservableObject {
         let maxBitrate = forcedServerBitrate ?? (playbackRouteIsPrivate
             ? directPlayBudget
             : min(directPlayBudget, 20_000_000))
+        let sourceBitrateFitsDirectBudget = entry.mediaBitrate.map {
+            $0 <= directPlayBudget
+        } ?? false
+        let routeCanAttemptOriginalPlayback = playbackRouteIsPrivate
+            || forcesOriginalPlayback
+            || (
+                bitrateDecision.networkKey == "cellular"
+                    || (bitrateDecision.networkKey == "wifi" && sourceBitrateFitsDirectBudget)
+            )
+        if routeCanAttemptOriginalPlayback,
+           forcedServerBitrate == nil,
+           forcedServerReason == nil,
+           let startupAudioTrack = Self.directPlayableStartupAudioTrack(
+               in: entry,
+               selectedAudioStreamIndex: selectedAudioStreamIndex
+           ) {
+            record(
+                "diagnostics.jellyfin.playback_preparing",
+                level: .info,
+                details: [
+                    "mode": "directPlayableAudioSelected",
+                    "fromAudioStreamIndex": selectedAudioStreamIndex.map(String.init) ?? "default",
+                    "fromAudioCodec": selectedAudioCodec ?? "-",
+                    "toAudioStreamIndex": "\(startupAudioTrack.index)",
+                    "toAudioCodec": startupAudioTrack.codec ?? "-",
+                    "reason": "avoidInitialServerHLS",
+                    "network": bitrateDecision.networkKey,
+                    "sourceBitrate": entry.mediaBitrate.map(String.init) ?? "-"
+                ]
+            )
+            selectedAudioStreamIndex = startupAudioTrack.index
+            selectedAudioCodec = startupAudioTrack.codec
+        }
+        let selectedAudioTrackOrdinal = selectedAudioStreamIndex.flatMap { selectedIndex in
+            entry.audioTracks.firstIndex { $0.index == selectedIndex }
+        }
         record(
             "diagnostics.jellyfin.playback_preparing",
             level: .info,
@@ -9847,9 +9873,6 @@ private final class JellyfinLibraryStore: ObservableObject {
             // to create the first HLS segment. The probe is bounded and the
             // existing HLS branch remains the fallback when the source cannot
             // be opened or the selected audio needs server conversion.
-            let sourceBitrateFitsDirectBudget = entry.mediaBitrate.map {
-                $0 <= directPlayBudget
-            } ?? false
             let prefersRemoteOriginalPlayback = (
                 bitrateDecision.networkKey == "cellular"
                     || (bitrateDecision.networkKey == "wifi" && sourceBitrateFitsDirectBudget)
@@ -10910,6 +10933,27 @@ private final class JellyfinLibraryStore: ObservableObject {
             return nil
         }
         return preferredPlaybackURL(url)
+    }
+
+    private static func directPlayableStartupAudioTrack(
+        in entry: JellyfinMediaEntry,
+        selectedAudioStreamIndex: Int?
+    ) -> JellyfinMediaTrack? {
+        guard
+            let selectedAudioStreamIndex,
+            let selectedTrack = entry.audioTracks.first(where: { $0.index == selectedAudioStreamIndex }),
+            requiresAudioTranscode(audioCodec: selectedTrack.codec)
+                || requiresDeviceCompatibilityTranscode(audioCodec: selectedTrack.codec)
+        else {
+            return nil
+        }
+
+        let candidates = entry.audioTracks.filter { track in
+            !requiresAudioTranscode(audioCodec: track.codec)
+                && !requiresDeviceCompatibilityTranscode(audioCodec: track.codec)
+        }
+        guard !candidates.isEmpty else { return nil }
+        return candidates.first(where: \.isDefault) ?? candidates.first
     }
 
     private static func requiresBurnIn(subtitleCodec: String?) -> Bool {
@@ -12762,63 +12806,11 @@ private struct JellyfinMediaDetailView: View {
                     }
 
                     if mediaItem.isPlayable {
+                        playbackActionRow
+
                         if mediaItem.audioTracks.count > 1 || !mediaItem.subtitleTracks.isEmpty {
                             playbackTrackControls
                         }
-
-                        HStack(spacing: 10) {
-                            Button(action: preparePlayback) {
-                                HStack(spacing: 10) {
-                                    if isPreparingPlayback {
-                                        ProgressView()
-                                            .tint(.white)
-                                    } else {
-                                        Image(systemName: "play.fill")
-                                    }
-                                    Text(
-                                        LocalizedStringKey(
-                                            (mediaItem.effectivePlaybackProgress ?? 0) > 0
-                                                ? "media.continue.title"
-                                                : "player.play_in_app"
-                                        )
-                                    )
-                                        .font(.headline.weight(.semibold))
-                                }
-                                .foregroundStyle(.white)
-                                .frame(maxWidth: .infinity, minHeight: 54)
-                                .background(AppTheme.accent)
-                                .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-                            }
-                            .buttonStyle(.plain)
-
-                            Menu {
-                                if !ExternalOpenTarget.installedPlayers.isEmpty {
-                                    Section {
-                                        ForEach(ExternalOpenTarget.installedPlayers) { target in
-                                            Button(target.displayName) {
-                                                prepareExternalPlayback(target)
-                                            }
-                                        }
-                                    } header: {
-                                        Text("external.installed_players")
-                                    }
-                                }
-                                Section {
-                                    Button("external.other_apps") {
-                                        prepareSharePlayback()
-                                    }
-                                }
-                            } label: {
-                                Image(systemName: "arrow.up.forward.app")
-                                    .font(.title3.weight(.semibold))
-                                    .foregroundStyle(AppTheme.accent)
-                                    .frame(width: 54, height: 54)
-                                    .background(AppTheme.secondarySurface)
-                                    .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-                            }
-                            .accessibilityLabel(Text("devices.files.open_external"))
-                        }
-                        .disabled(isPreparingPlayback)
                     }
 
                     if !mediaItem.overview.isEmpty {
@@ -12953,6 +12945,62 @@ private struct JellyfinMediaDetailView: View {
         } catch {
             similarItems = []
         }
+    }
+
+    private var playbackActionRow: some View {
+        HStack(spacing: 10) {
+            Button(action: preparePlayback) {
+                HStack(spacing: 10) {
+                    if isPreparingPlayback {
+                        ProgressView()
+                            .tint(.white)
+                    } else {
+                        Image(systemName: "play.fill")
+                    }
+                    Text(
+                        LocalizedStringKey(
+                            (mediaItem.effectivePlaybackProgress ?? 0) > 0
+                                ? "media.continue.title"
+                                : "player.play_in_app"
+                        )
+                    )
+                        .font(.headline.weight(.semibold))
+                }
+                .foregroundStyle(.white)
+                .frame(maxWidth: .infinity, minHeight: 54)
+                .background(AppTheme.accent)
+                .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+            }
+            .buttonStyle(.plain)
+
+            Menu {
+                if !ExternalOpenTarget.installedPlayers.isEmpty {
+                    Section {
+                        ForEach(ExternalOpenTarget.installedPlayers) { target in
+                            Button(target.displayName) {
+                                prepareExternalPlayback(target)
+                            }
+                        }
+                    } header: {
+                        Text("external.installed_players")
+                    }
+                }
+                Section {
+                    Button("external.other_apps") {
+                        prepareSharePlayback()
+                    }
+                }
+            } label: {
+                Image(systemName: "arrow.up.forward.app")
+                    .font(.title3.weight(.semibold))
+                    .foregroundStyle(AppTheme.accent)
+                    .frame(width: 54, height: 54)
+                    .background(AppTheme.secondarySurface)
+                    .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+            }
+            .accessibilityLabel(Text("devices.files.open_external"))
+        }
+        .disabled(isPreparingPlayback)
     }
 
     private func preparePlayback() {

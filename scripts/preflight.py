@@ -862,7 +862,7 @@ def check_playback_routing_invariants() -> CheckResult:
         "ISO images must use the dedicated Range playback adapter": (
             "case .discImage:\n            prepareDiscImagePlayback(from: url)"
         ),
-        "Non-zero seek ranges must be validated upstream": "response.statusCode != 206",
+        "Non-zero seek ranges must be validated upstream": "validatedPartialResponse",
         "Range retries must validate the active retry offset": "activeRequestedRangeStart",
         "The proxy must not advertise byte ranges that upstream omitted": (
             'response.value(forHTTPHeaderField: "Accept-Ranges") == nil'

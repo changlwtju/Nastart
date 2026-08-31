@@ -27,6 +27,49 @@ final class NonPlaybackPolicyTests: XCTestCase {
         )
     }
 
+    func testMediaRangePolicyParsesStrictContentRangeMetadata() {
+        XCTAssertEqual(
+            MediaRangePolicy.contentRange(from: "bytes 100-199/1000"),
+            MediaRangePolicy.ContentRange(start: 100, end: 199, totalLength: 1_000)
+        )
+        XCTAssertEqual(MediaRangePolicy.requestedRangeStart(from: "bytes=100-"), 100)
+        XCTAssertEqual(MediaRangePolicy.requestedRangeStart(from: "bytes 100-199"), 100)
+        XCTAssertNil(MediaRangePolicy.contentRange(from: "bytes */1000"))
+        XCTAssertNil(MediaRangePolicy.contentRange(from: "bytes 200-199/1000"))
+        XCTAssertNil(MediaRangePolicy.contentRange(from: "bytes 100-1000/1000"))
+        XCTAssertNil(MediaRangePolicy.contentRange(from: "bytes 100-199/*"))
+    }
+
+    func testMediaRangePolicyRejectsUnexpectedUpstreamPartialResponses() {
+        XCTAssertEqual(
+            MediaRangePolicy.validatedPartialResponse(
+                statusCode: 206,
+                contentRange: "bytes 33554432-67108863/2684354560",
+                expectedStart: 33_554_432
+            ),
+            MediaRangePolicy.ContentRange(
+                start: 33_554_432,
+                end: 67_108_863,
+                totalLength: 2_684_354_560
+            )
+        )
+        XCTAssertNil(MediaRangePolicy.validatedPartialResponse(
+            statusCode: 200,
+            contentRange: nil,
+            expectedStart: 0
+        ))
+        XCTAssertNil(MediaRangePolicy.validatedPartialResponse(
+            statusCode: 206,
+            contentRange: "bytes 0-33554431/2684354560",
+            expectedStart: 33_554_432
+        ))
+        XCTAssertNil(MediaRangePolicy.validatedPartialResponse(
+            statusCode: 206,
+            contentRange: "bytes 33554432-67108863/*",
+            expectedStart: 33_554_432
+        ))
+    }
+
     func testPrivateNetworkClassification() {
         XCTAssertTrue(NetworkHostClassifier.isPrivate("192.168.1.20"))
         XCTAssertTrue(NetworkHostClassifier.isPrivate("nas.local"))

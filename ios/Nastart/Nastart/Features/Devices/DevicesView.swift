@@ -1682,6 +1682,14 @@ enum AuthenticatedMediaPlaybackResolver {
 }
 
 enum MediaRangePolicy {
+    struct ContentRange: Equatable {
+        let start: Int64
+        let end: Int64
+        let totalLength: Int64
+
+        var bodyLength: Int64 { end - start + 1 }
+    }
+
     // The client-facing response stays open; this is only the maximum amount
     // fetched from the upstream in one URLSession task. It bounds memory and
     // remote connection lifetime without making a playback decision based on
@@ -1730,6 +1738,74 @@ enum MediaRangePolicy {
             return false
         }
         return start >= 0
+    }
+
+    static func requestedRangeStart(from value: String?) -> Int64? {
+        guard let value else { return nil }
+        let normalized = value.trimmingCharacters(in: .whitespacesAndNewlines)
+        let rangeText: Substring?
+        if normalized.lowercased().hasPrefix("bytes=") {
+            rangeText = normalized.dropFirst("bytes=".count)
+        } else {
+            let components = normalized.split(
+                maxSplits: 1,
+                whereSeparator: { $0 == " " || $0 == "\t" }
+            )
+            rangeText = components.count == 2 && components[0].lowercased() == "bytes"
+                ? components[1]
+                : nil
+        }
+        guard let firstRange = rangeText?.split(separator: ",", maxSplits: 1).first,
+              let separator = firstRange.firstIndex(of: "-") else {
+            return nil
+        }
+        let startValue = firstRange[..<separator]
+        guard !startValue.isEmpty,
+              let start = Int64(startValue),
+              start >= 0 else {
+            return nil
+        }
+        return start
+    }
+
+    static func contentRange(from value: String?) -> ContentRange? {
+        guard let value else { return nil }
+        let components = value.trimmingCharacters(in: .whitespacesAndNewlines)
+            .split(separator: " ", maxSplits: 1)
+        guard components.count == 2,
+              components[0].lowercased() == "bytes" else {
+            return nil
+        }
+        let rangeAndTotal = components[1].split(separator: "/", maxSplits: 1)
+        guard rangeAndTotal.count == 2,
+              rangeAndTotal[0] != "*",
+              let totalLength = Int64(rangeAndTotal[1]),
+              totalLength > 0 else {
+            return nil
+        }
+        let bounds = rangeAndTotal[0].split(separator: "-", maxSplits: 1)
+        guard bounds.count == 2,
+              let start = Int64(bounds[0]),
+              let end = Int64(bounds[1]),
+              start >= 0,
+              end >= start,
+              end < totalLength else {
+            return nil
+        }
+        return ContentRange(start: start, end: end, totalLength: totalLength)
+    }
+
+    static func validatedPartialResponse(
+        statusCode: Int,
+        contentRange: String?,
+        expectedStart: Int64
+    ) -> ContentRange? {
+        guard statusCode == 206,
+              let range = Self.contentRange(from: contentRange),
+              range.start == expectedStart else {
+            return nil
+        }
+        return range
     }
 }
 
@@ -2073,7 +2149,7 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
             )
         }
         activeRequestedRange = activeRange
-        activeRequestedRangeStart = Self.requestedRangeStart(from: activeRange)
+        activeRequestedRangeStart = MediaRangePolicy.requestedRangeStart(from: activeRange)
         var request = URLRequest(url: upstreamURL)
         request.httpMethod = method
         request.setValue("identity", forHTTPHeaderField: "Accept-Encoding")
@@ -2128,20 +2204,27 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
             return
         }
         let contentRange = response.value(forHTTPHeaderField: "Content-Range")
-        let parsedRange = Self.byteRange(from: contentRange)
-        responseTotalLength = Self.totalLength(from: contentRange)
+        let parsedRange = MediaRangePolicy.contentRange(from: contentRange)
+        responseTotalLength = parsedRange?.totalLength
         if !isHLSChildRequest,
            let requestedStart = activeRequestedRangeStart,
-           (response.statusCode != 206 || parsedRange?.start != requestedStart) {
-            completionHandler(.cancel)
-            rejectUpstreamResponse()
-            return
+           MediaRangePolicy.validatedPartialResponse(
+                statusCode: response.statusCode,
+                contentRange: contentRange,
+                expectedStart: requestedStart
+           ) == nil {
+                completionHandler(.cancel)
+                rejectUpstreamResponse()
+                return
         }
         if didSendResponseHeaders {
             let expectedStart = responseStartOffset.map { $0 + deliveredBodyBytes }
-            guard response.statusCode == 206,
-                  let expectedStart,
-                  parsedRange?.start == expectedStart else {
+            guard let expectedStart,
+                  let parsedRange = MediaRangePolicy.validatedPartialResponse(
+                    statusCode: response.statusCode,
+                    contentRange: contentRange,
+                    expectedStart: expectedStart
+                  ) else {
                 completionHandler(.cancel)
                 finish(with: URLError(.cannotParseResponse))
                 return
@@ -2150,14 +2233,14 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
             // per-task expectation current so an interrupted continuation is
             // resumed from the exact delivered offset instead of being
             // mistaken for a completed first window.
-            responseEndOffset = parsedRange?.end
+            responseEndOffset = parsedRange.end
             if let contentLength = response.value(forHTTPHeaderField: "Content-Length"),
                let parsedLength = Int64(contentLength), parsedLength >= 0 {
                 expectedBodyBytes = parsedLength
             } else {
-                expectedBodyBytes = parsedRange.map { $0.end - $0.start + 1 }
+                expectedBodyBytes = parsedRange.bodyLength
             }
-            responseTotalLength = Self.totalLength(from: contentRange)
+            responseTotalLength = parsedRange.totalLength
             completionHandler(.allow)
             return
         }
@@ -2632,44 +2715,6 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
         session?.invalidateAndCancel()
         session = nil
         completion()
-    }
-
-    private static func byteRange(from value: String?) -> (start: Int64, end: Int64)? {
-        guard let value else { return nil }
-        let components = value.split(separator: " ", maxSplits: 1)
-        guard components.count == 2,
-              components[0].lowercased() == "bytes",
-              let rangePart = components[1].split(separator: "/", maxSplits: 1).first else {
-            return nil
-        }
-        let bounds = rangePart.split(separator: "-", maxSplits: 1)
-        guard bounds.count == 2,
-              let start = Int64(bounds[0]),
-              let end = Int64(bounds[1]) else {
-            return nil
-        }
-        return (start, end)
-    }
-
-    private static func requestedRangeStart(from value: String?) -> Int64? {
-        guard let value else { return nil }
-        let normalized = value.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
-        guard normalized.hasPrefix("bytes=") else { return nil }
-        let range = normalized.dropFirst("bytes=".count)
-        guard let firstRange = range.split(separator: ",", maxSplits: 1).first,
-              let separator = firstRange.firstIndex(of: "-") else {
-            return nil
-        }
-        let startValue = firstRange[..<separator]
-        guard !startValue.isEmpty else { return nil }
-        return Int64(startValue)
-    }
-
-    private static func totalLength(from value: String?) -> Int64? {
-        guard let value,
-              let total = value.split(separator: "/", maxSplits: 1).last,
-              total != "*" else { return nil }
-        return Int64(total)
     }
 
     private var isFinished: Bool {
