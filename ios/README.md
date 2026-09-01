@@ -68,15 +68,25 @@ Release sync behavior.
 
 The `NastartTests` target covers non-playback policies such as URL validation,
 network-host classification, service status replacement, and launchpad category
-ordering. On macOS, run it from the workspace after installing CocoaPods:
+ordering. It also covers the greenfield playback core model, Range/cache
+planning, connection classification, KSPlayer availability boundaries, and
+weak-network first-frame policy.
+
+On macOS, the repository wrapper can run the workspace even when global
+`xcode-select` points at CommandLineTools, as long as a full Xcode exists in a
+standard location such as `/Applications/Xcode.app` or `~/Downloads/Xcode.app`:
 
 ```bash
-xcodebuild -workspace Nastart.xcworkspace -scheme Nastart \
-  -destination 'platform=iOS Simulator,name=iPhone 16' test
+./scripts/xcodebuild_nastart.sh -scheme Nastart \
+  -destination 'platform=iOS Simulator,name=iPhone 17 Pro,OS=26.5' test
 ```
 
-Playback tests remain intentionally outside this target until they can be
-validated on the physical Mac-connected device.
+To switch the whole machine to the downloaded Xcode instead, run this locally
+and enter the macOS admin password in Terminal:
+
+```bash
+sudo xcode-select -s ~/Downloads/Xcode.app/Contents/Developer
+```
 
 ## Measuring App Size
 

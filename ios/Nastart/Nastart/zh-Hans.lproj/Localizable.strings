@@ -827,6 +827,7 @@
 "diagnostics.files.preview_download_succeeded" = "App 内文件预览准备完成";
 "diagnostics.files.preview_download_failed" = "App 内文件预览准备失败";
 "diagnostics.files.preview_stream_started" = "开始流式播放 DSM 媒体文件";
+"diagnostics.playback.next.ksplayer_guarded" = "KSPlayer 崩溃保护已启用";
 "diagnostics.media.probe_started" = "开始检查媒体响应";
 "diagnostics.media.probe_succeeded" = "媒体响应检查通过";
 "diagnostics.media.probe_invalid_response" = "媒体地址返回了非媒体内容";
@@ -884,6 +885,8 @@
 "diagnostics.web.render_check" = "App 内网页渲染检查完成";
 "diagnostics.web.script_error" = "App 内网页报告脚本错误";
 "diagnostics.web.compatibility_fallback" = "已切换到系统 App 内浏览器";
+"diagnostics.web.entry_presented" = "App 内网页入口已呈现";
+"diagnostics.web.route_requested" = "App 内网页入口已请求";
 "devices.files.empty" = "暂无文件";
 "devices.files.folder_load_failed" = "无法读取此文件夹，请检查 DSM 会话与 File Station 权限后重试。";
 "jellyfin.library.connecting" = "正在连接 Jellyfin...";
@@ -937,6 +940,8 @@
 "jellyfin.search.failed_detail" = "请检查 Jellyfin 连接后重试。";
 "diagnostics.jellyfin.login_succeeded" = "Jellyfin 登录成功";
 "diagnostics.jellyfin.login_failed" = "Jellyfin 登录失败";
+"diagnostics.jellyfin.library_entry_presented" = "Jellyfin 资源库入口已呈现";
+"diagnostics.jellyfin.library_route_requested" = "Jellyfin 资源库入口已请求";
 "diagnostics.jellyfin.library_loaded" = "Jellyfin 资源库载入完成";
 "diagnostics.jellyfin.library_failed" = "Jellyfin 资源库载入失败";
 "jellyfin.player.retry_hint" = "请关闭播放器后重试以获取新的 Jellyfin 播放流，也可以从详情页选择 Infuse、VidHub 或 VLC 直连播放。";

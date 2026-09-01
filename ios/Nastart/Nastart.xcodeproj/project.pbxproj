@@ -30,6 +30,10 @@
 		010101010101010101010021 /* CloudSyncStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020022 /* CloudSyncStore.swift */; };
 		010101010101010101010022 /* AgentClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020024 /* AgentClient.swift */; };
 		010101010101010101010023 /* SSHAgentInstaller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020025 /* SSHAgentInstaller.swift */; };
+		010101010101010101010024 /* nastart_agent.py in Resources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020026 /* nastart_agent.py */; };
+		010101010101010101010025 /* Dockerfile in Resources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020027 /* Dockerfile */; };
+		010101010101010101010026 /* compose.yaml in Resources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020028 /* compose.yaml */; };
+		010101010101010101010027 /* NIOSSH in Frameworks */ = {isa = PBXBuildFile; productRef = 0B0B0B0B0B0B0B0B0B0B0004 /* NIOSSH */; };
 		010101010101010101010030 /* ServiceHealthProbe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020030 /* ServiceHealthProbe.swift */; };
 		010101010101010101010031 /* NonPlaybackPolicyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020031 /* NonPlaybackPolicyTests.swift */; };
 		010101010101010101010032 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 020202020202020202020032 /* XCTest.framework */; };
@@ -41,12 +45,38 @@
 		010101010101010101010038 /* NASConnectionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020038 /* NASConnectionStore.swift */; };
 		010101010101010101010039 /* KeychainStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020039 /* KeychainStore.swift */; };
 		010101010101010101010040 /* NetworkErrorClassification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020040 /* NetworkErrorClassification.swift */; };
-		010101010101010101010024 /* nastart_agent.py in Resources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020026 /* nastart_agent.py */; };
-		010101010101010101010025 /* Dockerfile in Resources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020027 /* Dockerfile */; };
-		010101010101010101010026 /* compose.yaml in Resources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020028 /* compose.yaml */; };
-		010101010101010101010027 /* NIOSSH in Frameworks */ = {isa = PBXBuildFile; productRef = 0B0B0B0B0B0B0B0B0B0B0004 /* NIOSSH */; };
+		010101010101010101010041 /* PlaybackIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020041 /* PlaybackIntent.swift */; };
+		010101010101010101010042 /* PlaybackRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020042 /* PlaybackRoute.swift */; };
+		010101010101010101010043 /* PlaybackPlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020043 /* PlaybackPlan.swift */; };
+		010101010101010101010044 /* PlaybackEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020044 /* PlaybackEngine.swift */; };
+		010101010101010101010045 /* PlaybackByteRange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020045 /* PlaybackByteRange.swift */; };
+		010101010101010101010046 /* RangeCacheStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020046 /* RangeCacheStore.swift */; };
+		010101010101010101010047 /* PlaybackIOContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020047 /* PlaybackIOContext.swift */; };
+		010101010101010101010048 /* PreloadCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020048 /* PreloadCoordinator.swift */; };
+		010101010101010101010049 /* PlaybackDiagnostics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020049 /* PlaybackDiagnostics.swift */; };
+		010101010101010101010050 /* PlaybackScenarioMatrix.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020050 /* PlaybackScenarioMatrix.swift */; };
+		010101010101010101010051 /* KSPlayerEngineSpike.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020051 /* KSPlayerEngineSpike.swift */; };
+		010101010101010101010052 /* PlaybackNextCoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020052 /* PlaybackNextCoreTests.swift */; };
+		010101010101010101010053 /* PlaybackPlanningPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020053 /* PlaybackPlanningPolicy.swift */; };
+		010101010101010101010054 /* URLPlaybackSourceResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020054 /* URLPlaybackSourceResolver.swift */; };
+		010101010101010101010055 /* PlaybackSessionCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020055 /* PlaybackSessionCoordinator.swift */; };
+		010101010101010101010056 /* GreenfieldVideoPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020056 /* GreenfieldVideoPlayerView.swift */; };
+		010101010101010101010057 /* GreenfieldPlaybackBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020057 /* GreenfieldPlaybackBridge.swift */; };
+		010101010101010101010058 /* PlaybackEngineAvailability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020058 /* PlaybackEngineAvailability.swift */; };
+		010101010101010101010059 /* GreenfieldKSPlayerRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020059 /* GreenfieldKSPlayerRenderer.swift */; };
+		010101010101010101010060 /* KSPlayer in Frameworks */ = {isa = PBXBuildFile; productRef = 0B0B0B0B0B0B0B0B0B0B0006 /* KSPlayer */; };
+		127807EE332EB83D2375E086 /* Pods_NastartTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FACED7936A7A76ABCAE30CE9 /* Pods_NastartTests.framework */; };
 		EDD2AEF5B14DC4128B8A2308 /* Pods_Nastart.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F0A427A98EF409A9FC1D1C04 /* Pods_Nastart.framework */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		0C0C0C0C0C0C0C0C0C0C0002 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 060606060606060606060000 /* Project object */;
+			proxyType = 1;
+			remoteInfo = Nastart;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		020202020202020202020001 /* NastartApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NastartApp.swift; sourceTree = "<group>"; };
@@ -74,6 +104,10 @@
 		020202020202020202020023 /* Nastart.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Nastart.entitlements; sourceTree = "<group>"; };
 		020202020202020202020024 /* AgentClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentClient.swift; sourceTree = "<group>"; };
 		020202020202020202020025 /* SSHAgentInstaller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SSHAgentInstaller.swift; sourceTree = "<group>"; };
+		020202020202020202020026 /* nastart_agent.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; name = nastart_agent.py; path = ../../agent/nastart_agent.py; sourceTree = SOURCE_ROOT; };
+		020202020202020202020027 /* Dockerfile */ = {isa = PBXFileReference; lastKnownFileType = text; name = Dockerfile; path = ../../agent/Dockerfile; sourceTree = SOURCE_ROOT; };
+		020202020202020202020028 /* compose.yaml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; name = compose.yaml; path = ../../agent/compose.yaml; sourceTree = SOURCE_ROOT; };
+		020202020202020202020029 /* Nastart.Debug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Nastart.Debug.entitlements; sourceTree = "<group>"; };
 		020202020202020202020030 /* ServiceHealthProbe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceHealthProbe.swift; sourceTree = "<group>"; };
 		020202020202020202020031 /* NonPlaybackPolicyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NonPlaybackPolicyTests.swift; sourceTree = "<group>"; };
 		020202020202020202020032 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = System/Library/Frameworks/XCTest.framework; sourceTree = SDKROOT; };
@@ -85,15 +119,33 @@
 		020202020202020202020038 /* NASConnectionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NASConnectionStore.swift; sourceTree = "<group>"; };
 		020202020202020202020039 /* KeychainStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainStore.swift; sourceTree = "<group>"; };
 		020202020202020202020040 /* NetworkErrorClassification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkErrorClassification.swift; sourceTree = "<group>"; };
-		020202020202020202020026 /* nastart_agent.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; name = nastart_agent.py; path = ../../agent/nastart_agent.py; sourceTree = SOURCE_ROOT; };
-		020202020202020202020027 /* Dockerfile */ = {isa = PBXFileReference; lastKnownFileType = text; name = Dockerfile; path = ../../agent/Dockerfile; sourceTree = SOURCE_ROOT; };
-		020202020202020202020028 /* compose.yaml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; name = compose.yaml; path = ../../agent/compose.yaml; sourceTree = SOURCE_ROOT; };
-		020202020202020202020029 /* Nastart.Debug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Nastart.Debug.entitlements; sourceTree = "<group>"; };
+		020202020202020202020041 /* PlaybackIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackIntent.swift; sourceTree = "<group>"; };
+		020202020202020202020042 /* PlaybackRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackRoute.swift; sourceTree = "<group>"; };
+		020202020202020202020043 /* PlaybackPlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackPlan.swift; sourceTree = "<group>"; };
+		020202020202020202020044 /* PlaybackEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackEngine.swift; sourceTree = "<group>"; };
+		020202020202020202020045 /* PlaybackByteRange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackByteRange.swift; sourceTree = "<group>"; };
+		020202020202020202020046 /* RangeCacheStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RangeCacheStore.swift; sourceTree = "<group>"; };
+		020202020202020202020047 /* PlaybackIOContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackIOContext.swift; sourceTree = "<group>"; };
+		020202020202020202020048 /* PreloadCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreloadCoordinator.swift; sourceTree = "<group>"; };
+		020202020202020202020049 /* PlaybackDiagnostics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackDiagnostics.swift; sourceTree = "<group>"; };
+		020202020202020202020050 /* PlaybackScenarioMatrix.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackScenarioMatrix.swift; sourceTree = "<group>"; };
+		020202020202020202020051 /* KSPlayerEngineSpike.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KSPlayerEngineSpike.swift; sourceTree = "<group>"; };
+		020202020202020202020052 /* PlaybackNextCoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackNextCoreTests.swift; sourceTree = "<group>"; };
+		020202020202020202020053 /* PlaybackPlanningPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackPlanningPolicy.swift; sourceTree = "<group>"; };
+		020202020202020202020054 /* URLPlaybackSourceResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLPlaybackSourceResolver.swift; sourceTree = "<group>"; };
+		020202020202020202020055 /* PlaybackSessionCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackSessionCoordinator.swift; sourceTree = "<group>"; };
+		020202020202020202020056 /* GreenfieldVideoPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GreenfieldVideoPlayerView.swift; sourceTree = "<group>"; };
+		020202020202020202020057 /* GreenfieldPlaybackBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GreenfieldPlaybackBridge.swift; sourceTree = "<group>"; };
+		020202020202020202020058 /* PlaybackEngineAvailability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackEngineAvailability.swift; sourceTree = "<group>"; };
+		020202020202020202020059 /* GreenfieldKSPlayerRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GreenfieldKSPlayerRenderer.swift; sourceTree = "<group>"; };
 		020202020202020202020099 /* Nastart.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Nastart.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		020202020202020202020100 /* NastartTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NastartTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6EE295E3449845D6FE9490F6 /* Pods-Nastart.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Nastart.release.xcconfig"; path = "Target Support Files/Pods-Nastart/Pods-Nastart.release.xcconfig"; sourceTree = "<group>"; };
 		D447A0A76105EFDD2D985714 /* Pods-Nastart.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Nastart.debug.xcconfig"; path = "Target Support Files/Pods-Nastart/Pods-Nastart.debug.xcconfig"; sourceTree = "<group>"; };
+		DE5A19352613C6D57EC2E296 /* Pods-NastartTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NastartTests.debug.xcconfig"; path = "Target Support Files/Pods-NastartTests/Pods-NastartTests.debug.xcconfig"; sourceTree = "<group>"; };
 		F0A427A98EF409A9FC1D1C04 /* Pods_Nastart.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Nastart.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		FACED7936A7A76ABCAE30CE9 /* Pods_NastartTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NastartTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		FD1CE5C045A68B1BA71D2F38 /* Pods-NastartTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NastartTests.release.xcconfig"; path = "Target Support Files/Pods-NastartTests/Pods-NastartTests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,37 +155,21 @@
 			files = (
 				010101010101010101010018 /* JellyfinAPI in Frameworks */,
 				010101010101010101010027 /* NIOSSH in Frameworks */,
+				010101010101010101010060 /* KSPlayer in Frameworks */,
 				EDD2AEF5B14DC4128B8A2308 /* Pods_Nastart.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		040404040404040404040002 /* NastartTests Frameworks */ = {
+		040404040404040404040002 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				010101010101010101010032 /* XCTest.framework in Frameworks */,
+				127807EE332EB83D2375E086 /* Pods_NastartTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
-
-/* Begin PBXContainerItemProxy section */
-		0C0C0C0C0C0C0C0C0C0C0002 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 060606060606060606060000 /* Project object */;
-			proxyType = 1;
-			remoteGlobalID = 060606060606060606060001;
-			remoteInfo = Nastart;
-		};
-/* End PBXContainerItemProxy section */
-
-/* Begin PBXTargetDependency section */
-		0D0D0D0D0D0D0D0D0D0D0002 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 060606060606060606060001 /* Nastart */;
-			targetProxy = 0C0C0C0C0C0C0C0C0C0C0002 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXGroup section */
 		050505050505050505050000 = {
@@ -148,20 +184,13 @@
 			);
 			sourceTree = "<group>";
 		};
-		050505050505050505050015 /* NastartTests */ = {
-			isa = PBXGroup;
-			children = (
-				020202020202020202020031 /* NonPlaybackPolicyTests.swift */,
-			);
-			path = NastartTests;
-			sourceTree = "<group>";
-		};
 		050505050505050505050001 /* Nastart */ = {
 			isa = PBXGroup;
 			children = (
 				050505050505050505050002 /* App */,
 				050505050505050505050003 /* Core */,
 				050505050505050505050004 /* Features */,
+				050505050505050505050016 /* Playback */,
 				050505050505050505050005 /* Shared */,
 				020202020202020202020017 /* Assets.xcassets */,
 				020202020202020202020019 /* Info.plist */,
@@ -303,6 +332,72 @@
 			name = "Agent Payload";
 			sourceTree = "<group>";
 		};
+		050505050505050505050015 /* NastartTests */ = {
+			isa = PBXGroup;
+			children = (
+				020202020202020202020031 /* NonPlaybackPolicyTests.swift */,
+				020202020202020202020052 /* PlaybackNextCoreTests.swift */,
+			);
+			path = NastartTests;
+			sourceTree = "<group>";
+		};
+		050505050505050505050016 /* Playback */ = {
+			isa = PBXGroup;
+			children = (
+				050505050505050505050017 /* Core */,
+				050505050505050505050018 /* IO */,
+				050505050505050505050019 /* Engines */,
+				050505050505050505050020 /* Diagnostics */,
+				020202020202020202020056 /* GreenfieldVideoPlayerView.swift */,
+				020202020202020202020057 /* GreenfieldPlaybackBridge.swift */,
+			);
+			path = Playback;
+			sourceTree = "<group>";
+		};
+		050505050505050505050017 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				020202020202020202020041 /* PlaybackIntent.swift */,
+				020202020202020202020042 /* PlaybackRoute.swift */,
+				020202020202020202020043 /* PlaybackPlan.swift */,
+				020202020202020202020044 /* PlaybackEngine.swift */,
+				020202020202020202020053 /* PlaybackPlanningPolicy.swift */,
+				020202020202020202020054 /* URLPlaybackSourceResolver.swift */,
+				020202020202020202020055 /* PlaybackSessionCoordinator.swift */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		050505050505050505050018 /* IO */ = {
+			isa = PBXGroup;
+			children = (
+				020202020202020202020045 /* PlaybackByteRange.swift */,
+				020202020202020202020046 /* RangeCacheStore.swift */,
+				020202020202020202020047 /* PlaybackIOContext.swift */,
+				020202020202020202020048 /* PreloadCoordinator.swift */,
+			);
+			path = IO;
+			sourceTree = "<group>";
+		};
+		050505050505050505050019 /* Engines */ = {
+			isa = PBXGroup;
+			children = (
+				020202020202020202020051 /* KSPlayerEngineSpike.swift */,
+				020202020202020202020058 /* PlaybackEngineAvailability.swift */,
+				020202020202020202020059 /* GreenfieldKSPlayerRenderer.swift */,
+			);
+			path = Engines;
+			sourceTree = "<group>";
+		};
+		050505050505050505050020 /* Diagnostics */ = {
+			isa = PBXGroup;
+			children = (
+				020202020202020202020049 /* PlaybackDiagnostics.swift */,
+				020202020202020202020050 /* PlaybackScenarioMatrix.swift */,
+			);
+			path = Diagnostics;
+			sourceTree = "<group>";
+		};
 		050505050505050505050099 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -317,6 +412,8 @@
 			children = (
 				D447A0A76105EFDD2D985714 /* Pods-Nastart.debug.xcconfig */,
 				6EE295E3449845D6FE9490F6 /* Pods-Nastart.release.xcconfig */,
+				DE5A19352613C6D57EC2E296 /* Pods-NastartTests.debug.xcconfig */,
+				FD1CE5C045A68B1BA71D2F38 /* Pods-NastartTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -325,6 +422,7 @@
 			isa = PBXGroup;
 			children = (
 				F0A427A98EF409A9FC1D1C04 /* Pods_Nastart.framework */,
+				FACED7936A7A76ABCAE30CE9 /* Pods_NastartTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -350,6 +448,7 @@
 			packageProductDependencies = (
 				0B0B0B0B0B0B0B0B0B0B0002 /* JellyfinAPI */,
 				0B0B0B0B0B0B0B0B0B0B0004 /* NIOSSH */,
+				0B0B0B0B0B0B0B0B0B0B0006 /* KSPlayer */,
 			);
 			productName = Nastart;
 			productReference = 020202020202020202020099 /* Nastart.app */;
@@ -359,8 +458,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 090909090909090909090007 /* Build configuration list for PBXNativeTarget "NastartTests" */;
 			buildPhases = (
-				070707070707070707070002 /* NastartTests Sources */,
-				040404040404040404040002 /* NastartTests Frameworks */,
+				03176249A024D430B96650AE /* [CP] Check Pods Manifest.lock */,
+				070707070707070707070002 /* Sources */,
+				040404040404040404040002 /* Frameworks */,
 			);
 			buildRules = (
 			);
@@ -404,6 +504,7 @@
 			packageReferences = (
 				0B0B0B0B0B0B0B0B0B0B0001 /* XCRemoteSwiftPackageReference "jellyfin-sdk-swift" */,
 				0B0B0B0B0B0B0B0B0B0B0003 /* XCRemoteSwiftPackageReference "swift-nio-ssh" */,
+				0B0B0B0B0B0B0B0B0B0B0005 /* XCRemoteSwiftPackageReference "KSPlayer" */,
 			);
 			productRefGroup = 050505050505050505050099 /* Products */;
 			projectDirPath = "";
@@ -431,6 +532,28 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		03176249A024D430B96650AE /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-NastartTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
 		835A6F937B9C08DBFC12A29F /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -506,18 +629,45 @@
 				010101010101010101010038 /* NASConnectionStore.swift in Sources */,
 				010101010101010101010039 /* KeychainStore.swift in Sources */,
 				010101010101010101010040 /* NetworkErrorClassification.swift in Sources */,
+				010101010101010101010041 /* PlaybackIntent.swift in Sources */,
+				010101010101010101010042 /* PlaybackRoute.swift in Sources */,
+				010101010101010101010043 /* PlaybackPlan.swift in Sources */,
+				010101010101010101010044 /* PlaybackEngine.swift in Sources */,
+				010101010101010101010045 /* PlaybackByteRange.swift in Sources */,
+				010101010101010101010046 /* RangeCacheStore.swift in Sources */,
+				010101010101010101010047 /* PlaybackIOContext.swift in Sources */,
+				010101010101010101010048 /* PreloadCoordinator.swift in Sources */,
+				010101010101010101010049 /* PlaybackDiagnostics.swift in Sources */,
+				010101010101010101010050 /* PlaybackScenarioMatrix.swift in Sources */,
+				010101010101010101010051 /* KSPlayerEngineSpike.swift in Sources */,
+				010101010101010101010053 /* PlaybackPlanningPolicy.swift in Sources */,
+				010101010101010101010054 /* URLPlaybackSourceResolver.swift in Sources */,
+				010101010101010101010055 /* PlaybackSessionCoordinator.swift in Sources */,
+				010101010101010101010056 /* GreenfieldVideoPlayerView.swift in Sources */,
+				010101010101010101010057 /* GreenfieldPlaybackBridge.swift in Sources */,
+				010101010101010101010058 /* PlaybackEngineAvailability.swift in Sources */,
+				010101010101010101010059 /* GreenfieldKSPlayerRenderer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		070707070707070707070002 /* NastartTests Sources */ = {
+		070707070707070707070002 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				010101010101010101010031 /* NonPlaybackPolicyTests.swift in Sources */,
+				010101010101010101010052 /* PlaybackNextCoreTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		0D0D0D0D0D0D0D0D0D0D0002 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 060606060606060606060001 /* Nastart */;
+			targetProxy = 0C0C0C0C0C0C0C0C0C0C0002 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		030303030303030303030001 /* Localizable.strings */ = {
@@ -737,6 +887,7 @@
 		};
 		090909090909090909090009 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = DE5A19352613C6D57EC2E296 /* Pods-NastartTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
@@ -760,6 +911,7 @@
 		};
 		090909090909090909090010 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = FD1CE5C045A68B1BA71D2F38 /* Pods-NastartTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
@@ -830,6 +982,14 @@
 				minimumVersion = 0.11.0;
 			};
 		};
+		0B0B0B0B0B0B0B0B0B0B0005 /* XCRemoteSwiftPackageReference "KSPlayer" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kingslay/KSPlayer.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.3.4;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -842,6 +1002,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 0B0B0B0B0B0B0B0B0B0B0003 /* XCRemoteSwiftPackageReference "swift-nio-ssh" */;
 			productName = NIOSSH;
+		};
+		0B0B0B0B0B0B0B0B0B0B0006 /* KSPlayer */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0B0B0B0B0B0B0B0B0B0B0005 /* XCRemoteSwiftPackageReference "KSPlayer" */;
+			productName = KSPlayer;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -827,6 +827,7 @@
 "diagnostics.files.preview_download_succeeded" = "In-app file preview became ready";
 "diagnostics.files.preview_download_failed" = "In-app file preview preparation failed";
 "diagnostics.files.preview_stream_started" = "DSM media streaming started";
+"diagnostics.playback.next.ksplayer_guarded" = "KSPlayer crash guard enabled";
 "diagnostics.media.probe_started" = "Media response check started";
 "diagnostics.media.probe_succeeded" = "Media response check passed";
 "diagnostics.media.probe_invalid_response" = "Media URL returned non-media content";
@@ -884,6 +885,8 @@
 "diagnostics.web.render_check" = "In-app page render check completed";
 "diagnostics.web.script_error" = "In-app page reported a script error";
 "diagnostics.web.compatibility_fallback" = "Switched to the system in-app browser";
+"diagnostics.web.entry_presented" = "In-app page entry presented";
+"diagnostics.web.route_requested" = "In-app page entry requested";
 "devices.files.empty" = "No files";
 "devices.files.folder_load_failed" = "Unable to load this folder. Check the DSM session and File Station permissions, then retry.";
 "jellyfin.library.connecting" = "Connecting to Jellyfin...";
@@ -937,6 +940,8 @@
 "jellyfin.search.failed_detail" = "Check the Jellyfin connection and try again.";
 "diagnostics.jellyfin.login_succeeded" = "Jellyfin sign-in succeeded";
 "diagnostics.jellyfin.login_failed" = "Jellyfin sign-in failed";
+"diagnostics.jellyfin.library_entry_presented" = "Jellyfin library entry presented";
+"diagnostics.jellyfin.library_route_requested" = "Jellyfin library entry requested";
 "diagnostics.jellyfin.library_loaded" = "Jellyfin library loaded";
 "diagnostics.jellyfin.library_failed" = "Jellyfin library load failed";
 "jellyfin.player.retry_hint" = "Close the player and retry for a fresh Jellyfin stream, or choose Infuse, VidHub, or VLC from the detail screen for direct playback.";

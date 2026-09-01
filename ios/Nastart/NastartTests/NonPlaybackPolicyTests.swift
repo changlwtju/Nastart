@@ -145,6 +145,86 @@ final class NonPlaybackPolicyTests: XCTestCase {
         XCTAssertEqual(updated.source, .manual)
     }
 
+    func testJellyfinServiceDetectionUsesNameAndKnownPorts() {
+        let namedService = LaunchpadService(
+            id: UUID(),
+            name: "Jellyfin",
+            iconText: "J",
+            category: .media,
+            status: .online,
+            subtitle: "jellyfin/jellyfin",
+            detail: "Agent · 18444",
+            isMedia: true,
+            cpu: nil,
+            memoryText: nil,
+            endpoint: URL(string: "https://media.example.com:18444")!,
+            source: .container
+        )
+        XCTAssertTrue(namedService.isJellyfin)
+        XCTAssertEqual(namedService.webProfileName, "jellyfin")
+        XCTAssertTrue(namedService.forcesMobileWebMode)
+        XCTAssertTrue(namedService.usesSystemInAppBrowser)
+
+        let portMappedService = LaunchpadService(
+            id: UUID(),
+            name: "Media Server",
+            iconText: "MS",
+            category: .media,
+            status: .online,
+            subtitle: "container.image",
+            detail: "Agent · 18444",
+            isMedia: true,
+            cpu: nil,
+            memoryText: nil,
+            ports: ["0.0.0.0:18444->8096/tcp"],
+            endpoint: URL(string: "https://media.example.com:18444")!,
+            source: .container
+        )
+        XCTAssertTrue(portMappedService.isJellyfin)
+        XCTAssertEqual(portMappedService.webProfileName, "jellyfin")
+        XCTAssertTrue(portMappedService.forcesMobileWebMode)
+        XCTAssertTrue(portMappedService.usesSystemInAppBrowser)
+
+        let apiPortService = LaunchpadService(
+            id: UUID(),
+            name: "Media API",
+            iconText: "MA",
+            category: .media,
+            status: .online,
+            subtitle: "container.image",
+            detail: "Agent · 8097",
+            isMedia: true,
+            cpu: nil,
+            memoryText: nil,
+            endpoint: URL(string: "https://media.example.com:8097")!,
+            source: .container
+        )
+        XCTAssertTrue(apiPortService.isJellyfin)
+        XCTAssertEqual(apiPortService.webProfileName, "jellyfin")
+        XCTAssertTrue(apiPortService.usesSystemInAppBrowser)
+    }
+
+    func testDownloaderServiceKeepsDefaultWebProfile() {
+        let service = LaunchpadService(
+            id: UUID(),
+            name: "qBittorrent",
+            iconText: "QB",
+            category: .downloads,
+            status: .online,
+            subtitle: "linuxserver/qbittorrent",
+            detail: "Agent · 8081",
+            isMedia: false,
+            cpu: nil,
+            memoryText: nil,
+            endpoint: URL(string: "https://downloads.example.com:8081")!,
+            source: .container
+        )
+        XCTAssertFalse(service.isJellyfin)
+        XCTAssertEqual(service.webProfileName, "default")
+        XCTAssertFalse(service.forcesMobileWebMode)
+        XCTAssertFalse(service.usesSystemInAppBrowser)
+    }
+
     func testServiceCategoryOrderingRestoresMissingCategories() {
         let ordered = ServiceCategory.ordered(from: "tools,tools,media")
         XCTAssertEqual(ordered, [.tools, .media, .favorites, .downloads, .network])

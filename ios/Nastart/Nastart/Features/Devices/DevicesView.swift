@@ -928,6 +928,11 @@ private struct FilePreviewView: View {
     @State private var externalMessageKey = "external.open_failed"
     @State private var showExternalHint = false
     @State private var playbackRequest: MediaPlaybackRequest?
+#if DEBUG
+    @AppStorage(GreenfieldPlaybackDebugSettings.useGreenfieldPlayerKey)
+    private var usesGreenfieldPlayer = false
+    @State private var greenfieldPlaybackRequest: GreenfieldPlaybackLaunchRequest?
+#endif
     @State private var localPreview: LocalFilePreview?
     @State private var isPreparingPreview = false
     @State private var externalPlaybackURL: URL?
@@ -966,6 +971,15 @@ private struct FilePreviewView: View {
                     }
                 }
                 .disabled(isPreparingPreview)
+#if DEBUG
+                if item.kind == .video || item.kind == .audio {
+                    Toggle(isOn: $usesGreenfieldPlayer) {
+                        Label("Greenfield player", systemImage: "switch.2")
+                            .font(.subheadline.weight(.semibold))
+                    }
+                    .toggleStyle(.switch)
+                }
+#endif
             } header: {
                 Text("devices.files.actions")
             } footer: {
@@ -986,6 +1000,13 @@ private struct FilePreviewView: View {
                 BuiltInMediaPlayerView(request: request)
             }
         }
+#if DEBUG
+        .fullScreenCover(item: $greenfieldPlaybackRequest) { request in
+            NavigationStack {
+                GreenfieldVideoPlayerView(request: request)
+            }
+        }
+#endif
         .fullScreenCover(item: $localPreview) { preview in
             LocalFilePreviewScreen(preview: preview)
         }
@@ -1111,6 +1132,11 @@ private struct FilePreviewView: View {
         let fileExtension = (item.name as NSString).pathExtension.lowercased()
         let session = connectionStore.dsmSession
         let candidates = session?.fileStationOpenURLs(path: item.path) ?? [url]
+#if DEBUG
+        let greenfieldRequested = usesGreenfieldPlayer
+#else
+        let greenfieldRequested = false
+#endif
         Task {
             let directory = (item.path as NSString).deletingLastPathComponent
             let siblingItems = try? await dataStore.loadFolder(path: directory)
@@ -1128,22 +1154,17 @@ private struct FilePreviewView: View {
             let selectedURL = candidates.first ?? url
             let subtitleAsset = await sidecarSubtitle
             let isPrivateRoute = NetworkHostClassifier.isPrivate(selectedURL.host)
-            // iPadOS VLC is less tolerant of NAS Range responses when the
-            // session uses a literal LAN IP (and it cannot validate a
-            // self-signed HTTPS certificate for that IP). Put private-route
-            // video through the authenticated local Range proxy before VLC
-            // is created. Domain-based/public playback keeps the direct URL
-            // path used successfully by iPhone, including HTTPS routes whose
-            // certificate is trusted through the existing session setting.
-            // The lazy fallback below remains available if direct playback
-            // cannot be prepared or later stalls.
+            // Greenfield/KSPlayer needs the authenticated local Range proxy
+            // up front so DSM cookies, redirects, and Range behavior stay under
+            // Nastart's control instead of being delegated to the renderer.
             let fallbackCandidates = candidates
             let fallbackUpstreamURL = selectedURL
             let fallbackFilename = item.name
             let fallbackAllowsSelfSigned = session?.allowsSelfSignedCertificates == true
             let fallbackSubtitleURL = subtitleAsset?.playbackURL
             let shouldPrepareLocalProxy = item.kind == .video
-                && (isPrivateRoute
+                && (greenfieldRequested
+                    || isPrivateRoute
                     || NetworkHostClassifier.isLiteralAddress(selectedURL.host))
             let preparedProxyURL: URL?
             if shouldPrepareLocalProxy {
@@ -1159,9 +1180,6 @@ private struct FilePreviewView: View {
             let playbackUsesLocalProxy = preparedProxyURL != nil
             await MainActor.run {
                 isPreparingPreview = false
-                PlayerOrientationController.prepareForPresentation(
-                    item.kind == .video ? .landscape : .automatic
-                )
                 DiagnosticLogStore.shared.record(
                     .info,
                     categoryKey: "diagnostics.category.media",
@@ -1173,10 +1191,11 @@ private struct FilePreviewView: View {
                         "selfSigned": session?.allowsSelfSignedCertificates == true ? "on" : "off",
                         "transport": playbackUsesLocalProxy ? "localRangeProxy" : (selectedURL.scheme?.lowercased() ?? "-"),
                         "upstream": DiagnosticLogStore.redactedURL(selectedURL),
-                        "fallbackTransport": item.kind == .video ? "lazyLocalRangeProxy" : "none"
+                        "fallbackTransport": item.kind == .video ? "lazyLocalRangeProxy" : "none",
+                        "greenfield": greenfieldRequested ? "on" : "off"
                     ]
                 )
-                playbackRequest = MediaPlaybackRequest(
+                let request = MediaPlaybackRequest(
                     requestedAt: requestedAt,
                     url: playbackURL,
                     title: item.name,
@@ -1220,8 +1239,55 @@ private struct FilePreviewView: View {
                         }
                         : nil
                 )
+#if DEBUG
+                let shouldUseCompatibilityGuard = greenfieldRequested
+                    && item.kind == .video
+                    && Self.requiresGreenfieldCompatibilityGuard(fileExtension)
+                if shouldUseCompatibilityGuard {
+                    DiagnosticLogStore.shared.record(
+                        .warning,
+                        categoryKey: "diagnostics.category.media",
+                        messageKey: "diagnostics.playback.next.ksplayer_guarded",
+                        details: [
+                            "sourceKind": "dsmFile",
+                            "extension": fileExtension.isEmpty ? "-" : fileExtension,
+                            "reason": "ksplayer_stream_track_assertion",
+                            "fallback": "compatibilityPlayer",
+                            "target": DiagnosticLogStore.redactedURL(playbackURL)
+                        ]
+                    )
+                    PlayerOrientationController.prepareForPresentation(.landscape)
+                    playbackRequest = request
+                } else if greenfieldRequested {
+                    greenfieldPlaybackRequest = request.greenfieldPlaybackLaunchRequest()
+                } else {
+                    PlayerOrientationController.prepareForPresentation(
+                        item.kind == .video ? .landscape : .automatic
+                    )
+                    playbackRequest = request
+                }
+#else
+                PlayerOrientationController.prepareForPresentation(
+                    item.kind == .video ? .landscape : .automatic
+                )
+                playbackRequest = request
+#endif
             }
         }
+    }
+
+    private static func requiresGreenfieldCompatibilityGuard(_ fileExtension: String) -> Bool {
+        let normalizedExtension = fileExtension.lowercased()
+        return [
+            "mkv",
+            "m2ts",
+            "mts",
+            "ts",
+            "avi",
+            "wmv",
+            "flv",
+            "rmvb"
+        ].contains(normalizedExtension)
     }
 
     private func prepareLocalPreview(from url: URL) {

@@ -15,6 +15,7 @@ Pods/
 .build/
 .swiftpm/
 Package.resolved
+!ios/Nastart/Nastart.xcworkspace/xcshareddata/swiftpm/Package.resolved
 
 # Node / website tooling
 node_modules/

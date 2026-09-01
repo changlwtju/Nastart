@@ -1330,6 +1330,8 @@ private struct ServiceDetailView: View {
     @State private var externalMessageKey = "external.open_failed"
     @State private var showExternalHint = false
     @State private var endpointOverride: URL?
+    @State private var systemBrowserPresentation: SystemBrowserPresentation?
+    @State private var mediaLibraryPresentation: MediaLibraryPresentation?
     @State private var showEndpointEditor = false
     @State private var showDeleteManualConfirmation = false
 
@@ -1369,24 +1371,48 @@ private struct ServiceDetailView: View {
                 }
 
                 if let endpoint = effectiveEndpoint {
-                    NavigationLink {
-                        ServiceWebUIView(
-                            service: service,
-                            endpoint: endpoint,
-                            allowsSelfSignedCertificates: ServiceCertificatePolicy.allowsBypass(
-                                for: endpoint,
-                                session: connectionStore.dsmSession
-                            ),
-                            dsmSession: service.source == .dsm || service.source == .package
-                                ? connectionStore.dsmSession
-                                : nil
-                        )
-                    } label: {
-                        Label {
-                            Text(LocalizedStringKey(service.isDeveloperConsole ? "service.action.open_console" : "service.action.open_web"))
-                        } icon: {
-                            Image(systemName: service.isDeveloperConsole ? "terminal" : "safari")
+                    if service.usesSystemInAppBrowser {
+                        Button {
+                            recordServiceRouteRequest(
+                                action: "web",
+                                endpoint: endpoint,
+                                engine: "SFSafariViewController"
+                            )
+                            systemBrowserPresentation = SystemBrowserPresentation(url: endpoint)
+                        } label: {
+                            Label {
+                                Text(LocalizedStringKey(service.isDeveloperConsole ? "service.action.open_console" : "service.action.open_web"))
+                            } icon: {
+                                Image(systemName: service.isDeveloperConsole ? "terminal" : "safari")
+                            }
                         }
+                    } else {
+                        NavigationLink {
+                            ServiceWebUIView(
+                                service: service,
+                                endpoint: endpoint,
+                                allowsSelfSignedCertificates: ServiceCertificatePolicy.allowsBypass(
+                                    for: endpoint,
+                                    session: connectionStore.dsmSession
+                                ),
+                                dsmSession: service.source == .dsm || service.source == .package
+                                    ? connectionStore.dsmSession
+                                    : nil
+                            )
+                        } label: {
+                            Label {
+                                Text(LocalizedStringKey(service.isDeveloperConsole ? "service.action.open_console" : "service.action.open_web"))
+                            } icon: {
+                                Image(systemName: service.isDeveloperConsole ? "terminal" : "safari")
+                            }
+                        }
+                        .simultaneousGesture(TapGesture().onEnded {
+                            recordServiceRouteRequest(
+                                action: "web",
+                                endpoint: endpoint,
+                                engine: "WKWebView"
+                            )
+                        })
                     }
                 } else {
                     Label {
@@ -1414,8 +1440,13 @@ private struct ServiceDetailView: View {
                         Label("player.open_stream", systemImage: "play.rectangle")
                     }
 
-                    NavigationLink {
-                        MediaLibraryView(service: service)
+                    Button {
+                        recordServiceRouteRequest(
+                            action: "mediaLibrary",
+                            endpoint: effectiveEndpoint,
+                            engine: service.isJellyfin ? "JellyfinLibraryView" : "MediaLibraryView"
+                        )
+                        mediaLibraryPresentation = MediaLibraryPresentation(service: service)
                     } label: {
                         Label("service.action.media_library", systemImage: service.name == "Navidrome" ? "music.note.list" : "play.rectangle")
                     }
@@ -1517,6 +1548,24 @@ private struct ServiceDetailView: View {
                 )
             }
         }
+        .fullScreenCover(item: $systemBrowserPresentation) { presentation in
+            SystemInAppBrowserView(url: presentation.url) {
+                systemBrowserPresentation = nil
+            }
+            .ignoresSafeArea()
+        }
+        .fullScreenCover(item: $mediaLibraryPresentation) { presentation in
+            NavigationStack {
+                MediaLibraryView(service: presentation.service)
+                    .toolbar {
+                        ToolbarItem(placement: .navigationBarLeading) {
+                            Button("action.done") {
+                                mediaLibraryPresentation = nil
+                            }
+                        }
+                    }
+            }
+        }
         .alert(LocalizedStringKey(externalMessageKey), isPresented: $showExternalHint) {
             Button("action.ok", role: .cancel) {}
         }
@@ -1545,6 +1594,30 @@ private struct ServiceDetailView: View {
                 }
             }
         }
+    }
+
+    private func recordServiceRouteRequest(
+        action: String,
+        endpoint: URL?,
+        engine: String
+    ) {
+        DiagnosticLogStore.shared.record(
+            .info,
+            categoryKey: action == "mediaLibrary"
+                ? "diagnostics.category.media"
+                : "diagnostics.category.web",
+            messageKey: action == "mediaLibrary"
+                ? "diagnostics.jellyfin.library_route_requested"
+                : "diagnostics.web.route_requested",
+            details: [
+                "action": action,
+                "target": endpoint.map(DiagnosticLogStore.redactedURL) ?? "-",
+                "service": service.name,
+                "profile": service.webProfileName,
+                "isJellyfin": service.isJellyfin ? "yes" : "no",
+                "engine": engine
+            ]
+        )
     }
 
     private var effectiveEndpoint: URL? {
@@ -1588,6 +1661,16 @@ private struct ServiceDetailView: View {
         case .dsm: return "service.dsm.detail"
         }
     }
+}
+
+private struct SystemBrowserPresentation: Identifiable {
+    let id = UUID()
+    let url: URL
+}
+
+private struct MediaLibraryPresentation: Identifiable {
+    let id = UUID()
+    let service: LaunchpadService
 }
 
 private enum ServiceCertificatePolicy {
@@ -1965,6 +2048,7 @@ private struct ServiceWebUIView: View {
     let endpoint: URL
     let allowsSelfSignedCertificates: Bool
     let dsmSession: DSMSession?
+    @Environment(\.dismiss) private var dismiss
     @State private var selectedMode = ServiceWebMode.automatic
     @State private var showCompatibilityBrowser = false
     @State private var browserCommand: WebBrowserCommand?
@@ -1994,13 +2078,36 @@ private struct ServiceWebUIView: View {
     }
 
     var body: some View {
-        webKitBrowser
-            .fullScreenCover(isPresented: $showCompatibilityBrowser) {
-                SystemInAppBrowserView(url: currentURL) {
-                    showCompatibilityBrowser = false
+        Group {
+            if service.usesSystemInAppBrowser {
+                SystemInAppBrowserView(url: endpoint) {
+                    dismiss()
                 }
                 .ignoresSafeArea()
+            } else {
+                webKitBrowser
+                    .fullScreenCover(isPresented: $showCompatibilityBrowser) {
+                        SystemInAppBrowserView(url: currentURL) {
+                            showCompatibilityBrowser = false
+                        }
+                        .ignoresSafeArea()
+                    }
             }
+        }
+        .onAppear {
+            DiagnosticLogStore.shared.record(
+                .info,
+                categoryKey: "diagnostics.category.web",
+                messageKey: "diagnostics.web.entry_presented",
+                details: [
+                    "target": DiagnosticLogStore.redactedURL(endpoint),
+                    "service": service.name,
+                    "profile": service.webProfileName,
+                    "isJellyfin": service.isJellyfin ? "yes" : "no",
+                    "engine": service.usesSystemInAppBrowser ? "SFSafariViewController" : "WKWebView"
+                ]
+            )
+        }
     }
 
     private var webKitBrowser: some View {
@@ -2009,10 +2116,11 @@ private struct ServiceWebUIView: View {
                 WebContainerView(
                     url: endpoint,
                     prefersDesktopMode: resolvedMode.usesDesktopUserAgent,
-                    prefersCompatibilityFallback: service.isDeveloperConsole,
+                    prefersCompatibilityFallback: service.isDeveloperConsole || service.isJellyfin,
                     expectsDeveloperWorkbench: service.isDeveloperConsole,
                     expectsMetaCubeDashboard: service.isMetaCubeXD,
                     bypassesPersistentWebCache: service.isMetaCubeXD,
+                    webProfileName: service.webProfileName,
                     allowsSelfSignedCertificates: allowsSelfSignedCertificates,
                     authenticationCookie: authenticationCookie,
                     command: browserCommand,
@@ -2078,18 +2186,20 @@ private struct ServiceWebUIView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
-                Menu {
-                    Picker(selection: $selectedMode) {
-                        ForEach(ServiceWebMode.allCases) { mode in
-                            Text(LocalizedStringKey(mode.titleKey)).tag(mode)
+                if !service.forcesMobileWebMode {
+                    Menu {
+                        Picker(selection: $selectedMode) {
+                            ForEach(ServiceWebMode.allCases) { mode in
+                                Text(LocalizedStringKey(mode.titleKey)).tag(mode)
+                            }
+                        } label: {
+                            Text("web.mode.title")
                         }
                     } label: {
-                        Text("web.mode.title")
+                        Image(systemName: "rectangle.on.rectangle")
                     }
-                } label: {
-                    Image(systemName: "rectangle.on.rectangle")
+                    .accessibilityLabel(Text("web.mode.title"))
                 }
-                .accessibilityLabel(Text("web.mode.title"))
 
                 Button {
                     sendBrowserCommand(isLoading ? .stop : .reload)
@@ -2197,6 +2307,9 @@ private struct ServiceWebUIView: View {
     }
 
     private var resolvedMode: ResolvedWebMode {
+        if service.forcesMobileWebMode {
+            return ResolvedWebMode(usesDesktopUserAgent: false)
+        }
         switch selectedMode {
         case .automatic:
             return ResolvedWebMode(usesDesktopUserAgent: service.prefersEnhancedWebMode)
@@ -2333,6 +2446,7 @@ private struct WebContainerView: UIViewRepresentable {
     let expectsDeveloperWorkbench: Bool
     let expectsMetaCubeDashboard: Bool
     let bypassesPersistentWebCache: Bool
+    let webProfileName: String
     let allowsSelfSignedCertificates: Bool
     let authenticationCookie: HTTPCookie?
     let command: WebBrowserCommand?
@@ -2540,6 +2654,7 @@ private struct WebContainerView: UIViewRepresentable {
                 details: [
                     "engine": "WKWebView",
                     "target": DiagnosticLogStore.redactedURL(url),
+                    "profile": parent.webProfileName,
                     "desktop": parent.prefersDesktopMode ? "on" : "off",
                     "persistentCache": parent.bypassesPersistentWebCache ? "off" : "on",
                     "selfSigned": parent.allowsSelfSignedCertificates ? "on" : "off",
@@ -4060,6 +4175,11 @@ private enum MediaPlaybackPolicy {
 private struct DirectMediaPlayerSetupView: View {
     @State private var address: String
     @State private var playbackRequest: MediaPlaybackRequest?
+#if DEBUG
+    @AppStorage(GreenfieldPlaybackDebugSettings.useGreenfieldPlayerKey)
+    private var usesGreenfieldPlayer = false
+    @State private var greenfieldPlaybackRequest: GreenfieldPlaybackLaunchRequest?
+#endif
     @State private var showValidationError = false
 
     init(suggestedURL: URL?) {
@@ -4086,10 +4206,26 @@ private struct DirectMediaPlayerSetupView: View {
                         showValidationError = true
                         return
                     }
-                    playbackRequest = MediaPlaybackRequest(url: url, title: url.lastPathComponent)
+                    let request = MediaPlaybackRequest(url: url, title: url.lastPathComponent)
+#if DEBUG
+                    if usesGreenfieldPlayer {
+                        greenfieldPlaybackRequest = request.greenfieldPlaybackLaunchRequest()
+                    } else {
+                        playbackRequest = request
+                    }
+#else
+                    playbackRequest = request
+#endif
                 } label: {
                     Label("player.play_in_app", systemImage: "play.fill")
                 }
+#if DEBUG
+                Toggle(isOn: $usesGreenfieldPlayer) {
+                    Label("Greenfield player", systemImage: "switch.2")
+                        .font(.subheadline.weight(.semibold))
+                }
+                .toggleStyle(.switch)
+#endif
             } footer: {
                 Text("player.direct.footer")
             }
@@ -4106,6 +4242,13 @@ private struct DirectMediaPlayerSetupView: View {
                 BuiltInMediaPlayerView(request: request)
             }
         }
+#if DEBUG
+        .fullScreenCover(item: $greenfieldPlaybackRequest) { request in
+            NavigationStack {
+                GreenfieldVideoPlayerView(request: request)
+            }
+        }
+#endif
     }
 
     private var normalizedURL: URL? {
@@ -11210,62 +11353,25 @@ private final class JellyfinLibraryStore: ObservableObject {
     }
 
     private func loadHome() async {
+        let startedAt = Date()
+        record(
+            "diagnostics.jellyfin.library_loading",
+            level: .info,
+            details: ["stage": "started"]
+        )
         do {
-            let startedAt = Date()
-            async let loadedLibraries = loadViews()
-            async let loadedContinueWatching = loadResumeItems()
-            async let loadedMovies = loadItems(parentID: nil, kinds: [.movie], limit: 36)
-            async let loadedSeries = loadItems(parentID: nil, kinds: [.series], limit: 36)
-            async let loadedRecentlyAdded = loadItems(
-                parentID: nil,
-                kinds: [.movie, .series],
-                limit: 24,
-                sortBy: [.dateCreated],
-                sortOrder: [.descending]
-            )
-            async let loadedFavorites = loadItems(
-                parentID: nil,
-                kinds: [.movie, .series, .episode, .audio, .video, .musicAlbum, .musicVideo],
-                limit: 60,
-                favoriteOnly: true
-            )
-            movies = try await loadedMovies
-            series = try await loadedSeries
-            record(
-                "diagnostics.jellyfin.library_loaded",
-                level: .info,
-                details: [
-                    "stage": "primaryShelves",
-                    "movies": "\(movies.count)",
-                    "series": "\(series.count)",
-                    "durationMs": Self.elapsedMilliseconds(since: startedAt)
-                ]
-            )
-            libraries = try await loadedLibraries
+            let loadedLibraries = try await loadViews()
+            libraries = loadedLibraries
             isLoading = false
-            continueWatching = try await loadedContinueWatching
-            recentlyAdded = try await loadedRecentlyAdded
-            favorites = try await loadedFavorites
-            let serverFavoriteIDs = (continueWatching + movies + series + recentlyAdded + favorites)
-                .filter(\.isFavorite)
-                .map(\.id)
-            favoriteItemIDs = Set(serverFavoriteIDs + favorites.map(\.id))
             record(
                 "diagnostics.jellyfin.library_loaded",
                 level: .info,
                 details: [
-                    "libraries": "\(libraries.count)",
-                    "resume": "\(continueWatching.count)",
-                    "movies": "\(movies.count)",
-                    "series": "\(series.count)",
-                    "recentlyAdded": "\(recentlyAdded.count)",
-                    "favorites": "\(favorites.count)",
+                    "stage": "views",
+                    "libraries": "\(loadedLibraries.count)",
                     "durationMs": Self.elapsedMilliseconds(since: startedAt)
                 ]
             )
-            if let client {
-                scheduleBitrateMeasurementIfNeeded(client: client)
-            }
         } catch {
             isLoading = false
             if isExpectedCancellation(error) {
@@ -11277,7 +11383,115 @@ private final class JellyfinLibraryStore: ObservableObject {
                 level: .error,
                 details: diagnosticDetails(for: error)
             )
+            return
         }
+
+        do {
+            let shelfStartedAt = Date()
+            continueWatching = try await loadResumeItems()
+            registerFavoriteState(from: continueWatching)
+            recordHomeShelfLoaded("resume", count: continueWatching.count, since: shelfStartedAt)
+        } catch {
+            recordHomeShelfFailed("resume", error: error)
+        }
+
+        do {
+            let shelfStartedAt = Date()
+            movies = try await loadItems(parentID: nil, kinds: [.movie], limit: 36)
+            registerFavoriteState(from: movies)
+            recordHomeShelfLoaded("movies", count: movies.count, since: shelfStartedAt)
+        } catch {
+            recordHomeShelfFailed("movies", error: error)
+        }
+
+        do {
+            let shelfStartedAt = Date()
+            series = try await loadItems(parentID: nil, kinds: [.series], limit: 36)
+            registerFavoriteState(from: series)
+            recordHomeShelfLoaded("series", count: series.count, since: shelfStartedAt)
+        } catch {
+            recordHomeShelfFailed("series", error: error)
+        }
+
+        do {
+            let shelfStartedAt = Date()
+            recentlyAdded = try await loadItems(
+                parentID: nil,
+                kinds: [.movie, .series],
+                limit: 24,
+                sortBy: [.dateCreated],
+                sortOrder: [.descending]
+            )
+            registerFavoriteState(from: recentlyAdded)
+            recordHomeShelfLoaded("recentlyAdded", count: recentlyAdded.count, since: shelfStartedAt)
+        } catch {
+            recordHomeShelfFailed("recentlyAdded", error: error)
+        }
+
+        do {
+            let shelfStartedAt = Date()
+            favorites = try await loadItems(
+                parentID: nil,
+                kinds: [.movie, .series, .episode, .audio, .video, .musicAlbum, .musicVideo],
+                limit: 60,
+                favoriteOnly: true
+            )
+            registerFavoriteState(from: favorites)
+            recordHomeShelfLoaded("favorites", count: favorites.count, since: shelfStartedAt)
+        } catch {
+            recordHomeShelfFailed("favorites", error: error)
+        }
+
+        let serverFavoriteIDs = (continueWatching + movies + series + recentlyAdded + favorites)
+            .filter(\.isFavorite)
+            .map(\.id)
+        favoriteItemIDs = Set(serverFavoriteIDs + favorites.map(\.id))
+        record(
+            "diagnostics.jellyfin.library_loaded",
+            level: .info,
+            details: [
+                "stage": "completed",
+                "libraries": "\(libraries.count)",
+                "resume": "\(continueWatching.count)",
+                "movies": "\(movies.count)",
+                "series": "\(series.count)",
+                "recentlyAdded": "\(recentlyAdded.count)",
+                "favorites": "\(favorites.count)",
+                "durationMs": Self.elapsedMilliseconds(since: startedAt)
+            ]
+        )
+        if let client {
+            scheduleBitrateMeasurementIfNeeded(client: client)
+        }
+    }
+
+    private func recordHomeShelfLoaded(
+        _ shelf: String,
+        count: Int,
+        since startedAt: Date
+    ) {
+        record(
+            "diagnostics.jellyfin.library_loaded",
+            level: .info,
+            details: [
+                "stage": shelf,
+                "count": "\(count)",
+                "durationMs": Self.elapsedMilliseconds(since: startedAt)
+            ]
+        )
+    }
+
+    private func recordHomeShelfFailed(_ shelf: String, error: Error) {
+        if isExpectedCancellation(error) {
+            return
+        }
+        record(
+            "diagnostics.jellyfin.library_failed",
+            level: .warning,
+            details: diagnosticDetails(for: error).merging([
+                "stage": shelf
+            ]) { current, _ in current }
+        )
     }
 
     private func isExpectedCancellation(_ error: Error) -> Bool {
@@ -12761,6 +12975,11 @@ private struct JellyfinMediaDetailView: View {
     @ObservedObject var store: JellyfinLibraryStore
     let item: JellyfinMediaEntry
     @State private var playbackRequest: MediaPlaybackRequest?
+#if DEBUG
+    @AppStorage(GreenfieldPlaybackDebugSettings.useGreenfieldPlayerKey)
+    private var usesGreenfieldPlayer = false
+    @State private var greenfieldPlaybackRequest: GreenfieldPlaybackLaunchRequest?
+#endif
     @State private var isPreparingPlayback = false
     @State private var showPlaybackError = false
     @State private var pendingExternalPlayback: PendingExternalPlayback?
@@ -12799,6 +13018,9 @@ private struct JellyfinMediaDetailView: View {
 
                     if mediaItem.isPlayable {
                         playbackActionRow
+#if DEBUG
+                        greenfieldPlaybackToggle
+#endif
 
                         if mediaItem.audioTracks.count > 1 || !mediaItem.subtitleTracks.isEmpty {
                             playbackTrackControls
@@ -12910,6 +13132,13 @@ private struct JellyfinMediaDetailView: View {
                 BuiltInMediaPlayerView(request: request)
             }
         }
+#if DEBUG
+        .fullScreenCover(item: $greenfieldPlaybackRequest) { request in
+            NavigationStack {
+                GreenfieldVideoPlayerView(request: request)
+            }
+        }
+#endif
     }
 
     private var mediaItem: JellyfinMediaEntry {
@@ -13008,6 +13237,12 @@ private struct JellyfinMediaDetailView: View {
                     )
                 )
                 if let request {
+#if DEBUG
+                    if usesGreenfieldPlayer {
+                        greenfieldPlaybackRequest = request.greenfieldPlaybackLaunchRequest()
+                        return
+                    }
+#endif
                     PlayerOrientationController.prepareForPresentation(
                         request.initialOrientationMode
                     )
@@ -13018,6 +13253,20 @@ private struct JellyfinMediaDetailView: View {
             }
         }
     }
+
+#if DEBUG
+    private var greenfieldPlaybackToggle: some View {
+        Toggle(isOn: $usesGreenfieldPlayer) {
+            Label("Greenfield player", systemImage: "switch.2")
+                .font(.subheadline.weight(.semibold))
+        }
+        .toggleStyle(.switch)
+        .padding(.horizontal, 12)
+        .frame(maxWidth: .infinity, minHeight: 48, alignment: .leading)
+        .background(AppTheme.secondarySurface)
+        .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+    }
+#endif
 
     private var playbackTrackControls: some View {
         LazyVGrid(
@@ -13554,9 +13803,7 @@ private struct MediaLibraryView: View {
                         )
                     },
                     dsmSession: connectionStore.dsmSession,
-                    dsmSharedFolderPaths: dataStore.files
-                        .filter { $0.kind == .folder }
-                        .map(\.path),
+                    dsmSharedFolderPaths: dsmSharedFolderRootPaths,
                     fallbackEndpoints: jellyfinEndpointCandidates
                 )
             } else {
@@ -13564,6 +13811,20 @@ private struct MediaLibraryView: View {
             }
         }
         .navigationTitle(service.name)
+        .onAppear {
+            DiagnosticLogStore.shared.record(
+                .info,
+                categoryKey: "diagnostics.category.media",
+                messageKey: "diagnostics.jellyfin.library_entry_presented",
+                details: [
+                    "target": effectiveJellyfinEndpoint.map(DiagnosticLogStore.redactedURL) ?? "-",
+                    "service": service.name,
+                    "profile": service.webProfileName,
+                    "isJellyfin": service.isJellyfin ? "yes" : "no",
+                    "candidateCount": "\(jellyfinEndpointCandidates.count)"
+                ]
+            )
+        }
     }
 
     private var effectiveJellyfinEndpoint: URL? {
@@ -13575,6 +13836,31 @@ private struct MediaLibraryView: View {
 
     private var jellyfinEndpointCandidates: [URL] {
         [effectiveJellyfinEndpoint, service.endpoint, service.alternateEndpoint].compactMap { $0 }
+    }
+
+    private var dsmSharedFolderRootPaths: [String] {
+        let roots = Set(dataStore.files.lazy.compactMap { item -> String? in
+            guard item.kind == .folder else { return nil }
+            return dsmSharedFolderRootPath(for: item.path)
+        })
+        return Array(roots).sorted().prefix(80).map { $0 }
+    }
+
+    private func dsmSharedFolderRootPath(for path: String) -> String? {
+        let normalized = path
+            .replacingOccurrences(of: "\\", with: "/")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        guard normalized.hasPrefix("/") else { return nil }
+        let components = normalized.split(separator: "/", omittingEmptySubsequences: true)
+        guard let first = components.first else { return nil }
+        let lowercasedFirst = first.lowercased()
+        if lowercasedFirst.hasPrefix("volume"),
+           !lowercasedFirst.dropFirst("volume".count).isEmpty,
+           lowercasedFirst.dropFirst("volume".count).allSatisfy(\.isNumber),
+           components.count > 1 {
+            return "/" + [first, components[1]].joined(separator: "/")
+        }
+        return "/" + first
     }
 
     private var fallbackLibrary: some View {

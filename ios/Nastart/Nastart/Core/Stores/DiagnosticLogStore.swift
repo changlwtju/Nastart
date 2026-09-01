@@ -186,6 +186,7 @@ final class DiagnosticLogStore: ObservableObject {
     @MainActor
     private func append(_ entry: DiagnosticLogEntry) {
         entries.append(entry)
+        NSLog("%@", entry.exportLine)
         if entries.count > maxEntries {
             entries.removeFirst(entries.count - maxEntries)
         }

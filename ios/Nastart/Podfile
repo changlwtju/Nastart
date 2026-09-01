@@ -5,6 +5,10 @@ target 'Nastart' do
 
   # Keep this exact version so codec coverage and binary size stay reproducible.
   pod 'MobileVLCKit', '3.7.3'
+
+  target 'NastartTests' do
+    inherit! :search_paths
+  end
 end
 
 post_install do |installer|

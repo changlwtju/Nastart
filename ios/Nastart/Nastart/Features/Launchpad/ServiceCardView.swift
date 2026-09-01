@@ -153,7 +153,43 @@ extension LaunchpadService {
     }
 
     var isJellyfin: Bool {
-        name.lowercased().contains("jellyfin")
+        let fingerprint = [
+            name,
+            subtitle,
+            detail,
+            endpoint?.absoluteString ?? "",
+            alternateEndpoint?.absoluteString ?? "",
+            ports.joined(separator: " ")
+        ]
+        .joined(separator: " ")
+        .lowercased()
+        if fingerprint.contains("jellyfin") { return true }
+
+        let jellyfinPorts: Set<Int> = [8096, 8097, 8920, 18444]
+        if [endpoint?.port, alternateEndpoint?.port].compactMap({ $0 }).contains(where: jellyfinPorts.contains) {
+            return true
+        }
+        return ports.contains { port in
+            jellyfinPorts.contains { jellyfinPort in
+                port.contains("\(jellyfinPort)")
+            }
+        }
+    }
+
+    var webProfileName: String {
+        if isJellyfin { return "jellyfin" }
+        if isDeveloperConsole { return "developer" }
+        if isMetaCubeXD { return "metacube" }
+        if isMedia { return "media" }
+        return "default"
+    }
+
+    var forcesMobileWebMode: Bool {
+        (isJellyfin || isMedia) && !isDeveloperConsole
+    }
+
+    var usesSystemInAppBrowser: Bool {
+        isJellyfin
     }
 
     var isMetaCubeXD: Bool {
