@@ -52,10 +52,19 @@ struct GreenfieldKSPlayerRenderer: View {
         options.startPlayTime = plan.timeline.startTime
         options.startPlayRate = plan.intent.playbackRate
         options.isAccurateSeek = true
-        options.isSecondOpen = true
+        options.isSecondOpen = false
         options.nobuffer = plan.intent.networkContext.isExpensive || plan.intent.networkContext.isConstrained
         options.probesize = 5 * 1024 * 1024
         options.maxAnalyzeDuration = 2_000_000
+        options.forcedInputFormatName = ffmpegInputFormatName(for: plan.primaryRoute)
+        if shouldTreatAsTransportStream(plan.primaryRoute) {
+            options.probesize = 1 * 1024 * 1024
+            options.maxAnalyzeDuration = 1_000_000
+            options.formatContextOptions["seekable"] = 0
+            options.formatContextOptions["skip_estimate_duration_from_pts"] = 1
+        } else if plan.primaryRoute.routeKind == .localRangeProxy {
+            options.formatContextOptions["seekable"] = 1
+        }
         options.autoSelectEmbedSubtitle = plan.subtitles.mode != .disabled
         options.canStartPictureInPictureAutomaticallyFromInline = true
         if plan.primaryRoute.certificatePolicy == .allowPinnedSelfSigned {
@@ -73,6 +82,39 @@ struct GreenfieldKSPlayerRenderer: View {
         }
 
         return options
+    }
+
+    private func ffmpegInputFormatName(for route: PlaybackRoute) -> String? {
+        let container = (route.containerHint ?? route.url.pathExtension)
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .lowercased()
+        switch container {
+        case "ts", "m2ts", "mts":
+            return "mpegts"
+        case "mkv", "webm":
+            return "matroska,webm"
+        case "mp4", "m4v", "mov":
+            return "mov,mp4,m4a,3gp,3g2,mj2"
+        case "avi":
+            return "avi"
+        case "flv":
+            return "flv"
+        case "wmv", "asf":
+            return "asf"
+        case "rm", "rmvb":
+            return "rm"
+        case "m3u8":
+            return "hls"
+        default:
+            return nil
+        }
+    }
+
+    private func shouldTreatAsTransportStream(_ route: PlaybackRoute) -> Bool {
+        let container = (route.containerHint ?? route.url.pathExtension)
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .lowercased()
+        return container == "ts" || container == "m2ts" || container == "mts"
     }
 
     private func configureDefaultEngine() {

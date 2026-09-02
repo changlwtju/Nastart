@@ -178,10 +178,15 @@ public class FFmpegAssetTrack: MediaPlayerTrack {
             if codecpar.nb_coded_side_data > 0, let sideDatas = codecpar.coded_side_data {
                 for i in 0 ..< codecpar.nb_coded_side_data {
                     let sideData = sideDatas[Int(i)]
-                    if sideData.type == AV_PKT_DATA_DOVI_CONF {
-                        dovi = sideData.data.withMemoryRebound(to: DOVIDecoderConfigurationRecord.self, capacity: 1) { $0 }.pointee
-                    } else if sideData.type == AV_PKT_DATA_DISPLAYMATRIX {
-                        let matrix = sideData.data.withMemoryRebound(to: Int32.self, capacity: 1) { $0 }
+                    guard sideData.size > 0, let data = sideData.data else {
+                        continue
+                    }
+                    if sideData.type == AV_PKT_DATA_DOVI_CONF,
+                       sideData.size >= MemoryLayout<DOVIDecoderConfigurationRecord>.size {
+                        dovi = data.withMemoryRebound(to: DOVIDecoderConfigurationRecord.self, capacity: 1) { $0 }.pointee
+                    } else if sideData.type == AV_PKT_DATA_DISPLAYMATRIX,
+                              sideData.size >= MemoryLayout<Int32>.size * 9 {
+                        let matrix = data.withMemoryRebound(to: Int32.self, capacity: 1) { $0 }
                         rotation = Int16(Int(-av_display_rotation_get(matrix)) % 360)
                     }
                 }
@@ -190,15 +195,16 @@ public class FFmpegAssetTrack: MediaPlayerTrack {
             var extradataSize = Int32(0)
             var extradata = codecpar.extradata
             let atomsData: Data?
-            if let extradata {
+            if let extradata, codecpar.extradata_size > 0 {
                 extradataSize = codecpar.extradata_size
-                if extradataSize >= 5, extradata[4] == 0xFE {
-                    extradata[4] = 0xFF
+                var codecAtoms = Data(bytes: extradata, count: Int(extradataSize))
+                if codecAtoms.count >= 5, codecAtoms[4] == 0xFE {
+                    codecAtoms[4] = 0xFF
                     isConvertNALSize = true
                 } else {
                     isConvertNALSize = false
                 }
-                atomsData = Data(bytes: extradata, count: Int(extradataSize))
+                atomsData = codecAtoms
             } else {
                 if codecType.rawValue == kCMVideoCodecType_VP9 {
                     // ff_videotoolbox_vpcc_extradata_create
@@ -208,7 +214,7 @@ public class FFmpegAssetTrack: MediaPlayerTrack {
                     }
                     ff_isom_write_vpcc(nil, ioContext, nil, 0, &self.codecpar)
                     extradataSize = avio_close_dyn_buf(ioContext, &extradata)
-                    guard let extradata else {
+                    guard let extradata, extradataSize > 0 else {
                         return nil
                     }
                     var data = Data()
@@ -222,15 +228,27 @@ public class FFmpegAssetTrack: MediaPlayerTrack {
                 isConvertNALSize = false
             }
             let format = AVPixelFormat(rawValue: codecpar.format)
-            bitDepth = format.bitDepth
+            let safeBitDepth = max(format.bitDepth, 8)
+            let safePlaneCount = max(Int32(format.planeCount), 1)
+            bitDepth = safeBitDepth
             let fullRange = codecpar.color_range == AVCOL_RANGE_JPEG
             let dic: NSMutableDictionary = [
                 kCVImageBufferChromaLocationBottomFieldKey: kCVImageBufferChromaLocation_Left,
                 kCVImageBufferChromaLocationTopFieldKey: kCVImageBufferChromaLocation_Left,
-                kCMFormatDescriptionExtension_Depth: format.bitDepth * Int32(format.planeCount),
+                kCMFormatDescriptionExtension_Depth: safeBitDepth * safePlaneCount,
                 kCMFormatDescriptionExtension_FullRangeVideo: fullRange,
-                codecType.rawValue == kCMVideoCodecType_HEVC ? "EnableHardwareAcceleratedVideoDecoder" : "RequireHardwareAcceleratedVideoDecoder": true,
             ]
+            if codecType.rawValue == kCMVideoCodecType_HEVC {
+                dic["EnableHardwareAcceleratedVideoDecoder"] = true
+            } else if [
+                kCMVideoCodecType_H264,
+                kCMVideoCodecType_MPEG1Video,
+                kCMVideoCodecType_MPEG2Video,
+                kCMVideoCodecType_MPEG4Video,
+                kCMVideoCodecType_VP9,
+            ].contains(codecType.rawValue) {
+                dic["RequireHardwareAcceleratedVideoDecoder"] = true
+            }
             // kCMFormatDescriptionExtension_BitsPerComponent
             if let atomsData {
                 dic[kCMFormatDescriptionExtension_SampleDescriptionExtensionAtoms] = [codecType.rawValue.avc: atomsData]
@@ -249,7 +267,15 @@ public class FFmpegAssetTrack: MediaPlayerTrack {
                 dic[kCVImageBufferYCbCrMatrixKey] = ycbcrMatrix
             }
             // swiftlint:disable line_length
-            _ = CMVideoFormatDescriptionCreate(allocator: kCFAllocatorDefault, codecType: codecType.rawValue, width: codecpar.width, height: codecpar.height, extensions: dic, formatDescriptionOut: &formatDescriptionOut)
+            var status = CMVideoFormatDescriptionCreate(allocator: kCFAllocatorDefault, codecType: codecType.rawValue, width: codecpar.width, height: codecpar.height, extensions: dic, formatDescriptionOut: &formatDescriptionOut)
+            if status != noErr {
+                KSLog(level: .warning, "[FFmpegAssetTrack] CMVideoFormatDescriptionCreate failed codec=\(codecName) status=\(status); retry without extensions")
+                status = CMVideoFormatDescriptionCreate(allocator: kCFAllocatorDefault, codecType: codecType.rawValue, width: codecpar.width, height: codecpar.height, extensions: nil, formatDescriptionOut: &formatDescriptionOut)
+                if status != noErr {
+                    KSLog(level: .warning, "[FFmpegAssetTrack] skip video track codec=\(codecName) status=\(status)")
+                    return nil
+                }
+            }
             // swiftlint:enable line_length
             if let name = av_get_pix_fmt_name(format) {
                 formatName = String(cString: name)

@@ -43,6 +43,7 @@ open class KSOptions {
     public var avOptions = [String: Any]()
     public var formatContextOptions = [String: Any]()
     public var decoderOptions = [String: Any]()
+    public var forcedInputFormatName: String?
     public var probesize: Int64?
     public var maxAnalyzeDuration: Int64?
     public var lowres = UInt8(0)

@@ -188,6 +188,12 @@ extension MEPlayerItem {
 //            0
 //        }
         setHttpProxy()
+        if let probesize = options.probesize {
+            options.formatContextOptions["probesize"] = probesize
+        }
+        if let maxAnalyzeDuration = options.maxAnalyzeDuration {
+            options.formatContextOptions["analyzeduration"] = maxAnalyzeDuration
+        }
         var avOptions = options.formatContextOptions.avOptions
         if let pb = options.process(url: url) {
             // 如果要自定义协议的话，那就用avio_alloc_context，对formatCtx.pointee.pb赋值
@@ -199,7 +205,8 @@ extension MEPlayerItem {
         } else {
             urlString = url.absoluteString
         }
-        var result = avformat_open_input(&self.formatCtx, urlString, nil, &avOptions)
+        let inputFormat = options.forcedInputFormatName.flatMap { av_find_input_format($0) }
+        var result = avformat_open_input(&self.formatCtx, urlString, inputFormat, &avOptions)
         av_dict_free(&avOptions)
         if result == AVError.eof.code {
             state = .finished

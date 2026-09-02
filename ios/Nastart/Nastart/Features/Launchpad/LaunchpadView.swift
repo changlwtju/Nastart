@@ -10967,13 +10967,13 @@ private final class JellyfinLibraryStore: ObservableObject {
             expectedContentLength: entry.mediaSize
         ) {
             let requiresLocalProxy = requiresCertificateBypass(for: url)
-            return JellyfinDirectPlaybackRoute(
-                url: await preferredDirectPlaybackURL(
-                    url,
-                    filename: entry.title,
-                    allowsSelfSignedCertificates: requiresLocalProxy,
-                    forcesLocalProxy: forcesLocalProxy && requiresLocalProxy
-                ),
+                return JellyfinDirectPlaybackRoute(
+                    url: await preferredDirectPlaybackURL(
+                        url,
+                        filename: entry.title,
+                        allowsSelfSignedCertificates: requiresLocalProxy,
+                        forcesLocalProxy: forcesLocalProxy
+                    ),
                 handoffURL: url,
                 source: "jellyfinOriginal",
                 allowsSelfSignedCertificates: requiresLocalProxy,
@@ -11052,7 +11052,8 @@ private final class JellyfinLibraryStore: ObservableObject {
         return (try? await AuthenticatedMediaStreamProxy.shared.register(
             upstreamURL: url,
             filename: filename,
-            allowsSelfSignedCertificates: allowsSelfSignedCertificates
+            allowsSelfSignedCertificates: allowsSelfSignedCertificates,
+            prefersFiniteRangeResponse: forcesLocalProxy
         )) ?? url
     }
 

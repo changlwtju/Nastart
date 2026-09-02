@@ -1163,16 +1163,16 @@ private struct FilePreviewView: View {
             let fallbackAllowsSelfSigned = session?.allowsSelfSignedCertificates == true
             let fallbackSubtitleURL = subtitleAsset?.playbackURL
             let shouldPrepareLocalProxy = item.kind == .video
-                && (!greenfieldRequested
-                    && (isPrivateRoute
+                && (greenfieldRequested
+                    || isPrivateRoute
                     || NetworkHostClassifier.isLiteralAddress(selectedURL.host))
-                )
             let preparedProxyURL: URL?
             if shouldPrepareLocalProxy {
                 preparedProxyURL = try? await AuthenticatedMediaStreamProxy.shared.register(
                     upstreamURL: selectedURL,
                     filename: item.name,
-                    allowsSelfSignedCertificates: fallbackAllowsSelfSigned
+                    allowsSelfSignedCertificates: fallbackAllowsSelfSigned,
+                    prefersFiniteRangeResponse: greenfieldRequested
                 )
             } else {
                 preparedProxyURL = nil
@@ -1227,7 +1227,8 @@ private struct FilePreviewView: View {
                             guard let proxyURL = try? await AuthenticatedMediaStreamProxy.shared.register(
                                 upstreamURL: resolvedFallbackURL,
                                 filename: fallbackFilename,
-                                allowsSelfSignedCertificates: fallbackAllowsSelfSigned
+                                allowsSelfSignedCertificates: fallbackAllowsSelfSigned,
+                                prefersFiniteRangeResponse: greenfieldRequested
                             ) else {
                                 return nil
                             }
@@ -1852,6 +1853,7 @@ final class AuthenticatedMediaStreamProxy: @unchecked Sendable {
         let allowsSelfSignedCertificates: Bool
         let filename: String
         let isPlaylist: Bool
+        let prefersFiniteRangeResponse: Bool
         let localPort: NWEndpoint.Port
         let createdAt: Date
     }
@@ -1868,7 +1870,8 @@ final class AuthenticatedMediaStreamProxy: @unchecked Sendable {
     func register(
         upstreamURL: URL,
         filename: String,
-        allowsSelfSignedCertificates: Bool
+        allowsSelfSignedCertificates: Bool,
+        prefersFiniteRangeResponse: Bool = false
     ) async throws -> URL {
         let port = try await listenerPort()
         let token = UUID().uuidString.lowercased()
@@ -1884,6 +1887,7 @@ final class AuthenticatedMediaStreamProxy: @unchecked Sendable {
                     allowsSelfSignedCertificates: allowsSelfSignedCertificates,
                     filename: safeFilename,
                     isPlaylist: upstreamURL.pathExtension.lowercased() == "m3u8",
+                    prefersFiniteRangeResponse: prefersFiniteRangeResponse,
                     localPort: port,
                     createdAt: Date()
                 )
@@ -2036,6 +2040,7 @@ final class AuthenticatedMediaStreamProxy: @unchecked Sendable {
             method: requestParts[0],
             requestHeaders: headers,
             allowsSelfSignedCertificates: route.allowsSelfSignedCertificates,
+            prefersFiniteRangeResponse: route.prefersFiniteRangeResponse,
             isPlaylist: route.isPlaylist
                 && requestedUpstreamURL.pathExtension.lowercased() == "m3u8",
             isHLSChildRequest: route.isPlaylist
@@ -2065,6 +2070,7 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
     private let method: String
     private let requestHeaders: [String: String]
     private let allowsSelfSignedCertificates: Bool
+    private let prefersFiniteRangeResponse: Bool
     private let isPlaylist: Bool
     private let isHLSChildRequest: Bool
     private let playlistToken: String?
@@ -2109,7 +2115,13 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
     private let maximumMediaSegmentBytes = MediaRangePolicy.upstreamWindowBytes
 
     private var clientUsesChunkedMediaResponse: Bool {
+        guard !prefersFiniteRangeResponse else { return false }
         guard !isPlaylist, !isHLSChildRequest else { return false }
+        return MediaRangePolicy.isOpenEnded(requestHeaders["range"] ?? "bytes=0-")
+    }
+
+    private var clientUsesContinuousRangeResponse: Bool {
+        guard prefersFiniteRangeResponse, !isPlaylist, !isHLSChildRequest else { return false }
         return MediaRangePolicy.isOpenEnded(requestHeaders["range"] ?? "bytes=0-")
     }
 
@@ -2119,6 +2131,7 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
         method: String,
         requestHeaders: [String: String],
         allowsSelfSignedCertificates: Bool,
+        prefersFiniteRangeResponse: Bool,
         isPlaylist: Bool,
         isHLSChildRequest: Bool,
         playlistToken: String?,
@@ -2131,6 +2144,7 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
         self.method = method
         self.requestHeaders = requestHeaders
         self.allowsSelfSignedCertificates = allowsSelfSignedCertificates
+        self.prefersFiniteRangeResponse = prefersFiniteRangeResponse
         self.isPlaylist = isPlaylist
         self.isHLSChildRequest = isHLSChildRequest
         self.playlistToken = playlistToken
@@ -2287,6 +2301,7 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
            let parsedLength = Int64(contentLength), parsedLength >= 0 {
             expectedBodyBytes = parsedLength
         }
+        let shouldExposeContinuousRange = clientUsesContinuousRangeResponse && parsedRange != nil
         DiagnosticLogStore.shared.record(
             .info,
             categoryKey: "diagnostics.category.media",
@@ -2296,7 +2311,10 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
                 "range": activeRequestedRange ?? "full",
                 "status": "\(response.statusCode)",
                 "contentLength": expectedBodyBytes.map(String.init) ?? "-",
-                "contentRange": contentRange ?? "-"
+                "contentRange": contentRange ?? "-",
+                "clientResponse": shouldExposeContinuousRange
+                    ? "continuousRange"
+                    : (clientUsesChunkedMediaResponse ? "chunkedRange" : "finiteRange")
             ]
         )
         let reason = HTTPURLResponse.localizedString(forStatusCode: response.statusCode).capitalized
@@ -2305,12 +2323,20 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
             "Content-Type", "Content-Length", "Content-Range", "Accept-Ranges",
             "ETag", "Last-Modified", "Content-Disposition"
         ] {
-            if clientUsesChunkedMediaResponse && (name == "Content-Length" || name == "Content-Range") {
+            if (clientUsesChunkedMediaResponse || shouldExposeContinuousRange)
+                && (name == "Content-Length" || name == "Content-Range") {
                 continue
             }
             if let value = response.value(forHTTPHeaderField: name) {
                 lines.append("\(name): \(value)")
             }
+        }
+        if shouldExposeContinuousRange,
+           let start = parsedRange?.start,
+           let total = responseTotalLength,
+           total > start {
+            lines.append("Content-Length: \(total - start)")
+            lines.append("Content-Range: bytes \(start)-\(total - 1)/\(total)")
         }
         if clientUsesChunkedMediaResponse {
             if let start = parsedRange?.start, let total = responseTotalLength, total > start {
@@ -2318,6 +2344,7 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
             }
             lines.append("Transfer-Encoding: chunked")
         }
+        lines.append("Cache-Control: no-store")
         lines.append("Connection: close")
         let header = lines.joined(separator: "\r\n") + "\r\n\r\n"
         connection.send(content: Data(header.utf8), completion: .contentProcessed { [weak self] error in
@@ -2412,6 +2439,9 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
             return
         }
         if continueChunkedMediaResponseIfNeeded() {
+            return
+        }
+        if continueContinuousRangeResponseIfNeeded() {
             return
         }
         bufferLock.lock()
@@ -2632,6 +2662,22 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
 
     private func continueChunkedMediaResponseIfNeeded() -> Bool {
         guard clientUsesChunkedMediaResponse,
+              let total = responseTotalLength,
+              let responseStartOffset else {
+            return false
+        }
+        let (nextOffset, overflow) = responseStartOffset.addingReportingOverflow(deliveredBodyBytes)
+        guard !overflow, nextOffset < total else {
+            return false
+        }
+        upstreamCompleted = false
+        let nextRange = "bytes=\(nextOffset)-\(min(nextOffset + maximumMediaSegmentBytes - 1, total - 1))"
+        startUpstreamTask(rangeOverride: nextRange)
+        return true
+    }
+
+    private func continueContinuousRangeResponseIfNeeded() -> Bool {
+        guard clientUsesContinuousRangeResponse,
               let total = responseTotalLength,
               let responseStartOffset else {
             return false

@@ -111,7 +111,8 @@ extension MediaPlaybackRequest {
 
     private func greenfieldPrimaryResource() -> MediaPlaybackResource? {
         let extensionHint = fileExtensionHint
-        guard extensionHint != "m3u8",
+        guard source == .directURL,
+              extensionHint != "m3u8",
               isLoopbackProxy(url),
               let externalHandoffResource,
               isHTTPPlaybackURL(externalHandoffResource.url)
@@ -127,7 +128,7 @@ extension MediaPlaybackRequest {
         sourceKind: PlaybackSourceKind
     ) -> [PlaybackRoute] {
         var resources: [MediaPlaybackResource] = []
-        if let externalHandoffResource {
+        if source == .directURL, let externalHandoffResource {
             resources.append(externalHandoffResource)
         }
         if let compatibilityResource {
