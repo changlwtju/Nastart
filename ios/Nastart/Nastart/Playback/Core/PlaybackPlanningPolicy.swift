@@ -15,6 +15,7 @@ enum PlaybackPlanningPolicy {
         certificatePolicy: PlaybackCertificatePolicy = .systemTrust,
         byteLength: Int64? = nil,
         duration: TimeInterval? = nil,
+        estimatedBitrate: Int? = nil,
         tracks: TrackCatalog = TrackCatalog(),
         subtitles: SubtitlePlan? = nil,
         alternateRoutes: [PlaybackRoute] = []
@@ -41,7 +42,10 @@ enum PlaybackPlanningPolicy {
             duration: duration,
             byteLength: byteLength,
             rangeCapability: rangeCapability(routeKind: routeKind, fileExtensionHint: extensionHint),
-            codecSummary: PlaybackCodecSummary(container: extensionHint)
+            codecSummary: PlaybackCodecSummary(
+                container: extensionHint,
+                bitrate: estimatedBitrate
+            )
         )
         return PlaybackPlan(
             intent: intent,

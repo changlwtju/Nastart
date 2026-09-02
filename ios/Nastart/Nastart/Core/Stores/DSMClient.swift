@@ -278,6 +278,7 @@ final class DSMClient {
     // package/container endpoint must not keep the login sheet spinning after
     // authentication and shared folders are already available.
     private static let snapshotRequestTimeout: TimeInterval = 8
+    private static let packageSnapshotRequestTimeout: TimeInterval = 2.5
     private let baseURL: URL
     private let urlSession: URLSession
     private let allowsSelfSignedCertificates: Bool
@@ -470,6 +471,7 @@ final class DSMClient {
             details: [
                 "target": DiagnosticLogStore.redactedURL(baseURL),
                 "account": account.isEmpty ? "-" : "<redacted>",
+                "session": sessionName,
                 "2fa": oneTimeCode.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? "off" : "on",
                 "selfSigned": allowsSelfSignedCertificates ? "on" : "off"
             ]
@@ -704,7 +706,7 @@ final class DSMClient {
             fallbackPath: "/webapi/entry.cgi",
             fallbackMaxVersion: 2,
             method: "list"
-        ))
+        ), timeout: Self.packageSnapshotRequestTimeout, maximumAttempts: 1)
         async let reverseProxyData = firstSuccessfulCall(apiRequests(
             session,
             apiInfo: apiInfo,
@@ -975,6 +977,31 @@ final class DSMClient {
         }
     }
 
+    private func callWithAbsoluteTimeout(
+        path: String,
+        queryItems: [URLQueryItem],
+        timeout: TimeInterval
+    ) async throws -> DSMJSONValue {
+        try await withThrowingTaskGroup(of: DSMJSONValue.self) { group in
+            defer { group.cancelAll() }
+            group.addTask {
+                try await self.call(path: path, queryItems: queryItems, timeout: timeout)
+            }
+            group.addTask {
+                try await Task.sleep(nanoseconds: Self.nanoseconds(for: timeout))
+                throw URLError(.timedOut)
+            }
+            guard let value = try await group.next() else {
+                throw CancellationError()
+            }
+            return value
+        }
+    }
+
+    private static func nanoseconds(for timeout: TimeInterval) -> UInt64 {
+        UInt64(max(timeout, 0.1) * 1_000_000_000)
+    }
+
     private static func isTransientNetworkError(_ error: Error) -> Bool {
         guard let urlError = error as? URLError else { return false }
         switch urlError.code {
@@ -1025,7 +1052,7 @@ final class DSMClient {
     }
 
     private func optionalCall(path: String, queryItems: [URLQueryItem]) async -> DSMJSONValue? {
-        try? await call(
+        try? await callWithAbsoluteTimeout(
             path: path,
             queryItems: queryItems,
             timeout: Self.snapshotRequestTimeout
@@ -1047,14 +1074,19 @@ final class DSMClient {
         apiInfoCacheLock.unlock()
     }
 
-    private func firstSuccessfulCall(_ requests: [(String, [URLQueryItem])]) async -> DSMJSONValue? {
-        for request in requests {
+    private func firstSuccessfulCall(
+        _ requests: [(String, [URLQueryItem])],
+        timeout: TimeInterval = DSMClient.snapshotRequestTimeout,
+        maximumAttempts: Int? = nil
+    ) async -> DSMJSONValue? {
+        let attempts = maximumAttempts.map { Array(requests.prefix(max($0, 0))) } ?? requests
+        for request in attempts {
             guard !Task.isCancelled else { return nil }
             do {
-                let value = try await call(
+                let value = try await callWithAbsoluteTimeout(
                     path: request.0,
                     queryItems: request.1,
-                    timeout: Self.snapshotRequestTimeout
+                    timeout: timeout
                 )
                 return value
             } catch {
@@ -1383,7 +1415,7 @@ final class DSMClient {
         for request in requests {
             let value: DSMJSONValue
             do {
-                value = try await call(
+                value = try await callWithAbsoluteTimeout(
                     path: request.0,
                     queryItems: request.1,
                     timeout: Self.snapshotRequestTimeout
@@ -2122,7 +2154,10 @@ final class DSMClient {
                 endpoint: resolvedEndpoint?.url,
                 alternateEndpoint: resolvedEndpoint?.alternateURL,
                 source: resolvedEndpoint?.source ?? .container,
-                isLaunchpadVisible: true
+                isLaunchpadVisible: Self.shouldAutomaticallyShowContainerService(
+                    container,
+                    endpoint: resolvedEndpoint?.url
+                )
             )
         }
 
@@ -2623,6 +2658,45 @@ final class DSMClient {
             "virtualmachinemanager"
         ]
         return launchpadPackageTokens.contains { compact.contains($0) }
+    }
+
+    private static func shouldAutomaticallyShowContainerService(
+        _ container: DockerContainer,
+        endpoint: URL?
+    ) -> Bool {
+        guard container.status == .online, endpoint != nil else { return false }
+        let compact = compactServiceIdentifier("\(container.name) \(container.image)")
+        let highValueTokens = [
+            "jellyfin",
+            "emby",
+            "plex",
+            "navidrome",
+            "audiobookshelf",
+            "qbittorrent",
+            "transmission",
+            "aria2",
+            "downloadstation",
+            "homeassistant",
+            "homebridge",
+            "portainer",
+            "homepage",
+            "nginxproxymanager",
+            "traefik",
+            "caddy",
+            "adguard",
+            "pihole",
+            "vaultwarden",
+            "bitwarden",
+            "codeserver",
+            "codexserver",
+            "jupyter",
+            "tinymediamanager",
+            "metacubexd",
+            "gitea",
+            "gitlab",
+            "uptimekuma"
+        ]
+        return highValueTokens.contains { compact.contains($0) }
     }
 
     private static func serviceSortRank(_ service: LaunchpadService) -> Int {

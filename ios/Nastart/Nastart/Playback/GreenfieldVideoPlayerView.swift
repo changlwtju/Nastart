@@ -8,7 +8,10 @@ struct GreenfieldPlaybackLaunchRequest: Identifiable {
     let fileExtensionHint: String?
     let mimeHint: String?
     let certificatePolicy: PlaybackCertificatePolicy
+    let alternateRoutes: [PlaybackRoute]
+    let byteLength: Int64?
     let duration: TimeInterval?
+    let estimatedBitrate: Int?
     let tracks: TrackCatalog
     let subtitles: SubtitlePlan?
 
@@ -18,7 +21,10 @@ struct GreenfieldPlaybackLaunchRequest: Identifiable {
         fileExtensionHint: String? = nil,
         mimeHint: String? = nil,
         certificatePolicy: PlaybackCertificatePolicy = .systemTrust,
+        alternateRoutes: [PlaybackRoute] = [],
+        byteLength: Int64? = nil,
         duration: TimeInterval? = nil,
+        estimatedBitrate: Int? = nil,
         tracks: TrackCatalog = TrackCatalog(),
         subtitles: SubtitlePlan? = nil
     ) {
@@ -27,7 +33,10 @@ struct GreenfieldPlaybackLaunchRequest: Identifiable {
         self.fileExtensionHint = fileExtensionHint
         self.mimeHint = mimeHint
         self.certificatePolicy = certificatePolicy
+        self.alternateRoutes = alternateRoutes
+        self.byteLength = byteLength
         self.duration = duration
+        self.estimatedBitrate = estimatedBitrate
         self.tracks = tracks
         self.subtitles = subtitles
     }
@@ -53,6 +62,7 @@ struct GreenfieldVideoPlayerView: View {
                     onFinished: model.handleKSPlayerFinished,
                     onBufferChanged: model.handleKSPlayerBufferChanged
                 )
+                .id(plan.primaryRoute.id)
             } else {
                 VideoPlayer(player: model.player)
                     .ignoresSafeArea(edges: .bottom)
@@ -153,6 +163,7 @@ private final class GreenfieldVideoPlayerModel: ObservableObject {
     private var didRecordThirtySecondCheckpoint = false
     private var lastTimeControlStatus: AVPlayer.TimeControlStatus?
     private var playbackTask: Task<Void, Never>?
+    private var failedRouteIDs = Set<UUID>()
 
     func start(_ request: GreenfieldPlaybackLaunchRequest) {
         guard playbackTask == nil else { return }
@@ -169,9 +180,12 @@ private final class GreenfieldVideoPlayerModel: ObservableObject {
                 fileExtensionHint: request.fileExtensionHint,
                 mimeHint: request.mimeHint,
                 certificatePolicy: request.certificatePolicy,
+                byteLength: request.byteLength,
                 duration: request.duration,
+                estimatedBitrate: request.estimatedBitrate,
                 tracks: request.tracks,
-                subtitles: request.subtitles
+                subtitles: request.subtitles,
+                alternateRoutes: request.alternateRoutes
             )
             let coordinator = PlaybackSessionCoordinator(
                 resolver: resolver,
@@ -224,6 +238,7 @@ private final class GreenfieldVideoPlayerModel: ObservableObject {
         }
         player.replaceCurrentItem(with: nil)
         renderingPlan = nil
+        failedRouteIDs.removeAll()
     }
 
     func handleKSPlayerRendererUnsupported() {
@@ -250,6 +265,9 @@ private final class GreenfieldVideoPlayerModel: ObservableObject {
             )
         }
         if state == "error" {
+            if activateAlternateRoute(after: plan, reason: "ksPlayerStateError") {
+                return
+            }
             errorMessage = NSLocalizedString("player.load_failed", comment: "")
         }
     }
@@ -277,6 +295,9 @@ private final class GreenfieldVideoPlayerModel: ObservableObject {
     func handleKSPlayerFinished(_ errorDescription: String?) {
         guard let plan = renderingPlan else { return }
         if let errorDescription {
+            if activateAlternateRoute(after: plan, reason: "ksPlayerFinished") {
+                return
+            }
             errorMessage = errorDescription
             debugBadge = "KSPlayer failed"
             recordPlayerFailure(plan: plan, error: nil, stage: "ksPlayerFinished:\(errorDescription)")
@@ -428,6 +449,56 @@ private final class GreenfieldVideoPlayerModel: ObservableObject {
             plan.primaryRoute.routeKind.rawValue,
             plan.intent.connectionContext.addressKind.rawValue
         ].joined(separator: " / ")
+    }
+
+    private func activateAlternateRoute(after plan: PlaybackPlan, reason: String) -> Bool {
+        failedRouteIDs.insert(plan.primaryRoute.id)
+        guard let fallbackRoute = plan.alternateRoutes.first(where: { route in
+            !failedRouteIDs.contains(route.id)
+                && route.url.absoluteString != plan.primaryRoute.url.absoluteString
+        }) else {
+            return false
+        }
+
+        let remainingRoutes = ([plan.primaryRoute] + plan.alternateRoutes).filter {
+            $0.id != fallbackRoute.id
+        }
+        var replacementIntent = plan.intent
+        replacementIntent.directURL = fallbackRoute.url
+        replacementIntent.connectionContext = PlaybackConnectionContext.make(url: fallbackRoute.url)
+        let replacementPlan = PlaybackPlanningPolicy.makePlan(
+            intent: replacementIntent,
+            url: fallbackRoute.url,
+            originURL: fallbackRoute.originURL,
+            fileExtensionHint: fallbackRoute.containerHint,
+            mimeHint: fallbackRoute.mimeHint,
+            certificatePolicy: fallbackRoute.certificatePolicy,
+            byteLength: fallbackRoute.byteLength,
+            duration: fallbackRoute.duration,
+            estimatedBitrate: fallbackRoute.codecSummary.bitrate,
+            tracks: plan.tracks,
+            subtitles: plan.subtitles,
+            alternateRoutes: remainingRoutes
+        )
+        errorMessage = nil
+        isPreparing = false
+        renderingPlan = replacementPlan
+        player.replaceCurrentItem(with: nil)
+        debugBadge = [
+            replacementPlan.enginePolicy.rawValue,
+            "fallback \(reason)",
+            replacementPlan.primaryRoute.routeKind.rawValue,
+            replacementPlan.intent.connectionContext.addressKind.rawValue
+        ].joined(separator: " / ")
+        let coordinator = coordinator
+        Task {
+            await coordinator?.markStreamInterrupted(
+                plan: plan,
+                reason: reason,
+                fallbackRoute: fallbackRoute
+            )
+        }
+        return true
     }
 
     private func recordPlayerFailure(plan: PlaybackPlan, error: Error?, stage: String) {

@@ -29,6 +29,10 @@ extension MediaPlaybackRequest {
             contentKind = .discImage
         }
 
+        let primaryResource = greenfieldPrimaryResource()
+        let primaryURL = primaryResource?.url ?? url
+        let primaryExtensionHint = primaryResource?.fileExtensionOverride ?? fileExtensionHint
+        let primaryCertificatePolicy = certificatePolicy(for: primaryResource)
         let startTime = totalDurationSeconds.flatMap { duration in
             initialPosition.map { duration * $0 }
         } ?? (timelineOffsetSeconds > 0 ? timelineOffsetSeconds : nil)
@@ -36,7 +40,7 @@ extension MediaPlaybackRequest {
         let subtitleTrackID = prefersSubtitlesDisabled
             ? nil
             : selectedSourceSubtitleTrackID.map(String.init)
-        let connectionContext = PlaybackConnectionContext.make(url: networkOriginURL)
+        let connectionContext = PlaybackConnectionContext.make(url: primaryURL)
         let networkContext = PlaybackNetworkContext(
             networkClass: playbackNetworkClass(
                 connectionContext: connectionContext,
@@ -44,7 +48,7 @@ extension MediaPlaybackRequest {
             ),
             isPrivateRoute: isPrivateNetworkRoute
                 ?? isPrivateConnection(connectionContext.addressKind),
-            estimatedBitrate: nil,
+            estimatedBitrate: estimatedBitrate,
             isExpensive: false,
             isConstrained: false
         )
@@ -77,7 +81,7 @@ extension MediaPlaybackRequest {
                 stablePath: networkOriginURL.path.isEmpty ? nil : networkOriginURL.path
             ),
             displayTitle: title,
-            directURL: url,
+            directURL: primaryURL,
             preferredStartTime: startTime,
             preferredAudioTrackID: audioTrackID,
             preferredSubtitleTrackID: subtitleTrackID,
@@ -89,13 +93,114 @@ extension MediaPlaybackRequest {
         return GreenfieldPlaybackLaunchRequest(
             id: intent.id,
             intent: intent,
-            fileExtensionHint: fileExtensionHint,
+            fileExtensionHint: primaryExtensionHint,
             mimeHint: mimeTypeHint,
-            certificatePolicy: allowsSelfSignedCertificates ? .allowPinnedSelfSigned : .systemTrust,
+            certificatePolicy: primaryCertificatePolicy,
+            alternateRoutes: greenfieldAlternateRoutes(
+                intent: intent,
+                primaryURL: primaryURL,
+                sourceKind: sourceKind
+            ),
+            byteLength: byteLength,
             duration: totalDurationSeconds,
+            estimatedBitrate: estimatedBitrate,
             tracks: tracks,
             subtitles: subtitlePlan(tracks: tracks, selectedSubtitleTrackID: subtitleTrackID)
         )
+    }
+
+    private func greenfieldPrimaryResource() -> MediaPlaybackResource? {
+        let extensionHint = fileExtensionHint
+        guard extensionHint != "m3u8",
+              isLoopbackProxy(url),
+              let externalHandoffResource,
+              isHTTPPlaybackURL(externalHandoffResource.url)
+        else {
+            return nil
+        }
+        return externalHandoffResource
+    }
+
+    private func greenfieldAlternateRoutes(
+        intent: PlaybackIntent,
+        primaryURL: URL,
+        sourceKind: PlaybackSourceKind
+    ) -> [PlaybackRoute] {
+        var resources: [MediaPlaybackResource] = []
+        if let externalHandoffResource {
+            resources.append(externalHandoffResource)
+        }
+        if let compatibilityResource {
+            resources.append(compatibilityResource)
+        }
+        if let compatibilityFallbackResource {
+            resources.append(compatibilityFallbackResource)
+        }
+        resources.append(
+            MediaPlaybackResource(
+                url: url,
+                fileExtensionOverride: fileExtensionHint.isEmpty ? nil : fileExtensionHint,
+                subtitleURL: externalSubtitleURL,
+                allowsSelfSignedCertificates: allowsSelfSignedCertificates
+            )
+        )
+
+        var seen = Set([primaryURL.absoluteString])
+        return resources.compactMap { resource -> PlaybackRoute? in
+            let extensionHint = resource.fileExtensionOverride
+                ?? (fileExtensionHint.isEmpty ? nil : fileExtensionHint)
+            guard isHTTPPlaybackURL(resource.url),
+                  !(extensionHint != "m3u8" && isLoopbackProxy(resource.url)),
+                  seen.insert(resource.url.absoluteString).inserted
+            else {
+                return nil
+            }
+            let routeKind = PlaybackPlanningPolicy.routeKind(
+                sourceKind: sourceKind,
+                url: resource.url,
+                fileExtensionHint: extensionHint
+            )
+            let playMethod = PlaybackPlanningPolicy.playMethod(
+                sourceKind: sourceKind,
+                routeKind: routeKind,
+                timelineOffset: intent.preferredStartTime
+            )
+            return PlaybackRoute(
+                routeKind: routeKind,
+                playMethod: playMethod,
+                url: resource.url,
+                originURL: networkOriginURL,
+                certificatePolicy: certificatePolicy(for: resource),
+                containerHint: extensionHint,
+                mimeHint: mimeTypeHint,
+                duration: resource.totalDurationSeconds ?? totalDurationSeconds,
+                byteLength: byteLength,
+                rangeCapability: PlaybackPlanningPolicy.rangeCapability(
+                    routeKind: routeKind,
+                    fileExtensionHint: extensionHint
+                ),
+                codecSummary: PlaybackCodecSummary(
+                    container: extensionHint,
+                    bitrate: estimatedBitrate
+                )
+            )
+        }
+    }
+
+    private func certificatePolicy(for resource: MediaPlaybackResource?) -> PlaybackCertificatePolicy {
+        (resource?.allowsSelfSignedCertificates ?? allowsSelfSignedCertificates)
+            ? .allowPinnedSelfSigned
+            : .systemTrust
+    }
+
+    private func isLoopbackProxy(_ url: URL) -> Bool {
+        let host = url.host?.lowercased()
+        return host == "127.0.0.1" || host == "localhost"
+    }
+
+    private func isHTTPPlaybackURL(_ url: URL) -> Bool {
+        guard let scheme = url.scheme?.lowercased() else { return false }
+        return scheme == "http" || scheme == "https" || scheme == "file"
     }
 
     private func subtitlePlan(

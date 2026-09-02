@@ -143,6 +143,23 @@ struct DSMConnectionEndpoints: Codable, Equatable {
     var activeFallbackURL: URL? {
         lanAddress ?? publicAddress ?? primaryDomain
     }
+
+    func replacingLANAddress(_ url: URL?) -> DSMConnectionEndpoints {
+        DSMConnectionEndpoints(
+            primaryDomain: primaryDomain,
+            lanAddress: url,
+            publicAddress: publicAddress
+        )
+    }
+
+    func removingLANAddress() -> DSMConnectionEndpoints {
+        replacingLANAddress(nil)
+    }
+
+    func addingVerifiedLANAddress(_ url: URL?) -> DSMConnectionEndpoints {
+        guard let url else { return self }
+        return replacingLANAddress(url)
+    }
 }
 
 enum DSMConnectionRouteResolver {

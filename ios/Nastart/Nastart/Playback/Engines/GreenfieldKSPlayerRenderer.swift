@@ -58,6 +58,9 @@ struct GreenfieldKSPlayerRenderer: View {
         options.maxAnalyzeDuration = 2_000_000
         options.autoSelectEmbedSubtitle = plan.subtitles.mode != .disabled
         options.canStartPictureInPictureAutomaticallyFromInline = true
+        if plan.primaryRoute.certificatePolicy == .allowPinnedSelfSigned {
+            options.formatContextOptions["tls_verify"] = "0"
+        }
         if !plan.primaryRoute.headers.isEmpty {
             options.appendHeader(plan.primaryRoute.headers)
         }
@@ -74,7 +77,7 @@ struct GreenfieldKSPlayerRenderer: View {
 
     private func configureDefaultEngine() {
         KSOptions.firstPlayerType = KSMEPlayer.self
-        KSOptions.secondPlayerType = KSAVPlayer.self
+        KSOptions.secondPlayerType = KSMEPlayer.self
         KSOptions.logLevel = .info
     }
 

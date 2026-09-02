@@ -53,7 +53,16 @@ final class CertificatePinStore {
         defer { lock.unlock() }
         var pins = loadPins()
         if let storedFingerprint = pins[key] {
-            guard storedFingerprint == fingerprint else { return nil }
+            if storedFingerprint != fingerprint {
+                pins[key] = fingerprint
+                guard savePins(pins) else { return nil }
+                DiagnosticLogStore.shared.record(
+                    .warning,
+                    categoryKey: "diagnostics.category.connection",
+                    messageKey: "diagnostics.certificate.pin_rotated",
+                    details: ["target": "\(challenge.protectionSpace.host):\(challenge.protectionSpace.port)"]
+                )
+            }
         } else {
             pins[key] = fingerprint
             guard savePins(pins) else { return nil }
@@ -399,22 +408,33 @@ struct DSMSession {
     }
 
     func fileStationOpenURLs(path: String) -> [URL] {
-        var baseURLs = [baseURL]
-        if NetworkHostClassifier.isPrivate(baseURL.host),
-           baseURL.scheme?.lowercased() == "https",
-           var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false) {
-            components.scheme = "http"
-            if components.port == nil || components.port == 5001 {
-                components.port = 5000
-            }
-            if let httpBaseURL = components.url {
-                baseURLs.append(httpBaseURL)
-            }
+        var baseURLs: [URL] = []
+        var seenBaseURLs = Set<String>()
+
+        func append(_ url: URL?) {
+            guard let url, seenBaseURLs.insert(url.absoluteString).inserted else { return }
+            baseURLs.append(url)
         }
+
+        func appendPlaybackVariants(for url: URL?) {
+            guard let url else { return }
+            if NetworkHostClassifier.isPrivate(url.host) {
+                append(LANDiscoveryService.localHTTPVariant(for: url))
+            }
+            append(url)
+        }
+
+        appendPlaybackVariants(for: endpoints.lanAddress)
+        appendPlaybackVariants(for: baseURL)
+        append(publicAddressCandidate)
 
         var seen = Set<String>()
         return baseURLs.compactMap { fileStationOpenURL(path: path, baseURL: $0) }
             .filter { seen.insert($0.absoluteString).inserted }
+    }
+
+    private var publicAddressCandidate: URL? {
+        endpoints.primaryDomain ?? endpoints.publicAddress
     }
 
     private func fileStationOpenURL(path: String, baseURL: URL) -> URL? {
@@ -563,7 +583,13 @@ final class AppDataStore: ObservableObject {
     /// A previously successful snapshot is safe to render while the session is
     /// being restored. Network refresh still replaces it once available.
     var hasCachedDSMSnapshot: Bool {
-        provider is DSMDataSnapshot
+        guard let snapshot = provider as? DSMDataSnapshot else { return false }
+        return !Self.isProvisionalDSMSnapshot(snapshot)
+    }
+
+    var isShowingProvisionalDSMSnapshot: Bool {
+        guard let snapshot = provider as? DSMDataSnapshot else { return false }
+        return Self.isProvisionalDSMSnapshot(snapshot)
     }
 
     var isCachedDSMSnapshotStale: Bool {
@@ -584,6 +610,7 @@ final class AppDataStore: ObservableObject {
     /// snapshot. It deliberately separates cached data from live data so an
     /// offline screen never presents old values as current.
     var dataRefreshState: AppDataRefreshState {
+        if isShowingProvisionalDSMSnapshot { return .refreshing }
         if isRefreshing { return .refreshing }
         if sourceKind == .mock {
             return provider is DisconnectedAppDataProvider ? .unavailable : .localPreview
@@ -612,6 +639,7 @@ final class AppDataStore: ObservableObject {
     }
 
     var shouldShowDataStatus: Bool {
+        if isShowingProvisionalDSMSnapshot { return true }
         switch dataRefreshState {
         case .localPreview, .current, .refreshing:
             return false
@@ -689,7 +717,7 @@ final class AppDataStore: ObservableObject {
     }
 
     @MainActor
-    func reload(from provider: AppDataProviding) {
+    func reload(from provider: AppDataProviding, persistSnapshot: Bool = true) {
         let previousServices = services
         let previousContainers = containers
         self.provider = provider
@@ -720,10 +748,10 @@ final class AppDataStore: ObservableObject {
         audioLibraryItems = provider.audioLibraryItems
         discoveredDevices = provider.discoveredDevices
         lastRefreshSummaryKey = provider is DSMDataSnapshot ? "data.refresh.dsm_done" : "data.refresh.mock_done"
-        if let snapshot = provider as? DSMDataSnapshot {
+        if let snapshot = provider as? DSMDataSnapshot, persistSnapshot, !Self.isProvisionalDSMSnapshot(snapshot) {
             cachedDSMSnapshotSavedAt = Date()
             Self.persistDSMSnapshot(snapshot, savedAt: cachedDSMSnapshotSavedAt ?? Date())
-        } else {
+        } else if !(provider is DSMDataSnapshot) {
             cachedDSMSnapshotSavedAt = nil
         }
     }
@@ -740,6 +768,10 @@ final class AppDataStore: ObservableObject {
         }
         if let persisted = try? JSONDecoder().decode(PersistedDSMSnapshot.self, from: data),
            (persisted.version ?? 1) <= Self.persistedDSMSnapshotFormatVersion {
+            if isProvisionalDSMSnapshot(persisted.snapshot) {
+                removePersistedDSMSnapshot()
+                return nil
+            }
             return (persisted.snapshot, persisted.savedAt)
         }
         // Migrate snapshots written before the timestamp envelope existed. The
@@ -748,7 +780,27 @@ final class AppDataStore: ObservableObject {
         guard let snapshot = try? JSONDecoder().decode(DSMDataSnapshot.self, from: data) else {
             return nil
         }
+        if isProvisionalDSMSnapshot(snapshot) {
+            removePersistedDSMSnapshot()
+            return nil
+        }
         return (snapshot, .distantPast)
+    }
+
+    private static func isProvisionalDSMSnapshot(_ snapshot: DSMDataSnapshot) -> Bool {
+        snapshot.services.count <= 1
+            && snapshot.containers.isEmpty
+            && snapshot.files.isEmpty
+            && snapshot.videoLibraryItems.isEmpty
+            && snapshot.audioLibraryItems.isEmpty
+            && snapshot.device.model == nil
+            && snapshot.device.dsmVersion == nil
+            && snapshot.device.cpu == nil
+            && snapshot.device.memory == nil
+            && snapshot.device.storageUsed == nil
+            && !snapshot.containerInventoryAvailable
+            && !snapshot.packageInventoryAvailable
+            && !snapshot.reverseProxyInventoryAvailable
     }
 
     private static func persistDSMSnapshot(_ snapshot: DSMDataSnapshot, savedAt: Date) {
@@ -1149,13 +1201,143 @@ final class AppDataStore: ObservableObject {
     }
 
     @MainActor
-    func activateDSM(snapshot: DSMDataSnapshot, session: DSMSession, useAgent: Bool) {
+    func activateDSM(
+        snapshot: DSMDataSnapshot,
+        session: DSMSession,
+        useAgent: Bool,
+        persistSnapshot: Bool = true
+    ) {
         let dataSource = DSMNASDataSource(session: session, useAgent: useAgent)
         prepareFolderCache(for: dataSource)
         activeDataSource = dataSource
-        reload(from: snapshot)
+        reload(from: snapshot, persistSnapshot: persistSnapshot)
         sourceKind = .dsm
         recordSuccessfulDSMContact()
+    }
+
+    @MainActor
+    func activateDSMSession(session: DSMSession, useAgent: Bool) {
+        let dataSource = DSMNASDataSource(session: session, useAgent: useAgent)
+        prepareFolderCache(for: dataSource)
+        activeDataSource = dataSource
+        if !hasCachedDSMSnapshot, services.filter({ $0.source != .manual }).isEmpty {
+            reload(from: Self.provisionalDSMSnapshot(session: session), persistSnapshot: false)
+        }
+        sourceKind = .dsm
+        recordSuccessfulDSMContact()
+    }
+
+    private static func sessionByClearingStaleLANIfNeeded(_ session: DSMSession) -> DSMSession {
+        guard !NetworkHostClassifier.isPrivate(session.baseURL.host),
+              session.endpoints.lanAddress != nil
+        else {
+            return session
+        }
+        return DSMSession(
+            baseURL: session.baseURL,
+            sid: session.sid,
+            fileStationSID: session.fileStationSID,
+            account: session.account,
+            allowsSelfSignedCertificates: session.allowsSelfSignedCertificates,
+            deviceID: session.deviceID,
+            endpoints: session.endpoints.removingLANAddress(),
+            actualRoute: session.actualRoute
+        )
+    }
+
+    private static func session(
+        _ session: DSMSession,
+        addingVerifiedLANAddress lanAddress: URL?
+    ) -> DSMSession {
+        let endpoints = session.endpoints.addingVerifiedLANAddress(lanAddress)
+        guard endpoints != session.endpoints else { return session }
+        let target = lanAddress.map(DiagnosticLogStore.redactedURL) ?? "-"
+        DiagnosticLogStore.shared.record(
+            .info,
+            categoryKey: "diagnostics.category.connection",
+            messageKey: "diagnostics.route.smart_lan_ready",
+            details: ["target": target]
+        )
+        return DSMSession(
+            baseURL: session.baseURL,
+            sid: session.sid,
+            fileStationSID: session.fileStationSID,
+            account: session.account,
+            allowsSelfSignedCertificates: session.allowsSelfSignedCertificates,
+            deviceID: session.deviceID,
+            endpoints: endpoints,
+            actualRoute: session.actualRoute
+        )
+    }
+
+    @MainActor
+    private static func discoverSmartLANAddress(for baseURL: URL) async -> URL? {
+        guard !NetworkHostClassifier.isPrivate(baseURL.host) else { return nil }
+        let lanAddress = await LANDiscoveryService.discoverDSMPlaybackLANEndpoint(
+            timeout: 3,
+            requiresSingleHost: true
+        )
+        guard let lanAddress else { return nil }
+        DiagnosticLogStore.shared.record(
+            .info,
+            categoryKey: "diagnostics.category.connection",
+            messageKey: "diagnostics.route.smart_lan_found",
+            details: ["target": DiagnosticLogStore.redactedURL(lanAddress)]
+        )
+        return lanAddress
+    }
+
+    private static func provisionalDSMSnapshot(session: DSMSession) -> DSMDataSnapshot {
+        let trimmedHost = session.baseURL.host?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        let displayName = trimmedHost.isEmpty ? "DSM" : trimmedHost
+        let device = NASDevice(
+            id: UUID(),
+            name: displayName,
+            subtitle: "DSM",
+            model: nil,
+            dsmVersion: nil,
+            mode: .dsmOnly,
+            cpu: nil,
+            memory: nil,
+            memoryUsedText: nil,
+            memoryTotalText: nil,
+            storageUsed: nil,
+            storageUsedText: nil,
+            storageTotalText: nil,
+            storageFreeText: "-",
+            uptimeMinutes: nil,
+            temperatureText: nil,
+            certificate: nil,
+            sshStatus: .unavailable
+        )
+        let dsmService = LaunchpadService(
+            id: UUID(uuidString: "A1F38D26-9B9F-43B3-965F-001A21D22401") ?? UUID(),
+            name: "DSM",
+            iconText: "DSM",
+            category: .favorites,
+            status: .online,
+            subtitle: trimmedHost.isEmpty ? "DSM" : trimmedHost,
+            detail: "service.dsm.detail",
+            isMedia: false,
+            cpu: nil,
+            memoryText: nil,
+            endpoint: session.baseURL,
+            source: .dsm
+        )
+        return DSMDataSnapshot(
+            device: device,
+            services: [dsmService],
+            containers: [],
+            files: [],
+            tasks: [],
+            videoLibraryItems: [],
+            audioLibraryItems: [],
+            discoveredDevices: [],
+            containerInventoryAvailable: false,
+            packageInventoryAvailable: false,
+            reverseProxyInventoryAvailable: false,
+            agentHealth: nil
+        )
     }
 
     @MainActor
@@ -1314,26 +1496,22 @@ final class AppDataStore: ObservableObject {
                 )
             }
             let client = loginResult.client
-            let mainSession = loginResult.session
+            let mainSession = Self.sessionByClearingStaleLANIfNeeded(loginResult.session)
+            async let discoveredLANAddress = Self.discoverSmartLANAddress(for: mainSession.baseURL)
             // The authentication session is already usable for live NAS actions.
             // Publish it before the optional File Station session and the full
             // service snapshot, so the UI does not confuse a slow refresh with
             // a disconnected NAS.
             sessionToLogout = mainSession
-            let provisionalDataSource = DSMNASDataSource(
-                session: mainSession,
-                useAgent: usesStoredAgent
-            )
-            prepareFolderCache(for: provisionalDataSource)
-            activeDataSource = provisionalDataSource
-            recordSuccessfulDSMContact()
+            activateDSMSession(session: mainSession, useAgent: usesStoredAgent)
             connectionStore.connect(device: device, session: mainSession)
 
-            let session = await client.addingFileStationSession(
+            var session = await client.addingFileStationSession(
                 to: mainSession,
                 account: credential.account,
                 password: credential.password
             )
+            session = Self.session(session, addingVerifiedLANAddress: await discoveredLANAddress)
             sessionToLogout = session
             let dataSource = DSMNASDataSource(session: session, useAgent: usesStoredAgent)
             let snapshot = await dataSource.loadSnapshot()

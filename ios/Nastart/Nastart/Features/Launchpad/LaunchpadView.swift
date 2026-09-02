@@ -375,7 +375,8 @@ private struct LaunchpadDataStatusBanner: View {
         case .cached: return "data.refresh.cached"
         case .stale: return "data.refresh.stale"
         case .unavailable: return "data.refresh.unavailable"
-        case .localPreview, .current, .refreshing: return "data.refresh.ready"
+        case .refreshing: return "data.refresh.scanning_services"
+        case .localPreview, .current: return "data.refresh.ready"
         }
     }
 
@@ -860,17 +861,57 @@ private struct GlassHeroPanel: View {
 
     private var summaryKey: String {
         guard isConnected else { return "state.not_connected" }
-        return hasWarning ? "status.warning" : "launchpad.summary.normal"
+        return activeWarning?.titleKey ?? "launchpad.summary.normal"
     }
 
     private var summarySymbol: String {
         guard isConnected else { return "wifi.slash" }
-        return hasWarning ? "exclamationmark.triangle.fill" : "checkmark.circle.fill"
+        return activeWarning?.symbolName ?? "checkmark.circle.fill"
     }
 
-    private var hasWarning: Bool {
-        device.certificateDaysRemaining.map { $0 <= LaunchpadReminderPolicy.certificateWarningDays } == true
-            || [device.cpu, device.memory, device.storageUsed].compactMap { $0 }.contains { $0 >= 0.9 }
+    private var activeWarning: LaunchpadResourceWarning? {
+        LaunchpadResourceWarning.primary(for: device)
+    }
+}
+
+private enum LaunchpadResourceWarning {
+    case storageTight
+    case memoryPressure
+    case cpuPressure
+    case certificateExpiring
+
+    var titleKey: String {
+        switch self {
+        case .storageTight: return "launchpad.warning.storage_tight"
+        case .memoryPressure: return "launchpad.warning.memory_pressure"
+        case .cpuPressure: return "launchpad.warning.cpu_pressure"
+        case .certificateExpiring: return "launchpad.warning.certificate_expiring"
+        }
+    }
+
+    var symbolName: String {
+        switch self {
+        case .storageTight: return "internaldrive"
+        case .memoryPressure: return "memorychip"
+        case .cpuPressure: return "cpu"
+        case .certificateExpiring: return "lock.shield"
+        }
+    }
+
+    static func primary(for device: NASDevice) -> LaunchpadResourceWarning? {
+        if device.storageUsed.map({ $0 >= 0.9 }) == true {
+            return .storageTight
+        }
+        if device.memory.map({ $0 >= 0.9 }) == true {
+            return .memoryPressure
+        }
+        if device.cpu.map({ $0 >= 0.9 }) == true {
+            return .cpuPressure
+        }
+        if device.certificateDaysRemaining.map({ $0 <= LaunchpadReminderPolicy.certificateWarningDays }) == true {
+            return .certificateExpiring
+        }
+        return nil
     }
 }
 
@@ -3482,6 +3523,8 @@ struct MediaPlaybackRequest: Identifiable {
     let initialPlaybackRate: Float
     let timelineOffsetSeconds: Double
     let totalDurationSeconds: Double?
+    let byteLength: Int64?
+    let estimatedBitrate: Int?
     let isPrivateNetworkRoute: Bool?
     let forcesSoftwareDecoding: Bool
     let playbackTracker: MediaPlaybackTracker?
@@ -3519,6 +3562,8 @@ struct MediaPlaybackRequest: Identifiable {
         initialPlaybackRate: Float = 1,
         timelineOffsetSeconds: Double = 0,
         totalDurationSeconds: Double? = nil,
+        byteLength: Int64? = nil,
+        estimatedBitrate: Int? = nil,
         isPrivateNetworkRoute: Bool? = nil,
         forcesSoftwareDecoding: Bool = false,
         playbackTracker: MediaPlaybackTracker? = nil,
@@ -3555,6 +3600,8 @@ struct MediaPlaybackRequest: Identifiable {
         self.initialPlaybackRate = min(max(initialPlaybackRate, 0.25), 4)
         self.timelineOffsetSeconds = max(timelineOffsetSeconds, 0)
         self.totalDurationSeconds = totalDurationSeconds.flatMap { $0 > 0 ? $0 : nil }
+        self.byteLength = byteLength.flatMap { $0 > 0 ? $0 : nil }
+        self.estimatedBitrate = estimatedBitrate.flatMap { $0 > 0 ? $0 : nil }
         self.isPrivateNetworkRoute = isPrivateNetworkRoute
         self.forcesSoftwareDecoding = forcesSoftwareDecoding
         self.playbackTracker = playbackTracker
@@ -3691,6 +3738,8 @@ struct MediaPlaybackRequest: Identifiable {
             initialPlaybackRate: runtimeState?.playbackRate ?? initialPlaybackRate,
             timelineOffsetSeconds: resource.timelineOffsetSeconds ?? timelineOffsetSeconds,
             totalDurationSeconds: resource.totalDurationSeconds ?? totalDurationSeconds,
+            byteLength: byteLength,
+            estimatedBitrate: estimatedBitrate,
             isPrivateNetworkRoute: isPrivateNetworkRoute,
             forcesSoftwareDecoding: resource.forcesSoftwareDecoding,
             playbackTracker: resource.playbackTracker ?? playbackTracker,
@@ -3742,6 +3791,8 @@ struct MediaPlaybackRequest: Identifiable {
             initialPlaybackRate: runtimeState.playbackRate,
             timelineOffsetSeconds: timelineOffsetSeconds,
             totalDurationSeconds: totalDurationSeconds,
+            byteLength: byteLength,
+            estimatedBitrate: estimatedBitrate,
             isPrivateNetworkRoute: isPrivateNetworkRoute,
             forcesSoftwareDecoding: forcesSoftwareDecoding,
             playbackTracker: playbackTracker,
@@ -9881,6 +9932,7 @@ private final class JellyfinLibraryStore: ObservableObject {
         forcedStartTimeTicks: Int? = nil,
         forcedServerReason: String? = nil,
         forcesOriginalPlayback: Bool = false,
+        prefersFastStartupDirectPlay: Bool = false,
         selectedQualityID: String? = nil
     ) async throws -> MediaPlaybackRequest? {
         guard let client, entry.isPlayable else { return nil }
@@ -10015,7 +10067,27 @@ private final class JellyfinLibraryStore: ObservableObject {
             let requiresDeviceCompatibilityTranscode = Self.requiresDeviceCompatibilityTranscode(
                 audioCodec: selectedAudioCodec
             )
+            let defersServerRenderedSubtitleForFastStartup = prefersFastStartupDirectPlay
+                && forcedServerBitrate == nil
+                && forcedServerReason == nil
+                && selectedSubtitleStreamIndex != nil
+                && Self.requiresBurnIn(subtitleCodec: selectedSubtitleCodec)
+            if defersServerRenderedSubtitleForFastStartup {
+                record(
+                    "diagnostics.jellyfin.playback_preparing",
+                    level: .info,
+                    details: [
+                        "mode": "fastStartupSubtitleDeferred",
+                        "reason": "avoidInitialServerHLS",
+                        "subtitleCodec": selectedSubtitleCodec ?? "-",
+                        "subtitleStreamIndex": selectedSubtitleStreamIndex.map(String.init) ?? "none",
+                        "network": bitrateDecision.networkKey,
+                        "sourceBitrate": entry.mediaBitrate.map(String.init) ?? "-"
+                    ]
+                )
+            }
             let requiresServerSubtitleRendering = selectedSubtitleStreamIndex != nil
+                && !defersServerRenderedSubtitleForFastStartup
                 && Self.requiresBurnIn(subtitleCodec: selectedSubtitleCodec)
             let shouldAttemptDirectPlayback = forcedServerBitrate == nil
                 && !Self.requiresAudioTranscode(audioCodec: selectedAudioCodec)
@@ -10023,7 +10095,11 @@ private final class JellyfinLibraryStore: ObservableObject {
                 && !requiresServerSubtitleRendering
                 && (playbackRouteIsPrivate || forcesOriginalPlayback || prefersRemoteOriginalPlayback)
             let directRoute = shouldAttemptDirectPlayback
-                ? await preferredOriginalPlaybackRoute(for: entry, client: client)
+                ? await preferredOriginalPlaybackRoute(
+                    for: entry,
+                    client: client,
+                    forcesLocalProxy: prefersFastStartupDirectPlay
+                )
                 : nil
             if let directRoute {
                 let directURL = directRoute.url
@@ -10316,6 +10392,8 @@ private final class JellyfinLibraryStore: ObservableObject {
             let totalDurationSeconds = entry.runTimeTicks.map { Double($0) / 10_000_000 }
             let usesExternalNormalizedSubtitle = prepared.playMethod == .directPlay
                 && prepared.resource.subtitleURL != nil
+            let disablesServerRenderedSubtitleForFastStartup = prepared.playMethod == .directPlay
+                && defersServerRenderedSubtitleForFastStartup
             return MediaPlaybackRequest(
                 requestedAt: requestedAt,
                 url: prepared.resource.url,
@@ -10336,6 +10414,7 @@ private final class JellyfinLibraryStore: ObservableObject {
                     ? nil
                     : selectedAudioTrackOrdinal,
                 preferredSubtitleTrackOrdinal: prepared.playMethod == .transcode
+                    || disablesServerRenderedSubtitleForFastStartup
                     ? nil
                     : selectedSubtitleTrackOrdinal,
                 // When Jellyfin supplies a normalized SRT for an ASS/SSA
@@ -10343,9 +10422,12 @@ private final class JellyfinLibraryStore: ObservableObject {
                 // renders only the external text track, avoiding tofu boxes
                 // and duplicate subtitle lines.
                 prefersSubtitlesDisabled: selectedSubtitleStreamIndex == nil
+                    || disablesServerRenderedSubtitleForFastStartup
                     || usesExternalNormalizedSubtitle,
                 timelineOffsetSeconds: timelineOffsetSeconds,
                 totalDurationSeconds: totalDurationSeconds,
+                byteLength: entry.mediaSize.map(Int64.init),
+                estimatedBitrate: entry.mediaBitrate,
                 isPrivateNetworkRoute: prepared.isPrivateNetworkRoute,
                 playbackTracker: playbackTracker,
                 externalHandoffResource: prepared.externalHandoffResource,
@@ -10367,7 +10449,9 @@ private final class JellyfinLibraryStore: ObservableObject {
                     )
                 },
                 selectedSourceAudioTrackID: selectedAudioStreamIndex,
-                selectedSourceSubtitleTrackID: selectedSubtitleStreamIndex,
+                selectedSourceSubtitleTrackID: disablesServerRenderedSubtitleForFastStartup
+                    ? nil
+                    : selectedSubtitleStreamIndex,
                 sourceTrackRequestLoader: sourceTrackRequestLoader,
                 serverSeekRequestLoader: serverSeekRequestLoader,
                 qualityOptions: qualityOptions,
@@ -10871,7 +10955,8 @@ private final class JellyfinLibraryStore: ObservableObject {
 
     private func preferredOriginalPlaybackRoute(
         for entry: JellyfinMediaEntry,
-        client: JellyfinClient
+        client: JellyfinClient,
+        forcesLocalProxy: Bool = false
     ) async -> JellyfinDirectPlaybackRoute? {
         let jellyfinCandidates = originalVideoPlaybackURLs(for: entry, client: client)
         if let url = await AuthenticatedMediaPlaybackResolver.firstPlayableURL(
@@ -10881,15 +10966,17 @@ private final class JellyfinLibraryStore: ObservableObject {
             timeout: 4,
             expectedContentLength: entry.mediaSize
         ) {
+            let requiresLocalProxy = requiresCertificateBypass(for: url)
             return JellyfinDirectPlaybackRoute(
                 url: await preferredDirectPlaybackURL(
                     url,
                     filename: entry.title,
-                    allowsSelfSignedCertificates: requiresCertificateBypass(for: url)
+                    allowsSelfSignedCertificates: requiresLocalProxy,
+                    forcesLocalProxy: forcesLocalProxy && requiresLocalProxy
                 ),
                 handoffURL: url,
                 source: "jellyfinOriginal",
-                allowsSelfSignedCertificates: requiresCertificateBypass(for: url),
+                allowsSelfSignedCertificates: requiresLocalProxy,
                 isPrivateNetworkRoute: NetworkHostClassifier.isPrivate(url.host)
             )
         }
@@ -10914,7 +11001,8 @@ private final class JellyfinLibraryStore: ObservableObject {
                     url: await preferredDirectPlaybackURL(
                         url,
                         filename: entry.title,
-                        allowsSelfSignedCertificates: dsmSession.allowsSelfSignedCertificates
+                        allowsSelfSignedCertificates: dsmSession.allowsSelfSignedCertificates,
+                        forcesLocalProxy: forcesLocalProxy
                     ),
                     handoffURL: url,
                     source: "dsmFileStation",
@@ -10957,9 +11045,10 @@ private final class JellyfinLibraryStore: ObservableObject {
     private func preferredDirectPlaybackURL(
         _ url: URL,
         filename: String,
-        allowsSelfSignedCertificates: Bool
+        allowsSelfSignedCertificates: Bool,
+        forcesLocalProxy: Bool = false
     ) async -> URL {
-        guard !NetworkHostClassifier.isPrivate(url.host) else { return url }
+        guard forcesLocalProxy || !NetworkHostClassifier.isPrivate(url.host) else { return url }
         return (try? await AuthenticatedMediaStreamProxy.shared.register(
             upstreamURL: url,
             filename: filename,
@@ -11969,6 +12058,7 @@ private struct JellyfinLoginView: View {
     @ObservedObject var store: JellyfinLibraryStore
     @State private var username = ""
     @State private var password = ""
+    @State private var showsPassword = false
 
     var body: some View {
         ScrollView {
@@ -11985,15 +12075,39 @@ private struct JellyfinLoginView: View {
                 }
 
                 VStack(spacing: 0) {
-                    TextField("jellyfin.login.username", text: $username)
-                        .textContentType(.username)
+                    compactLoginTextField(
+                        titleKey: "jellyfin.login.username",
+                        placeholderKey: "jellyfin.login.username.example",
+                        text: $username,
+                        keyboardType: .asciiCapable
+                    )
+                    .textContentType(.username)
+                    Divider()
+                    HStack(spacing: 12) {
+                        Text("jellyfin.login.password")
+                            .foregroundStyle(.primary)
+                        Group {
+                            if showsPassword {
+                                TextField("jellyfin.login.password.example", text: $password)
+                            } else {
+                                SecureField("jellyfin.login.password.example", text: $password)
+                            }
+                        }
+                        .textContentType(.password)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
-                        .padding(16)
-                    Divider()
-                    SecureField("jellyfin.login.password", text: $password)
-                        .textContentType(.password)
-                        .padding(16)
+                        .multilineTextAlignment(.trailing)
+
+                        Button {
+                            showsPassword.toggle()
+                        } label: {
+                            Image(systemName: showsPassword ? "eye.slash" : "eye")
+                                .foregroundStyle(.secondary)
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel(Text(showsPassword ? "jellyfin.login.password.hide" : "jellyfin.login.password.show"))
+                    }
+                    .padding(16)
                 }
                 .background(Color(.secondarySystemGroupedBackground))
                 .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
@@ -12021,6 +12135,24 @@ private struct JellyfinLoginView: View {
             }
             .padding(24)
         }
+    }
+
+    private func compactLoginTextField(
+        titleKey: LocalizedStringKey,
+        placeholderKey: LocalizedStringKey,
+        text: Binding<String>,
+        keyboardType: UIKeyboardType
+    ) -> some View {
+        HStack(spacing: 12) {
+            Text(titleKey)
+                .foregroundStyle(.primary)
+            TextField(placeholderKey, text: text)
+                .textInputAutocapitalization(.never)
+                .autocorrectionDisabled()
+                .keyboardType(keyboardType)
+                .multilineTextAlignment(.trailing)
+        }
+        .padding(16)
     }
 }
 
@@ -13229,16 +13361,22 @@ private struct JellyfinMediaDetailView: View {
             isPreparingPlayback = true
             defer { isPreparingPlayback = false }
             do {
+#if DEBUG
+                let requestsGreenfield = usesGreenfieldPlayer
+#else
+                let requestsGreenfield = false
+#endif
                 let request = try await store.playbackRequest(
                     for: mediaItem,
                     selection: JellyfinPlaybackSelection(
                         audioStreamIndex: selectedAudioStreamIndex,
                         subtitleStreamIndex: selectedSubtitleStreamIndex
-                    )
+                    ),
+                    prefersFastStartupDirectPlay: requestsGreenfield
                 )
                 if let request {
 #if DEBUG
-                    if usesGreenfieldPlayer {
+                    if requestsGreenfield {
                         greenfieldPlaybackRequest = request.greenfieldPlaybackLaunchRequest()
                         return
                     }
@@ -14351,6 +14489,10 @@ private enum DSMConnectionProtocol: String, CaseIterable, Identifiable {
     var title: String { rawValue.uppercased() }
 }
 
+private enum DSMConnectionInputError: LocalizedError {
+    case remoteLocalOnlyHost
+}
+
 private enum DSMConnectionLocation: String, CaseIterable, Identifiable {
     case local
     case remote
@@ -14398,194 +14540,182 @@ private struct DSMConnectionFlowView: View {
     @State private var oneTimeCode = ""
     @State private var accessLocation: DSMConnectionLocation = .remote
     @State private var connectionProtocol: DSMConnectionProtocol = .https
+    @State private var port = "443"
+    @State private var portWasEdited = false
+    @State private var basePath = ""
     @State private var allowsSelfSignedCertificates = false
     @State private var showsPassword = false
-    @State private var showsAdvancedSettings = false
     @State private var isConnecting = false
     @State private var connectionStatusKey = "connect.review.authenticating"
     @State private var errorMessage = ""
     @State private var showError = false
-    @State private var showFinishHint = false
     @State private var connectionTask: Task<Void, Never>?
     @State private var didLoadRememberedLogin = false
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 20) {
-                VStack(alignment: .leading, spacing: 8) {
-                    Image(systemName: "externaldrive.connected.to.line.below")
-                        .font(.system(size: 22, weight: .semibold))
-                        .foregroundStyle(.white)
-                        .frame(width: 48, height: 48)
-                        .background(AppTheme.accent.gradient)
-                        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
-                    Text("connect.title")
-                        .font(.title2.weight(.bold))
-                    Text("connect.subtitle")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
+        List {
+            Section {
+                Picker("connect.location", selection: $accessLocation) {
+                    ForEach(DSMConnectionLocation.allCases) { location in
+                        Text(LocalizedStringKey(location.titleKey)).tag(location)
+                    }
+                }
+                .pickerStyle(.segmented)
+                .onChange(of: accessLocation) { location in
+                    if location == .remote {
+                        connectionProtocol = .https
+                    }
+                    refreshDefaultPortIfNeeded()
                 }
 
-                VStack(alignment: .leading, spacing: 14) {
-                    Text("connect.section.target")
-                        .font(.headline)
-
-                    Picker("connect.location", selection: $accessLocation) {
-                        ForEach(DSMConnectionLocation.allCases) { location in
-                            Text(LocalizedStringKey(location.titleKey)).tag(location)
-                        }
+                if accessLocation == .local {
+                    NavigationLink {
+                        LANDiscoveryView(selectedHost: $host)
+                    } label: {
+                        Label("connect.scan.title", systemImage: "dot.radiowaves.left.and.right")
                     }
-                    .pickerStyle(.segmented)
-                    .onChange(of: accessLocation) { location in
-                        if location == .remote {
-                            connectionProtocol = .https
-                        }
-                    }
-
-                    if accessLocation == .local {
-                        NavigationLink {
-                            LANDiscoveryView(selectedHost: $host)
-                        } label: {
-                            HStack(spacing: 12) {
-                                Image(systemName: "dot.radiowaves.left.and.right")
-                                    .font(.title3.weight(.semibold))
-                                    .foregroundStyle(AppTheme.accent)
-                                    .frame(width: 36, height: 36)
-                                    .background(AppTheme.accent.opacity(0.12))
-                                    .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
-                                VStack(alignment: .leading, spacing: 3) {
-                                    Text("connect.scan.title")
-                                        .font(.body.weight(.semibold))
-                                    Text("connect.scan.card_hint")
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
-                                }
-                                Spacer()
-                                Image(systemName: "chevron.right")
-                                    .font(.caption.weight(.bold))
-                                    .foregroundStyle(.tertiary)
-                            }
-                            .contentShape(Rectangle())
-                        }
-                        .buttonStyle(.plain)
-
-                        HStack(spacing: 10) {
-                            Rectangle()
-                                .fill(AppTheme.hairline)
-                                .frame(height: 1)
-                            Text("connect.or_manual")
-                                .font(.caption)
-                                .foregroundStyle(.tertiary)
-                            Rectangle()
-                                .fill(AppTheme.hairline)
-                                .frame(height: 1)
-                        }
-                    }
-
-                    connectionFieldLabel("connect.host")
-                    TextField(LocalizedStringKey(accessLocation.hostPlaceholderKey), text: $host)
-                        .textInputAutocapitalization(.never)
-                        .autocorrectionDisabled()
-                        .keyboardType(.URL)
-                        .connectionInputStyle()
-                        .onChange(of: host) { value in
-                            adoptLocation(from: value)
-                        }
-
-                    Text(LocalizedStringKey(accessLocation.hostHintKey))
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
                 }
-                .connectionSectionStyle()
 
-                VStack(alignment: .leading, spacing: 14) {
-                    Text("connect.section.account")
-                        .font(.headline)
-
-                    connectionFieldLabel("connect.account")
-                    TextField("connect.account.example", text: $account)
-                        .textInputAutocapitalization(.never)
-                        .autocorrectionDisabled()
-                        .keyboardType(.asciiCapable)
-                        .textContentType(.username)
-                        .connectionInputStyle()
-
-                    connectionFieldLabel("connect.password")
-                    passwordInput
-                        .connectionInputStyle()
-
-                    connectionFieldLabel("connect.otp", optional: true)
-                    SecureField("connect.otp.example", text: $oneTimeCode)
-                        .textContentType(.oneTimeCode)
-                        .keyboardType(.numberPad)
-                        .connectionInputStyle()
-
-                    rememberOptions
-                }
-                .connectionSectionStyle()
-
-                DisclosureGroup(isExpanded: $showsAdvancedSettings) {
-                    VStack(alignment: .leading, spacing: 14) {
-                        Picker("connect.protocol", selection: $connectionProtocol) {
-                            ForEach(DSMConnectionProtocol.allCases) { connectionProtocol in
-                                Text(connectionProtocol.title).tag(connectionProtocol)
-                            }
-                        }
-                        .pickerStyle(.segmented)
-                        .disabled(accessLocation == .remote)
-
-                        Toggle(isOn: $allowsSelfSignedCertificates) {
-                            VStack(alignment: .leading, spacing: 3) {
-                                Text("connect.trust_self_signed")
-                                Text("connect.trust_self_signed.inline_hint")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                            }
-                        }
-                        .disabled(connectionProtocol == .http)
-                        .onChange(of: connectionProtocol) { connectionProtocol in
-                            if connectionProtocol == .http {
-                                allowsSelfSignedCertificates = false
-                            }
-                        }
-
-                        Text("connect.trust_self_signed.protocol_hint")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                            .fixedSize(horizontal: false, vertical: true)
-
-                        Divider()
-
-                        NavigationLink {
-                            AgentSetupGuideView()
-                        } label: {
-                            Label("connect.agent.guide", systemImage: "shippingbox")
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                        }
+                Picker("connect.protocol", selection: $connectionProtocol) {
+                    ForEach(DSMConnectionProtocol.allCases) { connectionProtocol in
+                        Text(connectionProtocol.title).tag(connectionProtocol)
                     }
-                    .padding(.top, 12)
-                } label: {
-                    Label("connect.advanced", systemImage: "slider.horizontal.3")
-                        .font(.headline)
                 }
-                .padding(16)
-                .background(Color(.secondarySystemGroupedBackground))
-                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                .pickerStyle(.segmented)
+                .disabled(accessLocation == .remote)
+                .onChange(of: connectionProtocol) { connectionProtocol in
+                    if connectionProtocol == .http {
+                        allowsSelfSignedCertificates = false
+                    }
+                    refreshDefaultPortIfNeeded()
+                }
 
-                Label("connect.scope.footer", systemImage: "lock.shield")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
+                formTextField(
+                    titleKey: "connect.host",
+                    placeholderKey: accessLocation.hostPlaceholderKey,
+                    text: $host,
+                    keyboardType: .URL
+                )
+                .onChange(of: host) { value in
+                    adoptAddressInput(from: value)
+                }
+
+                formTextField(
+                    titleKey: "connect.path",
+                    placeholderKey: "connect.path.example",
+                    text: $basePath,
+                    keyboardType: .URL
+                )
+
+                formTextField(
+                    titleKey: "connect.port",
+                    placeholderKey: "connect.port.example",
+                    text: Binding(
+                        get: { port },
+                        set: { value in
+                            port = value
+                            portWasEdited = true
+                        }
+                    ),
+                    keyboardType: .numberPad
+                )
+            } header: {
+                Text("connect.section.target")
+            } footer: {
+                Text(LocalizedStringKey(accessLocation.hostHintKey))
             }
-            .frame(maxWidth: 960)
-            .frame(maxWidth: .infinity)
-            .padding(.horizontal, 18)
-            .padding(.top, 8)
-            .padding(.bottom, 28)
+
+            Section {
+                formTextField(
+                    titleKey: "connect.account",
+                    placeholderKey: "connect.account.example",
+                    text: $account,
+                    keyboardType: .asciiCapable
+                )
+                .textContentType(.username)
+
+                HStack(spacing: 12) {
+                    Text("connect.password")
+                        .foregroundStyle(.primary)
+                    Group {
+                        if showsPassword {
+                            TextField("connect.password.example", text: $password)
+                        } else {
+                            SecureField("connect.password.example", text: $password)
+                        }
+                    }
+                    .textContentType(.password)
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled()
+                    .multilineTextAlignment(.trailing)
+
+                    Button {
+                        showsPassword.toggle()
+                    } label: {
+                        Image(systemName: showsPassword ? "eye.slash" : "eye")
+                            .foregroundStyle(.secondary)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(Text(showsPassword ? "connect.password.hide" : "connect.password.show"))
+                }
+
+                formTextField(
+                    titleKey: "connect.otp",
+                    placeholderKey: "connect.otp.example",
+                    text: $oneTimeCode,
+                    keyboardType: .numberPad
+                )
+                .textContentType(.oneTimeCode)
+            } header: {
+                Text("connect.section.account")
+            } footer: {
+                Text("connect.otp.secure_signin_hint")
+            }
+
+            Section {
+                if automaticallyTrustsLocalHTTPSCertificate {
+                    Label {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("connect.local_https_auto_trust")
+                            Text("connect.local_https_auto_trust.inline_hint")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    } icon: {
+                        Image(systemName: "lock.shield")
+                            .foregroundStyle(.secondary)
+                    }
+                } else {
+                    Toggle(isOn: $allowsSelfSignedCertificates) {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("connect.trust_self_signed")
+                            Text("connect.trust_self_signed.inline_hint")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    .disabled(connectionProtocol == .http)
+                }
+
+                Toggle("connect.remember.filled", isOn: rememberFilledBinding)
+                Toggle("connect.remember.password", isOn: $rememberPassword)
+                    .disabled(!rememberNAS || !rememberAccount)
+                    .onChange(of: rememberPassword) { value in
+                        if value {
+                            rememberNAS = true
+                            rememberAccount = true
+                        } else {
+                            KeychainStore.shared.clearNASCredentials()
+                        }
+                    }
+            } header: {
+                Text("connect.section.security")
+            } footer: {
+                Text("connect.remember.hint")
+            }
         }
-        .background(AppTheme.groupedBackground)
+        .listStyle(.insetGrouped)
+        .scrollDismissesKeyboard(.interactively)
         .safeAreaInset(edge: .bottom) {
             connectButton
                 .padding(.horizontal, 18)
@@ -14597,19 +14727,10 @@ private struct DSMConnectionFlowView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
-                Button {
+                Button("action.cancel") {
                     connectionTask?.cancel()
                     dismiss()
-                } label: {
-                    Image(systemName: "xmark")
                 }
-                .accessibilityLabel(Text("action.cancel"))
-            }
-        }
-        .alert("connect.review.done", isPresented: $showFinishHint) {
-            Button("action.ok", role: .cancel) {
-                onConnected()
-                dismiss()
             }
         }
         .alert("connect.error.title", isPresented: $showError) {
@@ -14619,6 +14740,23 @@ private struct DSMConnectionFlowView: View {
         }
         .onAppear {
             loadRememberedLoginIfNeeded()
+        }
+    }
+
+    private func formTextField(
+        titleKey: String,
+        placeholderKey: String,
+        text: Binding<String>,
+        keyboardType: UIKeyboardType
+    ) -> some View {
+        HStack(spacing: 12) {
+            Text(LocalizedStringKey(titleKey))
+                .foregroundStyle(.primary)
+            TextField(LocalizedStringKey(placeholderKey), text: text)
+                .textInputAutocapitalization(.never)
+                .autocorrectionDisabled()
+                .keyboardType(keyboardType)
+                .multilineTextAlignment(.trailing)
         }
     }
 
@@ -14644,67 +14782,77 @@ private struct DSMConnectionFlowView: View {
             && !host.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
             && !account.isEmpty
             && !password.isEmpty
+            && isPortValid
+            && !usesLocalOnlyHostInRemoteMode
     }
 
-    private var rememberOptions: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Toggle("connect.remember.nas", isOn: $rememberNAS)
-                .onChange(of: rememberNAS) { value in
-                    if !value {
-                        rememberAccount = false
-                        rememberPassword = false
-                        rememberedHost = ""
-                    }
-                }
-            Toggle("connect.remember.account", isOn: $rememberAccount)
-                .disabled(!rememberNAS)
-                .onChange(of: rememberAccount) { value in
-                    if !value {
-                        rememberPassword = false
-                        rememberedAccount = ""
-                    }
-                }
-            Toggle("connect.remember.password", isOn: $rememberPassword)
-                .disabled(!rememberNAS || !rememberAccount)
-                .onChange(of: rememberPassword) { value in
-                    if value {
-                        rememberNAS = true
-                        rememberAccount = true
-                    } else {
-                        KeychainStore.shared.clearNASCredentials()
-                    }
-                }
-            Text("connect.remember.hint")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .fixedSize(horizontal: false, vertical: true)
-        }
+    private var usesLocalOnlyHostInRemoteMode: Bool {
+        guard accessLocation == .remote else { return false }
+        guard let normalizedHost = normalizedHostForValidation else { return false }
+        return Self.isLocalOnlyHost(normalizedHost)
     }
 
-    private var passwordInput: some View {
-        HStack(spacing: 8) {
-            Group {
-                if showsPassword {
-                    TextField("connect.password.example", text: $password)
-                } else {
-                    SecureField("connect.password.example", text: $password)
+    private var normalizedHostForValidation: String? {
+        let trimmed = host.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return nil }
+        let candidate = trimmed.contains("://") ? trimmed : "https://\(trimmed)"
+        return URLComponents(string: candidate)?.host ?? trimmed
+    }
+
+    private var rememberFilledBinding: Binding<Bool> {
+        Binding(
+            get: { rememberNAS && rememberAccount },
+            set: { value in
+                rememberNAS = value
+                rememberAccount = value
+                if !value {
+                    rememberPassword = false
+                    rememberedHost = ""
+                    rememberedAccount = ""
+                    KeychainStore.shared.clearNASCredentials()
                 }
             }
-            .textContentType(.password)
-            .textInputAutocapitalization(.never)
-            .autocorrectionDisabled()
+        )
+    }
 
-            Button {
-                showsPassword.toggle()
-            } label: {
-                Image(systemName: showsPassword ? "eye.slash" : "eye")
-                    .font(.body.weight(.semibold))
-                    .foregroundStyle(.secondary)
-                    .frame(width: 34, height: 34)
-            }
-            .buttonStyle(.plain)
-            .accessibilityLabel(Text(showsPassword ? "connect.password.hide" : "connect.password.show"))
+    private var isPortValid: Bool {
+        let trimmed = port.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return true }
+        guard let value = Int(trimmed) else { return false }
+        return (1...65_535).contains(value)
+    }
+
+    private var defaultPort: String {
+        if accessLocation == .remote {
+            return connectionProtocol == .http ? "80" : "443"
         }
+        return connectionProtocol == .http ? "5000" : "5001"
+    }
+
+    private var composedAddress: String {
+        let trimmedHost = host.trimmingCharacters(in: .whitespacesAndNewlines)
+        if trimmedHost.contains("://") {
+            return trimmedHost
+        }
+
+        var components = URLComponents()
+        components.scheme = defaultSchemeForCurrentLocation
+        components.host = trimmedHost
+        if let portValue = Int(port.trimmingCharacters(in: .whitespacesAndNewlines)),
+           (1...65_535).contains(portValue) {
+            components.port = portValue
+        }
+        let normalizedPath = normalizedBasePath
+        if !normalizedPath.isEmpty {
+            components.path = normalizedPath
+        }
+        return components.string ?? "\(defaultSchemeForCurrentLocation)://\(trimmedHost)"
+    }
+
+    private var normalizedBasePath: String {
+        let trimmed = basePath.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty, trimmed != "/" else { return "" }
+        return trimmed.hasPrefix("/") ? trimmed : "/\(trimmed)"
     }
 
     private func connectDSM() {
@@ -14713,35 +14861,37 @@ private struct DSMConnectionFlowView: View {
         errorMessage = ""
         connectionTask = Task {
             do {
+                guard !usesLocalOnlyHostInRemoteMode else {
+                    throw DSMConnectionInputError.remoteLocalOnlyHost
+                }
                 let baseURL = try DSMClient.normalizedBaseURL(
-                    from: protocolAdjustedHost,
+                    from: composedAddress,
                     defaultScheme: defaultSchemeForCurrentLocation
                 )
+                let effectiveAllowsSelfSignedCertificates = allowsSelfSignedCertificates
+                    || Self.shouldAutomaticallyTrustLocalHTTPSCertificate(for: baseURL)
                 let endpoints = DSMConnectionEndpoints(
                     primaryDomain: NetworkHostClassifier.isPrivate(baseURL.host) ? nil : baseURL,
                     lanAddress: NetworkHostClassifier.isPrivate(baseURL.host) ? baseURL : nil
                 )
                 let loginResult = try await DSMClient.login(
                     endpoints: endpoints,
-                    allowsSelfSignedCertificates: allowsSelfSignedCertificates,
+                    allowsSelfSignedCertificates: effectiveAllowsSelfSignedCertificates,
                     account: account,
                     password: password,
                     oneTimeCode: oneTimeCode
                 )
                 let client = loginResult.client
                 let mainSession = loginResult.session
-                let session = await client.addingFileStationSession(
-                    to: mainSession,
-                    account: account,
-                    password: password,
-                    oneTimeCode: oneTimeCode
-                )
                 await MainActor.run {
-                    connectionStatusKey = "connect.review.loading"
+                    connectionStatusKey = "connect.review.connected"
                 }
-                let snapshot = await client.loadSnapshot(session: session, useAgent: false)
                 try Task.checkCancellation()
-                rememberSuccessfulConnection(baseURL: baseURL, account: account)
+                rememberSuccessfulConnection(
+                    baseURL: baseURL,
+                    account: account,
+                    allowsSelfSignedCertificates: effectiveAllowsSelfSignedCertificates
+                )
                 if rememberPassword {
                     try KeychainStore.shared.saveNASCredential(
                         StoredNASCredential(
@@ -14749,21 +14899,142 @@ private struct DSMConnectionFlowView: View {
                             account: account,
                             password: password,
                             useAgent: false,
-                            allowsSelfSignedCertificates: allowsSelfSignedCertificates,
-                            deviceID: session.deviceID,
-                            endpoints: session.endpoints,
-                            lastKnownRoute: session.actualRoute
+                            allowsSelfSignedCertificates: effectiveAllowsSelfSignedCertificates,
+                            deviceID: mainSession.deviceID,
+                            endpoints: mainSession.endpoints,
+                            lastKnownRoute: mainSession.actualRoute
                         )
                     )
                 } else {
                     KeychainStore.shared.clearNASCredentials()
                 }
-                await MainActor.run {
-                    dataStore.activateDSM(snapshot: snapshot, session: session, useAgent: false)
-                    connectionStore.connect(device: snapshot.device, session: session)
-                    isConnecting = false
-                    connectionTask = nil
-                    showFinishHint = true
+                let shouldRememberPassword = rememberPassword
+                let savedAccount = account
+                let savedPassword = password
+                let savedAllowsSelfSignedCertificates = effectiveAllowsSelfSignedCertificates
+                let savedOneTimeCode = oneTimeCode
+                let canRenderCachedSnapshot = await MainActor.run {
+                    dataStore.hasCachedDSMSnapshot
+                }
+
+                if canRenderCachedSnapshot {
+                    await MainActor.run {
+                        dataStore.activateDSMSession(session: mainSession, useAgent: false)
+                        connectionStore.connect(device: dataStore.device, session: mainSession)
+                        isConnecting = false
+                        connectionTask = nil
+                        onConnected()
+                        dismiss()
+                    }
+
+                    Task {
+                        async let discoveredLANAddress: URL? = NetworkHostClassifier.isPrivate(baseURL.host)
+                            ? nil
+                            : LANDiscoveryService.discoverDSMPlaybackLANEndpoint(
+                                timeout: 3,
+                                requiresSingleHost: true
+                            )
+                        var session = await client.addingFileStationSession(
+                            to: mainSession,
+                            account: savedAccount,
+                            password: savedPassword,
+                            oneTimeCode: savedOneTimeCode
+                        )
+                        if let lanAddress = await discoveredLANAddress {
+                            DiagnosticLogStore.shared.record(
+                                .info,
+                                categoryKey: "diagnostics.category.connection",
+                                messageKey: "diagnostics.route.smart_lan_ready",
+                                details: ["target": DiagnosticLogStore.redactedURL(lanAddress)]
+                            )
+                            session = DSMSession(
+                                baseURL: session.baseURL,
+                                sid: session.sid,
+                                fileStationSID: session.fileStationSID,
+                                account: session.account,
+                                allowsSelfSignedCertificates: session.allowsSelfSignedCertificates,
+                                deviceID: session.deviceID,
+                                endpoints: session.endpoints.addingVerifiedLANAddress(lanAddress),
+                                actualRoute: session.actualRoute
+                            )
+                        }
+                        let snapshot = await client.loadSnapshot(session: session, useAgent: false)
+                        await MainActor.run {
+                            dataStore.activateDSM(snapshot: snapshot, session: session, useAgent: false)
+                            connectionStore.connect(device: snapshot.device, session: session)
+                        }
+                        if shouldRememberPassword {
+                            try? KeychainStore.shared.saveNASCredential(
+                                StoredNASCredential(
+                                    baseURLString: baseURL.absoluteString,
+                                    account: savedAccount,
+                                    password: savedPassword,
+                                    useAgent: false,
+                                    allowsSelfSignedCertificates: savedAllowsSelfSignedCertificates,
+                                    deviceID: session.deviceID,
+                                    endpoints: session.endpoints,
+                                    lastKnownRoute: session.actualRoute
+                                )
+                            )
+                        }
+                    }
+                } else {
+                    await MainActor.run {
+                        connectionStatusKey = "connect.review.loading"
+                    }
+                    async let discoveredLANAddress: URL? = NetworkHostClassifier.isPrivate(baseURL.host)
+                        ? nil
+                        : LANDiscoveryService.discoverDSMPlaybackLANEndpoint(
+                            timeout: 3,
+                            requiresSingleHost: true
+                        )
+                    var session = await client.addingFileStationSession(
+                        to: mainSession,
+                        account: savedAccount,
+                        password: savedPassword,
+                        oneTimeCode: savedOneTimeCode
+                    )
+                    if let lanAddress = await discoveredLANAddress {
+                        DiagnosticLogStore.shared.record(
+                            .info,
+                            categoryKey: "diagnostics.category.connection",
+                            messageKey: "diagnostics.route.smart_lan_ready",
+                            details: ["target": DiagnosticLogStore.redactedURL(lanAddress)]
+                        )
+                        session = DSMSession(
+                            baseURL: session.baseURL,
+                            sid: session.sid,
+                            fileStationSID: session.fileStationSID,
+                            account: session.account,
+                            allowsSelfSignedCertificates: session.allowsSelfSignedCertificates,
+                            deviceID: session.deviceID,
+                            endpoints: session.endpoints.addingVerifiedLANAddress(lanAddress),
+                            actualRoute: session.actualRoute
+                        )
+                    }
+                    let snapshot = await client.loadSnapshot(session: session, useAgent: false)
+                    await MainActor.run {
+                        dataStore.activateDSM(snapshot: snapshot, session: session, useAgent: false)
+                        connectionStore.connect(device: snapshot.device, session: session)
+                        isConnecting = false
+                        connectionTask = nil
+                        onConnected()
+                        dismiss()
+                    }
+                    if shouldRememberPassword {
+                        try KeychainStore.shared.saveNASCredential(
+                            StoredNASCredential(
+                                baseURLString: baseURL.absoluteString,
+                                account: savedAccount,
+                                password: savedPassword,
+                                useAgent: false,
+                                allowsSelfSignedCertificates: savedAllowsSelfSignedCertificates,
+                                deviceID: session.deviceID,
+                                endpoints: session.endpoints,
+                                lastKnownRoute: session.actualRoute
+                            )
+                        )
+                    }
                 }
             } catch is CancellationError {
                 await MainActor.run {
@@ -14785,20 +15056,6 @@ private struct DSMConnectionFlowView: View {
         accessLocation == .remote ? DSMConnectionProtocol.https.rawValue : connectionProtocol.rawValue
     }
 
-    private var protocolAdjustedHost: String {
-        let trimmed = host.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard
-            let components = URLComponents(string: trimmed),
-            let scheme = components.scheme?.lowercased(),
-            scheme == "http" || scheme == "https"
-        else {
-            return trimmed
-        }
-        // Respect an explicitly entered scheme. The protocol picker only
-        // applies when the user enters a bare host or IP address.
-        return trimmed
-    }
-
     private func loadRememberedLoginIfNeeded() {
         guard !didLoadRememberedLogin else { return }
         didLoadRememberedLogin = true
@@ -14809,15 +15066,16 @@ private struct DSMConnectionFlowView: View {
         if let rememberedProtocol = DSMConnectionProtocol(rawValue: rememberedProtocolRaw) {
             connectionProtocol = rememberedProtocol
         }
-        allowsSelfSignedCertificates = rememberedAllowsSelfSignedCertificates
+        let credential = KeychainStore.shared.loadNASCredential()
+        allowsSelfSignedCertificates = credential?.allowsSelfSignedCertificates
+            ?? rememberedAllowsSelfSignedCertificates
         if accessLocation == .remote {
             connectionProtocol = .https
         }
 
-        let credential = KeychainStore.shared.loadNASCredential()
         if rememberNAS, host.isEmpty {
             host = credential?.baseURLString ?? rememberedHost
-            adoptLocation(from: host)
+            adoptAddressInput(from: host)
         }
         if rememberAccount, account.isEmpty {
             account = credential?.account ?? rememberedAccount
@@ -14827,7 +15085,27 @@ private struct DSMConnectionFlowView: View {
         }
     }
 
-    private func rememberSuccessfulConnection(baseURL: URL, account: String) {
+    private var automaticallyTrustsLocalHTTPSCertificate: Bool {
+        guard !host.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+              let url = try? DSMClient.normalizedBaseURL(
+                from: composedAddress,
+                defaultScheme: defaultSchemeForCurrentLocation
+              )
+        else {
+            return false
+        }
+        return Self.shouldAutomaticallyTrustLocalHTTPSCertificate(for: url)
+    }
+
+    private static func shouldAutomaticallyTrustLocalHTTPSCertificate(for url: URL) -> Bool {
+        url.scheme?.lowercased() == "https" && NetworkHostClassifier.isPrivate(url.host)
+    }
+
+    private func rememberSuccessfulConnection(
+        baseURL: URL,
+        account: String,
+        allowsSelfSignedCertificates: Bool
+    ) {
         if rememberNAS {
             rememberedHost = baseURL.absoluteString
             rememberedLocationRaw = NetworkHostClassifier.isPrivate(baseURL.host)
@@ -14846,32 +15124,71 @@ private struct DSMConnectionFlowView: View {
         }
     }
 
-    private func adoptLocation(from value: String) {
+    private func adoptAddressInput(from value: String) {
         let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
         let hasExplicitScheme = trimmed.contains("://")
         let urlText = hasExplicitScheme ? trimmed : "https://\(trimmed)"
         guard
             let components = URLComponents(string: urlText),
-            let host = components.host,
-            !host.isEmpty
+            let hostValue = components.host,
+            !hostValue.isEmpty
         else {
             return
         }
-        accessLocation = NetworkHostClassifier.isPrivate(host) ? .local : .remote
+        let parsedLocation: DSMConnectionLocation = NetworkHostClassifier.isPrivate(hostValue)
+            ? .local
+            : .remote
+        if host != hostValue {
+            host = hostValue
+        }
+        accessLocation = parsedLocation
         if hasExplicitScheme,
            let scheme = components.scheme?.lowercased(),
            let parsedProtocol = DSMConnectionProtocol(rawValue: scheme) {
             connectionProtocol = parsedProtocol
-        } else if accessLocation == .local,
+            if parsedProtocol == .http {
+                allowsSelfSignedCertificates = false
+            }
+        } else if parsedLocation == .local,
                   components.port == 5_000 {
             connectionProtocol = .http
-        } else if accessLocation == .remote {
+        } else if parsedLocation == .remote {
             connectionProtocol = .https
+        }
+        if let parsedPort = components.port {
+            let parsedPortText = "\(parsedPort)"
+            if port != parsedPortText {
+                port = parsedPortText
+            }
+            portWasEdited = true
+        } else if hasExplicitScheme {
+            portWasEdited = false
+            port = defaultPort
+        } else if !portWasEdited {
+            refreshDefaultPortIfNeeded()
+        }
+        let parsedPath = components.path == "/" ? "" : components.path
+        if hasExplicitScheme || !parsedPath.isEmpty {
+            basePath = parsedPath
         }
     }
 
+    private func refreshDefaultPortIfNeeded() {
+        guard !portWasEdited else { return }
+        let trimmed = port.trimmingCharacters(in: .whitespacesAndNewlines)
+        let commonDefaults = ["", "443", "5000", "5001"]
+        guard commonDefaults.contains(trimmed) else { return }
+        port = defaultPort
+    }
+
     private func connectionErrorMessage(for error: Error) -> String {
+        if let inputError = error as? DSMConnectionInputError {
+            switch inputError {
+            case .remoteLocalOnlyHost:
+                return NSLocalizedString("connect.error.remote_local_host", comment: "")
+            }
+        }
         guard let urlError = error as? URLError else {
             return error.localizedDescription
         }
@@ -14884,6 +15201,71 @@ private struct DSMConnectionFlowView: View {
         default:
             return error.localizedDescription
         }
+    }
+
+    private static func isLocalOnlyHost(_ host: String) -> Bool {
+        var normalized = host.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        if normalized.hasPrefix("[") && normalized.hasSuffix("]") {
+            normalized.removeFirst()
+            normalized.removeLast()
+        }
+        normalized = normalized.split(separator: "%", maxSplits: 1).first.map(String.init) ?? normalized
+        return normalized == "localhost"
+            || normalized.hasSuffix(".local")
+            || normalized.hasSuffix(".lan")
+    }
+
+    private func fallbackSnapshot(baseURL: URL, session: DSMSession) -> DSMDataSnapshot {
+        let trimmedHost = baseURL.host?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        let displayName = trimmedHost.isEmpty ? "DSM" : trimmedHost
+        let device = NASDevice(
+            id: UUID(),
+            name: displayName,
+            subtitle: "DSM",
+            model: nil,
+            dsmVersion: nil,
+            mode: .dsmOnly,
+            cpu: nil,
+            memory: nil,
+            memoryUsedText: nil,
+            memoryTotalText: nil,
+            storageUsed: nil,
+            storageUsedText: nil,
+            storageTotalText: nil,
+            storageFreeText: "-",
+            uptimeMinutes: nil,
+            temperatureText: nil,
+            certificate: nil,
+            sshStatus: .unavailable
+        )
+        let dsmService = LaunchpadService(
+            id: UUID(uuidString: "A1F38D26-9B9F-43B3-965F-001A21D22401") ?? UUID(),
+            name: "DSM",
+            iconText: "DSM",
+            category: .favorites,
+            status: .online,
+            subtitle: "service.dsm.subtitle",
+            detail: "service.dsm.detail",
+            isMedia: false,
+            cpu: nil,
+            memoryText: nil,
+            endpoint: session.baseURL,
+            source: .dsm
+        )
+        return DSMDataSnapshot(
+            device: device,
+            services: [dsmService],
+            containers: [],
+            files: [],
+            tasks: [],
+            videoLibraryItems: [],
+            audioLibraryItems: [],
+            discoveredDevices: [],
+            containerInventoryAvailable: false,
+            packageInventoryAvailable: false,
+            reverseProxyInventoryAvailable: false,
+            agentHealth: nil
+        )
     }
 
     private func connectionFieldLabel(_ key: String, optional: Bool = false) -> some View {
@@ -15027,12 +15409,18 @@ struct AgentSetupGuideView: View {
             }
 
             Section {
-                TextField("agent.address.placeholder", text: $agentAddress)
-                    .textInputAutocapitalization(.never)
-                    .autocorrectionDisabled()
-                    .keyboardType(.URL)
-                TextField("agent.pairing_code.placeholder", text: $pairingCode)
-                    .keyboardType(.numberPad)
+                compactAgentTextField(
+                    titleKey: "agent.address",
+                    placeholderKey: "agent.address.placeholder",
+                    text: $agentAddress,
+                    keyboardType: .URL
+                )
+                compactAgentTextField(
+                    titleKey: "agent.pairing_code",
+                    placeholderKey: "agent.pairing_code.placeholder",
+                    text: $pairingCode,
+                    keyboardType: .numberPad
+                )
                 Toggle("connect.trust_self_signed", isOn: $allowsSelfSignedCertificates)
 
                 Button {
@@ -15157,6 +15545,23 @@ struct AgentSetupGuideView: View {
             }
         }
     }
+
+    private func compactAgentTextField(
+        titleKey: LocalizedStringKey,
+        placeholderKey: LocalizedStringKey,
+        text: Binding<String>,
+        keyboardType: UIKeyboardType
+    ) -> some View {
+        HStack(spacing: 12) {
+            Text(titleKey)
+                .foregroundStyle(.primary)
+            TextField(placeholderKey, text: text)
+                .textInputAutocapitalization(.never)
+                .autocorrectionDisabled()
+                .keyboardType(keyboardType)
+                .multilineTextAlignment(.trailing)
+        }
+    }
 }
 
 struct MobileSSHAgentInstallerView: View {
@@ -15192,17 +15597,38 @@ struct MobileSSHAgentInstallerView: View {
     var body: some View {
         Form {
             Section {
-                TextField("agent.ssh.host", text: $host)
-                    .textInputAutocapitalization(.never)
-                    .autocorrectionDisabled()
-                TextField("agent.ssh.port", text: $port)
-                    .keyboardType(.numberPad)
-                TextField("agent.ssh.username", text: $username)
-                    .textInputAutocapitalization(.never)
-                    .autocorrectionDisabled()
-                SecureField("agent.ssh.password", text: $password)
-                TextField("agent.pairing_code.placeholder", text: $pairingCode)
-                    .keyboardType(.numberPad)
+                compactSSHTextField(
+                    titleKey: "agent.ssh.host",
+                    placeholderKey: "agent.ssh.host.example",
+                    text: $host,
+                    keyboardType: .URL
+                )
+                compactSSHTextField(
+                    titleKey: "agent.ssh.port",
+                    placeholderKey: "agent.ssh.port.example",
+                    text: $port,
+                    keyboardType: .numberPad
+                )
+                compactSSHTextField(
+                    titleKey: "agent.ssh.username",
+                    placeholderKey: "agent.ssh.username.example",
+                    text: $username,
+                    keyboardType: .asciiCapable
+                )
+                HStack(spacing: 12) {
+                    Text("agent.ssh.password")
+                    SecureField("agent.ssh.password.example", text: $password)
+                        .textContentType(.password)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                        .multilineTextAlignment(.trailing)
+                }
+                compactSSHTextField(
+                    titleKey: "agent.pairing_code",
+                    placeholderKey: "agent.pairing_code.placeholder",
+                    text: $pairingCode,
+                    keyboardType: .numberPad
+                )
             } header: {
                 Text("agent.ssh.connection.section")
             } footer: {
@@ -15286,6 +15712,22 @@ struct MobileSSHAgentInstallerView: View {
         .onChange(of: port) { _ in
             inspectedIdentity = nil
             reloadTrustedHostKey()
+        }
+    }
+
+    private func compactSSHTextField(
+        titleKey: LocalizedStringKey,
+        placeholderKey: LocalizedStringKey,
+        text: Binding<String>,
+        keyboardType: UIKeyboardType
+    ) -> some View {
+        HStack(spacing: 12) {
+            Text(titleKey)
+            TextField(placeholderKey, text: text)
+                .textInputAutocapitalization(.never)
+                .autocorrectionDisabled()
+                .keyboardType(keyboardType)
+                .multilineTextAlignment(.trailing)
         }
     }
 
@@ -15518,17 +15960,16 @@ private struct DeviceSummaryPanel: View {
 
     private var summaryKey: String {
         guard isConnected else { return "state.not_connected" }
-        return hasWarning ? "status.warning" : "launchpad.summary.normal"
+        return activeWarning?.titleKey ?? "launchpad.summary.normal"
     }
 
     private var summarySymbol: String {
         guard isConnected else { return "wifi.slash" }
-        return hasWarning ? "exclamationmark.triangle.fill" : "checkmark.circle.fill"
+        return activeWarning?.symbolName ?? "checkmark.circle.fill"
     }
 
-    private var hasWarning: Bool {
-        device.certificateDaysRemaining.map { $0 <= LaunchpadReminderPolicy.certificateWarningDays } == true
-            || [device.cpu, device.memory, device.storageUsed].compactMap { $0 }.contains { $0 >= 0.9 }
+    private var activeWarning: LaunchpadResourceWarning? {
+        LaunchpadResourceWarning.primary(for: device)
     }
 }
 

@@ -7,6 +7,7 @@ struct URLPlaybackSourceResolver: PlaybackSourceResolver {
     var certificatePolicy: PlaybackCertificatePolicy
     var byteLength: Int64?
     var duration: TimeInterval?
+    var estimatedBitrate: Int?
     var tracks: TrackCatalog
     var subtitles: SubtitlePlan?
     var alternateRoutes: [PlaybackRoute]
@@ -18,6 +19,7 @@ struct URLPlaybackSourceResolver: PlaybackSourceResolver {
         certificatePolicy: PlaybackCertificatePolicy = .systemTrust,
         byteLength: Int64? = nil,
         duration: TimeInterval? = nil,
+        estimatedBitrate: Int? = nil,
         tracks: TrackCatalog = TrackCatalog(),
         subtitles: SubtitlePlan? = nil,
         alternateRoutes: [PlaybackRoute] = []
@@ -28,6 +30,7 @@ struct URLPlaybackSourceResolver: PlaybackSourceResolver {
         self.certificatePolicy = certificatePolicy
         self.byteLength = byteLength
         self.duration = duration
+        self.estimatedBitrate = estimatedBitrate
         self.tracks = tracks
         self.subtitles = subtitles
         self.alternateRoutes = alternateRoutes
@@ -48,6 +51,7 @@ struct URLPlaybackSourceResolver: PlaybackSourceResolver {
             certificatePolicy: certificatePolicy,
             byteLength: byteLength,
             duration: duration,
+            estimatedBitrate: estimatedBitrate,
             tracks: tracks,
             subtitles: subtitles,
             alternateRoutes: alternateRoutes

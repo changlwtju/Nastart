@@ -1163,9 +1163,10 @@ private struct FilePreviewView: View {
             let fallbackAllowsSelfSigned = session?.allowsSelfSignedCertificates == true
             let fallbackSubtitleURL = subtitleAsset?.playbackURL
             let shouldPrepareLocalProxy = item.kind == .video
-                && (greenfieldRequested
-                    || isPrivateRoute
+                && (!greenfieldRequested
+                    && (isPrivateRoute
                     || NetworkHostClassifier.isLiteralAddress(selectedURL.host))
+                )
             let preparedProxyURL: URL?
             if shouldPrepareLocalProxy {
                 preparedProxyURL = try? await AuthenticatedMediaStreamProxy.shared.register(
@@ -1240,25 +1241,7 @@ private struct FilePreviewView: View {
                         : nil
                 )
 #if DEBUG
-                let shouldUseCompatibilityGuard = greenfieldRequested
-                    && item.kind == .video
-                    && Self.requiresGreenfieldCompatibilityGuard(fileExtension)
-                if shouldUseCompatibilityGuard {
-                    DiagnosticLogStore.shared.record(
-                        .warning,
-                        categoryKey: "diagnostics.category.media",
-                        messageKey: "diagnostics.playback.next.ksplayer_guarded",
-                        details: [
-                            "sourceKind": "dsmFile",
-                            "extension": fileExtension.isEmpty ? "-" : fileExtension,
-                            "reason": "ksplayer_stream_track_assertion",
-                            "fallback": "compatibilityPlayer",
-                            "target": DiagnosticLogStore.redactedURL(playbackURL)
-                        ]
-                    )
-                    PlayerOrientationController.prepareForPresentation(.landscape)
-                    playbackRequest = request
-                } else if greenfieldRequested {
+                if greenfieldRequested {
                     greenfieldPlaybackRequest = request.greenfieldPlaybackLaunchRequest()
                 } else {
                     PlayerOrientationController.prepareForPresentation(
@@ -1274,20 +1257,6 @@ private struct FilePreviewView: View {
 #endif
             }
         }
-    }
-
-    private static func requiresGreenfieldCompatibilityGuard(_ fileExtension: String) -> Bool {
-        let normalizedExtension = fileExtension.lowercased()
-        return [
-            "mkv",
-            "m2ts",
-            "mts",
-            "ts",
-            "avi",
-            "wmv",
-            "flv",
-            "rmvb"
-        ].contains(normalizedExtension)
     }
 
     private func prepareLocalPreview(from url: URL) {
@@ -2689,7 +2658,7 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
               method == "GET",
               let expectedBodyBytes,
               deliveredBytesInTask < expectedBodyBytes,
-              consecutiveRetryFailures < maximumConsecutiveRetryFailures,
+              (madeProgress || consecutiveRetryFailures < maximumConsecutiveRetryFailures),
               let responseStartOffset else {
             return false
         }

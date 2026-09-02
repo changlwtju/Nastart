@@ -165,6 +165,7 @@ struct NastartApp: App {
 #endif
     @AppStorage(AppLanguage.storageKey) private var appLanguageRaw = AppLanguage.system.rawValue
     @AppStorage(AppThemeMode.storageKey) private var appThemeModeRaw = AppThemeMode.system.rawValue
+    private static let startupRestoreGraceNanoseconds: UInt64 = 12_000_000_000
 
     var body: some Scene {
         WindowGroup {
@@ -174,13 +175,13 @@ struct NastartApp: App {
                     NavigationStack {
                         BuiltInMediaPlayerView(request: playbackLabRequest)
                     }
-                } else if didCompleteRestore || appDataStore.hasCachedDSMSnapshot {
+                } else if canShowMainApp {
                     AppTabRootView()
                 } else {
                     DSMConnectionRestoreView()
                 }
 #else
-                if didCompleteRestore || appDataStore.hasCachedDSMSnapshot {
+                if canShowMainApp {
                     AppTabRootView()
                 } else {
                     DSMConnectionRestoreView()
@@ -207,16 +208,32 @@ struct NastartApp: App {
                     // Render the last known NAS state immediately. The login and
                     // snapshot refresh continue in the background and replace it
                     // when the network is ready.
-                    if appDataStore.hasCachedDSMSnapshot {
+                    let hasCachedSnapshot = appDataStore.hasCachedDSMSnapshot
+                    if hasCachedSnapshot {
                         didCompleteRestore = true
                     }
-                    await appDataStore.restoreDSMConnection(using: connectionStore)
-                    didCompleteRestore = true
-                    if cloudSyncStore.isEnabled {
-                        await cloudSyncStore.syncNow(
-                            dataStore: appDataStore,
-                            appearanceStore: appearanceStore
+
+                    Task { @MainActor in
+                        await appDataStore.restoreDSMConnection(using: connectionStore)
+                        didCompleteRestore = true
+                        if cloudSyncStore.isEnabled {
+                            await cloudSyncStore.syncNow(
+                                dataStore: appDataStore,
+                                appearanceStore: appearanceStore
+                            )
+                        }
+                    }
+
+                    guard !hasCachedSnapshot else { return }
+                    try? await Task.sleep(nanoseconds: Self.startupRestoreGraceNanoseconds)
+                    if !didCompleteRestore {
+                        DiagnosticLogStore.shared.record(
+                            .warning,
+                            categoryKey: "diagnostics.category.connection",
+                            messageKey: "diagnostics.connection.restore_timeout",
+                            details: ["timeoutSeconds": "12"]
                         )
+                        didCompleteRestore = true
                     }
                 }
                 .onChange(of: scenePhase) { phase in
@@ -245,6 +262,11 @@ struct NastartApp: App {
 
     private var selectedLanguage: AppLanguage {
         AppLanguage(rawValue: appLanguageRaw) ?? .system
+    }
+
+    private var canShowMainApp: Bool {
+        appDataStore.hasCachedDSMSnapshot
+            || (didCompleteRestore && !appDataStore.isShowingProvisionalDSMSnapshot)
     }
 
     private var preferredColorScheme: ColorScheme? {

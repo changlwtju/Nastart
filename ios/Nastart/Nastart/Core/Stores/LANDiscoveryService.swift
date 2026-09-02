@@ -42,6 +42,89 @@ final class LANDiscoveryService: NSObject, ObservableObject {
         return endpoints
     }
 
+    /// Return a LAN endpoint suitable for automatic route acceleration. For a
+    /// private IP, HTTP avoids the common certificate-name mismatch caused by
+    /// using an HTTPS certificate issued for the public domain.
+    @MainActor
+    static func discoverDSMPlaybackLANEndpoint(
+        timeout: TimeInterval = 3,
+        requiresSingleHost: Bool = true
+    ) async -> URL? {
+        let endpoints = await discoverDSMEndpoints(timeout: timeout)
+        let privateEndpoints = endpoints.filter { NetworkHostClassifier.isPrivate($0.host) }
+        let literalPrivateEndpoints = privateEndpoints.filter {
+            NetworkHostClassifier.isLiteralAddress($0.host)
+        }
+        let localDomainEndpoints = privateEndpoints.filter {
+            !NetworkHostClassifier.isLiteralAddress($0.host)
+        }
+        if requiresSingleHost {
+            let literalHosts = Set(literalPrivateEndpoints.compactMap {
+                $0.host?.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+            })
+            let localDomainHosts = Set(localDomainEndpoints.compactMap {
+                $0.host?.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+            })
+            let hasResolvableSingleEndpoint = literalHosts.count <= 1
+                && (literalHosts.count == 1 || localDomainHosts.count <= 1)
+            guard hasResolvableSingleEndpoint else {
+                let hostCount = max(literalHosts.count, localDomainHosts.count)
+                if hostCount > 1 {
+                    DiagnosticLogStore.shared.record(
+                        .warning,
+                        categoryKey: "diagnostics.category.connection",
+                        messageKey: "diagnostics.route.smart_lan_skipped",
+                        details: ["reason": "multiple_lan_hosts", "hosts": "\(hostCount)"]
+                    )
+                }
+                return nil
+            }
+        }
+        let orderedEndpoints = literalPrivateEndpoints.isEmpty
+            ? privateEndpoints
+            : literalPrivateEndpoints + localDomainEndpoints
+        return playbackLANCandidates(from: orderedEndpoints).first
+    }
+
+    static func playbackLANCandidates(from endpoints: [URL]) -> [URL] {
+        var candidates: [URL] = []
+        var seen = Set<String>()
+
+        func append(_ url: URL?) {
+            guard let url,
+                  NetworkHostClassifier.isPrivate(url.host),
+                  seen.insert(url.absoluteString).inserted
+            else { return }
+            candidates.append(url)
+        }
+
+        for endpoint in endpoints {
+            append(localHTTPVariant(for: endpoint))
+        }
+        for endpoint in endpoints where endpoint.scheme?.lowercased() == "http" {
+            append(endpoint)
+        }
+        for endpoint in endpoints {
+            append(endpoint)
+        }
+        return candidates
+    }
+
+    static func localHTTPVariant(for url: URL) -> URL? {
+        guard NetworkHostClassifier.isPrivate(url.host),
+              var components = URLComponents(url: url, resolvingAgainstBaseURL: false)
+        else {
+            return nil
+        }
+        components.scheme = "http"
+        if components.port == nil || components.port == 5001 || components.port == 443 {
+            components.port = 5000
+        }
+        components.query = nil
+        components.fragment = nil
+        return components.url
+    }
+
     func start() {
         stop()
         devices = []
