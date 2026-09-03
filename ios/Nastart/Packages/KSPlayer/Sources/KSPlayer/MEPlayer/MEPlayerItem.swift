@@ -38,6 +38,8 @@ public final class MEPlayerItem: Sendable {
     private(set) var assetTracks = [FFmpegAssetTrack]()
     private var videoAdaptation: VideoAdaptationState?
     private var videoDisplayCount = UInt8(0)
+    private var hasDisplayedVideoFrame = false
+    private var readPacketLogCount = 0
     private var seekByBytes = false
     private var lastVideoDisplayTime = CACurrentMediaTime()
     public private(set) var chapters: [Chapter] = []
@@ -74,6 +76,28 @@ public final class MEPlayerItem: Sendable {
                 break
             }
         }
+    }
+
+    private static func normalizedDuration(_ rawDuration: Int64) -> TimeInterval {
+        let maximumPlausibleMediaDuration: TimeInterval = 24 * 60 * 60
+        guard rawDuration > 0 else { return 0 }
+        let seconds = TimeInterval(rawDuration) / TimeInterval(AV_TIME_BASE)
+        guard seconds.isFinite, seconds <= maximumPlausibleMediaDuration else {
+            KSLog(level: .warning, "Ignoring implausible FFmpeg duration \(rawDuration)")
+            return 0
+        }
+        return seconds
+    }
+
+    private static func normalizedStartTime(_ rawStartTime: Int64) -> CMTime {
+        let maximumPlausibleMediaStart: TimeInterval = 24 * 60 * 60
+        guard rawStartTime != Int64.min, rawStartTime > 0 else { return .zero }
+        let seconds = TimeInterval(rawStartTime) / TimeInterval(AV_TIME_BASE)
+        guard seconds.isFinite, seconds <= maximumPlausibleMediaStart else {
+            KSLog(level: .warning, "Ignoring implausible FFmpeg start_time \(rawStartTime)")
+            return .zero
+        }
+        return CMTime(value: rawStartTime, timescale: AV_TIME_BASE)
     }
 
     private lazy var timer: Timer = .scheduledTimer(withTimeInterval: 0.05, repeats: true) { [weak self] _ in
@@ -206,14 +230,19 @@ extension MEPlayerItem {
             urlString = url.absoluteString
         }
         let inputFormat = options.forcedInputFormatName.flatMap { av_find_input_format($0) }
+        NSLog(
+            "KSPlayer: avformat_open_input started scheme=\(url.scheme ?? "-") host=\(url.host ?? "-") inputFormat=\(options.forcedInputFormatName ?? "-") options=\(options.formatContextOptions)"
+        )
         var result = avformat_open_input(&self.formatCtx, urlString, inputFormat, &avOptions)
         av_dict_free(&avOptions)
         if result == AVError.eof.code {
+            NSLog("KSPlayer: avformat_open_input eof code=\(result)")
             state = .finished
             delegate?.sourceDidFinished()
             return
         }
         guard result == 0 else {
+            NSLog("KSPlayer: avformat_open_input failed code=\(result)")
             error = .init(errorCode: .formatOpenInput, avErrorCode: result)
             avformat_close_input(&self.formatCtx)
             return
@@ -229,8 +258,12 @@ extension MEPlayerItem {
         if let maxAnalyzeDuration = options.maxAnalyzeDuration {
             formatCtx.pointee.max_analyze_duration = maxAnalyzeDuration
         }
+        NSLog(
+            "KSPlayer: avformat_find_stream_info started probe=\(formatCtx.pointee.probesize) analyze=\(formatCtx.pointee.max_analyze_duration)"
+        )
         result = avformat_find_stream_info(formatCtx, nil)
         guard result == 0 else {
+            NSLog("KSPlayer: avformat_find_stream_info failed code=\(result)")
             error = .init(errorCode: .formatFindStreamInfo, avErrorCode: result)
             avformat_close_input(&self.formatCtx)
             return
@@ -242,14 +275,29 @@ extension MEPlayerItem {
         options.findTime = CACurrentMediaTime()
         options.formatName = String(cString: formatCtx.pointee.iformat.pointee.name)
         seekByBytes = (flags & AVFMT_NO_BYTE_SEEK == 0) && (flags & AVFMT_TS_DISCONT != 0) && options.formatName != "ogg"
-        if formatCtx.pointee.start_time != Int64.min {
-            startTime = CMTime(value: formatCtx.pointee.start_time, timescale: AV_TIME_BASE)
-            videoClock.time = startTime
-            audioClock.time = startTime
+        startTime = Self.normalizedStartTime(formatCtx.pointee.start_time)
+        videoClock.time = startTime
+        audioClock.time = startTime
+        duration = Self.normalizedDuration(formatCtx.pointee.duration)
+        KSLog(
+            level: .info,
+            "Opened FFmpeg input format=\(options.formatName) streams=\(formatCtx.pointee.nb_streams) startTime=\(startTime.seconds) duration=\(duration) bitrate=\(formatCtx.pointee.bit_rate)"
+        )
+        NSLog(
+            "KSPlayer: avformat_find_stream_info succeeded format=\(options.formatName) streams=\(formatCtx.pointee.nb_streams) duration=\(duration) bitrate=\(formatCtx.pointee.bit_rate)"
+        )
+        if duration > 0, formatCtx.pointee.bit_rate > 0 {
+            fileSize = Double(formatCtx.pointee.bit_rate) * duration / 8
+        } else {
+            fileSize = 0
         }
-        duration = TimeInterval(max(formatCtx.pointee.duration, 0) / Int64(AV_TIME_BASE))
-        fileSize = Double(formatCtx.pointee.bit_rate) * duration / 8
         createCodec(formatCtx: formatCtx)
+        let trackSummary = assetTracks
+            .map { "id=\($0.trackID),type=\($0.mediaType.rawValue),enabled=\($0.isEnabled),codec=\($0.codecName),bitrate=\($0.bitRate),fps=\($0.nominalFrameRate)" }
+            .joined(separator: ";")
+        NSLog(
+            "KSPlayer: tracks selected video=\(videoTrack == nil ? "no" : "yes") audio=\(audioTrack == nil ? "no" : "yes") all=[\(trackSummary)]"
+        )
         if formatCtx.pointee.nb_chapters > 0 {
             chapters.removeAll()
             for i in 0 ..< formatCtx.pointee.nb_chapters {
@@ -556,6 +604,12 @@ extension MEPlayerItem {
                 return 0
             }
             let first = assetTracks.first { $0.trackID == corePacket.pointee.stream_index }
+            if readPacketLogCount < 16 {
+                NSLog(
+                    "KSPlayer: av_read_frame packet stream=\(corePacket.pointee.stream_index) media=\(first?.mediaType.rawValue ?? "-") enabled=\(first?.isEnabled.description ?? "-") size=\(corePacket.pointee.size) pts=\(corePacket.pointee.pts) dts=\(corePacket.pointee.dts) pos=\(corePacket.pointee.pos) flags=\(corePacket.pointee.flags)"
+                )
+                readPacketLogCount += 1
+            }
             if let first, first.isEnabled {
                 packet.assetTrack = first
                 if first.mediaType == .video {
@@ -573,6 +627,9 @@ extension MEPlayerItem {
                 }
             }
         } else {
+            NSLog(
+                "KSPlayer: av_read_frame ended result=\(readResult) feof=\(avio_feof(formatCtx?.pointee.pb)) position=\(avio_tell(formatCtx?.pointee.pb)) state=\(state) loggedPackets=\(readPacketLogCount) videoPackets=\(videoTrack?.packetCount ?? -1) videoFrames=\(videoTrack?.frameCount ?? -1) audioPackets=\(audioTrack?.packetCount ?? -1) audioFrames=\(audioTrack?.frameCount ?? -1)"
+            )
             if readResult == AVError.eof.code || avio_feof(formatCtx?.pointee.pb) > 0 {
                 if options.isLoopPlay, allPlayerItemTracks.allSatisfy({ !$0.isLoopModel }) {
                     allPlayerItemTracks.forEach { $0.isLoopModel = true }
@@ -727,6 +784,15 @@ extension MEPlayerItem: CodecCapacityDelegate {
         }
         let allSatisfy = videoAudioTracks.allSatisfy { $0.isEndOfFile && $0.frameCount == 0 && $0.packetCount == 0 }
         if allSatisfy {
+            if isFirst, !hasDisplayedVideoFrame {
+                let trackSummary = videoAudioTracks
+                    .map { "\($0.mediaType.rawValue):eof=\($0.isEndOfFile),frames=\($0.frameCount),packets=\($0.packetCount)" }
+                    .joined(separator: ";")
+                KSLog(
+                    level: .warning,
+                    "FFmpeg reached EOF before first frame state=\(state) duration=\(duration) startTime=\(startTime.seconds) tracks=[\(trackSummary)] bytesRead=\(dynamicInfo.bytesRead)"
+                )
+            }
             delegate?.sourceDidFinished()
             timer.fireDate = Date.distantFuture
             if options.isLoopPlay {
@@ -785,6 +851,7 @@ extension MEPlayerItem: OutputRenderSourceDelegate {
         videoClock.time = time
         videoClock.position = position
         videoDisplayCount += 1
+        hasDisplayedVideoFrame = true
         let diff = videoClock.lastMediaTime - lastVideoDisplayTime
         if diff > 1 {
             dynamicInfo.displayFPS = Double(videoDisplayCount) / diff

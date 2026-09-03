@@ -8,7 +8,7 @@ struct GreenfieldKSPlayerRenderer: View {
     let onUnsupported: () -> Void
     let onStateChanged: (String) -> Void
     let onPlaybackTime: (TimeInterval, TimeInterval) -> Void
-    let onFinished: (String?) -> Void
+    let onFinished: (String?, GreenfieldKSPlayerRuntimeSnapshot?) -> Void
     let onBufferChanged: (Int, TimeInterval) -> Void
 
     @StateObject private var coordinator = KSVideoPlayer.Coordinator()
@@ -26,8 +26,8 @@ struct GreenfieldKSPlayerRenderer: View {
             .onPlay { currentTime, totalTime in
                 onPlaybackTime(currentTime, totalTime)
             }
-            .onFinish { _, error in
-                onFinished(error.map(Self.describe))
+            .onFinish { layer, error in
+                onFinished(error.map(Self.describe), Self.snapshot(layer))
             }
             .onBufferChanged { bufferedCount, consumeTime in
                 onBufferChanged(bufferedCount, consumeTime)
@@ -91,8 +91,6 @@ struct GreenfieldKSPlayerRenderer: View {
         switch container {
         case "ts", "m2ts", "mts":
             return "mpegts"
-        case "mkv", "webm":
-            return "matroska,webm"
         case "mp4", "m4v", "mov":
             return "mov,mp4,m4a,3gp,3g2,mj2"
         case "avi":
@@ -127,6 +125,24 @@ struct GreenfieldKSPlayerRenderer: View {
         let nsError = error as NSError
         return "\(nsError.domain):\(nsError.code):\(nsError.localizedDescription)"
     }
+
+    private static func snapshot(_ layer: KSPlayerLayer) -> GreenfieldKSPlayerRuntimeSnapshot {
+        let dynamicInfo = layer.player.dynamicInfo
+        return GreenfieldKSPlayerRuntimeSnapshot(
+            playbackState: String(describing: layer.player.playbackState),
+            loadState: String(describing: layer.player.loadState),
+            isReadyToPlay: layer.player.isReadyToPlay,
+            isPlaying: layer.player.isPlaying,
+            isSeekable: layer.player.seekable,
+            currentSeconds: layer.player.currentPlaybackTime,
+            durationSeconds: layer.player.duration,
+            playableSeconds: layer.player.playableTime,
+            bytesRead: dynamicInfo?.bytesRead,
+            audioBitrate: dynamicInfo?.audioBitrate,
+            videoBitrate: dynamicInfo?.videoBitrate,
+            displayFPS: dynamicInfo?.displayFPS
+        )
+    }
 }
 #else
 struct GreenfieldKSPlayerRenderer: View {
@@ -134,7 +150,7 @@ struct GreenfieldKSPlayerRenderer: View {
     let onUnsupported: () -> Void
     let onStateChanged: (String) -> Void
     let onPlaybackTime: (TimeInterval, TimeInterval) -> Void
-    let onFinished: (String?) -> Void
+    let onFinished: (String?, GreenfieldKSPlayerRuntimeSnapshot?) -> Void
     let onBufferChanged: (Int, TimeInterval) -> Void
 
     var body: some View {

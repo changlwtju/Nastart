@@ -35,9 +35,35 @@ PRESETS: dict[str, dict[str, object]] = {
         "measured_mbps": 10.8,
         "network": "cellular",
         "expensive": True,
+        "container": "mkv",
+        "size_gb": 54.0,
         "audio_codec": "truehd",
         "subtitle_codec": "ass",
         "subtitle_selected": True,
+        "device": "iphone",
+    },
+    "jellyfin-wifi-unmeasured-large-mkv": {
+        "source_mbps": 62.7,
+        "measured_mbps": None,
+        "network": "wifi",
+        "expensive": False,
+        "container": "mkv",
+        "size_gb": 54.0,
+        "audio_codec": "truehd",
+        "subtitle_codec": "ass",
+        "subtitle_selected": True,
+        "device": "iphone",
+    },
+    "jellyfin-mission-impossible-iii-remux": {
+        "source_mbps": 62.7,
+        "measured_mbps": 154.6,
+        "network": "wifi",
+        "expensive": False,
+        "container": "mkv",
+        "size_gb": 54.0,
+        "audio_codec": "truehd",
+        "subtitle_codec": "ass",
+        "subtitle_selected": False,
         "device": "iphone",
     },
     "jellyfin-remote-4k-mkv": {
@@ -45,6 +71,8 @@ PRESETS: dict[str, dict[str, object]] = {
         "measured_mbps": 33.7,
         "network": "cellular",
         "expensive": False,
+        "container": "mkv",
+        "size_gb": 54.0,
         "audio_codec": "truehd",
         "subtitle_codec": "ass",
         "subtitle_selected": True,
@@ -73,6 +101,7 @@ class PolicyResult:
     direct_play_budget: int
     source_bitrate_fits_direct_budget: bool
     route_can_attempt_original: bool
+    large_remote_original_risk: bool
     audio_transcode_required: bool
     subtitle_burn_in_required: bool
     device_compatibility_transcode: bool
@@ -132,11 +161,23 @@ def bitrate_decision(
             direct_play = safe_bitrate
         return safe_bitrate, direct_play, "measured"
 
-    if network == "wifi":
-        fallback_bitrate = cap or fallback
-    else:
-        fallback_bitrate = min(cap or fallback, fallback)
+    fallback_bitrate = min(cap or fallback, fallback)
     return fallback_bitrate, fallback_bitrate, "networkFallback"
+
+
+def large_remote_original_risk(args: argparse.Namespace, source_bitrate: int | None) -> bool:
+    if args.private_route:
+        return False
+    containers = {
+        value.strip().lower()
+        for value in (args.container or "").split(",")
+        if value.strip()
+    }
+    if not ({"mkv", "matroska", "webm"} & containers):
+        return False
+    high_bitrate = source_bitrate is not None and source_bitrate >= 40_000_000
+    large_file = args.size_gb is not None and args.size_gb >= 20.0
+    return high_bitrate or large_file
 
 
 def simulate(args: argparse.Namespace, experimental_original: bool) -> PolicyResult:
@@ -155,8 +196,13 @@ def simulate(args: argparse.Namespace, experimental_original: bool) -> PolicyRes
     subtitle_burn = args.subtitle_selected and subtitle_codec in BURN_IN_SUBTITLE_CODECS
     device_compat = args.device == "ipad" and audio_codec == "flac"
     fits_direct = source_bitrate is not None and source_bitrate <= direct_budget
-    route_can_attempt = args.private_route or args.force_original or experimental_original or fits_direct
-    prefers_remote_original = fits_direct and not audio_transcode
+    large_remote_risk = large_remote_original_risk(args, source_bitrate)
+    auto_fits_direct = fits_direct and not large_remote_risk
+    route_can_attempt = args.private_route or args.force_original or experimental_original or auto_fits_direct
+    startup_audio_adjusted = audio_transcode and route_can_attempt and not args.forced_server
+    if startup_audio_adjusted:
+        audio_transcode = False
+    prefers_remote_original = auto_fits_direct and not audio_transcode
     should_attempt_direct = (
         not args.forced_server
         and (not audio_transcode or experimental_original)
@@ -174,14 +220,22 @@ def simulate(args: argparse.Namespace, experimental_original: bool) -> PolicyRes
         warnings.append(
             "source bitrate is above measured throughput; direct original may start but is unlikely to stay smooth"
         )
-    if experimental_original and audio_transcode:
-        warnings.append("experimental mode bypasses selected audio compatibility protection")
+    if startup_audio_adjusted:
+        warnings.append("direct original video uses a compatible startup audio track")
+    if experimental_original:
+        warnings.append(
+            "experimental original uses localRangeProxy continuous-range transport with seekable MKV startup"
+        )
     if experimental_original and subtitle_burn:
         warnings.append("experimental mode bypasses server subtitle burn-in protection")
+    if large_remote_risk and not experimental_original and not args.force_original:
+        warnings.append("large remote MKV/REMUX is routed through Jellyfin HLS for first-frame reliability")
 
     if should_attempt_direct:
         return PolicyResult(
-            route="localRangeProxy" if not args.private_route else "directHTTP",
+            route="localRangeProxy" if experimental_original and not args.private_route else (
+                "directHTTP" if args.private_route else "localRangeProxy"
+            ),
             engine="ksPlayer",
             play_method="directPlay",
             reason="experimentalOriginal" if experimental_original else "originalAllowed",
@@ -189,6 +243,7 @@ def simulate(args: argparse.Namespace, experimental_original: bool) -> PolicyRes
             direct_play_budget=direct_budget,
             source_bitrate_fits_direct_budget=fits_direct,
             route_can_attempt_original=route_can_attempt,
+            large_remote_original_risk=large_remote_risk,
             audio_transcode_required=audio_transcode,
             subtitle_burn_in_required=subtitle_burn,
             device_compatibility_transcode=device_compat,
@@ -198,6 +253,8 @@ def simulate(args: argparse.Namespace, experimental_original: bool) -> PolicyRes
 
     if args.forced_server:
         reason = "forcedServer"
+    elif large_remote_risk and not args.force_original and not experimental_original:
+        reason = "largeRemoteOriginalRisk"
     elif not route_can_attempt:
         reason = "automaticBitrateBudget"
     elif audio_transcode:
@@ -218,6 +275,7 @@ def simulate(args: argparse.Namespace, experimental_original: bool) -> PolicyRes
         direct_play_budget=direct_budget,
         source_bitrate_fits_direct_budget=fits_direct,
         route_can_attempt_original=route_can_attempt,
+        large_remote_original_risk=large_remote_risk,
         audio_transcode_required=audio_transcode,
         subtitle_burn_in_required=subtitle_burn,
         device_compatibility_transcode=device_compat,
@@ -235,6 +293,7 @@ def render(result: PolicyResult, title: str) -> list[str]:
         f"  direct_play_budget: {label(result.direct_play_budget)}",
         f"  source_fits_direct_budget: {'yes' if result.source_bitrate_fits_direct_budget else 'no'}",
         f"  route_can_attempt_original: {'yes' if result.route_can_attempt_original else 'no'}",
+        f"  large_remote_original_risk: {'yes' if result.large_remote_original_risk else 'no'}",
         f"  audio_transcode_required: {'yes' if result.audio_transcode_required else 'no'}",
         f"  subtitle_burn_in_required: {'yes' if result.subtitle_burn_in_required else 'no'}",
     ]
@@ -275,6 +334,8 @@ def main() -> int:
     parser.add_argument("--audio-codec")
     parser.add_argument("--subtitle-codec")
     parser.add_argument("--subtitle-selected", action="store_true")
+    parser.add_argument("--container")
+    parser.add_argument("--size-gb", type=float)
     parser.add_argument("--device", choices=["iphone", "ipad"], default=None, type=normalized_choice)
     parser.add_argument("--force-original", action="store_true")
     parser.add_argument("--forced-server", action="store_true")

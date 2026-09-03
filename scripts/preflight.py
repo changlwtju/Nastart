@@ -34,6 +34,17 @@ LAUNCHPAD_VIEW = LAUNCHPAD_DIR / "LaunchpadView.swift"
 DEVICES_VIEW = IOS_ROOT / "Features" / "Devices" / "DevicesView.swift"
 GREENFIELD_PLAYER_VIEW = IOS_ROOT / "Playback" / "GreenfieldVideoPlayerView.swift"
 PLAYBACK_DIAGNOSTICS = IOS_ROOT / "Playback" / "Diagnostics" / "PlaybackDiagnostics.swift"
+KSPLAYER_MEPLAYER_ITEM = (
+    ROOT
+    / "ios"
+    / "Nastart"
+    / "Packages"
+    / "KSPlayer"
+    / "Sources"
+    / "KSPlayer"
+    / "MEPlayer"
+    / "MEPlayerItem.swift"
+)
 INFO_PLIST = IOS_ROOT / "Info.plist"
 APP_ENTRY = IOS_ROOT / "App" / "NastartApp.swift"
 NAS_MODELS = IOS_ROOT / "Core" / "Models" / "NASModels.swift"
@@ -445,6 +456,11 @@ def check_playback_routing_invariants() -> CheckResult:
     devices = DEVICES_VIEW.read_text(encoding="utf-8")
     greenfield_player = GREENFIELD_PLAYER_VIEW.read_text(encoding="utf-8")
     playback_diagnostics = PLAYBACK_DIAGNOSTICS.read_text(encoding="utf-8")
+    ksplayer_meplayer_item = (
+        KSPLAYER_MEPLAYER_ITEM.read_text(encoding="utf-8")
+        if KSPLAYER_MEPLAYER_ITEM.exists()
+        else ""
+    )
     app_entry = APP_ENTRY.read_text(encoding="utf-8")
     nas_models = NAS_MODELS.read_text(encoding="utf-8")
     stores = APP_STATE_STORES.read_text(encoding="utf-8")
@@ -679,6 +695,15 @@ def check_playback_routing_invariants() -> CheckResult:
         "Jellyfin direct play must use the measured route budget instead of the HLS ceiling": (
             "let directPlayBudget = bitrateDecision.directPlayMaximumBitrate"
         ),
+        "Auto Jellyfin playback must avoid large remote MKV originals by default": (
+            "requiresServerPlaybackForLargeRemoteOriginal"
+        ),
+        "Initial automatic Jellyfin playback must await route bitrate measurement": (
+            "await ensureBitrateMeasurementIfNeeded(client: client)"
+        ),
+        "Failed Jellyfin bitrate probes must cache conservative fallback": (
+            "bitrateMeasurements[cacheKey] = (fallbackBitrate, fallbackBitrate, Date())"
+        ),
         "Wi-Fi direct play must tolerate short throughput-sample variance": (
             "max(Int(Double(cached.rawBitrate) * 1.25), cached.bitrate)"
         ),
@@ -701,10 +726,10 @@ def check_playback_routing_invariants() -> CheckResult:
             '"subtitleFont": Self.cjkFontPath ?? "default"'
         ),
         "Jellyfin automatic playback must gate remote original attempts by route or direct budget": (
-            "let routeCanAttemptOriginalPlayback = playbackRouteIsPrivate\n            || forcesOriginalPlayback\n            || canUseExperimentalOriginalPlayback\n            || sourceBitrateFitsDirectBudget"
+            "let routeCanAttemptOriginalPlayback = playbackRouteIsPrivate\n            || forcesOriginalPlayback\n            || canUseExperimentalOriginalPlayback\n            || automaticSourceBitrateFitsDirectBudget"
         ),
         "Jellyfin remote original playback must require the source bitrate budget": (
-            "let prefersRemoteOriginalPlayback = sourceBitrateFitsDirectBudget\n                && !requiresSelectedAudioTranscode"
+            "let prefersRemoteOriginalPlayback = automaticSourceBitrateFitsDirectBudget\n                && !requiresSelectedAudioTranscode"
         ),
         "Jellyfin automatic metadata must retain the highest-bitrate original source": (
             "return sources.max { lhs, rhs in"
@@ -1004,7 +1029,13 @@ def check_playback_routing_invariants() -> CheckResult:
             'sampleAVPlayer(\n                    self.player,'
         ),
         "Greenfield KSPlayer must emit playback tick telemetry samples": (
-            'sampleKSPlayer(\n            currentTime: currentTime,'
+            'sampleKSPlayer(\n            currentTime: playbackTime.current,'
+        ),
+        "Greenfield KSPlayer must reject implausible playback timestamps": (
+            "invalidPlaybackTime"
+        ),
+        "Greenfield KSPlayer must flag premature finishes before first frame": (
+            "ksPlayerFinishedBeforeFirstFrame"
         ),
         "Greenfield first-frame diagnostics must force a telemetry sample": (
             'reason: "firstFrame",\n                    force: true'
@@ -1027,9 +1058,21 @@ def check_playback_routing_invariants() -> CheckResult:
         "Playback telemetry sampler must record stall activity": (
             'metrics["stallActive"] = "yes"'
         ),
+        "Playback telemetry sampler must sanitize KSPlayer time fields": (
+            "sanitizedKSPlayerSeconds"
+        ),
     }
     for message, fragment in required_playback_diagnostic_fragments.items():
         if fragment not in playback_diagnostics:
+            errors.append(message)
+
+    required_ksplayer_fragments = {
+        "KSPlayer must normalize implausible FFmpeg duration before exposing it": (
+            "normalizedDuration(formatCtx.pointee.duration)"
+        ),
+    }
+    for message, fragment in required_ksplayer_fragments.items():
+        if fragment not in ksplayer_meplayer_item:
             errors.append(message)
 
     required_project_artifacts = {
@@ -1040,10 +1083,25 @@ def check_playback_routing_invariants() -> CheckResult:
             "Trace report must summarize telemetry stall samples": (
                 '"stallSampleCount": len(telemetry_stalls)'
             ),
+            "Trace report must classify KSPlayer invalid clock samples": (
+                '"ksplayer_invalid_clock"'
+            ),
+            "Trace report must classify KSPlayer premature finishes": (
+                '"ksplayer_premature_end"'
+            ),
+            "Trace report must classify large remote original HLS baselines": (
+                '"large_remote_original_hls"'
+            ),
         },
         PLAYBACK_POLICY_SIMULATOR: {
             "Policy simulator must keep the external Jellyfin validation preset": (
                 '"jellyfin-external-large-mkv"'
+            ),
+            "Policy simulator must cover public Wi-Fi before a fresh route sample": (
+                '"jellyfin-wifi-unmeasured-large-mkv"'
+            ),
+            "Policy simulator must include the Mission Impossible III 4K remux target": (
+                '"jellyfin-mission-impossible-iii-remux"'
             ),
             "Policy simulator must compare Auto with Force original KSPlayer": (
                 '"forceOriginalKSPlayer": asdict(experimental)'

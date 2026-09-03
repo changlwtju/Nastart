@@ -48,6 +48,52 @@ struct GreenfieldPlaybackLaunchRequest: Identifiable {
     }
 }
 
+struct GreenfieldKSPlayerRuntimeSnapshot {
+    let playbackState: String
+    let loadState: String
+    let isReadyToPlay: Bool
+    let isPlaying: Bool
+    let isSeekable: Bool
+    let currentSeconds: TimeInterval
+    let durationSeconds: TimeInterval
+    let playableSeconds: TimeInterval
+    let bytesRead: Int64?
+    let audioBitrate: Int?
+    let videoBitrate: Int?
+    let displayFPS: Double?
+
+    var diagnostics: [String: String] {
+        var metrics = [
+            "ksPlaybackState": playbackState,
+            "ksLoadState": loadState,
+            "ksReady": isReadyToPlay ? "yes" : "no",
+            "ksPlaying": isPlaying ? "yes" : "no",
+            "ksSeekable": isSeekable ? "yes" : "no",
+            "ksCurrentSeconds": Self.format(currentSeconds),
+            "ksDurationSeconds": Self.format(durationSeconds),
+            "ksPlayableSeconds": Self.format(playableSeconds)
+        ]
+        if let bytesRead {
+            metrics["ksBytesRead"] = "\(bytesRead)"
+        }
+        if let audioBitrate {
+            metrics["ksAudioBitrate"] = "\(audioBitrate)"
+        }
+        if let videoBitrate {
+            metrics["ksVideoBitrate"] = "\(videoBitrate)"
+        }
+        if let displayFPS {
+            metrics["ksDisplayFPS"] = Self.format(displayFPS)
+        }
+        return metrics
+    }
+
+    private static func format(_ value: TimeInterval) -> String {
+        guard value.isFinite else { return "-" }
+        return String(format: "%.3f", value)
+    }
+}
+
 struct GreenfieldVideoPlayerView: View {
     let request: GreenfieldPlaybackLaunchRequest
     @Environment(\.dismiss) private var dismiss
@@ -176,6 +222,9 @@ private final class GreenfieldVideoPlayerModel: ObservableObject {
     private var lastTimeControlStatus: AVPlayer.TimeControlStatus?
     private var playbackTask: Task<Void, Never>?
     private var failedRouteIDs = Set<UUID>()
+    private var lastValidKSPlayerTime: (current: TimeInterval, total: TimeInterval?)?
+    private var lastKSPlayerState: String?
+    private var didRecordInvalidKSPlayerTime = false
 
     func start(_ request: GreenfieldPlaybackLaunchRequest) {
         guard playbackTask == nil else { return }
@@ -259,6 +308,9 @@ private final class GreenfieldVideoPlayerModel: ObservableObject {
         player.replaceCurrentItem(with: nil)
         renderingPlan = nil
         failedRouteIDs.removeAll()
+        lastValidKSPlayerTime = nil
+        lastKSPlayerState = nil
+        didRecordInvalidKSPlayerTime = false
     }
 
     func handleKSPlayerRendererUnsupported() {
@@ -269,6 +321,7 @@ private final class GreenfieldVideoPlayerModel: ObservableObject {
 
     func handleKSPlayerStateChanged(_ state: String) {
         guard let plan = renderingPlan else { return }
+        lastKSPlayerState = state
         debugBadge = [
             "Greenfield",
             "KSPlayer \(state)",
@@ -298,15 +351,68 @@ private final class GreenfieldVideoPlayerModel: ObservableObject {
     }
 
     func handleKSPlayerPlaybackTime(_ currentTime: TimeInterval, _ totalTime: TimeInterval) {
-        guard currentTime.isFinite, totalTime.isFinite else { return }
-        handlePlaybackTime(currentTime)
-        telemetrySampler?.sampleKSPlayer(
+        guard let plan = renderingPlan else { return }
+        guard let playbackTime = sanitizedKSPlayerTime(
             currentTime: currentTime,
             totalTime: totalTime,
+            plan: plan
+        ) else {
+            if !didRecordInvalidKSPlayerTime {
+                didRecordInvalidKSPlayerTime = true
+                telemetrySampler?.sampleKSPlayer(
+                    state: "invalidTime",
+                    reason: "invalidPlaybackTime",
+                    force: true
+                )
+                let recorder = recorder
+                let lastState = lastKSPlayerState ?? "-"
+                Task {
+                    await recorder?.record(
+                        .engineReady,
+                        plan: plan,
+                        engineName: "KSPlayer",
+                        metrics: [
+                            "state": "invalidPlaybackTime",
+                            "currentSecondsRaw": Self.formatDiagnosticSeconds(currentTime),
+                            "durationSecondsRaw": Self.formatDiagnosticSeconds(totalTime),
+                            "lastState": lastState
+                        ]
+                    )
+                }
+            }
+            return
+        }
+        if isSyntheticKSPlayerFinishTime(playbackTime, plan: plan) {
+            telemetrySampler?.sampleKSPlayer(
+                state: "finishTimeBeforeFirstFrame",
+                reason: "syntheticFinishTime",
+                force: true
+            )
+            let recorder = recorder
+            Task {
+                await recorder?.record(
+                    .engineReady,
+                    plan: plan,
+                    engineName: "KSPlayer",
+                    metrics: [
+                        "state": "syntheticFinishTime",
+                        "currentSeconds": Self.formatDiagnosticSeconds(playbackTime.current),
+                        "durationSeconds": Self.formatDiagnosticSeconds(playbackTime.total),
+                        "lastState": lastKSPlayerState ?? "-"
+                    ]
+                )
+            }
+            return
+        }
+
+        lastValidKSPlayerTime = playbackTime
+        handlePlaybackTime(playbackTime.current)
+        telemetrySampler?.sampleKSPlayer(
+            currentTime: playbackTime.current,
+            totalTime: playbackTime.total,
             reason: "playbackTick"
         )
-        guard let plan = renderingPlan else { return }
-        if totalTime > 0, plan.timeline.duration == nil {
+        if let duration = playbackTime.total, duration > 0, plan.timeline.duration == nil {
             let recorder = recorder
             Task {
                 await recorder?.record(
@@ -314,18 +420,30 @@ private final class GreenfieldVideoPlayerModel: ObservableObject {
                     plan: plan,
                     engineName: "KSPlayer",
                     metrics: [
-                        "currentSeconds": String(format: "%.1f", currentTime),
-                        "durationSeconds": String(format: "%.1f", totalTime)
+                        "currentSeconds": String(format: "%.1f", playbackTime.current),
+                        "durationSeconds": String(format: "%.1f", duration)
                     ]
                 )
             }
         }
     }
 
-    func handleKSPlayerFinished(_ errorDescription: String?) {
+    func handleKSPlayerFinished(
+        _ errorDescription: String?,
+        snapshot: GreenfieldKSPlayerRuntimeSnapshot?
+    ) {
         guard let plan = renderingPlan else { return }
+        let isPrematureEnd = errorDescription == nil && isKSPlayerPrematureEnd(plan: plan)
+        let finishState: String
+        if isPrematureEnd {
+            finishState = "prematureFinished"
+        } else if errorDescription == nil {
+            finishState = "finished"
+        } else {
+            finishState = "finishedWithError"
+        }
         telemetrySampler?.sampleKSPlayer(
-            state: errorDescription == nil ? "finished" : "finishedWithError",
+            state: finishState,
             reason: "finished",
             force: true
         )
@@ -335,13 +453,132 @@ private final class GreenfieldVideoPlayerModel: ObservableObject {
             }
             errorMessage = errorDescription
             debugBadge = "KSPlayer failed"
-            recordPlayerFailure(plan: plan, error: nil, stage: "ksPlayerFinished:\(errorDescription)")
+            recordPlayerFailure(
+                plan: plan,
+                error: nil,
+                stage: "ksPlayerFinished:\(errorDescription)",
+                snapshot: snapshot
+            )
             return
         }
+        if isPrematureEnd {
+            let stage = didRecordFirstFrame
+                ? "ksPlayerPrematureEnd"
+                : "ksPlayerFinishedBeforeFirstFrame"
+            recordKSPlayerPlaybackEnded(
+                plan: plan,
+                stage: stage,
+                premature: true,
+                snapshot: snapshot
+            )
+            if activateAlternateRoute(after: plan, reason: stage) {
+                return
+            }
+            errorMessage = NSLocalizedString("player.load_failed", comment: "")
+            debugBadge = "KSPlayer ended early"
+            recordPlayerFailure(plan: plan, error: nil, stage: stage, snapshot: snapshot)
+            return
+        }
+        recordKSPlayerPlaybackEnded(
+            plan: plan,
+            stage: "ksPlayerFinished",
+            premature: false,
+            snapshot: snapshot
+        )
         let coordinator = coordinator
         Task {
             await coordinator?.finishPlayback(plan: plan)
         }
+    }
+
+    private func sanitizedKSPlayerTime(
+        currentTime: TimeInterval,
+        totalTime: TimeInterval,
+        plan: PlaybackPlan
+    ) -> (current: TimeInterval, total: TimeInterval?)? {
+        let maxStandaloneDuration: TimeInterval = 24 * 60 * 60
+        guard currentTime.isFinite, currentTime >= 0 else { return nil }
+
+        let sanitizedTotal: TimeInterval? = {
+            guard totalTime.isFinite, totalTime > 0, totalTime <= maxStandaloneDuration else {
+                return nil
+            }
+            return totalTime
+        }()
+        let expectedDuration = plan.timeline.duration ?? sanitizedTotal
+        if let expectedDuration, expectedDuration > 0 {
+            let upperBound = max(
+                expectedDuration + 10,
+                max(plan.timeline.startTime, 0) + 10
+            )
+            guard currentTime <= upperBound else { return nil }
+        } else {
+            guard currentTime <= maxStandaloneDuration else { return nil }
+        }
+        return (currentTime, sanitizedTotal)
+    }
+
+    private func isSyntheticKSPlayerFinishTime(
+        _ playbackTime: (current: TimeInterval, total: TimeInterval?),
+        plan: PlaybackPlan
+    ) -> Bool {
+        guard !didRecordFirstFrame,
+              let total = playbackTime.total,
+              total > 1,
+              abs(playbackTime.current - total) < 0.001
+        else {
+            return false
+        }
+        let startTime = max(plan.timeline.startTime, 0)
+        return playbackTime.current > startTime + 1
+    }
+
+    private func isKSPlayerPrematureEnd(plan: PlaybackPlan) -> Bool {
+        if !didRecordFirstFrame {
+            return true
+        }
+        let expectedDuration = plan.timeline.duration ?? lastValidKSPlayerTime?.total
+        guard let expectedDuration, expectedDuration > 30 else {
+            return false
+        }
+        let startTime = max(plan.timeline.startTime, 0)
+        let lastCurrent = lastValidKSPlayerTime?.current ?? startTime
+        return lastCurrent < min(startTime + 1, expectedDuration - 1)
+    }
+
+    private func recordKSPlayerPlaybackEnded(
+        plan: PlaybackPlan,
+        stage: String,
+        premature: Bool,
+        snapshot: GreenfieldKSPlayerRuntimeSnapshot? = nil
+    ) {
+        var metrics = [
+            "stage": stage,
+            "premature": premature ? "yes" : "no",
+            "didRecordFirstFrame": didRecordFirstFrame ? "yes" : "no",
+            "lastState": lastKSPlayerState ?? "-"
+        ]
+        if let lastValidKSPlayerTime {
+            metrics["lastCurrentSeconds"] = Self.formatDiagnosticSeconds(lastValidKSPlayerTime.current)
+            metrics["lastDurationSeconds"] = Self.formatDiagnosticSeconds(lastValidKSPlayerTime.total)
+        }
+        if let snapshot {
+            metrics.merge(snapshot.diagnostics) { current, _ in current }
+        }
+        let recorder = recorder
+        Task {
+            await recorder?.record(
+                .playbackEnded,
+                plan: plan,
+                engineName: "KSPlayer",
+                metrics: metrics
+            )
+        }
+    }
+
+    private static func formatDiagnosticSeconds(_ value: TimeInterval?) -> String {
+        guard let value, value.isFinite else { return "-" }
+        return String(format: "%.3f", value)
     }
 
     func handleKSPlayerBufferChanged(_ bufferedCount: Int, _ consumeTime: TimeInterval) {
@@ -601,7 +838,12 @@ private final class GreenfieldVideoPlayerModel: ObservableObject {
         )
     }
 
-    private func recordPlayerFailure(plan: PlaybackPlan, error: Error?, stage: String) {
+    private func recordPlayerFailure(
+        plan: PlaybackPlan,
+        error: Error?,
+        stage: String,
+        snapshot: GreenfieldKSPlayerRuntimeSnapshot? = nil
+    ) {
         var details = [
             "stage": stage,
             "enginePolicy": plan.enginePolicy.rawValue,
@@ -618,6 +860,9 @@ private final class GreenfieldVideoPlayerModel: ObservableObject {
             details["errorDomain"] = nsError.domain
             details["errorCode"] = "\(nsError.code)"
             details["error"] = nsError.localizedDescription
+        }
+        if let snapshot {
+            details.merge(snapshot.diagnostics) { current, _ in current }
         }
         DiagnosticLogStore.shared.record(
             .error,

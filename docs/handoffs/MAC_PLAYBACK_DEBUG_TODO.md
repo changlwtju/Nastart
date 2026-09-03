@@ -30,9 +30,18 @@ The main loop should be:
 - DEBUG Jellyfin playback has a `Force original KSPlayer` toggle so the same
   source can be tested in two explicit modes:
   - Auto policy: production route selection.
-  - Force original KSPlayer: direct original/Range-proxy attempt using KSPlayer.
+  - Force original KSPlayer: direct original/local Range proxy attempt using
+    KSPlayer. The current debug route uses a local Range proxy with
+    `continuousRange` responses and seekable MKV startup, so FFmpeg can probe
+    both the file head and Matroska tail/cues before the first frame.
 - Greenfield playback now emits continuous
   `diagnostics.playback.next.telemetry_sample` events.
+- KSPlayer playback ticks are sanitized before they can count as first-frame or
+  progress evidence, so implausible timestamps are logged as
+  `invalidPlaybackTime` instead of poisoning the trace.
+- KSPlayer `playedToTheEnd` before a plausible first frame is treated as
+  `ksPlayerFinishedBeforeFirstFrame`/`ksPlayerPrematureEnd`, which can trigger
+  alternate-route fallback and is visible in offline trace reports.
 - Local proxy transfer diagnostics now classify slow requests with
   `proxyKind`, `hlsRole`, `pathExtension`, and `upstreamTaskIndex`.
 - Offline scripts were added/updated:
@@ -42,14 +51,96 @@ The main loop should be:
   - `docs/handoffs/PLAYBACK_OFFLINE_DIAGNOSTICS.md`
   - `docs/handoffs/PLAYBACK_VALIDATION_TARGETS.md`
 
-## What to do on the Mac
+## 2026-09-04 iPhone 13 Result
+
+The DEBUG build was compiled and installed on iPhone 13
+(`00008110-001E543122E0401E`, iOS 16.3.1). WDA was used only to operate the UI
+and preserve visual evidence; the decision source is still the in-app playback
+trace.
+
+Target sample:
+
+- `碟中谍3`
+- `Mission.Impossible.III.2006.2160p.BluRay.REMUX.DV.HEVC.TrueHD.5.1.mkv`
+- about 54 GB / 62.7 Mbps
+
+Auto baseline:
+
+- trace: `08381CF9`
+- route: `localHLS / localRemux / systemAVPlayer`
+- decision: `originalRangeSkipped`, `reason=largeRemoteOriginalRisk`
+- prepared stream: `serverNegotiatedHLS`, `transport=localHLSProxy`
+- first frame: `tapToFirstFrameMs=7791`
+- playback stayed live past the 30 second screenshot checkpoint
+- evidence:
+  - log: `/tmp/nastart-mi3-auto-snapshot.log`
+  - screenshots: `/tmp/nastart-mi3-auto-snapshot-t5.png`,
+    `/tmp/nastart-mi3-auto-snapshot-t15.png`,
+    `/tmp/nastart-mi3-auto-snapshot-t30.png`
+
+Force original KSPlayer:
+
+- traces: `0E1DE462`, `A2096B61`
+- route: `localRangeProxy / directPlay / ksPlayer`
+- prepared stream: `jellyfinOriginalDirectPlay`, `transport=localRangeProxy`
+- compatible startup audio was selected: TrueHD -> AC3
+- first local response was valid HTTP Range:
+  `bytes 0-33554431/54005939750`, `status=206`
+- first frame: none
+- failure: `ksPlayerFinishedBeforeFirstFrame`
+- KSPlayer snapshot at failure:
+  `state=idle`, `load=idle`, `ready=no`, `playing=no`, `seekable=no`,
+  `current=0`, `duration=0`, `playable=0`, `displayFPS=0`
+- 5/15/30 second WDA screenshots all stayed on `无法播放媒体` with
+  `KSPlayer ended early`
+- evidence:
+  - log: `/tmp/nastart-mi3-force-ksplayer-snapshot.log`
+  - screenshots: `/tmp/nastart-mi3-force-snapshot2-t5.png`,
+    `/tmp/nastart-mi3-force-snapshot2-t15.png`,
+    `/tmp/nastart-mi3-force-snapshot2-t30.png`
+
+Follow-up Force transport probes:
+
+- `continuousRange` local proxy response did not fix startup by itself.
+- `seekable=1` for MKV startup allowed FFmpeg to open and probe the file:
+  `avformat_open_input` started successfully, `avformat_find_stream_info`
+  succeeded with `format=matroska,webm` and `streams=12`.
+- The failure still happened before first frame. KSPlayer snapshots showed
+  `seekable=yes`, `duration=0`, `playable=0`, and then `playedToTheEnd`.
+- Packet-probe evidence from trace `F32440AF` showed the sharper failure:
+  `KSPlayer: tracks selected video=no audio=no all=[]`. In other words, FFmpeg
+  recognized the container, but Nastart's vendored KSPlayer did not materialize
+  usable `FFmpegAssetTrack` instances for this Matroska REMUX.
+- evidence:
+  - `/tmp/nastart-mi3-force-ksplayer-continuous.log`
+  - `/tmp/nastart-mi3-force-ksplayer-seekable-continuous.log`
+  - `/tmp/nastart-mi3-force-ksplayer-packet-probe.log`
+
+Conclusion:
+
+- The current question cannot yet be "is Force KSPlayer faster than Auto?".
+  Force KSPlayer does reach the intended original-video route, but it does not
+  reach playable startup or emit `first_frame`.
+- The immediate target is to make `localRangeProxy / directPlay / ksPlayer`
+  play the large MKV at all. Only after it records first frame should it be
+  compared against Auto's 7791 ms baseline.
+- The competitor-derived architecture should guide the next code change:
+  `PlaybackInfo/MediaSource decision -> IO/cache/preload -> engine -> unified
+  telemetry`. Nastart currently has the decision and telemetry layers; the
+  next missing piece is now narrower than generic route selection: inspect why
+  KSPlayer/`FFmpegAssetTrack` rejects all Matroska streams after FFmpeg reports
+  12 streams, then continue toward a KSPlayer-compatible IO/cache/preload path.
+
+## What to do next
 
 1. Open the iOS project in Xcode and build the DEBUG app.
 2. If Xcode reports compile errors, fix those first; this NAS environment cannot
    run Swift/Xcode.
 3. Install on the same iPhone/iPad used for Jellyfin testing.
-4. Pick one large external-network Jellyfin video, preferably the previous
-   62.7 Mbps MKV sample.
+4. Pick one large external-network Jellyfin video. Prefer `碟中谍3`
+   (`Mission.Impossible.III.2006.2160p.BluRay.REMUX.DV.HEVC.TrueHD.5.1.mkv`),
+   the 54 GB / roughly 62.7 Mbps 4K REMUX sample that reproduced the
+   KSPlayer early-end black screen.
 5. Run the Auto policy test:
    - Leave `Force original KSPlayer` off.
    - Start playback.
@@ -89,13 +180,32 @@ Before running on device, confirm the expected route split with:
 python3 scripts/playback_policy_simulator.py --preset jellyfin-external-large-mkv
 ```
 
+If the iPhone is on Wi-Fi but the Jellyfin endpoint is still the public/WAN
+domain, also check the no-fresh-sample fallback:
+
+```sh
+python3 scripts/playback_policy_simulator.py --preset jellyfin-wifi-unmeasured-large-mkv
+```
+
+For the current `碟中谍3` Wi-Fi/public-domain target:
+
+```sh
+python3 scripts/playback_policy_simulator.py --preset jellyfin-mission-impossible-iii-remux
+```
+
 ## What to look for
 
 - If Auto shows `localHLS / systemAVPlayer` with
-  `reason=automaticBitrateBudget`, that is expected for oversized external
-  videos. The bottleneck is Jellyfin HLS/proxy startup, not KSPlayer.
+  `reason=automaticBitrateBudget` or `reason=largeRemoteOriginalRisk`, that is
+  expected for oversized external videos. The bottleneck is Jellyfin HLS/proxy
+  startup, not KSPlayer.
 - If Force original shows `localRangeProxy / directPlay / ksPlayer`, then
-  KSPlayer is finally being tested against the original source.
+  KSPlayer is being tested against the original source through the authenticated
+  Range proxy.
+- If Force original logs `avformat_find_stream_info succeeded` but then
+  `tracks selected video=no audio=no all=[]`, focus on
+  `FFmpegAssetTrack(stream:)` and codec/format-description construction before
+  changing buffering or route policy.
 - Compare:
   - `tapToFirstFrameMs`
   - `telemetry.sampleCount`
@@ -109,6 +219,11 @@ python3 scripts/playback_policy_simulator.py --preset jellyfin-external-large-mk
   means Jellyfin HLS startup is the target.
 - A slow first frame with `localRangeProxy / ksPlayer` and no slow proxy request
   points toward KSPlayer open/probe/decode timing.
+- `ksplayer_invalid_clock` means KSPlayer returned an impossible current/duration
+  value; inspect time propagation before trusting renderer timing.
+- `ksplayer_premature_end` means KSPlayer finished before a plausible first
+  frame/progress point; compare KSPlayer open/probe/decode logs with local-range
+  response status.
 
 ## Do not regress to this old loop
 
@@ -124,5 +239,9 @@ The next useful code changes should be driven by the trace:
   Range continuation timing.
 - KSPlayer selected but slow before first frame: add KSPlayer-specific open,
   probe, ready, and first-frame timestamps before tuning FFmpeg options.
+- KSPlayer invalid clock or premature end after `tracks selected ... all=[]`:
+  inspect Matroska stream-to-`FFmpegAssetTrack` construction, codec IDs, codec
+  parameters, and VideoToolbox format-description creation before changing cache
+  sizes.
 - Direct original fast but stalls later: keep Auto conservative and consider
   an explicit user-facing "original quality" mode instead of making it default.

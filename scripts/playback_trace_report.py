@@ -13,7 +13,7 @@ from pathlib import Path
 
 
 LINE_RE = re.compile(
-    r"^\[(?P<time>[^\]]+)\]\s+(?P<level>\w+)\s+(?P<category>[^-]+?)\s+-\s+"
+    r"\[(?P<time>\d{4}-\d{2}-\d{2} [^\]]+)\]\s+(?P<level>\w+)\s+(?P<category>[^-]+?)\s+-\s+"
     r"(?P<message>.*?)(?:\s+\|\s+(?P<details>.*))?$"
 )
 DETAIL_RE = re.compile(r"\s*([^=,\s]+)=([^,]*)(?:,|$)")
@@ -40,6 +40,9 @@ class PlaybackTrace:
     transfers: list[Event] = field(default_factory=list)
     warnings: list[Event] = field(default_factory=list)
     telemetry: list[Event] = field(default_factory=list)
+    engine_events: list[Event] = field(default_factory=list)
+    ended: list[Event] = field(default_factory=list)
+    failures: list[Event] = field(default_factory=list)
 
     @property
     def trace_id(self) -> str:
@@ -72,7 +75,7 @@ def parse_details(raw: str | None) -> dict[str, str]:
 def parse_log(path: Path) -> list[Event]:
     events: list[Event] = []
     for line_no, raw_line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
-        match = LINE_RE.match(raw_line)
+        match = LINE_RE.search(raw_line)
         if not match:
             continue
         timestamp: datetime | None
@@ -209,6 +212,18 @@ def build_traces(events: list[Event]) -> list[PlaybackTrace]:
             event_trace.telemetry.append(event)
             continue
 
+        if event.message == "diagnostics.playback.next.engine_ready":
+            event_trace.engine_events.append(event)
+            continue
+
+        if event.message == "diagnostics.playback.next.playback_ended":
+            event_trace.ended.append(event)
+            continue
+
+        if event.message == "diagnostics.playback.next.playback_failed":
+            event_trace.failures.append(event)
+            continue
+
         if event.message == "diagnostics.playback.next.first_frame":
             if event.details.get("planID") == event_trace.plan_id:
                 event_trace.first_frame = event
@@ -247,12 +262,46 @@ def classify_bottleneck(trace: PlaybackTrace) -> tuple[str, str, str]:
     audio_transcode = decision.get("audioTranscodeRequired") == "yes"
     subtitle_burn = decision.get("serverSubtitleRendering") == "yes"
     route_blocked = decision.get("routeCanAttemptOriginal") == "no"
+    engine_states = {
+        event.details.get("state", "-")
+        for event in trace.engine_events
+    }
+    failure_stages = {
+        event.details.get("stage", "-")
+        for event in trace.failures
+    }
+    ended_stages = {
+        event.details.get("stage", "-")
+        for event in trace.ended
+    }
+    premature_stages = {
+        "ksPlayerFinishedBeforeFirstFrame",
+        "ksPlayerPrematureEnd",
+    }
 
+    if premature_stages & (failure_stages | ended_stages):
+        return (
+            "ksplayer_premature_end",
+            "high",
+            "KSPlayer reported finish before a plausible playback position or first frame.",
+        )
+    if "invalidPlaybackTime" in engine_states:
+        return (
+            "ksplayer_invalid_clock",
+            "high",
+            "KSPlayer emitted an implausible playback timestamp; trace timing from that tick is ignored.",
+        )
     if trace.first_frame is None:
         return (
             "missing_first_frame",
             "high",
             "No first-frame event was captured for this playback trace.",
+        )
+    if route_kind in {"localHLS", "serverHLS"} and reason == "largeRemoteOriginalRisk":
+        return (
+            "large_remote_original_hls",
+            "medium",
+            "Auto avoided remote original playback for a large MKV/REMUX source.",
         )
     if route_kind in {"localHLS", "serverHLS"} and reason == "automaticBitrateBudget":
         if tap_ms and target_ms and tap_ms > target_ms * 2:
@@ -310,12 +359,15 @@ def recommended_action(code: str) -> str:
         "missing_first_frame": "Check whether playback ended, crashed, or lacked first-frame instrumentation.",
         "hls_policy_latency": "Profile Jellyfin HLS startup and first segment delivery before changing renderer settings.",
         "hls_policy_route": "Use Force original KSPlayer only as an A/B diagnostic, then compare sustained playback.",
+        "large_remote_original_hls": "Use this as the Auto baseline; keep Force original KSPlayer as the decoder stress test.",
         "audio_compatibility_hls": "Test an alternate direct-playable audio track, then decide whether KSPlayer can own this codec.",
         "subtitle_burnin_hls": "Test subtitles off or external text subtitles to separate subtitle rendering from video startup.",
         "original_route_blocked": "Revisit remote original policy only after comparing source bitrate with measured throughput.",
         "pre_renderer_latency": "Add or inspect PlaybackInfo/proxy/segment timing; renderer is probably not the first bottleneck.",
         "slow_media_request": "Inspect the slow request line and Jellyfin/reverse-proxy logs for delayed playlist or segment response.",
         "ksplayer_needs_engine_timing": "Add KSPlayer open/probe/ready/decode timestamps before tuning cache or buffer values.",
+        "ksplayer_invalid_clock": "Inspect KSPlayer duration/currentTime propagation before trusting renderer timing fields.",
+        "ksplayer_premature_end": "Compare KSPlayer open/probe/decode logs with local-range response status to find the early EOF trigger.",
     }
     return actions.get(code, "Collect more segmented timing fields before changing playback policy.")
 
@@ -347,11 +399,43 @@ def trace_record(trace: PlaybackTrace, index: int) -> dict[str, object]:
         event for event in trace.telemetry
         if event.details.get("stallActive") == "yes"
     ]
+    ksplayer_states = [
+        event.details.get("state", "-")
+        for event in trace.engine_events
+        if event.details.get("state")
+    ]
+    failure_stages = [
+        event.details.get("stage", "-")
+        for event in trace.failures
+        if event.details.get("stage")
+    ]
+    ended_stages = [
+        event.details.get("stage", "-")
+        for event in trace.ended
+        if event.details.get("stage")
+    ]
     access_log_stalls = [
         value for event in trace.telemetry
         if (value := integer(event.details.get("accessLogStalls"))) is not None
     ]
     code, severity, inference = classify_bottleneck(trace)
+    ks_snapshot_source = trace.failures[-1] if trace.failures else (
+        trace.ended[-1] if trace.ended else None
+    )
+    ks_snapshot_keys = [
+        "ksPlaybackState",
+        "ksLoadState",
+        "ksReady",
+        "ksPlaying",
+        "ksSeekable",
+        "ksCurrentSeconds",
+        "ksDurationSeconds",
+        "ksPlayableSeconds",
+        "ksBytesRead",
+        "ksAudioBitrate",
+        "ksVideoBitrate",
+        "ksDisplayFPS",
+    ]
     return {
         "index": index,
         "line": trace.route.line,
@@ -373,6 +457,9 @@ def trace_record(trace: PlaybackTrace, index: int) -> dict[str, object]:
         "targetMs": millis(route.get("firstFrameTargetMs")),
         "preFirstFrameTransferCount": len(trace.transfers),
         "preFirstFrameWarnings": len(trace.warnings),
+        "ksPlayerStates": ksplayer_states,
+        "playbackEndedStages": ended_stages,
+        "failureStages": failure_stages,
         "telemetry": {
             "sampleCount": len(trace.telemetry),
             "stallSampleCount": len(telemetry_stalls),
@@ -390,6 +477,13 @@ def trace_record(trace: PlaybackTrace, index: int) -> dict[str, object]:
                 sum(telemetry_throughputs) / len(telemetry_throughputs)
                 if telemetry_throughputs else None
             ),
+        },
+        "ksRuntimeSnapshot": None
+        if ks_snapshot_source is None
+        else {
+            key: ks_snapshot_source.details[key]
+            for key in ks_snapshot_keys
+            if key in ks_snapshot_source.details
         },
         "slowestRequest": None
         if slow_transfer is None
@@ -530,6 +624,27 @@ def render_trace(trace: PlaybackTrace, index: int) -> list[str]:
             f"minBufferAhead={format_seconds(telemetry['minBufferAheadSeconds'])} "
             f"avgObservedBitrate={format_bitrate_value(telemetry['avgObservedBitrate'])} "
             f"avgThroughput={format_mbps(telemetry['avgAccessLogThroughputMbps'])}"
+        )
+    if record["ksPlayerStates"] or record["playbackEndedStages"] or record["failureStages"]:
+        lines.append(
+            "  ksplayer_events: "
+            f"states={','.join(record['ksPlayerStates']) or '-'} "
+            f"ended={','.join(record['playbackEndedStages']) or '-'} "
+            f"failures={','.join(record['failureStages']) or '-'}"
+        )
+    ks_snapshot = record["ksRuntimeSnapshot"]
+    if isinstance(ks_snapshot, dict) and ks_snapshot:
+        lines.append(
+            "  ksplayer_snapshot: "
+            f"state={ks_snapshot.get('ksPlaybackState', '-')} "
+            f"load={ks_snapshot.get('ksLoadState', '-')} "
+            f"ready={ks_snapshot.get('ksReady', '-')} "
+            f"playing={ks_snapshot.get('ksPlaying', '-')} "
+            f"seekable={ks_snapshot.get('ksSeekable', '-')} "
+            f"current={ks_snapshot.get('ksCurrentSeconds', '-')} "
+            f"duration={ks_snapshot.get('ksDurationSeconds', '-')} "
+            f"playable={ks_snapshot.get('ksPlayableSeconds', '-')} "
+            f"bytesRead={ks_snapshot.get('ksBytesRead', '-')}"
         )
     lines.append(
         f"  bottleneck: {record['bottleneck']} severity={record['severity']}"

@@ -242,7 +242,8 @@ final class PlaybackTelemetrySampler {
         guard force || now.timeIntervalSince(lastEmissionAt) >= sampleInterval else { return }
         lastEmissionAt = now
 
-        let playbackSeconds = currentTime.flatMap { $0.isFinite ? $0 : nil }
+        let playbackSeconds = Self.sanitizedKSPlayerSeconds(currentTime)
+        let durationSeconds = Self.sanitizedKSPlayerSeconds(totalTime)
         let deltaSeconds = updatePlaybackProgress(playbackSeconds, now: now)
         let isPlaying = (deltaSeconds ?? 0) > 0.05 || state == "playing"
         let isBuffering = state?.localizedCaseInsensitiveContains("buffer") == true
@@ -256,7 +257,7 @@ final class PlaybackTelemetrySampler {
         metrics["ksPlayerState"] = state ?? "-"
         metrics["currentSeconds"] = Self.format(playbackSeconds)
         metrics["deltaSeconds"] = Self.format(deltaSeconds)
-        metrics["durationSeconds"] = Self.format(totalTime)
+        metrics["durationSeconds"] = Self.format(durationSeconds)
         metrics["bufferedCount"] = bufferedCount.map(String.init) ?? "-"
         metrics["consumeMs"] = consumeTime.map { String(Int(($0 * 1000).rounded())) } ?? "-"
         metrics.merge(stallState) { _, new in new }
@@ -373,6 +374,18 @@ final class PlaybackTelemetrySampler {
     ) -> Double? {
         guard let bytes, let duration, duration > 0 else { return nil }
         return Double(bytes) * 8 / duration / 1_000_000
+    }
+
+    private static func sanitizedKSPlayerSeconds(_ value: TimeInterval?) -> TimeInterval? {
+        let maximumPlausibleMediaDuration: TimeInterval = 24 * 60 * 60
+        guard let value,
+              value.isFinite,
+              value >= 0,
+              value <= maximumPlausibleMediaDuration
+        else {
+            return nil
+        }
+        return value
     }
 
     private static func describe(_ status: AVPlayer.TimeControlStatus) -> String {

@@ -69,7 +69,11 @@ public class FFmpegAssetTrack: MediaPlayerTrack {
     }
 
     convenience init?(stream: UnsafeMutablePointer<AVStream>) {
-        let codecpar = stream.pointee.codecpar.pointee
+        guard let codecparPointer = stream.pointee.codecpar else {
+            KSLog(level: .warning, "Skipping FFmpeg stream \(stream.pointee.index) with nil codec parameters")
+            return nil
+        }
+        let codecpar = codecparPointer.pointee
         guard codecpar.codec_id != AV_CODEC_ID_NONE,
               codecpar.codec_type == AVMEDIA_TYPE_AUDIO
                   || codecpar.codec_type == AVMEDIA_TYPE_VIDEO

@@ -5961,14 +5961,14 @@ private final class JellyfinLibraryStore: ObservableObject {
                 initialPosition: entry.effectivePlaybackProgress,
                 initialOrientationMode: .automatic,
                 isPrivateNetworkRoute: playbackRouteIsPrivate,
-                playbackTraceID: playbackTraceID,
                 playbackTracker: makePlaybackTracker(
                     for: entry,
                     playMethod: .directPlay,
                     playSessionID: nil,
                     mediaSourceID: entry.mediaSourceID,
                     subtitleStreamIndex: nil
-                )
+                ),
+                playbackTraceID: playbackTraceID
             )
         }
 
@@ -5988,6 +5988,13 @@ private final class JellyfinLibraryStore: ObservableObject {
             entry.subtitleTracks.firstIndex { $0.index == selectedIndex }
         }
 
+        if forcedServerBitrate == nil,
+           forcedServerReason == nil,
+           !forcesOriginalPlayback,
+           !forcesExperimentalOriginalPlayback {
+            await ensureBitrateMeasurementIfNeeded(client: client)
+        }
+
         let bitrateDecision = playbackBitrateDecision()
         // Direct-play eligibility and the server transcoding target solve two
         // different problems. A measured 60+ Mbps Wi-Fi route should be allowed
@@ -6002,15 +6009,22 @@ private final class JellyfinLibraryStore: ObservableObject {
         let sourceBitrateFitsDirectBudget = entry.mediaBitrate.map {
             $0 <= directPlayBudget
         } ?? false
+        let largeRemoteOriginalRisk = Self.requiresServerPlaybackForLargeRemoteOriginal(
+            container: entry.container,
+            bitrate: entry.mediaBitrate,
+            byteSize: entry.mediaSize,
+            routeIsPrivate: playbackRouteIsPrivate
+        )
+        let automaticSourceBitrateFitsDirectBudget = sourceBitrateFitsDirectBudget
+            && !largeRemoteOriginalRisk
         let canUseExperimentalOriginalPlayback = forcesExperimentalOriginalPlayback
             && forcedServerBitrate == nil
             && forcedServerReason == nil
         let routeCanAttemptOriginalPlayback = playbackRouteIsPrivate
             || forcesOriginalPlayback
             || canUseExperimentalOriginalPlayback
-            || sourceBitrateFitsDirectBudget
+            || automaticSourceBitrateFitsDirectBudget
         if routeCanAttemptOriginalPlayback,
-           !canUseExperimentalOriginalPlayback,
            forcedServerBitrate == nil,
            forcedServerReason == nil,
            let startupAudioTrack = Self.directPlayableStartupAudioTrack(
@@ -6052,6 +6066,7 @@ private final class JellyfinLibraryStore: ObservableObject {
                 "maximumBitrate": "\(maxBitrate)",
                 "networkMaximumBitrate": "\(bitrateDecision.maximumBitrate)",
                 "directPlayMaximumBitrate": "\(directPlayBudget)",
+                    "largeRemoteOriginalRisk": largeRemoteOriginalRisk ? "yes" : "no",
                     "requestReason": forcedServerReason ?? "initialPlayback",
                     "playbackTraceID": playbackTraceID,
                     "allowsDirectPlay": "preferred",
@@ -6073,7 +6088,7 @@ private final class JellyfinLibraryStore: ObservableObject {
             let requiresSelectedAudioTranscode = Self.requiresAudioTranscode(
                 audioCodec: selectedAudioCodec
             )
-            let prefersRemoteOriginalPlayback = sourceBitrateFitsDirectBudget
+            let prefersRemoteOriginalPlayback = automaticSourceBitrateFitsDirectBudget
                 && !requiresSelectedAudioTranscode
             let requiresDeviceCompatibilityTranscode = Self.requiresDeviceCompatibilityTranscode(
                 audioCodec: selectedAudioCodec
@@ -6198,7 +6213,12 @@ private final class JellyfinLibraryStore: ObservableObject {
                 let isForcedServerPlayback = forcedServerBitrate != nil
                 let originalRouteWasSkipped = !shouldAttemptDirectPlayback
                 let automaticFallbackReason: String
-                if !routeCanAttemptOriginalPlayback {
+                if largeRemoteOriginalRisk,
+                   !playbackRouteIsPrivate,
+                   !forcesOriginalPlayback,
+                   !canUseExperimentalOriginalPlayback {
+                    automaticFallbackReason = "largeRemoteOriginalRisk"
+                } else if !routeCanAttemptOriginalPlayback {
                     automaticFallbackReason = "automaticBitrateBudget"
                 } else if requiresSelectedAudioTranscode {
                     automaticFallbackReason = "audioTranscodeRequired"
@@ -6228,6 +6248,7 @@ private final class JellyfinLibraryStore: ObservableObject {
                         "remoteOriginalPreferred": prefersRemoteOriginalPlayback ? "yes" : "no",
                         "experimentalOriginal": canUseExperimentalOriginalPlayback ? "yes" : "no",
                         "routeCanAttemptOriginal": routeCanAttemptOriginalPlayback ? "yes" : "no",
+                        "largeRemoteOriginalRisk": largeRemoteOriginalRisk ? "yes" : "no",
                         "audioTranscodeRequired": requiresSelectedAudioTranscode ? "yes" : "no",
                         "deviceCompatibilityTranscode": requiresDeviceCompatibilityTranscode ? "yes" : "no",
                         "serverSubtitleRendering": requiresServerSubtitleRendering ? "yes" : "no",
@@ -6473,7 +6494,6 @@ private final class JellyfinLibraryStore: ObservableObject {
                 byteLength: entry.mediaSize.map(Int64.init),
                 estimatedBitrate: entry.mediaBitrate,
                 isPrivateNetworkRoute: prepared.isPrivateNetworkRoute,
-                playbackTraceID: playbackTraceID,
                 playbackTracker: playbackTracker,
                 externalHandoffResource: prepared.externalHandoffResource,
                 compatibilityFallbackRequestLoader: compatibilityFallbackRequestLoader,
@@ -6501,7 +6521,8 @@ private final class JellyfinLibraryStore: ObservableObject {
                 serverSeekRequestLoader: serverSeekRequestLoader,
                 qualityOptions: qualityOptions,
                 selectedQualityID: effectiveQualityID,
-                qualityRequestLoader: qualityRequestLoader
+                qualityRequestLoader: qualityRequestLoader,
+                playbackTraceID: playbackTraceID
             )
         } catch {
             record(
@@ -6849,16 +6870,13 @@ private final class JellyfinLibraryStore: ObservableObject {
                 networkKey: network.cacheKey
             )
         }
-        // On Wi-Fi, prefer the source stream and fall back only after an actual
-        // playback failure. Treating the conservative 8 Mbps bootstrap value as
-        // a hard gate forced ordinary 9-20 Mbps files through full H.264/AAC
-        // transcoding before the bandwidth probe had completed.
-        let fallbackBitrate = network.cacheKey == "wifi"
-            ? (network.bitrateCap ?? network.fallbackBitrate)
-            : min(
-                network.bitrateCap ?? network.fallbackBitrate,
-                network.fallbackBitrate
-            )
+        // Initial Auto playback awaits the route probe. If no fresh sample is
+        // available here, keep the decision conservative so public Wi-Fi does
+        // not mistake the adapter cap for measured WAN throughput.
+        let fallbackBitrate = min(
+            network.bitrateCap ?? network.fallbackBitrate,
+            network.fallbackBitrate
+        )
         return JellyfinPlaybackBitrateDecision(
             maximumBitrate: fallbackBitrate,
             directPlayMaximumBitrate: fallbackBitrate,
@@ -6942,6 +6960,7 @@ private final class JellyfinLibraryStore: ObservableObject {
                 network.bitrateCap ?? network.fallbackBitrate,
                 network.fallbackBitrate
             )
+            bitrateMeasurements[cacheKey] = (fallbackBitrate, fallbackBitrate, Date())
             record(
                 "diagnostics.jellyfin.bitrate_measured",
                 level: .warning,
@@ -7020,14 +7039,15 @@ private final class JellyfinLibraryStore: ObservableObject {
             expectedContentLength: entry.mediaSize
         ) {
             let requiresLocalProxy = requiresCertificateBypass(for: url)
+            let playbackURL = await preferredDirectPlaybackURL(
+                    url,
+                    filename: entry.title,
+                    allowsSelfSignedCertificates: requiresLocalProxy,
+                    forcesLocalProxy: forcesLocalProxy,
+                    playbackTraceID: playbackTraceID
+                )
                 return JellyfinDirectPlaybackRoute(
-                    url: await preferredDirectPlaybackURL(
-                        url,
-                        filename: entry.title,
-                        allowsSelfSignedCertificates: requiresLocalProxy,
-                        forcesLocalProxy: forcesLocalProxy,
-                        playbackTraceID: playbackTraceID
-                    ),
+                    url: playbackURL,
                 handoffURL: url,
                 source: "jellyfinOriginal",
                 allowsSelfSignedCertificates: requiresLocalProxy,
@@ -7051,14 +7071,15 @@ private final class JellyfinLibraryStore: ObservableObject {
                    expectedContentLength: entry.mediaSize
                ) {
                 unavailableDSMPlaybackPaths.removeValue(forKey: mediaPath)
-                return JellyfinDirectPlaybackRoute(
-                    url: await preferredDirectPlaybackURL(
+                let playbackURL = await preferredDirectPlaybackURL(
                         url,
                         filename: entry.title,
                         allowsSelfSignedCertificates: dsmSession.allowsSelfSignedCertificates,
                         forcesLocalProxy: forcesLocalProxy,
                         playbackTraceID: playbackTraceID
-                    ),
+                    )
+                return JellyfinDirectPlaybackRoute(
+                    url: playbackURL,
                     handoffURL: url,
                     source: "dsmFileStation",
                     allowsSelfSignedCertificates: dsmSession.allowsSelfSignedCertificates,
@@ -7246,6 +7267,27 @@ private final class JellyfinLibraryStore: ObservableObject {
             "dvdsub", "dvd_subtitle",
             "xsub"
         ].contains(subtitleCodec)
+    }
+
+    private static func requiresServerPlaybackForLargeRemoteOriginal(
+        container: String?,
+        bitrate: Int?,
+        byteSize: Int?,
+        routeIsPrivate: Bool
+    ) -> Bool {
+        guard !routeIsPrivate else { return false }
+        let normalizedContainers = container?
+            .lowercased()
+            .split(separator: ",")
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) } ?? []
+        let isMatroska = normalizedContainers.contains("mkv")
+            || normalizedContainers.contains("matroska")
+            || normalizedContainers.contains("webm")
+        guard isMatroska else { return false }
+
+        let highBitrate = bitrate.map { $0 >= 40_000_000 } ?? false
+        let largeFile = byteSize.map { $0 >= 20_000_000_000 } ?? false
+        return highBitrate || largeFile
     }
 
     private static func requiresAudioTranscode(audioCodec: String?) -> Bool {

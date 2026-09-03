@@ -40,6 +40,8 @@ class RunSummary:
     min_buffer_ahead_seconds: float | None
     max_access_log_stalls: int | None
     slow_request_roles: dict[str, int]
+    premature_ksplayer_end_count: int
+    missing_first_frame_count: int
     records: list[dict[str, Any]]
 
 
@@ -91,6 +93,14 @@ def summarize(label: str, path: Path) -> RunSummary:
         for record in records
         if isinstance((telemetry := record.get("telemetry")), dict)
     )
+    premature_ksplayer_end_count = sum(
+        1 for record in records
+        if record.get("bottleneck") == "ksplayer_premature_end"
+    )
+    missing_first_frame_count = sum(
+        1 for record in records
+        if record.get("tapToFirstFrameMs") is None
+    )
     slow_request_roles = Counter(
         f"{slow['proxyKind']}/{slow['hlsRole']}"
         for record in records
@@ -116,6 +126,8 @@ def summarize(label: str, path: Path) -> RunSummary:
         min_buffer_ahead_seconds=min(min_buffers) if min_buffers else None,
         max_access_log_stalls=max(access_log_stalls) if access_log_stalls else None,
         slow_request_roles=dict(slow_request_roles),
+        premature_ksplayer_end_count=premature_ksplayer_end_count,
+        missing_first_frame_count=missing_first_frame_count,
         records=records,
     )
 
@@ -156,7 +168,8 @@ def compare(auto: RunSummary, force: RunSummary) -> list[str]:
             f"reason={dominant_key(force.reason_counts)} "
             f"avg_first_frame={format_ms(force.avg_first_frame_ms)} "
             f"stall_samples={force.telemetry_stall_sample_count} "
-            f"min_buffer={format_seconds(force.min_buffer_ahead_seconds)}"
+            f"min_buffer={format_seconds(force.min_buffer_ahead_seconds)} "
+            f"premature_ks_ends={force.premature_ksplayer_end_count}"
         ),
     ]
 
@@ -177,7 +190,11 @@ def compare(auto: RunSummary, force: RunSummary) -> list[str]:
         "ksPlayer",
     )
     valid_route_split = auto_hls and force_ks
-    if valid_route_split:
+    if valid_route_split and force.premature_ksplayer_end_count:
+        lines.append(
+            "  verdict: A/B route separation is valid, but Force KSPlayer did not reach playable startup."
+        )
+    elif valid_route_split:
         lines.append("  verdict: A/B route separation is valid.")
     elif not force_ks:
         lines.append(
@@ -189,6 +206,10 @@ def compare(auto: RunSummary, force: RunSummary) -> list[str]:
     if not force_ks:
         lines.append(
             "  next: Fix the validation run first; do not use this Force log to judge KSPlayer performance."
+        )
+    elif force.premature_ksplayer_end_count:
+        lines.append(
+            "  next: Fix Force KSPlayer startup first; first-frame speed is not comparable until it records a first_frame event."
         )
     elif force.telemetry_stall_sample_count > auto.telemetry_stall_sample_count:
         lines.append(

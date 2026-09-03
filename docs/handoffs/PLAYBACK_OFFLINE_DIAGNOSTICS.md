@@ -21,6 +21,11 @@ The report groups Greenfield playback events into route-level traces and shows:
 - measured, selected, and source bitrate;
 - tap-to-first-frame timing;
 - slowest pre-first-frame media request, including HLS proxy role when available;
+- KSPlayer state, playback-ended stage, playback-failed stage, and runtime
+  failure snapshot when present;
+- KSPlayer open/probe/track-selection breadcrumbs when present, including
+  `avformat_open_input`, `avformat_find_stream_info`, `tracks selected`, early
+  `av_read_frame packet`, and read EOF state;
 - inferred bottleneck and the next diagnostic action.
 
 Machine-readable output is available for diffing two runs:
@@ -58,16 +63,36 @@ original KSPlayer policy. It mirrors the current Nastart rules:
 - image subtitles such as PGS require server rendering unless the DEBUG
   experimental original path is enabled.
 
-## Current 2026-09-03 Log Finding
+## Current 2026-09-04 Real-Device Finding
 
-For the attached `文本.txt`, the trace report found seven Greenfield playback
-traces. All seven selected `localHLS / localRemux / systemAVPlayer`, and all
-seven skipped original playback with `automaticBitrateBudget`.
+The iPhone 13 run used `碟中谍3`, a roughly 54 GB / 62.7 Mbps 4K REMUX MKV, as
+the representative large-file target.
 
-The 62.7 Mbps MKV sample on a roughly 10.8 Mbps measured cellular route is
-therefore not evidence that KSPlayer is slow. It is evidence that Nastart's Auto
-policy selected Jellyfin HLS before KSPlayer had a chance to open the original
-stream.
+Auto selected `localHLS / localRemux / systemAVPlayer` because of
+`largeRemoteOriginalRisk`. It did play, and the trace recorded
+`tapToFirstFrameMs=7791`, with playback continuing through the 30 second WDA
+checkpoint.
+
+Force original KSPlayer selected the intended diagnostic route,
+`localRangeProxy / directPlay / ksPlayer`, and Jellyfin served the first MKV
+range as a valid `206` response. KSPlayer still reported
+`ksPlayerFinishedBeforeFirstFrame`. The failure snapshot showed `ready=no`,
+`playing=no`, `seekable=no`, `duration=0`, `playable=0`, and `displayFPS=0`.
+
+Follow-up Force probes narrowed this further. Presenting the local proxy as
+`continuousRange` and allowing `seekable=1` still failed before first frame.
+FFmpeg reached `avformat_find_stream_info succeeded format=matroska,webm
+streams=12`, but packet-probe logging then reported
+`KSPlayer: tracks selected video=no audio=no all=[]`. The current sharp target
+is therefore not generic first-frame latency; it is why the vendored KSPlayer
+does not construct usable `FFmpegAssetTrack` objects for this Matroska REMUX
+after FFmpeg has already identified the streams.
+
+That means this is not yet a first-frame-speed comparison. Force original must
+first reach playable startup. The next code work should target the missing
+competitor-style IO/cache/preload layer for KSPlayer original playback, with
+the immediate next step focused on Matroska stream-to-track construction rather
+than more route-selection tweaks.
 
 ## Next Device Run Contract
 
@@ -75,7 +100,9 @@ The next device run should compare two explicit modes:
 
 - Auto: validates the production route policy and Jellyfin HLS startup.
 - Force original KSPlayer: validates whether KSPlayer can open the same source
-  faster, while separately checking whether sustained playback stalls.
+  faster, while separately checking whether sustained playback stalls. For MKV
+  startup, the current diagnostic route uses local `continuousRange` responses
+  with `seekable=1`, so FFmpeg can probe the Matroska head and tail/cues.
 
 The DEBUG Jellyfin playback screen exposes a `Force original KSPlayer` toggle.
 Leave it off for the Auto run, then enable it for the A/B run. The exported log
@@ -117,10 +144,25 @@ For AVPlayer routes, samples include:
 For KSPlayer routes, samples include:
 
 - `ksPlayerState`;
-- playback `currentSeconds`, `deltaSeconds`, and `durationSeconds`;
+- sanitized playback `currentSeconds`, `deltaSeconds`, and `durationSeconds`;
 - KSPlayer buffer callback values, including `bufferedCount` and `consumeMs`;
 - inferred stall state from buffering/state/progress.
 
 The trace report summarizes these samples as `telemetry`, including sample
 count, stall sample count, minimum buffer ahead, observed bitrate, and access-log
 throughput where available.
+
+KSPlayer-specific failure modes are reported before the generic missing
+first-frame bucket:
+
+- `ksplayer_invalid_clock`: KSPlayer emitted an implausible current/duration
+  timestamp, so the app ignored that tick for first-frame and progress timing.
+- `ksplayer_premature_end`: KSPlayer reported finish before a plausible
+  first-frame/progress point, usually worth comparing against local Range status
+  and KSPlayer open/probe/decode logs. If the run includes
+  `tracks selected video=no audio=no all=[]`, inspect `FFmpegAssetTrack` stream
+  filtering and codec/format-description construction before changing buffer
+  sizing.
+- `large_remote_original_hls`: Auto intentionally avoided remote original
+  playback for a large MKV/REMUX source; use this as the systemAVPlayer/HLS
+  baseline and keep Force original KSPlayer as the decoder stress test.
