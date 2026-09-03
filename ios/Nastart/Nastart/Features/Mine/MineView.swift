@@ -7,7 +7,6 @@ struct MineView: View {
     @EnvironmentObject private var dataStore: AppDataStore
     @EnvironmentObject private var entitlementStore: EntitlementStore
     @State private var showSignOutConfirm = false
-    @State private var showSignOutInfo = false
 
     var body: some View {
         NavigationStack {
@@ -84,10 +83,7 @@ struct MineView: View {
                             }
                             .disabled(!connectionStore.isConnected)
 
-                            ContextInfoButton(
-                                isPresented: $showSignOutInfo,
-                                message: signOutInfoText
-                            )
+                            ContextInfoButton(message: signOutInfoText)
                         }
 
                         if !connectionStore.isConnected && dataStore.isRefreshing {
@@ -96,19 +92,7 @@ struct MineView: View {
                                 .foregroundStyle(.secondary)
                         }
 
-                        if showSignOutInfo {
-                            Text(signOutInfoText)
-                                .font(.footnote)
-                                .foregroundStyle(.secondary)
-                                .fixedSize(horizontal: false, vertical: true)
-                                .padding(10)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .background(AppTheme.secondarySurface)
-                                .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-                                .transition(.opacity.combined(with: .move(edge: .top)))
-                        }
                     }
-                    .animation(.easeInOut(duration: 0.2), value: showSignOutInfo)
                 }
             }
             .padding(.top, -12)
@@ -140,26 +124,17 @@ struct MineView: View {
 }
 
 private struct ContextInfoButton: View {
-    @Binding var isPresented: Bool
     let message: String
 
     var body: some View {
-        Button {
-            isPresented.toggle()
-        } label: {
-            Image(systemName: "exclamationmark.circle")
-                .font(.system(size: 17, weight: .medium))
-                .foregroundStyle(AppTheme.accent)
-                .frame(width: 32, height: 32)
-                .contentShape(Circle())
-        }
-        .buttonStyle(.plain)
-        .hoverEffect(.highlight)
-        .onHover { isHovering in
-            isPresented = isHovering
-        }
+        Image(systemName: "exclamationmark.circle")
+            .font(.system(size: 17, weight: .medium))
+            .foregroundStyle(AppTheme.accent)
+            .frame(width: 32, height: 32)
+            .contentShape(Circle())
+            .help(Text(message))
         .accessibilityLabel(Text("action.info"))
-        .accessibilityHint(Text(message))
+        .accessibilityValue(Text(message))
     }
 }
 
@@ -220,7 +195,7 @@ private struct PlusView: View {
                 }
 
                 VStack(spacing: 12) {
-                    if entitlementStore.hasPlus {
+                    if entitlementStore.hasPlus && purchasesAreAvailable {
                         Button {
                             openSubscriptionManagement()
                         } label: {
@@ -255,6 +230,10 @@ private struct PlusView: View {
         .background(AppTheme.groupedBackground.ignoresSafeArea())
         .navigationTitle("mine.plus.title")
         .navigationBarTitleDisplayMode(.inline)
+    }
+
+    private var purchasesAreAvailable: Bool {
+        false
     }
 
     private func openSubscriptionManagement() {
@@ -1409,16 +1388,92 @@ private struct HelpAboutView: View {
 }
 
 private struct DiagnosticLogsView: View {
+    @EnvironmentObject private var connectionStore: NASConnectionStore
+    @EnvironmentObject private var dataStore: AppDataStore
     @EnvironmentObject private var diagnostics: DiagnosticLogStore
     @State private var showCopiedHint = false
     @State private var showClearConfirmation = false
+    @State private var selectedLevelFilter: DiagnosticLevelFilter = .all
+    @State private var selectedCategoryKey = DiagnosticCategoryFilter.allKey
 
     private var reversedEntries: [DiagnosticLogEntry] {
         Array(diagnostics.entries.reversed())
     }
 
+    private var filteredEntries: [DiagnosticLogEntry] {
+        reversedEntries.filter { entry in
+            selectedLevelFilter.includes(entry.level)
+                && DiagnosticCategoryFilter.includes(entry.categoryKey, selected: selectedCategoryKey)
+        }
+    }
+
+    private var availableCategoryKeys: [String] {
+        Array(Set(diagnostics.entries.map(\.categoryKey))).sorted {
+            NSLocalizedString($0, comment: "").localizedCaseInsensitiveCompare(
+                NSLocalizedString($1, comment: "")
+            ) == .orderedAscending
+        }
+    }
+
+    private var diagnosticExportText: String {
+        diagnostics.exportText(context: diagnosticExportContext)
+    }
+
+    private var diagnosticExportContext: DiagnosticExportContext {
+        DiagnosticExportContext(
+            appVersion: Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "-",
+            build: Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "-",
+            deviceName: dataStore.device.name,
+            dsmVersion: dataStore.device.dsmVersion,
+            connectionMode: dataStore.device.mode.rawValue,
+            activeRoute: connectionStore.actualRoute?.rawValue ?? "-",
+            cachedSnapshotSavedAt: dataStore.cachedDSMSnapshotSavedAt
+        )
+    }
+
     var body: some View {
         List {
+            Section {
+                HStack(spacing: 8) {
+                    ShareLink(item: diagnosticExportText) {
+                        DiagnosticActionTile(
+                            titleKey: "diagnostics.export.short",
+                            systemImage: "square.and.arrow.up"
+                        )
+                    }
+                    .accessibilityLabel(Text("diagnostics.export"))
+                    .disabled(diagnostics.entries.isEmpty)
+
+                    Button {
+                        UIPasteboard.general.string = diagnosticExportText
+                        showCopiedHint = true
+                    } label: {
+                        DiagnosticActionTile(
+                            titleKey: "diagnostics.copy.short",
+                            systemImage: "doc.on.doc"
+                        )
+                    }
+                    .accessibilityLabel(Text("diagnostics.copy"))
+                    .disabled(diagnostics.entries.isEmpty)
+
+                    Button(role: .destructive) {
+                        showClearConfirmation = true
+                    } label: {
+                        DiagnosticActionTile(
+                            titleKey: "diagnostics.clear.short",
+                            systemImage: "trash",
+                            foregroundColor: .red
+                        )
+                    }
+                    .disabled(diagnostics.entries.isEmpty)
+                    .accessibilityLabel(Text("diagnostics.clear"))
+                }
+                .buttonStyle(.plain)
+                .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+            } header: {
+                Text("diagnostics.actions")
+            }
+
             Section {
                 DiagnosticSummaryView(
                     total: diagnostics.entries.count,
@@ -1431,19 +1486,40 @@ private struct DiagnosticLogsView: View {
             }
 
             Section {
-                if reversedEntries.isEmpty {
+                Picker("diagnostics.filter.level", selection: $selectedLevelFilter) {
+                    ForEach(DiagnosticLevelFilter.allCases) { filter in
+                        Text(filter.titleKey).tag(filter)
+                    }
+                }
+                .pickerStyle(.segmented)
+
+                Picker("diagnostics.filter.category", selection: $selectedCategoryKey) {
+                    Text("diagnostics.filter.category.all")
+                        .tag(DiagnosticCategoryFilter.allKey)
+                    ForEach(availableCategoryKeys, id: \.self) { categoryKey in
+                        Text(LocalizedStringKey(categoryKey)).tag(categoryKey)
+                    }
+                }
+            } header: {
+                Text("diagnostics.filter")
+            }
+
+            Section {
+                if filteredEntries.isEmpty {
                     VStack(spacing: 10) {
                         Image(systemName: "checkmark.seal")
                             .font(.title2)
                             .foregroundStyle(.secondary)
-                        Text("diagnostics.empty")
+                        Text(LocalizedStringKey(
+                            reversedEntries.isEmpty ? "diagnostics.empty" : "diagnostics.empty_filtered"
+                        ))
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 28)
                 } else {
-                    ForEach(reversedEntries) { entry in
+                    ForEach(filteredEntries) { entry in
                         VStack(alignment: .leading, spacing: 6) {
                             HStack(spacing: 8) {
                                 Text(LocalizedStringKey(entry.messageKey))
@@ -1479,24 +1555,6 @@ private struct DiagnosticLogsView: View {
             } footer: {
                 Text("diagnostics.footer")
             }
-
-            Section {
-                ShareLink(item: diagnostics.exportText()) {
-                    Label("diagnostics.export", systemImage: "square.and.arrow.up")
-                }
-                Button {
-                    UIPasteboard.general.string = diagnostics.exportText()
-                    showCopiedHint = true
-                } label: {
-                    Label("diagnostics.copy", systemImage: "doc.on.doc")
-                }
-                Button(role: .destructive) {
-                    showClearConfirmation = true
-                } label: {
-                    Label("diagnostics.clear", systemImage: "trash")
-                }
-                .disabled(diagnostics.entries.isEmpty)
-            }
         }
         .listStyle(.insetGrouped)
         .navigationTitle("diagnostics.title")
@@ -1521,6 +1579,63 @@ private struct DiagnosticLogsView: View {
         case .info: return .secondary
         case .warning: return AppTheme.accent
         case .error: return .red
+        }
+    }
+}
+
+private enum DiagnosticLevelFilter: String, CaseIterable, Identifiable {
+    case all
+    case warnings
+    case errors
+
+    var id: String { rawValue }
+
+    var titleKey: LocalizedStringKey {
+        switch self {
+        case .all: return "diagnostics.filter.all"
+        case .warnings: return "diagnostics.filter.warnings"
+        case .errors: return "diagnostics.filter.errors"
+        }
+    }
+
+    func includes(_ level: DiagnosticLogLevel) -> Bool {
+        switch self {
+        case .all: return true
+        case .warnings: return level == .warning
+        case .errors: return level == .error
+        }
+    }
+}
+
+private enum DiagnosticCategoryFilter {
+    static let allKey = "__all__"
+
+    static func includes(_ categoryKey: String, selected: String) -> Bool {
+        selected == allKey || categoryKey == selected
+    }
+}
+
+private struct DiagnosticActionTile: View {
+    let titleKey: LocalizedStringKey
+    let systemImage: String
+    var foregroundColor: Color = .primary
+
+    var body: some View {
+        VStack(spacing: 5) {
+            Image(systemName: systemImage)
+                .font(.subheadline.weight(.semibold))
+            Text(titleKey)
+                .font(.caption.weight(.medium))
+                .lineLimit(1)
+                .minimumScaleFactor(0.75)
+        }
+        .foregroundStyle(foregroundColor)
+        .frame(maxWidth: .infinity, minHeight: 52)
+        .background(AppTheme.secondarySurface)
+        .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                .stroke(AppTheme.hairline, lineWidth: 1)
         }
     }
 }

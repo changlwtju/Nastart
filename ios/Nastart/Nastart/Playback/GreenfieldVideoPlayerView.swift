@@ -5,6 +5,8 @@ import AVKit
 struct GreenfieldPlaybackLaunchRequest: Identifiable {
     let id: UUID
     let intent: PlaybackIntent
+    let orientationMode: PlayerOrientationMode
+    let playbackTraceID: String?
     let fileExtensionHint: String?
     let mimeHint: String?
     let certificatePolicy: PlaybackCertificatePolicy
@@ -18,6 +20,8 @@ struct GreenfieldPlaybackLaunchRequest: Identifiable {
     init(
         id: UUID = UUID(),
         intent: PlaybackIntent,
+        orientationMode: PlayerOrientationMode = .landscape,
+        playbackTraceID: String? = nil,
         fileExtensionHint: String? = nil,
         mimeHint: String? = nil,
         certificatePolicy: PlaybackCertificatePolicy = .systemTrust,
@@ -30,6 +34,8 @@ struct GreenfieldPlaybackLaunchRequest: Identifiable {
     ) {
         self.id = id
         self.intent = intent
+        self.orientationMode = orientationMode
+        self.playbackTraceID = playbackTraceID?.isEmpty == false ? playbackTraceID : nil
         self.fileExtensionHint = fileExtensionHint
         self.mimeHint = mimeHint
         self.certificatePolicy = certificatePolicy
@@ -136,10 +142,15 @@ struct GreenfieldVideoPlayerView: View {
 #endif
         }
         .onAppear {
+            PlayerOrientationController.setPlayerActive(
+                true,
+                initialMode: request.orientationMode
+            )
             model.start(request)
         }
         .onDisappear {
             model.stop()
+            PlayerOrientationController.setPlayerActive(false)
         }
     }
 }
@@ -159,6 +170,7 @@ private final class GreenfieldVideoPlayerModel: ObservableObject {
     private var periodicTimeObserver: Any?
     private var itemStatusObservation: NSKeyValueObservation?
     private var timeControlObservation: NSKeyValueObservation?
+    private var telemetrySampler: PlaybackTelemetrySampler?
     private var didRecordFirstFrame = false
     private var didRecordThirtySecondCheckpoint = false
     private var lastTimeControlStatus: AVPlayer.TimeControlStatus?
@@ -174,7 +186,7 @@ private final class GreenfieldVideoPlayerModel: ObservableObject {
 
         playbackTask = Task { [weak self] in
             guard let self else { return }
-            let recorder = PlaybackDiagnosticsRecorder()
+            let recorder = PlaybackDiagnosticsRecorder(playbackTraceID: request.playbackTraceID)
             let resolver = URLPlaybackSourceResolver(
                 sourceKind: request.intent.sourceKind,
                 fileExtensionHint: request.fileExtensionHint,
@@ -202,6 +214,12 @@ private final class GreenfieldVideoPlayerModel: ObservableObject {
                         self.handleRequiredKSPlayerMissing(result.plan)
                     } else if self.shouldUseKSPlayerRenderer(for: result.plan) {
                         self.player.replaceCurrentItem(with: nil)
+                        self.installTelemetrySampler(for: result.plan, engineName: "KSPlayer")
+                        self.telemetrySampler?.sampleKSPlayer(
+                            state: "rendererSelected",
+                            reason: "planReady",
+                            force: true
+                        )
                     } else {
                         self.installPlayerItem(for: result.plan)
                     }
@@ -231,6 +249,8 @@ private final class GreenfieldVideoPlayerModel: ObservableObject {
         itemStatusObservation = nil
         timeControlObservation?.invalidate()
         timeControlObservation = nil
+        telemetrySampler?.stop(reason: "viewDisappear")
+        telemetrySampler = nil
         if let coordinator, let renderingPlan {
             Task {
                 await coordinator.finishPlayback(plan: renderingPlan)
@@ -250,11 +270,16 @@ private final class GreenfieldVideoPlayerModel: ObservableObject {
     func handleKSPlayerStateChanged(_ state: String) {
         guard let plan = renderingPlan else { return }
         debugBadge = [
-            plan.enginePolicy.rawValue,
+            "Greenfield",
             "KSPlayer \(state)",
             plan.primaryRoute.routeKind.rawValue,
             plan.intent.connectionContext.addressKind.rawValue
         ].joined(separator: " / ")
+        telemetrySampler?.sampleKSPlayer(
+            state: state,
+            reason: "stateChanged",
+            force: state == "error"
+        )
         let recorder = recorder
         Task {
             await recorder?.record(
@@ -275,6 +300,11 @@ private final class GreenfieldVideoPlayerModel: ObservableObject {
     func handleKSPlayerPlaybackTime(_ currentTime: TimeInterval, _ totalTime: TimeInterval) {
         guard currentTime.isFinite, totalTime.isFinite else { return }
         handlePlaybackTime(currentTime)
+        telemetrySampler?.sampleKSPlayer(
+            currentTime: currentTime,
+            totalTime: totalTime,
+            reason: "playbackTick"
+        )
         guard let plan = renderingPlan else { return }
         if totalTime > 0, plan.timeline.duration == nil {
             let recorder = recorder
@@ -294,6 +324,11 @@ private final class GreenfieldVideoPlayerModel: ObservableObject {
 
     func handleKSPlayerFinished(_ errorDescription: String?) {
         guard let plan = renderingPlan else { return }
+        telemetrySampler?.sampleKSPlayer(
+            state: errorDescription == nil ? "finished" : "finishedWithError",
+            reason: "finished",
+            force: true
+        )
         if let errorDescription {
             if activateAlternateRoute(after: plan, reason: "ksPlayerFinished") {
                 return
@@ -311,6 +346,11 @@ private final class GreenfieldVideoPlayerModel: ObservableObject {
 
     func handleKSPlayerBufferChanged(_ bufferedCount: Int, _ consumeTime: TimeInterval) {
         guard let plan = renderingPlan else { return }
+        telemetrySampler?.sampleKSPlayer(
+            bufferedCount: bufferedCount,
+            consumeTime: consumeTime,
+            reason: "bufferChanged"
+        )
         let recorder = recorder
         Task {
             await recorder?.record(
@@ -327,6 +367,8 @@ private final class GreenfieldVideoPlayerModel: ObservableObject {
 
     private func installPlayerItem(for plan: PlaybackPlan) {
         let item = AVPlayerItem(url: plan.primaryRoute.url)
+        installTelemetrySampler(for: plan, engineName: fallbackRendererName(for: plan))
+        telemetrySampler?.sampleAVPlayer(player, item: item, reason: "itemInstalled", force: true)
         itemStatusObservation = item.observe(\.status, options: [.new]) { [weak self] item, _ in
             Task { @MainActor [weak self] in
                 self?.handleItemStatus(item.status)
@@ -343,7 +385,13 @@ private final class GreenfieldVideoPlayerModel: ObservableObject {
             queue: .main
         ) { [weak self] time in
             Task { @MainActor [weak self] in
-                self?.handlePlaybackTime(time.seconds)
+                guard let self else { return }
+                self.handlePlaybackTime(time.seconds)
+                self.telemetrySampler?.sampleAVPlayer(
+                    self.player,
+                    item: self.player.currentItem,
+                    reason: "playbackTick"
+                )
             }
         }
         player.replaceCurrentItem(with: item)
@@ -360,6 +408,12 @@ private final class GreenfieldVideoPlayerModel: ObservableObject {
 
     private func handleItemStatus(_ status: AVPlayerItem.Status) {
         guard let plan = renderingPlan else { return }
+        telemetrySampler?.sampleAVPlayer(
+            player,
+            item: player.currentItem,
+            reason: "itemStatusChanged",
+            force: status == .readyToPlay || status == .failed
+        )
         switch status {
         case .readyToPlay:
             debugBadge = fallbackBadge(for: plan, reason: "ready")
@@ -380,6 +434,12 @@ private final class GreenfieldVideoPlayerModel: ObservableObject {
         guard let plan = renderingPlan, lastTimeControlStatus != status else { return }
         let previousStatus = lastTimeControlStatus
         lastTimeControlStatus = status
+        telemetrySampler?.sampleAVPlayer(
+            player,
+            item: player.currentItem,
+            reason: "timeControlChanged",
+            force: true
+        )
         let coordinator = coordinator
         Task {
             if status == .paused, previousStatus == .playing {
@@ -394,6 +454,20 @@ private final class GreenfieldVideoPlayerModel: ObservableObject {
         guard let coordinator, let plan = renderingPlan, seconds.isFinite else { return }
         if !didRecordFirstFrame, seconds > max(plan.timeline.startTime, 0) + 0.05 {
             didRecordFirstFrame = true
+            if let currentItem = player.currentItem {
+                telemetrySampler?.sampleAVPlayer(
+                    player,
+                    item: currentItem,
+                    reason: "firstFrame",
+                    force: true
+                )
+            } else {
+                telemetrySampler?.sampleKSPlayer(
+                    currentTime: seconds,
+                    reason: "firstFrame",
+                    force: true
+                )
+            }
             Task {
                 await coordinator.markFirstFrame(plan: plan, position: seconds)
             }
@@ -413,8 +487,9 @@ private final class GreenfieldVideoPlayerModel: ObservableObject {
             ? "KSPlayer"
             : fallbackRendererName(for: result.plan)
         debugBadge = [
-            result.plan.enginePolicy.rawValue,
+            "Greenfield",
             renderer,
+            "plan=\(result.plan.enginePolicy.rawValue)",
             result.plan.primaryRoute.routeKind.rawValue,
             result.plan.intent.connectionContext.addressKind.rawValue
         ].joined(separator: " / ")
@@ -431,7 +506,7 @@ private final class GreenfieldVideoPlayerModel: ObservableObject {
     private func handleRequiredKSPlayerMissing(_ plan: PlaybackPlan) {
         player.replaceCurrentItem(with: nil)
         errorMessage = "KSPlayer is required for this route but is not linked in this build."
-        debugBadge = "Greenfield requires KSPlayer"
+        debugBadge = "Greenfield / KSPlayer required / not linked"
         recordPlayerFailure(plan: plan, error: nil, stage: "ksPlayerNotLinked")
     }
 
@@ -444,8 +519,9 @@ private final class GreenfieldVideoPlayerModel: ObservableObject {
 
     private func fallbackBadge(for plan: PlaybackPlan, reason: String) -> String {
         [
-            plan.enginePolicy.rawValue,
+            "Greenfield",
             "\(fallbackRendererName(for: plan)) \(reason)",
+            "plan=\(plan.enginePolicy.rawValue)",
             plan.primaryRoute.routeKind.rawValue,
             plan.intent.connectionContext.addressKind.rawValue
         ].joined(separator: " / ")
@@ -484,12 +560,26 @@ private final class GreenfieldVideoPlayerModel: ObservableObject {
         isPreparing = false
         renderingPlan = replacementPlan
         player.replaceCurrentItem(with: nil)
+        telemetrySampler?.stop(reason: "alternateRouteActivated")
+        telemetrySampler = nil
         debugBadge = [
-            replacementPlan.enginePolicy.rawValue,
+            "Greenfield",
             "fallback \(reason)",
+            "renderer=\(fallbackRendererName(for: replacementPlan))",
+            "plan=\(replacementPlan.enginePolicy.rawValue)",
             replacementPlan.primaryRoute.routeKind.rawValue,
             replacementPlan.intent.connectionContext.addressKind.rawValue
         ].joined(separator: " / ")
+        if shouldUseKSPlayerRenderer(for: replacementPlan) {
+            installTelemetrySampler(for: replacementPlan, engineName: "KSPlayer")
+            telemetrySampler?.sampleKSPlayer(
+                state: "alternateRouteSelected",
+                reason: reason,
+                force: true
+            )
+        } else {
+            installPlayerItem(for: replacementPlan)
+        }
         let coordinator = coordinator
         Task {
             await coordinator?.markStreamInterrupted(
@@ -501,6 +591,16 @@ private final class GreenfieldVideoPlayerModel: ObservableObject {
         return true
     }
 
+    private func installTelemetrySampler(for plan: PlaybackPlan, engineName: String) {
+        guard let recorder else { return }
+        telemetrySampler?.stop(reason: "routeReplaced")
+        telemetrySampler = PlaybackTelemetrySampler(
+            recorder: recorder,
+            plan: plan,
+            engineName: engineName
+        )
+    }
+
     private func recordPlayerFailure(plan: PlaybackPlan, error: Error?, stage: String) {
         var details = [
             "stage": stage,
@@ -510,6 +610,7 @@ private final class GreenfieldVideoPlayerModel: ObservableObject {
             "contentKind": plan.intent.contentKind.rawValue,
             "addressKind": plan.intent.connectionContext.addressKind.rawValue,
             "ksPlayerLinked": "\(PlaybackEngineAvailability.ksPlayerLinked)",
+            "playbackTraceID": request?.playbackTraceID ?? "-",
             "target": DiagnosticLogStore.redactedURL(plan.primaryRoute.url)
         ]
         if let error {

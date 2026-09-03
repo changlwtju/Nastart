@@ -2214,8 +2214,6 @@ final class DSMClient {
             ) else { return nil }
             guard isInstalledPackage(item) else { return nil }
             let endpoint = packageEndpoint(for: item, baseURL: session.baseURL)
-            let isBuiltIn = item.firstDirectBool(for: ["builtin", "is_builtin", "system", "is_system"]) == true
-            guard endpoint != nil || !isBuiltIn || shouldShowPackageService(name) else { return nil }
             let status = packageStatus(item)
             return LaunchpadService(
                 id: StableIdentifier.uuid("service|package|\(name.lowercased())"),
@@ -2233,7 +2231,7 @@ final class DSMClient {
                 memoryText: nil,
                 endpoint: endpoint,
                 source: .package,
-                isLaunchpadVisible: shouldAutomaticallyAddPackageService(name)
+                isLaunchpadVisible: shouldAutomaticallyAddPackageService(name, endpoint: endpoint)
             )
         }
     }
@@ -2635,29 +2633,14 @@ final class DSMClient {
         return isInstalledPackage(item) ? .installed : .unknown
     }
 
-    private static func shouldShowPackageService(_ name: String) -> Bool {
-        shouldAutomaticallyAddPackageService(name)
-    }
-
-    private static func shouldAutomaticallyAddPackageService(_ name: String) -> Bool {
-        let compact = compactServiceIdentifier(name)
-        // Default to direct, user-facing workflows and service-management entry points.
-        // Other discovered packages remain available in launchpad service management.
-        let launchpadPackageTokens = [
-            "container",
-            "docker",
-            "filestation",
-            "downloadstation",
-            "synologyphotos",
-            "photostation",
-            "videostation",
-            "audiostation",
-            "synologydrive",
-            "cloudstation",
-            "surveillancestation",
-            "virtualmachinemanager"
-        ]
-        return launchpadPackageTokens.contains { compact.contains($0) }
+    private static func shouldAutomaticallyAddPackageService(
+        _ name: String,
+        endpoint: URL?
+    ) -> Bool {
+        LaunchpadDefaultVisibilityPolicy.shouldShowPackage(
+            name: name,
+            hasEndpoint: endpoint != nil
+        )
     }
 
     private static func shouldAutomaticallyShowContainerService(
@@ -2665,38 +2648,11 @@ final class DSMClient {
         endpoint: URL?
     ) -> Bool {
         guard container.status == .online, endpoint != nil else { return false }
-        let compact = compactServiceIdentifier("\(container.name) \(container.image)")
-        let highValueTokens = [
-            "jellyfin",
-            "emby",
-            "plex",
-            "navidrome",
-            "audiobookshelf",
-            "qbittorrent",
-            "transmission",
-            "aria2",
-            "downloadstation",
-            "homeassistant",
-            "homebridge",
-            "portainer",
-            "homepage",
-            "nginxproxymanager",
-            "traefik",
-            "caddy",
-            "adguard",
-            "pihole",
-            "vaultwarden",
-            "bitwarden",
-            "codeserver",
-            "codexserver",
-            "jupyter",
-            "tinymediamanager",
-            "metacubexd",
-            "gitea",
-            "gitlab",
-            "uptimekuma"
-        ]
-        return highValueTokens.contains { compact.contains($0) }
+        return LaunchpadDefaultVisibilityPolicy.shouldShowContainer(
+            name: container.name,
+            image: container.image,
+            hasEndpoint: true
+        )
     }
 
     private static func serviceSortRank(_ service: LaunchpadService) -> Int {

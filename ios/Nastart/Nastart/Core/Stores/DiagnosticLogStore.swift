@@ -1,5 +1,6 @@
 import Foundation
 import Combine
+import UIKit
 
 enum DiagnosticLogLevel: String, Codable {
     case info
@@ -53,6 +54,10 @@ struct DiagnosticLogEntry: Identifiable, Codable {
         Self.displayFormatter.string(from: date)
     }
 
+    static func timestampString(from date: Date) -> String {
+        timestampFormatter.string(from: date)
+    }
+
     private static let timestampFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
@@ -65,6 +70,34 @@ struct DiagnosticLogEntry: Identifiable, Codable {
         formatter.timeStyle = .medium
         return formatter
     }()
+}
+
+struct DiagnosticExportContext {
+    let appVersion: String
+    let build: String
+    let deviceName: String
+    let dsmVersion: String?
+    let connectionMode: String
+    let activeRoute: String
+    let cachedSnapshotSavedAt: Date?
+
+    var exportLines: [String] {
+        var lines = [
+            "App: \(appVersion) (\(build))",
+            "iOS: \(UIDevice.current.systemVersion)",
+            "Device: \(UIDevice.current.model)",
+            "NAS: \(DiagnosticLogStore.redactedDetail(deviceName))",
+            "Connection: \(connectionMode)",
+            "Route: \(activeRoute)"
+        ]
+        if let dsmVersion {
+            lines.append("DSM: \(DiagnosticLogStore.redactedDetail(dsmVersion))")
+        }
+        if let cachedSnapshotSavedAt {
+            lines.append("Cached snapshot: \(DiagnosticLogEntry.timestampString(from: cachedSnapshotSavedAt))")
+        }
+        return lines
+    }
 }
 
 final class DiagnosticLogStore: ObservableObject {
@@ -125,7 +158,7 @@ final class DiagnosticLogStore: ObservableObject {
     }
 
     @MainActor
-    func exportText() -> String {
+    func exportText(context: DiagnosticExportContext? = nil) -> String {
         if entries.isEmpty {
             return NSLocalizedString("diagnostics.empty", comment: "")
         }
@@ -135,7 +168,12 @@ final class DiagnosticLogStore: ObservableObject {
             entries.filter { $0.level == .warning }.count,
             entries.filter { $0.level == .error }.count
         )
-        return ([header] + entries.map(\.exportLine)).joined(separator: "\n")
+        let contextLines = context.map {
+            ["", NSLocalizedString("diagnostics.export.context", comment: "")]
+                + $0.exportLines
+                + [""]
+        } ?? []
+        return ([header] + contextLines + entries.map(\.exportLine)).joined(separator: "\n")
     }
 
     static func redactedHost(_ host: String?) -> String {

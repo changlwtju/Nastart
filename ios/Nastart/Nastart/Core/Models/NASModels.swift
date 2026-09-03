@@ -284,6 +284,165 @@ enum LaunchpadServiceSource: String, Equatable, Codable {
     case manual
 }
 
+enum LaunchpadDefaultVisibilityReason: Equatable {
+    case coreNAS
+    case synologyApp
+    case recognizedWebUI
+    case noReachableEndpoint
+    case manual
+    case systemOrUnknown
+
+    var titleKey: String {
+        switch self {
+        case .coreNAS: return "launchpad.visibility.reason.core_nas"
+        case .synologyApp: return "launchpad.visibility.reason.synology_app"
+        case .recognizedWebUI: return "launchpad.visibility.reason.web_ui"
+        case .noReachableEndpoint: return "launchpad.visibility.reason.no_endpoint"
+        case .manual: return "launchpad.visibility.reason.manual"
+        case .systemOrUnknown: return "launchpad.visibility.reason.system_unknown"
+        }
+    }
+}
+
+/// Default launchpad visibility is a product curation decision, not a mirror
+/// of every package/container returned by DSM. The launchpad should surface
+/// destinations that a user can continue working in; the service manager
+/// remains the escape hatch for anything intentionally kept out of the default.
+enum LaunchpadDefaultVisibilityPolicy {
+    static func shouldShowPackage(name: String, hasEndpoint: Bool) -> Bool {
+        switch packageReason(name: name, hasEndpoint: hasEndpoint) {
+        case .synologyApp, .recognizedWebUI:
+            return true
+        case .coreNAS, .noReachableEndpoint, .manual, .systemOrUnknown:
+            return false
+        }
+    }
+
+    static func shouldShowContainer(
+        name: String,
+        image: String,
+        hasEndpoint: Bool
+    ) -> Bool {
+        containerReason(
+            name: name,
+            image: image,
+            hasEndpoint: hasEndpoint
+        ) == .recognizedWebUI
+    }
+
+    static func reason(for service: LaunchpadService) -> LaunchpadDefaultVisibilityReason {
+        switch service.source {
+        case .dsm:
+            return .coreNAS
+        case .manual:
+            return .manual
+        case .package:
+            return packageReason(
+                name: service.detail.isEmpty ? service.name : service.detail,
+                hasEndpoint: service.endpoint != nil
+            )
+        case .container, .reverseProxy:
+            return containerReason(
+                name: service.name,
+                image: service.subtitle,
+                hasEndpoint: service.endpoint != nil
+            )
+        }
+    }
+
+    static func packageReason(
+        name: String,
+        hasEndpoint: Bool
+    ) -> LaunchpadDefaultVisibilityReason {
+        guard hasEndpoint else { return .noReachableEndpoint }
+        let compact = compactIdentifier(name)
+        if recognizedSynologyAppTokens.contains(where: { compact.contains($0) }) {
+            return .synologyApp
+        }
+        if recognizedWebUITokens.contains(where: { compact.contains($0) }) {
+            return .recognizedWebUI
+        }
+        return .systemOrUnknown
+    }
+
+    static func containerReason(
+        name: String,
+        image: String,
+        hasEndpoint: Bool
+    ) -> LaunchpadDefaultVisibilityReason {
+        guard hasEndpoint else { return .noReachableEndpoint }
+        let compact = compactIdentifier(name + " " + image)
+        if recognizedWebUITokens.contains(where: { compact.contains($0) }) {
+            return .recognizedWebUI
+        }
+        return .systemOrUnknown
+    }
+
+    private static let recognizedSynologyAppTokens = [
+        "downloadstation",
+        "synologyphotos",
+        "photostation",
+        "videostation",
+        "audiostation",
+        "synologydrive",
+        "cloudstation",
+        "surveillancestation",
+        "virtualmachinemanager"
+    ]
+
+    private static let recognizedWebUITokens = [
+        "jellyfin",
+        "emby",
+        "plex",
+        "plexmediaserver",
+        "navidrome",
+        "audiobookshelf",
+        "qbittorrent",
+        "transmission",
+        "sonarr",
+        "radarr",
+        "lidarr",
+        "readarr",
+        "prowlarr",
+        "bazarr",
+        "overseerr",
+        "aria2",
+        "homeassistant",
+        "homebridge",
+        "portainer",
+        "homepage",
+        "nginxproxymanager",
+        "traefik",
+        "caddy",
+        "adguard",
+        "pihole",
+        "vaultwarden",
+        "bitwarden",
+        "codeserver",
+        "codexserver",
+        "jupyter",
+        "tinymediamanager",
+        "metacubexd",
+        "immich",
+        "photoprism",
+        "nextcloud",
+        "paperlessngx",
+        "paperless",
+        "calibreweb",
+        "mealie",
+        "grafana",
+        "gitea",
+        "gitlab",
+        "uptimekuma"
+    ]
+
+    private static func compactIdentifier(_ value: String) -> String {
+        value.lowercased()
+            .components(separatedBy: CharacterSet.alphanumerics.inverted)
+            .joined()
+    }
+}
+
 struct NASDevice: Identifiable, Codable {
     let id: UUID
     let name: String

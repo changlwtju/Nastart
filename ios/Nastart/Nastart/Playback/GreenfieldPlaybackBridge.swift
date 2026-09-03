@@ -2,11 +2,14 @@ import Foundation
 
 enum GreenfieldPlaybackDebugSettings {
     static let useGreenfieldPlayerKey = "debug.playback.use_greenfield_player"
+    static let forceOriginalKSPlayerKey = "debug.playback.force_original_ksplayer"
 }
 
 #if DEBUG
 extension MediaPlaybackRequest {
-    func greenfieldPlaybackLaunchRequest() -> GreenfieldPlaybackLaunchRequest {
+    func greenfieldPlaybackLaunchRequest(
+        playbackModePreference: PlaybackModePreference = .automatic
+    ) -> GreenfieldPlaybackLaunchRequest {
         let sourceKind: PlaybackSourceKind
         switch source {
         case .directURL:
@@ -85,7 +88,7 @@ extension MediaPlaybackRequest {
             preferredStartTime: startTime,
             preferredAudioTrackID: audioTrackID,
             preferredSubtitleTrackID: subtitleTrackID,
-            playbackModePreference: .automatic,
+            playbackModePreference: playbackModePreference,
             playbackRate: initialPlaybackRate,
             connectionContext: connectionContext,
             networkContext: networkContext
@@ -93,6 +96,8 @@ extension MediaPlaybackRequest {
         return GreenfieldPlaybackLaunchRequest(
             id: intent.id,
             intent: intent,
+            orientationMode: initialOrientationMode,
+            playbackTraceID: playbackTraceID,
             fileExtensionHint: primaryExtensionHint,
             mimeHint: mimeTypeHint,
             certificatePolicy: primaryCertificatePolicy,

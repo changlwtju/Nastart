@@ -23,6 +23,17 @@ struct TasksView: View {
     var body: some View {
         NavigationStack {
             List {
+                Section {
+                    TasksOverviewHeader(
+                        pendingCount: dataStore.tasks.count,
+                        completedCount: dataStore.completedTasks.count,
+                        refreshState: dataStore.dataRefreshState
+                    )
+                    .listRowInsets(EdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0))
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                }
+
                 Picker("tasks.segment.title", selection: $segment) {
                     ForEach(TaskSegment.allCases) { segment in
                         Text(segment.titleKey).tag(segment)
@@ -164,7 +175,7 @@ private struct TasksOverviewHeader: View {
             )
         }
         .padding(17)
-        .nastartCard(cornerRadius: 24, elevated: true)
+        .nastartCard(cornerRadius: 8, elevated: true)
     }
 }
 
@@ -224,7 +235,7 @@ private struct ReminderWatchRow: View {
         .accessibilityElement(children: .combine)
         .padding(.vertical, 7)
         .padding(.horizontal, 5)
-        .nastartCard(cornerRadius: 16)
+        .nastartCard(cornerRadius: 8)
     }
 }
 

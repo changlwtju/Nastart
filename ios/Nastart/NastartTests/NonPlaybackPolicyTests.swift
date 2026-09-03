@@ -225,6 +225,77 @@ final class NonPlaybackPolicyTests: XCTestCase {
         XCTAssertFalse(service.usesSystemInAppBrowser)
     }
 
+    func testLaunchpadDefaultVisibilityUsesActionableServicePolicy() {
+        XCTAssertTrue(
+            LaunchpadDefaultVisibilityPolicy.shouldShowPackage(
+                name: "Download Station",
+                hasEndpoint: true
+            )
+        )
+        XCTAssertTrue(
+            LaunchpadDefaultVisibilityPolicy.shouldShowPackage(
+                name: "Plex Media Server",
+                hasEndpoint: true
+            )
+        )
+        XCTAssertFalse(
+            LaunchpadDefaultVisibilityPolicy.shouldShowPackage(
+                name: "Container Manager",
+                hasEndpoint: true
+            )
+        )
+        XCTAssertFalse(
+            LaunchpadDefaultVisibilityPolicy.shouldShowPackage(
+                name: "File Station",
+                hasEndpoint: true
+            )
+        )
+        XCTAssertEqual(
+            LaunchpadDefaultVisibilityPolicy.reason(for: LaunchpadService(
+                id: UUID(),
+                name: "File Station",
+                iconText: "FS",
+                category: .tools,
+                status: .installed,
+                subtitle: "DSM package",
+                detail: "File Station",
+                isMedia: false,
+                cpu: nil,
+                memoryText: nil,
+                endpoint: URL(string: "https://nas.example.com/file"),
+                source: .package,
+                isLaunchpadVisible: false
+            )),
+            .systemOrUnknown
+        )
+        XCTAssertFalse(
+            LaunchpadDefaultVisibilityPolicy.shouldShowPackage(
+                name: "Unknown System Package",
+                hasEndpoint: true
+            )
+        )
+        XCTAssertFalse(
+            LaunchpadDefaultVisibilityPolicy.shouldShowPackage(
+                name: "Download Station",
+                hasEndpoint: false
+            )
+        )
+        XCTAssertTrue(
+            LaunchpadDefaultVisibilityPolicy.shouldShowContainer(
+                name: "jellyfin",
+                image: "jellyfin/jellyfin:latest",
+                hasEndpoint: true
+            )
+        )
+        XCTAssertFalse(
+            LaunchpadDefaultVisibilityPolicy.shouldShowContainer(
+                name: "random-worker",
+                image: "acme/worker:latest",
+                hasEndpoint: true
+            )
+        )
+    }
+
     func testServiceCategoryOrderingRestoresMissingCategories() {
         let ordered = ServiceCategory.ordered(from: "tools,tools,media")
         XCTAssertEqual(ordered, [.tools, .media, .favorites, .downloads, .network])

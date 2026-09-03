@@ -17,6 +17,13 @@
 		010101010101010101010008 /* SectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020008 /* SectionHeader.swift */; };
 		010101010101010101010009 /* ServiceCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020009 /* ServiceCardView.swift */; };
 		010101010101010101010010 /* LaunchpadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020010 /* LaunchpadView.swift */; };
+		010101010101010101010061 /* LaunchpadLayoutViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020060 /* LaunchpadLayoutViews.swift */; };
+		010101010101010101010062 /* LaunchpadServiceDetailViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020061 /* LaunchpadServiceDetailViews.swift */; };
+		010101010101010101010063 /* LaunchpadConnectionViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020062 /* LaunchpadConnectionViews.swift */; };
+		010101010101010101010064 /* LaunchpadSharedViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020063 /* LaunchpadSharedViews.swift */; };
+		010101010101010101010065 /* LaunchpadPlaybackCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020064 /* LaunchpadPlaybackCore.swift */; };
+		010101010101010101010066 /* LaunchpadMediaLibraryViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020065 /* LaunchpadMediaLibraryViews.swift */; };
+		010101010101010101010067 /* LaunchpadDirectMediaSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020066 /* LaunchpadDirectMediaSetupView.swift */; };
 		010101010101010101010011 /* DevicesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020011 /* DevicesView.swift */; };
 		010101010101010101010012 /* TasksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020012 /* TasksView.swift */; };
 		010101010101010101010013 /* MineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020013 /* MineView.swift */; };
@@ -89,6 +96,13 @@
 		020202020202020202020008 /* SectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeader.swift; sourceTree = "<group>"; };
 		020202020202020202020009 /* ServiceCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceCardView.swift; sourceTree = "<group>"; };
 		020202020202020202020010 /* LaunchpadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchpadView.swift; sourceTree = "<group>"; };
+		020202020202020202020060 /* LaunchpadLayoutViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchpadLayoutViews.swift; sourceTree = "<group>"; };
+		020202020202020202020061 /* LaunchpadServiceDetailViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchpadServiceDetailViews.swift; sourceTree = "<group>"; };
+		020202020202020202020062 /* LaunchpadConnectionViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchpadConnectionViews.swift; sourceTree = "<group>"; };
+		020202020202020202020063 /* LaunchpadSharedViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchpadSharedViews.swift; sourceTree = "<group>"; };
+		020202020202020202020064 /* LaunchpadPlaybackCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchpadPlaybackCore.swift; sourceTree = "<group>"; };
+		020202020202020202020065 /* LaunchpadMediaLibraryViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchpadMediaLibraryViews.swift; sourceTree = "<group>"; };
+		020202020202020202020066 /* LaunchpadDirectMediaSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchpadDirectMediaSetupView.swift; sourceTree = "<group>"; };
 		020202020202020202020011 /* DevicesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevicesView.swift; sourceTree = "<group>"; };
 		020202020202020202020012 /* TasksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TasksView.swift; sourceTree = "<group>"; };
 		020202020202020202020013 /* MineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MineView.swift; sourceTree = "<group>"; };
@@ -272,6 +286,13 @@
 			children = (
 				020202020202020202020009 /* ServiceCardView.swift */,
 				020202020202020202020010 /* LaunchpadView.swift */,
+				020202020202020202020060 /* LaunchpadLayoutViews.swift */,
+				020202020202020202020061 /* LaunchpadServiceDetailViews.swift */,
+				020202020202020202020062 /* LaunchpadConnectionViews.swift */,
+				020202020202020202020063 /* LaunchpadSharedViews.swift */,
+				020202020202020202020064 /* LaunchpadPlaybackCore.swift */,
+				020202020202020202020065 /* LaunchpadMediaLibraryViews.swift */,
+				020202020202020202020066 /* LaunchpadDirectMediaSetupView.swift */,
 				020202020202020202020020 /* AudioPlayerView.swift */,
 				020202020202020202020021 /* ISOPlaybackAdapter.swift */,
 			);
@@ -610,6 +631,13 @@
 				010101010101010101010008 /* SectionHeader.swift in Sources */,
 				010101010101010101010009 /* ServiceCardView.swift in Sources */,
 				010101010101010101010010 /* LaunchpadView.swift in Sources */,
+				010101010101010101010061 /* LaunchpadLayoutViews.swift in Sources */,
+				010101010101010101010062 /* LaunchpadServiceDetailViews.swift in Sources */,
+				010101010101010101010063 /* LaunchpadConnectionViews.swift in Sources */,
+				010101010101010101010064 /* LaunchpadSharedViews.swift in Sources */,
+				010101010101010101010065 /* LaunchpadPlaybackCore.swift in Sources */,
+				010101010101010101010066 /* LaunchpadMediaLibraryViews.swift in Sources */,
+				010101010101010101010067 /* LaunchpadDirectMediaSetupView.swift in Sources */,
 				010101010101010101010011 /* DevicesView.swift in Sources */,
 				010101010101010101010012 /* TasksView.swift in Sources */,
 				010101010101010101010013 /* MineView.swift in Sources */,

@@ -7,6 +7,7 @@ struct DevicesView: View {
     @EnvironmentObject private var dataStore: AppDataStore
     @EnvironmentObject private var connectionStore: NASConnectionStore
     @State private var showRediscoverHint = false
+    @State private var rediscoverSummaryKey = "devices.discovery.hint"
 
     var body: some View {
         NavigationStack {
@@ -88,14 +89,25 @@ struct DevicesView: View {
                     }
                     Button {
                         Task {
+                            let summaryKey: String
                             if let session = connectionStore.dsmSession {
-                                await dataStore.refreshDSM(session: session, useAgent: connectionStore.usesAgent)
+                                _ = await dataStore.refreshDSM(
+                                    session: session,
+                                    useAgent: connectionStore.usesAgent
+                                )
+                                summaryKey = await MainActor.run {
+                                    dataStore.lastRefreshSummaryKey
+                                }
                             } else {
                                 await MainActor.run {
                                     dataStore.refreshAll()
                                 }
+                                summaryKey = await MainActor.run {
+                                    dataStore.lastRefreshSummaryKey
+                                }
                             }
                             await MainActor.run {
+                                rediscoverSummaryKey = summaryKey
                                 showRediscoverHint = true
                             }
                         }
@@ -122,8 +134,10 @@ struct DevicesView: View {
             .padding(.top, -12)
             .navigationTitle("tab.devices")
             .navigationBarTitleDisplayMode(.inline)
-            .alert("devices.discovery.hint", isPresented: $showRediscoverHint) {
+            .alert("devices.discovery.result", isPresented: $showRediscoverHint) {
                 Button("action.ok", role: .cancel) {}
+            } message: {
+                Text(LocalizedStringKey(rediscoverSummaryKey))
             }
         }
     }
@@ -742,12 +756,28 @@ private struct DockerContainerDetailView: View {
     }
 }
 
+private enum FileBrowserSort: String, CaseIterable, Identifiable {
+    case name
+    case kind
+
+    var id: String { rawValue }
+
+    var titleKey: LocalizedStringKey {
+        switch self {
+        case .name: return "devices.files.sort.name"
+        case .kind: return "devices.files.sort.kind"
+        }
+    }
+}
+
 private struct FileBrowserView: View {
     @EnvironmentObject private var dataStore: AppDataStore
     @EnvironmentObject private var connectionStore: NASConnectionStore
     let titleKey: LocalizedStringKey
     let items: [FileItem]
     let folderPath: String?
+    @State private var query = ""
+    @State private var sort: FileBrowserSort = .name
     @State private var loadedItems: [FileItem] = []
     @State private var didLoad = false
     @State private var isLoading = false
@@ -759,13 +789,57 @@ private struct FileBrowserView: View {
         self.folderPath = folderPath
     }
 
-    private var visibleItems: [FileItem] {
+    private var baseItems: [FileItem] {
         if folderPath == nil { return items }
         return didLoad ? loadedItems : items
     }
 
+    private var visibleItems: [FileItem] {
+        sortedItems(filteredItems(baseItems))
+    }
+
     var body: some View {
         List {
+            if let folderPath {
+                Section {
+                    LabeledContent("devices.files.path") {
+                        Text(folderPath)
+                            .font(.caption.monospaced())
+                            .foregroundStyle(.secondary)
+                            .lineLimit(2)
+                            .multilineTextAlignment(.trailing)
+                            .textSelection(.enabled)
+                    }
+                }
+            }
+
+            Section {
+                HStack(spacing: 10) {
+                    Image(systemName: "magnifyingglass")
+                        .foregroundStyle(.secondary)
+                    TextField("devices.files.search", text: $query)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                    if !query.isEmpty {
+                        Button {
+                            query = ""
+                        } label: {
+                            Image(systemName: "xmark.circle.fill")
+                                .foregroundStyle(.secondary)
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel(Text("action.clear"))
+                    }
+                }
+
+                Picker("devices.files.sort", selection: $sort) {
+                    ForEach(FileBrowserSort.allCases) { option in
+                        Text(option.titleKey).tag(option)
+                    }
+                }
+                .pickerStyle(.segmented)
+            }
+
             Section {
                 if isLoading && visibleItems.isEmpty {
                     HStack {
@@ -803,7 +877,9 @@ private struct FileBrowserView: View {
                         Image(systemName: "tray")
                             .font(.title2)
                             .foregroundStyle(.secondary)
-                        Text("devices.files.empty")
+                        Text(LocalizedStringKey(
+                            query.isEmpty ? "devices.files.empty" : "devices.files.search.empty"
+                        ))
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                     }
@@ -819,6 +895,33 @@ private struct FileBrowserView: View {
         .task { await loadIfNeeded() }
         .refreshable {
             await reloadFolder()
+        }
+    }
+
+    private func filteredItems(_ items: [FileItem]) -> [FileItem] {
+        let normalizedQuery = query.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !normalizedQuery.isEmpty else { return items }
+        return items.filter {
+            $0.name.localizedCaseInsensitiveContains(normalizedQuery)
+                || $0.subtitle.localizedCaseInsensitiveContains(normalizedQuery)
+                || $0.path.localizedCaseInsensitiveContains(normalizedQuery)
+        }
+    }
+
+    private func sortedItems(_ items: [FileItem]) -> [FileItem] {
+        items.sorted { lhs, rhs in
+            if lhs.isFolder != rhs.isFolder {
+                return lhs.isFolder
+            }
+            switch sort {
+            case .name:
+                return lhs.name.localizedCaseInsensitiveCompare(rhs.name) == .orderedAscending
+            case .kind:
+                if lhs.kind.rawValue != rhs.kind.rawValue {
+                    return lhs.kind.rawValue < rhs.kind.rawValue
+                }
+                return lhs.name.localizedCaseInsensitiveCompare(rhs.name) == .orderedAscending
+            }
         }
     }
 
@@ -1854,6 +1957,7 @@ final class AuthenticatedMediaStreamProxy: @unchecked Sendable {
         let filename: String
         let isPlaylist: Bool
         let prefersFiniteRangeResponse: Bool
+        let playbackTraceID: String?
         let localPort: NWEndpoint.Port
         let createdAt: Date
     }
@@ -1871,7 +1975,8 @@ final class AuthenticatedMediaStreamProxy: @unchecked Sendable {
         upstreamURL: URL,
         filename: String,
         allowsSelfSignedCertificates: Bool,
-        prefersFiniteRangeResponse: Bool = false
+        prefersFiniteRangeResponse: Bool = false,
+        playbackTraceID: String? = nil
     ) async throws -> URL {
         let port = try await listenerPort()
         let token = UUID().uuidString.lowercased()
@@ -1888,6 +1993,7 @@ final class AuthenticatedMediaStreamProxy: @unchecked Sendable {
                     filename: safeFilename,
                     isPlaylist: upstreamURL.pathExtension.lowercased() == "m3u8",
                     prefersFiniteRangeResponse: prefersFiniteRangeResponse,
+                    playbackTraceID: playbackTraceID?.isEmpty == false ? playbackTraceID : nil,
                     localPort: port,
                     createdAt: Date()
                 )
@@ -2045,6 +2151,7 @@ final class AuthenticatedMediaStreamProxy: @unchecked Sendable {
                 && requestedUpstreamURL.pathExtension.lowercased() == "m3u8",
             isHLSChildRequest: route.isPlaylist
                 && requestedUpstreamURL.pathExtension.lowercased() != "m3u8",
+            playbackTraceID: route.playbackTraceID,
             playlistToken: token,
             playlistFilename: route.filename,
             playlistPort: route.localPort
@@ -2073,6 +2180,7 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
     private let prefersFiniteRangeResponse: Bool
     private let isPlaylist: Bool
     private let isHLSChildRequest: Bool
+    private let playbackTraceID: String?
     private let playlistToken: String?
     private let playlistFilename: String?
     private let playlistPort: NWEndpoint.Port?
@@ -2103,11 +2211,13 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
     private var playlistBody = Data()
     private var playlistStatusCode = 200
     private var playlistContentType = "application/vnd.apple.mpegurl"
+    private var playlistExpectedBodyBytes: Int64?
     private var responseTotalLength: Int64?
     private var isSendingBody = false
     private var suspendedDataTask: URLSessionDataTask?
     private var upstreamCompleted = false
     private var didScheduleConnectionClose = false
+    private var upstreamTaskIndex = 0
     private let sendChunkSize = 512 * 1024
     private let highWaterMark = 4 * 1024 * 1024
     private let lowWaterMark = 1 * 1024 * 1024
@@ -2125,6 +2235,45 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
         return MediaRangePolicy.isOpenEnded(requestHeaders["range"] ?? "bytes=0-")
     }
 
+    private var proxyKind: String {
+        if isPlaylist { return "hlsPlaylist" }
+        if isHLSChildRequest { return "hlsChild" }
+        return "mediaRange"
+    }
+
+    private var hlsRole: String {
+        guard isPlaylist || isHLSChildRequest else { return "-" }
+        let path = upstreamURL.path.lowercased()
+        let ext = upstreamURL.pathExtension.lowercased()
+        if ext == "m3u8" {
+            if path.contains("master") { return "masterPlaylist" }
+            return "mediaPlaylist"
+        }
+        if ["m4s", "ts", "mp4", "aac", "mp3", "ac3", "vtt"].contains(ext) {
+            return "segment"
+        }
+        if ["key", "bin"].contains(ext) {
+            return "key"
+        }
+        return ext.isEmpty ? "unknown" : ext
+    }
+
+    private var diagnosticContext: [String: String] {
+        [
+            "proxyKind": proxyKind,
+            "hlsRole": hlsRole,
+            "pathExtension": upstreamURL.pathExtension.lowercased().isEmpty
+                ? "-"
+                : upstreamURL.pathExtension.lowercased(),
+            "upstreamTaskIndex": "\(upstreamTaskIndex)",
+            "playbackTraceID": playbackTraceID ?? "-"
+        ]
+    }
+
+    private func diagnosticDetails(_ details: [String: String]) -> [String: String] {
+        diagnosticContext.merging(details) { _, new in new }
+    }
+
     init(
         connection: NWConnection,
         upstreamURL: URL,
@@ -2134,6 +2283,7 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
         prefersFiniteRangeResponse: Bool,
         isPlaylist: Bool,
         isHLSChildRequest: Bool,
+        playbackTraceID: String?,
         playlistToken: String?,
         playlistFilename: String?,
         playlistPort: NWEndpoint.Port?,
@@ -2147,6 +2297,7 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
         self.prefersFiniteRangeResponse = prefersFiniteRangeResponse
         self.isPlaylist = isPlaylist
         self.isHLSChildRequest = isHLSChildRequest
+        self.playbackTraceID = playbackTraceID?.isEmpty == false ? playbackTraceID : nil
         self.playlistToken = playlistToken
         self.playlistFilename = playlistFilename
         self.playlistPort = playlistPort
@@ -2178,6 +2329,7 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
     }
 
     private func startUpstreamTask(rangeOverride: String? = nil) {
+        upstreamTaskIndex += 1
         bodyBytesAtTaskStart = deliveredBodyBytes
         expectedBodyBytes = nil
         responseEndOffset = nil
@@ -2249,6 +2401,23 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
             playlistStatusCode = response.statusCode
             playlistContentType = response.value(forHTTPHeaderField: "Content-Type")
                 ?? "application/vnd.apple.mpegurl"
+            if let contentLength = response.value(forHTTPHeaderField: "Content-Length"),
+               let parsedLength = Int64(contentLength), parsedLength >= 0 {
+                playlistExpectedBodyBytes = parsedLength
+            }
+            DiagnosticLogStore.shared.record(
+                .info,
+                categoryKey: "diagnostics.category.media",
+                messageKey: "diagnostics.media.proxy_transfer_started",
+                details: diagnosticDetails([
+                    "method": method,
+                    "range": activeRequestedRange ?? "full",
+                    "status": "\(response.statusCode)",
+                    "contentLength": playlistExpectedBodyBytes.map(String.init) ?? "-",
+                    "contentRange": response.value(forHTTPHeaderField: "Content-Range") ?? "-",
+                    "clientResponse": "finitePlaylist"
+                ])
+            )
             completionHandler(.allow)
             return
         }
@@ -2306,7 +2475,7 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
             .info,
             categoryKey: "diagnostics.category.media",
             messageKey: "diagnostics.media.proxy_transfer_started",
-            details: [
+            details: diagnosticDetails([
                 "method": method,
                 "range": activeRequestedRange ?? "full",
                 "status": "\(response.statusCode)",
@@ -2315,7 +2484,7 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
                 "clientResponse": shouldExposeContinuousRange
                     ? "continuousRange"
                     : (clientUsesChunkedMediaResponse ? "chunkedRange" : "finiteRange")
-            ]
+            ])
         )
         let reason = HTTPURLResponse.localizedString(forStatusCode: response.statusCode).capitalized
         var lines = ["HTTP/1.1 \(response.statusCode) \(reason)"]
@@ -2385,7 +2554,7 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
             .info,
             categoryKey: "diagnostics.category.media",
             messageKey: "diagnostics.media.proxy_transfer_finished",
-            details: [
+            details: diagnosticDetails([
                 "stage": "urlSessionTaskMetrics",
                 "target": DiagnosticLogStore.redactedURL(upstreamURL),
                 "dnsMs": milliseconds(
@@ -2417,7 +2586,7 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
                 "expensive": transaction.isExpensive ? "yes" : "no",
                 "constrained": transaction.isConstrained ? "yes" : "no",
                 "remoteAddress": transaction.remoteAddress ?? "-"
-            ]
+            ])
         )
     }
 
@@ -2720,13 +2889,13 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
             .warning,
             categoryKey: "diagnostics.category.media",
             messageKey: "diagnostics.media.proxy_transfer_retry",
-            details: [
+            details: diagnosticDetails([
                 "attempt": "\(retryAttempts)",
                 "consecutiveFailures": "\(consecutiveRetryFailures)",
                 "deliveredBytes": "\(deliveredBodyBytes)",
                 "expectedBytes": "\(expectedBodyBytes)",
                 "reason": error?.localizedDescription ?? "prematureEOF"
-            ]
+            ])
         )
         startUpstreamTask(rangeOverride: range)
         return true
@@ -2781,14 +2950,15 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
             error == nil ? .info : .warning,
             categoryKey: "diagnostics.category.media",
             messageKey: "diagnostics.media.proxy_transfer_finished",
-            details: [
+            details: diagnosticDetails([
                 "status": lastStatusCode.map(String.init) ?? "-",
-                "deliveredBytes": "\(deliveredBodyBytes)",
-                "expectedBytes": expectedBodyBytes.map(String.init) ?? "-",
+                "deliveredBytes": "\(isPlaylist ? Int64(playlistBody.count) : deliveredBodyBytes)",
+                "expectedBytes": (isPlaylist ? playlistExpectedBodyBytes : expectedBodyBytes)
+                    .map(String.init) ?? "-",
                 "durationMs": "\(Int(Date().timeIntervalSince(startedAt) * 1_000))",
                 "retries": "\(retryAttempts)",
                 "result": error?.localizedDescription ?? "complete"
-            ]
+            ])
         )
         connection.stateUpdateHandler = nil
         connection.cancel()

@@ -119,6 +119,24 @@ The script runs static checks that work in the NAS workspace, including
 localization parity, iOS 16 guard patterns, AppIcon asset integrity, Swift
 delimiter balance, and `git diff --check`.
 
+## Playback Debugging
+
+For Jellyfin playback work, use the telemetry-first route documented in:
+
+- `../docs/handoffs/PLAYBACK_OFFLINE_DIAGNOSTICS.md`
+- `../docs/handoffs/PLAYBACK_VALIDATION_TARGETS.md`
+- `../docs/handoffs/MAC_PLAYBACK_DEBUG_TODO.md`
+
+WDA screenshots are supporting visual evidence only. Timing, buffering,
+throughput, stalls, and route-policy decisions should come from Nastart's
+exported diagnostics and the offline scripts:
+
+```text
+python3 scripts/playback_policy_simulator.py --preset jellyfin-external-large-mkv
+python3 scripts/playback_trace_report.py exported-log.txt
+python3 scripts/playback_compare_runs.py --auto auto-log.txt --force force-ksplayer-log.txt
+```
+
 ## Localization
 
 The prototype uses `Localizable.strings`:

@@ -29,8 +29,11 @@ LOCALIZATION_FILES = {
     "en": IOS_ROOT / "en.lproj" / "Localizable.strings",
     "zh-Hans": IOS_ROOT / "zh-Hans.lproj" / "Localizable.strings",
 }
-LAUNCHPAD_VIEW = IOS_ROOT / "Features" / "Launchpad" / "LaunchpadView.swift"
+LAUNCHPAD_DIR = IOS_ROOT / "Features" / "Launchpad"
+LAUNCHPAD_VIEW = LAUNCHPAD_DIR / "LaunchpadView.swift"
 DEVICES_VIEW = IOS_ROOT / "Features" / "Devices" / "DevicesView.swift"
+GREENFIELD_PLAYER_VIEW = IOS_ROOT / "Playback" / "GreenfieldVideoPlayerView.swift"
+PLAYBACK_DIAGNOSTICS = IOS_ROOT / "Playback" / "Diagnostics" / "PlaybackDiagnostics.swift"
 INFO_PLIST = IOS_ROOT / "Info.plist"
 APP_ENTRY = IOS_ROOT / "App" / "NastartApp.swift"
 NAS_MODELS = IOS_ROOT / "Core" / "Models" / "NASModels.swift"
@@ -39,6 +42,12 @@ DSM_CLIENT = IOS_ROOT / "Core" / "Stores" / "DSMClient.swift"
 DIAGNOSTIC_STORE = IOS_ROOT / "Core" / "Stores" / "DiagnosticLogStore.swift"
 LOCAL_TASK_STORE = IOS_ROOT / "Core" / "Stores" / "LocalTaskStore.swift"
 NETWORK_ERROR_CLASSIFICATION = IOS_ROOT / "Core" / "Stores" / "NetworkErrorClassification.swift"
+PLAYBACK_TRACE_REPORT = ROOT / "scripts" / "playback_trace_report.py"
+PLAYBACK_POLICY_SIMULATOR = ROOT / "scripts" / "playback_policy_simulator.py"
+PLAYBACK_COMPARE_RUNS = ROOT / "scripts" / "playback_compare_runs.py"
+PLAYBACK_OFFLINE_DIAGNOSTICS = ROOT / "docs" / "handoffs" / "PLAYBACK_OFFLINE_DIAGNOSTICS.md"
+PLAYBACK_MAC_HANDOFF = ROOT / "docs" / "handoffs" / "MAC_PLAYBACK_DEBUG_TODO.md"
+PLAYBACK_VALIDATION_TARGETS = ROOT / "docs" / "handoffs" / "PLAYBACK_VALIDATION_TARGETS.md"
 
 
 @dataclass
@@ -429,8 +438,13 @@ def check_transport_security_configuration() -> CheckResult:
 
 def check_playback_routing_invariants() -> CheckResult:
     errors: list[str] = []
-    launchpad = LAUNCHPAD_VIEW.read_text(encoding="utf-8")
+    launchpad = "\n".join(
+        path.read_text(encoding="utf-8")
+        for path in sorted(LAUNCHPAD_DIR.glob("Launchpad*.swift"))
+    )
     devices = DEVICES_VIEW.read_text(encoding="utf-8")
+    greenfield_player = GREENFIELD_PLAYER_VIEW.read_text(encoding="utf-8")
+    playback_diagnostics = PLAYBACK_DIAGNOSTICS.read_text(encoding="utf-8")
     app_entry = APP_ENTRY.read_text(encoding="utf-8")
     nas_models = NAS_MODELS.read_text(encoding="utf-8")
     stores = APP_STATE_STORES.read_text(encoding="utf-8")
@@ -489,7 +503,7 @@ def check_playback_routing_invariants() -> CheckResult:
             "allowVideoStreamCopy: false"
         ),
         "Jellyfin automatic playback must resolve the preferred original route": (
-            "preferredOriginalPlaybackRoute(for: entry, client: client)"
+            "preferredOriginalPlaybackRoute(\n                    for: entry,\n                    client: client,"
         ),
         "Jellyfin automatic playback must use an adaptive route policy": (
             '"defaultMode": "adaptiveAuto"'
@@ -504,7 +518,7 @@ def check_playback_routing_invariants() -> CheckResult:
             "dsmFileStationPathCandidates("
         ),
         "Containerized Jellyfin paths must be mapped against DSM shared folders": (
-            "dsmSharedFolderPaths: dataStore.files"
+            "dsmSharedFolderPaths: dsmSharedFolderRootPaths"
         ),
         "Jellyfin DSM path candidates must be verified against the source file size": (
             "expectedContentLength: entry.mediaSize"
@@ -596,6 +610,9 @@ def check_playback_routing_invariants() -> CheckResult:
         "Playback diagnostics must report the upstream instead of localhost": (
             "DiagnosticLogStore.redactedURL(playback.networkOriginURL)"
         ),
+        "Jellyfin playback diagnostics must carry a trace id across route decisions": (
+            '"playbackTraceID": playbackTraceID'
+        ),
         "Jellyfin HLS must wait for the same two-segment startup window as Swiftfin": (
             "minSegments: 2"
         ),
@@ -684,10 +701,10 @@ def check_playback_routing_invariants() -> CheckResult:
             '"subtitleFont": Self.cjkFontPath ?? "default"'
         ),
         "Jellyfin automatic playback must gate remote original attempts by route or direct budget": (
-            "let routeCanAttemptOriginalPlayback = playbackRouteIsPrivate\n            || forcesOriginalPlayback\n            || sourceBitrateFitsDirectBudget"
+            "let routeCanAttemptOriginalPlayback = playbackRouteIsPrivate\n            || forcesOriginalPlayback\n            || canUseExperimentalOriginalPlayback\n            || sourceBitrateFitsDirectBudget"
         ),
         "Jellyfin remote original playback must require the source bitrate budget": (
-            "let prefersRemoteOriginalPlayback = sourceBitrateFitsDirectBudget\n                && !Self.requiresAudioTranscode(audioCodec: selectedAudioCodec)"
+            "let prefersRemoteOriginalPlayback = sourceBitrateFitsDirectBudget\n                && !requiresSelectedAudioTranscode"
         ),
         "Jellyfin automatic metadata must retain the highest-bitrate original source": (
             "return sources.max { lhs, rhs in"
@@ -751,7 +768,7 @@ def check_playback_routing_invariants() -> CheckResult:
             "player.currentAudioTrackIndex = track.id\n        scheduleTrackSelectionCheck(kind: .audio)"
         ),
         "Jellyfin home shelves must publish before secondary collections": (
-            '"stage": "primaryShelves"'
+            'recordHomeShelfLoaded("resume", count: continueWatching.count'
         ),
         "Jellyfin posters must use the persistent image pipeline": (
             'diskPath: "nastart-jellyfin-images"'
@@ -850,6 +867,15 @@ def check_playback_routing_invariants() -> CheckResult:
         ),
         "Authenticated media proxy must expose the complete media length": (
             'Content-Range: bytes \\(start)-\\(total - 1)/\\(total)'
+        ),
+        "Authenticated media proxy diagnostics must classify proxy request kind": (
+            '"proxyKind": proxyKind'
+        ),
+        "Authenticated media proxy diagnostics must classify HLS request role": (
+            '"hlsRole": hlsRole'
+        ),
+        "Authenticated media proxy diagnostics must preserve the playback trace id": (
+            '"playbackTraceID": playbackTraceID ?? "-"'
         ),
         "Authenticated media proxy window policy must be sample-independent": (
             "static let upstreamWindowBytes"
@@ -969,6 +995,101 @@ def check_playback_routing_invariants() -> CheckResult:
         errors.append("The app must receive external-player callback URLs")
     if "#if DEBUG\nprivate enum PlaybackLabLaunchRequest" not in app_entry:
         errors.append("The playback lab entry point must remain Debug-only")
+
+    required_greenfield_fragments = {
+        "Greenfield playback must keep continuous telemetry sampling installed": (
+            "private var telemetrySampler: PlaybackTelemetrySampler?"
+        ),
+        "Greenfield AVPlayer must emit periodic telemetry samples": (
+            'sampleAVPlayer(\n                    self.player,'
+        ),
+        "Greenfield KSPlayer must emit playback tick telemetry samples": (
+            'sampleKSPlayer(\n            currentTime: currentTime,'
+        ),
+        "Greenfield first-frame diagnostics must force a telemetry sample": (
+            'reason: "firstFrame",\n                    force: true'
+        ),
+    }
+    for message, fragment in required_greenfield_fragments.items():
+        if fragment not in greenfield_player:
+            errors.append(message)
+
+    required_playback_diagnostic_fragments = {
+        "Playback diagnostics must define telemetry sample events": (
+            'case telemetrySample = "telemetry_sample"'
+        ),
+        "Playback telemetry sampler must record AVPlayer access log bitrate": (
+            'metrics["observedBitrate"] = Self.formatBitrate(observedBitrate)'
+        ),
+        "Playback telemetry sampler must record buffer ahead": (
+            'metrics["bufferAheadSeconds"] = Self.format(bufferAhead)'
+        ),
+        "Playback telemetry sampler must record stall activity": (
+            'metrics["stallActive"] = "yes"'
+        ),
+    }
+    for message, fragment in required_playback_diagnostic_fragments.items():
+        if fragment not in playback_diagnostics:
+            errors.append(message)
+
+    required_project_artifacts = {
+        PLAYBACK_TRACE_REPORT: {
+            "Trace report must parse continuous telemetry samples": (
+                'event.message == "diagnostics.playback.next.telemetry_sample"'
+            ),
+            "Trace report must summarize telemetry stall samples": (
+                '"stallSampleCount": len(telemetry_stalls)'
+            ),
+        },
+        PLAYBACK_POLICY_SIMULATOR: {
+            "Policy simulator must keep the external Jellyfin validation preset": (
+                '"jellyfin-external-large-mkv"'
+            ),
+            "Policy simulator must compare Auto with Force original KSPlayer": (
+                '"forceOriginalKSPlayer": asdict(experimental)'
+            ),
+        },
+        PLAYBACK_COMPARE_RUNS: {
+            "Playback comparison tool must compare Auto and Force logs": (
+                "A/B route separation is valid"
+            ),
+            "Playback comparison tool must report stall-sample differences": (
+                "telemetry_stall_sample_count"
+            ),
+        },
+        PLAYBACK_OFFLINE_DIAGNOSTICS: {
+            "Offline diagnostics doc must describe continuous telemetry": (
+                "Continuous Telemetry Samples"
+            ),
+            "Offline diagnostics doc must mention the comparison script": (
+                "scripts/playback_compare_runs.py"
+            ),
+        },
+        PLAYBACK_MAC_HANDOFF: {
+            "Mac handoff must preserve the telemetry-first debugging route": (
+                "Do not optimize by repeatedly changing cache/buffer/player flags based only on"
+            ),
+            "Mac handoff must mention WDA as supporting evidence only": (
+                "WDA can still start playback and capture visual proof"
+            ),
+        },
+        PLAYBACK_VALIDATION_TARGETS: {
+            "Validation targets doc must define the large external Jellyfin target": (
+                "Target A: External large Jellyfin MKV"
+            ),
+            "Validation targets doc must require exported telemetry fields": (
+                "Required exported-log fields"
+            ),
+        },
+    }
+    for path, fragments in required_project_artifacts.items():
+        if not path.exists():
+            errors.append(f"Missing playback diagnostic project artifact: {path.relative_to(ROOT)}")
+            continue
+        contents = path.read_text(encoding="utf-8")
+        for message, fragment in fragments.items():
+            if fragment not in contents:
+                errors.append(message)
 
     with INFO_PLIST.open("rb") as handle:
         info = plistlib.load(handle)

@@ -37,7 +37,7 @@
 		<string>_smb._tcp.</string>
 	</array>
 	<key>NSLocalNetworkUsageDescription</key>
-	<string>Nastart uses your local network to discover and connect to your NAS and Nastart Agent.</string>
+		<string>Nastart uses your local network to discover and connect to your NAS and Nastart Agent. Nastart 使用本地网络发现并连接你的 NAS 与 Nastart Agent。</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsLocalNetworking</key>

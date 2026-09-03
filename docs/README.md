@@ -26,6 +26,9 @@ security, research, and project planning documents.
 | `docs/design/MEDIA_SERVICE_FLOWS.md` | Jellyfin, Emby, Navidrome, media resource, and external handoff UX flows |
 | `docs/design/LAUNCHPAD_THEME_STRATEGY.md` | Quality-first launchpad theme strategy across Apple platforms |
 | `docs/handoffs/2026-08-02-NAS-MEDIA-JELLYFIN-THREAD.md` | NAS connectivity, media playback, Jellyfin redesign, diagnostics, and Mac handoff context |
+| `docs/handoffs/PLAYBACK_OFFLINE_DIAGNOSTICS.md` | Offline playback trace report, policy simulator, and continuous telemetry workflow |
+| `docs/handoffs/PLAYBACK_VALIDATION_TARGETS.md` | Real-device Jellyfin playback validation targets and decision rules |
+| `docs/handoffs/MAC_PLAYBACK_DEBUG_TODO.md` | Mac/Xcode handoff for telemetry-first playback debugging |
 
 ## Future Directories
 
