@@ -70,14 +70,20 @@ public class FFmpegAssetTrack: MediaPlayerTrack {
 
     convenience init?(stream: UnsafeMutablePointer<AVStream>) {
         guard let codecparPointer = stream.pointee.codecpar else {
-            KSLog(level: .warning, "Skipping FFmpeg stream \(stream.pointee.index) with nil codec parameters")
+            NSLog("KSPlayer: FFmpegAssetTrack rejected stream=\(stream.pointee.index) reason=nilCodecParameters")
             return nil
         }
         let codecpar = codecparPointer.pointee
+        NSLog(
+            "KSPlayer: FFmpegAssetTrack inspecting stream=\(stream.pointee.index) codec=\(codecpar.codec_id) type=\(codecpar.codec_type) width=\(codecpar.width) height=\(codecpar.height) sampleRate=\(codecpar.sample_rate) channels=\(codecpar.ch_layout.nb_channels) format=\(codecpar.format) extradata=\(codecpar.extradata_size)"
+        )
         guard codecpar.codec_id != AV_CODEC_ID_NONE,
               codecpar.codec_type == AVMEDIA_TYPE_AUDIO
                   || codecpar.codec_type == AVMEDIA_TYPE_VIDEO
                   || codecpar.codec_type == AVMEDIA_TYPE_SUBTITLE else {
+            NSLog(
+                "KSPlayer: FFmpegAssetTrack rejected stream=\(stream.pointee.index) reason=unsupportedCodecOrType codec=\(codecpar.codec_id) type=\(codecpar.codec_type)"
+            )
             return nil
         }
         self.init(codecpar: codecpar)
@@ -173,8 +179,14 @@ public class FFmpegAssetTrack: MediaPlayerTrack {
             } else {
                 formatName = nil
             }
+            NSLog(
+                "KSPlayer: FFmpegAssetTrack accepted audio codec=\(codecName) subtype=\(codecType.rawValue) sampleRate=\(codecpar.sample_rate) channels=\(codecpar.ch_layout.nb_channels) format=\(formatName ?? "-")"
+            )
         } else if codecpar.codec_type == AVMEDIA_TYPE_VIDEO {
             guard codecpar.width > 0, codecpar.height > 0 else {
+                NSLog(
+                    "KSPlayer: FFmpegAssetTrack rejected video reason=invalidSize codec=\(codecName) width=\(codecpar.width) height=\(codecpar.height)"
+                )
                 return nil
             }
             audioDescriptor = nil
@@ -214,11 +226,15 @@ public class FFmpegAssetTrack: MediaPlayerTrack {
                     // ff_videotoolbox_vpcc_extradata_create
                     var ioContext: UnsafeMutablePointer<AVIOContext>?
                     guard avio_open_dyn_buf(&ioContext) == 0 else {
+                        NSLog("KSPlayer: FFmpegAssetTrack rejected video reason=vp9OpenDynBufFailed codec=\(codecName)")
                         return nil
                     }
                     ff_isom_write_vpcc(nil, ioContext, nil, 0, &self.codecpar)
                     extradataSize = avio_close_dyn_buf(ioContext, &extradata)
                     guard let extradata, extradataSize > 0 else {
+                        NSLog(
+                            "KSPlayer: FFmpegAssetTrack rejected video reason=vp9ExtradataFailed codec=\(codecName) size=\(extradataSize)"
+                        )
                         return nil
                     }
                     var data = Data()
@@ -273,10 +289,14 @@ public class FFmpegAssetTrack: MediaPlayerTrack {
             // swiftlint:disable line_length
             var status = CMVideoFormatDescriptionCreate(allocator: kCFAllocatorDefault, codecType: codecType.rawValue, width: codecpar.width, height: codecpar.height, extensions: dic, formatDescriptionOut: &formatDescriptionOut)
             if status != noErr {
-                KSLog(level: .warning, "[FFmpegAssetTrack] CMVideoFormatDescriptionCreate failed codec=\(codecName) status=\(status); retry without extensions")
+                NSLog(
+                    "KSPlayer: FFmpegAssetTrack video format description retry codec=\(codecName) subtype=\(codecType.rawValue) status=\(status) width=\(codecpar.width) height=\(codecpar.height) pixelFormat=\(codecpar.format)"
+                )
                 status = CMVideoFormatDescriptionCreate(allocator: kCFAllocatorDefault, codecType: codecType.rawValue, width: codecpar.width, height: codecpar.height, extensions: nil, formatDescriptionOut: &formatDescriptionOut)
                 if status != noErr {
-                    KSLog(level: .warning, "[FFmpegAssetTrack] skip video track codec=\(codecName) status=\(status)")
+                    NSLog(
+                        "KSPlayer: FFmpegAssetTrack rejected video reason=formatDescriptionFailed codec=\(codecName) subtype=\(codecType.rawValue) status=\(status)"
+                    )
                     return nil
                 }
             }
@@ -286,6 +306,9 @@ public class FFmpegAssetTrack: MediaPlayerTrack {
             } else {
                 formatName = nil
             }
+            NSLog(
+                "KSPlayer: FFmpegAssetTrack accepted video codec=\(codecName) subtype=\(codecType.rawValue) width=\(codecpar.width) height=\(codecpar.height) pixelFormat=\(formatName ?? "-") bitDepth=\(bitDepth) extradata=\(codecpar.extradata_size)"
+            )
         } else if codecpar.codec_type == AVMEDIA_TYPE_SUBTITLE {
             mediaType = .subtitle
             audioDescriptor = nil
@@ -293,8 +316,14 @@ public class FFmpegAssetTrack: MediaPlayerTrack {
             bitDepth = 0
             isConvertNALSize = false
             _ = CMFormatDescriptionCreate(allocator: kCFAllocatorDefault, mediaType: kCMMediaType_Subtitle, mediaSubType: codecType.rawValue, extensions: nil, formatDescriptionOut: &formatDescriptionOut)
+            NSLog(
+                "KSPlayer: FFmpegAssetTrack accepted subtitle codec=\(codecName) subtype=\(codecType.rawValue)"
+            )
         } else {
             bitDepth = 0
+            NSLog(
+                "KSPlayer: FFmpegAssetTrack rejected stream reason=unsupportedType codec=\(codecpar.codec_id) type=\(codecpar.codec_type)"
+            )
             return nil
         }
         formatDescription = formatDescriptionOut
