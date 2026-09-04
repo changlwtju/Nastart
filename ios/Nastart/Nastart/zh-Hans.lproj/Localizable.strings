@@ -422,7 +422,6 @@
 "launchpad.services.manage" = "管理启动页服务";
 "launchpad.services.visible" = "启动页显示";
 "launchpad.services.hidden" = "已隐藏服务";
-"launchpad.services.hidden_count" = "可在这里恢复 %d 个已隐藏服务";
 "launchpad.services.search" = "搜索已识别服务";
 "launchpad.services.reset" = "恢复推荐显示";
 "launchpad.services.footer" = "启动台默认显示已确认有用户操作价值的入口：NAS 核心控制、媒体/下载服务，以及已识别且可访问的 Web 界面。系统、内部和未知服务默认隐藏，但可在这里手动启用。";
@@ -449,13 +448,6 @@
 "devices.placeholder.files" = "共享文件夹与收藏路径会显示在这里。";
 
 "tasks.segment.title" = "事项分段";
-"tasks.overview.eyebrow" = "Nastart 监控";
-"tasks.overview.title" = "任务与提醒";
-"tasks.overview.subtitle" = "随时掌握证书、域名和 Agent 健康状态。";
-"tasks.overview.pending" = "待处理";
-"tasks.overview.completed" = "已完成";
-"tasks.overview.live" = "实时数据";
-"tasks.overview.cached" = "缓存数据";
 "tasks.segment.pending" = "待处理";
 "tasks.segment.watching" = "监测项";
 "tasks.segment.history" = "历史";

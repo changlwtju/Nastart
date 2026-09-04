@@ -355,12 +355,8 @@ enum LaunchpadDefaultVisibilityPolicy {
         hasEndpoint: Bool
     ) -> LaunchpadDefaultVisibilityReason {
         guard hasEndpoint else { return .noReachableEndpoint }
-        let compact = compactIdentifier(name)
-        if recognizedSynologyAppTokens.contains(where: { compact.contains($0) }) {
-            return .synologyApp
-        }
-        if recognizedWebUITokens.contains(where: { compact.contains($0) }) {
-            return .recognizedWebUI
+        if let reason = ServiceIconRegistry.identity(name: name).defaultVisibilityReason {
+            return reason
         }
         return .systemOrUnknown
     }
@@ -371,69 +367,163 @@ enum LaunchpadDefaultVisibilityPolicy {
         hasEndpoint: Bool
     ) -> LaunchpadDefaultVisibilityReason {
         guard hasEndpoint else { return .noReachableEndpoint }
-        let compact = compactIdentifier(name + " " + image)
-        if recognizedWebUITokens.contains(where: { compact.contains($0) }) {
+        if ServiceIconRegistry.identity(name: name, subtitle: image).defaultVisibilityReason == .recognizedWebUI {
             return .recognizedWebUI
         }
         return .systemOrUnknown
     }
+}
 
-    private static let recognizedSynologyAppTokens = [
-        "downloadstation",
-        "synologyphotos",
-        "photostation",
-        "videostation",
-        "audiostation",
-        "synologydrive",
-        "cloudstation",
-        "surveillancestation",
-        "virtualmachinemanager"
-    ]
+struct ServiceIconIdentity {
+    let displayName: String?
+    let symbolName: String?
+    let badgeText: String?
+    let category: ServiceCategory?
+    let prefersBadge: Bool
+    let defaultVisibilityReason: LaunchpadDefaultVisibilityReason?
+}
 
-    private static let recognizedWebUITokens = [
-        "jellyfin",
-        "emby",
-        "plex",
-        "plexmediaserver",
-        "navidrome",
-        "audiobookshelf",
-        "qbittorrent",
-        "transmission",
-        "sonarr",
-        "radarr",
-        "lidarr",
-        "readarr",
-        "prowlarr",
-        "bazarr",
-        "overseerr",
-        "aria2",
-        "homeassistant",
-        "homebridge",
-        "portainer",
-        "homepage",
-        "nginxproxymanager",
-        "traefik",
-        "caddy",
-        "adguard",
-        "pihole",
-        "vaultwarden",
-        "bitwarden",
-        "codeserver",
-        "codexserver",
-        "jupyter",
-        "tinymediamanager",
-        "metacubexd",
-        "immich",
-        "photoprism",
-        "nextcloud",
-        "paperlessngx",
-        "paperless",
-        "calibreweb",
-        "mealie",
-        "grafana",
-        "gitea",
-        "gitlab",
-        "uptimekuma"
+enum ServiceIconRegistry {
+    static func identity(
+        name: String,
+        subtitle: String = "",
+        detail: String = "",
+        endpointHosts: [String] = []
+    ) -> ServiceIconIdentity {
+        if compactIdentifier(name) == "dsm" {
+            return ServiceIconIdentity(
+                displayName: "DSM",
+                symbolName: "server.rack",
+                badgeText: "DSM",
+                category: .favorites,
+                prefersBadge: false,
+                defaultVisibilityReason: nil
+            )
+        }
+
+        let fingerprint = compactIdentifier(
+            ([name, subtitle, detail] + endpointHosts).joined(separator: " ")
+        )
+        let lowerName = name.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        let rule = rules.first { rule in
+            rule.tokens.contains { fingerprint.contains($0) || lowerName.contains($0) }
+        }
+        return ServiceIconIdentity(
+            displayName: rule?.displayName,
+            symbolName: rule?.symbolName,
+            badgeText: rule?.badgeText,
+            category: rule?.category,
+            prefersBadge: rule?.prefersBadge ?? false,
+            defaultVisibilityReason: rule?.defaultVisibilityReason
+        )
+    }
+
+    static func fallbackBadgeText(iconText: String, name: String) -> String {
+        let normalizedIcon = iconText
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .components(separatedBy: CharacterSet.alphanumerics.inverted)
+            .joined()
+        if !normalizedIcon.isEmpty {
+            return String(normalizedIcon.prefix(2)).uppercased()
+        }
+
+        let letters = name
+            .components(separatedBy: CharacterSet.alphanumerics.inverted)
+            .filter { !$0.isEmpty }
+            .compactMap(\.first)
+            .prefix(2)
+        let fallback = letters.isEmpty ? String(name.prefix(2)) : String(letters)
+        return fallback.uppercased()
+    }
+
+    private struct Rule {
+        let tokens: [String]
+        let displayName: String?
+        let symbolName: String?
+        let badgeText: String?
+        let category: ServiceCategory?
+        let prefersBadge: Bool
+        let defaultVisibilityReason: LaunchpadDefaultVisibilityReason?
+
+        init(
+            _ tokens: [String],
+            displayName: String? = nil,
+            symbolName: String,
+            badgeText: String? = nil,
+            category: ServiceCategory? = nil,
+            prefersBadge: Bool = false,
+            defaultVisibilityReason: LaunchpadDefaultVisibilityReason? = nil
+        ) {
+            self.tokens = tokens.map(Self.compactIdentifier)
+            self.displayName = displayName
+            self.symbolName = symbolName
+            self.badgeText = badgeText
+            self.category = category
+            self.prefersBadge = prefersBadge
+            self.defaultVisibilityReason = defaultVisibilityReason
+        }
+
+        private static func compactIdentifier(_ value: String) -> String {
+            value.lowercased()
+                .components(separatedBy: CharacterSet.alphanumerics.inverted)
+                .joined()
+        }
+    }
+
+    private static let rules: [Rule] = [
+        Rule(["file station", "filebrowser", "文件"], displayName: "File Station", symbolName: "folder", badgeText: "FS", category: .favorites),
+        Rule(["container manager"], displayName: "Container Manager", symbolName: "shippingbox", badgeText: "CT", category: .favorites),
+        Rule(["download station"], displayName: "Download Station", symbolName: "arrow.down.circle", badgeText: "DL", category: .downloads, defaultVisibilityReason: .synologyApp),
+        Rule(["synology photos", "photostation", "photos"], displayName: "Synology Photos", symbolName: "photo", badgeText: "PH", category: .media, defaultVisibilityReason: .synologyApp),
+        Rule(["synology drive", "cloudstation", "cloudstationserver"], displayName: "Synology Drive", symbolName: "externaldrive", badgeText: "DR", category: .favorites, defaultVisibilityReason: .synologyApp),
+        Rule(["video station"], displayName: "Video Station", symbolName: "play.rectangle", badgeText: "VD", category: .media, defaultVisibilityReason: .synologyApp),
+        Rule(["audio station"], displayName: "Audio Station", symbolName: "music.note.list", badgeText: "AU", category: .media, defaultVisibilityReason: .synologyApp),
+        Rule(["surveillance station"], symbolName: "video", category: .tools, defaultVisibilityReason: .synologyApp),
+        Rule(["virtual machine manager"], displayName: "Virtual Machine Manager", symbolName: "desktopcomputer", badgeText: "VM", category: .tools, defaultVisibilityReason: .synologyApp),
+        Rule(["web station"], symbolName: "globe", category: .network),
+        Rule(["jellyfin"], displayName: "Jellyfin", symbolName: "play.rectangle", badgeText: "JF", category: .media, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["emby"], displayName: "Emby", symbolName: "play.tv", badgeText: "EM", category: .media, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["plex", "plexmediaserver"], displayName: "Plex", symbolName: "play.circle", badgeText: "PX", category: .media, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["navidrome"], displayName: "Navidrome", symbolName: "music.note.list", badgeText: "NV", category: .media, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["audiobookshelf"], displayName: "Audiobookshelf", symbolName: "books.vertical", badgeText: "AB", category: .media, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["immich"], displayName: "Immich", symbolName: "photo.on.rectangle", badgeText: "IM", category: .media, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["photoprism"], displayName: "PhotoPrism", symbolName: "camera.aperture", badgeText: "PP", category: .media, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["qbittorrent"], displayName: "qBittorrent", symbolName: "arrow.down.circle", badgeText: "QB", category: .downloads, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["transmission"], displayName: "Transmission", symbolName: "arrow.down.circle", badgeText: "TR", category: .downloads, prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["aria2"], displayName: "Aria2", symbolName: "arrow.down.circle", badgeText: "A2", category: .downloads, prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["prowlarr"], displayName: "Prowlarr", symbolName: "magnifyingglass.circle", badgeText: "PR", category: .downloads, prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["radarr"], displayName: "Radarr", symbolName: "film", badgeText: "RD", category: .media, prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["sonarr"], displayName: "Sonarr", symbolName: "tv", badgeText: "SN", category: .media, prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["lidarr"], displayName: "Lidarr", symbolName: "music.mic", badgeText: "LD", category: .media, prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["readarr"], displayName: "Readarr", symbolName: "book", badgeText: "RA", category: .media, prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["bazarr"], displayName: "Bazarr", symbolName: "captions.bubble", badgeText: "BZ", category: .media, prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["overseerr"], displayName: "Overseerr", symbolName: "person.badge.plus", badgeText: "OS", category: .downloads, prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["tinymediamanager", "tiny media manager"], displayName: "tinyMediaManager", symbolName: "film.stack", badgeText: "TM", category: .tools, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["homeassistant", "home assistant", "home-assistant"], displayName: "Home Assistant", symbolName: "house", badgeText: "HA", category: .tools, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["homebridge"], displayName: "Homebridge", symbolName: "house", badgeText: "HB", category: .tools, prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["portainer"], displayName: "Portainer", symbolName: "square.stack.3d.up", badgeText: "PT", category: .tools, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["homepage"], displayName: "Homepage", symbolName: "house", badgeText: "HP", category: .favorites, prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["codeserver", "code-server", "codexserver", "codex-server"], symbolName: "terminal", badgeText: "CD", category: .tools, prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["jupyter"], displayName: "Jupyter", symbolName: "terminal", badgeText: "JP", category: .tools, prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["grafana"], displayName: "Grafana", symbolName: "chart.xyaxis.line", badgeText: "GF", category: .tools, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["gitea"], displayName: "Gitea", symbolName: "point.3.connected.trianglepath.dotted", badgeText: "GT", category: .tools, prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["gitlab"], displayName: "GitLab", symbolName: "point.3.connected.trianglepath.dotted", badgeText: "GL", category: .tools, prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["nginx proxy", "nginxproxymanager", "reverse proxy", "traefik", "caddy"], symbolName: "lock.rectangle", category: .network, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["metacubexd", "metacube", "mihomo", "clash"], displayName: "MetaCubeXD", symbolName: "network", badgeText: "MX", category: .network, prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["tailscale", "zerotier", "vpn"], symbolName: "lock.shield", category: .network),
+        Rule(["adguard"], displayName: "AdGuard", symbolName: "shield", badgeText: "AG", category: .network, prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["pihole", "pi-hole"], displayName: "Pi-hole", symbolName: "shield", badgeText: "PH", category: .network, prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["vaultwarden"], displayName: "Vaultwarden", symbolName: "key", badgeText: "VW", category: .tools, prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["bitwarden"], displayName: "Bitwarden", symbolName: "key", badgeText: "BW", category: .tools, prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["mariadb", "mysql", "postgres"], symbolName: "cylinder", category: .tools),
+        Rule(["nextcloud"], displayName: "Nextcloud", symbolName: "cloud", badgeText: "NC", category: .tools, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["paperlessngx", "paperless"], displayName: "Paperless-ngx", symbolName: "doc.text", badgeText: "PN", category: .tools, prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["calibreweb"], displayName: "Calibre-Web", symbolName: "books.vertical", badgeText: "CW", category: .media, prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["mealie"], displayName: "Mealie", symbolName: "fork.knife", badgeText: "ML", category: .tools, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["uptimekuma", "healthchecks", "uptime"], symbolName: "waveform.path.ecg", category: .tools, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["calendar"], symbolName: "calendar", category: .tools),
+        Rule(["contacts"], symbolName: "person.crop.circle", category: .tools),
+        Rule(["note station"], symbolName: "note.text", category: .tools)
     ]
 
     private static func compactIdentifier(_ value: String) -> String {

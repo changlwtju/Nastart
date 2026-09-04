@@ -86,7 +86,7 @@ struct MineView: View {
                             ContextInfoButton(message: signOutInfoText)
                         }
 
-                        if !connectionStore.isConnected && dataStore.isRefreshing {
+                        if !connectionStore.isConnected && dataStore.isRestoringConnection {
                             Label("mine.sign_out.restoring", systemImage: "arrow.triangle.2.circlepath")
                                 .font(.footnote)
                                 .foregroundStyle(.secondary)

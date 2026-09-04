@@ -204,6 +204,123 @@ final class NonPlaybackPolicyTests: XCTestCase {
         XCTAssertTrue(apiPortService.usesSystemInAppBrowser)
     }
 
+    func testArrSuiteServicesUseDistinctLaunchpadIconIdentities() {
+        let services = [
+            LaunchpadService(
+                id: UUID(),
+                name: "Prowlarr",
+                iconText: "PR",
+                category: .downloads,
+                status: .online,
+                subtitle: "linuxserver/prowlarr",
+                detail: "Agent · 9696",
+                isMedia: false,
+                cpu: nil,
+                memoryText: nil,
+                source: .container
+            ),
+            LaunchpadService(
+                id: UUID(),
+                name: "Radarr",
+                iconText: "RD",
+                category: .media,
+                status: .online,
+                subtitle: "linuxserver/radarr",
+                detail: "Agent · 7878",
+                isMedia: false,
+                cpu: nil,
+                memoryText: nil,
+                source: .container
+            ),
+            LaunchpadService(
+                id: UUID(),
+                name: "Sonarr",
+                iconText: "SN",
+                category: .media,
+                status: .online,
+                subtitle: "linuxserver/sonarr",
+                detail: "Agent · 8989",
+                isMedia: false,
+                cpu: nil,
+                memoryText: nil,
+                source: .container
+            )
+        ]
+
+        XCTAssertEqual(Set(services.map(\.symbolName)).count, services.count)
+        XCTAssertEqual(services.compactMap(\.iconBadgeText), ["PR", "RD", "SN"])
+    }
+
+    func testServiceIconRegistryCoversCommonHomeLabFixtures() {
+        let fixtures: [(name: String, symbol: String, badge: String?, category: ServiceCategory)] = [
+            ("Jellyfin", "play.rectangle", "JF", .media),
+            ("Plex", "play.circle", "PX", .media),
+            ("Navidrome", "music.note.list", "NV", .media),
+            ("Audiobookshelf", "books.vertical", "AB", .media),
+            ("Immich", "photo.on.rectangle", "IM", .media),
+            ("PhotoPrism", "camera.aperture", "PP", .media),
+            ("qBittorrent", "arrow.down.circle", "QB", .downloads),
+            ("Transmission", "arrow.down.circle", "TR", .downloads),
+            ("Prowlarr", "magnifyingglass.circle", "PR", .downloads),
+            ("Radarr", "film", "RD", .media),
+            ("Sonarr", "tv", "SN", .media),
+            ("Lidarr", "music.mic", "LD", .media),
+            ("Readarr", "book", "RA", .media),
+            ("Bazarr", "captions.bubble", "BZ", .media),
+            ("Overseerr", "person.badge.plus", "OS", .downloads),
+            ("Home Assistant", "house", "HA", .tools),
+            ("Portainer", "square.stack.3d.up", "PT", .tools),
+            ("Grafana", "chart.xyaxis.line", "GF", .tools),
+            ("Paperless-ngx", "doc.text", "PN", .tools),
+            ("Vaultwarden", "key", "VW", .tools),
+            ("Nextcloud", "cloud", "NC", .tools),
+            ("Calibre-Web", "books.vertical", "CW", .media),
+            ("Mealie", "fork.knife", "ML", .tools),
+            ("AdGuard", "shield", "AG", .network),
+            ("Uptime Kuma", "waveform.path.ecg", nil, .tools)
+        ]
+
+        for fixture in fixtures {
+            let identity = ServiceIconRegistry.identity(
+                name: fixture.name,
+                subtitle: "linuxserver/\(fixture.name.lowercased())"
+            )
+            XCTAssertEqual(identity.symbolName, fixture.symbol, fixture.name)
+            XCTAssertEqual(identity.badgeText, fixture.badge, fixture.name)
+            XCTAssertEqual(identity.category, fixture.category, fixture.name)
+        }
+    }
+
+    func testServiceIconRegistryDoesNotTreatGenericDSMPackageTextAsDSM() {
+        let identity = ServiceIconRegistry.identity(
+            name: "Package Center",
+            subtitle: "DSM package",
+            detail: "package metadata"
+        )
+
+        XCTAssertNotEqual(identity.symbolName, "server.rack")
+        XCTAssertNotEqual(identity.displayName, "DSM")
+    }
+
+    func testUnknownLaunchpadServiceFallsBackToCategorySymbolWithBadge() {
+        let service = LaunchpadService(
+            id: UUID(),
+            name: "Custom Backup",
+            iconText: "CB",
+            category: .tools,
+            status: .online,
+            subtitle: "custom/image",
+            detail: "Agent · 8181",
+            isMedia: false,
+            cpu: nil,
+            memoryText: nil,
+            source: .container
+        )
+
+        XCTAssertEqual(service.symbolName, ServiceCategory.tools.symbolName)
+        XCTAssertEqual(service.iconBadgeText, "CB")
+    }
+
     func testDownloaderServiceKeepsDefaultWebProfile() {
         let service = LaunchpadService(
             id: UUID(),
@@ -287,6 +404,34 @@ final class NonPlaybackPolicyTests: XCTestCase {
                 hasEndpoint: true
             )
         )
+        XCTAssertTrue(
+            LaunchpadDefaultVisibilityPolicy.shouldShowContainer(
+                name: "homeassistant",
+                image: "ghcr.io/home-assistant/home-assistant:stable",
+                hasEndpoint: true
+            )
+        )
+        XCTAssertTrue(
+            LaunchpadDefaultVisibilityPolicy.shouldShowContainer(
+                name: "paperless",
+                image: "ghcr.io/paperless-ngx/paperless-ngx:latest",
+                hasEndpoint: true
+            )
+        )
+        XCTAssertEqual(
+            LaunchpadDefaultVisibilityPolicy.packageReason(
+                name: "Synology Photos",
+                hasEndpoint: true
+            ),
+            .synologyApp
+        )
+        XCTAssertFalse(
+            LaunchpadDefaultVisibilityPolicy.shouldShowContainer(
+                name: "postgres",
+                image: "postgres:16",
+                hasEndpoint: true
+            )
+        )
         XCTAssertFalse(
             LaunchpadDefaultVisibilityPolicy.shouldShowContainer(
                 name: "random-worker",
@@ -294,6 +439,71 @@ final class NonPlaybackPolicyTests: XCTestCase {
                 hasEndpoint: true
             )
         )
+    }
+
+    func testAgentSnapshotMergerUsesSharedServiceRegistryForVisibility() throws {
+        let agent = AgentSnapshot(
+            agentId: "agent-1",
+            apiVersion: 1,
+            agentVersion: "0.1.0",
+            timestamp: 1_800_000_000,
+            host: AgentSnapshot.Host(
+                hostname: "nas",
+                platform: "linux",
+                platformRelease: "7.2",
+                architecture: "x86_64",
+                loadAverage: [0.1, 0.2, 0.3],
+                memory: AgentSnapshot.Host.Memory(totalBytes: 8_000, usedBytes: 4_000),
+                storage: AgentSnapshot.Host.Storage(totalBytes: 16_000, usedBytes: 8_000, freeBytes: 8_000)
+            ),
+            containers: [
+                AgentSnapshot.Container(
+                    id: "paperless-container",
+                    name: "paperless",
+                    image: "ghcr.io/paperless-ngx/paperless-ngx:latest",
+                    state: "running",
+                    status: "Up",
+                    ports: ["8000:8000/tcp"],
+                    endpoints: [AgentSnapshot.Container.Endpoint(scheme: "http", port: 8000)]
+                ),
+                AgentSnapshot.Container(
+                    id: "postgres-container",
+                    name: "postgres",
+                    image: "postgres:16",
+                    state: "running",
+                    status: "Up",
+                    ports: ["5432:5432/tcp"],
+                    endpoints: [AgentSnapshot.Container.Endpoint(scheme: "http", port: 5432)]
+                )
+            ],
+            inventory: AgentSnapshot.Inventory(dockerAvailable: true, dockerError: nil)
+        )
+
+        let merged = AgentSnapshotMerger.merge(
+            dsm: Self.emptyDSMSnapshot(),
+            agent: agent,
+            agentBaseURL: URL(string: "http://192.168.1.20:8787")!,
+            health: AgentHealthSnapshot(handshake: AgentHandshake(
+                agentId: "agent-1",
+                apiVersion: 1,
+                agentVersion: "0.1.0",
+                hostIdentity: "nas",
+                providerHint: "generic-linux",
+                permissionLevel: "read",
+                capabilities: ["docker.containers.read", "services.detect"],
+                containerCount: 2,
+                timestamp: 1_800_000_000
+            ))
+        )
+
+        let paperless = try XCTUnwrap(merged.services.first { $0.name == "Paperless-ngx" })
+        XCTAssertEqual(paperless.iconText, "PN")
+        XCTAssertEqual(paperless.category, .tools)
+        XCTAssertTrue(paperless.isLaunchpadVisible)
+
+        let postgres = try XCTUnwrap(merged.services.first { $0.name == "postgres" })
+        XCTAssertEqual(postgres.category, .tools)
+        XCTAssertFalse(postgres.isLaunchpadVisible)
     }
 
     func testServiceCategoryOrderingRestoresMissingCategories() {
@@ -396,6 +606,42 @@ final class NonPlaybackPolicyTests: XCTestCase {
         XCTAssertEqual(
             CloudSyncMergePolicy.decision(remoteUpdatedAt: nil, localChangedAt: localDate),
             .uploadLocal
+        )
+    }
+
+    private static func emptyDSMSnapshot() -> DSMDataSnapshot {
+        DSMDataSnapshot(
+            device: NASDevice(
+                id: UUID(),
+                name: "DS920+",
+                subtitle: "DSM",
+                model: nil,
+                dsmVersion: nil,
+                mode: .dsmOnly,
+                cpu: nil,
+                memory: nil,
+                memoryUsedText: nil,
+                memoryTotalText: nil,
+                storageUsed: nil,
+                storageUsedText: nil,
+                storageTotalText: nil,
+                storageFreeText: "-",
+                uptimeMinutes: nil,
+                temperatureText: nil,
+                certificate: nil,
+                sshStatus: .unavailable
+            ),
+            services: [],
+            containers: [],
+            files: [],
+            tasks: [],
+            videoLibraryItems: [],
+            audioLibraryItems: [],
+            discoveredDevices: [],
+            containerInventoryAvailable: false,
+            packageInventoryAvailable: false,
+            reverseProxyInventoryAvailable: false,
+            agentHealth: nil
         )
     }
 }

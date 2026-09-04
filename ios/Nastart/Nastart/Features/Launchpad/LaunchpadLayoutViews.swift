@@ -76,50 +76,6 @@ struct LaunchpadDataStatusBanner: View {
     }
 }
 
-struct HiddenServicesRestoreStrip: View {
-    let count: Int
-    let action: () -> Void
-
-    var body: some View {
-        Button(action: action) {
-            HStack(spacing: 10) {
-                Image(systemName: "eye")
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(AppTheme.accent)
-                    .frame(width: 30, height: 30)
-                    .background(AppTheme.accent.opacity(0.12))
-                    .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("launchpad.services.hidden")
-                        .font(.subheadline.weight(.semibold))
-                    Text(String.localizedStringWithFormat(
-                        NSLocalizedString("launchpad.services.hidden_count", comment: ""),
-                        count
-                    ))
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                }
-
-                Spacer()
-
-                Text("launchpad.service.show")
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(AppTheme.accent)
-            }
-            .padding(12)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Color(.secondarySystemGroupedBackground))
-            .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
-            .overlay {
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .stroke(AppTheme.hairline, lineWidth: 1)
-            }
-        }
-        .buttonStyle(.plain)
-    }
-}
-
 enum LaunchpadReminderPolicy {
     static let certificateWarningDays = 14
 }
@@ -134,24 +90,16 @@ struct CommandCenterLaunchpad: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            if !isConnected {
-                Label("state.not_connected", systemImage: "wifi.slash")
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(.secondary)
-            }
-            HStack(alignment: .top, spacing: options.compactMetrics ? 8 : 10) {
-                CommandMetricRail(device: device, compact: options.compactMetrics)
+            DeviceSummaryPanel(device: device, compact: options.compactMetrics, isConnected: isConnected)
 
-                VStack(alignment: .leading, spacing: 12) {
-                    SectionHeader(titleKey: "launchpad.command.quick_actions", trailingKey: "launchpad.section.generated")
-                    ForEach(categories) { category in
-                        let categoryServices = services.filter { $0.category == category }
-                        if !categoryServices.isEmpty {
-                            CommandCategorySection(category: category, services: categoryServices, options: options, initiallyExpanded: groupDefaultExpanded(category))
-                        }
+            VStack(alignment: .leading, spacing: 12) {
+                SectionHeader(titleKey: "launchpad.command.quick_actions", trailingKey: "launchpad.section.generated")
+                ForEach(categories) { category in
+                    let categoryServices = services.filter { $0.category == category }
+                    if !categoryServices.isEmpty {
+                        CommandCategorySection(category: category, services: categoryServices, options: options, initiallyExpanded: groupDefaultExpanded(category))
                     }
                 }
-                .layoutPriority(1)
             }
 
             if shouldShowCertificateReminder {
@@ -168,66 +116,6 @@ struct CommandCenterLaunchpad: View {
     private var shouldShowCertificateReminder: Bool {
         guard let days = device.certificateDaysRemaining else { return false }
         return days <= LaunchpadReminderPolicy.certificateWarningDays
-    }
-}
-
-private struct CommandMetricRail: View {
-    let device: NASDevice
-    let compact: Bool
-
-    var body: some View {
-        VStack(spacing: compact ? 6 : 8) {
-            CommandRailMetric(titleKey: "metric.cpu", value: launchpadPercentText(device.cpu), symbolName: "cpu", progress: compact ? nil : device.cpu, compact: compact)
-            CommandRailMetric(titleKey: "metric.memory", value: launchpadPercentText(device.memory), symbolName: "memorychip", progress: compact ? nil : device.memory, compact: compact)
-            CommandRailMetric(titleKey: "metric.storage", value: launchpadPercentText(device.storageUsed), symbolName: "internaldrive", progress: compact ? nil : device.storageUsed, compact: compact)
-        }
-        .frame(width: compact ? 52 : 60)
-        .padding(.vertical, compact ? 10 : 12)
-        .background(AppTheme.primaryAction)
-        .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
-        .overlay {
-            RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .stroke(.white.opacity(0.12), lineWidth: 1)
-        }
-        .shadow(color: .black.opacity(0.12), radius: 14, y: 8)
-    }
-}
-
-private struct CommandRailMetric: View {
-    let titleKey: LocalizedStringKey
-    let value: String
-    let symbolName: String
-    let progress: Double?
-    let compact: Bool
-
-    var body: some View {
-        VStack(spacing: compact ? 3 : 5) {
-            Image(systemName: symbolName)
-                .font(.caption2.weight(.medium))
-                .foregroundStyle(.white.opacity(0.7))
-
-            Text(value)
-                .font((compact ? Font.caption : Font.subheadline).weight(.semibold))
-                .foregroundStyle(.white)
-                .lineLimit(1)
-                .minimumScaleFactor(0.66)
-            if !compact {
-                Text(titleKey)
-                    .font(.caption2)
-                    .foregroundStyle(.white.opacity(0.58))
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.66)
-            }
-
-            if let progress {
-                ProgressView(value: progress)
-                    .tint(.white.opacity(0.82))
-                    .scaleEffect(x: 1, y: 0.64)
-            }
-        }
-        .frame(maxWidth: .infinity)
-        .padding(.horizontal, compact ? 4 : 6)
-        .padding(.vertical, compact ? 8 : 10)
     }
 }
 
@@ -381,7 +269,7 @@ struct GlassDeckLaunchpad: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            GlassHeroPanel(device: device, compact: options.compactMetrics, isConnected: isConnected)
+            DeviceSummaryPanel(device: device, compact: options.compactMetrics, isConnected: isConnected)
 
             if shouldShowCertificateReminder {
                 NavigationLink {
@@ -487,68 +375,6 @@ private struct GlassCollapsedGroupRow: View {
                 .stroke(.white.opacity(0.58), lineWidth: 1)
         }
         .shadow(color: .black.opacity(0.05), radius: 10, y: 5)
-    }
-}
-
-private struct GlassHeroPanel: View {
-    let device: NASDevice
-    let compact: Bool
-    let isConnected: Bool
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: compact ? 12 : 16) {
-            HStack {
-                Label {
-                    Text(LocalizedStringKey(summaryKey))
-                } icon: {
-                    Image(systemName: summarySymbol)
-                }
-                    .font(.subheadline.weight(.semibold))
-                Spacer()
-                if let uptimeMinutes = device.uptimeMinutes {
-                    LiveUptimeText(baseMinutes: uptimeMinutes)
-                        .id(device.id)
-                        .font(.caption.weight(.medium))
-                        .foregroundStyle(.secondary)
-                }
-            }
-
-            if compact {
-                MetricPillRow(metrics: [
-                    MetricPillSpec("metric.cpu", value: launchpadPercentText(device.cpu), symbolName: "cpu"),
-                    MetricPillSpec("metric.memory_ram", value: launchpadPercentText(device.memory), symbolName: "memorychip"),
-                    MetricPillSpec("metric.storage_disk", value: launchpadPercentText(device.storageUsed), symbolName: "internaldrive")
-                ])
-            } else {
-                MetricPillRow(metrics: [
-                    MetricPillSpec("metric.cpu", value: launchpadPercentText(device.cpu), progress: device.cpu, symbolName: "cpu"),
-                    MetricPillSpec("metric.memory_ram", value: launchpadPercentText(device.memory), progress: device.memory, symbolName: "memorychip"),
-                    MetricPillSpec("metric.storage_disk", value: launchpadPercentText(device.storageUsed), progress: device.storageUsed, symbolName: "internaldrive")
-                ])
-            }
-        }
-        .padding(19)
-        .background(.regularMaterial)
-        .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
-        .overlay {
-            RoundedRectangle(cornerRadius: 28, style: .continuous)
-                .stroke(.white.opacity(0.74), lineWidth: 1)
-        }
-        .shadow(color: .black.opacity(0.07), radius: 20, y: 10)
-    }
-
-    private var summaryKey: String {
-        guard isConnected else { return "state.not_connected" }
-        return activeWarning?.titleKey ?? "launchpad.summary.normal"
-    }
-
-    private var summarySymbol: String {
-        guard isConnected else { return "wifi.slash" }
-        return activeWarning?.symbolName ?? "checkmark.circle.fill"
-    }
-
-    private var activeWarning: LaunchpadResourceWarning? {
-        LaunchpadResourceWarning.primary(for: device)
     }
 }
 

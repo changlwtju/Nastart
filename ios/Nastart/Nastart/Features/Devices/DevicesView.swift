@@ -13,16 +13,6 @@ struct DevicesView: View {
         NavigationStack {
             List {
                 Section {
-                    DeviceHealthHeader(
-                        device: dataStore.device,
-                        isConnected: dataStore.isDSMAvailableForDisplay
-                    )
-                    .listRowInsets(EdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0))
-                    .listRowBackground(Color.clear)
-                    .listRowSeparator(.hidden)
-                }
-
-                Section {
                     NavigationLink {
                         DeviceStatusView(device: dataStore.device)
                     } label: {
@@ -158,126 +148,6 @@ struct DevicesView: View {
                 .font(.caption.weight(.medium))
                 .foregroundStyle(.secondary)
         }
-    }
-}
-
-private struct DeviceHealthHeader: View {
-    let device: NASDevice
-    let isConnected: Bool
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 18) {
-            HStack(alignment: .center, spacing: 12) {
-                Image(systemName: "server.rack")
-                    .font(.system(size: 19, weight: .semibold))
-                    .foregroundStyle(AppTheme.accent)
-                    .frame(width: 42, height: 42)
-                    .background(AppTheme.accent.opacity(0.11))
-                    .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-                    .accessibilityHidden(true)
-
-                VStack(alignment: .leading, spacing: 3) {
-                    Text(device.name)
-                        .font(.title3.weight(.bold))
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.82)
-                    Text(device.subtitle)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.82)
-                }
-                .layoutPriority(1)
-
-                Spacer(minLength: 8)
-
-                DeviceConnectionBadge(isConnected: isConnected)
-            }
-
-            HStack(alignment: .top, spacing: 10) {
-                DeviceHealthMetric(
-                    titleKey: "metric.cpu",
-                    value: devicePercentText(device.cpu),
-                    progress: device.cpu,
-                    symbol: "cpu"
-                )
-                DeviceHealthMetric(
-                    titleKey: "metric.memory_ram",
-                    value: devicePercentText(device.memory),
-                    progress: device.memory,
-                    symbol: "memorychip"
-                )
-                DeviceHealthMetric(
-                    titleKey: "metric.storage_disk",
-                    value: devicePercentText(device.storageUsed),
-                    progress: device.storageUsed,
-                    symbol: "internaldrive"
-                )
-            }
-        }
-        .padding(18)
-        .background(Color(.secondarySystemGroupedBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-        .overlay {
-            RoundedRectangle(cornerRadius: 8, style: .continuous)
-                .stroke(AppTheme.hairline, lineWidth: 1)
-        }
-    }
-}
-
-private struct DeviceConnectionBadge: View {
-    let isConnected: Bool
-
-    var body: some View {
-        HStack(spacing: 6) {
-            Circle()
-                .fill(isConnected ? Color.green : Color.secondary)
-                .frame(width: 7, height: 7)
-            Text(LocalizedStringKey(isConnected ? "status.online" : "state.not_connected"))
-                .lineLimit(1)
-        }
-        .font(.caption.weight(.semibold))
-        .foregroundStyle(isConnected ? Color.green : Color.secondary)
-        .padding(.horizontal, 10)
-        .padding(.vertical, 7)
-        .background((isConnected ? Color.green : Color.secondary).opacity(0.1))
-        .clipShape(Capsule())
-    }
-}
-
-private struct DeviceHealthMetric: View {
-    let titleKey: LocalizedStringKey
-    let value: String
-    let progress: Double?
-    let symbol: String
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 7) {
-            HStack(spacing: 5) {
-                Image(systemName: symbol)
-                    .font(.caption2.weight(.medium))
-                Text(titleKey)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.75)
-            }
-            .font(.caption)
-            .foregroundStyle(.secondary)
-
-            Text(value)
-                .font(.title3.weight(.semibold))
-                .lineLimit(1)
-                .minimumScaleFactor(0.8)
-
-            ProgressView(value: normalizedProgress)
-                .tint(AppTheme.accent)
-                .scaleEffect(x: 1, y: 0.72)
-                .opacity(progress == nil ? 0.35 : 1)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-    }
-
-    private var normalizedProgress: Double {
-        min(max(progress ?? 0, 0), 1)
     }
 }
 
@@ -598,37 +468,48 @@ private struct ContainerServiceIcon: View {
     let size: CGFloat
 
     var body: some View {
-        Image(systemName: symbolName)
-            .font(.system(size: size * 0.4, weight: .medium))
-            .foregroundStyle(AppTheme.accent)
-            .frame(width: size, height: size)
-            .background(AppTheme.accent.opacity(0.1))
-            .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-            .overlay {
-                RoundedRectangle(cornerRadius: 8, style: .continuous)
-                    .stroke(AppTheme.hairline, lineWidth: 1)
+        ZStack(alignment: .bottomTrailing) {
+            Image(systemName: symbolName)
+                .font(.system(size: size * 0.4, weight: .medium))
+                .foregroundStyle(AppTheme.accent)
+                .frame(width: size, height: size)
+                .background(AppTheme.accent.opacity(0.1))
+                .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                .overlay {
+                    RoundedRectangle(cornerRadius: 8, style: .continuous)
+                        .stroke(AppTheme.hairline, lineWidth: 1)
+                }
+
+            if let badgeText {
+                Text(badgeText)
+                    .font(.system(size: max(size * 0.21, 8), weight: .bold, design: .rounded))
+                    .foregroundStyle(.white)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.68)
+                    .frame(width: size * 0.42, height: size * 0.32)
+                    .background(AppTheme.accentDeep)
+                    .clipShape(RoundedRectangle(cornerRadius: size * 0.10, style: .continuous))
+                    .overlay {
+                        RoundedRectangle(cornerRadius: size * 0.10, style: .continuous)
+                            .stroke(Color(.systemBackground), lineWidth: 1)
+                    }
+                    .offset(x: size * 0.08, y: size * 0.08)
             }
-            .accessibilityHidden(true)
+        }
+        .frame(width: size, height: size)
+        .accessibilityHidden(true)
     }
 
     private var symbolName: String {
-        let normalizedName = name.lowercased()
-        let mappings: [(keywords: [String], symbol: String)] = [
-            (["jellyfin", "emby", "plex"], "play.rectangle"),
-            (["navidrome", "music"], "music.note.list"),
-            (["qbittorrent", "transmission", "aria2", "download"], "arrow.down.circle"),
-            (["homeassistant", "home-assistant", "home assistant", "homepage"], "house"),
-            (["code-server", "codex-server", "jupyter"], "terminal"),
-            (["sonarr", "radarr", "prowlarr", "mediamanager"], "film.stack"),
-            (["nginx", "traefik", "caddy", "proxy"], "lock.rectangle"),
-            (["adguard", "pihole", "pi-hole"], "shield"),
-            (["vaultwarden", "bitwarden"], "key"),
-            (["immich", "photo"], "photo"),
-            (["ddns", "tailscale", "zerotier", "mihomo", "clash"], "network")
-        ]
-        return mappings.first { mapping in
-            mapping.keywords.contains { normalizedName.contains($0) }
-        }?.symbol ?? "shippingbox"
+        iconIdentity.symbolName ?? "shippingbox"
+    }
+
+    private var badgeText: String? {
+        return iconIdentity.badgeText
+    }
+
+    private var iconIdentity: ServiceIconIdentity {
+        ServiceIconRegistry.identity(name: name)
     }
 }
 

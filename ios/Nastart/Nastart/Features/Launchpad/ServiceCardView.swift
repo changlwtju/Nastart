@@ -55,17 +55,36 @@ struct ServiceIconView: View {
     var size: CGFloat = 36
 
     var body: some View {
-        Image(systemName: service.symbolName)
-            .font(.system(size: size * 0.4, weight: .medium))
-            .foregroundStyle(AppTheme.accent)
-            .frame(width: size, height: size)
-            .background(AppTheme.accent.opacity(0.1))
-            .clipShape(RoundedRectangle(cornerRadius: size * 0.3, style: .continuous))
-            .overlay {
-                RoundedRectangle(cornerRadius: size * 0.3, style: .continuous)
-                    .stroke(AppTheme.hairline, lineWidth: 1)
+        ZStack(alignment: .bottomTrailing) {
+            Image(systemName: service.symbolName)
+                .font(.system(size: size * 0.4, weight: .medium))
+                .foregroundStyle(AppTheme.accent)
+                .frame(width: size, height: size)
+                .background(AppTheme.accent.opacity(0.1))
+                .clipShape(RoundedRectangle(cornerRadius: size * 0.3, style: .continuous))
+                .overlay {
+                    RoundedRectangle(cornerRadius: size * 0.3, style: .continuous)
+                        .stroke(AppTheme.hairline, lineWidth: 1)
+                }
+
+            if let badgeText = service.iconBadgeText {
+                Text(badgeText)
+                    .font(.system(size: max(size * 0.21, 8), weight: .bold, design: .rounded))
+                    .foregroundStyle(.white)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.68)
+                    .frame(width: size * 0.42, height: size * 0.32)
+                    .background(AppTheme.accentDeep)
+                    .clipShape(RoundedRectangle(cornerRadius: size * 0.10, style: .continuous))
+                    .overlay {
+                        RoundedRectangle(cornerRadius: size * 0.10, style: .continuous)
+                            .stroke(Color(.systemBackground), lineWidth: 1)
+                    }
+                    .offset(x: size * 0.08, y: size * 0.08)
             }
-            .accessibilityHidden(true)
+        }
+        .frame(width: size, height: size)
+        .accessibilityHidden(true)
     }
 }
 
@@ -104,47 +123,36 @@ extension LaunchpadService {
     }
 
     var curatedSymbolName: String? {
-        let normalizedName = name.lowercased()
-        let mappings: [(keywords: [String], symbol: String)] = [
-            (["dsm"], "server.rack"),
-            (["file station", "file browser", "文件"], "folder"),
-            (["synology drive", "cloud station"], "externaldrive"),
-            (["synology photos", "photo station", "photos"], "photo"),
-            (["audio station", "navidrome", "music"], "music.note.list"),
-            (["video station", "jellyfin"], "play.rectangle"),
-            (["emby"], "play.tv"),
-            (["plex"], "play.circle"),
-            (["download station", "qbittorrent", "transmission", "aria2"], "arrow.down.circle"),
-            (["webdav"], "folder"),
-            (["vpn", "tailscale", "zerotier"], "lock.shield"),
-            (["virtual machine", "vm manager"], "desktopcomputer"),
-            (["mariadb", "mysql", "postgres"], "cylinder"),
-            (["nginx proxy", "reverse proxy", "traefik", "caddy"], "lock.rectangle"),
-            (["adguard", "pihole", "pi-hole"], "shield"),
-            (["home assistant", "homeassistant", "home-assistant", "homebridge"], "house"),
-            (["portainer"], "square.stack.3d.up"),
-            (["code-server", "codex-server", "jupyter", "terminal"], "terminal"),
-            (["tinymediamanager", "tiny media manager"], "film.stack"),
-            (["metacubexd", "metacube", "mihomo", "clash"], "network"),
-            (["gitea", "gitlab", "github"], "point.3.connected.trianglepath.dotted"),
-            (["uptime", "healthchecks"], "waveform.path.ecg"),
-            (["vaultwarden", "bitwarden"], "key"),
-            (["synology mail", "mail server"], "envelope"),
-            (["calendar"], "calendar"),
-            (["contacts"], "person.crop.circle"),
-            (["note station"], "note.text"),
-            (["surveillance station"], "video"),
-            (["web station"], "globe"),
-            (["container manager", "docker", "container"], "shippingbox")
-        ]
-
-        return mappings.first { mapping in
-            mapping.keywords.contains { normalizedName.contains($0) }
-        }?.symbol
+        iconIdentity.symbolName
     }
 
     var symbolName: String {
         curatedSymbolName ?? category.symbolName
+    }
+
+    var iconBadgeText: String? {
+        let badge = iconIdentity.badgeText
+            ?? ServiceIconRegistry.fallbackBadgeText(iconText: iconText, name: name)
+        guard !badge.isEmpty, name != "DSM" else { return nil }
+        if curatedSymbolName == nil { return badge }
+        switch source {
+        case .container, .reverseProxy, .manual:
+            return badge
+        case .dsm, .package:
+            return iconIdentity.prefersBadge ? badge : nil
+        }
+    }
+
+    private var iconIdentity: ServiceIconIdentity {
+        ServiceIconRegistry.identity(
+            name: name,
+            subtitle: subtitle,
+            detail: detail,
+            endpointHosts: [
+                endpoint?.host ?? "",
+                alternateEndpoint?.host ?? ""
+            ]
+        )
     }
 
     var isDeveloperConsole: Bool {

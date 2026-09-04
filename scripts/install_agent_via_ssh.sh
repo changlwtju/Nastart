@@ -44,7 +44,24 @@ ssh "${ssh_options[@]}" "$target" "install -d -m 700 \"\$HOME/.nastart-agent\""
 tar -C "$agent_dir" -cf - nastart_agent.py Dockerfile compose.yaml | \
   ssh "${ssh_options[@]}" "$target" "tar -xf - -C \"\$HOME/.nastart-agent\""
 
-remote_command="cd \"\$HOME/.nastart-agent\" && if command -v docker >/dev/null 2>&1; then NASTART_PAIRING_CODE=$pairing_code docker compose up -d --build; elif command -v python3 >/dev/null 2>&1; then install -d -m 700 \"\$HOME/.nastart-agent/data\"; pkill -f '[n]astart_agent.py' >/dev/null 2>&1 || true; nohup env NASTART_PAIRING_CODE=$pairing_code python3 nastart_agent.py --data-dir \"\$HOME/.nastart-agent/data\" >\"\$HOME/.nastart-agent/agent.log\" 2>&1 </dev/null & else echo 'Docker or Python 3 is required.' >&2; exit 1; fi"
+remote_command=$(cat <<REMOTE
+set -eu
+agent_dir="\$HOME/.nastart-agent"
+install -d -m 700 "\$agent_dir/data"
+cd "\$agent_dir"
+if command -v docker >/dev/null 2>&1 && docker compose version >/dev/null 2>&1; then
+  NASTART_PAIRING_CODE=$pairing_code docker compose -f compose.yaml up -d --build
+elif command -v python3 >/dev/null 2>&1; then
+  if [ -f agent.pid ] && kill -0 "\$(cat agent.pid)" 2>/dev/null; then kill "\$(cat agent.pid)"; fi
+  nohup env NASTART_PAIRING_CODE=$pairing_code python3 ./nastart_agent.py --host 0.0.0.0 --port 8787 --data-dir ./data >./agent.log 2>&1 </dev/null &
+  echo \$! > agent.pid
+else
+  echo 'Docker Compose or Python 3 is required.' >&2
+  exit 69
+fi
+echo NASTART_AGENT_READY
+REMOTE
+)
 ssh "${ssh_options[@]}" "$target" "$remote_command"
 
 echo "Nastart Agent deployed. Pair it in the app with code $pairing_code at http://$host:8787."

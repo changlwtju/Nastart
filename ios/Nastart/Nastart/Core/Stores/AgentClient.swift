@@ -397,11 +397,22 @@ enum AgentSnapshotMerger {
                 let url = components.url,
                 UserConfiguredServiceURLPolicy.allows(url)
             else { return nil }
-            let category = serviceCategory(name: container.name, image: container.image)
+            let identity = ServiceIconRegistry.identity(
+                name: container.name,
+                subtitle: container.image,
+                detail: container.ports.joined(separator: " ")
+            )
+            let category = identity.category ?? .tools
+            let name = identity.displayName ?? container.name
+            let iconText = identity.badgeText
+                ?? ServiceIconRegistry.fallbackBadgeText(
+                    iconText: String(container.name.prefix(3)).uppercased(),
+                    name: container.name
+                )
             return LaunchpadService(
                 id: stableUUID("agent-service|\(container.id)|\(endpoint.port)"),
-                name: container.name,
-                iconText: String(container.name.prefix(3)).uppercased(),
+                name: name,
+                iconText: iconText,
                 category: category,
                 status: container.state.lowercased() == "running" ? .online : .offline,
                 subtitle: container.image,
@@ -411,7 +422,13 @@ enum AgentSnapshotMerger {
                 memoryText: nil,
                 ports: container.ports,
                 endpoint: url,
-                source: .container
+                source: .container,
+                isLaunchpadVisible: container.state.lowercased() == "running"
+                    && LaunchpadDefaultVisibilityPolicy.shouldShowContainer(
+                        name: container.name,
+                        image: container.image,
+                        hasEndpoint: true
+                    )
             )
         }
     }
@@ -455,20 +472,6 @@ enum AgentSnapshotMerger {
             source: existing.source,
             isLaunchpadVisible: existing.isLaunchpadVisible
         )
-    }
-
-    private static func serviceCategory(name: String, image: String) -> ServiceCategory {
-        let value = "\(name) \(image)".lowercased()
-        if ["jellyfin", "plex", "emby", "navidrome", "immich"].contains(where: value.contains) {
-            return .media
-        }
-        if ["download", "qbittorrent", "transmission", "aria"].contains(where: value.contains) {
-            return .downloads
-        }
-        if ["adguard", "dns", "proxy", "traefik", "nginx"].contains(where: value.contains) {
-            return .network
-        }
-        return .tools
     }
 
     private static func stableUUID(_ value: String) -> UUID {

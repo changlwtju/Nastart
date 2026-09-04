@@ -422,7 +422,6 @@
 "launchpad.services.manage" = "Manage Services";
 "launchpad.services.visible" = "Shown on Launchpad";
 "launchpad.services.hidden" = "Hidden Services";
-"launchpad.services.hidden_count" = "%d hidden service can be restored here";
 "launchpad.services.search" = "Search detected services";
 "launchpad.services.reset" = "Restore Recommended Visibility";
 "launchpad.services.footer" = "By default, the launchpad shows confirmed user destinations: core NAS controls, media/download services, and recognized reachable Web UIs. System, internal, and unknown services stay hidden but can be enabled here.";
@@ -449,13 +448,6 @@
 "devices.placeholder.files" = "Shared folders and favorite paths will appear here.";
 
 "tasks.segment.title" = "Task Segment";
-"tasks.overview.eyebrow" = "Nastart Monitor";
-"tasks.overview.title" = "Tasks & Alerts";
-"tasks.overview.subtitle" = "Keep certificates, domains, and Agent health within reach.";
-"tasks.overview.pending" = "Pending";
-"tasks.overview.completed" = "Completed";
-"tasks.overview.live" = "Live data";
-"tasks.overview.cached" = "Cached data";
 "tasks.segment.pending" = "Pending";
 "tasks.segment.watching" = "Watching";
 "tasks.segment.history" = "History";

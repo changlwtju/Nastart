@@ -25,6 +25,8 @@ security, research, and project planning documents.
 | `docs/design/UI_WORKFLOW.md` | Required staged UI workflow from IA/style to wireframes, imagegen references, SwiftUI prototypes, and real-device testing |
 | `docs/design/MEDIA_SERVICE_FLOWS.md` | Jellyfin, Emby, Navidrome, media resource, and external handoff UX flows |
 | `docs/design/LAUNCHPAD_THEME_STRATEGY.md` | Quality-first launchpad theme strategy across Apple platforms |
+| `docs/development/nas-dev.md` | NAS-side development workflow, preflight scope, and Mac/Xcode handoff boundary |
+| `docs/development/service-icon-fixtures.json` | Common service recognition fixtures for launchpad icon, category, and visibility rules |
 | `docs/handoffs/2026-08-02-NAS-MEDIA-JELLYFIN-THREAD.md` | NAS connectivity, media playback, Jellyfin redesign, diagnostics, and Mac handoff context |
 | `docs/handoffs/PLAYBACK_OFFLINE_DIAGNOSTICS.md` | Offline playback trace report, policy simulator, and continuous telemetry workflow |
 | `docs/handoffs/PLAYBACK_VALIDATION_TARGETS.md` | Real-device Jellyfin playback validation targets and decision rules |
@@ -36,6 +38,7 @@ security, research, and project planning documents.
 |---|---|
 | `docs/architecture/` | iOS, Agent, Cloud, API, and data architecture |
 | `docs/design/` | Design system, UX flows, themes, icons, and prototypes |
+| `docs/development/` | NAS-side workflows, local fixtures, and static validation notes |
 | `docs/adr/` | Architecture and product decision records |
 
 ## Naming Rules

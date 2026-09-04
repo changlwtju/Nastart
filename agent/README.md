@@ -44,6 +44,18 @@ A consumed pairing code stays disabled across restarts. Deploying with a new
 six-digit code explicitly rotates pairing; failed attempts are limited to five
 per client address per minute.
 
+## Role in Nastart
+
+On Synology, Agent enhances a DSM connection rather than replacing it. DSM login
+is still the primary path for DSM identity, File Station, package APIs,
+session-backed media URLs, and Synology-specific settings. Agent contributes
+read-only local observations that DSM may not expose consistently, especially
+Docker containers, ports, host metrics, and service discovery.
+
+Agent-only support is reserved for Docker-capable non-Synology hosts and should
+be treated as an experimental compatibility path until the app has a dedicated
+provider flow for it.
+
 ## Run with Docker Compose
 
 ```sh
@@ -53,3 +65,14 @@ NASTART_PAIRING_CODE=123456 docker compose up -d --build
 The container is read-only, drops Linux capabilities, uses
 `no-new-privileges`, and mounts the Docker socket read-only. The Agent API does
 not expose container mutation or arbitrary command execution.
+
+## Smoke Test
+
+From the repository root on a Mac or NAS shell on the same LAN:
+
+```sh
+python3 scripts/agent_smoke_test.py --base-url http://NAS_HOST:8787 --pairing-code 123456
+```
+
+The smoke test checks `/healthz`, pairs when a code is supplied, validates the
+authenticated handshake, and reads a snapshot summary.

@@ -59,6 +59,9 @@ PLAYBACK_COMPARE_RUNS = ROOT / "scripts" / "playback_compare_runs.py"
 PLAYBACK_OFFLINE_DIAGNOSTICS = ROOT / "docs" / "handoffs" / "PLAYBACK_OFFLINE_DIAGNOSTICS.md"
 PLAYBACK_MAC_HANDOFF = ROOT / "docs" / "handoffs" / "MAC_PLAYBACK_DEBUG_TODO.md"
 PLAYBACK_VALIDATION_TARGETS = ROOT / "docs" / "handoffs" / "PLAYBACK_VALIDATION_TARGETS.md"
+NAS_DEV_DOC = ROOT / "docs" / "development" / "nas-dev.md"
+SERVICE_ICON_FIXTURES = ROOT / "docs" / "development" / "service-icon-fixtures.json"
+SERVICE_CATEGORIES = {"favorites", "media", "downloads", "network", "tools"}
 
 
 @dataclass
@@ -85,6 +88,10 @@ def run_command(name: str, command: list[str]) -> CheckResult:
         return CheckResult(name, [], [])
     output = completed.stdout.strip() or f"{' '.join(command)} failed"
     return CheckResult(name, [output], [])
+
+
+def compact_identifier(value: str) -> str:
+    return re.sub(r"[^A-Za-z0-9]+", "", value).lower()
 
 
 def swift_files() -> list[Path]:
@@ -1266,6 +1273,220 @@ def check_cloud_sync_invariants() -> CheckResult:
     return CheckResult("Cloud sync invariants", errors, [])
 
 
+def check_service_icon_registry_invariants() -> CheckResult:
+    errors: list[str] = []
+    nas_models = NAS_MODELS.read_text(encoding="utf-8")
+    launchpad_icons = (LAUNCHPAD_DIR / "ServiceCardView.swift").read_text(encoding="utf-8")
+    devices = DEVICES_VIEW.read_text(encoding="utf-8")
+    agent_client = (IOS_ROOT / "Core" / "Stores" / "AgentClient.swift").read_text(encoding="utf-8")
+    tests_path = ROOT / "ios" / "Nastart" / "NastartTests" / "NonPlaybackPolicyTests.swift"
+    tests = tests_path.read_text(encoding="utf-8") if tests_path.exists() else ""
+    combined = "\n".join((nas_models, launchpad_icons, devices, agent_client, tests))
+
+    required_fragments = {
+        "Service icon rules must be centralized in ServiceIconRegistry": "enum ServiceIconRegistry",
+        "Launchpad service icons must use the centralized registry": "ServiceIconRegistry.identity(",
+        "Unknown services must retain a distinguishing badge fallback": "fallbackBadgeText(iconText:",
+        "Container service icons must not keep a duplicated mapping table": "private var iconIdentity: ServiceIconIdentity",
+        "Default launchpad visibility must be carried by service icon identities": "defaultVisibilityReason",
+        "Agent-discovered services must use the centralized service registry": "ServiceIconRegistry.identity(\n                name: container.name",
+        "Agent-discovered services must use the shared launchpad visibility policy": "LaunchpadDefaultVisibilityPolicy.shouldShowContainer(",
+        "Prowlarr must have a distinct icon identity": 'Rule(["prowlarr"], displayName: "Prowlarr", symbolName: "magnifyingglass.circle", badgeText: "PR"',
+        "Radarr must have a distinct icon identity": 'Rule(["radarr"], displayName: "Radarr", symbolName: "film", badgeText: "RD"',
+        "Sonarr must have a distinct icon identity": 'Rule(["sonarr"], displayName: "Sonarr", symbolName: "tv", badgeText: "SN"',
+        "The registry must cover common HomeLab fixtures in tests": "testServiceIconRegistryCoversCommonHomeLabFixtures",
+        "Agent snapshot merging must have shared registry visibility coverage": "testAgentSnapshotMergerUsesSharedServiceRegistryForVisibility",
+        "The registry must guard against generic DSM package false positives": "testServiceIconRegistryDoesNotTreatGenericDSMPackageTextAsDSM",
+        "The launchpad icon fallback must have regression coverage": "testUnknownLaunchpadServiceFallsBackToCategorySymbolWithBadge",
+    }
+    for message, fragment in required_fragments.items():
+        if fragment not in combined:
+            errors.append(message)
+    removed_duplicate_tables = [
+        (
+            "Launchpad visibility must not keep a duplicate recognized web UI token table",
+            "recognizedWebUITokens",
+            nas_models,
+        ),
+        (
+            "Launchpad visibility must not keep a duplicate Synology app token table",
+            "recognizedSynologyAppTokens",
+            nas_models,
+        ),
+        (
+            "Agent service merging must not keep a duplicate category classifier",
+            "private static func serviceCategory(name: String, image: String)",
+            agent_client,
+        ),
+    ]
+    for message, fragment, source in removed_duplicate_tables:
+        if fragment in source:
+            errors.append(message)
+    return CheckResult("Service icon registry invariants", errors, [])
+
+
+def load_service_icon_fixtures() -> tuple[list[dict[str, object]], list[str]]:
+    errors: list[str] = []
+    if not SERVICE_ICON_FIXTURES.exists():
+        return [], [f"Missing {SERVICE_ICON_FIXTURES.relative_to(ROOT)}"]
+
+    try:
+        raw_fixtures = json.loads(SERVICE_ICON_FIXTURES.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as error:
+        return [], [f"{SERVICE_ICON_FIXTURES.relative_to(ROOT)} is invalid JSON: {error}"]
+
+    if not isinstance(raw_fixtures, list):
+        return [], [f"{SERVICE_ICON_FIXTURES.relative_to(ROOT)} must contain a list"]
+
+    fixtures: list[dict[str, object]] = []
+    seen_names: set[str] = set()
+    for index, fixture in enumerate(raw_fixtures, start=1):
+        if not isinstance(fixture, dict):
+            errors.append(f"service icon fixture #{index} must be an object")
+            continue
+
+        name = fixture.get("name")
+        match_token = fixture.get("matchToken")
+        expected = fixture.get("expected")
+        if not isinstance(name, str) or not name.strip():
+            errors.append(f"service icon fixture #{index} must have a non-empty name")
+            continue
+        if name in seen_names:
+            errors.append(f"Duplicate service icon fixture name: {name}")
+        seen_names.add(name)
+
+        if match_token is not None and (not isinstance(match_token, str) or not match_token.strip()):
+            errors.append(f"service icon fixture '{name}' has an invalid matchToken")
+        if not isinstance(expected, dict):
+            errors.append(f"service icon fixture '{name}' must have an expected object")
+            continue
+
+        symbol_name = expected.get("symbolName")
+        category = expected.get("category")
+        if not isinstance(symbol_name, str) or not symbol_name.strip():
+            errors.append(f"service icon fixture '{name}' must have expected.symbolName")
+        if category not in SERVICE_CATEGORIES:
+            errors.append(f"service icon fixture '{name}' has invalid category '{category}'")
+        for optional_key in ("displayName", "badgeText"):
+            value = expected.get(optional_key)
+            if value is not None and not isinstance(value, str):
+                errors.append(f"service icon fixture '{name}' has invalid expected.{optional_key}")
+
+        fixtures.append(fixture)
+
+    return fixtures, errors
+
+
+def swift_rule_lines_by_token(source: str) -> tuple[dict[str, str], list[str]]:
+    errors: list[str] = []
+    rules: dict[str, str] = {}
+    for line_number, line in enumerate(source.splitlines(), start=1):
+        if "Rule([" not in line:
+            continue
+        token_match = re.search(r"Rule\(\[([^\]]+)\]", line)
+        if not token_match:
+            errors.append(f"NASModels.swift:{line_number}: could not parse service icon rule tokens")
+            continue
+        for token in re.findall(r'"([^"]+)"', token_match.group(1)):
+            compact = compact_identifier(token)
+            if compact in rules and rules[compact] != line.strip():
+                errors.append(f"Duplicate service icon match token: {token}")
+            rules[compact] = line.strip()
+    return rules, errors
+
+
+def check_service_icon_fixtures() -> CheckResult:
+    errors: list[str] = []
+    fixtures, fixture_errors = load_service_icon_fixtures()
+    errors.extend(fixture_errors)
+    if not fixtures:
+        return CheckResult("Service icon fixtures", errors, [])
+
+    nas_models = NAS_MODELS.read_text(encoding="utf-8")
+    tests_path = ROOT / "ios" / "Nastart" / "NastartTests" / "NonPlaybackPolicyTests.swift"
+    tests = tests_path.read_text(encoding="utf-8") if tests_path.exists() else ""
+    rules_by_token, rule_errors = swift_rule_lines_by_token(nas_models)
+    errors.extend(rule_errors)
+
+    visual_identities: dict[str, str] = {}
+    for fixture in fixtures:
+        name = str(fixture["name"])
+        match_token = str(fixture.get("matchToken") or name)
+        expected = fixture["expected"]
+        assert isinstance(expected, dict)
+
+        token = compact_identifier(match_token)
+        rule_line = rules_by_token.get(token)
+        if rule_line is None:
+            errors.append(f"Service icon fixture '{name}' is not covered by ServiceIconRegistry")
+            continue
+
+        display_name = expected.get("displayName")
+        symbol_name = expected.get("symbolName")
+        badge_text = expected.get("badgeText")
+        category = expected.get("category")
+        if isinstance(display_name, str) and f'displayName: "{display_name}"' not in rule_line:
+            errors.append(f"Service icon fixture '{name}' expected displayName '{display_name}'")
+        if isinstance(symbol_name, str) and f'symbolName: "{symbol_name}"' not in rule_line:
+            errors.append(f"Service icon fixture '{name}' expected symbolName '{symbol_name}'")
+        if isinstance(badge_text, str) and f'badgeText: "{badge_text}"' not in rule_line:
+            errors.append(f"Service icon fixture '{name}' expected badgeText '{badge_text}'")
+        if isinstance(category, str) and f"category: .{category}" not in rule_line:
+            errors.append(f"Service icon fixture '{name}' expected category '.{category}'")
+
+        if f'"{name}"' not in tests:
+            errors.append(f"Service icon fixture '{name}' is missing Swift regression coverage")
+
+        visual_key = f"{symbol_name}|{badge_text}"
+        if visual_key in visual_identities:
+            errors.append(
+                f"Service icon fixtures '{visual_identities[visual_key]}' and '{name}' share the same visual identity"
+            )
+        visual_identities[visual_key] = name
+
+    return CheckResult("Service icon fixtures", errors, [])
+
+
+def check_nas_development_workflow() -> CheckResult:
+    errors: list[str] = []
+    warnings: list[str] = []
+    if not NAS_DEV_DOC.exists():
+        errors.append(f"Missing {NAS_DEV_DOC.relative_to(ROOT)}")
+    else:
+        doc = NAS_DEV_DOC.read_text(encoding="utf-8")
+        required_fragments = {
+            "NAS dev doc must name the local preflight entry point": "scripts/preflight.sh",
+            "NAS dev doc must document the Xcode handoff boundary": "Mac/Xcode Handoff",
+            "NAS dev doc must document service icon fixtures": "service-icon-fixtures.json",
+        }
+        for message, fragment in required_fragments.items():
+            if fragment not in doc:
+                errors.append(message)
+
+    preflight_sh = ROOT / "scripts" / "preflight.sh"
+    if not preflight_sh.exists():
+        errors.append(f"Missing {preflight_sh.relative_to(ROOT)}")
+    else:
+        preflight_shell = preflight_sh.read_text(encoding="utf-8")
+        for script_name in (
+            "preflight.py",
+            "playback_trace_report.py",
+            "playback_policy_simulator.py",
+            "agent_smoke_test.py",
+        ):
+            if script_name not in preflight_shell:
+                errors.append(f"scripts/preflight.sh must py_compile {script_name}")
+        if "python3 \"${SCRIPT_DIR}/preflight.py\"" not in preflight_shell:
+            errors.append("scripts/preflight.sh must run scripts/preflight.py")
+
+    if not warnings and SERVICE_ICON_FIXTURES.exists():
+        fixtures, fixture_errors = load_service_icon_fixtures()
+        if not fixture_errors and len(fixtures) < 20:
+            warnings.append("Service icon fixtures cover fewer than 20 common services")
+
+    return CheckResult("NAS development workflow", errors, warnings)
+
+
 def main() -> int:
     checks = [
         run_command("Git whitespace", ["git", "diff", "--check"]),
@@ -1278,6 +1499,9 @@ def main() -> int:
         check_transport_security_configuration(),
         check_persistence_invariants(),
         check_cloud_sync_invariants(),
+        check_service_icon_registry_invariants(),
+        check_service_icon_fixtures(),
+        check_nas_development_workflow(),
         check_playback_routing_invariants(),
         check_file_browser_performance_invariants(),
     ]

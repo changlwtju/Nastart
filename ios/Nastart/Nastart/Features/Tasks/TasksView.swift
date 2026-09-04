@@ -23,17 +23,6 @@ struct TasksView: View {
     var body: some View {
         NavigationStack {
             List {
-                Section {
-                    TasksOverviewHeader(
-                        pendingCount: dataStore.tasks.count,
-                        completedCount: dataStore.completedTasks.count,
-                        refreshState: dataStore.dataRefreshState
-                    )
-                    .listRowInsets(EdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0))
-                    .listRowBackground(Color.clear)
-                    .listRowSeparator(.hidden)
-                }
-
                 Picker("tasks.segment.title", selection: $segment) {
                     ForEach(TaskSegment.allCases) { segment in
                         Text(segment.titleKey).tag(segment)
@@ -129,76 +118,6 @@ struct TasksView: View {
         }
     }
 
-}
-
-private struct TasksOverviewHeader: View {
-    let pendingCount: Int
-    let completedCount: Int
-    let refreshState: AppDataRefreshState
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 15) {
-            HStack(alignment: .top) {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("tasks.overview.eyebrow")
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(AppTheme.accent)
-                        .textCase(.uppercase)
-                        .tracking(0.8)
-                    Text("tasks.overview.title")
-                        .font(.title2.weight(.bold))
-                    Text("tasks.overview.subtitle")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-                Spacer()
-                Image(systemName: "checklist")
-                    .font(.title2.weight(.semibold))
-                    .foregroundStyle(.white)
-                    .frame(width: 46, height: 46)
-                    .background(AppTheme.accentGradient)
-                    .clipShape(RoundedRectangle(cornerRadius: 15, style: .continuous))
-                    .shadow(color: AppTheme.accent.opacity(0.20), radius: 8, y: 4)
-                    .accessibilityHidden(true)
-            }
-
-            HStack(spacing: 9) {
-                TaskOverviewMetric(value: "\(pendingCount)", titleKey: "tasks.overview.pending", symbol: "bell")
-                TaskOverviewMetric(value: "\(completedCount)", titleKey: "tasks.overview.completed", symbol: "checkmark.circle")
-                Spacer(minLength: 0)
-            }
-
-            NastartStatusChip(
-                titleKey: refreshState == .current ? "tasks.overview.live" : "tasks.overview.cached",
-                symbol: refreshState == .current ? "bolt.fill" : "clock",
-                color: refreshState == .current ? .green : .orange
-            )
-        }
-        .padding(17)
-        .nastartCard(cornerRadius: 8, elevated: true)
-    }
-}
-
-private struct TaskOverviewMetric: View {
-    let value: String
-    let titleKey: LocalizedStringKey
-    let symbol: String
-
-    var body: some View {
-        HStack(spacing: 7) {
-            Image(systemName: symbol)
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(AppTheme.accent)
-            VStack(alignment: .leading, spacing: 1) {
-                Text(value)
-                    .font(.headline.weight(.bold).monospacedDigit())
-                Text(titleKey)
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-    }
 }
 
 private struct ReminderWatchRow: View {

@@ -566,6 +566,8 @@ final class AppDataStore: ObservableObject {
     @Published private(set) var audioLibraryItems: [MediaItem]
     @Published private(set) var discoveredDevices: [DiscoveredNASDevice]
     @Published private(set) var isRefreshing = false
+    @Published private(set) var isRestoringConnection = false
+    @Published private(set) var isForegroundRefreshing = false
     @Published private(set) var isDSMReachable = false
     @Published private(set) var serviceHealth: [UUID: ServiceHealthSnapshot] = [:]
     @Published private(set) var cachedDSMSnapshotSavedAt: Date?
@@ -1153,6 +1155,8 @@ final class AppDataStore: ObservableObject {
                 || secondsSinceContact >= Self.foregroundFreshnessInterval else {
                 return
             }
+            isForegroundRefreshing = true
+            defer { isForegroundRefreshing = false }
             _ = await refreshDSM(session: session, useAgent: connectionStore.usesAgent)
             return
         }
@@ -1160,6 +1164,8 @@ final class AppDataStore: ObservableObject {
         guard KeychainStore.shared.loadNASCredential() != nil else {
             return
         }
+        isForegroundRefreshing = true
+        defer { isForegroundRefreshing = false }
         await restoreDSMConnection(using: connectionStore)
     }
 
@@ -1198,6 +1204,8 @@ final class AppDataStore: ObservableObject {
     private func invalidateActiveRefresh() {
         activeRefreshID = nil
         isRefreshing = false
+        isRestoringConnection = false
+        isForegroundRefreshing = false
     }
 
     @MainActor
@@ -1436,7 +1444,11 @@ final class AppDataStore: ObservableObject {
             return
         }
         isRefreshing = true
-        defer { isRefreshing = false }
+        isRestoringConnection = true
+        defer {
+            isRefreshing = false
+            isRestoringConnection = false
+        }
         var sessionToLogout: DSMSession?
 
         do {

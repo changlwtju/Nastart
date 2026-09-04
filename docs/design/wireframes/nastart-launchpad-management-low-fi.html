@@ -1,0 +1,974 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nastart Launchpad Management Low-Fi</title>
+  <style>
+    :root {
+      --bg: #f3f4f6;
+      --paper: #ffffff;
+      --ink: #17181a;
+      --muted: #71747c;
+      --line: #d8dbe2;
+      --soft: #eef0f4;
+      --soft-2: #e4e7ed;
+      --accent: #222831;
+      --ok: #22a06b;
+      --warn: #c88a16;
+      --phone-w: 360px;
+      --phone-h: 780px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC",
+        "Helvetica Neue", Arial, sans-serif;
+    }
+
+    h1, h2, h3, p { margin: 0; }
+
+    .page {
+      max-width: 1480px;
+      margin: 0 auto;
+      padding: 28px;
+    }
+
+    .brief {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 22px;
+      margin-bottom: 22px;
+    }
+
+    .brief h1 {
+      font-size: 25px;
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+
+    .brief p {
+      max-width: 900px;
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.75;
+    }
+
+    .switcher {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 18px 0 0;
+    }
+
+    .switcher label {
+      border: 1px solid var(--line);
+      background: var(--paper);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 13px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    input[type="radio"] { position: absolute; opacity: 0; pointer-events: none; }
+
+    #show-launchpad:checked ~ .brief label[for="show-launchpad"],
+    #show-hidden:checked ~ .brief label[for="show-hidden"],
+    #show-detail:checked ~ .brief label[for="show-detail"],
+    #show-all:checked ~ .brief label[for="show-all"] {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(var(--phone-w), 1fr));
+      gap: 24px;
+      align-items: start;
+    }
+
+    .frame {
+      display: grid;
+      gap: 10px;
+      justify-items: center;
+    }
+
+    .caption {
+      width: var(--phone-w);
+      padding: 0 4px;
+    }
+
+    .caption h2 {
+      font-size: 16px;
+      line-height: 1.2;
+    }
+
+    .caption p {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .phone {
+      width: var(--phone-w);
+      height: var(--phone-h);
+      border: 2px solid #202124;
+      border-radius: 38px;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: 0 18px 44px rgba(0, 0, 0, .08);
+      position: relative;
+    }
+
+    .screen {
+      height: 100%;
+      overflow: hidden;
+      background: #fafafa;
+      padding: 16px 16px 78px;
+    }
+
+    .statusbar {
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+      color: #2b2d31;
+      margin-bottom: 12px;
+    }
+
+    .nav {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 9px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .title {
+      min-width: 0;
+    }
+
+    .title strong {
+      display: block;
+      font-size: 22px;
+      line-height: 1.05;
+    }
+
+    .title span {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 11px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .icon-btn {
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
+      display: grid;
+      place-items: center;
+      position: relative;
+      font-size: 16px;
+      color: #3a3d43;
+    }
+
+    .hint-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--warn);
+      position: absolute;
+      right: 5px;
+      top: 5px;
+      border: 1px solid white;
+    }
+
+    .nas-panel {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 13px;
+      margin-bottom: 12px;
+    }
+
+    .nas-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+
+    .nas-name {
+      font-size: 15px;
+      font-weight: 750;
+      line-height: 1.25;
+    }
+
+    .nas-sub {
+      margin-top: 4px;
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .online {
+      flex: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      height: 24px;
+      padding: 0 8px;
+      border-radius: 999px;
+      border: 1px solid #b9e4ce;
+      background: #eef9f3;
+      color: #146c48;
+      font-size: 11px;
+      font-weight: 650;
+    }
+
+    .online::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--ok);
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .metric {
+      background: #f8f9fb;
+      border: 1px solid var(--soft-2);
+      border-radius: 10px;
+      padding: 8px;
+      min-width: 0;
+    }
+
+    .metric span {
+      display: block;
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .metric strong {
+      display: block;
+      margin: 4px 0 7px;
+      font-size: 14px;
+    }
+
+    .bar {
+      height: 5px;
+      border-radius: 999px;
+      background: #e1e3e8;
+      overflow: hidden;
+    }
+
+    .bar i {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: var(--warn);
+    }
+
+    .search {
+      height: 38px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      padding: 0 12px;
+      margin-bottom: 12px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 7px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+
+    .tab {
+      flex: none;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 7px 10px;
+      background: #fff;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .tab.active {
+      background: #202124;
+      color: #fff;
+      border-color: #202124;
+    }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin: 14px 0 8px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .section-title strong {
+      color: var(--ink);
+      font-size: 13px;
+    }
+
+    .service-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .service {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px;
+      min-height: 104px;
+      display: grid;
+      align-content: space-between;
+      gap: 9px;
+    }
+
+    .service-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: flex-start;
+    }
+
+    .appicon {
+      width: 36px;
+      height: 36px;
+      border: 1px solid #cdd0d8;
+      border-radius: 10px;
+      background: var(--soft);
+      display: grid;
+      place-items: center;
+      font-size: 13px;
+      font-weight: 800;
+      color: #3c3f45;
+      position: relative;
+      flex: none;
+    }
+
+    .badge {
+      position: absolute;
+      right: -5px;
+      bottom: -5px;
+      min-width: 18px;
+      height: 18px;
+      border-radius: 6px;
+      background: #24272d;
+      color: white;
+      border: 1px solid white;
+      display: grid;
+      place-items: center;
+      font-size: 8px;
+      padding: 0 3px;
+    }
+
+    .pill {
+      border-radius: 999px;
+      background: #eef7f2;
+      color: #21714d;
+      padding: 4px 7px;
+      font-size: 10px;
+      white-space: nowrap;
+    }
+
+    .service strong {
+      display: block;
+      font-size: 14px;
+      line-height: 1.2;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .service p {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.35;
+      height: 27px;
+      overflow: hidden;
+    }
+
+    .quick {
+      height: 28px;
+      border-radius: 9px;
+      border: 1px solid #cfd2d8;
+      background: #f7f8fa;
+      display: grid;
+      place-items: center;
+      font-size: 11px;
+      font-weight: 650;
+    }
+
+    .tabbar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 66px;
+      border-top: 1px solid var(--line);
+      background: rgba(255, 255, 255, .95);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      align-items: center;
+      padding-bottom: 5px;
+    }
+
+    .tabitem {
+      display: grid;
+      place-items: center;
+      gap: 4px;
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .tabitem.active { color: var(--ink); font-weight: 700; }
+
+    .hidden-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 5px 0 14px;
+    }
+
+    .back {
+      width: 34px;
+      height: 34px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
+      display: grid;
+      place-items: center;
+      font-size: 18px;
+    }
+
+    .filter-row {
+      display: flex;
+      gap: 7px;
+      margin-bottom: 13px;
+    }
+
+    .filter {
+      flex: 1;
+      height: 34px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
+      display: grid;
+      place-items: center;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .filter.active {
+      background: #202124;
+      color: white;
+      border-color: #202124;
+    }
+
+    .hidden-list {
+      display: grid;
+      gap: 9px;
+    }
+
+    .row {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 11px;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .row .appicon {
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      font-size: 12px;
+    }
+
+    .row strong {
+      display: block;
+      font-size: 13px;
+      line-height: 1.2;
+    }
+
+    .row p {
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.35;
+      margin-top: 4px;
+    }
+
+    .show-btn {
+      height: 30px;
+      min-width: 54px;
+      border: 1px solid #bfc3cc;
+      border-radius: 9px;
+      background: #f8f9fb;
+      font-size: 11px;
+      font-weight: 650;
+    }
+
+    .reason {
+      display: inline-block;
+      margin-top: 7px;
+      border-radius: 999px;
+      background: #f0f1f4;
+      color: #5b5f68;
+      padding: 4px 7px;
+      font-size: 10px;
+    }
+
+    .detail-screen {
+      background: #f7f8fa;
+      padding-bottom: 0;
+      position: relative;
+    }
+
+    .dim-card {
+      opacity: .55;
+    }
+
+    .sheet {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 520px;
+      background: #fff;
+      border-radius: 24px 24px 0 0;
+      border-top: 1px solid var(--line);
+      padding: 12px 16px 20px;
+      box-shadow: 0 -18px 40px rgba(0, 0, 0, .12);
+    }
+
+    .grabber {
+      width: 42px;
+      height: 5px;
+      border-radius: 999px;
+      background: #d6d8de;
+      margin: 0 auto 14px;
+    }
+
+    .detail-title {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 11px;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .detail-title .appicon {
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+    }
+
+    .detail-title strong {
+      display: block;
+      font-size: 18px;
+    }
+
+    .detail-title span {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      margin-top: 3px;
+    }
+
+    .toggle {
+      width: 48px;
+      height: 28px;
+      border-radius: 999px;
+      background: #202124;
+      padding: 3px;
+    }
+
+    .toggle i {
+      display: block;
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      background: #fff;
+      margin-left: auto;
+    }
+
+    .action-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .action {
+      height: 58px;
+      border: 1px solid var(--line);
+      background: #f8f9fb;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 650;
+    }
+
+    .action span {
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .info-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .info {
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      padding: 10px;
+      background: #fff;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: baseline;
+    }
+
+    .info span {
+      color: var(--muted);
+      font-size: 11px;
+      flex: none;
+    }
+
+    .info strong {
+      font-size: 12px;
+      text-align: right;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    #show-launchpad:checked ~ .grid .hidden-view,
+    #show-launchpad:checked ~ .grid .detail-view,
+    #show-hidden:checked ~ .grid .launchpad-view,
+    #show-hidden:checked ~ .grid .detail-view,
+    #show-detail:checked ~ .grid .launchpad-view,
+    #show-detail:checked ~ .grid .hidden-view {
+      display: none;
+    }
+
+    @media (max-width: 780px) {
+      .page { padding: 18px; }
+      .brief { padding: 18px; }
+      .caption, .phone { width: min(var(--phone-w), calc(100vw - 36px)); }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <input type="radio" id="show-all" name="view" checked>
+    <input type="radio" id="show-launchpad" name="view">
+    <input type="radio" id="show-hidden" name="view">
+    <input type="radio" id="show-detail" name="view">
+
+    <section class="brief">
+      <h1>启动台服务管理低保真草图</h1>
+      <p>这版只讨论结构：顶部 NAS 状态聚合、隐藏服务入口、服务分组、隐藏项管理和服务详情抽屉。视觉细节先保持低保真，避免在方向没定之前过早投入 SwiftUI 精修。</p>
+      <div class="switcher" aria-label="选择预览">
+        <label for="show-all">全部</label>
+        <label for="show-launchpad">启动台</label>
+        <label for="show-hidden">隐藏项</label>
+        <label for="show-detail">详情抽屉</label>
+      </div>
+    </section>
+
+    <main class="grid">
+      <section class="frame launchpad-view">
+        <div class="caption">
+          <h2>方案 A：首页保持克制</h2>
+          <p>NAS 状态在顶部；隐藏项只保留图标入口；服务按常用场景分组，技术细节尽量不压在卡片上。</p>
+        </div>
+        <div class="phone">
+          <div class="screen">
+            <div class="statusbar"><span>9:41</span><span>5G 100%</span></div>
+            <div class="nav">
+              <div class="title">
+                <strong>启动台</strong>
+                <span>DS920+ · 家庭服务器</span>
+              </div>
+              <div class="icon-btn" title="隐藏项">◌<span class="hint-dot"></span></div>
+              <div class="icon-btn" title="刷新">↻</div>
+            </div>
+
+            <section class="nas-panel">
+              <div class="nas-head">
+                <div>
+                  <div class="nas-name">DS920+ 在线</div>
+                  <div class="nas-sub">运行 12 天 4 小时 · 1 条硬盘空间提醒</div>
+                </div>
+                <div class="online">在线</div>
+              </div>
+              <div class="metrics">
+                <div class="metric">
+                  <span>CPU</span>
+                  <strong>28%</strong>
+                  <div class="bar"><i style="width: 28%"></i></div>
+                </div>
+                <div class="metric">
+                  <span>RAM</span>
+                  <strong>62%</strong>
+                  <div class="bar"><i style="width: 62%"></i></div>
+                </div>
+                <div class="metric">
+                  <span>硬盘</span>
+                  <strong>74%</strong>
+                  <div class="bar"><i style="width: 74%"></i></div>
+                </div>
+              </div>
+            </section>
+
+            <div class="search">⌕ 搜索服务、文件或媒体</div>
+            <div class="tabs">
+              <div class="tab active">常用</div>
+              <div class="tab">媒体</div>
+              <div class="tab">下载</div>
+              <div class="tab">工具</div>
+            </div>
+
+            <div class="section-title"><strong>媒体</strong><span>3 个服务</span></div>
+            <div class="service-grid">
+              <article class="service">
+                <div class="service-top">
+                  <div class="appicon">▶<span class="badge">JF</span></div>
+                  <span class="pill">在线</span>
+                </div>
+                <div>
+                  <strong>Jellyfin</strong>
+                  <p>影片和剧集媒体库</p>
+                </div>
+                <div class="quick">打开</div>
+              </article>
+              <article class="service">
+                <div class="service-top">
+                  <div class="appicon">▣<span class="badge">SN</span></div>
+                  <span class="pill">在线</span>
+                </div>
+                <div>
+                  <strong>Sonarr</strong>
+                  <p>剧集自动化管理</p>
+                </div>
+                <div class="quick">打开</div>
+              </article>
+            </div>
+
+            <div class="section-title"><strong>下载与索引</strong><span>4 个服务</span></div>
+            <div class="service-grid">
+              <article class="service">
+                <div class="service-top">
+                  <div class="appicon">↓<span class="badge">QB</span></div>
+                  <span class="pill">在线</span>
+                </div>
+                <div>
+                  <strong>qBittorrent</strong>
+                  <p>下载任务控制台</p>
+                </div>
+                <div class="quick">打开</div>
+              </article>
+              <article class="service">
+                <div class="service-top">
+                  <div class="appicon">⌕<span class="badge">PR</span></div>
+                  <span class="pill">在线</span>
+                </div>
+                <div>
+                  <strong>Prowlarr</strong>
+                  <p>索引器与搜索聚合</p>
+                </div>
+                <div class="quick">打开</div>
+              </article>
+            </div>
+          </div>
+          <div class="tabbar">
+            <div class="tabitem active"><span>▦</span><span>启动台</span></div>
+            <div class="tabitem"><span>▤</span><span>设备</span></div>
+            <div class="tabitem"><span>✓</span><span>事项</span></div>
+            <div class="tabitem"><span>◯</span><span>我的</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="frame hidden-view">
+        <div class="caption">
+          <h2>方案 B：隐藏项成为管理页</h2>
+          <p>不再像一个重复入口，而是解释“为什么隐藏”，让用户能快速恢复误隐藏或系统默认隐藏的服务。</p>
+        </div>
+        <div class="phone">
+          <div class="screen">
+            <div class="statusbar"><span>9:41</span><span>5G 100%</span></div>
+            <div class="hidden-head">
+              <div class="back">‹</div>
+              <div class="title" style="text-align:center">
+                <strong>隐藏项</strong>
+                <span>12 个服务未显示在启动台</span>
+              </div>
+              <div class="icon-btn">↻</div>
+            </div>
+
+            <div class="filter-row">
+              <div class="filter active">全部</div>
+              <div class="filter">容器</div>
+              <div class="filter">套件</div>
+              <div class="filter">手动</div>
+            </div>
+
+            <div class="hidden-list">
+              <article class="row">
+                <div class="appicon">▣<span class="badge">CT</span></div>
+                <div>
+                  <strong>Container Manager</strong>
+                  <p>DSM 套件 · 系统管理入口</p>
+                  <span class="reason">默认隐藏：系统/管理组件</span>
+                </div>
+                <button class="show-btn">显示</button>
+              </article>
+              <article class="row">
+                <div class="appicon">◇</div>
+                <div>
+                  <strong>postgres</strong>
+                  <p>容器 · postgres:16</p>
+                  <span class="reason">默认隐藏：后台服务</span>
+                </div>
+                <button class="show-btn">显示</button>
+              </article>
+              <article class="row">
+                <div class="appicon">◎<span class="badge">UP</span></div>
+                <div>
+                  <strong>unknown-worker</strong>
+                  <p>容器 · acme/worker:latest</p>
+                  <span class="reason">默认隐藏：未识别 Web UI</span>
+                </div>
+                <button class="show-btn">显示</button>
+              </article>
+              <article class="row">
+                <div class="appicon">⌂<span class="badge">HP</span></div>
+                <div>
+                  <strong>Homepage</strong>
+                  <p>容器 · 手动隐藏</p>
+                  <span class="reason">用户隐藏：可随时恢复</span>
+                </div>
+                <button class="show-btn">显示</button>
+              </article>
+              <article class="row">
+                <div class="appicon">↔</div>
+                <div>
+                  <strong>redis</strong>
+                  <p>容器 · redis:7</p>
+                  <span class="reason">默认隐藏：后台服务</span>
+                </div>
+                <button class="show-btn">显示</button>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="frame detail-view">
+        <div class="caption">
+          <h2>方案 C：详情页承载技术信息</h2>
+          <p>首页只保留识别和快捷动作；endpoint、端口、来源、显示原因等信息下沉到详情抽屉。</p>
+        </div>
+        <div class="phone">
+          <div class="screen detail-screen">
+            <div class="statusbar"><span>9:41</span><span>5G 100%</span></div>
+            <div class="nav dim-card">
+              <div class="title">
+                <strong>启动台</strong>
+                <span>DS920+ · 家庭服务器</span>
+              </div>
+              <div class="icon-btn">◌</div>
+              <div class="icon-btn">↻</div>
+            </div>
+            <section class="nas-panel dim-card">
+              <div class="nas-head">
+                <div>
+                  <div class="nas-name">DS920+ 在线</div>
+                  <div class="nas-sub">运行 12 天 4 小时 · 1 条硬盘空间提醒</div>
+                </div>
+                <div class="online">在线</div>
+              </div>
+              <div class="metrics">
+                <div class="metric"><span>CPU</span><strong>28%</strong><div class="bar"><i style="width: 28%"></i></div></div>
+                <div class="metric"><span>RAM</span><strong>62%</strong><div class="bar"><i style="width: 62%"></i></div></div>
+                <div class="metric"><span>硬盘</span><strong>74%</strong><div class="bar"><i style="width: 74%"></i></div></div>
+              </div>
+            </section>
+
+            <div class="sheet">
+              <div class="grabber"></div>
+              <div class="detail-title">
+                <div class="appicon">⌕<span class="badge">PR</span></div>
+                <div>
+                  <strong>Prowlarr</strong>
+                  <span>索引器与搜索聚合 · 在线</span>
+                </div>
+                <div class="toggle"><i></i></div>
+              </div>
+
+              <div class="action-row">
+                <div class="action"><span>↗</span>打开</div>
+                <div class="action"><span>□</span>复制</div>
+                <div class="action"><span>⋯</span>更多</div>
+              </div>
+
+              <div class="info-list">
+                <div class="info"><span>启动台</span><strong>显示</strong></div>
+                <div class="info"><span>识别结果</span><strong>Web UI · 下载/索引</strong></div>
+                <div class="info"><span>来源</span><strong>容器 · 反代可达</strong></div>
+                <div class="info"><span>地址</span><strong>https://nas.local:9696</strong></div>
+                <div class="info"><span>端口</span><strong>9696 -> 9696/tcp</strong></div>
+                <div class="info"><span>默认原因</span><strong>已识别可点击 Web 服务</strong></div>
+                <div class="info"><span>镜像</span><strong>linuxserver/prowlarr</strong></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

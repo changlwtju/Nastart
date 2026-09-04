@@ -31,6 +31,7 @@ struct LaunchpadView: View {
     @State private var showManualServiceEditor = false
     @State private var showServiceManager = false
     @State private var refreshPulseID = UUID()
+    @State private var isToolbarRefreshing = false
 
     var body: some View {
         NavigationStack {
@@ -44,14 +45,6 @@ struct LaunchpadView: View {
                                     sourceKey: dataStore.dataSourceLabelKey,
                                     retry: {
                                         Task { await refreshLaunchpad() }
-                                    }
-                                )
-                            }
-                            if !hiddenLaunchpadServices.isEmpty {
-                                HiddenServicesRestoreStrip(
-                                    count: hiddenLaunchpadServices.count,
-                                    action: {
-                                        showServiceManager = true
                                     }
                                 )
                             }
@@ -92,10 +85,10 @@ struct LaunchpadView: View {
                         Button {
                             refreshPulseID = UUID()
                             Task(priority: .userInitiated) {
-                                await refreshLaunchpad()
+                                await refreshLaunchpad(showToolbarProgress: true)
                             }
                         } label: {
-                            if dataStore.isRefreshing {
+                            if isToolbarRefreshing {
                                 ProgressView()
                                     .controlSize(.small)
                             } else {
@@ -104,7 +97,7 @@ struct LaunchpadView: View {
                                     .transition(.opacity)
                             }
                         }
-                        .disabled(dataStore.isRefreshing)
+                        .disabled(dataStore.isRefreshing || isToolbarRefreshing)
                         .accessibilityLabel(Text("action.refresh"))
                     }
                 }
@@ -113,7 +106,7 @@ struct LaunchpadView: View {
                         Button {
                             showServiceManager = true
                         } label: {
-                            Image(systemName: "slider.horizontal.3")
+                            LaunchpadVisibilityToolbarIcon(hiddenCount: hiddenLaunchpadServices.count)
                         }
                         .accessibilityLabel(Text("launchpad.services.manage"))
                     }
@@ -167,8 +160,16 @@ struct LaunchpadView: View {
     }
 
     @MainActor
-    private func refreshLaunchpad() async {
+    private func refreshLaunchpad(showToolbarProgress: Bool = false) async {
         guard !dataStore.isRefreshing else { return }
+        if showToolbarProgress {
+            isToolbarRefreshing = true
+        }
+        defer {
+            if showToolbarProgress {
+                isToolbarRefreshing = false
+            }
+        }
         if let session = connectionStore.dsmSession {
             await dataStore.refreshDSM(session: session, useAgent: connectionStore.usesAgent)
         } else {
@@ -310,6 +311,25 @@ struct LaunchpadView: View {
         groupDefaultVersion = 1
     }
 
+}
+
+private struct LaunchpadVisibilityToolbarIcon: View {
+    let hiddenCount: Int
+
+    var body: some View {
+        ZStack(alignment: .topTrailing) {
+            Image(systemName: "eye.slash")
+                .symbolRenderingMode(.hierarchical)
+
+            if hiddenCount > 0 {
+                Circle()
+                    .fill(AppTheme.accent)
+                    .frame(width: 8, height: 8)
+                    .offset(x: 3, y: -3)
+            }
+        }
+        .frame(width: 24, height: 24)
+    }
 }
 
 private final class MediaPlayerSession: ObservableObject {

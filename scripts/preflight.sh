@@ -9,5 +9,6 @@ python3 -m py_compile \
   "${SCRIPT_DIR}/preflight.py" \
   "${SCRIPT_DIR}/playback_trace_report.py" \
   "${SCRIPT_DIR}/playback_policy_simulator.py" \
-  "${SCRIPT_DIR}/playback_compare_runs.py"
+  "${SCRIPT_DIR}/playback_compare_runs.py" \
+  "${SCRIPT_DIR}/agent_smoke_test.py"
 python3 "${SCRIPT_DIR}/preflight.py"

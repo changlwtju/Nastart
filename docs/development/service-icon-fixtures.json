@@ -1,0 +1,250 @@
+[
+  {
+    "name": "Jellyfin",
+    "matchToken": "jellyfin",
+    "expected": {
+      "displayName": "Jellyfin",
+      "symbolName": "play.rectangle",
+      "badgeText": "JF",
+      "category": "media"
+    }
+  },
+  {
+    "name": "Plex",
+    "matchToken": "plex",
+    "expected": {
+      "displayName": "Plex",
+      "symbolName": "play.circle",
+      "badgeText": "PX",
+      "category": "media"
+    }
+  },
+  {
+    "name": "Navidrome",
+    "matchToken": "navidrome",
+    "expected": {
+      "displayName": "Navidrome",
+      "symbolName": "music.note.list",
+      "badgeText": "NV",
+      "category": "media"
+    }
+  },
+  {
+    "name": "Audiobookshelf",
+    "matchToken": "audiobookshelf",
+    "expected": {
+      "displayName": "Audiobookshelf",
+      "symbolName": "books.vertical",
+      "badgeText": "AB",
+      "category": "media"
+    }
+  },
+  {
+    "name": "Immich",
+    "matchToken": "immich",
+    "expected": {
+      "displayName": "Immich",
+      "symbolName": "photo.on.rectangle",
+      "badgeText": "IM",
+      "category": "media"
+    }
+  },
+  {
+    "name": "PhotoPrism",
+    "matchToken": "photoprism",
+    "expected": {
+      "displayName": "PhotoPrism",
+      "symbolName": "camera.aperture",
+      "badgeText": "PP",
+      "category": "media"
+    }
+  },
+  {
+    "name": "qBittorrent",
+    "matchToken": "qbittorrent",
+    "expected": {
+      "displayName": "qBittorrent",
+      "symbolName": "arrow.down.circle",
+      "badgeText": "QB",
+      "category": "downloads"
+    }
+  },
+  {
+    "name": "Transmission",
+    "matchToken": "transmission",
+    "expected": {
+      "displayName": "Transmission",
+      "symbolName": "arrow.down.circle",
+      "badgeText": "TR",
+      "category": "downloads"
+    }
+  },
+  {
+    "name": "Prowlarr",
+    "matchToken": "prowlarr",
+    "expected": {
+      "displayName": "Prowlarr",
+      "symbolName": "magnifyingglass.circle",
+      "badgeText": "PR",
+      "category": "downloads"
+    }
+  },
+  {
+    "name": "Radarr",
+    "matchToken": "radarr",
+    "expected": {
+      "displayName": "Radarr",
+      "symbolName": "film",
+      "badgeText": "RD",
+      "category": "media"
+    }
+  },
+  {
+    "name": "Sonarr",
+    "matchToken": "sonarr",
+    "expected": {
+      "displayName": "Sonarr",
+      "symbolName": "tv",
+      "badgeText": "SN",
+      "category": "media"
+    }
+  },
+  {
+    "name": "Lidarr",
+    "matchToken": "lidarr",
+    "expected": {
+      "displayName": "Lidarr",
+      "symbolName": "music.mic",
+      "badgeText": "LD",
+      "category": "media"
+    }
+  },
+  {
+    "name": "Readarr",
+    "matchToken": "readarr",
+    "expected": {
+      "displayName": "Readarr",
+      "symbolName": "book",
+      "badgeText": "RA",
+      "category": "media"
+    }
+  },
+  {
+    "name": "Bazarr",
+    "matchToken": "bazarr",
+    "expected": {
+      "displayName": "Bazarr",
+      "symbolName": "captions.bubble",
+      "badgeText": "BZ",
+      "category": "media"
+    }
+  },
+  {
+    "name": "Overseerr",
+    "matchToken": "overseerr",
+    "expected": {
+      "displayName": "Overseerr",
+      "symbolName": "person.badge.plus",
+      "badgeText": "OS",
+      "category": "downloads"
+    }
+  },
+  {
+    "name": "Home Assistant",
+    "matchToken": "homeassistant",
+    "expected": {
+      "displayName": "Home Assistant",
+      "symbolName": "house",
+      "badgeText": "HA",
+      "category": "tools"
+    }
+  },
+  {
+    "name": "Portainer",
+    "matchToken": "portainer",
+    "expected": {
+      "displayName": "Portainer",
+      "symbolName": "square.stack.3d.up",
+      "badgeText": "PT",
+      "category": "tools"
+    }
+  },
+  {
+    "name": "Grafana",
+    "matchToken": "grafana",
+    "expected": {
+      "displayName": "Grafana",
+      "symbolName": "chart.xyaxis.line",
+      "badgeText": "GF",
+      "category": "tools"
+    }
+  },
+  {
+    "name": "Vaultwarden",
+    "matchToken": "vaultwarden",
+    "expected": {
+      "displayName": "Vaultwarden",
+      "symbolName": "key",
+      "badgeText": "VW",
+      "category": "tools"
+    }
+  },
+  {
+    "name": "Paperless-ngx",
+    "matchToken": "paperlessngx",
+    "expected": {
+      "displayName": "Paperless-ngx",
+      "symbolName": "doc.text",
+      "badgeText": "PN",
+      "category": "tools"
+    }
+  },
+  {
+    "name": "Nextcloud",
+    "matchToken": "nextcloud",
+    "expected": {
+      "displayName": "Nextcloud",
+      "symbolName": "cloud",
+      "badgeText": "NC",
+      "category": "tools"
+    }
+  },
+  {
+    "name": "Calibre-Web",
+    "matchToken": "calibreweb",
+    "expected": {
+      "displayName": "Calibre-Web",
+      "symbolName": "books.vertical",
+      "badgeText": "CW",
+      "category": "media"
+    }
+  },
+  {
+    "name": "Mealie",
+    "matchToken": "mealie",
+    "expected": {
+      "displayName": "Mealie",
+      "symbolName": "fork.knife",
+      "badgeText": "ML",
+      "category": "tools"
+    }
+  },
+  {
+    "name": "AdGuard",
+    "matchToken": "adguard",
+    "expected": {
+      "displayName": "AdGuard",
+      "symbolName": "shield",
+      "badgeText": "AG",
+      "category": "network"
+    }
+  },
+  {
+    "name": "Uptime Kuma",
+    "matchToken": "uptimekuma",
+    "expected": {
+      "symbolName": "waveform.path.ecg",
+      "category": "tools"
+    }
+  }
+]

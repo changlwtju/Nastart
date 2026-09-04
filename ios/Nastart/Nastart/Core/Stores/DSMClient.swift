@@ -2806,6 +2806,9 @@ final class DSMClient {
 
     private static func displayName(for rawName: String) -> String {
         let name = rawName.trimmingCharacters(in: .whitespacesAndNewlines)
+        if let displayName = ServiceIconRegistry.identity(name: name).displayName {
+            return displayName
+        }
         let lower = name.lowercased()
         let compact = compactServiceIdentifier(name)
         if ["container", "container manager", "docker"].contains(lower) { return "Container Manager" }
@@ -2834,6 +2837,9 @@ final class DSMClient {
     private static func iconText(for name: String) -> String {
         let lower = name.lowercased()
         let compact = compactServiceIdentifier(name)
+        if let badgeText = ServiceIconRegistry.identity(name: name).badgeText {
+            return badgeText
+        }
         if lower.contains("jellyfin") { return "JF" }
         if lower.contains("navidrome") { return "NV" }
         if lower.contains("qbittorrent") { return "QB" }
@@ -2862,6 +2868,9 @@ final class DSMClient {
     private static func category(for name: String) -> ServiceCategory {
         let lower = name.lowercased()
         let compact = compactServiceIdentifier(name)
+        if let category = ServiceIconRegistry.identity(name: name).category {
+            return category
+        }
         if lower.contains("dsm") || lower.contains("homepage") { return .favorites }
         if lower.contains("jellyfin") || lower.contains("emby") || lower.contains("plex") || lower.contains("navidrome") { return .media }
         if lower.contains("photos") || compact.contains("synologyphotos")
