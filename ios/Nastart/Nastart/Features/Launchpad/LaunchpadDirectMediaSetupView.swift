@@ -5,9 +5,7 @@ struct DirectMediaPlayerSetupView: View {
     @State private var playbackRequest: MediaPlaybackRequest?
 #if DEBUG
     @AppStorage(GreenfieldPlaybackDebugSettings.useGreenfieldPlayerKey)
-    private var usesGreenfieldPlayer = false
-    @AppStorage(GreenfieldPlaybackDebugSettings.forceOriginalKSPlayerKey)
-    private var forcesGreenfieldOriginalKSPlayer = false
+    private var usesGreenfieldPlayer = true
     @State private var greenfieldPlaybackRequest: GreenfieldPlaybackLaunchRequest?
 #endif
     @State private var showValidationError = false
@@ -39,11 +37,7 @@ struct DirectMediaPlayerSetupView: View {
                     let request = MediaPlaybackRequest(url: url, title: url.lastPathComponent)
 #if DEBUG
                     if usesGreenfieldPlayer {
-                        greenfieldPlaybackRequest = request.greenfieldPlaybackLaunchRequest(
-                            playbackModePreference: forcesGreenfieldOriginalKSPlayer
-                                ? .original
-                                : .automatic
-                        )
+                        greenfieldPlaybackRequest = request.greenfieldPlaybackLaunchRequest()
                     } else {
                         playbackRequest = request
                     }
@@ -54,19 +48,7 @@ struct DirectMediaPlayerSetupView: View {
                     Label("player.play_in_app", systemImage: "play.fill")
                 }
 #if DEBUG
-                Toggle(isOn: $usesGreenfieldPlayer) {
-                    Label("Greenfield player", systemImage: "switch.2")
-                        .font(.subheadline.weight(.semibold))
-                }
-                .toggleStyle(.switch)
-
-                if usesGreenfieldPlayer {
-                    Toggle(isOn: $forcesGreenfieldOriginalKSPlayer) {
-                        Label("Force original KSPlayer", systemImage: "bolt.horizontal")
-                            .font(.subheadline.weight(.semibold))
-                    }
-                    .toggleStyle(.switch)
-                }
+                PlaybackArchitecturePicker(usesGreenfieldPlayer: $usesGreenfieldPlayer)
 #endif
             } footer: {
                 Text("player.direct.footer")

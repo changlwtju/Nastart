@@ -1,5 +1,6 @@
 import Foundation
 import Network
+import UDFRead
 
 struct ISOPlaybackPreparation {
     let playbackURL: URL
@@ -25,8 +26,15 @@ enum ISOPlaybackAdapter {
             url: sourceURL,
             allowsSelfSignedCertificates: allowsSelfSignedCertificates
         )
-        let index = try await ISO9660Index.load(using: reader)
-        guard let selection = index.preferredPlaybackSelection else {
+        let selections: [ISOPlaybackSelection]
+        do {
+            selections = try await ISO9660Index.load(using: reader).selections
+        } catch ISOPlaybackError.invalidImage {
+            selections = try await UDFRemoteIndex(url: sourceURL,
+                allowsSelfSignedCertificates: allowsSelfSignedCertificates).load()
+        }
+        try Task.checkCancellation()
+        guard let selection = selections.first else {
             throw ISOPlaybackError.noPlayableTitle
         }
         let playbackURL = try await ISOPlaybackProxy.shared.register(
@@ -42,7 +50,7 @@ enum ISOPlaybackAdapter {
             details: [
                 "selectedPath": selection.displayPath,
                 "segmentCount": String(selection.segments.count),
-                "titleCount": String(index.playableSelectionCount),
+                "titleCount": String(selections.count),
                 "virtualBytes": String(selection.segments.reduce(Int64(0)) { $0 + $1.length }),
                 "format": selection.fileExtension
             ]
@@ -51,7 +59,7 @@ enum ISOPlaybackAdapter {
             playbackURL: playbackURL,
             fileExtension: selection.fileExtension,
             selectedPath: selection.displayPath,
-            titleCount: index.playableSelectionCount
+            titleCount: selections.count
         )
     }
 }
@@ -131,6 +139,115 @@ private final class ISOHTTPRangeReader {
         guard data.count == length else { throw ISOPlaybackError.invalidResponse }
         return data
     }
+}
+
+private final class UDFRemoteIndex: @unchecked Sendable {
+    let sourceURL: URL
+    let session: URLSession
+    let delegate: ISOTrustDelegate
+    private let lock = NSLock()
+    private var cancelled = false
+    private var activeRequest: URLSessionDataTask?
+    private var cache: [UInt32: Data] = [:]
+    private var cachedBytes = 0
+    private var readBytes = 0
+    private var selections: [String: [ISOSegment]] = [:]
+    private let deadline = Date().addingTimeInterval(30)
+
+    init(url: URL, allowsSelfSignedCertificates: Bool) {
+        sourceURL = url
+        delegate = ISOTrustDelegate(trustedHost: url.host, allowsSelfSignedCertificates: allowsSelfSignedCertificates)
+        let config = URLSessionConfiguration.ephemeral
+        config.timeoutIntervalForResource = 8
+        config.timeoutIntervalForRequest = 5
+        config.waitsForConnectivity = false
+        session = URLSession(configuration: config, delegate: delegate, delegateQueue: nil)
+    }
+
+    func cancel() {
+        lock.lock()
+        cancelled = true
+        activeRequest?.cancel()
+        lock.unlock()
+    }
+
+    private func read(lba: UInt32, buffer: UnsafeMutableRawPointer, count: UInt32) -> Int32 {
+        lock.lock()
+        let stopped = cancelled
+        lock.unlock()
+        guard !stopped, Date() < deadline, count > 0, count <= 8192 else { return 0 }
+        let length = Int(count) * 2048
+        if let data = cache[lba], data.count == length {
+            data.copyBytes(to: buffer.assumingMemoryBound(to: UInt8.self), count: length)
+            return Int32(count)
+        }
+        guard readBytes + length <= 128 * 1024 * 1024 else { return 0 }
+        readBytes += length
+        let offset = Int64(lba) * 2048
+        var request = URLRequest(url: sourceURL)
+        request.setValue("bytes=\(offset)-\(offset + Int64(length) - 1)", forHTTPHeaderField: "Range")
+        request.setValue("identity", forHTTPHeaderField: "Accept-Encoding")
+        request.cachePolicy = .reloadIgnoringLocalCacheData
+        let done = DispatchSemaphore(value: 0)
+        let result = UDFReadResult()
+        let task = session.dataTask(with: request) { data, response, _ in
+            if let response = response as? HTTPURLResponse,
+               response.statusCode == 206,
+               response.value(forHTTPHeaderField: "Content-Range")?.hasPrefix("bytes \(offset)-") == true,
+               let data, data.count == length { result.data = data }
+            done.signal()
+        }
+        lock.lock()
+        activeRequest = task
+        if cancelled { task.cancel() } else { task.resume() }
+        lock.unlock()
+        guard done.wait(timeout: .now() + 9) == .success, let data = result.data else {
+            task.cancel()
+            return 0
+        }
+        if cache[lba] == nil, cachedBytes + data.count <= 32 * 1024 * 1024 {
+            cache[lba] = data
+            cachedBytes += data.count
+        }
+        data.copyBytes(to: buffer.assumingMemoryBound(to: UInt8.self), count: length)
+        return Int32(count)
+    }
+
+    func load() async throws -> [ISOPlaybackSelection] {
+        try await withTaskCancellationHandler {
+            try await withCheckedThrowingContinuation { continuation in
+                DispatchQueue.global(qos: .userInitiated).async {
+                    defer { self.session.invalidateAndCancel() }
+                    let context = Unmanaged.passUnretained(self).toOpaque()
+                    let count = nastart_udf_scan(context, { context, lba, buffer, count in
+                        guard let context, let buffer else { return 0 }
+                        return Unmanaged<UDFRemoteIndex>.fromOpaque(context).takeUnretainedValue()
+                            .read(lba: lba, buffer: buffer, count: count)
+                    }, { context, path, offset, length in
+                        guard let context, let path else { return }
+                        let owner = Unmanaged<UDFRemoteIndex>.fromOpaque(context).takeUnretainedValue()
+                        owner.selections[String(cString: path), default: []].append(
+                            ISOSegment(sourceOffset: offset, length: length))
+                    })
+                    guard count > 0 else {
+                        continuation.resume(throwing: ISOPlaybackError.noPlayableTitle)
+                        return
+                    }
+                    let selections = self.selections.map { path, segments in
+                        ISOPlaybackSelection(segments: segments, fileExtension: "m2ts", displayPath: path)
+                    }.sorted { lhs, rhs in
+                        lhs.segments.reduce(Int64(0)) { $0 + $1.length }
+                            > rhs.segments.reduce(Int64(0)) { $0 + $1.length }
+                    }
+                    continuation.resume(returning: selections)
+                }
+            }
+        } onCancel: { self.cancel() }
+    }
+}
+
+private final class UDFReadResult: @unchecked Sendable {
+    var data: Data?
 }
 
 private struct ISOSegment {

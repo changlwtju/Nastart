@@ -100,6 +100,8 @@ public class KSMEPlayer: NSObject {
         }
     }
 
+    private var pendingSeekPreview = false
+
     public private(set) var playbackState = MediaPlaybackState.idle {
         didSet {
             if playbackState != oldValue {
@@ -236,6 +238,7 @@ extension KSMEPlayer: MEPlayerDelegate {
     }
 
     func sourceDidChange(loadingState: LoadingState) {
+        runOnMainThread { [weak self] in self?.displayPendingSeekPreview() }
         if loadingState.isEndOfFile {
             playableTime = duration
         } else {
@@ -354,6 +357,8 @@ extension KSMEPlayer: MediaPlayerProtocol {
 
     public func seek(time: TimeInterval, completion: @escaping ((Bool) -> Void)) {
         let time = max(time, 0)
+        let previewsWhilePaused = playbackState != .playing
+        pendingSeekPreview = false
         playbackState = .seeking
         runOnMainThread { [weak self] in
             self?.bufferingProgress = 0
@@ -375,8 +380,21 @@ extension KSMEPlayer: MediaPlayerProtocol {
                     }
                 }
             }
-            completion(result)
+            runOnMainThread { [weak self] in
+                guard let self else { return }
+                if result, previewsWhilePaused {
+                    self.pendingSeekPreview = true
+                    self.displayPendingSeekPreview()
+                }
+                completion(result)
+            }
         }
+    }
+
+    private func displayPendingSeekPreview() {
+        guard pendingSeekPreview else { return }
+        guard playbackState != .playing else { pendingSeekPreview = false; return }
+        if videoOutput?.displaySeekPreview() == true { pendingSeekPreview = false }
     }
 
     public func prepareToPlay() {

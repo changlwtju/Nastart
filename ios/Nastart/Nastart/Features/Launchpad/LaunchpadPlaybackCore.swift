@@ -2,6 +2,15 @@ import Foundation
 import UIKit
 import Network
 
+enum AudioFormatPolicy {
+    // Container recognition, not a guarantee that every codec/profile decodes.
+    static let extensions: Set<String> = [
+        "mp3", "mp2", "m4a", "m4b", "aac", "wav", "wave", "flac", "ogg", "oga", "opus",
+        "wma", "ape", "alac", "aiff", "aif", "aifc", "amr", "ac3", "eac3", "dts", "caf",
+        "wv", "tta", "mka", "au", "snd", "dsf", "dff"
+    ]
+}
+
 enum DirectMediaURLPolicy {
     private static let mediaExtensions = [
         "m3u8", "mp4", "mkv", "mov", "m4v", "avi", "wmv", "webm",
@@ -23,7 +32,8 @@ enum DirectMediaURLPolicy {
     static func isLikelyMediaURL(_ url: URL) -> Bool {
         guard canAttemptPlayback(url) else { return false }
         let normalizedURL = url.absoluteString.lowercased()
-        return mediaExtensions.contains(url.pathExtension.lowercased())
+        return AudioFormatPolicy.extensions.contains(url.pathExtension.lowercased())
+            || mediaExtensions.contains(url.pathExtension.lowercased())
             || mediaExtensions.contains { normalizedURL.contains(".\($0)?") }
     }
 }
@@ -340,10 +350,7 @@ struct MediaPlaybackRequest: Identifiable {
         }
     }
 
-    private static let audioExtensions: Set<String> = [
-        "mp3", "m4a", "aac", "wav", "flac", "ogg", "opus", "wma",
-        "ape", "alac", "aiff", "aif", "amr", "ac3", "dts"
-    ]
+    private static let audioExtensions = AudioFormatPolicy.extensions
 
     var allowsExternalHandoff: Bool {
         let handoffURL = externalHandoffResource?.url ?? url

@@ -1,5 +1,7 @@
 # Nastart iOS
 
+> 2026-09-06 已确定：[新架构唯一优化主线](../docs/adr/0002-single-playback-optimization-mainline.md)。旧架构仅作回退，验收后移除；新旧两项选择取代此前 Greenfield/Force 调试开关。后文历史测试记录不改变此决策。
+
 This directory contains the first SwiftUI prototype for Nastart.
 
 Recommended initial stack:
@@ -120,6 +122,18 @@ localization parity, iOS 16 guard patterns, AppIcon asset integrity, Swift
 delimiter balance, and `git diff --check`.
 
 ## Playback Debugging
+
+KSPlayer is linked as a separate dynamic framework so its FFmpeg calls cannot
+bind to MobileVLCKit's incompatible embedded FFmpeg. Before installing an A/B
+device build, run `python3 scripts/verify_playback_linkage.py /path/to/Nastart.app`
+from the repository root (the iPhone install script runs this automatically).
+The Xcode wrapper disables explicit Swift modules for the current FFmpegKit
+header/PCM compatibility issue across app and SwiftPM targets.
+
+DEBUG playback-lab can launch the same HTTP fixture through either architecture:
+set `NASTART_PLAYBACK_LAB_URL` and optionally
+`NASTART_PLAYBACK_LAB_ARCHITECTURE=greenfield`; omitting the latter uses legacy.
+Launch variables are process-local and do not change the user's player setting.
 
 For Jellyfin playback work, use the telemetry-first route documented in:
 

@@ -591,10 +591,11 @@ extension EventModifiers {
 }
 
 @available(iOS 16, tvOS 16, macOS 13, *)
-struct VideoSubtitleView: View {
+public struct VideoSubtitleView: View {
     @ObservedObject
     fileprivate var model: SubtitleModel
-    var body: some View {
+    public init(model: SubtitleModel) { self.model = model }
+    public var body: some View {
         ZStack {
             ForEach(model.parts) { part in
                 part.subtitleView

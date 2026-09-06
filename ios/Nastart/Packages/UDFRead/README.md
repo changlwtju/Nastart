@@ -1,0 +1,1 @@
+libudfread 1.2.0, from https://download.videolan.org/pub/videolan/libudfread/libudfread-1.2.0.tar.xz. Vendored sources unchanged; LGPL-2.1-or-later, see COPYING. NastartUDF wrapper is maintained locally. Dynamic library, no FFmpeg dependency.

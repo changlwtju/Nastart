@@ -54,34 +54,29 @@ struct ServiceIconView: View {
     let service: LaunchpadService
     var size: CGFloat = 36
 
+    private var iconColor: Color {
+        switch service.category {
+        case .favorites: return AppTheme.accent
+        case .media: return .purple
+        case .downloads: return .blue
+        case .network: return .teal
+        case .tools: return .indigo
+        }
+    }
+
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
             Image(systemName: service.symbolName)
                 .font(.system(size: size * 0.4, weight: .medium))
-                .foregroundStyle(AppTheme.accent)
+                .foregroundStyle(iconColor)
                 .frame(width: size, height: size)
-                .background(AppTheme.accent.opacity(0.1))
+                .background(iconColor.opacity(0.1))
                 .clipShape(RoundedRectangle(cornerRadius: size * 0.3, style: .continuous))
                 .overlay {
                     RoundedRectangle(cornerRadius: size * 0.3, style: .continuous)
                         .stroke(AppTheme.hairline, lineWidth: 1)
                 }
 
-            if let badgeText = service.iconBadgeText {
-                Text(badgeText)
-                    .font(.system(size: max(size * 0.21, 8), weight: .bold, design: .rounded))
-                    .foregroundStyle(.white)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.68)
-                    .frame(width: size * 0.42, height: size * 0.32)
-                    .background(AppTheme.accentDeep)
-                    .clipShape(RoundedRectangle(cornerRadius: size * 0.10, style: .continuous))
-                    .overlay {
-                        RoundedRectangle(cornerRadius: size * 0.10, style: .continuous)
-                            .stroke(Color(.systemBackground), lineWidth: 1)
-                    }
-                    .offset(x: size * 0.08, y: size * 0.08)
-            }
         }
         .frame(width: size, height: size)
         .accessibilityHidden(true)
@@ -229,10 +224,10 @@ extension LaunchpadService {
     }
 
     func preferredEndpoint(for dsmBaseURL: URL?) -> URL? {
-        guard Self.isPrivateNetworkHost(dsmBaseURL?.host) else {
-            return endpoint ?? alternateEndpoint
-        }
-        return alternateEndpoint ?? endpoint
+        let candidates = [endpoint, alternateEndpoint].compactMap { $0 }
+        guard source != .manual, let dsmBaseURL else { return candidates.first }
+        let wantsLAN = Self.isPrivateNetworkHost(dsmBaseURL.host)
+        return candidates.first { Self.isPrivateNetworkHost($0.host) == wantsLAN }
     }
 
     func usesLANOnlyEndpoint(for dsmBaseURL: URL?) -> Bool {

@@ -18,6 +18,7 @@ command -v ios-deploy >/dev/null 2>&1 || {
   -derivedDataPath "$DERIVED_DATA_PATH" \
   build
 
+python3 "$ROOT_DIR/scripts/verify_playback_linkage.py" "$APP_PATH"
 ios-deploy --id "$DEVICE_UDID" --bundle "$APP_PATH"
 
 printf 'Installed Nastart Debug A/B build to %s\n' "$DEVICE_UDID"

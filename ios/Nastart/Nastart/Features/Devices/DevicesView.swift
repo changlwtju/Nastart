@@ -681,46 +681,6 @@ private struct FileBrowserView: View {
 
     var body: some View {
         List {
-            if let folderPath {
-                Section {
-                    LabeledContent("devices.files.path") {
-                        Text(folderPath)
-                            .font(.caption.monospaced())
-                            .foregroundStyle(.secondary)
-                            .lineLimit(2)
-                            .multilineTextAlignment(.trailing)
-                            .textSelection(.enabled)
-                    }
-                }
-            }
-
-            Section {
-                HStack(spacing: 10) {
-                    Image(systemName: "magnifyingglass")
-                        .foregroundStyle(.secondary)
-                    TextField("devices.files.search", text: $query)
-                        .textInputAutocapitalization(.never)
-                        .autocorrectionDisabled()
-                    if !query.isEmpty {
-                        Button {
-                            query = ""
-                        } label: {
-                            Image(systemName: "xmark.circle.fill")
-                                .foregroundStyle(.secondary)
-                        }
-                        .buttonStyle(.plain)
-                        .accessibilityLabel(Text("action.clear"))
-                    }
-                }
-
-                Picker("devices.files.sort", selection: $sort) {
-                    ForEach(FileBrowserSort.allCases) { option in
-                        Text(option.titleKey).tag(option)
-                    }
-                }
-                .pickerStyle(.segmented)
-            }
-
             Section {
                 if isLoading && visibleItems.isEmpty {
                     HStack {
@@ -773,6 +733,33 @@ private struct FileBrowserView: View {
         }
         .listStyle(.insetGrouped)
         .navigationTitle(titleKey)
+        .navigationBarTitleDisplayMode(.inline)
+        .searchable(text: $query, placement: .navigationBarDrawer(displayMode: .automatic),
+                    prompt: Text("devices.files.search"))
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Menu {
+                    Picker("devices.files.sort", selection: $sort) {
+                        ForEach(FileBrowserSort.allCases) { option in
+                            Text(option.titleKey).tag(option)
+                        }
+                    }
+                    if let folderPath {
+                        Divider()
+                        Text(folderPath)
+                        Button {
+                            UIPasteboard.general.string = folderPath
+                        } label: {
+                            Label("devices.files.copy_path", systemImage: "doc.on.doc")
+                        }
+                    }
+                } label: {
+                    Image(systemName: "ellipsis.circle")
+                }
+                .accessibilityLabel(Text("devices.files.options"))
+            }
+        }
+
         .task { await loadIfNeeded() }
         .refreshable {
             await reloadFolder()
@@ -890,9 +877,12 @@ private struct FileItemRow: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(item.name)
                     .font(.body.weight(.medium))
-                Text(item.subtitle)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                if item.subtitle != item.path {
+                    Text(item.subtitle)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                }
             }
             Spacer()
             if !item.isFolder, let sizeText = item.sizeText {
@@ -914,7 +904,7 @@ private struct FilePreviewView: View {
     @State private var playbackRequest: MediaPlaybackRequest?
 #if DEBUG
     @AppStorage(GreenfieldPlaybackDebugSettings.useGreenfieldPlayerKey)
-    private var usesGreenfieldPlayer = false
+    private var usesGreenfieldPlayer = true
     @State private var greenfieldPlaybackRequest: GreenfieldPlaybackLaunchRequest?
 #endif
     @State private var localPreview: LocalFilePreview?
@@ -957,11 +947,7 @@ private struct FilePreviewView: View {
                 .disabled(isPreparingPreview)
 #if DEBUG
                 if item.kind == .video || item.kind == .audio {
-                    Toggle(isOn: $usesGreenfieldPlayer) {
-                        Label("Greenfield player", systemImage: "switch.2")
-                            .font(.subheadline.weight(.semibold))
-                    }
-                    .toggleStyle(.switch)
+                    PlaybackArchitecturePicker(usesGreenfieldPlayer: $usesGreenfieldPlayer)
                 }
 #endif
             } header: {
@@ -1063,7 +1049,7 @@ private struct FilePreviewView: View {
                     isPreparingPreview = false
                     externalPlaybackURL = selectedURL
                     PlayerOrientationController.prepareForPresentation(.landscape)
-                    playbackRequest = MediaPlaybackRequest(
+                    let request = MediaPlaybackRequest(
                         url: prepared.playbackURL,
                         title: item.name,
                         source: .dsmFile,
@@ -1077,6 +1063,13 @@ private struct FilePreviewView: View {
                             allowsSelfSignedCertificates: session?.allowsSelfSignedCertificates
                         )
                     )
+#if DEBUG
+                    if usesGreenfieldPlayer {
+                        greenfieldPlaybackRequest = request.greenfieldPlaybackLaunchRequest()
+                    } else { playbackRequest = request }
+#else
+                    playbackRequest = request
+#endif
                     DiagnosticLogStore.shared.record(
                         .info,
                         categoryKey: "diagnostics.category.media",
@@ -1130,12 +1123,25 @@ private struct FilePreviewView: View {
                 session: session,
                 siblingItems: siblingItems
             )
-            // Do not spend the startup path on a 0-1 byte probe. VLC already
-            // performs the real authenticated read and can begin demuxing as
-            // soon as the first media bytes arrive. The candidate resolver is
-            // kept for the failure path below, where selecting a working
-            // scheme is useful and no first-frame latency is at stake.
-            let selectedURL = candidates.first ?? url
+            // Validate DSM's authenticated Range endpoint before passing it
+            // to KSPlayer; a login/error JSON response is not a media stream.
+            let selectedURL: URL
+            if greenfieldRequested {
+                guard let resolved = await AuthenticatedMediaPlaybackResolver.firstPlayableURL(
+                    candidates: candidates,
+                    allowsSelfSignedCertificates: session?.allowsSelfSignedCertificates == true,
+                    diagnosticStage: "dsmGreenfieldRange", timeout: 4
+                ) else {
+                    await MainActor.run {
+                        isPreparingPreview = false
+                        showFailure("player.load_failed")
+                    }
+                    return
+                }
+                selectedURL = resolved
+            } else {
+                selectedURL = candidates.first ?? url
+            }
             let subtitleAsset = await sidecarSubtitle
             let isPrivateRoute = NetworkHostClassifier.isPrivate(selectedURL.host)
             // Greenfield/KSPlayer needs the authenticated local Range proxy
@@ -2188,8 +2194,10 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
     func start() {
         connection.stateUpdateHandler = { [weak self] state in
             switch state {
-            case .cancelled, .failed:
-                self?.finish(with: URLError(.networkConnectionLost))
+            case .cancelled:
+                self?.finish(with: URLError(.cancelled), source: "clientCancelled")
+            case .failed(let error):
+                self?.finish(with: error, source: "clientFailed")
             default:
                 break
             }
@@ -2340,6 +2348,19 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
                 expectedBodyBytes = parsedRange.bodyLength
             }
             responseTotalLength = parsedRange.totalLength
+            DiagnosticLogStore.shared.record(
+                .info,
+                categoryKey: "diagnostics.category.media",
+                messageKey: "diagnostics.media.proxy_transfer_started",
+                details: diagnosticDetails([
+                    "stage": "continuationResponse",
+                    "range": activeRequestedRange ?? "-",
+                    "status": "\(response.statusCode)",
+                    "contentRange": contentRange ?? "-",
+                    "contentLength": expectedBodyBytes.map(String.init) ?? "-",
+                    "cumulativeReceivedBytes": "\(deliveredBodyBytes)"
+                ])
+            )
             completionHandler(.allow)
             return
         }
@@ -2398,7 +2419,7 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
         lines.append("Connection: close")
         let header = lines.joined(separator: "\r\n") + "\r\n\r\n"
         connection.send(content: Data(header.utf8), completion: .contentProcessed { [weak self] error in
-            if let error { self?.finish(with: error) }
+            if let error { self?.finish(with: error, source: "clientHeaderSend") }
         })
         completionHandler(.allow)
     }
@@ -2481,6 +2502,20 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
             sendPlaylist()
             return
         }
+        DiagnosticLogStore.shared.record(
+            error == nil ? .info : .warning,
+            categoryKey: "diagnostics.category.media",
+            messageKey: "diagnostics.media.proxy_transfer_finished",
+            details: diagnosticDetails([
+                "stage": "upstreamTaskCompleted",
+                "range": activeRequestedRange ?? "-",
+                "taskReceivedBytes": "\(max(deliveredBodyBytes - bodyBytesAtTaskStart, 0))",
+                "cumulativeReceivedBytes": "\(deliveredBodyBytes)",
+                "expectedBytes": expectedBodyBytes.map(String.init) ?? "-",
+                "errorDomain": error.map { ($0 as NSError).domain } ?? "-",
+                "errorCode": error.map { String(($0 as NSError).code) } ?? "-"
+            ])
+        )
         if retryInterruptedTransfer(after: error) {
             return
         }
@@ -2692,7 +2727,7 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
             connection.send(content: wireChunk, completion: .contentProcessed { [weak self] error in
                 guard let self else { return }
                 if let error {
-                    self.finish(with: error)
+                    self.finish(with: error, source: "clientBodySend")
                     return
                 }
                 self.bufferLock.lock()
@@ -2705,7 +2740,7 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
                 ? Data("0\r\n\r\n".utf8)
                 : nil
             connection.send(content: terminalChunk, isComplete: true, completion: .contentProcessed { [weak self] error in
-                self?.finish(with: error)
+                self?.finish(with: error, source: "clientTerminalSend")
             })
         }
     }
@@ -2814,7 +2849,7 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
         completionHandler(.useCredential, credential)
     }
 
-    private func finish(with error: Error?) {
+    private func finish(with error: Error?, source: String = #function) {
         finishLock.lock()
         guard !finished else {
             finishLock.unlock()
@@ -2833,6 +2868,13 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
             messageKey: "diagnostics.media.proxy_transfer_finished",
             details: diagnosticDetails([
                 "status": lastStatusCode.map(String.init) ?? "-",
+                "finishSource": source,
+                "errorDomain": error.map { ($0 as NSError).domain } ?? "-",
+                "errorCode": error.map { String(($0 as NSError).code) } ?? "-",
+                "taskReceivedBytes": "\(max(deliveredBodyBytes - bodyBytesAtTaskStart, 0))",
+                "responseStartOffset": responseStartOffset.map(String.init) ?? "-",
+                "responseEndOffset": responseEndOffset.map(String.init) ?? "-",
+                "range": activeRequestedRange ?? "-",
                 "deliveredBytes": "\(isPlaylist ? Int64(playlistBody.count) : deliveredBodyBytes)",
                 "expectedBytes": (isPlaylist ? playlistExpectedBodyBytes : expectedBodyBytes)
                     .map(String.init) ?? "-",

@@ -517,7 +517,10 @@ def check_playback_routing_invariants() -> CheckResult:
             '|| request.source == .jellyfin'
         ),
         "Jellyfin playback must always submit a VLC device profile": (
-            "deviceProfile: Self.vlcPlaybackProfile(maxBitrate: maxStreamingBitrate)"
+            "deviceProfile: Self.vlcPlaybackProfile(\n                maxBitrate: maxStreamingBitrate,"
+        ),
+        "Only Greenfield Jellyfin HLS may use the content-preserving TS profile": (
+            'hlsSegmentContainer: usesGreenfieldPlayback ? "ts" : "mp4"'
         ),
         "Jellyfin playback negotiation must make direct play an explicit policy": (
             "enableDirectPlay: allowsDirectPlay"
@@ -821,7 +824,7 @@ def check_playback_routing_invariants() -> CheckResult:
             "runtimeState?.playbackRate ?? initialPlaybackRate"
         ),
         "VLC failures must capture runtime state before transport fallback": (
-            "compatibilityFailed(session.runtimeState(orientationMode: orientationMode))"
+            "compatibilityFailed(runtimeStateForSourceChange())"
         ),
         "External handoff must pause compatibility playback": (
             "session.pauseForExternalHandoff()"

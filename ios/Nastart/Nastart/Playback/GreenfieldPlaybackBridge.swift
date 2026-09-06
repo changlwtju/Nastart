@@ -2,10 +2,33 @@ import Foundation
 
 enum GreenfieldPlaybackDebugSettings {
     static let useGreenfieldPlayerKey = "debug.playback.use_greenfield_player"
-    static let forceOriginalKSPlayerKey = "debug.playback.force_original_ksplayer"
 }
 
 #if DEBUG
+import SwiftUI
+
+/// One shared architecture choice for Jellyfin, device files, and direct URLs.
+/// Original-stream selection belongs to routing policy, not architecture UI.
+struct PlaybackArchitecturePicker: View {
+    @Binding var usesGreenfieldPlayer: Bool
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("player.architecture.title")
+                .font(.subheadline.weight(.semibold))
+            Picker("player.architecture.title", selection: $usesGreenfieldPlayer) {
+                Text("player.architecture.new").tag(true)
+                Text("player.architecture.legacy").tag(false)
+            }
+            .pickerStyle(.segmented)
+            .accessibilityIdentifier("playbackArchitecturePicker")
+            Text("player.architecture.hint")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+    }
+}
+
 extension MediaPlaybackRequest {
     func greenfieldPlaybackLaunchRequest(
         playbackModePreference: PlaybackModePreference = .automatic
@@ -97,7 +120,7 @@ extension MediaPlaybackRequest {
             id: intent.id,
             intent: intent,
             orientationMode: initialOrientationMode,
-            playbackTraceID: playbackTraceID,
+            playbackTraceID: playbackTraceID ?? String(intent.id.uuidString.prefix(8)),
             fileExtensionHint: primaryExtensionHint,
             mimeHint: mimeTypeHint,
             certificatePolicy: primaryCertificatePolicy,
@@ -110,7 +133,8 @@ extension MediaPlaybackRequest {
             duration: totalDurationSeconds,
             estimatedBitrate: estimatedBitrate,
             tracks: tracks,
-            subtitles: subtitlePlan(tracks: tracks, selectedSubtitleTrackID: subtitleTrackID)
+            subtitles: subtitlePlan(tracks: tracks, selectedSubtitleTrackID: subtitleTrackID),
+            mediaRequest: self
         )
     }
 

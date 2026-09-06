@@ -609,19 +609,21 @@ final class DSMClient {
     }
 
     func isDSMEndpoint() async -> Bool {
-        let data = await optionalCall(
+        let data = try? await callWithAbsoluteTimeout(
             path: "/webapi/query.cgi",
             queryItems: [
                 URLQueryItem(name: "api", value: "SYNO.API.Info"),
                 URLQueryItem(name: "version", value: "1"),
                 URLQueryItem(name: "method", value: "query"),
                 URLQueryItem(name: "query", value: "SYNO.API.Auth,SYNO.Core.System")
-            ]
+            ],
+            timeout: 4
         )
         return data?.objectValue?["SYNO.API.Auth"] != nil
     }
 
     func loadSnapshot(session: DSMSession, useAgent _: Bool) async -> DSMDataSnapshot {
+        let snapshotStartedAt = Date()
         record(
             .info,
             categoryKey: "diagnostics.category.dsm_api",
@@ -776,6 +778,7 @@ final class DSMClient {
             categoryKey: "diagnostics.category.dsm_api",
             messageKey: "diagnostics.snapshot.completed",
             details: [
+                "durationMs": "\(Int(Date().timeIntervalSince(snapshotStartedAt) * 1_000))",
                 "services": "\(services.count)",
                 "launchpadServices": "\(services.filter(\.isLaunchpadVisible).count)",
                 "containers": "\(containers.count)",
@@ -1881,10 +1884,7 @@ final class DSMClient {
             "h264", "h265", "hevc", "av1", "nut", "amv", "bik",
             "roq", "wtv", "dvr-ms", "mod", "tod"
         ].contains(ext) { return .video }
-        if [
-            "mp3", "flac", "aac", "m4a", "wav", "ogg", "opus",
-            "wma", "ape", "alac", "aiff", "aif", "amr", "ac3", "dts"
-        ].contains(ext) { return .audio }
+        if AudioFormatPolicy.extensions.contains(ext) { return .audio }
         if [
             "jpg", "jpeg", "png", "gif", "heic", "heif", "webp",
             "bmp", "tif", "tiff", "avif", "dng", "svg"
@@ -2113,11 +2113,19 @@ final class DSMClient {
                 "https": "\(reverseProxyRules.filter { $0.sourceScheme == "https" }.count)"
             ]
         )
+        let endpointDiscoveryStartedAt = Date()
         let containerEndpoints = await resolvedContainerEndpoints(
             containers,
             reverseProxyRules: reverseProxyRules,
             lanHosts: lanHosts,
             baseURL: session.baseURL
+        )
+        record(
+            .info,
+            categoryKey: "diagnostics.category.dsm_api",
+            messageKey: "diagnostics.endpoints.completed",
+            details: ["durationMs": "\(Int(Date().timeIntervalSince(endpointDiscoveryStartedAt) * 1_000))",
+                      "count": "\(containerEndpoints.count)"]
         )
         var services: [LaunchpadService] = [
             LaunchpadService(
@@ -2263,7 +2271,8 @@ final class DSMClient {
                         if let endpoint {
                             return (
                                 container.id,
-                                ResolvedContainerEndpoint(url: endpoint, source: .container)
+                                ResolvedContainerEndpoint(url: endpoint, source: .container,
+                                    alternateURL: Self.reverseProxyEndpoint(for: container, rules: reverseProxyRules, baseURL: baseURL))
                             )
                         }
                     }
@@ -2276,10 +2285,11 @@ final class DSMClient {
                             Self.isPrivateNetworkHost($0.host)
                                 && $0.scheme?.lowercased() == "http"
                         }
-                        let discoveredLocalEndpoint = await self.firstReachableWebEndpoint(
+                        let discoveredLocalEndpoint = Self.isPrivateNetworkHost(baseURL.host)
+                            ? await self.firstReachableWebEndpoint(
                             Array(localCandidates.prefix(4)),
                             serviceName: container.name
-                        )
+                        ) : nil
                         let localEndpoint = discoveredLocalEndpoint.flatMap { discovered in
                             Self.isPrivateNetworkHost(discovered.host)
                                 && discovered.scheme?.lowercased() == "http"
@@ -2476,13 +2486,21 @@ final class DSMClient {
                 }
             }
 
-            var reachable: [(Int, URL)] = []
+            var completed = Set<Int>()
+            var best: (Int, URL)?
             for await (index, endpoint) in group {
-                if let endpoint {
-                    reachable.append((index, endpoint))
+                completed.insert(index)
+                if let endpoint, best == nil || index < best!.0 {
+                    best = (index, endpoint)
+                }
+                // Preserve candidate priority, but don't wait for lower-priority
+                // addresses once every preferred candidate has completed.
+                if let best, (0..<best.0).allSatisfy({ completed.contains($0) }) {
+                    group.cancelAll()
+                    return best.1
                 }
             }
-            return reachable.min { $0.0 < $1.0 }?.1
+            return best?.1
         }
     }
 
@@ -2519,7 +2537,7 @@ final class DSMClient {
                     request.cachePolicy = .reloadIgnoringLocalCacheData
                     request.setValue("application/json", forHTTPHeaderField: "Accept")
                     do {
-                        let (_, response) = try await self.urlSession.data(for: request)
+                        let response = try await self.endpointProbeResponse(for: request)
                         guard
                             let response = response as? HTTPURLResponse,
                             (200..<300).contains(response.statusCode)
@@ -2533,18 +2551,45 @@ final class DSMClient {
                 }
             }
 
-            var reachable: [(Int, URL)] = []
-            for await result in group {
-                if let endpoint = result.1 {
-                    reachable.append((result.0, endpoint))
+            var completed = Set<Int>()
+            var best: (Int, URL)?
+            for await (index, endpoint) in group {
+                completed.insert(index)
+                if let endpoint, best == nil || index < best!.0 {
+                    best = (index, endpoint)
+                }
+                // Preserve candidate priority, but don't wait for lower-priority
+                // addresses once every preferred candidate has completed.
+                if let best, (0..<best.0).allSatisfy({ completed.contains($0) }) {
+                    group.cancelAll()
+                    return best.1
                 }
             }
-            return reachable.min { $0.0 < $1.0 }?.1
+            return best?.1
+        }
+    }
+
+    /// URLSession's request timeout measures inactivity. A service that keeps
+    /// sending bytes (or waits for connectivity) must not hold up NAS discovery.
+    func endpointProbeResponse(for request: URLRequest) async throws -> URLResponse {
+        try await withThrowingTaskGroup(of: URLResponse.self) { group in
+            defer { group.cancelAll() }
+            group.addTask {
+                let (_, response) = try await self.urlSession.data(for: request)
+                return response
+            }
+            group.addTask {
+                try await Task.sleep(nanoseconds: Self.nanoseconds(for: request.timeoutInterval))
+                throw URLError(.timedOut)
+            }
+            guard let response = try await group.next() else { throw CancellationError() }
+            return response
         }
     }
 
     private func reachableWebEndpoint(_ endpoint: URL) async -> URL? {
         for method in ["HEAD", "GET"] {
+            guard !Task.isCancelled else { return nil }
             var request = URLRequest(url: endpoint)
             request.httpMethod = method
             request.timeoutInterval = method == "HEAD" ? 1.5 : 2.5
@@ -2553,7 +2598,7 @@ final class DSMClient {
                 request.setValue("bytes=0-0", forHTTPHeaderField: "Range")
             }
             do {
-                let (_, response) = try await urlSession.data(for: request)
+                let response = try await endpointProbeResponse(for: request)
                 if let response = response as? HTTPURLResponse,
                    (200..<400).contains(response.statusCode)
                     || response.statusCode == 401
@@ -2916,7 +2961,8 @@ final class DSMClient {
         baseURL: URL,
         lanHosts: [String]
     ) -> [URL] {
-        let hosts = uniqueStrings(lanHosts + [baseURL.host].compactMap { $0 })
+        let hosts = uniqueStrings((Self.isPrivateNetworkHost(baseURL.host) ? lanHosts : [])
+            + [baseURL.host].compactMap { $0 })
         guard !hosts.isEmpty else { return [] }
         let preferredContainerPorts = preferredWebPorts(for: container.name)
         var sortedMappings = container.ports.compactMap(portMapping(from:)).filter { $0.transport == "tcp" }

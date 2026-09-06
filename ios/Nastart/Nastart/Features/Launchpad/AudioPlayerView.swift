@@ -42,7 +42,20 @@ struct DedicatedAudioPlayerView: View {
 
                     Spacer()
 
-                    Color.clear.frame(width: 44, height: 44)
+                    Menu {
+                        Picker("audio.player.speed", selection: Binding(
+                            get: { session.playbackRate },
+                            set: { session.setPlaybackRate($0) }
+                        )) {
+                            ForEach([0.5, 0.75, 1.0, 1.25, 1.5, 2.0], id: \.self) { rate in
+                                Text("\(rate.formatted())×").tag(rate)
+                            }
+                        }
+                    } label: {
+                        Image(systemName: "speedometer")
+                            .frame(width: 44, height: 44)
+                    }
+                    .accessibilityLabel(Text("audio.player.speed"))
                 }
 
                 Spacer(minLength: 28)
@@ -132,6 +145,12 @@ struct DedicatedAudioPlayerView: View {
                 .padding(.top, 20)
 
                 if let errorMessage = session.errorMessage {
+                    Button {
+                        session.play()
+                    } label: {
+                        Label("action.retry", systemImage: "arrow.clockwise")
+                    }
+                    .padding(.top, 12)
                     Label(errorMessage, systemImage: "exclamationmark.triangle")
                         .font(.caption)
                         .foregroundStyle(.orange)
@@ -168,6 +187,8 @@ final class AudioPlaybackSession: NSObject, ObservableObject, VLCMediaPlayerDele
     @Published private(set) var currentTimeText = "00:00"
     @Published private(set) var durationText = "--:--"
     @Published private(set) var errorMessage: String?
+
+    @Published private(set) var playbackRate = 1.0
 
     let formatLabel: String
     private let request: MediaPlaybackRequest
@@ -210,10 +231,19 @@ final class AudioPlaybackSession: NSObject, ObservableObject, VLCMediaPlayerDele
 
     private static let avFormatAudioExtensions: Set<String> = [
         "mp3", "m4a", "aac", "wav", "flac", "ogg", "opus", "wma",
-        "ape", "alac", "aiff", "aif", "amr", "ac3", "dts", "caf"
+        "ape", "alac", "aiff", "aif", "amr", "ac3", "dts", "caf",
+        "mp2", "m4b", "wave", "oga", "aifc", "eac3", "wv", "tta", "mka", "au", "snd", "dsf", "dff"
     ]
 
+    func setPlaybackRate(_ rate: Double) {
+        guard rate.isFinite else { return }
+        playbackRate = min(max(rate, 0.5), 2)
+        player.rate = Float(playbackRate)
+        updateNowPlaying()
+    }
+
     func play() {
+        errorMessage = nil
         configureAudioSession()
         installRemoteCommandsIfNeeded()
         didReissueStartupPlay = false
@@ -236,6 +266,7 @@ final class AudioPlaybackSession: NSObject, ObservableObject, VLCMediaPlayerDele
             )
         }
         player.play()
+        player.rate = Float(playbackRate)
         scheduleStartupPlayRetry()
         updateNowPlaying()
     }
@@ -412,6 +443,8 @@ final class AudioPlaybackSession: ObservableObject {
     @Published private(set) var currentTimeText = "00:00"
     @Published private(set) var durationText = "--:--"
     @Published private(set) var errorMessage: String? = NSLocalizedString("player.compatibility_unavailable", comment: "")
+    @Published private(set) var playbackRate = 1.0
+    func setPlaybackRate(_ rate: Double) {}
     let formatLabel = "Audio"
     init(request: MediaPlaybackRequest) {}
     func play() {}

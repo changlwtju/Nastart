@@ -173,7 +173,13 @@ struct NastartApp: App {
 #if DEBUG
                 if let playbackLabRequest {
                     NavigationStack {
-                        BuiltInMediaPlayerView(request: playbackLabRequest)
+                        if ProcessInfo.processInfo.environment["NASTART_PLAYBACK_LAB_ARCHITECTURE"] == "greenfield" {
+                            GreenfieldVideoPlayerView(
+                                request: playbackLabRequest.greenfieldPlaybackLaunchRequest()
+                            )
+                        } else {
+                            BuiltInMediaPlayerView(request: playbackLabRequest)
+                        }
                     }
                 } else if canShowMainApp {
                     AppTabRootView()
@@ -236,6 +242,19 @@ struct NastartApp: App {
                         didCompleteRestore = true
                     }
                 }
+                .task(id: scenePhase) {
+                    guard scenePhase == .active else { return }
+                    while !Task.isCancelled {
+                        if didCompleteRestore {
+                            await appDataStore.monitorConnectivity(using: connectionStore)
+                        }
+                        do { try await Task.sleep(nanoseconds: 15_000_000_000) }
+                        catch { return }
+                    }
+                }
+                .onChange(of: connectionStore.isConnected) { connected in
+                    if connected { didCompleteRestore = true }
+                }
                 .onChange(of: scenePhase) { phase in
                     guard phase == .active, didCompleteRestore else { return }
                     Task {
@@ -266,7 +285,7 @@ struct NastartApp: App {
 
     private var canShowMainApp: Bool {
         appDataStore.hasCachedDSMSnapshot
-            || (didCompleteRestore && !appDataStore.isShowingProvisionalDSMSnapshot)
+            || didCompleteRestore
     }
 
     private var preferredColorScheme: ColorScheme? {

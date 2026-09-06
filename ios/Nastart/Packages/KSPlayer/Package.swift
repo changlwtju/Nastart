@@ -11,8 +11,10 @@ let package = Package(
         // Products define the executables and libraries produced by a package, and make them visible to other packages.
         .library(
             name: "KSPlayer",
-            // todo clang: warning: using sysroot for 'iPhoneSimulator' but targeting 'MacOSX' [-Wincompatible-sysroot]
-//            type: .dynamic,
+            // Isolate FFmpeg symbol resolution from the app's MobileVLCKit.
+            // Static linkage binds av* calls to VLC's older ABI while Swift
+            // accesses structs compiled against FFmpegKit's headers.
+            type: .dynamic,
             targets: ["KSPlayer"]
         ),
     ],

@@ -9,6 +9,7 @@ struct ServiceHealthSnapshot: Equatable, Sendable {
 struct ServiceHealthTarget: Sendable {
     let id: UUID
     let url: URL
+    var allowsSelfSignedCertificates = false
 }
 
 enum ServiceHealthProbe {
@@ -53,7 +54,10 @@ enum ServiceHealthProbe {
 
         let status: ServiceStatus
         do {
-            let (_, response) = try await URLSession.shared.data(for: request)
+            let response = try await DSMClient(
+                baseURL: target.url,
+                allowsSelfSignedCertificates: target.allowsSelfSignedCertificates
+            ).endpointProbeResponse(for: request)
             if let httpResponse = response as? HTTPURLResponse {
                 status = (200..<400).contains(httpResponse.statusCode) ? .online : .warning
             } else {

@@ -23,9 +23,20 @@ public protocol VideoOutput: FrameOutput {
     init(options: KSOptions)
     func invalidate()
     func readNextFrame()
+    func displaySeekPreview() -> Bool
+}
+
+public extension VideoOutput {
+    func displaySeekPreview() -> Bool { false }
 }
 
 public final class MetalPlayView: UIView, VideoOutput {
+    private var renderedFrameCount: UInt64 = 0
+    public func displaySeekPreview() -> Bool {
+        let previous = renderedFrameCount
+        draw(force: true)
+        return renderedFrameCount != previous
+    }
     public var displayLayer: AVSampleBufferDisplayLayer {
         displayView.displayLayer
     }
@@ -218,6 +229,9 @@ extension MetalPlayView {
                 metalView.draw(pixelBuffer: pixelBuffer, display: options.display, size: size)
             }
             renderSource?.setVideo(time: cmtime, position: frame.position)
+            renderedFrameCount &+= 1
+            options.videoFrameSubmitted?(cmtime.seconds, force)
+            if force { KSLog("paused/initial preview submitted pts=\(cmtime.seconds)") }
         }
     }
 

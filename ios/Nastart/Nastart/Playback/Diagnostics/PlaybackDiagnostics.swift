@@ -160,6 +160,8 @@ final class PlaybackTelemetrySampler {
     private var lastProgressAt = Date()
     private var stallStartedAt: Date?
     private var stallCount = 0
+    private var lastKSPlayerState: String?
+    private var lastAVTimeControlStatus: AVPlayer.TimeControlStatus?
 
     init(
         recorder: PlaybackDiagnosticsRecorder,
@@ -185,6 +187,13 @@ final class PlaybackTelemetrySampler {
 
         let currentSeconds = player.currentTime().seconds
         let playbackSeconds = currentSeconds.isFinite ? currentSeconds : nil
+        // Paused replacement items can have empty buffers by design. On resume,
+        // give the clock a fresh progress baseline instead of counting the pause.
+        if player.timeControlStatus == .paused ||
+            (player.timeControlStatus == .playing && lastAVTimeControlStatus != .playing) {
+            lastProgressAt = now
+        }
+        lastAVTimeControlStatus = player.timeControlStatus
         let deltaSeconds = updatePlaybackProgress(playbackSeconds, now: now)
         let timeControlStatus = Self.describe(player.timeControlStatus)
         let waitingReason = Self.describe(player.reasonForWaitingToPlay)
@@ -203,7 +212,7 @@ final class PlaybackTelemetrySampler {
         let isBufferEmpty = item?.isPlaybackBufferEmpty == true
         let isLikelyToKeepUp = item?.isPlaybackLikelyToKeepUp == true
         let stallState = updateStallState(
-            isWaitingOrEmpty: isWaiting || isBufferEmpty,
+            isWaitingOrEmpty: isWaiting || (player.timeControlStatus == .playing && isBufferEmpty),
             isPlaying: player.timeControlStatus == .playing,
             now: now
         )
@@ -239,14 +248,22 @@ final class PlaybackTelemetrySampler {
         force: Bool = false
     ) {
         let now = Date()
+        if let state {
+            if lastKSPlayerState == "paused", state == "bufferFinished" || state == "playing" {
+                lastProgressAt = now
+                lastPlaybackSeconds = nil
+            }
+            lastKSPlayerState = state
+        }
         guard force || now.timeIntervalSince(lastEmissionAt) >= sampleInterval else { return }
         lastEmissionAt = now
 
         let playbackSeconds = Self.sanitizedKSPlayerSeconds(currentTime)
         let durationSeconds = Self.sanitizedKSPlayerSeconds(totalTime)
         let deltaSeconds = updatePlaybackProgress(playbackSeconds, now: now)
-        let isPlaying = (deltaSeconds ?? 0) > 0.05 || state == "playing"
-        let isBuffering = state?.localizedCaseInsensitiveContains("buffer") == true
+        let isPlaying = lastKSPlayerState == "playing" || lastKSPlayerState == "bufferFinished"
+            || (lastKSPlayerState != "paused" && (deltaSeconds ?? 0) > 0.05)
+        let isBuffering = lastKSPlayerState == "buffering"
         let stallState = updateStallState(
             isWaitingOrEmpty: isBuffering,
             isPlaying: isPlaying,
@@ -320,7 +337,7 @@ final class PlaybackTelemetrySampler {
     ) -> [String: String] {
         var metrics: [String: String] = [:]
         let progressRecentlyAdvanced = now.timeIntervalSince(lastProgressAt) < 1.5
-        let isStalled = isWaitingOrEmpty || (!isPlaying && !progressRecentlyAdvanced)
+        let isStalled = isWaitingOrEmpty || (isPlaying && !progressRecentlyAdvanced)
         if isStalled {
             if stallStartedAt == nil {
                 stallStartedAt = now
@@ -431,7 +448,8 @@ struct PlaybackMetricKeys {
     static let routeToOpenMs = "routeToOpenMs"
     static let openToReadyMs = "openToReadyMs"
     static let tapToFirstFrameMs = "tapToFirstFrameMs"
-    static let firstFrameMs = "firstFrameMs"
+    static let firstFramePositionSeconds = "firstFramePositionSeconds"
+    static let firstFrameSignal = "firstFrameSignal"
     static let continuousPlaybackSeconds = "continuousPlaybackSeconds"
     static let pauseDurationMs = "pauseDurationMs"
     static let resumeRecoveryMs = "resumeRecoveryMs"

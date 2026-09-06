@@ -493,9 +493,15 @@ extension MEPlayerItem {
                 let timestamp = startTime + CMTime(seconds: options.startPlayTime)
                 let flags = seekByBytes ? AVSEEK_FLAG_BYTE : 0
                 let seekStartTime = CACurrentMediaTime()
-                let result = avformat_seek_file(formatCtx, -1, Int64.min, timestamp.value, Int64.max, flags)
+                let maximum = options.isAccurateSeek && !seekByBytes ? timestamp.value : Int64.max
+                let result = avformat_seek_file(formatCtx, -1, Int64.min, timestamp.value, maximum, flags)
                 audioClock.time = timestamp
                 videoClock.time = timestamp
+                // Demux seeks may land on an earlier keyframe. Apply the same
+                // decoder discard boundary used by interactive accurate seeks.
+                if result >= 0, options.isAccurateSeek {
+                    allPlayerItemTracks.forEach { $0.prepareInitialSeek(time: options.startPlayTime) }
+                }
                 KSLog("start PlayTime: \(timestamp.seconds) spend Time: \(CACurrentMediaTime() - seekStartTime)")
             }
             state = .reading
@@ -531,10 +537,14 @@ extension MEPlayerItem {
                     timeStamp = position + increase
                 } else {
                     increase *= Int64(AV_TIME_BASE)
-                    timeStamp = Int64(time.seconds) * Int64(AV_TIME_BASE) + increase
+                    timeStamp = Int64((seekToTime + startTime.seconds) * Double(AV_TIME_BASE))
                 }
-                let seekMin = increase > 0 ? timeStamp - increase + 2 : Int64.min
-                let seekMax = increase < 0 ? timeStamp - increase - 2 : Int64.max
+                // Accurate decoding needs a keyframe at/before the target.
+                // avformat_seek_file may otherwise choose a later keyframe;
+                // dropping pre-target decoded frames cannot repair that jump.
+                let accurateTimestampSeek = options.isAccurateSeek && !seekByBytes
+                let seekMin = accurateTimestampSeek ? Int64.min : (increase > 0 ? timeStamp - increase + 2 : Int64.min)
+                let seekMax = accurateTimestampSeek ? timeStamp : (increase < 0 ? timeStamp - increase - 2 : Int64.max)
                 // can not seek to key frame
                 let seekStartTime = CACurrentMediaTime()
                 var result = avformat_seek_file(formatCtx, -1, seekMin, timeStamp, seekMax, seekFlags)

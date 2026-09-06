@@ -15,6 +15,8 @@ import OSLog
 import UIKit
 #endif
 open class KSOptions {
+    /// Frame handed to the display layer/Metal renderer, not compositor presentation.
+    public var videoFrameSubmitted: ((TimeInterval, Bool) -> Void)?
     /// 最低缓存视频时间
     @Published
     public var preferredForwardBufferDuration = KSOptions.preferredForwardBufferDuration

@@ -1016,3 +1016,38 @@
 "tasks.detail.target" = "Target Date";
 "mine.privacy.reset_certificates" = "Reset Trusted Certificates";
 "mine.privacy.reset_certificates_hint" = "Saved self-signed certificate fingerprints were cleared. Nastart will trust and save the next certificate presented by each server.";
+
+"player.timeline" = "Playback position";
+"player.picture_mode" = "Picture mode";
+"player.picture_fit" = "Fit to screen";
+"player.picture_fill" = "Fill and crop";
+"player.picture_fill_hint" = "Fill preserves the aspect ratio and crops content outside the screen.";
+"player.gesture_hint" = "Tap to show or hide controls. Double-tap to pause or play. Drag horizontally to preview a time, then release to seek.";
+"player.diagnostics" = "Playback diagnostics";
+
+"player.architecture.title" = "Playback architecture";
+"player.architecture.new" = "New";
+"player.architecture.legacy" = "Legacy";
+"player.architecture.hint" = "Use the new architecture; switch to legacy if a problem occurs.";
+
+"connect.input.host" = "IP or domain (required)";
+
+"connect.input.path" = "Optional, e.g. /dsm";
+
+"connect.input.account" = "Username (required)";
+
+"connect.input.password" = "Password (required)";
+
+"connect.input.otp" = "If two-step verification is enabled";
+
+"connect.input.address_hint" = "Paste a full address to fill in the protocol, port and path automatically.";
+
+"connect.input.otp_label" = "2FA code";
+
+"diagnostics.endpoints.completed" = "Service address discovery completed";
+
+"devices.files.copy_path" = "Copy current path";
+
+"devices.files.options" = "Folder options";
+
+"audio.player.speed" = "Playback speed";

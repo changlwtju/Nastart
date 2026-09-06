@@ -424,8 +424,10 @@ struct DSMSession {
             append(url)
         }
 
-        appendPlaybackVariants(for: endpoints.lanAddress)
         appendPlaybackVariants(for: baseURL)
+        if NetworkHostClassifier.isPrivate(baseURL.host) {
+            appendPlaybackVariants(for: endpoints.lanAddress)
+        }
         append(publicAddressCandidate)
 
         var seen = Set<String>()
@@ -605,7 +607,7 @@ final class AppDataStore: ObservableObject {
     /// session has finished restoring. This is deliberately a display-only
     /// state: file operations still require `NASConnectionStore.dsmSession`.
     var isDSMAvailableForDisplay: Bool {
-        isDSMReachable || hasCachedDSMSnapshot
+        isDSMReachable
     }
 
     /// A single availability state used by pages that render the same NAS
@@ -673,7 +675,8 @@ final class AppDataStore: ObservableObject {
     private var consecutiveDSMReachabilityFailures = 0
     private var lastSuccessfulDSMContactAt: Date?
     private var lastForegroundRefreshAt: Date?
-    private var isRefreshingServiceHealth = false
+    private var serviceHealthRefreshID: UUID?
+    private var connectionGeneration = UUID()
     private var activeRefreshID: UUID?
     private struct FolderCacheEntry {
         let items: [FileItem]
@@ -683,8 +686,6 @@ final class AppDataStore: ObservableObject {
     private var folderLoadTasks: [String: Task<[FileItem], Error>] = [:]
     private var folderCacheScope: String?
 
-    private static let dsmReachabilityFailureThreshold = 2
-    private static let dsmReachabilityGraceInterval: TimeInterval = 180
     private static let foregroundRefreshCooldown: TimeInterval = 90
     private static let foregroundFreshnessInterval: TimeInterval = 5 * 60
     private static let folderCacheLifetime: TimeInterval = 5 * 60
@@ -705,7 +706,9 @@ final class AppDataStore: ObservableObject {
         activeDataSource = DisconnectedNASDataSource()
         device = initialProvider.device
         agentHealth = initialProvider.agentHealth
-        services = initialProvider.services + manualServiceStore.load()
+        services = (initialProvider.services + manualServiceStore.load()).map {
+            provider == nil ? $0.replacing(status: .unknown) : $0
+        }
         containers = initialProvider.containers
         files = initialProvider.files
         tasks = persistedTasks?.pending ?? initialProvider.tasks
@@ -720,6 +723,7 @@ final class AppDataStore: ObservableObject {
 
     @MainActor
     func reload(from provider: AppDataProviding, persistSnapshot: Bool = true) {
+        serviceHealthRefreshID = nil
         let previousServices = services
         let previousContainers = containers
         self.provider = provider
@@ -737,6 +741,25 @@ final class AppDataStore: ObservableObject {
         } else {
             services = provider.services + manualServiceStore.load()
             preservedContainerInventoryOnLastMerge = false
+        }
+        if provider is DSMDataSnapshot {
+            let baseURL = (activeDataSource as? DSMNASDataSource)?.session.baseURL
+            let previousByID = Dictionary(previousServices.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
+            services = services.map { service in
+                if let previous = previousByID[service.id],
+                   previous.preferredEndpoint(for: baseURL) == service.preferredEndpoint(for: baseURL),
+                   let health = serviceHealth[service.id],
+                   Date().timeIntervalSince(health.checkedAt) < 45 {
+                    return service.replacing(status: health.status)
+                }
+                // Inventory says a process exists/runs, not that its web service
+                // is accessible from this device. Await an actual probe.
+                return service.replacing(status: .unknown)
+            }
+            serviceHealth = serviceHealth.filter { id, health in
+                services.contains { $0.id == id && $0.status == health.status }
+                    && Date().timeIntervalSince(health.checkedAt) < 45
+            }
         }
         containers = preservedContainerInventoryOnLastMerge
             ? previousContainers
@@ -1020,29 +1043,39 @@ final class AppDataStore: ObservableObject {
 
     @MainActor
     func refreshServiceHealth() async {
-        guard !isRefreshingServiceHealth else { return }
+        guard serviceHealthRefreshID == nil else { return }
         let candidates = services.compactMap { service -> ServiceHealthTarget? in
             guard
-                service.source == .manual,
-                let endpoint = service.endpoint,
+                let endpoint = service.preferredEndpoint(for: (activeDataSource as? DSMNASDataSource)?.session.baseURL),
                 UserConfiguredServiceURLPolicy.allows(endpoint)
             else {
                 return nil
             }
-            return ServiceHealthTarget(id: service.id, url: endpoint)
+            let session = (activeDataSource as? DSMNASDataSource)?.session
+            return ServiceHealthTarget(id: service.id, url: endpoint,
+                allowsSelfSignedCertificates: session?.allowsSelfSignedCertificates == true
+                    && endpoint.host?.lowercased() == session?.baseURL.host?.lowercased())
         }
         guard !candidates.isEmpty else {
             serviceHealth.removeAll()
             return
         }
 
-        isRefreshingServiceHealth = true
-        defer { isRefreshingServiceHealth = false }
+        let refreshID = UUID()
+        serviceHealthRefreshID = refreshID
+        defer { if serviceHealthRefreshID == refreshID { serviceHealthRefreshID = nil } }
 
         let candidateIDs = Set(candidates.map(\.id))
         serviceHealth = serviceHealth.filter { candidateIDs.contains($0.key) }
-        let snapshots = await ServiceHealthProbe.check(candidates)
-        guard !Task.isCancelled, !snapshots.isEmpty else { return }
+        let grouped = Dictionary(grouping: candidates, by: { $0.url.absoluteString })
+        let representatives = grouped.values.compactMap(\.first)
+        let probed = await ServiceHealthProbe.check(representatives)
+        var snapshots: [UUID: ServiceHealthSnapshot] = [:]
+        for targets in grouped.values {
+            guard let first = targets.first, let health = probed[first.id] else { continue }
+            for target in targets { snapshots[target.id] = health }
+        }
+        guard !Task.isCancelled, serviceHealthRefreshID == refreshID, !snapshots.isEmpty else { return }
 
         serviceHealth.merge(snapshots) { _, latest in latest }
         services = services.map { service in
@@ -1137,6 +1170,21 @@ final class AppDataStore: ObservableObject {
         }
     }
 
+    /// Lightweight foreground monitoring, separate from the expensive inventory refresh.
+    @MainActor
+    func monitorConnectivity(using connectionStore: NASConnectionStore) async {
+        let generation = connectionGeneration
+        if let session = connectionStore.dsmSession {
+            let reachable = await DSMClient(baseURL: session.baseURL,
+                allowsSelfSignedCertificates: session.allowsSelfSignedCertificates).isDSMEndpoint()
+            guard !Task.isCancelled, generation == connectionGeneration,
+                  connectionStore.dsmSession?.sid == session.sid else { return }
+            if reachable { recordSuccessfulDSMContact() }
+            else { handleDSMReachabilityFailure(target: session.baseURL) }
+        }
+        await refreshServiceHealth()
+    }
+
     @MainActor
     func refreshForForeground(using connectionStore: NASConnectionStore) async {
         guard !isRefreshing else { return }
@@ -1186,7 +1234,9 @@ final class AppDataStore: ObservableObject {
         let dataSource = DSMNASDataSource(session: session, useAgent: useAgent)
         prepareFolderCache(for: dataSource)
         activeDataSource = dataSource
-        guard await dataSource.isReachable() else {
+        let reachable = await dataSource.isReachable()
+        guard !Task.isCancelled, activeRefreshID == refreshID else { return false }
+        guard reachable else {
             handleDSMReachabilityFailure(target: session.baseURL)
             return false
         }
@@ -1220,11 +1270,16 @@ final class AppDataStore: ObservableObject {
         activeDataSource = dataSource
         reload(from: snapshot, persistSnapshot: persistSnapshot)
         sourceKind = .dsm
-        recordSuccessfulDSMContact()
+        Task { await refreshServiceHealth() }
     }
 
     @MainActor
     func activateDSMSession(session: DSMSession, useAgent: Bool) {
+        if activeRefreshID != nil { invalidateActiveRefresh() }
+        connectionGeneration = UUID()
+        serviceHealthRefreshID = nil
+        serviceHealth.removeAll()
+        services = services.map { $0.replacing(status: .unknown) }
         let dataSource = DSMNASDataSource(session: session, useAgent: useAgent)
         prepareFolderCache(for: dataSource)
         activeDataSource = dataSource
@@ -1527,6 +1582,7 @@ final class AppDataStore: ObservableObject {
             sessionToLogout = session
             let dataSource = DSMNASDataSource(session: session, useAgent: usesStoredAgent)
             let snapshot = await dataSource.loadSnapshot()
+            guard connectionStore.dsmSession?.sid == mainSession.sid else { return }
             try KeychainStore.shared.saveNASCredential(
                 StoredNASCredential(
                     baseURLString: credential.baseURLString,
@@ -1597,31 +1653,6 @@ final class AppDataStore: ObservableObject {
     @MainActor
     private func handleDSMReachabilityFailure(target: URL) {
         consecutiveDSMReachabilityFailures += 1
-        let secondsSinceSuccess = lastSuccessfulDSMContactAt.map {
-            max(Date().timeIntervalSince($0), 0)
-        }
-        let isWithinGracePeriod = secondsSinceSuccess.map {
-            $0 < Self.dsmReachabilityGraceInterval
-        } ?? false
-        let shouldKeepLastKnownState = isDSMReachable
-            && (consecutiveDSMReachabilityFailures < Self.dsmReachabilityFailureThreshold
-                || isWithinGracePeriod)
-
-        guard !shouldKeepLastKnownState else {
-            lastRefreshSummaryKey = "data.refresh.connection_fluctuation"
-            DiagnosticLogStore.shared.record(
-                .warning,
-                categoryKey: "diagnostics.category.refresh",
-                messageKey: "diagnostics.refresh.transient_unreachable",
-                details: [
-                    "target": DiagnosticLogStore.redactedURL(target),
-                    "consecutiveFailures": "\(consecutiveDSMReachabilityFailures)",
-                    "secondsSinceSuccess": secondsSinceSuccess.map { "\(Int($0))" } ?? "unknown"
-                ]
-            )
-            return
-        }
-
         markDSMUnavailable(target: target)
     }
 

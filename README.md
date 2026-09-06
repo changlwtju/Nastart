@@ -18,6 +18,10 @@ It is intended to become an intelligent launchpad, service discovery center,
 status monitor, and lifecycle assistant for NAS users, starting with iPhone and
 iPad, then expanding toward macOS and other Apple platforms.
 
+## Playback Architecture Decision
+
+视频播放集中优化 Greenfield 新架构，旧架构仅作回退与必要对照；验收完成后删除旧架构。播放入口只保留新/旧两项选择。后续工作遵循 [ADR 0002：新播放架构唯一优化主线](docs/adr/0002-single-playback-optimization-mainline.md)。
+
 ## Product Direction
 
 Nastart is not planned as a simple mobile clone of Homepage, Homarr, MyServers,

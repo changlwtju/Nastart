@@ -36,3 +36,7 @@ __pycache__/
 .env
 .env.*
 !.env.example
+
+# Local diagnostics, private NAS/Jellyfin credentials and generated media
+/tmp/
+**/xcuserdata/

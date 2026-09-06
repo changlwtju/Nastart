@@ -2005,16 +2005,14 @@ struct BuiltInMediaPlayerView: View {
     }
 }
 
-#if canImport(MobileVLCKit)
-private struct VLCSubtitleTrack: Identifiable, Equatable {
+struct PlaybackUITrack: Identifiable, Equatable {
     let id: Int32
     let name: String
 }
 
-private struct VLCAudioTrack: Identifiable, Equatable {
-    let id: Int32
-    let name: String
-}
+#if canImport(MobileVLCKit)
+private typealias VLCSubtitleTrack = PlaybackUITrack
+private typealias VLCAudioTrack = PlaybackUITrack
 
 enum VLCTrustDirectory {
     static func options(for request: MediaPlaybackRequest) -> [String] {
@@ -3696,6 +3694,8 @@ private final class VLCMediaPlayerSession: NSObject, ObservableObject, VLCMediaP
     }
 }
 
+#endif
+
 private struct VLCPlayerTrackOption: Identifiable {
     let id: Int32
     let name: String
@@ -3843,6 +3843,7 @@ private struct CJKSubtitleOverlay: View {
     }
 }
 
+#if canImport(MobileVLCKit)
 private struct VLCBuiltInPlayerView: View {
     let request: MediaPlaybackRequest
     let close: () -> Void
@@ -3853,6 +3854,89 @@ private struct VLCBuiltInPlayerView: View {
     let qualityChange: ((String, MediaPlaybackRuntimeState) -> Void)?
     let openExternal: () -> Void
     @StateObject private var session: VLCMediaPlayerSession
+
+    init(request: MediaPlaybackRequest, close: @escaping () -> Void,
+         useSystemPlayer: ((MediaPlaybackRuntimeState, Bool) -> Void)?,
+         compatibilityFailed: @escaping (MediaPlaybackRuntimeState) -> Void,
+         sourceTrackChange: ((Int?, Int?, MediaPlaybackRuntimeState) -> Void)?,
+         serverSeek: ((Double, MediaPlaybackRuntimeState) -> Void)?,
+         qualityChange: ((String, MediaPlaybackRuntimeState) -> Void)?,
+         openExternal: @escaping () -> Void) {
+        self.request = request; self.close = close; self.useSystemPlayer = useSystemPlayer
+        self.compatibilityFailed = compatibilityFailed; self.sourceTrackChange = sourceTrackChange
+        self.serverSeek = serverSeek; self.qualityChange = qualityChange; self.openExternal = openExternal
+        _session = StateObject(wrappedValue: VLCMediaPlayerSession(request: request))
+    }
+    var body: some View {
+        SharedBuiltInPlayerView(request: request, session: session, close: close,
+            useSystemPlayer: useSystemPlayer, compatibilityFailed: compatibilityFailed,
+            sourceTrackChange: sourceTrackChange, serverSeek: serverSeek,
+            qualityChange: qualityChange, openExternal: openExternal) {
+                VLCPlayerSurface(session: session)
+            }
+    }
+}
+extension VLCMediaPlayerSession: PlaybackUIEngineSession {}
+#endif
+
+@MainActor
+protocol PlaybackUIEngineSession: ObservableObject {
+    var isPlaying: Bool { get }
+    var isMuted: Bool { get }
+    var position: Double { get }
+    var isSeekable: Bool { get }
+    var errorMessage: String? { get }
+    var subtitleTracks: [PlaybackUITrack] { get }
+    var audioTracks: [PlaybackUITrack] { get }
+    var selectedSubtitleTrackID: Int32 { get }
+    var selectedAudioTrackID: Int32 { get }
+    var isBuffering: Bool { get }
+    var hasStartedPlayback: Bool { get }
+    var currentTimeText: String { get }
+    var currentTimeSeconds: Double { get }
+    var durationText: String { get }
+    var durationSeconds: Double { get }
+    var playbackRate: Float { get }
+    var initialLoadTimeoutNanoseconds: UInt64 { get }
+    var usesSourceTrackSelectionForRuntimeState: Bool { get }
+    var supportsPictureMode: Bool { get }
+    var fillsScreen: Bool { get }
+    func setFillsScreen(_ fills: Bool)
+    func play()
+    func stop()
+    func togglePlayback()
+    func toggleMute()
+    func seek(to position: Double)
+    func seek(toAbsoluteSeconds seconds: Double) -> Bool
+    func jump(by seconds: Int)
+    func setPlaybackRate(_ rate: Float)
+    func selectAudio(_ track: PlaybackUITrack)
+    func selectSubtitle(_ track: PlaybackUITrack)
+    func selectExternalSubtitle(_ url: URL?) -> Bool
+    func pauseForExternalHandoff()
+    func runtimeState(orientationMode: PlayerOrientationMode) -> MediaPlaybackRuntimeState
+    func failIfStillLoading()
+    func initialLoadGraceNanosecondsIfNeeded() -> UInt64
+    func recoverIfStalled()
+}
+extension PlaybackUIEngineSession {
+    var usesSourceTrackSelectionForRuntimeState: Bool { false }
+    var supportsPictureMode: Bool { false }
+    var fillsScreen: Bool { false }
+    func setFillsScreen(_ fills: Bool) {}
+}
+
+struct SharedBuiltInPlayerView<Session: PlaybackUIEngineSession, Surface: View>: View {
+    let request: MediaPlaybackRequest
+    let close: () -> Void
+    let useSystemPlayer: ((MediaPlaybackRuntimeState, Bool) -> Void)?
+    let compatibilityFailed: (MediaPlaybackRuntimeState) -> Void
+    let sourceTrackChange: ((Int?, Int?, MediaPlaybackRuntimeState) -> Void)?
+    let serverSeek: ((Double, MediaPlaybackRuntimeState) -> Void)?
+    let qualityChange: ((String, MediaPlaybackRuntimeState) -> Void)?
+    let openExternal: () -> Void
+    @ObservedObject private var session: Session
+    private let surface: () -> Surface
     @State private var controlsVisible = true
     @State private var controlsLocked = false
     @State private var controlsRevision = 0
@@ -3867,19 +3951,22 @@ private struct VLCBuiltInPlayerView: View {
     @State private var brightnessHUDRevision = 0
     @State private var activePanel: VLCPlayerPanel?
     @State private var orientationMode: PlayerOrientationMode
+    @State private var selectedSourceAudioTrackID: Int?
     @State private var selectedSourceSubtitleTrackID: Int?
     @State private var showPiPUnavailableHint = false
     @StateObject private var subtitleOverlayModel: CJKSubtitleOverlayModel
 
     init(
         request: MediaPlaybackRequest,
+        session: Session,
         close: @escaping () -> Void,
         useSystemPlayer: ((MediaPlaybackRuntimeState, Bool) -> Void)?,
         compatibilityFailed: @escaping (MediaPlaybackRuntimeState) -> Void,
         sourceTrackChange: ((Int?, Int?, MediaPlaybackRuntimeState) -> Void)?,
         serverSeek: ((Double, MediaPlaybackRuntimeState) -> Void)?,
         qualityChange: ((String, MediaPlaybackRuntimeState) -> Void)?,
-        openExternal: @escaping () -> Void
+        openExternal: @escaping () -> Void,
+        @ViewBuilder surface: @escaping () -> Surface
     ) {
         self.request = request
         self.close = close
@@ -3889,9 +3976,11 @@ private struct VLCBuiltInPlayerView: View {
         self.serverSeek = serverSeek
         self.qualityChange = qualityChange
         self.openExternal = openExternal
-        _session = StateObject(wrappedValue: VLCMediaPlayerSession(request: request))
+        _session = ObservedObject(wrappedValue: session)
+        self.surface = surface
         _orientationMode = State(initialValue: request.initialOrientationMode)
         _displayBrightness = State(initialValue: UIScreen.main.brightness)
+        _selectedSourceAudioTrackID = State(initialValue: request.selectedSourceAudioTrackID)
         _selectedSourceSubtitleTrackID = State(
             initialValue: request.selectedSourceSubtitleTrackID
         )
@@ -3905,7 +3994,7 @@ private struct VLCBuiltInPlayerView: View {
             let landscapeLayout = proxy.size.width > proxy.size.height
 
             ZStack {
-                VLCPlayerSurface(session: session)
+                surface()
                     .ignoresSafeArea()
 
                 if subtitleOverlayModel.isEnabled {
@@ -3926,9 +4015,11 @@ private struct VLCBuiltInPlayerView: View {
                     .accessibilityAction {
                         toggleControls()
                     }
-                    .onTapGesture {
-                        toggleControls()
+                    .onTapGesture(count: 2) {
+                        session.togglePlayback()
+                        revealControls()
                     }
+                    .onTapGesture { toggleControls() }
                     .simultaneousGesture(
                         DragGesture(minimumDistance: 18)
                             .onChanged { value in
@@ -4000,7 +4091,7 @@ private struct VLCBuiltInPlayerView: View {
                         } else if let useSystemPlayer {
                             Button {
                                 useSystemPlayer(
-                                    session.runtimeState(orientationMode: orientationMode),
+                                    runtimeStateForSourceChange(),
                                     false
                                 )
                             } label: {
@@ -4070,7 +4161,7 @@ private struct VLCBuiltInPlayerView: View {
         }
         .onChange(of: session.errorMessage) { errorMessage in
             if errorMessage != nil {
-                compatibilityFailed(session.runtimeState(orientationMode: orientationMode))
+                compatibilityFailed(runtimeStateForSourceChange())
             }
         }
         .task {
@@ -4255,7 +4346,7 @@ private struct VLCBuiltInPlayerView: View {
                     Button {
                         if let useSystemPlayer {
                             useSystemPlayer(
-                                session.runtimeState(orientationMode: orientationMode),
+                                runtimeStateForSourceChange(),
                                 true
                             )
                         } else {
@@ -4348,12 +4439,13 @@ private struct VLCBuiltInPlayerView: View {
                     tracks: request.sourceAudioTracks.map {
                         VLCPlayerTrackOption(id: Int32(clamping: $0.id), name: $0.name)
                     },
-                    selectedID: Int32(clamping: request.selectedSourceAudioTrackID ?? -1)
+                    selectedID: Int32(clamping: selectedSourceAudioTrackID ?? -1)
                 ) { id in
+                    selectedSourceAudioTrackID = Int(id)
                     sourceTrackChange(
                         Int(id),
                         selectedSourceSubtitleTrackID,
-                        session.runtimeState(orientationMode: orientationMode)
+                        runtimeStateForSourceChange()
                     )
                     dismissPanel()
                 }
@@ -4388,9 +4480,9 @@ private struct VLCBuiltInPlayerView: View {
                     subtitleOverlayModel.setURL(sourceTrack?.externalURL)
                     if sourceTrack?.externalURL == nil {
                         sourceTrackChange(
-                            request.selectedSourceAudioTrackID,
+                            selectedSourceAudioTrackID,
                             sourceID,
-                            session.runtimeState(orientationMode: orientationMode)
+                            runtimeStateForSourceChange()
                         )
                     } else {
                         // Text subtitles are already normalized to a local
@@ -4418,6 +4510,24 @@ private struct VLCBuiltInPlayerView: View {
         }
     }
 
+    private func runtimeStateForSourceChange() -> MediaPlaybackRuntimeState {
+        let state = session.runtimeState(orientationMode: orientationMode)
+        guard session.usesSourceTrackSelectionForRuntimeState, sourceTrackChange != nil else { return state }
+        // The source menu includes sidecars and server-burned subtitles that
+        // never appear in AVPlayer's legible group. Preserve the user's current
+        // source selection when a Greenfield request is rebuilt.
+        return MediaPlaybackRuntimeState(
+            normalizedPosition: state.normalizedPosition,
+            positionSeconds: state.positionSeconds,
+            playbackRate: state.playbackRate,
+            audioTrackOrdinal: request.sourceAudioTracks.firstIndex { $0.id == selectedSourceAudioTrackID },
+            subtitleTrackOrdinal: request.sourceSubtitleTracks.firstIndex { $0.id == selectedSourceSubtitleTrackID },
+            subtitlesDisabled: selectedSourceSubtitleTrackID == nil,
+            subtitleSelectionKnown: true,
+            orientationMode: state.orientationMode
+        )
+    }
+
     private var qualityList: some View {
         ScrollView {
             LazyVStack(spacing: 0) {
@@ -4425,7 +4535,7 @@ private struct VLCBuiltInPlayerView: View {
                     Button {
                         qualityChange?(
                             option.id,
-                            session.runtimeState(orientationMode: orientationMode)
+                            runtimeStateForSourceChange()
                         )
                         dismissPanel()
                     } label: {
@@ -4517,6 +4627,17 @@ private struct VLCBuiltInPlayerView: View {
                     }
                 }
 
+                if session.supportsPictureMode {
+                    Picker("player.picture_mode", selection: Binding(
+                        get: { session.fillsScreen }, set: { session.setFillsScreen($0) }
+                    )) {
+                        Text("player.picture_fit").tag(false)
+                        Text("player.picture_fill").tag(true)
+                    }
+                    .pickerStyle(.segmented)
+                    Text("player.picture_fill_hint").font(.caption).foregroundStyle(.secondary)
+                }
+
                 Text("player.orientation")
                     .font(.caption)
                     .foregroundStyle(.secondary)
@@ -4565,7 +4686,7 @@ private struct VLCBuiltInPlayerView: View {
                         dismissPanel()
                         if let useSystemPlayer {
                             useSystemPlayer(
-                                session.runtimeState(orientationMode: orientationMode),
+                                runtimeStateForSourceChange(),
                                 true
                             )
                         } else {
@@ -4853,7 +4974,7 @@ private struct VLCBuiltInPlayerView: View {
         }
         serverSeek(
             targetSeconds,
-            session.runtimeState(orientationMode: orientationMode)
+            runtimeStateForSourceChange()
         )
     }
 
@@ -4871,7 +4992,7 @@ private struct VLCBuiltInPlayerView: View {
         }
         serverSeek(
             targetSeconds,
-            session.runtimeState(orientationMode: orientationMode)
+            runtimeStateForSourceChange()
         )
     }
 
@@ -4898,6 +5019,7 @@ private struct VLCBuiltInPlayerView: View {
     }
 }
 
+#if canImport(MobileVLCKit)
 private struct VLCPlayerSurface: UIViewRepresentable {
     let session: VLCMediaPlayerSession
 
@@ -5951,7 +6073,8 @@ private final class JellyfinLibraryStore: ObservableObject {
         forcesOriginalPlayback: Bool = false,
         forcesExperimentalOriginalPlayback: Bool = false,
         prefersFastStartupDirectPlay: Bool = false,
-        selectedQualityID: String? = nil
+        selectedQualityID: String? = nil,
+        usesGreenfieldPlayback: Bool = false
     ) async throws -> MediaPlaybackRequest? {
         guard let client, entry.isPlayable else { return nil }
         let requestedAt = Date()
@@ -5988,6 +6111,36 @@ private final class JellyfinLibraryStore: ObservableObject {
                     mediaSourceID: entry.mediaSourceID,
                     subtitleStreamIndex: nil
                 ),
+                playbackTraceID: playbackTraceID
+            )
+        }
+
+        let isDiscImage = Self.firstContainer(entry.container) == "iso"
+            || entry.mediaPath.map { ($0 as NSString).pathExtension.lowercased() == "iso" } == true
+        if usesGreenfieldPlayback && isDiscImage {
+            guard let route = await preferredOriginalPlaybackRoute(for: entry, client: client,
+                playbackTraceID: playbackTraceID) else {
+                throw JellyfinLibraryError.missingPlaybackURL
+            }
+            let prepared = try await ISOPlaybackAdapter.prepare(
+                sourceURL: route.handoffURL,
+                allowsSelfSignedCertificates: route.allowsSelfSignedCertificates
+            )
+            return MediaPlaybackRequest(
+                requestedAt: requestedAt,
+                url: prepared.playbackURL,
+                title: entry.title,
+                source: .jellyfin,
+                contentKind: .discImage,
+                fileExtensionOverride: prepared.fileExtension,
+                initialPosition: entry.effectivePlaybackProgress,
+                initialOrientationMode: .landscape,
+                totalDurationSeconds: entry.runTimeTicks.map { Double($0) / 10_000_000 },
+                isPrivateNetworkRoute: route.isPrivateNetworkRoute,
+                playbackTracker: makePlaybackTracker(for: entry, playMethod: .directPlay,
+                    playSessionID: nil, mediaSourceID: entry.mediaSourceID, subtitleStreamIndex: nil),
+                externalHandoffResource: MediaPlaybackResource(url: route.handoffURL,
+                    fileExtensionOverride: "iso", allowsSelfSignedCertificates: route.allowsSelfSignedCertificates),
                 playbackTraceID: playbackTraceID
             )
         }
@@ -6153,7 +6306,12 @@ private final class JellyfinLibraryStore: ObservableObject {
                 ? await preferredOriginalPlaybackRoute(
                     for: entry,
                     client: client,
-                    forcesLocalProxy: prefersFastStartupDirectPlay,
+                    // The DEBUG greenfield entry can use the same validated
+                    // authenticated LAN URL as legacy. Keep the proxy for WAN,
+                    // certificate compatibility, and the explicit Force probe.
+                    forcesLocalProxy: prefersFastStartupDirectPlay
+                        && (forcesExperimentalOriginalPlayback
+                            || !playbackRouteIsPrivate),
                     playbackTraceID: playbackTraceID
                 )
                 : nil
@@ -6289,7 +6447,8 @@ private final class JellyfinLibraryStore: ObservableObject {
                     allowsDirectPlay: false,
                     startTimeTicks: requestedStartTimeTicks,
                     requestedAt: requestedAt,
-                    playbackTraceID: playbackTraceID
+                    playbackTraceID: playbackTraceID,
+                    usesGreenfieldPlayback: usesGreenfieldPlayback
                 )
             }
             let playbackTracker = makePlaybackTracker(
@@ -6330,7 +6489,7 @@ private final class JellyfinLibraryStore: ObservableObject {
                         } ?? selectedAudioStreamIndex
                         if runtimeState?.subtitlesDisabled == true,
                            runtimeState?.subtitleSelectionKnown == true,
-                           !preservesServerSubtitleSelection {
+                           (!preservesServerSubtitleSelection || usesGreenfieldPlayback) {
                             runtimeSubtitleStreamIndex = nil
                         } else {
                             runtimeSubtitleStreamIndex = runtimeState?.subtitleTrackOrdinal.flatMap { ordinal in
@@ -6353,7 +6512,8 @@ private final class JellyfinLibraryStore: ObservableObject {
                         subtitleCodec: runtimeSubtitleCodec,
                         initialBitrate: compatibilityFallbackInitialBitrate,
                         startTimeTicks: Self.jellyfinTicks(for: fallbackPositionSeconds),
-                        runtimeState: runtimeState
+                        runtimeState: runtimeState,
+                        usesGreenfieldPlayback: usesGreenfieldPlayback
                     )
                 }
             // Track changes must use the same negotiated request path for
@@ -6377,7 +6537,8 @@ private final class JellyfinLibraryStore: ObservableObject {
                             Self.jellyfinTicks(for: $0)
                         },
                         forcedServerReason: "sourceTrackSwitch",
-                        forcesExperimentalOriginalPlayback: forcesExperimentalOriginalPlayback
+                        forcesExperimentalOriginalPlayback: forcesExperimentalOriginalPlayback,
+                        usesGreenfieldPlayback: usesGreenfieldPlayback
                     )
                     return replacement?.applyingRuntimePreferences(runtimeState)
                 } catch {
@@ -6406,7 +6567,8 @@ private final class JellyfinLibraryStore: ObservableObject {
                             ),
                             forcedServerBitrate: maxBitrate,
                             forcedStartTimeTicks: Self.jellyfinTicks(for: targetSeconds),
-                            forcedServerReason: "serverSeek"
+                            forcedServerReason: "serverSeek",
+                            usesGreenfieldPlayback: usesGreenfieldPlayback
                         )
                         return replacement?.applyingRuntimePreferences(runtimeState)
                     } catch {
@@ -6433,9 +6595,12 @@ private final class JellyfinLibraryStore: ObservableObject {
                     entry.audioTracks.indices.contains(ordinal) ? entry.audioTracks[ordinal].index : nil
                 } ?? selectedAudioStreamIndex
                 let runtimeSubtitleStreamIndex: Int?
+                // Greenfield supplies the live source-menu selection, including
+                // an explicit Off. The legacy engine still needs its sidecar
+                // preservation rule because it reports that sidecar as disabled.
                 if runtimeState.subtitlesDisabled,
                    runtimeState.subtitleSelectionKnown,
-                   !preservesServerSubtitleSelection {
+                   (!preservesServerSubtitleSelection || usesGreenfieldPlayback) {
                     runtimeSubtitleStreamIndex = nil
                 } else {
                     runtimeSubtitleStreamIndex = runtimeState.subtitleTrackOrdinal.flatMap { ordinal in
@@ -6456,7 +6621,8 @@ private final class JellyfinLibraryStore: ObservableObject {
                         forcedStartTimeTicks: runtimeState.positionSeconds.map(Self.jellyfinTicks(for:)),
                         forcedServerReason: "qualitySwitch",
                         forcesOriginalPlayback: qualityID == "original",
-                        selectedQualityID: qualityID
+                        selectedQualityID: qualityID,
+                        usesGreenfieldPlayback: usesGreenfieldPlayback
                     )
                     return replacement?.applyingRuntimePreferences(runtimeState)
                 } catch {
@@ -6598,7 +6764,8 @@ private final class JellyfinLibraryStore: ObservableObject {
         subtitleCodec: String?,
         initialBitrate: Int,
         startTimeTicks: Int?,
-        runtimeState: MediaPlaybackRuntimeState?
+        runtimeState: MediaPlaybackRuntimeState?,
+        usesGreenfieldPlayback: Bool
     ) async -> MediaPlaybackRequest? {
         guard client != nil else { return nil }
         let network = PlaybackNetworkObserver.shared.snapshot()
@@ -6613,7 +6780,8 @@ private final class JellyfinLibraryStore: ObservableObject {
                 ),
                 forcedServerBitrate: fallbackBitrate,
                 forcedStartTimeTicks: startTimeTicks,
-                forcedServerReason: "bitrateFallback"
+                forcedServerReason: "bitrateFallback",
+                usesGreenfieldPlayback: usesGreenfieldPlayback
             )
             guard let replacement else { return nil }
             record(
@@ -6685,13 +6853,17 @@ private final class JellyfinLibraryStore: ObservableObject {
         allowsDirectPlay: Bool,
         startTimeTicks: Int?,
         requestedAt: Date,
-        playbackTraceID: String?
+        playbackTraceID: String?,
+        usesGreenfieldPlayback: Bool
     ) async throws -> JellyfinPreparedPlayback {
         let requestBody = PlaybackInfoDto(
             allowAudioStreamCopy: false,
             allowVideoStreamCopy: false,
             audioStreamIndex: audioStreamIndex,
-            deviceProfile: Self.vlcPlaybackProfile(maxBitrate: maxStreamingBitrate),
+            deviceProfile: Self.vlcPlaybackProfile(
+                maxBitrate: maxStreamingBitrate,
+                hlsSegmentContainer: usesGreenfieldPlayback ? "ts" : "mp4"
+            ),
             enableDirectPlay: allowsDirectPlay,
             // Public routes must stay on Jellyfin's segmented HLS path. A
             // direct-stream/remux response can still be a long-lived raw
@@ -7145,7 +7317,10 @@ private final class JellyfinLibraryStore: ObservableObject {
         forcesLocalProxy: Bool = false,
         playbackTraceID: String? = nil
     ) async -> URL {
-        guard forcesLocalProxy || !NetworkHostClassifier.isPrivate(url.host) else { return url }
+        let needsCertificateProxy = url.scheme?.lowercased() == "https"
+            && allowsSelfSignedCertificates
+        guard forcesLocalProxy || needsCertificateProxy
+                || !NetworkHostClassifier.isPrivate(url.host) else { return url }
         return (try? await AuthenticatedMediaStreamProxy.shared.register(
             upstreamURL: url,
             filename: filename,
@@ -7480,7 +7655,10 @@ private final class JellyfinLibraryStore: ObservableObject {
         ) != nil
     }
 
-    private static func vlcPlaybackProfile(maxBitrate: Int) -> DeviceProfile {
+    private static func vlcPlaybackProfile(
+        maxBitrate: Int,
+        hlsSegmentContainer: String
+    ) -> DeviceProfile {
         let audioCodecs = [
             "aac", "ac3", "alac", "amr_nb", "amr_wb", "dts", "eac3", "flac",
             "mp1", "mp2", "mp3", "opus", "pcm_alaw", "pcm_bluray", "pcm_dvd",
@@ -7548,7 +7726,11 @@ private final class JellyfinLibraryStore: ObservableObject {
                 TranscodingProfile(
                     protocol: .hls,
                     audioCodec: "aac",
-                    container: "mp4",
+                    // Jellyfin fMP4 random starts retain pre-seek keyframes
+                    // (-noaccurate_seek), but its VOD playlist starts at the
+                    // requested segment time. H.264/AAC TS uses accurate seek
+                    // to preserve content position across Greenfield switches.
+                    container: hlsSegmentContainer,
                     context: .streaming,
                     isBreakOnNonKeyFrames: true,
                     maxAudioChannels: "8",
@@ -9229,9 +9411,7 @@ private struct JellyfinMediaDetailView: View {
     @State private var playbackRequest: MediaPlaybackRequest?
 #if DEBUG
     @AppStorage(GreenfieldPlaybackDebugSettings.useGreenfieldPlayerKey)
-    private var usesGreenfieldPlayer = false
-    @AppStorage(GreenfieldPlaybackDebugSettings.forceOriginalKSPlayerKey)
-    private var forcesGreenfieldOriginalKSPlayer = false
+    private var usesGreenfieldPlayer = true
     @State private var greenfieldPlaybackRequest: GreenfieldPlaybackLaunchRequest?
 #endif
     @State private var isPreparingPlayback = false
@@ -9485,11 +9665,8 @@ private struct JellyfinMediaDetailView: View {
             do {
 #if DEBUG
                 let requestsGreenfield = usesGreenfieldPlayer
-                let forcesGreenfieldOriginal = requestsGreenfield
-                    && forcesGreenfieldOriginalKSPlayer
 #else
                 let requestsGreenfield = false
-                let forcesGreenfieldOriginal = false
 #endif
                 let request = try await store.playbackRequest(
                     for: mediaItem,
@@ -9497,17 +9674,13 @@ private struct JellyfinMediaDetailView: View {
                         audioStreamIndex: selectedAudioStreamIndex,
                         subtitleStreamIndex: selectedSubtitleStreamIndex
                     ),
-                    forcesExperimentalOriginalPlayback: forcesGreenfieldOriginal,
-                    prefersFastStartupDirectPlay: requestsGreenfield
+                    prefersFastStartupDirectPlay: requestsGreenfield,
+                    usesGreenfieldPlayback: requestsGreenfield
                 )
                 if let request {
 #if DEBUG
                     if requestsGreenfield {
-                        greenfieldPlaybackRequest = request.greenfieldPlaybackLaunchRequest(
-                            playbackModePreference: forcesGreenfieldOriginal
-                                ? .original
-                                : .automatic
-                        )
+                        greenfieldPlaybackRequest = request.greenfieldPlaybackLaunchRequest()
                         return
                     }
 #endif
@@ -9524,21 +9697,7 @@ private struct JellyfinMediaDetailView: View {
 
 #if DEBUG
     private var greenfieldPlaybackToggle: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Toggle(isOn: $usesGreenfieldPlayer) {
-                Label("Greenfield player", systemImage: "switch.2")
-                    .font(.subheadline.weight(.semibold))
-            }
-            .toggleStyle(.switch)
-
-            if usesGreenfieldPlayer {
-                Toggle(isOn: $forcesGreenfieldOriginalKSPlayer) {
-                    Label("Force original KSPlayer", systemImage: "bolt.horizontal")
-                        .font(.subheadline.weight(.semibold))
-                }
-                .toggleStyle(.switch)
-            }
-        }
+        PlaybackArchitecturePicker(usesGreenfieldPlayer: $usesGreenfieldPlayer)
         .padding(.horizontal, 12)
         .padding(.vertical, 10)
         .frame(maxWidth: .infinity, minHeight: 48, alignment: .leading)

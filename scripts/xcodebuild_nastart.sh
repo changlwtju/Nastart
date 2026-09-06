@@ -39,4 +39,7 @@ developer_dir="$(find_xcode_developer_dir)" || {
 
 export DEVELOPER_DIR="$developer_dir"
 export PATH="$DEVELOPER_DIR/usr/bin:$PATH"
-exec xcodebuild -workspace "$WORKSPACE" "$@"
+# FFmpegKit's mixed-case Libavutil/libavutil headers currently break Xcode 26's
+# explicit PCM dependency graph, including SwiftPM targets. Apply the workaround
+# to the whole invocation; callers can override it with a later build setting.
+exec xcodebuild -workspace "$WORKSPACE" SWIFT_ENABLE_EXPLICIT_MODULES=NO "$@"

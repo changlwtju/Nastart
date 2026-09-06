@@ -15,6 +15,7 @@ protocol PlayerItemTrackProtocol: CapacityProtocol, AnyObject {
     var isEndOfFile: Bool { get set }
     var delegate: CodecCapacityDelegate? { get set }
     func decode()
+    func prepareInitialSeek(time: TimeInterval)
     func seek(time: TimeInterval)
     func putPacket(packet: Packet)
 //    func getOutputRender<Frame: ObjectQueueItem>(where predicate: ((Frame) -> Bool)?) -> Frame?
@@ -67,6 +68,12 @@ class SyncPlayerItemTrack<Frame: MEFrame>: PlayerItemTrackProtocol, CustomString
     func decode() {
         isEndOfFile = false
         state = .decoding
+    }
+
+    // Before decode() there is no decode operation or queued data to flush.
+    // Only establish the frame discard boundary for the initial demux seek.
+    func prepareInitialSeek(time: TimeInterval) {
+        seekTime = options.isAccurateSeek ? time : 0
     }
 
     func seek(time: TimeInterval) {

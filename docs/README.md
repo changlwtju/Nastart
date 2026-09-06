@@ -1,7 +1,11 @@
 # Nastart Documentation Structure
 
+最新播放任务接续：[2026-09-06 新对话交接](handoffs/2026-09-06-NEXT-CHAT-PLAYBACK.md)。
+
 This directory is the source of truth for Nastart product, architecture,
 security, research, and project planning documents.
+
+播放架构的已接受执行决策： [ADR 0002](adr/0002-single-playback-optimization-mainline.md)。新架构为唯一优化主线，旧架构仅作临时回退。
 
 ## Core Documents
 

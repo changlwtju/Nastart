@@ -4,7 +4,7 @@ Date: 2026-09-01
 
 ## Status
 
-Proposed
+Accepted in direction; execution scope updated by [ADR 0002](0002-single-playback-optimization-mainline.md), 2026-09-06. Shared playback UI is retained; legacy is a temporary rollback path.
 
 ## Context
 

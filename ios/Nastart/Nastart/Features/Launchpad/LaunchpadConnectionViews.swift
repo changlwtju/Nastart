@@ -188,25 +188,10 @@ struct DSMConnectionFlowView: View {
     var body: some View {
         List {
             Section {
-                Picker("connect.location", selection: $accessLocation) {
-                    ForEach(DSMConnectionLocation.allCases) { location in
-                        Text(LocalizedStringKey(location.titleKey)).tag(location)
-                    }
-                }
-                .pickerStyle(.segmented)
-                .onChange(of: accessLocation) { location in
-                    if location == .remote {
-                        connectionProtocol = .https
-                    }
-                    refreshDefaultPortIfNeeded()
-                }
-
-                if accessLocation == .local {
-                    NavigationLink {
-                        LANDiscoveryView(selectedHost: $host)
-                    } label: {
-                        Label("connect.scan.title", systemImage: "dot.radiowaves.left.and.right")
-                    }
+                NavigationLink {
+                    LANDiscoveryView(selectedHost: $host)
+                } label: {
+                    Label("connect.scan.title", systemImage: "dot.radiowaves.left.and.right")
                 }
 
                 Picker("connect.protocol", selection: $connectionProtocol) {
@@ -214,7 +199,7 @@ struct DSMConnectionFlowView: View {
                         Text(connectionProtocol.title).tag(connectionProtocol)
                     }
                 }
-                .pickerStyle(.segmented)
+                .pickerStyle(.menu)
                 .disabled(accessLocation == .remote)
                 .onChange(of: connectionProtocol) { connectionProtocol in
                     if connectionProtocol == .http {
@@ -225,7 +210,7 @@ struct DSMConnectionFlowView: View {
 
                 formTextField(
                     titleKey: "connect.host",
-                    placeholderKey: accessLocation.hostPlaceholderKey,
+                    placeholderKey: "connect.input.host",
                     text: $host,
                     keyboardType: .URL
                 )
@@ -235,7 +220,7 @@ struct DSMConnectionFlowView: View {
 
                 formTextField(
                     titleKey: "connect.path",
-                    placeholderKey: "connect.path.example",
+                    placeholderKey: "connect.input.path",
                     text: $basePath,
                     keyboardType: .URL
                 )
@@ -255,13 +240,13 @@ struct DSMConnectionFlowView: View {
             } header: {
                 Text("connect.section.target")
             } footer: {
-                Text(LocalizedStringKey(accessLocation.hostHintKey))
+                Text("connect.input.address_hint")
             }
 
             Section {
                 formTextField(
                     titleKey: "connect.account",
-                    placeholderKey: "connect.account.example",
+                    placeholderKey: "connect.input.account",
                     text: $account,
                     keyboardType: .asciiCapable
                 )
@@ -269,18 +254,19 @@ struct DSMConnectionFlowView: View {
 
                 HStack(spacing: 12) {
                     Text("connect.password")
+                        .frame(width: 84, alignment: .leading)
                         .foregroundStyle(.primary)
                     Group {
                         if showsPassword {
-                            TextField("connect.password.example", text: $password)
+                            TextField("connect.input.password", text: $password)
                         } else {
-                            SecureField("connect.password.example", text: $password)
+                            SecureField("connect.input.password", text: $password)
                         }
                     }
                     .textContentType(.password)
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
-                    .multilineTextAlignment(.trailing)
+                    .multilineTextAlignment(.leading)
 
                     Button {
                         showsPassword.toggle()
@@ -293,16 +279,14 @@ struct DSMConnectionFlowView: View {
                 }
 
                 formTextField(
-                    titleKey: "connect.otp",
-                    placeholderKey: "connect.otp.example",
+                    titleKey: "connect.input.otp_label",
+                    placeholderKey: "connect.input.otp",
                     text: $oneTimeCode,
                     keyboardType: .numberPad
                 )
                 .textContentType(.oneTimeCode)
             } header: {
                 Text("connect.section.account")
-            } footer: {
-                Text("connect.otp.secure_signin_hint")
             }
 
             Section {
@@ -348,6 +332,7 @@ struct DSMConnectionFlowView: View {
             }
         }
         .listStyle(.insetGrouped)
+        .disabled(isConnecting)
         .scrollDismissesKeyboard(.interactively)
         .safeAreaInset(edge: .bottom) {
             connectButton
@@ -384,12 +369,13 @@ struct DSMConnectionFlowView: View {
     ) -> some View {
         HStack(spacing: 12) {
             Text(LocalizedStringKey(titleKey))
+                .frame(width: 84, alignment: .leading)
                 .foregroundStyle(.primary)
             TextField(LocalizedStringKey(placeholderKey), text: text)
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
                 .keyboardType(keyboardType)
-                .multilineTextAlignment(.trailing)
+                .multilineTextAlignment(.leading)
         }
     }
 
@@ -546,75 +532,16 @@ struct DSMConnectionFlowView: View {
                 let savedPassword = password
                 let savedAllowsSelfSignedCertificates = effectiveAllowsSelfSignedCertificates
                 let savedOneTimeCode = oneTimeCode
-                let canRenderCachedSnapshot = await MainActor.run {
-                    dataStore.hasCachedDSMSnapshot
+                await MainActor.run {
+                    dataStore.activateDSMSession(session: mainSession, useAgent: false)
+                    connectionStore.connect(device: dataStore.device, session: mainSession)
+                    isConnecting = false
+                    connectionTask = nil
+                    onConnected()
+                    dismiss()
                 }
 
-                if canRenderCachedSnapshot {
-                    await MainActor.run {
-                        dataStore.activateDSMSession(session: mainSession, useAgent: false)
-                        connectionStore.connect(device: dataStore.device, session: mainSession)
-                        isConnecting = false
-                        connectionTask = nil
-                        onConnected()
-                        dismiss()
-                    }
-
-                    Task {
-                        async let discoveredLANAddress: URL? = NetworkHostClassifier.isPrivate(baseURL.host)
-                            ? nil
-                            : LANDiscoveryService.discoverDSMPlaybackLANEndpoint(
-                                timeout: 3,
-                                requiresSingleHost: true
-                            )
-                        var session = await client.addingFileStationSession(
-                            to: mainSession,
-                            account: savedAccount,
-                            password: savedPassword,
-                            oneTimeCode: savedOneTimeCode
-                        )
-                        if let lanAddress = await discoveredLANAddress {
-                            DiagnosticLogStore.shared.record(
-                                .info,
-                                categoryKey: "diagnostics.category.connection",
-                                messageKey: "diagnostics.route.smart_lan_ready",
-                                details: ["target": DiagnosticLogStore.redactedURL(lanAddress)]
-                            )
-                            session = DSMSession(
-                                baseURL: session.baseURL,
-                                sid: session.sid,
-                                fileStationSID: session.fileStationSID,
-                                account: session.account,
-                                allowsSelfSignedCertificates: session.allowsSelfSignedCertificates,
-                                deviceID: session.deviceID,
-                                endpoints: session.endpoints.addingVerifiedLANAddress(lanAddress),
-                                actualRoute: session.actualRoute
-                            )
-                        }
-                        let snapshot = await client.loadSnapshot(session: session, useAgent: false)
-                        await MainActor.run {
-                            dataStore.activateDSM(snapshot: snapshot, session: session, useAgent: false)
-                            connectionStore.connect(device: snapshot.device, session: session)
-                        }
-                        if shouldRememberPassword {
-                            try? KeychainStore.shared.saveNASCredential(
-                                StoredNASCredential(
-                                    baseURLString: baseURL.absoluteString,
-                                    account: savedAccount,
-                                    password: savedPassword,
-                                    useAgent: false,
-                                    allowsSelfSignedCertificates: savedAllowsSelfSignedCertificates,
-                                    deviceID: session.deviceID,
-                                    endpoints: session.endpoints,
-                                    lastKnownRoute: session.actualRoute
-                                )
-                            )
-                        }
-                    }
-                } else {
-                    await MainActor.run {
-                        connectionStatusKey = "connect.review.loading"
-                    }
+                Task {
                     async let discoveredLANAddress: URL? = NetworkHostClassifier.isPrivate(baseURL.host)
                         ? nil
                         : LANDiscoveryService.discoverDSMPlaybackLANEndpoint(
@@ -646,16 +573,13 @@ struct DSMConnectionFlowView: View {
                         )
                     }
                     let snapshot = await client.loadSnapshot(session: session, useAgent: false)
+                    guard await MainActor.run(body: { connectionStore.dsmSession?.sid == mainSession.sid }) else { return }
                     await MainActor.run {
                         dataStore.activateDSM(snapshot: snapshot, session: session, useAgent: false)
                         connectionStore.connect(device: snapshot.device, session: session)
-                        isConnecting = false
-                        connectionTask = nil
-                        onConnected()
-                        dismiss()
                     }
                     if shouldRememberPassword {
-                        try KeychainStore.shared.saveNASCredential(
+                        try? KeychainStore.shared.saveNASCredential(
                             StoredNASCredential(
                                 baseURLString: baseURL.absoluteString,
                                 account: savedAccount,

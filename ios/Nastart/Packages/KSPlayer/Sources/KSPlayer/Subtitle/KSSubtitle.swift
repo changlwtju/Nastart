@@ -315,6 +315,9 @@ open class SubtitleModel: ObservableObject {
     @Published
     public var selectedSubtitleInfo: (any SubtitleInfo)? {
         didSet {
+            // Never carry a still-timed cue from the previous language into
+            // the newly selected track, including a switch while paused.
+            if oldValue?.subtitleID != selectedSubtitleInfo?.subtitleID { parts = [] }
             oldValue?.isEnabled = false
             selectedSubtitleInfo?.isEnabled = true
             if let url, let info = selectedSubtitleInfo as? URLSubtitleInfo, !info.downloadURL.isFileURL, let cache = subtitleDataSouces.first(where: { $0 is CacheSubtitleDataSouce }) as? CacheSubtitleDataSouce {

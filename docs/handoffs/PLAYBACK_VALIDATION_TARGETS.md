@@ -1,5 +1,7 @@
 # Playback Validation Targets
 
+> 2026-09-06：架构范围遵循 [ADR 0002](../adr/0002-single-playback-optimization-mainline.md)。正式矩阵集中验证新架构；旧架构仅作回退与关键里程碑对照。Force original 是历史策略测试项，不再作为第三种架构或常规 UI 选项。
+
 Date: 2026-09-03
 
 This file defines the concrete real-device targets for the Jellyfin playback
@@ -20,6 +22,54 @@ real iPhone/iPad playback
 
 WDA is useful for operating the device and preserving visual proof. It is not
 the primary source for timing, buffering, bitrate, or stall decisions.
+
+## Network matrix (added 2026-09-05)
+
+Current execution constraint: the user reports NAS Internet access is broken.
+Only LAN NAS connections are authorized for the current debugging run. External
+Wi-Fi/cellular cases remain pending until connectivity is restored; do not retry
+public endpoints or use these failures to judge player performance.
+
+Each architecture comparison must stay within one network condition. Run the
+same media, audio/subtitle selection, start position and cache condition on both
+architectures; record the actual chosen engine and route independently of the
+Auto/Force switch.
+
+| Condition | Phone connection | NAS endpoint/path | Status on 2026-09-05 |
+| --- | --- | --- | --- |
+| LAN Wi-Fi | Same LAN as NAS | Private LAN address | Current iPhone 13 experiments |
+| External Wi-Fi | A separate Internet connection | Public NAS endpoint | Pending matched A/B runs |
+| External cellular | Wi-Fi disconnected; cellular data | Public NAS endpoint | Pending matched A/B runs |
+
+Accessing a public domain from the NAS LAN may use NAT loopback or split DNS;
+record that separately, not as external Wi-Fi. A loopback playback proxy says
+nothing about the upstream network. Record its actual NAS route as well. An
+artificially throttled LAN is a reproducible stress test, not a cellular result.
+
+For every run record interface, public/private upstream route, TLS/proxy/HLS
+policy, measured available throughput and RTT where available, NAS upload load,
+other concurrent streams, and warm/cold cache conditions. Mark unavailable
+jitter/loss measurements as unknown. Keep credentials and signed URLs out of
+shared evidence.
+
+Required outcomes per condition:
+
+- Startup: tap-to-visible-frame evidence plus separately named engine-ready and
+  advancing-playback-clock timestamps; do not equate the latter to a visible frame.
+- Sustained playback: at least 30 seconds, then a longer representative run;
+  stalls/count/total duration, buffer, throughput and failures, including proxy
+  continuation boundaries for large files.
+- Interaction: single tap reveals controls/settings, double tap pauses/resumes,
+  horizontal seek submits once on release, seek-to-visible-frame latency, and
+  seeking while paused preserves pause. Verify fit/fill and playback speed.
+- Recovery: separate Wi-Fi/cellular transition, interruption and reconnection
+  cases; record recovery time and whether the timeline is preserved.
+
+Use at least three matched repeats for exploratory medians and preserve every
+failure. Do not present a reliable P95 from three runs; collect at least twenty
+per condition before reporting even an exploratory P95. DS one and Lenna should
+use the same media/network/cache/start position where supported; document engine
+or transport differences rather than inferring their implementation from UI speed.
 
 ## Target A: External large Jellyfin MKV
 

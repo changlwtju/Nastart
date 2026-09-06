@@ -247,7 +247,7 @@ def classify_bottleneck(trace: PlaybackTrace) -> tuple[str, str, str]:
     reason = decision.get("reason", "-")
     tap_ms = millis(first.get("tapToFirstFrameMs"))
     target_ms = millis(route.get("firstFrameTargetMs"))
-    first_frame_ms = millis(first.get("firstFrameMs"))
+    first_frame_ms = millis(first.get("rendererFirstFrameMs"))
     longest_request = max(
         (millis(event.details.get("requestMs")) or 0 for event in trace.transfers),
         default=0,
@@ -453,7 +453,11 @@ def trace_record(trace: PlaybackTrace, index: int) -> dict[str, object]:
         "selectedBitrate": integer(bitrate.get("selectedBitrate")),
         "sourceBitrate": integer(prepared.get("sourceBitrate") or decision.get("sourceBitrate")),
         "tapToFirstFrameMs": millis(first.get("tapToFirstFrameMs")),
-        "rendererFirstFrameMs": millis(first.get("firstFrameMs")),
+        # Older coordinator logs mislabeled media position (seconds) as
+        # firstFrameMs. Never treat that field as renderer latency.
+        "firstFramePositionSeconds": millis(first.get("firstFramePositionSeconds", first.get("firstFrameMs"))),
+        "firstFrameSignal": first.get("firstFrameSignal", "playbackClock" if first else "-"),
+        "rendererFirstFrameMs": millis(first.get("rendererFirstFrameMs")),
         "targetMs": millis(route.get("firstFrameTargetMs")),
         "preFirstFrameTransferCount": len(trace.transfers),
         "preFirstFrameWarnings": len(trace.warnings),
@@ -594,6 +598,8 @@ def render_trace(trace: PlaybackTrace, index: int) -> list[str]:
         (
             "  first_frame: "
             f"tapToFirstFrameMs={record['tapToFirstFrameMs'] or '-'} "
+            f"signal={record['firstFrameSignal']} "
+            f"positionSeconds={record['firstFramePositionSeconds']} "
             f"rendererFirstFrameMs={record['rendererFirstFrameMs'] or '-'} "
             f"targetMs={record['targetMs'] or '-'}"
         ),

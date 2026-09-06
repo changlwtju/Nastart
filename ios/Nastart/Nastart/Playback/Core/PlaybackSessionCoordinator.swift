@@ -306,7 +306,8 @@ actor PlaybackSessionCoordinator {
             plan: plan,
             metrics: [
                 PlaybackMetricKeys.tapToFirstFrameMs: elapsedMilliseconds(since: plan.intent.requestedAt),
-                PlaybackMetricKeys.firstFrameMs: metricString(position)
+                PlaybackMetricKeys.firstFramePositionSeconds: metricString(position),
+                PlaybackMetricKeys.firstFrameSignal: "playbackClock"
             ]
         )
     }

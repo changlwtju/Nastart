@@ -72,8 +72,11 @@
 		010101010101010101010058 /* PlaybackEngineAvailability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020058 /* PlaybackEngineAvailability.swift */; };
 		010101010101010101010059 /* GreenfieldKSPlayerRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020059 /* GreenfieldKSPlayerRenderer.swift */; };
 		010101010101010101010060 /* KSPlayer in Frameworks */ = {isa = PBXBuildFile; productRef = 0B0B0B0B0B0B0B0B0B0B0006 /* KSPlayer */; };
+		F703CC7A8AA24E13AFCFAA5B /* KSPlayer in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 0B0B0B0B0B0B0B0B0B0B0006 /* KSPlayer */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		127807EE332EB83D2375E086 /* Pods_NastartTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FACED7936A7A76ABCAE30CE9 /* Pods_NastartTests.framework */; };
 		EDD2AEF5B14DC4128B8A2308 /* Pods_Nastart.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F0A427A98EF409A9FC1D1C04 /* Pods_Nastart.framework */; };
+		ABCD00000000000000000001 = {isa = PBXBuildFile; productRef = ABCD00000000000000000003; };
+		ABCD00000000000000000004 = {isa = PBXBuildFile; productRef = ABCD00000000000000000003; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -162,6 +165,21 @@
 		FD1CE5C045A68B1BA71D2F38 /* Pods-NastartTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NastartTests.release.xcconfig"; path = "Target Support Files/Pods-NastartTests/Pods-NastartTests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		1799B9B5F5964958980AC651 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				F703CC7A8AA24E13AFCFAA5B /* KSPlayer in Embed Frameworks */,
+                ABCD00000000000000000004,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFrameworksBuildPhase section */
 		040404040404040404040001 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
@@ -170,6 +188,7 @@
 				010101010101010101010018 /* JellyfinAPI in Frameworks */,
 				010101010101010101010027 /* NIOSSH in Frameworks */,
 				010101010101010101010060 /* KSPlayer in Frameworks */,
+                ABCD00000000000000000001,
 				EDD2AEF5B14DC4128B8A2308 /* Pods_Nastart.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -460,6 +479,7 @@
 				040404040404040404040001 /* Frameworks */,
 				080808080808080808080001 /* Resources */,
 				A2A8DEC79C028960F711EA2C /* [CP] Embed Pods Frameworks */,
+				1799B9B5F5964958980AC651 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -470,6 +490,7 @@
 				0B0B0B0B0B0B0B0B0B0B0002 /* JellyfinAPI */,
 				0B0B0B0B0B0B0B0B0B0B0004 /* NIOSSH */,
 				0B0B0B0B0B0B0B0B0B0B0006 /* KSPlayer */,
+                ABCD00000000000000000003,
 			);
 			productName = Nastart;
 			productReference = 020202020202020202020099 /* Nastart.app */;
@@ -526,6 +547,7 @@
 				0B0B0B0B0B0B0B0B0B0B0001 /* XCRemoteSwiftPackageReference "jellyfin-sdk-swift" */,
 				0B0B0B0B0B0B0B0B0B0B0003 /* XCRemoteSwiftPackageReference "swift-nio-ssh" */,
 				0B0B0B0B0B0B0B0B0B0B0005 /* XCLocalSwiftPackageReference "KSPlayer" */,
+                ABCD00000000000000000002,
 			);
 			productRefGroup = 050505050505050505050099 /* Products */;
 			projectDirPath = "";
@@ -1014,6 +1036,7 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Packages/KSPlayer;
 		};
+		ABCD00000000000000000002 = {isa = XCLocalSwiftPackageReference; relativePath = Packages/UDFRead; };
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1032,6 +1055,7 @@
 			package = 0B0B0B0B0B0B0B0B0B0B0005 /* XCLocalSwiftPackageReference "KSPlayer" */;
 			productName = KSPlayer;
 		};
+		ABCD00000000000000000003 = {isa = XCSwiftPackageProductDependency; package = ABCD00000000000000000002; productName = UDFRead; };
 /* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 060606060606060606060000 /* Project object */;
