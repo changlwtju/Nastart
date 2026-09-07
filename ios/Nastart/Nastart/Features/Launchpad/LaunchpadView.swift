@@ -8852,23 +8852,29 @@ private struct JellyfinGridPosterCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 7) {
-            ZStack(alignment: .bottomLeading) {
-                JellyfinPosterImage(
-                    url: store.imageURL(for: item, width: 540)
-                )
-                if let progress = item.effectivePlaybackProgress, progress > 0 {
-                    GeometryReader { geometry in
-                        VStack(spacing: 0) {
-                            Spacer()
-                            Rectangle()
-                                .fill(AppTheme.accent)
-                                .frame(width: geometry.size.width * progress, height: 4)
+            // The grid cell, rather than the downloaded image's natural size,
+            // owns layout. Both landscape stills and posters fill this same canvas.
+            Rectangle()
+                .fill(Color(.tertiarySystemFill))
+                .aspectRatio(2.0 / 3.0, contentMode: .fit)
+                .overlay {
+                    JellyfinPosterImage(
+                        url: store.imageURL(for: item, width: 540)
+                    )
+                }
+                .overlay(alignment: .bottomLeading) {
+                    if let progress = item.effectivePlaybackProgress, progress > 0 {
+                        GeometryReader { geometry in
+                            VStack(spacing: 0) {
+                                Spacer()
+                                Rectangle()
+                                    .fill(AppTheme.accent)
+                                    .frame(width: geometry.size.width * progress, height: 4)
+                            }
                         }
                     }
                 }
-            }
-            .aspectRatio(2.0 / 3.0, contentMode: .fit)
-            .clipShape(RoundedRectangle(cornerRadius: 7, style: .continuous))
+                .clipShape(RoundedRectangle(cornerRadius: 7, style: .continuous))
 
             Text(item.title)
                 .font(
@@ -8877,13 +8883,15 @@ private struct JellyfinGridPosterCard: View {
                         : .subheadline.weight(.semibold)
                 )
                 .foregroundStyle(.primary)
-                .lineLimit(2)
-            if !item.subtitle.isEmpty {
-                Text(item.subtitle)
-                    .font(horizontalSizeClass == .compact ? .caption2 : .caption)
-                    .foregroundStyle(.secondary)
-                    .lineLimit(1)
-            }
+                .lineLimit(2, reservesSpace: true)
+                .truncationMode(.tail)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            Text(item.subtitle.isEmpty ? " " : item.subtitle)
+                .font(horizontalSizeClass == .compact ? .caption2 : .caption)
+                .foregroundStyle(.secondary)
+                .lineLimit(1)
+                .truncationMode(.tail)
+                .frame(maxWidth: .infinity, alignment: .leading)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
@@ -9064,7 +9072,9 @@ private struct JellyfinSearchView: View {
             try? await Task.sleep(nanoseconds: 350_000_000)
             guard !Task.isCancelled else { return }
             do {
-                results = try await store.search(query: cleanedQuery)
+                let matches = try await store.search(query: cleanedQuery)
+                guard !Task.isCancelled else { return }
+                results = matches
             } catch {
                 guard !Task.isCancelled else { return }
                 results = []

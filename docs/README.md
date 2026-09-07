@@ -51,3 +51,5 @@ security, research, and project planning documents.
 - Use ADR files for irreversible or high-impact decisions.
 - Keep generated documents in Markdown unless a richer format is required.
 - Treat strategic and security documents as living documents.
+
+后续媒体能力：[Dolby Vision / Dolby Atmos 播放路线](project/DOLBY_PLAYBACK_ROADMAP.md)。
