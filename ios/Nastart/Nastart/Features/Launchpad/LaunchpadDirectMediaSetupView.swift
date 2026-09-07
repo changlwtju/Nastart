@@ -36,7 +36,7 @@ struct DirectMediaPlayerSetupView: View {
                     }
                     let request = MediaPlaybackRequest(url: url, title: url.lastPathComponent)
 #if DEBUG
-                    if usesGreenfieldPlayer {
+                    if usesGreenfieldPlayer && !request.isAudioOnly {
                         greenfieldPlaybackRequest = request.greenfieldPlaybackLaunchRequest()
                     } else {
                         playbackRequest = request

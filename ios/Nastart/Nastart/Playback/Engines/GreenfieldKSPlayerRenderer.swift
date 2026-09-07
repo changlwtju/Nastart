@@ -169,6 +169,35 @@ private final class GreenfieldKSOptions: KSOptions {
     }
 }
 
+private struct GreenfieldSubtitleOverlay: View {
+    @ObservedObject var model: SubtitleModel
+    let videoSize: CGSize
+
+    var body: some View {
+        if model.parts.contains(where: { $0.image != nil }), videoSize.width > 0, videoSize.height > 0 {
+            GeometryReader { geometry in
+                let scale = min(geometry.size.width / videoSize.width,
+                                geometry.size.height / videoSize.height)
+                VStack(spacing: 4) {
+                    Spacer(minLength: 0)
+                    ForEach(model.parts) { part in
+                        if let image = part.image {
+                            Image(uiImage: image)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: min(geometry.size.width, image.size.width * scale),
+                                       height: image.size.height * scale)
+                        }
+                    }
+                }
+                .frame(maxWidth: .infinity)
+            }
+        } else {
+            VideoSubtitleView(model: model)
+        }
+    }
+}
+
 struct GreenfieldKSPlayerRenderer: View {
     let plan: PlaybackPlan
     @ObservedObject var controls: GreenfieldPlaybackControls
@@ -214,7 +243,8 @@ struct GreenfieldKSPlayerRenderer: View {
                 onBufferChanged(bufferedCount, consumeTime)
             }
             .overlay(alignment: .bottom) {
-                VideoSubtitleView(model: coordinator.subtitleModel)
+                GreenfieldSubtitleOverlay(model: coordinator.subtitleModel,
+                    videoSize: coordinator.playerLayer?.player.naturalSize ?? .zero)
                     .padding(.horizontal, 24).padding(.bottom, 72)
                     .allowsHitTesting(false)
             }
@@ -386,6 +416,8 @@ struct GreenfieldKSPlayerRenderer: View {
         if shouldTreatAsTransportStream(plan.primaryRoute) {
             let isSeekableFile = plan.primaryRoute.routeKind == .localRangeProxy
                 || plan.intent.contentKind == .discImage
+            options.prefersTimestampSeeking = plan.intent.contentKind == .discImage
+            options.isSeekImageSubtitle = plan.intent.contentKind == .discImage
             options.probesize = isSeekableFile ? 5 * 1024 * 1024 : 1 * 1024 * 1024
             options.maxAnalyzeDuration = isSeekableFile ? 3_000_000 : 1_000_000
             options.formatContextOptions["seekable"] = isSeekableFile ? 1 : 0

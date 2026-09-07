@@ -5,12 +5,58 @@ import MediaPlayer
 import MobileVLCKit
 #endif
 
+struct AudioLyricLine: Identifiable, Equatable {
+    let id: Int
+    let seconds: Double?
+    let text: String
+}
+
+enum AudioLyricsParser {
+    static func parse(_ data: Data) -> [AudioLyricLine] {
+        if let object = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+           let lyrics = object["Lyrics"] as? [[String: Any]] {
+            return lyrics.enumerated().compactMap { index, row in
+                guard let text = row["Text"] as? String else { return nil }
+                let seconds = (row["Start"] as? NSNumber).map { $0.doubleValue / 10_000_000 }
+                return AudioLyricLine(id: index, seconds: seconds, text: text)
+            }
+        }
+        guard let text = String(data: data, encoding: .utf8) else { return [] }
+        let pattern = try! NSRegularExpression(pattern: #"\[(\d+):(\d{2}(?:\.\d+)?)\]"#)
+        let offsetPattern = try! NSRegularExpression(pattern: #"(?i)\[offset:([+-]?\d+)\]"#)
+        let ns = text as NSString
+        let offsetMatch = offsetPattern.firstMatch(in: text, range: NSRange(location: 0, length: ns.length))
+        let offset = offsetMatch.flatMap { Double(ns.substring(with: $0.range(at: 1))) }.map { $0 / 1000 } ?? 0
+        var lines: [(Double?, String)] = []
+        for raw in text.components(separatedBy: .newlines) {
+            let value = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !value.isEmpty else { continue }
+            let ns = value as NSString
+            let matches = pattern.matches(in: value, range: NSRange(location: 0, length: ns.length))
+            if let last = matches.last {
+                let words = ns.substring(from: NSMaxRange(last.range)).trimmingCharacters(in: .whitespaces)
+                for match in matches {
+                    let minute = Double(ns.substring(with: match.range(at: 1))) ?? 0
+                    let second = Double(ns.substring(with: match.range(at: 2))) ?? 0
+                    lines.append((max(0, minute * 60 + second + offset), words))
+                }
+            } else if !value.hasPrefix("[") { lines.append((nil, value)) }
+        }
+        if lines.contains(where: { $0.0 != nil }) {
+            lines = lines.filter { $0.0 != nil }.sorted { $0.0! < $1.0! }
+        }
+        return lines.enumerated().map { AudioLyricLine(id: $0.offset, seconds: $0.element.0, text: $0.element.1) }
+    }
+}
+
 struct DedicatedAudioPlayerView: View {
     let request: MediaPlaybackRequest
     @Environment(\.dismiss) private var dismiss
     @StateObject private var session: AudioPlaybackSession
     @State private var scrubPosition = 0.0
     @State private var isScrubbing = false
+    @State private var lyrics: [AudioLyricLine] = []
+    @State private var showsLyrics = false
 
     init(request: MediaPlaybackRequest) {
         self.request = request
@@ -60,6 +106,11 @@ struct DedicatedAudioPlayerView: View {
 
                 Spacer(minLength: 28)
 
+                if showsLyrics, !lyrics.isEmpty {
+                    lyricsView
+                        .frame(maxWidth: 390)
+                        .aspectRatio(1, contentMode: .fit)
+                } else {
                 ZStack {
                     RoundedRectangle(cornerRadius: 24, style: .continuous)
                         .fill(
@@ -76,6 +127,14 @@ struct DedicatedAudioPlayerView: View {
                 .aspectRatio(1, contentMode: .fit)
                 .frame(maxWidth: 390)
                 .shadow(color: AppTheme.accent.opacity(0.28), radius: 28, y: 16)
+                }
+                if !lyrics.isEmpty {
+                    Button { showsLyrics.toggle() } label: {
+                        Label(showsLyrics ? "audio.player.artwork" : "audio.player.lyrics",
+                              systemImage: showsLyrics ? "music.note" : "text.alignleft")
+                    }
+                    .padding(.top, 12)
+                }
 
                 Spacer(minLength: 34)
 
@@ -169,13 +228,67 @@ struct DedicatedAudioPlayerView: View {
             .foregroundStyle(.white)
             .frame(maxWidth: 620)
         }
+        .preferredColorScheme(.dark)
         .toolbar(.hidden, for: .navigationBar)
+        .task { await loadLyrics() }
         .onAppear { session.play() }
         .onDisappear { session.stop() }
         .onChange(of: session.position) { position in
             if !isScrubbing { scrubPosition = position }
         }
     }
+    private var currentLyricID: Int? {
+        lyrics.last { $0.seconds.map { $0 <= session.elapsedSeconds } == true }?.id
+    }
+
+    private var lyricsView: some View {
+        ScrollViewReader { proxy in
+            ScrollView {
+                VStack(alignment: .leading, spacing: 18) {
+                    ForEach(lyrics) { line in
+                        Text(line.text)
+                            .font(.title3.weight(line.id == currentLyricID ? .semibold : .regular))
+                            .foregroundStyle(line.id == currentLyricID ? .white : .white.opacity(0.5))
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .id(line.id)
+                    }
+                }
+                .padding(.vertical, 32)
+            }
+            .onChange(of: currentLyricID) { id in
+                if let id { withAnimation { proxy.scrollTo(id, anchor: .center) } }
+            }
+        }
+    }
+
+    private func loadLyrics() async {
+        var url = request.audioLyricsURL
+        if url == nil, request.url.query == nil,
+           AudioFormatPolicy.extensions.contains(request.url.pathExtension.lowercased()) {
+            url = request.url.deletingPathExtension().appendingPathExtension("lrc")
+        }
+        guard let url, ["http", "https"].contains(url.scheme?.lowercased() ?? "") else { return }
+        let delegate = FilePreviewTrustDelegate(trustedHost: url.host,
+            allowsSelfSignedCertificates: request.allowsSelfSignedCertificates
+                && url.host == request.networkOriginURL.host)
+        let config = URLSessionConfiguration.ephemeral
+        config.timeoutIntervalForResource = 8
+        config.timeoutIntervalForRequest = 5
+        let client = URLSession(configuration: config, delegate: delegate, delegateQueue: nil)
+        defer { client.invalidateAndCancel() }
+        do {
+            let (bytes, response) = try await client.bytes(from: url)
+            guard (response as? HTTPURLResponse)?.statusCode == 200 else { return }
+            var data = Data()
+            for try await byte in bytes {
+                guard data.count < 512 * 1024 else { return }
+                data.append(byte)
+            }
+            guard !Task.isCancelled else { return }
+            lyrics = AudioLyricsParser.parse(data)
+        } catch { /* Lyrics are optional and never block audio playback. */ }
+    }
+
 }
 
 #if canImport(MobileVLCKit)
@@ -183,6 +296,7 @@ final class AudioPlaybackSession: NSObject, ObservableObject, VLCMediaPlayerDele
     @Published private(set) var isPlaying = false
     @Published private(set) var isBuffering = true
     @Published private(set) var isSeekable = false
+    @Published private(set) var elapsedSeconds = 0.0
     @Published private(set) var position = 0.0
     @Published private(set) var currentTimeText = "00:00"
     @Published private(set) var durationText = "--:--"
@@ -193,6 +307,10 @@ final class AudioPlaybackSession: NSObject, ObservableObject, VLCMediaPlayerDele
     let formatLabel: String
     private let request: MediaPlaybackRequest
     private let player: VLCMediaPlayer
+    private var isPausedByUser = false
+    private var pausedSeekSeconds: Double?
+    private var lastClockSeconds = 0.0
+    private var lastClockAdvanceAt: Date?
     private var didApplyInitialPosition = false
     private var didStartTracking = false
     private var didReissueStartupPlay = false
@@ -217,7 +335,6 @@ final class AudioPlaybackSession: NSObject, ObservableObject, VLCMediaPlayerDele
         media.addOption(":network-caching=\(cache)")
         media.addOption(":file-caching=\(cache)")
         media.addOption(":http-reconnect")
-        media.addOption(":http-continuous")
         media.addOption(":input-fast-seek")
         // File Station/Jellyfin stream URLs are often API endpoints without
         // the original filename extension. Give FFmpeg the container hint so
@@ -243,6 +360,8 @@ final class AudioPlaybackSession: NSObject, ObservableObject, VLCMediaPlayerDele
     }
 
     func play() {
+        isPausedByUser = false
+        pausedSeekSeconds = nil
         errorMessage = nil
         configureAudioSession()
         installRemoteCommandsIfNeeded()
@@ -285,14 +404,26 @@ final class AudioPlaybackSession: NSObject, ObservableObject, VLCMediaPlayerDele
         MPNowPlayingInfoCenter.default().nowPlayingInfo = nil
     }
 
-    func togglePlayback() {
-        if player.isPlaying { player.pause() } else { player.play() }
+    private func setPaused(_ paused: Bool) {
+        isPausedByUser = paused
+        startupWorkItem?.cancel()
+        if paused { player.pause() } else {
+            pausedSeekSeconds = nil
+            player.play()
+            player.rate = Float(playbackRate)
+        }
         syncState()
+    }
+
+    func togglePlayback() {
+        setPaused(!isPausedByUser && player.isPlaying)
     }
 
     func seek(to normalizedPosition: Double) {
         guard player.isSeekable else { return }
-        player.position = Float(min(max(normalizedPosition, 0), 1))
+        let target = min(max(normalizedPosition, 0), 1)
+        if isPausedByUser { pausedSeekSeconds = target * durationSeconds }
+        player.position = Float(target)
         syncState()
     }
 
@@ -300,15 +431,14 @@ final class AudioPlaybackSession: NSObject, ObservableObject, VLCMediaPlayerDele
         let duration = durationSeconds
         guard player.isSeekable, duration > 0 else { return }
         let target = min(max(currentSeconds + seconds, 0), duration)
-        player.position = Float(target / duration)
-        syncState()
+        seek(to: target / duration)
     }
 
     func mediaPlayerStateChanged(_ notification: Notification) { syncState() }
     func mediaPlayerTimeChanged(_ notification: Notification) { syncState() }
 
     private var currentSeconds: Double {
-        max(Double(player.time.intValue) / 1_000, 0)
+        pausedSeekSeconds ?? max(Double(player.time.intValue) / 1_000, 0)
     }
 
     private var durationSeconds: Double {
@@ -320,6 +450,7 @@ final class AudioPlaybackSession: NSObject, ObservableObject, VLCMediaPlayerDele
         let state = player.state
         let duration = durationSeconds
         let current = currentSeconds
+        elapsedSeconds = current
         if !didApplyInitialPosition,
            player.isSeekable,
            let initialPosition = request.initialPosition,
@@ -327,12 +458,16 @@ final class AudioPlaybackSession: NSObject, ObservableObject, VLCMediaPlayerDele
             didApplyInitialPosition = true
             player.position = Float(initialPosition)
         }
-        isPlaying = player.isPlaying
+        isPlaying = player.isPlaying && !isPausedByUser
         isSeekable = player.isSeekable && duration > 0
         position = duration > 0 ? min(max(current / duration, 0), 1) : max(Double(player.position), 0)
         currentTimeText = Self.timeText(current)
         durationText = duration > 0 ? Self.timeText(duration) : "--:--"
-        isBuffering = state == .opening || state == .buffering
+        if current > lastClockSeconds + 0.01 { lastClockAdvanceAt = Date() }
+        lastClockSeconds = current
+        let clockIsAdvancing = lastClockAdvanceAt.map { Date().timeIntervalSince($0) < 2 } ?? false
+        isBuffering = !isPausedByUser && (state == .opening || state == .buffering)
+            && !(player.isPlaying && clockIsAdvancing)
         if state == .error {
             errorMessage = NSLocalizedString("audio.player.load_failed", comment: "")
         }
@@ -385,8 +520,8 @@ final class AudioPlaybackSession: NSObject, ObservableObject, VLCMediaPlayerDele
         guard !remoteCommandsInstalled else { return }
         remoteCommandsInstalled = true
         let center = MPRemoteCommandCenter.shared()
-        center.playCommand.addTarget { [weak self] _ in self?.player.play(); return .success }
-        center.pauseCommand.addTarget { [weak self] _ in self?.player.pause(); return .success }
+        center.playCommand.addTarget { [weak self] _ in self?.setPaused(false); return .success }
+        center.pauseCommand.addTarget { [weak self] _ in self?.setPaused(true); return .success }
         center.togglePlayPauseCommand.addTarget { [weak self] _ in self?.togglePlayback(); return .success }
         center.skipForwardCommand.preferredIntervals = [15]
         center.skipForwardCommand.addTarget { [weak self] _ in self?.jump(by: 15); return .success }
@@ -417,7 +552,7 @@ final class AudioPlaybackSession: NSObject, ObservableObject, VLCMediaPlayerDele
         var info: [String: Any] = [
             MPMediaItemPropertyTitle: request.title,
             MPNowPlayingInfoPropertyElapsedPlaybackTime: currentSeconds,
-            MPNowPlayingInfoPropertyPlaybackRate: player.isPlaying ? 1 : 0
+            MPNowPlayingInfoPropertyPlaybackRate: player.isPlaying ? playbackRate : 0
         ]
         if durationSeconds > 0 { info[MPMediaItemPropertyPlaybackDuration] = durationSeconds }
         MPNowPlayingInfoCenter.default().nowPlayingInfo = info
@@ -439,6 +574,7 @@ final class AudioPlaybackSession: ObservableObject {
     @Published private(set) var isPlaying = false
     @Published private(set) var isBuffering = false
     @Published private(set) var isSeekable = false
+    @Published private(set) var elapsedSeconds = 0.0
     @Published private(set) var position = 0.0
     @Published private(set) var currentTimeText = "00:00"
     @Published private(set) var durationText = "--:--"

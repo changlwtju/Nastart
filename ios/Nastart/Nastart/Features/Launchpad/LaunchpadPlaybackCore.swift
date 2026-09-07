@@ -237,6 +237,7 @@ struct MediaPlaybackRequest: Identifiable {
     let selectedQualityID: String?
     let qualityRequestLoader: ((String, MediaPlaybackRuntimeState) async -> MediaPlaybackRequest?)?
     let playbackTraceID: String?
+    let audioLyricsURL: URL?
 
     init(
         requestedAt: Date = Date(),
@@ -276,7 +277,8 @@ struct MediaPlaybackRequest: Identifiable {
         qualityOptions: [MediaPlaybackQualityOption] = [],
         selectedQualityID: String? = nil,
         qualityRequestLoader: ((String, MediaPlaybackRuntimeState) async -> MediaPlaybackRequest?)? = nil,
-        playbackTraceID: String? = nil
+        playbackTraceID: String? = nil,
+        audioLyricsURL: URL? = nil
     ) {
         self.requestedAt = requestedAt
         self.url = url
@@ -316,6 +318,7 @@ struct MediaPlaybackRequest: Identifiable {
         self.selectedQualityID = selectedQualityID
         self.qualityRequestLoader = qualityRequestLoader
         self.playbackTraceID = playbackTraceID?.isEmpty == false ? playbackTraceID : nil
+        self.audioLyricsURL = audioLyricsURL
     }
 
     var fileExtensionHint: String {
@@ -453,7 +456,8 @@ struct MediaPlaybackRequest: Identifiable {
             qualityOptions: qualityOptions,
             selectedQualityID: selectedQualityID,
             qualityRequestLoader: qualityRequestLoader,
-            playbackTraceID: playbackTraceID
+            playbackTraceID: playbackTraceID,
+            audioLyricsURL: audioLyricsURL
         )
     }
 
@@ -505,7 +509,8 @@ struct MediaPlaybackRequest: Identifiable {
             qualityOptions: qualityOptions,
             selectedQualityID: selectedQualityID,
             qualityRequestLoader: qualityRequestLoader,
-            playbackTraceID: playbackTraceID
+            playbackTraceID: playbackTraceID,
+            audioLyricsURL: audioLyricsURL
         )
     }
 }

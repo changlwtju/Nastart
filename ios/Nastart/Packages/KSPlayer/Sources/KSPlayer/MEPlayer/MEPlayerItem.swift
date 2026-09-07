@@ -274,7 +274,7 @@ extension MEPlayerItem {
         maxFrameDuration = flags & AVFMT_TS_DISCONT == AVFMT_TS_DISCONT ? 10.0 : 3600.0
         options.findTime = CACurrentMediaTime()
         options.formatName = String(cString: formatCtx.pointee.iformat.pointee.name)
-        seekByBytes = (flags & AVFMT_NO_BYTE_SEEK == 0) && (flags & AVFMT_TS_DISCONT != 0) && options.formatName != "ogg"
+        seekByBytes = !options.prefersTimestampSeeking && (flags & AVFMT_NO_BYTE_SEEK == 0) && (flags & AVFMT_TS_DISCONT != 0) && options.formatName != "ogg"
         startTime = Self.normalizedStartTime(formatCtx.pointee.start_time)
         videoClock.time = startTime
         audioClock.time = startTime
@@ -392,6 +392,11 @@ extension MEPlayerItem {
                 coreStream.pointee.discard = AVDISCARD_ALL
                 if let assetTrack = FFmpegAssetTrack(stream: coreStream) {
                     if assetTrack.mediaType == .subtitle {
+                        if options.prefersTimestampSeeking {
+                            // Sparse TS subtitle streams can have no start_time or a
+                            // first cue much later than the movie's timeline origin.
+                            assetTrack.startTime = startTime
+                        }
                         let subtitle = SyncPlayerItemTrack<SubtitleFrame>(mediaType: .subtitle, frameCapacity: 255, options: options)
                         assetTrack.subtitle = subtitle
                         allPlayerItemTracks.append(subtitle)
@@ -547,7 +552,9 @@ extension MEPlayerItem {
                 let seekMax = accurateTimestampSeek ? timeStamp : (increase < 0 ? timeStamp - increase - 2 : Int64.max)
                 // can not seek to key frame
                 let seekStartTime = CACurrentMediaTime()
-                var result = avformat_seek_file(formatCtx, -1, seekMin, timeStamp, seekMax, seekFlags)
+                var result = options.prefersTimestampSeeking
+                    ? av_seek_frame(formatCtx, -1, timeStamp, AVSEEK_FLAG_BACKWARD)
+                    : avformat_seek_file(formatCtx, -1, seekMin, timeStamp, seekMax, seekFlags)
 //                var result = av_seek_frame(formatCtx, -1, timeStamp, seekFlags)
                 // When seeking before the beginning of the file, and seeking fails,
                 // try again without the backwards flag to make it seek to the
@@ -558,7 +565,7 @@ extension MEPlayerItem {
                     seekFlags &= ~AVSEEK_FLAG_BACKWARD
                     result = avformat_seek_file(formatCtx, -1, seekMin, timeStamp, seekMax, seekFlags)
                 }
-                KSLog("seek to \(seekToTime) spend Time: \(CACurrentMediaTime() - seekStartTime)")
+                NSLog("KSPlayer seek target=\(seekToTime) timestampMode=\(options.prefersTimestampSeeking) result=\(result) elapsed=\(CACurrentMediaTime() - seekStartTime)")
                 if state == .closed {
                     break
                 }

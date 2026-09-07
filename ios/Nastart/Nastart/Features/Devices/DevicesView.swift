@@ -1110,13 +1110,19 @@ private struct FilePreviewView: View {
         let session = connectionStore.dsmSession
         let candidates = session?.fileStationOpenURLs(path: item.path) ?? [url]
 #if DEBUG
-        let greenfieldRequested = usesGreenfieldPlayer
+        let greenfieldRequested = usesGreenfieldPlayer && item.kind == .video
 #else
         let greenfieldRequested = false
 #endif
         Task {
             let directory = (item.path as NSString).deletingLastPathComponent
             let siblingItems = try? await dataStore.loadFolder(path: directory)
+            let lyricsItem = item.kind == .audio ? siblingItems?.first {
+                ($0.name as NSString).pathExtension.lowercased() == "lrc"
+                    && ($0.name as NSString).deletingPathExtension.caseInsensitiveCompare(
+                        (item.name as NSString).deletingPathExtension) == .orderedSame
+            } : nil
+            let lyricsURL = lyricsItem.flatMap { session?.fileStationOpenURL(path: $0.path) }
             async let sidecarSubtitle = NASSubtitleAssetResolver.resolve(
                 videoPath: item.path,
                 videoName: item.name,
@@ -1229,7 +1235,8 @@ private struct FilePreviewView: View {
                                 forcesSoftwareDecoding: true
                             )
                         }
-                        : nil
+                        : nil,
+                    audioLyricsURL: lyricsURL
                 )
 #if DEBUG
                 if greenfieldRequested {
@@ -2903,7 +2910,7 @@ private struct LocalFilePreview: Identifiable {
     let url: URL
 }
 
-private final class FilePreviewTrustDelegate: NSObject, URLSessionDelegate {
+final class FilePreviewTrustDelegate: NSObject, URLSessionDelegate {
     let trustedHost: String?
     let allowsSelfSignedCertificates: Bool
 

@@ -1051,3 +1051,7 @@
 "devices.files.options" = "Folder options";
 
 "audio.player.speed" = "Playback speed";
+
+"audio.player.lyrics" = "Lyrics";
+
+"audio.player.artwork" = "Artwork";

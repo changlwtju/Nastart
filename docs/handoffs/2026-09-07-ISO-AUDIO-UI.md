@@ -25,9 +25,48 @@
 
 ## 未完事项
 
-1. 重新验证 ISO 可拖动进度、前后跳转、音轨/字幕显示、续播及 PiP；当前原始 PTS 起点约 600 秒，UI 为归一化媒体时间，不增加固定补偿。
-2. 音频四格式 iPhone 实播、倍速/seek/锁屏控制。DSF/DFF/APE 等仅识别，尚未解码实测。
+1. ISO 续播、Slider 定位、前后跳转和中文字幕实际渲染已在本轮验证，见文末证据。音轨切换/PiP、其他 ISO 类型和多片段盘仍待回归；原始 PTS 起点约 600 秒，UI 为归一化媒体时间，不增加固定补偿。
+2. 音频 WAV/M4A/AIFF/FLAC 实播和暂停 seek 已验证；倍速与锁屏实际控制、NAS 同目录 LRC 端到端仍需补测。DSF/DFF/APE 等仅识别，尚未解码实测。
 3. 设备文件视频完整失败原因尚需单独回归；NAS 离线/恢复真机矩阵。
 4. UI 已核对启动台、设备、事项、我的与服务详情主要源码。同类动作保持一致；导航取消/完成与对话框遵循系统文本按钮惯例，不给所有文字硬加图标。iPad、动态字体和其余深层页面尚需视觉回归。
 
 源代码与临时证据分开。tmp 包含带凭据的原始 URL/设备配置，严禁提交。保留 Package.resolved 原 pin，不升级远端包。
+
+## 后续：音频缓冲提示与歌词
+
+用户进一步反馈持续缓冲提示，并要求尽量支持歌词。新增：
+
+- 用实际时钟推进消除“已播放但仍显示缓冲”的错误 UI；不再仅依据 VLC.buffering 状态。
+- 移除文件音频的 http-continuous 参数。旧参数测试时出现大量重复 GET；新的请求行为仍需真机复核，不把参数修改等同于性能通过。
+- 音频支持 LRC、多时间戳、offset、普通文本及 Jellyfin LyricDto（Start ticks / 10,000,000）。设备文件同目录 .lrc、Jellyfin Lyrics API、直接 URL 同名 .lrc；加载总时限 8 秒、大小上限 512 KB，不阻塞播放。暂仅 UTF-8，未宣称内嵌/在线搜词/逐字歌词完整支持。
+- 仅有歌词时提供歌词/封面切换，按当前行高亮滚动；请求复制保留 audioLyricsURL。
+- 本地自制 FLAC 真机时间由 00:00 推进至 00:08、总时长 00:40，倍速菜单正常出现。其他格式与歌词的新版本验证另记；不要把菜单出现写成全部控制通过。
+- 最新构建 build-lyrics-final2.log 成功，preflight-lyrics.log、linkage-lyrics.log 通过。安装 install-lyrics.log。
+- 第一批提交 ccb315a 已推送 main；后续音频修订再次提交。IDE 曾删除 Package.resolved，本轮恢复 551f7de 的原始固定版本，后续提交必须包含此文件。
+
+## 18:45 接续验证
+
+- WDA 已恢复。自生成 WAV/M4A/AIFF/FLAC 四种 LAN 文件均在 iPhone 从 00:04 推进至 00:09，总时长 00:40，均无错误缓冲提示（tmp/audio-20260907/verify-device.log）。FLAC 与 LRC 分别一次请求；这是播放时钟与 HTTP 证据，不代替音频听测。
+- 实际歌词界面显示且高亮对应时间行。暂停后 seek 发现 VLC 不立即上报新时间，另修用户暂停意图、暂停目标进度和缓冲显示；待最终包验证。锁屏播放速率沿用用户所选倍速。
+- 修正设备文件/Jellyfin/直接链接三个音频入口被 DEBUG Greenfield 视频入口截走的问题；音频统一进入已有专用音频播放器，视频仍遵循 ADR 0002。
+- 深色音频页面固定深色外观，确保状态栏文字可读。
+- build-audio-final.log 构建成功；preflight-audio-final.log 与 linkage-audio-final.log 通过。
+
+## 最终音频与 ISO 续播定位
+
+- 音频暂停 seek 最终真机通过：11 秒暂停 → 前进 26 秒 → 回退 11 秒 → 恢复后 14 秒，无缓冲提示。证据 tmp/audio-20260907/final-*.xml。四格式测试不需重复。
+- ISO trace 1E3029B6 / plan 844DD969：时长 8607.339 秒，8 条字幕轨道，23:00 → 23:15 → 23:00 控件可响应；但初始续播 1380.883 秒停滞，黑屏，不能据此宣称 seek 和字幕已验收。
+- 定位 KSPlayer 对 MPEG-TS 的 TS_DISCONT 自动开启字节 seek；初始 seek 将时间戳直接作为字节偏移传入。新增实例级 prefersTimestampSeeking（默认 false），仅 Greenfield discImage TS 启用，让初始与交互 seek 使用一致时间单位。不改旧路径默认行为。
+- build-iso-timestamp.log、linkage-iso-timestamp.log 通过，install-iso-timestamp.log 安装；需下面追加真实回归结果。
+
+- 时间戳模式真机 trace C6335381 / plan 0DCE80FF：23 分钟续播成功，首帧 PTS 1981.797 秒，媒体时间 1380.883 秒；连续播放 checkpoint 30 秒通过。中文字幕 zho 选中值为 1（字幕显示内容仍需画面证据）。
+- 交互跳转最终返回 completed=false；改为 ISO 时间戳模式使用 av_seek_frame 向前关键帧定位，避免 avformat_seek_file 对多轨 TS 有界定位失败。默认模式保持不变。新增不含 URL 的 seek 返回值/耗时日志，便于区分失败与 UI 延迟。
+- build-iso-seek-frame.log / linkage-iso-seek-frame.log / preflight-iso-seek-frame.log 通过，已安装；复测另记。
+
+- av_seek_frame 回归 trace 97954405 / plan 113EA715：暂停 23:43 → 23:58 → 23:43；完成回调均 true，恢复分别 924ms / 780ms，均有新的 forcedPreview 帧提交和实际变化画面。恢复播放推进至 23:52；Slider WDA 设置 20% 后到 28:55，非仅按钮测试。证据 seekframe-*.png/xml 与 iso-seekframe-prefs。
+- 中文字幕虽能选中，仍缺显示证据。进一步让 ISO 时间戳模式字幕使用 format 起点（稀疏字幕 stream.start_time 可能缺失或为首条字幕时间），并开启图形字幕切换时重新定位；其他模式默认保持不变。
+
+- 字幕 origin 修订真机已取得实际中文字幕画面：subtitle-origin-1.png（“这是当务之急头等大事”），时间推进时字幕内容变化。此前仅有选择状态的边界现已补齐实际渲染证据。
+- 发现 PGS 裁剪位图被默认字幕 View 铺满宽度，字过大；Greenfield 内按视频 naturalSize 与可用画面比例缩放位图，文本字幕仍复用原 View。最后构建/视觉回归见下方记录。
+
+- 最终包 build-subtitle-scale-final.log 构建成功，preflight-subtitle-scale-final.log、linkage-subtitle-scale-final.log 通过，install-subtitle-scale-final.log 已安装。

@@ -1051,3 +1051,7 @@
 "devices.files.options" = "文件夹选项";
 
 "audio.player.speed" = "播放速度";
+
+"audio.player.lyrics" = "歌词";
+
+"audio.player.artwork" = "封面";

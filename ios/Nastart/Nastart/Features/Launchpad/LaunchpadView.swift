@@ -6111,7 +6111,8 @@ private final class JellyfinLibraryStore: ObservableObject {
                     mediaSourceID: entry.mediaSourceID,
                     subtitleStreamIndex: nil
                 ),
-                playbackTraceID: playbackTraceID
+                playbackTraceID: playbackTraceID,
+                audioLyricsURL: client.url(with: Paths.getLyrics(itemID: entry.id), queryAPIKey: true)
             )
         }
 
@@ -9679,7 +9680,7 @@ private struct JellyfinMediaDetailView: View {
                 )
                 if let request {
 #if DEBUG
-                    if requestsGreenfield {
+                    if requestsGreenfield && !request.isAudioOnly {
                         greenfieldPlaybackRequest = request.greenfieldPlaybackLaunchRequest()
                         return
                     }

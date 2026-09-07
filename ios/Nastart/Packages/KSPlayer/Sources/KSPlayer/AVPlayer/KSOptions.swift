@@ -26,6 +26,8 @@ open class KSOptions {
     public var isSecondOpen = KSOptions.isSecondOpen
     /// 开启精确seek
     public var isAccurateSeek = KSOptions.isAccurateSeek
+    /// Seekable disc-image TS proxies support timestamp seeks despite TS_DISCONT.
+    public var prefersTimestampSeeking = false
     /// Applies to short videos only
     public var isLoopPlay = KSOptions.isLoopPlay
     /// seek完是否自动播放
