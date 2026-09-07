@@ -1295,7 +1295,8 @@ final class DSMClient {
             of: (UUID, DSMJSONValue?).self,
             returning: [UUID: DSMJSONValue].self
         ) { group in
-            for container in containers where container.status == .online {
+            for container in containers where container.status == .online
+                && !LaunchpadDefaultVisibilityPolicy.isInfrastructureContainer(image: container.image) {
                 group.addTask {
                     let detail = await self.firstSuccessfulCall(
                         self.containerDetailRequests(
@@ -2148,7 +2149,9 @@ final class DSMClient {
             let resolvedEndpoint = containerEndpoints[container.id]
             return LaunchpadService(
                 id: StableIdentifier.uuid("service|container|\(container.id.uuidString.lowercased())"),
-                name: Self.displayName(for: container.name),
+                name: LaunchpadDefaultVisibilityPolicy.isInfrastructureContainer(image: container.image)
+                    ? container.name : (ServiceIconRegistry.identity(name: container.image).displayName
+                        ?? Self.displayName(for: container.name)),
                 iconText: Self.iconText(for: container.name),
                 category: Self.category(for: container.name),
                 status: container.status,

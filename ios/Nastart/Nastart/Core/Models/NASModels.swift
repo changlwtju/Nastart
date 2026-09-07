@@ -309,6 +309,11 @@ enum LaunchpadDefaultVisibilityReason: Equatable {
 /// destinations that a user can continue working in; the service manager
 /// remains the escape hatch for anything intentionally kept out of the default.
 enum LaunchpadDefaultVisibilityPolicy {
+    static func isInfrastructureContainer(image: String) -> Bool {
+        let repository = image.lowercased().split(separator: "@").first.map(String.init) ?? image.lowercased()
+        return repository.split(separator: "/").last?.split(separator: ":").first == "docker-socket-proxy"
+    }
+
     static func shouldShowPackage(name: String, hasEndpoint: Bool) -> Bool {
         switch packageReason(name: name, hasEndpoint: hasEndpoint) {
         case .synologyApp, .recognizedWebUI:
@@ -344,7 +349,7 @@ enum LaunchpadDefaultVisibilityPolicy {
         case .container, .reverseProxy:
             return containerReason(
                 name: service.name,
-                image: service.subtitle,
+                image: service.detail,
                 hasEndpoint: service.endpoint != nil
             )
         }
@@ -366,7 +371,12 @@ enum LaunchpadDefaultVisibilityPolicy {
         image: String,
         hasEndpoint: Bool
     ) -> LaunchpadDefaultVisibilityReason {
+        guard !isInfrastructureContainer(image: image) else { return .systemOrUnknown }
         guard hasEndpoint else { return .noReachableEndpoint }
+        let imageIdentity = ServiceIconRegistry.identity(name: image)
+        if imageIdentity.displayName != nil {
+            return imageIdentity.defaultVisibilityReason == .recognizedWebUI ? .recognizedWebUI : .systemOrUnknown
+        }
         if ServiceIconRegistry.identity(name: name, subtitle: image).defaultVisibilityReason == .recognizedWebUI {
             return .recognizedWebUI
         }
@@ -509,7 +519,8 @@ enum ServiceIconRegistry {
         Rule(["gitea"], displayName: "Gitea", symbolName: "point.3.connected.trianglepath.dotted", badgeText: "GT", category: .tools, prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
         Rule(["gitlab"], displayName: "GitLab", symbolName: "point.3.connected.trianglepath.dotted", badgeText: "GL", category: .tools, prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
         Rule(["nginx proxy", "nginxproxymanager", "reverse proxy", "traefik", "caddy"], symbolName: "lock.rectangle", category: .network, defaultVisibilityReason: .recognizedWebUI),
-        Rule(["metacubexd", "metacube", "mihomo", "clash"], displayName: "MetaCubeXD", symbolName: "network", badgeText: "MX", category: .network, prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["mihomo", "clash"], displayName: "Mihomo", symbolName: "network", category: .network),
+        Rule(["metacubexd", "metacube"], displayName: "MetaCubeXD", symbolName: "network", badgeText: "MX", category: .network, prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
         Rule(["tailscale", "zerotier", "vpn"], symbolName: "lock.shield", category: .network),
         Rule(["adguard"], displayName: "AdGuard", symbolName: "shield", badgeText: "AG", category: .network, prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
         Rule(["pihole", "pi-hole"], displayName: "Pi-hole", symbolName: "shield", badgeText: "PH", category: .network, prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),

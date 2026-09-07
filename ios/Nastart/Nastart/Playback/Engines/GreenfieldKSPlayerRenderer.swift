@@ -193,7 +193,15 @@ private struct GreenfieldSubtitleOverlay: View {
                 .frame(maxWidth: .infinity)
             }
         } else {
-            VideoSubtitleView(model: model)
+            VStack(spacing: 4) {
+                Spacer(minLength: 0)
+                ForEach(model.parts) { part in
+                    if let text = part.text?.string, !text.isEmpty {
+                        PlaybackSubtitleText(text: text)
+                    }
+                }
+            }
+            .frame(maxWidth: .infinity)
         }
     }
 }
@@ -245,9 +253,10 @@ struct GreenfieldKSPlayerRenderer: View {
             .overlay(alignment: .bottom) {
                 GreenfieldSubtitleOverlay(model: coordinator.subtitleModel,
                     videoSize: coordinator.playerLayer?.player.naturalSize ?? .zero)
-                    .padding(.horizontal, 24).padding(.bottom, 72)
+                    .padding(.horizontal, 24).padding(.bottom, 36)
                     .allowsHitTesting(false)
             }
+            .allowsHitTesting(false)
             .ignoresSafeArea()
             .onAppear {
                 configureDefaultEngine()

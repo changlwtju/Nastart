@@ -722,6 +722,15 @@ private final class GreenfieldVideoPlayerModel: ObservableObject {
 
     private func installPlayerItem(for plan: PlaybackPlan) {
         let item = AVPlayerItem(url: plan.primaryRoute.url)
+        if let style = AVTextStyleRule(textMarkupAttributes: [
+            kCMTextMarkupAttribute_ForegroundColorARGB as String: [1.0, 1.0, 1.0, 1.0],
+            kCMTextMarkupAttribute_BackgroundColorARGB as String: [0.0, 0.0, 0.0, 0.0],
+            kCMTextMarkupAttribute_CharacterBackgroundColorARGB as String: [0.0, 0.0, 0.0, 0.0],
+            kCMTextMarkupAttribute_BaseFontSizePercentageRelativeToVideoHeight as String: 5.0,
+            kCMTextMarkupAttribute_TextPositionPercentageRelativeToWritingDirection as String: 50.0
+        ]) {
+            item.textStyleRules = [style]
+        }
 #if DEBUG
         let output = AVPlayerItemVideoOutput(pixelBufferAttributes: nil)
         output.suppressesPlayerRendering = false

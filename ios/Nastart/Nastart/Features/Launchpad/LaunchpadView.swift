@@ -198,7 +198,7 @@ struct LaunchpadView: View {
     }
 
     private var launchpadServices: [LaunchpadService] {
-        dataStore.services.filter(dataStore.isServiceVisibleOnLaunchpad)
+        dataStore.uniqueLaunchpadServices(dataStore.services.filter(dataStore.isServiceVisibleOnLaunchpad))
     }
 
     private var hiddenLaunchpadServices: [LaunchpadService] {
@@ -3820,26 +3820,25 @@ private final class CJKSubtitleOverlayModel: ObservableObject {
     }
 }
 
+struct PlaybackSubtitleText: View {
+    let text: String
+    var body: some View {
+        Text(text)
+            .font(.system(size: 20, weight: .medium))
+            .multilineTextAlignment(.center)
+            .foregroundStyle(.white)
+            .shadow(color: .black.opacity(0.9), radius: 1, x: 1, y: 1)
+            .shadow(color: .black.opacity(0.7), radius: 1, x: -1, y: -1)
+            .fixedSize(horizontal: false, vertical: true)
+            .frame(maxWidth: 720)
+            .allowsHitTesting(false)
+    }
+}
+
 private struct CJKSubtitleOverlay: View {
     @ObservedObject var model: CJKSubtitleOverlayModel
-
     var body: some View {
-        Group {
-            if let text = model.text, !text.isEmpty {
-                Text(text)
-                    .font(.system(size: 20, weight: .semibold, design: .default))
-                    .multilineTextAlignment(.center)
-                    .foregroundStyle(.white)
-                    .shadow(color: .black, radius: 0, x: 1, y: 1)
-                    .shadow(color: .black, radius: 3)
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 5)
-                    .background(.black.opacity(0.24), in: RoundedRectangle(cornerRadius: 5))
-                    .frame(maxWidth: 720)
-                    .accessibilityLabel(Text(text))
-            }
-        }
-        .allowsHitTesting(false)
+        if let text = model.text, !text.isEmpty { PlaybackSubtitleText(text: text) }
     }
 }
 
@@ -4002,7 +4001,7 @@ struct SharedBuiltInPlayerView<Session: PlaybackUIEngineSession, Surface: View>:
                         Spacer()
                         CJKSubtitleOverlay(model: subtitleOverlayModel)
                             .padding(.horizontal, 24)
-                            .padding(.bottom, landscapeLayout ? 72 : 118)
+                            .padding(.bottom, landscapeLayout ? 36 : 54)
                     }
                 }
 
@@ -9568,7 +9567,9 @@ private struct JellyfinMediaDetailView: View {
             }
         }
 #if DEBUG
-        .fullScreenCover(item: $greenfieldPlaybackRequest) { request in
+        .fullScreenCover(item: $greenfieldPlaybackRequest, onDismiss: {
+            PlayerOrientationController.setPlayerActive(false)
+        }) { request in
             NavigationStack {
                 GreenfieldVideoPlayerView(request: request)
             }
@@ -9681,6 +9682,7 @@ private struct JellyfinMediaDetailView: View {
                 if let request {
 #if DEBUG
                     if requestsGreenfield && !request.isAudioOnly {
+                        PlayerOrientationController.prepareForPresentation(request.initialOrientationMode)
                         greenfieldPlaybackRequest = request.greenfieldPlaybackLaunchRequest()
                         return
                     }

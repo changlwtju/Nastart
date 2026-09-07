@@ -37,6 +37,7 @@ struct DirectMediaPlayerSetupView: View {
                     let request = MediaPlaybackRequest(url: url, title: url.lastPathComponent)
 #if DEBUG
                     if usesGreenfieldPlayer && !request.isAudioOnly {
+                        PlayerOrientationController.prepareForPresentation(request.initialOrientationMode)
                         greenfieldPlaybackRequest = request.greenfieldPlaybackLaunchRequest()
                     } else {
                         playbackRequest = request
@@ -67,7 +68,9 @@ struct DirectMediaPlayerSetupView: View {
             }
         }
 #if DEBUG
-        .fullScreenCover(item: $greenfieldPlaybackRequest) { request in
+        .fullScreenCover(item: $greenfieldPlaybackRequest, onDismiss: {
+            PlayerOrientationController.setPlayerActive(false)
+        }) { request in
             NavigationStack {
                 GreenfieldVideoPlayerView(request: request)
             }

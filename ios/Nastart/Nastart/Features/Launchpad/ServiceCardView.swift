@@ -54,15 +54,7 @@ struct ServiceIconView: View {
     let service: LaunchpadService
     var size: CGFloat = 36
 
-    private var iconColor: Color {
-        switch service.category {
-        case .favorites: return AppTheme.accent
-        case .media: return .purple
-        case .downloads: return .blue
-        case .network: return .teal
-        case .tools: return .indigo
-        }
-    }
+    private var iconColor: Color { AppTheme.accent }
 
     var body: some View {
         ZStack(alignment: .bottomTrailing) {

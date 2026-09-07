@@ -971,7 +971,9 @@ private struct FilePreviewView: View {
             }
         }
 #if DEBUG
-        .fullScreenCover(item: $greenfieldPlaybackRequest) { request in
+        .fullScreenCover(item: $greenfieldPlaybackRequest, onDismiss: {
+            PlayerOrientationController.setPlayerActive(false)
+        }) { request in
             NavigationStack {
                 GreenfieldVideoPlayerView(request: request)
             }
@@ -1065,6 +1067,7 @@ private struct FilePreviewView: View {
                     )
 #if DEBUG
                     if usesGreenfieldPlayer {
+                        PlayerOrientationController.prepareForPresentation(request.initialOrientationMode)
                         greenfieldPlaybackRequest = request.greenfieldPlaybackLaunchRequest()
                     } else { playbackRequest = request }
 #else
@@ -1240,7 +1243,8 @@ private struct FilePreviewView: View {
                 )
 #if DEBUG
                 if greenfieldRequested {
-                    greenfieldPlaybackRequest = request.greenfieldPlaybackLaunchRequest()
+                    PlayerOrientationController.prepareForPresentation(request.initialOrientationMode)
+                        greenfieldPlaybackRequest = request.greenfieldPlaybackLaunchRequest()
                 } else {
                     PlayerOrientationController.prepareForPresentation(
                         item.kind == .video ? .landscape : .automatic

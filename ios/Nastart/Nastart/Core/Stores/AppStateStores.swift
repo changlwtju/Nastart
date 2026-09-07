@@ -1717,7 +1717,31 @@ final class AppDataStore: ObservableObject {
     }
 
     func isServiceVisibleOnLaunchpad(_ service: LaunchpadService) -> Bool {
-        serviceVisibilityOverrides[service.launchpadVisibilityKey] ?? service.isLaunchpadVisible
+        if let override = serviceVisibilityOverrides[service.launchpadVisibilityKey] { return override }
+        if service.source == .container || service.source == .reverseProxy,
+           LaunchpadDefaultVisibilityPolicy.isInfrastructureContainer(image: service.detail) { return false }
+        if service.source == .container || service.source == .reverseProxy {
+            let imageIdentity = ServiceIconRegistry.identity(name: service.detail)
+            if imageIdentity.displayName != nil, imageIdentity.defaultVisibilityReason != .recognizedWebUI { return false }
+        }
+        return service.isLaunchpadVisible
+    }
+
+    /// Presentation identity is the real web endpoint, not a friendly product name.
+    /// Keep independent instances on different ports/paths and all monitoring records.
+    func uniqueLaunchpadServices(_ candidates: [LaunchpadService]) -> [LaunchpadService] {
+        var seen = Set<String>()
+        return candidates.filter { service in
+            guard let endpoint = service.endpoint,
+                  var url = URLComponents(url: endpoint, resolvingAgainstBaseURL: false) else { return true }
+            url.scheme = url.scheme?.lowercased()
+            url.host = url.host?.lowercased()
+            if (url.scheme == "http" && url.port == 80) || (url.scheme == "https" && url.port == 443) { url.port = nil }
+            url.fragment = nil
+            if url.path == "/" { url.path = "" }
+            guard let key = url.string else { return true }
+            return seen.insert(key).inserted
+        }
     }
 
     func orderedLaunchpadServices(_ services: [LaunchpadService]) -> [LaunchpadService] {
