@@ -28,3 +28,7 @@
 - [Apple HLS authoring specification](https://developer.apple.com/documentation/http-live-streaming/hls-authoring-specification-for-apple-devices/)
 - [Apple：Incorporating HDR video with Dolby Vision into your apps](https://developer.apple.com/av-foundation/Incorporating-HDR-video-with-Dolby-Vision-into-your-apps.pdf)
 - [Apple HLS examples](https://developer.apple.com/streaming/examples/)（参考格式信息，当前不通过公网播放样本）
+
+## 实施时机与标识（2026-09-08）
+
+本轮先完成清晰度交接、PiP 生命周期与电视剧上下集回归；其后开展原生杜比输出分支。片源能力识别可先行，但将“片源含 DV/Atmos”与“本次输出已启用”分为不同状态。播放页杜比标识仅在对应运行链路获得充分证据后点亮，元数据标签、普通 E-AC-3 或 HEVC 不作为点亮条件。排期以验收门槛为准，不以固定日期代替验证。

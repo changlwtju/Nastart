@@ -66,7 +66,11 @@ extension MediaPlaybackRequest {
         let subtitleTrackID = prefersSubtitlesDisabled
             ? nil
             : selectedSourceSubtitleTrackID.map(String.init)
-        let connectionContext = PlaybackConnectionContext.make(url: primaryURL)
+        // A loopback renderer URL describes our transport adapter, not the
+        // network delivering the video. Preserve the NAS origin for policy.
+        let connectionContext = PlaybackConnectionContext.make(
+            url: isLoopbackProxy(primaryURL) ? networkOriginURL : primaryURL
+        )
         let networkContext = PlaybackNetworkContext(
             networkClass: playbackNetworkClass(
                 connectionContext: connectionContext,
@@ -264,7 +268,8 @@ extension MediaPlaybackRequest {
         connectionContext: PlaybackConnectionContext,
         isPrivateRoute: Bool?
     ) -> PlaybackNetworkClass {
-        if isPrivateRoute == true || isPrivateConnection(connectionContext.addressKind) {
+        if let isPrivateRoute { return isPrivateRoute ? .local : .unknown }
+        if isPrivateConnection(connectionContext.addressKind) {
             return .local
         }
         return .unknown

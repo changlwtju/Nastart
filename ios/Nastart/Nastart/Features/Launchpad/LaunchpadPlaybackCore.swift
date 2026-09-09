@@ -197,6 +197,11 @@ struct MediaPlaybackQualityOption: Identifiable, Equatable {
     let detail: String?
 }
 
+struct MediaPlaybackEpisodeNavigation {
+    let previous: (() async -> MediaPlaybackRequest?)?
+    let next: (() async -> MediaPlaybackRequest?)?
+}
+
 struct MediaPlaybackRequest: Identifiable {
     let id = UUID()
     let requestedAt: Date
@@ -238,6 +243,7 @@ struct MediaPlaybackRequest: Identifiable {
     let qualityRequestLoader: ((String, MediaPlaybackRuntimeState) async -> MediaPlaybackRequest?)?
     let playbackTraceID: String?
     let audioLyricsURL: URL?
+    let episodeNavigationLoader: (() async -> MediaPlaybackEpisodeNavigation?)?
 
     init(
         requestedAt: Date = Date(),
@@ -278,7 +284,8 @@ struct MediaPlaybackRequest: Identifiable {
         selectedQualityID: String? = nil,
         qualityRequestLoader: ((String, MediaPlaybackRuntimeState) async -> MediaPlaybackRequest?)? = nil,
         playbackTraceID: String? = nil,
-        audioLyricsURL: URL? = nil
+        audioLyricsURL: URL? = nil,
+        episodeNavigationLoader: (() async -> MediaPlaybackEpisodeNavigation?)? = nil
     ) {
         self.requestedAt = requestedAt
         self.url = url
@@ -318,6 +325,7 @@ struct MediaPlaybackRequest: Identifiable {
         self.selectedQualityID = selectedQualityID
         self.qualityRequestLoader = qualityRequestLoader
         self.playbackTraceID = playbackTraceID?.isEmpty == false ? playbackTraceID : nil
+        self.episodeNavigationLoader = episodeNavigationLoader
         self.audioLyricsURL = audioLyricsURL
     }
 
@@ -457,7 +465,8 @@ struct MediaPlaybackRequest: Identifiable {
             selectedQualityID: selectedQualityID,
             qualityRequestLoader: qualityRequestLoader,
             playbackTraceID: playbackTraceID,
-            audioLyricsURL: audioLyricsURL
+            audioLyricsURL: audioLyricsURL,
+            episodeNavigationLoader: episodeNavigationLoader
         )
     }
 
@@ -510,7 +519,8 @@ struct MediaPlaybackRequest: Identifiable {
             selectedQualityID: selectedQualityID,
             qualityRequestLoader: qualityRequestLoader,
             playbackTraceID: playbackTraceID,
-            audioLyricsURL: audioLyricsURL
+            audioLyricsURL: audioLyricsURL,
+            episodeNavigationLoader: episodeNavigationLoader
         )
     }
 }
@@ -524,14 +534,29 @@ enum MediaPlaybackTrackingEvent {
 final class MediaPlaybackTracker {
     private let lock = NSLock()
     private let eventHandler: (MediaPlaybackTrackingEvent) -> Void
+    private let releaseResources: () -> Void
+    private var didReleaseResources = false
     private var didStart = false
     private var didStop = false
     private var lastPositionSeconds = 0.0
     private var lastReportedPositionSeconds = -Double.infinity
     private var lastPausedState: Bool?
 
-    init(eventHandler: @escaping (MediaPlaybackTrackingEvent) -> Void) {
+    init(releaseResources: @escaping () -> Void = {}, eventHandler: @escaping (MediaPlaybackTrackingEvent) -> Void) {
+        self.releaseResources = releaseResources
         self.eventHandler = eventHandler
+    }
+
+    deinit { releasePreparedResources() }
+
+    /// A prewarmed server stream can be abandoned before playback starts.
+    /// Release its encoder without reporting a fictitious watched position.
+    func releasePreparedResources() {
+        lock.lock()
+        guard !didReleaseResources else { lock.unlock(); return }
+        didReleaseResources = true
+        lock.unlock()
+        releaseResources()
     }
 
     func started(positionSeconds: Double) {
@@ -572,6 +597,7 @@ final class MediaPlaybackTracker {
     }
 
     func stopped(failed: Bool = false) {
+        defer { releasePreparedResources() }
         lock.lock()
         guard didStart, !didStop else {
             lock.unlock()
@@ -920,5 +946,17 @@ enum MediaPlaybackPolicy {
         return request.fileExtensionHint != "m3u8"
             || request.compatibilityResource != nil
             || request.compatibilityResourceLoader != nil
+    }
+}
+
+/// Keep the negotiated encoder dimensions consistent with the quality menu.
+enum GreenfieldQualityPolicy {
+    static func maximumVideoSize(bitrate: Int) -> (width: Int, height: Int) {
+        switch bitrate {
+        case 25_000_000...: return (3840, 2160)
+        case 10_000_000...: return (1920, 1080)
+        case 5_000_000...: return (1280, 720)
+        default: return (854, 480)
+        }
     }
 }

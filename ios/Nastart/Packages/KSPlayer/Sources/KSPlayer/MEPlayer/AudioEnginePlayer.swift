@@ -101,6 +101,9 @@ public final class AudioEngineDynamicsPlayer: AudioEnginePlayer, AudioDynamicsPr
 }
 
 public class AudioEnginePlayer: AudioOutput {
+    // AVAudioEngine.pause/start can wait for the device render cycle. Keep
+    // transport changes in order without blocking slider/gesture callbacks.
+    private let controlQueue = DispatchQueue(label: "KSPlayer.audio-control", qos: .userInteractive)
     public let engine = AVAudioEngine()
     private var sourceNode: AVAudioSourceNode?
     private var sourceNodeAudioFormat: AVAudioFormat?
@@ -160,6 +163,10 @@ public class AudioEnginePlayer: AudioOutput {
     }
 
     public func prepare(audioFormat: AVAudioFormat) {
+        controlQueue.sync { prepareOnControlQueue(audioFormat: audioFormat) }
+    }
+
+    private func prepareOnControlQueue(audioFormat: AVAudioFormat) {
         if sourceNodeAudioFormat == audioFormat {
             return
         }
@@ -210,23 +217,23 @@ public class AudioEnginePlayer: AudioOutput {
     }
 
     public func play() {
-        if !engine.isRunning {
-            do {
-                try engine.start()
-            } catch {
-                KSLog(error)
-            }
+        controlQueue.async { [weak self] in
+            guard let self, !self.engine.isRunning else { return }
+            do { try self.engine.start() }
+            catch { KSLog(error) }
         }
     }
 
     public func pause() {
-        if engine.isRunning {
-            engine.pause()
+        controlQueue.async { [weak self] in
+            guard let self, self.engine.isRunning else { return }
+            self.engine.pause()
         }
     }
 
     public func flush() {
-        currentRender = nil
+        // Wait for an earlier pause before releasing the active audio frame.
+        controlQueue.sync { currentRender = nil }
         #if !os(macOS)
         // 这个要在主线程执行，如果在音频的线程，那就会有中断杂音
         outputLatency = AVAudioSession.sharedInstance().outputLatency

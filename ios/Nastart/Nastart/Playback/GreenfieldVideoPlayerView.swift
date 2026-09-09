@@ -1,6 +1,9 @@
 import SwiftUI
 import AVFoundation
 import AVKit
+#if canImport(KSPlayer)
+import KSPlayer
+#endif
 
 struct GreenfieldPlaybackLaunchRequest: Identifiable {
     let id: UUID
@@ -99,7 +102,16 @@ struct GreenfieldKSPlayerRuntimeSnapshot {
 
 struct GreenfieldVideoPlayerView: View {
     @State private var request: GreenfieldPlaybackLaunchRequest
-    init(request: GreenfieldPlaybackLaunchRequest) {
+    private let closePresentation: (() -> Void)?
+    private let minimizePresentation: (() -> Void)?
+    private let restorePresentation: ((@escaping (Bool) -> Void) -> Void)?
+    init(request: GreenfieldPlaybackLaunchRequest,
+         closePresentation: (() -> Void)? = nil,
+         minimizePresentation: (() -> Void)? = nil,
+         restorePresentation: ((@escaping (Bool) -> Void) -> Void)? = nil) {
+        self.closePresentation = closePresentation
+        self.minimizePresentation = minimizePresentation
+        self.restorePresentation = restorePresentation
         _request = State(initialValue: request)
     }
     @Environment(\.dismiss) private var dismiss
@@ -107,7 +119,12 @@ struct GreenfieldVideoPlayerView: View {
     @StateObject private var ksControls = GreenfieldPlaybackControls()
     @StateObject private var avControls = GreenfieldPlaybackControls()
     private var controls: GreenfieldPlaybackControls { usesKSPlayer ? ksControls : avControls }
+    #if canImport(KSPlayer)
+    @State private var preparedKSCoordinator: KSVideoPlayer.Coordinator?
+    #endif
     @State private var replacementRequest: GreenfieldPlaybackLaunchRequest?
+    @State private var didInitializeSession = false
+    @State private var episodeNavigation: MediaPlaybackEpisodeNavigation?
     @State private var changingSource = false
     @State private var sourceLoadTask: Task<Void, Never>?
     @State private var sourceChangeFailed = false
@@ -118,6 +135,8 @@ struct GreenfieldVideoPlayerView: View {
             title: activeRequest.intent.displayTitle, initialOrientationMode: activeRequest.orientationMode)
     }
 
+
+    var presentationOrientation: PlayerOrientationMode { activeRequest.orientationMode }
 
     private var usesKSPlayer: Bool {
         model.renderingPlan?.enginePolicy == .ksPlayer && PlaybackEngineAvailability.ksPlayerLinked
@@ -130,39 +149,43 @@ struct GreenfieldVideoPlayerView: View {
             if let plan = model.renderingPlan,
                plan.enginePolicy == .ksPlayer,
                PlaybackEngineAvailability.ksPlayerLinked {
-                SharedBuiltInPlayerView(request: uiRequest, session: controls,
-                    close: { dismiss() },
+                SharedBuiltInPlayerView(request: uiRequest, session: ksControls,
+                    close: { closePlayer() },
                     useSystemPlayer: { _, _ in controls.pictureInPictureAction?() },
                     compatibilityFailed: { _ in },
                     sourceTrackChange: sourceTrackCallback,
                     serverSeek: serverSeekCallback,
                     qualityChange: qualityCallback,
+                    previousEpisode: episodeNavigation?.previous.map { loader in { replaceSource(preservePausedState: false, loader) } },
+                    nextEpisode: episodeNavigation?.next.map { loader in { replaceSource(preservePausedState: false, loader) } },
                     openExternal: { handoffRequest = uiRequest }) {
                 GreenfieldKSPlayerRenderer(
                     plan: plan,
-                    controls: controls,
+                    controls: ksControls,
                     onUnsupported: model.handleKSPlayerRendererUnsupported,
                     onStateChanged: model.handleKSPlayerStateChanged,
                     onPlaybackTime: model.handleKSPlayerPlaybackTime,
                     onFinished: model.handleKSPlayerFinished,
-                    onBufferChanged: model.handleKSPlayerBufferChanged
+                    onBufferChanged: model.handleKSPlayerBufferChanged,
+                    preparedCoordinator: preparedKSCoordinator
                 )
                 .id(plan.primaryRoute.id)
                 }
                 .id(plan.id)
             } else if let plan = model.renderingPlan {
                 SharedBuiltInPlayerView(request: uiRequest, session: avControls,
-                    close: { dismiss() },
+                    close: { closePlayer() },
                     useSystemPlayer: { _, _ in avControls.pictureInPictureAction?() },
                     compatibilityFailed: { _ in },
                     sourceTrackChange: sourceTrackCallback,
                     serverSeek: serverSeekCallback,
                     qualityChange: qualityCallback,
+                    previousEpisode: episodeNavigation?.previous.map { loader in { replaceSource(preservePausedState: false, loader) } },
+                    nextEpisode: episodeNavigation?.next.map { loader in { replaceSource(preservePausedState: false, loader) } },
                     openExternal: { handoffRequest = uiRequest }) {
                     GreenfieldAVPlayerSurface(player: model.player, controls: avControls)
                         .ignoresSafeArea()
                 }
-                .id(plan.id)
             }
 
             if let errorMessage = model.errorMessage {
@@ -176,7 +199,7 @@ struct GreenfieldVideoPlayerView: View {
                         .multilineTextAlignment(.center)
                         .lineLimit(4)
                     Button("action.done") {
-                        dismiss()
+                        closePlayer()
                     }
                     .buttonStyle(.borderedProminent)
                     .tint(Color.accentColor)
@@ -204,13 +227,13 @@ struct GreenfieldVideoPlayerView: View {
 #if os(iOS)
             ToolbarItem(placement: .navigationBarLeading) {
                 Button("action.done") {
-                    dismiss()
+                    closePlayer()
                 }
             }
 #else
             ToolbarItem(placement: .cancellationAction) {
                 Button("action.done") {
-                    dismiss()
+                    closePlayer()
                 }
             }
 #endif
@@ -224,23 +247,52 @@ struct GreenfieldVideoPlayerView: View {
         .sheet(item: $handoffRequest) { request in
             SharedPlaybackExternalPicker(request: request)
         }
+        .task(id: uiRequest.id) {
+            episodeNavigation = nil
+            let navigation = await uiRequest.episodeNavigationLoader?()
+            guard !Task.isCancelled else { return }
+            episodeNavigation = navigation
+        }
         .onAppear {
             PlayerOrientationController.setPlayerActive(
                 true,
                 initialMode: request.orientationMode
             )
+            guard !didInitializeSession else { return }
+            didInitializeSession = true
+            for control in [ksControls, avControls] {
+                control.pipDidStart = minimizePresentation
+                control.pipRestore = restorePresentation
+                control.pipDidClose = { [weak model, closePresentation] in
+                    model?.stop()
+                    closePresentation?()
+                }
+            }
             ksControls.onTimelineDiscontinuity = model.resetContinuity
             avControls.onTimelineDiscontinuity = model.resetContinuity
+            ksControls.pipInitialExternalSubtitleURL = uiRequest.externalSubtitleURL
+            ksControls.pipExternalSubtitle.setURL(uiRequest.externalSubtitleURL)
             ksControls.traceID = activeRequest.playbackTraceID
             avControls.traceID = activeRequest.playbackTraceID
             model.avControls = avControls
             model.start(activeRequest)
         }
         .onDisappear {
+            guard !ksControls.isPictureInPictureActive && !avControls.isPictureInPictureActive else { return }
             sourceLoadTask?.cancel()
             model.stop()
             PlayerOrientationController.setPlayerActive(false)
         }
+    }
+    private func closePlayer() {
+        sourceLoadTask?.cancel()
+        model.stop()
+        for control in [ksControls, avControls] {
+            control.pipDidStart = nil
+            control.pipDidClose = nil
+            control.pipRestore = nil
+        }
+        if let closePresentation { closePresentation() } else { dismiss() }
     }
     private var sourceTrackCallback: ((Int?, Int?, MediaPlaybackRuntimeState) -> Void)? {
         guard let loader = uiRequest.sourceTrackRequestLoader else { return nil }
@@ -251,7 +303,13 @@ struct GreenfieldVideoPlayerView: View {
                 if let audio, let track = controls.audioTracks.first(where: { Int($0.id) == audio }) {
                     controls.selectAudio(track)
                 }
-                controls.selectSubtitle(PlaybackUITrack(id: Int32(subtitle ?? -1), name: ""))
+                let externalURL = uiRequest.sourceSubtitleTracks.first { $0.id == subtitle }?.externalURL
+                controls.selectSourceSubtitle(subtitle.flatMap(Int32.init), externalURL: externalURL)
+                controls.sourceRuntimeTracks = (
+                    uiRequest.sourceAudioTracks.firstIndex { $0.id == audio },
+                    uiRequest.sourceSubtitleTracks.firstIndex { $0.id == subtitle },
+                    subtitle == nil
+                )
             } else { replaceSource { await loader(audio, subtitle, state) } }
         }
     }
@@ -261,26 +319,78 @@ struct GreenfieldVideoPlayerView: View {
     }
     private var qualityCallback: ((String, MediaPlaybackRuntimeState) -> Void)? {
         guard let loader = uiRequest.qualityRequestLoader else { return nil }
-        return { quality, state in replaceSource { await loader(quality, state) } }
+        return { quality, state in replaceSource(keepPlayingDuringPreparation: true) { await loader(quality, state) } }
     }
-    private func replaceSource(_ load: @escaping () async -> MediaPlaybackRequest?) {
+    private func replaceSource(preservePausedState: Bool = true, keepPlayingDuringPreparation: Bool = false, _ load: @escaping () async -> MediaPlaybackRequest?) {
 #if DEBUG
         guard !changingSource else { return }
         changingSource = true
-        let wasPaused = !controls.isPlaying
+        let oldControls = controls
+        let wasPlaying = oldControls.isPlaying
+        let wasPaused = preservePausedState && !wasPlaying
+        if !keepPlayingDuringPreparation { oldControls.pauseForExternalHandoff() }
         sourceLoadTask = Task { @MainActor in
-            defer { changingSource = false }
+            var committed = false
+            defer {
+                changingSource = false
+                if !committed && wasPlaying && !keepPlayingDuringPreparation && !Task.isCancelled { oldControls.togglePlayback() }
+            }
             let loaded = await load()
+            guard var next = loaded else { sourceChangeFailed = true; return }
+            defer {
+                if !committed { next.playbackTracker?.releasePreparedResources() }
+            }
             guard !Task.isCancelled else { return }
-            guard let next = loaded else { sourceChangeFailed = true; return }
+            let preparedPlayer: AVPlayer?
+            if next.fileExtensionHint == "m3u8" {
+                oldControls.event("replacement_warmup_started")
+                preparedPlayer = await GreenfieldAVPlayerWarmup.prepare(next,
+                    liveClock: keepPlayingDuringPreparation ? { oldControls.preciseCurrentSeconds } : nil,
+                    isPlaying: { keepPlayingDuringPreparation && oldControls.isPlaying },
+                    report: { stage, metrics in oldControls.event("replacement_" + stage, metrics: metrics) })
+                guard !Task.isCancelled else { return }
+                guard preparedPlayer != nil else { sourceChangeFailed = true; return }
+                oldControls.event("replacement_warmup_completed")
+            } else { preparedPlayer = nil }
+            let commitPaused = keepPlayingDuringPreparation ? !oldControls.isPlaying : wasPaused
+            if keepPlayingDuringPreparation {
+                next = next.applyingRuntimePreferences(oldControls.runtimeState(orientationMode: uiRequest.initialOrientationMode))
+            }
             let launch = next.greenfieldPlaybackLaunchRequest(playbackModePreference: activeRequest.intent.playbackModePreference)
+            let preparedSession: GreenfieldVideoPlayerModel.PreparedSession
+            do { preparedSession = try await GreenfieldVideoPlayerModel.prepareSession(launch) }
+            catch { sourceChangeFailed = true; return }
+            guard !Task.isCancelled else { return }
+#if canImport(KSPlayer)
+            var nextKSCoordinator: KSVideoPlayer.Coordinator?
+            if preparedSession.result.plan.enginePolicy == .ksPlayer {
+                oldControls.event("replacement_warmup_started", metrics: ["candidateEngine": "KSPlayer"])
+                nextKSCoordinator = await GreenfieldKSPlayerRenderer.prepareReplacement(
+                    plan: preparedSession.result.plan, controls: ksControls,
+                    liveClock: { keepPlayingDuringPreparation ? oldControls.preciseCurrentSeconds : preparedSession.result.plan.timeline.startTime },
+                    isPlaying: { keepPlayingDuringPreparation && oldControls.isPlaying },
+                    report: { stage, metrics in oldControls.event("replacement_" + stage, metrics: metrics) })
+                guard !Task.isCancelled else { nextKSCoordinator?.resetPlayer(); return }
+                guard nextKSCoordinator != nil else { sourceChangeFailed = true; return }
+            }
+#endif
+            oldControls.event("replacement_committed", metrics: ["seconds": String(oldControls.currentSeconds),
+                "candidateSeconds": String(preparedPlayer?.currentTime().seconds ?? -1)])
+            let finalPaused = keepPlayingDuringPreparation ? !oldControls.isPlaying : commitPaused
+            oldControls.pauseForExternalHandoff()
             model.stop(reportStop: activeRequest.mediaRequest?.playbackTracker !== next.playbackTracker)
-            ksControls.startsPaused = wasPaused
-            avControls.startsPaused = wasPaused
+            ksControls.startsPaused = finalPaused
+            avControls.startsPaused = finalPaused
             ksControls.traceID = launch.playbackTraceID
             avControls.traceID = launch.playbackTraceID
+            ksControls.pipInitialExternalSubtitleURL = next.externalSubtitleURL
+            ksControls.pipExternalSubtitle.setURL(next.externalSubtitleURL)
+#if canImport(KSPlayer)
+            preparedKSCoordinator = nextKSCoordinator
+#endif
             replacementRequest = launch
-            model.start(launch)
+            model.start(launch, preparedPlayer: preparedPlayer, preparedSession: preparedSession)
+            committed = true
         }
 #endif
     }
@@ -288,11 +398,14 @@ struct GreenfieldVideoPlayerView: View {
 }
 
 @MainActor
-private final class GreenfieldVideoPlayerModel: ObservableObject {
-    let player = AVPlayer()
+final class GreenfieldVideoPlayerModel: ObservableObject {
+    @Published private(set) var player = AVPlayer()
+    private var preparedPlayer: AVPlayer?
     weak var avControls: GreenfieldPlaybackControls?
     private var avWantsPlayback = true
     private var avInitialSeekPending = false
+    private var avInitialSeekCompleted = false
+    private var avItemWasPrewarmed = false
     private var avTimelineOffset: Double {
         // Jellyfin VOD HLS exposes the full media timeline. StartTimeTicks is
         // the requested position, not a new zero for the returned playlist.
@@ -331,64 +444,92 @@ private final class GreenfieldVideoPlayerModel: ObservableObject {
     private var lastKSPlayerState: String?
     private var didRecordInvalidKSPlayerTime = false
 
-    func start(_ request: GreenfieldPlaybackLaunchRequest) {
+    struct PreparedSession {
+        let recorder: PlaybackDiagnosticsRecorder
+        let coordinator: PlaybackSessionCoordinator
+        let result: PlaybackSessionStartupResult
+    }
+
+    static func prepareSession(_ request: GreenfieldPlaybackLaunchRequest) async throws -> PreparedSession {
+        let recorder = PlaybackDiagnosticsRecorder(playbackTraceID: request.playbackTraceID)
+        let resolver = URLPlaybackSourceResolver(
+            sourceKind: request.intent.sourceKind,
+            fileExtensionHint: request.fileExtensionHint,
+            mimeHint: request.mimeHint,
+            certificatePolicy: request.certificatePolicy,
+            byteLength: request.byteLength,
+            duration: request.duration,
+            estimatedBitrate: request.estimatedBitrate,
+            tracks: request.tracks,
+            subtitles: request.subtitles,
+            alternateRoutes: request.alternateRoutes
+        )
+        let coordinator = PlaybackSessionCoordinator(
+            resolver: resolver,
+            diagnostics: recorder
+        )
+        let result = try await coordinator.prepare(request.intent)
+        return PreparedSession(recorder: recorder, coordinator: coordinator, result: result)
+    }
+
+    func start(_ request: GreenfieldPlaybackLaunchRequest, preparedPlayer: AVPlayer? = nil,
+               preparedSession: PreparedSession? = nil) {
         guard playbackTask == nil else { return }
+        self.preparedPlayer = preparedPlayer
         self.request = request
         isPreparing = true
         errorMessage = nil
         debugBadge = "Greenfield preparing"
+        do {
+            // AVPlayer does not configure this itself. A public NAS may start
+            // directly in AVPlayer without ever creating the KS renderer.
+            try GreenfieldPlaybackAudioSession.activate()
+            let audio = AVAudioSession.sharedInstance()
+            avControls?.event("audio_session_ready", metrics: [
+                "category": audio.category.rawValue, "mode": audio.mode.rawValue,
+                "outputVolume": String(audio.outputVolume),
+                "outputs": audio.currentRoute.outputs.map { $0.portType.rawValue }.joined(separator: ",")
+            ])
+        } catch {
+            avControls?.event("audio_session_failed", metrics: ["error": error.localizedDescription])
+        }
 
+        if let preparedSession {
+            // Publish the ready replacement in the same UI transaction as stop;
+            // do not render an intermediate empty/loading surface.
+            installPreparedSession(preparedSession)
+            playbackTask = Task {}
+            return
+        }
         playbackTask = Task { [weak self] in
             guard let self else { return }
-            let recorder = PlaybackDiagnosticsRecorder(playbackTraceID: request.playbackTraceID)
-            let resolver = URLPlaybackSourceResolver(
-                sourceKind: request.intent.sourceKind,
-                fileExtensionHint: request.fileExtensionHint,
-                mimeHint: request.mimeHint,
-                certificatePolicy: request.certificatePolicy,
-                byteLength: request.byteLength,
-                duration: request.duration,
-                estimatedBitrate: request.estimatedBitrate,
-                tracks: request.tracks,
-                subtitles: request.subtitles,
-                alternateRoutes: request.alternateRoutes
-            )
-            let coordinator = PlaybackSessionCoordinator(
-                resolver: resolver,
-                diagnostics: recorder
-            )
             do {
-                let result = try await coordinator.prepare(request.intent)
+                let prepared = try await Self.prepareSession(request)
                 guard !Task.isCancelled else { return }
-                await MainActor.run {
-                    self.recorder = recorder
-                    self.coordinator = coordinator
-                    self.renderingPlan = result.plan
-                    if self.requiresLinkedKSPlayer(for: result.plan) {
-                        self.handleRequiredKSPlayerMissing(result.plan)
-                    } else if self.shouldUseKSPlayerRenderer(for: result.plan) {
-                        self.player.replaceCurrentItem(with: nil)
-                        self.installTelemetrySampler(for: result.plan, engineName: "KSPlayer")
-                        self.telemetrySampler?.sampleKSPlayer(
-                            state: "rendererSelected",
-                            reason: "planReady",
-                            force: true
-                        )
-                    } else {
-                        self.installPlayerItem(for: result.plan)
-                    }
-                    self.isPreparing = false
-                    self.recordPlanReady(result)
-                }
+                self.installPreparedSession(prepared)
             } catch {
                 guard !Task.isCancelled else { return }
-                await MainActor.run {
-                    self.isPreparing = false
-                    self.errorMessage = error.localizedDescription
-                    self.debugBadge = "Greenfield failed"
-                }
+                self.isPreparing = false
+                self.errorMessage = error.localizedDescription
+                self.debugBadge = "Greenfield failed"
             }
         }
+    }
+
+    private func installPreparedSession(_ prepared: PreparedSession) {
+        recorder = prepared.recorder
+        coordinator = prepared.coordinator
+        let result = prepared.result
+        renderingPlan = result.plan
+        if requiresLinkedKSPlayer(for: result.plan) {
+            handleRequiredKSPlayerMissing(result.plan)
+        } else if shouldUseKSPlayerRenderer(for: result.plan) {
+            player.replaceCurrentItem(with: nil)
+            installTelemetrySampler(for: result.plan, engineName: "KSPlayer")
+            telemetrySampler?.sampleKSPlayer(state: "rendererSelected", reason: "planReady", force: true)
+        } else { installPlayerItem(for: result.plan) }
+        isPreparing = false
+        recordPlanReady(result)
     }
 
     func stop(reportStop: Bool = true) {
@@ -721,7 +862,21 @@ private final class GreenfieldVideoPlayerModel: ObservableObject {
     }
 
     private func installPlayerItem(for plan: PlaybackPlan) {
-        let item = AVPlayerItem(url: plan.primaryRoute.url)
+        if plan.intent.sourceKind == .jellyfin {
+            AuthenticatedMediaStreamProxy.shared.setPlaylistStart(plan.primaryRoute.url, seconds: plan.timeline.startTime)
+        }
+        let item: AVPlayerItem
+        if let preparedPlayer, let preparedItem = preparedPlayer.currentItem,
+           (preparedItem.asset as? AVURLAsset)?.url == plan.primaryRoute.url {
+            player = preparedPlayer
+            item = preparedItem
+            avItemWasPrewarmed = true
+        } else {
+            item = AVPlayerItem(url: plan.primaryRoute.url)
+            item.preferredForwardBufferDuration = 0.5
+            avItemWasPrewarmed = false
+        }
+        preparedPlayer = nil
         if let style = AVTextStyleRule(textMarkupAttributes: [
             kCMTextMarkupAttribute_ForegroundColorARGB as String: [1.0, 1.0, 1.0, 1.0],
             kCMTextMarkupAttribute_BackgroundColorARGB as String: [0.0, 0.0, 0.0, 0.0],
@@ -739,7 +894,7 @@ private final class GreenfieldVideoPlayerModel: ObservableObject {
 #endif
         installTelemetrySampler(for: plan, engineName: fallbackRendererName(for: plan))
         telemetrySampler?.sampleAVPlayer(player, item: item, reason: "itemInstalled", force: true)
-        itemStatusObservation = item.observe(\.status, options: [.new]) { [weak self] item, _ in
+        itemStatusObservation = item.observe(\.status, options: [.initial, .new]) { [weak self] item, _ in
             Task { @MainActor [weak self] in
                 guard self?.player.currentItem === item else { return }
                 self?.handleItemStatus(item.status)
@@ -748,6 +903,7 @@ private final class GreenfieldVideoPlayerModel: ObservableObject {
         timeControlObservation = player.observe(\.timeControlStatus, options: [.new]) {
             [weak self] player, _ in
             Task { @MainActor [weak self] in
+                guard self?.player === player else { return }
                 self?.handleTimeControlStatus(player.timeControlStatus)
             }
         }
@@ -768,9 +924,30 @@ private final class GreenfieldVideoPlayerModel: ObservableObject {
         }
         avWantsPlayback = !(avControls?.startsPaused ?? false)
         avInitialSeekPending = true
+        avInitialSeekCompleted = false
         connectAVControls(plan: plan)
         avControls?.startsPaused = false
-        player.replaceCurrentItem(with: item)
+        if player.currentItem !== item { player.replaceCurrentItem(with: item) }
+        if !avItemWasPrewarmed {
+            // Queue the real resume target while the asset is loading, just as
+            // in quality warmup. Waiting for ready first can prime then flush
+            // the first segment a second time. Completion and readiness may
+            // arrive in either order on iOS 16; both gate playback/preroll.
+            let target = max(0, plan.timeline.startTime - avTimelineOffset)
+            player.seek(to: CMTime(seconds: target, preferredTimescale: 600),
+                        toleranceBefore: .zero, toleranceAfter: .zero) { [weak self] completed in
+                Task { @MainActor in
+                    guard let self, self.player.currentItem === item else { return }
+                    guard completed else {
+                        self.errorMessage = NSLocalizedString("player.load_failed", comment: "")
+                        self.recordPlayerFailure(plan: plan, error: nil, stage: "avInitialSeekFailed")
+                        return
+                    }
+                    self.avInitialSeekCompleted = true
+                    self.finishInitialAVSeek(item)
+                }
+            }
+        }
     }
 
     private func connectAVControls(plan: PlaybackPlan) {
@@ -815,6 +992,10 @@ private final class GreenfieldVideoPlayerModel: ObservableObject {
                 CMTimeRangeContainsTime($0.timeRangeValue, time: CMTime(seconds: raw, preferredTimescale: 600))
             }
         }
+        controls.readPlaybackClock = { [weak self] in
+            guard let self else { return .nan }
+            return self.player.currentTime().seconds + self.avTimelineOffset
+        }
         controls.seekPlayback = { [weak self, weak controls] seconds in
             guard let self, let item = self.player.currentItem else { return }
             let generation = controls?.seekGeneration
@@ -825,6 +1006,10 @@ private final class GreenfieldVideoPlayerModel: ObservableObject {
                           let controls, controls.seekGeneration == generation else { return }
                     controls.seekDidComplete(completed)
                     if completed {
+                        // HLS seeks may leave the transport paused. Restore
+                        // the latest user intent, including a pause during seek.
+                        if self.avWantsPlayback { self.player.playImmediately(atRate: controls.rate) }
+                        else { self.player.pause() }
                         self.updateAVClock(self.player.currentTime().seconds)
                         self.probeAVFrame(reason: "interactiveSeek")
                     }
@@ -860,12 +1045,11 @@ private final class GreenfieldVideoPlayerModel: ObservableObject {
     private func updateAVClock(_ rawSeconds: Double) {
         guard rawSeconds.isFinite, !avInitialSeekPending, let controls = avControls else { return }
         let seconds = max(0, rawSeconds + avTimelineOffset)
-        controls.currentSeconds = seconds
+        controls.updateClock(seconds)
         let rawDuration = player.currentItem?.duration.seconds ?? 0
         if let duration = renderingPlan?.timeline.duration { controls.durationSeconds = duration }
         else if rawDuration.isFinite, rawDuration > 0 { controls.durationSeconds = rawDuration + avTimelineOffset }
         controls.isSeekable = !(player.currentItem?.seekableTimeRanges.isEmpty ?? true)
-        controls.observeClock(seconds)
         handlePlaybackTime(seconds)
     }
 
@@ -913,37 +1097,17 @@ private final class GreenfieldVideoPlayerModel: ObservableObject {
             debugBadge = fallbackBadge(for: plan, reason: "ready")
             syncAVTracks()
             guard avInitialSeekPending, let item = player.currentItem else { return }
-            let target = max(0, plan.timeline.startTime - avTimelineOffset)
-            player.seek(to: CMTime(seconds: target, preferredTimescale: 600),
-                        toleranceBefore: .zero, toleranceAfter: .zero) { [weak self] completed in
-                Task { @MainActor in
-                    guard let self, self.player.currentItem === item else { return }
-                    self.avInitialSeekPending = false
-                    guard completed else {
-                        self.errorMessage = NSLocalizedString("player.load_failed", comment: "")
-                        self.recordPlayerFailure(plan: plan, error: nil, stage: "avInitialSeekFailed")
-                        return
-                    }
-                    self.avControls?.isReady = true
-                    self.updateAVClock(self.player.currentTime().seconds)
-                    if self.avWantsPlayback {
-                        self.player.playImmediately(atRate: self.avControls?.rate ?? 1)
-                        self.probeAVFrame(reason: "initialSeek")
-                    }
-                    else {
-                        self.player.pause()
-                        // Prepare the paused replacement's video output without
-                        // briefly starting audio just to obtain a preview frame.
-                        self.player.preroll(atRate: self.avControls?.rate ?? 1) { [weak self] ready in
-                            Task { @MainActor in
-                                guard let self, self.player.currentItem === item else { return }
-                                self.avControls?.event("paused_preroll_completed", metrics: ["completed": String(ready)])
-                                self.probeAVFrame(reason: "pausedPreroll")
-                            }
-                        }
-                    }
-                }
+            if avItemWasPrewarmed {
+                avItemWasPrewarmed = false
+                avInitialSeekPending = false
+                avControls?.isReady = true
+                updateAVClock(player.currentTime().seconds)
+                if avWantsPlayback { player.playImmediately(atRate: avControls?.rate ?? 1) }
+                else { player.pause() }
+                probeAVFrame(reason: "preparedHandoff")
+                return
             }
+            finishInitialAVSeek(item)
         case .failed:
             let itemError = player.currentItem?.error
             errorMessage = itemError?.localizedDescription
@@ -957,8 +1121,34 @@ private final class GreenfieldVideoPlayerModel: ObservableObject {
         }
     }
 
+    private func finishInitialAVSeek(_ item: AVPlayerItem) {
+        guard player.currentItem === item, item.status == .readyToPlay,
+              avInitialSeekPending, avInitialSeekCompleted else { return }
+        avInitialSeekPending = false
+        avControls?.isReady = true
+        updateAVClock(player.currentTime().seconds)
+        if avWantsPlayback {
+            player.playImmediately(atRate: avControls?.rate ?? 1)
+            probeAVFrame(reason: "initialSeek")
+        } else {
+            player.pause()
+            player.preroll(atRate: avControls?.rate ?? 1) { [weak self] ready in
+                Task { @MainActor in
+                    guard let self, self.player.currentItem === item else { return }
+                    self.avControls?.event("paused_preroll_completed", metrics: ["completed": String(ready)])
+                    self.probeAVFrame(reason: "pausedPreroll")
+                }
+            }
+        }
+    }
+
     private func handleTimeControlStatus(_ status: AVPlayer.TimeControlStatus) {
         guard let plan = renderingPlan, lastTimeControlStatus != status else { return }
+        if status == .playing {
+            // Small startup buffering should not cap the reserve during normal
+            // playback on WAN connections. Let AVPlayer size it after startup.
+            player.currentItem?.preferredForwardBufferDuration = 0
+        }
         avControls?.isPlaying = avWantsPlayback && status != .paused
         if status != .playing { resetContinuity() }
         let previousStatus = lastTimeControlStatus
@@ -1252,7 +1442,7 @@ private struct SharedPlaybackExternalPicker: View {
 }
 
 // AVPlayer supplies video/PiP; the same app chrome owns every playback action.
-private struct GreenfieldAVPlayerSurface: UIViewRepresentable {
+struct GreenfieldAVPlayerSurface: UIViewRepresentable {
     let player: AVPlayer
     @ObservedObject var controls: GreenfieldPlaybackControls
 
@@ -1260,12 +1450,21 @@ private struct GreenfieldAVPlayerSurface: UIViewRepresentable {
         override class var layerClass: AnyClass { AVPlayerLayer.self }
         var playerLayer: AVPlayerLayer { layer as! AVPlayerLayer }
     }
-    final class Coordinator: NSObject, AVPictureInPictureControllerDelegate {
+    @MainActor final class Coordinator: NSObject {
+        let pipDelegate = GreenfieldPiPDelegate()
         var pictureInPicture: AVPictureInPictureController?
         var displayObservation: NSKeyValueObservation?
-        func pictureInPictureController(_ controller: AVPictureInPictureController,
-            restoreUserInterfaceForPictureInPictureStopWithCompletionHandler completionHandler: @escaping (Bool) -> Void) {
-            completionHandler(true)
+        func connectControls(_ controls: GreenfieldPlaybackControls) {
+            pipDelegate.controls = controls
+            controls.pictureInPictureAction = { [weak self, weak controls] in
+                guard let pip = self?.pictureInPicture, pip.isPictureInPicturePossible else {
+                    controls?.pictureInPictureUnavailable = true
+                    controls?.event("picture_in_picture_unavailable")
+                    return
+                }
+                pip.startPictureInPicture()
+                controls?.record("pictureInPictureRequested")
+            }
         }
     }
     func makeCoordinator() -> Coordinator { Coordinator() }
@@ -1280,21 +1479,18 @@ private struct GreenfieldAVPlayerSurface: UIViewRepresentable {
             }
         }
         let pip = AVPictureInPictureController(playerLayer: view.playerLayer)
-        pip?.delegate = context.coordinator
+        pip?.canStartPictureInPictureAutomaticallyFromInline = true
+        pip?.delegate = context.coordinator.pipDelegate
         context.coordinator.pictureInPicture = pip
-        controls.pictureInPictureAction = { [weak coordinator = context.coordinator, weak controls] in
-            guard let pip = coordinator?.pictureInPicture, pip.isPictureInPicturePossible else {
-                controls?.pictureInPictureUnavailable = true
-                return
-            }
-            pip.startPictureInPicture()
-            controls?.record("pictureInPictureRequested")
-        }
+        context.coordinator.connectControls(controls)
         return view
     }
     func updateUIView(_ view: SurfaceView, context: Context) {
         view.playerLayer.player = player
         view.playerLayer.videoGravity = controls.fillsScreen ? .resizeAspectFill : .resizeAspect
+        // A quality change reuses this surface but disconnects the old session.
+        // Rebind the action even when makeUIView is not called again.
+        context.coordinator.connectControls(controls)
     }
     static func dismantleUIView(_ view: SurfaceView, coordinator: Coordinator) {
         coordinator.displayObservation?.invalidate()
@@ -1303,4 +1499,240 @@ private struct GreenfieldAVPlayerSurface: UIViewRepresentable {
         coordinator.pictureInPicture = nil
         view.playerLayer.player = nil
     }
+}
+
+@MainActor
+enum GreenfieldPlaybackAudioSession {
+    static func activate() throws {
+        let session = AVAudioSession.sharedInstance()
+        try session.setCategory(.playback, mode: .moviePlayback, policy: .longFormVideo)
+        try session.setActive(true)
+    }
+}
+
+// Own PiP presentation separately from the media session. The retained hosting
+// controller survives dismissal, so closing the full-screen UI does not tear
+// down the sample-buffer renderer or AVPlayer used by the system PiP window.
+@MainActor
+final class GreenfieldPiPDelegate: NSObject, @preconcurrency AVPictureInPictureControllerDelegate {
+    weak var controls: GreenfieldPlaybackControls?
+    private var restoring = false
+    func pictureInPictureControllerDidStartPictureInPicture(_ controller: AVPictureInPictureController) {
+        restoring = false
+        controls?.isPictureInPictureActive = true
+        controls?.pipDidStart?()
+    }
+    func pictureInPictureController(_ controller: AVPictureInPictureController,
+        restoreUserInterfaceForPictureInPictureStopWithCompletionHandler completionHandler: @escaping (Bool) -> Void) {
+        restoring = true
+        guard let restore = controls?.pipRestore else { completionHandler(true); return }
+        restore { [weak self] success in
+            self?.restoring = success
+            completionHandler(success)
+        }
+    }
+    func pictureInPictureControllerDidStopPictureInPicture(_ controller: AVPictureInPictureController) {
+        controls?.isPictureInPictureActive = false
+        if !restoring { controls?.pipDidClose?() }
+        restoring = false
+    }
+    func pictureInPictureController(_ controller: AVPictureInPictureController, failedToStartPictureInPictureWithError error: Error) {
+        controls?.isPictureInPictureActive = false
+        controls?.pictureInPictureUnavailable = true
+    }
+}
+
+extension View {
+    func greenfieldPlaybackCover(item: Binding<GreenfieldPlaybackLaunchRequest?>) -> some View {
+        background(GreenfieldPlaybackPresenter(request: item).frame(width: 0, height: 0))
+    }
+}
+
+private struct GreenfieldPlaybackPresenter: UIViewControllerRepresentable {
+    @Binding var request: GreenfieldPlaybackLaunchRequest?
+    final class Anchor: UIViewController {
+        var becameVisible: (() -> Void)?
+        override func viewDidAppear(_ animated: Bool) {
+            super.viewDidAppear(animated)
+            becameVisible?()
+        }
+    }
+    @MainActor final class Coordinator {
+        private static var retainedPiP: Coordinator?
+        var binding: Binding<GreenfieldPlaybackLaunchRequest?>
+        weak var anchor: Anchor?
+        var host: UIHostingController<GreenfieldVideoPlayerView>?
+        var currentID: UUID?
+        var minimized = false
+        init(binding: Binding<GreenfieldPlaybackLaunchRequest?>) { self.binding = binding }
+        func update() {
+            guard let request = binding.wrappedValue else {
+                if host != nil && !minimized { close() }
+                return
+            }
+            guard currentID != request.id, let anchor, anchor.viewIfLoaded?.window != nil else { return }
+            guard host == nil else { return }
+            if let prior = Self.retainedPiP, prior !== self { prior.close() }
+            currentID = request.id
+            let controller = UIHostingController(rootView: GreenfieldVideoPlayerView(request: request,
+                closePresentation: { [weak self] in self?.close() },
+                minimizePresentation: { [weak self] in self?.minimize() },
+                restorePresentation: { [weak self] completion in self?.restore(completion) ?? completion(false) }))
+            controller.modalPresentationStyle = .fullScreen
+            host = controller
+            anchor.present(controller, animated: true)
+        }
+        func minimize() {
+            guard let host else { return }
+            minimized = true
+            Self.retainedPiP = self
+            host.dismiss(animated: true) {
+                PlayerOrientationController.setPlayerActive(false)
+            }
+        }
+        func restore(_ completion: @escaping (Bool) -> Void) {
+            guard let host else { completion(false); return }
+            var presenter: UIViewController? = anchor?.viewIfLoaded?.window != nil ? anchor : nil
+            if presenter == nil {
+                presenter = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
+                    .flatMap(\.windows).first(where: \.isKeyWindow)?.rootViewController
+                while let presented = presenter?.presentedViewController { presenter = presented }
+            }
+            guard let presenter else { completion(false); return }
+            PlayerOrientationController.prepareForPresentation(host.rootView.presentationOrientation)
+            presenter.present(host, animated: true) {
+                self.minimized = false
+                completion(true)
+                Self.retainedPiP = nil
+            }
+        }
+        func close() {
+            let controller = host
+            host = nil
+            currentID = nil
+            minimized = false
+            binding.wrappedValue = nil
+            if Self.retainedPiP === self { Self.retainedPiP = nil }
+            controller?.dismiss(animated: true)
+            PlayerOrientationController.setPlayerActive(false)
+        }
+    }
+    func makeCoordinator() -> Coordinator { Coordinator(binding: $request) }
+    func makeUIViewController(context: Context) -> Anchor {
+        let anchor = Anchor()
+        anchor.view.backgroundColor = .clear
+        context.coordinator.anchor = anchor
+        anchor.becameVisible = { [weak coordinator = context.coordinator] in coordinator?.update() }
+        return anchor
+    }
+    func updateUIViewController(_ controller: Anchor, context: Context) {
+        context.coordinator.binding = $request
+        DispatchQueue.main.async { context.coordinator.update() }
+    }
+}
+
+@MainActor
+enum GreenfieldAVPlayerWarmup {
+    private static var networkPreparationSeconds = 4.0
+    /// Keep the current renderer running while the muted candidate decodes.
+    /// Catch up to the live playhead before committing; retain the old stream
+    /// on timeout instead of moving the user to an unprepared replacement.
+    static func prepare(_ request: MediaPlaybackRequest,
+        liveClock: (() -> Double)? = nil, isPlaying: () -> Bool = { false },
+        report: (String, [String: String]) -> Void = { _, _ in }) async -> AVPlayer? {
+        let initialSeconds = request.timelineOffsetSeconds > 0 ? request.timelineOffsetSeconds
+            : (request.initialPosition ?? 0) * (request.totalDurationSeconds ?? 0)
+        let preparationLead = request.url.isFileURL ? 0.1 : networkPreparationSeconds
+        let target = min((liveClock?() ?? initialSeconds)
+            + (isPlaying() ? preparationLead * Double(request.initialPlaybackRate) : 0),
+            max((request.totalDurationSeconds ?? .greatestFiniteMagnitude) - 0.1, 0))
+        AuthenticatedMediaStreamProxy.shared.setPlaylistStart(request.url, seconds: target)
+        let item = AVPlayerItem(url: request.url)
+        item.preferredForwardBufferDuration = 0.5
+        let output = AVPlayerItemVideoOutput(pixelBufferAttributes: nil)
+        item.add(output)
+        let candidate = AVPlayer(playerItem: item)
+        candidate.isMuted = true
+        candidate.automaticallyWaitsToMinimizeStalling = false
+        let started = ProcessInfo.processInfo.systemUptime
+        let deadline = started + 20
+        var success = false
+        defer {
+            candidate.cancelPendingPrerolls()
+            item.remove(output)
+            if !success {
+                candidate.pause()
+                item.cancelPendingSeeks()
+                candidate.replaceCurrentItem(with: nil)
+            }
+        }
+        // Aim ahead by the measured decoder startup cost. The old player keeps
+        // running until this frame's time; this avoids paying startup twice
+        // (once decoding, again catching up from the stale selection position).
+        var seekResult: Bool?
+        // Queue the resume seek before readiness so VOD does not fetch segment zero.
+        candidate.seek(to: CMTime(seconds: target, preferredTimescale: 600),
+            toleranceBefore: .zero, toleranceAfter: .zero) { completed in
+            Task { @MainActor in seekResult = completed }
+        }
+        while (seekResult == nil || candidate.status != .readyToPlay) && item.status != .failed && candidate.status != .failed && !Task.isCancelled,
+              ProcessInfo.processInfo.systemUptime < deadline {
+            try? await Task.sleep(nanoseconds: 20_000_000)
+        }
+        guard seekResult == true, candidate.status == .readyToPlay, !Task.isCancelled else {
+            report("warmup_failed", ["stage": "initialSeek"]); return nil
+        }
+        // Full preroll may wait several seconds beyond the first decoded frame.
+        // Use an actual output frame as the gate, with the old renderer running.
+        if isPlaying() { candidate.playImmediately(atRate: request.initialPlaybackRate) }
+        else { candidate.preroll(atRate: request.initialPlaybackRate) { _ in } }
+        var firstFrame: Double?
+        while firstFrame == nil, item.status != .failed, !Task.isCancelled,
+              ProcessInfo.processInfo.systemUptime < deadline {
+            var displayTime = CMTime.invalid
+            let frameTime = candidate.currentTime()
+            if output.copyPixelBuffer(forItemTime: frameTime,
+                                      itemTimeForDisplay: &displayTime) != nil,
+               displayTime.seconds.isFinite, abs(displayTime.seconds - frameTime.seconds) < 0.15 {
+                firstFrame = displayTime.seconds
+            } else { try? await Task.sleep(nanoseconds: 20_000_000) }
+        }
+        guard let firstFrame, !Task.isCancelled else {
+            report("warmup_failed", ["stage": "decodedFrame"]); return nil
+        }
+        if !request.url.isFileURL {
+            networkPreparationSeconds = min(max(ProcessInfo.processInfo.systemUptime - started + 0.15, 0.25), 6)
+        }
+        candidate.cancelPendingPrerolls()
+        report("candidate_decoded", ["framePTS": String(firstFrame), "target": String(target),
+            "prepareMs": String(Int((ProcessInfo.processInfo.systemUptime - started) * 1000))])
+        var lastFrame = firstFrame
+        while !Task.isCancelled, item.status != .failed, ProcessInfo.processInfo.systemUptime < deadline {
+            let current = candidate.currentTime().seconds
+            let live = liveClock?() ?? initialSeconds
+            var displayTime = CMTime.invalid
+            if output.copyPixelBuffer(forItemTime: candidate.currentTime(), itemTimeForDisplay: &displayTime) != nil,
+               displayTime.seconds.isFinite { lastFrame = displayTime.seconds }
+            let delta = current - live
+            if abs(delta) <= 0.1, abs(lastFrame - current) <= 0.15 {
+                if isPlaying() { candidate.playImmediately(atRate: request.initialPlaybackRate) }
+                else { candidate.pause() }
+                report("candidate_aligned", ["candidate": String(current), "current": String(live),
+                    "framePTS": String(lastFrame), "evidence": "decodedFrameAndClock"])
+                success = true
+                return candidate
+            }
+            guard abs(delta) < 10 else { break } // A user seek invalidated this warmup.
+            if delta > 0.04 { candidate.pause() }
+            else if isPlaying() {
+                // Catch up once, muted, instead of restarting server transcodes
+                // with repeated seeks to a continually moving target.
+                candidate.playImmediately(atRate: min(request.initialPlaybackRate * 2, 4))
+            } else { break }
+            try? await Task.sleep(nanoseconds: 20_000_000)
+        }
+        report("warmup_failed", ["stage": "alignment"])
+        return nil
+    }
+
 }

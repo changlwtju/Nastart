@@ -9,6 +9,15 @@ import AVFoundation
 import Foundation
 import Libavcodec
 
+public extension KSOptions {
+    /// Query this binary's decoder registry instead of applying another
+    /// engine's audio compatibility restrictions to an explicit original.
+    static func hasAudioDecoder(named name: String) -> Bool {
+        guard let codec = avcodec_find_decoder_by_name(name.lowercased()) else { return false }
+        return codec.pointee.type == AVMEDIA_TYPE_AUDIO
+    }
+}
+
 class FFmpegDecode: DecodeProtocol {
     private let options: KSOptions
     private var coreFrame: UnsafeMutablePointer<AVFrame>? = av_frame_alloc()

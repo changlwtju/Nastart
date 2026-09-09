@@ -1055,3 +1055,6 @@
 "audio.player.lyrics" = "歌词";
 
 "audio.player.artwork" = "封面";
+
+"player.episode.previous" = "上一集";
+"player.episode.next" = "下一集";

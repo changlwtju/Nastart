@@ -1,7 +1,17 @@
 import SwiftUI
+import CoreImage
+import AVFoundation
 
 @MainActor
 final class GreenfieldPlaybackControls: PlaybackUIEngineSession {
+    static func canDecodeOriginalAudio(_ codec: String?) -> Bool {
+#if canImport(KSPlayer)
+        guard let codec else { return false }
+        return KSOptions.hasAudioDecoder(named: codec)
+#else
+        return false
+#endif
+    }
     @Published var currentSeconds: Double = 0
     @Published var durationSeconds: Double = 0
     @Published var isPlaying = false
@@ -10,10 +20,23 @@ final class GreenfieldPlaybackControls: PlaybackUIEngineSession {
     @Published var rate: Float = 1
     var togglePlaybackAction: (() -> Void)?
     var seekPlayback: ((Double) -> Void)?
+    var readPlaybackClock: (() -> Double)?
+    var preciseCurrentSeconds: Double {
+        guard pendingSeekPosition == nil, let seconds = readPlaybackClock?(), seconds.isFinite, seconds >= 0 else { return currentSeconds }
+        return seconds
+    }
     var onTimelineDiscontinuity: (() -> Void)?
     var updateScale: ((Bool) -> Void)?
     var updateRate: ((Float) -> Void)?
 
+    @Published var isPictureInPictureActive = false
+    var pipInitialExternalSubtitleURL: URL?
+    var pipDidStart: (() -> Void)?
+    var pipDidClose: (() -> Void)?
+    var pipRestore: ((@escaping (Bool) -> Void) -> Void)?
+    let pipDelegate = GreenfieldPiPDelegate()
+    let pipExternalSubtitle = CJKSubtitleOverlayModel()
+    let pipSubtitleCompositor = GreenfieldPiPSubtitleCompositor()
     @Published var pictureInPictureUnavailable = false
     @Published var isMuted = false
     @Published var isSeekable = false
@@ -39,12 +62,14 @@ final class GreenfieldPlaybackControls: PlaybackUIEngineSession {
     private var seekAt: TimeInterval?
     private var seekTarget = 0.0
     private var seekCompleted = false
+    private var pendingSeekPosition: Double?
     private(set) var seekGeneration = 0
     /// A control adapter may be reused after the other engine has played.
     /// Recovery timers and pending seek completions belong to one plan only.
     func beginSession() {
         seekGeneration += 1
         seekAt = nil
+        pendingSeekPosition = nil
         seekTarget = 0
         seekCompleted = false
         resumeAt = nil
@@ -68,7 +93,15 @@ final class GreenfieldPlaybackControls: PlaybackUIEngineSession {
     }
     func seekDidComplete(_ completed: Bool) {
         seekCompleted = completed
+        pendingSeekPosition = nil
         event("seek_engine_completed", metrics: ["completed": String(completed), "targetSeconds": String(seekTarget)])
+    }
+    /// Keep the requested position visible until the engine finishes seeking.
+    /// Demux/network work can continue emitting the previous clock meanwhile.
+    func updateClock(_ seconds: Double) {
+        guard seconds.isFinite, seconds >= 0, pendingSeekPosition == nil else { return }
+        currentSeconds = seconds
+        observeClock(seconds)
     }
     func observeClock(_ seconds: Double) {
         let now = ProcessInfo.processInfo.systemUptime
@@ -104,13 +137,22 @@ final class GreenfieldPlaybackControls: PlaybackUIEngineSession {
     func toggleMute() { isMuted.toggle(); muteAction?(isMuted); record("mute", value: String(isMuted)) }
     func seek(to position: Double) { seekSeconds(position * durationSeconds) }
     func seek(toAbsoluteSeconds seconds: Double) -> Bool {
-        guard isSeekable, canSeekAbsolute?(seconds) != false else { return false }
+        guard isReady, isSeekable, seekPlayback != nil, seconds.isFinite,
+              durationSeconds > 0, canSeekAbsolute?(seconds) != false else { return false }
         seekSeconds(seconds); return true
     }
     func jump(by seconds: Int) { seekSeconds(currentSeconds + Double(seconds)) }
     func setPlaybackRate(_ rate: Float) { self.rate = rate; updateRate?(rate); record("playbackRate", value: String(rate)) }
     func selectAudio(_ track: PlaybackUITrack) { audioAction?(track.id) }
     func selectSubtitle(_ track: PlaybackUITrack) { subtitleAction?(track.id) }
+    func selectSourceSubtitle(_ id: Int32?, externalURL: URL?) {
+        // The shared overlay owns sidecar text. Selecting an audio track must
+        // not re-enable the matching embedded subtitle underneath it.
+        if let externalURL, externalSubtitleAction != nil {
+            externalSubtitleAction?(externalURL)
+            selectedSubtitleTrackID = -1
+        } else { subtitleAction?(id ?? -1) }
+    }
     func selectExternalSubtitle(_ url: URL?) -> Bool { externalSubtitleAction?(url); return externalSubtitleAction != nil }
     func pauseForExternalHandoff() { if isPlaying { togglePlayback() } }
     func runtimeState(orientationMode: PlayerOrientationMode) -> MediaPlaybackRuntimeState {
@@ -128,13 +170,18 @@ final class GreenfieldPlaybackControls: PlaybackUIEngineSession {
     }
 
     func seekSeconds(_ seconds: Double) {
-        guard isReady, isSeekable, seconds.isFinite, durationSeconds > 0 else { return }
+        guard isReady, isSeekable, seconds.isFinite, durationSeconds > 0,
+              let seekPlayback else { return }
         let target = min(max(seconds, 0), max(durationSeconds - 0.1, 0))
         onTimelineDiscontinuity?()
         seekGeneration += 1
         seekAt = ProcessInfo.processInfo.systemUptime; seekTarget = target; seekCompleted = false
         event("seek_started", metrics: ["seekTargetSeconds": String(target), "seekDeltaSeconds": String(target - currentSeconds)])
-        seekPlayback?(target)
+        pendingSeekPosition = target
+        currentSeconds = target
+        let dispatchedAt = ProcessInfo.processInfo.systemUptime
+        seekPlayback(target)
+        event("seek_dispatched", metrics: ["mainThreadSubmissionMs": String((ProcessInfo.processInfo.systemUptime - dispatchedAt) * 1000)])
         record("seekRequested", value: String(format: "%.3f", target))
     }
 
@@ -145,10 +192,12 @@ final class GreenfieldPlaybackControls: PlaybackUIEngineSession {
     func disconnect() {
         seekGeneration += 1
         seekAt = nil; resumeAt = nil; pausedAt = nil
+        pendingSeekPosition = nil
         seekCompleted = false
         canSeekAbsolute = nil
         togglePlaybackAction = nil
         seekPlayback = nil
+        readPlaybackClock = nil
         updateScale = nil
         updateRate = nil
         muteAction = nil; audioAction = nil; subtitleAction = nil
@@ -215,15 +264,33 @@ struct GreenfieldKSPlayerRenderer: View {
     let onFinished: (String?, GreenfieldKSPlayerRuntimeSnapshot?) -> Void
     let onBufferChanged: (Int, TimeInterval) -> Void
 
-    @StateObject private var coordinator = KSVideoPlayer.Coordinator()
+    @StateObject private var coordinator: KSVideoPlayer.Coordinator
+    private let wasPrewarmed: Bool
     @State private var appliedInitialTracks = false
+
+    init(plan: PlaybackPlan, controls: GreenfieldPlaybackControls,
+         onUnsupported: @escaping () -> Void, onStateChanged: @escaping (String) -> Void,
+         onPlaybackTime: @escaping (TimeInterval, TimeInterval) -> Void,
+         onFinished: @escaping (String?, GreenfieldKSPlayerRuntimeSnapshot?) -> Void,
+         onBufferChanged: @escaping (Int, TimeInterval) -> Void,
+         preparedCoordinator: KSVideoPlayer.Coordinator? = nil) {
+        self.plan = plan
+        self.controls = controls
+        self.onUnsupported = onUnsupported
+        self.onStateChanged = onStateChanged
+        self.onPlaybackTime = onPlaybackTime
+        self.onFinished = onFinished
+        self.onBufferChanged = onBufferChanged
+        self.wasPrewarmed = preparedCoordinator != nil
+        _coordinator = StateObject(wrappedValue: preparedCoordinator ?? KSVideoPlayer.Coordinator())
+    }
 
     var body: some View {
         if #available(iOS 16.0, *) {
             KSVideoPlayer(
                 coordinator: coordinator,
                 url: plan.primaryRoute.url,
-                options: makeOptions()
+                options: Self.makeOptions(plan: plan, controls: controls, coordinator: coordinator)
             )
             .onStateChanged { layer, state in
                 controls.isReady = layer.player.isReadyToPlay
@@ -233,8 +300,7 @@ struct GreenfieldKSPlayerRenderer: View {
             }
             .onPlay { currentTime, totalTime in
                 if currentTime.isFinite, currentTime >= 0 {
-                    controls.currentSeconds = currentTime
-                    controls.observeClock(currentTime)
+                    controls.updateClock(currentTime)
                 }
                 if let duration = plan.timeline.duration, duration.isFinite, duration > 0 {
                     controls.durationSeconds = duration
@@ -259,11 +325,29 @@ struct GreenfieldKSPlayerRenderer: View {
             .allowsHitTesting(false)
             .ignoresSafeArea()
             .onAppear {
-                configureDefaultEngine()
-                connectControls()
+                Self.configureDefaultEngine()
+                if !controls.isPictureInPictureActive { connectControls() }
+                if wasPrewarmed, let layer = coordinator.playerLayer {
+                    let paused = controls.startsPaused
+                    controls.isReady = layer.player.isReadyToPlay
+                    syncTracks(layer)
+                    coordinator.isMuted = controls.isMuted
+                    layer.options.registerRemoteControll = true
+                    layer.registerRemoteControllEvent()
+                    if paused { layer.pause() } else { layer.play() }
+                    controls.isPlaying = !paused
+                    controls.updateClock(layer.player.currentPlaybackTime)
+                }
                 onStateChanged("rendererAppeared")
             }
-            .onDisappear { controls.disconnect() }
+            .onDisappear {
+                // SwiftUI may retire the previous surface after the replacement
+                // has already connected. Only disconnect this surface's plan.
+                if !controls.isPictureInPictureActive,
+                   controls.planID == String(plan.id.uuidString.prefix(8)) {
+                    controls.disconnect()
+                }
+            }
         } else {
             Color.black
                 .ignoresSafeArea()
@@ -286,6 +370,7 @@ struct GreenfieldKSPlayerRenderer: View {
             controls.didTogglePlayback()
             controls.record(controls.isPlaying ? "play" : "pause")
         }
+        controls.readPlaybackClock = { [weak coordinator] in coordinator?.playerLayer?.player.currentPlaybackTime ?? .nan }
         controls.seekPlayback = { [weak coordinator, weak controls] seconds in
             guard let layer = coordinator?.playerLayer else { return }
             let wasPlaying = layer.state.isPlaying
@@ -297,8 +382,7 @@ struct GreenfieldKSPlayerRenderer: View {
                     controls.seekDidComplete(completed)
                     let actual = player.currentPlaybackTime
                     if completed, actual.isFinite, actual >= 0 {
-                        controls.currentSeconds = actual
-                        controls.observeClock(actual)
+                        controls.updateClock(actual)
                         _ = coordinator?.subtitleModel.subtitle(currentTime: actual)
                     }
                 }
@@ -319,6 +403,7 @@ struct GreenfieldKSPlayerRenderer: View {
             controls?.event("audio_track_changed", metrics: ["engineTrackID": String(selected), "requestedTrackID": String(id), "evidence": "engineTrackInventory"] )
         }
         controls.subtitleAction = { [weak coordinator, weak controls] id in
+            controls?.pipExternalSubtitle.setURL(nil)
             guard let coordinator, let player = coordinator.playerLayer?.player else { return }
             coordinator.subtitleModel.selectedSubtitleInfo = nil
             let tracks = player.tracks(mediaType: .subtitle)
@@ -331,7 +416,8 @@ struct GreenfieldKSPlayerRenderer: View {
             controls?.selectedSubtitleTrackID = id
             controls?.record("subtitleTrackRequested", value: String(id))
         }
-        controls.externalSubtitleAction = { [weak coordinator] _ in
+        controls.externalSubtitleAction = { [weak coordinator, weak controls] url in
+            controls?.pipExternalSubtitle.setURL(url)
             coordinator?.subtitleModel.selectedSubtitleInfo = nil
             _ = coordinator?.subtitleModel.subtitle(currentTime: coordinator?.playerLayer?.player.currentPlaybackTime ?? 0)
             for track in coordinator?.playerLayer?.player.tracks(mediaType: .subtitle) ?? [] { track.isEnabled = false }
@@ -341,7 +427,8 @@ struct GreenfieldKSPlayerRenderer: View {
                 controls?.pictureInPictureUnavailable = true
                 controls?.event("pip_unavailable"); return
             }
-            pip.delegate = layer
+            controls?.pipDelegate.controls = controls
+            pip.delegate = controls?.pipDelegate
             pip.startPictureInPicture()
             controls?.record("pictureInPictureRequested")
         }
@@ -353,12 +440,14 @@ struct GreenfieldKSPlayerRenderer: View {
             if controls.startsPaused {
                 layer.pause()
                 let expectedPlanID = controls.planID
-                layer.seek(time: plan.timeline.startTime, autoPlay: false) { [weak layer, weak controls] completed in
-                    Task { @MainActor in
-                        guard completed, let layer, let controls,
-                              controls.planID == expectedPlanID else { return }
-                        let actual = layer.player.currentPlaybackTime
-                        if actual.isFinite { controls.currentSeconds = actual }
+                if !wasPrewarmed {
+                    layer.seek(time: plan.timeline.startTime, autoPlay: false) { [weak layer, weak controls] completed in
+                        Task { @MainActor in
+                            guard completed, let layer, let controls,
+                                  controls.planID == expectedPlanID else { return }
+                            let actual = layer.player.currentPlaybackTime
+                            if actual.isFinite { controls.currentSeconds = actual }
+                        }
                     }
                 }
                 controls.startsPaused = false
@@ -368,7 +457,8 @@ struct GreenfieldKSPlayerRenderer: View {
                     controls.audioAction?(id)
                 }
                 let subtitleID = plan.subtitles.mode == .disabled ? nil : plan.tracks.selectedSourceSubtitleTrackID.flatMap(Int32.init)
-                controls.subtitleAction?(subtitleID ?? -1)
+                controls.selectSourceSubtitle(subtitleID,
+                    externalURL: controls.pipInitialExternalSubtitleURL)
             }
         }
         controls.isSeekable = layer.player.seekable
@@ -391,8 +481,34 @@ struct GreenfieldKSPlayerRenderer: View {
         controls.selectedSubtitleTrackID = coordinator.subtitleModel.selectedSubtitleInfo.flatMap { Int32($0.subtitleID) } ?? -1
     }
 
-    private func makeOptions() -> KSOptions {
+    private static func makeOptions(plan: PlaybackPlan, controls: GreenfieldPlaybackControls,
+                                    coordinator: KSVideoPlayer.Coordinator) -> KSOptions {
         let options = GreenfieldKSOptions()
+        var lastPiPSubtitleReport = -Double.infinity
+        options.pictureInPictureFrameTransform = { [weak controls, weak coordinator] buffer, _ in
+            guard let controls, controls.isPictureInPictureActive, let coordinator,
+                  let player = coordinator.playerLayer?.player else { return nil }
+            let seconds = player.currentPlaybackTime
+            controls.pipExternalSubtitle.update(time: seconds)
+            _ = coordinator.subtitleModel.subtitle(currentTime: seconds)
+            let parts = coordinator.subtitleModel.parts
+            let text = controls.pipExternalSubtitle.isEnabled
+                ? controls.pipExternalSubtitle.text
+                : parts.compactMap { $0.text?.string }.joined(separator: "\n")
+            let images: [(UIImage, CGPoint)] = controls.pipExternalSubtitle.isEnabled ? [] : parts.compactMap { part in
+                guard let image = part.image else { return nil }
+                return (image, part.origin)
+            }
+            let output = controls.pipSubtitleCompositor.composite(buffer, text: text, images: images,
+                videoSize: player.naturalSize)
+            if seconds - lastPiPSubtitleReport > 5 || seconds < lastPiPSubtitleReport {
+                lastPiPSubtitleReport = seconds
+                controls.event("pip_subtitle_frame", metrics: ["seconds": String(seconds),
+                    "textLength": String(text?.count ?? 0), "imageCount": String(images.count),
+                    "external": String(controls.pipExternalSubtitle.isEnabled), "composited": String(output != nil)])
+            }
+            return output
+        }
         let expectedPlanID = String(plan.id.uuidString.prefix(8))
         var recordedFirstSubmission = false
         options.videoFrameSubmitted = { [weak controls] seconds, forced in
@@ -453,7 +569,76 @@ struct GreenfieldKSPlayerRenderer: View {
         return options
     }
 
-    private func ffmpegInputFormatName(for route: PlaybackRoute) -> String? {
+    /// Open and decode a muted original stream before replacing the visible one.
+    /// Reuse the same coordinator/view at commit so the prepared decoder survives.
+    static func prepareReplacement(plan: PlaybackPlan, controls: GreenfieldPlaybackControls,
+        liveClock: () -> Double, isPlaying: () -> Bool,
+        report: @escaping (String, [String: String]) -> Void) async -> KSVideoPlayer.Coordinator? {
+        let coordinator = KSVideoPlayer.Coordinator()
+        let options = makeOptions(plan: plan, controls: controls, coordinator: coordinator)
+        options.registerRemoteControll = false
+        var previewSeconds: Double?
+        let recordFrame = options.videoFrameSubmitted
+        options.videoFrameSubmitted = { seconds, forced in
+            recordFrame?(seconds, forced)
+            if forced { Task { @MainActor in previewSeconds = seconds } }
+        }
+        let layer = KSPlayerLayer(url: plan.primaryRoute.url, isAutoPlay: false,
+                                  options: options, delegate: coordinator)
+        coordinator.playerLayer = layer
+        coordinator.isMuted = true
+        layer.prepareToPlay()
+        let deadline = ProcessInfo.processInfo.systemUptime + 60
+        var success = false
+        defer { if !success { coordinator.resetPlayer() } }
+        while (!layer.player.isReadyToPlay || previewSeconds == nil), layer.state != .error,
+              !Task.isCancelled, ProcessInfo.processInfo.systemUptime < deadline {
+            try? await Task.sleep(nanoseconds: 50_000_000)
+        }
+        guard layer.player.isReadyToPlay, previewSeconds != nil, !Task.isCancelled else {
+            report("warmup_failed", ["stage": "ksInitialFrame", "state": String(describing: layer.player.playbackState),
+                                    "ready": String(layer.player.isReadyToPlay)]); return nil
+        }
+        report("candidate_opened", ["preview": String(previewSeconds ?? -1)])
+        var lead = 0.0
+        for _ in 0..<4 {
+            let started = ProcessInfo.processInfo.systemUptime
+            let target = min(max(0, liveClock() + (isPlaying() ? lead : 0)),
+                             max(0, (plan.timeline.duration ?? layer.player.duration) - 0.1))
+            previewSeconds = nil
+            var completed: Bool?
+            layer.seek(time: target, autoPlay: false) { result in
+                completed = result
+                report("candidate_seek_completed", ["target": String(target), "completed": String(result)])
+            }
+            while (completed == nil || (completed == true && previewSeconds == nil)),
+                  !Task.isCancelled, ProcessInfo.processInfo.systemUptime < deadline {
+                try? await Task.sleep(nanoseconds: 50_000_000)
+            }
+            guard !Task.isCancelled, completed == true, let preview = previewSeconds else {
+                report("warmup_failed", ["stage": "ksPreview", "completed": String(describing: completed),
+                    "state": String(describing: layer.player.playbackState), "clock": String(layer.player.currentPlaybackTime),
+                    "preview": String(describing: previewSeconds)]); return nil
+            }
+            lead = (ProcessInfo.processInfo.systemUptime - started) * Double(plan.intent.playbackRate) + 0.25
+            while isPlaying(), preview - liveClock() > 0.04,
+                  !Task.isCancelled, ProcessInfo.processInfo.systemUptime < deadline {
+                try? await Task.sleep(nanoseconds: 25_000_000)
+            }
+            guard !Task.isCancelled, ProcessInfo.processInfo.systemUptime < deadline else { return nil }
+            guard abs(preview - liveClock()) < 0.1 else { continue }
+            report("candidate_aligned", ["candidate": String(preview), "current": String(liveClock()),
+                                         "candidateEngine": "KSPlayer", "evidence": "decodedPreview"])
+            // Drop the warmup-only callback before transferring ownership.
+            options.videoFrameSubmitted = recordFrame
+            success = true
+            return coordinator
+        }
+        report("warmup_failed", ["stage": "ksAlignment"])
+        return nil
+    }
+
+    private static func ffmpegInputFormatName(for route: PlaybackRoute) -> String? {
         let container = (route.containerHint ?? route.url.pathExtension)
             .trimmingCharacters(in: .whitespacesAndNewlines)
             .lowercased()
@@ -477,14 +662,14 @@ struct GreenfieldKSPlayerRenderer: View {
         }
     }
 
-    private func shouldTreatAsTransportStream(_ route: PlaybackRoute) -> Bool {
+    private static func shouldTreatAsTransportStream(_ route: PlaybackRoute) -> Bool {
         let container = (route.containerHint ?? route.url.pathExtension)
             .trimmingCharacters(in: .whitespacesAndNewlines)
             .lowercased()
         return container == "ts" || container == "m2ts" || container == "mts"
     }
 
-    private func configureDefaultEngine() {
+    private static func configureDefaultEngine() {
         KSOptions.firstPlayerType = KSMEPlayer.self
         KSOptions.secondPlayerType = KSMEPlayer.self
         KSOptions.logLevel = .info
@@ -530,3 +715,70 @@ struct GreenfieldKSPlayerRenderer: View {
     }
 }
 #endif
+
+/// Subtitles must be inside PiP's video sample buffers; SwiftUI overlays belong
+/// only to the full-screen view. This opt-in compositor leaves normal playback
+/// untouched and caches the transparent subtitle canvas until its cue changes.
+final class GreenfieldPiPSubtitleCompositor {
+    private let context = CIContext(options: [.cacheIntermediates: false])
+    private var pool: CVPixelBufferPool?
+    private var poolSize = CGSize.zero
+    private var lastKey = ""
+    private var overlay: CIImage?
+
+    func composite(_ source: CVPixelBuffer, text: String?, images: [(UIImage, CGPoint)], videoSize: CGSize) -> CVPixelBuffer? {
+        let text = text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        guard !text.isEmpty || !images.isEmpty else { return nil }
+        // Do not silently flatten an HDR/Dolby signal into an SDR buffer.
+        let transfer = CVBufferCopyAttachment(source, kCVImageBufferTransferFunctionKey, nil) as? String
+        guard transfer != (kCVImageBufferTransferFunction_SMPTE_ST_2084_PQ as String),
+              transfer != (kCVImageBufferTransferFunction_ITU_R_2100_HLG as String) else { return nil }
+        let width = CVPixelBufferGetWidth(source), height = CVPixelBufferGetHeight(source)
+        let size = CGSize(width: width, height: height)
+        let imageKey = images.map { "\(ObjectIdentifier($0.0))-\($0.1)" }.joined(separator: "/")
+        let key = "\(size)-\(text)-\(imageKey)"
+        if key != lastKey {
+            lastKey = key
+            let format = UIGraphicsImageRendererFormat()
+            format.scale = 1
+            format.opaque = false
+            let image = UIGraphicsImageRenderer(size: size, format: format).image { renderer in
+                for (image, origin) in images {
+                    let scale = CGSize(width: size.width / max(videoSize.width, 1), height: size.height / max(videoSize.height, 1))
+                    image.draw(in: CGRect(x: origin.x * scale.width, y: origin.y * scale.height,
+                        width: image.size.width * scale.width, height: image.size.height * scale.height))
+                }
+                if !text.isEmpty {
+                    let paragraph = NSMutableParagraphStyle()
+                    paragraph.alignment = .center
+                    paragraph.lineBreakMode = .byWordWrapping
+                    let font = UIFont.systemFont(ofSize: max(18, size.height * 0.05), weight: .medium)
+                    let attributes: [NSAttributedString.Key: Any] = [
+                        .font: font, .foregroundColor: UIColor.white, .paragraphStyle: paragraph,
+                        .strokeColor: UIColor.black.withAlphaComponent(0.8), .strokeWidth: -2
+                    ]
+                    let bounds = (text as NSString).boundingRect(with: CGSize(width: size.width * 0.9, height: size.height * 0.5),
+                        options: [.usesLineFragmentOrigin, .usesFontLeading], attributes: attributes, context: nil)
+                    (text as NSString).draw(in: CGRect(x: size.width * 0.05,
+                        y: size.height * 0.91 - ceil(bounds.height), width: size.width * 0.9, height: ceil(bounds.height)),
+                        withAttributes: attributes)
+                }
+            }
+            overlay = image.cgImage.map { CIImage(cgImage: $0) }
+        }
+        if poolSize != size || pool == nil {
+            poolSize = size
+            let attributes: [String: Any] = [kCVPixelBufferWidthKey as String: width,
+                kCVPixelBufferHeightKey as String: height, kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA,
+                kCVPixelBufferIOSurfacePropertiesKey as String: [:]]
+            CVPixelBufferPoolCreate(nil, nil, attributes as CFDictionary, &pool)
+        }
+        guard let pool, let overlay else { return nil }
+        var output: CVPixelBuffer?
+        guard CVPixelBufferPoolCreatePixelBufferWithAuxAttributes(nil, pool,
+            [kCVPixelBufferPoolAllocationThresholdKey: 4] as CFDictionary, &output) == kCVReturnSuccess, let output else { return nil }
+        context.render(overlay.composited(over: CIImage(cvPixelBuffer: source)), to: output,
+            bounds: CGRect(origin: .zero, size: size), colorSpace: CGColorSpace(name: CGColorSpace.sRGB))
+        return output
+    }
+}

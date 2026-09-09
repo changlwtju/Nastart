@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CA070908CA070908CA070908 /* KSPlayer in Test Frameworks */ = {isa = PBXBuildFile; productRef = 0B0B0B0B0B0B0B0B0B0B0006 /* KSPlayer */; };
 		010101010101010101010001 /* NastartApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020001 /* NastartApp.swift */; };
 		010101010101010101010002 /* AppTabRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020002 /* AppTabRootView.swift */; };
 		010101010101010101010003 /* NASModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020003 /* NASModels.swift */; };
@@ -199,6 +200,7 @@
 			files = (
 				010101010101010101010032 /* XCTest.framework in Frameworks */,
 				127807EE332EB83D2375E086 /* Pods_NastartTests.framework in Frameworks */,
+				CA070908CA070908CA070908 /* KSPlayer in Test Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

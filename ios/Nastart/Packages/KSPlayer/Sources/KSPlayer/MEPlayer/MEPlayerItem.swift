@@ -15,6 +15,7 @@ public final class MEPlayerItem: Sendable {
     private let url: URL
     private let options: KSOptions
     private let operationQueue = OperationQueue()
+    private let seekQueue = DispatchQueue(label: "KSPlayer.seek", qos: .userInteractive)
     private let condition = NSCondition()
     private var formatCtx: UnsafeMutablePointer<AVFormatContext>?
     private var outputFormatCtx: UnsafeMutablePointer<AVFormatContext>?
@@ -574,11 +575,11 @@ extension MEPlayerItem {
                 }
                 isSeek = true
                 allPlayerItemTracks.forEach { $0.seek(time: seekToTime) }
-                DispatchQueue.main.async { [weak self] in
-                    guard let self else { return }
-                    self.seekingCompletionHandler?(result >= 0)
-                    self.seekingCompletionHandler = nil
-                }
+                // Capture this completion before returning to the UI queue.
+                // A later seek must not receive an earlier demux result.
+                let completion = seekingCompletionHandler
+                seekingCompletionHandler = nil
+                DispatchQueue.main.async { completion?(result >= 0) }
                 audioClock.time = CMTime(seconds: seekToTime, preferredTimescale: time.timescale) + startTime
                 videoClock.time = CMTime(seconds: seekToTime, preferredTimescale: time.timescale) + startTime
                 state = .reading
@@ -757,20 +758,30 @@ extension MEPlayerItem: MediaPlayback {
     }
 
     public func seek(time: TimeInterval, completion: @escaping ((Bool) -> Void)) {
+        // Releasing buffered 4K frames/packets can take multiple display frames.
+        // Keep that work off the gesture/main thread and serialize submissions.
+        seekQueue.async { [weak self] in
+            self?.performSeek(time: time, completion: completion)
+        }
+    }
+
+    private func performSeek(time: TimeInterval, completion: @escaping ((Bool) -> Void)) {
         if state == .reading || state == .paused {
             seekTime = time
-            state = .seeking
             seekingCompletionHandler = completion
+            state = .seeking
             condition.broadcast()
             allPlayerItemTracks.forEach { $0.seek(time: time) }
         } else if state == .finished {
             seekTime = time
-            state = .seeking
             seekingCompletionHandler = completion
+            state = .seeking
             read()
         } else if state == .seeking {
             seekTime = time
             seekingCompletionHandler = completion
+        } else {
+            DispatchQueue.main.async { completion(false) }
         }
         isAudioStalled = audioTrack == nil
     }

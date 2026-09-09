@@ -971,13 +971,7 @@ private struct FilePreviewView: View {
             }
         }
 #if DEBUG
-        .fullScreenCover(item: $greenfieldPlaybackRequest, onDismiss: {
-            PlayerOrientationController.setPlayerActive(false)
-        }) { request in
-            NavigationStack {
-                GreenfieldVideoPlayerView(request: request)
-            }
-        }
+        .greenfieldPlaybackCover(item: $greenfieldPlaybackRequest)
 #endif
         .fullScreenCover(item: $localPreview) { preview in
             LocalFilePreviewScreen(preview: preview)
@@ -1846,6 +1840,27 @@ enum MediaRangePolicy {
     }
 }
 
+enum PlaybackHLSStartOffset {
+    static func applying(_ seconds: Double?, to playlist: String) -> String {
+        guard let seconds, seconds.isFinite, seconds > 0 else { return playlist }
+        var lines = playlist.components(separatedBy: "\n")
+        let tags = lines.map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+        // Only complete, zero-based VOD timelines use absolute media seconds.
+        // Live/sliding playlists and master playlists retain server semantics.
+        guard tags.contains("#EXTM3U"), tags.contains("#EXT-X-ENDLIST"),
+              tags.contains(where: { $0.hasPrefix("#EXTINF:") }),
+              !tags.contains(where: { $0.hasPrefix("#EXT-X-MEDIA-SEQUENCE:") && $0 != "#EXT-X-MEDIA-SEQUENCE:0" }) else { return playlist }
+        let duration = tags.filter { $0.hasPrefix("#EXTINF:") }.compactMap {
+            Double($0.dropFirst(8).split(separator: ",").first ?? "")
+        }.reduce(0, +)
+        guard duration.isFinite, duration > seconds else { return playlist }
+        lines.removeAll { $0.trimmingCharacters(in: .whitespacesAndNewlines).hasPrefix("#EXT-X-START:") }
+        lines.insert(String(format: "#EXT-X-START:TIME-OFFSET=%.3f,PRECISE=YES",
+                            locale: Locale(identifier: "en_US_POSIX"), seconds), at: 1)
+        return lines.joined(separator: "\n")
+    }
+}
+
 final class AuthenticatedMediaStreamProxy: @unchecked Sendable {
     static let shared = AuthenticatedMediaStreamProxy()
 
@@ -1858,6 +1873,8 @@ final class AuthenticatedMediaStreamProxy: @unchecked Sendable {
         let playbackTraceID: String?
         let localPort: NWEndpoint.Port
         let createdAt: Date
+        var playlistStartSeconds: Double? = nil
+        let children = PlaybackPlaylistChildren()
     }
 
     private let queue = DispatchQueue(label: "com.nastart.authenticated-media-stream-proxy")
@@ -1868,6 +1885,29 @@ final class AuthenticatedMediaStreamProxy: @unchecked Sendable {
     private var listenerWaiters: [(Result<NWEndpoint.Port, Error>) -> Void] = []
 
     private init() {}
+
+    func unregister(_ url: URL) {
+        guard url.host == "127.0.0.1" else { return }
+        let parts = url.path.split(separator: "/")
+        guard parts.count >= 3, parts[0] == "media" else { return }
+        let token = String(parts[1])
+        queue.async {
+            guard let route = self.routes[token], url.port == Int(route.localPort.rawValue) else { return }
+            self.routes[token] = nil
+        }
+    }
+
+    func setPlaylistStart(_ url: URL, seconds: Double) {
+        guard url.host == "127.0.0.1", seconds.isFinite, seconds >= 0 else { return }
+        let parts = url.path.split(separator: "/")
+        guard parts.count >= 3, parts[0] == "media" else { return }
+        queue.sync {
+            let token = String(parts[1])
+            guard let route = routes[token], route.isPlaylist,
+                  url.port == Int(route.localPort.rawValue) else { return }
+            routes[token]?.playlistStartSeconds = seconds
+        }
+    }
 
     func register(
         upstreamURL: URL,
@@ -2020,7 +2060,13 @@ final class AuthenticatedMediaStreamProxy: @unchecked Sendable {
             return
         }
         let requestedUpstreamURL: URL
-        if let redirected = requestComponents?.queryItems?.first(where: {
+        if pathParts.count == 4, pathParts[2] == "child" {
+            guard let child = route.children.url(for: String(pathParts[3])) else {
+                sendError(404, on: connection)
+                return
+            }
+            requestedUpstreamURL = child
+        } else if let redirected = requestComponents?.queryItems?.first(where: {
             $0.name.caseInsensitiveCompare("u") == .orderedSame
         })?.value,
            let redirectedURL = URL(string: redirected),
@@ -2052,7 +2098,9 @@ final class AuthenticatedMediaStreamProxy: @unchecked Sendable {
             playbackTraceID: route.playbackTraceID,
             playlistToken: token,
             playlistFilename: route.filename,
-            playlistPort: route.localPort
+            playlistPort: route.localPort,
+            playlistStartSeconds: route.playlistStartSeconds,
+            playlistChildren: route.children
         ) { [weak self] in
             self?.queue.async { self?.transfers[transferID] = nil }
         }
@@ -2069,7 +2117,92 @@ final class AuthenticatedMediaStreamProxy: @unchecked Sendable {
     }
 }
 
+// Keep long authenticated segment URLs in the route, rather than duplicating
+// and percent-encoding them in every line sent to AVPlayer. The route owns the
+// index so nested playlists and repeated requests share stable, isolated IDs.
+private final class PlaybackPlaylistContext {
+    let baseURL: URL
+    let key: String
+    let inheritedQueryItems: [URLQueryItem]
+
+    init(_ baseURL: URL) {
+        self.baseURL = baseURL
+        key = baseURL.absoluteString
+        let names = Set(["api_key", "apikey", "token", "access_token",
+                         "deviceid", "mediasourceid", "playsessionid"])
+        inheritedQueryItems = (URLComponents(url: baseURL, resolvingAgainstBaseURL: false)?.queryItems ?? [])
+            .filter { names.contains($0.name.lowercased()) }
+    }
+
+    func resolve(_ uri: String) -> URL? {
+        guard let target = URL(string: uri, relativeTo: baseURL)?.absoluteURL,
+              ["http", "https"].contains(target.scheme?.lowercased() ?? "") else { return nil }
+        guard !inheritedQueryItems.isEmpty,
+              var components = URLComponents(url: target, resolvingAgainstBaseURL: false) else { return target }
+        var items = components.queryItems ?? []
+        let names = Set(items.map { $0.name.lowercased() })
+        items.append(contentsOf: inheritedQueryItems.filter { !names.contains($0.name.lowercased()) })
+        components.queryItems = items
+        return components.url ?? target
+    }
+}
+
+private final class PlaybackPlaylistChildren {
+    private struct Child {
+        let uri: String
+        let context: PlaybackPlaylistContext
+    }
+    private let lock = NSLock()
+    private var identifiers: [String: [String: String]] = [:]
+    private var children: [String: Child] = [:]
+
+    func identifier(for uri: String, context: PlaybackPlaylistContext) -> String? {
+        // Preserve non-HTTP schemes (e.g. data keys) instead of routing them to
+        // the HTTP proxy. Resolve/parse long URLs only when a segment is read.
+        let path = uri.prefix { $0 != "?" && $0 != "#" }
+        if let colon = path.firstIndex(of: ":"),
+           !path[..<colon].contains("/"),
+           !["http", "https"].contains(path[..<colon].lowercased()) { return nil }
+        let ext = path.split(separator: "/").last?.split(separator: ".").last.map(String.init) ?? ""
+        let safeExtension = !ext.isEmpty && ext.utf8.allSatisfy {
+            (97...122).contains($0) || (48...57).contains($0)
+        } ? ".\(ext)" : ""
+        lock.lock()
+        defer { lock.unlock() }
+        if let existing = identifiers[context.key]?[uri] { return existing }
+        let identifier = String(children.count, radix: 36) + safeExtension
+        identifiers[context.key, default: [:]][uri] = identifier
+        children[identifier] = Child(uri: uri, context: context)
+        return identifier
+    }
+
+    func url(for identifier: String) -> URL? {
+        lock.lock()
+        let child = children[identifier]
+        lock.unlock()
+        return child.flatMap { $0.context.resolve($0.uri) }
+    }
+}
+
 private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDelegate, URLSessionTaskDelegate {
+    // Share transport connections, not request credentials or cookies. Creating
+    // a session per HLS segment repeatedly pays DNS/TCP/TLS costs on WAN routes.
+    private static let transportSession: URLSession = {
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.timeoutIntervalForRequest = 30
+        configuration.timeoutIntervalForResource = 24 * 60 * 60
+        configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
+        configuration.httpMaximumConnectionsPerHost = 4
+        configuration.httpCookieStorage = nil
+        configuration.urlCredentialStorage = nil
+        configuration.allowsCellularAccess = true
+        configuration.allowsExpensiveNetworkAccess = true
+        configuration.waitsForConnectivity = true
+        let queue = OperationQueue()
+        queue.maxConcurrentOperationCount = 1
+        return URLSession(configuration: configuration, delegate: nil, delegateQueue: queue)
+    }()
+    private var usesSharedTransport = false
     private let connection: NWConnection
     private let upstreamURL: URL
     private let method: String
@@ -2082,6 +2215,9 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
     private let playlistToken: String?
     private let playlistFilename: String?
     private let playlistPort: NWEndpoint.Port?
+    private let playlistStartSeconds: Double?
+    private let playlistChildren: PlaybackPlaylistChildren
+    private let playlistContext: PlaybackPlaylistContext
     private let completion: () -> Void
     private let finishLock = NSLock()
     private var session: URLSession?
@@ -2185,6 +2321,8 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
         playlistToken: String?,
         playlistFilename: String?,
         playlistPort: NWEndpoint.Port?,
+        playlistStartSeconds: Double? = nil,
+        playlistChildren: PlaybackPlaylistChildren,
         completion: @escaping () -> Void
     ) {
         self.connection = connection
@@ -2199,6 +2337,9 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
         self.playlistToken = playlistToken
         self.playlistFilename = playlistFilename
         self.playlistPort = playlistPort
+        self.playlistStartSeconds = playlistStartSeconds
+        self.playlistChildren = playlistChildren
+        self.playlistContext = PlaybackPlaylistContext(upstreamURL)
         self.completion = completion
     }
 
@@ -2212,6 +2353,12 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
             default:
                 break
             }
+        }
+        if !allowsSelfSignedCertificates {
+            usesSharedTransport = true
+            session = Self.transportSession
+            startUpstreamTask()
+            return
         }
         let configuration = URLSessionConfiguration.ephemeral
         configuration.timeoutIntervalForRequest = 30
@@ -2253,7 +2400,11 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
         activeRequestedRangeStart = MediaRangePolicy.requestedRangeStart(from: activeRange)
         var request = URLRequest(url: upstreamURL)
         request.httpMethod = method
-        request.setValue("identity", forHTTPHeaderField: "Accept-Encoding")
+        // Let URLSession negotiate/decompress full text playlists. Binary and
+        // byte-range responses must retain their original byte offsets.
+        if !isPlaylist || activeRange != nil {
+            request.setValue("identity", forHTTPHeaderField: "Accept-Encoding")
+        }
         for name in ["range", "if-range", "if-none-match", "if-modified-since"] {
             if let value = requestHeaders[name] {
                 request.setValue(value, forHTTPHeaderField: name)
@@ -2277,6 +2428,7 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
             return
         }
         let task = session.dataTask(with: request)
+        if usesSharedTransport { task.delegate = self }
         self.task = task
         task.resume()
     }
@@ -2495,6 +2647,7 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
                     transaction.responseEndDate
                 ),
                 "protocol": transaction.networkProtocolName ?? "-",
+                "connectionReused": transaction.isReusedConnection ? "yes" : "no",
                 "cellular": transaction.isCellular ? "yes" : "no",
                 "expensive": transaction.isExpensive ? "yes" : "no",
                 "constrained": transaction.isConstrained ? "yes" : "no",
@@ -2548,7 +2701,14 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
 
     private func sendPlaylist() {
         guard !isFinished else { return }
+        let rewriteStarted = Date()
         let body = rewritePlaylist(playlistBody)
+        DiagnosticLogStore.shared.record(.info, categoryKey: "diagnostics.category.media",
+            messageKey: "diagnostics.media.proxy_transfer_finished", details: diagnosticDetails([
+                "stage": "playlistRewritten", "inputBytes": String(playlistBody.count),
+                "outputBytes": String(body.count),
+                "rewriteMs": String(Int(Date().timeIntervalSince(rewriteStarted) * 1_000))
+            ]))
         let reason = HTTPURLResponse.localizedString(forStatusCode: playlistStatusCode).capitalized
         let header = [
             "HTTP/1.1 \(playlistStatusCode) \(reason)",
@@ -2610,7 +2770,8 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
                 port: port
             ) ?? line
         }
-        return Data(lines.joined(separator: "\n").utf8)
+        return Data(PlaybackHLSStartOffset.applying(playlistStartSeconds,
+            to: lines.joined(separator: "\n")).utf8)
     }
 
     private func rewriteURIAttributes(
@@ -2646,49 +2807,8 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
         filename: String,
         port: NWEndpoint.Port
     ) -> String? {
-        guard
-            let target = URL(string: uri, relativeTo: upstreamURL)?.absoluteURL,
-            ["http", "https"].contains(target.scheme?.lowercased() ?? "")
-        else { return nil }
-
-        // Jellyfin commonly puts api_key/DeviceId/PlaySessionId on the
-        // master playlist URL only. AVPlayer requests rewritten child
-        // playlists and segments independently, so inherit only the
-        // authentication/session query items instead of relying on headers
-        // that AVPlayer will not propagate.
-        let authenticatedTarget = targetWithInheritedAuthenticationQuery(target)
-
-        var components = URLComponents()
-        components.scheme = "http"
-        components.host = "127.0.0.1"
-        components.port = Int(port.rawValue)
-        components.path = "/media/\(token)/\(filename)"
-        components.queryItems = [URLQueryItem(name: "u", value: authenticatedTarget.absoluteString)]
-        return components.url?.absoluteString
-    }
-
-    private func targetWithInheritedAuthenticationQuery(_ target: URL) -> URL {
-        guard
-            let upstreamComponents = URLComponents(url: upstreamURL, resolvingAgainstBaseURL: false),
-            var targetComponents = URLComponents(url: target, resolvingAgainstBaseURL: false)
-        else {
-            return target
-        }
-        let inheritedNames = Set([
-            "api_key", "apikey", "token", "access_token",
-            "deviceid", "mediasourceid", "playsessionid"
-        ])
-        var queryItems = targetComponents.queryItems ?? []
-        let existingNames = Set(queryItems.map { $0.name.lowercased() })
-        for item in upstreamComponents.queryItems ?? [] {
-            guard inheritedNames.contains(item.name.lowercased()),
-                  !existingNames.contains(item.name.lowercased()) else {
-                continue
-            }
-            queryItems.append(item)
-        }
-        targetComponents.queryItems = queryItems.isEmpty ? nil : queryItems
-        return targetComponents.url ?? target
+        guard let identifier = playlistChildren.identifier(for: uri, context: playlistContext) else { return nil }
+        return "http://127.0.0.1:\(port.rawValue)/media/\(token)/child/\(identifier)"
     }
 
     private func drainBufferedBody() {
@@ -2896,8 +3016,9 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
         )
         connection.stateUpdateHandler = nil
         connection.cancel()
+        task?.cancel()
         task = nil
-        session?.invalidateAndCancel()
+        if !usesSharedTransport { session?.invalidateAndCancel() }
         session = nil
         completion()
     }

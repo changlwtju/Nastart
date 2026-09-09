@@ -1055,3 +1055,6 @@
 "audio.player.lyrics" = "Lyrics";
 
 "audio.player.artwork" = "Artwork";
+
+"player.episode.previous" = "Previous episode";
+"player.episode.next" = "Next episode";

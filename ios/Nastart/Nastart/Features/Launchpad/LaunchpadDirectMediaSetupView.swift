@@ -68,13 +68,7 @@ struct DirectMediaPlayerSetupView: View {
             }
         }
 #if DEBUG
-        .fullScreenCover(item: $greenfieldPlaybackRequest, onDismiss: {
-            PlayerOrientationController.setPlayerActive(false)
-        }) { request in
-            NavigationStack {
-                GreenfieldVideoPlayerView(request: request)
-            }
-        }
+        .greenfieldPlaybackCover(item: $greenfieldPlaybackRequest)
 #endif
     }
 

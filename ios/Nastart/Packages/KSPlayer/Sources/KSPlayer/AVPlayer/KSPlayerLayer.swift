@@ -242,19 +242,21 @@ open class KSPlayerLayer: NSObject {
             player.pipController?.contentSource = nil
         }
         NotificationCenter.default.removeObserver(self)
-        MPNowPlayingInfoCenter.default().nowPlayingInfo = nil
-        MPRemoteCommandCenter.shared().playCommand.removeTarget(nil)
-        MPRemoteCommandCenter.shared().pauseCommand.removeTarget(nil)
-        MPRemoteCommandCenter.shared().togglePlayPauseCommand.removeTarget(nil)
-        MPRemoteCommandCenter.shared().stopCommand.removeTarget(nil)
-        MPRemoteCommandCenter.shared().nextTrackCommand.removeTarget(nil)
-        MPRemoteCommandCenter.shared().previousTrackCommand.removeTarget(nil)
-        MPRemoteCommandCenter.shared().changeRepeatModeCommand.removeTarget(nil)
-        MPRemoteCommandCenter.shared().changePlaybackRateCommand.removeTarget(nil)
-        MPRemoteCommandCenter.shared().skipForwardCommand.removeTarget(nil)
-        MPRemoteCommandCenter.shared().skipBackwardCommand.removeTarget(nil)
-        MPRemoteCommandCenter.shared().changePlaybackPositionCommand.removeTarget(nil)
-        MPRemoteCommandCenter.shared().enableLanguageOptionCommand.removeTarget(nil)
+        if options.registerRemoteControll {
+            MPNowPlayingInfoCenter.default().nowPlayingInfo = nil
+            MPRemoteCommandCenter.shared().playCommand.removeTarget(nil)
+            MPRemoteCommandCenter.shared().pauseCommand.removeTarget(nil)
+            MPRemoteCommandCenter.shared().togglePlayPauseCommand.removeTarget(nil)
+            MPRemoteCommandCenter.shared().stopCommand.removeTarget(nil)
+            MPRemoteCommandCenter.shared().nextTrackCommand.removeTarget(nil)
+            MPRemoteCommandCenter.shared().previousTrackCommand.removeTarget(nil)
+            MPRemoteCommandCenter.shared().changeRepeatModeCommand.removeTarget(nil)
+            MPRemoteCommandCenter.shared().changePlaybackRateCommand.removeTarget(nil)
+            MPRemoteCommandCenter.shared().skipForwardCommand.removeTarget(nil)
+            MPRemoteCommandCenter.shared().skipBackwardCommand.removeTarget(nil)
+            MPRemoteCommandCenter.shared().changePlaybackPositionCommand.removeTarget(nil)
+            MPRemoteCommandCenter.shared().enableLanguageOptionCommand.removeTarget(nil)
+        }
         options.playerLayerDeinit()
     }
 
@@ -309,9 +311,11 @@ open class KSPlayerLayer: NSObject {
         player.pause()
         timer.fireDate = Date.distantFuture
         state = .paused
-        MPNowPlayingInfoCenter.default().playbackState = .paused
-        runOnMainThread {
-            UIApplication.shared.isIdleTimerDisabled = false
+        if options.registerRemoteControll {
+            MPNowPlayingInfoCenter.default().playbackState = .paused
+            runOnMainThread {
+                UIApplication.shared.isIdleTimerDisabled = false
+            }
         }
     }
 
@@ -332,6 +336,7 @@ open class KSPlayerLayer: NSObject {
     open func seek(time: TimeInterval, autoPlay: Bool, completion: @escaping ((Bool) -> Void)) {
         if time.isInfinite || time.isNaN {
             completion(false)
+            return
         }
         if player.isReadyToPlay, player.seekable {
             player.seek(time: time) { [weak self] finished in
@@ -378,7 +383,7 @@ extension KSPlayerLayer: MediaPlayerDelegate {
             }
         }
         #endif
-        updateNowPlayingInfo()
+        if options.registerRemoteControll { updateNowPlayingInfo() }
         if isAutoPlay {
             if shouldSeekTo > 0 {
                 seek(time: shouldSeekTo, autoPlay: true) { [weak self] _ in

@@ -16,6 +16,7 @@ import UIKit
 #endif
 open class KSOptions {
     /// Frame handed to the display layer/Metal renderer, not compositor presentation.
+    public var pictureInPictureFrameTransform: ((CVPixelBuffer, TimeInterval) -> CVPixelBuffer?)?
     public var videoFrameSubmitted: ((TimeInterval, Bool) -> Void)?
     /// 最低缓存视频时间
     @Published

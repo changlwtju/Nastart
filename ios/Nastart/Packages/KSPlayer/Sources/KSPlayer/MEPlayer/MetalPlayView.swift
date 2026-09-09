@@ -249,6 +249,14 @@ extension MetalPlayView {
 
     private func set(pixelBuffer: CVPixelBuffer, time: CMTime) {
         guard let formatDescription else { return }
+        if let composited = options.pictureInPictureFrameTransform?(pixelBuffer, time.seconds) {
+            var description: CMVideoFormatDescription?
+            if CMVideoFormatDescriptionCreateForImageBuffer(allocator: kCFAllocatorDefault,
+                imageBuffer: composited, formatDescriptionOut: &description) == noErr, let description {
+                displayView.enqueue(imageBuffer: composited, formatDescription: description, time: time)
+                return
+            }
+        }
         displayView.enqueue(imageBuffer: pixelBuffer, formatDescription: formatDescription, time: time)
     }
 }

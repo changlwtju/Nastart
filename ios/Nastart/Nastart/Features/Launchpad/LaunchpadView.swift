@@ -3721,7 +3721,7 @@ private struct CJKSubtitleCue {
     let text: String
 }
 
-private final class CJKSubtitleOverlayModel: ObservableObject {
+final class CJKSubtitleOverlayModel: ObservableObject {
     @Published private(set) var text: String?
     @Published private(set) var isEnabled = false
     private var cues: [CJKSubtitleCue] = []
@@ -3741,12 +3741,16 @@ private final class CJKSubtitleOverlayModel: ObservableObject {
         cues = []
         loadTask?.cancel()
         guard let url else { return }
-        loadTask = Task { [weak self] in
+        loadTask = Task { @MainActor [weak self] in
             guard let self else { return }
             let loadedCues = await Self.loadCues(from: url)
             guard !Task.isCancelled else { return }
             cues = loadedCues
             applyCurrentTime()
+            DiagnosticLogStore.shared.record(loadedCues.isEmpty ? .warning : .info,
+                categoryKey: "diagnostics.category.media", messageKey: "diagnostics.playback.subtitle_overlay_loaded",
+                details: ["cueCount": String(loadedCues.count), "currentSeconds": String(currentTime),
+                          "localFile": String(url.isFileURL), "visible": String(text != nil)])
         }
     }
 
@@ -3765,9 +3769,17 @@ private final class CJKSubtitleOverlayModel: ObservableObject {
 
     private static func loadCues(from url: URL) async -> [CJKSubtitleCue] {
         await Task.detached(priority: .userInitiated) {
-            guard let data = try? Data(contentsOf: url),
-                  let value = decode(data) else { return [] }
-            return parse(value)
+            do {
+                let data: Data
+                if url.isFileURL { data = try Data(contentsOf: url) }
+                else {
+                    let (body, response) = try await URLSession.shared.data(from: url)
+                    guard let response = response as? HTTPURLResponse, (200..<300).contains(response.statusCode) else { return [] }
+                    data = body
+                }
+                guard let value = decode(data) else { return [] }
+                return parse(value)
+            } catch { return [] }
         }.value
     }
 
@@ -3925,6 +3937,51 @@ extension PlaybackUIEngineSession {
     func setFillsScreen(_ fills: Bool) {}
 }
 
+/// Finger movement is local to the timeline; it must not rebuild the video
+/// surface, track menus and subtitle hierarchy for every slider value.
+private struct PlaybackSeekBar<Session: PlaybackUIEngineSession>: View {
+    @ObservedObject var session: Session
+    let canSeek: Bool
+    let commit: (Double) -> Void
+    let editingChanged: () -> Void
+    @State private var position = 0.0
+    @State private var editing = false
+
+    private var timeText: String {
+        guard editing, session.durationSeconds.isFinite, session.durationSeconds > 0 else {
+            return session.currentTimeText
+        }
+        let seconds = Int((session.durationSeconds * position).rounded(.down))
+        return seconds >= 3600
+            ? String(format: "%d:%02d:%02d", seconds / 3600, seconds / 60 % 60, seconds % 60)
+            : String(format: "%02d:%02d", seconds / 60, seconds % 60)
+    }
+
+    var body: some View {
+        HStack(spacing: 10) {
+            Text(timeText)
+            Slider(value: $position, in: 0...1, onEditingChanged: { active in
+                editing = active
+                if !active { commit(position) }
+                editingChanged()
+            })
+            .disabled(!canSeek)
+            .tint(AppTheme.accent)
+            .frame(minHeight: 44)
+            .contentShape(Rectangle())
+            Text(session.durationText)
+        }
+        .font(.caption.monospacedDigit())
+        .onAppear { followClock(session.position) }
+        .onChange(of: session.position) { followClock($0) }
+    }
+
+    private func followClock(_ value: Double) {
+        guard !editing, value.isFinite else { return }
+        position = min(max(value, 0), 1)
+    }
+}
+
 struct SharedBuiltInPlayerView<Session: PlaybackUIEngineSession, Surface: View>: View {
     let request: MediaPlaybackRequest
     let close: () -> Void
@@ -3933,14 +3990,15 @@ struct SharedBuiltInPlayerView<Session: PlaybackUIEngineSession, Surface: View>:
     let sourceTrackChange: ((Int?, Int?, MediaPlaybackRuntimeState) -> Void)?
     let serverSeek: ((Double, MediaPlaybackRuntimeState) -> Void)?
     let qualityChange: ((String, MediaPlaybackRuntimeState) -> Void)?
+    let previousEpisode: (() -> Void)?
+    let nextEpisode: (() -> Void)?
     let openExternal: () -> Void
     @ObservedObject private var session: Session
     private let surface: () -> Surface
+    @State private var didInitializeSubtitleOverlay = false
     @State private var controlsVisible = true
     @State private var controlsLocked = false
     @State private var controlsRevision = 0
-    @State private var scrubPosition = 0.0
-    @State private var isScrubbing = false
     @State private var gestureStartPosition: Double?
     @State private var gestureTargetPosition: Double?
     @State private var panMode: VLCPlayerPanMode?
@@ -3964,9 +4022,13 @@ struct SharedBuiltInPlayerView<Session: PlaybackUIEngineSession, Surface: View>:
         sourceTrackChange: ((Int?, Int?, MediaPlaybackRuntimeState) -> Void)?,
         serverSeek: ((Double, MediaPlaybackRuntimeState) -> Void)?,
         qualityChange: ((String, MediaPlaybackRuntimeState) -> Void)?,
+        previousEpisode: (() -> Void)? = nil,
+        nextEpisode: (() -> Void)? = nil,
         openExternal: @escaping () -> Void,
         @ViewBuilder surface: @escaping () -> Surface
     ) {
+        self.previousEpisode = previousEpisode
+        self.nextEpisode = nextEpisode
         self.request = request
         self.close = close
         self.useSystemPlayer = useSystemPlayer
@@ -4135,19 +4197,22 @@ struct SharedBuiltInPlayerView<Session: PlaybackUIEngineSession, Surface: View>:
         }
         .onAppear {
             displayBrightness = UIScreen.main.brightness
-            subtitleOverlayModel.setURL(request.externalSubtitleURL)
+            if !didInitializeSubtitleOverlay {
+                didInitializeSubtitleOverlay = true
+                subtitleOverlayModel.setURL(request.externalSubtitleURL)
+            }
             session.play()
             revealControls()
         }
         .onDisappear {
             session.stop()
         }
-        .onChange(of: session.position) { position in
-            guard !isScrubbing else { return }
-            scrubPosition = position
-        }
         .onChange(of: session.currentTimeSeconds) { seconds in
             subtitleOverlayModel.update(time: seconds)
+        }
+        .onChange(of: request.externalSubtitleURL) { url in
+            subtitleOverlayModel.setURL(url)
+            subtitleOverlayModel.update(time: session.currentTimeSeconds)
         }
         .onChange(of: session.isPlaying) { isPlaying in
             if isPlaying {
@@ -4261,35 +4326,20 @@ struct SharedBuiltInPlayerView<Session: PlaybackUIEngineSession, Surface: View>:
 
     private func playbackControls(isLandscape: Bool) -> some View {
         VStack(spacing: isLandscape ? 6 : 10) {
-            HStack(spacing: 10) {
-                Text(scrubbingTimeText)
-                Slider(
-                    value: $scrubPosition,
-                    in: 0...1,
-                    onEditingChanged: { editing in
-                        isScrubbing = editing
-                        if !editing {
-                            commitSeek(to: scrubPosition)
-                        }
-                        revealControls()
-                    }
-                )
-                .disabled(!canSeek)
-                .tint(AppTheme.accent)
-                .frame(minHeight: 44)
-                .contentShape(Rectangle())
-                Text(session.durationText)
-            }
-            .font(.caption.monospacedDigit())
+            PlaybackSeekBar(session: session, canSeek: canSeek,
+                commit: commitSeek, editingChanged: { revealControls() })
 
             HStack(spacing: isLandscape ? 24 : 8) {
                 controlButton(
-                    systemImage: "gobackward.15",
-                    accessibilityKey: "player.seek_backward"
+                    systemImage: request.episodeNavigationLoader != nil ? "backward.end.fill" : "gobackward.15",
+                    accessibilityKey: request.episodeNavigationLoader != nil ? "player.episode.previous" : "player.seek_backward"
                 ) {
-                    jump(by: -15)
+                    if request.episodeNavigationLoader != nil { previousEpisode?() }
+                    else { jump(by: -15) }
                     revealControls()
                 }
+                .disabled(request.episodeNavigationLoader != nil && previousEpisode == nil)
+                .opacity(request.episodeNavigationLoader != nil && previousEpisode == nil ? 0.35 : 1)
 
                 controlButton(
                     systemImage: session.isPlaying ? "pause.fill" : "play.fill",
@@ -4301,12 +4351,15 @@ struct SharedBuiltInPlayerView<Session: PlaybackUIEngineSession, Surface: View>:
                 }
 
                 controlButton(
-                    systemImage: "goforward.15",
-                    accessibilityKey: "player.seek_forward"
+                    systemImage: request.episodeNavigationLoader != nil ? "forward.end.fill" : "goforward.15",
+                    accessibilityKey: request.episodeNavigationLoader != nil ? "player.episode.next" : "player.seek_forward"
                 ) {
-                    jump(by: 15)
+                    if request.episodeNavigationLoader != nil { nextEpisode?() }
+                    else { jump(by: 15) }
                     revealControls()
                 }
+                .disabled(request.episodeNavigationLoader != nil && nextEpisode == nil)
+                .opacity(request.episodeNavigationLoader != nil && nextEpisode == nil ? 0.35 : 1)
 
                 Spacer(minLength: 4)
 
@@ -4937,15 +4990,6 @@ struct SharedBuiltInPlayerView<Session: PlaybackUIEngineSession, Surface: View>:
         gestureTargetPosition = nil
     }
 
-    private var scrubbingTimeText: String {
-        guard isScrubbing,
-              session.durationSeconds > 0,
-              scrubPosition.isFinite else {
-            return session.currentTimeText
-        }
-        return Self.formatPlayerTime(session.durationSeconds * scrubPosition)
-    }
-
     private static func formatPlayerTime(_ seconds: Double) -> String {
         let totalSeconds = max(Int(seconds.rounded(.down)), 0)
         let hours = totalSeconds / 3_600
@@ -5417,6 +5461,7 @@ private struct JellyfinMediaEntry: Identifiable, Hashable {
     let progress: Double?
     let playbackPositionTicks: Int?
     let runTimeTicks: Int?
+    let seriesID: String?
     let seasonNumber: Int?
     let episodeNumber: Int?
     let isFavorite: Bool
@@ -6258,7 +6303,9 @@ private final class JellyfinLibraryStore: ObservableObject {
             // Treat a bitrate-safe original stream like a device-file route.
             // Oversized public cellular playback should enter Jellyfin HLS
             // before VLC opens the raw file, not after a startup watchdog fires.
-            let requiresSelectedAudioTranscode = Self.requiresAudioTranscode(
+            let explicitKSOriginalAudio = usesGreenfieldPlayback && forcesOriginalPlayback
+                && GreenfieldPlaybackControls.canDecodeOriginalAudio(selectedAudioCodec)
+            let requiresSelectedAudioTranscode = !explicitKSOriginalAudio && Self.requiresAudioTranscode(
                 audioCodec: selectedAudioCodec
             )
             let prefersRemoteOriginalPlayback = automaticSourceBitrateFitsDirectBudget
@@ -6456,7 +6503,8 @@ private final class JellyfinLibraryStore: ObservableObject {
                 playMethod: prepared.playMethod,
                 playSessionID: prepared.playSessionID,
                 mediaSourceID: prepared.mediaSourceID ?? entry.mediaSourceID,
-                subtitleStreamIndex: selectedSubtitleStreamIndex
+                subtitleStreamIndex: selectedSubtitleStreamIndex,
+                proxyURL: prepared.resource.url
             )
             // A private original route may carry the 360 Mbps direct-play
             // budget. Feeding half of that value into a compatibility HLS
@@ -6655,7 +6703,8 @@ private final class JellyfinLibraryStore: ObservableObject {
                 fileExtensionOverride: prepared.resource.fileExtensionOverride,
                 initialPosition: prepared.playMethod == .transcode
                     ? nil
-                    : entry.effectivePlaybackProgress,
+                    : forcedStartTimeTicks.map { min(max(Double($0) / Double(max(1, entry.runTimeTicks ?? 1)), 0), 1) }
+                        ?? entry.effectivePlaybackProgress,
                 externalSubtitleURL: prepared.resource.subtitleURL,
                 // Jellyfin has already selected the requested source audio track for HLS.
                 // Its single output track can receive a transient VLC identifier while the
@@ -6708,7 +6757,22 @@ private final class JellyfinLibraryStore: ObservableObject {
                 qualityOptions: qualityOptions,
                 selectedQualityID: effectiveQualityID,
                 qualityRequestLoader: qualityRequestLoader,
-                playbackTraceID: playbackTraceID
+                playbackTraceID: playbackTraceID,
+                episodeNavigationLoader: usesGreenfieldPlayback && entry.kind == .episode ? { [weak self] in
+                    guard let self, let seriesID = entry.seriesID,
+                          let episodes = try? await self.loadEpisodes(seriesID: seriesID),
+                          let index = episodes.firstIndex(where: { $0.id == entry.id }) else { return nil }
+                    func loader(at index: Int) -> (() async -> MediaPlaybackRequest?)? {
+                        guard episodes.indices.contains(index) else { return nil }
+                        let episode = episodes[index]
+                        return { [weak self] in
+                            guard let self else { return nil }
+                            return try? await self.playbackRequest(for: episode,
+                                forcedStartTimeTicks: 0, usesGreenfieldPlayback: usesGreenfieldPlayback)
+                        }
+                    }
+                    return MediaPlaybackEpisodeNavigation(previous: loader(at: index - 1), next: loader(at: index + 1))
+                } : nil
             )
         } catch {
             record(
@@ -6856,6 +6920,8 @@ private final class JellyfinLibraryStore: ObservableObject {
         playbackTraceID: String?,
         usesGreenfieldPlayback: Bool
     ) async throws -> JellyfinPreparedPlayback {
+        let usesExternalTextSubtitle = usesGreenfieldPlayback && subtitleStreamIndex != nil
+            && !Self.requiresBurnIn(subtitleCodec: subtitleCodec)
         let requestBody = PlaybackInfoDto(
             allowAudioStreamCopy: false,
             allowVideoStreamCopy: false,
@@ -6870,15 +6936,13 @@ private final class JellyfinLibraryStore: ObservableObject {
             // connection and defeats the cellular startup policy.
             enableDirectStream: playbackRouteIsPrivate,
             enableTranscoding: true,
-            // HLS transcoding is the compatibility path. Keep the selected
-            // subtitle in the server-rendered video so ASS/SSA/legacy CJK
-            // glyphs do not depend on VLC's iOS text renderer or a child
-            // playlist subtitle encoding.
-            isAlwaysBurnInSubtitleWhenTranscoding: subtitleStreamIndex != nil,
+            // Greenfield renders normalized text subtitles in its CJK overlay.
+            // Only image subtitles and the legacy renderer need server burn-in.
+            isAlwaysBurnInSubtitleWhenTranscoding: subtitleStreamIndex != nil && !usesExternalTextSubtitle,
             maxStreamingBitrate: maxStreamingBitrate,
             mediaSourceID: entry.mediaSourceID,
             startTimeTicks: startTimeTicks,
-            subtitleStreamIndex: subtitleStreamIndex,
+            subtitleStreamIndex: usesExternalTextSubtitle ? nil : subtitleStreamIndex,
             userID: userID
         )
         let response = try await client.send(
@@ -6968,10 +7032,9 @@ private final class JellyfinLibraryStore: ObservableObject {
             resource = MediaPlaybackResource(
                 url: internalStreamURL,
                 fileExtensionOverride: extensionHint,
-                // The server burns subtitles into HLS for consistent CJK
-                // rendering; adding the same track as a VLC slave would
-                // duplicate it and reintroduce the missing-glyph path.
-                subtitleURL: nil,
+                // Preserve the source subtitle choice without forcing video
+                // re-encoding through the server's subtitle filter.
+                subtitleURL: usesExternalTextSubtitle ? externalHandoffResource.subtitleURL : nil,
                 allowsSelfSignedCertificates: false
             )
         }
@@ -7515,9 +7578,20 @@ private final class JellyfinLibraryStore: ObservableObject {
         playMethod: PlayMethod,
         playSessionID: String?,
         mediaSourceID: String?,
-        subtitleStreamIndex: Int?
+        subtitleStreamIndex: Int?,
+        proxyURL: URL? = nil
     ) -> MediaPlaybackTracker {
-        MediaPlaybackTracker { [weak self] event in
+        let encodingClient = client
+        return MediaPlaybackTracker(releaseResources: {
+            if let proxyURL { AuthenticatedMediaStreamProxy.shared.unregister(proxyURL) }
+            guard let encodingClient, let playSessionID, playMethod == .transcode else { return }
+            Task {
+                _ = try? await encodingClient.send(Paths.stopEncodingProcess(
+                    deviceID: encodingClient.configuration.deviceID,
+                    playSessionID: playSessionID
+                )).value
+            }
+        }) { [weak self] event in
             Task { @MainActor [weak self] in
                 await self?.reportPlayback(
                     event,
@@ -7686,7 +7760,12 @@ private final class JellyfinLibraryStore: ObservableObject {
             codecProfiles: ["h264", "hevc", "vp9", "av1"].map { codec in
                 CodecProfile(
                     codec: codec,
-                    conditions: [
+                    conditions: (hlsSegmentContainer == "ts" ? [
+                        ProfileCondition(condition: .lessThanEqual, isRequired: true, property: .width,
+                            value: String(GreenfieldQualityPolicy.maximumVideoSize(bitrate: maxBitrate).width)),
+                        ProfileCondition(condition: .lessThanEqual, isRequired: true, property: .height,
+                            value: String(GreenfieldQualityPolicy.maximumVideoSize(bitrate: maxBitrate).height))
+                    ] : []) + [
                         ProfileCondition(
                             condition: .equalsAny,
                             isRequired: false,
@@ -7734,7 +7813,8 @@ private final class JellyfinLibraryStore: ObservableObject {
                     context: .streaming,
                     isBreakOnNonKeyFrames: true,
                     maxAudioChannels: "8",
-                    minSegments: 2,
+                    minSegments: hlsSegmentContainer == "ts" ? 1 : 2,
+                    segmentLength: hlsSegmentContainer == "ts" ? 1 : nil,
                     transcodeSeekInfo: .auto,
                     type: .video,
                     videoCodec: "h264"
@@ -8025,6 +8105,7 @@ private final class JellyfinLibraryStore: ObservableObject {
             progress: item.userData?.playedPercentage.map { min(max($0 / 100, 0), 1) },
             playbackPositionTicks: item.userData?.playbackPositionTicks,
             runTimeTicks: item.runTimeTicks ?? mediaSource?.runTimeTicks,
+            seriesID: item.seriesID,
             seasonNumber: item.parentIndexNumber,
             episodeNumber: item.indexNumber,
             isFavorite: item.userData?.isFavorite == true,
@@ -9577,13 +9658,7 @@ private struct JellyfinMediaDetailView: View {
             }
         }
 #if DEBUG
-        .fullScreenCover(item: $greenfieldPlaybackRequest, onDismiss: {
-            PlayerOrientationController.setPlayerActive(false)
-        }) { request in
-            NavigationStack {
-                GreenfieldVideoPlayerView(request: request)
-            }
-        }
+        .greenfieldPlaybackCover(item: $greenfieldPlaybackRequest)
 #endif
     }
 
