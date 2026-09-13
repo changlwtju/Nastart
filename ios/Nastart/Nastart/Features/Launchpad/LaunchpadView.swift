@@ -3728,6 +3728,8 @@ final class CJKSubtitleOverlayModel: ObservableObject {
     private var loadTask: Task<Void, Never>?
     private var subtitleURL: URL?
     private var currentTime = 0.0
+    private var cueCache: [URL: [CJKSubtitleCue]] = [:]
+    private var cachedURLs: [URL] = []
 
     deinit {
         loadTask?.cancel()
@@ -3741,10 +3743,22 @@ final class CJKSubtitleOverlayModel: ObservableObject {
         cues = []
         loadTask?.cancel()
         guard let url else { return }
+        if let cached = cueCache[url] {
+            cues = cached
+            applyCurrentTime()
+            return
+        }
         loadTask = Task { @MainActor [weak self] in
-            guard let self else { return }
             let loadedCues = await Self.loadCues(from: url)
-            guard !Task.isCancelled else { return }
+            guard !Task.isCancelled, let self, subtitleURL == url else { return }
+            if !loadedCues.isEmpty {
+                cueCache[url] = loadedCues
+                cachedURLs.append(url)
+                if cachedURLs.count > 4 { cueCache.removeValue(forKey: cachedURLs.removeFirst()) }
+            } else {
+                // Permit an explicit retry after a transient request failure.
+                subtitleURL = nil
+            }
             cues = loadedCues
             applyCurrentTime()
             DiagnosticLogStore.shared.record(loadedCues.isEmpty ? .warning : .info,
@@ -3768,7 +3782,7 @@ final class CJKSubtitleOverlayModel: ObservableObject {
     }
 
     private static func loadCues(from url: URL) async -> [CJKSubtitleCue] {
-        await Task.detached(priority: .userInitiated) {
+        let task = Task.detached(priority: .userInitiated) { () -> [CJKSubtitleCue] in
             do {
                 let data: Data
                 if url.isFileURL { data = try Data(contentsOf: url) }
@@ -3780,7 +3794,12 @@ final class CJKSubtitleOverlayModel: ObservableObject {
                 guard let value = decode(data) else { return [] }
                 return parse(value)
             } catch { return [] }
-        }.value
+        }
+        return await withTaskCancellationHandler {
+            await task.value
+        } onCancel: {
+            task.cancel()
+        }
     }
 
     private static func decode(_ data: Data) -> String? {
@@ -4199,7 +4218,7 @@ struct SharedBuiltInPlayerView<Session: PlaybackUIEngineSession, Surface: View>:
             displayBrightness = UIScreen.main.brightness
             if !didInitializeSubtitleOverlay {
                 didInitializeSubtitleOverlay = true
-                subtitleOverlayModel.setURL(request.externalSubtitleURL)
+                subtitleOverlayModel.setURL(request.prefersSubtitlesDisabled ? nil : request.externalSubtitleURL)
             }
             session.play()
             revealControls()
@@ -5385,6 +5404,8 @@ private struct JellyfinMediaTrack: Identifiable, Hashable {
     let index: Int
     let title: String
     let codec: String?
+    let profile: String?
+    let audioSpatialFormat: String?
     let isDefault: Bool
     let isForced: Bool
 
@@ -5458,8 +5479,8 @@ private struct JellyfinMediaEntry: Identifiable, Hashable {
     let preferredSubtitleCodec: String?
     let audioTracks: [JellyfinMediaTrack]
     let subtitleTracks: [JellyfinMediaTrack]
-    let progress: Double?
-    let playbackPositionTicks: Int?
+    var progress: Double?
+    var playbackPositionTicks: Int?
     let runTimeTicks: Int?
     let seriesID: String?
     let seasonNumber: Int?
@@ -5480,6 +5501,7 @@ private struct JellyfinMediaEntry: Identifiable, Hashable {
     let mediaPath: String?
     let mediaSize: Int?
     let mediaBitrate: Int?
+    let dolbyVideo: PlaybackDolbySourceInfo
 
     var isPlayable: Bool {
         [.movie, .episode, .audio, .video].contains(kind)
@@ -5757,12 +5779,14 @@ private final class JellyfinLibraryStore: ObservableObject {
     private var didRestore = false
     private var trustDelegate: JellyfinCertificateTrustDelegate?
     private let endpointCandidates: [URL]
-    private var bitrateMeasurements: [String: (bitrate: Int, rawBitrate: Int, measuredAt: Date)] = [:]
+    private var bitrateMeasurements: [String: (bitrate: Int, rawBitrate: Int, measuredAt: Date, wasMeasured: Bool)] = [:]
     private var bitrateMeasurementTasks: [String: Task<Void, Never>] = [:]
     private var resolvedPlaybackRouteIsPrivate: Bool?
     private var dsmSession: DSMSession?
     private var dsmSharedFolderPaths: [String]
     private var unavailableDSMPlaybackPaths: [String: Date] = [:]
+    @Published private(set) var playbackStopSnapshot: (itemID: String, position: Double, revision: UUID)?
+    private var originalRouteWarmup: (itemID: String, startedAt: Date, task: Task<URL?, Never>)?
 
     init(
         endpoint: URL,
@@ -5780,6 +5804,9 @@ private final class JellyfinLibraryStore: ObservableObject {
         self.endpointCandidates = Self.jellyfinEndpointCandidates(
             from: [endpoint] + fallbackEndpoints
         )
+        // Start observing while the library opens, before the first Play tap.
+        // NWPathMonitor's first update is asynchronous.
+        _ = PlaybackNetworkObserver.shared
         Task { @MainActor [weak self] in
             await self?.refreshPlaybackRouteClassification()
         }
@@ -5937,6 +5964,9 @@ private final class JellyfinLibraryStore: ObservableObject {
     }
 
     func signOut() async {
+        originalRouteWarmup?.task.cancel()
+        originalRouteWarmup = nil
+        playbackStopSnapshot = nil
         let activeClient = client
         KeychainStore.shared.clearJellyfinSession(endpoint: endpoint)
         client = nil
@@ -6073,6 +6103,22 @@ private final class JellyfinLibraryStore: ObservableObject {
             throw JellyfinLibraryError.missingItem
         }
         registerFavoriteState(from: [item])
+        // The detail page is useful lead time for the existing bounded probe.
+        // Recheck a stale restrictive sample for this source before Play is tapped.
+        if item.kind == .movie || item.kind == .episode || item.kind == .video {
+            scheduleBitrateMeasurementIfNeeded(client: client, originalSourceBitrate: item.mediaBitrate)
+            // Authenticate the two-byte original route while the detail is being
+            // read. No decoder, media download, or transcoding session is opened.
+            if playbackRouteIsPrivate || PlaybackNetworkObserver.shared.snapshot().cacheKey == "wifi",
+               originalRouteWarmup?.itemID != item.id
+                || Date().timeIntervalSince(originalRouteWarmup?.startedAt ?? .distantPast) >= 30 {
+                originalRouteWarmup?.task.cancel()
+                let task = Task { [weak self] in
+                    await self?.probeJellyfinOriginalURL(for: item, client: client, playbackTraceID: nil)
+                }
+                originalRouteWarmup = (item.id, Date(), task)
+            }
+        }
         return item
     }
 
@@ -6198,6 +6244,8 @@ private final class JellyfinLibraryStore: ObservableObject {
         let selectedSubtitleCodec = entry.subtitleTracks
             .first(where: { $0.index == selectedSubtitleStreamIndex })?
             .codec
+        let rendersBitmapSubtitleLocally = usesGreenfieldPlayback
+            && GreenfieldPlaybackControls.canDecodeBitmapSubtitle(selectedSubtitleCodec)
         var selectedAudioStreamIndex = requestedAudioStreamIndex
         var selectedAudioCodec = entry.audioTracks
             .first(where: { $0.index == selectedAudioStreamIndex })?
@@ -6206,14 +6254,50 @@ private final class JellyfinLibraryStore: ObservableObject {
             entry.subtitleTracks.firstIndex { $0.index == selectedIndex }
         }
 
+        // On remote Wi-Fi, the bandwidth decision and authenticated two-byte
+        // Range probe are independent. Overlap them without creating a proxy
+        // or opening a decoder until the final original-playback decision.
+        let overlapsOriginalProbe = usesGreenfieldPlayback
+            && !playbackRouteIsPrivate
+            && PlaybackNetworkObserver.shared.snapshot().cacheKey == "wifi"
+            && !forcesOriginalPlayback && !forcesExperimentalOriginalPlayback
+            && forcedServerReason == nil
+            && GreenfieldOriginalPlaybackPolicy.allowsOriginal(
+                forcedServerBitrate: forcedServerBitrate,
+                audioRequiresTranscode: Self.requiresPlaybackAudioTranscode(
+                    audioCodec: selectedAudioCodec, usesGreenfieldPlayback: true),
+                subtitleRequiresServer: selectedSubtitleStreamIndex != nil
+                    && !rendersBitmapSubtitleLocally
+                    && !prefersFastStartupDirectPlay
+                    && Self.requiresBurnIn(subtitleCodec: selectedSubtitleCodec),
+                routeIsPrivate: false, explicitOriginal: false, remoteBitrateFits: true)
+        let warmup = originalRouteWarmup.flatMap {
+            $0.itemID == entry.id && Date().timeIntervalSince($0.startedAt) < 30 ? $0.task : nil
+        }
+        let originalProbeTask: Task<URL?, Never>? = (overlapsOriginalProbe || warmup != nil) ? Task {
+            if let warmup, let url = await warmup.value, !Task.isCancelled {
+                record("diagnostics.jellyfin.playback_preparing", level: .info,
+                    details: ["stage": "originalRouteWarmupReused", "playbackTraceID": playbackTraceID])
+                return url
+            }
+            guard !Task.isCancelled else { return nil }
+            return await probeJellyfinOriginalURL(for: entry, client: client,
+                playbackTraceID: playbackTraceID, overlapsBandwidth: true)
+        } : nil
+        defer { originalProbeTask?.cancel() }
+        let originalSourceBitrate = overlapsOriginalProbe ? entry.mediaBitrate : nil
+
         if forcedServerBitrate == nil,
            forcedServerReason == nil,
            !forcesOriginalPlayback,
            !forcesExperimentalOriginalPlayback {
-            await ensureBitrateMeasurementIfNeeded(client: client)
+            await ensureBitrateMeasurementIfNeeded(client: client,
+                maximumWait: usesGreenfieldPlayback ? 0.8 : nil,
+                originalSourceBitrate: originalSourceBitrate)
         }
 
-        let bitrateDecision = playbackBitrateDecision()
+        let bitrateDecision = playbackBitrateDecision(originalSourceBitrate: originalSourceBitrate,
+            usesGreenfieldPlayback: usesGreenfieldPlayback)
         // Direct-play eligibility and the server transcoding target solve two
         // different problems. A measured 60+ Mbps Wi-Fi route should be allowed
         // to direct-play a matching source instead of being forced through the
@@ -6232,7 +6316,9 @@ private final class JellyfinLibraryStore: ObservableObject {
             bitrate: entry.mediaBitrate,
             byteSize: entry.mediaSize,
             routeIsPrivate: playbackRouteIsPrivate
-        )
+        ) && (!usesGreenfieldPlayback || GreenfieldOriginalPlaybackPolicy.retainsLargeRemoteGuard(
+            networkKey: bitrateDecision.networkKey, bandwidthBasis: bitrateDecision.basis,
+            sourceBitrate: entry.mediaBitrate, originalBudget: directPlayBudget))
         let automaticSourceBitrateFitsDirectBudget = sourceBitrateFitsDirectBudget
             && !largeRemoteOriginalRisk
         let canUseExperimentalOriginalPlayback = forcesExperimentalOriginalPlayback
@@ -6247,7 +6333,8 @@ private final class JellyfinLibraryStore: ObservableObject {
            forcedServerReason == nil,
            let startupAudioTrack = Self.directPlayableStartupAudioTrack(
                in: entry,
-               selectedAudioStreamIndex: selectedAudioStreamIndex
+               selectedAudioStreamIndex: selectedAudioStreamIndex,
+               usesGreenfieldPlayback: usesGreenfieldPlayback
            ) {
             record(
                 "diagnostics.jellyfin.playback_preparing",
@@ -6303,17 +6390,15 @@ private final class JellyfinLibraryStore: ObservableObject {
             // Treat a bitrate-safe original stream like a device-file route.
             // Oversized public cellular playback should enter Jellyfin HLS
             // before VLC opens the raw file, not after a startup watchdog fires.
-            let explicitKSOriginalAudio = usesGreenfieldPlayback && forcesOriginalPlayback
-                && GreenfieldPlaybackControls.canDecodeOriginalAudio(selectedAudioCodec)
-            let requiresSelectedAudioTranscode = !explicitKSOriginalAudio && Self.requiresAudioTranscode(
-                audioCodec: selectedAudioCodec
-            )
+            let requiresSelectedAudioTranscode = Self.requiresPlaybackAudioTranscode(
+                audioCodec: selectedAudioCodec, usesGreenfieldPlayback: usesGreenfieldPlayback)
             let prefersRemoteOriginalPlayback = automaticSourceBitrateFitsDirectBudget
                 && !requiresSelectedAudioTranscode
-            let requiresDeviceCompatibilityTranscode = Self.requiresDeviceCompatibilityTranscode(
+            let requiresDeviceCompatibilityTranscode = !usesGreenfieldPlayback && Self.requiresDeviceCompatibilityTranscode(
                 audioCodec: selectedAudioCodec
             )
             let defersServerRenderedSubtitleForFastStartup = prefersFastStartupDirectPlay
+                && !rendersBitmapSubtitleLocally
                 && forcedServerBitrate == nil
                 && forcedServerReason == nil
                 && selectedSubtitleStreamIndex != nil
@@ -6334,34 +6419,28 @@ private final class JellyfinLibraryStore: ObservableObject {
                 )
             }
             let requiresServerSubtitleRendering = selectedSubtitleStreamIndex != nil
+                && !rendersBitmapSubtitleLocally
                 && !defersServerRenderedSubtitleForFastStartup
                 && Self.requiresBurnIn(subtitleCodec: selectedSubtitleCodec)
-            let shouldAttemptDirectPlayback = forcedServerBitrate == nil
-                && (!requiresSelectedAudioTranscode
-                    || canUseExperimentalOriginalPlayback)
-                && (!requiresDeviceCompatibilityTranscode
-                    || canUseExperimentalOriginalPlayback)
-                && (!requiresServerSubtitleRendering
-                    || canUseExperimentalOriginalPlayback)
-                && (
-                    playbackRouteIsPrivate
-                        || forcesOriginalPlayback
-                        || prefersRemoteOriginalPlayback
-                        || canUseExperimentalOriginalPlayback
-                )
+            let shouldAttemptDirectPlayback = GreenfieldOriginalPlaybackPolicy.allowsOriginal(
+                forcedServerBitrate: forcedServerBitrate,
+                audioRequiresTranscode: requiresSelectedAudioTranscode || requiresDeviceCompatibilityTranscode,
+                subtitleRequiresServer: requiresServerSubtitleRendering,
+                routeIsPrivate: playbackRouteIsPrivate, explicitOriginal: forcesOriginalPlayback,
+                remoteBitrateFits: prefersRemoteOriginalPlayback,
+                experimentalOriginal: canUseExperimentalOriginalPlayback)
+            if !shouldAttemptDirectPlayback { originalProbeTask?.cancel() }
+            try Task.checkCancellation()
             let directRoute = shouldAttemptDirectPlayback
                 ? await preferredOriginalPlaybackRoute(
                     for: entry,
                     client: client,
-                    // The DEBUG greenfield entry can use the same validated
-                    // authenticated LAN URL as legacy. Keep the proxy for WAN,
-                    // certificate compatibility, and the explicit Force probe.
-                    forcesLocalProxy: prefersFastStartupDirectPlay
-                        && (forcesExperimentalOriginalPlayback
-                            || !playbackRouteIsPrivate),
-                    playbackTraceID: playbackTraceID
+                    usesGreenfieldPlayback: usesGreenfieldPlayback,
+                    playbackTraceID: playbackTraceID,
+                    originalProbeTask: originalProbeTask
                 )
                 : nil
+            try Task.checkCancellation()
             if let directRoute {
                 let directURL = directRoute.url
                 let extensionHint = Self.firstContainer(entry.container) ?? "mp4"
@@ -6373,7 +6452,8 @@ private final class JellyfinLibraryStore: ObservableObject {
                         client: client
                 )
                 let directSubtitleURL: URL?
-                if let directSubtitleSourceURL {
+                if let directSubtitleSourceURL,
+                   !usesGreenfieldPlayback || requiresCertificateBypass(for: directSubtitleSourceURL) {
                     directSubtitleURL = await JellyfinSubtitleNormalizer.normalize(
                         url: directSubtitleSourceURL,
                         sourceCodec: selectedSubtitleCodec,
@@ -6382,7 +6462,11 @@ private final class JellyfinLibraryStore: ObservableObject {
                         )
                     ) ?? directSubtitleSourceURL
                 } else {
-                    directSubtitleURL = nil
+                    // Jellyfin's endpoint already returns SRT; Greenfield's
+                    // overlay loads/cleans it asynchronously. Do not download
+                    // the whole subtitle before opening the video. Keep the
+                    // certificate-aware normalizer for self-signed sources.
+                    directSubtitleURL = directSubtitleSourceURL
                 }
                 let externalResource = MediaPlaybackResource(
                     url: directRoute.handoffURL,
@@ -6435,6 +6519,11 @@ private final class JellyfinLibraryStore: ObservableObject {
                     ]
                 )
             } else {
+                // A failed explicit original switch must leave the previous
+                // stream playing, not label a new server transcode as original.
+                if usesGreenfieldPlayback && forcesOriginalPlayback {
+                    throw JellyfinLibraryError.missingPlaybackURL
+                }
                 let isForcedServerPlayback = forcedServerBitrate != nil
                 let originalRouteWasSkipped = !shouldAttemptDirectPlayback
                 let automaticFallbackReason: String
@@ -6497,6 +6586,22 @@ private final class JellyfinLibraryStore: ObservableObject {
                     playbackTraceID: playbackTraceID,
                     usesGreenfieldPlayback: usesGreenfieldPlayback
                 )
+            }
+            if usesGreenfieldPlayback {
+                var dolby = entry.dolbyVideo
+                let audio = entry.audioTracks.first { $0.index == selectedAudioStreamIndex }
+                dolby.audioCodec = audio?.codec
+                dolby.audioProfile = audio?.profile
+                dolby.audioSpatialFormat = audio?.audioSpatialFormat
+                record("diagnostics.jellyfin.playback_prepared", level: .info,
+                    details: dolby.diagnosticDetails.merging([
+                        "stage": "sourceCapabilities", "playbackTraceID": playbackTraceID,
+                        "playMethod": prepared.playMethod.rawValue,
+                        "audioCodec": audio?.codec ?? "unknown",
+                        "audioDecoderAvailable": String(GreenfieldPlaybackControls.canDecodeOriginalAudio(audio?.codec)),
+                        "audioPath": prepared.playMethod == .directPlay ? "ksPlayerPCM" : "serverNegotiated",
+                        "metadataEvidence": "jellyfinMediaStream"
+                    ]) { _, new in new })
             }
             let playbackTracker = makePlaybackTracker(
                 for: entry,
@@ -7086,7 +7191,8 @@ private final class JellyfinLibraryStore: ObservableObject {
         }
     }
 
-    private func playbackBitrateDecision() -> JellyfinPlaybackBitrateDecision {
+    private func playbackBitrateDecision(originalSourceBitrate: Int? = nil,
+                                         usesGreenfieldPlayback: Bool = false) -> JellyfinPlaybackBitrateDecision {
         let route = playbackEndpoint ?? endpoint
         let network = PlaybackNetworkObserver.shared.snapshot()
         if playbackRouteIsPrivate {
@@ -7101,15 +7207,19 @@ private final class JellyfinLibraryStore: ObservableObject {
         let originKey = Self.originURL(for: route)?.absoluteString ?? route.absoluteString
         let cacheKey = "\(originKey)|\(network.cacheKey)"
         if let cached = bitrateMeasurements[cacheKey],
-           Date().timeIntervalSince(cached.measuredAt) < 10 * 60 {
-            // A short throughput sample is deliberately reduced for an HLS
-            // target, but applying that same safety factor to direct play makes
-            // a 50-55 Mbps Wi-Fi sample reject a 60-65 Mbps source and pay the
-            // full server-transcode startup cost. Direct playback can absorb
-            // short bursts in its local cache, so use the raw Wi-Fi sample with
-            // a small burst allowance while keeping cellular conservative.
+           GreenfieldBandwidthSamplePolicy.canReuse(age: Date().timeIntervalSince(cached.measuredAt),
+               networkKey: network.cacheKey, wasMeasured: cached.wasMeasured,
+               safeBitrate: cached.bitrate, originalSourceBitrate: originalSourceBitrate,
+               rawBitrate: cached.rawBitrate) {
+            // Greenfield compares original bitrate with measured delivery
+            // capacity. Legacy retains its previous capped burst allowance.
+            // HLS keeps the separate conservative encoder budget in both cases.
             let directPlayMaximumBitrate: Int
-            if network.cacheKey == "wifi" {
+            if usesGreenfieldPlayback {
+                directPlayMaximumBitrate = GreenfieldOriginalPlaybackPolicy.maximumOriginalBitrate(
+                    networkKey: network.cacheKey, wasMeasured: cached.wasMeasured,
+                    rawBitrate: cached.rawBitrate, conservativeBitrate: cached.bitrate)
+            } else if network.cacheKey == "wifi" {
                 directPlayMaximumBitrate = min(
                     max(Int(Double(cached.rawBitrate) * 1.25), cached.bitrate),
                     network.bitrateCap ?? 80_000_000
@@ -7121,7 +7231,7 @@ private final class JellyfinLibraryStore: ObservableObject {
                 maximumBitrate: cached.bitrate,
                 directPlayMaximumBitrate: directPlayMaximumBitrate,
                 isPrivateRoute: false,
-                basis: "measured",
+                basis: cached.wasMeasured ? "measured" : "measurementFailed",
                 networkKey: network.cacheKey
             )
         }
@@ -7141,14 +7251,18 @@ private final class JellyfinLibraryStore: ObservableObject {
         )
     }
 
-    private func scheduleBitrateMeasurementIfNeeded(client: JellyfinClient) {
+    private func scheduleBitrateMeasurementIfNeeded(client: JellyfinClient, originalSourceBitrate: Int? = nil,
+                                                    networkSnapshot: PlaybackNetworkSnapshot? = nil) {
         let route = playbackEndpoint ?? endpoint
         guard !playbackRouteIsPrivate else { return }
-        let network = PlaybackNetworkObserver.shared.snapshot()
+        let network = networkSnapshot ?? PlaybackNetworkObserver.shared.snapshot()
         let originKey = Self.originURL(for: route)?.absoluteString ?? route.absoluteString
         let cacheKey = "\(originKey)|\(network.cacheKey)"
         if let cached = bitrateMeasurements[cacheKey],
-           Date().timeIntervalSince(cached.measuredAt) < 10 * 60 {
+           GreenfieldBandwidthSamplePolicy.canReuse(age: Date().timeIntervalSince(cached.measuredAt),
+               networkKey: network.cacheKey, wasMeasured: cached.wasMeasured,
+               safeBitrate: cached.bitrate, originalSourceBitrate: originalSourceBitrate,
+               rawBitrate: cached.rawBitrate) {
             return
         }
         guard bitrateMeasurementTasks[cacheKey] == nil else { return }
@@ -7163,17 +7277,40 @@ private final class JellyfinLibraryStore: ObservableObject {
         }
     }
 
-    private func ensureBitrateMeasurementIfNeeded(client: JellyfinClient) async {
+    private func ensureBitrateMeasurementIfNeeded(client: JellyfinClient, maximumWait: TimeInterval? = nil,
+                                                 originalSourceBitrate: Int? = nil) async {
         let route = playbackEndpoint ?? endpoint
         guard !playbackRouteIsPrivate else { return }
         let network = PlaybackNetworkObserver.shared.snapshot()
         let originKey = Self.originURL(for: route)?.absoluteString ?? route.absoluteString
         let cacheKey = "\(originKey)|\(network.cacheKey)"
         if let cached = bitrateMeasurements[cacheKey],
-           Date().timeIntervalSince(cached.measuredAt) < 10 * 60 {
+           GreenfieldBandwidthSamplePolicy.canReuse(age: Date().timeIntervalSince(cached.measuredAt),
+               networkKey: network.cacheKey, wasMeasured: cached.wasMeasured,
+               safeBitrate: cached.bitrate, originalSourceBitrate: originalSourceBitrate,
+               rawBitrate: cached.rawBitrate) {
             return
         }
-        scheduleBitrateMeasurementIfNeeded(client: client)
+        // Re-reading NWPath here can schedule a Wi-Fi task while this function
+        // waits on the old "unknown" key, reporting completed after zero ms.
+        scheduleBitrateMeasurementIfNeeded(client: client, originalSourceBitrate: originalSourceBitrate,
+            networkSnapshot: network)
+        if let maximumWait {
+            // The shared measurement continues for later decisions. A slow
+            // probe must not hold the first frame behind its network timeout.
+            let started = ProcessInfo.processInfo.systemUptime
+            while bitrateMeasurementTasks[cacheKey] != nil,
+                  ProcessInfo.processInfo.systemUptime - started < maximumWait,
+                  !Task.isCancelled {
+                try? await Task.sleep(nanoseconds: 20_000_000)
+            }
+            record("diagnostics.jellyfin.playback_preparing", level: .info, details: [
+                "stage": "bandwidthWait", "waitMs": String(Int((ProcessInfo.processInfo.systemUptime - started) * 1000)),
+                "network": network.cacheKey,
+                "measurement": bitrateMeasurementTasks[cacheKey] == nil ? "completed" : "continuingInBackground"
+            ])
+            return
+        }
         let task = bitrateMeasurementTasks[cacheKey]
         await task?.value
     }
@@ -7197,7 +7334,7 @@ private final class JellyfinLibraryStore: ObservableObject {
             let measured = Double(data.count * 8) / elapsed
             let measuredSafeBitrate = max(Int(measured * 0.80), 1_500_000)
             let safeBitrate = min(measuredSafeBitrate, network.bitrateCap ?? 80_000_000)
-            bitrateMeasurements[cacheKey] = (safeBitrate, Int(measured), Date())
+            bitrateMeasurements[cacheKey] = (safeBitrate, Int(measured), Date(), true)
             record(
                 "diagnostics.jellyfin.bitrate_measured",
                 level: .info,
@@ -7215,7 +7352,7 @@ private final class JellyfinLibraryStore: ObservableObject {
                 network.bitrateCap ?? network.fallbackBitrate,
                 network.fallbackBitrate
             )
-            bitrateMeasurements[cacheKey] = (fallbackBitrate, fallbackBitrate, Date())
+            bitrateMeasurements[cacheKey] = (fallbackBitrate, fallbackBitrate, Date(), false)
             record(
                 "diagnostics.jellyfin.bitrate_measured",
                 level: .warning,
@@ -7282,23 +7419,30 @@ private final class JellyfinLibraryStore: ObservableObject {
     private func preferredOriginalPlaybackRoute(
         for entry: JellyfinMediaEntry,
         client: JellyfinClient,
-        forcesLocalProxy: Bool = false,
-        playbackTraceID: String? = nil
+        usesGreenfieldPlayback: Bool = false,
+        playbackTraceID: String? = nil,
+        originalProbeTask: Task<URL?, Never>? = nil
     ) async -> JellyfinDirectPlaybackRoute? {
-        let jellyfinCandidates = originalVideoPlaybackURLs(for: entry, client: client)
-        if let url = await AuthenticatedMediaPlaybackResolver.firstPlayableURL(
-            candidates: jellyfinCandidates,
-            allowsSelfSignedCertificates: allowsSelfSignedCertificates,
-            diagnosticStage: "jellyfinRange",
-            timeout: 4,
-            expectedContentLength: entry.mediaSize
-        ) {
+        guard !Task.isCancelled else { return nil }
+        let originalURL: URL?
+        if let originalProbeTask {
+            originalURL = await withTaskCancellationHandler {
+                await originalProbeTask.value
+            } onCancel: {
+                originalProbeTask.cancel()
+            }
+        } else {
+            originalURL = await probeJellyfinOriginalURL(for: entry, client: client,
+                playbackTraceID: playbackTraceID)
+        }
+        guard !Task.isCancelled else { return nil }
+        if let url = originalURL {
             let requiresLocalProxy = requiresCertificateBypass(for: url)
             let playbackURL = await preferredDirectPlaybackURL(
                     url,
                     filename: entry.title,
                     allowsSelfSignedCertificates: requiresLocalProxy,
-                    forcesLocalProxy: forcesLocalProxy,
+                    usesGreenfieldPlayback: usesGreenfieldPlayback,
                     playbackTraceID: playbackTraceID
                 )
                 return JellyfinDirectPlaybackRoute(
@@ -7330,7 +7474,7 @@ private final class JellyfinLibraryStore: ObservableObject {
                         url,
                         filename: entry.title,
                         allowsSelfSignedCertificates: dsmSession.allowsSelfSignedCertificates,
-                        forcesLocalProxy: forcesLocalProxy,
+                        usesGreenfieldPlayback: usesGreenfieldPlayback,
                         playbackTraceID: playbackTraceID
                     )
                 return JellyfinDirectPlaybackRoute(
@@ -7355,6 +7499,28 @@ private final class JellyfinLibraryStore: ObservableObject {
         return nil
     }
 
+    private func probeJellyfinOriginalURL(
+        for entry: JellyfinMediaEntry, client: JellyfinClient,
+        playbackTraceID: String?, overlapsBandwidth: Bool = false
+    ) async -> URL? {
+        guard !Task.isCancelled else { return nil }
+        let started = ProcessInfo.processInfo.systemUptime
+        let url = await AuthenticatedMediaPlaybackResolver.firstPlayableURL(
+            candidates: originalVideoPlaybackURLs(for: entry, client: client),
+            allowsSelfSignedCertificates: allowsSelfSignedCertificates,
+            diagnosticStage: "jellyfinRange", timeout: 4,
+            expectedContentLength: entry.mediaSize)
+        guard !Task.isCancelled else { return nil }
+        record("diagnostics.jellyfin.playback_preparing", level: .info, details: [
+            "stage": "originalRouteProbe",
+            "probeMs": String(Int((ProcessInfo.processInfo.systemUptime - started) * 1000)),
+            "overlapsBandwidth": String(overlapsBandwidth),
+            "result": url == nil ? "unavailable" : "available",
+            "playbackTraceID": playbackTraceID ?? "-"
+        ])
+        return url
+    }
+
     private func dsmOriginalVideoPlaybackURLs(
         mediaPath: String,
         session: DSMSession
@@ -7377,18 +7543,23 @@ private final class JellyfinLibraryStore: ObservableObject {
         _ url: URL,
         filename: String,
         allowsSelfSignedCertificates: Bool,
-        forcesLocalProxy: Bool = false,
+        usesGreenfieldPlayback: Bool = false,
         playbackTraceID: String? = nil
     ) async -> URL {
         let needsCertificateProxy = url.scheme?.lowercased() == "https"
             && allowsSelfSignedCertificates
-        guard forcesLocalProxy || needsCertificateProxy
+        if usesGreenfieldPlayback {
+            return (try? await AuthenticatedMediaStreamProxy.shared.registerOriginalStream(
+                upstreamURL: url, filename: filename,
+                allowsSelfSignedCertificates: allowsSelfSignedCertificates,
+                playbackTraceID: playbackTraceID)) ?? url
+        }
+        guard needsCertificateProxy
                 || !NetworkHostClassifier.isPrivate(url.host) else { return url }
         return (try? await AuthenticatedMediaStreamProxy.shared.register(
             upstreamURL: url,
             filename: filename,
             allowsSelfSignedCertificates: allowsSelfSignedCertificates,
-            prefersFiniteRangeResponse: forcesLocalProxy,
             playbackTraceID: playbackTraceID
         )) ?? url
     }
@@ -7498,13 +7669,17 @@ private final class JellyfinLibraryStore: ObservableObject {
 
     private static func directPlayableStartupAudioTrack(
         in entry: JellyfinMediaEntry,
-        selectedAudioStreamIndex: Int?
+        selectedAudioStreamIndex: Int?,
+        usesGreenfieldPlayback: Bool = false
     ) -> JellyfinMediaTrack? {
         guard
             let selectedAudioStreamIndex,
             let selectedTrack = entry.audioTracks.first(where: { $0.index == selectedAudioStreamIndex }),
-            requiresAudioTranscode(audioCodec: selectedTrack.codec)
-                || requiresDeviceCompatibilityTranscode(audioCodec: selectedTrack.codec)
+            // Keep the user's/default track when the active engine can decode
+            // it, including TrueHD and iPad FLAC under KSPlayer.
+            !usesGreenfieldPlayback,
+            requiresPlaybackAudioTranscode(audioCodec: selectedTrack.codec,
+                usesGreenfieldPlayback: usesGreenfieldPlayback)
         else {
             return nil
         }
@@ -7558,6 +7733,15 @@ private final class JellyfinLibraryStore: ObservableObject {
             "truehd", "mlp", "ac4", "dts-hd", "dtshd", "dts-hd ma",
             "eac3-joc", "atmos"
         ].contains(audioCodec)
+    }
+
+    private static func requiresPlaybackAudioTranscode(audioCodec: String?, usesGreenfieldPlayback: Bool) -> Bool {
+        if usesGreenfieldPlayback {
+            return GreenfieldOriginalPlaybackPolicy.requiresAudioTranscode(codec: audioCodec,
+                decoderAvailable: GreenfieldPlaybackControls.canDecodeOriginalAudio(audioCodec))
+        }
+        return requiresAudioTranscode(audioCodec: audioCodec)
+            || requiresDeviceCompatibilityTranscode(audioCodec: audioCodec)
     }
 
     private static func requiresDeviceCompatibilityTranscode(audioCodec: String?) -> Bool {
@@ -7643,6 +7827,9 @@ private final class JellyfinLibraryStore: ObservableObject {
                 )
                 _ = try await client.send(Paths.reportPlaybackProgress(body)).value
             case .stopped(let positionSeconds, let failed):
+                if positionSeconds.isFinite, positionSeconds >= 0 {
+                    playbackStopSnapshot = (entry.id, positionSeconds, UUID())
+                }
                 let body = PlaybackStopInfo(
                     isFailed: failed,
                     itemID: entry.id,
@@ -8123,7 +8310,9 @@ private final class JellyfinLibraryStore: ObservableObject {
             externalLinks: Self.externalLinks(for: item),
             mediaPath: mediaSource?.path ?? item.path,
             mediaSize: mediaSource?.size,
-            mediaBitrate: mediaSource?.bitrate
+            mediaBitrate: mediaSource?.bitrate,
+            dolbyVideo: PlaybackDolbySourceInfo(visionProfile: videoStream?.dvProfile,
+                visionLevel: videoStream?.dvLevel, baseLayerCompatibilityID: videoStream?.dvBlSignalCompatibilityID)
         )
     }
 
@@ -8184,6 +8373,8 @@ private final class JellyfinLibraryStore: ObservableObject {
             index: index,
             title: displayTitle ?? (fallbackTitle.isEmpty ? "#\(index)" : fallbackTitle),
             codec: stream.codec,
+            profile: stream.profile,
+            audioSpatialFormat: stream.audioSpatialFormat?.rawValue,
             isDefault: stream.isDefault == true,
             isForced: stream.isForced == true
         )
@@ -9618,6 +9809,15 @@ private struct JellyfinMediaDetailView: View {
         .background(Color(.systemBackground))
         .navigationTitle(mediaItem.title)
         .navigationBarTitleDisplayMode(.inline)
+        .onChange(of: store.playbackStopSnapshot?.revision) { _ in
+            guard let snapshot = store.playbackStopSnapshot, snapshot.itemID == item.id else { return }
+            var updated = mediaItem
+            updated.playbackPositionTicks = Int((snapshot.position * 10_000_000).rounded())
+            updated.progress = updated.runTimeTicks.flatMap { duration in
+                duration > 0 ? min(snapshot.position * 10_000_000 / Double(duration), 1) : nil
+            }
+            detailedItem = updated
+        }
         .task(id: item.id) {
             await loadDetailContent()
         }
@@ -9690,62 +9890,75 @@ private struct JellyfinMediaDetailView: View {
     }
 
     private var playbackActionRow: some View {
-        HStack(spacing: 10) {
-            Button(action: preparePlayback) {
-                HStack(spacing: 10) {
-                    if isPreparingPlayback {
-                        ProgressView()
-                            .tint(.white)
-                    } else {
-                        Image(systemName: "play.fill")
-                    }
-                    Text(
-                        LocalizedStringKey(
-                            (mediaItem.effectivePlaybackProgress ?? 0) > 0
-                                ? "media.continue.title"
-                                : "player.play_in_app"
-                        )
-                    )
-                        .font(.headline.weight(.semibold))
-                }
-                .foregroundStyle(.white)
-                .frame(maxWidth: .infinity, minHeight: 54)
-                .background(AppTheme.accent)
-                .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-            }
-            .buttonStyle(.plain)
-
-            Menu {
-                if !ExternalOpenTarget.installedPlayers.isEmpty {
-                    Section {
-                        ForEach(ExternalOpenTarget.installedPlayers) { target in
-                            Button(target.displayName) {
-                                prepareExternalPlayback(target)
-                            }
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(spacing: 10) {
+                Button { preparePlayback() } label: {
+                    HStack(spacing: 10) {
+                        if isPreparingPlayback {
+                            ProgressView()
+                                .tint(.white)
+                        } else {
+                            Image(systemName: "play.fill")
                         }
-                    } header: {
-                        Text("external.installed_players")
+                        Text(
+                            LocalizedStringKey(
+                                (mediaItem.effectivePlaybackProgress ?? 0) > 0
+                                    ? "media.continue.title"
+                                    : "player.play_in_app"
+                            )
+                        )
+                            .font(.headline.weight(.semibold))
                     }
-                }
-                Section {
-                    Button("external.other_apps") {
-                        prepareSharePlayback()
-                    }
-                }
-            } label: {
-                Image(systemName: "arrow.up.forward.app")
-                    .font(.title3.weight(.semibold))
-                    .foregroundStyle(AppTheme.accent)
-                    .frame(width: 54, height: 54)
-                    .background(AppTheme.secondarySurface)
+                    .foregroundStyle(.white)
+                    .frame(maxWidth: .infinity, minHeight: 54)
+                    .background(AppTheme.accent)
                     .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                }
+                .buttonStyle(.plain)
+
+                Menu {
+                    if !ExternalOpenTarget.installedPlayers.isEmpty {
+                        Section {
+                            ForEach(ExternalOpenTarget.installedPlayers) { target in
+                                Button(target.displayName) {
+                                    prepareExternalPlayback(target)
+                                }
+                            }
+                        } header: {
+                            Text("external.installed_players")
+                        }
+                    }
+                    Section {
+                        Button("external.other_apps") {
+                            prepareSharePlayback()
+                        }
+                    }
+                } label: {
+                    Image(systemName: "arrow.up.forward.app")
+                        .font(.title3.weight(.semibold))
+                        .foregroundStyle(AppTheme.accent)
+                        .frame(width: 54, height: 54)
+                        .background(AppTheme.secondarySurface)
+                        .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                }
+                .accessibilityLabel(Text("devices.files.open_external"))
             }
-            .accessibilityLabel(Text("devices.files.open_external"))
+            .disabled(isPreparingPlayback)
+            if (mediaItem.effectivePlaybackProgress ?? 0) > 0 {
+                Button("player.play_from_beginning") { preparePlayback(fromBeginning: true) }
+                    .font(.subheadline.weight(.semibold))
+                    .disabled(isPreparingPlayback)
+            }
         }
-        .disabled(isPreparingPlayback)
     }
 
-    private func preparePlayback() {
+    private func preparePlayback(fromBeginning: Bool = false) {
+        var itemToPlay = mediaItem
+        if fromBeginning {
+            itemToPlay.progress = 0
+            itemToPlay.playbackPositionTicks = 0
+        }
+        let entry = itemToPlay
         Task {
             isPreparingPlayback = true
             defer { isPreparingPlayback = false }
@@ -9756,7 +9969,7 @@ private struct JellyfinMediaDetailView: View {
                 let requestsGreenfield = false
 #endif
                 let request = try await store.playbackRequest(
-                    for: mediaItem,
+                    for: entry,
                     selection: JellyfinPlaybackSelection(
                         audioStreamIndex: selectedAudioStreamIndex,
                         subtitleStreamIndex: selectedSubtitleStreamIndex
@@ -10213,7 +10426,7 @@ private struct JellyfinSimilarShelf: View {
     var body: some View {
         JellyfinDetailSection(titleKey: "jellyfin.similar.title") {
             ScrollView(.horizontal, showsIndicators: false) {
-                LazyHStack(alignment: .top, spacing: 12) {
+                HStack(alignment: .top, spacing: 12) {
                     ForEach(items) { item in
                         NavigationLink {
                             JellyfinMediaDetailView(store: store, item: item)
@@ -10225,15 +10438,18 @@ private struct JellyfinSimilarShelf: View {
                                 Text(item.title)
                                     .font(.caption.weight(.semibold))
                                     .foregroundStyle(.primary)
-                                    .lineLimit(2)
+                                    .lineLimit(2, reservesSpace: true)
+                                    .fixedSize(horizontal: false, vertical: true)
                                 if !item.subtitle.isEmpty {
                                     Text(item.subtitle)
                                         .font(.caption2)
                                         .foregroundStyle(.secondary)
                                         .lineLimit(1)
+                                        .fixedSize(horizontal: false, vertical: true)
                                 }
                             }
                             .frame(width: 126, alignment: .leading)
+                            .fixedSize(horizontal: false, vertical: true)
                         }
                         .buttonStyle(.plain)
                     }

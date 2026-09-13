@@ -115,6 +115,8 @@ struct GreenfieldVideoPlayerView: View {
         _request = State(initialValue: request)
     }
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.scenePhase) private var scenePhase
+    @State private var lastLocalProgressSave = Date.distantPast
     @StateObject private var model = GreenfieldVideoPlayerModel()
     @StateObject private var ksControls = GreenfieldPlaybackControls()
     @StateObject private var avControls = GreenfieldPlaybackControls()
@@ -127,6 +129,8 @@ struct GreenfieldVideoPlayerView: View {
     @State private var episodeNavigation: MediaPlaybackEpisodeNavigation?
     @State private var changingSource = false
     @State private var sourceLoadTask: Task<Void, Never>?
+    @State private var pendingSourceChange: (() -> Void)?
+    @State private var sourceChangeWasPlaying = false
     @State private var sourceChangeFailed = false
     @State private var handoffRequest: MediaPlaybackRequest?
     private var activeRequest: GreenfieldPlaybackLaunchRequest { replacementRequest ?? request }
@@ -155,7 +159,7 @@ struct GreenfieldVideoPlayerView: View {
                     compatibilityFailed: { _ in },
                     sourceTrackChange: sourceTrackCallback,
                     serverSeek: serverSeekCallback,
-                    qualityChange: qualityCallback,
+                    qualityChange: nil,
                     previousEpisode: episodeNavigation?.previous.map { loader in { replaceSource(preservePausedState: false, loader) } },
                     nextEpisode: episodeNavigation?.next.map { loader in { replaceSource(preservePausedState: false, loader) } },
                     openExternal: { handoffRequest = uiRequest }) {
@@ -179,7 +183,7 @@ struct GreenfieldVideoPlayerView: View {
                     compatibilityFailed: { _ in },
                     sourceTrackChange: sourceTrackCallback,
                     serverSeek: serverSeekCallback,
-                    qualityChange: qualityCallback,
+                    qualityChange: nil,
                     previousEpisode: episodeNavigation?.previous.map { loader in { replaceSource(preservePausedState: false, loader) } },
                     nextEpisode: episodeNavigation?.next.map { loader in { replaceSource(preservePausedState: false, loader) } },
                     openExternal: { handoffRequest = uiRequest }) {
@@ -253,6 +257,10 @@ struct GreenfieldVideoPlayerView: View {
             guard !Task.isCancelled else { return }
             episodeNavigation = navigation
         }
+        .onChange(of: controls.currentSeconds) { _ in saveLocalProgress() }
+        .onChange(of: scenePhase) { phase in
+            if phase != .active { saveLocalProgress(force: true) }
+        }
         .onAppear {
             PlayerOrientationController.setPlayerActive(
                 true,
@@ -270,8 +278,8 @@ struct GreenfieldVideoPlayerView: View {
             }
             ksControls.onTimelineDiscontinuity = model.resetContinuity
             avControls.onTimelineDiscontinuity = model.resetContinuity
-            ksControls.pipInitialExternalSubtitleURL = uiRequest.externalSubtitleURL
-            ksControls.pipExternalSubtitle.setURL(uiRequest.externalSubtitleURL)
+            ksControls.pipInitialExternalSubtitleURL = uiRequest.prefersSubtitlesDisabled ? nil : uiRequest.externalSubtitleURL
+            ksControls.pipExternalSubtitle.setURL(uiRequest.prefersSubtitlesDisabled ? nil : uiRequest.externalSubtitleURL)
             ksControls.traceID = activeRequest.playbackTraceID
             avControls.traceID = activeRequest.playbackTraceID
             model.avControls = avControls
@@ -280,13 +288,28 @@ struct GreenfieldVideoPlayerView: View {
         .onDisappear {
             guard !ksControls.isPictureInPictureActive && !avControls.isPictureInPictureActive else { return }
             sourceLoadTask?.cancel()
-            model.stop()
+            saveLocalProgress(force: true)
+            model.stop(finalPositionSeconds: controls.currentSeconds)
             PlayerOrientationController.setPlayerActive(false)
         }
     }
+    private func saveLocalProgress(force: Bool = false) {
+        guard uiRequest.source == .dsmFile, let key = uiRequest.localResumeKey,
+              controls.isReady, !controls.hasPendingSeek,
+              force || Date().timeIntervalSince(lastLocalProgressSave) >= 15 else { return }
+        let state = controls.runtimeState(orientationMode: uiRequest.initialOrientationMode)
+        LocalPlaybackResumeStore.shared.save(key: key, position: controls.preciseCurrentSeconds,
+            duration: controls.durationSeconds,
+            audioTrackID: controls.selectedAudioTrackID >= 0 ? Int(controls.selectedAudioTrackID) : nil,
+            subtitleTrackID: controls.selectedSubtitleTrackID >= 0 ? Int(controls.selectedSubtitleTrackID) : nil,
+            subtitlesDisabled: state.subtitlesDisabled && !controls.pipExternalSubtitle.isEnabled)
+        lastLocalProgressSave = Date()
+    }
+
     private func closePlayer() {
+        saveLocalProgress(force: true)
         sourceLoadTask?.cancel()
-        model.stop()
+        model.stop(finalPositionSeconds: controls.currentSeconds)
         for control in [ksControls, avControls] {
             control.pipDidStart = nil
             control.pipDidClose = nil
@@ -297,13 +320,13 @@ struct GreenfieldVideoPlayerView: View {
     private var sourceTrackCallback: ((Int?, Int?, MediaPlaybackRuntimeState) -> Void)? {
         guard let loader = uiRequest.sourceTrackRequestLoader else { return nil }
         return { audio, subtitle, state in
+            let externalURL = uiRequest.sourceSubtitleTracks.first { $0.id == subtitle }?.externalURL
             if usesKSPlayer, model.renderingPlan?.primaryRoute.playMethod == .directPlay,
                audio == nil || controls.audioTracks.contains(where: { Int($0.id) == audio }),
-               subtitle == nil || controls.subtitleTracks.contains(where: { Int($0.id) == subtitle }) {
+               subtitle == nil || externalURL != nil || controls.subtitleTracks.contains(where: { Int($0.id) == subtitle }) {
                 if let audio, let track = controls.audioTracks.first(where: { Int($0.id) == audio }) {
                     controls.selectAudio(track)
                 }
-                let externalURL = uiRequest.sourceSubtitleTracks.first { $0.id == subtitle }?.externalURL
                 controls.selectSourceSubtitle(subtitle.flatMap(Int32.init), externalURL: externalURL)
                 controls.sourceRuntimeTracks = (
                     uiRequest.sourceAudioTracks.firstIndex { $0.id == audio },
@@ -317,16 +340,27 @@ struct GreenfieldVideoPlayerView: View {
         guard let loader = uiRequest.serverSeekRequestLoader else { return nil }
         return { seconds, state in replaceSource { await loader(seconds, state) } }
     }
-    private var qualityCallback: ((String, MediaPlaybackRuntimeState) -> Void)? {
-        guard let loader = uiRequest.qualityRequestLoader else { return nil }
-        return { quality, state in replaceSource(keepPlayingDuringPreparation: true) { await loader(quality, state) } }
-    }
-    private func replaceSource(preservePausedState: Bool = true, keepPlayingDuringPreparation: Bool = false, _ load: @escaping () async -> MediaPlaybackRequest?) {
+    // Manual quality changes are deferred until server preparation and handoff
+    // meet the playback acceptance criteria. Automatic route/fallback stays active.
+    private func replaceSource(preservePausedState: Bool = true, keepPlayingDuringPreparation: Bool = false,
+                               playbackWasPlaying: Bool? = nil, _ load: @escaping () async -> MediaPlaybackRequest?) {
 #if DEBUG
-        guard !changingSource else { return }
+        guard !changingSource else {
+            // Finish/clean up the current candidate, then apply the most recent
+            // user selection. Dropping this request leaves the menu ahead of the
+            // actual audio/subtitle stream after repeated taps.
+            let wasPlaying = sourceChangeWasPlaying
+            pendingSourceChange = {
+                replaceSource(preservePausedState: preservePausedState,
+                              keepPlayingDuringPreparation: keepPlayingDuringPreparation,
+                              playbackWasPlaying: wasPlaying, load)
+            }
+            return
+        }
         changingSource = true
         let oldControls = controls
-        let wasPlaying = oldControls.isPlaying
+        let wasPlaying = playbackWasPlaying ?? oldControls.isPlaying
+        sourceChangeWasPlaying = wasPlaying
         let wasPaused = preservePausedState && !wasPlaying
         if !keepPlayingDuringPreparation { oldControls.pauseForExternalHandoff() }
         sourceLoadTask = Task { @MainActor in
@@ -334,13 +368,16 @@ struct GreenfieldVideoPlayerView: View {
             defer {
                 changingSource = false
                 if !committed && wasPlaying && !keepPlayingDuringPreparation && !Task.isCancelled { oldControls.togglePlayback() }
+                let pending = pendingSourceChange
+                pendingSourceChange = nil
+                if !Task.isCancelled { pending?() }
             }
             let loaded = await load()
             guard var next = loaded else { sourceChangeFailed = true; return }
             defer {
                 if !committed { next.playbackTracker?.releasePreparedResources() }
             }
-            guard !Task.isCancelled else { return }
+            guard !Task.isCancelled, pendingSourceChange == nil else { return }
             let preparedPlayer: AVPlayer?
             if next.fileExtensionHint == "m3u8" {
                 oldControls.event("replacement_warmup_started")
@@ -374,6 +411,12 @@ struct GreenfieldVideoPlayerView: View {
                 guard nextKSCoordinator != nil else { sourceChangeFailed = true; return }
             }
 #endif
+            guard pendingSourceChange == nil else {
+#if canImport(KSPlayer)
+                nextKSCoordinator?.resetPlayer()
+#endif
+                return
+            }
             oldControls.event("replacement_committed", metrics: ["seconds": String(oldControls.currentSeconds),
                 "candidateSeconds": String(preparedPlayer?.currentTime().seconds ?? -1)])
             let finalPaused = keepPlayingDuringPreparation ? !oldControls.isPlaying : commitPaused
@@ -532,8 +575,11 @@ final class GreenfieldVideoPlayerModel: ObservableObject {
         recordPlanReady(result)
     }
 
-    func stop(reportStop: Bool = true) {
-        if reportStop { request?.mediaRequest?.playbackTracker?.stopped(failed: errorMessage != nil) }
+    func stop(reportStop: Bool = true, finalPositionSeconds: Double? = nil) {
+        if reportStop {
+            request?.mediaRequest?.playbackTracker?.stopped(failed: errorMessage != nil,
+                                                         positionSeconds: finalPositionSeconds)
+        }
         playbackTask?.cancel()
         playbackTask = nil
         player.pause()

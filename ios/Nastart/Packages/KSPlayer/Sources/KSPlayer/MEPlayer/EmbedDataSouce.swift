@@ -16,7 +16,13 @@ extension FFmpegAssetTrack: SubtitleInfo {
 
 extension FFmpegAssetTrack: KSSubtitleProtocol {
     public func search(for time: TimeInterval) -> [SubtitlePart] {
-        subtitle?.outputRenderQueue.search { item -> Bool in
+        if isImageSubtitle {
+            guard let frame = subtitle?.outputRenderQueue.popLatest(where: { $0.part.start <= time }) else { return [] }
+            // An expired display set must clear the previously displayed image,
+            // rather than making SubtitleModel keep an old infinite-duration cue.
+            return [frame.part == time ? frame.part : SubtitlePart(time, .infinity, attributedString: nil)]
+        }
+        return subtitle?.outputRenderQueue.search { item -> Bool in
             item.part == time
         }.map(\.part) ?? []
     }

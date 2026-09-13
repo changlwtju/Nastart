@@ -4,10 +4,18 @@ import AVFoundation
 
 @MainActor
 final class GreenfieldPlaybackControls: PlaybackUIEngineSession {
+    static func canDecodeBitmapSubtitle(_ codec: String?) -> Bool {
+#if canImport(KSPlayer)
+        guard let name = GreenfieldOriginalPlaybackPolicy.bitmapSubtitleDecoderName(codec) else { return false }
+        return KSOptions.hasSubtitleDecoder(named: name)
+#else
+        return false
+#endif
+    }
     static func canDecodeOriginalAudio(_ codec: String?) -> Bool {
 #if canImport(KSPlayer)
-        guard let codec else { return false }
-        return KSOptions.hasAudioDecoder(named: codec)
+        guard let decoder = GreenfieldOriginalPlaybackPolicy.audioDecoderName(codec) else { return false }
+        return KSOptions.hasAudioDecoder(named: decoder)
 #else
         return false
 #endif
@@ -50,6 +58,11 @@ final class GreenfieldPlaybackControls: PlaybackUIEngineSession {
     var externalSubtitleAction: ((URL?) -> Void)?
     var pictureInPictureAction: (() -> Void)?
     var sourceRuntimeTracks: (audio: Int?, subtitle: Int?, disabled: Bool)?
+    private enum SubtitleSelection: Equatable {
+        case embedded(Int32)
+        case external(URL)
+    }
+    private var lastSubtitleSelection: SubtitleSelection?
     var canSeekAbsolute: ((Double) -> Bool)?
     var engineName = "KSPlayer"
     var startsPaused = false
@@ -63,10 +76,12 @@ final class GreenfieldPlaybackControls: PlaybackUIEngineSession {
     private var seekTarget = 0.0
     private var seekCompleted = false
     private var pendingSeekPosition: Double?
+    var hasPendingSeek: Bool { pendingSeekPosition != nil }
     private(set) var seekGeneration = 0
     /// A control adapter may be reused after the other engine has played.
     /// Recovery timers and pending seek completions belong to one plan only.
     func beginSession() {
+        lastSubtitleSelection = nil
         seekGeneration += 1
         seekAt = nil
         pendingSeekPosition = nil
@@ -143,17 +158,33 @@ final class GreenfieldPlaybackControls: PlaybackUIEngineSession {
     }
     func jump(by seconds: Int) { seekSeconds(currentSeconds + Double(seconds)) }
     func setPlaybackRate(_ rate: Float) { self.rate = rate; updateRate?(rate); record("playbackRate", value: String(rate)) }
-    func selectAudio(_ track: PlaybackUITrack) { audioAction?(track.id) }
-    func selectSubtitle(_ track: PlaybackUITrack) { subtitleAction?(track.id) }
+    func selectAudio(_ track: PlaybackUITrack) {
+        guard selectedAudioTrackID != track.id else { return }
+        audioAction?(track.id)
+    }
+    func selectSubtitle(_ track: PlaybackUITrack) { selectSourceSubtitle(track.id, externalURL: nil) }
     func selectSourceSubtitle(_ id: Int32?, externalURL: URL?) {
         // The shared overlay owns sidecar text. Selecting an audio track must
         // not re-enable the matching embedded subtitle underneath it.
         if let externalURL, externalSubtitleAction != nil {
+            let selection = SubtitleSelection.external(externalURL)
+            guard lastSubtitleSelection != selection else { return }
             externalSubtitleAction?(externalURL)
+            lastSubtitleSelection = selection
             selectedSubtitleTrackID = -1
-        } else { subtitleAction?(id ?? -1) }
+        } else {
+            guard let subtitleAction else { return }
+            let selection = SubtitleSelection.embedded(id ?? -1)
+            guard lastSubtitleSelection != selection else { return }
+            subtitleAction(id ?? -1)
+            lastSubtitleSelection = selection
+        }
     }
-    func selectExternalSubtitle(_ url: URL?) -> Bool { externalSubtitleAction?(url); return externalSubtitleAction != nil }
+    func selectExternalSubtitle(_ url: URL?) -> Bool {
+        guard externalSubtitleAction != nil else { return false }
+        selectSourceSubtitle(nil, externalURL: url)
+        return true
+    }
     func pauseForExternalHandoff() { if isPlaying { togglePlayback() } }
     func runtimeState(orientationMode: PlayerOrientationMode) -> MediaPlaybackRuntimeState {
         MediaPlaybackRuntimeState(normalizedPosition: position, positionSeconds: currentSeconds,
@@ -225,17 +256,15 @@ private struct GreenfieldSubtitleOverlay: View {
     var body: some View {
         if model.parts.contains(where: { $0.image != nil }), videoSize.width > 0, videoSize.height > 0 {
             GeometryReader { geometry in
-                let scale = min(geometry.size.width / videoSize.width,
-                                geometry.size.height / videoSize.height)
                 VStack(spacing: 4) {
                     Spacer(minLength: 0)
                     ForEach(model.parts) { part in
                         if let image = part.image {
+                            let size = part.imageDisplaySize(in: geometry.size, videoSize: videoSize)
                             Image(uiImage: image)
                                 .resizable()
                                 .scaledToFit()
-                                .frame(width: min(geometry.size.width, image.size.width * scale),
-                                       height: image.size.height * scale)
+                                .frame(width: size.width, height: size.height)
                         }
                     }
                 }
@@ -396,25 +425,43 @@ struct GreenfieldKSPlayerRenderer: View {
         controls.audioAction = { [weak coordinator, weak controls] id in
             guard let player = coordinator?.playerLayer?.player,
                   let track = player.tracks(mediaType: .audio).first(where: { $0.trackID == id }) else { return }
+            guard !track.isEnabled else { return }
+            let started = ProcessInfo.processInfo.systemUptime
+            controls?.record("audioTrackRequested", value: String(id))
             player.select(track: track)
             let selected = player.tracks(mediaType: .audio).first { $0.isEnabled }?.trackID ?? -1
             controls?.selectedAudioTrackID = selected
-            controls?.record("audioTrackRequested", value: String(id))
-            controls?.event("audio_track_changed", metrics: ["engineTrackID": String(selected), "requestedTrackID": String(id), "evidence": "engineTrackInventory"] )
+            controls?.event("audio_track_changed", metrics: ["engineTrackID": String(selected), "requestedTrackID": String(id),
+                "selectionDispatchMs": String(Int((ProcessInfo.processInfo.systemUptime - started) * 1000)),
+                "evidence": "engineTrackInventoryNotAudibleRecovery"] )
         }
         controls.subtitleAction = { [weak coordinator, weak controls] id in
-            controls?.pipExternalSubtitle.setURL(nil)
             guard let coordinator, let player = coordinator.playerLayer?.player else { return }
-            coordinator.subtitleModel.selectedSubtitleInfo = nil
+            let selectedID = coordinator.subtitleModel.selectedSubtitleInfo.flatMap { Int32($0.subtitleID) } ?? -1
+            guard selectedID != id || controls?.pipExternalSubtitle.isEnabled == true else { return }
+            let started = ProcessInfo.processInfo.systemUptime
+            controls?.record("subtitleTrackRequested", value: String(id))
+            controls?.pipExternalSubtitle.setURL(nil)
             let tracks = player.tracks(mediaType: .subtitle)
-            for track in tracks { track.isEnabled = false }
-            if let track = tracks.first(where: { $0.trackID == id }) { player.select(track: track) }
-            if let info = player.subtitleDataSouce?.infos.first(where: { $0.subtitleID == String(id) }) {
-                coordinator.subtitleModel.selectedSubtitleInfo = info
-            }
+            // The demuxer may already have selected this track before opening.
+            // Preserve it when connecting the subtitle model to the prepared
+            // decoder; paths with image-subtitle seeking must not seek twice.
+            let target = tracks.first(where: { $0.trackID == id })
+            let refreshBitmap = target?.isImageSubtitle == true && target?.isEnabled == false
+            if let target, !target.isEnabled { player.select(track: target) }
+            coordinator.subtitleModel.selectedSubtitleInfo = player.subtitleDataSouce?.infos
+                .first(where: { $0.subtitleID == String(id) })
+            for track in tracks where track.trackID != id { track.isEnabled = false }
             _ = coordinator.subtitleModel.subtitle(currentTime: player.currentPlaybackTime)
             controls?.selectedSubtitleTrackID = id
-            controls?.record("subtitleTrackRequested", value: String(id))
+            // Re-read the current display set for a newly enabled bitmap track.
+            // Use the normal seek lifecycle so paused playback stays paused and
+            // a later selection supersedes the previous completion.
+            if refreshBitmap { _ = controls?.seek(toAbsoluteSeconds: player.currentPlaybackTime) }
+            controls?.event("subtitle_track_changed", metrics: ["requestedTrackID": String(id),
+                "selectionDispatchMs": String(Int((ProcessInfo.processInfo.systemUptime - started) * 1000)),
+                "visibleParts": String(coordinator.subtitleModel.parts.count),
+                "evidence": "selectionAndCueInventoryNotScreenPresentation"])
         }
         controls.externalSubtitleAction = { [weak coordinator, weak controls] url in
             controls?.pipExternalSubtitle.setURL(url)
@@ -437,6 +484,18 @@ struct GreenfieldKSPlayerRenderer: View {
     private func syncTracks(_ layer: KSPlayerLayer) {
         if layer.player.isReadyToPlay, controls.audioAction != nil, !appliedInitialTracks {
             appliedInitialTracks = true
+            let video = layer.player.tracks(mediaType: .video).first
+            let dolby = PlaybackDolbySourceInfo(visionProfile: video?.dovi.map { Int($0.dv_profile) },
+                visionLevel: video?.dovi.map { Int($0.dv_level) },
+                baseLayerCompatibilityID: video?.dovi.map { Int($0.dv_bl_signal_compatibility_id) })
+            controls.event("source_capabilities", metrics: dolby.diagnosticDetails.merging([
+                "metadataEvidence": "engineTrackInventory", "audioPath": "decodedPCM",
+                "videoBitDepth": video.map { String($0.bitDepth) } ?? "unknown",
+                "dvEnhancementLayer": video?.dovi.map { String($0.el_present_flag) } ?? "unknown",
+                "hdrDisplayEligible": String(AVPlayer.eligibleForHDRPlayback),
+                "audioOutputPorts": AVAudioSession.sharedInstance().currentRoute.outputs
+                    .map { $0.portType.rawValue }.joined(separator: ",")
+            ]) { _, new in new })
             if controls.startsPaused {
                 layer.pause()
                 let expectedPlanID = controls.planID
@@ -495,9 +554,9 @@ struct GreenfieldKSPlayerRenderer: View {
             let text = controls.pipExternalSubtitle.isEnabled
                 ? controls.pipExternalSubtitle.text
                 : parts.compactMap { $0.text?.string }.joined(separator: "\n")
-            let images: [(UIImage, CGPoint)] = controls.pipExternalSubtitle.isEnabled ? [] : parts.compactMap { part in
+            let images: [(UIImage, CGPoint, CGSize)] = controls.pipExternalSubtitle.isEnabled ? [] : parts.compactMap { part in
                 guard let image = part.image else { return nil }
-                return (image, part.origin)
+                return (image, part.origin, part.imageCanvasSize)
             }
             let output = controls.pipSubtitleCompositor.composite(buffer, text: text, images: images,
                 videoSize: player.naturalSize)
@@ -526,6 +585,9 @@ struct GreenfieldKSPlayerRenderer: View {
         }
         if plan.primaryRoute.playMethod == .directPlay {
             options.sourceAudioID = plan.tracks.selectedSourceAudioTrackID.flatMap(Int32.init)
+            if plan.subtitles.mode != .disabled, controls.pipInitialExternalSubtitleURL == nil {
+                options.preferredEmbeddedSubtitleTrackID = plan.tracks.selectedSourceSubtitleTrackID.flatMap(Int32.init)
+            }
         }
         configureDefaultEngine()
         options.preferredForwardBufferDuration = max(plan.startupPolicy.minimumPlayableBufferSeconds, 0.25)
@@ -542,7 +604,7 @@ struct GreenfieldKSPlayerRenderer: View {
             let isSeekableFile = plan.primaryRoute.routeKind == .localRangeProxy
                 || plan.intent.contentKind == .discImage
             options.prefersTimestampSeeking = plan.intent.contentKind == .discImage
-            options.isSeekImageSubtitle = plan.intent.contentKind == .discImage
+            options.isSeekImageSubtitle = false // Selection uses the shared seek lifecycle above.
             options.probesize = isSeekableFile ? 5 * 1024 * 1024 : 1 * 1024 * 1024
             options.maxAnalyzeDuration = isSeekableFile ? 3_000_000 : 1_000_000
             options.formatContextOptions["seekable"] = isSeekableFile ? 1 : 0
@@ -726,7 +788,7 @@ final class GreenfieldPiPSubtitleCompositor {
     private var lastKey = ""
     private var overlay: CIImage?
 
-    func composite(_ source: CVPixelBuffer, text: String?, images: [(UIImage, CGPoint)], videoSize: CGSize) -> CVPixelBuffer? {
+    func composite(_ source: CVPixelBuffer, text: String?, images: [(UIImage, CGPoint, CGSize)], videoSize: CGSize) -> CVPixelBuffer? {
         let text = text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         guard !text.isEmpty || !images.isEmpty else { return nil }
         // Do not silently flatten an HDR/Dolby signal into an SDR buffer.
@@ -735,16 +797,17 @@ final class GreenfieldPiPSubtitleCompositor {
               transfer != (kCVImageBufferTransferFunction_ITU_R_2100_HLG as String) else { return nil }
         let width = CVPixelBufferGetWidth(source), height = CVPixelBufferGetHeight(source)
         let size = CGSize(width: width, height: height)
-        let imageKey = images.map { "\(ObjectIdentifier($0.0))-\($0.1)" }.joined(separator: "/")
-        let key = "\(size)-\(text)-\(imageKey)"
+        let imageKey = images.map { "\(ObjectIdentifier($0.0))-\($0.1)-\($0.2)" }.joined(separator: "/")
+        let key = "\(size)-\(videoSize)-\(text)-\(imageKey)"
         if key != lastKey {
             lastKey = key
             let format = UIGraphicsImageRendererFormat()
             format.scale = 1
             format.opaque = false
             let image = UIGraphicsImageRenderer(size: size, format: format).image { renderer in
-                for (image, origin) in images {
-                    let scale = CGSize(width: size.width / max(videoSize.width, 1), height: size.height / max(videoSize.height, 1))
+                for (image, origin, subtitleCanvas) in images {
+                    let canvas = subtitleCanvas.width > 0 && subtitleCanvas.height > 0 ? subtitleCanvas : videoSize
+                    let scale = CGSize(width: size.width / max(canvas.width, 1), height: size.height / max(canvas.height, 1))
                     image.draw(in: CGRect(x: origin.x * scale.width, y: origin.y * scale.height,
                         width: image.size.width * scale.width, height: image.size.height * scale.height))
                 }

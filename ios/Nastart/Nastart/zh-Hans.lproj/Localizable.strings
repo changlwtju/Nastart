@@ -122,15 +122,17 @@
 "external.jellyfin_app" = "Jellyfin App";
 "service.console.title" = "开发控制台";
 "service.console.subtitle" = "为手机端保留常用控制键，适合发送指令和查看执行结果。";
-"web.mode.title" = "打开模式";
+"web.mode.title" = "网页版本";
 "web.stop" = "停止加载";
 "web.more" = "更多浏览器操作";
 "web.back" = "后退";
 "web.forward" = "前进";
 "web.mode.automatic" = "自动";
-"web.mode.mobile" = "移动";
-"web.mode.desktop" = "桌面";
-"web.mode.focused" = "专注";
+"web.mode.mobile" = "请求移动版";
+"web.mode.desktop" = "请求桌面版";
+"web.compact_browsing" = "简洁浏览";
+"web.mode.help" = "浏览选项说明";
+"web.mode.explanation" = "自动：按服务选择网页版本，部分管理控制台优先桌面版。\n移动版／桌面版：向网站请求相应版本；网站未提供不同布局时，外观可能相同。切换会重新加载当前页。\n简洁浏览：隐藏底部网页工具栏，后退、刷新和分享仍可在菜单中使用；不会改变网页版本。服务内始终隐藏底部应用导航。";
 "media.audio.title" = "音频资源库";
 "media.video.title" = "视频资源库";
 "media.library.description" = "浏览服务资源库后，可在 Nastart 中播放直链媒体，也可交给其他播放器。";
@@ -331,6 +333,12 @@
 "devices.files.sort" = "排序";
 "devices.files.sort.name" = "名称";
 "devices.files.sort.kind" = "类型";
+"devices.files.sort.modified" = "修改时间";
+"devices.files.sort.size" = "大小";
+"devices.files.sort.direction" = "排序方向";
+"devices.files.sort.ascending" = "升序";
+"devices.files.sort.descending" = "降序";
+"devices.files.sort.folders_first" = "文件夹优先；缺失数据排在同组末尾";
 "devices.network.reachability" = "可达性";
 "devices.network.ports" = "端口";
 "devices.network.ports.empty" = "DSM 暂未返回可识别的服务端口。";
@@ -1058,3 +1066,5 @@
 
 "player.episode.previous" = "上一集";
 "player.episode.next" = "下一集";
+
+"player.play_from_beginning" = "从头播放";

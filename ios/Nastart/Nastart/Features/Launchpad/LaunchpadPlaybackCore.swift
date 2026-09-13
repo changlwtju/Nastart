@@ -211,15 +211,15 @@ struct MediaPlaybackRequest: Identifiable {
     let source: MediaPlaybackSource
     let contentKind: MediaPlaybackContentKind
     let fileExtensionOverride: String?
-    let initialPosition: Double?
+    var initialPosition: Double?
     let externalSubtitleURL: URL?
     let preferredAudioTrackOrdinal: Int?
     let preferredSubtitleTrackOrdinal: Int?
-    let prefersSubtitlesDisabled: Bool
+    var prefersSubtitlesDisabled: Bool
     let initialOrientationMode: PlayerOrientationMode
     let initialPlaybackRate: Float
     let timelineOffsetSeconds: Double
-    let totalDurationSeconds: Double?
+    var totalDurationSeconds: Double?
     let byteLength: Int64?
     let estimatedBitrate: Int?
     let isPrivateNetworkRoute: Bool?
@@ -234,8 +234,8 @@ struct MediaPlaybackRequest: Identifiable {
     let externalHandoffResourceLoader: (() async -> MediaPlaybackResource?)?
     let sourceAudioTracks: [MediaPlaybackSourceTrack]
     let sourceSubtitleTracks: [MediaPlaybackSourceTrack]
-    let selectedSourceAudioTrackID: Int?
-    let selectedSourceSubtitleTrackID: Int?
+    var selectedSourceAudioTrackID: Int?
+    var selectedSourceSubtitleTrackID: Int?
     let sourceTrackRequestLoader: ((Int?, Int?, MediaPlaybackRuntimeState) async -> MediaPlaybackRequest?)?
     let serverSeekRequestLoader: ((Double, MediaPlaybackRuntimeState) async -> MediaPlaybackRequest?)?
     let qualityOptions: [MediaPlaybackQualityOption]
@@ -244,6 +244,7 @@ struct MediaPlaybackRequest: Identifiable {
     let playbackTraceID: String?
     let audioLyricsURL: URL?
     let episodeNavigationLoader: (() async -> MediaPlaybackEpisodeNavigation?)?
+    let localResumeKey: String?
 
     init(
         requestedAt: Date = Date(),
@@ -285,7 +286,8 @@ struct MediaPlaybackRequest: Identifiable {
         qualityRequestLoader: ((String, MediaPlaybackRuntimeState) async -> MediaPlaybackRequest?)? = nil,
         playbackTraceID: String? = nil,
         audioLyricsURL: URL? = nil,
-        episodeNavigationLoader: (() async -> MediaPlaybackEpisodeNavigation?)? = nil
+        episodeNavigationLoader: (() async -> MediaPlaybackEpisodeNavigation?)? = nil,
+        localResumeKey: String? = nil
     ) {
         self.requestedAt = requestedAt
         self.url = url
@@ -327,6 +329,7 @@ struct MediaPlaybackRequest: Identifiable {
         self.playbackTraceID = playbackTraceID?.isEmpty == false ? playbackTraceID : nil
         self.episodeNavigationLoader = episodeNavigationLoader
         self.audioLyricsURL = audioLyricsURL
+        self.localResumeKey = localResumeKey
     }
 
     var fileExtensionHint: String {
@@ -466,7 +469,8 @@ struct MediaPlaybackRequest: Identifiable {
             qualityRequestLoader: qualityRequestLoader,
             playbackTraceID: playbackTraceID,
             audioLyricsURL: audioLyricsURL,
-            episodeNavigationLoader: episodeNavigationLoader
+            episodeNavigationLoader: episodeNavigationLoader,
+            localResumeKey: localResumeKey
         )
     }
 
@@ -520,7 +524,8 @@ struct MediaPlaybackRequest: Identifiable {
             qualityRequestLoader: qualityRequestLoader,
             playbackTraceID: playbackTraceID,
             audioLyricsURL: audioLyricsURL,
-            episodeNavigationLoader: episodeNavigationLoader
+            episodeNavigationLoader: episodeNavigationLoader,
+            localResumeKey: localResumeKey
         )
     }
 }
@@ -596,7 +601,7 @@ final class MediaPlaybackTracker {
         }
     }
 
-    func stopped(failed: Bool = false) {
+    func stopped(failed: Bool = false, positionSeconds: Double? = nil) {
         defer { releasePreparedResources() }
         lock.lock()
         guard didStart, !didStop else {
@@ -604,6 +609,9 @@ final class MediaPlaybackTracker {
             return
         }
         didStop = true
+        if let positionSeconds, positionSeconds.isFinite, positionSeconds >= 0 {
+            lastPositionSeconds = positionSeconds
+        }
         let position = lastPositionSeconds
         lock.unlock()
         eventHandler(.stopped(positionSeconds: position, failed: failed))

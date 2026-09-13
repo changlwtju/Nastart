@@ -107,6 +107,8 @@ public class AudioEnginePlayer: AudioOutput {
     public let engine = AVAudioEngine()
     private var sourceNode: AVAudioSourceNode?
     private var sourceNodeAudioFormat: AVAudioFormat?
+    private var wantsPlayback = false // Owned by controlQueue, including format rebuilds.
+    private var configurationObserver: NSObjectProtocol?
 
 //    private let reverb = AVAudioUnitReverb()
 //    private let nbandEQ = AVAudioUnitEQ()
@@ -153,6 +155,23 @@ public class AudioEnginePlayer: AudioOutput {
     }
 
     public required init() {
+        configurationObserver = NotificationCenter.default.addObserver(
+            forName: .AVAudioEngineConfigurationChange, object: engine, queue: nil
+        ) { [weak self] _ in
+            // Core Audio stops/uninitializes the engine on channel/rate changes.
+            // Never rebuild synchronously on its internal notification queue.
+            self?.controlQueue.async { [weak self] in
+                guard let self, self.wantsPlayback, !self.engine.isRunning,
+                      self.sourceNode != nil else { return }
+                do {
+                    self.engine.prepare()
+                    try self.engine.start()
+                    NSLog("KSPlayer audio configuration recovered running=\(self.engine.isRunning)")
+                } catch {
+                    NSLog("KSPlayer audio configuration recovery failed: \(error)")
+                }
+            }
+        }
         engine.attach(timePitch)
         if let audioUnit = engine.outputNode.audioUnit {
             addRenderNotify(audioUnit: audioUnit)
@@ -160,6 +179,11 @@ public class AudioEnginePlayer: AudioOutput {
         #if !os(macOS)
         outputLatency = AVAudioSession.sharedInstance().outputLatency
         #endif
+    }
+
+    deinit {
+        if let configurationObserver { NotificationCenter.default.removeObserver(configurationObserver) }
+        engine.stop()
     }
 
     public func prepare(audioFormat: AVAudioFormat) {
@@ -179,8 +203,11 @@ public class AudioEnginePlayer: AudioOutput {
         if let channelLayout = audioFormat.channelLayout {
             KSLog("[audio] outputFormat channelLayout \(channelLayout.channelDescriptions)")
         }
-        let isRunning = engine.isRunning
         engine.stop()
+        if let sourceNode {
+            engine.disconnectNodeOutput(sourceNode)
+            engine.detach(sourceNode)
+        }
         engine.reset()
         sourceNode = AVAudioSourceNode(format: audioFormat) { [weak self] _, timestamp, frameCount, audioBufferList in
             if timestamp.pointee.mSampleTime == 0 {
@@ -203,12 +230,10 @@ public class AudioEnginePlayer: AudioOutput {
         // 一定要传入format，这样多音轨音响才不会有问题。
         engine.connect(nodes: nodes, format: audioFormat)
         engine.prepare()
-        if isRunning {
-            try? engine.start()
-            // 从多声道切换到2声道马上调用start会不生效。需要异步主线程才可以
-            DispatchQueue.main.async { [weak self] in
-                self?.play()
-            }
+        NSLog("KSPlayer audio format prepared channels=\(audioFormat.channelCount) sampleRate=\(audioFormat.sampleRate) nodes=\(engine.attachedNodes.count) wantsPlayback=\(wantsPlayback)")
+        if wantsPlayback {
+            do { try engine.start() }
+            catch { KSLog(error) }
         }
     }
 
@@ -218,7 +243,9 @@ public class AudioEnginePlayer: AudioOutput {
 
     public func play() {
         controlQueue.async { [weak self] in
-            guard let self, !self.engine.isRunning else { return }
+            guard let self else { return }
+            self.wantsPlayback = true
+            guard !self.engine.isRunning else { return }
             do { try self.engine.start() }
             catch { KSLog(error) }
         }
@@ -226,7 +253,9 @@ public class AudioEnginePlayer: AudioOutput {
 
     public func pause() {
         controlQueue.async { [weak self] in
-            guard let self, self.engine.isRunning else { return }
+            guard let self else { return }
+            self.wantsPlayback = false
+            guard self.engine.isRunning else { return }
             self.engine.pause()
         }
     }
@@ -288,11 +317,14 @@ public class AudioEnginePlayer: AudioOutput {
                 continue
             }
             if sourceNodeAudioFormat != currentRender.audioFormat {
-                runOnMainThread { [weak self] in
-                    guard let self else {
-                        return
-                    }
-                    self.prepare(audioFormat: currentRender.audioFormat)
+                // A queued format request can outlive the track that produced it.
+                // Rebuild on the same queue as play/pause and discard stale frames.
+                controlQueue.async { [weak self] in
+                    guard let self, self.currentRender?.audioFormat == currentRender.audioFormat else { return }
+                    self.prepareOnControlQueue(audioFormat: currentRender.audioFormat)
+                }
+                for buffer in ioData {
+                    if let data = buffer.mData { memset(data, 0, Int(buffer.mDataByteSize)) }
                 }
                 return
             }

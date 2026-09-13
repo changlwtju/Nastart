@@ -1,5 +1,113 @@
 import Foundation
 
+/// Reconsider a restrictive Wi-Fi sample on a later playback attempt, without
+/// probing on every tap or treating a failed sample as proof of more bandwidth.
+enum GreenfieldBandwidthSamplePolicy {
+    static func canReuse(age: TimeInterval, networkKey: String, wasMeasured: Bool,
+                         safeBitrate: Int, originalSourceBitrate: Int?, rawBitrate: Int? = nil) -> Bool {
+        let originalBudget = GreenfieldOriginalPlaybackPolicy.maximumOriginalBitrate(
+            networkKey: networkKey, wasMeasured: wasMeasured,
+            rawBitrate: rawBitrate ?? safeBitrate, conservativeBitrate: safeBitrate)
+        let restrictsOriginal = networkKey == "wifi"
+            && originalSourceBitrate.map { $0 > 0 && (!wasMeasured || originalBudget < $0) } == true
+        let lifetime: TimeInterval = restrictsOriginal ? 30 : 600
+        return age >= 0 && age < lifetime
+    }
+}
+
+/// Original playback is a decoder decision followed by a network decision.
+/// Container size alone must not override measured, sufficient Wi-Fi bandwidth.
+enum GreenfieldOriginalPlaybackPolicy {
+    static func bitmapSubtitleDecoderName(_ codec: String?) -> String? {
+        switch codec?.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() {
+        case "pgssub", "hdmv_pgs_subtitle": return "pgssub"
+        case "dvdsub", "dvd_subtitle": return "dvdsub"
+        case "dvbsub", "dvb_subtitle": return "dvbsub"
+        default: return nil
+        }
+    }
+
+    /// HLS encoder ceilings are not limits on measured Wi-Fi file delivery.
+    /// Do not inflate the sample; retain conservative budgets off Wi-Fi or
+    /// when no successful measurement is available.
+    static func maximumOriginalBitrate(networkKey: String, wasMeasured: Bool,
+                                       rawBitrate: Int, conservativeBitrate: Int) -> Int {
+        guard networkKey == "wifi", wasMeasured, rawBitrate > 0 else { return conservativeBitrate }
+        return rawBitrate
+    }
+
+    static func allowsOriginal(forcedServerBitrate: Int?, audioRequiresTranscode: Bool,
+                               subtitleRequiresServer: Bool, routeIsPrivate: Bool,
+                               explicitOriginal: Bool, remoteBitrateFits: Bool,
+                               experimentalOriginal: Bool = false) -> Bool {
+        forcedServerBitrate == nil
+            && (!audioRequiresTranscode || experimentalOriginal)
+            && (!subtitleRequiresServer || experimentalOriginal)
+            && (routeIsPrivate || explicitOriginal || remoteBitrateFits || experimentalOriginal)
+    }
+
+    static func audioDecoderName(_ codec: String?) -> String? {
+        guard let codec = codec?.trimmingCharacters(in: .whitespacesAndNewlines).lowercased(),
+              !codec.isEmpty else { return nil }
+        switch codec {
+        case "eac3-joc": return "eac3"
+        case "dts-hd", "dtshd", "dts-hd ma": return "dca"
+        case "dts": return "dca"
+        // "Atmos" describes an extension, not its underlying audio codec.
+        case "atmos": return nil
+        default: return codec
+        }
+    }
+
+    static func requiresAudioTranscode(codec: String?, decoderAvailable: Bool) -> Bool {
+        guard let codec, !codec.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            return false // Missing metadata: let the demuxer discover the track.
+        }
+        return !decoderAvailable
+    }
+
+    static func retainsLargeRemoteGuard(networkKey: String, bandwidthBasis: String,
+                                        sourceBitrate: Int?, originalBudget: Int) -> Bool {
+        guard networkKey == "wifi", bandwidthBasis == "measured",
+              let sourceBitrate, sourceBitrate > 0, originalBudget >= sourceBitrate else { return true }
+        return false
+    }
+}
+
+/// Source evidence only. Neither codec recognition nor PCM decoding certifies
+/// Dolby rendering or Atmos object output on the current device/audio route.
+struct PlaybackDolbySourceInfo: Hashable, Sendable {
+    var visionProfile: Int?
+    var visionLevel: Int?
+    var baseLayerCompatibilityID: Int?
+    var audioCodec: String?
+    var audioProfile: String?
+    var audioSpatialFormat: String?
+
+    var audioEvidence: String {
+        let codec = audioCodec?.lowercased() ?? ""
+        let profile = audioProfile?.uppercased() ?? ""
+        let declaresAtmos = audioSpatialFormat?.lowercased() == "dolbyatmos"
+        if codec == "eac3-joc" || (codec == "eac3" && (profile.contains("JOC") || declaresAtmos)) {
+            return "eac3JOC"
+        }
+        if codec == "truehd" || codec == "mlp" {
+            return profile.contains("ATMOS") || declaresAtmos ? "trueHDAtmos" : "trueHDAtmosUnknown"
+        }
+        if codec == "eac3" { return "eac3AtmosUnknown" }
+        return "unknown"
+    }
+
+    var diagnosticDetails: [String: String] {
+        ["sourceDVProfile": visionProfile.map(String.init) ?? "unknown",
+         "sourceDVLevel": visionLevel.map(String.init) ?? "unknown",
+         "sourceDVCompatibilityID": baseLayerCompatibilityID.map(String.init) ?? "unknown",
+         "sourceDolbyAudio": audioEvidence,
+         "sourceAudioSpatialFormat": audioSpatialFormat ?? "unknown",
+         "dolbyVisionOutput": "unverified", "dolbyAtmosOutput": "unverified"]
+    }
+}
+
 enum PlaybackSourceResolverError: Error, Equatable {
     case unsupportedSource(PlaybackSourceKind)
     case missingPlayableURL

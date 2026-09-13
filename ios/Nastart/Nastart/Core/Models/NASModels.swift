@@ -737,7 +737,6 @@ enum ServiceWebMode: String, CaseIterable, Identifiable {
     case automatic
     case mobile
     case desktop
-    case focused
 
     var id: String { rawValue }
 
@@ -749,8 +748,6 @@ enum ServiceWebMode: String, CaseIterable, Identifiable {
             return "web.mode.mobile"
         case .desktop:
             return "web.mode.desktop"
-        case .focused:
-            return "web.mode.focused"
         }
     }
 }
@@ -762,6 +759,8 @@ struct FileItem: Identifiable, Codable {
     let path: String
     let kind: FileKind
     let sizeText: String?
+    let sizeBytes: Int64?
+    let modifiedAt: Date?
     let children: [FileItem]
 
     init(
@@ -771,7 +770,9 @@ struct FileItem: Identifiable, Codable {
         path: String? = nil,
         kind: FileKind,
         sizeText: String?,
-        children: [FileItem]
+        children: [FileItem],
+        sizeBytes: Int64? = nil,
+        modifiedAt: Date? = nil
     ) {
         self.id = id
         self.name = name
@@ -779,6 +780,8 @@ struct FileItem: Identifiable, Codable {
         self.path = path ?? subtitle
         self.kind = kind
         self.sizeText = sizeText
+        self.sizeBytes = sizeBytes
+        self.modifiedAt = modifiedAt
         self.children = children
     }
 
@@ -787,6 +790,45 @@ struct FileItem: Identifiable, Codable {
             return true
         }
         return false
+    }
+}
+
+enum FileBrowserSort: String, CaseIterable, Identifiable {
+    case name, kind, modified, size
+
+    var id: String { rawValue }
+    var titleKey: String { "devices.files.sort.\(rawValue)" }
+
+    func sorted(_ items: [FileItem], ascending: Bool) -> [FileItem] {
+        items.sorted { lhs, rhs in
+            // Keep folders first in both directions. Missing metadata belongs
+            // last within its group; a directory's inode size is not its contents.
+            if lhs.isFolder != rhs.isFolder { return lhs.isFolder }
+            var order = ComparisonResult.orderedSame
+            switch self {
+            case .name:
+                break
+            case .kind:
+                let left = lhs.isFolder ? "" : (lhs.name as NSString).pathExtension
+                let right = rhs.isFolder ? "" : (rhs.name as NSString).pathExtension
+                order = left.localizedStandardCompare(right)
+            case .modified:
+                if (lhs.modifiedAt == nil) != (rhs.modifiedAt == nil) { return lhs.modifiedAt != nil }
+                if let left = lhs.modifiedAt, let right = rhs.modifiedAt {
+                    order = left.compare(right)
+                }
+            case .size:
+                if !lhs.isFolder {
+                    if (lhs.sizeBytes == nil) != (rhs.sizeBytes == nil) { return lhs.sizeBytes != nil }
+                    if let left = lhs.sizeBytes, let right = rhs.sizeBytes {
+                        order = left == right ? .orderedSame : (left < right ? .orderedAscending : .orderedDescending)
+                    }
+                }
+            }
+            if order == .orderedSame { order = lhs.name.localizedStandardCompare(rhs.name) }
+            if order == .orderedSame { order = lhs.path.compare(rhs.path) }
+            return ascending ? order == .orderedAscending : order == .orderedDescending
+        }
     }
 }
 

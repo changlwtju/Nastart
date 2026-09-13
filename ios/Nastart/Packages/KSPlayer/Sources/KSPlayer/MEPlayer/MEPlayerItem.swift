@@ -409,6 +409,11 @@ extension MEPlayerItem {
             return nil
         }
         var videoIndex: Int32 = -1
+        if let subtitleID = options.preferredEmbeddedSubtitleTrackID {
+            for track in assetTracks where track.mediaType == .subtitle {
+                track.isEnabled = track.trackID == subtitleID
+            }
+        }
         if !options.videoDisable {
             let videos = assetTracks.filter { $0.mediaType == .video }
             let wantedStreamNb: Int32

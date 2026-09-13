@@ -637,20 +637,6 @@ private struct DockerContainerDetailView: View {
     }
 }
 
-private enum FileBrowserSort: String, CaseIterable, Identifiable {
-    case name
-    case kind
-
-    var id: String { rawValue }
-
-    var titleKey: LocalizedStringKey {
-        switch self {
-        case .name: return "devices.files.sort.name"
-        case .kind: return "devices.files.sort.kind"
-        }
-    }
-}
-
 private struct FileBrowserView: View {
     @EnvironmentObject private var dataStore: AppDataStore
     @EnvironmentObject private var connectionStore: NASConnectionStore
@@ -658,7 +644,8 @@ private struct FileBrowserView: View {
     let items: [FileItem]
     let folderPath: String?
     @State private var query = ""
-    @State private var sort: FileBrowserSort = .name
+    @AppStorage("devices.files.sort") private var sort: FileBrowserSort = .name
+    @AppStorage("devices.files.sort.ascending") private var sortAscending = true
     @State private var loadedItems: [FileItem] = []
     @State private var didLoad = false
     @State private var isLoading = false
@@ -676,7 +663,7 @@ private struct FileBrowserView: View {
     }
 
     private var visibleItems: [FileItem] {
-        sortedItems(filteredItems(baseItems))
+        sort.sorted(filteredItems(baseItems), ascending: sortAscending)
     }
 
     var body: some View {
@@ -741,9 +728,14 @@ private struct FileBrowserView: View {
                 Menu {
                     Picker("devices.files.sort", selection: $sort) {
                         ForEach(FileBrowserSort.allCases) { option in
-                            Text(option.titleKey).tag(option)
+                            Text(LocalizedStringKey(option.titleKey)).tag(option)
                         }
                     }
+                    Picker("devices.files.sort.direction", selection: $sortAscending) {
+                        Text("devices.files.sort.ascending").tag(true)
+                        Text("devices.files.sort.descending").tag(false)
+                    }
+                    Text("devices.files.sort.folders_first")
                     if let folderPath {
                         Divider()
                         Text(folderPath)
@@ -773,23 +765,6 @@ private struct FileBrowserView: View {
             $0.name.localizedCaseInsensitiveContains(normalizedQuery)
                 || $0.subtitle.localizedCaseInsensitiveContains(normalizedQuery)
                 || $0.path.localizedCaseInsensitiveContains(normalizedQuery)
-        }
-    }
-
-    private func sortedItems(_ items: [FileItem]) -> [FileItem] {
-        items.sorted { lhs, rhs in
-            if lhs.isFolder != rhs.isFolder {
-                return lhs.isFolder
-            }
-            switch sort {
-            case .name:
-                return lhs.name.localizedCaseInsensitiveCompare(rhs.name) == .orderedAscending
-            case .kind:
-                if lhs.kind.rawValue != rhs.kind.rawValue {
-                    return lhs.kind.rawValue < rhs.kind.rawValue
-                }
-                return lhs.name.localizedCaseInsensitiveCompare(rhs.name) == .orderedAscending
-            }
         }
     }
 
@@ -883,6 +858,11 @@ private struct FileItemRow: View {
                         .foregroundStyle(.secondary)
                         .lineLimit(1)
                 }
+                if let modifiedAt = item.modifiedAt {
+                    Text(modifiedAt, format: .dateTime.year().month().day().hour().minute())
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
             }
             Spacer()
             if !item.isFolder, let sizeText = item.sizeText {
@@ -909,12 +889,29 @@ private struct FilePreviewView: View {
 #endif
     @State private var localPreview: LocalFilePreview?
     @State private var isPreparingPreview = false
+    @State private var playsFromBeginning = false
     @State private var externalPlaybackURL: URL?
     @State private var showExternalPicker = false
     @State private var externalSharePayload: FileExternalSharePayload?
     @State private var pendingExternalTarget: ExternalOpenTarget?
     @State private var pendingExternalShare = false
     @State private var showCredentialHandoffWarning = false
+
+    private var previewTitleKey: String {
+#if DEBUG
+        if usesGreenfieldPlayer, let key = localResumeKey,
+           (LocalPlaybackResumeStore.shared.entry(for: key)?.positionSeconds ?? 0) > 0 {
+            return "media.continue.title"
+        }
+#endif
+        return "devices.files.preview"
+    }
+
+    private var localResumeKey: String? {
+        guard let session = connectionStore.dsmSession else { return nil }
+        return LocalPlaybackResumeStore.key(server: session.endpoints.primaryDomain ?? session.endpoints.publicAddress ?? session.endpoints.lanAddress ?? session.baseURL,
+            account: session.account, path: item.path, byteLength: item.sizeBytes, modifiedAt: item.modifiedAt)
+    }
 
     var body: some View {
         List {
@@ -933,6 +930,7 @@ private struct FilePreviewView: View {
 
             Section {
                 Button {
+                    playsFromBeginning = false
                     previewFile()
                 } label: {
                     if isPreparingPreview {
@@ -941,10 +939,21 @@ private struct FilePreviewView: View {
                             Text("devices.files.preparing_preview")
                         }
                     } else {
-                        Label("devices.files.preview", systemImage: previewSymbolName)
+                        Label(LocalizedStringKey(previewTitleKey), systemImage: previewSymbolName)
                     }
                 }
                 .disabled(isPreparingPreview)
+#if DEBUG
+                if usesGreenfieldPlayer && (item.kind == .video || item.kind == .discImage) {
+                    Button {
+                        playsFromBeginning = true
+                        previewFile()
+                    } label: {
+                        Label("player.play_from_beginning", systemImage: "backward.end.fill")
+                    }
+                    .disabled(isPreparingPreview)
+                }
+#endif
 #if DEBUG
                 if item.kind == .video || item.kind == .audio {
                     PlaybackArchitecturePicker(usesGreenfieldPlayer: $usesGreenfieldPlayer)
@@ -1051,13 +1060,15 @@ private struct FilePreviewView: View {
                         source: .dsmFile,
                         contentKind: .discImage,
                         fileExtensionOverride: prepared.fileExtension,
+                        initialPosition: playsFromBeginning ? 0 : nil,
                         initialOrientationMode: .landscape,
                         isPrivateNetworkRoute: NetworkHostClassifier.isPrivate(selectedURL.host),
                         externalHandoffResource: MediaPlaybackResource(
                             url: selectedURL,
                             fileExtensionOverride: "iso",
                             allowsSelfSignedCertificates: session?.allowsSelfSignedCertificates
-                        )
+                        ),
+                        localResumeKey: localResumeKey
                     )
 #if DEBUG
                     if usesGreenfieldPlayer {
@@ -1161,11 +1172,11 @@ private struct FilePreviewView: View {
                     || NetworkHostClassifier.isLiteralAddress(selectedURL.host))
             let preparedProxyURL: URL?
             if shouldPrepareLocalProxy {
-                preparedProxyURL = try? await AuthenticatedMediaStreamProxy.shared.register(
+                preparedProxyURL = try? await AuthenticatedMediaStreamProxy.shared.registerOriginalStream(
                     upstreamURL: selectedURL,
                     filename: item.name,
                     allowsSelfSignedCertificates: fallbackAllowsSelfSigned,
-                    prefersFiniteRangeResponse: greenfieldRequested
+                    usesGreenfieldPlayback: greenfieldRequested
                 )
             } else {
                 preparedProxyURL = nil
@@ -1199,6 +1210,7 @@ private struct FilePreviewView: View {
                     source: .dsmFile,
                     contentKind: item.kind == .audio ? .audio : .video,
                     fileExtensionOverride: fileExtension.isEmpty ? nil : fileExtension,
+                    initialPosition: playsFromBeginning ? 0 : nil,
                     externalSubtitleURL: subtitleAsset?.playbackURL,
                     initialOrientationMode: item.kind == .video ? .landscape : .automatic,
                     isPrivateNetworkRoute: isPrivateRoute,
@@ -1217,11 +1229,11 @@ private struct FilePreviewView: View {
                                 diagnosticStage: "dsmRangeFallback",
                                 timeout: 3
                             ) ?? fallbackUpstreamURL
-                            guard let proxyURL = try? await AuthenticatedMediaStreamProxy.shared.register(
+                            guard let proxyURL = try? await AuthenticatedMediaStreamProxy.shared.registerOriginalStream(
                                 upstreamURL: resolvedFallbackURL,
                                 filename: fallbackFilename,
                                 allowsSelfSignedCertificates: fallbackAllowsSelfSigned,
-                                prefersFiniteRangeResponse: greenfieldRequested
+                                usesGreenfieldPlayback: greenfieldRequested
                             ) else {
                                 return nil
                             }
@@ -1233,7 +1245,8 @@ private struct FilePreviewView: View {
                             )
                         }
                         : nil,
-                    audioLyricsURL: lyricsURL
+                    audioLyricsURL: lyricsURL,
+                    localResumeKey: item.kind == .video ? localResumeKey : nil
                 )
 #if DEBUG
                 if greenfieldRequested {
@@ -1907,6 +1920,21 @@ final class AuthenticatedMediaStreamProxy: @unchecked Sendable {
                   url.port == Int(route.localPort.rawValue) else { return }
             routes[token]?.playlistStartSeconds = seconds
         }
+    }
+
+    /// Both media-library and file-browser originals use the same response
+    /// semantics, regardless of initial launch, quality switch, or TLS policy.
+    func registerOriginalStream(
+        upstreamURL: URL,
+        filename: String,
+        allowsSelfSignedCertificates: Bool,
+        usesGreenfieldPlayback: Bool = true,
+        playbackTraceID: String? = nil
+    ) async throws -> URL {
+        try await register(upstreamURL: upstreamURL, filename: filename,
+            allowsSelfSignedCertificates: allowsSelfSignedCertificates,
+            prefersFiniteRangeResponse: usesGreenfieldPlayback,
+            playbackTraceID: playbackTraceID)
     }
 
     func register(

@@ -188,6 +188,7 @@ struct ServiceDetailView: View {
     @State private var showExternalHint = false
     @State private var endpointOverride: URL?
     @State private var systemBrowserPresentation: SystemBrowserPresentation?
+    @State private var webBrowserPresentation: SystemBrowserPresentation?
     @State private var mediaLibraryPresentation: MediaLibraryPresentation?
     @State private var showEndpointEditor = false
     @State private var showDeleteManualConfirmation = false
@@ -244,18 +245,9 @@ struct ServiceDetailView: View {
                             }
                         }
                     } else {
-                        NavigationLink {
-                            ServiceWebUIView(
-                                service: service,
-                                endpoint: endpoint,
-                                allowsSelfSignedCertificates: ServiceCertificatePolicy.allowsBypass(
-                                    for: endpoint,
-                                    session: connectionStore.dsmSession
-                                ),
-                                dsmSession: service.source == .dsm || service.source == .package
-                                    ? connectionStore.dsmSession
-                                    : nil
-                            )
+                        Button {
+                            recordServiceRouteRequest(action: "web", endpoint: endpoint, engine: "WKWebView")
+                            webBrowserPresentation = SystemBrowserPresentation(url: endpoint)
                         } label: {
                             Label {
                                 Text(LocalizedStringKey(service.isDeveloperConsole ? "service.action.open_console" : "service.action.open_web"))
@@ -263,13 +255,6 @@ struct ServiceDetailView: View {
                                 Image(systemName: service.isDeveloperConsole ? "terminal" : "safari")
                             }
                         }
-                        .simultaneousGesture(TapGesture().onEnded {
-                            recordServiceRouteRequest(
-                                action: "web",
-                                endpoint: endpoint,
-                                engine: "WKWebView"
-                            )
-                        })
                     }
                 } else {
                     Label {
@@ -410,6 +395,27 @@ struct ServiceDetailView: View {
                 systemBrowserPresentation = nil
             }
             .ignoresSafeArea()
+        }
+        // Own a separate navigation stack: changing both the tab bar and
+        // bottom toolbar visibility during a push loops SwiftUI layout on iOS 16.
+        .fullScreenCover(item: $webBrowserPresentation) { presentation in
+            NavigationStack {
+                ServiceWebUIView(
+                    service: service,
+                    endpoint: presentation.url,
+                    allowsSelfSignedCertificates: ServiceCertificatePolicy.allowsBypass(
+                        for: presentation.url, session: connectionStore.dsmSession),
+                    dsmSession: service.source == .dsm || service.source == .package
+                        ? connectionStore.dsmSession : nil
+                )
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Button { webBrowserPresentation = nil } label: {
+                            Label("web.back", systemImage: "chevron.backward")
+                        }
+                    }
+                }
+            }
         }
         .fullScreenCover(item: $mediaLibraryPresentation) { presentation in
             NavigationStack {
@@ -907,6 +913,8 @@ struct ServiceWebUIView: View {
     let dsmSession: DSMSession?
     @Environment(\.dismiss) private var dismiss
     @State private var selectedMode = ServiceWebMode.automatic
+    @AppStorage("web.compact_browsing") private var compactBrowsing = true
+    @State private var showModeHelp = false
     @State private var showCompatibilityBrowser = false
     @State private var browserCommand: WebBrowserCommand?
     @State private var showCopiedHint = false
@@ -1043,8 +1051,8 @@ struct ServiceWebUIView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
-                if !service.forcesMobileWebMode {
-                    Menu {
+                Menu {
+                    if !service.forcesMobileWebMode {
                         Picker(selection: $selectedMode) {
                             ForEach(ServiceWebMode.allCases) { mode in
                                 Text(LocalizedStringKey(mode.titleKey)).tag(mode)
@@ -1052,22 +1060,29 @@ struct ServiceWebUIView: View {
                         } label: {
                             Text("web.mode.title")
                         }
-                    } label: {
-                        Image(systemName: "rectangle.on.rectangle")
                     }
-                    .accessibilityLabel(Text("web.mode.title"))
-                }
-
-                Button {
-                    sendBrowserCommand(isLoading ? .stop : .reload)
-                } label: {
-                    Image(systemName: isLoading ? "xmark" : "arrow.clockwise")
-                }
-                .accessibilityLabel(
-                    Text(LocalizedStringKey(isLoading ? "web.stop" : "action.refresh"))
-                )
-
-                Menu {
+                    Toggle("web.compact_browsing", isOn: $compactBrowsing)
+                    Button("web.mode.help") { showModeHelp = true }
+                    Divider()
+                    Button {
+                        sendBrowserCommand(.back)
+                    } label: {
+                        Label("web.back", systemImage: "chevron.backward")
+                    }
+                    .disabled(!canGoBack)
+                    Button {
+                        sendBrowserCommand(.forward)
+                    } label: {
+                        Label("web.forward", systemImage: "chevron.forward")
+                    }
+                    .disabled(!canGoForward)
+                    Button {
+                        sendBrowserCommand(isLoading ? .stop : .reload)
+                    } label: {
+                        Label(LocalizedStringKey(isLoading ? "web.stop" : "action.refresh"),
+                              systemImage: isLoading ? "xmark" : "arrow.clockwise")
+                    }
+                    Divider()
                     Button {
                         UIPasteboard.general.string = currentURL.absoluteString
                         showCopiedHint = true
@@ -1100,42 +1115,54 @@ struct ServiceWebUIView: View {
                 .accessibilityLabel(Text("web.more"))
             }
 
-            ToolbarItemGroup(placement: .bottomBar) {
-                Button {
-                    sendBrowserCommand(.back)
-                } label: {
-                    Image(systemName: "chevron.backward")
+        }
+        .safeAreaInset(edge: .bottom, spacing: 0) {
+            if !compactBrowsing {
+                HStack(spacing: 24) {
+                    Button {
+                        sendBrowserCommand(.back)
+                    } label: {
+                        Image(systemName: "chevron.backward")
+                    }
+                    .disabled(!canGoBack)
+                    .accessibilityLabel(Text("web.back"))
+
+                    Button {
+                        sendBrowserCommand(.forward)
+                    } label: {
+                        Image(systemName: "chevron.forward")
+                    }
+                    .disabled(!canGoForward)
+                    .accessibilityLabel(Text("web.forward"))
+
+                    Spacer()
+
+                    Text(currentURL.host ?? service.name)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+
+                    Spacer()
+
+                    Button {
+                        sharePayload = ServiceSharePayload(url: currentURL)
+                    } label: {
+                        Image(systemName: "square.and.arrow.up")
+                    }
+                    .accessibilityLabel(Text("web.share"))
                 }
-                .disabled(!canGoBack)
-                .accessibilityLabel(Text("web.back"))
-
-                Button {
-                    sendBrowserCommand(.forward)
-                } label: {
-                    Image(systemName: "chevron.forward")
-                }
-                .disabled(!canGoForward)
-                .accessibilityLabel(Text("web.forward"))
-
-                Spacer()
-
-                Text(currentURL.host ?? service.name)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .lineLimit(1)
-
-                Spacer()
-
-                Button {
-                    sharePayload = ServiceSharePayload(url: currentURL)
-                } label: {
-                    Image(systemName: "square.and.arrow.up")
-                }
-                .accessibilityLabel(Text("web.share"))
+                .padding(.horizontal)
+                .frame(height: 44)
+                .background(.bar)
             }
         }
         .alert("web.copy.done", isPresented: $showCopiedHint) {
             Button("action.ok", role: .cancel) {}
+        }
+        .alert("web.mode.help", isPresented: $showModeHelp) {
+            Button("action.ok", role: .cancel) {}
+        } message: {
+            Text("web.mode.explanation")
         }
         .sheet(item: $sharePayload) { payload in
             SystemShareView(items: [payload.url])
@@ -1172,7 +1199,7 @@ struct ServiceWebUIView: View {
             return ResolvedWebMode(usesDesktopUserAgent: service.prefersEnhancedWebMode)
         case .mobile:
             return ResolvedWebMode(usesDesktopUserAgent: false)
-        case .desktop, .focused:
+        case .desktop:
             return ResolvedWebMode(usesDesktopUserAgent: true)
         }
     }
@@ -1355,14 +1382,14 @@ private struct WebContainerView: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: WKWebView, context: Context) {
+        let modeChanged = context.coordinator.parent.prefersDesktopMode != prefersDesktopMode
         context.coordinator.parent = self
-        if uiView.configuration.defaultWebpagePreferences.preferredContentMode != preferredContentMode {
-            uiView.configuration.defaultWebpagePreferences.preferredContentMode = preferredContentMode
-            context.coordinator.load(url, in: uiView)
-            return
-        }
         if context.coordinator.lastRequestedURL != url {
             context.coordinator.load(url, in: uiView)
+        } else if modeChanged {
+            // Reload the page the user reached, preserving endpoint identity
+            // and history. Navigation preferences below apply the new mode.
+            uiView.reload()
         }
         if let command, context.coordinator.lastCommandID != command.id {
             context.coordinator.lastCommandID = command.id
@@ -1646,25 +1673,27 @@ private struct WebContainerView: UIViewRepresentable {
         func webView(
             _ webView: WKWebView,
             decidePolicyFor navigationAction: WKNavigationAction,
-            decisionHandler: @escaping (WKNavigationActionPolicy) -> Void
+            preferences: WKWebpagePreferences,
+            decisionHandler: @escaping (WKNavigationActionPolicy, WKWebpagePreferences) -> Void
         ) {
+            preferences.preferredContentMode = parent.preferredContentMode
             guard let targetURL = navigationAction.request.url else {
-                decisionHandler(.cancel)
+                decisionHandler(.cancel, preferences)
                 return
             }
             let scheme = targetURL.scheme?.lowercased()
             if scheme == "http" || scheme == "https" || scheme == "about" {
                 if navigationAction.navigationType == .linkActivated,
                    DirectMediaURLPolicy.isLikelyMediaURL(targetURL) {
-                    decisionHandler(.cancel)
+                    decisionHandler(.cancel, preferences)
                     DispatchQueue.main.async {
                         self.parent.pendingMediaURL = targetURL
                     }
                     return
                 }
-                decisionHandler(navigationAction.shouldPerformDownload ? .download : .allow)
+                decisionHandler(navigationAction.shouldPerformDownload ? .download : .allow, preferences)
             } else {
-                decisionHandler(.cancel)
+                decisionHandler(.cancel, preferences)
                 guard navigationAction.navigationType == .linkActivated else { return }
                 DispatchQueue.main.async {
                     UIApplication.shared.open(targetURL)

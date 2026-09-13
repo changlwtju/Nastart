@@ -114,6 +114,24 @@ public class CircularBuffer<Item: ObjectQueueItem> {
         }
     }
 
+    /// Consume a ready prefix atomically and retain only its newest item.
+    /// Bitmap display sets replace earlier sets, including explicit clears.
+    public func popLatest(where predicate: (Item) -> Bool) -> Item? {
+        condition.lock()
+        defer { condition.unlock() }
+        guard !destroyed else { return nil }
+        var latest: Item?
+        while headIndex < tailIndex {
+            let index = Int(headIndex & mask)
+            guard let item = _buffer[index], predicate(item) else { break }
+            latest = item
+            _buffer[index] = nil
+            headIndex &+= 1
+        }
+        if latest != nil { condition.broadcast() }
+        return latest
+    }
+
     public func search(where predicate: (Item) -> Bool) -> [Item] {
         condition.lock()
         defer { condition.unlock() }

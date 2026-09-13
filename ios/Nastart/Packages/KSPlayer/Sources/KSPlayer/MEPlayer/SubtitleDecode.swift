@@ -19,6 +19,7 @@ class SubtitleDecode: DecodeProtocol {
     private var subtitle = AVSubtitle()
     private var startTime = TimeInterval(0)
     private let assParse = AssParse()
+    private var reportedBitmapCanvas = false
     required init(assetTrack: FFmpegAssetTrack, options: KSOptions) {
         startTime = assetTrack.startTime.seconds
         do {
@@ -116,16 +117,23 @@ class SubtitleDecode: DecodeProtocol {
         }
         if images.count > 0 {
             let part = SubtitlePart(0, 0, attributedString: nil)
-            if images.count > 1 {
-                origin = .zero
-            }
+            let bounds = images.map(\.0).reduce(CGRect.null) { $0.union($1) }
+            origin = bounds.origin
+            let croppedImages = images.map { ( $0.0.offsetBy(dx: -bounds.minX, dy: -bounds.minY), $0.1 ) }
             var image: UIImage?
             // 因为字幕需要有透明度,所以不能用jpg；tif在iOS支持没有那么好，会有绿色背景； 用heic格式，展示的时候会卡主线程；所以最终用png。
-            if let data = CGImage.combine(images: images)?.data(type: .png, quality: 0.2) {
+            if let data = CGImage.combine(images: croppedImages)?.data(type: .png, quality: 0.2) {
                 image = UIImage(data: data)
             }
             part.image = image
             part.origin = origin
+            if let context = codecContext?.pointee {
+                part.imageCanvasSize = CGSize(width: Int(context.width), height: Int(context.height))
+            }
+            if !reportedBitmapCanvas {
+                reportedBitmapCanvas = true
+                KSLog("bitmapSubtitle canvas=\(part.imageCanvasSize) image=\(image?.size ?? .zero) origin=\(origin)")
+            }
             parts.append(part)
         }
         if let attributedString {

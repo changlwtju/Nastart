@@ -122,15 +122,17 @@
 "external.jellyfin_app" = "Jellyfin App";
 "service.console.title" = "Developer Console";
 "service.console.subtitle" = "Keeps common control keys close by for sending commands and watching output on mobile.";
-"web.mode.title" = "Open Mode";
+"web.mode.title" = "Website Version";
 "web.stop" = "Stop Loading";
 "web.more" = "More Browser Actions";
 "web.back" = "Back";
 "web.forward" = "Forward";
 "web.mode.automatic" = "Auto";
-"web.mode.mobile" = "Mobile";
-"web.mode.desktop" = "Desktop";
-"web.mode.focused" = "Focus";
+"web.mode.mobile" = "Request Mobile Site";
+"web.mode.desktop" = "Request Desktop Site";
+"web.compact_browsing" = "Compact Browsing";
+"web.mode.help" = "About Browsing Options";
+"web.mode.explanation" = "Auto chooses a version for each service, preferring desktop for some management consoles.\nMobile / Desktop requests that version from the website. Sites without separate layouts may look the same. Switching reloads the current page.\nCompact Browsing hides the bottom browser toolbar. Back, reload and share remain in the menu; the website version stays the same. App tabs are always hidden inside services.";
 "media.audio.title" = "Audio Library";
 "media.video.title" = "Video Library";
 "media.library.description" = "Browse the library, then play a direct stream in Nastart or hand it off to another player.";
@@ -331,6 +333,12 @@
 "devices.files.sort" = "Sort";
 "devices.files.sort.name" = "Name";
 "devices.files.sort.kind" = "Type";
+"devices.files.sort.modified" = "Modified";
+"devices.files.sort.size" = "Size";
+"devices.files.sort.direction" = "Sort Direction";
+"devices.files.sort.ascending" = "Ascending";
+"devices.files.sort.descending" = "Descending";
+"devices.files.sort.folders_first" = "Folders first; missing values last in each group";
 "devices.network.reachability" = "Reachability";
 "devices.network.ports" = "Ports";
 "devices.network.ports.empty" = "DSM did not return any recognizable service ports.";
@@ -1058,3 +1066,5 @@
 
 "player.episode.previous" = "Previous episode";
 "player.episode.next" = "Next episode";
+
+"player.play_from_beginning" = "Play from Beginning";

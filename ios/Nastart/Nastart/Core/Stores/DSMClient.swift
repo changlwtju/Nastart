@@ -862,8 +862,8 @@ final class DSMClient {
             return items
         }
         let encodedPath = Self.jsonQueryValue(normalizedPath) ?? normalizedPath
-        let encodedAdditional = Self.jsonQueryValue(["real_path", "size", "type"])
-            ?? "[\"real_path\",\"size\",\"type\"]"
+        let encodedAdditional = Self.jsonQueryValue(["real_path", "size", "type", "time"])
+            ?? "[\"real_path\",\"size\",\"type\",\"time\"]"
         let pageSize = 500
         var offset = 0
         var allItems: [FileItem] = []
@@ -1817,7 +1817,7 @@ final class DSMClient {
         .sorted(by: sortFiles)
     }
 
-    private static func mapFileItems(_ data: DSMJSONValue?, parentPath: String) -> [FileItem] {
+    static func mapFileItems(_ data: DSMJSONValue?, parentPath: String) -> [FileItem] {
         guard let entries = data?.firstArray(for: ["files", "items", "list"]) else { return [] }
         return entries.compactMap { item in
             let path = filePath(for: item, parentPath: parentPath)
@@ -1830,7 +1830,9 @@ final class DSMClient {
                 path: path ?? normalizedChildPath(parentPath: parentPath, name: name),
                 kind: kind,
                 sizeText: kind == .folder ? nil : fileSizeText(item),
-                children: []
+                children: [],
+                sizeBytes: kind == .folder ? nil : fileSizeBytes(item),
+                modifiedAt: fileModifiedAt(item)
             )
         }
         .sorted(by: sortFiles)
@@ -1900,6 +1902,20 @@ final class DSMClient {
             return formatted
         }
         return DSMFormatters.bytes(item.firstDouble(for: ["size", "filesize"]))
+    }
+
+    private static func fileSizeBytes(_ item: DSMJSONValue) -> Int64? {
+        guard let value = item.firstDouble(for: ["size", "filesize"]),
+              value.isFinite, value >= 0, value < Double(Int64.max) else { return nil }
+        return Int64(value)
+    }
+
+    private static func fileModifiedAt(_ item: DSMJSONValue) -> Date? {
+        let value = item["additional"]?["time"]?["mtime"]?.doubleValue
+            ?? item["time"]?["mtime"]?.doubleValue
+            ?? item.firstDirectDouble(for: ["mtime", "modified_time"])
+        guard let value, value.isFinite, value > 0 else { return nil }
+        return Date(timeIntervalSince1970: value)
     }
 
     private static func sortFiles(_ lhs: FileItem, _ rhs: FileItem) -> Bool {

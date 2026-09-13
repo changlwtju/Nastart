@@ -1,6 +1,6 @@
 # Nastart Documentation Structure
 
-最新播放任务接续：[2026-09-06 新对话交接](handoffs/2026-09-06-NEXT-CHAT-PLAYBACK.md)。
+最新任务接续：[2026-09-14 单位黑群晖接续指南（无 Xcode/真机）](handoffs/2026-09-14-NAS-DAYTIME-CONTINUATION.md)。
 
 This directory is the source of truth for Nastart product, architecture,
 security, research, and project planning documents.
@@ -53,3 +53,5 @@ security, research, and project planning documents.
 - Treat strategic and security documents as living documents.
 
 后续媒体能力：[Dolby Vision / Dolby Atmos 播放路线](project/DOLBY_PLAYBACK_ROADMAP.md)。
+
+播放优化任务总账：[播放体验分批计划与 PX-01～PX-21、UX-01～UX-04 状态](project/PLAYBACK_EXPERIENCE_PRIORITIES.md)。每次恢复播放优化及每批结束时核对全表，避免跨会话遗漏需求。

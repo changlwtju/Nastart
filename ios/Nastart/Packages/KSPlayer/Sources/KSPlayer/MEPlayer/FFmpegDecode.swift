@@ -16,6 +16,11 @@ public extension KSOptions {
         guard let codec = avcodec_find_decoder_by_name(name.lowercased()) else { return false }
         return codec.pointee.type == AVMEDIA_TYPE_AUDIO
     }
+
+    static func hasSubtitleDecoder(named name: String) -> Bool {
+        guard let codec = avcodec_find_decoder_by_name(name.lowercased()) else { return false }
+        return codec.pointee.type == AVMEDIA_TYPE_SUBTITLE
+    }
 }
 
 class FFmpegDecode: DecodeProtocol {

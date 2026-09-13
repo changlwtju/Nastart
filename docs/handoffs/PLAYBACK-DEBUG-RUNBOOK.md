@@ -4,6 +4,12 @@
 
 本文是后续真机播放调试的唯一执行约束。交接、源码优化、真机回归和结果复核都必须先读取本文，再读取当轮交接文档。本文记录全局链路和历史故障；单个视频的偶发现象不能覆盖这些约束。
 
+2026-09-11 起，播放优化需求和分批状态统一维护在 [PX-01～PX-19 任务总账](../project/PLAYBACK_EXPERIENCE_PRIORITIES.md)。用户已授权分批实施，要求不得遗漏；恢复任务及每批结束必须核对全部未验收编号，受阻项目保留原因和下一步。本规范继续约束验收，历史手动清晰度秒切优先级由总账中的“基础播放优先、自动画质”取代。
+
+2026-09-12 用户新增 **S19《指环王 1》100 GB 以上文件**，并要求优先用于首帧、续播及音轨/字幕/画质切换测试。当前矩阵为 19×4，按 [S19 专项](2026-09-12-S19-LORD-OF-THE-RINGS.md) 执行本轮大文件压力测试；下文历史 S01→S18 顺序保留，其未完成项不得因新增专项删除。不得按 S19 单独硬编码缓冲/解码参数。
+
+设备手动签名补充：无签名构建的 app 根目录可能包含 `Nastart.debug.dylib`、`__preview.dylib`，必须与 Frameworks 中所有动态库一起签名，并对每个动态库独立执行签名验证。只验证 app 外壳或链接隔离不足以排除启动时 DYLD 签名失败。2026-09-11 已遇到并修正该打包故障，不能将其计作播放器失败。
+
 ## 2026-08-15 本轮通用修复门槛
 
 - 本轮已修正标准 `bytes=start-end` 与 `bytes=start-` 请求解析；不得只测试非标准的 `bytes start-` 形式。
@@ -169,6 +175,12 @@ iPhone iOS 16 的历史成功证据不是“直接启动 Runner App”，而是 
 - 当前续接记录：[2026-08-12-CONTINUE-REAL-DEVICE-DEBUG.md](./2026-08-12-CONTINUE-REAL-DEVICE-DEBUG.md)
 
 ## WDA iPhone 固化链路（2026-08-27，已在真机验证）
+
+### 2026-09-10：iOS 16 在线状态判断纠正
+
+不能仅凭 `devicectl list devices` 的 `unavailable` 判定这台 iPhone 离线。本轮 CoreDevice 仍显示 unavailable，`system_profiler SPUSBDataType` 也返回空列表，但 `idevice_id -l` 正常列出设备、`idevicepair validate` 通过、`ideviceinfo` 返回 iOS 16.3.1，`ios-deploy -c -t 5` 明确报告 iPhone 13 `connected through USB`。既有 tidevice XCTest / iproxy 链路随后取得 WDA ready。
+
+对这台 iOS 16 设备，应先交叉检查 usbmux 枚举、配对、设备信息和 ios-deploy，再判断是否需要用户处理数据线或信任状态。CoreDevice 状态异常与设备物理离线分开记录；不要让单一工具误报阻止已经授权的真机安装与验证。
 
 这条链路已在 iPhone 13 / iOS 16.3.1（UDID `00008110-001E543122E0401E`）上验证通过，未升级、重启或修改系统。WDA host Bundle ID 固定为 `com.changliwen.nastart.WebDriverAgentRunner.xctrunner`，test Bundle ID 固定为 `com.changliwen.nastart.WebDriverAgentRunner`。
 

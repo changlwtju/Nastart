@@ -79,6 +79,9 @@ open class KSOptions {
     // sutile
     public var autoSelectEmbedSubtitle = true
     public var isSeekImageSubtitle = false
+    /// Select the requested embedded stream before reading packets, so bitmap
+    /// cues near the initial position are not discarded until the UI is ready.
+    public var preferredEmbeddedSubtitleTrackID: Int32?
     // video
     public var display = DisplayEnum.plane
     public var videoDelay = 0.0 // s

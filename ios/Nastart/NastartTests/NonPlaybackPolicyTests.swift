@@ -2,6 +2,55 @@ import XCTest
 @testable import Nastart
 
 final class NonPlaybackPolicyTests: XCTestCase {
+    func testFileSortingUsesNaturalNamesExtensionsAndBothDirections() {
+        let items = [file("Episode10.mkv"), file("Episode2.mp4"), file("Episode1.mkv"), file("Folder", folder: true)]
+        XCTAssertEqual(FileBrowserSort.name.sorted(items, ascending: true).map(\.name),
+                       ["Folder", "Episode1.mkv", "Episode2.mp4", "Episode10.mkv"])
+        XCTAssertEqual(FileBrowserSort.name.sorted(items, ascending: false).map(\.name),
+                       ["Folder", "Episode10.mkv", "Episode2.mp4", "Episode1.mkv"])
+        XCTAssertEqual(FileBrowserSort.kind.sorted(items, ascending: true).map(\.name),
+                       ["Folder", "Episode1.mkv", "Episode10.mkv", "Episode2.mp4"])
+    }
+
+    func testFileSortingUsesNumericMetadataAndKeepsUnknownValuesLast() {
+        let items = [file("Large", size: 128_800_000_000, modified: 200),
+                     file("Unknown"), file("Small", size: 900_000_000, modified: 100),
+                     file("Zero", size: 0, modified: 50), file("Folder", folder: true)]
+        for sort in [FileBrowserSort.size, .modified] {
+            XCTAssertEqual(sort.sorted(items, ascending: true).map(\.name),
+                           ["Folder", "Zero", "Small", "Large", "Unknown"])
+            XCTAssertEqual(sort.sorted(items, ascending: false).map(\.name),
+                           ["Folder", "Large", "Small", "Zero", "Unknown"])
+        }
+    }
+
+    func testFileMetadataMappingUsesDSMTimeAndDoesNotTreatDirectorySizeAsContents() throws {
+        let json = #"{"files":[{"name":"Film.mkv","isdir":false,"additional":{"size":128800000000,"time":{"mtime":1700000000}}},{"name":"Folder","isdir":true,"additional":{"size":4096,"time":{"mtime":1700000100}}},{"name":"Missing.mkv","isdir":false}]}"#
+        let data = try JSONDecoder().decode(DSMJSONValue.self, from: Data(json.utf8))
+        let items = DSMClient.mapFileItems(data, parentPath: "/video")
+        let movie = try XCTUnwrap(items.first { $0.name == "Film.mkv" })
+        XCTAssertEqual(movie.sizeBytes, 128_800_000_000)
+        XCTAssertEqual(movie.modifiedAt, Date(timeIntervalSince1970: 1_700_000_000))
+        XCTAssertNil(items.first { $0.isFolder }?.sizeBytes)
+        XCTAssertEqual(items.first { $0.isFolder }?.modifiedAt, Date(timeIntervalSince1970: 1_700_000_100))
+        XCTAssertNil(items.first { $0.name == "Missing.mkv" }?.modifiedAt)
+    }
+
+    func testLegacyFileSnapshotDecodesWithoutNewMetadata() throws {
+        let json = #"{"id":"148B71EC-9C60-449C-9196-4D3E9F4016DC","name":"Film.mkv","subtitle":"/video/Film.mkv","path":"/video/Film.mkv","kind":"video","sizeText":"128 GB","children":[]}"#
+        let item = try JSONDecoder().decode(FileItem.self, from: Data(json.utf8))
+        XCTAssertNil(item.sizeBytes)
+        XCTAssertNil(item.modifiedAt)
+        let roundTrip = try JSONDecoder().decode(FileItem.self, from: JSONEncoder().encode(item))
+        XCTAssertEqual(roundTrip.path, item.path)
+    }
+
+    private func file(_ name: String, folder: Bool = false, size: Int64? = nil, modified: TimeInterval? = nil) -> FileItem {
+        FileItem(id: UUID(), name: name, subtitle: "/\(name)", kind: folder ? .folder : .video,
+                 sizeText: nil, children: [], sizeBytes: size,
+                 modifiedAt: modified.map { Date(timeIntervalSince1970: $0) })
+    }
+
     func testMediaRangePolicyKeepsOpenResponsesFiniteUpstreamAndDetectsContinuation() {
         XCTAssertEqual(
             MediaRangePolicy.boundedRange("bytes=0-"),

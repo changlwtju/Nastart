@@ -711,14 +711,26 @@ def check_playback_routing_invariants() -> CheckResult:
         "Auto Jellyfin playback must avoid large remote MKV originals by default": (
             "requiresServerPlaybackForLargeRemoteOriginal"
         ),
-        "Initial automatic Jellyfin playback must await route bitrate measurement": (
-            "await ensureBitrateMeasurementIfNeeded(client: client)"
+        "Initial automatic Jellyfin playback must consult route bitrate measurement": (
+            "await ensureBitrateMeasurementIfNeeded(client: client,"
+        ),
+        "Greenfield startup must bound the bitrate wait while legacy retains its policy": (
+            "maximumWait: usesGreenfieldPlayback ? 0.8 : nil"
+        ),
+        "Bandwidth scheduling and awaiting must share the same network snapshot": (
+            "networkSnapshot: network)"
         ),
         "Failed Jellyfin bitrate probes must cache conservative fallback": (
-            "bitrateMeasurements[cacheKey] = (fallbackBitrate, fallbackBitrate, Date())"
+            "bitrateMeasurements[cacheKey] = (fallbackBitrate, fallbackBitrate, Date(), false)"
         ),
         "Wi-Fi direct play must tolerate short throughput-sample variance": (
             "max(Int(Double(cached.rawBitrate) * 1.25), cached.bitrate)"
+        ),
+        "Greenfield originals must use measured delivery capacity independently of HLS ceilings": (
+            "directPlayMaximumBitrate = GreenfieldOriginalPlaybackPolicy.maximumOriginalBitrate("
+        ),
+        "Large-file eligibility must use the same original budget as source bitrate eligibility": (
+            "sourceBitrate: entry.mediaBitrate, originalBudget: directPlayBudget"
         ),
         "Automatic remote HLS must retain the fast-start server ceiling": (
             "min(directPlayBudget, 20_000_000)"

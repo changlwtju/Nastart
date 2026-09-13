@@ -1,9 +1,281 @@
 import XCTest
 import AVFoundation
 import Network
+#if canImport(KSPlayer)
+@testable import KSPlayer
+#endif
 @testable import Nastart
 
 final class PlaybackNextCoreTests: XCTestCase {
+    func testLocalResumeIdentityIsolatesAccountsFilesAndRevisionsWithoutCredentials() {
+        let server = URL(string: "https://user:secret@nas.example:5001/?sid=token#fragment")!
+        let clean = URL(string: "https://nas.example:5001/")!
+        let key = LocalPlaybackResumeStore.key(server: server, account: "alice", path: "/video/a.mkv", byteLength: 100, modifiedAt: nil)
+        XCTAssertEqual(key, LocalPlaybackResumeStore.key(server: clean, account: "alice", path: "/video/a.mkv", byteLength: 100, modifiedAt: nil))
+        for (account, path, bytes) in [("bob", "/video/a.mkv", Int64(100)), ("alice", "/other/a.mkv", 100), ("alice", "/video/a.mkv", 101)] {
+            XCTAssertNotEqual(key, LocalPlaybackResumeStore.key(server: clean, account: account, path: path, byteLength: bytes, modifiedAt: nil))
+        }
+        XCTAssertEqual(key.count, 64)
+        XCTAssertFalse(key.contains("secret"))
+    }
+
+    func testLocalResumePersistsPositionTracksAndCompletionWithoutInvalidOverwrites() throws {
+        let suite = "LocalResumeTests." + UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        let store = LocalPlaybackResumeStore(defaults: defaults)
+        store.save(key: "file", position: 6200, duration: 13698, audioTrackID: 3, subtitleTrackID: 8, subtitlesDisabled: false)
+        let restored = try XCTUnwrap(LocalPlaybackResumeStore(defaults: defaults).entry(for: "file"))
+        XCTAssertEqual(restored.positionSeconds, 6200)
+        XCTAssertEqual(restored.audioTrackID, 3)
+        XCTAssertEqual(restored.subtitleTrackID, 8)
+        store.save(key: "file", position: .nan, duration: 100, audioTrackID: nil, subtitleTrackID: nil, subtitlesDisabled: true)
+        XCTAssertEqual(store.entry(for: "file")?.positionSeconds, 6200)
+        store.save(key: "file", position: 13690, duration: 13698, audioTrackID: 3, subtitleTrackID: nil, subtitlesDisabled: true)
+        XCTAssertEqual(store.entry(for: "file")?.positionSeconds, 0)
+        XCTAssertTrue(store.entry(for: "file")?.subtitlesDisabled == true)
+        for i in 0..<130 { store.save(key: "file-\(i)", position: 50, duration: 100, audioTrackID: nil, subtitleTrackID: nil, subtitlesDisabled: true) }
+        XCTAssertNil(store.entry(for: "file"))
+        XCTAssertNotNil(store.entry(for: "file-129"))
+    }
+
+    func testLocalResumeBridgeRestoresTracksAndExplicitBeginningPreservesThem() throws {
+        let suite = "LocalResumeBridgeTests." + UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        let store = LocalPlaybackResumeStore(defaults: defaults)
+        store.save(key: "file", position: 6200, duration: 13698, audioTrackID: 3, subtitleTrackID: 8, subtitlesDisabled: false)
+        let request = MediaPlaybackRequest(url: URL(string: "https://example.com/a.mkv")!, title: "Movie", source: .dsmFile, localResumeKey: "file")
+        let resumed = request.greenfieldPlaybackLaunchRequest(resumeStore: store)
+        XCTAssertEqual(resumed.intent.preferredStartTime, 6200)
+        XCTAssertEqual(resumed.tracks.selectedSourceAudioTrackID, "3")
+        XCTAssertEqual(resumed.tracks.selectedSourceSubtitleTrackID, "8")
+        XCTAssertEqual(resumed.subtitles?.mode, .embedded)
+        XCTAssertEqual(resumed.mediaRequest?.selectedSourceSubtitleTrackID, 8)
+        var beginning = request
+        beginning.initialPosition = 0
+        let fresh = beginning.greenfieldPlaybackLaunchRequest(resumeStore: store)
+        XCTAssertEqual(fresh.intent.preferredStartTime, 0)
+        XCTAssertEqual(fresh.tracks.selectedSourceSubtitleTrackID, "8")
+        let jellyfin = MediaPlaybackRequest(url: request.url, title: "Movie", source: .jellyfin, timelineOffsetSeconds: 300, totalDurationSeconds: 1000, localResumeKey: "file")
+            .greenfieldPlaybackLaunchRequest(resumeStore: store)
+        XCTAssertEqual(jellyfin.intent.preferredStartTime, 300)
+        XCTAssertNil(jellyfin.mediaRequest?.initialPosition)
+        XCTAssertEqual(request.playbackRequest(using: MediaPlaybackResource(url: request.url)).localResumeKey, "file")
+    }
+
+    func testExitAfterPausedSeekReportsConfirmedPositionIncludingBeginning() {
+        for target in [0.0, 140.681, 6200.0] {
+            var stopped: [Double] = []
+            let tracker = MediaPlaybackTracker { event in
+                if case .stopped(let position, _) = event { stopped.append(position) }
+            }
+            tracker.started(positionSeconds: 6100)
+            tracker.progressed(positionSeconds: 6105, isPaused: true)
+            tracker.stopped(positionSeconds: target)
+            tracker.stopped(positionSeconds: 1)
+            tracker.progressed(positionSeconds: 6105, isPaused: true)
+            XCTAssertEqual(stopped, [target])
+        }
+    }
+    #if canImport(KSPlayer)
+    func testBitmapSubtitleUsesItsOwnCanvasAndFallsBackForUnknownCanvas() {
+        let part = SubtitlePart(0, 1, attributedString: nil)
+        part.image = UIGraphicsImageRenderer(size: CGSize(width: 1000, height: 100)).image { _ in UIColor.white.setFill(); UIRectFill(CGRect(x: 0, y: 0, width: 1000, height: 100)) }
+        let video = CGSize(width: 3840, height: 2160)
+        let bounds = CGSize(width: 800, height: 450)
+        part.imageCanvasSize = CGSize(width: 1920, height: 1080)
+        XCTAssertEqual(part.imageDisplaySize(in: bounds, videoSize: video).height, 100 * 800 / 1920, accuracy: 0.01)
+        part.imageCanvasSize = .zero
+        XCTAssertEqual(part.imageDisplaySize(in: bounds, videoSize: video).height, 100 * 800 / 3840, accuracy: 0.01)
+        XCTAssertEqual(part.imageDisplaySize(in: .zero, videoSize: video), .zero)
+    }
+
+    func testBitmapQueueKeepsNewestDisplayIncludingClearAndReleasesSkippedFrames() {
+        let queue = CircularBuffer<BitmapQueueTestFrame>(initialCapacity: 4, sorted: true)
+        weak var released: BitmapQueueTestFrame?
+        do {
+            let frame = BitmapQueueTestFrame(1)
+            released = frame
+            queue.push(frame)
+        }
+        queue.push(BitmapQueueTestFrame(2))
+        queue.push(BitmapQueueTestFrame(3, isClear: true))
+        queue.push(BitmapQueueTestFrame(5))
+        XCTAssertEqual(queue.popLatest { $0.timestamp <= 2 }?.timestamp, 2)
+        XCTAssertNil(released)
+        XCTAssertEqual(queue.count, 2)
+        XCTAssertTrue(queue.popLatest { $0.timestamp <= 4 }?.isClear == true)
+        XCTAssertNil(queue.popLatest { $0.timestamp <= 4 })
+        XCTAssertEqual(queue.count, 1)
+        queue.flush()
+        for index in 0..<100 {
+            queue.push(BitmapQueueTestFrame(Int64(index)))
+            XCTAssertEqual(queue.popLatest { _ in true }?.timestamp, Int64(index))
+        }
+        queue.shutdown()
+        XCTAssertNil(queue.popLatest { _ in true })
+    }
+    #endif
+    func testRestrictiveWiFiSampleIsReconsideredWithoutReprobingEveryTap() {
+        for measured in [true, false] {
+            XCTAssertTrue(GreenfieldBandwidthSamplePolicy.canReuse(age: 29, networkKey: "wifi",
+                wasMeasured: measured, safeBitrate: 45_000_000, originalSourceBitrate: 63_000_000))
+            XCTAssertFalse(GreenfieldBandwidthSamplePolicy.canReuse(age: 30, networkKey: "wifi",
+                wasMeasured: measured, safeBitrate: 45_000_000, originalSourceBitrate: 63_000_000))
+        }
+        XCTAssertFalse(GreenfieldBandwidthSamplePolicy.canReuse(age: 30, networkKey: "wifi",
+            wasMeasured: false, safeBitrate: 80_000_000, originalSourceBitrate: 63_000_000),
+            "A fallback budget is not a successful throughput measurement")
+        XCTAssertTrue(GreenfieldOriginalPlaybackPolicy.retainsLargeRemoteGuard(networkKey: "wifi",
+            bandwidthBasis: "networkFallback", sourceBitrate: 63_000_000, originalBudget: 80_000_000),
+            "Expiring a low sample must not itself authorize original playback")
+    }
+
+    func testSufficientSamplesAndNonCandidatePlaybackKeepNormalCacheLifetime() {
+        XCTAssertTrue(GreenfieldBandwidthSamplePolicy.canReuse(age: 599, networkKey: "wifi",
+            wasMeasured: true, safeBitrate: 63_000_000, originalSourceBitrate: 63_000_000))
+        for network in ["cellular", "constrained", "unknown"] {
+            XCTAssertTrue(GreenfieldBandwidthSamplePolicy.canReuse(age: 599, networkKey: network,
+                wasMeasured: true, safeBitrate: 10_000_000, originalSourceBitrate: 63_000_000))
+        }
+        for source in [nil, 0, -1] as [Int?] {
+            XCTAssertTrue(GreenfieldBandwidthSamplePolicy.canReuse(age: 599, networkKey: "wifi",
+                wasMeasured: false, safeBitrate: 10_000_000, originalSourceBitrate: source))
+        }
+        for age in [-1.0, 600, .infinity, .nan] {
+            XCTAssertFalse(GreenfieldBandwidthSamplePolicy.canReuse(age: age, networkKey: "wifi",
+                wasMeasured: true, safeBitrate: 80_000_000, originalSourceBitrate: 63_000_000))
+        }
+    }
+
+    @MainActor
+    func testAutomaticOriginalUsesKSDecodersAndPreservesQualityAndNetworkConstraints() {
+        for codec in ["truehd", "flac", "eac3-joc", "dts-hd ma", " AC3 "] {
+            let needsTranscode = GreenfieldOriginalPlaybackPolicy.requiresAudioTranscode(codec: codec,
+                decoderAvailable: GreenfieldPlaybackControls.canDecodeOriginalAudio(codec))
+            XCTAssertFalse(needsTranscode, codec)
+            XCTAssertTrue(GreenfieldOriginalPlaybackPolicy.allowsOriginal(forcedServerBitrate: nil,
+                audioRequiresTranscode: needsTranscode, subtitleRequiresServer: false,
+                routeIsPrivate: true, explicitOriginal: false, remoteBitrateFits: false))
+            XCTAssertFalse(GreenfieldOriginalPlaybackPolicy.allowsOriginal(forcedServerBitrate: 12_000_000,
+                audioRequiresTranscode: needsTranscode, subtitleRequiresServer: false,
+                routeIsPrivate: true, explicitOriginal: false, remoteBitrateFits: true),
+                "An explicit lower quality must still use Jellyfin")
+        }
+        for codec in ["atmos", "unknown-codec", "h264"] {
+            XCTAssertTrue(GreenfieldOriginalPlaybackPolicy.requiresAudioTranscode(codec: codec,
+                decoderAvailable: GreenfieldPlaybackControls.canDecodeOriginalAudio(codec)))
+        }
+        XCTAssertFalse(GreenfieldOriginalPlaybackPolicy.allowsOriginal(forcedServerBitrate: nil,
+            audioRequiresTranscode: true, subtitleRequiresServer: false, routeIsPrivate: true,
+            explicitOriginal: true, remoteBitrateFits: true))
+        XCTAssertFalse(GreenfieldOriginalPlaybackPolicy.allowsOriginal(forcedServerBitrate: nil,
+            audioRequiresTranscode: false, subtitleRequiresServer: true, routeIsPrivate: true,
+            explicitOriginal: false, remoteBitrateFits: true))
+        XCTAssertFalse(GreenfieldOriginalPlaybackPolicy.allowsOriginal(forcedServerBitrate: nil,
+            audioRequiresTranscode: false, subtitleRequiresServer: false, routeIsPrivate: false,
+            explicitOriginal: false, remoteBitrateFits: false))
+    }
+
+    func testLargeOriginalOnlyBypassesSizeGuardWithSufficientMeasuredWiFi() {
+        XCTAssertFalse(GreenfieldOriginalPlaybackPolicy.retainsLargeRemoteGuard(networkKey: "wifi",
+            bandwidthBasis: "measured", sourceBitrate: 63_000_000, originalBudget: 70_000_000))
+        for network in ["cellular", "constrained", "unknown"] {
+            XCTAssertTrue(GreenfieldOriginalPlaybackPolicy.retainsLargeRemoteGuard(networkKey: network,
+                bandwidthBasis: "measured", sourceBitrate: 63_000_000, originalBudget: 70_000_000))
+        }
+        XCTAssertTrue(GreenfieldOriginalPlaybackPolicy.retainsLargeRemoteGuard(networkKey: "wifi",
+            bandwidthBasis: "networkFallback", sourceBitrate: 63_000_000, originalBudget: 80_000_000))
+        for bitrate in [nil, 0, 81_000_000] as [Int?] {
+            XCTAssertTrue(GreenfieldOriginalPlaybackPolicy.retainsLargeRemoteGuard(networkKey: "wifi",
+                bandwidthBasis: "measured", sourceBitrate: bitrate, originalBudget: 80_000_000))
+        }
+    }
+
+    func testMeasuredWiFiOriginalBudgetIsIndependentOfHLSEncoderCeiling() {
+        let source = 81_851_565 // S19 exceeded the former fixed 80 Mbps ceiling.
+        let budget = GreenfieldOriginalPlaybackPolicy.maximumOriginalBitrate(networkKey: "wifi",
+            wasMeasured: true, rawBitrate: 95_000_000, conservativeBitrate: 76_000_000)
+        XCTAssertEqual(budget, 95_000_000)
+        XCTAssertFalse(GreenfieldOriginalPlaybackPolicy.retainsLargeRemoteGuard(networkKey: "wifi",
+            bandwidthBasis: "measured", sourceBitrate: source, originalBudget: budget))
+        XCTAssertTrue(GreenfieldOriginalPlaybackPolicy.allowsOriginal(forcedServerBitrate: nil,
+            audioRequiresTranscode: false, subtitleRequiresServer: false, routeIsPrivate: false,
+            explicitOriginal: false, remoteBitrateFits: source <= budget))
+        XCTAssertFalse(GreenfieldOriginalPlaybackPolicy.allowsOriginal(forcedServerBitrate: 20_000_000,
+            audioRequiresTranscode: false, subtitleRequiresServer: false, routeIsPrivate: false,
+            explicitOriginal: false, remoteBitrateFits: source <= budget))
+        XCTAssertTrue(GreenfieldBandwidthSamplePolicy.canReuse(age: 599, networkKey: "wifi",
+            wasMeasured: true, safeBitrate: 76_000_000, originalSourceBitrate: source, rawBitrate: 95_000_000),
+            "A valid original budget must not be re-probed just because the HLS budget is lower")
+        let slowBudget = GreenfieldOriginalPlaybackPolicy.maximumOriginalBitrate(networkKey: "wifi",
+            wasMeasured: true, rawBitrate: 75_000_000, conservativeBitrate: 60_000_000)
+        XCTAssertTrue(GreenfieldOriginalPlaybackPolicy.retainsLargeRemoteGuard(networkKey: "wifi",
+            bandwidthBasis: "measured", sourceBitrate: source, originalBudget: slowBudget))
+    }
+
+    func testOriginalBudgetDoesNotPromoteUnmeasuredOrCellularThroughput() {
+        for network in ["cellular", "constrained", "unknown"] {
+            XCTAssertEqual(GreenfieldOriginalPlaybackPolicy.maximumOriginalBitrate(networkKey: network,
+                wasMeasured: true, rawBitrate: 200_000_000, conservativeBitrate: 20_000_000), 20_000_000)
+        }
+        XCTAssertEqual(GreenfieldOriginalPlaybackPolicy.maximumOriginalBitrate(networkKey: "wifi",
+            wasMeasured: false, rawBitrate: 200_000_000, conservativeBitrate: 20_000_000), 20_000_000)
+        for invalid in [0, -1] {
+            XCTAssertEqual(GreenfieldOriginalPlaybackPolicy.maximumOriginalBitrate(networkKey: "wifi",
+                wasMeasured: true, rawBitrate: invalid, conservativeBitrate: 20_000_000), 20_000_000)
+        }
+    }
+
+    func testDolbySourceMetadataDoesNotCertifyOutputOrInferAtmosFromCodecAlone() {
+        let vision = PlaybackDolbySourceInfo(visionProfile: 5, visionLevel: 6, baseLayerCompatibilityID: 0,
+            audioCodec: "eac3", audioProfile: nil)
+        XCTAssertEqual(vision.diagnosticDetails["sourceDVProfile"], "5")
+        XCTAssertEqual(vision.audioEvidence, "eac3AtmosUnknown")
+        XCTAssertEqual(vision.diagnosticDetails["dolbyVisionOutput"], "unverified")
+        XCTAssertEqual(vision.diagnosticDetails["dolbyAtmosOutput"], "unverified")
+        XCTAssertEqual(PlaybackDolbySourceInfo(audioCodec: "eac3", audioProfile: "Dolby Digital Plus + JOC").audioEvidence, "eac3JOC")
+        XCTAssertEqual(PlaybackDolbySourceInfo(audioCodec: "truehd").audioEvidence, "trueHDAtmosUnknown")
+        XCTAssertEqual(PlaybackDolbySourceInfo(audioCodec: "truehd", audioProfile: "TrueHD Atmos").audioEvidence, "trueHDAtmos")
+        XCTAssertEqual(PlaybackDolbySourceInfo(audioCodec: "truehd", audioSpatialFormat: "DolbyAtmos").audioEvidence, "trueHDAtmos")
+        XCTAssertEqual(PlaybackDolbySourceInfo(audioCodec: "eac3", audioSpatialFormat: "DolbyAtmos").audioEvidence, "eac3JOC")
+        XCTAssertEqual(PlaybackDolbySourceInfo(audioCodec: "eac3", audioSpatialFormat: "None").audioEvidence, "eac3AtmosUnknown")
+        XCTAssertEqual(PlaybackDolbySourceInfo(audioCodec: "aac", audioProfile: "Atmos").audioEvidence, "unknown")
+        XCTAssertEqual(PlaybackDolbySourceInfo().diagnosticDetails["sourceDVProfile"], "unknown")
+    }
+
+    @MainActor
+    func testOriginalProxyProvidesContinuousLengthAcrossWindowsAndBackwardSeek() async throws {
+        let window = Int(MediaRangePolicy.upstreamWindowBytes)
+        var payload = Data(repeating: 0x61, count: window)
+        payload.append(Data(repeating: 0x7b, count: 16))
+        let server = try PlaybackRangeTestServer(payload: payload)
+        defer { server.stop() }
+        await fulfillment(of: [server.ready], timeout: 3)
+        let proxy = try await AuthenticatedMediaStreamProxy.shared.registerOriginalStream(
+            upstreamURL: XCTUnwrap(server.url), filename: "fixture.mkv", allowsSelfSignedCertificates: false)
+        defer { AuthenticatedMediaStreamProxy.shared.unregister(proxy) }
+        let client = URLSession(configuration: .ephemeral)
+        defer { client.invalidateAndCancel() }
+        for (range, expected) in [("bytes=0-", payload), ("bytes=4-7", Data(payload[4...7]))] {
+            var request = URLRequest(url: proxy)
+            request.timeoutInterval = 10
+            request.setValue(range, forHTTPHeaderField: "Range")
+            let (data, response) = try await client.data(for: request)
+            let http = try XCTUnwrap(response as? HTTPURLResponse)
+            XCTAssertEqual(http.statusCode, 206)
+            XCTAssertEqual(response.expectedContentLength, Int64(expected.count))
+            XCTAssertNil(http.value(forHTTPHeaderField: "Transfer-Encoding"))
+            XCTAssertEqual(data, expected)
+        }
+        let requests = server.receivedRequests.map { $0.lowercased() }
+        XCTAssertEqual(requests.count, 3)
+        XCTAssertTrue(requests[0].contains("range: bytes=0-\(window - 1)"))
+        XCTAssertTrue(requests[1].contains("range: bytes=\(window)-\(window + 15)"))
+        XCTAssertTrue(requests[2].contains("range: bytes=4-7"))
+    }
+
     @MainActor
     func testCompressedPlaylistIsDecodedBeforeRewritingAndSendingContentLength() async throws {
         let compressed = try XCTUnwrap(Data(base64Encoded: "H4sIAAAAAAAC/1N2jQjxNQ7lUgbSuhG6vq4uno66wa6Boa5+zq5WBmBxTz83K0MDHa7i1PTc1LwSA72SYmzihjBxoDmufi4+nsEhXABFPVjkXwAAAA=="))
@@ -188,6 +460,51 @@ final class PlaybackNextCoreTests: XCTestCase {
     }
 
     @MainActor
+    func testRemoteJellyfinSRTLoadsInOverlayAndKeepsCurrentPlaybackPosition() async throws {
+        let srt = "1\n00:37:28,760 --> 00:37:30,080\n我信任你\n{\\rEng}I trust you.\n\n"
+        let server = try PlaybackRangeTestServer(payload: Data(srt.utf8))
+        defer { server.stop() }
+        await fulfillment(of: [server.ready], timeout: 3)
+        let model = CJKSubtitleOverlayModel()
+        model.update(time: 2249)
+        model.setURL(try XCTUnwrap(server.url))
+        XCTAssertTrue(model.isEnabled)
+        for _ in 0..<100 where model.text == nil { try await Task.sleep(nanoseconds: 10_000_000) }
+        XCTAssertEqual(model.text, "我信任你\nI trust you.")
+        XCTAssertEqual(server.requestCount, 1, "The overlay loads and parses the remote SRT in one request")
+        model.setURL(nil)
+        XCTAssertNil(model.text)
+    }
+
+    @MainActor
+    func testSubtitleStressUsesCachedCuesAndLastSelectionWins() async throws {
+        let urls = (0..<2).map { _ in FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString + ".srt") }
+        defer { for url in urls { try? FileManager.default.removeItem(at: url) } }
+        for (index, url) in urls.enumerated() {
+            try "1\n00:00:01,000 --> 00:00:10,000\nTrack \(index)\n\n".write(to: url, atomically: true, encoding: .utf8)
+        }
+        let model = CJKSubtitleOverlayModel()
+        model.update(time: 5)
+        for (index, url) in urls.enumerated() {
+            model.setURL(url)
+            for _ in 0..<100 where model.text == nil { try await Task.sleep(nanoseconds: 10_000_000) }
+            XCTAssertEqual(model.text, "Track \(index)")
+            try FileManager.default.removeItem(at: url)
+        }
+        for index in 0..<50 {
+            model.setURL(nil)
+            XCTAssertNil(model.text)
+            model.setURL(urls[index % 2])
+            XCTAssertEqual(model.text, "Track \(index % 2)", "A previously loaded track must reappear without a download")
+        }
+        // An uncached load finishing after a cached choice must not clear it.
+        model.setURL(FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString))
+        model.setURL(urls[1])
+        try await Task.sleep(nanoseconds: 100_000_000)
+        XCTAssertEqual(model.text, "Track 1")
+    }
+
+    @MainActor
     func testAudioTrackChangeKeepsSidecarAsTheOnlySubtitleRenderer() {
         let controls = GreenfieldPlaybackControls()
         let sidecar = URL(fileURLWithPath: "/tmp/subtitle.srt")
@@ -198,11 +515,55 @@ final class PlaybackNextCoreTests: XCTestCase {
         controls.selectSourceSubtitle(5, externalURL: sidecar)
         controls.selectSourceSubtitle(5, externalURL: sidecar) // Audio changed; subtitle stayed selected.
         XCTAssertTrue(embedded.isEmpty)
-        XCTAssertEqual(external.compactMap { $0 }, [sidecar, sidecar])
+        XCTAssertEqual(external.compactMap { $0 }, [sidecar], "An audio change must not reload the unchanged subtitle")
         controls.selectSourceSubtitle(nil, externalURL: nil)
         XCTAssertEqual(embedded, [-1])
         controls.selectSourceSubtitle(6, externalURL: nil) // An embedded image subtitle.
         XCTAssertEqual(embedded, [-1, 6])
+    }
+
+    @MainActor
+    func testRepeatedEmbeddedSelectionDoesNotClearSubtitleAndNewSessionReappliesIt() {
+        let controls = GreenfieldPlaybackControls()
+        var selected: [Int32] = []
+        controls.subtitleAction = { selected.append($0) }
+        controls.selectSourceSubtitle(8, externalURL: nil)
+        controls.selectSourceSubtitle(8, externalURL: nil)
+        controls.selectSubtitle(PlaybackUITrack(id: 8, name: "PGS"))
+        XCTAssertEqual(selected, [8])
+        controls.selectSourceSubtitle(nil, externalURL: nil)
+        controls.selectSourceSubtitle(nil, externalURL: nil)
+        XCTAssertEqual(selected, [8, -1])
+        controls.beginSession()
+        controls.selectSourceSubtitle(nil, externalURL: nil)
+        XCTAssertEqual(selected, [8, -1, -1])
+    }
+
+    @MainActor
+    func testUnchangedAudioDoesNotDispatchAnotherDemuxSelection() {
+        let controls = GreenfieldPlaybackControls()
+        controls.selectedAudioTrackID = 1
+        var selected: [Int32] = []
+        controls.audioAction = { selected.append($0); controls.selectedAudioTrackID = $0 }
+        controls.selectAudio(PlaybackUITrack(id: 1, name: "TrueHD"))
+        controls.selectAudio(PlaybackUITrack(id: 2, name: "AC3"))
+        controls.selectAudio(PlaybackUITrack(id: 2, name: "AC3"))
+        XCTAssertEqual(selected, [2])
+    }
+
+    @MainActor
+    func testPGSOriginalUsesTheActualSubtitleDecoderAndPreservesSelection() {
+        XCTAssertTrue(GreenfieldPlaybackControls.canDecodeBitmapSubtitle("PGSSUB"))
+        XCTAssertTrue(GreenfieldPlaybackControls.canDecodeBitmapSubtitle("hdmv_pgs_subtitle"))
+        XCTAssertFalse(GreenfieldPlaybackControls.canDecodeBitmapSubtitle("unknown"))
+        XCTAssertFalse(GreenfieldPlaybackControls.canDecodeBitmapSubtitle("truehd"))
+        XCTAssertFalse(GreenfieldPlaybackControls.canDecodeBitmapSubtitle("xsub"))
+        let request = MediaPlaybackRequest(url: URL(string: "http://127.0.0.1/movie.mkv")!,
+            title: "PGS original", source: .jellyfin, contentKind: .video,
+            sourceSubtitleTracks: [MediaPlaybackSourceTrack(id: 8, name: "PGS")],
+            selectedSourceSubtitleTrackID: 8)
+        let launch = request.greenfieldPlaybackLaunchRequest()
+        XCTAssertEqual(launch.intent.preferredSubtitleTrackID, "8")
     }
 
     func testAbandonedWarmupReleasesEncoderWithoutReportingPlayback() {
@@ -285,6 +646,39 @@ final class PlaybackNextCoreTests: XCTestCase {
     }
 
 #if canImport(KSPlayer)
+    @MainActor
+    func testAudioConfigurationChangeRestartsOnlyPlayingOutput() async throws {
+        let output = AudioEnginePlayer()
+        output.prepare(audioFormat: try XCTUnwrap(AVAudioFormat(standardFormatWithSampleRate: 48_000, channels: 2)))
+        output.play()
+        output.flush() // Drain the control queue before simulating Core Audio's stop.
+        XCTAssertTrue(output.engine.isRunning)
+        output.engine.stop()
+        NotificationCenter.default.post(name: .AVAudioEngineConfigurationChange, object: output.engine)
+        output.flush()
+        XCTAssertTrue(output.engine.isRunning, "A hardware format notification must recover the stopped output")
+        output.pause()
+        output.flush()
+        NotificationCenter.default.post(name: .AVAudioEngineConfigurationChange, object: output.engine)
+        output.flush()
+        XCTAssertFalse(output.engine.isRunning, "A late notification must not undo user pause")
+    }
+
+    @MainActor
+    func testAudioFormatStressReleasesOldNodesAndKeepsPause() throws {
+        let output = AudioEnginePlayer()
+        let mono = try XCTUnwrap(AVAudioFormat(standardFormatWithSampleRate: 48_000, channels: 1))
+        let stereo = try XCTUnwrap(AVAudioFormat(standardFormatWithSampleRate: 48_000, channels: 2))
+        output.prepare(audioFormat: stereo)
+        let nodeCount = output.engine.attachedNodes.count
+        output.pause()
+        for index in 0..<30 {
+            output.prepare(audioFormat: index % 2 == 0 ? mono : stereo)
+            XCTAssertEqual(output.engine.attachedNodes.count, nodeCount, "Track switches must detach the previous source node")
+            XCTAssertFalse(output.engine.isRunning, "A queued format rebuild must preserve paused playback")
+        }
+    }
+
     @MainActor
     func testOriginalReplacementDecodesPausedPreviewBeforeHandoff() async throws {
         let url = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString + ".mp4")
@@ -749,13 +1143,15 @@ private final class PlaybackRangeTestServer: @unchecked Sendable {
     private var requestHeaders: [String] = []
     private let playlist: String?
     private let compressedPlaylist: Data?
+    private let payload: Data?
     var url: URL? { listener.port.flatMap { URL(string: "http://127.0.0.1:\($0.rawValue)/fixture.\(playlist == nil ? "mp4" : "m3u8")") } }
     var connectionCount: Int { queue.sync { connections.count } }
     var requestCount: Int { queue.sync { requests } }
     var receivedRequests: [String] { queue.sync { requestHeaders } }
-    init(playlist: String? = nil, compressedPlaylist: Data? = nil) throws {
+    init(playlist: String? = nil, compressedPlaylist: Data? = nil, payload: Data? = nil) throws {
         self.playlist = playlist
         self.compressedPlaylist = compressedPlaylist
+        self.payload = payload
         listener = try NWListener(using: .tcp, on: .any)
         listener.stateUpdateHandler = { [weak self] state in
             if case .ready = state { self?.ready.fulfill() }
@@ -782,6 +1178,20 @@ private final class PlaybackRangeTestServer: @unchecked Sendable {
             self.requests += 1
             let request = String(decoding: received, as: UTF8.self)
             self.requestHeaders.append(request)
+            if let payload = self.payload {
+                let range = request.lowercased().components(separatedBy: "\r\n")
+                    .first { $0.hasPrefix("range:") }?.components(separatedBy: "bytes=").last?
+                    .components(separatedBy: "-") ?? []
+                let start = range.first.flatMap(Int.init) ?? 0
+                let end = min(range.last.flatMap(Int.init) ?? (payload.count - 1), payload.count - 1)
+                guard start >= 0, end >= start else { connection.cancel(); return }
+                let body = payload.subdata(in: start..<(end + 1))
+                let header = "HTTP/1.1 206 Partial Content\r\nContent-Type: video/mp4\r\nContent-Length: \(body.count)\r\nContent-Range: bytes \(start)-\(end)/\(payload.count)\r\nAccept-Ranges: bytes\r\nConnection: keep-alive\r\n\r\n"
+                connection.send(content: Data(header.utf8) + body, completion: .contentProcessed { [weak self] error in
+                    if error == nil { self?.receive(connection) }
+                })
+                return
+            }
             let response: String
             if let playlist = self.playlist, request.components(separatedBy: " ").dropFirst().first?.contains(".m3u8") == true {
                 response = "HTTP/1.1 200 OK\r\nContent-Type: application/vnd.apple.mpegurl\r\nContent-Length: \(playlist.utf8.count)\r\nConnection: keep-alive\r\n\r\n" + playlist
@@ -798,3 +1208,15 @@ private final class PlaybackRangeTestServer: @unchecked Sendable {
         }
     }
 }
+
+#if canImport(KSPlayer)
+private final class BitmapQueueTestFrame: ObjectQueueItem {
+    var timebase = Timebase.defaultValue
+    var timestamp: Int64
+    var duration: Int64 = 0
+    var position: Int64 = 0
+    var size: Int32 = 0
+    let isClear: Bool
+    init(_ timestamp: Int64, isClear: Bool = false) { self.timestamp = timestamp; self.isClear = isClear }
+}
+#endif

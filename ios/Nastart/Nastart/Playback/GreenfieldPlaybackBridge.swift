@@ -1,4 +1,62 @@
 import Foundation
+import CryptoKit
+
+
+/// Only file identity hashes and playback preferences are persisted, never URLs
+/// carrying DSM sessions. Different accounts/files/revisions cannot share a bookmark.
+final class LocalPlaybackResumeStore {
+    struct Entry: Codable {
+        let positionSeconds: Double
+        let durationSeconds: Double
+        let audioTrackID: Int?
+        let subtitleTrackID: Int?
+        let subtitlesDisabled: Bool
+        let updatedAt: Date
+    }
+    static let shared = LocalPlaybackResumeStore()
+    private let defaults: UserDefaults
+    private let lock = NSLock()
+    private let storageKey = "playback.localResume.v1"
+    init(defaults: UserDefaults = .standard) { self.defaults = defaults }
+
+    static func key(server: URL, account: String, path: String, byteLength: Int64?, modifiedAt: Date?) -> String {
+        var components = URLComponents(url: server, resolvingAgainstBaseURL: false)
+        components?.user = nil; components?.password = nil
+        components?.query = nil; components?.fragment = nil
+        let host = components?.host?.lowercased()
+        components?.host = host
+        let identity = [components?.string ?? "", account, path,
+                        byteLength.map(String.init) ?? "", modifiedAt.map { String($0.timeIntervalSince1970) } ?? ""]
+        let data = (try? JSONEncoder().encode(identity)) ?? Data()
+        return SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined()
+    }
+
+    func entry(for key: String) -> Entry? {
+        lock.lock(); defer { lock.unlock() }
+        return entries()[key]
+    }
+
+    func save(key: String, position: Double, duration: Double, audioTrackID: Int?, subtitleTrackID: Int?, subtitlesDisabled: Bool) {
+        guard position.isFinite, position >= 0, duration.isFinite, duration > 0 else { return }
+        lock.lock(); defer { lock.unlock() }
+        var values = entries()
+        let finished = duration - position <= min(30, duration * 0.02)
+        values[key] = Entry(positionSeconds: finished ? 0 : min(position, duration), durationSeconds: duration,
+                            audioTrackID: audioTrackID, subtitleTrackID: subtitleTrackID,
+                            subtitlesDisabled: subtitlesDisabled, updatedAt: Date())
+        if values.count > 128 {
+            for key in values.sorted(by: { $0.value.updatedAt > $1.value.updatedAt }).dropFirst(128).map(\.key) { values.removeValue(forKey: key) }
+        }
+        if let data = try? JSONEncoder().encode(values) { defaults.set(data, forKey: storageKey) }
+    }
+
+    private func entries() -> [String: Entry] {
+        guard let data = defaults.data(forKey: storageKey),
+              let values = try? JSONDecoder().decode([String: Entry].self, from: data) else { return [:] }
+        return values.filter { $0.value.positionSeconds.isFinite && $0.value.positionSeconds >= 0
+            && $0.value.durationSeconds.isFinite && $0.value.durationSeconds > 0 }
+    }
+}
 
 enum GreenfieldPlaybackDebugSettings {
     static let useGreenfieldPlayerKey = "debug.playback.use_greenfield_player"
@@ -31,7 +89,8 @@ struct PlaybackArchitecturePicker: View {
 
 extension MediaPlaybackRequest {
     func greenfieldPlaybackLaunchRequest(
-        playbackModePreference: PlaybackModePreference = .automatic
+        playbackModePreference: PlaybackModePreference = .automatic,
+        resumeStore: LocalPlaybackResumeStore = .shared
     ) -> GreenfieldPlaybackLaunchRequest {
         let sourceKind: PlaybackSourceKind
         switch source {
@@ -59,13 +118,16 @@ extension MediaPlaybackRequest {
         let primaryURL = primaryResource?.url ?? url
         let primaryExtensionHint = primaryResource?.fileExtensionOverride ?? fileExtensionHint
         let primaryCertificatePolicy = certificatePolicy(for: primaryResource)
-        let startTime = totalDurationSeconds.flatMap { duration in
+        let saved = source == .dsmFile ? localResumeKey.flatMap { resumeStore.entry(for: $0) } : nil
+        let playbackDuration = totalDurationSeconds ?? saved?.durationSeconds
+        let startTime = playbackDuration.flatMap { duration in
             initialPosition.map { duration * $0 }
-        } ?? (timelineOffsetSeconds > 0 ? timelineOffsetSeconds : nil)
-        let audioTrackID = selectedSourceAudioTrackID.map(String.init)
-        let subtitleTrackID = prefersSubtitlesDisabled
+        } ?? (timelineOffsetSeconds > 0 ? timelineOffsetSeconds : saved?.positionSeconds)
+        let audioTrackID = (selectedSourceAudioTrackID ?? saved?.audioTrackID).map(String.init)
+        let disablesSubtitles = prefersSubtitlesDisabled || saved?.subtitlesDisabled == true
+        let subtitleTrackID = disablesSubtitles
             ? nil
-            : selectedSourceSubtitleTrackID.map(String.init)
+            : (selectedSourceSubtitleTrackID ?? saved?.subtitleTrackID).map(String.init)
         // A loopback renderer URL describes our transport adapter, not the
         // network delivering the video. Preserve the NAS origin for policy.
         let connectionContext = PlaybackConnectionContext.make(
@@ -82,6 +144,16 @@ extension MediaPlaybackRequest {
             isExpensive: false,
             isConstrained: false
         )
+        var restoredRequest = self
+        if saved != nil {
+            restoredRequest.prefersSubtitlesDisabled = disablesSubtitles
+            restoredRequest.selectedSourceAudioTrackID = audioTrackID.flatMap(Int.init)
+            restoredRequest.selectedSourceSubtitleTrackID = subtitleTrackID.flatMap(Int.init)
+            if let playbackDuration, let startTime, playbackDuration > 0 {
+                restoredRequest.totalDurationSeconds = playbackDuration
+                restoredRequest.initialPosition = startTime / playbackDuration
+            }
+        }
         let tracks = TrackCatalog(
             sourceAudioTracks: sourceAudioTracks.map {
                 PlaybackTrack(
@@ -134,11 +206,11 @@ extension MediaPlaybackRequest {
                 sourceKind: sourceKind
             ),
             byteLength: byteLength,
-            duration: totalDurationSeconds,
+            duration: playbackDuration,
             estimatedBitrate: estimatedBitrate,
             tracks: tracks,
-            subtitles: subtitlePlan(tracks: tracks, selectedSubtitleTrackID: subtitleTrackID),
-            mediaRequest: self
+            subtitles: disablesSubtitles ? SubtitlePlan(mode: .disabled) : subtitlePlan(tracks: tracks, selectedSubtitleTrackID: subtitleTrackID),
+            mediaRequest: restoredRequest
         )
     }
 

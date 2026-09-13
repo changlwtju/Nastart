@@ -17,6 +17,18 @@ public class SubtitlePart: CustomStringConvertible, Identifiable {
     public var origin: CGPoint = .zero
     public let text: NSAttributedString?
     public var image: UIImage?
+    /// Bitmap subtitle coordinates belong to the subtitle canvas, which can
+    /// differ from the video (for example, 1080p PGS accompanying UHD video).
+    public var imageCanvasSize: CGSize = .zero
+
+    public func imageDisplaySize(in bounds: CGSize, videoSize: CGSize) -> CGSize {
+        guard let image else { return .zero }
+        let canvas = imageCanvasSize.width > 0 && imageCanvasSize.height > 0 ? imageCanvasSize : videoSize
+        guard canvas.width > 0, canvas.height > 0 else { return .zero }
+        let scale = min(bounds.width / canvas.width, bounds.height / canvas.height,
+                        bounds.width / max(image.size.width, 1))
+        return CGSize(width: image.size.width * scale, height: image.size.height * scale)
+    }
     public var textPosition: TextPosition?
     public var description: String {
         "Subtile Group ==========\nstart: \(start)\nend:\(end)\ntext:\(String(describing: text))"
