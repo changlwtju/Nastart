@@ -5774,7 +5774,15 @@ private final class JellyfinLibraryStore: ObservableObject {
     @Published private(set) var favoriteItemIDs: Set<String> = []
     @Published var errorMessage: String?
 
-    private var client: JellyfinClient?
+    private let playbackActivity = PlaybackActivityScope()
+    private var responseScope = PlaybackResponseScope()
+    private var client: JellyfinClient? {
+        didSet {
+            responseScope.invalidateSession()
+            playbackActivity.invalidate()
+            playbackStopSnapshot = nil
+        }
+    }
     private var userID: String?
     private var didRestore = false
     private var trustDelegate: JellyfinCertificateTrustDelegate?
@@ -6096,9 +6104,12 @@ private final class JellyfinLibraryStore: ObservableObject {
 
     func loadDetail(itemID: String) async throws -> JellyfinMediaEntry {
         guard let client, let userID else { throw JellyfinLibraryError.missingSession }
+        let sessionID = responseScope.sessionID
         let response = try await client.send(
             Paths.getItem(itemID: itemID, userID: userID)
         ).value
+        try Task.checkCancellation()
+        guard responseScope.acceptsSession(sessionID) else { throw CancellationError() }
         guard let item = mapItem(response) else {
             throw JellyfinLibraryError.missingItem
         }
@@ -7766,6 +7777,22 @@ private final class JellyfinLibraryStore: ObservableObject {
         proxyURL: URL? = nil
     ) -> MediaPlaybackTracker {
         let encodingClient = client
+        let reportingSessionID = responseScope.sessionID
+        let activity = playbackActivity
+        let activityTicket = activity.prepare()
+        let reports = MediaPlaybackReportQueue { [weak self] event in
+            await self?.reportPlayback(
+                event,
+                reportingClient: encodingClient,
+                reportingSessionID: reportingSessionID,
+                activityTicket: activityTicket,
+                entry: entry,
+                playMethod: playMethod,
+                playSessionID: playSessionID,
+                mediaSourceID: mediaSourceID,
+                subtitleStreamIndex: subtitleStreamIndex
+            )
+        }
         return MediaPlaybackTracker(releaseResources: {
             if let proxyURL { AuthenticatedMediaStreamProxy.shared.unregister(proxyURL) }
             guard let encodingClient, let playSessionID, playMethod == .transcode else { return }
@@ -7776,28 +7803,31 @@ private final class JellyfinLibraryStore: ObservableObject {
                 )).value
             }
         }) { [weak self] event in
-            Task { @MainActor [weak self] in
-                await self?.reportPlayback(
-                    event,
-                    entry: entry,
-                    playMethod: playMethod,
-                    playSessionID: playSessionID,
-                    mediaSourceID: mediaSourceID,
-                    subtitleStreamIndex: subtitleStreamIndex
-                )
+            if case .started = event { activity.activate(activityTicket) }
+            // Preserve immediate local exit feedback while earlier HTTP reports drain.
+            if case .stopped(let position, _) = event {
+                Task { @MainActor [weak self] in
+                    guard let self, self.responseScope.acceptsSession(reportingSessionID),
+                          activity.isCurrent(activityTicket), position.isFinite, position >= 0 else { return }
+                    self.playbackStopSnapshot = (entry.id, position, UUID())
+                }
             }
+            reports.enqueue(event)
         }
     }
 
     private func reportPlayback(
         _ event: MediaPlaybackTrackingEvent,
+        reportingClient: JellyfinClient?,
+        reportingSessionID: UUID,
+        activityTicket: PlaybackActivityScope.Ticket,
         entry: JellyfinMediaEntry,
         playMethod: PlayMethod,
         playSessionID: String?,
         mediaSourceID: String?,
         subtitleStreamIndex: Int?
     ) async {
-        guard let client else { return }
+        guard let client = reportingClient, responseScope.acceptsSession(reportingSessionID), !Task.isCancelled else { return }
         do {
             switch event {
             case .started(let positionSeconds):
@@ -7827,9 +7857,6 @@ private final class JellyfinLibraryStore: ObservableObject {
                 )
                 _ = try await client.send(Paths.reportPlaybackProgress(body)).value
             case .stopped(let positionSeconds, let failed):
-                if positionSeconds.isFinite, positionSeconds >= 0 {
-                    playbackStopSnapshot = (entry.id, positionSeconds, UUID())
-                }
                 let body = PlaybackStopInfo(
                     isFailed: failed,
                     itemID: entry.id,
@@ -7838,10 +7865,12 @@ private final class JellyfinLibraryStore: ObservableObject {
                     positionTicks: Self.jellyfinTicks(for: positionSeconds)
                 )
                 _ = try await client.send(Paths.reportPlaybackStopped(body)).value
-                continueWatching = try await loadResumeItems()
-                registerFavoriteState(from: continueWatching)
+                guard responseScope.acceptsSession(reportingSessionID), !Task.isCancelled else { return }
+                guard playbackActivity.isCurrent(activityTicket) else { return }
+                try await refreshResumeItems(sessionID: reportingSessionID, activityTicket: activityTicket)
             }
         } catch {
+            guard responseScope.acceptsSession(reportingSessionID) else { return }
             if !isExpectedCancellation(error) {
                 record(
                     "diagnostics.jellyfin.playback_report_failed",
@@ -7853,8 +7882,7 @@ private final class JellyfinLibraryStore: ObservableObject {
     }
 
     private static func jellyfinTicks(for seconds: Double) -> Int {
-        guard seconds.isFinite, seconds > 0 else { return 0 }
-        return Int(min(seconds * 10_000_000, Double(Int.max)))
+        PlaybackPositionPolicy.ticks(for: seconds)
     }
 
     private static func firstContainer(_ value: String?) -> String? {
@@ -8011,6 +8039,7 @@ private final class JellyfinLibraryStore: ObservableObject {
     }
 
     private func loadHome() async {
+        let sessionID = responseScope.sessionID
         let startedAt = Date()
         record(
             "diagnostics.jellyfin.library_loading",
@@ -8019,6 +8048,7 @@ private final class JellyfinLibraryStore: ObservableObject {
         )
         do {
             let loadedLibraries = try await loadViews()
+            guard responseScope.acceptsSession(sessionID), !Task.isCancelled else { return }
             libraries = loadedLibraries
             isLoading = false
             record(
@@ -8031,6 +8061,7 @@ private final class JellyfinLibraryStore: ObservableObject {
                 ]
             )
         } catch {
+            guard responseScope.acceptsSession(sessionID), !Task.isCancelled else { return }
             isLoading = false
             if isExpectedCancellation(error) {
                 return
@@ -8046,57 +8077,70 @@ private final class JellyfinLibraryStore: ObservableObject {
 
         do {
             let shelfStartedAt = Date()
-            continueWatching = try await loadResumeItems()
-            registerFavoriteState(from: continueWatching)
+            try await refreshResumeItems(sessionID: sessionID)
+            guard responseScope.acceptsSession(sessionID), !Task.isCancelled else { return }
             recordHomeShelfLoaded("resume", count: continueWatching.count, since: shelfStartedAt)
         } catch {
+            guard responseScope.acceptsSession(sessionID), !Task.isCancelled else { return }
             recordHomeShelfFailed("resume", error: error)
         }
 
         do {
             let shelfStartedAt = Date()
-            movies = try await loadItems(parentID: nil, kinds: [.movie], limit: 36)
+            let loaded = try await loadItems(parentID: nil, kinds: [.movie], limit: 36)
+            guard responseScope.acceptsSession(sessionID), !Task.isCancelled else { return }
+            movies = loaded
             registerFavoriteState(from: movies)
             recordHomeShelfLoaded("movies", count: movies.count, since: shelfStartedAt)
         } catch {
+            guard responseScope.acceptsSession(sessionID), !Task.isCancelled else { return }
             recordHomeShelfFailed("movies", error: error)
         }
 
         do {
             let shelfStartedAt = Date()
-            series = try await loadItems(parentID: nil, kinds: [.series], limit: 36)
+            let loaded = try await loadItems(parentID: nil, kinds: [.series], limit: 36)
+            guard responseScope.acceptsSession(sessionID), !Task.isCancelled else { return }
+            series = loaded
             registerFavoriteState(from: series)
             recordHomeShelfLoaded("series", count: series.count, since: shelfStartedAt)
         } catch {
+            guard responseScope.acceptsSession(sessionID), !Task.isCancelled else { return }
             recordHomeShelfFailed("series", error: error)
         }
 
         do {
             let shelfStartedAt = Date()
-            recentlyAdded = try await loadItems(
+            let loaded = try await loadItems(
                 parentID: nil,
                 kinds: [.movie, .series],
                 limit: 24,
                 sortBy: [.dateCreated],
                 sortOrder: [.descending]
             )
+            guard responseScope.acceptsSession(sessionID), !Task.isCancelled else { return }
+            recentlyAdded = loaded
             registerFavoriteState(from: recentlyAdded)
             recordHomeShelfLoaded("recentlyAdded", count: recentlyAdded.count, since: shelfStartedAt)
         } catch {
+            guard responseScope.acceptsSession(sessionID), !Task.isCancelled else { return }
             recordHomeShelfFailed("recentlyAdded", error: error)
         }
 
         do {
             let shelfStartedAt = Date()
-            favorites = try await loadItems(
+            let loaded = try await loadItems(
                 parentID: nil,
                 kinds: [.movie, .series, .episode, .audio, .video, .musicAlbum, .musicVideo],
                 limit: 60,
                 favoriteOnly: true
             )
+            guard responseScope.acceptsSession(sessionID), !Task.isCancelled else { return }
+            favorites = loaded
             registerFavoriteState(from: favorites)
             recordHomeShelfLoaded("favorites", count: favorites.count, since: shelfStartedAt)
         } catch {
+            guard responseScope.acceptsSession(sessionID), !Task.isCancelled else { return }
             recordHomeShelfFailed("favorites", error: error)
         }
 
@@ -8167,8 +8211,14 @@ private final class JellyfinLibraryStore: ObservableObject {
         return (response.items ?? []).compactMap(mapItem)
     }
 
-    private func loadResumeItems() async throws -> [JellyfinMediaEntry] {
+    private func refreshResumeItems(
+        sessionID: UUID,
+        activityTicket: PlaybackActivityScope.Ticket? = nil
+    ) async throws {
+        guard responseScope.acceptsSession(sessionID), !Task.isCancelled else { throw CancellationError() }
         guard let client, let userID else { throw JellyfinLibraryError.missingSession }
+        if let activityTicket, !playbackActivity.isCurrent(activityTicket) { throw CancellationError() }
+        let request = responseScope.beginResumeRequest()
         var parameters = Paths.GetResumeItemsParameters()
         parameters.userID = userID
         parameters.limit = 20
@@ -8179,7 +8229,13 @@ private final class JellyfinLibraryStore: ObservableObject {
         parameters.enableImageTypes = [.primary, .thumb, .backdrop]
         parameters.includeItemTypes = [.movie, .episode, .audio, .video]
         let response = try await client.send(Paths.getResumeItems(parameters: parameters)).value
-        return (response.items ?? []).compactMap(mapItem)
+        try Task.checkCancellation()
+        guard responseScope.acceptsResumeResponse(request) else { throw CancellationError() }
+        if let activityTicket, !playbackActivity.isCurrent(activityTicket) { throw CancellationError() }
+        // Validate and publish in one actor turn; returning an unchecked array
+        // to a suspended caller would reopen the stale-response race.
+        continueWatching = (response.items ?? []).compactMap(mapItem)
+        registerFavoriteState(from: continueWatching)
     }
 
     private func loadItems(
@@ -9705,6 +9761,7 @@ private struct JellyfinMediaDetailView: View {
     @State private var selectedAudioStreamIndex: Int?
     @State private var selectedSubtitleStreamIndex: Int?
     @State private var detailedItem: JellyfinMediaEntry?
+    @State private var localPlaybackStopSnapshot: (itemID: String, position: Double, revision: UUID)?
     @State private var similarItems: [JellyfinMediaEntry] = []
     @State private var isLoadingDetails = false
     @State private var isOverviewExpanded = false
@@ -9810,13 +9867,12 @@ private struct JellyfinMediaDetailView: View {
         .navigationTitle(mediaItem.title)
         .navigationBarTitleDisplayMode(.inline)
         .onChange(of: store.playbackStopSnapshot?.revision) { _ in
-            guard let snapshot = store.playbackStopSnapshot, snapshot.itemID == item.id else { return }
-            var updated = mediaItem
-            updated.playbackPositionTicks = Int((snapshot.position * 10_000_000).rounded())
-            updated.progress = updated.runTimeTicks.flatMap { duration in
-                duration > 0 ? min(snapshot.position * 10_000_000 / Double(duration), 1) : nil
+            guard let snapshot = store.playbackStopSnapshot else {
+                localPlaybackStopSnapshot = nil
+                return
             }
-            detailedItem = updated
+            guard snapshot.itemID == item.id else { return }
+            localPlaybackStopSnapshot = snapshot
         }
         .task(id: item.id) {
             await loadDetailContent()
@@ -9863,7 +9919,20 @@ private struct JellyfinMediaDetailView: View {
     }
 
     private var mediaItem: JellyfinMediaEntry {
-        detailedItem ?? item
+        var result = detailedItem ?? item
+        // Keep the confirmed local stop separate from fetched metadata: a
+        // request started before exit can finish afterwards with an old position.
+        // Retain this view's snapshot even if another item's stop is published.
+        // A newly opened detail view uses fresh server data, not a historical
+        // store snapshot that might predate playback on another device.
+        if let snapshot = localPlaybackStopSnapshot, snapshot.itemID == item.id {
+            let ticks = PlaybackPositionPolicy.ticks(for: snapshot.position)
+            result.playbackPositionTicks = ticks
+            result.progress = result.runTimeTicks.flatMap { duration in
+                duration > 0 ? min(Double(ticks) / Double(duration), 1) : nil
+            }
+        }
+        return result
     }
 
     @MainActor
@@ -9872,6 +9941,7 @@ private struct JellyfinMediaDetailView: View {
         defer { isLoadingDetails = false }
         do {
             let loadedItem = try await store.loadDetail(itemID: item.id)
+            try Task.checkCancellation()
             detailedItem = loadedItem
             if selectedAudioStreamIndex == nil {
                 selectedAudioStreamIndex = loadedItem.defaultAudioStreamIndex
@@ -9880,11 +9950,15 @@ private struct JellyfinMediaDetailView: View {
                 selectedSubtitleStreamIndex = loadedItem.preferredSubtitleStreamIndex
             }
         } catch {
+            guard !Task.isCancelled else { return }
             detailedItem = nil
         }
         do {
-            similarItems = try await store.loadSimilarItems(itemID: item.id)
+            let loadedSimilarItems = try await store.loadSimilarItems(itemID: item.id)
+            try Task.checkCancellation()
+            similarItems = loadedSimilarItems
         } catch {
+            guard !Task.isCancelled else { return }
             similarItems = []
         }
     }

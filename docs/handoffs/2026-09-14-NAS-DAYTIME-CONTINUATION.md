@@ -1,5 +1,7 @@
 # 2026-09-14 单位黑群晖接续工作指南
 
+最新交回 Mac：用户已明确要求将今天 NAS 六批修改直接提交并推送到 GitHub `main`。回 Mac 先保留当地未提交工作，再 fetch 并同步最新 `origin/main`，不再以工作分支作为唯一接续入口。下文各批“未提交/未推送”描述为当时历史检查点，以上述最新交接为准。Swift 编译、16 项新增 XCTest、真机及 ASan 验证仍未执行；23 项 Python 测试通过不替代这些验收。
+
 本指南承接 9 月 13 日 Mac 上的修改，供今天在单位黑群晖/Linux 环境继续开发。仓库为 `changlwtju/Nastart`，交接代码将推送至 `main`。今天没有 Xcode、模拟器及 iPhone/iPad 调试条件，工作集中在源码排查、离线诊断、测试用例和小范围实现；新增 Swift 修改必须记录为“待 Mac 编译/真机验证”。
 
 ## 1. 先同步并读取上下文
@@ -130,3 +132,44 @@ git push -u origin work/nas-20260914
 ## 7. 可直接发给单位开发助手的接续提示
 
 > 当前在单位黑群晖/Linux 上继续 Nastart，没有 Xcode、模拟器和真机调试能力。先读取 `docs/handoffs/2026-09-14-NAS-DAYTIME-CONTINUATION.md`、唯一任务总账及 9 月 13 日手记，基于 GitHub 最新 main 建工作分支。优先分析退出后的 JSON 解码崩溃与停止/详情/换轨的生命周期，其次核对双入口断点和修正离线诊断工具。Greenfield 是唯一优化主线，手动清晰度继续收起，所有 PX/UX 未完成项保留。可以实现有依据的小范围修复和回归用例；执行 NAS 可用检查，清楚记录不能运行的 Swift 编译、XCTest 和真机验收。不要凭栈顶函数认定崩溃根因，不要用时钟代替屏幕/听音，不要声称已经对齐 DS One。结束时更新本文和总账，给出回 Mac 的具体验证步骤。
+
+## 8. NAS 实际接续：首批生命周期修正
+
+- 用户补充：手动清晰度仅隐藏 App 入口，相关代码和接口全部保留，后期有必要再展示。已同步 PX-04 并在 Greenfield 源码注明；选项模型、`qualityRequestLoader`、换流准备与自动回退均保留。
+- 从 `b4c789a` 建立本地 `work/nas-20260914`。本批修改位于本地工作区，尚未提交或推送；main 保留同步基线。
+- 已修改 tracker 在首播前取消/释放后的终止状态，避免迟到 start/progress；分离详情页本次停止位置与异步元数据，避免迟到详情或加载失败覆盖断点；增加取消检查和无效时钟/整数转换边界保护。
+- 新增 4 项 Swift XCTest，待 Mac 执行。原 JSON 解码崩溃未确认根因，不标已修复；未修改解码 SDK 或 KS 内存管理，未改变设备文件 pending seek 保存保护与 HLS 时间语义。
+- 本批修改后实际检查：Python 3.12.13；`bash scripts/preflight.sh` 全部通过；诊断脚本 3 项 unittest、Agent 4 项 unittest 全部通过；`git diff --check` 与 `git diff --cached --check` 通过。环境没有 `swift`/`xcodebuild`，Swift 编译、4 项新增 XCTest 和真机验证未执行。
+- 时序、具体代码位置、剩余竞态和回 Mac 复现步骤：[NAS 首批退出生命周期分析](2026-09-14-NAS-PLAYBACK-LIFECYCLE.md)。后续优先补上报顺序/账号隔离证据，再推进首帧离线工具；不跳过总账未完成项。
+
+## 9. 开发方式调整：按逻辑与覆盖范围推进
+
+用户要求综合原下一阶段目标与测试矩阵优化开发方式。现行执行方式见 [分层开发与回归流程](../development/playback-development-workflow.md)：共用逻辑优先，L0/L1/L2 用于日常修复与批次，L3 保留 19×4 完整验收。S19 继续作为压力样本，日常跨格式代表集复用 S01/S03/S08/S11/S18，具体范围按修改影响确定。原 25 个 PX/UX 状态及所有正式矩阵结果未改动。
+
+下一步以停止事件顺序、旧会话/账号隔离和有效断点为有限交付范围，先写反例、证据和变更卡；原 JSON 解码崩溃仍待 Mac 捕获。Mac 完成构建/回归后建立正常包代表集基线，先固定性能口径及预算再优化。新增文档不是新增验收证据；本节优先于前文“持续优先 S19”的执行含义。
+
+## 10. NAS 第二批：认证会话与继续观看响应隔离
+
+已完成本地源码修改：旧 tracker 绑定准备时 client/认证会话，替换账号后拒绝旧上报任务；stopped 返回后复核会话；继续观看加载按最新请求校验并在同一次 MainActor 执行中发布；首页和详情补旧会话写回保护。详见 [第二批变更卡与 Mac 清单](2026-09-14-NAS-SESSION-ISOLATION.md)。
+
+实际检查：preflight、诊断脚本 3 项 unittest、Agent 4 项 unittest、`git diff --check` 全部通过。本批新增 4 项 XCTest，两批累计新增 8 项，均未在 NAS 编译/执行。当前仍为 `work/nas-20260914` 本地未提交修改，无 GitHub 推送；质量入口隐藏且代码保留。下一步针对同一播放会话 start/progress/stop 的有界串行队列与失败/取消规则取证和设计，原 SIGBUS 仍需回 Mac 捕获。
+
+## 11. NAS 第三批：单 tracker 有界上报队列
+
+已修改 tracker 的锁内事件登记/锁外交付，并接入单 worker 网络队列；未发送 progress 只保留最新值，stop 替换未发送进度，重复 stop 无效；本地停止快照单独更新，不等待网络。详情见 [第三批变更卡](2026-09-14-NAS-REPORT-ORDERING.md)。本批新增 4 项 XCTest，累计新增 12 项未执行。
+
+修改后 preflight、诊断脚本 3 项 unittest、Agent 4 项 unittest、`git diff --check` 通过。Swift 编译/新增 XCTest/真机仍未执行；本地分支未提交、未推送。跨 tracker 会话顺序和真实 SDK timeout 是下一步证据缺口；原 JSON 解码崩溃未认定修复，清晰度接口继续保留。
+
+## 12. NAS 第四批与 Mac 检查点
+
+已增加活动播放 ticket：仅实际 started 才获得本地更新资格，旧停止快照与刷新不能在新 tracker 开始后继续回填，预热候选不抢占，账号切换使旧 ticket 失效。详见 [第四批变更卡](2026-09-14-NAS-ACTIVE-PLAYBACK.md)。本批新增 4 项，累计 16 项 Swift XCTest 均未编译/执行。
+
+本批 preflight、诊断 3 项及 Agent 4 项 unittest、git diff --check 通过。源码已有 request/resource 20/60 秒配置，实际 SDK 超时行为待 Mac 核对。修改仍未提交/推送；所有 PX/UX 状态和矩阵保留。下一步先执行 Mac 构建、16 项新增测试及受控乱序响应验证，再决定跨 tracker 服务端协调；NAS 侧可继续日志/离线诊断，不继续扩大未经编译的核心改动。
+
+## 13. NAS 第五批：离线报告归属修正
+
+仅修改报告工具/测试及文档，按 trace/plan 归组，禁止借用其他会话的准备或测速数据；无法归属事件输出行号，旧日志标注兼容模式。新增 9 项 Python 测试，全部 12 项、preflight、git diff --check 通过，详见 [第五批变更卡](2026-09-14-NAS-TRACE-ASSOCIATION.md)。Swift 未继续修改，原 16 项仍待 Mac 验证；本地未提交/推送。拿到真实脱敏日志后先核对未归属事件与同条件字段，再进行性能比较。
+
+## 14. NAS 第六批：双入口配对校验与比较
+
+新增 playback_compare_entries.py 和 [三组模板/操作说明](2026-09-14-NAS-PAIRED-COMPARISON.md)，仅在同条件、正常构建、至少三组独立完整配对时输出播放时钟中位数、范围和配对差值；失败或不匹配时保留原因且不汇总。新增 11 项 Python 测试，全部 23 项、preflight、git diff --check 通过。未修改 Swift，原 16 项仍需 Mac；本地未提交/推送。需要真实脱敏报告及经核实的条件清单才能形成实际比较结果。

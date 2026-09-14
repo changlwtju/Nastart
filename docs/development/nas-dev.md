@@ -1,5 +1,7 @@
 # Nastart NAS Development Workflow
 
+播放相关任务先按 [播放开发与分层回归流程](playback-development-workflow.md) 选择 L0 与回 Mac 的 L1/L2 清单；完整矩阵在 L3 执行。本地可做确定性逻辑修复和 fixture，不能将静态检查等同于 Swift 编译或真机验收。
+
 The NAS workspace is optimized for fast static validation and fixture-driven
 checks. It does not replace a Mac/Xcode build, but it should catch the mistakes
 that are cheap to detect before handing the branch to Xcode.

@@ -1,5 +1,7 @@
 # Playback Validation Targets
 
+2026-09-14：当前目标、代表集与退出条件见 [播放开发与分层回归流程](../development/playback-development-workflow.md)，产品范围以唯一任务总账为准。以下 9 月 3～5 日 Auto/Force 目标与命令保留为历史证据，不作为现行操作步骤、网络可用性判断或生产选流依据。当前比较以 Greenfield 内设备文件/Jellyfin 的实际路线和同条件样本为准；网络须在执行时确认，本次 NAS 无真机条件。
+
 > 2026-09-06：架构范围遵循 [ADR 0002](../adr/0002-single-playback-optimization-mainline.md)。正式矩阵集中验证新架构；旧架构仅作回退与关键里程碑对照。Force original 是历史策略测试项，不再作为第三种架构或常规 UI 选项。
 
 Date: 2026-09-03

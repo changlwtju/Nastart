@@ -1,5 +1,7 @@
 # Nastart Documentation Structure
 
+播放开发方式：[共用逻辑优先、分层回归与完成条件](development/playback-development-workflow.md)。任务状态仍以唯一总账为准，19×4 功能矩阵保留完整验收范围。
+
 最新任务接续：[2026-09-14 单位黑群晖接续指南（无 Xcode/真机）](handoffs/2026-09-14-NAS-DAYTIME-CONTINUATION.md)。
 
 This directory is the source of truth for Nastart product, architecture,

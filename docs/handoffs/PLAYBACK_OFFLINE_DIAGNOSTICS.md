@@ -1,5 +1,11 @@
 # Playback Offline Diagnostics
 
+当前两入口对照：[配对校验、三组清单模板与比较工具](2026-09-14-NAS-PAIRED-COMPARISON.md)。使用 playback_compare_entries.py；历史 Auto/Force 工具不检查配对条件，不能代替此流程。
+
+2026-09-14 报告工具更新：[trace/plan 严格归属与未归属事件清单](2026-09-14-NAS-TRACE-ASSOCIATION.md)。缺会话身份的测速不再借用，旧日志兼容模式单独标识；同条件性能比较仍需补齐样本/轨道/断点/网络/构建证据。
+
+2026-09-14：按 [分层流程](../development/playback-development-workflow.md) 执行离线诊断。本文 Auto/Force、旧模拟器和策略假设属于历史工作流，须先与当前 Swift 策略核对；现行两入口比较必须按 trace、轨道、位置、网络、构建及实际原画/HLS 配对。脚本运行成功不等于策略已对齐或真机通过。
+
 This note covers playback work that can be done without Xcode, WDA, or an iOS
 device. The goal is to make the next real-device run a validation pass instead
 of a trial-and-error session.

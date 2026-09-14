@@ -342,6 +342,8 @@ struct GreenfieldVideoPlayerView: View {
     }
     // Manual quality changes are deferred until server preparation and handoff
     // meet the playback acceptance criteria. Automatic route/fallback stays active.
+    // Keep qualityOptions, qualityRequestLoader and source replacement support:
+    // only the visible entry is hidden, for a future UI reintroduction.
     private func replaceSource(preservePausedState: Bool = true, keepPlayingDuringPreparation: Bool = false,
                                playbackWasPlaying: Bool? = nil, _ load: @escaping () async -> MediaPlaybackRequest?) {
 #if DEBUG

@@ -530,10 +530,158 @@ struct MediaPlaybackRequest: Identifiable {
     }
 }
 
-enum MediaPlaybackTrackingEvent {
+enum MediaPlaybackTrackingEvent: Sendable {
     case started(positionSeconds: Double)
     case progressed(positionSeconds: Double, isPaused: Bool)
     case stopped(positionSeconds: Double, failed: Bool)
+}
+
+/// At most two pending events: start plus latest progress, or start plus stop.
+/// An in-flight event lives
+/// outside this buffer; stop replaces unsent progress with its final position.
+struct MediaPlaybackEventBuffer {
+    private var events: [MediaPlaybackTrackingEvent] = []
+    private var ended = false
+    private var started = false
+    var count: Int { events.count }
+
+    mutating func append(_ event: MediaPlaybackTrackingEvent) {
+        guard !ended else { return }
+        switch event {
+        case .started:
+            guard !started else { return }
+            started = true
+            events.append(event)
+        case .progressed:
+            guard started else { return }
+            events.removeAll { if case .progressed = $0 { return true }; return false }
+            events.append(event)
+        case .stopped:
+            ended = true
+            guard started else { return }
+            events.removeAll { if case .progressed = $0 { return true }; return false }
+            events.append(event)
+        }
+    }
+
+    mutating func next() -> MediaPlaybackTrackingEvent? {
+        events.isEmpty ? nil : events.removeFirst()
+    }
+}
+
+/// The lock protects only admission/dequeue, never network work. One worker
+/// owns a tracker queue until drained; no Task is created per progress event.
+final class MediaPlaybackReportQueue: @unchecked Sendable {
+    private let lock = NSLock()
+    private var pending = MediaPlaybackEventBuffer()
+    private var draining = false
+    private let report: @MainActor @Sendable (MediaPlaybackTrackingEvent) async -> Void
+
+    init(report: @escaping @MainActor @Sendable (MediaPlaybackTrackingEvent) async -> Void) {
+        self.report = report
+    }
+
+    func enqueue(_ event: MediaPlaybackTrackingEvent) {
+        lock.lock()
+        pending.append(event)
+        let shouldStart = !draining && pending.count > 0
+        if shouldStart { draining = true }
+        lock.unlock()
+        if shouldStart {
+            Task { @MainActor in
+                while let event = self.takeNext() {
+                    await self.report(event)
+                }
+            }
+        }
+    }
+
+    private func takeNext() -> MediaPlaybackTrackingEvent? {
+        lock.lock()
+        defer { lock.unlock() }
+        let event = pending.next()
+        if event == nil { draining = false }
+        return event
+    }
+}
+
+/// Tickets are allocated during preparation but acquire UI ownership only on
+/// actual start. Old-account callbacks cannot acquire ownership after logout.
+final class PlaybackActivityScope: @unchecked Sendable {
+    struct Ticket: Sendable, Equatable {
+        fileprivate let epoch: UUID
+        fileprivate let id: UUID
+    }
+
+    private let lock = NSLock()
+    private var epoch = UUID()
+    private var active: Ticket?
+
+    func prepare() -> Ticket {
+        lock.lock()
+        defer { lock.unlock() }
+        return Ticket(epoch: epoch, id: UUID())
+    }
+
+    func activate(_ ticket: Ticket) {
+        lock.lock()
+        defer { lock.unlock() }
+        guard ticket.epoch == epoch else { return }
+        active = ticket
+    }
+
+    func isCurrent(_ ticket: Ticket) -> Bool {
+        lock.lock()
+        defer { lock.unlock() }
+        return ticket.epoch == epoch && active == ticket
+    }
+
+    func invalidate() {
+        lock.lock()
+        defer { lock.unlock() }
+        epoch = UUID()
+        active = nil
+    }
+}
+
+/// Main-actor-owned scope for authenticated playback reports and resume loads.
+/// Session identity changes even when the same account signs in again.
+struct PlaybackResponseScope {
+    struct ResumeRequest {
+        fileprivate let sessionID: UUID
+        fileprivate let requestID: UUID
+    }
+
+    private(set) var sessionID = UUID()
+    private var resumeRequestID: UUID?
+
+    mutating func invalidateSession() {
+        sessionID = UUID()
+        resumeRequestID = nil
+    }
+
+    func acceptsSession(_ id: UUID) -> Bool { sessionID == id }
+
+    mutating func beginResumeRequest() -> ResumeRequest {
+        let id = UUID()
+        resumeRequestID = id
+        return ResumeRequest(sessionID: sessionID, requestID: id)
+    }
+
+    func acceptsResumeResponse(_ request: ResumeRequest) -> Bool {
+        acceptsSession(request.sessionID) && resumeRequestID == request.requestID
+    }
+}
+
+enum PlaybackPositionPolicy {
+    static func ticks(for seconds: Double) -> Int {
+        guard seconds.isFinite, seconds > 0 else { return 0 }
+        let ticks = seconds * 10_000_000
+        // Double(Int.max) rounds up on 64-bit platforms and cannot be
+        // converted back to Int. Clamp before performing that conversion.
+        guard ticks < Double(Int.max) else { return Int.max }
+        return Int(ticks)
+    }
 }
 
 final class MediaPlaybackTracker {
@@ -546,6 +694,8 @@ final class MediaPlaybackTracker {
     private var lastPositionSeconds = 0.0
     private var lastReportedPositionSeconds = -Double.infinity
     private var lastPausedState: Bool?
+    private var pendingEvents = MediaPlaybackEventBuffer()
+    private var deliveringEvents = false
 
     init(releaseResources: @escaping () -> Void = {}, eventHandler: @escaping (MediaPlaybackTrackingEvent) -> Void) {
         self.releaseResources = releaseResources
@@ -560,11 +710,13 @@ final class MediaPlaybackTracker {
         lock.lock()
         guard !didReleaseResources else { lock.unlock(); return }
         didReleaseResources = true
+        didStop = true
         lock.unlock()
         releaseResources()
     }
 
     func started(positionSeconds: Double) {
+        guard positionSeconds.isFinite else { return }
         let position = max(positionSeconds, 0)
         lock.lock()
         guard !didStart, !didStop else {
@@ -574,11 +726,13 @@ final class MediaPlaybackTracker {
         didStart = true
         lastPositionSeconds = position
         lastReportedPositionSeconds = position
+        pendingEvents.append(.started(positionSeconds: position))
         lock.unlock()
-        eventHandler(.started(positionSeconds: position))
+        deliverPendingEvents()
     }
 
     func progressed(positionSeconds: Double, isPaused: Bool, force: Bool = false) {
+        guard positionSeconds.isFinite else { return }
         let position = max(positionSeconds, 0)
         lock.lock()
         guard !didStop else {
@@ -594,27 +748,46 @@ final class MediaPlaybackTracker {
         if shouldReport {
             lastReportedPositionSeconds = position
             lastPausedState = isPaused
+            pendingEvents.append(.progressed(positionSeconds: position, isPaused: isPaused))
         }
         lock.unlock()
         if shouldReport {
-            eventHandler(.progressed(positionSeconds: position, isPaused: isPaused))
+            deliverPendingEvents()
         }
     }
 
     func stopped(failed: Bool = false, positionSeconds: Double? = nil) {
         defer { releasePreparedResources() }
         lock.lock()
-        guard didStart, !didStop else {
+        guard !didStop else {
             lock.unlock()
             return
         }
         didStop = true
+        guard didStart else {
+            lock.unlock()
+            return
+        }
         if let positionSeconds, positionSeconds.isFinite, positionSeconds >= 0 {
             lastPositionSeconds = positionSeconds
         }
         let position = lastPositionSeconds
+        pendingEvents.append(.stopped(positionSeconds: position, failed: failed))
         lock.unlock()
-        eventHandler(.stopped(positionSeconds: position, failed: failed))
+        deliverPendingEvents()
+    }
+
+    private func deliverPendingEvents() {
+        lock.lock()
+        guard !deliveringEvents else { lock.unlock(); return }
+        deliveringEvents = true
+        while let event = pendingEvents.next() {
+            lock.unlock()
+            eventHandler(event)
+            lock.lock()
+        }
+        deliveringEvents = false
+        lock.unlock()
     }
 }
 

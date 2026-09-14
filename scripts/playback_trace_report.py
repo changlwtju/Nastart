@@ -50,7 +50,7 @@ class PlaybackTrace:
 
     @property
     def plan_id(self) -> str:
-        return self.route.details.get("planID", "-")
+        return self.route.details.get("planID") or "-"
 
     @property
     def route_id(self) -> str:
@@ -152,21 +152,27 @@ def trace_field(trace: PlaybackTrace, source: str, key: str) -> str | None:
     return event.details.get(key) if event else None
 
 
-def build_traces(events: list[Event]) -> list[PlaybackTrace]:
+def build_traces(events: list[Event], unassigned: list[dict[str, object]] | None = None) -> list[PlaybackTrace]:
     traces: list[PlaybackTrace] = []
     last_decision: Event | None = None
     last_prepared: Event | None = None
     last_bitrate: Event | None = None
     decisions_by_trace_id: dict[str, Event] = {}
     prepared_by_trace_id: dict[str, Event] = {}
-    active_by_trace_id: dict[str, PlaybackTrace] = {}
+    bitrate_by_trace_id: dict[str, Event] = {}
+    active_by_identity: dict[tuple[str | None, str | None], list[PlaybackTrace]] = {}
     active_trace: PlaybackTrace | None = None
 
     for event in events:
         mode = event.details.get("mode")
         trace_id = event.details.get("playbackTraceID")
+        trace_id = trace_id if trace_id not in (None, "", "-") else None
+        plan_id = event.details.get("planID")
+        plan_id = plan_id if plan_id not in (None, "", "-") else None
         if "Jellyfin 连接码率测量完成" in event.message:
             last_bitrate = event
+            if trace_id:
+                bitrate_by_trace_id[trace_id] = event
         if mode in {
             "originalRangeSkipped",
             "originalRangeUnavailable",
@@ -186,26 +192,52 @@ def build_traces(events: list[Event]) -> list[PlaybackTrace]:
                 prepared_by_trace_id[trace_id] = event
 
         if event.message == "diagnostics.playback.next.route_selected":
-            route_trace_id = event.details.get("playbackTraceID")
+            def context(by_trace: dict[str, Event], legacy: Event | None) -> Event | None:
+                candidate = by_trace.get(trace_id) if trace_id else legacy
+                if candidate is None:
+                    return None
+                candidate_trace = candidate.details.get("playbackTraceID")
+                candidate_plan = candidate.details.get("planID")
+                if not trace_id and candidate_trace not in (None, "", "-"):
+                    return None
+                if candidate_plan not in (None, "", "-") and candidate_plan != plan_id:
+                    return None
+                return candidate
+
             active_trace = PlaybackTrace(
                 started=event,
                 route=event,
-                decision=decisions_by_trace_id.get(route_trace_id or "") or last_decision,
-                prepared=prepared_by_trace_id.get(route_trace_id or "") or last_prepared,
-                bitrate=last_bitrate,
+                decision=context(decisions_by_trace_id, last_decision),
+                prepared=context(prepared_by_trace_id, last_prepared),
+                bitrate=context(bitrate_by_trace_id, last_bitrate),
             )
             traces.append(active_trace)
-            if route_trace_id and route_trace_id != "-":
-                active_by_trace_id[route_trace_id] = active_trace
+            active_by_identity.setdefault((trace_id, plan_id), []).append(active_trace)
+            # Unidentified legacy context applies only to the next route.
+            last_decision = last_prepared = last_bitrate = None
             continue
 
-        event_trace = (
-            active_by_trace_id.get(trace_id)
-            if trace_id and trace_id != "-"
-            else active_trace
-        )
+        candidates = active_by_identity.get((trace_id, plan_id), []) if trace_id and plan_id else [
+            trace
+            for (known_trace, known_plan), matches in active_by_identity.items()
+            if (trace_id is None or known_trace == trace_id)
+            and (plan_id is None or known_plan == plan_id)
+            for trace in matches
+        ] if trace_id or plan_id else []
+        if trace_id or plan_id:
+            event_trace = candidates[0] if len(candidates) == 1 else None
+        else:
+            # Legacy fallback is limited to an unlabelled active route. It must
+            # never attach an unidentified event to a modern identified session.
+            event_trace = active_trace if active_trace and active_trace.trace_id == "-" and active_trace.plan_id == "-" else None
 
         if event_trace is None:
+            if unassigned is not None and (
+                event.message.startswith("diagnostics.playback.next.")
+                or event.message in {"媒体兼容传输已开始", "媒体兼容传输已结束"}
+                or event.level == "WARNING"
+            ):
+                unassigned.append({"line": event.line, "reason": "ambiguous_or_missing_identity"})
             continue
 
         if event.message == "diagnostics.playback.next.telemetry_sample":
@@ -225,7 +257,7 @@ def build_traces(events: list[Event]) -> list[PlaybackTrace]:
             continue
 
         if event.message == "diagnostics.playback.next.first_frame":
-            if event.details.get("planID") == event_trace.plan_id:
+            if event_trace.first_frame is None:
                 event_trace.first_frame = event
             continue
 
@@ -440,6 +472,7 @@ def trace_record(trace: PlaybackTrace, index: int) -> dict[str, object]:
         "index": index,
         "line": trace.route.line,
         "playbackTraceID": trace.trace_id,
+        "association": "legacy_unidentified" if trace.trace_id == "-" and trace.plan_id == "-" else "identified",
         "planID": trace.plan_id,
         "routeID": trace.route_id,
         "routeKind": route.get("routeKind", "-"),
@@ -667,19 +700,23 @@ def main() -> int:
     args = parser.parse_args()
 
     events = parse_log(args.log)
-    traces = build_traces(events)
+    unassigned: list[dict[str, object]] = []
+    traces = build_traces(events, unassigned)
     records = [trace_record(trace, index) for index, trace in enumerate(traces, 1)]
     if args.json:
         print(
             json.dumps(
-                {"events": len(events), "playbackTraces": records},
+                {"events": len(events), "associationPolicy": "trace-plan-strict-with-legacy-fallback",
+                 "unassignedEvents": unassigned, "playbackTraces": records},
                 ensure_ascii=False,
                 indent=2,
             )
         )
         return 0
 
-    print(f"events={len(events)} playback_traces={len(traces)}")
+    print(f"events={len(events)} playback_traces={len(traces)} unassigned_events={len(unassigned)}")
+    for event in unassigned:
+        print(f"unassigned line={event['line']} reason={event['reason']}")
     print()
     print("\n".join(summarize(records)))
     for index, trace in enumerate(traces, 1):

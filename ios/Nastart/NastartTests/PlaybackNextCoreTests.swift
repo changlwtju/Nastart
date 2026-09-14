@@ -7,6 +7,245 @@ import Network
 @testable import Nastart
 
 final class PlaybackNextCoreTests: XCTestCase {
+    func testPrewarmedCandidateDoesNotStealCurrentPlaybackOwnership() {
+        let scope = PlaybackActivityScope()
+        let playing = scope.prepare()
+        scope.activate(playing)
+        let abandonedCandidate = scope.prepare()
+        XCTAssertTrue(scope.isCurrent(playing))
+        XCTAssertFalse(scope.isCurrent(abandonedCandidate))
+    }
+
+    func testQuickReopenRejectsOldStopSnapshotAndKeepsNewOwner() {
+        let scope = PlaybackActivityScope()
+        let first = scope.prepare()
+        scope.activate(first)
+        let reopened = scope.prepare()
+        scope.activate(reopened)
+        var visiblePosition = 0
+        if scope.isCurrent(first) { visiblePosition = 6311 }
+        XCTAssertEqual(visiblePosition, 0)
+        XCTAssertTrue(scope.isCurrent(reopened))
+    }
+
+    func testLogoutRejectsLateActivationFromOldTracker() {
+        let scope = PlaybackActivityScope()
+        let old = scope.prepare()
+        scope.invalidate()
+        let current = scope.prepare()
+        scope.activate(current)
+        scope.activate(old)
+        XCTAssertTrue(scope.isCurrent(current))
+        XCTAssertFalse(scope.isCurrent(old))
+    }
+
+    func testStopRefreshLosesOwnershipWhenAnotherPlaybackStarts() {
+        let activity = PlaybackActivityScope()
+        var responses = PlaybackResponseScope()
+        let first = activity.prepare()
+        activity.activate(first)
+        let pendingResume = responses.beginResumeRequest()
+        XCTAssertTrue(activity.isCurrent(first))
+        activity.activate(activity.prepare())
+        // Even with no newer resume request, the old stop's response is stale.
+        XCTAssertTrue(responses.acceptsResumeResponse(pendingResume))
+        XCTAssertFalse(activity.isCurrent(first))
+    }
+
+    func testReportBufferCoalescesBurstAndKeepsFinalStop() {
+        var buffer = MediaPlaybackEventBuffer()
+        buffer.append(.started(positionSeconds: 100))
+        for position in 101...1100 {
+            buffer.append(.started(positionSeconds: 0))
+            buffer.append(.progressed(positionSeconds: Double(position), isPaused: position == 1100))
+            XCTAssertLessThanOrEqual(buffer.count, 2)
+        }
+        if case .started(let position)? = buffer.next() { XCTAssertEqual(position, 100) }
+        else { XCTFail("Start must remain first") }
+        if case .progressed(let position, let paused)? = buffer.next() {
+            XCTAssertEqual(position, 1100)
+            XCTAssertTrue(paused)
+        } else { XCTFail("Latest pending progress must survive") }
+        buffer.append(.progressed(positionSeconds: 1200, isPaused: false))
+        buffer.append(.stopped(positionSeconds: 0, failed: true))
+        buffer.append(.stopped(positionSeconds: 999, failed: false))
+        buffer.append(.progressed(positionSeconds: 1300, isPaused: false))
+        if case .stopped(let position, let failed)? = buffer.next() {
+            XCTAssertEqual(position, 0)
+            XCTAssertTrue(failed)
+        } else { XCTFail("First stop must replace unsent progress") }
+        XCTAssertNil(buffer.next())
+    }
+
+    func testReportBufferStopBeforeStartIsTerminalWithoutFictitiousReport() {
+        var buffer = MediaPlaybackEventBuffer()
+        buffer.append(.stopped(positionSeconds: 0, failed: false))
+        buffer.append(.started(positionSeconds: 10))
+        buffer.append(.progressed(positionSeconds: 20, isPaused: false))
+        XCTAssertNil(buffer.next())
+    }
+
+    func testTrackerReentrantStopIsDeliveredAfterStartCallbackReturns() {
+        var events: [String] = []
+        var tracker: MediaPlaybackTracker!
+        tracker = MediaPlaybackTracker { event in
+            switch event {
+            case .started:
+                events.append("start-enter")
+                tracker.progressed(positionSeconds: 120, isPaused: false, force: true)
+                tracker.stopped(positionSeconds: 140)
+                events.append("start-return")
+            case .progressed: events.append("progress")
+            case .stopped: events.append("stop")
+            }
+        }
+        tracker.started(positionSeconds: 100)
+        XCTAssertEqual(events, ["start-enter", "start-return", "stop"])
+        tracker = nil
+    }
+
+    @MainActor
+    func testReportQueueWaitsForStartAndDrainsStopAfterHandledFailure() async {
+        let started = expectation(description: "start request suspended")
+        let stopped = expectation(description: "stop request completed")
+        let probe = PlaybackReportQueueTestProbe()
+        let queue = MediaPlaybackReportQueue { event in
+            switch event {
+            case .started:
+                probe.events.append("start")
+                await withCheckedContinuation { continuation in
+                    probe.releaseStart = continuation
+                    started.fulfill()
+                }
+                // reportPlayback handles transport errors and returns normally.
+                do { throw NSError(domain: "test.transport", code: 1) }
+                catch { probe.events.append("handled-error") }
+            case .progressed:
+                probe.events.append("progress")
+            case .stopped(let position, _):
+                probe.events.append("stop-\(Int(position))")
+                stopped.fulfill()
+            }
+        }
+        queue.enqueue(.started(positionSeconds: 0))
+        await fulfillment(of: [started], timeout: 2)
+        for i in 1...1000 { queue.enqueue(.progressed(positionSeconds: Double(i), isPaused: false)) }
+        queue.enqueue(.stopped(positionSeconds: 6311, failed: false))
+        queue.enqueue(.stopped(positionSeconds: 0, failed: false))
+        XCTAssertEqual(probe.events, ["start"])
+        probe.releaseStart?.resume()
+        probe.releaseStart = nil
+        await fulfillment(of: [stopped], timeout: 2)
+        XCTAssertEqual(probe.events, ["start", "handled-error", "stop-6311"])
+    }
+
+    func testOldPlaybackReportCannotUseReplacementLoginEvenForSameAccount() {
+        var scope = PlaybackResponseScope()
+        let trackerSession = scope.sessionID
+        XCTAssertTrue(scope.acceptsSession(trackerSession))
+        scope.invalidateSession() // Sign out invalidates queued callbacks.
+        scope.invalidateSession() // A fresh login never revives that tracker.
+        XCTAssertFalse(scope.acceptsSession(trackerSession))
+        XCTAssertTrue(scope.acceptsSession(scope.sessionID))
+    }
+
+    func testResumeResponsesCompletingInReverseOrderKeepNewestRequest() {
+        var scope = PlaybackResponseScope()
+        let homeLoad = scope.beginResumeRequest()
+        let afterStop = scope.beginResumeRequest()
+        var visiblePosition = 100
+        if scope.acceptsResumeResponse(afterStop) { visiblePosition = 6311 }
+        if scope.acceptsResumeResponse(homeLoad) { visiblePosition = 100 }
+        XCTAssertEqual(visiblePosition, 6311)
+        XCTAssertFalse(scope.acceptsResumeResponse(homeLoad))
+    }
+
+    func testSignOutRejectsResumeResponseBeforeAnotherRequestExists() {
+        var scope = PlaybackResponseScope()
+        let request = scope.beginResumeRequest()
+        scope.invalidateSession()
+        XCTAssertFalse(scope.acceptsResumeResponse(request))
+        let replacement = scope.beginResumeRequest()
+        XCTAssertTrue(scope.acceptsResumeResponse(replacement))
+        XCTAssertFalse(scope.acceptsResumeResponse(request))
+    }
+
+    func testFailedNewResumeLoadDoesNotMakeOlderResponseCurrentAgain() {
+        var scope = PlaybackResponseScope()
+        let old = scope.beginResumeRequest()
+        _ = scope.beginResumeRequest() // New request fails; retain visible data.
+        XCTAssertFalse(scope.acceptsResumeResponse(old))
+        let retry = scope.beginResumeRequest()
+        XCTAssertTrue(scope.acceptsResumeResponse(retry))
+    }
+
+    func testCancelledWarmupRejectsLateStartProgressAndDuplicateStop() {
+        for explicitRelease in [false, true] {
+            var releases = 0
+            var reports = 0
+            var tracker: MediaPlaybackTracker? = MediaPlaybackTracker(
+                releaseResources: { releases += 1 }, eventHandler: { _ in reports += 1 })
+            if explicitRelease { tracker?.releasePreparedResources() }
+            else { tracker?.stopped() }
+            // A renderer readiness callback can arrive after its candidate was abandoned.
+            tracker?.started(positionSeconds: 120)
+            tracker?.progressed(positionSeconds: 150, isPaused: false, force: true)
+            tracker?.stopped(positionSeconds: 160)
+            tracker?.releasePreparedResources()
+            tracker = nil
+            XCTAssertEqual(reports, 0)
+            XCTAssertEqual(releases, 1)
+        }
+    }
+
+    func testInvalidClockDoesNotPoisonLastConfirmedStopPosition() {
+        for invalid in [Double.nan, .infinity, -.infinity] {
+            var positions: [Double] = []
+            let tracker = MediaPlaybackTracker { event in
+                switch event {
+                case .started(let position), .progressed(let position, _), .stopped(let position, _):
+                    positions.append(position)
+                }
+            }
+            tracker.started(positionSeconds: invalid)
+            tracker.started(positionSeconds: 120)
+            tracker.progressed(positionSeconds: 140, isPaused: true)
+            tracker.progressed(positionSeconds: invalid, isPaused: false, force: true)
+            tracker.stopped(positionSeconds: invalid)
+            tracker.stopped(positionSeconds: 0)
+            XCTAssertEqual(positions, [120, 140, 140])
+        }
+    }
+
+    func testStopReleasesResourcesOnceAndRejectsReentrantPlayback() {
+        var releases = 0
+        var reports = 0
+        var tracker: MediaPlaybackTracker?
+        tracker = MediaPlaybackTracker(releaseResources: {
+            releases += 1
+            tracker?.started(positionSeconds: 1)
+            tracker?.stopped()
+        }) { _ in reports += 1 }
+        tracker?.started(positionSeconds: 120)
+        tracker?.stopped(positionSeconds: 140)
+        tracker?.progressed(positionSeconds: 150, isPaused: false, force: true)
+        tracker = nil
+        XCTAssertEqual(reports, 2)
+        XCTAssertEqual(releases, 1)
+    }
+
+    func testJellyfinTicksHandleInvalidAndOverflowingClocks() {
+        for invalid in [Double.nan, .infinity, -.infinity, -1, 0] {
+            XCTAssertEqual(PlaybackPositionPolicy.ticks(for: invalid), 0)
+        }
+        XCTAssertEqual(PlaybackPositionPolicy.ticks(for: 6311.8), 63_118_000_000)
+        XCTAssertEqual(PlaybackPositionPolicy.ticks(for: Double(Int.max)), Int.max)
+        XCTAssertEqual(PlaybackPositionPolicy.ticks(for: .greatestFiniteMagnitude), Int.max)
+        let boundarySeconds = Double(Int.max) / 10_000_000
+        XCTAssertEqual(PlaybackPositionPolicy.ticks(for: boundarySeconds), Int.max)
+        XCTAssertLessThan(PlaybackPositionPolicy.ticks(for: boundarySeconds.nextDown), Int.max)
+    }
+
     func testLocalResumeIdentityIsolatesAccountsFilesAndRevisionsWithoutCredentials() {
         let server = URL(string: "https://user:secret@nas.example:5001/?sid=token#fragment")!
         let clean = URL(string: "https://nas.example:5001/")!
@@ -1220,3 +1459,9 @@ private final class BitmapQueueTestFrame: ObjectQueueItem {
     init(_ timestamp: Int64, isClear: Bool = false) { self.timestamp = timestamp; self.isClear = isClear }
 }
 #endif
+
+@MainActor
+private final class PlaybackReportQueueTestProbe {
+    var events: [String] = []
+    var releaseStart: CheckedContinuation<Void, Never>?
+}

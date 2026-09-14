@@ -1,0 +1,119 @@
+{
+  "schemaVersion": 1,
+  "runs": [
+    {
+      "pairID": "1",
+      "entry": "dsmFile",
+      "report": "unknown",
+      "playbackTraceID": "unknown",
+      "planID": "unknown",
+      "conditions": {
+        "sampleID": "unknown",
+        "fileRevision": "unknown",
+        "audioTrack": "unknown",
+        "subtitleTrack": "unknown",
+        "startSeconds": null,
+        "device": "unknown",
+        "network": "unknown",
+        "build": "unknown",
+        "buildMode": "unknown",
+        "cache": "unknown"
+      }
+    },
+    {
+      "pairID": "1",
+      "entry": "jellyfin",
+      "report": "unknown",
+      "playbackTraceID": "unknown",
+      "planID": "unknown",
+      "conditions": {
+        "sampleID": "unknown",
+        "fileRevision": "unknown",
+        "audioTrack": "unknown",
+        "subtitleTrack": "unknown",
+        "startSeconds": null,
+        "device": "unknown",
+        "network": "unknown",
+        "build": "unknown",
+        "buildMode": "unknown",
+        "cache": "unknown"
+      }
+    },
+    {
+      "pairID": "2",
+      "entry": "dsmFile",
+      "report": "unknown",
+      "playbackTraceID": "unknown",
+      "planID": "unknown",
+      "conditions": {
+        "sampleID": "unknown",
+        "fileRevision": "unknown",
+        "audioTrack": "unknown",
+        "subtitleTrack": "unknown",
+        "startSeconds": null,
+        "device": "unknown",
+        "network": "unknown",
+        "build": "unknown",
+        "buildMode": "unknown",
+        "cache": "unknown"
+      }
+    },
+    {
+      "pairID": "2",
+      "entry": "jellyfin",
+      "report": "unknown",
+      "playbackTraceID": "unknown",
+      "planID": "unknown",
+      "conditions": {
+        "sampleID": "unknown",
+        "fileRevision": "unknown",
+        "audioTrack": "unknown",
+        "subtitleTrack": "unknown",
+        "startSeconds": null,
+        "device": "unknown",
+        "network": "unknown",
+        "build": "unknown",
+        "buildMode": "unknown",
+        "cache": "unknown"
+      }
+    },
+    {
+      "pairID": "3",
+      "entry": "dsmFile",
+      "report": "unknown",
+      "playbackTraceID": "unknown",
+      "planID": "unknown",
+      "conditions": {
+        "sampleID": "unknown",
+        "fileRevision": "unknown",
+        "audioTrack": "unknown",
+        "subtitleTrack": "unknown",
+        "startSeconds": null,
+        "device": "unknown",
+        "network": "unknown",
+        "build": "unknown",
+        "buildMode": "unknown",
+        "cache": "unknown"
+      }
+    },
+    {
+      "pairID": "3",
+      "entry": "jellyfin",
+      "report": "unknown",
+      "playbackTraceID": "unknown",
+      "planID": "unknown",
+      "conditions": {
+        "sampleID": "unknown",
+        "fileRevision": "unknown",
+        "audioTrack": "unknown",
+        "subtitleTrack": "unknown",
+        "startSeconds": null,
+        "device": "unknown",
+        "network": "unknown",
+        "build": "unknown",
+        "buildMode": "unknown",
+        "cache": "unknown"
+      }
+    }
+  ]
+}

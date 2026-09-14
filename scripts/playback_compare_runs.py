@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
 """Compare two Nastart playback diagnostic exports.
 
-The intended device workflow is:
+Historical Auto/Force diagnostic workflow only. For current matched
+device-file/Jellyfin observations use playback_compare_entries.py and its
+manifest validation; this legacy script does not enforce comparable cohorts.
+
+The historical device workflow was:
 
 1. Run the same Jellyfin video with Auto policy.
 2. Run it again with DEBUG Force original KSPlayer enabled.
