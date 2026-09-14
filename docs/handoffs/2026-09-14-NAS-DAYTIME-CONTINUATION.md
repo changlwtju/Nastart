@@ -173,3 +173,9 @@ git push -u origin work/nas-20260914
 ## 14. NAS 第六批：双入口配对校验与比较
 
 新增 playback_compare_entries.py 和 [三组模板/操作说明](2026-09-14-NAS-PAIRED-COMPARISON.md)，仅在同条件、正常构建、至少三组独立完整配对时输出播放时钟中位数、范围和配对差值；失败或不匹配时保留原因且不汇总。新增 11 项 Python 测试，全部 23 项、preflight、git diff --check 通过。未修改 Swift，原 16 项仍需 Mac；本地未提交/推送。需要真实脱敏报告及经核实的条件清单才能形成实际比较结果。
+
+## 15. Mac 接续检查点
+
+已从实际推送的 `origin/main` / `4ccb161` 建立本地 `work/nas-20260914`，Mac 原有修改保存在命名 stash。正常 Debug 设备构建、94 项 Swift 测试（包括 NAS 新增 16 项，0 失败/跳过）、preflight、23 项诊断及 4 项 Agent Python 测试均通过。最新 ASan 包构建、签名、链接、覆盖安装及显式重启已完成；通话结束后已恢复测试，S01 Jellyfin 从头播放出现电影画面、时钟推进并暂停于 00:26；退出/重开/切轨/暂停定位压测仍待完成。当前未覆盖回正常包，未进行性能对照，原 SIGBUS 未定位或验收。详见 [Mac 验证记录](2026-09-14-MAC-VALIDATION.md)。
+
+9 月 15 日最新接续入口：[NAS 今日开发指南](2026-09-15-NAS-CONTINUATION.md)。以该文件及 Mac 最终验证记录为准，前文各批未编译/未执行的描述保留为历史检查点。
