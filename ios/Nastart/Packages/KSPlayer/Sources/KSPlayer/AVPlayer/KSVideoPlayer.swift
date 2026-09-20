@@ -167,10 +167,13 @@ extension KSVideoPlayer: UIViewRepresentable {
             #if canImport(UIKit)
             onSwipe = nil
             #endif
+            // Embedded subtitle infos borrow AVStream from the player. Clear
+            // selection (which disables the old track) before releasing its
+            // owner, and leave no selected track for a repeated teardown.
+            subtitleModel.selectedSubtitleInfo = nil
             playerLayer = nil
             delayHide?.cancel()
             delayHide = nil
-            subtitleModel.selectedSubtitleInfo?.isEnabled = false
         }
 
         public func skip(interval: Int) {

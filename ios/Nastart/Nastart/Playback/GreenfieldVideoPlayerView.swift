@@ -258,6 +258,32 @@ struct GreenfieldVideoPlayerView: View {
             episodeNavigation = navigation
         }
         .onChange(of: controls.currentSeconds) { _ in saveLocalProgress() }
+        .task(id: activeRequest.id) {
+            // This loader negotiates a lower bitrate. A device file's Range
+            // proxy fallback is not a transcode and must never be used here.
+            guard PlaybackStallDownshiftPolicy.isEnabled,
+                  uiRequest.source == .jellyfin,
+                  let loader = uiRequest.compatibilityFallbackRequestLoader else { return }
+            var policy = PlaybackStallDownshiftPolicy()
+            var attempts = 0
+            while !Task.isCancelled {
+                do { try await Task.sleep(nanoseconds: 1_000_000_000) }
+                catch { return }
+                let session = controls
+                let eligible = scenePhase == .active && session.isReady && session.isPlaying
+                    && !session.hasPendingSeek && !changingSource && model.errorMessage == nil
+                    && (session.durationSeconds <= 0 || session.currentSeconds < session.durationSeconds - 5)
+                guard policy.sample(now: ProcessInfo.processInfo.systemUptime,
+                    eligible: eligible, buffering: session.isTransportBuffering,
+                    seekGeneration: session.seekGeneration), attempts < 2 else { continue }
+                attempts += 1
+                let state = session.runtimeState(orientationMode: uiRequest.initialOrientationMode)
+                session.event("automatic_downshift_requested", metrics: ["reason": "sustainedRebuffering", "attempt": String(attempts)])
+                replaceSource(keepPlayingDuringPreparation: true, reportsFailure: false) {
+                    await loader(state)
+                }
+            }
+        }
         .onChange(of: scenePhase) { phase in
             if phase != .active { saveLocalProgress(force: true) }
         }
@@ -345,7 +371,8 @@ struct GreenfieldVideoPlayerView: View {
     // Keep qualityOptions, qualityRequestLoader and source replacement support:
     // only the visible entry is hidden, for a future UI reintroduction.
     private func replaceSource(preservePausedState: Bool = true, keepPlayingDuringPreparation: Bool = false,
-                               playbackWasPlaying: Bool? = nil, _ load: @escaping () async -> MediaPlaybackRequest?) {
+                               playbackWasPlaying: Bool? = nil, reportsFailure: Bool = true,
+                               _ load: @escaping () async -> MediaPlaybackRequest?) {
 #if DEBUG
         guard !changingSource else {
             // Finish/clean up the current candidate, then apply the most recent
@@ -355,12 +382,22 @@ struct GreenfieldVideoPlayerView: View {
             pendingSourceChange = {
                 replaceSource(preservePausedState: preservePausedState,
                               keepPlayingDuringPreparation: keepPlayingDuringPreparation,
-                              playbackWasPlaying: wasPlaying, load)
+                              playbackWasPlaying: wasPlaying, reportsFailure: reportsFailure, load)
             }
             return
         }
         changingSource = true
         let oldControls = controls
+        let initialSeekGeneration = oldControls.seekGeneration
+        let initialTracks = oldControls.runtimeState(orientationMode: uiRequest.initialOrientationMode)
+        func automaticCandidateStillCurrent() -> Bool {
+            guard !reportsFailure else { return true }
+            let latest = oldControls.runtimeState(orientationMode: uiRequest.initialOrientationMode)
+            return oldControls.seekGeneration == initialSeekGeneration
+                && latest.audioTrackOrdinal == initialTracks.audioTrackOrdinal
+                && latest.subtitleTrackOrdinal == initialTracks.subtitleTrackOrdinal
+                && latest.subtitlesDisabled == initialTracks.subtitlesDisabled
+        }
         let wasPlaying = playbackWasPlaying ?? oldControls.isPlaying
         sourceChangeWasPlaying = wasPlaying
         let wasPaused = preservePausedState && !wasPlaying
@@ -369,17 +406,21 @@ struct GreenfieldVideoPlayerView: View {
             var committed = false
             defer {
                 changingSource = false
+                if !committed && !reportsFailure && !Task.isCancelled {
+                    oldControls.event("automatic_downshift_abandoned")
+                }
                 if !committed && wasPlaying && !keepPlayingDuringPreparation && !Task.isCancelled { oldControls.togglePlayback() }
                 let pending = pendingSourceChange
                 pendingSourceChange = nil
                 if !Task.isCancelled { pending?() }
             }
             let loaded = await load()
-            guard var next = loaded else { sourceChangeFailed = true; return }
+            guard var next = loaded else { sourceChangeFailed = reportsFailure; return }
             defer {
                 if !committed { next.playbackTracker?.releasePreparedResources() }
             }
             guard !Task.isCancelled, pendingSourceChange == nil else { return }
+            guard automaticCandidateStillCurrent() else { return }
             let preparedPlayer: AVPlayer?
             if next.fileExtensionHint == "m3u8" {
                 oldControls.event("replacement_warmup_started")
@@ -388,7 +429,7 @@ struct GreenfieldVideoPlayerView: View {
                     isPlaying: { keepPlayingDuringPreparation && oldControls.isPlaying },
                     report: { stage, metrics in oldControls.event("replacement_" + stage, metrics: metrics) })
                 guard !Task.isCancelled else { return }
-                guard preparedPlayer != nil else { sourceChangeFailed = true; return }
+                guard preparedPlayer != nil else { sourceChangeFailed = reportsFailure; return }
                 oldControls.event("replacement_warmup_completed")
             } else { preparedPlayer = nil }
             let commitPaused = keepPlayingDuringPreparation ? !oldControls.isPlaying : wasPaused
@@ -398,7 +439,7 @@ struct GreenfieldVideoPlayerView: View {
             let launch = next.greenfieldPlaybackLaunchRequest(playbackModePreference: activeRequest.intent.playbackModePreference)
             let preparedSession: GreenfieldVideoPlayerModel.PreparedSession
             do { preparedSession = try await GreenfieldVideoPlayerModel.prepareSession(launch) }
-            catch { sourceChangeFailed = true; return }
+            catch { sourceChangeFailed = reportsFailure; return }
             guard !Task.isCancelled else { return }
 #if canImport(KSPlayer)
             var nextKSCoordinator: KSVideoPlayer.Coordinator?
@@ -410,10 +451,11 @@ struct GreenfieldVideoPlayerView: View {
                     isPlaying: { keepPlayingDuringPreparation && oldControls.isPlaying },
                     report: { stage, metrics in oldControls.event("replacement_" + stage, metrics: metrics) })
                 guard !Task.isCancelled else { nextKSCoordinator?.resetPlayer(); return }
-                guard nextKSCoordinator != nil else { sourceChangeFailed = true; return }
+                guard nextKSCoordinator != nil else { sourceChangeFailed = reportsFailure; return }
             }
 #endif
-            guard pendingSourceChange == nil else {
+            guard pendingSourceChange == nil,
+                  automaticCandidateStillCurrent() else {
 #if canImport(KSPlayer)
                 nextKSCoordinator?.resetPlayer()
 #endif
@@ -1191,6 +1233,7 @@ final class GreenfieldVideoPlayerModel: ObservableObject {
     }
 
     private func handleTimeControlStatus(_ status: AVPlayer.TimeControlStatus) {
+        avControls?.isTransportBuffering = status == .waitingToPlayAtSpecifiedRate
         guard let plan = renderingPlan, lastTimeControlStatus != status else { return }
         if status == .playing {
             // Small startup buffering should not cap the reserve during normal

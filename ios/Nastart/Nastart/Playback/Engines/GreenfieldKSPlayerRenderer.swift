@@ -23,6 +23,7 @@ final class GreenfieldPlaybackControls: PlaybackUIEngineSession {
     @Published var currentSeconds: Double = 0
     @Published var durationSeconds: Double = 0
     @Published var isPlaying = false
+    var isTransportBuffering = false
     @Published var isReady = false
     @Published var fillsScreen = false
     @Published var rate: Float = 1
@@ -81,6 +82,7 @@ final class GreenfieldPlaybackControls: PlaybackUIEngineSession {
     /// A control adapter may be reused after the other engine has played.
     /// Recovery timers and pending seek completions belong to one plan only.
     func beginSession() {
+        isTransportBuffering = false
         lastSubtitleSelection = nil
         seekGeneration += 1
         seekAt = nil
@@ -235,6 +237,7 @@ final class GreenfieldPlaybackControls: PlaybackUIEngineSession {
         externalSubtitleAction = nil; pictureInPictureAction = nil
         isReady = false; isSeekable = false
         isPlaying = false
+        isTransportBuffering = false
     }
 }
 
@@ -325,6 +328,7 @@ struct GreenfieldKSPlayerRenderer: View {
                 controls.isReady = layer.player.isReadyToPlay
                 syncTracks(layer)
                 controls.isPlaying = layer.state.isPlaying
+                controls.isTransportBuffering = state == .buffering
                 onStateChanged(state.description)
             }
             .onPlay { currentTime, totalTime in

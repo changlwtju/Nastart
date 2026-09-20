@@ -531,8 +531,8 @@ def check_playback_routing_invariants() -> CheckResult:
         "Jellyfin automatic playback must resolve the preferred original route": (
             "preferredOriginalPlaybackRoute(\n                    for: entry,\n                    client: client,"
         ),
-        "Jellyfin automatic playback must use an adaptive route policy": (
-            '"defaultMode": "adaptiveAuto"'
+        "Jellyfin KS playback must default to original while retaining legacy adaptive mode": (
+            '"defaultMode": prefersOriginalStream ? "originalFirst" : "adaptiveAuto"'
         ),
         "Jellyfin original playback must prefer the server static Range endpoint": (
             'diagnosticStage: "jellyfinRange"'
@@ -705,17 +705,17 @@ def check_playback_routing_invariants() -> CheckResult:
         "Jellyfin diagnostics must distinguish effective and network bitrates": (
             '"networkMaximumBitrate": "\\(bitrateDecision.maximumBitrate)"'
         ),
-        "Jellyfin direct play must use the measured route budget instead of the HLS ceiling": (
+        "Legacy Jellyfin eligibility and fallback must retain a distinct direct-play budget": (
             "let directPlayBudget = bitrateDecision.directPlayMaximumBitrate"
         ),
-        "Auto Jellyfin playback must avoid large remote MKV originals by default": (
+        "Legacy Jellyfin playback must retain the large remote original guard": (
             "requiresServerPlaybackForLargeRemoteOriginal"
         ),
-        "Initial automatic Jellyfin playback must consult route bitrate measurement": (
+        "Legacy automatic Jellyfin playback must retain route bitrate measurement": (
             "await ensureBitrateMeasurementIfNeeded(client: client,"
         ),
-        "Greenfield startup must bound the bitrate wait while legacy retains its policy": (
-            "maximumWait: usesGreenfieldPlayback ? 0.8 : nil"
+        "Original-first startup must skip blocking bandwidth measurement": (
+            "if !prefersOriginalStream,\n           forcedServerBitrate == nil,"
         ),
         "Bandwidth scheduling and awaiting must share the same network snapshot": (
             "networkSnapshot: network)"
@@ -750,11 +750,11 @@ def check_playback_routing_invariants() -> CheckResult:
         "VLC diagnostics must expose the active subtitle font and encoding": (
             '"subtitleFont": Self.cjkFontPath ?? "default"'
         ),
-        "Jellyfin automatic playback must gate remote original attempts by route or direct budget": (
-            "let routeCanAttemptOriginalPlayback = playbackRouteIsPrivate\n            || forcesOriginalPlayback\n            || canUseExperimentalOriginalPlayback\n            || automaticSourceBitrateFitsDirectBudget"
+        "Jellyfin original-first playback must bypass the legacy route budget": (
+            "let routeCanAttemptOriginalPlayback = prefersOriginalStream || playbackRouteIsPrivate\n            || forcesOriginalPlayback\n            || canUseExperimentalOriginalPlayback\n            || automaticSourceBitrateFitsDirectBudget"
         ),
-        "Jellyfin remote original playback must require the source bitrate budget": (
-            "let prefersRemoteOriginalPlayback = automaticSourceBitrateFitsDirectBudget\n                && !requiresSelectedAudioTranscode"
+        "Jellyfin remote original playback must preserve audio capability checks": (
+            "let prefersRemoteOriginalPlayback = (prefersOriginalStream || automaticSourceBitrateFitsDirectBudget)\n                && !requiresSelectedAudioTranscode"
         ),
         "Jellyfin automatic metadata must retain the highest-bitrate original source": (
             "return sources.max { lhs, rhs in"

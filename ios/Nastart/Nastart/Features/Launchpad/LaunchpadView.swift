@@ -6265,12 +6265,12 @@ private final class JellyfinLibraryStore: ObservableObject {
             entry.subtitleTracks.firstIndex { $0.index == selectedIndex }
         }
 
-        // On remote Wi-Fi, the bandwidth decision and authenticated two-byte
-        // Range probe are independent. Overlap them without creating a proxy
-        // or opening a decoder until the final original-playback decision.
-        let overlapsOriginalProbe = usesGreenfieldPlayback
+        // Default KS playback uses the original stream on every network. Bandwidth
+        // remains a fallback/quality budget, not an initial playback prerequisite.
+        let prefersOriginalStream = usesGreenfieldPlayback && forcedServerBitrate == nil
+        // Probe without creating a proxy or opening a decoder.
+        let startsOriginalProbe = usesGreenfieldPlayback
             && !playbackRouteIsPrivate
-            && PlaybackNetworkObserver.shared.snapshot().cacheKey == "wifi"
             && !forcesOriginalPlayback && !forcesExperimentalOriginalPlayback
             && forcedServerReason == nil
             && GreenfieldOriginalPlaybackPolicy.allowsOriginal(
@@ -6285,7 +6285,7 @@ private final class JellyfinLibraryStore: ObservableObject {
         let warmup = originalRouteWarmup.flatMap {
             $0.itemID == entry.id && Date().timeIntervalSince($0.startedAt) < 30 ? $0.task : nil
         }
-        let originalProbeTask: Task<URL?, Never>? = (overlapsOriginalProbe || warmup != nil) ? Task {
+        let originalProbeTask: Task<URL?, Never>? = (startsOriginalProbe || warmup != nil) ? Task {
             if let warmup, let url = await warmup.value, !Task.isCancelled {
                 record("diagnostics.jellyfin.playback_preparing", level: .info,
                     details: ["stage": "originalRouteWarmupReused", "playbackTraceID": playbackTraceID])
@@ -6293,17 +6293,17 @@ private final class JellyfinLibraryStore: ObservableObject {
             }
             guard !Task.isCancelled else { return nil }
             return await probeJellyfinOriginalURL(for: entry, client: client,
-                playbackTraceID: playbackTraceID, overlapsBandwidth: true)
+                playbackTraceID: playbackTraceID)
         } : nil
         defer { originalProbeTask?.cancel() }
-        let originalSourceBitrate = overlapsOriginalProbe ? entry.mediaBitrate : nil
+        let originalSourceBitrate = startsOriginalProbe ? entry.mediaBitrate : nil
 
-        if forcedServerBitrate == nil,
+        if !prefersOriginalStream,
+           forcedServerBitrate == nil,
            forcedServerReason == nil,
            !forcesOriginalPlayback,
            !forcesExperimentalOriginalPlayback {
             await ensureBitrateMeasurementIfNeeded(client: client,
-                maximumWait: usesGreenfieldPlayback ? 0.8 : nil,
                 originalSourceBitrate: originalSourceBitrate)
         }
 
@@ -6322,7 +6322,7 @@ private final class JellyfinLibraryStore: ObservableObject {
         let sourceBitrateFitsDirectBudget = entry.mediaBitrate.map {
             $0 <= directPlayBudget
         } ?? false
-        let largeRemoteOriginalRisk = Self.requiresServerPlaybackForLargeRemoteOriginal(
+        let largeRemoteOriginalRisk = !prefersOriginalStream && Self.requiresServerPlaybackForLargeRemoteOriginal(
             container: entry.container,
             bitrate: entry.mediaBitrate,
             byteSize: entry.mediaSize,
@@ -6335,7 +6335,7 @@ private final class JellyfinLibraryStore: ObservableObject {
         let canUseExperimentalOriginalPlayback = forcesExperimentalOriginalPlayback
             && forcedServerBitrate == nil
             && forcedServerReason == nil
-        let routeCanAttemptOriginalPlayback = playbackRouteIsPrivate
+        let routeCanAttemptOriginalPlayback = prefersOriginalStream || playbackRouteIsPrivate
             || forcesOriginalPlayback
             || canUseExperimentalOriginalPlayback
             || automaticSourceBitrateFitsDirectBudget
@@ -6387,7 +6387,7 @@ private final class JellyfinLibraryStore: ObservableObject {
                     "playbackTraceID": playbackTraceID,
                     "allowsDirectPlay": "preferred",
                     "experimentalOriginal": canUseExperimentalOriginalPlayback ? "yes" : "no",
-                "defaultMode": "adaptiveAuto",
+                "defaultMode": prefersOriginalStream ? "originalFirst" : "adaptiveAuto",
                 "deviceFamily": MediaPlaybackCapabilities.current.deviceFamily,
                 "osVersion": MediaPlaybackCapabilities.current.osVersion
             ]
@@ -6398,12 +6398,11 @@ private final class JellyfinLibraryStore: ObservableObject {
                 0
             )
             let prepared: JellyfinPreparedPlayback
-            // Treat a bitrate-safe original stream like a device-file route.
-            // Oversized public cellular playback should enter Jellyfin HLS
-            // before VLC opens the raw file, not after a startup watchdog fires.
+            // Use the same original-stream engine as device files. Explicit quality
+            // and unsupported audio/subtitles retain server negotiation.
             let requiresSelectedAudioTranscode = Self.requiresPlaybackAudioTranscode(
                 audioCodec: selectedAudioCodec, usesGreenfieldPlayback: usesGreenfieldPlayback)
-            let prefersRemoteOriginalPlayback = automaticSourceBitrateFitsDirectBudget
+            let prefersRemoteOriginalPlayback = (prefersOriginalStream || automaticSourceBitrateFitsDirectBudget)
                 && !requiresSelectedAudioTranscode
             let requiresDeviceCompatibilityTranscode = !usesGreenfieldPlayback && Self.requiresDeviceCompatibilityTranscode(
                 audioCodec: selectedAudioCodec
@@ -6439,7 +6438,8 @@ private final class JellyfinLibraryStore: ObservableObject {
                 subtitleRequiresServer: requiresServerSubtitleRendering,
                 routeIsPrivate: playbackRouteIsPrivate, explicitOriginal: forcesOriginalPlayback,
                 remoteBitrateFits: prefersRemoteOriginalPlayback,
-                experimentalOriginal: canUseExperimentalOriginalPlayback)
+                experimentalOriginal: canUseExperimentalOriginalPlayback,
+                originalFirst: prefersOriginalStream)
             if !shouldAttemptDirectPlayback { originalProbeTask?.cancel() }
             try Task.checkCancellation()
             let directRoute = shouldAttemptDirectPlayback

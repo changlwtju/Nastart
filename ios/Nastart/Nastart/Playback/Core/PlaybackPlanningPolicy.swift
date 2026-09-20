@@ -1,5 +1,50 @@
 import Foundation
 
+/// Reactive downshift only: bandwidth estimates alone must not interrupt a
+/// healthy original stream. Times use monotonic uptime, never playback time.
+struct PlaybackStallDownshiftPolicy {
+    // Candidate only: keep baseline playback unchanged until cellular
+    // observation and handoff bandwidth contention have been validated.
+    static let isEnabled = false
+    private var previousTime: TimeInterval?
+    private var generation: Int?
+    private var graceUntil: TimeInterval = 0
+    private var cooldownUntil: TimeInterval = 0
+    private var stalledSamples: [(time: TimeInterval, duration: TimeInterval)] = []
+    private var consecutive: TimeInterval = 0
+    private var wasBuffering = false
+
+    mutating func sample(now: TimeInterval, eligible: Bool, buffering: Bool,
+                         seekGeneration: Int) -> Bool {
+        guard now.isFinite else { return false }
+        defer { previousTime = now }
+        if generation != seekGeneration || !eligible {
+            generation = seekGeneration
+            graceUntil = now + 10
+            stalledSamples.removeAll()
+            consecutive = 0
+            wasBuffering = false
+            return false
+        }
+        let delta = previousTime.map { now - $0 } ?? 0
+        guard delta > 0, delta <= 2.5, now >= graceUntil, now >= cooldownUntil else {
+            consecutive = 0
+            wasBuffering = false
+            return false
+        }
+        stalledSamples.removeAll { now - $0.time > 60 }
+        let stalled = buffering && wasBuffering ? delta : 0
+        wasBuffering = buffering
+        consecutive = buffering ? consecutive + stalled : 0
+        if stalled > 0 { stalledSamples.append((now, stalled)) }
+        guard consecutive >= 8 || stalledSamples.reduce(0, { $0 + $1.duration }) >= 12 else { return false }
+        cooldownUntil = now + 60
+        consecutive = 0
+        stalledSamples.removeAll()
+        return true
+    }
+}
+
 /// Reconsider a restrictive Wi-Fi sample on a later playback attempt, without
 /// probing on every tap or treating a failed sample as proof of more bandwidth.
 enum GreenfieldBandwidthSamplePolicy {
@@ -39,11 +84,11 @@ enum GreenfieldOriginalPlaybackPolicy {
     static func allowsOriginal(forcedServerBitrate: Int?, audioRequiresTranscode: Bool,
                                subtitleRequiresServer: Bool, routeIsPrivate: Bool,
                                explicitOriginal: Bool, remoteBitrateFits: Bool,
-                               experimentalOriginal: Bool = false) -> Bool {
+                               experimentalOriginal: Bool = false, originalFirst: Bool = false) -> Bool {
         forcedServerBitrate == nil
             && (!audioRequiresTranscode || experimentalOriginal)
             && (!subtitleRequiresServer || experimentalOriginal)
-            && (routeIsPrivate || explicitOriginal || remoteBitrateFits || experimentalOriginal)
+            && (originalFirst || routeIsPrivate || explicitOriginal || remoteBitrateFits || experimentalOriginal)
     }
 
     static func audioDecoderName(_ codec: String?) -> String? {

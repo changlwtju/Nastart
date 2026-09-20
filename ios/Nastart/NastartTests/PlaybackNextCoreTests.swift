@@ -7,6 +7,53 @@ import Network
 @testable import Nastart
 
 final class PlaybackNextCoreTests: XCTestCase {
+    func testAutomaticDownshiftRequiresSustainedBufferingAndCoolsDown() {
+        var policy = PlaybackStallDownshiftPolicy()
+        var triggers: [Int] = []
+        for second in 0...90 {
+            if policy.sample(now: Double(second), eligible: true, buffering: true, seekGeneration: 0) {
+                triggers.append(second)
+            }
+        }
+        XCTAssertEqual(triggers, [18, 86])
+    }
+
+    func testAutomaticDownshiftIgnoresHealthyPlaybackPauseAndSeek() {
+        var policy = PlaybackStallDownshiftPolicy()
+        for second in 0...120 {
+            XCTAssertFalse(policy.sample(now: Double(second), eligible: true,
+                buffering: false, seekGeneration: 0))
+        }
+        for second in 121...160 {
+            XCTAssertFalse(policy.sample(now: Double(second), eligible: false,
+                buffering: true, seekGeneration: 0))
+        }
+        for second in 161...190 {
+            XCTAssertFalse(policy.sample(now: Double(second), eligible: true,
+                buffering: true, seekGeneration: second / 5))
+        }
+    }
+
+    func testRepeatedShortStallsDownshiftButIsolatedStallsExpire() {
+        var frequent = PlaybackStallDownshiftPolicy()
+        var isolated = PlaybackStallDownshiftPolicy()
+        var frequentTriggers = 0
+        for second in 0...180 {
+            if frequent.sample(now: Double(second), eligible: true,
+                buffering: second % 10 < 5, seekGeneration: 0) { frequentTriggers += 1 }
+            XCTAssertFalse(isolated.sample(now: Double(second), eligible: true,
+                buffering: second % 70 < 5, seekGeneration: 0))
+        }
+        XCTAssertGreaterThan(frequentTriggers, 0)
+    }
+
+    func testSuspendedSamplerDoesNotCountBackgroundTimeAsBuffering() {
+        var policy = PlaybackStallDownshiftPolicy()
+        XCTAssertFalse(policy.sample(now: 0, eligible: true, buffering: true, seekGeneration: 0))
+        XCTAssertFalse(policy.sample(now: 100, eligible: true, buffering: true, seekGeneration: 0))
+        XCTAssertFalse(policy.sample(now: 101, eligible: true, buffering: true, seekGeneration: 0))
+    }
+
     func testPrewarmedCandidateDoesNotStealCurrentPlaybackOwnership() {
         let scope = PlaybackActivityScope()
         let playing = scope.prepare()
@@ -415,6 +462,29 @@ final class PlaybackNextCoreTests: XCTestCase {
         XCTAssertFalse(GreenfieldOriginalPlaybackPolicy.allowsOriginal(forcedServerBitrate: nil,
             audioRequiresTranscode: false, subtitleRequiresServer: false, routeIsPrivate: false,
             explicitOriginal: false, remoteBitrateFits: false))
+    }
+
+    func testOriginalFirstIgnoresRemoteBudgetButPreservesQualityAndCapabilityFallbacks() {
+        // Includes low cellular budgets and unknown source bitrate: neither is
+        // evidence that KSPlayer cannot decode the original stream.
+        for budgetFits in [false, true] {
+            XCTAssertTrue(GreenfieldOriginalPlaybackPolicy.allowsOriginal(forcedServerBitrate: nil,
+                audioRequiresTranscode: false, subtitleRequiresServer: false,
+                routeIsPrivate: false, explicitOriginal: false, remoteBitrateFits: budgetFits,
+                originalFirst: true))
+            for forcedBitrate in [1_500_000, 12_000_000] {
+                XCTAssertFalse(GreenfieldOriginalPlaybackPolicy.allowsOriginal(forcedServerBitrate: forcedBitrate,
+                    audioRequiresTranscode: false, subtitleRequiresServer: false,
+                    routeIsPrivate: false, explicitOriginal: false, remoteBitrateFits: budgetFits,
+                    originalFirst: true), "Quality switches and adaptive fallback must remain effective")
+            }
+        }
+        for (audio, subtitle) in [(true, false), (false, true)] {
+            XCTAssertFalse(GreenfieldOriginalPlaybackPolicy.allowsOriginal(forcedServerBitrate: nil,
+                audioRequiresTranscode: audio, subtitleRequiresServer: subtitle,
+                routeIsPrivate: false, explicitOriginal: false, remoteBitrateFits: false,
+                originalFirst: true))
+        }
     }
 
     func testLargeOriginalOnlyBypassesSizeGuardWithSufficientMeasuredWiFi() {
@@ -885,6 +955,31 @@ final class PlaybackNextCoreTests: XCTestCase {
     }
 
 #if canImport(KSPlayer)
+    @MainActor
+    func testPlayerResetClearsSubtitleBeforeReleasingLayerAndIsIdempotent() {
+        let coordinator = KSVideoPlayer.Coordinator()
+        let options = KSOptions()
+        options.registerRemoteControll = false
+        coordinator.playerLayer = KSPlayerLayer(
+            url: URL(fileURLWithPath: "/unused-reset-fixture.mkv"),
+            isAutoPlay: false, options: options
+        )
+        let subtitle = ResetSubtitleProbe()
+        var disableCount = 0
+        subtitle.onDisable = {
+            disableCount += 1
+            XCTAssertNotNil(coordinator.playerLayer,
+                            "Embedded subtitle must be detached while its stream owner is alive")
+        }
+        coordinator.subtitleModel.selectedSubtitleInfo = subtitle
+        coordinator.resetPlayer()
+        XCTAssertNil(coordinator.subtitleModel.selectedSubtitleInfo)
+        XCTAssertNil(coordinator.playerLayer)
+        XCTAssertEqual(disableCount, 1)
+        coordinator.resetPlayer()
+        XCTAssertEqual(disableCount, 1, "Repeated teardown must not touch a retired stream")
+    }
+
     @MainActor
     func testAudioConfigurationChangeRestartsOnlyPlayingOutput() async throws {
         let output = AudioEnginePlayer()
@@ -1457,6 +1552,17 @@ private final class BitmapQueueTestFrame: ObjectQueueItem {
     var size: Int32 = 0
     let isClear: Bool
     init(_ timestamp: Int64, isClear: Bool = false) { self.timestamp = timestamp; self.isClear = isClear }
+}
+
+private final class ResetSubtitleProbe: SubtitleInfo {
+    let subtitleID = "reset-probe"
+    let name = "Reset probe"
+    var delay: TimeInterval = 0
+    var onDisable: (() -> Void)?
+    var isEnabled = false {
+        didSet { if !isEnabled { onDisable?() } }
+    }
+    func search(for time: TimeInterval) -> [SubtitlePart] { [] }
 }
 #endif
 
