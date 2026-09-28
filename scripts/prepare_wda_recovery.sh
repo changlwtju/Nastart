@@ -32,6 +32,13 @@ command -v curl >/dev/null 2>&1 || die 'curl is required'
 [[ -f "$DDI_ARCHIVE" ]] || die "iOS 16.3 DeviceSupport cache not found: $DDI_ARCHIVE"
 [[ -f "$PROFILE" ]] || die "provisioning profile not found: $PROFILE"
 
+profile_expires_at=$(security cms -D -i "$PROFILE" 2>/dev/null | plutil -extract ExpirationDate raw - 2>/dev/null) \
+  || die "cannot read provisioning profile expiration: $PROFILE"
+profile_expiration_epoch=$(date -j -u -f '%Y-%m-%dT%H:%M:%SZ' "$profile_expires_at" '+%s' 2>/dev/null) \
+  || die "invalid provisioning profile expiration: $profile_expires_at"
+(( profile_expiration_epoch > $(date -u '+%s') )) \
+  || die "provisioning profile expired at $profile_expires_at: $PROFILE"
+
 runner_bundle=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$WDA_APP/Info.plist")
 test_bundle=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$WDA_APP/PlugIns/WebDriverAgentRunner.xctest/Info.plist")
 test_host_bundle=$(/usr/libexec/PlistBuddy -c 'Print :WebDriverAgentRunner:TestHostBundleIdentifier' "$XCTESTRUN")
@@ -48,6 +55,7 @@ printf '  Runner:       %s\n' "$WDA_APP"
 printf '  xctestrun:    %s\n' "$XCTESTRUN"
 printf '  DeviceSupport:%s\n' "$DDI_ARCHIVE"
 printf '  Profile:      %s\n' "$PROFILE"
+printf '  Expires:      %s\n' "$profile_expires_at"
 printf '  Runner ID:    %s\n' "$runner_bundle"
 printf '  Test ID:      %s\n' "$test_bundle"
 printf '  Device:       %s\n' "$DEVICE_UDID"

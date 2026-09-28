@@ -1,6 +1,41 @@
 import Foundation
 import UIKit
 import Network
+import Combine
+
+/// Owns preparation only; presenting a player transfers playback ownership.
+/// Identity checks also reject services that return after ignoring cancellation.
+@MainActor
+final class PlaybackPreparation: ObservableObject {
+    @Published private(set) var isPreparing = false
+    private var requestID: UUID?
+    private var task: Task<Void, Never>?
+
+    func start(_ operation: @escaping @MainActor (UUID) async -> Void) {
+        cancel()
+        let id = UUID()
+        requestID = id
+        isPreparing = true
+        task = Task {
+            await operation(id)
+            guard requestID == id else { return }
+            requestID = nil
+            isPreparing = false
+            task = nil
+        }
+    }
+
+    func isCurrent(_ id: UUID) -> Bool {
+        requestID == id && !Task.isCancelled
+    }
+
+    func cancel() {
+        requestID = nil
+        task?.cancel()
+        task = nil
+        isPreparing = false
+    }
+}
 
 enum AudioFormatPolicy {
     // Container recognition, not a guarantee that every codec/profile decodes.
@@ -222,6 +257,8 @@ struct MediaPlaybackRequest: Identifiable {
     var totalDurationSeconds: Double?
     let byteLength: Int64?
     let estimatedBitrate: Int?
+    /// The selected server rendition ceiling, distinct from the source file bitrate.
+    let streamBitrateCeiling: Int?
     let isPrivateNetworkRoute: Bool?
     let forcesSoftwareDecoding: Bool
     let playbackTracker: MediaPlaybackTracker?
@@ -265,6 +302,7 @@ struct MediaPlaybackRequest: Identifiable {
         totalDurationSeconds: Double? = nil,
         byteLength: Int64? = nil,
         estimatedBitrate: Int? = nil,
+        streamBitrateCeiling: Int? = nil,
         isPrivateNetworkRoute: Bool? = nil,
         forcesSoftwareDecoding: Bool = false,
         playbackTracker: MediaPlaybackTracker? = nil,
@@ -307,6 +345,7 @@ struct MediaPlaybackRequest: Identifiable {
         self.totalDurationSeconds = totalDurationSeconds.flatMap { $0 > 0 ? $0 : nil }
         self.byteLength = byteLength.flatMap { $0 > 0 ? $0 : nil }
         self.estimatedBitrate = estimatedBitrate.flatMap { $0 > 0 ? $0 : nil }
+        self.streamBitrateCeiling = streamBitrateCeiling.flatMap { $0 > 0 ? $0 : nil }
         self.isPrivateNetworkRoute = isPrivateNetworkRoute
         self.forcesSoftwareDecoding = forcesSoftwareDecoding
         self.playbackTracker = playbackTracker
@@ -446,6 +485,7 @@ struct MediaPlaybackRequest: Identifiable {
             totalDurationSeconds: resource.totalDurationSeconds ?? totalDurationSeconds,
             byteLength: byteLength,
             estimatedBitrate: estimatedBitrate,
+            streamBitrateCeiling: streamBitrateCeiling,
             isPrivateNetworkRoute: isPrivateNetworkRoute,
             forcesSoftwareDecoding: resource.forcesSoftwareDecoding,
             playbackTracker: resource.playbackTracker ?? playbackTracker,
@@ -503,6 +543,7 @@ struct MediaPlaybackRequest: Identifiable {
             totalDurationSeconds: totalDurationSeconds,
             byteLength: byteLength,
             estimatedBitrate: estimatedBitrate,
+            streamBitrateCeiling: streamBitrateCeiling,
             isPrivateNetworkRoute: isPrivateNetworkRoute,
             forcesSoftwareDecoding: forcesSoftwareDecoding,
             playbackTracker: playbackTracker,

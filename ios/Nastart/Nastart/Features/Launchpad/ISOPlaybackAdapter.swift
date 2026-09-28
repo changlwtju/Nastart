@@ -18,6 +18,10 @@ enum ISOPlaybackError: Error {
 }
 
 enum ISOPlaybackAdapter {
+    static func release(_ url: URL) {
+        ISOPlaybackProxy.shared.unregister(url)
+    }
+
     static func prepare(
         sourceURL: URL,
         allowsSelfSignedCertificates: Bool
@@ -454,6 +458,15 @@ private final class ISOPlaybackProxy: @unchecked Sendable {
     private var listener: NWListener?
     private var port: NWEndpoint.Port?
     private var resources: [String: ISOProxyResource] = [:]
+
+    func unregister(_ url: URL) {
+        guard url.host == "127.0.0.1", url.path.hasPrefix("/iso/") else { return }
+        let token = url.deletingPathExtension().lastPathComponent
+        queue.async {
+            guard url.port == self.port.map({ Int($0.rawValue) }) else { return }
+            self.resources[token] = nil
+        }
+    }
 
     func register(
         sourceURL: URL,

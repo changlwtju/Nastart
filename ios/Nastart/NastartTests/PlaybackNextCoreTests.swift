@@ -7,6 +7,111 @@ import Network
 @testable import Nastart
 
 final class PlaybackNextCoreTests: XCTestCase {
+    @MainActor
+    func testPlaybackPreparationRejectsLateResultAfterLeavingDetail() async {
+        let preparation = PlaybackPreparation()
+        let started = expectation(description: "request started")
+        let returned = expectation(description: "cancel-ignoring service returned")
+        var response: CheckedContinuation<Void, Never>?
+        var presented = false
+        preparation.start { id in
+            await withCheckedContinuation { response = $0; started.fulfill() }
+            defer { returned.fulfill() }
+            guard preparation.isCurrent(id) else { return }
+            presented = true
+        }
+        await fulfillment(of: [started], timeout: 3)
+        preparation.cancel()
+        XCTAssertFalse(preparation.isPreparing)
+        response?.resume()
+        await fulfillment(of: [returned], timeout: 3)
+        XCTAssertFalse(presented, "A late response must not reopen a dismissed detail's player")
+    }
+
+    @MainActor
+    func testPlaybackPreparationOldCompletionCannotClearOrReplaceNewRequest() async {
+        let preparation = PlaybackPreparation()
+        let oldStarted = expectation(description: "old started")
+        let newStarted = expectation(description: "new started")
+        let oldReturned = expectation(description: "old returned")
+        let newReturned = expectation(description: "new returned")
+        var oldResponse: CheckedContinuation<Void, Never>?
+        var newResponse: CheckedContinuation<Void, Never>?
+        var presented: [String] = []
+        preparation.start { id in
+            await withCheckedContinuation { oldResponse = $0; oldStarted.fulfill() }
+            defer { oldReturned.fulfill() }
+            guard preparation.isCurrent(id) else { return }
+            presented.append("old")
+        }
+        await fulfillment(of: [oldStarted], timeout: 3)
+        preparation.start { id in
+            await withCheckedContinuation { newResponse = $0; newStarted.fulfill() }
+            defer { newReturned.fulfill() }
+            guard preparation.isCurrent(id) else { return }
+            presented.append("new")
+        }
+        await fulfillment(of: [newStarted], timeout: 3)
+        oldResponse?.resume()
+        await fulfillment(of: [oldReturned], timeout: 3)
+        XCTAssertTrue(preparation.isPreparing, "Old completion must not enable actions during the new preparation")
+        XCTAssertTrue(presented.isEmpty)
+        newResponse?.resume()
+        await fulfillment(of: [newReturned], timeout: 3)
+        XCTAssertEqual(presented, ["new"])
+        XCTAssertFalse(preparation.isPreparing)
+    }
+
+    func testFileStationDownloadUsesItsOwnSession() throws {
+        let session = DSMSession(
+            baseURL: try XCTUnwrap(URL(string: "https://nas.example:5001")),
+            sid: "main-session",
+            fileStationSID: "file-session",
+            account: "test",
+            allowsSelfSignedCertificates: false,
+            deviceID: nil
+        )
+        let url = try XCTUnwrap(session.fileStationOpenURL(path: "/video/movie.mp4"))
+        let query = try XCTUnwrap(URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems)
+        XCTAssertEqual(query.first(where: { $0.name == "_sid" })?.value, "file-session")
+    }
+
+    func testFileStationDownloadFallsBackToMainSessionBeforeSecondaryLogin() throws {
+        let session = DSMSession(
+            baseURL: try XCTUnwrap(URL(string: "https://nas.example:5001")),
+            sid: "main-session",
+            fileStationSID: nil,
+            account: "test",
+            allowsSelfSignedCertificates: false,
+            deviceID: nil
+        )
+        let url = try XCTUnwrap(session.fileStationOpenURL(path: "/video/movie.mp4"))
+        let query = try XCTUnwrap(URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems)
+        XCTAssertEqual(query.first(where: { $0.name == "_sid" })?.value, "main-session")
+    }
+
+    func testFileStationPlaybackOffersDiscoveredLANBeforePublicDomain() throws {
+        let domain = try XCTUnwrap(URL(string: "https://nas.example:5001"))
+        let lan = try XCTUnwrap(URL(string: "http://192.168.1.8:5000"))
+        let session = DSMSession(
+            baseURL: domain,
+            sid: "main-session",
+            fileStationSID: "file-session",
+            account: "test",
+            allowsSelfSignedCertificates: false,
+            deviceID: nil,
+            endpoints: DSMConnectionEndpoints(primaryDomain: domain, lanAddress: lan)
+        )
+        let candidates = session.fileStationOpenURLs(path: "/video/movie.mkv")
+        XCTAssertEqual(candidates.first?.host, lan.host)
+        XCTAssertEqual(candidates.last?.host, domain.host)
+        XCTAssertEqual(session.fileStationOpenURL(path: "/video/movie.mkv")?.host, domain.host)
+        XCTAssertTrue(candidates.allSatisfy { url in
+            URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems?
+                .first(where: { $0.name == "_sid" })?.value == "file-session"
+        })
+    }
+
     func testAutomaticDownshiftRequiresSustainedBufferingAndCoolsDown() {
         var policy = PlaybackStallDownshiftPolicy()
         var triggers: [Int] = []
@@ -47,11 +152,96 @@ final class PlaybackNextCoreTests: XCTestCase {
         XCTAssertGreaterThan(frequentTriggers, 0)
     }
 
+    func testThreeBriefRebuffersTriggerBeforeTwelveSecondsOfTotalStall() {
+        var policy = PlaybackStallDownshiftPolicy()
+        var triggers: [Int] = []
+        for second in 0...35 {
+            let buffering = (12...13).contains(second)
+                || (18...19).contains(second)
+                || (24...25).contains(second)
+            if policy.sample(now: Double(second), eligible: true,
+                             buffering: buffering, seekGeneration: 0) {
+                triggers.append(second)
+            }
+        }
+        XCTAssertEqual(triggers, [24])
+    }
+
     func testSuspendedSamplerDoesNotCountBackgroundTimeAsBuffering() {
         var policy = PlaybackStallDownshiftPolicy()
         XCTAssertFalse(policy.sample(now: 0, eligible: true, buffering: true, seekGeneration: 0))
         XCTAssertFalse(policy.sample(now: 100, eligible: true, buffering: true, seekGeneration: 0))
         XCTAssertFalse(policy.sample(now: 101, eligible: true, buffering: true, seekGeneration: 0))
+    }
+
+    func testRecentRangeCapacityRejectsPlayerBackpressureAndExpires() {
+        let samples = PlaybackRecentThroughputStore()
+        samples.record(traceID: "A", bytes: 3_000_000, seconds: 2,
+                       backpressureSeconds: 0, now: 10)
+        samples.record(traceID: "A", bytes: 3_000_000, seconds: 8,
+                       backpressureSeconds: 4, now: 11)
+        samples.record(traceID: "B", bytes: 3_000_000, seconds: 1,
+                       backpressureSeconds: 0, now: 12)
+        XCTAssertEqual(samples.estimate(traceID: "A", now: 12), 12_000_000)
+        XCTAssertNil(samples.estimate(traceID: "A", now: 72))
+    }
+
+    func testAdaptiveTargetFitsCapacityAndStepsDownAgain() {
+        XCTAssertTrue(PlaybackAdaptiveBitratePolicy.allowsAutomaticAdjustment(
+            selectedQualityID: "auto"))
+        XCTAssertFalse(PlaybackAdaptiveBitratePolicy.allowsAutomaticAdjustment(
+            selectedQualityID: "original"))
+        XCTAssertFalse(PlaybackAdaptiveBitratePolicy.allowsAutomaticAdjustment(
+            selectedQualityID: "8000000"))
+        XCTAssertEqual(PlaybackAdaptiveBitratePolicy.target(
+            currentCeiling: 12_000_000, capacity: 20_000_000,
+            networkKey: "cellular"), 10_000_000)
+        XCTAssertEqual(PlaybackAdaptiveBitratePolicy.target(
+            currentCeiling: 8_000_000, capacity: 5_000_000,
+            networkKey: "cellular"), 2_000_000)
+        XCTAssertEqual(PlaybackAdaptiveBitratePolicy.target(
+            currentCeiling: 12_000_000, capacity: nil,
+            networkKey: "cellular"), 4_000_000)
+        XCTAssertEqual(PlaybackAdaptiveBitratePolicy.target(
+            currentCeiling: 4_000_000, capacity: 2_200_000,
+            networkKey: "cellular"), 1_000_000)
+        XCTAssertEqual(PlaybackAdaptiveBitratePolicy.target(
+            currentCeiling: 1_000_000, capacity: 1_500_000,
+            networkKey: "cellular"), 750_000)
+        XCTAssertNil(PlaybackAdaptiveBitratePolicy.target(
+            currentCeiling: 500_000, capacity: 1_000_000,
+            networkKey: "cellular"))
+    }
+
+    func testVerifiedFileIdentityAllowsDifferentMountPrefixButRejectsWrongFile() {
+        let dsm = "/video/media/movie/Film (2001)/Film.2160p.mkv"
+        let jellyfin = "/mnt/media/movie/Film (2001)/Film.2160p.mkv"
+        XCTAssertTrue(VerifiedFileIdentityPolicy.matches(
+            dsmPath: dsm, dsmSize: 128_795_641_934,
+            jellyfinPath: jellyfin, jellyfinSize: 128_795_641_934))
+        XCTAssertFalse(VerifiedFileIdentityPolicy.matches(
+            dsmPath: dsm, dsmSize: 128_795_641_934,
+            jellyfinPath: jellyfin, jellyfinSize: 128_795_641_933))
+        XCTAssertFalse(VerifiedFileIdentityPolicy.matches(
+            dsmPath: dsm, dsmSize: 128_795_641_934,
+            jellyfinPath: "/mnt/media/other/Film (2001)/Film.2160p.mkv",
+            jellyfinSize: 128_795_641_934))
+        XCTAssertFalse(VerifiedFileIdentityPolicy.matches(
+            dsmPath: dsm, dsmSize: 128_795_641_934,
+            jellyfinPath: "/mnt/media/movie/Film (2001)/Other.2160p.mkv",
+            jellyfinSize: 128_795_641_934))
+    }
+
+    func testClearlyInsufficientMeasuredBandwidthSkipsOriginalWithoutAStartupProbe() {
+        XCTAssertTrue(PlaybackAdaptiveBitratePolicy.isOriginalClearlyUnsustainable(
+            sourceBitrate: 82_000_000, measuredCapacity: 20_000_000,
+            isPrivateRoute: false, forcesOriginal: false))
+        XCTAssertFalse(PlaybackAdaptiveBitratePolicy.isOriginalClearlyUnsustainable(
+            sourceBitrate: 82_000_000, measuredCapacity: nil,
+            isPrivateRoute: false, forcesOriginal: false))
+        XCTAssertFalse(PlaybackAdaptiveBitratePolicy.isOriginalClearlyUnsustainable(
+            sourceBitrate: 82_000_000, measuredCapacity: 20_000_000,
+            isPrivateRoute: false, forcesOriginal: true))
     }
 
     func testPrewarmedCandidateDoesNotStealCurrentPlaybackOwnership() {
@@ -1375,6 +1565,39 @@ final class PlaybackNextCoreTests: XCTestCase {
         XCTAssertEqual(preloadEvents.first?.metrics["reason"], "first_frame_priority")
         XCTAssertEqual(routeEvents.first?.metrics[PlaybackMetricKeys.firstFrameTargetMs], "3000")
         XCTAssertEqual(routeEvents.first?.metrics[PlaybackMetricKeys.blocksFirstFrameUntilStartupPreload], "false")
+    }
+
+    func testPublicUpstreamBehindLocalRangeProxyRaisesReserveAfterStartup() {
+        let intent = PlaybackIntent(
+            sourceKind: .dsmFile,
+            contentKind: .video,
+            itemIdentity: PlaybackItemIdentity(sourceKind: .dsmFile, stablePath: "/video/large.mkv"),
+            displayTitle: "Large Remote File",
+            directURL: URL(string: "http://127.0.0.1:62403/large.mkv")!,
+            connectionContext: PlaybackConnectionContext.make(
+                url: URL(string: "https://nas.example.com:5001/webapi/entry.cgi")
+            ),
+            networkContext: PlaybackNetworkContext(networkClass: .wifi)
+        )
+        let policy = PlaybackPlanningPolicy.startupPolicy(intent: intent, routeKind: .localRangeProxy)
+        XCTAssertEqual(policy.minimumPlayableBufferSeconds, 1)
+        XCTAssertEqual(PlaybackPlanningPolicy.steadyStateBufferSeconds(
+            routeKind: .localRangeProxy,
+            upstreamAddressKind: intent.connectionContext.addressKind,
+            startupSeconds: policy.minimumPlayableBufferSeconds
+        ), 4)
+
+        var localIntent = intent
+        localIntent.connectionContext = PlaybackConnectionContext.make(
+            url: URL(string: "https://192.168.1.8:5001/webapi/entry.cgi")
+        )
+        let localPolicy = PlaybackPlanningPolicy.startupPolicy(intent: localIntent, routeKind: .localRangeProxy)
+        XCTAssertEqual(localPolicy.minimumPlayableBufferSeconds, 1)
+        XCTAssertEqual(PlaybackPlanningPolicy.steadyStateBufferSeconds(
+            routeKind: .localRangeProxy,
+            upstreamAddressKind: localIntent.connectionContext.addressKind,
+            startupSeconds: localPolicy.minimumPlayableBufferSeconds
+        ), 1)
     }
 
     func testSessionCoordinatorRecordsColdStartAndRuntimeEvents() async throws {

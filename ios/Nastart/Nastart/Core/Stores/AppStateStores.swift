@@ -404,7 +404,9 @@ struct DSMSession {
     }
 
     func fileStationOpenURL(path: String) -> URL? {
-        fileStationOpenURLs(path: path).first
+        // Single-URL callers do not probe or fail over. Keep their endpoint
+        // tied to the authenticated DSM session.
+        fileStationOpenURL(path: path, baseURL: baseURL)
     }
 
     func fileStationOpenURLs(path: String) -> [URL] {
@@ -424,10 +426,11 @@ struct DSMSession {
             append(url)
         }
 
+        // Playback callers probe each candidate with the File Station SID.
+        // A discovered LAN endpoint must be offered even when DSM login used
+        // the public domain; otherwise large files hairpin through that route.
+        appendPlaybackVariants(for: endpoints.lanAddress)
         appendPlaybackVariants(for: baseURL)
-        if NetworkHostClassifier.isPrivate(baseURL.host) {
-            appendPlaybackVariants(for: endpoints.lanAddress)
-        }
         append(publicAddressCandidate)
 
         var seen = Set<String>()
@@ -456,7 +459,7 @@ struct DSMSession {
             URLQueryItem(name: "method", value: "download"),
             URLQueryItem(name: "path", value: pathParameter),
             URLQueryItem(name: "mode", value: modeParameter),
-            URLQueryItem(name: "_sid", value: sid)
+            URLQueryItem(name: "_sid", value: fileStationSID ?? sid)
         ]
         return components.url
     }
@@ -1580,6 +1583,12 @@ final class AppDataStore: ObservableObject {
             )
             session = Self.session(session, addingVerifiedLANAddress: await discoveredLANAddress)
             sessionToLogout = session
+            // File playback reads connectionStore directly. Publish the
+            // File Station SID and discovered LAN endpoint before the slower
+            // full snapshot, so the first playback gets the same candidates
+            // as a later reopen.
+            guard connectionStore.dsmSession?.sid == mainSession.sid else { return }
+            connectionStore.connect(device: device, session: session)
             let dataSource = DSMNASDataSource(session: session, useAgent: usesStoredAgent)
             let snapshot = await dataSource.loadSnapshot()
             guard connectionStore.dsmSession?.sid == mainSession.sid else { return }

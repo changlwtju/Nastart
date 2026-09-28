@@ -161,7 +161,7 @@ struct DSMConnectionFlowView: View {
     @Environment(\.dismiss) private var dismiss
     @AppStorage("connect.remember.nas") private var rememberNAS = true
     @AppStorage("connect.remember.account") private var rememberAccount = true
-    @AppStorage("connect.remember.password") private var rememberPassword = false
+    @AppStorage("connect.remember.password") private var rememberPassword = true
     @AppStorage("connect.remembered.host") private var rememberedHost = ""
     @AppStorage("connect.remembered.account") private var rememberedAccount = ""
     @AppStorage("connect.remembered.location") private var rememberedLocationRaw = DSMConnectionLocation.remote.rawValue
@@ -751,7 +751,10 @@ struct DSMConnectionFlowView: View {
         }
         switch urlError.code {
         case .networkConnectionLost, .cannotConnectToHost, .timedOut, .notConnectedToInternet:
-            return NSLocalizedString("connect.error.unreachable", comment: "")
+            let key = accessLocation == .remote
+                ? "connect.error.remote_unreachable"
+                : "connect.error.local_unreachable"
+            return NSLocalizedString(key, comment: "")
         case .serverCertificateUntrusted, .serverCertificateHasBadDate,
                 .serverCertificateHasUnknownRoot, .secureConnectionFailed:
             return NSLocalizedString("connect.error.certificate", comment: "")

@@ -861,7 +861,6 @@ final class DSMClient {
             )
             return items
         }
-        let encodedPath = Self.jsonQueryValue(normalizedPath) ?? normalizedPath
         let encodedAdditional = Self.jsonQueryValue(["real_path", "size", "type", "time"])
             ?? "[\"real_path\",\"size\",\"type\",\"time\"]"
         let pageSize = 500
@@ -877,10 +876,6 @@ final class DSMClient {
                 URLQueryItem(name: "sort_direction", value: "asc")
             ]
             let parameterVariants = [
-                [
-                    URLQueryItem(name: "folder_path", value: encodedPath),
-                    URLQueryItem(name: "additional", value: encodedAdditional)
-                ] + common,
                 [
                     URLQueryItem(name: "folder_path", value: normalizedPath),
                     URLQueryItem(name: "additional", value: encodedAdditional)

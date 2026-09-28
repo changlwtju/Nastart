@@ -43,8 +43,13 @@ struct LaunchpadView: View {
                                 LaunchpadDataStatusBanner(
                                     state: dataStore.dataRefreshState,
                                     sourceKey: dataStore.dataSourceLabelKey,
+                                    dsmConnected: connectionStore.dsmSession != nil,
                                     retry: {
-                                        Task { await refreshLaunchpad() }
+                                        if connectionStore.dsmSession == nil {
+                                            showConnectionFlow = true
+                                        } else {
+                                            Task { await refreshLaunchpad() }
+                                        }
                                     }
                                 )
                             }
@@ -5759,7 +5764,9 @@ private enum JellyfinSubtitleNormalizer {
 @MainActor
 private final class JellyfinLibraryStore: ObservableObject {
     @Published private(set) var endpoint: URL
-    let playbackEndpoint: URL?
+    private let configuredPlaybackEndpoint: URL?
+    private var verifiedLANPlaybackEndpoint: URL?
+    var playbackEndpoint: URL? { verifiedLANPlaybackEndpoint ?? configuredPlaybackEndpoint }
     let allowsSelfSignedCertificates: Bool
 
     @Published private(set) var isAuthenticated = false
@@ -5805,7 +5812,7 @@ private final class JellyfinLibraryStore: ObservableObject {
         fallbackEndpoints: [URL] = []
     ) {
         self.endpoint = endpoint
-        self.playbackEndpoint = playbackEndpoint.flatMap(Self.originURL)
+        self.configuredPlaybackEndpoint = playbackEndpoint.flatMap(Self.originURL)
         self.allowsSelfSignedCertificates = allowsSelfSignedCertificates
         self.dsmSession = dsmSession
         self.dsmSharedFolderPaths = dsmSharedFolderPaths
@@ -5817,7 +5824,56 @@ private final class JellyfinLibraryStore: ObservableObject {
         _ = PlaybackNetworkObserver.shared
         Task { @MainActor [weak self] in
             await self?.refreshPlaybackRouteClassification()
+            await self?.verifyLANPlaybackEndpoint()
         }
+    }
+
+    private func verifyLANPlaybackEndpoint() async {
+        guard configuredPlaybackEndpoint == nil else { return }
+        let candidate = endpointCandidates.first(where: {
+            NetworkHostClassifier.isPrivate($0.host) && $0.host != endpoint.host
+        }) ?? Self.defaultLANPlaybackEndpoint(for: dsmSession?.endpoints.lanAddress)
+        guard let candidate else { return }
+        guard let publicID = await Self.publicServerID(at: endpoint) else {
+            record("diagnostics.jellyfin.playback_route_probe", level: .info,
+                   details: ["result": "publicInfoUnavailable"])
+            return
+        }
+        guard let lanID = await Self.publicServerID(at: candidate), publicID == lanID else {
+            record("diagnostics.jellyfin.playback_route_probe", level: .info,
+                   details: ["result": "lanInfoUnavailableOrDifferent",
+                             "target": DiagnosticLogStore.redactedURL(candidate)])
+            return
+        }
+        verifiedLANPlaybackEndpoint = Self.originURL(for: candidate)
+        await refreshPlaybackRouteClassification()
+        record("diagnostics.jellyfin.playback_route_verified", level: .info,
+               details: ["route": "sameServerLAN", "target": DiagnosticLogStore.redactedURL(candidate)])
+    }
+
+    private static func defaultLANPlaybackEndpoint(for dsmLAN: URL?) -> URL? {
+        guard let host = dsmLAN?.host, NetworkHostClassifier.isPrivate(host) else { return nil }
+        var components = URLComponents()
+        components.scheme = "http"
+        components.host = host
+        components.port = 8096
+        return components.url
+    }
+
+    private static func publicServerID(at endpoint: URL) async -> String? {
+        guard var components = URLComponents(url: endpoint, resolvingAgainstBaseURL: false) else { return nil }
+        let base = components.path.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
+        components.path = (base.isEmpty ? "" : "/\(base)") + "/System/Info/Public"
+        components.query = nil
+        components.fragment = nil
+        guard let url = components.url else { return nil }
+        var request = URLRequest(url: url)
+        request.timeoutInterval = 3
+        guard let (data, response) = try? await URLSession.shared.data(for: request),
+              (response as? HTTPURLResponse)?.statusCode == 200,
+              let object = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let id = object["Id"] as? String, !id.isEmpty else { return nil }
+        return id
     }
 
     func updateDSMPlaybackContext(
@@ -5827,12 +5883,14 @@ private final class JellyfinLibraryStore: ObservableObject {
         let normalizedSharedFolderPaths = Array(Set(sharedFolderPaths)).sorted()
         guard dsmSession?.sid != session?.sid
             || dsmSession?.baseURL != session?.baseURL
+            || dsmSession?.endpoints != session?.endpoints
             || dsmSharedFolderPaths != normalizedSharedFolderPaths else {
             return
         }
         dsmSession = session
         dsmSharedFolderPaths = normalizedSharedFolderPaths
         unavailableDSMPlaybackPaths.removeAll()
+        Task { await verifyLANPlaybackEndpoint() }
     }
 
     private static func jellyfinEndpointCandidates(from endpoints: [URL]) -> [URL] {
@@ -6265,11 +6323,30 @@ private final class JellyfinLibraryStore: ObservableObject {
             entry.subtitleTracks.firstIndex { $0.index == selectedIndex }
         }
 
-        // Default KS playback uses the original stream on every network. Bandwidth
-        // remains a fallback/quality budget, not an initial playback prerequisite.
-        let prefersOriginalStream = usesGreenfieldPlayback && forcedServerBitrate == nil
+        // A fresh measurement from browsing the library can rule out an
+        // original whose bitrate is far beyond the route's delivery capacity.
+        // Never wait for a new probe on the Play path.
+        let startupNetwork = PlaybackNetworkObserver.shared.snapshot()
+        let startupRoute = playbackEndpoint ?? endpoint
+        let startupOrigin = Self.originURL(for: startupRoute)?.absoluteString
+            ?? startupRoute.absoluteString
+        let startupSample = bitrateMeasurements["\(startupOrigin)|\(startupNetwork.cacheKey)"]
+        let knownCapacity = startupSample.flatMap { sample -> Int? in
+            sample.wasMeasured && Date().timeIntervalSince(sample.measuredAt) < 120
+                ? sample.rawBitrate : nil
+        }
+        let knownInsufficientOriginalBandwidth = usesGreenfieldPlayback
+            && forcedServerBitrate == nil
+            && PlaybackAdaptiveBitratePolicy.isOriginalClearlyUnsustainable(
+                sourceBitrate: entry.mediaBitrate,
+                measuredCapacity: knownCapacity,
+                isPrivateRoute: playbackRouteIsPrivate,
+                forcesOriginal: forcesOriginalPlayback || forcesExperimentalOriginalPlayback)
+        let prefersOriginalStream = usesGreenfieldPlayback
+            && forcedServerBitrate == nil && !knownInsufficientOriginalBandwidth
         // Probe without creating a proxy or opening a decoder.
         let startsOriginalProbe = usesGreenfieldPlayback
+            && !knownInsufficientOriginalBandwidth
             && !playbackRouteIsPrivate
             && !forcesOriginalPlayback && !forcesExperimentalOriginalPlayback
             && forcedServerReason == nil
@@ -6316,9 +6393,27 @@ private final class JellyfinLibraryStore: ObservableObject {
         // cap automatic remote HLS at 20 Mbps so the server can produce the first
         // segment quickly; explicit quality choices remain exact.
         let directPlayBudget = bitrateDecision.directPlayMaximumBitrate
-        let maxBitrate = forcedServerBitrate ?? (playbackRouteIsPrivate
+        let automaticCeiling = playbackRouteIsPrivate
             ? directPlayBudget
-            : min(directPlayBudget, 20_000_000))
+            : min(directPlayBudget, 20_000_000)
+#if DEBUG
+        // A one-process, explicitly launched test fixture can hold the initial
+        // rendition constant while the media proxy changes delivery speed.
+        let testStartupCeiling = Int(ProcessInfo.processInfo.environment[
+            "NASTART_TEST_STARTUP_HLS_BPS"] ?? "").flatMap {
+                (2_000_000...20_000_000).contains($0) ? $0 : nil
+            }
+#else
+        let testStartupCeiling: Int? = nil
+#endif
+        let maxBitrate = forcedServerBitrate
+            ?? (usesGreenfieldPlayback ? testStartupCeiling : nil)
+            ?? (knownInsufficientOriginalBandwidth
+                ? PlaybackAdaptiveBitratePolicy.target(
+                    currentCeiling: automaticCeiling,
+                    capacity: knownCapacity,
+                    networkKey: startupNetwork.cacheKey) ?? automaticCeiling
+                : automaticCeiling)
         let sourceBitrateFitsDirectBudget = entry.mediaBitrate.map {
             $0 <= directPlayBudget
         } ?? false
@@ -6432,7 +6527,11 @@ private final class JellyfinLibraryStore: ObservableObject {
                 && !rendersBitmapSubtitleLocally
                 && !defersServerRenderedSubtitleForFastStartup
                 && Self.requiresBurnIn(subtitleCodec: selectedSubtitleCodec)
-            let shouldAttemptDirectPlayback = GreenfieldOriginalPlaybackPolicy.allowsOriginal(
+            // The Debug fixture must hold the starting HLS rendition even if
+            // the device has rejoined Wi-Fi or discovered a private NAS route.
+            // Otherwise this test can unexpectedly fetch the 82 Mbps original.
+            let shouldAttemptDirectPlayback = testStartupCeiling == nil
+                && GreenfieldOriginalPlaybackPolicy.allowsOriginal(
                 forcedServerBitrate: forcedServerBitrate,
                 audioRequiresTranscode: requiresSelectedAudioTranscode || requiresDeviceCompatibilityTranscode,
                 subtitleRequiresServer: requiresServerSubtitleRendering,
@@ -6538,7 +6637,9 @@ private final class JellyfinLibraryStore: ObservableObject {
                 let isForcedServerPlayback = forcedServerBitrate != nil
                 let originalRouteWasSkipped = !shouldAttemptDirectPlayback
                 let automaticFallbackReason: String
-                if largeRemoteOriginalRisk,
+                if knownInsufficientOriginalBandwidth {
+                    automaticFallbackReason = "measuredBandwidthInsufficient"
+                } else if largeRemoteOriginalRisk,
                    !playbackRouteIsPrivate,
                    !forcesOriginalPlayback,
                    !canUseExperimentalOriginalPlayback {
@@ -6675,6 +6776,7 @@ private final class JellyfinLibraryStore: ObservableObject {
                         subtitleStreamIndex: runtimeSubtitleStreamIndex,
                         subtitleCodec: runtimeSubtitleCodec,
                         initialBitrate: compatibilityFallbackInitialBitrate,
+                        sourceTraceID: playbackTraceID,
                         startTimeTicks: Self.jellyfinTicks(for: fallbackPositionSeconds),
                         runtimeState: runtimeState,
                         usesGreenfieldPlayback: usesGreenfieldPlayback
@@ -6844,6 +6946,7 @@ private final class JellyfinLibraryStore: ObservableObject {
                 totalDurationSeconds: totalDurationSeconds,
                 byteLength: entry.mediaSize.map(Int64.init),
                 estimatedBitrate: entry.mediaBitrate,
+                streamBitrateCeiling: prepared.playMethod == .transcode ? maxBitrate : nil,
                 isPrivateNetworkRoute: prepared.isPrivateNetworkRoute,
                 playbackTracker: playbackTracker,
                 externalHandoffResource: prepared.externalHandoffResource,
@@ -6913,7 +7016,8 @@ private final class JellyfinLibraryStore: ObservableObject {
                 detail: sourceBitrate.map { Self.bitrateLabel($0) }
             )
         ]
-        let bitrates = [30_000_000, 20_000_000, 12_000_000, 8_000_000, 4_000_000, 2_000_000]
+        let bitrates = [30_000_000, 20_000_000, 12_000_000,
+                        10_000_000, 8_000_000, 4_000_000, 2_000_000]
         options.append(contentsOf: bitrates.map { bitrate in
             MediaPlaybackQualityOption(
                 id: String(bitrate),
@@ -6943,14 +7047,26 @@ private final class JellyfinLibraryStore: ObservableObject {
         subtitleStreamIndex: Int?,
         subtitleCodec: String?,
         initialBitrate: Int,
+        sourceTraceID: String,
         startTimeTicks: Int?,
         runtimeState: MediaPlaybackRuntimeState?,
         usesGreenfieldPlayback: Bool
     ) async -> MediaPlaybackRequest? {
         guard client != nil else { return nil }
         let network = PlaybackNetworkObserver.shared.snapshot()
-        let fallbackBitrate = max(1_500_000, initialBitrate / 2)
-        guard fallbackBitrate < initialBitrate else { return nil }
+        let observedCapacity = PlaybackRecentThroughputStore.shared.estimate(
+            traceID: sourceTraceID, now: ProcessInfo.processInfo.systemUptime)
+        let route = playbackEndpoint ?? endpoint
+        let origin = Self.originURL(for: route)?.absoluteString ?? route.absoluteString
+        let measuredCapacity = bitrateMeasurements["\(origin)|\(network.cacheKey)"].flatMap {
+            sample -> Int? in
+            sample.wasMeasured && Date().timeIntervalSince(sample.measuredAt) < 120
+                ? sample.rawBitrate : nil
+        }
+        let capacity = [observedCapacity, measuredCapacity].compactMap { $0 }.min()
+        guard let fallbackBitrate = PlaybackAdaptiveBitratePolicy.target(
+            currentCeiling: initialBitrate, capacity: capacity,
+            networkKey: network.cacheKey) else { return nil }
         do {
             let replacement = try await playbackRequest(
                 for: entry,
@@ -6970,6 +7086,9 @@ private final class JellyfinLibraryStore: ObservableObject {
                 details: [
                     "fromBitrate": "\(initialBitrate)",
                     "toBitrate": "\(fallbackBitrate)",
+                    "capacityBitrate": capacity.map(String.init) ?? "unknown",
+                    "capacityBasis": observedCapacity != nil ? "recentTransfer" :
+                        (measuredCapacity != nil ? "recentJellyfinProbe" : "conservativeFallback"),
                     "playbackTraceID": replacement.playbackTraceID ?? "-",
                     "network": network.cacheKey,
                     "mode": "serverNegotiatedHLS",
@@ -8029,7 +8148,11 @@ private final class JellyfinLibraryStore: ObservableObject {
                     isBreakOnNonKeyFrames: true,
                     maxAudioChannels: "8",
                     minSegments: hlsSegmentContainer == "ts" ? 1 : 2,
-                    segmentLength: hlsSegmentContainer == "ts" ? 1 : nil,
+                    // A one-second VOD segment turns a multi-hour movie into
+                    // thousands of entries and delays the first playlist by
+                    // tens of seconds. Four seconds keeps seeks responsive
+                    // without making the playlist itself a startup bottleneck.
+                    segmentLength: hlsSegmentContainer == "ts" ? 4 : nil,
                     transcodeSeekInfo: .auto,
                     type: .video,
                     videoCodec: "h264"
@@ -8680,7 +8803,10 @@ struct JellyfinLibraryView: View {
     }
 
     private var dsmPlaybackContextID: String {
-        ([dsmSession?.sid ?? "-"] + dsmSharedFolderPaths.sorted()).joined(separator: "|")
+        ([dsmSession?.sid ?? "-",
+          dsmSession?.baseURL.absoluteString ?? "-",
+          dsmSession?.endpoints.lanAddress?.absoluteString ?? "-"]
+            + dsmSharedFolderPaths.sorted()).joined(separator: "|")
     }
 }
 
@@ -9752,7 +9878,8 @@ private struct JellyfinMediaDetailView: View {
     private var usesGreenfieldPlayer = true
     @State private var greenfieldPlaybackRequest: GreenfieldPlaybackLaunchRequest?
 #endif
-    @State private var isPreparingPlayback = false
+    @StateObject private var preparation = PlaybackPreparation()
+    private var isPreparingPlayback: Bool { preparation.isPreparing }
     @State private var showPlaybackError = false
     @State private var pendingExternalPlayback: PendingExternalPlayback?
     @State private var pendingShareRequest: MediaPlaybackRequest?
@@ -9874,6 +10001,7 @@ private struct JellyfinMediaDetailView: View {
             guard snapshot.itemID == item.id else { return }
             localPlaybackStopSnapshot = snapshot
         }
+        .onDisappear { preparation.cancel() }
         .task(id: item.id) {
             await loadDetailContent()
         }
@@ -10023,8 +10151,31 @@ private struct JellyfinMediaDetailView: View {
                     .font(.subheadline.weight(.semibold))
                     .disabled(isPreparingPlayback)
             }
+#if DEBUG
+            if usesGreenfieldPlayer &&
+                ProcessInfo.processInfo.environment["NASTART_TEST_STATIC_HLS"] == "1" {
+                Button("静态 HLS 弱网测试") { prepareStaticHLSPlayback() }
+                    .font(.subheadline.weight(.semibold))
+                    .disabled(isPreparingPlayback)
+            }
+#endif
         }
     }
+
+#if DEBUG
+    private func prepareStaticHLSPlayback() {
+        preparation.start { preparationID in
+            let request = await DebugStaticHLSFixture.makeRequest()
+            guard preparation.isCurrent(preparationID) else {
+                request?.playbackTracker?.releasePreparedResources()
+                return
+            }
+            guard let request else { showPlaybackError = true; return }
+            PlayerOrientationController.prepareForPresentation(request.initialOrientationMode)
+            greenfieldPlaybackRequest = request.greenfieldPlaybackLaunchRequest()
+        }
+    }
+#endif
 
     private func preparePlayback(fromBeginning: Bool = false) {
         var itemToPlay = mediaItem
@@ -10033,9 +10184,7 @@ private struct JellyfinMediaDetailView: View {
             itemToPlay.playbackPositionTicks = 0
         }
         let entry = itemToPlay
-        Task {
-            isPreparingPlayback = true
-            defer { isPreparingPlayback = false }
+        preparation.start { preparationID in
             do {
 #if DEBUG
                 let requestsGreenfield = usesGreenfieldPlayer
@@ -10051,6 +10200,11 @@ private struct JellyfinMediaDetailView: View {
                     prefersFastStartupDirectPlay: requestsGreenfield,
                     usesGreenfieldPlayback: requestsGreenfield
                 )
+                guard preparation.isCurrent(preparationID) else {
+                    request?.playbackTracker?.releasePreparedResources()
+                    if let request { AuthenticatedMediaStreamProxy.shared.unregister(request.url) }
+                    return
+                }
                 if let request {
 #if DEBUG
                     if requestsGreenfield && !request.isAudioOnly {
@@ -10065,6 +10219,7 @@ private struct JellyfinMediaDetailView: View {
                     playbackRequest = request
                 }
             } catch {
+                guard preparation.isCurrent(preparationID) else { return }
                 showPlaybackError = true
             }
         }
@@ -10179,9 +10334,7 @@ private struct JellyfinMediaDetailView: View {
     }
 
     private func prepareExternalPlayback(_ target: ExternalOpenTarget) {
-        Task {
-            isPreparingPlayback = true
-            defer { isPreparingPlayback = false }
+        preparation.start { preparationID in
             do {
                 guard let request = try await store.externalPlaybackRequest(
                     for: mediaItem,
@@ -10192,6 +10345,7 @@ private struct JellyfinMediaDetailView: View {
                 ) else {
                     throw JellyfinLibraryError.missingPlaybackURL
                 }
+                guard preparation.isCurrent(preparationID) else { return }
                 let pending = PendingExternalPlayback(request: request, target: target)
                 if request.containsSensitiveCredential {
                     pendingExternalPlayback = pending
@@ -10200,15 +10354,14 @@ private struct JellyfinMediaDetailView: View {
                     openExternalPlayback(pending)
                 }
             } catch {
+                guard preparation.isCurrent(preparationID) else { return }
                 showPlaybackError = true
             }
         }
     }
 
     private func prepareSharePlayback() {
-        Task {
-            isPreparingPlayback = true
-            defer { isPreparingPlayback = false }
+        preparation.start { preparationID in
             do {
                 guard let request = try await store.externalPlaybackRequest(
                     for: mediaItem,
@@ -10219,6 +10372,7 @@ private struct JellyfinMediaDetailView: View {
                 ) else {
                     throw JellyfinLibraryError.missingPlaybackURL
                 }
+                guard preparation.isCurrent(preparationID) else { return }
                 if request.containsSensitiveCredential {
                     pendingExternalPlayback = nil
                     pendingShareRequest = request
@@ -10227,6 +10381,7 @@ private struct JellyfinMediaDetailView: View {
                     sharePayload = ServiceSharePayload(url: request.url)
                 }
             } catch {
+                guard preparation.isCurrent(preparationID) else { return }
                 showPlaybackError = true
             }
         }
@@ -10599,3 +10754,36 @@ private struct JellyfinFileInformation: View {
         .padding(.vertical, 12)
     }
 }
+
+#if DEBUG
+/// Explicit test source for exercising adaptive handoff without opening a NAS
+/// encoder. Both renditions are pre-encoded Apple HLS example playlists.
+@MainActor
+enum DebugStaticHLSFixture {
+    private static let base = "https://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_adv_example_hevc"
+
+    static func makeRequest(low: Bool = false,
+                            source: MediaPlaybackSource = .jellyfin) async -> MediaPlaybackRequest? {
+        let upstream = URL(string: "\(base)/\(low ? "v4" : "v9")/prog_index.m3u8")!
+        let traceID = String(UUID().uuidString.prefix(8))
+        guard let proxyURL = try? await AuthenticatedMediaStreamProxy.shared.register(
+            upstreamURL: upstream, filename: "static-hls-fixture.m3u8",
+            allowsSelfSignedCertificates: false, playbackTraceID: traceID) else { return nil }
+        let tracker = MediaPlaybackTracker(releaseResources: {
+            AuthenticatedMediaStreamProxy.shared.unregister(proxyURL)
+        }, eventHandler: { _ in })
+        let bitrate = low ? 1_300_000 : 8_000_000
+        return MediaPlaybackRequest(
+            url: proxyURL, title: "Static HLS fixture", source: source,
+            contentKind: .video, fileExtensionOverride: "m3u8",
+            prefersSubtitlesDisabled: true, timelineOffsetSeconds: 0,
+            totalDurationSeconds: 600, estimatedBitrate: bitrate,
+            streamBitrateCeiling: bitrate, isPrivateNetworkRoute: false,
+            playbackTracker: tracker,
+            compatibilityFallbackRequestLoader: low ? nil : { _ in
+                await makeRequest(low: true, source: source)
+            },
+            selectedQualityID: "auto", playbackTraceID: traceID)
+    }
+}
+#endif

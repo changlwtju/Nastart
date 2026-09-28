@@ -3,14 +3,16 @@ import Foundation
 /// Reactive downshift only: bandwidth estimates alone must not interrupt a
 /// healthy original stream. Times use monotonic uptime, never playback time.
 struct PlaybackStallDownshiftPolicy {
-    // Candidate only: keep baseline playback unchanged until cellular
-    // observation and handoff bandwidth contention have been validated.
-    static let isEnabled = false
+    // A server-backed Jellyfin or verified DSM file rendition may request a
+    // lower bitrate. A DSM file with only its original Range route has no
+    // quality-switch loader.
+    static let isEnabled = true
     private var previousTime: TimeInterval?
     private var generation: Int?
     private var graceUntil: TimeInterval = 0
     private var cooldownUntil: TimeInterval = 0
     private var stalledSamples: [(time: TimeInterval, duration: TimeInterval)] = []
+    private var stallStarts: [TimeInterval] = []
     private var consecutive: TimeInterval = 0
     private var wasBuffering = false
 
@@ -22,6 +24,7 @@ struct PlaybackStallDownshiftPolicy {
             generation = seekGeneration
             graceUntil = now + 10
             stalledSamples.removeAll()
+            stallStarts.removeAll()
             consecutive = 0
             wasBuffering = false
             return false
@@ -33,15 +36,110 @@ struct PlaybackStallDownshiftPolicy {
             return false
         }
         stalledSamples.removeAll { now - $0.time > 60 }
+        stallStarts.removeAll { now - $0 > 30 }
+        if buffering && !wasBuffering { stallStarts.append(now) }
         let stalled = buffering && wasBuffering ? delta : 0
         wasBuffering = buffering
         consecutive = buffering ? consecutive + stalled : 0
         if stalled > 0 { stalledSamples.append((now, stalled)) }
-        guard consecutive >= 8 || stalledSamples.reduce(0, { $0 + $1.duration }) >= 12 else { return false }
+        // Several brief stalls are conspicuous even when their aggregate
+        // duration is below the old 12-second threshold. This is the common
+        // pattern when a high-bitrate original outruns an uneven Wi-Fi link.
+        guard consecutive >= 8 || stallStarts.count >= 3
+            || stalledSamples.reduce(0, { $0 + $1.duration }) >= 12 else { return false }
         cooldownUntil = now + 60
         consecutive = 0
         stalledSamples.removeAll()
+        stallStarts.removeAll()
         return true
+    }
+}
+
+/// Recent completed Range and HLS segment transfers are a better guide to
+/// sustained delivery than the small Jellyfin startup probe. Discard samples where the local
+/// proxy paused the upstream task because those measure player consumption.
+final class PlaybackRecentThroughputStore: @unchecked Sendable {
+    static let shared = PlaybackRecentThroughputStore()
+
+    private struct Sample {
+        let traceID: String
+        let bitrate: Int
+        let uptime: TimeInterval
+    }
+
+    private let lock = NSLock()
+    private var samples: [Sample] = []
+
+    func record(traceID: String?, bytes: Int64, seconds: TimeInterval,
+                backpressureSeconds: TimeInterval, now: TimeInterval) {
+        guard let traceID, !traceID.isEmpty, bytes >= 1_048_576,
+              seconds.isFinite, seconds >= 0.25,
+              backpressureSeconds < 0.1, now.isFinite else { return }
+        let rate = Double(bytes) * 8 / seconds
+        guard rate.isFinite, rate > 0, rate < Double(Int.max) else { return }
+        lock.lock()
+        samples.removeAll { now - $0.uptime > 90 || now < $0.uptime }
+        samples.append(Sample(traceID: traceID, bitrate: Int(rate), uptime: now))
+        if samples.count > 32 { samples.removeFirst(samples.count - 32) }
+        lock.unlock()
+    }
+
+    func estimate(traceID: String, now: TimeInterval) -> Int? {
+        lock.lock()
+        let rates = samples.filter { $0.traceID == traceID
+            && now >= $0.uptime && now - $0.uptime <= 60 }
+            .map(\.bitrate).sorted()
+        lock.unlock()
+        guard !rates.isEmpty else { return nil }
+        return rates[(rates.count - 1) / 4]
+    }
+}
+
+enum PlaybackAdaptiveBitratePolicy {
+    static let ladder = [30_000_000, 20_000_000, 12_000_000,
+                         10_000_000, 8_000_000, 4_000_000,
+                         2_000_000, 1_500_000, 1_000_000,
+                         750_000, 500_000]
+
+    static func allowsAutomaticAdjustment(selectedQualityID: String?) -> Bool {
+        selectedQualityID == nil || selectedQualityID == "auto"
+    }
+
+    static func isOriginalClearlyUnsustainable(sourceBitrate: Int?,
+                                               measuredCapacity: Int?,
+                                               isPrivateRoute: Bool,
+                                               forcesOriginal: Bool) -> Bool {
+        guard !isPrivateRoute, !forcesOriginal,
+              let sourceBitrate, sourceBitrate > 0,
+              let measuredCapacity, measuredCapacity > 0 else { return false }
+        return Double(sourceBitrate) > Double(measuredCapacity) * 1.5
+    }
+
+    /// Keep delivery well above the rendition's target bitrate. Each retry
+    /// must select a lower rendition, even if the old capacity sample is high.
+    static func target(currentCeiling: Int, capacity: Int?, networkKey: String) -> Int? {
+        guard currentCeiling > 500_000 else { return nil }
+        let safeCapacity = capacity.map { Int(Double($0) * 0.5) }
+        let unknownCapacityLimit = networkKey == "cellular" ? 4_000_000 : 8_000_000
+        let limit = min(currentCeiling - 1, safeCapacity ?? unknownCapacityLimit)
+        return ladder.first { $0 <= limit } ?? 500_000
+    }
+}
+
+enum VerifiedFileIdentityPolicy {
+    static func matches(dsmPath: String, dsmSize: Int64,
+                        jellyfinPath: String, jellyfinSize: Int64) -> Bool {
+        guard dsmSize > 0, dsmSize == jellyfinSize else { return false }
+        let expected = dsmPath.replacingOccurrences(of: "\\", with: "/").lowercased()
+        let candidate = jellyfinPath.replacingOccurrences(of: "\\", with: "/").lowercased()
+        let expectedName = (expected as NSString).lastPathComponent
+        guard !expectedName.isEmpty,
+              (candidate as NSString).lastPathComponent == expectedName else { return false }
+        if candidate.hasSuffix(expected) { return true }
+        let expectedParent = (expected as NSString).deletingLastPathComponent
+        let candidateParent = (candidate as NSString).deletingLastPathComponent
+        let tail = expectedParent.split(separator: "/").suffix(2).joined(separator: "/")
+        return !tail.isEmpty && candidateParent.hasSuffix("/" + tail)
     }
 }
 
@@ -402,6 +500,23 @@ enum PlaybackPlanningPolicy {
             )
         default:
             return PlaybackStartupPolicy()
+        }
+    }
+
+    /// Retain the fast first frame; raise the reserve only after the playback
+    /// clock advances. A public upstream behind the local proxy may need more
+    /// reserve; LAN playback did not improve in the iPhone 13 comparison.
+    static func steadyStateBufferSeconds(
+        routeKind: PlaybackRouteKind,
+        upstreamAddressKind: PlaybackConnectionAddressKind,
+        startupSeconds: TimeInterval
+    ) -> TimeInterval {
+        guard routeKind == .localRangeProxy else { return startupSeconds }
+        switch upstreamAddressKind {
+        case .publicDomain, .publicIP, .unknown:
+            return max(startupSeconds, 4)
+        case .loopback, .privateIP, .localDomain:
+            return startupSeconds
         }
     }
 

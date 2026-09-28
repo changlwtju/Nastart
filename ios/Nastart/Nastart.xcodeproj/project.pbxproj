@@ -482,6 +482,7 @@
 				080808080808080808080001 /* Resources */,
 				A2A8DEC79C028960F711EA2C /* [CP] Embed Pods Frameworks */,
 				1799B9B5F5964958980AC651 /* Embed Frameworks */,
+				8C7A1D6B0F34461BA9910C13 /* Embed Swift Compatibility Span */,
 			);
 			buildRules = (
 			);
@@ -637,6 +638,22 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Nastart/Pods-Nastart-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
+		};
+		8C7A1D6B0F34461BA9910C13 /* Embed Swift Compatibility Span */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/../../scripts/embed_swift_compat_span.sh",
+			);
+			name = "Embed Swift Compatibility Span";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/libswiftCompatibilitySpan.dylib",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/../../scripts/embed_swift_compat_span.sh\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 

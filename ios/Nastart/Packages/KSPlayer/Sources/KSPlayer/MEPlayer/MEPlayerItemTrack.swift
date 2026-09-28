@@ -167,6 +167,7 @@ class SyncPlayerItemTrack<Frame: MEFrame>: PlayerItemTrackProtocol, CustomString
                 if decoder is VideoToolboxDecode {
                     decoder.shutdown()
                     self.decoderMap[packet.assetTrack.trackID] = FFmpegDecode(assetTrack: packet.assetTrack, options: self.options)
+                    self.options.videoDecoderSelected?("ffmpegAfterVideoToolboxFailure")
                     KSLog("VideoCodec switch to software decompression")
                     self.doDecode(packet: packet)
                 } else {
@@ -313,8 +314,13 @@ extension SyncPlayerItemTrack {
                 if mediaType == .video, options.asynchronousDecompression, options.hardwareDecode,
                    let session = DecompressionSession(assetTrack: assetTrack, options: options)
                 {
+                    options.videoDecoderSelected?("videoToolboxAsync")
                     return VideoToolboxDecode(options: options, session: session)
                 } else {
+                    if mediaType == .video {
+                        options.videoDecoderSelected?(options.hardwareDecode
+                            ? "ffmpegVideoToolboxEligible" : "ffmpegSoftware")
+                    }
                     return FFmpegDecode(assetTrack: assetTrack, options: options)
                 }
             }

@@ -642,8 +642,8 @@ def check_playback_routing_invariants() -> CheckResult:
         "Greenfield TS HLS must start with one segment while legacy retains two": (
             'minSegments: hlsSegmentContainer == "ts" ? 1 : 2'
         ),
-        "Greenfield TS HLS must use short segments for responsive switching": (
-            'segmentLength: hlsSegmentContainer == "ts" ? 1 : nil'
+        "Greenfield TS HLS must use four-second segments for large VOD manifests": (
+            'segmentLength: hlsSegmentContainer == "ts" ? 4 : nil'
         ),
         "Jellyfin compatibility HLS must avoid unstable HEVC video-copy plus audio-transcode streams": (
             'type: .video,\n                    videoCodec: "h264"'

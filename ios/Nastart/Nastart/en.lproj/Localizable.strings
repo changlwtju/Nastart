@@ -238,7 +238,7 @@
 "connect.error.missing_session" = "DSM login succeeded but did not return a session. Check DSM version or login mode.";
 "connect.error.otp_required" = "DSM requires a 2FA code, or the code has expired. Enter a fresh code and connect again.";
 "connect.error.local_unreachable" = "Could not reach DSM on the local network. Confirm this device and the NAS are on the same network, verify the HTTP/HTTPS address and port, and allow Nastart local-network access.";
-"connect.error.remote_unreachable" = "The remote DSM connection ended before login. Check DNS, public port forwarding or the reverse proxy, and make sure it forwards DSM /webapi paths. Testing a public hostname from the LAN also requires NAT loopback support.";
+"connect.error.remote_unreachable" = "Could not reach DSM through the public address. Check whether this device's VPN, proxy, or DNS rules block the domain or port, and verify that the public port is reachable. On the same LAN, use Local Network Discovery to select the NAS.";
 "connect.error.unreachable" = "Nastart could not reach the NAS. Check the address, port, network connection, and NAS firewall settings.";
 "connect.error.certificate" = "DSM HTTPS certificate validation failed. Confirm the certificate matches the hostname; trust a self-signed certificate only for your own NAS.";
 "connect.status.cached_title" = "Showing the last confirmed data";
@@ -266,6 +266,8 @@
 "data.refresh.source.preview" = "Preview data";
 "data.refresh.source.none" = "No data";
 "data.refresh.cached" = "Showing cached data";
+"data.refresh.services_independent" = "DSM is disconnected; an online service only means its address responds. Tap to reconnect the NAS.";
+"service.dsm.login_required" = "Sign in";
 "data.refresh.stale" = "Cached data may be outdated";
 "data.refresh.unavailable" = "NAS data is unavailable";
 "diagnostics.manual_service.rejected" = "Rejected an invalid manual service entry";
@@ -927,6 +929,10 @@
 "diagnostics.media.proxy_transfer_started" = "Media compatibility transfer started";
 "diagnostics.media.proxy_transfer_retry" = "Media compatibility transfer resumed";
 "diagnostics.media.proxy_transfer_finished" = "Media compatibility transfer finished";
+"diagnostics.media.proxy_listener_ready" = "Playback proxy ready";
+"diagnostics.media.proxy_listener_failed" = "Playback proxy listener failed";
+"diagnostics.media.proxy_listener_restarting" = "Playback proxy restarting";
+"diagnostics.media.proxy_request_rejected" = "Playback proxy rejected an expired request";
 "mine.sign_out.restoring" = "Restoring the NAS session; connection actions will be available when it completes";
 "diagnostics.refresh.transient_unreachable" = "DSM reachability probe failed temporarily; kept the last confirmed connected state";
 "diagnostics.refresh.unreachable" = "DSM was unreachable on the current network; live statuses were marked offline";
@@ -944,6 +950,7 @@
 "devices.files.empty" = "No files";
 "devices.files.search.empty" = "No files match this search.";
 "devices.files.folder_load_failed" = "Unable to load this folder. Check the DSM session and File Station permissions, then retry.";
+"devices.files.dsm_disconnected" = "DSM is disconnected. Reconnect the NAS from Launchpad, then retry.";
 "jellyfin.library.connecting" = "Connecting to Jellyfin...";
 "jellyfin.library.connected" = "Jellyfin library connected";
 "jellyfin.library.mine" = "My media";

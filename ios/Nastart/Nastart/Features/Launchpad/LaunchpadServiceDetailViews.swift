@@ -183,13 +183,13 @@ struct ServiceDetailView: View {
     let service: LaunchpadService
     @EnvironmentObject private var dataStore: AppDataStore
     @EnvironmentObject private var connectionStore: NASConnectionStore
+    @EnvironmentObject private var mediaLibraryRouter: MediaLibraryRouter
     @Environment(\.dismiss) private var dismiss
     @State private var externalMessageKey = "external.open_failed"
     @State private var showExternalHint = false
     @State private var endpointOverride: URL?
     @State private var systemBrowserPresentation: SystemBrowserPresentation?
     @State private var webBrowserPresentation: SystemBrowserPresentation?
-    @State private var mediaLibraryPresentation: MediaLibraryPresentation?
     @State private var showEndpointEditor = false
     @State private var showDeleteManualConfirmation = false
 
@@ -288,7 +288,7 @@ struct ServiceDetailView: View {
                             endpoint: effectiveEndpoint,
                             engine: service.isJellyfin ? "JellyfinLibraryView" : "MediaLibraryView"
                         )
-                        mediaLibraryPresentation = MediaLibraryPresentation(service: service)
+                        mediaLibraryRouter.open(service)
                     } label: {
                         Label("service.action.media_library", systemImage: service.name == "Navidrome" ? "music.note.list" : "play.rectangle")
                     }
@@ -417,18 +417,6 @@ struct ServiceDetailView: View {
                 }
             }
         }
-        .fullScreenCover(item: $mediaLibraryPresentation) { presentation in
-            NavigationStack {
-                MediaLibraryView(service: presentation.service)
-                    .toolbar {
-                        ToolbarItem(placement: .navigationBarLeading) {
-                            Button("action.done") {
-                                mediaLibraryPresentation = nil
-                            }
-                        }
-                    }
-            }
-        }
         .alert(LocalizedStringKey(externalMessageKey), isPresented: $showExternalHint) {
             Button("action.ok", role: .cancel) {}
         }
@@ -529,11 +517,6 @@ struct ServiceDetailView: View {
 private struct SystemBrowserPresentation: Identifiable {
     let id = UUID()
     let url: URL
-}
-
-private struct MediaLibraryPresentation: Identifiable {
-    let id = UUID()
-    let service: LaunchpadService
 }
 
 enum ServiceCertificatePolicy {

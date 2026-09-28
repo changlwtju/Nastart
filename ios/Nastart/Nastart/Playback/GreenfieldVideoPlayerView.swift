@@ -262,23 +262,75 @@ struct GreenfieldVideoPlayerView: View {
             // This loader negotiates a lower bitrate. A device file's Range
             // proxy fallback is not a transcode and must never be used here.
             guard PlaybackStallDownshiftPolicy.isEnabled,
-                  uiRequest.source == .jellyfin,
+                  (uiRequest.source == .jellyfin || uiRequest.source == .dsmFile),
+                  PlaybackAdaptiveBitratePolicy.allowsAutomaticAdjustment(
+                    selectedQualityID: uiRequest.selectedQualityID),
                   let loader = uiRequest.compatibilityFallbackRequestLoader else { return }
             var policy = PlaybackStallDownshiftPolicy()
             var attempts = 0
+            var nextPredictiveAttemptAt: TimeInterval = 0
+            var lastSeekGeneration: Int?
+            var predictiveGraceUntil: TimeInterval = 0
+            var previousPlaybackSeconds: Double?
             while !Task.isCancelled {
                 do { try await Task.sleep(nanoseconds: 1_000_000_000) }
                 catch { return }
                 let session = controls
-                let eligible = scenePhase == .active && session.isReady && session.isPlaying
+                // A full-screen player can keep advancing while SwiftUI reports
+                // this view's scene as background during XCTest or PiP. Gate on
+                // actual playback activity instead; candidate preparation keeps
+                // the current stream alive and abandons an unready replacement.
+                let eligible = session.isReady
+                    && (session.isPlaying || session.isTransportBuffering)
                     && !session.hasPendingSeek && !changingSource && model.errorMessage == nil
                     && (session.durationSeconds <= 0 || session.currentSeconds < session.durationSeconds - 5)
-                guard policy.sample(now: ProcessInfo.processInfo.systemUptime,
+#if DEBUG
+                if session.isTransportBuffering {
+                    session.event("automatic_downshift_sample", metrics: [
+                        "eligible": String(eligible),
+                        "scenePhase": String(describing: scenePhase),
+                        "ready": String(session.isReady),
+                        "playing": String(session.isPlaying),
+                        "buffering": String(session.isTransportBuffering),
+                        "pendingSeek": String(session.hasPendingSeek),
+                        "changingSource": String(changingSource)
+                    ])
+                }
+#endif
+                let now = ProcessInfo.processInfo.systemUptime
+                if lastSeekGeneration != session.seekGeneration {
+                    lastSeekGeneration = session.seekGeneration
+                    predictiveGraceUntil = now + 10
+                }
+                let clockAdvanced = previousPlaybackSeconds.map {
+                    session.currentSeconds > $0 + 0.25
+                } ?? false
+                previousPlaybackSeconds = session.currentSeconds
+                let repeatedStalls = policy.sample(now: now,
                     eligible: eligible, buffering: session.isTransportBuffering,
-                    seekGeneration: session.seekGeneration), attempts < 2 else { continue }
+                    seekGeneration: session.seekGeneration)
+                let deliveryCapacity = uiRequest.playbackTraceID.flatMap {
+                    PlaybackRecentThroughputStore.shared.estimate(traceID: $0, now: now)
+                }
+                let predictsUnsustainableDelivery = eligible && session.isPlaying
+                    && !session.isTransportBuffering && !changingSource
+                    && clockAdvanced && now >= predictiveGraceUntil
+                    && now >= nextPredictiveAttemptAt
+                    && PlaybackAdaptiveBitratePolicy.isOriginalClearlyUnsustainable(
+                        sourceBitrate: uiRequest.streamBitrateCeiling
+                            ?? uiRequest.estimatedBitrate,
+                        measuredCapacity: deliveryCapacity,
+                        isPrivateRoute: false,
+                        forcesOriginal: uiRequest.selectedQualityID == "original")
+                guard (repeatedStalls || predictsUnsustainableDelivery), attempts < 2 else { continue }
                 attempts += 1
+                nextPredictiveAttemptAt = now + 60
                 let state = session.runtimeState(orientationMode: uiRequest.initialOrientationMode)
-                session.event("automatic_downshift_requested", metrics: ["reason": "sustainedRebuffering", "attempt": String(attempts)])
+                session.event("automatic_downshift_requested", metrics: [
+                    "reason": repeatedStalls ? "sustainedRebuffering" : "deliveryBelowSourceBitrate",
+                    "attempt": String(attempts),
+                    "deliveryCapacity": deliveryCapacity.map(String.init) ?? "unknown"
+                ])
                 replaceSource(keepPlayingDuringPreparation: true, reportsFailure: false) {
                     await loader(state)
                 }
@@ -309,6 +361,7 @@ struct GreenfieldVideoPlayerView: View {
             ksControls.traceID = activeRequest.playbackTraceID
             avControls.traceID = activeRequest.playbackTraceID
             model.avControls = avControls
+            model.ksControls = ksControls
             model.start(activeRequest)
         }
         .onDisappear {
@@ -335,7 +388,8 @@ struct GreenfieldVideoPlayerView: View {
     private func closePlayer() {
         saveLocalProgress(force: true)
         sourceLoadTask?.cancel()
-        model.stop(finalPositionSeconds: controls.currentSeconds)
+        // Keep the last frame visible through UIKit's dismissal animation.
+        // onDisappear owns the final stop after the player is off screen.
         for control in [ksControls, avControls] {
             control.pipDidStart = nil
             control.pipDidClose = nil
@@ -461,9 +515,14 @@ struct GreenfieldVideoPlayerView: View {
 #endif
                 return
             }
-            oldControls.event("replacement_committed", metrics: ["seconds": String(oldControls.currentSeconds),
-                "candidateSeconds": String(preparedPlayer?.currentTime().seconds ?? -1)])
             let finalPaused = keepPlayingDuringPreparation ? !oldControls.isPlaying : commitPaused
+            let candidateBufferAhead = preparedPlayer?.currentItem?.loadedTimeRanges
+                .map { $0.timeRangeValue.end.seconds - (preparedPlayer?.currentTime().seconds ?? 0) }
+                .filter { $0.isFinite && $0 > 0 }.max() ?? 0
+            oldControls.event("replacement_committed", metrics: ["seconds": String(oldControls.currentSeconds),
+                "candidateSeconds": String(preparedPlayer?.currentTime().seconds ?? -1),
+                "candidateBufferAheadSeconds": String(candidateBufferAhead),
+                "startsPaused": String(finalPaused)])
             oldControls.pauseForExternalHandoff()
             model.stop(reportStop: activeRequest.mediaRequest?.playbackTracker !== next.playbackTracker)
             ksControls.startsPaused = finalPaused
@@ -489,10 +548,12 @@ final class GreenfieldVideoPlayerModel: ObservableObject {
     @Published private(set) var player = AVPlayer()
     private var preparedPlayer: AVPlayer?
     weak var avControls: GreenfieldPlaybackControls?
+    weak var ksControls: GreenfieldPlaybackControls?
     private var avWantsPlayback = true
     private var avInitialSeekPending = false
     private var avInitialSeekCompleted = false
     private var avItemWasPrewarmed = false
+    private var avRetainsHandoffBuffer = false
     private var avTimelineOffset: Double {
         // Jellyfin VOD HLS exposes the full media timeline. StartTimeTicks is
         // the requested position, not a new zero for the returned playlist.
@@ -650,6 +711,7 @@ final class GreenfieldVideoPlayerModel: ObservableObject {
 #endif
         avControls?.disconnect()
         avInitialSeekPending = false
+        avRetainsHandoffBuffer = false
         renderingPlan = nil
         failedRouteIDs.removeAll()
         lastValidKSPlayerTime = nil
@@ -679,6 +741,7 @@ final class GreenfieldVideoPlayerModel: ObservableObject {
         ].joined(separator: " / ")
         telemetrySampler?.sampleKSPlayer(
             state: state,
+            runtimeMetrics: ksControls?.readRuntimeTelemetry?() ?? [:],
             reason: "stateChanged",
             force: state == "error"
         )
@@ -759,6 +822,7 @@ final class GreenfieldVideoPlayerModel: ObservableObject {
         telemetrySampler?.sampleKSPlayer(
             currentTime: playbackTime.current,
             totalTime: playbackTime.total,
+            runtimeMetrics: ksControls?.readRuntimeTelemetry?() ?? [:],
             reason: "playbackTick"
         )
         if let duration = playbackTime.total, duration > 0, plan.timeline.duration == nil {
@@ -961,10 +1025,16 @@ final class GreenfieldVideoPlayerModel: ObservableObject {
             player = preparedPlayer
             item = preparedItem
             avItemWasPrewarmed = true
+            avRetainsHandoffBuffer = true
+            // Warmup disables automatic waiting to align clocks. Restore normal
+            // AVPlayer buffering before the candidate becomes the live stream.
+            player.automaticallyWaitsToMinimizeStalling = true
+            item.preferredForwardBufferDuration = 3
         } else {
             item = AVPlayerItem(url: plan.primaryRoute.url)
             item.preferredForwardBufferDuration = 0.5
             avItemWasPrewarmed = false
+            avRetainsHandoffBuffer = false
         }
         preparedPlayer = nil
         if let style = AVTextStyleRule(textMarkupAttributes: [
@@ -1235,7 +1305,7 @@ final class GreenfieldVideoPlayerModel: ObservableObject {
     private func handleTimeControlStatus(_ status: AVPlayer.TimeControlStatus) {
         avControls?.isTransportBuffering = status == .waitingToPlayAtSpecifiedRate
         guard let plan = renderingPlan, lastTimeControlStatus != status else { return }
-        if status == .playing {
+        if status == .playing && !avRetainsHandoffBuffer {
             // Small startup buffering should not cap the reserve during normal
             // playback on WAN connections. Let AVPlayer size it after startup.
             player.currentItem?.preferredForwardBufferDuration = 0
@@ -1650,15 +1720,26 @@ private struct GreenfieldPlaybackPresenter: UIViewControllerRepresentable {
     }
     @MainActor final class Coordinator {
         private static var retainedPiP: Coordinator?
+        // The background representable can be recreated when the underlying
+        // Jellyfin detail view updates. Keep the presentation owner alive until
+        // UIKit has finished dismissing the full-screen controller.
+        private static var retainedPresentation: Coordinator?
         var binding: Binding<GreenfieldPlaybackLaunchRequest?>
         weak var anchor: Anchor?
         var host: UIHostingController<GreenfieldVideoPlayerView>?
         var currentID: UUID?
         var minimized = false
+        private var closing = false
         init(binding: Binding<GreenfieldPlaybackLaunchRequest?>) { self.binding = binding }
         func update() {
+            guard !closing else { return }
             guard let request = binding.wrappedValue else {
                 if host != nil && !minimized { close() }
+                return
+            }
+            if let previous = Self.retainedPresentation, previous !== self,
+               previous.currentID == request.id {
+                previous.binding = binding
                 return
             }
             guard currentID != request.id, let anchor, anchor.viewIfLoaded?.window != nil else { return }
@@ -1671,7 +1752,14 @@ private struct GreenfieldPlaybackPresenter: UIViewControllerRepresentable {
                 restorePresentation: { [weak self] completion in self?.restore(completion) ?? completion(false) }))
             controller.modalPresentationStyle = .fullScreen
             host = controller
-            anchor.present(controller, animated: true)
+            Self.retainedPresentation = self
+            // Present from the visible hosting hierarchy, not the zero-sized
+            // representable. Its anchor may be retired during a SwiftUI update,
+            // which otherwise dismisses the player before its first frame.
+            var presenter: UIViewController = anchor
+            while let parent = presenter.parent { presenter = parent }
+            while let presented = presenter.presentedViewController { presenter = presented }
+            presenter.present(controller, animated: true)
         }
         func minimize() {
             guard let host else { return }
@@ -1698,14 +1786,23 @@ private struct GreenfieldPlaybackPresenter: UIViewControllerRepresentable {
             }
         }
         func close() {
-            let controller = host
-            host = nil
-            currentID = nil
-            minimized = false
-            binding.wrappedValue = nil
-            if Self.retainedPiP === self { Self.retainedPiP = nil }
-            controller?.dismiss(animated: true)
-            PlayerOrientationController.setPlayerActive(false)
+            guard !closing else { return }
+            closing = true
+            let finish = { [self] in
+                host = nil
+                currentID = nil
+                minimized = false
+                binding.wrappedValue = nil
+                if Self.retainedPiP === self { Self.retainedPiP = nil }
+                PlayerOrientationController.setPlayerActive(false)
+                if Self.retainedPresentation === self { Self.retainedPresentation = nil }
+                closing = false
+            }
+            if let host, host.presentingViewController != nil {
+                host.dismiss(animated: true, completion: finish)
+            } else {
+                finish()
+            }
         }
     }
     func makeCoordinator() -> Coordinator { Coordinator(binding: $request) }
@@ -1724,7 +1821,10 @@ private struct GreenfieldPlaybackPresenter: UIViewControllerRepresentable {
 
 @MainActor
 enum GreenfieldAVPlayerWarmup {
-    private static var networkPreparationSeconds = 4.0
+    // Jellyfin's long VOD playlist plus first transcoded segment took about
+    // eleven seconds on a constrained cellular link. Start the muted HLS
+    // candidate ahead so its first decoded frame reaches the live playhead.
+    private static var networkPreparationSeconds = 11.0
     /// Keep the current renderer running while the muted candidate decodes.
     /// Catch up to the live playhead before committing; retain the old stream
     /// on timeout instead of moving the user to an unprepared replacement.
@@ -1746,7 +1846,10 @@ enum GreenfieldAVPlayerWarmup {
         candidate.isMuted = true
         candidate.automaticallyWaitsToMinimizeStalling = false
         let started = ProcessInfo.processInfo.systemUptime
-        let deadline = started + 20
+        // Jellyfin may return a multi-megabyte VOD playlist for a long movie
+        // before its first transcoded segment. Preserve the playing renderer
+        // while allowing the HLS candidate enough time to produce a frame.
+        let deadline = started + (request.url.pathExtension.lowercased() == "m3u8" ? 40 : 20)
         var success = false
         defer {
             candidate.cancelPendingPrerolls()
@@ -1792,7 +1895,7 @@ enum GreenfieldAVPlayerWarmup {
             report("warmup_failed", ["stage": "decodedFrame"]); return nil
         }
         if !request.url.isFileURL {
-            networkPreparationSeconds = min(max(ProcessInfo.processInfo.systemUptime - started + 0.15, 0.25), 6)
+            networkPreparationSeconds = min(max(ProcessInfo.processInfo.systemUptime - started + 0.15, 3), 15)
         }
         candidate.cancelPendingPrerolls()
         report("candidate_decoded", ["framePTS": String(firstFrame), "target": String(target),
@@ -1822,7 +1925,12 @@ enum GreenfieldAVPlayerWarmup {
             } else { break }
             try? await Task.sleep(nanoseconds: 20_000_000)
         }
-        report("warmup_failed", ["stage": "alignment"])
+        report("warmup_failed", ["stage": "alignment",
+            "candidate": String(candidate.currentTime().seconds),
+            "current": String(liveClock?() ?? initialSeconds),
+            "framePTS": String(lastFrame),
+            "candidateStatus": String(candidate.status.rawValue),
+            "itemStatus": String(item.status.rawValue)])
         return nil
     }
 

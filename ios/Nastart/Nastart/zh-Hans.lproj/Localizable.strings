@@ -238,7 +238,7 @@
 "connect.error.missing_session" = "DSM 登录成功但没有返回会话，请检查 DSM 版本或登录方式。";
 "connect.error.otp_required" = "DSM 需要双重验证代码，或验证码已失效，请重新输入 2FA 验证码后再连接。";
 "connect.error.local_unreachable" = "无法连接内网 DSM。请确认手机与 NAS 在同一网络、HTTP/HTTPS 地址和端口正确，并允许 Nastart 访问本地网络。";
-"connect.error.remote_unreachable" = "公网 DSM 在登录前断开连接。请检查域名解析、公网端口映射或反向代理，并确认其能转发 DSM 的 /webapi 路径；在内网测试公网域名时还需路由器支持 NAT 回环。";
+"connect.error.remote_unreachable" = "无法通过公网地址连接 DSM。请检查此设备的 VPN、代理或 DNS 规则是否阻断该域名及端口，并确认公网端口可用；当前在同一局域网时，也可点“局域网发现”选择 NAS。";
 "connect.error.unreachable" = "暂时无法连接 NAS。请检查地址、端口、网络连接和 NAS 防火墙设置。";
 "connect.error.certificate" = "DSM HTTPS 证书校验失败。请确认域名与证书匹配；仅在确认是自己的 NAS 时开启自签证书信任。";
 "connect.status.cached_title" = "当前显示最近一次确认的数据";
@@ -266,6 +266,8 @@
 "data.refresh.source.preview" = "预览数据";
 "data.refresh.source.none" = "无数据";
 "data.refresh.cached" = "当前显示缓存数据";
+"data.refresh.services_independent" = "DSM 未连接；服务在线仅表示该服务地址可访问。点此重新连接 NAS。";
+"service.dsm.login_required" = "未登录";
 "data.refresh.stale" = "缓存数据可能已过期";
 "data.refresh.unavailable" = "当前无法获取 NAS 数据";
 "diagnostics.manual_service.rejected" = "已拒绝无效的手动服务配置";
@@ -927,6 +929,10 @@
 "diagnostics.media.proxy_transfer_started" = "媒体兼容传输已开始";
 "diagnostics.media.proxy_transfer_retry" = "媒体兼容传输已续传";
 "diagnostics.media.proxy_transfer_finished" = "媒体兼容传输已结束";
+"diagnostics.media.proxy_listener_ready" = "播放代理已就绪";
+"diagnostics.media.proxy_listener_failed" = "播放代理监听失败";
+"diagnostics.media.proxy_listener_restarting" = "播放代理正在重建";
+"diagnostics.media.proxy_request_rejected" = "播放代理拒绝了失效的请求";
 "mine.sign_out.restoring" = "正在恢复 NAS 会话，连接按钮将在恢复完成后可用";
 "diagnostics.refresh.transient_unreachable" = "DSM 连通性探测暂时失败，已保留最近确认的连接状态";
 "diagnostics.refresh.unreachable" = "DSM 在当前网络不可达，已将实时状态标记为离线";
@@ -944,6 +950,7 @@
 "devices.files.empty" = "暂无文件";
 "devices.files.search.empty" = "没有符合搜索条件的文件。";
 "devices.files.folder_load_failed" = "无法读取此文件夹，请检查 DSM 会话与 File Station 权限后重试。";
+"devices.files.dsm_disconnected" = "DSM 当前未连接。请在启动台重新连接 NAS 后重试。";
 "jellyfin.library.connecting" = "正在连接 Jellyfin...";
 "jellyfin.library.connected" = "Jellyfin 资源库已连接";
 "jellyfin.library.mine" = "我的媒体";

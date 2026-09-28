@@ -244,6 +244,7 @@ final class PlaybackTelemetrySampler {
         totalTime: TimeInterval? = nil,
         bufferedCount: Int? = nil,
         consumeTime: TimeInterval? = nil,
+        runtimeMetrics: [String: String] = [:],
         reason: String,
         force: Bool = false
     ) {
@@ -277,6 +278,7 @@ final class PlaybackTelemetrySampler {
         metrics["durationSeconds"] = Self.format(durationSeconds)
         metrics["bufferedCount"] = bufferedCount.map(String.init) ?? "-"
         metrics["consumeMs"] = consumeTime.map { String(Int(($0 * 1000).rounded())) } ?? "-"
+        metrics.merge(runtimeMetrics) { _, latest in latest }
         metrics.merge(stallState) { _, new in new }
         emit(metrics)
     }

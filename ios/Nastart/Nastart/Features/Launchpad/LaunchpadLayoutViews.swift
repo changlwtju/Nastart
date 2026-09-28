@@ -9,6 +9,7 @@ struct LaunchpadDisplayOptions {
 struct LaunchpadDataStatusBanner: View {
     let state: AppDataRefreshState
     let sourceKey: String
+    let dsmConnected: Bool
     let retry: () -> Void
 
     var body: some View {
@@ -27,11 +28,16 @@ struct LaunchpadDataStatusBanner: View {
                     Text(LocalizedStringKey(sourceKey))
                         .font(.caption)
                         .foregroundStyle(.secondary)
+                    if !dsmConnected {
+                        Text("data.refresh.services_independent")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
                 }
 
                 Spacer(minLength: 8)
 
-                Image(systemName: "arrow.clockwise")
+                Image(systemName: dsmConnected ? "arrow.clockwise" : "link")
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(AppTheme.accent)
             }
@@ -45,7 +51,7 @@ struct LaunchpadDataStatusBanner: View {
             }
         }
         .buttonStyle(.plain)
-        .accessibilityHint(Text("action.refresh"))
+        .accessibilityHint(Text(dsmConnected ? "action.refresh" : "connect.welcome.action"))
     }
 
     private var titleKey: LocalizedStringKey {
@@ -206,6 +212,12 @@ private struct CommandServiceRailRow: View {
     let options: LaunchpadDisplayOptions
     @EnvironmentObject private var dataStore: AppDataStore
 
+    private var displayedStatus: ServiceStatus {
+        service.source == .dsm && service.name == "DSM"
+            && !dataStore.isDSMReachable && !dataStore.isRestoringConnection
+            ? .warning : service.status
+    }
+
     var body: some View {
         NavigationLink {
             ServiceDetailView(service: service)
@@ -231,7 +243,7 @@ private struct CommandServiceRailRow: View {
                 Spacer(minLength: 8)
 
                 if options.showServiceStatus {
-                    StatusDot(status: service.status)
+                    StatusDot(status: displayedStatus)
                 }
 
                 Image(systemName: "chevron.right")
@@ -424,6 +436,12 @@ private struct GlassServiceRow: View {
     let options: LaunchpadDisplayOptions
     @EnvironmentObject private var dataStore: AppDataStore
 
+    private var displayedStatus: ServiceStatus {
+        service.source == .dsm && service.name == "DSM"
+            && !dataStore.isDSMReachable && !dataStore.isRestoringConnection
+            ? .warning : service.status
+    }
+
     var body: some View {
         NavigationLink {
             ServiceDetailView(service: service)
@@ -444,7 +462,7 @@ private struct GlassServiceRow: View {
                 }
                 Spacer()
                 if options.showServiceStatus {
-                    StatusDot(status: service.status)
+                    StatusDot(status: displayedStatus)
                 }
             }
             .padding(15)
@@ -618,6 +636,15 @@ private struct ServiceListRow: View {
     let options: LaunchpadDisplayOptions
     @EnvironmentObject private var dataStore: AppDataStore
 
+    private var needsDSMLogin: Bool {
+        service.source == .dsm && service.name == "DSM"
+            && !dataStore.isDSMReachable && !dataStore.isRestoringConnection
+    }
+
+    private var displayedStatus: ServiceStatus {
+        needsDSMLogin ? .warning : service.status
+    }
+
     var body: some View {
         NavigationLink {
             ServiceDetailView(service: service)
@@ -632,7 +659,10 @@ private struct ServiceListRow: View {
                             .lineLimit(1)
                             .minimumScaleFactor(0.82)
                         if options.showServiceStatus {
-                            ServiceStatusBadge(status: service.status)
+                            ServiceStatusBadge(
+                                status: displayedStatus,
+                                titleKey: needsDSMLogin ? "service.dsm.login_required" : nil
+                            )
                         }
                     }
                     if options.showSubtitle {
@@ -681,11 +711,12 @@ private struct ServiceListRow: View {
 
 private struct ServiceStatusBadge: View {
     let status: ServiceStatus
+    var titleKey: String? = nil
 
     var body: some View {
         HStack(spacing: 4) {
             StatusDot(status: status)
-            Text(LocalizedStringKey(status.titleKey))
+            Text(LocalizedStringKey(titleKey ?? status.titleKey))
                 .font(.caption2.weight(.medium))
                 .lineLimit(1)
         }

@@ -30,6 +30,7 @@ final class GreenfieldPlaybackControls: PlaybackUIEngineSession {
     var togglePlaybackAction: (() -> Void)?
     var seekPlayback: ((Double) -> Void)?
     var readPlaybackClock: (() -> Double)?
+    var readRuntimeTelemetry: (() -> [String: String])?
     var preciseCurrentSeconds: Double {
         guard pendingSeekPosition == nil, let seconds = readPlaybackClock?(), seconds.isFinite, seconds >= 0 else { return currentSeconds }
         return seconds
@@ -231,6 +232,7 @@ final class GreenfieldPlaybackControls: PlaybackUIEngineSession {
         togglePlaybackAction = nil
         seekPlayback = nil
         readPlaybackClock = nil
+        readRuntimeTelemetry = nil
         updateScale = nil
         updateRate = nil
         muteAction = nil; audioAction = nil; subtitleAction = nil
@@ -299,6 +301,7 @@ struct GreenfieldKSPlayerRenderer: View {
     @StateObject private var coordinator: KSVideoPlayer.Coordinator
     private let wasPrewarmed: Bool
     @State private var appliedInitialTracks = false
+    @State private var steadyStateBufferGeneration: Int?
 
     init(plan: PlaybackPlan, controls: GreenfieldPlaybackControls,
          onUnsupported: @escaping () -> Void, onStateChanged: @escaping (String) -> Void,
@@ -334,6 +337,25 @@ struct GreenfieldKSPlayerRenderer: View {
             .onPlay { currentTime, totalTime in
                 if currentTime.isFinite, currentTime >= 0 {
                     controls.updateClock(currentTime)
+                    if steadyStateBufferGeneration != controls.seekGeneration,
+                       !controls.hasPendingSeek,
+                       currentTime > plan.timeline.startTime + 0.05,
+                       let layer = coordinator.playerLayer {
+                        steadyStateBufferGeneration = controls.seekGeneration
+                        let seconds = PlaybackPlanningPolicy.steadyStateBufferSeconds(
+                            routeKind: plan.primaryRoute.routeKind,
+                            upstreamAddressKind: plan.intent.connectionContext.addressKind,
+                            startupSeconds: layer.options.preferredForwardBufferDuration
+                        )
+                        if seconds > layer.options.preferredForwardBufferDuration {
+                            layer.options.preferredForwardBufferDuration = seconds
+                            layer.options.maxBufferDuration = max(layer.options.maxBufferDuration, seconds * 4)
+                            controls.event("steady_state_buffer", metrics: [
+                                "seconds": String(seconds),
+                                "upstreamAddressKind": plan.intent.connectionContext.addressKind.rawValue
+                            ])
+                        }
+                    }
                 }
                 if let duration = plan.timeline.duration, duration.isFinite, duration > 0 {
                     controls.durationSeconds = duration
@@ -404,10 +426,25 @@ struct GreenfieldKSPlayerRenderer: View {
             controls.record(controls.isPlaying ? "play" : "pause")
         }
         controls.readPlaybackClock = { [weak coordinator] in coordinator?.playerLayer?.player.currentPlaybackTime ?? .nan }
+        controls.readRuntimeTelemetry = { [weak coordinator] in
+            guard let layer = coordinator?.playerLayer,
+                  let info = layer.player.dynamicInfo else { return [:] }
+            return [
+                "bytesRead": String(info.bytesRead),
+                "displayFPS": String(format: "%.1f", info.displayFPS),
+                "droppedVideoFrames": String(info.droppedVideoFrameCount),
+                "droppedVideoPackets": String(info.droppedVideoPacketCount),
+                "videoBitrate": String(info.videoBitrate),
+                "audioBitrate": String(info.audioBitrate)
+            ]
+        }
         controls.seekPlayback = { [weak coordinator, weak controls] seconds in
             guard let layer = coordinator?.playerLayer else { return }
             let wasPlaying = layer.state.isPlaying
             let generation = controls?.seekGeneration
+            // A new position needs a fast first frame again. The larger
+            // steady-state reserve is restored after its clock advances.
+            layer.options.preferredForwardBufferDuration = max(plan.startupPolicy.minimumPlayableBufferSeconds, 0.25)
             layer.seek(time: seconds, autoPlay: wasPlaying) { completed in
                 Task { @MainActor [weak coordinator, weak controls] in
                     guard let controls, controls.seekGeneration == generation,
@@ -573,6 +610,12 @@ struct GreenfieldKSPlayerRenderer: View {
             return output
         }
         let expectedPlanID = String(plan.id.uuidString.prefix(8))
+        options.videoDecoderSelected = { [weak controls] mode in
+            Task { @MainActor [weak controls] in
+                guard let controls, controls.planID == expectedPlanID else { return }
+                controls.event("video_decoder_selected", metrics: ["mode": mode])
+            }
+        }
         var recordedFirstSubmission = false
         options.videoFrameSubmitted = { [weak controls] seconds, forced in
             guard forced || !recordedFirstSubmission else { return }

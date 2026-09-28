@@ -53,11 +53,10 @@ public final class MetalPlayView: UIView, VideoOutput {
             if fps != oldValue {
                 if KSOptions.preferredFrame {
                     let preferredFramesPerSecond = ceil(fps)
-                    if #available(iOS 15.0, tvOS 15.0, macOS 14.0, *) {
-                        displayLink.preferredFrameRateRange = CAFrameRateRange(minimum: preferredFramesPerSecond, maximum: 2 * preferredFramesPerSecond, __preferred: preferredFramesPerSecond)
-                    } else {
-                        displayLink.preferredFramesPerSecond = Int(preferredFramesPerSecond) << 1
-                    }
+                    // A 24 fps request can be scheduled at 20 Hz on a 60 Hz
+                    // display. Poll at least twice per source frame so the
+                    // output queue can present every 23.976 fps frame.
+                    displayLink.preferredFramesPerSecond = Int(preferredFramesPerSecond) << 1
                 }
                 options.updateVideo(refreshRate: fps, isDovi: isDovi, formatDescription: formatDescription)
             }
