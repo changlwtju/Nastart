@@ -44,9 +44,13 @@
   "gitHubSync": {
     "repository": "changlwtju/Nastart",
     "branch": "main",
-    "state": "PREPARING",
+    "state": "PUSHED_AND_VERIFIED",
     "scope": "all current app/KSPlayer Sources, tests, scripts, project documentation and safe evidence",
     "excludedLocalReferenceFiles": "previously untracked upstream KSPlayer Demo/Documents and vendor-only configuration; unused by app target; Demo includes embedded service access tokens",
-    "rawDeviceCredentialsAndPreferences": "private local evidence only"
+    "rawDeviceCredentialsAndPreferences": "private local evidence only",
+    "sourceCommit": "9410d801d041cec72d1619d4f3edeaef0aa4cef1",
+    "verifiedAt": "2026-10-07T07:46:16.800438+08:00",
+    "remoteMainContainsSourceCommit": true,
+    "installedBinaryIOSSourceMatchesCommittedContent": true
   }
 }
