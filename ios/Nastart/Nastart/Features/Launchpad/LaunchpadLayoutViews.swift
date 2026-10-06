@@ -496,7 +496,7 @@ struct ProductLaunchpad: View {
     let groupDefaultExpanded: (ServiceCategory) -> Bool
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 20) {
+        LazyVStack(alignment: .leading, spacing: 20) {
             DeviceSummaryPanel(device: device, compact: options.compactMetrics, isConnected: isConnected)
 
             if shouldShowCertificateReminder {
@@ -559,7 +559,7 @@ private struct ServiceGroupSection: View {
             .padding(.horizontal, 2)
 
             if isExpanded {
-                VStack(spacing: 10) {
+                LazyVStack(spacing: 10) {
                     ForEach(services) { service in
                         ServiceListRow(service: service, options: options)
                     }

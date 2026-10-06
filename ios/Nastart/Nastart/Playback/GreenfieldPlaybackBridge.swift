@@ -12,6 +12,14 @@ final class LocalPlaybackResumeStore {
         let subtitleTrackID: Int?
         let subtitlesDisabled: Bool
         let updatedAt: Date
+
+        func restoredTrackSelection(audioIDs: [Int], subtitleIDs: [Int],
+                                    defaultAudio: Int?, defaultSubtitle: Int?) -> (audio: Int?, subtitle: Int?) {
+            let audio = audioTrackID.flatMap { audioIDs.contains($0) ? $0 : nil } ?? defaultAudio
+            let subtitle = subtitlesDisabled ? nil
+                : (subtitleTrackID.flatMap { subtitleIDs.contains($0) ? $0 : nil } ?? defaultSubtitle)
+            return (audio, subtitle)
+        }
     }
     static let shared = LocalPlaybackResumeStore()
     private let defaults: UserDefaults

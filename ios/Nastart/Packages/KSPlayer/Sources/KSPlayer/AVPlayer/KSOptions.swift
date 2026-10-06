@@ -20,6 +20,9 @@ open class KSOptions {
     public var videoFrameSubmitted: ((TimeInterval, Bool) -> Void)?
     /// Reports the video decoder actually selected, including fallback.
     public var videoDecoderSelected: ((String) -> Void)?
+    /// Called after an embedded subtitle display set enters its render queue.
+    /// The decoder queue invokes this; consumers must marshal UI work themselves.
+    public var embeddedSubtitleFrameDecoded: ((Int32) -> Void)?
     /// 最低缓存视频时间
     @Published
     public var preferredForwardBufferDuration = KSOptions.preferredForwardBufferDuration

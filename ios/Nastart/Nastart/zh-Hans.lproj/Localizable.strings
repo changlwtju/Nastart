@@ -1075,3 +1075,6 @@
 "player.episode.next" = "下一集";
 
 "player.play_from_beginning" = "从头播放";
+
+"diagnostics.media.prepared_result_held" = "已准备的播放结果进入取消验证等待";
+"diagnostics.media.prepared_result_released" = "已准备的播放结果结束取消验证等待";

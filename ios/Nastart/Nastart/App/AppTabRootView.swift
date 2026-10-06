@@ -10,9 +10,13 @@ struct AppTabRootView: View {
             // A large iPhone becomes regular-width during landscape playback.
             // Replacing its TabView then destroys the selected tab and each
             // NavigationStack, so dismissing the player loses the file detail.
-            // Keep the root hierarchy stable; NavigationSplitView handles its
-            // own compact-width adaptation on iPad.
-            if UIDevice.current.userInterfaceIdiom == .pad {
+            // Keep each tab's NavigationStack stable. On iPadOS 18, nesting
+            // those stacks inside NavigationSplitView caused continuous layout
+            // and preference updates, including behind a presented media library.
+            // Adaptive tabs provide the sidebar without a second navigation owner.
+            if UIDevice.current.userInterfaceIdiom == .pad, #available(iOS 18.0, *) {
+                phoneTabs.tabViewStyle(.sidebarAdaptable)
+            } else if UIDevice.current.userInterfaceIdiom == .pad {
                 NavigationSplitView {
                     List(AppSection.allCases, selection: $selectedSection) { section in
                         Label(LocalizedStringKey(section.titleKey), systemImage: section.symbolName)

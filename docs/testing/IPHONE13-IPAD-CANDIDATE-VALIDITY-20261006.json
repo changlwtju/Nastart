@@ -1,0 +1,596 @@
+{
+  "recordedAt": "2026-10-06T14:03:02.692020+08:00",
+  "devices": {
+    "iphone13": {
+      "model": "iPhone14,5 / iPhone 13",
+      "os": "iOS16.3.1 (20D67)",
+      "connection": "fresh USB paired/unlocked; full identity private"
+    },
+    "ipad": {
+      "model": "iPad12,1 / iPad 9",
+      "os": "iPadOS18.3.1 (22D72)",
+      "connection": "fresh USB paired/developer mode/unlocked; full identity private"
+    },
+    "iphone18": {
+      "model": "iPhone19,7 / iPhone 18 Pro Max",
+      "os": "iOS27.0 (24A8428)",
+      "status": "user confirmed prior d84f/a389 App and pinned WDA launch; then unplugged. Current final source package is newer and has not been installed on offline iPhone18."
+    }
+  },
+  "latestPackage": {
+    "head": "9a9941cd4ec82625f680b5193b3a0f66797eb851",
+    "sourceDiffSHA256": "8653da4b07adb0a7be84f66f5f35a1aff14c8a68c79e1db5c1401f4fefab16aa",
+    "configuration": "normal Debug -Onone; empty test environment; explicit candidate validity; unchanged warmup deadline and rates",
+    "binaryBuildTime": "2026-10-06T13:51:13.662799+08:00",
+    "binaries": {
+      "Nastart": "500fccd317b4d3c9812c9a81a7250044fb24479f4fac06c289ce6631cd68c824",
+      "Nastart.debug.dylib": "eeb6126dc2685bf0d0eb6103a129fad4d435339e2b2fde8f0f6500f651e32b8f",
+      "Frameworks/KSPlayer.framework/KSPlayer": "c2f1a42bcad0e5c30d0bcebd24576f92d8475c201589ed1f9655cc637d6e7910"
+    },
+    "profileExpirationUTC": "2026-10-10T22:03:15",
+    "signatureVerified": true
+  },
+  "installations": {
+    "iphone13": {
+      "time": "2026-10-06T13:54:46.942820+08:00",
+      "normalLaunchReceiptTime": 1791265981.860245,
+      "mainSHA256": "500fccd317b4d3c9812c9a81a7250044fb24479f4fac06c289ce6631cd68c824",
+      "sourceDiffSHA256": "8653da4b07adb0a7be84f66f5f35a1aff14c8a68c79e1db5c1401f4fefab16aa",
+      "dataPreservingCoverInstall": true,
+      "installation": "success",
+      "unchangedPreferenceCount": 24,
+      "normalResumeUpdateCount": 1,
+      "resumeExistingRecordIDsRetained": 14,
+      "resumeChangedFieldNames": [
+        "positionSeconds",
+        "updatedAt"
+      ],
+      "normalForegroundVerified": true,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "sourceScreenshotVerified": true,
+      "gateRecoveryReason": "strict all-preferences-equal script stopped on normal resume-position flush from active old player; install success and fresh empty normal launch precede the round head request; all other preferences unchanged"
+    },
+    "ipad": {
+      "time": "2026-10-06T13:53:08.861274+08:00",
+      "mainSHA256": "500fccd317b4d3c9812c9a81a7250044fb24479f4fac06c289ce6631cd68c824",
+      "sourceDiffSHA256": "8653da4b07adb0a7be84f66f5f35a1aff14c8a68c79e1db5c1401f4fefab16aa",
+      "dataPreservingCoverInstall": true,
+      "installation": "success",
+      "unchangedPreferenceCount": 14,
+      "normalForegroundVerified": true,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "sourceScreenshotVerified": true
+    }
+  },
+  "validation": {
+    "coreTests": 113,
+    "failures": 0,
+    "executionSeconds": 4.104,
+    "environment": "Xcode27 / iOS26.5 simulator; not device performance",
+    "finalSource": "exact iOS diff identical to passing candidate-validity tests after rejected gesture trial reverted",
+    "deviceBuild": "normal Debug -Onone, Xcode26.6 (17F113)",
+    "preflightPass": 15,
+    "linkageAndDeepStrictSignatures": "passed; 29 libraries verified individually"
+  },
+  "retainedChange": "AV warmup uses actual automatic seek/track-generation validity during initial seek, frame readiness and alignment; removes clock-distance >=10sec as alleged user seek; existing deadline/rates/frame-clock acceptance unchanged",
+  "rejectedGestureTrial": {
+    "package": {
+      "head": "9a9941cd4ec82625f680b5193b3a0f66797eb851",
+      "sourceDiffSHA256": "0c98fcafce1a006c66a98e38c53d74f4734613a1084a84781879961e6cc106f0",
+      "configuration": "normal Debug -Onone; empty test environment; explicit candidate validity and exclusive single/double tap; unchanged warmup deadline/rates",
+      "binaryBuildTime": "2026-10-06T13:43:41.458393+08:00",
+      "binaries": {
+        "Nastart": "1262389f4653605119e86ebfc612c5892d844aea4e1130aebb266ba76f61ff57",
+        "Nastart.debug.dylib": "47267a809a15a7a193dc63cdcda7deb23c727845f7955d73324cc46dd25400ad",
+        "Frameworks/KSPlayer.framework/KSPlayer": "c2f1a42bcad0e5c30d0bcebd24576f92d8475c201589ed1f9655cc637d6e7910"
+      },
+      "profileExpirationUTC": "2026-10-10T22:03:15",
+      "signatureVerified": true
+    },
+    "change": "exclusive double/single tap combination",
+    "result": "NOT VALIDATED / REVERTED; iPad three background single taps did not expose controls; phone showed but hide results ambiguous",
+    "conditions": "UI diagnostics with both device players potentially active; not a serial natural or competitor performance baseline",
+    "tool404": "unsupported doubleTap endpoint; original WDA session remained valid. Earlier commentary claiming session loss corrected."
+  },
+  "oldFailures": {
+    "iphone13Natural600": {
+      "package": {
+        "head": "9a9941cd4ec82625f680b5193b3a0f66797eb851",
+        "sourceDiffSHA256": "dc7d08830a89f9f2d3701c7dc3677861c6f07b4e6530da7a63cc7e39c733be44",
+        "configuration": "normal Debug -Onone; no default test env; DEBUG-only capped-delivery windows and opt-in reserveOnly predictor isolation; reserve-bounded HLS preparation lead; live DSM context observation independent of library view task",
+        "binaryBuildTime": "2026-10-06T09:38:36.489160+08:00",
+        "binaries": {
+          "Nastart": "d84fda1970a6d1224e92ffe7caf81c2c1a79688a8e1d1770a9ee1321ab1d0381",
+          "Nastart.debug.dylib": "a389980c1c22628a9202c399d8d9d927497f4e9748509bed0986273cfa141d92",
+          "Frameworks/KSPlayer.framework/KSPlayer": "c2f1a42bcad0e5c30d0bcebd24576f92d8475c201589ed1f9655cc637d6e7910"
+        },
+        "profileExpirationUTC": "2026-10-10T22:03:15",
+        "signatureVerified": true
+      },
+      "traces": {
+        "A361D85B": {
+          "telemetryCount": 38,
+          "coverageSeconds": 39.11303091049194,
+          "maxStalls": 1,
+          "maxDrops": 14,
+          "firstActiveStallElapsed": 10.762326955795288,
+          "requestToCommitSeconds": 23.947484970092773
+        },
+        "5E17CB3C": {
+          "telemetryCount": 424,
+          "coverageSeconds": 565.9686350822449,
+          "maxStalls": 1,
+          "maxDrops": null,
+          "firstActiveStallElapsed": 40.75084590911865
+        }
+      },
+      "source": "default empty environment, actual privateIP/http8096 original then HLS",
+      "originalBufferMs": 4756,
+      "full600ObservationCompleted": true
+    },
+    "ipadFirst": {
+      "package": {
+        "head": "9a9941cd4ec82625f680b5193b3a0f66797eb851",
+        "sourceDiffSHA256": "dc7d08830a89f9f2d3701c7dc3677861c6f07b4e6530da7a63cc7e39c733be44",
+        "configuration": "normal Debug -Onone; no default test env; DEBUG-only capped-delivery windows and opt-in reserveOnly predictor isolation; reserve-bounded HLS preparation lead; live DSM context observation independent of library view task",
+        "binaryBuildTime": "2026-10-06T09:38:36.489160+08:00",
+        "binaries": {
+          "Nastart": "d84fda1970a6d1224e92ffe7caf81c2c1a79688a8e1d1770a9ee1321ab1d0381",
+          "Nastart.debug.dylib": "a389980c1c22628a9202c399d8d9d927497f4e9748509bed0986273cfa141d92",
+          "Frameworks/KSPlayer.framework/KSPlayer": "c2f1a42bcad0e5c30d0bcebd24576f92d8475c201589ed1f9655cc637d6e7910"
+        },
+        "profileExpirationUTC": "2026-10-10T22:03:15",
+        "signatureVerified": true
+      },
+      "scope": "planned120 but screenshot/exit TOOL, extended476.194sec diagnosis only; not complete regression",
+      "maxStalls": 3,
+      "maxDrops": 17,
+      "bufferMs": [
+        6992,
+        6450
+      ],
+      "candidateDecodedPreparationMs": 28650,
+      "candidateLagSeconds": 18.766,
+      "abandonRemainingMs": 11344,
+      "reason": "obsolete clock-distance guard interpreted preparation lag as user seek; no user seek evidence",
+      "wdaHostFailure": "first Xcode26.6 host exit65 communication invalidated; USB stayed online; saved diagnostics and same signed fixture restored through Xcode27 without another WDA cover-install",
+      "crashInventory": "fresh recursive listing returned no new Nastart/WDA report; only old Oct1 Jetsam. Does not establish all causes excluded."
+    }
+  },
+  "candidateIntermediate180": {
+    "package": {
+      "head": "9a9941cd4ec82625f680b5193b3a0f66797eb851",
+      "sourceDiffSHA256": "8653da4b07adb0a7be84f66f5f35a1aff14c8a68c79e1db5c1401f4fefab16aa",
+      "configuration": "normal Debug -Onone; empty test environment; explicit candidate validity; unchanged warmup deadline and rates",
+      "binaryBuildTime": "2026-10-06T13:26:57.353571+08:00",
+      "binaries": {
+        "Nastart": "e3248f074d888f15067ed8794072bcd8ee759d4a1c47f4b808d41a472d60b57d",
+        "Nastart.debug.dylib": "e5af338dea7491f4569e2fa8802ea6815b4a325f198a23562aa95fd3518467cc",
+        "Frameworks/KSPlayer.framework/KSPlayer": "c2f1a42bcad0e5c30d0bcebd24576f92d8475c201589ed1f9655cc637d6e7910"
+      },
+      "profileExpirationUTC": "2026-10-10T22:03:15",
+      "signatureVerified": true
+    },
+    "iphone13": {
+      "traces": {
+        "5FE28979": {
+          "telemetryCount": 40,
+          "coverageSeconds": 41.67901611328125,
+          "maxStalls": 1,
+          "maxDrops": 13,
+          "firstActiveStallElapsed": 8.921918153762817,
+          "requestToCommitSeconds": 26.018298864364624
+        },
+        "34C6B7DA": {
+          "telemetryCount": 113,
+          "coverageSeconds": 145.13004183769226,
+          "maxStalls": 0,
+          "maxDrops": null,
+          "firstActiveStallElapsed": null
+        }
+      },
+      "originalBufferMs": [
+        6923
+      ],
+      "requestToCommitSeconds": 26.018298864364624,
+      "nativeScreensCompleted": true,
+      "normalUIExitVerified": true
+    },
+    "ipad": {
+      "traces": {
+        "43A79E66": {
+          "telemetryCount": 40,
+          "coverageSeconds": 40.57988500595093,
+          "maxStalls": 2,
+          "maxDrops": 8,
+          "firstActiveStallElapsed": 11.945780038833618,
+          "requestToCommitSeconds": 21.6235990524292
+        },
+        "B80172F5": {
+          "telemetryCount": 103,
+          "coverageSeconds": 131.65385580062866,
+          "maxStalls": 0,
+          "maxDrops": null,
+          "firstActiveStallElapsed": null
+        }
+      },
+      "originalBufferMs": [
+        7548,
+        4550
+      ],
+      "requestToCommitSeconds": 21.6235990524292,
+      "wdaScreensCompleted": true,
+      "qualification": "t180 stored entries only; post-observation control tests excluded",
+      "normalUIExitVerified": false,
+      "input": "single native/W3C failed to expose controls; W3C double touch showed pause controls. Name=xmark,label=完成 distinction found; later close effect not verified. Ended by process cleanup before newer package install."
+    },
+    "causalComparison": "NOT ALLOWED; cache/order/thermal unknown and first iPad WDA host differs. This is intermediate e324/e5af, not final500f/eeb6 binary evidence."
+  },
+  "finalShort": {
+    "iphone13": {
+      "package": {
+        "head": "9a9941cd4ec82625f680b5193b3a0f66797eb851",
+        "sourceDiffSHA256": "8653da4b07adb0a7be84f66f5f35a1aff14c8a68c79e1db5c1401f4fefab16aa",
+        "configuration": "normal Debug -Onone; empty test environment; explicit candidate validity; unchanged warmup deadline and rates",
+        "binaryBuildTime": "2026-10-06T13:51:13.662799+08:00",
+        "binaries": {
+          "Nastart": "500fccd317b4d3c9812c9a81a7250044fb24479f4fac06c289ce6631cd68c824",
+          "Nastart.debug.dylib": "eeb6126dc2685bf0d0eb6103a129fad4d435339e2b2fde8f0f6500f651e32b8f",
+          "Frameworks/KSPlayer.framework/KSPlayer": "c2f1a42bcad0e5c30d0bcebd24576f92d8475c201589ed1f9655cc637d6e7910"
+        },
+        "profileExpirationUTC": "2026-10-10T22:03:15",
+        "signatureVerified": true
+      },
+      "requestedSeconds": 60,
+      "observationStatus": "completed",
+      "naturalEvidenceEndElapsed": 61.654118061065674,
+      "captureMethods": [
+        "native USB",
+        "native USB",
+        "native USB",
+        "native USB"
+      ],
+      "capturedTargets": [
+        3,
+        10,
+        30,
+        60
+      ],
+      "diagnosticFlushHoldSeconds": 0,
+      "telemetry": {
+        "64ABA9CA": {
+          "count": 57,
+          "coverageSeconds": 59.59064698219299,
+          "first": {
+            "elapsed": 1.4864671230316162,
+            "currentSeconds": "-",
+            "engine": "KSPlayer",
+            "playMethod": "directPlay",
+            "stallActive": "no",
+            "stallCount": "0"
+          },
+          "last": {
+            "elapsed": 61.07711410522461,
+            "bufferTargetSeconds": "4.0",
+            "bufferedAheadSeconds": "8.71474976193965",
+            "currentSeconds": "59.017",
+            "droppedVideoFrames": "1",
+            "engine": "KSPlayer",
+            "playMethod": "directPlay",
+            "stallActive": "no",
+            "stallCount": "0"
+          },
+          "maxStalls": 0,
+          "maxDrops": 1
+        }
+      },
+      "events": [
+        {
+          "elapsed": 1.4075119495391846,
+          "event": "route_selected",
+          "connectionAddressKind": "privateIP",
+          "connectionPort": "8096",
+          "connectionScheme": "http",
+          "decodeEngine": "ksPlayer",
+          "playMethod": "directPlay",
+          "playbackTraceID": "64ABA9CA"
+        },
+        {
+          "elapsed": 1.958827257156372,
+          "event": "buffer_updated",
+          "bufferedCount": "0",
+          "consumeMs": "463",
+          "playbackTraceID": "64ABA9CA"
+        }
+      ],
+      "normalUIExitVerified": false,
+      "cleanup": "saved diagnosis, then terminated and relaunched latest normal App with empty environment; foreground launchpad verified",
+      "environment": {},
+      "frameTiming": "INSUFFICIENT",
+      "audio": "INSUFFICIENT"
+    },
+    "ipad": {
+      "package": {
+        "head": "9a9941cd4ec82625f680b5193b3a0f66797eb851",
+        "sourceDiffSHA256": "8653da4b07adb0a7be84f66f5f35a1aff14c8a68c79e1db5c1401f4fefab16aa",
+        "configuration": "normal Debug -Onone; empty test environment; explicit candidate validity; unchanged warmup deadline and rates",
+        "binaryBuildTime": "2026-10-06T13:51:13.662799+08:00",
+        "binaries": {
+          "Nastart": "500fccd317b4d3c9812c9a81a7250044fb24479f4fac06c289ce6631cd68c824",
+          "Nastart.debug.dylib": "eeb6126dc2685bf0d0eb6103a129fad4d435339e2b2fde8f0f6500f651e32b8f",
+          "Frameworks/KSPlayer.framework/KSPlayer": "c2f1a42bcad0e5c30d0bcebd24576f92d8475c201589ed1f9655cc637d6e7910"
+        },
+        "profileExpirationUTC": "2026-10-10T22:03:15",
+        "signatureVerified": true
+      },
+      "requestedSeconds": 60,
+      "observationStatus": "completed",
+      "naturalEvidenceEndElapsed": 60.79870629310608,
+      "captureMethods": [
+        "WDA",
+        "WDA",
+        "WDA",
+        "WDA"
+      ],
+      "capturedTargets": [
+        3,
+        10,
+        30,
+        60
+      ],
+      "diagnosticFlushHoldSeconds": 10,
+      "telemetry": {
+        "3449BF93": {
+          "count": 57,
+          "coverageSeconds": 59.400887966156006,
+          "first": {
+            "elapsed": 1.3648602962493896,
+            "currentSeconds": "-",
+            "engine": "KSPlayer",
+            "playMethod": "directPlay",
+            "stallActive": "no",
+            "stallCount": "0"
+          },
+          "last": {
+            "elapsed": 60.765748262405396,
+            "bufferTargetSeconds": "4.0",
+            "bufferedAheadSeconds": "3.5452082369755757",
+            "currentSeconds": "33.585",
+            "droppedVideoFrames": "3",
+            "engine": "KSPlayer",
+            "playMethod": "directPlay",
+            "stallActive": "no",
+            "stallCount": "3"
+          },
+          "maxStalls": 3,
+          "maxDrops": 3
+        }
+      },
+      "events": [
+        {
+          "elapsed": 1.1607639789581299,
+          "event": "route_selected",
+          "connectionAddressKind": "privateIP",
+          "connectionPort": "8096",
+          "connectionScheme": "http",
+          "decodeEngine": "ksPlayer",
+          "playMethod": "directPlay",
+          "playbackTraceID": "3449BF93"
+        },
+        {
+          "elapsed": 3.393301248550415,
+          "event": "buffer_updated",
+          "bufferedCount": "0",
+          "consumeMs": "2126",
+          "playbackTraceID": "3449BF93"
+        },
+        {
+          "elapsed": 19.157435178756714,
+          "event": "buffer_updated",
+          "bufferedCount": "1",
+          "consumeMs": "8749",
+          "playbackTraceID": "3449BF93"
+        },
+        {
+          "elapsed": 19.964640140533447,
+          "event": "automatic_downshift_requested",
+          "playbackTraceID": "3449BF93",
+          "reason": "deliveryBelowSourceBitrate"
+        },
+        {
+          "elapsed": 20.74674415588379,
+          "event": "replacement_warmup_started",
+          "playbackTraceID": "3449BF93"
+        },
+        {
+          "elapsed": 20.7502760887146,
+          "event": "replacement_candidate_preparing",
+          "candidateBufferAheadSeconds": "0.0",
+          "candidateRate": "0.0",
+          "candidateSeconds": "0.0",
+          "deadlineRemainingMs": "39999",
+          "elapsedMs": "0",
+          "liveSeconds": "8.367",
+          "playbackTraceID": "3449BF93",
+          "target": "11.453374908176722"
+        },
+        {
+          "elapsed": 33.60827422142029,
+          "event": "buffer_updated",
+          "bufferedCount": "2",
+          "consumeMs": "7250",
+          "playbackTraceID": "3449BF93"
+        },
+        {
+          "elapsed": 45.27317810058594,
+          "event": "replacement_candidate_decoded",
+          "candidateBufferAheadSeconds": "0.0",
+          "candidateRate": "0.0",
+          "candidateSeconds": "11.453333333333333",
+          "deadlineRemainingMs": "15477",
+          "elapsedMs": "24522",
+          "framePTS": "11.428077777777778",
+          "liveSeconds": "25.573",
+          "playbackTraceID": "3449BF93",
+          "prepareMs": "24522",
+          "target": "11.453374908176722"
+        },
+        {
+          "elapsed": 58.756603956222534,
+          "event": "buffer_updated",
+          "bufferedCount": "3",
+          "consumeMs": "7400",
+          "playbackTraceID": "3449BF93"
+        }
+      ],
+      "normalUIExitVerified": false,
+      "cleanup": "saved diagnosis, then terminated and relaunched latest normal App with empty environment; foreground launchpad verified",
+      "environment": {},
+      "frameTiming": "INSUFFICIENT",
+      "audio": "INSUFFICIENT"
+    }
+  },
+  "ipadLatestCandidateDiagnostic": {
+    "scope": "same final round, no UI before post-t60 persistence hold; candidate failure occurs just after natural screenshot boundary and is separately classified",
+    "events": [
+      {
+        "elapsed": 20.74674415588379,
+        "event": "replacement_warmup_started"
+      },
+      {
+        "elapsed": 20.7502760887146,
+        "event": "replacement_candidate_preparing",
+        "bufferEmpty": "true",
+        "candidateBufferAheadSeconds": "0.0",
+        "candidateRate": "0.0",
+        "candidateSeconds": "0.0",
+        "deadlineRemainingMs": "39999",
+        "elapsedMs": "0",
+        "errorCode": "-",
+        "errorDomain": "-",
+        "liveSeconds": "8.367",
+        "timeControlStatus": "0"
+      },
+      {
+        "elapsed": 45.27317810058594,
+        "event": "replacement_candidate_decoded",
+        "bufferEmpty": "false",
+        "candidateBufferAheadSeconds": "0.0",
+        "candidateRate": "0.0",
+        "candidateSeconds": "11.453333333333333",
+        "deadlineRemainingMs": "15477",
+        "elapsedMs": "24522",
+        "errorCode": "-",
+        "errorDomain": "-",
+        "framePTS": "11.428077777777778",
+        "liveSeconds": "25.573",
+        "prepareMs": "24522",
+        "timeControlStatus": "0"
+      },
+      {
+        "elapsed": 60.82521915435791,
+        "event": "replacement_warmup_failed",
+        "bufferEmpty": "true",
+        "candidate": "33.247520247",
+        "candidateBufferAheadSeconds": "0.0",
+        "candidateRate": "0.0",
+        "candidateSeconds": "33.247520247",
+        "current": "33.616",
+        "deadlineRemainingMs": "0",
+        "elapsedMs": "40013",
+        "errorCode": "-",
+        "errorDomain": "-",
+        "framePTS": "33.03298888888889",
+        "liveSeconds": "33.616",
+        "reason": "notAlignedBeforeDeadlineOrPlaybackStopped",
+        "stage": "alignment",
+        "timeControlStatus": "0"
+      },
+      {
+        "elapsed": 60.82761311531067,
+        "event": "automatic_downshift_abandoned"
+      }
+    ],
+    "decodedLagSeconds": 14.119666666666667,
+    "continuedAfterDecodedSeconds": 15.552041053771973,
+    "elapsedMsAtFailure": 40013,
+    "deadlineRemainingMs": 0,
+    "finalClockGapSeconds": 0.3684797530000026,
+    "bufferEmptyAtFailure": true,
+    "committed": false,
+    "realDeviceGreaterThan10LagBranchExercised": true,
+    "rootCauseResolved": false
+  },
+  "wda": {
+    "iphone13": "existing pinned host retained; current session/source/foreground/ready rechecked; do not reuse historical PID70500",
+    "ipad": "canonical pinned signed fixture cover-installed only when matching profile/runtime absent, dedicated8103; later same installed fixture recovered with Xcode27; current ready/source verified",
+    "fixtureSDK": "26.4 reported by runtime, not newly rebuilt latest WDA",
+    "profileExpirationLocal": "2026-10-11 06:05:26 +08:00"
+  },
+  "final": {
+    "iphone13": {
+      "time": "2026-10-06T13:54:34.559091+08:00",
+      "latestMainSHA256": "500fccd317b4d3c9812c9a81a7250044fb24479f4fac06c289ce6631cd68c824",
+      "sourceAndBinaryHashesMatch": true,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "foreground": "latest normal Nastart launchpad",
+      "locked": false,
+      "wdaReady": true,
+      "waitForIdleTimeout": 10,
+      "videoNotPresented": true,
+      "preferenceCount": 25,
+      "changedPreferenceCount": 1,
+      "no24HourAuthorizationGuarantee": true,
+      "actualRechecked": {
+        "time": "2026-10-06T14:00:35.274090+08:00",
+        "wdaReady": true,
+        "foregroundLatestNormalNastart": true,
+        "noVideoPresented": true,
+        "locked": false,
+        "sourceHashMatch": true,
+        "mainSHA256": "500fccd317b4d3c9812c9a81a7250044fb24479f4fac06c289ce6631cd68c824"
+      }
+    },
+    "ipad": {
+      "time": "2026-10-06T13:58:38.831740+08:00",
+      "latestMainSHA256": "500fccd317b4d3c9812c9a81a7250044fb24479f4fac06c289ce6631cd68c824",
+      "sourceAndBinaryHashesMatch": true,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "foreground": "latest normal Nastart launchpad",
+      "locked": false,
+      "wdaReady": true,
+      "waitForIdleTimeout": 10,
+      "videoNotPresented": true,
+      "preferenceCount": 14,
+      "changedPreferenceCount": 1,
+      "no24HourAuthorizationGuarantee": true,
+      "actualRechecked": {
+        "time": "2026-10-06T14:00:37.609299+08:00",
+        "wdaReady": true,
+        "foregroundLatestNormalNastart": true,
+        "noVideoPresented": true,
+        "locked": false,
+        "sourceHashMatch": true,
+        "mainSHA256": "500fccd317b4d3c9812c9a81a7250044fb24479f4fac06c289ce6631cd68c824"
+      }
+    }
+  },
+  "macBoundedKeepawakeAlive": true,
+  "formalCompetitorPairs": 0,
+  "rankingAllowed": false,
+  "rootCauseResolved": false,
+  "pending": [
+    "private MI2 startup supply and HLS candidate empty-buffer/deadline recovery; repeat real lag case",
+    "latest HLS exact prior failed Bellerophon subtitle cue",
+    "iPad/phone effect-checked controls and normal UI exit; gesture trial rejected",
+    "Lenna and DS One Jellyfin/DSM matched route/file/track/startpoint/configuration then >=5 pairs across CB01–26",
+    "actual audio and complete frame/scroll display timing",
+    "S01 dual-device serial/concurrent and S03/S08/S11/S18 representative formats",
+    "all existing PX01–21 and UX01–06 gaps",
+    "offline iPhone18 latest final package update and actual playback regression when reconnected"
+  ]
+}

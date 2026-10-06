@@ -36,11 +36,19 @@ actor PreloadCoordinator {
     private(set) var activeRequests: [PlaybackPreloadRequest] = []
     private(set) var completedRequests: [PlaybackPreloadRequest] = []
 
-    func schedule(_ request: PlaybackPreloadRequest, ioContext: PlaybackIOContext) async throws {
+    @discardableResult
+    func schedule(_ request: PlaybackPreloadRequest, ioContext: PlaybackIOContext) async throws -> Int64 {
+        try Task.checkCancellation()
+        let length = min(request.range.length, request.budgetBytes)
+        guard length > 0 else { return 0 }
+        let boundedRange = PlaybackByteRange(start: request.range.start, length: length)
         activeRequests.append(request)
-        try await ioContext.preload(range: request.range, budget: request.budgetBytes)
-        activeRequests.removeAll { $0.id == request.id }
+        defer { activeRequests.removeAll { $0.id == request.id } }
+        try await ioContext.preload(range: boundedRange, budget: length)
+        try Task.checkCancellation()
+        guard await ioContext.isRangeCached(boundedRange) else { return 0 }
         completedRequests.append(request)
+        return length
     }
 
     func cancel(planID: UUID, reason: String) {

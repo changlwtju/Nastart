@@ -1,0 +1,492 @@
+{
+  "updatedAt": "2026-10-05T19:52:26.667424+08:00",
+  "device": {
+    "name": "iPhone",
+    "model": "iPhone14,5 / iPhone 13",
+    "os": "16.3.1 / 20D67",
+    "UDID": "00008110-001E543122E0401E",
+    "connection": "USB, pairing validated"
+  },
+  "source": {
+    "head": "9a9941cd4ec82625f680b5193b3a0f66797eb851",
+    "iosDiffSHA256": "c0326a4de3b705add2c0a30948a2e243610f33d70b6907c815a8bd7263fac084"
+  },
+  "normalPackage": {
+    "configuration": "normal Debug -Onone; no test environment variables",
+    "binaryBuildTime": "2026-10-05T18:52:08.339688+08:00",
+    "binaries": {
+      "Nastart": "7dd0f093e8dd1f52f3edf0c47fbb5d6bd704a89fa1eacfe1106a8a2a61f8c323",
+      "Nastart.debug.dylib": "ad7dd1d8f905c0a86b7ad2b2577827c8d61d80d3dcbb0640e4beb55906bc21c2",
+      "Frameworks/KSPlayer.framework/KSPlayer": "3c32cd682df8318238442b420d6e9a7d0c819ae9ac29c8a86596a2f336199176"
+    },
+    "profileExpirationUTC": "2026-10-10T22:03:15",
+    "signatureVerified": true,
+    "tests": {
+      "passed": 102,
+      "failed": 0,
+      "skipped": 0,
+      "oldImplementationCounterexamplesFailed": 2
+    }
+  },
+  "normalRestoration": {
+    "time": "2026-10-05T19:38:38.360990+08:00",
+    "installation": "InstallComplete",
+    "unchangedPreferenceCount": 24,
+    "ordinaryPID": 12665,
+    "resumePreferenceQualification": "Only monotonic positionSeconds and updatedAt changed from natural exit flush; identity and tracks unchanged; all other 24 non-diagnostic preferences equal."
+  },
+  "preChangePauseBaseline": {
+    "packageMainPrefix": "4148b9a0",
+    "data": {
+      "status": "completed",
+      "traceID": "945328BB",
+      "configuration": "normal Debug -Onone, no test environment",
+      "syslogSubscriber": false,
+      "subtitleTrack": 7,
+      "steadyScreenshots": false,
+      "invalidStartupTelemetryRows": 4,
+      "phases": {
+        "short": {
+          "events": [
+            {
+              "event": "resumed",
+              "metrics": {
+                "evidence": "advancingPlaybackClock",
+                "pauseDurationMs": "7440",
+                "resumeRecoveryMs": "146"
+              }
+            }
+          ],
+          "sampleCount": 114,
+          "wallCoverageSeconds": 120.73543906211853,
+          "first": {
+            "time": 1791196588.806665,
+            "currentSeconds": 149.534,
+            "drops": 3,
+            "stalls": 0,
+            "stallActive": "no",
+            "ahead": 15.19995791729454
+          },
+          "last": {
+            "time": 1791196709.542104,
+            "currentSeconds": 270.281,
+            "drops": 3,
+            "stalls": 0,
+            "stallActive": "no",
+            "ahead": 12.574916324313222
+          },
+          "droppedCountBeforeResume": 2,
+          "dropIncrease": 1,
+          "maxStallCount": 0,
+          "activeStallSamples": 0,
+          "minAheadAfter10s": 4.857583199566108,
+          "dropChanges": [
+            {
+              "elapsed": 1.5014488697052002,
+              "drops": 3
+            }
+          ]
+        },
+        "long": {
+          "events": [
+            {
+              "event": "resumed",
+              "metrics": {
+                "evidence": "advancingPlaybackClock",
+                "pauseDurationMs": "452576",
+                "resumeRecoveryMs": "84"
+              }
+            }
+          ],
+          "sampleCount": 167,
+          "wallCoverageSeconds": 177.29681181907654,
+          "first": {
+            "time": 1791197172.3574672,
+            "currentSeconds": 280.329,
+            "drops": 5,
+            "stalls": 0,
+            "stallActive": "no",
+            "ahead": 9.321666412735624
+          },
+          "last": {
+            "time": 1791197349.654279,
+            "currentSeconds": 457.631,
+            "drops": 5,
+            "stalls": 0,
+            "stallActive": "no",
+            "ahead": 9.217541416136498
+          },
+          "droppedCountBeforeResume": 3,
+          "dropIncrease": 2,
+          "maxStallCount": 0,
+          "activeStallSamples": 0,
+          "minAheadAfter10s": 7.92429145014512,
+          "dropChanges": [
+            {
+              "elapsed": 1.5540642738342285,
+              "drops": 5
+            }
+          ]
+        }
+      },
+      "causality": "unpaired different film intervals; no causal attribution to pause/logging/switching",
+      "displaySmoothness": "INSUFFICIENT; no complete display timing or audible proof"
+    }
+  },
+  "knownPGSFreshSeek": {
+    "actualInitialSeconds": 88.308,
+    "backTarget": 73.308,
+    "forwardTarget": 88.308,
+    "repeatCount": 5,
+    "completedRealSeeks": 10,
+    "pausedCacheReuseDuringTheseSeeks": 0,
+    "results": [
+      {
+        "repeat": 1,
+        "lastNoCueFrame": 2,
+        "firstBilingualCueFrame": 3,
+        "visibleCueResponseMs": [
+          867,
+          1658
+        ],
+        "actualFinalCueReviewed": true,
+        "engineTargetSeconds": 88.308,
+        "status": "PASS for this known paused cue"
+      },
+      {
+        "repeat": 2,
+        "lastNoCueFrame": 4,
+        "firstBilingualCueFrame": 5,
+        "visibleCueResponseMs": [
+          1663,
+          2481
+        ],
+        "actualFinalCueReviewed": true,
+        "engineTargetSeconds": 88.308,
+        "status": "PASS for this known paused cue"
+      },
+      {
+        "repeat": 3,
+        "lastNoCueFrame": 2,
+        "firstBilingualCueFrame": 3,
+        "visibleCueResponseMs": [
+          832,
+          1628
+        ],
+        "actualFinalCueReviewed": true,
+        "engineTargetSeconds": 88.308,
+        "status": "PASS for this known paused cue"
+      },
+      {
+        "repeat": 4,
+        "lastNoCueFrame": 3,
+        "firstBilingualCueFrame": 4,
+        "visibleCueResponseMs": [
+          1346,
+          2135
+        ],
+        "actualFinalCueReviewed": true,
+        "engineTargetSeconds": 88.308,
+        "status": "PASS for this known paused cue"
+      },
+      {
+        "repeat": 5,
+        "lastNoCueFrame": 3,
+        "firstBilingualCueFrame": 4,
+        "visibleCueResponseMs": [
+          1275,
+          2106
+        ],
+        "actualFinalCueReviewed": true,
+        "engineTargetSeconds": 88.308,
+        "status": "PASS for this known paused cue"
+      }
+    ],
+    "timeBoundary": "last no-cue frame request start to first cue frame request end relative to native click request start; not exact on-screen milliseconds",
+    "WDAIdleWaitTimeout": 0,
+    "limitations": [
+      "Source7 same known cue only; other PGS tracks/intervals/deep seeks pending",
+      "Chrome may darken/overlap the subtitle; not complete typography/PiP acceptance",
+      "New cue briefly appears before target video refresh in some requests; precise AV/subtitle synchronization pending"
+    ]
+  },
+  "nativeBurst": {
+    "sequenceTargets": [
+      103.308,
+      118.308,
+      103.308
+    ],
+    "submissionSeconds": 1.3975281715393066,
+    "allThreeCompleted": true,
+    "overlappingPendingSeekOnDevice": "not established; all completed sequentially; overlap protection covered by core tests",
+    "pointer300msTrial": "INVALID_ACTION: requested +15/+15/-15 produced two backward actions; all original artifacts retained"
+  },
+  "postSeekNormalPlayback": {
+    "status": "completed",
+    "configuration": "normal Debug -Onone, latest 7dd0/ad7d",
+    "sampleCount": 171,
+    "wallCoverage": 181.88725900650024,
+    "first": {
+      "elapsed": 1.7602019309997559,
+      "current": 89.106,
+      "drops": 6,
+      "ahead": 15.285957917294539,
+      "stalls": 0,
+      "active": "no"
+    },
+    "last": {
+      "elapsed": 183.6474609375,
+      "current": 271.015,
+      "drops": 6,
+      "ahead": 12.511207992113498,
+      "stalls": 0,
+      "active": "no"
+    },
+    "maxStalls": 0,
+    "activeStallSamples": 0,
+    "minAheadAfter10s": 5.004999863965509,
+    "dropChanges": [
+      {
+        "elapsed": 1.7602019309997559,
+        "current": 89.106,
+        "drops": 6,
+        "ahead": 15.285957917294539,
+        "stalls": 0,
+        "active": "no"
+      }
+    ],
+    "fluentVerdict": "INSUFFICIENT: no complete display timing or audible proof"
+  },
+  "MI2": {
+    "design": "normal Debug -Onone -> same-source Debug -O/DEBUG -> restored same normal package; exploratory ABA, one triad, not five controlled competitor pairs",
+    "cacheState": "NAS and OS caches not cleared; order/warming and temporal network changes not excluded",
+    "phases": {
+      "normal": {
+        "status": "completed",
+        "traceID": "3F0FE6D6",
+        "configuration": "normal Debug -Onone",
+        "requestedObservationSeconds": 180,
+        "sampleCount": 166,
+        "wallCoverage": 175.28086805343628,
+        "first": {
+          "elapsed": 4.310533046722412,
+          "current": 1.182,
+          "drops": 1,
+          "stalls": 0,
+          "active": "no",
+          "ahead": 3.7117498979741366,
+          "engine": "KSPlayer",
+          "method": "directPlay"
+        },
+        "last": {
+          "elapsed": 179.5914011001587,
+          "current": 171.293,
+          "drops": 5,
+          "stalls": 1,
+          "active": "no",
+          "ahead": 13.42979130050719,
+          "engine": "KSPlayer",
+          "method": "directPlay"
+        },
+        "maxStalls": 1,
+        "activeStallSamples": 4,
+        "maxDroppedFrames": 5,
+        "minAheadAfter10s": 0.08312499659913541,
+        "bufferCallbacks": [
+          {
+            "bufferedCount": "0",
+            "consumeMs": "1545"
+          },
+          {
+            "bufferedCount": "1",
+            "consumeMs": "5039"
+          }
+        ],
+        "completed32MiBWindows": 43,
+        "taskResponseMsRangeAllSizes": [
+          0,
+          10114
+        ],
+        "remoteAddressClasses": {
+          "private": 45
+        },
+        "fileBytesSeen": [
+          "54918998512"
+        ],
+        "nonCompletedTransferEvents": {
+          "clientBodySend:Network.NWError:0": 1
+        },
+        "nonCompletedEventQualification": "Retained; initial probing and client-cancelled reads are not automatically assumed to be app failures or harmless",
+        "automaticHLSObserved": false,
+        "fullDisplayTimingVerdict": "INSUFFICIENT",
+        "selectedRoute": {
+          "connectionAddressKind": "privateIP",
+          "connectionPort": "8096",
+          "connectionScheme": "http",
+          "routeKind": "localRangeProxy"
+        }
+      },
+      "optimized": {
+        "status": "completed",
+        "traceID": "BC005AC4",
+        "configuration": "Debug -O, DEBUG retained",
+        "requestedObservationSeconds": 180,
+        "sampleCount": 166,
+        "wallCoverage": 175.89453387260437,
+        "first": {
+          "elapsed": 4.012145042419434,
+          "current": 1.225,
+          "drops": 0,
+          "stalls": 0,
+          "active": "no",
+          "ahead": 4.3166665487701135,
+          "engine": "KSPlayer",
+          "method": "directPlay"
+        },
+        "last": {
+          "elapsed": 179.9066789150238,
+          "current": 177.139,
+          "drops": 0,
+          "stalls": 0,
+          "active": "no",
+          "ahead": 13.805166290304584,
+          "engine": "KSPlayer",
+          "method": "directPlay"
+        },
+        "maxStalls": 0,
+        "activeStallSamples": 0,
+        "maxDroppedFrames": 0,
+        "minAheadAfter10s": 2.95999991837931,
+        "bufferCallbacks": [
+          {
+            "bufferedCount": "0",
+            "consumeMs": "1244"
+          }
+        ],
+        "completed32MiBWindows": 44,
+        "taskResponseMsRangeAllSizes": [
+          0,
+          10384
+        ],
+        "remoteAddressClasses": {
+          "public": 46
+        },
+        "fileBytesSeen": [
+          "54918998512"
+        ],
+        "nonCompletedTransferEvents": {
+          "clientBodySend:Network.NWError:0": 1
+        },
+        "nonCompletedEventQualification": "Retained; initial probing and client-cancelled reads are not automatically assumed to be app failures or harmless",
+        "automaticHLSObserved": false,
+        "fullDisplayTimingVerdict": "INSUFFICIENT",
+        "selectedRoute": {
+          "connectionAddressKind": "publicDomain",
+          "connectionPort": "8097",
+          "connectionScheme": "https",
+          "routeKind": "localRangeProxy"
+        }
+      },
+      "restored": {
+        "status": "completed",
+        "traceID": "41B9582B",
+        "configuration": "normal Debug -Onone",
+        "requestedObservationSeconds": 180,
+        "sampleCount": 166,
+        "wallCoverage": 176.40008211135864,
+        "first": {
+          "elapsed": 3.58091402053833,
+          "current": 1.225,
+          "drops": 1,
+          "stalls": 0,
+          "active": "no",
+          "ahead": 4.544916541968389,
+          "engine": "KSPlayer",
+          "method": "directPlay"
+        },
+        "last": {
+          "elapsed": 179.98099613189697,
+          "current": 177.608,
+          "drops": 1,
+          "stalls": 0,
+          "active": "no",
+          "ahead": 9.113124751737047,
+          "engine": "KSPlayer",
+          "method": "directPlay"
+        },
+        "maxStalls": 0,
+        "activeStallSamples": 0,
+        "maxDroppedFrames": 1,
+        "minAheadAfter10s": 2.9192915861795967,
+        "bufferCallbacks": [
+          {
+            "bufferedCount": "0",
+            "consumeMs": "472"
+          }
+        ],
+        "completed32MiBWindows": 43,
+        "taskResponseMsRangeAllSizes": [
+          0,
+          10175
+        ],
+        "remoteAddressClasses": {
+          "private": 45
+        },
+        "fileBytesSeen": [
+          "54918998512"
+        ],
+        "nonCompletedTransferEvents": {
+          "clientBodySend:Network.NWError:0": 1
+        },
+        "nonCompletedEventQualification": "Retained; initial probing and client-cancelled reads are not automatically assumed to be app failures or harmless",
+        "automaticHLSObserved": false,
+        "fullDisplayTimingVerdict": "INSUFFICIENT",
+        "selectedRoute": {
+          "connectionAddressKind": "privateIP",
+          "connectionPort": "8096",
+          "connectionScheme": "http",
+          "routeKind": "localRangeProxy"
+        }
+      }
+    },
+    "causality": "Different actual media routes and uncontrolled cache/order; no compiler, CLI or route speed attribution",
+    "comparisonVerdict": "INVALID_COMPARISON: optimized uses public HTTPS8097, normal runs private HTTP8096",
+    "mediaIdentity": {
+      "normal": {
+        "identityDoubleSHA256": "54fa3559159dddad93119d2a922e4bf8965e9c82ab2c9d24b5d683fc4466ac56",
+        "audioTrackID": 1,
+        "subtitleTrackID": 7,
+        "subtitlesDisabled": false
+      },
+      "optimized": {
+        "identityDoubleSHA256": "54fa3559159dddad93119d2a922e4bf8965e9c82ab2c9d24b5d683fc4466ac56",
+        "audioTrackID": 1,
+        "subtitleTrackID": 7,
+        "subtitlesDisabled": false
+      },
+      "restored": {
+        "identityDoubleSHA256": "54fa3559159dddad93119d2a922e4bf8965e9c82ab2c9d24b5d683fc4466ac56",
+        "audioTrackID": 1,
+        "subtitleTrackID": 7,
+        "subtitlesDisabled": false
+      }
+    }
+  },
+  "finalState": {
+    "normalPackageRetained": true,
+    "ordinaryPID": 12665,
+    "locked": false,
+    "wdaReady": true,
+    "wdaHostRetained": true,
+    "MacBoundedKeepawakeRetained": true,
+    "wdaIdleWaitRestored": 10,
+    "moviesExited": true,
+    "competitorControlledPairs": 0,
+    "guaranteed24HourXCTestAuthorization": false
+  },
+  "remaining": [
+    "MI2 first-run 5039ms buffering remains unresolved; identify first-pass supply/route selection with actual endpoint guard",
+    "Need five controlled Lenna/DS One Jellyfin and DSM pairs; no new competitor rankings from this batch",
+    "Actual audio, full display timing and scrolling, other format/PGS intervals, iPad/iPhone18 remain pending"
+  ]
+}

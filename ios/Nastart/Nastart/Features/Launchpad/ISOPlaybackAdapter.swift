@@ -254,7 +254,7 @@ private final class UDFReadResult: @unchecked Sendable {
     var data: Data?
 }
 
-private struct ISOSegment {
+struct ISOSegment {
     let sourceOffset: Int64
     let length: Int64
 }
@@ -449,21 +449,25 @@ private struct ISOProxyResource {
     let segments: [ISOSegment]
     let fileExtension: String
     let totalLength: Int64
+    let localPort: NWEndpoint.Port
 }
 
-private final class ISOPlaybackProxy: @unchecked Sendable {
+final class ISOPlaybackProxy: @unchecked Sendable {
     static let shared = ISOPlaybackProxy()
 
     private let queue = DispatchQueue(label: "com.changliwen.nastart.iso-proxy")
     private var listener: NWListener?
     private var port: NWEndpoint.Port?
     private var resources: [String: ISOProxyResource] = [:]
+    private var listenerWaiters: [(Result<NWEndpoint.Port, Error>) -> Void] = []
+
+    deinit { listener?.cancel() }
 
     func unregister(_ url: URL) {
         guard url.host == "127.0.0.1", url.path.hasPrefix("/iso/") else { return }
         let token = url.deletingPathExtension().lastPathComponent
         queue.async {
-            guard url.port == self.port.map({ Int($0.rawValue) }) else { return }
+            guard url.port == self.resources[token].map({ Int($0.localPort.rawValue) }) else { return }
             self.resources[token] = nil
         }
     }
@@ -474,7 +478,7 @@ private final class ISOPlaybackProxy: @unchecked Sendable {
         segments: [ISOSegment],
         fileExtension: String
     ) async throws -> URL {
-        let activePort = try await ensureStarted()
+        let activePort = try await healthyListenerPort()
         let token = UUID().uuidString.lowercased()
         let resource = ISOProxyResource(
             reader: ISOHTTPRangeReader(
@@ -483,7 +487,8 @@ private final class ISOPlaybackProxy: @unchecked Sendable {
             ),
             segments: segments,
             fileExtension: fileExtension,
-            totalLength: segments.reduce(0) { $0 + $1.length }
+            totalLength: segments.reduce(0) { $0 + $1.length },
+            localPort: activePort
         )
         queue.sync { resources[token] = resource }
         guard let url = URL(string: "http://127.0.0.1:\(activePort.rawValue)/iso/\(token).\(fileExtension)") else {
@@ -493,49 +498,122 @@ private final class ISOPlaybackProxy: @unchecked Sendable {
     }
 
     private func ensureStarted() async throws -> NWEndpoint.Port {
-        if let port = queue.sync(execute: { self.port }) { return port }
-        return try await withCheckedThrowingContinuation { continuation in
+        try await withCheckedThrowingContinuation { continuation in
             queue.async {
                 if let port = self.port {
                     continuation.resume(returning: port)
                     return
                 }
-                do {
-                    let parameters = NWParameters.tcp
-                    parameters.requiredLocalEndpoint = .hostPort(
-                        host: NWEndpoint.Host("127.0.0.1"),
-                        port: .any
-                    )
-                    let listener = try NWListener(using: parameters)
-                    self.listener = listener
-                    var didResume = false
-                    listener.stateUpdateHandler = { state in
-                        self.queue.async {
-                            switch state {
-                            case .ready:
-                                guard !didResume, let port = listener.port else { return }
-                                didResume = true
-                                self.port = port
-                                continuation.resume(returning: port)
-                            case .failed:
-                                guard !didResume else { return }
-                                didResume = true
-                                continuation.resume(throwing: ISOPlaybackError.proxyUnavailable)
-                            default:
-                                break
-                            }
-                        }
-                    }
-                    listener.newConnectionHandler = { [weak self] connection in
-                        self?.handle(connection)
-                    }
-                    listener.start(queue: self.queue)
-                } catch {
-                    continuation.resume(throwing: error)
-                }
+                self.listenerWaiters.append { continuation.resume(with: $0) }
+                guard self.listener == nil else { return }
+                self.startListener()
             }
         }
     }
+
+    /// ISO has its own loopback server. Network/background transitions can leave
+    /// a cached port that no longer accepts connections, just as for ordinary media.
+    private func healthyListenerPort() async throws -> NWEndpoint.Port {
+        let firstPort = try await ensureStarted()
+        if await respondsOnLoopback(firstPort) { return firstPort }
+        recordListener("diagnostics.media.proxy_listener_restarting", port: firstPort)
+        await invalidateListener(ifUsing: firstPort)
+        let replacementPort = try await ensureStarted()
+        guard await respondsOnLoopback(replacementPort) else {
+            await invalidateListener(ifUsing: replacementPort)
+            throw ISOPlaybackError.proxyUnavailable
+        }
+        return replacementPort
+    }
+
+    private func respondsOnLoopback(_ port: NWEndpoint.Port) async -> Bool {
+        guard let url = URL(string: "http://127.0.0.1:\(port.rawValue)/iso-health") else { return false }
+        var request = URLRequest(url: url)
+        request.httpMethod = "HEAD"
+        request.cachePolicy = .reloadIgnoringLocalCacheData
+        request.timeoutInterval = 1.5
+        do {
+            let (_, response) = try await URLSession.shared.data(for: request)
+            guard let response = response as? HTTPURLResponse else { return false }
+            return response.statusCode == 204
+                && response.value(forHTTPHeaderField: "X-Nastart-Proxy") == "iso"
+        } catch { return false }
+    }
+
+    private func invalidateListener(ifUsing stalePort: NWEndpoint.Port) async {
+        await withCheckedContinuation { continuation in
+            queue.async {
+                if self.port == stalePort { self.failListener(ISOPlaybackError.proxyUnavailable) }
+                continuation.resume()
+            }
+        }
+    }
+
+    private func startListener() {
+        do {
+            let parameters = NWParameters.tcp
+            parameters.requiredLocalEndpoint = .hostPort(host: "127.0.0.1", port: .any)
+            let listener = try NWListener(using: parameters)
+            self.listener = listener
+            listener.stateUpdateHandler = { [weak self, weak listener] state in
+                guard let self, self.listener === listener else { return }
+                switch state {
+                case .ready:
+                    guard let port = listener?.port else {
+                        self.failListener(ISOPlaybackError.proxyUnavailable)
+                        return
+                    }
+                    self.port = port
+                    self.recordListener("diagnostics.media.proxy_listener_ready", port: port)
+                    let waiters = self.listenerWaiters
+                    self.listenerWaiters.removeAll()
+                    waiters.forEach { $0(.success(port)) }
+                case .failed(let error), .waiting(let error):
+                    self.recordListener("diagnostics.media.proxy_listener_failed", port: self.port,
+                        state: String(describing: state))
+                    self.failListener(error)
+                case .cancelled:
+                    self.failListener(ISOPlaybackError.proxyUnavailable)
+                default: break
+                }
+            }
+            listener.newConnectionHandler = { [weak self] connection in self?.handle(connection) }
+            listener.start(queue: queue)
+        } catch { failListener(error) }
+    }
+
+    private func failListener(_ error: Error) {
+        let oldListener = listener
+        listener = nil
+        port = nil
+        oldListener?.cancel()
+        let waiters = listenerWaiters
+        listenerWaiters.removeAll()
+        waiters.forEach { $0(.failure(error)) }
+    }
+
+    private func recordListener(_ message: String, port: NWEndpoint.Port?, state: String = "") {
+        DiagnosticLogStore.shared.record(.info, categoryKey: "diagnostics.category.media",
+            messageKey: message, details: ["proxyKind": "iso",
+                "port": port.map { String($0.rawValue) } ?? "-", "state": state])
+    }
+
+#if DEBUG
+    /// Reproduce a dead socket with a retained port without changing device networks.
+    func stopListenerForTesting(preservingCachedPort: Bool) async {
+        await withCheckedContinuation { continuation in
+            queue.async {
+                guard let listener = self.listener else { continuation.resume(); return }
+                let originalHandler = listener.stateUpdateHandler
+                listener.stateUpdateHandler = { state in
+                    if !preservingCachedPort { originalHandler?(state) }
+                    if case .cancelled = state { continuation.resume() }
+                }
+                listener.cancel()
+            }
+        }
+    }
+#endif
 
     private func handle(_ connection: NWConnection) {
         connection.start(queue: queue)
@@ -568,6 +646,13 @@ private final class ISOPlaybackProxy: @unchecked Sendable {
         guard requestParts.count >= 2 else { connection.cancel(); return }
         let method = requestParts[0].uppercased()
         let path = String(requestParts[1])
+        if method == "HEAD", path == "/iso-health" {
+            let response = "HTTP/1.1 204 No Content\r\nX-Nastart-Proxy: iso\r\nConnection: close\r\n\r\n"
+            connection.send(content: Data(response.utf8), completion: .contentProcessed { _ in
+                connection.cancel()
+            })
+            return
+        }
         guard method == "GET" || method == "HEAD",
               let tokenWithExtension = path.split(separator: "/").last,
               let token = tokenWithExtension.split(separator: ".").first.map(String.init),

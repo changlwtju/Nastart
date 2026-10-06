@@ -1,7 +1,81 @@
 import XCTest
+import Get
 @testable import Nastart
 
 final class NonPlaybackPolicyTests: XCTestCase {
+    /// Opt-in device route check; ordinary test runs never contact a NAS.
+    func testDeviceEnvironmentPublicEndpoints() async throws {
+        guard let configuration = ProcessInfo.processInfo.environment["NASTART_TEST_CONNECTION_PROBE_JSON"] else {
+            throw XCTSkip("Device endpoints must be explicitly configured")
+        }
+        let endpoints = try JSONDecoder().decode([String: URL].self, from: Data(configuration.utf8))
+        let metrics = DeviceProbeMetrics()
+        let session = URLSession(configuration: .ephemeral, delegate: metrics, delegateQueue: nil)
+        defer { session.invalidateAndCancel() }
+        for (label, url) in endpoints.sorted(by: { $0.key < $1.key }) {
+            guard url.user == nil, url.password == nil else {
+                XCTFail("Probe endpoints must be unauthenticated"); continue
+            }
+            var request = URLRequest(url: url)
+            request.timeoutInterval = 12
+            request.cachePolicy = .reloadIgnoringLocalCacheData
+            do {
+                let (data, response) = try await session.data(for: request)
+                let status = (response as? HTTPURLResponse)?.statusCode ?? 0
+                let json = try JSONSerialization.jsonObject(with: data) as? [String: Any]
+                let success = json?["success"] as? Bool ?? true
+                let summary = "\(label): HTTP \(status), json=\(json != nil), success=\(success), \(metrics.summary(for: url))"
+                let evidence = XCTAttachment(string: summary)
+                evidence.lifetime = .keepAlways
+                add(evidence)
+                XCTAssertTrue((200..<300).contains(status), "\(label) HTTP \(status)")
+                XCTAssertNotNil(json, "\(label) must return API JSON")
+                XCTAssertNotEqual(json?["success"] as? Bool, false, "\(label) API failed")
+            } catch {
+                let error = error as NSError
+                let evidence = XCTAttachment(string: "\(label): \(error.domain) \(error.code), \(metrics.summary(for: url))")
+                evidence.lifetime = .keepAlways
+                add(evidence)
+                XCTFail("\(label): \(error.domain) \(error.code)")
+            }
+        }
+        XCTAssertFalse(endpoints.isEmpty)
+    }
+
+    func testJellyfinHTTPStatusUsesActualResponseFailure() {
+        for status in [401, 403, 429, 503] {
+            XCTAssertEqual(JellyfinHTTPStatus.code(for: APIError.unacceptableStatusCode(status)), status)
+        }
+        XCTAssertNil(JellyfinHTTPStatus.code(for: APIError.unacceptableStatusCode(999)))
+    }
+
+    func testJellyfinHTTPStatusDoesNotInferNumbersFromTransportErrors() {
+        let error = NSError(domain: NSURLErrorDomain, code: -1017, userInfo: [
+            NSLocalizedDescriptionKey: "Cannot parse response for task 281 at /items/401"
+        ])
+        XCTAssertNil(JellyfinHTTPStatus.code(for: error))
+        XCTAssertNil(JellyfinHTTPStatus.code(for: URLError(.timedOut)))
+    }
+
+    func testJellyfinLANProbeRetriesTransientFailuresWithABoundedBudget() {
+        var policy = JellyfinLANPlaybackProbePolicy()
+        XCTAssertEqual(policy.evaluate(publicID: nil, lanID: nil), .retryAfter(2_000_000_000))
+        XCTAssertEqual(policy.evaluate(publicID: "server-a", lanID: nil), .retryAfter(6_000_000_000))
+        XCTAssertEqual(policy.evaluate(publicID: nil, lanID: nil), .retriesExhausted)
+        XCTAssertEqual(policy.retryCount, 2)
+        XCTAssertEqual(policy.evaluate(publicID: "server-a", lanID: "server-a"), .verified)
+        XCTAssertEqual(policy.retryCount, 2)
+    }
+
+    func testJellyfinLANProbeRequiresTheSameNonemptyServerID() {
+        var policy = JellyfinLANPlaybackProbePolicy()
+        XCTAssertEqual(policy.evaluate(publicID: "server-a", lanID: "server-b"), .differentServer)
+        XCTAssertEqual(policy.retryCount, 0)
+        XCTAssertEqual(policy.evaluate(publicID: "server-a", lanID: "server-a"), .verified)
+        XCTAssertEqual(policy.retryCount, 0)
+        XCTAssertEqual(policy.evaluate(publicID: "", lanID: ""), .retryAfter(2_000_000_000))
+    }
+
     func testFileSortingUsesNaturalNamesExtensionsAndBothDirections() {
         let items = [file("Episode10.mkv"), file("Episode2.mp4"), file("Episode1.mkv"), file("Folder", folder: true)]
         XCTAssertEqual(FileBrowserSort.name.sorted(items, ascending: true).map(\.name),
@@ -692,5 +766,27 @@ final class NonPlaybackPolicyTests: XCTestCase {
             reverseProxyInventoryAvailable: false,
             agentHealth: nil
         )
+    }
+}
+
+/// Records transport facts only; no headers, credentials, or response bodies.
+private final class DeviceProbeMetrics: NSObject, URLSessionTaskDelegate, @unchecked Sendable {
+    private let lock = NSLock()
+    private var values: [URL: String] = [:]
+
+    func urlSession(_ session: URLSession, task: URLSessionTask,
+                    didFinishCollecting metrics: URLSessionTaskMetrics) {
+        guard let url = task.originalRequest?.url else { return }
+        let transactions = metrics.transactionMetrics
+        let summary = transactions.isEmpty ? "metrics=unavailable" : transactions.map {
+            "proxy=\($0.isProxyConnection), protocol=\($0.networkProtocolName ?? "unknown"), reused=\($0.isReusedConnection)"
+        }.joined(separator: "; ")
+        lock.lock(); defer { lock.unlock() }
+        values[url] = summary
+    }
+
+    func summary(for url: URL) -> String {
+        lock.lock(); defer { lock.unlock() }
+        return values[url] ?? "metrics=unavailable"
     }
 }

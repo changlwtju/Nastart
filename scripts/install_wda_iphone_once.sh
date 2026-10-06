@@ -9,7 +9,7 @@ DEVICE_UDID="${DEVICE_UDID:-00008110-001E543122E0401E}"
 WDA_BUNDLE="${WDA_BUNDLE:-com.changliwen.nastart.WebDriverAgentRunner.xctrunner}"
 WDA_ARTIFACT_ROOT="${WDA_ARTIFACT_ROOT:-/Users/lagransun/Library/Application Support/Nastart/WDA/iPhone-16.3.1}"
 WDA_APP="${WDA_APP:-$WDA_ARTIFACT_ROOT/WebDriverAgentRunner-Runner.app}"
-PROFILE="${PROFILE:-$WDA_ARTIFACT_ROOT/Provisioning Profiles/3f31c7b8-5004-4aa5-ae34-205e4754cbd0.mobileprovision}"
+PROFILE="${PROFILE:-$WDA_APP/embedded.mobileprovision}"
 RECEIPT="${WDA_INSTALL_RECEIPT:-$WDA_ARTIFACT_ROOT/install-receipt.txt}"
 TIDEVICE_BIN="${TIDEVICE_BIN:-/Users/lagransun/Library/Python/3.9/bin/tidevice}"
 

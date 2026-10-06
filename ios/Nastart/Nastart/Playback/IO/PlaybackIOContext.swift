@@ -33,6 +33,8 @@ protocol PlaybackIOContext: AnyObject {
     func close() async
 }
 
+/// Records intent only. The renderer owns its network reads and buffers;
+/// this adapter cannot materialize bytes or claim those buffers as a byte cache.
 final class ObservingPlaybackIOContext: PlaybackIOContext {
     let route: PlaybackRoute
     private let cacheStore: RangeCacheStore
@@ -45,8 +47,7 @@ final class ObservingPlaybackIOContext: PlaybackIOContext {
     func open() async throws {}
 
     func read(range: PlaybackByteRange) async throws -> PlaybackReadResult {
-        await cacheStore.recordRead(range)
-        return PlaybackReadResult(range: range, data: Data(), source: .network)
+        throw URLError(.unsupportedURL)
     }
 
     func seek(to offset: Int64) async throws {
@@ -66,9 +67,9 @@ final class ObservingPlaybackIOContext: PlaybackIOContext {
     }
 
     func preload(range: PlaybackByteRange, budget: Int64) async throws {
-        let length = min(range.length, max(budget, 0))
-        guard length > 0 else { return }
-        await cacheStore.markCached(PlaybackByteRange(start: range.start, length: length))
+        // Scheduling a range is not evidence that its bytes were fetched.
+        _ = range
+        _ = budget
     }
 
     func invalidate(reason: String) async {

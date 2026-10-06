@@ -1,12 +1,246 @@
 import XCTest
 import AVFoundation
 import Network
+import Combine
 #if canImport(KSPlayer)
 @testable import KSPlayer
+import Libavcodec
+import UIKit
 #endif
 @testable import Nastart
 
 final class PlaybackNextCoreTests: XCTestCase {
+    @MainActor
+    func testLateDSMDiscoveryReachesPlaybackWithoutReturningToLibrary() throws {
+        let connection = NASConnectionStore()
+        let domain = try XCTUnwrap(URL(string: "https://nas.example:5001"))
+        let lan = try XCTUnwrap(URL(string: "http://192.168.1.8:5000"))
+        let device = NASDevice(id: UUID(), name: "Test NAS", subtitle: "DSM",
+            model: nil, dsmVersion: nil, mode: .dsmOnly, cpu: nil, memory: nil,
+            memoryUsedText: nil, memoryTotalText: nil, storageUsed: nil,
+            storageUsedText: nil, storageTotalText: nil, storageFreeText: "-",
+            uptimeMinutes: nil, temperatureText: nil, certificate: nil, sshStatus: .unavailable)
+        let initial = DSMSession(baseURL: domain, sid: "same-session",
+            fileStationSID: nil, account: "test", allowsSelfSignedCertificates: false,
+            deviceID: nil, endpoints: DSMConnectionEndpoints(primaryDomain: domain))
+        connection.connect(device: device, session: initial)
+        var received: [DSMSession?] = []
+        var observer: JellyfinDSMPlaybackContextObserver? = JellyfinDSMPlaybackContextObserver(
+            connectionStore: connection, update: { received.append($0) })
+        XCTAssertNil(received.last.flatMap { $0 }?.endpoints.lanAddress)
+
+        // The same authentication session gains File Station and LAN context
+        // after navigation has already opened a detail page. No view task or
+        // onAppear is needed to deliver the discovered route.
+        let discovered = DSMSession(baseURL: domain, sid: initial.sid,
+            fileStationSID: "file-session", account: "test", allowsSelfSignedCertificates: false,
+            deviceID: nil, endpoints: DSMConnectionEndpoints(primaryDomain: domain, lanAddress: lan))
+        connection.connect(device: device, session: discovered)
+        XCTAssertEqual(received.count, 2)
+        XCTAssertEqual(received.last.flatMap { $0 }?.sid, initial.sid)
+        XCTAssertEqual(received.last.flatMap { $0 }?.endpoints.lanAddress, lan)
+        XCTAssertEqual(received.last.flatMap { $0 }?.fileStationSID, "file-session")
+
+        weak var releasedObserver = observer
+        observer = nil
+        XCTAssertNil(releasedObserver, "Playback teardown must release the context subscription")
+        connection.connect(device: device, session: initial)
+        XCTAssertEqual(received.count, 2, "A closed library must stop receiving session updates")
+    }
+
+    func testReplacementLeadCannotOutrunDepletingOriginalReserve() {
+        let lead = PlaybackReplacementLeadPolicy.mediaSeconds(expectedPreparation: 11,
+            rate: 1, isAdvancing: true, availableReserve: 1.5232082913893663)
+        XCTAssertEqual(lead, 1.2732082913893663, accuracy: 0.000001)
+        // The observed old target was 16.607 + 11 while the live clock stalled
+        // at 19.102. The bounded candidate no longer waits for that future time.
+        XCTAssertLessThan(16.607 + lead, 19.102)
+        XCTAssertEqual(PlaybackReplacementLeadPolicy.mediaSeconds(expectedPreparation: 11,
+            rate: 1, isAdvancing: true, availableReserve: 14), 11)
+        XCTAssertEqual(PlaybackReplacementLeadPolicy.mediaSeconds(expectedPreparation: 11,
+            rate: 2, isAdvancing: true, availableReserve: 4), 3.75)
+        XCTAssertEqual(PlaybackReplacementLeadPolicy.mediaSeconds(expectedPreparation: 11,
+            rate: 1, isAdvancing: true, availableReserve: 0.1), 0)
+    }
+
+    func testReplacementLeadHandlesPauseUnknownReserveAndInvalidRate() {
+        XCTAssertEqual(PlaybackReplacementLeadPolicy.mediaSeconds(expectedPreparation: 11,
+            rate: 1, isAdvancing: false, availableReserve: 10), 0)
+        for reserve: Double? in [nil, .nan, -1] {
+            XCTAssertEqual(PlaybackReplacementLeadPolicy.mediaSeconds(expectedPreparation: 11,
+                rate: 1, isAdvancing: true, availableReserve: reserve), 11)
+        }
+        for rate in [Double.nan, .infinity, -1, 0] {
+            XCTAssertEqual(PlaybackReplacementLeadPolicy.mediaSeconds(expectedPreparation: 11,
+                rate: rate, isAdvancing: true, availableReserve: 10), 0)
+        }
+        XCTAssertEqual(PlaybackReplacementLeadPolicy.mediaSeconds(expectedPreparation: .infinity,
+            rate: 1, isAdvancing: true, availableReserve: 10), 0)
+    }
+
+    func testReserveDepletionDetectsPeakHiddenByWholeFileBitrate() {
+        XCTAssertFalse(PlaybackAdaptiveBitratePolicy.isOriginalClearlyUnsustainable(
+            sourceBitrate: 64_048_290, measuredCapacity: 50_984_888,
+            isPrivateRoute: false, forcesOriginal: false))
+        var policy = PlaybackReserveDepletionPolicy()
+        let times = [17.72, 18.72, 19.82]
+        let positions = [10.484, 11.486, 12.574]
+        let reserves = [3.84, 3.55, 3.34]
+        var decisions: [Bool] = []
+        for index in times.indices {
+            decisions.append(policy.sample(now: times[index], eligible: true, seekGeneration: 0,
+                currentSeconds: positions[index], aheadSeconds: reserves[index], targetSeconds: 4,
+                demandBitrate: 98_000_000, measuredCapacity: 50_984_888))
+        }
+        XCTAssertEqual(decisions, [false, false, true])
+    }
+
+    func testPeakDemandDoesNotLowerGrowingOrSufficientReserve() {
+        for (reserves, capacity) in [([3.86, 4.11, 4.27], 50_000_000),
+                                     ([5.0, 4.5, 4.0], 50_000_000),
+                                     ([3.8, 3.4, 3.0], 70_000_000)] {
+            var policy = PlaybackReserveDepletionPolicy()
+            for index in reserves.indices {
+                XCTAssertFalse(policy.sample(now: Double(index), eligible: true, seekGeneration: 0,
+                    currentSeconds: Double(index + 10), aheadSeconds: reserves[index], targetSeconds: 4,
+                    demandBitrate: 93_000_000, measuredCapacity: capacity))
+            }
+        }
+    }
+
+    func testReservePredictionRequiresSustainedDemandAndKnownCapacity() {
+        var policy = PlaybackReserveDepletionPolicy()
+        for index in 0..<3 {
+            XCTAssertFalse(policy.sample(now: Double(index), eligible: true, seekGeneration: 0,
+                currentSeconds: Double(index + 10), aheadSeconds: 3.8 - Double(index) * 0.4,
+                targetSeconds: 4, demandBitrate: index == 1 ? 120_000_000 : 64_000_000,
+                measuredCapacity: 50_000_000))
+        }
+        XCTAssertFalse(policy.sample(now: 3, eligible: true, seekGeneration: 0,
+            currentSeconds: 13, aheadSeconds: 2.6, targetSeconds: 4,
+            demandBitrate: 100_000_000, measuredCapacity: nil))
+        XCTAssertFalse(policy.sample(now: 4, eligible: true, seekGeneration: 0,
+            currentSeconds: 14, aheadSeconds: 2.2, targetSeconds: 4,
+            demandBitrate: 100_000_000, measuredCapacity: 50_000_000))
+    }
+
+    func testReservePredictionRejectsPausedClockSeekAndSamplingGap() {
+        for mode in ["pause", "clock", "seek", "gap", "target", "invalid"] {
+            var policy = PlaybackReserveDepletionPolicy()
+            for index in 0..<3 {
+                let interrupted = index == 2
+                XCTAssertFalse(policy.sample(now: interrupted && mode == "gap" ? 10 : Double(index),
+                    eligible: !(interrupted && mode == "pause"),
+                    seekGeneration: interrupted && mode == "seek" ? 1 : 0,
+                    currentSeconds: interrupted && mode == "clock" ? 11 : Double(index + 10),
+                    aheadSeconds: interrupted && mode == "invalid" ? .nan : 3.8 - Double(index) * 0.4,
+                    targetSeconds: interrupted && mode == "target" ? 8 : 4,
+                    demandBitrate: 100_000_000, measuredCapacity: 50_000_000), mode)
+            }
+        }
+    }
+
+    func testRuntimeDemandScalesByPlaybackRateAndRejectsInvalidMetrics() {
+        XCTAssertEqual(PlaybackReserveDepletionPolicy.demandBitrate(video: 90_000_000,
+            audio: 3_000_000, rate: 2), 186_000_000)
+        XCTAssertEqual(PlaybackReserveDepletionPolicy.demandBitrate(video: 90_000_000,
+            audio: 0, rate: 0.5), 45_000_000)
+        XCTAssertNil(PlaybackReserveDepletionPolicy.demandBitrate(video: Int.max, audio: 1, rate: 1))
+        XCTAssertNil(PlaybackReserveDepletionPolicy.demandBitrate(video: 90_000_000, audio: nil, rate: 1))
+        XCTAssertNil(PlaybackReserveDepletionPolicy.demandBitrate(video: 90_000_000, audio: -1, rate: 1))
+        XCTAssertNil(PlaybackReserveDepletionPolicy.demandBitrate(video: 90_000_000, audio: 0, rate: .nan))
+    }
+
+#if DEBUG
+    func testISOProxyRebuildsStaleCachedListenerBeforeReturningURL() async throws {
+        try await verifyISOProxyRecovery(preservingCachedPort: true)
+    }
+
+    func testISOProxyRebuildsAfterListenerCancellation() async throws {
+        try await verifyISOProxyRecovery(preservingCachedPort: false)
+    }
+
+    private func verifyISOProxyRecovery(preservingCachedPort: Bool) async throws {
+        let payload = Data((0..<128).map(UInt8.init))
+        let server = try PlaybackRangeTestServer(payload: payload)
+        defer { server.stop() }
+        await fulfillment(of: [server.ready], timeout: 3)
+        let upstream = try XCTUnwrap(server.url)
+        let proxy = ISOPlaybackProxy()
+        let initial = try await proxy.register(sourceURL: upstream, allowsSelfSignedCertificates: false,
+            segments: [ISOSegment(sourceOffset: 16, length: 64)], fileExtension: "m2ts")
+        defer { proxy.unregister(initial) }
+        await proxy.stopListenerForTesting(preservingCachedPort: preservingCachedPort)
+        let recovered = try await proxy.register(sourceURL: upstream, allowsSelfSignedCertificates: false,
+            segments: [ISOSegment(sourceOffset: 16, length: 64)], fileExtension: "m2ts")
+        defer { proxy.unregister(recovered) }
+        var request = URLRequest(url: recovered)
+        request.timeoutInterval = 3
+        request.setValue("bytes=8-15", forHTTPHeaderField: "Range")
+        let (data, response) = try await URLSession.shared.data(for: request)
+        let http = try XCTUnwrap(response as? HTTPURLResponse)
+        XCTAssertEqual(http.statusCode, 206)
+        XCTAssertEqual(http.value(forHTTPHeaderField: "Content-Range"), "bytes 8-15/64")
+        XCTAssertEqual(data, payload.subdata(in: 24..<32), "Recovered proxy must still map ISO offsets correctly")
+        proxy.unregister(initial)
+        var oldRouteAtNewPort = try XCTUnwrap(URLComponents(url: initial, resolvingAgainstBaseURL: false))
+        oldRouteAtNewPort.port = recovered.port
+        var releasedRequest = URLRequest(url: try XCTUnwrap(oldRouteAtNewPort.url))
+        releasedRequest.httpMethod = "HEAD"
+        releasedRequest.timeoutInterval = 3
+        let (_, releasedResponse) = try await URLSession.shared.data(for: releasedRequest)
+        XCTAssertEqual((releasedResponse as? HTTPURLResponse)?.statusCode, 404,
+            "Routes created on the old listener must still be releasable after restart")
+    }
+
+    func testISOProxyConcurrentRegistrationsShareListener() async throws {
+        let proxy = ISOPlaybackProxy()
+        let source = try XCTUnwrap(URL(string: "http://127.0.0.1:1/unused.iso"))
+        async let first = proxy.register(sourceURL: source, allowsSelfSignedCertificates: false,
+            segments: [ISOSegment(sourceOffset: 0, length: 64)], fileExtension: "m2ts")
+        async let second = proxy.register(sourceURL: source, allowsSelfSignedCertificates: false,
+            segments: [ISOSegment(sourceOffset: 0, length: 128)], fileExtension: "m2ts")
+        let urls = try await [first, second]
+        defer { urls.forEach { proxy.unregister($0) } }
+        XCTAssertEqual(urls[0].port, urls[1].port)
+        XCTAssertNotEqual(urls[0].path, urls[1].path)
+        for (url, expectedLength) in zip(urls, [64, 128]) {
+            var request = URLRequest(url: url)
+            request.httpMethod = "HEAD"
+            request.timeoutInterval = 3
+            let (_, response) = try await URLSession.shared.data(for: request)
+            let http = try XCTUnwrap(response as? HTTPURLResponse)
+            XCTAssertEqual(http.statusCode, 200)
+            XCTAssertEqual(http.value(forHTTPHeaderField: "Content-Length"), String(expectedLength))
+        }
+    }
+
+    @MainActor
+    func testPreparedResultHoldCancelsPromptlyAndReleasesWithoutPresenting() async {
+        let preparation = PlaybackPreparation()
+        let held = expectation(description: "prepared result reached hold")
+        let released = expectation(description: "prepared resources released")
+        var releaseCount = 0
+        var presented = false
+        preparation.start { id in
+            held.fulfill()
+            await preparation.holdPreparedResultForDebugIfRequested(id, entry: "test", delaySeconds: 10)
+            guard preparation.isCurrent(id) else {
+                releaseCount += 1
+                released.fulfill()
+                return
+            }
+            presented = true
+        }
+        await fulfillment(of: [held], timeout: 2)
+        preparation.cancel()
+        await fulfillment(of: [released], timeout: 2)
+        XCTAssertEqual(releaseCount, 1)
+        XCTAssertFalse(presented)
+        XCTAssertFalse(preparation.isPreparing)
+    }
+#endif
+
     @MainActor
     func testPlaybackPreparationRejectsLateResultAfterLeavingDetail() async {
         let preparation = PlaybackPreparation()
@@ -186,6 +420,222 @@ final class PlaybackNextCoreTests: XCTestCase {
         XCTAssertNil(samples.estimate(traceID: "A", now: 72))
     }
 
+    func testBufferedHandoffSeekCannotJumpAcrossMissingOrInsufficientBuffer() {
+        let target: ([(Double, Double)], Bool) -> Double? = { ranges, advancing in
+            PlaybackBufferedHandoffSeekPolicy.target(candidate: 17.5, live: 30,
+                rate: 1, isAdvancing: advancing, duration: 120,
+                ranges: ranges.map { (start: $0.0, end: $0.1) })
+        }
+        XCTAssertNil(target([(16, 24)], true))
+        XCTAssertNil(target([(16, 29), (31, 40)], true))
+        XCTAssertNil(target([(16, 30.7)], true))
+        XCTAssertEqual(target([(16, 34)], true), 30.25)
+        XCTAssertEqual(target([(16, 34)], false), 30)
+        XCTAssertNil(PlaybackBufferedHandoffSeekPolicy.target(candidate: 29, live: 30,
+            rate: 1, isAdvancing: true, duration: 120, ranges: [(0, 120)]))
+        XCTAssertNil(PlaybackBufferedHandoffSeekPolicy.target(candidate: 17.5, live: .nan,
+            rate: 1, isAdvancing: true, duration: 120, ranges: [(0, 120)]))
+        XCTAssertNil(PlaybackBufferedHandoffSeekPolicy.target(candidate: 17.5, live: 30,
+            rate: 1, isAdvancing: true, duration: 30.5, ranges: [(0, 120)]))
+    }
+
+    func testBufferedHandoffCorrectsAheadCandidateWhenOriginalStops() {
+        // Actual failed warmup: decoded candidate 6.339, original stalled at
+        // 6.131. Pausing the candidate cannot make the original catch up.
+        XCTAssertEqual(PlaybackBufferedHandoffSeekPolicy.target(
+            candidate: 6.339233899, live: 6.131, rate: 1,
+            isAdvancing: false, duration: 1000,
+            ranges: [(start: 5, end: 10)]), 6.131)
+        XCTAssertNil(PlaybackBufferedHandoffSeekPolicy.target(
+            candidate: 6.339233899, live: 6.131, rate: 1,
+            isAdvancing: true, duration: 1000,
+            ranges: [(start: 5, end: 10)]))
+        XCTAssertNil(PlaybackBufferedHandoffSeekPolicy.target(
+            candidate: 6.18, live: 6.131, rate: 1,
+            isAdvancing: false, duration: 1000,
+            ranges: [(start: 5, end: 10)]))
+    }
+
+    func testBufferedOvershootCorrectionCannotCrossUnloadedTime() {
+        let target: ([(Double, Double)]) -> Double? = { ranges in
+            PlaybackBufferedHandoffSeekPolicy.target(candidate: 6.339233899,
+                live: 6.131, rate: 1, isAdvancing: false, duration: 1000,
+                ranges: ranges.map { (start: $0.0, end: $0.1) })
+        }
+        XCTAssertNil(target([]))
+        XCTAssertNil(target([(6.2, 10)]))
+        XCTAssertNil(target([(5, 6.5)]))
+        XCTAssertNil(target([(5, 6.3), (6.4, 10)]))
+        XCTAssertNil(target([(.nan, 10)]))
+        XCTAssertEqual(target([(0, 1), (5, 10)]), 6.131)
+    }
+
+    func testHandoffRequiresAlignedFrameAndContinuousForwardReserve() {
+        let ready: (Double, Double, [(Double, Double)]) -> Bool = { candidate, frame, ranges in
+            PlaybackHandoffReadinessPolicy.isReady(candidate: candidate, live: 6.281,
+                frame: frame, ranges: ranges.map { (start: $0.0, end: $0.1) })
+        }
+        // This real baseline frame passed the old clock/frame-only gate with
+        // zero candidate reserve, followed by two live AV buffering counts.
+        XCTAssertFalse(ready(6.203634334, 6.172822222, []))
+        XCTAssertFalse(ready(6.203634334, 6.172822222, [(5, 6.4)]))
+        XCTAssertFalse(ready(6.203634334, 6.172822222, [(5, 6.4), (6.5, 10)]))
+        XCTAssertFalse(ready(6.203634334, 6.172822222, [(6.3, 10)]))
+        XCTAssertTrue(ready(6.203634334, 6.172822222, [(5, 10)]))
+        XCTAssertFalse(ready(6.5, 6.48, [(5, 10)]))
+        XCTAssertFalse(ready(6.28, 6.0, [(5, 10)]))
+        XCTAssertFalse(ready(.nan, 6.28, [(5, 10)]))
+        XCTAssertFalse(ready(6.28, .infinity, [(5, 10)]))
+    }
+
+    func testHandoffRevalidatesClockAfterAsyncSessionPreparation() {
+        XCTAssertTrue(PlaybackHandoffReadinessPolicy.canCommit(candidate: 5.650946251,
+            live: 5.598, ranges: [(start: 4.004, end: 6.436)]))
+        XCTAssertFalse(PlaybackHandoffReadinessPolicy.canCommit(candidate: 5.777352731,
+            live: 5.598, ranges: [(start: 4.004, end: 6.436)]))
+        XCTAssertFalse(PlaybackHandoffReadinessPolicy.canCommit(candidate: 5.65,
+            live: 5.65, ranges: [(start: 4.004, end: 6.0)]))
+    }
+
+    func testOriginalWarmupCannotOverrideLateLANOrBearerChange() {
+        let remote = URL(string: "https://media.example:8097")!
+        let local = URL(string: "http://192.168.10.20:8096")!
+        XCTAssertFalse(PlaybackOriginalWarmupPolicy.matches(warmedEndpoint: remote,
+            currentEndpoint: local, warmedNetwork: "wifi", currentNetwork: "wifi"))
+        XCTAssertFalse(PlaybackOriginalWarmupPolicy.matches(warmedEndpoint: remote,
+            currentEndpoint: remote, warmedNetwork: "wifi", currentNetwork: "cellular"))
+        XCTAssertFalse(PlaybackOriginalWarmupPolicy.matches(warmedEndpoint: remote,
+            currentEndpoint: URL(string: "https://media.example:8098")!,
+            warmedNetwork: "wifi", currentNetwork: "wifi"))
+        XCTAssertTrue(PlaybackOriginalWarmupPolicy.matches(warmedEndpoint: local,
+            currentEndpoint: local, warmedNetwork: "wifi", currentNetwork: "wifi"))
+    }
+
+    func testOriginalWarmupOriginIgnoresPathsButRejectsInvalidEndpoints() {
+        XCTAssertTrue(PlaybackOriginalWarmupPolicy.matches(
+            warmedEndpoint: URL(string: "https://MEDIA.example/old?q=one")!,
+            currentEndpoint: URL(string: "https://media.example:443/new?q=two")!,
+            warmedNetwork: "wifi", currentNetwork: "wifi"))
+        XCTAssertFalse(PlaybackOriginalWarmupPolicy.matches(
+            warmedEndpoint: URL(fileURLWithPath: "/tmp/movie"),
+            currentEndpoint: URL(fileURLWithPath: "/tmp/movie"),
+            warmedNetwork: "wifi", currentNetwork: "wifi"))
+        XCTAssertFalse(PlaybackOriginalWarmupPolicy.matches(
+            warmedEndpoint: URL(string: "https://media.example")!,
+            currentEndpoint: URL(string: "http://media.example")!,
+            warmedNetwork: "wifi", currentNetwork: "wifi"))
+    }
+
+    func testBodyWindowCapacityRequiresAdjacentUnthrottledStableWindows() {
+        var policy = PlaybackBodyWindowCapacityPolicy()
+        XCTAssertNil(policy.sample(bytes: 5_661_389, seconds: 2.112,
+            totalBackpressure: 0, queuedBytes: 46_336, now: 4.152))
+        let failedCapacity = policy.sample(bytes: 5_498_056, seconds: 2,
+            totalBackpressure: 0, queuedBytes: 5_792, now: 6.152)
+        XCTAssertTrue(PlaybackAdaptiveBitratePolicy.isOriginalClearlyUnsustainable(
+            sourceBitrate: 64_048_290, measuredCapacity: failedCapacity,
+            isPrivateRoute: false, forcesOriginal: false))
+        var healthy = PlaybackBodyWindowCapacityPolicy()
+        XCTAssertNil(healthy.sample(bytes: 10_648_713, seconds: 2,
+            totalBackpressure: 0, queuedBytes: 2_896, now: 3.643))
+        let healthyCapacity = healthy.sample(bytes: 20_358_267, seconds: 2,
+            totalBackpressure: 0, queuedBytes: 2_896, now: 5.643)
+        XCTAssertFalse(PlaybackAdaptiveBitratePolicy.isOriginalClearlyUnsustainable(
+            sourceBitrate: 64_048_290, measuredCapacity: healthyCapacity,
+            isPrivateRoute: false, forcesOriginal: false))
+        for invalid in ["pressure", "queue", "short", "gap", "spike"] {
+            var guarded = PlaybackBodyWindowCapacityPolicy()
+            XCTAssertNil(guarded.sample(bytes: 2_000_000, seconds: 2,
+                totalBackpressure: 0, queuedBytes: 0, now: 2))
+            XCTAssertNil(guarded.sample(bytes: invalid == "spike" ? 20_000_000 : 2_000_000,
+                seconds: invalid == "short" ? 1 : 2,
+                totalBackpressure: invalid == "pressure" ? 0.01 : 0,
+                queuedBytes: invalid == "queue" ? 131_073 : 0,
+                now: invalid == "gap" ? 8 : 4), invalid)
+        }
+    }
+
+    func testBodyCapacityExpiresAndCannotOverrideCompletedOrOtherTrace() {
+        let store = PlaybackRecentThroughputStore()
+        store.recordQualifiedBodyWindow(traceID: "A", bitrate: 22_000_000, now: 10)
+        XCTAssertEqual(store.estimateSample(traceID: "A", now: 12)?.source, .bodyWindow)
+        XCTAssertEqual(store.estimate(traceID: "A", now: 12), 22_000_000)
+        XCTAssertNil(store.estimate(traceID: "B", now: 12))
+        XCTAssertNil(store.estimate(traceID: "A", now: 9))
+        XCTAssertNil(store.estimate(traceID: "A", now: 16.001))
+        store.recordQualifiedBodyWindow(traceID: "A", bitrate: 40_000_000, now: 20)
+        store.record(traceID: "A", bytes: 3_000_000, seconds: 2,
+            backpressureSeconds: 0, now: 21)
+        XCTAssertEqual(store.estimateSample(traceID: "A", now: 22)?.source, .completedTransfer)
+        XCTAssertEqual(store.estimate(traceID: "A", now: 22), 12_000_000)
+    }
+
+    func testBodySamplerPreservesPartialWindowAndPreviousSampleAcrossRanges() throws {
+        var sampler = PlaybackBodyWindowSampler()
+        sampler.beginResponse(now: 0)
+        XCTAssertNil(sampler.receive(bytes: 8_000_000, now: 1,
+            totalBackpressure: 0, queuedBytes: 0, eligible: true))
+        let first = try XCTUnwrap(sampler.receive(bytes: 8_000_000, now: 2,
+            totalBackpressure: 0, queuedBytes: 0, eligible: true))
+        XCTAssertNil(first.capacity)
+        XCTAssertNil(sampler.receive(bytes: 8_000_000, now: 3,
+            totalBackpressure: 0, queuedBytes: 0, eligible: true))
+        sampler.beginResponse(now: 3.1)
+        let second = try XCTUnwrap(sampler.receive(bytes: 8_000_000, now: 4,
+            totalBackpressure: 0, queuedBytes: 0, eligible: true))
+        XCTAssertEqual(second.bytes, 16_000_000)
+        XCTAssertEqual(second.seconds, 2)
+        XCTAssertEqual(second.capacity, 64_000_000)
+    }
+
+    func testBodySamplerQualifiesWeakSupplyButNotOneSlowResponse() throws {
+        var sampler = PlaybackBodyWindowSampler()
+        sampler.beginResponse(now: 0)
+        XCTAssertNil(try XCTUnwrap(sampler.receive(bytes: 195_000, now: 2,
+            totalBackpressure: 0, queuedBytes: 0, eligible: true)).capacity)
+        XCTAssertEqual(try XCTUnwrap(sampler.receive(bytes: 195_000, now: 4,
+            totalBackpressure: 0, queuedBytes: 0, eligible: true)).capacity, 780_000)
+        var tiny = PlaybackBodyWindowCapacityPolicy()
+        XCTAssertNil(tiny.sample(bytes: 131_071, seconds: 2,
+            totalBackpressure: 0, queuedBytes: 0, now: 2))
+        XCTAssertNil(tiny.sample(bytes: 195_000, seconds: 2,
+            totalBackpressure: 0, queuedBytes: 0, now: 4))
+        XCTAssertNil(tiny.sample(bytes: 195_000, seconds: 5,
+            totalBackpressure: 0, queuedBytes: 0, now: 9))
+    }
+
+    func testBodySamplerCannotErasePressureAtRangeBoundaryOrMixEligibility() throws {
+        var sampler = PlaybackBodyWindowSampler()
+        sampler.beginResponse(now: 0)
+        _ = sampler.receive(bytes: 195_000, now: 2,
+            totalBackpressure: 0, queuedBytes: 0, eligible: true)
+        _ = sampler.receive(bytes: 100_000, now: 3,
+            totalBackpressure: 0.1, queuedBytes: 0, eligible: true)
+        sampler.beginResponse(now: 3.1)
+        let pressured = try XCTUnwrap(sampler.receive(bytes: 95_000, now: 4,
+            totalBackpressure: 0, queuedBytes: 0, eligible: true))
+        XCTAssertTrue(pressured.pressured)
+        XCTAssertNil(pressured.capacity)
+        XCTAssertNil(try XCTUnwrap(sampler.receive(bytes: 195_000, now: 6,
+            totalBackpressure: 0, queuedBytes: 0, eligible: false)).capacity)
+        XCTAssertNil(try XCTUnwrap(sampler.receive(bytes: 195_000, now: 8,
+            totalBackpressure: 0, queuedBytes: 0, eligible: true)).capacity)
+        XCTAssertEqual(try XCTUnwrap(sampler.receive(bytes: 195_000, now: 10,
+            totalBackpressure: 0, queuedBytes: 0, eligible: true)).capacity, 780_000)
+    }
+
+    func testOnlyQualifiedInitialBodyEstimateCanShortenPredictionGrace() {
+        var initial = PlaybackPredictiveGracePolicy()
+        XCTAssertFalse(initial.allows(now: 10, seekGeneration: 0, qualifiedBodyWindow: true))
+        XCTAssertFalse(initial.allows(now: 12.99, seekGeneration: 0, qualifiedBodyWindow: true))
+        XCTAssertFalse(initial.allows(now: 13, seekGeneration: 0, qualifiedBodyWindow: false))
+        XCTAssertTrue(initial.allows(now: 13, seekGeneration: 0, qualifiedBodyWindow: true))
+        XCTAssertFalse(initial.allows(now: 14, seekGeneration: 1, qualifiedBodyWindow: true))
+        XCTAssertFalse(initial.allows(now: 23.99, seekGeneration: 1, qualifiedBodyWindow: true))
+        XCTAssertTrue(initial.allows(now: 24, seekGeneration: 1, qualifiedBodyWindow: false))
+        XCTAssertFalse(initial.allows(now: .nan, seekGeneration: 1, qualifiedBodyWindow: true))
+    }
+
     func testAdaptiveTargetFitsCapacityAndStepsDownAgain() {
         XCTAssertTrue(PlaybackAdaptiveBitratePolicy.allowsAutomaticAdjustment(
             selectedQualityID: "auto"))
@@ -208,9 +658,27 @@ final class PlaybackNextCoreTests: XCTestCase {
         XCTAssertEqual(PlaybackAdaptiveBitratePolicy.target(
             currentCeiling: 1_000_000, capacity: 1_500_000,
             networkKey: "cellular"), 750_000)
-        XCTAssertNil(PlaybackAdaptiveBitratePolicy.target(
+        XCTAssertEqual(PlaybackAdaptiveBitratePolicy.target(
             currentCeiling: 500_000, capacity: 1_000_000,
+            networkKey: "cellular"), 375_000)
+        XCTAssertNil(PlaybackAdaptiveBitratePolicy.target(
+            currentCeiling: 250_000, capacity: 1_000_000,
             networkKey: "cellular"))
+    }
+
+    func testWeakCellularCeilingKeepsHeadroomBelowOldMinimum() {
+        // Real 0.78 Mbps conditioner samples measured only 0.5–0.6 Mbps;
+        // the former 500 kbps floor exceeded the policy's 50% safe capacity.
+        for measured in [500_000, 565_156, 600_000] {
+            let target = PlaybackAdaptiveBitratePolicy.target(
+                currentCeiling: 1_500_000, capacity: measured, networkKey: "cellular")
+            XCTAssertEqual(target, 250_000)
+            XCTAssertLessThanOrEqual(try! XCTUnwrap(target), measured / 2)
+        }
+        XCTAssertEqual(PlaybackAdaptiveBitratePolicy.target(
+            currentCeiling: 750_000, capacity: 780_000, networkKey: "cellular"), 375_000)
+        XCTAssertEqual(PlaybackAdaptiveBitratePolicy.target(
+            currentCeiling: 375_000, capacity: 1_000_000, networkKey: "cellular"), 250_000)
     }
 
     func testVerifiedFileIdentityAllowsDifferentMountPrefixButRejectsWrongFile() {
@@ -537,7 +1005,26 @@ final class PlaybackNextCoreTests: XCTestCase {
             .greenfieldPlaybackLaunchRequest(resumeStore: store)
         XCTAssertEqual(jellyfin.intent.preferredStartTime, 300)
         XCTAssertNil(jellyfin.mediaRequest?.initialPosition)
+        XCTAssertNil(jellyfin.tracks.selectedSourceAudioTrackID,
+                     "Jellyfin position and prepared selection must not be overridden in the bridge")
         XCTAssertEqual(request.playbackRequest(using: MediaPlaybackResource(url: request.url)).localResumeKey, "file")
+    }
+
+    func testSavedJellyfinTracksRespectSubtitleOffAndChangedInventory() {
+        let saved = LocalPlaybackResumeStore.Entry(positionSeconds: 700, durationSeconds: 1000,
+            audioTrackID: 2, subtitleTrackID: 8, subtitlesDisabled: true, updatedAt: Date())
+        let restored = saved.restoredTrackSelection(audioIDs: [1, 2], subtitleIDs: [8],
+            defaultAudio: 1, defaultSubtitle: 8)
+        XCTAssertEqual(restored.audio, 2)
+        XCTAssertNil(restored.subtitle)
+        let changed = saved.restoredTrackSelection(audioIDs: [5], subtitleIDs: [9],
+            defaultAudio: 5, defaultSubtitle: 9)
+        XCTAssertEqual(changed.audio, 5)
+        XCTAssertNil(changed.subtitle)
+        let enabled = LocalPlaybackResumeStore.Entry(positionSeconds: 700, durationSeconds: 1000,
+            audioTrackID: 2, subtitleTrackID: 8, subtitlesDisabled: false, updatedAt: Date())
+        XCTAssertEqual(enabled.restoredTrackSelection(audioIDs: [5], subtitleIDs: [9],
+            defaultAudio: 5, defaultSubtitle: 9).subtitle, 9)
     }
 
     func testExitAfterPausedSeekReportsConfirmedPositionIncludingBeginning() {
@@ -744,6 +1231,114 @@ final class PlaybackNextCoreTests: XCTestCase {
         XCTAssertEqual(PlaybackDolbySourceInfo().diagnosticDetails["sourceDVProfile"], "unknown")
     }
 
+    func testJellyfinPlaylistCompactQueryPreservesServerValuesAndIdentity() throws {
+        let url = try XCTUnwrap(URL(string: "https://example.com/jellyfin/Videos/00000000000000000000000000000001/main.m3u8?api_key=test-token&PlaySessionId=test-session&VideoCodec=h264&AudioCodec=aac&VideoBitrate=122000&AudioBitrate=128000&MaxWidth=854&MaxHeight=480&AudioStreamIndex=1&SubtitleStreamIndex=-1&StartTimeTicks=123456789012&AllowVideoStreamCopy=false"))
+        let compacted = try XCTUnwrap(PlaybackJellyfinPlaylistQuery.compact(url))
+        let items = try XCTUnwrap(URLComponents(url: compacted, resolvingAgainstBaseURL: false)?.queryItems)
+        let values = try XCTUnwrap(items.first { $0.name == "Params" }?.value)
+            .components(separatedBy: ";")
+        XCTAssertEqual(values, ["", "", "", "", "", "", "1", "-1", "122000", "128000", "", "", "854", "480", "123456789012"])
+        for name in ["api_key", "PlaySessionId", "VideoCodec", "AudioCodec", "AllowVideoStreamCopy"] {
+            let original = URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems?.first { $0.name == name }
+            XCTAssertEqual(items.first { $0.name == name }, original)
+        }
+        XCTAssertEqual(compacted.path, url.path)
+        XCTAssertLessThan(compacted.absoluteString.count, url.absoluteString.count)
+    }
+
+    func testJellyfinPlaylistCompactQueryRejectsAmbiguousAndForeignRequests() throws {
+        let base = "https://example.com/Videos/00000000000000000000000000000001/main.m3u8?api_key=t&PlaySessionId=s&VideoBitrate=122000&AudioBitrate=128000&MaxWidth=854&MaxHeight=480"
+        for value in [base + "&Params=existing", base + "&videobitrate=1", base + "&Static=unexpected", base + "&MaxVideoBitDepth=999999999999",
+                      base.replacingOccurrences(of: "/Videos/", with: "/other/"),
+                      base.replacingOccurrences(of: "main.m3u8", with: "0.ts"),
+                      base.replacingOccurrences(of: "api_key=t&", with: "")] {
+            XCTAssertNil(PlaybackJellyfinPlaylistQuery.compact(try XCTUnwrap(URL(string: value))))
+        }
+    }
+
+    @MainActor
+    func testCompactPlaylistRejectionRetriesOriginalOnceWithoutOldTaskCancellation() async throws {
+        let server = try PlaybackRangeTestServer(playlist: "#EXTM3U\n#EXTINF:4,\nsegment0.ts\n#EXT-X-ENDLIST\n", rejectsCompactQuery: true)
+        defer { server.stop() }
+        await fulfillment(of: [server.ready], timeout: 3)
+        var upstream = URLComponents(url: try XCTUnwrap(server.url), resolvingAgainstBaseURL: false)!
+        upstream.path = "/Videos/00000000000000000000000000000001/main.m3u8"
+        upstream.query = "api_key=test-token&PlaySessionId=test-session&VideoBitrate=122000&AudioBitrate=128000&MaxWidth=854&MaxHeight=480"
+        let proxy = try await AuthenticatedMediaStreamProxy.shared.register(upstreamURL: XCTUnwrap(upstream.url), filename: "vod.m3u8", allowsSelfSignedCertificates: false)
+        defer { AuthenticatedMediaStreamProxy.shared.unregister(proxy) }
+        let (data, response) = try await URLSession.shared.data(from: proxy)
+        XCTAssertEqual((response as? HTTPURLResponse)?.statusCode, 200)
+        XCTAssertTrue(String(decoding: data, as: UTF8.self).contains("#EXT-X-ENDLIST"))
+        XCTAssertTrue(String(decoding: data, as: UTF8.self).contains("/child/"))
+        XCTAssertFalse(String(decoding: data, as: UTF8.self).contains("test-token"))
+        let requests = server.receivedRequests
+        XCTAssertEqual(requests.count, 2)
+        XCTAssertTrue(requests[0].lowercased().contains("params="))
+        XCTAssertFalse(requests[1].lowercased().contains("params="))
+        XCTAssertTrue(requests[1].contains("VideoBitrate=122000"))
+        XCTAssertTrue(requests.allSatisfy { $0.lowercased().contains("x-emby-token: test-token") })
+    }
+
+    func testVODPlaylistCacheRejectsLiveAndBoundsAndPartitionsRoutes() throws {
+        let url = try XCTUnwrap(URL(string: "https://example.com/main.m3u8"))
+        let body = Data("#EXTM3U\n#EXTINF:4,\na.ts\n#EXT-X-ENDLIST\n".utf8)
+        let cache = PlaybackVODPlaylistCache(maximumBytes: body.count * 2, maximumEntryBytes: body.count)
+        cache.store(Data("#EXTM3U\n#EXTINF:4,\na.ts\n".utf8), route: "live", url: url)
+        XCTAssertNil(cache.data(route: "live", url: url))
+        cache.store(body + Data([10]), route: "oversized", url: url)
+        XCTAssertNil(cache.data(route: "oversized", url: url))
+        cache.store(body, route: "one", url: url)
+        XCTAssertNil(cache.data(route: "two", url: url))
+        cache.store(body, route: "two", url: url)
+        cache.store(body, route: "three", url: url)
+        XCTAssertNil(cache.data(route: "one", url: url))
+        XCTAssertEqual(cache.data(route: "two", url: url), body)
+        cache.remove(route: "two")
+        XCTAssertNil(cache.data(route: "two", url: url))
+        XCTAssertEqual(cache.data(route: "three", url: url), body)
+    }
+
+    @MainActor
+    func testVODPrewarmReusesManifestAndRewritesNewSeekWithoutFetchingSegments() async throws {
+        let playlist = "#EXTM3U\n#EXTINF:4,\nsegment0.ts\n#EXTINF:4,\nsegment1.ts\n#EXT-X-ENDLIST\n"
+        let server = try PlaybackRangeTestServer(playlist: playlist,
+            masterPlaylist: "#EXTM3U\n#EXT-X-STREAM-INF:BANDWIDTH=500000\nmain.m3u8\n")
+        defer { server.stop() }
+        await fulfillment(of: [server.ready], timeout: 3)
+        let proxy = try await AuthenticatedMediaStreamProxy.shared.register(upstreamURL: XCTUnwrap(server.url),
+            filename: "vod.m3u8", allowsSelfSignedCertificates: false)
+        defer { AuthenticatedMediaStreamProxy.shared.unregister(proxy) }
+        let warmed = try await AuthenticatedMediaStreamProxy.shared.prewarmVODPlaylist(proxy)
+        XCTAssertTrue(warmed)
+        XCTAssertEqual(server.receivedRequests.count, 2, "Only master and media text, no segments or keys")
+        AuthenticatedMediaStreamProxy.shared.setPlaylistStart(proxy, seconds: 5.25)
+        let (master, _) = try await URLSession.shared.data(from: proxy)
+        let child = try XCTUnwrap(String(decoding: master, as: UTF8.self).components(separatedBy: "\n")
+            .first(where: { $0.hasPrefix("http://") }).flatMap(URL.init(string:)))
+        let (data, response) = try await URLSession.shared.data(from: child)
+        XCTAssertEqual((response as? HTTPURLResponse)?.statusCode, 200)
+        XCTAssertEqual(response.expectedContentLength, Int64(data.count))
+        XCTAssertTrue(String(decoding: data, as: UTF8.self).contains("TIME-OFFSET=5.250"))
+        XCTAssertEqual(server.receivedRequests.count, 3, "Decoder read must reuse complete media text")
+        AuthenticatedMediaStreamProxy.shared.unregister(proxy)
+        let (_, removed) = try await URLSession.shared.data(from: child)
+        XCTAssertEqual((removed as? HTTPURLResponse)?.statusCode, 404)
+    }
+
+    @MainActor
+    func testLivePlaylistPrewarmDoesNotClaimReusableVOD() async throws {
+        let server = try PlaybackRangeTestServer(playlist: "#EXTM3U\n#EXTINF:4,\nsegment0.ts\n")
+        defer { server.stop() }
+        await fulfillment(of: [server.ready], timeout: 3)
+        let proxy = try await AuthenticatedMediaStreamProxy.shared.register(upstreamURL: XCTUnwrap(server.url),
+            filename: "live.m3u8", allowsSelfSignedCertificates: false)
+        defer { AuthenticatedMediaStreamProxy.shared.unregister(proxy) }
+        let warmed = try await AuthenticatedMediaStreamProxy.shared.prewarmVODPlaylist(proxy)
+        XCTAssertFalse(warmed)
+        _ = try await URLSession.shared.data(from: proxy)
+        XCTAssertEqual(server.receivedRequests.count, 2)
+    }
+
     @MainActor
     func testOriginalProxyProvidesContinuousLengthAcrossWindowsAndBackwardSeek() async throws {
         let window = Int(MediaRangePolicy.upstreamWindowBytes)
@@ -773,6 +1368,45 @@ final class PlaybackNextCoreTests: XCTestCase {
         XCTAssertTrue(requests[0].contains("range: bytes=0-\(window - 1)"))
         XCTAssertTrue(requests[1].contains("range: bytes=\(window)-\(window + 15)"))
         XCTAssertTrue(requests[2].contains("range: bytes=4-7"))
+    }
+
+    @MainActor
+    func testPacedOriginalProxyQualifiesSupplyAcrossFiniteRangeBoundary() async throws {
+        let window = Int(MediaRangePolicy.upstreamWindowBytes)
+        let payload = Data(repeating: 0x61, count: window + window / 2)
+        let server = try PlaybackRangeTestServer(payload: payload,
+            pacedBodyChunkBytes: 64 * 1024, pacedBodyDelay: 0.005)
+        defer { server.stop() }
+        await fulfillment(of: [server.ready], timeout: 3)
+        let trace = "body-boundary-" + UUID().uuidString
+        let proxy = try await AuthenticatedMediaStreamProxy.shared.registerOriginalStream(
+            upstreamURL: XCTUnwrap(server.url), filename: "fixture.mkv",
+            allowsSelfSignedCertificates: false, playbackTraceID: trace)
+        defer { AuthenticatedMediaStreamProxy.shared.unregister(proxy) }
+        let client = URLSession(configuration: .ephemeral)
+        defer { client.invalidateAndCancel() }
+        var request = URLRequest(url: proxy)
+        request.setValue("bytes=0-", forHTTPHeaderField: "Range")
+        request.timeoutInterval = 15
+        let (data, response) = try await client.data(for: request)
+        XCTAssertEqual((response as? HTTPURLResponse)?.statusCode, 206)
+        XCTAssertEqual(data, payload)
+        XCTAssertEqual(server.receivedRequests.count, 2)
+        XCTAssertTrue(server.receivedRequests[0].contains("bytes=0-\(window - 1)"))
+        XCTAssertTrue(server.receivedRequests[1].contains("bytes=\(window)-\(payload.count - 1)"))
+        try await Task.sleep(nanoseconds: 100_000_000)
+        let events = DiagnosticLogStore.shared.entries.filter { $0.detail.contains("playbackTraceID=\(trace)") }
+        let issued = try XCTUnwrap(events.first { $0.detail.contains("stage=upstreamRequestIssued") })
+        let rollover = try XCTUnwrap(events.first { $0.detail.contains("stage=continuationResponse") })
+        XCTAssertLessThan(rollover.date.timeIntervalSince(issued.date), 4,
+            "Fixture must finish the first Range before two full body windows fit inside it")
+        let windows = events.filter {
+            $0.detail.contains("playbackTraceID=\(trace)")
+                && $0.detail.contains("measurementBoundary=receivedBodyWindow")
+        }
+        XCTAssertGreaterThanOrEqual(windows.count, 2)
+        XCTAssertTrue(windows.contains { $0.detail.contains("recordedForAdaptiveEstimate=true") },
+            "Two stable body windows must survive a valid finite Range rollover")
     }
 
     @MainActor
@@ -852,6 +1486,22 @@ final class PlaybackNextCoreTests: XCTestCase {
         XCTAssertFalse(GreenfieldPlaybackControls.canDecodeOriginalAudio("h264"))
         XCTAssertFalse(GreenfieldPlaybackControls.canDecodeOriginalAudio("unknown-codec"))
         XCTAssertFalse(GreenfieldPlaybackControls.canDecodeOriginalAudio(nil))
+    }
+
+    func testHLSStructuralEvidenceNeverCopiesResourceNamesOrCredentials() {
+        XCTAssertEqual(PlaybackHLSRequestDiagnostics.segmentOrdinal(
+            URL(string: "https://example.com/private-library/17.ts?api_key=secret")!), 17)
+        XCTAssertNil(PlaybackHLSRequestDiagnostics.segmentOrdinal(
+            URL(string: "https://example.com/private-movie17.mp4?api_key=secret")!))
+        XCTAssertNil(PlaybackHLSRequestDiagnostics.segmentOrdinal(URL(string: "https://example.com/17.m3u8")!))
+        let fields = PlaybackHLSRequestDiagnostics.playlistFields(
+            "#EXTM3U\r\n#EXT-X-MEDIA-SEQUENCE:17\r\n#EXTINF:4.004,\r\n17.ts?api_key=secret\r\n#EXTINF:4.004,\r\nprivate-title.ts?token=secret\r\n#EXT-X-ENDLIST\r\n")
+        XCTAssertEqual(fields["playlistMediaSequence"], "17")
+        XCTAssertEqual(fields["playlistSegments"], "2")
+        XCTAssertEqual(fields["playlistFirstSegmentOrdinal"], "17")
+        XCTAssertEqual(fields["playlistEndlist"], "true")
+        XCTAssertFalse(String(describing: fields).contains("secret"))
+        XCTAssertFalse(String(describing: fields).contains("private"))
     }
 
     @MainActor
@@ -1092,6 +1742,91 @@ final class PlaybackNextCoreTests: XCTestCase {
     }
 
     @MainActor
+    func testUnchangedEngineMetadataDoesNotInvalidatePlayerButChangesStillPublish() {
+        let controls = GreenfieldPlaybackControls()
+        var notifications = 0
+        let subscription = controls.objectWillChange.sink { notifications += 1 }
+        defer { subscription.cancel() }
+        controls.updateTimelineMetadata(duration: 7_535, seekable: true)
+        XCTAssertEqual(notifications, 2)
+        for _ in 0..<100 {
+            controls.updateTimelineMetadata(duration: 7_535, seekable: true)
+        }
+        controls.updateTimelineMetadata(duration: .nan)
+        controls.updateTimelineMetadata(duration: .infinity)
+        controls.updateTimelineMetadata(duration: 0)
+        controls.updateTimelineMetadata(duration: -1)
+        XCTAssertEqual(notifications, 2, "Polling and unknown duration must not redraw or erase valid metadata")
+        controls.updateTimelineMetadata(duration: 8_000, seekable: false)
+        XCTAssertEqual(notifications, 4)
+        XCTAssertEqual(controls.durationSeconds, 8_000)
+        XCTAssertFalse(controls.isSeekable)
+        controls.updateClock(120.125)
+        controls.updateClock(120.25)
+        XCTAssertEqual(controls.currentSeconds, 120.25, "Playback clock keeps its original precision")
+    }
+
+    @MainActor
+    func testPausedRelativeJumpUsesEngineClockAndReturnsToSamePosition() {
+        let controls = GreenfieldPlaybackControls()
+        controls.durationSeconds = 7_535
+        controls.isReady = true
+        controls.isSeekable = true
+        controls.isPlaying = false
+        controls.currentSeconds = 91
+        var engineClock = 91.125
+        controls.readPlaybackClock = { engineClock }
+        var targets: [Double] = []
+        controls.seekPlayback = { targets.append($0) }
+        controls.jump(by: -15)
+        XCTAssertEqual(targets, [76.125], "A paused cue must be anchored to the actual engine frame")
+        engineClock = 76.125
+        controls.seekDidComplete(true)
+        controls.updateClock(engineClock)
+        controls.jump(by: 15)
+        XCTAssertEqual(targets, [76.125, 91.125], "A completed back/forward pair must return to the same paused cue")
+        XCTAssertFalse(controls.isPlaying)
+    }
+
+    @MainActor
+    func testRapidRelativeJumpsExtendPendingIntentInsteadOfOldEngineClock() {
+        let controls = GreenfieldPlaybackControls()
+        controls.durationSeconds = 7_535
+        controls.isReady = true
+        controls.isSeekable = true
+        controls.currentSeconds = 100
+        controls.readPlaybackClock = { 100.25 }
+        var targets: [Double] = []
+        controls.seekPlayback = { targets.append($0) }
+        controls.jump(by: 15)
+        controls.updateClock(100.3)
+        controls.jump(by: 15)
+        controls.jump(by: -15)
+        XCTAssertEqual(targets, [115.25, 130.25, 115.25])
+        XCTAssertEqual(controls.currentSeconds, 115.25)
+        XCTAssertTrue(controls.hasPendingSeek)
+    }
+
+    @MainActor
+    func testRelativeJumpFallsBackFromInvalidClockAndKeepsSeekBounds() {
+        let controls = GreenfieldPlaybackControls()
+        controls.durationSeconds = 100
+        controls.isReady = true
+        controls.isSeekable = true
+        controls.currentSeconds = 5
+        controls.readPlaybackClock = { .nan }
+        var targets: [Double] = []
+        controls.seekPlayback = { targets.append($0) }
+        controls.jump(by: -15)
+        XCTAssertEqual(targets, [0])
+        controls.seekDidComplete(true)
+        controls.updateClock(90)
+        controls.readPlaybackClock = { -1 }
+        controls.jump(by: 15)
+        XCTAssertEqual(targets, [0, 99.9])
+    }
+
+    @MainActor
     func testLargeMediaSeekKeepsTargetUntilEngineCompletion() {
         let controls = GreenfieldPlaybackControls()
         controls.durationSeconds = 7_535
@@ -1111,6 +1846,66 @@ final class PlaybackNextCoreTests: XCTestCase {
         controls.seekDidComplete(true)
         controls.updateClock(5_651.28)
         XCTAssertEqual(controls.currentSeconds, 5_651.28)
+    }
+
+    @MainActor
+    func testSeekRecoveryWaitsForPlayingNonbufferingClockAdvancement() {
+        let controls = GreenfieldPlaybackControls()
+        controls.durationSeconds = 7_535
+        controls.isReady = true
+        controls.isSeekable = true
+        controls.isPlaying = true
+        controls.seekPlayback = { _ in }
+        controls.seekSeconds(6_144)
+        controls.seekDidComplete(true)
+        controls.updateClock(6_144)
+        XCTAssertTrue(controls.hasPendingSeekRecovery, "Seek callback at the target is not resumed playback")
+        controls.isTransportBuffering = true
+        controls.updateClock(6_144.5)
+        XCTAssertTrue(controls.hasPendingSeekRecovery, "Buffered clock updates must not report recovery")
+        controls.isTransportBuffering = false
+        controls.isPlaying = false
+        controls.updateClock(6_144.6)
+        XCTAssertTrue(controls.hasPendingSeekRecovery, "Paused seeks cannot claim playback recovery")
+        controls.isPlaying = true
+        controls.updateClock(6_144.7)
+        XCTAssertFalse(controls.hasPendingSeekRecovery)
+        controls.seekSeconds(100)
+        controls.seekDidComplete(false)
+        controls.updateClock(100.5)
+        XCTAssertTrue(controls.hasPendingSeekRecovery, "Failed engine completion cannot report successful recovery")
+        controls.beginSession()
+        XCTAssertFalse(controls.hasPendingSeekRecovery, "A replacement session must release recovery state")
+    }
+
+    @MainActor
+    func testBackwardSeekRestoresSteadyBufferBeforeOriginalResumePosition() {
+        let controls = GreenfieldPlaybackControls()
+        controls.durationSeconds = 7_535
+        controls.isReady = true
+        controls.isSeekable = true
+        controls.currentSeconds = 6_232
+        controls.seekPlayback = { _ in }
+        XCTAssertFalse(controls.hasAdvancedForSteadyBuffer(6_232, initialPosition: 6_232))
+        XCTAssertTrue(controls.hasAdvancedForSteadyBuffer(6_233, initialPosition: 6_232))
+        controls.seekSeconds(6_144)
+        XCTAssertFalse(controls.hasAdvancedForSteadyBuffer(6_233, initialPosition: 6_232),
+                       "Old callbacks while seeking cannot restore the steady buffer")
+        controls.seekDidComplete(true)
+        XCTAssertFalse(controls.hasAdvancedForSteadyBuffer(6_144, initialPosition: 6_232))
+        XCTAssertTrue(controls.hasAdvancedForSteadyBuffer(6_144.1, initialPosition: 6_232),
+                      "Backward seek must not wait until playback passes 6,232 again")
+        controls.seekSeconds(6_400)
+        controls.seekDidComplete(true)
+        XCTAssertFalse(controls.hasAdvancedForSteadyBuffer(6_144.2, initialPosition: 6_232))
+        XCTAssertTrue(controls.hasAdvancedForSteadyBuffer(6_400.1, initialPosition: 6_232))
+        controls.readPlaybackClock = { 6_400.2 }
+        controls.seekSeconds(7_000)
+        controls.seekDidComplete(false)
+        XCTAssertTrue(controls.hasAdvancedForSteadyBuffer(6_400.3, initialPosition: 6_232))
+        controls.beginSession()
+        XCTAssertFalse(controls.hasAdvancedForSteadyBuffer(.nan, initialPosition: 100))
+        XCTAssertTrue(controls.hasAdvancedForSteadyBuffer(100.1, initialPosition: 100))
     }
 
     @MainActor
@@ -1145,6 +1940,180 @@ final class PlaybackNextCoreTests: XCTestCase {
     }
 
 #if canImport(KSPlayer)
+    @MainActor
+    func testPausedPGSReturnRestoresDisplayedCueAfterAnotherLanguageSelection() throws {
+        let track = try makePausedPGSFixture()
+        let part = try pausedPGSPart(start: 85, end: 89)
+        track.subtitle?.outputRenderQueue.push(SubtitleFrame(part: part, timebase: .defaultValue))
+        let model = SubtitleModel()
+        model.selectedSubtitleInfo = track
+        _ = model.subtitle(currentTime: 86.623)
+        XCTAssertTrue(model.parts.first === part)
+        model.rememberPausedImageSubtitle(currentTime: 86.623, token: "plan:4")
+        model.selectedSubtitleInfo = ResetSubtitleProbe()
+        XCTAssertTrue(model.parts.isEmpty, "The previous language must disappear before a new track is shown")
+        XCTAssertTrue(track.restorePausedImageSubtitle(at: 86.623, token: "plan:4"))
+        model.selectedSubtitleInfo = track
+        _ = model.subtitle(currentTime: 86.623)
+        XCTAssertTrue(model.parts.first === part, "A popped display set can be restored without rereading the media")
+        XCTAssertEqual(track.subtitle?.frameCount, 0)
+    }
+
+    @MainActor
+    func testPausedPGSExternalOverlayReturnCapturesBeforeProviderIsCleared() throws {
+        let track = try makePausedPGSFixture()
+        track.delay = 0.25
+        let part = try pausedPGSPart(start: 85, end: 89)
+        track.subtitle?.outputRenderQueue.push(SubtitleFrame(part: part, timebase: .defaultValue))
+        let model = SubtitleModel()
+        model.subtitleDelay = 0.5
+        model.selectedSubtitleInfo = track
+        let currentTime = 87.373
+        _ = model.subtitle(currentTime: currentTime)
+        XCTAssertTrue(model.parts.first === part)
+        model.rememberPausedImageSubtitle(currentTime: currentTime, token: "plan:4")
+        // External ASS and subtitle-off both clear the engine provider.
+        model.selectedSubtitleInfo = nil
+        XCTAssertTrue(model.parts.isEmpty)
+        model.rememberPausedImageSubtitle(currentTime: currentTime, token: "plan:4")
+        XCTAssertTrue(track.restorePausedImageSubtitle(at: 86.623, token: "plan:4"))
+        model.selectedSubtitleInfo = track
+        _ = model.subtitle(currentTime: currentTime)
+        XCTAssertTrue(model.parts.first === part)
+        XCTAssertEqual(track.subtitle?.frameCount, 0)
+        XCTAssertFalse(track.restorePausedImageSubtitle(at: 86.623, token: "plan:5"))
+    }
+
+    @MainActor
+    func testPausedPGSReplayCannotCarryInfiniteCueToAnotherPosition() throws {
+        let track = try makePausedPGSFixture()
+        let part = try pausedPGSPart(start: 85, end: .infinity)
+        track.rememberPausedImageSubtitle(part, at: 86.623, token: "plan:4")
+        XCTAssertTrue(track.restorePausedImageSubtitle(at: 86.623, token: "plan:4"))
+        XCTAssertTrue(track.search(for: 86.623).first === part)
+        XCTAssertTrue(track.search(for: 86.624).isEmpty)
+        XCTAssertFalse(track.restorePausedImageSubtitle(at: 86.623, token: "plan:4"),
+                       "Playback advancement must also release the retained bitmap")
+    }
+
+    @MainActor
+    func testPausedPGSReplayRejectsNewPlanSeekAndDifferentTrack() throws {
+        let track = try makePausedPGSFixture()
+        let part = try pausedPGSPart(start: 85, end: 89)
+        for token in ["next-plan:4", "plan:5"] {
+            track.rememberPausedImageSubtitle(part, at: 86.623, token: "plan:4")
+            XCTAssertFalse(track.restorePausedImageSubtitle(at: 86.623, token: token))
+            XCTAssertTrue(track.search(for: 86.623).isEmpty)
+        }
+        track.rememberPausedImageSubtitle(part, at: 86.623, token: "plan:4")
+        let other = try makePausedPGSFixture()
+        XCTAssertFalse(other.restorePausedImageSubtitle(at: 86.623, token: "plan:4"))
+        XCTAssertTrue(other.search(for: 86.623).isEmpty)
+    }
+
+    @MainActor
+    func testPausedPGSReplayRejectsOutOfCueTextAndChangedDisplayEnd() throws {
+        let track = try makePausedPGSFixture()
+        let valid = try pausedPGSPart(start: 85, end: 89)
+        let expired = try pausedPGSPart(start: 80, end: 84)
+        let future = try pausedPGSPart(start: 87, end: 89)
+        let text = SubtitlePart(85, 89, "ASS cue")
+        for invalid in [expired, future, text] {
+            track.rememberPausedImageSubtitle(valid, at: 86.623, token: "plan:4")
+            track.rememberPausedImageSubtitle(invalid, at: 86.623, token: "plan:4")
+            XCTAssertFalse(track.restorePausedImageSubtitle(at: 86.623, token: "plan:4"))
+        }
+        track.rememberPausedImageSubtitle(valid, at: 86.623, token: "plan:4")
+        valid.end = 86
+        XCTAssertFalse(track.restorePausedImageSubtitle(at: 86.623, token: "plan:4"),
+                       "A decoder's later clear/end must supersede the retained image")
+        track.rememberPausedImageSubtitle(expired, at: .nan, token: "plan:4")
+        XCTAssertFalse(track.restorePausedImageSubtitle(at: .nan, token: "plan:4"))
+    }
+
+    @MainActor
+    func testDecodedPGSClearSetSupersedesRestoredBitmapInSubtitleModel() throws {
+        let track = try makePausedPGSFixture()
+        let part = try pausedPGSPart(start: 85, end: .infinity)
+        track.rememberPausedImageSubtitle(part, at: 86.623, token: "plan:4")
+        XCTAssertTrue(track.restorePausedImageSubtitle(at: 86.623, token: "plan:4"))
+        let model = SubtitleModel()
+        model.selectedSubtitleInfo = track
+        _ = model.subtitle(currentTime: 86.623)
+        XCTAssertNotNil(model.parts.first?.image)
+        let clear = SubtitlePart(86, .infinity, attributedString: nil)
+        track.subtitle?.outputRenderQueue.push(SubtitleFrame(part: clear, timebase: .defaultValue))
+        _ = model.subtitle(currentTime: 86.623)
+        XCTAssertNil(model.parts.first?.image)
+        XCTAssertFalse(track.restorePausedImageSubtitle(at: 86.623, token: "plan:4"))
+    }
+
+    @MainActor
+    private func makePausedPGSFixture() throws -> FFmpegAssetTrack {
+        var parameters = AVCodecParameters()
+        parameters.codec_type = AVMEDIA_TYPE_SUBTITLE
+        parameters.codec_id = AV_CODEC_ID_HDMV_PGS_SUBTITLE
+        let track = try XCTUnwrap(FFmpegAssetTrack(codecpar: parameters))
+        track.subtitle = SyncPlayerItemTrack<SubtitleFrame>(mediaType: .subtitle,
+            frameCapacity: 8, options: KSOptions())
+        return track
+    }
+
+    @MainActor
+    private func pausedPGSPart(start: TimeInterval, end: TimeInterval) throws -> SubtitlePart {
+        let part = SubtitlePart(start, end, attributedString: nil)
+        part.image = try XCTUnwrap(UIImage(systemName: "star"))
+        return part
+    }
+
+    func testAccurateSeekKeepsSubtitleSpanningThePausedTarget() {
+        let frame = SubtitleFrame(part: SubtitlePart(81, 84, "Current cue"),
+            timebase: Timebase(num: 1, den: 1_000))
+        frame.timestamp = 81_000
+        XCTAssertEqual(frame.duration, 0)
+        XCTAssertFalse(frame.endsBeforeSeekTarget(82.542), "Packet start is not the subtitle display end")
+        XCTAssertFalse(frame.endsBeforeSeekTarget(84), "The subtitle renderer includes the end boundary")
+        XCTAssertTrue(frame.endsBeforeSeekTarget(84.001), "An expired cue must still be discarded")
+    }
+
+    func testAccurateSeekPreservesSubtitleClearAndFutureDisplaySets() {
+        let clear = SubtitleFrame(part: SubtitlePart(80, .infinity, attributedString: nil),
+            timebase: Timebase(num: 1, den: 1_000))
+        clear.timestamp = 80_000
+        XCTAssertFalse(clear.endsBeforeSeekTarget(82.542), "A clear display set must not leave an old bitmap behind")
+        let future = SubtitleFrame(part: SubtitlePart(85, 87, "Next cue"),
+            timebase: Timebase(num: 1, den: 1_000))
+        future.timestamp = 85_000
+        XCTAssertFalse(future.endsBeforeSeekTarget(82.542))
+    }
+
+    func testAccurateSeekRetainsAudioPacketEndFiltering() throws {
+        let format = try XCTUnwrap(AVAudioFormat(standardFormatWithSampleRate: 48_000, channels: 2))
+        let frame = AudioFrame(dataSize: 1, audioFormat: format)
+        frame.timebase = Timebase(num: 1, den: 1_000)
+        frame.timestamp = 81_000
+        frame.duration = 400
+        XCTAssertTrue(frame.endsBeforeSeekTarget(82.542))
+        frame.duration = 2_000
+        XCTAssertFalse(frame.endsBeforeSeekTarget(82.542))
+        frame.timestamp = 0
+        frame.duration = 0
+        XCTAssertTrue(frame.endsBeforeSeekTarget(82.542))
+    }
+
+    @MainActor
+    func testPausedSubtitleDecodeRefreshRejectsPlayingDisabledAndStaleTracks() {
+        let controls = GreenfieldPlaybackControls()
+        controls.planID = "current"
+        controls.isPlaying = false
+        XCTAssertTrue(controls.shouldRefreshPausedSubtitle(decodedTrackID: 7, selectedTrackID: 7, callbackPlanID: "current"))
+        XCTAssertFalse(controls.shouldRefreshPausedSubtitle(decodedTrackID: 7, selectedTrackID: nil, callbackPlanID: "current"))
+        XCTAssertFalse(controls.shouldRefreshPausedSubtitle(decodedTrackID: 7, selectedTrackID: 8, callbackPlanID: "current"))
+        XCTAssertFalse(controls.shouldRefreshPausedSubtitle(decodedTrackID: 7, selectedTrackID: 7, callbackPlanID: "retired"))
+        controls.isPlaying = true
+        XCTAssertFalse(controls.shouldRefreshPausedSubtitle(decodedTrackID: 7, selectedTrackID: 7, callbackPlanID: "current"))
+    }
+
     @MainActor
     func testPlayerResetClearsSubtitleBeforeReleasingLayerAndIsIdempotent() {
         let coordinator = KSVideoPlayer.Coordinator()
@@ -1278,6 +2247,34 @@ final class PlaybackNextCoreTests: XCTestCase {
         XCTAssertEqual(avPaused?.currentTime().seconds ?? -1, 1.5, accuracy: 0.1)
         XCTAssertEqual(avPaused?.rate, 0)
         avPaused?.replaceCurrentItem(with: nil)
+        // Regression: S01 stalled at 247.710s while playback intent stayed true.
+        // The replacement must decode at that frozen clock, without startup lead.
+        var bufferingTarget: Double?
+        let avBuffering = await GreenfieldAVPlayerWarmup.prepare(request,
+            liveClock: { 1.5 }, isPlaying: { true }, isAdvancing: { false },
+            report: { stage, metrics in
+                if stage == "candidate_decoded" { bufferingTarget = metrics["target"].flatMap(Double.init) }
+            })
+        XCTAssertNotNil(avBuffering, "A buffering source must accept an aligned decoded replacement")
+        XCTAssertEqual(bufferingTarget ?? -1, 1.5, accuracy: 0.001)
+        XCTAssertEqual(avBuffering?.currentTime().seconds ?? -1, 1.5, accuracy: 0.1)
+        XCTAssertGreaterThan(avBuffering?.rate ?? 0, 0, "Recovery must retain the user playback intent")
+        avBuffering?.pause()
+        avBuffering?.replaceCurrentItem(with: nil)
+        // Automatic handoff holds the muted frame across asynchronous session
+        // preparation; adopting that frame must still resume playback intent.
+        let avHeld = await GreenfieldAVPlayerWarmup.prepare(request,
+            liveClock: { 1.5 }, isPlaying: { true }, isAdvancing: { false }, holdForCommit: true)
+        XCTAssertNotNil(avHeld)
+        XCTAssertEqual(avHeld?.rate, 0)
+        XCTAssertEqual(avHeld?.currentTime().seconds ?? -1, 1.5, accuracy: 0.1)
+        controls.startsPaused = false
+        model.start(native, preparedPlayer: avHeld, preparedSession: .init(recorder: prepared.recorder,
+            coordinator: prepared.coordinator, result: nativeResult))
+        for _ in 0..<300 where model.player.rate == 0 { try await Task.sleep(nanoseconds: 10_000_000) }
+        XCTAssertGreaterThan(model.player.rate, 0, "Committed held candidate must resume the user's play intent")
+        XCTAssertFalse(model.player.isMuted)
+        model.stop()
         let avStarted = ProcessInfo.processInfo.systemUptime
         let avMoving = await GreenfieldAVPlayerWarmup.prepare(request,
             liveClock: { 0.5 + ProcessInfo.processInfo.systemUptime - avStarted }, isPlaying: { true })
@@ -1286,6 +2283,50 @@ final class PlaybackNextCoreTests: XCTestCase {
                        0.5 + ProcessInfo.processInfo.systemUptime - avStarted, accuracy: 0.15)
         avMoving?.pause()
         avMoving?.replaceCurrentItem(with: nil)
+        // Exercise the buffered jump against real AV decoding, not just a
+        // policy return. A still-current source can have advanced while loading.
+        var hasDecodedBufferedCandidate = false
+        var bufferedStages: [String] = []
+        let avBufferedJump = await GreenfieldAVPlayerWarmup.prepare(request,
+            liveClock: { hasDecodedBufferedCandidate ? 4 : 1.5 }, isPlaying: { false },
+            isAdvancing: { false }, report: { stage, _ in
+                bufferedStages.append(stage)
+                if stage == "candidate_decoded" { hasDecodedBufferedCandidate = true }
+            })
+        XCTAssertNotNil(avBufferedJump)
+        XCTAssertTrue(bufferedStages.contains("candidate_buffered_seek_completed"))
+        XCTAssertTrue(bufferedStages.contains("candidate_aligned"))
+        XCTAssertEqual(avBufferedJump?.currentTime().seconds ?? -1, 4, accuracy: 0.1)
+        XCTAssertEqual(avBufferedJump?.rate, 0)
+        avBufferedJump?.replaceCurrentItem(with: nil)
+        // iPad's first frame arrived 18.766 seconds behind the live source,
+        // without a user seek. Keep trying within the existing deadline; a
+        // real preference/seek invalidation must still abandon the candidate.
+        var decodedAt: Double?
+        var lagFailure: [String: String] = [:]
+        let avLagging = await GreenfieldAVPlayerWarmup.prepare(request,
+            liveClock: { decodedAt == nil ? 1.5 : 20.266 }, isPlaying: { true },
+            isAdvancing: { false },
+            candidateStillCurrent: {
+                decodedAt.map { ProcessInfo.processInfo.systemUptime - $0 < 0.1 } ?? true
+            }, report: { stage, metrics in
+                if stage == "candidate_decoded" { decodedAt = ProcessInfo.processInfo.systemUptime }
+                if stage == "warmup_failed" { lagFailure = metrics }
+            })
+        XCTAssertNotNil(decodedAt)
+        XCTAssertNil(avLagging)
+        XCTAssertEqual(lagFailure["reason"], "candidateInvalidated",
+                       "Elapsed preparation lag must not masquerade as a user seek")
+        var invalidated = false
+        var invalidationStage: String?
+        let avInvalidated = await GreenfieldAVPlayerWarmup.prepare(request,
+            liveClock: { 1.5 }, isPlaying: { false },
+            candidateStillCurrent: { !invalidated }, report: { stage, metrics in
+                if stage == "candidate_preparing" { invalidated = true }
+                if stage == "warmup_failed" { invalidationStage = metrics["stage"] }
+            })
+        XCTAssertNil(avInvalidated)
+        XCTAssertEqual(invalidationStage, "candidateInvalidated")
         let intent = PlaybackIntent(sourceKind: .directURL, itemIdentity: PlaybackItemIdentity(sourceKind: .directURL),
                                     displayTitle: "Warmup regression", directURL: url)
         let plan = PlaybackPlan(intent: intent, timeline: PlaybackTimeline(startTime: 0.5, duration: 6),
@@ -1385,10 +2426,10 @@ final class PlaybackNextCoreTests: XCTestCase {
             timeline: PlaybackTimeline(duration: 100),
             primaryRoute: route
         )
-        let context = ObservingPlaybackIOContext(route: route)
+        let context = VerifiedMemoryPlaybackIOContext(route: route, bytes: Data(repeating: 42, count: 1_000))
         let coordinator = PreloadCoordinator()
 
-        try await coordinator.schedule(
+        let completedBytes = try await coordinator.schedule(
             PlaybackPreloadRequest(
                 planID: plan.id,
                 routeID: route.id,
@@ -1405,6 +2446,59 @@ final class PlaybackNextCoreTests: XCTestCase {
             PlaybackByteRange(start: 0, endExclusive: 128)
         ])
         XCTAssertEqual(completedCount, 1)
+        XCTAssertEqual(completedBytes, 128)
+        let read = try await context.read(range: PlaybackByteRange(start: 0, length: completedBytes))
+        XCTAssertEqual(read.data, Data(repeating: 42, count: 128))
+    }
+
+    func testObservationOnlyIODoesNotInventCachedBytes() async throws {
+        let route = PlaybackRoute(routeKind: .directHTTP, playMethod: .directPlay,
+            url: URL(string: "https://example.com/video.mkv")!, rangeCapability: .supported)
+        let context = ObservingPlaybackIOContext(route: route)
+        let range = PlaybackByteRange(start: 0, length: 128)
+        try await context.preload(range: range, budget: 128)
+        let cached = await context.cachedRanges()
+        let claimsCached = await context.isRangeCached(range)
+        XCTAssertTrue(cached.isEmpty)
+        XCTAssertFalse(claimsCached)
+        do {
+            _ = try await context.read(range: range)
+            XCTFail("An observer must not return a fabricated network read")
+        } catch { XCTAssertEqual((error as? URLError)?.code, .unsupportedURL) }
+    }
+
+    func testObservationOnlyStartupReportsZeroActualPreload() async throws {
+        let recorder = PlaybackDiagnosticsRecorder()
+        let intent = PlaybackIntent(sourceKind: .directURL,
+            itemIdentity: PlaybackItemIdentity(sourceKind: .directURL), displayTitle: "Movie",
+            directURL: URL(string: "http://192.168.1.8/movie.mkv")!,
+            networkContext: PlaybackNetworkContext(networkClass: .local, isPrivateRoute: true))
+        let coordinator = PlaybackSessionCoordinator(
+            resolver: URLPlaybackSourceResolver(sourceKind: .directURL,
+                fileExtensionHint: "mkv", byteLength: 1_000), diagnostics: recorder)
+        let result = try await coordinator.prepare(intent)
+        let events = await recorder.events
+        XCTAssertEqual(result.completedPreloadBytes, 0)
+        XCTAssertFalse(events.contains { $0.name == .preloadCompleted })
+        XCTAssertEqual(events.first { $0.name == .preloadCancelled }?.metrics["reason"], "bytesNotMaterialized")
+    }
+
+    func testFailedPreloadDoesNotRemainActiveOrCompleted() async throws {
+        let route = PlaybackRoute(routeKind: .directHTTP, playMethod: .directPlay,
+            url: URL(string: "https://example.com/video.mkv")!, rangeCapability: .supported)
+        let context = VerifiedMemoryPlaybackIOContext(route: route,
+            bytes: Data(repeating: 42, count: 1_000), failsPreload: true)
+        let coordinator = PreloadCoordinator()
+        do {
+            try await coordinator.schedule(PlaybackPreloadRequest(planID: UUID(), routeID: route.id,
+                range: PlaybackByteRange(start: 0, length: 128), budgetBytes: 128, reason: .startup),
+                ioContext: context)
+            XCTFail("A failed byte transfer must propagate its error")
+        } catch { XCTAssertEqual((error as? URLError)?.code, .networkConnectionLost) }
+        let active = await coordinator.activeRequests
+        let completed = await coordinator.completedRequests
+        XCTAssertTrue(active.isEmpty)
+        XCTAssertTrue(completed.isEmpty)
     }
 
     func testScenarioMatrixCoversAgreedPlaybackEnvironments() {
@@ -1567,7 +2661,7 @@ final class PlaybackNextCoreTests: XCTestCase {
         XCTAssertEqual(routeEvents.first?.metrics[PlaybackMetricKeys.blocksFirstFrameUntilStartupPreload], "false")
     }
 
-    func testPublicUpstreamBehindLocalRangeProxyRaisesReserveAfterStartup() {
+    func testNetworkUpstreamBehindLocalRangeProxyRaisesReserveAfterStartup() {
         let intent = PlaybackIntent(
             sourceKind: .dsmFile,
             contentKind: .video,
@@ -1597,7 +2691,18 @@ final class PlaybackNextCoreTests: XCTestCase {
             routeKind: .localRangeProxy,
             upstreamAddressKind: localIntent.connectionContext.addressKind,
             startupSeconds: localPolicy.minimumPlayableBufferSeconds
+        ), 4)
+        // Neither local playback nor an unrelated renderer route inherits the
+        // network proxy's steady-state recovery target.
+        XCTAssertEqual(PlaybackPlanningPolicy.steadyStateBufferSeconds(
+            routeKind: .localFile, upstreamAddressKind: .privateIP, startupSeconds: 0
+        ), 0)
+        XCTAssertEqual(PlaybackPlanningPolicy.steadyStateBufferSeconds(
+            routeKind: .localRangeProxy, upstreamAddressKind: .loopback, startupSeconds: 1
         ), 1)
+        XCTAssertEqual(PlaybackPlanningPolicy.steadyStateBufferSeconds(
+            routeKind: .localRangeProxy, upstreamAddressKind: .privateIP, startupSeconds: 6
+        ), 6)
     }
 
     func testSessionCoordinatorRecordsColdStartAndRuntimeEvents() async throws {
@@ -1674,7 +2779,8 @@ final class PlaybackNextCoreTests: XCTestCase {
         XCTAssertTrue(allNames.contains(.qualityChanged))
         XCTAssertTrue(allNames.contains(.routeSelected))
         XCTAssertTrue(names.contains(.ioOpened))
-        XCTAssertTrue(names.contains(.preloadCompleted))
+        XCTAssertTrue(names.contains(.preloadCancelled))
+        XCTAssertFalse(names.contains(.preloadCompleted))
         XCTAssertTrue(names.contains(.seekRecovered))
         XCTAssertTrue(names.contains(.audioTrackChanged))
         XCTAssertTrue(names.contains(.subtitleChanged))
@@ -1687,7 +2793,7 @@ final class PlaybackNextCoreTests: XCTestCase {
         XCTAssertTrue(names.contains(.streamInterrupted))
         XCTAssertTrue(names.contains(.fallbackSelected))
         XCTAssertTrue(names.contains(.qualityChanged))
-        XCTAssertEqual(result.completedPreloadBytes, 1_000)
+        XCTAssertEqual(result.completedPreloadBytes, 0)
     }
 }
 
@@ -1699,13 +2805,23 @@ private final class PlaybackRangeTestServer: @unchecked Sendable {
     private var requests = 0
     private var requestHeaders: [String] = []
     private let playlist: String?
+    private let masterPlaylist: String?
     private let compressedPlaylist: Data?
     private let payload: Data?
+    private let pacedBodyChunkBytes: Int?
+    private let pacedBodyDelay: TimeInterval
+    private let rejectsCompactQuery: Bool
     var url: URL? { listener.port.flatMap { URL(string: "http://127.0.0.1:\($0.rawValue)/fixture.\(playlist == nil ? "mp4" : "m3u8")") } }
     var connectionCount: Int { queue.sync { connections.count } }
     var requestCount: Int { queue.sync { requests } }
     var receivedRequests: [String] { queue.sync { requestHeaders } }
-    init(playlist: String? = nil, compressedPlaylist: Data? = nil, payload: Data? = nil) throws {
+    init(playlist: String? = nil, compressedPlaylist: Data? = nil, payload: Data? = nil,
+         masterPlaylist: String? = nil, pacedBodyChunkBytes: Int? = nil,
+         pacedBodyDelay: TimeInterval = 0, rejectsCompactQuery: Bool = false) throws {
+        self.rejectsCompactQuery = rejectsCompactQuery
+        self.pacedBodyChunkBytes = pacedBodyChunkBytes
+        self.pacedBodyDelay = pacedBodyDelay
+        self.masterPlaylist = masterPlaylist
         self.playlist = playlist
         self.compressedPlaylist = compressedPlaylist
         self.payload = payload
@@ -1725,6 +2841,15 @@ private final class PlaybackRangeTestServer: @unchecked Sendable {
         listener.cancel()
         queue.sync { connections.forEach { $0.cancel() } }
     }
+    private func sendPaced(_ body: Data, on connection: NWConnection, offset: Int, chunk: Int) {
+        guard offset < body.count else { receive(connection); return }
+        let end = min(offset + chunk, body.count)
+        queue.asyncAfter(deadline: .now() + pacedBodyDelay) { [weak self] in
+            connection.send(content: body.subdata(in: offset..<end), completion: .contentProcessed { error in
+                if error == nil { self?.sendPaced(body, on: connection, offset: end, chunk: chunk) }
+            })
+        }
+    }
     private func receive(_ connection: NWConnection, pending: Data = Data()) {
         connection.receive(minimumIncompleteLength: 1, maximumLength: 8192) { [weak self] data, _, done, error in
             guard let self, let data, error == nil, !done else { return }
@@ -1735,6 +2860,10 @@ private final class PlaybackRangeTestServer: @unchecked Sendable {
             self.requests += 1
             let request = String(decoding: received, as: UTF8.self)
             self.requestHeaders.append(request)
+            if self.rejectsCompactQuery, request.lowercased().contains("params=") {
+                connection.send(content: Data("HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\nConnection: close\r\n\r\n".utf8), completion: .contentProcessed { _ in connection.cancel() })
+                return
+            }
             if let payload = self.payload {
                 let range = request.lowercased().components(separatedBy: "\r\n")
                     .first { $0.hasPrefix("range:") }?.components(separatedBy: "bytes=").last?
@@ -1744,13 +2873,20 @@ private final class PlaybackRangeTestServer: @unchecked Sendable {
                 guard start >= 0, end >= start else { connection.cancel(); return }
                 let body = payload.subdata(in: start..<(end + 1))
                 let header = "HTTP/1.1 206 Partial Content\r\nContent-Type: video/mp4\r\nContent-Length: \(body.count)\r\nContent-Range: bytes \(start)-\(end)/\(payload.count)\r\nAccept-Ranges: bytes\r\nConnection: keep-alive\r\n\r\n"
-                connection.send(content: Data(header.utf8) + body, completion: .contentProcessed { [weak self] error in
-                    if error == nil { self?.receive(connection) }
-                })
+                if let chunk = self.pacedBodyChunkBytes {
+                    connection.send(content: Data(header.utf8), completion: .contentProcessed { [weak self] error in
+                        if error == nil { self?.sendPaced(body, on: connection, offset: 0, chunk: chunk) }
+                    })
+                } else {
+                    connection.send(content: Data(header.utf8) + body, completion: .contentProcessed { [weak self] error in
+                        if error == nil { self?.receive(connection) }
+                    })
+                }
                 return
             }
             let response: String
-            if let playlist = self.playlist, request.components(separatedBy: " ").dropFirst().first?.contains(".m3u8") == true {
+            if let playlist = request.contains("/fixture.m3u8") ? (self.masterPlaylist ?? self.playlist) : self.playlist,
+               request.components(separatedBy: " ").dropFirst().first?.contains(".m3u8") == true {
                 response = "HTTP/1.1 200 OK\r\nContent-Type: application/vnd.apple.mpegurl\r\nContent-Length: \(playlist.utf8.count)\r\nConnection: keep-alive\r\n\r\n" + playlist
             } else {
                 response = "HTTP/1.1 206 Partial Content\r\nContent-Type: video/mp4\r\nContent-Length: 4\r\nContent-Range: bytes 0-3/4\r\nAccept-Ranges: bytes\r\nConnection: keep-alive\r\n\r\ntest"
@@ -1793,4 +2929,35 @@ private final class ResetSubtitleProbe: SubtitleInfo {
 private final class PlaybackReportQueueTestProbe {
     var events: [String] = []
     var releaseStart: CheckedContinuation<Void, Never>?
+}
+
+/// Materializes fixture bytes before marking a range; the observer cannot stand
+/// in for a byte cache when testing successful preloading.
+private final class VerifiedMemoryPlaybackIOContext: PlaybackIOContext {
+    let route: PlaybackRoute
+    private let bytes: Data
+    private let cache = RangeCacheStore()
+    private let failsPreload: Bool
+    init(route: PlaybackRoute, bytes: Data, failsPreload: Bool = false) {
+        self.route = route; self.bytes = bytes; self.failsPreload = failsPreload
+    }
+    func open() async throws {}
+    func read(range: PlaybackByteRange) async throws -> PlaybackReadResult {
+        guard range.endExclusive <= bytes.count else { throw URLError(.badServerResponse) }
+        return PlaybackReadResult(range: range,
+            data: bytes.subdata(in: Int(range.start)..<Int(range.endExclusive)), source: .localFile)
+    }
+    func seek(to offset: Int64) async throws {}
+    func cachedRanges() async -> [PlaybackByteRange] { await cache.cachedRanges }
+    func isRangeCached(_ range: PlaybackByteRange) async -> Bool { await cache.isCached(range) }
+    func isRangeUncached(_ range: PlaybackByteRange) async -> Bool { await cache.isUncached(range) }
+    func preload(range: PlaybackByteRange, budget: Int64) async throws {
+        if failsPreload { throw URLError(.networkConnectionLost) }
+        let bounded = PlaybackByteRange(start: range.start, length: min(range.length, max(budget, 0)))
+        let result = try await read(range: bounded)
+        guard result.data.count == bounded.length else { throw URLError(.badServerResponse) }
+        await cache.markCached(bounded)
+    }
+    func invalidate(reason: String) async { await cache.reset() }
+    func close() async {}
 }

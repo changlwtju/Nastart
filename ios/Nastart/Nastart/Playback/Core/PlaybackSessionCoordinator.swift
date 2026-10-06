@@ -356,7 +356,8 @@ actor PlaybackSessionCoordinator {
             .nextItemStarted,
             metrics: [
                 "intentID": nextIntent.id.uuidString,
-                PlaybackMetricKeys.preloadedBytes: metricString(plan.preloadPolicy.nextItemBytes)
+                PlaybackMetricKeys.preloadedBytes: "0",
+                "nextItemBudgetBytes": metricString(plan.preloadPolicy.nextItemBytes)
             ]
         )
     }
@@ -437,9 +438,9 @@ actor PlaybackSessionCoordinator {
             .preloadStarted,
             plan: plan,
             route: plan.primaryRoute,
-            metrics: [PlaybackMetricKeys.preloadedBytes: metricString(requestedLength)]
+            metrics: ["requestedBytes": metricString(requestedLength)]
         )
-        try await preloadCoordinator.schedule(
+        let completedBytes = try await preloadCoordinator.schedule(
             PlaybackPreloadRequest(
                 planID: plan.id,
                 routeID: plan.primaryRoute.id,
@@ -449,13 +450,19 @@ actor PlaybackSessionCoordinator {
             ),
             ioContext: ioContext
         )
+        guard completedBytes > 0 else {
+            await diagnostics.record(.preloadCancelled, plan: plan, route: plan.primaryRoute,
+                metrics: ["reason": "bytesNotMaterialized", "requestedBytes": metricString(requestedLength),
+                          PlaybackMetricKeys.preloadedBytes: "0"])
+            return 0
+        }
         await diagnostics.record(
             .preloadCompleted,
             plan: plan,
             route: plan.primaryRoute,
-            metrics: [PlaybackMetricKeys.preloadedBytes: metricString(requestedLength)]
+            metrics: [PlaybackMetricKeys.preloadedBytes: metricString(completedBytes)]
         )
-        return requestedLength
+        return completedBytes
     }
 
     private func approximateByteOffset(

@@ -21,7 +21,8 @@ struct MediaLibraryView: View {
                     },
                     dsmSession: connectionStore.dsmSession,
                     dsmSharedFolderPaths: dsmSharedFolderRootPaths,
-                    fallbackEndpoints: jellyfinEndpointCandidates
+                    fallbackEndpoints: jellyfinEndpointCandidates,
+                    connectionStore: connectionStore
                 )
             } else {
                 fallbackLibrary

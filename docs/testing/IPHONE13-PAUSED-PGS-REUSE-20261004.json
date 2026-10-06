@@ -1,0 +1,99 @@
+{
+  "measuredAt": "2026-10-04T19:02:05.368998+08:00",
+  "scope": "L0 candidate for redundant seek on return to a known paused PGS cue; device UI regression awaiting XCTest local authorization",
+  "device": {
+    "name": "iPhone",
+    "model": "iPhone 13",
+    "hardwareModel": "iPhone14,5",
+    "system": "iOS 16.3.1 (20D67)",
+    "connection": "USB; pair validation successful"
+  },
+  "head": "9a9941cd4ec82625f680b5193b3a0f66797eb851",
+  "workspace": "prior uncommitted changes preserved; current source snapshot matches built package",
+  "configuration": "normal Debug -Onone",
+  "package": {
+    "name": "Nastart-PausedPGSReuse-Debug.app",
+    "binaries": [
+      {
+        "name": "Nastart",
+        "sha256": "eefefaeda73af08ceb473793699baac9af2aa4af026022a8040f3949cb9f019c",
+        "buildTime": "2026-10-04T18:52:03.657878+08:00"
+      },
+      {
+        "name": "Nastart.debug.dylib",
+        "sha256": "d0ee7e8a6cb2abc4cbd36dabd5b6fd4c9773ae65c71a3ab16a9f260c8c0219b1",
+        "buildTime": "2026-10-04T18:52:03.483442+08:00"
+      },
+      {
+        "name": "Frameworks/KSPlayer.framework/KSPlayer",
+        "sha256": "568a9c04fe749c41718204be43839f3830e9786b282377c5199255863556e284",
+        "buildTime": "2026-10-04T18:52:03.163702+08:00"
+      }
+    ],
+    "signatureVerified": true,
+    "sourceDiffSHA256": "c991a9e272e95386cc27119eae17bf644c98c24fe22b1bedddd985ee41eced80",
+    "installation": "InstallComplete",
+    "iosDeployExit": 0,
+    "installationTime": "2026-10-04T18:55:17.968134+08:00",
+    "dataPreserved": true,
+    "nonDiagnosticKeyCount": 25,
+    "normalLaunch": "not executed; preserve local XCTest authorization screen",
+    "normalStartupUI": "unverified",
+    "deviceUIRegression": "not started"
+  },
+  "logicValidation": {
+    "testsPassed": 98,
+    "testsFailed": 0,
+    "testsSkipped": 0,
+    "testResult": "Passed",
+    "source": "xcresult structured summary; stdout omitted one passed case",
+    "newTests": [
+      "testDecodedPGSClearSetSupersedesRestoredBitmapInSubtitleModel",
+      "testPausedPGSReplayCannotCarryInfiniteCueToAnotherPosition",
+      "testPausedPGSReplayRejectsNewPlanSeekAndDifferentTrack",
+      "testPausedPGSReplayRejectsOutOfCueTextAndChangedDisplayEnd",
+      "testPausedPGSReturnRestoresDisplayedCueAfterAnotherLanguageSelection"
+    ],
+    "preflight": "passed",
+    "diffCheck": "passed"
+  },
+  "change": {
+    "reuseCondition": "paused; bitmap actually present in current subtitle model; same track object, normalized timestamp, plan and seek-generation token",
+    "action": "retain one bitmap per track by reference; return through original subtitle provider; skip redundant full seek only on exact match",
+    "fallback": "existing seek and decoder notification paths retained for missing, changed, expired or mismatched display state",
+    "invalidation": "playback timestamp changes, token mismatch, invalid cue, or newly decoded display/clear set",
+    "scopeExcluded": [
+      "playing subtitle switches",
+      "newly selected PGS with no known cue",
+      "different position/session/seek generation",
+      "transport window/buffer threshold/decoder mode changes"
+    ],
+    "devicePerformanceClaim": "none yet"
+  },
+  "authorization": {
+    "state": "native screenshot shows empty XCTest iPhone-password request",
+    "wda": "restart launched runner but HTTP never ready; bounded attempt ended and own processes cleaned",
+    "repeatInstallOfWDA": false,
+    "passcodeInput": false,
+    "deviceSettingsChanged": false
+  },
+  "historicalEvidence": {
+    "package": "30210177 / 6e2a2c5c",
+    "pausedPgsReturn": "5/5; belongs to previous package",
+    "originalNoSwitchObservationSeconds": 626.086,
+    "originalNoSwitchStallCount": 0,
+    "afterSubtitleSeekBufferMs": 4501,
+    "belongsToCandidate": false
+  },
+  "competitorControlledPairs": 0,
+  "pending": [
+    "local XCTest authorization",
+    "normal no-test-env launch and actual startup confirmation",
+    "known paused PGS cue return 5 repetitions; verify no seek/queue reset and actual correct display",
+    "immediate resume t3/10/30 and full ten-minute observation",
+    "negative controls: position/seek/track changes and fresh PGS decode",
+    "S01 dual entrances, S03/S19 ASS/PGS and required iPad/representative formats",
+    "audible output, full frame/scroll timing and CB-01 through CB-26 comparisons"
+  ],
+  "privateEvidence": "DebugEvidence/2026-10-04-pgs-reserve-183835; raw preferences, credentials, logs and screenshots remain local private"
+}

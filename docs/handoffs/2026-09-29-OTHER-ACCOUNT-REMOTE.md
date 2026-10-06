@@ -17,6 +17,12 @@
 
 ## 播放结果和边界
 
+**12:27 本轮补充：** 最新正常 Debug 候选为 `f08bfde1c3f3f9eaa811bb7eb7f4f43b1e31a32c31589b7458b4e17402c11bd2`，持久副本 `~/Library/Application Support/Nastart/DebugEvidence/2026-09-29-iphone13-continuous/Nastart.app`；已保留数据安装两机，正常无测试变量启动。旧 `37b0…` S01 十分钟持续基线失败（247.710 秒停住），自动 HLS 候选解码后因提前量 11/15 秒未对齐；新候选修正缓冲时提前量，实际解码 XCTest 通过；12:40 最新包 S01 十分钟原画单轮完成、卡顿/丢帧计数 0且已退出，没有触发自动回退，不能据此宣称真实故障恢复或初始停滞根因已解决。`4cdd…` 取消候选双入口原画呈现前有效取消通过；iPad 四接口 proxy=false 仅表示这些 HTTP 请求没有 HTTP 代理，VPN 隧道未排除。测试工具首次启动/随后收尾挂起有采样；实际断言与工具完成分开记录。全部未提交修改保留，禁止大电影限速转码，后续以 [当前完整交接](CURRENT-PLAYBACK-HANDOFF.md) 为准。
+
+**09:52 后续调试：** 最新正常候选 dylib SHA-256 `37b0fc03e608700b0a2bbe1734e7f4690bbe28b35a5cc7ce5b321e7826656f50`，持久路径 `~/Library/Application Support/Nastart/DebugEvidence/2026-09-29-iphone13-next/Nastart.app`，已保留数据安装两机。修正 Jellyfin 错误状态推断，以及退出重开丢音字幕偏好；iPhone 13 S01 热重开、冷续播、从头播放均有画面和国语/字幕关闭选中状态，声音尚未人工验收。iPad 原生网络专项实际 1 项通过，DSM/Jellyfin LAN/公网四接口均 HTTP 200 / 有效 JSON，新进程仍无已保存 DSM 凭据；没有 VPN A/B，不能排除间歇代理问题。iPad UI WDA 仍自动化模式初始化超时，需继续补保存登录与 UI 环境。以 [最新交接](CURRENT-PLAYBACK-HANDOFF.md) / [iPad 专项](2026-09-29-IPAD-ENVIRONMENT.md) 为准，下面 `46df…` 是首轮旧基线。
+
+**07:55 白天接手补充：** USB 为 iPhone 13 与同 UDID 的 iPad，iPhone 18 不在；iPad 实际已存在 Nastart/WDA 安装，但包身份、WDA 和播放仍未验收。iPhone 13 WDA ready，无测试变量，已用上述 `46df…` 持久包保留数据覆盖安装并正常启动。S01 两入口各三次退出/热重开，暂停退出及两入口冷启动续播已补；准备中取消未捕获有效窗口、短片头 Jellyfin 续播规则与一次上报 -1017 待查。全部播放已退出，正常 App PID `46268`，公网/局域网 Jellyfin 公共接口 HTTP 200，NAS CPU 44% / RAM 19% / 磁盘 92%。HEAD 被本任务之外的 07:26:57 提交推进至 `9a9941c`，本轮只改三份记录，未提交/清理源码。最新逐项证据及下一步以 [当前完整交接的白天回归节](CURRENT-PLAYBACK-HANDOFF.md) 为准。
+
 - 目标：尽量原画和高画质，同时保证流畅；弱网自动降到符合送达速率的清晰度，尽量让用户感受不到换流。手动清晰度 UI 暂缓，内部接口保留；播放中自动升档**尚未实现**。
 - iPhone 18 蜂窝下，Apple 预编码 HLS 静态素材通过 App 内 Debug 限速从约 8 Mbps 档降到约 1.3 Mbps 档，实际送达约 2.2 Mbps。Jellyfin 入口旧流交接时缓冲曾仅约 0.33 秒；设备文件入口从 26 GB 文件详情的**独立测试按钮**进入，旧流交接时约 2.82 秒，候选约 6.96 秒。候选完成解码/时钟对齐，交接附近诊断未记录缓冲空或播放器卡顿。尚缺人眼、声音、实际电影和最终包的真机复核，**不能宣称无感体验已经验收**。
 - 一次自动化在测试变量丢失后误点普通“从头播放”，短暂开启真实文件的 Jellyfin HLS 转码；发现后立即结束。现两个入口都用仅在 `NASTART_TEST_STATIC_HLS=1` 时出现的独立 Debug 按钮“静态 HLS 弱网测试”；普通播放按钮不再拦截为夹具。使用夹具前必须在 UI 树看到专用按钮，开播后确认标题 `Static HLS fixture`，否则立即停止。不要直接对《指环王》或《碟中谍》做受控限速转码；它们约 55–129 GB、60–82 Mbps，之前 NAS 有过失联。

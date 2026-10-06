@@ -1,0 +1,220 @@
+{
+  "time": "2026-10-05T21:01:01.465996+08:00",
+  "phases": {
+    "same-route": {
+      "trace": "E13B90B4",
+      "configuration": "normal Debug -Onone 7dd0/ad7d",
+      "requestedSeconds": 180,
+      "count": 166,
+      "wallCoverage": 176.1929030418396,
+      "first": {
+        "elapsed": 2.959944009780884,
+        "current": 1.14,
+        "drops": 0,
+        "stalls": 0,
+        "active": "no",
+        "ahead": 3.585624901374999,
+        "bytesRead": 9793031
+      },
+      "last": {
+        "elapsed": 179.15284705162048,
+        "current": 171.081,
+        "drops": 3,
+        "stalls": 1,
+        "active": "no",
+        "ahead": 14.889874595297414,
+        "bytesRead": 1445216545
+      },
+      "route": {
+        "connectionAddressKind": "privateIP",
+        "connectionPort": "8096",
+        "connectionScheme": "http",
+        "routeKind": "localRangeProxy"
+      },
+      "mediaIdentity": {
+        "doubleSHA256": "54fa3559159dddad93119d2a922e4bf8965e9c82ab2c9d24b5d683fc4466ac56",
+        "audioTrackID": 1,
+        "subtitleTrackID": 7,
+        "subtitlesDisabled": false
+      },
+      "maxStalls": 1,
+      "activeStallSamples": 6,
+      "bufferCallbacks": [
+        {
+          "bufferedCount": "0",
+          "consumeMs": "390"
+        },
+        {
+          "bufferedCount": "1",
+          "consumeMs": "6139"
+        }
+      ],
+      "minAhead": 0.04170833219971293,
+      "maxDrops": 3,
+      "completed32MiBWindows": 43,
+      "nonCompletedClientEvents": [
+        {
+          "finishSource": "clientFailed",
+          "errorDomain": "Network.NWError",
+          "errorCode": "0",
+          "taskReceivedBytes": "728058"
+        }
+      ],
+      "continuity": "FAIL",
+      "fullDisplayTiming": "INSUFFICIENT",
+      "targetReadLatenessSeconds": [
+        19.373,
+        5.427,
+        0.008,
+        0.008,
+        0.01
+      ]
+    },
+    "optimized-route": {
+      "trace": "8F99B939",
+      "configuration": "same-source Debug -O/DEBUG",
+      "requestedSeconds": 180,
+      "count": 165,
+      "wallCoverage": 174.0928680896759,
+      "first": {
+        "elapsed": 3.137890100479126,
+        "current": 1.204,
+        "drops": 1,
+        "stalls": 0,
+        "active": "no",
+        "ahead": 3.7734582301738486,
+        "bytesRead": 12406672
+      },
+      "last": {
+        "elapsed": 177.23075819015503,
+        "current": 170.185,
+        "drops": 5,
+        "stalls": 1,
+        "active": "no",
+        "ahead": 13.095124642909468,
+        "bytesRead": 1428106843
+      },
+      "route": {
+        "connectionAddressKind": "privateIP",
+        "connectionPort": "8096",
+        "connectionScheme": "http",
+        "routeKind": "localRangeProxy"
+      },
+      "mediaIdentity": {
+        "doubleSHA256": "54fa3559159dddad93119d2a922e4bf8965e9c82ab2c9d24b5d683fc4466ac56",
+        "audioTrackID": 1,
+        "subtitleTrackID": 7,
+        "subtitlesDisabled": false
+      },
+      "maxStalls": 1,
+      "activeStallSamples": 5,
+      "bufferCallbacks": [
+        {
+          "bufferedCount": "0",
+          "consumeMs": "515"
+        },
+        {
+          "bufferedCount": "1",
+          "consumeMs": "4999"
+        }
+      ],
+      "minAhead": 0.08341666439942585,
+      "maxDrops": 5,
+      "completed32MiBWindows": 42,
+      "nonCompletedClientEvents": [
+        {
+          "finishSource": "clientFailed",
+          "errorDomain": "Network.NWError",
+          "errorCode": "0",
+          "taskReceivedBytes": "717924"
+        }
+      ],
+      "continuity": "FAIL",
+      "fullDisplayTiming": "INSUFFICIENT",
+      "targetReadLatenessSeconds": [
+        10.277,
+        4.31,
+        0.007,
+        0.01,
+        0.004,
+        0.008
+      ]
+    },
+    "restored-route": {
+      "trace": "7216D3C9",
+      "configuration": "restored normal Debug -Onone 7dd0/ad7d",
+      "requestedSeconds": 180,
+      "count": 165,
+      "wallCoverage": 175.0953028202057,
+      "first": {
+        "elapsed": 3.0880680084228516,
+        "current": 1.225,
+        "drops": 1,
+        "stalls": 0,
+        "active": "no",
+        "ahead": 4.12912488777155,
+        "bytesRead": 17270503
+      },
+      "last": {
+        "elapsed": 178.18337082862854,
+        "current": 173.129,
+        "drops": 15,
+        "stalls": 1,
+        "active": "no",
+        "ahead": 14.264249612301711,
+        "bytesRead": 1449538137
+      },
+      "route": {
+        "connectionAddressKind": "privateIP",
+        "connectionPort": "8096",
+        "connectionScheme": "http",
+        "routeKind": "localRangeProxy"
+      },
+      "mediaIdentity": {
+        "doubleSHA256": "54fa3559159dddad93119d2a922e4bf8965e9c82ab2c9d24b5d683fc4466ac56",
+        "audioTrackID": 1,
+        "subtitleTrackID": 7,
+        "subtitlesDisabled": false
+      },
+      "maxStalls": 1,
+      "activeStallSamples": 3,
+      "bufferCallbacks": [
+        {
+          "bufferedCount": "0",
+          "consumeMs": "466"
+        },
+        {
+          "bufferedCount": "1",
+          "consumeMs": "2999"
+        }
+      ],
+      "minAhead": 0.125124996599137,
+      "maxDrops": 15,
+      "completed32MiBWindows": 43,
+      "nonCompletedClientEvents": [
+        {
+          "finishSource": "clientBodySend",
+          "errorDomain": "Network.NWError",
+          "errorCode": "0",
+          "taskReceivedBytes": "707786"
+        }
+      ],
+      "continuity": "FAIL",
+      "fullDisplayTiming": "INSUFFICIENT",
+      "targetReadLatenessSeconds": [
+        12.029,
+        5.967,
+        0.01,
+        0.005,
+        0.008,
+        0.01
+      ]
+    }
+  },
+  "qualification": "Sequential same-file same-private-endpoint exploration. Cache/order unknown, screenshot schedules differ; no fair speed ranking or compiler causality. All three buffering failures retained.",
+  "sourceIdentity": {
+    "head": "9a9941cd4ec82625f680b5193b3a0f66797eb851",
+    "sourceDiffSHA256": "c0326a4de3b705add2c0a30948a2e243610f33d70b6907c815a8bd7263fac084",
+    "scope": "All three trials precede verified-preload 3663/f76a installation and belong to the prior source; later tests/source edits are not attributed to these binaries"
+  }
+}

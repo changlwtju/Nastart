@@ -1,0 +1,576 @@
+{
+  "time": "2026-10-06T20:20:41.919561+08:00",
+  "sourceHEAD": "9a9941cd4ec82625f680b5193b3a0f66797eb851",
+  "sourceIOSDiffSHA256": "cca9dc8873aabd0c6be4e58033de9e925856f4bcb3993b5ee58e1cd4c7ee5aff",
+  "configuration": "ordinary Debug -Onone; empty environment; qualified two-window original 206 Range estimate, 6s TTL, completed transfers take precedence, 3s initial body-only prediction grace; 10s after interactive seek; original throughput and reactive policies retained",
+  "binaryBuildTime": "2026-10-06T19:40:02.542162+08:00",
+  "packageFileName": "Nastart-EarlySupply-Debug.app",
+  "binaries": {
+    "Nastart": "c46b8acca9a3a41fbd94e97b1ff62a26e4ed82665c7ce4f1dd6d00dadf25d0e2",
+    "Nastart.debug.dylib": "de71c1423b4ee80a8a6baf2796c959bb37cca3b754fdd8c8b71d7a0774d25163",
+    "Frameworks/KSPlayer.framework/KSPlayer": "5266dd33dea55e7667dd21f73e59cee7d05e085803bf787fa2f29c6d6cb9de5b"
+  },
+  "signatureVerified": true,
+  "profileExpirationUTC": "2026-10-10T22:03:15",
+  "installGate": {
+    "time": "2026-10-06T19:41:27.879563+08:00",
+    "freshTargetIdentity": true,
+    "mainSHA256": "c46b8acca9a3a41fbd94e97b1ff62a26e4ed82665c7ce4f1dd6d00dadf25d0e2",
+    "sourceDiffSHA256": "cca9dc8873aabd0c6be4e58033de9e925856f4bcb3993b5ee58e1cd4c7ee5aff",
+    "dataPreservingCoverInstall": true,
+    "installation": "success",
+    "unchangedPreferenceCount": 25,
+    "normalForegroundVerified": true,
+    "requestedEnvironment": {},
+    "requestedArguments": [],
+    "sourceScreenshotVerified": true
+  },
+  "deviceScope": {
+    "iPhone13": "iPhone14,5 / iOS16.3.1(20D67), USB rechecked, latest package installed",
+    "iPad": "Disconnected by user; old e52 package remains; no latest c46 regression",
+    "iPhone18": "Offline; old e855 package remains; no latest c46 regression"
+  },
+  "tests": {
+    "coreTests": 122,
+    "failures": 0,
+    "preflightChecks": 15,
+    "deviceBuild": "BUILD SUCCEEDED"
+  },
+  "runs": [
+    {
+      "label": "earlySupplyBaselinePhoneMI2",
+      "mainSHA256": "e52f04c93901ffc00147913dab5be838469a385e3fea7e995272c9611109de43",
+      "latestPackage": false,
+      "networkShaping": false,
+      "naturalBoundarySeconds": 121.03782105445862,
+      "plannedSeconds": 120,
+      "telemetry": [
+        {
+          "count": 87,
+          "coverageSeconds": 118.06054592132568,
+          "maxStalls": 1,
+          "maxDrops": null,
+          "postFirstFrame": {
+            "coverageSeconds": 108.98294878005981,
+            "startStallCount": 1,
+            "lastStallCount": 1,
+            "observedStallDelta": 0
+          },
+          "engine": "AVPlayer",
+          "firstAccessLogStalls": "-",
+          "lastAccessLogStalls": "0"
+        }
+      ],
+      "events": [
+        {
+          "elapsed": 2.083292007446289,
+          "event": "playback_preparing",
+          "elapsedMs": "1058",
+          "stage": "cellularVODPlaylistPrewarm"
+        },
+        {
+          "elapsed": 2.08354115486145,
+          "event": "playback_prepared",
+          "maxBitrate": "10000000",
+          "negotiatedAudioCodec": "aac",
+          "negotiatedVideoBitrate": "9360000",
+          "negotiatedVideoCodec": "h264",
+          "prepareMs": "1262"
+        },
+        {
+          "elapsed": 2.0837981700897217,
+          "event": "playback_prepared",
+          "stage": "sourceCapabilities"
+        },
+        {
+          "elapsed": 2.320939064025879,
+          "event": "route_selected",
+          "connectionAddressKind": "publicDomain",
+          "connectionPort": "8097",
+          "connectionScheme": "https"
+        },
+        {
+          "elapsed": 10.5851731300354,
+          "event": "first_frame"
+        }
+      ],
+      "actualUpstreamCellular": [
+        "yes"
+      ],
+      "actualUpstreamExpensive": [
+        "yes"
+      ]
+    },
+    {
+      "label": "earlySupplyPhoneLANMI2",
+      "mainSHA256": "c46b8acca9a3a41fbd94e97b1ff62a26e4ed82665c7ce4f1dd6d00dadf25d0e2",
+      "latestPackage": true,
+      "networkShaping": false,
+      "naturalBoundarySeconds": 181.7734179496765,
+      "plannedSeconds": 180,
+      "telemetry": [
+        {
+          "count": 169,
+          "coverageSeconds": 179.93744707107544,
+          "maxStalls": 0,
+          "maxDrops": 1,
+          "postFirstFrame": {
+            "coverageSeconds": 178.0962040424347,
+            "startStallCount": 0,
+            "lastStallCount": 0,
+            "observedStallDelta": 0
+          },
+          "engine": "KSPlayer",
+          "firstAccessLogStalls": null,
+          "lastAccessLogStalls": null
+        }
+      ],
+      "events": [
+        {
+          "elapsed": 0.8480079174041748,
+          "event": "playback_prepared",
+          "maxBitrate": "unlimitedOriginal",
+          "prepareMs": "54"
+        },
+        {
+          "elapsed": 0.8482987880706787,
+          "event": "playback_prepared",
+          "stage": "sourceCapabilities"
+        },
+        {
+          "elapsed": 1.0661571025848389,
+          "event": "route_selected",
+          "connectionAddressKind": "privateIP",
+          "connectionPort": "8096",
+          "connectionScheme": "http"
+        },
+        {
+          "elapsed": 1.5613839626312256,
+          "event": "buffer_updated",
+          "consumeMs": "427",
+          "engine": "KSPlayer"
+        },
+        {
+          "elapsed": 1.9140961170196533,
+          "event": "first_frame"
+        }
+      ],
+      "actualUpstreamCellular": [
+        "no"
+      ],
+      "actualUpstreamExpensive": [
+        "no"
+      ]
+    },
+    {
+      "label": "earlySupply40MPhoneMI2",
+      "mainSHA256": "c46b8acca9a3a41fbd94e97b1ff62a26e4ed82665c7ce4f1dd6d00dadf25d0e2",
+      "latestPackage": true,
+      "networkShaping": true,
+      "naturalBoundarySeconds": 181.12636804580688,
+      "plannedSeconds": 180,
+      "telemetry": [
+        {
+          "count": 23,
+          "coverageSeconds": 23.123054027557373,
+          "maxStalls": 1,
+          "maxDrops": 1,
+          "postFirstFrame": {
+            "coverageSeconds": 21.243596076965332,
+            "startStallCount": 0,
+            "lastStallCount": 1,
+            "observedStallDelta": 1
+          },
+          "engine": "KSPlayer",
+          "firstAccessLogStalls": null,
+          "lastAccessLogStalls": null
+        },
+        {
+          "count": 120,
+          "coverageSeconds": 155.35907220840454,
+          "maxStalls": 0,
+          "maxDrops": null,
+          "postFirstFrame": {
+            "coverageSeconds": 155.29863929748535,
+            "startStallCount": 0,
+            "lastStallCount": 0,
+            "observedStallDelta": 0
+          },
+          "engine": "AVPlayer",
+          "firstAccessLogStalls": "11",
+          "lastAccessLogStalls": "11"
+        }
+      ],
+      "events": [
+        {
+          "elapsed": 0.9398660659790039,
+          "event": "playback_prepared",
+          "maxBitrate": "unlimitedOriginal",
+          "prepareMs": "38"
+        },
+        {
+          "elapsed": 0.9401750564575195,
+          "event": "playback_prepared",
+          "stage": "sourceCapabilities"
+        },
+        {
+          "elapsed": 1.2228078842163086,
+          "event": "route_selected",
+          "connectionAddressKind": "privateIP",
+          "connectionPort": "8096",
+          "connectionScheme": "http"
+        },
+        {
+          "elapsed": 1.8717279434204102,
+          "event": "buffer_updated",
+          "consumeMs": "582",
+          "engine": "KSPlayer"
+        },
+        {
+          "elapsed": 2.1641600131988525,
+          "event": "first_frame"
+        },
+        {
+          "elapsed": 6.355592966079712,
+          "event": "automatic_downshift_requested",
+          "bufferedAheadSeconds": "1.3126666303908046",
+          "deliveryCapacity": "38106711",
+          "deliveryCapacitySource": "bodyWindow",
+          "engine": "KSPlayer",
+          "reason": "deliveryBelowSourceBitrate",
+          "runtimeDemand": "42784751"
+        },
+        {
+          "elapsed": 6.553969860076904,
+          "event": "playback_prepared",
+          "maxBitrate": "12000000",
+          "negotiatedAudioCodec": "aac",
+          "negotiatedVideoBitrate": "11360000",
+          "negotiatedVideoCodec": "h264",
+          "prepareMs": "160"
+        },
+        {
+          "elapsed": 6.554413795471191,
+          "event": "playback_prepared",
+          "stage": "sourceCapabilities"
+        },
+        {
+          "elapsed": 12.286127090454102,
+          "event": "replacement_candidate_decoded",
+          "candidateBufferAheadSeconds": "0.0",
+          "elapsedMs": "5719",
+          "engine": "KSPlayer",
+          "prepareMs": "5719"
+        },
+        {
+          "elapsed": 23.692351818084717,
+          "event": "buffer_updated",
+          "consumeMs": "15551",
+          "engine": "KSPlayer"
+        },
+        {
+          "elapsed": 23.992330074310303,
+          "event": "replacement_candidate_aligned",
+          "candidateBufferAheadSeconds": "10.635421656555554",
+          "elapsedMs": "17402",
+          "engine": "KSPlayer"
+        },
+        {
+          "elapsed": 23.995157957077026,
+          "event": "route_selected",
+          "connectionAddressKind": "privateIP",
+          "connectionPort": "8096",
+          "connectionScheme": "http"
+        },
+        {
+          "elapsed": 24.23190212249756,
+          "event": "replacement_committed",
+          "candidateBufferAheadSeconds": "11.49949659688889",
+          "engine": "KSPlayer"
+        },
+        {
+          "elapsed": 24.475740909576416,
+          "event": "first_frame"
+        }
+      ],
+      "actualUpstreamCellular": [
+        "no"
+      ],
+      "actualUpstreamExpensive": [
+        "no"
+      ]
+    },
+    {
+      "label": "earlySupplyS01LANb",
+      "mainSHA256": "c46b8acca9a3a41fbd94e97b1ff62a26e4ed82665c7ce4f1dd6d00dadf25d0e2",
+      "latestPackage": true,
+      "networkShaping": false,
+      "naturalBoundarySeconds": 121.48356199264526,
+      "plannedSeconds": 120,
+      "telemetry": [
+        {
+          "count": 112,
+          "coverageSeconds": 119.64047312736511,
+          "maxStalls": 0,
+          "maxDrops": 0,
+          "postFirstFrame": {
+            "coverageSeconds": 118.1973078250885,
+            "startStallCount": 0,
+            "lastStallCount": 0,
+            "observedStallDelta": 0
+          },
+          "engine": "KSPlayer",
+          "firstAccessLogStalls": null,
+          "lastAccessLogStalls": null
+        }
+      ],
+      "events": [
+        {
+          "elapsed": 0.8774688243865967,
+          "event": "playback_prepared",
+          "maxBitrate": "unlimitedOriginal",
+          "prepareMs": "36"
+        },
+        {
+          "elapsed": 0.8777899742126465,
+          "event": "playback_prepared",
+          "stage": "sourceCapabilities"
+        },
+        {
+          "elapsed": 1.1218798160552979,
+          "event": "route_selected",
+          "connectionAddressKind": "privateIP",
+          "connectionPort": "8096",
+          "connectionScheme": "http"
+        },
+        {
+          "elapsed": 1.3443217277526855,
+          "event": "buffer_updated",
+          "consumeMs": "175",
+          "engine": "KSPlayer"
+        },
+        {
+          "elapsed": 1.5577778816223145,
+          "event": "first_frame"
+        }
+      ],
+      "actualUpstreamCellular": [
+        "no"
+      ],
+      "actualUpstreamExpensive": [
+        "no"
+      ]
+    },
+    {
+      "label": "earlySupplyWeakS01b",
+      "mainSHA256": "c46b8acca9a3a41fbd94e97b1ff62a26e4ed82665c7ce4f1dd6d00dadf25d0e2",
+      "latestPackage": true,
+      "networkShaping": true,
+      "naturalBoundarySeconds": 181.15305519104004,
+      "plannedSeconds": 180,
+      "telemetry": [
+        {
+          "count": 122,
+          "coverageSeconds": 161.00402212142944,
+          "maxStalls": 1,
+          "maxDrops": null,
+          "postFirstFrame": {
+            "coverageSeconds": 151.48299503326416,
+            "startStallCount": 1,
+            "lastStallCount": 1,
+            "observedStallDelta": 0
+          },
+          "engine": "AVPlayer",
+          "firstAccessLogStalls": "-",
+          "lastAccessLogStalls": "0"
+        }
+      ],
+      "events": [
+        {
+          "elapsed": 18.97266983985901,
+          "event": "playback_preparing",
+          "elapsedMs": "17717",
+          "stage": "cellularVODPlaylistPrewarm"
+        },
+        {
+          "elapsed": 18.97290802001953,
+          "event": "playback_prepared",
+          "maxBitrate": "250000",
+          "negotiatedAudioCodec": "aac",
+          "negotiatedVideoBitrate": "122000",
+          "negotiatedVideoCodec": "h264",
+          "prepareMs": "18091"
+        },
+        {
+          "elapsed": 18.973140001296997,
+          "event": "playback_prepared",
+          "stage": "sourceCapabilities"
+        },
+        {
+          "elapsed": 19.2497398853302,
+          "event": "route_selected",
+          "connectionAddressKind": "publicDomain",
+          "connectionPort": "8097",
+          "connectionScheme": "https"
+        },
+        {
+          "elapsed": 27.40316891670227,
+          "event": "first_frame"
+        }
+      ],
+      "actualUpstreamCellular": [
+        "yes"
+      ],
+      "actualUpstreamExpensive": [
+        "yes"
+      ]
+    },
+    {
+      "label": "earlySupplyNormalCellS01",
+      "mainSHA256": "c46b8acca9a3a41fbd94e97b1ff62a26e4ed82665c7ce4f1dd6d00dadf25d0e2",
+      "latestPackage": true,
+      "networkShaping": false,
+      "naturalBoundarySeconds": 121.46072125434875,
+      "plannedSeconds": 120,
+      "telemetry": [
+        {
+          "count": 112,
+          "coverageSeconds": 119.53103995323181,
+          "maxStalls": 0,
+          "maxDrops": 0,
+          "postFirstFrame": {
+            "coverageSeconds": 117.3993308544159,
+            "startStallCount": 0,
+            "lastStallCount": 0,
+            "observedStallDelta": 0
+          },
+          "engine": "KSPlayer",
+          "firstAccessLogStalls": null,
+          "lastAccessLogStalls": null
+        }
+      ],
+      "events": [
+        {
+          "elapsed": 1.3495652675628662,
+          "event": "playback_prepared",
+          "maxBitrate": "unlimitedOriginal",
+          "prepareMs": "526"
+        },
+        {
+          "elapsed": 1.3499853610992432,
+          "event": "playback_prepared",
+          "stage": "sourceCapabilities"
+        },
+        {
+          "elapsed": 1.4830431938171387,
+          "event": "route_selected",
+          "connectionAddressKind": "publicDomain",
+          "connectionPort": "8097",
+          "connectionScheme": "https"
+        },
+        {
+          "elapsed": 2.335301160812378,
+          "event": "buffer_updated",
+          "consumeMs": "797",
+          "engine": "KSPlayer"
+        },
+        {
+          "elapsed": 2.5933873653411865,
+          "event": "first_frame"
+        }
+      ],
+      "actualUpstreamCellular": [
+        "yes"
+      ],
+      "actualUpstreamExpensive": [
+        "yes"
+      ]
+    }
+  ],
+  "weakCellFirstNativePictureIntervalSeconds": [
+    24.00985097885132,
+    30.659236907958984
+  ],
+  "weakCellControls": {
+    "singleSample": true,
+    "pausedNativePNGIdentical": true,
+    "pauseClock": "02:46",
+    "seekClock": "03:01",
+    "seekPreservedPausedUI": true,
+    "differentPictureByFirstCaptureUpperSeconds": 1.8850460052490234,
+    "blackObservedInSeekSamples": false,
+    "exactTargetContentVerified": false,
+    "resumeMotionBySixSecondSample": true,
+    "audioVerified": false,
+    "qualification": "Native pictures reviewed: pause identical, first post-seek picture differs and subsequent paused pictures retain it; historical black failure remains open; no exact content-time or audio proof."
+  },
+  "controlledLAN": {
+    "profile": "SlowNetworkWiFi",
+    "downMbps": 40,
+    "upMbps": 33,
+    "latencyMsEach": 1,
+    "packetLossPercent": 0,
+    "firstStallMs": 15551,
+    "earlyRequestSeconds": 6.355592966,
+    "handoffCommitSeconds": 24.231902122,
+    "requestToCommitSeconds": 17.876309156,
+    "firstStallPrevented": false,
+    "candidateSupplyContention": "Hypothesis only; original and candidate share supply, not isolated"
+  },
+  "weakCell": {
+    "physicalNetwork": "5G, upstream cellular=yes/expensive=yes",
+    "profile": "SlowNetwork3G",
+    "downMbps": 0.78,
+    "upMbps": 0.33,
+    "latencyMsEach": 100,
+    "packetLossPercent": 0,
+    "radioWeakSignalVerified": false
+  },
+  "toolAndIncompleteRuns": [
+    {
+      "label": "earlySupplyS01LAN",
+      "result": "TOOL before playback: transient source HTTP404, same session later recovered, no App crash proven"
+    },
+    {
+      "label": "earlySupplyWeakS01",
+      "result": "Setup incomplete/aborted; qualifier not confirmed before start; conditioner cleared; not a valid cellular performance result"
+    },
+    {
+      "label": "radio-restoration-helper",
+      "result": "Foreground/async guards failed; subsequent native CC and Settings verified original state; no blind retry toggle"
+    }
+  ],
+  "radioRestoration": {
+    "time": 1791288485.484641,
+    "wifiOriginalSwitch": "1",
+    "wifiRestoredSwitch": "1",
+    "controlCenterNewConnectionsDisabledOriginal": true,
+    "controlCenterNewConnectionsDisabledRestored": true,
+    "nativeSourceVerified": true,
+    "WAPINotChanged": true,
+    "cellularDataNotChanged": true,
+    "credentialsNotEntered": true,
+    "systemProxyAndVPNNotChanged": true
+  },
+  "final": {
+    "time": "2026-10-06T20:20:24.322560+08:00",
+    "device": "iphone13",
+    "latestMainSHA256": "c46b8acca9a3a41fbd94e97b1ff62a26e4ed82665c7ce4f1dd6d00dadf25d0e2",
+    "sourceAndBinaryHashesMatch": true,
+    "requestedEnvironment": {},
+    "requestedArguments": [],
+    "foreground": "latest normal Nastart launchpad",
+    "locked": false,
+    "wdaReady": true,
+    "waitForIdleTimeout": 10,
+    "videoNotPresented": true,
+    "preferenceCount": 25,
+    "changedPreferenceCount": 1,
+    "preferenceChangeKeysPrivate": true,
+    "no24HourAuthorizationGuarantee": true
+  },
+  "allDeviceConditionersInactive": true,
+  "formalCompetitorPairs": 0,
+  "qualification": "All latest runs ordinary Debug -Onone, empty env/args, serial; conditioner runs separately labeled. Sparse native frames and 1 Hz counters do not establish complete display fluidity or audio. Failed/old-package results retained. No causal speedup percentage or competitor ranking. All PX/UX/CB backlog remains.",
+  "conditionInactiveVerifiedAt": "2026-10-06T20:21:30.360622+08:00"
+}

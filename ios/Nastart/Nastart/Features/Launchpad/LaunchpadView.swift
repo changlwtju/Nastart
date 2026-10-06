@@ -5766,6 +5766,8 @@ private final class JellyfinLibraryStore: ObservableObject {
     @Published private(set) var endpoint: URL
     private let configuredPlaybackEndpoint: URL?
     private var verifiedLANPlaybackEndpoint: URL?
+    private var lanPlaybackProbeRetryTask: Task<Void, Never>?
+    private var lanPlaybackProbePolicy = JellyfinLANPlaybackProbePolicy()
     var playbackEndpoint: URL? { verifiedLANPlaybackEndpoint ?? configuredPlaybackEndpoint }
     let allowsSelfSignedCertificates: Bool
 
@@ -5799,9 +5801,11 @@ private final class JellyfinLibraryStore: ObservableObject {
     private var resolvedPlaybackRouteIsPrivate: Bool?
     private var dsmSession: DSMSession?
     private var dsmSharedFolderPaths: [String]
+    private var dsmPlaybackContextObserver: JellyfinDSMPlaybackContextObserver?
     private var unavailableDSMPlaybackPaths: [String: Date] = [:]
     @Published private(set) var playbackStopSnapshot: (itemID: String, position: Double, revision: UUID)?
-    private var originalRouteWarmup: (itemID: String, startedAt: Date, task: Task<URL?, Never>)?
+    private var originalRouteWarmup: (itemID: String, startedAt: Date,
+        endpoint: URL, network: String, task: Task<URL?, Never>)?
 
     init(
         endpoint: URL,
@@ -5809,7 +5813,8 @@ private final class JellyfinLibraryStore: ObservableObject {
         allowsSelfSignedCertificates: Bool,
         dsmSession: DSMSession? = nil,
         dsmSharedFolderPaths: [String] = [],
-        fallbackEndpoints: [URL] = []
+        fallbackEndpoints: [URL] = [],
+        connectionStore: NASConnectionStore? = nil
     ) {
         self.endpoint = endpoint
         self.configuredPlaybackEndpoint = playbackEndpoint.flatMap(Self.originURL)
@@ -5819,6 +5824,16 @@ private final class JellyfinLibraryStore: ObservableObject {
         self.endpointCandidates = Self.jellyfinEndpointCandidates(
             from: [endpoint] + fallbackEndpoints
         )
+        if let connectionStore {
+            dsmPlaybackContextObserver = JellyfinDSMPlaybackContextObserver(
+                connectionStore: connectionStore
+            ) { [weak self] session in
+                guard let self else { return }
+                self.updateDSMPlaybackContext(
+                    session: session, sharedFolderPaths: self.dsmSharedFolderPaths
+                )
+            }
+        }
         // Start observing while the library opens, before the first Play tap.
         // NWPathMonitor's first update is asynchronous.
         _ = PlaybackNetworkObserver.shared
@@ -5829,26 +5844,83 @@ private final class JellyfinLibraryStore: ObservableObject {
     }
 
     private func verifyLANPlaybackEndpoint() async {
-        guard configuredPlaybackEndpoint == nil else { return }
+        guard configuredPlaybackEndpoint == nil,
+              verifiedLANPlaybackEndpoint == nil else {
+            recordPlaybackRouteState(stage: "probeSkipped")
+            return
+        }
         let candidate = endpointCandidates.first(where: {
             NetworkHostClassifier.isPrivate($0.host) && $0.host != endpoint.host
         }) ?? Self.defaultLANPlaybackEndpoint(for: dsmSession?.endpoints.lanAddress)
-        guard let candidate else { return }
+        guard let candidate else {
+            recordPlaybackRouteState(stage: "probeSkipped", reason: "noPrivateCandidate")
+            return
+        }
+        let probeStartedAt = ProcessInfo.processInfo.systemUptime
+        recordPlaybackRouteState(stage: "probeStarted")
+        defer {
+            recordPlaybackRouteState(stage: "probeFinished", extra: [
+                "probeMs": String(Int(max(ProcessInfo.processInfo.systemUptime - probeStartedAt, 0) * 1_000))
+            ])
+        }
         guard let publicID = await Self.publicServerID(at: endpoint) else {
             record("diagnostics.jellyfin.playback_route_probe", level: .info,
                    details: ["result": "publicInfoUnavailable"])
+            scheduleLANPlaybackProbeRetry(publicID: nil, lanID: nil)
             return
         }
-        guard let lanID = await Self.publicServerID(at: candidate), publicID == lanID else {
+        guard let lanID = await Self.publicServerID(at: candidate) else {
             record("diagnostics.jellyfin.playback_route_probe", level: .info,
-                   details: ["result": "lanInfoUnavailableOrDifferent",
+                   details: ["result": "lanInfoUnavailable",
+                             "target": DiagnosticLogStore.redactedURL(candidate)])
+            scheduleLANPlaybackProbeRetry(publicID: publicID, lanID: nil)
+            return
+        }
+        guard lanPlaybackProbePolicy.evaluate(publicID: publicID, lanID: lanID) == .verified else {
+            record("diagnostics.jellyfin.playback_route_probe", level: .warning,
+                   details: ["result": "differentServer",
                              "target": DiagnosticLogStore.redactedURL(candidate)])
             return
         }
+        lanPlaybackProbeRetryTask?.cancel()
+        lanPlaybackProbeRetryTask = nil
         verifiedLANPlaybackEndpoint = Self.originURL(for: candidate)
         await refreshPlaybackRouteClassification()
         record("diagnostics.jellyfin.playback_route_verified", level: .info,
                details: ["route": "sameServerLAN", "target": DiagnosticLogStore.redactedURL(candidate)])
+    }
+
+    private func recordPlaybackRouteState(stage: String, reason: String? = nil,
+                                          extra: [String: String] = [:]) {
+        let selected = playbackEndpoint ?? endpoint
+        let selection = verifiedLANPlaybackEndpoint != nil ? "verifiedSameServerLAN"
+            : (configuredPlaybackEndpoint != nil ? "configuredPlaybackEndpoint" : "libraryEndpoint")
+        let details = [
+            "stage": stage, "selection": selection, "reason": reason ?? selection,
+            "selectedAddressKind": PlaybackConnectionContext.make(url: selected).addressKind.rawValue,
+            "selectedScheme": selected.scheme ?? "-", "selectedPort": selected.port.map(String.init) ?? "default",
+            "candidateCount": String(endpointCandidates.count),
+            "hasPrivateCandidate": String(endpointCandidates.contains { NetworkHostClassifier.isPrivate($0.host) }),
+            "hasDSMLANCandidate": String(Self.defaultLANPlaybackEndpoint(for: dsmSession?.endpoints.lanAddress) != nil),
+            "retryCount": String(lanPlaybackProbePolicy.retryCount)
+        ].merging(extra) { _, new in new }
+        record("diagnostics.jellyfin.playback_route_state", level: .info, details: details)
+    }
+
+    private func scheduleLANPlaybackProbeRetry(publicID: String?, lanID: String?) {
+        guard lanPlaybackProbeRetryTask == nil,
+              case let .retryAfter(delay) = lanPlaybackProbePolicy.evaluate(
+                publicID: publicID, lanID: lanID) else { return }
+        lanPlaybackProbeRetryTask = Task { @MainActor [weak self] in
+            do {
+                try await Task.sleep(nanoseconds: delay)
+            } catch {
+                return
+            }
+            guard let self else { return }
+            self.lanPlaybackProbeRetryTask = nil
+            await self.verifyLANPlaybackEndpoint()
+        }
     }
 
     private static func defaultLANPlaybackEndpoint(for dsmLAN: URL?) -> URL? {
@@ -6185,7 +6257,8 @@ private final class JellyfinLibraryStore: ObservableObject {
                 let task = Task { [weak self] in
                     await self?.probeJellyfinOriginalURL(for: item, client: client, playbackTraceID: nil)
                 }
-                originalRouteWarmup = (item.id, Date(), task)
+                originalRouteWarmup = (item.id, Date(), playbackEndpoint ?? endpoint,
+                    PlaybackNetworkObserver.shared.snapshot().cacheKey, task)
             }
         }
         return item
@@ -6224,6 +6297,52 @@ private final class JellyfinLibraryStore: ObservableObject {
     }
 
     func playbackRequest(
+        for entry: JellyfinMediaEntry,
+        selection: JellyfinPlaybackSelection? = nil,
+        forcedServerBitrate: Int? = nil,
+        forcedStartTimeTicks: Int? = nil,
+        forcedServerReason: String? = nil,
+        forcesOriginalPlayback: Bool = false,
+        forcesExperimentalOriginalPlayback: Bool = false,
+        prefersFastStartupDirectPlay: Bool = false,
+        selectedQualityID: String? = nil,
+        usesGreenfieldPlayback: Bool = false
+    ) async throws -> MediaPlaybackRequest? {
+        let preferenceKey = playbackPreferenceKey(for: entry)
+        var effectiveSelection = selection
+        if usesGreenfieldPlayback, selection == nil,
+           let saved = savedPlaybackTrackSelection(for: entry) {
+            effectiveSelection = saved
+        }
+        var request = try await makePlaybackRequest(for: entry, selection: effectiveSelection,
+            forcedServerBitrate: forcedServerBitrate, forcedStartTimeTicks: forcedStartTimeTicks,
+            forcedServerReason: forcedServerReason, forcesOriginalPlayback: forcesOriginalPlayback,
+            forcesExperimentalOriginalPlayback: forcesExperimentalOriginalPlayback,
+            prefersFastStartupDirectPlay: prefersFastStartupDirectPlay, selectedQualityID: selectedQualityID,
+            usesGreenfieldPlayback: usesGreenfieldPlayback)
+        // Jellyfin remains authoritative for position; this key restores tracks only.
+        if usesGreenfieldPlayback { request?.localResumeKey = preferenceKey }
+        return request
+    }
+
+    private func playbackPreferenceKey(for entry: JellyfinMediaEntry) -> String? {
+        userID.map {
+            LocalPlaybackResumeStore.key(server: endpoint, account: "jellyfin:\($0)",
+                path: "jellyfin:\(entry.id):\(entry.mediaSourceID ?? "")",
+                byteLength: entry.mediaSize.map(Int64.init), modifiedAt: nil)
+        }
+    }
+
+    func savedPlaybackTrackSelection(for entry: JellyfinMediaEntry) -> JellyfinPlaybackSelection? {
+        guard let key = playbackPreferenceKey(for: entry),
+              let saved = LocalPlaybackResumeStore.shared.entry(for: key) else { return nil }
+        let restored = saved.restoredTrackSelection(
+            audioIDs: entry.audioTracks.map(\.index), subtitleIDs: entry.subtitleTracks.map(\.index),
+            defaultAudio: entry.defaultAudioStreamIndex, defaultSubtitle: entry.preferredSubtitleStreamIndex)
+        return JellyfinPlaybackSelection(audioStreamIndex: restored.audio, subtitleStreamIndex: restored.subtitle)
+    }
+
+    private func makePlaybackRequest(
         for entry: JellyfinMediaEntry,
         selection: JellyfinPlaybackSelection? = nil,
         forcedServerBitrate: Int? = nil,
@@ -6328,6 +6447,7 @@ private final class JellyfinLibraryStore: ObservableObject {
         // Never wait for a new probe on the Play path.
         let startupNetwork = PlaybackNetworkObserver.shared.snapshot()
         let startupRoute = playbackEndpoint ?? endpoint
+        recordPlaybackRouteState(stage: "playRequested", extra: ["playbackTraceID": playbackTraceID])
         let startupOrigin = Self.originURL(for: startupRoute)?.absoluteString
             ?? startupRoute.absoluteString
         let startupSample = bitrateMeasurements["\(startupOrigin)|\(startupNetwork.cacheKey)"]
@@ -6360,13 +6480,25 @@ private final class JellyfinLibraryStore: ObservableObject {
                     && Self.requiresBurnIn(subtitleCodec: selectedSubtitleCodec),
                 routeIsPrivate: false, explicitOriginal: false, remoteBitrateFits: true)
         let warmup = originalRouteWarmup.flatMap {
-            $0.itemID == entry.id && Date().timeIntervalSince($0.startedAt) < 30 ? $0.task : nil
+            $0.itemID == entry.id && Date().timeIntervalSince($0.startedAt) < 30 ? $0 : nil
         }
         let originalProbeTask: Task<URL?, Never>? = (startsOriginalProbe || warmup != nil) ? Task {
-            if let warmup, let url = await warmup.value, !Task.isCancelled {
+            if let warmup {
+                @MainActor func stillMatches() -> Bool {
+                    PlaybackOriginalWarmupPolicy.matches(warmedEndpoint: warmup.endpoint,
+                        currentEndpoint: playbackEndpoint ?? endpoint, warmedNetwork: warmup.network,
+                        currentNetwork: PlaybackNetworkObserver.shared.snapshot().cacheKey)
+                }
+                if stillMatches(), let url = await warmup.task.value,
+                   !Task.isCancelled, stillMatches() {
+                    record("diagnostics.jellyfin.playback_preparing", level: .info,
+                        details: ["stage": "originalRouteWarmupReused", "playbackTraceID": playbackTraceID])
+                    return url
+                }
+                warmup.task.cancel()
                 record("diagnostics.jellyfin.playback_preparing", level: .info,
-                    details: ["stage": "originalRouteWarmupReused", "playbackTraceID": playbackTraceID])
-                return url
+                    details: ["stage": "originalRouteWarmupInvalidated",
+                              "reason": "routeOrNetworkChangedOrUnavailable", "playbackTraceID": playbackTraceID])
             }
             guard !Task.isCancelled else { return nil }
             return await probeJellyfinOriginalURL(for: entry, client: client,
@@ -6696,7 +6828,8 @@ private final class JellyfinLibraryStore: ObservableObject {
                     startTimeTicks: requestedStartTimeTicks,
                     requestedAt: requestedAt,
                     playbackTraceID: playbackTraceID,
-                    usesGreenfieldPlayback: usesGreenfieldPlayback
+                    usesGreenfieldPlayback: usesGreenfieldPlayback,
+                    prewarmsCellularVOD: forcedServerReason == nil && forcedServerBitrate == nil
                 )
             }
             if usesGreenfieldPlayback {
@@ -7153,7 +7286,8 @@ private final class JellyfinLibraryStore: ObservableObject {
         startTimeTicks: Int?,
         requestedAt: Date,
         playbackTraceID: String?,
-        usesGreenfieldPlayback: Bool
+        usesGreenfieldPlayback: Bool,
+        prewarmsCellularVOD: Bool
     ) async throws -> JellyfinPreparedPlayback {
         let usesExternalTextSubtitle = usesGreenfieldPlayback && subtitleStreamIndex != nil
             && !Self.requiresBurnIn(subtitleCodec: subtitleCodec)
@@ -7241,6 +7375,24 @@ private final class JellyfinLibraryStore: ObservableObject {
         } else {
             internalStreamURL = streamURL
         }
+        if prewarmsCellularVOD, usesGreenfieldPlayback, playMethod == .transcode,
+           extensionHint == "m3u8", internalStreamURL.host == "127.0.0.1",
+           PlaybackNetworkObserver.shared.snapshot().cacheKey == "cellular",
+           entry.kind == .movie || entry.kind == .episode {
+            let started = ProcessInfo.processInfo.systemUptime
+            do {
+                let warmed = try await AuthenticatedMediaStreamProxy.shared.prewarmVODPlaylist(internalStreamURL)
+                try Task.checkCancellation()
+                record("diagnostics.jellyfin.playback_preparing", level: .info, details: [
+                    "stage": "cellularVODPlaylistPrewarm", "result": warmed ? "cachedVOD" : "notCacheable",
+                    "elapsedMs": String(Int((ProcessInfo.processInfo.systemUptime - started) * 1000)),
+                    "playbackTraceID": playbackTraceID ?? "-", "network": "cellular"
+                ])
+            } catch {
+                AuthenticatedMediaStreamProxy.shared.unregister(internalStreamURL)
+                throw error
+            }
+        }
         let externalHandoffResource = MediaPlaybackResource(
             url: streamURL,
             fileExtensionOverride: extensionHint,
@@ -7288,6 +7440,15 @@ private final class JellyfinLibraryStore: ObservableObject {
                 "maxBitrate": "\(maxStreamingBitrate)",
                 "directPlay": allowsDirectPlay ? "allowed" : "disabled",
                 "sourceBitrate": mediaSource.bitrate.map(String.init) ?? "-",
+                // The selected ceiling and source bitrate do not establish
+                // whether Jellyfin actually encoded or copied the video.
+                // Record only allowlisted negotiation fields, never the URL.
+                "negotiatedVideoCodec": URLComponents(url: streamURL, resolvingAgainstBaseURL: false)?
+                    .queryItems?.first(where: { $0.name.caseInsensitiveCompare("VideoCodec") == .orderedSame })?.value ?? "-",
+                "negotiatedVideoBitrate": URLComponents(url: streamURL, resolvingAgainstBaseURL: false)?
+                    .queryItems?.first(where: { $0.name.caseInsensitiveCompare("VideoBitrate") == .orderedSame })?.value ?? "-",
+                "negotiatedAudioCodec": URLComponents(url: streamURL, resolvingAgainstBaseURL: false)?
+                    .queryItems?.first(where: { $0.name.caseInsensitiveCompare("AudioCodec") == .orderedSame })?.value ?? "-",
                 "transport": resource.url.host == "127.0.0.1"
                     ? "localHLSProxy"
                     : resource.url.scheme?.lowercased() ?? "serverURL",
@@ -8703,14 +8864,7 @@ private final class JellyfinLibraryStore: ObservableObject {
     }
 
     private func httpStatusCode(for error: Error) -> Int? {
-        let descriptions = [String(describing: error), (error as NSError).localizedDescription]
-        for description in descriptions {
-            let tokens = description.components(separatedBy: CharacterSet.decimalDigits.inverted)
-            if let status = tokens.compactMap(Int.init).first(where: { (100...599).contains($0) }) {
-                return status
-            }
-        }
-        return nil
+        JellyfinHTTPStatus.code(for: error)
     }
 }
 
@@ -8732,7 +8886,8 @@ struct JellyfinLibraryView: View {
         allowsSelfSignedCertificates: Bool,
         dsmSession: DSMSession? = nil,
         dsmSharedFolderPaths: [String] = [],
-        fallbackEndpoints: [URL] = []
+        fallbackEndpoints: [URL] = [],
+        connectionStore: NASConnectionStore? = nil
     ) {
         self.service = service
         self.dsmSession = dsmSession
@@ -8743,7 +8898,8 @@ struct JellyfinLibraryView: View {
             allowsSelfSignedCertificates: allowsSelfSignedCertificates,
             dsmSession: dsmSession,
             dsmSharedFolderPaths: dsmSharedFolderPaths,
-            fallbackEndpoints: fallbackEndpoints
+            fallbackEndpoints: fallbackEndpoints,
+            connectionStore: connectionStore
         ))
     }
 
@@ -9355,6 +9511,8 @@ private final class JellyfinImagePipeline: @unchecked Sendable {
     static let shared = JellyfinImagePipeline()
 
     private let memoryCache = NSCache<NSURL, UIImage>()
+    // Serialize eager decompression away from scrolling/layout on the main thread.
+    private let decodeQueue = DispatchQueue(label: "com.changliwen.nastart.poster-decode", qos: .userInitiated)
     private let session: URLSession
 
     private init() {
@@ -9385,11 +9543,22 @@ private final class JellyfinImagePipeline: @unchecked Sendable {
             guard
                 let response = response as? HTTPURLResponse,
                 (200..<300).contains(response.statusCode),
-                let image = UIImage(data: data)
+                !Task.isCancelled
             else {
                 return nil
             }
-            memoryCache.setObject(image, forKey: key, cost: data.count)
+            let image: UIImage? = await withCheckedContinuation { continuation in
+                decodeQueue.async {
+                    // Preserve UIImage's orientation metadata while preparing pixels.
+                    let image = UIImage(data: data)?.preparingForDisplay()
+                    continuation.resume(returning: image)
+                }
+            }
+            guard !Task.isCancelled, let image else { return nil }
+            // The cache owns decoded pixels, not just the compressed network payload.
+            let cost = image.cgImage.map { $0.bytesPerRow * $0.height }
+                ?? Int(image.size.width * image.scale * image.size.height * image.scale * 4)
+            memoryCache.setObject(image, forKey: key, cost: cost)
             return image
         } catch {
             return nil
@@ -9887,6 +10056,7 @@ private struct JellyfinMediaDetailView: View {
     @State private var sharePayload: ServiceSharePayload?
     @State private var selectedAudioStreamIndex: Int?
     @State private var selectedSubtitleStreamIndex: Int?
+    @State private var didEditDetailTracks = false
     @State private var detailedItem: JellyfinMediaEntry?
     @State private var localPlaybackStopSnapshot: (itemID: String, position: Double, revision: UUID)?
     @State private var similarItems: [JellyfinMediaEntry] = []
@@ -10000,6 +10170,8 @@ private struct JellyfinMediaDetailView: View {
             }
             guard snapshot.itemID == item.id else { return }
             localPlaybackStopSnapshot = snapshot
+            didEditDetailTracks = false
+            restoreSavedTrackSelection()
         }
         .onDisappear { preparation.cancel() }
         .task(id: item.id) {
@@ -10077,6 +10249,7 @@ private struct JellyfinMediaDetailView: View {
             if selectedSubtitleStreamIndex == nil {
                 selectedSubtitleStreamIndex = loadedItem.preferredSubtitleStreamIndex
             }
+            restoreSavedTrackSelection()
         } catch {
             guard !Task.isCancelled else { return }
             detailedItem = nil
@@ -10200,6 +10373,9 @@ private struct JellyfinMediaDetailView: View {
                     prefersFastStartupDirectPlay: requestsGreenfield,
                     usesGreenfieldPlayback: requestsGreenfield
                 )
+                if request != nil {
+                    await preparation.holdPreparedResultForDebugIfRequested(preparationID, entry: "jellyfin")
+                }
                 guard preparation.isCurrent(preparationID) else {
                     request?.playbackTracker?.releasePreparedResources()
                     if let request { AuthenticatedMediaStreamProxy.shared.unregister(request.url) }
@@ -10225,6 +10401,15 @@ private struct JellyfinMediaDetailView: View {
         }
     }
 
+    private func restoreSavedTrackSelection() {
+#if DEBUG
+        guard usesGreenfieldPlayer, !didEditDetailTracks,
+              let saved = store.savedPlaybackTrackSelection(for: mediaItem) else { return }
+        selectedAudioStreamIndex = saved.audioStreamIndex
+        selectedSubtitleStreamIndex = saved.subtitleStreamIndex
+#endif
+    }
+
 #if DEBUG
     private var greenfieldPlaybackToggle: some View {
         PlaybackArchitecturePicker(usesGreenfieldPlayer: $usesGreenfieldPlayer)
@@ -10247,6 +10432,7 @@ private struct JellyfinMediaDetailView: View {
                     ForEach(mediaItem.audioTracks) { track in
                         Button {
                             selectedAudioStreamIndex = track.index
+                            didEditDetailTracks = true
                         } label: {
                             if selectedAudioStreamIndex == track.index {
                                 Label(track.title, systemImage: "checkmark")
@@ -10271,6 +10457,7 @@ private struct JellyfinMediaDetailView: View {
                 Menu {
                     Button {
                         selectedSubtitleStreamIndex = nil
+                        didEditDetailTracks = true
                     } label: {
                         if selectedSubtitleStreamIndex == nil {
                             Label("player.subtitles.off", systemImage: "checkmark")
@@ -10281,6 +10468,7 @@ private struct JellyfinMediaDetailView: View {
                     ForEach(mediaItem.subtitleTracks) { track in
                         Button {
                             selectedSubtitleStreamIndex = track.index
+                            didEditDetailTracks = true
                         } label: {
                             if selectedSubtitleStreamIndex == track.index {
                                 Label(track.title, systemImage: "checkmark")

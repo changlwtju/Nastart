@@ -1,0 +1,208 @@
+{
+  "measuredAt": "2026-10-04T16:11:02+08:00",
+  "scope": "Exploratory same-App regression; no valid controlled competitor pairs",
+  "device": {
+    "model": "iPhone 13",
+    "hardwareModel": "iPhone14,5",
+    "iOS": "16.3.1",
+    "connection": "USB"
+  },
+  "source": {
+    "head": "9a9941cd4ec82625f680b5193b3a0f66797eb851",
+    "workspace": "pre-existing uncommitted changes retained; installed package includes seek diagnostics and PGS seek/filter/paused notification changes"
+  },
+  "package": {
+    "configuration": "normal Debug -Onone",
+    "launchEnvironment": "no test environment variables",
+    "builtAt": "2026-10-04T15:23:51+08:00",
+    "mainSHA256": "30210177bebb2241a353af9291a7a8026d73427c759382e690b826c922874a4c",
+    "debugDylibSHA256": "6e2a2c5c90beb1453dda1b96055dd2cf6f6819665d888d99aecbcd333d54b7f5",
+    "signature": "deep strict verified",
+    "installation": "data-preserving InstallComplete; ios-deploy exit 0",
+    "normalLaunchPID": 97411,
+    "coreTestsPassed": 93
+  },
+  "pausedPgsReturn": {
+    "sample": "S03 / Mission Impossible III",
+    "positionSeconds": 86.623,
+    "operation": "visible simplified Chinese bilingual PGS -> ASS -> same PGS while paused",
+    "status": "PASS within this functional scenario; broader format and competitive acceptance pending",
+    "method": "Conservative touch-release and screenshot-request capture bounds; visual content verified",
+    "runs": [
+      {
+        "run": 1,
+        "lowerMs": 450,
+        "upperMs": 1602,
+        "cueRetained": true
+      },
+      {
+        "run": 2,
+        "lowerMs": 486,
+        "upperMs": 1597,
+        "cueRetained": true
+      },
+      {
+        "run": 3,
+        "lowerMs": 760,
+        "upperMs": 1835,
+        "cueRetained": true
+      },
+      {
+        "run": 4,
+        "lowerMs": 120,
+        "upperMs": 1287,
+        "cueRetained": true
+      },
+      {
+        "run": 5,
+        "lowerMs": 763,
+        "upperMs": 1881,
+        "cueRetained": true
+      }
+    ],
+    "successfulRepetitions": 5,
+    "medianLowerMs": 486,
+    "medianUpperMs": 1602,
+    "maxUpperMs": 1881,
+    "pairedCompetitorRuns": 0
+  },
+  "pausedPgsOff": {
+    "status": "PASS within sampled same stopped cue",
+    "observation": "Visible bilingual PGS disappeared and remained absent to end of 5.235 second capture; movie stayed paused at 01:26",
+    "naturalCueExpiryConfound": "isolated by paused same-position operation"
+  },
+  "continuationAfterPgsSeek": {
+    "status": "FAIL continuity; recovered",
+    "capturedSeconds": 32.244,
+    "screenshots": 106,
+    "traceID": "FFF892FE",
+    "engine": "KSPlayer",
+    "routeKind": "localRangeProxy",
+    "playMethod": "directPlay",
+    "mediaEndpointClass": "privateIP",
+    "transportProtocol": "HTTP/1.1",
+    "samePositionSeekSeconds": 86.623,
+    "rebufferStartRelativeSeconds": 5.691,
+    "rebufferEndRelativeSeconds": 10.197,
+    "engineBufferConsumeMs": 4501,
+    "heldClockSeconds": 91.005,
+    "minimumObservedAheadSecondsBeforeBuffer": 0.0614,
+    "dropCountBeforeAndAfter": [
+      10,
+      29
+    ],
+    "subtitlesAt3_10_30": "bilingual content visually intact; t10 occurred during buffer",
+    "rangeEvidence": "finite 206 windows; continuation within capture; no reported retry/error for these completed tasks",
+    "diagnosis": "full same-position PGS seek flushes A/V queues and reapplies startup buffer; contribution to underflow suspected, end-to-end supply/decode constraint not isolated",
+    "stutterSolved": false
+  },
+  "competitorMediaEndpoints": {
+    "LennaJellyfin": "publicIP:8097",
+    "DSOneJellyfin": "publicIP:8097",
+    "DSOneDSM": "publicIP:5001",
+    "NastartJellyfin": "privateIP:8096",
+    "physicalWANPath": "unknown; NAT loopback possible",
+    "controlledPairs": 0,
+    "throughputRanking": "not eligible; buffering/prefetch, interval, source and configuration differ"
+  },
+  "finalState": {
+    "latestNormalPackageRestored": true,
+    "actualLastSubtitleTrack": "simplified Chinese bilingual PGS / track7",
+    "persistentTrackPreference": "unverified; prior ASS selection was visually confirmed within its session, new from-head plan selected PGS7",
+    "movieExited": true,
+    "exitEvidence": "named Done; MI3 detail source and playback_ended trace 7F24240D"
+  },
+  "pending": [
+    "LAN original stutter root cause and fix",
+    "same-source same-route configured competitor pairs",
+    "actual audible output and switch timing",
+    "complete display frame timing and scroll",
+    "representative sample and iPad regressions",
+    "remaining CB-01 through CB-26 and PX/UX acceptance"
+  ],
+  "privateEvidence": "DebugEvidence/2026-10-04-device-recovery-131038; raw preferences, credentials, network endpoints and images remain local private",
+  "noSwitchOriginalBaseline": {
+    "status": "complete captured segment; no frame timing or audible acceptance",
+    "traceID": "7F24240D",
+    "configuration": "normal Debug -Onone 30210177",
+    "operation": "from head; no track switches",
+    "actualSubtitleTrackID": 7,
+    "actualSubtitleFormat": "simplified Chinese bilingual PGS",
+    "numericClockSamples": 586,
+    "coverageSeconds": 626.086,
+    "clockFirstLast": [
+      1.225,
+      627.316
+    ],
+    "stalls": [
+      0
+    ],
+    "stallActiveSamples": 0,
+    "dropFirstLast": [
+      1,
+      2
+    ],
+    "byteFirstLast": [
+      12386974,
+      4649562145
+    ],
+    "minimumAheadAfter10Seconds": 7.923291450145086,
+    "same86To92SecondSegment": [
+      {
+        "currentSeconds": "85.214",
+        "bufferedAheadSeconds": "9.551208073734188",
+        "stallCount": "0",
+        "videoBitrate": "48939436"
+      },
+      {
+        "currentSeconds": "86.217",
+        "bufferedAheadSeconds": "9.718041402533046",
+        "stallCount": "0",
+        "videoBitrate": "49823688"
+      },
+      {
+        "currentSeconds": "87.220",
+        "bufferedAheadSeconds": "10.238249721129307",
+        "stallCount": "0",
+        "videoBitrate": "52151328"
+      },
+      {
+        "currentSeconds": "88.329",
+        "bufferedAheadSeconds": "11.03170803292386",
+        "stallCount": "0",
+        "videoBitrate": "53214513"
+      },
+      {
+        "currentSeconds": "89.311",
+        "bufferedAheadSeconds": "12.429082995514364",
+        "stallCount": "0",
+        "videoBitrate": "53764971"
+      },
+      {
+        "currentSeconds": "90.420",
+        "bufferedAheadSeconds": "12.782457985311765",
+        "stallCount": "0",
+        "videoBitrate": "53764971"
+      },
+      {
+        "currentSeconds": "91.529",
+        "bufferedAheadSeconds": "13.867874622504303",
+        "stallCount": "0",
+        "videoBitrate": "61484216"
+      },
+      {
+        "currentSeconds": "92.511",
+        "bufferedAheadSeconds": "16.057707896889355",
+        "stallCount": "0",
+        "videoBitrate": "68408703"
+      }
+    ],
+    "completedUpstreamWindows": 139,
+    "matchingDeliveredLength": 139,
+    "upstreamTaskErrors": 0,
+    "seekRequests": 0,
+    "visualEvidence": "t3/10/30 and 11 snapshots to t630 verified; bilingual PGS when source cue active",
+    "formalStatus": "Observed no rebuffer in this >10 minute segment; no full frame timing, audible or whole-file acceptance",
+    "comparisonLimitation": "Different cache and preparation state from paused subtitle-switch run; not randomized paired causal experiment"
+  }
+}

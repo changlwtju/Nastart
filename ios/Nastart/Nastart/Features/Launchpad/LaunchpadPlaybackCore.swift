@@ -2,6 +2,51 @@ import Foundation
 import UIKit
 import Network
 import Combine
+import Get
+
+enum JellyfinHTTPStatus {
+    static func code(for error: Error) -> Int? {
+        guard case let APIError.unacceptableStatusCode(status) = error,
+              (100...599).contains(status) else { return nil }
+        return status
+    }
+}
+
+/// Keep late DSM discovery connected to playback while library navigation is
+/// covered by search, details or the full-screen player. A view task may stop
+/// receiving context as soon as the user leaves the library home.
+@MainActor
+final class JellyfinDSMPlaybackContextObserver {
+    private var subscription: AnyCancellable?
+
+    init(connectionStore: NASConnectionStore, update: @escaping (DSMSession?) -> Void) {
+        subscription = connectionStore.$dsmSession.sink(receiveValue: update)
+    }
+}
+
+/// A failed public-info probe may be transient while the library opens.
+/// Keep the retry budget independent of the network request so it can be verified
+/// without contacting or changing a real server.
+struct JellyfinLANPlaybackProbePolicy {
+    enum Decision: Equatable {
+        case retryAfter(UInt64)
+        case retriesExhausted
+        case differentServer
+        case verified
+    }
+
+    private(set) var retryCount = 0
+
+    mutating func evaluate(publicID: String?, lanID: String?) -> Decision {
+        guard let publicID, !publicID.isEmpty,
+              let lanID, !lanID.isEmpty else {
+            guard retryCount < 2 else { return .retriesExhausted }
+            retryCount += 1
+            return .retryAfter(retryCount == 1 ? 2_000_000_000 : 6_000_000_000)
+        }
+        return publicID == lanID ? .verified : .differentServer
+    }
+}
 
 /// Owns preparation only; presenting a player transfers playback ownership.
 /// Identity checks also reject services that return after ignoring cancellation.
@@ -27,6 +72,25 @@ final class PlaybackPreparation: ObservableObject {
 
     func isCurrent(_ id: UUID) -> Bool {
         requestID == id && !Task.isCancelled
+    }
+
+    /// Creates an observable cancellation window after preparing the stream,
+    /// before a decoder is opened. Normal launches never wait here.
+    func holdPreparedResultForDebugIfRequested(_ id: UUID, entry: String,
+                                               delaySeconds: Double? = nil) async {
+#if DEBUG
+        let seconds = delaySeconds ?? Double(ProcessInfo.processInfo.environment[
+            "NASTART_TEST_PREPARED_RESULT_DELAY_SECONDS"] ?? "") ?? 0
+        guard isCurrent(id), seconds.isFinite, seconds > 0, seconds <= 10 else { return }
+        DiagnosticLogStore.shared.record(.info, categoryKey: "diagnostics.category.media",
+            messageKey: "diagnostics.media.prepared_result_held",
+            details: ["requestID": id.uuidString, "entry": entry, "delaySeconds": String(seconds)])
+        try? await Task.sleep(nanoseconds: UInt64(seconds * 1_000_000_000))
+        DiagnosticLogStore.shared.record(.info, categoryKey: "diagnostics.category.media",
+            messageKey: "diagnostics.media.prepared_result_released",
+            details: ["requestID": id.uuidString, "entry": entry,
+                      "cancelled": isCurrent(id) ? "no" : "yes"])
+#endif
     }
 
     func cancel() {
@@ -281,7 +345,7 @@ struct MediaPlaybackRequest: Identifiable {
     let playbackTraceID: String?
     let audioLyricsURL: URL?
     let episodeNavigationLoader: (() async -> MediaPlaybackEpisodeNavigation?)?
-    let localResumeKey: String?
+    var localResumeKey: String?
 
     init(
         requestedAt: Date = Date(),

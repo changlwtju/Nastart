@@ -1,0 +1,1906 @@
+{
+  "recordedAt": "2026-10-07T00:42:07.737335+08:00",
+  "device": {
+    "name": "iPhone",
+    "model": "iPhone13 (iPhone14,5)",
+    "system": "iOS16.3.1",
+    "freshUSBVerified": true,
+    "iPad": "user disconnected; no latest-package regression",
+    "iPhone18": "offline; no latest-package regression"
+  },
+  "package": {
+    "head": "9a9941cd4ec82625f680b5193b3a0f66797eb851",
+    "sourceDiffSHA256": "f33ae423c3c686d38d91fc00c003ab26022e197bfdc76150c9ae9ef047e95624",
+    "configuration": "ordinary Debug -Onone; empty environment; one loaded-range reverse correction for non-advancing original; strict fresh-frame/clock and continuous 0.5s reserve; stalled candidate paused through async session preparation with commit revalidation/cleanup; route and bearer identity bind original detail warmup; early-supply policy retained",
+    "binaryBuildTime": "2026-10-07T00:14:19.821667+08:00",
+    "binaries": {
+      "Nastart": "93a1b4252dbe09105e3118930ccf1b84565babae553a81084de1469feab16404",
+      "Nastart.debug.dylib": "6a0a3f95807c8568a1adbff1f35a36b201bd2faf61bc7b34f1231eba71e9b404",
+      "Frameworks/KSPlayer.framework/KSPlayer": "c814c6b3f8d1beaddef93e8c77935aa9d653835244ae7a0b772d9900e709a704"
+    },
+    "signatureVerified": true,
+    "profileExpirationUTC": "2026-10-10T22:03:15",
+    "signatureVerifiedBinaryCount": 29
+  },
+  "install": {
+    "time": "2026-10-07T00:16:01.355393+08:00",
+    "freshTargetIdentity": true,
+    "mainSHA256": "93a1b4252dbe09105e3118930ccf1b84565babae553a81084de1469feab16404",
+    "sourceDiffSHA256": "f33ae423c3c686d38d91fc00c003ab26022e197bfdc76150c9ae9ef047e95624",
+    "dataPreservingCoverInstall": true,
+    "installation": "success",
+    "unchangedPreferenceCount": 25,
+    "normalForegroundVerified": true,
+    "requestedEnvironment": {},
+    "requestedArguments": [],
+    "sourceScreenshotVerified": true
+  },
+  "tests": {
+    "core": 128,
+    "failed": 0,
+    "preflight": 15,
+    "build": "succeeded",
+    "dependencyRecovery": "missing derived-cache manifests restored from 11 exact clean locked revisions; no dependency version change"
+  },
+  "latestRounds": [
+    {
+      "label": "alignFinal40MRestoredA",
+      "mainSHA256": "93a1b4252dbe09105e3118930ccf1b84565babae553a81084de1469feab16404",
+      "plannedSeconds": 75,
+      "naturalBoundarySeconds": 76.15813398361206,
+      "conditioned": true,
+      "upstreamCellular": [
+        "no"
+      ],
+      "upstreamExpensive": [
+        "no"
+      ],
+      "telemetry": [
+        {
+          "engine": "KSPlayer",
+          "samples": 13,
+          "seconds": 12.777020931243896,
+          "maxStalls": 1,
+          "maxDrops": 0,
+          "postFirstFrame": {
+            "coverageSeconds": 10.765504121780396,
+            "startStallCount": 0,
+            "lastStallCount": 1,
+            "observedStallDelta": 1
+          },
+          "firstAccessLogStalls": null,
+          "lastAccessLogStalls": null,
+          "lastCurrentSeconds": null
+        },
+        {
+          "engine": "AVPlayer",
+          "samples": 49,
+          "seconds": 60.560973167419434,
+          "maxStalls": 1,
+          "maxDrops": null,
+          "postFirstFrame": {
+            "coverageSeconds": 60.50023698806763,
+            "startStallCount": 1,
+            "lastStallCount": 1,
+            "observedStallDelta": 0
+          },
+          "firstAccessLogStalls": "-",
+          "lastAccessLogStalls": "11",
+          "lastCurrentSeconds": "65.002"
+        }
+      ],
+      "events": [
+        {
+          "elapsed": 1.1611440181732178,
+          "event": "playback_preparing"
+        },
+        {
+          "elapsed": 1.1619319915771484,
+          "event": "playback_preparing",
+          "stage": "originalRouteWarmupReused"
+        },
+        {
+          "elapsed": 1.2199490070343018,
+          "event": "playback_prepared",
+          "maxBitrate": "unlimitedOriginal",
+          "prepareMs": "38"
+        },
+        {
+          "elapsed": 1.2202599048614502,
+          "event": "playback_prepared",
+          "stage": "sourceCapabilities"
+        },
+        {
+          "elapsed": 1.4285800457000732,
+          "event": "route_selected",
+          "connectionAddressKind": "privateIP",
+          "connectionPort": "8096",
+          "connectionScheme": "http"
+        },
+        {
+          "elapsed": 2.1385350227355957,
+          "event": "buffer_updated",
+          "consumeMs": "656"
+        },
+        {
+          "elapsed": 2.4622719287872314,
+          "event": "first_frame"
+        },
+        {
+          "elapsed": 6.5596959590911865,
+          "event": "automatic_downshift_requested",
+          "bufferTargetSeconds": "4.0",
+          "bufferedAheadSeconds": "1.3957916269899426",
+          "deliveryCapacity": "37658968",
+          "deliveryCapacitySource": "bodyWindow",
+          "reason": "deliveryBelowSourceBitrate"
+        },
+        {
+          "elapsed": 6.57283091545105,
+          "event": "playback_preparing"
+        },
+        {
+          "elapsed": 6.573225975036621,
+          "event": "playback_preparing",
+          "reason": "bitrateFallback"
+        },
+        {
+          "elapsed": 6.5743091106414795,
+          "event": "playback_preparing",
+          "reason": "routeOrNetworkChangedOrUnavailable",
+          "stage": "originalRouteWarmupInvalidated"
+        },
+        {
+          "elapsed": 6.778100967407227,
+          "event": "playback_prepared",
+          "maxBitrate": "12000000",
+          "negotiatedAudioCodec": "aac",
+          "negotiatedVideoBitrate": "11360000",
+          "negotiatedVideoCodec": "h264",
+          "prepareMs": "177"
+        },
+        {
+          "elapsed": 6.778483152389526,
+          "event": "playback_prepared",
+          "stage": "sourceCapabilities"
+        },
+        {
+          "elapsed": 6.779057025909424,
+          "event": "replacement_warmup_started"
+        },
+        {
+          "elapsed": 6.780357122421265,
+          "event": "replacement_candidate_preparing",
+          "bufferEmpty": "true",
+          "candidateBufferAheadSeconds": "0.0",
+          "candidateSeconds": "0.0",
+          "elapsedMs": "0",
+          "itemStatus": "0",
+          "likelyToKeepUp": "false",
+          "liveSeconds": "4.467",
+          "loadedRangeFirstEnd": "unknown",
+          "loadedRangeFirstStart": "unknown",
+          "seekResult": "pending",
+          "target": "5.530666630390804"
+        },
+        {
+          "elapsed": 12.016787052154541,
+          "event": "replacement_candidate_decoded",
+          "bufferEmpty": "false",
+          "candidateBufferAheadSeconds": "0.0",
+          "candidateSeconds": "5.53",
+          "elapsedMs": "5224",
+          "framePTS": "5.505488888888889",
+          "itemStatus": "0",
+          "likelyToKeepUp": "false",
+          "liveSeconds": "6.493",
+          "loadedRangeFirstEnd": "4.921322222222222",
+          "loadedRangeFirstStart": "4.003988888888889",
+          "prepareMs": "5224",
+          "seekResult": "true",
+          "target": "5.530666630390804"
+        },
+        {
+          "elapsed": 13.851547956466675,
+          "event": "replacement_candidate_buffered_seek_started",
+          "bufferEmpty": "false",
+          "bufferedTarget": "6.493",
+          "candidateBufferAheadSeconds": "0.41904165022222184",
+          "candidateSeconds": "6.614280572",
+          "elapsedMs": "6989",
+          "fromSeconds": "6.614280572",
+          "itemStatus": "1",
+          "likelyToKeepUp": "false",
+          "liveSeconds": "6.493",
+          "loadedRangeFirstEnd": "7.033322222222222",
+          "loadedRangeFirstStart": "4.003988888888889",
+          "reason": "stalledOvershoot",
+          "seekResult": "true",
+          "target": "5.530666630390804"
+        },
+        {
+          "elapsed": 13.885536909103394,
+          "event": "replacement_candidate_buffered_seek_completed",
+          "bufferEmpty": "false",
+          "bufferedTarget": "6.493",
+          "candidateBufferAheadSeconds": "0.5416555555555558",
+          "candidateSeconds": "6.491666666666666",
+          "elapsedMs": "7107",
+          "itemStatus": "1",
+          "likelyToKeepUp": "false",
+          "liveSeconds": "6.493",
+          "loadedRangeFirstEnd": "7.033322222222222",
+          "loadedRangeFirstStart": "4.003988888888889",
+          "seekResult": "true",
+          "target": "5.530666630390804"
+        },
+        {
+          "elapsed": 13.886208057403564,
+          "event": "replacement_candidate_aligned",
+          "bufferEmpty": "false",
+          "candidate": "6.491666666666666",
+          "candidateBufferAheadSeconds": "0.5416555555555558",
+          "candidateSeconds": "6.491666666666666",
+          "current": "6.493",
+          "elapsedMs": "7109",
+          "framePTS": "6.464777777777778",
+          "itemStatus": "1",
+          "likelyToKeepUp": "false",
+          "liveSeconds": "6.493",
+          "loadedRangeFirstEnd": "7.033322222222222",
+          "loadedRangeFirstStart": "4.003988888888889",
+          "seekResult": "true",
+          "target": "5.530666630390804"
+        },
+        {
+          "elapsed": 13.886532068252563,
+          "event": "replacement_warmup_completed"
+        },
+        {
+          "elapsed": 13.887245893478394,
+          "event": "route_selected",
+          "connectionAddressKind": "privateIP",
+          "connectionPort": "8096",
+          "connectionScheme": "http"
+        },
+        {
+          "elapsed": 14.187740087509155,
+          "event": "replacement_committed",
+          "candidateBufferAheadSeconds": "0.5416555555555558",
+          "candidateSeconds": "6.491666666666666"
+        },
+        {
+          "elapsed": 14.322535991668701,
+          "event": "first_frame"
+        }
+      ],
+      "requestToCommitSeconds": 7.628044128417969,
+      "ordinaryExit": {
+        "started": 1791303509.49056,
+        "result": "PASS",
+        "actualExitVerified": true,
+        "responseToVerifiedSourceSeconds": 17.39762783050537,
+        "ended": 1791303532.026444
+      },
+      "formalCompetitorPairs": 0,
+      "qualification": "Ordinary Debug -Onone. Actual native pictures plus sparse counters; complete frames, exact media-content alignment and audio not proven. No cause or competitor ranking.",
+      "actualVisualVerdict": "SUSTAINED_ADVANCE_CONFIRMED; STALLS_RETAINED_FAIL",
+      "visualReview": {
+        "nativeTargets": [
+          3,
+          10,
+          12,
+          14,
+          16,
+          18,
+          20,
+          22,
+          24,
+          30,
+          60,
+          75
+        ],
+        "earlySpinnerTargets": [
+          10,
+          12
+        ],
+        "continuedContentTargets": [
+          16,
+          18,
+          20,
+          22,
+          24,
+          60,
+          75
+        ],
+        "fullFrameTimingProven": false,
+        "audioProven": false
+      },
+      "adoptionWaitingSeconds": 1.8989028930664062
+    },
+    {
+      "label": "alignFinalHealthyLANMI2",
+      "mainSHA256": "93a1b4252dbe09105e3118930ccf1b84565babae553a81084de1469feab16404",
+      "plannedSeconds": 120,
+      "naturalBoundarySeconds": 122.55358481407166,
+      "conditioned": false,
+      "upstreamCellular": [
+        "no"
+      ],
+      "upstreamExpensive": [
+        "no"
+      ],
+      "telemetry": [
+        {
+          "engine": "KSPlayer",
+          "samples": 115,
+          "seconds": 120.73890805244446,
+          "maxStalls": 1,
+          "maxDrops": 15,
+          "postFirstFrame": {
+            "coverageSeconds": 119.09741115570068,
+            "startStallCount": 0,
+            "lastStallCount": 1,
+            "observedStallDelta": 1
+          },
+          "firstAccessLogStalls": null,
+          "lastAccessLogStalls": null,
+          "lastCurrentSeconds": "114.910"
+        }
+      ],
+      "events": [
+        {
+          "elapsed": 1.1079928874969482,
+          "event": "playback_preparing"
+        },
+        {
+          "elapsed": 1.1317641735076904,
+          "event": "playback_preparing",
+          "stage": "originalRouteWarmupReused"
+        },
+        {
+          "elapsed": 1.159559965133667,
+          "event": "playback_prepared",
+          "maxBitrate": "unlimitedOriginal",
+          "prepareMs": "35"
+        },
+        {
+          "elapsed": 1.1598808765411377,
+          "event": "playback_prepared",
+          "stage": "sourceCapabilities"
+        },
+        {
+          "elapsed": 1.3165500164031982,
+          "event": "route_selected",
+          "connectionAddressKind": "privateIP",
+          "connectionPort": "8096",
+          "connectionScheme": "http"
+        },
+        {
+          "elapsed": 1.7645950317382812,
+          "event": "buffer_updated",
+          "consumeMs": "399"
+        },
+        {
+          "elapsed": 2.0512030124664307,
+          "event": "first_frame"
+        },
+        {
+          "elapsed": 22.657104015350342,
+          "event": "buffer_updated",
+          "consumeMs": "5150"
+        }
+      ],
+      "requestToCommitSeconds": null,
+      "ordinaryExit": {
+        "started": 1791303735.008826,
+        "result": "PASS",
+        "actualExitVerified": true,
+        "responseToVerifiedSourceSeconds": 16.333890676498413,
+        "ended": 1791303756.507572
+      },
+      "formalCompetitorPairs": 0,
+      "qualification": "Ordinary Debug -Onone. Actual native pictures plus sparse counters; complete frames, exact media-content alignment and audio not proven. No cause or competitor ranking.",
+      "actualVisualVerdict": "SPARSE_FRAMES_ADVANCE; INTERNAL_POST_FIRST_FRAME_STALL_AND_DROPS_RETAINED",
+      "visualReview": {
+        "nativeTargets": [
+          3,
+          10,
+          30,
+          60,
+          90,
+          120
+        ],
+        "contentContinuesAcrossTargets": true,
+        "exactVisualStallDuration": "U",
+        "fullFrameTimingProven": false,
+        "audioProven": false
+      }
+    },
+    {
+      "label": "alignFinalNormalCellS01b",
+      "mainSHA256": "93a1b4252dbe09105e3118930ccf1b84565babae553a81084de1469feab16404",
+      "plannedSeconds": 120,
+      "naturalBoundarySeconds": 121.47285723686218,
+      "conditioned": false,
+      "upstreamCellular": [
+        "yes"
+      ],
+      "upstreamExpensive": [
+        "yes"
+      ],
+      "telemetry": [
+        {
+          "engine": "KSPlayer",
+          "samples": 111,
+          "seconds": 119.23839688301086,
+          "maxStalls": 0,
+          "maxDrops": 0,
+          "postFirstFrame": {
+            "coverageSeconds": 117.49373412132263,
+            "startStallCount": 0,
+            "lastStallCount": 0,
+            "observedStallDelta": 0
+          },
+          "firstAccessLogStalls": null,
+          "lastAccessLogStalls": null,
+          "lastCurrentSeconds": "118.665"
+        }
+      ],
+      "events": [
+        {
+          "elapsed": 1.0764241218566895,
+          "event": "playback_preparing"
+        },
+        {
+          "elapsed": 1.2880423069000244,
+          "event": "playback_preparing",
+          "stage": "originalRouteProbe"
+        },
+        {
+          "elapsed": 1.3371961116790771,
+          "event": "playback_prepared",
+          "maxBitrate": "unlimitedOriginal",
+          "prepareMs": "266"
+        },
+        {
+          "elapsed": 1.3376562595367432,
+          "event": "playback_prepared",
+          "stage": "sourceCapabilities"
+        },
+        {
+          "elapsed": 1.4980261325836182,
+          "event": "route_selected",
+          "connectionAddressKind": "publicDomain",
+          "connectionPort": "8097",
+          "connectionScheme": "https"
+        },
+        {
+          "elapsed": 2.034470319747925,
+          "event": "buffer_updated",
+          "consumeMs": "483"
+        },
+        {
+          "elapsed": 2.1998960971832275,
+          "event": "first_frame"
+        }
+      ],
+      "requestToCommitSeconds": null,
+      "ordinaryExit": {
+        "started": 1791304303.517927,
+        "result": "PASS",
+        "actualExitVerified": true,
+        "responseToVerifiedSourceSeconds": 15.99596905708313,
+        "ended": 1791304324.8720589
+      },
+      "formalCompetitorPairs": 0,
+      "qualification": "Ordinary Debug -Onone. Actual native pictures plus sparse counters; complete frames, exact media-content alignment and audio not proven. No cause or competitor ranking.",
+      "actualVisualVerdict": "SPARSE_FRAMES_ADVANCE; NO_APP_COUNTER_STALLS_THIS_INTERVAL",
+      "visualReview": {
+        "nativeTargets": [
+          3,
+          10,
+          30,
+          60,
+          90,
+          120
+        ],
+        "contentContinuesAcrossTargets": true,
+        "firstPictureUpperBoundTargetSeconds": 3,
+        "fullFrameTimingProven": false,
+        "audioProven": false,
+        "firstPictureUpperBoundSeconds": 3.7026162147521973
+      }
+    },
+    {
+      "label": "alignFinalWeakCellS01",
+      "mainSHA256": "93a1b4252dbe09105e3118930ccf1b84565babae553a81084de1469feab16404",
+      "plannedSeconds": 180,
+      "naturalBoundarySeconds": 180.97787404060364,
+      "conditioned": true,
+      "upstreamCellular": [
+        "yes"
+      ],
+      "upstreamExpensive": [
+        "yes"
+      ],
+      "telemetry": [
+        {
+          "engine": "KSPlayer",
+          "samples": 166,
+          "seconds": 177.78883910179138,
+          "maxStalls": 6,
+          "maxDrops": 15,
+          "postFirstFrame": {
+            "coverageSeconds": 169.49063086509705,
+            "startStallCount": 1,
+            "lastStallCount": 6,
+            "observedStallDelta": 5
+          },
+          "firstAccessLogStalls": null,
+          "lastAccessLogStalls": null,
+          "lastCurrentSeconds": "40.926"
+        }
+      ],
+      "events": [
+        {
+          "elapsed": 1.080824851989746,
+          "event": "playback_preparing"
+        },
+        {
+          "elapsed": 2.4118728637695312,
+          "event": "playback_preparing",
+          "stage": "originalRouteProbe"
+        },
+        {
+          "elapsed": 2.439258098602295,
+          "event": "playback_prepared",
+          "maxBitrate": "unlimitedOriginal",
+          "prepareMs": "1362"
+        },
+        {
+          "elapsed": 2.43959903717041,
+          "event": "playback_prepared",
+          "stage": "sourceCapabilities"
+        },
+        {
+          "elapsed": 2.59344482421875,
+          "event": "route_selected",
+          "connectionAddressKind": "publicDomain",
+          "connectionPort": "8097",
+          "connectionScheme": "https"
+        },
+        {
+          "elapsed": 2.642465114593506,
+          "event": "bitrate_measured"
+        },
+        {
+          "elapsed": 9.639472961425781,
+          "event": "buffer_updated",
+          "consumeMs": "7025"
+        },
+        {
+          "elapsed": 9.852255821228027,
+          "event": "first_frame"
+        },
+        {
+          "elapsed": 25.4036808013916,
+          "event": "automatic_downshift_requested",
+          "bufferTargetSeconds": "4.0",
+          "bufferedAheadSeconds": "3.9583333333333335",
+          "deliveryCapacity": "unknown",
+          "deliveryCapacitySource": "unknown",
+          "reason": "sustainedRebuffering"
+        },
+        {
+          "elapsed": 25.44843602180481,
+          "event": "playback_preparing"
+        },
+        {
+          "elapsed": 25.44887685775757,
+          "event": "playback_preparing",
+          "reason": "bitrateFallback"
+        },
+        {
+          "elapsed": 27.362201929092407,
+          "event": "buffer_updated",
+          "consumeMs": "14600"
+        },
+        {
+          "elapsed": 36.70949697494507,
+          "event": "playback_prepared",
+          "maxBitrate": "250000",
+          "negotiatedAudioCodec": "aac",
+          "negotiatedVideoBitrate": "122000",
+          "negotiatedVideoCodec": "h264",
+          "prepareMs": "11279"
+        },
+        {
+          "elapsed": 36.709989070892334,
+          "event": "playback_prepared",
+          "stage": "sourceCapabilities"
+        },
+        {
+          "elapsed": 36.71052408218384,
+          "event": "replacement_warmup_started"
+        },
+        {
+          "elapsed": 36.71087598800659,
+          "event": "replacement_candidate_preparing",
+          "bufferEmpty": "true",
+          "candidateBufferAheadSeconds": "0.0",
+          "candidateSeconds": "0.0",
+          "elapsedMs": "0",
+          "itemStatus": "0",
+          "likelyToKeepUp": "false",
+          "liveSeconds": "12.169",
+          "loadedRangeFirstEnd": "unknown",
+          "loadedRangeFirstStart": "unknown",
+          "seekResult": "pending",
+          "target": "13.294"
+        },
+        {
+          "elapsed": 56.10577392578125,
+          "event": "buffer_updated",
+          "consumeMs": "16200"
+        },
+        {
+          "elapsed": 70.61415004730225,
+          "event": "replacement_warmup_failed",
+          "bufferEmpty": "true",
+          "candidateBufferAheadSeconds": "0.0",
+          "candidateSeconds": "13.293333333333333",
+          "elapsedMs": "33895",
+          "itemStatus": "2",
+          "likelyToKeepUp": "false",
+          "liveSeconds": "24.094",
+          "loadedRangeFirstEnd": "unknown",
+          "loadedRangeFirstStart": "unknown",
+          "seekResult": "true",
+          "stage": "decodedFrame",
+          "target": "13.294"
+        },
+        {
+          "elapsed": 94.0451021194458,
+          "event": "automatic_downshift_requested",
+          "bufferTargetSeconds": "4.0",
+          "bufferedAheadSeconds": "2.958333333333332",
+          "deliveryCapacity": "unknown",
+          "deliveryCapacitySource": "unknown",
+          "reason": "sustainedRebuffering"
+        },
+        {
+          "elapsed": 94.08728790283203,
+          "event": "playback_preparing"
+        },
+        {
+          "elapsed": 94.08770704269409,
+          "event": "playback_preparing",
+          "reason": "bitrateFallback"
+        },
+        {
+          "elapsed": 103.11329698562622,
+          "event": "buffer_updated",
+          "consumeMs": "38201"
+        },
+        {
+          "elapsed": 106.9123649597168,
+          "event": "playback_prepared",
+          "maxBitrate": "250000",
+          "negotiatedAudioCodec": "aac",
+          "negotiatedVideoBitrate": "122000",
+          "negotiatedVideoCodec": "h264",
+          "prepareMs": "12855"
+        },
+        {
+          "elapsed": 106.91340589523315,
+          "event": "playback_prepared",
+          "stage": "sourceCapabilities"
+        },
+        {
+          "elapsed": 106.91458702087402,
+          "event": "replacement_warmup_started"
+        },
+        {
+          "elapsed": 106.91524982452393,
+          "event": "replacement_candidate_preparing",
+          "bufferEmpty": "true",
+          "candidateBufferAheadSeconds": "0.0",
+          "candidateSeconds": "0.0",
+          "elapsedMs": "0",
+          "itemStatus": "0",
+          "likelyToKeepUp": "false",
+          "liveSeconds": "27.764",
+          "loadedRangeFirstEnd": "unknown",
+          "loadedRangeFirstStart": "unknown",
+          "seekResult": "pending",
+          "target": "30.700166666666668"
+        },
+        {
+          "elapsed": 134.11810898780823,
+          "event": "buffer_updated",
+          "consumeMs": "20042"
+        },
+        {
+          "elapsed": 143.11560010910034,
+          "event": "replacement_warmup_failed",
+          "bufferEmpty": "true",
+          "candidateBufferAheadSeconds": "0.0",
+          "candidateSeconds": "30.7",
+          "elapsedMs": "36205",
+          "itemStatus": "2",
+          "likelyToKeepUp": "false",
+          "liveSeconds": "40.926",
+          "loadedRangeFirstEnd": "unknown",
+          "loadedRangeFirstStart": "unknown",
+          "seekResult": "true",
+          "stage": "decodedFrame",
+          "target": "30.700166666666668"
+        }
+      ],
+      "requestToCommitSeconds": null,
+      "ordinaryExit": {
+        "started": 1791304675.968836,
+        "result": "PASS",
+        "actualExitVerified": true,
+        "responseToVerifiedSourceSeconds": 10.590502977371216,
+        "ended": 1791304689.241301
+      },
+      "formalCompetitorPairs": 0,
+      "qualification": "Ordinary Debug -Onone. Actual native pictures plus sparse counters; complete frames, exact media-content alignment and audio not proven. No cause or competitor ranking.",
+      "actualVisualVerdict": "FAIL: repeated original stalls, two failed HLS candidates, paused seek stale frame",
+      "visualReview": {
+        "nativeTargets": [
+          3,
+          10,
+          18,
+          20,
+          22,
+          24,
+          30,
+          60,
+          90,
+          120,
+          180
+        ],
+        "fullFrameTimingProven": false,
+        "audioProven": false,
+        "firstPictureBoundarySeconds": {
+          "lastNoPictureCaptureEnd": 3.58,
+          "firstDecodedPictureCaptureEnd": 10.617,
+          "internalFirstFrameSeconds": 9.852255821228027
+        },
+        "rebufferSpinnerSeenAtTargets": [
+          3,
+          120
+        ],
+        "decodedScenesAdvanceAcrossSomeTargets": [
+          10,
+          60,
+          90,
+          180
+        ]
+      }
+    }
+  ],
+  "historicalSameSourceDifferentBinary40Mbps": [
+    {
+      "label": "alignFinal40MPhoneMI2A",
+      "mainSHA256": "c7839ca9f35e6edb38935786a74dc0777c57fafc91f09832dc308708f6e216c7",
+      "plannedSeconds": 75,
+      "naturalBoundarySeconds": 75.98956394195557,
+      "conditioned": true,
+      "upstreamCellular": [
+        "no"
+      ],
+      "upstreamExpensive": [
+        "no"
+      ],
+      "telemetry": [
+        {
+          "engine": "KSPlayer",
+          "samples": 14,
+          "seconds": 13.86772894859314,
+          "maxStalls": 1,
+          "maxDrops": 1,
+          "postFirstFrame": {
+            "coverageSeconds": 11.97183895111084,
+            "startStallCount": 0,
+            "lastStallCount": 1,
+            "observedStallDelta": 1
+          },
+          "firstAccessLogStalls": null,
+          "lastAccessLogStalls": null,
+          "lastCurrentSeconds": null
+        },
+        {
+          "engine": "AVPlayer",
+          "samples": 49,
+          "seconds": 60.30227518081665,
+          "maxStalls": 1,
+          "maxDrops": null,
+          "postFirstFrame": {
+            "coverageSeconds": 60.24215221405029,
+            "startStallCount": 1,
+            "lastStallCount": 1,
+            "observedStallDelta": 0
+          },
+          "firstAccessLogStalls": "-",
+          "lastAccessLogStalls": "16",
+          "lastCurrentSeconds": "63.501"
+        }
+      ],
+      "events": [
+        {
+          "elapsed": 1.2928040027618408,
+          "event": "playback_preparing"
+        },
+        {
+          "elapsed": 1.2936089038848877,
+          "event": "playback_preparing",
+          "stage": "originalRouteWarmupReused"
+        },
+        {
+          "elapsed": 1.3297860622406006,
+          "event": "playback_prepared",
+          "maxBitrate": "unlimitedOriginal",
+          "prepareMs": "41"
+        },
+        {
+          "elapsed": 1.3301270008087158,
+          "event": "playback_prepared",
+          "stage": "sourceCapabilities"
+        },
+        {
+          "elapsed": 1.5870110988616943,
+          "event": "route_selected",
+          "connectionAddressKind": "privateIP",
+          "connectionPort": "8096",
+          "connectionScheme": "http"
+        },
+        {
+          "elapsed": 2.2320878505706787,
+          "event": "buffer_updated",
+          "consumeMs": "585"
+        },
+        {
+          "elapsed": 2.4784491062164307,
+          "event": "first_frame"
+        },
+        {
+          "elapsed": 6.780321836471558,
+          "event": "automatic_downshift_requested",
+          "deliveryCapacity": "35054442",
+          "deliveryCapacitySource": "bodyWindow",
+          "reason": "deliveryBelowSourceBitrate"
+        },
+        {
+          "elapsed": 6.792279005050659,
+          "event": "playback_preparing"
+        },
+        {
+          "elapsed": 6.792764902114868,
+          "event": "playback_preparing",
+          "reason": "bitrateFallback"
+        },
+        {
+          "elapsed": 6.8200390338897705,
+          "event": "playback_preparing",
+          "reason": "routeOrNetworkChangedOrUnavailable",
+          "stage": "originalRouteWarmupInvalidated"
+        },
+        {
+          "elapsed": 7.247624158859253,
+          "event": "playback_prepared",
+          "maxBitrate": "12000000",
+          "negotiatedAudioCodec": "aac",
+          "negotiatedVideoBitrate": "11360000",
+          "negotiatedVideoCodec": "h264",
+          "prepareMs": "423"
+        },
+        {
+          "elapsed": 7.248070955276489,
+          "event": "playback_prepared",
+          "stage": "sourceCapabilities"
+        },
+        {
+          "elapsed": 7.248584985733032,
+          "event": "replacement_warmup_started"
+        },
+        {
+          "elapsed": 7.2500059604644775,
+          "event": "replacement_candidate_preparing",
+          "bufferEmpty": "true",
+          "candidateBufferAheadSeconds": "0.0",
+          "candidateSeconds": "0.0",
+          "elapsedMs": "0",
+          "itemStatus": "0",
+          "liveSeconds": "4.809",
+          "loadedRangeFirstEnd": "unknown",
+          "loadedRangeFirstStart": "unknown",
+          "seekResult": "pending",
+          "target": "5.2457499795948275"
+        },
+        {
+          "elapsed": 13.092265844345093,
+          "event": "replacement_candidate_decoded",
+          "bufferEmpty": "false",
+          "candidateBufferAheadSeconds": "0.0",
+          "candidateSeconds": "5.245",
+          "elapsedMs": "5835",
+          "framePTS": "5.213533333333333",
+          "itemStatus": "0",
+          "liveSeconds": "5.769",
+          "loadedRangeFirstEnd": "5.027988888888889",
+          "loadedRangeFirstStart": "4.003988888888889",
+          "prepareMs": "5835",
+          "seekResult": "true",
+          "target": "5.2457499795948275"
+        },
+        {
+          "elapsed": 15.107303857803345,
+          "event": "replacement_candidate_buffered_seek_started",
+          "bufferEmpty": "false",
+          "bufferedTarget": "5.769",
+          "candidateBufferAheadSeconds": "0.7791743042222228",
+          "candidateSeconds": "5.870147918",
+          "elapsedMs": "7782",
+          "fromSeconds": "5.870147918",
+          "itemStatus": "1",
+          "liveSeconds": "5.769",
+          "loadedRangeFirstEnd": "6.649322222222223",
+          "loadedRangeFirstStart": "4.003988888888889",
+          "reason": "stalledOvershoot",
+          "seekResult": "true",
+          "target": "5.2457499795948275"
+        },
+        {
+          "elapsed": 15.178380966186523,
+          "event": "replacement_candidate_buffered_seek_completed",
+          "bufferEmpty": "false",
+          "bufferedTarget": "5.769",
+          "candidateBufferAheadSeconds": "0.880988888888889",
+          "candidateSeconds": "5.7683333333333335",
+          "elapsedMs": "7929",
+          "itemStatus": "1",
+          "liveSeconds": "5.769",
+          "loadedRangeFirstEnd": "6.649322222222223",
+          "loadedRangeFirstStart": "4.003988888888889",
+          "seekResult": "true",
+          "target": "5.2457499795948275"
+        },
+        {
+          "elapsed": 15.178976058959961,
+          "event": "replacement_candidate_aligned",
+          "bufferEmpty": "false",
+          "candidate": "5.7683333333333335",
+          "candidateBufferAheadSeconds": "0.880988888888889",
+          "candidateSeconds": "5.7683333333333335",
+          "current": "5.769",
+          "elapsedMs": "7931",
+          "framePTS": "5.755744444444445",
+          "itemStatus": "1",
+          "liveSeconds": "5.769",
+          "loadedRangeFirstEnd": "6.649322222222223",
+          "loadedRangeFirstStart": "4.003988888888889",
+          "seekResult": "true",
+          "target": "5.2457499795948275"
+        },
+        {
+          "elapsed": 15.179245948791504,
+          "event": "replacement_warmup_completed"
+        },
+        {
+          "elapsed": 15.179880857467651,
+          "event": "route_selected",
+          "connectionAddressKind": "privateIP",
+          "connectionPort": "8096",
+          "connectionScheme": "http"
+        },
+        {
+          "elapsed": 15.392659902572632,
+          "event": "replacement_committed",
+          "candidateBufferAheadSeconds": "0.880988888888889",
+          "candidateSeconds": "5.7683333333333335"
+        },
+        {
+          "elapsed": 15.579481840133667,
+          "event": "first_frame"
+        }
+      ],
+      "requestToCommitSeconds": 8.612338066101074,
+      "ordinaryExit": {
+        "started": 1791301455.00068,
+        "result": "PASS",
+        "actualExitVerified": true,
+        "responseToVerifiedSourceSeconds": 10.570949077606201,
+        "ended": 1791301470.712356
+      },
+      "formalCompetitorPairs": 0,
+      "qualification": "Ordinary Debug -Onone. Actual native pictures plus sparse counters; complete frames, exact media-content alignment and audio not proven. No cause or competitor ranking."
+    },
+    {
+      "label": "alignFinal40MPhoneMI2B",
+      "mainSHA256": "c7839ca9f35e6edb38935786a74dc0777c57fafc91f09832dc308708f6e216c7",
+      "plannedSeconds": 75,
+      "naturalBoundarySeconds": 76.16599607467651,
+      "conditioned": true,
+      "upstreamCellular": [
+        "no"
+      ],
+      "upstreamExpensive": [
+        "no"
+      ],
+      "telemetry": [
+        {
+          "engine": "KSPlayer",
+          "samples": 17,
+          "seconds": 16.562382221221924,
+          "maxStalls": 1,
+          "maxDrops": 0,
+          "postFirstFrame": {
+            "coverageSeconds": 14.742233276367188,
+            "startStallCount": 0,
+            "lastStallCount": 1,
+            "observedStallDelta": 1
+          },
+          "firstAccessLogStalls": null,
+          "lastAccessLogStalls": null,
+          "lastCurrentSeconds": null
+        },
+        {
+          "engine": "AVPlayer",
+          "samples": 46,
+          "seconds": 57.410133838653564,
+          "maxStalls": 1,
+          "maxDrops": null,
+          "postFirstFrame": {
+            "coverageSeconds": 57.344544887542725,
+            "startStallCount": 1,
+            "lastStallCount": 1,
+            "observedStallDelta": 0
+          },
+          "firstAccessLogStalls": "-",
+          "lastAccessLogStalls": "21",
+          "lastCurrentSeconds": "61.001"
+        }
+      ],
+      "events": [
+        {
+          "elapsed": 1.274003028869629,
+          "event": "playback_preparing"
+        },
+        {
+          "elapsed": 1.2747962474822998,
+          "event": "playback_preparing",
+          "stage": "originalRouteWarmupReused"
+        },
+        {
+          "elapsed": 1.306286096572876,
+          "event": "playback_prepared",
+          "maxBitrate": "unlimitedOriginal",
+          "prepareMs": "35"
+        },
+        {
+          "elapsed": 1.3066389560699463,
+          "event": "playback_prepared",
+          "stage": "sourceCapabilities"
+        },
+        {
+          "elapsed": 1.576221227645874,
+          "event": "route_selected",
+          "connectionAddressKind": "privateIP",
+          "connectionPort": "8096",
+          "connectionScheme": "http"
+        },
+        {
+          "elapsed": 2.233433961868286,
+          "event": "buffer_updated",
+          "consumeMs": "609"
+        },
+        {
+          "elapsed": 2.5293281078338623,
+          "event": "first_frame"
+        },
+        {
+          "elapsed": 6.704239130020142,
+          "event": "automatic_downshift_requested",
+          "deliveryCapacity": "33040500",
+          "deliveryCapacitySource": "bodyWindow",
+          "reason": "deliveryBelowSourceBitrate"
+        },
+        {
+          "elapsed": 6.722692251205444,
+          "event": "playback_preparing"
+        },
+        {
+          "elapsed": 6.723207235336304,
+          "event": "playback_preparing",
+          "reason": "bitrateFallback"
+        },
+        {
+          "elapsed": 6.750890016555786,
+          "event": "playback_preparing",
+          "reason": "routeOrNetworkChangedOrUnavailable",
+          "stage": "originalRouteWarmupInvalidated"
+        },
+        {
+          "elapsed": 6.8792760372161865,
+          "event": "playback_prepared",
+          "maxBitrate": "12000000",
+          "negotiatedAudioCodec": "aac",
+          "negotiatedVideoBitrate": "11360000",
+          "negotiatedVideoCodec": "h264",
+          "prepareMs": "136"
+        },
+        {
+          "elapsed": 6.879655122756958,
+          "event": "playback_prepared",
+          "stage": "sourceCapabilities"
+        },
+        {
+          "elapsed": 6.880202054977417,
+          "event": "replacement_warmup_started"
+        },
+        {
+          "elapsed": 6.881024122238159,
+          "event": "replacement_candidate_preparing",
+          "bufferEmpty": "true",
+          "candidateBufferAheadSeconds": "0.0",
+          "candidateSeconds": "0.0",
+          "elapsedMs": "0",
+          "itemStatus": "0",
+          "liveSeconds": "4.467",
+          "loadedRangeFirstEnd": "unknown",
+          "loadedRangeFirstStart": "unknown",
+          "seekResult": "pending",
+          "target": "5.322124969392241"
+        },
+        {
+          "elapsed": 14.561702966690063,
+          "event": "replacement_candidate_decoded",
+          "bufferEmpty": "false",
+          "candidateBufferAheadSeconds": "0.0",
+          "candidateSeconds": "5.321666666666666",
+          "elapsedMs": "7670",
+          "framePTS": "5.296944444444445",
+          "itemStatus": "0",
+          "liveSeconds": "6.004",
+          "loadedRangeFirstEnd": "4.921322222222222",
+          "loadedRangeFirstStart": "4.003988888888889",
+          "prepareMs": "7670",
+          "seekResult": "true",
+          "target": "5.322124969392241"
+        },
+        {
+          "elapsed": 17.79849410057068,
+          "event": "replacement_candidate_buffered_seek_started",
+          "bufferEmpty": "false",
+          "bufferedTarget": "6.004",
+          "candidateBufferAheadSeconds": "0.0",
+          "candidateSeconds": "6.884319791",
+          "elapsedMs": "10836",
+          "fromSeconds": "6.884319791",
+          "itemStatus": "1",
+          "liveSeconds": "6.004",
+          "loadedRangeFirstEnd": "6.819988888888889",
+          "loadedRangeFirstStart": "4.003988888888889",
+          "reason": "stalledOvershoot",
+          "seekResult": "true",
+          "target": "5.322124969392241"
+        },
+        {
+          "elapsed": 17.834570169448853,
+          "event": "replacement_candidate_buffered_seek_completed",
+          "bufferEmpty": "false",
+          "bufferedTarget": "6.004",
+          "candidateBufferAheadSeconds": "0.8166555555555561",
+          "candidateSeconds": "6.003333333333333",
+          "elapsedMs": "10955",
+          "itemStatus": "1",
+          "liveSeconds": "6.004",
+          "loadedRangeFirstEnd": "6.819988888888889",
+          "loadedRangeFirstStart": "4.003988888888889",
+          "seekResult": "true",
+          "target": "5.322124969392241"
+        },
+        {
+          "elapsed": 17.83520007133484,
+          "event": "replacement_candidate_aligned",
+          "bufferEmpty": "false",
+          "candidate": "6.003333333333333",
+          "candidateBufferAheadSeconds": "0.8166555555555561",
+          "candidateSeconds": "6.003333333333333",
+          "current": "6.004",
+          "elapsedMs": "10957",
+          "framePTS": "5.964277777777777",
+          "itemStatus": "1",
+          "liveSeconds": "6.004",
+          "loadedRangeFirstEnd": "6.819988888888889",
+          "loadedRangeFirstStart": "4.003988888888889",
+          "seekResult": "true",
+          "target": "5.322124969392241"
+        },
+        {
+          "elapsed": 17.835487127304077,
+          "event": "replacement_warmup_completed"
+        },
+        {
+          "elapsed": 17.83607792854309,
+          "event": "route_selected",
+          "connectionAddressKind": "privateIP",
+          "connectionPort": "8096",
+          "connectionScheme": "http"
+        },
+        {
+          "elapsed": 18.10582423210144,
+          "event": "replacement_committed",
+          "candidateBufferAheadSeconds": "0.8166555555555561",
+          "candidateSeconds": "6.003333333333333"
+        },
+        {
+          "elapsed": 18.30871319770813,
+          "event": "first_frame"
+        },
+        {
+          "elapsed": 29.654299020767212,
+          "event": "automatic_downshift_requested",
+          "deliveryCapacity": "7858276",
+          "deliveryCapacitySource": "completedTransfer",
+          "reason": "deliveryBelowSourceBitrate"
+        },
+        {
+          "elapsed": 29.680898904800415,
+          "event": "playback_preparing"
+        },
+        {
+          "elapsed": 29.681164026260376,
+          "event": "playback_preparing",
+          "reason": "bitrateFallback"
+        },
+        {
+          "elapsed": 29.765329122543335,
+          "event": "playback_prepared",
+          "maxBitrate": "2000000",
+          "negotiatedAudioCodec": "aac",
+          "negotiatedVideoBitrate": "1616000",
+          "negotiatedVideoCodec": "h264",
+          "prepareMs": "102"
+        },
+        {
+          "elapsed": 29.7656352519989,
+          "event": "playback_prepared",
+          "stage": "sourceCapabilities"
+        },
+        {
+          "elapsed": 29.766118049621582,
+          "event": "replacement_warmup_started"
+        },
+        {
+          "elapsed": 29.766391038894653,
+          "event": "replacement_candidate_preparing",
+          "bufferEmpty": "true",
+          "candidateBufferAheadSeconds": "0.0",
+          "candidateSeconds": "0.0",
+          "elapsedMs": "0",
+          "itemStatus": "0",
+          "liveSeconds": "15.114060984",
+          "loadedRangeFirstEnd": "unknown",
+          "loadedRangeFirstStart": "unknown",
+          "seekResult": "pending",
+          "target": "22.930499877255052"
+        },
+        {
+          "elapsed": 35.750596046447754,
+          "event": "replacement_candidate_decoded",
+          "bufferEmpty": "false",
+          "candidateBufferAheadSeconds": "0.0",
+          "candidateSeconds": "22.93",
+          "elapsedMs": "5983",
+          "framePTS": "22.897866666666665",
+          "itemStatus": "0",
+          "liveSeconds": "21.098339665",
+          "loadedRangeFirstEnd": "unknown",
+          "loadedRangeFirstStart": "unknown",
+          "prepareMs": "5983",
+          "seekResult": "true",
+          "target": "22.930499877255052"
+        },
+        {
+          "elapsed": 37.66441321372986,
+          "event": "replacement_candidate_aligned",
+          "bufferEmpty": "false",
+          "candidate": "22.93",
+          "candidateBufferAheadSeconds": "5.014577777777777",
+          "candidateSeconds": "22.93",
+          "current": "22.952163293",
+          "elapsedMs": "7838",
+          "framePTS": "22.897866666666665",
+          "itemStatus": "1",
+          "liveSeconds": "22.997033984",
+          "loadedRangeFirstEnd": "27.944577777777777",
+          "loadedRangeFirstStart": "20.01998888888889",
+          "seekResult": "true",
+          "target": "22.930499877255052"
+        },
+        {
+          "elapsed": 37.664775133132935,
+          "event": "replacement_warmup_completed"
+        },
+        {
+          "elapsed": 37.66797423362732,
+          "event": "route_selected",
+          "connectionAddressKind": "privateIP",
+          "connectionPort": "8096",
+          "connectionScheme": "http"
+        },
+        {
+          "elapsed": 37.68350291252136,
+          "event": "replacement_warmup_failed",
+          "candidateBufferAheadSeconds": "5.070716253777778",
+          "candidateSeconds": "22.873865232",
+          "liveSeconds": "23.019042148",
+          "stage": "commitRevalidation"
+        }
+      ],
+      "requestToCommitSeconds": 11.401585102081299,
+      "ordinaryExit": {
+        "started": 1791301609.393831,
+        "result": "PASS",
+        "actualExitVerified": true,
+        "responseToVerifiedSourceSeconds": 24.009618997573853,
+        "ended": 1791301640.398272
+      },
+      "formalCompetitorPairs": 0,
+      "qualification": "Ordinary Debug -Onone. Actual native pictures plus sparse counters; complete frames, exact media-content alignment and audio not proven. No cause or competitor ranking."
+    },
+    {
+      "label": "alignFinal40MPhoneMI2C",
+      "mainSHA256": "c7839ca9f35e6edb38935786a74dc0777c57fafc91f09832dc308708f6e216c7",
+      "plannedSeconds": 75,
+      "naturalBoundarySeconds": 76.09778881072998,
+      "conditioned": true,
+      "upstreamCellular": [
+        "no"
+      ],
+      "upstreamExpensive": [
+        "no"
+      ],
+      "telemetry": [
+        {
+          "engine": "KSPlayer",
+          "samples": 16,
+          "seconds": 14.410303115844727,
+          "maxStalls": 1,
+          "maxDrops": 0,
+          "postFirstFrame": {
+            "coverageSeconds": 12.204726219177246,
+            "startStallCount": 0,
+            "lastStallCount": 1,
+            "observedStallDelta": 1
+          },
+          "firstAccessLogStalls": null,
+          "lastAccessLogStalls": null,
+          "lastCurrentSeconds": null
+        },
+        {
+          "engine": "AVPlayer",
+          "samples": 46,
+          "seconds": 58.72449207305908,
+          "maxStalls": 1,
+          "maxDrops": null,
+          "postFirstFrame": {
+            "coverageSeconds": 58.65632200241089,
+            "startStallCount": 1,
+            "lastStallCount": 1,
+            "observedStallDelta": 0
+          },
+          "firstAccessLogStalls": "-",
+          "lastAccessLogStalls": "6",
+          "lastCurrentSeconds": "62.001"
+        }
+      ],
+      "events": [
+        {
+          "elapsed": 1.2309718132019043,
+          "event": "playback_preparing"
+        },
+        {
+          "elapsed": 1.2556538581848145,
+          "event": "playback_preparing",
+          "stage": "originalRouteWarmupReused"
+        },
+        {
+          "elapsed": 1.2870268821716309,
+          "event": "playback_prepared",
+          "maxBitrate": "unlimitedOriginal",
+          "prepareMs": "53"
+        },
+        {
+          "elapsed": 1.2873148918151855,
+          "event": "playback_prepared",
+          "stage": "sourceCapabilities"
+        },
+        {
+          "elapsed": 1.4398467540740967,
+          "event": "route_selected",
+          "connectionAddressKind": "localDomain",
+          "connectionPort": "8096",
+          "connectionScheme": "http"
+        },
+        {
+          "elapsed": 2.349975824356079,
+          "event": "buffer_updated",
+          "consumeMs": "870"
+        },
+        {
+          "elapsed": 2.6642327308654785,
+          "event": "first_frame"
+        },
+        {
+          "elapsed": 6.624632835388184,
+          "event": "automatic_downshift_requested",
+          "deliveryCapacity": "32277050",
+          "deliveryCapacitySource": "bodyWindow",
+          "reason": "deliveryBelowSourceBitrate"
+        },
+        {
+          "elapsed": 6.6639697551727295,
+          "event": "playback_preparing"
+        },
+        {
+          "elapsed": 6.664336681365967,
+          "event": "playback_preparing",
+          "reason": "bitrateFallback"
+        },
+        {
+          "elapsed": 6.668647766113281,
+          "event": "playback_preparing",
+          "reason": "routeOrNetworkChangedOrUnavailable",
+          "stage": "originalRouteWarmupInvalidated"
+        },
+        {
+          "elapsed": 6.835291862487793,
+          "event": "playback_prepared",
+          "maxBitrate": "12000000",
+          "negotiatedAudioCodec": "aac",
+          "negotiatedVideoBitrate": "11360000",
+          "negotiatedVideoCodec": "h264",
+          "prepareMs": "177"
+        },
+        {
+          "elapsed": 6.835694789886475,
+          "event": "playback_prepared",
+          "stage": "sourceCapabilities"
+        },
+        {
+          "elapsed": 6.8362767696380615,
+          "event": "replacement_warmup_started"
+        },
+        {
+          "elapsed": 6.836829662322998,
+          "event": "replacement_candidate_preparing",
+          "bufferEmpty": "true",
+          "candidateBufferAheadSeconds": "0.0",
+          "candidateSeconds": "0.0",
+          "elapsedMs": "0",
+          "itemStatus": "0",
+          "liveSeconds": "4.318",
+          "loadedRangeFirstEnd": "unknown",
+          "loadedRangeFirstStart": "unknown",
+          "seekResult": "pending",
+          "target": "5.00629164059339"
+        },
+        {
+          "elapsed": 13.170690774917603,
+          "event": "replacement_candidate_decoded",
+          "bufferEmpty": "false",
+          "candidateBufferAheadSeconds": "0.0",
+          "candidateSeconds": "5.005",
+          "elapsedMs": "6326",
+          "framePTS": "5.004988888888889",
+          "itemStatus": "0",
+          "liveSeconds": "5.598",
+          "loadedRangeFirstEnd": "4.921322222222222",
+          "loadedRangeFirstStart": "4.003988888888889",
+          "prepareMs": "6326",
+          "seekResult": "true",
+          "target": "5.00629164059339"
+        },
+        {
+          "elapsed": 15.560886859893799,
+          "event": "replacement_candidate_buffered_seek_started",
+          "bufferEmpty": "false",
+          "bufferedTarget": "5.598",
+          "candidateBufferAheadSeconds": "0.9687602228888892",
+          "candidateSeconds": "5.723228666",
+          "elapsedMs": "8643",
+          "fromSeconds": "5.723228666",
+          "itemStatus": "1",
+          "liveSeconds": "5.598",
+          "loadedRangeFirstEnd": "6.691988888888889",
+          "loadedRangeFirstStart": "4.003988888888889",
+          "reason": "stalledOvershoot",
+          "seekResult": "true",
+          "target": "5.00629164059339"
+        },
+        {
+          "elapsed": 15.599721908569336,
+          "event": "replacement_candidate_buffered_seek_completed",
+          "bufferEmpty": "false",
+          "bufferedTarget": "5.598",
+          "candidateBufferAheadSeconds": "1.0953222222222223",
+          "candidateSeconds": "5.596666666666667",
+          "elapsedMs": "8763",
+          "itemStatus": "1",
+          "liveSeconds": "5.598",
+          "loadedRangeFirstEnd": "6.691988888888889",
+          "loadedRangeFirstStart": "4.003988888888889",
+          "seekResult": "true",
+          "target": "5.00629164059339"
+        },
+        {
+          "elapsed": 15.600496768951416,
+          "event": "replacement_candidate_aligned",
+          "bufferEmpty": "false",
+          "candidate": "5.596666666666667",
+          "candidateBufferAheadSeconds": "1.0953222222222223",
+          "candidateSeconds": "5.596666666666667",
+          "current": "5.598",
+          "elapsedMs": "8765",
+          "framePTS": "5.588911111111111",
+          "itemStatus": "1",
+          "liveSeconds": "5.598",
+          "loadedRangeFirstEnd": "6.691988888888889",
+          "loadedRangeFirstStart": "4.003988888888889",
+          "seekResult": "true",
+          "target": "5.00629164059339"
+        },
+        {
+          "elapsed": 15.600844860076904,
+          "event": "replacement_warmup_completed"
+        },
+        {
+          "elapsed": 15.601606845855713,
+          "event": "route_selected",
+          "connectionAddressKind": "localDomain",
+          "connectionPort": "8096",
+          "connectionScheme": "http"
+        },
+        {
+          "elapsed": 15.85185194015503,
+          "event": "replacement_committed",
+          "candidateBufferAheadSeconds": "1.0953222222222223",
+          "candidateSeconds": "5.596666666666667"
+        },
+        {
+          "elapsed": 15.929962635040283,
+          "event": "first_frame"
+        }
+      ],
+      "requestToCommitSeconds": 9.227219104766846,
+      "ordinaryExit": {
+        "started": 1791301778.7900631,
+        "result": "PASS",
+        "actualExitVerified": true,
+        "responseToVerifiedSourceSeconds": 10.764601945877075,
+        "ended": 1791301794.740203
+      },
+      "formalCompetitorPairs": 0,
+      "qualification": "Ordinary Debug -Onone. Actual native pictures plus sparse counters; complete frames, exact media-content alignment and audio not proven. No cause or competitor ranking."
+    }
+  ],
+  "withdrawnExperiment": {
+    "sourceReverted": true,
+    "testsPassedButNotHardwareQualified": 129,
+    "completeTrials": [
+      {
+        "label": "restore40MPhoneMI2A",
+        "mainSHA256": "8b8cfd0ff8b8a058db075b69f1ed623ed6347d76f428af9f7a2aeab551de5d57",
+        "verdict": "FAIL: video paused after adoption and did not advance",
+        "telemetry": [
+          {
+            "engine": "KSPlayer",
+            "samples": 17,
+            "seconds": 17.132059812545776,
+            "maxStalls": 1,
+            "maxDrops": 0,
+            "postFirstFrame": {
+              "coverageSeconds": 15.156874895095825,
+              "startStallCount": 0,
+              "lastStallCount": 1,
+              "observedStallDelta": 1
+            },
+            "firstAccessLogStalls": null,
+            "lastAccessLogStalls": null,
+            "lastCurrentSeconds": null
+          },
+          {
+            "engine": "AVPlayer",
+            "samples": 5,
+            "seconds": 0.09337186813354492,
+            "maxStalls": 0,
+            "maxDrops": null,
+            "postFirstFrame": {
+              "coverageSeconds": 0.028937816619873047,
+              "startStallCount": 0,
+              "lastStallCount": 0,
+              "observedStallDelta": 0
+            },
+            "firstAccessLogStalls": "-",
+            "lastAccessLogStalls": "-",
+            "lastCurrentSeconds": "5.475"
+          }
+        ],
+        "requestToCommitSeconds": 12.043730735778809,
+        "zeroCounterNotEvidenceOfImprovement": true
+      },
+      {
+        "label": "restore40MPhoneMI2B",
+        "mainSHA256": "8b8cfd0ff8b8a058db075b69f1ed623ed6347d76f428af9f7a2aeab551de5d57",
+        "verdict": "FAIL: video paused after adoption and did not advance",
+        "telemetry": [
+          {
+            "engine": "KSPlayer",
+            "samples": 14,
+            "seconds": 13.411396980285645,
+            "maxStalls": 1,
+            "maxDrops": 0,
+            "postFirstFrame": {
+              "coverageSeconds": 11.648589849472046,
+              "startStallCount": 0,
+              "lastStallCount": 1,
+              "observedStallDelta": 1
+            },
+            "firstAccessLogStalls": null,
+            "lastAccessLogStalls": null,
+            "lastCurrentSeconds": null
+          },
+          {
+            "engine": "AVPlayer",
+            "samples": 5,
+            "seconds": 0.12529492378234863,
+            "maxStalls": 0,
+            "maxDrops": null,
+            "postFirstFrame": {
+              "coverageSeconds": 0.03168892860412598,
+              "startStallCount": 0,
+              "lastStallCount": 0,
+              "observedStallDelta": 0
+            },
+            "firstAccessLogStalls": "-",
+            "lastAccessLogStalls": "16",
+            "lastCurrentSeconds": "6.345"
+          }
+        ],
+        "requestToCommitSeconds": 8.075135946273804,
+        "zeroCounterNotEvidenceOfImprovement": true
+      }
+    ],
+    "thirdTrial": "aborted; partial images retained privately",
+    "cleanup": "explicit standalone DVT clear and all-inactive read verified after abort; wrapper finally not confirmed"
+  },
+  "excludedCellularAttempt": {
+    "label": "alignFinalNormalCellS01",
+    "mainSHA256": "93a1b4252dbe09105e3118930ccf1b84565babae553a81084de1469feab16404",
+    "plannedSeconds": 120,
+    "naturalBoundarySeconds": 121.4684088230133,
+    "conditioned": false,
+    "upstreamCellular": [
+      "no"
+    ],
+    "upstreamExpensive": [
+      "no"
+    ],
+    "telemetry": [
+      {
+        "engine": "KSPlayer",
+        "samples": 114,
+        "seconds": 119.99979400634766,
+        "maxStalls": 0,
+        "maxDrops": 0,
+        "postFirstFrame": {
+          "coverageSeconds": 118.107834815979,
+          "startStallCount": 0,
+          "lastStallCount": 0,
+          "observedStallDelta": 0
+        },
+        "firstAccessLogStalls": null,
+        "lastAccessLogStalls": null,
+        "lastCurrentSeconds": "119.262"
+      }
+    ],
+    "events": [
+      {
+        "elapsed": 1.072455883026123,
+        "event": "playback_preparing"
+      },
+      {
+        "elapsed": 1.0962438583374023,
+        "event": "playback_preparing",
+        "stage": "originalRouteWarmupReused"
+      },
+      {
+        "elapsed": 1.1262307167053223,
+        "event": "playback_prepared",
+        "maxBitrate": "unlimitedOriginal",
+        "prepareMs": "36"
+      },
+      {
+        "elapsed": 1.1265437602996826,
+        "event": "playback_prepared",
+        "stage": "sourceCapabilities"
+      },
+      {
+        "elapsed": 1.2707078456878662,
+        "event": "route_selected",
+        "connectionAddressKind": "privateIP",
+        "connectionPort": "8096",
+        "connectionScheme": "http"
+      },
+      {
+        "elapsed": 1.980700969696045,
+        "event": "buffer_updated",
+        "consumeMs": "629"
+      },
+      {
+        "elapsed": 2.149247646331787,
+        "event": "first_frame"
+      }
+    ],
+    "requestToCommitSeconds": null,
+    "ordinaryExit": {
+      "started": 1791304019.6475441,
+      "result": "PASS",
+      "actualExitVerified": true,
+      "responseToVerifiedSourceSeconds": 11.444149017333984,
+      "ended": 1791304036.6846788
+    },
+    "formalCompetitorPairs": 0,
+    "qualification": "INVALID as cellular: Wi-Fi disable guard failed before switch change; subsequent round retained as accidental LAN S01, not paired"
+  },
+  "weakControls": {
+    "result": "FAIL",
+    "pauseUIClocks": [
+      "00:45",
+      "1:59:25"
+    ],
+    "pausePicturesStable": true,
+    "pauseResponseEffect": "U: original was already buffering; same pictures do not establish stopping latency",
+    "seekUIClocks": [
+      "01:00",
+      "1:59:25"
+    ],
+    "pausedIntentPreservedInUI": true,
+    "seekFreshPictureResult": "FAIL: exact crop identical to pre-seek through final paused-seek capture",
+    "stalePictureObservedThroughSecondsAfterSeekResponse": 36.32380509376526,
+    "seekNewPictureLatency": "timeout; not 0",
+    "resumePictureAdvancementResult": "INSUFFICIENT: same castle structure; controls disappear and crop changes slightly, no validated advancing content",
+    "resumeLastObservedSecondsAfterResponse": 9.665511131286621,
+    "blackScreenSeenInControls": false,
+    "exactMediaContentAlignment": "U",
+    "audio": "U",
+    "qualification": "Native USB images reviewed at all control stages. Exact selected picture crop (500,160)-(1900,620) identical until seek-30 and resume-2; not complete display timing. UI actions alone do not prove transport success."
+  },
+  "radioRestoration": {
+    "time": 1791304806.24965,
+    "switchBefore": "0",
+    "switchAfter": "1",
+    "controlCenterConnectionPausedNotice": false,
+    "originalThisTurn": "on, no Control Center paused connection notice",
+    "onlyWiFiSwitchChanged": true
+  },
+  "conditions": {
+    "allInactive": true,
+    "time": 1791304844.343837
+  },
+  "finalState": {
+    "time": "2026-10-07T00:41:03.029158+08:00",
+    "device": "iphone13",
+    "latestMainSHA256": "93a1b4252dbe09105e3118930ccf1b84565babae553a81084de1469feab16404",
+    "sourceAndBinaryHashesMatch": true,
+    "requestedEnvironment": {},
+    "requestedArguments": [],
+    "foreground": "latest normal Nastart launchpad",
+    "locked": false,
+    "wdaReady": true,
+    "waitForIdleTimeout": 10,
+    "videoNotPresented": true,
+    "preferenceCount": 25,
+    "changedPreferenceCount": 1,
+    "preferenceChangeKeysPrivate": true,
+    "no24HourAuthorizationGuarantee": true
+  },
+  "newSupplyEvidence": {
+    "sourcePolicySHA256": "884917036ff53fe1a68e2e2bb29948834deffc32e611a73377508ae226c1cd20",
+    "rows": [
+      {
+        "elapsed": 3.5196259021759033,
+        "bytes": "16745829",
+        "effectiveBps": "66970839",
+        "elapsedMs": "2000",
+        "measurementBoundary": "receivedBodyWindow",
+        "proxyBackpressureMs": "0",
+        "proxyQueuedBytes": "2896",
+        "qualifiedBodyCapacity": "unknown",
+        "recordedForAdaptiveEstimate": "false"
+      },
+      {
+        "elapsed": 7.535032033920288,
+        "bytes": "17300411",
+        "effectiveBps": "69196741",
+        "elapsedMs": "2000",
+        "measurementBoundary": "receivedBodyWindow",
+        "proxyBackpressureMs": "0",
+        "proxyQueuedBytes": "5792",
+        "qualifiedBodyCapacity": "unknown",
+        "recordedForAdaptiveEstimate": "false"
+      },
+      {
+        "elapsed": 11.052889108657837,
+        "bytes": "18701144",
+        "effectiveBps": "74598192",
+        "elapsedMs": "2005",
+        "measurementBoundary": "receivedBodyWindow",
+        "proxyBackpressureMs": "0",
+        "proxyQueuedBytes": "8688",
+        "qualifiedBodyCapacity": "unknown",
+        "recordedForAdaptiveEstimate": "false"
+      },
+      {
+        "elapsed": 14.883172988891602,
+        "bytes": "17279072",
+        "effectiveBps": "68478798",
+        "elapsedMs": "2018",
+        "measurementBoundary": "receivedBodyWindow",
+        "proxyBackpressureMs": "0",
+        "proxyQueuedBytes": "5792",
+        "qualifiedBodyCapacity": "unknown",
+        "recordedForAdaptiveEstimate": "false"
+      },
+      {
+        "elapsed": 18.56311583518982,
+        "bytes": "17099496",
+        "effectiveBps": "68332438",
+        "elapsedMs": "2001",
+        "measurementBoundary": "receivedBodyWindow",
+        "proxyBackpressureMs": "0",
+        "proxyQueuedBytes": "2896",
+        "qualifiedBodyCapacity": "unknown",
+        "recordedForAdaptiveEstimate": "false"
+      },
+      {
+        "elapsed": 22.25519108772278,
+        "bytes": "17930290",
+        "effectiveBps": "71718706",
+        "elapsedMs": "2000",
+        "measurementBoundary": "receivedBodyWindow",
+        "proxyBackpressureMs": "0",
+        "proxyQueuedBytes": "8688",
+        "qualifiedBodyCapacity": "unknown",
+        "recordedForAdaptiveEstimate": "false"
+      }
+    ],
+    "actualPolicyReplayExit": 0,
+    "sourceObservation": "startUpstreamRequest clears progressWindowStartedAt/bytes and bodyCapacityPolicy; ~2-second tail windows end before second qualifying sample at 32MiB boundary",
+    "qualification": "actual source nil replay plus source reset verified; not yet a repaired fixture/regression; completed-transfer alternative and callback ordering still need correlation",
+    "nextFixtureRequirements": [
+      "finite 206 windows with exact Content-Range rollover; no open 200",
+      "a 32MiB range completes after one full 2-second progress window plus partial tail",
+      "aggregate received-body accounting consistently across contiguous same-stream upstream ranges; exclude actual pressure and stale/cancelled callbacks",
+      "no interpretation of a one-time slow first response as sustained capacity; maintain two stable measurements, scoped trace/network and freshness",
+      "record completed transfer callback timing as alternative estimate; test retries/gaps/backpressure/high queues and header mismatch",
+      "then fresh phone latest normal package regression of same failed operation plus representative formats and other available device/entry scope"
+    ],
+    "lowBandwidthQualificationBoundary": {
+      "minimumBytes": 1048576,
+      "maximumSeconds": 4,
+      "minimumPossibleMbps": 2.097152,
+      "weakProfileMbps": 0.78,
+      "secondsToMinimumBytesAtWeakProfile": 10.75462564102564,
+      "qualification": "exact policy bounds cannot qualify unpressured 0.78 Mbps; not a source fix"
+    }
+  },
+  "formalCompetitorPairs": 0,
+  "qualification": "ordinary Debug -Onone, empty environment/args; latest rounds are single samples, historical 3 rounds kept under their own binary. Sparse native frames and counters, not complete display/audio evidence. No causal speedup, competitor ranking or global PASS. First_frame is internal timestamp; native visual boundaries are separate. LAN stall remains FAIL."
+}

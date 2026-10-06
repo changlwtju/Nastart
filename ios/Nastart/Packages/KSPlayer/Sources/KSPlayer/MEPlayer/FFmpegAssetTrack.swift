@@ -32,6 +32,7 @@ public class FFmpegAssetTrack: MediaPlayerTrack {
     public let isImageSubtitle: Bool
     public var delay: TimeInterval = 0
     var subtitle: SyncPlayerItemTrack<SubtitleFrame>?
+    let pausedImageSubtitleDisplay = PausedImageSubtitleDisplayCache()
     // video
     public private(set) var rotation: Int16 = 0
     public var dovi: DOVIDecoderConfigurationRecord?

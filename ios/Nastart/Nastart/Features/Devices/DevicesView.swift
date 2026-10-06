@@ -1234,6 +1234,7 @@ private struct FilePreviewView: View {
                     startSeconds: nil, initialPosition: playsFromBeginning ? 0 : nil,
                     subtitleURL: (await sidecarSubtitle)?.playbackURL,
                     localResumeKey: localResumeKey, requestedAt: requestedAt) {
+                await preparation.holdPreparedResultForDebugIfRequested(preparationID, entry: "dsmMatchedHLS")
                 await MainActor.run {
                     guard preparation.isCurrent(preparationID) else {
                         request.playbackTracker?.releasePreparedResources()
@@ -1330,6 +1331,7 @@ private struct FilePreviewView: View {
             }
             let playbackURL = preparedProxyURL ?? selectedURL
             let playbackUsesLocalProxy = preparedProxyURL != nil
+            await preparation.holdPreparedResultForDebugIfRequested(preparationID, entry: "dsmOriginal")
             await MainActor.run {
                 guard preparation.isCurrent(preparationID) else {
                     if let preparedProxyURL { AuthenticatedMediaStreamProxy.shared.unregister(preparedProxyURL) }
@@ -2387,6 +2389,35 @@ enum MediaRangePolicy {
     }
 }
 
+/// Structural HLS evidence only. Do not include URIs, paths or query values.
+enum PlaybackHLSRequestDiagnostics {
+    static func segmentOrdinal(_ url: URL) -> Int? {
+        guard ["ts", "m4s", "mp4", "aac"].contains(url.pathExtension.lowercased()) else { return nil }
+        let name = url.deletingPathExtension().lastPathComponent
+        guard !name.isEmpty, name.utf8.allSatisfy({ (48...57).contains($0) }),
+              let ordinal = Int(name), ordinal >= 0 else { return nil }
+        return ordinal
+    }
+
+    static func playlistFields(_ playlist: String) -> [String: String] {
+        let lines = playlist.components(separatedBy: .newlines).map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+        let sequence = lines.first { $0.hasPrefix("#EXT-X-MEDIA-SEQUENCE:") }
+            .flatMap { Int($0.dropFirst("#EXT-X-MEDIA-SEQUENCE:".count)) }
+        let durations = lines.filter { $0.hasPrefix("#EXTINF:") }.compactMap {
+            Double($0.dropFirst(8).split(separator: ",").first ?? "")
+        }.filter { $0.isFinite && $0 >= 0 }
+        let segments = lines.filter { !$0.isEmpty && !$0.hasPrefix("#") }
+        let firstOrdinal = segments.first.flatMap(URL.init(string:)).flatMap(segmentOrdinal)
+        return [
+            "playlistMediaSequence": sequence.map(String.init) ?? "unknown",
+            "playlistSegments": String(durations.count),
+            "playlistDurationSeconds": String(durations.reduce(0, +)),
+            "playlistEndlist": String(lines.contains("#EXT-X-ENDLIST")),
+            "playlistFirstSegmentOrdinal": firstOrdinal.map(String.init) ?? "unknown"
+        ]
+    }
+}
+
 enum PlaybackHLSStartOffset {
     static func applying(_ seconds: Double?, to playlist: String) -> String {
         guard let seconds, seconds.isFinite, seconds > 0 else { return playlist }
@@ -2496,6 +2527,7 @@ final class AuthenticatedMediaStreamProxy: @unchecked Sendable {
     private var listener: NWListener?
     private var port: NWEndpoint.Port?
     private var routes: [String: Route] = [:]
+    private let vodPlaylistCache = PlaybackVODPlaylistCache()
     private var transfers: [UUID: AuthenticatedMediaProxyTransfer] = [:]
     private var listenerWaiters: [(Result<NWEndpoint.Port, Error>) -> Void] = []
 
@@ -2509,6 +2541,7 @@ final class AuthenticatedMediaStreamProxy: @unchecked Sendable {
         queue.async {
             guard let route = self.routes[token], url.port == Int(route.localPort.rawValue) else { return }
             self.routes[token] = nil
+            self.vodPlaylistCache.remove(route: token)
         }
     }
 
@@ -2554,6 +2587,9 @@ final class AuthenticatedMediaStreamProxy: @unchecked Sendable {
         await withCheckedContinuation { continuation in
             queue.async {
                 let cutoff = Date().addingTimeInterval(-6 * 60 * 60)
+                for (expired, route) in self.routes where route.createdAt <= cutoff {
+                    self.vodPlaylistCache.remove(route: expired)
+                }
                 self.routes = self.routes.filter { $0.value.createdAt > cutoff }
                 self.routes[token] = Route(
                     upstreamURL: upstreamURL,
@@ -2575,6 +2611,61 @@ final class AuthenticatedMediaStreamProxy: @unchecked Sendable {
         components.path = "/media/\(token)/\(safeFilename)"
         guard let url = components.url else { throw URLError(.badURL) }
         return url
+    }
+
+    /// Slow cellular manifests can exceed AVFoundation's initial resource wait.
+    /// Fetch text before creating the decoder; its subsequent VOD read is local.
+    /// No segment, key, live manifest, credential or external URL is prefetched.
+    func prewarmVODPlaylist(_ url: URL) async throws -> Bool {
+        try Task.checkCancellation()
+        guard url.host == "127.0.0.1" else { return false }
+        return try await withThrowingTaskGroup(of: Bool.self) { group in
+            group.addTask { try await self.loadVODPlaylist(url) }
+            group.addTask {
+                try await Task.sleep(nanoseconds: 35_000_000_000)
+                throw URLError(.timedOut)
+            }
+            defer { group.cancelAll() }
+            return try await group.next() ?? false
+        }
+    }
+
+    private func hasCachedVOD(_ url: URL) -> Bool {
+        let parts = url.path.split(separator: "/")
+        guard parts.count >= 3, parts[0] == "media" else { return false }
+        return queue.sync {
+            let token = String(parts[1])
+            guard let route = routes[token], url.port == Int(route.localPort.rawValue) else { return false }
+            let upstream = parts.count == 4 && parts[2] == "child"
+                ? route.children.url(for: String(parts[3])) : route.upstreamURL
+            return upstream.flatMap { vodPlaylistCache.data(route: token, url: $0) } != nil
+        }
+    }
+
+    private func loadVODPlaylist(_ url: URL) async throws -> Bool {
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.timeoutIntervalForRequest = 30
+        configuration.timeoutIntervalForResource = 35
+        configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
+        let session = URLSession(configuration: configuration)
+        defer { session.invalidateAndCancel() }
+        let (root, response) = try await session.data(from: url)
+        try Task.checkCancellation()
+        guard (response as? HTTPURLResponse)?.statusCode == 200,
+              let text = String(data: root, encoding: .utf8), text.hasPrefix("#EXTM3U") else {
+            throw URLError(.cannotParseResponse)
+        }
+        if text.components(separatedBy: .newlines).contains("#EXT-X-ENDLIST") { return hasCachedVOD(url) }
+        guard text.contains("#EXT-X-STREAM-INF:"),
+              let child = text.components(separatedBy: .newlines)
+                .map({ $0.trimmingCharacters(in: .whitespacesAndNewlines) })
+                .first(where: { !$0.isEmpty && !$0.hasPrefix("#") }).flatMap(URL.init(string:)),
+              child.scheme == url.scheme, child.host == url.host, child.port == url.port,
+              child.path.hasPrefix(url.deletingLastPathComponent().path + "/child/") else { return false }
+        let (_, childResponse) = try await session.data(from: child)
+        try Task.checkCancellation()
+        guard (childResponse as? HTTPURLResponse)?.statusCode == 200 else { throw URLError(.badServerResponse) }
+        return hasCachedVOD(child)
     }
 
     private func listenerPort() async throws -> NWEndpoint.Port {
@@ -2798,7 +2889,9 @@ final class AuthenticatedMediaStreamProxy: @unchecked Sendable {
             playlistFilename: route.filename,
             playlistPort: route.localPort,
             playlistStartSeconds: route.playlistStartSeconds,
-            playlistChildren: route.children
+            playlistChildren: route.children,
+            vodPlaylistCache: vodPlaylistCache,
+            playlistChildID: pathParts.count == 4 && pathParts[2] == "child" ? String(pathParts[3]) : nil
         ) { [weak self] in
             self?.queue.async { self?.transfers[transferID] = nil }
         }
@@ -2910,11 +3003,16 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
     private let isPlaylist: Bool
     private let isHLSChildRequest: Bool
     private let playbackTraceID: String?
+    // Task indices restart for every transfer, including concurrent HLS
+    // children. Correlate metrics/completion without exposing request URLs.
+    private let diagnosticTransferID = UUID().uuidString
     private let playlistToken: String?
     private let playlistFilename: String?
     private let playlistPort: NWEndpoint.Port?
     private let playlistStartSeconds: Double?
     private let playlistChildren: PlaybackPlaylistChildren
+    private let vodPlaylistCache: PlaybackVODPlaylistCache
+    private let playlistChildID: String?
     private let playlistContext: PlaybackPlaylistContext
     private let completion: () -> Void
     private let finishLock = NSLock()
@@ -2953,9 +3051,14 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
     private var upstreamCompleted = false
     private var didScheduleConnectionClose = false
     private var upstreamTaskIndex = 0
+    private var bodyWindowSampler = PlaybackBodyWindowSampler()
+    private var retriesUncompactedPlaylist = false
+    private var usesCompactedPlaylistQuery = false
 #if DEBUG
     private var firstShapedSendAt: TimeInterval?
     private var shapedBodyBytes: Int64 = 0
+    private var shapedWindowStartedAt: TimeInterval?
+    private var shapedWindowBytes: Int64 = 0
 #endif
     private let sendChunkSize = 512 * 1024
     private let highWaterMark = 4 * 1024 * 1024
@@ -3005,6 +3108,10 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
                 ? "-"
                 : upstreamURL.pathExtension.lowercased(),
             "upstreamTaskIndex": "\(upstreamTaskIndex)",
+            "transferID": diagnosticTransferID,
+            "playlistChildID": playlistChildID ?? "root",
+            "segmentOrdinal": isHLSChildRequest
+                ? PlaybackHLSRequestDiagnostics.segmentOrdinal(upstreamURL).map(String.init) ?? "unknown" : "-",
             "playbackTraceID": playbackTraceID ?? "-"
         ]
     }
@@ -3028,6 +3135,8 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
         playlistPort: NWEndpoint.Port?,
         playlistStartSeconds: Double? = nil,
         playlistChildren: PlaybackPlaylistChildren,
+        vodPlaylistCache: PlaybackVODPlaylistCache,
+        playlistChildID: String? = nil,
         completion: @escaping () -> Void
     ) {
         self.connection = connection
@@ -3044,6 +3153,8 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
         self.playlistPort = playlistPort
         self.playlistStartSeconds = playlistStartSeconds
         self.playlistChildren = playlistChildren
+        self.vodPlaylistCache = vodPlaylistCache
+        self.playlistChildID = playlistChildID
         self.playlistContext = PlaybackPlaylistContext(upstreamURL)
         self.completion = completion
     }
@@ -3058,6 +3169,16 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
             default:
                 break
             }
+        }
+        if isPlaylist, method == "GET", requestHeaders["range"] == nil,
+           let token = playlistToken,
+           let cached = vodPlaylistCache.data(route: token, url: upstreamURL) {
+            playlistBody = cached
+            DiagnosticLogStore.shared.record(.info, categoryKey: "diagnostics.category.media",
+                messageKey: "diagnostics.media.proxy_transfer_started",
+                details: diagnosticDetails(["stage": "vodPlaylistCacheHit", "bytes": String(cached.count)]))
+            sendPlaylist()
+            return
         }
         if !allowsSelfSignedCertificates {
             usesSharedTransport = true
@@ -3108,7 +3229,11 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
         }
         activeRequestedRange = activeRange
         activeRequestedRangeStart = MediaRangePolicy.requestedRangeStart(from: activeRange)
-        var request = URLRequest(url: upstreamURL)
+        let compacted = isPlaylist && activeRange == nil && !retriesUncompactedPlaylist
+            ? PlaybackJellyfinPlaylistQuery.compact(upstreamURL) : nil
+        usesCompactedPlaylistQuery = compacted != nil
+        let requestURL = compacted ?? upstreamURL
+        var request = URLRequest(url: requestURL)
         request.httpMethod = method
         // Let URLSession negotiate/decompress full text playlists. Binary and
         // byte-range responses must retain their original byte offsets.
@@ -3140,6 +3265,17 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
         let task = session.dataTask(with: request)
         if usesSharedTransport { task.delegate = self }
         self.task = task
+        if method == "GET" {
+            DiagnosticLogStore.shared.record(.info, categoryKey: "diagnostics.category.media",
+                messageKey: "diagnostics.media.proxy_transfer_started", details: diagnosticDetails([
+                    "stage": "upstreamRequestIssued", "method": method,
+                    "range": activeRange ?? "full",
+                    "playlistQueryCompacted": String(usesCompactedPlaylistQuery),
+                    "queryBytesBefore": String(URLComponents(url: upstreamURL, resolvingAgainstBaseURL: false)?.percentEncodedQuery?.utf8.count ?? 0),
+                    "queryBytesAfter": String(URLComponents(url: requestURL, resolvingAgainstBaseURL: false)?.percentEncodedQuery?.utf8.count ?? 0),
+                    "requestReceivedToIssueMs": String(Int(Date().timeIntervalSince(startedAt) * 1_000))
+                ]))
+        }
         task.resume()
     }
 
@@ -3149,7 +3285,7 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
         didReceive response: URLResponse,
         completionHandler: @escaping (URLSession.ResponseDisposition) -> Void
     ) {
-        guard !isFinished else {
+        guard !isFinished, task === dataTask else {
             completionHandler(.cancel)
             return
         }
@@ -3158,7 +3294,19 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
             finish(with: URLError(.badServerResponse))
             return
         }
+        if isPlaylist, usesCompactedPlaylistQuery, !retriesUncompactedPlaylist,
+           [400, 422].contains(response.statusCode) {
+            retriesUncompactedPlaylist = true
+            DiagnosticLogStore.shared.record(.info, categoryKey: "diagnostics.category.media",
+                messageKey: "diagnostics.media.proxy_transfer_finished", details: diagnosticDetails([
+                    "stage": "playlistQueryCompatibilityFallback", "status": String(response.statusCode)
+                ]))
+            completionHandler(.cancel)
+            startUpstreamTask()
+            return
+        }
         lastStatusCode = response.statusCode
+        bodyWindowSampler.beginResponse(now: ProcessInfo.processInfo.systemUptime)
         if isPlaylist {
             playlistStatusCode = response.statusCode
             playlistContentType = response.value(forHTTPHeaderField: "Content-Type")
@@ -3298,7 +3446,7 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
     }
 
     func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
-        guard !isFinished else { return }
+        guard !isFinished, task === dataTask else { return }
         if isPlaylist {
             playlistBody.append(data)
             return
@@ -3314,7 +3462,42 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
             dataTask.suspend()
         }
         bufferLock.unlock()
+        recordBodyProgress(bytes: data.count)
         drainBufferedBody()
+    }
+
+    /// Two stable, unthrottled Range windows can supply a short-lived estimate
+    /// before completion. Completed transfer metrics remain authoritative.
+    private func recordBodyProgress(bytes: Int) {
+        guard method == "GET", !isPlaylist,
+              !isHLSChildRequest || hlsRole == "segment" else { return }
+        let now = ProcessInfo.processInfo.systemUptime
+        bufferLock.lock()
+        let pressure = upstreamSuspendedSeconds
+            + (suspendedSinceUptime.map { max(now - $0, 0) } ?? 0)
+        let queued = pendingBodyBytes
+        bufferLock.unlock()
+        guard let window = bodyWindowSampler.receive(bytes: bytes, now: now,
+            totalBackpressure: pressure, queuedBytes: queued,
+            eligible: !isHLSChildRequest && lastStatusCode == 206 && activeRequestedRange != nil) else { return }
+        let capacity = window.capacity
+        if let capacity {
+            PlaybackRecentThroughputStore.shared.recordQualifiedBodyWindow(
+                traceID: playbackTraceID, bitrate: capacity, now: now)
+        }
+        DiagnosticLogStore.shared.record(.info, categoryKey: "diagnostics.category.media",
+            messageKey: "diagnostics.media.proxy_transfer_finished", details: diagnosticDetails([
+                "stage": "upstreamBodyProgress", "measurementBoundary": "receivedBodyWindow",
+                "bytes": String(window.bytes), "elapsedMs": String(Int(window.seconds * 1_000)),
+                "effectiveBps": String(Int(Double(window.bytes) * 8 / window.seconds)),
+                "bodyWindowIncludesRangeBoundaries": "true",
+                "bodyWindowMinimumBytes": "131072",
+                "bodyWindowPressured": String(window.pressured),
+                "proxyBackpressureMs": String(Int(pressure * 1_000)),
+                "proxyQueuedBytes": String(queued),
+                "qualifiedBodyCapacity": capacity.map(String.init) ?? "unknown",
+                "recordedForAdaptiveEstimate": String(capacity != nil)
+            ]))
     }
 
     func urlSession(
@@ -3322,6 +3505,7 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
         task: URLSessionTask,
         didFinishCollecting metrics: URLSessionTaskMetrics
     ) {
+        guard task === self.task else { return }
         guard let transaction = metrics.transactionMetrics.last else { return }
         bufferLock.lock()
         let backpressureSeconds = upstreamSuspendedSeconds
@@ -3389,7 +3573,7 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
     }
 
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-        guard !isFinished else { return }
+        guard !isFinished, task === self.task else { return }
         if isPlaylist {
             guard error == nil else {
                 finish(with: error)
@@ -3433,6 +3617,9 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
 
     private func sendPlaylist() {
         guard !isFinished else { return }
+        if playlistStatusCode == 200, activeRequestedRange == nil, let token = playlistToken {
+            vodPlaylistCache.store(playlistBody, route: token, url: upstreamURL)
+        }
         let rewriteStarted = Date()
         let body = rewritePlaylist(playlistBody)
         DiagnosticLogStore.shared.record(.info, categoryKey: "diagnostics.category.media",
@@ -3440,7 +3627,7 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
                 "stage": "playlistRewritten", "inputBytes": String(playlistBody.count),
                 "outputBytes": String(body.count),
                 "rewriteMs": String(Int(Date().timeIntervalSince(rewriteStarted) * 1_000))
-            ]))
+            ].merging(PlaybackHLSRequestDiagnostics.playlistFields(String(decoding: playlistBody, as: UTF8.self))) { _, new in new }))
         let reason = HTTPURLResponse.localizedString(forStatusCode: playlistStatusCode).capitalized
         let header = [
             "HTTP/1.1 \(playlistStatusCode) \(reason)",
@@ -3591,6 +3778,22 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
             } else {
                 wireChunk = chunk
             }
+#if DEBUG
+            let delay = DebugMediaDeliveryThrottle.shared.deliveryDelay(
+                bytes: chunk.count,
+                isMedia: method == "GET" && !isPlaylist
+                    && (!isHLSChildRequest || hlsRole == "segment"))
+            bufferLock.lock()
+            if delay > 0 {
+                let now = ProcessInfo.processInfo.systemUptime
+                if firstShapedSendAt == nil { firstShapedSendAt = now }
+                if shapedWindowStartedAt == nil { shapedWindowStartedAt = now }
+            } else {
+                shapedWindowStartedAt = nil
+                shapedWindowBytes = 0
+            }
+            bufferLock.unlock()
+#endif
             let send = { [weak self] in
                 guard let self else { return }
                 guard !self.isFinished else { return }
@@ -3601,9 +3804,36 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
                         return
                     }
 #if DEBUG
+                    var shapedWindow: (bytes: Int64, seconds: TimeInterval)?
+                    let deliveredAt = ProcessInfo.processInfo.systemUptime
                     self.bufferLock.lock()
                     if self.firstShapedSendAt != nil { self.shapedBodyBytes += Int64(chunk.count) }
+                    if delay > 0, let startedAt = self.shapedWindowStartedAt {
+                        self.shapedWindowBytes += Int64(chunk.count)
+                        // Open-ended originals can outlive the entire test.
+                        // Publish actual capped delivery before connection EOF;
+                        // never treat this fixture as upstream network capacity.
+                        if self.shapedWindowBytes >= 8 * 1024 * 1024 {
+                            shapedWindow = (self.shapedWindowBytes, deliveredAt - startedAt)
+                            self.shapedWindowBytes = 0
+                            self.shapedWindowStartedAt = deliveredAt
+                        }
+                    }
                     self.bufferLock.unlock()
+                    if let window = shapedWindow, window.seconds >= 0.25 {
+                        PlaybackRecentThroughputStore.shared.record(
+                            traceID: self.playbackTraceID, bytes: window.bytes,
+                            seconds: window.seconds, backpressureSeconds: 0, now: deliveredAt)
+                        DiagnosticLogStore.shared.record(.info,
+                            categoryKey: "diagnostics.category.media",
+                            messageKey: "diagnostics.media.proxy_transfer_finished",
+                            details: self.diagnosticDetails([
+                                "stage": "debugThrottleWindow",
+                                "measurementBoundary": "cappedClientDelivery",
+                                "bytes": String(window.bytes),
+                                "elapsedMs": String(Int(window.seconds * 1_000)),
+                                "effectiveBps": String(Int(Double(window.bytes) * 8 / window.seconds))]))
+                    }
 #endif
                     self.bufferLock.lock()
                     self.isSendingBody = false
@@ -3612,14 +3842,7 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
                 })
             }
 #if DEBUG
-            let delay = DebugMediaDeliveryThrottle.shared.deliveryDelay(
-                bytes: chunk.count,
-                isMedia: method == "GET" && !isPlaylist
-                    && (!isHLSChildRequest || hlsRole == "segment"))
             if delay > 0 {
-                bufferLock.lock()
-                if firstShapedSendAt == nil { firstShapedSendAt = ProcessInfo.processInfo.systemUptime }
-                bufferLock.unlock()
                 DispatchQueue.global(qos: .utility).asyncAfter(
                     deadline: .now() + delay, execute: send)
             } else {

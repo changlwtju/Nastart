@@ -12,6 +12,14 @@
 
 设备手动签名补充：无签名构建的 app 根目录可能包含 `Nastart.debug.dylib`、`__preview.dylib`，必须与 Frameworks 中所有动态库一起签名，并对每个动态库独立执行签名验证。只验证 app 外壳或链接隔离不足以排除启动时 DYLD 签名失败。2026-09-11 已遇到并修正该打包故障，不能将其计作播放器失败。
 
+## CLI 画面观测与显示采样
+
+复用 [CLI 真机观测手册](../testing/CLI-DEVICE-OBSERVATION.md) 的完整命令和历史成功证据。WDA PNG/源帧匹配用于实际画面，Instruments 显示 timing/hitch 用于性能，两条路线独立执行；一条工具失败不能阻止另一条独立取证。稀疏截图、内部时钟及约1Hz FPS 均不能替代逐帧流畅度验收。
+
+## 真机调试基本门槛
+
+每次在 iPhone 13、iPhone 18 或 iPad 开始调试，必须逐台确认 Nastart 为当前源码的最新安装包；无法确认时先保存诊断，再保留数据覆盖安装并核实正常启动。仅凭版本号或其他设备已更新不算核对通过。执行与证据要求见 [项目基本调试要求](../../AGENTS.md)。
+
 ## 2026-08-15 本轮通用修复门槛
 
 - 本轮已修正标准 `bytes=start-end` 与 `bytes=start-` 请求解析；不得只测试非标准的 `bytes start-` 形式。
@@ -41,6 +49,12 @@ WDA 不是普通 App：直接用 `devicectl device process launch` 启动 Runner
 
 本次恢复证据：iPad `00008030-001168403C43C02E` 的 WDA `16.2.0` 返回 `ready: true`；S01 设备文件入口截图目录为 `/tmp/nastart-s01-wda-retry/`，t=0/3/10/30 均取得真实视频帧。iPhone `00008110-001E543122E0401E` 已于 2026-08-15 用历史 Bundle ID + DVT 复原，`127.0.0.1:8102/status` 返回 WDA `16.1.5`、`ready: true`，并成功建立 session、读取启动台和“设备→文件”页面；这只证明工具链恢复，不替代 iPhone 播放回归。
 
+### XCTest 已启动但 HTTP 未监听时的设备授权检查
+
+2026-10-01 iPhone 13 实测：tidevice 已报告 `Test runner ready detected` / `Start execute test plan`，Runner 进程存在，但日志为空、设备 8100 拒绝连接；直接设备截图显示“为 XCTest 输入 iPhone 密码 / Enable UI Automation”。这表示本轮 UI 自动化仍等待设备本机授权，不能凭配对成功、普通解锁或 Runner 存活判定 XCTest 可用，更不能据此重装 WDA。
+
+遇到这一组合时，先保存私有日志并用设备原生截图确认授权提示；请用户在设备上输入锁屏密码，不在项目或聊天中保存密码。授权后再重验 `/status ready=true`、固定 Bundle ID、session/source/screenshot，之后才开始 App 回归。历史包的 `.xctestrun` 也可能保留 `__TESTROOT__/Debug-iphoneos` 路径，标准 Xcode 回退前要检查 TestHostPath 实际存在；缺路径与设备授权分别记录。
+
 ### iPhone 历史可用链路的复原思路
 
 iPhone iOS 16 的历史成功证据不是“直接启动 Runner App”，而是 USB/usbmux 的 DVT/XCTest 链路：精确复用历史 WDA `.app`、`.xctestrun`、`TestHostBundleIdentifier`、test bundle ID、签名团队和 `DYLD_INSERT_LIBRARIES`，再用 `pymobiledevice3 developer dvt launch` 启动历史 host，最后用 `iproxy LOCAL_PORT:8100 -u "$UDID"` 暴露 WDA。当前机器若没有该工具，先在隔离环境固定安装：`python3 -m venv /tmp/nastart-pymobiledevice3-venv && /tmp/nastart-pymobiledevice3-venv/bin/python -m pip install pymobiledevice3`。`devicectl device process launch` 只能证明进程能被拉起，不能替代 `testmanagerd` 会话。
@@ -53,6 +67,16 @@ iPhone iOS 16 的历史成功证据不是“直接启动 Runner App”，而是 
 4. WDA 启动后才建立 `iproxy`，再依次验证 `/status`、`/session`、`/source`、`/screenshot`、元素点击和拖动；所有端口、UDID、WDA bundle ID 和进程 PID 写入证据。若用 DVT 单独启动 Nastart 进行诊断后 WDA 连接被 reset，重新启动历史 WDA 并复查 `/status`，不要重装或改播放参数。
 
 这条链路的目的是把“安装包、测试宿主、测试服务、usbmux 转发、WDA HTTP”拆开验证，避免每次遇到 iPhone 失效都从头猜测。
+
+### 自绘播放器的输入与首帧采集补充（2026-10-06）
+
+优先使用原生可访问元素；没有有效元素的自绘控件，可用 `scripts/wda_native_actions.py` 在显式核对前台Bundle ID、当前App边界后发送一次W3C触摸。坐标是当前UIKit点，须从本轮实际画面和App边界定位；不能把原生截图像素、另一方向或另一台设备的坐标直接复制过来。脚本只报告注入成功，效果仍须实际画面/播放时钟核对；错误前台和越界坐标已真机负例验证，均在触摸前终止，不新建session或重启Runner。
+
+本轮Lenna旧坐标点击返回成功但时钟继续；可见暂停键的W3C触摸后画面和05:16时钟保持，恢复后05:17→05:20。前者保留INVALID_ACTION/效果未验，不当竞品暂停FAIL，也不据单个场景断言旧点击接口全面不可用。自绘控制栏显示/隐藏也须先核对：暂停时控制栏可能持续显示，盲目点击画面可能先隐藏控制栏，使下一次触摸只重新显示而未恢复播放。
+
+低频原生USB截图可为可辨电影画面、控制响应提供保守区间；记录每次请求/返回及触摸请求范围，自然黑场、Dolby标识和转圈不能当已辨真实电影画面。它不是完整显示帧采样，不能证明FPS/滚动流畅或完整首个解码帧。第三方键盘可能实际可见但不在App XML树里；应核对实际截图、原生TextField值和正确结果，不仅靠Keyboard节点判定无法输入。采集错误/页面守卫失败保留TOOL，不混进App失败统计。
+
+暂停时也须先确认字幕cue能持续保持，再用该位置计关闭/恢复响应。本轮DS One DSM的ASS重新选择后首图有字幕、第二图消失，而时钟仍01:14；恢复播放后新cue正常。因此关闭后的消失不能直接归为关闭操作耗时，也不能仅凭首图重现判稳定恢复PASS。先补同位置不切轨暂停对照，记录自然消失及全部等待样本。
 
 ## 不可变约束
 

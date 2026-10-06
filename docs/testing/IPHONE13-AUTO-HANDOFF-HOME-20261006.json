@@ -1,0 +1,357 @@
+{
+  "time": "2026-10-06T02:11:15.750643+08:00",
+  "device": {
+    "DeviceName": "iPhone",
+    "ProductType": "iPhone14,5",
+    "ProductVersion": "16.3.1",
+    "BuildVersion": "20D67",
+    "UniqueDeviceID": "00008110-001E543122E0401E"
+  },
+  "baseline": {
+    "device": "iPhone13 / iPhone14,5 / iOS16.3.1(20D67)",
+    "requestSeconds": 180,
+    "baselinePackage": "3663/f76a before current Home indicator UI modification",
+    "traces": {
+      "4703FE30": {
+        "samples": 56,
+        "nonNumericSamplesRetainedInRaw": 2,
+        "first": {
+          "elapsed": 2.0523362159729004,
+          "current": 0.073,
+          "stalls": 0,
+          "active": "no",
+          "drops": null,
+          "ahead": null,
+          "timeControlStatus": null
+        },
+        "last": {
+          "elapsed": 60.17031288146973,
+          "current": 46.26,
+          "stalls": 2,
+          "active": "no",
+          "drops": 20,
+          "ahead": 14.554916269899415,
+          "timeControlStatus": null
+        },
+        "coverageSeconds": 58.117976665496826,
+        "maxStalls": 2,
+        "activeSamples": 11,
+        "maxDrops": 20,
+        "minAhead": 0.0
+      },
+      "6627AB31": {
+        "samples": 90,
+        "nonNumericSamplesRetainedInRaw": 0,
+        "first": {
+          "elapsed": 62.028650999069214,
+          "current": 47.106,
+          "stalls": 0,
+          "active": "no",
+          "drops": null,
+          "ahead": null,
+          "timeControlStatus": "playing"
+        },
+        "last": {
+          "elapsed": 179.91843795776367,
+          "current": 165.502,
+          "stalls": 1,
+          "active": "no",
+          "drops": null,
+          "ahead": null,
+          "timeControlStatus": "playing"
+        },
+        "coverageSeconds": 117.88978695869446,
+        "maxStalls": 1,
+        "activeSamples": 3,
+        "maxDrops": null,
+        "minAhead": null
+      }
+    },
+    "events": [
+      {
+        "elapsed": 1.057210922241211,
+        "trace": "4703FE30",
+        "event": "diagnostics.jellyfin.playback_prepared",
+        "prepareMs": "52",
+        "mode": "jellyfinOriginalDirectPlay",
+        "container": "mkv",
+        "transport": "localRangeProxy",
+        "maxBitrate": "unlimitedOriginal"
+      },
+      {
+        "elapsed": 1.0575060844421387,
+        "trace": "4703FE30",
+        "event": "diagnostics.jellyfin.playback_prepared",
+        "stage": "sourceCapabilities",
+        "playMethod": "DirectPlay"
+      },
+      {
+        "elapsed": 1.8202719688415527,
+        "trace": "4703FE30",
+        "event": "diagnostics.playback.next.buffer_updated",
+        "bufferedCount": "0",
+        "consumeMs": "423"
+      },
+      {
+        "elapsed": 18.478089094161987,
+        "trace": "4703FE30",
+        "event": "diagnostics.playback.next.buffer_updated",
+        "bufferedCount": "1",
+        "consumeMs": "7902"
+      },
+      {
+        "elapsed": 25.07295513153076,
+        "trace": "4703FE30",
+        "event": "diagnostics.playback.next.automatic_downshift_requested",
+        "reason": "deliveryBelowSourceBitrate",
+        "deliveryCapacity": "42061555"
+      },
+      {
+        "elapsed": 26.84300708770752,
+        "trace": "6627AB31",
+        "event": "diagnostics.jellyfin.playback_prepared",
+        "prepareMs": "1727",
+        "mode": "serverNegotiatedHLS",
+        "container": "m3u8",
+        "transport": "localHLSProxy",
+        "maxBitrate": "12000000"
+      },
+      {
+        "elapsed": 26.843470096588135,
+        "trace": "6627AB31",
+        "event": "diagnostics.jellyfin.playback_prepared",
+        "stage": "sourceCapabilities",
+        "playMethod": "Transcode"
+      },
+      {
+        "elapsed": 26.84399700164795,
+        "trace": "4703FE30",
+        "event": "diagnostics.playback.next.replacement_warmup_started"
+      },
+      {
+        "elapsed": 32.42595601081848,
+        "trace": "4703FE30",
+        "event": "diagnostics.playback.next.buffer_updated",
+        "bufferedCount": "2",
+        "consumeMs": "3727"
+      },
+      {
+        "elapsed": 48.60462999343872,
+        "trace": "4703FE30",
+        "event": "diagnostics.playback.next.replacement_candidate_decoded",
+        "prepareMs": "21762",
+        "framePTS": "27.736033333333335"
+      },
+      {
+        "elapsed": 61.01980113983154,
+        "trace": "4703FE30",
+        "event": "diagnostics.playback.next.replacement_candidate_aligned",
+        "candidate": "47.016155245",
+        "current": "47.113",
+        "framePTS": "47.00527777777778"
+      },
+      {
+        "elapsed": 61.02075719833374,
+        "trace": "4703FE30",
+        "event": "diagnostics.playback.next.replacement_warmup_completed"
+      },
+      {
+        "elapsed": 61.76382112503052,
+        "trace": "4703FE30",
+        "event": "diagnostics.playback.next.replacement_committed"
+      }
+    ],
+    "qualifiedResult": "Original continuity FAIL. 12Mbps server-negotiated HLS candidate committed this run; one observed AV continuity suspicion retained. Not root-cause resolution, not original 4K success, no formal competitor pairs."
+  },
+  "latestPackage": {
+    "head": "9a9941cd4ec82625f680b5193b3a0f66797eb851",
+    "sourceDiffSHA256": "2a297fc7dd9499ebfc86d9fc994dd0ab00bce9d78625eb4056c06529297d5bea",
+    "configuration": "normal Debug -Onone; no test environment variables",
+    "binaryBuildTime": "2026-10-06T01:58:06.195902+08:00",
+    "binaries": {
+      "Nastart": "d62b5d0c076db3e6b8ea14d72baa67194ee8ac01b232244598febba6f1055338",
+      "Nastart.debug.dylib": "53a2412914da0f9cc4ef5d89867e6aff6de522b4beb61204ed8f9ae1de17ea43",
+      "Frameworks/KSPlayer.framework/KSPlayer": "c2f1a42bcad0e5c30d0bcebd24576f92d8475c201589ed1f9655cc637d6e7910"
+    },
+    "signatureVerified": true,
+    "profileExpirationUTC": "2026-10-10T22:03:15",
+    "validation": "Normal device build passed. Small UIKit Home indicator preference; actual device regression required. Previous source core tests 105 passed; not rerun or attributed as current UI acceptance."
+  },
+  "latestInstallation": {
+    "result": "InstallComplete",
+    "dataPreserving": true,
+    "unchangedPreferenceCount": 25,
+    "normalLaunchPID": 17307,
+    "environment": {},
+    "arguments": []
+  },
+  "latestOriginalTrial": {
+    "trace": "5F72200A",
+    "configuration": "Latest normal d62b/53a2; Home indicator UI change only",
+    "requestedSeconds": 180,
+    "samples": 164,
+    "nonNumericSamplesRetainedInRaw": 2,
+    "coverageSeconds": 173.2939920425415,
+    "first": {
+      "elapsed": 3.0313189029693604,
+      "current": 1.161,
+      "drops": 0,
+      "stalls": 0,
+      "active": "no",
+      "ahead": 3.6690415657744233
+    },
+    "last": {
+      "elapsed": 176.32531094551086,
+      "current": 174.324,
+      "drops": 0,
+      "stalls": 0,
+      "active": "no",
+      "ahead": 14.346374608900845
+    },
+    "maxStalls": 0,
+    "maxDrops": 0,
+    "activeStallSamples": 0,
+    "minAheadAfter10s": 0.29166665759770183,
+    "firstWindows": [
+      {
+        "elapsed": 1.4898629188537598,
+        "upstreamTaskIndex": "1",
+        "requestMs": "28",
+        "responseMs": "0",
+        "proxyBackpressureMs": "0",
+        "proxySuspendCount": "0"
+      },
+      {
+        "elapsed": 1.5096228122711182,
+        "upstreamTaskIndex": "1",
+        "requestMs": "26",
+        "responseMs": "-",
+        "proxyBackpressureMs": "0",
+        "proxySuspendCount": "0"
+      },
+      {
+        "elapsed": 7.454551935195923,
+        "upstreamTaskIndex": "1",
+        "requestMs": "29",
+        "responseMs": "5932",
+        "proxyBackpressureMs": "0",
+        "proxySuspendCount": "0"
+      },
+      {
+        "elapsed": 11.101410865783691,
+        "upstreamTaskIndex": "2",
+        "requestMs": "24",
+        "responseMs": "3617",
+        "proxyBackpressureMs": "0",
+        "proxySuspendCount": "0"
+      },
+      {
+        "elapsed": 13.776670694351196,
+        "upstreamTaskIndex": "3",
+        "requestMs": "24",
+        "responseMs": "2647",
+        "proxyBackpressureMs": "0",
+        "proxySuspendCount": "0"
+      },
+      {
+        "elapsed": 16.275101900100708,
+        "upstreamTaskIndex": "4",
+        "requestMs": "24",
+        "responseMs": "2471",
+        "proxyBackpressureMs": "0",
+        "proxySuspendCount": "0"
+      },
+      {
+        "elapsed": 18.766986846923828,
+        "upstreamTaskIndex": "5",
+        "requestMs": "24",
+        "responseMs": "2464",
+        "proxyBackpressureMs": "0",
+        "proxySuspendCount": "0"
+      }
+    ],
+    "events": [
+      {
+        "elapsed": 1.0984389781951904,
+        "event": "diagnostics.jellyfin.playback_route_state",
+        "stage": "playRequested",
+        "reason": "verifiedSameServerLAN",
+        "selectedAddressKind": "privateIP",
+        "selectedPort": "8096",
+        "selectedScheme": "http"
+      },
+      {
+        "elapsed": 1.7443130016326904,
+        "event": "diagnostics.playback.next.buffer_updated",
+        "consumeMs": "359",
+        "bufferedCount": "0"
+      }
+    ],
+    "qualification": "UI-only change and WDA host recovered before trial. Cache/network/order unknown. One no-stall original run cannot cover retained failures or establish any causal speed improvement."
+  },
+  "homeIndicator": {
+    "comparison": "Same physical iPhone13, actual native screenshots around early playback; Home indicator UI check, not performance comparison",
+    "before": {
+      "file": "fresh-baseline-observe/t10.png",
+      "longBrightRunPixels": 651,
+      "row": 1138
+    },
+    "after": {
+      "file": "home-proof-observe/t10.png",
+      "longBrightRunPixels": 0
+    },
+    "result": "Home indicator hides in tested full-screen KS playback; specific HLS subtitle cue and full matrix remain unverified",
+    "normalPortraitIndicatorRestored": true,
+    "normalIndicatorDarkRunPixels": 417
+  },
+  "competitor": {
+    "Lenna": {
+      "version": "1.0.17(610)",
+      "media": "MI2 2000 2h3m 4KDV(P7) default choice",
+      "actualVideoFrameAndBilingualCue": true,
+      "actualClockObserved": "02:13 of 2:03:36",
+      "orientation": "portrait default, differs from Nastart landscape",
+      "firstFrame": "TOOL/INSUFFICIENT, first WDA screenshot connection interrupted",
+      "subtitleSwitchLatency": "NOT MEASURED",
+      "audioOutput": "UNKNOWN",
+      "mediaRouteAndFileHash": "Not verified in this attempt",
+      "continuousPlayback": "INSUFFICIENT, no full observation interval",
+      "cleanup": "Process terminated after bounded recovery; not measured UI exit"
+    },
+    "DSOne": "2.4.5(4) metadata reread only this turn",
+    "formalPairs": 0,
+    "ranking": "Not permitted"
+  },
+  "systemRecovery": {
+    "oldHostPID5532ExitedDuringCapture": true,
+    "existingHostAutomaticallyRecoveredPID70500": true,
+    "manualWDARestartOrReinstall": false,
+    "newNoLaunchUISessionRecovered": true,
+    "phoneLockedDuringFault": false,
+    "newXCTestPromptObserved": false,
+    "matchingDeviceCrashReportFound": false,
+    "rootCause": "Unknown; no Mac/screenshot/compiler/network causal claim",
+    "screenshotBurstAttemptNotUsedForRanking": true
+  },
+  "finalState": {
+    "time": "2026-10-06T02:11:15.750643+08:00",
+    "locked": false,
+    "WDAReady": true,
+    "hostPID": 70500,
+    "keepawakePID": 52029,
+    "active": {
+      "processArguments": {
+        "env": {},
+        "args": []
+      },
+      "name": "",
+      "pid": 17307,
+      "bundleId": "com.changliwen.nastart"
+    },
+    "movieUIAbsent": true,
+    "LennaTerminated": true,
+    "idleTimeoutRestored": 10,
+    "sourceMatchesVerifiedPackage": true
+  },
+  "remaining": "Original intermittently stalls; automatic 12Mbps HLS recovery varied across retained runs. Home indicator hidden on scoped original UI regression; exact prior HLS subtitle cue after UI change and full matrix unverified. All PX/UX and CB missing evidence remain open."
+}

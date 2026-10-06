@@ -18,6 +18,10 @@ It is intended to become an intelligent launchpad, service discovery center,
 status monitor, and lifecycle assistant for NAS users, starting with iPhone and
 iPad, then expanding toward macOS and other Apple platforms.
 
+## 真机调试基本门槛
+
+每次在 iPhone 13、iPhone 18 或 iPad 开始调试，必须逐台确认 Nastart 为当前源码的最新安装包；无法确认时先保存诊断，再保留数据覆盖安装并核实正常启动。仅凭版本号或其他设备已更新不算核对通过。执行与证据要求见 [项目基本调试要求](AGENTS.md)。
+
 ## Playback Architecture Decision
 
 视频播放集中优化 Greenfield 新架构，旧架构仅作回退与必要对照；验收完成后删除旧架构。播放入口只保留新/旧两项选择。后续工作遵循 [ADR 0002：新播放架构唯一优化主线](docs/adr/0002-single-playback-optimization-mainline.md)。

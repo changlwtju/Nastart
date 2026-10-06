@@ -1,0 +1,1051 @@
+{
+  "date": "2026-10-06",
+  "device": {
+    "name": "iPhone 13",
+    "model": "iPhone14,5",
+    "system": "iOS 16.3.1 (20D67)",
+    "connection": "fresh USB/paired/unlocked checks; full identity private"
+  },
+  "latestPackage": {
+    "head": "9a9941cd4ec82625f680b5193b3a0f66797eb851",
+    "sourceDiffSHA256": "dc7d08830a89f9f2d3701c7dc3677861c6f07b4e6530da7a63cc7e39c733be44",
+    "configuration": "normal Debug -Onone; no default test env; DEBUG-only capped-delivery windows and opt-in reserveOnly predictor isolation; reserve-bounded HLS preparation lead; live DSM context observation independent of library view task",
+    "binaryBuildTime": "2026-10-06T09:38:36.489160+08:00",
+    "binaries": {
+      "Nastart": "d84fda1970a6d1224e92ffe7caf81c2c1a79688a8e1d1770a9ee1321ab1d0381",
+      "Nastart.debug.dylib": "a389980c1c22628a9202c399d8d9d927497f4e9748509bed0986273cfa141d92",
+      "Frameworks/KSPlayer.framework/KSPlayer": "c2f1a42bcad0e5c30d0bcebd24576f92d8475c201589ed1f9655cc637d6e7910"
+    },
+    "signatureVerified": true,
+    "profileExpirationUTC": "2026-10-10T22:03:15"
+  },
+  "latestInstallation": {
+    "time": "2026-10-06T09:39:43.803009+08:00",
+    "installation": "InstallComplete",
+    "dataPreserving": true,
+    "unchangedPreferenceCount": 25,
+    "installedVariant": "latest-normal"
+  },
+  "codeChange": "Playback store subscribes to live DSM session updates while library is covered by search/details/player",
+  "validation": {
+    "coreTests": 113,
+    "failures": 0,
+    "executionSeconds": 3.314,
+    "simulator": "Xcode27.0 / iOS26.5; not phone performance",
+    "deviceBuild": "Xcode26.6 (17F113) normal Debug -Onone",
+    "preflightPass": 15
+  },
+  "oldColdLaunchLANDiscovery": [
+    {
+      "elapsed": 2.154,
+      "key": "diagnostics.discovery.found",
+      "protocol": "HTTPS"
+    },
+    {
+      "elapsed": 3.85,
+      "key": "diagnostics.discovery.found",
+      "protocol": "HTTPS"
+    },
+    {
+      "elapsed": 4.509,
+      "key": "diagnostics.route.smart_lan_found"
+    },
+    {
+      "elapsed": 4.543,
+      "key": "diagnostics.route.smart_lan_ready"
+    },
+    {
+      "elapsed": 10.851,
+      "key": "diagnostics.endpoints.completed",
+      "count": "11",
+      "durationMs": "4206"
+    }
+  ],
+  "oldColdLaunchRoute": [
+    {
+      "elapsed": 2.094895124435425,
+      "message": "diagnostics.jellyfin.playback_route_state",
+      "hasDSMLANCandidate": "false",
+      "hasPrivateCandidate": "false",
+      "reason": "noPrivateCandidate",
+      "retryCount": "0",
+      "selectedAddressKind": "publicDomain",
+      "selectedPort": "8097",
+      "selectedScheme": "https",
+      "selection": "libraryEndpoint",
+      "stage": "probeSkipped"
+    },
+    {
+      "elapsed": 25.55642294883728,
+      "message": "diagnostics.jellyfin.playback_route_state",
+      "hasDSMLANCandidate": "false",
+      "hasPrivateCandidate": "false",
+      "reason": "libraryEndpoint",
+      "retryCount": "0",
+      "selectedAddressKind": "publicDomain",
+      "selectedPort": "8097",
+      "selectedScheme": "https",
+      "selection": "libraryEndpoint",
+      "stage": "playRequested"
+    }
+  ],
+  "newColdLaunchVerification": [
+    {
+      "elapsed": 1.908,
+      "key": "diagnostics.jellyfin.playback_route_state",
+      "hasDSMLANCandidate": "false",
+      "reason": "noPrivateCandidate",
+      "selectedAddressKind": "publicDomain",
+      "selectedPort": "8097",
+      "selection": "libraryEndpoint",
+      "stage": "probeSkipped"
+    },
+    {
+      "elapsed": 4.048,
+      "key": "diagnostics.jellyfin.playback_route_state",
+      "hasDSMLANCandidate": "true",
+      "reason": "libraryEndpoint",
+      "selectedAddressKind": "publicDomain",
+      "selectedPort": "8097",
+      "selection": "libraryEndpoint",
+      "stage": "probeStarted"
+    },
+    {
+      "elapsed": 4.413,
+      "key": "diagnostics.jellyfin.playback_route_verified",
+      "route": "sameServerLAN"
+    },
+    {
+      "elapsed": 4.414,
+      "key": "diagnostics.jellyfin.playback_route_state",
+      "hasDSMLANCandidate": "true",
+      "probeMs": "372",
+      "reason": "verifiedSameServerLAN",
+      "selectedAddressKind": "privateIP",
+      "selectedPort": "8096",
+      "selection": "verifiedSameServerLAN",
+      "stage": "probeFinished"
+    }
+  ],
+  "newColdLaunchRepeat": [
+    {
+      "elapsed": 1.903,
+      "key": "diagnostics.jellyfin.playback_route_state",
+      "hasDSMLANCandidate": "false",
+      "reason": "noPrivateCandidate",
+      "selectedAddressKind": "publicDomain",
+      "selectedPort": "8097",
+      "selectedScheme": "https",
+      "selection": "libraryEndpoint",
+      "stage": "probeSkipped"
+    },
+    {
+      "elapsed": 3.915,
+      "key": "diagnostics.jellyfin.playback_route_state",
+      "hasDSMLANCandidate": "true",
+      "reason": "libraryEndpoint",
+      "selectedAddressKind": "publicDomain",
+      "selectedPort": "8097",
+      "selectedScheme": "https",
+      "selection": "libraryEndpoint",
+      "stage": "probeStarted"
+    },
+    {
+      "elapsed": 4.301,
+      "key": "diagnostics.jellyfin.playback_route_verified",
+      "route": "sameServerLAN"
+    },
+    {
+      "elapsed": 4.301,
+      "key": "diagnostics.jellyfin.playback_route_state",
+      "hasDSMLANCandidate": "true",
+      "probeMs": "404",
+      "reason": "verifiedSameServerLAN",
+      "selectedAddressKind": "privateIP",
+      "selectedPort": "8096",
+      "selectedScheme": "http",
+      "selection": "verifiedSameServerLAN",
+      "stage": "probeFinished"
+    },
+    {
+      "elapsed": 25.417,
+      "key": "diagnostics.jellyfin.playback_route_state",
+      "hasDSMLANCandidate": "true",
+      "reason": "verifiedSameServerLAN",
+      "selectedAddressKind": "privateIP",
+      "selectedPort": "8096",
+      "selectedScheme": "http",
+      "selection": "verifiedSameServerLAN",
+      "stage": "playRequested"
+    },
+    {
+      "elapsed": 25.682,
+      "key": "diagnostics.playback.next.route_selected",
+      "connectionAddressKind": "privateIP",
+      "connectionPort": "8096",
+      "connectionScheme": "http",
+      "decodeEngine": "ksPlayer",
+      "playMethod": "directPlay"
+    }
+  ],
+  "packetMetadata": {
+    "oldPublic": {
+      "status": "completed",
+      "matchedPackets": 71312,
+      "remoteMediaClass": "publicIPv4 / HTTPS8097",
+      "metadataOnlyNoPayloadSaved": true,
+      "qualification": "duplicate packet counts not capacity; brief sampling adds USB/CPU overhead"
+    },
+    "newLAN": {
+      "status": "completed",
+      "matchedPackets": 75364,
+      "mediaClasses": [
+        {
+          "addressKind": "privateIPv4",
+          "port": "8096",
+          "matchedPacketsWithDuplicates": 75086
+        },
+        {
+          "addressKind": "publicIPv4",
+          "port": "8097",
+          "matchedPacketsWithDuplicates": 20
+        }
+      ],
+      "scope": "10-second passive metadata sample, no payload saved, not throughput or ranking"
+    }
+  },
+  "rounds": [
+    {
+      "label": "natural600",
+      "package": {
+        "head": "9a9941cd4ec82625f680b5193b3a0f66797eb851",
+        "sourceDiffSHA256": "ccf2b47994c0a21ff0a250e419b7f4a75f2c386d5421fa679ec00f2f3214e5e9",
+        "configuration": "normal Debug -Onone; no default test env; DEBUG-only capped-delivery windows and opt-in reserveOnly predictor isolation; reserve-bounded HLS preparation lead",
+        "binaryBuildTime": "2026-10-06T08:42:08.408259+08:00",
+        "binaries": {
+          "Nastart": "474393b28795b6249890488ae15fb54db0df3453d6190fd9bc03180526ec9f0a",
+          "Nastart.debug.dylib": "8027863eaa6cc72ea87c1da4cfc9c1a3d08966b9c46afa3726521887ff7ba08c",
+          "Frameworks/KSPlayer.framework/KSPlayer": "c2f1a42bcad0e5c30d0bcebd24576f92d8475c201589ed1f9655cc637d6e7910"
+        },
+        "signatureVerified": true,
+        "profileExpirationUTC": "2026-10-10T22:03:15"
+      },
+      "plannedSeconds": 600,
+      "observationStatus": "completed",
+      "toolError": null,
+      "capturePlan": "sparse native screenshot plus AFC diagnostic pull",
+      "environment": {},
+      "cacheOrderTemperature": "unknown; no clearing or shaping",
+      "actualSelectedRoutes": [
+        {
+          "connectionAddressKind": "publicDomain",
+          "connectionPort": "8097",
+          "connectionScheme": "https",
+          "decodeEngine": "ksPlayer",
+          "playMethod": "directPlay"
+        }
+      ],
+      "numericTelemetryMergedByEntryID": {
+        "9DE6FA7F": {
+          "nonNumericSamples": 3,
+          "sampleCount": 569,
+          "coverageSeconds": 605.2109427452087,
+          "first": {
+            "elapsed": 3.3816540241241455,
+            "current": 1.076,
+            "ahead": 4.2309582165704,
+            "drops": 0,
+            "stalls": 0,
+            "active": "no",
+            "engine": "KSPlayer",
+            "method": "directPlay"
+          },
+          "last": {
+            "elapsed": 608.5925967693329,
+            "current": 606.302,
+            "ahead": 15.181832920695342,
+            "drops": 0,
+            "stalls": 0,
+            "active": "no",
+            "engine": "KSPlayer",
+            "method": "directPlay"
+          },
+          "maxStalls": 0,
+          "maxDrops": 0,
+          "activeSamples": 0,
+          "minAheadAfter10": 4.607333206367814
+        }
+      },
+      "postExitAllTelemetry": {
+        "9DE6FA7F": {
+          "events": [],
+          "telemetryCount": 567,
+          "first": {
+            "elapsed": 6.530442953109741,
+            "audioBitrate": "2776240",
+            "bufferTargetSeconds": "4.0",
+            "bufferedAheadSeconds": "4.9412915317658035",
+            "currentSeconds": "4.233",
+            "droppedVideoFrames": "0",
+            "engine": "KSPlayer",
+            "playMethod": "directPlay",
+            "stallActive": "no",
+            "stallCount": "0",
+            "videoBitrate": "40008511"
+          },
+          "last": {
+            "elapsed": 609.5985898971558,
+            "engine": "KSPlayer",
+            "playMethod": "directPlay",
+            "stallActive": "no",
+            "stallCount": "0"
+          },
+          "coverageSeconds": 603.068146944046,
+          "maxStalls": 0,
+          "maxDrops": 0,
+          "firstActiveStallElapsed": null
+        }
+      },
+      "completeUpstreamWindowSummary": {
+        "label": "natural600",
+        "pairMethod": "transferID + upstreamTaskIndex; unique metrics/completion pair only",
+        "actualTransferCount": 3,
+        "complete32MiBPairs": 143,
+        "unknownNumericPairs": 0,
+        "ambiguousPairs": 0,
+        "firstFour": [
+          {
+            "elapsed": 4.6330530643463135,
+            "responseMs": 2697,
+            "requestMs": 28,
+            "backpressureMs": 0,
+            "capacityBytesPerSecond": 12441391
+          },
+          {
+            "elapsed": 7.064317941665649,
+            "responseMs": 2348,
+            "requestMs": 68,
+            "backpressureMs": 0,
+            "capacityBytesPerSecond": 14290644
+          },
+          {
+            "elapsed": 9.872758865356445,
+            "responseMs": 2769,
+            "requestMs": 35,
+            "backpressureMs": 0,
+            "capacityBytesPerSecond": 12117888
+          },
+          {
+            "elapsed": 12.289807081222534,
+            "responseMs": 2382,
+            "requestMs": 32,
+            "backpressureMs": 0,
+            "capacityBytesPerSecond": 14086663
+          }
+        ],
+        "p50ResponseMs": 2553,
+        "maximumResponseMs": 10349,
+        "maxBackpressureMs": 8033,
+        "lessThan100msBackpressureCount": 111,
+        "maximumResponseMsWithLessThan100msBackpressure": 4969
+      },
+      "diagnosticOrDownshiftMarkers": [],
+      "screenshots": [
+        {
+          "target": 3,
+          "captureExit": 0,
+          "captureMethod": "native USB",
+          "requestElapsed": 3.3691508769989014,
+          "responseElapsed": 4.264776945114136
+        },
+        {
+          "target": 10,
+          "captureExit": 0,
+          "captureMethod": "native USB",
+          "requestElapsed": 10.163831949234009,
+          "responseElapsed": 11.497869968414307
+        },
+        {
+          "target": 30,
+          "captureExit": 0,
+          "captureMethod": "native USB",
+          "requestElapsed": 30.183459043502808,
+          "responseElapsed": 31.603428840637207
+        },
+        {
+          "target": 60,
+          "captureExit": 0,
+          "captureMethod": "native USB",
+          "requestElapsed": 60.190239906311035,
+          "responseElapsed": 61.56508278846741
+        },
+        {
+          "target": 120,
+          "captureExit": 0,
+          "captureMethod": "native USB",
+          "requestElapsed": 120.29457092285156,
+          "responseElapsed": 121.85123991966248
+        },
+        {
+          "target": 150,
+          "captureExit": 0,
+          "captureMethod": "native USB",
+          "requestElapsed": 150.26961302757263,
+          "responseElapsed": 151.50317907333374
+        },
+        {
+          "target": 165,
+          "captureExit": 0,
+          "captureMethod": "native USB",
+          "requestElapsed": 165.25923490524292,
+          "responseElapsed": 166.61081385612488
+        },
+        {
+          "target": 180,
+          "captureExit": 0,
+          "captureMethod": "native USB",
+          "requestElapsed": 180.1978108882904,
+          "responseElapsed": 181.66584587097168
+        },
+        {
+          "target": 240,
+          "captureExit": 0,
+          "captureMethod": "native USB",
+          "requestElapsed": 240.15725111961365,
+          "responseElapsed": 241.61531281471252
+        },
+        {
+          "target": 300,
+          "captureExit": 0,
+          "captureMethod": "native USB",
+          "requestElapsed": 300.3996088504791,
+          "responseElapsed": 301.6463108062744
+        },
+        {
+          "target": 450,
+          "captureExit": 0,
+          "captureMethod": "native USB",
+          "requestElapsed": 450.22865295410156,
+          "responseElapsed": 451.60740876197815
+        },
+        {
+          "target": 600,
+          "captureExit": 0,
+          "captureMethod": "native USB",
+          "requestElapsed": 600.3783988952637,
+          "responseElapsed": 601.8603298664093
+        }
+      ],
+      "displayFrameTiming": "INSUFFICIENT",
+      "audio": "INSUFFICIENT"
+    },
+    {
+      "label": "lan300",
+      "package": {
+        "head": "9a9941cd4ec82625f680b5193b3a0f66797eb851",
+        "sourceDiffSHA256": "dc7d08830a89f9f2d3701c7dc3677861c6f07b4e6530da7a63cc7e39c733be44",
+        "configuration": "normal Debug -Onone; no default test env; DEBUG-only capped-delivery windows and opt-in reserveOnly predictor isolation; reserve-bounded HLS preparation lead; live DSM context observation independent of library view task",
+        "binaryBuildTime": "2026-10-06T09:38:36.489160+08:00",
+        "binaries": {
+          "Nastart": "d84fda1970a6d1224e92ffe7caf81c2c1a79688a8e1d1770a9ee1321ab1d0381",
+          "Nastart.debug.dylib": "a389980c1c22628a9202c399d8d9d927497f4e9748509bed0986273cfa141d92",
+          "Frameworks/KSPlayer.framework/KSPlayer": "c2f1a42bcad0e5c30d0bcebd24576f92d8475c201589ed1f9655cc637d6e7910"
+        },
+        "signatureVerified": true,
+        "profileExpirationUTC": "2026-10-10T22:03:15"
+      },
+      "plannedSeconds": 300,
+      "observationStatus": "TOOL",
+      "toolError": "MuxError: read error: AFCStatus.ST_UNKNOWN_ERROR",
+      "capturePlan": "sparse native screenshot plus AFC diagnostic pull",
+      "environment": {},
+      "cacheOrderTemperature": "unknown; no clearing or shaping",
+      "actualSelectedRoutes": [
+        {
+          "connectionAddressKind": "privateIP",
+          "connectionPort": "8096",
+          "connectionScheme": "http",
+          "decodeEngine": "ksPlayer",
+          "playMethod": "directPlay"
+        }
+      ],
+      "numericTelemetryMergedByEntryID": {
+        "88D3422F": {
+          "nonNumericSamples": 3,
+          "sampleCount": 155,
+          "coverageSeconds": 163.96408987045288,
+          "first": {
+            "elapsed": 3.1190247535705566,
+            "current": 1.097,
+            "ahead": 3.6897498979741363,
+            "drops": 2,
+            "stalls": 0,
+            "active": "no",
+            "engine": "KSPlayer",
+            "method": "directPlay"
+          },
+          "last": {
+            "elapsed": 167.08311462402344,
+            "current": 165.087,
+            "ahead": 15.847874568090532,
+            "drops": 2,
+            "stalls": 0,
+            "active": "no",
+            "engine": "KSPlayer",
+            "method": "directPlay"
+          },
+          "maxStalls": 0,
+          "maxDrops": 2,
+          "activeSamples": 0,
+          "minAheadAfter10": 0.791166643994254
+        }
+      },
+      "postExitAllTelemetry": {
+        "88D3422F": {
+          "events": [
+            {
+              "elapsed": 1.845301628112793,
+              "event": "buffer_updated",
+              "bufferedCount": "0",
+              "consumeMs": "410"
+            }
+          ],
+          "telemetryCount": 158,
+          "first": {
+            "elapsed": 1.4705438613891602,
+            "currentSeconds": "-",
+            "engine": "KSPlayer",
+            "playMethod": "directPlay",
+            "stallActive": "no",
+            "stallCount": "0"
+          },
+          "last": {
+            "elapsed": 167.70711374282837,
+            "engine": "KSPlayer",
+            "playMethod": "directPlay",
+            "stallActive": "no",
+            "stallCount": "0"
+          },
+          "coverageSeconds": 166.2365698814392,
+          "maxStalls": 0,
+          "maxDrops": 2,
+          "firstActiveStallElapsed": null
+        }
+      },
+      "completeUpstreamWindowSummary": {
+        "label": "lan300",
+        "pairMethod": "transferID + upstreamTaskIndex; unique metrics/completion pair only",
+        "actualTransferCount": 3,
+        "complete32MiBPairs": 41,
+        "unknownNumericPairs": 0,
+        "ambiguousPairs": 0,
+        "firstFour": [
+          {
+            "elapsed": 5.802523612976074,
+            "responseMs": 4214,
+            "requestMs": 26,
+            "backpressureMs": 0,
+            "capacityBytesPerSecond": 7962608
+          },
+          {
+            "elapsed": 10.541712760925293,
+            "responseMs": 4680,
+            "requestMs": 25,
+            "backpressureMs": 0,
+            "capacityBytesPerSecond": 7169750
+          },
+          {
+            "elapsed": 13.368435859680176,
+            "responseMs": 2805,
+            "requestMs": 29,
+            "backpressureMs": 0,
+            "capacityBytesPerSecond": 11962364
+          },
+          {
+            "elapsed": 15.73209285736084,
+            "responseMs": 2354,
+            "requestMs": 25,
+            "backpressureMs": 0,
+            "capacityBytesPerSecond": 14254219
+          }
+        ],
+        "p50ResponseMs": 2701,
+        "maximumResponseMs": 10196,
+        "maxBackpressureMs": 7779,
+        "lessThan100msBackpressureCount": 34,
+        "maximumResponseMsWithLessThan100msBackpressure": 4680
+      },
+      "diagnosticOrDownshiftMarkers": [],
+      "screenshots": [
+        {
+          "target": 3,
+          "captureExit": 0,
+          "captureMethod": "native USB",
+          "requestElapsed": 3.3909928798675537,
+          "responseElapsed": 4.122295618057251
+        },
+        {
+          "target": 10,
+          "captureExit": 0,
+          "captureMethod": "native USB",
+          "requestElapsed": 10.175521612167358,
+          "responseElapsed": 12.581164598464966
+        },
+        {
+          "target": 30,
+          "captureExit": 0,
+          "captureMethod": "native USB",
+          "requestElapsed": 30.1716468334198,
+          "responseElapsed": 31.759270906448364
+        },
+        {
+          "target": 60,
+          "captureExit": 0,
+          "captureMethod": "native USB",
+          "requestElapsed": 60.24535274505615,
+          "responseElapsed": 61.86272072792053
+        },
+        {
+          "target": 120,
+          "captureExit": 0,
+          "captureMethod": "native USB",
+          "requestElapsed": 120.215158700943,
+          "responseElapsed": 121.72058176994324
+        }
+      ],
+      "displayFrameTiming": "INSUFFICIENT",
+      "audio": "INSUFFICIENT"
+    },
+    {
+      "label": "lanRepeat300",
+      "package": {
+        "head": "9a9941cd4ec82625f680b5193b3a0f66797eb851",
+        "sourceDiffSHA256": "dc7d08830a89f9f2d3701c7dc3677861c6f07b4e6530da7a63cc7e39c733be44",
+        "configuration": "normal Debug -Onone; no default test env; DEBUG-only capped-delivery windows and opt-in reserveOnly predictor isolation; reserve-bounded HLS preparation lead; live DSM context observation independent of library view task",
+        "binaryBuildTime": "2026-10-06T09:38:36.489160+08:00",
+        "binaries": {
+          "Nastart": "d84fda1970a6d1224e92ffe7caf81c2c1a79688a8e1d1770a9ee1321ab1d0381",
+          "Nastart.debug.dylib": "a389980c1c22628a9202c399d8d9d927497f4e9748509bed0986273cfa141d92",
+          "Frameworks/KSPlayer.framework/KSPlayer": "c2f1a42bcad0e5c30d0bcebd24576f92d8475c201589ed1f9655cc637d6e7910"
+        },
+        "signatureVerified": true,
+        "profileExpirationUTC": "2026-10-10T22:03:15"
+      },
+      "plannedSeconds": 300,
+      "observationStatus": "completed",
+      "toolError": null,
+      "capturePlan": "single sequential native screenshot process; diagnostics pulled after player exit to avoid concurrent AFC/capture contention",
+      "environment": {},
+      "cacheOrderTemperature": "unknown; no clearing or shaping",
+      "actualSelectedRoutes": [
+        {
+          "connectionAddressKind": "privateIP",
+          "connectionPort": "8096",
+          "connectionScheme": "http",
+          "decodeEngine": "ksPlayer",
+          "playMethod": "directPlay"
+        }
+      ],
+      "numericTelemetryMergedByEntryID": {
+        "393D02CE": {
+          "nonNumericSamples": 3,
+          "sampleCount": 289,
+          "coverageSeconds": 303.31051683425903,
+          "first": {
+            "elapsed": 3.317439079284668,
+            "current": 1.182,
+            "ahead": 3.5866249013749987,
+            "drops": 1,
+            "stalls": 0,
+            "active": "no",
+            "engine": "KSPlayer",
+            "method": "directPlay"
+          },
+          "last": {
+            "elapsed": 306.6279559135437,
+            "current": 304.478,
+            "ahead": 13.346666303908023,
+            "drops": 1,
+            "stalls": 0,
+            "active": "no",
+            "engine": "KSPlayer",
+            "method": "directPlay"
+          },
+          "maxStalls": 0,
+          "maxDrops": 1,
+          "activeSamples": 0,
+          "minAheadAfter10": 0.9579999727931039
+        }
+      },
+      "postExitAllTelemetry": {
+        "393D02CE": {
+          "events": [
+            {
+              "elapsed": 1.9809188842773438,
+              "event": "buffer_updated",
+              "bufferedCount": "0",
+              "consumeMs": "531"
+            }
+          ],
+          "telemetryCount": 292,
+          "first": {
+            "elapsed": 1.4736690521240234,
+            "currentSeconds": "-",
+            "engine": "KSPlayer",
+            "playMethod": "directPlay",
+            "stallActive": "no",
+            "stallCount": "0"
+          },
+          "last": {
+            "elapsed": 307.07451009750366,
+            "engine": "KSPlayer",
+            "playMethod": "directPlay",
+            "stallActive": "no",
+            "stallCount": "0"
+          },
+          "coverageSeconds": 305.60084104537964,
+          "maxStalls": 0,
+          "maxDrops": 1,
+          "firstActiveStallElapsed": null
+        }
+      },
+      "completeUpstreamWindowSummary": {
+        "label": "lanRepeat300",
+        "pairMethod": "transferID + upstreamTaskIndex; unique metrics/completion pair only",
+        "actualTransferCount": 3,
+        "complete32MiBPairs": 73,
+        "unknownNumericPairs": 0,
+        "ambiguousPairs": 0,
+        "firstFour": [
+          {
+            "elapsed": 6.546924114227295,
+            "responseMs": 4838,
+            "requestMs": 30,
+            "backpressureMs": 0,
+            "capacityBytesPerSecond": 6935600
+          },
+          {
+            "elapsed": 10.71849012374878,
+            "responseMs": 4124,
+            "requestMs": 39,
+            "backpressureMs": 0,
+            "capacityBytesPerSecond": 8136380
+          },
+          {
+            "elapsed": 13.350573062896729,
+            "responseMs": 2602,
+            "requestMs": 27,
+            "backpressureMs": 0,
+            "capacityBytesPerSecond": 12895631
+          },
+          {
+            "elapsed": 15.538628101348877,
+            "responseMs": 2160,
+            "requestMs": 24,
+            "backpressureMs": 0,
+            "capacityBytesPerSecond": 15534459
+          }
+        ],
+        "p50ResponseMs": 2473,
+        "maximumResponseMs": 10116,
+        "maxBackpressureMs": 7874,
+        "lessThan100msBackpressureCount": 56,
+        "maximumResponseMsWithLessThan100msBackpressure": 4838
+      },
+      "diagnosticOrDownshiftMarkers": [],
+      "screenshots": [
+        {
+          "target": 3,
+          "captureExit": 0,
+          "captureMethod": "native USB",
+          "requestElapsed": 3.006147861480713,
+          "responseElapsed": 4.188086032867432
+        },
+        {
+          "target": 10,
+          "captureExit": 0,
+          "captureMethod": "native USB",
+          "requestElapsed": 10.007843971252441,
+          "responseElapsed": 11.47470498085022
+        },
+        {
+          "target": 30,
+          "captureExit": 0,
+          "captureMethod": "native USB",
+          "requestElapsed": 30.00812292098999,
+          "responseElapsed": 31.37022304534912
+        },
+        {
+          "target": 60,
+          "captureExit": 0,
+          "captureMethod": "native USB",
+          "requestElapsed": 60.00837993621826,
+          "responseElapsed": 62.54136824607849
+        },
+        {
+          "target": 120,
+          "captureExit": 0,
+          "captureMethod": "native USB",
+          "requestElapsed": 120.00513100624084,
+          "responseElapsed": 121.58483004570007
+        },
+        {
+          "target": 150,
+          "captureExit": 0,
+          "captureMethod": "native USB",
+          "requestElapsed": 150.0086350440979,
+          "responseElapsed": 151.43830108642578
+        },
+        {
+          "target": 165,
+          "captureExit": 0,
+          "captureMethod": "native USB",
+          "requestElapsed": 165.00987195968628,
+          "responseElapsed": 166.3544499874115
+        },
+        {
+          "target": 180,
+          "captureExit": 0,
+          "captureMethod": "native USB",
+          "requestElapsed": 180.00185203552246,
+          "responseElapsed": 181.63357090950012
+        },
+        {
+          "target": 240,
+          "captureExit": 0,
+          "captureMethod": "native USB",
+          "requestElapsed": 240.0079848766327,
+          "responseElapsed": 241.55691599845886
+        },
+        {
+          "target": 300,
+          "captureExit": 0,
+          "captureMethod": "native USB",
+          "requestElapsed": 300.0094540119171,
+          "responseElapsed": 301.3177080154419
+        }
+      ],
+      "displayFrameTiming": "INSUFFICIENT",
+      "audio": "INSUFFICIENT"
+    },
+    {
+      "label": "lanS03normal120",
+      "package": {
+        "head": "9a9941cd4ec82625f680b5193b3a0f66797eb851",
+        "sourceDiffSHA256": "dc7d08830a89f9f2d3701c7dc3677861c6f07b4e6530da7a63cc7e39c733be44",
+        "configuration": "normal Debug -Onone; no default test env; DEBUG-only capped-delivery windows and opt-in reserveOnly predictor isolation; reserve-bounded HLS preparation lead; live DSM context observation independent of library view task",
+        "binaryBuildTime": "2026-10-06T09:38:36.489160+08:00",
+        "binaries": {
+          "Nastart": "d84fda1970a6d1224e92ffe7caf81c2c1a79688a8e1d1770a9ee1321ab1d0381",
+          "Nastart.debug.dylib": "a389980c1c22628a9202c399d8d9d927497f4e9748509bed0986273cfa141d92",
+          "Frameworks/KSPlayer.framework/KSPlayer": "c2f1a42bcad0e5c30d0bcebd24576f92d8475c201589ed1f9655cc637d6e7910"
+        },
+        "signatureVerified": true,
+        "profileExpirationUTC": "2026-10-10T22:03:15"
+      },
+      "plannedSeconds": 120,
+      "observationStatus": "completed",
+      "toolError": null,
+      "capturePlan": "single sequential native screenshot process; diagnostics pulled after player exit to avoid concurrent AFC/capture contention",
+      "environment": {},
+      "cacheOrderTemperature": "unknown; no clearing or shaping",
+      "actualSelectedRoutes": [
+        {
+          "connectionAddressKind": "privateIP",
+          "connectionPort": "8096",
+          "connectionScheme": "http",
+          "decodeEngine": "ksPlayer",
+          "playMethod": "directPlay"
+        }
+      ],
+      "numericTelemetryMergedByEntryID": {
+        "8580BD2D": {
+          "nonNumericSamples": 3,
+          "sampleCount": 117,
+          "coverageSeconds": 124.09569072723389,
+          "first": {
+            "elapsed": 3.2365522384643555,
+            "current": 1.246,
+            "ahead": 3.9202915589726994,
+            "drops": 0,
+            "stalls": 0,
+            "active": "no",
+            "engine": "KSPlayer",
+            "method": "directPlay"
+          },
+          "last": {
+            "elapsed": 127.33224296569824,
+            "current": 125.342,
+            "ahead": 14.347666276701133,
+            "drops": 0,
+            "stalls": 0,
+            "active": "no",
+            "engine": "KSPlayer",
+            "method": "directPlay"
+          },
+          "maxStalls": 0,
+          "maxDrops": 0,
+          "activeSamples": 0,
+          "minAheadAfter10": 8.049708114544543
+        }
+      },
+      "postExitAllTelemetry": {
+        "8580BD2D": {
+          "events": [
+            {
+              "elapsed": 1.8616199493408203,
+              "event": "buffer_updated",
+              "bufferedCount": "0",
+              "consumeMs": "403"
+            }
+          ],
+          "telemetryCount": 120,
+          "first": {
+            "elapsed": 1.4827730655670166,
+            "currentSeconds": "-",
+            "engine": "KSPlayer",
+            "playMethod": "directPlay",
+            "stallActive": "no",
+            "stallCount": "0"
+          },
+          "last": {
+            "elapsed": 128.39654302597046,
+            "engine": "KSPlayer",
+            "playMethod": "directPlay",
+            "stallActive": "no",
+            "stallCount": "0"
+          },
+          "coverageSeconds": 126.91376996040344,
+          "maxStalls": 0,
+          "maxDrops": 0,
+          "firstActiveStallElapsed": null
+        }
+      },
+      "completeUpstreamWindowSummary": {
+        "label": "lanS03normal120",
+        "pairMethod": "transferID + upstreamTaskIndex; unique metrics/completion pair only",
+        "actualTransferCount": 3,
+        "complete32MiBPairs": 25,
+        "unknownNumericPairs": 0,
+        "ambiguousPairs": 0,
+        "firstFour": [
+          {
+            "elapsed": 5.846860885620117,
+            "responseMs": 4262,
+            "requestMs": 26,
+            "backpressureMs": 0,
+            "capacityBytesPerSecond": 7872931
+          },
+          {
+            "elapsed": 27.469266891479492,
+            "responseMs": 21588,
+            "requestMs": 26,
+            "backpressureMs": 19840,
+            "capacityBytesPerSecond": 1554309
+          },
+          {
+            "elapsed": 30.513593196868896,
+            "responseMs": 2389,
+            "requestMs": 648,
+            "backpressureMs": 0,
+            "capacityBytesPerSecond": 14045388
+          },
+          {
+            "elapsed": 33.06472206115723,
+            "responseMs": 2508,
+            "requestMs": 40,
+            "backpressureMs": 0,
+            "capacityBytesPerSecond": 13378960
+          }
+        ],
+        "p50ResponseMs": 2508,
+        "maximumResponseMs": 21588,
+        "maxBackpressureMs": 19840,
+        "lessThan100msBackpressureCount": 18,
+        "maximumResponseMsWithLessThan100msBackpressure": 4262
+      },
+      "diagnosticOrDownshiftMarkers": [],
+      "screenshots": [
+        {
+          "target": 3,
+          "captureExit": 0,
+          "captureMethod": "native USB",
+          "requestElapsed": 3.010082960128784,
+          "responseElapsed": 4.017045974731445
+        },
+        {
+          "target": 10,
+          "captureExit": 0,
+          "captureMethod": "native USB",
+          "requestElapsed": 10.00161099433899,
+          "responseElapsed": 11.228424072265625
+        },
+        {
+          "target": 30,
+          "captureExit": 0,
+          "captureMethod": "native USB",
+          "requestElapsed": 30.01011824607849,
+          "responseElapsed": 30.63822102546692
+        },
+        {
+          "target": 60,
+          "captureExit": 0,
+          "captureMethod": "native USB",
+          "requestElapsed": 60.001893043518066,
+          "responseElapsed": 61.26754307746887
+        },
+        {
+          "target": 120,
+          "captureExit": 0,
+          "captureMethod": "native USB",
+          "requestElapsed": 120.01006627082825,
+          "responseElapsed": 121.44069910049438
+        }
+      ],
+      "displayFrameTiming": "INSUFFICIENT",
+      "audio": "INSUFFICIENT"
+    }
+  ],
+  "cue": {
+    "status": "INSUFFICIENT / NOT_CAPTURED for exact prior HLS failure cue",
+    "nativeBurstFrames": 15,
+    "burstScope": "Original KSPlayer first frames show Chimera bilingual cue; later frames include detail after early exit; these are excluded",
+    "ocrTargetMatches": 0,
+    "negativeInferenceAllowed": false
+  },
+  "formalCompetitorPairs": 0,
+  "rootCauseResolved": false,
+  "pending": [
+    "MI2 repeated natural private-route first-stall/candidate preparation diagnostics",
+    "Latest HLS exact prior failed subtitle cue",
+    "Lenna and DS One Jellyfin/DSM: matching file/protocol/track/startpoint/configuration and at least 5 controlled pairs",
+    "Actual sound and complete display frame timing/scrolling",
+    "Representative formats and S01 phone+iPad serial/concurrent",
+    "iPad/iPhone18 latest package checks and all PX01–21 UX01–06 CB01–26 gaps"
+  ],
+  "finalPreferenceCheck": {
+    "nonDiagnosticPreferenceCount": 25,
+    "unchangedCount": 24,
+    "changedKeys": [
+      "playback.localResume.v1"
+    ],
+    "allowedNaturalPlaybackResumeOnly": true
+  },
+  "final": {
+    "time": "2026-10-06T09:58:05.911872+08:00",
+    "phoneLocked": false,
+    "foreground": "latest normal Nastart launchpad",
+    "pid": 26337,
+    "requestedEnvironment": {},
+    "requestedArguments": [],
+    "processEnvironmentEvidence": "known fresh launch with empty environment; activeAppInfo alone is insufficient",
+    "playersExited": true,
+    "wdaReady": true,
+    "existingHostPID": 70500,
+    "waitForIdleTimeout": 10,
+    "defaultActiveApplication": "com.changliwen.nastart",
+    "macBoundedCaffeinatePID": 52029,
+    "sourceAndFrozenBinaryHashesMatch": true,
+    "no24HourAuthorizationGuarantee": true
+  }
+}

@@ -1,5 +1,96 @@
 import Foundation
 
+/// Jellyfin repeats the playlist request's query on every VOD segment URI.
+/// Its existing Params contract can express the same numeric/boolean hints
+/// without repeating their names. Keep codecs, authentication and session
+/// identity explicit, and leave unknown or ambiguous requests untouched.
+enum PlaybackJellyfinPlaylistQuery {
+    static func compact(_ url: URL) -> URL? {
+        let path = url.path.split(separator: "/").map(String.init)
+        guard path.count >= 3, path[path.count - 3].lowercased() == "videos",
+              ["master.m3u8", "main.m3u8"].contains(path.last?.lowercased() ?? ""),
+              UUID(uuidString: path[path.count - 2]) != nil
+                || path[path.count - 2].count == 32
+                    && path[path.count - 2].allSatisfy({ $0.isHexDigit }),
+              var components = URLComponents(url: url, resolvingAgainstBaseURL: false),
+              let items = components.queryItems,
+              !items.contains(where: { $0.name.lowercased() == "params" }),
+              items.contains(where: { $0.name.lowercased() == "playsessionid" }),
+              items.contains(where: { ["api_key", "apikey", "token", "access_token"].contains($0.name.lowercased()) }) else { return nil }
+        // Positional fields in Jellyfin StreamingHelpers.ParseParams.
+        let integers = ["audiostreamindex": 6, "subtitlestreamindex": 7,
+            "videobitrate": 8, "audiobitrate": 9, "maxaudiochannels": 10,
+            "maxwidth": 12, "maxheight": 13, "starttimeticks": 14,
+            "maxrefframes": 16, "maxvideobitdepth": 17]
+        let booleans = ["static": 3, "copytimestamps": 24, "requireavc": 29,
+            "requirenonanamorphic": 31, "deinterlace": 32]
+        var fields = Array(repeating: "", count: 33)
+        var remaining: [URLQueryItem] = []
+        var moved = Set<String>()
+        for item in items {
+            let name = item.name.lowercased()
+            guard let position = integers[name] ?? booleans[name] else {
+                remaining.append(item); continue
+            }
+            guard moved.insert(name).inserted, let value = item.value,
+                  !value.isEmpty else { return nil }
+            if integers[name] != nil {
+                guard Int64(value) != nil, value.utf8.allSatisfy({ (48...57).contains($0) || $0 == 45 }) else { return nil }
+                guard position == 14 || Int32(value) != nil else { return nil }
+            } else {
+                guard ["true", "false"].contains(value.lowercased()) else { return nil }
+            }
+            fields[position] = value
+        }
+        guard moved.count >= 3 else { return nil }
+        while fields.last == "" { fields.removeLast() }
+        remaining.append(URLQueryItem(name: "Params", value: fields.joined(separator: ";")))
+        let originalBytes = components.percentEncodedQuery?.utf8.count ?? 0
+        components.queryItems = remaining
+        guard (components.percentEncodedQuery?.utf8.count ?? 0) + 16 < originalBytes else { return nil }
+        return components.url
+    }
+}
+
+/// Only complete VOD manifests are immutable for a single playback route.
+/// Keep raw text so each proxy read can apply its current seek offset.
+final class PlaybackVODPlaylistCache: @unchecked Sendable {
+    private struct Entry { let route: String; let data: Data }
+    private let lock = NSLock()
+    private var entries: [String: Entry] = [:]
+    private var order: [String] = []
+    private let maximumBytes: Int
+    private let maximumEntryBytes: Int
+    init(maximumBytes: Int = 8 * 1024 * 1024, maximumEntryBytes: Int = 4 * 1024 * 1024) {
+        self.maximumBytes = maximumBytes
+        self.maximumEntryBytes = maximumEntryBytes
+    }
+    private func key(route: String, url: URL) -> String { route + "|" + url.absoluteString }
+    func data(route: String, url: URL) -> Data? {
+        lock.lock(); defer { lock.unlock() }
+        return entries[key(route: route, url: url)]?.data
+    }
+    func store(_ data: Data, route: String, url: URL) {
+        guard data.count <= maximumEntryBytes, data.count <= maximumBytes,
+              let text = String(data: data, encoding: .utf8),
+              text.hasPrefix("#EXTM3U"),
+              text.components(separatedBy: .newlines).contains("#EXT-X-ENDLIST") else { return }
+        lock.lock(); defer { lock.unlock() }
+        let k = key(route: route, url: url)
+        entries[k] = Entry(route: route, data: data)
+        order.removeAll { $0 == k }; order.append(k)
+        while entries.values.reduce(0, { $0 + $1.data.count }) > maximumBytes,
+              let oldest = order.first {
+            entries[oldest] = nil; order.removeFirst()
+        }
+    }
+    func remove(route: String) {
+        lock.lock(); defer { lock.unlock() }
+        entries = entries.filter { $0.value.route != route }
+        order.removeAll { entries[$0] == nil }
+    }
+}
+
 /// Reactive downshift only: bandwidth estimates alone must not interrupt a
 /// healthy original stream. Times use monotonic uptime, never playback time.
 struct PlaybackStallDownshiftPolicy {
@@ -58,8 +149,92 @@ struct PlaybackStallDownshiftPolicy {
 /// Recent completed Range and HLS segment transfers are a better guide to
 /// sustained delivery than the small Jellyfin startup probe. Discard samples where the local
 /// proxy paused the upstream task because those measure player consumption.
+struct PlaybackBodyWindowCapacityPolicy {
+    private var previous: (rate: Double, end: TimeInterval)?
+
+    mutating func sample(bytes: Int64, seconds: TimeInterval,
+                         totalBackpressure: TimeInterval, queuedBytes: Int,
+                         now: TimeInterval) -> Int? {
+        guard bytes >= 131_072, seconds.isFinite, (2...4).contains(seconds),
+              totalBackpressure == 0, (0...131_072).contains(queuedBytes),
+              now.isFinite else { previous = nil; return nil }
+        let rate = Double(bytes) * 8 / seconds
+        guard rate.isFinite, rate > 0, rate < Double(Int.max) else {
+            previous = nil; return nil
+        }
+        let prior = previous
+        previous = (rate, now)
+        guard let prior, abs(now - prior.end - seconds) <= 0.25,
+              max(rate, prior.rate) <= min(rate, prior.rate) * 2 else { return nil }
+        // A slow first response alone must not lower a healthy original.
+        return Int(max(rate, prior.rate))
+    }
+}
+
+/// Measures a single client media stream, including its consecutive finite
+/// upstream ranges. Response boundaries must not discard a partly read window
+/// or the preceding stable sample. Request latency is included in wall time.
+struct PlaybackBodyWindowSampler {
+    struct Window {
+        let bytes: Int64
+        let seconds: TimeInterval
+        let pressured: Bool
+        let capacity: Int?
+    }
+    private var startedAt: TimeInterval?
+    private var bytes: Int64 = 0
+    private var pressured = false
+    private var policy = PlaybackBodyWindowCapacityPolicy()
+
+    mutating func beginResponse(now: TimeInterval) {
+        guard now.isFinite else { return }
+        if startedAt == nil { startedAt = now }
+    }
+
+    mutating func receive(bytes count: Int, now: TimeInterval,
+                         totalBackpressure: TimeInterval, queuedBytes: Int,
+                         eligible: Bool) -> Window? {
+        guard count > 0, let start = startedAt, now.isFinite, now >= start else { return nil }
+        bytes += Int64(count)
+        pressured = pressured || !totalBackpressure.isFinite || totalBackpressure != 0
+        let seconds = now - start
+        guard seconds >= 2 else { return nil }
+        let capacity = eligible ? policy.sample(bytes: bytes, seconds: seconds,
+            totalBackpressure: pressured ? 1 : 0, queuedBytes: queuedBytes, now: now) : nil
+        if !eligible { policy = PlaybackBodyWindowCapacityPolicy() }
+        let window = Window(bytes: bytes, seconds: seconds, pressured: pressured, capacity: capacity)
+        startedAt = now
+        bytes = 0
+        pressured = false
+        return window
+    }
+}
+
+struct PlaybackPredictiveGracePolicy {
+    private var generation: Int?
+    private var normalUntil: TimeInterval = .infinity
+    private var initialBodyUntil: TimeInterval = .infinity
+
+    mutating func allows(now: TimeInterval, seekGeneration: Int,
+                         qualifiedBodyWindow: Bool) -> Bool {
+        guard now.isFinite else { return false }
+        if generation != seekGeneration {
+            initialBodyUntil = generation == nil ? now + 3 : .infinity
+            normalUntil = now + 10
+            generation = seekGeneration
+        }
+        return now >= normalUntil || qualifiedBodyWindow && now >= initialBodyUntil
+    }
+}
+
 final class PlaybackRecentThroughputStore: @unchecked Sendable {
     static let shared = PlaybackRecentThroughputStore()
+
+    struct Estimate {
+        enum Source: String { case completedTransfer, bodyWindow }
+        let bitrate: Int
+        let source: Source
+    }
 
     private struct Sample {
         let traceID: String
@@ -69,6 +244,15 @@ final class PlaybackRecentThroughputStore: @unchecked Sendable {
 
     private let lock = NSLock()
     private var samples: [Sample] = []
+    private var bodySamples: [Sample] = []
+
+    func recordQualifiedBodyWindow(traceID: String?, bitrate: Int, now: TimeInterval) {
+        guard let traceID, !traceID.isEmpty, bitrate > 0, now.isFinite else { return }
+        lock.lock(); defer { lock.unlock() }
+        bodySamples.removeAll { now - $0.uptime > 6 || now < $0.uptime || $0.traceID == traceID }
+        bodySamples.append(Sample(traceID: traceID, bitrate: bitrate, uptime: now))
+        if bodySamples.count > 32 { bodySamples.removeFirst(bodySamples.count - 32) }
+    }
 
     func record(traceID: String?, bytes: Int64, seconds: TimeInterval,
                 backpressureSeconds: TimeInterval, now: TimeInterval) {
@@ -85,13 +269,20 @@ final class PlaybackRecentThroughputStore: @unchecked Sendable {
     }
 
     func estimate(traceID: String, now: TimeInterval) -> Int? {
-        lock.lock()
+        estimateSample(traceID: traceID, now: now)?.bitrate
+    }
+
+    func estimateSample(traceID: String, now: TimeInterval) -> Estimate? {
+        lock.lock(); defer { lock.unlock() }
         let rates = samples.filter { $0.traceID == traceID
             && now >= $0.uptime && now - $0.uptime <= 60 }
             .map(\.bitrate).sorted()
-        lock.unlock()
-        guard !rates.isEmpty else { return nil }
-        return rates[(rates.count - 1) / 4]
+        if !rates.isEmpty {
+            return Estimate(bitrate: rates[(rates.count - 1) / 4], source: .completedTransfer)
+        }
+        guard let body = bodySamples.last(where: { $0.traceID == traceID
+            && now >= $0.uptime && now - $0.uptime <= 6 }) else { return nil }
+        return Estimate(bitrate: body.bitrate, source: .bodyWindow)
     }
 }
 
@@ -99,7 +290,7 @@ enum PlaybackAdaptiveBitratePolicy {
     static let ladder = [30_000_000, 20_000_000, 12_000_000,
                          10_000_000, 8_000_000, 4_000_000,
                          2_000_000, 1_500_000, 1_000_000,
-                         750_000, 500_000]
+                         750_000, 500_000, 375_000, 250_000]
 
     static func allowsAutomaticAdjustment(selectedQualityID: String?) -> Bool {
         selectedQualityID == nil || selectedQualityID == "auto"
@@ -118,11 +309,151 @@ enum PlaybackAdaptiveBitratePolicy {
     /// Keep delivery well above the rendition's target bitrate. Each retry
     /// must select a lower rendition, even if the old capacity sample is high.
     static func target(currentCeiling: Int, capacity: Int?, networkKey: String) -> Int? {
-        guard currentCeiling > 500_000 else { return nil }
+        guard currentCeiling > 250_000 else { return nil }
         let safeCapacity = capacity.map { Int(Double($0) * 0.5) }
         let unknownCapacityLimit = networkKey == "cellular" ? 4_000_000 : 8_000_000
         let limit = min(currentCeiling - 1, safeCapacity ?? unknownCapacityLimit)
-        return ladder.first { $0 <= limit } ?? 500_000
+        return ladder.first { $0 <= limit } ?? 250_000
+    }
+}
+
+/// Limit the muted candidate's future target to media the live stream can play.
+enum PlaybackReplacementLeadPolicy {
+    static func mediaSeconds(expectedPreparation: TimeInterval, rate: Double,
+                             isAdvancing: Bool, availableReserve: TimeInterval?) -> TimeInterval {
+        guard isAdvancing, expectedPreparation.isFinite, expectedPreparation >= 0,
+              rate.isFinite, rate > 0 else { return 0 }
+        let expected = expectedPreparation * rate
+        guard expected.isFinite else { return 0 }
+        guard let availableReserve, availableReserve.isFinite, availableReserve >= 0 else {
+            return expected
+        }
+        // A future candidate must not depend on the original surviving beyond
+        // its known reserve when delivery is already falling behind demand.
+        return min(expected, max(availableReserve - 0.25, 0))
+    }
+}
+
+/// Correct a muted candidate only when the live position is already buffered.
+/// Never turn a slow candidate into a new server seek or an unbounded retry.
+enum PlaybackBufferedHandoffSeekPolicy {
+    static func target(candidate: Double, live: Double, rate: Double,
+                       isAdvancing: Bool, duration: Double?,
+                       ranges: [(start: Double, end: Double)]) -> Double? {
+        guard candidate.isFinite, live.isFinite, candidate >= 0, live >= 0,
+              rate.isFinite, rate > 0 else { return nil }
+        // A slightly ahead candidate otherwise waits for a stalled original
+        // indefinitely, even though its buffer contains the original's frame.
+        // Do not disturb a progressing source or relax the alignment tolerance.
+        let stalledOvershoot = !isAdvancing && candidate - live > 0.1
+        guard live - candidate >= 2 || stalledOvershoot else { return nil }
+        let target = live + (isAdvancing ? 0.25 * rate : 0)
+        guard target.isFinite,
+              duration.map({ $0.isFinite && target + 0.5 < $0 }) ?? true,
+              ranges.contains(where: {
+                  $0.start.isFinite && $0.end.isFinite && $0.start >= 0
+                      && $0.start <= target && $0.end >= target + 0.5
+              }) else { return nil }
+        return target
+    }
+}
+
+/// A decoded still frame alone cannot carry a playing replacement.
+enum PlaybackHandoffReadinessPolicy {
+    static func canCommit(candidate: Double, live: Double,
+                          ranges: [(start: Double, end: Double)]) -> Bool {
+        guard candidate.isFinite, live.isFinite, candidate >= 0, live >= 0,
+              abs(candidate - live) <= 0.1 else { return false }
+        return ranges.contains {
+            $0.start.isFinite && $0.end.isFinite && $0.start >= 0
+                && $0.start <= candidate && $0.end >= candidate + 0.5
+        }
+    }
+
+    static func isReady(candidate: Double, live: Double, frame: Double,
+                        ranges: [(start: Double, end: Double)]) -> Bool {
+        guard frame.isFinite, frame >= 0, abs(frame - candidate) <= 0.15 else { return false }
+        // Match the candidate's existing half-second forward-buffer request.
+        // A disjoint future range is not reserve at the frame being committed.
+        return canCommit(candidate: candidate, live: live, ranges: ranges)
+    }
+}
+
+/// A detail probe cannot choose a route after that route or bearer has changed.
+enum PlaybackOriginalWarmupPolicy {
+    static func matches(warmedEndpoint: URL, currentEndpoint: URL,
+                        warmedNetwork: String, currentNetwork: String) -> Bool {
+        func origin(_ url: URL) -> String? {
+            guard let scheme = url.scheme?.lowercased(), ["http", "https"].contains(scheme),
+                  let host = url.host?.lowercased(), !host.isEmpty else { return nil }
+            return "\(scheme)://\(host):\(url.port ?? (scheme == "https" ? 443 : 80))"
+        }
+        guard !warmedNetwork.isEmpty, warmedNetwork == currentNetwork,
+              let warmed = origin(warmedEndpoint), let current = origin(currentEndpoint) else { return false }
+        return warmed == current
+    }
+}
+
+/// Whole-file bitrate can hide a sustained high-bitrate section. Require both
+/// insufficient measured delivery and a shrinking, low reserve; a GOP peak or
+/// a stale bitrate during pause/buffering must not lower a healthy original.
+struct PlaybackReserveDepletionPolicy {
+    private struct Sample {
+        let time: TimeInterval
+        let current: TimeInterval
+        let ahead: TimeInterval
+        let target: TimeInterval
+        let demand: Int
+        let capacity: Int
+    }
+    private var generation: Int?
+    private var samples: [Sample] = []
+
+    static func demandBitrate(video: Int?, audio: Int?, rate: Double) -> Int? {
+        guard let video, video > 0, let audio, audio >= 0,
+              rate.isFinite, rate > 0 else { return nil }
+        let (total, overflow) = video.addingReportingOverflow(audio)
+        let scaled = Double(total) * rate
+        guard !overflow, scaled.isFinite, scaled > 0,
+              scaled < Double(Int.max) else { return nil }
+        return Int(scaled)
+    }
+
+    mutating func sample(now: TimeInterval, eligible: Bool, seekGeneration: Int,
+                         currentSeconds: TimeInterval, aheadSeconds: TimeInterval?,
+                         targetSeconds: TimeInterval?, demandBitrate: Int?,
+                         measuredCapacity: Int?) -> Bool {
+        if generation != seekGeneration {
+            generation = seekGeneration
+            samples.removeAll()
+        }
+        guard eligible, now.isFinite, currentSeconds.isFinite, currentSeconds >= 0,
+              let aheadSeconds, aheadSeconds.isFinite, aheadSeconds >= 0,
+              let targetSeconds, targetSeconds.isFinite, targetSeconds > 0,
+              let demandBitrate, demandBitrate > 0,
+              let measuredCapacity, measuredCapacity > 0 else {
+            samples.removeAll()
+            return false
+        }
+        if let previous = samples.last {
+            let delta = now - previous.time
+            if delta <= 0 || delta > 2.5
+                || currentSeconds <= previous.current + 0.25
+                || abs(targetSeconds - previous.target) > 0.001 {
+                samples.removeAll()
+            }
+        }
+        samples.append(Sample(time: now, current: currentSeconds, ahead: aheadSeconds,
+                              target: targetSeconds, demand: demandBitrate,
+                              capacity: measuredCapacity))
+        if samples.count > 3 { samples.removeFirst(samples.count - 3) }
+        guard samples.count == 3, let first = samples.first,
+              now - first.time >= 2, aheadSeconds < targetSeconds,
+              (first.ahead - aheadSeconds) / (now - first.time) >= 0.15,
+              zip(samples, samples.dropFirst()).allSatisfy({ pair in pair.1.ahead < pair.0.ahead - 0.05 }),
+              let lowestDemand = samples.map(\.demand).min(),
+              let highestCapacity = samples.map(\.capacity).max() else { return false }
+        return Double(lowestDemand) > Double(highestCapacity) * 1.5
     }
 }
 
@@ -504,8 +835,8 @@ enum PlaybackPlanningPolicy {
     }
 
     /// Retain the fast first frame; raise the reserve only after the playback
-    /// clock advances. A public upstream behind the local proxy may need more
-    /// reserve; LAN playback did not improve in the iPhone 13 comparison.
+    /// clock advances. Private addressing does not guarantee steady delivery:
+    /// high-bitrate originals can exhaust the startup reserve on Wi-Fi too.
     static func steadyStateBufferSeconds(
         routeKind: PlaybackRouteKind,
         upstreamAddressKind: PlaybackConnectionAddressKind,
@@ -513,9 +844,9 @@ enum PlaybackPlanningPolicy {
     ) -> TimeInterval {
         guard routeKind == .localRangeProxy else { return startupSeconds }
         switch upstreamAddressKind {
-        case .publicDomain, .publicIP, .unknown:
+        case .publicDomain, .publicIP, .unknown, .privateIP, .localDomain:
             return max(startupSeconds, 4)
-        case .loopback, .privateIP, .localDomain:
+        case .loopback:
             return startupSeconds
         }
     }

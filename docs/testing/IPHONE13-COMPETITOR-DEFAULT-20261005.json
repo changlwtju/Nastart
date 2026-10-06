@@ -1,0 +1,157 @@
+{
+  "date": "2026-10-05",
+  "device": "fresh USB iPhone13 / iOS16.3.1 /20D67, existing ordinary unlocked WDA session",
+  "media": "S03 / MI3 title and visible opening match; Nastart exact bytes54,005,939,750, DS One rounded50.3GiB agrees; cross-app source IDs/file hashes not aligned",
+  "formalControlledPairs": 0,
+  "defaultExperienceRows": [
+    {
+      "entry": "Nastart Jellyfin",
+      "sampleCount": 1,
+      "metric": "request bracket to first manually identifiable opening cloud image; natural black included; not first decoded frame",
+      "boundsMs": [
+        1929,
+        5300
+      ],
+      "lastDefiniteNegativeFrameIndex": 8,
+      "firstDefinitePositiveFrameIndex": 14,
+      "orientation": "landscape",
+      "build": "normal Debug -Onone",
+      "observedMediaAddressClassAndPort": "privateIP:8096",
+      "imageCount": 97,
+      "inputMethod": "pointer action; real target change verified visually",
+      "sourceIdentity": "title/format/opening evidence; cross-app source-ID/byte identity pending"
+    },
+    {
+      "entry": "Lenna Jellyfin",
+      "sampleCount": 1,
+      "metric": "request bracket to first manually identifiable opening cloud image; natural black included; not first decoded frame",
+      "boundsMs": [
+        2304,
+        4912
+      ],
+      "lastDefiniteNegativeFrameIndex": 11,
+      "firstDefinitePositiveFrameIndex": 16,
+      "orientation": "portrait",
+      "build": "existing competitor distribution; compiler configuration unverified",
+      "observedMediaAddressClassAndPort": "publicIP:8097",
+      "imageCount": 28,
+      "inputMethod": "pointer action; real target change verified visually",
+      "sourceIdentity": "title/format/opening evidence; cross-app source-ID/byte identity pending"
+    },
+    {
+      "entry": "DS One Jellyfin",
+      "sampleCount": 1,
+      "metric": "request bracket to first manually identifiable opening cloud image; natural black included; not first decoded frame",
+      "boundsMs": [
+        3798,
+        7377
+      ],
+      "lastDefiniteNegativeFrameIndex": 11,
+      "firstDefinitePositiveFrameIndex": 18,
+      "orientation": "landscape",
+      "build": "existing competitor distribution; compiler configuration unverified",
+      "observedMediaAddressClassAndPort": "publicIP:8097",
+      "imageCount": 32,
+      "inputMethod": "pointer action; real target change verified visually",
+      "sourceIdentity": "title/format/opening evidence; cross-app source-ID/byte identity pending"
+    },
+    {
+      "entry": "DS One DSM direct",
+      "sampleCount": 1,
+      "metric": "request bracket to first manually identifiable opening cloud image; natural black included; not first decoded frame",
+      "boundsMs": [
+        4106,
+        7322
+      ],
+      "lastDefiniteNegativeFrameIndex": 19,
+      "firstDefinitePositiveFrameIndex": 26,
+      "orientation": "landscape",
+      "build": "existing competitor distribution; compiler configuration unverified",
+      "observedMediaAddressClassAndPort": "publicIP:5001",
+      "imageCount": 50,
+      "inputMethod": "native observed element click",
+      "sourceIdentity": "title/format/opening evidence; cross-app source-ID/byte identity pending"
+    }
+  ],
+  "conditions": [
+    "one default sample per entry, no p50/P95 or winner",
+    "different media endpoint classes/ports; public endpoint does not prove WAN rather than NAT loopback",
+    "different orientation and app build configuration",
+    "cache/temperature/startup preparation/track defaults unpaired; sample order retained",
+    "Lenna portrait screenshot rotation initially wrong in montage, corrected by original image/ROI review; no app orientation change",
+    "native element click used for DSM file; request bracket input methods explicitly recorded",
+    "black initial film frames and poster/controls are not called buffered stalls or decoded first frame",
+    "same media identity across all apps not proven by title / rounded size / duration alone"
+  ],
+  "capabilitiesFresh": {
+    "Lenna": [
+      "English TRUEHD5.1 selected menu",
+      "simplified/traditional ASS and PGS, English PGS",
+      "subtitle search/import/settings",
+      "PiP/scaling/rotation lock/rate UI entry; actual PiP and audible audio U"
+    ],
+    "DSOneJellyfin": [
+      "subtitle border width/color, text color, vertical offset, delay, sidecar, size, embedded tracks",
+      "English PGS/two Chinese PGS/Chinese ASS visible inventory",
+      "ASS bilingual actually visible, PGS selection attempt at02:23 had later02:26 clock: paused-condition/cue interval not held, correctness/latency U",
+      "original ASS selected via freshly observed menus and actual bilingual white text; earlier restore action failures preserved INVALID_ACTION"
+    ],
+    "DSOneDSM": [
+      "existing logged-in NAS online; actual file50.3GiB, same opening video and metadata HEVC2160P/23FPS/57.42mbps/duration2:05:24",
+      "actual process owned public5001 media route; no payload saved",
+      "normal native exit to same file directory verified"
+    ]
+  },
+  "routeSummaries": {
+    "lenna": {
+      "processOwnedTCPInboundBytesByAddressClassAndPort": [
+        {
+          "addressKind": "public",
+          "port": 8097,
+          "tcpBytes": 57890676
+        }
+      ],
+      "seconds": 12.033254861831665,
+      "payloadSaved": false,
+      "capacityVerdict": "not a capacity estimate; short, includes prefetch; same route with Nastart not verified",
+      "orientation": "Lenna default PORTRAIT vs Nastart default landscape"
+    },
+    "dsone-jellyfin": {
+      "processOwnedTCPInboundBytesByAddressClassAndPort": [
+        {
+          "addressKind": "public",
+          "port": 8097,
+          "tcpBytes": 44538128
+        }
+      ],
+      "seconds": 12.00442910194397,
+      "payloadSaved": false,
+      "capacityVerdict": "not capacity or throughput ranking; prefetch/pause unaligned"
+    },
+    "dsone-dsm": {
+      "processOwnedTCPInboundBytesByAddressClassAndPort": [
+        {
+          "addressKind": "public",
+          "port": 5001,
+          "tcpBytes": 44960428
+        }
+      ],
+      "seconds": 12.386034965515137,
+      "payloadSaved": false,
+      "capacityVerdict": "not a capacity estimate, not ranking"
+    }
+  },
+  "toolFailures": [
+    "DS One coordinate return/restore attempt did not match actual controls; invalid action, not latency sample or renderer fail; replaced with fresh native element stages",
+    "DS One coordinate table swipes had no demonstrated displacement; native table swipe then displaced rows. No 12-gesture/30Hz fluency PASS",
+    "native exit lookup after controls disappeared returned404; preserved and retried after fresh source, no WDA restart"
+  ],
+  "exits": {
+    "Nastart": "detail + playback_ended + viewDisappear verified",
+    "Lenna": "actual MI3 detail verified before next app",
+    "DSOneJellyfin": "actual NAS home fresh online before DSM, earlier exit lookups invalid",
+    "DSOneDSM": "actual same file directory verified"
+  },
+  "remaining": "CB01-26 controlled pairs, actual audible track changes, subtitle natural cue/paused same-frame alignment, full display timing/scroll and other formats remain pending",
+  "privacy": "raw credentials/preferences/endpoints/file paths/screenshots/pcap packet metadata only local private E"
+}

@@ -1,0 +1,66 @@
+{
+  "time": "2026-10-06T12:52:45.863771+08:00",
+  "device": {
+    "name": "iPhone",
+    "model": "iPhone 18 Pro Max (iPhone19,7)",
+    "system": "iOS27.0 (24A8428)",
+    "connectionAtInstall": "fresh USB/CoreDevice connected/paired/unlocked",
+    "fullIdentity": "private evidence only"
+  },
+  "latestNastart": {
+    "head": "9a9941cd4ec82625f680b5193b3a0f66797eb851",
+    "sourceDiffSHA256": "dc7d08830a89f9f2d3701c7dc3677861c6f07b4e6530da7a63cc7e39c733be44",
+    "configuration": "normal Debug -Onone; no default test env; DEBUG-only capped-delivery windows and opt-in reserveOnly predictor isolation; reserve-bounded HLS preparation lead; live DSM context observation independent of library view task",
+    "binaryBuildTime": "2026-10-06T09:38:36.489160+08:00",
+    "binaries": {
+      "Nastart": "d84fda1970a6d1224e92ffe7caf81c2c1a79688a8e1d1770a9ee1321ab1d0381",
+      "Nastart.debug.dylib": "a389980c1c22628a9202c399d8d9d927497f4e9748509bed0986273cfa141d92",
+      "Frameworks/KSPlayer.framework/KSPlayer": "c2f1a42bcad0e5c30d0bcebd24576f92d8475c201589ed1f9655cc637d6e7910"
+    },
+    "signatureVerified": true,
+    "profileExpirationUTC": "2026-10-10T22:03:15"
+  },
+  "appInstallation": {
+    "success": true,
+    "dataPreservingCoverInstall": true,
+    "nonDiagnosticPreferencesUnchanged": 25,
+    "initialCoreDeviceLaunchFailure": "Security rejection: signature, entitlement or explicit profile trust; generic message, cause not determined",
+    "userVerifiedBothAppsNormalLaunch": true,
+    "automatedNastartForegroundUIVerified": false
+  },
+  "wda": {
+    "bundleID": "com.changliwen.nastart.WebDriverAgentRunner.xctrunner",
+    "runnerSHA256": "8f1ec108c03c4836136edbabdd27af5af1949112540abf4e4b9f97988b9de852",
+    "profileSHA256": "c35230e94dbd31041f8c4a56d53065085141d48d7a33ece704d5fee808f4a471",
+    "testSHA256": "9b039e21f941a1075c7e97a3b7269a9604e4717db4c6828fae0ae0ff0a7e4eb3",
+    "source": "verified persistent fixed bundle fixture; independent copy for iPhone18",
+    "profileExpirationUTC": "2026-10-10T22:05:26",
+    "targetProvisioned": true,
+    "signatureVerified": true
+  },
+  "wdaRuntime": {
+    "ready": true,
+    "os": "27.0",
+    "reportedSDK": "26.4",
+    "fixedBundleConfirmed": true,
+    "newSessionAndSourceScreenshotVerified": true,
+    "macTestAndForwardStoppedAfterUserDisconnect": true
+  },
+  "proof": {
+    "time": "2026-10-06T12:48:29.588425+08:00",
+    "latestNastartInstalled": true,
+    "appDataPreserving": true,
+    "nonDiagnosticPreferencesUnchanged": 25,
+    "normalCoreDeviceLaunchFirstAttempt": "Security rejection preserved; subsequent user verified normal launch",
+    "wdaInstalled": true,
+    "wdaReadyAndSessionVerified": true,
+    "userVerifiedBothAppsLaunch": true,
+    "automatedNastartForegroundUIVerified": false,
+    "automationScreenshotForeground": "com.openai.chat; not Nastart, not used for App regression",
+    "macSideIPhone18TestAndForwardStoppedForUserDisconnect": true,
+    "systemSettingsChanged": false
+  },
+  "iPhone18PlaybackRegression": "not performed",
+  "iPhone13": "existing host retained; session absence/ordinary lock recovered, no Runner install or restart",
+  "iPad": "not yet connected at last USB check; latest package gate pending"
+}

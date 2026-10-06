@@ -1,0 +1,838 @@
+{
+  "status": "checkpoint_completed_with_open_items",
+  "sourceHEAD": "9a9941cd4ec82625f680b5193b3a0f66797eb851",
+  "sourceDiffSHA256": "303411ba71c8ed306824efe6eac61161928957f7f5f6611912c5268665aea501",
+  "configuration": "ordinary Debug -Onone; empty test environment",
+  "binaries": {
+    "Nastart": "ac5dbba6355893bccb90e0a901c99e9e5a5a76eb837eeda5eb7054075bc9bca2",
+    "Nastart.debug.dylib": "bf0bfadee6177e6dbe7640a4d897235b707eea31fcda78751b9ac72816234491",
+    "Frameworks/KSPlayer.framework/KSPlayer": "c814c6b3f8d1beaddef93e8c77935aa9d653835244ae7a0b772d9900e709a704"
+  },
+  "devices": {
+    "iphone13": {
+      "model": "iPhone14,5",
+      "os": "16.3.1",
+      "installGate": {
+        "time": "2026-10-07T06:58:23.912519+08:00",
+        "freshTargetIdentity": true,
+        "mainSHA256": "ac5dbba6355893bccb90e0a901c99e9e5a5a76eb837eeda5eb7054075bc9bca2",
+        "dataPreservingCoverInstall": true,
+        "installation": "success",
+        "unchangedPreferenceCount": 25,
+        "normalForegroundVerified": true,
+        "requestedEnvironment": {},
+        "requestedArguments": [],
+        "sourceScreenshotVerified": true
+      },
+      "runs": [
+        {
+          "label": "resumeLANMI2",
+          "mainSHA256": "ac5dbba6355893bccb90e0a901c99e9e5a5a76eb837eeda5eb7054075bc9bca2",
+          "plannedSeconds": 120,
+          "naturalBoundarySeconds": 121.97900795936584,
+          "conditioned": false,
+          "upstreamCellular": [
+            "no"
+          ],
+          "upstreamExpensive": [
+            "no"
+          ],
+          "telemetry": [
+            {
+              "engine": "KSPlayer",
+              "samples": 113,
+              "seconds": 119.39858889579773,
+              "maxStalls": 0,
+              "maxDrops": 1,
+              "postFirstFrame": {
+                "coverageSeconds": 117.59717583656311,
+                "startStallCount": 0,
+                "lastStallCount": 0,
+                "observedStallDelta": 0
+              },
+              "firstAccessLogStalls": null,
+              "lastAccessLogStalls": null,
+              "lastCurrentSeconds": "118.729"
+            }
+          ],
+          "events": [
+            {
+              "elapsed": 1.0960392951965332,
+              "event": "playback_preparing"
+            },
+            {
+              "elapsed": 1.119617223739624,
+              "event": "playback_preparing",
+              "stage": "originalRouteWarmupReused"
+            },
+            {
+              "elapsed": 1.1469941139221191,
+              "event": "playback_prepared",
+              "maxBitrate": "unlimitedOriginal",
+              "prepareMs": "56"
+            },
+            {
+              "elapsed": 1.1472821235656738,
+              "event": "playback_prepared",
+              "stage": "sourceCapabilities"
+            },
+            {
+              "elapsed": 1.4252972602844238,
+              "event": "route_selected",
+              "connectionAddressKind": "privateIP",
+              "connectionPort": "8096",
+              "connectionScheme": "http"
+            },
+            {
+              "elapsed": 1.9905381202697754,
+              "event": "buffer_updated",
+              "consumeMs": "481"
+            },
+            {
+              "elapsed": 2.4319100379943848,
+              "event": "first_frame"
+            }
+          ],
+          "requestToCommitSeconds": null,
+          "ordinaryExit": {
+            "started": 1791327774.5612879,
+            "result": "PASS",
+            "actualExitVerified": true,
+            "responseToVerifiedSourceSeconds": 19.790679931640625,
+            "ended": 1791327799.675842
+          },
+          "formalCompetitorPairs": 0,
+          "qualification": "Ordinary Debug -Onone. Actual native pictures plus sparse counters; complete frames, exact media-content alignment and audio not proven. No cause or competitor ranking."
+        },
+        {
+          "label": "resumeWeakBigS03",
+          "mainSHA256": "ac5dbba6355893bccb90e0a901c99e9e5a5a76eb837eeda5eb7054075bc9bca2",
+          "plannedSeconds": 120,
+          "naturalBoundarySeconds": 120.943598985672,
+          "conditioned": true,
+          "upstreamCellular": [
+            "yes"
+          ],
+          "upstreamExpensive": [
+            "yes"
+          ],
+          "telemetry": [
+            {
+              "engine": "AVPlayer",
+              "samples": 78,
+              "seconds": 98.54812908172607,
+              "maxStalls": 1,
+              "maxDrops": null,
+              "postFirstFrame": {
+                "coverageSeconds": 90.50787806510925,
+                "startStallCount": 1,
+                "lastStallCount": 1,
+                "observedStallDelta": 0
+              },
+              "firstAccessLogStalls": "-",
+              "lastAccessLogStalls": "0",
+              "lastCurrentSeconds": "92.501"
+            }
+          ],
+          "events": [
+            {
+              "elapsed": 1.0711820125579834,
+              "event": "playback_preparing"
+            },
+            {
+              "elapsed": 1.0716290473937988,
+              "event": "playback_preparing",
+              "reason": "measuredBandwidthInsufficient"
+            },
+            {
+              "elapsed": 20.622091054916382,
+              "event": "playback_preparing",
+              "elapsedMs": "19149",
+              "stage": "cellularVODPlaylistPrewarm"
+            },
+            {
+              "elapsed": 20.62233805656433,
+              "event": "playback_prepared",
+              "maxBitrate": "250000",
+              "negotiatedAudioCodec": "aac",
+              "negotiatedVideoBitrate": "122000",
+              "negotiatedVideoCodec": "h264",
+              "prepareMs": "19556"
+            },
+            {
+              "elapsed": 20.622583150863647,
+              "event": "playback_prepared",
+              "stage": "sourceCapabilities"
+            },
+            {
+              "elapsed": 20.879565000534058,
+              "event": "route_selected",
+              "connectionAddressKind": "publicDomain",
+              "connectionPort": "8097",
+              "connectionScheme": "https"
+            },
+            {
+              "elapsed": 27.563814878463745,
+              "event": "first_frame"
+            }
+          ],
+          "requestToCommitSeconds": null,
+          "ordinaryExit": {
+            "started": 1791328003.246954,
+            "result": "PASS",
+            "actualExitVerified": true,
+            "responseToVerifiedSourceSeconds": 10.324082136154175,
+            "ended": 1791328018.687003
+          },
+          "formalCompetitorPairs": 0,
+          "qualification": "Ordinary Debug -Onone. Actual native pictures plus sparse counters; complete frames, exact media-content alignment and audio not proven. No cause or competitor ranking."
+        },
+        {
+          "label": "rangeSupplyWeakS01",
+          "mainSHA256": "ac5dbba6355893bccb90e0a901c99e9e5a5a76eb837eeda5eb7054075bc9bca2",
+          "plannedSeconds": 120,
+          "naturalBoundarySeconds": 121.06091713905334,
+          "conditioned": true,
+          "upstreamCellular": [
+            "yes"
+          ],
+          "upstreamExpensive": [
+            "yes"
+          ],
+          "telemetry": [
+            {
+              "engine": "AVPlayer",
+              "samples": 80,
+              "seconds": 102.47978115081787,
+              "maxStalls": 1,
+              "maxDrops": null,
+              "postFirstFrame": {
+                "coverageSeconds": 92.98266100883484,
+                "startStallCount": 1,
+                "lastStallCount": 1,
+                "observedStallDelta": 0
+              },
+              "firstAccessLogStalls": "-",
+              "lastAccessLogStalls": "0",
+              "lastCurrentSeconds": "95.000"
+            }
+          ],
+          "events": [
+            {
+              "elapsed": 1.0417828559875488,
+              "event": "playback_preparing"
+            },
+            {
+              "elapsed": 1.0423078536987305,
+              "event": "playback_preparing",
+              "reason": "measuredBandwidthInsufficient"
+            },
+            {
+              "elapsed": 18.065248012542725,
+              "event": "playback_preparing",
+              "elapsedMs": "16619",
+              "stage": "cellularVODPlaylistPrewarm"
+            },
+            {
+              "elapsed": 18.065505027770996,
+              "event": "playback_prepared",
+              "maxBitrate": "250000",
+              "negotiatedAudioCodec": "aac",
+              "negotiatedVideoBitrate": "122000",
+              "negotiatedVideoCodec": "h264",
+              "prepareMs": "17010"
+            },
+            {
+              "elapsed": 18.065762042999268,
+              "event": "playback_prepared",
+              "stage": "sourceCapabilities"
+            },
+            {
+              "elapsed": 18.17404294013977,
+              "event": "route_selected",
+              "connectionAddressKind": "publicDomain",
+              "connectionPort": "8097",
+              "connectionScheme": "https"
+            },
+            {
+              "elapsed": 26.286741971969604,
+              "event": "first_frame"
+            }
+          ],
+          "requestToCommitSeconds": null,
+          "ordinaryExit": {
+            "started": 1791328353.1009831,
+            "result": "PASS",
+            "actualExitVerified": true,
+            "responseToVerifiedSourceSeconds": 10.041853189468384,
+            "ended": 1791328365.457189,
+            "qualification": "Later new playback exit; original AV was already unexpectedly dismissed, not an original AV UI-close proof"
+          },
+          "formalCompetitorPairs": 0,
+          "qualification": "Ordinary Debug -Onone. Actual native pictures plus sparse counters; complete frames, exact media-content alignment and audio not proven. No cause or competitor ranking.",
+          "controlQualification": {
+            "pausedSeekNewPictureUpperBoundSeconds": 1.215,
+            "unexpectedPlayerDismissalAfterSeekSeconds": 33.334,
+            "unexpectedDismissalCause": "UNRESOLVED",
+            "originalAVResume": "INVALID_TOOL_DETAIL_PLAY_NAME_COLLISION",
+            "newTraceStarted": true,
+            "finalUIExitBelongsToLaterNewPlayback": true
+          }
+        },
+        {
+          "label": "weakPauseSeekGuardedS01",
+          "mainSHA256": "ac5dbba6355893bccb90e0a901c99e9e5a5a76eb837eeda5eb7054075bc9bca2",
+          "plannedSeconds": 120,
+          "naturalBoundarySeconds": 121.18819403648376,
+          "conditioned": true,
+          "upstreamCellular": [
+            "yes"
+          ],
+          "upstreamExpensive": [
+            "yes"
+          ],
+          "telemetry": [
+            {
+              "engine": "AVPlayer",
+              "samples": 82,
+              "seconds": 102.45058393478394,
+              "maxStalls": 1,
+              "maxDrops": null,
+              "postFirstFrame": {
+                "coverageSeconds": 98.49652767181396,
+                "startStallCount": 1,
+                "lastStallCount": 1,
+                "observedStallDelta": 0
+              },
+              "firstAccessLogStalls": "-",
+              "lastAccessLogStalls": "0",
+              "lastCurrentSeconds": "100.501"
+            }
+          ],
+          "events": [
+            {
+              "elapsed": 1.0479202270507812,
+              "event": "playback_preparing"
+            },
+            {
+              "elapsed": 1.048436164855957,
+              "event": "playback_preparing",
+              "reason": "measuredBandwidthInsufficient"
+            },
+            {
+              "elapsed": 17.98302721977234,
+              "event": "playback_preparing",
+              "elapsedMs": "16534",
+              "stage": "cellularVODPlaylistPrewarm"
+            },
+            {
+              "elapsed": 17.98328423500061,
+              "event": "playback_prepared",
+              "maxBitrate": "250000",
+              "negotiatedAudioCodec": "aac",
+              "negotiatedVideoBitrate": "122000",
+              "negotiatedVideoCodec": "h264",
+              "prepareMs": "16921"
+            },
+            {
+              "elapsed": 17.983535289764404,
+              "event": "playback_prepared",
+              "stage": "sourceCapabilities"
+            },
+            {
+              "elapsed": 18.217841148376465,
+              "event": "route_selected",
+              "connectionAddressKind": "publicDomain",
+              "connectionPort": "8097",
+              "connectionScheme": "https"
+            },
+            {
+              "elapsed": 20.81626033782959,
+              "event": "first_frame"
+            }
+          ],
+          "requestToCommitSeconds": null,
+          "ordinaryExit": {
+            "started": 1791328809.225232,
+            "result": "PASS",
+            "actualExitVerified": true,
+            "responseToVerifiedSourceSeconds": 13.146140098571777,
+            "ended": 1791328825.095121
+          },
+          "formalCompetitorPairs": 0,
+          "qualification": "Ordinary Debug -Onone. Actual native pictures plus sparse counters; complete frames, exact media-content alignment and audio not proven. No cause or competitor ranking.",
+          "controls": {
+            "pausedSeek": "PASS_IN_THIS_SAMPLE",
+            "pauseClock": "01:53",
+            "seekClock": "02:08",
+            "seekNewPictureUpperBoundSeconds": 1.2196259498596191,
+            "pausedTargetFrameRetainedThroughSeconds": 36.72223901748657,
+            "resumeNewPictureUpperBoundSeconds": 4.511947870254517,
+            "resumeClockObserved": "02:11",
+            "resumeGuardedPlayerStayedPresented": true,
+            "ordinaryExitVerified": true,
+            "audio": "INSUFFICIENT",
+            "exactReferenceFrameAlignment": "INSUFFICIENT",
+            "historicalUnexpectedExitStillOpen": true
+          }
+        }
+      ],
+      "deviceName": "iPhone",
+      "systemBuild": "20D67",
+      "freshUSBPairingVerified": true,
+      "fullUDIDInPrivateEvidence": true,
+      "final": {
+        "time": "2026-10-07T07:20:43.270637+08:00",
+        "device": "iphone13",
+        "latestMainSHA256": "ac5dbba6355893bccb90e0a901c99e9e5a5a76eb837eeda5eb7054075bc9bca2",
+        "sourceAndBinaryHashesMatch": true,
+        "requestedEnvironment": {},
+        "requestedArguments": [],
+        "foreground": "latest normal Nastart launchpad",
+        "pid": 41810,
+        "locked": false,
+        "wdaReady": true,
+        "waitForIdleTimeout": 10,
+        "videoNotPresented": true,
+        "preferenceCount": 25,
+        "changedPreferenceCount": 1,
+        "preferenceChangeKeysPrivate": true,
+        "no24HourAuthorizationGuarantee": true
+      },
+      "finalDeviceGate": {
+        "time": "2026-10-07T07:34:37.728906+08:00",
+        "device": "iphone13",
+        "USBConnected": true,
+        "pairingValid": true,
+        "wdaReady": true,
+        "sourceDiffAndPackageStillMatch": true,
+        "installedPackageIdentity": "own successful data-preserving cover-install receipt in this run; no subsequent installation",
+        "fullIdentityPrivate": true
+      }
+    },
+    "ipad": {
+      "model": "iPad12,1",
+      "os": "18.3.1",
+      "installGate": {
+        "time": "2026-10-07T06:58:38.631109+08:00",
+        "freshTargetIdentity": true,
+        "mainSHA256": "ac5dbba6355893bccb90e0a901c99e9e5a5a76eb837eeda5eb7054075bc9bca2",
+        "dataPreservingCoverInstall": true,
+        "installation": "success",
+        "unchangedPreferenceCount": 14,
+        "normalForegroundVerified": true,
+        "requestedEnvironment": {},
+        "requestedArguments": [],
+        "sourceScreenshotVerified": true
+      },
+      "scrollRuns": [
+        {
+          "verdict": "INSUFFICIENT",
+          "reason": "Recording ended before all gestures; increase --record-seconds",
+          "page": "iPad Jellyfin poster home",
+          "build": "ac5dbba63558/bf0bfadee617 ordinary Debug -Onone",
+          "completed_swipes": 7,
+          "label": "nastart-poster-scroll-r1",
+          "formalCompetitorPairs": 0,
+          "summarySHA256": "b313cc4f981b7d45466ff54feb949bbcffd16ff87fc61561490d0c1a267b2b75",
+          "effective_swipes": 6,
+          "hostXcode": "Downloads Xcode26.6"
+        },
+        {
+          "verdict": "INSUFFICIENT",
+          "reason": "Remote end closed connection without response",
+          "page": "iPad Jellyfin poster home",
+          "build": "ac5dbba63558/bf0bfadee617 ordinary Debug -Onone",
+          "completed_swipes": 4,
+          "label": "nastart-poster-scroll-r2",
+          "formalCompetitorPairs": 0,
+          "summarySHA256": "23eccd4a0f73b410c56a2467789f283f4e1034e7ee65be0ba2ed6de0e424d5e7",
+          "effective_swipes": 4,
+          "hostXcode": "Downloads Xcode26.6"
+        },
+        {
+          "page": "iPad Lenna poster home",
+          "build": "App Store 1.0.16(539); exploratory",
+          "seconds": 124.129,
+          "completed_swipes": 21,
+          "hitch_count": 1,
+          "effective_swipes": 12,
+          "hitch_ms": 16.762,
+          "hitch_ms_per_second": 0.135,
+          "max_hitch_ms": 16.762,
+          "app_hitch_commit_count": 0,
+          "max_app_hitch_commit_ms": 0,
+          "verdict": "INSUFFICIENT",
+          "movement_verified": true,
+          "scope": "controlled foreground UI + compositor; not all pages or perpetual smoothness",
+          "display_sampling_complete": false,
+          "gate": ">=12 displaced swipes, >=10s; each drag has >=30 display timing samples/s and no gap >50ms; hitch <=5ms/s, no hitch >=100ms; foreground verified for every swipe",
+          "display_sampling_details": [
+            {
+              "swipe": 1,
+              "seconds": 1.712328,
+              "samples": 65,
+              "samples_per_second": 37.96,
+              "max_gap_ms": 183.276,
+              "leading_gap_ms": 8.507,
+              "trailing_gap_ms": 4.368
+            },
+            {
+              "swipe": 2,
+              "seconds": 1.407691,
+              "samples": 0,
+              "samples_per_second": 0.0,
+              "max_gap_ms": null,
+              "leading_gap_ms": null,
+              "trailing_gap_ms": null
+            },
+            {
+              "swipe": 3,
+              "seconds": 1.503532,
+              "samples": 0,
+              "samples_per_second": 0.0,
+              "max_gap_ms": null,
+              "leading_gap_ms": null,
+              "trailing_gap_ms": null
+            },
+            {
+              "swipe": 4,
+              "seconds": 1.514968,
+              "samples": 0,
+              "samples_per_second": 0.0,
+              "max_gap_ms": null,
+              "leading_gap_ms": null,
+              "trailing_gap_ms": null
+            },
+            {
+              "swipe": 5,
+              "seconds": 1.475445,
+              "samples": 0,
+              "samples_per_second": 0.0,
+              "max_gap_ms": null,
+              "leading_gap_ms": null,
+              "trailing_gap_ms": null
+            },
+            {
+              "swipe": 6,
+              "seconds": 1.49286,
+              "samples": 0,
+              "samples_per_second": 0.0,
+              "max_gap_ms": null,
+              "leading_gap_ms": null,
+              "trailing_gap_ms": null
+            },
+            {
+              "swipe": 7,
+              "seconds": 1.493668,
+              "samples": 0,
+              "samples_per_second": 0.0,
+              "max_gap_ms": null,
+              "leading_gap_ms": null,
+              "trailing_gap_ms": null
+            },
+            {
+              "swipe": 8,
+              "seconds": 1.491482,
+              "samples": 0,
+              "samples_per_second": 0.0,
+              "max_gap_ms": null,
+              "leading_gap_ms": null,
+              "trailing_gap_ms": null
+            },
+            {
+              "swipe": 9,
+              "seconds": 1.495355,
+              "samples": 0,
+              "samples_per_second": 0.0,
+              "max_gap_ms": null,
+              "leading_gap_ms": null,
+              "trailing_gap_ms": null
+            },
+            {
+              "swipe": 10,
+              "seconds": 1.401751,
+              "samples": 0,
+              "samples_per_second": 0.0,
+              "max_gap_ms": null,
+              "leading_gap_ms": null,
+              "trailing_gap_ms": null
+            },
+            {
+              "swipe": 11,
+              "seconds": 1.418432,
+              "samples": 0,
+              "samples_per_second": 0.0,
+              "max_gap_ms": null,
+              "leading_gap_ms": null,
+              "trailing_gap_ms": null
+            },
+            {
+              "swipe": 12,
+              "seconds": 1.44308,
+              "samples": 0,
+              "samples_per_second": 0.0,
+              "max_gap_ms": null,
+              "leading_gap_ms": null,
+              "trailing_gap_ms": null
+            },
+            {
+              "swipe": 13,
+              "seconds": 1.383623,
+              "samples": 0,
+              "samples_per_second": 0.0,
+              "max_gap_ms": null,
+              "leading_gap_ms": null,
+              "trailing_gap_ms": null
+            },
+            {
+              "swipe": 14,
+              "seconds": 1.556721,
+              "samples": 0,
+              "samples_per_second": 0.0,
+              "max_gap_ms": null,
+              "leading_gap_ms": null,
+              "trailing_gap_ms": null
+            },
+            {
+              "swipe": 15,
+              "seconds": 1.524439,
+              "samples": 0,
+              "samples_per_second": 0.0,
+              "max_gap_ms": null,
+              "leading_gap_ms": null,
+              "trailing_gap_ms": null
+            },
+            {
+              "swipe": 16,
+              "seconds": 1.582975,
+              "samples": 0,
+              "samples_per_second": 0.0,
+              "max_gap_ms": null,
+              "leading_gap_ms": null,
+              "trailing_gap_ms": null
+            },
+            {
+              "swipe": 17,
+              "seconds": 1.539859,
+              "samples": 0,
+              "samples_per_second": 0.0,
+              "max_gap_ms": null,
+              "leading_gap_ms": null,
+              "trailing_gap_ms": null
+            },
+            {
+              "swipe": 18,
+              "seconds": 1.451553,
+              "samples": 0,
+              "samples_per_second": 0.0,
+              "max_gap_ms": null,
+              "leading_gap_ms": null,
+              "trailing_gap_ms": null
+            },
+            {
+              "swipe": 19,
+              "seconds": 1.507646,
+              "samples": 0,
+              "samples_per_second": 0.0,
+              "max_gap_ms": null,
+              "leading_gap_ms": null,
+              "trailing_gap_ms": null
+            },
+            {
+              "swipe": 20,
+              "seconds": 1.57613,
+              "samples": 0,
+              "samples_per_second": 0.0,
+              "max_gap_ms": null,
+              "leading_gap_ms": null,
+              "trailing_gap_ms": null
+            },
+            {
+              "swipe": 21,
+              "seconds": 1.39937,
+              "samples": 0,
+              "samples_per_second": 0.0,
+              "max_gap_ms": null,
+              "leading_gap_ms": null,
+              "trailing_gap_ms": null
+            }
+          ],
+          "display_unique_samples": 195,
+          "display_time_range_seconds": [
+            0.3508045,
+            7.54847875
+          ],
+          "trace_seconds": 120.428187,
+          "motion_within_trace": false,
+          "formalCompetitorPairs": 0,
+          "label": "lenna-poster-scroll-r1",
+          "summarySHA256": "6263cd82d2d98b3f36bc9babecbc6a09e3d7099b288e9d5984dca2fc8832c85e",
+          "hostXcode": "/Applications/Xcode.app"
+        },
+        {
+          "verdict": "INSUFFICIENT",
+          "reason": "Page anchor hidden, ambiguous or moved since snapshot",
+          "page": "iPad Jellyfin poster home",
+          "build": "ac5dbba63558/bf0bfadee617 ordinary Debug -Onone",
+          "completed_swipes": 0,
+          "label": "nastart-poster-scroll-r3",
+          "formalCompetitorPairs": 0,
+          "summarySHA256": "aac47a3f251bf95a1fb750682c9ad57dec5c8e67a1fb0240790ae42d5a8b0a4d",
+          "effective_swipes": 0,
+          "hostXcode": "/Applications/Xcode.app"
+        },
+        {
+          "verdict": "INSUFFICIENT",
+          "reason": "trace recording failed; cannot judge performance",
+          "page": "iPad Jellyfin poster home",
+          "build": "ac5dbba63558/bf0bfadee617 ordinary Debug -Onone",
+          "completed_swipes": 12,
+          "effective_swipes": 12,
+          "movement_verified": true,
+          "foreground_verified": true,
+          "seconds": 129.177,
+          "captureErrors": [
+            "No configuration information received; data may be misleading",
+            "Failed to start recording: Failed starting ktrace session"
+          ],
+          "display_sampling_complete": false,
+          "label": "nastart-poster-scroll-r4",
+          "formalCompetitorPairs": 0,
+          "summarySHA256": "0c9c4948e7d3a799df4a933fbc96eabfa5424661b74800ffd677f6ec22397a16",
+          "hostXcode": "/Applications/Xcode.app"
+        }
+      ],
+      "competitorVersions": [
+        {
+          "name": "Jellyfin",
+          "bundleIdentifier": "org.jellyfin.expo",
+          "version": "1.5.0",
+          "bundleVersion": "5.5.0.0"
+        },
+        {
+          "name": "Lenna",
+          "bundleIdentifier": "com.uvov.Lenna",
+          "version": "1.0.16",
+          "bundleVersion": "539"
+        },
+        {
+          "name": "Nastart",
+          "bundleIdentifier": "com.changliwen.nastart",
+          "version": "0.1.0",
+          "bundleVersion": "1"
+        }
+      ],
+      "deviceName": "iPad",
+      "systemBuild": "22D72",
+      "freshUSBPairingVerified": true,
+      "fullUDIDInPrivateEvidence": true,
+      "playbackRuns": [
+        {
+          "label": "unlockedPadMI2LAN120",
+          "mainSHA256": "ac5dbba6355893bccb90e0a901c99e9e5a5a76eb837eeda5eb7054075bc9bca2",
+          "plannedSeconds": 120,
+          "naturalBoundarySeconds": 120.44992303848267,
+          "conditioned": false,
+          "observationStatus": "completed",
+          "telemetry": [],
+          "events": [],
+          "ordinaryExit": {
+            "result": "PASS",
+            "actualExitVerified": true,
+            "requestToVerifiedUpperBoundSeconds": 2.7250897884368896,
+            "priorNameLabelToolFailureRetained": true
+          },
+          "formalCompetitorPairs": 0,
+          "qualification": "Ordinary Debug -Onone, actual sparse pictures and internal counters only; cache unknown, full display/audio and causal stall resolution not proven.",
+          "telemetryVerdict": "INSUFFICIENT: persisted diagnostics contain no records within this run",
+          "routeAndEngineTelemetry": "UNVERIFIED",
+          "diagnosticLastPersistedUnix": 1791328393.9911919,
+          "priorCloseToolFailure": "name/label mismatch: button name xmark, label 完成; corrected using fresh XML + live displayed check",
+          "finalNormalForegroundVerified": true,
+          "actualSparsePicturesReviewed": true,
+          "subtitlePictures": "Chinese/English bitmap captions visible at t60 and t120",
+          "globalSmoothness": "INSUFFICIENT"
+        }
+      ],
+      "final": {
+        "time": "2026-10-07T07:32:44.550638+08:00",
+        "device": "ipad",
+        "latestMainSHA256": "ac5dbba6355893bccb90e0a901c99e9e5a5a76eb837eeda5eb7054075bc9bca2",
+        "sourceAndBinaryHashesMatch": true,
+        "requestedEnvironment": {},
+        "requestedArguments": [],
+        "foreground": "latest normal Nastart launchpad",
+        "pid": 1805,
+        "locked": false,
+        "wdaReady": true,
+        "waitForIdleTimeout": 10,
+        "videoNotPresented": true,
+        "preferenceCount": 14,
+        "changedPreferenceCount": 0,
+        "preferenceChangeKeysPrivate": true,
+        "no24HourAuthorizationGuarantee": true
+      },
+      "finalDeviceGate": {
+        "time": "2026-10-07T07:34:37.868648+08:00",
+        "device": "ipad",
+        "USBConnected": true,
+        "pairingValid": true,
+        "wdaReady": true,
+        "sourceDiffAndPackageStillMatch": true,
+        "installedPackageIdentity": "own successful data-preserving cover-install receipt in this run; no subsequent installation",
+        "fullIdentityPrivate": true
+      }
+    },
+    "iphone18": {
+      "status": "OFFLINE",
+      "regression": "NOT_RUN"
+    }
+  },
+  "formalCompetitorPairs": 0,
+  "globalAcceptance": "IN_PROGRESS",
+  "audio": "INSUFFICIENT",
+  "preserveAllPXUXCBGaps": true,
+  "recordedAt": "2026-10-07T07:35:22.315800+08:00",
+  "binaryBuildTime": "2026-10-07T06:10:51.466996+08:00",
+  "signatureVerifiedBinaryCount": 29,
+  "appSourceChangedThisTurn": false,
+  "toolTestsPassed": 18,
+  "networkRestoration": {
+    "iphone13AllConditionGroupsInactive": true,
+    "iphone13OriginalWiFiRestored": true,
+    "ipadNoShapingInjectedThisTurn": true
+  },
+  "pending": [
+    "weak-cellular long VOD manifest download latency",
+    "intermittent playback stalls and one unexplained paused-player dismissal remain open",
+    "complete trustworthy display frame sampling on iPad and all devices",
+    "audio and exact subtitle/video alignment",
+    "at least five qualified Lenna and DS One matched pairs per required condition",
+    "representative formats and full PX/UX/CB matrix",
+    "iPhone18 offline: latest package install/regression not performed"
+  ],
+  "validation": {
+    "toolTests": 18,
+    "toolFailures": 0,
+    "coreTests": 135,
+    "coreTestsQualification": "Previous completed suite for same unchanged iOS source; not rerun this turn",
+    "ordinaryBuildQualification": "06:10:51 verified signed Debug -Onone app; all 169 source/project/resource files older than binary, app source unchanged this turn"
+  },
+  "userScopeReminder": {
+    "recordedAt": "2026-10-07T07:36:59.284845+08:00",
+    "actualWeakCellularLargeFiles": [
+      "MI2 Mission Impossible 2 supplementary sample",
+      "S03 Mission Impossible 3",
+      "S19 Lord of the Rings Fellowship of the Ring >100GB historical specification"
+    ],
+    "entries": [
+      "device files",
+      "Jellyfin"
+    ],
+    "optimizeBothEntries": true,
+    "regressEachEntryIndependently": true,
+    "newDeviceTestsDuringReminder": false,
+    "executionCard": "docs/testing/WEAK-CELLULAR-LARGE-FILE-DUAL-ENTRY.md"
+  }
+}

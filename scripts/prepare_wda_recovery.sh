@@ -10,7 +10,7 @@ WDA_ARTIFACT_ROOT="${WDA_ARTIFACT_ROOT:-/Users/lagransun/Library/Application Sup
 WDA_APP="${WDA_APP:-$WDA_ARTIFACT_ROOT/WebDriverAgentRunner-Runner.app}"
 XCTESTRUN="${XCTESTRUN:-$WDA_ARTIFACT_ROOT/WebDriverAgentRunner_iphoneos26.5-arm64.xctestrun}"
 DDI_ARCHIVE="${DDI_ARCHIVE:-$WDA_ARTIFACT_ROOT/DeveloperDiskImage-16.3.zip}"
-PROFILE="${PROFILE:-$WDA_ARTIFACT_ROOT/Provisioning Profiles/3f31c7b8-5004-4aa5-ae34-205e4754cbd0.mobileprovision}"
+PROFILE="${PROFILE:-$WDA_APP/embedded.mobileprovision}"
 DEVICE_UDID="${DEVICE_UDID:-00008110-001E543122E0401E}"
 LOCAL_PORT="${LOCAL_PORT:-8102}"
 DEVICE_PORT="${DEVICE_PORT:-8100}"
@@ -32,8 +32,13 @@ command -v curl >/dev/null 2>&1 || die 'curl is required'
 [[ -f "$DDI_ARCHIVE" ]] || die "iOS 16.3 DeviceSupport cache not found: $DDI_ARCHIVE"
 [[ -f "$PROFILE" ]] || die "provisioning profile not found: $PROFILE"
 
-profile_expires_at=$(security cms -D -i "$PROFILE" 2>/dev/null | plutil -extract ExpirationDate raw - 2>/dev/null) \
-  || die "cannot read provisioning profile expiration: $PROFILE"
+# security cms may require keychain access even for a read-only decode. The
+# fallback still verifies the CMS signature; code signing is checked below.
+profile_expires_at=$(security cms -D -i "$PROFILE" 2>/dev/null | plutil -extract ExpirationDate raw - 2>/dev/null) || {
+  profile_expires_at=$(openssl smime -verify -inform DER -in "$PROFILE" -noverify 2>/dev/null \
+    | plutil -extract ExpirationDate raw - 2>/dev/null) \
+    || die "cannot read provisioning profile expiration: $PROFILE"
+}
 profile_expiration_epoch=$(date -j -u -f '%Y-%m-%dT%H:%M:%SZ' "$profile_expires_at" '+%s' 2>/dev/null) \
   || die "invalid provisioning profile expiration: $profile_expires_at"
 (( profile_expiration_epoch > $(date -u '+%s') )) \
@@ -63,8 +68,8 @@ printf '  Port:         127.0.0.1:%s -> device:%s\n' "$LOCAL_PORT" "$DEVICE_PORT
 printf '\n'
 printf '%s\n' '# If the device is unlocked and WDA is not already ready:'
 printf "tidevice -u %s developer\n" "$DEVICE_UDID"
-printf "tidevice -u %s xcuitest -B %s -e USE_PORT:%s --process-log-path '%s/runtime/wda-process.log' --console-log-path '%s/runtime/wda-console.log'\n" \
-  "$DEVICE_UDID" "$EXPECTED_RUNNER_BUNDLE" "$DEVICE_PORT" "$WDA_ARTIFACT_ROOT" "$WDA_ARTIFACT_ROOT"
+printf "tidevice -u %s xcuitest -B %s -e USE_PORT:%s -e WDA_PRODUCT_BUNDLE_IDENTIFIER:%s --process-log-path '%s/runtime/wda-process.log' --console-log-path '%s/runtime/wda-console.log'\n" \
+  "$DEVICE_UDID" "$EXPECTED_RUNNER_BUNDLE" "$DEVICE_PORT" "$EXPECTED_RUNNER_BUNDLE" "$WDA_ARTIFACT_ROOT" "$WDA_ARTIFACT_ROOT"
 printf '%s\n' '# In a second terminal, keep usbmux forwarding in the foreground:'
 printf 'iproxy %s:%s -u %s\n' "$LOCAL_PORT" "$DEVICE_PORT" "$DEVICE_UDID"
 printf '%s\n' '# Gate all UI automation on this response:'

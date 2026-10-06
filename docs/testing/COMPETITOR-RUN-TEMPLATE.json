@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "status": "U",
+  "pairID": "fill-me",
+  "scenarioID": "CB-01",
+  "device": {"model": "unknown", "os": "unknown", "udidSuffix": "unknown"},
+  "app": {"name": "unknown", "version": "unknown", "build": "unknown", "binarySHA256": null, "configuration": "unknown"},
+  "conditions": {"sampleID": "S01", "fileRevision": "unknown", "fileBytes": null, "entry": "unknown", "protocol": "unknown", "network": "unknown", "route": "unknown", "playbackMode": "unknown", "videoQuality": "unknown", "audioTrack": "unknown", "subtitleTrack": "unknown", "startSeconds": null, "processState": "unknown", "clientMediaCache": "unknown", "serverCache": "unknown", "audioRoute": "unknown", "thermalState": "unknown", "lowPowerMode": "unknown", "nasLoad": "unknown"},
+  "measurement": {"startEvent": "touch release", "endEvent": "first decoded video frame visible", "startTimestamp": null, "endLowerTimestamp": null, "endUpperTimestamp": null, "clock": "unknown", "method": "unknown", "samplingFPS": null, "timeoutSeconds": 30, "durationLowerMs": null, "durationUpperMs": null},
+  "correctness": {"actualStartSeconds": null, "audioVerified": false, "subtitleVerified": false, "realFrameVerified": false},
+  "evidence": [],
+  "blockers": ["Template only; no measurement has been performed"]
+}

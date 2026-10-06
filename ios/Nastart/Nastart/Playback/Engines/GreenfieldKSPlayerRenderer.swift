@@ -78,8 +78,21 @@ final class GreenfieldPlaybackControls: PlaybackUIEngineSession {
     private var seekTarget = 0.0
     private var seekCompleted = false
     private var pendingSeekPosition: Double?
+    private var bufferWarmupStartSeconds: Double?
     var hasPendingSeek: Bool { pendingSeekPosition != nil }
+    var hasPendingSeekRecovery: Bool { seekAt != nil }
+    func shouldRefreshPausedSubtitle(decodedTrackID: Int32, selectedTrackID: Int32?, callbackPlanID: String) -> Bool {
+        !isPlaying && planID == callbackPlanID && selectedTrackID == decodedTrackID
+    }
     private(set) var seekGeneration = 0
+    /// Engine polling also runs while the clock is stopped. Publishing the
+    /// same metadata at 10 Hz needlessly invalidates the entire player view.
+    func updateTimelineMetadata(duration: Double?, seekable: Bool? = nil) {
+        if let duration, duration.isFinite, duration > 0, durationSeconds != duration {
+            durationSeconds = duration
+        }
+        if let seekable, isSeekable != seekable { isSeekable = seekable }
+    }
     /// A control adapter may be reused after the other engine has played.
     /// Recovery timers and pending seek completions belong to one plan only.
     func beginSession() {
@@ -88,6 +101,7 @@ final class GreenfieldPlaybackControls: PlaybackUIEngineSession {
         seekGeneration += 1
         seekAt = nil
         pendingSeekPosition = nil
+        bufferWarmupStartSeconds = nil
         seekTarget = 0
         seekCompleted = false
         resumeAt = nil
@@ -112,7 +126,18 @@ final class GreenfieldPlaybackControls: PlaybackUIEngineSession {
     func seekDidComplete(_ completed: Bool) {
         seekCompleted = completed
         pendingSeekPosition = nil
+        if !completed {
+            // A failed seek resumes at the engine's actual position, not the
+            // requested target or the original session's resume position.
+            bufferWarmupStartSeconds = (readPlaybackClock?()).flatMap {
+                $0.isFinite && $0 >= 0 ? $0 : nil
+            }
+        }
         event("seek_engine_completed", metrics: ["completed": String(completed), "targetSeconds": String(seekTarget)])
+    }
+    func hasAdvancedForSteadyBuffer(_ seconds: Double, initialPosition: Double) -> Bool {
+        !hasPendingSeek && seconds.isFinite && seconds >= 0
+            && seconds > (bufferWarmupStartSeconds ?? initialPosition) + 0.05
     }
     /// Keep the requested position visible until the engine finishes seeking.
     /// Demux/network work can continue emitting the previous clock meanwhile.
@@ -128,9 +153,13 @@ final class GreenfieldPlaybackControls: PlaybackUIEngineSession {
                 "pauseDurationMs": String(Int((resumeAt - (pausedAt ?? resumeAt)) * 1000)), "evidence": "advancingPlaybackClock"])
             self.resumeAt = nil; pausedAt = nil
         }
-        if let seekAt, seekCompleted, abs(seconds - seekTarget) < 2 {
+        // Engine completion can publish the requested clock while transport
+        // is still buffering. Require advancing playback before reporting
+        // recovery; this remains clock evidence, not a visible-frame metric.
+        if let seekAt, seekCompleted, isPlaying, !isTransportBuffering,
+           seconds > seekTarget + 0.05, abs(seconds - seekTarget) < 2 {
             event("seek_recovered", metrics: ["seekRecoveryMs": String(Int((now - seekAt) * 1000)),
-                "currentSeconds": String(seconds), "seekTargetSeconds": String(seekTarget), "evidence": "engineCompletionAndClock"])
+                "currentSeconds": String(seconds), "seekTargetSeconds": String(seekTarget), "evidence": "engineCompletionAndAdvancingClock"])
             self.seekAt = nil
         }
     }
@@ -159,7 +188,7 @@ final class GreenfieldPlaybackControls: PlaybackUIEngineSession {
               durationSeconds > 0, canSeekAbsolute?(seconds) != false else { return false }
         seekSeconds(seconds); return true
     }
-    func jump(by seconds: Int) { seekSeconds(currentSeconds + Double(seconds)) }
+    func jump(by seconds: Int) { seekSeconds(preciseCurrentSeconds + Double(seconds)) }
     func setPlaybackRate(_ rate: Float) { self.rate = rate; updateRate?(rate); record("playbackRate", value: String(rate)) }
     func selectAudio(_ track: PlaybackUITrack) {
         guard selectedAudioTrackID != track.id else { return }
@@ -210,6 +239,7 @@ final class GreenfieldPlaybackControls: PlaybackUIEngineSession {
         onTimelineDiscontinuity?()
         seekGeneration += 1
         seekAt = ProcessInfo.processInfo.systemUptime; seekTarget = target; seekCompleted = false
+        bufferWarmupStartSeconds = target
         event("seek_started", metrics: ["seekTargetSeconds": String(target), "seekDeltaSeconds": String(target - currentSeconds)])
         pendingSeekPosition = target
         currentSeconds = target
@@ -227,6 +257,7 @@ final class GreenfieldPlaybackControls: PlaybackUIEngineSession {
         seekGeneration += 1
         seekAt = nil; resumeAt = nil; pausedAt = nil
         pendingSeekPosition = nil
+        bufferWarmupStartSeconds = nil
         seekCompleted = false
         canSeekAbsolute = nil
         togglePlaybackAction = nil
@@ -338,8 +369,7 @@ struct GreenfieldKSPlayerRenderer: View {
                 if currentTime.isFinite, currentTime >= 0 {
                     controls.updateClock(currentTime)
                     if steadyStateBufferGeneration != controls.seekGeneration,
-                       !controls.hasPendingSeek,
-                       currentTime > plan.timeline.startTime + 0.05,
+                       controls.hasAdvancedForSteadyBuffer(currentTime, initialPosition: plan.timeline.startTime),
                        let layer = coordinator.playerLayer {
                         steadyStateBufferGeneration = controls.seekGeneration
                         let seconds = PlaybackPlanningPolicy.steadyStateBufferSeconds(
@@ -358,9 +388,9 @@ struct GreenfieldKSPlayerRenderer: View {
                     }
                 }
                 if let duration = plan.timeline.duration, duration.isFinite, duration > 0 {
-                    controls.durationSeconds = duration
+                    controls.updateTimelineMetadata(duration: duration)
                 } else if totalTime.isFinite, totalTime > 0 {
-                    controls.durationSeconds = totalTime
+                    controls.updateTimelineMetadata(duration: totalTime)
                 }
                 if let layer = coordinator.playerLayer { syncTracks(layer) }
                 onPlaybackTime(currentTime, totalTime)
@@ -435,7 +465,10 @@ struct GreenfieldKSPlayerRenderer: View {
                 "droppedVideoFrames": String(info.droppedVideoFrameCount),
                 "droppedVideoPackets": String(info.droppedVideoPacketCount),
                 "videoBitrate": String(info.videoBitrate),
-                "audioBitrate": String(info.audioBitrate)
+                "audioBitrate": String(info.audioBitrate),
+                "bufferedAheadSeconds": String(max(0, layer.player.playableTime - layer.player.currentPlaybackTime)),
+                "bufferTargetSeconds": String(layer.options.preferredForwardBufferDuration),
+                "bufferLimitSeconds": String(layer.options.maxBufferDuration)
             ]
         }
         controls.seekPlayback = { [weak coordinator, weak controls] seconds in
@@ -484,17 +517,36 @@ struct GreenfieldKSPlayerRenderer: View {
             controls?.record("subtitleTrackRequested", value: String(id))
             controls?.pipExternalSubtitle.setURL(nil)
             let tracks = player.tracks(mediaType: .subtitle)
+            let paused = controls?.isPlaying == false
+            let displayToken = "\(controls?.planID ?? "-"):\(controls?.seekGeneration ?? -1)"
+            let currentTime = player.currentPlaybackTime
+            if paused {
+                coordinator.subtitleModel.rememberPausedImageSubtitle(currentTime: currentTime, token: displayToken)
+            }
             // The demuxer may already have selected this track before opening.
             // Preserve it when connecting the subtitle model to the prepared
             // decoder; paths with image-subtitle seeking must not seek twice.
             let target = tracks.first(where: { $0.trackID == id })
-            let refreshBitmap = target?.isImageSubtitle == true && target?.isEnabled == false
+            let returningBitmap = target?.isImageSubtitle == true && target?.isEnabled == false
+            let reusedPausedDisplay: Bool
+            if paused, returningBitmap, let bitmap = target as? FFmpegAssetTrack {
+                reusedPausedDisplay = bitmap.restorePausedImageSubtitle(
+                    at: currentTime - bitmap.delay - coordinator.subtitleModel.subtitleDelay,
+                    token: displayToken)
+            } else { reusedPausedDisplay = false }
+            let refreshBitmap = returningBitmap && !reusedPausedDisplay
             if let target, !target.isEnabled { player.select(track: target) }
             coordinator.subtitleModel.selectedSubtitleInfo = player.subtitleDataSouce?.infos
                 .first(where: { $0.subtitleID == String(id) })
             for track in tracks where track.trackID != id { track.isEnabled = false }
             _ = coordinator.subtitleModel.subtitle(currentTime: player.currentPlaybackTime)
             controls?.selectedSubtitleTrackID = id
+            if reusedPausedDisplay {
+                controls?.event("subtitle_paused_display_reused", metrics: [
+                    "requestedTrackID": String(id), "currentSeconds": String(currentTime),
+                    "evidence": "samePausedPositionDecodedCueNotScreenPresentation"
+                ])
+            }
             // Re-read the current display set for a newly enabled bitmap track.
             // Use the normal seek lifecycle so paused playback stays paused and
             // a later selection supersedes the previous completion.
@@ -505,6 +557,12 @@ struct GreenfieldKSPlayerRenderer: View {
                 "evidence": "selectionAndCueInventoryNotScreenPresentation"])
         }
         controls.externalSubtitleAction = { [weak coordinator, weak controls] url in
+            if controls?.isPlaying == false, let coordinator,
+               let player = coordinator.playerLayer?.player {
+                coordinator.subtitleModel.rememberPausedImageSubtitle(
+                    currentTime: player.currentPlaybackTime,
+                    token: "\(controls?.planID ?? "-"):\(controls?.seekGeneration ?? -1)")
+            }
             controls?.pipExternalSubtitle.setURL(url)
             coordinator?.subtitleModel.selectedSubtitleInfo = nil
             _ = coordinator?.subtitleModel.subtitle(currentTime: coordinator?.playerLayer?.player.currentPlaybackTime ?? 0)
@@ -561,7 +619,7 @@ struct GreenfieldKSPlayerRenderer: View {
                     externalURL: controls.pipInitialExternalSubtitleURL)
             }
         }
-        controls.isSeekable = layer.player.seekable
+        controls.updateTimelineMetadata(duration: nil, seekable: layer.player.seekable)
         let audio = layer.player.tracks(mediaType: .audio)
         let subtitles = layer.player.tracks(mediaType: .subtitle)
         let audioOptions = audio.map { PlaybackUITrack(id: $0.trackID, name: $0.name) }
@@ -578,7 +636,8 @@ struct GreenfieldKSPlayerRenderer: View {
             controls.selectedAudioTrackID = audioID
             controls.event("audio_track_changed", metrics: ["engineTrackID": String(audioID), "evidence": "engineTrackInventory"])
         }
-        controls.selectedSubtitleTrackID = coordinator.subtitleModel.selectedSubtitleInfo.flatMap { Int32($0.subtitleID) } ?? -1
+        let subtitleID = coordinator.subtitleModel.selectedSubtitleInfo.flatMap { Int32($0.subtitleID) } ?? -1
+        if controls.selectedSubtitleTrackID != subtitleID { controls.selectedSubtitleTrackID = subtitleID }
     }
 
     private static func makeOptions(plan: PlaybackPlan, controls: GreenfieldPlaybackControls,
@@ -610,6 +669,17 @@ struct GreenfieldKSPlayerRenderer: View {
             return output
         }
         let expectedPlanID = String(plan.id.uuidString.prefix(8))
+        options.embeddedSubtitleFrameDecoded = { [weak controls, weak coordinator] trackID in
+            Task { @MainActor [weak controls, weak coordinator] in
+                guard let controls, let coordinator, let player = coordinator.playerLayer?.player,
+                      controls.shouldRefreshPausedSubtitle(decodedTrackID: trackID,
+                        selectedTrackID: coordinator.subtitleModel.selectedSubtitleInfo.flatMap { Int32($0.subtitleID) },
+                        callbackPlanID: expectedPlanID) else { return }
+                // Pausing stops KSPlayerLayer's progress timer. A bitmap arriving
+                // after seek completion still needs to update the stopped frame.
+                _ = coordinator.subtitleModel.subtitle(currentTime: player.currentPlaybackTime)
+            }
+        }
         options.videoDecoderSelected = { [weak controls] mode in
             Task { @MainActor [weak controls] in
                 guard let controls, controls.planID == expectedPlanID else { return }

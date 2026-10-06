@@ -150,9 +150,7 @@ class SyncPlayerItemTrack<Frame: MEFrame>: PlayerItemTrackProtocol, CustomString
                     return
                 }
                 if self.seekTime > 0 {
-                    let timestamp = frame.timestamp + frame.duration
-//                    KSLog("seektime \(self.seekTime), frame \(frame.seconds), mediaType \(packet.assetTrack.mediaType)")
-                    if timestamp <= 0 || frame.timebase.cmtime(for: timestamp).seconds < self.seekTime {
+                    if frame.endsBeforeSeekTarget(self.seekTime) {
                         return
                     } else {
                         self.seekTime = 0.0
@@ -161,6 +159,9 @@ class SyncPlayerItemTrack<Frame: MEFrame>: PlayerItemTrackProtocol, CustomString
                 if let frame = frame as? Frame {
                     self.outputRenderQueue.push(frame)
                     self.outputRenderQueue.fps = packet.assetTrack.nominalFrameRate
+                    if frame is SubtitleFrame {
+                        self.options.embeddedSubtitleFrameDecoded?(packet.assetTrack.trackID)
+                    }
                 }
             } catch {
                 KSLog("Decoder did Failed : \(error)")

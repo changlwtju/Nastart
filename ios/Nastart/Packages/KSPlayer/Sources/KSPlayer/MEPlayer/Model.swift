@@ -74,6 +74,19 @@ protocol MEFrame: ObjectQueueItem {
     var timebase: Timebase { get set }
 }
 
+extension MEFrame {
+    func endsBeforeSeekTarget(_ target: TimeInterval) -> Bool {
+        if let subtitle = self as? SubtitleFrame {
+            // SubtitleFrame has no packet duration. Its decoded display interval
+            // is on the playback timeline; a cue starting before the seek can
+            // still be active at the requested paused frame.
+            return subtitle.part.end < target
+        }
+        let endTimestamp = timestamp + duration
+        return endTimestamp <= 0 || timebase.cmtime(for: endTimestamp).seconds < target
+    }
+}
+
 // MARK: model
 
 // for MEPlayer

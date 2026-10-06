@@ -1,0 +1,552 @@
+{
+  "updated": "2026-10-06T08:07:04.637234+08:00",
+  "device": {
+    "name": "iPhone",
+    "model": "iPhone 13 / iPhone14,5",
+    "os": "16.3.1 (20D67)",
+    "connection": "USB paired; fresh identity and full UDID private"
+  },
+  "package": {
+    "head": "9a9941cd4ec82625f680b5193b3a0f66797eb851",
+    "sourceDiffSHA256": "ea5e1e77c1dad4caea407d7b2c08793c347d5353380ea8141e61ea61da070d1a",
+    "configuration": "normal Debug -Onone; no test environment variables; reserve-depletion candidate enabled",
+    "binaryBuildTime": "2026-10-06T07:34:35.561712+08:00",
+    "binaries": {
+      "Nastart": "c2d4de0441fae7132bbbb3d0b1cf2e4ef11830415ddfe6ef897321b9f7d4a28b",
+      "Nastart.debug.dylib": "edc9c0e95afb6193565f8184e108930bf077cd9e42c7a44f98d881814f9ee3fa",
+      "Frameworks/KSPlayer.framework/KSPlayer": "c2f1a42bcad0e5c30d0bcebd24576f92d8475c201589ed1f9655cc637d6e7910"
+    },
+    "signatureVerified": true,
+    "profileExpirationUTC": "2026-10-10T22:03:15"
+  },
+  "installGate": {
+    "time": "2026-10-06T07:38:18.365125+08:00",
+    "installation": "InstallComplete",
+    "dataPreserving": true,
+    "unchangedPreferenceCount": 25,
+    "resumeOnlyNaturalExitFlush": []
+  },
+  "codeChange": "reserve depletion candidate, 3 advancing samples over >=2s, low declining reserve and sustained runtime demand > measured capacity *1.5; existing grace/cooldown/manual-quality guard retained",
+  "validation": {
+    "distinctCoreTestsPassed": 110,
+    "newBoundaryTests": 5,
+    "coreTestFailures": 0,
+    "preflightPassed": 15,
+    "deviceBuild": "normal Debug -Onone, Xcode26.6",
+    "simulatorTests": "Xcode27.0, iOS26.5 simulator; not real device evidence"
+  },
+  "counterfactualReplay": {
+    "totalSamples": 1607,
+    "healthySamples": 1032,
+    "results": [
+      {
+        "knownStalls": 1,
+        "label": "diag1",
+        "packageMain": "baa94b1c2fe8dafc6482e37f53d2545961ec062238660a7e755822a78be095df",
+        "samples": 575,
+        "triggers": [
+          {
+            "ahead": 3.336666575977011,
+            "capacity": 50984891,
+            "current": 12.574,
+            "demand": 100611901,
+            "elapsed": 19.824739933013916
+          }
+        ]
+      },
+      {
+        "knownStalls": 0,
+        "label": "reserve1",
+        "packageMain": "baa94b1c2fe8dafc6482e37f53d2545961ec062238660a7e755822a78be095df",
+        "samples": 205,
+        "triggers": []
+      },
+      {
+        "knownStalls": 0,
+        "label": "reserve2",
+        "packageMain": "baa94b1c2fe8dafc6482e37f53d2545961ec062238660a7e755822a78be095df",
+        "samples": 265,
+        "triggers": []
+      },
+      {
+        "knownStalls": 0,
+        "label": "long1",
+        "packageMain": "historical normal d62b/53a2; not a current-package test",
+        "samples": 562,
+        "triggers": []
+      }
+    ],
+    "qualification": "historical packages; approximate 1Hz replay, completed32MiB inputs only; excludes partial/cancelled capacity inputs and exact UI sampling phase; not live warmup/causal improvement",
+    "firstHistoricalStallPrevented": false
+  },
+  "naturalRuns": [
+    {
+      "label": "peak1",
+      "title": "碟中谍2",
+      "requestedSeconds": 300,
+      "trace": "89D2DE98",
+      "buffers": [
+        {
+          "elapsed": 1.8247268199920654,
+          "consumeMs": "412",
+          "bufferedCount": "0"
+        }
+      ],
+      "nonNumericSamples": 2,
+      "sampleCount": 278,
+      "coverageSeconds": 294.1145918369293,
+      "first": {
+        "elapsed": 3.030255079269409,
+        "current": 1.054,
+        "ahead": 4.378083213169538,
+        "drops": 1,
+        "stalls": 0,
+        "active": "no",
+        "engine": "KSPlayer",
+        "method": "directPlay"
+      },
+      "last": {
+        "elapsed": 297.14484691619873,
+        "current": 295.241,
+        "ahead": 13.220249639508609,
+        "drops": 1,
+        "stalls": 0,
+        "active": "no",
+        "engine": "KSPlayer",
+        "method": "directPlay"
+      },
+      "maxStalls": 0,
+      "maxDrops": 1,
+      "activeSamples": 0,
+      "minAheadAfter10": 5.2539581893635035,
+      "automaticDownshiftRequests": 0,
+      "complete32MiBWindows": {
+        "pairMethod": "transferID + upstreamTaskIndex; unique metrics/completion pair only",
+        "actualTransferCount": 3,
+        "complete32MiBPairs": 70,
+        "unknownNumericPairs": 0,
+        "ambiguousPairs": 0,
+        "firstFour": [
+          {
+            "elapsed": 3.9510090351104736,
+            "responseMs": 2348,
+            "requestMs": 29,
+            "backpressureMs": 0,
+            "capacityBytesPerSecond": 14290644
+          },
+          {
+            "elapsed": 6.33324408531189,
+            "responseMs": 2350,
+            "requestMs": 24,
+            "backpressureMs": 0,
+            "capacityBytesPerSecond": 14278482
+          },
+          {
+            "elapsed": 9.177453756332397,
+            "responseMs": 2780,
+            "requestMs": 26,
+            "backpressureMs": 0,
+            "capacityBytesPerSecond": 12069940
+          },
+          {
+            "elapsed": 11.56499981880188,
+            "responseMs": 2391,
+            "requestMs": 26,
+            "backpressureMs": 0,
+            "capacityBytesPerSecond": 14033639
+          }
+        ],
+        "p50ResponseMs": 2616.5,
+        "maximumResponseMs": 10167,
+        "maxBackpressureMs": 7855,
+        "lessThan100msBackpressureCount": 55,
+        "maximumResponseMsWithLessThan100msBackpressure": 4593
+      },
+      "actualFrameReview": "native movie frame and complete Chinese/English later cue; not the historical failed HLS cue",
+      "displayFrameTiming": "INSUFFICIENT",
+      "testEnvironmentRequested": {},
+      "networkShaping": false
+    },
+    {
+      "label": "normal3",
+      "title": "S03 碟中谍3",
+      "requestedSeconds": 120,
+      "trace": "8BDBF2A8",
+      "buffers": [
+        {
+          "elapsed": 1.6415250301361084,
+          "consumeMs": "418",
+          "bufferedCount": "0"
+        }
+      ],
+      "nonNumericSamples": 2,
+      "sampleCount": 110,
+      "coverageSeconds": 117.1948299407959,
+      "first": {
+        "elapsed": 3.0039050579071045,
+        "current": 1.225,
+        "ahead": 11.636624683719823,
+        "drops": 0,
+        "stalls": 0,
+        "active": "no",
+        "engine": "KSPlayer",
+        "method": "directPlay"
+      },
+      "last": {
+        "elapsed": 120.198734998703,
+        "current": 118.409,
+        "ahead": 15.473791246093398,
+        "drops": 0,
+        "stalls": 0,
+        "active": "no",
+        "engine": "KSPlayer",
+        "method": "directPlay"
+      },
+      "maxStalls": 0,
+      "maxDrops": 0,
+      "activeSamples": 0,
+      "minAheadAfter10": 3.4812082369755757,
+      "automaticDownshiftRequests": 0,
+      "complete32MiBWindows": {
+        "pairMethod": "transferID + upstreamTaskIndex; unique metrics/completion pair only",
+        "actualTransferCount": 3,
+        "complete32MiBPairs": 23,
+        "unknownNumericPairs": 0,
+        "ambiguousPairs": 0,
+        "firstFour": [
+          {
+            "elapsed": 3.9049229621887207,
+            "responseMs": 2482,
+            "requestMs": 26,
+            "backpressureMs": 0,
+            "capacityBytesPerSecond": 13519110
+          },
+          {
+            "elapsed": 24.320245027542114,
+            "responseMs": 20401,
+            "requestMs": 25,
+            "backpressureMs": 18262,
+            "capacityBytesPerSecond": 1644744
+          },
+          {
+            "elapsed": 27.020633935928345,
+            "responseMs": 2672,
+            "requestMs": 25,
+            "backpressureMs": 0,
+            "capacityBytesPerSecond": 12557796
+          },
+          {
+            "elapsed": 43.08867406845093,
+            "responseMs": 16039,
+            "requestMs": 26,
+            "backpressureMs": 7335,
+            "capacityBytesPerSecond": 2092053
+          }
+        ],
+        "p50ResponseMs": 2482,
+        "maximumResponseMs": 20401,
+        "maxBackpressureMs": 18262,
+        "lessThan100msBackpressureCount": 17,
+        "maximumResponseMsWithLessThan100msBackpressure": 3286
+      },
+      "actualFrameReview": "native movie frame and complete Chinese/English later cue; not the historical failed HLS cue",
+      "displayFrameTiming": "INSUFFICIENT",
+      "testEnvironmentRequested": {},
+      "networkShaping": false
+    }
+  ],
+  "diagnosticRun": {
+    "label": "lab50",
+    "source": "process-local diagnostic shaping, not natural LAN performance",
+    "requestedEnvironment": {
+      "NASTART_TEST_MEDIA_CAP_BPS": "50000000",
+      "NASTART_TEST_MEDIA_DELAY_SECONDS": "5",
+      "NASTART_TEST_MEDIA_DURATION_SECONDS": "90"
+    },
+    "runtimeEnvironmentConfirmedByEvents": true,
+    "throttleEvents": [
+      {
+        "elapsed": 6.397341728210449,
+        "capBps": "50000000",
+        "stage": "debugThrottleStarted"
+      },
+      {
+        "elapsed": 31.950620889663696,
+        "effectiveBps": "10790212",
+        "elapsedMs": "4468",
+        "playbackTraceID": "9E0EB1F1",
+        "proxyKind": "hlsChild",
+        "stage": "debugThrottleMeasured"
+      },
+      {
+        "elapsed": 36.348469734191895,
+        "effectiveBps": "13620835",
+        "elapsedMs": "3633",
+        "playbackTraceID": "9E0EB1F1",
+        "proxyKind": "hlsChild",
+        "stage": "debugThrottleMeasured"
+      },
+      {
+        "elapsed": 38.64071583747864,
+        "effectiveBps": "22163803",
+        "elapsedMs": "2195",
+        "playbackTraceID": "9E0EB1F1",
+        "proxyKind": "hlsChild",
+        "stage": "debugThrottleMeasured"
+      },
+      {
+        "elapsed": 40.80195188522339,
+        "effectiveBps": "25317989",
+        "elapsedMs": "1907",
+        "playbackTraceID": "9E0EB1F1",
+        "proxyKind": "hlsChild",
+        "stage": "debugThrottleMeasured"
+      },
+      {
+        "elapsed": 45.0634069442749,
+        "effectiveBps": "22919220",
+        "elapsedMs": "2136",
+        "playbackTraceID": "9E0EB1F1",
+        "proxyKind": "hlsChild",
+        "stage": "debugThrottleMeasured"
+      },
+      {
+        "elapsed": 49.01013469696045,
+        "effectiveBps": "24319598",
+        "elapsedMs": "2116",
+        "playbackTraceID": "9E0EB1F1",
+        "proxyKind": "hlsChild",
+        "stage": "debugThrottleMeasured"
+      },
+      {
+        "elapsed": 53.16405892372131,
+        "effectiveBps": "21690925",
+        "elapsedMs": "2246",
+        "playbackTraceID": "9E0EB1F1",
+        "proxyKind": "hlsChild",
+        "stage": "debugThrottleMeasured"
+      },
+      {
+        "elapsed": 57.2975640296936,
+        "effectiveBps": "21211436",
+        "elapsedMs": "2375",
+        "playbackTraceID": "9E0EB1F1",
+        "proxyKind": "hlsChild",
+        "stage": "debugThrottleMeasured"
+      },
+      {
+        "elapsed": 61.46917486190796,
+        "effectiveBps": "21388669",
+        "elapsedMs": "2539",
+        "playbackTraceID": "9E0EB1F1",
+        "proxyKind": "hlsChild",
+        "stage": "debugThrottleMeasured"
+      },
+      {
+        "elapsed": 64.60792779922485,
+        "effectiveBps": "28484176",
+        "elapsedMs": "1695",
+        "playbackTraceID": "9E0EB1F1",
+        "proxyKind": "hlsChild",
+        "stage": "debugThrottleMeasured"
+      },
+      {
+        "elapsed": 68.72209692001343,
+        "effectiveBps": "24045836",
+        "elapsedMs": "1780",
+        "playbackTraceID": "9E0EB1F1",
+        "proxyKind": "hlsChild",
+        "stage": "debugThrottleMeasured"
+      },
+      {
+        "elapsed": 73.63469290733337,
+        "effectiveBps": "19068131",
+        "elapsedMs": "2691",
+        "playbackTraceID": "9E0EB1F1",
+        "proxyKind": "hlsChild",
+        "stage": "debugThrottleMeasured"
+      },
+      {
+        "elapsed": 76.89480495452881,
+        "effectiveBps": "26018592",
+        "elapsedMs": "1952",
+        "playbackTraceID": "9E0EB1F1",
+        "proxyKind": "hlsChild",
+        "stage": "debugThrottleMeasured"
+      },
+      {
+        "elapsed": 80.72922277450562,
+        "effectiveBps": "23018032",
+        "elapsedMs": "1819",
+        "playbackTraceID": "9E0EB1F1",
+        "proxyKind": "hlsChild",
+        "stage": "debugThrottleMeasured"
+      },
+      {
+        "elapsed": 84.83745884895325,
+        "effectiveBps": "25036766",
+        "elapsedMs": "1942",
+        "playbackTraceID": "9E0EB1F1",
+        "proxyKind": "hlsChild",
+        "stage": "debugThrottleMeasured"
+      },
+      {
+        "elapsed": 88.91318583488464,
+        "effectiveBps": "26247470",
+        "elapsedMs": "1993",
+        "playbackTraceID": "9E0EB1F1",
+        "proxyKind": "hlsChild",
+        "stage": "debugThrottleMeasured"
+      },
+      {
+        "elapsed": 93.10377383232117,
+        "effectiveBps": "23600607",
+        "elapsedMs": "2167",
+        "playbackTraceID": "9E0EB1F1",
+        "proxyKind": "hlsChild",
+        "stage": "debugThrottleMeasured"
+      },
+      {
+        "elapsed": 96.33798289299011,
+        "capBps": "50000000",
+        "stage": "debugThrottleRestored"
+      },
+      {
+        "elapsed": 96.41407871246338,
+        "effectiveBps": "33734890",
+        "elapsedMs": "1468",
+        "playbackTraceID": "9E0EB1F1",
+        "proxyKind": "hlsChild",
+        "stage": "debugThrottleMeasured"
+      }
+    ],
+    "downshift": {
+      "elapsed": 20.467370986938477,
+      "event": "automatic_downshift_requested",
+      "reason": "sustainedRebuffering",
+      "deliveryCapacity": "68039024",
+      "runtimeDemand": "98015057",
+      "requestedToCommitSeconds": 15.606711864471436,
+      "newPredictionBranchActuallyTriggered": false,
+      "firstStallPrevented": false
+    },
+    "original": {
+      "buffers": [
+        {
+          "elapsed": 1.6933727264404297,
+          "consumeMs": "385",
+          "bufferedCount": "0"
+        },
+        {
+          "elapsed": 25.573906898498535,
+          "consumeMs": "13651",
+          "bufferedCount": "1"
+        }
+      ],
+      "nonNumericSamples": 3,
+      "sampleCount": 31,
+      "coverageSeconds": 32.19751000404358,
+      "first": {
+        "elapsed": 2.9536898136138916,
+        "current": 1.118,
+        "ahead": 4.003708223372124,
+        "drops": 1,
+        "stalls": 0,
+        "active": "no",
+        "engine": "KSPlayer",
+        "method": "directPlay"
+      },
+      "last": {
+        "elapsed": 35.15119981765747,
+        "current": 14.964,
+        "ahead": 0.8341666439942532,
+        "drops": 5,
+        "stalls": 2,
+        "active": "yes",
+        "engine": "KSPlayer",
+        "method": "directPlay"
+      },
+      "maxStalls": 2,
+      "maxDrops": 5,
+      "activeSamples": 18,
+      "minAheadAfter10": 0.04170833219971293
+    },
+    "replacement": {
+      "telemetryCount": 113,
+      "coverageSeconds": 141.70598888397217,
+      "first": {
+        "elapsed": 36.198946952819824,
+        "currentSeconds": "14.933",
+        "engine": "AVPlayer",
+        "playMethod": "localRemux",
+        "stallActive": "yes",
+        "stallCount": "1"
+      },
+      "last": {
+        "elapsed": 177.904935836792,
+        "currentSeconds": "154.000",
+        "engine": "AVPlayer",
+        "playMethod": "localRemux",
+        "stallActive": "no",
+        "stallCount": "2"
+      },
+      "stallCountSemantics": "shared state across replacement; do not add to original counter",
+      "frameTiming": "INSUFFICIENT",
+      "bufferedAheadAndDroppedVideoFrames": "unavailable in AV telemetry; generic summary discarded 113 nonnumeric rows, not zero samples"
+    },
+    "actualFramesInspected": [
+      "t60 movie laboratory",
+      "t180 full Chinese/English cue, distinct from old failed cue"
+    ],
+    "oldHLSFailedCueRegression": "pending",
+    "cacheAndOrder": "unknown; no cache clearing; process local cap applied",
+    "handoffDeadlineFailure": "not observed in this single diagnostic run"
+  },
+  "normalRestore": {
+    "knownNewProcessLaunchWithEmptyEnvironment": true,
+    "normalRegressionThrottleEvents": 0,
+    "normalRegressionDownshiftRequests": 0,
+    "preferenceChange": "local resume only; other 24 non-diagnostic preferences unchanged at end"
+  },
+  "finalState": {
+    "time": "2026-10-06T08:02:52.638026+08:00",
+    "phoneLocked": false,
+    "foreground": "latest normal Nastart launchpad",
+    "pid": 23203,
+    "requestedEnvironment": {},
+    "requestedArguments": [],
+    "processEnvironmentEvidence": "known fresh launch with empty environment; activeAppInfo alone is insufficient",
+    "playersExited": true,
+    "wdaReady": true,
+    "existingHostPID": 70500,
+    "waitForIdleTimeout": 10,
+    "defaultActiveApplication": "com.changliwen.nastart",
+    "macBoundedCaffeinatePID": 52029,
+    "sourceAndFrozenBinaryHashesMatch": true,
+    "no24HourAuthorizationGuarantee": true
+  },
+  "competitors": {
+    "newSamplesThisRound": 0,
+    "formalValidPairs": 0,
+    "requiredPairsPerControlledComparison": 5,
+    "requiredAppsAndEntries": [
+      "Lenna",
+      "DS One Jellyfin",
+      "DS One DSM"
+    ],
+    "previousSingleControlAndFailuresRetained": true
+  },
+  "remaining": [
+    "new depletingOriginalReserve branch real device trigger and preparation lead time",
+    "same historical failed HLS subtitle cue",
+    "repeated natural intermittent stalls and root cause",
+    "S01 dual device; S08/S11/S18 and broader representative formats",
+    "Lenna/DS One matched routes/files/start/quality/timing, >=5 pairs each",
+    "actual audio track effect/latency",
+    "complete display/scroll evidence",
+    "all existing PX01-21 UX01-06 CB01-26 pending items",
+    "iPad/iPhone18 latest package gate and regressions"
+  ],
+  "rootCauseResolved": false,
+  "rawEvidence": "local private evidence directory 2026-10-06-depletion-policy-072510; package, raw prefs/endpoints and screenshots stay private"
+}

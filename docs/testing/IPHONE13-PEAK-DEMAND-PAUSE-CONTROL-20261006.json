@@ -1,0 +1,1084 @@
+{
+  "updated": "2026-10-06T07:14:32.715380+08:00",
+  "device": {
+    "name": "iPhone",
+    "model": "iPhone 13 / iPhone14,5",
+    "os": "16.3.1 (20D67)",
+    "connection": "USB paired; full UDID private"
+  },
+  "package": {
+    "head": "9a9941cd4ec82625f680b5193b3a0f66797eb851",
+    "sourceDiffSHA256": "92f7265bd3574b0079e45aaf58b80474403a56d394919d02da6da21fd060fad4",
+    "configuration": "normal Debug -Onone; no test environment variables",
+    "binaryBuildTime": "2026-10-06T04:36:03.053072+08:00",
+    "binaries": {
+      "Nastart": "baa94b1c2fe8dafc6482e37f53d2545961ec062238660a7e755822a78be095df",
+      "Nastart.debug.dylib": "bddf70e426e3e88a72e6496b361db32457671c7c794c380b1008ee324e63be44",
+      "Frameworks/KSPlayer.framework/KSPlayer": "c2f1a42bcad0e5c30d0bcebd24576f92d8475c201589ed1f9655cc637d6e7910"
+    },
+    "signatureVerified": true,
+    "profileExpirationUTC": "2026-10-10T22:03:15"
+  },
+  "installGate": {
+    "time": "2026-10-06T05:11:51.596381+08:00",
+    "installation": "InstallComplete",
+    "dataPreserving": true,
+    "unchangedPreferenceCount": 25,
+    "resumeOnlyNaturalExitFlush": []
+  },
+  "iosSourceChangedThisRound": false,
+  "runs": [
+    {
+      "label": "reserve1",
+      "trace": "0597368C",
+      "sampleCount": 205,
+      "coverageSeconds": 215.72335505485535,
+      "first": {
+        "elapsed": 2.8890180587768555,
+        "current": 1.161,
+        "ahead": 4.336374880969826,
+        "drops": 1,
+        "stalls": 0,
+        "active": "no",
+        "engine": "KSPlayer",
+        "method": "directPlay"
+      },
+      "last": {
+        "elapsed": 218.6123731136322,
+        "current": 216.862,
+        "ahead": 11.86587467691811,
+        "drops": 1,
+        "stalls": 0,
+        "active": "no",
+        "engine": "KSPlayer",
+        "method": "directPlay"
+      },
+      "maxStalls": 0,
+      "maxDrops": 1,
+      "activeSamples": 0,
+      "minAheadAfter10": 5.296666521563216,
+      "nonNumericSamples": 2,
+      "buffers": [
+        {
+          "elapsed": 1.6475670337677002,
+          "consumeMs": "461",
+          "bufferedCount": "0"
+        }
+      ],
+      "events": [
+        {
+          "elapsed": 1.8220889568328857,
+          "event": "steady_state_buffer",
+          "seconds": "4.0"
+        }
+      ],
+      "requestedSeconds": 180,
+      "coverageBoundary": "first valid telemetry to last before actual exit; includes extension after requested observer stop",
+      "instrumentation": "no DVT CPU/memory",
+      "actualMediaRoute": "private IPv4 HTTP 8096; metrics remoteAddress verified privately",
+      "cacheAndOrder": "unknown",
+      "windows": {
+        "complete32MiBPairs": 52,
+        "unknownNumericPairs": 0,
+        "ambiguousPairs": 0,
+        "firstFour": [
+          {
+            "elapsed": 4.094762086868286,
+            "responseMs": 2861,
+            "requestMs": 24,
+            "backpressureMs": 0,
+            "capacityBytesPerSecond": 11728218
+          },
+          {
+            "elapsed": 6.224132061004639,
+            "responseMs": 2096,
+            "requestMs": 25,
+            "backpressureMs": 0,
+            "capacityBytesPerSecond": 16008794
+          },
+          {
+            "elapsed": 8.782074213027954,
+            "responseMs": 2378,
+            "requestMs": 175,
+            "backpressureMs": 0,
+            "capacityBytesPerSecond": 14110358
+          },
+          {
+            "elapsed": 11.170717000961304,
+            "responseMs": 2233,
+            "requestMs": 153,
+            "backpressureMs": 0,
+            "capacityBytesPerSecond": 15026615
+          }
+        ],
+        "p50ResponseMs": 2572.5,
+        "maximumResponseMs": 10297,
+        "maxBackpressureMs": 7730,
+        "lessThan100msBackpressureCount": 41,
+        "maximumResponseMsWithLessThan100msBackpressure": 4187
+      },
+      "toolFailures": [
+        {
+          "error": "RuntimeError: Native screenshot failed; preserve tool failure",
+          "status": "TOOL",
+          "resumeAt": 1791234874.980482,
+          "missedCaptureTargets": [
+            10
+          ]
+        }
+      ],
+      "frameTiming": "INSUFFICIENT; sparse native screenshots",
+      "audio": "U"
+    },
+    {
+      "label": "reserve2",
+      "trace": "22A7CE85",
+      "sampleCount": 265,
+      "coverageSeconds": 282.0914959907532,
+      "first": {
+        "elapsed": 2.910268783569336,
+        "current": 1.225,
+        "ahead": 3.8578748945732744,
+        "drops": 0,
+        "stalls": 0,
+        "active": "no",
+        "engine": "KSPlayer",
+        "method": "directPlay"
+      },
+      "last": {
+        "elapsed": 285.0017647743225,
+        "current": 283.315,
+        "ahead": 9.384374744935315,
+        "drops": 0,
+        "stalls": 0,
+        "active": "no",
+        "engine": "KSPlayer",
+        "method": "directPlay"
+      },
+      "maxStalls": 0,
+      "maxDrops": 0,
+      "activeSamples": 0,
+      "minAheadAfter10": 4.441791545369252,
+      "nonNumericSamples": 2,
+      "buffers": [
+        {
+          "elapsed": 1.5523920059204102,
+          "consumeMs": "449",
+          "bufferedCount": "0"
+        }
+      ],
+      "events": [
+        {
+          "elapsed": 1.8078279495239258,
+          "event": "steady_state_buffer",
+          "seconds": "4.0"
+        }
+      ],
+      "requestedSeconds": 180,
+      "coverageBoundary": "first valid telemetry to last before actual exit; includes extension after requested observer stop",
+      "instrumentation": "DVT CPU/memory 70s",
+      "actualMediaRoute": "private IPv4 HTTP 8096; metrics remoteAddress verified privately",
+      "cacheAndOrder": "unknown",
+      "windows": {
+        "complete32MiBPairs": 68,
+        "unknownNumericPairs": 0,
+        "ambiguousPairs": 0,
+        "firstFour": [
+          {
+            "elapsed": 4.446539878845215,
+            "responseMs": 3135,
+            "requestMs": 27,
+            "backpressureMs": 0,
+            "capacityBytesPerSecond": 10703168
+          },
+          {
+            "elapsed": 6.888804912567139,
+            "responseMs": 2431,
+            "requestMs": 25,
+            "backpressureMs": 0,
+            "capacityBytesPerSecond": 13802728
+          },
+          {
+            "elapsed": 9.600046873092651,
+            "responseMs": 2665,
+            "requestMs": 39,
+            "backpressureMs": 0,
+            "capacityBytesPerSecond": 12590781
+          },
+          {
+            "elapsed": 11.93845272064209,
+            "responseMs": 2278,
+            "requestMs": 28,
+            "backpressureMs": 0,
+            "capacityBytesPerSecond": 14729777
+          }
+        ],
+        "p50ResponseMs": 2569.5,
+        "maximumResponseMs": 11040,
+        "maxBackpressureMs": 7697,
+        "lessThan100msBackpressureCount": 55,
+        "maximumResponseMsWithLessThan100msBackpressure": 5232
+      },
+      "toolFailures": [],
+      "frameTiming": "INSUFFICIENT; sparse native screenshots",
+      "audio": "U"
+    }
+  ],
+  "cpuMemory": {
+    "metadata": {
+      "status": "completed",
+      "start": 1791235044.151489,
+      "requestedSeconds": 70,
+      "scope": "app-attributed DVT CPU/memory, no graphics or new XCTest; instrumentation may affect playback",
+      "samplingStart": 1791235044.998471,
+      "end": 1791235115.1494348
+    },
+    "units": "DVT cpuUsage/sysCpuUsage raw; no normalization or universal saturation threshold. physical footprint/RSS MiB",
+    "intervals": {
+      "preplay": {
+        "cpuSamples": 16,
+        "cpuUsageRawP50": 88.23278237588974,
+        "cpuUsageRawMax": 91.22236127371208,
+        "systemUsageRawMax": 185.25641025641025,
+        "physicalFootprintMiBP50": 129.331298828125,
+        "physicalFootprintMiBMax": 129.612548828125,
+        "cpuCount": [
+          6
+        ],
+        "hostCoverageSeconds": 14.998160123825073,
+        "maxHostGapSeconds": 1.0175399780273438
+      },
+      "startup0to20": {
+        "cpuSamples": 8,
+        "cpuUsageRawP50": 61.955058036843326,
+        "cpuUsageRawMax": 69.48250802700338,
+        "systemUsageRawMax": 240.89402221830363,
+        "physicalFootprintMiBP50": 870.6049194335938,
+        "physicalFootprintMiBMax": 944.3627319335938,
+        "cpuCount": [
+          6
+        ],
+        "hostCoverageSeconds": 19.00089406967163,
+        "maxHostGapSeconds": 9.00428581237793
+      },
+      "playing20to50": {
+        "cpuSamples": 19,
+        "cpuUsageRawP50": 59.164233340421326,
+        "cpuUsageRawMax": 72.47692353143827,
+        "systemUsageRawMax": 183.65804300912748,
+        "physicalFootprintMiBP50": 926.45654296875,
+        "physicalFootprintMiBMax": 993.4096069335938,
+        "cpuCount": [
+          6
+        ],
+        "hostCoverageSeconds": 29.00046420097351,
+        "maxHostGapSeconds": 4.011999845504761
+      }
+    }
+  },
+  "peakDemandHypothesis": {
+    "status": "HYPOTHESIS, no strategy/source change this round",
+    "priorFailureTrace": "D7E1FD41",
+    "priorBufferingMs": 5200,
+    "sourceBitrate": 64048290,
+    "earlyFailedVideoMbpsRange": [
+      86.2,
+      93.0
+    ],
+    "earlyFailedVideoPlusAudioMbpsRange": [
+      89.13,
+      95.89
+    ],
+    "firstTwoFailedCompleteWindowMbps": [
+      58.015008,
+      50.984888
+    ],
+    "backpressureMs": [
+      0,
+      0
+    ],
+    "policySource": "stream ceiling or estimated whole-file bitrate; threshold capacity * 1.5",
+    "predictiveOtherGates": "10s seek/start grace, advancing clock and not buffering; repeated-stall policy distinct",
+    "explanation": "Failed ahead depletes to zero at elapsed11.53, then rebuilds while clock9.631 freezes. Static bitrate does not exceed 1.5x measured early capacity. Runtime demand is larger, but replacing it alone does not prove first-stall avoidance. Healthy runs carry same early peak with more capacity and growing reserves.",
+    "notRootCauseClaims": [
+      "NAS/CLI causation unknown",
+      "FFmpeg bytesRead includes probe/read effects, not unique consumed payload",
+      "displayFPS cached during no frame output; value24.7 is not continuous display evidence"
+    ],
+    "replay": [
+      {
+        "label": "diag1",
+        "trace": "D7E1FD41",
+        "sourceBitrate": [
+          "64048290"
+        ],
+        "first20Seconds": [
+          {
+            "elapsed": 2.964806079864502,
+            "currentSeconds": 1.076,
+            "bufferedAheadSeconds": 3.8788748945732743,
+            "videoBitrate": 147196.0,
+            "audioBitrate": 298151.0,
+            "bytesRead": 12400855.0,
+            "displayFPS": 9.9,
+            "stallActive": "no",
+            "stallCount": 0
+          },
+          {
+            "elapsed": 4.027839183807373,
+            "currentSeconds": 2.142,
+            "bufferedAheadSeconds": 3.253249911577585,
+            "videoBitrate": 149514.0,
+            "audioBitrate": 323613.0,
+            "bytesRead": 18030263.0,
+            "displayFPS": 23.9,
+            "stallActive": "no",
+            "stallCount": 0
+          },
+          {
+            "elapsed": 5.128920078277588,
+            "currentSeconds": 3.208,
+            "bufferedAheadSeconds": 2.8778749217801707,
+            "videoBitrate": 170789.0,
+            "audioBitrate": 2689801.0,
+            "bytesRead": 26059703.0,
+            "displayFPS": 23.6,
+            "stallActive": "no",
+            "stallCount": 0
+          },
+          {
+            "elapsed": 6.1268310546875,
+            "currentSeconds": 4.211,
+            "bufferedAheadSeconds": 2.585916596382183,
+            "videoBitrate": 40008511.0,
+            "audioBitrate": 2776240.0,
+            "bytesRead": 33970199.0,
+            "displayFPS": 24.0,
+            "stallActive": "no",
+            "stallCount": 0
+          },
+          {
+            "elapsed": 7.231251001358032,
+            "currentSeconds": 5.32,
+            "bufferedAheadSeconds": 2.252249938784482,
+            "videoBitrate": 91590057.0,
+            "audioBitrate": 2757038.0,
+            "bytesRead": 42601255.0,
+            "displayFPS": 24.0,
+            "stallActive": "no",
+            "stallCount": 0
+          },
+          {
+            "elapsed": 8.327615976333618,
+            "currentSeconds": 6.409,
+            "bufferedAheadSeconds": 1.9185832811867813,
+            "videoBitrate": 86244459.0,
+            "audioBitrate": 2888097.0,
+            "bytesRead": 52253743.0,
+            "displayFPS": 24.2,
+            "stallActive": "no",
+            "stallCount": 0
+          },
+          {
+            "elapsed": 9.427106857299805,
+            "currentSeconds": 7.518,
+            "bufferedAheadSeconds": 1.4180832947902298,
+            "videoBitrate": 92977134.0,
+            "audioBitrate": 2912810.0,
+            "bytesRead": 58773919.0,
+            "displayFPS": 24.0,
+            "stallActive": "no",
+            "stallCount": 0
+          },
+          {
+            "elapsed": 10.524508953094482,
+            "currentSeconds": 8.627,
+            "bufferedAheadSeconds": 0.5839166507959774,
+            "videoBitrate": 90656191.0,
+            "audioBitrate": 2882247.0,
+            "bytesRead": 62672471.0,
+            "displayFPS": 23.5,
+            "stallActive": "no",
+            "stallCount": 0
+          },
+          {
+            "elapsed": 11.528884887695312,
+            "currentSeconds": 9.609,
+            "bufferedAheadSeconds": 0.0,
+            "videoBitrate": 90363764.0,
+            "audioBitrate": 2903129.0,
+            "bytesRead": 67948279.0,
+            "displayFPS": 24.7,
+            "stallActive": "yes",
+            "stallCount": 1
+          },
+          {
+            "elapsed": 12.62320613861084,
+            "currentSeconds": 9.631,
+            "bufferedAheadSeconds": 0.5422083185962645,
+            "videoBitrate": 90363764.0,
+            "audioBitrate": 2903129.0,
+            "bytesRead": 74550679.0,
+            "displayFPS": 24.7,
+            "stallActive": "yes",
+            "stallCount": 1
+          },
+          {
+            "elapsed": 13.623667001724243,
+            "currentSeconds": 9.631,
+            "bufferedAheadSeconds": 1.4597916269899418,
+            "videoBitrate": 90363764.0,
+            "audioBitrate": 2903129.0,
+            "bytesRead": 86315975.0,
+            "displayFPS": 24.7,
+            "stallActive": "yes",
+            "stallCount": 1
+          },
+          {
+            "elapsed": 14.623417854309082,
+            "currentSeconds": 9.631,
+            "bufferedAheadSeconds": 2.335666603183906,
+            "videoBitrate": 90363764.0,
+            "audioBitrate": 2903129.0,
+            "bytesRead": 96967559.0,
+            "displayFPS": 24.7,
+            "stallActive": "yes",
+            "stallCount": 1
+          },
+          {
+            "elapsed": 15.626888990402222,
+            "currentSeconds": 9.631,
+            "bufferedAheadSeconds": 3.0447082505790206,
+            "videoBitrate": 90363764.0,
+            "audioBitrate": 2903129.0,
+            "bytesRead": 106487119.0,
+            "displayFPS": 24.7,
+            "stallActive": "yes",
+            "stallCount": 1
+          },
+          {
+            "elapsed": 17.724656105041504,
+            "currentSeconds": 10.484,
+            "bufferedAheadSeconds": 3.837166562373561,
+            "videoBitrate": 95111928.0,
+            "audioBitrate": 2903129.0,
+            "bytesRead": 125885655.0,
+            "displayFPS": 0.9,
+            "stallActive": "no",
+            "stallCount": 1
+          },
+          {
+            "elapsed": 18.72364616394043,
+            "currentSeconds": 11.486,
+            "bufferedAheadSeconds": 3.545208236975572,
+            "videoBitrate": 95852859.0,
+            "audioBitrate": 3124003.0,
+            "bytesRead": 134557823.0,
+            "displayFPS": 16.0,
+            "stallActive": "no",
+            "stallCount": 1
+          },
+          {
+            "elapsed": 19.824739933013916,
+            "currentSeconds": 12.574,
+            "bufferedAheadSeconds": 3.336666575977011,
+            "videoBitrate": 97422513.0,
+            "audioBitrate": 3189388.0,
+            "bytesRead": 145668511.0,
+            "displayFPS": 24.0,
+            "stallActive": "no",
+            "stallCount": 1
+          }
+        ],
+        "firstFourCompleteWindows": [
+          {
+            "elapsed": 6.052778959274292,
+            "responseMs": 4627,
+            "requestMs": 26,
+            "backpressureMs": 0,
+            "capacityBytesPerSecond": 7251876
+          },
+          {
+            "elapsed": 11.388139963150024,
+            "responseMs": 5265,
+            "requestMs": 42,
+            "backpressureMs": 0,
+            "capacityBytesPerSecond": 6373111
+          },
+          {
+            "elapsed": 15.06280517578125,
+            "responseMs": 3593,
+            "requestMs": 62,
+            "backpressureMs": 0,
+            "capacityBytesPerSecond": 9338834
+          },
+          {
+            "elapsed": 18.700114965438843,
+            "responseMs": 3650,
+            "requestMs": 25,
+            "backpressureMs": 0,
+            "capacityBytesPerSecond": 9192995
+          }
+        ]
+      },
+      {
+        "label": "reserve1",
+        "trace": "0597368C",
+        "sourceBitrate": [
+          "64048290"
+        ],
+        "first20Seconds": [
+          {
+            "elapsed": 2.8890180587768555,
+            "currentSeconds": 1.161,
+            "bufferedAheadSeconds": 4.336374880969826,
+            "videoBitrate": 147348.0,
+            "audioBitrate": 298151.0,
+            "bytesRead": 19896751.0,
+            "displayFPS": 9.6,
+            "stallActive": "no",
+            "stallCount": 0
+          },
+          {
+            "elapsed": 3.9882450103759766,
+            "currentSeconds": 2.271,
+            "bufferedAheadSeconds": 4.377083213169539,
+            "videoBitrate": 149514.0,
+            "audioBitrate": 323613.0,
+            "bytesRead": 32947927.0,
+            "displayFPS": 23.9,
+            "stallActive": "no",
+            "stallCount": 0
+          },
+          {
+            "elapsed": 4.987022161483765,
+            "currentSeconds": 3.273,
+            "bufferedAheadSeconds": 4.56591654196839,
+            "videoBitrate": 170789.0,
+            "audioBitrate": 2689801.0,
+            "bytesRead": 46511807.0,
+            "displayFPS": 24.2,
+            "stallActive": "no",
+            "stallCount": 0
+          },
+          {
+            "elapsed": 6.087631940841675,
+            "currentSeconds": 4.36,
+            "bufferedAheadSeconds": 5.046416528364939,
+            "videoBitrate": 40008511.0,
+            "audioBitrate": 2776240.0,
+            "bytesRead": 65808935.0,
+            "displayFPS": 24.0,
+            "stallActive": "no",
+            "stallCount": 0
+          },
+          {
+            "elapsed": 7.093456983566284,
+            "currentSeconds": 5.363,
+            "bufferedAheadSeconds": 5.128833192764366,
+            "videoBitrate": 91590057.0,
+            "audioBitrate": 2757038.0,
+            "bytesRead": 78749463.0,
+            "displayFPS": 24.0,
+            "stallActive": "no",
+            "stallCount": 0
+          },
+          {
+            "elapsed": 8.185326099395752,
+            "currentSeconds": 6.473,
+            "bufferedAheadSeconds": 5.128833192764366,
+            "videoBitrate": 86244459.0,
+            "audioBitrate": 2888097.0,
+            "bytesRead": 92879719.0,
+            "displayFPS": 24.0,
+            "stallActive": "no",
+            "stallCount": 0
+          },
+          {
+            "elapsed": 9.186171054840088,
+            "currentSeconds": 7.475,
+            "bufferedAheadSeconds": 5.129833192764366,
+            "videoBitrate": 92977134.0,
+            "audioBitrate": 2912810.0,
+            "bytesRead": 105475367.0,
+            "displayFPS": 24.0,
+            "stallActive": "no",
+            "stallCount": 0
+          },
+          {
+            "elapsed": 10.18555998802185,
+            "currentSeconds": 8.478,
+            "bufferedAheadSeconds": 5.296666521563216,
+            "videoBitrate": 90656191.0,
+            "audioBitrate": 2882247.0,
+            "bytesRead": 120270807.0,
+            "displayFPS": 24.0,
+            "stallActive": "no",
+            "stallCount": 0
+          },
+          {
+            "elapsed": 11.18924593925476,
+            "currentSeconds": 9.481,
+            "bufferedAheadSeconds": 5.48320818256178,
+            "videoBitrate": 90363764.0,
+            "audioBitrate": 2903129.0,
+            "bytesRead": 134556727.0,
+            "displayFPS": 24.0,
+            "stallActive": "no",
+            "stallCount": 0
+          },
+          {
+            "elapsed": 12.286224126815796,
+            "currentSeconds": 10.569,
+            "bufferedAheadSeconds": 5.7137498435603415,
+            "videoBitrate": 95111928.0,
+            "audioBitrate": 3124003.0,
+            "bytesRead": 151146679.0,
+            "displayFPS": 24.0,
+            "stallActive": "no",
+            "stallCount": 0
+          },
+          {
+            "elapsed": 13.385513067245483,
+            "currentSeconds": 11.678,
+            "bufferedAheadSeconds": 5.815874840159477,
+            "videoBitrate": 95852859.0,
+            "audioBitrate": 3189388.0,
+            "bytesRead": 165942695.0,
+            "displayFPS": 23.6,
+            "stallActive": "no",
+            "stallCount": 0
+          },
+          {
+            "elapsed": 14.484819173812866,
+            "currentSeconds": 12.766,
+            "bufferedAheadSeconds": 6.109124833357756,
+            "videoBitrate": 97422513.0,
+            "audioBitrate": 3118335.0,
+            "bytesRead": 181082911.0,
+            "displayFPS": 24.2,
+            "stallActive": "no",
+            "stallCount": 0
+          },
+          {
+            "elapsed": 15.585909128189087,
+            "currentSeconds": 13.875,
+            "bufferedAheadSeconds": 7.507208128147987,
+            "videoBitrate": 96069306.0,
+            "audioBitrate": 3140258.0,
+            "bytesRead": 200196511.0,
+            "displayFPS": 24.0,
+            "stallActive": "no",
+            "stallCount": 0
+          },
+          {
+            "elapsed": 16.685014009475708,
+            "currentSeconds": 14.964,
+            "bufferedAheadSeconds": 9.17454141613649,
+            "videoBitrate": 92579348.0,
+            "audioBitrate": 3290041.0,
+            "bytesRead": 217602151.0,
+            "displayFPS": 24.0,
+            "stallActive": "no",
+            "stallCount": 0
+          },
+          {
+            "elapsed": 17.68517303466797,
+            "currentSeconds": 15.967,
+            "bufferedAheadSeconds": 10.550916378727008,
+            "videoBitrate": 92397962.0,
+            "audioBitrate": 3324865.0,
+            "bytesRead": 231762319.0,
+            "displayFPS": 24.0,
+            "stallActive": "no",
+            "stallCount": 0
+          },
+          {
+            "elapsed": 18.688102960586548,
+            "currentSeconds": 16.969,
+            "bufferedAheadSeconds": 11.42779135492097,
+            "videoBitrate": 91486665.0,
+            "audioBitrate": 3364813.0,
+            "bytesRead": 242568191.0,
+            "displayFPS": 24.0,
+            "stallActive": "no",
+            "stallCount": 0
+          },
+          {
+            "elapsed": 19.78487515449524,
+            "currentSeconds": 18.078,
+            "bufferedAheadSeconds": 12.740457985311775,
+            "videoBitrate": 91695536.0,
+            "audioBitrate": 3462657.0,
+            "bytesRead": 256289303.0,
+            "displayFPS": 24.0,
+            "stallActive": "no",
+            "stallCount": 0
+          }
+        ],
+        "firstFourCompleteWindows": [
+          {
+            "elapsed": 4.094762086868286,
+            "responseMs": 2861,
+            "requestMs": 24,
+            "backpressureMs": 0,
+            "capacityBytesPerSecond": 11728218
+          },
+          {
+            "elapsed": 6.224132061004639,
+            "responseMs": 2096,
+            "requestMs": 25,
+            "backpressureMs": 0,
+            "capacityBytesPerSecond": 16008794
+          },
+          {
+            "elapsed": 8.782074213027954,
+            "responseMs": 2378,
+            "requestMs": 175,
+            "backpressureMs": 0,
+            "capacityBytesPerSecond": 14110358
+          },
+          {
+            "elapsed": 11.170717000961304,
+            "responseMs": 2233,
+            "requestMs": 153,
+            "backpressureMs": 0,
+            "capacityBytesPerSecond": 15026615
+          }
+        ]
+      },
+      {
+        "label": "reserve2",
+        "trace": "22A7CE85",
+        "sourceBitrate": [
+          "64048290"
+        ],
+        "first20Seconds": [
+          {
+            "elapsed": 2.910268783569336,
+            "currentSeconds": 1.225,
+            "bufferedAheadSeconds": 3.8578748945732744,
+            "videoBitrate": 147348.0,
+            "audioBitrate": 298151.0,
+            "bytesRead": 14900287.0,
+            "displayFPS": 11.7,
+            "stallActive": "no",
+            "stallCount": 0
+          },
+          {
+            "elapsed": 4.0112738609313965,
+            "currentSeconds": 2.313,
+            "bufferedAheadSeconds": 4.108124887771549,
+            "videoBitrate": 149514.0,
+            "audioBitrate": 323613.0,
+            "bytesRead": 29261959.0,
+            "displayFPS": 24.0,
+            "stallActive": "no",
+            "stallCount": 0
+          },
+          {
+            "elapsed": 5.016298770904541,
+            "currentSeconds": 3.315,
+            "bufferedAheadSeconds": 4.107124887771549,
+            "videoBitrate": 170789.0,
+            "audioBitrate": 2689801.0,
+            "bytesRead": 41563375.0,
+            "displayFPS": 24.0,
+            "stallActive": "no",
+            "stallCount": 0
+          },
+          {
+            "elapsed": 6.108389854431152,
+            "currentSeconds": 4.425,
+            "bufferedAheadSeconds": 4.274958216570401,
+            "videoBitrate": 40008511.0,
+            "audioBitrate": 2776240.0,
+            "bytesRead": 56512615.0,
+            "displayFPS": 24.0,
+            "stallActive": "no",
+            "stallCount": 0
+          },
+          {
+            "elapsed": 7.109578847885132,
+            "currentSeconds": 5.427,
+            "bufferedAheadSeconds": 4.358374880969826,
+            "videoBitrate": 91590057.0,
+            "audioBitrate": 2757038.0,
+            "bytesRead": 69843143.0,
+            "displayFPS": 24.0,
+            "stallActive": "no",
+            "stallCount": 0
+          },
+          {
+            "elapsed": 8.107761859893799,
+            "currentSeconds": 6.409,
+            "bufferedAheadSeconds": 4.504499877568963,
+            "videoBitrate": 86244459.0,
+            "audioBitrate": 2888097.0,
+            "bytesRead": 83316215.0,
+            "displayFPS": 24.0,
+            "stallActive": "no",
+            "stallCount": 0
+          },
+          {
+            "elapsed": 9.108085870742798,
+            "currentSeconds": 7.412,
+            "bufferedAheadSeconds": 4.566916541968388,
+            "videoBitrate": 92977134.0,
+            "audioBitrate": 2912810.0,
+            "bytesRead": 96723951.0,
+            "displayFPS": 24.0,
+            "stallActive": "no",
+            "stallCount": 0
+          },
+          {
+            "elapsed": 10.111731052398682,
+            "currentSeconds": 8.414,
+            "bufferedAheadSeconds": 4.441791545369252,
+            "videoBitrate": 90656191.0,
+            "audioBitrate": 2882247.0,
+            "bytesRead": 108414863.0,
+            "displayFPS": 24.0,
+            "stallActive": "no",
+            "stallCount": 0
+          },
+          {
+            "elapsed": 11.20849895477295,
+            "currentSeconds": 9.524,
+            "bufferedAheadSeconds": 4.524208209768679,
+            "videoBitrate": 90363764.0,
+            "audioBitrate": 2903129.0,
+            "bytesRead": 123238783.0,
+            "displayFPS": 23.8,
+            "stallActive": "no",
+            "stallCount": 0
+          },
+          {
+            "elapsed": 12.308599948883057,
+            "currentSeconds": 10.612,
+            "bufferedAheadSeconds": 4.900583199566089,
+            "videoBitrate": 95111928.0,
+            "audioBitrate": 3124003.0,
+            "bytesRead": 140931743.0,
+            "displayFPS": 24.0,
+            "stallActive": "no",
+            "stallCount": 0
+          },
+          {
+            "elapsed": 13.307891845703125,
+            "currentSeconds": 11.613,
+            "bufferedAheadSeconds": 5.110124860564653,
+            "videoBitrate": 95852859.0,
+            "audioBitrate": 3189388.0,
+            "bytesRead": 155658311.0,
+            "displayFPS": 23.6,
+            "stallActive": "no",
+            "stallCount": 0
+          },
+          {
+            "elapsed": 14.310873031616211,
+            "currentSeconds": 12.617,
+            "bufferedAheadSeconds": 5.1498331927643655,
+            "videoBitrate": 97422513.0,
+            "audioBitrate": 3189388.0,
+            "bytesRead": 168469631.0,
+            "displayFPS": 24.6,
+            "stallActive": "no",
+            "stallCount": 0
+          },
+          {
+            "elapsed": 15.408184051513672,
+            "currentSeconds": 13.726,
+            "bufferedAheadSeconds": 5.234249857163791,
+            "videoBitrate": 96069306.0,
+            "audioBitrate": 3118335.0,
+            "bytesRead": 182413199.0,
+            "displayFPS": 24.0,
+            "stallActive": "no",
+            "stallCount": 0
+          },
+          {
+            "elapsed": 16.50779104232788,
+            "currentSeconds": 14.814,
+            "bufferedAheadSeconds": 5.234249857163789,
+            "videoBitrate": 92579348.0,
+            "audioBitrate": 3290041.0,
+            "bytesRead": 194125751.0,
+            "displayFPS": 24.0,
+            "stallActive": "no",
+            "stallCount": 0
+          },
+          {
+            "elapsed": 17.509063720703125,
+            "currentSeconds": 15.817,
+            "bufferedAheadSeconds": 5.901583172359192,
+            "videoBitrate": 92397962.0,
+            "audioBitrate": 3290041.0,
+            "bytesRead": 201661959.0,
+            "displayFPS": 24.0,
+            "stallActive": "no",
+            "stallCount": 0
+          },
+          {
+            "elapsed": 18.514035940170288,
+            "currentSeconds": 16.82,
+            "bufferedAheadSeconds": 6.256249829956893,
+            "videoBitrate": 91486665.0,
+            "audioBitrate": 3324865.0,
+            "bytesRead": 209721215.0,
+            "displayFPS": 24.0,
+            "stallActive": "no",
+            "stallCount": 0
+          },
+          {
+            "elapsed": 19.611872911453247,
+            "currentSeconds": 17.929,
+            "bufferedAheadSeconds": 6.484499823155172,
+            "videoBitrate": 91695536.0,
+            "audioBitrate": 3364813.0,
+            "bytesRead": 218528455.0,
+            "displayFPS": 24.0,
+            "stallActive": "no",
+            "stallCount": 0
+          }
+        ],
+        "firstFourCompleteWindows": [
+          {
+            "elapsed": 4.446539878845215,
+            "responseMs": 3135,
+            "requestMs": 27,
+            "backpressureMs": 0,
+            "capacityBytesPerSecond": 10703168
+          },
+          {
+            "elapsed": 6.888804912567139,
+            "responseMs": 2431,
+            "requestMs": 25,
+            "backpressureMs": 0,
+            "capacityBytesPerSecond": 13802728
+          },
+          {
+            "elapsed": 9.600046873092651,
+            "responseMs": 2665,
+            "requestMs": 39,
+            "backpressureMs": 0,
+            "capacityBytesPerSecond": 12590781
+          },
+          {
+            "elapsed": 11.93845272064209,
+            "responseMs": 2278,
+            "requestMs": 28,
+            "backpressureMs": 0,
+            "capacityBytesPerSecond": 14729777
+          }
+        ]
+      }
+    ]
+  },
+  "dsonePauseControl": {
+    "app": "DS One",
+    "version": "2.4.5 (4)",
+    "entry": "DSM existing MI2 Remux MKV shown as 51.2 GB",
+    "currentActualMediaRoute": "unknown; no new process pcap in this control",
+    "position": "01:16",
+    "condition": "No subtitle menu or track selection between head seek and pause/hold; menus inspected only after hold",
+    "track": "second Chinese ASS checkmarked after hold; no selection action",
+    "cue": "Chinese/English arrival within 20 hours cue",
+    "pauseFrameIntervalsSeconds": [
+      [
+        0.5804867744445801,
+        2.266516923904419
+      ],
+      [
+        4.4159486293792725,
+        5.73298192024231
+      ]
+    ],
+    "holdFrames": [
+      {
+        "requestedTargetSeconds": 5,
+        "actualRequestSeconds": 26.827900886535645,
+        "actualResponseSeconds": 28.05821180343628,
+        "toolExit": 0,
+        "clock": "01:16",
+        "bilingualCueVisible": true
+      },
+      {
+        "requestedTargetSeconds": 15,
+        "actualRequestSeconds": 29.048606872558594,
+        "actualResponseSeconds": 30.23493766784668,
+        "toolExit": 0,
+        "clock": "01:16",
+        "bilingualCueVisible": true
+      },
+      {
+        "requestedTargetSeconds": 30,
+        "actualRequestSeconds": 31.273486614227295,
+        "actualResponseSeconds": 32.45361256599426,
+        "toolExit": 0,
+        "clock": "01:16",
+        "bilingualCueVisible": true
+      }
+    ],
+    "result": "Observed bilingual cue remains through 32.454 seconds; no-track-change single control only",
+    "limitations": [
+      "Hold targets 5/15 were late; actual times used",
+      "Previous switch sample paused at 01:14; this control at 01:16, not exact same-position replication",
+      "No continuous display timing, actual sound or matched performance pair",
+      "One hidden-slider lookup HTTP404 retained as TOOL; retry fresh controls succeeded",
+      "Audio menu was opened during post-control verification by stale icon mapping; no track selected; correct subtitle menu then inspected"
+    ],
+    "resumeFrameIntervalsSeconds": [
+      [
+        0.656257152557373,
+        2.073329210281372
+      ],
+      [
+        4.2226433753967285,
+        5.728755235671997
+      ]
+    ],
+    "resumeEffect": [
+      "first frame still paused clock01:16",
+      "second frame movie changed clock01:20"
+    ],
+    "exitFrameIntervalsSeconds": [
+      [
+        0.6483509540557861,
+        2.111248016357422
+      ],
+      [
+        4.257822036743164,
+        5.000182151794434
+      ]
+    ],
+    "exit": "actual DSM file list seen; DS One terminated after UI exit",
+    "switchLatencyVerdict": "INSUFFICIENT; previous transient disappearance remains unresolved"
+  },
+  "formalCompetitorPairs": 0,
+  "unresolved": [
+    "MI2 intermittent buffering",
+    "new warmup diagnostic candidate branch / HLS same failed cue",
+    "matched Lenna and DS One Jellyfin/DSM pairs >=5",
+    "sound/complete display timing",
+    "remaining PX01-21 UX01-06 CB01-26",
+    "iPad/iPhone18 current-package regression"
+  ],
+  "finalState": {
+    "time": "2026-10-06T07:13:31.063823+08:00",
+    "phoneLocked": false,
+    "foreground": "latest normal Nastart",
+    "pid": 20501,
+    "env": {},
+    "args": [],
+    "playersExited": true,
+    "wdaReady": true,
+    "existingHostPID": 70500,
+    "waitForIdleTimeout": 10,
+    "defaultActiveApplication": "com.changliwen.nastart",
+    "macBoundedCaffeinatePID": 52029,
+    "sourceAndFrozenBinaryHashesMatch": true,
+    "no24HourAuthorizationGuarantee": true
+  },
+  "privateEvidence": "local protected round directory; raw preferences/endpoints/frames excluded"
+}

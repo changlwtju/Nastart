@@ -1075,3 +1075,6 @@
 "player.episode.next" = "Next episode";
 
 "player.play_from_beginning" = "Play from Beginning";
+
+"diagnostics.media.prepared_result_held" = "Prepared playback held for cancellation check";
+"diagnostics.media.prepared_result_released" = "Prepared playback cancellation check finished";

@@ -1,0 +1,1462 @@
+{
+  "recordedAt": "2026-10-06T09:10:45.505252+08:00",
+  "privateEvidenceDirectoryBasename": "2026-10-06-prediction-live-082335",
+  "device": {
+    "name": "iPhone",
+    "model": "iPhone 13 / iPhone14,5",
+    "os": "16.3.1 (20D67)",
+    "freshIdentity": "USB paired connected and unlocked; full UDID private"
+  },
+  "latestPackage": {
+    "head": "9a9941cd4ec82625f680b5193b3a0f66797eb851",
+    "sourceDiffSHA256": "ccf2b47994c0a21ff0a250e419b7f4a75f2c386d5421fa679ec00f2f3214e5e9",
+    "configuration": "normal Debug -Onone; no default test env; DEBUG-only capped-delivery windows and opt-in reserveOnly predictor isolation; reserve-bounded HLS preparation lead",
+    "binaryBuildTime": "2026-10-06T08:42:08.408259+08:00",
+    "binaries": {
+      "Nastart": "474393b28795b6249890488ae15fb54db0df3453d6190fd9bc03180526ec9f0a",
+      "Nastart.debug.dylib": "8027863eaa6cc72ea87c1da4cfc9c1a3d08966b9c46afa3726521887ff7ba08c",
+      "Frameworks/KSPlayer.framework/KSPlayer": "c2f1a42bcad0e5c30d0bcebd24576f92d8475c201589ed1f9655cc637d6e7910"
+    },
+    "signatureVerified": true,
+    "profileExpirationUTC": "2026-10-10T22:03:15"
+  },
+  "latestInstall": {
+    "time": "2026-10-06T08:46:26.795383+08:00",
+    "installation": "InstallComplete",
+    "dataPreserving": true,
+    "unchangedPreferenceCount": 25
+  },
+  "validation": {
+    "coreTests": 112,
+    "coreFailures": 0,
+    "coreExecutionSeconds": 3.452,
+    "coreEnvironment": "Xcode27.0 / iOS26.5 simulator, not device evidence",
+    "deviceBuild": "Xcode26.6(17F113) Debug -Onone succeeded",
+    "preflight": 15,
+    "initialCompileFailure": "ambiguous String.init logging conversion repaired before final build/test; not device runtime failure"
+  },
+  "changes": {
+    "production": "HLS future candidate preparation lead bounded by valid available media reserve minus 0.25 seconds; advancing/rate/unknown inputs handled; existing preparation deadlines unchanged",
+    "debugOnly": "8MiB capped client delivery windows before open-ended EOF; optional reserveOnly static predictor isolation retaining reactive recovery; empty environment disables both"
+  },
+  "diagnosticRuns": [
+    {
+      "label": "late50",
+      "package": {
+        "head": "9a9941cd4ec82625f680b5193b3a0f66797eb851",
+        "sourceDiffSHA256": "f51d7b28c94a2b4e82bed6409181e65bf4cb8e7d5430c9fad967d5d0f905b635",
+        "configuration": "normal Debug -Onone; no default test env; DEBUG-only active capped-delivery window diagnostics; prediction policy unchanged",
+        "binaryBuildTime": "2026-10-06T08:25:38.047641+08:00",
+        "binaries": {
+          "Nastart": "1571f14590a6fbbd6c482a731390fbcdd567127e69ab2e0e0fc565c5b375192b",
+          "Nastart.debug.dylib": "3e40e200508a45a0b064f730264aaaa047c0790aee1e7578a959fa1232fedd2d",
+          "Frameworks/KSPlayer.framework/KSPlayer": "c2f1a42bcad0e5c30d0bcebd24576f92d8475c201589ed1f9655cc637d6e7910"
+        },
+        "signatureVerified": true,
+        "profileExpirationUTC": "2026-10-10T22:03:15"
+      },
+      "requestedSeconds": 240,
+      "source": "diagnostic process-local 50Mbps after30s for120s; capped client delivery windows; cue captures185-210; NOT natural performance",
+      "requestedEnvironment": {
+        "NASTART_TEST_MEDIA_CAP_BPS": "50000000",
+        "NASTART_TEST_MEDIA_DELAY_SECONDS": "30",
+        "NASTART_TEST_MEDIA_DURATION_SECONDS": "120"
+      },
+      "traces": {
+        "7114A017": {
+          "events": [
+            {
+              "elapsed": 2.2555909156799316,
+              "event": "buffer_updated",
+              "bufferedCount": "0",
+              "consumeMs": "754"
+            },
+            {
+              "elapsed": 46.798420906066895,
+              "event": "automatic_downshift_requested",
+              "bufferTargetSeconds": "4.0",
+              "bufferedAheadSeconds": "5.338666521563219",
+              "deliveryCapacity": "33664554",
+              "reason": "deliveryBelowSourceBitrate",
+              "runtimeDemand": "50457501"
+            },
+            {
+              "elapsed": 47.13442516326904,
+              "event": "replacement_warmup_started"
+            },
+            {
+              "elapsed": 47.13541507720947,
+              "event": "replacement_candidate_preparing",
+              "candidateSeconds": "0.0",
+              "deadlineRemainingMs": "39999",
+              "elapsedMs": "0",
+              "liveSeconds": "44.702",
+              "target": "55.702"
+            },
+            {
+              "elapsed": 54.42700505256653,
+              "event": "replacement_candidate_decoded",
+              "candidateSeconds": "55.70166666666667",
+              "deadlineRemainingMs": "32704",
+              "elapsedMs": "7295",
+              "framePTS": "55.68061111111111",
+              "liveSeconds": "52.041",
+              "target": "55.702"
+            },
+            {
+              "elapsed": 66.9837760925293,
+              "event": "buffer_updated",
+              "bufferedCount": "1",
+              "consumeMs": "10601"
+            },
+            {
+              "elapsed": 68.81870102882385,
+              "event": "replacement_candidate_aligned",
+              "candidateSeconds": "55.70166666666667",
+              "deadlineRemainingMs": "18320",
+              "elapsedMs": "21679",
+              "framePTS": "55.68061111111111",
+              "liveSeconds": "55.604",
+              "target": "55.702"
+            },
+            {
+              "elapsed": 68.8216118812561,
+              "event": "replacement_warmup_completed"
+            },
+            {
+              "elapsed": 71.02290296554565,
+              "event": "replacement_committed",
+              "candidateSeconds": "55.70166666666667",
+              "seconds": "55.518"
+            }
+          ],
+          "telemetryCount": 65,
+          "first": {
+            "elapsed": 1.5290331840515137,
+            "currentSeconds": "-",
+            "engine": "KSPlayer",
+            "playMethod": "directPlay",
+            "stallActive": "no",
+            "stallCount": "0"
+          },
+          "last": {
+            "elapsed": 71.33774709701538,
+            "engine": "KSPlayer",
+            "playMethod": "directPlay",
+            "stallActive": "no",
+            "stallCount": "1"
+          },
+          "coverageSeconds": 69.80871391296387,
+          "maxStalls": 1,
+          "maxDrops": 8,
+          "firstActiveStallElapsed": 57.22510504722595,
+          "requestToCommitSeconds": 24.22448205947876,
+          "requestLeadToFirstObservedStallSeconds": 10.426684141159058
+        },
+        "EB31AD9E": {
+          "events": [],
+          "telemetryCount": 130,
+          "first": {
+            "elapsed": 71.33842897415161,
+            "currentSeconds": "55.702",
+            "engine": "AVPlayer",
+            "playMethod": "localRemux",
+            "stallActive": "no",
+            "stallCount": "0"
+          },
+          "last": {
+            "elapsed": 241.72708106040955,
+            "currentSeconds": "228.001",
+            "engine": "AVPlayer",
+            "playMethod": "localRemux",
+            "stallActive": "no",
+            "stallCount": "0"
+          },
+          "coverageSeconds": 170.38865208625793,
+          "maxStalls": 0,
+          "maxDrops": null,
+          "firstActiveStallElapsed": null
+        }
+      },
+      "throttleEvents": [
+        {
+          "elapsed": 34.46696901321411,
+          "capBps": "50000000",
+          "stage": "debugThrottleStarted"
+        },
+        {
+          "elapsed": 39.24791407585144,
+          "bytes": "8572928",
+          "effectiveBps": "14346015",
+          "elapsedMs": "4780",
+          "measurementBoundary": "cappedClientDelivery",
+          "playbackTraceID": "7114A017",
+          "stage": "debugThrottleWindow"
+        },
+        {
+          "elapsed": 41.241568088531494,
+          "bytes": "8388921",
+          "effectiveBps": "33664554",
+          "elapsedMs": "1993",
+          "measurementBoundary": "cappedClientDelivery",
+          "playbackTraceID": "7114A017",
+          "stage": "debugThrottleWindow"
+        },
+        {
+          "elapsed": 43.61689305305481,
+          "bytes": "8388608",
+          "effectiveBps": "28253839",
+          "elapsedMs": "2375",
+          "measurementBoundary": "cappedClientDelivery",
+          "playbackTraceID": "7114A017",
+          "stage": "debugThrottleWindow"
+        },
+        {
+          "elapsed": 46.027428150177,
+          "bytes": "8388608",
+          "effectiveBps": "27851637",
+          "elapsedMs": "2409",
+          "measurementBoundary": "cappedClientDelivery",
+          "playbackTraceID": "7114A017",
+          "stage": "debugThrottleWindow"
+        },
+        {
+          "elapsed": 49.46077585220337,
+          "bytes": "8388608",
+          "effectiveBps": "19540364",
+          "elapsedMs": "3434",
+          "measurementBoundary": "cappedClientDelivery",
+          "playbackTraceID": "7114A017",
+          "stage": "debugThrottleWindow"
+        },
+        {
+          "elapsed": 52.18550395965576,
+          "bytes": "8392390",
+          "effectiveBps": "24639838",
+          "elapsedMs": "2724",
+          "measurementBoundary": "cappedClientDelivery",
+          "playbackTraceID": "7114A017",
+          "stage": "debugThrottleWindow"
+        },
+        {
+          "elapsed": 54.32397985458374,
+          "bytes": "6025964",
+          "effectiveBps": "26594687",
+          "elapsedMs": "1812",
+          "playbackTraceID": "EB31AD9E",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 56.83439111709595,
+          "bytes": "6323568",
+          "effectiveBps": "24500696",
+          "elapsedMs": "2064",
+          "playbackTraceID": "EB31AD9E",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 56.963294982910156,
+          "bytes": "8388608",
+          "effectiveBps": "14418243",
+          "elapsedMs": "4654",
+          "measurementBoundary": "cappedClientDelivery",
+          "playbackTraceID": "7114A017",
+          "stage": "debugThrottleWindow"
+        },
+        {
+          "elapsed": 59.48276901245117,
+          "bytes": "5433764",
+          "effectiveBps": "18960488",
+          "elapsedMs": "2292",
+          "playbackTraceID": "EB31AD9E",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 60.40212917327881,
+          "bytes": "8388608",
+          "effectiveBps": "18840713",
+          "elapsedMs": "3561",
+          "measurementBoundary": "cappedClientDelivery",
+          "playbackTraceID": "7114A017",
+          "stage": "debugThrottleWindow"
+        },
+        {
+          "elapsed": 62.14442205429077,
+          "bytes": "6605004",
+          "effectiveBps": "21937177",
+          "elapsedMs": "2408",
+          "playbackTraceID": "EB31AD9E",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 63.73198318481445,
+          "bytes": "8392704",
+          "effectiveBps": "20162348",
+          "elapsedMs": "3330",
+          "measurementBoundary": "cappedClientDelivery",
+          "playbackTraceID": "7114A017",
+          "stage": "debugThrottleWindow"
+        },
+        {
+          "elapsed": 65.39893817901611,
+          "bytes": "6071460",
+          "effectiveBps": "17405408",
+          "elapsedMs": "2790",
+          "playbackTraceID": "EB31AD9E",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 66.99073314666748,
+          "bytes": "8388608",
+          "effectiveBps": "20591407",
+          "elapsedMs": "3259",
+          "measurementBoundary": "cappedClientDelivery",
+          "playbackTraceID": "7114A017",
+          "stage": "debugThrottleWindow"
+        },
+        {
+          "elapsed": 68.44784593582153,
+          "bytes": "6497844",
+          "effectiveBps": "18851548",
+          "elapsedMs": "2757",
+          "playbackTraceID": "EB31AD9E",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 72.6045789718628,
+          "bytes": "6144592",
+          "effectiveBps": "13420493",
+          "elapsedMs": "3662",
+          "playbackTraceID": "EB31AD9E",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 90.62043190002441,
+          "bytes": "6337480",
+          "effectiveBps": "27756217",
+          "elapsedMs": "1826",
+          "playbackTraceID": "EB31AD9E",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 94.37062001228333,
+          "bytes": "6126920",
+          "effectiveBps": "30970473",
+          "elapsedMs": "1582",
+          "playbackTraceID": "EB31AD9E",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 98.62214708328247,
+          "bytes": "6230132",
+          "effectiveBps": "27304514",
+          "elapsedMs": "1825",
+          "playbackTraceID": "EB31AD9E",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 102.63148307800293,
+          "bytes": "6502920",
+          "effectiveBps": "28347454",
+          "elapsedMs": "1835",
+          "playbackTraceID": "EB31AD9E",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 106.7087299823761,
+          "bytes": "5574952",
+          "effectiveBps": "23350857",
+          "elapsedMs": "1909",
+          "playbackTraceID": "EB31AD9E",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 110.8594880104065,
+          "bytes": "6450656",
+          "effectiveBps": "24782994",
+          "elapsedMs": "2082",
+          "playbackTraceID": "EB31AD9E",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 114.7949640750885,
+          "bytes": "5865600",
+          "effectiveBps": "23223394",
+          "elapsedMs": "2020",
+          "playbackTraceID": "EB31AD9E",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 118.77745389938354,
+          "bytes": "6065444",
+          "effectiveBps": "25118462",
+          "elapsedMs": "1931",
+          "playbackTraceID": "EB31AD9E",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 122.39130806922913,
+          "bytes": "6361168",
+          "effectiveBps": "31467930",
+          "elapsedMs": "1617",
+          "playbackTraceID": "EB31AD9E",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 126.67784786224365,
+          "bytes": "6677008",
+          "effectiveBps": "28228985",
+          "elapsedMs": "1892",
+          "playbackTraceID": "EB31AD9E",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 130.65266704559326,
+          "bytes": "6147788",
+          "effectiveBps": "26475495",
+          "elapsedMs": "1857",
+          "playbackTraceID": "EB31AD9E",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 134.79359817504883,
+          "bytes": "5800364",
+          "effectiveBps": "23106388",
+          "elapsedMs": "2008",
+          "playbackTraceID": "EB31AD9E",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 138.721529006958,
+          "bytes": "6511004",
+          "effectiveBps": "27417670",
+          "elapsedMs": "1899",
+          "playbackTraceID": "EB31AD9E",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 142.48606204986572,
+          "bytes": "6049276",
+          "effectiveBps": "28687950",
+          "elapsedMs": "1686",
+          "playbackTraceID": "EB31AD9E",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 146.43329000473022,
+          "bytes": "6332216",
+          "effectiveBps": "30844337",
+          "elapsedMs": "1642",
+          "playbackTraceID": "EB31AD9E",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 150.949156999588,
+          "bytes": "6063376",
+          "effectiveBps": "26183652",
+          "elapsedMs": "1852",
+          "playbackTraceID": "EB31AD9E",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 152.76777601242065,
+          "capBps": "50000000",
+          "stage": "debugThrottleRestored"
+        }
+      ],
+      "frameTiming": "INSUFFICIENT; cue capture burst is not display timing",
+      "cacheOrderTemperature": "unknown; no cache clearing",
+      "qualification": "diagnostic fixture; capped client delivery differs from upstream network capacity, not natural performance",
+      "rootCauseResolved": false,
+      "initialStallPrevented": false,
+      "completedBufferDurationMs": 10601,
+      "totalStallDurationMs": null,
+      "stallDurationQualification": "reported completed buffer event only; do not add independent engine counters"
+    },
+    {
+      "label": "reserveOnly",
+      "package": {
+        "head": "9a9941cd4ec82625f680b5193b3a0f66797eb851",
+        "sourceDiffSHA256": "99a5766cf1fdc4dce508c1fdbe451aea717c165d0b69cdd79a27273563f78464",
+        "configuration": "normal Debug -Onone; no default test env; DEBUG-only capped-delivery windows and opt-in reserveOnly predictor isolation; normal policy unchanged",
+        "binaryBuildTime": "2026-10-06T08:34:05.188087+08:00",
+        "binaries": {
+          "Nastart": "ec6496aa92391ef089fb5d81736a1e6a4b9af9750e82a771395456c2284d1c6e",
+          "Nastart.debug.dylib": "60d564acaa0a8356eb989040dbf883b61e2dbbe0c8faeb7a02dd02afdab16a8b",
+          "Frameworks/KSPlayer.framework/KSPlayer": "c2f1a42bcad0e5c30d0bcebd24576f92d8475c201589ed1f9655cc637d6e7910"
+        },
+        "signatureVerified": true,
+        "profileExpirationUTC": "2026-10-10T22:03:15"
+      },
+      "requestedSeconds": 210,
+      "source": "diagnostic process-local 50Mbps after15s for90s; static predictor isolated, reactive retained; NOT natural performance",
+      "requestedEnvironment": {
+        "NASTART_TEST_MEDIA_CAP_BPS": "50000000",
+        "NASTART_TEST_MEDIA_DELAY_SECONDS": "15",
+        "NASTART_TEST_MEDIA_DURATION_SECONDS": "90",
+        "NASTART_TEST_PREDICTION_ISOLATION": "reserveOnly"
+      },
+      "traces": {
+        "9267E533": {
+          "events": [
+            {
+              "elapsed": 1.2742059230804443,
+              "event": "debug_prediction_isolation",
+              "scope": "staticPredictorDisabled_reactiveRecoveryRetained"
+            },
+            {
+              "elapsed": 2.237434148788452,
+              "event": "buffer_updated",
+              "bufferedCount": "0",
+              "consumeMs": "909"
+            },
+            {
+              "elapsed": 18.780323028564453,
+              "event": "automatic_downshift_requested",
+              "bufferTargetSeconds": "4.0",
+              "bufferedAheadSeconds": "1.5232082913893663",
+              "deliveryCapacity": "61523401",
+              "reason": "depletingOriginalReserve",
+              "runtimeDemand": "94811530"
+            },
+            {
+              "elapsed": 19.014458894729614,
+              "event": "replacement_warmup_started"
+            },
+            {
+              "elapsed": 19.015432119369507,
+              "event": "replacement_candidate_preparing",
+              "candidateSeconds": "0.0",
+              "deadlineRemainingMs": "39999",
+              "elapsedMs": "0",
+              "liveSeconds": "16.607",
+              "target": "27.607"
+            },
+            {
+              "elapsed": 26.29010510444641,
+              "event": "replacement_candidate_decoded",
+              "candidateSeconds": "27.606666666666666",
+              "deadlineRemainingMs": "32723",
+              "elapsedMs": "7276",
+              "framePTS": "27.5692",
+              "liveSeconds": "19.102",
+              "target": "27.607"
+            },
+            {
+              "elapsed": 27.07711696624756,
+              "event": "buffer_updated",
+              "bufferedCount": "1",
+              "consumeMs": "5599"
+            },
+            {
+              "elapsed": 35.631816148757935,
+              "event": "replacement_candidate_aligned",
+              "candidateSeconds": "27.606666666666666",
+              "deadlineRemainingMs": "23388",
+              "elapsedMs": "16611",
+              "framePTS": "27.5692",
+              "liveSeconds": "27.507",
+              "target": "27.607"
+            },
+            {
+              "elapsed": 35.63264489173889,
+              "event": "replacement_warmup_completed"
+            },
+            {
+              "elapsed": 36.00667214393616,
+              "event": "replacement_committed",
+              "candidateSeconds": "27.606666666666666",
+              "seconds": "27.486"
+            }
+          ],
+          "telemetryCount": 35,
+          "first": {
+            "elapsed": 1.351027011871338,
+            "currentSeconds": "-",
+            "engine": "KSPlayer",
+            "playMethod": "directPlay",
+            "stallActive": "no",
+            "stallCount": "0"
+          },
+          "last": {
+            "elapsed": 36.08563685417175,
+            "engine": "KSPlayer",
+            "playMethod": "directPlay",
+            "stallActive": "no",
+            "stallCount": "1"
+          },
+          "coverageSeconds": 34.734609842300415,
+          "maxStalls": 1,
+          "maxDrops": 4,
+          "firstActiveStallElapsed": 21.511806964874268,
+          "requestToCommitSeconds": 17.226349115371704,
+          "requestLeadToFirstObservedStallSeconds": 2.7314839363098145
+        },
+        "46B7A18B": {
+          "events": [
+            {
+              "elapsed": 36.14134907722473,
+              "event": "debug_prediction_isolation",
+              "scope": "staticPredictorDisabled_reactiveRecoveryRetained"
+            }
+          ],
+          "telemetryCount": 135,
+          "first": {
+            "elapsed": 36.14068913459778,
+            "currentSeconds": "27.607",
+            "engine": "AVPlayer",
+            "playMethod": "localRemux",
+            "stallActive": "no",
+            "stallCount": "0"
+          },
+          "last": {
+            "elapsed": 206.00942301750183,
+            "currentSeconds": "197.501",
+            "engine": "AVPlayer",
+            "playMethod": "localRemux",
+            "stallActive": "no",
+            "stallCount": "0"
+          },
+          "coverageSeconds": 169.86873388290405,
+          "maxStalls": 0,
+          "maxDrops": null,
+          "firstActiveStallElapsed": null
+        }
+      },
+      "throttleEvents": [
+        {
+          "elapsed": 16.677234888076782,
+          "capBps": "50000000",
+          "stage": "debugThrottleStarted"
+        },
+        {
+          "elapsed": 18.882174015045166,
+          "bytes": "8388922",
+          "effectiveBps": "30443193",
+          "elapsedMs": "2204",
+          "measurementBoundary": "cappedClientDelivery",
+          "playbackTraceID": "9267E533",
+          "stage": "debugThrottleWindow"
+        },
+        {
+          "elapsed": 20.447160959243774,
+          "bytes": "8765440",
+          "effectiveBps": "44809416",
+          "elapsedMs": "1564",
+          "measurementBoundary": "cappedClientDelivery",
+          "playbackTraceID": "9267E533",
+          "stage": "debugThrottleWindow"
+        },
+        {
+          "elapsed": 21.838897943496704,
+          "bytes": "8388608",
+          "effectiveBps": "48219980",
+          "elapsedMs": "1391",
+          "measurementBoundary": "cappedClientDelivery",
+          "playbackTraceID": "9267E533",
+          "stage": "debugThrottleWindow"
+        },
+        {
+          "elapsed": 23.266772031784058,
+          "bytes": "8388608",
+          "effectiveBps": "47060899",
+          "elapsedMs": "1426",
+          "measurementBoundary": "cappedClientDelivery",
+          "playbackTraceID": "9267E533",
+          "stage": "debugThrottleWindow"
+        },
+        {
+          "elapsed": 25.184859037399292,
+          "bytes": "8392390",
+          "effectiveBps": "34968745",
+          "elapsedMs": "1919",
+          "measurementBoundary": "cappedClientDelivery",
+          "playbackTraceID": "9267E533",
+          "stage": "debugThrottleWindow"
+        },
+        {
+          "elapsed": 26.2400119304657,
+          "bytes": "6143464",
+          "effectiveBps": "12129712",
+          "elapsedMs": "4051",
+          "playbackTraceID": "46B7A18B",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 27.440696954727173,
+          "bytes": "8871936",
+          "effectiveBps": "31462996",
+          "elapsedMs": "2255",
+          "measurementBoundary": "cappedClientDelivery",
+          "playbackTraceID": "9267E533",
+          "stage": "debugThrottleWindow"
+        },
+        {
+          "elapsed": 29.059891939163208,
+          "bytes": "8519680",
+          "effectiveBps": "42089877",
+          "elapsedMs": "1619",
+          "measurementBoundary": "cappedClientDelivery",
+          "playbackTraceID": "9267E533",
+          "stage": "debugThrottleWindow"
+        },
+        {
+          "elapsed": 31.029629945755005,
+          "bytes": "8474624",
+          "effectiveBps": "34418601",
+          "elapsedMs": "1969",
+          "measurementBoundary": "cappedClientDelivery",
+          "playbackTraceID": "9267E533",
+          "stage": "debugThrottleWindow"
+        },
+        {
+          "elapsed": 32.47160005569458,
+          "bytes": "6537512",
+          "effectiveBps": "8579181",
+          "elapsedMs": "6096",
+          "playbackTraceID": "46B7A18B",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 33.4743390083313,
+          "bytes": "8393018",
+          "effectiveBps": "27466672",
+          "elapsedMs": "2444",
+          "measurementBoundary": "cappedClientDelivery",
+          "playbackTraceID": "9267E533",
+          "stage": "debugThrottleWindow"
+        },
+        {
+          "elapsed": 35.34577798843384,
+          "bytes": "8646656",
+          "effectiveBps": "36960513",
+          "elapsedMs": "1871",
+          "measurementBoundary": "cappedClientDelivery",
+          "playbackTraceID": "9267E533",
+          "stage": "debugThrottleWindow"
+        },
+        {
+          "elapsed": 36.597980976104736,
+          "bytes": "6038560",
+          "effectiveBps": "12272813",
+          "elapsedMs": "3936",
+          "playbackTraceID": "46B7A18B",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 38.86052894592285,
+          "bytes": "6294992",
+          "effectiveBps": "28445520",
+          "elapsedMs": "1770",
+          "playbackTraceID": "46B7A18B",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 45.59239888191223,
+          "bytes": "6714232",
+          "effectiveBps": "25934301",
+          "elapsedMs": "2071",
+          "playbackTraceID": "46B7A18B",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 49.134780168533325,
+          "bytes": "6179372",
+          "effectiveBps": "30657742",
+          "elapsedMs": "1612",
+          "playbackTraceID": "46B7A18B",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 53.189290046691895,
+          "bytes": "5656544",
+          "effectiveBps": "27248155",
+          "elapsedMs": "1660",
+          "playbackTraceID": "46B7A18B",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 57.285595178604126,
+          "bytes": "6273560",
+          "effectiveBps": "28827514",
+          "elapsedMs": "1740",
+          "playbackTraceID": "46B7A18B",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 61.563040018081665,
+          "bytes": "6477352",
+          "effectiveBps": "26096839",
+          "elapsedMs": "1985",
+          "playbackTraceID": "46B7A18B",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 65.34163403511047,
+          "bytes": "5021668",
+          "effectiveBps": "22492072",
+          "elapsedMs": "1786",
+          "playbackTraceID": "46B7A18B",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 69.41235709190369,
+          "bytes": "6317364",
+          "effectiveBps": "26998006",
+          "elapsedMs": "1871",
+          "playbackTraceID": "46B7A18B",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 73.5286328792572,
+          "bytes": "6064880",
+          "effectiveBps": "24386368",
+          "elapsedMs": "1989",
+          "playbackTraceID": "46B7A18B",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 77.60989308357239,
+          "bytes": "6397076",
+          "effectiveBps": "24463923",
+          "elapsedMs": "2091",
+          "playbackTraceID": "46B7A18B",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 82.01762199401855,
+          "bytes": "6200992",
+          "effectiveBps": "24288447",
+          "elapsedMs": "2042",
+          "playbackTraceID": "46B7A18B",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 85.38602995872498,
+          "bytes": "6285592",
+          "effectiveBps": "27006087",
+          "elapsedMs": "1861",
+          "playbackTraceID": "46B7A18B",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 89.25309801101685,
+          "bytes": "5911660",
+          "effectiveBps": "27457523",
+          "elapsedMs": "1722",
+          "playbackTraceID": "46B7A18B",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 93.31178593635559,
+          "bytes": "6156812",
+          "effectiveBps": "27601503",
+          "elapsedMs": "1784",
+          "playbackTraceID": "46B7A18B",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 97.47048997879028,
+          "bytes": "6882868",
+          "effectiveBps": "28564496",
+          "elapsedMs": "1927",
+          "playbackTraceID": "46B7A18B",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 101.22762799263,
+          "bytes": "6003216",
+          "effectiveBps": "28410027",
+          "elapsedMs": "1690",
+          "playbackTraceID": "46B7A18B",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 105.16239500045776,
+          "bytes": "6448212",
+          "effectiveBps": "31937743",
+          "elapsedMs": "1615",
+          "playbackTraceID": "46B7A18B",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 107.55095601081848,
+          "capBps": "50000000",
+          "stage": "debugThrottleRestored"
+        }
+      ],
+      "frameTiming": "INSUFFICIENT; cue capture burst is not display timing",
+      "cacheOrderTemperature": "unknown; no cache clearing",
+      "qualification": "diagnostic fixture; capped client delivery differs from upstream network capacity, not natural performance",
+      "rootCauseResolved": false,
+      "initialStallPrevented": false,
+      "completedBufferDurationMs": 5599,
+      "totalStallDurationMs": null,
+      "stallDurationQualification": "reported completed buffer event only; do not add independent engine counters"
+    },
+    {
+      "label": "leadBound",
+      "package": {
+        "head": "9a9941cd4ec82625f680b5193b3a0f66797eb851",
+        "sourceDiffSHA256": "ccf2b47994c0a21ff0a250e419b7f4a75f2c386d5421fa679ec00f2f3214e5e9",
+        "configuration": "normal Debug -Onone; no default test env; DEBUG-only capped-delivery windows and opt-in reserveOnly predictor isolation; reserve-bounded HLS preparation lead",
+        "binaryBuildTime": "2026-10-06T08:42:08.408259+08:00",
+        "binaries": {
+          "Nastart": "474393b28795b6249890488ae15fb54db0df3453d6190fd9bc03180526ec9f0a",
+          "Nastart.debug.dylib": "8027863eaa6cc72ea87c1da4cfc9c1a3d08966b9c46afa3726521887ff7ba08c",
+          "Frameworks/KSPlayer.framework/KSPlayer": "c2f1a42bcad0e5c30d0bcebd24576f92d8475c201589ed1f9655cc637d6e7910"
+        },
+        "signatureVerified": true,
+        "profileExpirationUTC": "2026-10-10T22:03:15"
+      },
+      "requestedSeconds": 210,
+      "source": "diagnostic process-local 50Mbps after15s for90s; static predictor isolated, reactive retained; NOT natural performance",
+      "requestedEnvironment": {
+        "NASTART_TEST_MEDIA_CAP_BPS": "50000000",
+        "NASTART_TEST_MEDIA_DELAY_SECONDS": "15",
+        "NASTART_TEST_MEDIA_DURATION_SECONDS": "90",
+        "NASTART_TEST_PREDICTION_ISOLATION": "reserveOnly"
+      },
+      "traces": {
+        "3768BEA9": {
+          "events": [
+            {
+              "elapsed": 1.2383320331573486,
+              "event": "debug_prediction_isolation",
+              "scope": "staticPredictorDisabled_reactiveRecoveryRetained"
+            },
+            {
+              "elapsed": 2.0268499851226807,
+              "event": "buffer_updated",
+              "bufferedCount": "0",
+              "consumeMs": "739"
+            },
+            {
+              "elapsed": 22.858641147613525,
+              "event": "automatic_downshift_requested",
+              "bufferTargetSeconds": "4.0",
+              "bufferedAheadSeconds": "1.8141666167873538",
+              "deliveryCapacity": "36425569",
+              "reason": "depletingOriginalReserve",
+              "runtimeDemand": "96322671"
+            },
+            {
+              "elapsed": 22.969497203826904,
+              "event": "replacement_warmup_started"
+            },
+            {
+              "elapsed": 22.970457077026367,
+              "event": "replacement_candidate_preparing",
+              "availableReserveSeconds": "1.8131666167873561",
+              "candidateSeconds": "0.0",
+              "deadlineRemainingMs": "39999",
+              "elapsedMs": "0",
+              "liveSeconds": "20.767",
+              "preparationLeadSeconds": "1.5631666167873561",
+              "target": "22.330166616787356"
+            },
+            {
+              "elapsed": 28.54139804840088,
+              "event": "replacement_candidate_decoded",
+              "availableReserveSeconds": "1.8131666167873561",
+              "candidateSeconds": "22.33",
+              "deadlineRemainingMs": "34427",
+              "elapsedMs": "5572",
+              "framePTS": "22.313944444444445",
+              "liveSeconds": "26.377",
+              "preparationLeadSeconds": "1.5631666167873561",
+              "target": "22.330166616787356"
+            },
+            {
+              "elapsed": 34.49850416183472,
+              "event": "replacement_candidate_aligned",
+              "availableReserveSeconds": "1.8131666167873561",
+              "candidateSeconds": "28.354911648",
+              "deadlineRemainingMs": "28479",
+              "elapsedMs": "11520",
+              "framePTS": "28.319944444444445",
+              "liveSeconds": "28.447",
+              "preparationLeadSeconds": "1.5631666167873561",
+              "target": "22.330166616787356"
+            },
+            {
+              "elapsed": 34.49905490875244,
+              "event": "replacement_warmup_completed"
+            },
+            {
+              "elapsed": 34.7967791557312,
+              "event": "replacement_committed",
+              "candidateSeconds": "28.357151304",
+              "seconds": "28.447"
+            }
+          ],
+          "telemetryCount": 33,
+          "first": {
+            "elapsed": 1.318331003189087,
+            "currentSeconds": "-",
+            "engine": "KSPlayer",
+            "playMethod": "directPlay",
+            "stallActive": "no",
+            "stallCount": "0"
+          },
+          "last": {
+            "elapsed": 35.23646593093872,
+            "engine": "KSPlayer",
+            "playMethod": "directPlay",
+            "stallActive": "yes",
+            "stallCount": "1"
+          },
+          "coverageSeconds": 33.918134927749634,
+          "maxStalls": 1,
+          "maxDrops": 1,
+          "firstActiveStallElapsed": 30.915225982666016,
+          "requestToCommitSeconds": 11.938138008117676,
+          "requestLeadToFirstObservedStallSeconds": 8.05658483505249
+        },
+        "607C9004": {
+          "events": [
+            {
+              "elapsed": 35.24108004570007,
+              "event": "debug_prediction_isolation",
+              "scope": "staticPredictorDisabled_reactiveRecoveryRetained"
+            }
+          ],
+          "telemetryCount": 136,
+          "first": {
+            "elapsed": 35.23713493347168,
+            "currentSeconds": "28.422",
+            "engine": "AVPlayer",
+            "playMethod": "localRemux",
+            "stallActive": "no",
+            "stallCount": "0"
+          },
+          "last": {
+            "elapsed": 210.87839007377625,
+            "currentSeconds": "204.501",
+            "engine": "AVPlayer",
+            "playMethod": "localRemux",
+            "stallActive": "no",
+            "stallCount": "0"
+          },
+          "coverageSeconds": 175.64125514030457,
+          "maxStalls": 0,
+          "maxDrops": null,
+          "firstActiveStallElapsed": null
+        }
+      },
+      "throttleEvents": [
+        {
+          "elapsed": 16.647361993789673,
+          "capBps": "50000000",
+          "stage": "debugThrottleStarted"
+        },
+        {
+          "elapsed": 18.839487075805664,
+          "bytes": "8622080",
+          "effectiveBps": "31488398",
+          "elapsedMs": "2190",
+          "measurementBoundary": "cappedClientDelivery",
+          "playbackTraceID": "3768BEA9",
+          "stage": "debugThrottleWindow"
+        },
+        {
+          "elapsed": 20.354496002197266,
+          "bytes": "8433664",
+          "effectiveBps": "44506870",
+          "elapsedMs": "1515",
+          "measurementBoundary": "cappedClientDelivery",
+          "playbackTraceID": "3768BEA9",
+          "stage": "debugThrottleWindow"
+        },
+        {
+          "elapsed": 22.1975040435791,
+          "bytes": "8393018",
+          "effectiveBps": "36425569",
+          "elapsedMs": "1843",
+          "measurementBoundary": "cappedClientDelivery",
+          "playbackTraceID": "3768BEA9",
+          "stage": "debugThrottleWindow"
+        },
+        {
+          "elapsed": 23.9636070728302,
+          "bytes": "8785920",
+          "effectiveBps": "39822203",
+          "elapsedMs": "1765",
+          "measurementBoundary": "cappedClientDelivery",
+          "playbackTraceID": "3768BEA9",
+          "stage": "debugThrottleWindow"
+        },
+        {
+          "elapsed": 25.357747077941895,
+          "bytes": "8388608",
+          "effectiveBps": "48099547",
+          "elapsedMs": "1395",
+          "measurementBoundary": "cappedClientDelivery",
+          "playbackTraceID": "3768BEA9",
+          "stage": "debugThrottleWindow"
+        },
+        {
+          "elapsed": 26.78245496749878,
+          "bytes": "8388608",
+          "effectiveBps": "47402475",
+          "elapsedMs": "1415",
+          "measurementBoundary": "cappedClientDelivery",
+          "playbackTraceID": "3768BEA9",
+          "stage": "debugThrottleWindow"
+        },
+        {
+          "elapsed": 29.229208946228027,
+          "bytes": "5952832",
+          "effectiveBps": "13373815",
+          "elapsedMs": "3560",
+          "playbackTraceID": "607C9004",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 29.250272035598755,
+          "bytes": "8408774",
+          "effectiveBps": "27250376",
+          "elapsedMs": "2468",
+          "measurementBoundary": "cappedClientDelivery",
+          "playbackTraceID": "3768BEA9",
+          "stage": "debugThrottleWindow"
+        },
+        {
+          "elapsed": 32.03501892089844,
+          "bytes": "8392704",
+          "effectiveBps": "24051794",
+          "elapsedMs": "2791",
+          "measurementBoundary": "cappedClientDelivery",
+          "playbackTraceID": "3768BEA9",
+          "stage": "debugThrottleWindow"
+        },
+        {
+          "elapsed": 32.44236993789673,
+          "bytes": "6290668",
+          "effectiveBps": "16998524",
+          "elapsedMs": "2960",
+          "playbackTraceID": "607C9004",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 35.4012451171875,
+          "bytes": "6435240",
+          "effectiveBps": "19949284",
+          "elapsedMs": "2580",
+          "playbackTraceID": "607C9004",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 37.83545708656311,
+          "bytes": "6091576",
+          "effectiveBps": "20679484",
+          "elapsedMs": "2356",
+          "playbackTraceID": "607C9004",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 39.69055104255676,
+          "bytes": "6295932",
+          "effectiveBps": "28259436",
+          "elapsedMs": "1782",
+          "playbackTraceID": "607C9004",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 44.40493202209473,
+          "bytes": "6931372",
+          "effectiveBps": "19071083",
+          "elapsedMs": "2907",
+          "playbackTraceID": "607C9004",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 47.26133489608765,
+          "bytes": "5982724",
+          "effectiveBps": "26839806",
+          "elapsedMs": "1783",
+          "playbackTraceID": "607C9004",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 51.46342897415161,
+          "bytes": "5349916",
+          "effectiveBps": "21433411",
+          "elapsedMs": "1996",
+          "playbackTraceID": "607C9004",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 55.494898080825806,
+          "bytes": "6273748",
+          "effectiveBps": "24785531",
+          "elapsedMs": "2024",
+          "playbackTraceID": "607C9004",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 59.30446195602417,
+          "bytes": "6475284",
+          "effectiveBps": "27589656",
+          "elapsedMs": "1877",
+          "playbackTraceID": "607C9004",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 63.11512613296509,
+          "bytes": "5015276",
+          "effectiveBps": "23808266",
+          "elapsedMs": "1685",
+          "playbackTraceID": "607C9004",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 67.65127420425415,
+          "bytes": "6081424",
+          "effectiveBps": "25325827",
+          "elapsedMs": "1921",
+          "playbackTraceID": "607C9004",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 71.16659116744995,
+          "bytes": "6535820",
+          "effectiveBps": "29746304",
+          "elapsedMs": "1757",
+          "playbackTraceID": "607C9004",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 75.50648593902588,
+          "bytes": "6545408",
+          "effectiveBps": "24873274",
+          "elapsedMs": "2105",
+          "playbackTraceID": "607C9004",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 79.4507908821106,
+          "bytes": "6068640",
+          "effectiveBps": "23709521",
+          "elapsedMs": "2047",
+          "playbackTraceID": "607C9004",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 83.14772319793701,
+          "bytes": "6196292",
+          "effectiveBps": "28384466",
+          "elapsedMs": "1746",
+          "playbackTraceID": "607C9004",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 87.1388030052185,
+          "bytes": "6282020",
+          "effectiveBps": "28967029",
+          "elapsedMs": "1734",
+          "playbackTraceID": "607C9004",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 91.07690620422363,
+          "bytes": "6158692",
+          "effectiveBps": "29650889",
+          "elapsedMs": "1661",
+          "playbackTraceID": "607C9004",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 95.1932601928711,
+          "bytes": "6666668",
+          "effectiveBps": "29894019",
+          "elapsedMs": "1784",
+          "playbackTraceID": "607C9004",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 99.09511613845825,
+          "bytes": "5504640",
+          "effectiveBps": "26262451",
+          "elapsedMs": "1676",
+          "playbackTraceID": "607C9004",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 103.22939491271973,
+          "bytes": "6437496",
+          "effectiveBps": "28330392",
+          "elapsedMs": "1817",
+          "playbackTraceID": "607C9004",
+          "stage": "debugThrottleMeasured"
+        },
+        {
+          "elapsed": 106.59795188903809,
+          "capBps": "50000000",
+          "stage": "debugThrottleRestored"
+        },
+        {
+          "elapsed": 106.65300297737122,
+          "bytes": "5922000",
+          "effectiveBps": "39211269",
+          "elapsedMs": "1208",
+          "playbackTraceID": "607C9004",
+          "stage": "debugThrottleMeasured"
+        }
+      ],
+      "frameTiming": "INSUFFICIENT; cue capture burst is not display timing",
+      "cacheOrderTemperature": "unknown; no cache clearing",
+      "qualification": "diagnostic fixture; capped client delivery differs from upstream network capacity, not natural performance",
+      "rootCauseResolved": false,
+      "initialStallPrevented": false,
+      "completedBufferDurationMs": null,
+      "totalStallDurationMs": null,
+      "stallDurationQualification": "original still stallActive at last sample during handoff; duration censored, do not invent total"
+    }
+  ],
+  "normalRegression": {
+    "material": "S03 Mission Impossible 3",
+    "fileBytes": 54005939750,
+    "original": true,
+    "engine": "KSPlayer",
+    "playMethod": "directPlay",
+    "audioTrack": 1,
+    "subtitleTrack": 7,
+    "requestedSeconds": 120,
+    "knownFreshLaunchEnvironment": {},
+    "knownFreshLaunchArguments": [],
+    "trace": "E89F2EFE",
+    "sampleCount": 112,
+    "coverageSeconds": 118.59379482269287,
+    "first": {
+      "elapsed": 3.0433590412139893,
+      "current": 1.225,
+      "ahead": 8.507208100941089,
+      "drops": 0,
+      "stalls": 0,
+      "active": "no",
+      "engine": "KSPlayer",
+      "method": "directPlay"
+    },
+    "last": {
+      "elapsed": 121.63715386390686,
+      "current": 119.817,
+      "ahead": 13.345374636107763,
+      "drops": 0,
+      "stalls": 0,
+      "active": "no",
+      "engine": "KSPlayer",
+      "method": "directPlay"
+    },
+    "maxStalls": 0,
+    "maxDrops": 0,
+    "activeSamples": 0,
+    "minAheadAfter10": 7.985999782344834,
+    "fixtureMarkerCount": 0,
+    "automaticDownshiftRequests": 0,
+    "actualFrameViewed": "normal3-observe/t120.png; complete bilingual I can help you cue and hidden home indicator",
+    "qualification": "only this observed interval; previous failures retained"
+  },
+  "subtitle": {
+    "late50Intermediate": {
+      "result": "PASS scoped only to 1571f145 / 3e40e200 package",
+      "nativeFrame": "late50-observe/t180.png",
+      "cueChinese": "贝拉洛芬也没用了",
+      "cueEnglish": "not even Bellerophon.",
+      "completeVisible": true,
+      "homeIndicatorHidden": true
+    },
+    "latestLeadBound": {
+      "result": "INSUFFICIENT / NOT_CAPTURED",
+      "reason": "2-second cue sampling did not capture exact same cue; neighboring real movie cues observed, cannot infer subtitle failure or claim latest same-cue PASS"
+    }
+  },
+  "rootCauseResolved": false,
+  "formalCompetitorPairs": 0,
+  "rankingAllowed": false,
+  "audioAndCompleteDisplayTiming": "INSUFFICIENT; sparse screenshots and player telemetry do not prove actual sound/full frame timing",
+  "remaining": [
+    "natural MI2 first stall prevention and repeatability",
+    "latest HLS exact failed subtitle cue",
+    "Lenna and DS One Jellyfin/DSM matched route/file/track/start/configuration then >=5 pairs",
+    "CB01-26 response/effect evidence including sound and display",
+    "all existing PX01-21 and UX01-06 gaps",
+    "S01 dual-device and S08/S11/S18 representative formats",
+    "iPad and iPhone18 fresh latest package gates and regression"
+  ],
+  "comparisonQualification": "request-to-commit single diagnostic observations 17.226349 versus 11.938138 seconds; delivery capacity, preparation and trigger times differ, not causal effect or qualified paired improvement",
+  "dsOne": {
+    "freshInstalledVersion": "2.4.5 (4)",
+    "route": "DSM direct existing MI2 file",
+    "formalPairCount": 0,
+    "defaultTracksNotChanged": true,
+    "observedPlayerHUD": [
+      "HEVC",
+      "2160P",
+      "23FPS",
+      "59.25mbps"
+    ],
+    "HUDQualification": "app display, not complete measured frame rate or verified throughput",
+    "pauseBeforeHUD": "01:16",
+    "actualPausedHUD": "01:18",
+    "firstActualFrameUpperSeconds": 2.168301820755005,
+    "observedHoldUpperSeconds": 31.136749029159546,
+    "holdScreens": [
+      {
+        "plannedSeconds": 0,
+        "captureStartSinceResponseSeconds": 0.013221979141235352,
+        "captureEndSinceResponseSeconds": 1.6111009120941162
+      },
+      {
+        "plannedSeconds": 5,
+        "captureStartSinceResponseSeconds": 5.017498016357422,
+        "captureEndSinceResponseSeconds": 6.279032945632935
+      },
+      {
+        "plannedSeconds": 15,
+        "captureStartSinceResponseSeconds": 15.01699185371399,
+        "captureEndSinceResponseSeconds": 16.158790111541748
+      },
+      {
+        "plannedSeconds": 30,
+        "captureStartSinceResponseSeconds": 30.019137859344482,
+        "captureEndSinceResponseSeconds": 31.136749029159546
+      }
+    ],
+    "pictureAndClockHold": "observed at 0/5/15/30 scheduled seconds, same timer closeup and 01:18 clock",
+    "subtitleHold": "INSUFFICIENT; actual stop missed earlier 01:16 bilingual cue; no same-cue subtitle PASS or FAIL",
+    "toolFailuresRetained": [
+      "old native swipe route 404",
+      "folder traversal/name lookup misses before corrected path",
+      "slider requested 0.0098 landed near head 00:01 instead of target",
+      "later 0.975 requested value reached end 2:03:35 rather than target; unqualified automation action"
+    ],
+    "earlierBilingualHold": "previous 07:13 single control remains separate historical evidence",
+    "actualFileHashAndEndpoint": "not reverified this control; default routes differ in prior records",
+    "returnedToFileList": true,
+    "processTerminated": true
+  },
+  "finalState": {
+    "time": "2026-10-06T09:09:48.008145+08:00",
+    "phoneLocked": false,
+    "foreground": "latest normal Nastart launchpad",
+    "pid": 24629,
+    "requestedEnvironment": {},
+    "requestedArguments": [],
+    "processEnvironmentEvidence": "known fresh launch with empty environment; activeAppInfo alone is insufficient",
+    "playersExited": true,
+    "wdaReady": true,
+    "existingHostPID": 70500,
+    "waitForIdleTimeout": 10,
+    "defaultActiveApplication": "com.changliwen.nastart",
+    "macBoundedCaffeinatePID": 52029,
+    "sourceAndFrozenBinaryHashesMatch": true,
+    "no24HourAuthorizationGuarantee": true
+  },
+  "finalPreferences": {
+    "nonDiagnosticPreferenceCount": 25,
+    "unchanged": 24,
+    "naturalLocalResumeOnlyChange": true,
+    "credentialsAndOtherPreferencesUnchanged": true
+  }
+}

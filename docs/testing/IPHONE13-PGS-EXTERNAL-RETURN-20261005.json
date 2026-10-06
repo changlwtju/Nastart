@@ -1,0 +1,280 @@
+{
+  "date": "2026-10-05",
+  "device": {
+    "name": "iPhone",
+    "model": "iPhone13 / iPhone14,5",
+    "os": "16.3.1 (20D67)",
+    "connection": "fresh USB and pairing validated; UDID retained in private gate"
+  },
+  "head": "9a9941cd4ec82625f680b5193b3a0f66797eb851",
+  "trackedIOSDiffSHA256": "347854f9ad6e8ecc46fd142b87ddebaae9a08135c2115629814aaa69ff5bafab",
+  "configuration": "normal Debug -Onone; no test environment variables",
+  "buildTime": "2026-10-05T09:43:38.982004+08:00",
+  "binarySHA256": {
+    "Nastart": "4148b9a075664c3d7da815aa7a61b8991675ec9789c75fba58877c21ff642943",
+    "Nastart.debug.dylib": "777ca0b5c76de7fbb166491790b825423ccfa50fda202e00aa55b2e79b9827c1",
+    "Frameworks/KSPlayer.framework/KSPlayer": "3c32cd682df8318238442b420d6e9a7d0c819ae9ac29c8a86596a2f336199176"
+  },
+  "signatureVerified": true,
+  "profileExpirationLocal": "2026-10-11T06:03:15+08:00",
+  "installation": {
+    "status": "InstallComplete / ios-deploy 0",
+    "time": "2026-10-05T09:45:06.802168+08:00",
+    "dataPreserved": true,
+    "nonDiagnosticPreferencesEqual": 25,
+    "startup": "normal no-test-env startup, library and selected MI3 detail verified",
+    "wdaSessionPreserved": true
+  },
+  "tests": {
+    "passed": 99,
+    "failed": 0,
+    "skipped": 0
+  },
+  "oldCandidate": {
+    "identity": "eef/d0",
+    "realPGSExternalASSReturnIterations": 5,
+    "reuse": 0,
+    "redundantSamePositionSeeks": 5,
+    "verdict": "FAIL; retained as old package"
+  },
+  "latestPGSReturns": {
+    "scope": "same App normal Debug; paused original S03 LAN cue at 87.049; external ASS return to PGS",
+    "visualIterations": 6,
+    "completeLiveLogIterations": [
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "reuseEvents": 5,
+    "seekEventsDuringFiveLiveReturns": 0,
+    "firstIterationDiagnostic": "disk snapshot stale, do not infer no event from it",
+    "visualResult": "six PGS return frames match known bilingual cue and fixed pause; final five at least six seconds held",
+    "timingVerdict": "request bracket only, no exact latency / P95 / winner",
+    "notACompetitorPair": true,
+    "reuseEventsFromPersistedAllSix": 6,
+    "seekEventsFromPersistedAllSix": 0,
+    "requestBracketMilliseconds": [
+      {
+        "iteration": 2,
+        "low": 0,
+        "high": 1351
+      },
+      {
+        "iteration": 3,
+        "low": 0,
+        "high": 1323
+      },
+      {
+        "iteration": 4,
+        "low": 0,
+        "high": 1264
+      },
+      {
+        "iteration": 5,
+        "low": 0,
+        "high": 1323
+      },
+      {
+        "iteration": 6,
+        "low": 0,
+        "high": 1322
+      }
+    ]
+  },
+  "resumeAfterReturns": {
+    "monitorStatus": "completed",
+    "requestedObservationSeconds": 630,
+    "numericTelemetryCount": 583,
+    "first": {
+      "wallSecond": 1.6969630718231201,
+      "currentSeconds": 87.924,
+      "droppedVideoFrames": 10,
+      "bufferedAheadSeconds": 15.180541252895097,
+      "stallCount": 0,
+      "stallActive": "no"
+    },
+    "last": {
+      "wallSecond": 626.8663508892059,
+      "currentSeconds": 713.118,
+      "droppedVideoFrames": 101,
+      "bufferedAheadSeconds": 9.59291640593392,
+      "stallCount": 0,
+      "stallActive": "no"
+    },
+    "telemetryWallCoverage": 625.1693878173828,
+    "maxStallCount": 0,
+    "activeStallSamples": 0,
+    "minAheadAfter10s": 7.881583117945411,
+    "maxDropped": 101,
+    "maxTelemetryGap": 1.9848089218139648,
+    "dropIncreases": [
+      [
+        1.6969630718231201,
+        10
+      ],
+      [
+        6.273759126663208,
+        11
+      ],
+      [
+        7.376014947891235,
+        12
+      ],
+      [
+        9.709427118301392,
+        13
+      ],
+      [
+        37.09122586250305,
+        18
+      ],
+      [
+        38.24150490760803,
+        24
+      ],
+      [
+        40.226313829422,
+        25
+      ],
+      [
+        41.19277787208557,
+        52
+      ],
+      [
+        42.19180989265442,
+        56
+      ],
+      [
+        44.34164500236511,
+        58
+      ],
+      [
+        45.39294981956482,
+        59
+      ],
+      [
+        46.394129037857056,
+        65
+      ],
+      [
+        48.259124994277954,
+        66
+      ],
+      [
+        49.09042501449585,
+        74
+      ],
+      [
+        50.13251280784607,
+        75
+      ],
+      [
+        52.32215905189514,
+        77
+      ],
+      [
+        53.291587114334106,
+        81
+      ],
+      [
+        54.29933190345764,
+        83
+      ],
+      [
+        56.49243497848511,
+        85
+      ],
+      [
+        57.59138607978821,
+        87
+      ],
+      [
+        59.6717529296875,
+        91
+      ],
+      [
+        61.69259810447693,
+        94
+      ],
+      [
+        62.789347887039185,
+        97
+      ],
+      [
+        64.88867092132568,
+        101
+      ]
+    ],
+    "finiteFinishedEvents": 276,
+    "reuseEventsAllIterations": 6,
+    "seekStartedBeforeResume": 0,
+    "observationErrors": [],
+    "manualVisualStatus": "resume motion/natural cue replacement and all eleven minute screenshots manually reviewed",
+    "fluentVerdict": "INSUFFICIENT; sparse screenshots, no complete display timing or actual sound; initial drops retained",
+    "rangeWindows": {
+      "completeWindows": 138,
+      "complete32MiBWindows": 138,
+      "completionErrors": 0,
+      "stages": {
+        "urlSessionTaskMetrics": 138,
+        "upstreamTaskCompleted": 138
+      }
+    }
+  },
+  "boundaryCases": {
+    "offReturn": {
+      "positionSeconds": 91.072,
+      "trackID": 8,
+      "visibleCue": "Chinese two / English Two.",
+      "offCleared": true,
+      "samePositionReturnReused": true,
+      "newSeek": false,
+      "heldSeconds": 6,
+      "fullSubtitleReviewed": true
+    },
+    "positionAndSeekChanged": {
+      "timeAdvancedReturnTarget": 754.206,
+      "realSliderTarget": 72.86307081735134,
+      "realForwardTarget": 87.863,
+      "neverDisplayedBitmapTrack": 8,
+      "newTrackTarget": 87.863,
+      "seekUsedRatherThanCachedCue": true,
+      "old87SecondCueNotCarried": true,
+      "freshCueVerdict": "INSUFFICIENT; pause-seek samples blank; exact PGS validity boundaries need checking, natural playback later displays Two."
+    },
+    "naturalCueClearAndReplacement": "verified in resumed frame samples"
+  },
+  "normalExit": {
+    "doneButtonActualClick": true,
+    "detailScreenVerified": true,
+    "playbackEndedPersisted": true,
+    "viewDisappearPersisted": true,
+    "initialPGSTrack7RestoredBeforeExit": true
+  },
+  "wda": {
+    "label": "local.nastart.wda-iphone13",
+    "independentHost": true,
+    "automaticRestartLoop": false,
+    "readyAfterTests": true,
+    "reinstalledThisTurn": false,
+    "guaranteed24HourAuthorization": false,
+    "appleReference": "https://developer.apple.com/forums/thread/693273"
+  },
+  "competitors": {
+    "Lenna": "1.0.17 (610)",
+    "DSOne": "2.4.5 (4)",
+    "installationMetadataFresh": true,
+    "formalControlledPairs": 0,
+    "scope": "CB01-26 including DS One Jellyfin and DSM direct; LAN/public endpoint distinction retained"
+  },
+  "remaining": [
+    "isolate initial resume drop growth from tool instrumentation / long pause / clock behavior",
+    "prove fresh PGS cue recovery after real seek against exact cue intervals; other formats and iPad",
+    "same-condition comparative first frame / seek / audio / subtitle timings, Lenna and DS One both routes",
+    "actual audible track effect and complete frame timing / scroll displacement gates",
+    "MI2 original bitrate stalls and remaining PX/UX ledger"
+  ],
+  "privacy": "raw device preferences/credentials/endpoints/screen/syslog only local private evidence; no raw source URLs in this summary"
+}
