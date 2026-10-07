@@ -34,6 +34,7 @@ struct AppTabRootView: View {
                 phoneTabs
             }
         }
+        .environment(\.showLaunchpad) { selectedSection = .launchpad }
         .environmentObject(mediaLibraryRouter)
         .fullScreenCover(item: $mediaLibraryRouter.presentation) { presentation in
             NavigationStack {
@@ -50,23 +51,27 @@ struct AppTabRootView: View {
     }
 
     private var phoneTabs: some View {
-        TabView {
+        TabView(selection: $selectedSection) {
             LaunchpadView()
+                .tag(Optional(AppSection.launchpad))
                 .tabItem {
                     Label("tab.launchpad", systemImage: "square.grid.2x2")
                 }
 
             DevicesView()
+                .tag(Optional(AppSection.devices))
                 .tabItem {
                     Label("tab.devices", systemImage: "server.rack")
                 }
 
             TasksView()
+                .tag(Optional(AppSection.tasks))
                 .tabItem {
                     Label("tab.tasks", systemImage: "checklist")
                 }
 
             MineView()
+                .tag(Optional(AppSection.mine))
                 .tabItem {
                     Label("tab.mine", systemImage: "person")
                 }
@@ -123,5 +128,16 @@ private enum AppSection: String, CaseIterable, Identifiable {
         case .tasks: return "checklist"
         case .mine: return "person"
         }
+    }
+}
+
+private struct ShowLaunchpadKey: EnvironmentKey {
+    static let defaultValue: () -> Void = {}
+}
+
+extension EnvironmentValues {
+    var showLaunchpad: () -> Void {
+        get { self[ShowLaunchpadKey.self] }
+        set { self[ShowLaunchpadKey.self] = newValue }
     }
 }

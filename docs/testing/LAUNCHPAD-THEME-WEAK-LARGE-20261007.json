@@ -1,0 +1,190 @@
+{
+  "time": "2026-10-07T08:14:03.020405+08:00",
+  "source": {
+    "head": "2f00aac13efebcc7a9cca48147cea8fe4e9c7732",
+    "dirtyIOSDiffSHA256": "f30458fabae515bd0c83a02c86129a6e70c7fd6c5e3fb9030af4abd85260ef32"
+  },
+  "configuration": "ordinary Debug -Onone, empty App environment and arguments",
+  "package": {
+    "buildTime": "2026-10-07T07:55:49.711897+08:00",
+    "binaries": {
+      "Nastart": "412ba50ad4877e65696f910da310e96cdd896d7e2a1009885954489c17a3483a",
+      "Nastart.debug.dylib": "a21a52be3bbd24104e6be7f68f5f6899ddef8fed0e7549243e69d53be4858ef7",
+      "Frameworks/KSPlayer.framework/KSPlayer": "c814c6b3f8d1beaddef93e8c77935aa9d653835244ae7a0b772d9900e709a704"
+    },
+    "signatureVerified": true,
+    "dynamicLibrariesVerified": 29
+  },
+  "reportedProblem": {
+    "devices": [
+      "iPhone18",
+      "iPhone13"
+    ],
+    "symptom": "Apply theme appears to leave original style",
+    "exactOldHotFailureReproduced": false
+  },
+  "baseline": {
+    "iPhone13": "old signed ac5d/bf0b package; hot clean/command/glass changes visible, cold command persisted; apply returned gallery; command metrics rail and glass summary material missing compared with preview",
+    "iPhone18": "not currently USB connected"
+  },
+  "changes": [
+    "Use one observable AppearanceStore for launchpad and theme settings/gallery/preview",
+    "Apply theme selects Launchpad tab immediately while retaining tab navigation stacks",
+    "Command summary uses metric rail; glass summary uses material surface"
+  ],
+  "validation": {
+    "nonPlaybackPolicyTests": {
+      "executed": 35,
+      "skipped": 1,
+      "failures": 0,
+      "skipReason": "Device public endpoints not configured"
+    },
+    "preflightPass": 15,
+    "iPhone13": {
+      "installedDataPreserving": true,
+      "installationPreferencesUnchanged": 25,
+      "themeResults": [
+        {
+          "theme": "cleanGrid",
+          "automaticLaunchpad": true,
+          "normalColdLaunchPersisted": true,
+          "applyEvidence": "new-cleanGrid-0-applied"
+        },
+        {
+          "theme": "commandCenter",
+          "automaticLaunchpad": true,
+          "normalColdLaunchPersisted": true,
+          "actionStartedAt": 1791331262.341203,
+          "houseArrestSnapshotThemeAfterApply": "commandCenter",
+          "snapshotMayLagCFPreferences": true,
+          "quickActions": true
+        },
+        {
+          "theme": "glassDeck",
+          "automaticLaunchpad": true,
+          "normalColdLaunchPersisted": true,
+          "actionStartedAt": 1791331291.833653,
+          "houseArrestSnapshotThemeAfterApply": "glassDeck",
+          "snapshotMayLagCFPreferences": true,
+          "quickActions": false
+        },
+        {
+          "theme": "commandCenter",
+          "automaticLaunchpad": true,
+          "normalColdLaunchPersisted": true,
+          "actionStartedAt": 1791331320.4382641,
+          "houseArrestSnapshotThemeAfterApply": "glassDeck",
+          "snapshotMayLagCFPreferences": true,
+          "quickActions": true
+        }
+      ],
+      "originalThemeRestored": true,
+      "unchangedPreferencesAfterThemeRestoration": 24,
+      "intentionalCloudSyncTimestampChanged": true
+    },
+    "iPad": {
+      "freshUSB": true,
+      "latestBuildInstalled": false,
+      "reason": "InstallCoordination PromiseStaging mkpath returned NSPOSIXErrorDomain 28 No space left on device",
+      "appTemporaryAndCacheBytes": 0,
+      "wdaRecoveredUsingInstalledArtifacts": true,
+      "oldPackageNormalForeground": true,
+      "originalPreferencesPreserved": true
+    },
+    "iPhone18": {
+      "latestThemeBuildInstalled": false,
+      "reason": "Not in current USB inventory"
+    }
+  },
+  "weakCellularLargeFiles": {
+    "profile": "SlowNetwork3G",
+    "downMbps": 0.78,
+    "upMbps": 0.33,
+    "inboundLatencyMs": 100,
+    "outboundLatencyMs": 100,
+    "lossPercent": 0,
+    "actualDeviceWiFi": "off",
+    "S19DeviceFiles": {
+      "time": "2026-10-07T08:12:32.009899+08:00",
+      "entry": "deviceFiles",
+      "fileIdentity": {
+        "sample": "S19 Fellowship extended",
+        "currentCompleteBytes": 128795641934,
+        "rangeEvidence": [
+          {
+            "contentRange": "bytes 0-33554431/128795641934",
+            "contentLength": "33554432",
+            "status": "206"
+          },
+          {
+            "contentRange": "bytes 128795625367-128795641933/128795641934",
+            "contentLength": "16567",
+            "status": "206"
+          },
+          {
+            "contentRange": "bytes 14205-33568636/128795641934",
+            "contentLength": "33554432",
+            "status": "206"
+          }
+        ]
+      },
+      "source": "DSM HTTPS 5001 publicDomain, original local Range proxy",
+      "network": {
+        "WiFiOffAtStart": true,
+        "profile": "SlowNetwork3G",
+        "MbpsDown": 0.78,
+        "MbpsUp": 0.33,
+        "eachWayLatencyMs": 100,
+        "lossPercent": 0,
+        "currentTransferCellularObserved": true,
+        "laterWiFiTransitionTime": "unknown; WiFi on in other app screenshot after run, no controlled causal comparison"
+      },
+      "noVerifiedJellyfinMatchReason": "noStoredJellyfinSession",
+      "telemetry": {
+        "count": 144,
+        "coverageSeconds": 177.63063716888428,
+        "first": {
+          "elapsed": 2.6192469596862793,
+          "currentSeconds": "-",
+          "engine": "KSPlayer",
+          "stallCount": "0"
+        },
+        "last": {
+          "elapsed": 180.24988412857056,
+          "currentSeconds": "1.844",
+          "droppedVideoFrames": "1",
+          "engine": "KSPlayer",
+          "stallCount": "1"
+        },
+        "maxPositionSeconds": 1.844,
+        "maxStallCount": 1.0,
+        "maxDroppedVideoFrames": 1.0
+      },
+      "actualScreenshots": "t3/10 loading; t30 black at00:01, t60/90/120/180 black; no recognizable movie picture obtained",
+      "classification": "playback stalled in original flow, not accepted",
+      "exit": "INSUFFICIENT; later native screenshot another app and WiFi on. Do not infer crash/exit cause or continued cellular state beyond proven interval",
+      "tool": "WDA activeAppInfo/source 500 nil object after other app foreground; server ready, unlocked, screenshot usable",
+      "crashReports": "No newly dated Nastart report October7 in collected reports; does not prove every exit cause",
+      "restoration": "Our shaping cleared and all groups inactive; WiFi shown on, original on. No further phone input pending availability answer",
+      "pending": [
+        "S19 Jellyfin weak-cell counterpart",
+        "device match session lookup/endpoint consistency investigation",
+        "10 minute stability",
+        "pause/deep seek/resume",
+        "audio/subtitles output",
+        "MI2/S03 device-file weak-cell cases"
+      ]
+    },
+    "S19Jellyfin": "pending; another app foreground and WDA appInfo nil-object error stopped opening",
+    "MI2AndS03DeviceFiles": "pending"
+  },
+  "formalCompetitorPairs": 0,
+  "allExistingPXUXCBRemainingPreserved": true,
+  "restoration": {
+    "conditionGroups": "allInactive verified",
+    "WiFi": "ON in native screenshot; originally ON; no further radio input",
+    "iPhone13": "other app foreground; availability question pending; final Nastart foreground not verified",
+    "iPad": "old normal package retained; latest install blocked; installed WDA reused",
+    "iPhone18": "not connected"
+  }
+}

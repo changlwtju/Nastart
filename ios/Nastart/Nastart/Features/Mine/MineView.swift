@@ -410,7 +410,6 @@ private struct PlusFeatureTile: View {
 
 private struct AppearanceSettingsView: View {
     @EnvironmentObject private var appearanceStore: AppearanceStore
-    @AppStorage(LaunchpadTheme.storageKey) private var launchpadThemeRaw = LaunchpadTheme.cleanGrid.rawValue
     @AppStorage(AppLanguage.storageKey) private var appLanguageRaw = AppLanguage.system.rawValue
     @AppStorage(AppThemeMode.storageKey) private var appThemeModeRaw = AppThemeMode.system.rawValue
     @AppStorage(AppearancePreferenceKeys.showCardSubtitle) private var showCardSubtitle = false
@@ -467,12 +466,12 @@ private struct AppearanceSettingsView: View {
     }
 
     private var selectedTheme: LaunchpadTheme {
-        LaunchpadTheme(rawValue: launchpadThemeRaw) ?? .cleanGrid
+        appearanceStore.launchpadTheme
     }
 }
 
 private struct LaunchpadThemeGalleryView: View {
-    @AppStorage(LaunchpadTheme.storageKey) private var launchpadThemeRaw = LaunchpadTheme.cleanGrid.rawValue
+    @EnvironmentObject private var appearanceStore: AppearanceStore
 
     var body: some View {
         ScrollView {
@@ -499,7 +498,7 @@ private struct LaunchpadThemeGalleryView: View {
 
                                 Spacer(minLength: 8)
 
-                                if theme.rawValue == launchpadThemeRaw {
+                                if theme == appearanceStore.launchpadTheme {
                                     Text("mine.appearance.theme.active")
                                         .font(.caption.weight(.semibold))
                                         .foregroundStyle(AppTheme.accent)
@@ -534,10 +533,10 @@ private struct LaunchpadThemeGalleryView: View {
 }
 
 private struct LaunchpadThemePreviewDetailView: View {
+    @Environment(\.showLaunchpad) private var showLaunchpad
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var entitlementStore: EntitlementStore
     @EnvironmentObject private var appearanceStore: AppearanceStore
-    @AppStorage(LaunchpadTheme.storageKey) private var launchpadThemeRaw = LaunchpadTheme.cleanGrid.rawValue
 
     let theme: LaunchpadTheme
 
@@ -601,7 +600,7 @@ private struct LaunchpadThemePreviewDetailView: View {
     }
 
     private var isActive: Bool {
-        launchpadThemeRaw == theme.rawValue
+        appearanceStore.launchpadTheme == theme
     }
 
     private var canApply: Bool {
@@ -609,9 +608,9 @@ private struct LaunchpadThemePreviewDetailView: View {
     }
 
     private func applyTheme() {
-        launchpadThemeRaw = theme.rawValue
         appearanceStore.launchpadTheme = theme
         dismiss()
+        showLaunchpad()
     }
 }
 

@@ -96,7 +96,7 @@ struct CommandCenterLaunchpad: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            DeviceSummaryPanel(device: device, compact: options.compactMetrics, isConnected: isConnected)
+            DeviceSummaryPanel(device: device, compact: options.compactMetrics, isConnected: isConnected, theme: .commandCenter)
 
             VStack(alignment: .leading, spacing: 12) {
                 SectionHeader(titleKey: "launchpad.command.quick_actions", trailingKey: "launchpad.section.generated")
@@ -281,7 +281,7 @@ struct GlassDeckLaunchpad: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            DeviceSummaryPanel(device: device, compact: options.compactMetrics, isConnected: isConnected)
+            DeviceSummaryPanel(device: device, compact: options.compactMetrics, isConnected: isConnected, theme: .glassDeck)
 
             if shouldShowCertificateReminder {
                 NavigationLink {

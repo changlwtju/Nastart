@@ -57,14 +57,62 @@ struct DeviceSummaryPanel: View {
     let device: NASDevice
     let compact: Bool
     let isConnected: Bool
+    var theme: LaunchpadTheme = .cleanGrid
 
+    @ViewBuilder
     var body: some View {
+        switch theme {
+        case .cleanGrid:
+            summaryContent
+                .padding(compact ? 14 : 16)
+                .nastartCard(cornerRadius: 18)
+        case .commandCenter:
+            HStack(alignment: .center, spacing: 14) {
+                VStack(spacing: compact ? 14 : 18) {
+                    ForEach(metrics) { metric in
+                        VStack(spacing: 5) {
+                            Label(metric.titleKey, systemImage: metric.symbolName)
+                                .font(.caption2)
+                                .foregroundStyle(.white.opacity(0.8))
+                            Text(metric.value)
+                                .font(.subheadline.weight(.bold))
+                                .foregroundStyle(.white)
+                                .monospacedDigit()
+                        }
+                        .frame(maxWidth: .infinity)
+                    }
+                }
+                .padding(.vertical, 16)
+                .padding(.horizontal, 6)
+                .frame(width: compact ? 82 : 96)
+                .background(AppTheme.primaryAction)
+                .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+
+                VStack(alignment: .leading, spacing: 14) {
+                    titleCluster
+                    statusCluster(alignment: .leading)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .padding(compact ? 14 : 16)
+            .nastartCard(cornerRadius: 18)
+        case .glassDeck:
+            summaryContent
+                .padding(compact ? 14 : 16)
+                .background(.regularMaterial)
+                .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+                .overlay {
+                    RoundedRectangle(cornerRadius: 18, style: .continuous)
+                        .stroke(.white.opacity(0.4), lineWidth: 1)
+                }
+        }
+    }
+
+    private var summaryContent: some View {
         VStack(alignment: .leading, spacing: compact ? 12 : 15) {
             header
             LaunchpadNASMetricRow(metrics: metrics, compact: compact)
         }
-        .padding(compact ? 14 : 16)
-        .nastartCard(cornerRadius: 18)
     }
 
     @ViewBuilder

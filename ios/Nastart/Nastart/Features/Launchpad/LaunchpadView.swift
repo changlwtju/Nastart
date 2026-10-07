@@ -15,9 +15,7 @@ struct LaunchpadView: View {
     @EnvironmentObject private var dataStore: AppDataStore
     @EnvironmentObject private var connectionStore: NASConnectionStore
     @EnvironmentObject private var entitlementStore: EntitlementStore
-    @AppStorage(LaunchpadTheme.storageKey) private var launchpadThemeRaw = LaunchpadTheme.cleanGrid.rawValue
-    @AppStorage(AppearancePreferenceKeys.compactMetrics) private var compactMetrics = true
-    @AppStorage(AppearancePreferenceKeys.showServiceStatus) private var showServiceStatus = true
+    @EnvironmentObject private var appearanceStore: AppearanceStore
     @AppStorage(AppearancePreferenceKeys.showCardSubtitle) private var showCardSubtitle = false
     @AppStorage(AppearancePreferenceKeys.groupFavoritesExpanded) private var groupFavoritesExpanded = true
     @AppStorage(AppearancePreferenceKeys.groupMediaExpanded) private var groupMediaExpanded = true
@@ -240,7 +238,7 @@ struct LaunchpadView: View {
     }
 
     private var selectedTheme: LaunchpadTheme {
-        let theme = LaunchpadTheme(rawValue: launchpadThemeRaw) ?? .cleanGrid
+        let theme = appearanceStore.launchpadTheme
         if theme == .cleanGrid {
             return theme
         }
@@ -259,8 +257,8 @@ struct LaunchpadView: View {
 
     private var displayOptions: LaunchpadDisplayOptions {
         LaunchpadDisplayOptions(
-            compactMetrics: compactMetrics,
-            showServiceStatus: showServiceStatus,
+            compactMetrics: appearanceStore.compactMetrics,
+            showServiceStatus: appearanceStore.showServiceStatus,
             showSubtitle: showCardSubtitle
         )
     }
@@ -285,8 +283,8 @@ struct LaunchpadView: View {
 
     private var displayOptionsSignature: String {
         [
-            compactMetrics,
-            showServiceStatus,
+            appearanceStore.compactMetrics,
+            appearanceStore.showServiceStatus,
             showCardSubtitle
         ].map { $0 ? "1" : "0" }.joined()
     }
