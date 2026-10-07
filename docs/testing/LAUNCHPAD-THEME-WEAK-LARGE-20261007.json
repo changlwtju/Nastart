@@ -186,5 +186,13 @@
     "iPhone13": "other app foreground; availability question pending; final Nastart foreground not verified",
     "iPad": "old normal package retained; latest install blocked; installed WDA reused",
     "iPhone18": "not connected"
+  },
+  "github": {
+    "codeCommit": "ce3ca945cf5bd660020cad72ae5bd7c76580daeb",
+    "branch": "main",
+    "remoteVerified": true,
+    "time": "2026-10-07T08:16:35.328337+08:00",
+    "installedIPhone13IOSContentMatchesCommit": true,
+    "unchangedIOSBuildOriginalIdentityRetained": true
   }
 }
