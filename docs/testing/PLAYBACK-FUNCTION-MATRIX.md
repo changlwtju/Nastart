@@ -413,6 +413,8 @@ TV边界补充（2026-10-19）：[照片/现场复核](../archive/handoffs/2026-
 
 样本真实身份仍维护在[固定清单](samples/README.md)。扩展样本先核对可达性和规格，不因本节增加容量分档就自动增加已执行覆盖。
 
+2026-11-08 [S19 恢复后抽测](../archive/handoffs/2026-11/CODEX-2026-11-08-LORD-OF-THE-RINGS-PLAYBACK.md)：设备文件的 `Content-Range` 总量 128,795,641,934 bytes，13 Wi-Fi 原流出画，识别 Dolby Vision Profile 7 源；15 秒定位、50% 实画成立，50% 首次恢复后再次缓冲。十分钟窗口记录 9 次缓冲，未通过稳定性；设备输出和同条件 NAS 负载仍开放。Jellyfin 401 单列，iPad 未回归，不增加整格通过数。
+
 ### B. 设备、网络与入口维度
 
 | 条件 | iPhone 13 | iPhone 18 | iPad | 记录要求 |

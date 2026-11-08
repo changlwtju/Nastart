@@ -15,7 +15,7 @@
 | 时长、容器、视频编码、分辨率、位深 | 详情页 3h48m、MKV、4K H.265 HDR；位深待实际轨道核实 |
 | 平均 / 峰值码率 | 服务端源码率 **81,851,565 bps**（界面 81.9 Mbps）；峰值未知 |
 | DV Profile / 基础层 / HDR | Jellyfin 结构化诊断：DV Profile 7、Level 6、基础层兼容 ID 6；不是实际输出验收 |
-| 音轨与字幕清单 | 默认流 1：English TrueHD + Dolby Atmos 7.1，结构化 AudioSpatialFormat=DolbyAtmos；流 2：AC3；默认字幕流 8：Chinese (Simplified)&English PGSSUB。其余轨道待补齐 |
+| 音轨与字幕清单 | 默认流 1：English TrueHD + Dolby Atmos 7.1，历史结构化 AudioSpatialFormat=DolbyAtmos；流 2：AC3；默认字幕流 8：Chinese (Simplified)&English PGSSUB。2026-11-08 [真机音轨菜单](../../archive/handoffs/2026-11/CODEX-2026-11-08-LORD-OF-THE-RINGS-PLAYBACK.md)另外确认流 3 为普通话 DTS，未切轨或听音；其余轨道待补齐。 |
 | 当前应用版本 | 第一批原流探测并行 + 限制性 Wi-Fi 测速复核；34 项播放测试通过，真机待验证 |
 
 ## 四入口状态

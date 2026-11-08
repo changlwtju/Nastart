@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-08T10:33:18.475609+08:00",
+  "updatedAt": "2026-11-08T18:02:20.496914+08:00",
   "timezone": "Asia/Shanghai",
   "coordinator": "Codex",
   "statusIsAdvisoryNotAnOSLock": true,
@@ -32,25 +32,28 @@
     "acceptedCompactUICommit": "1fbad71ef2784458ef3ab1d73f14e53490cd65ef",
     "previous447AndReviewBranchFieldsAreHistorical": true,
     "currentSelected542InputsMatch": true,
-    "currentWorkspaceManifestSubfolder": "shared-proxy-phase1"
+    "currentWorkspaceManifestSubfolder": "shared-proxy-phase1",
+    "activeMobileProductCommit": "d3dbc9c40e6bdd292bf9066ded4e9e0ee75974d7",
+    "activeMobileProductInputsHaveLocalDiff": false,
+    "prior542InputFieldsAreHistorical": true
   },
   "devices": {
     "iphone13": {
       "coordinator": "Codex",
       "activeTestOwner": null,
-      "state": "Phase1 normal97b3 retained install; LAN FTP actual image/short seek; ordinary close pending; clean shutdown",
-      "lastInstalledMainSHA256": "4f5f0ffe431e9ea09e7e917279d0d21bb967b38af91607dd7e6b212c62f1262e",
+      "state": "Current main Debug retained install; S19 File Station Wi-Fi actual image, forward and 50 percent seek; rebuffer after deep seek; Jellyfin catalog 401",
+      "lastInstalledMainSHA256": "2f8e29cd25d5a8b59e99045c44b21079e796bed5d88cfb39214d9a7226c204a6",
       "claudeAccessGranted": false,
       "latestPackageForCurrentSourceVerified": true,
-      "debugDylibSHA256": "97b358321cdd7652b866552e24bb25c65cd1ab800bf42c4afd92905bb3147d5f",
-      "installedAt": "2026-11-08T10:09:42.452882+08:00",
+      "debugDylibSHA256": "3ac443127f9ece12fafbc91f2e81077be843f0ee959f501bac5be912ab4f680f",
+      "installedAt": "2026-11-08T17:35:53.460913+08:00",
       "normalAccountRootVerified": true,
       "originalAllPreferencesPreserved": true,
       "mobileInputsUnchangedAfterTVOnlyBatch2": true,
-      "reasonLatestIdentityNeedsRecheck": "Finalbb4d independently installed and normal root seen; every future window still fresh-check all gates",
+      "reasonLatestIdentityNeedsRecheck": "Current app installed with preferences retained; a new device window still requires fresh identity and package gates",
       "currentSourceInstallComplete": true,
       "installComplete": true,
-      "mainSHA256": "4f5f0ffe431e9ea09e7e917279d0d21bb967b38af91607dd7e6b212c62f1262e",
+      "mainSHA256": "2f8e29cd25d5a8b59e99045c44b21079e796bed5d88cfb39214d9a7226c204a6",
       "physicalRotationOrInteractionVerified": false,
       "currentUIReport": "docs/testing/results/2026-11/CODEX-NETWORK-SOURCES-SHARED-PROXY-PHASE1-20261108.json",
       "freshIdentityVerified": true,
@@ -64,12 +67,12 @@
       "existingInteractiveRunnerReady": false,
       "validInteractiveRunnerSignatureAvailable": true,
       "interactiveRunnerProfileExpirationUTC": "2026-11-11T00:42:31Z",
-      "interactionVerifiedThisBatch": false,
-      "lastCleanupConfirmedAt": "2026-11-08T10:11:03.052768+08:00",
+      "interactionVerifiedThisBatch": true,
+      "lastCleanupConfirmedAt": "2026-11-08T18:02:20.496914+08:00",
       "ownedAppAndRunnerStoppedAtWindowEnd": true,
       "currentInteractionBlock": "Ordinary close control hid before fresh interaction; no action sent",
       "currentInstalledIdentityNotRecheckedThisReview": false,
-      "reportedCurrentDebugDylibPrefix": "97b358321cdd7652",
+      "reportedCurrentDebugDylibPrefix": "3ac443127f9ece12",
       "historicalInstallFieldsScope": "Old4November and Claude package reports are historical; current627c independently installed and started",
       "nextWindowOwnerProposal": "Codex afterfresh source/package/identity/signature andexclusive preflight",
       "ClaudeWindowClosedReported": true,
@@ -97,7 +100,9 @@
       "finalAllPreferencesEqual": false,
       "currentPlaybackVerified": true,
       "baselinePlaybackPackageSHA256": "627c173d7d0cc43d39e91cc7a8dc43480c8aac33251012bad6a9668af349c190",
-      "currentPlaybackVerificationScope": "One real LAN FTP short play and +15s seek on97b3, local proxy verified; bb4d Jellyfin result separate"
+      "currentPlaybackVerificationScope": "One real LAN FTP short play and +15s seek on97b3, local proxy verified; bb4d Jellyfin result separate",
+      "currentSampleReport": "docs/testing/results/2026-11/CODEX-S19-WIFI-DEVICE-FILES-20261108.json",
+      "currentSampleHandoff": "docs/archive/handoffs/2026-11/CODEX-2026-11-08-LORD-OF-THE-RINGS-PLAYBACK.md"
     },
     "appletvLivingRoom": {
       "coordinator": "Codex",
@@ -121,7 +126,7 @@
       "coordinator": "Codex",
       "plannedDebugOwnerAfterHandoff": "Codex by default under user latest instruction; Claude only with explicit exclusive resource handoff",
       "activeTestOwner": null,
-      "state": "USB absent at10:12:39; priorbb4d confirmed, phase1 97b3 not installed; manual media library entry still needed; user currently unable to reconnect",
+      "state": "A16 iPad fresh USB identity observed; existing app left in place, no current main install or S19 regression",
       "model": "iPad15,7",
       "system": "26.6",
       "transport": "wired",
@@ -173,7 +178,7 @@
         "currentUIReport": "docs/testing/results/2026-11/CODEX-FOLDER-PICKER-INTEGRATION-20261104.json",
         "lastCleanupConfirmedAt": "2026-11-04T09:16:43.547989+08:00"
       },
-      "currentInstalledIdentityNotRecheckedThisBatch": false,
+      "currentInstalledIdentityNotRecheckedThisBatch": true,
       "appProfileExpirationUTC": "2026-11-15T00:30:17Z",
       "preferencesPreservationScope": "All preferences equal across final retain-data installation; final normal startup changed only diagnostics",
       "currentWindowClosed": true,
@@ -248,7 +253,7 @@
       "latestContextReport": "docs/archive/handoffs/2026-11/2026-11-08-0130-CLAUDE-TRANSITION-TO-CODEX.md",
       "observedBusinessReadAccessByCodexThisBatch": true
     },
-    "mediaRequestsScope": "Phase1 13 FTP window closed; no active media lease",
+    "mediaRequestsScope": "S19 iPhone 13 Wi-Fi File Station window released; no active media lease",
     "FTPAndSMBUsageScope": "LAN only per user11-08; no loopback/entry-label inference",
     "NASSecurityClosure": "Open pertransition; user-owned separate work; no configuration/sourcefile changes throughApp task"
   },
@@ -265,7 +270,7 @@
     "releaseRequiredBeforeCodexHeavyBuild": false,
     "activeSimulatorOwner": null,
     "simulatorScope": "All owned Range test simulators deleted; other instances untouched",
-    "lastValidationReport": "docs/archive/handoffs/2026-11/CODEX-2026-11-08-NETWORK-SOURCES-SHARED-PROXY-PHASE1.md",
+    "lastValidationReport": "docs/archive/handoffs/2026-11/CODEX-2026-11-08-LORD-OF-THE-RINGS-PLAYBACK.md",
     "lastIntakeReport": "docs/archive/handoffs/2026-11/CODEX-2026-11-08-TRANSITION-INTAKE.md",
     "activeHeavyBuildScope": null
   },
@@ -1364,5 +1369,23 @@
     "privateEvidencePointer": "/tmp/nastart-codex-tv-root-cause-1108-path",
     "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-08-APPLE-TV-TUNNEL-1005-DIAGNOSIS.md",
     "blocker": "Target-correlated RemotePairing1005 during CoreDevice tunnel acquisition; underlying capability decision unresolved"
+  },
+  "mainNormalPackage20261108": {
+    "configuration": "Signed ordinary Debug, no injected test flags or arguments",
+    "xcode": "27.2 (27B52)",
+    "productSourceCommit": "d3dbc9c40e6bdd292bf9066ded4e9e0ee75974d7",
+    "builtAt": "2026-11-08T17:31:43+08:00",
+    "mainSHA256": "2f8e29cd25d5a8b59e99045c44b21079e796bed5d88cfb39214d9a7226c204a6",
+    "debugDylibSHA256": "3ac443127f9ece12fafbc91f2e81077be843f0ee959f501bac5be912ab4f680f",
+    "profileExpirationUTC": "2026-11-15T00:30:17Z",
+    "deepStrictSignatureVerified": true,
+    "coveredDevices": [
+      "iphone13",
+      "ipad"
+    ],
+    "installedAndNormalRootVerifiedDevices": [
+      "iphone13"
+    ],
+    "verificationReport": "docs/archive/handoffs/2026-11/CODEX-2026-11-08-LORD-OF-THE-RINGS-PLAYBACK.md"
   }
 }

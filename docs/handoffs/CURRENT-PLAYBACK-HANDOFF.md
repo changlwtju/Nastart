@@ -1,5 +1,7 @@
 # 当前接续：共享代理第一步与 Apple TV 连接
 
+2026-11-08 晚间接续：[《指环王：护戒使者》样本现场](../archive/handoffs/2026-11/CODEX-2026-11-08-LORD-OF-THE-RINGS-PLAYBACK.md)。产品快照 `main/d3dbc9c4` 已推送；签名 Debug `3ac44312…` 已在 13 保留数据覆盖并启动，iPad A16 已重新识别、本轮未安装。13 Wi-Fi 设备文件原流实画成立，50% 定位首次恢复后再次缓冲，十分钟原流观察记录 9 次缓冲。Jellyfin 库返回 401；源 Dolby Vision Profile 7，实际显示输出、声音、iPad 和 NAS 负载对照待验。此前 97b3/BB4D 与断连描述为历史结果。
+
 2026-11-08 用户将《指环王》样本调试交给 Codex。完整 NAS 路径保存在本机私有交接原件，公开的[新样本一节](../archive/handoffs/2026-11/2026-11-08-0130-CLAUDE-TRANSITION-TO-CODEX.md#新样本11-08-1720用户经-radarr-下载)记录了样本边界和待测项。先核 NAS 可用性、样本元数据和目标设备最新包，再串行测起播、跳转、长时、HDR、TrueHD 与 NAS 负载。Safari 的黑屏和约 60% CPU 为用户提供的前序观察，Codex 尚未独立复现。
 
 2026-11-08 Apple TV 已升级至 tvOS 27.2（24K122）。16:18 截图的两次 DeviceKit 5000/-1 均发生在验证码认证前，广播的手动配对 TCP 55747 在 IPv4/IPv6 拒连，16:21 复核仍拒连且同主机 AirPlay 7000 可连。下次重新进入电视配对页后先核对新广播和端口。此前 13:08/13:09 两次配对成功后报开发隧道 1005，13:11 条目转为不可用。独立 Mac 对照暂缓。[升级后日志](../archive/handoffs/2026-11/CODEX-2026-11-08-APPLE-TV-27-2-DEVICE-HUB-LOGS.md)。

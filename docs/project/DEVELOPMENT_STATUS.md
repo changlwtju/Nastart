@@ -1,5 +1,7 @@
 # 当前开发进度、问题与后续计划
 
+2026-11-08 晚间：[《指环王：护戒使者》样本接续](../archive/handoffs/2026-11/CODEX-2026-11-08-LORD-OF-THE-RINGS-PLAYBACK.md)。签名 Debug `3ac44312…` 已在 13 保留数据覆盖并启动。128.8 GB 样本 Wi-Fi 设备文件原流出画，源 Dolby Vision Profile 7；深定位后再次缓冲，十分钟原流观察有 9 次缓冲。当前 Jellyfin 库返回 401；音频输出、HDR/DV 显示和 NAS 负载配对待验证。iPad A16 已重新连接，本轮未更新或回归。
+
 2026-11-08 Apple TV 升级至 tvOS 27.2（24K122）。16:18 两次配对发生 DeviceKit 5000/-1，日志及 16:21 复核均确认手动配对端口 55747 拒连，同一主机 AirPlay 可达。此前两次配对成功后报开发隧道 1005。当前未恢复真机安装条件。[升级后日志](../archive/handoffs/2026-11/CODEX-2026-11-08-APPLE-TV-27-2-DEVICE-HUB-LOGS.md)。
 
 历史复核补充，同一台 AppleTV14,1/tvOS18.2 于 10 月 18 日配对后曾出现 1005，10 月 24 日已可安装，10 月 29 日仍可通过局域网覆盖安装。历史连接恢复的触发动作未确认。[Apple TV 准备与历史记录](../development/APPLE-TV-PREPARATION.md)。

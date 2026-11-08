@@ -1,0 +1,465 @@
+{
+  "recordedDate": "2026-11-08",
+  "productSourceCommit": "d3dbc9c40e6bdd292bf9066ded4e9e0ee75974d7",
+  "debugDylibSHA256": "3ac443127f9ece12fafbc91f2e81077be843f0ee959f501bac5be912ab4f680f",
+  "device": {
+    "family": "iPhone 13",
+    "model": "iPhone14,5",
+    "system": "16.3.1",
+    "freshInstall": true,
+    "network": "Wi-Fi/LAN"
+  },
+  "sample": {
+    "reference": "S19 capacity match; no full-file checksum",
+    "movie": "The Lord of the Rings: The Fellowship of the Ring (2001)",
+    "contentRangeTotalBytes": 128795641934,
+    "durationSeconds": 13698.4,
+    "container": "MKV",
+    "sourceBitDepth": 10,
+    "sourceDolbyVisionProfile": 7,
+    "sourceDolbyVisionLevel": 6,
+    "sourceDolbyVisionCompatibilityID": 6,
+    "sourceDolbyVisionEnhancementLayer": true
+  },
+  "playback": {
+    "entry": "deviceFiles",
+    "upstream": "DSM File Station",
+    "route": "localRangeProxy",
+    "engine": "KSPlayer",
+    "method": "directPlay",
+    "startupPreloadedBytes": 0,
+    "startupPreloadReason": "bytesNotMaterialized",
+    "actualFrameObserved": true
+  },
+  "seek": [
+    {
+      "control": "forward15",
+      "targetSeconds": 18.081,
+      "recoveredAfterSecondsApprox": 2.8,
+      "actualPositionObserved": true
+    },
+    {
+      "control": "drag50Percent",
+      "targetSeconds": 6906.567,
+      "internalRecoveryMs": 5144,
+      "actualFrameObserved": true,
+      "rebufferedAfterInitialRecovery": true,
+      "stableAfterSeek": false
+    }
+  ],
+  "continuousWindow": {
+    "startedAt": "2026-11-08T17:49:06.562215+08:00",
+    "targetWallSeconds": 600,
+    "lastRecordedWallSeconds": 606.39,
+    "lastRecordedMediaPositionSeconds": 557.534,
+    "internalFirstFrameMs": 884,
+    "checkpoints": [
+      {
+        "currentSeconds": "24.564",
+        "routeKind": "localRangeProxy",
+        "playMethod": "directPlay",
+        "stallCount": "0",
+        "droppedVideoFrames": "0",
+        "displayFPS": "25.4",
+        "bytesRead": "114705964",
+        "enginePlaybackState": "playing",
+        "sampleAgeSeconds": 6.01,
+        "wallSeconds": 31
+      },
+      {
+        "currentSeconds": "54.473",
+        "routeKind": "localRangeProxy",
+        "playMethod": "directPlay",
+        "stallCount": "0",
+        "droppedVideoFrames": "0",
+        "displayFPS": "24.0",
+        "bytesRead": "208698324",
+        "enginePlaybackState": "playing",
+        "sampleAgeSeconds": 6.18,
+        "wallSeconds": 61
+      },
+      {
+        "currentSeconds": "85.278",
+        "routeKind": "localRangeProxy",
+        "playMethod": "directPlay",
+        "stallCount": "0",
+        "droppedVideoFrames": "0",
+        "displayFPS": "25.0",
+        "bytesRead": "481696428",
+        "enginePlaybackState": "playing",
+        "sampleAgeSeconds": 5.39,
+        "wallSeconds": 91
+      },
+      {
+        "currentSeconds": "114.974",
+        "routeKind": "localRangeProxy",
+        "playMethod": "directPlay",
+        "stallCount": "0",
+        "droppedVideoFrames": "0",
+        "displayFPS": "24.0",
+        "bytesRead": "749804636",
+        "enginePlaybackState": "playing",
+        "sampleAgeSeconds": 5.74,
+        "wallSeconds": 121
+      },
+      {
+        "currentSeconds": "144.564",
+        "routeKind": "localRangeProxy",
+        "playMethod": "directPlay",
+        "stallCount": "0",
+        "droppedVideoFrames": "0",
+        "displayFPS": "24.0",
+        "bytesRead": "1004188771",
+        "enginePlaybackState": "playing",
+        "sampleAgeSeconds": 6.11,
+        "wallSeconds": 151
+      },
+      {
+        "currentSeconds": "174.153",
+        "routeKind": "localRangeProxy",
+        "playMethod": "directPlay",
+        "stallCount": "1",
+        "droppedVideoFrames": "0",
+        "displayFPS": "24.0",
+        "bytesRead": "1265193090",
+        "enginePlaybackState": "playing",
+        "sampleAgeSeconds": 6.42,
+        "wallSeconds": 181
+      },
+      {
+        "currentSeconds": "200.073",
+        "routeKind": "localRangeProxy",
+        "playMethod": "directPlay",
+        "stallCount": "1",
+        "droppedVideoFrames": "16",
+        "displayFPS": "23.9",
+        "bytesRead": "1552546594",
+        "enginePlaybackState": "playing",
+        "sampleAgeSeconds": 5.79,
+        "wallSeconds": 211
+      },
+      {
+        "currentSeconds": "225.801",
+        "routeKind": "localRangeProxy",
+        "playMethod": "directPlay",
+        "stallCount": "2",
+        "droppedVideoFrames": "20",
+        "displayFPS": "23.8",
+        "bytesRead": "1829338458",
+        "enginePlaybackState": "playing",
+        "sampleAgeSeconds": 6.25,
+        "wallSeconds": 241
+      },
+      {
+        "currentSeconds": "252.191",
+        "routeKind": "localRangeProxy",
+        "playMethod": "directPlay",
+        "stallCount": "3",
+        "droppedVideoFrames": "24",
+        "displayFPS": "24.0",
+        "bytesRead": "2152198298",
+        "enginePlaybackState": "playing",
+        "sampleAgeSeconds": 5.1,
+        "wallSeconds": 271
+      },
+      {
+        "currentSeconds": "280.777",
+        "routeKind": "localRangeProxy",
+        "playMethod": "directPlay",
+        "stallCount": "3",
+        "droppedVideoFrames": "24",
+        "displayFPS": "24.0",
+        "bytesRead": "2433169090",
+        "enginePlaybackState": "playing",
+        "sampleAgeSeconds": 6.49,
+        "wallSeconds": 301
+      },
+      {
+        "currentSeconds": "307.358",
+        "routeKind": "localRangeProxy",
+        "playMethod": "directPlay",
+        "stallCount": "4",
+        "droppedVideoFrames": "28",
+        "displayFPS": "24.0",
+        "bytesRead": "2699574450",
+        "enginePlaybackState": "playing",
+        "sampleAgeSeconds": 5.74,
+        "wallSeconds": 331
+      },
+      {
+        "currentSeconds": "332.340",
+        "routeKind": "localRangeProxy",
+        "playMethod": "directPlay",
+        "stallCount": "5",
+        "droppedVideoFrames": "32",
+        "displayFPS": "24.0",
+        "bytesRead": "2960642482",
+        "enginePlaybackState": "playing",
+        "sampleAgeSeconds": 5.89,
+        "wallSeconds": 361
+      },
+      {
+        "currentSeconds": "362.931",
+        "routeKind": "localRangeProxy",
+        "playMethod": "directPlay",
+        "stallCount": "5",
+        "droppedVideoFrames": "32",
+        "displayFPS": "23.6",
+        "bytesRead": "3213306394",
+        "enginePlaybackState": "playing",
+        "sampleAgeSeconds": 5.4,
+        "wallSeconds": 391
+      },
+      {
+        "currentSeconds": "392.627",
+        "routeKind": "localRangeProxy",
+        "playMethod": "directPlay",
+        "stallCount": "5",
+        "droppedVideoFrames": "32",
+        "displayFPS": "24.0",
+        "bytesRead": "3483554746",
+        "enginePlaybackState": "playing",
+        "sampleAgeSeconds": 6.43,
+        "wallSeconds": 422
+      },
+      {
+        "currentSeconds": "422.345",
+        "routeKind": "localRangeProxy",
+        "playMethod": "directPlay",
+        "stallCount": "5",
+        "droppedVideoFrames": "32",
+        "displayFPS": "24.0",
+        "bytesRead": "3751416794",
+        "enginePlaybackState": "playing",
+        "sampleAgeSeconds": 6.05,
+        "wallSeconds": 451
+      },
+      {
+        "currentSeconds": "452.937",
+        "routeKind": "localRangeProxy",
+        "playMethod": "directPlay",
+        "stallCount": "5",
+        "droppedVideoFrames": "32",
+        "displayFPS": "24.0",
+        "bytesRead": "4025415466",
+        "enginePlaybackState": "playing",
+        "sampleAgeSeconds": 5.54,
+        "wallSeconds": 481
+      },
+      {
+        "currentSeconds": "482.633",
+        "routeKind": "localRangeProxy",
+        "playMethod": "directPlay",
+        "stallCount": "5",
+        "droppedVideoFrames": "32",
+        "displayFPS": "24.0",
+        "bytesRead": "4291602178",
+        "enginePlaybackState": "playing",
+        "sampleAgeSeconds": 5.93,
+        "wallSeconds": 511
+      },
+      {
+        "currentSeconds": "506.974",
+        "routeKind": "localRangeProxy",
+        "playMethod": "directPlay",
+        "stallCount": "6",
+        "droppedVideoFrames": "36",
+        "displayFPS": "24.0",
+        "bytesRead": "4563442154",
+        "enginePlaybackState": "playing",
+        "sampleAgeSeconds": 6.01,
+        "wallSeconds": 541
+      },
+      {
+        "currentSeconds": "533.726",
+        "routeKind": "localRangeProxy",
+        "playMethod": "directPlay",
+        "stallCount": "7",
+        "droppedVideoFrames": "39",
+        "displayFPS": "23.9",
+        "bytesRead": "4854408146",
+        "enginePlaybackState": "playing",
+        "sampleAgeSeconds": 5.34,
+        "wallSeconds": 571
+      },
+      {
+        "currentSeconds": "557.534",
+        "routeKind": "localRangeProxy",
+        "playMethod": "directPlay",
+        "stallCount": "9",
+        "droppedVideoFrames": "47",
+        "displayFPS": "24.0",
+        "bytesRead": "5103368002",
+        "enginePlaybackState": "playing",
+        "sampleAgeSeconds": 6.8,
+        "wallSeconds": 611
+      }
+    ],
+    "telemetrySamples": 569,
+    "maximumSamplingGapSeconds": 1.12,
+    "reportedStallCount": 9,
+    "stallTransitions": [
+      {
+        "elapsedSeconds": 3.66,
+        "active": false,
+        "mediaPositionSeconds": 1.182,
+        "reportedStallCount": 0
+      },
+      {
+        "elapsedSeconds": 176.68,
+        "active": true,
+        "mediaPositionSeconds": 174.153,
+        "reportedStallCount": 1
+      },
+      {
+        "elapsedSeconds": 182.05,
+        "active": false,
+        "mediaPositionSeconds": 174.878,
+        "reportedStallCount": 1
+      },
+      {
+        "elapsedSeconds": 210.35,
+        "active": true,
+        "mediaPositionSeconds": 202.654,
+        "reportedStallCount": 2
+      },
+      {
+        "elapsedSeconds": 214.45,
+        "active": false,
+        "mediaPositionSeconds": 203.507,
+        "reportedStallCount": 2
+      },
+      {
+        "elapsedSeconds": 254.85,
+        "active": true,
+        "mediaPositionSeconds": 242.931,
+        "reportedStallCount": 3
+      },
+      {
+        "elapsedSeconds": 259.25,
+        "active": false,
+        "mediaPositionSeconds": 243.571,
+        "reportedStallCount": 3
+      },
+      {
+        "elapsedSeconds": 303.85,
+        "active": true,
+        "mediaPositionSeconds": 287.561,
+        "reportedStallCount": 4
+      },
+      {
+        "elapsedSeconds": 308.25,
+        "active": false,
+        "mediaPositionSeconds": 288.351,
+        "reportedStallCount": 4
+      },
+      {
+        "elapsedSeconds": 333.64,
+        "active": true,
+        "mediaPositionSeconds": 313.737,
+        "reportedStallCount": 5
+      },
+      {
+        "elapsedSeconds": 338.94,
+        "active": false,
+        "mediaPositionSeconds": 314.227,
+        "reportedStallCount": 5
+      },
+      {
+        "elapsedSeconds": 518.89,
+        "active": true,
+        "mediaPositionSeconds": 493.811,
+        "reportedStallCount": 6
+      },
+      {
+        "elapsedSeconds": 524.39,
+        "active": false,
+        "mediaPositionSeconds": 494.153,
+        "reportedStallCount": 6
+      },
+      {
+        "elapsedSeconds": 552.89,
+        "active": true,
+        "mediaPositionSeconds": 522.547,
+        "reportedStallCount": 7
+      },
+      {
+        "elapsedSeconds": 557.09,
+        "active": false,
+        "mediaPositionSeconds": 522.931,
+        "reportedStallCount": 7
+      },
+      {
+        "elapsedSeconds": 580.79,
+        "active": true,
+        "mediaPositionSeconds": 545.566,
+        "reportedStallCount": 8
+      },
+      {
+        "elapsedSeconds": 586.09,
+        "active": false,
+        "mediaPositionSeconds": 546.057,
+        "reportedStallCount": 8
+      },
+      {
+        "elapsedSeconds": 592.5,
+        "active": true,
+        "mediaPositionSeconds": 552.051,
+        "reportedStallCount": 9
+      },
+      {
+        "elapsedSeconds": 601.09,
+        "active": false,
+        "mediaPositionSeconds": 552.244,
+        "reportedStallCount": 9
+      }
+    ],
+    "observedMethods": [
+      "directPlay"
+    ],
+    "upstreamTaskStatusCounts": {
+      "206": 154
+    },
+    "eligibleRangeBodyRateSamples": 152,
+    "sampledRangeBodyMBps": {
+      "minimum": 1.3,
+      "median": 9.4,
+      "maximum": 13.29
+    },
+    "rawData": "Local private evidence. Engine bytes read are not network or billing totals."
+  },
+  "blockedOrUnverified": {
+    "jellyfinCatalogHTTPStatus": 401,
+    "iPadRegression": "not run",
+    "HDRDolbyVisionDisplay": "not verified",
+    "audibleOutputAndChannelPreservation": "not verified",
+    "matchedNASCPUComparison": "not run",
+    "deviceMemory": "no usable sample",
+    "wholeMatrixCellPassed": false
+  },
+  "audioMenu": {
+    "separateShortWindow": true,
+    "selectedTrack": {
+      "number": 1,
+      "language": "English",
+      "codec": "TrueHD"
+    },
+    "observedAdditionalTracks": [
+      {
+        "number": 2,
+        "codec": "AC3",
+        "role": "compatibility"
+      },
+      {
+        "number": 3,
+        "language": "Chinese (Mandarin)",
+        "codec": "DTS"
+      }
+    ],
+    "trackSwitchTested": false,
+    "outputVolume": 0,
+    "reportedOutput": "speaker decoded PCM",
+    "source7Point1FromPriorS19Metadata": true,
+    "physicalChannelOutputVerified": false
+  }
+}
