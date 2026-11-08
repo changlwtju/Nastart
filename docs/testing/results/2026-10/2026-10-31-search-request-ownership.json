@@ -1,0 +1,148 @@
+{
+  "recordedAt": "2026-10-31T06:04:37+08:00",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceInputCount": 439,
+  "changedExistingSourceOrTestFiles": 6,
+  "newSourceOrTestFiles": 0,
+  "existingTestsPassed": 9,
+  "newRaceRegressionTestsPassed": 3,
+  "builds": {
+    "mobile-sim-debug-cast": {
+      "startedAt": "2026-10-31T05:50:22.622799+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-31T05:51:01.582833+08:00"
+    },
+    "tv-sim-debug-cast": {
+      "startedAt": "2026-10-31T05:52:30.120557+08:00",
+      "reason": "Final TV retry label padding before visual validation",
+      "exitCode": 0,
+      "endedAt": "2026-10-31T05:52:40.900964+08:00"
+    },
+    "module-tests": {
+      "startedAt": "2026-10-31T05:51:15.518292+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-31T05:51:20.423486+08:00"
+    },
+    "mobile-debug": {
+      "startedAt": "2026-10-31T05:54:12.102556+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-31T05:54:45.633977+08:00"
+    },
+    "tv-debug": {
+      "startedAt": "2026-10-31T05:56:26.044382+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-31T05:56:41.743674+08:00"
+    },
+    "mobile-release": {
+      "startedAt": "2026-10-31T05:54:45.635288+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-31T05:56:26.042040+08:00"
+    },
+    "tv-release": {
+      "startedAt": "2026-10-31T05:56:41.745518+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-31T05:57:12.536981+08:00"
+    }
+  },
+  "sourcePreservation": {
+    "existingSourceOrTestFilesChanged": 6,
+    "newSourceOrTestFiles": 0,
+    "mobileOutsideSearchViewByteIdentical": true,
+    "allStoreClientAuthenticationAndPlaybackCodeByteIdentical": true,
+    "existing350msDebounceAndServiceSearchRetained": true,
+    "readStateAlgorithmByteIdenticalAfterAccessAndTypeAliasNormalization": true,
+    "existingDetailReadersRetainCompatibilityAlias": true,
+    "tvEntireFileOnlyOneDetailErrorPresentationBlockChanged": true,
+    "tvRequestPlaybackFocusNavigationAndRetryCallbackByteIdentical": true,
+    "newSearchBehavior": "Stable query/retry task trigger, explicit generation + current-query guard, cleared-query invalidation, direct same-term retry",
+    "existingTestsPassed": 9,
+    "newRaceRegressionTestsPassed": 3,
+    "previewNoModelStoreVaultClientTaskOrNetwork": true,
+    "sourceInputCount": 439,
+    "otherSourceInputsUnchanged": 433
+  },
+  "packages": {
+    "mobile": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-31T05:54:45.483535+08:00",
+      "frozenAt": "2026-10-31T05:58:32.071100+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 439,
+      "mainSHA256": "484ddf1fd1343e3b2746ee188cd9496cc19ce6370a21abc3e2e971fed8eccd56",
+      "debugDylibSHA256": "0d2eb29531c20787fccf7c559669c52a400fbf8798d8a5f6dbd109b8e82e67fb",
+      "signedMachOCount": 30,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false,
+      "copyMethod": "cp -cpR clone requested; hashes and signatures verified independently"
+    },
+    "tv": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-31T05:56:41.682935+08:00",
+      "frozenAt": "2026-10-31T05:58:32.452195+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 439,
+      "mainSHA256": "f220f24eb948331f2bd1a65be61d357346a069a4447e1bcc660fe238f1a53b62",
+      "debugDylibSHA256": "5143834432f2a403afb9e69e483ea27707a45003ed0585732b5aa4734b9d366a",
+      "signedMachOCount": 27,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false,
+      "copyMethod": "cp -cpR clone requested; hashes and signatures verified independently"
+    }
+  },
+  "capture": {
+    "accepted": 9,
+    "byPlatform": {
+      "phone": 3,
+      "pad": 3,
+      "tv": 3
+    },
+    "notStarted": {},
+    "allPassed": true,
+    "ownedSimulatorsDeleted": true,
+    "syntheticPreferencesPreserved": true,
+    "physicalDevicesOperated": 0,
+    "NASCommands": 0,
+    "interactionOrAnimationVerified": false
+  },
+  "visualReview": {
+    "recordedAt": "2026-10-31T06:04:37.568568+08:00",
+    "reviewed": true,
+    "reviewedStaticWindows": 9,
+    "reviewSheets": [
+      "phone-review-1.jpg",
+      "phone-review-2.jpg",
+      "pad-review-1.jpg",
+      "pad-review-2.jpg",
+      "tv-review-1.jpg",
+      "tv-review-2.jpg"
+    ],
+    "searchFailureRetryVisible": true,
+    "heroTitleMessageAndRetryReadableInLightAndDarkParentThemes": true,
+    "noClippingOverlapOrContrastIssueObservedInSelectedWindows": true,
+    "actualSearchStateTransitionsOrRequestsVerified": false,
+    "productionTVTileStyleFocusOrCallbackVerified": false,
+    "allLanguagesLargeTextOrVoiceOverVerified": false,
+    "frameTimingOrScrollSmoothnessVerified": false
+  },
+  "ownedSimulatorsDeleted": 3,
+  "physicalDevicesOperated": 0,
+  "NASCommands": 0,
+  "playbackCommands": 0,
+  "newPlaybackMatrixP": 0,
+  "notVerified": [
+    "Live Jellyfin typing/response races, search service cancellation or same-term retry",
+    "Production TV detail button focus/click and actual server data",
+    "All preferred languages, large text, VoiceOver/scroll timing",
+    "Physical installation and NAS/playback"
+  ]
+}

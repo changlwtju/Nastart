@@ -1,0 +1,1381 @@
+{
+  "date": "2026-10-20",
+  "scope": "Mac offline CoreText glyph, generated PGS decoder, HDR color and retained-generation boundaries",
+  "appSourceChanged": false,
+  "sourceDiffSHA256Unchanged": "88efcc6f4c76662d29b16603b7665a0974cf1a952aa4796dbd181bfe306177f7",
+  "appBuildOrInstallationPerformed": false,
+  "deviceOperations": 0,
+  "NASMediaRequests": 0,
+  "cellularWindows": 0,
+  "normalHDRProtectionEnabled": true,
+  "requirementsClosed": 0,
+  "openRequirementCount": 28,
+  "probeSourceSHA256": {
+    "scripts/hdr_pip_overlay_probe.swift": "7ce58730d9c436249870434542adaed3ba724a739998a2923c3a06e7a720bcfb",
+    "scripts/hdr_pip_pgs_fixture.py": "3f5ec4c1e5338d01b77e0a467eece505a6e4a2061b19f8547ac2eba512c1efa4",
+    "scripts/hdr_pip_lifetime_probe.swift": "1b0a6eb9554825e3975cc84f242ee81698ea0e40f9f446914562f0d40cb701d5"
+  },
+  "whiteCalibration": [
+    {
+      "y10": 573,
+      "range": "video",
+      "inputLinear": 1,
+      "pqEncodedNits": 203.70295787737396
+    },
+    {
+      "inputLinear": 2.03,
+      "range": "video",
+      "y10": 638,
+      "pqEncodedNits": 410.0885310230822
+    },
+    {
+      "y10": 660,
+      "range": "video",
+      "pqEncodedNits": 517.8239910063844,
+      "inputLinear": 2.5375
+    },
+    {
+      "pqEncodedNits": 202.91510536212263,
+      "y10": 594,
+      "range": "full",
+      "inputLinear": 1
+    },
+    {
+      "inputLinear": 2.03,
+      "pqEncodedNits": 412.62865981022173,
+      "range": "full",
+      "y10": 671
+    },
+    {
+      "pqEncodedNits": 513.0929765985251,
+      "y10": 695,
+      "range": "full",
+      "inputLinear": 2.5375
+    }
+  ],
+  "whiteCalibrationBoundary": "10-bit gray PQ code interpreted with ST2084; current Mac profile/OS only, not panel luminance or iOS calibration",
+  "coreTextBitmapProbe": {
+    "appSourceChanged": false,
+    "deviceOperated": false,
+    "dolbyVisionMetadataValidated": false,
+    "mediaRequests": 0,
+    "panelLuminanceMeasured": false,
+    "pgsDecoderOrSourceMovieTest": false,
+    "retainedFormatGenerations": {
+      "heldImageBufferBytes": 199134720,
+      "heldSampleBuffers": 8,
+      "perPoolThresholdIsGlobalMemoryCap": false,
+      "pools": [
+        {
+          "fifthAllocationStatus": -6689,
+          "pixelFormat": 2016686640,
+          "thresholdEnforced": true
+        },
+        {
+          "fifthAllocationStatus": -6689,
+          "pixelFormat": 2019963440,
+          "thresholdEnforced": true
+        }
+      ],
+      "samplesReleasedAtEnd": true
+    },
+    "rows": [
+      {
+        "allGlyphsAvailable": true,
+        "bitmapSize": [
+          512,
+          128
+        ],
+        "halfAlphaExpectedRGB": [
+          2.499696969985962,
+          2.499697208404541,
+          2.499697208404541
+        ],
+        "halfAlphaLinearRGBA": [
+          2.497401475906372,
+          2.4974019527435303,
+          2.4974019527435303,
+          1
+        ],
+        "halfAlphaMaxError": 0.0022954940795898438,
+        "height": 1080,
+        "idealFloatHalfWhiteMaxError": 0.008199930191040039,
+        "objectOriginInTopLeftCanvas": [
+          400,
+          800
+        ],
+        "opaqueWhiteLinearRGBA": [
+          1.0034644603729248,
+          1.0034645795822144,
+          1.0034645795822144,
+          1
+        ],
+        "opaqueWhitePQEncodedNits": 203.70295787737396,
+        "opaqueWhiteY10": 573,
+        "pixelFormat": 2016686640,
+        "range": "video",
+        "rasterizedHalfAlpha": 0.501960813999176,
+        "rasterizedHalfOverBlackLinearRGBA": [
+          0.5019607543945312,
+          0.501960813999176,
+          0.501960813999176,
+          1
+        ],
+        "sampleCoordinatesInCoreImageSpace": {
+          "halfAlpha": [
+            472,
+            176
+          ],
+          "opaque": [
+            424,
+            176
+          ]
+        },
+        "sourceCanvas": [
+          1920,
+          1080
+        ],
+        "transfer": "PQ",
+        "untouchedNeutralAndColorMaxError": 0,
+        "width": 1920
+      },
+      {
+        "allGlyphsAvailable": true,
+        "bitmapSize": [
+          512,
+          128
+        ],
+        "halfAlphaExpectedRGB": [
+          2.499696969985962,
+          2.499697208404541,
+          2.499697208404541
+        ],
+        "halfAlphaLinearRGBA": [
+          2.497401475906372,
+          2.4974019527435303,
+          2.4974019527435303,
+          1
+        ],
+        "halfAlphaMaxError": 0.0022954940795898438,
+        "height": 2160,
+        "idealFloatHalfWhiteMaxError": 0.008199930191040039,
+        "objectOriginInTopLeftCanvas": [
+          400,
+          800
+        ],
+        "opaqueWhiteLinearRGBA": [
+          1.0034644603729248,
+          1.0034645795822144,
+          1.0034645795822144,
+          1
+        ],
+        "opaqueWhitePQEncodedNits": 203.70295787737396,
+        "opaqueWhiteY10": 573,
+        "pixelFormat": 2016686640,
+        "range": "video",
+        "rasterizedHalfAlpha": 0.501960813999176,
+        "rasterizedHalfOverBlackLinearRGBA": [
+          0.5019607543945312,
+          0.501960813999176,
+          0.501960813999176,
+          1
+        ],
+        "sampleCoordinatesInCoreImageSpace": {
+          "halfAlpha": [
+            944,
+            352
+          ],
+          "opaque": [
+            848,
+            352
+          ]
+        },
+        "sourceCanvas": [
+          1920,
+          1080
+        ],
+        "transfer": "PQ",
+        "untouchedNeutralAndColorMaxError": 0,
+        "width": 3840
+      },
+      {
+        "allGlyphsAvailable": true,
+        "bitmapSize": [
+          512,
+          128
+        ],
+        "halfAlphaExpectedRGB": [
+          2.4955945014953613,
+          2.4955949783325195,
+          2.4955949783325195
+        ],
+        "halfAlphaLinearRGBA": [
+          2.5048248767852783,
+          2.5048253536224365,
+          2.5048253536224365,
+          1
+        ],
+        "halfAlphaMaxError": 0.009230375289916992,
+        "height": 1080,
+        "idealFloatHalfWhiteMaxError": 0.003342151641845703,
+        "objectOriginInTopLeftCanvas": [
+          400,
+          800
+        ],
+        "opaqueWhiteLinearRGBA": [
+          0.9995934367179871,
+          0.9995936155319214,
+          0.9995936155319214,
+          1
+        ],
+        "opaqueWhitePQEncodedNits": 202.91510536212263,
+        "opaqueWhiteY10": 594,
+        "pixelFormat": 2019963440,
+        "range": "full",
+        "rasterizedHalfAlpha": 0.501960813999176,
+        "rasterizedHalfOverBlackLinearRGBA": [
+          0.5019607543945312,
+          0.501960813999176,
+          0.501960813999176,
+          1
+        ],
+        "sampleCoordinatesInCoreImageSpace": {
+          "halfAlpha": [
+            472,
+            176
+          ],
+          "opaque": [
+            424,
+            176
+          ]
+        },
+        "sourceCanvas": [
+          1920,
+          1080
+        ],
+        "transfer": "PQ",
+        "untouchedNeutralAndColorMaxError": 0,
+        "width": 1920
+      },
+      {
+        "allGlyphsAvailable": true,
+        "bitmapSize": [
+          512,
+          128
+        ],
+        "halfAlphaExpectedRGB": [
+          2.4955945014953613,
+          2.4955949783325195,
+          2.4955949783325195
+        ],
+        "halfAlphaLinearRGBA": [
+          2.5048248767852783,
+          2.5048253536224365,
+          2.5048253536224365,
+          1
+        ],
+        "halfAlphaMaxError": 0.009230375289916992,
+        "height": 2160,
+        "idealFloatHalfWhiteMaxError": 0.003342151641845703,
+        "objectOriginInTopLeftCanvas": [
+          400,
+          800
+        ],
+        "opaqueWhiteLinearRGBA": [
+          0.9995934367179871,
+          0.9995936155319214,
+          0.9995936155319214,
+          1
+        ],
+        "opaqueWhitePQEncodedNits": 202.91510536212263,
+        "opaqueWhiteY10": 594,
+        "pixelFormat": 2019963440,
+        "range": "full",
+        "rasterizedHalfAlpha": 0.501960813999176,
+        "rasterizedHalfOverBlackLinearRGBA": [
+          0.5019607543945312,
+          0.501960813999176,
+          0.501960813999176,
+          1
+        ],
+        "sampleCoordinatesInCoreImageSpace": {
+          "halfAlpha": [
+            944,
+            352
+          ],
+          "opaque": [
+            848,
+            352
+          ]
+        },
+        "sourceCanvas": [
+          1920,
+          1080
+        ],
+        "transfer": "PQ",
+        "untouchedNeutralAndColorMaxError": 0,
+        "width": 3840
+      },
+      {
+        "allGlyphsAvailable": true,
+        "bitmapSize": [
+          512,
+          128
+        ],
+        "halfAlphaExpectedRGB": [
+          2.4927873611450195,
+          2.4927878379821777,
+          2.492788791656494
+        ],
+        "halfAlphaLinearRGBA": [
+          2.4901952743530273,
+          2.4901957511901855,
+          2.4901959896087646,
+          1
+        ],
+        "halfAlphaMaxError": 0.002592802047729492,
+        "height": 1080,
+        "idealFloatHalfWhiteMaxError": 0.00847005844116211,
+        "objectOriginInTopLeftCanvas": [
+          400,
+          800
+        ],
+        "opaqueWhiteLinearRGBA": [
+          1.000749111175537,
+          1.0007492303848267,
+          1.0007495880126953,
+          1
+        ],
+        "pixelFormat": 2016686640,
+        "range": "video",
+        "rasterizedHalfAlpha": 0.501960813999176,
+        "rasterizedHalfOverBlackLinearRGBA": [
+          0.5019607543945312,
+          0.501960813999176,
+          0.501960813999176,
+          1
+        ],
+        "sampleCoordinatesInCoreImageSpace": {
+          "halfAlpha": [
+            472,
+            176
+          ],
+          "opaque": [
+            424,
+            176
+          ]
+        },
+        "sourceCanvas": [
+          1920,
+          1080
+        ],
+        "transfer": "HLG",
+        "untouchedNeutralAndColorMaxError": 0,
+        "width": 1920
+      },
+      {
+        "allGlyphsAvailable": true,
+        "bitmapSize": [
+          512,
+          128
+        ],
+        "halfAlphaExpectedRGB": [
+          2.4927873611450195,
+          2.4927878379821777,
+          2.492788791656494
+        ],
+        "halfAlphaLinearRGBA": [
+          2.4901952743530273,
+          2.4901957511901855,
+          2.4901959896087646,
+          1
+        ],
+        "halfAlphaMaxError": 0.002592802047729492,
+        "height": 2160,
+        "idealFloatHalfWhiteMaxError": 0.00847005844116211,
+        "objectOriginInTopLeftCanvas": [
+          400,
+          800
+        ],
+        "opaqueWhiteLinearRGBA": [
+          1.000749111175537,
+          1.0007492303848267,
+          1.0007495880126953,
+          1
+        ],
+        "pixelFormat": 2016686640,
+        "range": "video",
+        "rasterizedHalfAlpha": 0.501960813999176,
+        "rasterizedHalfOverBlackLinearRGBA": [
+          0.5019607543945312,
+          0.501960813999176,
+          0.501960813999176,
+          1
+        ],
+        "sampleCoordinatesInCoreImageSpace": {
+          "halfAlpha": [
+            944,
+            352
+          ],
+          "opaque": [
+            848,
+            352
+          ]
+        },
+        "sourceCanvas": [
+          1920,
+          1080
+        ],
+        "transfer": "HLG",
+        "untouchedNeutralAndColorMaxError": 0,
+        "width": 3840
+      },
+      {
+        "allGlyphsAvailable": true,
+        "bitmapSize": [
+          512,
+          128
+        ],
+        "halfAlphaExpectedRGB": [
+          2.4889678955078125,
+          2.4889659881591797,
+          2.4889683723449707
+        ],
+        "halfAlphaLinearRGBA": [
+          2.4814226627349854,
+          2.48142147064209,
+          2.4814229011535645,
+          1
+        ],
+        "halfAlphaMaxError": 0.00754547119140625,
+        "height": 1080,
+        "idealFloatHalfWhiteMaxError": 0.013407707214355469,
+        "objectOriginInTopLeftCanvas": [
+          400,
+          800
+        ],
+        "opaqueWhiteLinearRGBA": [
+          0.9992567896842957,
+          0.9992563724517822,
+          0.9992570877075195,
+          1
+        ],
+        "pixelFormat": 2019963440,
+        "range": "full",
+        "rasterizedHalfAlpha": 0.501960813999176,
+        "rasterizedHalfOverBlackLinearRGBA": [
+          0.5019607543945312,
+          0.501960813999176,
+          0.501960813999176,
+          1
+        ],
+        "sampleCoordinatesInCoreImageSpace": {
+          "halfAlpha": [
+            472,
+            176
+          ],
+          "opaque": [
+            424,
+            176
+          ]
+        },
+        "sourceCanvas": [
+          1920,
+          1080
+        ],
+        "transfer": "HLG",
+        "untouchedNeutralAndColorMaxError": 0,
+        "width": 1920
+      },
+      {
+        "allGlyphsAvailable": true,
+        "bitmapSize": [
+          512,
+          128
+        ],
+        "halfAlphaExpectedRGB": [
+          2.4889678955078125,
+          2.4889659881591797,
+          2.4889683723449707
+        ],
+        "halfAlphaLinearRGBA": [
+          2.4814226627349854,
+          2.48142147064209,
+          2.4814229011535645,
+          1
+        ],
+        "halfAlphaMaxError": 0.00754547119140625,
+        "height": 2160,
+        "idealFloatHalfWhiteMaxError": 0.013407707214355469,
+        "objectOriginInTopLeftCanvas": [
+          400,
+          800
+        ],
+        "opaqueWhiteLinearRGBA": [
+          0.9992567896842957,
+          0.9992563724517822,
+          0.9992570877075195,
+          1
+        ],
+        "pixelFormat": 2019963440,
+        "range": "full",
+        "rasterizedHalfAlpha": 0.501960813999176,
+        "rasterizedHalfOverBlackLinearRGBA": [
+          0.5019607543945312,
+          0.501960813999176,
+          0.501960813999176,
+          1
+        ],
+        "sampleCoordinatesInCoreImageSpace": {
+          "halfAlpha": [
+            944,
+            352
+          ],
+          "opaque": [
+            848,
+            352
+          ]
+        },
+        "sourceCanvas": [
+          1920,
+          1080
+        ],
+        "transfer": "HLG",
+        "untouchedNeutralAndColorMaxError": 0,
+        "width": 3840
+      }
+    ],
+    "scope": "Mac offline rasterized glyph/bitmap HDR probe"
+  },
+  "generatedPGSFixture": {
+    "generatedFixture": true,
+    "movieMediaRead": false,
+    "paletteAlphaStep": 17,
+    "paletteEntries": 17,
+    "bytes": 8557,
+    "sha256": "9f9919076cfd704b43378cbb9d7cad92e85f91b56a535008a5c598351d94045c",
+    "canvas": [
+      1920,
+      1080
+    ],
+    "objectOriginTopLeft": [
+      400,
+      800
+    ],
+    "objectSize": [
+      512,
+      128
+    ],
+    "displayIntervalSeconds": [
+      1,
+      3
+    ]
+  },
+  "generatedPGSDecoderRoundtrip": {
+    "decoder": "FFmpeg macOS7.1 hdmv_pgs_subtitle via transparent sub2video overlay",
+    "timestampsPreservedWithCopyts": true,
+    "syntheticSource": true,
+    "rows": [
+      {
+        "timeSeconds": 0.0,
+        "expectedCueActive": false,
+        "alphaBoundingBox": null,
+        "alphaMaxErrorAgainstCueObject": null,
+        "RGBMaxErrorsOnNontransparentPixels": null,
+        "expectedEmptyOutsideCueInterval": true,
+        "actualEmpty": true
+      },
+      {
+        "timeSeconds": 1.0,
+        "expectedCueActive": true,
+        "alphaBoundingBox": null,
+        "alphaMaxErrorAgainstCueObject": 255,
+        "RGBMaxErrorsOnNontransparentPixels": [
+          255,
+          255,
+          255
+        ],
+        "expectedEmptyOutsideCueInterval": false,
+        "actualEmpty": true
+      },
+      {
+        "timeSeconds": 2.0,
+        "expectedCueActive": true,
+        "alphaBoundingBox": [
+          408,
+          834,
+          775,
+          920
+        ],
+        "alphaMaxErrorAgainstCueObject": 0,
+        "RGBMaxErrorsOnNontransparentPixels": [
+          0,
+          0,
+          0
+        ],
+        "expectedEmptyOutsideCueInterval": false,
+        "actualEmpty": false
+      },
+      {
+        "timeSeconds": 3.0,
+        "expectedCueActive": false,
+        "alphaBoundingBox": null,
+        "alphaMaxErrorAgainstCueObject": null,
+        "RGBMaxErrorsOnNontransparentPixels": null,
+        "expectedEmptyOutsideCueInterval": true,
+        "actualEmpty": true
+      }
+    ]
+  },
+  "generatedPGSDecoderTimingAccepted": false,
+  "decodedPGSHDRProbe": {
+    "appSourceChanged": false,
+    "deviceOperated": false,
+    "dolbyVisionMetadataValidated": false,
+    "inputFromGeneratedPGSDecoder": true,
+    "mediaRequests": 0,
+    "movieMediaTest": false,
+    "panelLuminanceMeasured": false,
+    "retainedFormatGenerations": {
+      "heldImageBufferBytes": 199134720,
+      "heldSampleBuffers": 8,
+      "perPoolThresholdIsGlobalMemoryCap": false,
+      "pools": [
+        {
+          "fifthAllocationStatus": -6689,
+          "pixelFormat": 2016686640,
+          "thresholdEnforced": true
+        },
+        {
+          "fifthAllocationStatus": -6689,
+          "pixelFormat": 2019963440,
+          "thresholdEnforced": true
+        }
+      ],
+      "samplesReleasedAtEnd": true
+    },
+    "rows": [
+      {
+        "allGlyphsAvailable": true,
+        "bitmapSize": [
+          512,
+          128
+        ],
+        "halfAlphaExpectedRGB": [
+          2.4052276611328125,
+          2.4052281379699707,
+          2.4052281379699707
+        ],
+        "halfAlphaLinearRGBA": [
+          2.3939359188079834,
+          2.3939361572265625,
+          2.3939361572265625,
+          1
+        ],
+        "halfAlphaMaxError": 0.011291980743408203,
+        "height": 1080,
+        "idealFloatHalfWhiteMaxError": 0.11166548728942871,
+        "objectOriginInTopLeftCanvas": [
+          400,
+          800
+        ],
+        "opaqueWhiteLinearRGBA": [
+          1.0034644603729248,
+          1.0034645795822144,
+          1.0034645795822144,
+          1
+        ],
+        "opaqueWhitePQEncodedNits": 203.70295787737396,
+        "opaqueWhiteY10": 573,
+        "pixelFormat": 2016686640,
+        "range": "video",
+        "rasterizedHalfAlpha": 0.5333333611488342,
+        "rasterizedHalfOverBlackLinearRGBA": [
+          0.5333333015441895,
+          0.5333333611488342,
+          0.5333333611488342,
+          1
+        ],
+        "sampleCoordinatesInCoreImageSpace": {
+          "halfAlpha": [
+            472,
+            176
+          ],
+          "opaque": [
+            424,
+            176
+          ]
+        },
+        "sourceCanvas": [
+          1920,
+          1080
+        ],
+        "transfer": "PQ",
+        "untouchedNeutralAndColorMaxError": 0,
+        "width": 1920
+      },
+      {
+        "allGlyphsAvailable": true,
+        "bitmapSize": [
+          512,
+          128
+        ],
+        "halfAlphaExpectedRGB": [
+          2.4052276611328125,
+          2.4052281379699707,
+          2.4052281379699707
+        ],
+        "halfAlphaLinearRGBA": [
+          2.3939359188079834,
+          2.3939361572265625,
+          2.3939361572265625,
+          1
+        ],
+        "halfAlphaMaxError": 0.011291980743408203,
+        "height": 2160,
+        "idealFloatHalfWhiteMaxError": 0.11166548728942871,
+        "objectOriginInTopLeftCanvas": [
+          400,
+          800
+        ],
+        "opaqueWhiteLinearRGBA": [
+          1.0034644603729248,
+          1.0034645795822144,
+          1.0034645795822144,
+          1
+        ],
+        "opaqueWhitePQEncodedNits": 203.70295787737396,
+        "opaqueWhiteY10": 573,
+        "pixelFormat": 2016686640,
+        "range": "video",
+        "rasterizedHalfAlpha": 0.5333333611488342,
+        "rasterizedHalfOverBlackLinearRGBA": [
+          0.5333333015441895,
+          0.5333333611488342,
+          0.5333333611488342,
+          1
+        ],
+        "sampleCoordinatesInCoreImageSpace": {
+          "halfAlpha": [
+            944,
+            352
+          ],
+          "opaque": [
+            848,
+            352
+          ]
+        },
+        "sourceCanvas": [
+          1920,
+          1080
+        ],
+        "transfer": "PQ",
+        "untouchedNeutralAndColorMaxError": 0,
+        "width": 3840
+      },
+      {
+        "allGlyphsAvailable": true,
+        "bitmapSize": [
+          512,
+          128
+        ],
+        "halfAlphaExpectedRGB": [
+          2.401383876800537,
+          2.4013843536376953,
+          2.4013843536376953
+        ],
+        "halfAlphaLinearRGBA": [
+          2.3937926292419434,
+          2.3937931060791016,
+          2.3937931060791016,
+          1
+        ],
+        "halfAlphaMaxError": 0.00759124755859375,
+        "height": 1080,
+        "idealFloatHalfWhiteMaxError": 0.10769009590148926,
+        "objectOriginInTopLeftCanvas": [
+          400,
+          800
+        ],
+        "opaqueWhiteLinearRGBA": [
+          0.9995934367179871,
+          0.9995936155319214,
+          0.9995936155319214,
+          1
+        ],
+        "opaqueWhitePQEncodedNits": 202.91510536212263,
+        "opaqueWhiteY10": 594,
+        "pixelFormat": 2019963440,
+        "range": "full",
+        "rasterizedHalfAlpha": 0.5333333611488342,
+        "rasterizedHalfOverBlackLinearRGBA": [
+          0.5333333015441895,
+          0.5333333611488342,
+          0.5333333611488342,
+          1
+        ],
+        "sampleCoordinatesInCoreImageSpace": {
+          "halfAlpha": [
+            472,
+            176
+          ],
+          "opaque": [
+            424,
+            176
+          ]
+        },
+        "sourceCanvas": [
+          1920,
+          1080
+        ],
+        "transfer": "PQ",
+        "untouchedNeutralAndColorMaxError": 0,
+        "width": 1920
+      },
+      {
+        "allGlyphsAvailable": true,
+        "bitmapSize": [
+          512,
+          128
+        ],
+        "halfAlphaExpectedRGB": [
+          2.401383876800537,
+          2.4013843536376953,
+          2.4013843536376953
+        ],
+        "halfAlphaLinearRGBA": [
+          2.3937926292419434,
+          2.3937931060791016,
+          2.3937931060791016,
+          1
+        ],
+        "halfAlphaMaxError": 0.00759124755859375,
+        "height": 2160,
+        "idealFloatHalfWhiteMaxError": 0.10769009590148926,
+        "objectOriginInTopLeftCanvas": [
+          400,
+          800
+        ],
+        "opaqueWhiteLinearRGBA": [
+          0.9995934367179871,
+          0.9995936155319214,
+          0.9995936155319214,
+          1
+        ],
+        "opaqueWhitePQEncodedNits": 202.91510536212263,
+        "opaqueWhiteY10": 594,
+        "pixelFormat": 2019963440,
+        "range": "full",
+        "rasterizedHalfAlpha": 0.5333333611488342,
+        "rasterizedHalfOverBlackLinearRGBA": [
+          0.5333333015441895,
+          0.5333333611488342,
+          0.5333333611488342,
+          1
+        ],
+        "sampleCoordinatesInCoreImageSpace": {
+          "halfAlpha": [
+            944,
+            352
+          ],
+          "opaque": [
+            848,
+            352
+          ]
+        },
+        "sourceCanvas": [
+          1920,
+          1080
+        ],
+        "transfer": "PQ",
+        "untouchedNeutralAndColorMaxError": 0,
+        "width": 3840
+      },
+      {
+        "allGlyphsAvailable": true,
+        "bitmapSize": [
+          512,
+          128
+        ],
+        "halfAlphaExpectedRGB": [
+          2.3987536430358887,
+          2.398754119873047,
+          2.398754835128784
+        ],
+        "halfAlphaLinearRGBA": [
+          2.4005305767059326,
+          2.400531768798828,
+          2.4005320072174072,
+          1
+        ],
+        "halfAlphaMaxError": 0.00177764892578125,
+        "height": 1080,
+        "idealFloatHalfWhiteMaxError": 0.09813427925109863,
+        "objectOriginInTopLeftCanvas": [
+          400,
+          800
+        ],
+        "opaqueWhiteLinearRGBA": [
+          1.000749111175537,
+          1.0007492303848267,
+          1.0007495880126953,
+          1
+        ],
+        "pixelFormat": 2016686640,
+        "range": "video",
+        "rasterizedHalfAlpha": 0.5333333611488342,
+        "rasterizedHalfOverBlackLinearRGBA": [
+          0.5333333015441895,
+          0.5333333611488342,
+          0.5333333611488342,
+          1
+        ],
+        "sampleCoordinatesInCoreImageSpace": {
+          "halfAlpha": [
+            472,
+            176
+          ],
+          "opaque": [
+            424,
+            176
+          ]
+        },
+        "sourceCanvas": [
+          1920,
+          1080
+        ],
+        "transfer": "HLG",
+        "untouchedNeutralAndColorMaxError": 0,
+        "width": 1920
+      },
+      {
+        "allGlyphsAvailable": true,
+        "bitmapSize": [
+          512,
+          128
+        ],
+        "halfAlphaExpectedRGB": [
+          2.3987536430358887,
+          2.398754119873047,
+          2.398754835128784
+        ],
+        "halfAlphaLinearRGBA": [
+          2.4005305767059326,
+          2.400531768798828,
+          2.4005320072174072,
+          1
+        ],
+        "halfAlphaMaxError": 0.00177764892578125,
+        "height": 2160,
+        "idealFloatHalfWhiteMaxError": 0.09813427925109863,
+        "objectOriginInTopLeftCanvas": [
+          400,
+          800
+        ],
+        "opaqueWhiteLinearRGBA": [
+          1.000749111175537,
+          1.0007492303848267,
+          1.0007495880126953,
+          1
+        ],
+        "pixelFormat": 2016686640,
+        "range": "video",
+        "rasterizedHalfAlpha": 0.5333333611488342,
+        "rasterizedHalfOverBlackLinearRGBA": [
+          0.5333333015441895,
+          0.5333333611488342,
+          0.5333333611488342,
+          1
+        ],
+        "sampleCoordinatesInCoreImageSpace": {
+          "halfAlpha": [
+            944,
+            352
+          ],
+          "opaque": [
+            848,
+            352
+          ]
+        },
+        "sourceCanvas": [
+          1920,
+          1080
+        ],
+        "transfer": "HLG",
+        "untouchedNeutralAndColorMaxError": 0,
+        "width": 3840
+      },
+      {
+        "allGlyphsAvailable": true,
+        "bitmapSize": [
+          512,
+          128
+        ],
+        "halfAlphaExpectedRGB": [
+          2.395174503326416,
+          2.3951728343963623,
+          2.395174980163574
+        ],
+        "halfAlphaLinearRGBA": [
+          2.3896710872650146,
+          2.389669895172119,
+          2.389671564102173,
+          1
+        ],
+        "halfAlphaMaxError": 0.005503416061401367,
+        "height": 1080,
+        "idealFloatHalfWhiteMaxError": 0.10515904426574707,
+        "objectOriginInTopLeftCanvas": [
+          400,
+          800
+        ],
+        "opaqueWhiteLinearRGBA": [
+          0.9992567896842957,
+          0.9992563724517822,
+          0.9992570877075195,
+          1
+        ],
+        "pixelFormat": 2019963440,
+        "range": "full",
+        "rasterizedHalfAlpha": 0.5333333611488342,
+        "rasterizedHalfOverBlackLinearRGBA": [
+          0.5333333015441895,
+          0.5333333611488342,
+          0.5333333611488342,
+          1
+        ],
+        "sampleCoordinatesInCoreImageSpace": {
+          "halfAlpha": [
+            472,
+            176
+          ],
+          "opaque": [
+            424,
+            176
+          ]
+        },
+        "sourceCanvas": [
+          1920,
+          1080
+        ],
+        "transfer": "HLG",
+        "untouchedNeutralAndColorMaxError": 0,
+        "width": 1920
+      },
+      {
+        "allGlyphsAvailable": true,
+        "bitmapSize": [
+          512,
+          128
+        ],
+        "halfAlphaExpectedRGB": [
+          2.395174503326416,
+          2.3951728343963623,
+          2.395174980163574
+        ],
+        "halfAlphaLinearRGBA": [
+          2.3896710872650146,
+          2.389669895172119,
+          2.389671564102173,
+          1
+        ],
+        "halfAlphaMaxError": 0.005503416061401367,
+        "height": 2160,
+        "idealFloatHalfWhiteMaxError": 0.10515904426574707,
+        "objectOriginInTopLeftCanvas": [
+          400,
+          800
+        ],
+        "opaqueWhiteLinearRGBA": [
+          0.9992567896842957,
+          0.9992563724517822,
+          0.9992570877075195,
+          1
+        ],
+        "pixelFormat": 2019963440,
+        "range": "full",
+        "rasterizedHalfAlpha": 0.5333333611488342,
+        "rasterizedHalfOverBlackLinearRGBA": [
+          0.5333333015441895,
+          0.5333333611488342,
+          0.5333333611488342,
+          1
+        ],
+        "sampleCoordinatesInCoreImageSpace": {
+          "halfAlpha": [
+            944,
+            352
+          ],
+          "opaque": [
+            848,
+            352
+          ]
+        },
+        "sourceCanvas": [
+          1920,
+          1080
+        ],
+        "transfer": "HLG",
+        "untouchedNeutralAndColorMaxError": 0,
+        "width": 3840
+      }
+    ],
+    "scope": "Mac offline rasterized glyph/bitmap HDR probe"
+  },
+  "visualReview": {
+    "rasterizedChineseAndLatinGlyphsVisible": true,
+    "SDRBackdropLayoutPreviewReviewed": true,
+    "activeDecodedGeneratedPGSFrameReviewed": true,
+    "previewIsNotHDRDisplayEvidence": true
+  },
+  "runtimeScope": "single Mac process including Swift/JIT; not iPhone performance or long-run memory",
+  "runtime": {
+    "maximumResidentSetBytes": 260849664,
+    "peakMemoryFootprintBytes": 168919976
+  },
+  "failuresAndCorrections": [
+    {
+      "kind": "SwiftCompile",
+      "reason": "Int bitmap height required explicit CGFloat conversion",
+      "retained": true
+    },
+    {
+      "kind": "PreviewMeasurement",
+      "reason": "HDR white backdrop clipped in SDR PNG, glyph position not visually assessable; separate SDR layout backdrop added",
+      "retained": true
+    },
+    {
+      "kind": "AlphaReference",
+      "reason": "raster alpha128/255 is not ideal Float0.5; raw and corrected comparisons both retained",
+      "retained": true
+    },
+    {
+      "kind": "ToolTiming",
+      "reason": "default FFmpeg input timestamps normalized; copyts/showinfo retained original timeline",
+      "retained": true
+    },
+    {
+      "kind": "ToolTimingUnresolved",
+      "reason": "copyts1Hz exact t1 cue boundary empty; t2 exact bitmap RGBA and t0/t3 empty; no App timing acceptance",
+      "retained": true
+    }
+  ],
+  "sources": {
+    "AppleReferenceWhiteAndUnclampedWorkingSpace": "https://developer.apple.com/videos/play/wwdc2023/10181/",
+    "PGSDecoderReference": "https://github.com/FFmpeg/FFmpeg/blob/n8.0/libavcodec/pgssubdec.c"
+  },
+  "nextUnverified": [
+    "iOS actual compositor and frame/seek/PiP ownership",
+    "actual movie PGS and cue lifecycle",
+    "shared IOSurface aliases, private attachment mutation and iOS display-layer lifetime",
+    "glyph edges/chroma/cropping across output formats",
+    "Dolby Vision dynamic metadata"
+  ],
+  "lifetimeReservationExperiment": {
+    "actualFourBufferBytes": 99567360,
+    "AppOrKSPlayerChanged": false,
+    "budgetBytes": 157286400,
+    "deviceOrMediaRequests": 0,
+    "finalReservedBytes": 0,
+    "peakReservedBytes": 136904704,
+    "peakWithinQuota": true,
+    "processRSSOrGPUMemoryBoundedByThisQuota": false,
+    "productionBudgetChosen": false,
+    "reservationBytesPerPool": 136904704,
+    "rows": [
+      {
+        "actualImageBufferBytes": 99567360,
+        "case": "fourSamplesHeld",
+        "fifthBufferRejected": true,
+        "reservedBytes": 136904704
+      },
+      {
+        "case": "retiredPoolStillHeldBySamples",
+        "newFormatPoolDenied": true,
+        "reservedBytes": 136904704
+      },
+      {
+        "case": "sampleReleasedButPixelBufferStillHeld",
+        "pixelBufferExists": true,
+        "reservedBytes": 136904704
+      },
+      {
+        "case": "lastPixelReleased",
+        "reservedBytes": 0
+      },
+      {
+        "case": "retryAfterOldPixelsReleased",
+        "newFormatPoolAdmitted": true,
+        "reservedBytes": 136904704
+      },
+      {
+        "case": "creationFailureReturnsReservation",
+        "reservedBytes": 0
+      },
+      {
+        "allBlockedWhileOldSamplesHeld": true,
+        "case": "twelveAlternatingRetainedGenerations",
+        "peakReservationBytes": 136904704,
+        "reservedBytes": 0
+      }
+    ],
+    "scope": "Mac offline CVBuffer-attached shared reservation experiment"
+  },
+  "lifetimeReservationLimitations": [
+    "Mac CVBuffer/CMSampleBuffer object lifetimes only; no App/iOS display-layer integration",
+    "Private reservation attachment must remain on the output object; consumer removal or new IOSurface-sharing wrappers not validated",
+    "150MiB quota and conservative per-pool reservation are experiment values, not selected production budget",
+    "No process RSS/GPU/IOSurface aliasing hard cap established",
+    "Production callback ownership, no-cue fast path and failure-to-original submission still not executed"
+  ],
+  "verification": {
+    "preflightPassed": 15,
+    "documentationCheckPassed": true,
+    "iOSDiffUnchanged": true
+  },
+  "macOffscreenDisplayLayerExperiment": {
+    "actualFourBufferBytes": 99567360,
+    "AppOrKSPlayerChanged": false,
+    "budgetBytes": 157286400,
+    "deviceOrMediaRequests": 0,
+    "finalReservedBytes": 0,
+    "offscreenDisplayLayerIsNotIOSPiP": true,
+    "offscreenDisplayLayerObservations": [
+      {
+        "errorCode": 0,
+        "layerStatus": 1,
+        "readyForMoreData": true,
+        "reservedBytes": 136904704,
+        "stage": "producerPoolAndSamplesReleased"
+      },
+      {
+        "errorCode": 0,
+        "layerStatus": 1,
+        "readyForMoreData": true,
+        "reservedBytes": 136904704,
+        "stage": "offscreenLayerRunLoop1"
+      },
+      {
+        "errorCode": 0,
+        "layerStatus": 1,
+        "readyForMoreData": true,
+        "reservedBytes": 136904704,
+        "stage": "offscreenLayerRunLoop2"
+      },
+      {
+        "errorCode": 0,
+        "layerStatus": 1,
+        "readyForMoreData": true,
+        "reservedBytes": 136904704,
+        "stage": "offscreenLayerRunLoop3"
+      },
+      {
+        "errorCode": 0,
+        "layerStatus": 1,
+        "readyForMoreData": true,
+        "reservedBytes": 136904704,
+        "stage": "offscreenLayerRunLoop4"
+      },
+      {
+        "errorCode": 0,
+        "layerStatus": 1,
+        "readyForMoreData": true,
+        "reservedBytes": 136904704,
+        "stage": "offscreenLayerRunLoop5"
+      },
+      {
+        "errorCode": 0,
+        "layerStatus": 1,
+        "readyForMoreData": true,
+        "reservedBytes": 136904704,
+        "stage": "flushRequested"
+      },
+      {
+        "errorCode": 0,
+        "layerStatus": 1,
+        "readyForMoreData": true,
+        "reservedBytes": 0,
+        "stage": "afterFlushRunLoop1"
+      },
+      {
+        "errorCode": 0,
+        "layerStatus": 1,
+        "readyForMoreData": true,
+        "reservedBytes": 0,
+        "stage": "afterFlushRunLoop2"
+      },
+      {
+        "errorCode": 0,
+        "layerStatus": 1,
+        "readyForMoreData": true,
+        "reservedBytes": 0,
+        "stage": "afterFlushRunLoop3"
+      },
+      {
+        "errorCode": 0,
+        "layerStatus": 1,
+        "readyForMoreData": true,
+        "reservedBytes": 0,
+        "stage": "afterFlushRunLoop4"
+      },
+      {
+        "errorCode": 0,
+        "layerStatus": 1,
+        "readyForMoreData": true,
+        "reservedBytes": 0,
+        "stage": "afterFlushRunLoop5"
+      },
+      {
+        "errorCode": 0,
+        "layerStatus": -1,
+        "readyForMoreData": false,
+        "reservedBytes": 0,
+        "stage": "layerReleased"
+      }
+    ],
+    "peakReservedBytes": 136904704,
+    "peakWithinQuota": true,
+    "processRSSOrGPUMemoryBoundedByThisQuota": false,
+    "productionBudgetChosen": false,
+    "reservationBytesPerPool": 136904704,
+    "rows": [
+      {
+        "actualImageBufferBytes": 99567360,
+        "case": "fourSamplesHeld",
+        "fifthBufferRejected": true,
+        "reservedBytes": 136904704
+      },
+      {
+        "case": "retiredPoolStillHeldBySamples",
+        "newFormatPoolDenied": true,
+        "reservedBytes": 136904704
+      },
+      {
+        "case": "sampleReleasedButPixelBufferStillHeld",
+        "pixelBufferExists": true,
+        "reservedBytes": 136904704
+      },
+      {
+        "case": "lastPixelReleased",
+        "reservedBytes": 0
+      },
+      {
+        "case": "retryAfterOldPixelsReleased",
+        "newFormatPoolAdmitted": true,
+        "reservedBytes": 136904704
+      },
+      {
+        "case": "creationFailureReturnsReservation",
+        "reservedBytes": 0
+      },
+      {
+        "allBlockedWhileOldSamplesHeld": true,
+        "case": "twelveAlternatingRetainedGenerations",
+        "peakReservationBytes": 136904704,
+        "reservedBytes": 0
+      }
+    ],
+    "scope": "Mac offline CVBuffer-attached shared reservation experiment"
+  },
+  "macOffscreenDisplayLayerBoundary": "Actual Mac AVSampleBufferDisplayLayer offscreen enqueue/flush, status rendering and no error; no iOS PiP, surface aliases, visible output or release-time SLA"
+}

@@ -1,0 +1,147 @@
+{
+  "date": "2026-10-22",
+  "device": "iPhone14,5/iOS16.3.1/USB; name and UDID private",
+  "package": {
+    "normalBuild": "05:26 Debug/-Onone",
+    "sourceDiffSHA256": "e65a8da17ea0db5e1a22d374c2bb79c5d5d8dd4eb4acb4a5fedd8f3057cbaa16",
+    "ipaSHA256": "45d213bafb07a70a3543980ff961388a817172e7e9176185f67c76fb2b1eaf9b",
+    "fresh173Inputs29SignaturesProfileOwnDeviceReceiptAndIdentityVerifiedEachWindow": true,
+    "AppSourceEditsBuildsInstallsOrTestsRerun": 0
+  },
+  "windows": [
+    {
+      "startedAt": "2026-10-22T07:39:22.184616+08:00",
+      "finishedAt": "2026-10-22T07:44:20.028041+08:00",
+      "playCommands": 0,
+      "pipCommands": 0,
+      "filePreviewOrDownloadCommands": 0,
+      "environmentReadback": {},
+      "preservedFailure": "404 stale element reference while redundantly clicking already-checked direction to close verification menu after size descending; no replay or downstream commands",
+      "normalHomeReturnReached": false,
+      "originalSortUIRestored": true,
+      "ownedAppLoggerStopped": true,
+      "reportNameDelta": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      }
+    },
+    {
+      "startedAt": "2026-10-22T07:47:50.513920+08:00",
+      "finishedAt": "2026-10-22T07:49:10.513540+08:00",
+      "playCommands": 0,
+      "pipCommands": 0,
+      "filePreviewOrDownloadCommands": 0,
+      "environmentReadback": {},
+      "changeInPrivateDriver": "remove redundant reopen/checked-option closing click; choose criterion/direction once and verify actual resulting row order",
+      "failure": null,
+      "normalFolderBackAndHomeReturnObserved": true,
+      "normalHomeNativeImageReviewed": true,
+      "ownedAppLoggerStopped": true,
+      "reportNameDelta": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      }
+    }
+  ],
+  "renderedDateOrder": {
+    "02-video": {
+      "rowCount": 3,
+      "allRenderedDatesParsed": true,
+      "ascending": false,
+      "descending": true
+    },
+    "03-video-date-ascending": {
+      "rowCount": 3,
+      "allRenderedDatesParsed": true,
+      "ascending": true,
+      "descending": false
+    },
+    "04-restored": {
+      "rowCount": 3,
+      "allRenderedDatesParsed": true,
+      "ascending": false,
+      "descending": true
+    }
+  },
+  "firstSizeEvidence": {
+    "sizeAscendingFileRows": 6,
+    "allSixFilesSameAcrossAscDesc": true,
+    "ascendingRenderedSizesMonotonic": true,
+    "descendingRenderedSizesMonotonic": true,
+    "exactReverseLabels": true,
+    "sizeScale": "rendered KB/GB comparison only, not exact raw-byte audit",
+    "descendingScreenshotOccludedByMenu": true,
+    "transientFailureCode": "stale element reference on redundant selected-direction close; no replay"
+  },
+  "remainingCaseEvidence": {
+    "fileTypeAscendingRows": 6,
+    "fileTypeDescendingRows": 6,
+    "sameSixFileLabels": true,
+    "extensionsAscending": [
+      ".jpg",
+      ".jpg",
+      ".jpg",
+      ".jpg",
+      ".mkv",
+      ".nfo"
+    ],
+    "extensionsDescending": [
+      ".nfo",
+      ".mkv",
+      ".jpg",
+      ".jpg",
+      ".jpg",
+      ".jpg"
+    ],
+    "typeAscendingOrderCorrect": true,
+    "typeDescendingOrderCorrect": true,
+    "exactReverseFileLabels": true,
+    "mixedDirectoryRows": 5,
+    "mixedFourFoldersBeforeSingleFile": true,
+    "folderRenderedDatesAscending": true,
+    "fileDateWouldBelongBeforeTwoFoldersWithoutFolderPriority": true,
+    "folderSizeLabelsAbsent": true,
+    "noExactRawByteOrUnknownMetadataCaseClaim": true
+  },
+  "visualReview": {
+    "dateAscendingDescending": true,
+    "sixFileSizeAscendingAndUnoccludedDescending": true,
+    "sixFileExtensionAscendingDescending": true,
+    "fourFoldersBeforeSingleFileDespiteDatePosition": true,
+    "normalAppHomeBeforeStop": true,
+    "nativeHomeWiFiNoPiPAfterStop": true
+  },
+  "finalAudit": {
+    "at": "2026-10-22T07:50:22.034631+08:00",
+    "sourceInputs": 173,
+    "sourceAndPackageUnchanged": true,
+    "sourceDiffSHA256": "e65a8da17ea0db5e1a22d374c2bb79c5d5d8dd4eb4acb4a5fedd8f3057cbaa16",
+    "ipaSHA256": "45d213bafb07a70a3543980ff961388a817172e7e9176185f67c76fb2b1eaf9b",
+    "allBinariesAnd29LibrariesVerified": true,
+    "profileValid": true,
+    "freshUSBIdentityVerified": true,
+    "WDAAutoIdle10CoolOff2ReadbackVerified": true,
+    "ownedPlaybackOrBuildProcessesRemaining": 0,
+    "nativeAppAbsent": true,
+    "all25PreferencesUnchangedSinceWindowEnd": true,
+    "bookmarksUnchangedSinceWindowEnd": true,
+    "networkChanged": false,
+    "mediaPlayCommands": 0,
+    "newCrashReportNamesCollected": true,
+    "NASOnlineHomeVerifiedInPriorStartupWindow": true,
+    "nativeHomeWiFiNoPiPVisuallyReviewed": true,
+    "all25PreferencesEqualToFirstWindowStart": true,
+    "all36BookmarksExactlyUnchanged": true,
+    "normalAppHomeBeforeStopVisuallyReviewed": true
+  },
+  "limits": [
+    "finite iPhone13 examples only; UX-02 and all28 requirements remain open",
+    "rendered size and minute-resolution dates; not exact byte/timestamp audit",
+    "no missing-metadata mixed case or numeric2-vs10 natural-name proof",
+    "no scrolling frame-time/strict speed/media acceptance",
+    "iPad and iPhone18 not operated; iPhone18 normal UI remains user-deferred"
+  ],
+  "privateEvidencePointer": "/tmp/nastart-subfolder-sort-current-evidence"
+}

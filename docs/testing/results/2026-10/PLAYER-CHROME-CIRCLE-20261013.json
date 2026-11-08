@@ -1,0 +1,344 @@
+{
+  "updatedAt": "2026-10-13T03:39:55.631036+08:00",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceDiffSHA256": "e82a5bde1c5840c55b4ba5a8953b9bb5f41ff47ccfa9b7d27164772c838580b1",
+  "configuration": "normal Debug -Onone; empty launch environment",
+  "buildTime": "2026-10-13T03:24:47.203642+08:00",
+  "packagePath": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-10-13-player-chrome-circle-032024/Nastart-Player-Chrome-Circle-Normal-Debug.app",
+  "ipaPath": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-10-13-player-chrome-circle-032024/Nastart-Player-Chrome-Circle-Normal-Debug.ipa",
+  "binarySHA256": {
+    "Nastart": "6113a756d310119e1d902ab7510140b3fbd435e69bc9fcae6b9993fd71b9c7c2",
+    "Nastart.debug.dylib": "a2f7a36ad38e2eaf54d6af26ea624f7fe02b98ec439fd0399d71928212515260",
+    "Frameworks/KSPlayer.framework/KSPlayer": "e68d742056f06b8806d18ce13f3027b47a2d9bc380671b7371a985b6d139f785"
+  },
+  "sourceInputsVerified": 173,
+  "individualLibrarySignaturesVerified": 29,
+  "signatureProfileIPALinkageVerified": true,
+  "profileExpirationUTC": "2026-10-17T22:23:40",
+  "tests": {
+    "executed": 344,
+    "skipped": 2,
+    "failures": 0,
+    "runThisTurn": true
+  },
+  "preflight": {
+    "passed": 15,
+    "runThisTurn": true
+  },
+  "devices": {
+    "iphone13": {
+      "recordedAt": "2026-10-13T03:26:28.794544+08:00",
+      "device": "iphone13",
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "connection": "USB",
+      "sourceDiffSHA256": "e82a5bde1c5840c55b4ba5a8953b9bb5f41ff47ccfa9b7d27164772c838580b1",
+      "binaries": {
+        "Nastart": "6113a756d310119e1d902ab7510140b3fbd435e69bc9fcae6b9993fd71b9c7c2",
+        "Nastart.debug.dylib": "a2f7a36ad38e2eaf54d6af26ea624f7fe02b98ec439fd0399d71928212515260",
+        "Frameworks/KSPlayer.framework/KSPlayer": "e68d742056f06b8806d18ce13f3027b47a2d9bc380671b7371a985b6d139f785"
+      },
+      "method": "ios-deploy data-preserving cover",
+      "preservesContainer": true,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "actualForegroundUIVerified": true,
+      "installation": "success",
+      "signatureVerified": true,
+      "librariesVerified": 29,
+      "installationStartedAt": "2026-10-13T03:26:28.926149+08:00",
+      "nativeInstallExitCode": 0,
+      "installedAt": "2026-10-13T03:28:07.612774+08:00",
+      "nonDiagnosticKeysBefore": 25,
+      "nonDiagnosticKeysAfter": 25,
+      "samePreferenceKeys": true,
+      "unchangedPreferenceValues": 25,
+      "changedPreferenceCount": 0,
+      "postInstallLookupExists": true,
+      "actualHomeReviewed": true
+    },
+    "ipad": {
+      "recordedAt": "2026-10-13T03:26:45.129571+08:00",
+      "device": "ipad",
+      "model": "iPad12,1",
+      "system": "18.3.1",
+      "connection": "USB",
+      "sourceDiffSHA256": "e82a5bde1c5840c55b4ba5a8953b9bb5f41ff47ccfa9b7d27164772c838580b1",
+      "binaries": {
+        "Nastart": "6113a756d310119e1d902ab7510140b3fbd435e69bc9fcae6b9993fd71b9c7c2",
+        "Nastart.debug.dylib": "a2f7a36ad38e2eaf54d6af26ea624f7fe02b98ec439fd0399d71928212515260",
+        "Frameworks/KSPlayer.framework/KSPlayer": "e68d742056f06b8806d18ce13f3027b47a2d9bc380671b7371a985b6d139f785"
+      },
+      "method": "Apple devicectl data-preserving cover",
+      "preservesContainer": true,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "actualForegroundUIVerified": true,
+      "installation": "success",
+      "signatureVerified": true,
+      "librariesVerified": 29,
+      "installationStartedAt": "2026-10-13T03:26:45.370084+08:00",
+      "nativeInstallExitCode": 0,
+      "nativeInstallErrorCode": null,
+      "installedAt": "2026-10-13T03:26:51.839375+08:00",
+      "nonDiagnosticKeysBefore": 18,
+      "nonDiagnosticKeysAfter": 18,
+      "samePreferenceKeys": true,
+      "unchangedPreferenceValues": 18,
+      "changedPreferenceCount": 0,
+      "postInstallLookupExists": true,
+      "actualHomeReviewed": true
+    },
+    "iphone18": {
+      "device": "iphone18",
+      "installation": "success",
+      "sourceDiffSHA256": "e82a5bde1c5840c55b4ba5a8953b9bb5f41ff47ccfa9b7d27164772c838580b1",
+      "binaries": {
+        "Nastart": "6113a756d310119e1d902ab7510140b3fbd435e69bc9fcae6b9993fd71b9c7c2",
+        "Nastart.debug.dylib": "a2f7a36ad38e2eaf54d6af26ea624f7fe02b98ec439fd0399d71928212515260",
+        "Frameworks/KSPlayer.framework/KSPlayer": "e68d742056f06b8806d18ce13f3027b47a2d9bc380671b7371a985b6d139f785"
+      },
+      "method": "direct Bonjour TCP lockdown using existing Mac legacy pairing + AFC + installation_proxy Install; preserve container",
+      "newPairingAttempted": false,
+      "preservesContainer": true,
+      "signatureVerified": true,
+      "librariesVerified": 29,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "normalLaunch": "deferred per user; no UI launch requested",
+      "actualForegroundUIVerified": false,
+      "model": "iPhone19,7",
+      "system": "27.0",
+      "connection": "NETWORK",
+      "installationStartedAt": "2026-10-13T03:29:09.691075+08:00",
+      "installedAt": "2026-10-13T03:29:23.059746+08:00",
+      "postInstallLookupExists": true,
+      "samePreferenceKeys": true,
+      "nonDiagnosticKeysBefore": 25,
+      "nonDiagnosticKeysAfter": 25,
+      "unchangedPreferenceValues": 25,
+      "changedPreferenceCount": 0
+    }
+  },
+  "audit": {
+    "sourceInputsVerified": 173,
+    "binaryHashesVerified": true,
+    "deepSignatureVerified": true,
+    "devices": {
+      "iphone13": {
+        "at": "2026-10-13T03:37:49.312760+08:00",
+        "model": "iPhone14,5",
+        "system": "16.3.1",
+        "connection": "USB",
+        "sourceDiffSHA256": "e82a5bde1c5840c55b4ba5a8953b9bb5f41ff47ccfa9b7d27164772c838580b1",
+        "latestPackage": {
+          "Nastart": "6113a756d310119e1d902ab7510140b3fbd435e69bc9fcae6b9993fd71b9c7c2",
+          "Nastart.debug.dylib": "a2f7a36ad38e2eaf54d6af26ea624f7fe02b98ec439fd0399d71928212515260",
+          "Frameworks/KSPlayer.framework/KSPlayer": "e68d742056f06b8806d18ce13f3027b47a2d9bc380671b7371a985b6d139f785"
+        },
+        "nonBookmarkPreferenceKeys": 24,
+        "nonBookmarkPreferencesExactlyUnchanged": true,
+        "changedBookmarksCount": 3,
+        "originalS03FileAndJellyfinEntriesEntirelyUnchanged": true,
+        "normalEmptyEnvironment": true,
+        "NASNormal": true,
+        "playerClosed": true,
+        "finalHomeScreenshotReviewed": true,
+        "WDAIdleSeconds": 10,
+        "WDAAnimationCoolOffSeconds": 2,
+        "crashInventoryNotCheckedThisTurn": true,
+        "performanceAccepted": false,
+        "fullSubtitleAudioHDRAccepted": false
+      },
+      "ipad": {
+        "at": "2026-10-13T03:37:50.196444+08:00",
+        "model": "iPad12,1",
+        "system": "18.3.1",
+        "connection": "USB",
+        "sourceDiffSHA256": "e82a5bde1c5840c55b4ba5a8953b9bb5f41ff47ccfa9b7d27164772c838580b1",
+        "latestPackage": {
+          "Nastart": "6113a756d310119e1d902ab7510140b3fbd435e69bc9fcae6b9993fd71b9c7c2",
+          "Nastart.debug.dylib": "a2f7a36ad38e2eaf54d6af26ea624f7fe02b98ec439fd0399d71928212515260",
+          "Frameworks/KSPlayer.framework/KSPlayer": "e68d742056f06b8806d18ce13f3027b47a2d9bc380671b7371a985b6d139f785"
+        },
+        "nonBookmarkPreferenceKeys": 17,
+        "nonBookmarkPreferencesExactlyUnchanged": true,
+        "changedBookmarksCount": 3,
+        "originalS03FileAndJellyfinEntriesEntirelyUnchanged": true,
+        "normalEmptyEnvironment": true,
+        "NASNormal": true,
+        "playerClosed": true,
+        "finalHomeScreenshotReviewed": true,
+        "WDAIdleSeconds": 10,
+        "WDAAnimationCoolOffSeconds": 2,
+        "crashInventoryNotCheckedThisTurn": true,
+        "performanceAccepted": false,
+        "fullSubtitleAudioHDRAccepted": false
+      }
+    }
+  },
+  "windows": {
+    "iphone13": {
+      "new-recording-circle": {
+        "latestPackage": true,
+        "actualMediaAndFullCircularBordersReviewed": true,
+        "normalCloseReturnedToDetail": true,
+        "portraitReviewed": true,
+        "settingsMenuReviewed": true,
+        "requestObservationSeconds": 10,
+        "precisePauseAccepted": false,
+        "EOFValidated": false,
+        "performanceAccepted": false
+      },
+      "s01-file-circle": {
+        "latestPackage": true,
+        "actualMediaAndFullCircularBordersReviewed": true,
+        "normalCloseReturnedToDetail": true,
+        "portraitReviewed": false,
+        "settingsMenuReviewed": false,
+        "requestObservationSeconds": 10,
+        "precisePauseAccepted": false,
+        "EOFValidated": false,
+        "performanceAccepted": false
+      },
+      "s01-jf-circle": {
+        "latestPackage": true,
+        "actualMediaAndFullCircularBordersReviewed": true,
+        "normalCloseReturnedToDetail": true,
+        "portraitReviewed": false,
+        "settingsMenuReviewed": false,
+        "requestObservationSeconds": 10,
+        "precisePauseAccepted": false,
+        "EOFValidated": false,
+        "performanceAccepted": false
+      }
+    },
+    "ipad": {
+      "new-recording-circle": {
+        "latestPackage": true,
+        "actualMediaAndFullCircularBordersReviewed": true,
+        "normalCloseReturnedToDetail": true,
+        "portraitReviewed": true,
+        "settingsMenuReviewed": false,
+        "requestObservationSeconds": 10,
+        "precisePauseAccepted": false,
+        "EOFValidated": false,
+        "performanceAccepted": false
+      },
+      "s01-file-circle": {
+        "latestPackage": true,
+        "actualMediaAndFullCircularBordersReviewed": true,
+        "normalCloseReturnedToDetail": true,
+        "portraitReviewed": false,
+        "settingsMenuReviewed": true,
+        "requestObservationSeconds": 10,
+        "precisePauseAccepted": false,
+        "EOFValidated": false,
+        "performanceAccepted": false
+      },
+      "s01-jf-circle": {
+        "latestPackage": true,
+        "actualMediaAndFullCircularBordersReviewed": true,
+        "normalCloseReturnedToDetail": true,
+        "portraitReviewed": false,
+        "settingsMenuReviewed": false,
+        "requestObservationSeconds": 10,
+        "precisePauseAccepted": false,
+        "EOFValidated": false,
+        "performanceAccepted": false
+      }
+    }
+  },
+  "circleContrastEvidence": {
+    "method": "actual raw WDA landscape pixel mapping to App point bounds; one edge pixel per button, plus full image visual inspection required",
+    "results": [
+      {
+        "label": "baseline-recording-circle",
+        "samples": {
+          "close": {
+            "outsideVideoEdgeSampleRGB": [
+              0,
+              0,
+              0
+            ],
+            "nativePixel": [
+              1073,
+              190
+            ]
+          },
+          "more": {
+            "outsideVideoEdgeSampleRGB": [
+              0,
+              0,
+              0
+            ],
+            "nativePixel": [
+              1073,
+              2342
+            ]
+          }
+        }
+      },
+      {
+        "label": "new-recording-circle",
+        "samples": {
+          "close": {
+            "outsideVideoEdgeSampleRGB": [
+              61,
+              61,
+              61
+            ],
+            "nativePixel": [
+              1073,
+              190
+            ]
+          },
+          "more": {
+            "outsideVideoEdgeSampleRGB": [
+              61,
+              61,
+              61
+            ],
+            "nativePixel": [
+              1073,
+              2342
+            ]
+          }
+        }
+      }
+    ],
+    "notFramePerformanceEvidence": true
+  },
+  "reviewedImages": {
+    "iphone13": [
+      "baseline-recording-circle/landscape-paused",
+      "new-recording-circle/landscape-paused",
+      "new-recording-circle/portrait-paused",
+      "new-recording-circle/settings-menu",
+      "s01-file-circle/landscape-paused",
+      "s01-jf-circle/landscape-paused"
+    ],
+    "ipad": [
+      "new-recording-circle/landscape-paused",
+      "new-recording-circle/portrait-paused",
+      "s01-file-circle/landscape-paused",
+      "s01-file-circle/settings-menu",
+      "s01-jf-circle/landscape-paused"
+    ]
+  },
+  "baselineSourceDiffSHA256": "3e3aa7b7c6dfd15bfe1faad767abb5386e3e18eba57776348b235749423183be",
+  "rootCause": "Black translucent circular fill loses contrast over black pillarboxes; no visible circle edge existed. Reproduced with user photo exact R02 recording on latest baseline iPhone13.",
+  "fix": "Shared 1 pt white 0.24 opacity circle stroke; ellipsis reuses same 44 pt button helper; stroke does not receive hits.",
+  "changedSourceFilesThisTurn": [
+    "ios/Nastart/Nastart/Features/Launchpad/LaunchpadView.swift"
+  ],
+  "noPlaybackRendererLayoutFontChanges": true,
+  "toolFailuresRetained": [
+    "Initial baseline helper package gate rejected before actual-home review; corrected by actual review; no App failure inferred"
+  ],
+  "evidenceScope": "R02 completed MP4, both USB devices landscape/portrait; S01 device-file and Jellyfin entry UI + normal close on both USB devices. Serial playback.",
+  "iPhone18UIValidated": false,
+  "XcodeAutomaticTunnelValidated": false,
+  "allHistoricalBacklogRetained": true,
+  "privateEvidenceRoot": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-10-13-player-chrome-circle-032024"
+}

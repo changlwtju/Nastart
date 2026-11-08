@@ -1,5 +1,7 @@
 # Nastart iOS Architecture
 
+> 当前实施说明（2026-10-19）：本文是工程创建前的初始设计。视频播放已发展为Greenfield/KSPlayer原流与AVPlayer/HLS兼容主线，实际实现和Debug/Release边界见[当前播放技术路线](VIDEO_PLAYBACK_PIPELINE.md)。下文仅系统/外部播放器等早期设想不作为当前播放实现说明；项目进度见[开发状态](../project/DEVELOPMENT_STATUS.md)。
+
 Version: 0.2  
 Status: Draft  
 Last updated: 2026-07-25

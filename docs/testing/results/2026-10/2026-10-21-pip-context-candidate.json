@@ -1,0 +1,453 @@
+{
+  "date": "2026-10-21",
+  "scope": "Debug same-frame metadata and explicit PQ candidate; no ordinary/Release HDR subtitle acceptance",
+  "contextPackages": [
+    {
+      "sourceDiffSHA256": "2e5cd3c3890a58b542ae579f2964f536a24fcb2a7bdc56558d8b06ae959bbf02",
+      "binaryBuildTime": "2026-10-21T04:07:31.093151+08:00",
+      "binaries": {
+        "Nastart": "cc0b06fb6cbe4e281689b45c38058c81b30b6c2bbf38ba156bfdbe2d96f898b0",
+        "Nastart.debug.dylib": "3645f51e91f2f9a4df928326c2653e2e9c81319ced58ae8e0191366937806859",
+        "Frameworks/KSPlayer.framework/KSPlayer": "1b762c21dbc59e575e8f36cb4c2fac9bb2613f911458ea84b5e2a223528ba6b1"
+      },
+      "ipaSHA256": "00613190f1948b5caf472e169f644f00c01ba09af8a6b1e83b2239f87587a879"
+    },
+    {
+      "sourceDiffSHA256": "dd6b530689d6822f973b5ac0d98d89de970079bb2e3113c26f4781177c387f63",
+      "binaryBuildTime": "2026-10-21T04:25:07.471396+08:00",
+      "binaries": {
+        "Nastart": "cdbc65c51d8c6012a56ee7d9d233e0061ada9861b4c2379ff292d1441f5069e8",
+        "Nastart.debug.dylib": "7c0327009114acc3d85e743227261e4667524a02325d06bed4db10d325a9301c",
+        "Frameworks/KSPlayer.framework/KSPlayer": "56b59d7434fb41b53b068eda5cf7c04d9735ee6f88958ecac415c6ecb8dd8225"
+      },
+      "ipaSHA256": "eda7231ac331c760daeb57d9ae120f35453f3e6d0030390bf5e34e69afbdb727"
+    }
+  ],
+  "candidateInitialFailure": {
+    "configuration": "Debug explicit candidate=1; normal environment restored",
+    "rows": [
+      {
+        "compositionReason": "hdrDeviceValidationFailed",
+        "frameMasteringDisplayBytes": "24",
+        "frameMasteringMaximumNits": "1000.0",
+        "hdrPoolCreationStatus": "0",
+        "hdrProbeRoundtripCodeDelta": "0",
+        "hdrProbeWhiteNits": "99.91279848944153",
+        "imageCount": "1",
+        "sourceDolbyCompatibilityID": "6",
+        "sourceDolbyProfile": "7"
+      },
+      {
+        "compositionReason": "hdrDeviceValidationFailed",
+        "frameMasteringDisplayBytes": "24",
+        "frameMasteringMaximumNits": "1000.0",
+        "hdrPoolCreationStatus": "0",
+        "hdrProbeRoundtripCodeDelta": "0",
+        "hdrProbeWhiteNits": "99.91279848944153",
+        "imageCount": "1",
+        "sourceDolbyCompatibilityID": "6",
+        "sourceDolbyProfile": "7"
+      }
+    ],
+    "memory": {
+      "count": 84,
+      "physMiBMin": 37.3460693359375,
+      "physMiBMax": 1011.5662841796875,
+      "rssMiBMax": 267.984375
+    },
+    "result": {
+      "startedAt": "2026-10-21T04:49:36.962585+08:00",
+      "network": "Wi-Fi unchanged",
+      "sample": "S03",
+      "entry": "Jellyfin",
+      "playCommands": 1,
+      "pipCommands": 1,
+      "HDRCompositionEnabled": true,
+      "windowPurpose": "Debug opt-in fixed 4K PQ compatible HDR base subtitle candidate; not Release or DV dynamic output acceptance",
+      "testEnvironment": {
+        "NASTART_PIP_PQ_CANDIDATE": "1"
+      },
+      "latestPackageGate": true,
+      "actualTestEnvironmentVerified": true,
+      "playAction": "从头播放",
+      "manualHomeSent": true,
+      "inventoryWindowCompleted": true,
+      "ownedAppStoppedAndAbsent": true,
+      "WDASettingsRestored": true,
+      "normalEnvironmentRestored": true,
+      "finalOwnedAppAbsent": true,
+      "nonBookmarkPreferencesExactlyUnchanged": true,
+      "originalBookmarkCount": 36,
+      "originalTrackChanges": 0,
+      "bookmarkProgressChanges": 1,
+      "bookmarksAdded": 0,
+      "bookmarksRemoved": 0,
+      "crashInventoryDelta": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      },
+      "finishedAt": "2026-10-21T04:52:02.034769+08:00"
+    },
+    "presentation": "Two native PiP screenshots show no subtitles; candidate validation refused. No composition/resource acceptance."
+  },
+  "metadata": {
+    "S03": {
+      "profile": 7,
+      "compatibility": 6,
+      "baseLayer": 1,
+      "enhancementLayer": 1,
+      "RPU": 1,
+      "RPUBytes": [
+        391,
+        392,
+        387
+      ],
+      "pixelFormat": "x420",
+      "transfer": "PQ",
+      "geometry": [
+        3840,
+        2160
+      ]
+    },
+    "S19": {
+      "sourceDolbyIdentity": true,
+      "RPUBytes": 225,
+      "pixelFormat": "x420",
+      "transfer": "PQ",
+      "geometry": [
+        3840,
+        2160
+      ]
+    },
+    "DVDisplay": "unknown",
+    "sourceCVPayloadVisibility": "RPU/mastering/content-light payload not observed in CV/display inventory; AVFrame contains them"
+  },
+  "calibratedPackage": {
+    "sourceDiffSHA256": "c4a73011f1125e0222b6230789b099cfea2ad6cc64f80603cd62d2ebea0148c4",
+    "binaryBuildTime": "2026-10-21T04:55:32.968390+08:00",
+    "binaries": {
+      "Nastart": "6cd9893b0b6f9b8ebf5e9fb83486578ef329e6b377c270aee3faa64fb02a17dd",
+      "Nastart.debug.dylib": "0739174ced5a87003e17bd12d8a36c88725857393990ab91a76a2f908d5f5369",
+      "Frameworks/KSPlayer.framework/KSPlayer": "6707c79d90bd44b15104d8ba1729179610109fe7bd6e83e622ebeb2e88b7cb9d"
+    },
+    "ipaSHA256": "7c4c1f7e9a0d5d644a4099103dccc600a85ecda7a057301cd58ef03e944e2b6a"
+  },
+  "calibratedTests": {
+    "passed": 14,
+    "normalXcodeExit": true
+  },
+  "calibratedDevices": {
+    "iphone13": {
+      "frames": [
+        {
+          "composited": "true",
+          "compositionReason": "hdrPQOutputCreated",
+          "frameMasteringDisplayBytes": "24",
+          "frameMasteringMaximumNits": "1000.0",
+          "hdrCheckoutStatus": "0",
+          "hdrDynamicPayloadCopied": "false",
+          "hdrLifetimeSurfaceGuard": "disableOnFifthNeverAllocateSixth",
+          "hdrNominalOutputSurfaces": "4",
+          "hdrObservedUniqueSurfaces": "4",
+          "hdrOriginalContentLightMetadataCopied": "false",
+          "hdrOutputMode": "compatibleHDR10BaseWithCaptions",
+          "hdrPoolCreationStatus": "0",
+          "hdrProbeHeldAliasAllocationRefused": "true",
+          "hdrProbeNativeWhiteNits": "99.91279848944153",
+          "hdrProbeRoundtripCodeDelta": "0",
+          "hdrProbeWhiteNits": "203.70295787737396",
+          "hdrRenderMilliseconds": "56.963041657581925",
+          "hdrSubtitleLinearGain": "2.031771735644582",
+          "imageCount": "1",
+          "sourceDolbyCompatibilityID": "6",
+          "sourceDolbyProfile": "7"
+        },
+        {
+          "composited": "true",
+          "compositionReason": "hdrPQOutputCreated",
+          "frameMasteringDisplayBytes": "24",
+          "frameMasteringMaximumNits": "1000.0",
+          "hdrCheckoutStatus": "0",
+          "hdrDynamicPayloadCopied": "false",
+          "hdrLifetimeSurfaceGuard": "disableOnFifthNeverAllocateSixth",
+          "hdrNominalOutputSurfaces": "4",
+          "hdrObservedUniqueSurfaces": "4",
+          "hdrOriginalContentLightMetadataCopied": "false",
+          "hdrOutputMode": "compatibleHDR10BaseWithCaptions",
+          "hdrPoolCreationStatus": "0",
+          "hdrProbeHeldAliasAllocationRefused": "true",
+          "hdrProbeNativeWhiteNits": "99.91279848944153",
+          "hdrProbeRoundtripCodeDelta": "0",
+          "hdrProbeWhiteNits": "203.70295787737396",
+          "hdrRenderMilliseconds": "21.010333322919905",
+          "hdrSubtitleLinearGain": "2.031771735644582",
+          "imageCount": "1",
+          "sourceDolbyCompatibilityID": "6",
+          "sourceDolbyProfile": "7"
+        },
+        {
+          "composited": "false",
+          "compositionReason": "noCue",
+          "frameMasteringDisplayBytes": "24",
+          "frameMasteringMaximumNits": "1000.0",
+          "imageCount": "0",
+          "sourceDolbyCompatibilityID": "6",
+          "sourceDolbyProfile": "7"
+        }
+      ],
+      "result": {
+        "startedAt": "2026-10-21T04:57:56.326319+08:00",
+        "network": "Wi-Fi unchanged",
+        "sample": "S03",
+        "entry": "Jellyfin",
+        "playCommands": 1,
+        "pipCommands": 1,
+        "HDRCompositionEnabled": true,
+        "windowPurpose": "Debug opt-in fixed 4K PQ compatible HDR base subtitle candidate; not Release or DV dynamic output acceptance",
+        "testEnvironment": {
+          "NASTART_PIP_PQ_CANDIDATE": "1"
+        },
+        "latestPackageGate": true,
+        "actualTestEnvironmentVerified": true,
+        "playAction": "在 Nastart 中播放",
+        "manualHomeSent": true,
+        "inventoryWindowCompleted": true,
+        "ownedAppStoppedAndAbsent": true,
+        "WDASettingsRestored": true,
+        "normalEnvironmentRestored": true,
+        "finalOwnedAppAbsent": true,
+        "nonBookmarkPreferencesExactlyUnchanged": true,
+        "originalBookmarkCount": 36,
+        "originalTrackChanges": 0,
+        "bookmarkProgressChanges": 1,
+        "bookmarksAdded": 0,
+        "bookmarksRemoved": 0,
+        "crashInventoryDelta": {
+          "Nastart": 0,
+          "WebDriverAgent": 0,
+          "JetsamEvent": 0
+        },
+        "finishedAt": "2026-10-21T05:00:19.674821+08:00"
+      },
+      "nativeVisualReview": "PiP3 native screenshot has readable bilingual PGS subtitles; PiP10 sampled no subtitle. Original SSID and Wi-Fi icon reviewed after stop.",
+      "ordinaryOrReleaseAcceptance": false,
+      "memory": {
+        "count": 78,
+        "physMiBMax": 1097.7540893554688,
+        "rssMiBMax": 261.46875,
+        "lastPhysMiB": 999.3946533203125,
+        "longPlateauVerified": false
+      }
+    },
+    "ipad": {
+      "frames": [
+        {
+          "composited": "true",
+          "compositionReason": "hdrPQOutputCreated",
+          "hdrCheckoutStatus": "0",
+          "hdrDynamicPayloadCopied": "false",
+          "hdrLifetimeSurfaceGuard": "disableOnFifthNeverAllocateSixth",
+          "hdrNominalOutputSurfaces": "4",
+          "hdrObservedUniqueSurfaces": "4",
+          "hdrOriginalContentLightMetadataCopied": "false",
+          "hdrOutputMode": "compatibleHDR10BaseWithCaptions",
+          "hdrPoolCreationStatus": "0",
+          "hdrProbeHeldAliasAllocationRefused": "true",
+          "hdrProbeNativeWhiteNits": "203.70295787737396",
+          "hdrProbeRoundtripCodeDelta": "0",
+          "hdrProbeWhiteNits": "201.4900779667006",
+          "hdrRenderMilliseconds": "73.51825013756752",
+          "hdrSubtitleLinearGain": "0.9965491032398404",
+          "imageCount": "1",
+          "sourceDolbyCompatibilityID": "6",
+          "sourceDolbyProfile": "7"
+        },
+        {
+          "composited": "true",
+          "compositionReason": "hdrPQOutputCreated",
+          "hdrCheckoutStatus": "0",
+          "hdrDynamicPayloadCopied": "false",
+          "hdrLifetimeSurfaceGuard": "disableOnFifthNeverAllocateSixth",
+          "hdrNominalOutputSurfaces": "4",
+          "hdrObservedUniqueSurfaces": "4",
+          "hdrOriginalContentLightMetadataCopied": "false",
+          "hdrOutputMode": "compatibleHDR10BaseWithCaptions",
+          "hdrPoolCreationStatus": "0",
+          "hdrProbeHeldAliasAllocationRefused": "true",
+          "hdrProbeNativeWhiteNits": "203.70295787737396",
+          "hdrProbeRoundtripCodeDelta": "0",
+          "hdrProbeWhiteNits": "201.4900779667006",
+          "hdrRenderMilliseconds": "26.477958308532834",
+          "hdrSubtitleLinearGain": "0.9965491032398404",
+          "imageCount": "1",
+          "sourceDolbyCompatibilityID": "6",
+          "sourceDolbyProfile": "7"
+        }
+      ],
+      "result": {
+        "startedAt": "2026-10-21T05:07:16.070256+08:00",
+        "network": "Wi-Fi unchanged",
+        "sample": "S03",
+        "entry": "Jellyfin",
+        "playCommands": 1,
+        "pipCommands": 1,
+        "HDRCompositionEnabled": true,
+        "windowPurpose": "Debug opt-in fixed 4K PQ compatible HDR base subtitle candidate; not Release or DV dynamic output acceptance",
+        "testEnvironment": {
+          "NASTART_PIP_PQ_CANDIDATE": "1"
+        },
+        "latestPackageGate": true,
+        "actualTestEnvironmentVerified": true,
+        "memorySampling": "Not collected; avoid a second native RSD owner during XCTest",
+        "playAction": "从头播放",
+        "manualHomeSent": true,
+        "inventoryWindowCompleted": true,
+        "ownedAppStoppedWDAStateNotRunning": true,
+        "WDASettingsRestored": true,
+        "normalEnvironmentRestored": true,
+        "finalOwnedAppWDAStateNotRunning": true,
+        "nonBookmarkPreferencesExactlyUnchanged": true,
+        "originalBookmarkCount": 29,
+        "originalTrackChanges": 0,
+        "bookmarkProgressChanges": 1,
+        "bookmarksAdded": 0,
+        "bookmarksRemoved": 0,
+        "crashInventoryDelta": {
+          "Nastart": 0,
+          "WebDriverAgent": 0,
+          "JetsamEvent": 0
+        },
+        "finishedAt": "2026-10-21T05:09:51.401897+08:00"
+      },
+      "nativeVisualReview": "PiP3 native screenshot has readable bilingual PGS subtitles; PiP10 sampled no subtitle. Original SSID and Wi-Fi icon reviewed after stop.",
+      "ordinaryOrReleaseAcceptance": false
+    }
+  },
+  "iphone18Installation": {
+    "installDispatchAttempted": true,
+    "installCommandSent": true,
+    "installCompleteObserved": true,
+    "actualForegroundUIVerified": false,
+    "RSDTargetVerified": true,
+    "transport": "Existing paired Wi-Fi userspace RSD; legacy container handshake failure retained",
+    "sourceDiffSHA256": "c4a73011f1125e0222b6230789b099cfea2ad6cc64f80603cd62d2ebea0148c4",
+    "binaries": {
+      "Nastart": "6cd9893b0b6f9b8ebf5e9fb83486578ef329e6b377c270aee3faa64fb02a17dd",
+      "Nastart.debug.dylib": "0739174ced5a87003e17bd12d8a36c88725857393990ab91a76a2f908d5f5369",
+      "Frameworks/KSPlayer.framework/KSPlayer": "6707c79d90bd44b15104d8ba1729179610109fe7bd6e83e622ebeb2e88b7cb9d"
+    },
+    "ipaSHA256": "7c4c1f7e9a0d5d644a4099103dccc600a85ecda7a057301cd58ef03e944e2b6a",
+    "stage": "installed; normal launch and actual UI review pending",
+    "preferencesSavedBeforeInstall": true,
+    "installedAtUTC": "2026-10-20T21:12:33.037462+00:00",
+    "postInstallLookupExists": true,
+    "preferences": {
+      "beforeKeys": 25,
+      "afterKeys": 25,
+      "sameKeys": true,
+      "changedValues": 0,
+      "allNonDiagnosticPreferencesEqual": true
+    },
+    "normalLaunchRequested": true,
+    "requestedEnvironment": {},
+    "requestedArguments": [],
+    "failureType": "DTXNsError"
+  },
+  "ipadNativeCleanup": {
+    "ownedRunnerAbsent": true,
+    "ownedAppAbsent": true,
+    "runnerProcessesStopped": 0,
+    "existingPhoneRunnerUntouched": true
+  },
+  "pauseRestoreAttempts": [
+    {
+      "result": {
+        "startedAt": "2026-10-21T05:16:32.386651+08:00",
+        "network": "Wi-Fi unchanged",
+        "sample": "S03",
+        "entry": "Jellyfin",
+        "playCommands": 1,
+        "pipCommands": 1,
+        "HDRCompositionEnabled": true,
+        "windowPurpose": "Debug opt-in fixed 4K PQ compatible HDR base subtitle candidate; not Release or DV dynamic output acceptance",
+        "testEnvironment": {
+          "NASTART_PIP_PQ_CANDIDATE": "1"
+        },
+        "latestPackageGate": true,
+        "actualTestEnvironmentVerified": true,
+        "playAction": "从头播放",
+        "manualHomeSent": true,
+        "inventoryWindowCompleted": true,
+        "failureType": "AssertionError",
+        "failureReason": "",
+        "ownedAppStoppedAndAbsent": true,
+        "WDASettingsRestored": true,
+        "normalEnvironmentRestored": true,
+        "finalOwnedAppAbsent": true,
+        "nonBookmarkPreferencesExactlyUnchanged": true,
+        "originalBookmarkCount": 36,
+        "originalTrackChanges": 0,
+        "bookmarkProgressChanges": 1,
+        "bookmarksAdded": 0,
+        "bookmarksRemoved": 0,
+        "crashInventoryDelta": {
+          "Nastart": 0,
+          "WebDriverAgent": 0,
+          "JetsamEvent": 0
+        },
+        "finishedAt": "2026-10-21T05:19:00.720784+08:00"
+      },
+      "pauseSent": false,
+      "restoreSent": false,
+      "scope": "Control/scene prerequisite failure; actual PiP captions still readable; not a pause/restore result"
+    },
+    {
+      "result": {
+        "startedAt": "2026-10-21T05:20:34.349484+08:00",
+        "network": "Wi-Fi unchanged",
+        "sample": "S03",
+        "entry": "Jellyfin",
+        "playCommands": 1,
+        "pipCommands": 1,
+        "HDRCompositionEnabled": true,
+        "windowPurpose": "Debug opt-in fixed 4K PQ compatible HDR base subtitle candidate; not Release or DV dynamic output acceptance",
+        "testEnvironment": {
+          "NASTART_PIP_PQ_CANDIDATE": "1"
+        },
+        "latestPackageGate": true,
+        "actualTestEnvironmentVerified": true,
+        "playAction": "在 Nastart 中播放",
+        "manualHomeSent": true,
+        "inventoryWindowCompleted": true,
+        "failureType": "AssertionError",
+        "failureReason": "",
+        "ownedAppStoppedAndAbsent": true,
+        "WDASettingsRestored": true,
+        "nonBookmarkPreferencesExactlyUnchanged": true,
+        "originalBookmarkCount": 36,
+        "originalTrackChanges": 0,
+        "bookmarkProgressChanges": 1,
+        "bookmarksAdded": 0,
+        "bookmarksRemoved": 0,
+        "crashInventoryDelta": {
+          "Nastart": 0,
+          "WebDriverAgent": 0,
+          "JetsamEvent": 0
+        },
+        "finishedAt": "2026-10-21T05:22:58.682693+08:00"
+      },
+      "pauseSent": false,
+      "restoreSent": false,
+      "scope": "Control/scene prerequisite failure; actual PiP captions still readable; not a pause/restore result"
+    }
+  ],
+  "pauseRestoreRecovery": {
+    "AppAbsentBeforeRecovery": true,
+    "latestPackageReceiptMatched": true,
+    "actualEmptyEnvironment": true,
+    "normalHomeVerified": true,
+    "WDASettingsRestored": true,
+    "ownedAppStoppedAndAbsent": true
+  }
+}

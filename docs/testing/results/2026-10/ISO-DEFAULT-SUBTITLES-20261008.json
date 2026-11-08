@@ -1,0 +1,169 @@
+{
+  "updatedAt": "2026-10-08T05:33:39.999271+08:00",
+  "scope": "Jellyfin ISO startup track propagation; L1 only",
+  "package": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "2f3727b0cb647f7dd8b3c8df92cdebb1f1d50635cef6a9c4f1706b48d3a0ba50",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "binaryBuildTime": "2026-10-08T05:13:40.767524+08:00",
+    "binaries": {
+      "Nastart": "6fba26f7abc9b83429743110f143e58c892f2b243fcc092bf1a44deb3166f2f4",
+      "Nastart.debug.dylib": "4867d55db62b1f02d2cd322a7f829db5e2c078d1f1477421b29ecd1461c45202",
+      "Frameworks/KSPlayer.framework/KSPlayer": "5fa42aac977408c21c0a85c45b0d806490c3d7dc2048f0e84ea00eb0dc591cf0"
+    },
+    "signatureVerified": true,
+    "individuallyVerifiedLibraries": 29,
+    "checkedInputs": 128,
+    "newerInputs": [],
+    "linkageVerified": true,
+    "preflight": "15 passed",
+    "tests": "ISO source tracks fix: 185/2 skipped/0 failures"
+  },
+  "devices": [
+    {
+      "device": "iphone13",
+      "model": "iPhone14,5",
+      "os": "16.3.1",
+      "systemBuild": "20D67",
+      "recordedAt": "2026-10-08T05:15:16.564993+08:00",
+      "binaries": {
+        "Nastart": "6fba26f7abc9b83429743110f143e58c892f2b243fcc092bf1a44deb3166f2f4",
+        "Nastart.debug.dylib": "4867d55db62b1f02d2cd322a7f829db5e2c078d1f1477421b29ecd1461c45202",
+        "Frameworks/KSPlayer.framework/KSPlayer": "5fa42aac977408c21c0a85c45b0d806490c3d7dc2048f0e84ea00eb0dc591cf0"
+      },
+      "sourceDiffSHA256": "2f3727b0cb647f7dd8b3c8df92cdebb1f1d50635cef6a9c4f1706b48d3a0ba50",
+      "configuration": "normal Debug -Onone; empty launch environment",
+      "freshUSBIdentity": true,
+      "signatureVerified": true,
+      "dataPreservingCoverInstall": true,
+      "unchangedNonDiagnosticPreferences": 25,
+      "installation": "success",
+      "normalLaunchSucceeded": true,
+      "actualForegroundUIVerified": true,
+      "requestedEnvironment": {},
+      "requestedArguments": []
+    },
+    {
+      "device": "ipad",
+      "model": "iPad12,1",
+      "os": "18.3.1",
+      "systemBuild": "22D72",
+      "recordedAt": "2026-10-08T05:15:23.647299+08:00",
+      "binaries": {
+        "Nastart": "6fba26f7abc9b83429743110f143e58c892f2b243fcc092bf1a44deb3166f2f4",
+        "Nastart.debug.dylib": "4867d55db62b1f02d2cd322a7f829db5e2c078d1f1477421b29ecd1461c45202",
+        "Frameworks/KSPlayer.framework/KSPlayer": "5fa42aac977408c21c0a85c45b0d806490c3d7dc2048f0e84ea00eb0dc591cf0"
+      },
+      "sourceDiffSHA256": "2f3727b0cb647f7dd8b3c8df92cdebb1f1d50635cef6a9c4f1706b48d3a0ba50",
+      "configuration": "normal Debug -Onone; empty launch environment",
+      "freshUSBIdentity": true,
+      "signatureVerified": true,
+      "dataPreservingCoverInstall": true,
+      "unchangedNonDiagnosticPreferences": 16,
+      "installation": "success",
+      "normalLaunchSucceeded": true,
+      "actualForegroundUIVerified": true,
+      "requestedEnvironment": {},
+      "requestedArguments": []
+    }
+  ],
+  "baseline": {
+    "iPhone13": {
+      "package": "a6f75669",
+      "explicitDetailChineseThenPlayerOff": "reproduced"
+    },
+    "diagnosticChain": {
+      "trace": "124F92CF",
+      "detailSubtitleID": 6,
+      "requestSubtitleID": null,
+      "requestSubtitleCount": 0,
+      "requestSubtitleMode": "disabled",
+      "format": "ISO -> m2ts"
+    },
+    "rootCause": "Jellyfin ISO early-return request omitted source audio/subtitle tracks and chosen IDs"
+  },
+  "checks": [
+    {
+      "device": "iPhone13",
+      "trace": "A966797A",
+      "selection": "Chinese PGS ID 6",
+      "mode": "embedded",
+      "actualSubtitleVisible": true,
+      "playerMenuChecked": true,
+      "normalExitReadable": true
+    },
+    {
+      "device": "iPhone13",
+      "trace": "91B7303E",
+      "selection": "explicit off",
+      "mode": "disabled",
+      "actualMovieVisible": true,
+      "playerMenuOffChecked": true,
+      "normalExitReadable": true,
+      "restoredChineseBeforeFinish": true
+    },
+    {
+      "device": "iPad",
+      "trace": "AD8F24A9",
+      "selection": "existing detail Chinese PGS ID 6; no selection edit",
+      "mode": "embedded",
+      "actualSubtitleVisible": true,
+      "playerMenuChecked": true,
+      "normalExitReadable": true
+    },
+    {
+      "device": "iPad",
+      "trace": "7739275B",
+      "selection": "resume retained Chinese PGS ID 6",
+      "mode": "embedded",
+      "actualSubtitleVisible": true,
+      "actualMovieAdvancing": true,
+      "blackSpinnerCaptureUpperBoundFromTapSeconds": 4.626,
+      "movieCaptureUpperBoundFromTapSeconds": 15.295,
+      "laterMovieSubtitleCaptureUpperBoundFromTapSeconds": 36.003,
+      "internalClockFirstFrameMs": 6594,
+      "internalFirstPositionSeconds": 123.272,
+      "normalExitReadable": true,
+      "performanceAcceptance": "not established"
+    }
+  ],
+  "s03NewRegression": {
+    "device": "iPad",
+    "trace": "4AE71073",
+    "entry": "Jellyfin",
+    "start": "from beginning",
+    "plan": "directPlay localRangeProxy; private upstream",
+    "selectedSubtitleID": 7,
+    "actualMovieAndBilingualSubtitleVisible": true,
+    "captureAt30Seconds": "black image retained; no complete-frame verdict",
+    "internalClockFirstFrameMs": 1445,
+    "telemetrySamples": 140,
+    "telemetrySpanSeconds": 146.069,
+    "lastPlaybackSeconds": 145.072,
+    "lastStallCount": 0,
+    "lastDroppedVideoFrames": 3,
+    "bufferedCount": "unavailable (-)",
+    "replacementWarmupFailedEvents": 0,
+    "oldFailureClosed": false,
+    "normalExitReadable": true,
+    "fullSmoothnessQualified": false
+  },
+  "limitations": [
+    "No user-explicit Off preferences were mass-cleared",
+    "Device file ISO default track selection not verified or changed",
+    "Other ISO titles may require different stream-index mapping; not globally verified",
+    "HDR PiP subtitle guard unchanged",
+    "No complete frame timing or audible output qualification",
+    "Single-device serial observations do not qualify multi-device contention",
+    "Main not pushed; shared playback L2 and all open PX/UX/CB gates remain"
+  ],
+  "rawEvidence": "local private only",
+  "finish": {
+    "bothPlayersClosed": true,
+    "normalNastartForegroundVerified": true,
+    "automationIdleWaitRestored": 10,
+    "networkOrVPNChanges": false,
+    "artificialLimitsIntroduced": false,
+    "iphone18": "disconnected; previous package 51ae; not updated this batch"
+  }
+}

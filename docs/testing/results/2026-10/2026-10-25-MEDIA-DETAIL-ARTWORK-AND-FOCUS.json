@@ -1,0 +1,191 @@
+{
+  "checkedAt": "2026-10-25T19:28:05.481541+08:00",
+  "phase": "three_device_detail_visual_verified_global_focus_followup_open",
+  "openRequirements": 28,
+  "matrixCells": 114,
+  "sourceHEAD": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "grid": {
+    "directions": 23,
+    "focusCorrect": true,
+    "alreadyVisible": 19,
+    "zeroPageDisplacement": 18,
+    "maximumVisibleAdjustment": 3.0,
+    "notFrameTimingOrFullPerformanceAcceptance": true
+  },
+  "phoneActionRow": {
+    "at": "2026-10-25T18:38:44.774596+08:00",
+    "mediaCommands": 0,
+    "sameRow": true,
+    "sameHeight": true,
+    "geometry": {
+      "jellyfin.detail.continue": {
+        "x": 18.0,
+        "y": 638.0,
+        "width": 145.0,
+        "height": 48.0
+      },
+      "jellyfin.detail.restart": {
+        "x": 173.0,
+        "y": 638.0,
+        "width": 145.0,
+        "height": 48.0
+      }
+    }
+  },
+  "ratingResearch": "../../architecture/MULTISOURCE_RATINGS.md",
+  "ratingsImplemented": false,
+  "deviceFileResumeCrossDeviceSync": false,
+  "mediaCommandsForLatestNavigationBatch": 0,
+  "cellularTestsForThisBatch": 0,
+  "failuresRetained": [
+    "Two TV KS chrome auto-hide / Play-Pause failures; reverted to stable KSUI",
+    "Earlier grid test assumed 4 columns instead of actual user setting 5; fixture corrected",
+    "First movie fixture required 11 realised items; actual tree had 10",
+    "First movie cleanup read settings under wrong JSON key; corrected and restoration subsequently verified",
+    "Runtime interleaved with user remote operation; stopped automation, restored settings, obtained handoff, restarted controlled window"
+  ],
+  "tests": {
+    "logic": 40,
+    "noMediaUI": 5,
+    "exit": 0
+  },
+  "latestTV": {
+    "at": "2026-10-25T19:02:32.117190+08:00",
+    "configuration": "normal Debug",
+    "HEAD": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceInputs": 510,
+    "binaries": {
+      "__preview.dylib": "54fea83cd5239310598a0fb14ad680d3f9df45cd2ceab9ec1151dd27463fbd2d",
+      "NastartTV": "67f985c02bbd67d51a284a9fa3e1435e82dccf7c5aab8a881ad3fd36ec953daa",
+      "NastartTV.debug.dylib": "01fa9e42bcb71ead5e3df062f61f843c43f20043cebad6a0ca2477f1faee2f32",
+      "Frameworks/Libswresample.framework/Libswresample": "0248cd11622bf34e8e12ea2384191f3f5a7fcca21b5afd2acf76a640cfd9f7f0",
+      "Frameworks/Libavfilter.framework/Libavfilter": "c878237c59edbfc0a1b18cf7ba32bc94048f6ce73be835ff8e9fbbe1238903b5",
+      "Frameworks/KSPlayer.framework/KSPlayer": "f05aeec944d1f0efeccc1a9bdc646d59943c16c509dffce252fb017c4edeb583",
+      "Frameworks/Libavformat.framework/Libavformat": "a4387a55f532ab71c9c57a0b4d4919a9342aa1888b91d64a940d80b45b252776",
+      "Frameworks/libshaderc_combined.framework/libshaderc_combined": "b9b4856f545f3f06617e1c7ad120e48134ba7a09317bdb20b3431d2d982a09f0",
+      "Frameworks/Libavutil.framework/Libavutil": "9f47f291d006f259a86a9d4f578d6a5e497d7b58f5399e95976e5baeafaecd05",
+      "Frameworks/libharfbuzz.framework/libharfbuzz": "2fa8e17f7fb4248cb77793638b7df8da60d7f7130e840914cfbf2770284bd88c",
+      "Frameworks/libdav1d.framework/libdav1d": "65951f5b38b4aab6a506efa43766a30e47f9f42478d361133ea8d1249e4e7233",
+      "Frameworks/libfontconfig.framework/libfontconfig": "deea0a600d2a1d7b214ac2fcef9c8929cbf5143159642975e6ff385911960dfa",
+      "Frameworks/libfreetype.framework/libfreetype": "3c44f4cef7c08af3ff37965c9b4375c8a29c2352dff59f64c6d5bae737954805",
+      "Frameworks/libfribidi.framework/libfribidi": "945fcbbb7d148dd863e459e1281ac7579492e0df528c138e74b570f1fab03a2a",
+      "Frameworks/libsmbclient.framework/libsmbclient": "46bcc09abf3f34bf0322c83519ffacadb5b4f23a74d1b1a8edbb35deeb1d23d7",
+      "Frameworks/hogweed.framework/hogweed": "1911ef0eea6aff11b4bf1f2a51ea2075873a89ce7fc5a96393f1f76ab6713bb0",
+      "Frameworks/Libswscale.framework/Libswscale": "74f5a8701f603af74d2ec6d13ac2e90a9e1fed8d399d1c18311803aac9845464",
+      "Frameworks/Libavdevice.framework/Libavdevice": "0d51820e370cb80eceda22ca99a9ebebf5ac5d044f7d6eb72f74dc94ae26af60",
+      "Frameworks/gnutls.framework/gnutls": "1de6a7b54cd55edb99e26a773c18ea4fe2734ebe984107591c00892dacb8560f",
+      "Frameworks/libass.framework/libass": "d7346f4eea3e9ee26c52890a5bfd52bd24f8f1ef91c586af89dd2f879555a0d3",
+      "Frameworks/Libavcodec.framework/Libavcodec": "302ee649f33f0715470c59e79cd9eb15535b2780e4801aacea1e54675669991d",
+      "Frameworks/lcms2.framework/lcms2": "84fb6f08e190a458685239a2f43de725d56043db5c6a80a68663787b5e266da9",
+      "Frameworks/nettle.framework/nettle": "270add856b37235b732099217ca8e2c3286d1de22dae84bceb789514a6c9bfcf",
+      "Frameworks/gmp.framework/gmp": "60468a6d439b36bd8339de2d0213cf6b36f5abef503da282cc377007b61d97b4",
+      "Frameworks/libplacebo.framework/libplacebo": "861e1931951ac4f2b4372c09f7bb1aebc46bf247f91b6e4ad4f7e1b80720c646",
+      "Frameworks/libzvbi.framework/libzvbi": "3c7a05db9b5a3b0730e21c2292e69e041133e92d8713f951824ad65ad0b9b5aa",
+      "Frameworks/libsrt.framework/libsrt": "211c387e47e7c4ec31b7f671b1df9b6eade88ab37cfa82fe25960edd5592706f"
+    },
+    "signedMachOCount": 27,
+    "embeddedDependenciesChecked": true,
+    "profileContainsTarget": true,
+    "applicationIdentifierAndKeychainGroupsPreserved": true,
+    "installationExit": 0,
+    "installedAt": "2026-10-25T19:02:34.374786+08:00",
+    "binaryBuildTime": "2026-10-25T19:02:31.092214+08:00"
+  },
+  "finalAudit": {
+    "at": "2026-10-25T19:21:07.744299+08:00",
+    "mobile": {
+      "iPhone13": {
+        "model": "iPhone14,5",
+        "system": "16.3.1",
+        "changedKeys": [
+          "diagnostics.entries.v1"
+        ],
+        "normalHomeVisuallyInspected": true,
+        "fullPlaybackNotRepeated": true
+      },
+      "iPad": {
+        "model": "iPad15,7",
+        "system": "26.6",
+        "changedKeys": [
+          "diagnostics.entries.v1"
+        ],
+        "normalHomeVisuallyInspected": true,
+        "fullPlaybackNotRepeated": true
+      },
+      "sourceInputs": 570,
+      "sourceDrift": 0
+    },
+    "TV": {
+      "changedKeys": [
+        "tv.playback.resume.ab98fd2c21299e0549b96cead9a163d5d575ef986c1f73ff727a3faee8f50720",
+        "tv.playback.resume.67eff9736d2b174d26ccbd91216bc8a8ffb8a860b3a9dab7c81a227eb59122e7",
+        "tv.playback.resume.b5ea0822dd5a898edfb99f93d77c6dd4b508df0998eb27dcb3c15fc6efa42bdb",
+        "tv.playback.resume.22832db64c5d08e39c798d72b4078d2a28e4ee4387ef5d5f3f06f2b7771e080e"
+      ],
+      "baseline": "15:39 historical preference baseline; existing resume changes retained, not attributed to latest UI-only batch",
+      "sourceInputs": 510,
+      "sourceDrift": 0
+    }
+  },
+  "visual": {
+    "tv": {
+      "at": "2026-10-25T19:04:05.346473+08:00",
+      "mediaCommands": 0,
+      "detailShown": true,
+      "rootTabsPresentInAccessibilityOnly": true,
+      "sourceVideoFactsShown": true,
+      "sourceAudioFactsShown": true,
+      "returnedNormalHome": true,
+      "settingsRestored": true
+    },
+    "phoneActions": {
+      "at": "2026-10-25T19:06:22.748315+08:00",
+      "mediaCommands": 0,
+      "sameRow": true,
+      "sameHeight": true,
+      "geometry": {
+        "jellyfin.detail.continue": {
+          "x": 18.0,
+          "y": 665.0,
+          "width": 145.0,
+          "height": 49.0
+        },
+        "jellyfin.detail.restart": {
+          "x": 173.0,
+          "y": 665.0,
+          "width": 145.0,
+          "height": 49.0
+        }
+      }
+    },
+    "ipadActions": {
+      "at": "2026-10-25T19:17:44.382703+08:00",
+      "mediaCommands": 0,
+      "sameRow": true,
+      "sameHeight": true,
+      "geometry": {
+        "jellyfin.detail.continue": {
+          "x": 180.0,
+          "y": 652.0,
+          "width": 378.0,
+          "height": 48.0
+        },
+        "jellyfin.detail.restart": {
+          "x": 568.0,
+          "y": 652.0,
+          "width": 378.0,
+          "height": 48.0
+        }
+      }
+    }
+  },
+  "ipadDisplayIncident": {
+    "userConfirmedBlack": true,
+    "systemAndAppScreensBlack": true,
+    "recoveredAfterWake": true,
+    "lockRequestTimedOut": true,
+    "cause": "unknown",
+    "normalDetailThenHomeVerified": true
+  },
+  "newUserFocusReport": "First cast member cannot move Up into hero; second can. Global directional audit remains open."
+}

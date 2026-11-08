@@ -1,0 +1,1468 @@
+{
+  "recordedAt": "2026-10-10T13:11:34.062969+08:00",
+  "source": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "21e8797a0ebd2fd5bf7fbb85be355c27c4cdd926550deeb2db8fb0df800cb842",
+    "package": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-10-10-folder-source-ui-125639/Nastart-Folder-Source-UI-Normal-Debug.app",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "binaryBuildTime": "2026-10-10T13:01:32.267381+08:00",
+    "binaries": {
+      "Nastart": "24189030f8c7f3fbed8d30c884610a8417020a917254d19a1f64dba2af1f4b86",
+      "Nastart.debug.dylib": "2aaadca11a4a00306655cc88bc787910bb95efeb65c440459566e6c462f01c0d",
+      "Frameworks/KSPlayer.framework/KSPlayer": "eda16e6d0e22bc81045752f2f54a263b0f4f8500912378d5ac141013c9042b52"
+    },
+    "signatureVerified": true,
+    "individuallyVerifiedLibraries": 29,
+    "checkedInputs": 173,
+    "newerInputs": [],
+    "profileExpirationUTC": "2026-10-10T22:03:15",
+    "tests": "262/2 skipped/0 failures; 10 folder source/UI fixtures plus 4 authentication identity fixtures plus 11 directory session/cache/API fixtures plus prior playback tests",
+    "preflight": "15 passed",
+    "linkageVerified": true,
+    "sourceInputManifestSHA256": "e3a7e2d04547f410cd4a7ec449899ab364300f4213c0e771cfac2184520cbc1b"
+  },
+  "tests": {
+    "executed": 262,
+    "skipped": 2,
+    "failures": 0,
+    "newDirectorySourceUITests": 10,
+    "preflight": 15,
+    "safeTools": 18
+  },
+  "status": "interrupted by user-requested iPhone18 installation; targeted playback not started",
+  "devices": {
+    "iphone13": {
+      "installation": {
+        "recordedAt": "2026-10-10T13:03:13.871181+08:00",
+        "device": "iphone13",
+        "model": "iPhone14,5",
+        "os": "16.3.1",
+        "systemBuild": "20D67",
+        "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+        "sourceDiffSHA256": "21e8797a0ebd2fd5bf7fbb85be355c27c4cdd926550deeb2db8fb0df800cb842",
+        "binaries": {
+          "Nastart": "24189030f8c7f3fbed8d30c884610a8417020a917254d19a1f64dba2af1f4b86",
+          "Nastart.debug.dylib": "2aaadca11a4a00306655cc88bc787910bb95efeb65c440459566e6c462f01c0d",
+          "Frameworks/KSPlayer.framework/KSPlayer": "eda16e6d0e22bc81045752f2f54a263b0f4f8500912378d5ac141013c9042b52"
+        },
+        "binaryBuildTime": "2026-10-10T13:01:32.267381+08:00",
+        "configuration": "normal Debug -Onone; empty launch environment",
+        "freshUSBIdentity": true,
+        "pairingValid": true,
+        "signatureVerified": true,
+        "verifiedLibraries": 29,
+        "checkedInputs": 173,
+        "targetInValidProfile": true,
+        "dataPreservingCoverInstall": true,
+        "installation": "success",
+        "unchangedNonDiagnosticPreferences": 25,
+        "normalLaunchSucceeded": true,
+        "requestedEnvironment": {},
+        "requestedArguments": [],
+        "actualForegroundUIVerified": true,
+        "foregroundEvidence": "normal-launch.png/xml",
+        "wdaReinstallRequested": false,
+        "cellularAvailability": "available per current user; not used in this home Wi-Fi batch",
+        "networkSettingsChanged": false,
+        "actualProcessArguments": {
+          "env": {},
+          "args": []
+        },
+        "normalHomeNASOnline": true,
+        "initialJellyfinOnline": false,
+        "initialServiceSnapshot": "gray/unknown while refreshing; retained"
+      },
+      "navigation": [
+        {
+          "device": "iphone13",
+          "attempt": 1,
+          "sample": "MI2",
+          "network": "weakwifi",
+          "entry": "files",
+          "startedAt": "2026-10-10T13:05:42.607222+08:00",
+          "endedAt": "2026-10-10T13:06:10.761775+08:00",
+          "restoreAndNavigationSeconds": 28.154553,
+          "helperExitCode": 0,
+          "result": "DETAIL_READY",
+          "normalActualEnvironment": {},
+          "normalActualArguments": [],
+          "noPlaybackSubmitted": true,
+          "playerClosed": true,
+          "responsesInAttempt": [
+            {
+              "id": "87D09810-B46A-435B-82D8-A33E0466E28F",
+              "elapsedSeconds": 7.544172,
+              "fields": {
+                "apiVersion": 2,
+                "authenticationGeneration": "FD1B9EB9-1133-42CF-9AA7-DD468C17A37C",
+                "authenticationObservedMonoMs": 1385813833,
+                "bodyBytes": 626,
+                "contentType": "json",
+                "diagnosticClientID": "2C11CE53",
+                "envelopeSuccess": "true",
+                "fileStationGeneration": "F1597A51-1BEB-4383-B31F-5B6A152EBC91",
+                "folderAttempt": 1,
+                "folderOperationID": "7BBFD763",
+                "folderOrigin": "snapshot",
+                "hasData": "true",
+                "httpStatus": 200,
+                "method": "list_share",
+                "requestAuthenticationGeneration": "F1597A51-1BEB-4383-B31F-5B6A152EBC91",
+                "responseKind": "success",
+                "sessionRole": "fileStation"
+              }
+            },
+            {
+              "id": "2C055EF9-C92B-4D31-ACC2-3AB2507947A6",
+              "elapsedSeconds": 9.016286,
+              "fields": {
+                "apiVersion": 2,
+                "authenticationGeneration": "FD1B9EB9-1133-42CF-9AA7-DD468C17A37C",
+                "authenticationObservedMonoMs": 1385815323,
+                "bodyBytes": 626,
+                "contentType": "json",
+                "diagnosticClientID": "199DDFEC",
+                "envelopeSuccess": "true",
+                "fileStationGeneration": "F1597A51-1BEB-4383-B31F-5B6A152EBC91",
+                "folderAttempt": 1,
+                "folderOperationID": "D6C18AC9",
+                "folderOrigin": "browserRoot",
+                "hasData": "true",
+                "httpStatus": 200,
+                "method": "list_share",
+                "requestAuthenticationGeneration": "F1597A51-1BEB-4383-B31F-5B6A152EBC91",
+                "responseKind": "success",
+                "sessionRole": "fileStation"
+              }
+            },
+            {
+              "id": "936D9E4B-A03F-4B27-B21E-7F691F7C14AE",
+              "elapsedSeconds": 11.351621,
+              "fields": {
+                "apiVersion": 2,
+                "authenticationGeneration": "FD1B9EB9-1133-42CF-9AA7-DD468C17A37C",
+                "authenticationObservedMonoMs": 1385817660,
+                "bodyBytes": 702,
+                "contentType": "json",
+                "diagnosticClientID": "2C11CE53",
+                "envelopeSuccess": "true",
+                "fileStationGeneration": "F1597A51-1BEB-4383-B31F-5B6A152EBC91",
+                "folderAttempt": 1,
+                "folderOperationID": "4627BC36",
+                "folderOrigin": "browserFolder",
+                "hasData": "true",
+                "httpStatus": 200,
+                "method": "list",
+                "requestAuthenticationGeneration": "F1597A51-1BEB-4383-B31F-5B6A152EBC91",
+                "responseKind": "success",
+                "sessionRole": "fileStation"
+              }
+            },
+            {
+              "id": "4802DDDB-23A6-4707-8F25-77EECD1F0A2B",
+              "elapsedSeconds": 13.679141,
+              "fields": {
+                "apiVersion": 2,
+                "authenticationGeneration": "FD1B9EB9-1133-42CF-9AA7-DD468C17A37C",
+                "authenticationObservedMonoMs": 1385819987,
+                "bodyBytes": 1162,
+                "contentType": "json",
+                "diagnosticClientID": "2C11CE53",
+                "envelopeSuccess": "true",
+                "fileStationGeneration": "F1597A51-1BEB-4383-B31F-5B6A152EBC91",
+                "folderAttempt": 1,
+                "folderOperationID": "1A8BC3EF",
+                "folderOrigin": "browserFolder",
+                "hasData": "true",
+                "httpStatus": 200,
+                "method": "list",
+                "requestAuthenticationGeneration": "F1597A51-1BEB-4383-B31F-5B6A152EBC91",
+                "responseKind": "success",
+                "sessionRole": "fileStation"
+              }
+            },
+            {
+              "id": "B448333B-1D4C-42C6-8707-D0CAF33ABED6",
+              "elapsedSeconds": 16.037475,
+              "fields": {
+                "apiVersion": 2,
+                "authenticationGeneration": "FD1B9EB9-1133-42CF-9AA7-DD468C17A37C",
+                "authenticationObservedMonoMs": 1385822346,
+                "bodyBytes": 25081,
+                "contentType": "json",
+                "diagnosticClientID": "2C11CE53",
+                "envelopeSuccess": "true",
+                "fileStationGeneration": "F1597A51-1BEB-4383-B31F-5B6A152EBC91",
+                "folderAttempt": 1,
+                "folderOperationID": "352814B6",
+                "folderOrigin": "browserFolder",
+                "hasData": "true",
+                "httpStatus": 200,
+                "method": "list",
+                "requestAuthenticationGeneration": "F1597A51-1BEB-4383-B31F-5B6A152EBC91",
+                "responseKind": "success",
+                "sessionRole": "fileStation"
+              }
+            },
+            {
+              "id": "B01FEB6C-D0E4-4EDC-84A8-B88A90A01A62",
+              "elapsedSeconds": 23.154565,
+              "fields": {
+                "apiVersion": 2,
+                "authenticationGeneration": "FD1B9EB9-1133-42CF-9AA7-DD468C17A37C",
+                "authenticationObservedMonoMs": 1385829463,
+                "bodyBytes": 2089,
+                "contentType": "json",
+                "diagnosticClientID": "2C11CE53",
+                "envelopeSuccess": "true",
+                "fileStationGeneration": "F1597A51-1BEB-4383-B31F-5B6A152EBC91",
+                "folderAttempt": 1,
+                "folderOperationID": "E6999124",
+                "folderOrigin": "browserFolder",
+                "hasData": "true",
+                "httpStatus": 200,
+                "method": "list",
+                "requestAuthenticationGeneration": "F1597A51-1BEB-4383-B31F-5B6A152EBC91",
+                "responseKind": "success",
+                "sessionRole": "fileStation"
+              }
+            }
+          ],
+          "actualUIInspected": true,
+          "evidence": "directory-weakwifi-1-state.png/xml",
+          "visibleDetail": "MI2 Remux-2160p plus from-head and resume actions; no player/error"
+        },
+        {
+          "device": "iphone13",
+          "attempt": 2,
+          "sample": "MI2",
+          "network": "weakwifi",
+          "entry": "files",
+          "startedAt": "2026-10-10T13:06:11.372511+08:00",
+          "endedAt": "2026-10-10T13:06:39.588393+08:00",
+          "restoreAndNavigationSeconds": 28.215882,
+          "helperExitCode": 0,
+          "result": "DETAIL_READY",
+          "normalActualEnvironment": {},
+          "normalActualArguments": [],
+          "noPlaybackSubmitted": true,
+          "playerClosed": true,
+          "responsesInAttempt": [
+            {
+              "id": "DDBC1F12-10C1-4E6B-A439-FB907F07AA7A",
+              "elapsedSeconds": 6.734041,
+              "fields": {
+                "apiVersion": 2,
+                "authenticationGeneration": "87806AD6-2F6A-47A1-9849-B9EA083045FD",
+                "authenticationObservedMonoMs": 1385841808,
+                "bodyBytes": 626,
+                "contentType": "json",
+                "diagnosticClientID": "9275CE45",
+                "envelopeSuccess": "true",
+                "fileStationGeneration": "F827ED0E-B951-4DB3-B28A-32A72F5166F1",
+                "folderAttempt": 1,
+                "folderOperationID": "2401EF0C",
+                "folderOrigin": "snapshot",
+                "hasData": "true",
+                "httpStatus": 200,
+                "method": "list_share",
+                "requestAuthenticationGeneration": "F827ED0E-B951-4DB3-B28A-32A72F5166F1",
+                "responseKind": "success",
+                "sessionRole": "fileStation"
+              }
+            },
+            {
+              "id": "614F4AAD-1463-44D7-8BC4-D1ACA2C5A839",
+              "elapsedSeconds": 8.65449,
+              "fields": {
+                "apiVersion": 2,
+                "authenticationGeneration": "87806AD6-2F6A-47A1-9849-B9EA083045FD",
+                "authenticationObservedMonoMs": 1385843729,
+                "bodyBytes": 626,
+                "contentType": "json",
+                "diagnosticClientID": "9275CE45",
+                "envelopeSuccess": "true",
+                "fileStationGeneration": "F827ED0E-B951-4DB3-B28A-32A72F5166F1",
+                "folderAttempt": 1,
+                "folderOperationID": "FFDD0905",
+                "folderOrigin": "browserRoot",
+                "hasData": "true",
+                "httpStatus": 200,
+                "method": "list_share",
+                "requestAuthenticationGeneration": "F827ED0E-B951-4DB3-B28A-32A72F5166F1",
+                "responseKind": "success",
+                "sessionRole": "fileStation"
+              }
+            },
+            {
+              "id": "1F0FFD51-E6B8-4865-A564-F15EE8326BD0",
+              "elapsedSeconds": 11.397767,
+              "fields": {
+                "apiVersion": 2,
+                "authenticationGeneration": "87806AD6-2F6A-47A1-9849-B9EA083045FD",
+                "authenticationObservedMonoMs": 1385846472,
+                "bodyBytes": 702,
+                "contentType": "json",
+                "diagnosticClientID": "9275CE45",
+                "envelopeSuccess": "true",
+                "fileStationGeneration": "F827ED0E-B951-4DB3-B28A-32A72F5166F1",
+                "folderAttempt": 1,
+                "folderOperationID": "A36C7468",
+                "folderOrigin": "browserFolder",
+                "hasData": "true",
+                "httpStatus": 200,
+                "method": "list",
+                "requestAuthenticationGeneration": "F827ED0E-B951-4DB3-B28A-32A72F5166F1",
+                "responseKind": "success",
+                "sessionRole": "fileStation"
+              }
+            },
+            {
+              "id": "7AD596F3-686E-4C5B-A820-3E0C1618C08B",
+              "elapsedSeconds": 13.649656,
+              "fields": {
+                "apiVersion": 2,
+                "authenticationGeneration": "87806AD6-2F6A-47A1-9849-B9EA083045FD",
+                "authenticationObservedMonoMs": 1385848724,
+                "bodyBytes": 1162,
+                "contentType": "json",
+                "diagnosticClientID": "9275CE45",
+                "envelopeSuccess": "true",
+                "fileStationGeneration": "F827ED0E-B951-4DB3-B28A-32A72F5166F1",
+                "folderAttempt": 1,
+                "folderOperationID": "35C501BC",
+                "folderOrigin": "browserFolder",
+                "hasData": "true",
+                "httpStatus": 200,
+                "method": "list",
+                "requestAuthenticationGeneration": "F827ED0E-B951-4DB3-B28A-32A72F5166F1",
+                "responseKind": "success",
+                "sessionRole": "fileStation"
+              }
+            },
+            {
+              "id": "A8718772-518D-47E1-9C04-0952C16AD4FD",
+              "elapsedSeconds": 16.037715,
+              "fields": {
+                "apiVersion": 2,
+                "authenticationGeneration": "87806AD6-2F6A-47A1-9849-B9EA083045FD",
+                "authenticationObservedMonoMs": 1385851112,
+                "bodyBytes": 25081,
+                "contentType": "json",
+                "diagnosticClientID": "9275CE45",
+                "envelopeSuccess": "true",
+                "fileStationGeneration": "F827ED0E-B951-4DB3-B28A-32A72F5166F1",
+                "folderAttempt": 1,
+                "folderOperationID": "762E855F",
+                "folderOrigin": "browserFolder",
+                "hasData": "true",
+                "httpStatus": 200,
+                "method": "list",
+                "requestAuthenticationGeneration": "F827ED0E-B951-4DB3-B28A-32A72F5166F1",
+                "responseKind": "success",
+                "sessionRole": "fileStation"
+              }
+            }
+          ],
+          "actualUIInspected": true,
+          "evidence": "directory-weakwifi-2-state.png/xml",
+          "visibleDetail": "MI2 Remux-2160p plus from-head and resume actions; no player/error"
+        }
+      ],
+      "weakCondition": {
+        "recordedAt": "2026-10-10T13:05:41.706961+08:00",
+        "device": "iphone13",
+        "profile": "SlowNetworkWiFi",
+        "profileDescription": "Name: Nominal Wi-Fi Scenario\nDownlink Bandwidth: 40 Mbps\nDownlink Latency: 1 ms\nDownlink Packet Loss Ratio: 0%\nUplink Bandwidth: 33 Mbps\nUplink Latency: 1 ms\nUplink Packet Loss Ratio: 0%",
+        "physicalBearer": "Wi-Fi requested; actual URL metrics verify separately",
+        "scope": "controlled constrained Wi-Fi on current home-connected USB environment; external Wi-Fi not verified",
+        "originalActiveCount": 0,
+        "noAppTestEnvironment": true,
+        "cases": [
+          [
+            "iphone13",
+            "MI2",
+            "files",
+            0,
+            "weakwifi"
+          ],
+          [
+            "iphone13",
+            "MI2",
+            "files",
+            0,
+            "weakwifi"
+          ]
+        ],
+        "conditionRestored": true,
+        "activeVerifiedAt": "2026-10-10T13:05:42.265159+08:00",
+        "batchExitCode": 0,
+        "restoredActiveCount": 0,
+        "restoredAt": "2026-10-10T13:06:41.111945+08:00"
+      },
+      "exitReopen": {
+        "recordedAt": "2026-10-10T13:07:18.772292+08:00",
+        "device": "iphone13",
+        "cycles": [
+          {
+            "cycle": 1,
+            "openRequestAt": 1791608825.324364,
+            "openResponseAt": 1791608826.063672,
+            "backResponseAt": 1791608826.7306721,
+            "directoryReopened": true,
+            "expectedChildVisible": true,
+            "noFolderErrorInCapturedStates": true,
+            "networkRequestInFlightAtExit": "unknown; controlled fixtures establish cancellation correctness",
+            "actualUIInspected": false
+          },
+          {
+            "cycle": 2,
+            "openRequestAt": 1791608829.830889,
+            "openResponseAt": 1791608830.584383,
+            "backResponseAt": 1791608831.2469509,
+            "directoryReopened": true,
+            "expectedChildVisible": true,
+            "noFolderErrorInCapturedStates": true,
+            "networkRequestInFlightAtExit": "unknown; controlled fixtures establish cancellation correctness",
+            "actualUIInspected": false
+          },
+          {
+            "cycle": 3,
+            "openRequestAt": 1791608834.3565729,
+            "openResponseAt": 1791608835.068398,
+            "backResponseAt": 1791608835.73112,
+            "directoryReopened": true,
+            "expectedChildVisible": true,
+            "noFolderErrorInCapturedStates": true,
+            "networkRequestInFlightAtExit": "unknown; controlled fixtures establish cancellation correctness",
+            "actualUIInspected": false
+          }
+        ],
+        "sourceAndLatestPackageVerified": true,
+        "network": "normal Wi-Fi after condition restoration",
+        "limitations": [
+          "UI smoke verifies exit/reopen, not measured in-flight cancellation or scroll fluidity."
+        ],
+        "noPlaybackSubmitted": true
+      },
+      "interruptionCleanup": {
+        "at": "2026-10-10T13:11:34.062969+08:00",
+        "idleWaitRestored": 10,
+        "animationCoolOffRestored": 2,
+        "appRestarted": false,
+        "phoneWeakConditionRestored": "previous scope verified inactive",
+        "iPadCleanup": "device disconnected during native condition cleanup; active state/idle settings unconfirmed until reconnect"
+      }
+    },
+    "ipad": {
+      "installation": {
+        "recordedAt": "2026-10-10T13:05:06.925976+08:00",
+        "device": "ipad",
+        "model": "iPad12,1",
+        "os": "18.3.1",
+        "systemBuild": "22D72",
+        "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+        "sourceDiffSHA256": "21e8797a0ebd2fd5bf7fbb85be355c27c4cdd926550deeb2db8fb0df800cb842",
+        "binaries": {
+          "Nastart": "24189030f8c7f3fbed8d30c884610a8417020a917254d19a1f64dba2af1f4b86",
+          "Nastart.debug.dylib": "2aaadca11a4a00306655cc88bc787910bb95efeb65c440459566e6c462f01c0d",
+          "Frameworks/KSPlayer.framework/KSPlayer": "eda16e6d0e22bc81045752f2f54a263b0f4f8500912378d5ac141013c9042b52"
+        },
+        "binaryBuildTime": "2026-10-10T13:01:32.267381+08:00",
+        "configuration": "normal Debug -Onone; empty launch environment",
+        "freshUSBIdentity": true,
+        "pairingValid": true,
+        "signatureVerified": true,
+        "verifiedLibraries": 29,
+        "checkedInputs": 173,
+        "targetInValidProfile": true,
+        "dataPreservingCoverInstall": true,
+        "installation": "success",
+        "unchangedNonDiagnosticPreferences": 16,
+        "normalLaunchSucceeded": true,
+        "requestedEnvironment": {},
+        "requestedArguments": [],
+        "actualForegroundUIVerified": true,
+        "foregroundEvidence": "normal-launch.png/xml",
+        "wdaReinstallRequested": false,
+        "cellularAvailability": "not used",
+        "networkSettingsChanged": false,
+        "actualProcessArguments": {
+          "env": {},
+          "args": []
+        },
+        "normalHomeNASOnline": true,
+        "initialJellyfinOnline": false,
+        "initialServiceSnapshot": "gray/unknown while refreshing; retained"
+      },
+      "navigation": [
+        {
+          "device": "ipad",
+          "attempt": 1,
+          "result": "TOOL_DEVICE_CHANNEL_RESET",
+          "noPlaybackSubmitted": true,
+          "actualUIInspected": false,
+          "restoreAndNavigationSeconds": null,
+          "retained": "directory-weakwifi-1-navigation.log; network restoration not confirmed at failure; original condition evidence retained"
+        }
+      ],
+      "weakCondition": {
+        "recordedAt": "2026-10-10T13:07:19.225987+08:00",
+        "device": "ipad",
+        "profile": "SlowNetworkWiFi",
+        "profileDescription": "Name: Nominal Wi-Fi Scenario\nDownlink Bandwidth: 40 Mbps\nDownlink Latency: 1 ms\nDownlink Packet Loss Ratio: 0%\nUplink Bandwidth: 33 Mbps\nUplink Latency: 1 ms\nUplink Packet Loss Ratio: 0%",
+        "physicalBearer": "Wi-Fi requested; actual URL metrics verify separately",
+        "scope": "controlled constrained Wi-Fi on current home-connected USB environment; external Wi-Fi not verified",
+        "originalActiveCount": 0,
+        "noAppTestEnvironment": true,
+        "cases": [
+          [
+            "ipad",
+            "MI2",
+            "files",
+            0,
+            "weakwifi"
+          ],
+          [
+            "ipad",
+            "MI2",
+            "files",
+            0,
+            "weakwifi"
+          ]
+        ],
+        "conditionRestored": false,
+        "activeVerifiedAt": "2026-10-10T13:07:19.828642+08:00"
+      }
+    }
+  },
+  "preliminaryAuthenticationCorrelation": {
+    "recordedAt": "2026-10-10T13:06:48.871937+08:00",
+    "meaning": "UUID identifies a local successful login result, not server SID equivalence. Stage sourcePrepared precedes synchronous active-source assignment; event dates are asynchronously persisted, so use observation monotonic milliseconds for ordering.",
+    "devices": {
+      "iphone13": {
+        "fileStationSourceAtConnectionPublication": [
+          {
+            "authenticationGeneration": "A9F3E3F1-083E-4B83-9BE2-EAC76B865DFE",
+            "fileStationGeneration": "78B7F4ED-041F-4FAA-84E9-0F2C9C518BC3",
+            "connectionEventID": "5946618B-0567-4C06-8318-236B19225BF1",
+            "sourceEventID": "B61EB073-E9A7-42BF-91FB-558AB6EB84A3",
+            "sourceReadyAtPublication": true,
+            "sourcePreparationToConnectionMS": 1
+          },
+          {
+            "authenticationGeneration": "A9F3E3F1-083E-4B83-9BE2-EAC76B865DFE",
+            "fileStationGeneration": "78B7F4ED-041F-4FAA-84E9-0F2C9C518BC3",
+            "connectionEventID": "1D70FE9D-FF16-4E1D-90A3-61734A44A718",
+            "sourceEventID": "573A5DD6-3492-4547-BB21-221F916F058F",
+            "sourceReadyAtPublication": true,
+            "sourcePreparationToConnectionMS": 5
+          },
+          {
+            "authenticationGeneration": "FD1B9EB9-1133-42CF-9AA7-DD468C17A37C",
+            "fileStationGeneration": "F1597A51-1BEB-4383-B31F-5B6A152EBC91",
+            "connectionEventID": "7B2D047F-214F-4EB7-9EC5-51C52BB45FC2",
+            "sourceEventID": "4B850F43-4C16-452A-917B-93E81783F760",
+            "sourceReadyAtPublication": true,
+            "sourcePreparationToConnectionMS": 1
+          },
+          {
+            "authenticationGeneration": "FD1B9EB9-1133-42CF-9AA7-DD468C17A37C",
+            "fileStationGeneration": "F1597A51-1BEB-4383-B31F-5B6A152EBC91",
+            "connectionEventID": "F7A8FA43-0CBF-4025-931A-A1B841F53B53",
+            "sourceEventID": "1B4CBBE2-5A85-4DF7-B9E9-5541C9BD1D0B",
+            "sourceReadyAtPublication": true,
+            "sourcePreparationToConnectionMS": 4
+          },
+          {
+            "authenticationGeneration": "87806AD6-2F6A-47A1-9849-B9EA083045FD",
+            "fileStationGeneration": "F827ED0E-B951-4DB3-B28A-32A72F5166F1",
+            "connectionEventID": "F126D398-4E80-484F-8603-6D914AEF6B47",
+            "sourceEventID": "ABE6F1C4-0B46-419B-9DD4-AF507F8BECA6",
+            "sourceReadyAtPublication": true,
+            "sourcePreparationToConnectionMS": 1
+          },
+          {
+            "authenticationGeneration": "87806AD6-2F6A-47A1-9849-B9EA083045FD",
+            "fileStationGeneration": "F827ED0E-B951-4DB3-B28A-32A72F5166F1",
+            "connectionEventID": "C5276893-1E3E-49DB-9E5E-A7A477AB42ED",
+            "sourceEventID": "9E159E22-D029-45CE-BCAB-BDD52AA9E88C",
+            "sourceReadyAtPublication": true,
+            "sourcePreparationToConnectionMS": 3
+          }
+        ],
+        "events": [
+          {
+            "id": "B3AA0C70-8936-4FA3-9A65-00F5BF8ADC02",
+            "event": "login.succeeded",
+            "dateEpoch": 1791608592.100219,
+            "fields": {
+              "authenticationGeneration": "A9F3E3F1-083E-4B83-9BE2-EAC76B865DFE",
+              "authenticationObservedMonoMs": 1385655794,
+              "method": "unrecognized"
+            }
+          },
+          {
+            "id": "E57C7DB1-2473-4703-BDE3-AA75E6080B6B",
+            "event": "connection.session_lifecycle",
+            "dateEpoch": 1791608592.193039,
+            "fields": {
+              "authenticationGeneration": "A9F3E3F1-083E-4B83-9BE2-EAC76B865DFE",
+              "authenticationObservedMonoMs": 1385655802,
+              "authenticationStage": "sourcePrepared"
+            }
+          },
+          {
+            "id": "7A04FB13-D323-465D-99C5-1C936588A28E",
+            "event": "connection.session_lifecycle",
+            "dateEpoch": 1791608592.193499,
+            "fields": {
+              "authenticationGeneration": "A9F3E3F1-083E-4B83-9BE2-EAC76B865DFE",
+              "authenticationObservedMonoMs": 1385655803,
+              "authenticationStage": "connectionPublished"
+            }
+          },
+          {
+            "id": "63869918-A732-4B96-A559-F56493EDB563",
+            "event": "login.succeeded",
+            "dateEpoch": 1791608593.0553908,
+            "fields": {
+              "authenticationGeneration": "78B7F4ED-041F-4FAA-84E9-0F2C9C518BC3",
+              "authenticationObservedMonoMs": 1385656751,
+              "method": "unrecognized"
+            }
+          },
+          {
+            "id": "B7431946-201A-4189-8986-440055770136",
+            "event": "connection.session_lifecycle",
+            "dateEpoch": 1791608593.056439,
+            "fields": {
+              "authenticationGeneration": "A9F3E3F1-083E-4B83-9BE2-EAC76B865DFE",
+              "authenticationObservedMonoMs": 1385656751,
+              "authenticationStage": "fileStationAttached",
+              "fileStationGeneration": "78B7F4ED-041F-4FAA-84E9-0F2C9C518BC3"
+            }
+          },
+          {
+            "id": "B61EB073-E9A7-42BF-91FB-558AB6EB84A3",
+            "event": "connection.session_lifecycle",
+            "dateEpoch": 1791608595.4084868,
+            "fields": {
+              "authenticationGeneration": "A9F3E3F1-083E-4B83-9BE2-EAC76B865DFE",
+              "authenticationObservedMonoMs": 1385659045,
+              "authenticationStage": "sourcePrepared",
+              "fileStationGeneration": "78B7F4ED-041F-4FAA-84E9-0F2C9C518BC3"
+            }
+          },
+          {
+            "id": "5946618B-0567-4C06-8318-236B19225BF1",
+            "event": "connection.session_lifecycle",
+            "dateEpoch": 1791608595.408822,
+            "fields": {
+              "authenticationGeneration": "A9F3E3F1-083E-4B83-9BE2-EAC76B865DFE",
+              "authenticationObservedMonoMs": 1385659046,
+              "authenticationStage": "connectionPublished",
+              "fileStationGeneration": "78B7F4ED-041F-4FAA-84E9-0F2C9C518BC3"
+            }
+          },
+          {
+            "id": "AB0D9099-4A59-43BE-8BAA-ED1A46B7E999",
+            "event": "files.folder_response",
+            "dateEpoch": 1791608595.992763,
+            "fields": {
+              "apiVersion": 2,
+              "authenticationGeneration": "A9F3E3F1-083E-4B83-9BE2-EAC76B865DFE",
+              "authenticationObservedMonoMs": 1385659688,
+              "bodyBytes": 626,
+              "contentType": "json",
+              "diagnosticClientID": "46963764",
+              "envelopeSuccess": "true",
+              "fileStationGeneration": "78B7F4ED-041F-4FAA-84E9-0F2C9C518BC3",
+              "folderAttempt": 1,
+              "folderOperationID": "7137CFBD",
+              "folderOrigin": "snapshot",
+              "hasData": "true",
+              "httpStatus": 200,
+              "method": "list_share",
+              "requestAuthenticationGeneration": "78B7F4ED-041F-4FAA-84E9-0F2C9C518BC3",
+              "responseKind": "success",
+              "sessionRole": "fileStation"
+            }
+          },
+          {
+            "id": "573A5DD6-3492-4547-BB21-221F916F058F",
+            "event": "connection.session_lifecycle",
+            "dateEpoch": 1791608597.5403771,
+            "fields": {
+              "authenticationGeneration": "A9F3E3F1-083E-4B83-9BE2-EAC76B865DFE",
+              "authenticationObservedMonoMs": 1385661219,
+              "authenticationStage": "sourcePrepared",
+              "fileStationGeneration": "78B7F4ED-041F-4FAA-84E9-0F2C9C518BC3"
+            }
+          },
+          {
+            "id": "1D70FE9D-FF16-4E1D-90A3-61734A44A718",
+            "event": "connection.session_lifecycle",
+            "dateEpoch": 1791608597.5408602,
+            "fields": {
+              "authenticationGeneration": "A9F3E3F1-083E-4B83-9BE2-EAC76B865DFE",
+              "authenticationObservedMonoMs": 1385661224,
+              "authenticationStage": "connectionPublished",
+              "fileStationGeneration": "78B7F4ED-041F-4FAA-84E9-0F2C9C518BC3"
+            }
+          },
+          {
+            "id": "61D885A5-7871-4257-B469-45F1AD5A6E3B",
+            "event": "login.succeeded",
+            "dateEpoch": 1791608745.805945,
+            "fields": {
+              "authenticationGeneration": "FD1B9EB9-1133-42CF-9AA7-DD468C17A37C",
+              "authenticationObservedMonoMs": 1385809506,
+              "method": "unrecognized"
+            }
+          },
+          {
+            "id": "AFEC2F03-B038-401E-B0F2-D806A6C34529",
+            "event": "connection.session_lifecycle",
+            "dateEpoch": 1791608745.893979,
+            "fields": {
+              "authenticationGeneration": "FD1B9EB9-1133-42CF-9AA7-DD468C17A37C",
+              "authenticationObservedMonoMs": 1385809512,
+              "authenticationStage": "sourcePrepared"
+            }
+          },
+          {
+            "id": "0EFAEB7C-5E02-4173-BC7B-BF3D49271FCA",
+            "event": "connection.session_lifecycle",
+            "dateEpoch": 1791608745.894443,
+            "fields": {
+              "authenticationGeneration": "FD1B9EB9-1133-42CF-9AA7-DD468C17A37C",
+              "authenticationObservedMonoMs": 1385809512,
+              "authenticationStage": "connectionPublished"
+            }
+          },
+          {
+            "id": "C81550BE-3E4F-4D99-AE7F-A3F7976D5DED",
+            "event": "login.succeeded",
+            "dateEpoch": 1791608747.1137629,
+            "fields": {
+              "authenticationGeneration": "F1597A51-1BEB-4383-B31F-5B6A152EBC91",
+              "authenticationObservedMonoMs": 1385810755,
+              "method": "unrecognized"
+            }
+          },
+          {
+            "id": "6639ADBD-8EC8-429E-87DB-CF7D27027A7E",
+            "event": "connection.session_lifecycle",
+            "dateEpoch": 1791608747.114133,
+            "fields": {
+              "authenticationGeneration": "FD1B9EB9-1133-42CF-9AA7-DD468C17A37C",
+              "authenticationObservedMonoMs": 1385810755,
+              "authenticationStage": "fileStationAttached",
+              "fileStationGeneration": "F1597A51-1BEB-4383-B31F-5B6A152EBC91"
+            }
+          },
+          {
+            "id": "4B850F43-4C16-452A-917B-93E81783F760",
+            "event": "connection.session_lifecycle",
+            "dateEpoch": 1791608749.154779,
+            "fields": {
+              "authenticationGeneration": "FD1B9EB9-1133-42CF-9AA7-DD468C17A37C",
+              "authenticationObservedMonoMs": 1385812799,
+              "authenticationStage": "sourcePrepared",
+              "fileStationGeneration": "F1597A51-1BEB-4383-B31F-5B6A152EBC91"
+            }
+          },
+          {
+            "id": "7B2D047F-214F-4EB7-9EC5-51C52BB45FC2",
+            "event": "connection.session_lifecycle",
+            "dateEpoch": 1791608749.1551418,
+            "fields": {
+              "authenticationGeneration": "FD1B9EB9-1133-42CF-9AA7-DD468C17A37C",
+              "authenticationObservedMonoMs": 1385812800,
+              "authenticationStage": "connectionPublished",
+              "fileStationGeneration": "F1597A51-1BEB-4383-B31F-5B6A152EBC91"
+            }
+          },
+          {
+            "id": "87D09810-B46A-435B-82D8-A33E0466E28F",
+            "event": "files.folder_response",
+            "dateEpoch": 1791608750.151394,
+            "fields": {
+              "apiVersion": 2,
+              "authenticationGeneration": "FD1B9EB9-1133-42CF-9AA7-DD468C17A37C",
+              "authenticationObservedMonoMs": 1385813833,
+              "bodyBytes": 626,
+              "contentType": "json",
+              "diagnosticClientID": "2C11CE53",
+              "envelopeSuccess": "true",
+              "fileStationGeneration": "F1597A51-1BEB-4383-B31F-5B6A152EBC91",
+              "folderAttempt": 1,
+              "folderOperationID": "7BBFD763",
+              "folderOrigin": "snapshot",
+              "hasData": "true",
+              "httpStatus": 200,
+              "method": "list_share",
+              "requestAuthenticationGeneration": "F1597A51-1BEB-4383-B31F-5B6A152EBC91",
+              "responseKind": "success",
+              "sessionRole": "fileStation"
+            }
+          },
+          {
+            "id": "2C055EF9-C92B-4D31-ACC2-3AB2507947A6",
+            "event": "files.folder_response",
+            "dateEpoch": 1791608751.623508,
+            "fields": {
+              "apiVersion": 2,
+              "authenticationGeneration": "FD1B9EB9-1133-42CF-9AA7-DD468C17A37C",
+              "authenticationObservedMonoMs": 1385815323,
+              "bodyBytes": 626,
+              "contentType": "json",
+              "diagnosticClientID": "199DDFEC",
+              "envelopeSuccess": "true",
+              "fileStationGeneration": "F1597A51-1BEB-4383-B31F-5B6A152EBC91",
+              "folderAttempt": 1,
+              "folderOperationID": "D6C18AC9",
+              "folderOrigin": "browserRoot",
+              "hasData": "true",
+              "httpStatus": 200,
+              "method": "list_share",
+              "requestAuthenticationGeneration": "F1597A51-1BEB-4383-B31F-5B6A152EBC91",
+              "responseKind": "success",
+              "sessionRole": "fileStation"
+            }
+          },
+          {
+            "id": "1B4CBBE2-5A85-4DF7-B9E9-5541C9BD1D0B",
+            "event": "connection.session_lifecycle",
+            "dateEpoch": 1791608751.8148432,
+            "fields": {
+              "authenticationGeneration": "FD1B9EB9-1133-42CF-9AA7-DD468C17A37C",
+              "authenticationObservedMonoMs": 1385815512,
+              "authenticationStage": "sourcePrepared",
+              "fileStationGeneration": "F1597A51-1BEB-4383-B31F-5B6A152EBC91"
+            }
+          },
+          {
+            "id": "F7A8FA43-0CBF-4025-931A-A1B841F53B53",
+            "event": "connection.session_lifecycle",
+            "dateEpoch": 1791608751.815288,
+            "fields": {
+              "authenticationGeneration": "FD1B9EB9-1133-42CF-9AA7-DD468C17A37C",
+              "authenticationObservedMonoMs": 1385815516,
+              "authenticationStage": "connectionPublished",
+              "fileStationGeneration": "F1597A51-1BEB-4383-B31F-5B6A152EBC91"
+            }
+          },
+          {
+            "id": "936D9E4B-A03F-4B27-B21E-7F691F7C14AE",
+            "event": "files.folder_response",
+            "dateEpoch": 1791608753.958843,
+            "fields": {
+              "apiVersion": 2,
+              "authenticationGeneration": "FD1B9EB9-1133-42CF-9AA7-DD468C17A37C",
+              "authenticationObservedMonoMs": 1385817660,
+              "bodyBytes": 702,
+              "contentType": "json",
+              "diagnosticClientID": "2C11CE53",
+              "envelopeSuccess": "true",
+              "fileStationGeneration": "F1597A51-1BEB-4383-B31F-5B6A152EBC91",
+              "folderAttempt": 1,
+              "folderOperationID": "4627BC36",
+              "folderOrigin": "browserFolder",
+              "hasData": "true",
+              "httpStatus": 200,
+              "method": "list",
+              "requestAuthenticationGeneration": "F1597A51-1BEB-4383-B31F-5B6A152EBC91",
+              "responseKind": "success",
+              "sessionRole": "fileStation"
+            }
+          },
+          {
+            "id": "4802DDDB-23A6-4707-8F25-77EECD1F0A2B",
+            "event": "files.folder_response",
+            "dateEpoch": 1791608756.2863631,
+            "fields": {
+              "apiVersion": 2,
+              "authenticationGeneration": "FD1B9EB9-1133-42CF-9AA7-DD468C17A37C",
+              "authenticationObservedMonoMs": 1385819987,
+              "bodyBytes": 1162,
+              "contentType": "json",
+              "diagnosticClientID": "2C11CE53",
+              "envelopeSuccess": "true",
+              "fileStationGeneration": "F1597A51-1BEB-4383-B31F-5B6A152EBC91",
+              "folderAttempt": 1,
+              "folderOperationID": "1A8BC3EF",
+              "folderOrigin": "browserFolder",
+              "hasData": "true",
+              "httpStatus": 200,
+              "method": "list",
+              "requestAuthenticationGeneration": "F1597A51-1BEB-4383-B31F-5B6A152EBC91",
+              "responseKind": "success",
+              "sessionRole": "fileStation"
+            }
+          },
+          {
+            "id": "B448333B-1D4C-42C6-8707-D0CAF33ABED6",
+            "event": "files.folder_response",
+            "dateEpoch": 1791608758.644697,
+            "fields": {
+              "apiVersion": 2,
+              "authenticationGeneration": "FD1B9EB9-1133-42CF-9AA7-DD468C17A37C",
+              "authenticationObservedMonoMs": 1385822346,
+              "bodyBytes": 25081,
+              "contentType": "json",
+              "diagnosticClientID": "2C11CE53",
+              "envelopeSuccess": "true",
+              "fileStationGeneration": "F1597A51-1BEB-4383-B31F-5B6A152EBC91",
+              "folderAttempt": 1,
+              "folderOperationID": "352814B6",
+              "folderOrigin": "browserFolder",
+              "hasData": "true",
+              "httpStatus": 200,
+              "method": "list",
+              "requestAuthenticationGeneration": "F1597A51-1BEB-4383-B31F-5B6A152EBC91",
+              "responseKind": "success",
+              "sessionRole": "fileStation"
+            }
+          },
+          {
+            "id": "B01FEB6C-D0E4-4EDC-84A8-B88A90A01A62",
+            "event": "files.folder_response",
+            "dateEpoch": 1791608765.761787,
+            "fields": {
+              "apiVersion": 2,
+              "authenticationGeneration": "FD1B9EB9-1133-42CF-9AA7-DD468C17A37C",
+              "authenticationObservedMonoMs": 1385829463,
+              "bodyBytes": 2089,
+              "contentType": "json",
+              "diagnosticClientID": "2C11CE53",
+              "envelopeSuccess": "true",
+              "fileStationGeneration": "F1597A51-1BEB-4383-B31F-5B6A152EBC91",
+              "folderAttempt": 1,
+              "folderOperationID": "E6999124",
+              "folderOrigin": "browserFolder",
+              "hasData": "true",
+              "httpStatus": 200,
+              "method": "list",
+              "requestAuthenticationGeneration": "F1597A51-1BEB-4383-B31F-5B6A152EBC91",
+              "responseKind": "success",
+              "sessionRole": "fileStation"
+            }
+          },
+          {
+            "id": "E882A618-C9BC-44A2-9CE2-87BE7630BC4A",
+            "event": "login.succeeded",
+            "dateEpoch": 1791608774.479945,
+            "fields": {
+              "authenticationGeneration": "87806AD6-2F6A-47A1-9849-B9EA083045FD",
+              "authenticationObservedMonoMs": 1385838181,
+              "method": "unrecognized"
+            }
+          },
+          {
+            "id": "08A7FF27-45BF-4757-9E1D-5BE533DEB61F",
+            "event": "connection.session_lifecycle",
+            "dateEpoch": 1791608774.57264,
+            "fields": {
+              "authenticationGeneration": "87806AD6-2F6A-47A1-9849-B9EA083045FD",
+              "authenticationObservedMonoMs": 1385838227,
+              "authenticationStage": "sourcePrepared"
+            }
+          },
+          {
+            "id": "190D38EE-76B8-4930-B32F-6C26CCB3E79A",
+            "event": "connection.session_lifecycle",
+            "dateEpoch": 1791608774.572967,
+            "fields": {
+              "authenticationGeneration": "87806AD6-2F6A-47A1-9849-B9EA083045FD",
+              "authenticationObservedMonoMs": 1385838227,
+              "authenticationStage": "connectionPublished"
+            }
+          },
+          {
+            "id": "4154F9C1-C54E-4EAC-84BE-3D1DAF441043",
+            "event": "login.succeeded",
+            "dateEpoch": 1791608775.370924,
+            "fields": {
+              "authenticationGeneration": "F827ED0E-B951-4DB3-B28A-32A72F5166F1",
+              "authenticationObservedMonoMs": 1385839073,
+              "method": "unrecognized"
+            }
+          },
+          {
+            "id": "9AD9E9CC-F276-4B02-8D0D-6A42C84A44AB",
+            "event": "connection.session_lifecycle",
+            "dateEpoch": 1791608775.371553,
+            "fields": {
+              "authenticationGeneration": "87806AD6-2F6A-47A1-9849-B9EA083045FD",
+              "authenticationObservedMonoMs": 1385839073,
+              "authenticationStage": "fileStationAttached",
+              "fileStationGeneration": "F827ED0E-B951-4DB3-B28A-32A72F5166F1"
+            }
+          },
+          {
+            "id": "ABE6F1C4-0B46-419B-9DD4-AF507F8BECA6",
+            "event": "connection.session_lifecycle",
+            "dateEpoch": 1791608777.713733,
+            "fields": {
+              "authenticationGeneration": "87806AD6-2F6A-47A1-9849-B9EA083045FD",
+              "authenticationObservedMonoMs": 1385841363,
+              "authenticationStage": "sourcePrepared",
+              "fileStationGeneration": "F827ED0E-B951-4DB3-B28A-32A72F5166F1"
+            }
+          },
+          {
+            "id": "F126D398-4E80-484F-8603-6D914AEF6B47",
+            "event": "connection.session_lifecycle",
+            "dateEpoch": 1791608777.714089,
+            "fields": {
+              "authenticationGeneration": "87806AD6-2F6A-47A1-9849-B9EA083045FD",
+              "authenticationObservedMonoMs": 1385841364,
+              "authenticationStage": "connectionPublished",
+              "fileStationGeneration": "F827ED0E-B951-4DB3-B28A-32A72F5166F1"
+            }
+          },
+          {
+            "id": "DDBC1F12-10C1-4E6B-A439-FB907F07AA7A",
+            "event": "files.folder_response",
+            "dateEpoch": 1791608778.1065521,
+            "fields": {
+              "apiVersion": 2,
+              "authenticationGeneration": "87806AD6-2F6A-47A1-9849-B9EA083045FD",
+              "authenticationObservedMonoMs": 1385841808,
+              "bodyBytes": 626,
+              "contentType": "json",
+              "diagnosticClientID": "9275CE45",
+              "envelopeSuccess": "true",
+              "fileStationGeneration": "F827ED0E-B951-4DB3-B28A-32A72F5166F1",
+              "folderAttempt": 1,
+              "folderOperationID": "2401EF0C",
+              "folderOrigin": "snapshot",
+              "hasData": "true",
+              "httpStatus": 200,
+              "method": "list_share",
+              "requestAuthenticationGeneration": "F827ED0E-B951-4DB3-B28A-32A72F5166F1",
+              "responseKind": "success",
+              "sessionRole": "fileStation"
+            }
+          },
+          {
+            "id": "9E159E22-D029-45CE-BCAB-BDD52AA9E88C",
+            "event": "connection.session_lifecycle",
+            "dateEpoch": 1791608779.816325,
+            "fields": {
+              "authenticationGeneration": "87806AD6-2F6A-47A1-9849-B9EA083045FD",
+              "authenticationObservedMonoMs": 1385843515,
+              "authenticationStage": "sourcePrepared",
+              "fileStationGeneration": "F827ED0E-B951-4DB3-B28A-32A72F5166F1"
+            }
+          },
+          {
+            "id": "C5276893-1E3E-49DB-9E5E-A7A477AB42ED",
+            "event": "connection.session_lifecycle",
+            "dateEpoch": 1791608779.816753,
+            "fields": {
+              "authenticationGeneration": "87806AD6-2F6A-47A1-9849-B9EA083045FD",
+              "authenticationObservedMonoMs": 1385843518,
+              "authenticationStage": "connectionPublished",
+              "fileStationGeneration": "F827ED0E-B951-4DB3-B28A-32A72F5166F1"
+            }
+          },
+          {
+            "id": "614F4AAD-1463-44D7-8BC4-D1ACA2C5A839",
+            "event": "files.folder_response",
+            "dateEpoch": 1791608780.027001,
+            "fields": {
+              "apiVersion": 2,
+              "authenticationGeneration": "87806AD6-2F6A-47A1-9849-B9EA083045FD",
+              "authenticationObservedMonoMs": 1385843729,
+              "bodyBytes": 626,
+              "contentType": "json",
+              "diagnosticClientID": "9275CE45",
+              "envelopeSuccess": "true",
+              "fileStationGeneration": "F827ED0E-B951-4DB3-B28A-32A72F5166F1",
+              "folderAttempt": 1,
+              "folderOperationID": "FFDD0905",
+              "folderOrigin": "browserRoot",
+              "hasData": "true",
+              "httpStatus": 200,
+              "method": "list_share",
+              "requestAuthenticationGeneration": "F827ED0E-B951-4DB3-B28A-32A72F5166F1",
+              "responseKind": "success",
+              "sessionRole": "fileStation"
+            }
+          },
+          {
+            "id": "1F0FFD51-E6B8-4865-A564-F15EE8326BD0",
+            "event": "files.folder_response",
+            "dateEpoch": 1791608782.770278,
+            "fields": {
+              "apiVersion": 2,
+              "authenticationGeneration": "87806AD6-2F6A-47A1-9849-B9EA083045FD",
+              "authenticationObservedMonoMs": 1385846472,
+              "bodyBytes": 702,
+              "contentType": "json",
+              "diagnosticClientID": "9275CE45",
+              "envelopeSuccess": "true",
+              "fileStationGeneration": "F827ED0E-B951-4DB3-B28A-32A72F5166F1",
+              "folderAttempt": 1,
+              "folderOperationID": "A36C7468",
+              "folderOrigin": "browserFolder",
+              "hasData": "true",
+              "httpStatus": 200,
+              "method": "list",
+              "requestAuthenticationGeneration": "F827ED0E-B951-4DB3-B28A-32A72F5166F1",
+              "responseKind": "success",
+              "sessionRole": "fileStation"
+            }
+          },
+          {
+            "id": "7AD596F3-686E-4C5B-A820-3E0C1618C08B",
+            "event": "files.folder_response",
+            "dateEpoch": 1791608785.022167,
+            "fields": {
+              "apiVersion": 2,
+              "authenticationGeneration": "87806AD6-2F6A-47A1-9849-B9EA083045FD",
+              "authenticationObservedMonoMs": 1385848724,
+              "bodyBytes": 1162,
+              "contentType": "json",
+              "diagnosticClientID": "9275CE45",
+              "envelopeSuccess": "true",
+              "fileStationGeneration": "F827ED0E-B951-4DB3-B28A-32A72F5166F1",
+              "folderAttempt": 1,
+              "folderOperationID": "35C501BC",
+              "folderOrigin": "browserFolder",
+              "hasData": "true",
+              "httpStatus": 200,
+              "method": "list",
+              "requestAuthenticationGeneration": "F827ED0E-B951-4DB3-B28A-32A72F5166F1",
+              "responseKind": "success",
+              "sessionRole": "fileStation"
+            }
+          },
+          {
+            "id": "A8718772-518D-47E1-9C04-0952C16AD4FD",
+            "event": "files.folder_response",
+            "dateEpoch": 1791608787.4102259,
+            "fields": {
+              "apiVersion": 2,
+              "authenticationGeneration": "87806AD6-2F6A-47A1-9849-B9EA083045FD",
+              "authenticationObservedMonoMs": 1385851112,
+              "bodyBytes": 25081,
+              "contentType": "json",
+              "diagnosticClientID": "9275CE45",
+              "envelopeSuccess": "true",
+              "fileStationGeneration": "F827ED0E-B951-4DB3-B28A-32A72F5166F1",
+              "folderAttempt": 1,
+              "folderOperationID": "762E855F",
+              "folderOrigin": "browserFolder",
+              "hasData": "true",
+              "httpStatus": 200,
+              "method": "list",
+              "requestAuthenticationGeneration": "F827ED0E-B951-4DB3-B28A-32A72F5166F1",
+              "responseKind": "success",
+              "sessionRole": "fileStation"
+            }
+          }
+        ],
+        "successfulLoginResultCount": 6,
+        "stageCounts": {
+          "sourcePrepared": 9,
+          "connectionPublished": 9,
+          "fileStationAttached": 3
+        },
+        "directoryJoins": [
+          {
+            "eventID": "AB0D9099-4A59-43BE-8BAA-ED1A46B7E999",
+            "origin": "snapshot",
+            "responseKind": "success",
+            "apiErrorCode": null,
+            "authenticationGeneration": "A9F3E3F1-083E-4B83-9BE2-EAC76B865DFE",
+            "fileStationGeneration": "78B7F4ED-041F-4FAA-84E9-0F2C9C518BC3",
+            "requestAuthenticationGeneration": "78B7F4ED-041F-4FAA-84E9-0F2C9C518BC3",
+            "mainLoginObserved": true,
+            "requestLoginObserved": true,
+            "usesFileStationGeneration": true,
+            "browserSourceMatchesAtResponse": null,
+            "connectionMatchesAtResponse": null
+          },
+          {
+            "eventID": "87D09810-B46A-435B-82D8-A33E0466E28F",
+            "origin": "snapshot",
+            "responseKind": "success",
+            "apiErrorCode": null,
+            "authenticationGeneration": "FD1B9EB9-1133-42CF-9AA7-DD468C17A37C",
+            "fileStationGeneration": "F1597A51-1BEB-4383-B31F-5B6A152EBC91",
+            "requestAuthenticationGeneration": "F1597A51-1BEB-4383-B31F-5B6A152EBC91",
+            "mainLoginObserved": true,
+            "requestLoginObserved": true,
+            "usesFileStationGeneration": true,
+            "browserSourceMatchesAtResponse": null,
+            "connectionMatchesAtResponse": null
+          },
+          {
+            "eventID": "2C055EF9-C92B-4D31-ACC2-3AB2507947A6",
+            "origin": "browserRoot",
+            "responseKind": "success",
+            "apiErrorCode": null,
+            "authenticationGeneration": "FD1B9EB9-1133-42CF-9AA7-DD468C17A37C",
+            "fileStationGeneration": "F1597A51-1BEB-4383-B31F-5B6A152EBC91",
+            "requestAuthenticationGeneration": "F1597A51-1BEB-4383-B31F-5B6A152EBC91",
+            "mainLoginObserved": true,
+            "requestLoginObserved": true,
+            "usesFileStationGeneration": true,
+            "browserSourceMatchesAtResponse": true,
+            "connectionMatchesAtResponse": true
+          },
+          {
+            "eventID": "936D9E4B-A03F-4B27-B21E-7F691F7C14AE",
+            "origin": "browserFolder",
+            "responseKind": "success",
+            "apiErrorCode": null,
+            "authenticationGeneration": "FD1B9EB9-1133-42CF-9AA7-DD468C17A37C",
+            "fileStationGeneration": "F1597A51-1BEB-4383-B31F-5B6A152EBC91",
+            "requestAuthenticationGeneration": "F1597A51-1BEB-4383-B31F-5B6A152EBC91",
+            "mainLoginObserved": true,
+            "requestLoginObserved": true,
+            "usesFileStationGeneration": true,
+            "browserSourceMatchesAtResponse": true,
+            "connectionMatchesAtResponse": true
+          },
+          {
+            "eventID": "4802DDDB-23A6-4707-8F25-77EECD1F0A2B",
+            "origin": "browserFolder",
+            "responseKind": "success",
+            "apiErrorCode": null,
+            "authenticationGeneration": "FD1B9EB9-1133-42CF-9AA7-DD468C17A37C",
+            "fileStationGeneration": "F1597A51-1BEB-4383-B31F-5B6A152EBC91",
+            "requestAuthenticationGeneration": "F1597A51-1BEB-4383-B31F-5B6A152EBC91",
+            "mainLoginObserved": true,
+            "requestLoginObserved": true,
+            "usesFileStationGeneration": true,
+            "browserSourceMatchesAtResponse": true,
+            "connectionMatchesAtResponse": true
+          },
+          {
+            "eventID": "B448333B-1D4C-42C6-8707-D0CAF33ABED6",
+            "origin": "browserFolder",
+            "responseKind": "success",
+            "apiErrorCode": null,
+            "authenticationGeneration": "FD1B9EB9-1133-42CF-9AA7-DD468C17A37C",
+            "fileStationGeneration": "F1597A51-1BEB-4383-B31F-5B6A152EBC91",
+            "requestAuthenticationGeneration": "F1597A51-1BEB-4383-B31F-5B6A152EBC91",
+            "mainLoginObserved": true,
+            "requestLoginObserved": true,
+            "usesFileStationGeneration": true,
+            "browserSourceMatchesAtResponse": true,
+            "connectionMatchesAtResponse": true
+          },
+          {
+            "eventID": "B01FEB6C-D0E4-4EDC-84A8-B88A90A01A62",
+            "origin": "browserFolder",
+            "responseKind": "success",
+            "apiErrorCode": null,
+            "authenticationGeneration": "FD1B9EB9-1133-42CF-9AA7-DD468C17A37C",
+            "fileStationGeneration": "F1597A51-1BEB-4383-B31F-5B6A152EBC91",
+            "requestAuthenticationGeneration": "F1597A51-1BEB-4383-B31F-5B6A152EBC91",
+            "mainLoginObserved": true,
+            "requestLoginObserved": true,
+            "usesFileStationGeneration": true,
+            "browserSourceMatchesAtResponse": true,
+            "connectionMatchesAtResponse": true
+          },
+          {
+            "eventID": "DDBC1F12-10C1-4E6B-A439-FB907F07AA7A",
+            "origin": "snapshot",
+            "responseKind": "success",
+            "apiErrorCode": null,
+            "authenticationGeneration": "87806AD6-2F6A-47A1-9849-B9EA083045FD",
+            "fileStationGeneration": "F827ED0E-B951-4DB3-B28A-32A72F5166F1",
+            "requestAuthenticationGeneration": "F827ED0E-B951-4DB3-B28A-32A72F5166F1",
+            "mainLoginObserved": true,
+            "requestLoginObserved": true,
+            "usesFileStationGeneration": true,
+            "browserSourceMatchesAtResponse": null,
+            "connectionMatchesAtResponse": null
+          },
+          {
+            "eventID": "614F4AAD-1463-44D7-8BC4-D1ACA2C5A839",
+            "origin": "browserRoot",
+            "responseKind": "success",
+            "apiErrorCode": null,
+            "authenticationGeneration": "87806AD6-2F6A-47A1-9849-B9EA083045FD",
+            "fileStationGeneration": "F827ED0E-B951-4DB3-B28A-32A72F5166F1",
+            "requestAuthenticationGeneration": "F827ED0E-B951-4DB3-B28A-32A72F5166F1",
+            "mainLoginObserved": true,
+            "requestLoginObserved": true,
+            "usesFileStationGeneration": true,
+            "browserSourceMatchesAtResponse": true,
+            "connectionMatchesAtResponse": true
+          },
+          {
+            "eventID": "1F0FFD51-E6B8-4865-A564-F15EE8326BD0",
+            "origin": "browserFolder",
+            "responseKind": "success",
+            "apiErrorCode": null,
+            "authenticationGeneration": "87806AD6-2F6A-47A1-9849-B9EA083045FD",
+            "fileStationGeneration": "F827ED0E-B951-4DB3-B28A-32A72F5166F1",
+            "requestAuthenticationGeneration": "F827ED0E-B951-4DB3-B28A-32A72F5166F1",
+            "mainLoginObserved": true,
+            "requestLoginObserved": true,
+            "usesFileStationGeneration": true,
+            "browserSourceMatchesAtResponse": true,
+            "connectionMatchesAtResponse": true
+          },
+          {
+            "eventID": "7AD596F3-686E-4C5B-A820-3E0C1618C08B",
+            "origin": "browserFolder",
+            "responseKind": "success",
+            "apiErrorCode": null,
+            "authenticationGeneration": "87806AD6-2F6A-47A1-9849-B9EA083045FD",
+            "fileStationGeneration": "F827ED0E-B951-4DB3-B28A-32A72F5166F1",
+            "requestAuthenticationGeneration": "F827ED0E-B951-4DB3-B28A-32A72F5166F1",
+            "mainLoginObserved": true,
+            "requestLoginObserved": true,
+            "usesFileStationGeneration": true,
+            "browserSourceMatchesAtResponse": true,
+            "connectionMatchesAtResponse": true
+          },
+          {
+            "eventID": "A8718772-518D-47E1-9C04-0952C16AD4FD",
+            "origin": "browserFolder",
+            "responseKind": "success",
+            "apiErrorCode": null,
+            "authenticationGeneration": "87806AD6-2F6A-47A1-9849-B9EA083045FD",
+            "fileStationGeneration": "F827ED0E-B951-4DB3-B28A-32A72F5166F1",
+            "requestAuthenticationGeneration": "F827ED0E-B951-4DB3-B28A-32A72F5166F1",
+            "mainLoginObserved": true,
+            "requestLoginObserved": true,
+            "usesFileStationGeneration": true,
+            "browserSourceMatchesAtResponse": true,
+            "connectionMatchesAtResponse": true
+          }
+        ],
+        "unjoinedRequestLoginCount": 0,
+        "browserSourceMismatchAtResponseCount": 0,
+        "directoryResponseCounts": {
+          "success": 12
+        }
+      },
+      "ipad": {
+        "fileStationSourceAtConnectionPublication": [],
+        "events": [
+          {
+            "id": "D417CD5A-25CA-4E89-A11B-B1C5EF3A06F7",
+            "event": "login.succeeded",
+            "dateEpoch": 1791608705.268511,
+            "fields": {
+              "authenticationGeneration": "BAFA31A4-7F0C-43D7-9640-7EF45B0786A9",
+              "authenticationObservedMonoMs": 257453806,
+              "method": "unrecognized"
+            }
+          },
+          {
+            "id": "07CBC172-366A-427D-B3B8-056D5B92E95E",
+            "event": "connection.session_lifecycle",
+            "dateEpoch": 1791608705.354577,
+            "fields": {
+              "authenticationGeneration": "BAFA31A4-7F0C-43D7-9640-7EF45B0786A9",
+              "authenticationObservedMonoMs": 257453810,
+              "authenticationStage": "sourcePrepared"
+            }
+          },
+          {
+            "id": "B3CB31D5-02DF-4642-BF70-B3A1E506DEA1",
+            "event": "connection.session_lifecycle",
+            "dateEpoch": 1791608705.355054,
+            "fields": {
+              "authenticationGeneration": "BAFA31A4-7F0C-43D7-9640-7EF45B0786A9",
+              "authenticationObservedMonoMs": 257453811,
+              "authenticationStage": "connectionPublished"
+            }
+          }
+        ],
+        "successfulLoginResultCount": 1,
+        "stageCounts": {
+          "sourcePrepared": 1,
+          "connectionPublished": 1
+        },
+        "directoryJoins": [],
+        "unjoinedRequestLoginCount": 0,
+        "browserSourceMismatchAtResponseCount": 0,
+        "directoryResponseCounts": {}
+      }
+    },
+    "limitations": [
+      "No real logout or account switching was performed; logout target semantics are fixture-tested only.",
+      "Directory source is now prepared before FS connection publication; UI requests are isolated. Global restore/manual-login tail ownership and real account switching remain unverified.",
+      "A missing or rejected SID still needs server-side cause evidence; no-119 runs cannot close it."
+    ]
+  },
+  "iPhone18Installation": {
+    "recordedAt": "2026-10-10T13:09:59.948070+08:00",
+    "installedAt": "2026-10-10T13:09:56.524873+08:00",
+    "device": "iPhone18 Pro Max",
+    "deviceName": "iPhone",
+    "model": "iPhone19,7",
+    "os": "27.0",
+    "systemBuild": "24A8428",
+    "freshUSBIdentity": true,
+    "pairingValid": true,
+    "sourceHEAD": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "21e8797a0ebd2fd5bf7fbb85be355c27c4cdd926550deeb2db8fb0df800cb842",
+    "binaries": {
+      "Nastart": "24189030f8c7f3fbed8d30c884610a8417020a917254d19a1f64dba2af1f4b86",
+      "Nastart.debug.dylib": "2aaadca11a4a00306655cc88bc787910bb95efeb65c440459566e6c462f01c0d",
+      "Frameworks/KSPlayer.framework/KSPlayer": "eda16e6d0e22bc81045752f2f54a263b0f4f8500912378d5ac141013c9042b52"
+    },
+    "binaryBuildTime": "2026-10-10T13:01:32.267381+08:00",
+    "package": "Nastart-Folder-Source-UI-Normal-Debug.app",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "sourceInputsChecked": 173,
+    "verifiedLibraries": 29,
+    "deepStrictSignatureVerified": true,
+    "linkageVerified": true,
+    "targetInValidProfile": true,
+    "profileExpirationUTC": "2026-10-10T22:03:15",
+    "dataPreservingCoverInstall": true,
+    "installation": "success",
+    "unchangedNonDiagnosticPreferences": 25,
+    "postLaunchPreferencesUnchanged": true,
+    "requestedTestEnvironment": {},
+    "requestedArguments": [],
+    "inheritedDeviceLaunchVariablesCleared": true,
+    "launchCommandSucceeded": true,
+    "launchPID": 15079,
+    "launchStartUnix": 1791608996.640631,
+    "actualForegroundUIVerified": true,
+    "wdaReinstalled": false,
+    "playbackRegression": "NOT_RUN",
+    "sourceTestEvidence": "Same source passed 262 XCTest / 2 skipped / 0 failures, 15 preflight, 18 safe report tests this turn; not repeated for installation.",
+    "nativeScreenCaptureSucceeded": true,
+    "processStillRunningVerified": true,
+    "processObservationElapsedSeconds": 33.352,
+    "finalRecordedAt": "2026-10-10T13:10:29.992580+08:00",
+    "freshUSBIdentityAtConfirmation": true,
+    "reportedLaunchEnvironment": null,
+    "reportedLaunchArguments": null,
+    "actualUIEvidence": "normal-app-screen.png; individually inspected",
+    "normalHomeNASOnline": true,
+    "normalHomeJellyfinOnline": true,
+    "playerClosed": true,
+    "finalPreferencesUnchanged": true,
+    "finalUnchangedPreferenceCount": 25,
+    "actualLaunchEnvironmentDisclosure": "CLI clears inherited DEVICECTL_CHILD variables and passes no app arguments/test injection; system record does not enumerate environment",
+    "finalSourceAndBinariesVerified": true,
+    "completedAt": "2026-10-10T13:11:34.062969+08:00",
+    "iPhone13AndIPadWork": "Folder source/UI change built and installed; phone navigation completed, iPad USB/WDA/native channel lost; playback regression not started."
+  },
+  "openItems": [
+    "iPad disconnect TOOL retained; native weak condition cleanup unconfirmed",
+    "Four S01 and S03 entry playback windows not started",
+    "Real account/logout switching, restore/manual login tail ownership",
+    "Server119 cause and bounded current-session recovery",
+    "Old weak-network stalls / ordinal0 / 355ms startup wait",
+    "S19 deep/MTP, frame/scroll/audio/subtitle/competitors and full acceptance"
+  ]
+}

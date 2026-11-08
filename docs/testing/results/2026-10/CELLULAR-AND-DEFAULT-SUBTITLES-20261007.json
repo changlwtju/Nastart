@@ -1,0 +1,208 @@
+{
+  "recordedAt": "2026-10-07T23:58:45.877364+08:00",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceDiffSHA256": "485e57b4cb8afe9a781dd1d20b438370b6b10197566dac6c9ef8a4edf4334789",
+  "configuration": "normal Debug -Onone; empty launch environment",
+  "binaryBuildTime": "2026-10-07T23:47:22.282311+08:00",
+  "binaries": {
+    "Nastart": "823e80c660b24eabe46350e78a85da76815f64e6abb627ca5e7ce1e3c471d9c4",
+    "Nastart.debug.dylib": "758d7ef9eb82defa658aebc59cf4725a7734dfe642c9082e1a111ed955755305",
+    "Frameworks/KSPlayer.framework/KSPlayer": "5fa42aac977408c21c0a85c45b0d806490c3d7dc2048f0e84ea00eb0dc591cf0"
+  },
+  "signatureVerified": true,
+  "individuallyVerifiedLibraries": 29,
+  "checkedInputs": 128,
+  "newerInputs": [],
+  "linkageVerified": true,
+  "tests": {
+    "executed": 185,
+    "skipped": 2,
+    "failed": 0
+  },
+  "preflight": "15 passed",
+  "installations": {
+    "iPhone13": {
+      "recordedAt": "2026-10-07T23:48:53.143061+08:00",
+      "device": "iphone13",
+      "model": "iPhone14,5",
+      "os": "16.3.1",
+      "systemBuild": "20D67",
+      "sourceDiffSHA256": "485e57b4cb8afe9a781dd1d20b438370b6b10197566dac6c9ef8a4edf4334789",
+      "binaries": {
+        "Nastart": "823e80c660b24eabe46350e78a85da76815f64e6abb627ca5e7ce1e3c471d9c4",
+        "Nastart.debug.dylib": "758d7ef9eb82defa658aebc59cf4725a7734dfe642c9082e1a111ed955755305",
+        "Frameworks/KSPlayer.framework/KSPlayer": "5fa42aac977408c21c0a85c45b0d806490c3d7dc2048f0e84ea00eb0dc591cf0"
+      },
+      "binaryBuildTime": "2026-10-07T23:47:22.282311+08:00",
+      "configuration": "normal Debug -Onone; empty launch environment",
+      "signatureVerified": true,
+      "freshUSBIdentity": true,
+      "targetInValidProfile": true,
+      "dataPreservingCoverInstall": true,
+      "unchangedNonDiagnosticPreferences": 25,
+      "installation": "success",
+      "normalLaunchSucceeded": true,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "actualForegroundUIVerified": true,
+      "playbackRegression": "pending",
+      "foregroundEvidence": "latest-normal.png/xml"
+    },
+    "iPad": {
+      "recordedAt": "2026-10-07T23:48:45.512392+08:00",
+      "device": "ipad",
+      "model": "iPad12,1",
+      "os": "18.3.1",
+      "systemBuild": "22D72",
+      "sourceDiffSHA256": "485e57b4cb8afe9a781dd1d20b438370b6b10197566dac6c9ef8a4edf4334789",
+      "binaries": {
+        "Nastart": "823e80c660b24eabe46350e78a85da76815f64e6abb627ca5e7ce1e3c471d9c4",
+        "Nastart.debug.dylib": "758d7ef9eb82defa658aebc59cf4725a7734dfe642c9082e1a111ed955755305",
+        "Frameworks/KSPlayer.framework/KSPlayer": "5fa42aac977408c21c0a85c45b0d806490c3d7dc2048f0e84ea00eb0dc591cf0"
+      },
+      "binaryBuildTime": "2026-10-07T23:47:22.282311+08:00",
+      "configuration": "normal Debug -Onone; empty launch environment",
+      "signatureVerified": true,
+      "freshUSBIdentity": true,
+      "targetInValidProfile": true,
+      "dataPreservingCoverInstall": true,
+      "unchangedNonDiagnosticPreferences": 16,
+      "installation": "success",
+      "normalLaunchSucceeded": true,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "actualForegroundUIVerified": true,
+      "playbackRegression": "pending",
+      "foregroundEvidence": "latest-normal.png/xml"
+    }
+  },
+  "iPhone18UserCellularVerification": {
+    "reportedAt": "2026-10-07T23:32:55.499494+08:00",
+    "source": "direct user report",
+    "device": "iPhone18 Pro Max",
+    "latestVerifiedPackageMainSHA256": "51ae4a5864b7e0e1bd4adaf6a8e254864359c0d3f8920836e28ce2d670f86557",
+    "realCellularDSMConnection": "user verified success",
+    "historicalOutsideHomeFailure": "cause unresolved; old package diagnostics retained",
+    "automatedCellularRegression": "not completed",
+    "radioChangedByAgent": false,
+    "userDisconnectedDeviceForContinuingOtherDevices": true
+  },
+  "iPhone18CurrentSourceRegression": "not performed; disconnected with preceding 51ae package",
+  "previous51aeSingleS03Observation": {
+    "recordedAt": "2026-10-07T23:46:41.560648+08:00",
+    "sourceDiffSHA256": "1c6f3e35ebb6e3b86720e33b79b54fce20e0ebecf49ab1997d00590f0071385d",
+    "normalDebugMainSHA256": "51ae4a5864b7e0e1bd4adaf6a8e254864359c0d3f8920836e28ce2d670f86557",
+    "device": "iPhone13",
+    "otherPlayback": "iPad idle; iPhone18 disconnected",
+    "test": "single S03 from beginning",
+    "scheduledVisualSamplesSeconds": [
+      3,
+      10,
+      30,
+      60,
+      90,
+      120,
+      180
+    ],
+    "availableAVTelemetryRows": 211,
+    "firstAVTelemetry": {
+      "elapsedMs": "0",
+      "currentSeconds": "19.770",
+      "stallCount": "0",
+      "stallActive": "no",
+      "accessLogStalls": "0",
+      "bufferAheadSeconds": "12.179",
+      "accessLogBytes": "5483772",
+      "itemStatus": "readyToPlay",
+      "rate": "1.000",
+      "engine": "AVPlayer",
+      "playMethod": "localRemux",
+      "routeKind": "localHLS",
+      "networkClass": "local",
+      "addressKind": "privateIP",
+      "indicatedBitrate": "12000000"
+    },
+    "lastAVTelemetry": {
+      "elapsedMs": "280402",
+      "stallCount": "0",
+      "stallActive": "no",
+      "engine": "AVPlayer",
+      "playMethod": "localRemux",
+      "routeKind": "localHLS",
+      "networkClass": "local",
+      "addressKind": "privateIP"
+    },
+    "historicalFailureRemainsOpen": true,
+    "movieAndBilingualSubtitlesVerified": true,
+    "ordinaryStopVerified": true,
+    "completeDisplayTiming": "not collected",
+    "audioOutput": "not verified",
+    "wholeFilmResult": "not assessed",
+    "lastActiveAVTelemetry": {
+      "elapsedMs": "279500",
+      "currentSeconds": "299.010",
+      "stallCount": "0",
+      "stallActive": "no",
+      "accessLogStalls": "0",
+      "bufferAheadSeconds": "0.000",
+      "accessLogBytes": "410601024",
+      "itemStatus": "readyToPlay",
+      "rate": "1.000",
+      "engine": "AVPlayer",
+      "playMethod": "localRemux",
+      "routeKind": "localHLS",
+      "networkClass": "local",
+      "addressKind": "privateIP",
+      "indicatedBitrate": "12000000"
+    }
+  },
+  "defaultSubtitles": {
+    "selection": "valid server default, forced, marked default, system language, first available",
+    "savedSubtitleOff": "preserved; historical intent ambiguous",
+    "unitRegression": "passed",
+    "deviceRegression": "in progress: iPhone13 Transformers detail selected Chinese PGS but player menu reported Off; first default and explicit selection observations retained; cause not established; iPad pending"
+  },
+  "currentServiceProbe": {
+    "origin": "Mac direct unauthenticated public-info API on actual endpoint read from service UI",
+    "publicEndpointHTTPStatus": 502,
+    "localEndpointCurlExit": 56,
+    "localEndpointResult": "connection reset",
+    "maskedDiagnosticURLProbe": "INVALID_TOOL_INPUT; excluded",
+    "containerInspection": "Safari DSM session expired; user login requested; no restart performed",
+    "laterRecheck": {
+      "recordedAt": "2026-10-08T00:07:36+08:00",
+      "publicEndpointHTTPStatus": 200,
+      "localEndpointHTTPStatus": 200,
+      "recovery": "observed recovery without agent service restart",
+      "rootCause": "not established; earlier 502/reset preserved"
+    }
+  },
+  "mainPush": "not performed; required L2 remains open",
+  "detailGradientRegression": {
+    "recordedAt": "2026-10-08T00:30:13.467810+08:00",
+    "device": "iPhone13",
+    "model": "iPhone14,5",
+    "os": "16.3.1",
+    "systemBuild": "20D67",
+    "sourceDiffSHA256": "485e57b4cb8afe9a781dd1d20b438370b6b10197566dac6c9ef8a4edf4334789",
+    "binaries": {
+      "Nastart": "823e80c660b24eabe46350e78a85da76815f64e6abb627ca5e7ce1e3c471d9c4",
+      "Nastart.debug.dylib": "758d7ef9eb82defa658aebc59cf4725a7734dfe642c9082e1a111ed955755305",
+      "Frameworks/KSPlayer.framework/KSPlayer": "5fa42aac977408c21c0a85c45b0d806490c3d7dc2048f0e84ea00eb0dc591cf0"
+    },
+    "installationBasis": "verified data preserving cover earlier in same round; no source/package change; normal fresh process restart before UI comparison",
+    "reference": {
+      "scene": "Jellyfin Mission Impossible III detail",
+      "screenshotClock": "20:00",
+      "packageIdentity": "not established; do not attribute to latest or specific old package",
+      "symptom": "dark header gradient covers low contrast metadata/tagline while lower playback section remains light"
+    },
+    "codeFinding": "header fixed frame and clipping already present in latest source; prior header had no clipping",
+    "currentActualUI": "same film latest detail settled screenshot inspected; white metadata background and readable text; no gradient spill observed",
+    "evidence": "strange-ui-s03-latest-detail-settled.png/xml",
+    "excluded": "first navigation screenshot captured transition and keyboard; not counted as settled UI regression",
+    "status": "current single portrait check observed normal; intermittent rotation/playback return reproduction remains open",
+    "noNewSourceEdit": true,
+    "noNewBuildOrInstallation": true
+  }
+}

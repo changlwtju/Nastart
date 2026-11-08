@@ -76,7 +76,9 @@ class SubtitleDecode: DecodeProtocol {
         avsubtitle_free(&subtitle)
     }
 
-    func doFlushCodec() {}
+    func doFlushCodec() {
+        if let codecContext { avcodec_flush_buffers(codecContext) }
+    }
 
     func shutdown() {
         scale.shutdown()
@@ -121,12 +123,14 @@ class SubtitleDecode: DecodeProtocol {
             origin = bounds.origin
             let croppedImages = images.map { ( $0.0.offsetBy(dx: -bounds.minX, dy: -bounds.minY), $0.1 ) }
             var image: UIImage?
-            // 因为字幕需要有透明度,所以不能用jpg；tif在iOS支持没有那么好，会有绿色背景； 用heic格式，展示的时候会卡主线程；所以最终用png。
-            if let data = CGImage.combine(images: croppedImages)?.data(type: .png, quality: 0.2) {
-                image = UIImage(data: data)
+            // The composed bitmap already owns its pixels and alpha. Retain it
+            // directly instead of encoding and decoding a PNG for every cue.
+            if let bitmap = CGImage.combine(images: croppedImages) {
+                image = UIImage(cgImage: bitmap)
             }
             part.image = image
             part.origin = origin
+            part.imageUsesCanvasCoordinates = true
             if let context = codecContext?.pointee {
                 part.imageCanvasSize = CGSize(width: Int(context.width), height: Int(context.height))
             }

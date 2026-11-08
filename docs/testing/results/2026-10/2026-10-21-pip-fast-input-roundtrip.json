@@ -1,0 +1,650 @@
+{
+  "date": "2026-10-21",
+  "scope": "iPhone13 S03 Jellyfin normal Debug ASS functional PiP roundtrip; PGS pre-PiP candidate item failure and unexposed native controls",
+  "sourceChanges": false,
+  "newBuilds": 0,
+  "newInstalls": 0,
+  "packageAudit": {
+    "at": "2026-10-21T19:05:52.789865+08:00",
+    "checkedInputs": 173,
+    "sourceAndPackageUnchanged": true,
+    "sourceDiffSHA256": "6fd78d20f8d406a7794686d7e92c5316274b707ac12cac8a4a7dd52563d8d6e7",
+    "ipaSHA256": "e0c196cf2195de31426041d4acfe7175298c06f1c1e618d6fbd903747ae2c877",
+    "WDASettingsReadbackVerified": true,
+    "normalPackagePointerPreserved": true,
+    "ownedPlaybackRunnersRemaining": 0
+  },
+  "model": "iPhone14,5",
+  "system": "16.3.1",
+  "environment": {},
+  "playCommands": 2,
+  "pipCommands": 2,
+  "windows": [
+    {
+      "kind": "ambiguous-menu-precondition",
+      "startedAt": "2026-10-21T18:45:26.682760+08:00",
+      "finishedAt": "2026-10-21T18:45:55.433569+08:00",
+      "playCommands": 0,
+      "pipCommands": 0,
+      "failureReason": "Missing or ambiguous target: explicit original simplified PGS"
+    },
+    {
+      "kind": "ASS-functional-roundtrip",
+      "result": {
+        "startedAt": "2026-10-21T18:47:33.947398+08:00",
+        "playCommands": 1,
+        "pipCommands": 1,
+        "environment": {},
+        "actions": [
+          {
+            "label": "Jellyfin",
+            "dispatchWall": 1792579662.0654569,
+            "dispatchMono": 8.392666291,
+            "responseMono": 8.850171458
+          },
+          {
+            "label": "library",
+            "dispatchWall": 1792579663.2069829,
+            "dispatchMono": 9.534175458,
+            "responseMono": 9.97948
+          },
+          {
+            "label": "search",
+            "dispatchWall": 1792579664.39437,
+            "dispatchMono": 10.721545666,
+            "responseMono": 11.164998125
+          },
+          {
+            "label": "S03 detail",
+            "dispatchWall": 1792579668.587024,
+            "dispatchMono": 14.914140083,
+            "responseMono": 15.671024125
+          },
+          {
+            "label": "open current detail subtitle choices",
+            "dispatchWall": 1792579671.616302,
+            "dispatchMono": 17.94337425,
+            "responseMono": 18.416891375
+          },
+          {
+            "label": "explicit original simplified PGS",
+            "dispatchWall": 1792579674.626063,
+            "dispatchMono": 20.953092541,
+            "responseMono": 21.48926125
+          },
+          {
+            "label": "play",
+            "dispatchWall": 1792579677.546628,
+            "dispatchMono": 23.873615041,
+            "responseMono": 24.394936625
+          },
+          {
+            "label": "open subtitle panel",
+            "dispatchWall": 1792579682.377345,
+            "dispatchMono": 28.704262166,
+            "responseMono": 29.093526958
+          },
+          {
+            "label": "select simplified bilingual ASS",
+            "dispatchWall": 1792579684.46856,
+            "dispatchMono": 30.795447875,
+            "responseMono": 31.183864875
+          },
+          {
+            "label": "show chrome for PiP",
+            "dispatchWall": 1792579721.747078,
+            "dispatchMono": 68.073429333,
+            "responseMono": 68.467786125
+          },
+          {
+            "label": "enter PiP",
+            "dispatchWall": 1792579722.983913,
+            "dispatchMono": 69.3102475,
+            "responseMono": 69.699515375
+          },
+          {
+            "label": "system pause",
+            "dispatchWall": 1792579761.5468092,
+            "dispatchMono": 107.8725885,
+            "observationToDispatchSeconds": 0.7522258750000077,
+            "method": "fresh current rect W3C touch; no cached element click",
+            "responseMono": 108.433912375
+          },
+          {
+            "label": "system resume",
+            "dispatchWall": 1792579769.246939,
+            "dispatchMono": 115.572607916,
+            "observationToDispatchSeconds": 0.7050301250000075,
+            "method": "fresh current rect W3C touch; no cached element click",
+            "responseMono": 116.264125541
+          },
+          {
+            "label": "system restore full screen",
+            "dispatchWall": 1792579779.633323,
+            "dispatchMono": 125.958842708,
+            "observationToDispatchSeconds": 0.746418417000001,
+            "method": "fresh current rect W3C touch; no cached element click",
+            "responseMono": 126.519137458
+          },
+          {
+            "label": "show chrome for subtitles",
+            "dispatchWall": 1792579794.449373,
+            "dispatchMono": 140.774682875,
+            "responseMono": 141.143626583
+          },
+          {
+            "label": "open subtitle panel",
+            "dispatchWall": 1792579795.7182138,
+            "dispatchMono": 142.043503875,
+            "responseMono": 142.480330666
+          },
+          {
+            "label": "restore original PGS subtitle",
+            "dispatchWall": 1792579796.630713,
+            "dispatchMono": 142.955990708,
+            "responseMono": 143.405052666
+          },
+          {
+            "label": "show chrome for close",
+            "dispatchWall": 1792579804.6548748,
+            "dispatchMono": 150.980037708,
+            "responseMono": 151.353473
+          },
+          {
+            "label": "normal player close",
+            "dispatchWall": 1792579805.552779,
+            "dispatchMono": 151.877928041,
+            "responseMono": 152.279359291
+          }
+        ],
+        "method": "fresh current system control rect then immediate W3C touch; remove intervening screenshot and cached element dispatch; one-second observation expiry",
+        "latestPackageVerified": true,
+        "sourceDiffSHA256": "6fd78d20f8d406a7794686d7e92c5316274b707ac12cac8a4a7dd52563d8d6e7",
+        "model": "iPhone14,5",
+        "system": "16.3.1",
+        "normalBaselineRestart": true,
+        "emptyEnvironmentVerified": true,
+        "restoringBannerAbsentAndTargetStable": true,
+        "explicitOriginalPGSChoiceObserved": true,
+        "playDispatchWall": 1792579676.801375,
+        "ASSSelectionAttempted": true,
+        "manualHomeSent": true,
+        "retainedAppSessionSystemTarget": true,
+        "systemForegroundVerified": true,
+        "systemChromeRevealCommands": 2,
+        "systemPauseCommands": 1,
+        "systemResumeCommands": 1,
+        "systemRestoreButtonVisibleInTree": true,
+        "systemRestoreCommands": 1,
+        "actualFullScreenReturned": true,
+        "originalTrackRestoreAttempted": true,
+        "originalTrackRestoreUIResponseObserved": true,
+        "normalPlayerCloseObserved": true,
+        "observationCompleted": true,
+        "nativeAppAbsent": true,
+        "ownedGuardianStopped": true,
+        "WDASettingsRestored": true,
+        "ownedSyslogStopped": true,
+        "nonBookmarkPreferencesUnchanged": true,
+        "originalBookmarkCount": 36,
+        "originalTrackChanges": 0,
+        "bookmarksAdded": 0,
+        "bookmarksRemoved": 0,
+        "bookmarkProgressChanges": 1,
+        "newCrashInventory": {
+          "Nastart": 0,
+          "WebDriverAgent": 0,
+          "JetsamEvent": 0
+        },
+        "finishedAt": "2026-10-21T18:50:20.238498+08:00"
+      },
+      "playbackCallbackEvidence": {
+        "sameRenderingOwnerAndTrace": true,
+        "pauseRequestedAndActualFalse": true,
+        "resumeRequestedAndActualTrue": true,
+        "pauseAndResumePositionSeconds": [
+          75.251,
+          75.251
+        ],
+        "betweenCallbacksSeconds": 7.8001078750239685,
+        "pausedPiPRegionByteIdentical": false,
+        "comparisonScope": "same fresh system PiP window crop, two native paused frames; not frame-time/audio acceptance"
+      }
+    },
+    {
+      "kind": "PGS-system-close-not-reached",
+      "result": {
+        "startedAt": "2026-10-21T18:55:30.260830+08:00",
+        "playCommands": 1,
+        "pipCommands": 1,
+        "environment": {},
+        "actions": [
+          {
+            "label": "Jellyfin",
+            "dispatchWall": 1792580139.077037,
+            "dispatchMono": 9.133313833,
+            "responseMono": 9.596748208
+          },
+          {
+            "label": "library",
+            "dispatchWall": 1792580140.4631271,
+            "dispatchMono": 10.519387625,
+            "responseMono": 10.962118916
+          },
+          {
+            "label": "search",
+            "dispatchWall": 1792580141.749481,
+            "dispatchMono": 11.805726958,
+            "responseMono": 12.347564791
+          },
+          {
+            "label": "S03 detail",
+            "dispatchWall": 1792580145.8632488,
+            "dispatchMono": 15.919446666,
+            "responseMono": 16.694906375
+          },
+          {
+            "label": "open current detail subtitle choices",
+            "dispatchWall": 1792580149.03387,
+            "dispatchMono": 19.090030583,
+            "responseMono": 19.698488291
+          },
+          {
+            "label": "explicit original simplified PGS",
+            "dispatchWall": 1792580152.254207,
+            "dispatchMono": 22.310330416,
+            "responseMono": 22.98606075
+          },
+          {
+            "label": "play",
+            "dispatchWall": 1792580155.991693,
+            "dispatchMono": 26.047776916,
+            "responseMono": 26.607975041
+          },
+          {
+            "label": "show chrome for PiP",
+            "dispatchWall": 1792580197.509859,
+            "dispatchMono": 67.56545575,
+            "responseMono": 68.027884833
+          },
+          {
+            "label": "enter PiP",
+            "dispatchWall": 1792580198.974475,
+            "dispatchMono": 69.030054583,
+            "responseMono": 69.496020125
+          }
+        ],
+        "method": "PGS original source, fresh native control rect W3C pause/resume then system close; original detail and media stop observations",
+        "latestPackageVerified": true,
+        "sourceDiffSHA256": "6fd78d20f8d406a7794686d7e92c5316274b707ac12cac8a4a7dd52563d8d6e7",
+        "model": "iPhone14,5",
+        "system": "16.3.1",
+        "normalBaselineRestart": true,
+        "emptyEnvironmentVerified": true,
+        "restoringBannerAbsentAndTargetStable": true,
+        "explicitOriginalPGSChoiceObserved": true,
+        "playDispatchWall": 1792580155.266867,
+        "manualHomeSent": true,
+        "retainedAppSessionSystemTarget": true,
+        "systemForegroundVerified": true,
+        "systemChromeRevealCommands": 1,
+        "failureType": "AssertionError",
+        "failureReason": "Pause control not exposed",
+        "nativeAppAbsent": true,
+        "ownedGuardianStopped": true,
+        "WDASettingsRestored": true,
+        "ownedSyslogStopped": true,
+        "nonBookmarkPreferencesUnchanged": true,
+        "originalBookmarkCount": 36,
+        "originalTrackChanges": 0,
+        "bookmarksAdded": 0,
+        "bookmarksRemoved": 0,
+        "bookmarkProgressChanges": 1,
+        "newCrashInventory": {
+          "Nastart": 0,
+          "WebDriverAgent": 0,
+          "JetsamEvent": 0
+        },
+        "finishedAt": "2026-10-21T18:57:21.171760+08:00"
+      },
+      "systemPauseCommands": 0,
+      "systemResumeCommands": 0,
+      "systemRestoreCommands": 0,
+      "systemCloseCommands": 0
+    }
+  ],
+  "PGSJoinedAnalysis": {
+    "sameOriginalTracePlanRouteAcrossClocks": true,
+    "initialRoute": {
+      "engine": "KSPlayer",
+      "playMethod": "directPlay",
+      "routeKind": "localRangeProxy",
+      "sourceSubtitleID": 7,
+      "mode": "embedded"
+    },
+    "candidateRoute": {
+      "separateTracePlanRoute": true,
+      "engine": "systemAVPlayer",
+      "playMethod": "localRemux",
+      "routeKind": "localHLS"
+    },
+    "internalFirstFrameSignal": {
+      "kind": "playbackClock",
+      "tapToFirstFrameMs": 8427,
+      "actualScreenFirstFrame": false
+    },
+    "downshiftRequestedAt": "18:56:06.334",
+    "reason": "deliveryBelowSourceBitrate",
+    "attempt": 1,
+    "warmupStartedAt": "18:56:09.615",
+    "warmupFailedAt": "18:56:36.992",
+    "failure": {
+      "stage": "decodedFrame",
+      "meaning": "waiting for output frame; not decoded-frame success",
+      "elapsedMs": 27376,
+      "deadlineRemainingMs": 12623,
+      "itemStatus": 2,
+      "errorDomain": "NSURLErrorDomain",
+      "errorCode": -1008,
+      "candidateSeconds": 1.7366666666666666,
+      "targetSeconds": 1.737,
+      "candidateRate": 0,
+      "loadedRangeCount": 0,
+      "candidateBufferAheadSeconds": 0,
+      "liveSeconds": 9.694,
+      "cancelled": false
+    },
+    "candidateDecodedObserved": false,
+    "candidateCommittedObserved": false,
+    "automaticDownshiftAbandoned": true,
+    "pipStartedAt": "18:56:39.993",
+    "failureBeforePiP": true,
+    "laterOriginalClockSeconds": [
+      9.694,
+      14.707,
+      16.2
+    ],
+    "candidateFailureURLOrResponseIdentified": false,
+    "causeAttributedToSubtitleWiFiNASOrPiP": false,
+    "candidateTransferEvidence": [
+      {
+        "at": "18:56:06.369408",
+        "event": "diagnostics.jellyfin.playback_route_state",
+        "fields": {
+          "stage": "playRequested"
+        }
+      },
+      {
+        "at": "18:56:09.687386",
+        "event": "媒体兼容传输已开始",
+        "fields": {
+          "hlsRole": "masterPlaylist",
+          "pathExtension": "m3u8",
+          "proxyKind": "hlsPlaylist",
+          "segmentOrdinal": "-",
+          "stage": "upstreamRequestIssued",
+          "range": "full"
+        }
+      },
+      {
+        "at": "18:56:16.902717",
+        "event": "媒体兼容传输已开始",
+        "fields": {
+          "status": "200",
+          "hlsRole": "masterPlaylist",
+          "pathExtension": "m3u8",
+          "proxyKind": "hlsPlaylist",
+          "segmentOrdinal": "-",
+          "range": "full"
+        }
+      },
+      {
+        "at": "18:56:16.941152",
+        "event": "媒体兼容传输已结束",
+        "fields": {
+          "responseStatusCode": "200",
+          "hlsRole": "masterPlaylist",
+          "pathExtension": "m3u8",
+          "proxyKind": "hlsPlaylist",
+          "segmentOrdinal": "-",
+          "stage": "urlSessionTaskMetrics",
+          "callbackAfterClientFinish": "false"
+        }
+      },
+      {
+        "at": "18:56:16.941714",
+        "event": "媒体兼容传输已结束",
+        "fields": {
+          "hlsRole": "masterPlaylist",
+          "pathExtension": "m3u8",
+          "proxyKind": "hlsPlaylist",
+          "segmentOrdinal": "-",
+          "stage": "upstreamTaskCompleted",
+          "errorCode": "-",
+          "errorDomain": "-",
+          "taskReceivedBytes": "873",
+          "expectedBytes": "873",
+          "range": "-",
+          "upstreamCancellationRequested": "false",
+          "upstreamHeadersObserved": "true",
+          "upstreamCompletionObserved": "true",
+          "upstreamTaskBodyBytes": "873",
+          "upstreamIssuedToCallbackMs": "7227",
+          "callbackAfterClientFinish": "false",
+          "upstreamIssueToHeadersCallbackMs": "7224",
+          "upstreamIssueToFirstBodyCallbackMs": "7224",
+          "upstreamIssueToLastBodyCallbackMs": "7224"
+        }
+      },
+      {
+        "at": "18:56:16.942169",
+        "event": "媒体兼容传输已结束",
+        "fields": {
+          "hlsRole": "masterPlaylist",
+          "pathExtension": "m3u8",
+          "proxyKind": "hlsPlaylist",
+          "segmentOrdinal": "-",
+          "stage": "playlistRewritten"
+        }
+      },
+      {
+        "at": "18:56:16.942621",
+        "event": "媒体兼容传输已结束",
+        "fields": {
+          "status": "200",
+          "hlsRole": "masterPlaylist",
+          "pathExtension": "m3u8",
+          "proxyKind": "hlsPlaylist",
+          "segmentOrdinal": "-",
+          "result": "complete",
+          "deliveredBytes": "873",
+          "durationMs": "7229",
+          "errorCode": "-",
+          "errorDomain": "-",
+          "finishSource": "sendPlaylist()",
+          "taskReceivedBytes": "873",
+          "expectedBytes": "873",
+          "range": "-",
+          "transportErrorKind": "none",
+          "retries": "0"
+        }
+      },
+      {
+        "at": "18:56:16.943045",
+        "event": "媒体兼容传输已开始",
+        "fields": {
+          "hlsRole": "masterPlaylist",
+          "pathExtension": "m3u8",
+          "proxyKind": "hlsPlaylist",
+          "segmentOrdinal": "-",
+          "stage": "clientReadEnded"
+        }
+      },
+      {
+        "at": "18:56:16.943706",
+        "event": "媒体兼容传输已开始",
+        "fields": {
+          "hlsRole": "mediaPlaylist",
+          "pathExtension": "m3u8",
+          "proxyKind": "hlsPlaylist",
+          "segmentOrdinal": "-",
+          "stage": "upstreamRequestIssued",
+          "range": "full"
+        }
+      },
+      {
+        "at": "18:56:20.013738",
+        "event": "媒体兼容传输已开始",
+        "fields": {
+          "status": "200",
+          "hlsRole": "mediaPlaylist",
+          "pathExtension": "m3u8",
+          "proxyKind": "hlsPlaylist",
+          "segmentOrdinal": "-",
+          "range": "full"
+        }
+      },
+      {
+        "at": "18:56:36.959038",
+        "event": "媒体兼容传输已开始",
+        "fields": {
+          "hlsRole": "mediaPlaylist",
+          "pathExtension": "m3u8",
+          "proxyKind": "hlsPlaylist",
+          "segmentOrdinal": "-",
+          "stage": "clientReadEnded"
+        }
+      },
+      {
+        "at": "18:56:36.994027",
+        "event": "媒体兼容传输已结束",
+        "fields": {
+          "status": "200",
+          "hlsRole": "mediaPlaylist",
+          "pathExtension": "m3u8",
+          "proxyKind": "hlsPlaylist",
+          "segmentOrdinal": "-",
+          "result": "未能完成操作。（NSURLErrorDomain错误-999。）",
+          "deliveredBytes": "170692",
+          "durationMs": "20067",
+          "errorCode": "-999",
+          "errorDomain": "NSURLErrorDomain",
+          "finishSource": "routeRevoked",
+          "taskReceivedBytes": "170692",
+          "expectedBytes": "1527158",
+          "range": "-",
+          "transportErrorKind": "other",
+          "retries": "0"
+        }
+      },
+      {
+        "at": "18:56:36.994500",
+        "event": "媒体兼容传输已结束",
+        "fields": {
+          "hlsRole": "mediaPlaylist",
+          "pathExtension": "m3u8",
+          "proxyKind": "hlsPlaylist",
+          "segmentOrdinal": "-",
+          "stage": "upstreamCancellationRequested"
+        }
+      },
+      {
+        "at": "18:56:36.995766",
+        "event": "媒体兼容传输已结束",
+        "fields": {
+          "responseStatusCode": "200",
+          "hlsRole": "mediaPlaylist",
+          "pathExtension": "m3u8",
+          "proxyKind": "hlsPlaylist",
+          "segmentOrdinal": "-",
+          "stage": "urlSessionTaskM<…>",
+          "callbackAfterClientFinish": "true"
+        }
+      },
+      {
+        "at": "18:56:36.996296",
+        "event": "媒体兼容传输已结束",
+        "fields": {
+          "hlsRole": "mediaPlaylist",
+          "pathExtension": "m3u8",
+          "proxyKind": "hlsPlaylist",
+          "segmentOrdinal": "-",
+          "stage": "upstreamTaskCompleted",
+          "errorCode": "-999",
+          "errorDomain": "NSURLErrorDomain",
+          "taskReceivedBytes": "170692",
+          "expectedBytes": "1527158",
+          "range": "-",
+          "upstreamCancellationRequested": "true",
+          "upstreamHeadersObserved": "true",
+          "upstreamCompletionObserved": "true",
+          "upstreamTaskBodyBytes": "170692",
+          "upstreamIssuedToCallbackMs": "20069",
+          "callbackAfterClientFinish": "true",
+          "upstreamIssueToHeadersCallbackMs": "3090",
+          "upstreamIssueToFirstBodyCallbackMs": "3090",
+          "upstreamIssueToLastBodyCallbackMs": "19489"
+        }
+      }
+    ],
+    "candidateMediaSegmentRequestsObserved": 0,
+    "candidateMediaPlaylistCompletionObserved": false,
+    "candidateMediaPlaylistPartialBytes": 170692,
+    "candidateMediaPlaylistExpectedBytes": 1527158,
+    "candidateMediaPlaylistClientReadEndedAt": "18:56:36.959",
+    "routeRevocationAfterItemFailure": true,
+    "candidateMediaPlaylistDeliveryMeaning": "170692 is upstream playlistBody bytes, not bytes sent to AV; sendPlaylist waits for upstream completion",
+    "clientReadEndedMeaning": "peer write-direction EOF, not proof peer stopped receiving",
+    "candidateMasterPlaylist": {
+      "status": 200,
+      "bytes": 873,
+      "durationMs": 7229,
+      "complete": true
+    },
+    "candidateMediaPlaylist": {
+      "status": 200,
+      "receivedBytes": 170692,
+      "expectedBytes": 1527158,
+      "issueToHeadersAndFirstBodyMs": 3090,
+      "issueToLastBodyMs": 19489,
+      "complete": false,
+      "rewriteOrCompleteClientSendObserved": false
+    },
+    "specificAVFailedResourceIdentified": false,
+    "proxyTimeoutConfiguredSeconds": {
+      "request": 30,
+      "resource": 86400
+    },
+    "proxyTimeoutObserved": false
+  },
+  "inputCausalityLimit": {
+    "oldLastRefreshedSourceToDispatchSecondsApprox": 0.686112,
+    "newSourceReturnToDispatchSeconds": [
+      0.752225875,
+      0.705030125,
+      0.746418417
+    ],
+    "latencyAloneProvenCause": false,
+    "method": "fresh unique native control/current rect, foreground/bounds guard, W3C point input, no intervening screenshot, one-second expiry, no action resend"
+  },
+  "acceptanceLimits": [
+    "limited ASS functional slice only",
+    "system X close unverified",
+    "PGS controls and complete subtitle/audio unverified",
+    "no frame-time or long-run acceptance",
+    "no Release or other-device acceptance"
+  ],
+  "cleanup": {
+    "allWindowsNativeAppAbsent": true,
+    "allOwnedCollectorsAndGuardiansStopped": true,
+    "all36OriginalBookmarkTracksPreserved": true,
+    "otherPreferencesUnchanged": true,
+    "nativeFinalHomeWithoutPiPAndWiFiReviewed": true,
+    "networkChanged": false,
+    "persistentWDAKept": true,
+    "zeroMediaWindowGuardianNotStarted": true,
+    "mediaWindowGuardiansConfirmedStopped": true
+  },
+  "iPhone18": "latest installed; user deferred actual home check; no foreground changes during these windows",
+  "openItems": 28
+}

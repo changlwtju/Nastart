@@ -1,0 +1,128 @@
+{
+  "recordedAt": "2026-10-31T14:21:14+08:00",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourcePreservation": {
+    "inputCount": 445,
+    "changedExistingFiles": 1,
+    "unchangedInputs": 444,
+    "onlySharedWebDAVFieldAccessibilityMetadataChanged": true,
+    "labelsAdded": 6,
+    "hintsAdded": 3,
+    "visualLayoutBindingsCallbacksAndNetworkCodeUnchanged": true,
+    "runtimeVoiceOverNotVerified": true
+  },
+  "scope": "Only six explicit accessibility labels and three hints on shared production WebDAV fields; add/edit and all three platforms reuse them.",
+  "builds": {
+    "mobile-sim-debug-cast": {
+      "startedAt": "2026-10-31T14:15:50.436100+08:00",
+      "physicalDevicesOperated": 0,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-31T14:16:10.718283+08:00"
+    },
+    "mobile-debug": {
+      "startedAt": "2026-10-31T14:16:10.719017+08:00",
+      "physicalDevicesOperated": 0,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-31T14:16:46.547230+08:00"
+    },
+    "mobile-release": {
+      "startedAt": "2026-10-31T14:16:46.547838+08:00",
+      "physicalDevicesOperated": 0,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-31T14:18:22.885470+08:00"
+    },
+    "tv-sim-debug-cast": {
+      "startedAt": "2026-10-31T14:19:54.968174+08:00",
+      "physicalDevicesOperated": 0,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-31T14:20:05.235609+08:00"
+    },
+    "tv-unsigned-debug": {
+      "startedAt": "2026-10-31T14:20:05.236238+08:00",
+      "physicalDevicesOperated": 0,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-31T14:20:17.774344+08:00"
+    },
+    "tv-release": {
+      "startedAt": "2026-10-31T14:20:17.774958+08:00",
+      "physicalDevicesOperated": 0,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-31T14:20:46.424090+08:00"
+    }
+  },
+  "buildOrchestrationIssue": {
+    "reason": "Missing aliased TV simulator command manifest after mobile builds; no TV build attempted until corrected",
+    "productCompileFailure": false,
+    "mobileBuildsNotRepeated": true
+  },
+  "packages": {
+    "mobile": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-31T14:16:46.349977+08:00",
+      "frozenAt": "2026-10-31T14:21:14.342414+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 445,
+      "mainSHA256": "121ac39c83117979c5a6f4b1d890ca867a8c7cbca225cc56a004cbd5eb2857dd",
+      "debugDylibSHA256": "882bd5f4126980b6668d83d49b973325b88554e011c4812a54a4b65ee78a8079",
+      "signedMachOCount": 30,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false,
+      "copyMethod": "cp -cpR clone requested; hashes and signatures verified independently",
+      "sourceManifestSHA256": "4e97edd37cb4b0945d07ac7b11ca00c5b9e6f015b57eefcb1ace689695e0ef8e",
+      "currentSourceMatched": true
+    },
+    "tv": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-31T12:36:33.579791+08:00",
+      "frozenAt": "2026-10-31T12:37:32.953390+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 444,
+      "mainSHA256": "baf21f8bd1dc412cdd55140b840474d15afe60d4f01b1349e23c864d8a223cfc",
+      "debugDylibSHA256": "41c0e4cc8218d0eed04ed7e401e0a91290d78d6acc4c0a163016e305e3c1e0c5",
+      "signedMachOCount": 27,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false,
+      "copyMethod": "cp -cpR clone requested; hashes and signatures verified independently",
+      "uiValidationStatus": "Known focus failures retained; compile/signature candidate only, not a passed UI regression",
+      "currentSourceMatched": false,
+      "olderPackageRetained": true,
+      "latestBuildAttempt": {
+        "sourceInputCount": 445,
+        "configuration": "Debug",
+        "exitCode": 65,
+        "reason": "No valid tvOS development provisioning profile",
+        "recordedAt": "2026-10-31T14:11:46.992140+08:00",
+        "currentSourceMatched": false,
+        "sourceManifestSHA256": "77f68039fd9cd627bb8f3ac70a93c2fdfd7719877fe033541527fd7896ab0008"
+      },
+      "currentSourceAssessment": {
+        "sourceInputCount": 445,
+        "sourceManifestSHA256": "4e97edd37cb4b0945d07ac7b11ca00c5b9e6f015b57eefcb1ace689695e0ef8e",
+        "currentSourceMatched": false,
+        "signedBuildRetriedThisBatch": false,
+        "unsignedDebugAndReleaseCompilePassed": true,
+        "priorProfileBlockRetained": true,
+        "recordedAt": "2026-10-31T14:21:14.427830+08:00"
+      }
+    }
+  },
+  "physicalDevicesOperated": 0,
+  "NASCommands": 0,
+  "simulatorsCreated": 0,
+  "newTests": 0,
+  "runtimeVoiceOverVerified": false,
+  "newVisualOrUITestEvidence": false,
+  "priorFocusEvidence": "2026-10-31-native-focus-event-order-and-memory.json",
+  "priorFocusEvidenceSourceIsBeforeThisMetadataOnlyChange": true,
+  "TVNormalSigningPriorBlockNotRetried": true,
+  "playbackPipelineChanged": false,
+  "newPlaybackMatrixP": 0
+}

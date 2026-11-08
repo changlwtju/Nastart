@@ -1,0 +1,59 @@
+{
+  "installation": {
+    "startedAtUTC": "2026-10-22T22:25:52.037765+00:00",
+    "stage": "installed; launch requested; actual screenshot review required",
+    "packageVerified": true,
+    "targetLiveVerified": true,
+    "preferencesSavedBeforeInstall": true,
+    "installDispatchAttempted": true,
+    "installCommandSent": true,
+    "installCompleteObserved": true,
+    "postInstallLookupExists": true,
+    "actualForegroundUIVerified": false,
+    "newPairingAttempted": false,
+    "networkOrVPNChanged": false,
+    "WDARequiredForInstallation": false,
+    "sourceDiffSHA256": "e65a8da17ea0db5e1a22d374c2bb79c5d5d8dd4eb4acb4a5fedd8f3057cbaa16",
+    "binaries": {
+      "Nastart": "f023ef06bad5184423c19d2903907c4c8564bbd2ea346c9bf9f8eaa12f04d658",
+      "Nastart.debug.dylib": "cfb2fe9d031daf8149556bc16109e872f0ffe452cd0990be7c838ee8b7a109e8",
+      "Frameworks/KSPlayer.framework/KSPlayer": "2d184d29e046c4790084a789cd259014b9853c1216218b10f1326a81517d5be2"
+    },
+    "ipaSHA256": "45d213bafb07a70a3543980ff961388a817172e7e9176185f67c76fb2b1eaf9b",
+    "model": "iPhone19,7",
+    "system": "27.0",
+    "connection": "NETWORK",
+    "existingEscrowUsedForContainerRequest": true,
+    "installedAtUTC": "2026-10-22T22:26:05.300444+00:00",
+    "preferences": {
+      "beforeKeys": 25,
+      "afterKeys": 25,
+      "sameKeys": true,
+      "changedValues": 0,
+      "allNonDiagnosticPreferencesEqual": true
+    },
+    "RSDTargetVerified": true,
+    "normalLaunchRequested": true,
+    "requestedEnvironment": {},
+    "requestedArguments": [],
+    "actualScreenCaptured": true,
+    "preferencesAfterLaunch": {
+      "beforeKeys": 25,
+      "afterKeys": 25,
+      "sameKeys": true,
+      "changedValues": 0,
+      "allNonDiagnosticPreferencesEqual": true
+    },
+    "finishedAtUTC": "2026-10-22T22:26:18.345137+00:00"
+  },
+  "actualUIReview": {
+    "actualNativeScreenshotViewed": true,
+    "normalLaunchpadVisible": true,
+    "NASOnlineVisible": true,
+    "WiFiIconVisible": true,
+    "noPlayerOrPiPVisible": true,
+    "installedAtUTC": "2026-10-22T22:26:05.300444+00:00",
+    "IPA": "45d213bafb07a70a3543980ff961388a817172e7e9176185f67c76fb2b1eaf9b",
+    "all25PreferencesPreservedBeforeAfterAndLaunch": true
+  }
+}

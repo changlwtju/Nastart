@@ -1,0 +1,611 @@
+{
+  "recordedAt": "2026-10-13T22:44:52.099435+08:00",
+  "scope": "authenticated Jellyfin playback context; limited physical regression, not complete performance acceptance",
+  "package": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "8979d86352bc56776afc5ca9f841e45bdac2dd81016e0e8c9bfae5e39ad3ddaf",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "binaryBuildTime": "2026-10-13T21:54:50.998797+08:00",
+    "binaries": {
+      "Nastart": "b2c489b21ce9915aeb1a311d593a16d2919320e4420f1e23c9aeb41f9f78c689",
+      "Nastart.debug.dylib": "b4b7f8bd2f88b8a4a1524701ba5cd710997f0bc73004e40b06f7366acb70853d",
+      "Frameworks/KSPlayer.framework/KSPlayer": "855ae3045eec387043efa3253820de1316fc38435bbc17eee38e2d7d5ed0163d"
+    },
+    "signatureVerified": true,
+    "individuallyVerifiedLibraries": 29,
+    "checkedInputs": 173,
+    "profileExpirationUTC": "2026-10-17T22:23:40",
+    "tests": {
+      "executed": 370,
+      "skipped": 2,
+      "failures": 0,
+      "runThisTurn": true
+    },
+    "preflight": {
+      "passed": 15,
+      "runThisTurn": true
+    },
+    "sourceInputManifestSHA256": "160cda693c722830d43c764f88e9f649ce0d22d2dcb1cdc2644ed8f6c1604f9a",
+    "frozenAt": "2026-10-13T21:56:30.993670+08:00",
+    "linkageVerified": true
+  },
+  "devices": {
+    "iphone13": {
+      "installedAt": "2026-10-13T21:56:55.847396+08:00",
+      "installCompleteObserved": true,
+      "signatureVerified": true,
+      "currentPackageNormalUIVerified": true,
+      "finalAudit": {
+        "at": "2026-10-13T22:41:17.591561+08:00",
+        "model": "iPhone14,5",
+        "system": "16.3.1",
+        "connection": "USB",
+        "sourceDiffSHA256": "8979d86352bc56776afc5ca9f841e45bdac2dd81016e0e8c9bfae5e39ad3ddaf",
+        "latestPackage": {
+          "Nastart": "b2c489b21ce9915aeb1a311d593a16d2919320e4420f1e23c9aeb41f9f78c689",
+          "Nastart.debug.dylib": "b4b7f8bd2f88b8a4a1524701ba5cd710997f0bc73004e40b06f7366acb70853d",
+          "Frameworks/KSPlayer.framework/KSPlayer": "855ae3045eec387043efa3253820de1316fc38435bbc17eee38e2d7d5ed0163d"
+        },
+        "nonBookmarkPreferenceKeys": 24,
+        "nonBookmarkPreferencesExactlyUnchanged": true,
+        "changedBookmarksCount": 6,
+        "originalS03TrackChanges": {
+          "file": {},
+          "Jellyfin": {}
+        },
+        "originalS03FileAndJellyfinTracksUnchanged": true,
+        "normalEmptyEnvironment": true,
+        "NASNormal": true,
+        "playerClosed": true,
+        "finalHomeScreenshotReviewed": true,
+        "WDAIdleSeconds": 10,
+        "WDAAnimationCoolOffSeconds": 2,
+        "crashInventoryNotCheckedThisTurn": false,
+        "baselineAppCrashRecordedThisTurn": false,
+        "reviewedFinalCapture": "final-home-after-cellular",
+        "historicalIPhone13NetworkCrashUnresolved": true,
+        "candidateCrashInventoryDelta": {
+          "Nastart": 0,
+          "WebDriverAgent": 0,
+          "JetsamEvent": 0
+        },
+        "performanceAccepted": false,
+        "fullSubtitleAudioHDRAccepted": false
+      },
+      "authErrorUnion": {
+        "device": "iphone13",
+        "window": "union of retained latest-install snapshots; rolling final preferences alone are incomplete",
+        "api119Count": 2,
+        "api119Events": [
+          {
+            "at": "2026-10-13T22:02:14.547984+08:00",
+            "message": "diagnostics.files.folder_response"
+          },
+          {
+            "at": "2026-10-13T22:02:14.586453+08:00",
+            "message": "diagnostics.files.folder_response"
+          }
+        ],
+        "logoutCount": 0,
+        "old119RootCauseResolved": false
+      },
+      "playbackWindows": [
+        {
+          "label": "wifi-phase-s01-file-head",
+          "sampleFamily": "S01",
+          "entry": "device file",
+          "startupAction": "从头播放",
+          "networkIntent": "WiFi no shaping",
+          "firstFrames": [
+            {
+              "secondsFromOuterTouch": 1.77885,
+              "reportedInternalTapToFirstFrameMs": 979,
+              "meaning": "engine first-frame boundary, not first visible movie frame"
+            }
+          ],
+          "URLMetricsCount": 2,
+          "URLMetricsCellularYes": 0,
+          "URLMetricsCellularNo": 2,
+          "seekEngineRecoveryMs": [],
+          "seekVisibleFrameRecoveryAccepted": false,
+          "actualImagesReviewed": true,
+          "actualObservation": "t3/10/30 and ordinary exit actually reviewed, sparse captures only",
+          "ordinaryExitCaptured": true,
+          "performanceAccepted": false,
+          "fullSubtitleAudioHDRAccepted": false,
+          "resumeVerified": false
+        },
+        {
+          "label": "wifi-phase-s01-jf-head",
+          "sampleFamily": "S01",
+          "entry": "Jellyfin",
+          "startupAction": "在 Nastart 中播放",
+          "networkIntent": "WiFi no shaping",
+          "firstFrames": [
+            {
+              "secondsFromOuterTouch": 1.085812,
+              "reportedInternalTapToFirstFrameMs": 565,
+              "meaning": "engine first-frame boundary, not first visible movie frame"
+            }
+          ],
+          "URLMetricsCount": 2,
+          "URLMetricsCellularYes": 0,
+          "URLMetricsCellularNo": 2,
+          "seekEngineRecoveryMs": [],
+          "seekVisibleFrameRecoveryAccepted": false,
+          "actualImagesReviewed": true,
+          "actualObservation": "t3/10/30 and ordinary exit actually reviewed, sparse captures only",
+          "ordinaryExitCaptured": true,
+          "performanceAccepted": false,
+          "fullSubtitleAudioHDRAccepted": false,
+          "resumeVerified": false
+        },
+        {
+          "label": "wifi-context-l2-s03-jf-head",
+          "sampleFamily": "S03",
+          "entry": "Jellyfin",
+          "startupAction": "在 Nastart 中播放",
+          "networkIntent": "WiFi no shaping",
+          "firstFrames": [
+            {
+              "secondsFromOuterTouch": 1.660771,
+              "reportedInternalTapToFirstFrameMs": 1123,
+              "meaning": "engine first-frame boundary, not first visible movie frame"
+            },
+            {
+              "secondsFromOuterTouch": 23.817102,
+              "reportedInternalTapToFirstFrameMs": 11522,
+              "meaning": "engine first-frame boundary, not first visible movie frame"
+            }
+          ],
+          "URLMetricsCount": 15,
+          "URLMetricsCellularYes": 0,
+          "URLMetricsCellularNo": 15,
+          "seekEngineRecoveryMs": [],
+          "seekVisibleFrameRecoveryAccepted": false,
+          "actualImagesReviewed": true,
+          "actualObservation": "not yet visually inspected",
+          "ordinaryExitCaptured": true,
+          "performanceAccepted": false,
+          "fullSubtitleAudioHDRAccepted": false,
+          "resumeVerified": false
+        },
+        {
+          "label": "wifi-context-l2-s08-jf-head",
+          "sampleFamily": "S08",
+          "entry": "Jellyfin",
+          "startupAction": "在 Nastart 中播放",
+          "networkIntent": "WiFi no shaping",
+          "firstFrames": [
+            {
+              "secondsFromOuterTouch": 3.710507,
+              "reportedInternalTapToFirstFrameMs": 3141,
+              "meaning": "engine first-frame boundary, not first visible movie frame"
+            }
+          ],
+          "URLMetricsCount": 2,
+          "URLMetricsCellularYes": 0,
+          "URLMetricsCellularNo": 2,
+          "seekEngineRecoveryMs": [],
+          "seekVisibleFrameRecoveryAccepted": false,
+          "actualImagesReviewed": true,
+          "actualObservation": "not yet visually inspected",
+          "ordinaryExitCaptured": true,
+          "performanceAccepted": false,
+          "fullSubtitleAudioHDRAccepted": false,
+          "resumeVerified": false
+        },
+        {
+          "label": "wifi-context-l2-s11-jf-head",
+          "sampleFamily": "S11",
+          "entry": "Jellyfin",
+          "startupAction": "在 Nastart 中播放",
+          "networkIntent": "WiFi no shaping",
+          "firstFrames": [
+            {
+              "secondsFromOuterTouch": 1.55825,
+              "reportedInternalTapToFirstFrameMs": 1019,
+              "meaning": "engine first-frame boundary, not first visible movie frame"
+            }
+          ],
+          "URLMetricsCount": 3,
+          "URLMetricsCellularYes": 0,
+          "URLMetricsCellularNo": 3,
+          "seekEngineRecoveryMs": [],
+          "seekVisibleFrameRecoveryAccepted": false,
+          "actualImagesReviewed": true,
+          "actualObservation": "not yet visually inspected",
+          "ordinaryExitCaptured": true,
+          "performanceAccepted": false,
+          "fullSubtitleAudioHDRAccepted": false,
+          "resumeVerified": false
+        },
+        {
+          "label": "wifi-context-l2-s18-jf-head",
+          "sampleFamily": "S18",
+          "entry": "Jellyfin",
+          "startupAction": "从头播放",
+          "networkIntent": "WiFi no shaping",
+          "firstFrames": [
+            {
+              "secondsFromOuterTouch": 3.14423,
+              "reportedInternalTapToFirstFrameMs": 2585,
+              "meaning": "engine first-frame boundary, not first visible movie frame"
+            }
+          ],
+          "URLMetricsCount": 4,
+          "URLMetricsCellularYes": 0,
+          "URLMetricsCellularNo": 4,
+          "seekEngineRecoveryMs": [],
+          "seekVisibleFrameRecoveryAccepted": false,
+          "actualImagesReviewed": true,
+          "actualObservation": "not yet visually inspected",
+          "ordinaryExitCaptured": true,
+          "performanceAccepted": false,
+          "fullSubtitleAudioHDRAccepted": false,
+          "resumeVerified": false
+        },
+        {
+          "label": "cellular-context-s11-jf-head",
+          "sampleFamily": "S11",
+          "entry": "Jellyfin",
+          "startupAction": "在 Nastart 中播放",
+          "networkIntent": "real cellular WiFi off; no shaping",
+          "firstFrames": [
+            {
+              "secondsFromOuterTouch": 6.124698,
+              "reportedInternalTapToFirstFrameMs": 1569,
+              "meaning": "engine first-frame boundary, not first visible movie frame"
+            }
+          ],
+          "URLMetricsCount": 11,
+          "URLMetricsCellularYes": 11,
+          "URLMetricsCellularNo": 0,
+          "seekEngineRecoveryMs": [
+            12396,
+            14249
+          ],
+          "seekVisibleFrameRecoveryAccepted": false,
+          "actualImagesReviewed": true,
+          "actualObservation": "t10 black/loading; actual t15 WB title visible; sparse bound only",
+          "ordinaryExitCaptured": true,
+          "performanceAccepted": false,
+          "fullSubtitleAudioHDRAccepted": false,
+          "resumeVerified": false
+        },
+        {
+          "label": "cellular-context-s03-jf-head",
+          "sampleFamily": "S03",
+          "entry": "Jellyfin",
+          "startupAction": "在 Nastart 中播放",
+          "networkIntent": "real cellular WiFi off; no shaping",
+          "firstFrames": [
+            {
+              "secondsFromOuterTouch": 6.476497,
+              "reportedInternalTapToFirstFrameMs": 1898,
+              "meaning": "engine first-frame boundary, not first visible movie frame"
+            },
+            {
+              "secondsFromOuterTouch": 30.139821,
+              "reportedInternalTapToFirstFrameMs": 11439,
+              "meaning": "engine first-frame boundary, not first visible movie frame"
+            }
+          ],
+          "URLMetricsCount": 26,
+          "URLMetricsCellularYes": 26,
+          "URLMetricsCellularNo": 0,
+          "seekEngineRecoveryMs": [],
+          "seekVisibleFrameRecoveryAccepted": false,
+          "actualImagesReviewed": true,
+          "actualObservation": "t3 preparing; t10 clouds/stars and t15 unmistakable Paramount image, t30 title/t60 film subtitles; sparse bound only",
+          "ordinaryExitCaptured": true,
+          "performanceAccepted": false,
+          "fullSubtitleAudioHDRAccepted": false,
+          "resumeVerified": false
+        },
+        {
+          "label": "cellular-context-s03-jf-resume-seek",
+          "sampleFamily": "S03",
+          "entry": "Jellyfin",
+          "startupAction": "在 Nastart 中播放",
+          "networkIntent": "real cellular WiFi off; no shaping",
+          "firstFrames": [
+            {
+              "secondsFromOuterTouch": 6.533878,
+              "reportedInternalTapToFirstFrameMs": 2027,
+              "meaning": "engine first-frame boundary, not first visible movie frame"
+            }
+          ],
+          "URLMetricsCount": 16,
+          "URLMetricsCellularYes": 16,
+          "URLMetricsCellularNo": 0,
+          "seekEngineRecoveryMs": [
+            8163,
+            6943
+          ],
+          "seekVisibleFrameRecoveryAccepted": false,
+          "actualImagesReviewed": true,
+          "actualObservation": "t3 preparing; t10 clouds/stars, t30 title and video later; sparse captures reviewed",
+          "ordinaryExitCaptured": true,
+          "performanceAccepted": false,
+          "fullSubtitleAudioHDRAccepted": false,
+          "resumeVerified": false
+        }
+      ],
+      "contextProofSummary": {
+        "latestInstallFilter": true,
+        "authenticatedFallbackDiagnosticRows": 24,
+        "publicReportHTTPAcceptedRows": 30,
+        "reportFailureRows": 0,
+        "durableServerResumeVerified": false
+      }
+    },
+    "ipad": {
+      "installedAt": "2026-10-13T21:56:49.564094+08:00",
+      "installCompleteObserved": true,
+      "signatureVerified": true,
+      "currentPackageNormalUIVerified": true,
+      "finalAudit": {
+        "at": "2026-10-13T22:41:18.404303+08:00",
+        "model": "iPad12,1",
+        "system": "18.3.1",
+        "connection": "USB",
+        "sourceDiffSHA256": "8979d86352bc56776afc5ca9f841e45bdac2dd81016e0e8c9bfae5e39ad3ddaf",
+        "latestPackage": {
+          "Nastart": "b2c489b21ce9915aeb1a311d593a16d2919320e4420f1e23c9aeb41f9f78c689",
+          "Nastart.debug.dylib": "b4b7f8bd2f88b8a4a1524701ba5cd710997f0bc73004e40b06f7366acb70853d",
+          "Frameworks/KSPlayer.framework/KSPlayer": "855ae3045eec387043efa3253820de1316fc38435bbc17eee38e2d7d5ed0163d"
+        },
+        "nonBookmarkPreferenceKeys": 17,
+        "nonBookmarkPreferencesExactlyUnchanged": true,
+        "changedBookmarksCount": 6,
+        "originalS03TrackChanges": {
+          "file": {},
+          "Jellyfin": {}
+        },
+        "originalS03FileAndJellyfinTracksUnchanged": true,
+        "normalEmptyEnvironment": true,
+        "NASNormal": true,
+        "playerClosed": true,
+        "finalHomeScreenshotReviewed": true,
+        "WDAIdleSeconds": 10,
+        "WDAAnimationCoolOffSeconds": 2,
+        "crashInventoryNotCheckedThisTurn": false,
+        "baselineAppCrashRecordedThisTurn": false,
+        "reviewedFinalCapture": "final-restored-home",
+        "historicalIPhone13NetworkCrashUnresolved": true,
+        "candidateCrashInventoryDelta": {
+          "Nastart": 0,
+          "WebDriverAgent": 0,
+          "JetsamEvent": 0
+        },
+        "performanceAccepted": false,
+        "fullSubtitleAudioHDRAccepted": false
+      },
+      "authErrorUnion": {
+        "device": "ipad",
+        "window": "union of retained latest-install snapshots; rolling final preferences alone are incomplete",
+        "api119Count": 0,
+        "api119Events": [],
+        "logoutCount": 0,
+        "old119RootCauseResolved": false
+      },
+      "playbackWindows": [
+        {
+          "label": "wifi-phase-s01-file-head",
+          "sampleFamily": "S01",
+          "entry": "device file",
+          "startupAction": "从头播放",
+          "networkIntent": "WiFi no shaping",
+          "firstFrames": [
+            {
+              "secondsFromOuterTouch": 2.419119,
+              "reportedInternalTapToFirstFrameMs": 1720,
+              "meaning": "engine first-frame boundary, not first visible movie frame"
+            }
+          ],
+          "URLMetricsCount": 2,
+          "URLMetricsCellularYes": 0,
+          "URLMetricsCellularNo": 2,
+          "seekEngineRecoveryMs": [],
+          "seekVisibleFrameRecoveryAccepted": false,
+          "actualImagesReviewed": true,
+          "actualObservation": "t3/10/30 and ordinary exit actually reviewed, sparse captures only",
+          "ordinaryExitCaptured": true,
+          "performanceAccepted": false,
+          "fullSubtitleAudioHDRAccepted": false,
+          "resumeVerified": false
+        },
+        {
+          "label": "wifi-phase-s01-jf-head",
+          "sampleFamily": "S01",
+          "entry": "Jellyfin",
+          "startupAction": "在 Nastart 中播放",
+          "networkIntent": "WiFi no shaping",
+          "firstFrames": [
+            {
+              "secondsFromOuterTouch": 1.728777,
+              "reportedInternalTapToFirstFrameMs": 828,
+              "meaning": "engine first-frame boundary, not first visible movie frame"
+            }
+          ],
+          "URLMetricsCount": 2,
+          "URLMetricsCellularYes": 0,
+          "URLMetricsCellularNo": 2,
+          "seekEngineRecoveryMs": [],
+          "seekVisibleFrameRecoveryAccepted": false,
+          "actualImagesReviewed": true,
+          "actualObservation": "t3/10/30 and ordinary exit actually reviewed, sparse captures only",
+          "ordinaryExitCaptured": true,
+          "performanceAccepted": false,
+          "fullSubtitleAudioHDRAccepted": false,
+          "resumeVerified": false
+        },
+        {
+          "label": "wifi-context-l2-s03-jf-head",
+          "sampleFamily": "S03",
+          "entry": "Jellyfin",
+          "startupAction": "在 Nastart 中播放",
+          "networkIntent": "WiFi no shaping",
+          "firstFrames": [
+            {
+              "secondsFromOuterTouch": 3.032827,
+              "reportedInternalTapToFirstFrameMs": 2275,
+              "meaning": "engine first-frame boundary, not first visible movie frame"
+            },
+            {
+              "secondsFromOuterTouch": 17.643004,
+              "reportedInternalTapToFirstFrameMs": 9037,
+              "meaning": "engine first-frame boundary, not first visible movie frame"
+            }
+          ],
+          "URLMetricsCount": 12,
+          "URLMetricsCellularYes": 0,
+          "URLMetricsCellularNo": 12,
+          "seekEngineRecoveryMs": [],
+          "seekVisibleFrameRecoveryAccepted": false,
+          "actualImagesReviewed": true,
+          "actualObservation": "not yet visually inspected",
+          "ordinaryExitCaptured": true,
+          "performanceAccepted": false,
+          "fullSubtitleAudioHDRAccepted": false,
+          "resumeVerified": false
+        },
+        {
+          "label": "wifi-context-l2-s08-jf-head",
+          "sampleFamily": "S08",
+          "entry": "Jellyfin",
+          "startupAction": "在 Nastart 中播放",
+          "networkIntent": "WiFi no shaping",
+          "firstFrames": [
+            {
+              "secondsFromOuterTouch": 5.548649,
+              "reportedInternalTapToFirstFrameMs": 4727,
+              "meaning": "engine first-frame boundary, not first visible movie frame"
+            }
+          ],
+          "URLMetricsCount": 2,
+          "URLMetricsCellularYes": 0,
+          "URLMetricsCellularNo": 2,
+          "seekEngineRecoveryMs": [],
+          "seekVisibleFrameRecoveryAccepted": false,
+          "actualImagesReviewed": true,
+          "actualObservation": "not yet visually inspected",
+          "ordinaryExitCaptured": true,
+          "performanceAccepted": false,
+          "fullSubtitleAudioHDRAccepted": false,
+          "resumeVerified": false
+        },
+        {
+          "label": "wifi-context-l2-s11-jf-head",
+          "sampleFamily": "S11",
+          "entry": "Jellyfin",
+          "startupAction": "在 Nastart 中播放",
+          "networkIntent": "WiFi no shaping",
+          "firstFrames": [
+            {
+              "secondsFromOuterTouch": 2.765415,
+              "reportedInternalTapToFirstFrameMs": 1941,
+              "meaning": "engine first-frame boundary, not first visible movie frame"
+            }
+          ],
+          "URLMetricsCount": 3,
+          "URLMetricsCellularYes": 0,
+          "URLMetricsCellularNo": 3,
+          "seekEngineRecoveryMs": [],
+          "seekVisibleFrameRecoveryAccepted": false,
+          "actualImagesReviewed": true,
+          "actualObservation": "not yet visually inspected",
+          "ordinaryExitCaptured": true,
+          "performanceAccepted": false,
+          "fullSubtitleAudioHDRAccepted": false,
+          "resumeVerified": false
+        },
+        {
+          "label": "wifi-context-l2-s18-jf-head",
+          "sampleFamily": "S18",
+          "entry": "Jellyfin",
+          "startupAction": "在 Nastart 中播放",
+          "networkIntent": "WiFi no shaping",
+          "firstFrames": [
+            {
+              "secondsFromOuterTouch": 4.097979,
+              "reportedInternalTapToFirstFrameMs": 3260,
+              "meaning": "engine first-frame boundary, not first visible movie frame"
+            }
+          ],
+          "URLMetricsCount": 4,
+          "URLMetricsCellularYes": 0,
+          "URLMetricsCellularNo": 4,
+          "seekEngineRecoveryMs": [],
+          "seekVisibleFrameRecoveryAccepted": false,
+          "actualImagesReviewed": true,
+          "actualObservation": "not yet visually inspected",
+          "ordinaryExitCaptured": true,
+          "performanceAccepted": false,
+          "fullSubtitleAudioHDRAccepted": false,
+          "resumeVerified": false
+        }
+      ],
+      "contextProofSummary": {
+        "latestInstallFilter": true,
+        "authenticatedFallbackDiagnosticRows": 0,
+        "publicReportHTTPAcceptedRows": 0,
+        "reportFailureRows": 0,
+        "durableServerResumeVerified": false
+      }
+    },
+    "iphone18": {
+      "model": "iPhone19,7",
+      "system": "27.0",
+      "connection": "NETWORK",
+      "installationStartedAt": "2026-10-13T22:39:48.159041+08:00",
+      "installation": "BLOCKED before observed InstallComplete",
+      "failureType": "ConnectionResetError",
+      "userReauthorized": true,
+      "userDeferred": false,
+      "signatureVerified": true,
+      "librariesVerified": 29,
+      "newPairingAttempted": false,
+      "preservesContainer": true,
+      "installationServiceAttempted": true,
+      "InstallCompleteObserved": false,
+      "normalLaunch": "not attempted; latest installation incomplete",
+      "actualForegroundUIVerified": false,
+      "currentPreferencesSavedBeforeInstall": false,
+      "faultDiagnosisSavedBeforeInstall": true,
+      "lastActuallyInstalledSourceDiffSHA256": "f58e2171f7631e4bc30086cf9cae506af47002132f80fdc1db30f1b0dbd8f703",
+      "lastActuallyInstalledAt": "2026-10-13T20:34:43+08:00",
+      "latestPackageRegressionCompleted": false,
+      "MacNetworkConfigurationChanged": false,
+      "normalUIOfOldPackagePreviouslyVerified": false,
+      "failureStage": "AFC staging directory creation before IPA upload and Install command",
+      "primaryFailureType": "ConnectionTerminatedError",
+      "cleanupFailureType": "ConnectionResetError",
+      "packageUploaded": false,
+      "InstallCommandSent": false
+    }
+  },
+  "priorCandidateFailuresRetained": [
+    "8864 original preparation failure, missing initial cancellation detail",
+    "1cc4 S03 cellular visible playback, S11 two actual network-generation cancellations",
+    "028f S03 still cancelled after path settling; close observation tool failure retained",
+    "147d S11 still cancelled; native NWPath equality proved actual different paths"
+  ],
+  "performanceAccepted": false,
+  "resumeVerified": false,
+  "credentialsOrPrivateOriginsExported": false,
+  "openItems": [
+    "cellular seek recovery 6.943–14.249 seconds with observed spinners; no speed acceptance",
+    "cold cellular identity when no verified primary RAM identity; fail closed",
+    "cold resume with exact matching media-source identity; fresh S03 detail only offered ordinary playback",
+    "two current-package iPhone13 119 responses retained despite final rolling preferences showing zero",
+    "iPhone18 wireless service/installation/normal UI/WDA/automatic tunnel",
+    "iPad TS02 hardware-versus-software decode and seek ownership",
+    "historical iPhone13 Network SIGTRAP and physical memory stress",
+    "growing TS append/tail/duration/replacement and cold resume",
+    "rotation transition/full subtitle/audio/HDR/PiP",
+    "same-condition competitor continuous displacement/frame timing; full L2/L3 and all existing PX/UX/CB/Main backlog",
+    "S19 128.8 GB deep HLS/startup/resume; weak RF/external WiFi/ten-minute/MTP/19x4 matrix"
+  ]
+}

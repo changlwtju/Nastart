@@ -1,0 +1,793 @@
+{
+  "recordedAt": "2026-10-13T07:49:39.666356+08:00",
+  "status": "iPad paused image FAILED; actual hardware path confirmed; root cause unresolved",
+  "sourceEditsThisTurn": [
+    "DEBUG-only bounded video packet/frame/flush metadata in FFmpegDecode.swift, final safe numerical NSLog output; no decoding/seek/transport/buffer strategy change"
+  ],
+  "package": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "ac8f176e1d138ab418055d894cddd7d6858dc95d3059b3ed1878a24cc78bb1b1",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "binaryBuildTime": "2026-10-13T07:29:18.221360+08:00",
+    "binaries": {
+      "Nastart": "7cc99e076d3a49293fe664c4d09ab186986bbd8622f661e5ddde39734d5a5370",
+      "Nastart.debug.dylib": "0e2bae07cc4f8444b6ba7249cea33ae02c53ab8f350bb175ef1b0bab64bae4c2",
+      "Frameworks/KSPlayer.framework/KSPlayer": "6be1f6780b3edd377d2ef6ee2e144c9213b831f45969eedbb7f7601b93067559"
+    },
+    "checkedInputs": 173,
+    "individuallyVerifiedLibraries": 29,
+    "signatureVerified": true,
+    "linkageVerified": true,
+    "tests": {
+      "executed": 348,
+      "skipped": 2,
+      "failures": 0,
+      "runThisTurn": true
+    },
+    "preflight": {
+      "passed": 15,
+      "runThisTurn": true
+    }
+  },
+  "cases": [
+    {
+      "device": "ipad",
+      "sample": "TS02",
+      "sourceDiffSHA256": "ac8f176e1d138ab418055d894cddd7d6858dc95d3059b3ed1878a24cc78bb1b1",
+      "entry": "device files",
+      "dragCount": 4,
+      "dragRatios": [
+        0.5,
+        0.85,
+        0.25,
+        0.5
+      ],
+      "dragRequestStartIntervals": [
+        1.2967309951782227,
+        2.0161619186401367,
+        1.780911922454834
+      ],
+      "buttonCount": 8,
+      "buttonRequestStartIntervals": [
+        0.8835949897766113,
+        0.8472731113433838,
+        1.013401985168457,
+        0.8492410182952881,
+        0.899338960647583,
+        0.8777379989624023,
+        0.8855750560760498
+      ],
+      "resumedWindowRequestedSeconds": 90,
+      "normalExit": true,
+      "flushRecords": 24,
+      "sampledPacketRecords": 153,
+      "sampledFrameRecords": 273,
+      "sampledSendResults": {
+        "0": 93,
+        "-1313558101": 60
+      },
+      "sampledFrameFormats": {
+        "158": 273
+      },
+      "actualVideoToolboxOutputConfirmed": true,
+      "sampledCorruptFlagCount": 0,
+      "sampledDecodeErrorFlagCounts": {
+        "0": 273
+      },
+      "traceIsBoundedNotComplete": true,
+      "startupGenerationNotSeekIdentity": [
+        "0"
+      ],
+      "dragPausedLargeBlocksVisible": false,
+      "buttonPausedLargeBlocksVisible": true,
+      "fullFrameAccuracyAccepted": false,
+      "rootCauseConfirmed": false,
+      "events": [
+        {
+          "event": "seek_started",
+          "date": "2026-10-13T07:35:04.632312+08:00",
+          "fields": {
+            "seekTargetSeconds": "888.4306713025334"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "date": "2026-10-13T07:35:05.637653+08:00",
+          "fields": {
+            "completed": "true"
+          }
+        },
+        {
+          "event": "video_frame_submitted",
+          "date": "2026-10-13T07:35:05.767036+08:00",
+          "fields": {
+            "controlSeconds": "888.4306666666666",
+            "framePTSSeconds": "890.093"
+          }
+        },
+        {
+          "event": "seek_started",
+          "date": "2026-10-13T07:35:06.500522+08:00",
+          "fields": {
+            "seekTargetSeconds": "1528.9733135230458"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "date": "2026-10-13T07:35:07.182103+08:00",
+          "fields": {
+            "completed": "true"
+          }
+        },
+        {
+          "event": "video_frame_submitted",
+          "date": "2026-10-13T07:35:07.765883+08:00",
+          "fields": {
+            "controlSeconds": "1528.9733134444446",
+            "framePTSSeconds": "1532.093"
+          }
+        },
+        {
+          "event": "seek_started",
+          "date": "2026-10-13T07:35:08.108769+08:00",
+          "fields": {
+            "seekTargetSeconds": "461.07170400773015"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "date": "2026-10-13T07:35:08.489721+08:00",
+          "fields": {
+            "completed": "true"
+          }
+        },
+        {
+          "event": "video_frame_submitted",
+          "date": "2026-10-13T07:35:09.018637+08:00",
+          "fields": {
+            "controlSeconds": "461.071704",
+            "framePTSSeconds": "464.093"
+          }
+        },
+        {
+          "event": "seek_started",
+          "date": "2026-10-13T07:35:09.738070+08:00",
+          "fields": {
+            "seekTargetSeconds": "885.4559801411044"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "date": "2026-10-13T07:35:10.261621+08:00",
+          "fields": {
+            "completed": "true"
+          }
+        },
+        {
+          "event": "video_frame_submitted",
+          "date": "2026-10-13T07:35:10.275298+08:00",
+          "fields": {
+            "controlSeconds": "885.4559801111111",
+            "framePTSSeconds": "886.859"
+          }
+        },
+        {
+          "event": "seek_started",
+          "date": "2026-10-13T07:35:41.678477+08:00",
+          "fields": {
+            "seekTargetSeconds": "900.4559801111111"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "date": "2026-10-13T07:35:41.976581+08:00",
+          "fields": {
+            "completed": "true"
+          }
+        },
+        {
+          "event": "video_frame_submitted",
+          "date": "2026-10-13T07:35:42.086396+08:00",
+          "fields": {
+            "controlSeconds": "900.4559801111111",
+            "framePTSSeconds": "902.093"
+          }
+        },
+        {
+          "event": "seek_started",
+          "date": "2026-10-13T07:35:42.497652+08:00",
+          "fields": {
+            "seekTargetSeconds": "915.4559801111111"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "date": "2026-10-13T07:35:42.879130+08:00",
+          "fields": {
+            "completed": "true"
+          }
+        },
+        {
+          "event": "video_frame_submitted",
+          "date": "2026-10-13T07:35:43.361417+08:00",
+          "fields": {
+            "controlSeconds": "915.4559801111111",
+            "framePTSSeconds": "918.093"
+          }
+        },
+        {
+          "event": "seek_started",
+          "date": "2026-10-13T07:35:43.568925+08:00",
+          "fields": {
+            "seekTargetSeconds": "930.4559801111111"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "date": "2026-10-13T07:35:43.938381+08:00",
+          "fields": {
+            "completed": "true"
+          }
+        },
+        {
+          "event": "video_frame_submitted",
+          "date": "2026-10-13T07:35:44.159487+08:00",
+          "fields": {
+            "controlSeconds": "930.4559801111111",
+            "framePTSSeconds": "932.093"
+          }
+        },
+        {
+          "event": "seek_started",
+          "date": "2026-10-13T07:35:44.443788+08:00",
+          "fields": {
+            "seekTargetSeconds": "915.4559801111111"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "date": "2026-10-13T07:35:44.777713+08:00",
+          "fields": {
+            "completed": "true"
+          }
+        },
+        {
+          "event": "video_frame_submitted",
+          "date": "2026-10-13T07:35:45.232115+08:00",
+          "fields": {
+            "controlSeconds": "915.4559801111111",
+            "framePTSSeconds": "918.093"
+          }
+        },
+        {
+          "event": "seek_started",
+          "date": "2026-10-13T07:35:45.279235+08:00",
+          "fields": {
+            "seekTargetSeconds": "900.4559801111111"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "date": "2026-10-13T07:35:45.644126+08:00",
+          "fields": {
+            "completed": "true"
+          }
+        },
+        {
+          "event": "video_frame_submitted",
+          "date": "2026-10-13T07:35:45.734255+08:00",
+          "fields": {
+            "controlSeconds": "900.4559801111111",
+            "framePTSSeconds": "902.093"
+          }
+        },
+        {
+          "event": "seek_started",
+          "date": "2026-10-13T07:35:46.116240+08:00",
+          "fields": {
+            "seekTargetSeconds": "885.4559801111111"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "date": "2026-10-13T07:35:46.554289+08:00",
+          "fields": {
+            "completed": "true"
+          }
+        },
+        {
+          "event": "video_frame_submitted",
+          "date": "2026-10-13T07:35:46.789865+08:00",
+          "fields": {
+            "controlSeconds": "885.4559801111111",
+            "framePTSSeconds": "888.093"
+          }
+        },
+        {
+          "event": "seek_started",
+          "date": "2026-10-13T07:35:47.042991+08:00",
+          "fields": {
+            "seekTargetSeconds": "870.4559801111111"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "date": "2026-10-13T07:35:47.433783+08:00",
+          "fields": {
+            "completed": "true"
+          }
+        },
+        {
+          "event": "video_frame_submitted",
+          "date": "2026-10-13T07:35:47.622838+08:00",
+          "fields": {
+            "controlSeconds": "870.4559801111111",
+            "framePTSSeconds": "872.093"
+          }
+        },
+        {
+          "event": "seek_started",
+          "date": "2026-10-13T07:35:47.893474+08:00",
+          "fields": {
+            "seekTargetSeconds": "885.4559801111111"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "date": "2026-10-13T07:35:48.286639+08:00",
+          "fields": {
+            "completed": "true"
+          }
+        },
+        {
+          "event": "video_frame_submitted",
+          "date": "2026-10-13T07:35:48.342926+08:00",
+          "fields": {
+            "controlSeconds": "885.4559801111111",
+            "framePTSSeconds": "886.859"
+          }
+        }
+      ]
+    },
+    {
+      "device": "iphone13",
+      "sample": "TS02",
+      "sourceDiffSHA256": "ac8f176e1d138ab418055d894cddd7d6858dc95d3059b3ed1878a24cc78bb1b1",
+      "entry": "device files",
+      "dragCount": 4,
+      "dragRatios": [
+        0.5,
+        0.85,
+        0.25,
+        0.5
+      ],
+      "dragRequestStartIntervals": [
+        1.1673579216003418,
+        1.153095006942749,
+        1.1998469829559326
+      ],
+      "buttonCount": 8,
+      "buttonRequestStartIntervals": [
+        0.7354669570922852,
+        0.7023329734802246,
+        0.8113298416137695,
+        0.7574460506439209,
+        0.6890380382537842,
+        0.7140002250671387,
+        0.7060816287994385
+      ],
+      "resumedWindowRequestedSeconds": 90,
+      "normalExit": true,
+      "flushRecords": 24,
+      "sampledPacketRecords": 152,
+      "sampledFrameRecords": 217,
+      "sampledSendResults": {
+        "0": 88,
+        "-1313558101": 64
+      },
+      "sampledFrameFormats": {
+        "158": 217
+      },
+      "actualVideoToolboxOutputConfirmed": true,
+      "sampledCorruptFlagCount": 0,
+      "sampledDecodeErrorFlagCounts": {
+        "0": 217
+      },
+      "traceIsBoundedNotComplete": true,
+      "startupGenerationNotSeekIdentity": [
+        "0"
+      ],
+      "dragPausedLargeBlocksVisible": false,
+      "buttonPausedLargeBlocksVisible": false,
+      "fullFrameAccuracyAccepted": false,
+      "rootCauseConfirmed": false,
+      "events": [
+        {
+          "event": "seek_started",
+          "date": "2026-10-13T07:42:08.417219+08:00",
+          "fields": {
+            "seekTargetSeconds": "889.9050965237758"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "date": "2026-10-13T07:42:09.079118+08:00",
+          "fields": {
+            "completed": "true"
+          }
+        },
+        {
+          "event": "video_frame_submitted",
+          "date": "2026-10-13T07:42:09.373662+08:00",
+          "fields": {
+            "controlSeconds": "889.9050888888889",
+            "framePTSSeconds": "892.093"
+          }
+        },
+        {
+          "event": "seek_started",
+          "date": "2026-10-13T07:42:09.610171+08:00",
+          "fields": {
+            "seekTargetSeconds": "1529.183907324003"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "date": "2026-10-13T07:42:10.034850+08:00",
+          "fields": {
+            "completed": "true"
+          }
+        },
+        {
+          "event": "video_frame_submitted",
+          "date": "2026-10-13T07:42:10.068933+08:00",
+          "fields": {
+            "controlSeconds": "1529.1839072222222",
+            "framePTSSeconds": "1530.593"
+          }
+        },
+        {
+          "event": "seek_started",
+          "date": "2026-10-13T07:42:10.727665+08:00",
+          "fields": {
+            "seekTargetSeconds": "462.3355354280154"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "date": "2026-10-13T07:42:11.245958+08:00",
+          "fields": {
+            "completed": "true"
+          }
+        },
+        {
+          "event": "video_frame_submitted",
+          "date": "2026-10-13T07:42:11.435901+08:00",
+          "fields": {
+            "controlSeconds": "462.3355353333333",
+            "framePTSSeconds": "464.093"
+          }
+        },
+        {
+          "event": "seek_started",
+          "date": "2026-10-13T07:42:11.894958+08:00",
+          "fields": {
+            "seekTargetSeconds": "886.7916928128388"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "date": "2026-10-13T07:42:12.414621+08:00",
+          "fields": {
+            "completed": "true"
+          }
+        },
+        {
+          "event": "video_frame_submitted",
+          "date": "2026-10-13T07:42:13.041397+08:00",
+          "fields": {
+            "controlSeconds": "886.7916927777778",
+            "framePTSSeconds": "890.093"
+          }
+        },
+        {
+          "event": "seek_started",
+          "date": "2026-10-13T07:42:43.363185+08:00",
+          "fields": {
+            "seekTargetSeconds": "901.7916927777778"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "date": "2026-10-13T07:42:43.567192+08:00",
+          "fields": {
+            "completed": "true"
+          }
+        },
+        {
+          "event": "video_frame_submitted",
+          "date": "2026-10-13T07:42:43.845790+08:00",
+          "fields": {
+            "controlSeconds": "901.7916927777778",
+            "framePTSSeconds": "904.093"
+          }
+        },
+        {
+          "event": "seek_started",
+          "date": "2026-10-13T07:42:44.064562+08:00",
+          "fields": {
+            "seekTargetSeconds": "916.7916927777778"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "date": "2026-10-13T07:42:44.348019+08:00",
+          "fields": {
+            "completed": "true"
+          }
+        },
+        {
+          "event": "seek_started",
+          "date": "2026-10-13T07:42:44.781473+08:00",
+          "fields": {
+            "seekTargetSeconds": "931.7916927777778"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "date": "2026-10-13T07:42:45.542352+08:00",
+          "fields": {
+            "completed": "true"
+          }
+        },
+        {
+          "event": "seek_started",
+          "date": "2026-10-13T07:42:45.630949+08:00",
+          "fields": {
+            "seekTargetSeconds": "916.7916927777778"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "date": "2026-10-13T07:42:45.848448+08:00",
+          "fields": {
+            "completed": "true"
+          }
+        },
+        {
+          "event": "seek_started",
+          "date": "2026-10-13T07:42:46.330823+08:00",
+          "fields": {
+            "seekTargetSeconds": "901.7916927777778"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "date": "2026-10-13T07:42:46.622197+08:00",
+          "fields": {
+            "completed": "true"
+          }
+        },
+        {
+          "event": "video_frame_submitted",
+          "date": "2026-10-13T07:42:47.009455+08:00",
+          "fields": {
+            "controlSeconds": "901.7916927777778",
+            "framePTSSeconds": "904.093"
+          }
+        },
+        {
+          "event": "seek_started",
+          "date": "2026-10-13T07:42:47.034516+08:00",
+          "fields": {
+            "seekTargetSeconds": "886.7916927777778"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "date": "2026-10-13T07:42:47.228159+08:00",
+          "fields": {
+            "completed": "true"
+          }
+        },
+        {
+          "event": "seek_started",
+          "date": "2026-10-13T07:42:47.748675+08:00",
+          "fields": {
+            "seekTargetSeconds": "871.7916927777778"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "date": "2026-10-13T07:42:48.030686+08:00",
+          "fields": {
+            "completed": "true"
+          }
+        },
+        {
+          "event": "video_frame_submitted",
+          "date": "2026-10-13T07:42:48.425816+08:00",
+          "fields": {
+            "controlSeconds": "871.7916927777778",
+            "framePTSSeconds": "874.093"
+          }
+        },
+        {
+          "event": "seek_started",
+          "date": "2026-10-13T07:42:48.464959+08:00",
+          "fields": {
+            "seekTargetSeconds": "886.7916927777778"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "date": "2026-10-13T07:42:48.820731+08:00",
+          "fields": {
+            "completed": "true"
+          }
+        },
+        {
+          "event": "video_frame_submitted",
+          "date": "2026-10-13T07:42:49.525423+08:00",
+          "fields": {
+            "controlSeconds": "886.7916927777778",
+            "framePTSSeconds": "890.093"
+          }
+        }
+      ]
+    }
+  ],
+  "iPadSameReportedTargetPTSComparison": {
+    "sameObservedPacketAndFrameMetadata": false,
+    "epochs": {
+      "8": {
+        "packetCount": 12,
+        "frameCount": 17
+      },
+      "24": {
+        "packetCount": 12,
+        "frameCount": 96
+      }
+    },
+    "sourceBytesHashAvailable": false,
+    "actualPixelsEqual": false,
+    "firstClearThenCorruptAtSameSubmittedPTS": 886.859,
+    "decodeErrorsDoNotProveVisualQuality": true,
+    "specificHardwareSessionReferenceRootCauseConfirmed": false,
+    "first12ObservedPacketMetadataEqual": true,
+    "first17ObservedFrameMetadataEqual": true
+  },
+  "nativeExactAttempt": {
+    "sourceDiffSHA256": "35ed118b8950dd091dffbd566c7d56dfc87e40971179354ba980943fa81f44f5",
+    "requestedSeconds": 885.4559801411044,
+    "actualTargetSeconds": 897.3546373410032,
+    "reportedFramePTS": 898.759,
+    "samePositionReferenceAccepted": false,
+    "ordinaryExit": true
+  },
+  "finalDevices": {
+    "iphone13": {
+      "at": "2026-10-13T07:47:34.913754+08:00",
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "connection": "USB",
+      "sourceDiffSHA256": "ac8f176e1d138ab418055d894cddd7d6858dc95d3059b3ed1878a24cc78bb1b1",
+      "latestPackage": {
+        "Nastart": "7cc99e076d3a49293fe664c4d09ab186986bbd8622f661e5ddde39734d5a5370",
+        "Nastart.debug.dylib": "0e2bae07cc4f8444b6ba7249cea33ae02c53ab8f350bb175ef1b0bab64bae4c2",
+        "Frameworks/KSPlayer.framework/KSPlayer": "6be1f6780b3edd377d2ef6ee2e144c9213b831f45969eedbb7f7601b93067559"
+      },
+      "nonBookmarkPreferenceKeys": 24,
+      "nonBookmarkPreferencesExactlyUnchanged": true,
+      "changedBookmarksCount": 1,
+      "originalS03FileAndJellyfinTracksUnchanged": true,
+      "normalEmptyEnvironment": true,
+      "NASNormal": true,
+      "playerClosed": true,
+      "finalHomeScreenshotReviewed": true,
+      "WDAIdleSeconds": 10,
+      "WDAAnimationCoolOffSeconds": 2,
+      "crashInventoryNotCheckedThisTurn": false,
+      "baselineAppCrashRecordedThisTurn": false,
+      "historicalIPhone13NetworkCrashUnresolved": true,
+      "candidateCrashInventoryDelta": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      },
+      "performanceAccepted": false,
+      "fullSubtitleAudioHDRAccepted": false,
+      "originalS03FileAndJellyfinEntireBookmarksUnchanged": true
+    },
+    "ipad": {
+      "at": "2026-10-13T07:47:35.687187+08:00",
+      "model": "iPad12,1",
+      "system": "18.3.1",
+      "connection": "USB",
+      "sourceDiffSHA256": "ac8f176e1d138ab418055d894cddd7d6858dc95d3059b3ed1878a24cc78bb1b1",
+      "latestPackage": {
+        "Nastart": "7cc99e076d3a49293fe664c4d09ab186986bbd8622f661e5ddde39734d5a5370",
+        "Nastart.debug.dylib": "0e2bae07cc4f8444b6ba7249cea33ae02c53ab8f350bb175ef1b0bab64bae4c2",
+        "Frameworks/KSPlayer.framework/KSPlayer": "6be1f6780b3edd377d2ef6ee2e144c9213b831f45969eedbb7f7601b93067559"
+      },
+      "nonBookmarkPreferenceKeys": 17,
+      "nonBookmarkPreferencesExactlyUnchanged": true,
+      "changedBookmarksCount": 1,
+      "originalS03FileAndJellyfinTracksUnchanged": true,
+      "normalEmptyEnvironment": true,
+      "NASNormal": true,
+      "playerClosed": true,
+      "finalHomeScreenshotReviewed": true,
+      "WDAIdleSeconds": 10,
+      "WDAAnimationCoolOffSeconds": 2,
+      "crashInventoryNotCheckedThisTurn": false,
+      "baselineAppCrashRecordedThisTurn": false,
+      "historicalIPhone13NetworkCrashUnresolved": true,
+      "candidateCrashInventoryDelta": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      },
+      "performanceAccepted": false,
+      "fullSubtitleAudioHDRAccepted": false,
+      "originalS03FileAndJellyfinEntireBookmarksUnchanged": true
+    }
+  },
+  "installation": {
+    "iphone13": {
+      "recordedAt": "2026-10-13T07:38:30.117915+08:00",
+      "installedAt": "2026-10-13T07:38:42.022743+08:00",
+      "device": "iphone13",
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "connection": "USB",
+      "method": "ios-deploy data-preserving cover",
+      "preservesContainer": true,
+      "installation": "success",
+      "binaries": {
+        "Nastart": "7cc99e076d3a49293fe664c4d09ab186986bbd8622f661e5ddde39734d5a5370",
+        "Nastart.debug.dylib": "0e2bae07cc4f8444b6ba7249cea33ae02c53ab8f350bb175ef1b0bab64bae4c2",
+        "Frameworks/KSPlayer.framework/KSPlayer": "6be1f6780b3edd377d2ef6ee2e144c9213b831f45969eedbb7f7601b93067559"
+      },
+      "actualForegroundUIVerified": true,
+      "unchangedPreferenceValues": 25
+    },
+    "ipad": {
+      "recordedAt": "2026-10-13T07:31:34.561890+08:00",
+      "installedAt": "2026-10-13T07:31:54.153132+08:00",
+      "device": "ipad",
+      "model": "iPad12,1",
+      "system": "18.3.1",
+      "connection": "USB",
+      "method": "ios-deploy data-preserving cover",
+      "preservesContainer": true,
+      "installation": "success",
+      "binaries": {
+        "Nastart": "7cc99e076d3a49293fe664c4d09ab186986bbd8622f661e5ddde39734d5a5370",
+        "Nastart.debug.dylib": "0e2bae07cc4f8444b6ba7249cea33ae02c53ab8f350bb175ef1b0bab64bae4c2",
+        "Frameworks/KSPlayer.framework/KSPlayer": "6be1f6780b3edd377d2ef6ee2e144c9213b831f45969eedbb7f7601b93067559"
+      },
+      "actualForegroundUIVerified": true,
+      "unchangedPreferenceValues": 18
+    }
+  },
+  "iPhone18Operated": false,
+  "independentSourceFrameReferenceCollected": false,
+  "specificHardwareReferenceStateRootCauseConfirmed": false,
+  "EAGAINObservedInBoundedTrace": false,
+  "unknownErrorIsNotProofOfCorruptionCause": true,
+  "historicalIPhone13NetworkCrashUnresolved": true,
+  "toolAttemptsRetained": [
+    "Native slider target885.45598 actually897.354637, not accepted exact-position control",
+    "iPad long-name element lookup404 corrected with current UI native pointer, actual detail verified",
+    "Phone navigation helper absent native_touch method corrected with actual existing fasttap, detail verified",
+    "First macro probe missing libavutil header include path, corrected with isolated header alias",
+    "Initial private log variant package e434 installed on iPad but never regression tested; latest ac8 tested and installed before windows",
+    "Isolated Mac PyAV environment prepared but no independent source reference collected"
+  ],
+  "next": [
+    "Add anonymous input-packet and output-pixel fingerprints with actual seek ownership, then controlled same-source software/hardware reference before smallest justified fix",
+    "Replay original paused rapid drag and alternating-button failures on both USB devices after fix",
+    "Keep S01 four units, L2 representative families/S19/MTP, real growing tail, subtitle/audio/HDR, cellular, competitor frame timing and iPhone18 actual UI/automatic tunnel backlog open"
+  ]
+}

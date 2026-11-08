@@ -20,6 +20,17 @@ public class SubtitlePart: CustomStringConvertible, Identifiable {
     /// Bitmap subtitle coordinates belong to the subtitle canvas, which can
     /// differ from the video (for example, 1080p PGS accompanying UHD video).
     public var imageCanvasSize: CGSize = .zero
+    /// A decoded bitmap can have a valid authored origin of (0, 0). Keep this
+    /// distinct from legacy images that only specify bottom-aligned content.
+    public var imageUsesCanvasCoordinates = false
+
+    public func imageDisplayFrame(videoFrame: CGRect, videoSize: CGSize) -> CGRect? {
+        guard imageUsesCanvasCoordinates, let image else { return nil }
+        let canvas = imageCanvasSize.width.isFinite && imageCanvasSize.height.isFinite
+            && imageCanvasSize.width > 0 && imageCanvasSize.height > 0 ? imageCanvasSize : videoSize
+        return SubtitleViewportGeometry.imageRect(origin: origin, image: image.size,
+            canvas: canvas, videoFrame: videoFrame)
+    }
 
     public func imageDisplaySize(in bounds: CGSize, videoSize: CGSize) -> CGSize {
         guard let image else { return .zero }
@@ -305,6 +316,7 @@ open class SubtitleModel: ObservableObject {
     public private(set) var subtitleInfos = [any SubtitleInfo]()
     @Published
     public private(set) var parts = [SubtitlePart]()
+    private var isSeeking = false
     public var subtitleDelay = 0.0 // s
     public var url: URL? {
         didSet {
@@ -346,7 +358,21 @@ open class SubtitleModel: ObservableObject {
         }
     }
 
+    /// An empty decoder queue during a seek must not reuse a pre-seek PGS
+    /// display set whose end time is infinity. Clock callbacks can still carry
+    /// the previous position until the engine acknowledges the discontinuity.
+    public func beginSeek() {
+        isSeeking = true
+        parts = []
+    }
+
+    public func endSeek() {
+        parts = []
+        isSeeking = false
+    }
+
     public func subtitle(currentTime: TimeInterval) -> Bool {
+        guard !isSeeking else { return false }
         var newParts = [SubtitlePart]()
         if let subtile = selectedSubtitleInfo {
             let currentTime = currentTime - subtile.delay - subtitleDelay

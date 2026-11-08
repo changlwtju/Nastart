@@ -1,5 +1,17 @@
 # Nastart Information Architecture
 
+2026-10-26用户最新规则：Plus并入三端“设置”组；TV固定六项等大三列两行。TV启动台默认显示全部Docker（可手动隐藏），不展示套件，分类与设备→容器目录及手机共享规则一致；套件入口留设备资源组。TV Docker 服务及管理显示最终改为双列等大卡，奇数末张靠左；分组标题整行，暖色焦点不使用覆盖名称的系统白条。存储入口仍保持“浏览文件/已有库/添加目录”，连接表单分HTTP/HTTPS、地址、端口和路径，发现线索不等于已有授权。具体实施与未接能力见[当前批](../archive/handoffs/2026-10/2026-10-26-CROSS-PLATFORM-CARD-RULES-WEBDAV.md)。
+
+2026-10-26最新补充：存储与媒体与NAS概览是同级功能卡片，移动三种布局已从DeviceSummaryPanel移出，iPad共用；TV原为同级行。内部浏览文件/已有媒体库/添加目录与次级连接管理保持。 见[最新批](../archive/handoffs/2026-10/2026-10-26-INDEPENDENT-STORAGE-CARD-AND-ACCENT.md)。
+
+2026-10-26用户要求减少重复：NAS摘要的设备文件/影音媒体库并列快捷入口合并为存储与媒体；该页直接给浏览文件、已连接媒体库和添加媒体文件夹。连接管理才展示协议与服务目录；原四主Tab保持。实际实现/边界见[本批](../archive/handoffs/2026-10/2026-10-26-UNIFIED-MEDIA-HOME-AND-TV-UI.md)。
+
+2026-10-26接续：“媒体服务”分组/服务详情已放入现有“存储与媒体”，仍为四主Tab；NAS文件夹入口不等待可选服务探测。当前NAS的发现线索与独立已存Jellyfin连接分别标名，不能凭同主机名推断归属。当前原生目的页只接现有Jellyfin，其他产品状态与后续范围见[服务批](../archive/handoffs/2026-10/2026-10-26-MEDIA-SERVICE-DISCOVERY-AND-ENTRY.md)。
+
+2026-10-26：三端原网络媒体入口改“存储与媒体”，保留四主Tab；当前NAS/已有媒体库/已有连接与手动WebDAV入口已实接，媒体服务统一分组/能力状态尚未实接。见[本批](../archive/handoffs/2026-10/2026-10-26-NAS-SESSION-SOURCE-HUB-NATIVE.md)。
+
+2026-10-26接入补充：四主Tab保持，“存储与媒体”在NAS摘要/已有来源下承接文件夹与媒体服务，默认先当前NAS与已有授权，手动地址放新增/高级流程。详[统一来源方案](../architecture/UNIFIED_SOURCE_DISCOVERY_AND_ACCESS.md)；此轮仅设计与交互预览，尚未修改App。
+
 Version: 0.3
 Status: Draft
 Last updated: 2026-07-27

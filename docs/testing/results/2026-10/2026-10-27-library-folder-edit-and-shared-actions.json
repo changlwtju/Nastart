@@ -1,0 +1,80 @@
+{
+  "date": "2026-10-27",
+  "sourceHead": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceInputCount": 414,
+  "configuration": "ordinary Debug; empty arguments/environment",
+  "packages": {
+    "tv": {
+      "mainSHA256": "5f3879d9582b231132e01ba010039d8ba03f47c859922945afeb4ffef8585e04",
+      "debugDylibSHA256": "f3ae141aad08adb3c1d07de12f71525e0ba4ba5cab09c1e0f6b0b5fa554b70a7",
+      "builtAt": "2026-10-27T23:07:29.676839+08:00",
+      "signedMachOCount": 27
+    },
+    "mobile": {
+      "mainSHA256": "d5494c8c0c665b1e9124fcc3a3216600593c0fbf96f8f30b455720d9bf31f827",
+      "debugDylibSHA256": "47b1f236ac6233eb95f371bdcfa83e872532ec605c15ad513355782ca3f17d60",
+      "builtAt": "2026-10-27T23:04:54.109124+08:00",
+      "signedMachOCount": 30
+    }
+  },
+  "tests": {
+    "targetedCount": 39,
+    "failures": 0,
+    "covers": [
+      "folder transaction success/durable recovery",
+      "failure/cancellation and stale scan",
+      "same origin/source isolation",
+      "full literal path and File Station root",
+      "existing catalog/corrections/credit transport"
+    ]
+  },
+  "devices": {
+    "iphone13": {
+      "latestInstalled": true,
+      "normalHomeReviewed": true,
+      "nativeFolderRoundTrip": {
+        "invalidPathPreservedOriginalLibrary": true,
+        "nativeValidPathRoundTrip": true,
+        "originalFolderRestored": true,
+        "sameUserFacingName": true,
+        "sourceWrites": 0,
+        "relativePathsRebased": true,
+        "absoluteSourcePathSetsPreserved": true
+      },
+      "affectedFilmCastStillPlaceholders": true,
+      "existingJellyfinHomeAuthenticatedObserved": true
+    },
+    "ipad": {
+      "latestInstalled": true,
+      "normalHomeReviewed": true,
+      "wallMenuAndPrefilledEditorReviewed": true,
+      "cancelNotVerifiedBeforeOwnedRunnerTimedOut": true,
+      "oldWDAProfileRejectedThenResignedWithEligibleExistingProfile": true
+    },
+    "tv": {
+      "latestInstalled": true,
+      "sharedMenuAndPrefilledEditorReviewed": true,
+      "creditsSample": {
+        "realPortraits": 9,
+        "placeholders": 1
+      },
+      "remoteEditorScreenshotSucceededButImmediateAXMarkerAssertionFailed": true
+    },
+    "iphone18": {
+      "installCompleteObserved": true,
+      "postInstallLookupExists": true,
+      "normalLaunchAndScreenReview": false,
+      "userConstraint": "install only; user is using phone"
+    }
+  },
+  "sourceWrites": 0,
+  "newPlaybackPasses": 0,
+  "limitations": [
+    "independent offline actor photos and episode/series mapping not complete",
+    "iPhone13 affected film still placeholders despite existing Jellyfin session",
+    "TV/iPad editor cancel not accepted from failed immediate AX assertion",
+    "Infuse read-only observation reached home/settings/upgrade; no share editing observed",
+    "FTP App source integration, FTPS reuse 522 and strict SMB root scope remain open",
+    "full common playback session lifecycle migration remains open"
+  ]
+}

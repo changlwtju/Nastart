@@ -1,0 +1,528 @@
+{
+  "date": "2026-10-27",
+  "configuration": "Debug",
+  "source": {
+    "sourceInputs": 399,
+    "sourceDrift": [],
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "inheritedDirtyPreserved": true
+  },
+  "packages": {
+    "mobile": {
+      "builtAt": "2026-10-27T14:23:19.801421+08:00",
+      "mainSHA256": "2deb7138f1c247dc083113aeb3ed4d02f8a97a42c38c4c0aa71dc21b1c1879b6",
+      "debugDylibSHA256": "1efc6c80d69fd1e5982051fb589394fcfdb99345b7ce7d7e60ae0c2c4192fc21",
+      "sourceInputCount": 399,
+      "signedMachOCount": 30
+    },
+    "tv": {
+      "builtAt": "2026-10-27T14:23:17.991023+08:00",
+      "mainSHA256": "984d999dd0643db7ede480da7a9d51b000c29a062c5658a0ad77bac249a814bf",
+      "debugDylibSHA256": "463d7551a2dd51e4b6a0bc72ead8cfe11e04672f5f3aab030cef7c909dfece0c",
+      "sourceInputCount": 399,
+      "signedMachOCount": 27
+    }
+  },
+  "devices": {
+    "ipad": {
+      "index": {
+        "equalFullJSON": true,
+        "libraries": 1,
+        "files": 3408
+      },
+      "install": {
+        "at": "2026-10-27T14:26:22.251665+08:00",
+        "packageSHA256": "2deb7138f1c247dc083113aeb3ed4d02f8a97a42c38c4c0aa71dc21b1c1879b6",
+        "configuration": "Debug",
+        "preserveData": true,
+        "freshIdentityConnected": true,
+        "preferencesBackedUp": true,
+        "exitCode": 0,
+        "installComplete": true,
+        "installedAt": "2026-10-27T14:26:28.538834+08:00",
+        "preferences": {
+          "beforeKeys": 19,
+          "afterKeys": 19,
+          "sameKeys": true,
+          "changedValues": 0,
+          "allNonDiagnosticPreferencesEqual": true
+        }
+      },
+      "normal": {
+        "at": "2026-10-27T14:26:36.077151+08:00",
+        "environment": {},
+        "arguments": [],
+        "ordinaryHomeSourceObserved": true,
+        "ownHTTPSession": true,
+        "originalRunnerKept": true
+      },
+      "final-preferences": {
+        "beforeKeys": 19,
+        "afterKeys": 19,
+        "sameKeys": true,
+        "changedValues": 0,
+        "allNonDiagnosticPreferencesEqual": true
+      },
+      "session-cleanup": {
+        "at": "2026-10-27T14:28:08.282175+08:00",
+        "device": "ipad",
+        "settingsRestored": true,
+        "ownedHTTPSessionDeleted": true,
+        "originalRunnerKept": true
+      },
+      "playback": {
+        "device": "ipad",
+        "scope": "unified fullscreen host actual saved WebDAV S01",
+        "normalExit": true,
+        "intentionalTermination": false,
+        "guardSeconds": 65,
+        "frames": {
+          "play-3": {
+            "elapsed": 3.1614665421657264,
+            "samePID": true
+          },
+          "play-10": {
+            "elapsed": 10.156926416791975,
+            "samePID": true
+          },
+          "after-observed-reveal": {
+            "elapsed": 12.743185124825686,
+            "samePID": true
+          },
+          "after-close-1": {
+            "elapsed": 16.241707582958043,
+            "samePID": true
+          },
+          "after-close-4": {
+            "elapsed": 19.883888124953955,
+            "samePID": true
+          }
+        },
+        "commands": [
+          {
+            "route": "element",
+            "seconds": 0.5501767080277205,
+            "returned": true
+          },
+          {
+            "route": "source",
+            "seconds": 2.6466712090186775,
+            "returned": true
+          },
+          {
+            "route": "elements",
+            "seconds": 0.2604040829464793,
+            "returned": true
+          },
+          {
+            "route": "element",
+            "seconds": 0.5894823339767754,
+            "returned": true
+          },
+          {
+            "route": "elements",
+            "seconds": 1.0630972497165203,
+            "returned": true
+          },
+          {
+            "route": "element",
+            "seconds": 0.7689026249572635,
+            "returned": true
+          },
+          {
+            "route": "source",
+            "seconds": 0.9870017082430422,
+            "returned": true
+          }
+        ],
+        "arguments": [],
+        "environment": {},
+        "pidBefore": 4562,
+        "closeRequestedAt": "2026-10-27T14:27:37.520245+08:00"
+      },
+      "nativeFramesViewed": true
+    },
+    "iphone13": {
+      "index": {
+        "equalFullJSON": true,
+        "libraries": 1,
+        "files": 149
+      },
+      "install": {
+        "at": "2026-10-27T14:26:22.253428+08:00",
+        "packageSHA256": "2deb7138f1c247dc083113aeb3ed4d02f8a97a42c38c4c0aa71dc21b1c1879b6",
+        "configuration": "Debug",
+        "preserveData": true,
+        "preferencesBackedUp": true,
+        "exitCode": 0,
+        "installComplete": true,
+        "installedAt": "2026-10-27T14:26:39.158832+08:00",
+        "preferences": {
+          "beforeKeys": 26,
+          "afterKeys": 26,
+          "sameKeys": true,
+          "changedValues": 0,
+          "allNonDiagnosticPreferencesEqual": true
+        }
+      },
+      "normal": {
+        "at": "2026-10-27T14:26:47.409983+08:00",
+        "environment": {},
+        "arguments": [],
+        "ordinaryHomeSourceObserved": true,
+        "ownHTTPSession": true,
+        "originalRunnerKept": true
+      },
+      "final-preferences": {
+        "beforeKeys": 26,
+        "afterKeys": 26,
+        "sameKeys": true,
+        "changedValues": 0,
+        "allNonDiagnosticPreferencesEqual": true
+      },
+      "session-cleanup": {
+        "at": "2026-10-27T14:28:26.254565+08:00",
+        "device": "iphone13",
+        "settingsRestored": true,
+        "ownedHTTPSessionDeleted": true,
+        "originalRunnerKept": true
+      },
+      "playback": {
+        "device": "iphone13",
+        "scope": "actual saved WebDAV S01 WDA-only playback",
+        "guardSeconds": 65,
+        "normalExit": true,
+        "intentionalTermination": false,
+        "frames": {
+          "play-3": {
+            "elapsed": 3.232087249867618
+          },
+          "play-10": {
+            "elapsed": 10.201267916709185
+          },
+          "observed-reveal": {
+            "elapsed": 11.927683999761939
+          },
+          "after-close-1": {
+            "elapsed": 13.9027995839715
+          }
+        },
+        "commands": [
+          {
+            "route": "wda",
+            "seconds": 0.1084645832888782,
+            "returned": true
+          },
+          {
+            "route": "element",
+            "seconds": 0.5101412907242775,
+            "returned": true
+          },
+          {
+            "route": "screenshot",
+            "seconds": 0.22879524994641542,
+            "returned": true
+          },
+          {
+            "route": "screenshot",
+            "seconds": 0.19580075005069375,
+            "returned": true
+          },
+          {
+            "route": "elements",
+            "seconds": 0.08767925016582012,
+            "returned": true
+          },
+          {
+            "route": "element",
+            "seconds": 0.4845497920177877,
+            "returned": true
+          },
+          {
+            "route": "screenshot",
+            "seconds": 0.17696891725063324,
+            "returned": true
+          },
+          {
+            "route": "elements",
+            "seconds": 0.18631079094484448,
+            "returned": true
+          },
+          {
+            "route": "element",
+            "seconds": 0.5557341673411429,
+            "returned": true
+          },
+          {
+            "route": "screenshot",
+            "seconds": 0.22463066689670086,
+            "returned": true
+          },
+          {
+            "route": "source",
+            "seconds": 2.2960393340326846,
+            "returned": true
+          },
+          {
+            "route": "wda",
+            "seconds": 0.06359999999403954,
+            "returned": true
+          }
+        ],
+        "arguments": [],
+        "environment": {},
+        "closeRequestedAt": "2026-10-27T14:28:03.763066+08:00",
+        "samePositivePID": true
+      },
+      "framesViewed": {
+        "threeSeconds": "buffering",
+        "tenSeconds": "movie image",
+        "afterClose": "original detail"
+      },
+      "independentDVT": "InvalidService before media; not accepted"
+    },
+    "tv": {
+      "index": {
+        "equalFullJSON": true,
+        "libraries": 1,
+        "files": 149
+      },
+      "install": {
+        "at": "2026-10-27T14:30:48.805012+08:00",
+        "packageSHA256": "984d999dd0643db7ede480da7a9d51b000c29a062c5658a0ad77bac249a814bf",
+        "configuration": "Debug",
+        "preserveData": true,
+        "freshIdentityConnected": true,
+        "preferencesBackedUp": true,
+        "exitCode": 0,
+        "installComplete": true,
+        "installedAt": "2026-10-27T14:30:52.049776+08:00",
+        "preferences": {
+          "beforeKeys": 15,
+          "afterKeys": 15,
+          "sameKeys": true,
+          "changedValues": 0,
+          "allNonDiagnosticPreferencesEqual": true
+        }
+      },
+      "normal": {
+        "at": "2026-10-27T14:34:27.978353+08:00",
+        "environment": {},
+        "arguments": [],
+        "mediaCommands": 0,
+        "processObservedAt3": true,
+        "processObservedAt10": true,
+        "nativeBaselineCaptured": true
+      },
+      "playback": {
+        "actualMovieNativeFramesSeconds": [
+          3.314,
+          10.298,
+          30.298
+        ],
+        "samePID": true,
+        "nativeFramesViewed": true,
+        "menuExit": false,
+        "explicitDoneFocusHTTP400": true,
+        "intentionalTerminationAfterFailure": true,
+        "initialFocusCandidateMenuExit": false,
+        "focusCandidateReverted": true,
+        "previousCandidatesOnly": true
+      },
+      "final-preferences": {
+        "beforeKeys": 15,
+        "afterKeys": 15,
+        "sameKeys": true,
+        "changedValues": 0,
+        "allNonDiagnosticPreferencesEqual": true
+      },
+      "runnerCleanup": {
+        "thirdOwnedRunnerStopped": true,
+        "thirdOwnedSessionSettingsRestored": true,
+        "thirdOwnedHTTPSessionDeleted": true,
+        "secondOwnedSessionHTTPCleanupUnconfirmed": true,
+        "finalOrdinaryAppBaselineCaptured": true
+      },
+      "session-cleanup": {
+        "at": "2026-10-27T14:33:47.457292+08:00",
+        "device": "tv",
+        "thirdOwnedSessionSettingsRestored": true,
+        "thirdOwnedHTTPSessionDeleted": true,
+        "runnerStopRequested": true,
+        "secondHTTPRestoreAndDeleteUnconfirmed": true
+      },
+      "playbackFinalPackage": {
+        "device": "tv",
+        "scope": "actual saved WebDAV S01 TV inner-player two-stage Menu",
+        "normalExit": false,
+        "intentionalTermination": true,
+        "guardSeconds": 80,
+        "frames": {
+          "play-3": {
+            "elapsed": 3.2932827500626445,
+            "samePID": true
+          },
+          "play-10": {
+            "elapsed": 10.264245124999434,
+            "samePID": true
+          },
+          "play-30": {
+            "elapsed": 30.49721216596663,
+            "samePID": true
+          },
+          "after-first-menu": {
+            "elapsed": 32.34530220832676,
+            "samePID": true
+          },
+          "after-menu-2": {
+            "elapsed": 34.72911704098806,
+            "samePID": true
+          },
+          "after-menu-3": {
+            "elapsed": 36.71888358332217,
+            "samePID": true
+          },
+          "after-close-1": {
+            "elapsed": 38.39187870826572,
+            "samePID": true
+          },
+          "after-close-4": {
+            "elapsed": 42.28975308313966,
+            "samePID": true
+          }
+        },
+        "commands": [
+          {
+            "route": "wda",
+            "seconds": 0.08127737510949373,
+            "returned": true
+          },
+          {
+            "route": "element",
+            "seconds": 0.4845668328925967,
+            "returned": true
+          },
+          {
+            "route": "source?excluded_attributes=visible",
+            "seconds": 0.19327187491580844,
+            "returned": true
+          },
+          {
+            "route": "wda",
+            "seconds": 0.30337991705164313,
+            "returned": true
+          },
+          {
+            "route": "source?excluded_attributes=visible",
+            "seconds": 0.23696850007399917,
+            "returned": true
+          },
+          {
+            "route": "wda",
+            "seconds": 0.2732732919976115,
+            "returned": true
+          },
+          {
+            "route": "source?excluded_attributes=visible",
+            "seconds": 0.23902287473902106,
+            "returned": true
+          },
+          {
+            "route": "wda",
+            "seconds": 0.27469579223543406,
+            "returned": true
+          },
+          {
+            "route": "source?excluded_attributes=visible",
+            "seconds": 0.23037262493744493,
+            "returned": true
+          },
+          {
+            "route": "source?excluded_attributes=visible",
+            "seconds": 0.30414508329704404,
+            "returned": true
+          }
+        ],
+        "arguments": [],
+        "environment": {},
+        "pidBefore": 3743,
+        "closeRequestedAt": "2026-10-27T14:33:17.020929+08:00",
+        "firstMenuStillPlayer": true,
+        "menuPresses": 3,
+        "failureType": "AssertionError",
+        "nativeFramesViewed": true,
+        "sourceDerivedMenuStages": 3
+      },
+      "runnerFinalExit": {
+        "startedAt": "2026-10-27T14:32:07.218190+08:00",
+        "limitSeconds": 900,
+        "runnerStopped": true,
+        "finishedAt": "2026-10-27T14:33:48.716282+08:00"
+      }
+    },
+    "iphone18": {
+      "handsOff": true,
+      "accessed": false,
+      "updated": false,
+      "knownOldPackage": "07:00 4e package; not freshly queried"
+    }
+  },
+  "moduleTests": {
+    "runner": "direct xctest newly compiled module bundle",
+    "tests": 131,
+    "failures": 0,
+    "seconds": 5.318,
+    "priorSwiftPMTimeoutsSeconds": [
+      150,
+      150
+    ],
+    "initialFixtureCompileFailureCorrected": true
+  },
+  "UIKitSimulatorTest": {
+    "executed": false,
+    "preparationTimeoutsSeconds": [
+      600,
+      420
+    ],
+    "initialAndFinalState": "Shutdown"
+  },
+  "revertedExperiment": "TV bordered button and initial FocusState did not restore Menu exit; reverted",
+  "requirements": {
+    "inProgress": 14,
+    "awaitingAcceptance": 5,
+    "notStarted": 11
+  },
+  "playbackMatrix": {
+    "cells": 114,
+    "newPasses": 0
+  },
+  "boundaries": [
+    "NAS source read-only",
+    "No NAS/VPN/system/credential changes",
+    "No TMM scraping",
+    "No cellular",
+    "iPhone18 hands off"
+  ],
+  "repackIdentity": {
+    "allSourceInputsEqual": true,
+    "oldPackageSHA": "85cf8fe662648b08e53025ec73cfc217c8a363a196074a116228d23353624c55",
+    "newPackageSHA": "2deb7138f1c247dc083113aeb3ed4d02f8a97a42c38c4c0aa71dc21b1c1879b6",
+    "changedSignedBinaries": [
+      "__preview.dylib",
+      "Nastart",
+      "Nastart.debug.dylib",
+      "Frameworks/libswiftCompatibilitySpan.dylib",
+      "Frameworks/KSPlayer.framework/KSPlayer",
+      "Frameworks/UDFRead.framework/UDFRead",
+      "Frameworks/MobileVLCKit.framework/MobileVLCKit"
+    ],
+    "assumingInstalledIdentityFromSource": false
+  },
+  "finishedAt": "2026-10-27T14:35:10.195160+08:00",
+  "verification": {
+    "documentationDocuments": 487,
+    "documentationLinks": 2883,
+    "missingDestinations": 0,
+    "diffCheckPassed": true
+  }
+}

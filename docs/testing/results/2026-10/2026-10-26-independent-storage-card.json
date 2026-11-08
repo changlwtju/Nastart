@@ -1,0 +1,259 @@
+{
+  "at": "2026-10-26T20:51:21.694328+08:00",
+  "source": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "dirty": true,
+    "localInputCount": 375,
+    "fullDependencyClosure": false,
+    "driftCount": 0
+  },
+  "packages": {
+    "mobile": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-26T20:41:05.870878+08:00",
+      "mainSHA256": "ccf70658c603b02124367a5d562b62c1128854b2ff2b4403dfd1cd1a7dd50bad",
+      "debugDylibSHA256": "ded16c806ed8b98f72b38e07350d65be9a3be56891109c57c1897d454fe5ea69",
+      "signedMachOCount": 30,
+      "arguments": [],
+      "environment": {}
+    },
+    "tv": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-26T20:40:53.064100+08:00",
+      "mainSHA256": "12ce5006cd20a2df970d7daf54263f0aa9ec60ae528806fa106a0f53452bca80",
+      "debugDylibSHA256": "38452e3c5e1aa29b454276b9666e3a9de026a6d5e4bdfcc7d397b4806df80bfb",
+      "signedMachOCount": 27,
+      "arguments": [],
+      "environment": {}
+    }
+  },
+  "devices": {
+    "iphone13": {
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "connection": "USB",
+      "freshCheckAt": "2026-10-26T20:42:30.110978+08:00",
+      "targetPackageSHA256": "ccf70658c603b02124367a5d562b62c1128854b2ff2b4403dfd1cd1a7dd50bad",
+      "installComplete": true,
+      "installedAt": "2026-10-26T20:42:47.970156+08:00",
+      "preserveData": true,
+      "preferences": {
+        "beforeKeys": 26,
+        "afterKeys": 26,
+        "sameKeys": true,
+        "changedValues": 0,
+        "allNonDiagnosticPreferencesEqual": true
+      },
+      "uiLatest": true
+    },
+    "tv": {
+      "model": "AppleTV14,1",
+      "system": "18.2",
+      "connection": "LAN",
+      "freshCheckAt": "2026-10-26T20:42:30.114241+08:00",
+      "targetPackageSHA256": "12ce5006cd20a2df970d7daf54263f0aa9ec60ae528806fa106a0f53452bca80",
+      "installComplete": true,
+      "installedAt": "2026-10-26T20:42:34.448448+08:00",
+      "preserveData": true,
+      "preferences": {
+        "beforeKeys": 13,
+        "afterKeys": 13,
+        "sameKeys": true,
+        "changedValues": 0,
+        "allNonDiagnosticPreferencesEqual": true
+      },
+      "uiLatest": true
+    },
+    "ipad": {
+      "model": "iPad15,7",
+      "system": "26.6",
+      "connection": "unavailable",
+      "freshCheckAt": "2026-10-26T20:50:19.006155+08:00",
+      "targetPackageSHA256": "ccf70658c603b02124367a5d562b62c1128854b2ff2b4403dfd1cd1a7dd50bad",
+      "installComplete": false,
+      "installedAt": null,
+      "preserveData": true,
+      "preferences": null,
+      "uiLatest": false,
+      "modelAndSystemFromPriorConnectedWindow": true
+    },
+    "iphone18": {
+      "model": "iPhone19,7",
+      "system": "27.0",
+      "connection": "USB; home Wi-Fi unchanged",
+      "targetPackageSHA256": "ccf70658c603b02124367a5d562b62c1128854b2ff2b4403dfd1cd1a7dd50bad",
+      "installComplete": true,
+      "lookup": true,
+      "stage": "USB overlay complete and native ordinary home visually reviewed",
+      "failureType": null,
+      "uiLatest": {
+        "nativeHome": true,
+        "darkIndependentCardSurface": true,
+        "mediaPage": false,
+        "connectionManagement": false
+      },
+      "next": "internal page tool verification blocked by XCTest initialization; continue independently",
+      "finalUSBPresent": true,
+      "wirelessHistorical": {
+        "installComplete": false,
+        "lookup": false,
+        "stage": "blocked; install not confirmed",
+        "failureType": "TimeoutError"
+      },
+      "installedAt": "2026-10-26T21:03:22.849857+08:00",
+      "preferences": {
+        "beforeKeys": 27,
+        "afterKeys": 27,
+        "sameKeys": true,
+        "changedValues": 0,
+        "allNonDiagnosticPreferencesEqual": true
+      },
+      "afterNormalPreferences": {
+        "beforeKeys": 27,
+        "afterKeys": 27,
+        "sameKeys": true,
+        "changedValues": 0,
+        "allNonDiagnosticPreferencesEqual": true,
+        "at": "2026-10-26T21:14:16.700969+08:00"
+      }
+    }
+  },
+  "tests": {
+    "networkMedia": {
+      "passed": 67,
+      "failed": 0
+    },
+    "iphone13": [
+      "dark independent launchpad card",
+      "dark media page amber symbols",
+      "dark connection management amber labels",
+      "restore original display mode via UI"
+    ],
+    "tv": [
+      "native ordinary launch",
+      "files/media/manage/protocol/NAS folder navigation and Menu",
+      "clean/light, command/dark, glass/system finite screenshot and up/down focus windows"
+    ],
+    "limits": [
+      "No scroll frame time performance acceptance",
+      "No full theme/Dynamic Type matrix",
+      "No actual media playback",
+      "No complete WebDAV add/correction UI acceptance"
+    ]
+  },
+  "knownFailure": {
+    "flow": "WebDAV connect then choose folder, iOS16.3.1",
+    "observation": "Nastart main thread SwiftUI/UIKit layout loop in three spindumps; no corresponding new Nastart SIG report",
+    "repairCandidates": [
+      {
+        "mainSHA256": "8b3675a4c00b950945829529c125b631630347fbb60b56411b17747dbf9fd545",
+        "change": "separate navigation boolean and clear focus",
+        "result": "connection timeout; reverted"
+      },
+      {
+        "mainSHA256": "c6108312bd477384ae72e274b83681eb322787114fed17f71cb1663bcc75a56a",
+        "change": "stable loading row and repeated action guard",
+        "result": "connection timeout; reverted"
+      }
+    ],
+    "thirdTuningAttempt": false,
+    "currentFlowAcceptance": "open; latest appearance change does not resolve connection failure"
+  },
+  "cleanup": {
+    "ui-fixture-navigation": {
+      "stopped": true,
+      "portClosed": true,
+      "sourceBytesUnchanged": true,
+      "videoGETs": 0,
+      "NFOGETs": 0,
+      "remoteWrites": 0,
+      "requests": 1
+    },
+    "ui-fixture-repro": {
+      "stopped": true,
+      "portClosed": true,
+      "sourceBytesUnchanged": true,
+      "videoGETs": 0,
+      "NFOGETs": 0,
+      "remoteWrites": 0,
+      "requests": 2
+    },
+    "ui-fixture-stable-row": {
+      "stopped": true,
+      "portClosed": true,
+      "sourceBytesUnchanged": true,
+      "videoGETs": 0,
+      "NFOGETs": 0,
+      "remoteWrites": 0,
+      "requests": 1
+    },
+    "ui-fixture": {
+      "stopped": true,
+      "portClosed": true,
+      "sourceBytesUnchanged": true,
+      "videoGETs": 0,
+      "NFOGETs": 0,
+      "remoteWrites": 0,
+      "requests": 1
+    },
+    "tvRunner": {
+      "startedAt": "2026-10-26T20:45:18.582525+08:00",
+      "limitSeconds": 900,
+      "runnerStopped": true,
+      "finishedAt": "2026-10-26T20:48:53.332786+08:00"
+    },
+    "tvSettings": {
+      "restored": true
+    },
+    "mobileThemeAndSettings": {
+      "ordinaryLaunch": true,
+      "temporaryMode": "dark",
+      "originalMode": "system",
+      "originalModeRestored": true,
+      "settingsRestored": true,
+      "mediaCommands": 0,
+      "darkIndependentEntryObserved": true,
+      "darkMediaHomeObserved": true,
+      "darkManagementObserved": true
+    },
+    "mobileHTTPSession": {
+      "at": "2026-10-26T20:55:42.324929+08:00",
+      "deletedOwnHTTPSession": true,
+      "originalRunnerKept": true,
+      "settingsRestored": true
+    },
+    "iphone18Runner": {
+      "startedAt": "2026-10-26T21:06:05.999160+08:00",
+      "limitSeconds": 900,
+      "runnerStopped": true,
+      "finishedAt": "2026-10-26T21:09:27.459531+08:00"
+    },
+    "iphone18NativeAX": {
+      "activatedStorageEntry": false,
+      "monitoringStopped": true,
+      "newSettingsWritten": false,
+      "mediaCommands": 0
+    }
+  },
+  "playbackMatrixNewPasses": 0,
+  "networkOrNASConfigurationChanged": false,
+  "uninstalledOrCredentialsCleared": false,
+  "binaryDriftCounts": {
+    "mobile": 0,
+    "tv": 0
+  },
+  "visualReview": {
+    "at": "2026-10-26T20:57:08.828239+08:00",
+    "independentPeerCard": true,
+    "glassDarkHostSurface": true,
+    "amberFunctionalSymbols": true,
+    "iphone18LatestUIReviewed": false,
+    "iphone18LatestHomeReviewed": true
+  },
+  "documentationCheck": {
+    "documents": 477,
+    "localLinks": 2811,
+    "missingDestinations": 0,
+    "diffWhitespaceErrors": 0
+  }
+}

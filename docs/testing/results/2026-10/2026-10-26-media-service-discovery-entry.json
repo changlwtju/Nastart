@@ -1,0 +1,164 @@
+{
+  "date": "2026-10-26",
+  "scope": "media-service-discovery-and-existing-Jellyfin-entry",
+  "source": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "workingTree": "preexisting dirty preserved; additions uncommitted",
+    "localInputCount": 375,
+    "notFullExternalDependencyClosure": true,
+    "driftCount": 0
+  },
+  "builds": {
+    "mobile": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-26T11:09:52.887294+08:00",
+      "mainSHA256": "286f158605c81d4c3cbea8e36f2d8fab9f836fdf0dc6cafd1834993c39411bc1",
+      "debugDylibSHA256": "bf95a969c20e319c18ff63c0476de1618e9dd46f74cc22c2d38c4096ae87d8fe",
+      "signedMachOCount": 30
+    },
+    "tv": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-26T11:09:49.673355+08:00",
+      "mainSHA256": "354991033311ddcc30184b783488746fee6fe02e398a0b772935a6f04486c5da",
+      "debugDylibSHA256": "c4e781254f3f59ab465bbfe8f546f81b7989eb5ad7541d4f5b1c3470ccf13069",
+      "signedMachOCount": 27
+    }
+  },
+  "tests": {
+    "networkMediaExecuted": 67,
+    "failures": 0,
+    "newLogic": 13,
+    "newHTTPAndTLS": 3,
+    "fixturesOnlyForAdditionalProducts": true
+  },
+  "devices": {
+    "iphone13": {
+      "model": "iPhone14,5",
+      "system": "iOS 16.3.1",
+      "connection": "USB",
+      "installedAt": "2026-10-26T11:11:00.393744+08:00",
+      "preserveData": true,
+      "packageSHA256": "286f158605c81d4c3cbea8e36f2d8fab9f836fdf0dc6cafd1834993c39411bc1",
+      "installComplete": true,
+      "normalArguments": [],
+      "normalEnvironment": {},
+      "flow": {
+        "playbackCommands": 0,
+        "credentialInputCommands": 0,
+        "mediaServiceRowsRendered": 2,
+        "noNASPasswordPrompt": true,
+        "productIdentityConfirmed": true,
+        "inventoryRefresh": true,
+        "savedLoginLabel": true,
+        "existingLibraryEnteredWithoutCredentialInput": true,
+        "NASFolderSessionRegression": true,
+        "normalHomeRestored": true
+      },
+      "originalNonDiagnosticPreferencesEqual": true,
+      "finalLocalLibraryCount": 0,
+      "ordinaryHomeImageReviewed": true
+    },
+    "ipad": {
+      "model": "iPad15,7",
+      "system": "iPadOS 26.6",
+      "connection": "USB",
+      "installedAt": "2026-10-26T11:10:50.224360+08:00",
+      "preserveData": true,
+      "packageSHA256": "286f158605c81d4c3cbea8e36f2d8fab9f836fdf0dc6cafd1834993c39411bc1",
+      "installComplete": true,
+      "normalArguments": [],
+      "normalEnvironment": {},
+      "flow": {
+        "playbackCommands": 0,
+        "credentialInputCommands": 0,
+        "mediaServiceRowsRendered": 2,
+        "noNASPasswordPrompt": true,
+        "productIdentityConfirmed": true,
+        "savedLoginLabel": true,
+        "existingLibraryEnteredWithoutCredentialInput": true,
+        "NASFolderSessionRegression": true,
+        "normalHomeRestored": true
+      },
+      "originalNonDiagnosticPreferencesEqual": true,
+      "finalLocalLibraryCount": 0,
+      "ordinaryHomeImageReviewed": true
+    },
+    "tv": {
+      "model": "AppleTV14,1",
+      "system": "tvOS 18.2",
+      "connection": "LAN",
+      "installedAt": "2026-10-26T11:10:52.277059+08:00",
+      "preserveData": true,
+      "packageSHA256": "354991033311ddcc30184b783488746fee6fe02e398a0b772935a6f04486c5da",
+      "installComplete": true,
+      "normalArguments": [],
+      "normalEnvironment": {},
+      "flow": {
+        "playbackCommands": 0,
+        "credentialInputCommands": 0,
+        "mediaServiceRowsRendered": 3,
+        "productIdentityConfirmed": true,
+        "existingLibraryEnteredWithoutCredentialInput": true,
+        "NASFolderSessionRegression": true,
+        "normalHomeRestored": true
+      },
+      "originalNonDiagnosticPreferencesEqual": true,
+      "finalLocalLibraryCount": 0,
+      "ordinaryHomeImageReviewed": true
+    },
+    "iphone18": {
+      "model": "iPhone19,7",
+      "system": "iOS 27",
+      "connection": "unavailable",
+      "installedThisBatch": false,
+      "originalDomainConstraintPreserved": true,
+      "actualFixedDomainSessionVerified": false
+    }
+  },
+  "readOnly": {
+    "mediaCommands": 0,
+    "credentialInputCommands": 0,
+    "NASConfigurationChanged": false,
+    "sourceFileWritesInvoked": false,
+    "VPNOrNetworkSettingsChanged": false,
+    "newServiceInstalledOnNAS": false,
+    "remoteWholeLibraryHashAudit": false
+  },
+  "cleanup": {
+    "iphone13": {
+      "deletedOwnHTTPSession": true,
+      "originalRunnerKept": true,
+      "settingsChanged": false
+    },
+    "ipad": {
+      "deletedOwnHTTPSession": true,
+      "originalRunnerKept": true,
+      "settingsChanged": false
+    },
+    "fixtureStarted": false,
+    "TVRunnerStopped": true,
+    "TVSettingsRestored": true
+  },
+  "retainedFailures": [
+    "first endpoint assertion used URL.path, which drops trailing slash; test corrected to original absolute string",
+    "initial tvOS textSelection compilation; guarded to iOS",
+    "first TV candidate omitted independently saved Jellyfin when NAS inventory had no endpoint; fixed and rebuilt both",
+    "tvOS element click timed out after moving focus; actual focused wrapper verified and native Select entered library",
+    "empty detached build launch logs retained; rerun with isolated process session succeeded"
+  ],
+  "remaining": [
+    "SMB adapter; isolated raw negotiation cancellation prototype only",
+    "FTPS/FTP and independent SFTP implementation",
+    "Emby/Plex/Navidrome/Subsonic/Audio Station native authorization, browsing, playback and real-service validation",
+    "online metadata provider authorization, artwork, incremental updates, independent network-library playback and sync",
+    "all themes, dynamic type, large NAS and TV scan cancellation"
+  ],
+  "requirements": {
+    "open": 30,
+    "inProgress": 14,
+    "awaitingAcceptance": 5,
+    "notStarted": 11,
+    "playbackMatrixCells": 114,
+    "closedThisBatch": 0
+  }
+}

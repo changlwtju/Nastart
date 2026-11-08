@@ -1,0 +1,365 @@
+{
+  "at": "2026-11-03T23:39:58.714496+08:00",
+  "baseline": "3a4e68b6fc82c8d36315c04e2c1bfb1ea542f05a",
+  "uiCommit": "f231962e38256aa046fc7963d40b304e8825b9fa",
+  "compactFixCommit": "1fbad71ef2784458ef3ab1d73f14e53490cd65ef",
+  "branch": "codex/ui-integration-20261103",
+  "mainHEADAndRealIndexUnchanged": true,
+  "branchAudit": {
+    "trackedIOSTVPaths": 312,
+    "trackedDelta": [
+      "ios/README.md"
+    ],
+    "manifestTrackedEntries": 268,
+    "inheritedDemoScanEntriesOutsideReviewTree": 179,
+    "allInheritedDemoEntriesUnchanged": true,
+    "initialOverbroad447TreeAssertionFailedBeforeSharedDocsWrite": true
+  },
+  "pushed": false,
+  "sourceInputCount": 447,
+  "unchangedAgainstBaseline": 443,
+  "sourceManifestSHA256": "4a0ce63e9e0a14da852f9151020069f047fcdd1e714b9476b4a98a2025367241",
+  "files": {
+    "ios/Nastart/Nastart/zh-Hans.lproj/Localizable.strings": {
+      "baseline": "2007a5fb9a27283c3989a21cea32282327dacb28a2ad688f8498e9137752f1e9",
+      "claude": "508d8b05041afd04b1cb6bd387a930094af3fa03d6cb02c7a17ebe00aa05cc27",
+      "final": "508d8b05041afd04b1cb6bd387a930094af3fa03d6cb02c7a17ebe00aa05cc27"
+    },
+    "ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/LibraryViews.swift": {
+      "baseline": "630447404a47419173a04e703a688df1553fc9b0404bb9da097275069f7cc77d",
+      "claude": "fb7b4a00b947751e447273c43b5343c321eae71115f7eefe6208d6dc1a4e3c56",
+      "final": "1fbd58484a41abed3d05a3a557e9a0c8c99727c4530bbe78e122d4edcbabc617"
+    },
+    "ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/MediaDetailPresentation.swift": {
+      "baseline": "467eb63d8bca1468a705654d0a68571b63eea864a8429fd7b26c86b529a6e05d",
+      "claude": "ce15f138a5b3223a6213f1c65d5f641e27c5d2684b16ce7601cd06e39386a5b6",
+      "final": "ce15f138a5b3223a6213f1c65d5f641e27c5d2684b16ce7601cd06e39386a5b6"
+    },
+    "ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/SourceContext.swift": {
+      "baseline": "1fdefee5d6c3f9b65f4a55116f942e195dc14cedbe0ed9a353d4fc33e0eaeb71",
+      "claude": "b05159530b4655f770060509b8165f676fa94bee02da846537a9bed78204628a",
+      "final": "b05159530b4655f770060509b8165f676fa94bee02da846537a9bed78204628a"
+    }
+  },
+  "README": {
+    "sha256": "b44ee7c8945599e850728fb7093e6b53b14a6a5678557a379b56e3f3f464be66",
+    "matches1101Snapshot": true,
+    "exactOriginalAuthorUnknown": true
+  },
+  "READMEIncludedInUICommit": false,
+  "pageCallers": [
+    {
+      "file": "ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/SeriesViews.swift",
+      "line": 14,
+      "source": "NetworkContentPage(title: series.title) {",
+      "debugOnly": false
+    },
+    {
+      "file": "ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/SeriesViews.swift",
+      "line": 87,
+      "source": "NetworkContentPage(title: \"\\(seriesTitle) · \\(season.title)\") {",
+      "debugOnly": false
+    },
+    {
+      "file": "ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/LibraryViews.swift",
+      "line": 360,
+      "source": "NetworkContentPage(title: \"存储与媒体\", headerActionTitle: \"连接管理\", headerActionIdentifier: \"network.connections.manage\", headerAction: { managing = true }) {",
+      "debugOnly": false
+    },
+    {
+      "file": "ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/LibraryViews.swift",
+      "line": 651,
+      "source": "NetworkContentPage(title: \"存储与媒体\") {",
+      "debugOnly": true
+    },
+    {
+      "file": "ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/LibraryViews.swift",
+      "line": 676,
+      "source": "NetworkContentPage(title: \"存储与媒体\") {",
+      "debugOnly": true
+    },
+    {
+      "file": "ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/LibraryViews.swift",
+      "line": 732,
+      "source": "NetworkContentPage(title: \"媒体服务\") { NetworkMediaServicesSection(context: services) }",
+      "debugOnly": false
+    },
+    {
+      "file": "ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/LibraryViews.swift",
+      "line": 798,
+      "source": "NetworkContentPage(title: \"连接管理\") {",
+      "debugOnly": false
+    },
+    {
+      "file": "ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/LibraryViews.swift",
+      "line": 909,
+      "source": "NetworkContentPage(title: \"修改文件夹\") {",
+      "debugOnly": false
+    },
+    {
+      "file": "ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/LibraryViews.swift",
+      "line": 1020,
+      "source": "NetworkContentPage(title: \"选择文件夹\") {",
+      "debugOnly": false
+    },
+    {
+      "file": "ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/LibraryViews.swift",
+      "line": 1069,
+      "source": "NetworkContentPage(title: \"媒体库\", backAction: back) {",
+      "debugOnly": false
+    },
+    {
+      "file": "ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/LibraryViews.swift",
+      "line": 1260,
+      "source": "NetworkContentPage(title: \"修改本机资料\", backAction: { if !saving { cancel() } }) {",
+      "debugOnly": false
+    },
+    {
+      "file": "ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/LibraryViews.swift",
+      "line": 1489,
+      "source": "NetworkContentPage(title: showsSavedConnections ? \"添加媒体文件夹\" : \"添加存储连接\") {",
+      "debugOnly": false
+    },
+    {
+      "file": "ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/LibraryViews.swift",
+      "line": 1573,
+      "source": "NetworkContentPage(title: title, subtitle: subtitle) {",
+      "debugOnly": false
+    },
+    {
+      "file": "ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/LibraryViews.swift",
+      "line": 1834,
+      "source": "NetworkContentPage(title: \"连接操作\", subtitle: \"离线界面测试 · 合成连接\") {",
+      "debugOnly": true
+    },
+    {
+      "file": "ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/LibraryViews.swift",
+      "line": 1951,
+      "source": "NetworkContentPage(title: name) {",
+      "debugOnly": false
+    },
+    {
+      "file": "ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/LibraryViews.swift",
+      "line": 2149,
+      "source": "NetworkContentPage(title: \"选择媒体文件夹\", backAction: cancel) {",
+      "debugOnly": false
+    },
+    {
+      "file": "ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/LibraryViews.swift",
+      "line": 2345,
+      "source": "NetworkContentPage(title: \"选择媒体文件夹\", backAction: back) {",
+      "debugOnly": false
+    },
+    {
+      "file": "ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/MediaServiceViews.swift",
+      "line": 141,
+      "source": "NetworkContentPage(title: product.title) {",
+      "debugOnly": false
+    },
+    {
+      "file": "ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/MediaServiceViews.swift",
+      "line": 195,
+      "source": "NetworkContentPage(title: value.identity?.product.title ?? candidate.hint.title, subtitle: \"媒体服务与连接状态\") {",
+      "debugOnly": false
+    }
+  ],
+  "review": {
+    "callSites": 19,
+    "debugOnlyCallSites": 3,
+    "approx720ptReadableWidth": "iOS17+ regular only; compact/iOS16 unchanged; native list insets still apply",
+    "inlineTitle": "iOS17+ regular only, including narrower regular windows",
+    "hero": "820pt inner column +18pt padding, same order as production detail body; backdrop remains full width",
+    "folderBack": "Custom per-directory history/root callback; system navigation pop intentionally hidden only when a custom action exists",
+    "interactivePop": "Accepted disabled tradeoff; not physically gesture-tested",
+    "compactFix": "Custom chevron at compact width, full accessibility label retained; regular width uses titled action",
+    "tvOS": "No behavior change in this batch",
+    "compactFixEvidence": "Original-resolution candidate1 had complete title/no overlap; compact chevron is navigation layout refinement, not a proven truncation fix"
+  },
+  "validation": {
+    "sixConfigurations": [
+      {
+        "stage": "mobile-sim-debug",
+        "startedAt": "2026-11-03T23:27:42.160614+08:00",
+        "freeGiBBefore": 7.350345611572266,
+        "sourceInputs": 447,
+        "initialBatchGateGiB": 6,
+        "runtimeReserveGiB": 2,
+        "exitCode": 0,
+        "endedAt": "2026-11-03T23:28:04.252685+08:00",
+        "freeGiBAfter": 7.338218688964844,
+        "sourceUnchanged": true
+      },
+      {
+        "stage": "mobile-device-debug",
+        "startedAt": "2026-11-03T23:28:10.693674+08:00",
+        "freeGiBBefore": 7.338024139404297,
+        "sourceInputs": 447,
+        "initialBatchGateGiB": 6,
+        "runtimeReserveGiB": 2,
+        "exitCode": 0,
+        "endedAt": "2026-11-03T23:28:29.784892+08:00",
+        "freeGiBAfter": 7.341922760009766,
+        "sourceUnchanged": true
+      },
+      {
+        "stage": "mobile-device-release",
+        "startedAt": "2026-11-03T23:28:29.913336+08:00",
+        "freeGiBBefore": 7.341915130615234,
+        "sourceInputs": 447,
+        "initialBatchGateGiB": 6,
+        "runtimeReserveGiB": 2,
+        "exitCode": 0,
+        "endedAt": "2026-11-03T23:30:10.636046+08:00",
+        "freeGiBAfter": 7.338298797607422,
+        "sourceUnchanged": true
+      },
+      {
+        "stage": "tv-sim-debug",
+        "startedAt": "2026-11-03T23:30:10.776567+08:00",
+        "freeGiBBefore": 7.338287353515625,
+        "sourceInputs": 447,
+        "initialBatchGateGiB": 6,
+        "runtimeReserveGiB": 2,
+        "exitCode": 0,
+        "endedAt": "2026-11-03T23:30:21.848975+08:00",
+        "freeGiBAfter": 7.360115051269531,
+        "sourceUnchanged": true
+      },
+      {
+        "stage": "tv-device-debug",
+        "startedAt": "2026-11-03T23:30:21.951085+08:00",
+        "freeGiBBefore": 7.360057830810547,
+        "sourceInputs": 447,
+        "initialBatchGateGiB": 6,
+        "runtimeReserveGiB": 2,
+        "exitCode": 0,
+        "endedAt": "2026-11-03T23:30:37.077492+08:00",
+        "freeGiBAfter": 7.358188629150391,
+        "sourceUnchanged": true
+      },
+      {
+        "stage": "tv-device-release",
+        "startedAt": "2026-11-03T23:30:37.199101+08:00",
+        "freeGiBBefore": 7.358177185058594,
+        "sourceInputs": 447,
+        "initialBatchGateGiB": 6,
+        "runtimeReserveGiB": 2,
+        "exitCode": 0,
+        "endedAt": "2026-11-03T23:31:09.477579+08:00",
+        "freeGiBAfter": 7.356620788574219,
+        "sourceUnchanged": true
+      }
+    ],
+    "releaseMarkers": 27,
+    "ReleaseExclusionPassed": true,
+    "DEBUGPositiveControlPassed": true,
+    "localizationLintPassed": true,
+    "diffCheckPassed": true,
+    "package305": "Claude-reported after four-file delta; not rerun by Codex for iOS-only presentation refinement",
+    "hostedTests": "Prior batch only, not claimed as tests of current UI",
+    "documentation": {
+      "documents": 659,
+      "localLinks": 3935,
+      "missingDestinations": 0
+    }
+  },
+  "package": {
+    "configuration": "normal Debug -Onone; existing automatic signing; no test variables/flags or provisioning updates",
+    "builtAt": "2026-11-03T23:32:15.563445+08:00",
+    "sourceInputCount": 447,
+    "sourceManifestSHA256": "4a0ce63e9e0a14da852f9151020069f047fcdd1e714b9476b4a98a2025367241",
+    "appPath": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-11-03-ui-integration2/normal-package/Payload/Nastart.app",
+    "ipaPath": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-11-03-ui-integration2/normal-package/Nastart-Normal-Debug-20261103.ipa",
+    "mainSHA256": "2090db4219666643c062b899ab376d7d1cc1edfd2dc164ca6909f6f3d1919c6b",
+    "debugDylibSHA256": "8a1e979bb59c4a593068e8150a9b34bbd825a8a45ad7eec47cbbf33f2afe7605",
+    "ipaSHA256": "96f99d5021b113a1dee1977dc61e295299294fe6bd7b3ac90f19b7f187dbc23e",
+    "signedMachOCount": 30,
+    "profileExpirationUTC": "2026-11-08T01:08:19Z",
+    "deepAndIndividualSignatureVerificationPassed": true,
+    "ipaArchiveAndCurrentInputsVerified": true,
+    "physicalDevicesInstalledThisBatch": 2,
+    "normalRootLaunched": false,
+    "buildStartedAt": "2026-11-03T23:31:16.686070+08:00",
+    "buildEndedAt": "2026-11-03T23:32:10.407660+08:00",
+    "physicalDevicesInstalled": 2
+  },
+  "candidate1Superseded": true,
+  "devices": {
+    "iphone13": {
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "connection": "USB",
+      "freshIdentityVerified": true,
+      "installedAt": "2026-11-03T23:32:41.775686+08:00",
+      "mainSHA256": "2090db4219666643c062b899ab376d7d1cc1edfd2dc164ca6909f6f3d1919c6b",
+      "debugDylibSHA256": "8a1e979bb59c4a593068e8150a9b34bbd825a8a45ad7eec47cbbf33f2afe7605",
+      "retainedDataInstallComplete": true,
+      "freshBundleLookupConfirmed": true,
+      "allPreferencesEqual": true,
+      "nonDiagnosticPreferenceKeys": 26,
+      "sceneCount": 5,
+      "scenes": [
+        "home-read-ready",
+        "source-add",
+        "folder-picker",
+        "folder-picker-busy",
+        "detail"
+      ],
+      "imagesInspected": true,
+      "observations": {
+        "orientation": "portrait",
+        "scenes": "Five final-package screenshots inspected; home and source-add fit compact screen; custom folder chevron and complete inline title visible; busy variant visibly dims back/select/children; synthetic detail hero remains readable. No interaction performed.",
+        "folderBeforeAfter": "Original-resolution candidate1 title was complete with no overlap; long text occupied more navigation space. Final chevron is layout refinement, not a proven clipping fix.",
+        "ordinaryRoot": false
+      },
+      "remainingNastartProcesses": 0,
+      "interactionOrRotationVerified": false,
+      "ordinaryRootStarted": false,
+      "testEnvironment": {},
+      "launchConditions": "Explicit --offline-ui scene, glassDeck/dark, zh-Hans; busy/source-add variants use large text as recorded in private args"
+    },
+    "ipad": {
+      "model": "iPad15,7",
+      "system": "26.6",
+      "connection": "wired",
+      "freshIdentityVerified": true,
+      "installedAt": "2026-11-03T23:33:14.962592+08:00",
+      "mainSHA256": "2090db4219666643c062b899ab376d7d1cc1edfd2dc164ca6909f6f3d1919c6b",
+      "debugDylibSHA256": "8a1e979bb59c4a593068e8150a9b34bbd825a8a45ad7eec47cbbf33f2afe7605",
+      "retainedDataInstallComplete": true,
+      "freshBundleLookupConfirmed": true,
+      "allPreferencesEqual": true,
+      "nonDiagnosticPreferenceKeys": 19,
+      "sceneCount": 7,
+      "scenes": [
+        "home-read-ready",
+        "connections",
+        "source-add",
+        "connection",
+        "folder-picker",
+        "folder-picker-busy",
+        "detail"
+      ],
+      "imagesInspected": true,
+      "observations": {
+        "orientation": "portrait",
+        "scenes": "Seven final-package screenshots inspected; home/connections/source-add/form/folder content columns centered and inline titles visible; regular-width folder return remains text; busy variant visibly disabled; synthetic detail component shown.",
+        "heroLimit": "Portrait A16 inner hero width does not exceed820pt; does not exercise the cap or prove production-body alignment. Landscape/split-screen pending.",
+        "ordinaryRoot": false
+      },
+      "remainingNastartProcesses": 0,
+      "interactionOrRotationVerified": false,
+      "ordinaryRootStarted": false,
+      "testEnvironment": {},
+      "launchConditions": "Explicit --offline-ui scene, glassDeck/dark, zh-Hans; busy/source-add variants use large text as recorded in private args"
+    }
+  },
+  "NASRequests": 0,
+  "cellularTasks": 0,
+  "iphone18Operated": false,
+  "physicalTVOperated": false,
+  "newWDAOrSigning": false,
+  "requirementsClosed": 0,
+  "playbackMatrixNewPasses": 0,
+  "privateEvidencePointer": "/tmp/nastart-codex-ui-integration2-path"
+}

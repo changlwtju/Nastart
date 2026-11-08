@@ -1,0 +1,1680 @@
+{
+  "recordedAt": "2026-10-10T16:34:32.468482+08:00",
+  "source": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "c51133b78e77c80a02c9b7c23b4a7b1cdc7aaeb0327bab6b9c7d394c799b8a6f",
+    "package": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-10-10-restore-ownership-final-161835/Nastart-Restore-Ownership-Normal-Debug.app",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "binaryBuildTime": "2026-10-10T16:19:15.777382+08:00",
+    "binaries": {
+      "Nastart": "f26037831d6074b3779470c59191b4af0b9720eb522f1d730e2fba2a0e191f7e",
+      "Nastart.debug.dylib": "0649bd7b7a6f661d5bc4737485e70af8c1d0995df50d32ac862f64becd212950",
+      "Frameworks/KSPlayer.framework/KSPlayer": "eda16e6d0e22bc81045752f2f54a263b0f4f8500912378d5ac141013c9042b52"
+    },
+    "signatureVerified": true,
+    "individuallyVerifiedLibraries": 29,
+    "checkedInputs": 173,
+    "newerInputs": [],
+    "profileExpirationUTC": "2026-10-10T22:03:15",
+    "tests": "285/2 skipped/0 failures; 20 new restore/manual lifecycle fixtures plus preceding resume/folder/authentication/cache/playback fixtures",
+    "preflight": "15 passed",
+    "linkageVerified": true,
+    "sourceInputManifestSHA256": "0daa440f6906cc4bc617ae4300505320c893a23bd409c4041779911a0525a3d2"
+  },
+  "sourceScope": {
+    "recordedAt": "2026-10-10T16:20:30.420187+08:00",
+    "previousSourceInputsCompared": 173,
+    "changedSincePreviousFrozenBuild": [
+      "ios/Nastart/Nastart/Core/Stores/AppStateStores.swift",
+      "ios/Nastart/Nastart/Core/Stores/DSMClient.swift",
+      "ios/Nastart/Nastart/Core/Stores/NASConnectionStore.swift",
+      "ios/Nastart/Nastart/Features/Launchpad/LaunchpadConnectionViews.swift",
+      "ios/Nastart/Nastart/Features/Mine/MineView.swift",
+      "ios/Nastart/NastartTests/NonPlaybackPolicyTests.swift"
+    ],
+    "playerEngineTransportResumeParametersUnchanged": true,
+    "authenticationRuleChange": "explicit attempt and login UUID plus restore refresh-ID ownership, guarded cleanup and protected logout; no extra reauthentication or retries"
+  },
+  "tests": {
+    "executed": 285,
+    "skipped": 2,
+    "failures": 0,
+    "newOwnershipFixtures": 20,
+    "preflight": 15,
+    "safeReportTests": 18,
+    "attribution": "Executed for final frozen source, not historical"
+  },
+  "controlledCounterexamples": {
+    "originalScenes": 7,
+    "originalFailedAssertions": 19,
+    "additionalCacheInvalidationScene": 1,
+    "additionalFailedAssertions": 4,
+    "baselineFailedLogsRetainedPrivately": true,
+    "all20FinalFixturesPassed": true,
+    "realAccountsOrPhysicalDeviceCredentialsSwitched": false
+  },
+  "freshDevices": {
+    "recordedAt": "2026-10-10T16:18:35.812271+08:00",
+    "devices": {
+      "other": {
+        "DeviceName": "iPhone",
+        "ProductType": "iPhone19,7",
+        "ProductVersion": "27.0",
+        "BuildVersion": "24A8428",
+        "connectionType": "ConnectionType.NETWORK"
+      },
+      "ipad": {
+        "DeviceName": "iPad",
+        "ProductType": "iPad12,1",
+        "ProductVersion": "18.3.1",
+        "BuildVersion": "22D72",
+        "connectionType": "ConnectionType.USB"
+      },
+      "iphone13": {
+        "DeviceName": "iPhone",
+        "ProductType": "iPhone14,5",
+        "ProductVersion": "16.3.1",
+        "BuildVersion": "20D67",
+        "connectionType": "ConnectionType.USB"
+      }
+    }
+  },
+  "devices": {
+    "ipad": {
+      "installation": {
+        "recordedAt": "2026-10-10T16:20:42.710207+08:00",
+        "device": "ipad",
+        "model": "iPad12,1",
+        "os": "18.3.1",
+        "systemBuild": "22D72",
+        "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+        "sourceDiffSHA256": "c51133b78e77c80a02c9b7c23b4a7b1cdc7aaeb0327bab6b9c7d394c799b8a6f",
+        "binaries": {
+          "Nastart": "f26037831d6074b3779470c59191b4af0b9720eb522f1d730e2fba2a0e191f7e",
+          "Nastart.debug.dylib": "0649bd7b7a6f661d5bc4737485e70af8c1d0995df50d32ac862f64becd212950",
+          "Frameworks/KSPlayer.framework/KSPlayer": "eda16e6d0e22bc81045752f2f54a263b0f4f8500912378d5ac141013c9042b52"
+        },
+        "binaryBuildTime": "2026-10-10T16:19:15.777382+08:00",
+        "configuration": "normal Debug -Onone; empty launch environment",
+        "freshUSBIdentity": true,
+        "pairingValid": true,
+        "signatureVerified": true,
+        "verifiedLibraries": 29,
+        "checkedInputs": 173,
+        "targetInValidProfile": true,
+        "dataPreservingCoverInstall": true,
+        "installation": "success",
+        "unchangedNonDiagnosticPreferences": 16,
+        "normalLaunchSucceeded": true,
+        "requestedEnvironment": {},
+        "requestedArguments": [],
+        "actualForegroundUIVerified": true,
+        "foregroundEvidence": "normal-launch.png/xml",
+        "wdaReinstallRequested": false,
+        "cellularAvailability": "not used",
+        "networkSettingsChanged": false,
+        "actualProcessArguments": {
+          "env": {},
+          "args": []
+        },
+        "normalHomeNASOnline": true,
+        "actualPlayerClosed": true,
+        "initialJellyfinStatus": "gray/unknown"
+      },
+      "directoryCycles": {
+        "recordedAt": "2026-10-10T16:22:11.201195+08:00",
+        "device": "ipad",
+        "cycles": [
+          {
+            "cycle": 1,
+            "directoryReopened": true,
+            "expectedChildVisible": true,
+            "noFolderErrorInCapturedStates": true,
+            "actualUIInspected": true,
+            "evidence": [
+              "directory-owned-click-cycle1-closed.png",
+              "directory-owned-click-cycle1-reopened.png"
+            ]
+          },
+          {
+            "cycle": 2,
+            "directoryReopened": true,
+            "expectedChildVisible": true,
+            "noFolderErrorInCapturedStates": true,
+            "actualUIInspected": true,
+            "evidence": [
+              "directory-owned-click-cycle2-closed.png",
+              "directory-owned-click-cycle2-reopened.png"
+            ]
+          },
+          {
+            "cycle": 3,
+            "directoryReopened": true,
+            "expectedChildVisible": true,
+            "noFolderErrorInCapturedStates": true,
+            "actualUIInspected": true,
+            "evidence": [
+              "directory-owned-click-cycle3-closed.png",
+              "directory-owned-click-cycle3-reopened.png"
+            ]
+          }
+        ],
+        "sourceAndLatestPackageVerified": true,
+        "noPlaybackSubmitted": true,
+        "network": "normal Wi-Fi, no shaping",
+        "limitations": [
+          "Three exit/reopen XML checks, actual inspected captures separately; not in-flight cancellation or scroll/performance acceptance."
+        ]
+      },
+      "startConditions": {
+        "recordedAt": "2026-10-10T16:21:43.708988+08:00",
+        "groups": [
+          {
+            "name": "Network Link",
+            "isActive": false
+          },
+          {
+            "name": "Thermal State",
+            "isActive": false
+          },
+          {
+            "name": "GPU Performance State",
+            "isActive": false
+          }
+        ],
+        "activeCount": 0,
+        "mutationPerformed": false
+      },
+      "finalState": {
+        "recordedAt": "2026-10-10T16:33:09.043168+08:00",
+        "freshUSBIdentity": true,
+        "sourceAndBinariesMatchLatest": true,
+        "latestPackage": {
+          "Nastart": "f26037831d6074b3779470c59191b4af0b9720eb522f1d730e2fba2a0e191f7e",
+          "Nastart.debug.dylib": "0649bd7b7a6f661d5bc4737485e70af8c1d0995df50d32ac862f64becd212950",
+          "Frameworks/KSPlayer.framework/KSPlayer": "eda16e6d0e22bc81045752f2f54a263b0f4f8500912378d5ac141013c9042b52"
+        },
+        "normalRequestedEnvironment": {},
+        "normalRequestedArguments": [],
+        "actualProcessArguments": {
+          "env": {},
+          "args": []
+        },
+        "normalLaunch": true,
+        "playerClosed": true,
+        "pid": 8410,
+        "wdaReady": true,
+        "wdaReinstalled": false,
+        "idleWaitRestored": 10,
+        "animationCoolOffRestored": 2,
+        "UIEvidence": "final-latest-normal-home.png/xml",
+        "actualUIInspected": true,
+        "normalHomeNASOnline": true,
+        "initialServicesStatus": "gray/unknown"
+      },
+      "finalConditions": {
+        "recordedAt": "2026-10-10T16:33:20.956988+08:00",
+        "groups": [
+          {
+            "name": "Network Link",
+            "isActive": false
+          },
+          {
+            "name": "Thermal State",
+            "isActive": false
+          },
+          {
+            "name": "GPU Performance State",
+            "isActive": false
+          }
+        ],
+        "activeCount": 0,
+        "mutationPerformed": false
+      },
+      "finalConfirmation": {
+        "recordedAt": "2026-10-10T16:33:37.461561+08:00",
+        "device": "ipad",
+        "name": "iPad",
+        "model": "iPad12,1",
+        "os": "18.3.1",
+        "systemBuild": "22D72",
+        "freshUSBIdentity": true,
+        "sourceInputManifestMatches": true,
+        "sourceAndBinariesMatchLatest": true,
+        "actualEnvironment": {},
+        "actualArguments": [],
+        "normalHomeNASOnline": true,
+        "playerClosed": true,
+        "actualUIInspected": true,
+        "evidence": "final-confirmation.png/xml",
+        "mutationPerformed": false,
+        "actualDSMOnline": true,
+        "actualJellyfinOnline": true,
+        "otherServicesWarningsRetained": true,
+        "allServicesGreen": false
+      },
+      "finalPreferences": {
+        "recordedAt": "2026-10-10T16:33:51.074555+08:00",
+        "device": "ipad",
+        "rawPreferencesStoredPrivately": true,
+        "nonDiagnosticPreferenceCount": 16
+      },
+      "newDirectoryResponseCounts": {
+        "success": 12
+      },
+      "apiFailureCodes": {},
+      "historicalEventIDsExcluded": 1000
+    },
+    "iphone13": {
+      "installation": {
+        "recordedAt": "2026-10-10T16:21:20.442262+08:00",
+        "device": "iphone13",
+        "model": "iPhone14,5",
+        "os": "16.3.1",
+        "systemBuild": "20D67",
+        "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+        "sourceDiffSHA256": "c51133b78e77c80a02c9b7c23b4a7b1cdc7aaeb0327bab6b9c7d394c799b8a6f",
+        "binaries": {
+          "Nastart": "f26037831d6074b3779470c59191b4af0b9720eb522f1d730e2fba2a0e191f7e",
+          "Nastart.debug.dylib": "0649bd7b7a6f661d5bc4737485e70af8c1d0995df50d32ac862f64becd212950",
+          "Frameworks/KSPlayer.framework/KSPlayer": "eda16e6d0e22bc81045752f2f54a263b0f4f8500912378d5ac141013c9042b52"
+        },
+        "binaryBuildTime": "2026-10-10T16:19:15.777382+08:00",
+        "configuration": "normal Debug -Onone; empty launch environment",
+        "freshUSBIdentity": true,
+        "pairingValid": true,
+        "signatureVerified": true,
+        "verifiedLibraries": 29,
+        "checkedInputs": 173,
+        "targetInValidProfile": true,
+        "dataPreservingCoverInstall": true,
+        "installation": "success",
+        "unchangedNonDiagnosticPreferences": 25,
+        "normalLaunchSucceeded": true,
+        "requestedEnvironment": {},
+        "requestedArguments": [],
+        "actualForegroundUIVerified": true,
+        "foregroundEvidence": "normal-launch.png/xml",
+        "wdaReinstallRequested": false,
+        "cellularAvailability": "available per current user; not used in this home Wi-Fi batch",
+        "networkSettingsChanged": false,
+        "actualProcessArguments": {
+          "env": {},
+          "args": []
+        },
+        "normalHomeNASOnline": true,
+        "actualPlayerClosed": true,
+        "initialJellyfinStatus": "gray/unknown"
+      },
+      "directoryCycles": {
+        "recordedAt": "2026-10-10T16:28:38.618254+08:00",
+        "device": "iphone13",
+        "cycles": [
+          {
+            "cycle": 1,
+            "directoryReopened": true,
+            "expectedChildVisible": true,
+            "noFolderErrorInCapturedStates": true,
+            "actualUIInspected": true,
+            "evidence": [
+              "directory-owned-click-cycle1-closed.png",
+              "directory-owned-click-cycle1-reopened.png"
+            ],
+            "transitionVisibleInImmediateReopenImage": true,
+            "scrollingOrAnimationFluidityVerified": false
+          },
+          {
+            "cycle": 2,
+            "directoryReopened": true,
+            "expectedChildVisible": true,
+            "noFolderErrorInCapturedStates": true,
+            "actualUIInspected": true,
+            "evidence": [
+              "directory-owned-click-cycle2-closed.png",
+              "directory-owned-click-cycle2-reopened.png"
+            ],
+            "transitionVisibleInImmediateReopenImage": true,
+            "scrollingOrAnimationFluidityVerified": false
+          },
+          {
+            "cycle": 3,
+            "directoryReopened": true,
+            "expectedChildVisible": true,
+            "noFolderErrorInCapturedStates": true,
+            "actualUIInspected": true,
+            "evidence": [
+              "directory-owned-click-cycle3-closed.png",
+              "directory-owned-click-cycle3-reopened.png"
+            ],
+            "transitionVisibleInImmediateReopenImage": true,
+            "scrollingOrAnimationFluidityVerified": false
+          }
+        ],
+        "sourceAndLatestPackageVerified": true,
+        "noPlaybackSubmitted": true,
+        "network": "normal Wi-Fi, no shaping",
+        "limitations": [
+          "Three exit/reopen XML checks, actual inspected captures separately; not in-flight cancellation or scroll/performance acceptance."
+        ]
+      },
+      "startConditions": {
+        "recordedAt": "2026-10-10T16:21:43.561693+08:00",
+        "groups": [
+          {
+            "name": "Network Link",
+            "isActive": false
+          },
+          {
+            "name": "Thermal State",
+            "isActive": false
+          },
+          {
+            "name": "GPU Performance State",
+            "isActive": false
+          }
+        ],
+        "activeCount": 0,
+        "mutationPerformed": false
+      },
+      "finalState": {
+        "recordedAt": "2026-10-10T16:33:02.219090+08:00",
+        "freshUSBIdentity": true,
+        "sourceAndBinariesMatchLatest": true,
+        "latestPackage": {
+          "Nastart": "f26037831d6074b3779470c59191b4af0b9720eb522f1d730e2fba2a0e191f7e",
+          "Nastart.debug.dylib": "0649bd7b7a6f661d5bc4737485e70af8c1d0995df50d32ac862f64becd212950",
+          "Frameworks/KSPlayer.framework/KSPlayer": "eda16e6d0e22bc81045752f2f54a263b0f4f8500912378d5ac141013c9042b52"
+        },
+        "normalRequestedEnvironment": {},
+        "normalRequestedArguments": [],
+        "actualProcessArguments": {
+          "env": {},
+          "args": []
+        },
+        "normalLaunch": true,
+        "playerClosed": true,
+        "pid": 78990,
+        "wdaReady": true,
+        "wdaReinstalled": false,
+        "idleWaitRestored": 10,
+        "animationCoolOffRestored": 2,
+        "UIEvidence": "final-latest-normal-home.png/xml",
+        "actualUIInspected": true,
+        "normalHomeNASOnline": true,
+        "initialServicesStatus": "gray/unknown"
+      },
+      "finalConditions": {
+        "recordedAt": "2026-10-10T16:33:20.808002+08:00",
+        "groups": [
+          {
+            "name": "Network Link",
+            "isActive": false
+          },
+          {
+            "name": "Thermal State",
+            "isActive": false
+          },
+          {
+            "name": "GPU Performance State",
+            "isActive": false
+          }
+        ],
+        "activeCount": 0,
+        "mutationPerformed": false
+      },
+      "finalConfirmation": {
+        "recordedAt": "2026-10-10T16:33:36.750535+08:00",
+        "device": "iphone13",
+        "name": "iPhone",
+        "model": "iPhone14,5",
+        "os": "16.3.1",
+        "systemBuild": "20D67",
+        "freshUSBIdentity": true,
+        "sourceInputManifestMatches": true,
+        "sourceAndBinariesMatchLatest": true,
+        "actualEnvironment": {},
+        "actualArguments": [],
+        "normalHomeNASOnline": true,
+        "playerClosed": true,
+        "actualUIInspected": true,
+        "evidence": "final-confirmation.png/xml",
+        "mutationPerformed": false,
+        "actualDSMOnline": true,
+        "actualJellyfinOnline": true,
+        "otherServicesWarningsRetained": true,
+        "allServicesGreen": false
+      },
+      "finalPreferences": {
+        "recordedAt": "2026-10-10T16:33:50.901789+08:00",
+        "device": "iphone13",
+        "rawPreferencesStoredPrivately": true,
+        "nonDiagnosticPreferenceCount": 25
+      },
+      "newDirectoryResponseCounts": {
+        "success": 12
+      },
+      "apiFailureCodes": {},
+      "historicalEventIDsExcluded": 1000
+    }
+  },
+  "windows": [
+    {
+      "device": "ipad",
+      "label": "normalwifi-baseline-ownership-s01-files",
+      "window": {
+        "boundedEndActionSeconds": 60.375420331954956,
+        "plannedWindowSeconds": 60,
+        "deduplicatedWindowEventCount": 104,
+        "snapshotsRead": 8
+      },
+      "exit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "screen": {
+        "recordedAt": "2026-10-10T16:28:39.985772+08:00",
+        "actualUIInspected": true,
+        "filmBodyVerified": true,
+        "filmEvidence": "t60.png",
+        "filmObservation": "Howl film countryside with cottages, mist and sheep",
+        "normalExitUIInspected": true,
+        "exitEvidence": "closed-stable.png",
+        "exitMatchingTitle": true,
+        "fileContinueVisible": true,
+        "jellyfinContinueVisible": false,
+        "frameCoverageVerified": false,
+        "audioSubtitleHDRVerified": false
+      },
+      "readAttempts": [
+        {
+          "requestStart": 1791620604.231311,
+          "responseEnd": 1791620604.432236,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791620606.215424,
+          "responseEnd": 1791620606.245586,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791620607.755101,
+          "responseEnd": 1791620607.787455,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791620614.759389,
+          "responseEnd": 1791620614.788516,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791620634.807332,
+          "responseEnd": 1791620634.839144,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791620664.809113,
+          "responseEnd": 1791620664.841614,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791620668.618455,
+          "responseEnd": 1791620668.6531572,
+          "attempt": 1,
+          "result": "success"
+        }
+      ],
+      "rendererTraces": [
+        {
+          "traceID": "1CEA740B",
+          "engine": "KSPlayer",
+          "firstClockSignal": {
+            "actionSeconds": 2.152739,
+            "event": "first_frame",
+            "fields": {
+              "firstFramePositionSeconds": 0.08,
+              "planID": "44F29831",
+              "playbackTraceID": "1CEA740B",
+              "routeID": "88EF07F8",
+              "tapToFirstFrameMs": 1466
+            }
+          },
+          "firstObservedAdvancingClockActionSeconds": 3.166293,
+          "maxReportedStallCount": 0,
+          "stallEpisodes": [],
+          "handoffEvents": [],
+          "handoffConfiguration": []
+        }
+      ],
+      "failureSignals": [
+        {
+          "actionSeconds": 1.784607,
+          "event": "proxy_transfer_finished",
+          "fields": {
+            "deliveredBytes": 444207,
+            "durationMs": 501,
+            "errorCode": 54,
+            "errorDomain": "unrecognized",
+            "expectedBytes": 33554432,
+            "finishSource": "clientFailed",
+            "hlsRole": "-",
+            "playbackTraceID": "1CEA740B",
+            "proxyKind": "mediaRange",
+            "responseEndOffset": 33554431,
+            "responseStartOffset": 0,
+            "result": "unrecognized",
+            "retries": 0,
+            "status": 206,
+            "taskReceivedBytes": 444207,
+            "transferID": "77EC70D6-7575-4DF1-AD71-8408D8E0DBFA",
+            "transportErrorCode": 54,
+            "transportErrorKind": "posix",
+            "upstreamTaskIndex": 1
+          }
+        },
+        {
+          "actionSeconds": 1.785329,
+          "event": "proxy_transfer_finished",
+          "fields": {
+            "callbackAfterClientFinish": "true",
+            "cumulativeReceivedBytes": 444207,
+            "errorCode": -999,
+            "errorDomain": "NSURLErrorDomain",
+            "expectedBytes": 33554432,
+            "hlsRole": "-",
+            "playbackTraceID": "1CEA740B",
+            "proxyKind": "mediaRange",
+            "stage": "upstreamTaskCompleted",
+            "taskReceivedBytes": 444207,
+            "transferID": "77EC70D6-7575-4DF1-AD71-8408D8E0DBFA",
+            "upstreamCancelToCallbackMs": 1,
+            "upstreamCancellationRequested": "true",
+            "upstreamCompletionObserved": "true",
+            "upstreamIssuedToCallbackMs": 502,
+            "upstreamTaskIndex": 1
+          }
+        }
+      ],
+      "acceptance": "Unchanged: recorded waits/stalls retained, no playback quality PASS or causal speed claim.",
+      "limits": [
+        "Engine waiting/empty is not proof of network starvation; retain waiting reason and reserve.",
+        "A unique HLS trace within warmup is a temporal association, not proof of a network or server root cause.",
+        "Transfer intervals overlap; late terminals stay bounded. Unrecognized result strings do not mean success.",
+        "First clock marker may reflect a prepared paused position, not advancing output or presentation.",
+        "First observed progress is limited by sparse telemetry; phase is descriptive, not an exact startup boundary.",
+        "Sampled stall intervals are observation spans, not display hitches or precise buffer durations.",
+        "Stalls are per trace; never subtract counters across renderers. Open episodes remain censored.",
+        "Missing metrics remain unknown; no screen, audio, full-frame, cache or competitor acceptance."
+      ]
+    },
+    {
+      "device": "ipad",
+      "label": "normalwifi-baseline-ownership-s01-jellyfin",
+      "window": {
+        "boundedEndActionSeconds": 60.705617904663086,
+        "plannedWindowSeconds": 60,
+        "deduplicatedWindowEventCount": 166,
+        "snapshotsRead": 8
+      },
+      "exit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "screen": {
+        "recordedAt": "2026-10-10T16:28:39.986108+08:00",
+        "actualUIInspected": true,
+        "filmBodyVerified": true,
+        "filmEvidence": "t60.png",
+        "filmObservation": "Howl film countryside with cottages, mist and sheep",
+        "normalExitUIInspected": true,
+        "exitEvidence": "closed-stable.png",
+        "exitMatchingTitle": true,
+        "fileContinueVisible": false,
+        "jellyfinContinueVisible": true,
+        "frameCoverageVerified": false,
+        "audioSubtitleHDRVerified": false
+      },
+      "readAttempts": [
+        {
+          "requestStart": 1791620696.718384,
+          "responseEnd": 1791620696.928523,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791620699.3874938,
+          "responseEnd": 1791620699.387572,
+          "attempt": 1,
+          "result": "TOOL_READ_FAILURE",
+          "errorType": "SocketError"
+        },
+        {
+          "requestStart": 1791620699.6443279,
+          "responseEnd": 1791620699.7725818,
+          "attempt": 2,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791620700.50264,
+          "responseEnd": 1791620700.5341299,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791620707.418491,
+          "responseEnd": 1791620707.445947,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791620727.480619,
+          "responseEnd": 1791620727.5137742,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791620757.6367629,
+          "responseEnd": 1791620757.666185,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791620763.276433,
+          "responseEnd": 1791620763.308631,
+          "attempt": 1,
+          "result": "success"
+        }
+      ],
+      "rendererTraces": [
+        {
+          "traceID": "3415E214",
+          "engine": "KSPlayer",
+          "firstClockSignal": {
+            "actionSeconds": 1.752532,
+            "event": "first_frame",
+            "fields": {
+              "firstFramePositionSeconds": 0.155,
+              "planID": "3504D603",
+              "playbackTraceID": "3415E214",
+              "routeID": "DF4FF125",
+              "tapToFirstFrameMs": 850
+            }
+          },
+          "firstObservedAdvancingClockActionSeconds": 2.739531,
+          "maxReportedStallCount": 0,
+          "stallEpisodes": [],
+          "handoffEvents": [],
+          "handoffConfiguration": []
+        }
+      ],
+      "failureSignals": [
+        {
+          "actionSeconds": 1.331849,
+          "event": "proxy_transfer_finished",
+          "fields": {
+            "deliveredBytes": 296555,
+            "durationMs": 164,
+            "errorCode": 32,
+            "errorDomain": "unrecognized",
+            "expectedBytes": 33554432,
+            "finishSource": "clientBodySend",
+            "hlsRole": "-",
+            "playbackTraceID": "3415E214",
+            "proxyKind": "mediaRange",
+            "responseEndOffset": 33554431,
+            "responseStartOffset": 0,
+            "result": "unrecognized",
+            "retries": 0,
+            "status": 206,
+            "taskReceivedBytes": 296555,
+            "transferID": "868BD4E8-E4A6-4C2C-9572-B7E9842163FC",
+            "transportErrorCode": 32,
+            "transportErrorKind": "posix",
+            "upstreamTaskIndex": 1
+          }
+        },
+        {
+          "actionSeconds": 1.402441,
+          "event": "proxy_transfer_finished",
+          "fields": {
+            "callbackAfterClientFinish": "true",
+            "cumulativeReceivedBytes": 296555,
+            "errorCode": -999,
+            "errorDomain": "NSURLErrorDomain",
+            "expectedBytes": 33554432,
+            "hlsRole": "-",
+            "playbackTraceID": "3415E214",
+            "proxyKind": "mediaRange",
+            "stage": "upstreamTaskCompleted",
+            "taskReceivedBytes": 296555,
+            "transferID": "868BD4E8-E4A6-4C2C-9572-B7E9842163FC",
+            "upstreamCancelToCallbackMs": 1,
+            "upstreamCancellationRequested": "true",
+            "upstreamCompletionObserved": "true",
+            "upstreamIssuedToCallbackMs": 166,
+            "upstreamTaskIndex": 1
+          }
+        }
+      ],
+      "acceptance": "Unchanged: recorded waits/stalls retained, no playback quality PASS or causal speed claim.",
+      "limits": [
+        "Engine waiting/empty is not proof of network starvation; retain waiting reason and reserve.",
+        "A unique HLS trace within warmup is a temporal association, not proof of a network or server root cause.",
+        "Transfer intervals overlap; late terminals stay bounded. Unrecognized result strings do not mean success.",
+        "First clock marker may reflect a prepared paused position, not advancing output or presentation.",
+        "First observed progress is limited by sparse telemetry; phase is descriptive, not an exact startup boundary.",
+        "Sampled stall intervals are observation spans, not display hitches or precise buffer durations.",
+        "Stalls are per trace; never subtract counters across renderers. Open episodes remain censored.",
+        "Missing metrics remain unknown; no screen, audio, full-frame, cache or competitor acceptance."
+      ]
+    },
+    {
+      "device": "iphone13",
+      "label": "normalwifi-baseline-ownership-s01-files",
+      "window": {
+        "boundedEndActionSeconds": 60.3774778842926,
+        "plannedWindowSeconds": 60,
+        "deduplicatedWindowEventCount": 106,
+        "snapshotsRead": 8
+      },
+      "exit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "screen": {
+        "recordedAt": "2026-10-10T16:31:35.160131+08:00",
+        "actualUIInspected": true,
+        "filmBodyVerified": true,
+        "filmEvidence": "t60.png",
+        "filmObservation": "Howl film countryside with cottages, mist and sheep; screenshot portrait container includes rotated movie",
+        "normalExitUIInspected": true,
+        "exitEvidence": "closed-stable.png",
+        "exitMatchingTitle": true,
+        "fileContinueVisible": true,
+        "frameCoverageVerified": false,
+        "audioSubtitleHDRVerified": false,
+        "physicalScreenOrientationVerified": false
+      },
+      "readAttempts": [
+        {
+          "requestStart": 1791620969.5659049,
+          "responseEnd": 1791620969.719844,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791620970.545982,
+          "responseEnd": 1791620970.566874,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791620972.938705,
+          "responseEnd": 1791620972.964818,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791620979.952655,
+          "responseEnd": 1791620979.97965,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791620999.951097,
+          "responseEnd": 1791620999.977354,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791621030.098451,
+          "responseEnd": 1791621030.11982,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791621033.521475,
+          "responseEnd": 1791621033.549813,
+          "attempt": 1,
+          "result": "success"
+        }
+      ],
+      "rendererTraces": [
+        {
+          "traceID": "9BFF1164",
+          "engine": "KSPlayer",
+          "firstClockSignal": {
+            "actionSeconds": 1.137468,
+            "event": "first_frame",
+            "fields": {
+              "firstFramePositionSeconds": 0.116,
+              "planID": "5F0E3D77",
+              "playbackTraceID": "9BFF1164",
+              "routeID": "F261BCA7",
+              "tapToFirstFrameMs": 638
+            }
+          },
+          "firstObservedAdvancingClockActionSeconds": 2.233051,
+          "maxReportedStallCount": 0,
+          "stallEpisodes": [],
+          "handoffEvents": [],
+          "handoffConfiguration": []
+        }
+      ],
+      "failureSignals": [
+        {
+          "actionSeconds": 0.755557,
+          "event": "proxy_transfer_finished",
+          "fields": {
+            "callbackAfterClientFinish": "true",
+            "cumulativeReceivedBytes": 124199,
+            "errorCode": -999,
+            "errorDomain": "NSURLErrorDomain",
+            "expectedBytes": 33554432,
+            "hlsRole": "-",
+            "playbackTraceID": "9BFF1164",
+            "proxyKind": "mediaRange",
+            "stage": "upstreamTaskCompleted",
+            "taskReceivedBytes": 124199,
+            "transferID": "E9982A14-B45B-4FAA-8598-E6DA8470B28E",
+            "upstreamCancelToCallbackMs": 0,
+            "upstreamCancellationRequested": "true",
+            "upstreamCompletionObserved": "true",
+            "upstreamIssuedToCallbackMs": 86,
+            "upstreamTaskIndex": 1
+          }
+        }
+      ],
+      "acceptance": "Unchanged: recorded waits/stalls retained, no playback quality PASS or causal speed claim.",
+      "limits": [
+        "Engine waiting/empty is not proof of network starvation; retain waiting reason and reserve.",
+        "A unique HLS trace within warmup is a temporal association, not proof of a network or server root cause.",
+        "Transfer intervals overlap; late terminals stay bounded. Unrecognized result strings do not mean success.",
+        "First clock marker may reflect a prepared paused position, not advancing output or presentation.",
+        "First observed progress is limited by sparse telemetry; phase is descriptive, not an exact startup boundary.",
+        "Sampled stall intervals are observation spans, not display hitches or precise buffer durations.",
+        "Stalls are per trace; never subtract counters across renderers. Open episodes remain censored.",
+        "Missing metrics remain unknown; no screen, audio, full-frame, cache or competitor acceptance."
+      ]
+    },
+    {
+      "device": "iphone13",
+      "label": "normalwifi-baseline-ownership-s01-jellyfin",
+      "window": {
+        "boundedEndActionSeconds": 60.49630784988403,
+        "plannedWindowSeconds": 60,
+        "deduplicatedWindowEventCount": 164,
+        "snapshotsRead": 8
+      },
+      "exit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "screen": {
+        "recordedAt": "2026-10-10T16:33:08.917667+08:00",
+        "actualUIInspected": true,
+        "filmBodyVerified": true,
+        "filmEvidence": "t60.png",
+        "filmObservation": "Howl film countryside with cottages, mist and sheep; screenshot portrait container includes rotated movie",
+        "normalExitUIInspected": true,
+        "exitEvidence": "closed-stable.png",
+        "exitMatchingTitle": true,
+        "jellyfinContinueVisible": true,
+        "frameCoverageVerified": false,
+        "audioSubtitleHDRVerified": false,
+        "physicalScreenOrientationVerified": false
+      },
+      "readAttempts": [
+        {
+          "requestStart": 1791621055.399921,
+          "responseEnd": 1791621055.5066261,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791621056.8151329,
+          "responseEnd": 1791621056.83585,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791621058.871671,
+          "responseEnd": 1791621058.8968089,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791621065.808348,
+          "responseEnd": 1791621065.840659,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791621085.885707,
+          "responseEnd": 1791621085.913895,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791621116.007741,
+          "responseEnd": 1791621116.0353742,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791621120.282806,
+          "responseEnd": 1791621120.3111591,
+          "attempt": 1,
+          "result": "success"
+        }
+      ],
+      "rendererTraces": [
+        {
+          "traceID": "5D61795E",
+          "engine": "KSPlayer",
+          "firstClockSignal": {
+            "actionSeconds": 1.211795,
+            "event": "first_frame",
+            "fields": {
+              "firstFramePositionSeconds": 0.073,
+              "planID": "B7D04E60",
+              "playbackTraceID": "5D61795E",
+              "routeID": "5C900C81",
+              "tapToFirstFrameMs": 525
+            }
+          },
+          "firstObservedAdvancingClockActionSeconds": 2.259443,
+          "maxReportedStallCount": 0,
+          "stallEpisodes": [],
+          "handoffEvents": [],
+          "handoffConfiguration": []
+        }
+      ],
+      "failureSignals": [
+        {
+          "actionSeconds": 0.910434,
+          "event": "proxy_transfer_finished",
+          "fields": {
+            "callbackAfterClientFinish": "true",
+            "cumulativeReceivedBytes": 115555,
+            "errorCode": -999,
+            "errorDomain": "NSURLErrorDomain",
+            "expectedBytes": 33554432,
+            "hlsRole": "-",
+            "playbackTraceID": "5D61795E",
+            "proxyKind": "mediaRange",
+            "stage": "upstreamTaskCompleted",
+            "taskReceivedBytes": 115555,
+            "transferID": "AB2FC3CE-8647-464D-8E9D-ED68E4EA1A52",
+            "upstreamCancelToCallbackMs": 0,
+            "upstreamCancellationRequested": "true",
+            "upstreamCompletionObserved": "true",
+            "upstreamIssuedToCallbackMs": 70,
+            "upstreamTaskIndex": 1
+          }
+        }
+      ],
+      "acceptance": "Unchanged: recorded waits/stalls retained, no playback quality PASS or causal speed claim.",
+      "limits": [
+        "Engine waiting/empty is not proof of network starvation; retain waiting reason and reserve.",
+        "A unique HLS trace within warmup is a temporal association, not proof of a network or server root cause.",
+        "Transfer intervals overlap; late terminals stay bounded. Unrecognized result strings do not mean success.",
+        "First clock marker may reflect a prepared paused position, not advancing output or presentation.",
+        "First observed progress is limited by sparse telemetry; phase is descriptive, not an exact startup boundary.",
+        "Sampled stall intervals are observation spans, not display hitches or precise buffer durations.",
+        "Stalls are per trace; never subtract counters across renderers. Open episodes remain censored.",
+        "Missing metrics remain unknown; no screen, audio, full-frame, cache or competitor acceptance."
+      ]
+    }
+  ],
+  "intermediateCandidate": {
+    "classification": "INTERMEDIATE candidate, not final latest-source acceptance",
+    "source": {
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceDiffSHA256": "8ee0997df0c31e9f8a05abadb4a1bd0300c7270ec76422bcd145d0ee0917ea24",
+      "package": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-10-10-restore-ownership-155315/Nastart-Restore-Ownership-Normal-Debug.app",
+      "configuration": "normal Debug -Onone; empty launch environment",
+      "binaryBuildTime": "2026-10-10T16:02:08.504058+08:00",
+      "binaries": {
+        "Nastart": "a7ac6b4b31a552d1012ea03988deb1e710094c4ff2e64ae0a867bf1f48e0bc93",
+        "Nastart.debug.dylib": "6841d6b403b479043c56f8cdb8f71c1640be68160ce6ed8263e620ff9abd9231",
+        "Frameworks/KSPlayer.framework/KSPlayer": "eda16e6d0e22bc81045752f2f54a263b0f4f8500912378d5ac141013c9042b52"
+      },
+      "signatureVerified": true,
+      "individuallyVerifiedLibraries": 29,
+      "checkedInputs": 173,
+      "newerInputs": [],
+      "profileExpirationUTC": "2026-10-10T22:03:15",
+      "tests": "284/2 skipped/0 failures; 19 new restore/manual lifecycle fixtures plus preceding resume/folder/authentication/cache/playback fixtures",
+      "preflight": "15 passed",
+      "linkageVerified": true,
+      "sourceInputManifestSHA256": "81fcafee5038558cccf24bacf8dd3952e8a99e27afe04f6b4d9140a0ea78fd25"
+    },
+    "testResult": "284 /2 skipped/0 failure;20th cache invalidation case then failed 4 assertions before final guard",
+    "devices": {
+      "iphone13": {
+        "recordedAt": "2026-10-10T16:03:13.204307+08:00",
+        "device": "iphone13",
+        "model": "iPhone14,5",
+        "os": "16.3.1",
+        "systemBuild": "20D67",
+        "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+        "sourceDiffSHA256": "8ee0997df0c31e9f8a05abadb4a1bd0300c7270ec76422bcd145d0ee0917ea24",
+        "binaries": {
+          "Nastart": "a7ac6b4b31a552d1012ea03988deb1e710094c4ff2e64ae0a867bf1f48e0bc93",
+          "Nastart.debug.dylib": "6841d6b403b479043c56f8cdb8f71c1640be68160ce6ed8263e620ff9abd9231",
+          "Frameworks/KSPlayer.framework/KSPlayer": "eda16e6d0e22bc81045752f2f54a263b0f4f8500912378d5ac141013c9042b52"
+        },
+        "binaryBuildTime": "2026-10-10T16:02:08.504058+08:00",
+        "configuration": "normal Debug -Onone; empty launch environment",
+        "freshUSBIdentity": true,
+        "pairingValid": true,
+        "signatureVerified": true,
+        "verifiedLibraries": 29,
+        "checkedInputs": 173,
+        "targetInValidProfile": true,
+        "dataPreservingCoverInstall": true,
+        "installation": "success",
+        "unchangedNonDiagnosticPreferences": 25,
+        "normalLaunchSucceeded": true,
+        "requestedEnvironment": {},
+        "requestedArguments": [],
+        "actualForegroundUIVerified": true,
+        "foregroundEvidence": "normal-launch.png/xml",
+        "wdaReinstallRequested": false,
+        "cellularAvailability": "available per current user; not used in this home Wi-Fi batch",
+        "networkSettingsChanged": false,
+        "actualProcessArguments": {
+          "env": {},
+          "args": []
+        },
+        "normalHomeNASOnline": true,
+        "actualPlayerClosed": true,
+        "initialJellyfinStatus": "gray/unknown"
+      },
+      "ipad": {
+        "recordedAt": "2026-10-10T16:03:42.365063+08:00",
+        "device": "ipad",
+        "model": "iPad12,1",
+        "os": "18.3.1",
+        "systemBuild": "22D72",
+        "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+        "sourceDiffSHA256": "8ee0997df0c31e9f8a05abadb4a1bd0300c7270ec76422bcd145d0ee0917ea24",
+        "binaries": {
+          "Nastart": "a7ac6b4b31a552d1012ea03988deb1e710094c4ff2e64ae0a867bf1f48e0bc93",
+          "Nastart.debug.dylib": "6841d6b403b479043c56f8cdb8f71c1640be68160ce6ed8263e620ff9abd9231",
+          "Frameworks/KSPlayer.framework/KSPlayer": "eda16e6d0e22bc81045752f2f54a263b0f4f8500912378d5ac141013c9042b52"
+        },
+        "binaryBuildTime": "2026-10-10T16:02:08.504058+08:00",
+        "configuration": "normal Debug -Onone; empty launch environment",
+        "freshUSBIdentity": true,
+        "pairingValid": true,
+        "signatureVerified": true,
+        "verifiedLibraries": 29,
+        "checkedInputs": 173,
+        "targetInValidProfile": true,
+        "dataPreservingCoverInstall": true,
+        "installation": "success",
+        "unchangedNonDiagnosticPreferences": 16,
+        "normalLaunchSucceeded": true,
+        "requestedEnvironment": {},
+        "requestedArguments": [],
+        "actualForegroundUIVerified": true,
+        "foregroundEvidence": "normal-launch.png/xml",
+        "wdaReinstallRequested": false,
+        "cellularAvailability": "not used",
+        "networkSettingsChanged": false,
+        "actualProcessArguments": {
+          "env": {},
+          "args": []
+        },
+        "normalHomeNASOnline": true,
+        "actualPlayerClosed": true,
+        "initialJellyfinStatus": "gray/unknown"
+      }
+    },
+    "windows": [
+      {
+        "device": "iphone13",
+        "label": "normalwifi-baseline-ownership-s01-jellyfin",
+        "completeExit": {
+          "normalUIExit": true,
+          "playbackErrorVisible": false,
+          "completionMatches": 1,
+          "playerOpened": true
+        },
+        "actualUI": {
+          "actualUIInspected": true,
+          "filmBodyVerified": true,
+          "classification": "INTERMEDIATE source 8ee/a7ac/6841; not final cache-invalidation fix",
+          "evidence": [
+            "t60.png",
+            "closed-stable.png"
+          ]
+        },
+        "traces": [
+          {
+            "traceID": "9A69B7A2",
+            "engine": "KSPlayer",
+            "firstObservedAdvancingClockActionSeconds": 2.166455,
+            "stallEpisodes": []
+          }
+        ]
+      },
+      {
+        "device": "iphone13",
+        "label": "normalwifi-baseline-ownership-s01-files",
+        "completeExit": {
+          "normalUIExit": true,
+          "playbackErrorVisible": false,
+          "completionMatches": 1,
+          "playerOpened": true
+        },
+        "actualUI": {
+          "actualUIInspected": true,
+          "filmBodyVerified": true,
+          "classification": "INTERMEDIATE source 8ee/a7ac/6841; not final cache-invalidation fix",
+          "evidence": [
+            "t60.png",
+            "closed-stable.png"
+          ]
+        },
+        "traces": [
+          {
+            "traceID": "9236CE6F",
+            "engine": "KSPlayer",
+            "firstObservedAdvancingClockActionSeconds": 2.525748,
+            "stallEpisodes": [
+              {
+                "startActionSeconds": 18.803925,
+                "phaseAtStart": "afterObservedAdvancingClock",
+                "startFields": {
+                  "elapsedMs": 18052,
+                  "engine": "KSPlayer",
+                  "ksPlayerState": "-",
+                  "planID": "C1729DB2",
+                  "playbackTraceID": "9236CE6F",
+                  "routeID": "82929E7B",
+                  "sampleReason": "bufferChanged",
+                  "stallActive": "yes",
+                  "stallCount": 1,
+                  "stallDurationMs": 0
+                },
+                "endActionSeconds": 19.812531,
+                "sampledSpanSeconds": 1.0086060000000003,
+                "reportedDurationMs": 1002
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "failures": {
+      "recordedAt": "2026-10-10T16:09:42.922668+08:00",
+      "appSourceChangedDuringCorrection": false,
+      "change": "Bound video/folder clicks to actual WDA element identity rather than screen coordinates; fresh latest source/device gate retained",
+      "preservedFailures": [
+        "original first phone foreground loss/WDA404, cause unresolved",
+        "follow-up directory replay on system home lacked navigation bar",
+        "independent recovery cold1 selected fanart.jpg and failed video identity check; cold2 succeeded",
+        "Phone directory traversal recovery exceeded 7-back bound before reaching root; actual exit/reopen not accepted. Rebuilt navigation from a fresh cold-start file root with element-identity back/video clicks."
+      ],
+      "crashCopyInitialFailure": "missing destination directory; corrected with keep-only copy",
+      "newNastartNamedCrashReportsFound": 0,
+      "todayJetsamReportsFound": 0,
+      "absenceOfCrashFilesEstablishesCause": false
+    },
+    "iPhone18": {
+      "recordedAt": "2026-10-10T16:04:48.099446+08:00",
+      "device": "iPhone18 Pro Max",
+      "name": "iPhone",
+      "model": "iPhone19,7",
+      "os": "27.0",
+      "systemBuild": "24A8428",
+      "connection": "network; no USB target",
+      "sourceDiffSHA256": "8ee0997df0c31e9f8a05abadb4a1bd0300c7270ec76422bcd145d0ee0917ea24",
+      "sourceHEAD": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "package": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-10-10-restore-ownership-155315/Nastart-Restore-Ownership-Normal-Debug.app",
+      "binaries": {
+        "Nastart": "a7ac6b4b31a552d1012ea03988deb1e710094c4ff2e64ae0a867bf1f48e0bc93",
+        "Nastart.debug.dylib": "6841d6b403b479043c56f8cdb8f71c1640be68160ce6ed8263e620ff9abd9231",
+        "Frameworks/KSPlayer.framework/KSPlayer": "eda16e6d0e22bc81045752f2f54a263b0f4f8500912378d5ac141013c9042b52"
+      },
+      "configuration": "normal Debug -Onone; empty launch environment",
+      "binaryBuildTime": "2026-10-10T16:02:08.504058+08:00",
+      "sourceInputsChecked": 173,
+      "verifiedLibraries": 29,
+      "deepSignatureVerified": true,
+      "targetInValidProfile": true,
+      "oldPreferencesSavedPrivately": true,
+      "dataPreservingInstallRequested": true,
+      "installation": "success",
+      "normalLaunch": "BLOCKED native launch unavailable",
+      "playbackRegression": "NOT_RUN",
+      "earlierUSBOnlyGuardFailurePreserved": true,
+      "nativeInstallExitCode": 1,
+      "finalRecordedAt": "2026-10-10T16:05:05.103997+08:00",
+      "alternateInstallMethod": "tidevice AFC PublicStaging + installation_proxy Install; no uninstall",
+      "ipaBinariesMatchVerifiedPackage": true,
+      "alternateStartedAt": "2026-10-10T16:04:52.658548+08:00",
+      "installedAt": "2026-10-10T16:05:03.415163+08:00",
+      "successfulMethod": "wireless AFC + installation_proxy",
+      "postInstallLookupExists": true,
+      "unchangedNonDiagnosticPreferences": 25,
+      "requestedTestEnvironment": {},
+      "requestedArguments": [],
+      "actualForegroundUIVerified": false,
+      "pairedWirelessDVTLaunchFailureType": "MuxServiceError",
+      "pairedWirelessDVTLaunchFailure": "InvalidService",
+      "wirelessScreenshotExitCode": 255,
+      "normalLaunchActualUIVerification": "pending native connection; no verified foreground UI"
+    },
+    "directoryRecoveryAttempts": [
+      {
+        "device": "iphone13",
+        "attempt": 1,
+        "sample": "S01",
+        "network": "normalwifi-recovery-cold1",
+        "entry": "files",
+        "startedAt": "2026-10-10T16:06:34.465269+08:00",
+        "endedAt": "2026-10-10T16:07:28.355656+08:00",
+        "restoreAndNavigationSeconds": 53.890387,
+        "helperExitCode": 1,
+        "result": "NAVIGATION_FAILURE_REQUIRES_CLASSIFICATION",
+        "normalActualEnvironment": {},
+        "normalActualArguments": [],
+        "noPlaybackSubmitted": true,
+        "playerClosed": true,
+        "responsesInAttempt": [
+          {
+            "id": "17909A5D-CCD7-4164-A2BA-950236B6E1AA",
+            "elapsedSeconds": 6.491544,
+            "fields": {
+              "apiVersion": 2,
+              "authenticationGeneration": "8476032F-6CF9-4E5A-9C3B-AAF94FD0C0F1",
+              "authenticationObservedMonoMs": 1396664881,
+              "bodyBytes": 626,
+              "contentType": "json",
+              "diagnosticClientID": "891AD065",
+              "envelopeSuccess": "true",
+              "fileStationGeneration": "4544C39F-9F81-4152-9420-1C606D3F76A1",
+              "folderAttempt": 1,
+              "folderOperationID": "DE1FC660",
+              "folderOrigin": "snapshot",
+              "hasData": "true",
+              "httpStatus": 200,
+              "method": "list_share",
+              "requestAuthenticationGeneration": "4544C39F-9F81-4152-9420-1C606D3F76A1",
+              "responseKind": "success",
+              "sessionRole": "fileStation"
+            }
+          },
+          {
+            "id": "02045B13-771F-4FD0-B1E2-1E4632EE8D31",
+            "elapsedSeconds": 9.180065,
+            "fields": {
+              "apiVersion": 2,
+              "authenticationGeneration": "8476032F-6CF9-4E5A-9C3B-AAF94FD0C0F1",
+              "authenticationObservedMonoMs": 1396667568,
+              "bodyBytes": 626,
+              "contentType": "json",
+              "diagnosticClientID": "D383D051",
+              "envelopeSuccess": "true",
+              "fileStationGeneration": "4544C39F-9F81-4152-9420-1C606D3F76A1",
+              "folderAttempt": 1,
+              "folderOperationID": "644BE13B",
+              "folderOrigin": "browserRoot",
+              "hasData": "true",
+              "httpStatus": 200,
+              "method": "list_share",
+              "requestAuthenticationGeneration": "4544C39F-9F81-4152-9420-1C606D3F76A1",
+              "responseKind": "success",
+              "sessionRole": "fileStation"
+            }
+          },
+          {
+            "id": "EEEBC3D1-2086-4473-BE01-A14CCC58893A",
+            "elapsedSeconds": 11.803539,
+            "fields": {
+              "apiVersion": 2,
+              "authenticationGeneration": "8476032F-6CF9-4E5A-9C3B-AAF94FD0C0F1",
+              "authenticationObservedMonoMs": 1396670191,
+              "bodyBytes": 702,
+              "contentType": "json",
+              "diagnosticClientID": "3DDC8582",
+              "envelopeSuccess": "true",
+              "fileStationGeneration": "4544C39F-9F81-4152-9420-1C606D3F76A1",
+              "folderAttempt": 1,
+              "folderOperationID": "459F16B0",
+              "folderOrigin": "browserFolder",
+              "hasData": "true",
+              "httpStatus": 200,
+              "method": "list",
+              "requestAuthenticationGeneration": "4544C39F-9F81-4152-9420-1C606D3F76A1",
+              "responseKind": "success",
+              "sessionRole": "fileStation"
+            }
+          },
+          {
+            "id": "84366DED-5729-4878-837A-4D56B3E5CB18",
+            "elapsedSeconds": 13.724348,
+            "fields": {
+              "apiVersion": 2,
+              "authenticationGeneration": "8476032F-6CF9-4E5A-9C3B-AAF94FD0C0F1",
+              "authenticationObservedMonoMs": 1396672114,
+              "bodyBytes": 1162,
+              "contentType": "json",
+              "diagnosticClientID": "3DDC8582",
+              "envelopeSuccess": "true",
+              "fileStationGeneration": "4544C39F-9F81-4152-9420-1C606D3F76A1",
+              "folderAttempt": 1,
+              "folderOperationID": "79B867ED",
+              "folderOrigin": "browserFolder",
+              "hasData": "true",
+              "httpStatus": 200,
+              "method": "list",
+              "requestAuthenticationGeneration": "4544C39F-9F81-4152-9420-1C606D3F76A1",
+              "responseKind": "success",
+              "sessionRole": "fileStation"
+            }
+          },
+          {
+            "id": "5B4EE21D-5602-4FA9-9059-99248AFF61DE",
+            "elapsedSeconds": 16.095061,
+            "fields": {
+              "apiVersion": 2,
+              "authenticationGeneration": "8476032F-6CF9-4E5A-9C3B-AAF94FD0C0F1",
+              "authenticationObservedMonoMs": 1396674484,
+              "bodyBytes": 25081,
+              "contentType": "json",
+              "diagnosticClientID": "3DDC8582",
+              "envelopeSuccess": "true",
+              "fileStationGeneration": "4544C39F-9F81-4152-9420-1C606D3F76A1",
+              "folderAttempt": 1,
+              "folderOperationID": "47CFE6EC",
+              "folderOrigin": "browserFolder",
+              "hasData": "true",
+              "httpStatus": 200,
+              "method": "list",
+              "requestAuthenticationGeneration": "4544C39F-9F81-4152-9420-1C606D3F76A1",
+              "responseKind": "success",
+              "sessionRole": "fileStation"
+            }
+          },
+          {
+            "id": "C6F460D5-C11B-45AE-91F7-D7141EBF73C7",
+            "elapsedSeconds": 33.055746,
+            "fields": {
+              "apiVersion": 2,
+              "authenticationGeneration": "8476032F-6CF9-4E5A-9C3B-AAF94FD0C0F1",
+              "authenticationObservedMonoMs": 1396691445,
+              "bodyBytes": 2391,
+              "contentType": "json",
+              "diagnosticClientID": "3DDC8582",
+              "envelopeSuccess": "true",
+              "fileStationGeneration": "4544C39F-9F81-4152-9420-1C606D3F76A1",
+              "folderAttempt": 1,
+              "folderOperationID": "C93566AD",
+              "folderOrigin": "browserFolder",
+              "hasData": "true",
+              "httpStatus": 200,
+              "method": "list",
+              "requestAuthenticationGeneration": "4544C39F-9F81-4152-9420-1C606D3F76A1",
+              "responseKind": "success",
+              "sessionRole": "fileStation"
+            }
+          }
+        ],
+        "actualUIInspected": true,
+        "evidence": "directory-normalwifi-recovery-cold1-1-state.png/xml",
+        "classification": "TOOL wrong fanart.jpg preview selected; video item click not verified, not a playback/restore PASS",
+        "cause": "coordinate navigation did not preserve expected item identity during UI transition"
+      },
+      {
+        "device": "iphone13",
+        "attempt": 2,
+        "sample": "S01",
+        "network": "normalwifi-recovery-cold2",
+        "entry": "files",
+        "startedAt": "2026-10-10T16:07:29.026100+08:00",
+        "endedAt": "2026-10-10T16:08:06.990100+08:00",
+        "restoreAndNavigationSeconds": 37.964,
+        "helperExitCode": 0,
+        "result": "DETAIL_READY",
+        "normalActualEnvironment": {},
+        "normalActualArguments": [],
+        "noPlaybackSubmitted": true,
+        "playerClosed": true,
+        "responsesInAttempt": [
+          {
+            "id": "2795B461-1D50-4395-88B4-1E66E0F31117",
+            "elapsedSeconds": 6.926239,
+            "fields": {
+              "apiVersion": 2,
+              "authenticationGeneration": "0E02FD0A-47A9-4856-AC3E-E8D7B05E06B5",
+              "authenticationObservedMonoMs": 1396719877,
+              "bodyBytes": 626,
+              "contentType": "json",
+              "diagnosticClientID": "4B5C1C36",
+              "envelopeSuccess": "true",
+              "fileStationGeneration": "18F3E10D-98F6-499E-98F7-DFB3728ABAEF",
+              "folderAttempt": 1,
+              "folderOperationID": "EBF726ED",
+              "folderOrigin": "snapshot",
+              "hasData": "true",
+              "httpStatus": 200,
+              "method": "list_share",
+              "requestAuthenticationGeneration": "18F3E10D-98F6-499E-98F7-DFB3728ABAEF",
+              "responseKind": "success",
+              "sessionRole": "fileStation"
+            }
+          },
+          {
+            "id": "87155C21-2D73-4B5F-9FDF-9327DF724991",
+            "elapsedSeconds": 9.004824,
+            "fields": {
+              "apiVersion": 2,
+              "authenticationGeneration": "0E02FD0A-47A9-4856-AC3E-E8D7B05E06B5",
+              "authenticationObservedMonoMs": 1396721955,
+              "bodyBytes": 626,
+              "contentType": "json",
+              "diagnosticClientID": "E9C7DD56",
+              "envelopeSuccess": "true",
+              "fileStationGeneration": "18F3E10D-98F6-499E-98F7-DFB3728ABAEF",
+              "folderAttempt": 1,
+              "folderOperationID": "88782DA3",
+              "folderOrigin": "browserRoot",
+              "hasData": "true",
+              "httpStatus": 200,
+              "method": "list_share",
+              "requestAuthenticationGeneration": "18F3E10D-98F6-499E-98F7-DFB3728ABAEF",
+              "responseKind": "success",
+              "sessionRole": "fileStation"
+            }
+          },
+          {
+            "id": "E409F439-BB0B-4AF5-8A06-EB367C54085E",
+            "elapsedSeconds": 11.657239,
+            "fields": {
+              "apiVersion": 2,
+              "authenticationGeneration": "0E02FD0A-47A9-4856-AC3E-E8D7B05E06B5",
+              "authenticationObservedMonoMs": 1396724606,
+              "bodyBytes": 702,
+              "contentType": "json",
+              "diagnosticClientID": "5A449C89",
+              "envelopeSuccess": "true",
+              "fileStationGeneration": "18F3E10D-98F6-499E-98F7-DFB3728ABAEF",
+              "folderAttempt": 1,
+              "folderOperationID": "BE80572E",
+              "folderOrigin": "browserFolder",
+              "hasData": "true",
+              "httpStatus": 200,
+              "method": "list",
+              "requestAuthenticationGeneration": "18F3E10D-98F6-499E-98F7-DFB3728ABAEF",
+              "responseKind": "success",
+              "sessionRole": "fileStation"
+            }
+          },
+          {
+            "id": "CAA208B3-29E3-4ABE-9737-9BA53AE8559B",
+            "elapsedSeconds": 13.597623,
+            "fields": {
+              "apiVersion": 2,
+              "authenticationGeneration": "0E02FD0A-47A9-4856-AC3E-E8D7B05E06B5",
+              "authenticationObservedMonoMs": 1396726549,
+              "bodyBytes": 1162,
+              "contentType": "json",
+              "diagnosticClientID": "5A449C89",
+              "envelopeSuccess": "true",
+              "fileStationGeneration": "18F3E10D-98F6-499E-98F7-DFB3728ABAEF",
+              "folderAttempt": 1,
+              "folderOperationID": "E954790C",
+              "folderOrigin": "browserFolder",
+              "hasData": "true",
+              "httpStatus": 200,
+              "method": "list",
+              "requestAuthenticationGeneration": "18F3E10D-98F6-499E-98F7-DFB3728ABAEF",
+              "responseKind": "success",
+              "sessionRole": "fileStation"
+            }
+          },
+          {
+            "id": "2DAD1AFC-09D6-42E4-A2D8-991CC2AE289A",
+            "elapsedSeconds": 15.987277,
+            "fields": {
+              "apiVersion": 2,
+              "authenticationGeneration": "0E02FD0A-47A9-4856-AC3E-E8D7B05E06B5",
+              "authenticationObservedMonoMs": 1396728938,
+              "bodyBytes": 25081,
+              "contentType": "json",
+              "diagnosticClientID": "5A449C89",
+              "envelopeSuccess": "true",
+              "fileStationGeneration": "18F3E10D-98F6-499E-98F7-DFB3728ABAEF",
+              "folderAttempt": 1,
+              "folderOperationID": "F2339681",
+              "folderOrigin": "browserFolder",
+              "hasData": "true",
+              "httpStatus": 200,
+              "method": "list",
+              "requestAuthenticationGeneration": "18F3E10D-98F6-499E-98F7-DFB3728ABAEF",
+              "responseKind": "success",
+              "sessionRole": "fileStation"
+            }
+          },
+          {
+            "id": "E494E698-5272-4D74-8EF4-2FAC20312260",
+            "elapsedSeconds": 32.81624,
+            "fields": {
+              "apiVersion": 2,
+              "authenticationGeneration": "0E02FD0A-47A9-4856-AC3E-E8D7B05E06B5",
+              "authenticationObservedMonoMs": 1396745768,
+              "bodyBytes": 2391,
+              "contentType": "json",
+              "diagnosticClientID": "5A449C89",
+              "envelopeSuccess": "true",
+              "fileStationGeneration": "18F3E10D-98F6-499E-98F7-DFB3728ABAEF",
+              "folderAttempt": 1,
+              "folderOperationID": "D19688FF",
+              "folderOrigin": "browserFolder",
+              "hasData": "true",
+              "httpStatus": 200,
+              "method": "list",
+              "requestAuthenticationGeneration": "18F3E10D-98F6-499E-98F7-DFB3728ABAEF",
+              "responseKind": "success",
+              "sessionRole": "fileStation"
+            }
+          }
+        ],
+        "actualUIInspected": false,
+        "evidence": "directory-normalwifi-recovery-cold2-2-state.png/xml"
+      }
+    ]
+  },
+  "iphone18": {
+    "recordedAt": "2026-10-10T16:21:44.126742+08:00",
+    "device": "iPhone18 Pro Max",
+    "name": "iPhone",
+    "model": "iPhone19,7",
+    "os": "27.0",
+    "systemBuild": "24A8428",
+    "connection": "network; no USB target",
+    "sourceDiffSHA256": "c51133b78e77c80a02c9b7c23b4a7b1cdc7aaeb0327bab6b9c7d394c799b8a6f",
+    "sourceHEAD": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "package": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-10-10-restore-ownership-final-161835/Nastart-Restore-Ownership-Normal-Debug.app",
+    "binaries": {
+      "Nastart": "f26037831d6074b3779470c59191b4af0b9720eb522f1d730e2fba2a0e191f7e",
+      "Nastart.debug.dylib": "0649bd7b7a6f661d5bc4737485e70af8c1d0995df50d32ac862f64becd212950",
+      "Frameworks/KSPlayer.framework/KSPlayer": "eda16e6d0e22bc81045752f2f54a263b0f4f8500912378d5ac141013c9042b52"
+    },
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "binaryBuildTime": "2026-10-10T16:19:15.777382+08:00",
+    "sourceInputsChecked": 173,
+    "verifiedLibraries": 29,
+    "deepSignatureVerified": true,
+    "targetInValidProfile": true,
+    "oldPreferencesSavedPrivately": true,
+    "dataPreservingInstallRequested": true,
+    "installation": "success",
+    "normalLaunch": "BLOCKED native launch unavailable",
+    "playbackRegression": "NOT_RUN",
+    "nativeInstallExitCode": 1,
+    "finalRecordedAt": "2026-10-10T16:22:04.145855+08:00",
+    "alternateInstallMethod": "tidevice AFC PublicStaging + installation_proxy Install; no uninstall",
+    "ipaBinariesMatchVerifiedPackage": true,
+    "alternateStartedAt": "2026-10-10T16:21:48.917916+08:00",
+    "installedAt": "2026-10-10T16:22:02.445359+08:00",
+    "successfulMethod": "wireless AFC + installation_proxy",
+    "postInstallLookupExists": true,
+    "unchangedNonDiagnosticPreferences": 25,
+    "requestedTestEnvironment": {},
+    "requestedArguments": [],
+    "actualForegroundUIVerified": false,
+    "pairedWirelessDVTLaunchFailureType": "MuxServiceError",
+    "pairedWirelessDVTLaunchFailure": "InvalidService",
+    "wirelessScreenshotExitCode": 255,
+    "normalLaunchActualUIVerification": "pending native connection; no verified foreground UI",
+    "connectionRecheckedWirelessly": true,
+    "nativeInstallErrorDomain": "com.apple.dt.CoreDeviceError",
+    "nativeInstallErrorCode": 4016,
+    "nativeLaunchErrorCode": 4016
+  },
+  "formalL2Acceptance": false,
+  "finalPackageVerification": {
+    "recordedAt": "2026-10-10T16:30:29.419938+08:00",
+    "headMatches": true,
+    "iosDiffMatches": true,
+    "sourceInputsMatch": 173,
+    "binaryHashesMatch": true,
+    "deepSignatureVerified": true,
+    "individuallyVerifiedLibraries": 29,
+    "profileCurrentAndContainsAllThreeTargets": true,
+    "profileExpirationUTC": "2026-10-10T22:03:15"
+  },
+  "limitations": [
+    "Current-session 119 server/SID-loss cause remains open; no automatic reauthentication/retry behavior added.",
+    "No real cross-account/signout scenario performed on user devices; controlled fixtures establish ownership behavior.",
+    "Sparse images, advancing clock or zero stalls do not establish full frame coverage, audio/subtitles/HDR, scrolling fluidity or performance ranking.",
+    "Intermediate foreground loss has no identified cause; absence of copied Nastart/Jetsam reports does not establish harmlessness or crash absence.",
+    "S19 weak waiting/old ordinal0, final bookmark settling, deep seek/10min/PiP/MTP, actual weak cellular/external Wi-Fi/Lenna/whole matrix/Main remain open.",
+    "Foreground refresh cleanup has an operation token but no dedicated new foreground fixture; covered by source review only.",
+    "Explicit signOut server logout that was already dispatched can race a subsequent login; the current fixtures do not establish safety of that server-side timing.",
+    "Wirelessly installed iPhone18 latest source has unverified normal launch/foreground UI; native tunnel unavailable."
+  ],
+  "completePlaybackWindows": 4,
+  "actualBodyWindows": 4,
+  "readFailureAttempts": 1,
+  "visiblePlayerErrors": 0
+}

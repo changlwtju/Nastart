@@ -1,0 +1,46 @@
+{
+  "recordedAt": "2026-11-02T07:46:49.963135+08:00",
+  "kind": "Repository-only comprehensive development overview and collaboration handoff",
+  "sourceHEAD": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "declaredSourceInputs": 446,
+  "declaredSourceInputsUnchangedSinceTVRound2": true,
+  "repositoryRelativeInputManifestSHA256": "56891edd2e4083fdce3dfa9fc91d8a3f954a7d259b275fe7d2d16853ae5d15b9",
+  "manifestHashEncoding": "SHA256(sorted compact JSON repository-relative paths and file SHA256)",
+  "currentIOSUnstagedDiffSHA256": "4f97dc8ebfaccb6d24ef886cfac625c3d8deb6efdcebd8a037d98ebe85f67fd0",
+  "indexSHA256": "6e17b5cca48157af6e734886158af8831b9b8cfbe786b345b4728201bd17a8e6",
+  "openRequirementCounts": {
+    "进行中": 14,
+    "待开始": 11,
+    "待验收": 5
+  },
+  "totalOpenRequirements": 30,
+  "newPlaybackMatrixPasses": 0,
+  "productCodeChangedThisOverviewBatch": false,
+  "physicalDeviceOperations": 0,
+  "NASCommands": 0,
+  "testsNewlyRunThisOverviewBatch": 0,
+  "priorTVRound2ResultReconciled": true,
+  "namedOwnedTVSimulatorsRemaining": 0,
+  "fullPreflightRunThisBatch": false,
+  "knownPriorPreflightFailureCategories": 5,
+  "currentSignedMobilePackageIsOlderSource": true,
+  "newSignedPackageBuiltThisBatch": false,
+  "developmentLead": "Claude Code",
+  "defaultPhysicalOperatorAndIntegrator": "Codex",
+  "claudeMessageSentThisBatch": false,
+  "claudePermissionPromptOperated": false,
+  "threadGoalObservedStatus": "usageLimited",
+  "backgroundExecutionClaimed": false,
+  "documentationValidation": {
+    "exitCode": 0,
+    "localMissingDestinations": 0,
+    "gitDiffCheckExitCode": 0
+  },
+  "leadershipPolicyClarification": {
+    "recordedAt": "2026-11-02T07:56:09.482253+08:00",
+    "originalDevelopmentLeadFieldIsHistorical": true,
+    "currentPermanentLead": null,
+    "currentPolicy": "Dynamic per batch based on confirmed quota, task continuity and resources",
+    "authoritativeDocument": "docs/development/CODEX-CLAUDE-COLLABORATION.md"
+  }
+}

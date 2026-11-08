@@ -1,0 +1,56 @@
+{
+  "date": "2026-11-02",
+  "workspace": "/Users/lagransun/workspace/Nastart-Claude-Closures-20261102",
+  "integratedIntoMainWorkspace": false,
+  "command": "RUN_TESTS=1 bash ~/Downloads/Nastart-ClaudeEvidence-2026-11-02-batch8/run-verify-batch8.sh",
+  "start": "2026-11-02T10:07:50+08:00",
+  "end": "2026-11-02T10:15:08+08:00",
+  "debugBuildForTestingExit": 0,
+  "releaseBuildExit": 0,
+  "testWithoutBuildingExit": 0,
+  "scriptExit": 0,
+  "releaseMarkerCounts": {
+    "OfflineAppearanceHost": 0,
+    "nastart.offline-ui.appearance": 0,
+    "offline.appearance.readback": 0,
+    "offline.privacy.cache-counters": 0
+  },
+  "tests": {
+    "classesPassed": {
+      "AppearanceStoreInjectionTests": 5,
+      "PrivacyCacheCleanerTests": 4
+    },
+    "total": 9,
+    "passed": 9,
+    "failed": 0,
+    "skipped": 0,
+    "expectedFailures": 0,
+    "xcresultVerdict": "Passed"
+  },
+  "safety": {
+    "freshSimulatorAppContainers": 0,
+    "nastartContainers": 0,
+    "keychainDatabases": 1,
+    "nasAgentJellyfinKeychainMatches": 0,
+    "sourceFreezeMatches": true,
+    "inheritedNastartOrSimctlChildVariables": 0,
+    "freeGiB": 6.02,
+    "safetyBasis": "Fresh simulator with no app data/keychain entries; restore exits before I/O if credential absent, disconnected provider services empty, iCloud disabled by default; selected tests use injected suites/steps and temp paths only."
+  },
+  "sourceInputFilesUnchanged": 212,
+  "testSummaryMissingFromRESULTReason": "grep expected Test Case / Executed; actual Xcode output used Test case; verified original log and xcresult without editing script or RESULT",
+  "cleanup": {
+    "ownedSimulatorFinalStateBeforeDelete": "Shutdown",
+    "initialShutdownAttemptExit": 149,
+    "shutdownFailureHandledByFreshStateCheck": true,
+    "ownedSimulatorDeleted": true,
+    "ownedSimulatorDataPathAbsent": true,
+    "recordedTestHostPidAbsent": true,
+    "otherSimulatorsNotOperated": true
+  },
+  "physicalDeviceOperations": false,
+  "NASProbesPerformed": false,
+  "packetCapturePerformed": false,
+  "scope": "Injected defaults/cleaner steps/temp directories; not real UI, production cache, playback or integration acceptance",
+  "privateEvidencePointer": "/tmp/nastart-batch8-hosted-tests-path"
+}

@@ -9,6 +9,25 @@ final class NASConnectionStore: ObservableObject {
     @Published private(set) var actualRoute: DSMConnectionRoute?
     @Published private(set) var agentConnection: StoredAgentConnection?
 
+    private var dsmConnectionAttemptID = UUID()
+    /// DEBUG offline UI only: never reads or writes the Keychain and never contacts DSM.
+    private var isOfflineFixture = false
+
+    @MainActor
+    func beginDSMConnectionAttempt() -> UUID {
+        dsmConnectionAttemptID = UUID()
+        return dsmConnectionAttemptID
+    }
+
+    @MainActor
+    func ownsDSMConnectionAttempt(_ id: UUID) -> Bool { dsmConnectionAttemptID == id }
+
+    @MainActor
+    func cancelDSMConnectionAttempt(ownedBy id: UUID) {
+        guard ownsDSMConnectionAttempt(id) else { return }
+        dsmConnectionAttemptID = UUID()
+    }
+
     init(device: NASDevice? = nil) {
         connectedDevice = device
         isConnected = device != nil
@@ -16,6 +35,17 @@ final class NASConnectionStore: ObservableObject {
         actualRoute = nil
         agentConnection = KeychainStore.shared.loadAgentConnection()
     }
+
+    #if DEBUG
+    init(offlineFixture device: NASDevice) {
+        connectedDevice = device
+        isConnected = true
+        connectionEndpoints = nil
+        actualRoute = nil
+        agentConnection = nil
+        isOfflineFixture = true
+    }
+    #endif
 
     var usesAgent: Bool {
         agentConnection != nil
@@ -28,10 +58,12 @@ final class NASConnectionStore: ObservableObject {
         connectionEndpoints = session?.endpoints
         actualRoute = session?.actualRoute
         isConnected = true
+        session?.recordAuthenticationStage(.connectionPublished)
     }
 
     @MainActor
     func connectAgent(_ connection: StoredAgentConnection) throws {
+        guard !isOfflineFixture else { return }
         try KeychainStore.shared.saveAgentConnection(connection)
         agentConnection = connection
     }
@@ -39,11 +71,14 @@ final class NASConnectionStore: ObservableObject {
     @MainActor
     func disconnectAgent() {
         agentConnection = nil
+        guard !isOfflineFixture else { return }
         KeychainStore.shared.clearAgentConnection()
     }
 
     @MainActor
-    func signOut() async {
+    func signOut(client injectedClient: DSMClient? = nil) async {
+        guard !isOfflineFixture else { return }
+        _ = beginDSMConnectionAttempt()
         let session = dsmSession
         connectedDevice = nil
         dsmSession = nil
@@ -54,11 +89,11 @@ final class NASConnectionStore: ObservableObject {
         disconnectAgent()
 
         if let session {
-            let client = DSMClient(
+            let client = injectedClient ?? DSMClient(
                 baseURL: session.baseURL,
                 allowsSelfSignedCertificates: session.allowsSelfSignedCertificates
             )
-            await client.logout(session: session)
+            await client.logout(session: session, protectingCurrentSession: { self.dsmSession })
         }
     }
 }

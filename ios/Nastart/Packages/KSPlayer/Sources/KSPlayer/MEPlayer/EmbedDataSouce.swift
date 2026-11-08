@@ -79,6 +79,10 @@ extension FFmpegAssetTrack {
     public func restorePausedImageSubtitle(at time: TimeInterval, token: String) -> Bool {
         isImageSubtitle && pausedImageSubtitleDisplay.restore(at: time, token: token)
     }
+
+    public func invalidatePausedImageSubtitle() {
+        pausedImageSubtitleDisplay.clear()
+    }
 }
 
 extension SubtitleModel {

@@ -1,0 +1,2157 @@
+{
+  "at": "2026-10-16T06:52:11.250980+08:00",
+  "package": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "c868c278fcefe2411cfc07eabb4adf33ce159f0a0f9fb446897aeb2ce25ac835",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "binaryBuildTime": "2026-10-15T18:56:47.888882+08:00",
+    "binaries": {
+      "Nastart": "963906f2460a7e8ca717dbb818d7ac6e6425a0466c28d96d8a5829cd21f8a75b",
+      "Nastart.debug.dylib": "46cb682d7938d2f4d45b622dc49ca9ecc368f493717d7c23303a44196c4ba8f5",
+      "Frameworks/KSPlayer.framework/KSPlayer": "76d17821ceeba058544cad0031b0eb41f4fa6be90edb9ec36ebe2d1f24bb7b5e"
+    },
+    "ipaSHA256": "197133cef44eec71d344cf716aee716f902edcad17a2bb51da80425e970ee537",
+    "profileExpirationUTC": "2026-10-17T22:23:40",
+    "AppSourceChanged": false,
+    "rebuiltThisTurn": false,
+    "AppTests": {
+      "executed": 396,
+      "skipped": 2,
+      "failures": 0,
+      "runThisTurn": false,
+      "origin": "2026-10-15 18:56 same-source build"
+    },
+    "AppPreflight": {
+      "passed": 15,
+      "runThisTurn": false
+    }
+  },
+  "toolValidation": {
+    "windows": 8,
+    "unassignedOwnedReplacementEventCounts": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "reportScriptSHA256": "bfe759585952dbfed911a951d69ff761b39e5c2852d47fd8df969896a159503b",
+    "testScriptSHA256": "ea89d08084fb85c7abbc8b32b75c1bb56c8c9e6f51849c9829de37c4364dbb95",
+    "testsNewTool": 16,
+    "testsAllReportTools": 60,
+    "allPassed": true,
+    "AppTestsOrPreflightRerun": false
+  },
+  "readinessPolicyIdentity": {
+    "currentSourceSHA256": "af532fb479c452f7a24d0aaa4826f3c16da0cbba8a18e216127cf18962938126",
+    "prior20abPolicyHashMatchesCurrent": true,
+    "thresholds": "clock 0.1s; frame 0.15s; contiguous forward reserve 0.5s",
+    "notAChangeToAppPolicy": true
+  },
+  "prior20abSubtitle": {
+    "provenance": {
+      "origin": {
+        "sourceDiffSHA256": "20ab3f6aed209541a6236dddbb5a3c5976304092d9e32db01c6f60fcc17e58f9",
+        "device": "ipad",
+        "sample": "S19",
+        "entry": "Jellyfin",
+        "priorFrozenWindowOnly": true,
+        "downloadedServerLogs": 15,
+        "newServerOrMediaRequestsThisAnalysis": 0,
+        "historicalServerClockCorrectionApplied": false
+      },
+      "operations": [
+        {
+          "operation": 1,
+          "sample": "S19",
+          "entry": "Jellyfin",
+          "decodedToCommitSeconds": 3.545273,
+          "decodedToAlignedSeconds": 3.544578,
+          "alignedToCommitSeconds": 0.000695,
+          "decodedClockDeltaSeconds": 0.48873,
+          "decodedForwardReserveSeconds": 0.0,
+          "decodedObstructions": [
+            "clockDistanceOver0.1s",
+            "maximumReportedForwardReserveUnder0.5s",
+            "singleReportedRangeDoesNotCoverCommitReserve"
+          ],
+          "postDecodeSnapshots": 7,
+          "bufferedSeekStarts": 0,
+          "terminal": "replacement_committed",
+          "screenOrSoundAccepted": false
+        },
+        {
+          "operation": 2,
+          "sample": "S19",
+          "entry": "Jellyfin",
+          "decodedToCommitSeconds": 3.964192,
+          "decodedToAlignedSeconds": 3.963502,
+          "alignedToCommitSeconds": 0.00069,
+          "decodedClockDeltaSeconds": -1.10498,
+          "decodedForwardReserveSeconds": 0.25125555555555934,
+          "decodedObstructions": [
+            "clockDistanceOver0.1s",
+            "maximumReportedForwardReserveUnder0.5s",
+            "singleReportedRangeDoesNotCoverCommitReserve"
+          ],
+          "postDecodeSnapshots": 7,
+          "bufferedSeekStarts": 0,
+          "terminal": "replacement_committed",
+          "screenOrSoundAccepted": false
+        },
+        {
+          "operation": 3,
+          "sample": "S19",
+          "entry": "Jellyfin",
+          "decodedToCommitSeconds": 5.239196,
+          "decodedToAlignedSeconds": 5.238654,
+          "alignedToCommitSeconds": 0.000542,
+          "decodedClockDeltaSeconds": -2.632108,
+          "decodedForwardReserveSeconds": 0.25058888888888475,
+          "decodedObstructions": [
+            "clockDistanceOver0.1s",
+            "maximumReportedForwardReserveUnder0.5s",
+            "singleReportedRangeDoesNotCoverCommitReserve"
+          ],
+          "postDecodeSnapshots": 9,
+          "bufferedSeekStarts": 0,
+          "terminal": "replacement_committed",
+          "screenOrSoundAccepted": false
+        },
+        {
+          "operation": 4,
+          "sample": "S19",
+          "entry": "Jellyfin",
+          "decodedToCommitSeconds": 0.845912,
+          "decodedToAlignedSeconds": 0.844936,
+          "alignedToCommitSeconds": 0.000976,
+          "decodedClockDeltaSeconds": 0.173124,
+          "decodedForwardReserveSeconds": 0.24732222222223754,
+          "decodedObstructions": [
+            "clockDistanceOver0.1s",
+            "maximumReportedForwardReserveUnder0.5s",
+            "singleReportedRangeDoesNotCoverCommitReserve"
+          ],
+          "postDecodeSnapshots": 4,
+          "bufferedSeekStarts": 0,
+          "terminal": "replacement_committed",
+          "screenOrSoundAccepted": false
+        },
+        {
+          "operation": 5,
+          "sample": "S19",
+          "entry": "Jellyfin",
+          "decodedToCommitSeconds": 0.55289,
+          "decodedToAlignedSeconds": 0.552188,
+          "alignedToCommitSeconds": 0.000702,
+          "decodedClockDeltaSeconds": 0.115497,
+          "decodedForwardReserveSeconds": 0.13565555555555875,
+          "decodedObstructions": [
+            "clockDistanceOver0.1s",
+            "maximumReportedForwardReserveUnder0.5s",
+            "singleReportedRangeDoesNotCoverCommitReserve"
+          ],
+          "postDecodeSnapshots": 4,
+          "bufferedSeekStarts": 0,
+          "terminal": "replacement_committed",
+          "screenOrSoundAccepted": false
+        },
+        {
+          "operation": 6,
+          "sample": "S19",
+          "entry": "Jellyfin",
+          "decodedToCommitSeconds": 7.522243,
+          "decodedToAlignedSeconds": 7.521483,
+          "alignedToCommitSeconds": 0.00076,
+          "decodedClockDeltaSeconds": -5.645071,
+          "decodedForwardReserveSeconds": 0.250911111111094,
+          "decodedObstructions": [
+            "clockDistanceOver0.1s",
+            "maximumReportedForwardReserveUnder0.5s",
+            "singleReportedRangeDoesNotCoverCommitReserve"
+          ],
+          "postDecodeSnapshots": 14,
+          "bufferedSeekStarts": 1,
+          "terminal": "replacement_committed",
+          "screenOrSoundAccepted": false
+        }
+      ],
+      "newDeviceOrMediaRequests": false,
+      "notCurrentSourceRegression": true
+    },
+    "reports": [
+      {
+        "attempts": [
+          {
+            "attempt": 1,
+            "warmupStartActionSeconds": 1.335585,
+            "terminal": "replacement_committed",
+            "rightCensoredAtActionSeconds": null,
+            "decodeCount": 1,
+            "alignedCount": 1,
+            "decodedToAlignedSeconds": 3.544578,
+            "alignedToCommitSeconds": 0.000695,
+            "decodedToCommitSeconds": 3.545273,
+            "bufferedSeekStarts": 0,
+            "postDecodeSnapshots": [
+              {
+                "actionSeconds": 7.490679,
+                "event": "replacement_candidate_decoded",
+                "snapshot": {
+                  "candidateStatus": 1.0,
+                  "framePTS": 51.676611111111114,
+                  "loadedRangeFirstStart": 48.04798888888889,
+                  "candidateSeconds": 51.67666666666667,
+                  "loadedRangeFirstEnd": 48.98665555555556,
+                  "target": 51.67692954066667,
+                  "candidateRate": 0.0,
+                  "liveSeconds": 51.187936256,
+                  "itemStatus": 0.0,
+                  "candidateBufferAheadSeconds": 0.0,
+                  "loadedRangeCount": 1.0,
+                  "elapsedMs": 6195.0,
+                  "availableReserveSeconds": 6.939970370666671,
+                  "preparationLeadSeconds": 6.689970370666671,
+                  "bufferEmpty": false,
+                  "likelyToKeepUp": false,
+                  "seekResult": true
+                },
+                "observedObstructions": [
+                  "clockDistanceOver0.1s",
+                  "maximumReportedForwardReserveUnder0.5s",
+                  "singleReportedRangeDoesNotCoverCommitReserve"
+                ],
+                "candidateMinusLiveSeconds": 0.48873
+              },
+              {
+                "actionSeconds": 7.491015,
+                "event": "replacement_candidate_progress",
+                "snapshot": {
+                  "candidateStatus": 1.0,
+                  "framePTS": 51.676611111111114,
+                  "loadedRangeFirstStart": 48.04798888888889,
+                  "candidateSeconds": 51.67666666666667,
+                  "loadedRangeFirstEnd": 48.98665555555556,
+                  "target": 51.67692954066667,
+                  "candidateRate": 0.0,
+                  "liveSeconds": 51.189051239,
+                  "itemStatus": 0.0,
+                  "candidateBufferAheadSeconds": 0.0,
+                  "loadedRangeCount": 1.0,
+                  "elapsedMs": 6196.0,
+                  "availableReserveSeconds": 6.939970370666671,
+                  "preparationLeadSeconds": 6.689970370666671,
+                  "bufferEmpty": false,
+                  "likelyToKeepUp": false,
+                  "seekResult": true,
+                  "stage": "alignment"
+                },
+                "observedObstructions": [
+                  "clockDistanceOver0.1s",
+                  "maximumReportedForwardReserveUnder0.5s",
+                  "singleReportedRangeDoesNotCoverCommitReserve"
+                ],
+                "candidateMinusLiveSeconds": 0.487615
+              },
+              {
+                "actionSeconds": 8.496672,
+                "event": "replacement_candidate_progress",
+                "snapshot": {
+                  "candidateStatus": 1.0,
+                  "framePTS": 51.92686666666667,
+                  "loadedRangeFirstStart": 48.04798888888889,
+                  "candidateSeconds": 52.053801813,
+                  "loadedRangeFirstEnd": 51.968577777777774,
+                  "target": 51.67692954066667,
+                  "candidateRate": 0.0,
+                  "liveSeconds": 52.195105576,
+                  "itemStatus": 1.0,
+                  "candidateBufferAheadSeconds": 0.0,
+                  "loadedRangeCount": 1.0,
+                  "elapsedMs": 7202.0,
+                  "availableReserveSeconds": 6.939970370666671,
+                  "preparationLeadSeconds": 6.689970370666671,
+                  "bufferEmpty": true,
+                  "likelyToKeepUp": false,
+                  "seekResult": true,
+                  "stage": "alignment"
+                },
+                "observedObstructions": [
+                  "clockDistanceOver0.1s",
+                  "bufferEmpty",
+                  "maximumReportedForwardReserveUnder0.5s",
+                  "singleReportedRangeDoesNotCoverCommitReserve"
+                ],
+                "candidateMinusLiveSeconds": -0.141304
+              },
+              {
+                "actionSeconds": 9.504098,
+                "event": "replacement_candidate_progress",
+                "snapshot": {
+                  "candidateStatus": 1.0,
+                  "framePTS": 52.46907777777778,
+                  "loadedRangeFirstStart": 48.04798888888889,
+                  "candidateSeconds": 52.490284739,
+                  "loadedRangeFirstEnd": 55.97257777777778,
+                  "target": 51.67692954066667,
+                  "candidateRate": 2.0,
+                  "liveSeconds": 53.202664205,
+                  "itemStatus": 1.0,
+                  "candidateBufferAheadSeconds": 3.482293038777776,
+                  "loadedRangeCount": 1.0,
+                  "elapsedMs": 8210.0,
+                  "availableReserveSeconds": 6.939970370666671,
+                  "preparationLeadSeconds": 6.689970370666671,
+                  "bufferEmpty": false,
+                  "likelyToKeepUp": false,
+                  "seekResult": true,
+                  "stage": "alignment"
+                },
+                "observedObstructions": [
+                  "clockDistanceOver0.1s"
+                ],
+                "candidateMinusLiveSeconds": -0.712379
+              },
+              {
+                "actionSeconds": 10.556629,
+                "event": "replacement_candidate_progress",
+                "snapshot": {
+                  "candidateStatus": 1.0,
+                  "framePTS": 54.0957,
+                  "loadedRangeFirstStart": 48.04798888888889,
+                  "candidateSeconds": 54.113305801,
+                  "loadedRangeFirstEnd": 55.97257777777778,
+                  "target": 51.67692954066667,
+                  "candidateRate": 2.0,
+                  "liveSeconds": 54.204544936,
+                  "itemStatus": 1.0,
+                  "candidateBufferAheadSeconds": 1.8592719767777766,
+                  "loadedRangeCount": 1.0,
+                  "elapsedMs": 9211.0,
+                  "availableReserveSeconds": 6.939970370666671,
+                  "preparationLeadSeconds": 6.689970370666671,
+                  "bufferEmpty": false,
+                  "likelyToKeepUp": false,
+                  "seekResult": true,
+                  "stage": "alignment"
+                },
+                "observedObstructions": [],
+                "candidateMinusLiveSeconds": -0.091239
+              },
+              {
+                "actionSeconds": 11.035257,
+                "event": "replacement_candidate_aligned",
+                "snapshot": {
+                  "candidateStatus": 1.0,
+                  "framePTS": 54.51277777777778,
+                  "loadedRangeFirstStart": 48.04798888888889,
+                  "candidateSeconds": 54.549100563,
+                  "loadedRangeFirstEnd": 55.97257777777778,
+                  "target": 51.67692954066667,
+                  "candidateRate": 0.0,
+                  "liveSeconds": 54.625192626,
+                  "itemStatus": 1.0,
+                  "candidateBufferAheadSeconds": 1.4249086427777797,
+                  "loadedRangeCount": 1.0,
+                  "elapsedMs": 9597.0,
+                  "availableReserveSeconds": 6.939970370666671,
+                  "preparationLeadSeconds": 6.689970370666671,
+                  "bufferEmpty": false,
+                  "likelyToKeepUp": false,
+                  "seekResult": true
+                },
+                "observedObstructions": [],
+                "candidateMinusLiveSeconds": -0.076092
+              },
+              {
+                "actionSeconds": 11.035952,
+                "event": "replacement_committed",
+                "snapshot": {
+                  "candidateSeconds": 54.549100563,
+                  "candidateBufferAheadSeconds": 1.4234772147777761
+                },
+                "observedObstructions": []
+              }
+            ],
+            "sourceTraceJoin": "exactWithinBoundedWarmup",
+            "fullReadinessOrContinuousBlockedTimeAccepted": false
+          }
+        ],
+        "unownedReplacementEvents": 0,
+        "unassignedOwnedReplacementEventCount": 0,
+        "boundedReplacementEventCount": 18,
+        "screenFirstFrameOrActualSoundAccepted": false,
+        "limits": [
+          "Snapshots are not atomic AV state and do not cover time between events.",
+          "Reported max forward reserve does not establish a contiguous commit range.",
+          "Negative constraints do not partition elapsed time into exclusive causes.",
+          "No observed obstruction does not imply ready or successful playback.",
+          "Source trace identity is not proof of a server session or candidate network owner."
+        ]
+      },
+      {
+        "attempts": [
+          {
+            "attempt": 1,
+            "warmupStartActionSeconds": 1.379259,
+            "terminal": "replacement_committed",
+            "rightCensoredAtActionSeconds": null,
+            "decodeCount": 1,
+            "alignedCount": 1,
+            "decodedToAlignedSeconds": 3.963502,
+            "alignedToCommitSeconds": 0.00069,
+            "decodedToCommitSeconds": 3.964192,
+            "bufferedSeekStarts": 0,
+            "postDecodeSnapshots": [
+              {
+                "actionSeconds": 8.012263,
+                "event": "replacement_candidate_decoded",
+                "snapshot": {
+                  "candidateStatus": 1.0,
+                  "framePTS": 87.71262222222222,
+                  "loadedRangeFirstStart": 84.084,
+                  "candidateSeconds": 87.75333333333333,
+                  "loadedRangeFirstEnd": 88.00458888888889,
+                  "target": 87.7546054017778,
+                  "candidateRate": 0.0,
+                  "liveSeconds": 88.858313212,
+                  "itemStatus": 0.0,
+                  "candidateBufferAheadSeconds": 0.25125555555555934,
+                  "loadedRangeCount": 1.0,
+                  "elapsedMs": 6672.0,
+                  "availableReserveSeconds": 5.821395787777789,
+                  "preparationLeadSeconds": 5.571395787777789,
+                  "bufferEmpty": false,
+                  "likelyToKeepUp": false,
+                  "seekResult": true
+                },
+                "observedObstructions": [
+                  "clockDistanceOver0.1s",
+                  "maximumReportedForwardReserveUnder0.5s",
+                  "singleReportedRangeDoesNotCoverCommitReserve"
+                ],
+                "candidateMinusLiveSeconds": -1.10498
+              },
+              {
+                "actionSeconds": 8.012649,
+                "event": "replacement_candidate_progress",
+                "snapshot": {
+                  "candidateStatus": 1.0,
+                  "framePTS": 87.71262222222222,
+                  "loadedRangeFirstStart": 84.084,
+                  "candidateSeconds": 87.75333333333333,
+                  "loadedRangeFirstEnd": 88.00458888888889,
+                  "target": 87.7546054017778,
+                  "candidateRate": 0.0,
+                  "liveSeconds": 88.859235404,
+                  "itemStatus": 0.0,
+                  "candidateBufferAheadSeconds": 0.25125555555555934,
+                  "loadedRangeCount": 1.0,
+                  "elapsedMs": 6673.0,
+                  "availableReserveSeconds": 5.821395787777789,
+                  "preparationLeadSeconds": 5.571395787777789,
+                  "bufferEmpty": false,
+                  "likelyToKeepUp": false,
+                  "seekResult": true,
+                  "stage": "alignment"
+                },
+                "observedObstructions": [
+                  "clockDistanceOver0.1s",
+                  "maximumReportedForwardReserveUnder0.5s",
+                  "singleReportedRangeDoesNotCoverCommitReserve"
+                ],
+                "candidateMinusLiveSeconds": -1.105902
+              },
+              {
+                "actionSeconds": 9.019736,
+                "event": "replacement_candidate_progress",
+                "snapshot": {
+                  "candidateStatus": 1.0,
+                  "framePTS": 87.96287777777778,
+                  "loadedRangeFirstStart": 84.084,
+                  "candidateSeconds": 88.157956187,
+                  "loadedRangeFirstEnd": 88.00458888888889,
+                  "target": 87.7546054017778,
+                  "candidateRate": 0.0,
+                  "liveSeconds": 89.866900836,
+                  "itemStatus": 1.0,
+                  "candidateBufferAheadSeconds": 0.0,
+                  "loadedRangeCount": 1.0,
+                  "elapsedMs": 7681.0,
+                  "availableReserveSeconds": 5.821395787777789,
+                  "preparationLeadSeconds": 5.571395787777789,
+                  "bufferEmpty": true,
+                  "likelyToKeepUp": false,
+                  "seekResult": true,
+                  "stage": "alignment"
+                },
+                "observedObstructions": [
+                  "clockDistanceOver0.1s",
+                  "frameDistanceOver0.15s",
+                  "bufferEmpty",
+                  "maximumReportedForwardReserveUnder0.5s",
+                  "singleReportedRangeDoesNotCoverCommitReserve"
+                ],
+                "candidateMinusLiveSeconds": -1.708945
+              },
+              {
+                "actionSeconds": 10.029853,
+                "event": "replacement_candidate_progress",
+                "snapshot": {
+                  "candidateStatus": 1.0,
+                  "framePTS": 89.089,
+                  "loadedRangeFirstStart": 84.084,
+                  "candidateSeconds": 89.100853223,
+                  "loadedRangeFirstEnd": 90.01466666666667,
+                  "target": 87.7546054017778,
+                  "candidateRate": 2.0,
+                  "liveSeconds": 90.877169272,
+                  "itemStatus": 1.0,
+                  "candidateBufferAheadSeconds": 0.913813443666669,
+                  "loadedRangeCount": 1.0,
+                  "elapsedMs": 8691.0,
+                  "availableReserveSeconds": 5.821395787777789,
+                  "preparationLeadSeconds": 5.571395787777789,
+                  "bufferEmpty": false,
+                  "likelyToKeepUp": false,
+                  "seekResult": true,
+                  "stage": "alignment"
+                },
+                "observedObstructions": [
+                  "clockDistanceOver0.1s"
+                ],
+                "candidateMinusLiveSeconds": -1.776316
+              },
+              {
+                "actionSeconds": 11.040138,
+                "event": "replacement_candidate_progress",
+                "snapshot": {
+                  "candidateStatus": 1.0,
+                  "framePTS": 91.091,
+                  "loadedRangeFirstStart": 84.084,
+                  "candidateSeconds": 91.120759565,
+                  "loadedRangeFirstEnd": 92.0085888888889,
+                  "target": 87.7546054017778,
+                  "candidateRate": 2.0,
+                  "liveSeconds": 91.887221536,
+                  "itemStatus": 1.0,
+                  "candidateBufferAheadSeconds": 0.8878293238888944,
+                  "loadedRangeCount": 1.0,
+                  "elapsedMs": 9701.0,
+                  "availableReserveSeconds": 5.821395787777789,
+                  "preparationLeadSeconds": 5.571395787777789,
+                  "bufferEmpty": false,
+                  "likelyToKeepUp": false,
+                  "seekResult": true,
+                  "stage": "alignment"
+                },
+                "observedObstructions": [
+                  "clockDistanceOver0.1s"
+                ],
+                "candidateMinusLiveSeconds": -0.766462
+              },
+              {
+                "actionSeconds": 11.975765,
+                "event": "replacement_candidate_aligned",
+                "snapshot": {
+                  "candidateStatus": 1.0,
+                  "framePTS": 92.63421111111111,
+                  "loadedRangeFirstStart": 84.084,
+                  "candidateSeconds": 92.667647871,
+                  "loadedRangeFirstEnd": 94.516,
+                  "target": 87.7546054017778,
+                  "candidateRate": 0.0,
+                  "liveSeconds": 92.719420767,
+                  "itemStatus": 1.0,
+                  "candidateBufferAheadSeconds": 1.8497832710000068,
+                  "loadedRangeCount": 1.0,
+                  "elapsedMs": 10504.0,
+                  "availableReserveSeconds": 5.821395787777789,
+                  "preparationLeadSeconds": 5.571395787777789,
+                  "bufferEmpty": false,
+                  "likelyToKeepUp": false,
+                  "seekResult": true
+                },
+                "observedObstructions": [],
+                "candidateMinusLiveSeconds": -0.051773
+              },
+              {
+                "actionSeconds": 11.976455,
+                "event": "replacement_committed",
+                "snapshot": {
+                  "candidateSeconds": 92.667647871,
+                  "candidateBufferAheadSeconds": 1.8483521290000056
+                },
+                "observedObstructions": []
+              }
+            ],
+            "sourceTraceJoin": "exactWithinBoundedWarmup",
+            "fullReadinessOrContinuousBlockedTimeAccepted": false
+          }
+        ],
+        "unownedReplacementEvents": 0,
+        "unassignedOwnedReplacementEventCount": 0,
+        "boundedReplacementEventCount": 18,
+        "screenFirstFrameOrActualSoundAccepted": false,
+        "limits": [
+          "Snapshots are not atomic AV state and do not cover time between events.",
+          "Reported max forward reserve does not establish a contiguous commit range.",
+          "Negative constraints do not partition elapsed time into exclusive causes.",
+          "No observed obstruction does not imply ready or successful playback.",
+          "Source trace identity is not proof of a server session or candidate network owner."
+        ]
+      },
+      {
+        "attempts": [
+          {
+            "attempt": 1,
+            "warmupStartActionSeconds": 1.553087,
+            "terminal": "replacement_committed",
+            "rightCensoredAtActionSeconds": null,
+            "decodeCount": 1,
+            "alignedCount": 1,
+            "decodedToAlignedSeconds": 5.238654,
+            "alignedToCommitSeconds": 0.000542,
+            "decodedToCommitSeconds": 5.239196,
+            "bufferedSeekStarts": 0,
+            "postDecodeSnapshots": [
+              {
+                "actionSeconds": 9.005923,
+                "event": "replacement_candidate_decoded",
+                "snapshot": {
+                  "candidateStatus": 1.0,
+                  "framePTS": 123.74862222222222,
+                  "loadedRangeFirstStart": 120.12,
+                  "candidateSeconds": 123.79,
+                  "loadedRangeFirstEnd": 124.04058888888889,
+                  "target": 123.7906190548889,
+                  "candidateRate": 0.0,
+                  "liveSeconds": 126.422108436,
+                  "itemStatus": 0.0,
+                  "candidateBufferAheadSeconds": 0.25058888888888475,
+                  "loadedRangeCount": 1.0,
+                  "elapsedMs": 7470.0,
+                  "availableReserveSeconds": 5.091078518888892,
+                  "preparationLeadSeconds": 4.841078518888892,
+                  "bufferEmpty": false,
+                  "likelyToKeepUp": false,
+                  "seekResult": true
+                },
+                "observedObstructions": [
+                  "clockDistanceOver0.1s",
+                  "maximumReportedForwardReserveUnder0.5s",
+                  "singleReportedRangeDoesNotCoverCommitReserve"
+                ],
+                "candidateMinusLiveSeconds": -2.632108
+              },
+              {
+                "actionSeconds": 9.00643,
+                "event": "replacement_candidate_progress",
+                "snapshot": {
+                  "candidateStatus": 1.0,
+                  "framePTS": 123.74862222222222,
+                  "loadedRangeFirstStart": 120.12,
+                  "candidateSeconds": 123.79,
+                  "loadedRangeFirstEnd": 124.04058888888889,
+                  "target": 123.7906190548889,
+                  "candidateRate": 0.0,
+                  "liveSeconds": 126.423020671,
+                  "itemStatus": 0.0,
+                  "candidateBufferAheadSeconds": 0.25058888888888475,
+                  "loadedRangeCount": 1.0,
+                  "elapsedMs": 7471.0,
+                  "availableReserveSeconds": 5.091078518888892,
+                  "preparationLeadSeconds": 4.841078518888892,
+                  "bufferEmpty": false,
+                  "likelyToKeepUp": false,
+                  "seekResult": true,
+                  "stage": "alignment"
+                },
+                "observedObstructions": [
+                  "clockDistanceOver0.1s",
+                  "maximumReportedForwardReserveUnder0.5s",
+                  "singleReportedRangeDoesNotCoverCommitReserve"
+                ],
+                "candidateMinusLiveSeconds": -2.633021
+              },
+              {
+                "actionSeconds": 9.984962,
+                "event": "replacement_candidate_progress",
+                "snapshot": {
+                  "candidateStatus": 1.0,
+                  "framePTS": 123.99887777777778,
+                  "loadedRangeFirstStart": 120.12,
+                  "candidateSeconds": 124.121581416,
+                  "loadedRangeFirstEnd": 124.04058888888889,
+                  "target": 123.7906190548889,
+                  "candidateRate": 0.0,
+                  "liveSeconds": 127.424327124,
+                  "itemStatus": 1.0,
+                  "candidateBufferAheadSeconds": 0.0,
+                  "loadedRangeCount": 1.0,
+                  "elapsedMs": 8472.0,
+                  "availableReserveSeconds": 5.091078518888892,
+                  "preparationLeadSeconds": 4.841078518888892,
+                  "bufferEmpty": true,
+                  "likelyToKeepUp": false,
+                  "seekResult": true,
+                  "stage": "alignment"
+                },
+                "observedObstructions": [
+                  "clockDistanceOver0.1s",
+                  "bufferEmpty",
+                  "maximumReportedForwardReserveUnder0.5s",
+                  "singleReportedRangeDoesNotCoverCommitReserve"
+                ],
+                "candidateMinusLiveSeconds": -3.302746
+              },
+              {
+                "actionSeconds": 10.99818,
+                "event": "replacement_candidate_progress",
+                "snapshot": {
+                  "candidateStatus": 1.0,
+                  "framePTS": 125.54208888888888,
+                  "loadedRangeFirstStart": 120.12,
+                  "candidateSeconds": 125.572309962,
+                  "loadedRangeFirstEnd": 128.04458888888888,
+                  "target": 123.7906190548889,
+                  "candidateRate": 2.0,
+                  "liveSeconds": 128.437175562,
+                  "itemStatus": 1.0,
+                  "candidateBufferAheadSeconds": 2.472278926888876,
+                  "loadedRangeCount": 1.0,
+                  "elapsedMs": 9485.0,
+                  "availableReserveSeconds": 5.091078518888892,
+                  "preparationLeadSeconds": 4.841078518888892,
+                  "bufferEmpty": false,
+                  "likelyToKeepUp": false,
+                  "seekResult": true,
+                  "stage": "alignment"
+                },
+                "observedObstructions": [
+                  "clockDistanceOver0.1s"
+                ],
+                "candidateMinusLiveSeconds": -2.864866
+              },
+              {
+                "actionSeconds": 12.018991,
+                "event": "replacement_candidate_progress",
+                "snapshot": {
+                  "candidateStatus": 1.0,
+                  "framePTS": 127.58578888888889,
+                  "loadedRangeFirstStart": 120.12,
+                  "candidateSeconds": 127.612934238,
+                  "loadedRangeFirstEnd": 128.04458888888888,
+                  "target": 123.7906190548889,
+                  "candidateRate": 2.0,
+                  "liveSeconds": 129.457801511,
+                  "itemStatus": 1.0,
+                  "candidateBufferAheadSeconds": 0.43165465088888766,
+                  "loadedRangeCount": 1.0,
+                  "elapsedMs": 10505.0,
+                  "availableReserveSeconds": 5.091078518888892,
+                  "preparationLeadSeconds": 4.841078518888892,
+                  "bufferEmpty": false,
+                  "likelyToKeepUp": false,
+                  "seekResult": true,
+                  "stage": "alignment"
+                },
+                "observedObstructions": [
+                  "clockDistanceOver0.1s",
+                  "maximumReportedForwardReserveUnder0.5s",
+                  "singleReportedRangeDoesNotCoverCommitReserve"
+                ],
+                "candidateMinusLiveSeconds": -1.844867
+              },
+              {
+                "actionSeconds": 13.062278,
+                "event": "replacement_candidate_progress",
+                "snapshot": {
+                  "candidateStatus": 1.0,
+                  "framePTS": 129.42095555555557,
+                  "loadedRangeFirstStart": 120.12,
+                  "candidateSeconds": 129.461008234,
+                  "loadedRangeFirstEnd": 131.04266666666666,
+                  "target": 123.7906190548889,
+                  "candidateRate": 2.0,
+                  "liveSeconds": 130.477648327,
+                  "itemStatus": 1.0,
+                  "candidateBufferAheadSeconds": 1.5816584326666714,
+                  "loadedRangeCount": 1.0,
+                  "elapsedMs": 11525.0,
+                  "availableReserveSeconds": 5.091078518888892,
+                  "preparationLeadSeconds": 4.841078518888892,
+                  "bufferEmpty": false,
+                  "likelyToKeepUp": false,
+                  "seekResult": true,
+                  "stage": "alignment"
+                },
+                "observedObstructions": [
+                  "clockDistanceOver0.1s"
+                ],
+                "candidateMinusLiveSeconds": -1.01664
+              },
+              {
+                "actionSeconds": 14.046174,
+                "event": "replacement_candidate_progress",
+                "snapshot": {
+                  "candidateStatus": 1.0,
+                  "framePTS": 131.29783333333333,
+                  "loadedRangeFirstStart": 120.12,
+                  "candidateSeconds": 131.328413812,
+                  "loadedRangeFirstEnd": 132.0485888888889,
+                  "target": 123.7906190548889,
+                  "candidateRate": 2.0,
+                  "liveSeconds": 131.485459915,
+                  "itemStatus": 1.0,
+                  "candidateBufferAheadSeconds": 0.7201750768888928,
+                  "loadedRangeCount": 1.0,
+                  "elapsedMs": 12531.0,
+                  "availableReserveSeconds": 5.091078518888892,
+                  "preparationLeadSeconds": 4.841078518888892,
+                  "bufferEmpty": false,
+                  "likelyToKeepUp": false,
+                  "seekResult": true,
+                  "stage": "alignment"
+                },
+                "observedObstructions": [
+                  "clockDistanceOver0.1s"
+                ],
+                "candidateMinusLiveSeconds": -0.157046
+              },
+              {
+                "actionSeconds": 14.244577,
+                "event": "replacement_candidate_aligned",
+                "snapshot": {
+                  "candidateStatus": 1.0,
+                  "framePTS": 131.50637777777777,
+                  "loadedRangeFirstStart": 120.12,
+                  "candidateSeconds": 131.513826896,
+                  "loadedRangeFirstEnd": 132.0485888888889,
+                  "target": 123.7906190548889,
+                  "candidateRate": 0.0,
+                  "liveSeconds": 131.604515141,
+                  "itemStatus": 1.0,
+                  "candidateBufferAheadSeconds": 0.5362993948889141,
+                  "loadedRangeCount": 1.0,
+                  "elapsedMs": 12605.0,
+                  "availableReserveSeconds": 5.091078518888892,
+                  "preparationLeadSeconds": 4.841078518888892,
+                  "bufferEmpty": false,
+                  "likelyToKeepUp": false,
+                  "seekResult": true
+                },
+                "observedObstructions": [],
+                "candidateMinusLiveSeconds": -0.090688
+              },
+              {
+                "actionSeconds": 14.245119,
+                "event": "replacement_committed",
+                "snapshot": {
+                  "candidateSeconds": 131.513826896,
+                  "candidateBufferAheadSeconds": 0.5347619928888889
+                },
+                "observedObstructions": []
+              }
+            ],
+            "sourceTraceJoin": "exactWithinBoundedWarmup",
+            "fullReadinessOrContinuousBlockedTimeAccepted": false
+          }
+        ],
+        "unownedReplacementEvents": 0,
+        "unassignedOwnedReplacementEventCount": 0,
+        "boundedReplacementEventCount": 21,
+        "screenFirstFrameOrActualSoundAccepted": false,
+        "limits": [
+          "Snapshots are not atomic AV state and do not cover time between events.",
+          "Reported max forward reserve does not establish a contiguous commit range.",
+          "Negative constraints do not partition elapsed time into exclusive causes.",
+          "No observed obstruction does not imply ready or successful playback.",
+          "Source trace identity is not proof of a server session or candidate network owner."
+        ]
+      },
+      {
+        "attempts": [
+          {
+            "attempt": 1,
+            "warmupStartActionSeconds": 1.697078,
+            "terminal": "replacement_committed",
+            "rightCensoredAtActionSeconds": null,
+            "decodeCount": 1,
+            "alignedCount": 1,
+            "decodedToAlignedSeconds": 0.844936,
+            "alignedToCommitSeconds": 0.000976,
+            "decodedToCommitSeconds": 0.845912,
+            "bufferedSeekStarts": 0,
+            "postDecodeSnapshots": [
+              {
+                "actionSeconds": 7.999009,
+                "event": "replacement_candidate_decoded",
+                "snapshot": {
+                  "candidateStatus": 1.0,
+                  "framePTS": 162.2871111111111,
+                  "loadedRangeFirstStart": 160.15998888888888,
+                  "candidateSeconds": 162.32333333333332,
+                  "loadedRangeFirstEnd": 162.57065555555556,
+                  "target": 162.32336645733332,
+                  "candidateRate": 0.0,
+                  "liveSeconds": 162.150208857,
+                  "itemStatus": 0.0,
+                  "candidateBufferAheadSeconds": 0.24732222222223754,
+                  "loadedRangeCount": 1.0,
+                  "elapsedMs": 6349.0,
+                  "availableReserveSeconds": 6.774719427333309,
+                  "preparationLeadSeconds": 6.524719427333309,
+                  "bufferEmpty": false,
+                  "likelyToKeepUp": false,
+                  "seekResult": true
+                },
+                "observedObstructions": [
+                  "clockDistanceOver0.1s",
+                  "maximumReportedForwardReserveUnder0.5s",
+                  "singleReportedRangeDoesNotCoverCommitReserve"
+                ],
+                "candidateMinusLiveSeconds": 0.173124
+              },
+              {
+                "actionSeconds": 7.999385,
+                "event": "replacement_candidate_progress",
+                "snapshot": {
+                  "candidateStatus": 1.0,
+                  "framePTS": 162.2871111111111,
+                  "loadedRangeFirstStart": 160.15998888888888,
+                  "candidateSeconds": 162.32333333333332,
+                  "loadedRangeFirstEnd": 162.57065555555556,
+                  "target": 162.32336645733332,
+                  "candidateRate": 0.0,
+                  "liveSeconds": 162.15222136,
+                  "itemStatus": 0.0,
+                  "candidateBufferAheadSeconds": 0.24732222222223754,
+                  "loadedRangeCount": 1.0,
+                  "elapsedMs": 6350.0,
+                  "availableReserveSeconds": 6.774719427333309,
+                  "preparationLeadSeconds": 6.524719427333309,
+                  "bufferEmpty": false,
+                  "likelyToKeepUp": false,
+                  "seekResult": true,
+                  "stage": "alignment"
+                },
+                "observedObstructions": [
+                  "clockDistanceOver0.1s",
+                  "maximumReportedForwardReserveUnder0.5s",
+                  "singleReportedRangeDoesNotCoverCommitReserve"
+                ],
+                "candidateMinusLiveSeconds": 0.171112
+              },
+              {
+                "actionSeconds": 8.843945,
+                "event": "replacement_candidate_aligned",
+                "snapshot": {
+                  "candidateStatus": 1.0,
+                  "framePTS": 162.78761111111112,
+                  "loadedRangeFirstStart": 160.15998888888888,
+                  "candidateSeconds": 162.810628429,
+                  "loadedRangeFirstEnd": 164.0805777777778,
+                  "target": 162.32336645733332,
+                  "candidateRate": 0.0,
+                  "liveSeconds": 162.857715737,
+                  "itemStatus": 1.0,
+                  "candidateBufferAheadSeconds": 1.2712748247777768,
+                  "loadedRangeCount": 1.0,
+                  "elapsedMs": 7022.0,
+                  "availableReserveSeconds": 6.774719427333309,
+                  "preparationLeadSeconds": 6.524719427333309,
+                  "bufferEmpty": false,
+                  "likelyToKeepUp": false,
+                  "seekResult": true
+                },
+                "observedObstructions": [],
+                "candidateMinusLiveSeconds": -0.047087
+              },
+              {
+                "actionSeconds": 8.844921,
+                "event": "replacement_committed",
+                "snapshot": {
+                  "candidateSeconds": 162.810628429,
+                  "candidateBufferAheadSeconds": 1.2699493487778
+                },
+                "observedObstructions": []
+              }
+            ],
+            "sourceTraceJoin": "exactWithinBoundedWarmup",
+            "fullReadinessOrContinuousBlockedTimeAccepted": false
+          }
+        ],
+        "unownedReplacementEvents": 0,
+        "unassignedOwnedReplacementEventCount": 0,
+        "boundedReplacementEventCount": 15,
+        "screenFirstFrameOrActualSoundAccepted": false,
+        "limits": [
+          "Snapshots are not atomic AV state and do not cover time between events.",
+          "Reported max forward reserve does not establish a contiguous commit range.",
+          "Negative constraints do not partition elapsed time into exclusive causes.",
+          "No observed obstruction does not imply ready or successful playback.",
+          "Source trace identity is not proof of a server session or candidate network owner."
+        ]
+      },
+      {
+        "attempts": [
+          {
+            "attempt": 1,
+            "warmupStartActionSeconds": 1.284693,
+            "terminal": "replacement_committed",
+            "rightCensoredAtActionSeconds": null,
+            "decodeCount": 1,
+            "alignedCount": 1,
+            "decodedToAlignedSeconds": 0.552188,
+            "alignedToCommitSeconds": 0.000702,
+            "decodedToCommitSeconds": 0.55289,
+            "bufferedSeekStarts": 0,
+            "postDecodeSnapshots": [
+              {
+                "actionSeconds": 7.66363,
+                "event": "replacement_candidate_decoded",
+                "snapshot": {
+                  "candidateStatus": 1.0,
+                  "framePTS": 198.94874444444446,
+                  "loadedRangeFirstStart": 196.19598888888888,
+                  "candidateSeconds": 198.96166666666667,
+                  "loadedRangeFirstEnd": 199.09732222222223,
+                  "target": 198.9626245250032,
+                  "candidateRate": 0.0,
+                  "liveSeconds": 198.846169735,
+                  "itemStatus": 0.0,
+                  "candidateBufferAheadSeconds": 0.13565555555555875,
+                  "loadedRangeCount": 1.0,
+                  "elapsedMs": 6379.0,
+                  "availableReserveSeconds": 7.6531010857777915,
+                  "preparationLeadSeconds": 6.499097625003197,
+                  "bufferEmpty": false,
+                  "likelyToKeepUp": false,
+                  "seekResult": true
+                },
+                "observedObstructions": [
+                  "clockDistanceOver0.1s",
+                  "maximumReportedForwardReserveUnder0.5s",
+                  "singleReportedRangeDoesNotCoverCommitReserve"
+                ],
+                "candidateMinusLiveSeconds": 0.115497
+              },
+              {
+                "actionSeconds": 7.664215,
+                "event": "replacement_candidate_progress",
+                "snapshot": {
+                  "candidateStatus": 1.0,
+                  "framePTS": 198.94874444444446,
+                  "loadedRangeFirstStart": 196.19598888888888,
+                  "candidateSeconds": 198.96166666666667,
+                  "loadedRangeFirstEnd": 199.09732222222223,
+                  "target": 198.9626245250032,
+                  "candidateRate": 0.0,
+                  "liveSeconds": 198.848433861,
+                  "itemStatus": 0.0,
+                  "candidateBufferAheadSeconds": 0.13565555555555875,
+                  "loadedRangeCount": 1.0,
+                  "elapsedMs": 6380.0,
+                  "availableReserveSeconds": 7.6531010857777915,
+                  "preparationLeadSeconds": 6.499097625003197,
+                  "bufferEmpty": false,
+                  "likelyToKeepUp": false,
+                  "seekResult": true,
+                  "stage": "alignment"
+                },
+                "observedObstructions": [
+                  "clockDistanceOver0.1s",
+                  "maximumReportedForwardReserveUnder0.5s",
+                  "singleReportedRangeDoesNotCoverCommitReserve"
+                ],
+                "candidateMinusLiveSeconds": 0.113233
+              },
+              {
+                "actionSeconds": 8.215818,
+                "event": "replacement_candidate_aligned",
+                "snapshot": {
+                  "candidateStatus": 1.0,
+                  "framePTS": 199.1989888888889,
+                  "loadedRangeFirstStart": 196.19598888888888,
+                  "candidateSeconds": 199.229770773,
+                  "loadedRangeFirstEnd": 200.1165777777778,
+                  "target": 198.9626245250032,
+                  "candidateRate": 0.0,
+                  "liveSeconds": 199.26146812,
+                  "itemStatus": 1.0,
+                  "candidateBufferAheadSeconds": 0.8879033487777974,
+                  "loadedRangeCount": 1.0,
+                  "elapsedMs": 6762.0,
+                  "availableReserveSeconds": 7.6531010857777915,
+                  "preparationLeadSeconds": 6.499097625003197,
+                  "bufferEmpty": false,
+                  "likelyToKeepUp": false,
+                  "seekResult": true
+                },
+                "observedObstructions": [],
+                "candidateMinusLiveSeconds": -0.031697
+              },
+              {
+                "actionSeconds": 8.21652,
+                "event": "replacement_committed",
+                "snapshot": {
+                  "candidateSeconds": 199.229770773,
+                  "candidateBufferAheadSeconds": 0.8868070047777792
+                },
+                "observedObstructions": []
+              }
+            ],
+            "sourceTraceJoin": "exactWithinBoundedWarmup",
+            "fullReadinessOrContinuousBlockedTimeAccepted": false
+          }
+        ],
+        "unownedReplacementEvents": 0,
+        "unassignedOwnedReplacementEventCount": 0,
+        "boundedReplacementEventCount": 15,
+        "screenFirstFrameOrActualSoundAccepted": false,
+        "limits": [
+          "Snapshots are not atomic AV state and do not cover time between events.",
+          "Reported max forward reserve does not establish a contiguous commit range.",
+          "Negative constraints do not partition elapsed time into exclusive causes.",
+          "No observed obstruction does not imply ready or successful playback.",
+          "Source trace identity is not proof of a server session or candidate network owner."
+        ]
+      },
+      {
+        "attempts": [
+          {
+            "attempt": 1,
+            "warmupStartActionSeconds": 1.733474,
+            "terminal": "replacement_committed",
+            "rightCensoredAtActionSeconds": null,
+            "decodeCount": 1,
+            "alignedCount": 1,
+            "decodedToAlignedSeconds": 7.521483,
+            "alignedToCommitSeconds": 0.00076,
+            "decodedToCommitSeconds": 7.522243,
+            "bufferedSeekStarts": 1,
+            "postDecodeSnapshots": [
+              {
+                "actionSeconds": 13.67193,
+                "event": "replacement_candidate_decoded",
+                "snapshot": {
+                  "candidateStatus": 1.0,
+                  "framePTS": 235.8606111111111,
+                  "loadedRangeFirstStart": 232.23198888888888,
+                  "candidateSeconds": 235.90166666666667,
+                  "loadedRangeFirstEnd": 236.15257777777776,
+                  "target": 235.9026084027778,
+                  "candidateRate": 0.0,
+                  "liveSeconds": 241.546737962,
+                  "itemStatus": 0.0,
+                  "candidateBufferAheadSeconds": 0.250911111111094,
+                  "loadedRangeCount": 1.0,
+                  "elapsedMs": 11936.0,
+                  "availableReserveSeconds": 6.545067613777775,
+                  "preparationLeadSeconds": 6.295067613777775,
+                  "bufferEmpty": false,
+                  "likelyToKeepUp": false,
+                  "seekResult": true
+                },
+                "observedObstructions": [
+                  "clockDistanceOver0.1s",
+                  "maximumReportedForwardReserveUnder0.5s",
+                  "singleReportedRangeDoesNotCoverCommitReserve"
+                ],
+                "candidateMinusLiveSeconds": -5.645071
+              },
+              {
+                "actionSeconds": 13.67233,
+                "event": "replacement_candidate_progress",
+                "snapshot": {
+                  "candidateStatus": 1.0,
+                  "framePTS": 235.8606111111111,
+                  "loadedRangeFirstStart": 232.23198888888888,
+                  "candidateSeconds": 235.90166666666667,
+                  "loadedRangeFirstEnd": 236.15257777777776,
+                  "target": 235.9026084027778,
+                  "candidateRate": 0.0,
+                  "liveSeconds": 241.547743026,
+                  "itemStatus": 0.0,
+                  "candidateBufferAheadSeconds": 0.250911111111094,
+                  "loadedRangeCount": 1.0,
+                  "elapsedMs": 11937.0,
+                  "availableReserveSeconds": 6.545067613777775,
+                  "preparationLeadSeconds": 6.295067613777775,
+                  "bufferEmpty": false,
+                  "likelyToKeepUp": false,
+                  "seekResult": true,
+                  "stage": "alignment"
+                },
+                "observedObstructions": [
+                  "clockDistanceOver0.1s",
+                  "maximumReportedForwardReserveUnder0.5s",
+                  "singleReportedRangeDoesNotCoverCommitReserve"
+                ],
+                "candidateMinusLiveSeconds": -5.646076
+              },
+              {
+                "actionSeconds": 14.689094,
+                "event": "replacement_candidate_progress",
+                "snapshot": {
+                  "candidateStatus": 1.0,
+                  "framePTS": 236.11086666666668,
+                  "loadedRangeFirstStart": 232.23198888888888,
+                  "candidateSeconds": 236.232598511,
+                  "loadedRangeFirstEnd": 236.15257777777776,
+                  "target": 235.9026084027778,
+                  "candidateRate": 0.0,
+                  "liveSeconds": 242.565309523,
+                  "itemStatus": 1.0,
+                  "candidateBufferAheadSeconds": 0.0,
+                  "loadedRangeCount": 1.0,
+                  "elapsedMs": 12955.0,
+                  "availableReserveSeconds": 6.545067613777775,
+                  "preparationLeadSeconds": 6.295067613777775,
+                  "bufferEmpty": true,
+                  "likelyToKeepUp": false,
+                  "seekResult": true,
+                  "stage": "alignment"
+                },
+                "observedObstructions": [
+                  "clockDistanceOver0.1s",
+                  "bufferEmpty",
+                  "maximumReportedForwardReserveUnder0.5s",
+                  "singleReportedRangeDoesNotCoverCommitReserve"
+                ],
+                "candidateMinusLiveSeconds": -6.332711
+              },
+              {
+                "actionSeconds": 15.750557,
+                "event": "replacement_candidate_progress",
+                "snapshot": {
+                  "candidateStatus": 1.0,
+                  "framePTS": 237.61236666666667,
+                  "loadedRangeFirstStart": 232.23198888888888,
+                  "candidateSeconds": 237.618526689,
+                  "loadedRangeFirstEnd": 240.15657777777778,
+                  "target": 235.9026084027778,
+                  "candidateRate": 2.0,
+                  "liveSeconds": 243.604461833,
+                  "itemStatus": 1.0,
+                  "candidateBufferAheadSeconds": 2.5380510887777916,
+                  "loadedRangeCount": 1.0,
+                  "elapsedMs": 13994.0,
+                  "availableReserveSeconds": 6.545067613777775,
+                  "preparationLeadSeconds": 6.295067613777775,
+                  "bufferEmpty": false,
+                  "likelyToKeepUp": false,
+                  "seekResult": true,
+                  "stage": "alignment"
+                },
+                "observedObstructions": [
+                  "clockDistanceOver0.1s"
+                ],
+                "candidateMinusLiveSeconds": -5.985935
+              },
+              {
+                "actionSeconds": 16.736221,
+                "event": "replacement_candidate_progress",
+                "snapshot": {
+                  "candidateStatus": 1.0,
+                  "framePTS": 239.61436666666665,
+                  "loadedRangeFirstStart": 232.23198888888888,
+                  "candidateSeconds": 239.633728133,
+                  "loadedRangeFirstEnd": 240.15657777777778,
+                  "target": 235.9026084027778,
+                  "candidateRate": 2.0,
+                  "liveSeconds": 244.612196673,
+                  "itemStatus": 1.0,
+                  "candidateBufferAheadSeconds": 0.5228496447777786,
+                  "loadedRangeCount": 1.0,
+                  "elapsedMs": 15002.0,
+                  "availableReserveSeconds": 6.545067613777775,
+                  "preparationLeadSeconds": 6.295067613777775,
+                  "bufferEmpty": false,
+                  "likelyToKeepUp": false,
+                  "seekResult": true,
+                  "stage": "alignment"
+                },
+                "observedObstructions": [
+                  "clockDistanceOver0.1s"
+                ],
+                "candidateMinusLiveSeconds": -4.978469
+              },
+              {
+                "actionSeconds": 17.745099,
+                "event": "replacement_candidate_progress",
+                "snapshot": {
+                  "candidateStatus": 1.0,
+                  "framePTS": 241.61636666666666,
+                  "loadedRangeFirstStart": 232.23198888888888,
+                  "candidateSeconds": 241.651925319,
+                  "loadedRangeFirstEnd": 244.16057777777777,
+                  "target": 235.9026084027778,
+                  "candidateRate": 2.0,
+                  "liveSeconds": 245.621270127,
+                  "itemStatus": 1.0,
+                  "candidateBufferAheadSeconds": 2.5086524587777888,
+                  "loadedRangeCount": 1.0,
+                  "elapsedMs": 16011.0,
+                  "availableReserveSeconds": 6.545067613777775,
+                  "preparationLeadSeconds": 6.295067613777775,
+                  "bufferEmpty": false,
+                  "likelyToKeepUp": false,
+                  "seekResult": true,
+                  "stage": "alignment"
+                },
+                "observedObstructions": [
+                  "clockDistanceOver0.1s"
+                ],
+                "candidateMinusLiveSeconds": -3.969345
+              },
+              {
+                "actionSeconds": 18.804568,
+                "event": "replacement_candidate_progress",
+                "snapshot": {
+                  "candidateStatus": 1.0,
+                  "framePTS": 243.7434888888889,
+                  "loadedRangeFirstStart": 232.23198888888888,
+                  "candidateSeconds": 243.770409867,
+                  "loadedRangeFirstEnd": 244.16057777777777,
+                  "target": 235.9026084027778,
+                  "candidateRate": 2.0,
+                  "liveSeconds": 246.680353342,
+                  "itemStatus": 1.0,
+                  "candidateBufferAheadSeconds": 0.39016791077776247,
+                  "loadedRangeCount": 1.0,
+                  "elapsedMs": 17070.0,
+                  "availableReserveSeconds": 6.545067613777775,
+                  "preparationLeadSeconds": 6.295067613777775,
+                  "bufferEmpty": false,
+                  "likelyToKeepUp": false,
+                  "seekResult": true,
+                  "stage": "alignment"
+                },
+                "observedObstructions": [
+                  "clockDistanceOver0.1s",
+                  "maximumReportedForwardReserveUnder0.5s",
+                  "singleReportedRangeDoesNotCoverCommitReserve"
+                ],
+                "candidateMinusLiveSeconds": -2.909943
+              },
+              {
+                "actionSeconds": 19.634075,
+                "event": "replacement_candidate_buffered_seek_started",
+                "snapshot": {
+                  "candidateStatus": 1.0,
+                  "loadedRangeFirstStart": 232.23198888888888,
+                  "candidateSeconds": 245.209173935,
+                  "loadedRangeFirstEnd": 248.16457777777777,
+                  "target": 235.9026084027778,
+                  "bufferedTarget": 247.649073348,
+                  "candidateRate": 0.0,
+                  "liveSeconds": 247.429915788,
+                  "itemStatus": 1.0,
+                  "candidateBufferAheadSeconds": 2.95540384277777,
+                  "loadedRangeCount": 1.0,
+                  "elapsedMs": 17789.0,
+                  "fromSeconds": 245.208356531,
+                  "availableReserveSeconds": 6.545067613777775,
+                  "preparationLeadSeconds": 6.295067613777775,
+                  "bufferEmpty": false,
+                  "likelyToKeepUp": false,
+                  "seekResult": true
+                },
+                "observedObstructions": [
+                  "clockDistanceOver0.1s"
+                ],
+                "candidateMinusLiveSeconds": -2.220742
+              },
+              {
+                "actionSeconds": 19.634591,
+                "event": "replacement_candidate_progress",
+                "snapshot": {
+                  "candidateStatus": 1.0,
+                  "loadedRangeFirstStart": 232.23198888888888,
+                  "candidateSeconds": 245.210331011,
+                  "loadedRangeFirstEnd": 248.16457777777777,
+                  "target": 235.9026084027778,
+                  "candidateRate": 0.0,
+                  "liveSeconds": 247.47628372,
+                  "itemStatus": 1.0,
+                  "candidateBufferAheadSeconds": 2.9542467667777714,
+                  "loadedRangeCount": 1.0,
+                  "elapsedMs": 17820.0,
+                  "availableReserveSeconds": 6.545067613777775,
+                  "preparationLeadSeconds": 6.295067613777775,
+                  "bufferEmpty": false,
+                  "likelyToKeepUp": false,
+                  "seekResult": true,
+                  "stage": "bufferedSeek"
+                },
+                "observedObstructions": [
+                  "clockDistanceOver0.1s"
+                ],
+                "candidateMinusLiveSeconds": -2.265953
+              },
+              {
+                "actionSeconds": 19.741856,
+                "event": "replacement_candidate_buffered_seek_completed",
+                "snapshot": {
+                  "candidateStatus": 1.0,
+                  "loadedRangeFirstStart": 232.23198888888888,
+                  "candidateSeconds": 247.64833333333334,
+                  "loadedRangeFirstEnd": 248.16457777777777,
+                  "target": 235.9026084027778,
+                  "bufferedTarget": 247.649073348,
+                  "candidateRate": 0.0,
+                  "liveSeconds": 247.617055315,
+                  "itemStatus": 1.0,
+                  "candidateBufferAheadSeconds": 0.5162444444444247,
+                  "loadedRangeCount": 1.0,
+                  "elapsedMs": 18006.0,
+                  "availableReserveSeconds": 6.545067613777775,
+                  "preparationLeadSeconds": 6.295067613777775,
+                  "bufferEmpty": true,
+                  "likelyToKeepUp": false,
+                  "seekResult": true
+                },
+                "observedObstructions": [
+                  "bufferEmpty"
+                ],
+                "candidateMinusLiveSeconds": 0.031278
+              },
+              {
+                "actionSeconds": 19.742249,
+                "event": "replacement_candidate_progress",
+                "snapshot": {
+                  "candidateStatus": 1.0,
+                  "framePTS": 247.62236666666666,
+                  "loadedRangeFirstStart": 232.23198888888888,
+                  "candidateSeconds": 247.64833333333334,
+                  "loadedRangeFirstEnd": 248.16457777777777,
+                  "target": 235.9026084027778,
+                  "candidateRate": 0.0,
+                  "liveSeconds": 247.618405163,
+                  "itemStatus": 1.0,
+                  "candidateBufferAheadSeconds": 0.5162444444444247,
+                  "loadedRangeCount": 1.0,
+                  "elapsedMs": 18008.0,
+                  "availableReserveSeconds": 6.545067613777775,
+                  "preparationLeadSeconds": 6.295067613777775,
+                  "bufferEmpty": true,
+                  "likelyToKeepUp": false,
+                  "seekResult": true,
+                  "stage": "alignment"
+                },
+                "observedObstructions": [
+                  "bufferEmpty"
+                ],
+                "candidateMinusLiveSeconds": 0.029928
+              },
+              {
+                "actionSeconds": 20.75192,
+                "event": "replacement_candidate_progress",
+                "snapshot": {
+                  "candidateStatus": 1.0,
+                  "framePTS": 248.45653333333334,
+                  "loadedRangeFirstStart": 232.23198888888888,
+                  "candidateSeconds": 248.488241169,
+                  "loadedRangeFirstEnd": 248.21065555555555,
+                  "target": 235.9026084027778,
+                  "candidateRate": 2.0,
+                  "liveSeconds": 248.628373214,
+                  "itemStatus": 1.0,
+                  "candidateBufferAheadSeconds": 0.0,
+                  "loadedRangeCount": 1.0,
+                  "elapsedMs": 19018.0,
+                  "availableReserveSeconds": 6.545067613777775,
+                  "preparationLeadSeconds": 6.295067613777775,
+                  "bufferEmpty": false,
+                  "likelyToKeepUp": false,
+                  "seekResult": true,
+                  "stage": "alignment"
+                },
+                "observedObstructions": [
+                  "clockDistanceOver0.1s",
+                  "maximumReportedForwardReserveUnder0.5s",
+                  "singleReportedRangeDoesNotCoverCommitReserve"
+                ],
+                "candidateMinusLiveSeconds": -0.140132
+              },
+              {
+                "actionSeconds": 21.193413,
+                "event": "replacement_candidate_aligned",
+                "snapshot": {
+                  "candidateStatus": 1.0,
+                  "framePTS": 248.95703333333333,
+                  "loadedRangeFirstStart": 232.23198888888888,
+                  "candidateSeconds": 248.981874249,
+                  "loadedRangeFirstEnd": 251.15465555555556,
+                  "target": 235.9026084027778,
+                  "candidateRate": 0.0,
+                  "liveSeconds": 248.948893729,
+                  "itemStatus": 1.0,
+                  "candidateBufferAheadSeconds": 2.172781306555578,
+                  "loadedRangeCount": 1.0,
+                  "elapsedMs": 19338.0,
+                  "availableReserveSeconds": 6.545067613777775,
+                  "preparationLeadSeconds": 6.295067613777775,
+                  "bufferEmpty": false,
+                  "likelyToKeepUp": false,
+                  "seekResult": true
+                },
+                "observedObstructions": [],
+                "candidateMinusLiveSeconds": 0.032981
+              },
+              {
+                "actionSeconds": 21.194173,
+                "event": "replacement_committed",
+                "snapshot": {
+                  "candidateSeconds": 248.981874249,
+                  "candidateBufferAheadSeconds": 2.172781306555578
+                },
+                "observedObstructions": []
+              }
+            ],
+            "sourceTraceJoin": "exactWithinBoundedWarmup",
+            "fullReadinessOrContinuousBlockedTimeAccepted": false
+          }
+        ],
+        "unownedReplacementEvents": 0,
+        "unassignedOwnedReplacementEventCount": 0,
+        "boundedReplacementEventCount": 30,
+        "screenFirstFrameOrActualSoundAccepted": false,
+        "limits": [
+          "Snapshots are not atomic AV state and do not cover time between events.",
+          "Reported max forward reserve does not establish a contiguous commit range.",
+          "Negative constraints do not partition elapsed time into exclusive causes.",
+          "No observed obstruction does not imply ready or successful playback.",
+          "Source trace identity is not proof of a server session or candidate network owner."
+        ]
+      }
+    ]
+  },
+  "currentc868Audio": {
+    "provenance": {
+      "priorFrozenWindowsOnly": true,
+      "operations": [
+        {
+          "direction": "out",
+          "sample": "S03",
+          "entry": "device file",
+          "sourceDiffSHA256": "c868c278fcefe2411cfc07eabb4adf33ce159f0a0f9fb446897aeb2ce25ac835",
+          "decodedToCommitSeconds": 2.705234,
+          "decodedToAlignedSeconds": 2.704464,
+          "alignedToCommitSeconds": 0.00077,
+          "decodedClockDeltaSeconds": -0.223615,
+          "decodedForwardReserveSeconds": 0.0,
+          "decodedObstructions": [
+            "clockDistanceOver0.1s",
+            "maximumReportedForwardReserveUnder0.5s",
+            "singleReportedRangeDoesNotCoverCommitReserve"
+          ],
+          "bufferedSeekStarts": 0,
+          "terminal": "replacement_committed",
+          "screenOrSoundAccepted": false
+        },
+        {
+          "direction": "back",
+          "sample": "S03",
+          "entry": "device file",
+          "sourceDiffSHA256": "c868c278fcefe2411cfc07eabb4adf33ce159f0a0f9fb446897aeb2ce25ac835",
+          "decodedToCommitSeconds": 2.486865,
+          "decodedToAlignedSeconds": 2.484792,
+          "alignedToCommitSeconds": 0.002073,
+          "decodedClockDeltaSeconds": -0.657929,
+          "decodedForwardReserveSeconds": 0.0,
+          "decodedObstructions": [
+            "clockDistanceOver0.1s",
+            "maximumReportedForwardReserveUnder0.5s",
+            "singleReportedRangeDoesNotCoverCommitReserve"
+          ],
+          "bufferedSeekStarts": 0,
+          "terminal": "replacement_committed",
+          "screenOrSoundAccepted": false
+        }
+      ],
+      "noNewDeviceOrMediaRequests": true
+    },
+    "reports": [
+      {
+        "attempts": [
+          {
+            "attempt": 1,
+            "warmupStartActionSeconds": 0.806495,
+            "terminal": "replacement_committed",
+            "rightCensoredAtActionSeconds": null,
+            "decodeCount": 1,
+            "alignedCount": 1,
+            "decodedToAlignedSeconds": 2.704464,
+            "alignedToCommitSeconds": 0.00077,
+            "decodedToCommitSeconds": 2.705234,
+            "bufferedSeekStarts": 0,
+            "postDecodeSnapshots": [
+              {
+                "actionSeconds": 6.37809,
+                "event": "replacement_candidate_decoded",
+                "snapshot": {
+                  "candidateStatus": 1.0,
+                  "framePTS": 111.77833333333334,
+                  "loadedRangeFirstStart": 108.108,
+                  "candidateSeconds": 111.77833333333334,
+                  "loadedRangeFirstEnd": 109.04666666666667,
+                  "target": 111.7786170968889,
+                  "candidateRate": 0.0,
+                  "liveSeconds": 112.001948359,
+                  "itemStatus": 0.0,
+                  "candidateBufferAheadSeconds": 0.0,
+                  "loadedRangeCount": 1.0,
+                  "elapsedMs": 5573.0,
+                  "availableReserveSeconds": 5.602893957888895,
+                  "preparationLeadSeconds": 5.352893957888895,
+                  "bufferEmpty": false,
+                  "likelyToKeepUp": false,
+                  "seekResult": true
+                },
+                "observedObstructions": [
+                  "clockDistanceOver0.1s",
+                  "maximumReportedForwardReserveUnder0.5s",
+                  "singleReportedRangeDoesNotCoverCommitReserve"
+                ],
+                "candidateMinusLiveSeconds": -0.223615
+              },
+              {
+                "actionSeconds": 6.378425,
+                "event": "replacement_candidate_progress",
+                "snapshot": {
+                  "candidateStatus": 1.0,
+                  "framePTS": 111.77833333333334,
+                  "loadedRangeFirstStart": 108.108,
+                  "candidateSeconds": 111.77833333333334,
+                  "loadedRangeFirstEnd": 109.04666666666667,
+                  "target": 111.7786170968889,
+                  "candidateRate": 0.0,
+                  "liveSeconds": 112.002913637,
+                  "itemStatus": 0.0,
+                  "candidateBufferAheadSeconds": 0.0,
+                  "loadedRangeCount": 1.0,
+                  "elapsedMs": 5574.0,
+                  "availableReserveSeconds": 5.602893957888895,
+                  "preparationLeadSeconds": 5.352893957888895,
+                  "bufferEmpty": false,
+                  "likelyToKeepUp": false,
+                  "seekResult": true,
+                  "stage": "alignment"
+                },
+                "observedObstructions": [
+                  "clockDistanceOver0.1s",
+                  "maximumReportedForwardReserveUnder0.5s",
+                  "singleReportedRangeDoesNotCoverCommitReserve"
+                ],
+                "candidateMinusLiveSeconds": -0.22458
+              },
+              {
+                "actionSeconds": 7.381922,
+                "event": "replacement_candidate_progress",
+                "snapshot": {
+                  "candidateStatus": 1.0,
+                  "framePTS": 111.98687777777778,
+                  "loadedRangeFirstStart": 108.108,
+                  "candidateSeconds": 112.108802735,
+                  "loadedRangeFirstEnd": 112.02858888888889,
+                  "target": 111.7786170968889,
+                  "candidateRate": 0.0,
+                  "liveSeconds": 113.006420846,
+                  "itemStatus": 1.0,
+                  "candidateBufferAheadSeconds": 0.0,
+                  "loadedRangeCount": 1.0,
+                  "elapsedMs": 6577.0,
+                  "availableReserveSeconds": 5.602893957888895,
+                  "preparationLeadSeconds": 5.352893957888895,
+                  "bufferEmpty": true,
+                  "likelyToKeepUp": false,
+                  "seekResult": true,
+                  "stage": "alignment"
+                },
+                "observedObstructions": [
+                  "clockDistanceOver0.1s",
+                  "bufferEmpty",
+                  "maximumReportedForwardReserveUnder0.5s",
+                  "singleReportedRangeDoesNotCoverCommitReserve"
+                ],
+                "candidateMinusLiveSeconds": -0.897618
+              },
+              {
+                "actionSeconds": 8.428289,
+                "event": "replacement_candidate_progress",
+                "snapshot": {
+                  "candidateStatus": 1.0,
+                  "framePTS": 113.65521111111111,
+                  "loadedRangeFirstStart": 108.108,
+                  "candidateSeconds": 113.677967997,
+                  "loadedRangeFirstEnd": 116.0325888888889,
+                  "target": 111.7786170968889,
+                  "candidateRate": 2.0,
+                  "liveSeconds": 114.051721215,
+                  "itemStatus": 1.0,
+                  "candidateBufferAheadSeconds": 2.3546208918888993,
+                  "loadedRangeCount": 1.0,
+                  "elapsedMs": 7623.0,
+                  "availableReserveSeconds": 5.602893957888895,
+                  "preparationLeadSeconds": 5.352893957888895,
+                  "bufferEmpty": false,
+                  "likelyToKeepUp": false,
+                  "seekResult": true,
+                  "stage": "alignment"
+                },
+                "observedObstructions": [
+                  "clockDistanceOver0.1s"
+                ],
+                "candidateMinusLiveSeconds": -0.373753
+              },
+              {
+                "actionSeconds": 9.082554,
+                "event": "replacement_candidate_aligned",
+                "snapshot": {
+                  "candidateStatus": 1.0,
+                  "framePTS": 114.48937777777778,
+                  "loadedRangeFirstStart": 108.108,
+                  "candidateSeconds": 114.498027137,
+                  "loadedRangeFirstEnd": 116.0325888888889,
+                  "target": 111.7786170968889,
+                  "candidateRate": 0.0,
+                  "liveSeconds": 114.583252816,
+                  "itemStatus": 1.0,
+                  "candidateBufferAheadSeconds": 1.5358677218888914,
+                  "loadedRangeCount": 1.0,
+                  "elapsedMs": 8110.0,
+                  "availableReserveSeconds": 5.602893957888895,
+                  "preparationLeadSeconds": 5.352893957888895,
+                  "bufferEmpty": false,
+                  "likelyToKeepUp": false,
+                  "seekResult": true
+                },
+                "observedObstructions": [],
+                "candidateMinusLiveSeconds": -0.085226
+              },
+              {
+                "actionSeconds": 9.083324,
+                "event": "replacement_committed",
+                "snapshot": {
+                  "candidateSeconds": 114.498027137,
+                  "candidateBufferAheadSeconds": 1.5345617518889014
+                },
+                "observedObstructions": []
+              }
+            ],
+            "sourceTraceJoin": "exactWithinBoundedWarmup",
+            "fullReadinessOrContinuousBlockedTimeAccepted": false
+          }
+        ],
+        "unownedReplacementEvents": 0,
+        "unassignedOwnedReplacementEventCount": 0,
+        "boundedReplacementEventCount": 16,
+        "screenFirstFrameOrActualSoundAccepted": false,
+        "limits": [
+          "Snapshots are not atomic AV state and do not cover time between events.",
+          "Reported max forward reserve does not establish a contiguous commit range.",
+          "Negative constraints do not partition elapsed time into exclusive causes.",
+          "No observed obstruction does not imply ready or successful playback.",
+          "Source trace identity is not proof of a server session or candidate network owner."
+        ]
+      },
+      {
+        "attempts": [
+          {
+            "attempt": 1,
+            "warmupStartActionSeconds": 0.877401,
+            "terminal": "replacement_committed",
+            "rightCensoredAtActionSeconds": null,
+            "decodeCount": 1,
+            "alignedCount": 1,
+            "decodedToAlignedSeconds": 2.484792,
+            "alignedToCommitSeconds": 0.002073,
+            "decodedToCommitSeconds": 2.486865,
+            "bufferedSeekStarts": 0,
+            "postDecodeSnapshots": [
+              {
+                "actionSeconds": 7.258655,
+                "event": "replacement_candidate_decoded",
+                "snapshot": {
+                  "candidateStatus": 1.0,
+                  "framePTS": 146.93845555555555,
+                  "loadedRangeFirstStart": 144.144,
+                  "candidateSeconds": 146.96,
+                  "loadedRangeFirstEnd": 145.08266666666665,
+                  "target": 146.96071565492747,
+                  "candidateRate": 0.0,
+                  "liveSeconds": 147.617929076,
+                  "itemStatus": 0.0,
+                  "candidateBufferAheadSeconds": 0.0,
+                  "loadedRangeCount": 1.0,
+                  "elapsedMs": 6377.0,
+                  "availableReserveSeconds": 6.827599899888895,
+                  "preparationLeadSeconds": 5.723700874927454,
+                  "bufferEmpty": false,
+                  "likelyToKeepUp": false,
+                  "seekResult": true
+                },
+                "observedObstructions": [
+                  "clockDistanceOver0.1s",
+                  "maximumReportedForwardReserveUnder0.5s",
+                  "singleReportedRangeDoesNotCoverCommitReserve"
+                ],
+                "candidateMinusLiveSeconds": -0.657929
+              },
+              {
+                "actionSeconds": 7.259037,
+                "event": "replacement_candidate_progress",
+                "snapshot": {
+                  "candidateStatus": 1.0,
+                  "framePTS": 146.93845555555555,
+                  "loadedRangeFirstStart": 144.144,
+                  "candidateSeconds": 146.96,
+                  "loadedRangeFirstEnd": 145.08266666666665,
+                  "target": 146.96071565492747,
+                  "candidateRate": 0.0,
+                  "liveSeconds": 147.61915818,
+                  "itemStatus": 0.0,
+                  "candidateBufferAheadSeconds": 0.0,
+                  "loadedRangeCount": 1.0,
+                  "elapsedMs": 6379.0,
+                  "availableReserveSeconds": 6.827599899888895,
+                  "preparationLeadSeconds": 5.723700874927454,
+                  "bufferEmpty": false,
+                  "likelyToKeepUp": false,
+                  "seekResult": true,
+                  "stage": "alignment"
+                },
+                "observedObstructions": [
+                  "clockDistanceOver0.1s",
+                  "maximumReportedForwardReserveUnder0.5s",
+                  "singleReportedRangeDoesNotCoverCommitReserve"
+                ],
+                "candidateMinusLiveSeconds": -0.659158
+              },
+              {
+                "actionSeconds": 8.273492,
+                "event": "replacement_candidate_progress",
+                "snapshot": {
+                  "candidateStatus": 1.0,
+                  "framePTS": 148.02287777777778,
+                  "loadedRangeFirstStart": 144.144,
+                  "candidateSeconds": 148.128363494,
+                  "loadedRangeFirstEnd": 148.0645888888889,
+                  "target": 146.96071565492747,
+                  "candidateRate": 0.0,
+                  "liveSeconds": 148.635653129,
+                  "itemStatus": 1.0,
+                  "candidateBufferAheadSeconds": 0.0,
+                  "loadedRangeCount": 1.0,
+                  "elapsedMs": 7396.0,
+                  "availableReserveSeconds": 6.827599899888895,
+                  "preparationLeadSeconds": 5.723700874927454,
+                  "bufferEmpty": true,
+                  "likelyToKeepUp": false,
+                  "seekResult": true,
+                  "stage": "alignment"
+                },
+                "observedObstructions": [
+                  "clockDistanceOver0.1s",
+                  "bufferEmpty",
+                  "maximumReportedForwardReserveUnder0.5s",
+                  "singleReportedRangeDoesNotCoverCommitReserve"
+                ],
+                "candidateMinusLiveSeconds": -0.50729
+              },
+              {
+                "actionSeconds": 9.281949,
+                "event": "replacement_candidate_progress",
+                "snapshot": {
+                  "candidateStatus": 1.0,
+                  "framePTS": 149.27412222222222,
+                  "loadedRangeFirstStart": 144.144,
+                  "candidateSeconds": 149.304843426,
+                  "loadedRangeFirstEnd": 152.06858888888888,
+                  "target": 146.96071565492747,
+                  "candidateRate": 2.0,
+                  "liveSeconds": 149.64316263,
+                  "itemStatus": 1.0,
+                  "candidateBufferAheadSeconds": 2.763745462888892,
+                  "loadedRangeCount": 1.0,
+                  "elapsedMs": 8403.0,
+                  "availableReserveSeconds": 6.827599899888895,
+                  "preparationLeadSeconds": 5.723700874927454,
+                  "bufferEmpty": false,
+                  "likelyToKeepUp": false,
+                  "seekResult": true,
+                  "stage": "alignment"
+                },
+                "observedObstructions": [
+                  "clockDistanceOver0.1s"
+                ],
+                "candidateMinusLiveSeconds": -0.338319
+              },
+              {
+                "actionSeconds": 9.743447,
+                "event": "replacement_candidate_aligned",
+                "snapshot": {
+                  "candidateStatus": 1.0,
+                  "framePTS": 149.85804444444443,
+                  "loadedRangeFirstStart": 144.144,
+                  "candidateSeconds": 149.877312894,
+                  "loadedRangeFirstEnd": 152.06858888888888,
+                  "target": 146.96071565492747,
+                  "candidateRate": 0.0,
+                  "liveSeconds": 149.975261516,
+                  "itemStatus": 1.0,
+                  "candidateBufferAheadSeconds": 2.193023124888896,
+                  "loadedRangeCount": 1.0,
+                  "elapsedMs": 8688.0,
+                  "availableReserveSeconds": 6.827599899888895,
+                  "preparationLeadSeconds": 5.723700874927454,
+                  "bufferEmpty": false,
+                  "likelyToKeepUp": false,
+                  "seekResult": true
+                },
+                "observedObstructions": [],
+                "candidateMinusLiveSeconds": -0.097949
+              },
+              {
+                "actionSeconds": 9.74552,
+                "event": "replacement_committed",
+                "snapshot": {
+                  "candidateSeconds": 149.877312894,
+                  "candidateBufferAheadSeconds": 2.1912759948888834
+                },
+                "observedObstructions": []
+              }
+            ],
+            "sourceTraceJoin": "exactWithinBoundedWarmup",
+            "fullReadinessOrContinuousBlockedTimeAccepted": false
+          }
+        ],
+        "unownedReplacementEvents": 0,
+        "unassignedOwnedReplacementEventCount": 0,
+        "boundedReplacementEventCount": 17,
+        "screenFirstFrameOrActualSoundAccepted": false,
+        "limits": [
+          "Snapshots are not atomic AV state and do not cover time between events.",
+          "Reported max forward reserve does not establish a contiguous commit range.",
+          "Negative constraints do not partition elapsed time into exclusive causes.",
+          "No observed obstruction does not imply ready or successful playback.",
+          "Source trace identity is not proof of a server session or candidate network owner."
+        ]
+      }
+    ]
+  },
+  "deviceScope": {
+    "iphone13": {
+      "freshIdentity": {
+        "at": "2026-10-16T06:36:01.035281+08:00",
+        "USB": true,
+        "identityReadable": true,
+        "newAppLaunchOrPlayback": false,
+        "nameAndUDIDMatched": true,
+        "model": "iPhone14,5",
+        "system": "16.3.1"
+      },
+      "newInstallLaunchPlayback": false
+    },
+    "ipad": {
+      "freshIdentity": {
+        "at": "2026-10-16T06:36:01.117617+08:00",
+        "USB": true,
+        "identityReadable": true,
+        "newAppLaunchOrPlayback": false,
+        "nameAndUDIDMatched": true,
+        "model": "iPad12,1",
+        "system": "18.3.1",
+        "WDAReady": true,
+        "locked": false
+      },
+      "latestCover": {
+        "device": "ipad",
+        "model": "iPad12,1",
+        "system": "18.3.1",
+        "connection": "USB",
+        "binaries": {
+          "Nastart": "963906f2460a7e8ca717dbb818d7ac6e6425a0466c28d96d8a5829cd21f8a75b",
+          "Nastart.debug.dylib": "46cb682d7938d2f4d45b622dc49ca9ecc368f493717d7c23303a44196c4ba8f5",
+          "Frameworks/KSPlayer.framework/KSPlayer": "76d17821ceeba058544cad0031b0eb41f4fa6be90edb9ec36ebe2d1f24bb7b5e"
+        },
+        "sourceDiffSHA256": "c868c278fcefe2411cfc07eabb4adf33ce159f0a0f9fb446897aeb2ce25ac835",
+        "preservesContainer": true,
+        "signatureVerified": true,
+        "actualForegroundUIVerified": true,
+        "requestedEnvironment": {},
+        "requestedArguments": [],
+        "installation": "success",
+        "startedAt": "2026-10-16T06:37:02.236689+08:00",
+        "installedAt": "2026-10-16T06:37:11.463837+08:00",
+        "preferenceKeysUnchanged": true,
+        "preferenceValuesUnchanged": true,
+        "nonDiagnosticKeys": 18
+      },
+      "finalAudit": {
+        "at": "2026-10-16T06:48:27.802644+08:00",
+        "model": "iPad12,1",
+        "system": "18.3.1",
+        "connection": "USB",
+        "sourceDiffSHA256": "c868c278fcefe2411cfc07eabb4adf33ce159f0a0f9fb446897aeb2ce25ac835",
+        "latestPackage": {
+          "Nastart": "963906f2460a7e8ca717dbb818d7ac6e6425a0466c28d96d8a5829cd21f8a75b",
+          "Nastart.debug.dylib": "46cb682d7938d2f4d45b622dc49ca9ecc368f493717d7c23303a44196c4ba8f5",
+          "Frameworks/KSPlayer.framework/KSPlayer": "76d17821ceeba058544cad0031b0eb41f4fa6be90edb9ec36ebe2d1f24bb7b5e"
+        },
+        "nonBookmarkPreferenceKeys": 17,
+        "nonBookmarkPreferencesExactlyUnchanged": true,
+        "naturalBookmarkChangesCount": 1,
+        "originalBookmarksChecked": 28,
+        "originalBookmarksRemoved": 0,
+        "originalTrackChangeCount": 0,
+        "allOriginalTracksUnchanged": true,
+        "newBookmarksCount": 0,
+        "crashInventoryDelta": {
+          "Nastart": 1,
+          "WebDriverAgent": 0,
+          "JetsamEvent": 0
+        },
+        "normalEmptyEnvironment": true,
+        "NASNormal": true,
+        "playerClosed": true,
+        "WDAIdleSeconds": 10,
+        "WDAAnimationCoolOffSeconds": 2,
+        "nativeConditionsNotRecheckedThisTurn": false,
+        "noConditionInjectedThisTurn": true,
+        "nativeActiveConditions": 0,
+        "finalHomeActuallyReviewed": true,
+        "reportClassification": {
+          "newExceptionCrashReports": 0,
+          "newCPUResourceDiagnostics": 1,
+          "newCPUDiagnosticAction": "none",
+          "countsAreFilenameInventoryBeforeClassification": true
+        }
+      }
+    },
+    "iphone18": {
+      "newContactOrInstallThisTurn": false,
+      "latestSuccessfulInstallOrigin": "2026-10-15 21:49 Wi-Fi c868; see IPHONE18-WIFI-UPDATE-20261015.json",
+      "currentPlaybackAccepted": false
+    }
+  },
+  "allocationDiagnostic": {
+    "ordinarySourceUnchanged": true,
+    "template": "Allocations; attach to ordinary Debug; separate diagnostic overhead",
+    "attachOnly": true,
+    "separateDiagnosticNotNormalCycleComparison": true,
+    "environmentInjected": false,
+    "timeline": [
+      {
+        "at": 1792104327.015578,
+        "stage": "traceCommand"
+      },
+      {
+        "at": 1792104328.890391,
+        "stage": "recordingStartAnnouncementObserved"
+      },
+      {
+        "at": 1792104455.4800189,
+        "stage": "playerExit"
+      },
+      {
+        "at": 1792104470.127865,
+        "stage": "sameProcessHome"
+      }
+    ],
+    "samePIDAfterExit": true,
+    "recordExitCode": 0,
+    "tocExportExitCode": 0,
+    "traceCompleted": true,
+    "recordTool": "Xcode 26.6 xctrace",
+    "AppBuild": "Xcode 27 ordinary Debug -Onone; no custom test environment",
+    "traceDurationSeconds": 120.4980001449585,
+    "traceStartISO": "2026-10-16T06:45:28.925000+08:00",
+    "traceEndISO": "2026-10-16T06:47:29.423000+08:00",
+    "actionSecondsFromTraceStart": 41.71246409416199,
+    "lastCaptureSecondsFromTraceStart": 102.71470618247986,
+    "coversActionThrough60SecondCapture": true,
+    "coversPlayerExit": false,
+    "coversSameProcessHome": false,
+    "selectedPicturesActuallyReviewed": true,
+    "fullSUBOrAUDOrContinuousFramesAccepted": false,
+    "allocationCategoryBytesOrCallstackOwnershipExtracted": false,
+    "CLITOCContainsAllocationSchema": false,
+    "normalPerformanceComparisonAccepted": false,
+    "resourceDiagnosticObserved": true,
+    "URLMetricsCellularYes": 0,
+    "URLMetricsCellularNo": 26
+  },
+  "resourceDiagnostic": {
+    "metadataBugType": "202",
+    "format": "JSON metadata + text resource diagnostic",
+    "headers": {
+      "Date/Time": "2026-10-16 06:45:21.571 +0800",
+      "End time": "2026-10-16 06:47:32.846 +0800",
+      "Data Source": "Microstackshots",
+      "Event": "cpu usage",
+      "Action taken": "none",
+      "CPU": "90 seconds cpu time over 144 seconds (63% cpu average), exceeding limit of 50% cpu over 180 seconds",
+      "CPU limit": "90s",
+      "Limit duration": "180s",
+      "CPU used": "90s",
+      "Duration": "143.96s",
+      "Duration Sampled": "124.33s (event starts 6.94s before samples, event ends 12.68s after samples)",
+      "Steps": "32",
+      "Hardware model": "iPad12,1"
+    },
+    "instrumentedProcessMatches": [
+      "allocations-x26-r3"
+    ],
+    "processTerminatedByThisReport": false,
+    "notExceptionCrashFormat": true,
+    "classification": "CPU resource diagnostic; retain as resource warning, not an exception crash",
+    "allocationCausalityProven": false
+  },
+  "failedDiagnosticWindows": [
+    {
+      "attempt": 1,
+      "playbackActionSent": false,
+      "reason": "local helper metadata missing; recovery relaunch explains trace target exit",
+      "preserved": true
+    },
+    {
+      "attempt": 2,
+      "playbackActionSent": false,
+      "reason": "WDA source request and recovery status timed out; App and Runner still observed natively",
+      "preserved": true
+    }
+  ],
+  "transportRecovery": {
+    "temporaryForwardStopped": true,
+    "originalForwardNotStopped": true,
+    "originalForwardFinal": {
+      "at": "2026-10-16T06:51:00.805257+08:00",
+      "priorDirectUSBReady": true,
+      "oldLocalForwardChanged": false,
+      "oldLocalForwardReadyNow": true
+    },
+    "directFinal": {
+      "at": "2026-10-16T06:48:26.425106+08:00",
+      "directUSBMuxReady": true,
+      "sameRunnerNoReinstall": true,
+      "ordinaryLatestAppForeground": true,
+      "emptyEnvironmentAndArgumentsActuallyVerified": true,
+      "NASNormal": true,
+      "playerClosed": true,
+      "settingsRestoredIdle10CoolOff2": true,
+      "finalHomeActuallyReviewed": true
+    },
+    "soleComponentCauseProven": false,
+    "RunnerReinstalled": false
+  },
+  "memoryAllocationOwnershipProven": false,
+  "latencyFixOrVersionSpeedupAccepted": false,
+  "allOriginalOpenTasksPreserved": true
+}

@@ -1,5 +1,7 @@
 # Nastart Master Plan
 
+> 当前实施入口（2026-10-19）：本文保留初始范围、成本与阶段估算，不代表当前完成度。实际开发进度、问题和依赖计划维护在[开发状态](DEVELOPMENT_STATUS.md)，短摘要见[PROGRESS](../../PROGRESS.md)，播放路线见[当前技术说明](../architecture/VIDEO_PLAYBACK_PIPELINE.md)。
+
 Version: 0.1  
 Status: Draft  
 Last updated: 2026-07-25

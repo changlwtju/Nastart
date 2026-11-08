@@ -1,0 +1,182 @@
+{
+  "updated": "2026-10-24 21:38",
+  "HEAD": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "uncommittedChangesPreserved": true,
+  "packages": {
+    "iPhone13": {
+      "at": "2026-10-24T21:05:31.106355+08:00",
+      "configuration": "normal Debug",
+      "signedMachOCount": 30,
+      "installedAt": "2026-10-24T21:05:46.652899+08:00",
+      "installExit": 0,
+      "identityPreserved": true,
+      "binaries": {
+        "Nastart": "3c949475adcfc874000ce84d55a853a1d36330ed26e1b3f6c613b7399012ea85",
+        "__preview.dylib": "2c22078fb2c978223bcb5ca606fc045474e1d70556d21f5774e05e7ef9b3d538",
+        "Nastart.debug.dylib": "1070b68a3c88c088bbbc7f4bfa08259a899d5fd48f23618909991d746661a33c"
+      }
+    },
+    "iPad": {
+      "at": "2026-10-24T21:05:29.199421+08:00",
+      "configuration": "normal Debug",
+      "sourceInputs": 569,
+      "signedMachOCount": 30,
+      "binaries": {
+        "__preview.dylib": "8937adf7902d39b88931fb4dac9f6629b8ca501a6bc894dc279b4f1106c3a1f5",
+        "Nastart": "10537e2290d83f794e2f42baedf77843d0ed1290dcfeb0212f72016c879883db",
+        "Nastart.debug.dylib": "97a22386635549f9c2dcd21341a4bc2a54b8af308707f137fb0c9226f48b1b61"
+      },
+      "installation": {
+        "beganAt": "2026-10-24T21:13:42.357282+08:00",
+        "configuration": "normal Debug",
+        "sourceRelevantDrift": 0,
+        "preserveData": true,
+        "exit": 0,
+        "finishedAt": "2026-10-24T21:13:47.186093+08:00"
+      }
+    },
+    "AppleTV": {
+      "at": "2026-10-24T21:25:58.498925+08:00",
+      "configuration": "normal Debug",
+      "sourceInputs": 508,
+      "signedMachOCount": 27,
+      "installedAt": "2026-10-24T21:26:00.687486+08:00",
+      "installationExit": 0,
+      "applicationIdentifierAndKeychainGroupsPreserved": true,
+      "binaries": {
+        "__preview.dylib": "31600e8c2a832d5060421210f3beecae04111104cbabcde476e133d87dcf110d",
+        "NastartTV": "2c7ae6d5e6375c3a88f6f6cb7b4977ed2c55c8abc7473d174e4c24a9205ea5de",
+        "NastartTV.debug.dylib": "8a9907f05bf3e74e5eeb094e27cde9e19a643d93bb01f8fcf51dfe620f2cb47c"
+      }
+    }
+  },
+  "source": {
+    "mobile": {
+      "inputs": 569,
+      "relevantDrift": [],
+      "unrelatedTVInputsChanged": 2
+    },
+    "TV": {
+      "inputs": 508,
+      "relevantDrift": [],
+      "unrelatedTVInputsChanged": 0
+    }
+  },
+  "iPhone13": {
+    "mediaCommands": 0,
+    "checks": [
+      "subtle light glass and compact inventory shortcuts",
+      "dark glass across four tabs",
+      "real file root and direct Jellyfin"
+    ],
+    "normalEnvironment": {},
+    "arguments": [],
+    "emptyEnvironmentConfirmed": true,
+    "appearanceRestored": true,
+    "wdaSettingsRestored": true,
+    "finalTheme": "glassDeck",
+    "finalMode": "system"
+  },
+  "iPad": {
+    "mediaCommands": 0,
+    "checks": [
+      "light glass",
+      "dark glass across four tabs"
+    ],
+    "appearanceRestored": true,
+    "wdaSettingsRestored": true
+  },
+  "AppleTV": {
+    "mediaCommands": 0,
+    "checks": [
+      "honest iCloud unavailable status",
+      "Menu returns to My",
+      "inventory shortcuts"
+    ],
+    "normalEmptyEnvironment": true,
+    "wdaSettingsRestored": true
+  },
+  "TVRunner": {
+    "startedAt": "2026-10-24T21:28:23.297747+08:00",
+    "limitSeconds": 900,
+    "runnerStopped": true,
+    "finishedAt": "2026-10-24T21:31:35.596492+08:00"
+  },
+  "iPadRunner": {
+    "startedAt": "2026-10-24T21:27:20.125590+08:00",
+    "limitSeconds": 900,
+    "runnerStopped": true,
+    "finishedAt": "2026-10-24T21:29:12.067512+08:00"
+  },
+  "TVNormalLaunch": {
+    "startedAt": "2026-10-24T21:32:53.629215+08:00",
+    "environment": {},
+    "arguments": [],
+    "mediaCommands": 0,
+    "PID": 2399,
+    "nativeImagesCaptured": true,
+    "finishedAt": "2026-10-24T21:33:05.605034+08:00"
+  },
+  "iPadNormalLaunch": {
+    "startedAt": "2026-10-24T21:35:09.436863+08:00",
+    "environment": {},
+    "arguments": [],
+    "mediaCommands": 0,
+    "activation": "prior devicectl foreground launch",
+    "nativeImagesCaptured": true,
+    "finishedAt": "2026-10-24T21:35:19.847063+08:00"
+  },
+  "iPadNormalActivation": {
+    "at": "2026-10-24T21:35:09.207719+08:00",
+    "exit": 0,
+    "environment": {},
+    "arguments": []
+  },
+  "iPadPreferences": {
+    "copyExit": 0,
+    "theme": "cleanGrid",
+    "mode": "system",
+    "posterDensity": null
+  },
+  "TVPreferences": {
+    "copyExit": 0,
+    "theme": "glassDeck",
+    "mode": "system",
+    "posterDensity": 5
+  },
+  "nativeVisualReview": {
+    "iPhone13LightAndDark": true,
+    "iPadLightAndDarkAndDevice": true,
+    "TViCloudAndInventory": true,
+    "TVNormalHome": true,
+    "iPadForegroundNormalHome": true
+  },
+  "inventoryObserved": {
+    "accessibleSharedFolders": 12,
+    "currentJellyfinUserMovies": 112,
+    "NASFullRecursiveFileCount": null
+  },
+  "cloud": {
+    "userConfirmedPersonalFreeSigning": true,
+    "currentProfilesCloudKitEntitled": false,
+    "TVEntry": "status only; actual synchronization unimplemented",
+    "mobileBuild": "NASTART_NO_ICLOUD",
+    "cloudWrites": 0
+  },
+  "mediaPlayCommands": 0,
+  "cellularTests": 0,
+  "iPhone18": "paused by user; untouched",
+  "fullPlaybackMatrixCellsClosed": 0,
+  "failuresRetained": [
+    "tidevice iPhone13 overlay transfer stalled; historical ios-deploy USB path succeeded",
+    "WDA element-click timeout and selectors failed on earlier phone candidates; final direct coordinate check succeeded",
+    "iPad native Tab name differs from label; theme gallery requires preview/apply rather than picker; tool failures retained separately",
+    "Earlier iPad normal screenshot black, not accepted as homepage evidence"
+  ],
+  "limits": [
+    "ordinary Debug only; not Release",
+    "page/theme coverage is sampled, not every subpage visually accepted",
+    "full three-platform shared business model and feature parity remain incomplete",
+    "no new video/audio output, frame-time performance or competitor acceptance"
+  ]
+}

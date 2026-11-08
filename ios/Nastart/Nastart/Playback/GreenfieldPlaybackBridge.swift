@@ -1,68 +1,57 @@
 import Foundation
 import CryptoKit
+import Combine
 
+/// The player and tests use this same save boundary. Observation does not change
+/// the existing guards, selection derivation, cadence or UserDefaults durability.
+@MainActor
+enum PlaybackLocalResumeCheckpoint {
+    struct Observation {
+        /// Preserve the player's existing meaning: its guards permitted a store call.
+        let enteredStore: Bool
+        let fields: [String: String]
+    }
 
-/// Only file identity hashes and playback preferences are persisted, never URLs
-/// carrying DSM sessions. Different accounts/files/revisions cannot share a bookmark.
-final class LocalPlaybackResumeStore {
-    struct Entry: Codable {
-        let positionSeconds: Double
-        let durationSeconds: Double
-        let audioTrackID: Int?
+    static func save(controls: GreenfieldPlaybackControls, request: MediaPlaybackRequest,
+                     store: LocalPlaybackResumeStore = .shared, observeMemory: Bool = false) -> Observation {
+        var fields = controls.resumePersistenceDiagnostics
+        fields["sourceKind"] = request.source.rawValue
+        fields["hasResumeKey"] = String(request.localResumeKey != nil)
+        guard (request.source != .directURL || request.networkSource != nil), let key = request.localResumeKey,
+              controls.canPersistResumeProgress else {
+            fields["saveOutcome"] = "skipped"
+            fields["skipReason"] = request.source == .directURL ? "directURL"
+                : request.localResumeKey == nil ? "missingResumeKey" : "unconfirmedTimeline"
+            fields["memoryReadback"] = "notObserved"
+            return Observation(enteredStore: false, fields: fields)
+        }
+        let state = controls.runtimeState(orientationMode: request.initialOrientationMode)
         let subtitleTrackID: Int?
-        let subtitlesDisabled: Bool
-        let updatedAt: Date
-
-        func restoredTrackSelection(audioIDs: [Int], subtitleIDs: [Int],
-                                    defaultAudio: Int?, defaultSubtitle: Int?) -> (audio: Int?, subtitle: Int?) {
-            let audio = audioTrackID.flatMap { audioIDs.contains($0) ? $0 : nil } ?? defaultAudio
-            let subtitle = subtitlesDisabled ? nil
-                : (subtitleTrackID.flatMap { subtitleIDs.contains($0) ? $0 : nil } ?? defaultSubtitle)
-            return (audio, subtitle)
+        if let externalURL = state.activeExternalSubtitleURL {
+            subtitleTrackID = request.sourceSubtitleTrackID(forExternalURL: externalURL)
+        } else {
+            subtitleTrackID = state.sourceSubtitleStreamIndex ?? (!request.sourceSubtitleTracks.isEmpty
+                ? state.subtitleTrackOrdinal.flatMap { request.sourceSubtitleTracks.indices.contains($0) && request.sourceSubtitleTracks[$0].id >= 0 ? request.sourceSubtitleTracks[$0].id : nil }
+                : (controls.selectedSubtitleTrackID >= 0 ? Int(controls.selectedSubtitleTrackID) : nil))
         }
-    }
-    static let shared = LocalPlaybackResumeStore()
-    private let defaults: UserDefaults
-    private let lock = NSLock()
-    private let storageKey = "playback.localResume.v1"
-    init(defaults: UserDefaults = .standard) { self.defaults = defaults }
-
-    static func key(server: URL, account: String, path: String, byteLength: Int64?, modifiedAt: Date?) -> String {
-        var components = URLComponents(url: server, resolvingAgainstBaseURL: false)
-        components?.user = nil; components?.password = nil
-        components?.query = nil; components?.fragment = nil
-        let host = components?.host?.lowercased()
-        components?.host = host
-        let identity = [components?.string ?? "", account, path,
-                        byteLength.map(String.init) ?? "", modifiedAt.map { String($0.timeIntervalSince1970) } ?? ""]
-        let data = (try? JSONEncoder().encode(identity)) ?? Data()
-        return SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined()
-    }
-
-    func entry(for key: String) -> Entry? {
-        lock.lock(); defer { lock.unlock() }
-        return entries()[key]
-    }
-
-    func save(key: String, position: Double, duration: Double, audioTrackID: Int?, subtitleTrackID: Int?, subtitlesDisabled: Bool) {
-        guard position.isFinite, position >= 0, duration.isFinite, duration > 0 else { return }
-        lock.lock(); defer { lock.unlock() }
-        var values = entries()
-        let finished = duration - position <= min(30, duration * 0.02)
-        values[key] = Entry(positionSeconds: finished ? 0 : min(position, duration), durationSeconds: duration,
-                            audioTrackID: audioTrackID, subtitleTrackID: subtitleTrackID,
-                            subtitlesDisabled: subtitlesDisabled, updatedAt: Date())
-        if values.count > 128 {
-            for key in values.sorted(by: { $0.value.updatedAt > $1.value.updatedAt }).dropFirst(128).map(\.key) { values.removeValue(forKey: key) }
-        }
-        if let data = try? JSONEncoder().encode(values) { defaults.set(data, forKey: storageKey) }
-    }
-
-    private func entries() -> [String: Entry] {
-        guard let data = defaults.data(forKey: storageKey),
-              let values = try? JSONDecoder().decode([String: Entry].self, from: data) else { return [:] }
-        return values.filter { $0.value.positionSeconds.isFinite && $0.value.positionSeconds >= 0
-            && $0.value.durationSeconds.isFinite && $0.value.durationSeconds > 0 }
+        let audioTrackID = state.sourceAudioStreamIndex ?? (!request.sourceAudioTracks.isEmpty
+            ? state.audioTrackOrdinal.flatMap { request.sourceAudioTracks.indices.contains($0) ? request.sourceAudioTracks[$0].id : nil }
+            : (controls.selectedAudioTrackID >= 0 ? Int(controls.selectedAudioTrackID) : nil))
+        let disabled = state.subtitleSelectionKnown && state.subtitlesDisabled && !controls.pipExternalSubtitle.isEnabled
+        let observation = store.save(key: key, position: controls.preciseCurrentSeconds,
+            duration: controls.durationSeconds, audioTrackID: audioTrackID,
+            subtitleTrackID: subtitleTrackID, subtitlesDisabled: disabled, observeMemory: observeMemory)
+        fields["saveOutcome"] = observation.status.rawValue
+        fields["skipReason"] = "none"
+        fields["memoryReadback"] = observation.memoryReadbackMatches.map { $0 ? "match" : "mismatch" } ?? "notObserved"
+        fields["entryUpdatedAtReferenceSeconds"] = observation.entryUpdatedAt.map { String($0.timeIntervalSinceReferenceDate) } ?? "unknown"
+        fields["audioTrackID"] = audioTrackID.map(String.init) ?? "none"
+        fields["subtitleTrackID"] = subtitleTrackID.map(String.init) ?? "none"
+        fields["subtitleSelectionKnown"] = String(state.subtitleSelectionKnown)
+        fields["subtitlesDisabled"] = String(disabled)
+        fields["externalSubtitleActive"] = String(state.activeExternalSubtitleURL != nil)
+        fields["durabilityEvidence"] = "sameProcessOnly"
+        return Observation(enteredStore: true, fields: fields)
     }
 }
 
@@ -95,15 +84,18 @@ struct PlaybackArchitecturePicker: View {
     }
 }
 
+#endif
+
 extension MediaPlaybackRequest {
     func greenfieldPlaybackLaunchRequest(
         playbackModePreference: PlaybackModePreference = .automatic,
-        resumeStore: LocalPlaybackResumeStore = .shared
+        resumeStore: LocalPlaybackResumeStore = .shared,
+        proxyRouteLease: PlaybackProxyRouteLease? = nil
     ) -> GreenfieldPlaybackLaunchRequest {
         let sourceKind: PlaybackSourceKind
         switch source {
         case .directURL:
-            sourceKind = .directURL
+            sourceKind = networkSource == nil ? .directURL : .webDAVFile
         case .dsmFile:
             sourceKind = .dsmFile
         case .jellyfin:
@@ -126,13 +118,16 @@ extension MediaPlaybackRequest {
         let primaryURL = primaryResource?.url ?? url
         let primaryExtensionHint = primaryResource?.fileExtensionOverride ?? fileExtensionHint
         let primaryCertificatePolicy = certificatePolicy(for: primaryResource)
-        let saved = source == .dsmFile ? localResumeKey.flatMap { resumeStore.entry(for: $0) } : nil
+        // Only an original entry restores the saved selection. A negotiated
+        // replacement already carries the live position and exact source tracks.
+        let saved = (source == .dsmFile || networkSource != nil) && sourceTrackRequestLoader == nil && timelineOffsetSeconds == 0
+            ? localResumeKey.flatMap { resumeStore.entry(for: $0) } : nil
         let playbackDuration = totalDurationSeconds ?? saved?.durationSeconds
         let startTime = playbackDuration.flatMap { duration in
             initialPosition.map { duration * $0 }
         } ?? (timelineOffsetSeconds > 0 ? timelineOffsetSeconds : saved?.positionSeconds)
         let audioTrackID = (selectedSourceAudioTrackID ?? saved?.audioTrackID).map(String.init)
-        let disablesSubtitles = prefersSubtitlesDisabled || saved?.subtitlesDisabled == true
+        let disablesSubtitles = greenfieldSubtitlesDisabled || saved?.subtitlesDisabled == true
         let subtitleTrackID = disablesSubtitles
             ? nil
             : (selectedSourceSubtitleTrackID ?? saved?.subtitleTrackID).map(String.init)
@@ -188,7 +183,7 @@ extension MediaPlaybackRequest {
             contentKind: contentKind,
             itemIdentity: PlaybackItemIdentity(
                 sourceKind: sourceKind,
-                stablePath: networkOriginURL.path.isEmpty ? nil : networkOriginURL.path
+                stablePath: networkSource?.stableID ?? (networkOriginURL.path.isEmpty ? nil : networkOriginURL.path)
             ),
             displayTitle: title,
             directURL: primaryURL,
@@ -218,7 +213,8 @@ extension MediaPlaybackRequest {
             estimatedBitrate: estimatedBitrate,
             tracks: tracks,
             subtitles: disablesSubtitles ? SubtitlePlan(mode: .disabled) : subtitlePlan(tracks: tracks, selectedSubtitleTrackID: subtitleTrackID),
-            mediaRequest: restoredRequest
+            mediaRequest: restoredRequest,
+            proxyRouteLease: proxyRouteLease
         )
     }
 
@@ -321,7 +317,7 @@ extension MediaPlaybackRequest {
         tracks: TrackCatalog,
         selectedSubtitleTrackID: String?
     ) -> SubtitlePlan {
-        if prefersSubtitlesDisabled {
+        if greenfieldSubtitlesDisabled {
             return SubtitlePlan(mode: .disabled)
         }
         if let selectedSubtitleTrackID {
@@ -341,7 +337,9 @@ extension MediaPlaybackRequest {
                 normalization: "utf8-text"
             )
         }
-        return SubtitlePlan(mode: .disabled)
+        // File/direct entries may not know their embedded tracks until the
+        // demuxer opens. Absence of metadata is not an explicit Off selection.
+        return SubtitlePlan(mode: .embedded)
     }
 
     private func playbackNetworkClass(
@@ -364,4 +362,3 @@ extension MediaPlaybackRequest {
         }
     }
 }
-#endif

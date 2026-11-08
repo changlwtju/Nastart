@@ -1,0 +1,61 @@
+{
+  "date": "2026-10-28",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "frozenInputs": 419,
+  "sourceDrift": 0,
+  "implementationChanged": false,
+  "appRebuilt": false,
+  "newInstallations": 0,
+  "nativePlaybackWindows": 0,
+  "cellularSwitches": 0,
+  "nasMediaReads": 0,
+  "deviceActions": 0,
+  "iphone18HandsOff": true,
+  "tests": {
+    "startedAt": "2026-10-28T18:24:34.111057+08:00",
+    "endedAt": "2026-10-28T18:24:48.858412+08:00",
+    "exitCode": 0,
+    "freshBuild": true,
+    "scope": "Preparation/cancellation and WebDAV read-only HTTP boundaries; loopback fixtures only",
+    "deviceActions": 0,
+    "nasMediaReads": 0,
+    "count": 26,
+    "failures": 0
+  },
+  "retainedFailures": [
+    {
+      "step": "Initial skip-build invocation",
+      "result": "Missing test binary in default package build directory",
+      "classification": "test setup; not app or media failure",
+      "followup": "Fresh isolated build and selected 26 tests passed"
+    }
+  ],
+  "priorWindowCleanup": {
+    "at": "2026-10-28T18:19:00+08:00",
+    "device": "iPhone 13",
+    "settingsRestoredAndReadBack": true,
+    "normalHomeObserved": true,
+    "ownedHTTPSessionDeleted": true,
+    "originalRunnerPreserved": true,
+    "mediaStarted": false,
+    "networkToggles": 0,
+    "freshDeviceAvailabilityForNextWindow": false
+  },
+  "decision": "Preparation only; no performance winner selected",
+  "modelPreference": {
+    "routine": "gpt-6.1-sol",
+    "corePlaybackOptimizationOnly": "gpt-6-astra",
+    "speed": "standard",
+    "reasoning": "high",
+    "applicationSettingsVerified": false,
+    "switchRequiresUserAction": true,
+    "selectionAndNativeComparison": "gpt-6.1-sol",
+    "switchAfterSelectionOnly": true
+  },
+  "taskCountsUnchanged": {
+    "inProgress": 14,
+    "pendingValidation": 5,
+    "notStarted": 11
+  },
+  "playbackCellsUnchanged": 114
+}

@@ -1,0 +1,1694 @@
+{
+  "at": "2026-10-24T09:40:11.819839+08:00",
+  "scope": "DEBUG diagnostic output lifecycle correction; real S19 explicit manual KS-to-AV cases; no Release or ordinary automatic acceptance",
+  "package": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "8dc17da01af97164ae5327a85f83da4e2fdadf10c546ba00a9899375c6301c10",
+    "binaryBuildTime": "2026-10-24T09:23:28.180778+08:00",
+    "binaries": {
+      "Nastart": "5bfeb90affaaf6d463ea084c5ed913b610b401f8392c23e77423355fb194d3e0",
+      "Nastart.debug.dylib": "778107a241c7a684af8083fec3e2946eb376dc1915792313e2df983e706cefdf",
+      "Frameworks/KSPlayer.framework/KSPlayer": "50a7559f22961ec7063232612ae8d47eade094b58b68cde0c449077ed10f01fc"
+    },
+    "ipaSHA256": "e6daba5d956ff9c4765651822ff57cc983bd149bb6228562812aaa1cbaf9b20c",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "checkedInputs": 174,
+    "tests": {
+      "executed": 10,
+      "passed": 10,
+      "note": "actual decoded output adoption and continued-frame regression; cancellation, seek, PiP, manifest isolation, readiness and manual deep-resume checks; normal TEST SUCCEEDED"
+    }
+  },
+  "redTest": {
+    "expectedFailure": "real held candidate had no attached decoded output",
+    "xcodeExit": 65
+  },
+  "greenTest": {
+    "assertionsPassed": 10,
+    "assertionFailures": 0,
+    "xcodeExit": 0,
+    "formalTestSucceeded": true,
+    "optionalOwnedSimctlDiagnoseStoppedAfterOver6Minutes": true,
+    "deviceBuildOverlappedOnlyPostTestDiagnosticCollection": true,
+    "deviceBuildSucceeded": true
+  },
+  "controls": {
+    "controlled-thin-reserve": [
+      {
+        "case": "1-late-samples",
+        "mode": "late",
+        "decoded": true,
+        "held": {
+          "automaticWaiting": false,
+          "clock": 7.117860998,
+          "elapsed": 3.7526757083833218,
+          "empty": false,
+          "forward": 0.5,
+          "phase": "held",
+          "rate": 0,
+          "ready": 1,
+          "reserve": 0.8161390019999999,
+          "state": 0,
+          "waiting": "-"
+        },
+        "resume": {
+          "automaticWaiting": true,
+          "clock": 7.118568832,
+          "elapsed": 3.86665066704154,
+          "empty": false,
+          "forward": 3,
+          "phase": "resumed",
+          "rate": 1,
+          "ready": 1,
+          "reserve": 0.8154311679999999,
+          "state": 1,
+          "waiting": "AVPlayerWaitingWhileEvaluatingBufferingRateReason"
+        },
+        "first100msAdvanceAfterResume": 0.023980249650776386,
+        "sampledWaitingSeconds": 3.6370033328421414,
+        "end": {
+          "automaticWaiting": true,
+          "clock": 8.57917252,
+          "elapsed": 8.857591166626662,
+          "empty": false,
+          "forward": 3,
+          "phase": "resumed",
+          "rate": 1,
+          "ready": 1,
+          "reserve": 3.354827479999999,
+          "state": 2,
+          "waiting": "-"
+        },
+        "stateChanges": [
+          {
+            "automaticWaiting": true,
+            "clock": 7.118568832,
+            "elapsed": 3.86665066704154,
+            "empty": false,
+            "forward": 3,
+            "phase": "resumed",
+            "rate": 1,
+            "ready": 1,
+            "reserve": 0.8154311679999999,
+            "state": 1,
+            "waiting": "AVPlayerWaitingWhileEvaluatingBufferingRateReason"
+          },
+          {
+            "automaticWaiting": true,
+            "clock": 7.228824286,
+            "elapsed": 3.8906309166923165,
+            "empty": false,
+            "forward": 3,
+            "phase": "resumed",
+            "rate": 1,
+            "ready": 1,
+            "reserve": 0.7051757140000001,
+            "state": 2,
+            "waiting": "-"
+          },
+          {
+            "automaticWaiting": true,
+            "clock": 7.802578744,
+            "elapsed": 4.511001875158399,
+            "empty": true,
+            "forward": 3,
+            "phase": "resumed",
+            "rate": 1,
+            "ready": 1,
+            "reserve": 0.13142125600000032,
+            "state": 1,
+            "waiting": "AVPlayerWaitingToMinimizeStallsReason"
+          },
+          {
+            "automaticWaiting": true,
+            "clock": 7.834446811,
+            "elapsed": 8.11289987526834,
+            "empty": false,
+            "forward": 3,
+            "phase": "resumed",
+            "rate": 1,
+            "ready": 1,
+            "reserve": 0.9268865223333327,
+            "state": 1,
+            "waiting": "AVPlayerWaitingToMinimizeStallsReason"
+          },
+          {
+            "automaticWaiting": true,
+            "clock": 7.845594686,
+            "elapsed": 8.124024958349764,
+            "empty": false,
+            "forward": 3,
+            "phase": "resumed",
+            "rate": 1,
+            "ready": 1,
+            "reserve": 4.088405313999999,
+            "state": 2,
+            "waiting": "-"
+          }
+        ]
+      },
+      {
+        "case": "2-early-samples",
+        "mode": "early",
+        "decoded": true,
+        "held": {
+          "automaticWaiting": true,
+          "clock": 7.118180582,
+          "elapsed": 3.7074022917076945,
+          "empty": false,
+          "forward": 3,
+          "phase": "held",
+          "rate": 0,
+          "ready": 1,
+          "reserve": 0.8158194180000002,
+          "state": 0,
+          "waiting": "-"
+        },
+        "resume": {
+          "automaticWaiting": true,
+          "clock": 7.118737748,
+          "elapsed": 3.7905470416881144,
+          "empty": false,
+          "forward": 3,
+          "phase": "resumed",
+          "rate": 1,
+          "ready": 1,
+          "reserve": 0.8152622520000001,
+          "state": 1,
+          "waiting": "AVPlayerWaitingWhileEvaluatingBufferingRateReason"
+        },
+        "first100msAdvanceAfterResume": 0.022622999735176563,
+        "sampledWaitingSeconds": 3.6892841667868197,
+        "end": {
+          "automaticWaiting": true,
+          "clock": 8.527293017,
+          "elapsed": 8.781586125027388,
+          "empty": false,
+          "forward": 3,
+          "phase": "resumed",
+          "rate": 1,
+          "ready": 1,
+          "reserve": 3.4067069829999994,
+          "state": 2,
+          "waiting": "-"
+        },
+        "stateChanges": [
+          {
+            "automaticWaiting": true,
+            "clock": 7.118737748,
+            "elapsed": 3.7905470416881144,
+            "empty": false,
+            "forward": 3,
+            "phase": "resumed",
+            "rate": 1,
+            "ready": 1,
+            "reserve": 0.8152622520000001,
+            "state": 1,
+            "waiting": "AVPlayerWaitingWhileEvaluatingBufferingRateReason"
+          },
+          {
+            "automaticWaiting": true,
+            "clock": 7.228805519,
+            "elapsed": 3.813170041423291,
+            "empty": false,
+            "forward": 3,
+            "phase": "resumed",
+            "rate": 1,
+            "ready": 1,
+            "reserve": 0.7051944810000004,
+            "state": 2,
+            "waiting": "-"
+          },
+          {
+            "automaticWaiting": true,
+            "clock": 7.802584519,
+            "elapsed": 4.433239124715328,
+            "empty": true,
+            "forward": 3,
+            "phase": "resumed",
+            "rate": 1,
+            "ready": 1,
+            "reserve": 0.13141548100000033,
+            "state": 1,
+            "waiting": "AVPlayerWaitingToMinimizeStallsReason"
+          },
+          {
+            "automaticWaiting": true,
+            "clock": 7.834398975,
+            "elapsed": 8.08872462483123,
+            "empty": false,
+            "forward": 3,
+            "phase": "resumed",
+            "rate": 1,
+            "ready": 1,
+            "reserve": 0.9269343583333329,
+            "state": 1,
+            "waiting": "AVPlayerWaitingToMinimizeStallsReason"
+          },
+          {
+            "automaticWaiting": true,
+            "clock": 7.845584017,
+            "elapsed": 8.099900291766971,
+            "empty": false,
+            "forward": 3,
+            "phase": "resumed",
+            "rate": 1,
+            "ready": 1,
+            "reserve": 4.088415982999999,
+            "state": 2,
+            "waiting": "-"
+          }
+        ]
+      },
+      {
+        "case": "3-early-samples",
+        "mode": "early",
+        "decoded": true,
+        "held": {
+          "automaticWaiting": true,
+          "clock": 7.120777168,
+          "elapsed": 3.7165025835856795,
+          "empty": false,
+          "forward": 3,
+          "phase": "held",
+          "rate": 0,
+          "ready": 1,
+          "reserve": 0.8132228320000001,
+          "state": 0,
+          "waiting": "-"
+        },
+        "resume": {
+          "automaticWaiting": true,
+          "clock": 7.121436084,
+          "elapsed": 3.7970244167372584,
+          "empty": false,
+          "forward": 3,
+          "phase": "resumed",
+          "rate": 1,
+          "ready": 1,
+          "reserve": 0.8125639160000002,
+          "state": 1,
+          "waiting": "AVPlayerWaitingWhileEvaluatingBufferingRateReason"
+        },
+        "first100msAdvanceAfterResume": 0.013089083600789309,
+        "sampledWaitingSeconds": 3.7009171252138913,
+        "end": {
+          "automaticWaiting": true,
+          "clock": 8.542578974,
+          "elapsed": 8.794021625071764,
+          "empty": false,
+          "forward": 3,
+          "phase": "resumed",
+          "rate": 1,
+          "ready": 1,
+          "reserve": 3.3914210259999997,
+          "state": 2,
+          "waiting": "-"
+        },
+        "stateChanges": [
+          {
+            "automaticWaiting": true,
+            "clock": 7.121436084,
+            "elapsed": 3.7970244167372584,
+            "empty": false,
+            "forward": 3,
+            "phase": "resumed",
+            "rate": 1,
+            "ready": 1,
+            "reserve": 0.8125639160000002,
+            "state": 1,
+            "waiting": "AVPlayerWaitingWhileEvaluatingBufferingRateReason"
+          },
+          {
+            "automaticWaiting": true,
+            "clock": 7.25209527,
+            "elapsed": 3.8210217501036823,
+            "empty": false,
+            "forward": 3,
+            "phase": "resumed",
+            "rate": 1,
+            "ready": 1,
+            "reserve": 0.6819047300000003,
+            "state": 2,
+            "waiting": "-"
+          },
+          {
+            "automaticWaiting": true,
+            "clock": 7.802550187,
+            "elapsed": 4.419828624930233,
+            "empty": true,
+            "forward": 3,
+            "phase": "resumed",
+            "rate": 1,
+            "ready": 1,
+            "reserve": 0.13144981300000058,
+            "state": 1,
+            "waiting": "AVPlayerWaitingToMinimizeStallsReason"
+          },
+          {
+            "automaticWaiting": true,
+            "clock": 7.802550187,
+            "elapsed": 8.085555875208229,
+            "empty": false,
+            "forward": 3,
+            "phase": "resumed",
+            "rate": 1,
+            "ready": 1,
+            "reserve": 0.9587831463333334,
+            "state": 1,
+            "waiting": "AVPlayerWaitingToMinimizeStallsReason"
+          },
+          {
+            "automaticWaiting": true,
+            "clock": 7.845308266,
+            "elapsed": 8.0967484167777,
+            "empty": false,
+            "forward": 3,
+            "phase": "resumed",
+            "rate": 1,
+            "ready": 1,
+            "reserve": 4.088691733999999,
+            "state": 2,
+            "waiting": "-"
+          }
+        ]
+      },
+      {
+        "case": "4-late-samples",
+        "mode": "late",
+        "decoded": true,
+        "held": {
+          "automaticWaiting": false,
+          "clock": 7.11163175,
+          "elapsed": 3.7177700004540384,
+          "empty": false,
+          "forward": 0.5,
+          "phase": "held",
+          "rate": 0,
+          "ready": 1,
+          "reserve": 0.8223682500000002,
+          "state": 0,
+          "waiting": "-"
+        },
+        "resume": {
+          "automaticWaiting": true,
+          "clock": 7.111945334,
+          "elapsed": 3.8323126253671944,
+          "empty": false,
+          "forward": 3,
+          "phase": "resumed",
+          "rate": 1,
+          "ready": 1,
+          "reserve": 0.8220546660000005,
+          "state": 1,
+          "waiting": "AVPlayerWaitingWhileEvaluatingBufferingRateReason"
+        },
+        "first100msAdvanceAfterResume": 0.015769791323691607,
+        "sampledWaitingSeconds": 3.6630035834386945,
+        "end": {
+          "automaticWaiting": true,
+          "clock": 8.553521598,
+          "elapsed": 8.821489750407636,
+          "empty": false,
+          "forward": 3,
+          "phase": "resumed",
+          "rate": 1,
+          "ready": 1,
+          "reserve": 3.3804784019999996,
+          "state": 2,
+          "waiting": "-"
+        },
+        "stateChanges": [
+          {
+            "automaticWaiting": true,
+            "clock": 7.111945334,
+            "elapsed": 3.8323126253671944,
+            "empty": false,
+            "forward": 3,
+            "phase": "resumed",
+            "rate": 1,
+            "ready": 1,
+            "reserve": 0.8220546660000005,
+            "state": 1,
+            "waiting": "AVPlayerWaitingWhileEvaluatingBufferingRateReason"
+          },
+          {
+            "automaticWaiting": true,
+            "clock": 7.229409948,
+            "elapsed": 3.8594475421123207,
+            "empty": false,
+            "forward": 3,
+            "phase": "resumed",
+            "rate": 1,
+            "ready": 1,
+            "reserve": 0.7045900520000004,
+            "state": 2,
+            "waiting": "-"
+          },
+          {
+            "automaticWaiting": true,
+            "clock": 7.802592905,
+            "elapsed": 4.479137958493084,
+            "empty": true,
+            "forward": 3,
+            "phase": "resumed",
+            "rate": 1,
+            "ready": 1,
+            "reserve": 0.13140709500000014,
+            "state": 1,
+            "waiting": "AVPlayerWaitingToMinimizeStallsReason"
+          },
+          {
+            "automaticWaiting": true,
+            "clock": 7.835844265,
+            "elapsed": 8.103849291801453,
+            "empty": false,
+            "forward": 3,
+            "phase": "resumed",
+            "rate": 1,
+            "ready": 1,
+            "reserve": 0.9254890683333326,
+            "state": 1,
+            "waiting": "AVPlayerWaitingToMinimizeStallsReason"
+          },
+          {
+            "automaticWaiting": true,
+            "clock": 7.847037431,
+            "elapsed": 8.115006625186652,
+            "empty": false,
+            "forward": 3,
+            "phase": "resumed",
+            "rate": 1,
+            "ready": 1,
+            "reserve": 4.086962568999999,
+            "state": 2,
+            "waiting": "-"
+          }
+        ]
+      }
+    ],
+    "matched-output-boundary": [
+      {
+        "case": "1-retain-samples",
+        "mode": "retain",
+        "decoded": true,
+        "heldReserve": 2.913254834,
+        "first100msClockAdvanceAfterResume": 0.01216762512922287,
+        "emptyInFirst400ms": false,
+        "clockAdvanceAtEndOfFirst400ms": 0.48976337200000053,
+        "sampledWaitingSeconds": 2.5935327503830194
+      },
+      {
+        "case": "2-replace-samples",
+        "mode": "replace",
+        "decoded": true,
+        "heldReserve": 2.924477416,
+        "first100msClockAdvanceAfterResume": 0.1789455832913518,
+        "emptyInFirst400ms": true,
+        "clockAdvanceAtEndOfFirst400ms": 0.32870718399999976,
+        "sampledWaitingSeconds": 2.412570624612272
+      },
+      {
+        "case": "3-replace-samples",
+        "mode": "replace",
+        "decoded": true,
+        "heldReserve": 2.926439998,
+        "first100msClockAdvanceAfterResume": 0.1752410833723843,
+        "emptyInFirst400ms": true,
+        "clockAdvanceAtEndOfFirst400ms": 0.32302560699999994,
+        "sampledWaitingSeconds": 2.4515945413149893
+      },
+      {
+        "case": "4-retain-samples",
+        "mode": "retain",
+        "decoded": true,
+        "heldReserve": 2.9325283340000006,
+        "first100msClockAdvanceAfterResume": 0.01106233336031437,
+        "emptyInFirst400ms": false,
+        "clockAdvanceAtEndOfFirst400ms": 0.48729962400000026,
+        "sampledWaitingSeconds": 2.6007831250317395
+      }
+    ],
+    "output-factor-isolation": [
+      {
+        "case": "1-remove-samples",
+        "mode": "remove",
+        "decoded": true,
+        "heldReserve": 2.9266365820000004,
+        "first100msClockAdvanceAfterResume": 0.022871458437293768,
+        "emptyInFirst400ms": false,
+        "clockAdvanceAtEndOfFirst400ms": 0.4845374900000001,
+        "sampledWaitingSeconds": 2.5606283750385046
+      },
+      {
+        "case": "2-add-samples",
+        "mode": "add",
+        "decoded": true,
+        "heldReserve": 2.9241848299999997,
+        "first100msClockAdvanceAfterResume": 0.17865604162216187,
+        "emptyInFirst400ms": true,
+        "clockAdvanceAtEndOfFirst400ms": 0.31351907200000007,
+        "sampledWaitingSeconds": 2.4095701668411493
+      },
+      {
+        "case": "3-add-samples",
+        "mode": "add",
+        "decoded": true,
+        "heldReserve": 2.929678416,
+        "first100msClockAdvanceAfterResume": 0.17700333334505558,
+        "emptyInFirst400ms": true,
+        "clockAdvanceAtEndOfFirst400ms": 0.3252356540000001,
+        "sampledWaitingSeconds": 2.4114933335222304
+      },
+      {
+        "case": "4-remove-samples",
+        "mode": "remove",
+        "decoded": true,
+        "heldReserve": 2.929039586,
+        "first100msClockAdvanceAfterResume": 0.022737249732017517,
+        "emptyInFirst400ms": false,
+        "clockAdvanceAtEndOfFirst400ms": 0.4818162940000006,
+        "sampledWaitingSeconds": 2.600663791410625
+      }
+    ]
+  },
+  "localControlLimits": [
+    "macOS AVFoundation; no real NAS or complete app UI handoff",
+    "first probe had excessive reserve and is retained as non-matching supply",
+    "first thin-reserve policy experiment used play(); later output factors match app playImmediately()",
+    "later supply starvation is distinct from initial output-attachment empty-buffer perturbation"
+  ],
+  "realCases": [
+    {
+      "startedAt": "2026-10-24T09:10:38.926765+08:00",
+      "finishedAt": "2026-10-24T09:11:51.441782+08:00",
+      "originalDeepFirstClockPositionSeconds": 4000.073,
+      "labPlaybackLaunches": 1,
+      "candidateTriggerCommands": 1,
+      "normalPlayCommands": 0,
+      "seekCommands": 0,
+      "pipCommands": 0,
+      "MacMediaGETRequests": 0,
+      "allNonDiagnosticPreferencesUnchanged": true,
+      "ownGuardianStopped": true,
+      "ownSyslogStopped": true,
+      "serverCleanup": {
+        "stopHTTPStatus": 204,
+        "exactOwnDeviceAndNegotiatedPlaySession": true,
+        "remainingOwnedSessions": 0,
+        "encodingProcessExitNotProvenByHTTPStatusAlone": true
+      },
+      "finalWDAAppStates": [
+        1,
+        1
+      ],
+      "newCrashInventory": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      },
+      "name": "real-nas-deep-s19-12m",
+      "milestones": [
+        {
+          "actionSeconds": 7.897654,
+          "event": "first_frame",
+          "fields": {
+            "firstFramePositionSeconds": 4000.073,
+            "planID": "B758D583",
+            "playbackTraceID": "3CD50922",
+            "routeID": "6D9EF82C",
+            "tapToFirstFrameMs": 3824
+          }
+        },
+        {
+          "actionSeconds": 19.978303,
+          "event": "replacement_warmup_started",
+          "fields": {
+            "engine": "KSPlayer",
+            "planID": "B758D583",
+            "playbackTraceID": "3CD50922",
+            "routeID": "6D9EF82C"
+          }
+        },
+        {
+          "actionSeconds": 30.031213,
+          "event": "replacement_candidate_manifest_prepared",
+          "fields": {
+            "cachedVOD": "true",
+            "elapsedMs": 10036,
+            "engine": "KSPlayer",
+            "planID": "B758D583",
+            "playbackTraceID": "3CD50922",
+            "routeID": "6D9EF82C"
+          }
+        },
+        {
+          "actionSeconds": 30.036629,
+          "event": "replacement_candidate_preparing",
+          "fields": {
+            "availableReserveSeconds": 1.792166616787199,
+            "bufferEmpty": "true",
+            "cancelled": "false",
+            "candidateBufferAheadSeconds": 0,
+            "candidateSeconds": 0,
+            "deadlineRemainingMs": 29943,
+            "elapsedMs": 10056,
+            "engine": "KSPlayer",
+            "errorDomain": "-",
+            "likelyToKeepUp": "false",
+            "liveSeconds": 4022.196,
+            "loadedRangeCount": 0,
+            "planID": "B758D583",
+            "playbackTraceID": "3CD50922",
+            "preparationLeadSeconds": 1.542166616787199,
+            "routeID": "6D9EF82C",
+            "target": 4023.738166616787,
+            "timeControlStatus": "unrecognized",
+            "waitingReason": "-"
+          }
+        },
+        {
+          "actionSeconds": 37.521506,
+          "event": "replacement_candidate_decoded",
+          "fields": {
+            "availableReserveSeconds": 1.792166616787199,
+            "bufferEmpty": "false",
+            "cancelled": "false",
+            "candidateBufferAheadSeconds": 0,
+            "candidateSeconds": 4023.7366666666667,
+            "deadlineRemainingMs": 22554,
+            "elapsedMs": 17445,
+            "engine": "KSPlayer",
+            "errorDomain": "-",
+            "framePTS": 4023.7280333333333,
+            "likelyToKeepUp": "false",
+            "liveSeconds": 4029.598,
+            "loadedRangeCount": 1,
+            "planID": "B758D583",
+            "playbackTraceID": "3CD50922",
+            "preparationLeadSeconds": 1.542166616787199,
+            "prepareMs": 17445,
+            "routeID": "6D9EF82C",
+            "target": 4023.738166616787,
+            "timeControlStatus": "unrecognized",
+            "waitingReason": "-"
+          }
+        },
+        {
+          "actionSeconds": 43.778538,
+          "event": "replacement_candidate_aligned",
+          "fields": {
+            "accessLogStalls": 13,
+            "availableReserveSeconds": 1.792166616787199,
+            "bufferEmpty": "false",
+            "cancelled": "false",
+            "candidateBufferAheadSeconds": 2.9015969932220287,
+            "candidateSeconds": 4035.056922421,
+            "current": 4035.124,
+            "deadlineRemainingMs": 16349,
+            "elapsedMs": 23650,
+            "engine": "KSPlayer",
+            "errorDomain": "-",
+            "framePTS": 4035.0309888888887,
+            "indicatedBitrate": 12000000,
+            "likelyToKeepUp": "false",
+            "liveSeconds": 4035.124,
+            "loadedRangeCount": 1,
+            "observedBitrate": 16058863,
+            "planID": "B758D583",
+            "playbackTraceID": "3CD50922",
+            "preparationLeadSeconds": 1.542166616787199,
+            "routeID": "6D9EF82C",
+            "target": 4023.738166616787,
+            "timeControlStatus": "unrecognized",
+            "waitingReason": "-"
+          }
+        },
+        {
+          "actionSeconds": 43.780806,
+          "event": "replacement_committed",
+          "fields": {
+            "candidateBufferAheadSeconds": 2.9003998012221928,
+            "candidateSeconds": 4035.056922421,
+            "engine": "KSPlayer",
+            "planID": "B758D583",
+            "playbackTraceID": "3CD50922",
+            "routeID": "6D9EF82C",
+            "seconds": 4035.124
+          }
+        },
+        {
+          "actionSeconds": 45.590766,
+          "event": "first_frame",
+          "fields": {
+            "firstFramePositionSeconds": 4035.5,
+            "planID": "32F6F802",
+            "playbackTraceID": "E727FEA0",
+            "routeID": "DB62084A",
+            "tapToFirstFrameMs": 25622
+          }
+        }
+      ],
+      "renderers": [
+        {
+          "engine": "KSPlayer",
+          "maxReportedStallCount": 1,
+          "stallEpisodes": [
+            {
+              "startActionSeconds": 5.493104,
+              "phaseAtStart": "beforeObservedAdvancingClock",
+              "startFields": {
+                "audioBitrate": 0,
+                "bufferLimitSeconds": 6,
+                "bufferTargetSeconds": 1,
+                "bufferedAheadSeconds": 0,
+                "bytesRead": 6521480,
+                "currentSeconds": 0,
+                "durationSeconds": 13698.368,
+                "elapsedMs": 1087,
+                "engine": "KSPlayer",
+                "ksPlayerState": "-",
+                "planID": "B758D583",
+                "playbackTraceID": "3CD50922",
+                "routeID": "6D9EF82C",
+                "sampleReason": "playbackTick",
+                "stallActive": "yes",
+                "stallCount": 1,
+                "stallDurationMs": 0,
+                "videoBitrate": 0
+              },
+              "endActionSeconds": 7.897306,
+              "sampledSpanSeconds": 2.4042020000000006,
+              "reportedDurationMs": 2400
+            }
+          ],
+          "firstClockSignal": {
+            "actionSeconds": 7.897654,
+            "event": "first_frame",
+            "fields": {
+              "firstFramePositionSeconds": 4000.073,
+              "planID": "B758D583",
+              "playbackTraceID": "3CD50922",
+              "routeID": "6D9EF82C",
+              "tapToFirstFrameMs": 3824
+            }
+          },
+          "handoffConfiguration": []
+        },
+        {
+          "engine": "AVPlayer",
+          "maxReportedStallCount": 1,
+          "stallEpisodes": [
+            {
+              "startActionSeconds": 44.004005,
+              "phaseAtStart": "beforeObservedAdvancingClock",
+              "startFields": {
+                "accessLogBytes": 29707696,
+                "accessLogStalls": 13,
+                "accessLogThroughputMbps": 19.622,
+                "accessLogTransferMs": 12112,
+                "bufferAheadSeconds": 3.391,
+                "bufferEmpty": "yes",
+                "currentSeconds": 4035.057,
+                "deltaSeconds": 0,
+                "elapsedMs": 301,
+                "engine": "AVPlayer",
+                "indicatedBitrate": 12000000,
+                "likelyToKeepUp": "no",
+                "loadedRangeCount": 1,
+                "observedBitrate": 16164897,
+                "planID": "32F6F802",
+                "playbackTraceID": "E727FEA0",
+                "rate": 1,
+                "reasonForWaiting": "toMinimizeStalls",
+                "routeID": "DB62084A",
+                "sampleReason": "timeControlChanged",
+                "stallActive": "yes",
+                "stallCount": 1,
+                "stallDurationMs": 0,
+                "timeControlStatus": "waitingToPlayAtSpecifiedRate"
+              },
+              "endActionSeconds": 45.05964,
+              "sampledSpanSeconds": 1.0556350000000023,
+              "reportedDurationMs": 1063
+            }
+          ],
+          "firstClockSignal": {
+            "actionSeconds": 45.590766,
+            "event": "first_frame",
+            "fields": {
+              "firstFramePositionSeconds": 4035.5,
+              "planID": "32F6F802",
+              "playbackTraceID": "E727FEA0",
+              "routeID": "DB62084A",
+              "tapToFirstFrameMs": 25622
+            }
+          },
+          "handoffConfiguration": [
+            {
+              "actionSeconds": 43.786657,
+              "event": "av_handoff_boundary",
+              "fields": {
+                "automaticallyWaits": "no",
+                "avTimeControlState": 0,
+                "bufferAheadSeconds": 2.9003998012221928,
+                "bufferEmpty": "no",
+                "currentSeconds": 4035.056922421,
+                "engine": "AVPlayer",
+                "likelyToKeepUp": "no",
+                "loadedRangeCount": 1,
+                "planID": "32F6F802",
+                "playbackTraceID": "E727FEA0",
+                "preferredForwardBufferSeconds": 0.5,
+                "rate": 0,
+                "routeID": "DB62084A",
+                "stage": "beforeConfiguration",
+                "videoOutputCount": 0,
+                "waitingReason": "-"
+              }
+            },
+            {
+              "actionSeconds": 43.787763,
+              "event": "av_handoff_boundary",
+              "fields": {
+                "automaticallyWaits": "yes",
+                "avTimeControlState": 0,
+                "bufferAheadSeconds": 2.9003998012221928,
+                "bufferEmpty": "no",
+                "currentSeconds": 4035.056922421,
+                "engine": "AVPlayer",
+                "likelyToKeepUp": "no",
+                "loadedRangeCount": 1,
+                "planID": "32F6F802",
+                "playbackTraceID": "E727FEA0",
+                "preferredForwardBufferSeconds": 0.5,
+                "rate": 0,
+                "routeID": "DB62084A",
+                "stage": "afterWaitingPolicy",
+                "videoOutputCount": 0,
+                "waitingReason": "-"
+              }
+            },
+            {
+              "actionSeconds": 43.788663,
+              "event": "av_handoff_boundary",
+              "fields": {
+                "automaticallyWaits": "yes",
+                "avTimeControlState": 0,
+                "bufferAheadSeconds": 2.9003998012221928,
+                "bufferEmpty": "no",
+                "currentSeconds": 4035.056922421,
+                "engine": "AVPlayer",
+                "likelyToKeepUp": "no",
+                "loadedRangeCount": 1,
+                "planID": "32F6F802",
+                "playbackTraceID": "E727FEA0",
+                "preferredForwardBufferSeconds": 3,
+                "rate": 0,
+                "routeID": "DB62084A",
+                "stage": "afterForwardBuffer",
+                "videoOutputCount": 0,
+                "waitingReason": "-"
+              }
+            },
+            {
+              "actionSeconds": 43.789512,
+              "event": "av_handoff_boundary",
+              "fields": {
+                "automaticallyWaits": "yes",
+                "avTimeControlState": 0,
+                "bufferAheadSeconds": 2.9003998012221928,
+                "bufferEmpty": "no",
+                "currentSeconds": 4035.056922421,
+                "engine": "AVPlayer",
+                "likelyToKeepUp": "no",
+                "loadedRangeCount": 1,
+                "planID": "32F6F802",
+                "playbackTraceID": "E727FEA0",
+                "preferredForwardBufferSeconds": 3,
+                "rate": 0,
+                "routeID": "DB62084A",
+                "stage": "afterTextStyle",
+                "videoOutputCount": 0,
+                "waitingReason": "-"
+              }
+            },
+            {
+              "actionSeconds": 43.790351,
+              "event": "av_handoff_boundary",
+              "fields": {
+                "automaticallyWaits": "yes",
+                "avTimeControlState": 0,
+                "bufferAheadSeconds": 2.9003998012221928,
+                "bufferEmpty": "no",
+                "currentSeconds": 4035.056922421,
+                "engine": "AVPlayer",
+                "likelyToKeepUp": "no",
+                "loadedRangeCount": 1,
+                "planID": "32F6F802",
+                "playbackTraceID": "E727FEA0",
+                "preferredForwardBufferSeconds": 3,
+                "rate": 0,
+                "routeID": "DB62084A",
+                "stage": "afterVideoOutput",
+                "videoOutputCount": 1,
+                "waitingReason": "-"
+              }
+            },
+            {
+              "actionSeconds": 43.900708,
+              "event": "av_handoff_boundary",
+              "fields": {
+                "automaticallyWaits": "yes",
+                "avTimeControlState": 0,
+                "bufferAheadSeconds": 2.9003988012218542,
+                "bufferEmpty": "no",
+                "currentSeconds": 4035.056923421,
+                "engine": "AVPlayer",
+                "likelyToKeepUp": "no",
+                "loadedRangeCount": 1,
+                "planID": "32F6F802",
+                "playbackTraceID": "E727FEA0",
+                "preferredForwardBufferSeconds": 3,
+                "rate": 0,
+                "routeID": "DB62084A",
+                "stage": "beforeResume",
+                "videoOutputCount": 1,
+                "waitingReason": "-"
+              }
+            },
+            {
+              "actionSeconds": 43.901788,
+              "event": "av_handoff_boundary",
+              "fields": {
+                "automaticallyWaits": "yes",
+                "avTimeControlState": 1,
+                "bufferAheadSeconds": 2.9003988012218542,
+                "bufferEmpty": "no",
+                "currentSeconds": 4035.056923421,
+                "engine": "AVPlayer",
+                "likelyToKeepUp": "no",
+                "loadedRangeCount": 1,
+                "planID": "32F6F802",
+                "playbackTraceID": "E727FEA0",
+                "preferredForwardBufferSeconds": 3,
+                "rate": 1,
+                "routeID": "DB62084A",
+                "stage": "afterResume",
+                "videoOutputCount": 1,
+                "waitingReason": "AVPlayerWaitingWhileEvaluatingBufferingRateReason"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "startedAt": "2026-10-24T09:35:54.686687+08:00",
+      "finishedAt": "2026-10-24T09:37:05.535571+08:00",
+      "originalDeepFirstClockPositionSeconds": 4000.073,
+      "labPlaybackLaunches": 1,
+      "candidateTriggerCommands": 1,
+      "normalPlayCommands": 0,
+      "seekCommands": 0,
+      "pipCommands": 0,
+      "MacMediaGETRequests": 0,
+      "allNonDiagnosticPreferencesUnchanged": true,
+      "ownGuardianStopped": true,
+      "ownSyslogStopped": true,
+      "serverCleanup": {
+        "stopHTTPStatus": 204,
+        "exactOwnDeviceAndNegotiatedPlaySession": true,
+        "remainingOwnedSessions": 0,
+        "encodingProcessExitNotProvenByHTTPStatusAlone": true
+      },
+      "finalWDAAppStates": [
+        1,
+        1
+      ],
+      "newCrashInventory": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      },
+      "name": "real-nas-deep-s19-output-retained",
+      "milestones": [
+        {
+          "actionSeconds": 6.36787,
+          "event": "first_frame",
+          "fields": {
+            "firstFramePositionSeconds": 4000.073,
+            "planID": "AD2233A9",
+            "playbackTraceID": "243FA4B9",
+            "routeID": "D479E356",
+            "tapToFirstFrameMs": 3955
+          }
+        },
+        {
+          "actionSeconds": 18.568525,
+          "event": "replacement_warmup_started",
+          "fields": {
+            "engine": "KSPlayer",
+            "planID": "AD2233A9",
+            "playbackTraceID": "243FA4B9",
+            "routeID": "D479E356"
+          }
+        },
+        {
+          "actionSeconds": 35.505492,
+          "event": "replacement_candidate_manifest_prepared",
+          "fields": {
+            "cachedVOD": "true",
+            "elapsedMs": 16909,
+            "engine": "KSPlayer",
+            "planID": "AD2233A9",
+            "playbackTraceID": "243FA4B9",
+            "routeID": "D479E356"
+          }
+        },
+        {
+          "actionSeconds": 35.512671,
+          "event": "replacement_candidate_preparing",
+          "fields": {
+            "availableReserveSeconds": 0.5004999863963349,
+            "bufferEmpty": "true",
+            "cancelled": "false",
+            "candidateBufferAheadSeconds": 0,
+            "candidateSeconds": 0,
+            "deadlineRemainingMs": 23061,
+            "elapsedMs": 16938,
+            "engine": "KSPlayer",
+            "errorDomain": "-",
+            "likelyToKeepUp": "false",
+            "liveSeconds": 4015.817,
+            "loadedRangeCount": 0,
+            "planID": "AD2233A9",
+            "playbackTraceID": "243FA4B9",
+            "preparationLeadSeconds": 0,
+            "routeID": "D479E356",
+            "target": 4015.817,
+            "timeControlStatus": "unrecognized",
+            "waitingReason": "-"
+          }
+        },
+        {
+          "actionSeconds": 44.687538,
+          "event": "replacement_candidate_decoded",
+          "fields": {
+            "accessLogStalls": 0,
+            "availableReserveSeconds": 0.5004999863963349,
+            "bufferEmpty": "false",
+            "cancelled": "false",
+            "candidateBufferAheadSeconds": 0.07398888888883448,
+            "candidateSeconds": 4015.8166666666666,
+            "deadlineRemainingMs": 13878,
+            "elapsedMs": 26121,
+            "engine": "KSPlayer",
+            "errorDomain": "-",
+            "framePTS": 4015.8034444444443,
+            "indicatedBitrate": 12000000,
+            "likelyToKeepUp": "false",
+            "liveSeconds": 4018.867,
+            "loadedRangeCount": 1,
+            "observedBitrate": 4487169,
+            "planID": "AD2233A9",
+            "playbackTraceID": "243FA4B9",
+            "preparationLeadSeconds": 0,
+            "prepareMs": 26121,
+            "routeID": "D479E356",
+            "target": 4015.817,
+            "timeControlStatus": "unrecognized",
+            "waitingReason": "-"
+          }
+        },
+        {
+          "actionSeconds": 48.740081,
+          "event": "replacement_candidate_aligned",
+          "fields": {
+            "accessLogStalls": 16,
+            "availableReserveSeconds": 0.5004999863963349,
+            "bufferEmpty": "false",
+            "cancelled": "false",
+            "candidateBufferAheadSeconds": 0.7816113185558606,
+            "candidateSeconds": 4020.677044237,
+            "current": 4020.596,
+            "deadlineRemainingMs": 10030,
+            "elapsedMs": 29969,
+            "engine": "KSPlayer",
+            "errorDomain": "-",
+            "framePTS": 4020.641611111111,
+            "indicatedBitrate": 12000000,
+            "likelyToKeepUp": "false",
+            "liveSeconds": 4020.596,
+            "loadedRangeCount": 1,
+            "observedBitrate": 8637768,
+            "planID": "AD2233A9",
+            "playbackTraceID": "243FA4B9",
+            "preparationLeadSeconds": 0,
+            "routeID": "D479E356",
+            "target": 4015.817,
+            "timeControlStatus": "unrecognized",
+            "waitingReason": "-"
+          }
+        },
+        {
+          "actionSeconds": 48.740797,
+          "event": "replacement_committed",
+          "fields": {
+            "candidateBufferAheadSeconds": 0.7816113185558606,
+            "candidateSeconds": 4020.677044237,
+            "engine": "KSPlayer",
+            "planID": "AD2233A9",
+            "playbackTraceID": "243FA4B9",
+            "routeID": "D479E356",
+            "seconds": 4020.596
+          }
+        },
+        {
+          "actionSeconds": 49.227528,
+          "event": "first_frame",
+          "fields": {
+            "firstFramePositionSeconds": 4021.001,
+            "planID": "FEE2D948",
+            "playbackTraceID": "D99F40BC",
+            "routeID": "D60E801B",
+            "tapToFirstFrameMs": 30664
+          }
+        }
+      ],
+      "renderers": [
+        {
+          "engine": "KSPlayer",
+          "maxReportedStallCount": 9,
+          "stallEpisodes": [
+            {
+              "startActionSeconds": 3.754374,
+              "phaseAtStart": "beforeObservedAdvancingClock",
+              "startFields": {
+                "audioBitrate": 0,
+                "bufferLimitSeconds": 6,
+                "bufferTargetSeconds": 1,
+                "bufferedAheadSeconds": 0,
+                "bytesRead": 3587831,
+                "currentSeconds": 0,
+                "durationSeconds": 13698.368,
+                "elapsedMs": 1085,
+                "engine": "KSPlayer",
+                "ksPlayerState": "-",
+                "planID": "AD2233A9",
+                "playbackTraceID": "243FA4B9",
+                "routeID": "D479E356",
+                "sampleReason": "playbackTick",
+                "stallActive": "yes",
+                "stallCount": 1,
+                "stallDurationMs": 0,
+                "videoBitrate": 0
+              },
+              "endActionSeconds": 6.367181,
+              "sampledSpanSeconds": 2.6128070000000005,
+              "reportedDurationMs": 2602
+            },
+            {
+              "startActionSeconds": 12.856722,
+              "phaseAtStart": "afterObservedAdvancingClock",
+              "startFields": {
+                "audioBitrate": 3314594,
+                "bufferLimitSeconds": 6,
+                "bufferTargetSeconds": 1,
+                "bufferedAheadSeconds": 0.12512499659897003,
+                "bytesRead": 84839239,
+                "currentSeconds": 4006.409,
+                "deltaSeconds": 0.938,
+                "durationSeconds": 13698.368,
+                "elapsedMs": 10186,
+                "engine": "KSPlayer",
+                "ksPlayerState": "-",
+                "planID": "AD2233A9",
+                "playbackTraceID": "243FA4B9",
+                "routeID": "D479E356",
+                "sampleReason": "playbackTick",
+                "stallActive": "yes",
+                "stallCount": 2,
+                "stallDurationMs": 0,
+                "videoBitrate": 71617287
+              },
+              "endActionSeconds": 15.055223,
+              "sampledSpanSeconds": 2.1985010000000003,
+              "reportedDurationMs": 2199
+            },
+            {
+              "startActionSeconds": 19.260048,
+              "phaseAtStart": "afterObservedAdvancingClock",
+              "startFields": {
+                "audioBitrate": 3304052,
+                "bufferLimitSeconds": 6,
+                "bufferTargetSeconds": 1,
+                "bufferedAheadSeconds": 0.2919583253978999,
+                "bytesRead": 123983679,
+                "currentSeconds": 4010.014,
+                "deltaSeconds": 0.128,
+                "durationSeconds": 13698.368,
+                "elapsedMs": 16586,
+                "engine": "KSPlayer",
+                "ksPlayerState": "-",
+                "planID": "AD2233A9",
+                "playbackTraceID": "243FA4B9",
+                "routeID": "D479E356",
+                "sampleReason": "playbackTick",
+                "stallActive": "yes",
+                "stallCount": 3,
+                "stallDurationMs": 0,
+                "videoBitrate": 77430625
+              },
+              "endActionSeconds": 22.35161,
+              "sampledSpanSeconds": 3.0915619999999997,
+              "reportedDurationMs": 3099
+            },
+            {
+              "startActionSeconds": 24.360403,
+              "phaseAtStart": "afterObservedAdvancingClock",
+              "startFields": {
+                "audioBitrate": 3280270,
+                "bufferLimitSeconds": 6,
+                "bufferTargetSeconds": 1,
+                "bufferedAheadSeconds": 0.12512499659897003,
+                "bytesRead": 137823663,
+                "currentSeconds": 4011.422,
+                "deltaSeconds": 0.235,
+                "durationSeconds": 13698.368,
+                "elapsedMs": 21686,
+                "engine": "KSPlayer",
+                "ksPlayerState": "-",
+                "planID": "AD2233A9",
+                "playbackTraceID": "243FA4B9",
+                "routeID": "D479E356",
+                "sampleReason": "playbackTick",
+                "stallActive": "yes",
+                "stallCount": 4,
+                "stallDurationMs": 0,
+                "videoBitrate": 77430625
+              },
+              "endActionSeconds": 27.560553,
+              "sampledSpanSeconds": 3.200149999999997,
+              "reportedDurationMs": 3200
+            },
+            {
+              "startActionSeconds": 29.73801,
+              "phaseAtStart": "afterObservedAdvancingClock",
+              "startFields": {
+                "audioBitrate": 3103474,
+                "bufferLimitSeconds": 6,
+                "bufferTargetSeconds": 1,
+                "bufferedAheadSeconds": 0,
+                "bytesRead": 161350743,
+                "elapsedMs": 27065,
+                "engine": "KSPlayer",
+                "ksPlayerState": "buffering",
+                "planID": "AD2233A9",
+                "playbackTraceID": "243FA4B9",
+                "routeID": "D479E356",
+                "sampleReason": "stateChanged",
+                "stallActive": "yes",
+                "stallCount": 5,
+                "stallDurationMs": 0,
+                "videoBitrate": 70376777
+              },
+              "endActionSeconds": 32.859945,
+              "sampledSpanSeconds": 3.121935000000004,
+              "reportedDurationMs": 3121
+            },
+            {
+              "startActionSeconds": 34.86221,
+              "phaseAtStart": "afterObservedAdvancingClock",
+              "startFields": {
+                "audioBitrate": 3331463,
+                "bufferLimitSeconds": 6,
+                "bufferTargetSeconds": 1,
+                "bufferedAheadSeconds": 0.37537498979736483,
+                "bytesRead": 182558151,
+                "currentSeconds": 4015.817,
+                "deltaSeconds": 0.192,
+                "durationSeconds": 13698.368,
+                "elapsedMs": 32187,
+                "engine": "KSPlayer",
+                "ksPlayerState": "-",
+                "planID": "AD2233A9",
+                "playbackTraceID": "243FA4B9",
+                "routeID": "D479E356",
+                "sampleReason": "playbackTick",
+                "stallActive": "yes",
+                "stallCount": 6,
+                "stallDurationMs": 0,
+                "videoBitrate": 67025309
+              },
+              "endActionSeconds": 36.956769,
+              "sampledSpanSeconds": 2.094559000000004,
+              "reportedDurationMs": 2099
+            },
+            {
+              "startActionSeconds": 37.959482,
+              "phaseAtStart": "afterObservedAdvancingClock",
+              "startFields": {
+                "audioBitrate": 3111279,
+                "bufferLimitSeconds": 6,
+                "bufferTargetSeconds": 1,
+                "bufferedAheadSeconds": 0,
+                "bytesRead": 194004591,
+                "currentSeconds": 4017.289,
+                "deltaSeconds": 0.982,
+                "durationSeconds": 13698.368,
+                "elapsedMs": 35290,
+                "engine": "KSPlayer",
+                "ksPlayerState": "-",
+                "planID": "AD2233A9",
+                "playbackTraceID": "243FA4B9",
+                "routeID": "D479E356",
+                "sampleReason": "playbackTick",
+                "stallActive": "yes",
+                "stallCount": 7,
+                "stallDurationMs": 0,
+                "videoBitrate": 71655095
+              },
+              "endActionSeconds": 42.261317,
+              "sampledSpanSeconds": 4.301834999999997,
+              "reportedDurationMs": 4296
+            },
+            {
+              "startActionSeconds": 43.261001,
+              "phaseAtStart": "afterObservedAdvancingClock",
+              "startFields": {
+                "audioBitrate": 3108408,
+                "bufferLimitSeconds": 6,
+                "bufferTargetSeconds": 1,
+                "bufferedAheadSeconds": 0,
+                "bytesRead": 209424159,
+                "currentSeconds": 4018.867,
+                "deltaSeconds": 0.981,
+                "durationSeconds": 13698.368,
+                "elapsedMs": 40592,
+                "engine": "KSPlayer",
+                "ksPlayerState": "-",
+                "planID": "AD2233A9",
+                "playbackTraceID": "243FA4B9",
+                "routeID": "D479E356",
+                "sampleReason": "playbackTick",
+                "stallActive": "yes",
+                "stallCount": 8,
+                "stallDurationMs": 0,
+                "videoBitrate": 73818844
+              },
+              "endActionSeconds": 46.451562,
+              "sampledSpanSeconds": 3.1905610000000024,
+              "reportedDurationMs": 3192
+            },
+            {
+              "startActionSeconds": 47.551472,
+              "phaseAtStart": "afterObservedAdvancingClock",
+              "startFields": {
+                "audioBitrate": 3089200,
+                "bufferLimitSeconds": 6,
+                "bufferTargetSeconds": 1,
+                "bufferedAheadSeconds": 0.08341666439946493,
+                "bytesRead": 227677311,
+                "currentSeconds": 4020.596,
+                "deltaSeconds": 0.769,
+                "durationSeconds": 13698.368,
+                "elapsedMs": 44885,
+                "engine": "KSPlayer",
+                "ksPlayerState": "-",
+                "planID": "AD2233A9",
+                "playbackTraceID": "243FA4B9",
+                "routeID": "D479E356",
+                "sampleReason": "playbackTick",
+                "stallActive": "yes",
+                "stallCount": 9,
+                "stallDurationMs": 0,
+                "videoBitrate": 72751780
+              },
+              "endActionSeconds": 48.81205,
+              "sampledSpanSeconds": 1.2605780000000024,
+              "reportedDurationMs": 1005
+            }
+          ],
+          "firstClockSignal": {
+            "actionSeconds": 6.36787,
+            "event": "first_frame",
+            "fields": {
+              "firstFramePositionSeconds": 4000.073,
+              "planID": "AD2233A9",
+              "playbackTraceID": "243FA4B9",
+              "routeID": "D479E356",
+              "tapToFirstFrameMs": 3955
+            }
+          },
+          "handoffConfiguration": []
+        },
+        {
+          "engine": "AVPlayer",
+          "maxReportedStallCount": 1,
+          "stallEpisodes": [
+            {
+              "startActionSeconds": 48.882099,
+              "phaseAtStart": "beforeObservedAdvancingClock",
+              "startFields": {
+                "accessLogBytes": 17170432,
+                "accessLogStalls": 16,
+                "accessLogThroughputMbps": 12.641,
+                "accessLogTransferMs": 10866,
+                "bufferAheadSeconds": 0.838,
+                "bufferEmpty": "no",
+                "currentSeconds": 4020.62,
+                "deltaSeconds": -0.057,
+                "elapsedMs": 252,
+                "engine": "AVPlayer",
+                "indicatedBitrate": 12000000,
+                "likelyToKeepUp": "no",
+                "loadedRangeCount": 1,
+                "observedBitrate": 9558756,
+                "planID": "FEE2D948",
+                "playbackTraceID": "D99F40BC",
+                "rate": 1,
+                "reasonForWaiting": "evaluatingBufferingRate",
+                "routeID": "D60E801B",
+                "sampleReason": "timeControlChanged",
+                "stallActive": "yes",
+                "stallCount": 1,
+                "stallDurationMs": 0,
+                "timeControlStatus": "waitingToPlayAtSpecifiedRate"
+              },
+              "endActionSeconds": 48.907276,
+              "sampledSpanSeconds": 0.025177000000006444,
+              "reportedDurationMs": 67
+            }
+          ],
+          "firstClockSignal": {
+            "actionSeconds": 49.227528,
+            "event": "first_frame",
+            "fields": {
+              "firstFramePositionSeconds": 4021.001,
+              "planID": "FEE2D948",
+              "playbackTraceID": "D99F40BC",
+              "routeID": "D60E801B",
+              "tapToFirstFrameMs": 30664
+            }
+          },
+          "handoffConfiguration": [
+            {
+              "actionSeconds": 48.744725,
+              "event": "av_handoff_boundary",
+              "fields": {
+                "automaticallyWaits": "no",
+                "avTimeControlState": 0,
+                "bufferAheadSeconds": 0.7816113185558606,
+                "bufferEmpty": "no",
+                "currentSeconds": 4020.677044237,
+                "engine": "AVPlayer",
+                "likelyToKeepUp": "no",
+                "loadedRangeCount": 1,
+                "planID": "FEE2D948",
+                "playbackTraceID": "D99F40BC",
+                "preferredForwardBufferSeconds": 0.5,
+                "rate": 0,
+                "routeID": "D60E801B",
+                "stage": "beforeConfiguration",
+                "videoOutputCount": 1,
+                "waitingReason": "-"
+              }
+            },
+            {
+              "actionSeconds": 48.745623,
+              "event": "av_handoff_boundary",
+              "fields": {
+                "automaticallyWaits": "yes",
+                "avTimeControlState": 0,
+                "bufferAheadSeconds": 0.7816113185558606,
+                "bufferEmpty": "no",
+                "currentSeconds": 4020.677044237,
+                "engine": "AVPlayer",
+                "likelyToKeepUp": "no",
+                "loadedRangeCount": 1,
+                "planID": "FEE2D948",
+                "playbackTraceID": "D99F40BC",
+                "preferredForwardBufferSeconds": 0.5,
+                "rate": 0,
+                "routeID": "D60E801B",
+                "stage": "afterWaitingPolicy",
+                "videoOutputCount": 1,
+                "waitingReason": "-"
+              }
+            },
+            {
+              "actionSeconds": 48.746287,
+              "event": "av_handoff_boundary",
+              "fields": {
+                "automaticallyWaits": "yes",
+                "avTimeControlState": 0,
+                "bufferAheadSeconds": 0.7816113185558606,
+                "bufferEmpty": "no",
+                "currentSeconds": 4020.677044237,
+                "engine": "AVPlayer",
+                "likelyToKeepUp": "no",
+                "loadedRangeCount": 1,
+                "planID": "FEE2D948",
+                "playbackTraceID": "D99F40BC",
+                "preferredForwardBufferSeconds": 3,
+                "rate": 0,
+                "routeID": "D60E801B",
+                "stage": "afterForwardBuffer",
+                "videoOutputCount": 1,
+                "waitingReason": "-"
+              }
+            },
+            {
+              "actionSeconds": 48.746922,
+              "event": "av_handoff_boundary",
+              "fields": {
+                "automaticallyWaits": "yes",
+                "avTimeControlState": 0,
+                "bufferAheadSeconds": 0.7816113185558606,
+                "bufferEmpty": "no",
+                "currentSeconds": 4020.677044237,
+                "engine": "AVPlayer",
+                "likelyToKeepUp": "no",
+                "loadedRangeCount": 1,
+                "planID": "FEE2D948",
+                "playbackTraceID": "D99F40BC",
+                "preferredForwardBufferSeconds": 3,
+                "rate": 0,
+                "routeID": "D60E801B",
+                "stage": "afterTextStyle",
+                "videoOutputCount": 1,
+                "waitingReason": "-"
+              }
+            },
+            {
+              "actionSeconds": 48.747549,
+              "event": "av_handoff_boundary",
+              "fields": {
+                "automaticallyWaits": "yes",
+                "avTimeControlState": 0,
+                "bufferAheadSeconds": 0.7816113185558606,
+                "bufferEmpty": "no",
+                "currentSeconds": 4020.677044237,
+                "engine": "AVPlayer",
+                "likelyToKeepUp": "no",
+                "loadedRangeCount": 1,
+                "planID": "FEE2D948",
+                "playbackTraceID": "D99F40BC",
+                "preferredForwardBufferSeconds": 3,
+                "rate": 0,
+                "routeID": "D60E801B",
+                "stage": "afterVideoOutput",
+                "videoOutputCount": 1,
+                "waitingReason": "-"
+              }
+            },
+            {
+              "actionSeconds": 48.815712,
+              "event": "av_handoff_boundary",
+              "fields": {
+                "automaticallyWaits": "yes",
+                "avTimeControlState": 0,
+                "bufferAheadSeconds": 0.7816103185555221,
+                "bufferEmpty": "no",
+                "currentSeconds": 4020.677045237,
+                "engine": "AVPlayer",
+                "likelyToKeepUp": "no",
+                "loadedRangeCount": 1,
+                "planID": "FEE2D948",
+                "playbackTraceID": "D99F40BC",
+                "preferredForwardBufferSeconds": 3,
+                "rate": 0,
+                "routeID": "D60E801B",
+                "stage": "beforeResume",
+                "videoOutputCount": 1,
+                "waitingReason": "-"
+              }
+            },
+            {
+              "actionSeconds": 48.816647,
+              "event": "av_handoff_boundary",
+              "fields": {
+                "automaticallyWaits": "yes",
+                "avTimeControlState": 1,
+                "bufferAheadSeconds": 0.7816103185555221,
+                "bufferEmpty": "no",
+                "currentSeconds": 4020.677045237,
+                "engine": "AVPlayer",
+                "likelyToKeepUp": "no",
+                "loadedRangeCount": 1,
+                "planID": "FEE2D948",
+                "playbackTraceID": "D99F40BC",
+                "preferredForwardBufferSeconds": 3,
+                "rate": 1,
+                "routeID": "D60E801B",
+                "stage": "afterResume",
+                "videoOutputCount": 1,
+                "waitingReason": "AVPlayerWaitingWhileEvaluatingBufferingRateReason"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "latest13Final": {
+    "at": "2026-10-24T09:37:41.535159+08:00",
+    "current174InputsAndPackageAndOwnInstallReceiptVerified": true,
+    "liveModel": "iPhone14,5",
+    "liveSystem": "16.3.1",
+    "connection": "USB",
+    "WDAAppStates": [
+      1,
+      1
+    ],
+    "settingsRestored": true,
+    "fullNonDiagnosticPreferencesStableTwoReads": true,
+    "other24PreferencesUnchangedSinceInstall": true,
+    "bookmarkKeys": 36,
+    "bookmarkKeysSame": true,
+    "trackPreferencesSame": true,
+    "changedBookmarkFields": [],
+    "homeImageReviewPending": false,
+    "actualNormalNASHomeImageReviewed": true,
+    "WiFiIconVisible": true,
+    "noPiPVisible": true
+  },
+  "ipad": {
+    "latestInstalledPackage": "08:37 previous package",
+    "thisBatchMediaWindows": 0,
+    "09_23PackageNotYetInstalled": true,
+    "pendingNextAddressPolicyPackageBeforeUpdate": true
+  },
+  "iphone18": {
+    "currentAdvertisements": 2,
+    "normalizedSameTargetMatches": 0,
+    "newBackupUploadInstallLaunch": 0,
+    "latestPackageNotInstalled": true,
+    "rememberedDomainAddressObservedIn15HistoricalPreferenceSnapshots": true,
+    "currentKeychainAndActualSessionNotRead": true,
+    "fixedActualDSMAddressNotYetEnabled": true
+  },
+  "subtitleFailure": "candidate PGS English bottom line overlaps system home indicator; original/candidate styles differ; complete track/content verification pending",
+  "acceptance": "28 open and76 cells unchanged; old40.005s/7300ms retained; no supply-matched real-device speed claim"
+}

@@ -1,0 +1,352 @@
+{
+  "date": "2026-10-27",
+  "baselineBeforeAuthenticationFix": {
+    "date": "2026-10-27",
+    "sourceChanged": false,
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "configuration": "Debug",
+    "buildAt": "2026-10-26T23:39:49.192752+08:00",
+    "packageSHA256": "3f9d61ce4027350f33ed98426a22b272544a335de3a243b7265829610dfe5456",
+    "debugDylibSHA256": "06e62e1eddb09c3f588c6aa38279c3af50e62ec43c31672c97b6e7c2f1c2cc8d",
+    "signedMachOCount": 30,
+    "localSourceInputs": 379,
+    "sourceDrift": 0,
+    "ipad": {
+      "model": "iPad15,7",
+      "system": "26.6",
+      "connection": "wired",
+      "freshIdentityChecked": true,
+      "installComplete": true,
+      "installedAt": "2026-10-26T23:57:00.679304+08:00",
+      "installationPreferences": {
+        "beforeKeys": 19,
+        "afterKeys": 19,
+        "sameKeys": true,
+        "changedValues": 0,
+        "allNonDiagnosticPreferencesEqual": true
+      },
+      "currentPackageNormalHomeViewed": true,
+      "sixSettingsRowsHeight": 53,
+      "plusInsideSettingsObserved": true,
+      "appearance": "original cleanGrid/system retained",
+      "darkAndAllThemesAccepted": false
+    },
+    "iphone18": {
+      "connection": "direct paired Wi-Fi TCP",
+      "absentFromUSB": true,
+      "model": "iPhone19,7",
+      "system": "27.0",
+      "discovery": {
+        "identityMatches": true,
+        "paired": true,
+        "model": "iPhone19,7",
+        "system": "27.0",
+        "verifiedPort": 62078,
+        "connection": "direct Wi-Fi TCP",
+        "targetAbsentFromUSB": true,
+        "systemDNSServiceResolved": true,
+        "resolvedInterfaceIndex": 12,
+        "pairingRecordChanged": false,
+        "networkConfigurationChanged": false,
+        "appInstalledOrLaunched": false,
+        "currentAdvertisementsChecked": 1,
+        "discoveryMode": "current advertisements; authenticated target identity",
+        "outcome": "verified"
+      },
+      "probe": {
+        "targetLiveVerified": true,
+        "containerReadable": true,
+        "installDispatchAttempted": false,
+        "installCompleteObserved": false,
+        "postInstallLookupExists": false,
+        "newPairingAttempted": false,
+        "networkOrVPNChanged": false
+      },
+      "newPackageInstalledWirelesslyThisBatch": false,
+      "reason": "Source and package unchanged; latest payload already installed by prior verified USB update."
+    },
+    "webdavFixture": {
+      "flow": {
+        "initialDriverTimedOutAt140Seconds": true,
+        "addedLibraryFromNewHTTPForm": true,
+        "existingNFORecognized": true,
+        "localCorrectionObservedInNativeScreenshot": true,
+        "originalNFORestoredAndReviewed": true,
+        "onlyTestLibraryRemovedLocally": true,
+        "actualPlaybackCommands": 0,
+        "userNASCredentialsInputCommands": 0,
+        "notActualUserNASAuthenticationAcceptance": true
+      },
+      "cleanup": {
+        "stopped": true,
+        "portClosed": true,
+        "sourceBytesUnchanged": true,
+        "videoGETs": 0,
+        "NFOGETs": 1,
+        "remoteWrites": 0,
+        "requests": 3
+      },
+      "originalDriverTimedOut": true,
+      "notUserNASAuthAcceptance": true
+    },
+    "playback": {
+      "sample": "S01 Howls Moving Castle",
+      "route": "Jellyfin directPlay/localRangeProxy/KSPlayer confirmed in current diagnostics",
+      "network": "existing Wi-Fi; VPN retained",
+      "endpointDetails": "private only",
+      "firstWindow": {
+        "mediaCommands": 1,
+        "normalExitVerified": false,
+        "networkChanged": false,
+        "pipCommands": 0,
+        "subtitlesOrAudioChanged": false,
+        "playDispatchWall": 1793044636.6800718,
+        "playerEntryVerified": true,
+        "captures": [
+          {
+            "targetFromDispatchSeconds": 3,
+            "startElapsed": 3.296121292281896,
+            "endElapsed": 4.298659209161997
+          },
+          {
+            "targetFromDispatchSeconds": 10,
+            "startElapsed": 10.00506608420983,
+            "endElapsed": 10.952050250023603
+          },
+          {
+            "targetFromDispatchSeconds": 30,
+            "startElapsed": 30.005067834164947,
+            "endElapsed": 30.99011070933193
+          }
+        ],
+        "failureType": "ActionUnconfirmed",
+        "settingsRestored": true
+      },
+      "firstSafetyGuard": {
+        "guardSeconds": 70,
+        "forcedStop": true,
+        "ownedPIDAbsent": true
+      },
+      "secondWindow": {
+        "mediaCommands": 1,
+        "normalExitVerified": true,
+        "networkChanged": false,
+        "pipCommands": 0,
+        "subtitlesOrAudioChanged": false,
+        "playDispatchWall": 1793044962.967629,
+        "playerEntryVerified": true,
+        "captures": [
+          {
+            "targetFromDispatchSeconds": 3,
+            "startElapsed": 3.1016932921484113,
+            "endElapsed": 3.898023583460599
+          },
+          {
+            "targetFromDispatchSeconds": 10,
+            "startElapsed": 10.010020000394434,
+            "endElapsed": 10.83791737537831
+          }
+        ],
+        "settingsRestored": true
+      },
+      "secondSafetyGuard": {
+        "guardSeconds": 70,
+        "forcedStop": false
+      },
+      "sparseImagesReviewed": true,
+      "firstFrameOrFramePacingAccepted": false,
+      "fullAudioSubtitleMatrixAccepted": false,
+      "newMatrixPasses": 0
+    },
+    "preferencesAfterPlayback": {
+      "nonDiagnosticKeys": 19,
+      "changedExistingKeys": [
+        "playback.localResume.v1"
+      ],
+      "otherExistingValuesUnchanged": true,
+      "naturalProgressNotRewritten": true
+    },
+    "notDelivered": [
+      "online scraping and poster provider",
+      "production FTP source",
+      "strict selected-root SMB source",
+      "iPhone13 WebDAV new-folder transition fix"
+    ]
+  },
+  "authenticationFix": {
+    "sourceChanged": true,
+    "scope": "WebDAV directory/NFO Basic and Digest rejection preserves HTTP401 rather than URL cancellation",
+    "priorRealHTTPRegression": {
+      "tests": 2,
+      "failedAssertions": 4
+    },
+    "finalTests": {
+      "exitCode": 0,
+      "testCount": 75,
+      "xctestFailures": 0,
+      "passed": true
+    },
+    "packages": {
+      "mobile": {
+        "builtAt": "2026-10-27T04:15:35.874038+08:00",
+        "mainSHA256": "aca2505a2a058e431271c05eb5f172a837ad47337d04ebc0a9d08947f9e8116a",
+        "debugDylibSHA256": "00f3006338ea3edca29ca1aaed956ad6d047f57242089eea389071496a8ae641",
+        "signedMachOCount": 30,
+        "configuration": "Debug",
+        "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+        "sourceInputCount": 379
+      },
+      "tv": {
+        "builtAt": "2026-10-27T04:15:31.020870+08:00",
+        "mainSHA256": "13e26f8573104166385211c7f5946bc827814bc09c716e2743a211ac8d4f2574",
+        "debugDylibSHA256": "0891441d97eae20b43a83ad17b2045065db2b88753dac5455b8f1d7f99da648f",
+        "signedMachOCount": 27,
+        "configuration": "Debug",
+        "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+        "sourceInputCount": 379
+      }
+    },
+    "userNASPasswordsInput": false,
+    "newCredentialRetriesIntroduced": false,
+    "certificateRedirectAndOriginPolicyChanged": false,
+    "latestFullVideoPlaybackRegressionAccepted": false,
+    "ipadUserDomainUnauthenticatedUI": {
+      "mediaCommands": 0,
+      "credentialInputCommands": 0,
+      "visibleError": "服务器要求认证或未接受本次登录（HTTP 401），请检查 WebDAV 授权与账号。",
+      "errorReturned": true
+    },
+    "ipadHTTP401Viewed": true,
+    "doesNotProveUserCredentialsInvalidOrValid": true
+  },
+  "latestDevices": {
+    "ipad": {
+      "installComplete": true,
+      "packageSHA256": "aca2505a2a058e431271c05eb5f172a837ad47337d04ebc0a9d08947f9e8116a",
+      "installedAt": "2026-10-27T04:17:25.818763+08:00",
+      "freshIdentityChecked": true,
+      "preserveData": true,
+      "installationPreferences": {
+        "beforeKeys": 19,
+        "afterKeys": 19,
+        "sameKeys": true,
+        "changedValues": 0,
+        "allNonDiagnosticPreferencesEqual": true
+      },
+      "normalHomeCaptured": true,
+      "finalPreferences": {
+        "beforeKeys": 19,
+        "afterKeys": 19,
+        "sameKeys": true,
+        "changedValues": 0,
+        "allNonDiagnosticPreferencesEqual": true
+      },
+      "normalBaseline": {
+        "at": "2026-10-27T04:23:01.182595+08:00",
+        "environment": {},
+        "arguments": [],
+        "mediaCommands": 0,
+        "processObservedAt3": true,
+        "processObservedAt10": true,
+        "nativeBaselineCaptured": true
+      }
+    },
+    "iphone13": {
+      "installComplete": true,
+      "packageSHA256": "aca2505a2a058e431271c05eb5f172a837ad47337d04ebc0a9d08947f9e8116a",
+      "installedAt": "2026-10-27T04:17:41.618026+08:00",
+      "freshIdentityChecked": true,
+      "preserveData": true,
+      "installationPreferences": {
+        "beforeKeys": 26,
+        "afterKeys": 26,
+        "sameKeys": true,
+        "changedValues": 0,
+        "allNonDiagnosticPreferencesEqual": true
+      },
+      "normalHomeCaptured": true,
+      "finalPreferences": {
+        "beforeKeys": 26,
+        "afterKeys": 26,
+        "sameKeys": true,
+        "changedValues": 0,
+        "allNonDiagnosticPreferencesEqual": true
+      }
+    },
+    "tv": {
+      "installComplete": true,
+      "packageSHA256": "13e26f8573104166385211c7f5946bc827814bc09c716e2743a211ac8d4f2574",
+      "installedAt": "2026-10-27T04:17:27.252378+08:00",
+      "freshIdentityChecked": true,
+      "preserveData": true,
+      "installationPreferences": {
+        "beforeKeys": 14,
+        "afterKeys": 14,
+        "sameKeys": true,
+        "changedValues": 0,
+        "allNonDiagnosticPreferencesEqual": true
+      },
+      "normalHomeCaptured": true,
+      "finalPreferences": {
+        "beforeKeys": 14,
+        "afterKeys": 14,
+        "sameKeys": true,
+        "changedValues": 0,
+        "allNonDiagnosticPreferencesEqual": true
+      }
+    },
+    "iphone18": {
+      "transport": "paired Wi-Fi TCP",
+      "absentFromUSB": true,
+      "model": "iPhone19,7",
+      "system": "27.0",
+      "packageSHA256": "aca2505a2a058e431271c05eb5f172a837ad47337d04ebc0a9d08947f9e8116a",
+      "installComplete": true,
+      "lookup": true,
+      "preferences": {
+        "beforeKeys": 27,
+        "afterKeys": 27,
+        "sameKeys": true,
+        "changedValues": 0,
+        "allNonDiagnosticPreferencesEqual": true
+      },
+      "finishedAtUTC": "2026-10-26T20:18:07.960305+00:00",
+      "normalLaunchRequested": true,
+      "actualHomeReviewed": true,
+      "savedDSMAddressNotChanged": true,
+      "actualFixedDSMSessionDomainVerified": false
+    }
+  },
+  "cleanup": {
+    "ipadOwnSessionDeleted": true,
+    "iphone13OwnSessionDeleted": true,
+    "originalRunnersRetained": true,
+    "noUserNASCredentialInput": true,
+    "fixtureServerStopped": true,
+    "mediaWindowStopped": true,
+    "fixture": {
+      "stopped": true,
+      "portClosed": true,
+      "sourceBytesUnchanged": true,
+      "videoGETs": 0,
+      "NFOGETs": 1,
+      "remoteWrites": 0,
+      "requests": 3
+    },
+    "ipadFinalPreferenceTool": {
+      "firstConcurrentReadExitCode": -11,
+      "firstReadProducedValidPreferenceSnapshot": true,
+      "serializedReadExitCode": 0,
+      "appCrashInferred": false
+    },
+    "noAppOrPlayerSourceLoopInferredFromToolExit": true
+  },
+  "checks": {
+    "documentationDocuments": 479,
+    "localLinks": 2826,
+    "missing": 0,
+    "gitDiffCheck": true,
+    "all379SourceInputsMatch": true,
+    "all30MobileAnd27TVSignedBinaryHashesMatch": true
+  }
+}

@@ -1,0 +1,107 @@
+{
+  "recordedAt": "2026-10-07T18:53:38.558474+08:00",
+  "package": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "e08bd8ed27cebc580cc72597bda979f63215f71182c178cde1b4a4c9237f9283",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "binaryBuildTime": "2026-10-07T18:28:30.153412+08:00",
+    "binaries": {
+      "Nastart": "906e14aeb6d1f8824e79de19c265aa3cb8067e6a05fb1decef5a8b2df6d95401",
+      "Nastart.debug.dylib": "05321d486b6b7766f0bf28442b6bccde7bb5f6ec3efb455ad6a01dbc3679a149",
+      "Frameworks/KSPlayer.framework/KSPlayer": "5fa42aac977408c21c0a85c45b0d806490c3d7dc2048f0e84ea00eb0dc591cf0"
+    },
+    "signatureVerified": true,
+    "individuallyVerifiedLibraries": 29,
+    "checkedInputs": 136,
+    "tests": {
+      "executed": 184,
+      "skipped": 2,
+      "failed": 0,
+      "pipDelegateTest": "skipped: simulator cannot create PiP controller; actual device still required"
+    },
+    "preflight": "15 passed"
+  },
+  "iPhone18": {
+    "recordedAt": "2026-10-07T18:30:29.720645+08:00",
+    "device": "iPhone18 Pro Max",
+    "model": "iPhone19,7",
+    "os": "27.0",
+    "systemBuild": "24A8428",
+    "freshUSBIdentity": true,
+    "sourceHEAD": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "e08bd8ed27cebc580cc72597bda979f63215f71182c178cde1b4a4c9237f9283",
+    "binaries": {
+      "Nastart": "906e14aeb6d1f8824e79de19c265aa3cb8067e6a05fb1decef5a8b2df6d95401",
+      "Nastart.debug.dylib": "05321d486b6b7766f0bf28442b6bccde7bb5f6ec3efb455ad6a01dbc3679a149",
+      "Frameworks/KSPlayer.framework/KSPlayer": "5fa42aac977408c21c0a85c45b0d806490c3d7dc2048f0e84ea00eb0dc591cf0"
+    },
+    "binaryBuildTime": "2026-10-07T18:28:30.153412+08:00",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "signatureVerified": true,
+    "individuallyVerifiedLibraries": 29,
+    "dataPreservingCoverInstall": true,
+    "installation": "success",
+    "unchangedNonDiagnosticPreferences": 25,
+    "requestedEnvironment": {},
+    "requestedArguments": [],
+    "normalLaunchPID": 2416,
+    "actualForegroundUIVerified": true,
+    "wdaReinstalled": false,
+    "playbackRegression": "S03 head actual frames at t3/t10/t30; PiP entry observed. Five-minute attempt invalid: pre-switch screenshot already no PiP/process changed. No restore/close PASS.",
+    "currentConnection": "disconnected by user; host WDA/forward stopped; background/restore remains pending"
+  },
+  "iPhone13": {
+    "recordedAt": "2026-10-07T18:37:42.474376+08:00",
+    "device": "iPhone13",
+    "model": "iPhone14,5",
+    "os": "16.3.1",
+    "systemBuild": "20D67",
+    "freshUSBIdentity": true,
+    "sourceHEAD": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "e08bd8ed27cebc580cc72597bda979f63215f71182c178cde1b4a4c9237f9283",
+    "binaries": {
+      "Nastart": "906e14aeb6d1f8824e79de19c265aa3cb8067e6a05fb1decef5a8b2df6d95401",
+      "Nastart.debug.dylib": "05321d486b6b7766f0bf28442b6bccde7bb5f6ec3efb455ad6a01dbc3679a149",
+      "Frameworks/KSPlayer.framework/KSPlayer": "5fa42aac977408c21c0a85c45b0d806490c3d7dc2048f0e84ea00eb0dc591cf0"
+    },
+    "binaryBuildTime": "2026-10-07T18:28:30.153412+08:00",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "signatureVerified": true,
+    "individuallyVerifiedLibraries": 29,
+    "dataPreservingCoverInstall": true,
+    "installation": "success",
+    "unchangedNonDiagnosticPreferences": 25,
+    "requestedEnvironment": {},
+    "requestedArguments": [],
+    "normalLaunchPID": 47711,
+    "actualForegroundUIVerified": true,
+    "wdaTarget": "explicit Nastart; auto target wrong SpringBoard preserved as TOOL",
+    "playbackRegression": "actual library/startup verified, later physical screen idle service; latest playback not yet qualified"
+  },
+  "iPad": {
+    "recordedAt": "2026-10-07T18:50:27.162933+08:00",
+    "device": "iPad",
+    "model": "iPad12,1",
+    "os": "18.3.1",
+    "systemBuild": "22D72",
+    "freshUSBIdentity": true,
+    "package": {
+      "Nastart": "906e14aeb6d1f8824e79de19c265aa3cb8067e6a05fb1decef5a8b2df6d95401",
+      "Nastart.debug.dylib": "05321d486b6b7766f0bf28442b6bccde7bb5f6ec3efb455ad6a01dbc3679a149",
+      "Frameworks/KSPlayer.framework/KSPlayer": "5fa42aac977408c21c0a85c45b0d806490c3d7dc2048f0e84ea00eb0dc591cf0"
+    },
+    "sourceDiffSHA256": "e08bd8ed27cebc580cc72597bda979f63215f71182c178cde1b4a4c9237f9283",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "binaryBuildTime": "2026-10-07T18:28:30.153412+08:00",
+    "signatureVerified": true,
+    "dataPreservingCoverInstall": true,
+    "installation": "success",
+    "unchangedNonDiagnosticPreferences": 16,
+    "requestedEnvironment": {},
+    "requestedArguments": [],
+    "actualForegroundUIVerified": true,
+    "playbackRegression": "pending actual UI"
+  },
+  "issuesResolvedGlobally": false,
+  "mainPushed": false
+}

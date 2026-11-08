@@ -1,0 +1,134 @@
+{
+  "at": "2026-10-28T06:24:52.246827+08:00",
+  "configuration": "Debug",
+  "sourceInputCount": 418,
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "tests": {
+    "executed": 36,
+    "failed": 0,
+    "scope": "existing metadata, grouping and exact-ID credits; native layouts checked separately"
+  },
+  "packages": {
+    "mobile": {
+      "builtAt": "2026-10-28T05:55:07.487088+08:00",
+      "mainSHA256": "b3cee16a915df8030a1336744fc8458995029cbec611d9b5ba081b8bad8b952a",
+      "debugDylibSHA256": "683e26cafa0965d45785b94cba4d6dcfbce492d5fe582b8bbc0dad86c976a6e6",
+      "signedMachOCount": 30
+    },
+    "tv": {
+      "builtAt": "2026-10-28T05:55:55.692307+08:00",
+      "mainSHA256": "eb82f5624e92d9840c530aacb5bb2e89178aa5fba7a66c429c1167d8a8c0427c",
+      "debugDylibSHA256": "e7a3994e65601f8bd520832180708a99f701d0830f65f29df5e609b7ddc05555",
+      "signedMachOCount": 27
+    }
+  },
+  "native": {
+    "phone": {
+      "freshIdentityConnected": true,
+      "detailVerified": true,
+      "sources": {
+        "webdav": {
+          "productionAfterCast": true,
+          "productionVisible": true,
+          "productionIdentifierPreserved": true
+        },
+        "jellyfin": {
+          "productionAfterCast": true,
+          "productionVisible": true,
+          "productionIdentifierPreserved": true
+        }
+      },
+      "normalHome": true,
+      "settingsRestored": true,
+      "ownedHTTPSessionDeleted": true
+    },
+    "pad": {
+      "freshIdentityConnected": true,
+      "detailVerified": true,
+      "sources": {
+        "webdav": {
+          "productionAfterCast": true,
+          "productionVisible": true,
+          "productionIdentifierPreserved": true
+        },
+        "jellyfin": {
+          "productionAfterCast": true,
+          "productionVisible": true,
+          "productionIdentifierPreserved": true
+        }
+      },
+      "normalHome": true,
+      "settingsRestored": true,
+      "ownedHTTPSessionDeleted": true,
+      "ownedRunnerStopped": true
+    },
+    "padViewport": {
+      "freshIdentityConnected": true,
+      "detailVerified": true,
+      "sources": {
+        "jellyfin": {
+          "productionAfterCast": true,
+          "productionVisible": true,
+          "productionInViewport": true,
+          "productionIdentifierPreserved": true
+        }
+      },
+      "normalHome": true,
+      "settingsRestored": true,
+      "ownedHTTPSessionDeleted": true,
+      "ownedRunnerStopped": true
+    },
+    "tvWebDAV": {
+      "freshIdentityConnected": true,
+      "detailVerified": true,
+      "productionAfterCast": true,
+      "productionIdentifierPreserved": true,
+      "normalHome": true,
+      "settingsRestored": true,
+      "ownedHTTPSessionDeleted": true,
+      "originalRunnerPreserved": true
+    },
+    "tvJellyfin": {
+      "freshIdentityConnected": true,
+      "detailVerified": true,
+      "productionAfterCast": true,
+      "productionIdentifierPreserved": true,
+      "castFocusRoundTrip": true,
+      "normalHome": true,
+      "settingsRestored": true,
+      "ownedHTTPSessionDeleted": true,
+      "originalRunnerPreserved": true
+    }
+  },
+  "preservation": {
+    "iphone13": {
+      "completeIndexJSONEqual": true,
+      "libraries": 1
+    },
+    "ipad": {
+      "completeIndexJSONEqual": true,
+      "libraries": 1
+    },
+    "tv": {
+      "completeIndexJSONEqual": true,
+      "libraries": 1
+    }
+  },
+  "iphone18": {
+    "installComplete": true,
+    "preferencesEqual": true,
+    "activeLaunchOrCapture": false
+  },
+  "mediaCommands": 0,
+  "sourceFileWrites": 0,
+  "newMatrixPassCells": 0,
+  "limits": [
+    "No new playback regression or Release acceptance",
+    "iPad AV native close still open",
+    "Full playback lifecycle, FTP integration and strict SMB scope still open"
+  ],
+  "retainedFailures": [
+    "Intermediate container identifier shadowed child identifiers on phone and TV; first marker waits timed out",
+    "iPad first Jellyfin visibility flag did not prove onscreen presentation; supplemental viewport and screenshot validation completed"
+  ]
+}

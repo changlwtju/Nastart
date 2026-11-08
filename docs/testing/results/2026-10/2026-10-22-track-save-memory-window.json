@@ -1,0 +1,132 @@
+{
+  "date": "2026-10-22",
+  "sourceDiffSHA256": "e65a8da17ea0db5e1a22d374c2bb79c5d5d8dd4eb4acb4a5fedd8f3057cbaa16",
+  "package": "05:26 normal Debug unchanged; latest identity checked before window; no build/install",
+  "device": "iPhone13 / iPhone14,5 / iOS16.3.1 / USB; full fresh identity private",
+  "window": {
+    "startedAt": "2026-10-22T05:34:34.021255+08:00",
+    "finishedAt": "2026-10-22T05:35:47.304812+08:00",
+    "environment": {},
+    "playCommands": 1,
+    "pipCommands": 0,
+    "normalCloseObserved": true,
+    "sameProcessObservation": {
+      "samePrivateKey": true,
+      "entries": {
+        "before": {
+          "durationSeconds": 7524.768,
+          "positionSeconds": 49.524,
+          "subtitleTrackID": 7,
+          "audioTrackID": 1,
+          "updatedAt": 813920182.501888,
+          "subtitlesDisabled": false
+        },
+        "ASS-before-original-track-restore": {
+          "durationSeconds": 7524.768,
+          "positionSeconds": 12.638,
+          "subtitleTrackID": 5,
+          "audioTrackID": 1,
+          "updatedAt": 814311321.01801,
+          "subtitlesDisabled": false
+        },
+        "PGS-before-normal-close": {
+          "durationSeconds": 7524.768,
+          "positionSeconds": 22.354,
+          "subtitleTrackID": 7,
+          "audioTrackID": 1,
+          "updatedAt": 814311331.342281,
+          "subtitlesDisabled": false
+        },
+        "after-normal-close": {
+          "durationSeconds": 7524.768,
+          "positionSeconds": 25.533,
+          "subtitleTrackID": 7,
+          "audioTrackID": 1,
+          "updatedAt": 814311334.532995,
+          "subtitlesDisabled": false
+        },
+        "after": {
+          "durationSeconds": 7524.768,
+          "positionSeconds": 25.533,
+          "subtitleTrackID": 7,
+          "audioTrackID": 1,
+          "updatedAt": 814311334.532995,
+          "subtitlesDisabled": false
+        }
+      },
+      "forcedBoundaries": [
+        {
+          "audioTrackID": "1",
+          "boundary": "close",
+          "durabilityEvidence": "sameProcessOnly",
+          "engine": "KSPlayer",
+          "entryUpdatedAtReferenceSeconds": "814311333.909189",
+          "externalSubtitleActive": "false",
+          "hasResumeKey": "true",
+          "memoryReadback": "match",
+          "ownerPlanID": "EBBE2B53-BEC0-4EBA-8369-0148C295E549",
+          "pendingSeek": "false",
+          "pendingSeekPosition": "false",
+          "planID": "EBBE2B53",
+          "playbackTraceID": "B2B0041A",
+          "ready": "true",
+          "resumeTimelineConfirmed": "true",
+          "routeID": "9EF0AD20",
+          "saveOutcome": "submitted",
+          "skipReason": "none",
+          "sourceKind": "jellyfin",
+          "subtitleSelectionKnown": "true",
+          "subtitleTrackID": "7",
+          "subtitlesDisabled": "false",
+          "waitingForPausedPreview": "false"
+        },
+        {
+          "audioTrackID": "1",
+          "boundary": "viewDisappear",
+          "durabilityEvidence": "sameProcessOnly",
+          "engine": "KSPlayer",
+          "entryUpdatedAtReferenceSeconds": "814311334.532995",
+          "externalSubtitleActive": "false",
+          "hasResumeKey": "true",
+          "memoryReadback": "match",
+          "ownerPlanID": "EBBE2B53-BEC0-4EBA-8369-0148C295E549",
+          "pendingSeek": "false",
+          "pendingSeekPosition": "false",
+          "planID": "EBBE2B53",
+          "playbackTraceID": "B2B0041A",
+          "ready": "true",
+          "resumeTimelineConfirmed": "true",
+          "routeID": "9EF0AD20",
+          "saveOutcome": "submitted",
+          "skipReason": "none",
+          "sourceKind": "jellyfin",
+          "subtitleSelectionKnown": "true",
+          "subtitleTrackID": "7",
+          "subtitlesDisabled": "false",
+          "waitingForPausedPreview": "false"
+        }
+      ],
+      "finalEntryTimeMatchesDisappearObservationExactly": true,
+      "source": "persisted diagnostic entries and AFC preferences; live syslog did not contain this event",
+      "noFullSubtitleAcceptance": "intro frames/no cue; 3/10/20, no30s/full audio validation"
+    },
+    "originalTracksChanged": 0,
+    "bookmarksBeforeAndAfter": 36,
+    "bookmarksAdded": 0,
+    "bookmarksRemoved": 0,
+    "progressEntriesChanged": 1,
+    "otherPreferencesUnchanged": true,
+    "newCrashReportNames": {
+      "Nastart": 0,
+      "WebDriverAgent": 0,
+      "JetsamEvent": 0
+    },
+    "appLoggerGuardianStopped": true,
+    "WDASettingsRestored": true,
+    "wifiHomeIconVisuallyReviewed": true,
+    "networkOrCellularConfigurationChanged": false
+  },
+  "visualBoundary": "ASS10 intro star/cloud and PGS-before-close Paramount title actual frames; no active subtitle cue, no30s/full audio/flow acceptance",
+  "conclusion": "One same-key ASS5 to PGS7 external preference transition; close and disappear submitted/memory match; final external updatedAt exactly matches disappear observation. Old failure not reproduced or explained; not original root-cause fix or cold-start durability proof. Live syslog lacks these events; persisted diagnostics contains both; no second media attempt.",
+  "privateEvidencePointer": "/tmp/nastart-track-save-window-evidence"
+}

@@ -1,0 +1,215 @@
+{
+  "recordedAt": "2026-10-11T07:45:28.864093+08:00",
+  "package": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "6bbe470c5edbf56360564f354e73a4f47851910dcf0c0261abdff10702900eef",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "binaryBuildTime": "2026-10-11T07:13:12.115029+08:00",
+    "binaries": {
+      "Nastart": "5b3cb2ce5701e1347cccc2553f5670d9c10c5a65b248567a07c98e146052d8b9",
+      "Nastart.debug.dylib": "41f8c0ef4d656a8f18390b6f161d54cb5de33df764f5e58fd181fc35e92cd881",
+      "Frameworks/KSPlayer.framework/KSPlayer": "8e6bc9ccfd71d1aa406f1cf74f06201df62b90e577527315f72c040fe2465ebe"
+    },
+    "checkedInputs": 173,
+    "signatureVerified": true,
+    "individuallyVerifiedLibraries": 29,
+    "profileExpirationUTC": "2026-10-17T22:23:40",
+    "sourceEditsThisTurn": [
+      "GreenfieldVideoPlayerView periodic local checkpoint interval 15 -> 2 seconds; forced boundaries/startup guard unchanged"
+    ],
+    "periodicCheckpointSeconds": 2
+  },
+  "privatePackagePath": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-10-11-abrupt-resume-070632/Nastart-Checkpoint-Normal-Debug.app",
+  "tests": {
+    "newSourceCoreTestsExecuted": 306,
+    "skipped": 2,
+    "failures": 0,
+    "preflight": 15,
+    "wirelessDiscoveryToolTests": 3
+  },
+  "devices": {
+    "iphone13": {
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "connection": "USB",
+      "installation": "success",
+      "installedAt": "2026-10-11T07:17:58.292609+08:00",
+      "samePreferenceKeys": true,
+      "unchangedPreferenceValues": 25,
+      "nonDiagnosticKeysBefore": 25,
+      "nonDiagnosticKeysAfter": 25,
+      "preservesContainer": true,
+      "actualForegroundUIVerified": true,
+      "latestBinaries": {
+        "Nastart": "5b3cb2ce5701e1347cccc2553f5670d9c10c5a65b248567a07c98e146052d8b9",
+        "Nastart.debug.dylib": "41f8c0ef4d656a8f18390b6f161d54cb5de33df764f5e58fd181fc35e92cd881",
+        "Frameworks/KSPlayer.framework/KSPlayer": "8e6bc9ccfd71d1aa406f1cf74f06201df62b90e577527315f72c040fe2465ebe"
+      },
+      "actualNormalLaunchVerified": true,
+      "finalEnvironment": {},
+      "finalArguments": [],
+      "finalPlayerClosed": true,
+      "finalNormalHomeActualUIVerified": true,
+      "finalNASDSMJellyfinOnline": true,
+      "otherWarningsPreserved": true,
+      "waitForIdleTimeoutRestored": 10,
+      "animationCoolOffTimeoutRestored": 2,
+      "nativeConditionActiveCount": 0
+    },
+    "ipad": {
+      "model": "iPad12,1",
+      "system": "18.3.1",
+      "connection": "USB",
+      "installation": "success",
+      "installedAt": "2026-10-11T07:31:01.960081+08:00",
+      "samePreferenceKeys": true,
+      "unchangedPreferenceValues": 16,
+      "nonDiagnosticKeysBefore": 16,
+      "nonDiagnosticKeysAfter": 16,
+      "preservesContainer": true,
+      "actualForegroundUIVerified": true,
+      "latestBinaries": {
+        "Nastart": "5b3cb2ce5701e1347cccc2553f5670d9c10c5a65b248567a07c98e146052d8b9",
+        "Nastart.debug.dylib": "41f8c0ef4d656a8f18390b6f161d54cb5de33df764f5e58fd181fc35e92cd881",
+        "Frameworks/KSPlayer.framework/KSPlayer": "8e6bc9ccfd71d1aa406f1cf74f06201df62b90e577527315f72c040fe2465ebe"
+      },
+      "actualNormalLaunchVerified": true,
+      "finalEnvironment": {},
+      "finalArguments": [],
+      "finalPlayerClosed": true,
+      "finalNormalHomeActualUIVerified": true,
+      "finalNASDSMJellyfinOnline": true,
+      "otherWarningsPreserved": true,
+      "waitForIdleTimeoutRestored": 10,
+      "animationCoolOffTimeoutRestored": 2,
+      "nativeConditionActiveCount": 0
+    },
+    "iphone18": {
+      "model": "iPhone19,7",
+      "system": "27.0",
+      "connection": "USB",
+      "installation": "success",
+      "installedAt": "2026-10-11T07:22:42.361151+08:00",
+      "samePreferenceKeys": true,
+      "unchangedPreferenceValues": 25,
+      "nonDiagnosticKeysBefore": 25,
+      "nonDiagnosticKeysAfter": 25,
+      "preservesContainer": true,
+      "actualForegroundUIVerified": true,
+      "latestBinaries": {
+        "Nastart": "5b3cb2ce5701e1347cccc2553f5670d9c10c5a65b248567a07c98e146052d8b9",
+        "Nastart.debug.dylib": "41f8c0ef4d656a8f18390b6f161d54cb5de33df764f5e58fd181fc35e92cd881",
+        "Frameworks/KSPlayer.framework/KSPlayer": "8e6bc9ccfd71d1aa406f1cf74f06201df62b90e577527315f72c040fe2465ebe"
+      },
+      "actualNormalLaunchVerified": true,
+      "installationConnection": "USB",
+      "verifiedDebugConnectionAfterRemoval": "Wi-Fi",
+      "USBAbsentVerified": true,
+      "latestNormalHomeScreenshotVerified": true,
+      "nativeCoreDeviceTunnel": "unavailable",
+      "nativeDDIServicesAvailable": false,
+      "WDA_LLDB_PerformanceVerified": false
+    }
+  },
+  "oldBaseline": {
+    "sourceDiffSHA256": "a56c92d3fd10dae04b2a5c50e8e4f09c4fdc7587441b8dbae01726b968b3743c",
+    "binaries": {
+      "Nastart": "309d3e6978376473eb5fe4ce8f8252b1f738536628bf6253bba165773b473915",
+      "Nastart.debug.dylib": "acb8c81956fa6a5a54845708691e88fad1411e56a71fe76eea78b7c9395a3d13",
+      "Frameworks/KSPlayer.framework/KSPlayer": "8e6bc9ccfd71d1aa406f1cf74f06201df62b90e577527315f72c040fe2465ebe"
+    },
+    "savedAfterCold": 621.033,
+    "lastPersistedDiagnosticClock": 633.833,
+    "confirmedRollbackLowerBoundSeconds": 12.8,
+    "actualColdFirstFrame": 621.182
+  },
+  "newSourceBoundedS01FileKSResults": {
+    "iphone13": {
+      "signalOnlyTargetApp": 9,
+      "ordinaryPauseHomeExitBeforeSignal": false,
+      "coldPIDDifferent": true,
+      "latestPersistedDiagnosticClock": 678.846,
+      "stableColdSavedPosition": 680.148,
+      "actualColdFirstFrameClock": 680.244,
+      "savedToFirstFrameDifferenceSeconds": 0.096,
+      "sameTrackPreferences": true,
+      "sameBookmarkKeys": true,
+      "actualUIInspected": true,
+      "normalReplaySecondsRequested": 30,
+      "normalExitVerified": true,
+      "maximumDurabilityBoundEstablished": false
+    },
+    "ipad": {
+      "signalOnlyTargetApp": 9,
+      "ordinaryPauseHomeExitBeforeSignal": false,
+      "coldPIDDifferent": true,
+      "latestPersistedDiagnosticClock": 743.152,
+      "stableColdSavedPosition": 743.333,
+      "actualColdFirstFrameClock": 743.408,
+      "savedToFirstFrameDifferenceSeconds": 0.075,
+      "sameTrackPreferences": true,
+      "sameBookmarkKeys": true,
+      "actualUIInspected": true,
+      "normalReplaySecondsRequested": 30,
+      "normalExitVerified": true,
+      "maximumDurabilityBoundEstablished": false
+    }
+  },
+  "wireless": {
+    "pairedIdentityAfterUSBRemoval": {
+      "targetAbsentFromUSB": true,
+      "identityMatches": true,
+      "paired": true,
+      "model": "iPhone19,7",
+      "system": "27.0",
+      "connection": "direct Wi-Fi TCP",
+      "pairingRecordChanged": false
+    },
+    "systemDNSDiscoveryVerified": {
+      "identityMatches": true,
+      "paired": true,
+      "model": "iPhone19,7",
+      "system": "27.0",
+      "verifiedPort": 62078,
+      "connection": "direct Wi-Fi TCP",
+      "targetAbsentFromUSB": true,
+      "systemDNSServiceResolved": true,
+      "resolvedInterfaceIndex": 12,
+      "pairingRecordChanged": false,
+      "networkConfigurationChanged": false,
+      "appInstalledOrLaunched": false,
+      "outcome": "verified"
+    },
+    "directUserspaceRSDContainerDVTNormalLaunchScreenshotVerified": true,
+    "nativeCoreDeviceTunnelUnavailable": true,
+    "nativeDDIServicesAvailable": false,
+    "rawPythonDiscoveryOmittedTarget": true,
+    "legacyAddressSerializationWasDescriptionText": true,
+    "advertisedPortPlainLockdownTimedOut": true,
+    "standardPortPairedIdentityVerified": true,
+    "networkConfigurationChanged": false,
+    "VPNComparisonDeclinedByUser": true,
+    "VPNRootCauseEstablished": false,
+    "automaticNativeConnectionRootCauseEstablished": false
+  },
+  "evidenceScope": "ordinary Debug, Wi-Fi, S01 device-file KSPlayer; one controlled SIGKILL per new-package device, not spontaneous crash/Jetsam/restart/max-bound or performance acceptance",
+  "retainedFailures": [
+    "baseline cold rollback and both old/new package identities",
+    "first replay observer started before navigation finished: no new playback submitted, retry stored separately",
+    "iPad USB disconnect/failed read, then latest install and formal fixed WDA recovery",
+    "18 first direct timeout, native launch empty-dictionary decoder rejection and untrusted developer rejection",
+    "first successful wireless launch returned existing background process: screenshot not target App, explicitly excluded; fresh kill-existing launch verified actual home",
+    "native hostname resolution timeouts, random advertised-port failures, direct-IP and native-CoreDevice differing outcomes",
+    "experimental duplicate multicast-membership error and unsuccessful en0-bound browse; no system network changes"
+  ],
+  "remaining": [
+    "新包Jellyfin/AV及暂停/自动PiP边界回归、不同终止相位/长期写入开销",
+    "18原生Xcode/CoreDevice自动连接、WDA/LLDB/完整无线性能采集",
+    "119服务端根因、真实弱蜂窝大文件双入口/旧ordinal0",
+    "完整帧/实际位移和Lenna及指定竞品同条件对照",
+    "全部PX/UX/CB/L2/L3/Main未验账目保持开放"
+  ],
+  "performanceAccepted": false,
+  "formalCompetitorPairsThisTurn": 0,
+  "committedOrPushed": false
+}

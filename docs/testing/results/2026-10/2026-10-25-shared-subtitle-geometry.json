@@ -1,0 +1,336 @@
+{
+  "updatedAt": "2026-10-25 05:23",
+  "privateEvidencePointer": "/tmp/nastart-subtitle-geometry-evidence",
+  "accepted": "Shared SubtitleViewportGeometry; mobile policy alias and KS subtitle subtree use same videoRect. Caption time/geometry observation isolated from playback focus root.",
+  "package": {
+    "at": "2026-10-25T05:14:42.893119+08:00",
+    "configuration": "normal Debug",
+    "HEAD": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceInputs": 509,
+    "binaries": {
+      "__preview.dylib": "4f63cfd76ea974de0ac5e800265256977e41bccd91ca477909ee8b4eb827e77e",
+      "NastartTV": "a020220db6a11e2ddedf70b167ed68c020cb39e842f53b95a5dbd9f4a341fc9f",
+      "NastartTV.debug.dylib": "e501c60c2f9aa8b053d2fd7e43ceff45d60b5b8aab99369b39e9f7fb81a2d8a3",
+      "Frameworks/Libswresample.framework/Libswresample": "0248cd11622bf34e8e12ea2384191f3f5a7fcca21b5afd2acf76a640cfd9f7f0",
+      "Frameworks/Libavfilter.framework/Libavfilter": "c878237c59edbfc0a1b18cf7ba32bc94048f6ce73be835ff8e9fbbe1238903b5",
+      "Frameworks/KSPlayer.framework/KSPlayer": "e44690df038e6950b7872c73016bfcb0bfc6802c339a2e82ae4dcf1409a57b06",
+      "Frameworks/Libavformat.framework/Libavformat": "a4387a55f532ab71c9c57a0b4d4919a9342aa1888b91d64a940d80b45b252776",
+      "Frameworks/libshaderc_combined.framework/libshaderc_combined": "b9b4856f545f3f06617e1c7ad120e48134ba7a09317bdb20b3431d2d982a09f0",
+      "Frameworks/Libavutil.framework/Libavutil": "9f47f291d006f259a86a9d4f578d6a5e497d7b58f5399e95976e5baeafaecd05",
+      "Frameworks/libharfbuzz.framework/libharfbuzz": "2fa8e17f7fb4248cb77793638b7df8da60d7f7130e840914cfbf2770284bd88c",
+      "Frameworks/libdav1d.framework/libdav1d": "65951f5b38b4aab6a506efa43766a30e47f9f42478d361133ea8d1249e4e7233",
+      "Frameworks/libfontconfig.framework/libfontconfig": "deea0a600d2a1d7b214ac2fcef9c8929cbf5143159642975e6ff385911960dfa",
+      "Frameworks/libfreetype.framework/libfreetype": "3c44f4cef7c08af3ff37965c9b4375c8a29c2352dff59f64c6d5bae737954805",
+      "Frameworks/libfribidi.framework/libfribidi": "945fcbbb7d148dd863e459e1281ac7579492e0df528c138e74b570f1fab03a2a",
+      "Frameworks/libsmbclient.framework/libsmbclient": "46bcc09abf3f34bf0322c83519ffacadb5b4f23a74d1b1a8edbb35deeb1d23d7",
+      "Frameworks/hogweed.framework/hogweed": "1911ef0eea6aff11b4bf1f2a51ea2075873a89ce7fc5a96393f1f76ab6713bb0",
+      "Frameworks/Libswscale.framework/Libswscale": "74f5a8701f603af74d2ec6d13ac2e90a9e1fed8d399d1c18311803aac9845464",
+      "Frameworks/Libavdevice.framework/Libavdevice": "0d51820e370cb80eceda22ca99a9ebebf5ac5d044f7d6eb72f74dc94ae26af60",
+      "Frameworks/gnutls.framework/gnutls": "1de6a7b54cd55edb99e26a773c18ea4fe2734ebe984107591c00892dacb8560f",
+      "Frameworks/libass.framework/libass": "d7346f4eea3e9ee26c52890a5bfd52bd24f8f1ef91c586af89dd2f879555a0d3",
+      "Frameworks/Libavcodec.framework/Libavcodec": "302ee649f33f0715470c59e79cd9eb15535b2780e4801aacea1e54675669991d",
+      "Frameworks/lcms2.framework/lcms2": "84fb6f08e190a458685239a2f43de725d56043db5c6a80a68663787b5e266da9",
+      "Frameworks/nettle.framework/nettle": "270add856b37235b732099217ca8e2c3286d1de22dae84bceb789514a6c9bfcf",
+      "Frameworks/gmp.framework/gmp": "60468a6d439b36bd8339de2d0213cf6b36f5abef503da282cc377007b61d97b4",
+      "Frameworks/libplacebo.framework/libplacebo": "861e1931951ac4f2b4372c09f7bb1aebc46bf247f91b6e4ad4f7e1b80720c646",
+      "Frameworks/libzvbi.framework/libzvbi": "3c7a05db9b5a3b0730e21c2292e69e041133e92d8713f951824ad65ad0b9b5aa",
+      "Frameworks/libsrt.framework/libsrt": "211c387e47e7c4ec31b7f671b1df9b6eade88ab37cfa82fe25960edd5592706f"
+    },
+    "signedMachOCount": 27,
+    "embeddedDependenciesChecked": true,
+    "profileContainsTarget": true,
+    "profileExpirationUTC": "2026-10-31 05:46:14",
+    "applicationIdentifierAndKeychainGroupsPreserved": true,
+    "installationExit": 0,
+    "installedAt": "2026-10-25T05:14:49.447104+08:00"
+  },
+  "device": {
+    "model": "AppleTV14,1",
+    "system": "18.2",
+    "UDIDMatched": true,
+    "connection": "localNetwork",
+    "pairing": "paired"
+  },
+  "tests": {
+    "mobileFinalSource": {
+      "executed": 8,
+      "failures": 0,
+      "invocationExit": 0
+    },
+    "TVFinalSource": {
+      "geometry": 2,
+      "unpreparedPlayerUI": 2,
+      "invocationExit": 0
+    },
+    "normalDebugBuild": 0,
+    "ReleaseCompileOnly": 0
+  },
+  "retainedFailures": [
+    "TV test ambiguous infinity compile error, corrected to CGFloat.infinity",
+    "TV test target missing KS dynamic link dependency, explicitly linked",
+    "Parent-state subtitle layout: 3 Menu, no exit event, intentional media kill; superseded by isolated subtree"
+  ],
+  "windows": [
+    {
+      "startedAt": "2026-10-25T05:10:35.954213+08:00",
+      "environment": {},
+      "arguments": [],
+      "PlayCommands": 1,
+      "MenuCommands": 3,
+      "normalReturn": false,
+      "captures": [
+        {
+          "targetSeconds": 3,
+          "requestedAtSeconds": 3.0022868750000002,
+          "returnedAtSeconds": 14.371237083
+        },
+        {
+          "targetSeconds": 10,
+          "requestedAtSeconds": 14.734058333,
+          "returnedAtSeconds": 18.052254125
+        }
+      ],
+      "audio": "not listened",
+      "completeSubtitles": "not verified",
+      "frameTiming": "not measured",
+      "playAt": "2026-10-25T05:10:37.141493+08:00",
+      "presses": [
+        {
+          "mono": 20.03111175,
+          "wall": "2026-10-25T05:10:55.843526+08:00"
+        },
+        {
+          "mono": 23.633726791,
+          "wall": "2026-10-25T05:10:59.446130+08:00"
+        },
+        {
+          "mono": 28.280470625,
+          "wall": "2026-10-25T05:11:04.092860+08:00"
+        }
+      ],
+      "sameProcessBeforeRestoration": true,
+      "intentionalCleanupKill": true,
+      "normalRestorationRestart": true,
+      "settingsRestored": true,
+      "finishedAt": "2026-10-25T05:11:20.417460+08:00",
+      "case": "parent-state-rejected",
+      "interactionEvents": [
+        {
+          "event": "host.appear"
+        },
+        {
+          "event": "focus"
+        },
+        {
+          "event": "focus"
+        },
+        {
+          "event": "focus"
+        }
+      ]
+    },
+    {
+      "startedAt": "2026-10-25T05:16:50.331144+08:00",
+      "environment": {},
+      "arguments": [],
+      "PlayCommands": 1,
+      "MenuCommands": 1,
+      "normalReturn": true,
+      "captures": [
+        {
+          "targetSeconds": 3,
+          "requestedAtSeconds": 3.002235417,
+          "returnedAtSeconds": 9.365003667
+        },
+        {
+          "targetSeconds": 10,
+          "requestedAtSeconds": 10.002099167,
+          "returnedAtSeconds": 14.061973583
+        }
+      ],
+      "audio": "not listened",
+      "completeSubtitles": "not verified",
+      "frameTiming": "not measured",
+      "playAt": "2026-10-25T05:16:52.269087+08:00",
+      "presses": [
+        {
+          "mono": 16.725481541,
+          "wall": "2026-10-25T05:17:06.917402+08:00"
+        }
+      ],
+      "sameProcessBeforeRestoration": true,
+      "normalRestorationRestart": true,
+      "settingsRestored": true,
+      "finishedAt": "2026-10-25T05:17:22.448293+08:00",
+      "case": "isolated-S03",
+      "interactionEvents": [
+        {
+          "event": "host.appear"
+        },
+        {
+          "event": "focus"
+        },
+        {
+          "event": "focus"
+        },
+        {
+          "event": "focus"
+        },
+        {
+          "event": "exit",
+          "receiver": "surface",
+          "mask": "false",
+          "dropdown": "false"
+        },
+        {
+          "event": "focus"
+        },
+        {
+          "event": "host.disappear"
+        },
+        {
+          "event": "stop.requested"
+        },
+        {
+          "event": "stop.finished"
+        }
+      ]
+    },
+    {
+      "startedAt": "2026-10-25T05:20:17.836530+08:00",
+      "environment": {},
+      "arguments": [],
+      "PlayCommands": 1,
+      "MenuCommands": 2,
+      "normalReturn": true,
+      "captures": [
+        {
+          "targetSeconds": 3,
+          "requestedAtSeconds": 3.0021366670000003,
+          "returnedAtSeconds": 3.7779222920000004
+        },
+        {
+          "targetSeconds": 10,
+          "requestedAtSeconds": 10.003882667000001,
+          "returnedAtSeconds": 11.096118
+        }
+      ],
+      "audio": "not listened",
+      "completeSubtitles": "not verified",
+      "frameTiming": "not measured",
+      "playAt": "2026-10-25T05:20:19.331001+08:00",
+      "presses": [
+        {
+          "mono": 13.158346333,
+          "wall": "2026-10-25T05:20:30.789376+08:00"
+        },
+        {
+          "mono": 14.993006666,
+          "wall": "2026-10-25T05:20:32.624044+08:00"
+        }
+      ],
+      "sameProcessBeforeRestoration": true,
+      "normalRestorationRestart": true,
+      "settingsRestored": true,
+      "finishedAt": "2026-10-25T05:20:52.392015+08:00",
+      "case": "isolated-S01",
+      "interactionEvents": [
+        {
+          "event": "host.appear"
+        },
+        {
+          "event": "focus"
+        },
+        {
+          "event": "focus"
+        },
+        {
+          "event": "focus"
+        },
+        {
+          "event": "exit",
+          "receiver": "surface",
+          "mask": "false",
+          "dropdown": "false"
+        },
+        {
+          "event": "focus"
+        },
+        {
+          "event": "host.disappear"
+        },
+        {
+          "event": "stop.requested"
+        },
+        {
+          "event": "stop.finished"
+        }
+      ]
+    }
+  ],
+  "cleanup": {
+    "at": "2026-10-25T05:21:29.411230+08:00",
+    "beforeKeyCount": 10,
+    "afterKeyCount": 10,
+    "changedNaturalResumeEntries": 2,
+    "onlyNaturalResumeChanged": true,
+    "sourceInputsMatched": true,
+    "ownedRunnersStopped": true,
+    "phoneMutations": 0,
+    "cellularOrNetworkChanges": 0
+  },
+  "iPhone18": {
+    "at": "2026-10-25T05:19:42.221904+08:00",
+    "HEAD": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "configuration": "normal Debug",
+    "sourceInputs": 570,
+    "sourceInputDrift": 0,
+    "binaries": {
+      "__preview.dylib": "810109456bdd8510df2fc7484214518c1bc6d4be6d423f06fc78ff173dbe8964",
+      "Nastart": "0365ff3615f398299adab3219c1bd12fd203580beb8f440c118f9d2dc59e63d1",
+      "Nastart.debug.dylib": "74dbf12116246bdb2cf4458f02fd8a65da8f0e2a2cd22a9d14c3b6d9dbe96a70",
+      "Frameworks/libswiftCompatibilitySpan.dylib": "619ce6081a444a2696a6014ed8e55373944a7da79424b778865081297c6b9dfe",
+      "Frameworks/Libswresample.framework/Libswresample": "2022806f9891e8cfe31483645cdd2edd24f6883e6309228691d8b47133ca55f4",
+      "Frameworks/Libavfilter.framework/Libavfilter": "94467f8430701b923c4ce9810528aaf241a99102a2d513cb93bb55883de78d3e",
+      "Frameworks/KSPlayer.framework/KSPlayer": "636e9805914cac932e87cdac3301b43a494e1382788be53f8d84181081101762",
+      "Frameworks/Libavformat.framework/Libavformat": "0719f73e25477c878d339ed7f3f5ea57708a88cb7695f2e7257bdc27df8f016f",
+      "Frameworks/libshaderc_combined.framework/libshaderc_combined": "cb4d445c2615c90782b40c695a30ba99edd03b13175efcc54f00cde097d6276c",
+      "Frameworks/Libavutil.framework/Libavutil": "910cc2bbacee6a8f143e5a8b6d2d7e6fa606862ae49ff12d56c100d6e1924895",
+      "Frameworks/libharfbuzz.framework/libharfbuzz": "5e943d28de153eefa36c645430850f83e879cf7aefb9109ab02f06ec1127a974",
+      "Frameworks/libdav1d.framework/libdav1d": "1280c36e0f9e8cf405932611232ce1a149ef7f9e127416ad5de8988821261d44",
+      "Frameworks/libfontconfig.framework/libfontconfig": "f76bb2fde014f5c5e8c8278bc094d5022abf2a32fb711828c35f1e1d476cdf09",
+      "Frameworks/UDFRead.framework/UDFRead": "cdb2c5a5ac80b7b34a3d2d6388db0c473e96caed7a0be0889f4cd15594e2bc79",
+      "Frameworks/libfreetype.framework/libfreetype": "6f742f9883a071d43516feb870701147dab3ce6c57d2ac7f6e35b23ed7604188",
+      "Frameworks/libfribidi.framework/libfribidi": "a0eae0de71691834af8abbf9b12d4038d0baf1ddcf6d5356f6b062970c31ff52",
+      "Frameworks/libsmbclient.framework/libsmbclient": "c02e2517a53d8a605cad864a880855e41a445fdcede8b911ecd71e8cee913a0d",
+      "Frameworks/MobileVLCKit.framework/MobileVLCKit": "d82b37e2d1a65593f8e88a4340f75344b61b0cbbc4ce95bf92d938521a58cf97",
+      "Frameworks/hogweed.framework/hogweed": "003ec172d579250179269a544f11cfe035ecebf7603912a27536efea4e072455",
+      "Frameworks/Libswscale.framework/Libswscale": "419baf06f7d87f1bcd296d8024ba5a10357e103b7ae22708db382180b8054e30",
+      "Frameworks/Libavdevice.framework/Libavdevice": "755d86e5f02f99b3c1e38f8d306ba6af43388c07dbcd5d41300db710e22c587d",
+      "Frameworks/gnutls.framework/gnutls": "f46aa92c414da09849bc81d947a9f516751282e8c7b4223b391d66b7f14f2a0f",
+      "Frameworks/libass.framework/libass": "7908ae48b17dcf934d51ea8bce9e313bf0da2f0216f8661a272712f9727fec0f",
+      "Frameworks/Libavcodec.framework/Libavcodec": "58ca6deef1700b42bcfdb4cd496adfd8c673bb69eefbe40080f16486a25b8938",
+      "Frameworks/lcms2.framework/lcms2": "95742776e2fd56c482517d10e4f3cecf31d22bc5e8e3c47806f9938608804a07",
+      "Frameworks/nettle.framework/nettle": "55115bbbabc116d110c6a0ce9b6e848e3a8c604469db66416c7fe08d402cf77a",
+      "Frameworks/gmp.framework/gmp": "2d0cd4ec6b634edd3f0030434845b681eac10da83b0ce934545b9ea4d41af86f",
+      "Frameworks/libplacebo.framework/libplacebo": "d1327c6aee6ccf8d6e5774d3be71ff9426a5182d1cf17a84022ccb41a32f2b3e",
+      "Frameworks/libzvbi.framework/libzvbi": "389d0b22c82579f32fa36911b10a8b1c42c3b6a96b982de062d0754032233b9d",
+      "Frameworks/libsrt.framework/libsrt": "a90e314e39b12f5c10b168db6363280bb41d5e4cefdc794da89d50f5e676909e"
+    },
+    "signedMachOCount": 30,
+    "targetProvisioned": false,
+    "installed": false,
+    "reason": "current build profile does not include iPhone18; target renewal build cannot find Xcode destination",
+    "previous18ProfileExpiresChina": "2026-10-25 06:23:57",
+    "discoveryAuthenticated": true,
+    "deviceOrPreferenceMutation": false
+  },
+  "limits": [
+    "TV shared call covers video rectangle only; mobile uses shared bottom inset/font defaults but TV typography/insets remain platform-specific",
+    "No authored ASS/bitmap origin mapping, no automatic encoded-black-bar detection, no server-burned subtitle relocation",
+    "Mobile final-source real-device regression pending; 18 current build NOT installed",
+    "No audio listening, full subtitle completeness, frame timing, HDR or Release runtime acceptance",
+    "S01 sent two Menu commands, only one exit trace observed; black transitional capture preserved",
+    "28 requirements and 114 full matrix cells remain open"
+  ]
+}

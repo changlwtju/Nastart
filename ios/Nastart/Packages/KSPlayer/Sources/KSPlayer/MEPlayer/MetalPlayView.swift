@@ -190,6 +190,10 @@ extension MetalPlayView {
             isDovi = frame.isDovi
             fps = frame.fps
             let cmtime = frame.cmtime
+            let startupGeneration = options.videoStartupTiming.snapshot.generation
+            options.videoStartupTiming.record(.outputAttempt, time: CACurrentMediaTime(),
+                pts: cmtime.seconds, path: "rendererWithPixelBuffer", generation: startupGeneration)
+            var outputPath: String?
             let par = pixelBuffer.size
             let sar = pixelBuffer.aspectRatio
             if let pixelBuffer = pixelBuffer.cvPixelBuffer, options.isUseDisplayLayer() {
@@ -202,7 +206,7 @@ extension MetalPlayView {
                     pixelBuffer.aspectRatio = CGSize(width: dar.width, height: dar.height * par.width / par.height)
                 }
                 checkFormatDescription(pixelBuffer: pixelBuffer)
-                set(pixelBuffer: pixelBuffer, time: cmtime)
+                if set(pixelBuffer: pixelBuffer, time: cmtime, frame: frame) { outputPath = "sampleBufferEnqueued" }
             } else {
                 if !displayView.isHidden {
                     displayView.isHidden = true
@@ -225,7 +229,14 @@ extension MetalPlayView {
                     metalView.metalLayer.edrMetadata = frame.edrMetadata
                 }
                 #endif
-                metalView.draw(pixelBuffer: pixelBuffer, display: options.display, size: size)
+                if metalView.draw(pixelBuffer: pixelBuffer, display: options.display, size: size) {
+                    outputPath = "metalCommandCompleted"
+                }
+            }
+            if let outputPath {
+                options.videoStartupTiming.record(.outputSubmitted, time: CACurrentMediaTime(),
+                    pts: cmtime.seconds, path: outputPath, generation: startupGeneration)
+                if force { options.pausedSeekPreviewSubmitted?(cmtime.seconds) }
             }
             renderSource?.setVideo(time: cmtime, position: frame.position)
             renderedFrameCount &+= 1
@@ -246,17 +257,23 @@ extension MetalPlayView {
         }
     }
 
-    private func set(pixelBuffer: CVPixelBuffer, time: CMTime) {
-        guard let formatDescription else { return }
-        if let composited = options.pictureInPictureFrameTransform?(pixelBuffer, time.seconds) {
+    private func set(pixelBuffer: CVPixelBuffer, time: CMTime, frame: VideoVTBFrame) -> Bool {
+        guard let formatDescription else { return false }
+        let transformed: CVPixelBuffer?
+        if let transform = options.pictureInPictureFrameTransformWithContext {
+            let context = frame.pictureInPictureContext(displayFormatDescription: formatDescription)
+            transformed = transform(pixelBuffer, time.seconds, context)
+        } else {
+            transformed = options.pictureInPictureFrameTransform?(pixelBuffer, time.seconds)
+        }
+        if let composited = transformed {
             var description: CMVideoFormatDescription?
             if CMVideoFormatDescriptionCreateForImageBuffer(allocator: kCFAllocatorDefault,
                 imageBuffer: composited, formatDescriptionOut: &description) == noErr, let description {
-                displayView.enqueue(imageBuffer: composited, formatDescription: description, time: time)
-                return
+                return displayView.enqueue(imageBuffer: composited, formatDescription: description, time: time)
             }
         }
-        displayView.enqueue(imageBuffer: pixelBuffer, formatDescription: formatDescription, time: time)
+        return displayView.enqueue(imageBuffer: pixelBuffer, formatDescription: formatDescription, time: time)
     }
 }
 
@@ -292,7 +309,7 @@ class MetalView: UIView {
         }
     }
 
-    func draw(pixelBuffer: PixelBufferProtocol, display: DisplayEnum, size: CGSize) {
+    func draw(pixelBuffer: PixelBufferProtocol, display: DisplayEnum, size: CGSize) -> Bool {
         metalLayer.drawableSize = size
         metalLayer.pixelFormat = KSOptions.colorPixelFormat(bitDepth: pixelBuffer.bitDepth)
         let colorspace = pixelBuffer.colorspace
@@ -316,9 +333,9 @@ class MetalView: UIView {
         }
         guard let drawable = metalLayer.nextDrawable() else {
             KSLog("[video] CAMetalLayer not readyForMoreMediaData")
-            return
+            return false
         }
-        render.draw(pixelBuffer: pixelBuffer, display: display, drawable: drawable)
+        return render.draw(pixelBuffer: pixelBuffer, display: display, drawable: drawable)
     }
 }
 
@@ -351,7 +368,7 @@ class AVSampleBufferDisplayView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func enqueue(imageBuffer: CVPixelBuffer, formatDescription: CMVideoFormatDescription, time: CMTime) {
+    func enqueue(imageBuffer: CVPixelBuffer, formatDescription: CMVideoFormatDescription, time: CMTime) -> Bool {
         let timing = CMSampleTimingInfo(duration: .invalid, presentationTimeStamp: .zero, decodeTimeStamp: .invalid)
         //        var timing = CMSampleTimingInfo(duration: .invalid, presentationTimeStamp: time, decodeTimeStamp: .invalid)
         var sampleBuffer: CMSampleBuffer?
@@ -379,7 +396,9 @@ class AVSampleBufferDisplayView: UIView {
                 //                        displayLayer.stopRequestingMediaData()
                 //                    }
             }
+            return true
         }
+        return false
     }
 }
 

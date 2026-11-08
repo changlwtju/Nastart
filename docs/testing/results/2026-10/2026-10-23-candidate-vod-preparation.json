@@ -1,0 +1,696 @@
+{
+  "schemaVersion": 1,
+  "at": "2026-10-23T21:30:47.215189+08:00",
+  "implementation": "Registered finite-duration VOD manifest preparation before AV candidate creation; per-preparation cancellation preserves independent readers and routes; total existing HLS40-second budget retained",
+  "package": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "ca034f91ffad8f339adc15d4d741283e6591378a37590a0d54f5037fd57fc8cb",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "Xcode": "27.0",
+    "binaryBuildTime": "2026-10-23T20:53:21.611386+08:00",
+    "binaries": {
+      "Nastart": "98b1d03c0a6f14151bfe10022ef9f4d3f8aad47986ca057efe44b2b9aaa167d7",
+      "Nastart.debug.dylib": "240ada7630639e4d56cd86565d2715bef27c25d406c1162bb96c9b5bedb46919",
+      "Frameworks/KSPlayer.framework/KSPlayer": "157255a2f99e83cc2d54c66daa25f2aff22c5a74145afc9663ce5b9ab6a3d16c"
+    },
+    "signatureVerified": true,
+    "individuallyVerifiedLibraries": 29,
+    "checkedInputs": 174,
+    "profileExpirationUTC": "2026-10-24T22:23:57",
+    "ipaSHA256": "29155b89e97fe74c1c9f73bbd269bc7ee93710c22ec6a4e96453a14c300d3f4d",
+    "ipaCRCAndBinaryHashesVerified": true,
+    "linkageVerified": true
+  },
+  "tests": {
+    "normalExitMethods": [
+      "testCandidateManifestRequiresRegisteredRootAndKnownDuration",
+      "testCandidateManifestCachesOnlyCompleteVODBeforeAVPreparation",
+      "testCandidateManifestLiveResultKeepsOrdinaryAVPathAvailable",
+      "testCandidateInvalidationStopsManifestBeforeAVItemAndPreservesOtherRoute",
+      "testCandidateManifestCancellationAndDeadlineStopOwnTransfer",
+      "testExpiredCandidateManifestDeadlineDoesNotStartTransfer",
+      "testPlaybackLabProxyPrewarmOnlyFetchesManifestsAndReleaseRevokesChildren",
+      "testPlaybackLabProxyCancelledPrewarmCancelsItsPendingTransfer",
+      "testVODPrewarmReusesManifestAndRewritesNewSeekWithoutFetchingSegments",
+      "testLivePlaylistPrewarmDoesNotClaimReusableVOD",
+      "testCandidateManifestCancelPreservesIndependentReaderOfSameRoute",
+      "testStartupPrimerPolicyRejectsLiveMasterExternalAndOffsetPlaylists",
+      "testStartupPrimerReturnsBeforeHeadersIsSingleAndRouteCancellationIsIsolated",
+      "testStartupPrimerRejectsIgnoredRangeAndRedirectBeforeBody",
+      "testStartupPrimerSkipsResumedNonzeroAndCancelledPreparation",
+      "testStartupPrimerDeadlineCancelsUpstreamWithoutHeadersAndSeekCancelsOwnedTask",
+      "testVODPrewarmUsesItsFullDeadlineWhileProxyBuffersAMovingResponse",
+      "testVODPlaylistCacheRejectsLiveAndBoundsAndPartitionsRoutes"
+    ],
+    "normalExitCount": 18,
+    "newManifestTestMethods": 7,
+    "firstCancellationFailureRetained": true,
+    "secondPostTestDiagnosticInterruptionRetained": true,
+    "additionalAVLifecycleMethodPassedWithInterruptedPostTestCleanup": true
+  },
+  "hostReportTestsPassed": 141,
+  "preflightPassed": 15,
+  "macCandidateFixture": {
+    "startedAt": "2026-10-23T20:28:14.511470+08:00",
+    "scope": "macOS actual candidate warmup function with direct local HLS fixture; explicit diagnostic/data adapters, no production proxy/cache/ownership or iPhone",
+    "AppSourceChanged": false,
+    "NASRequests": 0,
+    "deviceCommands": 0,
+    "perReaderPacingSeconds": 25,
+    "mediaBytes": 1620153,
+    "mediaSHA256": "65beac20897d59db2d5e84d35e5423afb862b38ac0e65b7167aba109b0874bd9",
+    "segmentSHA256": {
+      "0.ts": "2f7bc0bc542898fca327c7cfdc0f9df80e1af009241a3af845ac75157f2e2926",
+      "1.ts": "84137f09354d007b643bac8a023d5fedef226399745f5e100f9bfd5629f64b01"
+    },
+    "conditions": [
+      {
+        "condition": "fast",
+        "prefetchPerformed": false,
+        "probeExit": 0,
+        "candidateReturned": true,
+        "candidateWarmupElapsedMs": 1654.518541879952,
+        "heldClockSeconds": 0.5,
+        "stages": [
+          "candidate_preparing",
+          "candidate_progress",
+          "candidate_progress",
+          "candidate_progress",
+          "candidate_decoded",
+          "candidate_progress",
+          "candidate_aligned"
+        ],
+        "totalCaseWallMs": 1654.518541879952
+      },
+      {
+        "condition": "slow",
+        "prefetchPerformed": false,
+        "probeExit": 0,
+        "candidateReturned": false,
+        "candidateWarmupElapsedMs": 20112.679541576654,
+        "heldClockSeconds": null,
+        "stages": [
+          "candidate_preparing",
+          "candidate_progress",
+          "candidate_progress",
+          "candidate_progress",
+          "candidate_progress",
+          "candidate_progress",
+          "candidate_progress",
+          "candidate_progress",
+          "candidate_progress",
+          "candidate_progress",
+          "candidate_progress",
+          "candidate_progress",
+          "candidate_progress",
+          "candidate_progress",
+          "candidate_progress",
+          "candidate_progress",
+          "candidate_progress",
+          "candidate_progress",
+          "candidate_progress",
+          "candidate_progress",
+          "candidate_progress",
+          "candidate_progress",
+          "warmup_failed"
+        ],
+        "totalCaseWallMs": 20112.679541576654
+      },
+      {
+        "condition": "cached",
+        "prefetchPerformed": true,
+        "completePrefetchWallMs": 25431.835,
+        "completeCacheCommittedAfterFullValidation": true,
+        "probeExit": 0,
+        "candidateReturned": true,
+        "candidateWarmupElapsedMs": 291.3567083887756,
+        "heldClockSeconds": 0.5,
+        "stages": [
+          "candidate_preparing",
+          "candidate_progress",
+          "candidate_progress",
+          "candidate_decoded",
+          "candidate_progress",
+          "candidate_aligned"
+        ],
+        "totalCaseWallMs": 25723.191708388775
+      }
+    ],
+    "journal": [
+      {
+        "condition": "fast",
+        "resource": "master.m3u8",
+        "bytesWritten": 164,
+        "cachedAtStart": false,
+        "elapsedSeconds": 0.000142,
+        "result": "complete"
+      },
+      {
+        "condition": "fast",
+        "resource": "main.m3u8",
+        "bytesWritten": 1620153,
+        "cachedAtStart": false,
+        "elapsedSeconds": 0.000999,
+        "result": "complete"
+      },
+      {
+        "condition": "fast",
+        "resource": "main.m3u8",
+        "bytesWritten": 1620153,
+        "cachedAtStart": false,
+        "elapsedSeconds": 0.000822,
+        "result": "complete"
+      },
+      {
+        "condition": "fast",
+        "resource": "0.ts",
+        "bytesWritten": 121072,
+        "cachedAtStart": false,
+        "elapsedSeconds": 5.4e-05,
+        "result": "complete"
+      },
+      {
+        "condition": "fast",
+        "resource": "1.ts",
+        "bytesWritten": 646156,
+        "cachedAtStart": false,
+        "elapsedSeconds": 0.000271,
+        "result": "complete"
+      },
+      {
+        "condition": "slow",
+        "resource": "master.m3u8",
+        "bytesWritten": 164,
+        "cachedAtStart": false,
+        "elapsedSeconds": 4.9e-05,
+        "result": "complete"
+      },
+      {
+        "condition": "slow",
+        "resource": "main.m3u8",
+        "bytesWritten": 1310720,
+        "cachedAtStart": false,
+        "elapsedSeconds": 20.234523,
+        "result": "ownedCaseStopped"
+      },
+      {
+        "condition": "slow",
+        "resource": "main.m3u8",
+        "bytesWritten": 1310720,
+        "cachedAtStart": false,
+        "elapsedSeconds": 20.234354,
+        "result": "ownedCaseStopped"
+      },
+      {
+        "condition": "cached",
+        "resource": "main.m3u8",
+        "bytesWritten": 1620153,
+        "cachedAtStart": false,
+        "elapsedSeconds": 25.010124,
+        "result": "complete"
+      },
+      {
+        "condition": "cached",
+        "resource": "master.m3u8",
+        "bytesWritten": 164,
+        "cachedAtStart": true,
+        "elapsedSeconds": 7.7e-05,
+        "result": "complete"
+      },
+      {
+        "condition": "cached",
+        "resource": "main.m3u8",
+        "bytesWritten": 1620153,
+        "cachedAtStart": true,
+        "elapsedSeconds": 0.00066,
+        "result": "complete"
+      },
+      {
+        "condition": "cached",
+        "resource": "main.m3u8",
+        "bytesWritten": 1620153,
+        "cachedAtStart": true,
+        "elapsedSeconds": 0.000522,
+        "result": "complete"
+      },
+      {
+        "condition": "cached",
+        "resource": "0.ts",
+        "bytesWritten": 121072,
+        "cachedAtStart": true,
+        "elapsedSeconds": 6.4e-05,
+        "result": "complete"
+      },
+      {
+        "condition": "cached",
+        "resource": "1.ts",
+        "bytesWritten": 646156,
+        "cachedAtStart": true,
+        "elapsedSeconds": 0.000195,
+        "result": "complete"
+      }
+    ],
+    "power": [
+      {
+        "label": "before-local-candidate",
+        "ownChildAssertionVerified": true,
+        "ACPower": true
+      },
+      {
+        "label": "during-local-candidate",
+        "ownChildAssertionVerified": true,
+        "ACPower": true
+      },
+      {
+        "label": "after-local-candidate-stop",
+        "ownChildAssertionVerified": true,
+        "ACPower": true
+      }
+    ],
+    "allOwnedCandidateProcessesStopped": true,
+    "fixtureServerStopped": true,
+    "finishedAt": "2026-10-23T20:29:04.697165+08:00"
+  },
+  "iphone13": {
+    "install": {
+      "device": "iphone13",
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "connection": "USB",
+      "binaries": {
+        "Nastart": "98b1d03c0a6f14151bfe10022ef9f4d3f8aad47986ca057efe44b2b9aaa167d7",
+        "Nastart.debug.dylib": "240ada7630639e4d56cd86565d2715bef27c25d406c1162bb96c9b5bedb46919",
+        "Frameworks/KSPlayer.framework/KSPlayer": "157255a2f99e83cc2d54c66daa25f2aff22c5a74145afc9663ce5b9ab6a3d16c"
+      },
+      "sourceDiffSHA256": "ca034f91ffad8f339adc15d4d741283e6591378a37590a0d54f5037fd57fc8cb",
+      "preservesContainer": true,
+      "signatureVerified": true,
+      "actualForegroundUIVerified": true,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "installation": "success",
+      "startedAt": "2026-10-23T20:57:04.543078+08:00",
+      "installedAt": "2026-10-23T20:57:19.668715+08:00",
+      "preferenceKeysUnchanged": true,
+      "preferenceValuesUnchanged": true,
+      "nonDiagnosticKeys": 25,
+      "emptyEnvironmentHomeVerified": true
+    },
+    "normalWindows": [
+      {
+        "entry": "file",
+        "sample": "S01",
+        "playCommands": 1,
+        "seekCommands": 0,
+        "pipCommands": 0,
+        "audioSelectionCommands": 0,
+        "hostNativeActionDispatchAt": "2026-10-23T21:04:33.599267+08:00",
+        "hostDispatchBoundary": "sendingOnce, not physical touch or renderer start",
+        "helperPlayEffectVerifiedAt": "2026-10-23T21:04:35.159043+08:00",
+        "nativeCaptures": [
+          {
+            "label": "original-detail",
+            "at": "2026-10-23T21:04:32.462566+08:00",
+            "hostSecondsAfterActionDispatch": -1.137
+          },
+          {
+            "label": "playing-live-3",
+            "at": "2026-10-23T21:04:36.914056+08:00",
+            "hostSecondsAfterActionDispatch": 3.315
+          },
+          {
+            "label": "playing-live-10",
+            "at": "2026-10-23T21:04:43.843240+08:00",
+            "hostSecondsAfterActionDispatch": 10.244
+          },
+          {
+            "label": "playing-live-30",
+            "at": "2026-10-23T21:05:05.081377+08:00",
+            "hostSecondsAfterActionDispatch": 31.482
+          },
+          {
+            "label": "playing-end-position",
+            "at": "2026-10-23T21:05:08.133903+08:00",
+            "hostSecondsAfterActionDispatch": 34.535
+          },
+          {
+            "label": "normal-return",
+            "at": "2026-10-23T21:05:11.739856+08:00",
+            "hostSecondsAfterActionDispatch": 38.141
+          }
+        ],
+        "firstAndFinalScreenClock": [
+          "00:33",
+          "01:04"
+        ],
+        "actualNativeMovieImagesReviewed": true,
+        "sampledReportedStallCountMax": 0,
+        "reportedStallEpisodes": [],
+        "candidateHandoffEvents": 0,
+        "internalPlaybackClockMs": 1030,
+        "internalClockIsScreenFirstFrame": false,
+        "sampledRangeMetricsCellularNo": true,
+        "ordinaryReturnSameDetailIndependentlyReviewed": true,
+        "helperReturnAssertionFailed": false,
+        "nativeDetailFullPathVisiblyUntruncated": false,
+        "original36TrackFieldsUnchanged": true,
+        "otherPreferencesUnchanged": true,
+        "newCrashInventory": {
+          "Nastart": 0,
+          "WebDriverAgent": 0,
+          "JetsamEvent": 0
+        },
+        "ownGuardianStopped": true,
+        "ownSyslogStopped": true,
+        "finishedAt": "2026-10-23T21:05:15.053146+08:00",
+        "fullFunctionCellPassed": false,
+        "pairedSpeedComparisonEligible": false,
+        "scope": "normal KS original baseline; no AV candidate exercised; sparse screenshots not complete frame/sound/subtitle/PiP acceptance"
+      },
+      {
+        "entry": "jf",
+        "sample": "S01",
+        "playCommands": 1,
+        "seekCommands": 0,
+        "pipCommands": 0,
+        "audioSelectionCommands": 0,
+        "hostNativeActionDispatchAt": "2026-10-23T21:07:15.193917+08:00",
+        "hostDispatchBoundary": "sendingOnce, not physical touch or renderer start",
+        "helperPlayEffectVerifiedAt": "2026-10-23T21:07:17.138305+08:00",
+        "nativeCaptures": [
+          {
+            "label": "original-detail",
+            "at": "2026-10-23T21:07:12.922864+08:00",
+            "hostSecondsAfterActionDispatch": -2.271
+          },
+          {
+            "label": "playing-live-3",
+            "at": "2026-10-23T21:07:17.752687+08:00",
+            "hostSecondsAfterActionDispatch": 2.559
+          },
+          {
+            "label": "playing-live-10",
+            "at": "2026-10-23T21:07:24.391496+08:00",
+            "hostSecondsAfterActionDispatch": 9.198
+          },
+          {
+            "label": "playing-live-30",
+            "at": "2026-10-23T21:07:44.634237+08:00",
+            "hostSecondsAfterActionDispatch": 29.44
+          },
+          {
+            "label": "playing-end-position",
+            "at": "2026-10-23T21:07:48.036271+08:00",
+            "hostSecondsAfterActionDispatch": 32.842
+          },
+          {
+            "label": "normal-return",
+            "at": "2026-10-23T21:07:54.325737+08:00",
+            "hostSecondsAfterActionDispatch": 39.132
+          }
+        ],
+        "firstAndFinalScreenClock": [
+          "00:01",
+          "00:30"
+        ],
+        "actualNativeMovieImagesReviewed": true,
+        "sampledReportedStallCountMax": 0,
+        "reportedStallEpisodes": [],
+        "candidateHandoffEvents": 0,
+        "internalPlaybackClockMs": 592,
+        "internalClockIsScreenFirstFrame": false,
+        "sampledRangeMetricsCellularNo": true,
+        "ordinaryReturnSameDetailIndependentlyReviewed": true,
+        "helperReturnAssertionFailed": true,
+        "nativeDetailFullPathVisiblyUntruncated": null,
+        "original36TrackFieldsUnchanged": true,
+        "otherPreferencesUnchanged": true,
+        "newCrashInventory": {
+          "Nastart": 0,
+          "WebDriverAgent": 0,
+          "JetsamEvent": 0
+        },
+        "ownGuardianStopped": true,
+        "ownSyslogStopped": true,
+        "finishedAt": "2026-10-23T21:07:57.624370+08:00",
+        "fullFunctionCellPassed": false,
+        "pairedSpeedComparisonEligible": false,
+        "scope": "normal KS original baseline; no AV candidate exercised; sparse screenshots not complete frame/sound/subtitle/PiP acceptance"
+      }
+    ],
+    "zeroPlayToolFailures": [
+      {
+        "attempt": 1,
+        "cause": "private evidence pointer newline before UI/play",
+        "playCommands": 0
+      },
+      {
+        "attempt": 2,
+        "cause": "private locator wrongly required unbracketed title prefix",
+        "playCommands": 0
+      }
+    ],
+    "normalReturnToolFailure": "JF helper required visible=true although fast source intentionally omits it; independent native/source/same foreground PID evidence proves return, no second Play",
+    "finalAudit": {
+      "at": "2026-10-23T21:15:10.215088+08:00",
+      "freshDeviceNameModelSystemUDIDUSBVerified": true,
+      "source174AndBinaryHashes29SignaturesProfileAndOwnReceiptVerified": true,
+      "WDAAutoIdle10Cool2ReadbackVerified": true,
+      "WDAAppStates": [
+        1,
+        1
+      ],
+      "HomeForeground": true,
+      "fullNonDiagnosticPreferencesUnchangedSinceWindowEnd": false,
+      "allOriginal36TrackFieldsMatchBatchStart": true,
+      "otherPreferencesUnchangedSinceBatchStart": true,
+      "ownedPlaybackBuildLoggerHostsRemaining": 0,
+      "nativeProcessAbsenceClaimed": false,
+      "newMediaCommands": 0,
+      "networkConfigurationChanged": false,
+      "actualFinalHomeImageReviewPending": false,
+      "actualNativeHomeWiFiNoPiPReviewed": true,
+      "fullNonDiagnosticPreferencesUnchangedSinceFirstIndependentRead": true,
+      "lateOneEntryProgressUpdateSeconds": [
+        31.241,
+        33.886
+      ],
+      "lateEntryUpdatedAtReferenceSeconds": [
+        814453667.405771,
+        814453670.041238
+      ],
+      "independentReadStableAt": "2026-10-23T21:16:13.741252+08:00",
+      "lateProgressTimestampExactlyMatchesViewDisappear": true,
+      "closeAndDisappearSameProcessMemoryReadbackMatch": true
+    },
+    "additionalS03JFWindow": {
+      "sample": "S03",
+      "entry": "Jellyfin",
+      "normalDebugLatestPackageVerified": true,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "newCondition": "first S03 on20:53 candidate manifest/scoped cancellation build; no forced conditions or settings changes",
+      "normalPlayCommands": 1,
+      "audioSubtitleSelectionCommands": 0,
+      "manualSeekCommands": 0,
+      "PiPCommands": 0,
+      "actualNativeOriginalAndReturnDetailReviewed": true,
+      "originalAndReturnPGSSubtitleDetailReviewed": true,
+      "actualNativePlaying3_10_30_60_90AndEndReviewed": true,
+      "screenFirstAndFinalPosition": [
+        "1:05:09",
+        "1:06:32"
+      ],
+      "nativeEarlySpinnerAtPlanned3And10": true,
+      "native30And60BilingualDialogueReviewed": true,
+      "native30_60_90DifferentMovieScenesReviewed": true,
+      "hostNativeActionDispatchAt": "2026-10-23T21:26:43.172018+08:00",
+      "hostPlayEffectVerifiedAt": "2026-10-23T21:26:45.061255+08:00",
+      "captures": [
+        {
+          "label": "original-detail",
+          "actualFinishedAt": "2026-10-23T21:26:40.748324+08:00",
+          "secondsAfterNativeActionDispatch": -2.424
+        },
+        {
+          "label": "playing-live-3",
+          "actualFinishedAt": "2026-10-23T21:26:46.437447+08:00",
+          "secondsAfterNativeActionDispatch": 3.265
+        },
+        {
+          "label": "playing-live-10",
+          "actualFinishedAt": "2026-10-23T21:26:53.073657+08:00",
+          "secondsAfterNativeActionDispatch": 9.902
+        },
+        {
+          "label": "playing-live-30",
+          "actualFinishedAt": "2026-10-23T21:27:12.932597+08:00",
+          "secondsAfterNativeActionDispatch": 29.761
+        },
+        {
+          "label": "playing-live-60",
+          "actualFinishedAt": "2026-10-23T21:27:42.975893+08:00",
+          "secondsAfterNativeActionDispatch": 59.804
+        },
+        {
+          "label": "playing-live-90",
+          "actualFinishedAt": "2026-10-23T21:28:12.943662+08:00",
+          "secondsAfterNativeActionDispatch": 89.772
+        },
+        {
+          "label": "playing-end-position",
+          "actualFinishedAt": "2026-10-23T21:28:16.637949+08:00",
+          "secondsAfterNativeActionDispatch": 93.466
+        },
+        {
+          "label": "normal-return",
+          "actualFinishedAt": "2026-10-23T21:28:22.722412+08:00",
+          "secondsAfterNativeActionDispatch": 99.55
+        }
+      ],
+      "internalFirstClockMs": 2062,
+      "internalFirstClockIsScreenFirstFrame": false,
+      "sampledReportedStallCountMax": 2,
+      "stallEpisodes": [
+        {
+          "startActionSeconds": 1.769542,
+          "phaseAtStart": "beforeObservedAdvancingClock",
+          "startFields": {
+            "audioBitrate": 0,
+            "bufferLimitSeconds": 6,
+            "bufferTargetSeconds": 1,
+            "bufferedAheadSeconds": 0,
+            "bytesRead": 6166644,
+            "currentSeconds": 3909.337,
+            "durationSeconds": 7524.768,
+            "elapsedMs": 1012,
+            "engine": "KSPlayer",
+            "ksPlayerState": "-",
+            "planID": "A092AE3D",
+            "playbackTraceID": "75FF5375",
+            "routeID": "0969844A",
+            "sampleReason": "playbackTick",
+            "stallActive": "yes",
+            "stallCount": 1,
+            "stallDurationMs": 0,
+            "videoBitrate": 0
+          },
+          "endActionSeconds": 2.675394,
+          "sampledSpanSeconds": 0.9058519999999999,
+          "reportedDurationMs": 802
+        },
+        {
+          "startActionSeconds": 4.655357,
+          "phaseAtStart": "afterObservedAdvancingClock",
+          "startFields": {
+            "audioBitrate": 4137981,
+            "bufferLimitSeconds": 16,
+            "bufferTargetSeconds": 4,
+            "bufferedAheadSeconds": 0.12512499659897003,
+            "bytesRead": 24302844,
+            "currentSeconds": 3911.18,
+            "deltaSeconds": 0.789,
+            "durationSeconds": 7524.768,
+            "elapsedMs": 3905,
+            "engine": "KSPlayer",
+            "ksPlayerState": "-",
+            "planID": "A092AE3D",
+            "playbackTraceID": "75FF5375",
+            "routeID": "0969844A",
+            "sampleReason": "playbackTick",
+            "stallActive": "yes",
+            "stallCount": 2,
+            "stallDurationMs": 0,
+            "videoBitrate": 71095808
+          },
+          "endActionSeconds": 11.956627,
+          "sampledSpanSeconds": 7.301269999999999,
+          "reportedDurationMs": 7300
+        }
+      ],
+      "candidateAttemptMax": 0,
+      "predictionDecisionCount": 90,
+      "predictiveEligibleCount": 80,
+      "predictsReserveDepletionCount": 0,
+      "predictsUnsustainableDeliveryCount": 0,
+      "firstPredictiveEligibleActionSeconds": 12.145247,
+      "candidateManifestPreparationOrCommitEvents": 0,
+      "normalReturnSameDetailVerified": true,
+      "ownGuardianStopped": true,
+      "ownSyslogStopped": true,
+      "WDAAppStates": [
+        1,
+        1
+      ],
+      "original36TrackFieldsUnchanged": true,
+      "otherPreferencesUnchanged": true,
+      "progressEntriesChanged": 1,
+      "newCrashInventory": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      },
+      "finishedAt": "2026-10-23T21:28:26.017302+08:00",
+      "fullFunctionOrContinuousPlaybackPassed": false,
+      "slowVODCandidateAccepted": false,
+      "sameConditionReplayScheduled": false,
+      "limits": [
+        "7.3-second after-clock rebuffer remains a failure; native early spinners corroborate limited timeline, sparse screenshots do not measure exact visible stall duration",
+        "No actual candidate attempted, prepared, decoded or committed in this window; do not accept new candidate implementation from ordinary KS playback",
+        "No actual sound/full subtitle/continuous frame or Release acceptance",
+        "Different start point/network supply from old file6.4sec window; no paired improvement/regression claim"
+      ],
+      "finalAudit": {
+        "at": "2026-10-23T21:29:46.289911+08:00",
+        "freshDeviceNameModelSystemUDIDUSBVerified": true,
+        "source174AndBinaryHashes29SignaturesProfileAndOwnReceiptVerified": true,
+        "WDAAutoIdle10Cool2ReadbackVerified": true,
+        "WDAAppStates": [
+          1,
+          1
+        ],
+        "HomeForeground": true,
+        "fullNonDiagnosticPreferencesUnchangedSinceWindowEnd": false,
+        "allOriginal36TrackFieldsMatchBatchStart": true,
+        "otherPreferencesUnchangedSinceBatchStart": true,
+        "ownedPlaybackBuildLoggerHostsRemaining": 0,
+        "nativeProcessAbsenceClaimed": false,
+        "newMediaCommands": 0,
+        "networkConfigurationChanged": false,
+        "actualFinalHomeImageReviewPending": false,
+        "actualNativeHomeWiFiNoPiPReviewed": true,
+        "fullNonDiagnosticPreferencesUnchangedSinceFirstIndependentRead": true,
+        "lateOneEntryProgressUpdateSeconds": [
+          3995.084,
+          3995.746
+        ],
+        "lateProgressTimestampExactlyMatchesViewDisappear": true,
+        "lateEntryUpdatedAtReferenceSeconds": [
+          814454898.0462,
+          814454898.712284
+        ],
+        "independentReadStableAt": "2026-10-23T21:31:18.664994+08:00"
+      }
+    }
+  },
+  "iphone18": {
+    "latestPackageInstalled": false,
+    "lastVerifiedBuild": "2026-10-23 06:52 normal Debug (historical)",
+    "newTargetCommands": 0,
+    "normalHomeVerification": "user deferred; no repeated prompt/discovery without changed connection condition"
+  },
+  "ipad": {
+    "latestPackageInstalled": false,
+    "newAppUIInstallMediaCommands": 0
+  },
+  "limits": [
+    "No physical slow-VOD candidate decode/alignment/commit acceptance yet",
+    "Earlier iPhone13 S03 6400ms rebuffer remains unresolved",
+    "Normal S01 file resumes near32s while JF starts at0; not paired speed comparison",
+    "Sparse native images and sampled counters do not establish continuous frame pacing, actual sound, full subtitle or PiP acceptance",
+    "Common production source changed; only Debug built/tested, no Release acceptance",
+    "Initial failed tests and helper assertions retained; no full76-cell or28-issue closure"
+  ],
+  "privateEvidencePointer": "/tmp/nastart-candidate-vod-preparation-evidence",
+  "hostReportTestScope": "seven report suites, including additional11 server-log tests; initial missing PYTHONPATH invocation retained"
+}

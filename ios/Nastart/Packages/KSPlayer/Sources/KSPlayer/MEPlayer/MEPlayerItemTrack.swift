@@ -14,6 +14,7 @@ protocol PlayerItemTrackProtocol: CapacityProtocol, AnyObject {
     var isLoopModel: Bool { get set }
     var isEndOfFile: Bool { get set }
     var delegate: CodecCapacityDelegate? { get set }
+    var timestampOrigin: CMTime { get set }
     func decode()
     func prepareInitialSeek(time: TimeInterval)
     func seek(time: TimeInterval)
@@ -23,7 +24,11 @@ protocol PlayerItemTrackProtocol: CapacityProtocol, AnyObject {
 }
 
 class SyncPlayerItemTrack<Frame: MEFrame>: PlayerItemTrackProtocol, CustomStringConvertible {
+#if DEBUG
+    fileprivate let seekFrameDiagnostics = KSSeekFrameDiagnostics()
+#endif
     var seekTime = 0.0
+    var timestampOrigin = CMTime.zero
     fileprivate let options: KSOptions
     fileprivate var decoderMap = [Int32: DecodeProtocol]()
     fileprivate var state = MECodecState.idle {
@@ -77,6 +82,9 @@ class SyncPlayerItemTrack<Frame: MEFrame>: PlayerItemTrackProtocol, CustomString
     }
 
     func seek(time: TimeInterval) {
+#if DEBUG
+        if mediaType == .video { seekFrameDiagnostics.willSeek(target: time, now: CACurrentMediaTime()) }
+#endif
         if options.isAccurateSeek {
             seekTime = time
         } else {
@@ -90,13 +98,35 @@ class SyncPlayerItemTrack<Frame: MEFrame>: PlayerItemTrackProtocol, CustomString
 
     func putPacket(packet: Packet) {
         if state == .flush {
-            decoderMap.values.forEach { $0.doFlushCodec() }
+            flushCodecs()
             state = .decoding
         }
         if state == .decoding {
             doDecode(packet: packet)
         }
     }
+
+    fileprivate func flushCodecs() {
+#if DEBUG
+        let revision = mediaType == .video ? seekFrameDiagnostics.prepareFlush() : nil
+#endif
+        decoderMap.values.forEach { $0.doFlushCodec() }
+#if DEBUG
+        if mediaType == .video { seekFrameDiagnostics.didFlush(revision: revision, now: CACurrentMediaTime()) }
+#endif
+    }
+
+#if DEBUG
+    private func observeSeekFrame(_ frame: MEFrame, discarded: Bool, token: Int?) {
+        guard mediaType == .video else { return }
+        let sum = frame.timestamp.addingReportingOverflow(frame.duration)
+        let start = (frame.cmtime - timestampOrigin).seconds
+        let end = sum.overflow ? nil : (frame.timebase.cmtime(for: sum.partialValue) - timestampOrigin).seconds
+        seekFrameDiagnostics.frame(token: token, discarded: discarded, start: start, end: end,
+            timebaseNum: frame.timebase.num, timebaseDen: frame.timebase.den,
+            origin: timestampOrigin.seconds, now: CACurrentMediaTime())
+    }
+#endif
 
     func getOutputRender(where predicate: ((Frame, Int) -> Bool)?) -> Frame? {
         let outputFecthRender = outputRenderQueue.pop(where: predicate)
@@ -136,6 +166,15 @@ class SyncPlayerItemTrack<Frame: MEFrame>: PlayerItemTrackProtocol, CustomString
         lastPacketBytes += packet.size
         let decoder = decoderMap.value(for: packet.assetTrack.trackID, default: makeDecode(assetTrack: packet.assetTrack))
 //        var startTime = CACurrentMediaTime()
+        let startupGeneration = options.videoStartupTiming.snapshot.generation
+        let decodeStart = CACurrentMediaTime()
+#if DEBUG
+        let seekFrameToken = mediaType == .video ? seekFrameDiagnostics.token(now: decodeStart) : nil
+#endif
+        if mediaType == .video {
+            options.videoStartupTiming.record(.decodeInvocation, time: decodeStart, pts: packet.seconds,
+                path: "beforeDecodeFrameCall", generation: startupGeneration)
+        }
         decoder.decodeFrame(from: packet) { [weak self] result in
             guard let self else {
                 return
@@ -149,15 +188,37 @@ class SyncPlayerItemTrack<Frame: MEFrame>: PlayerItemTrackProtocol, CustomString
                 if self.state == .flush || self.state == .closed {
                     return
                 }
+                if self.mediaType == .video {
+                    self.options.videoStartupTiming.record(.decodedCallback, time: CACurrentMediaTime(),
+                        pts: frame.cmtime.seconds, path: "successfulDecodeCallbackBeforeSeekFilter", generation: startupGeneration)
+                }
                 if self.seekTime > 0 {
-                    if frame.endsBeforeSeekTarget(self.seekTime) {
+                    if frame.endsBeforeSeekTarget(self.seekTime, timestampOrigin: self.timestampOrigin) {
+#if DEBUG
+                        self.observeSeekFrame(frame, discarded: true, token: seekFrameToken)
+#endif
+                        if self.mediaType == .video {
+                            self.options.videoStartupTiming.discardedBeforeTarget(generation: startupGeneration)
+                        }
                         return
                     } else {
                         self.seekTime = 0.0
                     }
                 }
                 if let frame = frame as? Frame {
+                    if self.mediaType == .video {
+                        self.options.videoStartupTiming.record(.acceptedFrame, time: CACurrentMediaTime(),
+                            pts: frame.cmtime.seconds, path: "postSeekTypedDecodeCallback", generation: startupGeneration)
+                    }
+#if DEBUG
+                    self.observeSeekFrame(frame, discarded: false, token: seekFrameToken)
+#endif
                     self.outputRenderQueue.push(frame)
+#if DEBUG
+                    if self.mediaType == .video {
+                        self.seekFrameDiagnostics.didReturnFromPush(token: seekFrameToken, now: CACurrentMediaTime())
+                    }
+#endif
                     self.outputRenderQueue.fps = packet.assetTrack.nominalFrameRate
                     if frame is SubtitleFrame {
                         self.options.embeddedSubtitleFrameDecoded?(packet.assetTrack.trackID)
@@ -175,6 +236,10 @@ class SyncPlayerItemTrack<Frame: MEFrame>: PlayerItemTrackProtocol, CustomString
                     self.state = .failed
                 }
             }
+        }
+        if mediaType == .video {
+            options.videoStartupTiming.recordWork(.videoDecodeCall, start: decodeStart,
+                end: CACurrentMediaTime(), generation: startupGeneration)
         }
         if options.decodeAudioTime == 0, mediaType == .audio {
             options.decodeAudioTime = CACurrentMediaTime()
@@ -252,7 +317,7 @@ final class AsyncPlayerItemTrack<Frame: MEFrame>: SyncPlayerItemTrack<Frame> {
                 decoderMap.removeAll()
                 break outerLoop
             case .flush:
-                decoderMap.values.forEach { $0.doFlushCodec() }
+                flushCodecs()
                 state = .decoding
             case .decoding:
                 if isEndOfFile, packetQueue.count == 0 {
@@ -328,3 +393,38 @@ extension SyncPlayerItemTrack {
         }
     }
 }
+
+#if DEBUG
+extension SyncPlayerItemTrack: KSSeekFrameCapacity {
+    func seekFrameDiagnosticSnapshot(now: TimeInterval) -> [String: String] {
+        guard mediaType == .video, let before = seekFrameDiagnostics.snapshot(now: now) else { return [:] }
+        // The probe and queue have separate locks. A seek between these reads
+        // invalidates this snapshot; otherwise the combined read is still sequential.
+        let origin = timestampOrigin
+        let queue = outputRenderQueue.diagnosticSnapshot(limit: 64) { frame -> (start: Double, end: Double)? in
+            let sum = frame.timestamp.addingReportingOverflow(frame.duration)
+            guard !sum.overflow, frame.duration > 0, frame.timebase.num > 0, frame.timebase.den > 0 else { return nil }
+            let start = (frame.cmtime - origin).seconds
+            let end = (frame.timebase.cmtime(for: sum.partialValue) - origin).seconds
+            return start.isFinite && end.isFinite && end > start ? (start, end) : nil
+        }
+        guard seekFrameDiagnostics.token(now: now) == before.token else { return [:] }
+        var fields = before.fields
+        fields["videoSeekQueueSnapshotAvailable"] = String(queue != nil)
+        if let queue {
+            let intervals = queue.values.compactMap { $0 }
+            fields["videoSeekQueueFrames"] = String(queue.count)
+            fields["videoSeekQueueValidIntervals"] = String(intervals.count)
+            fields["videoSeekQueueInvalidIntervals"] = String(queue.count - intervals.count)
+            if intervals.count == queue.count, let coverage = KSSeekFrameDiagnostics.coverage(intervals) {
+                fields["videoSeekQueueSpanSeconds"] = String(coverage.span)
+                fields["videoSeekQueueUnionSeconds"] = String(coverage.union)
+                fields["videoSeekQueueGapSeconds"] = String(coverage.gaps)
+                fields["videoSeekQueueFirstStartSeconds"] = String(intervals.map(\.start).min()!)
+                fields["videoSeekQueueLastEndSeconds"] = String(intervals.map(\.end).max()!)
+            }
+        }
+        return fields
+    }
+}
+#endif

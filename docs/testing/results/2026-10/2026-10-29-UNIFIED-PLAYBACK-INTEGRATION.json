@@ -1,0 +1,141 @@
+{
+  "updatedAt": "2026-10-29T01:28+08:00",
+  "source": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "inheritedUncommittedChangesPreserved": true,
+    "frozenInputCount": 424,
+    "inputHashesStillMatch": true
+  },
+  "modelPhase": "6.1 integration and real-device verification; Astra optimization not started",
+  "implementation": {
+    "tvThreeSourcesUseOneHost": true,
+    "sharedMobileCoreReferencedByTV": true,
+    "sharedKSOptionsValuesUnchanged": true,
+    "mobileProductionVideoEntriesEnabled": true,
+    "fullCrossPlatformRendererLifecycleUnified": false
+  },
+  "builds": {
+    "mobile": {
+      "signedDebugBuildAt": "2026-10-29T00:32:06.157731+08:00",
+      "mainSHA256": "a1db5798d8a330aaaf47d23cefccc49154556636141daabdc5a70ee1d2ecd91b",
+      "debugDylibSHA256": "ef57460372114e0d6ff18f17835f39e7bc749b6f7f8cbd87ff9744ffb392ad31",
+      "signedDebugVerified": true,
+      "unsignedReleaseCompilePassed": true,
+      "releaseDeviceAcceptance": false
+    },
+    "tv": {
+      "signedDebugBuildAt": "2026-10-29T00:48:31.892294+08:00",
+      "mainSHA256": "a10eee64a3aed6469d8f59de762f831151a464cfe53d2bbb62f940ba65aa1f94",
+      "debugDylibSHA256": "ce73b0af8022ec7d87b1c71554535b4157b6d3fbdd4c698e19624902ea1406c8",
+      "signedDebugVerified": true,
+      "unsignedReleaseCompilePassed": true,
+      "releaseDeviceAcceptance": false
+    }
+  },
+  "tests": [
+    {
+      "suite": "NetworkMedia targeted source/preparation/WebDAV",
+      "passed": 31,
+      "failed": 0
+    },
+    {
+      "suite": "TV all unit tests after explicit public-probe fixture fix",
+      "passed": 52,
+      "failed": 0
+    },
+    {
+      "suite": "Mobile source replacement, paused intent, timeline, subtitles",
+      "passed": 9,
+      "failed": 0
+    }
+  ],
+  "priorFailuresRetained": [
+    "TV discovery test fixture omitted anonymous public transport; initial failure retained, fixture injection fixed and suite passed",
+    "Mobile initial test orchestration omitted result bundle argument; no tests executed",
+    "TV native XCTest and Xcode remote process connection invalidated; no DSM credentials submitted",
+    "iPhone 13 first pause action failed after controls auto-hide; media stopped",
+    "iPad initial WDA status refused; no session or playback",
+    "iPad first new Runner window assumed phone search layout; no playback; cleanup verified",
+    "iPad second window showed actual movie frames, then DTX connection failed; original cleanup interrupted; fresh CoreDevice stopped exact installed app process and confirmed no app/Runner; normal relaunch image inspected"
+  ],
+  "devices": {
+    "iphone13": {
+      "freshIdentityVerified": true,
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "connection": "USB",
+      "preserveData": true,
+      "latestInstalled": true,
+      "installedAt": "2026-10-29T00:50:39.237360+08:00",
+      "mainSHA256": "a1db5798d8a330aaaf47d23cefccc49154556636141daabdc5a70ee1d2ecd91b",
+      "originalPreferencesEqualAfterOverlay": true,
+      "ordinaryHomeImageInspected": true,
+      "realWebDAV": {
+        "sample": "S19 ~128.8GB HEVC4K TrueHD/PGS",
+        "network": "Wi-Fi; native Wi-Fi icon inspected",
+        "actualMovieImageInspected": true,
+        "bufferingOverlayStillObserved": true,
+        "displayedThroughputApproxMBps": 1.0,
+        "pauseAndResumeControlsInspected": true,
+        "normalReturnToFilmDetailInspected": true,
+        "preciseFirstFrameTimeMeasured": false,
+        "ownedMediaStopped": true,
+        "toolSettingsRestored": true,
+        "ownHTTPSessionDeleted": true,
+        "changedPreferencesAfterPlayback": [
+          "localResume",
+          "diagnostics"
+        ],
+        "performanceAccepted": false
+      }
+    },
+    "ipad": {
+      "freshIdentityVerified": true,
+      "model": "iPad15,7",
+      "system": "26.6",
+      "connection": "USB",
+      "preserveData": true,
+      "latestInstalled": true,
+      "installedAt": "2026-10-29T00:51:32.503129+08:00",
+      "mainSHA256": "a1db5798d8a330aaaf47d23cefccc49154556636141daabdc5a70ee1d2ecd91b",
+      "originalPreferencesEqualAfterOverlay": true,
+      "ordinaryHomeImageInspected": true,
+      "latestPlaybackWindow": {
+        "actualMovieImagesInspected": true,
+        "sample": "S19 ~128.8GB HEVC4K TrueHD/PGS",
+        "presentationObserved": "current iPad window mode; movie and subtitle images observed",
+        "pauseResumeAndNormalExitAccepted": false,
+        "failure": "DTX No route to host / ConnectionTerminatedError after playback started",
+        "originalFinallyCleanupInterrupted": true,
+        "independentCoreDeviceStopAcknowledged": true,
+        "freshProcessListAfterStop": {
+          "Nastart": 0,
+          "ownedRunner": 0
+        },
+        "normalHomeImageAfterRelaunchInspected": true,
+        "changedPreferences": [
+          "localResume",
+          "diagnostics"
+        ],
+        "toolSettingsRestoreAndHTTPDeleteBeforeConnectionLoss": "not verified; Runner no longer running",
+        "networkChanged": false,
+        "performanceAccepted": false
+      }
+    },
+    "tv": {
+      "latest424InputPackageInstalled": false,
+      "installedCandidateInputCount": 423,
+      "ordinaryHomeImageInspected": true,
+      "DSMReadOnlyReachabilityConfirmed": true,
+      "DSMCredentialsSubmitted": false,
+      "DSMReloginComplete": false,
+      "ownedRunnerStopped": true,
+      "ownedMediaWindows": 0,
+      "blocker": "system remote process connection invalidated; one request for manual restart pending"
+    }
+  },
+  "newPerformanceMatrixPasses": 0,
+  "NASWrites": 0,
+  "cellularWindows": 0,
+  "iphone18Actions": 0
+}

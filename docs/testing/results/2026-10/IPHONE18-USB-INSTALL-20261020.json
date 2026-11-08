@@ -1,0 +1,51 @@
+{
+  "model": "iPhone19,7",
+  "system": "27.0",
+  "connection": "USB",
+  "sourceDiffSHA256": "35df7015b08ee4d929683983de8ac59d2d7111f94615bf85f38894fc25ae66ed",
+  "binaries": {
+    "Nastart": "08e79c32cfcaa4554d43b34fa0aadebc2704802325054ff402520dd8afb7a730",
+    "Nastart.debug.dylib": "1de981917130d8ddfd3db6cff043a4d393a926cc6c8aea333e137aece9d9a785",
+    "Frameworks/KSPlayer.framework/KSPlayer": "46b62a146dc5cf1aff87099675a40ea4436cb49b82ce8e9c3b2930044cd082b6"
+  },
+  "packageVerified": true,
+  "preferencesSaved": true,
+  "installSent": true,
+  "installSucceeded": true,
+  "normalHomeReviewed": true,
+  "beforeNonDiagnosticPreferenceKeys": 25,
+  "nativeInstallExit": 0,
+  "nonDiagnosticPreferencesEqual": true,
+  "afterNonDiagnosticPreferenceKeys": 25,
+  "RSDTargetVerified": true,
+  "normalLaunchRequested": true,
+  "requestedEnvironment": {},
+  "requestedArguments": [],
+  "actualScreenCaptured": true,
+  "preferencesAfterLaunch": {
+    "beforeKeys": 25,
+    "afterKeys": 25,
+    "sameKeys": true,
+    "changedValues": 0,
+    "allNonDiagnosticPreferencesEqual": true
+  },
+  "normalLaunchFinishedAt": "2026-10-20T07:33:07.444583+08:00",
+  "actualForegroundUIVerified": true,
+  "WiFiIconReviewed": true,
+  "playerClosedReviewed": true,
+  "visibleNASCard": "online; NAS status normal",
+  "otherServiceCardsAtCapture": "unknown; not playback validation",
+  "date": "2026-10-20",
+  "buildTime": "2026-10-20T06:48:25.326233+08:00",
+  "ipaSHA256": "463402be9b1838d3bb7b664e6add6f402e161a79f40afbe654b9977998c72a1a",
+  "wirelessAttempts": {
+    "identityVerified": true,
+    "existingPaired": true,
+    "appForegroundConfirmedByUser": true,
+    "backupFailed": true,
+    "installSent": false,
+    "RSDProxyFailed": true
+  },
+  "currentUserConstraint": "User has left with iPhone18 after install; do not operate it",
+  "playbackRegressionAccepted": false
+}

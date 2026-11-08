@@ -1,0 +1,153 @@
+{
+  "recordedAt": "2026-10-31T06:59:49+08:00",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceInputCount": 439,
+  "changedExistingSourceOrResourceFiles": 8,
+  "newSourceOrTestFiles": 0,
+  "existingTestsPassed": 12,
+  "newTestsPassed": 0,
+  "builds": {
+    "mobile-sim-debug-cast": {
+      "startedAt": "2026-10-31T06:47:46.867678+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-31T06:48:21.095410+08:00"
+    },
+    "tv-sim-debug-cast": {
+      "startedAt": "2026-10-31T06:48:21.095983+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-31T06:48:33.089784+08:00"
+    },
+    "module-tests": {
+      "startedAt": "2026-10-31T06:48:33.090143+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-31T06:48:37.335281+08:00"
+    },
+    "mobile-debug": {
+      "startedAt": "2026-10-31T06:49:39.640432+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-31T06:50:19.932094+08:00"
+    },
+    "tv-debug": {
+      "startedAt": "2026-10-31T06:51:54.728954+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-31T06:52:08.877898+08:00"
+    },
+    "mobile-release": {
+      "startedAt": "2026-10-31T06:50:19.933158+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-31T06:51:54.727321+08:00"
+    },
+    "tv-release": {
+      "startedAt": "2026-10-31T06:52:08.878863+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-31T06:52:37.120195+08:00"
+    }
+  },
+  "sourcePreservation": {
+    "existingSourceOrResourceFilesChanged": 8,
+    "newSourceOrTestFiles": 0,
+    "existingTestsPassed": 12,
+    "newTests": 0,
+    "mobileOutsideDetailViewByteIdentical": true,
+    "mobileMediaItemTrackOverlayAndPlaybackFunctionsByteIdentical": true,
+    "tvOutsideDetailViewAndAllDirectionFunctionsByteIdentical": true,
+    "castRowsAndImageLoadersUnchanged": true,
+    "classificationAlgorithmByteIdentical": true,
+    "readTicketAlgorithmByteIdentical": true,
+    "creditsNoticeLayoutFontsAndAccessibilityIdentifierUnchanged": true,
+    "onlyThreeNewMobileTextKeysPerLocale": true,
+    "metadataReadPhaseAnnotationsOnlyNoNewRequestsOrPayloadAcceptanceGates": true,
+    "originalMobileFailureFallbackAndTVRetainedDetailBehaviorPreserved": true,
+    "previewNoModelStoreVaultClientTaskOrNetwork": true,
+    "sourceInputCount": 439,
+    "otherSourceInputsUnchanged": 431,
+    "mobileWholeDetailLoadMethodByteIdenticalAfterRemovingOnlyStatusAnnotations": true
+  },
+  "packages": {
+    "mobile": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-31T06:50:19.735046+08:00",
+      "frozenAt": "2026-10-31T06:53:43.702438+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 439,
+      "mainSHA256": "bfbaf69317958bca9cde68474678f56ca3a597cfad4dcaa65e809b5ec39a57e2",
+      "debugDylibSHA256": "b14043a9b90fbcc7a9c0b509cf85901d33665c3fa7fb18bf830583d1a60d24b4",
+      "signedMachOCount": 30,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false,
+      "copyMethod": "cp -cpR clone requested; hashes and signatures verified independently"
+    },
+    "tv": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-31T06:52:08.802813+08:00",
+      "frozenAt": "2026-10-31T06:53:44.105278+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 439,
+      "mainSHA256": "21c0fcae053c6a59e6e00617921593cd8e893b6905c06e367626fe7aa6d3fac5",
+      "debugDylibSHA256": "c274a229c62c55b26378406a5c96d9b3bab60278e207edf2b377ea1447c03f88",
+      "signedMachOCount": 27,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false,
+      "copyMethod": "cp -cpR clone requested; hashes and signatures verified independently"
+    }
+  },
+  "capture": {
+    "accepted": 13,
+    "byPlatform": {
+      "phone": 4,
+      "pad": 4,
+      "tv": 5
+    },
+    "notStarted": {},
+    "allPassed": true,
+    "ownedSimulatorsDeleted": true,
+    "syntheticPreferencesPreserved": true,
+    "physicalDevicesOperated": 0,
+    "NASCommands": 0,
+    "interactionOrAnimationVerified": false
+  },
+  "visualReview": {
+    "recordedAt": "2026-10-31T06:59:49.683854+08:00",
+    "reviewed": true,
+    "reviewedStaticWindows": 13,
+    "reviewSheets": [
+      "phone-review-1.jpg",
+      "phone-review-2.jpg",
+      "pad-review-1.jpg",
+      "pad-review-2.jpg",
+      "tv-review-1.jpg",
+      "tv-review-2.jpg",
+      "tv-review-3.jpg"
+    ],
+    "loadingMissingAndUnavailableAreDistinct": true,
+    "namesRemainShownInSyntheticMissingPortraitCase": true,
+    "missingPortraitCaseHasNoNoPeopleOrReadFailureNotice": true,
+    "relatedNoticeShowsSyntheticRetainedPostersAndRetry": true,
+    "noticeTextReadableInSelectedWindows": true,
+    "productionDetailMethodsOrDataTransitionsVerified": false,
+    "realPortraitLoadingOrMetadataAvailabilityVerified": false,
+    "productionTVTileStyleDirectionOrRetryReachabilityVerified": false,
+    "allLanguagesLargeTextVoiceOverOrFrameTimingVerified": false
+  },
+  "ownedSimulatorsDeleted": 3,
+  "physicalDevicesOperated": 0,
+  "NASCommands": 0,
+  "playbackCommands": 0,
+  "newPlaybackMatrixP": 0,
+  "notVerified": [
+    "Live metadata/people loading transitions, actual avatar availability or image requests",
+    "Actual production TVTileStyle focus/click and related retry reachability",
+    "All preferred languages, large-text/VoiceOver and scroll performance",
+    "Physical installation and NAS/playback"
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "date": "2026-10-22",
+  "device": "iPhone14,5/iOS16.3.1/USB; name/UDID private",
+  "package": {
+    "normalBuild": "05:26 Debug/-Onone",
+    "sourceDiffSHA256": "e65a8da17ea0db5e1a22d374c2bb79c5d5d8dd4eb4acb4a5fedd8f3057cbaa16",
+    "ipaSHA256": "45d213bafb07a70a3543980ff961388a817172e7e9176185f67c76fb2b1eaf9b",
+    "source173And29SignaturesProfileOwnDeviceReceiptVerified": true,
+    "newAppSourceBuildInstall": false
+  },
+  "initialNoActionFailure": {
+    "ready": true,
+    "oldSessionActiveInfoHTTP400": "invalid element state; selected App not running",
+    "appStateReadOnly": 1,
+    "sessionInvalidityNotProven": true,
+    "playOrUIActions": 0
+  },
+  "normalWindow": {
+    "startedAt": "2026-10-22T07:30:47.420331+08:00",
+    "finishedAt": "2026-10-22T07:31:21.753909+08:00",
+    "beforeAppStates": [
+      1,
+      1
+    ],
+    "nativeHomeBeforeReviewed": true,
+    "environmentReadback": {},
+    "playCommands": 0,
+    "pipCommands": 0,
+    "directory": "same shared-folder root, all folders",
+    "nameOrder": {
+      "ascendingRows": 12,
+      "descendingRows": 12,
+      "sameRowSet": true,
+      "reversedOrder": true
+    },
+    "nativeAscendingDescendingImagesReviewed": true,
+    "knownGaps": [
+      "no mixed files/type/size/numeric-name coverage",
+      "root has no visible modification dates; not date-sort acceptance",
+      "normal Home return not reached because preference-read assertion stopped window"
+    ],
+    "preservedFailure": "immediate AFC snapshot did not yet reflect menu choice; restore assertion and its finally repeat retained, no forced preference write"
+  },
+  "finalAudit": {
+    "at": "2026-10-22T07:33:01.166652+08:00",
+    "sourceInputs": 173,
+    "sourceAndPackageUnchanged": true,
+    "sourceDiffSHA256": "e65a8da17ea0db5e1a22d374c2bb79c5d5d8dd4eb4acb4a5fedd8f3057cbaa16",
+    "ipaSHA256": "45d213bafb07a70a3543980ff961388a817172e7e9176185f67c76fb2b1eaf9b",
+    "allBinariesAnd29LibrariesVerified": true,
+    "profileValid": true,
+    "freshUSBIdentityVerified": true,
+    "WDAAutoIdle10CoolOff2ReadbackVerified": true,
+    "ownedPlaybackOrBuildProcessesRemaining": 0,
+    "nativeAppAbsent": true,
+    "all25PreferencesUnchangedSinceWindowEnd": true,
+    "bookmarksUnchangedSinceWindowEnd": true,
+    "networkChanged": false,
+    "mediaPlayCommands": 0,
+    "newCrashReportNamesCollected": true,
+    "NASOnlineHomeVerifiedInPriorStartupWindow": true,
+    "nativeHomeWiFiNoPiPVisuallyReviewed": true,
+    "all25PreferencesIncluding36BookmarksEqualToBatchStart": true,
+    "originalModifiedDescendingRestored": true
+  },
+  "hostToolOnly": {
+    "change": "recognize safe protocol code invalid element state, keep private messages out of printable error",
+    "tests": {
+      "suite": "test_wda_command_guard.py",
+      "passed": 18,
+      "failed": 0
+    },
+    "retryOrActionPolicyChanged": false
+  },
+  "formalStatus": "finite UX-02 same-root name direction evidence; whole requirement and28 items remain open",
+  "privateEvidencePointer": "/tmp/nastart-file-sort-current-evidence"
+}

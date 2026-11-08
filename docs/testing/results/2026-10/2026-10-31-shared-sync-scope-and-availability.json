@@ -1,0 +1,143 @@
+{
+  "date": "2026-10-31",
+  "scope": "Shared sync scope and unavailable presentation; offline only",
+  "source": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "inputCount": 446,
+    "existingFilesChanged": 7,
+    "otherHashesUnchanged": 439
+  },
+  "builds": {
+    "mobile-sim-debug-cast": {
+      "startedAt": "2026-10-31T18:39:31.563401+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-31T18:40:02.838037+08:00"
+    },
+    "mobile-debug": {
+      "startedAt": "2026-10-31T18:42:33.966267+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-31T18:43:14.613077+08:00"
+    },
+    "mobile-release": {
+      "startedAt": "2026-10-31T18:43:14.613996+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-31T18:44:50.527895+08:00"
+    },
+    "tv-sim-debug-cast": {
+      "startedAt": "2026-10-31T18:44:50.528751+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-31T18:45:03.243052+08:00"
+    },
+    "tv-unsigned-debug": {
+      "startedAt": "2026-10-31T18:45:03.244024+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-31T18:45:17.203841+08:00"
+    },
+    "tv-release": {
+      "startedAt": "2026-10-31T18:45:17.204650+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-31T18:45:46.962784+08:00"
+    }
+  },
+  "tests": {
+    "OfflineUIScenarioTests": {
+      "passed": 4,
+      "failed": 0
+    },
+    "localization": {
+      "en": {
+        "syncKeyCount": 38,
+        "duplicateSyncKeys": 0
+      },
+      "zh-Hans": {
+        "syncKeyCount": 38,
+        "duplicateSyncKeys": 0
+      }
+    }
+  },
+  "visualWindows": [
+    {
+      "device": "phone simulator",
+      "appearance": "dark",
+      "textSize": "standard",
+      "result": "STATIC_REVIEWED",
+      "observed": "Unavailable notice and all three scope rows visible"
+    },
+    {
+      "device": "TV simulator",
+      "appearance": "dark",
+      "textSize": "standard",
+      "result": "STATIC_REVIEWED",
+      "observed": "Unavailable notice and three equal-width equal-height cards visible"
+    },
+    {
+      "device": "TV simulator",
+      "appearance": "dark",
+      "textSize": "large",
+      "result": "STATIC_REVIEWED",
+      "observed": "Three cards stacked; complete text visible"
+    },
+    {
+      "device": "Pad simulator",
+      "textSize": "large",
+      "time": "2026-10-31T18:49:02.401083+08:00",
+      "freeGiB": 5.8379364013671875,
+      "requiredGiB": 6.0,
+      "started": false,
+      "result": "BLOCKED_STARTUP_BUDGET",
+      "ownedSimulatorCreated": false
+    }
+  ],
+  "cleanup": {
+    "phone-standard": {
+      "startedAt": "2026-10-31T18:46:39.717048+08:00",
+      "physicalDevicesOperated": 0,
+      "NASCommands": 0,
+      "sourceInputCount": 446,
+      "builtFromUnchangedSource": true,
+      "traceExported": false,
+      "syntheticPreferencesPreserved": true,
+      "unexpectedApplicationKeys": [],
+      "installedHashesUnchanged": true,
+      "shutdownExit": 0,
+      "deleteExit": 0,
+      "freshAbsent": true,
+      "endedAt": "2026-10-31T18:48:34.202478+08:00"
+    },
+    "tv-standard": {
+      "startedAt": "2026-10-31T18:49:02.673336+08:00",
+      "physicalDevicesOperated": 0,
+      "NASCommands": 0,
+      "sourceInputCount": 446,
+      "builtFromUnchangedSource": true,
+      "traceExported": false,
+      "syntheticPreferencesPreserved": true,
+      "unexpectedApplicationKeys": [],
+      "installedHashesUnchanged": true,
+      "shutdownExit": 0,
+      "deleteExit": 0,
+      "freshAbsent": true,
+      "endedAt": "2026-10-31T18:53:29.061282+08:00"
+    }
+  },
+  "package": {
+    "mobileSignedMachOCount": 30,
+    "physicalInstallCount": 0,
+    "tvCurrentSignedPackageAvailable": false,
+    "priorProfileBlockRetained": true,
+    "normalTVSigningRetried": false
+  },
+  "physicalDevicesOperated": 0,
+  "NASRequests": 0,
+  "playbackAttempts": 0,
+  "remoteSourceWrites": 0,
+  "playbackMatrixNewPasses": 0,
+  "limitations": [
+    "No real iCloud sync or entitlement verification",
+    "No full production-host navigation, remote interaction or VoiceOver test",
+    "Pad not started below established budget",
+    "TV sync remains unimplemented",
+    "Old password and folder-editor open regressions retained"
+  ],
+  "recordedAt": "2026-10-31T18:56:15.792015+08:00"
+}

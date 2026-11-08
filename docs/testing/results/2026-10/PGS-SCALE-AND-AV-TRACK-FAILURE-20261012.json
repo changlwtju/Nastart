@@ -1,0 +1,143 @@
+{
+  "at": "2026-10-12T07:47:41.349285+08:00",
+  "source": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "a4be368ba042c0f52bb58be240a6e90c5bfc49032653f64ee22440ddedbbb935",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "binaryBuildTime": "2026-10-12T07:18:09.565389+08:00",
+    "binaries": {
+      "Nastart": "036fea1f544b85cfb2b9aa6185e5ddddcacd102b6f997d5cdb3afbcfed36e937",
+      "Nastart.debug.dylib": "2b45b6688bc50b1da2417f39e277c4a602b0045ff8cf6433381d77cce23afa70",
+      "Frameworks/KSPlayer.framework/KSPlayer": "a981b6ce9643d58ef5cbdd81b3f1aa2c1878e6c4e590ee41f1afd510bc3da83c"
+    },
+    "package": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-10-12-subtitle-continuation-071725/Nastart-PGS-Stable-Scale-Normal-Debug.app",
+    "ipa": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-10-12-subtitle-continuation-071725/Nastart-PGS-Stable-Scale-Normal-Debug.ipa",
+    "checkedInputs": 173,
+    "individuallyVerifiedLibraries": 29,
+    "signatureVerified": true,
+    "profileExpirationUTC": "2026-10-17T22:23:40",
+    "tests": {
+      "executed": 322,
+      "skipped": 2,
+      "failures": 0,
+      "runThisTurn": true
+    },
+    "preflight": {
+      "passed": 15,
+      "runThisTurn": true
+    },
+    "sourceEditsThisTurn": [
+      "GreenfieldSubtitleOverlay full viewport bitmap scale; bottom control clearance inside layout"
+    ]
+  },
+  "devices": {
+    "iphone13": {
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "installation": "2026-10-12T07:20:29.712645+08:00",
+      "otherPreferencesUnchanged": 24,
+      "onlyS03BookmarkChanged": true,
+      "originalTrackFieldsRestored": true,
+      "finalPosition": 398.185,
+      "finalAudioTrack": 4,
+      "finalSubtitleTrack": 5,
+      "finalSubtitlesDisabled": false,
+      "newCrashInventoryEntries": 0,
+      "actualNormalHomeVerified": true,
+      "emptyEnvironmentVerified": true,
+      "playerClosed": true,
+      "settingsRestored": {
+        "idle": 10,
+        "animation": 2
+      },
+      "fullSubtitleAccepted": false,
+      "performanceAccepted": false,
+      "trackRestorationMethod": "ordinary UI verified persisted",
+      "PGSCueScaleBeforeSpreadPercent": 53.216368313730065,
+      "PGSCueScaleAfterSpreadPercent": 0.18454233294842304,
+      "samePausedPosition": 364.244,
+      "PGSStaticLayoutVerified": true,
+      "animationFramesComplete": false,
+      "currentPackageSyslogCodecInventoryMissing": true,
+      "codecProof": "this-turn baseline same asset and same KSPlayer binary; actual ID7 bitmap and newer iPad codec inventory",
+      "pausedReturnEvent": [
+        {
+          "event": "subtitle_paused_display_reused",
+          "requestedTrackID": "7",
+          "currentSeconds": "364.244",
+          "evidence": "samePausedPositionDecodedCueNotScreenPresentation"
+        }
+      ]
+    },
+    "ipad": {
+      "model": "iPad12,1",
+      "system": "18.3.1",
+      "installation": "2026-10-12T07:20:23.395167+08:00",
+      "otherPreferencesUnchanged": 15,
+      "onlyS03BookmarkChanged": true,
+      "originalTrackFieldsRestored": true,
+      "finalPosition": 542.298781016,
+      "finalAudioTrack": 4,
+      "finalSubtitleTrack": null,
+      "finalSubtitlesDisabled": true,
+      "newCrashInventoryEntries": 0,
+      "actualNormalHomeVerified": true,
+      "emptyEnvironmentVerified": true,
+      "playerClosed": true,
+      "settingsRestored": {
+        "idle": 10,
+        "animation": 2
+      },
+      "fullSubtitleAccepted": false,
+      "performanceAccepted": false,
+      "trackRestorationMethod": "exact rollback of only test-modified track fields after UI restore failed; post-normal-launch readback confirmed",
+      "PGSLatestLayoutAccepted": false,
+      "actualPrepareFailureRetained": true,
+      "AVPlayerLocalHLSColdRouteVerified": true,
+      "closedBlankCueNotLayoutEvidence": true,
+      "subtitleOffUIAccepted": false,
+      "trackCleanup": {
+        "at": "2026-10-12T07:43:49.967241+08:00",
+        "purpose": "rollback only controlled track changes from failed UI regression; not a playback test condition or acceptance",
+        "AppTerminatedState": 1,
+        "allowedFields": [
+          "audioTrackID",
+          "subtitleTrackID",
+          "subtitlesDisabled"
+        ],
+        "onlyS03TrackFieldsChanged": true,
+        "playbackPositionPreserved": 542.298781016,
+        "allOtherPreferenceValuesPreserved": true,
+        "UIRestoreHadFailed": true,
+        "diskRoundTripExact": true,
+        "subtitleUIFeatureAccepted": false,
+        "normalLaunchReadbackConfirmed": true
+      }
+    },
+    "iphone18": {
+      "model": "iPhone19,7",
+      "system": "27.0",
+      "connection": "paired wireless direct service",
+      "installation": "2026-10-12T07:20:30.768287+08:00",
+      "preservedPreferences": 25,
+      "normalEmptyEnvironmentHomeVerified": true,
+      "latestPlaybackVerified": false,
+      "nativeAutoTunnel": "unavailable paired in this-turn device inventory",
+      "finalWDAQuery": "timeout final state unknown; does not invalidate earlier actual home",
+      "networkChanged": false
+    }
+  },
+  "acceptance": {
+    "iPhone13SamePGSCueStaticScale": true,
+    "iPadLatestPGSLayout": false,
+    "iPadAVSubtitleSwitchOrOff": false,
+    "iPhone18LatestNormalHome": true,
+    "iPhone18LatestPlayback": false,
+    "completeAnimationFrames": false,
+    "fullSUB": false,
+    "AUD": false,
+    "HDR": false,
+    "performanceOrCompetitorRanking": false
+  },
+  "next": "prioritize iPad AV/localHLS source track switching alignment failure and persistence transaction; USB source format/external subtitle/full animation; then iPhone18 playback and native auto tunnel"
+}

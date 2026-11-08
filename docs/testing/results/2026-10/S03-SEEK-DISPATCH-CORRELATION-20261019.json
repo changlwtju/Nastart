@@ -1,0 +1,232 @@
+{
+  "jf": {
+    "operations": [
+      {
+        "operation": 1,
+        "observationSeconds": 47.733561,
+        "requestSelectionBoundary": "actionStart",
+        "seekDispatchSecondsFromAction": null,
+        "seekDispatchTraceAvailable": false,
+        "excludedSegmentRequests": [],
+        "firstSegmentRequests": [
+          {
+            "requestSeconds": 4.592359,
+            "segmentOrdinal": 0,
+            "responseHeadersSeconds": 19.993255,
+            "responseStatus": 200,
+            "headersObserved": true,
+            "bodyBytesObserved": 3854,
+            "cancelRequestedSeconds": 19.993759,
+            "requestMs": 15392.0,
+            "completionSeconds": 19.994316,
+            "errorCode": -999.0
+          },
+          {
+            "requestSeconds": 8.601732,
+            "segmentOrdinal": 0,
+            "responseHeadersSeconds": 19.923715,
+            "responseStatus": 200,
+            "headersObserved": true,
+            "bodyBytesObserved": 7950,
+            "cancelRequestedSeconds": 19.92604,
+            "requestMs": 11319.0,
+            "completionSeconds": 19.956992,
+            "errorCode": -999.0
+          },
+          {
+            "requestSeconds": 18.608893,
+            "segmentOrdinal": 0,
+            "responseHeadersSeconds": 19.781515,
+            "responseStatus": 200,
+            "headersObserved": true,
+            "bodyBytesObserved": 744480,
+            "requestMs": 1158.0,
+            "completionSeconds": 20.384338,
+            "errorCode": null
+          }
+        ],
+        "serverCandidateCount": 1,
+        "association": "timeAndOrdinalOnly",
+        "serverCommand": {
+          "startSegmentOrdinal": 0,
+          "seekSeconds": 0.0,
+          "videoCodec": "h264_vaapi",
+          "audioCodec": "libfdk_aac",
+          "subtitleOverlayFilter": true,
+          "secondsFromAction": 4.902905
+        },
+        "replacement_candidate_decodedSeconds": [],
+        "replacement_committedSeconds": [],
+        "candidateFailures": []
+      },
+      {
+        "operation": 2,
+        "observationSeconds": 48.476804,
+        "requestSelectionBoundary": "seekDispatch",
+        "seekDispatchSecondsFromAction": 0.601823,
+        "seekDispatchTraceAvailable": true,
+        "excludedSegmentRequests": [
+          {
+            "requestSeconds": 0.051568,
+            "segmentOrdinal": 40,
+            "responseHeadersSeconds": 0.553961,
+            "responseStatus": 200,
+            "headersObserved": true,
+            "bodyBytesObserved": 155407,
+            "cancelRequestedSeconds": 0.607547,
+            "requestMs": 516.0,
+            "completionSeconds": 0.608316,
+            "errorCode": -999.0,
+            "exclusionReason": "beforeSeekDispatch"
+          }
+        ],
+        "firstSegmentRequests": [
+          {
+            "requestSeconds": 0.606888,
+            "segmentOrdinal": 932,
+            "responseHeadersSeconds": 5.988901,
+            "responseStatus": 200,
+            "headersObserved": true,
+            "bodyBytesObserved": 3854,
+            "cancelRequestedSeconds": 5.99572,
+            "requestMs": 5415.0,
+            "completionSeconds": 6.048831,
+            "errorCode": -999.0
+          },
+          {
+            "requestSeconds": 4.60769,
+            "segmentOrdinal": 932,
+            "responseHeadersSeconds": 6.12226,
+            "responseStatus": 200,
+            "headersObserved": true,
+            "bodyBytesObserved": 1145484,
+            "requestMs": 1538.0,
+            "completionSeconds": 6.52814,
+            "errorCode": null
+          }
+        ],
+        "serverCandidateCount": 1,
+        "association": "timeAndOrdinalOnly",
+        "serverCommand": {
+          "startSegmentOrdinal": 932,
+          "seekSeconds": 3731.728,
+          "videoCodec": "h264_vaapi",
+          "audioCodec": "libfdk_aac",
+          "subtitleOverlayFilter": true,
+          "secondsFromAction": 1.294344
+        },
+        "replacement_candidate_decodedSeconds": [],
+        "replacement_committedSeconds": [],
+        "candidateFailures": []
+      }
+    ],
+    "serverMinusClientOffsetSecondsUsed": 0.0,
+    "matchingWindowSeconds": 5.0,
+    "matchingBoundary": "firstSegmentRequest",
+    "sessionIdentityVerified": false,
+    "firstVisibleFrameAccepted": false,
+    "actualAudibleAccepted": false,
+    "limitations": [
+      "Server command times are log records, not exact process or segment readiness.",
+      "Time and ordinal correlation does not exclude unrelated concurrent sessions.",
+      "Pre-dispatch requests are retained separately; touch start is not seek dispatch.",
+      "Missing events or commands stay unknown; request intervals may overlap."
+    ]
+  },
+  "file": {
+    "operations": [
+      {
+        "operation": 1,
+        "observationSeconds": 47.087916,
+        "requestSelectionBoundary": "actionStart",
+        "seekDispatchSecondsFromAction": null,
+        "seekDispatchTraceAvailable": false,
+        "excludedSegmentRequests": [],
+        "firstSegmentRequests": [
+          {
+            "requestSeconds": 3.699237,
+            "segmentOrdinal": 0,
+            "responseHeadersSeconds": 5.923565,
+            "responseStatus": 200,
+            "headersObserved": true,
+            "bodyBytesObserved": 744480,
+            "requestMs": 2231.0,
+            "completionSeconds": 6.460628,
+            "errorCode": null
+          }
+        ],
+        "serverCandidateCount": 1,
+        "association": "timeAndOrdinalOnly",
+        "serverCommand": {
+          "startSegmentOrdinal": 0,
+          "seekSeconds": 0.0,
+          "videoCodec": "h264_vaapi",
+          "audioCodec": "libfdk_aac",
+          "subtitleOverlayFilter": false,
+          "secondsFromAction": 3.990602
+        },
+        "replacement_candidate_decodedSeconds": [],
+        "replacement_committedSeconds": [],
+        "candidateFailures": []
+      },
+      {
+        "operation": 2,
+        "observationSeconds": 47.465837,
+        "requestSelectionBoundary": "seekDispatch",
+        "seekDispatchSecondsFromAction": 0.467312,
+        "seekDispatchTraceAvailable": true,
+        "excludedSegmentRequests": [],
+        "firstSegmentRequests": [
+          {
+            "requestSeconds": 0.46794,
+            "segmentOrdinal": 916,
+            "responseHeadersSeconds": 5.394533,
+            "responseStatus": 200,
+            "headersObserved": true,
+            "bodyBytesObserved": 12046,
+            "cancelRequestedSeconds": 5.408107,
+            "requestMs": 4931.0,
+            "completionSeconds": 5.408945,
+            "errorCode": -999.0
+          },
+          {
+            "requestSeconds": 4.4836,
+            "segmentOrdinal": 916,
+            "responseHeadersSeconds": 5.503487,
+            "responseStatus": 200,
+            "headersObserved": true,
+            "bodyBytesObserved": 1031180,
+            "requestMs": 1028.0,
+            "completionSeconds": 5.998458,
+            "errorCode": null
+          }
+        ],
+        "serverCandidateCount": 1,
+        "association": "timeAndOrdinalOnly",
+        "serverCommand": {
+          "startSegmentOrdinal": 916,
+          "seekSeconds": 3667.664,
+          "videoCodec": "h264_vaapi",
+          "audioCodec": "libfdk_aac",
+          "subtitleOverlayFilter": false,
+          "secondsFromAction": 1.334686
+        },
+        "replacement_candidate_decodedSeconds": [],
+        "replacement_committedSeconds": [],
+        "candidateFailures": []
+      }
+    ],
+    "serverMinusClientOffsetSecondsUsed": 0.0,
+    "matchingWindowSeconds": 5.0,
+    "matchingBoundary": "firstSegmentRequest",
+    "sessionIdentityVerified": false,
+    "firstVisibleFrameAccepted": false,
+    "actualAudibleAccepted": false,
+    "limitations": [
+      "Server command times are log records, not exact process or segment readiness.",
+      "Time and ordinal correlation does not exclude unrelated concurrent sessions.",
+      "Pre-dispatch requests are retained separately; touch start is not seek dispatch.",
+      "Missing events or commands stay unknown; request intervals may overlap."
+    ]
+  }
+}

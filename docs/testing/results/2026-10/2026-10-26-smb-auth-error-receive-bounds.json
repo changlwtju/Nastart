@@ -1,0 +1,667 @@
+{
+  "date": "2026-10-26",
+  "scope": "SMB authentication failure callback precedence and receive bounds; external prototype only",
+  "baseCRevision": "aedafb2c8742c83188e27841e270fdaad6035d41",
+  "earlierSigningPatchRetained": true,
+  "newFindings": {
+    "nonstandardFixtureErrorBody": {
+      "sessionSetupBodyLength": 17,
+      "structureSize": 9,
+      "errorByteCountInterpretation": 589896,
+      "actualPayloadRemaining": 9,
+      "claimsBeyondRemaining": true
+    },
+    "standardErrorBeforeWrapperFix": {
+      "afterCancelMs": 0,
+      "elapsedMs": 9.382125,
+      "outcome": "unavailable",
+      "wireCommands": 3,
+      "peerClosedObserved": true,
+      "writeRequests": 0,
+      "queryRequests": 0,
+      "readRequests": 0,
+      "maxQueryRequested": 0,
+      "mediaReadRequested": false,
+      "outsideReadRequested": false,
+      "stageReached": false,
+      "sourceUnchanged": true
+    },
+    "callbackErrorWasOverwrittenByFollowingEBADF": true,
+    "classificationUsesCapturedNTSTATUSInsteadOfDarwinErrno": true
+  },
+  "acceptedLocalChanges": [
+    "preserve completed nonzero callback status when service later reports close error; do not suppress transport failure after success",
+    "capture callback NTSTATUS and classify authentication rejection without clearing or retrying credentials",
+    "reject claimed ERROR ByteCount beyond current command before allocation/wait",
+    "bound client transport frame to 64..262144 bytes before variable payload allocation",
+    "validate compound NextCommand within actual remaining frame/alignment"
+  ],
+  "contractCaseCount": 18,
+  "contractCases": {
+    "normal": {
+      "afterCancelMs": 0,
+      "elapsedMs": 58.302834,
+      "outcome": "success",
+      "result": {
+        "dialect": 514,
+        "nfoBytes": 50001,
+        "pages": 2,
+        "skippedLinks": 0,
+        "entryCount": 123
+      },
+      "wireCommands": 17,
+      "peerClosedObserved": true,
+      "writeRequests": 0,
+      "queryRequests": 3,
+      "readRequests": 4,
+      "maxQueryRequested": 16384,
+      "mediaReadRequested": false,
+      "outsideReadRequested": false,
+      "stageReached": false,
+      "sourceUnchanged": true
+    },
+    "standardAuth": {
+      "afterCancelMs": 0,
+      "elapsedMs": 3.595125,
+      "outcome": "authenticationRejected(3221225581)",
+      "wireCommands": 3,
+      "peerClosedObserved": true,
+      "writeRequests": 0,
+      "queryRequests": 0,
+      "readRequests": 0,
+      "maxQueryRequested": 0,
+      "mediaReadRequested": false,
+      "outsideReadRequested": false,
+      "stageReached": false,
+      "sourceUnchanged": true
+    },
+    "disabledAuth": {
+      "afterCancelMs": 0,
+      "elapsedMs": 3.5265,
+      "outcome": "authenticationRejected(3221225586)",
+      "wireCommands": 3,
+      "peerClosedObserved": true,
+      "writeRequests": 0,
+      "queryRequests": 0,
+      "readRequests": 0,
+      "maxQueryRequested": 0,
+      "mediaReadRequested": false,
+      "outsideReadRequested": false,
+      "stageReached": false,
+      "sourceUnchanged": true
+    },
+    "authMalformed": {
+      "afterCancelMs": 0,
+      "elapsedMs": 3.529041,
+      "outcome": "unavailable",
+      "wireCommands": 3,
+      "peerClosedObserved": true,
+      "writeRequests": 0,
+      "queryRequests": 0,
+      "readRequests": 0,
+      "maxQueryRequested": 0,
+      "mediaReadRequested": false,
+      "outsideReadRequested": false,
+      "stageReached": false,
+      "sourceUnchanged": true
+    },
+    "silentAuth": {
+      "afterCancelMs": 0,
+      "elapsedMs": 311.236917,
+      "outcome": "deadline",
+      "wireCommands": 2,
+      "peerClosedObserved": true,
+      "writeRequests": 0,
+      "queryRequests": 0,
+      "readRequests": 0,
+      "maxQueryRequested": 0,
+      "mediaReadRequested": false,
+      "outsideReadRequested": false,
+      "stageReached": true,
+      "sourceUnchanged": true
+    },
+    "permissionDenied": {
+      "afterCancelMs": 0,
+      "elapsedMs": 4.615583,
+      "outcome": "remote(-1073741790)",
+      "wireCommands": 5,
+      "peerClosedObserved": true,
+      "writeRequests": 0,
+      "queryRequests": 0,
+      "readRequests": 0,
+      "maxQueryRequested": 0,
+      "mediaReadRequested": false,
+      "outsideReadRequested": false,
+      "stageReached": false,
+      "sourceUnchanged": true
+    },
+    "errorBodyOverflow": {
+      "afterCancelMs": 0,
+      "elapsedMs": 4.779875,
+      "outcome": "unavailable",
+      "wireCommands": 5,
+      "peerClosedObserved": true,
+      "writeRequests": 0,
+      "queryRequests": 0,
+      "readRequests": 0,
+      "maxQueryRequested": 0,
+      "mediaReadRequested": false,
+      "outsideReadRequested": false,
+      "stageReached": false,
+      "sourceUnchanged": true
+    },
+    "compoundOverflow": {
+      "afterCancelMs": 0,
+      "elapsedMs": 2.111166,
+      "outcome": "unavailable",
+      "wireCommands": 1,
+      "peerClosedObserved": true,
+      "writeRequests": 0,
+      "queryRequests": 0,
+      "readRequests": 0,
+      "maxQueryRequested": 0,
+      "mediaReadRequested": false,
+      "outsideReadRequested": false,
+      "stageReached": false,
+      "sourceUnchanged": true
+    },
+    "limit": {
+      "afterCancelMs": 0,
+      "elapsedMs": 16.264292,
+      "outcome": "limit",
+      "wireCommands": 8,
+      "peerClosedObserved": true,
+      "writeRequests": 0,
+      "queryRequests": 1,
+      "readRequests": 0,
+      "maxQueryRequested": 16384,
+      "mediaReadRequested": false,
+      "outsideReadRequested": false,
+      "stageReached": false,
+      "sourceUnchanged": true
+    },
+    "dfs": {
+      "afterCancelMs": 0,
+      "elapsedMs": 4.880833,
+      "outcome": "remote(-1073741225)",
+      "wireCommands": 5,
+      "peerClosedObserved": true,
+      "writeRequests": 0,
+      "queryRequests": 0,
+      "readRequests": 0,
+      "maxQueryRequested": 0,
+      "mediaReadRequested": false,
+      "outsideReadRequested": false,
+      "stageReached": false,
+      "sourceUnchanged": true
+    },
+    "malformed": {
+      "afterCancelMs": 0,
+      "elapsedMs": 15.495542,
+      "outcome": "malformedPage",
+      "wireCommands": 8,
+      "peerClosedObserved": true,
+      "writeRequests": 0,
+      "queryRequests": 1,
+      "readRequests": 0,
+      "maxQueryRequested": 16384,
+      "mediaReadRequested": false,
+      "outsideReadRequested": false,
+      "stageReached": false,
+      "sourceUnchanged": true
+    },
+    "unsigned": {
+      "afterCancelMs": 0,
+      "elapsedMs": 4.018708,
+      "outcome": "unavailable",
+      "wireCommands": 4,
+      "peerClosedObserved": true,
+      "writeRequests": 0,
+      "queryRequests": 0,
+      "readRequests": 0,
+      "maxQueryRequested": 0,
+      "mediaReadRequested": false,
+      "outsideReadRequested": false,
+      "stageReached": false,
+      "sourceUnchanged": true
+    },
+    "badSignature": {
+      "afterCancelMs": 0,
+      "elapsedMs": 4.433417,
+      "outcome": "unavailable",
+      "wireCommands": 4,
+      "peerClosedObserved": true,
+      "writeRequests": 0,
+      "queryRequests": 0,
+      "readRequests": 0,
+      "maxQueryRequested": 0,
+      "mediaReadRequested": false,
+      "outsideReadRequested": false,
+      "stageReached": false,
+      "sourceUnchanged": true
+    },
+    "slowQuery": {
+      "afterCancelMs": 2.21625,
+      "elapsedMs": 72.353875,
+      "outcome": "CancellationError",
+      "wireCommands": 8,
+      "peerClosedObserved": true,
+      "writeRequests": 0,
+      "queryRequests": 1,
+      "readRequests": 0,
+      "maxQueryRequested": 16384,
+      "mediaReadRequested": false,
+      "outsideReadRequested": false,
+      "stageReached": true,
+      "sourceUnchanged": true
+    },
+    "slowRead": {
+      "afterCancelMs": 21.589291,
+      "elapsedMs": 118.129958,
+      "outcome": "CancellationError",
+      "wireCommands": 13,
+      "peerClosedObserved": true,
+      "writeRequests": 0,
+      "queryRequests": 3,
+      "readRequests": 1,
+      "maxQueryRequested": 16384,
+      "mediaReadRequested": false,
+      "outsideReadRequested": false,
+      "stageReached": true,
+      "sourceUnchanged": true
+    },
+    "deadline": {
+      "afterCancelMs": 0,
+      "elapsedMs": 311.699958,
+      "outcome": "deadline",
+      "wireCommands": 8,
+      "peerClosedObserved": true,
+      "writeRequests": 0,
+      "queryRequests": 1,
+      "readRequests": 0,
+      "maxQueryRequested": 16384,
+      "mediaReadRequested": false,
+      "outsideReadRequested": false,
+      "stageReached": true,
+      "sourceUnchanged": true
+    },
+    "reparse": {
+      "afterCancelMs": 0,
+      "elapsedMs": 32.841583,
+      "outcome": "success",
+      "result": {
+        "dialect": 514,
+        "nfoBytes": 50001,
+        "pages": 2,
+        "skippedLinks": 1,
+        "entryCount": 123
+      },
+      "wireCommands": 17,
+      "peerClosedObserved": true,
+      "writeRequests": 0,
+      "queryRequests": 3,
+      "readRequests": 4,
+      "maxQueryRequested": 16384,
+      "mediaReadRequested": false,
+      "outsideReadRequested": false,
+      "stageReached": false,
+      "sourceUnchanged": true
+    },
+    "rootReparse": {
+      "afterCancelMs": 0,
+      "elapsedMs": 5.815666,
+      "outcome": "reparse",
+      "wireCommands": 6,
+      "peerClosedObserved": true,
+      "writeRequests": 0,
+      "queryRequests": 0,
+      "readRequests": 0,
+      "maxQueryRequested": 0,
+      "mediaReadRequested": false,
+      "outsideReadRequested": false,
+      "stageReached": false,
+      "sourceUnchanged": true
+    }
+  },
+  "transportPrefixCaseCount": 5,
+  "transportPrefixCases": {
+    "zero": {
+      "afterCancelMs": 0,
+      "elapsedMs": 5.355292,
+      "outcome": "unavailable",
+      "clientBytesReceived": 108,
+      "peerClosed": true,
+      "claimedFrameBytes": 0
+    },
+    "short": {
+      "afterCancelMs": 0,
+      "elapsedMs": 3.814666,
+      "outcome": "unavailable",
+      "clientBytesReceived": 108,
+      "peerClosed": true,
+      "claimedFrameBytes": 63
+    },
+    "overCap": {
+      "afterCancelMs": 0,
+      "elapsedMs": 1.679333,
+      "outcome": "unavailable",
+      "clientBytesReceived": 108,
+      "peerClosed": true,
+      "claimedFrameBytes": 262145
+    },
+    "overflow": {
+      "afterCancelMs": 0,
+      "elapsedMs": 1.838208,
+      "outcome": "unavailable",
+      "clientBytesReceived": 108,
+      "peerClosed": true,
+      "claimedFrameBytes": 4294967295
+    },
+    "atCapPending": {
+      "afterCancelMs": 0,
+      "elapsedMs": 307.938583,
+      "outcome": "deadline",
+      "clientBytesReceived": 108,
+      "peerClosed": true,
+      "claimedFrameBytes": 262144
+    }
+  },
+  "memoryValidation": {
+    "caseCount": 17,
+    "connectionOperations": 28,
+    "AddressSanitizerRuntimeLinked": true,
+    "CObjectInstrumentationConfirmed": true,
+    "invalidMemoryReportsObserved": 0,
+    "parallelReadPending": 12,
+    "parallelCancelled": 6,
+    "parallelCompleted": 6,
+    "individualRaceWindows": 16,
+    "outcomeCounts": {
+      "CancellationError": 13,
+      "success": 3
+    },
+    "results": {
+      "parallel": {
+        "afterCancelUntilAllFinishedMs": 839.542292,
+        "parallelOutcomes": {
+          "CancellationError": 6,
+          "success": 6
+        },
+        "pendingReadConnectionsBeforeCancel": 12,
+        "peerClosedCount": 12,
+        "sourceUnchanged": true,
+        "mediaReadRequested": false,
+        "writeRequests": 0,
+        "ASanRuntimeLinked": true,
+        "invalidMemoryReport": false
+      },
+      "race00": {
+        "afterCancelMs": 3.597917,
+        "elapsedMs": 18.943375,
+        "outcome": "CancellationError",
+        "peerClosedCount": 1,
+        "sourceUnchanged": true,
+        "mediaReadRequested": false,
+        "writeRequests": 0,
+        "ASanRuntimeLinked": true,
+        "invalidMemoryReport": false
+      },
+      "race01": {
+        "afterCancelMs": 6.385584,
+        "elapsedMs": 27.413375,
+        "outcome": "CancellationError",
+        "peerClosedCount": 1,
+        "sourceUnchanged": true,
+        "mediaReadRequested": false,
+        "writeRequests": 0,
+        "ASanRuntimeLinked": true,
+        "invalidMemoryReport": false
+      },
+      "race02": {
+        "afterCancelMs": 0.927334,
+        "elapsedMs": 27.65375,
+        "outcome": "CancellationError",
+        "peerClosedCount": 1,
+        "sourceUnchanged": true,
+        "mediaReadRequested": false,
+        "writeRequests": 0,
+        "ASanRuntimeLinked": true,
+        "invalidMemoryReport": false
+      },
+      "race03": {
+        "afterCancelMs": 3.759334,
+        "elapsedMs": 19.044375,
+        "outcome": "CancellationError",
+        "peerClosedCount": 1,
+        "sourceUnchanged": true,
+        "mediaReadRequested": false,
+        "writeRequests": 0,
+        "ASanRuntimeLinked": true,
+        "invalidMemoryReport": false
+      },
+      "race04": {
+        "afterCancelMs": 7.34775,
+        "elapsedMs": 27.970125,
+        "outcome": "CancellationError",
+        "peerClosedCount": 1,
+        "sourceUnchanged": true,
+        "mediaReadRequested": false,
+        "writeRequests": 0,
+        "ASanRuntimeLinked": true,
+        "invalidMemoryReport": false
+      },
+      "race05": {
+        "afterCancelMs": 6.696833,
+        "elapsedMs": 36.314,
+        "outcome": "CancellationError",
+        "peerClosedCount": 1,
+        "sourceUnchanged": true,
+        "mediaReadRequested": false,
+        "writeRequests": 0,
+        "ASanRuntimeLinked": true,
+        "invalidMemoryReport": false
+      },
+      "race06": {
+        "afterCancelMs": 3.937958,
+        "elapsedMs": 19.262083,
+        "outcome": "CancellationError",
+        "peerClosedCount": 1,
+        "sourceUnchanged": true,
+        "mediaReadRequested": false,
+        "writeRequests": 0,
+        "ASanRuntimeLinked": true,
+        "invalidMemoryReport": false
+      },
+      "race07": {
+        "afterCancelMs": 5.413167,
+        "elapsedMs": 27.637709,
+        "outcome": "CancellationError",
+        "peerClosedCount": 1,
+        "sourceUnchanged": true,
+        "mediaReadRequested": false,
+        "writeRequests": 0,
+        "ASanRuntimeLinked": true,
+        "invalidMemoryReport": false
+      },
+      "race08": {
+        "afterCancelMs": 0.220708,
+        "elapsedMs": 27.5945,
+        "outcome": "CancellationError",
+        "peerClosedCount": 1,
+        "sourceUnchanged": true,
+        "mediaReadRequested": false,
+        "writeRequests": 0,
+        "ASanRuntimeLinked": true,
+        "invalidMemoryReport": false
+      },
+      "race09": {
+        "afterCancelMs": 6.138708,
+        "elapsedMs": 19.744083,
+        "outcome": "CancellationError",
+        "peerClosedCount": 1,
+        "sourceUnchanged": true,
+        "mediaReadRequested": false,
+        "writeRequests": 0,
+        "ASanRuntimeLinked": true,
+        "invalidMemoryReport": false
+      },
+      "race10": {
+        "afterCancelMs": 5.340292,
+        "elapsedMs": 28.246334,
+        "outcome": "CancellationError",
+        "peerClosedCount": 1,
+        "sourceUnchanged": true,
+        "mediaReadRequested": false,
+        "writeRequests": 0,
+        "ASanRuntimeLinked": true,
+        "invalidMemoryReport": false
+      },
+      "race11": {
+        "afterCancelMs": 1.016042,
+        "elapsedMs": 28.055209,
+        "outcome": "CancellationError",
+        "peerClosedCount": 1,
+        "sourceUnchanged": true,
+        "mediaReadRequested": false,
+        "writeRequests": 0,
+        "ASanRuntimeLinked": true,
+        "invalidMemoryReport": false
+      },
+      "raceLate00": {
+        "afterCancelMs": 0.244708,
+        "elapsedMs": 44.938625,
+        "outcome": "CancellationError",
+        "peerClosedCount": 1,
+        "sourceUnchanged": true,
+        "mediaReadRequested": false,
+        "writeRequests": 0,
+        "ASanRuntimeLinked": true,
+        "invalidMemoryReport": false
+      },
+      "raceLate01": {
+        "afterCancelMs": 0.33175,
+        "elapsedMs": 103.220458,
+        "outcome": "success",
+        "result": {
+          "dialect": 514,
+          "entryNames": [
+            "Movie.nfo",
+            "Movie.mkv"
+          ],
+          "nfoBytes": 50001,
+          "pages": 1,
+          "skippedLinks": 0
+        },
+        "peerClosedCount": 1,
+        "sourceUnchanged": true,
+        "mediaReadRequested": false,
+        "writeRequests": 0,
+        "ASanRuntimeLinked": true,
+        "invalidMemoryReport": false
+      },
+      "raceLate02": {
+        "afterCancelMs": 0.273959,
+        "elapsedMs": 50.3835,
+        "outcome": "success",
+        "result": {
+          "dialect": 514,
+          "entryNames": [
+            "Movie.nfo",
+            "Movie.mkv"
+          ],
+          "nfoBytes": 50001,
+          "pages": 1,
+          "skippedLinks": 0
+        },
+        "peerClosedCount": 1,
+        "sourceUnchanged": true,
+        "mediaReadRequested": false,
+        "writeRequests": 0,
+        "ASanRuntimeLinked": true,
+        "invalidMemoryReport": false
+      },
+      "raceLate03": {
+        "afterCancelMs": 0.38275,
+        "elapsedMs": 104.380958,
+        "outcome": "success",
+        "result": {
+          "dialect": 514,
+          "entryNames": [
+            "Movie.nfo",
+            "Movie.mkv"
+          ],
+          "nfoBytes": 50001,
+          "pages": 1,
+          "skippedLinks": 0
+        },
+        "peerClosedCount": 1,
+        "sourceUnchanged": true,
+        "mediaReadRequested": false,
+        "writeRequests": 0,
+        "ASanRuntimeLinked": true,
+        "invalidMemoryReport": false
+      }
+    },
+    "notThreadSanitizerOrLeakAudit": true
+  },
+  "builds": {
+    "mobile": {
+      "platform": "IOS",
+      "architecture": "arm64",
+      "configuration": "Debug",
+      "sha256": "58a7ca36ca6901c56406201079444e3d1dc20562c8488cfcd858c5830068297c",
+      "signed": false,
+      "embeddedInApp": false,
+      "deviceExecuted": false
+    },
+    "tv": {
+      "platform": "TVOS",
+      "architecture": "arm64",
+      "configuration": "Debug",
+      "sha256": "0a859db0e2d05907cda0036c1873f0b45fe5ef182c1b1011dc80ed4c4488e027",
+      "signed": false,
+      "embeddedInApp": false,
+      "deviceExecuted": false
+    }
+  },
+  "integrity": {
+    "at": "2026-10-26T12:05:10.770299+08:00",
+    "baseCFiles": 199,
+    "changedCFiles": [
+      "lib/smb2-cmd-error.c",
+      "lib/socket.c"
+    ],
+    "applicationInputCount": 375,
+    "applicationDriftCount": 0,
+    "appBinaryDriftCounts": {
+      "mobile": 0,
+      "tv": 0
+    },
+    "ownedFixtureProcessesStopped": true,
+    "physicalDeviceTests": 0,
+    "NASRequests": 0
+  },
+  "iphone18": {
+    "currentInventoryChecked": true,
+    "connectionStates": [
+      "unavailable"
+    ],
+    "installedThisBatch": false
+  },
+  "remaining": [
+    "synchronous getaddrinfo before poll remains; current runs use literal loopback",
+    "real NAS/Windows/Samba authentication, permission/reparse/DFS compatibility",
+    "SMB3 encryption, reauthentication, negotiated limits and whole C parser allocation audit",
+    "atomic root containment during namespace changes, NFO post-read version checks and old-index transaction",
+    "protocol adapter, signing/embedding, licensing/distribution, app UI and device integration"
+  ],
+  "appCodeBuildInstallChanged": false,
+  "requirements": {
+    "open": 30,
+    "inProgress": 14,
+    "awaitingAcceptance": 5,
+    "notStarted": 11,
+    "playbackMatrixCells": 114,
+    "closedThisBatch": 0
+  }
+}

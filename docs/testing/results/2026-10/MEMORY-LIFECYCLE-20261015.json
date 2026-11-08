@@ -1,0 +1,731 @@
+{
+  "recordedAt": "2026-10-15T22:31:32.336471+08:00",
+  "scope": "iPad normal memory lifecycle + separate diagnostic + offline prior subtitle correlation; no App edits",
+  "package": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "c868c278fcefe2411cfc07eabb4adf33ce159f0a0f9fb446897aeb2ce25ac835",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "binaryBuildTime": "2026-10-15T18:56:47.888882+08:00",
+    "binaries": {
+      "Nastart": "963906f2460a7e8ca717dbb818d7ac6e6425a0466c28d96d8a5829cd21f8a75b",
+      "Nastart.debug.dylib": "46cb682d7938d2f4d45b622dc49ca9ecc368f493717d7c23303a44196c4ba8f5",
+      "Frameworks/KSPlayer.framework/KSPlayer": "76d17821ceeba058544cad0031b0eb41f4fa6be90edb9ec36ebe2d1f24bb7b5e"
+    },
+    "ipaSHA256": "197133cef44eec71d344cf716aee716f902edcad17a2bb51da80425e970ee537",
+    "signatureVerified": true,
+    "individuallyVerifiedLibraries": 29,
+    "checkedInputs": 173,
+    "profileExpirationUTC": "2026-10-17T22:23:40",
+    "sourceEditsThisTurn": false,
+    "rebuiltThisTurn": false,
+    "tests": {
+      "executed": 396,
+      "skipped": 2,
+      "failures": 0,
+      "runThisTurn": false,
+      "origin": "2026-10-15 18:56 same-source build"
+    },
+    "preflight": {
+      "passed": 15,
+      "runThisTurn": false,
+      "origin": "2026-10-15 18:56 same-source build"
+    }
+  },
+  "devices": {
+    "ipad": {
+      "model": "iPad12,1",
+      "system": "18.3.1",
+      "liveNameUDIDUSBCheckedPrivately": true,
+      "latestCoverInstalledThisTurn": true,
+      "dataPreserving": true,
+      "installPreferenceKeysUnchanged": 18,
+      "finalAudit": {
+        "at": "2026-10-15T22:27:52.318393+08:00",
+        "model": "iPad12,1",
+        "system": "18.3.1",
+        "connection": "USB",
+        "sourceDiffSHA256": "c868c278fcefe2411cfc07eabb4adf33ce159f0a0f9fb446897aeb2ce25ac835",
+        "latestPackage": {
+          "Nastart": "963906f2460a7e8ca717dbb818d7ac6e6425a0466c28d96d8a5829cd21f8a75b",
+          "Nastart.debug.dylib": "46cb682d7938d2f4d45b622dc49ca9ecc368f493717d7c23303a44196c4ba8f5",
+          "Frameworks/KSPlayer.framework/KSPlayer": "76d17821ceeba058544cad0031b0eb41f4fa6be90edb9ec36ebe2d1f24bb7b5e"
+        },
+        "nonBookmarkPreferenceKeys": 17,
+        "nonBookmarkPreferencesExactlyUnchanged": true,
+        "naturalBookmarkChangesCount": 2,
+        "originalBookmarksChecked": 28,
+        "originalBookmarksRemoved": 0,
+        "originalTrackChangeCount": 0,
+        "allOriginalTracksUnchanged": true,
+        "newBookmarksCount": 0,
+        "crashInventoryDelta": {
+          "Nastart": 0,
+          "WebDriverAgent": 0,
+          "JetsamEvent": 0
+        },
+        "normalEmptyEnvironment": true,
+        "NASNormal": true,
+        "playerClosed": true,
+        "WDAIdleSeconds": 10,
+        "WDAAnimationCoolOffSeconds": 2,
+        "nativeConditionsNotRecheckedThisTurn": false,
+        "noConditionInjectedThisTurn": true,
+        "nativeActiveConditions": 0,
+        "finalHomeActuallyReviewed": true
+      }
+    },
+    "iphone13": {
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "connection": "USB",
+      "freshIdentityPreferencesAndCrashInventoryReadOnly": true,
+      "latestPackageRegressionThisTurn": false
+    },
+    "iphone18": {
+      "freshWirelessIdentityContainerAndPackageVerified": true,
+      "probeOnly": true,
+      "installOrLaunchSentThisTurn": false,
+      "latestInstallPreviouslyCompletedAt": "2026-10-15T21:49:20.742898+08:00",
+      "latestInstallManifest": "IPHONE18-WIFI-UPDATE-20261015.json",
+      "playbackAccepted": false
+    }
+  },
+  "memory": {
+    "sourceChanges": false,
+    "samplingIntervalRequestedMs": 1000,
+    "cycles": [
+      {
+        "case": "wifi-memory-s19-jf-r2",
+        "sourceDiffSHA256": "c868c278fcefe2411cfc07eabb4adf33ce159f0a0f9fb446897aeb2ce25ac835",
+        "sample": "S19",
+        "entry": "Jellyfin",
+        "prePlaybackNavigation": {
+          "samples": 19,
+          "physMiBMedian": 67.83,
+          "physMiBMax": 83.127,
+          "residentMiBMedian": 147.328,
+          "residentMiBMax": 198.078
+        },
+        "startup0to60": {
+          "samples": 59,
+          "physMiBMedian": 151.096,
+          "physMiBMax": 928.784,
+          "residentMiBMedian": 182.547,
+          "residentMiBMax": 268.172
+        },
+        "peakPhysicalMemorySecondsFromTouch": 22.234,
+        "ordinaryPlayerExitSecondsFromTouch": 73.453,
+        "homeNavigationDurationSeconds": 12.467,
+        "home10to30": {
+          "samples": 20,
+          "physMiBMedian": 122.479,
+          "physMiBMax": 122.783,
+          "residentMiBMedian": 202.641,
+          "residentMiBMax": 202.781
+        },
+        "PIDCountPlaybackThroughPostExit": 1,
+        "hostReceiptMaxGapSeconds": 2.026,
+        "automaticRouteEvents": [
+          {
+            "secondsFromTouch": 6.086534,
+            "event": "automatic_downshift_requested",
+            "fields": {
+              "attempt": 1,
+              "bufferTargetSeconds": 4,
+              "bufferedAheadSeconds": 1.5736249557887927,
+              "deliveryCapacity": 44867872,
+              "engine": "KSPlayer",
+              "reason": "deliveryBelowSourceBitrate",
+              "runtimeDemand": 8482008
+            }
+          },
+          {
+            "secondsFromTouch": 6.733355,
+            "event": "replacement_warmup_started",
+            "fields": {
+              "engine": "KSPlayer"
+            }
+          },
+          {
+            "secondsFromTouch": 30.822669,
+            "event": "replacement_committed",
+            "fields": {
+              "candidateBufferAheadSeconds": 15.920865747777775,
+              "candidateSeconds": 20.03171203,
+              "engine": "KSPlayer",
+              "seconds": 20.101,
+              "startsPaused": "false"
+            }
+          },
+          {
+            "secondsFromTouch": 43.211392,
+            "event": "automatic_downshift_requested",
+            "fields": {
+              "attempt": 1,
+              "bufferedAheadSeconds": 11.978959476777778,
+              "deliveryCapacity": 5060319,
+              "engine": "AVPlayer",
+              "reason": "deliveryBelowSourceBitrate"
+            }
+          },
+          {
+            "secondsFromTouch": 43.49098,
+            "event": "replacement_warmup_started",
+            "fields": {
+              "engine": "AVPlayer"
+            }
+          },
+          {
+            "secondsFromTouch": 54.947817,
+            "event": "replacement_committed",
+            "fields": {
+              "candidateBufferAheadSeconds": 12.262577777777778,
+              "candidateSeconds": 43.71,
+              "engine": "AVPlayer",
+              "seconds": 43.500064026,
+              "startsPaused": "false"
+            }
+          }
+        ],
+        "URLMetricsCellularYes": 0,
+        "imagesReviewed": true,
+        "noColdCacheControl": true,
+        "freshProcessEachCycle": true,
+        "residentVsPhysicalFootprintNotInterchangeable": true
+      },
+      {
+        "case": "wifi-memory-s19-jf-r3",
+        "sourceDiffSHA256": "c868c278fcefe2411cfc07eabb4adf33ce159f0a0f9fb446897aeb2ce25ac835",
+        "sample": "S19",
+        "entry": "Jellyfin",
+        "prePlaybackNavigation": {
+          "samples": 20,
+          "physMiBMedian": 68.048,
+          "physMiBMax": 89.048,
+          "residentMiBMedian": 148.344,
+          "residentMiBMax": 207.234
+        },
+        "startup0to60": {
+          "samples": 61,
+          "physMiBMedian": 149.221,
+          "physMiBMax": 949.565,
+          "residentMiBMedian": 191.391,
+          "residentMiBMax": 242.562
+        },
+        "peakPhysicalMemorySecondsFromTouch": 25.211,
+        "ordinaryPlayerExitSecondsFromTouch": 73.422,
+        "homeNavigationDurationSeconds": 12.689,
+        "home10to30": {
+          "samples": 20,
+          "physMiBMedian": 120.619,
+          "physMiBMax": 120.862,
+          "residentMiBMedian": 213.672,
+          "residentMiBMax": 213.828
+        },
+        "PIDCountPlaybackThroughPostExit": 1,
+        "hostReceiptMaxGapSeconds": 1.082,
+        "automaticRouteEvents": [
+          {
+            "secondsFromTouch": 7.273212,
+            "event": "automatic_downshift_requested",
+            "fields": {
+              "attempt": 1,
+              "bufferTargetSeconds": 4,
+              "bufferedAheadSeconds": 0.6744583117945391,
+              "deliveryCapacity": 33680177,
+              "engine": "KSPlayer",
+              "reason": "deliveryBelowSourceBitrate",
+              "runtimeDemand": 41370729
+            }
+          },
+          {
+            "secondsFromTouch": 7.839184,
+            "event": "replacement_warmup_started",
+            "fields": {
+              "engine": "KSPlayer"
+            }
+          },
+          {
+            "secondsFromTouch": 26.513654,
+            "event": "replacement_committed",
+            "fields": {
+              "candidateBufferAheadSeconds": 7.375577777777778,
+              "candidateSeconds": 16.565,
+              "engine": "KSPlayer",
+              "seconds": 16.348,
+              "startsPaused": "false"
+            }
+          },
+          {
+            "secondsFromTouch": 38.436055,
+            "event": "automatic_downshift_requested",
+            "fields": {
+              "attempt": 1,
+              "bufferedAheadSeconds": 7.8285236837777745,
+              "deliveryCapacity": 6609925,
+              "engine": "AVPlayer",
+              "reason": "deliveryBelowSourceBitrate"
+            }
+          },
+          {
+            "secondsFromTouch": 38.69099,
+            "event": "replacement_warmup_started",
+            "fields": {
+              "engine": "AVPlayer"
+            }
+          },
+          {
+            "secondsFromTouch": 48.519002,
+            "event": "replacement_committed",
+            "fields": {
+              "candidateBufferAheadSeconds": 1.9070893647777822,
+              "candidateSeconds": 38.049488413,
+              "engine": "AVPlayer",
+              "seconds": 37.507926622,
+              "startsPaused": "false"
+            }
+          }
+        ],
+        "URLMetricsCellularYes": 0,
+        "imagesReviewed": true,
+        "noColdCacheControl": true,
+        "freshProcessEachCycle": true,
+        "residentVsPhysicalFootprintNotInterchangeable": true
+      },
+      {
+        "case": "wifi-memory-s19-jf-r4",
+        "sourceDiffSHA256": "c868c278fcefe2411cfc07eabb4adf33ce159f0a0f9fb446897aeb2ce25ac835",
+        "sample": "S19",
+        "entry": "Jellyfin",
+        "prePlaybackNavigation": {
+          "samples": 19,
+          "physMiBMedian": 67.564,
+          "physMiBMax": 92.47,
+          "residentMiBMedian": 147.422,
+          "residentMiBMax": 207.891
+        },
+        "startup0to60": {
+          "samples": 60,
+          "physMiBMedian": 438.487,
+          "physMiBMax": 927.252,
+          "residentMiBMedian": 189.492,
+          "residentMiBMax": 243.578
+        },
+        "peakPhysicalMemorySecondsFromTouch": 31.509,
+        "ordinaryPlayerExitSecondsFromTouch": 74.16,
+        "homeNavigationDurationSeconds": 12.451,
+        "home10to30": {
+          "samples": 20,
+          "physMiBMedian": 121.237,
+          "physMiBMax": 121.674,
+          "residentMiBMedian": 209.422,
+          "residentMiBMax": 209.641
+        },
+        "PIDCountPlaybackThroughPostExit": 1,
+        "hostReceiptMaxGapSeconds": 1.145,
+        "automaticRouteEvents": [
+          {
+            "secondsFromTouch": 16.765649,
+            "event": "automatic_downshift_requested",
+            "fields": {
+              "attempt": 1,
+              "bufferTargetSeconds": 4,
+              "bufferedAheadSeconds": 4.0654165555718365,
+              "deliveryCapacity": 40449511,
+              "engine": "KSPlayer",
+              "reason": "deliveryBelowSourceBitrate",
+              "runtimeDemand": 73202430
+            }
+          },
+          {
+            "secondsFromTouch": 17.386193,
+            "event": "replacement_warmup_started",
+            "fields": {
+              "engine": "KSPlayer"
+            }
+          },
+          {
+            "secondsFromTouch": 30.950385,
+            "event": "replacement_committed",
+            "fields": {
+              "candidateBufferAheadSeconds": 2.2883171192222207,
+              "candidateSeconds": 21.713005103,
+              "engine": "KSPlayer",
+              "seconds": 21.605,
+              "startsPaused": "false"
+            }
+          },
+          {
+            "secondsFromTouch": 43.379797,
+            "event": "automatic_downshift_requested",
+            "fields": {
+              "attempt": 1,
+              "bufferedAheadSeconds": 6.255670395777784,
+              "deliveryCapacity": 3652856,
+              "engine": "AVPlayer",
+              "reason": "deliveryBelowSourceBitrate"
+            }
+          },
+          {
+            "secondsFromTouch": 43.663502,
+            "event": "replacement_warmup_started",
+            "fields": {
+              "engine": "AVPlayer"
+            }
+          },
+          {
+            "secondsFromTouch": 52.552517,
+            "event": "replacement_committed",
+            "fields": {
+              "candidateBufferAheadSeconds": 1.4231137197777812,
+              "candidateSeconds": 42.537464058,
+              "engine": "AVPlayer",
+              "seconds": 42.512613177,
+              "startsPaused": "false"
+            }
+          }
+        ],
+        "URLMetricsCellularYes": 0,
+        "imagesReviewed": true,
+        "noColdCacheControl": true,
+        "freshProcessEachCycle": true,
+        "residentVsPhysicalFootprintNotInterchangeable": true
+      },
+      {
+        "case": "wifi-memory-s01-jf-r1",
+        "sourceDiffSHA256": "c868c278fcefe2411cfc07eabb4adf33ce159f0a0f9fb446897aeb2ce25ac835",
+        "sample": "S01",
+        "entry": "Jellyfin",
+        "prePlaybackNavigation": {
+          "samples": 19,
+          "physMiBMedian": 67.845,
+          "physMiBMax": 89.236,
+          "residentMiBMedian": 147.844,
+          "residentMiBMax": 200.719
+        },
+        "startup0to60": {
+          "samples": 61,
+          "physMiBMedian": 151.721,
+          "physMiBMax": 155.064,
+          "residentMiBMedian": 267.328,
+          "residentMiBMax": 277.672
+        },
+        "peakPhysicalMemorySecondsFromTouch": 4.584,
+        "ordinaryPlayerExitSecondsFromTouch": 73.521,
+        "homeNavigationDurationSeconds": 12.371,
+        "home10to30": {
+          "samples": 20,
+          "physMiBMedian": 88.111,
+          "physMiBMax": 88.533,
+          "residentMiBMedian": 273.234,
+          "residentMiBMax": 273.547
+        },
+        "PIDCountPlaybackThroughPostExit": 1,
+        "hostReceiptMaxGapSeconds": 1.195,
+        "automaticRouteEvents": [],
+        "URLMetricsCellularYes": 0,
+        "imagesReviewed": true,
+        "noColdCacheControl": true,
+        "freshProcessEachCycle": true,
+        "residentVsPhysicalFootprintNotInterchangeable": true
+      }
+    ],
+    "continuousDisplayOrAUDOrWholeSUBAccepted": false,
+    "allocationOwnershipProven": false,
+    "sameSourceVersionRanking": false,
+    "coldCacheControlled": false,
+    "S19PeakPhysicalMiBAcrossThree": {
+      "min": 927.252,
+      "median": 928.784,
+      "max": 949.565,
+      "count": 3,
+      "P95Accepted": false
+    },
+    "snapshotMetricWarning": "Prior Jetsam ~846MiB was rpages*pageSize resident estimate; these physFootprint peaks are a different metric and do not reproduce that exact resident snapshot",
+    "S19ToS01PerformanceRankingAccepted": false
+  },
+  "separateVMDiagnostic": {
+    "ordinarySourceUnchanged": true,
+    "template": "Activity Monitor + VM Tracker (automatic 3s snapshots)",
+    "attachOnly": true,
+    "separateDiagnosticNotNormalCycleComparison": true,
+    "environmentInjected": false,
+    "timeline": [
+      {
+        "at": 1792074305.933503,
+        "stage": "traceCommand"
+      },
+      {
+        "at": 1792074307.5998652,
+        "stage": "recordingStartAnnouncementObserved"
+      },
+      {
+        "at": 1792074406.845678,
+        "stage": "playerExit"
+      },
+      {
+        "at": 1792074422.028723,
+        "stage": "sameProcessHome"
+      }
+    ],
+    "samePIDAfterExit": true,
+    "recordExitCode": 0,
+    "tocExportExitCode": 0,
+    "traceCompleted": true,
+    "recordingTool": "Xcode 26.6 xctrace; App still Xcode 27 ordinary Debug",
+    "selectedPicturesActuallyReviewed": true,
+    "VMTrackerTrackAndGraphsActuallySeenInInstruments": true,
+    "VMCategoryNumbersExtracted": false,
+    "allocationOwnershipProven": false,
+    "VMTableAbsentFromCLITOC": true,
+    "traceSeconds": 120
+  },
+  "toolFailuresRetained": {
+    "firstXcode27PIDAttach": "Cannot find process for provided pid; no playback launched by driver",
+    "secondXcode26NameAttach": "Attach announcement and home-only trace created; driver wrongly awaited different message text, stopped before playback",
+    "fix": "accept actual Starting recording / Attaching announcement and verify attached PID equals fresh WDA foreground; independent Xcode27 named-target diagnostic",
+    "noAppSourceChanges": true,
+    "normalCyclesNotReusedAsVMTrace": true,
+    "plotNotProduced": "matplotlib absent in both available Python runtimes; numeric summaries retained",
+    "thirdXcode27NameAttach": "Cannot find process matching name; no playback window",
+    "fourthXcode26NameAttach": "120s complete; same PID through return home; VM Tracker graphs viewed in Instruments; CLI TOC has no VM schema; category attribution still open",
+    "diagnosticNotNormalCycle": true
+  },
+  "priorSubtitleAnalysis": {
+    "operations": [
+      {
+        "operation": 1,
+        "observationSeconds": 38.736949,
+        "firstSegmentRequests": [
+          {
+            "requestSeconds": 2.192612,
+            "segmentOrdinal": 12,
+            "responseHeadersSeconds": 7.214628,
+            "cancelRequestedSeconds": 7.276062,
+            "requestMs": 5030.0
+          },
+          {
+            "requestSeconds": 6.204721,
+            "segmentOrdinal": 12,
+            "responseHeadersSeconds": 7.300599,
+            "requestMs": 1058.0
+          }
+        ],
+        "serverCandidateCount": 1,
+        "association": "timeAndOrdinalOnly",
+        "serverCommand": {
+          "startSegmentOrdinal": 12,
+          "seekSeconds": 48.048,
+          "videoCodec": "h264_vaapi",
+          "audioCodec": "libfdk_aac",
+          "subtitleOverlayFilter": true,
+          "secondsFromAction": 2.398554
+        },
+        "replacement_candidate_decodedSeconds": [
+          7.490679
+        ],
+        "replacement_committedSeconds": [
+          11.035952
+        ]
+      },
+      {
+        "operation": 2,
+        "observationSeconds": 38.10985,
+        "firstSegmentRequests": [
+          {
+            "requestSeconds": 2.148514,
+            "segmentOrdinal": 21,
+            "responseHeadersSeconds": 7.13795,
+            "cancelRequestedSeconds": 7.138552,
+            "requestMs": 4962.0
+          },
+          {
+            "requestSeconds": 6.189649,
+            "segmentOrdinal": 21,
+            "responseHeadersSeconds": 7.139236,
+            "requestMs": 966.0
+          }
+        ],
+        "serverCandidateCount": 1,
+        "association": "timeAndOrdinalOnly",
+        "serverCommand": {
+          "startSegmentOrdinal": 21,
+          "seekSeconds": 84.084,
+          "videoCodec": "h264_vaapi",
+          "audioCodec": "libfdk_aac",
+          "subtitleOverlayFilter": true,
+          "secondsFromAction": 2.346605
+        },
+        "replacement_candidate_decodedSeconds": [
+          8.012263
+        ],
+        "replacement_committedSeconds": [
+          11.976455
+        ]
+      },
+      {
+        "operation": 3,
+        "observationSeconds": 38.409849,
+        "firstSegmentRequests": [
+          {
+            "requestSeconds": 1.654641,
+            "segmentOrdinal": 31,
+            "responseHeadersSeconds": 1.68154,
+            "requestMs": 47.0
+          },
+          {
+            "requestSeconds": 8.899344,
+            "segmentOrdinal": 31,
+            "responseHeadersSeconds": 10.091361,
+            "requestMs": 1232.0
+          }
+        ],
+        "serverCandidateCount": 0,
+        "association": "unmatched",
+        "serverCommand": null,
+        "replacement_candidate_decodedSeconds": [
+          9.005923
+        ],
+        "replacement_committedSeconds": [
+          14.245119
+        ]
+      },
+      {
+        "operation": 4,
+        "observationSeconds": 38.659749,
+        "firstSegmentRequests": [
+          {
+            "requestSeconds": 0.927216,
+            "segmentOrdinal": 40,
+            "responseHeadersSeconds": 1.001574,
+            "requestMs": 44.0
+          },
+          {
+            "requestSeconds": 2.546348,
+            "segmentOrdinal": 40,
+            "responseHeadersSeconds": 7.490243,
+            "cancelRequestedSeconds": 7.490812,
+            "requestMs": 4967.0
+          },
+          {
+            "requestSeconds": 6.596993,
+            "segmentOrdinal": 40,
+            "responseHeadersSeconds": 7.438253,
+            "requestMs": 862.0
+          }
+        ],
+        "serverCandidateCount": 1,
+        "association": "timeAndOrdinalOnly",
+        "serverCommand": {
+          "startSegmentOrdinal": 40,
+          "seekSeconds": 160.16,
+          "videoCodec": "h264_vaapi",
+          "audioCodec": "libfdk_aac",
+          "subtitleOverlayFilter": true,
+          "secondsFromAction": 2.734906
+        },
+        "replacement_candidate_decodedSeconds": [
+          7.999009
+        ],
+        "replacement_committedSeconds": [
+          8.844921
+        ]
+      },
+      {
+        "operation": 5,
+        "observationSeconds": 38.77076,
+        "firstSegmentRequests": [
+          {
+            "requestSeconds": 2.088935,
+            "segmentOrdinal": 49,
+            "responseHeadersSeconds": 7.122247,
+            "cancelRequestedSeconds": 7.122824,
+            "requestMs": 5014.0
+          },
+          {
+            "requestSeconds": 6.064152,
+            "segmentOrdinal": 49,
+            "responseHeadersSeconds": 7.04976,
+            "requestMs": 984.0
+          }
+        ],
+        "serverCandidateCount": 1,
+        "association": "timeAndOrdinalOnly",
+        "serverCommand": {
+          "startSegmentOrdinal": 49,
+          "seekSeconds": 196.196,
+          "videoCodec": "h264_vaapi",
+          "audioCodec": "libfdk_aac",
+          "subtitleOverlayFilter": true,
+          "secondsFromAction": 2.360157
+        },
+        "replacement_candidate_decodedSeconds": [
+          7.66363
+        ],
+        "replacement_committedSeconds": [
+          8.21652
+        ]
+      },
+      {
+        "operation": 6,
+        "observationSeconds": 30.816886,
+        "firstSegmentRequests": [
+          {
+            "requestSeconds": 2.576531,
+            "segmentOrdinal": 58,
+            "responseHeadersSeconds": 12.916278,
+            "cancelRequestedSeconds": 13.008263,
+            "requestMs": 10351.0
+          },
+          {
+            "requestSeconds": 6.650789,
+            "segmentOrdinal": 58,
+            "responseHeadersSeconds": 13.007056,
+            "requestMs": 6334.0
+          }
+        ],
+        "serverCandidateCount": 1,
+        "association": "timeAndOrdinalOnly",
+        "serverCommand": {
+          "startSegmentOrdinal": 58,
+          "seekSeconds": 232.232,
+          "videoCodec": "h264_vaapi",
+          "audioCodec": "libfdk_aac",
+          "subtitleOverlayFilter": true,
+          "secondsFromAction": 2.779397
+        },
+        "replacement_candidate_decodedSeconds": [
+          13.67193
+        ],
+        "replacement_committedSeconds": [
+          21.194173
+        ]
+      }
+    ],
+    "serverMinusClientOffsetSecondsUsed": 0.0,
+    "matchingWindowSeconds": 5.0,
+    "sessionIdentityVerified": false,
+    "firstVisibleFrameAccepted": false,
+    "actualAudibleAccepted": false,
+    "limitations": [
+      "Server command times are log records, not exact process or segment readiness.",
+      "Time and ordinal correlation does not exclude unrelated concurrent sessions.",
+      "Missing events or commands stay unknown; request intervals may overlap."
+    ],
+    "provenance": {
+      "sourceDiffSHA256": "20ab3f6aed209541a6236dddbb5a3c5976304092d9e32db01c6f60fcc17e58f9",
+      "device": "ipad",
+      "sample": "S19",
+      "entry": "Jellyfin",
+      "priorFrozenWindowOnly": true,
+      "downloadedServerLogs": 15,
+      "newServerOrMediaRequestsThisAnalysis": 0,
+      "historicalServerClockCorrectionApplied": false
+    }
+  },
+  "finalSourceInputsVerified": 173,
+  "finalBinaryHashesAndSignatureVerified": true,
+  "allOriginalOpenIssuesPreserved": true,
+  "mediaOrTransportParametersChanged": false,
+  "independentPrivateEvidenceWindow": true
+}

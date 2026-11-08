@@ -1,0 +1,793 @@
+{
+  "updatedAt": "2026-10-23T20:20:56.353014+08:00",
+  "scope": "Offline analysis of saved19:24 iPhone13 window; no present-time device/media commands",
+  "newAppBuildsOrInstalls": 0,
+  "newDeviceCommands": 0,
+  "newMediaCommands": 0,
+  "AppInputs174Unchanged": true,
+  "IPA_SHA256": "c09e72c5df9a397c702a3c08a4d7a3580ac515a565ef3b404fd51419242c6055",
+  "savedUnionWindow": {
+    "boundedEndActionSeconds": 67.95587301254272,
+    "plannedWindowSeconds": 65,
+    "deduplicatedWindowEventCount": 308,
+    "snapshotsRead": 7
+  },
+  "actualSwiftPolicyReplay": {
+    "AppPolicyChanged": false,
+    "clockScope": "Replay substitutes bounded logged event times for original sampler monotonic uptime; matching is consistency evidence only.",
+    "mismatchedRows": 0,
+    "newDeviceOrMediaRequests": 0,
+    "recordedDecisionRows": 62,
+    "reserveEligibilityScope": "Uses recorded predictiveEligible; does not reconstruct the entire player/task state.",
+    "rows": [
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": true,
+        "eventTimeSeconds": 1.437014,
+        "graceAllowed": false,
+        "predictiveEligibleRecorded": false,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": false,
+        "eventTimeSeconds": 2.460282,
+        "graceAllowed": false,
+        "predictiveEligibleRecorded": false,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": false,
+        "eventTimeSeconds": 3.471909,
+        "graceAllowed": false,
+        "predictiveEligibleRecorded": false,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": false,
+        "eventTimeSeconds": 4.48684,
+        "graceAllowed": false,
+        "predictiveEligibleRecorded": false,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": false,
+        "eventTimeSeconds": 5.488149,
+        "graceAllowed": false,
+        "predictiveEligibleRecorded": false,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": false,
+        "eventTimeSeconds": 6.543604,
+        "graceAllowed": false,
+        "predictiveEligibleRecorded": false,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": false,
+        "eventTimeSeconds": 7.58205,
+        "graceAllowed": true,
+        "predictiveEligibleRecorded": true,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": true,
+        "eventTimeSeconds": 8.645149,
+        "graceAllowed": true,
+        "predictiveEligibleRecorded": false,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": true,
+        "eventTimeSeconds": 9.674513,
+        "graceAllowed": true,
+        "predictiveEligibleRecorded": false,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": true,
+        "eventTimeSeconds": 10.74536,
+        "graceAllowed": true,
+        "predictiveEligibleRecorded": false,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": true,
+        "eventTimeSeconds": 11.792288,
+        "graceAllowed": true,
+        "predictiveEligibleRecorded": false,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": true,
+        "eventTimeSeconds": 12.849417,
+        "graceAllowed": true,
+        "predictiveEligibleRecorded": false,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": true,
+        "eventTimeSeconds": 13.892999,
+        "graceAllowed": true,
+        "predictiveEligibleRecorded": false,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": true,
+        "eventTimeSeconds": 14.944121,
+        "graceAllowed": true,
+        "predictiveEligibleRecorded": false,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": false,
+        "eventTimeSeconds": 16.009321,
+        "graceAllowed": true,
+        "predictiveEligibleRecorded": true,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": false,
+        "eventTimeSeconds": 17.041724,
+        "graceAllowed": true,
+        "predictiveEligibleRecorded": true,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": false,
+        "eventTimeSeconds": 18.059976,
+        "graceAllowed": true,
+        "predictiveEligibleRecorded": true,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": false,
+        "eventTimeSeconds": 19.127408,
+        "graceAllowed": true,
+        "predictiveEligibleRecorded": true,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": false,
+        "eventTimeSeconds": 20.142284,
+        "graceAllowed": true,
+        "predictiveEligibleRecorded": true,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": false,
+        "eventTimeSeconds": 21.205062,
+        "graceAllowed": true,
+        "predictiveEligibleRecorded": true,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": false,
+        "eventTimeSeconds": 22.248302,
+        "graceAllowed": true,
+        "predictiveEligibleRecorded": true,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": false,
+        "eventTimeSeconds": 23.313079,
+        "graceAllowed": true,
+        "predictiveEligibleRecorded": true,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": false,
+        "eventTimeSeconds": 24.343142,
+        "graceAllowed": true,
+        "predictiveEligibleRecorded": true,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": false,
+        "eventTimeSeconds": 25.367037,
+        "graceAllowed": true,
+        "predictiveEligibleRecorded": true,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": false,
+        "eventTimeSeconds": 26.435171,
+        "graceAllowed": true,
+        "predictiveEligibleRecorded": true,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": false,
+        "eventTimeSeconds": 27.449178,
+        "graceAllowed": true,
+        "predictiveEligibleRecorded": true,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": false,
+        "eventTimeSeconds": 28.467658,
+        "graceAllowed": true,
+        "predictiveEligibleRecorded": true,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": false,
+        "eventTimeSeconds": 29.483813,
+        "graceAllowed": true,
+        "predictiveEligibleRecorded": true,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": false,
+        "eventTimeSeconds": 30.544731,
+        "graceAllowed": true,
+        "predictiveEligibleRecorded": true,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": false,
+        "eventTimeSeconds": 31.603866,
+        "graceAllowed": true,
+        "predictiveEligibleRecorded": true,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": false,
+        "eventTimeSeconds": 32.646156,
+        "graceAllowed": true,
+        "predictiveEligibleRecorded": true,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": false,
+        "eventTimeSeconds": 33.667109,
+        "graceAllowed": true,
+        "predictiveEligibleRecorded": true,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": false,
+        "eventTimeSeconds": 34.684995,
+        "graceAllowed": true,
+        "predictiveEligibleRecorded": true,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": false,
+        "eventTimeSeconds": 35.74376,
+        "graceAllowed": true,
+        "predictiveEligibleRecorded": true,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": false,
+        "eventTimeSeconds": 36.80282,
+        "graceAllowed": true,
+        "predictiveEligibleRecorded": true,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": false,
+        "eventTimeSeconds": 37.842548,
+        "graceAllowed": true,
+        "predictiveEligibleRecorded": true,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": false,
+        "eventTimeSeconds": 38.844261,
+        "graceAllowed": true,
+        "predictiveEligibleRecorded": true,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": false,
+        "eventTimeSeconds": 39.868902,
+        "graceAllowed": true,
+        "predictiveEligibleRecorded": true,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": false,
+        "eventTimeSeconds": 40.936879,
+        "graceAllowed": true,
+        "predictiveEligibleRecorded": true,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": false,
+        "eventTimeSeconds": 41.944133,
+        "graceAllowed": true,
+        "predictiveEligibleRecorded": true,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": false,
+        "eventTimeSeconds": 43.006402,
+        "graceAllowed": true,
+        "predictiveEligibleRecorded": true,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": false,
+        "eventTimeSeconds": 44.0458,
+        "graceAllowed": true,
+        "predictiveEligibleRecorded": true,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": false,
+        "eventTimeSeconds": 45.072883,
+        "graceAllowed": true,
+        "predictiveEligibleRecorded": true,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": false,
+        "eventTimeSeconds": 46.138332,
+        "graceAllowed": true,
+        "predictiveEligibleRecorded": true,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": false,
+        "eventTimeSeconds": 47.173477,
+        "graceAllowed": true,
+        "predictiveEligibleRecorded": true,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": false,
+        "eventTimeSeconds": 48.239339,
+        "graceAllowed": true,
+        "predictiveEligibleRecorded": true,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": false,
+        "eventTimeSeconds": 49.242377,
+        "graceAllowed": true,
+        "predictiveEligibleRecorded": true,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": false,
+        "eventTimeSeconds": 50.273328,
+        "graceAllowed": true,
+        "predictiveEligibleRecorded": true,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": false,
+        "eventTimeSeconds": 51.340884,
+        "graceAllowed": true,
+        "predictiveEligibleRecorded": true,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": false,
+        "eventTimeSeconds": 52.342654,
+        "graceAllowed": true,
+        "predictiveEligibleRecorded": true,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": false,
+        "eventTimeSeconds": 53.394926,
+        "graceAllowed": true,
+        "predictiveEligibleRecorded": true,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": false,
+        "eventTimeSeconds": 54.446506,
+        "graceAllowed": true,
+        "predictiveEligibleRecorded": true,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": false,
+        "eventTimeSeconds": 55.459025,
+        "graceAllowed": true,
+        "predictiveEligibleRecorded": true,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": false,
+        "eventTimeSeconds": 56.493465,
+        "graceAllowed": true,
+        "predictiveEligibleRecorded": true,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": false,
+        "eventTimeSeconds": 57.543444,
+        "graceAllowed": true,
+        "predictiveEligibleRecorded": true,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": false,
+        "eventTimeSeconds": 58.615549,
+        "graceAllowed": true,
+        "predictiveEligibleRecorded": true,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": false,
+        "eventTimeSeconds": 59.667001,
+        "graceAllowed": true,
+        "predictiveEligibleRecorded": true,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": false,
+        "eventTimeSeconds": 60.671318,
+        "graceAllowed": true,
+        "predictiveEligibleRecorded": true,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": false,
+        "eventTimeSeconds": 61.73665,
+        "graceAllowed": true,
+        "predictiveEligibleRecorded": true,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": false,
+        "eventTimeSeconds": 62.747668,
+        "graceAllowed": true,
+        "predictiveEligibleRecorded": true,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": false,
+        "eventTimeSeconds": 63.812608,
+        "graceAllowed": true,
+        "predictiveEligibleRecorded": true,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      },
+      {
+        "allFourRecordedDecisionsMatch": true,
+        "bufferingRecorded": false,
+        "eventTimeSeconds": 64.847924,
+        "graceAllowed": true,
+        "predictiveEligibleRecorded": true,
+        "reactiveRequested": false,
+        "reservePredicted": false,
+        "staticPredicted": false
+      }
+    ],
+    "syntheticControls": {
+      "postGraceLongStallTriggers": [
+        20
+      ],
+      "singleEarlyShortStallTriggers": [],
+      "threeBriefStallsTriggers": [
+        24
+      ]
+    }
+  },
+  "sourceExtraction": {
+    "source": "ios/Nastart/Nastart/Playback/Core/PlaybackPlanningPolicy.swift",
+    "sourceSHA256": "cb0855f40252177d9af6b32ea445d4fd82c696fce3a2476c2f2c492dcc078aa4",
+    "sourceModified": false,
+    "originalSamplerMonotonicTimeRecorded": false,
+    "replayClock": "logged event relative time; approximate, not original sampler uptime",
+    "savedSnapshotCount": 7,
+    "savedUnionEvents": 308,
+    "extractedProbeBinarySHA256": "5f7c4659f7c2bd860a5c7c39f7b8a52558870c9f9e590cad60ddf3e1539b2dc4"
+  },
+  "initialExtractionFailureRetained": true,
+  "gateFindings": {
+    "recordedAutomaticRequests": 0,
+    "recordedCandidates": 0,
+    "recordedAllAttemptsZero": true,
+    "firstQualifiedBodySourceDecisionActionSeconds": 7.58205,
+    "reactiveGraceConfiguredSeconds": 10,
+    "reactiveConsecutiveThresholdSeconds": 8,
+    "reactiveBriefEpisodeThresholdCount": 3,
+    "reactiveAccumulatedThresholdSeconds": 12,
+    "eventClockEstimatedGraceEndActionSeconds": 11.437014,
+    "eventClockEstimatedConsecutiveBufferCountedSeconds": 3.151833,
+    "predictiveEligiblePreStallSampleCount": 1,
+    "onlyPreStallEligibleSampleFields": {
+      "attempt": 0,
+      "bufferTargetSeconds": 4,
+      "bufferedAheadSeconds": 0.0624166643992794,
+      "buffering": "false",
+      "changingSource": "false",
+      "clockAdvanced": "true",
+      "cooldownAllowsPrediction": "true",
+      "currentSeconds": 4287.529,
+      "deliveryCapacity": 49559678,
+      "deliveryCapacitySource": "bodyWindow",
+      "eligible": "true",
+      "engine": "KSPlayer",
+      "graceAllowsPrediction": "true",
+      "pendingSeek": "false",
+      "planID": "7D98F482",
+      "playbackTraceID": "79BF89BE",
+      "playing": "true",
+      "predictiveDeliveryCapacity": 49559678,
+      "predictiveEligible": "true",
+      "predictsReserveDepletion": "false",
+      "predictsUnsustainableDelivery": "false",
+      "ready": "true",
+      "repeatedStalls": "false",
+      "routeID": "3DE01C6A",
+      "runtimeDemand": 47298556,
+      "seekGeneration": 1,
+      "sourceBitrate": 57416722
+    },
+    "wholeFileAverageSourceBitrate": 57416722,
+    "firstBodyWindowsMbps": [
+      79.975376,
+      38.613754,
+      49.559678
+    ],
+    "firstPairRateRatio": 2.0711629332905575,
+    "bodyQualificationMaximumPairRatio": 2,
+    "originalStayedOnOriginalRoute": true
+  },
+  "hostChange": "Retain existing predictiveDeliveryCapacity numeric field separately from deliveryCapacity in safe reports; no change to App or prediction rules",
+  "hostTests": {
+    "executed": 128,
+    "passed": 128
+  },
+  "limits": [
+    "Original sampler monotonic now was not logged; event-time reconstruction is approximate, not exact original timing or device presentation evidence.",
+    "Recorded eligibility is input for reserve replay; the whole player closure/ownership/task lifecycle is not recreated.",
+    "The record contains no automatic request; this does not explain all playback symptoms or establish a NAS/Wi-Fi root cause.",
+    "No counterfactual stall duration or improvement from changing thresholds is claimed.",
+    "Late independent preference snapshots add17 events to the291-event initial union; original result remains historical, full7-copy union is308 events.",
+    "iPhone18 latest18:00 package remains uninstalled pending reliable connection; no new connection conditions or probes this offline stage."
+  ],
+  "candidateFeasibilityAudit": {
+    "scope": "Offline historical/source audit, no new movie or fixture requests",
+    "firstEligibleToFirstBufferedDecisionEventGapSeconds": 1.063099,
+    "reportedReserveAtFirstEligibleSeconds": 0.0624166643992794,
+    "observationGapIsNotAvailableMediaReserve": true,
+    "warmupExpectedPreparationEstimateInitialSeconds": 11,
+    "estimateIsFixedDelay": false,
+    "leadRule": "min(expectedPreparation*rate,max(availableReserve-0.25,0)); returns0 if not advancing",
+    "leadAtReportedReserveSeconds": 0,
+    "historicalExamples": [
+      {
+        "date": "2026-10-19",
+        "device": "iPad",
+        "source": "S03 file automatic static prediction, historical package/point",
+        "requestToCommitSeconds": 15.16,
+        "predictionLaterRecovered": true,
+        "currentBuildPerformanceEvidence": false
+      },
+      {
+        "date": "2026-10-15",
+        "device": "iPad",
+        "source": "S03 file compatible audio, c868 package",
+        "decodedToAlignedSeconds": [
+          2.704464,
+          2.484792
+        ],
+        "currentBuildPerformanceEvidence": false
+      },
+      {
+        "date": "2026-10-21",
+        "device": "iPhone13",
+        "source": "S03 Jellyfin PGS, historical package",
+        "requestToWarmupSeconds": 3.281,
+        "warmupToFailureMs": 27376,
+        "failureBeforeDecodedFrame": true,
+        "committed": false,
+        "notSuccessfulPreparationLatency": true
+      },
+      {
+        "date": "2026-10-21",
+        "device": "iPhone13",
+        "source": "S03 Jellyfin PGS,19:52 historical package",
+        "warmupToFailureMs": 22460,
+        "failureBeforeDecodedFrame": true,
+        "mediaPlaylistClientHeaderCompleted": false,
+        "mediaPlaylistClientBodyCompletedBytes": 0,
+        "committed": false
+      }
+    ],
+    "currentCallsiteAudit": {
+      "GreenfieldAVPlayerWarmupCreatesAVItemWithoutCompleteVODPrewarm": true,
+      "fileEntryVODPrewarmLimitedToFromHeadCellular": true,
+      "JellyfinEntryVODPrewarmRequiresCellularOptionAndTranscode": true,
+      "debugInitialLabCanExplicitlyPrewarmButDoesNotUseActualCandidateWarmup": true,
+      "productionHookChanged": false
+    },
+    "nextDistinctExperiment": "Local actual GreenfieldAVPlayerWarmup entry with identical complete versus paced VOD bytes, then full-cache-before-AV control; keep existing source playback/ownership, cancellation and no-partial-cache gates; no third identical NAS PGS run",
+    "acceptanceLimits": [
+      "No same18:00 iPhone13 successful candidate timing is present; cannot establish this window would be rescued by earlier triggering.",
+      "Historical failures are censored outcomes, not finite successful preparation costs.",
+      "The11-second estimate sets target lead; it is not a scheduled11-second wait.",
+      "Complete VOD prewarm can separate AV waiting from manifest supply, but still consumes wall time and cannot by itself promise no first stall."
+    ]
+  }
+}

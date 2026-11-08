@@ -1,0 +1,100 @@
+{
+  "date": "2026-11-01",
+  "scope": "Offline settings simulator catch-up and two Debug preview backgrounds",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "source": {
+    "inputCount": 446,
+    "changedExistingFiles": 1,
+    "otherHashesUnchanged": 445,
+    "debugOnlyBackgroundModifiers": 2,
+    "productionViewsActionsModelsAndPlaybackUnchanged": true
+  },
+  "builds": {
+    "finalSource": {
+      "mobile-sim-debug-cast": 0,
+      "tv-sim-debug-cast": 0,
+      "mobile-unsigned-debug": 0,
+      "mobile-release": 0,
+      "tv-unsigned-debug": 0,
+      "tv-release": 0
+    },
+    "deviceReleaseSigningEnabled": false,
+    "normalMobileSignedDebugBeforeBackgroundFix": 65,
+    "signedFailureReason": "Missing development provisioning profile",
+    "normalMobileSignedDebugAfterFixRetried": false,
+    "normalTVSigningRetried": false,
+    "newSignedCandidate": false,
+    "retainedOldPackageHashesAndSignaturesVerified": true,
+    "retainedPackagesMatchCurrentSource": false
+  },
+  "observations": {
+    "phoneStandardChinese": [
+      "service four rows and footer",
+      "credential state toggle and themed background",
+      "export none disabled/reselected/memory-only feedback",
+      "cache confirmation outside dismissal",
+      "folder invalid/correct/retry/cancel feedback",
+      "appearance three toggles/return/re-entry/restore"
+    ],
+    "padLarge": [
+      "credential and export states",
+      "folder invalid/correct/retry/cancel",
+      "English appearance changes/restoration",
+      "Chinese sync portrait and settled landscape",
+      "English service rows reached by native AX Scroll Down"
+    ],
+    "savedAXAssertions": 16,
+    "screenshots": {
+      "phoneFinalPairs": 15,
+      "padFinalPairs": 16,
+      "padTransientRotationExcluded": 1,
+      "tvPairs": 0,
+      "countsAreNotPassedTestCounts": true
+    }
+  },
+  "openLimits": [
+    "Pad English service footer obscured by Debug marker",
+    "TV CUA timeout twice; static service layout and remote not validated",
+    "No complete production host, VoiceOver, frame time, hardware remote or real transactions",
+    "Other themes/text sizes not checked",
+    "Password visibility behavior remains unresolved",
+    "Normal signing blocked"
+  ],
+  "failuresRetained": [
+    "pre-fix black preview backgrounds",
+    "CUA session timeouts",
+    "reported AX Cancel action rejected; outside dismissal observed",
+    "Pad scroll helper noWindowsAvailable twice; exposed Scroll Down succeeded",
+    "Pad stale setValue reported but applied; state checked before continuation",
+    "transient tilted rotation screenshot excluded",
+    "initial audit misclassified unrelated read-only IDE metadata query; corrected without terminating it"
+  ],
+  "cleanup": {
+    "ownedInstances": 4,
+    "allFreshAbsent": true,
+    "installedHashesAndSyntheticSentinelPreserved": true,
+    "traceExported": false,
+    "unrelatedSimulatorsOperated": false
+  },
+  "constraints": {
+    "startupBudgetGiB": {
+      "mobile": 6,
+      "tv": 3.8
+    },
+    "runtimeReserveGiB": 2,
+    "physicalDeviceOperations": 0,
+    "NASCommands": 0,
+    "realCredentialsRead": false,
+    "sourceMediaWrites": 0,
+    "playbackTests": 0,
+    "playbackMatrixCells": 114,
+    "newPlaybackPasses": 0,
+    "unitOrUITestSuitesAddedOrRerun": false,
+    "scheduledTasksCreated": false
+  },
+  "next": [
+    "Fix Debug marker layout and recheck affected English large window",
+    "Resume TV service layout with working UI surface",
+    "Continue offline cross-platform detail work; real NAS/media tests remain paused"
+  ]
+}

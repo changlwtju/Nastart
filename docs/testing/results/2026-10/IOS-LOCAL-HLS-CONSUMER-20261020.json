@@ -1,0 +1,447 @@
+{
+  "date": "2026-10-20",
+  "currentSourceDiffSHA256": "39b0bdc21ea6e43e8c357d1c26ae78f8f87f63b69c301ae20d8b5ba717a45591",
+  "configuration": "normal Debug -Onone binary; explicit Debug lab environment only during fixture windows",
+  "newBuilds": 0,
+  "newDeviceInstalls": 0,
+  "device": {
+    "model": "iPhone14,5",
+    "system": "16.3.1",
+    "connection": "USB",
+    "freshIdentityAndPackageGate": "2026-10-20 13:09, repeated before corrected window",
+    "nameAndUDIDKeptPrivate": true
+  },
+  "network": "original Wi-Fi; no NAS media reads; no cellular playback",
+  "segments": [
+    {
+      "ordinal": 0,
+      "bytes": 121072,
+      "sha256": "2f7bc0bc542898fca327c7cfdc0f9df80e1af009241a3af845ac75157f2e2926"
+    },
+    {
+      "ordinal": 1,
+      "bytes": 646156,
+      "sha256": "84137f09354d007b643bac8a023d5fedef226399745f5e100f9bfd5629f64b01"
+    }
+  ],
+  "metadata": {
+    "savedMasterCodec": "avc1.424029",
+    "savedMasterResolution": "853x480",
+    "savedSPSCodec": "avc1.64081e",
+    "coreMediaSPSDimensions": "852x480",
+    "localCorrectionDidNotEliminateDuplicateGET": true,
+    "NASChanged": false
+  },
+  "windows": [
+    {
+      "label": "wifi-local-lab-immediate-r1",
+      "reusedExistingEvidence": true,
+      "playlistMode": "media",
+      "headerDelaySeconds": 0.0,
+      "sharedReadyTime": false,
+      "correctedMetadata": false,
+      "decodeEngine": "systemAVPlayer",
+      "routeKind": "serverHLS",
+      "debugLabEnvironmentVerified": true,
+      "ordinaryEntryAcceptance": false,
+      "authenticationProxyExercised": false,
+      "firstSegmentGETs": 1,
+      "secondGETAfterFirstSeconds": null,
+      "clockSignalMs": 1541,
+      "clockSignalIsScreenPresentation": false,
+      "ownMediaStopped": true,
+      "fixtureServerClosed": true,
+      "emptyEnvironmentRestored": true,
+      "requests": [
+        {
+          "name": "main.m3u8",
+          "method": "GET",
+          "requestSeconds": 0.8517325830000001,
+          "headersSeconds": 0.8527584170000001,
+          "bodyBytes": 153,
+          "status": 200,
+          "result": "sent",
+          "endSeconds": 0.8527815830000001,
+          "rangeRequested": false
+        },
+        {
+          "name": "0.ts",
+          "method": "GET",
+          "requestSeconds": 1.404293917,
+          "headersSeconds": 1.4056976669999999,
+          "bodyBytes": 121072,
+          "status": 200,
+          "result": "sent",
+          "endSeconds": 1.4058107499999999,
+          "rangeRequested": false
+        },
+        {
+          "name": "1.ts",
+          "method": "GET",
+          "requestSeconds": 1.520146875,
+          "headersSeconds": 1.521652125,
+          "bodyBytes": 646156,
+          "status": 200,
+          "result": "sent",
+          "endSeconds": 1.542961917,
+          "rangeRequested": false
+        }
+      ]
+    },
+    {
+      "label": "wifi-local-lab-held-r1",
+      "reusedExistingEvidence": true,
+      "playlistMode": "media",
+      "headerDelaySeconds": 4.5,
+      "sharedReadyTime": false,
+      "correctedMetadata": false,
+      "decodeEngine": "systemAVPlayer",
+      "routeKind": "serverHLS",
+      "debugLabEnvironmentVerified": true,
+      "ordinaryEntryAcceptance": false,
+      "authenticationProxyExercised": false,
+      "firstSegmentGETs": 1,
+      "secondGETAfterFirstSeconds": null,
+      "clockSignalMs": 5864,
+      "clockSignalIsScreenPresentation": false,
+      "ownMediaStopped": true,
+      "fixtureServerClosed": true,
+      "emptyEnvironmentRestored": true,
+      "requests": [
+        {
+          "name": "main.m3u8",
+          "method": "GET",
+          "requestSeconds": 2.004746833,
+          "headersSeconds": 2.0062357079999997,
+          "bodyBytes": 153,
+          "status": 200,
+          "result": "sent",
+          "endSeconds": 2.006292833,
+          "rangeRequested": false
+        },
+        {
+          "name": "0.ts",
+          "method": "GET",
+          "requestSeconds": 2.206512625,
+          "headersSeconds": 6.7118523329999995,
+          "bodyBytes": 121072,
+          "status": 200,
+          "result": "sent",
+          "endSeconds": 6.7119891659999995,
+          "rangeRequested": false
+        },
+        {
+          "name": "1.ts",
+          "method": "GET",
+          "requestSeconds": 6.797184666,
+          "headersSeconds": 6.798232291,
+          "bodyBytes": 646156,
+          "status": 200,
+          "result": "sent",
+          "endSeconds": 6.821631583,
+          "rangeRequested": false
+        }
+      ]
+    },
+    {
+      "label": "wifi-local-lab-master-held-r1",
+      "reusedExistingEvidence": true,
+      "playlistMode": "master",
+      "headerDelaySeconds": 4.5,
+      "sharedReadyTime": false,
+      "correctedMetadata": false,
+      "decodeEngine": "systemAVPlayer",
+      "routeKind": "serverHLS",
+      "debugLabEnvironmentVerified": true,
+      "ordinaryEntryAcceptance": false,
+      "authenticationProxyExercised": false,
+      "firstSegmentGETs": 2,
+      "secondGETAfterFirstSeconds": 2.09068,
+      "clockSignalMs": 7661,
+      "clockSignalIsScreenPresentation": false,
+      "ownMediaStopped": true,
+      "fixtureServerClosed": true,
+      "emptyEnvironmentRestored": true,
+      "requests": [
+        {
+          "name": "master.m3u8",
+          "method": "GET",
+          "requestSeconds": 1.883682458,
+          "headersSeconds": 1.885744416,
+          "bodyBytes": 164,
+          "status": 200,
+          "result": "sent",
+          "endSeconds": 1.8857715000000002,
+          "rangeRequested": false
+        },
+        {
+          "name": "main.m3u8",
+          "method": "GET",
+          "requestSeconds": 1.902190666,
+          "headersSeconds": 1.903197083,
+          "bodyBytes": 153,
+          "status": 200,
+          "result": "sent",
+          "endSeconds": 1.9032289580000001,
+          "rangeRequested": false
+        },
+        {
+          "name": "0.ts",
+          "method": "GET",
+          "requestSeconds": 1.916527541,
+          "headersSeconds": 6.42593275,
+          "bodyBytes": 121072,
+          "status": 200,
+          "result": "sent",
+          "endSeconds": 6.4260371659999995,
+          "rangeRequested": false
+        },
+        {
+          "name": "0.ts",
+          "method": "GET",
+          "requestSeconds": 4.0072076249999995,
+          "headersSeconds": 8.511174166,
+          "bodyBytes": 121072,
+          "status": 200,
+          "result": "sent",
+          "endSeconds": 8.511308041000001,
+          "rangeRequested": false
+        },
+        {
+          "name": "1.ts",
+          "method": "GET",
+          "requestSeconds": 8.579886083,
+          "headersSeconds": 8.580951458000001,
+          "bodyBytes": 646156,
+          "status": 200,
+          "result": "sent",
+          "endSeconds": 8.60357725,
+          "rangeRequested": false
+        }
+      ]
+    },
+    {
+      "label": "wifi-local-lab-master-shared-r1",
+      "reusedExistingEvidence": true,
+      "playlistMode": "master",
+      "headerDelaySeconds": 4.5,
+      "sharedReadyTime": true,
+      "correctedMetadata": false,
+      "decodeEngine": "systemAVPlayer",
+      "routeKind": "serverHLS",
+      "debugLabEnvironmentVerified": true,
+      "ordinaryEntryAcceptance": false,
+      "authenticationProxyExercised": false,
+      "firstSegmentGETs": 2,
+      "secondGETAfterFirstSeconds": 2.05828,
+      "clockSignalMs": 5714,
+      "clockSignalIsScreenPresentation": false,
+      "ownMediaStopped": true,
+      "fixtureServerClosed": true,
+      "emptyEnvironmentRestored": true,
+      "requests": [
+        {
+          "name": "master.m3u8",
+          "method": "GET",
+          "requestSeconds": 1.862324583,
+          "headersSeconds": 1.863192625,
+          "bodyBytes": 164,
+          "status": 200,
+          "result": "sent",
+          "endSeconds": 1.8632127909999998,
+          "rangeRequested": false
+        },
+        {
+          "name": "main.m3u8",
+          "method": "GET",
+          "requestSeconds": 1.8796705409999999,
+          "headersSeconds": 1.880625166,
+          "bodyBytes": 153,
+          "status": 200,
+          "result": "sent",
+          "endSeconds": 1.880650083,
+          "rangeRequested": false
+        },
+        {
+          "name": "0.ts",
+          "method": "GET",
+          "requestSeconds": 1.8972712079999998,
+          "headersSeconds": 6.4082395000000005,
+          "bodyBytes": 121072,
+          "status": 200,
+          "result": "sent",
+          "endSeconds": 6.408382041,
+          "rangeRequested": false
+        },
+        {
+          "name": "0.ts",
+          "method": "GET",
+          "requestSeconds": 3.955550916,
+          "headersSeconds": 6.408216958000001,
+          "bodyBytes": 121072,
+          "status": 200,
+          "result": "sent",
+          "endSeconds": 6.408751125,
+          "rangeRequested": false
+        },
+        {
+          "name": "1.ts",
+          "method": "GET",
+          "requestSeconds": 6.70603275,
+          "headersSeconds": 6.707520875,
+          "bodyBytes": 646156,
+          "status": 200,
+          "result": "sent",
+          "endSeconds": 6.735674333,
+          "rangeRequested": false
+        }
+      ]
+    },
+    {
+      "label": "wifi-local-lab-master-corrected-r1",
+      "reusedExistingEvidence": false,
+      "playlistMode": "master",
+      "headerDelaySeconds": 4.5,
+      "sharedReadyTime": true,
+      "correctedMetadata": true,
+      "decodeEngine": "systemAVPlayer",
+      "routeKind": "serverHLS",
+      "debugLabEnvironmentVerified": true,
+      "ordinaryEntryAcceptance": false,
+      "authenticationProxyExercised": false,
+      "firstSegmentGETs": 2,
+      "secondGETAfterFirstSeconds": 2.454216,
+      "clockSignalMs": 6090,
+      "clockSignalIsScreenPresentation": false,
+      "ownMediaStopped": true,
+      "fixtureServerClosed": true,
+      "emptyEnvironmentRestored": true,
+      "requests": [
+        {
+          "name": "master.m3u8",
+          "method": "GET",
+          "requestSeconds": 2.03253125,
+          "headersSeconds": 2.034613334,
+          "bodyBytes": 164,
+          "status": 200,
+          "result": "sent",
+          "endSeconds": 2.0346555,
+          "rangeRequested": false
+        },
+        {
+          "name": "main.m3u8",
+          "method": "GET",
+          "requestSeconds": 2.235982584,
+          "headersSeconds": 2.237199042,
+          "bodyBytes": 153,
+          "status": 200,
+          "result": "sent",
+          "endSeconds": 2.237225375,
+          "rangeRequested": false
+        },
+        {
+          "name": "0.ts",
+          "method": "GET",
+          "requestSeconds": 2.276584625,
+          "headersSeconds": 6.780997084,
+          "bodyBytes": 121072,
+          "status": 200,
+          "result": "sent",
+          "endSeconds": 6.7810745,
+          "rangeRequested": false
+        },
+        {
+          "name": "0.ts",
+          "method": "GET",
+          "requestSeconds": 4.730800542,
+          "headersSeconds": 6.779564792,
+          "bodyBytes": 121072,
+          "status": 200,
+          "result": "sent",
+          "endSeconds": 6.779679875,
+          "rangeRequested": false
+        },
+        {
+          "name": "1.ts",
+          "method": "GET",
+          "requestSeconds": 7.042942875,
+          "headersSeconds": 7.044331542,
+          "bodyBytes": 646156,
+          "status": 200,
+          "result": "sent",
+          "endSeconds": 7.08513375,
+          "rangeRequested": false
+        }
+      ]
+    }
+  ],
+  "ordinaryEntryToolFailures": [
+    {
+      "label": "wifi-local-immediate-r1-fixture",
+      "classification": "TOOL_NO_PLAYBACK_REQUEST",
+      "requests": 0,
+      "playerPass": false,
+      "ownMediaStopped": true,
+      "fixtureServerClosed": true,
+      "separateSecondClickAlsoFailed": null
+    },
+    {
+      "label": "wifi-local-immediate-r2-fixture",
+      "classification": "TOOL_NO_PLAYBACK_REQUEST",
+      "requests": 0,
+      "playerPass": false,
+      "ownMediaStopped": true,
+      "fixtureServerClosed": true,
+      "separateSecondClickAlsoFailed": null
+    },
+    {
+      "label": "wifi-local-immediate-r3-fixture",
+      "classification": "TOOL_NO_PLAYBACK_REQUEST",
+      "requests": 0,
+      "playerPass": false,
+      "ownMediaStopped": true,
+      "fixtureServerClosed": true,
+      "separateSecondClickAlsoFailed": null
+    },
+    {
+      "label": "wifi-local-immediate-r4-fixture",
+      "classification": "TOOL_NO_PLAYBACK_REQUEST",
+      "requests": 0,
+      "playerPass": false,
+      "ownMediaStopped": true,
+      "fixtureServerClosed": true,
+      "separateSecondClickAlsoFailed": null
+    },
+    {
+      "label": "wifi-local-immediate-r5-fixture",
+      "classification": "TOOL_NO_PLAYBACK_REQUEST",
+      "requests": 0,
+      "playerPass": false,
+      "ownMediaStopped": true,
+      "fixtureServerClosed": true,
+      "separateSecondClickAlsoFailed": true
+    }
+  ],
+  "limits": [
+    "No universal four-second AV timeout proven",
+    "No RST/FIN or first-reader cancellation inference from successful server write",
+    "Debug direct HLS does not exercise authentication proxy or ordinary entries",
+    "No real cellular speed improvement or full audio/subtitle/frame-time acceptance"
+  ],
+  "cleanup": {
+    "originalNetworkSelected": true,
+    "independentNativeWiFiIconReviewed": true,
+    "normalEmptyEnvironment": true,
+    "nonBookmarkPreferencesUnchanged": true,
+    "originalTracksUnchanged": true,
+    "newCrashReportCounts": {
+      "Nastart": 0,
+      "WebDriverAgent": 0,
+      "JetsamEvent": 0
+    },
+    "ownedServerAndMediaStopped": true,
+    "WDAOriginalPersistentRunnerPreserved": true,
+    "correctedWindowPowerAssertionsAtStartDuringEnd": true,
+    "sleepWakeEventsDuringCorrectedWindow": 0
+  }
+}

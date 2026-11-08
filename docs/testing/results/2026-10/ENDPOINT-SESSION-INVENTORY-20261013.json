@@ -1,0 +1,540 @@
+{
+  "recordedAt": "2026-10-13T20:18:03.774634+08:00",
+  "package": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "dceba30041c4db257a2239f1d491ea40de0881ee76eee2b001fd2e4420f57a70",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "binaryBuildTime": "2026-10-13T20:08:48.510369+08:00",
+    "binaries": {
+      "Nastart": "8a048d2ec352feb4659899bc966cbc1fb13e1756121043fc0526f4e35b8fb9e4",
+      "Nastart.debug.dylib": "7459a67dca678ae28918ce1e4430ffc0618536074927a87d51932ef3e56f4504",
+      "Frameworks/KSPlayer.framework/KSPlayer": "855ae3045eec387043efa3253820de1316fc38435bbc17eee38e2d7d5ed0163d"
+    },
+    "checkedInputs": 173,
+    "signatureVerified": true,
+    "individuallyVerifiedLibraries": 29,
+    "profileExpirationUTC": "2026-10-17T22:23:40",
+    "tests": {
+      "executed": 359,
+      "skipped": 2,
+      "failures": 0,
+      "runThisTurn": true
+    },
+    "preflight": {
+      "passed": 15,
+      "runThisTurn": true
+    }
+  },
+  "sourceChanges": [
+    "LaunchpadView.swift DEBUG-only restore inventory; uses existing reads and leaves first stored candidate and all release behavior unchanged"
+  ],
+  "installed": {
+    "iphone13": {
+      "device": "iphone13",
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "connection": "USB",
+      "binaries": {
+        "Nastart": "8a048d2ec352feb4659899bc966cbc1fb13e1756121043fc0526f4e35b8fb9e4",
+        "Nastart.debug.dylib": "7459a67dca678ae28918ce1e4430ffc0618536074927a87d51932ef3e56f4504",
+        "Frameworks/KSPlayer.framework/KSPlayer": "855ae3045eec387043efa3253820de1316fc38435bbc17eee38e2d7d5ed0163d"
+      },
+      "sourceDiffSHA256": "dceba30041c4db257a2239f1d491ea40de0881ee76eee2b001fd2e4420f57a70",
+      "preservesContainer": true,
+      "signatureVerified": true,
+      "actualForegroundUIVerified": true,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "installation": "success",
+      "startedAt": "2026-10-13T20:09:23.619995+08:00",
+      "installedAt": "2026-10-13T20:09:36.481115+08:00",
+      "preferenceKeysUnchanged": true,
+      "preferenceValuesUnchanged": true,
+      "nonDiagnosticKeys": 25
+    },
+    "ipad": {
+      "device": "ipad",
+      "model": "iPad12,1",
+      "system": "18.3.1",
+      "connection": "USB",
+      "binaries": {
+        "Nastart": "8a048d2ec352feb4659899bc966cbc1fb13e1756121043fc0526f4e35b8fb9e4",
+        "Nastart.debug.dylib": "7459a67dca678ae28918ce1e4430ffc0618536074927a87d51932ef3e56f4504",
+        "Frameworks/KSPlayer.framework/KSPlayer": "855ae3045eec387043efa3253820de1316fc38435bbc17eee38e2d7d5ed0163d"
+      },
+      "sourceDiffSHA256": "dceba30041c4db257a2239f1d491ea40de0881ee76eee2b001fd2e4420f57a70",
+      "preservesContainer": true,
+      "signatureVerified": true,
+      "actualForegroundUIVerified": true,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "installation": "success",
+      "startedAt": "2026-10-13T20:09:55.471127+08:00",
+      "installedAt": "2026-10-13T20:10:02.001159+08:00",
+      "preferenceKeysUnchanged": true,
+      "preferenceValuesUnchanged": true,
+      "nonDiagnosticKeys": 18
+    },
+    "iphone18": {
+      "device": "iphone18",
+      "installation": "success",
+      "sourceDiffSHA256": "dceba30041c4db257a2239f1d491ea40de0881ee76eee2b001fd2e4420f57a70",
+      "binaries": {
+        "Nastart": "8a048d2ec352feb4659899bc966cbc1fb13e1756121043fc0526f4e35b8fb9e4",
+        "Nastart.debug.dylib": "7459a67dca678ae28918ce1e4430ffc0618536074927a87d51932ef3e56f4504",
+        "Frameworks/KSPlayer.framework/KSPlayer": "855ae3045eec387043efa3253820de1316fc38435bbc17eee38e2d7d5ed0163d"
+      },
+      "method": "prior direct TCP address using existing legacy pairing; target name/model/OS/UDID freshly revalidated; AFC + installation_proxy Install preserves container",
+      "newPairingAttempted": false,
+      "preservesContainer": true,
+      "signatureVerified": true,
+      "librariesVerified": 29,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "normalLaunch": "RSD/DVT returned PID with requested empty args/env; actual screenshot is lock screen; foreground Nastart UI not verified",
+      "actualForegroundUIVerified": false,
+      "model": "iPhone19,7",
+      "system": "27.0",
+      "connection": "NETWORK",
+      "installationStartedAt": "2026-10-13T20:10:24.840056+08:00",
+      "installedAt": "2026-10-13T20:10:35.751347+08:00",
+      "postInstallLookupExists": true,
+      "samePreferenceKeys": true,
+      "nonDiagnosticKeysBefore": 25,
+      "nonDiagnosticKeysAfter": 25,
+      "unchangedPreferenceValues": 25,
+      "changedPreferenceCount": 0
+    }
+  },
+  "candidateScopes": {
+    "iphone13": {
+      "device": "iphone13",
+      "sourceDiffSHA256": "dceba30041c4db257a2239f1d491ea40de0881ee76eee2b001fd2e4420f57a70",
+      "rows": [
+        {
+          "candidateOrdinal": "0",
+          "candidateCount": "6",
+          "candidateAddressKind": "privateIP",
+          "candidateScheme": "http",
+          "candidatePort": "8096",
+          "candidatePathKind": "root",
+          "hasStoredSession": "true",
+          "hasNonemptyUserID": "true",
+          "hasNonemptyToken": "true",
+          "sameSelectedUser": "yes",
+          "selectedCandidate": "true",
+          "network": "wifi"
+        },
+        {
+          "candidateOrdinal": "1",
+          "candidateCount": "6",
+          "candidateAddressKind": "privateIP",
+          "candidateScheme": "http",
+          "candidatePort": "8096",
+          "candidatePathKind": "jellyfin",
+          "hasStoredSession": "false",
+          "hasNonemptyUserID": "false",
+          "hasNonemptyToken": "false",
+          "sameSelectedUser": "unknown",
+          "selectedCandidate": "false",
+          "network": "wifi"
+        },
+        {
+          "candidateOrdinal": "2",
+          "candidateCount": "6",
+          "candidateAddressKind": "privateIP",
+          "candidateScheme": "http",
+          "candidatePort": "8096",
+          "candidatePathKind": "emby",
+          "hasStoredSession": "false",
+          "hasNonemptyUserID": "false",
+          "hasNonemptyToken": "false",
+          "sameSelectedUser": "unknown",
+          "selectedCandidate": "false",
+          "network": "wifi"
+        },
+        {
+          "candidateOrdinal": "3",
+          "candidateCount": "6",
+          "candidateAddressKind": "publicDomain",
+          "candidateScheme": "https",
+          "candidatePort": "8097",
+          "candidatePathKind": "root",
+          "hasStoredSession": "true",
+          "hasNonemptyUserID": "true",
+          "hasNonemptyToken": "true",
+          "sameSelectedUser": "yes",
+          "selectedCandidate": "false",
+          "network": "wifi"
+        },
+        {
+          "candidateOrdinal": "4",
+          "candidateCount": "6",
+          "candidateAddressKind": "publicDomain",
+          "candidateScheme": "https",
+          "candidatePort": "8097",
+          "candidatePathKind": "jellyfin",
+          "hasStoredSession": "false",
+          "hasNonemptyUserID": "false",
+          "hasNonemptyToken": "false",
+          "sameSelectedUser": "unknown",
+          "selectedCandidate": "false",
+          "network": "wifi"
+        },
+        {
+          "candidateOrdinal": "5",
+          "candidateCount": "6",
+          "candidateAddressKind": "publicDomain",
+          "candidateScheme": "https",
+          "candidatePort": "8097",
+          "candidatePathKind": "emby",
+          "hasStoredSession": "false",
+          "hasNonemptyUserID": "false",
+          "hasNonemptyToken": "false",
+          "sameSelectedUser": "unknown",
+          "selectedCandidate": "false",
+          "network": "wifi"
+        }
+      ],
+      "storedPresenceProvesAuthentication": false,
+      "userIDEqualityProvesSameServer": false
+    },
+    "ipad": {
+      "device": "ipad",
+      "sourceDiffSHA256": "dceba30041c4db257a2239f1d491ea40de0881ee76eee2b001fd2e4420f57a70",
+      "rows": [
+        {
+          "candidateOrdinal": "0",
+          "candidateCount": "6",
+          "candidateAddressKind": "privateIP",
+          "candidateScheme": "http",
+          "candidatePort": "8096",
+          "candidatePathKind": "root",
+          "hasStoredSession": "true",
+          "hasNonemptyUserID": "true",
+          "hasNonemptyToken": "true",
+          "sameSelectedUser": "yes",
+          "selectedCandidate": "true",
+          "network": "wifi"
+        },
+        {
+          "candidateOrdinal": "1",
+          "candidateCount": "6",
+          "candidateAddressKind": "privateIP",
+          "candidateScheme": "http",
+          "candidatePort": "8096",
+          "candidatePathKind": "jellyfin",
+          "hasStoredSession": "false",
+          "hasNonemptyUserID": "false",
+          "hasNonemptyToken": "false",
+          "sameSelectedUser": "unknown",
+          "selectedCandidate": "false",
+          "network": "wifi"
+        },
+        {
+          "candidateOrdinal": "2",
+          "candidateCount": "6",
+          "candidateAddressKind": "privateIP",
+          "candidateScheme": "http",
+          "candidatePort": "8096",
+          "candidatePathKind": "emby",
+          "hasStoredSession": "false",
+          "hasNonemptyUserID": "false",
+          "hasNonemptyToken": "false",
+          "sameSelectedUser": "unknown",
+          "selectedCandidate": "false",
+          "network": "wifi"
+        },
+        {
+          "candidateOrdinal": "3",
+          "candidateCount": "6",
+          "candidateAddressKind": "publicDomain",
+          "candidateScheme": "https",
+          "candidatePort": "8097",
+          "candidatePathKind": "root",
+          "hasStoredSession": "true",
+          "hasNonemptyUserID": "true",
+          "hasNonemptyToken": "true",
+          "sameSelectedUser": "yes",
+          "selectedCandidate": "false",
+          "network": "wifi"
+        },
+        {
+          "candidateOrdinal": "4",
+          "candidateCount": "6",
+          "candidateAddressKind": "publicDomain",
+          "candidateScheme": "https",
+          "candidatePort": "8097",
+          "candidatePathKind": "jellyfin",
+          "hasStoredSession": "false",
+          "hasNonemptyUserID": "false",
+          "hasNonemptyToken": "false",
+          "sameSelectedUser": "unknown",
+          "selectedCandidate": "false",
+          "network": "wifi"
+        },
+        {
+          "candidateOrdinal": "5",
+          "candidateCount": "6",
+          "candidateAddressKind": "publicDomain",
+          "candidateScheme": "https",
+          "candidatePort": "8097",
+          "candidatePathKind": "emby",
+          "hasStoredSession": "false",
+          "hasNonemptyUserID": "false",
+          "hasNonemptyToken": "false",
+          "sameSelectedUser": "unknown",
+          "selectedCandidate": "false",
+          "network": "wifi"
+        }
+      ],
+      "storedPresenceProvesAuthentication": false,
+      "userIDEqualityProvesSameServer": false
+    }
+  },
+  "macUnauthenticatedPublicInfo": {
+    "observedAt": "2026-10-13T20:08:59.314858+08:00",
+    "probes": [
+      {
+        "originRole": "endpoint",
+        "scheme": "http",
+        "port": 8096,
+        "macOnly": true,
+        "credentialsSent": false,
+        "authenticationVerified": false,
+        "at": "2026-10-13T20:08:54.153835+08:00",
+        "httpStatus": 200,
+        "hasNonemptyServerID": true,
+        "sameConfiguredOrigin": true
+      },
+      {
+        "originRole": "alternateEndpoint",
+        "scheme": "https",
+        "port": 8097,
+        "macOnly": true,
+        "credentialsSent": false,
+        "authenticationVerified": false,
+        "at": "2026-10-13T20:08:54.242510+08:00",
+        "httpStatus": 200,
+        "hasNonemptyServerID": true,
+        "sameConfiguredOrigin": true
+      }
+    ],
+    "bothServerIDsPresent": true,
+    "sameServerID": true,
+    "phoneCellularReachabilityProven": false,
+    "storedSessionValidityProven": false,
+    "networkConfigurationChanged": false
+  },
+  "S01BasicObservations": [
+    {
+      "device": "iphone13",
+      "sample": "S01",
+      "entry": "file",
+      "sourceDiffSHA256": "dceba30041c4db257a2239f1d491ea40de0881ee76eee2b001fd2e4420f57a70",
+      "sampledWindowSeconds": 30.31932306289673,
+      "internalFirstFrameMs": [
+        540
+      ],
+      "URLMetricsCount": 2,
+      "URLMetricsCellularNo": 2,
+      "normalUIExit": true,
+      "actualImagesReviewed": [
+        3,
+        10,
+        30,
+        "closed"
+      ],
+      "t3BeforeStartupBlackSpinner": false,
+      "continuous30SecondsAccepted": false,
+      "performanceAccepted": false,
+      "fullSUBAudioHDRAccepted": false,
+      "cacheState": "unknown; no cache cleared; no cross-device performance comparison"
+    },
+    {
+      "device": "iphone13",
+      "sample": "S01",
+      "entry": "jf",
+      "sourceDiffSHA256": "dceba30041c4db257a2239f1d491ea40de0881ee76eee2b001fd2e4420f57a70",
+      "sampledWindowSeconds": 30.28701615333557,
+      "internalFirstFrameMs": [
+        552
+      ],
+      "URLMetricsCount": 2,
+      "URLMetricsCellularNo": 2,
+      "normalUIExit": true,
+      "actualImagesReviewed": [
+        3,
+        10,
+        30,
+        "closed"
+      ],
+      "t3BeforeStartupBlackSpinner": false,
+      "continuous30SecondsAccepted": false,
+      "performanceAccepted": false,
+      "fullSUBAudioHDRAccepted": false,
+      "cacheState": "unknown; no cache cleared; no cross-device performance comparison"
+    },
+    {
+      "device": "ipad",
+      "sample": "S01",
+      "entry": "file",
+      "sourceDiffSHA256": "dceba30041c4db257a2239f1d491ea40de0881ee76eee2b001fd2e4420f57a70",
+      "sampledWindowSeconds": 30.36813712120056,
+      "internalFirstFrameMs": [
+        2374
+      ],
+      "URLMetricsCount": 2,
+      "URLMetricsCellularNo": 2,
+      "normalUIExit": true,
+      "actualImagesReviewed": [
+        3,
+        10,
+        30,
+        "closed"
+      ],
+      "t3BeforeStartupBlackSpinner": true,
+      "continuous30SecondsAccepted": false,
+      "performanceAccepted": false,
+      "fullSUBAudioHDRAccepted": false,
+      "cacheState": "unknown; no cache cleared; no cross-device performance comparison"
+    },
+    {
+      "device": "ipad",
+      "sample": "S01",
+      "entry": "jf",
+      "sourceDiffSHA256": "dceba30041c4db257a2239f1d491ea40de0881ee76eee2b001fd2e4420f57a70",
+      "sampledWindowSeconds": 30.796797037124634,
+      "internalFirstFrameMs": [
+        978
+      ],
+      "URLMetricsCount": 2,
+      "URLMetricsCellularNo": 2,
+      "normalUIExit": true,
+      "actualImagesReviewed": [
+        3,
+        10,
+        30,
+        "closed"
+      ],
+      "t3BeforeStartupBlackSpinner": false,
+      "continuous30SecondsAccepted": false,
+      "performanceAccepted": false,
+      "fullSUBAudioHDRAccepted": false,
+      "cacheState": "unknown; no cache cleared; no cross-device performance comparison"
+    }
+  ],
+  "finalAudit": {
+    "sourceInputsVerified": 173,
+    "binaryHashesVerified": true,
+    "deepSignatureVerified": true,
+    "devices": {
+      "iphone13": {
+        "at": "2026-10-13T20:15:49.584297+08:00",
+        "model": "iPhone14,5",
+        "system": "16.3.1",
+        "connection": "USB",
+        "sourceDiffSHA256": "dceba30041c4db257a2239f1d491ea40de0881ee76eee2b001fd2e4420f57a70",
+        "latestPackage": {
+          "Nastart": "8a048d2ec352feb4659899bc966cbc1fb13e1756121043fc0526f4e35b8fb9e4",
+          "Nastart.debug.dylib": "7459a67dca678ae28918ce1e4430ffc0618536074927a87d51932ef3e56f4504",
+          "Frameworks/KSPlayer.framework/KSPlayer": "855ae3045eec387043efa3253820de1316fc38435bbc17eee38e2d7d5ed0163d"
+        },
+        "nonBookmarkPreferenceKeys": 24,
+        "nonBookmarkPreferencesExactlyUnchanged": true,
+        "changedBookmarksCount": 2,
+        "originalS03TrackChanges": {
+          "file": {},
+          "Jellyfin": {}
+        },
+        "originalS03FileAndJellyfinTracksUnchanged": true,
+        "normalEmptyEnvironment": true,
+        "NASNormal": true,
+        "playerClosed": true,
+        "finalHomeScreenshotReviewed": true,
+        "WDAIdleSeconds": 10,
+        "WDAAnimationCoolOffSeconds": 2,
+        "crashInventoryNotCheckedThisTurn": false,
+        "baselineAppCrashRecordedThisTurn": false,
+        "reviewedFinalCapture": "final-home-after-cellular",
+        "historicalIPhone13NetworkCrashUnresolved": true,
+        "candidateCrashInventoryDelta": {
+          "Nastart": 0,
+          "WebDriverAgent": 0,
+          "JetsamEvent": 0
+        },
+        "performanceAccepted": false,
+        "fullSubtitleAudioHDRAccepted": false
+      },
+      "ipad": {
+        "at": "2026-10-13T20:15:50.414204+08:00",
+        "model": "iPad12,1",
+        "system": "18.3.1",
+        "connection": "USB",
+        "sourceDiffSHA256": "dceba30041c4db257a2239f1d491ea40de0881ee76eee2b001fd2e4420f57a70",
+        "latestPackage": {
+          "Nastart": "8a048d2ec352feb4659899bc966cbc1fb13e1756121043fc0526f4e35b8fb9e4",
+          "Nastart.debug.dylib": "7459a67dca678ae28918ce1e4430ffc0618536074927a87d51932ef3e56f4504",
+          "Frameworks/KSPlayer.framework/KSPlayer": "855ae3045eec387043efa3253820de1316fc38435bbc17eee38e2d7d5ed0163d"
+        },
+        "nonBookmarkPreferenceKeys": 17,
+        "nonBookmarkPreferencesExactlyUnchanged": true,
+        "changedBookmarksCount": 2,
+        "originalS03TrackChanges": {
+          "file": {},
+          "Jellyfin": {}
+        },
+        "originalS03FileAndJellyfinTracksUnchanged": true,
+        "normalEmptyEnvironment": true,
+        "NASNormal": true,
+        "playerClosed": true,
+        "finalHomeScreenshotReviewed": true,
+        "WDAIdleSeconds": 10,
+        "WDAAnimationCoolOffSeconds": 2,
+        "crashInventoryNotCheckedThisTurn": false,
+        "baselineAppCrashRecordedThisTurn": false,
+        "reviewedFinalCapture": "final-restored-home",
+        "historicalIPhone13NetworkCrashUnresolved": true,
+        "candidateCrashInventoryDelta": {
+          "Nastart": 0,
+          "WebDriverAgent": 0,
+          "JetsamEvent": 0
+        },
+        "performanceAccepted": false,
+        "fullSubtitleAudioHDRAccepted": false
+      }
+    }
+  },
+  "sourceInputHashVerificationPassed": true,
+  "networkConfigurationChanged": false,
+  "newPairingAttempted": false,
+  "candidateTokensMigrated": false,
+  "publicSessionAuthenticationVerified": false,
+  "phonePublicCellularReachabilityVerified": false,
+  "wireless18Launch": {
+    "recordedAt": "2026-10-13T20:11:07.629851+08:00",
+    "rootRequired": false,
+    "systemRemotedChanged": false,
+    "pairingRecordChanged": false,
+    "rsdConnected": true,
+    "containerReadable": true,
+    "DVTServiceAdvertised": true,
+    "normalLaunchPID": 11353,
+    "requestedEnvironment": {},
+    "requestedArguments": [],
+    "actualScreenCaptured": true,
+    "actualScreenReviewed": true,
+    "actualForegroundNastartUIVerified": false,
+    "actualScreen": "device locked; Nastart foreground not verified",
+    "automaticXcodeTunnelVerified": false
+  },
+  "cellularSpeedFixAccepted": false,
+  "originalCellularFailureRetained": true,
+  "L2L3Accepted": false,
+  "next": [
+    "Validate alternate origin using its own session/current-user response; verify same server and current account before switching client context",
+    "Bind accepted fallback to current network and authentication/response ownership; discard late results after path/account/stop changes",
+    "Preserve canonical file/library resume key and tracks while request/reporting client uses one consistent endpoint/session",
+    "Replay original WiFi detail to cellular startup on S03 and different source, then paired first frame and actual HLS seek target/completion; S01 and affected L2 required for routing changes"
+  ]
+}

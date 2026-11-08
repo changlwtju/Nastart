@@ -1,0 +1,145 @@
+{
+  "recordedAt": "2026-11-01T18:10:47.584544+08:00",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceDiffSHA256": "bf7ebee27846e8a13d2cdea5c2220cf36c14bbe135c34582996c5006796ca1ef",
+  "sourceInputCount": 446,
+  "changedExistingSourceFiles": [
+    "ios/Nastart/Nastart/Core/Stores/DiagnosticLogStore.swift",
+    "ios/Nastart/NastartTests/NonPlaybackPolicyTests.swift"
+  ],
+  "otherSourceHashesUnchanged": 444,
+  "finalInputHashesVerified": true,
+  "selectedUniqueTestMethods": 23,
+  "newAddressBoundaryMethods": 5,
+  "priorMethodsUnchanged": 18,
+  "baselinePassedTests": 18,
+  "baselineFailedTests": 5,
+  "acceptedPassedTests": 23,
+  "acceptedFailedTests": 0,
+  "testBodiesIdenticalAcrossBaselineAndAccepted": true,
+  "methodTestBodiesSHA256": "336881af81a1b18cb70ee35e82c2318616f0c62b11d046cae32e504d3413b13a",
+  "actualGeneratorAndEnumModelBodiesUsed": true,
+  "harnessOnlyAdaptation": "LocalizedStringKey aliases String for unused ReminderKind title metadata; no AppState/UserDefaults/network",
+  "addressProtectionScope": [
+    "Scheme-less ASCII DNS plus explicit port/path/query/userinfo",
+    "IPv4, bracketed IPv6, localhost and .local; conservative structural recognition, not endpoint validation",
+    "Whitespace/quote-delimited embedded tokens and word labels followed by = or :",
+    "Whole structured address replaced; explicit scheme URLs continue through existing URL summary",
+    "Dotted filenames/versions and ambiguous bare DNS labels retained; no strict anonymity guarantee"
+  ],
+  "finalBuildExitCodes": {
+    "tv-sim-debug-cast": 0,
+    "mobile-sim-debug-cast": 0,
+    "mobile-unsigned-debug": 0,
+    "mobile-release": 0,
+    "tv-unsigned-debug": 0,
+    "tv-release": 0
+  },
+  "simulatorCompilationBinaries": {
+    "mobile": {
+      "configuration": "Debug simulator compile only",
+      "binaries": {
+        "Nastart": "a14854ba92b04aa772c266475ad036ae35538e8aa9bca2687e6afb2a79765fa5",
+        "Nastart.debug.dylib": "f9a027e1203addd9147d0bb2b7516731cf143440272a378d2fcf4791bd2a6da5"
+      },
+      "binaryBuiltAt": "2026-11-01T18:07:14.770215+08:00",
+      "sourceManifestSHA256": "ed1cdb5ed1c3b27b88b7e12c16bcf8b47606151bf669b0491373bed7469a599c",
+      "installedThisBatch": false
+    },
+    "tv": {
+      "configuration": "Debug simulator compile only",
+      "binaries": {
+        "NastartTV": "83fa9a228d53781700889fd71171e55e10cbacadc40e0d6e1ef0bc1287b30164",
+        "NastartTV.debug.dylib": "e5ba5fd91dcba92db298a8b16962aa943d2afa892d7d71efb64a075e4aac3b99"
+      },
+      "binaryBuiltAt": "2026-11-01T18:06:51.292992+08:00",
+      "sourceManifestSHA256": "ed1cdb5ed1c3b27b88b7e12c16bcf8b47606151bf669b0491373bed7469a599c",
+      "installedThisBatch": false
+    }
+  },
+  "preflight": {
+    "baseline": {
+      "exitCode": 1,
+      "passedChecks": [
+        "Git whitespace",
+        "iOS 16 static API guard",
+        "Localization parity",
+        "Localization references",
+        "AppIcon asset",
+        "Xcode project settings",
+        "Persistence invariants",
+        "Cloud sync invariants",
+        "NAS development workflow",
+        "File browser performance invariants"
+      ],
+      "failedChecks": [
+        "Swift delimiter balance",
+        "Transport security configuration",
+        "Service icon registry invariants",
+        "Service icon fixtures",
+        "Playback routing invariants"
+      ]
+    },
+    "final": {
+      "exitCode": 1,
+      "passedChecks": [
+        "Git whitespace",
+        "iOS 16 static API guard",
+        "Localization parity",
+        "Localization references",
+        "AppIcon asset",
+        "Xcode project settings",
+        "Persistence invariants",
+        "Cloud sync invariants",
+        "NAS development workflow",
+        "File browser performance invariants"
+      ],
+      "failedChecks": [
+        "Swift delimiter balance",
+        "Transport security configuration",
+        "Service icon registry invariants",
+        "Service icon fixtures",
+        "Playback routing invariants"
+      ]
+    },
+    "comparisonNote": "10 passing/5 failing check categories in both. Existing raw-string delimiter scanner failures remain; the newly introduced raw-quote compatibility issue was removed. No existing production regex or preflight rules edited."
+  },
+  "diagnosticStoreRecordPersistenceAndTelemetrySourceUnchanged": true,
+  "hostAndURLSummaryFunctionsUnchanged": true,
+  "exportPayloadSchemaAndShareViewSourceUnchanged": true,
+  "payloadIDAndUnknownKindInputNotMutated": true,
+  "initialHarnessCompileFailure": "New test attempted to assign immutable TaskItem subtitle; fixture constructor corrected before red/green runs; 0 tests executed in failed harness",
+  "retainedCandidateFailures": [
+    "Initial candidate 22/1: leading explicit URL swallowed following free text; guard corrected",
+    "Expanded labeled-address probe 22/1; labeled suffix protection then 23/0",
+    "Candidate builds stopped before final input freeze; no intermediate receipts used for final validation",
+    "Intermediate raw-literal quote added a naive delimiter-checker complaint; escaped literal restored baseline complaint set without changing existing diagnostic regexes"
+  ],
+  "fullPreflightPassed": false,
+  "strictAnonymityDelivered": false,
+  "nativeUserDefaultsBindingOrShareVerified": false,
+  "realUserExportsReadOrGenerated": 0,
+  "physicalDeviceOperations": 0,
+  "NASCommands": 0,
+  "newSimulatorsCreated": 0,
+  "newUIImages": 0,
+  "newSignedCandidateFrozen": false,
+  "signedBuildAttemptedThisBatch": false,
+  "priorIPhone18InstalledPackage": {
+    "mainSHA256": "7304e1f1d859c25ca7a26458aa999a76e2c677dd24f5c153853b13ffe21db8e8",
+    "debugDylibSHA256": "379eb7d23e58263a8f851b805d13dae26105ae8f0b040a588cafd0a794d5cb61",
+    "sourceDiffSHA256": "045cca60476091d088d7d9d01eddf782c9eeaa1d4902fdc0524947e33279b0b5",
+    "matchesCurrentSource": false,
+    "receiptKeptUnchanged": true
+  },
+  "playbackMatrixSize": 114,
+  "newPlaybackPasses": 0,
+  "backgroundTasksCreated": false,
+  "freeGiB": 11.78,
+  "documentationCheck": {
+    "documents": 577,
+    "localLinksChecked": 3651,
+    "missingDestinations": 0
+  },
+  "gitWhitespaceCheckPassed": true
+}

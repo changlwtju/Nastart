@@ -1,0 +1,122 @@
+{
+  "recordedAt": "2026-10-30T06:48:40+08:00",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceInputCount": 435,
+  "changedExistingSourceFiles": 7,
+  "testsPassed": 22,
+  "newTests": 0,
+  "testsBySuite": {
+    "MediaCatalogTests": 11,
+    "MediaPresentationTests": 7,
+    "OfflineUIScenarioTests": 4
+  },
+  "builds": {
+    "module-tests": {
+      "startedAt": "2026-10-30T06:39:21.626569+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T06:39:25.786044+08:00"
+    },
+    "mobile-sim-debug-cast": {
+      "startedAt": "2026-10-30T06:39:21.626507+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T06:39:54.755768+08:00"
+    },
+    "tv-sim-debug-cast": {
+      "startedAt": "2026-10-30T06:39:21.626542+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T06:39:37.523438+08:00"
+    },
+    "mobile-debug": {
+      "startedAt": "2026-10-30T06:40:56.247062+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T06:43:43.077027+08:00"
+    },
+    "tv-debug": {
+      "startedAt": "2026-10-30T06:40:56.247113+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T06:42:10.659142+08:00"
+    },
+    "mobile-release": {
+      "startedAt": "2026-10-30T06:43:43.081713+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T06:46:06.537842+08:00"
+    },
+    "tv-release": {
+      "startedAt": "2026-10-30T06:42:10.662407+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T06:44:09.106016+08:00"
+    }
+  },
+  "capture": {
+    "accepted": 10,
+    "byPlatform": {
+      "phone": 4,
+      "pad": 3,
+      "tv": 3
+    },
+    "allQualifiedArtifactsHashChecked": true,
+    "initialOverwrittenCaseExcluded": true,
+    "repairCaseCount": 1,
+    "sameSimulatorBinaryOnRepair": true,
+    "allOwnedSimulatorsDeleted": true,
+    "syntheticPreferencesPreserved": true,
+    "realSourceOrFullInteractionVerified": false
+  },
+  "sourcePreservation": {
+    "networkPortraitLoaderUnchanged": true,
+    "networkPlaybackDestinationUnchanged": true,
+    "mobilePosterViewUnchanged": true,
+    "mobileEpisodeImageURLExpressionPreserved": true,
+    "tvPlaybackSuffixUnchanged": true
+  },
+  "packages": {
+    "mobile": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-30T06:43:40.145715+08:00",
+      "frozenAt": "2026-10-30T06:46:26.100734+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 435,
+      "mainSHA256": "05a76fb75036d4a157c0aa617e753283499b47e8625d1e73a3335a7b32690407",
+      "debugDylibSHA256": "a89ee6cca4ea02f5b86b1a7be3bf259acb04c3bf66c19ed993a2bdf3a28f81f5",
+      "signedMachOCount": 30,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false
+    },
+    "tv": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-30T06:42:09.905478+08:00",
+      "frozenAt": "2026-10-30T06:46:26.491275+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 435,
+      "mainSHA256": "7ccdf793259571c4494247045f3c4b6bfe78f66594709c5fde0e2c9a7287d524",
+      "debugDylibSHA256": "e7ce6b2d5472407438107d157b875d95bc9629a025193bace1d4bd705ae7665f",
+      "signedMachOCount": 27,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false
+    }
+  },
+  "physicalDevicesOperated": 0,
+  "NASCommands": 0,
+  "playbackCommands": 0,
+  "ownedSimulatorsDeleted": 4,
+  "privateEvidencePointer": "current-episode-summary-polish-private",
+  "repairSpaceGateBlockedBeforeDeviceCreation": true,
+  "supersededUninstalledCopiesRemoved": 4,
+  "retainedArtifactFailure": "Phone standard episode screenshot was overwritten by large-text filename collision; case excluded and one same-binary unique-prefix window recaptured",
+  "notVerified": [
+    "Real images/metadata, subtitles, playback or progress reporting",
+    "Full episode scrolling, keyboard/remote focus, navigation or VoiceOver",
+    "TV Jellyfin episode grid migration",
+    "Multi-version grouping/selection and unique episode counts"
+  ]
+}

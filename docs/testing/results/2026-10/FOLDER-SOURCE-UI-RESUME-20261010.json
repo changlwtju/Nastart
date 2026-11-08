@@ -1,0 +1,4451 @@
+{
+  "recordedAt": "2026-10-10T14:06:59.349400+08:00",
+  "scope": "directory source published before FS connection; source/request/view-lifetime isolation; playback/transport/authentication retry unchanged",
+  "source": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "21e8797a0ebd2fd5bf7fbb85be355c27c4cdd926550deeb2db8fb0df800cb842",
+    "package": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-10-10-folder-source-ui-125639/Nastart-Folder-Source-UI-Normal-Debug.app",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "binaryBuildTime": "2026-10-10T13:01:32.267381+08:00",
+    "binaries": {
+      "Nastart": "24189030f8c7f3fbed8d30c884610a8417020a917254d19a1f64dba2af1f4b86",
+      "Nastart.debug.dylib": "2aaadca11a4a00306655cc88bc787910bb95efeb65c440459566e6c462f01c0d",
+      "Frameworks/KSPlayer.framework/KSPlayer": "eda16e6d0e22bc81045752f2f54a263b0f4f8500912378d5ac141013c9042b52"
+    },
+    "signatureVerified": true,
+    "individuallyVerifiedLibraries": 29,
+    "checkedInputs": 173,
+    "newerInputs": [],
+    "profileExpirationUTC": "2026-10-10T22:03:15",
+    "tests": "262/2 skipped/0 failures; 10 folder source/UI fixtures plus 4 authentication identity fixtures plus 11 directory session/cache/API fixtures plus prior playback tests",
+    "preflight": "15 passed",
+    "linkageVerified": true,
+    "sourceInputManifestSHA256": "e3a7e2d04547f410cd4a7ec449899ab364300f4213c0e771cfac2184520cbc1b"
+  },
+  "sourceInputsChecked": 173,
+  "directoryIdentityBoundary": "exclude every event ID captured before the verified normal launch; build-date filter alone is insufficient for historical preferences",
+  "tests": {
+    "executed": 262,
+    "skipped": 2,
+    "failures": 0,
+    "newFolderSourceAndUITests": 10,
+    "existingAuthenticationTests": 4,
+    "existingDirectoryTests": 11,
+    "preflightChecks": 15,
+    "safeReportTests": 18,
+    "executionAttribution": "Tests, preflight and build executed in preceding frozen-source batch; logs copied for this continuation; unchanged 173 source inputs reverified, not rerun."
+  },
+  "limitations": [
+    "Service-side SID loss remains unproven; local generation identifies a login result, not a server SID fingerprint.",
+    "Global restore/manual-login tail ownership and real account/logout switching remain open; publication guard only protects folder source sync.",
+    "Synthetic API/cache fixtures do not reproduce the server cause of 119.",
+    "Successful navigations do not close intermittent API119 or prove scroll fluidity.",
+    "Restore-plus-navigation timing includes restore, UI queries and bounded scrolling, not a pure API duration or controlled performance comparison.",
+    "Server/media cache state is unknown; no cross-build causal speed claim.",
+    "Playback windows are sparse screen/clock/telemetry observations, not complete frame/audio/subtitle verification.",
+    "Earlier weak-network stalls, ordinal0 first-segment failure, full matrix/competitors/PiP/ten-minute/real weak wireless/cellular/external Wi-Fi remain open.",
+    "iPhone18 is absent from current USB inventory; its successful same-build installation at 13:11 is recorded separately, not current playback regression."
+  ],
+  "completePlaybackWindows": 12,
+  "playbackAttemptCount": 13,
+  "actualFilmBodyWindows": 10,
+  "diagnosticReadFailures": 0,
+  "playbackErrorVisibleCount": 0,
+  "allConditionsRestored": true,
+  "allFinalUIsInspected": true,
+  "formalL2Acceptance": false,
+  "previousInterruptedSegment": {
+    "rootName": "2026-10-10-folder-source-ui-125639",
+    "summary": "docs/testing/FOLDER-SOURCE-UI-20261010.json",
+    "preserved": "iPad USB disconnection and failed historical cleanup; current recovery inactive0 does not erase these failures."
+  },
+  "toolFailures": [
+    {
+      "device": "iphone13",
+      "file": "directory-exit-reopen-tool-safe.json",
+      "record": {
+        "result": "TOOL_UI_RETURN_ASSERTION",
+        "originalHelper": "directory-reopen helper first return assertion did not confirm root",
+        "evidence": "directory-exit-1-root-before.xml; directory-reopen-tool-current.png/xml",
+        "appFailureNotEstablished": true,
+        "newPlaybackNotStarted": true
+      }
+    },
+    {
+      "device": "iphone13",
+      "file": "s03-files-observer-tool-diagnosis-safe.json",
+      "record": {
+        "recordedAt": "2026-10-10T13:43:30.031936+08:00",
+        "fresh-device": {
+          "returnCode": 0
+        },
+        "native-screen": {
+          "returnCode": 0
+        },
+        "crash": {
+          "returnCode": 1
+        },
+        "status": {
+          "ready": true
+        },
+        "sessions": {
+          "errorType": "HTTPError"
+        }
+      }
+    },
+    {
+      "device": "iphone13",
+      "file": "s03-files-observer-tool-recovery-safe.json",
+      "record": {
+        "recordedAt": "2026-10-10T13:45:08.256584+08:00",
+        "crashPullReturnCode": 0,
+        "nastartReportFiles": [
+          "JetsamEvent-2026-09-27-084322.ips",
+          "Nastart-2026-09-28-070946.ips",
+          "JetsamEvent-2026-09-27-083314.ips",
+          "JetsamEvent-2026-09-27-083937.ips",
+          "Nastart-2026-09-28-070946.000.ips",
+          "Nastart-2026-09-28-070945.ips",
+          "JetsamEvent-2026-09-27-081923.ips",
+          "JetsamEvent-2026-09-27-075404.000.ips",
+          "JetsamEvent-2026-09-27-083311.ips",
+          "JetsamEvent-2026-09-27-084723.ips",
+          "Nastart-2026-09-28-070943.ips",
+          "Nastart-2026-09-28-070945.000.ips",
+          "Nastart-2026-10-01-073420.ips",
+          "JetsamEvent-2026-09-27-081827.ips",
+          "JetsamEvent-2026-09-27-075408.ips",
+          "JetsamEvent-2026-09-27-083836.ips",
+          "JetsamEvent-2026-09-27-075620.ips",
+          "JetsamEvent-2026-09-27-084342.ips",
+          "JetsamEvent-2026-09-27-080041.ips",
+          "Nastart-2026-09-28-071220.ips",
+          "Nastart-2026-09-28-202102.ips",
+          "JetsamEvent-2026-09-27-083952.ips",
+          "JetsamEvent-2026-09-27-083748.ips",
+          "Nastart-2026-09-30-215211.ips",
+          "Nastart-2026-09-30-215619.ips",
+          "JetsamEvent-2026-09-27-083630.ips",
+          "JetsamEvent-2026-10-07-132242.ips",
+          "JetsamEvent-2026-09-27-075412.ips",
+          "JetsamEvent-2026-09-27-080713.ips",
+          "JetsamEvent-2026-09-27-083636.ips",
+          "JetsamEvent-2026-09-27-075404.ips",
+          "JetsamEvent-2026-09-27-075649.ips",
+          "JetsamEvent-2026-09-27-083928.ips",
+          "Nastart-2026-10-04-142719.ips",
+          "Nastart-2026-10-04-131246.ips",
+          "JetsamEvent-2026-09-27-083903.ips",
+          "JetsamEvent-2026-09-27-065510.ips",
+          "Nastart-2026-09-27-074423.ips",
+          "JetsamEvent-2026-09-27-081322.ips"
+        ],
+        "nativeScreenInspected": true,
+        "nativeScreen": "S03 actual film still playing; not Home screen",
+        "wdaStatusReady": true,
+        "oldSessionError": "invalid session id: Session does not exist",
+        "originalObserverFailure": "RemoteDisconnected during t10 screenshot; t0/t3 only; original timed normal exit absent",
+        "classification": "TOOL incomplete observation; App crash not evidenced by native screen; crash reports retained for audit.",
+        "oldSessionReplacedWithoutAppRestart": true,
+        "newSessionActiveAppInfoError": "unknown error: nil object in WDA dictionary; source/screenshot restored by defaultActiveApplication setting",
+        "UIBundleIDVerified": true,
+        "ordinaryRecoveryExit": true,
+        "originalTimedExitStillMissing": true,
+        "mostRecentNastartCrashReport": "2026-10-04 14:27:19",
+        "newNastartCrashReportsOnCurrentDate": 0,
+        "recoveryEvidence": "normalwifi-resume-s03-files-tool-recovery"
+      }
+    },
+    {
+      "device": "ipad",
+      "file": "jellyfin-action-selection-tool-safe.json",
+      "record": {
+        "recordedAt": "2026-10-10T13:31:43.809930+08:00",
+        "result": "TOOL",
+        "sample": "S01",
+        "entry": "jellyfin",
+        "originalAssertion": "assert action",
+        "cause": "Optional requested action was None and XML contained nameless buttons; tool selected None instead of existing playback action.",
+        "AppDetailVerified": true,
+        "actualUIInspected": true,
+        "videoNotStartedInFailedAttempt": true,
+        "evidence": [
+          "normalwifi-resume-s01-jellyfin-navigation.log",
+          "normalwifi-resume-s01-jellyfin-detail.png/xml",
+          "s01-jellyfin-action-missing-current.png/xml"
+        ],
+        "fix": "Require nonempty preferredAction before membership selection; App source and package unchanged.",
+        "failedAttemptRetained": true
+      }
+    },
+    {
+      "device": "ipad",
+      "file": "reconnect-condition-cleanup-safe.json",
+      "record": {
+        "recordedAt": "2026-10-10T13:14:51.213953+08:00",
+        "freshNativeConnection": true,
+        "activeBefore": 0,
+        "previousSlowNetworkProfileCleared": false,
+        "activeAfter": 0,
+        "groups": [
+          {
+            "name": "Network Link",
+            "isActive": false
+          },
+          {
+            "name": "Thermal State",
+            "isActive": false
+          },
+          {
+            "name": "GPU Performance State",
+            "isActive": false
+          }
+        ],
+        "previousCleanupFailure": "retained in original batch; this confirms current reconnect state only"
+      }
+    },
+    {
+      "device": "ipad",
+      "file": "wda-recovery-safe.json",
+      "record": {
+        "recordedAt": "2026-10-10T13:15:37.405974+08:00",
+        "initialStatus": "ConnectionResetError",
+        "XCTestHostAbsentVerified": true,
+        "fixtureVerified": true,
+        "profileExpirationUTC": "2026-10-10T22:05:26",
+        "explicitWDAInstallRequested": false,
+        "hostRecovery": "test-without-building using existing signed fixture"
+      }
+    }
+  ],
+  "finalSourcePackageVerification": {
+    "recordedAt": "2026-10-10T13:58:03.360467+08:00",
+    "unchangedSourceInputs": 173,
+    "sourceDiffSHA256": "21e8797a0ebd2fd5bf7fbb85be355c27c4cdd926550deeb2db8fb0df800cb842",
+    "verifiedLibraries": 29,
+    "deepSignatureVerified": true,
+    "bothTargetsInValidProfile": true,
+    "profileExpirationUTC": "2026-10-10T22:03:15",
+    "binaries": {
+      "Nastart": "24189030f8c7f3fbed8d30c884610a8417020a917254d19a1f64dba2af1f4b86",
+      "Nastart.debug.dylib": "2aaadca11a4a00306655cc88bc787910bb95efeb65c440459566e6c462f01c0d",
+      "Frameworks/KSPlayer.framework/KSPlayer": "eda16e6d0e22bc81045752f2f54a263b0f4f8500912378d5ac141013c9042b52"
+    },
+    "newAppSourceEditsInContinuation": false
+  },
+  "nextRestoreOwnershipReview": {
+    "recordedAt": "2026-10-10T13:36:04.010686+08:00",
+    "scope": "Read-only next-batch ownership review; no source changes during live source-frozen regression.",
+    "observations": [
+      {
+        "method": "restoreDSMConnection",
+        "boundary": "after initial login",
+        "existingRule": "activate primary session without operation/login ownership check; isRefreshing only gates reentry."
+      },
+      {
+        "method": "restoreDSMConnection",
+        "boundary": "after snapshot",
+        "existingRule": "guard connection SID equals main SID before credential save/source snapshot/connect; same SID across distinct authentication UUIDs is not excluded here."
+      },
+      {
+        "method": "restoreDSMConnection",
+        "boundary": "catch/defer",
+        "existingRule": "failure sets reachability/summary and finally refresh flags without owner token; effect on concurrent manual activation remains to be covered."
+      },
+      {
+        "method": "publishFolderSession",
+        "boundary": "FS publication",
+        "existingRule": "new guard protects this publication against cancelled task or different primary UUID in connection/source, but does not cover later tail."
+      }
+    ],
+    "unverified": [
+      "No real cross-account/logout scenario was exercised.",
+      "No server119 cause inferred.",
+      "No automatic reauthentication or retry policy change."
+    ],
+    "nextControlledFixtures": [
+      "late snapshot with reused server SID across distinct login generations",
+      "cancelled restore after login/FS/snapshot must not publish, save credentials or report current failure",
+      "old cleanup must not clear newer operation flags",
+      "manual login and logout invalidate pending restore; losing session cleanup cannot logout the active identity"
+    ]
+  },
+  "acceptance": "Folder-source/UI targeted regression complete for tested scope; formal L2, global restore ownership, 119 cause and playback performance remain open.",
+  "devices": {
+    "iphone13": {
+      "installation": {
+        "recordedAt": "2026-10-10T13:15:54.837781+08:00",
+        "device": "iphone13",
+        "model": "iPhone14,5",
+        "os": "16.3.1",
+        "systemBuild": "20D67",
+        "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+        "sourceDiffSHA256": "21e8797a0ebd2fd5bf7fbb85be355c27c4cdd926550deeb2db8fb0df800cb842",
+        "binaries": {
+          "Nastart": "24189030f8c7f3fbed8d30c884610a8417020a917254d19a1f64dba2af1f4b86",
+          "Nastart.debug.dylib": "2aaadca11a4a00306655cc88bc787910bb95efeb65c440459566e6c462f01c0d",
+          "Frameworks/KSPlayer.framework/KSPlayer": "eda16e6d0e22bc81045752f2f54a263b0f4f8500912378d5ac141013c9042b52"
+        },
+        "binaryBuildTime": "2026-10-10T13:01:32.267381+08:00",
+        "configuration": "normal Debug -Onone; empty launch environment",
+        "freshUSBIdentity": true,
+        "pairingValid": true,
+        "signatureVerified": true,
+        "verifiedLibraries": 29,
+        "checkedInputs": 173,
+        "targetInValidProfile": true,
+        "dataPreservingCoverInstall": true,
+        "installation": "success",
+        "unchangedNonDiagnosticPreferences": 25,
+        "normalLaunchSucceeded": true,
+        "requestedEnvironment": {},
+        "requestedArguments": [],
+        "actualForegroundUIVerified": true,
+        "foregroundEvidence": "normal-launch.png/xml",
+        "wdaReinstallRequested": false,
+        "cellularAvailability": "available per current user; not used in this home Wi-Fi batch",
+        "networkSettingsChanged": false,
+        "actualProcessArguments": {
+          "env": {},
+          "args": []
+        },
+        "normalHomeNASOnline": true,
+        "initialJellyfinOnline": false,
+        "initialServiceSnapshot": "gray/unknown while refreshing; captured unchanged"
+      },
+      "directoryNavigation": [
+        {
+          "device": "iphone13",
+          "attempt": 1,
+          "sample": "MI2",
+          "network": "weakwifi",
+          "entry": "files",
+          "startedAt": "2026-10-10T13:18:49.489926+08:00",
+          "endedAt": "2026-10-10T13:19:17.242425+08:00",
+          "restoreAndNavigationSeconds": 27.752499,
+          "helperExitCode": 0,
+          "result": "DETAIL_READY",
+          "normalActualEnvironment": {},
+          "normalActualArguments": [],
+          "noPlaybackSubmitted": true,
+          "playerClosed": true,
+          "responsesInAttempt": [
+            {
+              "id": "7DA5692A-1EF6-420F-9F8C-FD60841E6212",
+              "elapsedSeconds": 7.10402,
+              "fields": {
+                "apiVersion": 2,
+                "authenticationGeneration": "AD8CA542-7673-4733-955C-58C697111FBD",
+                "authenticationObservedMonoMs": 1386600275,
+                "bodyBytes": 626,
+                "contentType": "json",
+                "diagnosticClientID": "BCE458C8",
+                "envelopeSuccess": "true",
+                "fileStationGeneration": "220B896E-F07F-4160-B248-8E4E0FF27398",
+                "folderAttempt": 1,
+                "folderOperationID": "294337F7",
+                "folderOrigin": "snapshot",
+                "hasData": "true",
+                "httpStatus": 200,
+                "method": "list_share",
+                "requestAuthenticationGeneration": "220B896E-F07F-4160-B248-8E4E0FF27398",
+                "responseKind": "success",
+                "sessionRole": "fileStation"
+              }
+            },
+            {
+              "id": "93494A67-E9E4-4598-B1F1-A71F2AEF8ACC",
+              "elapsedSeconds": 8.58107,
+              "fields": {
+                "apiVersion": 2,
+                "authenticationGeneration": "AD8CA542-7673-4733-955C-58C697111FBD",
+                "authenticationObservedMonoMs": 1386601753,
+                "bodyBytes": 626,
+                "contentType": "json",
+                "diagnosticClientID": "BCE458C8",
+                "envelopeSuccess": "true",
+                "fileStationGeneration": "220B896E-F07F-4160-B248-8E4E0FF27398",
+                "folderAttempt": 1,
+                "folderOperationID": "AC929DD5",
+                "folderOrigin": "browserRoot",
+                "hasData": "true",
+                "httpStatus": 200,
+                "method": "list_share",
+                "requestAuthenticationGeneration": "220B896E-F07F-4160-B248-8E4E0FF27398",
+                "responseKind": "success",
+                "sessionRole": "fileStation"
+              }
+            },
+            {
+              "id": "8285E515-BFF6-4B43-8FF0-C78AEE0C2542",
+              "elapsedSeconds": 11.197036,
+              "fields": {
+                "apiVersion": 2,
+                "authenticationGeneration": "AD8CA542-7673-4733-955C-58C697111FBD",
+                "authenticationObservedMonoMs": 1386604369,
+                "bodyBytes": 702,
+                "contentType": "json",
+                "diagnosticClientID": "BCE458C8",
+                "envelopeSuccess": "true",
+                "fileStationGeneration": "220B896E-F07F-4160-B248-8E4E0FF27398",
+                "folderAttempt": 1,
+                "folderOperationID": "6E5F1129",
+                "folderOrigin": "browserFolder",
+                "hasData": "true",
+                "httpStatus": 200,
+                "method": "list",
+                "requestAuthenticationGeneration": "220B896E-F07F-4160-B248-8E4E0FF27398",
+                "responseKind": "success",
+                "sessionRole": "fileStation"
+              }
+            },
+            {
+              "id": "83C0B51C-4F02-4DD6-8028-CAFEBF632E74",
+              "elapsedSeconds": 13.438458,
+              "fields": {
+                "apiVersion": 2,
+                "authenticationGeneration": "AD8CA542-7673-4733-955C-58C697111FBD",
+                "authenticationObservedMonoMs": 1386606611,
+                "bodyBytes": 1162,
+                "contentType": "json",
+                "diagnosticClientID": "BCE458C8",
+                "envelopeSuccess": "true",
+                "fileStationGeneration": "220B896E-F07F-4160-B248-8E4E0FF27398",
+                "folderAttempt": 1,
+                "folderOperationID": "E052CB68",
+                "folderOrigin": "browserFolder",
+                "hasData": "true",
+                "httpStatus": 200,
+                "method": "list",
+                "requestAuthenticationGeneration": "220B896E-F07F-4160-B248-8E4E0FF27398",
+                "responseKind": "success",
+                "sessionRole": "fileStation"
+              }
+            },
+            {
+              "id": "4BB37DD3-329E-4DEF-8982-9AB2BC0F4DAF",
+              "elapsedSeconds": 15.819577,
+              "fields": {
+                "apiVersion": 2,
+                "authenticationGeneration": "AD8CA542-7673-4733-955C-58C697111FBD",
+                "authenticationObservedMonoMs": 1386608992,
+                "bodyBytes": 25081,
+                "contentType": "json",
+                "diagnosticClientID": "BCE458C8",
+                "envelopeSuccess": "true",
+                "fileStationGeneration": "220B896E-F07F-4160-B248-8E4E0FF27398",
+                "folderAttempt": 1,
+                "folderOperationID": "6E7FD2DE",
+                "folderOrigin": "browserFolder",
+                "hasData": "true",
+                "httpStatus": 200,
+                "method": "list",
+                "requestAuthenticationGeneration": "220B896E-F07F-4160-B248-8E4E0FF27398",
+                "responseKind": "success",
+                "sessionRole": "fileStation"
+              }
+            }
+          ],
+          "actualUIInspected": true,
+          "evidence": "directory-weakwifi-1-state.png/xml",
+          "visibleDetail": "MI2 Remux-2160p plus from-head/resume controls, player closed and no folder error"
+        },
+        {
+          "device": "iphone13",
+          "attempt": 2,
+          "sample": "MI2",
+          "network": "weakwifi",
+          "entry": "files",
+          "startedAt": "2026-10-10T13:19:17.937281+08:00",
+          "endedAt": "2026-10-10T13:19:46.151391+08:00",
+          "restoreAndNavigationSeconds": 28.21411,
+          "helperExitCode": 0,
+          "result": "DETAIL_READY",
+          "normalActualEnvironment": {},
+          "normalActualArguments": [],
+          "noPlaybackSubmitted": true,
+          "playerClosed": true,
+          "responsesInAttempt": [
+            {
+              "id": "F2455F14-0FB1-4E64-BE75-41A4155B3AD9",
+              "elapsedSeconds": 6.683105,
+              "fields": {
+                "apiVersion": 2,
+                "authenticationGeneration": "259DE23D-D470-45ED-B6FE-39127DBCFEB2",
+                "authenticationObservedMonoMs": 1386628303,
+                "bodyBytes": 626,
+                "contentType": "json",
+                "diagnosticClientID": "4A2E4EF3",
+                "envelopeSuccess": "true",
+                "fileStationGeneration": "2FA58DBB-CB84-44E1-AC2E-266440023616",
+                "folderAttempt": 1,
+                "folderOperationID": "06BA9E9D",
+                "folderOrigin": "snapshot",
+                "hasData": "true",
+                "httpStatus": 200,
+                "method": "list_share",
+                "requestAuthenticationGeneration": "2FA58DBB-CB84-44E1-AC2E-266440023616",
+                "responseKind": "success",
+                "sessionRole": "fileStation"
+              }
+            },
+            {
+              "id": "0CDB9DA4-D4DE-428B-87A3-11EDC6E9F7A1",
+              "elapsedSeconds": 8.586859,
+              "fields": {
+                "apiVersion": 2,
+                "authenticationGeneration": "259DE23D-D470-45ED-B6FE-39127DBCFEB2",
+                "authenticationObservedMonoMs": 1386630207,
+                "bodyBytes": 626,
+                "contentType": "json",
+                "diagnosticClientID": "4A2E4EF3",
+                "envelopeSuccess": "true",
+                "fileStationGeneration": "2FA58DBB-CB84-44E1-AC2E-266440023616",
+                "folderAttempt": 1,
+                "folderOperationID": "C3212B93",
+                "folderOrigin": "browserRoot",
+                "hasData": "true",
+                "httpStatus": 200,
+                "method": "list_share",
+                "requestAuthenticationGeneration": "2FA58DBB-CB84-44E1-AC2E-266440023616",
+                "responseKind": "success",
+                "sessionRole": "fileStation"
+              }
+            },
+            {
+              "id": "A045C03B-A668-49A0-96F4-C6DD9153C6A8",
+              "elapsedSeconds": 11.292639,
+              "fields": {
+                "apiVersion": 2,
+                "authenticationGeneration": "259DE23D-D470-45ED-B6FE-39127DBCFEB2",
+                "authenticationObservedMonoMs": 1386632913,
+                "bodyBytes": 702,
+                "contentType": "json",
+                "diagnosticClientID": "4A2E4EF3",
+                "envelopeSuccess": "true",
+                "fileStationGeneration": "2FA58DBB-CB84-44E1-AC2E-266440023616",
+                "folderAttempt": 1,
+                "folderOperationID": "CAC93680",
+                "folderOrigin": "browserFolder",
+                "hasData": "true",
+                "httpStatus": 200,
+                "method": "list",
+                "requestAuthenticationGeneration": "2FA58DBB-CB84-44E1-AC2E-266440023616",
+                "responseKind": "success",
+                "sessionRole": "fileStation"
+              }
+            },
+            {
+              "id": "4CD0DA8F-1C7D-4914-A219-D5BE405A35C0",
+              "elapsedSeconds": 13.586066,
+              "fields": {
+                "apiVersion": 2,
+                "authenticationGeneration": "259DE23D-D470-45ED-B6FE-39127DBCFEB2",
+                "authenticationObservedMonoMs": 1386635207,
+                "bodyBytes": 1162,
+                "contentType": "json",
+                "diagnosticClientID": "4A2E4EF3",
+                "envelopeSuccess": "true",
+                "fileStationGeneration": "2FA58DBB-CB84-44E1-AC2E-266440023616",
+                "folderAttempt": 1,
+                "folderOperationID": "E4C202A9",
+                "folderOrigin": "browserFolder",
+                "hasData": "true",
+                "httpStatus": 200,
+                "method": "list",
+                "requestAuthenticationGeneration": "2FA58DBB-CB84-44E1-AC2E-266440023616",
+                "responseKind": "success",
+                "sessionRole": "fileStation"
+              }
+            },
+            {
+              "id": "D3F61ABA-00B5-4B85-AC1E-0AE8BDE0BF29",
+              "elapsedSeconds": 16.066939,
+              "fields": {
+                "apiVersion": 2,
+                "authenticationGeneration": "259DE23D-D470-45ED-B6FE-39127DBCFEB2",
+                "authenticationObservedMonoMs": 1386637687,
+                "bodyBytes": 25081,
+                "contentType": "json",
+                "diagnosticClientID": "4A2E4EF3",
+                "envelopeSuccess": "true",
+                "fileStationGeneration": "2FA58DBB-CB84-44E1-AC2E-266440023616",
+                "folderAttempt": 1,
+                "folderOperationID": "563A0150",
+                "folderOrigin": "browserFolder",
+                "hasData": "true",
+                "httpStatus": 200,
+                "method": "list",
+                "requestAuthenticationGeneration": "2FA58DBB-CB84-44E1-AC2E-266440023616",
+                "responseKind": "success",
+                "sessionRole": "fileStation"
+              }
+            }
+          ],
+          "actualUIInspected": true,
+          "evidence": "directory-weakwifi-2-state.png/xml",
+          "visibleDetail": "MI2 Remux-2160p plus from-head/resume controls, player closed and no folder error"
+        }
+      ],
+      "weakNavigationCondition": {
+        "recordedAt": "2026-10-10T13:18:48.641993+08:00",
+        "device": "iphone13",
+        "profile": "SlowNetworkWiFi",
+        "profileDescription": "Name: Nominal Wi-Fi Scenario\nDownlink Bandwidth: 40 Mbps\nDownlink Latency: 1 ms\nDownlink Packet Loss Ratio: 0%\nUplink Bandwidth: 33 Mbps\nUplink Latency: 1 ms\nUplink Packet Loss Ratio: 0%",
+        "physicalBearer": "Wi-Fi requested; actual URL metrics verify separately",
+        "scope": "controlled constrained Wi-Fi on current home-connected USB environment; external Wi-Fi not verified",
+        "originalActiveCount": 0,
+        "noAppTestEnvironment": true,
+        "cases": [
+          [
+            "iphone13",
+            "MI2",
+            "files",
+            0,
+            "weakwifi"
+          ],
+          [
+            "iphone13",
+            "MI2",
+            "files",
+            0,
+            "weakwifi"
+          ]
+        ],
+        "conditionRestored": true,
+        "activeVerifiedAt": "2026-10-10T13:18:49.194693+08:00",
+        "batchExitCode": 0,
+        "restoredActiveCount": 0,
+        "restoredAt": "2026-10-10T13:19:47.685958+08:00"
+      },
+      "finalState": {
+        "recordedAt": "2026-10-10T13:59:07.851177+08:00",
+        "freshUSBIdentity": true,
+        "sourceAndBinariesMatchLatest": true,
+        "latestPackage": {
+          "Nastart": "24189030f8c7f3fbed8d30c884610a8417020a917254d19a1f64dba2af1f4b86",
+          "Nastart.debug.dylib": "2aaadca11a4a00306655cc88bc787910bb95efeb65c440459566e6c462f01c0d",
+          "Frameworks/KSPlayer.framework/KSPlayer": "eda16e6d0e22bc81045752f2f54a263b0f4f8500912378d5ac141013c9042b52"
+        },
+        "normalRequestedEnvironment": {},
+        "normalRequestedArguments": [],
+        "actualProcessArguments": {
+          "env": {},
+          "args": []
+        },
+        "normalLaunch": true,
+        "playerClosed": true,
+        "pid": 77862,
+        "wdaReady": true,
+        "wdaReinstalled": false,
+        "idleWaitRestored": 10,
+        "animationCoolOffRestored": 2,
+        "UIEvidence": "final-latest-normal-home.png/xml",
+        "actualUIInspected": true,
+        "normalHomeNASOnline": true,
+        "actualPlayerClosed": true,
+        "initialJellyfinStatusAtFinalLaunch": "gray/unknown; later read-only confirmation separately verified online"
+      },
+      "finalConditions": {
+        "recordedAt": "2026-10-10T14:00:00.190985+08:00",
+        "groups": [
+          {
+            "name": "Network Link",
+            "isActive": false
+          },
+          {
+            "name": "Thermal State",
+            "isActive": false
+          },
+          {
+            "name": "GPU Performance State",
+            "isActive": false
+          }
+        ],
+        "activeCount": 0,
+        "mutationPerformed": false
+      },
+      "finalPreferences": {
+        "recordedAt": "2026-10-10T14:00:58.988254+08:00",
+        "device": "iphone13",
+        "rawPreferencesStoredPrivately": true,
+        "nonDiagnosticPreferenceCount": 25
+      },
+      "finalConfirmation": {
+        "recordedAt": "2026-10-10T14:00:32.034466+08:00",
+        "device": "iphone13",
+        "name": "iPhone",
+        "model": "iPhone14,5",
+        "os": "16.3.1",
+        "systemBuild": "20D67",
+        "freshUSBIdentity": true,
+        "sourceInputManifestMatches": true,
+        "sourceAndBinariesMatchLatest": true,
+        "actualEnvironment": {},
+        "actualArguments": [],
+        "normalHomeNASOnline": true,
+        "playerClosed": true,
+        "actualUIInspected": true,
+        "evidence": "final-confirmation.png/xml",
+        "mutationPerformed": false,
+        "actualPlayerClosed": true,
+        "normalHomeJellyfinOnline": true,
+        "otherServiceWarningsRetained": [
+          "Radarr",
+          "Sonarr",
+          "Prowlarr on iPad"
+        ],
+        "finalScreenshotNativePortraitLayout": true
+      },
+      "directoryExitReopen": {
+        "recordedAt": "2026-10-10T13:25:27.797934+08:00",
+        "device": "iphone13",
+        "cycles": [
+          {
+            "cycle": 1,
+            "openRequestAt": 1791609914.251926,
+            "openResponseAt": 1791609914.976293,
+            "backResponseAt": 1791609915.711293,
+            "directoryReopened": true,
+            "expectedChildVisible": true,
+            "noFolderErrorInCapturedStates": true,
+            "networkRequestInFlightAtExit": "unknown; controlled fixtures establish cancellation correctness",
+            "backActionGrounding": "fresh pushed-navigation XML; original rapid root-coordinate attempt retained separately",
+            "actualUIInspected": true,
+            "inspectionScope": "All three reopened video directory images individually show media child and no failure; first rapid unconfirmed back is retained separately"
+          },
+          {
+            "cycle": 2,
+            "openRequestAt": 1791609918.735577,
+            "openResponseAt": 1791609919.461061,
+            "backResponseAt": 1791609920.228123,
+            "directoryReopened": true,
+            "expectedChildVisible": true,
+            "noFolderErrorInCapturedStates": true,
+            "networkRequestInFlightAtExit": "unknown; controlled fixtures establish cancellation correctness",
+            "backActionGrounding": "fresh pushed-navigation XML; original rapid root-coordinate attempt retained separately",
+            "actualUIInspected": true,
+            "inspectionScope": "All three reopened video directory images individually show media child and no failure; first rapid unconfirmed back is retained separately"
+          },
+          {
+            "cycle": 3,
+            "openRequestAt": 1791609923.218221,
+            "openResponseAt": 1791609923.947454,
+            "backResponseAt": 1791609924.7242172,
+            "directoryReopened": true,
+            "expectedChildVisible": true,
+            "noFolderErrorInCapturedStates": true,
+            "networkRequestInFlightAtExit": "unknown; controlled fixtures establish cancellation correctness",
+            "backActionGrounding": "fresh pushed-navigation XML; original rapid root-coordinate attempt retained separately",
+            "actualUIInspected": true,
+            "inspectionScope": "All three reopened video directory images individually show media child and no failure; first rapid unconfirmed back is retained separately"
+          }
+        ],
+        "sourceAndLatestPackageVerified": true,
+        "network": "normal Wi-Fi after condition restoration",
+        "limitations": [
+          "UI smoke verifies exit/reopen, not measured in-flight cancellation or scroll fluidity."
+        ],
+        "noPlaybackSubmitted": true,
+        "visualLimitation": "Three reopened phone screenshots were captured during push transitions; expected folder children and absence of error are visible, but settled layout and full scrolling frame timing are not verified."
+      },
+      "s19ResumeIdentity": {
+        "recordedAt": "2026-10-10T14:06:25.191094+08:00",
+        "device": "iphone13",
+        "sample": "S19",
+        "entryIdentity": "Exact SHA-256 resume key compared privately across all snapshots; key and server/account/path kept private.",
+        "snapshots": [
+          {
+            "capture": "normalwifi-s19-resume-s19-files/before-private.plist",
+            "sameExactKeyPresent": true,
+            "positionSeconds": 114.620913084,
+            "durationSeconds": 13698.368,
+            "updatedAt": 813157664.139438
+          },
+          {
+            "capture": "normalwifi-s19-resume-s19-files/closed-private.plist",
+            "sameExactKeyPresent": true,
+            "positionSeconds": 45.406,
+            "durationSeconds": 13698.368,
+            "updatedAt": 813304404.556194
+          },
+          {
+            "capture": "normalwifi-s19-resume-s19-files-retry1/before-private.plist",
+            "sameExactKeyPresent": true,
+            "positionSeconds": 58.74,
+            "durationSeconds": 13698.368,
+            "updatedAt": 813304417.896165
+          },
+          {
+            "capture": "normalwifi-s19-resume-s19-files-retry1/closed-private.plist",
+            "sameExactKeyPresent": true,
+            "positionSeconds": 87.186,
+            "durationSeconds": 13698.368,
+            "updatedAt": 813304478.355161
+          },
+          {
+            "capture": "final-private.plist",
+            "sameExactKeyPresent": true,
+            "positionSeconds": 100.946,
+            "durationSeconds": 13698.368,
+            "updatedAt": 813304492.116676
+          }
+        ],
+        "allSnapshotsSameExactKeyPresent": true,
+        "savedPositionBeforeColdProcessReopenSeconds": 58.74,
+        "firstClockAfterColdProcessReopenSeconds": 58.856,
+        "firstClockMinusSavedSeconds": 0.116,
+        "finalPersistedPositionSeconds": 100.946,
+        "finalPersistedNonzero": true,
+        "scope": "One cold-process reopen via Continue Watching; first clock is diagnostic telemetry, with actual later film-body images separately inspected. This is not deep seek/long playback/resume matrix acceptance.",
+        "earlyExitPreferenceReadLimitation": "Immediately pulled closed preferences lag final forced progress persistence; later before-reopen/final snapshots establish stored values.",
+        "immediateExitButtonDiscrepancy": false,
+        "buttonDiscrepancyInterpretation": "Resume and From Head visible at normal exit."
+      },
+      "historicalPreNormalLaunchEventIDsExcluded": 1000,
+      "directoryResponseCounts": {
+        "success": 47
+      },
+      "apiFailureCounts": {},
+      "directoryAttemptSummary": {
+        "attempts": 2,
+        "detailReady": 2,
+        "failedOrTimedOut": 0,
+        "restoreAndNavigationSeconds": {
+          "raw": [
+            27.752499,
+            28.21411
+          ],
+          "median": 27.983304500000003,
+          "range": [
+            27.752499,
+            28.21411
+          ]
+        }
+      }
+    },
+    "ipad": {
+      "installation": {
+        "recordedAt": "2026-10-10T13:16:36.189969+08:00",
+        "device": "ipad",
+        "model": "iPad12,1",
+        "os": "18.3.1",
+        "systemBuild": "22D72",
+        "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+        "sourceDiffSHA256": "21e8797a0ebd2fd5bf7fbb85be355c27c4cdd926550deeb2db8fb0df800cb842",
+        "binaries": {
+          "Nastart": "24189030f8c7f3fbed8d30c884610a8417020a917254d19a1f64dba2af1f4b86",
+          "Nastart.debug.dylib": "2aaadca11a4a00306655cc88bc787910bb95efeb65c440459566e6c462f01c0d",
+          "Frameworks/KSPlayer.framework/KSPlayer": "eda16e6d0e22bc81045752f2f54a263b0f4f8500912378d5ac141013c9042b52"
+        },
+        "binaryBuildTime": "2026-10-10T13:01:32.267381+08:00",
+        "configuration": "normal Debug -Onone; empty launch environment",
+        "freshUSBIdentity": true,
+        "pairingValid": true,
+        "signatureVerified": true,
+        "verifiedLibraries": 29,
+        "checkedInputs": 173,
+        "targetInValidProfile": true,
+        "dataPreservingCoverInstall": true,
+        "installation": "success",
+        "unchangedNonDiagnosticPreferences": 16,
+        "normalLaunchSucceeded": true,
+        "requestedEnvironment": {},
+        "requestedArguments": [],
+        "actualForegroundUIVerified": true,
+        "foregroundEvidence": "normal-launch.png/xml",
+        "wdaReinstallRequested": false,
+        "cellularAvailability": "not used",
+        "networkSettingsChanged": false,
+        "actualProcessArguments": {
+          "env": {},
+          "args": []
+        },
+        "normalHomeNASOnline": true,
+        "initialJellyfinOnline": false,
+        "initialServiceSnapshot": "gray/unknown while refreshing; captured unchanged"
+      },
+      "directoryNavigation": [
+        {
+          "device": "ipad",
+          "attempt": 1,
+          "sample": "MI2",
+          "network": "weakwifi",
+          "entry": "files",
+          "startedAt": "2026-10-10T13:16:48.230521+08:00",
+          "endedAt": "2026-10-10T13:17:21.168056+08:00",
+          "restoreAndNavigationSeconds": 32.937535,
+          "helperExitCode": 0,
+          "result": "DETAIL_READY",
+          "normalActualEnvironment": {},
+          "normalActualArguments": [],
+          "noPlaybackSubmitted": true,
+          "playerClosed": true,
+          "responsesInAttempt": [
+            {
+              "id": "4486E987-D887-43A5-97E9-20E0A12FA9FB",
+              "elapsedSeconds": 7.198146,
+              "fields": {
+                "apiVersion": 2,
+                "authenticationGeneration": "98204957-F18A-4D53-811E-6A25A47E88CA",
+                "authenticationObservedMonoMs": 258163921,
+                "bodyBytes": 626,
+                "contentType": "json",
+                "diagnosticClientID": "33EA7CF2",
+                "envelopeSuccess": "true",
+                "fileStationGeneration": "8A3E13AE-AECB-4403-83D5-D1B6B4F3C001",
+                "folderAttempt": 1,
+                "folderOperationID": "4DAFBC53",
+                "folderOrigin": "snapshot",
+                "hasData": "true",
+                "httpStatus": 200,
+                "method": "list_share",
+                "requestAuthenticationGeneration": "8A3E13AE-AECB-4403-83D5-D1B6B4F3C001",
+                "responseKind": "success",
+                "sessionRole": "fileStation"
+              }
+            },
+            {
+              "id": "D89095AD-EC30-4ED0-90E7-A42CA086EE99",
+              "elapsedSeconds": 9.962418,
+              "fields": {
+                "apiVersion": 2,
+                "authenticationGeneration": "98204957-F18A-4D53-811E-6A25A47E88CA",
+                "authenticationObservedMonoMs": 258166707,
+                "bodyBytes": 626,
+                "contentType": "json",
+                "diagnosticClientID": "33EA7CF2",
+                "envelopeSuccess": "true",
+                "fileStationGeneration": "8A3E13AE-AECB-4403-83D5-D1B6B4F3C001",
+                "folderAttempt": 1,
+                "folderOperationID": "A0FE8474",
+                "folderOrigin": "browserRoot",
+                "hasData": "true",
+                "httpStatus": 200,
+                "method": "list_share",
+                "requestAuthenticationGeneration": "8A3E13AE-AECB-4403-83D5-D1B6B4F3C001",
+                "responseKind": "success",
+                "sessionRole": "fileStation"
+              }
+            },
+            {
+              "id": "AE07C759-18E9-45A7-A386-21AF4DE300E3",
+              "elapsedSeconds": 12.880675,
+              "fields": {
+                "apiVersion": 2,
+                "authenticationGeneration": "98204957-F18A-4D53-811E-6A25A47E88CA",
+                "authenticationObservedMonoMs": 258169638,
+                "bodyBytes": 702,
+                "contentType": "json",
+                "diagnosticClientID": "33EA7CF2",
+                "envelopeSuccess": "true",
+                "fileStationGeneration": "8A3E13AE-AECB-4403-83D5-D1B6B4F3C001",
+                "folderAttempt": 1,
+                "folderOperationID": "A7E2FE33",
+                "folderOrigin": "browserFolder",
+                "hasData": "true",
+                "httpStatus": 200,
+                "method": "list",
+                "requestAuthenticationGeneration": "8A3E13AE-AECB-4403-83D5-D1B6B4F3C001",
+                "responseKind": "success",
+                "sessionRole": "fileStation"
+              }
+            },
+            {
+              "id": "04993EC3-3C4F-4611-93DD-58A35183A472",
+              "elapsedSeconds": 15.529716,
+              "fields": {
+                "apiVersion": 2,
+                "authenticationGeneration": "98204957-F18A-4D53-811E-6A25A47E88CA",
+                "authenticationObservedMonoMs": 258172287,
+                "bodyBytes": 1162,
+                "contentType": "json",
+                "diagnosticClientID": "33EA7CF2",
+                "envelopeSuccess": "true",
+                "fileStationGeneration": "8A3E13AE-AECB-4403-83D5-D1B6B4F3C001",
+                "folderAttempt": 1,
+                "folderOperationID": "72C9EC2C",
+                "folderOrigin": "browserFolder",
+                "hasData": "true",
+                "httpStatus": 200,
+                "method": "list",
+                "requestAuthenticationGeneration": "8A3E13AE-AECB-4403-83D5-D1B6B4F3C001",
+                "responseKind": "success",
+                "sessionRole": "fileStation"
+              }
+            },
+            {
+              "id": "7617B3A2-69DC-4C34-8C6B-2E05BE4C2E9F",
+              "elapsedSeconds": 18.474513,
+              "fields": {
+                "apiVersion": 2,
+                "authenticationGeneration": "98204957-F18A-4D53-811E-6A25A47E88CA",
+                "authenticationObservedMonoMs": 258175181,
+                "bodyBytes": 25081,
+                "contentType": "json",
+                "diagnosticClientID": "33EA7CF2",
+                "envelopeSuccess": "true",
+                "fileStationGeneration": "8A3E13AE-AECB-4403-83D5-D1B6B4F3C001",
+                "folderAttempt": 1,
+                "folderOperationID": "C2A2C684",
+                "folderOrigin": "browserFolder",
+                "hasData": "true",
+                "httpStatus": 200,
+                "method": "list",
+                "requestAuthenticationGeneration": "8A3E13AE-AECB-4403-83D5-D1B6B4F3C001",
+                "responseKind": "success",
+                "sessionRole": "fileStation"
+              }
+            },
+            {
+              "id": "A19C4BF3-1901-49D4-9F16-3DC9943EAB36",
+              "elapsedSeconds": 27.282552,
+              "fields": {
+                "apiVersion": 2,
+                "authenticationGeneration": "98204957-F18A-4D53-811E-6A25A47E88CA",
+                "authenticationObservedMonoMs": 258184040,
+                "bodyBytes": 2089,
+                "contentType": "json",
+                "diagnosticClientID": "33EA7CF2",
+                "envelopeSuccess": "true",
+                "fileStationGeneration": "8A3E13AE-AECB-4403-83D5-D1B6B4F3C001",
+                "folderAttempt": 1,
+                "folderOperationID": "A94E72DD",
+                "folderOrigin": "browserFolder",
+                "hasData": "true",
+                "httpStatus": 200,
+                "method": "list",
+                "requestAuthenticationGeneration": "8A3E13AE-AECB-4403-83D5-D1B6B4F3C001",
+                "responseKind": "success",
+                "sessionRole": "fileStation"
+              }
+            }
+          ],
+          "actualUIInspected": true,
+          "evidence": "directory-weakwifi-1-state.png/xml",
+          "visibleDetail": "MI2 Remux-2160p plus from-head/resume controls, player closed and no folder error"
+        },
+        {
+          "device": "ipad",
+          "attempt": 2,
+          "sample": "MI2",
+          "network": "weakwifi",
+          "entry": "files",
+          "startedAt": "2026-10-10T13:17:22.142694+08:00",
+          "endedAt": "2026-10-10T13:17:54.654017+08:00",
+          "restoreAndNavigationSeconds": 32.511323,
+          "helperExitCode": 0,
+          "result": "DETAIL_READY",
+          "normalActualEnvironment": {},
+          "normalActualArguments": [],
+          "noPlaybackSubmitted": true,
+          "playerClosed": true,
+          "responsesInAttempt": [
+            {
+              "id": "B4630510-0DFF-4763-A005-74C332DDC92C",
+              "elapsedSeconds": 7.031856,
+              "fields": {
+                "apiVersion": 2,
+                "authenticationGeneration": "A45564EC-BF9F-44CC-95A5-CDF53086988D",
+                "authenticationObservedMonoMs": 258197681,
+                "bodyBytes": 626,
+                "contentType": "json",
+                "diagnosticClientID": "D47F1527",
+                "envelopeSuccess": "true",
+                "fileStationGeneration": "806D5861-DC23-4F67-A84E-E68AD9D28645",
+                "folderAttempt": 1,
+                "folderOperationID": "AE31A456",
+                "folderOrigin": "snapshot",
+                "hasData": "true",
+                "httpStatus": 200,
+                "method": "list_share",
+                "requestAuthenticationGeneration": "806D5861-DC23-4F67-A84E-E68AD9D28645",
+                "responseKind": "success",
+                "sessionRole": "fileStation"
+              }
+            },
+            {
+              "id": "F7829CB6-0927-4F7F-84A3-4F93799668E3",
+              "elapsedSeconds": 9.492242,
+              "fields": {
+                "apiVersion": 2,
+                "authenticationGeneration": "A45564EC-BF9F-44CC-95A5-CDF53086988D",
+                "authenticationObservedMonoMs": 258200146,
+                "bodyBytes": 626,
+                "contentType": "json",
+                "diagnosticClientID": "D47F1527",
+                "envelopeSuccess": "true",
+                "fileStationGeneration": "806D5861-DC23-4F67-A84E-E68AD9D28645",
+                "folderAttempt": 1,
+                "folderOperationID": "9A7996A2",
+                "folderOrigin": "browserRoot",
+                "hasData": "true",
+                "httpStatus": 200,
+                "method": "list_share",
+                "requestAuthenticationGeneration": "806D5861-DC23-4F67-A84E-E68AD9D28645",
+                "responseKind": "success",
+                "sessionRole": "fileStation"
+              }
+            },
+            {
+              "id": "C7C4EA78-F360-40A9-B064-DBE772A2528A",
+              "elapsedSeconds": 12.598119,
+              "fields": {
+                "apiVersion": 2,
+                "authenticationGeneration": "A45564EC-BF9F-44CC-95A5-CDF53086988D",
+                "authenticationObservedMonoMs": 258203267,
+                "bodyBytes": 702,
+                "contentType": "json",
+                "diagnosticClientID": "D47F1527",
+                "envelopeSuccess": "true",
+                "fileStationGeneration": "806D5861-DC23-4F67-A84E-E68AD9D28645",
+                "folderAttempt": 1,
+                "folderOperationID": "E3D28478",
+                "folderOrigin": "browserFolder",
+                "hasData": "true",
+                "httpStatus": 200,
+                "method": "list",
+                "requestAuthenticationGeneration": "806D5861-DC23-4F67-A84E-E68AD9D28645",
+                "responseKind": "success",
+                "sessionRole": "fileStation"
+              }
+            },
+            {
+              "id": "E35B0FCB-EE5F-4B7B-B9BC-03F9E8C1D35D",
+              "elapsedSeconds": 15.228733,
+              "fields": {
+                "apiVersion": 2,
+                "authenticationGeneration": "A45564EC-BF9F-44CC-95A5-CDF53086988D",
+                "authenticationObservedMonoMs": 258205898,
+                "bodyBytes": 1162,
+                "contentType": "json",
+                "diagnosticClientID": "D47F1527",
+                "envelopeSuccess": "true",
+                "fileStationGeneration": "806D5861-DC23-4F67-A84E-E68AD9D28645",
+                "folderAttempt": 1,
+                "folderOperationID": "19DD7E09",
+                "folderOrigin": "browserFolder",
+                "hasData": "true",
+                "httpStatus": 200,
+                "method": "list",
+                "requestAuthenticationGeneration": "806D5861-DC23-4F67-A84E-E68AD9D28645",
+                "responseKind": "success",
+                "sessionRole": "fileStation"
+              }
+            },
+            {
+              "id": "D817CE29-4E30-4604-82FD-C4FCF3CFB9C8",
+              "elapsedSeconds": 18.050167,
+              "fields": {
+                "apiVersion": 2,
+                "authenticationGeneration": "A45564EC-BF9F-44CC-95A5-CDF53086988D",
+                "authenticationObservedMonoMs": 258208719,
+                "bodyBytes": 25081,
+                "contentType": "json",
+                "diagnosticClientID": "D47F1527",
+                "envelopeSuccess": "true",
+                "fileStationGeneration": "806D5861-DC23-4F67-A84E-E68AD9D28645",
+                "folderAttempt": 1,
+                "folderOperationID": "F84221F4",
+                "folderOrigin": "browserFolder",
+                "hasData": "true",
+                "httpStatus": 200,
+                "method": "list",
+                "requestAuthenticationGeneration": "806D5861-DC23-4F67-A84E-E68AD9D28645",
+                "responseKind": "success",
+                "sessionRole": "fileStation"
+              }
+            }
+          ],
+          "actualUIInspected": true,
+          "evidence": "directory-weakwifi-2-state.png/xml",
+          "visibleDetail": "MI2 Remux-2160p plus from-head/resume controls, player closed and no folder error"
+        }
+      ],
+      "weakNavigationCondition": {
+        "recordedAt": "2026-10-10T13:16:47.305059+08:00",
+        "device": "ipad",
+        "profile": "SlowNetworkWiFi",
+        "profileDescription": "Name: Nominal Wi-Fi Scenario\nDownlink Bandwidth: 40 Mbps\nDownlink Latency: 1 ms\nDownlink Packet Loss Ratio: 0%\nUplink Bandwidth: 33 Mbps\nUplink Latency: 1 ms\nUplink Packet Loss Ratio: 0%",
+        "physicalBearer": "Wi-Fi requested; actual URL metrics verify separately",
+        "scope": "controlled constrained Wi-Fi on current home-connected USB environment; external Wi-Fi not verified",
+        "originalActiveCount": 0,
+        "noAppTestEnvironment": true,
+        "cases": [
+          [
+            "ipad",
+            "MI2",
+            "files",
+            0,
+            "weakwifi"
+          ],
+          [
+            "ipad",
+            "MI2",
+            "files",
+            0,
+            "weakwifi"
+          ]
+        ],
+        "conditionRestored": true,
+        "activeVerifiedAt": "2026-10-10T13:16:47.905291+08:00",
+        "batchExitCode": 0,
+        "restoredActiveCount": 0,
+        "restoredAt": "2026-10-10T13:17:56.280425+08:00"
+      },
+      "finalState": {
+        "recordedAt": "2026-10-10T13:59:15.046159+08:00",
+        "freshUSBIdentity": true,
+        "sourceAndBinariesMatchLatest": true,
+        "latestPackage": {
+          "Nastart": "24189030f8c7f3fbed8d30c884610a8417020a917254d19a1f64dba2af1f4b86",
+          "Nastart.debug.dylib": "2aaadca11a4a00306655cc88bc787910bb95efeb65c440459566e6c462f01c0d",
+          "Frameworks/KSPlayer.framework/KSPlayer": "eda16e6d0e22bc81045752f2f54a263b0f4f8500912378d5ac141013c9042b52"
+        },
+        "normalRequestedEnvironment": {},
+        "normalRequestedArguments": [],
+        "actualProcessArguments": {
+          "env": {},
+          "args": []
+        },
+        "normalLaunch": true,
+        "playerClosed": true,
+        "pid": 8171,
+        "wdaReady": true,
+        "wdaReinstalled": false,
+        "idleWaitRestored": 10,
+        "animationCoolOffRestored": 2,
+        "UIEvidence": "final-latest-normal-home.png/xml",
+        "actualUIInspected": true,
+        "normalHomeNASOnline": true,
+        "actualPlayerClosed": true,
+        "initialJellyfinStatusAtFinalLaunch": "gray/unknown; later read-only confirmation separately verified online"
+      },
+      "finalConditions": {
+        "recordedAt": "2026-10-10T14:00:00.770601+08:00",
+        "groups": [
+          {
+            "name": "Network Link",
+            "isActive": false
+          },
+          {
+            "name": "Thermal State",
+            "isActive": false
+          },
+          {
+            "name": "GPU Performance State",
+            "isActive": false
+          }
+        ],
+        "activeCount": 0,
+        "mutationPerformed": false
+      },
+      "finalPreferences": {
+        "recordedAt": "2026-10-10T14:00:59.248375+08:00",
+        "device": "ipad",
+        "rawPreferencesStoredPrivately": true,
+        "nonDiagnosticPreferenceCount": 16
+      },
+      "finalConfirmation": {
+        "recordedAt": "2026-10-10T14:00:32.777612+08:00",
+        "device": "ipad",
+        "name": "iPad",
+        "model": "iPad12,1",
+        "os": "18.3.1",
+        "systemBuild": "22D72",
+        "freshUSBIdentity": true,
+        "sourceInputManifestMatches": true,
+        "sourceAndBinariesMatchLatest": true,
+        "actualEnvironment": {},
+        "actualArguments": [],
+        "normalHomeNASOnline": true,
+        "playerClosed": true,
+        "actualUIInspected": true,
+        "evidence": "final-confirmation.png/xml",
+        "mutationPerformed": false,
+        "actualPlayerClosed": true,
+        "normalHomeJellyfinOnline": true,
+        "otherServiceWarningsRetained": [
+          "Radarr",
+          "Sonarr",
+          "Prowlarr on iPad"
+        ],
+        "finalScreenshotNativePortraitLayout": true
+      },
+      "directoryExitReopen": {
+        "recordedAt": "2026-10-10T13:18:48.297177+08:00",
+        "device": "ipad",
+        "cycles": [
+          {
+            "cycle": 1,
+            "openRequestAt": 1791609510.131208,
+            "openResponseAt": 1791609511.1999109,
+            "backResponseAt": 1791609512.003843,
+            "directoryReopened": true,
+            "expectedChildVisible": true,
+            "noFolderErrorInCapturedStates": true,
+            "networkRequestInFlightAtExit": "unknown; controlled fixtures establish cancellation correctness",
+            "actualUIInspected": true,
+            "inspectionScope": "All three reopened video directory images individually show media child and no failure; closed states validated by XML, images retained"
+          },
+          {
+            "cycle": 2,
+            "openRequestAt": 1791609516.262146,
+            "openResponseAt": 1791609517.299252,
+            "backResponseAt": 1791609518.082332,
+            "directoryReopened": true,
+            "expectedChildVisible": true,
+            "noFolderErrorInCapturedStates": true,
+            "networkRequestInFlightAtExit": "unknown; controlled fixtures establish cancellation correctness",
+            "actualUIInspected": true,
+            "inspectionScope": "All three reopened video directory images individually show media child and no failure; closed states validated by XML, images retained"
+          },
+          {
+            "cycle": 3,
+            "openRequestAt": 1791609522.244488,
+            "openResponseAt": 1791609523.30784,
+            "backResponseAt": 1791609524.080235,
+            "directoryReopened": true,
+            "expectedChildVisible": true,
+            "noFolderErrorInCapturedStates": true,
+            "networkRequestInFlightAtExit": "unknown; controlled fixtures establish cancellation correctness",
+            "actualUIInspected": true,
+            "inspectionScope": "All three reopened video directory images individually show media child and no failure; closed states validated by XML, images retained"
+          }
+        ],
+        "sourceAndLatestPackageVerified": true,
+        "network": "normal Wi-Fi after condition restoration",
+        "limitations": [
+          "UI smoke verifies exit/reopen, not measured in-flight cancellation or scroll fluidity."
+        ],
+        "noPlaybackSubmitted": true
+      },
+      "s19ResumeIdentity": {
+        "recordedAt": "2026-10-10T14:06:25.205214+08:00",
+        "device": "ipad",
+        "sample": "S19",
+        "entryIdentity": "Exact SHA-256 resume key compared privately across all snapshots; key and server/account/path kept private.",
+        "snapshots": [
+          {
+            "capture": "normalwifi-s19-resume-s19-files/before-private.plist",
+            "sameExactKeyPresent": true,
+            "positionSeconds": 159.674,
+            "durationSeconds": 13698.368,
+            "updatedAt": 813043701.158612
+          },
+          {
+            "capture": "normalwifi-s19-resume-s19-files/closed-private.plist",
+            "sameExactKeyPresent": true,
+            "positionSeconds": 45.498,
+            "durationSeconds": 13698.368,
+            "updatedAt": 813304585.898501
+          },
+          {
+            "capture": "normalwifi-s19-resume-s19-files-retry1/before-private.plist",
+            "sameExactKeyPresent": true,
+            "positionSeconds": 58.992,
+            "durationSeconds": 13698.368,
+            "updatedAt": 813304599.377599
+          },
+          {
+            "capture": "normalwifi-s19-resume-s19-files-retry1/closed-private.plist",
+            "sameExactKeyPresent": true,
+            "positionSeconds": 86.432,
+            "durationSeconds": 13698.368,
+            "updatedAt": 813304678.844496
+          },
+          {
+            "capture": "final-private.plist",
+            "sameExactKeyPresent": true,
+            "positionSeconds": 101.408,
+            "durationSeconds": 13698.368,
+            "updatedAt": 813304693.83875
+          }
+        ],
+        "allSnapshotsSameExactKeyPresent": true,
+        "savedPositionBeforeColdProcessReopenSeconds": 58.992,
+        "firstClockAfterColdProcessReopenSeconds": 59.125,
+        "firstClockMinusSavedSeconds": 0.133,
+        "finalPersistedPositionSeconds": 101.408,
+        "finalPersistedNonzero": true,
+        "scope": "One cold-process reopen via Continue Watching; first clock is diagnostic telemetry, with actual later film-body images separately inspected. This is not deep seek/long playback/resume matrix acceptance.",
+        "earlyExitPreferenceReadLimitation": "Immediately pulled closed preferences lag final forced progress persistence; later before-reopen/final snapshots establish stored values.",
+        "immediateExitButtonDiscrepancy": true,
+        "buttonDiscrepancyInterpretation": "iPad immediate exit UI shows Preview despite nonzero exact-key persisted progress. Persistence loss is not established; view refresh/identity timing remains unverified."
+      },
+      "historicalPreNormalLaunchEventIDsExcluded": 1000,
+      "directoryResponseCounts": {
+        "success": 41
+      },
+      "apiFailureCounts": {},
+      "directoryAttemptSummary": {
+        "attempts": 2,
+        "detailReady": 2,
+        "failedOrTimedOut": 0,
+        "restoreAndNavigationSeconds": {
+          "raw": [
+            32.937535,
+            32.511323
+          ],
+          "median": 32.724429,
+          "range": [
+            32.511323,
+            32.937535
+          ]
+        }
+      }
+    }
+  },
+  "authenticationCorrelation": {
+    "recordedAt": "2026-10-10T14:06:25.230012+08:00",
+    "meaning": "UUID identifies a local successful login result, not server SID equivalence. Stage sourcePrepared precedes synchronous active-source assignment; event dates are asynchronously persisted, so use observation monotonic milliseconds for ordering.",
+    "limitations": [
+      "No real logout or account switching was performed; logout target semantics are fixture-tested only.",
+      "Directory source is now prepared before FS connection publication; UI requests are isolated. Global restore/manual-login tail ownership and real account switching remain unverified.",
+      "A missing or rejected SID still needs server-side cause evidence; no-119 runs cannot close it."
+    ],
+    "devices": {
+      "iphone13": {
+        "fileStationSourceAtConnectionPublication": [
+          {
+            "authenticationGeneration": "B796105B-C3D6-436D-8ED9-E6EC09D3C263",
+            "fileStationGeneration": "0EABD30A-8F7C-4AA1-A6A8-37865C5281CD",
+            "connectionEventID": "66CA0D61-95E8-4698-B428-16BCC64732DB",
+            "sourceEventID": "9B00A376-4C62-4F1B-B99F-9998BE18EF77",
+            "sourceReadyAtPublication": true,
+            "sourcePreparationToConnectionMS": 1
+          },
+          {
+            "authenticationGeneration": "B796105B-C3D6-436D-8ED9-E6EC09D3C263",
+            "fileStationGeneration": "0EABD30A-8F7C-4AA1-A6A8-37865C5281CD",
+            "connectionEventID": "90FE0159-E288-4565-B17D-1CF2F67988E3",
+            "sourceEventID": "38A32372-7249-4BF3-9184-F2B1D57064A8",
+            "sourceReadyAtPublication": true,
+            "sourcePreparationToConnectionMS": 4
+          },
+          {
+            "authenticationGeneration": "AD8CA542-7673-4733-955C-58C697111FBD",
+            "fileStationGeneration": "220B896E-F07F-4160-B248-8E4E0FF27398",
+            "connectionEventID": "4BDEEF29-7354-417B-A99A-3C2B0EAF1C85",
+            "sourceEventID": "54C892A7-1F50-4D1D-9FCF-8013CAACBF9B",
+            "sourceReadyAtPublication": true,
+            "sourcePreparationToConnectionMS": 0
+          },
+          {
+            "authenticationGeneration": "AD8CA542-7673-4733-955C-58C697111FBD",
+            "fileStationGeneration": "220B896E-F07F-4160-B248-8E4E0FF27398",
+            "connectionEventID": "B09EB88D-82F4-42E7-933E-060EF38CD247",
+            "sourceEventID": "70422358-D505-42D8-A25A-233AC2A9DE02",
+            "sourceReadyAtPublication": true,
+            "sourcePreparationToConnectionMS": 3
+          },
+          {
+            "authenticationGeneration": "259DE23D-D470-45ED-B6FE-39127DBCFEB2",
+            "fileStationGeneration": "2FA58DBB-CB84-44E1-AC2E-266440023616",
+            "connectionEventID": "0EAAEC4C-5271-42F1-8C4C-267ED3CA8FFD",
+            "sourceEventID": "B465CE6D-82F8-4775-B5EF-F0E15FF04FF6",
+            "sourceReadyAtPublication": true,
+            "sourcePreparationToConnectionMS": 0
+          },
+          {
+            "authenticationGeneration": "259DE23D-D470-45ED-B6FE-39127DBCFEB2",
+            "fileStationGeneration": "2FA58DBB-CB84-44E1-AC2E-266440023616",
+            "connectionEventID": "23284084-9655-4EA7-A0AD-34F91B7FF75A",
+            "sourceEventID": "D4E83447-A587-4A99-8FA8-341A073DB03F",
+            "sourceReadyAtPublication": true,
+            "sourcePreparationToConnectionMS": 3
+          },
+          {
+            "authenticationGeneration": "2581C591-CD4C-4BA1-ABEF-E70F54F9FF87",
+            "fileStationGeneration": "304B249B-9886-4F61-B64E-342734E3CAC4",
+            "connectionEventID": "355FDC01-E9B7-45D3-B836-D0682ADFAD36",
+            "sourceEventID": "5927BDD5-EFF8-4828-A6E4-5F372F58B17F",
+            "sourceReadyAtPublication": true,
+            "sourcePreparationToConnectionMS": 0
+          },
+          {
+            "authenticationGeneration": "2581C591-CD4C-4BA1-ABEF-E70F54F9FF87",
+            "fileStationGeneration": "304B249B-9886-4F61-B64E-342734E3CAC4",
+            "connectionEventID": "CDBFDC69-C8DD-482C-AC4D-096A43F3F9BD",
+            "sourceEventID": "606BA8F0-47D3-400A-B448-D1797A76982F",
+            "sourceReadyAtPublication": true,
+            "sourcePreparationToConnectionMS": 3
+          },
+          {
+            "authenticationGeneration": "47DB9F3E-A385-49E7-9388-42C955D096EF",
+            "fileStationGeneration": "69EC9FD3-66BA-47A7-BFFA-8980DC11AB21",
+            "connectionEventID": "42483D04-3BAD-462C-8916-1A26AE5CA5DE",
+            "sourceEventID": "F06135FE-20A2-47D9-B5C5-15733C4702A2",
+            "sourceReadyAtPublication": true,
+            "sourcePreparationToConnectionMS": 0
+          },
+          {
+            "authenticationGeneration": "47DB9F3E-A385-49E7-9388-42C955D096EF",
+            "fileStationGeneration": "69EC9FD3-66BA-47A7-BFFA-8980DC11AB21",
+            "connectionEventID": "44C023C9-8B9F-4CB4-A6AB-BC2EA9AE7840",
+            "sourceEventID": "3759BC23-A594-4C8B-8E0B-F72426600C43",
+            "sourceReadyAtPublication": true,
+            "sourcePreparationToConnectionMS": 4
+          },
+          {
+            "authenticationGeneration": "A1B7E87E-776B-48C8-B091-5E628ED031DD",
+            "fileStationGeneration": "D121D891-DE98-4747-8E2C-A1737FC20C83",
+            "connectionEventID": "A5039733-526D-4A3A-B3FE-DA1C7B9E9C2B",
+            "sourceEventID": "DC11E484-1F27-4BA2-86D5-22E02BFBCA25",
+            "sourceReadyAtPublication": true,
+            "sourcePreparationToConnectionMS": 0
+          },
+          {
+            "authenticationGeneration": "A1B7E87E-776B-48C8-B091-5E628ED031DD",
+            "fileStationGeneration": "D121D891-DE98-4747-8E2C-A1737FC20C83",
+            "connectionEventID": "E20D7F26-9E7B-4B66-83BE-946F0847AA88",
+            "sourceEventID": "A5EFD92E-FE5F-4C46-B0E1-C55B9B8CE327",
+            "sourceReadyAtPublication": true,
+            "sourcePreparationToConnectionMS": 3
+          },
+          {
+            "authenticationGeneration": "7246DFD4-D4D9-441B-9457-BE3CB7F0117D",
+            "fileStationGeneration": "1632CF74-1E49-478A-A0F5-2789477873B4",
+            "connectionEventID": "A722EE4D-C137-43F4-AD6B-C13F2A72FA06",
+            "sourceEventID": "7715B091-62F0-46E9-920A-3A60A639C46F",
+            "sourceReadyAtPublication": true,
+            "sourcePreparationToConnectionMS": 0
+          },
+          {
+            "authenticationGeneration": "7246DFD4-D4D9-441B-9457-BE3CB7F0117D",
+            "fileStationGeneration": "1632CF74-1E49-478A-A0F5-2789477873B4",
+            "connectionEventID": "4AA398F8-E96B-44B0-BE23-843407C9E268",
+            "sourceEventID": "337F587E-D89A-40E6-A586-3CA3966838CF",
+            "sourceReadyAtPublication": true,
+            "sourcePreparationToConnectionMS": 4
+          },
+          {
+            "authenticationGeneration": "B0F2A8AD-13A7-4809-9121-60E93D146A3E",
+            "fileStationGeneration": "E203332D-EB14-4D1D-8C88-B0E3B1FD9D4E",
+            "connectionEventID": "21939A7F-9458-4FDF-ADA3-D179FA550428",
+            "sourceEventID": "B3B3D80D-653E-4855-851D-E6CB17268684",
+            "sourceReadyAtPublication": true,
+            "sourcePreparationToConnectionMS": 0
+          },
+          {
+            "authenticationGeneration": "B0F2A8AD-13A7-4809-9121-60E93D146A3E",
+            "fileStationGeneration": "E203332D-EB14-4D1D-8C88-B0E3B1FD9D4E",
+            "connectionEventID": "2DF9E446-1F12-466B-B471-E4227F541969",
+            "sourceEventID": "35BCBCCC-3912-4ECC-9179-6986BACE1970",
+            "sourceReadyAtPublication": true,
+            "sourcePreparationToConnectionMS": 5
+          },
+          {
+            "authenticationGeneration": "D9922217-ECC7-4D79-AEB5-141F2B3FF037",
+            "fileStationGeneration": "27F4C8DD-5988-4C47-AB72-47D524570E91",
+            "connectionEventID": "FB4734DC-A6AA-4ECA-8845-E6529F82D03C",
+            "sourceEventID": "6ACED1F8-5CF4-45AC-9824-43511E99DCEF",
+            "sourceReadyAtPublication": true,
+            "sourcePreparationToConnectionMS": 1
+          },
+          {
+            "authenticationGeneration": "D9922217-ECC7-4D79-AEB5-141F2B3FF037",
+            "fileStationGeneration": "27F4C8DD-5988-4C47-AB72-47D524570E91",
+            "connectionEventID": "732FA35A-8A64-422E-8DCE-49D96A43978C",
+            "sourceEventID": "E63284B4-58B2-42B8-BD4E-0B9404321C3B",
+            "sourceReadyAtPublication": true,
+            "sourcePreparationToConnectionMS": 4
+          },
+          {
+            "authenticationGeneration": "77AE8109-5C2F-448C-A9C9-37ED4CA00321",
+            "fileStationGeneration": "5EC6BAB2-765F-46F0-A2DC-A2FCBD1F198C",
+            "connectionEventID": "D95C1AEE-70EA-4174-BCFE-EE511177625F",
+            "sourceEventID": "816E9BF8-4C86-4E0E-B360-F03924BBEAE0",
+            "sourceReadyAtPublication": true,
+            "sourcePreparationToConnectionMS": 1
+          },
+          {
+            "authenticationGeneration": "77AE8109-5C2F-448C-A9C9-37ED4CA00321",
+            "fileStationGeneration": "5EC6BAB2-765F-46F0-A2DC-A2FCBD1F198C",
+            "connectionEventID": "02AAA4AA-3F2E-42C0-B868-550FA9345F7D",
+            "sourceEventID": "AEC6401A-2F62-49C5-9015-6D0512F7B4F8",
+            "sourceReadyAtPublication": true,
+            "sourcePreparationToConnectionMS": 4
+          },
+          {
+            "authenticationGeneration": "516C02FD-CEA2-47B0-A633-962A21CFE22E",
+            "fileStationGeneration": "EE37A194-E3E6-416C-8409-A84AADF834A1",
+            "connectionEventID": "EF3439AA-DD7C-4025-9723-1D7C6C456382",
+            "sourceEventID": "14C8215D-8CFD-4FB7-8086-5395D4FC130D",
+            "sourceReadyAtPublication": true,
+            "sourcePreparationToConnectionMS": 0
+          },
+          {
+            "authenticationGeneration": "516C02FD-CEA2-47B0-A633-962A21CFE22E",
+            "fileStationGeneration": "EE37A194-E3E6-416C-8409-A84AADF834A1",
+            "connectionEventID": "34590324-5B85-4594-8ED4-75FBBD5F46A3",
+            "sourceEventID": "F472ED41-48C7-49B1-9767-FD3A4F8C225B",
+            "sourceReadyAtPublication": true,
+            "sourcePreparationToConnectionMS": 4
+          }
+        ],
+        "successfulLoginResultCount": 22,
+        "stageCounts": {
+          "sourcePrepared": 33,
+          "connectionPublished": 33,
+          "fileStationAttached": 11
+        },
+        "unjoinedRequestLoginCount": 0,
+        "browserSourceMismatchAtResponseCount": 0,
+        "directoryResponseCounts": {
+          "success": 47
+        }
+      },
+      "ipad": {
+        "fileStationSourceAtConnectionPublication": [
+          {
+            "authenticationGeneration": "9D4387FE-4AC8-44F3-B4F3-94194BBEA836",
+            "fileStationGeneration": "FDBF64DC-1F71-40D8-965D-9FBCB6E93AF1",
+            "connectionEventID": "EF9B9D0D-206C-44AC-8F7F-86E2A1FDBB50",
+            "sourceEventID": "5F83958C-2B3D-4458-8E87-23D9A7F4E66E",
+            "sourceReadyAtPublication": true,
+            "sourcePreparationToConnectionMS": 1
+          },
+          {
+            "authenticationGeneration": "9D4387FE-4AC8-44F3-B4F3-94194BBEA836",
+            "fileStationGeneration": "FDBF64DC-1F71-40D8-965D-9FBCB6E93AF1",
+            "connectionEventID": "E50567F2-57D3-40FB-973C-31F15CE21F0C",
+            "sourceEventID": "F3CC09BB-4A92-457B-BF5C-E38EB493AE4B",
+            "sourceReadyAtPublication": true,
+            "sourcePreparationToConnectionMS": 6
+          },
+          {
+            "authenticationGeneration": "98204957-F18A-4D53-811E-6A25A47E88CA",
+            "fileStationGeneration": "8A3E13AE-AECB-4403-83D5-D1B6B4F3C001",
+            "connectionEventID": "18733AF5-A69E-4D76-9D0B-45CE4F04D7FB",
+            "sourceEventID": "41C2383C-95F8-4D1C-9ADA-D60FE1ECB002",
+            "sourceReadyAtPublication": true,
+            "sourcePreparationToConnectionMS": 0
+          },
+          {
+            "authenticationGeneration": "98204957-F18A-4D53-811E-6A25A47E88CA",
+            "fileStationGeneration": "8A3E13AE-AECB-4403-83D5-D1B6B4F3C001",
+            "connectionEventID": "7D76A3BF-6F58-46DC-AAD1-DA9026A8B9E3",
+            "sourceEventID": "7BD6FBBE-27BE-41D3-8E05-00DD42E8004C",
+            "sourceReadyAtPublication": true,
+            "sourcePreparationToConnectionMS": 4
+          },
+          {
+            "authenticationGeneration": "A45564EC-BF9F-44CC-95A5-CDF53086988D",
+            "fileStationGeneration": "806D5861-DC23-4F67-A84E-E68AD9D28645",
+            "connectionEventID": "BD501ECD-52B9-4765-BE11-145F65ACED9C",
+            "sourceEventID": "2BB7FDBB-F22F-46EE-A7E2-0C666DF6A81C",
+            "sourceReadyAtPublication": true,
+            "sourcePreparationToConnectionMS": 0
+          },
+          {
+            "authenticationGeneration": "A45564EC-BF9F-44CC-95A5-CDF53086988D",
+            "fileStationGeneration": "806D5861-DC23-4F67-A84E-E68AD9D28645",
+            "connectionEventID": "EF0E44C5-091E-4EE1-99F4-DB8188F74C90",
+            "sourceEventID": "F80C593C-D9E8-4380-A01F-47EBD940D665",
+            "sourceReadyAtPublication": true,
+            "sourcePreparationToConnectionMS": 5
+          },
+          {
+            "authenticationGeneration": "E51587EB-056E-4E49-856C-D9FC875C78EF",
+            "fileStationGeneration": "554DF229-9D41-43DD-8692-C6EB09ED4BBF",
+            "connectionEventID": "ACB90E45-FA19-4D0D-B68C-D45EE16219A2",
+            "sourceEventID": "2AF6F93A-11B1-46A3-9865-2FBED472C66E",
+            "sourceReadyAtPublication": true,
+            "sourcePreparationToConnectionMS": 0
+          },
+          {
+            "authenticationGeneration": "E51587EB-056E-4E49-856C-D9FC875C78EF",
+            "fileStationGeneration": "554DF229-9D41-43DD-8692-C6EB09ED4BBF",
+            "connectionEventID": "F6CB2110-80F5-4A8E-B70F-FB429A9BCF84",
+            "sourceEventID": "0D218980-F084-434A-8C0E-AFCD6BE00B66",
+            "sourceReadyAtPublication": true,
+            "sourcePreparationToConnectionMS": 5
+          },
+          {
+            "authenticationGeneration": "F03A39DC-46DA-4AA6-86CD-F70AEB0CD766",
+            "fileStationGeneration": "A8B37DC5-40A6-49F6-BBC6-897F01EB59AF",
+            "connectionEventID": "53A4F9CE-E1E6-4D4A-BDD2-9393A5D893FC",
+            "sourceEventID": "D3B0FB20-A75B-4B30-BA30-5C79EB481C29",
+            "sourceReadyAtPublication": true,
+            "sourcePreparationToConnectionMS": 0
+          },
+          {
+            "authenticationGeneration": "F03A39DC-46DA-4AA6-86CD-F70AEB0CD766",
+            "fileStationGeneration": "A8B37DC5-40A6-49F6-BBC6-897F01EB59AF",
+            "connectionEventID": "FD71EA3A-B5C7-4EF4-BA41-DB313354F7E3",
+            "sourceEventID": "A552493B-7CA7-47D9-ADE5-6C95F2671CAF",
+            "sourceReadyAtPublication": true,
+            "sourcePreparationToConnectionMS": 5
+          },
+          {
+            "authenticationGeneration": "527B51BF-C3C9-4C54-AAC2-930A8E5E2AD3",
+            "fileStationGeneration": "BD6BE2E0-0585-4206-B79B-CDFF5C2A8E50",
+            "connectionEventID": "B00ABA20-2709-46DE-8579-613CF9EE6241",
+            "sourceEventID": "3247CEF1-09A2-4231-9C8B-0FB768221864",
+            "sourceReadyAtPublication": true,
+            "sourcePreparationToConnectionMS": 0
+          },
+          {
+            "authenticationGeneration": "527B51BF-C3C9-4C54-AAC2-930A8E5E2AD3",
+            "fileStationGeneration": "BD6BE2E0-0585-4206-B79B-CDFF5C2A8E50",
+            "connectionEventID": "445EC7AE-802D-46C4-B398-201D9B1D89DB",
+            "sourceEventID": "282BE31F-FD3D-49A7-861E-ABF4E5D29AFA",
+            "sourceReadyAtPublication": true,
+            "sourcePreparationToConnectionMS": 6
+          },
+          {
+            "authenticationGeneration": "9A212007-93A0-4B6F-888C-C1358FC07199",
+            "fileStationGeneration": "74003151-5202-473A-9876-93162578E39A",
+            "connectionEventID": "A9DD81A4-7D33-4CCC-8121-AAC49EA65B09",
+            "sourceEventID": "7B9D9279-A99D-49B2-86B2-BD3162A470CF",
+            "sourceReadyAtPublication": true,
+            "sourcePreparationToConnectionMS": 0
+          },
+          {
+            "authenticationGeneration": "9A212007-93A0-4B6F-888C-C1358FC07199",
+            "fileStationGeneration": "74003151-5202-473A-9876-93162578E39A",
+            "connectionEventID": "E28EEE72-8F27-4B32-AA96-4E31133DDF54",
+            "sourceEventID": "8CBEBACE-7286-440F-9A0F-A5672392AE3B",
+            "sourceReadyAtPublication": true,
+            "sourcePreparationToConnectionMS": 5
+          },
+          {
+            "authenticationGeneration": "949F640B-772C-47C6-9965-A1D7F55C87C3",
+            "fileStationGeneration": "C4C3E7AB-B053-438C-BEA7-73399EEBA59F",
+            "connectionEventID": "D15A46D0-4EFD-48FE-9DBD-B4101921E5D9",
+            "sourceEventID": "745DD238-8C14-4DA1-B25A-CEEB49169363",
+            "sourceReadyAtPublication": true,
+            "sourcePreparationToConnectionMS": 0
+          },
+          {
+            "authenticationGeneration": "949F640B-772C-47C6-9965-A1D7F55C87C3",
+            "fileStationGeneration": "C4C3E7AB-B053-438C-BEA7-73399EEBA59F",
+            "connectionEventID": "4FA644CB-9004-4A09-A68D-43C767E9AD59",
+            "sourceEventID": "21935A66-15D6-4808-A586-EC43418B27D6",
+            "sourceReadyAtPublication": true,
+            "sourcePreparationToConnectionMS": 5
+          },
+          {
+            "authenticationGeneration": "8CF1B57D-7BEA-4258-B429-7DDA3C49ED35",
+            "fileStationGeneration": "697F1BCB-3859-4272-8483-D06BA986FCB8",
+            "connectionEventID": "1AAE992C-75D3-4F30-8E58-E2FAA00E98CC",
+            "sourceEventID": "272F6CB1-40CA-474A-AE90-7EADD29C0A8A",
+            "sourceReadyAtPublication": true,
+            "sourcePreparationToConnectionMS": 0
+          },
+          {
+            "authenticationGeneration": "8CF1B57D-7BEA-4258-B429-7DDA3C49ED35",
+            "fileStationGeneration": "697F1BCB-3859-4272-8483-D06BA986FCB8",
+            "connectionEventID": "382CDF03-C181-468B-8D8D-354462685C65",
+            "sourceEventID": "C6C58878-FBA4-4855-BA1F-4A5DB5771794",
+            "sourceReadyAtPublication": true,
+            "sourcePreparationToConnectionMS": 6
+          },
+          {
+            "authenticationGeneration": "16DC8BD6-D2A6-4292-90F9-4294446A79C5",
+            "fileStationGeneration": "16690000-3D5A-4B0E-94F6-662A572FC49F",
+            "connectionEventID": "D9AA1DEB-927F-4BB4-ABB3-8A6CA9D75159",
+            "sourceEventID": "C8D0F15C-CF33-4F98-B768-395E4A9F9D2D",
+            "sourceReadyAtPublication": true,
+            "sourcePreparationToConnectionMS": 0
+          },
+          {
+            "authenticationGeneration": "16DC8BD6-D2A6-4292-90F9-4294446A79C5",
+            "fileStationGeneration": "16690000-3D5A-4B0E-94F6-662A572FC49F",
+            "connectionEventID": "82640A58-AD27-4A1B-A1BF-5B22A2D4E88C",
+            "sourceEventID": "6C04D814-A65E-4F79-BACF-6332AE44C5D9",
+            "sourceReadyAtPublication": true,
+            "sourcePreparationToConnectionMS": 6
+          },
+          {
+            "authenticationGeneration": "D1944BCA-8D5E-46DE-AC2F-806BE5F81E10",
+            "fileStationGeneration": "322510C2-30C9-4962-B525-DDA93514A66E",
+            "connectionEventID": "0CB4D323-3C27-40C5-B054-437101FA98A1",
+            "sourceEventID": "212C2232-D439-4135-9758-22A13DE8C144",
+            "sourceReadyAtPublication": true,
+            "sourcePreparationToConnectionMS": 1
+          },
+          {
+            "authenticationGeneration": "D1944BCA-8D5E-46DE-AC2F-806BE5F81E10",
+            "fileStationGeneration": "322510C2-30C9-4962-B525-DDA93514A66E",
+            "connectionEventID": "BDDBC713-BAF7-4CD4-BEAE-4D6C73792106",
+            "sourceEventID": "57C37994-FBF2-49A2-9BE0-586D6964FEF4",
+            "sourceReadyAtPublication": true,
+            "sourcePreparationToConnectionMS": 6
+          }
+        ],
+        "successfulLoginResultCount": 22,
+        "stageCounts": {
+          "sourcePrepared": 33,
+          "connectionPublished": 33,
+          "fileStationAttached": 11
+        },
+        "unjoinedRequestLoginCount": 0,
+        "browserSourceMismatchAtResponseCount": 0,
+        "directoryResponseCounts": {
+          "success": 41
+        }
+      }
+    }
+  },
+  "windows": [
+    {
+      "device": "iphone13",
+      "label": "normalwifi-resume-s01-files",
+      "window": {
+        "boundedEndActionSeconds": 90.4199149608612,
+        "plannedWindowSeconds": 90,
+        "deduplicatedWindowEventCount": 128,
+        "snapshotsRead": 8
+      },
+      "exit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "actualFinalScreenInspected": true,
+      "incompleteWindow": null,
+      "screenInspection": {
+        "recordedAt": "2026-10-10T13:40:49.517925+08:00",
+        "actualUIInspected": true,
+        "evidence": [
+          "t60.png",
+          "t90.png",
+          "closed.png"
+        ],
+        "observed": "S01 meadow/houses then town steam train; normal exit to matching file preview with Continue Watching and From Head.",
+        "limitations": [
+          "Video PNG uses portrait capture canvas with rotated landscape content; no native orientation/complete layout comparison in this window.",
+          "Sparse screenshots and zero sampled waits do not establish complete frame/audio/subtitle performance."
+        ],
+        "filmBodyVerified": true
+      },
+      "readAttemptCount": 8,
+      "diagnosticReadFailureCount": 0,
+      "phases": {
+        "eventsWithoutTraceIdentity": 3,
+        "tracesWithoutTelemetry": [],
+        "failureSignals": [
+          {
+            "actionSeconds": 1.022053,
+            "event": "proxy_transfer_finished",
+            "fields": {
+              "callbackAfterClientFinish": "true",
+              "cumulativeReceivedBytes": 174879,
+              "errorCode": -999,
+              "errorDomain": "NSURLErrorDomain",
+              "expectedBytes": 33554432,
+              "hlsRole": "-",
+              "playbackTraceID": "1642917A",
+              "proxyKind": "mediaRange",
+              "stage": "upstreamTaskCompleted",
+              "taskReceivedBytes": 174879,
+              "transferID": "EA99FED6-BD09-4DE8-AB4D-48C1076532B0",
+              "upstreamCancelToCallbackMs": 1,
+              "upstreamCancellationRequested": "true",
+              "upstreamCompletionObserved": "true",
+              "upstreamIssuedToCallbackMs": 95,
+              "upstreamTaskIndex": 1
+            }
+          }
+        ],
+        "acceptance": "Unchanged: recorded waits/stalls retained, no playback quality PASS or causal speed claim.",
+        "limits": [
+          "Engine waiting/empty is not proof of network starvation; retain waiting reason and reserve.",
+          "A unique HLS trace within warmup is a temporal association, not proof of a network or server root cause.",
+          "Transfer intervals overlap; late terminals stay bounded. Unrecognized result strings do not mean success.",
+          "First clock marker may reflect a prepared paused position, not advancing output or presentation.",
+          "First observed progress is limited by sparse telemetry; phase is descriptive, not an exact startup boundary.",
+          "Sampled stall intervals are observation spans, not display hitches or precise buffer durations.",
+          "Stalls are per trace; never subtract counters across renderers. Open episodes remain censored.",
+          "Missing metrics remain unknown; no screen, audio, full-frame, cache or competitor acceptance."
+        ],
+        "rendererTraces": [
+          {
+            "traceID": "1642917A",
+            "engine": "KSPlayer",
+            "firstClockSignal": {
+              "actionSeconds": 1.360665,
+              "event": "first_frame",
+              "fields": {
+                "firstFramePositionSeconds": 0.052,
+                "planID": "256EFFFC",
+                "playbackTraceID": "1642917A",
+                "routeID": "ED43EF9C",
+                "tapToFirstFrameMs": 705
+              }
+            },
+            "firstObservedAdvancingClockActionSeconds": 2.410575,
+            "maxReportedStallCount": 0,
+            "counterDecreaseWithinTrace": false,
+            "stallEpisodes": [],
+            "slowestThreeSegmentMetrics": [],
+            "slowestThreeRangeMetrics": [
+              {
+                "actionSeconds": 66.16675,
+                "event": "proxy_transfer_finished",
+                "fields": {
+                  "adaptiveMeasurementBoundary": "responseBody",
+                  "adaptiveTransferMs": 65097,
+                  "callbackAfterClientFinish": "false",
+                  "cellular": "no",
+                  "connectionReused": "no",
+                  "dnsMs": 0,
+                  "hlsRole": "-",
+                  "playbackTraceID": "1642917A",
+                  "protocol": "http/1.1",
+                  "proxyBackpressureMs": 61921,
+                  "proxyKind": "mediaRange",
+                  "proxyQueuedBytes": 1601748,
+                  "proxySuspendCount": 4,
+                  "requestMs": 21,
+                  "responseMs": 65097,
+                  "stage": "urlSessionTaskMetrics",
+                  "taskIntervalMs": 65124,
+                  "tcpMs": 1,
+                  "totalMs": 65122,
+                  "transactionCount": 1,
+                  "transferID": "C04C20F0-3E4A-44A6-BBEE-39A17F21177C",
+                  "upstreamCancellationRequested": "false",
+                  "upstreamCompletionObserved": "false",
+                  "upstreamIssuedToCallbackMs": 65126,
+                  "upstreamTaskIndex": 1
+                }
+              },
+              {
+                "actionSeconds": 1.024456,
+                "event": "proxy_transfer_finished",
+                "fields": {
+                  "adaptiveMeasurementBoundary": "responseBody",
+                  "adaptiveTransferMs": 10,
+                  "callbackAfterClientFinish": "false",
+                  "cellular": "no",
+                  "connectionReused": "no",
+                  "dnsMs": 0,
+                  "hlsRole": "-",
+                  "playbackTraceID": "1642917A",
+                  "protocol": "http/1.1",
+                  "proxyBackpressureMs": 0,
+                  "proxyKind": "mediaRange",
+                  "proxyQueuedBytes": 0,
+                  "proxySuspendCount": 0,
+                  "requestMs": 21,
+                  "responseMs": 10,
+                  "stage": "urlSessionTaskMetrics",
+                  "taskIntervalMs": 36,
+                  "tcpMs": 3,
+                  "totalMs": 36,
+                  "transactionCount": 1,
+                  "transferID": "873A755F-B701-442F-9B7F-737FEEF08B49",
+                  "upstreamCancellationRequested": "false",
+                  "upstreamCompletionObserved": "false",
+                  "upstreamIssuedToCallbackMs": 36,
+                  "upstreamTaskIndex": 1
+                }
+              },
+              {
+                "actionSeconds": 1.021775,
+                "event": "proxy_transfer_finished",
+                "fields": {
+                  "adaptiveMeasurementBoundary": "responseBody",
+                  "callbackAfterClientFinish": "true",
+                  "cellular": "no",
+                  "connectionReused": "no",
+                  "dnsMs": 0,
+                  "hlsRole": "-",
+                  "playbackTraceID": "1642917A",
+                  "protocol": "http/1.1",
+                  "proxyBackpressureMs": 0,
+                  "proxyKind": "mediaRange",
+                  "proxyQueuedBytes": 0,
+                  "proxySuspendCount": 0,
+                  "requestMs": 55,
+                  "stage": "urlSessionTaskMetrics",
+                  "taskIntervalMs": 94,
+                  "tcpMs": 6,
+                  "transactionCount": 1,
+                  "transferID": "EA99FED6-BD09-4DE8-AB4D-48C1076532B0",
+                  "upstreamCancelToCallbackMs": 0,
+                  "upstreamCancellationRequested": "true",
+                  "upstreamCompletionObserved": "false",
+                  "upstreamIssuedToCallbackMs": 94,
+                  "upstreamTaskIndex": 1
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "device": "iphone13",
+      "label": "normalwifi-resume-s01-jellyfin",
+      "window": {
+        "boundedEndActionSeconds": 90.60392379760742,
+        "plannedWindowSeconds": 90,
+        "deduplicatedWindowEventCount": 226,
+        "snapshotsRead": 8
+      },
+      "exit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "actualFinalScreenInspected": true,
+      "incompleteWindow": null,
+      "screenInspection": {
+        "recordedAt": "2026-10-10T13:42:47.291551+08:00",
+        "actualUIInspected": true,
+        "evidence": [
+          "t60.png",
+          "t90.png",
+          "closed.png"
+        ],
+        "observed": "S01 meadow and town steam train; exited to matching Jellyfin detail with Continue Watching and From Head.",
+        "limitations": [
+          "PNG portrait canvas contains rotated landscape film; native orientation not compared.",
+          "No full-frame/audio/subtitle verification; zero sparse wait counter not performance PASS."
+        ],
+        "filmBodyVerified": true
+      },
+      "readAttemptCount": 8,
+      "diagnosticReadFailureCount": 0,
+      "phases": {
+        "eventsWithoutTraceIdentity": 1,
+        "tracesWithoutTelemetry": [],
+        "failureSignals": [
+          {
+            "actionSeconds": 0.918669,
+            "event": "proxy_transfer_finished",
+            "fields": {
+              "callbackAfterClientFinish": "true",
+              "cumulativeReceivedBytes": 190851,
+              "errorCode": -999,
+              "errorDomain": "NSURLErrorDomain",
+              "expectedBytes": 33554432,
+              "hlsRole": "-",
+              "playbackTraceID": "EF28BA3D",
+              "proxyKind": "mediaRange",
+              "stage": "upstreamTaskCompleted",
+              "taskReceivedBytes": 190851,
+              "transferID": "998BAABB-6BA0-4E84-BF48-AACEE35C919A",
+              "upstreamCancelToCallbackMs": 1,
+              "upstreamCancellationRequested": "true",
+              "upstreamCompletionObserved": "true",
+              "upstreamIssuedToCallbackMs": 67,
+              "upstreamTaskIndex": 1
+            }
+          }
+        ],
+        "acceptance": "Unchanged: recorded waits/stalls retained, no playback quality PASS or causal speed claim.",
+        "limits": [
+          "Engine waiting/empty is not proof of network starvation; retain waiting reason and reserve.",
+          "A unique HLS trace within warmup is a temporal association, not proof of a network or server root cause.",
+          "Transfer intervals overlap; late terminals stay bounded. Unrecognized result strings do not mean success.",
+          "First clock marker may reflect a prepared paused position, not advancing output or presentation.",
+          "First observed progress is limited by sparse telemetry; phase is descriptive, not an exact startup boundary.",
+          "Sampled stall intervals are observation spans, not display hitches or precise buffer durations.",
+          "Stalls are per trace; never subtract counters across renderers. Open episodes remain censored.",
+          "Missing metrics remain unknown; no screen, audio, full-frame, cache or competitor acceptance."
+        ],
+        "rendererTraces": [
+          {
+            "traceID": "EF28BA3D",
+            "engine": "KSPlayer",
+            "firstClockSignal": {
+              "actionSeconds": 1.205491,
+              "event": "first_frame",
+              "fields": {
+                "firstFramePositionSeconds": 0.073,
+                "planID": "2E2477C5",
+                "playbackTraceID": "EF28BA3D",
+                "routeID": "E1BD82C0",
+                "tapToFirstFrameMs": 532
+              }
+            },
+            "firstObservedAdvancingClockActionSeconds": 2.292895,
+            "maxReportedStallCount": 0,
+            "counterDecreaseWithinTrace": false,
+            "stallEpisodes": [],
+            "slowestThreeSegmentMetrics": [],
+            "slowestThreeRangeMetrics": [
+              {
+                "actionSeconds": 61.1122,
+                "event": "proxy_transfer_finished",
+                "fields": {
+                  "adaptiveMeasurementBoundary": "responseBody",
+                  "adaptiveTransferMs": 60164,
+                  "callbackAfterClientFinish": "false",
+                  "cellular": "no",
+                  "connectionReused": "yes",
+                  "hlsRole": "-",
+                  "playbackTraceID": "EF28BA3D",
+                  "protocol": "http/1.1",
+                  "proxyBackpressureMs": 56154,
+                  "proxyKind": "mediaRange",
+                  "proxyQueuedBytes": 0,
+                  "proxySuspendCount": 4,
+                  "requestMs": 25,
+                  "responseMs": 60164,
+                  "stage": "urlSessionTaskMetrics",
+                  "taskIntervalMs": 60190,
+                  "totalMs": 60190,
+                  "transactionCount": 1,
+                  "transferID": "727B22BF-2AF1-4E26-9859-1764246D92A1",
+                  "upstreamCancellationRequested": "false",
+                  "upstreamCompletionObserved": "false",
+                  "upstreamIssuedToCallbackMs": 60192,
+                  "upstreamTaskIndex": 1
+                }
+              },
+              {
+                "actionSeconds": 0.934574,
+                "event": "proxy_transfer_finished",
+                "fields": {
+                  "adaptiveMeasurementBoundary": "responseBody",
+                  "adaptiveTransferMs": 9,
+                  "callbackAfterClientFinish": "false",
+                  "cellular": "no",
+                  "connectionReused": "no",
+                  "dnsMs": 0,
+                  "hlsRole": "-",
+                  "playbackTraceID": "EF28BA3D",
+                  "protocol": "http/1.1",
+                  "proxyBackpressureMs": 0,
+                  "proxyKind": "mediaRange",
+                  "proxyQueuedBytes": 0,
+                  "proxySuspendCount": 0,
+                  "requestMs": 26,
+                  "responseMs": 9,
+                  "stage": "urlSessionTaskMetrics",
+                  "taskIntervalMs": 42,
+                  "tcpMs": 6,
+                  "totalMs": 42,
+                  "transactionCount": 1,
+                  "transferID": "A1A37941-DCED-482C-B355-F59A88A051BF",
+                  "upstreamCancellationRequested": "false",
+                  "upstreamCompletionObserved": "false",
+                  "upstreamIssuedToCallbackMs": 42,
+                  "upstreamTaskIndex": 1
+                }
+              },
+              {
+                "actionSeconds": 0.918111,
+                "event": "proxy_transfer_finished",
+                "fields": {
+                  "adaptiveMeasurementBoundary": "responseBody",
+                  "callbackAfterClientFinish": "true",
+                  "cellular": "no",
+                  "connectionReused": "no",
+                  "dnsMs": 0,
+                  "hlsRole": "-",
+                  "playbackTraceID": "EF28BA3D",
+                  "protocol": "http/1.1",
+                  "proxyBackpressureMs": 0,
+                  "proxyKind": "mediaRange",
+                  "proxyQueuedBytes": 0,
+                  "proxySuspendCount": 0,
+                  "requestMs": 24,
+                  "stage": "urlSessionTaskMetrics",
+                  "taskIntervalMs": 66,
+                  "tcpMs": 1,
+                  "transactionCount": 1,
+                  "transferID": "998BAABB-6BA0-4E84-BF48-AACEE35C919A",
+                  "upstreamCancelToCallbackMs": 0,
+                  "upstreamCancellationRequested": "true",
+                  "upstreamCompletionObserved": "false",
+                  "upstreamIssuedToCallbackMs": 66,
+                  "upstreamTaskIndex": 1
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "device": "iphone13",
+      "label": "normalwifi-resume-s03-files",
+      "window": {
+        "boundedEndActionSeconds": 3.310070037841797,
+        "plannedWindowSeconds": 3,
+        "deduplicatedWindowEventCount": 0,
+        "snapshotsRead": 3
+      },
+      "exit": {},
+      "actualFinalScreenInspected": false,
+      "incompleteWindow": {
+        "classification": "TOOL",
+        "plannedSeconds": 90,
+        "completedCaptureTargets": [
+          0,
+          3
+        ],
+        "failureTarget": 10,
+        "failureType": "RemoteDisconnected",
+        "normalTimedUIExit": false,
+        "recovery": "../normalwifi-resume-s03-files-tool-recovery",
+        "notCountedAsCompletePlaybackWindow": true
+      },
+      "screenInspection": null,
+      "readAttemptCount": 3,
+      "diagnosticReadFailureCount": 0,
+      "phases": {
+        "eventsWithoutTraceIdentity": 0,
+        "tracesWithoutTelemetry": [],
+        "failureSignals": [],
+        "acceptance": "Unchanged: recorded waits/stalls retained, no playback quality PASS or causal speed claim.",
+        "limits": [
+          "Engine waiting/empty is not proof of network starvation; retain waiting reason and reserve.",
+          "A unique HLS trace within warmup is a temporal association, not proof of a network or server root cause.",
+          "Transfer intervals overlap; late terminals stay bounded. Unrecognized result strings do not mean success.",
+          "First clock marker may reflect a prepared paused position, not advancing output or presentation.",
+          "First observed progress is limited by sparse telemetry; phase is descriptive, not an exact startup boundary.",
+          "Sampled stall intervals are observation spans, not display hitches or precise buffer durations.",
+          "Stalls are per trace; never subtract counters across renderers. Open episodes remain censored.",
+          "Missing metrics remain unknown; no screen, audio, full-frame, cache or competitor acceptance."
+        ],
+        "rendererTraces": []
+      }
+    },
+    {
+      "device": "iphone13",
+      "label": "normalwifi-resume-s03-files-retry1",
+      "window": {
+        "boundedEndActionSeconds": 90.40084409713745,
+        "plannedWindowSeconds": 90,
+        "deduplicatedWindowEventCount": 293,
+        "snapshotsRead": 8
+      },
+      "exit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "actualFinalScreenInspected": true,
+      "incompleteWindow": null,
+      "screenInspection": {
+        "recordedAt": "2026-10-10T13:50:22.113536+08:00",
+        "actualUIInspected": true,
+        "evidence": [
+          "t60.png",
+          "t90.png",
+          "closed.png"
+        ],
+        "observed": "S03 dialogue shots of woman then man; normal exit to matching file preview and resume/from-head controls.",
+        "limitations": [
+          "Sparse actual frames do not establish full-frame flow, sound/subtitle, native orientation or HDR.",
+          "Separate original observer failure is not overwritten by this completed retry."
+        ],
+        "filmBodyVerified": true
+      },
+      "readAttemptCount": 8,
+      "diagnosticReadFailureCount": 0,
+      "phases": {
+        "eventsWithoutTraceIdentity": 5,
+        "tracesWithoutTelemetry": [],
+        "failureSignals": [
+          {
+            "actionSeconds": 2.526515,
+            "event": "proxy_transfer_finished",
+            "fields": {
+              "callbackAfterClientFinish": "true",
+              "cumulativeReceivedBytes": 532533,
+              "errorCode": -999,
+              "errorDomain": "NSURLErrorDomain",
+              "expectedBytes": 33554432,
+              "hlsRole": "-",
+              "playbackTraceID": "9D98E8E6",
+              "proxyKind": "mediaRange",
+              "stage": "upstreamTaskCompleted",
+              "taskReceivedBytes": 532533,
+              "transferID": "423B0243-B13B-4A7C-9B45-CC384F23210C",
+              "upstreamCancelToCallbackMs": 0,
+              "upstreamCancellationRequested": "true",
+              "upstreamCompletionObserved": "true",
+              "upstreamIssuedToCallbackMs": 124,
+              "upstreamTaskIndex": 1
+            }
+          }
+        ],
+        "acceptance": "Unchanged: recorded waits/stalls retained, no playback quality PASS or causal speed claim.",
+        "limits": [
+          "Engine waiting/empty is not proof of network starvation; retain waiting reason and reserve.",
+          "A unique HLS trace within warmup is a temporal association, not proof of a network or server root cause.",
+          "Transfer intervals overlap; late terminals stay bounded. Unrecognized result strings do not mean success.",
+          "First clock marker may reflect a prepared paused position, not advancing output or presentation.",
+          "First observed progress is limited by sparse telemetry; phase is descriptive, not an exact startup boundary.",
+          "Sampled stall intervals are observation spans, not display hitches or precise buffer durations.",
+          "Stalls are per trace; never subtract counters across renderers. Open episodes remain censored.",
+          "Missing metrics remain unknown; no screen, audio, full-frame, cache or competitor acceptance."
+        ],
+        "rendererTraces": [
+          {
+            "traceID": "9D98E8E6",
+            "engine": "KSPlayer",
+            "firstClockSignal": {
+              "actionSeconds": 3.006371,
+              "event": "first_frame",
+              "fields": {
+                "firstFramePositionSeconds": 0.052,
+                "planID": "01FC448D",
+                "playbackTraceID": "9D98E8E6",
+                "routeID": "C019FE4C",
+                "tapToFirstFrameMs": 756
+              }
+            },
+            "firstObservedAdvancingClockActionSeconds": 4.002877,
+            "maxReportedStallCount": 0,
+            "counterDecreaseWithinTrace": false,
+            "stallEpisodes": [],
+            "slowestThreeSegmentMetrics": [],
+            "slowestThreeRangeMetrics": [
+              {
+                "actionSeconds": 22.057938,
+                "event": "proxy_transfer_finished",
+                "fields": {
+                  "adaptiveMeasurementBoundary": "responseBody",
+                  "adaptiveTransferMs": 15116,
+                  "callbackAfterClientFinish": "false",
+                  "cellular": "no",
+                  "connectionReused": "yes",
+                  "hlsRole": "-",
+                  "playbackTraceID": "9D98E8E6",
+                  "protocol": "http/1.1",
+                  "proxyBackpressureMs": 12120,
+                  "proxyKind": "mediaRange",
+                  "proxyQueuedBytes": 0,
+                  "proxySuspendCount": 2,
+                  "requestMs": 39,
+                  "responseMs": 15116,
+                  "stage": "urlSessionTaskMetrics",
+                  "taskIntervalMs": 15158,
+                  "totalMs": 15156,
+                  "transactionCount": 1,
+                  "transferID": "D33BA3D2-5154-44B7-B5CA-9B04C2E067E7",
+                  "upstreamCancellationRequested": "false",
+                  "upstreamCompletionObserved": "false",
+                  "upstreamIssuedToCallbackMs": 15158,
+                  "upstreamTaskIndex": 2
+                }
+              },
+              {
+                "actionSeconds": 83.191533,
+                "event": "proxy_transfer_finished",
+                "fields": {
+                  "adaptiveMeasurementBoundary": "responseBody",
+                  "adaptiveTransferMs": 14538,
+                  "callbackAfterClientFinish": "false",
+                  "cellular": "no",
+                  "connectionReused": "yes",
+                  "hlsRole": "-",
+                  "playbackTraceID": "9D98E8E6",
+                  "protocol": "http/1.1",
+                  "proxyBackpressureMs": 11774,
+                  "proxyKind": "mediaRange",
+                  "proxyQueuedBytes": 0,
+                  "proxySuspendCount": 2,
+                  "requestMs": 42,
+                  "responseMs": 14538,
+                  "stage": "urlSessionTaskMetrics",
+                  "taskIntervalMs": 14582,
+                  "totalMs": 14581,
+                  "transactionCount": 1,
+                  "transferID": "D33BA3D2-5154-44B7-B5CA-9B04C2E067E7",
+                  "upstreamCancellationRequested": "false",
+                  "upstreamCompletionObserved": "false",
+                  "upstreamIssuedToCallbackMs": 14582,
+                  "upstreamTaskIndex": 14
+                }
+              },
+              {
+                "actionSeconds": 44.079088,
+                "event": "proxy_transfer_finished",
+                "fields": {
+                  "adaptiveMeasurementBoundary": "responseBody",
+                  "adaptiveTransferMs": 14502,
+                  "callbackAfterClientFinish": "false",
+                  "cellular": "no",
+                  "connectionReused": "yes",
+                  "hlsRole": "-",
+                  "playbackTraceID": "9D98E8E6",
+                  "protocol": "http/1.1",
+                  "proxyBackpressureMs": 11790,
+                  "proxyKind": "mediaRange",
+                  "proxyQueuedBytes": 0,
+                  "proxySuspendCount": 2,
+                  "requestMs": 50,
+                  "responseMs": 14502,
+                  "stage": "urlSessionTaskMetrics",
+                  "taskIntervalMs": 14555,
+                  "totalMs": 14553,
+                  "transactionCount": 1,
+                  "transferID": "D33BA3D2-5154-44B7-B5CA-9B04C2E067E7",
+                  "upstreamCancellationRequested": "false",
+                  "upstreamCompletionObserved": "false",
+                  "upstreamIssuedToCallbackMs": 14555,
+                  "upstreamTaskIndex": 6
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "device": "iphone13",
+      "label": "normalwifi-resume-s03-jellyfin",
+      "window": {
+        "boundedEndActionSeconds": 90.50314807891846,
+        "plannedWindowSeconds": 90,
+        "deduplicatedWindowEventCount": 287,
+        "snapshotsRead": 8
+      },
+      "exit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "actualFinalScreenInspected": true,
+      "incompleteWindow": null,
+      "screenInspection": {
+        "recordedAt": "2026-10-10T13:52:42.156649+08:00",
+        "actualUIInspected": true,
+        "evidence": [
+          "t60.png",
+          "t90.png",
+          "closed.png"
+        ],
+        "observed": "S03 dialogue scenes; one Chinese/English subtitle cue visible at t90 without obvious missing glyphs; normal exit to matching Jellyfin detail with resume/from-head controls.",
+        "limitations": [
+          "One cue is not complete subtitle verification; actual audio/HDR/native orientation not measured.",
+          "Zero sparse wait counter not fluidity PASS."
+        ],
+        "filmBodyVerified": true
+      },
+      "readAttemptCount": 8,
+      "diagnosticReadFailureCount": 0,
+      "phases": {
+        "eventsWithoutTraceIdentity": 1,
+        "tracesWithoutTelemetry": [],
+        "failureSignals": [
+          {
+            "actionSeconds": 1.126052,
+            "event": "proxy_transfer_finished",
+            "fields": {
+              "callbackAfterClientFinish": "true",
+              "cumulativeReceivedBytes": 558642,
+              "errorCode": -999,
+              "errorDomain": "NSURLErrorDomain",
+              "expectedBytes": 33554432,
+              "hlsRole": "-",
+              "playbackTraceID": "89ADD9EA",
+              "proxyKind": "mediaRange",
+              "stage": "upstreamTaskCompleted",
+              "taskReceivedBytes": 558642,
+              "transferID": "6AC9B6A1-E896-4E78-9FF1-3FF5A420B328",
+              "upstreamCancelToCallbackMs": 1,
+              "upstreamCancellationRequested": "true",
+              "upstreamCompletionObserved": "true",
+              "upstreamIssuedToCallbackMs": 127,
+              "upstreamTaskIndex": 1
+            }
+          }
+        ],
+        "acceptance": "Unchanged: recorded waits/stalls retained, no playback quality PASS or causal speed claim.",
+        "limits": [
+          "Engine waiting/empty is not proof of network starvation; retain waiting reason and reserve.",
+          "A unique HLS trace within warmup is a temporal association, not proof of a network or server root cause.",
+          "Transfer intervals overlap; late terminals stay bounded. Unrecognized result strings do not mean success.",
+          "First clock marker may reflect a prepared paused position, not advancing output or presentation.",
+          "First observed progress is limited by sparse telemetry; phase is descriptive, not an exact startup boundary.",
+          "Sampled stall intervals are observation spans, not display hitches or precise buffer durations.",
+          "Stalls are per trace; never subtract counters across renderers. Open episodes remain censored.",
+          "Missing metrics remain unknown; no screen, audio, full-frame, cache or competitor acceptance."
+        ],
+        "rendererTraces": [
+          {
+            "traceID": "89ADD9EA",
+            "engine": "KSPlayer",
+            "firstClockSignal": {
+              "actionSeconds": 1.610378,
+              "event": "first_frame",
+              "fields": {
+                "firstFramePositionSeconds": 0.051,
+                "planID": "ABA851AB",
+                "playbackTraceID": "89ADD9EA",
+                "routeID": "15AE84E7",
+                "tapToFirstFrameMs": 796
+              }
+            },
+            "firstObservedAdvancingClockActionSeconds": 2.569551,
+            "maxReportedStallCount": 0,
+            "counterDecreaseWithinTrace": false,
+            "stallEpisodes": [],
+            "slowestThreeSegmentMetrics": [],
+            "slowestThreeRangeMetrics": [
+              {
+                "actionSeconds": 28.513274,
+                "event": "proxy_transfer_finished",
+                "fields": {
+                  "adaptiveMeasurementBoundary": "responseBody",
+                  "adaptiveTransferMs": 22652,
+                  "callbackAfterClientFinish": "false",
+                  "cellular": "no",
+                  "connectionReused": "yes",
+                  "hlsRole": "-",
+                  "playbackTraceID": "89ADD9EA",
+                  "protocol": "http/1.1",
+                  "proxyBackpressureMs": 18832,
+                  "proxyKind": "mediaRange",
+                  "proxyQueuedBytes": 0,
+                  "proxySuspendCount": 4,
+                  "requestMs": 28,
+                  "responseMs": 22652,
+                  "stage": "urlSessionTaskMetrics",
+                  "taskIntervalMs": 22684,
+                  "totalMs": 22683,
+                  "transactionCount": 1,
+                  "transferID": "583D5B08-D173-431C-9CAB-F946EFCE6176",
+                  "upstreamCancellationRequested": "false",
+                  "upstreamCompletionObserved": "false",
+                  "upstreamIssuedToCallbackMs": 22685,
+                  "upstreamTaskIndex": 2
+                }
+              },
+              {
+                "actionSeconds": 55.248013,
+                "event": "proxy_transfer_finished",
+                "fields": {
+                  "adaptiveMeasurementBoundary": "responseBody",
+                  "adaptiveTransferMs": 10753,
+                  "callbackAfterClientFinish": "false",
+                  "cellular": "no",
+                  "connectionReused": "yes",
+                  "hlsRole": "-",
+                  "playbackTraceID": "89ADD9EA",
+                  "protocol": "http/1.1",
+                  "proxyBackpressureMs": 7645,
+                  "proxyKind": "mediaRange",
+                  "proxyQueuedBytes": 0,
+                  "proxySuspendCount": 2,
+                  "requestMs": 23,
+                  "responseMs": 10753,
+                  "stage": "urlSessionTaskMetrics",
+                  "taskIntervalMs": 10777,
+                  "totalMs": 10777,
+                  "transactionCount": 1,
+                  "transferID": "583D5B08-D173-431C-9CAB-F946EFCE6176",
+                  "upstreamCancellationRequested": "false",
+                  "upstreamCompletionObserved": "false",
+                  "upstreamIssuedToCallbackMs": 10778,
+                  "upstreamTaskIndex": 8
+                }
+              },
+              {
+                "actionSeconds": 70.69665,
+                "event": "proxy_transfer_finished",
+                "fields": {
+                  "adaptiveMeasurementBoundary": "responseBody",
+                  "adaptiveTransferMs": 9537,
+                  "callbackAfterClientFinish": "false",
+                  "cellular": "no",
+                  "connectionReused": "yes",
+                  "hlsRole": "-",
+                  "playbackTraceID": "89ADD9EA",
+                  "protocol": "http/1.1",
+                  "proxyBackpressureMs": 7599,
+                  "proxyKind": "mediaRange",
+                  "proxyQueuedBytes": 0,
+                  "proxySuspendCount": 2,
+                  "requestMs": 23,
+                  "responseMs": 9537,
+                  "stage": "urlSessionTaskMetrics",
+                  "taskIntervalMs": 9562,
+                  "totalMs": 9561,
+                  "transactionCount": 1,
+                  "transferID": "583D5B08-D173-431C-9CAB-F946EFCE6176",
+                  "upstreamCancellationRequested": "false",
+                  "upstreamCompletionObserved": "false",
+                  "upstreamIssuedToCallbackMs": 9562,
+                  "upstreamTaskIndex": 11
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "device": "iphone13",
+      "label": "normalwifi-s19-resume-s19-files",
+      "window": {
+        "boundedEndActionSeconds": 60.28202199935913,
+        "plannedWindowSeconds": 60,
+        "deduplicatedWindowEventCount": 176,
+        "snapshotsRead": 7
+      },
+      "exit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "actualFinalScreenInspected": true,
+      "incompleteWindow": null,
+      "screenInspection": {
+        "recordedAt": "2026-10-10T13:54:48.319376+08:00",
+        "actualUIInspected": true,
+        "evidence": [
+          "t30.png",
+          "t60.png",
+          "closed.png"
+        ],
+        "observed": "S19 opening production title at t30 and very dark fading movie title at t60; matching file preview after normal exit with resume/from-head controls.",
+        "filmBodyVerified": false,
+        "limitations": [
+          "Title/fade window is not body-scene acceptance or complete-frame/sound/HDR/PGS proof; subsequent resume window is separate."
+        ]
+      },
+      "readAttemptCount": 7,
+      "diagnosticReadFailureCount": 0,
+      "phases": {
+        "eventsWithoutTraceIdentity": 5,
+        "tracesWithoutTelemetry": [],
+        "failureSignals": [
+          {
+            "actionSeconds": 2.575266,
+            "event": "proxy_transfer_finished",
+            "fields": {
+              "callbackAfterClientFinish": "true",
+              "cumulativeReceivedBytes": 129987,
+              "errorCode": -999,
+              "errorDomain": "NSURLErrorDomain",
+              "expectedBytes": 33554432,
+              "hlsRole": "-",
+              "playbackTraceID": "B05A6471",
+              "proxyKind": "mediaRange",
+              "stage": "upstreamTaskCompleted",
+              "taskReceivedBytes": 129987,
+              "transferID": "A558D759-4AC3-4CC7-9AD2-4C85B8CB61B9",
+              "upstreamCancelToCallbackMs": 1,
+              "upstreamCancellationRequested": "true",
+              "upstreamCompletionObserved": "true",
+              "upstreamIssuedToCallbackMs": 137,
+              "upstreamTaskIndex": 1
+            }
+          }
+        ],
+        "acceptance": "Unchanged: recorded waits/stalls retained, no playback quality PASS or causal speed claim.",
+        "limits": [
+          "Engine waiting/empty is not proof of network starvation; retain waiting reason and reserve.",
+          "A unique HLS trace within warmup is a temporal association, not proof of a network or server root cause.",
+          "Transfer intervals overlap; late terminals stay bounded. Unrecognized result strings do not mean success.",
+          "First clock marker may reflect a prepared paused position, not advancing output or presentation.",
+          "First observed progress is limited by sparse telemetry; phase is descriptive, not an exact startup boundary.",
+          "Sampled stall intervals are observation spans, not display hitches or precise buffer durations.",
+          "Stalls are per trace; never subtract counters across renderers. Open episodes remain censored.",
+          "Missing metrics remain unknown; no screen, audio, full-frame, cache or competitor acceptance."
+        ],
+        "rendererTraces": [
+          {
+            "traceID": "B05A6471",
+            "engine": "KSPlayer",
+            "firstClockSignal": {
+              "actionSeconds": 3.197248,
+              "event": "first_frame",
+              "fields": {
+                "firstFramePositionSeconds": 0.094,
+                "planID": "FD49987C",
+                "playbackTraceID": "B05A6471",
+                "routeID": "4D95F2C5",
+                "tapToFirstFrameMs": 918
+              }
+            },
+            "firstObservedAdvancingClockActionSeconds": 4.288277,
+            "maxReportedStallCount": 0,
+            "counterDecreaseWithinTrace": false,
+            "stallEpisodes": [],
+            "slowestThreeSegmentMetrics": [],
+            "slowestThreeRangeMetrics": [
+              {
+                "actionSeconds": 41.376858,
+                "event": "proxy_transfer_finished",
+                "fields": {
+                  "adaptiveMeasurementBoundary": "responseBody",
+                  "adaptiveTransferMs": 26265,
+                  "callbackAfterClientFinish": "false",
+                  "cellular": "no",
+                  "connectionReused": "yes",
+                  "hlsRole": "-",
+                  "playbackTraceID": "B05A6471",
+                  "protocol": "http/1.1",
+                  "proxyBackpressureMs": 23570,
+                  "proxyKind": "mediaRange",
+                  "proxyQueuedBytes": 3290126,
+                  "proxySuspendCount": 5,
+                  "requestMs": 40,
+                  "responseMs": 26265,
+                  "stage": "urlSessionTaskMetrics",
+                  "taskIntervalMs": 26306,
+                  "totalMs": 26306,
+                  "transactionCount": 1,
+                  "transferID": "07B19458-2C40-4C42-BCEA-37F708BF1976",
+                  "upstreamCancellationRequested": "false",
+                  "upstreamCompletionObserved": "false",
+                  "upstreamIssuedToCallbackMs": 26307,
+                  "upstreamTaskIndex": 4
+                }
+              },
+              {
+                "actionSeconds": 51.935166,
+                "event": "proxy_transfer_finished",
+                "fields": {
+                  "adaptiveMeasurementBoundary": "responseBody",
+                  "adaptiveTransferMs": 10502,
+                  "callbackAfterClientFinish": "false",
+                  "cellular": "no",
+                  "connectionReused": "yes",
+                  "hlsRole": "-",
+                  "playbackTraceID": "B05A6471",
+                  "protocol": "http/1.1",
+                  "proxyBackpressureMs": 6905,
+                  "proxyKind": "mediaRange",
+                  "proxyQueuedBytes": 0,
+                  "proxySuspendCount": 2,
+                  "requestMs": 42,
+                  "responseMs": 10502,
+                  "stage": "urlSessionTaskMetrics",
+                  "taskIntervalMs": 10547,
+                  "totalMs": 10546,
+                  "transactionCount": 1,
+                  "transferID": "07B19458-2C40-4C42-BCEA-37F708BF1976",
+                  "upstreamCancellationRequested": "false",
+                  "upstreamCompletionObserved": "false",
+                  "upstreamIssuedToCallbackMs": 10547,
+                  "upstreamTaskIndex": 5
+                }
+              },
+              {
+                "actionSeconds": 7.296961,
+                "event": "proxy_transfer_finished",
+                "fields": {
+                  "adaptiveMeasurementBoundary": "responseBody",
+                  "adaptiveTransferMs": 4687,
+                  "callbackAfterClientFinish": "false",
+                  "cellular": "no",
+                  "connectionReused": "no",
+                  "dnsMs": 0,
+                  "hlsRole": "-",
+                  "playbackTraceID": "B05A6471",
+                  "protocol": "http/1.1",
+                  "proxyBackpressureMs": 0,
+                  "proxyKind": "mediaRange",
+                  "proxyQueuedBytes": 0,
+                  "proxySuspendCount": 0,
+                  "requestMs": 47,
+                  "responseMs": 4687,
+                  "stage": "urlSessionTaskMetrics",
+                  "taskIntervalMs": 4737,
+                  "tcpMs": 1,
+                  "totalMs": 4737,
+                  "transactionCount": 1,
+                  "transferID": "07B19458-2C40-4C42-BCEA-37F708BF1976",
+                  "upstreamCancellationRequested": "false",
+                  "upstreamCompletionObserved": "false",
+                  "upstreamIssuedToCallbackMs": 4738,
+                  "upstreamTaskIndex": 1
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "device": "iphone13",
+      "label": "normalwifi-s19-resume-s19-files-retry1",
+      "window": {
+        "boundedEndActionSeconds": 45.472172021865845,
+        "plannedWindowSeconds": 45,
+        "deduplicatedWindowEventCount": 221,
+        "snapshotsRead": 7
+      },
+      "exit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "actualFinalScreenInspected": true,
+      "incompleteWindow": null,
+      "screenInspection": {
+        "recordedAt": "2026-10-10T13:57:17.418578+08:00",
+        "actualUIInspected": true,
+        "evidence": [
+          "t30.png",
+          "t45.png",
+          "closed.png"
+        ],
+        "observed": "S19 actual eye close-up at t30 then Middle Earth map at t45; returned to matching file preview with resume/from-head controls.",
+        "filmBodyVerified": true,
+        "action": "Continue Watching after normal App restart; cold process reopening, cache unknown.",
+        "limitations": [
+          "1500ms startup waiting before observed advancing clock retained; not performance PASS.",
+          "Sparse frames do not establish full frame, sound/subtitle/HDR; not deep-position or concurrent regression."
+        ]
+      },
+      "readAttemptCount": 7,
+      "diagnosticReadFailureCount": 0,
+      "phases": {
+        "eventsWithoutTraceIdentity": 6,
+        "tracesWithoutTelemetry": [],
+        "failureSignals": [
+          {
+            "actionSeconds": 2.674595,
+            "event": "proxy_transfer_finished",
+            "fields": {
+              "callbackAfterClientFinish": "true",
+              "cumulativeReceivedBytes": 286371,
+              "errorCode": -999,
+              "errorDomain": "NSURLErrorDomain",
+              "expectedBytes": 33554432,
+              "hlsRole": "-",
+              "playbackTraceID": "BD8B15E7",
+              "proxyKind": "mediaRange",
+              "stage": "upstreamTaskCompleted",
+              "taskReceivedBytes": 286371,
+              "transferID": "EB944B5D-2FD1-4950-8475-2679DEB6A03B",
+              "upstreamCancelToCallbackMs": 1,
+              "upstreamCancellationRequested": "true",
+              "upstreamCompletionObserved": "true",
+              "upstreamIssuedToCallbackMs": 302,
+              "upstreamTaskIndex": 1
+            }
+          },
+          {
+            "actionSeconds": 3.166162,
+            "event": "proxy_transfer_finished",
+            "fields": {
+              "callbackAfterClientFinish": "true",
+              "cumulativeReceivedBytes": 2860911,
+              "errorCode": -999,
+              "errorDomain": "NSURLErrorDomain",
+              "expectedBytes": 33554432,
+              "hlsRole": "-",
+              "playbackTraceID": "BD8B15E7",
+              "proxyKind": "mediaRange",
+              "stage": "upstreamTaskCompleted",
+              "taskReceivedBytes": 2860911,
+              "transferID": "32A13CA5-748A-4B11-993C-8B2BD1013F80",
+              "upstreamCancelToCallbackMs": 1,
+              "upstreamCancellationRequested": "true",
+              "upstreamCompletionObserved": "true",
+              "upstreamIssuedToCallbackMs": 495,
+              "upstreamTaskIndex": 1
+            }
+          },
+          {
+            "actionSeconds": 3.747051,
+            "event": "proxy_transfer_finished",
+            "fields": {
+              "callbackAfterClientFinish": "true",
+              "cumulativeReceivedBytes": 308085,
+              "errorCode": -999,
+              "errorDomain": "NSURLErrorDomain",
+              "expectedBytes": 33554432,
+              "hlsRole": "-",
+              "playbackTraceID": "BD8B15E7",
+              "proxyKind": "mediaRange",
+              "stage": "upstreamTaskCompleted",
+              "taskReceivedBytes": 308085,
+              "transferID": "73A4E356-7744-4B9F-9845-B9994CD9A0AF",
+              "upstreamCancelToCallbackMs": 0,
+              "upstreamCancellationRequested": "true",
+              "upstreamCompletionObserved": "true",
+              "upstreamIssuedToCallbackMs": 109,
+              "upstreamTaskIndex": 1
+            }
+          }
+        ],
+        "acceptance": "Unchanged: recorded waits/stalls retained, no playback quality PASS or causal speed claim.",
+        "limits": [
+          "Engine waiting/empty is not proof of network starvation; retain waiting reason and reserve.",
+          "A unique HLS trace within warmup is a temporal association, not proof of a network or server root cause.",
+          "Transfer intervals overlap; late terminals stay bounded. Unrecognized result strings do not mean success.",
+          "First clock marker may reflect a prepared paused position, not advancing output or presentation.",
+          "First observed progress is limited by sparse telemetry; phase is descriptive, not an exact startup boundary.",
+          "Sampled stall intervals are observation spans, not display hitches or precise buffer durations.",
+          "Stalls are per trace; never subtract counters across renderers. Open episodes remain censored.",
+          "Missing metrics remain unknown; no screen, audio, full-frame, cache or competitor acceptance."
+        ],
+        "rendererTraces": [
+          {
+            "traceID": "BD8B15E7",
+            "engine": "KSPlayer",
+            "firstClockSignal": {
+              "actionSeconds": 4.938316,
+              "event": "first_frame",
+              "fields": {
+                "firstFramePositionSeconds": 58.856,
+                "planID": "5E96445D",
+                "playbackTraceID": "BD8B15E7",
+                "routeID": "E39C518C",
+                "tapToFirstFrameMs": 2700
+              }
+            },
+            "firstObservedAdvancingClockActionSeconds": 4.938032,
+            "maxReportedStallCount": 1,
+            "counterDecreaseWithinTrace": false,
+            "stallEpisodes": [
+              {
+                "startActionSeconds": 3.436511,
+                "phaseAtStart": "beforeObservedAdvancingClock",
+                "startFields": {
+                  "audioBitrate": 0,
+                  "bufferLimitSeconds": 6,
+                  "bufferTargetSeconds": 1,
+                  "bufferedAheadSeconds": 0,
+                  "bytesRead": 4153398,
+                  "currentSeconds": 0,
+                  "durationSeconds": 13698.368,
+                  "elapsedMs": 1099,
+                  "engine": "KSPlayer",
+                  "ksPlayerState": "-",
+                  "planID": "5E96445D",
+                  "playbackTraceID": "BD8B15E7",
+                  "routeID": "E39C518C",
+                  "sampleReason": "playbackTick",
+                  "stallActive": "yes",
+                  "stallCount": 1,
+                  "stallDurationMs": 0,
+                  "videoBitrate": 0
+                },
+                "endActionSeconds": 4.938032,
+                "sampledSpanSeconds": 1.5015209999999999,
+                "reportedDurationMs": 1500
+              }
+            ],
+            "slowestThreeSegmentMetrics": [],
+            "slowestThreeRangeMetrics": [
+              {
+                "actionSeconds": 31.513189,
+                "event": "proxy_transfer_finished",
+                "fields": {
+                  "adaptiveMeasurementBoundary": "responseBody",
+                  "adaptiveTransferMs": 3906,
+                  "callbackAfterClientFinish": "false",
+                  "cellular": "no",
+                  "connectionReused": "yes",
+                  "hlsRole": "-",
+                  "playbackTraceID": "BD8B15E7",
+                  "protocol": "http/1.1",
+                  "proxyBackpressureMs": 0,
+                  "proxyKind": "mediaRange",
+                  "proxyQueuedBytes": 0,
+                  "proxySuspendCount": 0,
+                  "requestMs": 52,
+                  "responseMs": 3906,
+                  "stage": "urlSessionTaskMetrics",
+                  "taskIntervalMs": 3959,
+                  "totalMs": 3959,
+                  "transactionCount": 1,
+                  "transferID": "F822E000-17D7-4255-9104-3BBCBC7161AD",
+                  "upstreamCancellationRequested": "false",
+                  "upstreamCompletionObserved": "false",
+                  "upstreamIssuedToCallbackMs": 3959,
+                  "upstreamTaskIndex": 9
+                }
+              },
+              {
+                "actionSeconds": 13.82741,
+                "event": "proxy_transfer_finished",
+                "fields": {
+                  "adaptiveMeasurementBoundary": "responseBody",
+                  "adaptiveTransferMs": 3745,
+                  "callbackAfterClientFinish": "false",
+                  "cellular": "no",
+                  "connectionReused": "yes",
+                  "hlsRole": "-",
+                  "playbackTraceID": "BD8B15E7",
+                  "protocol": "http/1.1",
+                  "proxyBackpressureMs": 0,
+                  "proxyKind": "mediaRange",
+                  "proxyQueuedBytes": 0,
+                  "proxySuspendCount": 0,
+                  "requestMs": 75,
+                  "responseMs": 3745,
+                  "stage": "urlSessionTaskMetrics",
+                  "taskIntervalMs": 3822,
+                  "totalMs": 3821,
+                  "transactionCount": 1,
+                  "transferID": "F822E000-17D7-4255-9104-3BBCBC7161AD",
+                  "upstreamCancellationRequested": "false",
+                  "upstreamCompletionObserved": "false",
+                  "upstreamIssuedToCallbackMs": 3822,
+                  "upstreamTaskIndex": 3
+                }
+              },
+              {
+                "actionSeconds": 43.76997,
+                "event": "proxy_transfer_finished",
+                "fields": {
+                  "adaptiveMeasurementBoundary": "responseBody",
+                  "adaptiveTransferMs": 3437,
+                  "callbackAfterClientFinish": "false",
+                  "cellular": "no",
+                  "connectionReused": "yes",
+                  "hlsRole": "-",
+                  "playbackTraceID": "BD8B15E7",
+                  "protocol": "http/1.1",
+                  "proxyBackpressureMs": 0,
+                  "proxyKind": "mediaRange",
+                  "proxyQueuedBytes": 0,
+                  "proxySuspendCount": 0,
+                  "requestMs": 45,
+                  "responseMs": 3437,
+                  "stage": "urlSessionTaskMetrics",
+                  "taskIntervalMs": 3484,
+                  "totalMs": 3484,
+                  "transactionCount": 1,
+                  "transferID": "F822E000-17D7-4255-9104-3BBCBC7161AD",
+                  "upstreamCancellationRequested": "false",
+                  "upstreamCompletionObserved": "false",
+                  "upstreamIssuedToCallbackMs": 3485,
+                  "upstreamTaskIndex": 13
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "device": "ipad",
+      "label": "normalwifi-resume-s01-files",
+      "window": {
+        "boundedEndActionSeconds": 90.65241694450378,
+        "plannedWindowSeconds": 90,
+        "deduplicatedWindowEventCount": 136,
+        "snapshotsRead": 8
+      },
+      "exit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "actualFinalScreenInspected": true,
+      "incompleteWindow": null,
+      "screenInspection": {
+        "actualUIInspected": true,
+        "evidence": [
+          "t60.png",
+          "t90.png",
+          "closed.png"
+        ],
+        "observed": "S01 animation meadow/houses at t60 and town/steam train at t90; actual film frames; normal exit recorded separately.",
+        "limitations": [
+          "Sparse screenshots do not establish full frame timing, sound or subtitle synchronization.",
+          "194ms startup waiting retained; not performance PASS."
+        ],
+        "exitObservation": "Returned to matching file preview with Continue Watching and From Head; immediate exit screenshot is captured during orientation transition, so settled-layout quality remains unmeasured.",
+        "filmBodyVerified": true
+      },
+      "readAttemptCount": 8,
+      "diagnosticReadFailureCount": 0,
+      "phases": {
+        "eventsWithoutTraceIdentity": 3,
+        "tracesWithoutTelemetry": [],
+        "failureSignals": [
+          {
+            "actionSeconds": 2.042469,
+            "event": "proxy_transfer_finished",
+            "fields": {
+              "deliveredBytes": 248727,
+              "durationMs": 569,
+              "errorCode": 54,
+              "errorDomain": "unrecognized",
+              "expectedBytes": 33554432,
+              "finishSource": "clientFailed",
+              "hlsRole": "-",
+              "playbackTraceID": "098EE585",
+              "proxyKind": "mediaRange",
+              "responseEndOffset": 33554431,
+              "responseStartOffset": 0,
+              "result": "unrecognized",
+              "retries": 0,
+              "status": 206,
+              "taskReceivedBytes": 248727,
+              "transferID": "84AE4ED9-DB62-4174-A29A-B54A36E5BA60",
+              "transportErrorCode": 54,
+              "transportErrorKind": "posix",
+              "upstreamTaskIndex": 1
+            }
+          },
+          {
+            "actionSeconds": 2.043188,
+            "event": "proxy_transfer_finished",
+            "fields": {
+              "callbackAfterClientFinish": "true",
+              "cumulativeReceivedBytes": 248727,
+              "errorCode": -999,
+              "errorDomain": "NSURLErrorDomain",
+              "expectedBytes": 33554432,
+              "hlsRole": "-",
+              "playbackTraceID": "098EE585",
+              "proxyKind": "mediaRange",
+              "stage": "upstreamTaskCompleted",
+              "taskReceivedBytes": 248727,
+              "transferID": "84AE4ED9-DB62-4174-A29A-B54A36E5BA60",
+              "upstreamCancelToCallbackMs": 2,
+              "upstreamCancellationRequested": "true",
+              "upstreamCompletionObserved": "true",
+              "upstreamIssuedToCallbackMs": 572,
+              "upstreamTaskIndex": 1
+            }
+          }
+        ],
+        "acceptance": "Unchanged: recorded waits/stalls retained, no playback quality PASS or causal speed claim.",
+        "limits": [
+          "Engine waiting/empty is not proof of network starvation; retain waiting reason and reserve.",
+          "A unique HLS trace within warmup is a temporal association, not proof of a network or server root cause.",
+          "Transfer intervals overlap; late terminals stay bounded. Unrecognized result strings do not mean success.",
+          "First clock marker may reflect a prepared paused position, not advancing output or presentation.",
+          "First observed progress is limited by sparse telemetry; phase is descriptive, not an exact startup boundary.",
+          "Sampled stall intervals are observation spans, not display hitches or precise buffer durations.",
+          "Stalls are per trace; never subtract counters across renderers. Open episodes remain censored.",
+          "Missing metrics remain unknown; no screen, audio, full-frame, cache or competitor acceptance."
+        ],
+        "rendererTraces": [
+          {
+            "traceID": "098EE585",
+            "engine": "KSPlayer",
+            "firstClockSignal": {
+              "actionSeconds": 3.738234,
+              "event": "first_frame",
+              "fields": {
+                "firstFramePositionSeconds": 0.101,
+                "planID": "D7175BB0",
+                "playbackTraceID": "098EE585",
+                "routeID": "5A2B48E3",
+                "tapToFirstFrameMs": 2828
+              }
+            },
+            "firstObservedAdvancingClockActionSeconds": 4.841854,
+            "maxReportedStallCount": 1,
+            "counterDecreaseWithinTrace": false,
+            "stallEpisodes": [
+              {
+                "startActionSeconds": 3.548541,
+                "phaseAtStart": "beforeObservedAdvancingClock",
+                "startFields": {
+                  "elapsedMs": 2210,
+                  "engine": "KSPlayer",
+                  "ksPlayerState": "-",
+                  "planID": "D7175BB0",
+                  "playbackTraceID": "098EE585",
+                  "routeID": "5A2B48E3",
+                  "sampleReason": "bufferChanged",
+                  "stallActive": "yes",
+                  "stallCount": 1,
+                  "stallDurationMs": 0
+                },
+                "endActionSeconds": 3.737901,
+                "sampledSpanSeconds": 0.18935999999999975,
+                "reportedDurationMs": 194
+              }
+            ],
+            "slowestThreeSegmentMetrics": [],
+            "slowestThreeRangeMetrics": [
+              {
+                "actionSeconds": 64.636566,
+                "event": "proxy_transfer_finished",
+                "fields": {
+                  "adaptiveMeasurementBoundary": "responseBody",
+                  "adaptiveTransferMs": 62202,
+                  "callbackAfterClientFinish": "false",
+                  "cellular": "no",
+                  "connectionReused": "no",
+                  "dnsMs": 0,
+                  "hlsRole": "-",
+                  "playbackTraceID": "098EE585",
+                  "protocol": "http/1.1",
+                  "proxyBackpressureMs": 56433,
+                  "proxyKind": "mediaRange",
+                  "proxyQueuedBytes": 0,
+                  "proxySuspendCount": 4,
+                  "requestMs": 42,
+                  "responseMs": 62202,
+                  "stage": "urlSessionTaskMetrics",
+                  "taskIntervalMs": 62253,
+                  "tcpMs": 1,
+                  "totalMs": 62251,
+                  "transactionCount": 1,
+                  "transferID": "7D82797A-C437-4BDB-9EB5-C9CACC47B420",
+                  "upstreamCancellationRequested": "false",
+                  "upstreamCompletionObserved": "false",
+                  "upstreamIssuedToCallbackMs": 62252,
+                  "upstreamTaskIndex": 1
+                }
+              },
+              {
+                "actionSeconds": 2.38164,
+                "event": "proxy_transfer_finished",
+                "fields": {
+                  "adaptiveMeasurementBoundary": "responseBody",
+                  "adaptiveTransferMs": 362,
+                  "callbackAfterClientFinish": "false",
+                  "cellular": "no",
+                  "connectionReused": "no",
+                  "dnsMs": 0,
+                  "hlsRole": "-",
+                  "playbackTraceID": "098EE585",
+                  "protocol": "http/1.1",
+                  "proxyBackpressureMs": 0,
+                  "proxyKind": "mediaRange",
+                  "proxyQueuedBytes": 0,
+                  "proxySuspendCount": 0,
+                  "requestMs": 23,
+                  "responseMs": 362,
+                  "stage": "urlSessionTaskMetrics",
+                  "taskIntervalMs": 394,
+                  "tcpMs": 3,
+                  "totalMs": 391,
+                  "transactionCount": 1,
+                  "transferID": "64C51E66-396E-48A0-80C1-2B44EE396F8D",
+                  "upstreamCancellationRequested": "false",
+                  "upstreamCompletionObserved": "false",
+                  "upstreamIssuedToCallbackMs": 394,
+                  "upstreamTaskIndex": 1
+                }
+              },
+              {
+                "actionSeconds": 2.042919,
+                "event": "proxy_transfer_finished",
+                "fields": {
+                  "adaptiveMeasurementBoundary": "responseBody",
+                  "callbackAfterClientFinish": "true",
+                  "cellular": "no",
+                  "connectionReused": "no",
+                  "dnsMs": 0,
+                  "hlsRole": "-",
+                  "playbackTraceID": "098EE585",
+                  "protocol": "http/1.1",
+                  "proxyBackpressureMs": 0,
+                  "proxyKind": "mediaRange",
+                  "proxyQueuedBytes": 11584,
+                  "proxySuspendCount": 0,
+                  "requestMs": 41,
+                  "stage": "urlSessionTaskMetrics",
+                  "taskIntervalMs": 570,
+                  "tcpMs": 476,
+                  "transactionCount": 1,
+                  "transferID": "84AE4ED9-DB62-4174-A29A-B54A36E5BA60",
+                  "upstreamCancelToCallbackMs": 0,
+                  "upstreamCancellationRequested": "true",
+                  "upstreamCompletionObserved": "false",
+                  "upstreamIssuedToCallbackMs": 570,
+                  "upstreamTaskIndex": 1
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "device": "ipad",
+      "label": "normalwifi-resume-s01-jellyfin-retry1",
+      "window": {
+        "boundedEndActionSeconds": 90.94525909423828,
+        "plannedWindowSeconds": 90,
+        "deduplicatedWindowEventCount": 220,
+        "snapshotsRead": 8
+      },
+      "exit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "actualFinalScreenInspected": true,
+      "incompleteWindow": null,
+      "screenInspection": {
+        "recordedAt": "2026-10-10T13:34:36.721319+08:00",
+        "actualUIInspected": true,
+        "evidence": [
+          "t60.png",
+          "t90.png",
+          "closed.png"
+        ],
+        "observed": "S01 animation meadow/houses and town/steam train; exited to matching Jellyfin detail with Continue Watching and From Head controls.",
+        "limitations": [
+          "Sparse screenshots cannot establish complete frame timing, audio or subtitle effects.",
+          "Zero sampled waiting counter is not fluidity PASS."
+        ],
+        "filmBodyVerified": true
+      },
+      "readAttemptCount": 8,
+      "diagnosticReadFailureCount": 0,
+      "phases": {
+        "eventsWithoutTraceIdentity": 1,
+        "tracesWithoutTelemetry": [],
+        "failureSignals": [
+          {
+            "actionSeconds": 1.739515,
+            "event": "proxy_transfer_finished",
+            "fields": {
+              "deliveredBytes": 185059,
+              "durationMs": 168,
+              "errorCode": 32,
+              "errorDomain": "unrecognized",
+              "expectedBytes": 33554432,
+              "finishSource": "clientBodySend",
+              "hlsRole": "-",
+              "playbackTraceID": "CBFD6CEE",
+              "proxyKind": "mediaRange",
+              "responseEndOffset": 33554431,
+              "responseStartOffset": 0,
+              "result": "unrecognized",
+              "retries": 0,
+              "status": 206,
+              "taskReceivedBytes": 185059,
+              "transferID": "03B05DE4-DAD6-481D-B6BF-5BFDC2D7B9B2",
+              "transportErrorCode": 32,
+              "transportErrorKind": "posix",
+              "upstreamTaskIndex": 1
+            }
+          },
+          {
+            "actionSeconds": 1.740509,
+            "event": "proxy_transfer_finished",
+            "fields": {
+              "callbackAfterClientFinish": "true",
+              "cumulativeReceivedBytes": 185059,
+              "errorCode": -999,
+              "errorDomain": "NSURLErrorDomain",
+              "expectedBytes": 33554432,
+              "hlsRole": "-",
+              "playbackTraceID": "CBFD6CEE",
+              "proxyKind": "mediaRange",
+              "stage": "upstreamTaskCompleted",
+              "taskReceivedBytes": 185059,
+              "transferID": "03B05DE4-DAD6-481D-B6BF-5BFDC2D7B9B2",
+              "upstreamCancelToCallbackMs": 1,
+              "upstreamCancellationRequested": "true",
+              "upstreamCompletionObserved": "true",
+              "upstreamIssuedToCallbackMs": 170,
+              "upstreamTaskIndex": 1
+            }
+          }
+        ],
+        "acceptance": "Unchanged: recorded waits/stalls retained, no playback quality PASS or causal speed claim.",
+        "limits": [
+          "Engine waiting/empty is not proof of network starvation; retain waiting reason and reserve.",
+          "A unique HLS trace within warmup is a temporal association, not proof of a network or server root cause.",
+          "Transfer intervals overlap; late terminals stay bounded. Unrecognized result strings do not mean success.",
+          "First clock marker may reflect a prepared paused position, not advancing output or presentation.",
+          "First observed progress is limited by sparse telemetry; phase is descriptive, not an exact startup boundary.",
+          "Sampled stall intervals are observation spans, not display hitches or precise buffer durations.",
+          "Stalls are per trace; never subtract counters across renderers. Open episodes remain censored.",
+          "Missing metrics remain unknown; no screen, audio, full-frame, cache or competitor acceptance."
+        ],
+        "rendererTraces": [
+          {
+            "traceID": "CBFD6CEE",
+            "engine": "KSPlayer",
+            "firstClockSignal": {
+              "actionSeconds": 2.09237,
+              "event": "first_frame",
+              "fields": {
+                "firstFramePositionSeconds": 0.059,
+                "planID": "91EFF8A0",
+                "playbackTraceID": "CBFD6CEE",
+                "routeID": "A2BE6ABE",
+                "tapToFirstFrameMs": 791
+              }
+            },
+            "firstObservedAdvancingClockActionSeconds": 3.059372,
+            "maxReportedStallCount": 0,
+            "counterDecreaseWithinTrace": false,
+            "stallEpisodes": [],
+            "slowestThreeSegmentMetrics": [],
+            "slowestThreeRangeMetrics": [
+              {
+                "actionSeconds": 65.242359,
+                "event": "proxy_transfer_finished",
+                "fields": {
+                  "adaptiveMeasurementBoundary": "responseBody",
+                  "adaptiveTransferMs": 63530,
+                  "callbackAfterClientFinish": "false",
+                  "cellular": "no",
+                  "connectionReused": "yes",
+                  "hlsRole": "-",
+                  "playbackTraceID": "CBFD6CEE",
+                  "protocol": "http/1.1",
+                  "proxyBackpressureMs": 60589,
+                  "proxyKind": "mediaRange",
+                  "proxyQueuedBytes": 0,
+                  "proxySuspendCount": 4,
+                  "requestMs": 26,
+                  "responseMs": 63530,
+                  "stage": "urlSessionTaskMetrics",
+                  "taskIntervalMs": 63557,
+                  "totalMs": 63557,
+                  "transactionCount": 1,
+                  "transferID": "3440154A-5685-4366-AFB1-677D9410620C",
+                  "upstreamCancellationRequested": "false",
+                  "upstreamCompletionObserved": "false",
+                  "upstreamIssuedToCallbackMs": 63557,
+                  "upstreamTaskIndex": 1
+                }
+              },
+              {
+                "actionSeconds": 1.740741,
+                "event": "proxy_transfer_finished",
+                "fields": {
+                  "adaptiveMeasurementBoundary": "responseBody",
+                  "adaptiveTransferMs": 12,
+                  "callbackAfterClientFinish": "false",
+                  "cellular": "no",
+                  "connectionReused": "no",
+                  "dnsMs": 0,
+                  "hlsRole": "-",
+                  "playbackTraceID": "CBFD6CEE",
+                  "protocol": "http/1.1",
+                  "proxyBackpressureMs": 0,
+                  "proxyKind": "mediaRange",
+                  "proxyQueuedBytes": 0,
+                  "proxySuspendCount": 0,
+                  "requestMs": 26,
+                  "responseMs": 12,
+                  "stage": "urlSessionTaskMetrics",
+                  "taskIntervalMs": 45,
+                  "tcpMs": 4,
+                  "totalMs": 45,
+                  "transactionCount": 1,
+                  "transferID": "BA698115-236F-48F4-ADFF-49781C002B13",
+                  "upstreamCancellationRequested": "false",
+                  "upstreamCompletionObserved": "false",
+                  "upstreamIssuedToCallbackMs": 45,
+                  "upstreamTaskIndex": 1
+                }
+              },
+              {
+                "actionSeconds": 1.740228,
+                "event": "proxy_transfer_finished",
+                "fields": {
+                  "adaptiveMeasurementBoundary": "responseBody",
+                  "callbackAfterClientFinish": "true",
+                  "cellular": "no",
+                  "connectionReused": "no",
+                  "dnsMs": 0,
+                  "hlsRole": "-",
+                  "playbackTraceID": "CBFD6CEE",
+                  "protocol": "http/1.1",
+                  "proxyBackpressureMs": 0,
+                  "proxyKind": "mediaRange",
+                  "proxyQueuedBytes": 0,
+                  "proxySuspendCount": 0,
+                  "requestMs": 44,
+                  "stage": "urlSessionTaskMetrics",
+                  "taskIntervalMs": 169,
+                  "tcpMs": 78,
+                  "transactionCount": 1,
+                  "transferID": "03B05DE4-DAD6-481D-B6BF-5BFDC2D7B9B2",
+                  "upstreamCancelToCallbackMs": 0,
+                  "upstreamCancellationRequested": "true",
+                  "upstreamCompletionObserved": "false",
+                  "upstreamIssuedToCallbackMs": 169,
+                  "upstreamTaskIndex": 1
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "device": "ipad",
+      "label": "normalwifi-resume-s03-files",
+      "window": {
+        "boundedEndActionSeconds": 90.6280288696289,
+        "plannedWindowSeconds": 90,
+        "deduplicatedWindowEventCount": 301,
+        "snapshotsRead": 8
+      },
+      "exit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "actualFinalScreenInspected": true,
+      "incompleteWindow": null,
+      "screenInspection": {
+        "recordedAt": "2026-10-10T13:36:33.895369+08:00",
+        "actualUIInspected": true,
+        "evidence": [
+          "t60.png",
+          "t90.png",
+          "closed.png"
+        ],
+        "observed": "S03 actual dialogue shots of injured man, frame differs across captures; exited to matching REMUX file preview with Continue Watching and From Head.",
+        "limitations": [
+          "Immediate exit screenshot is mid-rotation; settled layout not assessed by this frame.",
+          "No full display-frame, sound/subtitle/HDR proof; zero sparse wait samples not fluidity PASS."
+        ],
+        "filmBodyVerified": true
+      },
+      "readAttemptCount": 8,
+      "diagnosticReadFailureCount": 0,
+      "phases": {
+        "eventsWithoutTraceIdentity": 4,
+        "tracesWithoutTelemetry": [],
+        "failureSignals": [
+          {
+            "actionSeconds": 2.939839,
+            "event": "proxy_transfer_finished",
+            "fields": {
+              "deliveredBytes": 665749,
+              "durationMs": 196,
+              "errorCode": 32,
+              "errorDomain": "unrecognized",
+              "expectedBytes": 33554432,
+              "finishSource": "clientBodySend",
+              "hlsRole": "-",
+              "playbackTraceID": "29C43108",
+              "proxyKind": "mediaRange",
+              "responseEndOffset": 33554431,
+              "responseStartOffset": 0,
+              "result": "unrecognized",
+              "retries": 0,
+              "status": 206,
+              "taskReceivedBytes": 665749,
+              "transferID": "3DB4598F-90FA-4320-ABE9-94ED2AAE2FCB",
+              "transportErrorCode": 32,
+              "transportErrorKind": "posix",
+              "upstreamTaskIndex": 1
+            }
+          },
+          {
+            "actionSeconds": 2.94088,
+            "event": "proxy_transfer_finished",
+            "fields": {
+              "callbackAfterClientFinish": "true",
+              "cumulativeReceivedBytes": 665749,
+              "errorCode": -999,
+              "errorDomain": "NSURLErrorDomain",
+              "expectedBytes": 33554432,
+              "hlsRole": "-",
+              "playbackTraceID": "29C43108",
+              "proxyKind": "mediaRange",
+              "stage": "upstreamTaskCompleted",
+              "taskReceivedBytes": 665749,
+              "transferID": "3DB4598F-90FA-4320-ABE9-94ED2AAE2FCB",
+              "upstreamCancelToCallbackMs": 1,
+              "upstreamCancellationRequested": "true",
+              "upstreamCompletionObserved": "true",
+              "upstreamIssuedToCallbackMs": 197,
+              "upstreamTaskIndex": 1
+            }
+          }
+        ],
+        "acceptance": "Unchanged: recorded waits/stalls retained, no playback quality PASS or causal speed claim.",
+        "limits": [
+          "Engine waiting/empty is not proof of network starvation; retain waiting reason and reserve.",
+          "A unique HLS trace within warmup is a temporal association, not proof of a network or server root cause.",
+          "Transfer intervals overlap; late terminals stay bounded. Unrecognized result strings do not mean success.",
+          "First clock marker may reflect a prepared paused position, not advancing output or presentation.",
+          "First observed progress is limited by sparse telemetry; phase is descriptive, not an exact startup boundary.",
+          "Sampled stall intervals are observation spans, not display hitches or precise buffer durations.",
+          "Stalls are per trace; never subtract counters across renderers. Open episodes remain censored.",
+          "Missing metrics remain unknown; no screen, audio, full-frame, cache or competitor acceptance."
+        ],
+        "rendererTraces": [
+          {
+            "traceID": "29C43108",
+            "engine": "KSPlayer",
+            "firstClockSignal": {
+              "actionSeconds": 3.959351,
+              "event": "first_frame",
+              "fields": {
+                "firstFramePositionSeconds": 0.155,
+                "planID": "262300B2",
+                "playbackTraceID": "29C43108",
+                "routeID": "07D6FD0E",
+                "tapToFirstFrameMs": 1354
+              }
+            },
+            "firstObservedAdvancingClockActionSeconds": 4.881087,
+            "maxReportedStallCount": 0,
+            "counterDecreaseWithinTrace": false,
+            "stallEpisodes": [],
+            "slowestThreeSegmentMetrics": [],
+            "slowestThreeRangeMetrics": [
+              {
+                "actionSeconds": 22.321145,
+                "event": "proxy_transfer_finished",
+                "fields": {
+                  "adaptiveMeasurementBoundary": "responseBody",
+                  "adaptiveTransferMs": 15285,
+                  "callbackAfterClientFinish": "false",
+                  "cellular": "no",
+                  "connectionReused": "yes",
+                  "hlsRole": "-",
+                  "playbackTraceID": "29C43108",
+                  "protocol": "http/1.1",
+                  "proxyBackpressureMs": 12461,
+                  "proxyKind": "mediaRange",
+                  "proxyQueuedBytes": 0,
+                  "proxySuspendCount": 1,
+                  "requestMs": 56,
+                  "responseMs": 15285,
+                  "stage": "urlSessionTaskMetrics",
+                  "taskIntervalMs": 15352,
+                  "totalMs": 15348,
+                  "transactionCount": 1,
+                  "transferID": "F9D3EFAD-1686-43B5-A78F-CE8A81A24822",
+                  "upstreamCancellationRequested": "false",
+                  "upstreamCompletionObserved": "false",
+                  "upstreamIssuedToCallbackMs": 15351,
+                  "upstreamTaskIndex": 2
+                }
+              },
+              {
+                "actionSeconds": 83.005656,
+                "event": "proxy_transfer_finished",
+                "fields": {
+                  "adaptiveMeasurementBoundary": "responseBody",
+                  "adaptiveTransferMs": 14570,
+                  "callbackAfterClientFinish": "false",
+                  "cellular": "no",
+                  "connectionReused": "yes",
+                  "hlsRole": "-",
+                  "playbackTraceID": "29C43108",
+                  "protocol": "http/1.1",
+                  "proxyBackpressureMs": 12010,
+                  "proxyKind": "mediaRange",
+                  "proxyQueuedBytes": 0,
+                  "proxySuspendCount": 1,
+                  "requestMs": 37,
+                  "responseMs": 14570,
+                  "stage": "urlSessionTaskMetrics",
+                  "taskIntervalMs": 14607,
+                  "totalMs": 14607,
+                  "transactionCount": 1,
+                  "transferID": "F9D3EFAD-1686-43B5-A78F-CE8A81A24822",
+                  "upstreamCancellationRequested": "false",
+                  "upstreamCompletionObserved": "false",
+                  "upstreamIssuedToCallbackMs": 14607,
+                  "upstreamTaskIndex": 14
+                }
+              },
+              {
+                "actionSeconds": 53.010043,
+                "event": "proxy_transfer_finished",
+                "fields": {
+                  "adaptiveMeasurementBoundary": "responseBody",
+                  "adaptiveTransferMs": 14471,
+                  "callbackAfterClientFinish": "false",
+                  "cellular": "no",
+                  "connectionReused": "yes",
+                  "hlsRole": "-",
+                  "playbackTraceID": "29C43108",
+                  "protocol": "http/1.1",
+                  "proxyBackpressureMs": 11707,
+                  "proxyKind": "mediaRange",
+                  "proxyQueuedBytes": 0,
+                  "proxySuspendCount": 1,
+                  "requestMs": 39,
+                  "responseMs": 14471,
+                  "stage": "urlSessionTaskMetrics",
+                  "taskIntervalMs": 14512,
+                  "totalMs": 14511,
+                  "transactionCount": 1,
+                  "transferID": "F9D3EFAD-1686-43B5-A78F-CE8A81A24822",
+                  "upstreamCancellationRequested": "false",
+                  "upstreamCompletionObserved": "false",
+                  "upstreamIssuedToCallbackMs": 14512,
+                  "upstreamTaskIndex": 8
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "device": "ipad",
+      "label": "normalwifi-resume-s03-jellyfin",
+      "window": {
+        "boundedEndActionSeconds": 90.96974921226501,
+        "plannedWindowSeconds": 90,
+        "deduplicatedWindowEventCount": 307,
+        "snapshotsRead": 8
+      },
+      "exit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "actualFinalScreenInspected": true,
+      "incompleteWindow": null,
+      "screenInspection": {
+        "recordedAt": "2026-10-10T13:38:52.510007+08:00",
+        "actualUIInspected": true,
+        "evidence": [
+          "t60.png",
+          "t90.png",
+          "closed.png"
+        ],
+        "observed": "S03 different dialogue frames at t60/t90; two Chinese/English subtitle cues visible without obvious missing glyphs in these frames; returned to matching Jellyfin detail.",
+        "exitControls": "Immediate detail still shows Play in Nastart rather than a demonstrated resume action; no Jellyfin resume acceptance claimed.",
+        "limitations": [
+          "Immediate exit orientation still landscape; final orientation/layout not assessed by this frame.",
+          "Two cues do not establish full subtitle correctness or audio effect; zero sampled waits not fluidity PASS."
+        ],
+        "filmBodyVerified": true
+      },
+      "readAttemptCount": 8,
+      "diagnosticReadFailureCount": 0,
+      "phases": {
+        "eventsWithoutTraceIdentity": 1,
+        "tracesWithoutTelemetry": [],
+        "failureSignals": [
+          {
+            "actionSeconds": 1.828229,
+            "event": "proxy_transfer_finished",
+            "fields": {
+              "deliveredBytes": 455834,
+              "durationMs": 221,
+              "errorCode": 32,
+              "errorDomain": "unrecognized",
+              "expectedBytes": 33554432,
+              "finishSource": "clientBodySend",
+              "hlsRole": "-",
+              "playbackTraceID": "183603F4",
+              "proxyKind": "mediaRange",
+              "responseEndOffset": 33554431,
+              "responseStartOffset": 0,
+              "result": "unrecognized",
+              "retries": 0,
+              "status": 206,
+              "taskReceivedBytes": 455834,
+              "transferID": "7BE019CD-B7AF-4C6A-9823-0D629A837D85",
+              "transportErrorCode": 32,
+              "transportErrorKind": "posix",
+              "upstreamTaskIndex": 1
+            }
+          },
+          {
+            "actionSeconds": 1.829606,
+            "event": "proxy_transfer_finished",
+            "fields": {
+              "callbackAfterClientFinish": "true",
+              "cumulativeReceivedBytes": 455834,
+              "errorCode": -999,
+              "errorDomain": "NSURLErrorDomain",
+              "expectedBytes": 33554432,
+              "hlsRole": "-",
+              "playbackTraceID": "183603F4",
+              "proxyKind": "mediaRange",
+              "stage": "upstreamTaskCompleted",
+              "taskReceivedBytes": 455834,
+              "transferID": "7BE019CD-B7AF-4C6A-9823-0D629A837D85",
+              "upstreamCancelToCallbackMs": 2,
+              "upstreamCancellationRequested": "true",
+              "upstreamCompletionObserved": "true",
+              "upstreamIssuedToCallbackMs": 223,
+              "upstreamTaskIndex": 1
+            }
+          }
+        ],
+        "acceptance": "Unchanged: recorded waits/stalls retained, no playback quality PASS or causal speed claim.",
+        "limits": [
+          "Engine waiting/empty is not proof of network starvation; retain waiting reason and reserve.",
+          "A unique HLS trace within warmup is a temporal association, not proof of a network or server root cause.",
+          "Transfer intervals overlap; late terminals stay bounded. Unrecognized result strings do not mean success.",
+          "First clock marker may reflect a prepared paused position, not advancing output or presentation.",
+          "First observed progress is limited by sparse telemetry; phase is descriptive, not an exact startup boundary.",
+          "Sampled stall intervals are observation spans, not display hitches or precise buffer durations.",
+          "Stalls are per trace; never subtract counters across renderers. Open episodes remain censored.",
+          "Missing metrics remain unknown; no screen, audio, full-frame, cache or competitor acceptance."
+        ],
+        "rendererTraces": [
+          {
+            "traceID": "183603F4",
+            "engine": "KSPlayer",
+            "firstClockSignal": {
+              "actionSeconds": 2.411498,
+              "event": "first_frame",
+              "fields": {
+                "firstFramePositionSeconds": 0.058,
+                "planID": "31FDB98F",
+                "playbackTraceID": "183603F4",
+                "routeID": "BDF90241",
+                "tapToFirstFrameMs": 1089
+              }
+            },
+            "firstObservedAdvancingClockActionSeconds": 3.340547,
+            "maxReportedStallCount": 0,
+            "counterDecreaseWithinTrace": false,
+            "stallEpisodes": [],
+            "slowestThreeSegmentMetrics": [],
+            "slowestThreeRangeMetrics": [
+              {
+                "actionSeconds": 25.87117,
+                "event": "proxy_transfer_finished",
+                "fields": {
+                  "adaptiveMeasurementBoundary": "responseBody",
+                  "adaptiveTransferMs": 19075,
+                  "callbackAfterClientFinish": "false",
+                  "cellular": "no",
+                  "connectionReused": "yes",
+                  "hlsRole": "-",
+                  "playbackTraceID": "183603F4",
+                  "protocol": "http/1.1",
+                  "proxyBackpressureMs": 16451,
+                  "proxyKind": "mediaRange",
+                  "proxyQueuedBytes": 0,
+                  "proxySuspendCount": 2,
+                  "requestMs": 24,
+                  "responseMs": 19075,
+                  "stage": "urlSessionTaskMetrics",
+                  "taskIntervalMs": 19102,
+                  "totalMs": 19101,
+                  "transactionCount": 1,
+                  "transferID": "EB6A840A-F36D-4748-B03B-A721BCBEA767",
+                  "upstreamCancellationRequested": "false",
+                  "upstreamCompletionObserved": "false",
+                  "upstreamIssuedToCallbackMs": 19102,
+                  "upstreamTaskIndex": 2
+                }
+              },
+              {
+                "actionSeconds": 62.256118,
+                "event": "proxy_transfer_finished",
+                "fields": {
+                  "adaptiveMeasurementBoundary": "responseBody",
+                  "adaptiveTransferMs": 11102,
+                  "callbackAfterClientFinish": "false",
+                  "cellular": "no",
+                  "connectionReused": "yes",
+                  "hlsRole": "-",
+                  "playbackTraceID": "183603F4",
+                  "protocol": "http/1.1",
+                  "proxyBackpressureMs": 7645,
+                  "proxyKind": "mediaRange",
+                  "proxyQueuedBytes": 0,
+                  "proxySuspendCount": 1,
+                  "requestMs": 23,
+                  "responseMs": 11102,
+                  "stage": "urlSessionTaskMetrics",
+                  "taskIntervalMs": 11127,
+                  "totalMs": 11126,
+                  "transactionCount": 1,
+                  "transferID": "EB6A840A-F36D-4748-B03B-A721BCBEA767",
+                  "upstreamCancellationRequested": "false",
+                  "upstreamCompletionObserved": "false",
+                  "upstreamIssuedToCallbackMs": 11127,
+                  "upstreamTaskIndex": 9
+                }
+              },
+              {
+                "actionSeconds": 81.156367,
+                "event": "proxy_transfer_finished",
+                "fields": {
+                  "adaptiveMeasurementBoundary": "responseBody",
+                  "adaptiveTransferMs": 10347,
+                  "callbackAfterClientFinish": "false",
+                  "cellular": "no",
+                  "connectionReused": "yes",
+                  "hlsRole": "-",
+                  "playbackTraceID": "183603F4",
+                  "protocol": "http/1.1",
+                  "proxyBackpressureMs": 7442,
+                  "proxyKind": "mediaRange",
+                  "proxyQueuedBytes": 0,
+                  "proxySuspendCount": 1,
+                  "requestMs": 32,
+                  "responseMs": 10347,
+                  "stage": "urlSessionTaskMetrics",
+                  "taskIntervalMs": 10380,
+                  "totalMs": 10380,
+                  "transactionCount": 1,
+                  "transferID": "EB6A840A-F36D-4748-B03B-A721BCBEA767",
+                  "upstreamCancellationRequested": "false",
+                  "upstreamCompletionObserved": "false",
+                  "upstreamIssuedToCallbackMs": 10380,
+                  "upstreamTaskIndex": 13
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "device": "ipad",
+      "label": "normalwifi-s19-resume-s19-files",
+      "window": {
+        "boundedEndActionSeconds": 60.45438623428345,
+        "plannedWindowSeconds": 60,
+        "deduplicatedWindowEventCount": 184,
+        "snapshotsRead": 7
+      },
+      "exit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "actualFinalScreenInspected": true,
+      "incompleteWindow": null,
+      "screenInspection": {
+        "recordedAt": "2026-10-10T13:58:33.954978+08:00",
+        "actualUIInspected": true,
+        "evidence": [
+          "t30.png",
+          "t60.png",
+          "closed.png"
+        ],
+        "observed": "S19 opening production title at t30; t60 black image; returned to matching file preview with resume/from-head controls during rotation.",
+        "filmBodyVerified": false,
+        "t60BlackFrameClassification": "Unresolved from this sparse frame: possible natural opening fade; no claim that it proves normal visual flow or visible renderer failure.",
+        "limitations": [
+          "Opening/black frame is not body-scene acceptance, sound/HDR/PGS or frame-flow proof; continuation is measured separately.",
+          "Immediate exit screenshot is mid-rotation."
+        ]
+      },
+      "readAttemptCount": 7,
+      "diagnosticReadFailureCount": 0,
+      "phases": {
+        "eventsWithoutTraceIdentity": 4,
+        "tracesWithoutTelemetry": [],
+        "failureSignals": [
+          {
+            "actionSeconds": 2.913012,
+            "event": "proxy_transfer_finished",
+            "fields": {
+              "deliveredBytes": 186459,
+              "durationMs": 82,
+              "errorCode": 54,
+              "errorDomain": "unrecognized",
+              "expectedBytes": 33554432,
+              "finishSource": "clientFailed",
+              "hlsRole": "-",
+              "playbackTraceID": "72C43025",
+              "proxyKind": "mediaRange",
+              "responseEndOffset": 33554431,
+              "responseStartOffset": 0,
+              "result": "unrecognized",
+              "retries": 0,
+              "status": 206,
+              "taskReceivedBytes": 186459,
+              "transferID": "99C666C8-73F9-4DA5-B799-6A35E19FD78D",
+              "transportErrorCode": 54,
+              "transportErrorKind": "posix",
+              "upstreamTaskIndex": 1
+            }
+          },
+          {
+            "actionSeconds": 2.913754,
+            "event": "proxy_transfer_finished",
+            "fields": {
+              "callbackAfterClientFinish": "true",
+              "cumulativeReceivedBytes": 186459,
+              "errorCode": -999,
+              "errorDomain": "NSURLErrorDomain",
+              "expectedBytes": 33554432,
+              "hlsRole": "-",
+              "playbackTraceID": "72C43025",
+              "proxyKind": "mediaRange",
+              "stage": "upstreamTaskCompleted",
+              "taskReceivedBytes": 186459,
+              "transferID": "99C666C8-73F9-4DA5-B799-6A35E19FD78D",
+              "upstreamCancelToCallbackMs": 1,
+              "upstreamCancellationRequested": "true",
+              "upstreamCompletionObserved": "true",
+              "upstreamIssuedToCallbackMs": 83,
+              "upstreamTaskIndex": 1
+            }
+          }
+        ],
+        "acceptance": "Unchanged: recorded waits/stalls retained, no playback quality PASS or causal speed claim.",
+        "limits": [
+          "Engine waiting/empty is not proof of network starvation; retain waiting reason and reserve.",
+          "A unique HLS trace within warmup is a temporal association, not proof of a network or server root cause.",
+          "Transfer intervals overlap; late terminals stay bounded. Unrecognized result strings do not mean success.",
+          "First clock marker may reflect a prepared paused position, not advancing output or presentation.",
+          "First observed progress is limited by sparse telemetry; phase is descriptive, not an exact startup boundary.",
+          "Sampled stall intervals are observation spans, not display hitches or precise buffer durations.",
+          "Stalls are per trace; never subtract counters across renderers. Open episodes remain censored.",
+          "Missing metrics remain unknown; no screen, audio, full-frame, cache or competitor acceptance."
+        ],
+        "rendererTraces": [
+          {
+            "traceID": "72C43025",
+            "engine": "KSPlayer",
+            "firstClockSignal": {
+              "actionSeconds": 3.897678,
+              "event": "first_frame",
+              "fields": {
+                "firstFramePositionSeconds": 0.154,
+                "planID": "70FC36C8",
+                "playbackTraceID": "72C43025",
+                "routeID": "37E205AC",
+                "tapToFirstFrameMs": 1365
+              }
+            },
+            "firstObservedAdvancingClockActionSeconds": 3.881957,
+            "maxReportedStallCount": 0,
+            "counterDecreaseWithinTrace": false,
+            "stallEpisodes": [],
+            "slowestThreeSegmentMetrics": [],
+            "slowestThreeRangeMetrics": [
+              {
+                "actionSeconds": 39.378221,
+                "event": "proxy_transfer_finished",
+                "fields": {
+                  "adaptiveMeasurementBoundary": "responseBody",
+                  "adaptiveTransferMs": 25473,
+                  "callbackAfterClientFinish": "false",
+                  "cellular": "no",
+                  "connectionReused": "yes",
+                  "hlsRole": "-",
+                  "playbackTraceID": "72C43025",
+                  "protocol": "http/1.1",
+                  "proxyBackpressureMs": 22850,
+                  "proxyKind": "mediaRange",
+                  "proxyQueuedBytes": 0,
+                  "proxySuspendCount": 3,
+                  "requestMs": 56,
+                  "responseMs": 25473,
+                  "stage": "urlSessionTaskMetrics",
+                  "taskIntervalMs": 25530,
+                  "totalMs": 25529,
+                  "transactionCount": 1,
+                  "transferID": "0E363252-29F7-4477-9F0D-D8644F6C7EB5",
+                  "upstreamCancellationRequested": "false",
+                  "upstreamCompletionObserved": "false",
+                  "upstreamIssuedToCallbackMs": 25529,
+                  "upstreamTaskIndex": 4
+                }
+              },
+              {
+                "actionSeconds": 49.897736,
+                "event": "proxy_transfer_finished",
+                "fields": {
+                  "adaptiveMeasurementBoundary": "responseBody",
+                  "adaptiveTransferMs": 10485,
+                  "callbackAfterClientFinish": "false",
+                  "cellular": "no",
+                  "connectionReused": "yes",
+                  "hlsRole": "-",
+                  "playbackTraceID": "72C43025",
+                  "protocol": "http/1.1",
+                  "proxyBackpressureMs": 7666,
+                  "proxyKind": "mediaRange",
+                  "proxyQueuedBytes": 0,
+                  "proxySuspendCount": 1,
+                  "requestMs": 30,
+                  "responseMs": 10485,
+                  "stage": "urlSessionTaskMetrics",
+                  "taskIntervalMs": 10517,
+                  "totalMs": 10516,
+                  "transactionCount": 1,
+                  "transferID": "0E363252-29F7-4477-9F0D-D8644F6C7EB5",
+                  "upstreamCancellationRequested": "false",
+                  "upstreamCompletionObserved": "false",
+                  "upstreamIssuedToCallbackMs": 10517,
+                  "upstreamTaskIndex": 5
+                }
+              },
+              {
+                "actionSeconds": 7.485297,
+                "event": "proxy_transfer_finished",
+                "fields": {
+                  "adaptiveMeasurementBoundary": "responseBody",
+                  "adaptiveTransferMs": 4574,
+                  "callbackAfterClientFinish": "false",
+                  "cellular": "no",
+                  "connectionReused": "no",
+                  "dnsMs": 0,
+                  "hlsRole": "-",
+                  "playbackTraceID": "72C43025",
+                  "protocol": "http/1.1",
+                  "proxyBackpressureMs": 0,
+                  "proxyKind": "mediaRange",
+                  "proxyQueuedBytes": 0,
+                  "proxySuspendCount": 0,
+                  "requestMs": 20,
+                  "responseMs": 4574,
+                  "stage": "urlSessionTaskMetrics",
+                  "taskIntervalMs": 4597,
+                  "tcpMs": 1,
+                  "totalMs": 4596,
+                  "transactionCount": 1,
+                  "transferID": "0E363252-29F7-4477-9F0D-D8644F6C7EB5",
+                  "upstreamCancellationRequested": "false",
+                  "upstreamCompletionObserved": "false",
+                  "upstreamIssuedToCallbackMs": 4597,
+                  "upstreamTaskIndex": 1
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "device": "ipad",
+      "label": "normalwifi-s19-resume-s19-files-retry1",
+      "window": {
+        "boundedEndActionSeconds": 45.76526403427124,
+        "plannedWindowSeconds": 45,
+        "deduplicatedWindowEventCount": 199,
+        "snapshotsRead": 7
+      },
+      "exit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "actualFinalScreenInspected": true,
+      "incompleteWindow": null,
+      "screenInspection": {
+        "recordedAt": "2026-10-10T13:59:36.873409+08:00",
+        "actualUIInspected": true,
+        "evidence": [
+          "t30.png",
+          "t45.png",
+          "closed.png"
+        ],
+        "observed": "S19 ring-forging hands/table at t30 and Middle Earth map at t45; exited to matching file preview.",
+        "filmBodyVerified": true,
+        "action": "Continue Watching after normal App restart; cold process reopening, cache unknown.",
+        "exitControlDiscrepancy": "Immediate iPad split-view preview shows Preview and From Head instead of demonstrated Continue Watching after second exit; resume-UI persistence not accepted by this window.",
+        "limitations": [
+          "2029ms startup waiting before observed advancing clock retained; not performance PASS.",
+          "Sparse actual frames do not close full frame/audio/subtitle/HDR, deep-position or concurrent regression."
+        ]
+      },
+      "readAttemptCount": 7,
+      "diagnosticReadFailureCount": 0,
+      "phases": {
+        "eventsWithoutTraceIdentity": 4,
+        "tracesWithoutTelemetry": [],
+        "failureSignals": [
+          {
+            "actionSeconds": 2.819529,
+            "event": "proxy_transfer_finished",
+            "fields": {
+              "deliveredBytes": 179219,
+              "durationMs": 84,
+              "errorCode": 54,
+              "errorDomain": "unrecognized",
+              "expectedBytes": 33554432,
+              "finishSource": "clientFailed",
+              "hlsRole": "-",
+              "playbackTraceID": "B271BDCD",
+              "proxyKind": "mediaRange",
+              "responseEndOffset": 33554431,
+              "responseStartOffset": 0,
+              "result": "unrecognized",
+              "retries": 0,
+              "status": 206,
+              "taskReceivedBytes": 179219,
+              "transferID": "F234025A-3B2B-4A7A-A1FE-BA37986726A9",
+              "transportErrorCode": 54,
+              "transportErrorKind": "posix",
+              "upstreamTaskIndex": 1
+            }
+          },
+          {
+            "actionSeconds": 2.820269,
+            "event": "proxy_transfer_finished",
+            "fields": {
+              "callbackAfterClientFinish": "true",
+              "cumulativeReceivedBytes": 179219,
+              "errorCode": -999,
+              "errorDomain": "NSURLErrorDomain",
+              "expectedBytes": 33554432,
+              "hlsRole": "-",
+              "playbackTraceID": "B271BDCD",
+              "proxyKind": "mediaRange",
+              "stage": "upstreamTaskCompleted",
+              "taskReceivedBytes": 179219,
+              "transferID": "F234025A-3B2B-4A7A-A1FE-BA37986726A9",
+              "upstreamCancelToCallbackMs": 1,
+              "upstreamCancellationRequested": "true",
+              "upstreamCompletionObserved": "true",
+              "upstreamIssuedToCallbackMs": 85,
+              "upstreamTaskIndex": 1
+            }
+          },
+          {
+            "actionSeconds": 3.26215,
+            "event": "proxy_transfer_finished",
+            "fields": {
+              "deliveredBytes": 2843535,
+              "durationMs": 444,
+              "errorCode": 32,
+              "errorDomain": "unrecognized",
+              "expectedBytes": 33554432,
+              "finishSource": "clientBodySend",
+              "hlsRole": "-",
+              "playbackTraceID": "B271BDCD",
+              "proxyKind": "mediaRange",
+              "responseEndOffset": 33568636,
+              "responseStartOffset": 14205,
+              "result": "unrecognized",
+              "retries": 0,
+              "status": 206,
+              "taskReceivedBytes": 2843535,
+              "transferID": "52A5985F-6F87-400B-AE45-32AFF613DD19",
+              "transportErrorCode": 32,
+              "transportErrorKind": "posix",
+              "upstreamTaskIndex": 1
+            }
+          },
+          {
+            "actionSeconds": 3.262866,
+            "event": "proxy_transfer_finished",
+            "fields": {
+              "callbackAfterClientFinish": "true",
+              "cumulativeReceivedBytes": 2843535,
+              "errorCode": -999,
+              "errorDomain": "NSURLErrorDomain",
+              "expectedBytes": 33554432,
+              "hlsRole": "-",
+              "playbackTraceID": "B271BDCD",
+              "proxyKind": "mediaRange",
+              "stage": "upstreamTaskCompleted",
+              "taskReceivedBytes": 2843535,
+              "transferID": "52A5985F-6F87-400B-AE45-32AFF613DD19",
+              "upstreamCancelToCallbackMs": 1,
+              "upstreamCancellationRequested": "true",
+              "upstreamCompletionObserved": "true",
+              "upstreamIssuedToCallbackMs": 446,
+              "upstreamTaskIndex": 1
+            }
+          },
+          {
+            "actionSeconds": 3.968907,
+            "event": "proxy_transfer_finished",
+            "fields": {
+              "deliveredBytes": 212517,
+              "durationMs": 83,
+              "errorCode": 54,
+              "errorDomain": "unrecognized",
+              "expectedBytes": 33554432,
+              "finishSource": "clientFailed",
+              "hlsRole": "-",
+              "playbackTraceID": "B271BDCD",
+              "proxyKind": "mediaRange",
+              "responseEndOffset": 35235233,
+              "responseStartOffset": 1680802,
+              "result": "unrecognized",
+              "retries": 0,
+              "status": 206,
+              "taskReceivedBytes": 212517,
+              "transferID": "929033CB-9D12-41F2-92F1-0428B1248D65",
+              "transportErrorCode": 54,
+              "transportErrorKind": "posix",
+              "upstreamTaskIndex": 1
+            }
+          },
+          {
+            "actionSeconds": 3.969618,
+            "event": "proxy_transfer_finished",
+            "fields": {
+              "callbackAfterClientFinish": "true",
+              "cumulativeReceivedBytes": 212517,
+              "errorCode": -999,
+              "errorDomain": "NSURLErrorDomain",
+              "expectedBytes": 33554432,
+              "hlsRole": "-",
+              "playbackTraceID": "B271BDCD",
+              "proxyKind": "mediaRange",
+              "stage": "upstreamTaskCompleted",
+              "taskReceivedBytes": 212517,
+              "transferID": "929033CB-9D12-41F2-92F1-0428B1248D65",
+              "upstreamCancelToCallbackMs": 1,
+              "upstreamCancellationRequested": "true",
+              "upstreamCompletionObserved": "true",
+              "upstreamIssuedToCallbackMs": 85,
+              "upstreamTaskIndex": 1
+            }
+          }
+        ],
+        "acceptance": "Unchanged: recorded waits/stalls retained, no playback quality PASS or causal speed claim.",
+        "limits": [
+          "Engine waiting/empty is not proof of network starvation; retain waiting reason and reserve.",
+          "A unique HLS trace within warmup is a temporal association, not proof of a network or server root cause.",
+          "Transfer intervals overlap; late terminals stay bounded. Unrecognized result strings do not mean success.",
+          "First clock marker may reflect a prepared paused position, not advancing output or presentation.",
+          "First observed progress is limited by sparse telemetry; phase is descriptive, not an exact startup boundary.",
+          "Sampled stall intervals are observation spans, not display hitches or precise buffer durations.",
+          "Stalls are per trace; never subtract counters across renderers. Open episodes remain censored.",
+          "Missing metrics remain unknown; no screen, audio, full-frame, cache or competitor acceptance."
+        ],
+        "rendererTraces": [
+          {
+            "traceID": "B271BDCD",
+            "engine": "KSPlayer",
+            "firstClockSignal": {
+              "actionSeconds": 5.881572,
+              "event": "first_frame",
+              "fields": {
+                "firstFramePositionSeconds": 59.125,
+                "planID": "414888E1",
+                "playbackTraceID": "B271BDCD",
+                "routeID": "D64A469B",
+                "tapToFirstFrameMs": 3395
+              }
+            },
+            "firstObservedAdvancingClockActionSeconds": 5.881242,
+            "maxReportedStallCount": 1,
+            "counterDecreaseWithinTrace": false,
+            "stallEpisodes": [
+              {
+                "startActionSeconds": 3.677343,
+                "phaseAtStart": "beforeObservedAdvancingClock",
+                "startFields": {
+                  "audioBitrate": 0,
+                  "bufferLimitSeconds": 6,
+                  "bufferTargetSeconds": 1,
+                  "bufferedAheadSeconds": 0,
+                  "bytesRead": 4721550,
+                  "currentSeconds": 0,
+                  "durationSeconds": 13698.368,
+                  "elapsedMs": 1048,
+                  "engine": "KSPlayer",
+                  "ksPlayerState": "-",
+                  "planID": "414888E1",
+                  "playbackTraceID": "B271BDCD",
+                  "routeID": "D64A469B",
+                  "sampleReason": "playbackTick",
+                  "stallActive": "yes",
+                  "stallCount": 1,
+                  "stallDurationMs": 0,
+                  "videoBitrate": 0
+                },
+                "endActionSeconds": 5.723514,
+                "sampledSpanSeconds": 2.0461709999999997,
+                "reportedDurationMs": 2029
+              }
+            ],
+            "slowestThreeSegmentMetrics": [],
+            "slowestThreeRangeMetrics": [
+              {
+                "actionSeconds": 8.135954,
+                "event": "proxy_transfer_finished",
+                "fields": {
+                  "adaptiveMeasurementBoundary": "responseBody",
+                  "adaptiveTransferMs": 4174,
+                  "callbackAfterClientFinish": "false",
+                  "cellular": "no",
+                  "connectionReused": "no",
+                  "dnsMs": 0,
+                  "hlsRole": "-",
+                  "playbackTraceID": "B271BDCD",
+                  "protocol": "http/1.1",
+                  "proxyBackpressureMs": 0,
+                  "proxyKind": "mediaRange",
+                  "proxyQueuedBytes": 0,
+                  "proxySuspendCount": 0,
+                  "requestMs": 22,
+                  "responseMs": 4174,
+                  "stage": "urlSessionTaskMetrics",
+                  "taskIntervalMs": 4206,
+                  "tcpMs": 6,
+                  "totalMs": 4204,
+                  "transactionCount": 1,
+                  "transferID": "5C9619C3-2A06-47FA-B913-B2FA2F6955A6",
+                  "upstreamCancellationRequested": "false",
+                  "upstreamCompletionObserved": "false",
+                  "upstreamIssuedToCallbackMs": 4206,
+                  "upstreamTaskIndex": 1
+                }
+              },
+              {
+                "actionSeconds": 15.477503,
+                "event": "proxy_transfer_finished",
+                "fields": {
+                  "adaptiveMeasurementBoundary": "responseBody",
+                  "adaptiveTransferMs": 3734,
+                  "callbackAfterClientFinish": "false",
+                  "cellular": "no",
+                  "connectionReused": "yes",
+                  "hlsRole": "-",
+                  "playbackTraceID": "B271BDCD",
+                  "protocol": "http/1.1",
+                  "proxyBackpressureMs": 0,
+                  "proxyKind": "mediaRange",
+                  "proxyQueuedBytes": 0,
+                  "proxySuspendCount": 0,
+                  "requestMs": 31,
+                  "responseMs": 3734,
+                  "stage": "urlSessionTaskMetrics",
+                  "taskIntervalMs": 3767,
+                  "totalMs": 3766,
+                  "transactionCount": 1,
+                  "transferID": "5C9619C3-2A06-47FA-B913-B2FA2F6955A6",
+                  "upstreamCancellationRequested": "false",
+                  "upstreamCompletionObserved": "false",
+                  "upstreamIssuedToCallbackMs": 3767,
+                  "upstreamTaskIndex": 3
+                }
+              },
+              {
+                "actionSeconds": 11.73458,
+                "event": "proxy_transfer_finished",
+                "fields": {
+                  "adaptiveMeasurementBoundary": "responseBody",
+                  "adaptiveTransferMs": 3525,
+                  "callbackAfterClientFinish": "false",
+                  "cellular": "no",
+                  "connectionReused": "yes",
+                  "hlsRole": "-",
+                  "playbackTraceID": "B271BDCD",
+                  "protocol": "http/1.1",
+                  "proxyBackpressureMs": 0,
+                  "proxyKind": "mediaRange",
+                  "proxyQueuedBytes": 0,
+                  "proxySuspendCount": 0,
+                  "requestMs": 30,
+                  "responseMs": 3525,
+                  "stage": "urlSessionTaskMetrics",
+                  "taskIntervalMs": 3569,
+                  "totalMs": 3566,
+                  "transactionCount": 1,
+                  "transferID": "5C9619C3-2A06-47FA-B913-B2FA2F6955A6",
+                  "upstreamCancellationRequested": "false",
+                  "upstreamCompletionObserved": "false",
+                  "upstreamIssuedToCallbackMs": 3569,
+                  "upstreamTaskIndex": 2
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "offlineReportToolCorrection": {
+    "stage": "offline aggregation",
+    "failure": "AttributeError: incomplete observation row has null screenInspection",
+    "correction": "Null-safe inspection aggregation; original incomplete window remains separate, not counted as completed.",
+    "appSourceChanged": false
+  }
+}

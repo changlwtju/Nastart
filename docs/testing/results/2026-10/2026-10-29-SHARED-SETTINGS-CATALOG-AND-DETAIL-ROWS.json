@@ -1,0 +1,375 @@
+{
+  "updatedAt": "2026-10-29T15:06+08:00",
+  "sourceInputCount": 433,
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "modifiedExistingSources": 6,
+  "sharedProductionCallers": {
+    "catalogAndLabels": [
+      "MineView",
+      "TVSettingsView"
+    ],
+    "defaultRows": [
+      "PlayerSettingsView",
+      "TVPlayerSettingsView"
+    ]
+  },
+  "existingScenarioTestsPassed": 4,
+  "finalSimulatorWindows": 25,
+  "acceptedCases": [
+    {
+      "surface": "phone",
+      "scene": "settings",
+      "theme": "cleanGrid",
+      "appearance": "light",
+      "textSize": "standard",
+      "language": "zh-Hans",
+      "accepted": true,
+      "attempts": 1
+    },
+    {
+      "surface": "phone",
+      "scene": "settings",
+      "theme": "cleanGrid",
+      "appearance": "dark",
+      "textSize": "standard",
+      "language": "zh-Hans",
+      "accepted": true,
+      "attempts": 1
+    },
+    {
+      "surface": "phone",
+      "scene": "settings",
+      "theme": "glassDeck",
+      "appearance": "light",
+      "textSize": "standard",
+      "language": "zh-Hans",
+      "accepted": true,
+      "attempts": 1
+    },
+    {
+      "surface": "phone",
+      "scene": "settings",
+      "theme": "glassDeck",
+      "appearance": "dark",
+      "textSize": "standard",
+      "language": "zh-Hans",
+      "accepted": true,
+      "attempts": 1
+    },
+    {
+      "surface": "phone",
+      "scene": "settings",
+      "theme": "commandCenter",
+      "appearance": "dark",
+      "textSize": "standard",
+      "language": "zh-Hans",
+      "accepted": true,
+      "attempts": 1
+    },
+    {
+      "surface": "phone",
+      "scene": "player-settings",
+      "theme": "cleanGrid",
+      "appearance": "light",
+      "textSize": "standard",
+      "language": "zh-Hans",
+      "accepted": true,
+      "attempts": 1
+    },
+    {
+      "surface": "phone",
+      "scene": "player-settings",
+      "theme": "glassDeck",
+      "appearance": "dark",
+      "textSize": "standard",
+      "language": "zh-Hans",
+      "accepted": true,
+      "attempts": 1
+    },
+    {
+      "surface": "phone",
+      "scene": "settings",
+      "theme": "glassDeck",
+      "appearance": "dark",
+      "textSize": "large",
+      "language": "en",
+      "accepted": true,
+      "attempts": 1
+    },
+    {
+      "surface": "phone",
+      "scene": "player-settings",
+      "theme": "glassDeck",
+      "appearance": "light",
+      "textSize": "large",
+      "language": "en",
+      "accepted": true,
+      "attempts": 1
+    },
+    {
+      "surface": "pad",
+      "scene": "settings",
+      "theme": "cleanGrid",
+      "appearance": "light",
+      "textSize": "standard",
+      "language": "zh-Hans",
+      "accepted": true,
+      "attempts": 2
+    },
+    {
+      "surface": "pad",
+      "scene": "settings",
+      "theme": "cleanGrid",
+      "appearance": "dark",
+      "textSize": "standard",
+      "language": "zh-Hans",
+      "accepted": true,
+      "attempts": 1
+    },
+    {
+      "surface": "pad",
+      "scene": "settings",
+      "theme": "glassDeck",
+      "appearance": "light",
+      "textSize": "standard",
+      "language": "zh-Hans",
+      "accepted": true,
+      "attempts": 1
+    },
+    {
+      "surface": "pad",
+      "scene": "settings",
+      "theme": "glassDeck",
+      "appearance": "dark",
+      "textSize": "standard",
+      "language": "zh-Hans",
+      "accepted": true,
+      "attempts": 1
+    },
+    {
+      "surface": "pad",
+      "scene": "settings",
+      "theme": "commandCenter",
+      "appearance": "dark",
+      "textSize": "standard",
+      "language": "zh-Hans",
+      "accepted": true,
+      "attempts": 1
+    },
+    {
+      "surface": "pad",
+      "scene": "player-settings",
+      "theme": "cleanGrid",
+      "appearance": "light",
+      "textSize": "standard",
+      "language": "zh-Hans",
+      "accepted": true,
+      "attempts": 2
+    },
+    {
+      "surface": "pad",
+      "scene": "player-settings",
+      "theme": "glassDeck",
+      "appearance": "dark",
+      "textSize": "standard",
+      "language": "zh-Hans",
+      "accepted": true,
+      "attempts": 1
+    },
+    {
+      "surface": "pad",
+      "scene": "settings",
+      "theme": "glassDeck",
+      "appearance": "dark",
+      "textSize": "large",
+      "language": "en",
+      "accepted": true,
+      "attempts": 1
+    },
+    {
+      "surface": "pad",
+      "scene": "player-settings",
+      "theme": "glassDeck",
+      "appearance": "light",
+      "textSize": "large",
+      "language": "en",
+      "accepted": true,
+      "attempts": 1
+    },
+    {
+      "surface": "tv",
+      "scene": "settings",
+      "theme": "cleanGrid",
+      "appearance": "light",
+      "textSize": "standard",
+      "language": "zh-Hans",
+      "accepted": true,
+      "attempts": 1
+    },
+    {
+      "surface": "tv",
+      "scene": "settings",
+      "theme": "cleanGrid",
+      "appearance": "dark",
+      "textSize": "standard",
+      "language": "zh-Hans",
+      "accepted": true,
+      "attempts": 1
+    },
+    {
+      "surface": "tv",
+      "scene": "settings",
+      "theme": "glassDeck",
+      "appearance": "light",
+      "textSize": "standard",
+      "language": "zh-Hans",
+      "accepted": true,
+      "attempts": 1
+    },
+    {
+      "surface": "tv",
+      "scene": "settings",
+      "theme": "glassDeck",
+      "appearance": "dark",
+      "textSize": "standard",
+      "language": "zh-Hans",
+      "accepted": true,
+      "attempts": 1
+    },
+    {
+      "surface": "tv",
+      "scene": "settings",
+      "theme": "commandCenter",
+      "appearance": "dark",
+      "textSize": "standard",
+      "language": "zh-Hans",
+      "accepted": true,
+      "attempts": 1
+    },
+    {
+      "surface": "tv",
+      "scene": "player-settings",
+      "theme": "cleanGrid",
+      "appearance": "light",
+      "textSize": "standard",
+      "language": "zh-Hans",
+      "accepted": true,
+      "attempts": 1
+    },
+    {
+      "surface": "tv",
+      "scene": "player-settings",
+      "theme": "glassDeck",
+      "appearance": "dark",
+      "textSize": "standard",
+      "language": "zh-Hans",
+      "accepted": true,
+      "attempts": 1
+    }
+  ],
+  "fullSettingsPageParityAccepted": false,
+  "builds": {
+    "mobile-sim-debug-final-r2": {
+      "startedAt": "2026-10-29T14:38:51.299691+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-29T14:39:16.576672+08:00"
+    },
+    "tv-sim-debug-final-r2": {
+      "startedAt": "2026-10-29T14:38:51.299744+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-29T14:39:06.517173+08:00"
+    },
+    "mobile-debug": {
+      "startedAt": "2026-10-29T15:00:05.659642+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-29T15:01:00.442793+08:00"
+    },
+    "tv-debug": {
+      "startedAt": "2026-10-29T15:00:05.659767+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-29T15:00:25.904137+08:00"
+    },
+    "mobile-release": {
+      "startedAt": "2026-10-29T15:01:00.444668+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-29T15:02:40.350076+08:00"
+    },
+    "tv-release": {
+      "startedAt": "2026-10-29T15:00:25.905460+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-29T15:01:04.956434+08:00"
+    }
+  },
+  "packages": {
+    "mobile": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-29T15:01:00.172775+08:00",
+      "frozenAt": "2026-10-29T15:05:14.675720+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 433,
+      "mainSHA256": "d6eea976b8976e7de7abd3381a3bc7d7a5b76ada6dbefc5a00c5a526e86ce7d9",
+      "debugDylibSHA256": "10673261f125d5cd936fa8273f69eed97c18313ba5dc38e0728bd96a4e28f474",
+      "signedMachOCount": 30,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false
+    },
+    "tv": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-29T15:00:25.731424+08:00",
+      "frozenAt": "2026-10-29T15:05:15.057001+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 433,
+      "mainSHA256": "e87d8fe8e59d9986749c4701ce40998820721dbc5cac79f719bcffae8760fb6b",
+      "debugDylibSHA256": "b6b45d76adbd72e35c8de90b9211c7b85c3cec2680e874d29b8c463946b59c3a",
+      "signedMachOCount": 27,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false
+    }
+  },
+  "physicalDeviceInstallOrControlCommands": 0,
+  "NASCommands": 0,
+  "oldNASCredentialsUsed": false,
+  "playbackWindows": 0,
+  "newPlaybackMatrixPasses": 0,
+  "modelSwitchPerformed": false,
+  "cleanup": {
+    "uninstalledIntermediateCandidatesRemoved": 12,
+    "firstOwnedSimulatorsRemoved": 3,
+    "recoveredOwnedSimulatorsRemoved": 2,
+    "sourceLogsScreenshotsCredentialsPreserved": true,
+    "latestTwoFrozenCandidatesRetained": true
+  },
+  "retainedFailures": [
+    "TV AnyView background overload compile exit65",
+    "Initial concurrent Pad/TV blank-page deadlines",
+    "Overly strong TV preview focus style rejected by visual inspection",
+    "Final recapture explicit disk full; task artifacts cleaned",
+    "Recovery finalizer syntax and stopped-simulator lookup errors"
+  ],
+  "limitations": [
+    "Settings labels/default two rows only; other five destinations preview stubs",
+    "No true-device, navigation, paid entitlement, frame-time or performance acceptance",
+    "TV full localization not migrated",
+    "Some theme combinations, iPad rotation/split view and VoiceOver remain unverified"
+  ],
+  "finalSourceHashCheck": true,
+  "changedLinesWhitespaceClean": true,
+  "allFiveOwnedSimulatorsAbsent": true,
+  "rootFinalPackagesExistAndMainHashesMatch": true,
+  "freeGiBAtClose": 9.0,
+  "documentationCheck": {
+    "documents": 519,
+    "localLinks": 3129,
+    "missingDestinations": 0
+  }
+}

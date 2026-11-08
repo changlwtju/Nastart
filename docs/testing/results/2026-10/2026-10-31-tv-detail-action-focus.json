@@ -1,0 +1,160 @@
+{
+  "recordedAt": "2026-10-31T08:21:16+08:00",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceInputCount": 441,
+  "changedExistingSourceOrTestFiles": 7,
+  "unchangedOtherInputs": 434,
+  "unitTestsPassed": 24,
+  "existingUnitTests": 19,
+  "newUnitTests": 5,
+  "UITestsPassed": 4,
+  "existingUITests": 3,
+  "newUITests": 1,
+  "uiExecutionRuns": 1,
+  "builds": {
+    "mobile-sim-debug-cast": {
+      "startedAt": "2026-10-31T08:13:57.148557+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-31T08:14:19.453103+08:00"
+    },
+    "tv-sim-debug-cast": {
+      "startedAt": "2026-10-31T08:14:19.453590+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-31T08:14:30.429406+08:00"
+    },
+    "module-tests": {
+      "startedAt": "2026-10-31T08:14:30.429797+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-31T08:14:33.939792+08:00"
+    },
+    "ui-build": {
+      "startedAt": "2026-10-31T08:14:52.747885+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-31T08:15:02.316844+08:00"
+    },
+    "mobile-debug": {
+      "startedAt": "2026-10-31T08:17:28.067999+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-31T08:18:11.956839+08:00"
+    },
+    "tv-debug": {
+      "startedAt": "2026-10-31T08:19:48.862531+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-31T08:20:03.517999+08:00"
+    },
+    "mobile-release": {
+      "startedAt": "2026-10-31T08:18:11.957761+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-31T08:19:48.861377+08:00"
+    },
+    "tv-release": {
+      "startedAt": "2026-10-31T08:20:03.519094+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-31T08:20:30.117168+08:00"
+    }
+  },
+  "sourcePreservation": {
+    "sourceInputCount": 441,
+    "changedFiles": [
+      "ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/MediaDetailFocusMap.swift",
+      "ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/OfflineMediaScene.swift",
+      "ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/OfflineUIScenario.swift",
+      "ios/Nastart/Packages/NetworkMedia/Tests/NetworkMediaTests/MediaDetailFocusMapTests.swift",
+      "tvos/NastartTV/Sources/NastartTVApp.swift",
+      "tvos/NastartTV/Sources/TVViews.swift",
+      "tvos/NastartTV/UITests/TVLaunchTests.swift"
+    ],
+    "unchangedOtherInputs": 434,
+    "productionDetailReadAndPlaybackBlocksUnchanged": true,
+    "otherTVViewsUnchanged": true,
+    "mobileProductionViewsUnchanged": true,
+    "noClientStoreVaultNetworkOrMediaTaskInOfflineScene": true,
+    "networkMediaProductionUnchanged": true,
+    "newUnitMethods": 5,
+    "newUITestMethods": 1
+  },
+  "packages": {
+    "mobile": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-31T08:18:11.721215+08:00",
+      "frozenAt": "2026-10-31T08:20:59.449242+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 441,
+      "mainSHA256": "7a6cc0435362bfae23b2827becde20439455960e726184e81fddcb68f1d6a284",
+      "debugDylibSHA256": "c93df34969007727f493d7d0adf7b0727f98bb8180c31809e9fe2670c0aae120",
+      "signedMachOCount": 30,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false,
+      "copyMethod": "cp -cpR clone requested; hashes and signatures verified independently"
+    },
+    "tv": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-31T08:20:03.438814+08:00",
+      "frozenAt": "2026-10-31T08:20:59.820560+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 441,
+      "mainSHA256": "c1bd8190ae539fab4d84e105b6c85ea291756afcfe8b07f9af37e2be5a7d2e41",
+      "debugDylibSHA256": "d84febf1a2e43ab4eacefa41848533c14941cdfddf92754a8f45a8b9a40db792",
+      "signedMachOCount": 27,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false,
+      "copyMethod": "cp -cpR clone requested; hashes and signatures verified independently"
+    }
+  },
+  "uiRun": {
+    "started": true,
+    "startedAt": "2026-10-31T08:15:24.856508+08:00",
+    "physicalDevicesOperated": 0,
+    "NASCommands": 0,
+    "playbackCommands": 0,
+    "customAppLaunchEnvironment": {},
+    "fixture": "early offline branch, no app state/client/store/task",
+    "sourceInputCount": 441,
+    "exitCode": 0,
+    "inputHashesUnchanged": true,
+    "installedBinaryHashesMatchAfterTests": true,
+    "endedAt": "2026-10-31T08:16:49.566502+08:00",
+    "syntheticPreferencesPreserved": true,
+    "unexpectedApplicationKeys": [],
+    "shutdownExit": 0,
+    "deleteExit": 0
+  },
+  "visualReview": {
+    "recordedAt": "2026-10-31T08:18:36.718080+08:00",
+    "reviewed": true,
+    "reviewedAttachmentCount": 2,
+    "attachmentHashes": {
+      "6344FF92-F816-4007-9575-69BFAC91EC91.png": "4bed74b7a18628328d79b3cf981dfde8fe62c5d5a8c9a1ad100d6428667ddc07",
+      "A181BA43-8A94-4663-93D4-30795224D247.png": "67db2984a3ab4edea967eebb1b13502a26defdd64abd2d06a010b1363b0cd061"
+    },
+    "observations": [
+      "Hero fixture shows play focus outline after overview and retry removal; removed buttons absent. Receipt outside this screenshot, asserted by UITest instead.",
+      "Related fixture shows second related card focus outline, retry absent and receipt one visible."
+    ],
+    "notVerified": [
+      "Production client-backed page layout",
+      "Intermediate focus events or frame timing",
+      "Real metadata replacement, long rows, touchpad, Menu/Back and physical remote"
+    ]
+  },
+  "ownedSimulatorsDeleted": 1,
+  "physicalDevicesOperated": 0,
+  "NASCommands": 0,
+  "playbackCommands": 0,
+  "newPlaybackMatrixP": 0,
+  "notVerified": [
+    "Production client-backed detail page and real server metadata replacement",
+    "Physical remote, long rows, touchpad, Menu/Back, intermediate focus events or frame timing",
+    "Network-library multi-file focus integration and playback"
+  ]
+}

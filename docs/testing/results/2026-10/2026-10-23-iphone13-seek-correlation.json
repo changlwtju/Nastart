@@ -1,0 +1,1064 @@
+{
+  "kind": "offline saved seek/decoder/supply correlation",
+  "analysisDate": "2026-10-23",
+  "cases": [
+    {
+      "packageScope": "current-1632",
+      "window": {
+        "boundedEndActionSeconds": 85.74971914291382,
+        "plannedWindowSeconds": 84.240794,
+        "deduplicatedWindowEventCount": 393,
+        "snapshotsRead": 6
+      },
+      "inputSHA256": {
+        "syslog": "5b4741dc7e59ffbf03508fa7f48d9c6922786faad2140b58ea018908973665f5"
+      },
+      "seeks": [
+        {
+          "requestOrdinal": 1,
+          "traceID": "0BDAB1BE",
+          "planID": "764D53EF",
+          "seekTargetSeconds": 4087.924,
+          "deviceLogPhases": [
+            {
+              "deviceLogTime": "2026-10-23T16:37:53.120703",
+              "event": "seek_started",
+              "fields": {
+                "engine": "KSPlayer",
+                "planID": "764D53EF",
+                "playbackTraceID": "0BDAB1BE",
+                "routeID": "88F2DEFB",
+                "seekDeltaSeconds": 0.04300000000012005,
+                "seekTargetSeconds": 4087.924
+              }
+            },
+            {
+              "deviceLogTime": "2026-10-23T16:37:53.761225",
+              "event": "seek_engine_completed",
+              "fields": {
+                "completed": "true",
+                "engine": "KSPlayer",
+                "planID": "764D53EF",
+                "playbackTraceID": "0BDAB1BE",
+                "routeID": "88F2DEFB"
+              }
+            },
+            {
+              "deviceLogTime": "2026-10-23T16:37:54.525842",
+              "event": "seek_capacity_sample",
+              "fields": {
+                "audioCapacityTracks": 1,
+                "audioEOF": "false",
+                "audioFPS": 1200,
+                "audioFrames": 256,
+                "audioLoadedSeconds": 1.62,
+                "audioMaximumFrames": 256,
+                "audioPackets": 1688,
+                "bufferTargetSeconds": 1,
+                "engine": "KSPlayer",
+                "isFirst": "false",
+                "isSeek": "true",
+                "loadedSeconds": 1.0427083049928156,
+                "phase": "playable",
+                "planID": "764D53EF",
+                "playable": "true",
+                "playbackTraceID": "0BDAB1BE",
+                "routeID": "88F2DEFB",
+                "sampleUptimeSeconds": 538460.797475875,
+                "seekGeneration": 2,
+                "sinceRequestMs": 1419.9680832680315,
+                "videoCapacityTracks": 1,
+                "videoEOF": "false",
+                "videoFPS": 23.976025,
+                "videoFrames": 16,
+                "videoLoadedSeconds": 1.0427083049928156,
+                "videoMaximumFrames": 16,
+                "videoPackets": 9
+              }
+            },
+            {
+              "deviceLogTime": "2026-10-23T16:37:54.739523",
+              "event": "seek_recovered",
+              "fields": {
+                "currentSeconds": 4088.039,
+                "engine": "KSPlayer",
+                "planID": "764D53EF",
+                "playbackTraceID": "0BDAB1BE",
+                "routeID": "88F2DEFB",
+                "seekRecoveryMs": 1638,
+                "seekTargetSeconds": 4087.924
+              }
+            }
+          ],
+          "temporalDecoderAssociation": "last flush between same-process seek log and completion; not a validated requested-generation tag",
+          "flushCandidates": 1,
+          "decoderLocalEpoch": 2,
+          "loggedIntervalsMs": {
+            "requestToCompletion": 640.522,
+            "completionToFirstPacketSendRecord": 178.347,
+            "firstPacketSendRecordToFirstRawFrame": 185.075,
+            "firstRawFrameToReady": 401.195,
+            "readyToRecovered": 213.681
+          },
+          "firstPacketSeconds": 4087.875,
+          "firstPacketKey": true,
+          "firstPacketBeforeTargetSeconds": 0.049,
+          "packetSampleCount": 12,
+          "sampledPacketsBeforeTarget": 2,
+          "allSampledPacketSendResultsZero": true,
+          "rawFrameSampleCount": 96,
+          "rawFramesBeforeReady": 17,
+          "rawFramePTSUnit": "unknown; no seconds conversion",
+          "rawFramesAllHardwareBacked": true,
+          "rawFrameDecodeErrorValues": [
+            0.0
+          ],
+          "capacitySamples": [
+            {
+              "deviceLogTime": "2026-10-23T16:37:53.774453",
+              "event": "seek_capacity_sample",
+              "fields": {
+                "audioCapacityTracks": 1,
+                "audioEOF": "false",
+                "audioFPS": 48,
+                "audioFrames": 0,
+                "audioLoadedSeconds": 0,
+                "audioMaximumFrames": 256,
+                "audioPackets": 0,
+                "bufferTargetSeconds": 1,
+                "engine": "KSPlayer",
+                "isFirst": "false",
+                "isSeek": "true",
+                "loadedSeconds": 0,
+                "phase": "waiting",
+                "planID": "764D53EF",
+                "playable": "false",
+                "playbackTraceID": "0BDAB1BE",
+                "routeID": "88F2DEFB",
+                "sampleUptimeSeconds": 538460.0220105833,
+                "seekGeneration": 2,
+                "sinceRequestMs": 644.5027915760875,
+                "videoCapacityTracks": 1,
+                "videoEOF": "false",
+                "videoFPS": 23.976025,
+                "videoFrames": 0,
+                "videoLoadedSeconds": 0,
+                "videoMaximumFrames": 16,
+                "videoPackets": 0
+              },
+              "rawFramesLoggedByThisLogTime": 0
+            },
+            {
+              "deviceLogTime": "2026-10-23T16:37:54.268905",
+              "event": "seek_capacity_sample",
+              "fields": {
+                "audioCapacityTracks": 1,
+                "audioEOF": "false",
+                "audioFPS": 1200,
+                "audioFrames": 256,
+                "audioLoadedSeconds": 0.9116666666666666,
+                "audioMaximumFrames": 256,
+                "audioPackets": 838,
+                "bufferTargetSeconds": 1,
+                "engine": "KSPlayer",
+                "isFirst": "false",
+                "isSeek": "true",
+                "loadedSeconds": 0.2919583253979884,
+                "phase": "waiting",
+                "planID": "764D53EF",
+                "playable": "false",
+                "playbackTraceID": "0BDAB1BE",
+                "routeID": "88F2DEFB",
+                "sampleUptimeSeconds": 538460.546724125,
+                "seekGeneration": 2,
+                "sinceRequestMs": 1169.2163333063945,
+                "videoCapacityTracks": 1,
+                "videoEOF": "false",
+                "videoFPS": 23.976025,
+                "videoFrames": 7,
+                "videoLoadedSeconds": 0.2919583253979884,
+                "videoMaximumFrames": 16,
+                "videoPackets": 0
+              },
+              "rawFramesLoggedByThisLogTime": 8
+            },
+            {
+              "deviceLogTime": "2026-10-23T16:37:54.525842",
+              "event": "seek_capacity_sample",
+              "fields": {
+                "audioCapacityTracks": 1,
+                "audioEOF": "false",
+                "audioFPS": 1200,
+                "audioFrames": 256,
+                "audioLoadedSeconds": 1.62,
+                "audioMaximumFrames": 256,
+                "audioPackets": 1688,
+                "bufferTargetSeconds": 1,
+                "engine": "KSPlayer",
+                "isFirst": "false",
+                "isSeek": "true",
+                "loadedSeconds": 1.0427083049928156,
+                "phase": "playable",
+                "planID": "764D53EF",
+                "playable": "true",
+                "playbackTraceID": "0BDAB1BE",
+                "routeID": "88F2DEFB",
+                "sampleUptimeSeconds": 538460.797475875,
+                "seekGeneration": 2,
+                "sinceRequestMs": 1419.9680832680315,
+                "videoCapacityTracks": 1,
+                "videoEOF": "false",
+                "videoFPS": 23.976025,
+                "videoFrames": 16,
+                "videoLoadedSeconds": 1.0427083049928156,
+                "videoMaximumFrames": 16,
+                "videoPackets": 9
+              },
+              "rawFramesLoggedByThisLogTime": 17
+            }
+          ],
+          "recordedEventPhases": [
+            {
+              "actionSeconds": 15.360916,
+              "event": "seek_started",
+              "fields": {
+                "engine": "KSPlayer",
+                "planID": "764D53EF",
+                "playbackTraceID": "0BDAB1BE",
+                "routeID": "88F2DEFB",
+                "seekDeltaSeconds": 0.04300000000012005,
+                "seekTargetSeconds": 4087.924
+              }
+            },
+            {
+              "actionSeconds": 16.002923,
+              "event": "seek_engine_completed",
+              "fields": {
+                "completed": "true",
+                "engine": "KSPlayer",
+                "planID": "764D53EF",
+                "playbackTraceID": "0BDAB1BE",
+                "routeID": "88F2DEFB"
+              }
+            },
+            {
+              "actionSeconds": 16.768534,
+              "event": "engine_ready",
+              "fields": {
+                "engine": "KSPlayer",
+                "planID": "764D53EF",
+                "playbackTraceID": "0BDAB1BE",
+                "routeID": "88F2DEFB",
+                "state": "bufferFinished"
+              }
+            },
+            {
+              "actionSeconds": 16.979213,
+              "event": "seek_recovered",
+              "fields": {
+                "currentSeconds": 4088.039,
+                "engine": "KSPlayer",
+                "planID": "764D53EF",
+                "playbackTraceID": "0BDAB1BE",
+                "routeID": "88F2DEFB",
+                "seekRecoveryMs": 1638,
+                "seekTargetSeconds": 4087.924
+              }
+            }
+          ],
+          "newlyIssuedRequests": [
+            {
+              "completedActionSeconds": 19.461874,
+              "recoveredBeforeTaskCompletionMs": 2482.661,
+              "issuedActionSeconds": 15.382853,
+              "issuedAfterRequestMs": 21.937,
+              "transferID": "2895C2D3-6955-4A7D-A76F-F4E7046B5443",
+              "upstreamTaskIndex": 1,
+              "metricsIdentity": "unique",
+              "metricsFields": {
+                "adaptiveMeasurementBoundary": "responseBody",
+                "adaptiveTransferMs": 3502,
+                "callbackAfterClientFinish": "false",
+                "cellular": "no",
+                "connectionReused": "no",
+                "dnsMs": 0,
+                "hlsRole": "-",
+                "lastFetchToRequestMs": 255,
+                "lastRequestEndToFirstByteMs": 324,
+                "lastRequestSendMs": 0,
+                "lastResponseBodyMs": 3502,
+                "lastResponseEndToMetricsCallbackMs": 0,
+                "playbackTraceID": "0BDAB1BE",
+                "playlistChildID": "root",
+                "protocol": "http/1.1",
+                "proxyBackpressureMs": 0,
+                "proxyKind": "mediaRange",
+                "proxyQueuedBytes": 0,
+                "proxySuspendCount": 0,
+                "requestMs": 324,
+                "responseBodyBytesAfterDecoding": 33554432,
+                "responseBodyBytesReceivedIncludingProtocol": 33554432,
+                "responseContentEncoding": "unspecified",
+                "responseContentLength": 33554432,
+                "responseMs": 3502,
+                "responseStatusCode": 206,
+                "stage": "urlSessionTaskMetrics",
+                "taskIntervalMs": 4084,
+                "tcpMs": 243,
+                "totalMs": 4082,
+                "transactionCount": 1,
+                "transferID": "2895C2D3-6955-4A7D-A76F-F4E7046B5443",
+                "upstreamCancellationRequested": "false",
+                "upstreamCompletionObserved": "false",
+                "upstreamIssueToFirstBodyCallbackMs": 583,
+                "upstreamIssueToHeadersCallbackMs": 582,
+                "upstreamIssueToLastBodyCallbackMs": 4084,
+                "upstreamIssuedToCallbackMs": 4085,
+                "upstreamTaskBodyBytes": 33554432,
+                "upstreamTaskIndex": 1
+              },
+              "note": "Full-task metrics include time after recovery; body duration/rate is not a seek-only interval. First-body callback is reported relative to this task issue, not a decoder packet arrival."
+            }
+          ],
+          "decoderTraceBudget": {
+            "packetLimitAfterFlush": 12,
+            "rawFrameLimitAfterFlush": 96,
+            "completeDecodeTrafficObserved": false
+          },
+          "presentationOrAudibleOutputVerifiedByThisReport": false
+        },
+        {
+          "requestOrdinal": 2,
+          "traceID": "0BDAB1BE",
+          "planID": "764D53EF",
+          "seekTargetSeconds": 4121.661,
+          "deviceLogPhases": [
+            {
+              "deviceLogTime": "2026-10-23T16:38:28.375041",
+              "event": "seek_started",
+              "fields": {
+                "engine": "KSPlayer",
+                "planID": "764D53EF",
+                "playbackTraceID": "0BDAB1BE",
+                "routeID": "88F2DEFB",
+                "seekDeltaSeconds": 0.02099999999973079,
+                "seekTargetSeconds": 4121.661
+              }
+            },
+            {
+              "deviceLogTime": "2026-10-23T16:38:28.484742",
+              "event": "seek_engine_completed",
+              "fields": {
+                "completed": "true",
+                "engine": "KSPlayer",
+                "planID": "764D53EF",
+                "playbackTraceID": "0BDAB1BE",
+                "routeID": "88F2DEFB"
+              }
+            },
+            {
+              "deviceLogTime": "2026-10-23T16:38:29.466938",
+              "event": "seek_capacity_sample",
+              "fields": {
+                "audioCapacityTracks": 1,
+                "audioEOF": "false",
+                "audioFPS": 48,
+                "audioFrames": 52,
+                "audioLoadedSeconds": 1.0833333333333333,
+                "audioMaximumFrames": 256,
+                "audioPackets": 0,
+                "bufferTargetSeconds": 1,
+                "engine": "KSPlayer",
+                "isFirst": "false",
+                "isSeek": "true",
+                "loadedSeconds": 1.0427083049928156,
+                "phase": "playable",
+                "planID": "764D53EF",
+                "playable": "true",
+                "playbackTraceID": "0BDAB1BE",
+                "routeID": "88F2DEFB",
+                "sampleUptimeSeconds": 538495.7398817918,
+                "seekGeneration": 3,
+                "sinceRequestMs": 1100.8540000766516,
+                "videoCapacityTracks": 1,
+                "videoEOF": "false",
+                "videoFPS": 23.976025,
+                "videoFrames": 16,
+                "videoLoadedSeconds": 1.0427083049928156,
+                "videoMaximumFrames": 16,
+                "videoPackets": 9
+              }
+            },
+            {
+              "deviceLogTime": "2026-10-23T16:38:29.667391",
+              "event": "seek_recovered",
+              "fields": {
+                "currentSeconds": 4121.769,
+                "engine": "KSPlayer",
+                "planID": "764D53EF",
+                "playbackTraceID": "0BDAB1BE",
+                "routeID": "88F2DEFB",
+                "seekRecoveryMs": 1307,
+                "seekTargetSeconds": 4121.661
+              }
+            }
+          ],
+          "temporalDecoderAssociation": "last flush between same-process seek log and completion; not a validated requested-generation tag",
+          "flushCandidates": 1,
+          "decoderLocalEpoch": 4,
+          "loggedIntervalsMs": {
+            "requestToCompletion": 109.701,
+            "completionToFirstPacketSendRecord": 17.281,
+            "firstPacketSendRecordToFirstRawFrame": 267.546,
+            "firstRawFrameToReady": 697.369,
+            "readyToRecovered": 200.453
+          },
+          "firstPacketSeconds": 4121.451,
+          "firstPacketKey": true,
+          "firstPacketBeforeTargetSeconds": 0.21,
+          "packetSampleCount": 12,
+          "sampledPacketsBeforeTarget": 6,
+          "allSampledPacketSendResultsZero": true,
+          "rawFrameSampleCount": 96,
+          "rawFramesBeforeReady": 21,
+          "rawFramePTSUnit": "unknown; no seconds conversion",
+          "rawFramesAllHardwareBacked": true,
+          "rawFrameDecodeErrorValues": [
+            0.0
+          ],
+          "capacitySamples": [
+            {
+              "deviceLogTime": "2026-10-23T16:38:28.479760",
+              "event": "seek_capacity_sample",
+              "fields": {
+                "audioCapacityTracks": 1,
+                "audioEOF": "false",
+                "audioFPS": 1200,
+                "audioFrames": 0,
+                "audioLoadedSeconds": 0,
+                "audioMaximumFrames": 256,
+                "audioPackets": 0,
+                "bufferTargetSeconds": 1,
+                "engine": "KSPlayer",
+                "isFirst": "false",
+                "isSeek": "true",
+                "loadedSeconds": 0,
+                "phase": "waiting",
+                "planID": "764D53EF",
+                "playable": "false",
+                "playbackTraceID": "0BDAB1BE",
+                "routeID": "88F2DEFB",
+                "sampleUptimeSeconds": 538494.7398335417,
+                "seekGeneration": 3,
+                "sinceRequestMs": 100.80575000029057,
+                "videoCapacityTracks": 1,
+                "videoEOF": "false",
+                "videoFPS": 23.976025,
+                "videoFrames": 0,
+                "videoLoadedSeconds": 0,
+                "videoMaximumFrames": 16,
+                "videoPackets": 0
+              },
+              "rawFramesLoggedByThisLogTime": 0
+            },
+            {
+              "deviceLogTime": "2026-10-23T16:38:28.960895",
+              "event": "seek_capacity_sample",
+              "fields": {
+                "audioCapacityTracks": 1,
+                "audioEOF": "false",
+                "audioFPS": 48,
+                "audioFrames": 25,
+                "audioLoadedSeconds": 0.5208333333333334,
+                "audioMaximumFrames": 256,
+                "audioPackets": 0,
+                "bufferTargetSeconds": 1,
+                "engine": "KSPlayer",
+                "isFirst": "false",
+                "isSeek": "true",
+                "loadedSeconds": 0.12512499659913787,
+                "phase": "waiting",
+                "planID": "764D53EF",
+                "playable": "false",
+                "playbackTraceID": "0BDAB1BE",
+                "routeID": "88F2DEFB",
+                "sampleUptimeSeconds": 538495.2404958333,
+                "seekGeneration": 3,
+                "sinceRequestMs": 601.4680416556075,
+                "videoCapacityTracks": 1,
+                "videoEOF": "false",
+                "videoFPS": 23.976025,
+                "videoFrames": 3,
+                "videoLoadedSeconds": 0.12512499659913787,
+                "videoMaximumFrames": 16,
+                "videoPackets": 0
+              },
+              "rawFramesLoggedByThisLogTime": 8
+            },
+            {
+              "deviceLogTime": "2026-10-23T16:38:29.466938",
+              "event": "seek_capacity_sample",
+              "fields": {
+                "audioCapacityTracks": 1,
+                "audioEOF": "false",
+                "audioFPS": 48,
+                "audioFrames": 52,
+                "audioLoadedSeconds": 1.0833333333333333,
+                "audioMaximumFrames": 256,
+                "audioPackets": 0,
+                "bufferTargetSeconds": 1,
+                "engine": "KSPlayer",
+                "isFirst": "false",
+                "isSeek": "true",
+                "loadedSeconds": 1.0427083049928156,
+                "phase": "playable",
+                "planID": "764D53EF",
+                "playable": "true",
+                "playbackTraceID": "0BDAB1BE",
+                "routeID": "88F2DEFB",
+                "sampleUptimeSeconds": 538495.7398817918,
+                "seekGeneration": 3,
+                "sinceRequestMs": 1100.8540000766516,
+                "videoCapacityTracks": 1,
+                "videoEOF": "false",
+                "videoFPS": 23.976025,
+                "videoFrames": 16,
+                "videoLoadedSeconds": 1.0427083049928156,
+                "videoMaximumFrames": 16,
+                "videoPackets": 9
+              },
+              "rawFramesLoggedByThisLogTime": 21
+            }
+          ],
+          "recordedEventPhases": [
+            {
+              "actionSeconds": 50.615172,
+              "event": "seek_started",
+              "fields": {
+                "engine": "KSPlayer",
+                "planID": "764D53EF",
+                "playbackTraceID": "0BDAB1BE",
+                "routeID": "88F2DEFB",
+                "seekDeltaSeconds": 0.02099999999973079,
+                "seekTargetSeconds": 4121.661
+              }
+            },
+            {
+              "actionSeconds": 50.725188,
+              "event": "seek_engine_completed",
+              "fields": {
+                "completed": "true",
+                "engine": "KSPlayer",
+                "planID": "764D53EF",
+                "playbackTraceID": "0BDAB1BE",
+                "routeID": "88F2DEFB"
+              }
+            },
+            {
+              "actionSeconds": 51.70918,
+              "event": "engine_ready",
+              "fields": {
+                "engine": "KSPlayer",
+                "planID": "764D53EF",
+                "playbackTraceID": "0BDAB1BE",
+                "routeID": "88F2DEFB",
+                "state": "bufferFinished"
+              }
+            },
+            {
+              "actionSeconds": 51.908123,
+              "event": "seek_recovered",
+              "fields": {
+                "currentSeconds": 4121.769,
+                "engine": "KSPlayer",
+                "planID": "764D53EF",
+                "playbackTraceID": "0BDAB1BE",
+                "routeID": "88F2DEFB",
+                "seekRecoveryMs": 1307,
+                "seekTargetSeconds": 4121.661
+              }
+            }
+          ],
+          "newlyIssuedRequests": [
+            {
+              "completedActionSeconds": 53.875822,
+              "recoveredBeforeTaskCompletionMs": 1967.699,
+              "issuedActionSeconds": 50.618167,
+              "issuedAfterRequestMs": 2.995,
+              "transferID": "211DED20-A6BE-4CAB-B027-88C86DEF198A",
+              "upstreamTaskIndex": 1,
+              "metricsIdentity": "unique",
+              "metricsFields": {
+                "adaptiveMeasurementBoundary": "responseBody",
+                "adaptiveTransferMs": 3174,
+                "callbackAfterClientFinish": "false",
+                "cellular": "no",
+                "connectionReused": "no",
+                "dnsMs": 0,
+                "hlsRole": "-",
+                "lastFetchToRequestMs": 28,
+                "lastRequestEndToFirstByteMs": 61,
+                "lastRequestSendMs": 0,
+                "lastResponseBodyMs": 3174,
+                "lastResponseEndToMetricsCallbackMs": 0,
+                "playbackTraceID": "0BDAB1BE",
+                "playlistChildID": "root",
+                "protocol": "http/1.1",
+                "proxyBackpressureMs": 0,
+                "proxyKind": "mediaRange",
+                "proxyQueuedBytes": 0,
+                "proxySuspendCount": 0,
+                "requestMs": 61,
+                "responseBodyBytesAfterDecoding": 33554432,
+                "responseBodyBytesReceivedIncludingProtocol": 33554432,
+                "responseContentEncoding": "unspecified",
+                "responseContentLength": 33554432,
+                "responseMs": 3174,
+                "responseStatusCode": 206,
+                "stage": "urlSessionTaskMetrics",
+                "taskIntervalMs": 3266,
+                "tcpMs": 16,
+                "totalMs": 3264,
+                "transactionCount": 1,
+                "transferID": "211DED20-A6BE-4CAB-B027-88C86DEF198A",
+                "upstreamCancellationRequested": "false",
+                "upstreamCompletionObserved": "false",
+                "upstreamIssueToFirstBodyCallbackMs": 92,
+                "upstreamIssueToHeadersCallbackMs": 91,
+                "upstreamIssueToLastBodyCallbackMs": 3266,
+                "upstreamIssuedToCallbackMs": 3266,
+                "upstreamTaskBodyBytes": 33554432,
+                "upstreamTaskIndex": 1
+              },
+              "note": "Full-task metrics include time after recovery; body duration/rate is not a seek-only interval. First-body callback is reported relative to this task issue, not a decoder packet arrival."
+            }
+          ],
+          "decoderTraceBudget": {
+            "packetLimitAfterFlush": 12,
+            "rawFrameLimitAfterFlush": 96,
+            "completeDecodeTrafficObserved": false
+          },
+          "presentationOrAudibleOutputVerifiedByThisReport": false
+        }
+      ]
+    },
+    {
+      "packageScope": "historical-0733",
+      "window": {
+        "boundedEndActionSeconds": 85.11752223968506,
+        "plannedWindowSeconds": 83.668329,
+        "deduplicatedWindowEventCount": 430,
+        "snapshotsRead": 6
+      },
+      "inputSHA256": {
+        "syslog": "311554e6d9f74092fadeab464bff79a93f3155be5e50b7145566d285f8653aff"
+      },
+      "seeks": [
+        {
+          "requestOrdinal": 1,
+          "traceID": "90458959",
+          "planID": "9E215C29",
+          "seekTargetSeconds": 3928.404,
+          "deviceLogPhases": [
+            {
+              "deviceLogTime": "2026-10-23T15:47:44.440542",
+              "event": "seek_started",
+              "fields": {
+                "engine": "KSPlayer",
+                "planID": "9E215C29",
+                "playbackTraceID": "90458959",
+                "routeID": "F9DE2592",
+                "seekDeltaSeconds": 0.04300000000012005,
+                "seekTargetSeconds": 3928.404
+              }
+            },
+            {
+              "deviceLogTime": "2026-10-23T15:47:45.026432",
+              "event": "seek_engine_completed",
+              "fields": {
+                "completed": "true",
+                "engine": "KSPlayer",
+                "planID": "9E215C29",
+                "playbackTraceID": "90458959",
+                "routeID": "F9DE2592"
+              }
+            },
+            {
+              "deviceLogTime": "2026-10-23T15:47:45.785435",
+              "event": "engine_ready",
+              "fields": {
+                "engine": "KSPlayer",
+                "planID": "9E215C29",
+                "playbackTraceID": "90458959",
+                "routeID": "F9DE2592",
+                "state": "bufferFinished"
+              }
+            },
+            {
+              "deviceLogTime": "2026-10-23T15:47:45.988409",
+              "event": "seek_recovered",
+              "fields": {
+                "currentSeconds": 3928.541,
+                "engine": "KSPlayer",
+                "planID": "9E215C29",
+                "playbackTraceID": "90458959",
+                "routeID": "F9DE2592",
+                "seekRecoveryMs": 1571,
+                "seekTargetSeconds": 3928.404
+              }
+            }
+          ],
+          "temporalDecoderAssociation": "last flush between same-process seek log and completion; not a validated requested-generation tag",
+          "flushCandidates": 1,
+          "decoderLocalEpoch": 2,
+          "loggedIntervalsMs": {
+            "requestToCompletion": 585.89,
+            "completionToFirstPacketSendRecord": 3.835,
+            "firstPacketSendRecordToFirstRawFrame": 132.621,
+            "firstRawFrameToReady": 622.547,
+            "readyToRecovered": 202.974
+          },
+          "firstPacketSeconds": 3928.258,
+          "firstPacketKey": false,
+          "firstPacketBeforeTargetSeconds": 0.146,
+          "packetSampleCount": 12,
+          "sampledPacketsBeforeTarget": 10,
+          "allSampledPacketSendResultsZero": true,
+          "rawFrameSampleCount": 96,
+          "rawFramesBeforeReady": 26,
+          "rawFramePTSUnit": "unknown; no seconds conversion",
+          "rawFramesAllHardwareBacked": true,
+          "rawFrameDecodeErrorValues": [
+            0.0
+          ],
+          "capacitySamples": [],
+          "recordedEventPhases": [
+            {
+              "actionSeconds": 14.946333,
+              "event": "seek_started",
+              "fields": {
+                "engine": "KSPlayer",
+                "planID": "9E215C29",
+                "playbackTraceID": "90458959",
+                "routeID": "F9DE2592",
+                "seekDeltaSeconds": 0.04300000000012005,
+                "seekTargetSeconds": 3928.404
+              }
+            },
+            {
+              "actionSeconds": 15.532675,
+              "event": "seek_engine_completed",
+              "fields": {
+                "completed": "true",
+                "engine": "KSPlayer",
+                "planID": "9E215C29",
+                "playbackTraceID": "90458959",
+                "routeID": "F9DE2592"
+              }
+            },
+            {
+              "actionSeconds": 16.291386,
+              "event": "engine_ready",
+              "fields": {
+                "engine": "KSPlayer",
+                "planID": "9E215C29",
+                "playbackTraceID": "90458959",
+                "routeID": "F9DE2592",
+                "state": "bufferFinished"
+              }
+            },
+            {
+              "actionSeconds": 16.495098,
+              "event": "seek_recovered",
+              "fields": {
+                "currentSeconds": 3928.541,
+                "engine": "KSPlayer",
+                "planID": "9E215C29",
+                "playbackTraceID": "90458959",
+                "routeID": "F9DE2592",
+                "seekRecoveryMs": 1571,
+                "seekTargetSeconds": 3928.404
+              }
+            }
+          ],
+          "newlyIssuedRequests": [
+            {
+              "completedActionSeconds": 18.871618,
+              "recoveredBeforeTaskCompletionMs": 2376.52,
+              "issuedActionSeconds": 14.950086,
+              "issuedAfterRequestMs": 3.753,
+              "transferID": "73378952-BCDD-4B61-92A4-BA1F63FC6910",
+              "upstreamTaskIndex": 1,
+              "metricsIdentity": "unique",
+              "metricsFields": {
+                "adaptiveMeasurementBoundary": "responseBody",
+                "adaptiveTransferMs": 3387,
+                "callbackAfterClientFinish": "false",
+                "cellular": "no",
+                "connectionReused": "no",
+                "dnsMs": 0,
+                "hlsRole": "-",
+                "lastFetchToRequestMs": 318,
+                "lastRequestEndToFirstByteMs": 211,
+                "lastRequestSendMs": 0,
+                "lastResponseBodyMs": 3387,
+                "lastResponseEndToMetricsCallbackMs": 0,
+                "playbackTraceID": "90458959",
+                "playlistChildID": "root",
+                "protocol": "http/1.1",
+                "proxyBackpressureMs": 0,
+                "proxyKind": "mediaRange",
+                "proxyQueuedBytes": 0,
+                "proxySuspendCount": 0,
+                "requestMs": 211,
+                "responseBodyBytesAfterDecoding": 33554432,
+                "responseBodyBytesReceivedIncludingProtocol": 33554432,
+                "responseContentEncoding": "unspecified",
+                "responseContentLength": 33554432,
+                "responseMs": 3387,
+                "responseStatusCode": 206,
+                "stage": "urlSessionTaskMetrics",
+                "taskIntervalMs": 3925,
+                "tcpMs": 310,
+                "totalMs": 3918,
+                "transactionCount": 1,
+                "transferID": "73378952-BCDD-4B61-92A4-BA1F63FC6910",
+                "upstreamCancellationRequested": "false",
+                "upstreamCompletionObserved": "false",
+                "upstreamIssueToFirstBodyCallbackMs": 539,
+                "upstreamIssueToHeadersCallbackMs": 538,
+                "upstreamIssueToLastBodyCallbackMs": 3925,
+                "upstreamIssuedToCallbackMs": 3925,
+                "upstreamTaskBodyBytes": 33554432,
+                "upstreamTaskIndex": 1
+              },
+              "note": "Full-task metrics include time after recovery; body duration/rate is not a seek-only interval. First-body callback is reported relative to this task issue, not a decoder packet arrival."
+            }
+          ],
+          "decoderTraceBudget": {
+            "packetLimitAfterFlush": 12,
+            "rawFrameLimitAfterFlush": 96,
+            "completeDecodeTrafficObserved": false
+          },
+          "presentationOrAudibleOutputVerifiedByThisReport": false
+        },
+        {
+          "requestOrdinal": 2,
+          "traceID": "90458959",
+          "planID": "9E215C29",
+          "seekTargetSeconds": 3962.398,
+          "deviceLogPhases": [
+            {
+              "deviceLogTime": "2026-10-23T15:48:19.872301",
+              "event": "seek_started",
+              "fields": {
+                "engine": "KSPlayer",
+                "planID": "9E215C29",
+                "playbackTraceID": "90458959",
+                "routeID": "F9DE2592",
+                "seekDeltaSeconds": 0.06500000000005457,
+                "seekTargetSeconds": 3962.398
+              }
+            },
+            {
+              "deviceLogTime": "2026-10-23T15:48:20.634235",
+              "event": "seek_engine_completed",
+              "fields": {
+                "completed": "true",
+                "engine": "KSPlayer",
+                "planID": "9E215C29",
+                "playbackTraceID": "90458959",
+                "routeID": "F9DE2592"
+              }
+            },
+            {
+              "deviceLogTime": "2026-10-23T15:48:23.591332",
+              "event": "engine_ready",
+              "fields": {
+                "engine": "KSPlayer",
+                "planID": "9E215C29",
+                "playbackTraceID": "90458959",
+                "routeID": "F9DE2592",
+                "state": "bufferFinished"
+              }
+            },
+            {
+              "deviceLogTime": "2026-10-23T15:48:23.810230",
+              "event": "seek_recovered",
+              "fields": {
+                "currentSeconds": 3962.484,
+                "engine": "KSPlayer",
+                "planID": "9E215C29",
+                "playbackTraceID": "90458959",
+                "routeID": "F9DE2592",
+                "seekRecoveryMs": 3956,
+                "seekTargetSeconds": 3962.398
+              }
+            }
+          ],
+          "temporalDecoderAssociation": "last flush between same-process seek log and completion; not a validated requested-generation tag",
+          "flushCandidates": 2,
+          "decoderLocalEpoch": 4,
+          "loggedIntervalsMs": {
+            "requestToCompletion": 761.934,
+            "completionToFirstPacketSendRecord": 258.386,
+            "firstPacketSendRecordToFirstRawFrame": 549.422,
+            "firstRawFrameToReady": 2149.289,
+            "readyToRecovered": 218.898
+          },
+          "firstPacketSeconds": 3961.458,
+          "firstPacketKey": true,
+          "firstPacketBeforeTargetSeconds": 0.94,
+          "packetSampleCount": 12,
+          "sampledPacketsBeforeTarget": 12,
+          "allSampledPacketSendResultsZero": true,
+          "rawFrameSampleCount": 96,
+          "rawFramesBeforeReady": 38,
+          "rawFramePTSUnit": "unknown; no seconds conversion",
+          "rawFramesAllHardwareBacked": true,
+          "rawFrameDecodeErrorValues": [
+            0.0
+          ],
+          "capacitySamples": [],
+          "recordedEventPhases": [
+            {
+              "actionSeconds": 50.379156,
+              "event": "seek_started",
+              "fields": {
+                "engine": "KSPlayer",
+                "planID": "9E215C29",
+                "playbackTraceID": "90458959",
+                "routeID": "F9DE2592",
+                "seekDeltaSeconds": 0.06500000000005457,
+                "seekTargetSeconds": 3962.398
+              }
+            },
+            {
+              "actionSeconds": 51.14043,
+              "event": "seek_engine_completed",
+              "fields": {
+                "completed": "true",
+                "engine": "KSPlayer",
+                "planID": "9E215C29",
+                "playbackTraceID": "90458959",
+                "routeID": "F9DE2592"
+              }
+            },
+            {
+              "actionSeconds": 54.098268,
+              "event": "engine_ready",
+              "fields": {
+                "engine": "KSPlayer",
+                "planID": "9E215C29",
+                "playbackTraceID": "90458959",
+                "routeID": "F9DE2592",
+                "state": "bufferFinished"
+              }
+            },
+            {
+              "actionSeconds": 54.317301,
+              "event": "seek_recovered",
+              "fields": {
+                "currentSeconds": 3962.484,
+                "engine": "KSPlayer",
+                "planID": "9E215C29",
+                "playbackTraceID": "90458959",
+                "routeID": "F9DE2592",
+                "seekRecoveryMs": 3956,
+                "seekTargetSeconds": 3962.398
+              }
+            }
+          ],
+          "newlyIssuedRequests": [
+            {
+              "completedActionSeconds": 54.672384,
+              "recoveredBeforeTaskCompletionMs": 355.083,
+              "issuedActionSeconds": 50.530754,
+              "issuedAfterRequestMs": 151.598,
+              "transferID": "E68C29F2-2AC5-4E2E-9C41-128228AB7107",
+              "upstreamTaskIndex": 1,
+              "metricsIdentity": "unique",
+              "metricsFields": {
+                "adaptiveMeasurementBoundary": "responseBody",
+                "adaptiveTransferMs": 3583,
+                "callbackAfterClientFinish": "false",
+                "cellular": "no",
+                "connectionReused": "no",
+                "dnsMs": 0,
+                "hlsRole": "-",
+                "lastFetchToRequestMs": 293,
+                "lastRequestEndToFirstByteMs": 260,
+                "lastRequestSendMs": 0,
+                "lastResponseBodyMs": 3583,
+                "lastResponseEndToMetricsCallbackMs": 0,
+                "playbackTraceID": "90458959",
+                "playlistChildID": "root",
+                "protocol": "http/1.1",
+                "proxyBackpressureMs": 0,
+                "proxyKind": "mediaRange",
+                "proxyQueuedBytes": 0,
+                "proxySuspendCount": 0,
+                "requestMs": 260,
+                "responseBodyBytesAfterDecoding": 33554432,
+                "responseBodyBytesReceivedIncludingProtocol": 33554432,
+                "responseContentEncoding": "unspecified",
+                "responseContentLength": 33554432,
+                "responseMs": 3583,
+                "responseStatusCode": 206,
+                "stage": "urlSessionTaskMetrics",
+                "taskIntervalMs": 4140,
+                "tcpMs": 286,
+                "totalMs": 4137,
+                "transactionCount": 1,
+                "transferID": "E68C29F2-2AC5-4E2E-9C41-128228AB7107",
+                "upstreamCancellationRequested": "false",
+                "upstreamCompletionObserved": "false",
+                "upstreamIssueToFirstBodyCallbackMs": 557,
+                "upstreamIssueToHeadersCallbackMs": 557,
+                "upstreamIssueToLastBodyCallbackMs": 4140,
+                "upstreamIssuedToCallbackMs": 4140,
+                "upstreamTaskBodyBytes": 33554432,
+                "upstreamTaskIndex": 1
+              },
+              "note": "Full-task metrics include time after recovery; body duration/rate is not a seek-only interval. First-body callback is reported relative to this task issue, not a decoder packet arrival."
+            }
+          ],
+          "decoderTraceBudget": {
+            "packetLimitAfterFlush": 12,
+            "rawFrameLimitAfterFlush": 96,
+            "completeDecodeTrafficObserved": false
+          },
+          "presentationOrAudibleOutputVerifiedByThisReport": false
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "No device, playback, media fetch, install, build, network or preference command was issued by this analysis.",
+    "Device syslog intervals are log-record intervals. Foundation delivery and scheduling can lag; they are not execution costs or physical touch times.",
+    "Decoder packet trace is AFTER avcodec_send_packet returns. Packet-to-frame intervals include additional sends, scheduling and decode; they are not single-packet decode latency.",
+    "Raw frame callbacks precede filtering, conversion, seek-target acceptance, queue insertion and presentation. No actual PTS coverage or before-target discard count is inferred without a stream timebase.",
+    "Requested seek generation, decoder-local epoch and startup generation are distinct identities. Temporal association is not an explicit decoder ownership tag.",
+    "Trace budgets censor packet/frame counts. Counts before a capacity log are only log-time counts and are not an atomic capacity snapshot.",
+    "Both package revisions remain separate, with different content positions, caches and supply. They do not establish a performance improvement.",
+    "Cancelled old transfers are retained in reserve reports; cancellation/pressure is not promoted to a network fault.",
+    "Observed first-frame and body arrival exclude continuous total absence, not intermittent supply/demux/decode limits. Root cause remains unassigned."
+  ],
+  "independentAudit": {
+    "checks": [
+      "current-1632 two distinct same-process final-epoch scopes and task identities checked",
+      "historical-0733 two distinct same-process final-epoch scopes and task identities checked",
+      "all six capacity fields exactly equal existing independently extracted safe events",
+      "historical two-flush ambiguity retained; compressed pre-target counts use seconds only",
+      "shared report contains no raw endpoints, account/device identities, paths or credentials",
+      "first packet key flags and same-event-date recovery-before-task-completion checked independently against reserve report"
+    ],
+    "checksPassed": 6,
+    "inputReportSHA256": "85148fc9804419b2a646be995f018e099eb41d23177b9999f992031ad0197d3e",
+    "noDeviceCommands": true,
+    "sourceInputsUnchanged": 173,
+    "iosDiffSHA256": "5360a5df7c24ea5ae3d4e74e75d45492e2ce8401dd98526b2a9efb900b605615"
+  },
+  "currentPackageIPA_SHA256": "506da76d122f6e79eff46afabf373655b5c5865682d2eaab33c1e4ac0952abab",
+  "currentSourceUnchanged": true
+}

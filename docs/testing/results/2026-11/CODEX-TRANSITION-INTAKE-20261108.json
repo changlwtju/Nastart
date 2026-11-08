@@ -1,0 +1,41 @@
+{
+  "at": "2026-11-08T08:02:29.075533+08:00",
+  "entry": "docs/archive/handoffs/2026-11/2026-11-08-0130-CLAUDE-TRANSITION-TO-CODEX.md",
+  "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-08-TRANSITION-INTAKE.md",
+  "owner": "Codex",
+  "ClaudeStageEndedReported": true,
+  "remainingQuota": "unknown; handoff/user saysClaude near exhaustion",
+  "workingTreeStatusRecordsAtIntake": 309,
+  "packageDirectoriesTrackedFiles": {
+    "NetworkMedia": 0,
+    "LibSMB2": 0
+  },
+  "localAudit": {
+    "at": "2026-11-08T08:00:14.278540+08:00",
+    "inputCount": 341,
+    "manifestSHA256": "86e023629af4cc83b89bc435ef32b88ff01a3782a3a96e847cd4ef6bef744c7e",
+    "appDylibSMBImports": 22,
+    "prefixedFromLibSMB2": 22,
+    "unexpectedSMBImports": 0,
+    "installedDevicesFreshlyChecked": false,
+    "packageCorrespondsToFrozenSourceProven": false,
+    "candidate": {
+      "appPath": "/Users/lagransun/Library/Developer/Xcode/DerivedData/Nastart-Codex-SavedPassword-20261102/mobile/Build/Products/Debug-iphoneos/Nastart.app",
+      "debugDylibSHA256": "4744df402a1897c3558894d89375e08ea60a66b8c1ff889c3897f67fc887c2fb",
+      "mainSHA256": "b30ee2af02615875cf63ff8e17b99456910cfce45e1b26f256d4186051a8dc04",
+      "signatureVerified": true,
+      "profileExpirationUTC": "2026-11-08T01:08:19Z",
+      "profileSHA256": "47f8c8ab23b4cf63db0bf9b6e4ea8e0c56060598605159261f408a53ac81ef9a"
+    },
+    "manifestScope": "selected product/test/project source and assets, including untracked packages, excludes generated .build/.git/.swiftpm; not a proven build input manifest"
+  },
+  "productCodeModified": false,
+  "commitsCreated": 0,
+  "devicesFreshlyChecked": false,
+  "deviceOperations": 0,
+  "NASRequests": 0,
+  "implementationAndValidationPending": true,
+  "priorReviewTechnicalConditionsStillApply": true,
+  "priorClaudeStep1AssignmentSuperseded": true,
+  "privateEvidencePointer": "/tmp/nastart-codex-transition-intake-path"
+}

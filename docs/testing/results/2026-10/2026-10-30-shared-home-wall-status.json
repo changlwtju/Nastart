@@ -1,0 +1,172 @@
+{
+  "recordedAt": "2026-10-30T15:51:34+08:00",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceInputCount": 435,
+  "changedExistingSourceFiles": 4,
+  "existingOfflineParameterTestsPassed": 4,
+  "newRepositoryTests": 0,
+  "builds": {
+    "module-tests": {
+      "startedAt": "2026-10-30T15:29:07.680971+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T15:29:11.510038+08:00"
+    },
+    "mobile-sim-debug-cast": {
+      "startedAt": "2026-10-30T15:28:26.286481+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T15:28:55.053409+08:00"
+    },
+    "tv-sim-debug-cast": {
+      "startedAt": "2026-10-30T15:28:55.054026+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T15:29:07.680629+08:00"
+    },
+    "mobile-debug": {
+      "startedAt": "2026-10-30T15:43:14.404905+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T15:43:57.980026+08:00"
+    },
+    "tv-debug": {
+      "startedAt": "2026-10-30T15:45:33.920191+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T15:45:47.938599+08:00"
+    },
+    "mobile-release": {
+      "startedAt": "2026-10-30T15:43:57.981191+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T15:45:33.919020+08:00"
+    },
+    "tv-release": {
+      "startedAt": "2026-10-30T15:45:47.939238+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T15:46:15.829350+08:00"
+    }
+  },
+  "capture": {
+    "accepted": 6,
+    "byPlatform": {
+      "tv": 6
+    },
+    "notStarted": {
+      "phone": {
+        "reason": "Simulator startup free-space budget unmet; no device created",
+        "requiredFreeGiB": 4.8,
+        "observedFreeGiB": 4.54
+      },
+      "pad": {
+        "reason": "Simulator startup free-space budget unmet; no device created",
+        "requiredFreeGiB": 4.8,
+        "observedFreeGiB": 4.53
+      }
+    },
+    "allPassed": true,
+    "ownedSimulatorsDeleted": true,
+    "syntheticPreferencesPreserved": true,
+    "physicalDevicesOperated": 0,
+    "NASCommands": 0,
+    "interactionOrAnimationVerified": false
+  },
+  "visualReview": {
+    "reviewed": true,
+    "recordedAt": "2026-10-30T15:43:14.283767+08:00",
+    "windows": [
+      {
+        "platform": "tv",
+        "scene": "library-scanning",
+        "sha256": "6c6973cff85e5b3efc9ebc66e84215dc7c84089527bf34a0e0c4265ab0183382"
+      },
+      {
+        "platform": "tv",
+        "scene": "library-updating",
+        "sha256": "50d3d6824f698bed421d31c927ef1670557e77500b0934d53c57ec3aba6185c1"
+      },
+      {
+        "platform": "tv",
+        "scene": "library-notice",
+        "sha256": "f7e4c49f729bb92e14c45af5b0b4655e136707b2327c66f29d86e31810088b15"
+      },
+      {
+        "platform": "tv",
+        "scene": "wall-scanning",
+        "sha256": "083d083baaf2ca67620fceef50ef6afea3e574c3c365f957f58e8f32e676ba11"
+      },
+      {
+        "platform": "tv",
+        "scene": "wall-updating",
+        "sha256": "dd4119c15c465dcccf5371dc5cbddf626ef6ea14833311b20513901af2cc5bbd"
+      },
+      {
+        "platform": "tv",
+        "scene": "wall-notice",
+        "sha256": "022e8f5432a829d75eeb1e4a2250e2b290fbd280ad834cd693ae936edba4a1aa"
+      }
+    ],
+    "findings": [
+      "Compared all six TV captures in three home/wall paired sheets",
+      "Title, count, cancel control and notes use same typography and semantic colors in both carriers",
+      "Wall status uses a themed compact card; scan has cancel, update and notice do not",
+      "No duplicate centered TV preview title",
+      "No actual menu, cancel, navigation, focus transition, VoiceOver, scrolling or real poster data verified"
+    ],
+    "actualInteractionVerified": false,
+    "mobileVisualLayoutVerified": false,
+    "physicalDevicesOperated": 0
+  },
+  "sourcePreservation": {
+    "changedExistingSourceFiles": 4,
+    "allModelMethodsAndHomeControllerByteUnchanged": true,
+    "allOtherLibraryControllersSourcesStoresCredentialsPlaybackInputsUnchanged": true,
+    "wallGridArtworkNavigationSheetsFocusAndRefreshAndFolderActionsByteUnchanged": true,
+    "wallStatusOnlyForCurrentLibraryScanOrExistingGlobalError": true,
+    "menuCancelRequiresExistingTaskCapability": true,
+    "distinctInlineAndMenuCancelAccessibilityIdentifiers": true,
+    "debugPreviewHasNoModelVaultClientTaskOrPersistence": true
+  },
+  "packages": {
+    "mobile": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-30T15:43:57.777196+08:00",
+      "frozenAt": "2026-10-30T15:50:05.891952+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 435,
+      "mainSHA256": "f5d7e7313279236601775608e4f785c9f697f2fc1e39155fdd635719016d4b4c",
+      "debugDylibSHA256": "bde984df2c1ab8123a5fc0cca9c754b1948d302e3359bdf67a105ec7b9516d56",
+      "signedMachOCount": 30,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false
+    },
+    "tv": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-30T15:45:47.860121+08:00",
+      "frozenAt": "2026-10-30T15:50:06.257818+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 435,
+      "mainSHA256": "d3993e89e640de25ba8a1e703ec4a876b07a719c56798d9c8f6f6c56a45af539",
+      "debugDylibSHA256": "e04060f73154991190e193317d475d97cd229632056941351b338fb3f8a32233",
+      "signedMachOCount": 27,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false
+    }
+  },
+  "ownedSimulatorsDeleted": 1,
+  "physicalDevicesOperated": 0,
+  "NASCommands": 0,
+  "playbackCommands": 0,
+  "privateEvidencePointer": "current-wall-status-unification-private",
+  "notVerified": [
+    "Mobile/tablet latest status layout: disk budget unmet",
+    "Actual menu interaction, task ownership transition or cancel completion",
+    "Real wall header width, data, posters or whole storage home",
+    "Remote focus movement, navigation, return, VoiceOver, scrolling or playback"
+  ]
+}

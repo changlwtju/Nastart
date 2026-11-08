@@ -1,0 +1,55 @@
+{
+  "recordedAt": "2026-11-02T07:46:49.963135+08:00",
+  "scope": "Production confirmation modifier in isolated DEBUG synthetic tvOS simulator host; real XCUIRemote input",
+  "firstRound": {
+    "exitCode": 65,
+    "tests": 4,
+    "failures": 4,
+    "classification": "Test queried inner identified SwiftUI button; focus belongs to native parent; horizontal layout misassumed. Native sheets really opened. Failure evidence retained.",
+    "cleanupVerified": true,
+    "notClassifiedAsProductFocusFailure": true
+  },
+  "secondRound": {
+    "startedAt": "2026-11-02T07:23:10.049275+08:00",
+    "endedAt": "2026-11-02T07:25:29.561054+08:00",
+    "exitCode": 0,
+    "tests": 4,
+    "failures": 0,
+    "cases": [
+      "settingsNAS standard",
+      "connectionNAS standard",
+      "jellyfin standard",
+      "jellyfin large"
+    ],
+    "asserted": [
+      "cancel preserves feedback and attempts",
+      "Menu dismisses and preserves foreground",
+      "opener focus returns",
+      "confirm calls injected action exactly once and clears old feedback",
+      "subsequent cancel preserves new feedback"
+    ],
+    "testOnlyChangeAfterRound1": true,
+    "sourceInputCount": 446,
+    "inputHashesUnchanged": true,
+    "installedBinaryHashesMatchAfterTests": true,
+    "syntheticPreferencesPreserved": true,
+    "unexpectedApplicationKeys": [],
+    "shutdownExit": 0,
+    "deleteExit": 0,
+    "freshAbsent": true
+  },
+  "followupCleanupCheck": {
+    "checkedAt": "2026-11-02T07:46:49.963135+08:00",
+    "namedOwnedSimulatorsRemaining": 0,
+    "matchingOwnedBuildOrRunnerObserved": false
+  },
+  "physicalDevicesOperatedThisBatch": 0,
+  "NASCommands": 0,
+  "actualCredentialOrLogoutCallbacksExecuted": false,
+  "limits": [
+    "not physical Apple TV",
+    "not real NAS or credential transaction",
+    "not full accessibility",
+    "not frame-time or playback validation"
+  ]
+}

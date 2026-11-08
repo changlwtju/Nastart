@@ -1,0 +1,139 @@
+{
+  "recordedAt": "2026-10-30T09:07:56+08:00",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceInputCount": 435,
+  "changedExistingSourceFiles": 3,
+  "existingOfflineParameterTestsPassed": 4,
+  "existingLocalCorrectionTestsPassed": 10,
+  "newRepositoryTests": 0,
+  "builds": {
+    "module-tests": {
+      "startedAt": "2026-10-30T08:55:27.227816+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T08:55:31.617969+08:00"
+    },
+    "correction-tests": {
+      "startedAt": "2026-10-30T08:56:37.055787+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T08:56:38.709951+08:00"
+    },
+    "mobile-sim-debug-cast": {
+      "startedAt": "2026-10-30T08:55:27.227786+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T08:55:58.154601+08:00"
+    },
+    "tv-sim-debug-cast": {
+      "startedAt": "2026-10-30T08:55:27.227758+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T08:55:45.227745+08:00"
+    },
+    "mobile-debug": {
+      "startedAt": "2026-10-30T08:56:38.261368+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T08:59:05.575376+08:00"
+    },
+    "tv-debug": {
+      "startedAt": "2026-10-30T08:56:38.261399+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T08:57:37.500520+08:00"
+    },
+    "mobile-release": {
+      "startedAt": "2026-10-30T08:59:05.577477+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T09:01:04.609593+08:00"
+    },
+    "tv-release": {
+      "startedAt": "2026-10-30T08:57:37.503726+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T08:59:13.615625+08:00"
+    }
+  },
+  "capture": {
+    "accepted": 12,
+    "byPlatform": {
+      "pad": 4,
+      "tv": 4,
+      "phone": 4
+    },
+    "allPassed": true,
+    "ownedSimulatorsDeleted": true,
+    "syntheticPreferencesPreserved": true,
+    "physicalDevicesOperated": 0,
+    "NASCommands": 0,
+    "interactionOrAnimationVerified": false,
+    "initialOCRFailureRetained": true,
+    "newOwnedInstances": 4
+  },
+  "allCaptureArtifactsHashChecked": true,
+  "sourcePreservation": {
+    "changedExistingSourceFiles": 3,
+    "changedFileNames": [
+      "LibraryViews.swift",
+      "OfflineMediaScene.swift",
+      "OfflineUIScenario.swift"
+    ],
+    "productionCodeOutsideCorrectionViewUnchanged": true,
+    "numberParsingAndValuesValidationUnchanged": true,
+    "correctExpectedFileAndRestorePathUnchanged": true,
+    "modelStoreAndPlaybackSourcesUnchanged": true,
+    "sourceWrites": 0,
+    "newRepositoryTests": 0
+  },
+  "packages": {
+    "mobile": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-30T08:59:04.836605+08:00",
+      "frozenAt": "2026-10-30T09:02:25.924532+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 435,
+      "mainSHA256": "828ab95755821ef445bbbb19c39c451dc52479f488cc4c7de7e2dde593497d5b",
+      "debugDylibSHA256": "b067578443e71893d0086b5e85d39bcd755ce5872f06c8d2fef0b429f8846082",
+      "signedMachOCount": 30,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false
+    },
+    "tv": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-30T08:57:36.975219+08:00",
+      "frozenAt": "2026-10-30T09:02:27.100122+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 435,
+      "mainSHA256": "002a255ce57e9d7b701bce32e2575dcc9f430b9c5425699b7bbfd52e0fb80168",
+      "debugDylibSHA256": "c2c253959e55ea11d34738cd8b26bfc44e9a9f61111b30158ef01537a4eda59f",
+      "signedMachOCount": 27,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false
+    }
+  },
+  "physicalDevicesOperated": 0,
+  "NASCommands": 0,
+  "playbackCommands": 0,
+  "ownedSimulatorsDeleted": 4,
+  "privateEvidencePointer": "current-correction-form-polish-private",
+  "initialOCRFailure": {
+    "failedWindow": "phone/correction-error/glassDeck/dark/large",
+    "failure": "OCR inserted icon exclamation into wrapped error sentence; strict string assertion timed out",
+    "visualTextReviewed": true,
+    "firstTwoAcceptedWindowsRetained": true,
+    "productSourceChanged": false,
+    "repair": "Normalize only OCR exclamation punctuation; recapture missing phone error/busy on same binaries, then first Pad/TV windows",
+    "initialOwnedSimulatorDeleted": true
+  },
+  "testSelectorNote": "Initial correction selector used the wrong existing class name, so only four parameter tests ran. Correct LocalCorrectionTests then ran separately: ten passed; no nonexistent class counted.",
+  "notVerified": [
+    "Production correction persistence against actual NAS library",
+    "Actual input, picker, error clearing, save/restore or keyboard next interaction",
+    "TV remote back suppression, mobile sheet swipe suppression, VoiceOver or complete scrolling",
+    "NAS/source read or write, real image retrieval or playback"
+  ]
+}

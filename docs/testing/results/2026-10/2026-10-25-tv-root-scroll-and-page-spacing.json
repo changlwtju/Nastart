@@ -1,0 +1,602 @@
+{
+  "recordedAt": "2026-10-25T07:49:12.845874+08:00",
+  "HEAD": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "dirtyPreserved": true,
+  "package": {
+    "at": "2026-10-25T07:41:02.069922+08:00",
+    "configuration": "normal Debug",
+    "HEAD": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceInputs": 509,
+    "binaries": {
+      "__preview.dylib": "4fcdfa205b18a690c82db868310e614e915922a58c729dbd2567a5ef91a0afd6",
+      "NastartTV": "e152ecbbcccb8e5565107e40dcdac227ae969b6ba04759ac44c15a319cea7c32",
+      "NastartTV.debug.dylib": "65ddcebeaed184659788e31d4443879f3c4eeef2595a1efefe8f6873b69fbf6a",
+      "Frameworks/Libswresample.framework/Libswresample": "0248cd11622bf34e8e12ea2384191f3f5a7fcca21b5afd2acf76a640cfd9f7f0",
+      "Frameworks/Libavfilter.framework/Libavfilter": "c878237c59edbfc0a1b18cf7ba32bc94048f6ce73be835ff8e9fbbe1238903b5",
+      "Frameworks/KSPlayer.framework/KSPlayer": "443897a8379c9ea2e98053f79f7884a6a33e861980536fe306f0c20469204dbf",
+      "Frameworks/Libavformat.framework/Libavformat": "a4387a55f532ab71c9c57a0b4d4919a9342aa1888b91d64a940d80b45b252776",
+      "Frameworks/libshaderc_combined.framework/libshaderc_combined": "b9b4856f545f3f06617e1c7ad120e48134ba7a09317bdb20b3431d2d982a09f0",
+      "Frameworks/Libavutil.framework/Libavutil": "9f47f291d006f259a86a9d4f578d6a5e497d7b58f5399e95976e5baeafaecd05",
+      "Frameworks/libharfbuzz.framework/libharfbuzz": "2fa8e17f7fb4248cb77793638b7df8da60d7f7130e840914cfbf2770284bd88c",
+      "Frameworks/libdav1d.framework/libdav1d": "65951f5b38b4aab6a506efa43766a30e47f9f42478d361133ea8d1249e4e7233",
+      "Frameworks/libfontconfig.framework/libfontconfig": "deea0a600d2a1d7b214ac2fcef9c8929cbf5143159642975e6ff385911960dfa",
+      "Frameworks/libfreetype.framework/libfreetype": "3c44f4cef7c08af3ff37965c9b4375c8a29c2352dff59f64c6d5bae737954805",
+      "Frameworks/libfribidi.framework/libfribidi": "945fcbbb7d148dd863e459e1281ac7579492e0df528c138e74b570f1fab03a2a",
+      "Frameworks/libsmbclient.framework/libsmbclient": "46bcc09abf3f34bf0322c83519ffacadb5b4f23a74d1b1a8edbb35deeb1d23d7",
+      "Frameworks/hogweed.framework/hogweed": "1911ef0eea6aff11b4bf1f2a51ea2075873a89ce7fc5a96393f1f76ab6713bb0",
+      "Frameworks/Libswscale.framework/Libswscale": "74f5a8701f603af74d2ec6d13ac2e90a9e1fed8d399d1c18311803aac9845464",
+      "Frameworks/Libavdevice.framework/Libavdevice": "0d51820e370cb80eceda22ca99a9ebebf5ac5d044f7d6eb72f74dc94ae26af60",
+      "Frameworks/gnutls.framework/gnutls": "1de6a7b54cd55edb99e26a773c18ea4fe2734ebe984107591c00892dacb8560f",
+      "Frameworks/libass.framework/libass": "d7346f4eea3e9ee26c52890a5bfd52bd24f8f1ef91c586af89dd2f879555a0d3",
+      "Frameworks/Libavcodec.framework/Libavcodec": "302ee649f33f0715470c59e79cd9eb15535b2780e4801aacea1e54675669991d",
+      "Frameworks/lcms2.framework/lcms2": "84fb6f08e190a458685239a2f43de725d56043db5c6a80a68663787b5e266da9",
+      "Frameworks/nettle.framework/nettle": "270add856b37235b732099217ca8e2c3286d1de22dae84bceb789514a6c9bfcf",
+      "Frameworks/gmp.framework/gmp": "60468a6d439b36bd8339de2d0213cf6b36f5abef503da282cc377007b61d97b4",
+      "Frameworks/libplacebo.framework/libplacebo": "861e1931951ac4f2b4372c09f7bb1aebc46bf247f91b6e4ad4f7e1b80720c646",
+      "Frameworks/libzvbi.framework/libzvbi": "3c7a05db9b5a3b0730e21c2292e69e041133e92d8713f951824ad65ad0b9b5aa",
+      "Frameworks/libsrt.framework/libsrt": "211c387e47e7c4ec31b7f671b1df9b6eade88ab37cfa82fe25960edd5592706f"
+    },
+    "signedMachOCount": 27,
+    "embeddedDependenciesChecked": true,
+    "profileContainsTarget": true,
+    "profileExpirationUTC": "2026-10-31 05:46:14",
+    "applicationIdentifierAndKeychainGroupsPreserved": true,
+    "installationExit": 0,
+    "installedAt": "2026-10-25T07:41:04.490590+08:00"
+  },
+  "configuration": "normal Debug",
+  "sourceDriftAtClose": 0,
+  "implementation": {
+    "files": [
+      "tvos/NastartTV/Sources/TVNASViews.swift",
+      "tvos/NastartTV/Sources/TVViews.swift"
+    ],
+    "pinnedHeaderOutsideScroll": true,
+    "separateVisitedNavigationStacksRetained": true,
+    "focusAloneDoesNotSwitchPage": true,
+    "removedHiddenNativeTabContainer": true,
+    "sharedPageTopInset": 24,
+    "priorInformationPageTopInset": 70,
+    "headingSubtitleGap": 6,
+    "duplicateBrandEyebrowRemoved": true
+  },
+  "observedBefore": {
+    "nativeTabY": -30,
+    "nativeTabHeight": 39,
+    "tasksTabClippedAfterScroll": true
+  },
+  "experimentsPreserved": [
+    {
+      "candidate": "force native tab-bar visibility",
+      "accepted": false,
+      "reason": "same clipping remained"
+    },
+    {
+      "candidate": "single outer navigation stack",
+      "accepted": false,
+      "reason": "same clipping remained; original per-tab stacks restored"
+    },
+    {
+      "candidate": "pinned header plus hidden native TabView",
+      "accepted": false,
+      "reason": "large reserved top space remained"
+    },
+    {
+      "candidate": "switch tab on focus",
+      "accepted": false,
+      "reason": "upward scrolling changed page; explicit Select retained"
+    }
+  ],
+  "scrollChecks": [
+    {
+      "case": "tasks-initial",
+      "at": "2026-10-25T07:43:34.695314+08:00",
+      "tabs": [
+        {
+          "name": "tv.tab.launchpad",
+          "y": 94.0,
+          "height": 33.0
+        },
+        {
+          "name": "tv.tab.devices",
+          "y": 94.0,
+          "height": 33.0
+        },
+        {
+          "name": "tv.tab.tasks",
+          "y": 74.0,
+          "height": 73.0
+        },
+        {
+          "name": "tv.tab.mine",
+          "y": 94.0,
+          "height": 33.0
+        }
+      ],
+      "allTabsInsideScreen": true,
+      "samePageHeadingPresent": true,
+      "headingY": 195.0
+    },
+    {
+      "case": "tasks-bottom-0",
+      "at": "2026-10-25T07:43:39.989650+08:00",
+      "tabs": [
+        {
+          "name": "tv.tab.launchpad",
+          "y": 94.0,
+          "height": 33.0
+        },
+        {
+          "name": "tv.tab.devices",
+          "y": 94.0,
+          "height": 33.0
+        },
+        {
+          "name": "tv.tab.tasks",
+          "y": 76.0,
+          "height": 69.0
+        },
+        {
+          "name": "tv.tab.mine",
+          "y": 94.0,
+          "height": 33.0
+        }
+      ],
+      "allTabsInsideScreen": true,
+      "samePageHeadingPresent": true,
+      "headingY": 195.0
+    },
+    {
+      "case": "tasks-returned-0",
+      "at": "2026-10-25T07:43:46.554845+08:00",
+      "tabs": [
+        {
+          "name": "tv.tab.launchpad",
+          "y": 94.0,
+          "height": 33.0
+        },
+        {
+          "name": "tv.tab.devices",
+          "y": 94.0,
+          "height": 33.0
+        },
+        {
+          "name": "tv.tab.tasks",
+          "y": 74.0,
+          "height": 73.0
+        },
+        {
+          "name": "tv.tab.mine",
+          "y": 94.0,
+          "height": 33.0
+        }
+      ],
+      "allTabsInsideScreen": true,
+      "samePageHeadingPresent": true,
+      "headingY": 195.0
+    },
+    {
+      "case": "tasks-bottom-1",
+      "at": "2026-10-25T07:43:52.809583+08:00",
+      "tabs": [
+        {
+          "name": "tv.tab.launchpad",
+          "y": 94.0,
+          "height": 33.0
+        },
+        {
+          "name": "tv.tab.devices",
+          "y": 94.0,
+          "height": 33.0
+        },
+        {
+          "name": "tv.tab.tasks",
+          "y": 76.0,
+          "height": 69.0
+        },
+        {
+          "name": "tv.tab.mine",
+          "y": 94.0,
+          "height": 33.0
+        }
+      ],
+      "allTabsInsideScreen": true,
+      "samePageHeadingPresent": true,
+      "headingY": 195.0
+    },
+    {
+      "case": "tasks-returned-1",
+      "at": "2026-10-25T07:43:59.722143+08:00",
+      "tabs": [
+        {
+          "name": "tv.tab.launchpad",
+          "y": 94.0,
+          "height": 33.0
+        },
+        {
+          "name": "tv.tab.devices",
+          "y": 94.0,
+          "height": 33.0
+        },
+        {
+          "name": "tv.tab.tasks",
+          "y": 74.0,
+          "height": 73.0
+        },
+        {
+          "name": "tv.tab.mine",
+          "y": 94.0,
+          "height": 33.0
+        }
+      ],
+      "allTabsInsideScreen": true,
+      "samePageHeadingPresent": true,
+      "headingY": 195.0
+    },
+    {
+      "case": "devices-initial",
+      "at": "2026-10-25T07:44:03.838889+08:00",
+      "tabs": [
+        {
+          "name": "tv.tab.launchpad",
+          "y": 94.0,
+          "height": 33.0
+        },
+        {
+          "name": "tv.tab.devices",
+          "y": 75.0,
+          "height": 72.0
+        },
+        {
+          "name": "tv.tab.tasks",
+          "y": 94.0,
+          "height": 33.0
+        },
+        {
+          "name": "tv.tab.mine",
+          "y": 94.0,
+          "height": 33.0
+        }
+      ],
+      "allTabsInsideScreen": true,
+      "samePageHeadingPresent": true,
+      "headingY": 195.0
+    },
+    {
+      "case": "devices-bottom-0",
+      "at": "2026-10-25T07:44:10.820757+08:00",
+      "tabs": [
+        {
+          "name": "tv.tab.launchpad",
+          "y": 94.0,
+          "height": 33.0
+        },
+        {
+          "name": "tv.tab.devices",
+          "y": 76.0,
+          "height": 69.0
+        },
+        {
+          "name": "tv.tab.tasks",
+          "y": 94.0,
+          "height": 33.0
+        },
+        {
+          "name": "tv.tab.mine",
+          "y": 94.0,
+          "height": 33.0
+        }
+      ],
+      "allTabsInsideScreen": true,
+      "samePageHeadingPresent": true,
+      "headingY": 44.0
+    },
+    {
+      "case": "devices-returned-0",
+      "at": "2026-10-25T07:44:19.364941+08:00",
+      "tabs": [
+        {
+          "name": "tv.tab.launchpad",
+          "y": 94.0,
+          "height": 33.0
+        },
+        {
+          "name": "tv.tab.devices",
+          "y": 75.0,
+          "height": 72.0
+        },
+        {
+          "name": "tv.tab.tasks",
+          "y": 94.0,
+          "height": 33.0
+        },
+        {
+          "name": "tv.tab.mine",
+          "y": 94.0,
+          "height": 33.0
+        }
+      ],
+      "allTabsInsideScreen": true,
+      "samePageHeadingPresent": true,
+      "headingY": 195.0
+    },
+    {
+      "case": "mine-initial",
+      "at": "2026-10-25T07:44:24.631064+08:00",
+      "tabs": [
+        {
+          "name": "tv.tab.launchpad",
+          "y": 94.0,
+          "height": 33.0
+        },
+        {
+          "name": "tv.tab.devices",
+          "y": 94.0,
+          "height": 33.0
+        },
+        {
+          "name": "tv.tab.tasks",
+          "y": 94.0,
+          "height": 33.0
+        },
+        {
+          "name": "tv.tab.mine",
+          "y": 74.0,
+          "height": 73.0
+        }
+      ],
+      "allTabsInsideScreen": true,
+      "samePageHeadingPresent": true,
+      "headingY": 195.0
+    },
+    {
+      "case": "mine-bottom-0",
+      "at": "2026-10-25T07:44:31.261496+08:00",
+      "tabs": [
+        {
+          "name": "tv.tab.launchpad",
+          "y": 94.0,
+          "height": 33.0
+        },
+        {
+          "name": "tv.tab.devices",
+          "y": 94.0,
+          "height": 33.0
+        },
+        {
+          "name": "tv.tab.tasks",
+          "y": 94.0,
+          "height": 33.0
+        },
+        {
+          "name": "tv.tab.mine",
+          "y": 76.0,
+          "height": 69.0
+        }
+      ],
+      "allTabsInsideScreen": true,
+      "samePageHeadingPresent": true,
+      "headingY": 186.0
+    },
+    {
+      "case": "mine-returned-0",
+      "at": "2026-10-25T07:44:38.256763+08:00",
+      "tabs": [
+        {
+          "name": "tv.tab.launchpad",
+          "y": 94.0,
+          "height": 33.0
+        },
+        {
+          "name": "tv.tab.devices",
+          "y": 94.0,
+          "height": 33.0
+        },
+        {
+          "name": "tv.tab.tasks",
+          "y": 94.0,
+          "height": 33.0
+        },
+        {
+          "name": "tv.tab.mine",
+          "y": 74.0,
+          "height": 73.0
+        }
+      ],
+      "allTabsInsideScreen": true,
+      "samePageHeadingPresent": true,
+      "headingY": 195.0
+    },
+    {
+      "case": "launchpad-initial",
+      "at": "2026-10-25T07:44:45.233609+08:00",
+      "tabs": [
+        {
+          "name": "tv.tab.launchpad",
+          "y": 75.0,
+          "height": 72.0
+        },
+        {
+          "name": "tv.tab.devices",
+          "y": 94.0,
+          "height": 33.0
+        },
+        {
+          "name": "tv.tab.tasks",
+          "y": 94.0,
+          "height": 33.0
+        },
+        {
+          "name": "tv.tab.mine",
+          "y": 94.0,
+          "height": 33.0
+        }
+      ],
+      "allTabsInsideScreen": true,
+      "samePageHeadingPresent": true,
+      "headingY": 195.0
+    },
+    {
+      "case": "launchpad-bottom-0",
+      "at": "2026-10-25T07:44:53.914198+08:00",
+      "tabs": [
+        {
+          "name": "tv.tab.launchpad",
+          "y": 76.0,
+          "height": 69.0
+        },
+        {
+          "name": "tv.tab.devices",
+          "y": 94.0,
+          "height": 33.0
+        },
+        {
+          "name": "tv.tab.tasks",
+          "y": 94.0,
+          "height": 33.0
+        },
+        {
+          "name": "tv.tab.mine",
+          "y": 94.0,
+          "height": 33.0
+        }
+      ],
+      "allTabsInsideScreen": true,
+      "samePageHeadingPresent": true,
+      "headingY": -695.0
+    },
+    {
+      "case": "launchpad-returned-0",
+      "at": "2026-10-25T07:45:04.966079+08:00",
+      "tabs": [
+        {
+          "name": "tv.tab.launchpad",
+          "y": 75.0,
+          "height": 72.0
+        },
+        {
+          "name": "tv.tab.devices",
+          "y": 94.0,
+          "height": 33.0
+        },
+        {
+          "name": "tv.tab.tasks",
+          "y": 94.0,
+          "height": 33.0
+        },
+        {
+          "name": "tv.tab.mine",
+          "y": 94.0,
+          "height": 33.0
+        }
+      ],
+      "allTabsInsideScreen": true,
+      "samePageHeadingPresent": true,
+      "headingY": 195.0
+    }
+  ],
+  "subpageMenuReturns": [
+    {
+      "tab": "mine",
+      "childReturned": true
+    },
+    {
+      "tab": "devices",
+      "childReturned": true
+    }
+  ],
+  "tests": {
+    "logic": 35,
+    "UIUnpreparedPlayerExit": 2,
+    "exit": 0,
+    "realMediaPlayedThisBatch": false,
+    "ReleaseRuntimeTested": false
+  },
+  "preferences": {
+    "at": "2026-10-25T07:46:48.011377+08:00",
+    "beforeKeys": 10,
+    "afterKeys": 10,
+    "changedKeys": [],
+    "nonPlaybackPreferencesPreserved": true
+  },
+  "cleanup": {
+    "settings": {
+      "verified": true,
+      "at": "2026-10-25T07:46:16.704951+08:00"
+    },
+    "ownedRunner": {
+      "startedAt": "2026-10-25T07:41:50.237280+08:00",
+      "limitSeconds": 900,
+      "runnerStopped": true,
+      "finishedAt": "2026-10-25T07:46:17.728129+08:00"
+    },
+    "normalHome": {
+      "startedAt": "2026-10-25T07:46:46.467127+08:00",
+      "environment": {},
+      "arguments": [],
+      "mediaCommands": 0,
+      "PID": 2619,
+      "nativeImagesCaptured": true,
+      "finishedAt": "2026-10-25T07:47:01.763088+08:00"
+    }
+  },
+  "iPhone13Portrait": {
+    "baseline": {
+      "at": "2026-10-25T07:42:45.051835+08:00",
+      "installedPackageVerifiedByCurrentSessionInstallReceipt": true,
+      "mainSHA256": "3c765e482fa66caa75ada47db616a92c0f42a0d4fbf053f7b2780bbd6560e20f",
+      "compiledMobileSourceDrift": 0,
+      "unrelatedTVInputsChanged": 2,
+      "normalEnvironment": {},
+      "mediaCommands": 0,
+      "existingRunnerOwnership": "unknown; not started/stopped"
+    },
+    "geometry": [
+      {
+        "page": "我的",
+        "navigationFrame": {
+          "y": "47",
+          "height": "44"
+        },
+        "firstVisibleContentY": 114.0
+      },
+      {
+        "page": "设备",
+        "navigationFrame": {
+          "y": "47",
+          "height": "44"
+        },
+        "firstVisibleContentY": 117.0
+      },
+      {
+        "page": "事项",
+        "navigationFrame": {
+          "y": "47",
+          "height": "44"
+        },
+        "firstVisibleContentY": 114.0
+      },
+      {
+        "page": "启动台",
+        "navigationFrame": {
+          "y": "47",
+          "height": "44"
+        },
+        "firstVisibleContentY": 118.0
+      }
+    ],
+    "actualImagesViewed": [
+      "我的",
+      "启动台"
+    ],
+    "otherTwoPages": "native captures plus accessible geometry; no source change",
+    "existingRunnerNotStartedStoppedOrSettingsChanged": true
+  },
+  "iPadPortrait": "current USB absent; same mobile source audited, latest actual portrait test and device Runner/settings cleanup not verified",
+  "scope": {
+    "mediaCommands": 0,
+    "networkOrNASChanges": 0,
+    "wholePlaybackMatrixPasses": 0,
+    "allThemesOrAllSubpagesPassed": false
+  }
+}

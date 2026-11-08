@@ -1,0 +1,65 @@
+{
+  "at": "2026-10-19T19:20:51.104040+08:00",
+  "userPhotos": {
+    "TVListsThisMacPairingRecord": true,
+    "systemPageHasNoDeveloperItemVisible": true,
+    "photosAreNotInstallSessionProof": true
+  },
+  "xcode": [
+    {
+      "at": "2026-10-19T19:16:38.937550+08:00",
+      "xcode": "Xcode 27.0\nBuild version 27A266a",
+      "exit": 0,
+      "physicalTVs": []
+    },
+    {
+      "at": "2026-10-19T19:16:38.960110+08:00",
+      "xcode": "Xcode 26.6\nBuild version 17F113",
+      "exit": 0,
+      "physicalTVs": []
+    }
+  ],
+  "native26DevicesWindowPhysicalTVAbsent": true,
+  "knownAddressRead": {
+    "at": "2026-10-19T19:19:19.763861+08:00",
+    "target": "user previously supplied address; no subnet scan",
+    "autopair": false,
+    "installationDispatched": false,
+    "reachable": true,
+    "product": "AppleTV14,1",
+    "system": "18.2",
+    "nameRecordedPrivately": true,
+    "hardwareUDIDPresent": false,
+    "publicMetadataIsNotDevelopmentSession": true
+  },
+  "bonjour": {
+    "at": "2026-10-19T19:18:41.375039+08:00",
+    "historicalTargetInstanceCurrentlyAdvertised": false,
+    "oldInstanceIsNotFreshIdentityProof": true,
+    "newPairingAttempted": false,
+    "historicalInstanceCanRotate": true,
+    "missingOldInstanceDoesNotProveTVOffline": true
+  },
+  "remoteInventoryTVKeywordPresent": false,
+  "rootCause": "not established; pairing record and development connection differ",
+  "newPairingOrPIN": false,
+  "unpairOrReset": false,
+  "systemsUpdated": false,
+  "MacOrTVRestarted": false,
+  "NASVPNChanged": false,
+  "TVInstallationDispatched": false,
+  "TVAppSourceChanged": false,
+  "mobileMediaLaunched": false,
+  "officialDeveloperModeNote": "tvOS has no separate Developer Mode; Developer Settings follow pairing through Device Hub",
+  "officialSources": [
+    "https://developer.apple.com/documentation/xcode/enabling-developer-mode-on-a-device",
+    "https://help.apple.com/xcode/mac/current/en.lproj/devbc48d1bad.html"
+  ],
+  "checks": {
+    "documents": 333,
+    "localLinks": 1667,
+    "missingLinks": 0,
+    "gitDiffCheck": "passed",
+    "ownDiscoveryTasksFinished": true
+  }
+}

@@ -1,0 +1,166 @@
+{
+  "recordedAt": "2026-10-30T17:20:47+08:00",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceInputCount": 437,
+  "changedExistingSourceFiles": 4,
+  "newSourceOrTestFiles": 0,
+  "existingTests": {
+    "offlineParameters": 4,
+    "localReadRequestOwnership": 3,
+    "failures": 0
+  },
+  "builds": {
+    "module-tests": {
+      "startedAt": "2026-10-30T17:08:15.614582+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T17:08:19.157766+08:00"
+    },
+    "mobile-sim-debug-cast": {
+      "startedAt": "2026-10-30T17:07:45.834973+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T17:08:05.993845+08:00"
+    },
+    "tv-sim-debug-cast": {
+      "startedAt": "2026-10-30T17:08:05.994257+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T17:08:15.614224+08:00"
+    },
+    "mobile-debug": {
+      "startedAt": "2026-10-30T17:13:13.598040+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T17:13:55.887034+08:00"
+    },
+    "tv-debug": {
+      "startedAt": "2026-10-30T17:15:30.998471+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T17:15:45.109081+08:00"
+    },
+    "mobile-release": {
+      "startedAt": "2026-10-30T17:13:55.887908+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T17:15:30.997696+08:00"
+    },
+    "tv-release": {
+      "startedAt": "2026-10-30T17:15:45.109731+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T17:16:13.475911+08:00"
+    }
+  },
+  "capture": {
+    "accepted": 0,
+    "byPlatform": {},
+    "notStarted": {
+      "phone": {
+        "reason": "Simulator startup free-space budget unmet; no device created",
+        "requiredFreeGiB": 4.8,
+        "observedFreeGiB": 3.72
+      },
+      "pad": {
+        "reason": "Simulator startup free-space budget unmet; no device created",
+        "requiredFreeGiB": 4.8,
+        "observedFreeGiB": 3.72
+      },
+      "tv": {
+        "reason": "Simulator startup free-space budget unmet; no device created",
+        "requiredFreeGiB": 3.8,
+        "observedFreeGiB": 3.74
+      }
+    },
+    "allPassed": false,
+    "ownedSimulatorsDeleted": true,
+    "syntheticPreferencesPreserved": true,
+    "physicalDevicesOperated": 0,
+    "NASCommands": 0,
+    "interactionOrAnimationVerified": false
+  },
+  "firstBlockedCapture": null,
+  "visualReview": {
+    "reviewed": false,
+    "at": "2026-10-30T17:19:18.442526+08:00",
+    "windows": 0,
+    "reason": "All three simulator startup budgets unmet; no simulator created or current-source screenshot captured",
+    "oldScreenshotsReusedAsCurrentValidation": false,
+    "actualRetryBackTaskFocusOrMobileLayoutVerified": false
+  },
+  "sourcePreservation": {
+    "modelAndNetworkMessageByteIdentical": true,
+    "homeControllerByteIdentical": true,
+    "pureLocalReadStateAndTestsUnchanged": true,
+    "originalWallFocusAndVersionedScanTaskByteIdentical": true,
+    "wallGridSearchNavigationEditorAndMenusByteIdentical": true,
+    "newLocalRetryCallsOnlyRefresh": true,
+    "sharedReadContentAndDistinctWallIdentifiers": true,
+    "newPreviewUsesNoModelStoreVaultClientTask": true,
+    "changedExistingSourceFiles": 4,
+    "newSourceOrTestFiles": 0,
+    "frozenSourceDifferenceFromPreviousCandidate": [
+      "LibraryPosterWall.swift",
+      "LibraryViews.swift",
+      "OfflineMediaScene.swift",
+      "OfflineUIScenario.swift"
+    ],
+    "other433InputHashesUnchanged": true
+  },
+  "boundedPackageSharing": {
+    "performed": false
+  },
+  "boundedSpacePreflight": {
+    "candidateFilesAtMost": 3,
+    "theoreticalMaximumShareGiB": 0.131,
+    "freeGiB": 3.494,
+    "tvRequiredGiB": 3.8,
+    "frameworkFilesCloned": 0,
+    "packageMutations": 0,
+    "couldReachBudgetEvenWithPerfectSharing": false,
+    "isOnlyMetadataPreflight": true
+  },
+  "packages": {
+    "mobile": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-30T17:13:55.680883+08:00",
+      "frozenAt": "2026-10-30T17:19:17.874781+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 437,
+      "mainSHA256": "a16cffe4faeb9c33a4b8e0c776b1d124eae6e23f3be82de3e5c8c15c231352d2",
+      "debugDylibSHA256": "62e9b0e0278a67b7a9d52cba01d78e24dc34e8afbd908f5c6cfe70726ada4b3c",
+      "signedMachOCount": 30,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false,
+      "copyMethod": "cp -cpR clone requested; hashes and signatures verified independently"
+    },
+    "tv": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-30T17:15:45.030422+08:00",
+      "frozenAt": "2026-10-30T17:19:18.209393+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 437,
+      "mainSHA256": "9e6f95cd0279f659672c940847e189ab849b885ff5f4fb097c1192cab4100070",
+      "debugDylibSHA256": "b39fb02fca37d56c25442b34fd4e00087a90ae9992ed34c5d6eb138fe095e1a8",
+      "signedMachOCount": 27,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false,
+      "copyMethod": "cp -cpR clone requested; hashes and signatures verified independently"
+    }
+  },
+  "ownedSimulatorsDeleted": 0,
+  "physicalDevicesOperated": 0,
+  "NASCommands": 0,
+  "playbackCommands": 0,
+  "privateEvidencePointer": "current-wall-local-read-retry-private",
+  "notVerified": [
+    "Latest mobile/tablet read-state layouts: startup disk budget unmet",
+    "Actual retry/back/cancel/navigation/return and consumed UUID ownership under SwiftUI",
+    "Real model/store/vault read, migration, retained catalogs or concurrent scan/read behavior",
+    "Actual focus movement, accessibility reading, scrolling, images or playback"
+  ]
+}

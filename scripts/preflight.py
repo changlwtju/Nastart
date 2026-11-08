@@ -56,9 +56,9 @@ NETWORK_ERROR_CLASSIFICATION = IOS_ROOT / "Core" / "Stores" / "NetworkErrorClass
 PLAYBACK_TRACE_REPORT = ROOT / "scripts" / "playback_trace_report.py"
 PLAYBACK_POLICY_SIMULATOR = ROOT / "scripts" / "playback_policy_simulator.py"
 PLAYBACK_COMPARE_RUNS = ROOT / "scripts" / "playback_compare_runs.py"
-PLAYBACK_OFFLINE_DIAGNOSTICS = ROOT / "docs" / "handoffs" / "PLAYBACK_OFFLINE_DIAGNOSTICS.md"
-PLAYBACK_MAC_HANDOFF = ROOT / "docs" / "handoffs" / "MAC_PLAYBACK_DEBUG_TODO.md"
-PLAYBACK_VALIDATION_TARGETS = ROOT / "docs" / "handoffs" / "PLAYBACK_VALIDATION_TARGETS.md"
+PLAYBACK_OFFLINE_DIAGNOSTICS = ROOT / "docs" / "development" / "PLAYBACK_OFFLINE_DIAGNOSTICS.md"
+PLAYBACK_MAC_HANDOFF = ROOT / "docs" / "development" / "MAC_PLAYBACK_DEBUG_TODO.md"
+PLAYBACK_VALIDATION_TARGETS = ROOT / "docs" / "testing" / "PLAYBACK_VALIDATION_TARGETS.md"
 NAS_DEV_DOC = ROOT / "docs" / "development" / "nas-dev.md"
 SERVICE_ICON_FIXTURES = ROOT / "docs" / "development" / "service-icon-fixtures.json"
 SERVICE_CATEGORIES = {"favorites", "media", "downloads", "network", "tools"}
@@ -690,8 +690,13 @@ def check_playback_routing_invariants() -> CheckResult:
         "Jellyfin HLS must expose every source subtitle track": (
             "sourceSubtitleTracks: entry.subtitleTracks.map"
         ),
-        "Text subtitles must switch through VLC without rebuilding Jellyfin video HLS": (
-            "session.selectExternalSubtitle(sourceTrack?.externalURL)"
+        "Sidecar-only switching must require a clean committed video and no pending replacement": (
+            "if let externalURL = sourceTrack?.externalURL,\n"
+            "                       !sourceTrackChangeInProgress,\n"
+            "                       request.externalSubtitleURL != nil || request.greenfieldSubtitlesDisabled"
+        ),
+        "Clean video streams must retain native sidecar switching": (
+            "session.selectExternalSubtitle(externalURL)"
         ),
         "Image subtitles must remain on the Jellyfin burn-in path": (
             "Self.requiresBurnIn(subtitleCodec: track.codec)"
@@ -721,7 +726,7 @@ def check_playback_routing_invariants() -> CheckResult:
             "networkSnapshot: network)"
         ),
         "Failed Jellyfin bitrate probes must cache conservative fallback": (
-            "bitrateMeasurements[cacheKey] = (fallbackBitrate, fallbackBitrate, Date(), false)"
+            "bitrateMeasurements[cacheKey] = (fallbackBitrate, fallbackBitrate, Date(), false, false)"
         ),
         "Wi-Fi direct play must tolerate short throughput-sample variance": (
             "max(Int(Double(cached.rawBitrate) * 1.25), cached.bitrate)"
@@ -1043,7 +1048,26 @@ def check_playback_routing_invariants() -> CheckResult:
 
     if "ExternalPlaybackCallbackHandler.handle(url)" not in app_entry:
         errors.append("The app must receive external-player callback URLs")
-    if "#if DEBUG\nprivate enum PlaybackLabLaunchRequest" not in app_entry:
+    # Access level and adjacent declarations do not establish build scope.
+    # Check the active conditional branches, including #else/#elseif, instead.
+    def debug_only_declaration(name):
+        branches = []
+        declarations = []
+        for line in app_entry.splitlines():
+            stripped = line.split("//", 1)[0].strip()
+            if stripped.startswith("#if "):
+                branches.append(stripped[4:].strip() == "DEBUG")
+            elif stripped == "#else" and branches:
+                branches[-1] = False
+            elif stripped.startswith("#elseif ") and branches:
+                branches[-1] = stripped[8:].strip() == "DEBUG"
+            elif stripped == "#endif" and branches:
+                branches.pop()
+            elif re.match(rf"(?:private |fileprivate |internal )?(?:enum|struct) {re.escape(name)}\b", stripped):
+                declarations.append(any(branches))
+        return bool(declarations) and all(declarations)
+
+    if not all(debug_only_declaration(name) for name in ["PlaybackLabLaunchRequest", "PlaybackLabPlayerView"]):
         errors.append("The playback lab entry point must remain Debug-only")
 
     required_greenfield_fragments = {
@@ -1213,7 +1237,13 @@ def check_file_browser_performance_invariants() -> CheckResult:
             "folderCacheLifetime: TimeInterval = 5 * 60"
         ),
         "Concurrent requests for the same folder must be coalesced": (
-            "folderLoadTasks[normalizedPath]"
+            "if let existing = pending[path]"
+        ),
+        "Directory browsing must use the session-scoped request cache": (
+            "folderCache.load(path: normalizedPath)"
+        ),
+        "Late directory responses must be rejected across session generations": (
+            "requestGeneration == generation"
         ),
         "Folder caches must be isolated by NAS and account": (
             "prepareFolderCache(for: dataSource)"

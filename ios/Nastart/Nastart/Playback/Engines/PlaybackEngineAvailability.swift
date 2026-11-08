@@ -1,6 +1,12 @@
 import Foundation
 
 enum PlaybackEngineAvailability {
+    /// Settings on every platform describe the shared video pipeline.
+    /// Audio keeps its existing adapter and is not covered by this summary.
+    static var videoEngineSummary: String {
+        ksPlayerLinked ? "KSPlayer / AVFoundation" : "AVFoundation"
+    }
+
     static var ksPlayerLinked: Bool {
         #if canImport(KSPlayer)
         return true

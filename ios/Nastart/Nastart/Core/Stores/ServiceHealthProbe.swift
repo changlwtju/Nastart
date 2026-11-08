@@ -21,7 +21,14 @@ enum ServiceHealthProbe {
     private static let maximumConcurrentProbes = 6
     private static let timeout: TimeInterval = 3.5
 
-    static func check(_ targets: [ServiceHealthTarget]) async -> [UUID: ServiceHealthSnapshot] {
+    static func check(_ targets: [ServiceHealthTarget],
+                      onResult: (@MainActor @Sendable (UUID, ServiceHealthSnapshot) -> Void)? = nil) async -> [UUID: ServiceHealthSnapshot] {
+        await check(targets, perform: { await probe($0).snapshot }, onResult: onResult)
+    }
+
+    static func check(_ targets: [ServiceHealthTarget],
+                      perform: @escaping @Sendable (ServiceHealthTarget) async -> ServiceHealthSnapshot,
+                      onResult: (@MainActor @Sendable (UUID, ServiceHealthSnapshot) -> Void)? = nil) async -> [UUID: ServiceHealthSnapshot] {
         guard !targets.isEmpty, !Task.isCancelled else { return [:] }
 
         return await withTaskGroup(of: Result.self, returning: [UUID: ServiceHealthSnapshot].self) { group in
@@ -30,14 +37,15 @@ enum ServiceHealthProbe {
 
             for _ in 0..<min(Self.maximumConcurrentProbes, targets.count) {
                 guard let target = pending.next() else { break }
-                group.addTask { await Self.probe(target) }
+                group.addTask { Result(id: target.id, snapshot: await perform(target)) }
             }
 
             while let result = await group.next() {
-                snapshots[result.id] = result.snapshot
                 if Task.isCancelled { return [:] }
+                snapshots[result.id] = result.snapshot
+                await onResult?(result.id, result.snapshot)
                 if let target = pending.next() {
-                    group.addTask { await Self.probe(target) }
+                    group.addTask { Result(id: target.id, snapshot: await perform(target)) }
                 }
             }
             return snapshots

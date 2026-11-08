@@ -1,0 +1,73 @@
+{
+  "date": "2026-10-26",
+  "scope": "Design and source audit only; unified source hub, NAS session reuse, FTP family and media-service discovery",
+  "nativeImplementationChanged": false,
+  "nativeBuilds": 0,
+  "deviceOperations": 0,
+  "nasRequests": 0,
+  "source": {
+    "checkedInputs": 368,
+    "drift": 0,
+    "fullExternalDependencyClosure": false,
+    "requirements": 30,
+    "states": {
+      "进行中": 13,
+      "待开始": 12,
+      "待验收": 5
+    }
+  },
+  "preview": {
+    "layouts": 10,
+    "scenarioStates": [
+      "current",
+      "first",
+      "empty",
+      "limited",
+      "offline"
+    ],
+    "checkedWidths": [
+      320,
+      736
+    ],
+    "folderChoice": true,
+    "manualAddressValidation": true,
+    "manualStorageFlow": true,
+    "plexIndependentAuthorization": true,
+    "scriptErrors": [],
+    "blockedNetworkRequests": 2,
+    "nativeAppChanged": false,
+    "visualReview": {
+      "lightTextLayout": true,
+      "darkFullPageAfterLayoutSettled": true,
+      "darkAppHeight": 906,
+      "iconsVisibleWithRendererStaticAssets": true,
+      "nativeThemeAcceptance": false
+    }
+  },
+  "previewLimitations": [
+    "All HTTP(S) requests blocked, including renderer static assets; icons not validated",
+    "No native theme, device, provider login or protocol compatibility acceptance"
+  ],
+  "preservedFailures": [
+    "Initial state echo reset navigation; fixed and flows retested",
+    "FTP accessible-name whitespace and Plex duplicate text caused test-only failures; locators corrected",
+    "Renderer overwrite refused; stale preview run interrupted and regenerated"
+  ],
+  "requirements": {
+    "total": 30,
+    "inProgress": 13,
+    "pendingAcceptance": 5,
+    "notStarted": 12,
+    "playbackCells": 114
+  },
+  "nextImplementation": "NAS context, File Station session folder selection, existing-connection reuse and shared app theme",
+  "userNasHasNewServicesInstalled": false,
+  "noNasConfigurationChange": true,
+  "checks": {
+    "documentationDocuments": 460,
+    "documentationLocalLinks": 2677,
+    "missingDestinations": 0,
+    "gitDiffCheck": "passed",
+    "ownedHeadlessBrowserProcessesRemaining": 0
+  }
+}

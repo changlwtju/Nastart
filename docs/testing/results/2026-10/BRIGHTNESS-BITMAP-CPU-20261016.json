@@ -1,0 +1,335 @@
+{
+  "batch": "2026-10-16 brightness and bitmap subtitle CPU",
+  "privateEvidencePointer": "/tmp/nastart-bitmap-evidence",
+  "build": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "5df8e033fabddd22d5c0769376a7456512210d9c7421e87471cb93222eb81dc1",
+    "binaryBuildTime": "2026-10-16T07:38:13.176251+08:00",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "binaries": {
+      "Nastart": "cf41232ba8e088244fb2178bca66d3e9fbe6b3c446999d321de4ed493904f0df",
+      "Nastart.debug.dylib": "abf4fce5b996abb4991eb601a28cd747db67c18dbc7c8e4efdee00dd0d5ab466",
+      "Frameworks/KSPlayer.framework/KSPlayer": "2b629261db8c738931d3b6b5364481cfd4c26ed95fb3eaedca49565d2e158f0e"
+    },
+    "ipaSHA256": "a2f43ce379ebfe27892deeffff72e492cc745c711997c81378da8c2bb2e2d420",
+    "checkedInputs": 173,
+    "tests": {
+      "executed": 397,
+      "skipped": 2,
+      "failures": 0,
+      "runThisTurn": true
+    },
+    "preflight": {
+      "passed": 15,
+      "runThisTurn": true
+    },
+    "individuallyVerifiedLibraries": 29,
+    "profileExpirationUTC": "2026-10-17T22:23:40"
+  },
+  "changedInputs": {
+    "count": 3,
+    "paths": [
+      "ios/Nastart/NastartTests/PlaybackNextCoreTests.swift",
+      "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/Core/Utility.swift",
+      "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/MEPlayer/SubtitleDecode.swift"
+    ]
+  },
+  "brightness": {
+    "device": "iPhone13",
+    "userAuthorized": true,
+    "finalPercent": 25,
+    "verifiedAfterBaselineAndOptimized60sPlayback": true,
+    "initialSystemControlCenterPercent": 0,
+    "originalHighBrightnessCauseNotConfirmed": true,
+    "noStartupForceToMaximumFound": true,
+    "retainedBrightnessEvents": 0
+  },
+  "CPU": {
+    "device": "iPhone13",
+    "sample": "S19",
+    "entry": "Jellyfin",
+    "appLaunchEnvironment": {},
+    "appLaunchArguments": [],
+    "recording": "Xcode26.6 bundle, xctrace16.0 17F113; Time Profiler",
+    "exporting": "Xcode27.0, successful TOC and time-profile XML exports",
+    "sampleWeightMeaning": "running-thread statistical sample weight; not exact CPU elapsed, wall utilization or displayed FPS",
+    "singleWindowEachNoColdCacheOrTemperatureControl": true,
+    "causalWholeAppImprovementAccepted": false,
+    "cases": [
+      {
+        "variant": "baseline",
+        "sourceDiffSHA256": "c868c278fcefe2411cfc07eabb4adf33ce159f0a0f9fb446897aeb2ce25ac835",
+        "binaryBuildTime": "2026-10-15T18:56:47.888882+08:00",
+        "configuration": "normal Debug -Onone; empty launch environment",
+        "durationSeconds": 100.347704,
+        "targetOnlyVerified": true,
+        "rowCount": 39695,
+        "missingStackRowsRetained": 6,
+        "coverage": {
+          "actionOffset": 6.10800313949585,
+          "startup60Covered": true,
+          "exitOffset": 68.40673995018005,
+          "postPlayerExit10to30Covered": true
+        },
+        "postExitScreen": "Jellyfin detail, not launchpad",
+        "windows": {
+          "beforePlayback": {
+            "windowDurationSeconds": 6.10800313949585,
+            "rows": 503,
+            "sampledWeightSeconds": 0.503,
+            "mainThreadSampledWeightSeconds": 0.42
+          },
+          "startup0to15": {
+            "windowDurationSeconds": 15.0,
+            "rows": 9326,
+            "sampledWeightSeconds": 9.326,
+            "mainThreadSampledWeightSeconds": 3.912
+          },
+          "playing15to60": {
+            "windowDurationSeconds": 45.0,
+            "rows": 25916,
+            "sampledWeightSeconds": 25.916,
+            "mainThreadSampledWeightSeconds": 9.623
+          },
+          "postPlayerExit10to30": {
+            "windowDurationSeconds": 20.0,
+            "rows": 604,
+            "sampledWeightSeconds": 0.604,
+            "mainThreadSampledWeightSeconds": 0.436
+          }
+        },
+        "focusedRunningSampleWeights15to60": {
+          "bitmapPNGRoundtrip": {
+            "rows": 781,
+            "sampleWeightSeconds": 0.781
+          },
+          "bitmapSubtitleDecode": {
+            "rows": 903,
+            "sampleWeightSeconds": 0.903
+          },
+          "logPersistence": {
+            "rows": 1013,
+            "sampleWeightSeconds": 1.013
+          },
+          "audioRenderInput": {
+            "rows": 2448,
+            "sampleWeightSeconds": 2.448
+          }
+        },
+        "ownBinaryUUIDsVerified": {
+          "Nastart.debug.dylib": {
+            "exactFrozenBinaryUUIDMatchesTrace": true,
+            "sha256": "46cb682d7938d2f4d45b622dc49ca9ecc368f493717d7c23303a44196c4ba8f5"
+          },
+          "KSPlayer": {
+            "exactFrozenBinaryUUIDMatchesTrace": true,
+            "sha256": "76d17821ceeba058544cad0031b0eb41f4fa6be90edb9ec36ebe2d1f24bb7b5e"
+          }
+        }
+      },
+      {
+        "variant": "optimized",
+        "sourceDiffSHA256": "5df8e033fabddd22d5c0769376a7456512210d9c7421e87471cb93222eb81dc1",
+        "binaryBuildTime": "2026-10-16T07:38:13.176251+08:00",
+        "configuration": "normal Debug -Onone; empty launch environment",
+        "durationSeconds": 100.432801,
+        "targetOnlyVerified": true,
+        "rowCount": 37786,
+        "missingStackRowsRetained": 11,
+        "coverage": {
+          "actionOffset": 5.933538198471069,
+          "startup60Covered": true,
+          "exitOffset": 68.21817994117737,
+          "postPlayerExit10to30Covered": true
+        },
+        "postExitScreen": "Jellyfin detail, not launchpad",
+        "windows": {
+          "beforePlayback": {
+            "windowDurationSeconds": 5.933538198471069,
+            "rows": 266,
+            "sampledWeightSeconds": 0.266,
+            "mainThreadSampledWeightSeconds": 0.233
+          },
+          "startup0to15": {
+            "windowDurationSeconds": 15.0,
+            "rows": 9340,
+            "sampledWeightSeconds": 9.34,
+            "mainThreadSampledWeightSeconds": 3.957
+          },
+          "playing15to60": {
+            "windowDurationSeconds": 45.0,
+            "rows": 24391,
+            "sampledWeightSeconds": 24.391,
+            "mainThreadSampledWeightSeconds": 9.45
+          },
+          "postPlayerExit10to30": {
+            "windowDurationSeconds": 20.0,
+            "rows": 832,
+            "sampledWeightSeconds": 0.832,
+            "mainThreadSampledWeightSeconds": 0.647
+          }
+        },
+        "focusedRunningSampleWeights15to60": {
+          "bitmapPNGRoundtrip": {
+            "rows": 0,
+            "sampleWeightSeconds": 0
+          },
+          "bitmapSubtitleDecode": {
+            "rows": 83,
+            "sampleWeightSeconds": 0.083
+          },
+          "logPersistence": {
+            "rows": 1088,
+            "sampleWeightSeconds": 1.088
+          },
+          "audioRenderInput": {
+            "rows": 2460,
+            "sampleWeightSeconds": 2.46
+          }
+        },
+        "ownBinaryUUIDsVerified": {
+          "Nastart.debug.dylib": {
+            "exactFrozenBinaryUUIDMatchesTrace": true,
+            "sha256": "abf4fce5b996abb4991eb601a28cd747db67c18dbc7c8e4efdee00dd0d5ab466"
+          },
+          "KSPlayer": {
+            "exactFrozenBinaryUUIDMatchesTrace": true,
+            "sha256": "2b629261db8c738931d3b6b5364481cfd4c26ed95fb3eaedca49565d2e158f0e"
+          }
+        }
+      }
+    ],
+    "knownToolFailures": [
+      "Xcode27 recorder did not find iPhone13, before playback",
+      "First older recorder wrapper stopped before playback due to readiness text mismatch; all output retained",
+      "Older exporter returned SIGSEGV after producing complete XML; authoritative re-export with Xcode27 exited zero",
+      "Initial private analyzer did not handle newer direct frame layout/sentinel/unknown binary; corrected; complete export reprocessed"
+    ]
+  },
+  "memory": {
+    "device": "iPad",
+    "model": "iPad12,1",
+    "system": "18.3.1",
+    "configuration": "normal Debug -Onone; empty environment and arguments",
+    "sourceDiffSHA256": "5df8e033fabddd22d5c0769376a7456512210d9c7421e87471cb93222eb81dc1",
+    "entry": "Jellyfin",
+    "sample": "S19",
+    "startup0to60": {
+      "samples": 61,
+      "physFootprintMiBMedian": 150.971,
+      "physFootprintMiBMax": 952.081,
+      "residentMiBMedian": 161.375,
+      "residentMiBMax": 230.5,
+      "CPUValidSamples": 61,
+      "CPUPercentOfOneCoreMedian": 61.884
+    },
+    "samePIDLaunchpadAfterExit10to30": {
+      "samples": 20,
+      "physFootprintMiBMedian": 121.737,
+      "physFootprintMiBMax": 122.112,
+      "residentMiBMedian": 189.234,
+      "residentMiBMax": 189.406,
+      "CPUValidSamples": 20,
+      "CPUPercentOfOneCoreMedian": 0.147
+    },
+    "PIDCountPlaybackThroughPostExit": 1,
+    "peakSecondsAfterTouch": 30.37,
+    "hostReceiptMaxGapSeconds": 1.075,
+    "requestedSampleIntervalMs": 1000,
+    "notDisplayFPS": true,
+    "highMemoryRemainsOpen": true,
+    "strictOldNewPerformanceComparisonAccepted": false,
+    "noColdCacheOrTemperatureControl": true
+  },
+  "devices": {
+    "iphone13": {
+      "at": "2026-10-16T07:46:48.533336+08:00",
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "connection": "USB",
+      "sourceDiffSHA256": "5df8e033fabddd22d5c0769376a7456512210d9c7421e87471cb93222eb81dc1",
+      "latestPackage": {
+        "Nastart": "cf41232ba8e088244fb2178bca66d3e9fbe6b3c446999d321de4ed493904f0df",
+        "Nastart.debug.dylib": "abf4fce5b996abb4991eb601a28cd747db67c18dbc7c8e4efdee00dd0d5ab466",
+        "Frameworks/KSPlayer.framework/KSPlayer": "2b629261db8c738931d3b6b5364481cfd4c26ed95fb3eaedca49565d2e158f0e"
+      },
+      "nonBookmarkPreferenceKeys": 24,
+      "nonBookmarkPreferencesExactlyUnchanged": true,
+      "naturalBookmarkChangesCount": 1,
+      "originalBookmarksChecked": 35,
+      "originalBookmarksRemoved": 0,
+      "originalTrackChangeCount": 0,
+      "allOriginalTracksUnchanged": true,
+      "newBookmarksCount": 0,
+      "crashInventoryDelta": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      },
+      "normalEmptyEnvironment": true,
+      "NASNormal": true,
+      "playerClosed": true,
+      "WDAIdleSeconds": 10,
+      "WDAAnimationCoolOffSeconds": 2,
+      "nativeConditionsNotRecheckedThisTurn": false,
+      "noConditionInjectedThisTurn": true,
+      "nativeActiveConditions": 0,
+      "finalHomeActuallyReviewed": true
+    },
+    "ipad": {
+      "at": "2026-10-16T07:46:49.282359+08:00",
+      "model": "iPad12,1",
+      "system": "18.3.1",
+      "connection": "USB",
+      "sourceDiffSHA256": "5df8e033fabddd22d5c0769376a7456512210d9c7421e87471cb93222eb81dc1",
+      "latestPackage": {
+        "Nastart": "cf41232ba8e088244fb2178bca66d3e9fbe6b3c446999d321de4ed493904f0df",
+        "Nastart.debug.dylib": "abf4fce5b996abb4991eb601a28cd747db67c18dbc7c8e4efdee00dd0d5ab466",
+        "Frameworks/KSPlayer.framework/KSPlayer": "2b629261db8c738931d3b6b5364481cfd4c26ed95fb3eaedca49565d2e158f0e"
+      },
+      "nonBookmarkPreferenceKeys": 17,
+      "nonBookmarkPreferencesExactlyUnchanged": true,
+      "naturalBookmarkChangesCount": 1,
+      "originalBookmarksChecked": 28,
+      "originalBookmarksRemoved": 0,
+      "originalTrackChangeCount": 0,
+      "allOriginalTracksUnchanged": true,
+      "newBookmarksCount": 0,
+      "crashInventoryDelta": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      },
+      "normalEmptyEnvironment": true,
+      "NASNormal": true,
+      "playerClosed": true,
+      "WDAIdleSeconds": 10,
+      "WDAAnimationCoolOffSeconds": 2,
+      "nativeConditionsNotRecheckedThisTurn": false,
+      "noConditionInjectedThisTurn": true,
+      "nativeActiveConditions": 0,
+      "finalHomeActuallyReviewed": true
+    }
+  },
+  "iPhone18": {
+    "freshWiFiIdentityVerified": false,
+    "bothServiceAndStandardPortTimedOut": true,
+    "installDispatched": false,
+    "new5dfPackageInstalled": false,
+    "lastVerifiedInstalledSource": "c868c278fcefe2411cfc07eabb4adf33ce159f0a0f9fb446897aeb2ce25ac835",
+    "lastVerifiedInstallBatch": "2026-10-16 07:10 WiFi",
+    "noPairingOrNetworkChanges": true
+  },
+  "imageReview": {
+    "iPhone13": "t3/10/30/60 selected frames reviewed; Chinese title/cue visible, no whole SUB/AUD/FPS acceptance",
+    "iPad": "t3/10/30/60 selected frames reviewed; automatic downshift and server burn-in at later times, not all native PGS",
+    "userReportedPositionAcceptance": false
+  },
+  "stillOpen": [
+    "User follow-up: move subtitle anchor to screen bottom and clear pre-seek captions after large seeks, currently reproducing",
+    "Whole App high memory and CPU resource risk",
+    "Track replacement waits and first-frame/AUD/whole SUB",
+    "All previous MI2/PX/UX/CB/Main/competitor/full matrix gaps",
+    "iPhone18 latest5df WiFi update"
+  ]
+}

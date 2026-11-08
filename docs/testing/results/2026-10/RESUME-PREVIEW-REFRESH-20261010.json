@@ -1,0 +1,3183 @@
+{
+  "recordedAt": "2026-10-10T15:29:46.969028+08:00",
+  "scope": "Local persisted resume change notification and FilePreviewView subscription only; authentication/transport/player parameters unchanged",
+  "source": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "53b6c222dc55ad8fbcc2a74689cc60608ecc202fb2190aeab02221eb2313e6fe",
+    "package": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-10-10-resume-preview-refresh-145700/Nastart-Resume-Preview-Refresh-Normal-Debug.app",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "binaryBuildTime": "2026-10-10T15:01:41.885128+08:00",
+    "binaries": {
+      "Nastart": "5de9b770f629b1637699b46d1577f396e790afff5c05d4d8886b44ce66f97ba6",
+      "Nastart.debug.dylib": "05cf9654a38eb6c589e6b95901c09a72eb00e8cd0d44c02e4148dc84df06aa51",
+      "Frameworks/KSPlayer.framework/KSPlayer": "eda16e6d0e22bc81045752f2f54a263b0f4f8500912378d5ac141013c9042b52"
+    },
+    "signatureVerified": true,
+    "individuallyVerifiedLibraries": 29,
+    "checkedInputs": 173,
+    "newerInputs": [],
+    "profileExpirationUTC": "2026-10-10T22:03:15",
+    "tests": "265/2 skipped/0 failures; 3 new resume-observation fixtures plus preceding folder/authentication/cache/playback fixtures",
+    "preflight": "15 passed",
+    "linkageVerified": true,
+    "sourceInputManifestSHA256": "20ce7ddaac7a3db4b238a66c640acb149b63f7b765fd59c435b884bd2c5f0f0e"
+  },
+  "tests": {
+    "executed": 265,
+    "skipped": 2,
+    "failures": 0,
+    "newResumeObservationFixtures": 3,
+    "preflight": 15,
+    "safeReportTests": 18,
+    "executionAttribution": "Executed in this frozen-source batch"
+  },
+  "devices": {
+    "ipad": {
+      "installation": {
+        "recordedAt": "2026-10-10T15:02:18.752851+08:00",
+        "device": "ipad",
+        "model": "iPad12,1",
+        "os": "18.3.1",
+        "systemBuild": "22D72",
+        "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+        "sourceDiffSHA256": "53b6c222dc55ad8fbcc2a74689cc60608ecc202fb2190aeab02221eb2313e6fe",
+        "binaries": {
+          "Nastart": "5de9b770f629b1637699b46d1577f396e790afff5c05d4d8886b44ce66f97ba6",
+          "Nastart.debug.dylib": "05cf9654a38eb6c589e6b95901c09a72eb00e8cd0d44c02e4148dc84df06aa51",
+          "Frameworks/KSPlayer.framework/KSPlayer": "eda16e6d0e22bc81045752f2f54a263b0f4f8500912378d5ac141013c9042b52"
+        },
+        "binaryBuildTime": "2026-10-10T15:01:41.885128+08:00",
+        "configuration": "normal Debug -Onone; empty launch environment",
+        "freshUSBIdentity": true,
+        "pairingValid": true,
+        "signatureVerified": true,
+        "verifiedLibraries": 29,
+        "checkedInputs": 173,
+        "targetInValidProfile": true,
+        "dataPreservingCoverInstall": true,
+        "installation": "success",
+        "unchangedNonDiagnosticPreferences": 16,
+        "normalLaunchSucceeded": true,
+        "requestedEnvironment": {},
+        "requestedArguments": [],
+        "actualForegroundUIVerified": true,
+        "foregroundEvidence": "normal-launch.png/xml",
+        "wdaReinstallRequested": false,
+        "cellularAvailability": "not used",
+        "networkSettingsChanged": false,
+        "actualProcessArguments": {
+          "env": {},
+          "args": []
+        },
+        "normalHomeNASOnline": true,
+        "initialJellyfinStatus": "gray/unknown",
+        "actualPlayerClosed": true
+      },
+      "startConditions": {
+        "recordedAt": "2026-10-10T15:03:22.550982+08:00",
+        "groups": [
+          {
+            "name": "Network Link",
+            "isActive": false
+          },
+          {
+            "name": "Thermal State",
+            "isActive": false
+          },
+          {
+            "name": "GPU Performance State",
+            "isActive": false
+          }
+        ],
+        "activeCount": 0,
+        "mutationPerformed": false
+      },
+      "finalState": {
+        "recordedAt": "2026-10-10T15:19:49.855107+08:00",
+        "freshUSBIdentity": true,
+        "sourceAndBinariesMatchLatest": true,
+        "latestPackage": {
+          "Nastart": "5de9b770f629b1637699b46d1577f396e790afff5c05d4d8886b44ce66f97ba6",
+          "Nastart.debug.dylib": "05cf9654a38eb6c589e6b95901c09a72eb00e8cd0d44c02e4148dc84df06aa51",
+          "Frameworks/KSPlayer.framework/KSPlayer": "eda16e6d0e22bc81045752f2f54a263b0f4f8500912378d5ac141013c9042b52"
+        },
+        "normalRequestedEnvironment": {},
+        "normalRequestedArguments": [],
+        "actualProcessArguments": {
+          "env": {},
+          "args": []
+        },
+        "normalLaunch": true,
+        "playerClosed": true,
+        "pid": 8304,
+        "wdaReady": true,
+        "wdaReinstalled": false,
+        "idleWaitRestored": 10,
+        "animationCoolOffRestored": 2,
+        "UIEvidence": "final-latest-normal-home.png/xml",
+        "actualUIInspected": true,
+        "visualObservation": "Initial home NAS green, service badges gray/unknown; settled final-confirmation separately verifies DSM/Jellyfin green."
+      },
+      "finalConditions": {
+        "recordedAt": "2026-10-10T15:19:50.522695+08:00",
+        "groups": [
+          {
+            "name": "Network Link",
+            "isActive": false
+          },
+          {
+            "name": "Thermal State",
+            "isActive": false
+          },
+          {
+            "name": "GPU Performance State",
+            "isActive": false
+          }
+        ],
+        "activeCount": 0,
+        "mutationPerformed": false
+      },
+      "finalConfirmation": {
+        "recordedAt": "2026-10-10T15:25:44.948038+08:00",
+        "device": "ipad",
+        "name": "iPad",
+        "model": "iPad12,1",
+        "os": "18.3.1",
+        "systemBuild": "22D72",
+        "freshUSBIdentity": true,
+        "sourceInputManifestMatches": true,
+        "sourceAndBinariesMatchLatest": true,
+        "actualEnvironment": {},
+        "actualArguments": [],
+        "normalHomeNASOnline": true,
+        "playerClosed": true,
+        "actualUIInspected": true,
+        "evidence": "final-confirmation.png/xml",
+        "mutationPerformed": false,
+        "normalHomeJellyfinOnline": true,
+        "normalHomeDSMOnline": true,
+        "otherServiceStatus": "Radarr/Sonarr orange warning; iPad Prowlarr orange warning, not all services green"
+      },
+      "finalPreferences": {
+        "recordedAt": "2026-10-10T15:19:52.532356+08:00",
+        "device": "ipad",
+        "rawPreferencesStoredPrivately": true,
+        "nonDiagnosticPreferenceCount": 16
+      },
+      "historicalEventIDsExcluded": 1000,
+      "directoryResponseCounts": {
+        "success": 20
+      },
+      "apiFailureCodes": {},
+      "s19ColdResume": {
+        "sameExactKeyVerifiedPrivately": true,
+        "savedBeforeColdRestartSeconds": 59.269,
+        "firstClockSeconds": 59.391,
+        "firstClockMinusSavedSeconds": 0.122,
+        "stableExitPersistedSeconds": 96.287429232,
+        "snapshots": [
+          {
+            "capture": "normalwifi-from-head-resume-s19-files/closed-stable-private.plist",
+            "positionSeconds": 59.269,
+            "durationSeconds": 13698.368
+          },
+          {
+            "capture": "normalwifi-cold-reopen-resume-s19-files/before-private.plist",
+            "positionSeconds": 59.269,
+            "durationSeconds": 13698.368
+          },
+          {
+            "capture": "normalwifi-cold-reopen-resume-s19-files/closed-stable-private.plist",
+            "positionSeconds": 96.287429232,
+            "durationSeconds": 13698.368
+          }
+        ],
+        "scope": "One near-start cold process reopen, not deep seek or long-run verification"
+      }
+    },
+    "iphone13": {
+      "installation": {
+        "recordedAt": "2026-10-10T15:11:29.070479+08:00",
+        "device": "iphone13",
+        "model": "iPhone14,5",
+        "os": "16.3.1",
+        "systemBuild": "20D67",
+        "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+        "sourceDiffSHA256": "53b6c222dc55ad8fbcc2a74689cc60608ecc202fb2190aeab02221eb2313e6fe",
+        "binaries": {
+          "Nastart": "5de9b770f629b1637699b46d1577f396e790afff5c05d4d8886b44ce66f97ba6",
+          "Nastart.debug.dylib": "05cf9654a38eb6c589e6b95901c09a72eb00e8cd0d44c02e4148dc84df06aa51",
+          "Frameworks/KSPlayer.framework/KSPlayer": "eda16e6d0e22bc81045752f2f54a263b0f4f8500912378d5ac141013c9042b52"
+        },
+        "binaryBuildTime": "2026-10-10T15:01:41.885128+08:00",
+        "configuration": "normal Debug -Onone; empty launch environment",
+        "freshUSBIdentity": true,
+        "pairingValid": true,
+        "signatureVerified": true,
+        "verifiedLibraries": 29,
+        "checkedInputs": 173,
+        "targetInValidProfile": true,
+        "dataPreservingCoverInstall": true,
+        "installation": "success",
+        "unchangedNonDiagnosticPreferences": 25,
+        "normalLaunchSucceeded": true,
+        "requestedEnvironment": {},
+        "requestedArguments": [],
+        "actualForegroundUIVerified": true,
+        "foregroundEvidence": "normal-launch.png/xml",
+        "wdaReinstallRequested": false,
+        "cellularAvailability": "available per current user; not used in this home Wi-Fi batch",
+        "networkSettingsChanged": false,
+        "actualProcessArguments": {
+          "env": {},
+          "args": []
+        },
+        "normalHomeNASOnline": true,
+        "initialJellyfinStatus": "gray/unknown",
+        "actualPlayerClosed": true
+      },
+      "startConditions": {
+        "recordedAt": "2026-10-10T15:03:22.342226+08:00",
+        "groups": [
+          {
+            "name": "Network Link",
+            "isActive": false
+          },
+          {
+            "name": "Thermal State",
+            "isActive": false
+          },
+          {
+            "name": "GPU Performance State",
+            "isActive": false
+          }
+        ],
+        "activeCount": 0,
+        "mutationPerformed": false
+      },
+      "finalState": {
+        "recordedAt": "2026-10-10T15:19:42.942451+08:00",
+        "freshUSBIdentity": true,
+        "sourceAndBinariesMatchLatest": true,
+        "latestPackage": {
+          "Nastart": "5de9b770f629b1637699b46d1577f396e790afff5c05d4d8886b44ce66f97ba6",
+          "Nastart.debug.dylib": "05cf9654a38eb6c589e6b95901c09a72eb00e8cd0d44c02e4148dc84df06aa51",
+          "Frameworks/KSPlayer.framework/KSPlayer": "eda16e6d0e22bc81045752f2f54a263b0f4f8500912378d5ac141013c9042b52"
+        },
+        "normalRequestedEnvironment": {},
+        "normalRequestedArguments": [],
+        "actualProcessArguments": {
+          "env": {},
+          "args": []
+        },
+        "normalLaunch": true,
+        "playerClosed": true,
+        "pid": 78448,
+        "wdaReady": true,
+        "wdaReinstalled": false,
+        "idleWaitRestored": 10,
+        "animationCoolOffRestored": 2,
+        "UIEvidence": "final-latest-normal-home.png/xml",
+        "actualUIInspected": true,
+        "visualObservation": "Initial home NAS green, service badges gray/unknown; settled final-confirmation separately verifies DSM/Jellyfin green."
+      },
+      "finalConditions": {
+        "recordedAt": "2026-10-10T15:19:50.284829+08:00",
+        "groups": [
+          {
+            "name": "Network Link",
+            "isActive": false
+          },
+          {
+            "name": "Thermal State",
+            "isActive": false
+          },
+          {
+            "name": "GPU Performance State",
+            "isActive": false
+          }
+        ],
+        "activeCount": 0,
+        "mutationPerformed": false
+      },
+      "finalConfirmation": {
+        "recordedAt": "2026-10-10T15:25:44.216455+08:00",
+        "device": "iphone13",
+        "name": "iPhone",
+        "model": "iPhone14,5",
+        "os": "16.3.1",
+        "systemBuild": "20D67",
+        "freshUSBIdentity": true,
+        "sourceInputManifestMatches": true,
+        "sourceAndBinariesMatchLatest": true,
+        "actualEnvironment": {},
+        "actualArguments": [],
+        "normalHomeNASOnline": true,
+        "playerClosed": true,
+        "actualUIInspected": true,
+        "evidence": "final-confirmation.png/xml",
+        "mutationPerformed": false,
+        "normalHomeJellyfinOnline": true,
+        "normalHomeDSMOnline": true,
+        "otherServiceStatus": "Radarr/Sonarr orange warning; iPad Prowlarr orange warning, not all services green"
+      },
+      "finalPreferences": {
+        "recordedAt": "2026-10-10T15:19:52.356235+08:00",
+        "device": "iphone13",
+        "rawPreferencesStoredPrivately": true,
+        "nonDiagnosticPreferenceCount": 25
+      },
+      "historicalEventIDsExcluded": 1000,
+      "directoryResponseCounts": {
+        "success": 21
+      },
+      "apiFailureCodes": {},
+      "s19ColdResume": {
+        "sameExactKeyVerifiedPrivately": true,
+        "savedBeforeColdRestartSeconds": 58.28565841,
+        "firstClockSeconds": 58.401,
+        "firstClockMinusSavedSeconds": 0.115342,
+        "stableExitPersistedSeconds": 92.080275267,
+        "snapshots": [
+          {
+            "capture": "normalwifi-from-head-resume-s19-files/closed-stable-private.plist",
+            "positionSeconds": 45.503102409,
+            "durationSeconds": 13698.368
+          },
+          {
+            "capture": "normalwifi-cold-reopen-resume-s19-files/before-private.plist",
+            "positionSeconds": 58.28565841,
+            "durationSeconds": 13698.368
+          },
+          {
+            "capture": "normalwifi-cold-reopen-resume-s19-files/closed-stable-private.plist",
+            "positionSeconds": 92.080275267,
+            "durationSeconds": 13698.368
+          }
+        ],
+        "scope": "One near-start cold process reopen, not deep seek or long-run verification"
+      }
+    }
+  },
+  "windows": [
+    {
+      "device": "ipad",
+      "label": "normalwifi-baseline-resume-s01-files",
+      "window": {
+        "boundedEndActionSeconds": 60.47848606109619,
+        "plannedWindowSeconds": 60,
+        "deduplicatedWindowEventCount": 104,
+        "snapshotsRead": 8
+      },
+      "exit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "exitTitle": {
+        "recordedAt": "2026-10-10T15:08:52.864720+08:00",
+        "entry": "files",
+        "immediateExitHasContinueWatching": true,
+        "settledExitHasContinueWatching": true,
+        "settledExitHasPreview": false,
+        "settledExitHasFromHead": true,
+        "actualUIInspected": true,
+        "playerClosed": true,
+        "evidence": [
+          "closed.png",
+          "closed-stable.png"
+        ],
+        "scope": "File preview title only; Jellyfin resume data uses a separate store and is not accepted by this check.",
+        "visualObservation": "Immediate and settled matching file Continue/from-head images both viewed."
+      },
+      "screenInspection": {
+        "recordedAt": "2026-10-10T15:09:53.954144+08:00",
+        "actualUIInspected": true,
+        "filmBodyVerified": true,
+        "evidence": [
+          "t30.png",
+          "t60.png",
+          "closed-stable.png"
+        ],
+        "observed": "Opening mist/encoded production credit then animated meadow/houses; stable matching preview and Continue Watching.",
+        "limitations": [
+          "Sparse frames and zero sampled stall counts are not full flow/audio/subtitle acceptance."
+        ]
+      },
+      "readAttempts": [
+        {
+          "requestStart": 1791616064.132776,
+          "responseEnd": 1791616064.335865,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791616065.697228,
+          "responseEnd": 1791616065.697419,
+          "attempt": 1,
+          "result": "TOOL_READ_FAILURE",
+          "errorType": "SocketError"
+        },
+        {
+          "requestStart": 1791616065.955683,
+          "responseEnd": 1791616066.088234,
+          "attempt": 2,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791616067.660156,
+          "responseEnd": 1791616067.692068,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791616074.722446,
+          "responseEnd": 1791616074.753655,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791616094.689412,
+          "responseEnd": 1791616094.7213628,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791616124.815267,
+          "responseEnd": 1791616124.842728,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791616128.962239,
+          "responseEnd": 1791616128.9977548,
+          "attempt": 1,
+          "result": "success"
+        }
+      ],
+      "phases": {
+        "rendererTraces": [
+          {
+            "traceID": "35357E7F",
+            "engine": "KSPlayer",
+            "firstClockSignal": {
+              "actionSeconds": 2.092935,
+              "event": "first_frame",
+              "fields": {
+                "firstFramePositionSeconds": 0.059,
+                "planID": "D417D087",
+                "playbackTraceID": "35357E7F",
+                "routeID": "B4D2164F",
+                "tapToFirstFrameMs": 1087
+              }
+            },
+            "firstObservedAdvancingClockActionSeconds": 3.201648,
+            "maxReportedStallCount": 0,
+            "counterDecreaseWithinTrace": false,
+            "stallEpisodes": [],
+            "handoffEvents": [],
+            "handoffConfiguration": [],
+            "segmentMetricCount": 0,
+            "rangeMetricCount": 2,
+            "urlMetricsCellularYes": 0
+          }
+        ],
+        "failureSignals": [
+          {
+            "actionSeconds": 1.751775,
+            "event": "proxy_transfer_finished",
+            "fields": {
+              "deliveredBytes": 282031,
+              "durationMs": 388,
+              "errorCode": 54,
+              "errorDomain": "unrecognized",
+              "expectedBytes": 33554432,
+              "finishSource": "clientFailed",
+              "hlsRole": "-",
+              "playbackTraceID": "35357E7F",
+              "proxyKind": "mediaRange",
+              "responseEndOffset": 33554431,
+              "responseStartOffset": 0,
+              "result": "unrecognized",
+              "retries": 0,
+              "status": 206,
+              "taskReceivedBytes": 282031,
+              "transferID": "2B8503EE-C403-4DD1-90C8-D014BEE65F17",
+              "transportErrorCode": 54,
+              "transportErrorKind": "posix",
+              "upstreamTaskIndex": 1
+            }
+          },
+          {
+            "actionSeconds": 1.752507,
+            "event": "proxy_transfer_finished",
+            "fields": {
+              "callbackAfterClientFinish": "true",
+              "cumulativeReceivedBytes": 282031,
+              "errorCode": -999,
+              "errorDomain": "NSURLErrorDomain",
+              "expectedBytes": 33554432,
+              "hlsRole": "-",
+              "playbackTraceID": "35357E7F",
+              "proxyKind": "mediaRange",
+              "stage": "upstreamTaskCompleted",
+              "taskReceivedBytes": 282031,
+              "transferID": "2B8503EE-C403-4DD1-90C8-D014BEE65F17",
+              "upstreamCancelToCallbackMs": 1,
+              "upstreamCancellationRequested": "true",
+              "upstreamCompletionObserved": "true",
+              "upstreamIssuedToCallbackMs": 389,
+              "upstreamTaskIndex": 1
+            }
+          }
+        ],
+        "acceptance": "Unchanged: recorded waits/stalls retained, no playback quality PASS or causal speed claim.",
+        "limits": [
+          "Engine waiting/empty is not proof of network starvation; retain waiting reason and reserve.",
+          "A unique HLS trace within warmup is a temporal association, not proof of a network or server root cause.",
+          "Transfer intervals overlap; late terminals stay bounded. Unrecognized result strings do not mean success.",
+          "First clock marker may reflect a prepared paused position, not advancing output or presentation.",
+          "First observed progress is limited by sparse telemetry; phase is descriptive, not an exact startup boundary.",
+          "Sampled stall intervals are observation spans, not display hitches or precise buffer durations.",
+          "Stalls are per trace; never subtract counters across renderers. Open episodes remain censored.",
+          "Missing metrics remain unknown; no screen, audio, full-frame, cache or competitor acceptance."
+        ]
+      }
+    },
+    {
+      "device": "ipad",
+      "label": "normalwifi-baseline-resume-s01-jellyfin",
+      "window": {
+        "boundedEndActionSeconds": 60.74516725540161,
+        "plannedWindowSeconds": 60,
+        "deduplicatedWindowEventCount": 167,
+        "snapshotsRead": 8
+      },
+      "exit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "exitTitle": {
+        "recordedAt": "2026-10-10T15:10:28.338818+08:00",
+        "entry": "jellyfin",
+        "immediateExitHasContinueWatching": true,
+        "settledExitHasContinueWatching": true,
+        "settledExitHasPreview": false,
+        "settledExitHasFromHead": true,
+        "actualUIInspected": true,
+        "playerClosed": true,
+        "evidence": [
+          "closed.png",
+          "closed-stable.png"
+        ],
+        "scope": "File preview title only; Jellyfin resume data uses a separate store and is not accepted by this check.",
+        "visualObservation": "Matching Jellyfin detail returned in portrait with Continue Watching and From Head; separate Jellyfin store, no extended resume acceptance."
+      },
+      "screenInspection": {
+        "recordedAt": "2026-10-10T15:11:33.639608+08:00",
+        "actualUIInspected": true,
+        "filmBodyVerified": true,
+        "evidence": [
+          "t60.png",
+          "closed-stable.png"
+        ],
+        "observed": "S01 actual animated meadow/houses; correct matching Jellyfin detail after exit.",
+        "limitations": [
+          "No full-frame/audio/subtitle test; no Jellyfin cold-resume accepted by a button display."
+        ]
+      },
+      "readAttempts": [
+        {
+          "requestStart": 1791616157.335603,
+          "responseEnd": 1791616157.550848,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791616159.93856,
+          "responseEnd": 1791616159.964364,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791616161.166027,
+          "responseEnd": 1791616161.198512,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791616168.118558,
+          "responseEnd": 1791616168.1489751,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791616188.165469,
+          "responseEnd": 1791616188.194009,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791616218.29876,
+          "responseEnd": 1791616218.32991,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791616223.9213598,
+          "responseEnd": 1791616223.949464,
+          "attempt": 1,
+          "result": "success"
+        }
+      ],
+      "phases": {
+        "rendererTraces": [
+          {
+            "traceID": "409EC85B",
+            "engine": "KSPlayer",
+            "firstClockSignal": {
+              "actionSeconds": 1.885304,
+              "event": "first_frame",
+              "fields": {
+                "firstFramePositionSeconds": 0.101,
+                "planID": "29C4C09F",
+                "playbackTraceID": "409EC85B",
+                "routeID": "66A92201",
+                "tapToFirstFrameMs": 823
+              }
+            },
+            "firstObservedAdvancingClockActionSeconds": 2.910091,
+            "maxReportedStallCount": 0,
+            "counterDecreaseWithinTrace": false,
+            "stallEpisodes": [],
+            "handoffEvents": [],
+            "handoffConfiguration": [],
+            "segmentMetricCount": 0,
+            "rangeMetricCount": 3,
+            "urlMetricsCellularYes": 0
+          }
+        ],
+        "failureSignals": [
+          {
+            "actionSeconds": 1.484782,
+            "event": "proxy_transfer_finished",
+            "fields": {
+              "deliveredBytes": 205331,
+              "durationMs": 213,
+              "errorCode": 54,
+              "errorDomain": "unrecognized",
+              "expectedBytes": 33554432,
+              "finishSource": "clientFailed",
+              "hlsRole": "-",
+              "playbackTraceID": "409EC85B",
+              "proxyKind": "mediaRange",
+              "responseEndOffset": 33554431,
+              "responseStartOffset": 0,
+              "result": "unrecognized",
+              "retries": 0,
+              "status": 206,
+              "taskReceivedBytes": 205331,
+              "transferID": "EBBC325E-CA0C-4272-8DC0-FB286794E899",
+              "transportErrorCode": 54,
+              "transportErrorKind": "posix",
+              "upstreamTaskIndex": 1
+            }
+          },
+          {
+            "actionSeconds": 1.48587,
+            "event": "proxy_transfer_finished",
+            "fields": {
+              "callbackAfterClientFinish": "true",
+              "cumulativeReceivedBytes": 205331,
+              "errorCode": -999,
+              "errorDomain": "NSURLErrorDomain",
+              "expectedBytes": 33554432,
+              "hlsRole": "-",
+              "playbackTraceID": "409EC85B",
+              "proxyKind": "mediaRange",
+              "stage": "upstreamTaskCompleted",
+              "taskReceivedBytes": 205331,
+              "transferID": "EBBC325E-CA0C-4272-8DC0-FB286794E899",
+              "upstreamCancelToCallbackMs": 1,
+              "upstreamCancellationRequested": "true",
+              "upstreamCompletionObserved": "true",
+              "upstreamIssuedToCallbackMs": 214,
+              "upstreamTaskIndex": 1
+            }
+          }
+        ],
+        "acceptance": "Unchanged: recorded waits/stalls retained, no playback quality PASS or causal speed claim.",
+        "limits": [
+          "Engine waiting/empty is not proof of network starvation; retain waiting reason and reserve.",
+          "A unique HLS trace within warmup is a temporal association, not proof of a network or server root cause.",
+          "Transfer intervals overlap; late terminals stay bounded. Unrecognized result strings do not mean success.",
+          "First clock marker may reflect a prepared paused position, not advancing output or presentation.",
+          "First observed progress is limited by sparse telemetry; phase is descriptive, not an exact startup boundary.",
+          "Sampled stall intervals are observation spans, not display hitches or precise buffer durations.",
+          "Stalls are per trace; never subtract counters across renderers. Open episodes remain censored.",
+          "Missing metrics remain unknown; no screen, audio, full-frame, cache or competitor acceptance."
+        ]
+      }
+    },
+    {
+      "device": "ipad",
+      "label": "normalwifi-cold-reopen-resume-s19-files",
+      "window": {
+        "boundedEndActionSeconds": 45.40700387954712,
+        "plannedWindowSeconds": 45,
+        "deduplicatedWindowEventCount": 344,
+        "snapshotsRead": 8
+      },
+      "exit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "exitTitle": {
+        "recordedAt": "2026-10-10T15:06:47.567888+08:00",
+        "entry": "files",
+        "immediateExitHasContinueWatching": true,
+        "settledExitHasContinueWatching": true,
+        "settledExitHasPreview": false,
+        "settledExitHasFromHead": true,
+        "actualUIInspected": true,
+        "playerClosed": true,
+        "evidence": [
+          "closed.png",
+          "closed-stable.png"
+        ],
+        "scope": "File preview title only; Jellyfin resume data uses a separate store and is not accepted by this check.",
+        "visualObservation": "Immediate mid-rotation and stable portrait preview both show Continue Watching and From Head after second exit."
+      },
+      "screenInspection": {
+        "recordedAt": "2026-10-10T15:07:44.230693+08:00",
+        "actualUIInspected": true,
+        "filmBodyVerified": true,
+        "evidence": [
+          "t30.png",
+          "t45.png",
+          "closed.png",
+          "closed-stable.png"
+        ],
+        "observed": "S19 ring-forging hands/table then king scene at01:34; correct matching preview with Continue Watching both immediate and stable.",
+        "limitations": [
+          "Two telemetry waits retained; sparse frames do not establish full visual flow/audio/subtitle/HDR, deep seek or long-run quality."
+        ]
+      },
+      "readAttempts": [
+        {
+          "requestStart": 1791615954.737492,
+          "responseEnd": 1791615954.953068,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791615956.0516639,
+          "responseEnd": 1791615956.086329,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791615958.553765,
+          "responseEnd": 1791615958.5784209,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791615965.484842,
+          "responseEnd": 1791615965.517545,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791615985.623668,
+          "responseEnd": 1791615985.649427,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791616000.361519,
+          "responseEnd": 1791616000.389013,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791616003.526734,
+          "responseEnd": 1791616003.560778,
+          "attempt": 1,
+          "result": "success"
+        }
+      ],
+      "phases": {
+        "rendererTraces": [
+          {
+            "traceID": "4ED3F3E6",
+            "engine": "KSPlayer",
+            "firstClockSignal": {
+              "actionSeconds": 6.92417,
+              "event": "first_frame",
+              "fields": {
+                "firstFramePositionSeconds": 59.391,
+                "planID": "140BEBBD",
+                "playbackTraceID": "4ED3F3E6",
+                "routeID": "058A81D1",
+                "tapToFirstFrameMs": 4338
+              }
+            },
+            "firstObservedAdvancingClockActionSeconds": 6.923823,
+            "maxReportedStallCount": 2,
+            "counterDecreaseWithinTrace": false,
+            "stallEpisodes": [
+              {
+                "startActionSeconds": 3.912194,
+                "phaseAtStart": "beforeObservedAdvancingClock",
+                "startFields": {
+                  "audioBitrate": 0,
+                  "bufferLimitSeconds": 6,
+                  "bufferTargetSeconds": 1,
+                  "bufferedAheadSeconds": 0,
+                  "bytesRead": 4144710,
+                  "currentSeconds": 0,
+                  "durationSeconds": 13698.368,
+                  "elapsedMs": 1092,
+                  "engine": "KSPlayer",
+                  "ksPlayerState": "-",
+                  "planID": "140BEBBD",
+                  "playbackTraceID": "4ED3F3E6",
+                  "routeID": "058A81D1",
+                  "sampleReason": "playbackTick",
+                  "stallActive": "yes",
+                  "stallCount": 1,
+                  "stallDurationMs": 0,
+                  "videoBitrate": 0
+                },
+                "endActionSeconds": 6.923823,
+                "sampledSpanSeconds": 3.0116289999999997,
+                "reportedDurationMs": 3003
+              },
+              {
+                "startActionSeconds": 39.935429,
+                "phaseAtStart": "afterObservedAdvancingClock",
+                "startFields": {
+                  "audioBitrate": 2620968,
+                  "bufferLimitSeconds": 16,
+                  "bufferTargetSeconds": 4,
+                  "bufferedAheadSeconds": 0.8341666439942514,
+                  "bytesRead": 316244947,
+                  "currentSeconds": 91.412,
+                  "deltaSeconds": 0.117,
+                  "durationSeconds": 13698.368,
+                  "elapsedMs": 37094,
+                  "engine": "KSPlayer",
+                  "ksPlayerState": "-",
+                  "planID": "140BEBBD",
+                  "playbackTraceID": "4ED3F3E6",
+                  "routeID": "058A81D1",
+                  "sampleReason": "playbackTick",
+                  "stallActive": "yes",
+                  "stallCount": 2,
+                  "stallDurationMs": 0,
+                  "videoBitrate": 67763876
+                },
+                "endActionSeconds": null,
+                "sampledSpanSeconds": null,
+                "reportedDurationMs": null,
+                "rightCensoredAtActionSeconds": 41.806713
+              }
+            ],
+            "handoffEvents": [
+              {
+                "actionSeconds": 14.015996,
+                "event": "automatic_downshift_requested",
+                "fields": {
+                  "attempt": 1,
+                  "bufferTargetSeconds": 4,
+                  "bufferedAheadSeconds": 1.249958298191089,
+                  "deliveryCapacity": 38186697,
+                  "deliveryCapacitySource": "completedTransfer",
+                  "engine": "KSPlayer",
+                  "planID": "140BEBBD",
+                  "playbackTraceID": "4ED3F3E6",
+                  "reason": "deliveryBelowSourceBitrate",
+                  "routeID": "058A81D1",
+                  "runtimeDemand": 11492548
+                }
+              },
+              {
+                "actionSeconds": 18.711692,
+                "event": "replacement_warmup_started",
+                "fields": {
+                  "engine": "KSPlayer",
+                  "planID": "140BEBBD",
+                  "playbackTraceID": "4ED3F3E6",
+                  "routeID": "058A81D1"
+                }
+              },
+              {
+                "actionSeconds": 41.652778,
+                "event": "replacement_candidate_aligned",
+                "fields": {
+                  "accessLogStalls": 2,
+                  "availableReserveSeconds": 0.48762498299569756,
+                  "bufferEmpty": "false",
+                  "candidateBufferAheadSeconds": 1.1469888885555548,
+                  "candidateSeconds": 91.411666667,
+                  "current": 91.412,
+                  "deadlineRemainingMs": 17349,
+                  "elapsedMs": 22650,
+                  "engine": "KSPlayer",
+                  "errorDomain": "-",
+                  "framePTS": 91.38294444444445,
+                  "indicatedBitrate": 1000000,
+                  "likelyToKeepUp": "false",
+                  "liveSeconds": 91.412,
+                  "loadedRangeCount": 1,
+                  "observedBitrate": 1175824,
+                  "planID": "140BEBBD",
+                  "playbackTraceID": "4ED3F3E6",
+                  "preparationLeadSeconds": 0.23762498299569756,
+                  "routeID": "058A81D1",
+                  "target": 71.3826249829957,
+                  "timeControlStatus": "unrecognized",
+                  "waitingReason": "-"
+                }
+              },
+              {
+                "actionSeconds": 41.65405,
+                "event": "replacement_committed",
+                "fields": {
+                  "candidateBufferAheadSeconds": 1.1469888885555548,
+                  "candidateSeconds": 91.411666667,
+                  "engine": "KSPlayer",
+                  "planID": "140BEBBD",
+                  "playbackTraceID": "4ED3F3E6",
+                  "routeID": "058A81D1",
+                  "seconds": 91.412
+                }
+              }
+            ],
+            "handoffConfiguration": [],
+            "segmentMetricCount": 0,
+            "rangeMetricCount": 15,
+            "urlMetricsCellularYes": 0
+          },
+          {
+            "traceID": "6B1D57F5",
+            "engine": "AVPlayer",
+            "firstClockSignal": {
+              "actionSeconds": 41.936997,
+              "event": "first_frame",
+              "fields": {
+                "firstFramePositionSeconds": 91.5,
+                "planID": "A305C545",
+                "playbackTraceID": "6B1D57F5",
+                "routeID": "857229D0",
+                "tapToFirstFrameMs": 23294
+              }
+            },
+            "firstObservedAdvancingClockActionSeconds": 41.936566,
+            "maxReportedStallCount": 0,
+            "counterDecreaseWithinTrace": false,
+            "stallEpisodes": [],
+            "handoffEvents": [],
+            "handoffConfiguration": [
+              {
+                "actionSeconds": 41.655396,
+                "event": "av_handoff_boundary",
+                "fields": {
+                  "automaticallyWaits": "no",
+                  "avTimeControlState": 0,
+                  "bufferAheadSeconds": 1.1469888885555548,
+                  "bufferEmpty": "no",
+                  "currentSeconds": 91.411666667,
+                  "engine": "AVPlayer",
+                  "likelyToKeepUp": "no",
+                  "loadedRangeCount": 1,
+                  "planID": "A305C545",
+                  "playbackTraceID": "6B1D57F5",
+                  "preferredForwardBufferSeconds": 0.5,
+                  "rate": 0,
+                  "routeID": "857229D0",
+                  "stage": "beforeConfiguration",
+                  "videoOutputCount": 0,
+                  "waitingReason": "-"
+                }
+              },
+              {
+                "actionSeconds": 41.65585,
+                "event": "av_handoff_boundary",
+                "fields": {
+                  "automaticallyWaits": "yes",
+                  "avTimeControlState": 0,
+                  "bufferAheadSeconds": 1.1469888885555548,
+                  "bufferEmpty": "no",
+                  "currentSeconds": 91.411666667,
+                  "engine": "AVPlayer",
+                  "likelyToKeepUp": "no",
+                  "loadedRangeCount": 1,
+                  "planID": "A305C545",
+                  "playbackTraceID": "6B1D57F5",
+                  "preferredForwardBufferSeconds": 0.5,
+                  "rate": 0,
+                  "routeID": "857229D0",
+                  "stage": "afterWaitingPolicy",
+                  "videoOutputCount": 0,
+                  "waitingReason": "-"
+                }
+              },
+              {
+                "actionSeconds": 41.656774,
+                "event": "av_handoff_boundary",
+                "fields": {
+                  "automaticallyWaits": "yes",
+                  "avTimeControlState": 0,
+                  "bufferAheadSeconds": 1.1469888885555548,
+                  "bufferEmpty": "no",
+                  "currentSeconds": 91.411666667,
+                  "engine": "AVPlayer",
+                  "likelyToKeepUp": "no",
+                  "loadedRangeCount": 1,
+                  "planID": "A305C545",
+                  "playbackTraceID": "6B1D57F5",
+                  "preferredForwardBufferSeconds": 3,
+                  "rate": 0,
+                  "routeID": "857229D0",
+                  "stage": "afterForwardBuffer",
+                  "videoOutputCount": 0,
+                  "waitingReason": "-"
+                }
+              },
+              {
+                "actionSeconds": 41.65715,
+                "event": "av_handoff_boundary",
+                "fields": {
+                  "automaticallyWaits": "yes",
+                  "avTimeControlState": 0,
+                  "bufferAheadSeconds": 1.1469888885555548,
+                  "bufferEmpty": "no",
+                  "currentSeconds": 91.411666667,
+                  "engine": "AVPlayer",
+                  "likelyToKeepUp": "no",
+                  "loadedRangeCount": 1,
+                  "planID": "A305C545",
+                  "playbackTraceID": "6B1D57F5",
+                  "preferredForwardBufferSeconds": 3,
+                  "rate": 0,
+                  "routeID": "857229D0",
+                  "stage": "afterTextStyle",
+                  "videoOutputCount": 0,
+                  "waitingReason": "-"
+                }
+              },
+              {
+                "actionSeconds": 41.657621,
+                "event": "av_handoff_boundary",
+                "fields": {
+                  "automaticallyWaits": "yes",
+                  "avTimeControlState": 0,
+                  "bufferAheadSeconds": 1.1469888885555548,
+                  "bufferEmpty": "no",
+                  "currentSeconds": 91.411666667,
+                  "engine": "AVPlayer",
+                  "likelyToKeepUp": "no",
+                  "loadedRangeCount": 1,
+                  "planID": "A305C545",
+                  "playbackTraceID": "6B1D57F5",
+                  "preferredForwardBufferSeconds": 3,
+                  "rate": 0,
+                  "routeID": "857229D0",
+                  "stage": "afterVideoOutput",
+                  "videoOutputCount": 1,
+                  "waitingReason": "-"
+                }
+              },
+              {
+                "actionSeconds": 41.807741,
+                "event": "av_handoff_boundary",
+                "fields": {
+                  "automaticallyWaits": "yes",
+                  "avTimeControlState": 0,
+                  "bufferAheadSeconds": 1.1469868885555599,
+                  "bufferEmpty": "no",
+                  "currentSeconds": 91.411668667,
+                  "engine": "AVPlayer",
+                  "likelyToKeepUp": "yes",
+                  "loadedRangeCount": 1,
+                  "planID": "A305C545",
+                  "playbackTraceID": "6B1D57F5",
+                  "preferredForwardBufferSeconds": 3,
+                  "rate": 0,
+                  "routeID": "857229D0",
+                  "stage": "beforeResume",
+                  "videoOutputCount": 1,
+                  "waitingReason": "-"
+                }
+              },
+              {
+                "actionSeconds": 41.808372,
+                "event": "av_handoff_boundary",
+                "fields": {
+                  "automaticallyWaits": "yes",
+                  "avTimeControlState": 1,
+                  "bufferAheadSeconds": 1.1469868885555599,
+                  "bufferEmpty": "no",
+                  "currentSeconds": 91.411668667,
+                  "engine": "AVPlayer",
+                  "likelyToKeepUp": "yes",
+                  "loadedRangeCount": 1,
+                  "planID": "A305C545",
+                  "playbackTraceID": "6B1D57F5",
+                  "preferredForwardBufferSeconds": 3,
+                  "rate": 1,
+                  "routeID": "857229D0",
+                  "stage": "afterResume",
+                  "videoOutputCount": 1,
+                  "waitingReason": "AVPlayerWaitingWhileEvaluatingBufferingRateReason"
+                }
+              }
+            ],
+            "segmentMetricCount": 9,
+            "rangeMetricCount": 0,
+            "urlMetricsCellularYes": 0
+          }
+        ],
+        "failureSignals": [
+          {
+            "actionSeconds": 3.028986,
+            "event": "proxy_transfer_finished",
+            "fields": {
+              "deliveredBytes": 286371,
+              "durationMs": 81,
+              "errorCode": 54,
+              "errorDomain": "unrecognized",
+              "expectedBytes": 33554432,
+              "finishSource": "clientFailed",
+              "hlsRole": "-",
+              "playbackTraceID": "4ED3F3E6",
+              "proxyKind": "mediaRange",
+              "responseEndOffset": 33554431,
+              "responseStartOffset": 0,
+              "result": "unrecognized",
+              "retries": 0,
+              "status": 206,
+              "taskReceivedBytes": 286371,
+              "transferID": "1D251360-059B-4A63-BE35-796CEA06BD58",
+              "transportErrorCode": 54,
+              "transportErrorKind": "posix",
+              "upstreamTaskIndex": 1
+            }
+          },
+          {
+            "actionSeconds": 3.060022,
+            "event": "proxy_transfer_finished",
+            "fields": {
+              "callbackAfterClientFinish": "true",
+              "cumulativeReceivedBytes": 286371,
+              "errorCode": -999,
+              "errorDomain": "NSURLErrorDomain",
+              "expectedBytes": 33554432,
+              "hlsRole": "-",
+              "playbackTraceID": "4ED3F3E6",
+              "proxyKind": "mediaRange",
+              "stage": "upstreamTaskCompleted",
+              "taskReceivedBytes": 286371,
+              "transferID": "1D251360-059B-4A63-BE35-796CEA06BD58",
+              "upstreamCancelToCallbackMs": 2,
+              "upstreamCancellationRequested": "true",
+              "upstreamCompletionObserved": "true",
+              "upstreamIssuedToCallbackMs": 85,
+              "upstreamTaskIndex": 1
+            }
+          },
+          {
+            "actionSeconds": 3.566145,
+            "event": "proxy_transfer_finished",
+            "fields": {
+              "deliveredBytes": 2287503,
+              "durationMs": 519,
+              "errorCode": 54,
+              "errorDomain": "unrecognized",
+              "expectedBytes": 33554432,
+              "finishSource": "clientFailed",
+              "hlsRole": "-",
+              "playbackTraceID": "4ED3F3E6",
+              "proxyKind": "mediaRange",
+              "responseEndOffset": 33568636,
+              "responseStartOffset": 14205,
+              "result": "unrecognized",
+              "retries": 0,
+              "status": 206,
+              "taskReceivedBytes": 2287503,
+              "transferID": "31ACA563-7EC1-4E02-93CB-A0A16FE365BF",
+              "transportErrorCode": 54,
+              "transportErrorKind": "posix",
+              "upstreamTaskIndex": 1
+            }
+          },
+          {
+            "actionSeconds": 3.566852,
+            "event": "proxy_transfer_finished",
+            "fields": {
+              "callbackAfterClientFinish": "true",
+              "cumulativeReceivedBytes": 2287503,
+              "errorCode": -999,
+              "errorDomain": "NSURLErrorDomain",
+              "expectedBytes": 33554432,
+              "hlsRole": "-",
+              "playbackTraceID": "4ED3F3E6",
+              "proxyKind": "mediaRange",
+              "stage": "upstreamTaskCompleted",
+              "taskReceivedBytes": 2287503,
+              "transferID": "31ACA563-7EC1-4E02-93CB-A0A16FE365BF",
+              "upstreamCancelToCallbackMs": 1,
+              "upstreamCancellationRequested": "true",
+              "upstreamCompletionObserved": "true",
+              "upstreamIssuedToCallbackMs": 520,
+              "upstreamTaskIndex": 1
+            }
+          },
+          {
+            "actionSeconds": 4.687558,
+            "event": "proxy_transfer_finished",
+            "fields": {
+              "deliveredBytes": 260301,
+              "durationMs": 104,
+              "errorCode": 54,
+              "errorDomain": "unrecognized",
+              "expectedBytes": 33554432,
+              "finishSource": "clientFailed",
+              "hlsRole": "-",
+              "playbackTraceID": "4ED3F3E6",
+              "proxyKind": "mediaRange",
+              "responseEndOffset": 35235233,
+              "responseStartOffset": 1680802,
+              "result": "unrecognized",
+              "retries": 0,
+              "status": 206,
+              "taskReceivedBytes": 260301,
+              "transferID": "360BF1EB-A4F6-4764-B712-7D6A10F2A6E1",
+              "transportErrorCode": 54,
+              "transportErrorKind": "posix",
+              "upstreamTaskIndex": 1
+            }
+          },
+          {
+            "actionSeconds": 4.688261,
+            "event": "proxy_transfer_finished",
+            "fields": {
+              "callbackAfterClientFinish": "true",
+              "cumulativeReceivedBytes": 260301,
+              "errorCode": -999,
+              "errorDomain": "NSURLErrorDomain",
+              "expectedBytes": 33554432,
+              "hlsRole": "-",
+              "playbackTraceID": "4ED3F3E6",
+              "proxyKind": "mediaRange",
+              "stage": "upstreamTaskCompleted",
+              "taskReceivedBytes": 260301,
+              "transferID": "360BF1EB-A4F6-4764-B712-7D6A10F2A6E1",
+              "upstreamCancelToCallbackMs": 1,
+              "upstreamCancellationRequested": "true",
+              "upstreamCompletionObserved": "true",
+              "upstreamIssuedToCallbackMs": 105,
+              "upstreamTaskIndex": 1
+            }
+          },
+          {
+            "actionSeconds": 35.991789,
+            "event": "proxy_transfer_finished",
+            "fields": {
+              "deliveredBytes": 7951,
+              "durationMs": 9968,
+              "errorCode": 32,
+              "errorDomain": "unrecognized",
+              "expectedBytes": 465864,
+              "finishSource": "clientBodySend",
+              "hlsRole": "segment",
+              "playbackTraceID": "6B1D57F5",
+              "proxyKind": "hlsChild",
+              "responseStartOffset": 0,
+              "result": "unrecognized",
+              "retries": 0,
+              "segmentOrdinal": 17,
+              "status": 200,
+              "taskReceivedBytes": 7951,
+              "transferID": "0BDF77C0-1593-458C-A62C-97ED04EB9301",
+              "transportErrorCode": 32,
+              "transportErrorKind": "posix",
+              "upstreamTaskIndex": 1
+            }
+          },
+          {
+            "actionSeconds": 35.992644,
+            "event": "proxy_transfer_finished",
+            "fields": {
+              "callbackAfterClientFinish": "true",
+              "cumulativeReceivedBytes": 7951,
+              "errorCode": -999,
+              "errorDomain": "NSURLErrorDomain",
+              "expectedBytes": 465864,
+              "hlsRole": "segment",
+              "playbackTraceID": "6B1D57F5",
+              "proxyKind": "hlsChild",
+              "segmentOrdinal": 17,
+              "stage": "upstreamTaskCompleted",
+              "taskReceivedBytes": 7951,
+              "transferID": "0BDF77C0-1593-458C-A62C-97ED04EB9301",
+              "upstreamCancelToCallbackMs": 1,
+              "upstreamCancellationRequested": "true",
+              "upstreamCompletionObserved": "true",
+              "upstreamIssuedToCallbackMs": 9970,
+              "upstreamTaskIndex": 1
+            }
+          },
+          {
+            "actionSeconds": 41.793259,
+            "event": "proxy_transfer_finished",
+            "fields": {
+              "deliveredBytes": 325405154,
+              "durationMs": 36986,
+              "errorCode": 54,
+              "errorDomain": "unrecognized",
+              "expectedBytes": 33554432,
+              "finishSource": "clientFailed",
+              "hlsRole": "-",
+              "playbackTraceID": "4ED3F3E6",
+              "proxyKind": "mediaRange",
+              "responseEndOffset": 484841765,
+              "responseStartOffset": 149297446,
+              "result": "unrecognized",
+              "retries": 0,
+              "status": 206,
+              "taskReceivedBytes": 23415266,
+              "transferID": "37CCBAD0-F84D-4C25-B3B9-CBBE512957B3",
+              "transportErrorCode": 54,
+              "transportErrorKind": "posix",
+              "upstreamTaskIndex": 10
+            }
+          },
+          {
+            "actionSeconds": 41.794004,
+            "event": "proxy_transfer_finished",
+            "fields": {
+              "callbackAfterClientFinish": "true",
+              "cumulativeReceivedBytes": 325405154,
+              "errorCode": -999,
+              "errorDomain": "NSURLErrorDomain",
+              "expectedBytes": 33554432,
+              "hlsRole": "-",
+              "playbackTraceID": "4ED3F3E6",
+              "proxyKind": "mediaRange",
+              "stage": "upstreamTaskCompleted",
+              "taskReceivedBytes": 23415266,
+              "transferID": "37CCBAD0-F84D-4C25-B3B9-CBBE512957B3",
+              "upstreamCancelToCallbackMs": 1,
+              "upstreamCancellationRequested": "true",
+              "upstreamCompletionObserved": "true",
+              "upstreamIssuedToCallbackMs": 2793,
+              "upstreamTaskIndex": 10
+            }
+          }
+        ],
+        "acceptance": "Unchanged: recorded waits/stalls retained, no playback quality PASS or causal speed claim.",
+        "limits": [
+          "Engine waiting/empty is not proof of network starvation; retain waiting reason and reserve.",
+          "A unique HLS trace within warmup is a temporal association, not proof of a network or server root cause.",
+          "Transfer intervals overlap; late terminals stay bounded. Unrecognized result strings do not mean success.",
+          "First clock marker may reflect a prepared paused position, not advancing output or presentation.",
+          "First observed progress is limited by sparse telemetry; phase is descriptive, not an exact startup boundary.",
+          "Sampled stall intervals are observation spans, not display hitches or precise buffer durations.",
+          "Stalls are per trace; never subtract counters across renderers. Open episodes remain censored.",
+          "Missing metrics remain unknown; no screen, audio, full-frame, cache or competitor acceptance."
+        ]
+      }
+    },
+    {
+      "device": "ipad",
+      "label": "normalwifi-from-head-resume-s19-files",
+      "window": {
+        "boundedEndActionSeconds": 60.44020986557007,
+        "plannedWindowSeconds": 60,
+        "deduplicatedWindowEventCount": 186,
+        "snapshotsRead": 8
+      },
+      "exit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "exitTitle": {
+        "recordedAt": "2026-10-10T15:05:12.283948+08:00",
+        "entry": "files",
+        "immediateExitHasContinueWatching": true,
+        "settledExitHasContinueWatching": true,
+        "settledExitHasPreview": false,
+        "settledExitHasFromHead": true,
+        "actualUIInspected": true,
+        "playerClosed": true,
+        "evidence": [
+          "closed.png",
+          "closed-stable.png"
+        ],
+        "scope": "File preview title only; Jellyfin resume data uses a separate store and is not accepted by this check.",
+        "visualObservation": "Immediate exit still mid-rotation, stable portrait preview shows Continue Watching and From Head."
+      },
+      "screenInspection": {
+        "recordedAt": "2026-10-10T15:06:04.405516+08:00",
+        "actualUIInspected": true,
+        "filmBodyVerified": false,
+        "evidence": [
+          "closed.png",
+          "closed-stable.png",
+          "t60.png"
+        ],
+        "observed": "t60 black frame; matching file preview returned, Continue Watching visible immediate and settled.",
+        "blackFrameClassification": "Unresolved sparse opening frame; natural fade versus render flow not established, not counted as body or fluidity PASS."
+      },
+      "readAttempts": [
+        {
+          "requestStart": 1791615843.013964,
+          "responseEnd": 1791615843.213003,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791615844.3512,
+          "responseEnd": 1791615844.384199,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791615846.6973991,
+          "responseEnd": 1791615846.750887,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791615853.795726,
+          "responseEnd": 1791615853.8284092,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791615873.730974,
+          "responseEnd": 1791615873.7590332,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791615903.655024,
+          "responseEnd": 1791615903.686047,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791615908.185355,
+          "responseEnd": 1791615908.222019,
+          "attempt": 1,
+          "result": "success"
+        }
+      ],
+      "phases": {
+        "rendererTraces": [
+          {
+            "traceID": "D0AA93D4",
+            "engine": "KSPlayer",
+            "firstClockSignal": {
+              "actionSeconds": 3.844935,
+              "event": "first_frame",
+              "fields": {
+                "firstFramePositionSeconds": 0.058,
+                "planID": "5AE68BBF",
+                "playbackTraceID": "D0AA93D4",
+                "routeID": "FA1E2353",
+                "tapToFirstFrameMs": 1379
+              }
+            },
+            "firstObservedAdvancingClockActionSeconds": 3.844012,
+            "maxReportedStallCount": 0,
+            "counterDecreaseWithinTrace": false,
+            "stallEpisodes": [],
+            "handoffEvents": [],
+            "handoffConfiguration": [],
+            "segmentMetricCount": 0,
+            "rangeMetricCount": 7,
+            "urlMetricsCellularYes": 0
+          }
+        ],
+        "failureSignals": [
+          {
+            "actionSeconds": 3.009354,
+            "event": "proxy_transfer_finished",
+            "fields": {
+              "deliveredBytes": 211075,
+              "durationMs": 91,
+              "errorCode": 54,
+              "errorDomain": "unrecognized",
+              "expectedBytes": 33554432,
+              "finishSource": "clientFailed",
+              "hlsRole": "-",
+              "playbackTraceID": "D0AA93D4",
+              "proxyKind": "mediaRange",
+              "responseEndOffset": 33554431,
+              "responseStartOffset": 0,
+              "result": "unrecognized",
+              "retries": 0,
+              "status": 206,
+              "taskReceivedBytes": 211075,
+              "transferID": "DFB20699-7068-4170-9E28-C31A67059003",
+              "transportErrorCode": 54,
+              "transportErrorKind": "posix",
+              "upstreamTaskIndex": 1
+            }
+          },
+          {
+            "actionSeconds": 3.010066,
+            "event": "proxy_transfer_finished",
+            "fields": {
+              "callbackAfterClientFinish": "true",
+              "cumulativeReceivedBytes": 211075,
+              "errorCode": -999,
+              "errorDomain": "NSURLErrorDomain",
+              "expectedBytes": 33554432,
+              "hlsRole": "-",
+              "playbackTraceID": "D0AA93D4",
+              "proxyKind": "mediaRange",
+              "stage": "upstreamTaskCompleted",
+              "taskReceivedBytes": 211075,
+              "transferID": "DFB20699-7068-4170-9E28-C31A67059003",
+              "upstreamCancelToCallbackMs": 1,
+              "upstreamCancellationRequested": "true",
+              "upstreamCompletionObserved": "true",
+              "upstreamIssuedToCallbackMs": 93,
+              "upstreamTaskIndex": 1
+            }
+          }
+        ],
+        "acceptance": "Unchanged: recorded waits/stalls retained, no playback quality PASS or causal speed claim.",
+        "limits": [
+          "Engine waiting/empty is not proof of network starvation; retain waiting reason and reserve.",
+          "A unique HLS trace within warmup is a temporal association, not proof of a network or server root cause.",
+          "Transfer intervals overlap; late terminals stay bounded. Unrecognized result strings do not mean success.",
+          "First clock marker may reflect a prepared paused position, not advancing output or presentation.",
+          "First observed progress is limited by sparse telemetry; phase is descriptive, not an exact startup boundary.",
+          "Sampled stall intervals are observation spans, not display hitches or precise buffer durations.",
+          "Stalls are per trace; never subtract counters across renderers. Open episodes remain censored.",
+          "Missing metrics remain unknown; no screen, audio, full-frame, cache or competitor acceptance."
+        ]
+      }
+    },
+    {
+      "device": "iphone13",
+      "label": "normalwifi-baseline-resume-s01-files",
+      "window": {
+        "boundedEndActionSeconds": 60.37072515487671,
+        "plannedWindowSeconds": 60,
+        "deduplicatedWindowEventCount": 102,
+        "snapshotsRead": 8
+      },
+      "exit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "exitTitle": {
+        "recordedAt": "2026-10-10T15:16:43.029632+08:00",
+        "entry": "files",
+        "immediateExitHasContinueWatching": true,
+        "settledExitHasContinueWatching": true,
+        "settledExitHasPreview": false,
+        "settledExitHasFromHead": true,
+        "actualUIInspected": true,
+        "playerClosed": true,
+        "evidence": [
+          "closed.png",
+          "closed-stable.png"
+        ],
+        "scope": "File preview title only; Jellyfin resume data uses a separate store and is not accepted by this check.",
+        "visualObservation": "Matching portrait S01 preview with Continue Watching immediate and stable."
+      },
+      "screenInspection": {
+        "recordedAt": "2026-10-10T15:18:03.734195+08:00",
+        "actualUIInspected": true,
+        "filmBodyVerified": true,
+        "evidence": [
+          "t60.png",
+          "closed.png",
+          "closed-stable.png"
+        ],
+        "observed": "S01 actual animated meadow/houses; matching preview and Continue Watching immediate/stable.",
+        "limitations": [
+          "Sparse frames and sampled zero waits cannot establish full flow/audio/subtitle or native video orientation."
+        ]
+      },
+      "readAttempts": [
+        {
+          "requestStart": 1791616535.2540329,
+          "responseEnd": 1791616535.41244,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791616536.292272,
+          "responseEnd": 1791616536.328367,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791616538.667255,
+          "responseEnd": 1791616538.6962402,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791616545.64435,
+          "responseEnd": 1791616545.669714,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791616565.64359,
+          "responseEnd": 1791616565.6704378,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791616595.784508,
+          "responseEnd": 1791616595.809237,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791616599.33996,
+          "responseEnd": 1791616599.369494,
+          "attempt": 1,
+          "result": "success"
+        }
+      ],
+      "phases": {
+        "rendererTraces": [
+          {
+            "traceID": "29FD6D3D",
+            "engine": "KSPlayer",
+            "firstClockSignal": {
+              "actionSeconds": 1.026622,
+              "event": "first_frame",
+              "fields": {
+                "firstFramePositionSeconds": 0.073,
+                "planID": "61BF9400",
+                "playbackTraceID": "29FD6D3D",
+                "routeID": "7918E9AE",
+                "tapToFirstFrameMs": 533
+              }
+            },
+            "firstObservedAdvancingClockActionSeconds": 2.019159,
+            "maxReportedStallCount": 0,
+            "counterDecreaseWithinTrace": false,
+            "stallEpisodes": [],
+            "handoffEvents": [],
+            "handoffConfiguration": [],
+            "segmentMetricCount": 0,
+            "rangeMetricCount": 2,
+            "urlMetricsCellularYes": 0
+          }
+        ],
+        "failureSignals": [
+          {
+            "actionSeconds": 0.739744,
+            "event": "proxy_transfer_finished",
+            "fields": {
+              "callbackAfterClientFinish": "true",
+              "cumulativeReceivedBytes": 322575,
+              "errorCode": -999,
+              "errorDomain": "NSURLErrorDomain",
+              "expectedBytes": 33554432,
+              "hlsRole": "-",
+              "playbackTraceID": "29FD6D3D",
+              "proxyKind": "mediaRange",
+              "stage": "upstreamTaskCompleted",
+              "taskReceivedBytes": 322575,
+              "transferID": "EE358F78-DBA2-42F1-BBDC-62136FC5572F",
+              "upstreamCancelToCallbackMs": 0,
+              "upstreamCancellationRequested": "true",
+              "upstreamCompletionObserved": "true",
+              "upstreamIssuedToCallbackMs": 125,
+              "upstreamTaskIndex": 1
+            }
+          }
+        ],
+        "acceptance": "Unchanged: recorded waits/stalls retained, no playback quality PASS or causal speed claim.",
+        "limits": [
+          "Engine waiting/empty is not proof of network starvation; retain waiting reason and reserve.",
+          "A unique HLS trace within warmup is a temporal association, not proof of a network or server root cause.",
+          "Transfer intervals overlap; late terminals stay bounded. Unrecognized result strings do not mean success.",
+          "First clock marker may reflect a prepared paused position, not advancing output or presentation.",
+          "First observed progress is limited by sparse telemetry; phase is descriptive, not an exact startup boundary.",
+          "Sampled stall intervals are observation spans, not display hitches or precise buffer durations.",
+          "Stalls are per trace; never subtract counters across renderers. Open episodes remain censored.",
+          "Missing metrics remain unknown; no screen, audio, full-frame, cache or competitor acceptance."
+        ]
+      }
+    },
+    {
+      "device": "iphone13",
+      "label": "normalwifi-baseline-resume-s01-jellyfin",
+      "window": {
+        "boundedEndActionSeconds": 60.479445934295654,
+        "plannedWindowSeconds": 60,
+        "deduplicatedWindowEventCount": 164,
+        "snapshotsRead": 8
+      },
+      "exit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "exitTitle": {
+        "recordedAt": "2026-10-10T15:18:09.663532+08:00",
+        "entry": "jellyfin",
+        "immediateExitHasContinueWatching": true,
+        "settledExitHasContinueWatching": true,
+        "settledExitHasPreview": false,
+        "settledExitHasFromHead": true,
+        "actualUIInspected": true,
+        "playerClosed": true,
+        "evidence": [
+          "closed.png",
+          "closed-stable.png"
+        ],
+        "scope": "File preview title only; Jellyfin resume data uses a separate store and is not accepted by this check.",
+        "visualObservation": "Settled matching Jellyfin item Continue/from-head viewed; immediate XML only."
+      },
+      "screenInspection": {
+        "recordedAt": "2026-10-10T15:26:14.435084+08:00",
+        "actualUIInspected": true,
+        "filmBodyVerified": true,
+        "visualObservation": "t60 meadow/houses movie scene; closed-stable portrait Jellyfin item Continue/from-head. Separate Jellyfin resume store, no cold resume acceptance.",
+        "evidence": [
+          "t60.png",
+          "closed-stable.png"
+        ]
+      },
+      "readAttempts": [
+        {
+          "requestStart": 1791616620.768565,
+          "responseEnd": 1791616620.9282901,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791616622.188222,
+          "responseEnd": 1791616622.215708,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791616624.2772539,
+          "responseEnd": 1791616624.305836,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791616631.212629,
+          "responseEnd": 1791616631.2431612,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791616651.2888699,
+          "responseEnd": 1791616651.318353,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791616681.410293,
+          "responseEnd": 1791616681.441782,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791616685.583227,
+          "responseEnd": 1791616685.615328,
+          "attempt": 1,
+          "result": "success"
+        }
+      ],
+      "phases": {
+        "rendererTraces": [
+          {
+            "traceID": "ABDE6BB9",
+            "engine": "KSPlayer",
+            "firstClockSignal": {
+              "actionSeconds": 1.23494,
+              "event": "first_frame",
+              "fields": {
+                "firstFramePositionSeconds": 0.073,
+                "planID": "D2348A8C",
+                "playbackTraceID": "ABDE6BB9",
+                "routeID": "615AB61F",
+                "tapToFirstFrameMs": 542
+              }
+            },
+            "firstObservedAdvancingClockActionSeconds": 2.320389,
+            "maxReportedStallCount": 0,
+            "counterDecreaseWithinTrace": false,
+            "stallEpisodes": [],
+            "handoffEvents": [],
+            "handoffConfiguration": [],
+            "segmentMetricCount": 0,
+            "rangeMetricCount": 3,
+            "urlMetricsCellularYes": 0
+          }
+        ],
+        "failureSignals": [
+          {
+            "actionSeconds": 0.941664,
+            "event": "proxy_transfer_finished",
+            "fields": {
+              "callbackAfterClientFinish": "true",
+              "cumulativeReceivedBytes": 597739,
+              "errorCode": -999,
+              "errorDomain": "NSURLErrorDomain",
+              "expectedBytes": 33554432,
+              "hlsRole": "-",
+              "playbackTraceID": "ABDE6BB9",
+              "proxyKind": "mediaRange",
+              "stage": "upstreamTaskCompleted",
+              "taskReceivedBytes": 597739,
+              "transferID": "A27A419B-84FE-4B12-812E-37F228AF0E55",
+              "upstreamCancelToCallbackMs": 0,
+              "upstreamCancellationRequested": "true",
+              "upstreamCompletionObserved": "true",
+              "upstreamIssuedToCallbackMs": 100,
+              "upstreamTaskIndex": 1
+            }
+          }
+        ],
+        "acceptance": "Unchanged: recorded waits/stalls retained, no playback quality PASS or causal speed claim.",
+        "limits": [
+          "Engine waiting/empty is not proof of network starvation; retain waiting reason and reserve.",
+          "A unique HLS trace within warmup is a temporal association, not proof of a network or server root cause.",
+          "Transfer intervals overlap; late terminals stay bounded. Unrecognized result strings do not mean success.",
+          "First clock marker may reflect a prepared paused position, not advancing output or presentation.",
+          "First observed progress is limited by sparse telemetry; phase is descriptive, not an exact startup boundary.",
+          "Sampled stall intervals are observation spans, not display hitches or precise buffer durations.",
+          "Stalls are per trace; never subtract counters across renderers. Open episodes remain censored.",
+          "Missing metrics remain unknown; no screen, audio, full-frame, cache or competitor acceptance."
+        ]
+      }
+    },
+    {
+      "device": "iphone13",
+      "label": "normalwifi-cold-reopen-resume-s19-files",
+      "window": {
+        "boundedEndActionSeconds": 45.31219792366028,
+        "plannedWindowSeconds": 45,
+        "deduplicatedWindowEventCount": 315,
+        "snapshotsRead": 8
+      },
+      "exit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "exitTitle": {
+        "recordedAt": "2026-10-10T15:14:56.002543+08:00",
+        "entry": "files",
+        "immediateExitHasContinueWatching": true,
+        "settledExitHasContinueWatching": true,
+        "settledExitHasPreview": false,
+        "settledExitHasFromHead": true,
+        "actualUIInspected": true,
+        "playerClosed": true,
+        "evidence": [
+          "closed.png",
+          "closed-stable.png"
+        ],
+        "scope": "File preview title only; Jellyfin resume data uses a separate store and is not accepted by this check.",
+        "visualObservation": "Matching portrait preview shows Continue Watching both immediate and stable after second exit."
+      },
+      "screenInspection": {
+        "recordedAt": "2026-10-10T15:16:41.665358+08:00",
+        "actualUIInspected": true,
+        "filmBodyVerified": true,
+        "evidence": [
+          "t30.png",
+          "t45.png",
+          "closed.png",
+          "closed-stable.png"
+        ],
+        "observed": "S19 ring-forging close-up then king scene; actual film changes; matching file preview with Continue Watching immediate and stable.",
+        "limitations": [
+          "Two reported waits retained; sparse images do not establish flow/HDR/audio/subtitle or native video orientation."
+        ]
+      },
+      "readAttempts": [
+        {
+          "requestStart": 1791616443.4621272,
+          "responseEnd": 1791616443.6203039,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791616444.411912,
+          "responseEnd": 1791616444.440914,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791616446.951645,
+          "responseEnd": 1791616446.979054,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791616453.934722,
+          "responseEnd": 1791616453.9672582,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791616474.04387,
+          "responseEnd": 1791616474.06972,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791616488.9336178,
+          "responseEnd": 1791616488.95575,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791616492.282071,
+          "responseEnd": 1791616492.3129568,
+          "attempt": 1,
+          "result": "success"
+        }
+      ],
+      "phases": {
+        "rendererTraces": [
+          {
+            "traceID": "EB44FE84",
+            "engine": "KSPlayer",
+            "firstClockSignal": {
+              "actionSeconds": 7.119256,
+              "event": "first_frame",
+              "fields": {
+                "firstFramePositionSeconds": 58.401,
+                "planID": "ACEF1BF6",
+                "playbackTraceID": "EB44FE84",
+                "routeID": "7F939D61",
+                "tapToFirstFrameMs": 4044
+              }
+            },
+            "firstObservedAdvancingClockActionSeconds": 7.118969,
+            "maxReportedStallCount": 2,
+            "counterDecreaseWithinTrace": false,
+            "stallEpisodes": [
+              {
+                "startActionSeconds": 4.221064,
+                "phaseAtStart": "beforeObservedAdvancingClock",
+                "startFields": {
+                  "audioBitrate": 0,
+                  "bufferLimitSeconds": 6,
+                  "bufferTargetSeconds": 1,
+                  "bufferedAheadSeconds": 0,
+                  "bytesRead": 2233886,
+                  "currentSeconds": 0,
+                  "durationSeconds": 13698.368,
+                  "elapsedMs": 1021,
+                  "engine": "KSPlayer",
+                  "ksPlayerState": "-",
+                  "planID": "ACEF1BF6",
+                  "playbackTraceID": "EB44FE84",
+                  "routeID": "7F939D61",
+                  "sampleReason": "playbackTick",
+                  "stallActive": "yes",
+                  "stallCount": 1,
+                  "stallDurationMs": 0,
+                  "videoBitrate": 0
+                },
+                "endActionSeconds": 7.118969,
+                "sampledSpanSeconds": 2.8979049999999997,
+                "reportedDurationMs": 2900
+              },
+              {
+                "startActionSeconds": 17.717728,
+                "phaseAtStart": "afterObservedAdvancingClock",
+                "startFields": {
+                  "audioBitrate": 2883617,
+                  "bufferLimitSeconds": 16,
+                  "bufferTargetSeconds": 4,
+                  "bufferedAheadSeconds": 0.0834166643994223,
+                  "bytesRead": 86231880,
+                  "currentSeconds": 68.599,
+                  "deltaSeconds": 0.619,
+                  "durationSeconds": 13698.368,
+                  "elapsedMs": 14520,
+                  "engine": "KSPlayer",
+                  "ksPlayerState": "-",
+                  "planID": "ACEF1BF6",
+                  "playbackTraceID": "EB44FE84",
+                  "routeID": "7F939D61",
+                  "sampleReason": "playbackTick",
+                  "stallActive": "yes",
+                  "stallCount": 2,
+                  "stallDurationMs": 0,
+                  "videoBitrate": 75827051
+                },
+                "endActionSeconds": 24.014265,
+                "sampledSpanSeconds": 6.296537000000001,
+                "reportedDurationMs": 6300
+              }
+            ],
+            "handoffEvents": [
+              {
+                "actionSeconds": 14.618506,
+                "event": "automatic_downshift_requested",
+                "fields": {
+                  "attempt": 1,
+                  "bufferTargetSeconds": 4,
+                  "bufferedAheadSeconds": 1.415791626989943,
+                  "deliveryCapacity": 36579283,
+                  "deliveryCapacitySource": "completedTransfer",
+                  "engine": "KSPlayer",
+                  "planID": "ACEF1BF6",
+                  "playbackTraceID": "EB44FE84",
+                  "reason": "deliveryBelowSourceBitrate",
+                  "routeID": "7F939D61",
+                  "runtimeDemand": 35101192
+                }
+              },
+              {
+                "actionSeconds": 21.901369,
+                "event": "replacement_warmup_started",
+                "fields": {
+                  "engine": "KSPlayer",
+                  "planID": "ACEF1BF6",
+                  "playbackTraceID": "EB44FE84",
+                  "routeID": "7F939D61"
+                }
+              },
+              {
+                "actionSeconds": 37.044669,
+                "event": "replacement_candidate_aligned",
+                "fields": {
+                  "accessLogStalls": 0,
+                  "availableReserveSeconds": 3.0029999183793024,
+                  "bufferEmpty": "false",
+                  "candidateBufferAheadSeconds": 3.162785912555549,
+                  "candidateSeconds": 82.357317019,
+                  "current": 82.359,
+                  "deadlineRemainingMs": 25015,
+                  "elapsedMs": 14984,
+                  "engine": "KSPlayer",
+                  "errorDomain": "-",
+                  "framePTS": 82.33224444444444,
+                  "indicatedBitrate": 500000,
+                  "likelyToKeepUp": "false",
+                  "liveSeconds": 82.359,
+                  "loadedRangeCount": 1,
+                  "observedBitrate": 656394,
+                  "planID": "ACEF1BF6",
+                  "playbackTraceID": "EB44FE84",
+                  "preparationLeadSeconds": 0,
+                  "routeID": "7F939D61",
+                  "target": 68.599,
+                  "timeControlStatus": "unrecognized",
+                  "waitingReason": "-"
+                }
+              },
+              {
+                "actionSeconds": 37.045379,
+                "event": "replacement_committed",
+                "fields": {
+                  "candidateBufferAheadSeconds": 3.1613385365555473,
+                  "candidateSeconds": 82.357317019,
+                  "engine": "KSPlayer",
+                  "planID": "ACEF1BF6",
+                  "playbackTraceID": "EB44FE84",
+                  "routeID": "7F939D61",
+                  "seconds": 82.295
+                }
+              }
+            ],
+            "handoffConfiguration": [],
+            "segmentMetricCount": 0,
+            "rangeMetricCount": 13,
+            "urlMetricsCellularYes": 0
+          },
+          {
+            "traceID": "26B1BDAC",
+            "engine": "AVPlayer",
+            "firstClockSignal": {
+              "actionSeconds": 37.381787,
+              "event": "first_frame",
+              "fields": {
+                "firstFramePositionSeconds": 82.51,
+                "planID": "A4873289",
+                "playbackTraceID": "26B1BDAC",
+                "routeID": "29F5CD38",
+                "tapToFirstFrameMs": 15497
+              }
+            },
+            "firstObservedAdvancingClockActionSeconds": 37.381462,
+            "maxReportedStallCount": 1,
+            "counterDecreaseWithinTrace": false,
+            "stallEpisodes": [
+              {
+                "startActionSeconds": 37.176523,
+                "phaseAtStart": "beforeObservedAdvancingClock",
+                "startFields": {
+                  "accessLogBytes": 1185752,
+                  "accessLogStalls": 0,
+                  "accessLogThroughputMbps": 1.787,
+                  "accessLogTransferMs": 5310,
+                  "bufferAheadSeconds": 3.213,
+                  "bufferEmpty": "yes",
+                  "currentSeconds": 82.305,
+                  "deltaSeconds": -0.052,
+                  "elapsedMs": 215,
+                  "engine": "AVPlayer",
+                  "indicatedBitrate": 500000,
+                  "likelyToKeepUp": "yes",
+                  "loadedRangeCount": 1,
+                  "observedBitrate": 648556,
+                  "planID": "A4873289",
+                  "playbackTraceID": "26B1BDAC",
+                  "rate": 1,
+                  "reasonForWaiting": "-",
+                  "routeID": "29F5CD38",
+                  "sampleReason": "timeControlChanged",
+                  "stallActive": "yes",
+                  "stallCount": 1,
+                  "stallDurationMs": 0,
+                  "timeControlStatus": "playing"
+                },
+                "endActionSeconds": 37.381462,
+                "sampledSpanSeconds": 0.20493899999999599,
+                "reportedDurationMs": 211
+              }
+            ],
+            "handoffEvents": [],
+            "handoffConfiguration": [
+              {
+                "actionSeconds": 37.046257,
+                "event": "av_handoff_boundary",
+                "fields": {
+                  "automaticallyWaits": "no",
+                  "avTimeControlState": 0,
+                  "bufferAheadSeconds": 3.1613385365555473,
+                  "bufferEmpty": "no",
+                  "currentSeconds": 82.357317019,
+                  "engine": "AVPlayer",
+                  "likelyToKeepUp": "no",
+                  "loadedRangeCount": 1,
+                  "planID": "A4873289",
+                  "playbackTraceID": "26B1BDAC",
+                  "preferredForwardBufferSeconds": 0.5,
+                  "rate": 0,
+                  "routeID": "29F5CD38",
+                  "stage": "beforeConfiguration",
+                  "videoOutputCount": 0,
+                  "waitingReason": "-"
+                }
+              },
+              {
+                "actionSeconds": 37.046518,
+                "event": "av_handoff_boundary",
+                "fields": {
+                  "automaticallyWaits": "yes",
+                  "avTimeControlState": 0,
+                  "bufferAheadSeconds": 3.1613385365555473,
+                  "bufferEmpty": "no",
+                  "currentSeconds": 82.357317019,
+                  "engine": "AVPlayer",
+                  "likelyToKeepUp": "no",
+                  "loadedRangeCount": 1,
+                  "planID": "A4873289",
+                  "playbackTraceID": "26B1BDAC",
+                  "preferredForwardBufferSeconds": 0.5,
+                  "rate": 0,
+                  "routeID": "29F5CD38",
+                  "stage": "afterWaitingPolicy",
+                  "videoOutputCount": 0,
+                  "waitingReason": "-"
+                }
+              },
+              {
+                "actionSeconds": 37.047083,
+                "event": "av_handoff_boundary",
+                "fields": {
+                  "automaticallyWaits": "yes",
+                  "avTimeControlState": 0,
+                  "bufferAheadSeconds": 3.1613385365555473,
+                  "bufferEmpty": "no",
+                  "currentSeconds": 82.357317019,
+                  "engine": "AVPlayer",
+                  "likelyToKeepUp": "no",
+                  "loadedRangeCount": 1,
+                  "planID": "A4873289",
+                  "playbackTraceID": "26B1BDAC",
+                  "preferredForwardBufferSeconds": 3,
+                  "rate": 0,
+                  "routeID": "29F5CD38",
+                  "stage": "afterForwardBuffer",
+                  "videoOutputCount": 0,
+                  "waitingReason": "-"
+                }
+              },
+              {
+                "actionSeconds": 37.047684,
+                "event": "av_handoff_boundary",
+                "fields": {
+                  "automaticallyWaits": "yes",
+                  "avTimeControlState": 0,
+                  "bufferAheadSeconds": 3.1613385365555473,
+                  "bufferEmpty": "no",
+                  "currentSeconds": 82.357317019,
+                  "engine": "AVPlayer",
+                  "likelyToKeepUp": "no",
+                  "loadedRangeCount": 1,
+                  "planID": "A4873289",
+                  "playbackTraceID": "26B1BDAC",
+                  "preferredForwardBufferSeconds": 3,
+                  "rate": 0,
+                  "routeID": "29F5CD38",
+                  "stage": "afterTextStyle",
+                  "videoOutputCount": 0,
+                  "waitingReason": "-"
+                }
+              },
+              {
+                "actionSeconds": 37.047986,
+                "event": "av_handoff_boundary",
+                "fields": {
+                  "automaticallyWaits": "yes",
+                  "avTimeControlState": 0,
+                  "bufferAheadSeconds": 3.1613385365555473,
+                  "bufferEmpty": "no",
+                  "currentSeconds": 82.357317019,
+                  "engine": "AVPlayer",
+                  "likelyToKeepUp": "no",
+                  "loadedRangeCount": 1,
+                  "planID": "A4873289",
+                  "playbackTraceID": "26B1BDAC",
+                  "preferredForwardBufferSeconds": 3,
+                  "rate": 0,
+                  "routeID": "29F5CD38",
+                  "stage": "afterVideoOutput",
+                  "videoOutputCount": 1,
+                  "waitingReason": "-"
+                }
+              },
+              {
+                "actionSeconds": 37.136943,
+                "event": "av_handoff_boundary",
+                "fields": {
+                  "automaticallyWaits": "yes",
+                  "avTimeControlState": 0,
+                  "bufferAheadSeconds": 3.1613365365555524,
+                  "bufferEmpty": "no",
+                  "currentSeconds": 82.357319019,
+                  "engine": "AVPlayer",
+                  "likelyToKeepUp": "no",
+                  "loadedRangeCount": 1,
+                  "planID": "A4873289",
+                  "playbackTraceID": "26B1BDAC",
+                  "preferredForwardBufferSeconds": 3,
+                  "rate": 0,
+                  "routeID": "29F5CD38",
+                  "stage": "beforeResume",
+                  "videoOutputCount": 1,
+                  "waitingReason": "-"
+                }
+              },
+              {
+                "actionSeconds": 37.137577,
+                "event": "av_handoff_boundary",
+                "fields": {
+                  "automaticallyWaits": "yes",
+                  "avTimeControlState": 1,
+                  "bufferAheadSeconds": 3.1613365365555524,
+                  "bufferEmpty": "no",
+                  "currentSeconds": 82.357319019,
+                  "engine": "AVPlayer",
+                  "likelyToKeepUp": "no",
+                  "loadedRangeCount": 1,
+                  "planID": "A4873289",
+                  "playbackTraceID": "26B1BDAC",
+                  "preferredForwardBufferSeconds": 3,
+                  "rate": 1,
+                  "routeID": "29F5CD38",
+                  "stage": "afterResume",
+                  "videoOutputCount": 1,
+                  "waitingReason": "AVPlayerWaitingWhileEvaluatingBufferingRateReason"
+                }
+              }
+            ],
+            "segmentMetricCount": 7,
+            "rangeMetricCount": 0,
+            "urlMetricsCellularYes": 0
+          }
+        ],
+        "failureSignals": [
+          {
+            "actionSeconds": 3.430169,
+            "event": "proxy_transfer_finished",
+            "fields": {
+              "callbackAfterClientFinish": "true",
+              "cumulativeReceivedBytes": 964035,
+              "errorCode": -999,
+              "errorDomain": "NSURLErrorDomain",
+              "expectedBytes": 33554432,
+              "hlsRole": "-",
+              "playbackTraceID": "EB44FE84",
+              "proxyKind": "mediaRange",
+              "stage": "upstreamTaskCompleted",
+              "taskReceivedBytes": 964035,
+              "transferID": "94546667-20E4-45AC-BB7A-6F3691E28B9D",
+              "upstreamCancelToCallbackMs": 0,
+              "upstreamCancellationRequested": "true",
+              "upstreamCompletionObserved": "true",
+              "upstreamIssuedToCallbackMs": 196,
+              "upstreamTaskIndex": 1
+            }
+          },
+          {
+            "actionSeconds": 3.96033,
+            "event": "proxy_transfer_finished",
+            "fields": {
+              "callbackAfterClientFinish": "true",
+              "cumulativeReceivedBytes": 3130239,
+              "errorCode": -999,
+              "errorDomain": "NSURLErrorDomain",
+              "expectedBytes": 33554432,
+              "hlsRole": "-",
+              "playbackTraceID": "EB44FE84",
+              "proxyKind": "mediaRange",
+              "stage": "upstreamTaskCompleted",
+              "taskReceivedBytes": 3130239,
+              "transferID": "6A5A8F6D-20A3-4321-A574-13E70F6E61EE",
+              "upstreamCancelToCallbackMs": 1,
+              "upstreamCancellationRequested": "true",
+              "upstreamCompletionObserved": "true",
+              "upstreamIssuedToCallbackMs": 519,
+              "upstreamTaskIndex": 1
+            }
+          },
+          {
+            "actionSeconds": 5.236901,
+            "event": "proxy_transfer_finished",
+            "fields": {
+              "callbackAfterClientFinish": "true",
+              "cumulativeReceivedBytes": 1027741,
+              "errorCode": -999,
+              "errorDomain": "NSURLErrorDomain",
+              "expectedBytes": 33554432,
+              "hlsRole": "-",
+              "playbackTraceID": "EB44FE84",
+              "proxyKind": "mediaRange",
+              "stage": "upstreamTaskCompleted",
+              "taskReceivedBytes": 1027741,
+              "transferID": "8CC1EC56-8C81-4F5A-81B8-5C051A75DEFD",
+              "upstreamCancelToCallbackMs": 1,
+              "upstreamCancellationRequested": "true",
+              "upstreamCompletionObserved": "true",
+              "upstreamIssuedToCallbackMs": 220,
+              "upstreamTaskIndex": 1
+            }
+          },
+          {
+            "actionSeconds": 37.135452,
+            "event": "proxy_transfer_finished",
+            "fields": {
+              "callbackAfterClientFinish": "true",
+              "cumulativeReceivedBytes": 266956778,
+              "errorCode": -999,
+              "errorDomain": "NSURLErrorDomain",
+              "expectedBytes": 33554432,
+              "hlsRole": "-",
+              "playbackTraceID": "EB44FE84",
+              "proxyKind": "mediaRange",
+              "stage": "upstreamTaskCompleted",
+              "taskReceivedBytes": 32075754,
+              "transferID": "20F21D61-8683-44BC-B213-9466245325D9",
+              "upstreamCancelToCallbackMs": 0,
+              "upstreamCancellationRequested": "true",
+              "upstreamCompletionObserved": "true",
+              "upstreamIssuedToCallbackMs": 3164,
+              "upstreamTaskIndex": 8
+            }
+          }
+        ],
+        "acceptance": "Unchanged: recorded waits/stalls retained, no playback quality PASS or causal speed claim.",
+        "limits": [
+          "Engine waiting/empty is not proof of network starvation; retain waiting reason and reserve.",
+          "A unique HLS trace within warmup is a temporal association, not proof of a network or server root cause.",
+          "Transfer intervals overlap; late terminals stay bounded. Unrecognized result strings do not mean success.",
+          "First clock marker may reflect a prepared paused position, not advancing output or presentation.",
+          "First observed progress is limited by sparse telemetry; phase is descriptive, not an exact startup boundary.",
+          "Sampled stall intervals are observation spans, not display hitches or precise buffer durations.",
+          "Stalls are per trace; never subtract counters across renderers. Open episodes remain censored.",
+          "Missing metrics remain unknown; no screen, audio, full-frame, cache or competitor acceptance."
+        ]
+      }
+    },
+    {
+      "device": "iphone13",
+      "label": "normalwifi-from-head-resume-s19-files",
+      "window": {
+        "boundedEndActionSeconds": 60.17233204841614,
+        "plannedWindowSeconds": 60,
+        "deduplicatedWindowEventCount": 301,
+        "snapshotsRead": 8
+      },
+      "exit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "exitTitle": {
+        "recordedAt": "2026-10-10T15:13:37.953243+08:00",
+        "entry": "files",
+        "immediateExitHasContinueWatching": true,
+        "settledExitHasContinueWatching": true,
+        "settledExitHasPreview": false,
+        "settledExitHasFromHead": true,
+        "actualUIInspected": true,
+        "playerClosed": true,
+        "evidence": [
+          "closed.png",
+          "closed-stable.png"
+        ],
+        "scope": "File preview title only; Jellyfin resume data uses a separate store and is not accepted by this check.",
+        "visualObservation": "Matching portrait file preview shows Continue Watching and From Head immediate and stable."
+      },
+      "screenInspection": {
+        "recordedAt": "2026-10-10T15:15:09.978507+08:00",
+        "actualUIInspected": true,
+        "filmBodyVerified": false,
+        "evidence": [
+          "t60.png",
+          "closed.png",
+          "closed-stable.png"
+        ],
+        "observed": "Very dark opening/fading title at t60; both immediate/stable matching file preview show Continue Watching.",
+        "limitations": [
+          "Dark opening not body-scene or full-flow acceptance; PNG canvas rotated versus film content, native video orientation not compared."
+        ]
+      },
+      "readAttempts": [
+        {
+          "requestStart": 1791616350.407951,
+          "responseEnd": 1791616350.557423,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791616351.359253,
+          "responseEnd": 1791616351.3894882,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791616354.0056791,
+          "responseEnd": 1791616354.0462358,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791616360.962003,
+          "responseEnd": 1791616360.9851892,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791616380.825687,
+          "responseEnd": 1791616380.856716,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791616410.7311912,
+          "responseEnd": 1791616410.760959,
+          "attempt": 1,
+          "result": "success"
+        },
+        {
+          "requestStart": 1791616414.2271821,
+          "responseEnd": 1791616414.258454,
+          "attempt": 1,
+          "result": "success"
+        }
+      ],
+      "phases": {
+        "rendererTraces": [
+          {
+            "traceID": "5D0F3266",
+            "engine": "KSPlayer",
+            "firstClockSignal": {
+              "actionSeconds": 3.379296,
+              "event": "first_frame",
+              "fields": {
+                "firstFramePositionSeconds": 0.158,
+                "planID": "2BF6B920",
+                "playbackTraceID": "5D0F3266",
+                "routeID": "40E3BA8B",
+                "tapToFirstFrameMs": 1239
+              }
+            },
+            "firstObservedAdvancingClockActionSeconds": 4.457262,
+            "maxReportedStallCount": 0,
+            "counterDecreaseWithinTrace": false,
+            "stallEpisodes": [],
+            "handoffEvents": [
+              {
+                "actionSeconds": 13.771143,
+                "event": "automatic_downshift_requested",
+                "fields": {
+                  "attempt": 1,
+                  "bufferTargetSeconds": 4,
+                  "bufferedAheadSeconds": 0.93729164059339,
+                  "deliveryCapacity": 46194047,
+                  "deliveryCapacitySource": "completedTransfer",
+                  "engine": "KSPlayer",
+                  "planID": "2BF6B920",
+                  "playbackTraceID": "5D0F3266",
+                  "reason": "deliveryBelowSourceBitrate",
+                  "routeID": "40E3BA8B",
+                  "runtimeDemand": 56432649
+                }
+              },
+              {
+                "actionSeconds": 17.759871,
+                "event": "replacement_warmup_started",
+                "fields": {
+                  "engine": "KSPlayer",
+                  "planID": "2BF6B920",
+                  "playbackTraceID": "5D0F3266",
+                  "routeID": "40E3BA8B"
+                }
+              },
+              {
+                "actionSeconds": 28.698807,
+                "event": "replacement_candidate_aligned",
+                "fields": {
+                  "accessLogStalls": 0,
+                  "availableReserveSeconds": 15.013707924096257,
+                  "bufferEmpty": "false",
+                  "candidateBufferAheadSeconds": 38.97798888888889,
+                  "candidateSeconds": 25.536666666666665,
+                  "current": 25.46,
+                  "deadlineRemainingMs": 29111,
+                  "elapsedMs": 10888,
+                  "engine": "KSPlayer",
+                  "errorDomain": "-",
+                  "framePTS": 25.525488888888887,
+                  "indicatedBitrate": 1000000,
+                  "likelyToKeepUp": "true",
+                  "liveSeconds": 25.46,
+                  "loadedRangeCount": 1,
+                  "observedBitrate": 2335673,
+                  "planID": "2BF6B920",
+                  "playbackTraceID": "5D0F3266",
+                  "preparationLeadSeconds": 11,
+                  "routeID": "40E3BA8B",
+                  "target": 25.537,
+                  "timeControlStatus": "unrecognized",
+                  "waitingReason": "-"
+                }
+              },
+              {
+                "actionSeconds": 28.699424,
+                "event": "replacement_committed",
+                "fields": {
+                  "candidateBufferAheadSeconds": 38.97798888888889,
+                  "candidateSeconds": 25.536666666666665,
+                  "engine": "KSPlayer",
+                  "planID": "2BF6B920",
+                  "playbackTraceID": "5D0F3266",
+                  "routeID": "40E3BA8B",
+                  "seconds": 25.438
+                }
+              }
+            ],
+            "handoffConfiguration": [],
+            "segmentMetricCount": 0,
+            "rangeMetricCount": 6,
+            "urlMetricsCellularYes": 0
+          },
+          {
+            "traceID": "7331C5F3",
+            "engine": "AVPlayer",
+            "firstClockSignal": {
+              "actionSeconds": 29.534547,
+              "event": "first_frame",
+              "fields": {
+                "firstFramePositionSeconds": 26.001,
+                "planID": "6E50C3D2",
+                "playbackTraceID": "7331C5F3",
+                "routeID": "32B165F0",
+                "tapToFirstFrameMs": 11793
+              }
+            },
+            "firstObservedAdvancingClockActionSeconds": 29.532668,
+            "maxReportedStallCount": 1,
+            "counterDecreaseWithinTrace": false,
+            "stallEpisodes": [
+              {
+                "startActionSeconds": 29.032554,
+                "phaseAtStart": "beforeObservedAdvancingClock",
+                "startFields": {
+                  "accessLogBytes": 3588356,
+                  "accessLogStalls": 0,
+                  "accessLogThroughputMbps": 2.956,
+                  "accessLogTransferMs": 9711,
+                  "bufferAheadSeconds": 38.978,
+                  "bufferEmpty": "no",
+                  "currentSeconds": 25.537,
+                  "deltaSeconds": 0,
+                  "elapsedMs": 180,
+                  "engine": "AVPlayer",
+                  "indicatedBitrate": 1000000,
+                  "likelyToKeepUp": "yes",
+                  "loadedRangeCount": 1,
+                  "observedBitrate": 2497191,
+                  "planID": "6E50C3D2",
+                  "playbackTraceID": "7331C5F3",
+                  "rate": 1,
+                  "reasonForWaiting": "evaluatingBufferingRate",
+                  "routeID": "32B165F0",
+                  "sampleReason": "timeControlChanged",
+                  "stallActive": "yes",
+                  "stallCount": 1,
+                  "stallDurationMs": 0,
+                  "timeControlStatus": "waitingToPlayAtSpecifiedRate"
+                },
+                "endActionSeconds": null,
+                "sampledSpanSeconds": null,
+                "reportedDurationMs": null,
+                "rightCensoredAtActionSeconds": 59.5216
+              }
+            ],
+            "handoffEvents": [],
+            "handoffConfiguration": [
+              {
+                "actionSeconds": 28.700274,
+                "event": "av_handoff_boundary",
+                "fields": {
+                  "automaticallyWaits": "no",
+                  "avTimeControlState": 0,
+                  "bufferAheadSeconds": 38.97798888888889,
+                  "bufferEmpty": "no",
+                  "currentSeconds": 25.536666666666665,
+                  "engine": "AVPlayer",
+                  "likelyToKeepUp": "yes",
+                  "loadedRangeCount": 1,
+                  "planID": "6E50C3D2",
+                  "playbackTraceID": "7331C5F3",
+                  "preferredForwardBufferSeconds": 0.5,
+                  "rate": 0,
+                  "routeID": "32B165F0",
+                  "stage": "beforeConfiguration",
+                  "videoOutputCount": 0,
+                  "waitingReason": "-"
+                }
+              },
+              {
+                "actionSeconds": 28.700521,
+                "event": "av_handoff_boundary",
+                "fields": {
+                  "automaticallyWaits": "yes",
+                  "avTimeControlState": 0,
+                  "bufferAheadSeconds": 38.97798888888889,
+                  "bufferEmpty": "no",
+                  "currentSeconds": 25.536666666666665,
+                  "engine": "AVPlayer",
+                  "likelyToKeepUp": "yes",
+                  "loadedRangeCount": 1,
+                  "planID": "6E50C3D2",
+                  "playbackTraceID": "7331C5F3",
+                  "preferredForwardBufferSeconds": 0.5,
+                  "rate": 0,
+                  "routeID": "32B165F0",
+                  "stage": "afterWaitingPolicy",
+                  "videoOutputCount": 0,
+                  "waitingReason": "-"
+                }
+              },
+              {
+                "actionSeconds": 28.70076,
+                "event": "av_handoff_boundary",
+                "fields": {
+                  "automaticallyWaits": "yes",
+                  "avTimeControlState": 0,
+                  "bufferAheadSeconds": 38.97798888888889,
+                  "bufferEmpty": "no",
+                  "currentSeconds": 25.536666666666665,
+                  "engine": "AVPlayer",
+                  "likelyToKeepUp": "yes",
+                  "loadedRangeCount": 1,
+                  "planID": "6E50C3D2",
+                  "playbackTraceID": "7331C5F3",
+                  "preferredForwardBufferSeconds": 3,
+                  "rate": 0,
+                  "routeID": "32B165F0",
+                  "stage": "afterForwardBuffer",
+                  "videoOutputCount": 0,
+                  "waitingReason": "-"
+                }
+              },
+              {
+                "actionSeconds": 28.700993,
+                "event": "av_handoff_boundary",
+                "fields": {
+                  "automaticallyWaits": "yes",
+                  "avTimeControlState": 0,
+                  "bufferAheadSeconds": 38.97798888888889,
+                  "bufferEmpty": "no",
+                  "currentSeconds": 25.536666666666665,
+                  "engine": "AVPlayer",
+                  "likelyToKeepUp": "yes",
+                  "loadedRangeCount": 1,
+                  "planID": "6E50C3D2",
+                  "playbackTraceID": "7331C5F3",
+                  "preferredForwardBufferSeconds": 3,
+                  "rate": 0,
+                  "routeID": "32B165F0",
+                  "stage": "afterTextStyle",
+                  "videoOutputCount": 0,
+                  "waitingReason": "-"
+                }
+              },
+              {
+                "actionSeconds": 28.701224,
+                "event": "av_handoff_boundary",
+                "fields": {
+                  "automaticallyWaits": "yes",
+                  "avTimeControlState": 0,
+                  "bufferAheadSeconds": 38.97798888888889,
+                  "bufferEmpty": "no",
+                  "currentSeconds": 25.536666666666665,
+                  "engine": "AVPlayer",
+                  "likelyToKeepUp": "yes",
+                  "loadedRangeCount": 1,
+                  "planID": "6E50C3D2",
+                  "playbackTraceID": "7331C5F3",
+                  "preferredForwardBufferSeconds": 3,
+                  "rate": 0,
+                  "routeID": "32B165F0",
+                  "stage": "afterVideoOutput",
+                  "videoOutputCount": 1,
+                  "waitingReason": "-"
+                }
+              },
+              {
+                "actionSeconds": 28.875652,
+                "event": "av_handoff_boundary",
+                "fields": {
+                  "automaticallyWaits": "yes",
+                  "avTimeControlState": 0,
+                  "bufferAheadSeconds": 38.97798788888888,
+                  "bufferEmpty": "no",
+                  "currentSeconds": 25.536667666666666,
+                  "engine": "AVPlayer",
+                  "likelyToKeepUp": "yes",
+                  "loadedRangeCount": 1,
+                  "planID": "6E50C3D2",
+                  "playbackTraceID": "7331C5F3",
+                  "preferredForwardBufferSeconds": 3,
+                  "rate": 0,
+                  "routeID": "32B165F0",
+                  "stage": "beforeResume",
+                  "videoOutputCount": 1,
+                  "waitingReason": "-"
+                }
+              },
+              {
+                "actionSeconds": 28.964772,
+                "event": "av_handoff_boundary",
+                "fields": {
+                  "automaticallyWaits": "yes",
+                  "avTimeControlState": 1,
+                  "bufferAheadSeconds": 38.97798788888888,
+                  "bufferEmpty": "no",
+                  "currentSeconds": 25.536667666666666,
+                  "engine": "AVPlayer",
+                  "likelyToKeepUp": "yes",
+                  "loadedRangeCount": 1,
+                  "planID": "6E50C3D2",
+                  "playbackTraceID": "7331C5F3",
+                  "preferredForwardBufferSeconds": 3,
+                  "rate": 1,
+                  "routeID": "32B165F0",
+                  "stage": "afterResume",
+                  "videoOutputCount": 1,
+                  "waitingReason": "AVPlayerWaitingWhileEvaluatingBufferingRateReason"
+                }
+              }
+            ],
+            "segmentMetricCount": 11,
+            "rangeMetricCount": 0,
+            "urlMetricsCellularYes": 0
+          }
+        ],
+        "failureSignals": [
+          {
+            "actionSeconds": 2.70776,
+            "event": "proxy_transfer_finished",
+            "fields": {
+              "callbackAfterClientFinish": "true",
+              "cumulativeReceivedBytes": 2131123,
+              "errorCode": -999,
+              "errorDomain": "NSURLErrorDomain",
+              "expectedBytes": 33554432,
+              "hlsRole": "-",
+              "playbackTraceID": "5D0F3266",
+              "proxyKind": "mediaRange",
+              "stage": "upstreamTaskCompleted",
+              "taskReceivedBytes": 2131123,
+              "transferID": "4B93BD58-7A68-4F49-A923-3CF7ED846291",
+              "upstreamCancelToCallbackMs": 1,
+              "upstreamCancellationRequested": "true",
+              "upstreamCompletionObserved": "true",
+              "upstreamIssuedToCallbackMs": 335,
+              "upstreamTaskIndex": 1
+            }
+          },
+          {
+            "actionSeconds": 29.020221,
+            "event": "proxy_transfer_finished",
+            "fields": {
+              "callbackAfterClientFinish": "true",
+              "cumulativeReceivedBytes": 120972602,
+              "errorCode": -999,
+              "errorDomain": "NSURLErrorDomain",
+              "expectedBytes": 33554432,
+              "hlsRole": "-",
+              "playbackTraceID": "5D0F3266",
+              "proxyKind": "mediaRange",
+              "stage": "upstreamTaskCompleted",
+              "taskReceivedBytes": 20309306,
+              "transferID": "5F026E75-D40B-4135-B3DA-E71B384C2DB4",
+              "upstreamCancelToCallbackMs": 1,
+              "upstreamCancellationRequested": "true",
+              "upstreamCompletionObserved": "true",
+              "upstreamIssuedToCallbackMs": 12484,
+              "upstreamTaskIndex": 4
+            }
+          }
+        ],
+        "acceptance": "Unchanged: recorded waits/stalls retained, no playback quality PASS or causal speed claim.",
+        "limits": [
+          "Engine waiting/empty is not proof of network starvation; retain waiting reason and reserve.",
+          "A unique HLS trace within warmup is a temporal association, not proof of a network or server root cause.",
+          "Transfer intervals overlap; late terminals stay bounded. Unrecognized result strings do not mean success.",
+          "First clock marker may reflect a prepared paused position, not advancing output or presentation.",
+          "First observed progress is limited by sparse telemetry; phase is descriptive, not an exact startup boundary.",
+          "Sampled stall intervals are observation spans, not display hitches or precise buffer durations.",
+          "Stalls are per trace; never subtract counters across renderers. Open episodes remain censored.",
+          "Missing metrics remain unknown; no screen, audio, full-frame, cache or competitor acceptance."
+        ]
+      }
+    }
+  ],
+  "formalL2Acceptance": false,
+  "limitations": [
+    "Global restore/manual-login snapshot/credential/catch/defer ownership remains open; no auth retry changes or real account switching performed.",
+    "No-119 sampled directory runs do not close server SID-loss cause.",
+    "Sparse screenshots/clock/stall counters do not establish full display frames, audio/subtitle/HDR or scrolling fluidity.",
+    "Startup waiting, original weak-network stalls/ordinal0, S19 deep seek/10min/PiP/MTP and Lenna/whole matrix/Main remain open.",
+    "Cold process restart does not establish cold server/media cache; no cross-build performance ranking.",
+    "iPhone18 latest package installed over paired wireless AFC/installation_proxy; normal launch and actual UI remain unverified because CoreDevice tunnel unavailable, native install/launch 4016, DVT InvalidService and screenshot unavailable. No iPhone18 playback regression.",
+    "iPhone13 S19 same key changed from from-head stable-exit 45.503102409 to cold-before 58.28565841; cold launch matches latest stored value. Exact save settling boundary remains unverified, not continuous final-save acceptance.",
+    "One iPad S01 diagnostic SocketError retry retained; all 8 windows completed, no failed attempt discarded.",
+    "Phone from-head AV stall episode has no bounded closing event despite later observed clock advance; no inferred end or duration."
+  ],
+  "completePlaybackWindows": 8,
+  "visiblePlayerErrorCount": 0,
+  "diagnosticReadFailureCount": 1,
+  "actualFilmBodyWindows": 6,
+  "fileExitTitleChecks": [
+    {
+      "device": "ipad",
+      "label": "normalwifi-baseline-resume-s01-files",
+      "record": {
+        "recordedAt": "2026-10-10T15:08:52.864720+08:00",
+        "entry": "files",
+        "immediateExitHasContinueWatching": true,
+        "settledExitHasContinueWatching": true,
+        "settledExitHasPreview": false,
+        "settledExitHasFromHead": true,
+        "actualUIInspected": true,
+        "playerClosed": true,
+        "evidence": [
+          "closed.png",
+          "closed-stable.png"
+        ],
+        "scope": "File preview title only; Jellyfin resume data uses a separate store and is not accepted by this check.",
+        "visualObservation": "Immediate and settled matching file Continue/from-head images both viewed."
+      }
+    },
+    {
+      "device": "ipad",
+      "label": "normalwifi-cold-reopen-resume-s19-files",
+      "record": {
+        "recordedAt": "2026-10-10T15:06:47.567888+08:00",
+        "entry": "files",
+        "immediateExitHasContinueWatching": true,
+        "settledExitHasContinueWatching": true,
+        "settledExitHasPreview": false,
+        "settledExitHasFromHead": true,
+        "actualUIInspected": true,
+        "playerClosed": true,
+        "evidence": [
+          "closed.png",
+          "closed-stable.png"
+        ],
+        "scope": "File preview title only; Jellyfin resume data uses a separate store and is not accepted by this check.",
+        "visualObservation": "Immediate mid-rotation and stable portrait preview both show Continue Watching and From Head after second exit."
+      }
+    },
+    {
+      "device": "ipad",
+      "label": "normalwifi-from-head-resume-s19-files",
+      "record": {
+        "recordedAt": "2026-10-10T15:05:12.283948+08:00",
+        "entry": "files",
+        "immediateExitHasContinueWatching": true,
+        "settledExitHasContinueWatching": true,
+        "settledExitHasPreview": false,
+        "settledExitHasFromHead": true,
+        "actualUIInspected": true,
+        "playerClosed": true,
+        "evidence": [
+          "closed.png",
+          "closed-stable.png"
+        ],
+        "scope": "File preview title only; Jellyfin resume data uses a separate store and is not accepted by this check.",
+        "visualObservation": "Immediate exit still mid-rotation, stable portrait preview shows Continue Watching and From Head."
+      }
+    },
+    {
+      "device": "iphone13",
+      "label": "normalwifi-baseline-resume-s01-files",
+      "record": {
+        "recordedAt": "2026-10-10T15:16:43.029632+08:00",
+        "entry": "files",
+        "immediateExitHasContinueWatching": true,
+        "settledExitHasContinueWatching": true,
+        "settledExitHasPreview": false,
+        "settledExitHasFromHead": true,
+        "actualUIInspected": true,
+        "playerClosed": true,
+        "evidence": [
+          "closed.png",
+          "closed-stable.png"
+        ],
+        "scope": "File preview title only; Jellyfin resume data uses a separate store and is not accepted by this check.",
+        "visualObservation": "Matching portrait S01 preview with Continue Watching immediate and stable."
+      }
+    },
+    {
+      "device": "iphone13",
+      "label": "normalwifi-cold-reopen-resume-s19-files",
+      "record": {
+        "recordedAt": "2026-10-10T15:14:56.002543+08:00",
+        "entry": "files",
+        "immediateExitHasContinueWatching": true,
+        "settledExitHasContinueWatching": true,
+        "settledExitHasPreview": false,
+        "settledExitHasFromHead": true,
+        "actualUIInspected": true,
+        "playerClosed": true,
+        "evidence": [
+          "closed.png",
+          "closed-stable.png"
+        ],
+        "scope": "File preview title only; Jellyfin resume data uses a separate store and is not accepted by this check.",
+        "visualObservation": "Matching portrait preview shows Continue Watching both immediate and stable after second exit."
+      }
+    },
+    {
+      "device": "iphone13",
+      "label": "normalwifi-from-head-resume-s19-files",
+      "record": {
+        "recordedAt": "2026-10-10T15:13:37.953243+08:00",
+        "entry": "files",
+        "immediateExitHasContinueWatching": true,
+        "settledExitHasContinueWatching": true,
+        "settledExitHasPreview": false,
+        "settledExitHasFromHead": true,
+        "actualUIInspected": true,
+        "playerClosed": true,
+        "evidence": [
+          "closed.png",
+          "closed-stable.png"
+        ],
+        "scope": "File preview title only; Jellyfin resume data uses a separate store and is not accepted by this check.",
+        "visualObservation": "Matching portrait file preview shows Continue Watching and From Head immediate and stable."
+      }
+    }
+  ],
+  "toolFailures": [
+    {
+      "failures": [
+        "Shell python3 lacks tidevice",
+        "stdin lacked UTF-8 declaration",
+        "DeviceInfo uses attributes rather than dictionary indexing",
+        "Safe report unittest module import lacked scripts search path; direct script execution passed all18 tests",
+        "Assumed native Python virtualenv path missing; existing /usr/bin/python3 supports pymobiledevice3",
+        "Offline source comparison treated relative manifest paths as absolute; resolved before comparing",
+        "Initial USB label incorrectly included paired NETWORK iPhone18; USB-only guard rejected before any install, wireless status rechecked and corrected.",
+        "Offline tidevice API lookup used nonexistent Device.install; supported Device.app_install inspected before use."
+      ],
+      "correction": "Use existing /usr/bin/python3 with project adapter, UTF-8 header and dev.udid; inspect actual ConnectionType and supported installation API",
+      "deviceMutationsOnFailedAttempts": false
+    }
+  ],
+  "status": "File resume preview refresh L0 and targeted L1 complete; full playback/performance acceptance OPEN",
+  "sourceScope": {
+    "recordedAt": "2026-10-10T15:07:00.064291+08:00",
+    "changedSincePreviousFrozenBuild": [
+      "ios/Nastart/Nastart/Features/Devices/DevicesView.swift",
+      "ios/Nastart/Nastart/Playback/GreenfieldPlaybackBridge.swift",
+      "ios/Nastart/NastartTests/PlaybackNextCoreTests.swift"
+    ],
+    "previousSourceInputsCompared": 173,
+    "authenticationSourceUnchanged": true,
+    "playbackTransportAndEngineParametersUnchanged": true
+  },
+  "freshDeviceConnections": {
+    "recordedAt": "2026-10-10T14:58:21.611133+08:00",
+    "devices": {
+      "other": {
+        "DeviceName": "iPhone",
+        "ProductType": "iPhone19,7",
+        "ProductVersion": "27.0",
+        "BuildVersion": "24A8428",
+        "usbConnected": false,
+        "connection": "NETWORK wireless paired",
+        "connectionCorrection": "Initial usbmux inventory included NETWORK; USB assumption rejected by later USB-only list and fresh connection-type check."
+      },
+      "ipad": {
+        "DeviceName": "iPad",
+        "ProductType": "iPad12,1",
+        "ProductVersion": "18.3.1",
+        "BuildVersion": "22D72",
+        "usbConnected": true
+      },
+      "iphone13": {
+        "DeviceName": "iPhone",
+        "ProductType": "iPhone14,5",
+        "ProductVersion": "16.3.1",
+        "BuildVersion": "20D67",
+        "usbConnected": true
+      }
+    },
+    "correctedAt": "2026-10-10T15:29:46.969028+08:00"
+  },
+  "finalPackageVerification": {
+    "recordedAt": "2026-10-10T15:29:46.969028+08:00",
+    "sourceInputsMatch": 173,
+    "iosDiffMatches": true,
+    "binaryHashesMatch": true,
+    "individualLibrariesVerified": 29,
+    "deepSignatureVerified": true,
+    "profileCurrentlyValid": true,
+    "allThreeTargetsInProfile": true
+  },
+  "iphone18Installation": {
+    "recordedAt": "2026-10-10T15:21:15.535502+08:00",
+    "device": "iPhone18 Pro Max",
+    "name": "iPhone",
+    "model": "iPhone19,7",
+    "os": "27.0",
+    "systemBuild": "24A8428",
+    "connection": "network; no USB target",
+    "sourceDiffSHA256": "53b6c222dc55ad8fbcc2a74689cc60608ecc202fb2190aeab02221eb2313e6fe",
+    "sourceHEAD": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "package": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-10-10-resume-preview-refresh-145700/Nastart-Resume-Preview-Refresh-Normal-Debug.app",
+    "binaries": {
+      "Nastart": "5de9b770f629b1637699b46d1577f396e790afff5c05d4d8886b44ce66f97ba6",
+      "Nastart.debug.dylib": "05cf9654a38eb6c589e6b95901c09a72eb00e8cd0d44c02e4148dc84df06aa51",
+      "Frameworks/KSPlayer.framework/KSPlayer": "eda16e6d0e22bc81045752f2f54a263b0f4f8500912378d5ac141013c9042b52"
+    },
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "binaryBuildTime": "2026-10-10T15:01:41.885128+08:00",
+    "sourceInputsChecked": 173,
+    "verifiedLibraries": 29,
+    "deepSignatureVerified": true,
+    "targetInValidProfile": true,
+    "oldPreferencesSavedPrivately": true,
+    "dataPreservingInstallRequested": true,
+    "installation": "success",
+    "normalLaunch": "BLOCKED native launch unavailable",
+    "playbackRegression": "NOT_RUN",
+    "earlierUSBOnlyGuardFailurePreserved": true,
+    "nativeInstallExitCode": 1,
+    "finalRecordedAt": "2026-10-10T15:27:07.309253+08:00",
+    "alternateInstallMethod": "tidevice AFC PublicStaging + installation_proxy Install; no uninstall",
+    "ipaBinariesMatchVerifiedPackage": true,
+    "alternateStartedAt": "2026-10-10T15:25:46.661646+08:00",
+    "installedAt": "2026-10-10T15:26:00.457482+08:00",
+    "successfulMethod": "wireless AFC + installation_proxy",
+    "postInstallLookupExists": true,
+    "unchangedNonDiagnosticPreferences": 25,
+    "requestedTestEnvironment": {},
+    "requestedArguments": [],
+    "actualForegroundUIVerified": false,
+    "pairedWirelessDVTLaunchFailureType": "MuxServiceError",
+    "pairedWirelessDVTLaunchFailure": "InvalidService",
+    "wirelessScreenshotExitCode": 255,
+    "normalLaunchActualUIVerification": "pending native connection; no verified foreground UI"
+  },
+  "nextRestoreOwnershipReview": {
+    "recordedAt": "2026-10-10T13:36:04.010686+08:00",
+    "scope": "Read-only next-batch ownership review; no source changes during live source-frozen regression.",
+    "observations": [
+      {
+        "method": "restoreDSMConnection",
+        "boundary": "after initial login",
+        "existingRule": "activate primary session without operation/login ownership check; isRefreshing only gates reentry."
+      },
+      {
+        "method": "restoreDSMConnection",
+        "boundary": "after snapshot",
+        "existingRule": "guard connection SID equals main SID before credential save/source snapshot/connect; same SID across distinct authentication UUIDs is not excluded here."
+      },
+      {
+        "method": "restoreDSMConnection",
+        "boundary": "catch/defer",
+        "existingRule": "failure sets reachability/summary and finally refresh flags without owner token; effect on concurrent manual activation remains to be covered."
+      },
+      {
+        "method": "publishFolderSession",
+        "boundary": "FS publication",
+        "existingRule": "new guard protects this publication against cancelled task or different primary UUID in connection/source, but does not cover later tail."
+      }
+    ],
+    "unverified": [
+      "No real cross-account/logout scenario was exercised.",
+      "No server119 cause inferred.",
+      "No automatic reauthentication or retry policy change."
+    ],
+    "nextControlledFixtures": [
+      "late snapshot with reused server SID across distinct login generations",
+      "cancelled restore after login/FS/snapshot must not publish, save credentials or report current failure",
+      "old cleanup must not clear newer operation flags",
+      "manual login and logout invalidate pending restore; losing session cleanup cannot logout the active identity"
+    ]
+  }
+}

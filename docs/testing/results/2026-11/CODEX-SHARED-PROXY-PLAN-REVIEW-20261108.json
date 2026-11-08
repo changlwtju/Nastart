@@ -1,0 +1,99 @@
+{
+  "at": "2026-11-08T07:53:56.985314+08:00",
+  "reviewReport": "docs/archive/handoffs/2026-11/CODEX-2026-11-08-SHARED-PROXY-PLAN-REVIEW.md",
+  "baseline": {
+    "at": "2026-11-08T07:50:09.211207+08:00",
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "branch": "main",
+    "sourceHashCount": 28,
+    "manifestSHA256": "c26bdff0bd260ada37df8bde1d6179d333fe97b02918765315f6ab167efc03a8"
+  },
+  "sourceInputs": {
+    "ios/Nastart/Nastart/Features/Devices/DevicesView.swift": "45c0d512b1275fdab373f63f52467cb5fc38d9adde95fc67a008751ed56fb454",
+    "ios/Nastart/Nastart/Features/Launchpad/LaunchpadLayoutViews.swift": "79e41b6554221cc655f96b41592ee3c30d8b62ee20bffa047d460b2bf541a672",
+    "ios/Nastart/Nastart/Features/Launchpad/LaunchpadView.swift": "8253c4919fce147299d5c013f3a3590f4e6c8d94b6553c9810961e4461651494",
+    "ios/Nastart/Nastart/Features/Launchpad/LaunchpadPlaybackCore.swift": "ccee8e8b9c80d4702a0644b1242b8998dee82b4e5b2763dc406538f8961e6e14",
+    "ios/Nastart/Nastart/Playback/GreenfieldPlaybackBridge.swift": "66c2e4abd634af9ed17c87d07468ab2a0f0bd3b05cb8fd9bcbe56dcafb706ee4",
+    "ios/Nastart/Nastart/Playback/GreenfieldVideoPlayerView.swift": "44ef6235b2da854e6c6949803b7658e75136bffcdbbd25bcfa59cf3ec74aec1d",
+    "ios/Nastart/Nastart/Playback/Core/PlaybackSessionCoordinator.swift": "d81aa3695e513ca0f2c79ce07922d176e850d431ea5d6d56afcc269de83b77d4",
+    "ios/Nastart/Nastart/Playback/Core/PlaybackPlanningPolicy.swift": "5a33946aebad9a3a9ebd079605d77947b731d4cd8fb99a661baaab2d02739ac7",
+    "ios/Nastart/Nastart/Playback/Core/PlaybackIntent.swift": "d231ea87e15d08f90c6743773c70c72df59ccae496ac6337b989a9af0392e59d",
+    "ios/Nastart/Nastart/Playback/IO/PlaybackIOContext.swift": "15c6b42d358fa50b01cecb775caf89a6ba46f5ab886e6d9bc1995097d01b38a7",
+    "ios/Nastart/Nastart/Playback/IO/PreloadCoordinator.swift": "6df050a231c498432607c825950302190838efa3ee3bccbacf1c60be3c719d5e",
+    "ios/Nastart/Nastart/Playback/IO/RangeCacheStore.swift": "12986a68f6634cd28ad11a8c406cfc90861ac076dfc59ad5f100f7d66d945ba3",
+    "ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/WebDAVPlaybackSession.swift": "609c4815f2a048e4b6c7c3fee4047efff55db30128d1123bd8adda8aa023d3ea",
+    "ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/WebDAVMediaResource.swift": "62fb3f91dd58269183b47ccd6330c9df5568e9e6b5509e72957292bcdc606f30",
+    "ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/WebDAV.swift": "54ced36ac7ceaa8938647a98a8e43c314e8b330ed0fca5915f76d34f2a022807",
+    "ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/NetworkLibraryPlaybackView.swift": "6611e8086f50fb3ad6a76ceddea38b9576338a248e6ffe129e05fa229b4062c8",
+    "ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/NetworkMediaPlaybackSource.swift": "feed7e0ff9cf53a7a2f9c823b5942abd50497f314b236bfd35c3377bd5c6638f",
+    "ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/PlaybackPreparationCoordinator.swift": "3e0237f5a29c145de18ac61b583dde9319593e874fde4579de3808ead605750b",
+    "ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/PlaybackSessionLifetime.swift": "e1078dd56a38f6d9270ddaa10f4ec57cf1fd4cfd696be5507a0fbf61dc2d8462",
+    "ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/FTPLibrarySource.swift": "35f4bb7ed99a8cf1b20e8f879ce329fb9904f5bf26b293f233335f3417018fb9",
+    "ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/SMBLibrarySource.swift": "3833f4c5b9d3ba63ab03b3b9de79d995ef27134c9393aa9657585bd02c7238e1",
+    "ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/SMBConnection.swift": "4901e188e8bab9b15be5518c51c9b1b005e59e3f59b6b9292437442de93d42f1",
+    "ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/FTPReadOnlyClient.swift": "fd70209a164e938d1a2eeb0358a892a95648fc05c9a5dca5c192c2a140aa6f00",
+    "ios/Nastart/NastartTests/PlaybackNextCoreTests.swift": "e14c9a640a6c604fc0a10293758ceee3c3e926398c78ff38af6f786275133247",
+    "ios/Nastart/Packages/NetworkMedia/Tests/NetworkMediaTests/WebDAVMediaHTTPTests.swift": "5e81884b1dbfe298a3f865d5aa1d1c01d1cdd75d012ddb3931b85bf6f6d9a708",
+    "ios/Nastart/Packages/NetworkMedia/Package.swift": "b63d2cb609ab2c3632d10dd3665053649dac74d8cbfcaef7dfa343535da7ae6d",
+    "tvos/NastartTV/Sources/TVNASViews.swift": "b1268d2285779945d760ac30856c5d37cbcb0765a797028013ba2b1b9d5850e8",
+    "tvos/NastartTV/NastartTV.xcodeproj/project.pbxproj": "f775f06e7da241a45d86350c9d1d4de0ea2f09a5f6c540bfa7e8936b9f6f8f2c"
+  },
+  "decision": "Conditional approval of step1; Range and ownership/trace/budget conditions first",
+  "sourceOnlyPreloadFinding": "Production default ObservingPlaybackIOContext does not materialize bytes, confirmed by code and existing explicit tests",
+  "probe": {
+    "at": "2026-11-08T07:51:21.021290+08:00",
+    "command": "xcrun swift -module-cache-path <batch private>/swift-module-cache <batch private>/range-policy-exact-source-probe.swift",
+    "exitCode": 0,
+    "copiedVerbatimFromCurrent": "DevicesView.swift enum MediaRangePolicy",
+    "cases": [
+      {
+        "request": "bytes=0-",
+        "actual": "bytes=0-33554431"
+      },
+      {
+        "request": "bytes=100-199",
+        "actual": "bytes=100-199"
+      },
+      {
+        "request": "bytes=-500",
+        "actual": "bytes=0-33554431",
+        "finding": "wrong region; suffix must reference final bytes"
+      },
+      {
+        "request": "bytes=100-99",
+        "actual": "bytes=100-100",
+        "finding": "invalid range silently converted into valid range"
+      },
+      {
+        "request": "bytes=0-0,999-999",
+        "actual": "bytes=0-0",
+        "finding": "first range only; caller-visible behavior requires explicit contract"
+      }
+    ],
+    "NASRequests": 0,
+    "deviceOperations": 0,
+    "projectProductCodeModified": false
+  },
+  "sourceModified": false,
+  "deviceOperations": 0,
+  "NASRequests": 0,
+  "builds": 0,
+  "networkPrinciple": "same environment and media conditions, shared pipeline; protocol-specific byte acquisition; FTP/SMB LAN scope",
+  "roles": {
+    "claude": "step1 + sequential13/Pad comparison, later bounded reader optimization",
+    "codex": "Range preflight, shared proxy/interface step2, preload investigation and integration"
+  },
+  "implementationLeaseActivated": false,
+  "reportedCurrentPackage": {
+    "SHA256Prefix": "4744df402a1897c3",
+    "kind": "Debug dylib per background report",
+    "devices": [
+      "iphone13",
+      "ipad",
+      "iphone18"
+    ],
+    "source": "user current statement",
+    "freshlyVerified": false
+  },
+  "privateEvidencePointer": "/tmp/nastart-codex-shared-proxy-review-path"
+}

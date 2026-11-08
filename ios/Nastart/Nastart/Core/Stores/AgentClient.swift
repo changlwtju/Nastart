@@ -394,9 +394,13 @@ enum AgentSnapshotMerger {
             components.query = nil
             components.fragment = nil
             guard
-                let url = components.url,
-                UserConfiguredServiceURLPolicy.allows(url)
+                let candidateURL = components.url,
+                UserConfiguredServiceURLPolicy.allows(candidateURL)
             else { return nil }
+            // Reaching the Agent's public domain does not expose every Docker
+            // port on that domain. Keep discovery, but require an explicit
+            // endpoint when there is no private host to derive a LAN address.
+            let url = NetworkHostClassifier.isPrivate(baseURL.host) ? candidateURL : nil
             let identity = ServiceIconRegistry.identity(
                 name: container.name,
                 subtitle: container.image,
@@ -427,7 +431,7 @@ enum AgentSnapshotMerger {
                     && LaunchpadDefaultVisibilityPolicy.shouldShowContainer(
                         name: container.name,
                         image: container.image,
-                        hasEndpoint: true
+                        hasEndpoint: url != nil
                     )
             )
         }

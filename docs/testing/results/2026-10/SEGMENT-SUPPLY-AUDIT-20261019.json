@@ -1,0 +1,843 @@
+{
+  "date": "2026-10-19",
+  "scope": "Saved S19 offline supply audit plus fresh normal-package iPhone13 S03 cellular two-entry windows; analysis scripts changed, no iOS source or binary change",
+  "sourceDiffSHA256": "063cf95682eb6429a6670ffd189a58464da22ca5576edadcd49b1bd2a85c589c",
+  "sourcePackageBuildTime": "2026-10-19T13:42:56.228770+08:00",
+  "tests": {
+    "analysisToolTests": 40,
+    "failed": 0,
+    "newRegressionTestsFailedBeforeFix": 2
+  },
+  "windows": [
+    {
+      "label": "cellular-s19-jf-bounded-auth",
+      "exactPrivateBinding": "playbackTraceID + transferID + upstreamTaskIndex; no identities exported",
+      "metricsMatchedCount": 91,
+      "segmentMetricsCount": 88,
+      "cancelledSegmentMetricsCount": 2,
+      "maxProxyBackpressureMs": 0.0,
+      "initialSegment": {
+        "role": "segment",
+        "ordinal": 0.0,
+        "issued": 6.5614402294158936,
+        "completedCallback": 9.197843313217163,
+        "cancelled": false,
+        "connectionReused": "yes",
+        "dnsMs": null,
+        "tcpMs": null,
+        "tlsMs": null,
+        "lastFetchToRequestMs": 0.0,
+        "lastRequestEndToFirstByteMs": 2111.0,
+        "upstreamIssueToHeadersCallbackMs": 2112.0,
+        "lastResponseBodyMs": 496.0,
+        "proxyBackpressureMs": 0.0,
+        "totalMs": 2607.0
+      },
+      "startupTail": {
+        "firstSegmentOrdinal": 0,
+        "firstSegmentCompletedCallbackSeconds": 9.197843,
+        "clockSignalSeconds": 10.430944,
+        "tailSeconds": 1.233101,
+        "subsequentRequestCallbackEnvelopeUnionSeconds": 1.224595,
+        "uncoveredByTheseEnvelopesSeconds": 0.008506,
+        "nextRequests": [
+          {
+            "role": "segment",
+            "ordinal": 1.0,
+            "issued": 9.198697,
+            "completedCallback": 10.30833,
+            "cancelled": false,
+            "connectionReused": "yes",
+            "dnsMs": null,
+            "tcpMs": null,
+            "tlsMs": null,
+            "lastFetchToRequestMs": 0.0,
+            "lastRequestEndToFirstByteMs": 248.0,
+            "upstreamIssueToHeadersCallbackMs": 249.0,
+            "lastResponseBodyMs": 885.0,
+            "proxyBackpressureMs": 0.0,
+            "totalMs": 1133.0
+          },
+          {
+            "role": "segment",
+            "ordinal": 2.0,
+            "issued": 10.315982,
+            "completedCallback": 11.082747,
+            "cancelled": false,
+            "connectionReused": "yes",
+            "dnsMs": null,
+            "tcpMs": null,
+            "tlsMs": null,
+            "lastFetchToRequestMs": 0.0,
+            "lastRequestEndToFirstByteMs": 103.0,
+            "upstreamIssueToHeadersCallbackMs": 104.0,
+            "lastResponseBodyMs": 640.0,
+            "proxyBackpressureMs": 0.0,
+            "totalMs": 744.0
+          }
+        ]
+      },
+      "deepSeekFirstTargetSegment": {
+        "role": "segment",
+        "ordinal": 1698.0,
+        "issued": 48.434041261672974,
+        "completedCallback": 51.890830278396606,
+        "cancelled": false,
+        "connectionReused": "yes",
+        "dnsMs": null,
+        "tcpMs": null,
+        "tlsMs": null,
+        "lastFetchToRequestMs": 0.0,
+        "lastRequestEndToFirstByteMs": 2998.0,
+        "upstreamIssueToHeadersCallbackMs": 2999.0,
+        "lastResponseBodyMs": 443.0,
+        "proxyBackpressureMs": 0.0,
+        "totalMs": 3442.0
+      },
+      "deepSeekTail": {
+        "firstSegmentOrdinal": 1698,
+        "firstSegmentCompletedCallbackSeconds": 51.89083,
+        "clockSignalSeconds": 53.748611,
+        "tailSeconds": 1.857781,
+        "subsequentRequestCallbackEnvelopeUnionSeconds": 1.803719,
+        "uncoveredByTheseEnvelopesSeconds": 0.054062,
+        "nextRequests": [
+          {
+            "role": "segment",
+            "ordinal": 1699.0,
+            "issued": 51.891699,
+            "completedCallback": 52.487664,
+            "cancelled": false,
+            "connectionReused": "yes",
+            "dnsMs": null,
+            "tcpMs": null,
+            "tlsMs": null,
+            "lastFetchToRequestMs": 0.0,
+            "lastRequestEndToFirstByteMs": 440.0,
+            "upstreamIssueToHeadersCallbackMs": 442.0,
+            "lastResponseBodyMs": 165.0,
+            "proxyBackpressureMs": 0.0,
+            "totalMs": 607.0
+          },
+          {
+            "role": "segment",
+            "ordinal": 1700.0,
+            "issued": 52.529396,
+            "completedCallback": 53.389632,
+            "cancelled": false,
+            "connectionReused": "yes",
+            "dnsMs": null,
+            "tcpMs": null,
+            "tlsMs": null,
+            "lastFetchToRequestMs": 0.0,
+            "lastRequestEndToFirstByteMs": 635.0,
+            "upstreamIssueToHeadersCallbackMs": 637.0,
+            "lastResponseBodyMs": 206.0,
+            "proxyBackpressureMs": 0.0,
+            "totalMs": 842.0
+          },
+          {
+            "role": "segment",
+            "ordinal": 1701.0,
+            "issued": 53.401092,
+            "completedCallback": 54.15151,
+            "cancelled": false,
+            "connectionReused": "yes",
+            "dnsMs": null,
+            "tcpMs": null,
+            "tlsMs": null,
+            "lastFetchToRequestMs": 0.0,
+            "lastRequestEndToFirstByteMs": 616.0,
+            "upstreamIssueToHeadersCallbackMs": 617.0,
+            "lastResponseBodyMs": 169.0,
+            "proxyBackpressureMs": 0.0,
+            "totalMs": 785.0
+          }
+        ]
+      },
+      "libraryAuthEventsRecoveredByParser": [],
+      "secondProbeObserved": false
+    },
+    {
+      "label": "cellular-s19-file-bounded-auth",
+      "exactPrivateBinding": "playbackTraceID + transferID + upstreamTaskIndex; no identities exported",
+      "metricsMatchedCount": 93,
+      "segmentMetricsCount": 90,
+      "cancelledSegmentMetricsCount": 1,
+      "maxProxyBackpressureMs": 0.0,
+      "initialSegment": {
+        "role": "segment",
+        "ordinal": 0.0,
+        "issued": 3.7889180183410645,
+        "completedCallback": 6.228104114532471,
+        "cancelled": false,
+        "connectionReused": "yes",
+        "dnsMs": null,
+        "tcpMs": null,
+        "tlsMs": null,
+        "lastFetchToRequestMs": 0.0,
+        "lastRequestEndToFirstByteMs": 2059.0,
+        "upstreamIssueToHeadersCallbackMs": 2061.0,
+        "lastResponseBodyMs": 364.0,
+        "proxyBackpressureMs": 0.0,
+        "totalMs": 2424.0
+      },
+      "startupTail": {
+        "firstSegmentOrdinal": 0,
+        "firstSegmentCompletedCallbackSeconds": 6.228104,
+        "clockSignalSeconds": 7.513956,
+        "tailSeconds": 1.285852,
+        "subsequentRequestCallbackEnvelopeUnionSeconds": 1.27965,
+        "uncoveredByTheseEnvelopesSeconds": 0.006202,
+        "nextRequests": [
+          {
+            "role": "segment",
+            "ordinal": 1.0,
+            "issued": 6.232075,
+            "completedCallback": 7.039191,
+            "cancelled": false,
+            "connectionReused": "yes",
+            "dnsMs": null,
+            "tcpMs": null,
+            "tlsMs": null,
+            "lastFetchToRequestMs": 0.0,
+            "lastRequestEndToFirstByteMs": 321.0,
+            "upstreamIssueToHeadersCallbackMs": 323.0,
+            "lastResponseBodyMs": 475.0,
+            "proxyBackpressureMs": 0.0,
+            "totalMs": 797.0
+          },
+          {
+            "role": "segment",
+            "ordinal": 2.0,
+            "issued": 7.040314,
+            "completedCallback": 7.475914,
+            "cancelled": false,
+            "connectionReused": "yes",
+            "dnsMs": null,
+            "tcpMs": null,
+            "tlsMs": null,
+            "lastFetchToRequestMs": 0.0,
+            "lastRequestEndToFirstByteMs": 182.0,
+            "upstreamIssueToHeadersCallbackMs": 183.0,
+            "lastResponseBodyMs": 253.0,
+            "proxyBackpressureMs": 0.0,
+            "totalMs": 436.0
+          },
+          {
+            "role": "segment",
+            "ordinal": 3.0,
+            "issued": 7.477022,
+            "completedCallback": 8.156087,
+            "cancelled": false,
+            "connectionReused": "yes",
+            "dnsMs": null,
+            "tcpMs": null,
+            "tlsMs": null,
+            "lastFetchToRequestMs": 0.0,
+            "lastRequestEndToFirstByteMs": 478.0,
+            "upstreamIssueToHeadersCallbackMs": 480.0,
+            "lastResponseBodyMs": 176.0,
+            "proxyBackpressureMs": 0.0,
+            "totalMs": 654.0
+          }
+        ]
+      },
+      "deepSeekFirstTargetSegment": {
+        "role": "segment",
+        "ordinal": 1698.0,
+        "issued": 47.35958003997803,
+        "completedCallback": 50.31711411476135,
+        "cancelled": false,
+        "connectionReused": "yes",
+        "dnsMs": null,
+        "tcpMs": null,
+        "tlsMs": null,
+        "lastFetchToRequestMs": 0.0,
+        "lastRequestEndToFirstByteMs": 2582.0,
+        "upstreamIssueToHeadersCallbackMs": 2584.0,
+        "lastResponseBodyMs": 348.0,
+        "proxyBackpressureMs": 0.0,
+        "totalMs": 2931.0
+      },
+      "deepSeekTail": {
+        "firstSegmentOrdinal": 1698,
+        "firstSegmentCompletedCallbackSeconds": 50.317114,
+        "clockSignalSeconds": 52.116055,
+        "tailSeconds": 1.798941,
+        "subsequentRequestCallbackEnvelopeUnionSeconds": 1.776447,
+        "uncoveredByTheseEnvelopesSeconds": 0.022494,
+        "nextRequests": [
+          {
+            "role": "segment",
+            "ordinal": 1699.0,
+            "issued": 50.327046,
+            "completedCallback": 50.947019,
+            "cancelled": false,
+            "connectionReused": "yes",
+            "dnsMs": null,
+            "tcpMs": null,
+            "tlsMs": null,
+            "lastFetchToRequestMs": 0.0,
+            "lastRequestEndToFirstByteMs": 469.0,
+            "upstreamIssueToHeadersCallbackMs": 473.0,
+            "lastResponseBodyMs": 151.0,
+            "proxyBackpressureMs": 0.0,
+            "totalMs": 621.0
+          },
+          {
+            "role": "segment",
+            "ordinal": 1700.0,
+            "issued": 50.956326,
+            "completedCallback": 51.732968,
+            "cancelled": false,
+            "connectionReused": "yes",
+            "dnsMs": null,
+            "tcpMs": null,
+            "tlsMs": null,
+            "lastFetchToRequestMs": 0.0,
+            "lastRequestEndToFirstByteMs": 601.0,
+            "upstreamIssueToHeadersCallbackMs": 603.0,
+            "lastResponseBodyMs": 173.0,
+            "proxyBackpressureMs": 0.0,
+            "totalMs": 776.0
+          },
+          {
+            "role": "segment",
+            "ordinal": 1701.0,
+            "issued": 51.736223,
+            "completedCallback": 52.633072,
+            "cancelled": false,
+            "connectionReused": "yes",
+            "dnsMs": null,
+            "tcpMs": null,
+            "tlsMs": null,
+            "lastFetchToRequestMs": 0.0,
+            "lastRequestEndToFirstByteMs": 520.0,
+            "upstreamIssueToHeadersCallbackMs": 521.0,
+            "lastResponseBodyMs": 369.0,
+            "proxyBackpressureMs": 0.0,
+            "totalMs": 890.0
+          }
+        ]
+      },
+      "libraryAuthEventsRecoveredByParser": [],
+      "secondProbeObserved": false,
+      "fileOutputEvidence": {
+        "traceBoundNegotiatedURLLimits": [
+          {
+            "secondsFromTouch": 0.734431,
+            "bitrate": 2000000.0,
+            "maxWidth": 854.0,
+            "maxHeight": 480.0,
+            "scope": "budget and negotiated URL limits, not decoded resolution"
+          }
+        ],
+        "subtitleDisabledObserved": true,
+        "actualDecodedVideoAudioFormat": "unknown"
+      }
+    },
+    {
+      "label": "cellular-s19-jf-bounded-auth-retry",
+      "exactPrivateBinding": "playbackTraceID + transferID + upstreamTaskIndex; no identities exported",
+      "metricsMatchedCount": 58,
+      "segmentMetricsCount": 55,
+      "cancelledSegmentMetricsCount": 0,
+      "maxProxyBackpressureMs": 0.0,
+      "initialSegment": {
+        "role": "segment",
+        "ordinal": 0.0,
+        "issued": 5.145648002624512,
+        "completedCallback": 7.833086013793945,
+        "cancelled": false,
+        "connectionReused": "yes",
+        "dnsMs": null,
+        "tcpMs": null,
+        "tlsMs": null,
+        "lastFetchToRequestMs": 0.0,
+        "lastRequestEndToFirstByteMs": 2053.0,
+        "upstreamIssueToHeadersCallbackMs": 2054.0,
+        "lastResponseBodyMs": 631.0,
+        "proxyBackpressureMs": 0.0,
+        "totalMs": 2684.0
+      },
+      "startupTail": {
+        "firstSegmentOrdinal": 0,
+        "firstSegmentCompletedCallbackSeconds": 7.833086,
+        "clockSignalSeconds": 9.227157,
+        "tailSeconds": 1.394071,
+        "subsequentRequestCallbackEnvelopeUnionSeconds": 1.388386,
+        "uncoveredByTheseEnvelopesSeconds": 0.005685,
+        "nextRequests": [
+          {
+            "role": "segment",
+            "ordinal": 1.0,
+            "issued": 7.834094,
+            "completedCallback": 8.889878,
+            "cancelled": false,
+            "connectionReused": "yes",
+            "dnsMs": null,
+            "tcpMs": null,
+            "tlsMs": null,
+            "lastFetchToRequestMs": 0.0,
+            "lastRequestEndToFirstByteMs": 212.0,
+            "upstreamIssueToHeadersCallbackMs": 213.0,
+            "lastResponseBodyMs": 822.0,
+            "proxyBackpressureMs": 0.0,
+            "totalMs": 1035.0
+          },
+          {
+            "role": "segment",
+            "ordinal": 2.0,
+            "issued": 8.894555,
+            "completedCallback": 9.386047,
+            "cancelled": false,
+            "connectionReused": "yes",
+            "dnsMs": null,
+            "tcpMs": null,
+            "tlsMs": null,
+            "lastFetchToRequestMs": 0.0,
+            "lastRequestEndToFirstByteMs": 98.0,
+            "upstreamIssueToHeadersCallbackMs": 99.0,
+            "lastResponseBodyMs": 388.0,
+            "proxyBackpressureMs": 0.0,
+            "totalMs": 487.0
+          }
+        ]
+      },
+      "deepSeekFirstTargetSegment": {
+        "role": "segment",
+        "ordinal": 1698.0,
+        "issued": 48.430233001708984,
+        "completedCallback": 51.470558881759644,
+        "cancelled": false,
+        "connectionReused": "yes",
+        "dnsMs": null,
+        "tcpMs": null,
+        "tlsMs": null,
+        "lastFetchToRequestMs": 0.0,
+        "lastRequestEndToFirstByteMs": 2490.0,
+        "upstreamIssueToHeadersCallbackMs": 2491.0,
+        "lastResponseBodyMs": 555.0,
+        "proxyBackpressureMs": 0.0,
+        "totalMs": 3046.0
+      },
+      "deepSeekTail": {
+        "firstSegmentOrdinal": 1698,
+        "firstSegmentCompletedCallbackSeconds": 51.470559,
+        "clockSignalSeconds": 53.131767,
+        "tailSeconds": 1.661208,
+        "subsequentRequestCallbackEnvelopeUnionSeconds": 1.650104,
+        "uncoveredByTheseEnvelopesSeconds": 0.011104,
+        "nextRequests": [
+          {
+            "role": "segment",
+            "ordinal": 1699.0,
+            "issued": 51.478695,
+            "completedCallback": 52.216033,
+            "cancelled": false,
+            "connectionReused": "yes",
+            "dnsMs": null,
+            "tcpMs": null,
+            "tlsMs": null,
+            "lastFetchToRequestMs": 0.0,
+            "lastRequestEndToFirstByteMs": 316.0,
+            "upstreamIssueToHeadersCallbackMs": 318.0,
+            "lastResponseBodyMs": 371.0,
+            "proxyBackpressureMs": 0.0,
+            "totalMs": 688.0
+          },
+          {
+            "role": "segment",
+            "ordinal": 1700.0,
+            "issued": 52.217688,
+            "completedCallback": 52.958982,
+            "cancelled": false,
+            "connectionReused": "yes",
+            "dnsMs": null,
+            "tcpMs": null,
+            "tlsMs": null,
+            "lastFetchToRequestMs": 0.0,
+            "lastRequestEndToFirstByteMs": 337.0,
+            "upstreamIssueToHeadersCallbackMs": 339.0,
+            "lastResponseBodyMs": 420.0,
+            "proxyBackpressureMs": 0.0,
+            "totalMs": 758.0
+          },
+          {
+            "role": "segment",
+            "ordinal": 1701.0,
+            "issued": 52.960295,
+            "completedCallback": 53.648456,
+            "cancelled": false,
+            "connectionReused": "yes",
+            "dnsMs": null,
+            "tcpMs": null,
+            "tlsMs": null,
+            "lastFetchToRequestMs": 0.0,
+            "lastRequestEndToFirstByteMs": 341.0,
+            "upstreamIssueToHeadersCallbackMs": 342.0,
+            "lastResponseBodyMs": 333.0,
+            "proxyBackpressureMs": 0.0,
+            "totalMs": 675.0
+          }
+        ]
+      },
+      "libraryAuthEventsRecoveredByParser": [
+        {
+          "actionSeconds": 4.372282,
+          "reason": "freshSameOriginAfterCellularPathChange",
+          "stage": "preparedLibraryRevalidationStarted"
+        },
+        {
+          "actionSeconds": 4.684104,
+          "attempt": 1,
+          "maximumAttempts": 2,
+          "mediaRenegotiated": "false",
+          "reason": "authenticatedCurrentPath",
+          "stage": "preparedLibraryRevalidationAttempt",
+          "willRetry": "false"
+        },
+        {
+          "actionSeconds": 4.684859,
+          "elapsedMs": 293,
+          "mediaRenegotiated": "false",
+          "reason": "sameServerAndAccountOnCurrentPath",
+          "stage": "preparedLibraryRevalidated"
+        }
+      ],
+      "secondProbeObserved": false
+    }
+  ],
+  "allSegmentReuse": {
+    "yes": 233,
+    "no": 0,
+    "unknown": 0
+  },
+  "limitations": [
+    "Request-to-metrics-callback envelopes are not exclusive network busy time or CPU/decode time",
+    "In-flight requests and decoding can overlap; subtracting envelopes cannot isolate causal latency",
+    "Same-window server generation versus transport wait remains unresolved",
+    "Source windows have different budgets/subtitles and unknown cache; no paired speed acceptance",
+    "Saved S19 offline audit adds no fresh S19 device evidence; fresh S03 is separate. No full-frame/audio/HDR/subtitle acceptance or requirement closure"
+  ],
+  "S03CurrentDeviceWindows": [
+    {
+      "entry": "Jellyfin",
+      "sample": "S03",
+      "internalFirstClockSecondsFromTouch": 21.646165,
+      "internalClockNotPresentation": true,
+      "URLMetricsCount": 85,
+      "URLMetricsCellularYes": 85,
+      "maxStallCountIncludingSeek": 2,
+      "autoDownshiftRequested": 0,
+      "seeks": [
+        {
+          "start": {
+            "secondsFromTouch": 48.334498,
+            "event": "seek_started",
+            "fields": {
+              "engine": "AVPlayer",
+              "seekDeltaSeconds": 3712.864603398722,
+              "seekTargetSeconds": 3739.868068825722
+            }
+          },
+          "signals": [
+            {
+              "secondsFromTouch": 55.360817,
+              "event": "seek_engine_completed",
+              "fields": {
+                "engine": "AVPlayer",
+                "targetSeconds": 3739.868068825722
+              }
+            },
+            {
+              "secondsFromTouch": 55.565958,
+              "event": "seek_recovered",
+              "fields": {
+                "currentSeconds": 3740.000560979,
+                "engine": "AVPlayer",
+                "evidence": "engineCompletionAndAdvancingClock",
+                "seekRecoveryMs": 7268,
+                "seekTargetSeconds": 3739.868068825722
+              }
+            }
+          ],
+          "recoveryMs": 7268,
+          "censoredAfterSeconds": null,
+          "meaning": "engine completion and advancing clock, not first visible frame"
+        }
+      ],
+      "preparation": [
+        {
+          "secondsFromTouch": 3.484466,
+          "maxBitrate": "2000000",
+          "mode": "serverNegotiatedHLS",
+          "negotiatedAudioCodec": "aac",
+          "negotiatedSubtitleIndex": "7",
+          "negotiatedSubtitleMethod": "Encode",
+          "negotiatedVideoBitrate": "1616000",
+          "negotiatedVideoCodec": "h264"
+        },
+        {
+          "secondsFromTouch": 3.484951,
+          "reason": "freshSameOriginAfterCellularPathChange",
+          "stage": "preparedLibraryRevalidationStarted"
+        },
+        {
+          "secondsFromTouch": 4.005661,
+          "attempt": "1",
+          "maximumAttempts": "2",
+          "reason": "authenticatedCurrentPath",
+          "stage": "preparedLibraryRevalidationAttempt",
+          "willRetry": "false"
+        },
+        {
+          "secondsFromTouch": 4.006236,
+          "elapsedMs": "518",
+          "reason": "sameServerAndAccountOnCurrentPath",
+          "stage": "preparedLibraryRevalidated"
+        }
+      ],
+      "manifestMetrics": [
+        {
+          "lastRequestEndToFirstByteMs": "111",
+          "lastResponseBodyMs": "1651",
+          "responseBodyBytesAfterDecoding": "1529038",
+          "responseBodyBytesReceivedIncludingProtocol": "1532413",
+          "responseContentEncoding": "unspecified",
+          "responseContentLength": "1529038",
+          "totalMs": "1763"
+        }
+      ],
+      "firstSegmentRequests": [
+        {
+          "issuedSecondsFromTouch": 4.592359,
+          "headersSecondsFromTouch": 19.993255,
+          "statusCode": "200",
+          "connectionReused": "yes",
+          "requestEndToHeadersMs": "15392",
+          "taskBodyBytes": "3854",
+          "transactionDecodedBytes": "3854",
+          "contentLength": "744480",
+          "upstreamCancellationRequested": "true",
+          "clientFinishSource": "clientFailed",
+          "clientTransportErrorKind": "posix",
+          "clientTransportErrorCode": "54"
+        },
+        {
+          "issuedSecondsFromTouch": 8.601732,
+          "headersSecondsFromTouch": 19.923715,
+          "statusCode": "200",
+          "connectionReused": "yes",
+          "requestEndToHeadersMs": "11319",
+          "taskBodyBytes": "7950",
+          "transactionDecodedBytes": "28430",
+          "contentLength": "744480",
+          "upstreamCancellationRequested": "true",
+          "clientFinishSource": "clientFailed",
+          "clientTransportErrorKind": "posix",
+          "clientTransportErrorCode": "54"
+        },
+        {
+          "issuedSecondsFromTouch": 18.608893,
+          "headersSecondsFromTouch": 19.781515,
+          "statusCode": "200",
+          "connectionReused": "yes",
+          "requestEndToHeadersMs": "1157",
+          "taskBodyBytes": "744480",
+          "transactionDecodedBytes": "744480",
+          "contentLength": "744480",
+          "upstreamCancellationRequested": "false",
+          "clientFinishSource": "clientTerminalSend",
+          "clientTransportErrorKind": "none",
+          "clientTransportErrorCode": null
+        }
+      ],
+      "sameFirstSegmentChildHandle": true,
+      "sameTraceForFirstSegmentRequests": true,
+      "t30ActuallyReviewed": true,
+      "seekT10ActuallyReviewed": true,
+      "t30Scene": "Paramount stars",
+      "seekT10Scene": "bridge traffic",
+      "subtitleMode": "PGS index7 server Encode",
+      "ordinaryExit": true,
+      "WiFiRestoration": {
+        "startedAt": "2026-10-19T14:17:49.867960+08:00",
+        "networkRestored": true,
+        "automaticFinally": true,
+        "ordinaryExit": true,
+        "nativeSelectedOriginalNetworkVerified": true,
+        "wifiScreenshotNeedsActualReview": true,
+        "finishedAt": "2026-10-19T14:20:16.560636+08:00",
+        "wifiIconActuallyReviewed": true,
+        "normalHomeActuallyReviewed": true
+      },
+      "performanceAccepted": false
+    },
+    {
+      "entry": "device file",
+      "sample": "S03",
+      "internalFirstClockSecondsFromTouch": 7.448477,
+      "internalClockNotPresentation": true,
+      "URLMetricsCount": 88,
+      "URLMetricsCellularYes": 88,
+      "maxStallCountIncludingSeek": 2,
+      "autoDownshiftRequested": 0,
+      "seeks": [
+        {
+          "start": {
+            "secondsFromTouch": 47.554516,
+            "event": "seek_started",
+            "fields": {
+              "engine": "AVPlayer",
+              "seekDeltaSeconds": 3636.323579890091,
+              "seekTargetSeconds": 3676.823999751091
+            }
+          },
+          "signals": [
+            {
+              "secondsFromTouch": 53.84851,
+              "event": "seek_engine_completed",
+              "fields": {
+                "engine": "AVPlayer",
+                "targetSeconds": 3676.823999751091
+              }
+            },
+            {
+              "secondsFromTouch": 54.108599,
+              "event": "seek_recovered",
+              "fields": {
+                "currentSeconds": 3677.001143888,
+                "engine": "AVPlayer",
+                "evidence": "engineCompletionAndAdvancingClock",
+                "seekRecoveryMs": 6560,
+                "seekTargetSeconds": 3676.823999751091
+              }
+            }
+          ],
+          "recoveryMs": 6560,
+          "censoredAfterSeconds": null,
+          "meaning": "engine completion and advancing clock, not first visible frame"
+        }
+      ],
+      "preparation": [
+        {
+          "secondsFromTouch": 0.586396,
+          "bitrate": "2000000",
+          "maxHeight": "480",
+          "maxWidth": "854",
+          "result": "negotiatedDimensions"
+        }
+      ],
+      "manifestMetrics": [
+        {
+          "lastRequestEndToFirstByteMs": "120",
+          "lastResponseBodyMs": "1761",
+          "responseBodyBytesAfterDecoding": "1399318",
+          "responseBodyBytesReceivedIncludingProtocol": "1402414",
+          "responseContentEncoding": "unspecified",
+          "responseContentLength": "1399318",
+          "totalMs": "1883"
+        }
+      ],
+      "firstSegmentRequests": [
+        {
+          "issuedSecondsFromTouch": 3.699237,
+          "headersSecondsFromTouch": 5.923565,
+          "statusCode": "200",
+          "connectionReused": "yes",
+          "requestEndToHeadersMs": "2231",
+          "taskBodyBytes": "744480",
+          "transactionDecodedBytes": "744480",
+          "contentLength": "744480",
+          "upstreamCancellationRequested": "false",
+          "clientFinishSource": "clientTerminalSend",
+          "clientTransportErrorKind": "none",
+          "clientTransportErrorCode": null
+        }
+      ],
+      "sameFirstSegmentChildHandle": true,
+      "sameTraceForFirstSegmentRequests": true,
+      "t30ActuallyReviewed": true,
+      "seekT10ActuallyReviewed": true,
+      "t30Scene": "Paramount Pictures presents",
+      "seekT10Scene": "Ethan Hunt closeup",
+      "subtitleMode": "disabled",
+      "ordinaryExit": true,
+      "WiFiRestoration": {
+        "startedAt": "2026-10-19T14:21:11.856470+08:00",
+        "networkRestored": true,
+        "automaticFinally": true,
+        "ordinaryExit": true,
+        "nativeSelectedOriginalNetworkVerified": true,
+        "wifiScreenshotNeedsActualReview": true,
+        "finishedAt": "2026-10-19T14:23:41.396639+08:00",
+        "wifiIconActuallyReviewed": true,
+        "normalHomeActuallyReviewed": true
+      },
+      "performanceAccepted": false
+    }
+  ],
+  "S03Limitations": [
+    "One window per entry; exact file bytes/source match not freshly frozen",
+    "Same observed VOD duration7524.768 and1880segments, but actual seek targets3739.868/3676.824 differ despite requested ratio0.5; no same-target comparison",
+    "Fix native slider action calibration or use verified normalized native slider action before strict pairing",
+    "Selected S03 subtitle is PGSSUB, not an ASS-track regression; ASS coverage stays pending",
+    "PGS Encode versus Off, same2Mbps budget but cache unknown; do not assign14.2s difference to subtitles alone",
+    "Repeated first-segment requests documented; no proof they caused original server response delay or that coalescing alone fixes startup"
+  ],
+  "currentFinalAudit": {
+    "sourceInputsVerified": 173,
+    "binaryHashesVerified": true,
+    "signatureVerified": true,
+    "devices": {
+      "iphone13": {
+        "at": "2026-10-19T14:26:12.323507+08:00",
+        "model": "iPhone14,5",
+        "system": "16.3.1",
+        "connection": "USB",
+        "sourceDiffSHA256": "063cf95682eb6429a6670ffd189a58464da22ca5576edadcd49b1bd2a85c589c",
+        "latestPackage": {
+          "Nastart": "178f2beeca6afc5fa9a02f7de57e7fe8e2809e6a4f7ba7e4b5a8cd876b6a1133",
+          "Nastart.debug.dylib": "430d512c992ff63515c29c65ff15ec3c07ef39ed0e035d13e0c105c3b0a81db2",
+          "Frameworks/KSPlayer.framework/KSPlayer": "126143f6a6bc0baf1aeba81e478ee5e8eb9c881d25d89b6fdd1e0957714bd33f"
+        },
+        "nonBookmarkPreferenceKeys": 24,
+        "nonBookmarkPreferencesExactlyUnchanged": true,
+        "naturalBookmarkChangesCount": 2,
+        "originalBookmarksChecked": 36,
+        "originalBookmarksRemoved": 0,
+        "originalTrackChangeCount": 0,
+        "allOriginalTracksUnchanged": true,
+        "newBookmarksCount": 0,
+        "crashInventoryDelta": {
+          "Nastart": 0,
+          "WebDriverAgent": 0,
+          "JetsamEvent": 0
+        },
+        "normalEmptyEnvironment": true,
+        "NASNormal": true,
+        "playerClosed": true,
+        "WDAIdleSeconds": 10,
+        "WDAAnimationCoolOffSeconds": 2,
+        "nativeConditionsNotRecheckedThisTurn": false,
+        "noConditionInjectedThisTurn": true,
+        "nativeActiveConditions": 0,
+        "finalHomeActuallyReviewed": true,
+        "NASNormalAtFinalNativeScreenshot": true
+      }
+    }
+  },
+  "currentCleanup": {
+    "twoCellularWindowsStoppedAndOriginalWiFiVerified": true,
+    "actualSleepWakeDarkWakeCountSinceFirstCellWindow": 0,
+    "noIOSSourceOrBinaryChange": true,
+    "noNewPad18OrTVActions": true,
+    "noNASVPNUpdatesOrShaping": true,
+    "preservedPhonePersistentWDA": true,
+    "noOwnMediaBuildCaptureRemaining": true
+  },
+  "analysisToolSHA256": "3478aba8190d521717c0bc493b35817eb7edde8bf02df735e5adc9af752f8d7a",
+  "allSegmentReuseScope": "Saved S19 three windows only; S03 listed separately"
+}

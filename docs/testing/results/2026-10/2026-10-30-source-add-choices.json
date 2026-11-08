@@ -1,0 +1,207 @@
+{
+  "recordedAt": "2026-10-30T10:33:16+08:00",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceInputCount": 435,
+  "changedExistingSourceFiles": 3,
+  "existingOfflineParameterTestsPassed": 4,
+  "newRepositoryTests": 0,
+  "builds": {
+    "module-tests": {
+      "startedAt": "2026-10-30T10:10:08.156922+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T10:10:12.793603+08:00"
+    },
+    "mobile-sim-debug-cast": {
+      "startedAt": "2026-10-30T10:13:31.897692+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T10:13:52.977053+08:00"
+    },
+    "tv-sim-debug-cast": {
+      "startedAt": "2026-10-30T10:13:31.897747+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T10:13:47.600044+08:00"
+    },
+    "mobile-debug": {
+      "startedAt": "2026-10-30T10:29:24.724305+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T10:30:19.227437+08:00"
+    },
+    "tv-debug": {
+      "startedAt": "2026-10-30T10:29:24.724327+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T10:29:47.555502+08:00"
+    },
+    "mobile-release": {
+      "startedAt": "2026-10-30T10:30:19.228439+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T10:32:03.458891+08:00"
+    },
+    "tv-release": {
+      "startedAt": "2026-10-30T10:29:47.556589+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T10:30:29.449655+08:00"
+    }
+  },
+  "capture": {
+    "accepted": 9,
+    "byPlatform": {
+      "phone": 3,
+      "pad": 3,
+      "tv": 3
+    },
+    "allPassed": true,
+    "ownedSimulatorsDeleted": true,
+    "syntheticPreferencesPreserved": true,
+    "physicalDevicesOperated": 0,
+    "NASCommands": 0,
+    "interactionOrAnimationVerified": false
+  },
+  "visualReview": {
+    "reviewed": true,
+    "recordedAt": "2026-10-30T10:29:24.544410+08:00",
+    "windows": [
+      {
+        "platform": "phone",
+        "scene": "source-add",
+        "sha256": "9560aefa3ae5e8d0beed55db33a67877702ef12b408c507832791a55bcd8337e"
+      },
+      {
+        "platform": "phone",
+        "scene": "source-add-empty",
+        "sha256": "06c3bc49bc328a2ef5b68637da22dc99d1fc360c5fc30a6cd0531a091464f38c"
+      },
+      {
+        "platform": "phone",
+        "scene": "source-add-connection",
+        "sha256": "ba785eb95fe53176a18ff208521cfeacf7a679d4e13b50d557cfae718ee6ff36"
+      },
+      {
+        "platform": "pad",
+        "scene": "source-add",
+        "sha256": "5f23c3a922a97d4346857bb63d1142d4b916ddd4e97d56030b79afb0230c3d1b"
+      },
+      {
+        "platform": "pad",
+        "scene": "source-add-empty",
+        "sha256": "9d6d8f55c08a54fca2a804635dbc2b9d182734e6ea2635c28d7924c2fc2a6610"
+      },
+      {
+        "platform": "pad",
+        "scene": "source-add-connection",
+        "sha256": "6ad26390b657dfe11bb8218f91aab2829dda54a0469a21f195d3996ffba33d39"
+      },
+      {
+        "platform": "tv",
+        "scene": "source-add",
+        "sha256": "af9fb48c5e2e1d0b63250a345758dfed47f9accc899ca4a138497937e71d8374"
+      },
+      {
+        "platform": "tv",
+        "scene": "source-add-empty",
+        "sha256": "9697a47cd18dd1da8a2dcca0067dd783ba66a22b34fda0c579f2e6d31d72328d"
+      },
+      {
+        "platform": "tv",
+        "scene": "source-add-connection",
+        "sha256": "831d391e4ca9203b8e5dec5faa952e2a376ed3e5ba4d84d837967a9077f4243a"
+      }
+    ],
+    "findings": [
+      "Primary and secondary text colors readable, accent icons retained across all selected windows",
+      "Empty and connection-only modes have no saved-source section",
+      "Phone large text and tablet large text explanatory labels wrap without clipping in captured viewports",
+      "TV visible pending protocol rows are static and have no disclosure chevrons",
+      "TV full source list shows only first pending protocol at viewport edge; remainder and footer not claimed visible",
+      "Removed overlapping duplicate debug footer; final phone full screenshot reviewed without overlap"
+    ],
+    "actualInteractionVerified": false,
+    "actualSourceMappingVerified": false,
+    "physicalDevicesOperated": 0
+  },
+  "sourcePreservation": {
+    "changedExistingSourceFiles": 3,
+    "unchangedBeforeActionLabel": true,
+    "unchangedOtherLibraryControllers": true,
+    "unchangedConnectionFormsFolderControllersAndTransactions": true,
+    "sourceAndStoreAndPlaybackInputsUnchanged": true,
+    "savedConnectionReadsPerBody": 1,
+    "connectionOnlyModeSkipsSavedSourceRead": true,
+    "pendingProtocolsHaveNoButtonOrDisclosure": true,
+    "offlineSceneHasNoModelStoreClientOrTask": true,
+    "finalPreviewOnlyCorrection": true,
+    "offlineParameterInputsUnchangedAfterTest": true
+  },
+  "diskPreflight": {
+    "initialGateGiB": 4.0,
+    "gateStoppedBeforeAnyDeviceCreated": true,
+    "observedFreeGiB": 3.95,
+    "revisedSerialPreflightGiB": 3.5,
+    "runtimeReserveGiB": 2.0,
+    "reason": "Measured serial simulator budget below 1.5 GiB; no parallel native builds during capture, keep at least 2 GiB free and clean task-owned instances in finally",
+    "evidenceOrUserDataDeleted": false,
+    "runtimeReserveTriggered": true,
+    "runtimeStopPreservedQualifiedPhoneWindows": 2,
+    "partialOwnedDeviceDeleted": true,
+    "revisedMeasuredStartupGiB": 4.8,
+    "measuredFreeAfterDeletionGiB": 4.81,
+    "retryPolicy": "Resume only missing windows once; keep 2 GiB reserve; stop if reserve triggers again",
+    "phoneMissingWindowCompleted": true,
+    "nextDevicePreflightHeldUntilDeletedDataReclaimed": true,
+    "boundedReclamationWaitSeconds": 45,
+    "guardGiBNotLoweredAgain": true,
+    "tabletThreeWindowsCompleted": true,
+    "tabletDeletionLeftLessThanIOSStartupBudget": true,
+    "tvOnlyStartupGiB": 3.8,
+    "tvOnlyBudgetReason": "Television simulator has a smaller known footprint than iOS; run only TV with 2 GiB runtime stop line, no further retry on reserve failure",
+    "observedBeforeTVGiB": 4.1
+  },
+  "packages": {
+    "mobile": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-30T10:30:18.835994+08:00",
+      "frozenAt": "2026-10-30T10:32:42.858472+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 435,
+      "mainSHA256": "df9d9a7e84915a3a98498551113c5cf9e2b23475f2ad9cc7b1d849cbe03047b2",
+      "debugDylibSHA256": "7092937df0f9bb966c4d750c2240982121f93fd1b06b5993d85b7af490b6e4d2",
+      "signedMachOCount": 30,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false
+    },
+    "tv": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-30T10:29:47.393450+08:00",
+      "frozenAt": "2026-10-30T10:32:43.240034+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 435,
+      "mainSHA256": "a1051a00034ab8f90a736fe1579a3ce37240a131f7f545c29ed0187c5f6345c9",
+      "debugDylibSHA256": "ace5db4cc846085b4a2332b2c1e211d83950af28e712c91b784f334abfa5dd75",
+      "signedMachOCount": 27,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false
+    }
+  },
+  "initialPreviewFooterFailureRetainedAndExcluded": true,
+  "interruptedInstancesPreferencesPreserved": true,
+  "ownedSimulatorsDeleted": 5,
+  "physicalDevicesOperated": 0,
+  "NASCommands": 0,
+  "playbackCommands": 0,
+  "privateEvidencePointer": "current-source-add-polish-private",
+  "notVerified": [
+    "Actual connection selection, navigation, credentials or directory access",
+    "Actual source discovery, persistence or NAS compatibility",
+    "Scroll displacement, remote control, VoiceOver and performance",
+    "Playback or actual posters and actor images"
+  ]
+}

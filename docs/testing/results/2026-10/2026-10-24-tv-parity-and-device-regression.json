@@ -1,0 +1,162 @@
+{
+  "at": "2026-10-24T14:34:19.376559+08:00",
+  "sourceHead": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "otherDirtyPreserved": true,
+  "iOSInputsUnchanged": 174,
+  "TV": {
+    "at": "2026-10-24T14:15:33.674454+08:00",
+    "configuration": "normal Debug",
+    "binaries": {
+      "NastartTV": "d25567c883f59baca2d68b1cf8e533665bbecd926e0706dc8d6058e8e22ece08",
+      "__preview.dylib": "447b8c916cd3f66ddb58214eea2bc018e02be05df58af070c6946e8a501985ab",
+      "NastartTV.debug.dylib": "0e087a8668429c75b14b3dfc8b40df4455f8672c2293df33f522a8bc20b12a3a"
+    },
+    "sourceInputs": 41,
+    "model": "AppleTV14,1",
+    "system": "18.2",
+    "signedLibraries": 2,
+    "applicationIdentifierAndKeychainGroupsPreserved": true,
+    "compiledIconMetadataPresent": true,
+    "profileExpirationUTC": "2026-10-31 05:46:14",
+    "tests": {
+      "unit": 14,
+      "UI": 1,
+      "failed": 0
+    },
+    "installationExit": 0,
+    "installedAt": "2026-10-24T14:15:34.611610+08:00",
+    "ordinaryEmptyLaunchNativeImageReviewed": true,
+    "desktopIconActualVerified": false,
+    "NASRealLoginPlaybackVerified": false,
+    "fullMobileParity": false,
+    "lastReadOnlyScreen": "screensaver/AirPlay information; NAS login not confirmed"
+  },
+  "mobile": {
+    "iphone13": {
+      "startedAt": "2026-10-24T14:24:20.276312+08:00",
+      "finishedAt": "2026-10-24T14:25:28.443256+08:00",
+      "sample": "S01",
+      "entry": "jellyfin",
+      "playCommands": 1,
+      "seekCommands": 0,
+      "pipCommands": 0,
+      "requestedMediaSeconds": 30,
+      "actualNative10And30ImagesReviewed": true,
+      "returnOriginalDetailUIObserved": true,
+      "normalCloseEffectCaptured": true,
+      "finalWDAAppStates": [
+        1,
+        1
+      ],
+      "ownGuardianStopped": true,
+      "ownSyslogStopped": true,
+      "otherPreferencesUnchanged": true,
+      "originalBookmarks": 36,
+      "finalBookmarks": 36,
+      "trackChanges": 0,
+      "progressEntriesChanged": 1,
+      "newCrashInventory": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      },
+      "newEventCount": 161,
+      "newFirstFrameEvents": 1,
+      "newDetailKnownRouteTokens": {
+        "ksplayer": true,
+        "avplayer": false,
+        "localRangeProxy": true,
+        "localHLSProxy": false
+      },
+      "verdict": "finite ordinary Jellyfin S01 playback/normal return; no audio/full-frame/full-subtitle or whole matrix PASS"
+    },
+    "ipad11": {
+      "startedAt": "2026-10-24T14:19:41.417073+08:00",
+      "finishedAt": "2026-10-24T14:20:45.593339+08:00",
+      "sample": "S01",
+      "entry": "jellyfin",
+      "playCommands": 1,
+      "seekCommands": 0,
+      "pipCommands": 0,
+      "requestedMediaSeconds": 30,
+      "actualNative10And30ImagesReviewed": true,
+      "returnOriginalDetailUIObserved": true,
+      "normalCloseEffectCaptured": true,
+      "finalWDAAppStates": [
+        1,
+        1
+      ],
+      "ownGuardianStopped": true,
+      "ownSyslogStopped": true,
+      "otherPreferencesUnchanged": true,
+      "originalBookmarks": 1,
+      "finalBookmarks": 2,
+      "trackChanges": 0,
+      "progressEntriesChanged": 0,
+      "newCrashInventory": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      },
+      "newEventCount": 171,
+      "newFirstFrameEvents": 1,
+      "newDetailKnownRouteTokens": {
+        "ksplayer": true,
+        "avplayer": false,
+        "localRangeProxy": true,
+        "localHLSProxy": false
+      },
+      "verdict": "finite ordinary Jellyfin S01 playback/normal return; no audio/full-frame/full-subtitle or whole matrix PASS"
+    }
+  },
+  "iphone18": {
+    "USBInstallSucceeded": true,
+    "installedAt": "2026-10-24T13:50:16.120719+08:00",
+    "nonDiagnosticPreferencesEqual": 25,
+    "actualDomainAddressFixed": false,
+    "userReportedStillIPAndPort": true,
+    "userPausedBranch": true,
+    "wirelessPairedIdentityVerified": true,
+    "wirelessContainerFailsOnBothPythonLibreSSLAndOpenSSL": true,
+    "wirelessRootCause": "unresolved; authenticated post-TLS service protocol termination, USB same container backup succeeded",
+    "newWirelessInstallCommands": 0,
+    "credentialsOrNetworkChanged": false
+  },
+  "knownFailuresRetained": [
+    "TV first asset layer content failure",
+    "TV test compile expression and body-stream assertion failures",
+    "iPad helper missing session before media",
+    "iPad nested search button selection before media",
+    "iPhone13 changing full-row label selection before media"
+  ],
+  "wholePlaybackMatrixCellsPassed": 0,
+  "openRequirementCount": 28,
+  "periodicAutomationCreated": false,
+  "finalAudit": {
+    "at": "2026-10-24T14:32:35.039078+08:00",
+    "devices": {
+      "iphone13": {
+        "currentSourcePackageVerified": true,
+        "model": "iPhone14,5",
+        "system": "16.3.1",
+        "connection": "USB",
+        "twoPreferenceReadsStable": true,
+        "installedLookup": true,
+        "appState": 1,
+        "automationSettingsRestored": true
+      },
+      "ipad11": {
+        "currentSourcePackageVerified": true,
+        "model": "iPad15,7",
+        "system": "26.6",
+        "connection": "USB",
+        "twoPreferenceReadsStable": true,
+        "installedLookup": true,
+        "ownRunnerStopped": true
+      }
+    },
+    "TV41InputsStillMatchInstalledBuild": true,
+    "nativeHomeWiFiIconsReviewed": true,
+    "nativeHomePiPAbsent": true
+  }
+}

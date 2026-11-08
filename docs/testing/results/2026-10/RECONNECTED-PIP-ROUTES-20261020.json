@@ -1,0 +1,197 @@
+{
+  "date": "2026-10-20",
+  "sourceDiffSHA256": "35df7015b08ee4d929683983de8ac59d2d7111f94615bf85f38894fc25ae66ed",
+  "buildTime": "2026-10-20T06:48:25.326233+08:00",
+  "configuration": "normal Debug, empty environment",
+  "productCodeChangedInThisBatch": false,
+  "s01WiFiBaseline": [
+    {
+      "device": "iphone13",
+      "entry": "device file",
+      "sample": "S01",
+      "internalClockSeconds": [
+        1.357451
+      ],
+      "maxSampledStalls": 0,
+      "completedMetrics": 2,
+      "cellularYes": 0,
+      "cellularNo": 2,
+      "ordinaryExit": true,
+      "nonBookmarkPreferencesEqual": true,
+      "performanceAccepted": false,
+      "screensReviewed": true,
+      "screenshotEvidence": "sampled visible film frames only; not FF/SUB/AUD or frame timing acceptance"
+    },
+    {
+      "device": "iphone13",
+      "entry": "Jellyfin",
+      "sample": "S01",
+      "internalClockSeconds": [
+        1.715566
+      ],
+      "maxSampledStalls": 0,
+      "completedMetrics": 2,
+      "cellularYes": 0,
+      "cellularNo": 2,
+      "ordinaryExit": true,
+      "nonBookmarkPreferencesEqual": true,
+      "performanceAccepted": false,
+      "screensReviewed": true,
+      "screenshotEvidence": "sampled visible film frames only; not FF/SUB/AUD or frame timing acceptance"
+    },
+    {
+      "device": "ipad",
+      "entry": "device file",
+      "sample": "S01",
+      "internalClockSeconds": [
+        2.701961
+      ],
+      "maxSampledStalls": 1,
+      "completedMetrics": 2,
+      "cellularYes": 0,
+      "cellularNo": 2,
+      "ordinaryExit": true,
+      "nonBookmarkPreferencesEqual": true,
+      "performanceAccepted": false,
+      "screensReviewed": true,
+      "screenshotEvidence": "sampled visible film frames only; not FF/SUB/AUD or frame timing acceptance"
+    },
+    {
+      "device": "ipad",
+      "entry": "Jellyfin",
+      "sample": "S01",
+      "internalClockSeconds": [
+        2.337096
+      ],
+      "maxSampledStalls": 0,
+      "completedMetrics": 2,
+      "cellularYes": 0,
+      "cellularNo": 2,
+      "ordinaryExit": true,
+      "nonBookmarkPreferencesEqual": true,
+      "performanceAccepted": false,
+      "screensReviewed": true,
+      "screenshotEvidence": "sampled visible film frames only; not FF/SUB/AUD or frame timing acceptance"
+    }
+  ],
+  "pip": {
+    "reportedEntry": "Jellyfin",
+    "reportedFilmAndDevice": "not confirmed by latest reply",
+    "deviceFilePiPTestedInThisBatch": false,
+    "phone13": {
+      "sample": "S19",
+      "route": "KSPlayer original through LAN Range proxy",
+      "sourceFrame": "3840x2160, 10-bit, PQ",
+      "systemPiPStarted": true,
+      "cueSamples": [
+        {
+          "seconds": 20.511,
+          "imageCount": 0,
+          "reason": "noCue"
+        },
+        {
+          "seconds": 25.545,
+          "imageCount": 1,
+          "reason": "hdrPQPreserved"
+        },
+        {
+          "seconds": 30.558,
+          "imageCount": 1,
+          "reason": "hdrPQPreserved"
+        }
+      ],
+      "actualPiPScreensReviewed": true,
+      "subtitlesMissingWithDecodedCue": true,
+      "roundtripAttempted": false
+    },
+    "ipad": {
+      "sample": "S19",
+      "validPiPWindows": 2,
+      "route": "KSPlayer original then automatic 12Mbps H264/AAC HLS; PGS8 Encode; AVPlayer PiP",
+      "actualSubtitlePixelsVisible": true,
+      "differentCuePositionsObserved": true,
+      "staleOrDuplicateCueConfirmed": false,
+      "roundtripAccepted": false,
+      "restoreAutomationFailures": [
+        "full accessibility source request timed out",
+        "lightweight explicit SpringBoard tree contained PiP window, restore button not exposed after native tap; no guessed coordinate correction"
+      ]
+    },
+    "otherRetainedToolFailures": [
+      "phone earlier WDA/USB observation interruption, independently stopped app",
+      "iPad first button lookup used display label instead of native pip.enter identifier",
+      "iPad later preplay failure after owned 1800-second XCTest expiry; no movie started; existing signed Runner reused with bounded 600-second session then explicitly stopped"
+    ]
+  },
+  "hdrLab": [
+    {
+      "absoluteDifference": 0,
+      "highlightAboveSDRPreserved": true,
+      "linearHighlightAfter": 4.011202812194824,
+      "linearHighlightBefore": 4.011202812194824,
+      "notIOSDeviceOrDolbyVisionMetadataAcceptance": true,
+      "outputFormat": 2016686640,
+      "sourceFormat": 2016686640,
+      "transfer": "PQ",
+      "transferAttachmentPreserved": true
+    },
+    {
+      "absoluteDifference": 0,
+      "highlightAboveSDRPreserved": true,
+      "linearHighlightAfter": 3.9973294734954834,
+      "linearHighlightBefore": 3.9973294734954834,
+      "notIOSDeviceOrDolbyVisionMetadataAcceptance": true,
+      "outputFormat": 2016686640,
+      "sourceFormat": 2016686640,
+      "transfer": "HLG",
+      "transferAttachmentPreserved": true
+    }
+  ],
+  "cleanup": {
+    "iphone13": {
+      "nonBookmarkPreferencesEqual": true,
+      "originalTrackChanges": 0,
+      "originalBookmarksRemoved": 0,
+      "naturalProgressChanges": 1,
+      "ownMediaStopped": true,
+      "nativeDesktopAndWiFiIconReviewed": true,
+      "networkChangedThisBatch": false,
+      "testEnvironment": {},
+      "crashInventoryDelta": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      },
+      "crashBaseline": "same-day earlier"
+    },
+    "ipad": {
+      "nonBookmarkPreferencesEqual": true,
+      "originalTrackChanges": 0,
+      "originalBookmarksRemoved": 0,
+      "naturalProgressChanges": 1,
+      "ownMediaStopped": true,
+      "nativeDesktopAndWiFiIconReviewed": true,
+      "networkChangedThisBatch": false,
+      "testEnvironment": {},
+      "crashInventoryDelta": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      },
+      "crashBaseline": "previous-day last saved"
+    }
+  },
+  "iphone18": "latest ordinary package already installed via USB and normal home verified earlier; now away with user, no operation",
+  "acceptance": {
+    "performanceFix": false,
+    "fullPiPSubtitles": false,
+    "fullPiPRoundtrip": false,
+    "HDRDolbyOutput": false,
+    "release": false
+  },
+  "next": [
+    "cellular first-segment preparation overlap: local cancellation/resume/Range/identity counterexamples before product change",
+    "HDR subtitle prototype: device color/bit-depth/metadata and allocation/CPU verification; DV remains unaccepted",
+    "PiP matrix must split embedded bitmap/text/external/server-burned and actual engine"
+  ]
+}

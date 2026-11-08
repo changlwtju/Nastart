@@ -1,0 +1,128 @@
+{
+  "at": "2026-10-11T21:04:05.022954+08:00",
+  "priority": [
+    "iphone13 USB",
+    "ipad USB",
+    "iphone18 wireless"
+  ],
+  "package": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "2946c84b6a1831e41220671b9807bf56dba8d28643a238fa3aee78d8805e525c",
+    "package": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-10-11-usb-subtitle-203049/Nastart-Subtitle-Controls-Normal-Debug.app",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "binaryBuildTime": "2026-10-11T20:43:17.198378+08:00",
+    "binaries": {
+      "Nastart": "7ec01c72e7b92036543b275f4e0166c0bbcb96a54d62a753aad63f987bffb465",
+      "Nastart.debug.dylib": "17f17700a89e13c6515f71c99f7c12aa6c357633baacd84d4164aeeececc7705",
+      "Frameworks/KSPlayer.framework/KSPlayer": "042a3ecaaf2d9d6b30bf6d176b4f6a8e8d0319ece60f2eea55bca061b6aedc04"
+    },
+    "signatureVerified": true,
+    "individuallyVerifiedLibraries": 29,
+    "checkedInputs": 173,
+    "newerInputs": [],
+    "profileExpirationUTC": "2026-10-17T22:23:40",
+    "tests": {
+      "executed": 322,
+      "skipped": 2,
+      "failures": 0,
+      "runThisTurn": true
+    },
+    "preflight": {
+      "passed": 15,
+      "runThisTurn": true
+    },
+    "sourceEditsThisTurn": [
+      "SharedBuiltInPlayerView measured control height and safe-area subtitle clearance",
+      "GreenfieldKSPlayerRenderer embedded subtitle bottom inset from shared environment"
+    ],
+    "baselineSourceDiffSHA256": "c6922e99474b4cc0f6ae1f6f2981fa76e0e2c6f9a4ec828e70dca7aae9e96305",
+    "sourceInputManifestSHA256": "ee54713b64db5ba78ff673e203a44cf564b83f0f4b332a576754ce7f0b352eb9",
+    "frozenAt": "2026-10-11T20:45:22.077138+08:00",
+    "linkageVerified": true,
+    "ipa": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-10-11-usb-subtitle-203049/Nastart-Subtitle-Controls-Normal-Debug.ipa"
+  },
+  "iphone13": {
+    "model": "iPhone14,5",
+    "system": "16.3.1",
+    "connection": "USB",
+    "latestInstalled": true,
+    "installationPreferencesUnchanged": 25,
+    "finalNormalHomeVerified": true,
+    "finalEnvironment": {},
+    "finalArguments": [],
+    "playerClosed": true,
+    "settingsRestored": {
+      "idleTimeout": 10,
+      "animationCoolOff": 2
+    },
+    "crashInventoryNoNewReports": true,
+    "subtitleReview": {
+      "at": "2026-10-11T21:02:21.074084+08:00",
+      "sourceInputsAndBinariesVerified": true,
+      "sourceDiffSHA256": "2946c84b6a1831e41220671b9807bf56dba8d28643a238fa3aee78d8805e525c",
+      "sameCueSteadyControlsVisual": "PASS scoped iPhone13 landscape S03 text subtitle only",
+      "fullSubtitleAcceptance": false,
+      "transitionAcceptance": "OPEN early re-reveal frame retained with transient overlap",
+      "sameCuePausedPositionSeconds": 285.545,
+      "pauseT10PositionSeconds": 285.545,
+      "resume45NormalExitSeconds": 332.734,
+      "finalNormalExitSeconds": 364.873,
+      "finalTrackIDs": {
+        "audio": 4,
+        "subtitle": 5,
+        "subtitlesDisabled": false
+      },
+      "nonBookmarkPreferencesUnchanged": 24,
+      "rawPreferenceInjection": false,
+      "audioAccepted": false,
+      "performanceAccepted": false,
+      "cellularTestPerformed": false,
+      "competitorComparisonPerformed": false,
+      "noNewCrashInventoryAfterMainRegression": true,
+      "naturalSamplesReviewed": [
+        3,
+        10,
+        30,
+        45
+      ],
+      "settledHideRevealReviewed": true,
+      "toolFailuresRetained": true
+    }
+  },
+  "ipad": {
+    "model": "iPad12,1",
+    "system": "18.3.1",
+    "connection": "USB",
+    "WDAFormalRenewedFixtureReady": true,
+    "latestInstalled": false,
+    "latestNormalUIVerified": false,
+    "latestRegressionStarted": false,
+    "installation": "BLOCKED CoreDevice3002 underlyingIX48 coordinated install scoped to different process; InstallationProxy90s timeout retained",
+    "userIconStatePending": true,
+    "uninstallOrClearData": false
+  },
+  "iphone18": {
+    "model": "iPhone19,7",
+    "system": "27.0",
+    "connection": "NETWORK fresh paired DNS-SD endpoint identity verified",
+    "latestInstalled": true,
+    "installationPreferencesUnchanged": 25,
+    "latestNormalUIVerified": false,
+    "latestRegressionStarted": false,
+    "launchBlocked": "FBS RequestDenied underlying Locked; awaiting device unlock",
+    "nativeXcodeTunnel": "prior failure still OPEN; not re-tested this batch"
+  },
+  "networkChanged": false,
+  "performanceAccepted": false,
+  "competitorComparisonPerformed": false,
+  "pending": [
+    "subtitle reveal transition transient overlap",
+    "iPad coordinated-install recovery then latest cover and actual normal startup",
+    "iPhone18 unlock ordinary empty-environment startup and new-package playback",
+    "portrait/rotation/locked-controls/long-cue/bitmap/external-subtitle regression",
+    "audio evidence and subtitle full matrix",
+    "HLS full deadline/segment/read/callback/capacity",
+    "old AV track identity / +475 bookmark / FileStation119 / real cellular",
+    "Lenna primary iPad/iPhone13 and full CB/PX/UX/L2/L3/Main pending retained"
+  ]
+}

@@ -1,0 +1,198 @@
+{
+  "date": "2026-10-28T05:39:44.368075+08:00",
+  "source": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "frozenInputs": 418,
+    "dirtyTreePreserved": true
+  },
+  "configuration": "Debug",
+  "arguments": [],
+  "environment": {},
+  "tests": {
+    "executed": 65,
+    "failed": 0,
+    "coordinator": 7,
+    "gate": 5,
+    "webdavResourceAndHTTP": 14,
+    "libraryAndCredits": 39
+  },
+  "packages": {
+    "mobile": {
+      "builtAt": "2026-10-28T05:29:19.624104+08:00",
+      "mainSHA256": "258c5b3edcfbd72e1b71a1f8e006547a4a66716376d0e5d5009e5a80c8a719c7",
+      "debugDylibSHA256": "7db60e7027bb3f8ae22aa596778974dae339ac7b049c324d33eb45b76c627739",
+      "signedMachOCount": 30
+    },
+    "tv": {
+      "builtAt": "2026-10-28T05:29:49.966484+08:00",
+      "mainSHA256": "8824cafbd0c41f777db9260bb01d2a0f8328a11c9a394ea9a98f8155f7601baf",
+      "debugDylibSHA256": "aaf2da2c8a3c1547acb10a83f05c0f6598184aa2515612ccccd70ea2f4ff0230",
+      "signedMachOCount": 27
+    }
+  },
+  "native": {
+    "iphone13WebDAV": {
+      "arguments": [],
+      "environment": {},
+      "normalExit": true,
+      "intentionalTermination": false,
+      "frames": {
+        "play-3": {
+          "elapsed": 5.493973291944712,
+          "samePID": true
+        },
+        "play-10": {
+          "elapsed": 13.187460500281304,
+          "samePID": true
+        },
+        "after-close-1": {
+          "elapsed": 20.716205583885312,
+          "samePID": true
+        },
+        "after-close-4": {
+          "elapsed": 25.08638579212129,
+          "samePID": true
+        }
+      },
+      "existingRunnerPreserved": true,
+      "freshIdentityConnected": true,
+      "normalHome": true,
+      "settingsRestored": true,
+      "ownedHTTPSessionDeleted": true
+    },
+    "tvWebDAV": {
+      "source": "webdav",
+      "arguments": [],
+      "environment": {},
+      "normalExit": true,
+      "intentionalTermination": false,
+      "frames": {
+        "play-3": {
+          "elapsed": 5.030112165957689,
+          "samePID": true
+        },
+        "play-10": {
+          "elapsed": 12.237309415824711,
+          "samePID": true
+        },
+        "paused": {
+          "elapsed": 16.22454412514344,
+          "samePID": true
+        },
+        "paused-later": {
+          "elapsed": 20.240952082909644,
+          "samePID": true
+        },
+        "resumed": {
+          "elapsed": 26.370889749843627,
+          "samePID": true
+        },
+        "exit-0": {
+          "elapsed": 30.685003040824085,
+          "samePID": true
+        },
+        "detail-after-exit": {
+          "elapsed": 35.10263908281922,
+          "samePID": true
+        }
+      },
+      "freshIdentityConnected": true,
+      "originalRunnerPresent": true,
+      "pidBeforePlay": 4276,
+      "controlMethod": "focus-confirmed Select",
+      "pausedClockStable": true,
+      "resumeAdvanced": true,
+      "normalHome": true,
+      "settingsRestored": true,
+      "ownedHTTPSessionDeleted": true,
+      "originalRunnerPreserved": true
+    },
+    "tvJellyfin": {
+      "source": "jellyfin",
+      "arguments": [],
+      "environment": {},
+      "normalExit": true,
+      "intentionalTermination": false,
+      "frames": {
+        "play-3": {
+          "elapsed": 4.530275458935648,
+          "samePID": true
+        },
+        "play-10": {
+          "elapsed": 12.683592834044248,
+          "samePID": true
+        },
+        "ready": {
+          "elapsed": 15.662668250035495,
+          "samePID": true
+        },
+        "paused": {
+          "elapsed": 20.330569416750222,
+          "samePID": true
+        },
+        "paused-later": {
+          "elapsed": 24.421958999708295,
+          "samePID": true
+        },
+        "resumed": {
+          "elapsed": 31.328846875112504,
+          "samePID": true
+        },
+        "exit-0": {
+          "elapsed": 34.648333666846156,
+          "samePID": true
+        },
+        "detail-after-exit": {
+          "elapsed": 39.03962879208848,
+          "samePID": true
+        }
+      },
+      "freshIdentityConnected": true,
+      "originalRunnerPresent": true,
+      "pidBeforePlay": 4279,
+      "preparationStillVisibleAt10": false,
+      "readyElapsed": 13.20210741693154,
+      "controlMethod": "focus-confirmed Select on toggle control",
+      "toggleTarget": "tv.player.seek",
+      "pausedClockStable": true,
+      "resumeAdvanced": true,
+      "normalHome": true,
+      "settingsRestored": true,
+      "ownedHTTPSessionDeleted": true,
+      "originalRunnerPreserved": true
+    },
+    "ipadLatestNormalHomeOnly": true,
+    "ipadPrevious416NormalExitVerified": false,
+    "iphone18InstallComplete": true,
+    "iphone18AppActivelyLaunchedOrCaptured": false
+  },
+  "preservation": {
+    "completeIndexes": {
+      "iphone13": {
+        "completeIndexJSONEqual": true,
+        "libraries": 1
+      },
+      "ipad": {
+        "completeIndexJSONEqual": true,
+        "libraries": 1
+      },
+      "tv": {
+        "completeIndexJSONEqual": true,
+        "libraries": 1
+      }
+    },
+    "allThreeNonDiagnosticPreferencesEqual": true,
+    "iphone18NonDiagnosticPreferencesEqual": true
+  },
+  "limits": [
+    "No Release or full-matrix acceptance",
+    "Controlled source tests do not prove real-server late cleanup",
+    "iPad normal playback exit remains unverified",
+    "Full playback lifecycle not yet unified",
+    "FTP App integration and FTPS 522 open",
+    "SMB strict root boundary still failing"
+  ],
+  "nasWrites": 0,
+  "cellularTesting": false,
+  "newFullMatrixPassCells": 0
+}

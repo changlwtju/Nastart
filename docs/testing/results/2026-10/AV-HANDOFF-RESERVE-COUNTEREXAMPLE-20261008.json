@@ -1,0 +1,155 @@
+{
+  "issue": "AVPlayer runtime reserve missing at adaptive handoff",
+  "relatedTasks": [
+    "PX-01",
+    "PX-03"
+  ],
+  "sourcePackage": "e8efe87b8c84151d814c80e026741922accaf1e92da3a55f456cf95b790a9a33",
+  "traceID": "99F84087",
+  "baselineEvidence": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-10-07-083328-dual-entry-session/network-background-profiles-175119/hls-cellular-startup-20261008-112301/iphone13/cellular-latest-s03-jellyfin",
+  "events": [
+    {
+      "event": "diagnostics.playback.next.automatic_downshift_requested",
+      "date": 813123306.078336,
+      "fields": {
+        "attempt": "1",
+        "bufferTargetSeconds": "unknown",
+        "bufferedAheadSeconds": "unknown",
+        "deliveryCapacity": "1025078",
+        "engine": "AVPlayer",
+        "playbackTraceID": "99F84087",
+        "reason": "deliveryBelowSourceBitrate"
+      }
+    },
+    {
+      "event": "diagnostics.playback.next.replacement_candidate_preparing",
+      "date": 813123306.202237,
+      "fields": {
+        "availableReserveSeconds": "unknown",
+        "engine": "AVPlayer",
+        "liveSeconds": "32.069208532",
+        "playbackTraceID": "99F84087",
+        "preparationLeadSeconds": "11.0",
+        "target": "43.063997795"
+      }
+    },
+    {
+      "event": "diagnostics.playback.next.automatic_downshift_requested",
+      "date": 813123418.874715,
+      "fields": {
+        "attempt": "2",
+        "bufferTargetSeconds": "unknown",
+        "bufferedAheadSeconds": "unknown",
+        "deliveryCapacity": "1051042",
+        "engine": "AVPlayer",
+        "playbackTraceID": "99F84087",
+        "reason": "deliveryBelowSourceBitrate"
+      }
+    },
+    {
+      "event": "diagnostics.playback.next.replacement_candidate_preparing",
+      "date": 813123419.025663,
+      "fields": {
+        "availableReserveSeconds": "unknown",
+        "engine": "AVPlayer",
+        "liveSeconds": "133.647366096",
+        "playbackTraceID": "99F84087",
+        "preparationLeadSeconds": "15.0",
+        "target": "148.643065369"
+      }
+    }
+  ],
+  "precedingTelemetry": [
+    {
+      "event": "diagnostics.playback.next.telemetry_sample",
+      "date": 813123304.145167,
+      "fields": {
+        "accessLogBytes": "6064692",
+        "accessLogStalls": "0",
+        "accessLogThroughputMbps": "1.143",
+        "accessLogTransferMs": "42464",
+        "bufferAheadSeconds": "1.947",
+        "currentSeconds": "30.001",
+        "deltaSeconds": "1.500",
+        "elapsedMs": "54153",
+        "engine": "AVPlayer",
+        "indicatedBitrate": "2000000",
+        "itemStatus": "readyToPlay",
+        "loadedRangeCount": "1",
+        "networkClass": "unknown",
+        "observedBitrate": "986536",
+        "playMethod": "localRemux",
+        "playbackTraceID": "99F84087",
+        "rate": "1.000",
+        "routeKind": "localHLS",
+        "sampleIndex": "28",
+        "sampleReason": "playbackTick",
+        "stallActive": "no",
+        "stallCount": "1",
+        "timeControlStatus": "playing"
+      }
+    },
+    {
+      "event": "diagnostics.playback.next.telemetry_sample",
+      "date": 813123305.701344,
+      "fields": {
+        "accessLogBytes": "6457908",
+        "accessLogStalls": "0",
+        "accessLogThroughputMbps": "1.217",
+        "accessLogTransferMs": "42464",
+        "bufferAheadSeconds": "1.266",
+        "currentSeconds": "31.502",
+        "deltaSeconds": "1.500",
+        "elapsedMs": "55654",
+        "engine": "AVPlayer",
+        "indicatedBitrate": "2000000",
+        "itemStatus": "readyToPlay",
+        "loadedRangeCount": "1",
+        "networkClass": "unknown",
+        "observedBitrate": "1037182",
+        "playMethod": "localRemux",
+        "playbackTraceID": "99F84087",
+        "rate": "1.000",
+        "routeKind": "localHLS",
+        "sampleIndex": "29",
+        "sampleReason": "playbackTick",
+        "stallActive": "no",
+        "stallCount": "1",
+        "timeControlStatus": "playing"
+      }
+    }
+  ],
+  "limitations": [
+    "Preceding telemetry is not the exact reserve at the later decision.",
+    "Candidate observed delivery 232078 bps with 500000 bps indicated demand; missing reserve alone is not a proven cause of all failures.",
+    "Second attempt closed by planned observation end, not a natural timeout."
+  ],
+  "codeEvidence": {
+    "consumer": "GreenfieldVideoPlayerView.swift automatic downshift and liveReserve closure",
+    "producerMissing": "GreenfieldVideoPlayerModel.connectAVControls sets readPlaybackClock but no readRuntimeTelemetry",
+    "existingRule": "PlaybackReplacementLeadPolicy returns expectedPreparation when reserve is nil",
+    "diagnosticProducer": "PlaybackDiagnostics.bufferAheadSeconds independently samples AVPlayer loadedTimeRanges; fallback first range can overstate a gap"
+  },
+  "proposedRule": "Publish only continuous buffered duration containing current AV item time; valid ranges with a hole at the playhead mean zero; no usable item/ranges/time mean unknown. Reuse for diagnostics and liveReserve without changing lead/seek/retry/buffer constants.",
+  "status": "Baseline counterexample preserved; continuous AV input implemented and actual small-reserve boundary verified; startup/alignment failures remain open",
+  "implementationResolution": {
+    "at": "2026-10-08T18:19:50.110750+08:00",
+    "sourceDiffSHA256": "fa2029aaa4caed35873f90e9bb2f5182d60e5054120a476202b00098924564a4",
+    "package": {
+      "Nastart": "74a645e4373f3f1f401d8e24d5f59f76620f3ca85e5c1902ae9565099ddeab80",
+      "Nastart.debug.dylib": "3cf3b090d26e8673fa43b59f065969b9ba4737288abcbfe2e8cf8ebdb31231eb",
+      "Frameworks/KSPlayer.framework/KSPlayer": "eda16e6d0e22bc81045752f2f54a263b0f4f8500912378d5ac141013c9042b52"
+    },
+    "deterministicChecks": "201 tests / 2 skipped / 0 failures; gap=0; missing/invalid unknown preserved",
+    "actualSmallReserveCheck": {
+      "traceID": "E14A57D6",
+      "availableReserveSeconds": 0.7276103216666598,
+      "preparationLeadSeconds": 0.47761032166665984,
+      "existingSafetyMarginSeconds": 0.25,
+      "boundaryVerified": true,
+      "candidateOutcome": "ordinary user-interface exit at 120s cut off in-flight preparation; no alignment success claim"
+    },
+    "remaining": "S03 startup/candidate alignment, original-stream depletion, old iPad first segment failure remain open",
+    "report": "AV-RESERVE-HANDOFF-20261008.json"
+  }
+}

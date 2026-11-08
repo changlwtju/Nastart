@@ -1,0 +1,205 @@
+{
+  "recordedAt": "2026-10-30T15:17:44+08:00",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceInputCount": 435,
+  "changedExistingSourceFiles": 3,
+  "existingOfflineParameterTestsPassed": 4,
+  "newRepositoryTests": 0,
+  "builds": {
+    "module-tests": {
+      "startedAt": "2026-10-30T14:34:47.293719+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T14:34:52.046132+08:00"
+    },
+    "mobile-sim-debug-cast": {
+      "startedAt": "2026-10-30T14:34:47.292062+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T14:35:18.437282+08:00"
+    },
+    "tv-sim-debug-cast": {
+      "startedAt": "2026-10-30T14:34:47.292102+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T14:35:03.542993+08:00"
+    },
+    "mobile-debug": {
+      "startedAt": "2026-10-30T15:07:12.895059+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T15:07:56.169279+08:00"
+    },
+    "tv-debug": {
+      "startedAt": "2026-10-30T15:09:32.312752+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T15:09:46.364293+08:00"
+    },
+    "mobile-release": {
+      "startedAt": "2026-10-30T15:07:56.170449+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T15:09:32.311432+08:00"
+    },
+    "tv-release": {
+      "startedAt": "2026-10-30T15:09:46.365337+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T15:10:14.821723+08:00"
+    }
+  },
+  "capture": {
+    "accepted": 8,
+    "byPlatform": {
+      "phone": 5,
+      "tv": 3
+    },
+    "notStarted": {
+      "pad": {
+        "reason": "Simulator startup free-space budget unmet; no device created",
+        "requiredFreeGiB": 4.8,
+        "observedFreeGiB": 3.95
+      }
+    },
+    "allPassed": true,
+    "ownedSimulatorsDeleted": true,
+    "syntheticPreferencesPreserved": true,
+    "physicalDevicesOperated": 0,
+    "NASCommands": 0,
+    "interactionOrAnimationVerified": false
+  },
+  "visualReview": {
+    "reviewed": true,
+    "recordedAt": "2026-10-30T15:07:12.770630+08:00",
+    "windows": [
+      {
+        "platform": "phone",
+        "scene": "library-scanning",
+        "sha256": "4caf30d96a2d85db62540d0f0143444dc921d6639ca4c030971801acb3c0d880"
+      },
+      {
+        "platform": "phone",
+        "scene": "library-updating",
+        "sha256": "59a81d61695a15467851068a915a752731728f6a41f82b2bf1a2272a30577217"
+      },
+      {
+        "platform": "phone",
+        "scene": "library-notice",
+        "sha256": "96e9801aa88fdbe207f01225ce5f43acbb644520c4864fafc4d828cc084720e5"
+      },
+      {
+        "platform": "phone",
+        "scene": "existing-preparing",
+        "sha256": "56dbd36a5f6dab7d2467291da48af693df4696b7c1349b85b291f63e9ee6b284"
+      },
+      {
+        "platform": "phone",
+        "scene": "existing-error",
+        "sha256": "dddbb081bdc862bf29cdbeb0e9f5b13f6117d05bf9fbd9a2fc35cf1e577eef58"
+      },
+      {
+        "platform": "tv",
+        "scene": "library-scanning",
+        "sha256": "0c9c43612f272bce7273d76a3d0a75865ef833238c6436a8cf0669fcf4031fdb"
+      },
+      {
+        "platform": "tv",
+        "scene": "library-updating",
+        "sha256": "0437d3c570f1a80343ef405b2c47721075be5311b979ba267f15944e790cfab6"
+      },
+      {
+        "platform": "tv",
+        "scene": "library-notice",
+        "sha256": "7ad5b4af0fb44012cbd8326479253f6ef8fa68991e9e827643a7fb122fd2d6bb"
+      }
+    ],
+    "findings": [
+      "Phone five-case montage and three original TV images reviewed",
+      "Scan shows cancel action and file count; editing-owned update has no scan cancel action",
+      "Failure notice uses readable primary text with warm icon",
+      "Existing connection phone loading and accessibility-size error show return and vertical error actions",
+      "No actual cancel/retry/return, task ownership transition or scrolling verified"
+    ],
+    "actualInteractionVerified": false,
+    "actualSourceMappingVerified": false,
+    "tabletVisualLayoutVerified": false,
+    "physicalDevicesOperated": 0
+  },
+  "sourcePreservation": {
+    "changedExistingSourceFiles": 3,
+    "allModelMethodsByteUnchanged": true,
+    "modelOnlyAddsReadOnlyTaskOwnershipGetter": true,
+    "savedMediaMappingAndNavigationAndLifecycleByteUnchanged": true,
+    "savedMediaSnapshotOncePerBody": true,
+    "allOtherLibraryControllersAndSourcesStoresCredentialsPlaybackInputsUnchanged": true,
+    "cancelStillUsesOriginalModelCancelWithoutNewTaskOrCancellationState": true,
+    "debugPreviewHasNoModelVaultClientTaskOrPersistence": true
+  },
+  "diskObservation": {
+    "recordedAt": "2026-10-30T15:07:12.770782+08:00",
+    "freeGiB": 4.84,
+    "padStartupBudgetGiB": 4.8,
+    "taskOwnedDeviceDirsAndInstancesAbsent": true,
+    "readOnlySwapObservation": {
+      "totalMiB": 4096,
+      "usedMiB": 2753.31
+    },
+    "otherUserAppsOrSystemSwapNotModified": true,
+    "nativeBuildsSequentialToLimitMemory": true
+  },
+  "frameworkStorageSharing": {
+    "recordedAt": "2026-10-30T14:40:29.000564+08:00",
+    "selectedFrozenOfflinePackages": 24,
+    "frameworkFilesCloned": 4,
+    "originalPathsAndBinaryHashesPreserved": true,
+    "allPackageSignaturesVerified": true,
+    "copyOnWriteFilesRemainIndependent": true,
+    "signedDifferencesPreservedFromEachOriginal": true,
+    "sourcePreferencesUserAppsAndEvidenceLogsUntouched": true,
+    "freeGiBBefore": 4.77,
+    "freeGiBAfter": 4.9,
+    "physicalFreeIncreaseGiB": 0.13
+  },
+  "packages": {
+    "mobile": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-30T15:07:55.968207+08:00",
+      "frozenAt": "2026-10-30T15:16:25.942961+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 435,
+      "mainSHA256": "4edd0d66474797915c60f0aa3236501b3fb68e40839b3047f405bd077bfb010f",
+      "debugDylibSHA256": "4c341ffb6df3a19c572ec02041e53f323ca137f2e9bd43a1bd6d3e7d8a046450",
+      "signedMachOCount": 30,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false
+    },
+    "tv": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-30T15:09:46.285443+08:00",
+      "frozenAt": "2026-10-30T15:16:26.328042+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 435,
+      "mainSHA256": "c66985ec8ffe9415910e6742de97e9e5a4a5a57e1319a8e3667743c16e10d848",
+      "debugDylibSHA256": "476849408ab70bfddc22dbc5be17bcad90295f8e874905a463fee10ccc2e67f5",
+      "signedMachOCount": 27,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false
+    }
+  },
+  "ownedSimulatorsDeleted": 2,
+  "physicalDevicesOperated": 0,
+  "NASCommands": 0,
+  "playbackCommands": 0,
+  "privateEvidencePointer": "current-library-status-polish-private",
+  "notVerified": [
+    "Tablet visual layout: startup disk budget unmet",
+    "Actual scan ownership, progress updates, cancel completion or preserved index",
+    "Actual connection retry, return or navigation",
+    "VoiceOver, scrolling, remote focus movement, media images and playback",
+    "Whole storage home layout with real destinations or library rows"
+  ]
+}

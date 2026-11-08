@@ -369,6 +369,11 @@ struct DisconnectedAppDataProvider: AppDataProviding {
     let agentHealth: AgentHealthSnapshot? = nil
 }
 
+enum DSMAuthenticationStage: String {
+    case fileStationAttached, fileStationUnavailable, connectionPublished, sourcePrepared
+    case logoutStarted, logoutSucceeded, logoutFailed
+}
+
 struct DSMSession {
     let baseURL: URL
     let sid: String
@@ -378,6 +383,10 @@ struct DSMSession {
     let deviceID: String?
     let endpoints: DSMConnectionEndpoints
     let actualRoute: DSMConnectionRoute
+    // Local login identities only. Never derive these from authentication data
+    // or send them to DSM. Endpoint-only copies retain the original identities.
+    let authenticationGeneration: UUID
+    let fileStationGeneration: UUID?
 
     init(
         baseURL: URL,
@@ -387,7 +396,9 @@ struct DSMSession {
         allowsSelfSignedCertificates: Bool,
         deviceID: String?,
         endpoints: DSMConnectionEndpoints? = nil,
-        actualRoute: DSMConnectionRoute? = nil
+        actualRoute: DSMConnectionRoute? = nil,
+        authenticationGeneration: UUID = UUID(),
+        fileStationGeneration: UUID? = nil
     ) {
         let resolvedEndpoints = endpoints ?? DSMConnectionEndpoints(legacyBaseURL: baseURL)
         self.baseURL = baseURL
@@ -396,11 +407,47 @@ struct DSMSession {
         self.account = account
         self.allowsSelfSignedCertificates = allowsSelfSignedCertificates
         self.deviceID = deviceID
+        self.authenticationGeneration = authenticationGeneration
+        self.fileStationGeneration = fileStationSID == nil ? nil : fileStationGeneration ?? UUID()
         self.endpoints = resolvedEndpoints
         self.actualRoute = actualRoute ?? DSMConnectionRouteResolver.route(
             for: baseURL,
             endpoints: resolvedEndpoints
         )
+    }
+
+    var authenticationDiagnosticFields: [String: String] {
+        var fields = ["authenticationGeneration": authenticationGeneration.uuidString]
+        if let fileStationGeneration { fields["fileStationGeneration"] = fileStationGeneration.uuidString }
+        return fields
+    }
+
+    var authenticationObservationFields: [String: String] {
+        authenticationDiagnosticFields.merging([
+            "authenticationObservedMonoMs": String(Int64(ProcessInfo.processInfo.systemUptime * 1_000))]) { _, new in new }
+    }
+
+    func recordAuthenticationStage(_ stage: DSMAuthenticationStage) {
+        DiagnosticLogStore.shared.record(.info,
+            categoryKey: "diagnostics.category.connection",
+            messageKey: "diagnostics.connection.session_lifecycle",
+            details: authenticationObservationFields.merging(["authenticationStage": stage.rawValue]) { _, new in new })
+    }
+
+    func replacingConnection(endpoints: DSMConnectionEndpoints,
+                             actualRoute: DSMConnectionRoute? = nil) -> DSMSession {
+        DSMSession(baseURL: baseURL, sid: sid, fileStationSID: fileStationSID,
+            account: account, allowsSelfSignedCertificates: allowsSelfSignedCertificates,
+            deviceID: deviceID, endpoints: endpoints, actualRoute: actualRoute ?? self.actualRoute,
+            authenticationGeneration: authenticationGeneration, fileStationGeneration: fileStationGeneration)
+    }
+
+    func attachingFileStationSession(_ fileStationSession: DSMSession?) -> DSMSession {
+        DSMSession(baseURL: baseURL, sid: sid, fileStationSID: fileStationSession?.sid,
+            account: account, allowsSelfSignedCertificates: allowsSelfSignedCertificates,
+            deviceID: fileStationSession?.deviceID ?? deviceID, endpoints: endpoints, actualRoute: actualRoute,
+            authenticationGeneration: authenticationGeneration,
+            fileStationGeneration: fileStationSession?.authenticationGeneration)
     }
 
     func fileStationOpenURL(path: String) -> URL? {
@@ -474,6 +521,7 @@ struct StoredNASCredential: Codable {
     let deviceID: String?
     let endpoints: DSMConnectionEndpoints
     let lastKnownRoute: DSMConnectionRoute
+    let usesOnlyConfiguredAddress: Bool
 
     init(
         baseURLString: String,
@@ -483,7 +531,8 @@ struct StoredNASCredential: Codable {
         allowsSelfSignedCertificates: Bool = false,
         deviceID: String? = nil,
         endpoints: DSMConnectionEndpoints? = nil,
-        lastKnownRoute: DSMConnectionRoute? = nil
+        lastKnownRoute: DSMConnectionRoute? = nil,
+        usesOnlyConfiguredAddress: Bool = false
     ) {
         self.baseURLString = baseURLString
         self.account = account
@@ -491,6 +540,7 @@ struct StoredNASCredential: Codable {
         self.useAgent = useAgent
         self.allowsSelfSignedCertificates = allowsSelfSignedCertificates
         self.deviceID = deviceID
+        self.usesOnlyConfiguredAddress = usesOnlyConfiguredAddress
         let legacyURL = URL(string: baseURLString)
         let resolvedEndpoints = endpoints
             ?? legacyURL.map(DSMConnectionEndpoints.init(legacyBaseURL:))
@@ -512,6 +562,7 @@ struct StoredNASCredential: Codable {
         case deviceID
         case endpoints
         case lastKnownRoute
+        case usesOnlyConfiguredAddress
     }
 
     init(from decoder: Decoder) throws {
@@ -522,6 +573,7 @@ struct StoredNASCredential: Codable {
         useAgent = try container.decode(Bool.self, forKey: .useAgent)
         allowsSelfSignedCertificates = try container.decodeIfPresent(Bool.self, forKey: .allowsSelfSignedCertificates) ?? false
         deviceID = try container.decodeIfPresent(String.self, forKey: .deviceID)
+        usesOnlyConfiguredAddress = try container.decodeIfPresent(Bool.self, forKey: .usesOnlyConfiguredAddress) ?? false
         let legacyURL = URL(string: baseURLString)
         let decodedEndpoints = try container.decodeIfPresent(DSMConnectionEndpoints.self, forKey: .endpoints)
             ?? legacyURL.map(DSMConnectionEndpoints.init(legacyBaseURL:))
@@ -557,6 +609,197 @@ struct DSMDataSnapshot: AppDataProviding, Codable {
     let agentHealth: AgentHealthSnapshot?
 }
 
+/// A session-scoped directory cache. Credentials stay private and are never logged.
+/// The random generation also changes on explicit clearing of the same session.
+final class DSMFolderCache {
+    private struct Identity: Equatable {
+        let baseURL: URL
+        let account: String
+        let sid: String
+        let fileStationSID: String?
+        let allowsSelfSignedCertificates: Bool
+
+        init(_ session: DSMSession) {
+            baseURL = session.baseURL
+            account = session.account
+            sid = session.sid
+            fileStationSID = session.fileStationSID
+            allowsSelfSignedCertificates = session.allowsSelfSignedCertificates
+        }
+    }
+    private struct Entry {
+        let items: [FileItem]
+        let loadedAt: Date
+    }
+    private struct Pending {
+        let id: UUID
+        let task: Task<[FileItem], Error>
+    }
+    private var identity: Identity?
+    private static let folderCacheLifetime: TimeInterval = 5 * 60
+    private var generation = UUID()
+    private var entries: [String: Entry] = [:]
+    private var pending: [String: Pending] = [:]
+
+    @MainActor
+    @discardableResult
+    func prepare(for session: DSMSession?) -> Bool {
+        let next = session.map(Identity.init)
+        guard next != identity else { return false }
+        clear()
+        identity = next
+        return true
+    }
+
+    @MainActor
+    func clear() {
+        generation = UUID()
+        identity = nil
+        pending.values.forEach { $0.task.cancel() }
+        pending.removeAll()
+        entries.removeAll()
+    }
+
+    @MainActor
+    func freshItems(for path: String) -> [FileItem]? {
+        guard let entry = entries[path], Date().timeIntervalSince(entry.loadedAt) < Self.folderCacheLifetime else { return nil }
+        return entry.items
+    }
+
+    @MainActor
+    func load(path: String, operation: @escaping () async throws -> [FileItem]) async throws -> [FileItem] {
+        let requestGeneration = generation
+        if let existing = pending[path] {
+            do {
+                let items = try await existing.task.value
+                try Task.checkCancellation()
+                guard requestGeneration == generation else { throw CancellationError() }
+                return items
+            } catch {
+                guard requestGeneration == generation else { throw CancellationError() }
+                throw error
+            }
+        }
+        let staleEntry = entries[path]
+        let id = UUID()
+        let task = Task { try await operation() }
+        pending[path] = Pending(id: id, task: task)
+        do {
+            let items = try await task.value
+            try Task.checkCancellation()
+            guard requestGeneration == generation else { throw CancellationError() }
+            if pending[path]?.id == id { pending[path] = nil }
+            entries[path] = Entry(items: items, loadedAt: Date())
+            return items
+        } catch {
+            // Check the generation BEFORE cleanup: a newer task can use this path.
+            guard requestGeneration == generation else { throw CancellationError() }
+            if pending[path]?.id == id { pending[path] = nil }
+            if error is CancellationError || Task.isCancelled { throw CancellationError() }
+            if case DSMClientError.apiFailed(code: 119) = error {
+                // A known invalid SID affects every directory in this scope.
+                clear()
+                throw error
+            }
+            if let staleEntry { return staleEntry.items }
+            throw error
+        }
+    }
+}
+
+/// Owns only the visible directory request; transport/cache work has its own scope.
+@MainActor
+final class FolderBrowserLoader: ObservableObject {
+    @Published private(set) var items: [FileItem] = []
+    @Published private(set) var didLoad = false
+    @Published private(set) var isLoading = false
+    @Published private(set) var errorKey: String?
+    @Published private(set) var needsRetry = false
+    private(set) var sourceID: UUID?
+    private var requestID: UUID?
+
+    func invalidate() {
+        requestID = nil
+        isLoading = false
+        needsRetry = false
+    }
+
+    func load(sourceID: UUID, forceRefresh: Bool = false,
+              isConnected: () -> Bool,
+              operation: () async throws -> [FileItem]) async {
+        guard !Task.isCancelled else { return }
+        if self.sourceID != sourceID {
+            invalidate()
+            self.sourceID = sourceID
+            items = []
+            didLoad = false
+            errorKey = nil
+        }
+        guard forceRefresh || !didLoad else { return }
+        let id = UUID()
+        requestID = id
+        isLoading = true
+        errorKey = nil
+        needsRetry = false
+        do {
+            let result = try await operation()
+            try Task.checkCancellation()
+            guard requestID == id, self.sourceID == sourceID else { return }
+            items = result
+            didLoad = true
+            if result.isEmpty && !isConnected() { errorKey = "devices.files.dsm_disconnected" }
+        } catch {
+            guard requestID == id, self.sourceID == sourceID else { return }
+            if error is CancellationError || Task.isCancelled {
+                needsRetry = !didLoad
+            } else {
+                if case DSMClientError.apiFailed(code: 119) = error {
+                    items = []
+                    didLoad = false
+                }
+                errorKey = "devices.files.folder_load_failed"
+            }
+        }
+        guard requestID == id else { return }
+        requestID = nil
+        isLoading = false
+    }
+}
+
+/// Injectable I/O for deterministic connection lifecycle tests; live calls retain existing routes.
+struct DSMConnectionOperations {
+    var currentTime: @MainActor () -> Date = { Date() }
+    var isReachable: @MainActor (DSMNASDataSource) async -> Bool = { await $0.isReachable() }
+    var loadRefreshSnapshot: @MainActor (DSMNASDataSource) async -> AppDataProviding = { await $0.loadSnapshot() }
+    var refreshServiceHealth: @MainActor (AppDataStore) async -> Void = { await $0.refreshServiceHealth() }
+    var loadCredential: @MainActor () -> StoredNASCredential? = { KeychainStore.shared.loadNASCredential() }
+    var usesAgent: @MainActor () -> Bool = { KeychainStore.shared.loadAgentConnection() != nil }
+    var login: @MainActor (StoredNASCredential, DSMConnectionEndpoints) async throws -> DSMLoginResult = { credential, endpoints in
+        try await DSMClient.login(endpoints: endpoints,
+            allowsSelfSignedCertificates: credential.allowsSelfSignedCertificates,
+            account: credential.account, password: credential.password, deviceID: credential.deviceID,
+            preferredRoute: credential.lastKnownRoute, prepareConfiguredEndpoints: true)
+    }
+    var discoverFallback: @MainActor () async -> [URL] = { await LANDiscoveryService.discoverDSMEndpoints() }
+    var discoverLAN: @MainActor (URL) async -> URL? = { await AppDataStore.discoverSmartLANAddress(for: $0) }
+    var attachFileStation: @MainActor (DSMLoginResult, StoredNASCredential, String) async -> DSMSession = { result, credential, code in
+        await result.client.addingFileStationSession(to: result.session, account: credential.account,
+            password: credential.password, oneTimeCode: code)
+    }
+    var loadSnapshot: @MainActor (DSMSession, Bool) async -> AppDataProviding = { session, useAgent in
+        await DSMNASDataSource(session: session, useAgent: useAgent).loadSnapshot()
+    }
+    var saveCredential: @MainActor (StoredNASCredential) throws -> Void = { try KeychainStore.shared.saveNASCredential($0) }
+    var logout: @MainActor (DSMSession, NASConnectionStore) async -> Void = { session, connection in
+        await DSMClient(baseURL: session.baseURL, allowsSelfSignedCertificates: session.allowsSelfSignedCertificates)
+            .logout(session: session, protectingCurrentSession: { connection.dsmSession })
+    }
+}
+
+enum NASConnectionRecoveryState: Equatable {
+    case idle, restoring, failed
+}
+
 final class AppDataStore: ObservableObject {
     private static let persistedDSMSnapshotKey = "dsm.cachedSnapshot.v1"
     private static let persistedDSMSnapshotFormatVersion = 2
@@ -571,7 +814,10 @@ final class AppDataStore: ObservableObject {
     @Published private(set) var audioLibraryItems: [MediaItem]
     @Published private(set) var discoveredDevices: [DiscoveredNASDevice]
     @Published private(set) var isRefreshing = false
-    @Published private(set) var isRestoringConnection = false
+    @Published private(set) var connectionRecoveryState: NASConnectionRecoveryState = .idle
+    /// Set when DSM refused the saved login, as opposed to being unreachable.
+    @Published private(set) var connectionRecoveryRejection: DSMClientError?
+    var isRestoringConnection: Bool { connectionRecoveryState == .restoring }
     @Published private(set) var isForegroundRefreshing = false
     @Published private(set) var isDSMReachable = false
     @Published private(set) var serviceHealth: [UUID: ServiceHealthSnapshot] = [:]
@@ -584,6 +830,7 @@ final class AppDataStore: ObservableObject {
         }
     }
     @Published private(set) var sourceKind: NASDataSourceKind
+    @Published private(set) var folderSourceID = UUID()
     @Published private(set) var serviceVisibilityOverrides: [String: Bool]
     @Published private(set) var launchpadServiceOrder: [String: [String]]
 
@@ -670,10 +917,13 @@ final class AppDataStore: ObservableObject {
 
     private var provider: AppDataProviding
     private var activeDataSource: NASDataSource
-    private var manualServiceStore = ManualLaunchpadServiceStore()
-    private let launchpadVisibilityStore = LaunchpadVisibilityStore()
-    private let launchpadOrderStore = LaunchpadOrderStore()
+    private var manualServiceStore: ManualLaunchpadServiceStore
+    private let launchpadVisibilityStore: LaunchpadVisibilityStore
+    private let launchpadOrderStore: LaunchpadOrderStore
     private let localTaskStore: LocalTaskStore
+    /// DEBUG offline UI only: synthetic data and an ephemeral preference domain. Never
+    /// touches the network, notifications, sync markers or the persisted NAS snapshot.
+    private let isOfflineFixture: Bool
     private var preservedContainerInventoryOnLastMerge = false
     private var consecutiveDSMReachabilityFailures = 0
     private var lastSuccessfulDSMContactAt: Date?
@@ -681,35 +931,65 @@ final class AppDataStore: ObservableObject {
     private var serviceHealthRefreshID: UUID?
     private var connectionGeneration = UUID()
     private var activeRefreshID: UUID?
-    private struct FolderCacheEntry {
-        let items: [FileItem]
-        let loadedAt: Date
+    private var foregroundRefreshID: UUID?
+    private let folderCache = DSMFolderCache()
+    private var folderAuthenticationGeneration: UUID?
+    private var folderFileStationGeneration: UUID?
+    private var folderSnapshotAuthenticationGeneration: UUID?
+
+    func serviceInventoryMatches(_ session: DSMSession?) -> Bool {
+        guard let session, let source = activeDataSource as? DSMNASDataSource else { return false }
+        return source.session.authenticationGeneration == session.authenticationGeneration
+            && folderSnapshotAuthenticationGeneration == session.authenticationGeneration
+            && !isShowingProvisionalDSMSnapshot
     }
-    private var folderCache: [String: FolderCacheEntry] = [:]
-    private var folderLoadTasks: [String: Task<[FileItem], Error>] = [:]
-    private var folderCacheScope: String?
+    var serviceInventoryIsComplete: Bool {
+        guard let snapshot = provider as? DSMDataSnapshot else { return false }
+        return snapshot.containerInventoryAvailable && snapshot.packageInventoryAvailable && snapshot.reverseProxyInventoryAvailable
+    }
+
+    var folderSnapshotMatchesSource: Bool {
+        folderAuthenticationGeneration != nil
+            && folderAuthenticationGeneration == folderSnapshotAuthenticationGeneration
+    }
 
     private static let foregroundRefreshCooldown: TimeInterval = 90
     private static let foregroundFreshnessInterval: TimeInterval = 5 * 60
-    private static let folderCacheLifetime: TimeInterval = 5 * 60
 
-    init(provider: AppDataProviding? = nil) {
-        let taskStore = LocalTaskStore()
-        let persistedTasks = taskStore.load()
-        let persistedSnapshot = Self.loadPersistedDSMSnapshot()
+    convenience init(provider: AppDataProviding? = nil) {
+        self.init(provider: provider, defaults: .standard, isOfflineFixture: false)
+    }
+
+    #if DEBUG
+    static func offlineFixture(defaults: UserDefaults) -> AppDataStore {
+        AppDataStore(provider: MockAppDataProvider(), defaults: defaults, isOfflineFixture: true)
+    }
+    #endif
+
+    private init(provider: AppDataProviding?, defaults: UserDefaults, isOfflineFixture: Bool) {
+        let taskStore = LocalTaskStore(defaults: defaults)
+        let visibilityStore = LaunchpadVisibilityStore(defaults: defaults)
+        let orderStore = LaunchpadOrderStore(defaults: defaults)
+        let manualStore = ManualLaunchpadServiceStore(defaults: defaults)
+        let persistedTasks = isOfflineFixture ? nil : taskStore.load()
+        let persistedSnapshot = isOfflineFixture ? nil : Self.loadPersistedDSMSnapshot()
         let initialProvider = provider
             ?? persistedSnapshot?.snapshot
             ?? DisconnectedAppDataProvider()
         self.provider = initialProvider
+        self.isOfflineFixture = isOfflineFixture
         localTaskStore = taskStore
-        serviceVisibilityOverrides = LaunchpadVisibilityStore().load()
-        launchpadServiceOrder = LaunchpadOrderStore().load()
+        launchpadVisibilityStore = visibilityStore
+        launchpadOrderStore = orderStore
+        manualServiceStore = manualStore
+        serviceVisibilityOverrides = visibilityStore.load()
+        launchpadServiceOrder = orderStore.load()
         sourceKind = initialProvider is DSMDataSnapshot ? .dsm : .mock
         cachedDSMSnapshotSavedAt = provider == nil ? persistedSnapshot?.savedAt : nil
         activeDataSource = DisconnectedNASDataSource()
         device = initialProvider.device
         agentHealth = initialProvider.agentHealth
-        services = (initialProvider.services + manualServiceStore.load()).map {
+        services = (initialProvider.services + manualStore.load()).map {
             provider == nil ? $0.replacing(status: .unknown) : $0
         }
         containers = initialProvider.containers
@@ -720,7 +1000,7 @@ final class AppDataStore: ObservableObject {
         audioLibraryItems = initialProvider.audioLibraryItems
         discoveredDevices = initialProvider.discoveredDevices
         tasks.forEach {
-            ReminderNotificationScheduler.schedule($0, requestsAuthorization: false)
+            scheduleReminder($0, requestsAuthorization: false)
         }
     }
 
@@ -755,6 +1035,11 @@ final class AppDataStore: ObservableObject {
                    Date().timeIntervalSince(health.checkedAt) < 45 {
                     return service.replacing(status: health.status)
                 }
+                // A package nobody can open is never probed, so its inventory state
+                // is the only state it will ever have.
+                if service.source == .package, !service.isLaunchpadVisible || service.endpoint == nil {
+                    return service
+                }
                 // Inventory says a process exists/runs, not that its web service
                 // is accessible from this device. Await an actual probe.
                 return service.replacing(status: .unknown)
@@ -776,12 +1061,33 @@ final class AppDataStore: ObservableObject {
         audioLibraryItems = provider.audioLibraryItems
         discoveredDevices = provider.discoveredDevices
         lastRefreshSummaryKey = provider is DSMDataSnapshot ? "data.refresh.dsm_done" : "data.refresh.mock_done"
-        if let snapshot = provider as? DSMDataSnapshot, persistSnapshot, !Self.isProvisionalDSMSnapshot(snapshot) {
+        if !isOfflineFixture, let snapshot = dsmSnapshotForPersistence(), persistSnapshot, !Self.isProvisionalDSMSnapshot(snapshot) {
             cachedDSMSnapshotSavedAt = Date()
             Self.persistDSMSnapshot(snapshot, savedAt: cachedDSMSnapshotSavedAt ?? Date())
         } else if !(provider is DSMDataSnapshot) {
             cachedDSMSnapshotSavedAt = nil
         }
+    }
+
+    /// Persist the inventory actually applied to the UI. A failed partial
+    /// refresh can retain services in memory; saving the raw response instead
+    /// would silently discard those services on the next cold launch.
+    func dsmSnapshotForPersistence() -> DSMDataSnapshot? {
+        guard let snapshot = provider as? DSMDataSnapshot else { return nil }
+        return DSMDataSnapshot(
+            device: device,
+            services: services.filter { $0.source != .manual },
+            containers: containers,
+            files: snapshot.files,
+            tasks: snapshot.tasks,
+            videoLibraryItems: snapshot.videoLibraryItems,
+            audioLibraryItems: snapshot.audioLibraryItems,
+            discoveredDevices: snapshot.discoveredDevices,
+            containerInventoryAvailable: snapshot.containerInventoryAvailable,
+            packageInventoryAvailable: snapshot.packageInventoryAvailable,
+            reverseProxyInventoryAvailable: snapshot.reverseProxyInventoryAvailable,
+            agentHealth: snapshot.agentHealth
+        )
     }
 
     private struct PersistedDSMSnapshot: Codable {
@@ -1046,6 +1352,7 @@ final class AppDataStore: ObservableObject {
 
     @MainActor
     func refreshServiceHealth() async {
+        guard !isOfflineFixture else { return }
         guard serviceHealthRefreshID == nil else { return }
         let candidates = services.compactMap { service -> ServiceHealthTarget? in
             guard
@@ -1072,7 +1379,16 @@ final class AppDataStore: ObservableObject {
         serviceHealth = serviceHealth.filter { candidateIDs.contains($0.key) }
         let grouped = Dictionary(grouping: candidates, by: { $0.url.absoluteString })
         let representatives = grouped.values.compactMap(\.first)
-        let probed = await ServiceHealthProbe.check(representatives)
+        let probed = await ServiceHealthProbe.check(representatives) { [weak self] id, health in
+            guard let self, !Task.isCancelled, self.serviceHealthRefreshID == refreshID else { return }
+            let matchingIDs = Set(grouped.values.first(where: { $0.first?.id == id })?.map(\.id) ?? [])
+            for targetID in matchingIDs { self.serviceHealth[targetID] = health }
+            // Publish each completed endpoint; an unrelated timeout must not
+            // hold all successful service cards in the unknown state.
+            self.services = self.services.map { service in
+                matchingIDs.contains(service.id) ? service.replacing(status: health.status) : service
+            }
+        }
         var snapshots: [UUID: ServiceHealthSnapshot] = [:]
         for targets in grouped.values {
             guard let first = targets.first, let health = probed[first.id] else { continue }
@@ -1098,6 +1414,7 @@ final class AppDataStore: ObservableObject {
 
     @MainActor
     func load(from dataSource: NASDataSource) async {
+        guard !isOfflineFixture else { return }
         guard !isRefreshing else { return }
         isRefreshing = true
         let refreshID = UUID()
@@ -1113,6 +1430,7 @@ final class AppDataStore: ObservableObject {
         activeDataSource = dataSource
         let snapshot = await dataSource.loadSnapshot()
         guard !Task.isCancelled, activeRefreshID == refreshID else { return }
+        folderSnapshotAuthenticationGeneration = (dataSource as? DSMNASDataSource)?.session.authenticationGeneration
         reload(from: snapshot)
         sourceKind = dataSource.kind
     }
@@ -1132,7 +1450,7 @@ final class AppDataStore: ObservableObject {
     @MainActor
     func clearConnectionData() {
         invalidateActiveRefresh()
-        Self.removePersistedDSMSnapshot()
+        if !isOfflineFixture { Self.removePersistedDSMSnapshot() }
         let dataSource = DisconnectedNASDataSource()
         prepareFolderCache(for: dataSource)
         activeDataSource = dataSource
@@ -1148,11 +1466,9 @@ final class AppDataStore: ObservableObject {
     @MainActor
     func clearCachedSnapshot() {
         invalidateActiveRefresh()
-        Self.removePersistedDSMSnapshot()
-        folderLoadTasks.values.forEach { $0.cancel() }
-        folderLoadTasks.removeAll()
-        folderCache.removeAll()
-        folderCacheScope = nil
+        if !isOfflineFixture { Self.removePersistedDSMSnapshot() }
+        folderCache.clear()
+        folderSourceID = UUID()
         cachedDSMSnapshotSavedAt = nil
         serviceHealth.removeAll()
 
@@ -1166,6 +1482,7 @@ final class AppDataStore: ObservableObject {
 
     @MainActor
     func reconnectDSM(using connectionStore: NASConnectionStore) async {
+        guard !isOfflineFixture else { return }
         if let session = connectionStore.dsmSession {
             _ = await refreshDSM(session: session, useAgent: connectionStore.usesAgent)
         } else {
@@ -1176,6 +1493,7 @@ final class AppDataStore: ObservableObject {
     /// Lightweight foreground monitoring, separate from the expensive inventory refresh.
     @MainActor
     func monitorConnectivity(using connectionStore: NASConnectionStore) async {
+        guard !isOfflineFixture else { return }
         let generation = connectionGeneration
         if let session = connectionStore.dsmSession {
             let reachable = await DSMClient(baseURL: session.baseURL,
@@ -1189,9 +1507,11 @@ final class AppDataStore: ObservableObject {
     }
 
     @MainActor
-    func refreshForForeground(using connectionStore: NASConnectionStore) async {
-        guard !isRefreshing else { return }
-        let now = Date()
+    func refreshForForeground(using connectionStore: NASConnectionStore,
+                              operations: DSMConnectionOperations = DSMConnectionOperations()) async {
+        guard !isOfflineFixture else { return }
+        guard !Task.isCancelled, !isRefreshing else { return }
+        let now = operations.currentTime()
         if let lastForegroundRefreshAt,
            now.timeIntervalSince(lastForegroundRefreshAt) < Self.foregroundRefreshCooldown {
             return
@@ -1206,23 +1526,37 @@ final class AppDataStore: ObservableObject {
                 || secondsSinceContact >= Self.foregroundFreshnessInterval else {
                 return
             }
+            let foregroundID = UUID()
+            foregroundRefreshID = foregroundID
             isForegroundRefreshing = true
-            defer { isForegroundRefreshing = false }
-            _ = await refreshDSM(session: session, useAgent: connectionStore.usesAgent)
+            defer {
+                if foregroundRefreshID == foregroundID { foregroundRefreshID = nil; isForegroundRefreshing = false }
+            }
+            _ = await refreshDSM(session: session, useAgent: connectionStore.usesAgent, operations: operations)
             return
         }
 
-        guard KeychainStore.shared.loadNASCredential() != nil else {
+        guard operations.loadCredential() != nil else {
             return
         }
+        // DSM counts each refused login toward auto block. Returning to the
+        // foreground must not repeat one; the user retries from the recovery card.
+        guard connectionRecoveryRejection == nil else { return }
+        let foregroundID = UUID()
+        foregroundRefreshID = foregroundID
         isForegroundRefreshing = true
-        defer { isForegroundRefreshing = false }
-        await restoreDSMConnection(using: connectionStore)
+        defer {
+            if foregroundRefreshID == foregroundID { foregroundRefreshID = nil; isForegroundRefreshing = false }
+        }
+        await restoreDSMConnection(using: connectionStore, operations: operations)
     }
 
     @MainActor
     @discardableResult
-    func refreshDSM(session: DSMSession, useAgent: Bool) async -> Bool {
+    func refreshDSM(session: DSMSession, useAgent: Bool,
+                    operations: DSMConnectionOperations = DSMConnectionOperations()) async -> Bool {
+        guard !isOfflineFixture else { return false }
+        guard !Task.isCancelled else { return false }
         guard !isRefreshing else { return isDSMReachable }
         isRefreshing = true
         let refreshID = UUID()
@@ -1237,7 +1571,7 @@ final class AppDataStore: ObservableObject {
         let dataSource = DSMNASDataSource(session: session, useAgent: useAgent)
         prepareFolderCache(for: dataSource)
         activeDataSource = dataSource
-        let reachable = await dataSource.isReachable()
+        let reachable = await operations.isReachable(dataSource)
         guard !Task.isCancelled, activeRefreshID == refreshID else { return false }
         guard reachable else {
             handleDSMReachabilityFailure(target: session.baseURL)
@@ -1245,19 +1579,23 @@ final class AppDataStore: ObservableObject {
         }
 
         recordSuccessfulDSMContact()
-        let snapshot = await dataSource.loadSnapshot()
+        let snapshot = await operations.loadRefreshSnapshot(dataSource)
         guard !Task.isCancelled, activeRefreshID == refreshID else { return false }
+        folderSnapshotAuthenticationGeneration = (dataSource as? DSMNASDataSource)?.session.authenticationGeneration
         reload(from: snapshot)
         sourceKind = dataSource.kind
         recordSuccessfulDSMContact()
-        return true
+        await operations.refreshServiceHealth(self)
+        return !Task.isCancelled && activeRefreshID == refreshID
     }
 
     @MainActor
     private func invalidateActiveRefresh() {
         activeRefreshID = nil
         isRefreshing = false
-        isRestoringConnection = false
+        connectionRecoveryState = .idle
+        connectionRecoveryRejection = nil
+        foregroundRefreshID = nil
         isForegroundRefreshing = false
     }
 
@@ -1268,9 +1606,11 @@ final class AppDataStore: ObservableObject {
         useAgent: Bool,
         persistSnapshot: Bool = true
     ) {
+        guard !isOfflineFixture else { return }
         let dataSource = DSMNASDataSource(session: session, useAgent: useAgent)
         prepareFolderCache(for: dataSource)
         activeDataSource = dataSource
+        folderSnapshotAuthenticationGeneration = session.authenticationGeneration
         reload(from: snapshot, persistSnapshot: persistSnapshot)
         sourceKind = .dsm
         Task { await refreshServiceHealth() }
@@ -1278,7 +1618,13 @@ final class AppDataStore: ObservableObject {
 
     @MainActor
     func activateDSMSession(session: DSMSession, useAgent: Bool) {
-        if activeRefreshID != nil { invalidateActiveRefresh() }
+        guard !isOfflineFixture else { return }
+        activateDSMSession(session: session, useAgent: useAgent, preservingRestoreID: nil)
+    }
+
+    @MainActor
+    private func activateDSMSession(session: DSMSession, useAgent: Bool, preservingRestoreID: UUID?) {
+        if activeRefreshID != nil && activeRefreshID != preservingRestoreID { invalidateActiveRefresh() }
         connectionGeneration = UUID()
         serviceHealthRefreshID = nil
         serviceHealth.removeAll()
@@ -1299,16 +1645,7 @@ final class AppDataStore: ObservableObject {
         else {
             return session
         }
-        return DSMSession(
-            baseURL: session.baseURL,
-            sid: session.sid,
-            fileStationSID: session.fileStationSID,
-            account: session.account,
-            allowsSelfSignedCertificates: session.allowsSelfSignedCertificates,
-            deviceID: session.deviceID,
-            endpoints: session.endpoints.removingLANAddress(),
-            actualRoute: session.actualRoute
-        )
+        return session.replacingConnection(endpoints: session.endpoints.removingLANAddress())
     }
 
     private static func session(
@@ -1324,20 +1661,11 @@ final class AppDataStore: ObservableObject {
             messageKey: "diagnostics.route.smart_lan_ready",
             details: ["target": target]
         )
-        return DSMSession(
-            baseURL: session.baseURL,
-            sid: session.sid,
-            fileStationSID: session.fileStationSID,
-            account: session.account,
-            allowsSelfSignedCertificates: session.allowsSelfSignedCertificates,
-            deviceID: session.deviceID,
-            endpoints: endpoints,
-            actualRoute: session.actualRoute
-        )
+        return session.replacingConnection(endpoints: endpoints)
     }
 
     @MainActor
-    private static func discoverSmartLANAddress(for baseURL: URL) async -> URL? {
+    fileprivate static func discoverSmartLANAddress(for baseURL: URL) async -> URL? {
         guard !NetworkHostClassifier.isPrivate(baseURL.host) else { return nil }
         let lanAddress = await LANDiscoveryService.discoverDSMPlaybackLANEndpoint(
             timeout: 3,
@@ -1411,43 +1739,22 @@ final class AppDataStore: ObservableObject {
         let normalizedPath = path.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
             ? "/"
             : path
-        let cachedEntry = folderCache[normalizedPath]
-        if !forceRefresh,
-           let cachedEntry,
-           Date().timeIntervalSince(cachedEntry.loadedAt) < Self.folderCacheLifetime {
+        if isOfflineFixture { return localChildren(for: normalizedPath, in: files) }
+        if !forceRefresh, let cachedItems = folderCache.freshItems(for: normalizedPath) {
             DiagnosticLogStore.shared.record(
-                .info,
-                categoryKey: "diagnostics.category.dsm_api",
+                .info, categoryKey: "diagnostics.category.dsm_api",
                 messageKey: "diagnostics.files.folder_loaded",
-                details: [
-                    "pathDepth": "\(normalizedPath.split(separator: "/").count)",
-                    "items": "\(cachedEntry.items.count)",
-                    "source": "memoryCache",
-                    "durationMs": "0"
-                ]
-            )
-            return cachedEntry.items
-        }
-        if let existingTask = folderLoadTasks[normalizedPath] {
-            return try await existingTask.value
+                details: ["pathDepth": "\(normalizedPath.split(separator: "/").count)",
+                          "items": "\(cachedItems.count)", "source": "memoryCache", "durationMs": "0"])
+            return cachedItems
         }
         if let dataSource = activeDataSource as? DSMNASDataSource {
-            let requestScope = folderCacheScope
-            let task = Task {
-                try await dataSource.loadFolder(path: normalizedPath)
-            }
-            folderLoadTasks[normalizedPath] = task
             do {
-                let items = try await task.value
-                guard requestScope == folderCacheScope else {
-                    throw CancellationError()
+                return try await folderCache.load(path: normalizedPath) {
+                    try await dataSource.loadFolder(path: normalizedPath)
                 }
-                folderLoadTasks[normalizedPath] = nil
-                folderCache[normalizedPath] = FolderCacheEntry(items: items, loadedAt: Date())
-                return items
             } catch {
-                folderLoadTasks[normalizedPath] = nil
-                guard requestScope == folderCacheScope else { throw CancellationError() }
+                if error is CancellationError || Task.isCancelled { throw CancellationError() }
                 DiagnosticLogStore.shared.record(
                     .warning,
                     categoryKey: "diagnostics.category.dsm_api",
@@ -1457,7 +1764,7 @@ final class AppDataStore: ObservableObject {
                         "error": "\(error)"
                     ]
                 )
-                if let cachedEntry { return cachedEntry.items }
+                if case DSMClientError.apiFailed(code: 119) = error { throw error }
                 let localItems = localChildren(for: normalizedPath, in: files)
                 if !localItems.isEmpty { return localItems }
                 throw error
@@ -1468,17 +1775,33 @@ final class AppDataStore: ObservableObject {
 
     @MainActor
     private func prepareFolderCache(for dataSource: NASDataSource) {
-        let newScope: String?
-        if let dsmDataSource = dataSource as? DSMNASDataSource {
-            newScope = "\(dsmDataSource.session.baseURL.absoluteString)|\(dsmDataSource.session.account)"
-        } else {
-            newScope = nil
+        let session = (dataSource as? DSMNASDataSource)?.session
+        let cacheChanged = folderCache.prepare(for: session)
+        if cacheChanged || session == nil
+            || folderAuthenticationGeneration != session?.authenticationGeneration
+            || folderFileStationGeneration != session?.fileStationGeneration {
+            folderSourceID = UUID()
         }
-        guard newScope != folderCacheScope else { return }
-        folderLoadTasks.values.forEach { $0.cancel() }
-        folderLoadTasks.removeAll()
-        folderCache.removeAll()
-        folderCacheScope = newScope
+        folderAuthenticationGeneration = session?.authenticationGeneration
+        folderFileStationGeneration = session?.fileStationGeneration
+        session?.recordAuthenticationStage(.sourcePrepared)
+    }
+
+    /// Both readers become ready in one MainActor turn, before inventory I/O.
+    @MainActor
+    @discardableResult
+    func publishFolderSession(_ session: DSMSession, useAgent: Bool,
+                              using connectionStore: NASConnectionStore) -> Bool {
+        guard !isOfflineFixture else { return false }
+        guard !Task.isCancelled,
+              connectionStore.dsmSession?.authenticationGeneration == session.authenticationGeneration,
+              (activeDataSource as? DSMNASDataSource)?.session.authenticationGeneration == session.authenticationGeneration
+        else { return false }
+        let dataSource = DSMNASDataSource(session: session, useAgent: useAgent)
+        prepareFolderCache(for: dataSource)
+        activeDataSource = dataSource
+        connectionStore.connect(device: device, session: session)
+        return true
     }
 
     private func localChildren(for path: String, in items: [FileItem]) -> [FileItem] {
@@ -1491,9 +1814,80 @@ final class AppDataStore: ObservableObject {
     }
 
     @MainActor
-    func restoreDSMConnection(using connectionStore: NASConnectionStore) async {
-        guard !isRefreshing else { return }
-        guard let credential = KeychainStore.shared.loadNASCredential() else {
+    func beginDSMConnectionAttempt(using connectionStore: NASConnectionStore) -> UUID {
+        invalidateActiveRefresh()
+        connectionGeneration = UUID()
+        return connectionStore.beginDSMConnectionAttempt()
+    }
+
+    @MainActor
+    private func ownsDSMConnectionWork(_ id: UUID, session: DSMSession, using connectionStore: NASConnectionStore) -> Bool {
+        !Task.isCancelled && connectionStore.ownsDSMConnectionAttempt(id)
+            && connectionStore.dsmSession?.authenticationGeneration == session.authenticationGeneration
+            && (activeDataSource as? DSMNASDataSource)?.session.authenticationGeneration == session.authenticationGeneration
+    }
+
+    /// Shared tail for restoration and manual login. Recheck after each suspended I/O.
+    @MainActor
+    func finishDSMConnection(_ result: DSMLoginResult, credential: StoredNASCredential,
+                             operationID: UUID, using connectionStore: NASConnectionStore,
+                             useAgent: Bool, saveCredential: Bool = true, oneTimeCode: String = "",
+                             operations: DSMConnectionOperations = DSMConnectionOperations(),
+                             restoreRefreshID: UUID? = nil) async throws {
+        guard !isOfflineFixture else { throw CancellationError() }
+        var session = result.session
+        func checkOwnership() throws {
+            guard ownsDSMConnectionWork(operationID, session: session, using: connectionStore),
+                  restoreRefreshID == nil || activeRefreshID == restoreRefreshID else { throw CancellationError() }
+        }
+        do {
+            try checkOwnership()
+            let discoveryBaseURL = session.baseURL
+            async let discoveredLAN = operations.discoverLAN(discoveryBaseURL)
+            session = await operations.attachFileStation(result, credential, oneTimeCode)
+            try checkOwnership()
+            // The authenticated origin already works. Optional LAN discovery
+            // must not delay both file readers adopting the File Station SID.
+            guard publishFolderSession(session, useAgent: useAgent, using: connectionStore) else { throw CancellationError() }
+            let lan = await discoveredLAN
+            try checkOwnership()
+            session = Self.session(session, addingVerifiedLANAddress: lan)
+            guard publishFolderSession(session, useAgent: useAgent, using: connectionStore) else { throw CancellationError() }
+            let snapshot = await operations.loadSnapshot(session, useAgent)
+            try checkOwnership()
+            // No suspension between the final identity check, credential write and publication.
+            if saveCredential {
+                try operations.saveCredential(StoredNASCredential(
+                    baseURLString: credential.baseURLString, account: credential.account,
+                    password: credential.password, useAgent: useAgent,
+                    allowsSelfSignedCertificates: credential.allowsSelfSignedCertificates,
+                    deviceID: session.deviceID ?? credential.deviceID, endpoints: session.endpoints,
+                    lastKnownRoute: session.actualRoute,
+                    usesOnlyConfiguredAddress: credential.usesOnlyConfiguredAddress))
+            }
+            let dataSource = DSMNASDataSource(session: session, useAgent: useAgent)
+            prepareFolderCache(for: dataSource)
+            activeDataSource = dataSource
+            recordSuccessfulDSMContact()
+            folderSnapshotAuthenticationGeneration = session.authenticationGeneration
+            reload(from: snapshot)
+            sourceKind = dataSource.kind
+            connectionStore.connect(device: snapshot.device, session: session)
+            // Start checking the published inventory immediately, rather than
+            // waiting for the next 15-second foreground monitoring tick.
+            await operations.refreshServiceHealth(self)
+        } catch {
+            await operations.logout(session, connectionStore)
+            throw error
+        }
+    }
+
+    @MainActor
+    func restoreDSMConnection(using connectionStore: NASConnectionStore,
+                              operations: DSMConnectionOperations = DSMConnectionOperations()) async {
+        guard !isOfflineFixture else { return }
+        guard !Task.isCancelled, !isRefreshing else { return }
+        guard let credential = operations.loadCredential() else {
             DiagnosticLogStore.shared.record(
                 .warning,
                 categoryKey: "diagnostics.category.connection",
@@ -1501,11 +1895,21 @@ final class AppDataStore: ObservableObject {
             )
             return
         }
+        let restoreID = connectionStore.beginDSMConnectionAttempt()
+        activeRefreshID = restoreID
         isRefreshing = true
-        isRestoringConnection = true
+        connectionRecoveryState = .restoring
+        connectionRecoveryRejection = nil
         defer {
-            isRefreshing = false
-            isRestoringConnection = false
+            if activeRefreshID == restoreID {
+                activeRefreshID = nil
+                isRefreshing = false
+                if connectionRecoveryState == .restoring { connectionRecoveryState = .idle }
+            }
+        }
+        func checkRestoreOwnership() throws {
+            guard !Task.isCancelled, activeRefreshID == restoreID,
+                  connectionStore.ownsDSMConnectionAttempt(restoreID) else { throw CancellationError() }
         }
         var sessionToLogout: DSMSession?
 
@@ -1514,18 +1918,21 @@ final class AppDataStore: ObservableObject {
             var endpoints = credential.endpoints.candidates.isEmpty
                 ? DSMConnectionEndpoints(legacyBaseURL: baseURL)
                 : credential.endpoints
-            let usesStoredAgent = KeychainStore.shared.loadAgentConnection() != nil
+            // A discovered LAN address is useful for optional media routing,
+            // but it must not replace a user-pinned DSM authentication origin.
+            if credential.usesOnlyConfiguredAddress {
+                endpoints = DSMConnectionEndpoints(legacyBaseURL: baseURL)
+            }
+            let usesStoredAgent = operations.usesAgent()
             let loginResult: DSMLoginResult
             do {
-                loginResult = try await DSMClient.login(
-                    endpoints: endpoints,
-                    allowsSelfSignedCertificates: credential.allowsSelfSignedCertificates,
-                    account: credential.account,
-                    password: credential.password,
-                    deviceID: credential.deviceID,
-                    preferredRoute: credential.lastKnownRoute
-                )
+                loginResult = try await operations.login(credential, endpoints)
             } catch {
+                try checkRestoreOwnership()
+                // A timed-out credential POST may already have reached DSM.
+                // Do not silently issue another login or scan the LAN for it.
+                guard !credential.usesOnlyConfiguredAddress,
+                      DSMClient.shouldRetryLogin(on: error) else { throw error }
                 // Older credentials may contain only a stale address. Discover
                 // a verified private DSM endpoint before retrying credentials.
                 DiagnosticLogStore.shared.record(
@@ -1537,7 +1944,8 @@ final class AppDataStore: ObservableObject {
                         "configuredEndpoints": "\(endpoints.candidates.count)"
                     ]
                 )
-                let discoveredEndpoints = await LANDiscoveryService.discoverDSMEndpoints()
+                let discoveredEndpoints = await operations.discoverFallback()
+                try checkRestoreOwnership()
                 let knownURLs = Set(endpoints.candidates.map { $0.url.absoluteString })
                 guard let discoveredLAN = discoveredEndpoints.first(where: {
                     NetworkHostClassifier.isPrivate($0.host)
@@ -1556,77 +1964,37 @@ final class AppDataStore: ObservableObject {
                     messageKey: "diagnostics.restore.fallback_found",
                     details: ["target": DiagnosticLogStore.redactedURL(discoveredLAN)]
                 )
-                loginResult = try await DSMClient.login(
-                    endpoints: endpoints,
-                    allowsSelfSignedCertificates: credential.allowsSelfSignedCertificates,
-                    account: credential.account,
-                    password: credential.password,
-                    deviceID: credential.deviceID,
-                    preferredRoute: credential.lastKnownRoute
-                )
+                loginResult = try await operations.login(credential, endpoints)
             }
-            let client = loginResult.client
             let mainSession = Self.sessionByClearingStaleLANIfNeeded(loginResult.session)
-            async let discoveredLANAddress = Self.discoverSmartLANAddress(for: mainSession.baseURL)
-            // The authentication session is already usable for live NAS actions.
-            // Publish it before the optional File Station session and the full
-            // service snapshot, so the UI does not confuse a slow refresh with
-            // a disconnected NAS.
             sessionToLogout = mainSession
-            activateDSMSession(session: mainSession, useAgent: usesStoredAgent)
+            try checkRestoreOwnership()
+            // Admission, source preparation and connection publication share a MainActor turn.
+            activateDSMSession(session: mainSession, useAgent: usesStoredAgent, preservingRestoreID: restoreID)
             connectionStore.connect(device: device, session: mainSession)
-
-            var session = await client.addingFileStationSession(
-                to: mainSession,
-                account: credential.account,
-                password: credential.password
-            )
-            session = Self.session(session, addingVerifiedLANAddress: await discoveredLANAddress)
-            sessionToLogout = session
-            // File playback reads connectionStore directly. Publish the
-            // File Station SID and discovered LAN endpoint before the slower
-            // full snapshot, so the first playback gets the same candidates
-            // as a later reopen.
-            guard connectionStore.dsmSession?.sid == mainSession.sid else { return }
-            connectionStore.connect(device: device, session: session)
-            let dataSource = DSMNASDataSource(session: session, useAgent: usesStoredAgent)
-            let snapshot = await dataSource.loadSnapshot()
-            guard connectionStore.dsmSession?.sid == mainSession.sid else { return }
-            try KeychainStore.shared.saveNASCredential(
-                StoredNASCredential(
-                    baseURLString: credential.baseURLString,
-                    account: credential.account,
-                    password: credential.password,
-                    useAgent: usesStoredAgent,
-                    allowsSelfSignedCertificates: credential.allowsSelfSignedCertificates,
-                    deviceID: session.deviceID ?? credential.deviceID,
-                    endpoints: session.endpoints,
-                    lastKnownRoute: session.actualRoute
-                )
-            )
-            prepareFolderCache(for: dataSource)
-            activeDataSource = dataSource
-            recordSuccessfulDSMContact()
-            reload(from: snapshot)
-            sourceKind = dataSource.kind
-            connectionStore.connect(device: snapshot.device, session: session)
             sessionToLogout = nil
+            try await finishDSMConnection(
+                DSMLoginResult(client: loginResult.client, session: mainSession), credential: credential,
+                operationID: restoreID, using: connectionStore, useAgent: usesStoredAgent,
+                operations: operations, restoreRefreshID: restoreID)
         } catch {
-            isDSMReachable = false
-            if let session = sessionToLogout {
-                let client = DSMClient(
-                    baseURL: session.baseURL,
-                    allowsSelfSignedCertificates: session.allowsSelfSignedCertificates
-                )
-                await client.logout(session: session)
+            let ownsFailure = activeRefreshID == restoreID && connectionStore.ownsDSMConnectionAttempt(restoreID)
+                && !Task.isCancelled && !(error is CancellationError)
+            if ownsFailure {
+                connectionRecoveryState = .failed
+                if let dsmError = error as? DSMClientError, case .loginRejected = dsmError {
+                    connectionRecoveryRejection = dsmError
+                }
+                isDSMReachable = false
+                lastRefreshSummaryKey = "data.refresh.restore_failed"
+                DiagnosticLogStore.shared.record(
+                    .error, categoryKey: "diagnostics.category.connection",
+                    messageKey: "diagnostics.restore.failed",
+                    details: ["error": Self.restoreDiagnosticMessage(for: error)])
             }
-            lastRefreshSummaryKey = "data.refresh.restore_failed"
-            DiagnosticLogStore.shared.record(
-                .error,
-                categoryKey: "diagnostics.category.connection",
-                messageKey: "diagnostics.restore.failed",
-                details: ["error": Self.restoreDiagnosticMessage(for: error)]
-            )
+            if let session = sessionToLogout {
+                await operations.logout(session, connectionStore)
+            }
         }
     }
 
@@ -1640,6 +2008,7 @@ final class AppDataStore: ObservableObject {
             case .insecureHTTP: return "insecureHTTP"
             case .invalidResponse: return "invalidResponse"
             case .apiFailed(let code): return "apiFailed:\(code.map(String.init) ?? "-")"
+            case .loginRejected(let code): return "loginRejected:\(code)"
             case .missingSession: return "missingSession"
             }
         }
@@ -1779,7 +2148,7 @@ final class AppDataStore: ObservableObject {
         orderedKeys.move(fromOffsets: source, toOffset: destination)
         launchpadServiceOrder[category.rawValue] = orderedKeys
         launchpadOrderStore.save(launchpadServiceOrder)
-        CloudSyncStore.noteLocalChange()
+        noteLocalChange()
     }
 
     @MainActor
@@ -1790,7 +2159,7 @@ final class AppDataStore: ObservableObject {
             serviceVisibilityOverrides[service.launchpadVisibilityKey] = isVisible
         }
         launchpadVisibilityStore.save(serviceVisibilityOverrides)
-        CloudSyncStore.noteLocalChange()
+        noteLocalChange()
         lastRefreshSummaryKey = isVisible ? "launchpad.service.shown" : "launchpad.service.hidden"
     }
 
@@ -1798,7 +2167,7 @@ final class AppDataStore: ObservableObject {
     func resetLaunchpadServiceVisibility() {
         serviceVisibilityOverrides.removeAll()
         launchpadVisibilityStore.save(serviceVisibilityOverrides)
-        CloudSyncStore.noteLocalChange()
+        noteLocalChange()
         lastRefreshSummaryKey = "launchpad.services.reset_done"
     }
 
@@ -1824,7 +2193,7 @@ final class AppDataStore: ObservableObject {
             iconText: iconText
         )
         services.append(service)
-        CloudSyncStore.noteLocalChange()
+        noteLocalChange()
         lastRefreshSummaryKey = "manual.service.added"
     }
 
@@ -1832,7 +2201,7 @@ final class AppDataStore: ObservableObject {
     func deleteManualService(id: UUID) {
         manualServiceStore.delete(id: id)
         services.removeAll { $0.id == id && $0.source == .manual }
-        CloudSyncStore.noteLocalChange()
+        noteLocalChange()
         lastRefreshSummaryKey = "manual.service.deleted"
     }
 
@@ -1844,7 +2213,7 @@ final class AppDataStore: ObservableObject {
     func addTask(_ task: TaskItem) {
         tasks.insert(task, at: 0)
         persistTasks()
-        ReminderNotificationScheduler.schedule(task, requestsAuthorization: true)
+        scheduleReminder(task, requestsAuthorization: true)
     }
 
     @MainActor
@@ -1852,7 +2221,7 @@ final class AppDataStore: ObservableObject {
         guard let index = tasks.firstIndex(where: { $0.id == task.id }) else { return }
         tasks[index].isMuted = isMuted
         persistTasks()
-        ReminderNotificationScheduler.schedule(tasks[index], requestsAuthorization: false)
+        scheduleReminder(tasks[index], requestsAuthorization: false)
     }
 
     @MainActor
@@ -1862,12 +2231,27 @@ final class AppDataStore: ObservableObject {
         completedTask.completedAt = Date()
         completedTasks.insert(completedTask, at: 0)
         persistTasks()
-        ReminderNotificationScheduler.cancel(completedTask)
+        cancelReminder(completedTask)
+    }
+
+    private func scheduleReminder(_ task: TaskItem, requestsAuthorization: Bool) {
+        guard !isOfflineFixture else { return }
+        ReminderNotificationScheduler.schedule(task, requestsAuthorization: requestsAuthorization)
+    }
+
+    private func cancelReminder(_ task: TaskItem) {
+        guard !isOfflineFixture else { return }
+        ReminderNotificationScheduler.cancel(task)
+    }
+
+    private func noteLocalChange() {
+        guard !isOfflineFixture else { return }
+        CloudSyncStore.noteLocalChange()
     }
 
     private func persistTasks() {
         localTaskStore.save(pending: tasks, history: completedTasks)
-        CloudSyncStore.noteLocalChange()
+        noteLocalChange()
     }
 
     @MainActor
@@ -1907,6 +2291,7 @@ final class AppDataStore: ObservableObject {
 
     @MainActor
     func applyCloudSyncSnapshot(_ snapshot: CloudSyncSnapshot) {
+        guard !isOfflineFixture else { return }
         snapshot.stringPreferences.forEach { UserDefaults.standard.set($0.value, forKey: $0.key) }
         snapshot.booleanPreferences.forEach { UserDefaults.standard.set($0.value, forKey: $0.key) }
         manualServiceStore.replaceFromSync(snapshot.manualServices)
@@ -1916,12 +2301,12 @@ final class AppDataStore: ObservableObject {
             pending: snapshot.pendingTasks,
             history: snapshot.completedTasks
         )
-        tasks.forEach(ReminderNotificationScheduler.cancel)
+        tasks.forEach(cancelReminder)
         tasks = taskState.pending
         completedTasks = taskState.history
         localTaskStore.save(pending: tasks, history: completedTasks)
         tasks.forEach {
-            ReminderNotificationScheduler.schedule($0, requestsAuthorization: false)
+            scheduleReminder($0, requestsAuthorization: false)
         }
         let nonManualServices = services.filter { $0.source != .manual }
         services = nonManualServices + manualServiceStore.load()
@@ -2029,6 +2414,16 @@ enum AppLanguage: String, CaseIterable, Identifiable {
         }
     }
 
+    /// Text views follow `locale` right away. Strings built outside a view use the bundle's
+    /// language, which the system fixes when the app launches, so this takes effect on relaunch.
+    func applyToBundleLanguageOnNextLaunch(_ defaults: UserDefaults = .standard) {
+        switch self {
+        case .system: defaults.removeObject(forKey: "AppleLanguages")
+        case .zhHans: defaults.set(["zh-Hans"], forKey: "AppleLanguages")
+        case .en: defaults.set(["en"], forKey: "AppleLanguages")
+        }
+    }
+
     var locale: Locale {
         switch self {
         case .system: return .autoupdatingCurrent
@@ -2070,41 +2465,95 @@ enum AppearancePreferenceKeys {
 }
 
 final class AppearanceStore: ObservableObject {
+    /// 偏好域与“本地改动”通知均可注入；默认值与以往完全一致（标准偏好域 + iCloud 本地改动标记）。
+    /// 隔离宿主（离线界面测试）传入临时偏好域与空通知，避免触碰用户数据或同步。
+    private let defaults: UserDefaults
+    private let noteChange: () -> Void
+
     @Published var launchpadTheme: LaunchpadTheme {
         didSet {
-            UserDefaults.standard.set(launchpadTheme.rawValue, forKey: LaunchpadTheme.storageKey)
-            CloudSyncStore.noteLocalChange()
+            defaults.set(launchpadTheme.rawValue, forKey: LaunchpadTheme.storageKey)
+            noteChange()
         }
     }
 
     @Published var compactMetrics: Bool {
         didSet {
-            UserDefaults.standard.set(compactMetrics, forKey: AppearancePreferenceKeys.compactMetrics)
-            CloudSyncStore.noteLocalChange()
+            defaults.set(compactMetrics, forKey: AppearancePreferenceKeys.compactMetrics)
+            noteChange()
         }
     }
 
     @Published var showServiceStatus: Bool {
         didSet {
-            UserDefaults.standard.set(showServiceStatus, forKey: AppearancePreferenceKeys.showServiceStatus)
-            CloudSyncStore.noteLocalChange()
+            defaults.set(showServiceStatus, forKey: AppearancePreferenceKeys.showServiceStatus)
+            noteChange()
         }
     }
 
-    init() {
-        let savedTheme = UserDefaults.standard.string(forKey: LaunchpadTheme.storageKey)
+    init(defaults: UserDefaults = .standard,
+         noteChange: @escaping () -> Void = { CloudSyncStore.noteLocalChange() }) {
+        self.defaults = defaults
+        self.noteChange = noteChange
+        let savedTheme = defaults.string(forKey: LaunchpadTheme.storageKey)
         launchpadTheme = savedTheme.flatMap(LaunchpadTheme.init(rawValue:)) ?? .cleanGrid
-        compactMetrics = UserDefaults.standard.object(forKey: AppearancePreferenceKeys.compactMetrics) as? Bool ?? true
-        showServiceStatus = UserDefaults.standard.object(forKey: AppearancePreferenceKeys.showServiceStatus) as? Bool ?? true
+        compactMetrics = defaults.object(forKey: AppearancePreferenceKeys.compactMetrics) as? Bool ?? true
+        showServiceStatus = defaults.object(forKey: AppearancePreferenceKeys.showServiceStatus) as? Bool ?? true
     }
 
     @MainActor
     func reloadFromDefaults() {
-        let defaults = UserDefaults.standard
         launchpadTheme = defaults.string(forKey: LaunchpadTheme.storageKey)
             .flatMap(LaunchpadTheme.init(rawValue:)) ?? .cleanGrid
         compactMetrics = defaults.object(forKey: AppearancePreferenceKeys.compactMetrics) as? Bool ?? true
         showServiceStatus = defaults.object(forKey: AppearancePreferenceKeys.showServiceStatus) as? Bool ?? true
+    }
+}
+
+/// “清理缓存与网页数据”的步骤序列。只负责按顺序执行并汇总结果，不含界面；
+/// 确认/取消由界面层决定（取消时根本不会创建或调用它）。
+/// 某一步失败不会跳过后面的步骤；失败的步骤名只用于判断是否“部分未清除”，不含路径或内容。
+struct PrivacyCacheCleaner {
+    struct Step {
+        let name: String
+        let run: @MainActor () async throws -> Void
+    }
+
+    enum Outcome: Equatable {
+        case cleared
+        case partial(failedSteps: [String])
+    }
+
+    let steps: [Step]
+
+    @MainActor
+    func clear() async -> Outcome {
+        var failed: [String] = []
+        for step in steps {
+            do {
+                try await step.run()
+            } catch {
+                failed.append(step.name)
+            }
+        }
+        return failed.isEmpty ? .cleared : .partial(failedSteps: failed)
+    }
+
+    /// 删除 `base` 下指定名称的目录。目录不存在视为成功；
+    /// 其余错误在全部目录都尝试后再抛出第一个，避免一处失败导致另一处不再清理。
+    static func removeTemporaryDirectories(named names: [String], in base: URL,
+                                           fileManager: FileManager = .default) throws {
+        var firstError: Error?
+        for name in names {
+            let url = base.appendingPathComponent(name, isDirectory: true)
+            guard fileManager.fileExists(atPath: url.path) else { continue }
+            do {
+                try fileManager.removeItem(at: url)
+            } catch {
+                firstError = firstError ?? error
+            }
+        }
+        if let firstError { throw firstError }
     }
 }
 

@@ -1,0 +1,242 @@
+{
+  "date": "2026-10-27",
+  "scope": "tvOS DEBUG-only offline exit contrasts; no new production playback fix",
+  "sourceHead": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceInputCount": 399,
+  "changedSourceFiles": [
+    "tvos/NastartTV/Sources/NastartTVApp.swift"
+  ],
+  "productionPlaybackChanged": false,
+  "configuration": "Debug",
+  "builtAt": "2026-10-27T15:23:18.592188+08:00",
+  "mainSHA256": "df96adfac3dd25f9f7749781988e1762bcf74c48b4cc2c35f9e307a3335f780e",
+  "debugDylibSHA256": "4c17836796dcf53a2eee6e1add2d7660eb18e96bc2ffbe7ff1be80d4c32739b6",
+  "signedMachOCount": 27,
+  "install": {
+    "at": "2026-10-27T15:23:47.041923+08:00",
+    "packageSHA256": "df96adfac3dd25f9f7749781988e1762bcf74c48b4cc2c35f9e307a3335f780e",
+    "configuration": "Debug",
+    "preserveData": true,
+    "freshIdentityConnected": true,
+    "preferencesBackedUp": true,
+    "exitCode": 0,
+    "installComplete": true,
+    "installedAt": "2026-10-27T15:23:50.322724+08:00",
+    "preferences": {
+      "beforeKeys": 15,
+      "afterKeys": 15,
+      "sameKeys": true,
+      "changedValues": 0,
+      "allNonDiagnosticPreferencesEqual": true
+    }
+  },
+  "device": {
+    "model": "AppleTV14,1",
+    "os": "18.2",
+    "connection": "LAN"
+  },
+  "offlineContrasts": [
+    {
+      "mode": "player-ks",
+      "startedAt": "2026-10-27T15:12:03.020525+08:00",
+      "finishedAt": "2026-10-27T15:12:13.086160+08:00",
+      "returned": true,
+      "menuPresses": 1,
+      "samePositivePID": true,
+      "ordinaryLaunchRestored": true
+    },
+    {
+      "mode": "player-ks-nested",
+      "startedAt": "2026-10-27T15:12:13.196830+08:00",
+      "finishedAt": "2026-10-27T15:12:24.934128+08:00",
+      "returned": true,
+      "menuPresses": 1,
+      "samePositivePID": true,
+      "ordinaryLaunchRestored": true
+    },
+    {
+      "mode": "button",
+      "startedAt": "2026-10-27T15:12:25.033817+08:00",
+      "finishedAt": "2026-10-27T15:12:34.376061+08:00",
+      "returned": true,
+      "menuPresses": 1,
+      "samePositivePID": true,
+      "ordinaryLaunchRestored": true
+    },
+    {
+      "mode": "button-nested",
+      "startedAt": "2026-10-27T15:12:34.473489+08:00",
+      "finishedAt": "2026-10-27T15:12:45.432147+08:00",
+      "returned": true,
+      "menuPresses": 1,
+      "samePositivePID": true,
+      "ordinaryLaunchRestored": true
+    },
+    {
+      "mode": "player-ks",
+      "startedAt": "2026-10-27T15:15:30.649090+08:00",
+      "finishedAt": "2026-10-27T15:15:40.711595+08:00",
+      "returned": true,
+      "menuPresses": 1,
+      "samePositivePID": true,
+      "ordinaryLaunchRestored": true
+    },
+    {
+      "mode": "player-ks-edge",
+      "startedAt": "2026-10-27T15:15:40.843373+08:00",
+      "finishedAt": "2026-10-27T15:15:50.769723+08:00",
+      "returned": true,
+      "menuPresses": 1,
+      "samePositivePID": true,
+      "ordinaryLaunchRestored": true
+    },
+    {
+      "mode": "player-ks-edge-nested",
+      "startedAt": "2026-10-27T15:15:50.856755+08:00",
+      "finishedAt": "2026-10-27T15:16:02.614278+08:00",
+      "returned": true,
+      "menuPresses": 1,
+      "samePositivePID": true,
+      "ordinaryLaunchRestored": true
+    },
+    {
+      "mode": "player-ks-delayed",
+      "startedAt": "2026-10-27T15:16:02.705406+08:00",
+      "finishedAt": "2026-10-27T15:16:15.425780+08:00",
+      "returned": true,
+      "menuPresses": 1,
+      "samePositivePID": true,
+      "ordinaryLaunchRestored": true
+    },
+    {
+      "mode": "player-ks-delayed-nested",
+      "startedAt": "2026-10-27T15:16:15.568797+08:00",
+      "finishedAt": "2026-10-27T15:16:30.320483+08:00",
+      "returned": true,
+      "menuPresses": 1,
+      "samePositivePID": true,
+      "ordinaryLaunchRestored": true
+    },
+    {
+      "mode": "player-ks-local",
+      "startedAt": "2026-10-27T15:20:02.999658+08:00",
+      "finishedAt": "2026-10-27T15:20:23.098070+08:00",
+      "returned": true,
+      "menuPresses": 1,
+      "samePositivePID": true,
+      "ordinaryLaunchRestored": true
+    },
+    {
+      "mode": "player-ks-local-edge",
+      "startedAt": "2026-10-27T15:20:23.206697+08:00",
+      "finishedAt": "2026-10-27T15:20:43.557629+08:00",
+      "returned": true,
+      "menuPresses": 1,
+      "samePositivePID": true,
+      "ordinaryLaunchRestored": true
+    },
+    {
+      "mode": "player-ks-local-edge-nested",
+      "startedAt": "2026-10-27T15:20:43.681664+08:00",
+      "finishedAt": "2026-10-27T15:21:05.632005+08:00",
+      "returned": true,
+      "menuPresses": 1,
+      "samePositivePID": true,
+      "ordinaryLaunchRestored": true
+    },
+    {
+      "mode": "player-ks-local-edge",
+      "startedAt": "2026-10-27T15:24:11.074618+08:00",
+      "finishedAt": "2026-10-27T15:24:31.204844+08:00",
+      "returned": true,
+      "menuPresses": 1,
+      "samePositivePID": true,
+      "ordinaryLaunchRestored": true
+    },
+    {
+      "mode": "player-ks-local-lazy",
+      "startedAt": "2026-10-27T15:24:31.340558+08:00",
+      "finishedAt": "2026-10-27T15:24:51.758478+08:00",
+      "returned": true,
+      "menuPresses": 1,
+      "samePositivePID": true,
+      "ordinaryLaunchRestored": true
+    },
+    {
+      "mode": "player-ks-local-lazy-edge",
+      "startedAt": "2026-10-27T15:24:51.905621+08:00",
+      "finishedAt": "2026-10-27T15:25:11.997991+08:00",
+      "returned": true,
+      "menuPresses": 1,
+      "samePositivePID": true,
+      "ordinaryLaunchRestored": true
+    },
+    {
+      "mode": "player-ks-local-lazy-edge-nested",
+      "startedAt": "2026-10-27T15:25:12.120845+08:00",
+      "finishedAt": "2026-10-27T15:25:34.273879+08:00",
+      "returned": true,
+      "menuPresses": 1,
+      "samePositivePID": true,
+      "ordinaryLaunchRestored": true
+    }
+  ],
+  "distinctModes": 14,
+  "earlyPollingDriverFailuresRetained": 2,
+  "realNASPlaybackRetested": false,
+  "ordinaryFinalBaseline": {
+    "at": "2026-10-27T15:32:22.894388+08:00",
+    "environment": {},
+    "arguments": [],
+    "mediaCommands": 0,
+    "processObservedAt3": true,
+    "processObservedAt10": true,
+    "nativeBaselineCaptured": true
+  },
+  "index": {
+    "originalFileCount": 149,
+    "fullJSONEqual": true
+  },
+  "preferences": {
+    "beforeKeys": 15,
+    "afterKeys": 15,
+    "sameKeys": true,
+    "changedValues": 0,
+    "allNonDiagnosticPreferencesEqual": true
+  },
+  "cleanup": {
+    "at": "2026-10-27T15:31:28.939054+08:00",
+    "device": "tv",
+    "ownedSessionSettingsRestored": true,
+    "ownedHTTPSessionDeleted": true,
+    "runnerStopRequested": true
+  },
+  "fixtureCleanup": {
+    "clientOwnedFixtureRemoved": true,
+    "existedBeforeCleanup": true,
+    "hashVerifiedBeforeRemoval": true,
+    "bytes": 2640017,
+    "sha256": "71e02c56b1f0395fb38574d65aa08b784dc5235662ccf12679440860f6d947b0",
+    "networkMedia": false
+  },
+  "finalProcesses": {
+    "normalAppPresent": true,
+    "ownedRunnerAbsent": true
+  },
+  "mobileDevicesAccessed": false,
+  "iPhone18HandsOff": true,
+  "newPlaybackMatrixPasses": 0,
+  "requirementsCounts": {
+    "inProgress": 14,
+    "awaitingAcceptance": 5,
+    "notStarted": 11
+  },
+  "remaining": [
+    "real WebDAV Menu/Done exit",
+    "ordinary app root/search and async player presentation contrasts",
+    "format, transport and actual focus environment ownership",
+    "cross-platform seek/audio/subtitle/PiP/resume",
+    "FTP production adapter and FTPS reuse",
+    "SMB strict negotiation/root boundary"
+  ]
+}

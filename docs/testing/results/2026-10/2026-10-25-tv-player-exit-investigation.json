@@ -1,0 +1,352 @@
+{
+  "recordedAt": "2026-10-25T03:23:28.690772+08:00",
+  "HEAD": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "dirtyPreserved": true,
+  "acceptedAppSourceChanges": 0,
+  "acceptedSharedPlayerSourceChanges": 0,
+  "experimentsRevertedByteForByte": true,
+  "attempts": [
+    {
+      "label": "attempt1",
+      "device": {
+        "at": "2026-10-25T02:55:03.645591+08:00",
+        "name": "客厅",
+        "model": "AppleTV14,1",
+        "system": "18.2",
+        "UDIDMatched": true,
+        "pairing": "paired",
+        "transport": "localNetwork",
+        "tunnel": "connected"
+      },
+      "package": {
+        "at": "2026-10-25T02:57:45.305637+08:00",
+        "configuration": "normal Debug",
+        "HEAD": "4de732dd645b36671becff992cdef1d0163fd1e4",
+        "sourceInputs": 508,
+        "binaries": {
+          "__preview.dylib": "393c69493097aa7fadd4c6233fcc78a9b78d5b15d5bd778b978f42da0192ad54",
+          "NastartTV": "8e9d7cd477a58a4de02d99f093cb93d12683b7e3d8cabeff480415da6d0c1c90",
+          "NastartTV.debug.dylib": "94aafb2f33be5d06b187c992a58b9aaad5bbeb42e1c9260550bc89d25fecf67d",
+          "Frameworks/Libswresample.framework/Libswresample": "0248cd11622bf34e8e12ea2384191f3f5a7fcca21b5afd2acf76a640cfd9f7f0",
+          "Frameworks/Libavfilter.framework/Libavfilter": "c878237c59edbfc0a1b18cf7ba32bc94048f6ce73be835ff8e9fbbe1238903b5",
+          "Frameworks/KSPlayer.framework/KSPlayer": "e0a3dceb77d2b00085b1a85f5042efa276c6590436a385c62df58d94a2b41626",
+          "Frameworks/Libavformat.framework/Libavformat": "a4387a55f532ab71c9c57a0b4d4919a9342aa1888b91d64a940d80b45b252776",
+          "Frameworks/libshaderc_combined.framework/libshaderc_combined": "b9b4856f545f3f06617e1c7ad120e48134ba7a09317bdb20b3431d2d982a09f0",
+          "Frameworks/Libavutil.framework/Libavutil": "9f47f291d006f259a86a9d4f578d6a5e497d7b58f5399e95976e5baeafaecd05",
+          "Frameworks/libharfbuzz.framework/libharfbuzz": "2fa8e17f7fb4248cb77793638b7df8da60d7f7130e840914cfbf2770284bd88c",
+          "Frameworks/libdav1d.framework/libdav1d": "65951f5b38b4aab6a506efa43766a30e47f9f42478d361133ea8d1249e4e7233",
+          "Frameworks/libfontconfig.framework/libfontconfig": "deea0a600d2a1d7b214ac2fcef9c8929cbf5143159642975e6ff385911960dfa",
+          "Frameworks/libfreetype.framework/libfreetype": "3c44f4cef7c08af3ff37965c9b4375c8a29c2352dff59f64c6d5bae737954805",
+          "Frameworks/libfribidi.framework/libfribidi": "945fcbbb7d148dd863e459e1281ac7579492e0df528c138e74b570f1fab03a2a",
+          "Frameworks/libsmbclient.framework/libsmbclient": "46bcc09abf3f34bf0322c83519ffacadb5b4f23a74d1b1a8edbb35deeb1d23d7",
+          "Frameworks/hogweed.framework/hogweed": "1911ef0eea6aff11b4bf1f2a51ea2075873a89ce7fc5a96393f1f76ab6713bb0",
+          "Frameworks/Libswscale.framework/Libswscale": "74f5a8701f603af74d2ec6d13ac2e90a9e1fed8d399d1c18311803aac9845464",
+          "Frameworks/Libavdevice.framework/Libavdevice": "0d51820e370cb80eceda22ca99a9ebebf5ac5d044f7d6eb72f74dc94ae26af60",
+          "Frameworks/gnutls.framework/gnutls": "1de6a7b54cd55edb99e26a773c18ea4fe2734ebe984107591c00892dacb8560f",
+          "Frameworks/libass.framework/libass": "d7346f4eea3e9ee26c52890a5bfd52bd24f8f1ef91c586af89dd2f879555a0d3",
+          "Frameworks/Libavcodec.framework/Libavcodec": "302ee649f33f0715470c59e79cd9eb15535b2780e4801aacea1e54675669991d",
+          "Frameworks/lcms2.framework/lcms2": "84fb6f08e190a458685239a2f43de725d56043db5c6a80a68663787b5e266da9",
+          "Frameworks/nettle.framework/nettle": "270add856b37235b732099217ca8e2c3286d1de22dae84bceb789514a6c9bfcf",
+          "Frameworks/gmp.framework/gmp": "60468a6d439b36bd8339de2d0213cf6b36f5abef503da282cc377007b61d97b4",
+          "Frameworks/libplacebo.framework/libplacebo": "861e1931951ac4f2b4372c09f7bb1aebc46bf247f91b6e4ad4f7e1b80720c646",
+          "Frameworks/libzvbi.framework/libzvbi": "3c7a05db9b5a3b0730e21c2292e69e041133e92d8713f951824ad65ad0b9b5aa",
+          "Frameworks/libsrt.framework/libsrt": "211c387e47e7c4ec31b7f671b1df9b6eade88ab37cfa82fe25960edd5592706f"
+        },
+        "signedMachOCount": 27,
+        "embeddedDependenciesChecked": true,
+        "profileContainsTarget": true,
+        "profileExpirationUTC": "2026-10-31 05:46:14",
+        "applicationIdentifierAndKeychainGroupsPreserved": true,
+        "installationExit": 0,
+        "installedAt": "2026-10-25T02:57:47.807495+08:00"
+      },
+      "tests": {
+        "logicExecuted": 32,
+        "UIExecuted": 1,
+        "failures": 0
+      },
+      "regression": {
+        "startedAt": "2026-10-25T03:02:16.012628+08:00",
+        "environment": {},
+        "arguments": [],
+        "windows": [
+          {
+            "index": 1,
+            "playCommands": 1,
+            "normalReturn": false,
+            "menuCommands": 1,
+            "captures": [
+              {
+                "targetSeconds": 3,
+                "requestedAtSeconds": 3.0022282089999996,
+                "returnedAtSeconds": 11.25149775
+              },
+              {
+                "targetSeconds": 10,
+                "requestedAtSeconds": 11.647396167,
+                "returnedAtSeconds": 15.838522208999999
+              },
+              {
+                "targetSeconds": 30,
+                "requestedAtSeconds": 30.002191,
+                "returnedAtSeconds": 31.930192875
+              },
+              {
+                "targetSeconds": 60,
+                "requestedAtSeconds": 60.002160042,
+                "returnedAtSeconds": 62.656173792000004
+              }
+            ],
+            "settingsExercise": false,
+            "playAt": "2026-10-25T03:02:17.317920+08:00",
+            "exitRequestedAt": "2026-10-25T03:03:20.254361+08:00",
+            "exitCheckSeconds": 1.2676602080000094,
+            "sameAppProcessPresent": true,
+            "intentionalCleanupKill": true
+          }
+        ],
+        "audio": "not listened",
+        "completeSubtitles": "not verified",
+        "HDR": "not measured",
+        "frameTiming": "not captured",
+        "failure": "AssertionError",
+        "WDASettingsRestored": true,
+        "finishedAt": "2026-10-25T03:03:24.039941+08:00",
+        "actualPostExitPlayerNativeImageViewed": true
+      },
+      "runner": {
+        "startedAt": "2026-10-25T02:59:15.703430+08:00",
+        "limitSeconds": 900,
+        "runnerStopped": true,
+        "finishedAt": "2026-10-25T03:03:24.946621+08:00"
+      },
+      "accepted": false
+    },
+    {
+      "label": "attempt2",
+      "device": {
+        "model": "AppleTV14,1",
+        "system": "18.2",
+        "UDIDMatched": true,
+        "pairing": "paired",
+        "transport": "localNetwork"
+      },
+      "package": {
+        "at": "2026-10-25T03:08:27.987316+08:00",
+        "configuration": "normal Debug",
+        "HEAD": "4de732dd645b36671becff992cdef1d0163fd1e4",
+        "sourceInputs": 508,
+        "binaries": {
+          "__preview.dylib": "0a14822bb696d48b3cfd45caaeb12b1b4fe8e1af0c539fd1e961559f1d588849",
+          "NastartTV": "78463f505d5b4953dafab842da9f207f3904693d38d58048355b2150b8efb9e4",
+          "NastartTV.debug.dylib": "ed40806199c04b7cf9c0c457e31c27015490d3edc5f10e8bbabebea52d5b2ca7",
+          "Frameworks/Libswresample.framework/Libswresample": "0248cd11622bf34e8e12ea2384191f3f5a7fcca21b5afd2acf76a640cfd9f7f0",
+          "Frameworks/Libavfilter.framework/Libavfilter": "c878237c59edbfc0a1b18cf7ba32bc94048f6ce73be835ff8e9fbbe1238903b5",
+          "Frameworks/KSPlayer.framework/KSPlayer": "c6a5127951eaa0df2382f8d506ba191dd8eb34c2c61bc7a83eff3c4be75ed351",
+          "Frameworks/Libavformat.framework/Libavformat": "a4387a55f532ab71c9c57a0b4d4919a9342aa1888b91d64a940d80b45b252776",
+          "Frameworks/libshaderc_combined.framework/libshaderc_combined": "b9b4856f545f3f06617e1c7ad120e48134ba7a09317bdb20b3431d2d982a09f0",
+          "Frameworks/Libavutil.framework/Libavutil": "9f47f291d006f259a86a9d4f578d6a5e497d7b58f5399e95976e5baeafaecd05",
+          "Frameworks/libharfbuzz.framework/libharfbuzz": "2fa8e17f7fb4248cb77793638b7df8da60d7f7130e840914cfbf2770284bd88c",
+          "Frameworks/libdav1d.framework/libdav1d": "65951f5b38b4aab6a506efa43766a30e47f9f42478d361133ea8d1249e4e7233",
+          "Frameworks/libfontconfig.framework/libfontconfig": "deea0a600d2a1d7b214ac2fcef9c8929cbf5143159642975e6ff385911960dfa",
+          "Frameworks/libfreetype.framework/libfreetype": "3c44f4cef7c08af3ff37965c9b4375c8a29c2352dff59f64c6d5bae737954805",
+          "Frameworks/libfribidi.framework/libfribidi": "945fcbbb7d148dd863e459e1281ac7579492e0df528c138e74b570f1fab03a2a",
+          "Frameworks/libsmbclient.framework/libsmbclient": "46bcc09abf3f34bf0322c83519ffacadb5b4f23a74d1b1a8edbb35deeb1d23d7",
+          "Frameworks/hogweed.framework/hogweed": "1911ef0eea6aff11b4bf1f2a51ea2075873a89ce7fc5a96393f1f76ab6713bb0",
+          "Frameworks/Libswscale.framework/Libswscale": "74f5a8701f603af74d2ec6d13ac2e90a9e1fed8d399d1c18311803aac9845464",
+          "Frameworks/Libavdevice.framework/Libavdevice": "0d51820e370cb80eceda22ca99a9ebebf5ac5d044f7d6eb72f74dc94ae26af60",
+          "Frameworks/gnutls.framework/gnutls": "1de6a7b54cd55edb99e26a773c18ea4fe2734ebe984107591c00892dacb8560f",
+          "Frameworks/libass.framework/libass": "d7346f4eea3e9ee26c52890a5bfd52bd24f8f1ef91c586af89dd2f879555a0d3",
+          "Frameworks/Libavcodec.framework/Libavcodec": "302ee649f33f0715470c59e79cd9eb15535b2780e4801aacea1e54675669991d",
+          "Frameworks/lcms2.framework/lcms2": "84fb6f08e190a458685239a2f43de725d56043db5c6a80a68663787b5e266da9",
+          "Frameworks/nettle.framework/nettle": "270add856b37235b732099217ca8e2c3286d1de22dae84bceb789514a6c9bfcf",
+          "Frameworks/gmp.framework/gmp": "60468a6d439b36bd8339de2d0213cf6b36f5abef503da282cc377007b61d97b4",
+          "Frameworks/libplacebo.framework/libplacebo": "861e1931951ac4f2b4372c09f7bb1aebc46bf247f91b6e4ad4f7e1b80720c646",
+          "Frameworks/libzvbi.framework/libzvbi": "3c7a05db9b5a3b0730e21c2292e69e041133e92d8713f951824ad65ad0b9b5aa",
+          "Frameworks/libsrt.framework/libsrt": "211c387e47e7c4ec31b7f671b1df9b6eade88ab37cfa82fe25960edd5592706f"
+        },
+        "signedMachOCount": 27,
+        "embeddedDependenciesChecked": true,
+        "profileContainsTarget": true,
+        "profileExpirationUTC": "2026-10-31 05:46:14",
+        "applicationIdentifierAndKeychainGroupsPreserved": true,
+        "installationExit": 0,
+        "installedAt": "2026-10-25T03:08:30.595494+08:00"
+      },
+      "tests": {
+        "logicExecuted": 32,
+        "UIExecuted": 1,
+        "failures": 0
+      },
+      "regression": {
+        "startedAt": "2026-10-25T03:11:24.236117+08:00",
+        "environment": {},
+        "arguments": [],
+        "windows": [
+          {
+            "index": 1,
+            "playCommands": 1,
+            "normalReturn": false,
+            "menuCommands": 1,
+            "captures": [
+              {
+                "targetSeconds": 3,
+                "requestedAtSeconds": 3.0021450420000004,
+                "returnedAtSeconds": 7.530959708000001
+              },
+              {
+                "targetSeconds": 10,
+                "requestedAtSeconds": 10.002249542,
+                "returnedAtSeconds": 13.176464375
+              },
+              {
+                "targetSeconds": 30,
+                "requestedAtSeconds": 30.002231917,
+                "returnedAtSeconds": 31.845273291999998
+              },
+              {
+                "targetSeconds": 60,
+                "requestedAtSeconds": 60.002102375,
+                "returnedAtSeconds": 62.187235625
+              }
+            ],
+            "settingsExercise": false,
+            "playAt": "2026-10-25T03:11:25.437639+08:00",
+            "exitRequestedAt": "2026-10-25T03:12:28.011185+08:00",
+            "exitCheckSeconds": 3.1805597499999934,
+            "sameAppProcessPresent": true,
+            "intentionalCleanupKill": true
+          }
+        ],
+        "audio": "not listened",
+        "completeSubtitles": "not verified",
+        "HDR": "not measured",
+        "frameTiming": "not captured",
+        "failure": "AssertionError",
+        "WDASettingsRestored": true,
+        "finishedAt": "2026-10-25T03:12:35.011168+08:00",
+        "actualPostExitPlayerNativeImageViewed": true
+      },
+      "runner": {
+        "startedAt": "2026-10-25T03:09:44.608170+08:00",
+        "limitSeconds": 900,
+        "runnerStopped": true,
+        "finishedAt": "2026-10-25T03:12:35.896005+08:00"
+      },
+      "accepted": false
+    }
+  ],
+  "restored": {
+    "package": {
+      "at": "2026-10-25T03:16:14.143048+08:00",
+      "configuration": "normal Debug",
+      "HEAD": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputs": 508,
+      "binaries": {
+        "__preview.dylib": "c49cf02bd0d80b7cf0819fa315ebe0e1cef7bbb6c95e17efb92961b1bd6657ea",
+        "NastartTV": "94c2002f19ecb9f4bd3392a64e221ce24182712d48ad91bed7720e4b2f61f168",
+        "NastartTV.debug.dylib": "90ed79e31c01568032107063628fd64efa7ad22932c0798ca3389e1717366815",
+        "Frameworks/Libswresample.framework/Libswresample": "0248cd11622bf34e8e12ea2384191f3f5a7fcca21b5afd2acf76a640cfd9f7f0",
+        "Frameworks/Libavfilter.framework/Libavfilter": "c878237c59edbfc0a1b18cf7ba32bc94048f6ce73be835ff8e9fbbe1238903b5",
+        "Frameworks/KSPlayer.framework/KSPlayer": "7a64c53cf2fb8d767b12784ab1cb0a973955294aa740afadfe2fcf8428507d0b",
+        "Frameworks/Libavformat.framework/Libavformat": "a4387a55f532ab71c9c57a0b4d4919a9342aa1888b91d64a940d80b45b252776",
+        "Frameworks/libshaderc_combined.framework/libshaderc_combined": "b9b4856f545f3f06617e1c7ad120e48134ba7a09317bdb20b3431d2d982a09f0",
+        "Frameworks/Libavutil.framework/Libavutil": "9f47f291d006f259a86a9d4f578d6a5e497d7b58f5399e95976e5baeafaecd05",
+        "Frameworks/libharfbuzz.framework/libharfbuzz": "2fa8e17f7fb4248cb77793638b7df8da60d7f7130e840914cfbf2770284bd88c",
+        "Frameworks/libdav1d.framework/libdav1d": "65951f5b38b4aab6a506efa43766a30e47f9f42478d361133ea8d1249e4e7233",
+        "Frameworks/libfontconfig.framework/libfontconfig": "deea0a600d2a1d7b214ac2fcef9c8929cbf5143159642975e6ff385911960dfa",
+        "Frameworks/libfreetype.framework/libfreetype": "3c44f4cef7c08af3ff37965c9b4375c8a29c2352dff59f64c6d5bae737954805",
+        "Frameworks/libfribidi.framework/libfribidi": "945fcbbb7d148dd863e459e1281ac7579492e0df528c138e74b570f1fab03a2a",
+        "Frameworks/libsmbclient.framework/libsmbclient": "46bcc09abf3f34bf0322c83519ffacadb5b4f23a74d1b1a8edbb35deeb1d23d7",
+        "Frameworks/hogweed.framework/hogweed": "1911ef0eea6aff11b4bf1f2a51ea2075873a89ce7fc5a96393f1f76ab6713bb0",
+        "Frameworks/Libswscale.framework/Libswscale": "74f5a8701f603af74d2ec6d13ac2e90a9e1fed8d399d1c18311803aac9845464",
+        "Frameworks/Libavdevice.framework/Libavdevice": "0d51820e370cb80eceda22ca99a9ebebf5ac5d044f7d6eb72f74dc94ae26af60",
+        "Frameworks/gnutls.framework/gnutls": "1de6a7b54cd55edb99e26a773c18ea4fe2734ebe984107591c00892dacb8560f",
+        "Frameworks/libass.framework/libass": "d7346f4eea3e9ee26c52890a5bfd52bd24f8f1ef91c586af89dd2f879555a0d3",
+        "Frameworks/Libavcodec.framework/Libavcodec": "302ee649f33f0715470c59e79cd9eb15535b2780e4801aacea1e54675669991d",
+        "Frameworks/lcms2.framework/lcms2": "84fb6f08e190a458685239a2f43de725d56043db5c6a80a68663787b5e266da9",
+        "Frameworks/nettle.framework/nettle": "270add856b37235b732099217ca8e2c3286d1de22dae84bceb789514a6c9bfcf",
+        "Frameworks/gmp.framework/gmp": "60468a6d439b36bd8339de2d0213cf6b36f5abef503da282cc377007b61d97b4",
+        "Frameworks/libplacebo.framework/libplacebo": "861e1931951ac4f2b4372c09f7bb1aebc46bf247f91b6e4ad4f7e1b80720c646",
+        "Frameworks/libzvbi.framework/libzvbi": "3c7a05db9b5a3b0730e21c2292e69e041133e92d8713f951824ad65ad0b9b5aa",
+        "Frameworks/libsrt.framework/libsrt": "211c387e47e7c4ec31b7f671b1df9b6eade88ab37cfa82fe25960edd5592706f"
+      },
+      "signedMachOCount": 27,
+      "embeddedDependenciesChecked": true,
+      "profileContainsTarget": true,
+      "profileExpirationUTC": "2026-10-31 05:46:14",
+      "applicationIdentifierAndKeychainGroupsPreserved": true,
+      "installationExit": 0,
+      "installedAt": "2026-10-25T03:16:19.360226+08:00"
+    },
+    "normal": {
+      "startedAt": "2026-10-25T03:17:20.420014+08:00",
+      "environment": {},
+      "arguments": [],
+      "mediaCommands": 0,
+      "PID": 2498,
+      "nativeImagesCaptured": true,
+      "finishedAt": "2026-10-25T03:17:35.295439+08:00"
+    },
+    "normalNativeHomeViewed": true,
+    "preferences": {
+      "at": "2026-10-25T03:21:29.335782+08:00",
+      "beforeKeys": 9,
+      "afterKeys": 9,
+      "sameKeys": true,
+      "changedOriginalKeyCount": 1,
+      "onlyNaturalResumeChanges": true,
+      "theme": "glassDeck",
+      "mode": "system",
+      "posterDensity": 5,
+      "noUninstall": true
+    },
+    "mobileSourceInputsStillMatchPreviousInstalledBuild": true
+  },
+  "nonMediaMenuControl": {
+    "startedAt": "2026-10-25T03:19:04.968022+08:00",
+    "mediaCommands": 0,
+    "attempts": [
+      {
+        "durationSeconds": null,
+        "networkBackAbsent": true,
+        "devicesGridVisible": true
+      }
+    ],
+    "normalHomeRestored": true,
+    "settingsRestored": true,
+    "finishedAt": "2026-10-25T03:19:30.261811+08:00"
+  },
+  "menuControlNativeImagesViewed": true,
+  "controlRunner": {
+    "startedAt": "2026-10-25T03:17:58.410322+08:00",
+    "limitSeconds": 900,
+    "runnerStopped": true,
+    "finishedAt": "2026-10-25T03:19:31.172577+08:00"
+  },
+  "claims": {
+    "ordinaryPlayerReturnFixed": false,
+    "causeProven": false,
+    "subtitleFixDelivered": false,
+    "fullPlaybackUnificationDelivered": false,
+    "newWholeMatrixPasses": 0,
+    "openRequirements": 28,
+    "matrixCells": 114,
+    "cellularTests": 0,
+    "NASConfigurationChanges": 0,
+    "iPhone13iPadIPhone18Actions": 0
+  },
+  "notes": [
+    "Two candidate packages each exercised one Menu after 60-second playback; settings/second-window branches were not reached",
+    "Old baseline failure used three Menu presses; new windows are not exact paired old-versus-new sequences",
+    "Same default Menu works on network page, so command is not globally unavailable",
+    "First callback/dismiss hypothesis not established; two unsuccessful revisions rolled back; no third product tweak or media replay"
+  ],
+  "candidate2MobileCompileCompatibility": {
+    "executed": 157,
+    "skipped": 1,
+    "failures": 0,
+    "simulatorOnly": true,
+    "productAcceptance": false
+  }
+}

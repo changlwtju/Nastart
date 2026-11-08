@@ -1,0 +1,317 @@
+{
+  "recordedAt": "2026-10-06 02:58 +08:00",
+  "scope": "iPhone13 latest-package baseline and competitor native capture; root intermittent stall unresolved",
+  "evidenceKey": "2026-10-06-supply-hls-cue-021937",
+  "rawEvidencePolicy": "Local private evidence only; no account preferences, credentials, IP addresses or raw media paths in repository",
+  "device": {
+    "name": "iPhone",
+    "model": "iPhone14,5 (iPhone13)",
+    "system": "16.3.1 (20D67)",
+    "udid": "REDACTED-DEVICE-01",
+    "connection": "USB; freshly verified this round"
+  },
+  "package": {
+    "head": "9a9941cd4ec82625f680b5193b3a0f66797eb851",
+    "sourceDiffSHA256": "2a297fc7dd9499ebfc86d9fc994dd0ab00bce9d78625eb4056c06529297d5bea",
+    "configuration": "normal Debug -Onone; no test environment variables",
+    "binaryBuildTime": "2026-10-06T01:58:06.195902+08:00",
+    "binaries": {
+      "Nastart": "d62b5d0c076db3e6b8ea14d72baa67194ee8ac01b232244598febba6f1055338",
+      "Nastart.debug.dylib": "53a2412914da0f9cc4ef5d89867e6aff6de522b4beb61204ed8f9ae1de17ea43",
+      "Frameworks/KSPlayer.framework/KSPlayer": "c2f1a42bcad0e5c30d0bcebd24576f92d8475c201589ed1f9655cc637d6e7910"
+    },
+    "signatureVerified": true,
+    "profileExpirationUTC": "2026-10-10T22:03:15"
+  },
+  "latestPackageGate": {
+    "time": "2026-10-06T02:19:55.742023+08:00",
+    "packageManifest": "home-indicator-package.json in local evidence; package path recorded there",
+    "installation": "InstallComplete",
+    "dataPreserving": true,
+    "unchangedPreferenceCount": 25,
+    "env": {},
+    "args": [],
+    "pid": 17700,
+    "actualLaunchImageVerified": true,
+    "iOSSourceChangedThisRound": false,
+    "newAppBuildRequired": false
+  },
+  "nastartMI2": {
+    "method": "original directPlay; private HTTP8096 verified",
+    "fileBytes": 54918998512,
+    "audioIndex": 1,
+    "subtitleIndex": 7,
+    "trace": "3DD7FE3A",
+    "requestedSeconds": 180,
+    "validTelemetrySamples": 158,
+    "nonNumericSamplesRetained": 2,
+    "coverageSeconds": 167.72756814956665,
+    "first": {
+      "elapsed": 11.240128993988037,
+      "current": 1.204,
+      "ahead": 4.378083213169538,
+      "drops": 1,
+      "stalls": 0,
+      "active": "no",
+      "engine": "KSPlayer",
+      "method": "directPlay"
+    },
+    "last": {
+      "elapsed": 178.9676971435547,
+      "current": 168.926,
+      "ahead": 10.112833056729897,
+      "drops": 1,
+      "stalls": 0,
+      "active": "no",
+      "engine": "KSPlayer",
+      "method": "directPlay"
+    },
+    "maxStallCount": 0,
+    "activeStallSamples": 0,
+    "maxDroppedFrames": 1,
+    "minAheadAfter10Seconds": 2.5429165963821827,
+    "complete32MiBWindows": 41,
+    "firstFourWindowResponseMs": [
+      2500,
+      3153,
+      4043,
+      2857
+    ],
+    "firstFourRequestMs": [
+      43,
+      40,
+      43,
+      53
+    ],
+    "firstFourProxyBackpressureMs": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "firstFourProxySuspendCounts": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "initialConsumeMs": 418,
+    "initialBufferedCount": 0,
+    "initialBufferClassification": "startup; not an added playback stall",
+    "actualImagesVerified": [
+      "t3",
+      "t10",
+      "t30",
+      "t180",
+      "exit"
+    ],
+    "firstFramePrecision": "scheduled t3/t10 captures late; no precise first-frame result",
+    "hls": "Not naturally triggered; exact prior HLS subtitle cue regression remains INSUFFICIENT",
+    "continuousDisplayTiming": "INSUFFICIENT; sparse native screenshots and telemetry do not prove whole-display smoothness",
+    "verdict": "No added stalls in observed coverage; historical FAILs remain unresolved"
+  },
+  "supplyComparison": {
+    "historicalPackage": "3663/f76a; prior handoff",
+    "historicalFirstFourComplete32MiBResponseMs": [
+      5037,
+      6121,
+      5034,
+      6381
+    ],
+    "currentFirstFourComplete32MiBResponseMs": [
+      2500,
+      3153,
+      4043,
+      2857
+    ],
+    "historicalCapacityPredictionBps": 42061555,
+    "capacityEvidenceClassification": "Corresponding complete 32MiB window, not merely a cancelled partial probe",
+    "cacheAndOrder": "unknown/uncontrolled; no causal A/B claim",
+    "conclusion": "Window delivery varied; no evidence justifying a partial-probe-only patch, global buffer change or NAS/Wi-Fi/CLI attribution"
+  },
+  "capture": {
+    "scheme": "Existing WDA native action plus bounded USB screenshots; no Runner restart, new session or XCTest prompt",
+    "firstRecognizableMovieBoundary": "action request start -> movie mountain; lower is last black-frame request start, upper first movie-frame response end",
+    "blackIntroAndOverlay": "Natural black frames, Dolby badge, loading poster and spinner excluded",
+    "frameTiming": "Sparse request/return bounds only; not first decoded frame, actual FPS, full frame continuity or HDR proof"
+  },
+  "competitors": {
+    "LennaJellyfin": {
+      "version": "1.0.17 (610)",
+      "sourceIdentity": "MI2 2000, 2h3m; exact file hash unverified",
+      "orientation": "default portrait",
+      "cache": "unknown",
+      "firstRecognizableIntervalSeconds": [
+        5.472,
+        7.591
+      ],
+      "nativeFrames": 13,
+      "mediaEndpoint": "process Lenna-iOS PID17892 -> public IP8097; path outside home/NAT reflection unknown",
+      "pause": {
+        "intervalSeconds": [
+          0,
+          1.541
+        ],
+        "clock": "05:16 frozen across two images; play icon"
+      },
+      "resume": {
+        "intervalSeconds": [
+          0,
+          1.56
+        ],
+        "clock": "05:17 -> 05:20 and actual different frames"
+      },
+      "uiExit": {
+        "intervalSeconds": [
+          0,
+          2.557
+        ],
+        "result": "MI2 detail visually verified"
+      },
+      "audio": "U; no sound evidence",
+      "formalPair": false
+    },
+    "DSOneJellyfin": {
+      "version": "2.4.5 (4)",
+      "sourceIdentity": "MI2 2000, 2h3m, HDR/51.2GB labels; exact file hash unverified",
+      "orientation": "default landscape",
+      "cache": "unknown",
+      "defaultButton": "resume 06:18, not used; observed restart arrow used",
+      "headVerified": "actual 00:03 -> 00:05",
+      "firstRecognizableIntervalSeconds": [
+        9.12,
+        11.255
+      ],
+      "nativeFrames": 13,
+      "mediaEndpoint": "process DSCloudStorage PID15228 -> public IP8097; path outside home/NAT reflection unknown",
+      "actualSubtitle": "complete natural bilingual cue visible at 04:15",
+      "uiExit": "portrait MI2 detail visually verified",
+      "audio": "U; no sound evidence",
+      "formalPair": false
+    },
+    "DSOneDSM": {
+      "version": "2.4.5 (4)",
+      "sourceIdentity": "MI2 2000 Remux2160p MKV;51.2GB/2:03:35 labels; file hash unverified",
+      "navigation": "existing DSM home -> video share -> media/movie -> native TextField Mission search -> actual file; paths/screens remain private",
+      "orientation": "default landscape",
+      "headVerified": "00:02 -> 00:04 -> mountain/00:05",
+      "firstRecognizableIntervalSeconds": [
+        6.988,
+        9.092
+      ],
+      "nativeFrames": 13,
+      "mediaEndpoint": "process DSCloudStorage PID15228 -> public IP5001; path outside home/NAT reflection unknown",
+      "pause": {
+        "intervalSeconds": [
+          0,
+          1.928
+        ],
+        "clock": "01:14 frozen across two images; play icon"
+      },
+      "resume": {
+        "intervalSeconds": [
+          0.675,
+          5.227
+        ],
+        "clock": "first screenshot still01:14, second01:17; later01:35/new bilingual cue"
+      },
+      "uiExit": {
+        "intervalSeconds": [
+          0.634,
+          4.744
+        ],
+        "result": "first screenshot still movie, second portrait original file list"
+      },
+      "subtitle": {
+        "menuCapabilities": [
+          "embedded English PGS",
+          "two Chinese PGS entries",
+          "Chinese ASS",
+          "external subtitles",
+          "size",
+          "vertical offset",
+          "delay",
+          "text/border colour",
+          "border width"
+        ],
+        "knownPausedClock": "01:14",
+        "offAction": "native Close subtitles click verified, menu dismissed",
+        "offPresentAtCaptureSeconds": [
+          [
+            0.515,
+            1.68
+          ],
+          [
+            3.825,
+            4.989
+          ]
+        ],
+        "offAbsentAtLaterCaptureSeconds": 28.51,
+        "assRestoration": "first image has complete same bilingual cue, second image lacks it while clock remains01:14; after resume actual new bilingual cue at01:35 visible",
+        "responseVerdict": "INSUFFICIENT for valid switch/off latency: paused cue disappearance confounds observed interval; preserve transient/unstable display, not fixed response time or PASS",
+        "pgsSwitch": "U; not attempted this round",
+        "preferenceAtExit": "Chinese ASS reselected, natural resumed cue verified; other styles unchanged"
+      },
+      "audio": "U; no sound evidence",
+      "formalPair": false
+    }
+  },
+  "failuresRetained": [
+    {
+      "kind": "TOOL",
+      "case": "Lenna first pcap filter name Lenna matched zero; fresh probe found Lenna-iOS; not zero network traffic"
+    },
+    {
+      "kind": "INVALID_ACTION",
+      "case": "Lenna legacy tap response succeeded but clock advanced; not pause function FAIL"
+    },
+    {
+      "kind": "INVALID_ACTION",
+      "case": "First Lenna resume touch exposed hidden controls only; later visible-control action verified"
+    },
+    {
+      "kind": "TOOL",
+      "case": "DS One SearchField/Keyboard-node guards failed before text entry; actual native TextField/third-party keyboard verified and correct result obtained"
+    },
+    {
+      "kind": "INSUFFICIENT",
+      "case": "DS One DSM paused ASS cue visible then disappears; no stable paused switch response result"
+    }
+  ],
+  "validation": {
+    "preflight": "15 PASS this round",
+    "pythonSyntax": "PASS",
+    "wrongForegroundGuard": "PASS: rejected before touch",
+    "outOfBoundsGuard": "PASS: rejected before touch",
+    "actualW3CFunction": "Lenna pause/resume/UI exit; DS One DSM pause/resume/UI exit actual frame/clock verification",
+    "core105Tests": "Historical result only; not rerun this round",
+    "diffWhitespace": "PASS",
+    "redaction": "PASS targeted new summary/handoff scan",
+    "localLinks": "PASS new handoff and continuation indexes"
+  },
+  "formalValidPairs": 0,
+  "ranking": "INVALID conditions: different actual endpoints, Debug vs App Store, orientation/cache/file/track equivalence incomplete; >=5 matched pairs still required",
+  "finalState": {
+    "time": "2026-10-06T02:55:10.730781+08:00",
+    "phoneLocked": false,
+    "foreground": "latest normal Nastart",
+    "pid": 17700,
+    "env": {},
+    "args": [],
+    "sourceAndBinaryHashesUnchanged": true,
+    "allPlayersExited": true,
+    "wdaReady": true,
+    "existingHostPID": 70500,
+    "waitForIdleTimeout": 10,
+    "defaultActiveApplication": "com.changliwen.nastart",
+    "macBoundedCaffeinatePID": 52029,
+    "no24HourAuthorizationGuarantee": true
+  },
+  "remaining": [
+    "intermittent original MI2 stall root cause / window delivery / reserve depletion isolation",
+    "natural HLS preparation/alignment variability and latest-package exact prior subtitle cue",
+    "same-condition >=5 Lenna/DS One Jellyfin/DSM pairs",
+    "actual audio, stable subtitle track response, complete display and scroll timing",
+    "all prior PX/UX, representative formats, iPad/iPhone18 latest-package gates"
+  ]
+}

@@ -1,6 +1,74 @@
 import SwiftUI
 import UIKit
 
+/// A saved connection being restored is not a first-time NAS setup.
+struct NASConnectionRecoveryView: View {
+    let state: NASConnectionRecoveryState
+    var compact = false
+    var rejection: DSMClientError? = nil
+    var cachedAt: Date? = nil
+    let retry: () -> Void
+    let settings: () -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            if state == .restoring {
+                ProgressView("connect.restore.title")
+                    .tint(AppTheme.accent)
+            } else {
+                Label(rejection == nil ? "connect.restore.failed" : "connect.restore.rejected",
+                      systemImage: rejection == nil ? "wifi.exclamationmark" : "person.crop.circle.badge.exclamationmark")
+                    .font(.headline)
+            }
+            Group {
+                if let message = rejection?.errorDescription {
+                    Text(message)
+                } else {
+                    Text(LocalizedStringKey(state == .restoring ? "connect.restore.detail" : "connect.restore.failed_detail"))
+                }
+            }
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+            if let cachedAt {
+                Text(LaunchpadCachedTime.text(cachedAt))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .accessibilityIdentifier("nas.connection.cachedAt")
+            }
+            if state == .failed {
+                HStack(spacing: 24) {
+                    if rejection?.allowsRetryWithSameCredential ?? true {
+                        Button("action.retry", action: retry)
+                    }
+                    Button("connect.restore.settings", action: settings)
+                }
+            }
+        }
+        .padding(compact ? 16 : 24)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background { NastartThemeBackground() }
+        .accessibilityIdentifier("nas.connection.recovery")
+    }
+}
+
+enum LaunchpadCachedTime {
+    static func text(_ date: Date) -> String {
+        String(format: NSLocalizedString("data.refresh.cached_at", comment: ""),
+               date.formatted(date: .abbreviated, time: .shortened))
+    }
+}
+
+enum DSMCertificateTrustPolicy {
+    /// A private HTTPS address is trusted automatically, and that trust is saved with the
+    /// connection. It is not the user's choice, so it must not carry over to a public address
+    /// typed into this form. A public address keeps its saved value, with a visible warning.
+    static func initialToggle(savedTrust: Bool, savedAddress: String) -> Bool {
+        guard savedTrust, let host = URL(string: savedAddress)?.host else { return false }
+        return !NetworkHostClassifier.isPrivate(host)
+    }
+}
+
 struct NASConnectionWelcomeView: View {
     let addNASAction: () -> Void
 
@@ -37,7 +105,7 @@ struct NASConnectionWelcomeView: View {
             .padding(.horizontal, 24)
             .padding(.top, 34)
         }
-        .background(AppTheme.groupedBackground)
+        .background { NastartThemeBackground() }
     }
 }
 
@@ -49,6 +117,11 @@ struct ManualServiceEditorView: View {
     @State private var category: ServiceCategory = .tools
     @State private var showsValidationError = false
 
+    init(initialName: String = "", initialCategory: ServiceCategory = .tools) {
+        _name = State(initialValue: initialName)
+        _category = State(initialValue: initialCategory)
+    }
+
     var body: some View {
         Form {
             Section {
@@ -56,7 +129,7 @@ struct ManualServiceEditorView: View {
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
-            }
+            }.nastartListSection()
 
             Section {
                 TextField("manual.service.name.placeholder", text: $name)
@@ -74,8 +147,9 @@ struct ManualServiceEditorView: View {
                 }
             } footer: {
                 Text("manual.service.footer")
-            }
+            }.nastartListSection()
         }
+        .nastartReadableWidth().nastartPageTheme()
         .navigationTitle("manual.service.add")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -167,6 +241,7 @@ struct DSMConnectionFlowView: View {
     @AppStorage("connect.remembered.location") private var rememberedLocationRaw = DSMConnectionLocation.remote.rawValue
     @AppStorage("connect.remembered.protocol") private var rememberedProtocolRaw = DSMConnectionProtocol.https.rawValue
     @AppStorage("connect.remembered.self_signed") private var rememberedAllowsSelfSignedCertificates = false
+    @AppStorage("connect.remembered.fixed_address") private var rememberedUsesOnlyConfiguredAddress = false
     @State private var host = ""
     @State private var account = ""
     @State private var password = ""
@@ -177,12 +252,14 @@ struct DSMConnectionFlowView: View {
     @State private var portWasEdited = false
     @State private var basePath = ""
     @State private var allowsSelfSignedCertificates = false
+    @State private var usesOnlyConfiguredAddress = false
     @State private var showsPassword = false
     @State private var isConnecting = false
     @State private var connectionStatusKey = "connect.review.authenticating"
     @State private var errorMessage = ""
     @State private var showError = false
     @State private var connectionTask: Task<Void, Never>?
+    @State private var connectionAttemptID: UUID?
     @State private var didLoadRememberedLogin = false
 
     var body: some View {
@@ -237,11 +314,15 @@ struct DSMConnectionFlowView: View {
                     ),
                     keyboardType: .numberPad
                 )
+                Toggle("connect.address.fixed", isOn: $usesOnlyConfiguredAddress)
             } header: {
                 Text("connect.section.target")
             } footer: {
-                Text("connect.input.address_hint")
-            }
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("connect.input.address_hint")
+                    if usesOnlyConfiguredAddress { Text("connect.address.fixed.hint") }
+                }
+            }.nastartListSection()
 
             Section {
                 formTextField(
@@ -287,7 +368,7 @@ struct DSMConnectionFlowView: View {
                 .textContentType(.oneTimeCode)
             } header: {
                 Text("connect.section.account")
-            }
+            }.nastartListSection()
 
             Section {
                 if automaticallyTrustsLocalHTTPSCertificate {
@@ -306,9 +387,16 @@ struct DSMConnectionFlowView: View {
                     Toggle(isOn: $allowsSelfSignedCertificates) {
                         VStack(alignment: .leading, spacing: 2) {
                             Text("connect.trust_self_signed")
-                            Text("connect.trust_self_signed.inline_hint")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
+                            if allowsSelfSignedCertificates, accessLocation == .remote {
+                                Text("connect.trust_self_signed.public_warning")
+                                    .font(.caption)
+                                    .foregroundStyle(AppTheme.accent)
+                                    .fixedSize(horizontal: false, vertical: true)
+                            } else {
+                                Text("connect.trust_self_signed.inline_hint")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
                         }
                     }
                     .disabled(connectionProtocol == .http)
@@ -329,7 +417,7 @@ struct DSMConnectionFlowView: View {
                 Text("connect.section.security")
             } footer: {
                 Text("connect.remember.hint")
-            }
+            }.nastartListSection()
         }
         .listStyle(.insetGrouped)
         .disabled(isConnecting)
@@ -341,12 +429,14 @@ struct DSMConnectionFlowView: View {
                 .padding(.bottom, 8)
                 .background(.regularMaterial)
         }
+        .nastartReadableWidth().nastartPageTheme()
         .navigationTitle("connect.nav")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 Button("action.cancel") {
                     connectionTask?.cancel()
+                    if let connectionAttemptID { connectionStore.cancelDSMConnectionAttempt(ownedBy: connectionAttemptID) }
                     dismiss()
                 }
             }
@@ -428,6 +518,7 @@ struct DSMConnectionFlowView: View {
                     rememberPassword = false
                     rememberedHost = ""
                     rememberedAccount = ""
+                    rememberedUsesOnlyConfiguredAddress = false
                     KeychainStore.shared.clearNASCredentials()
                 }
             }
@@ -474,11 +565,15 @@ struct DSMConnectionFlowView: View {
         return trimmed.hasPrefix("/") ? trimmed : "/\(trimmed)"
     }
 
+    @MainActor
     private func connectDSM() {
+        let operationID = dataStore.beginDSMConnectionAttempt(using: connectionStore)
+        connectionAttemptID = operationID
         isConnecting = true
         connectionStatusKey = "connect.review.authenticating"
         errorMessage = ""
         connectionTask = Task {
+            var unpublishedSession: DSMSession?
             do {
                 guard !usesLocalOnlyHostInRemoteMode else {
                     throw DSMConnectionInputError.remoteLocalOnlyHost
@@ -500,12 +595,11 @@ struct DSMConnectionFlowView: View {
                     password: password,
                     oneTimeCode: oneTimeCode
                 )
-                let client = loginResult.client
                 let mainSession = loginResult.session
-                await MainActor.run {
-                    connectionStatusKey = "connect.review.connected"
-                }
+                unpublishedSession = mainSession
                 try Task.checkCancellation()
+                guard connectionStore.ownsDSMConnectionAttempt(operationID) else { throw CancellationError() }
+                connectionStatusKey = "connect.review.connected"
                 rememberSuccessfulConnection(
                     baseURL: baseURL,
                     account: account,
@@ -521,90 +615,50 @@ struct DSMConnectionFlowView: View {
                             allowsSelfSignedCertificates: effectiveAllowsSelfSignedCertificates,
                             deviceID: mainSession.deviceID,
                             endpoints: mainSession.endpoints,
-                            lastKnownRoute: mainSession.actualRoute
+                            lastKnownRoute: mainSession.actualRoute,
+                            usesOnlyConfiguredAddress: usesOnlyConfiguredAddress
                         )
                     )
                 } else {
                     KeychainStore.shared.clearNASCredentials()
                 }
                 let shouldRememberPassword = rememberPassword
-                let savedAccount = account
-                let savedPassword = password
-                let savedAllowsSelfSignedCertificates = effectiveAllowsSelfSignedCertificates
                 let savedOneTimeCode = oneTimeCode
-                await MainActor.run {
-                    dataStore.activateDSMSession(session: mainSession, useAgent: false)
-                    connectionStore.connect(device: dataStore.device, session: mainSession)
-                    isConnecting = false
-                    connectionTask = nil
-                    onConnected()
-                    dismiss()
-                }
+                let credential = StoredNASCredential(baseURLString: baseURL.absoluteString,
+                    account: account, password: password, useAgent: false,
+                    allowsSelfSignedCertificates: effectiveAllowsSelfSignedCertificates,
+                    deviceID: mainSession.deviceID, endpoints: mainSession.endpoints,
+                    lastKnownRoute: mainSession.actualRoute,
+                    usesOnlyConfiguredAddress: usesOnlyConfiguredAddress)
+                dataStore.activateDSMSession(session: mainSession, useAgent: false)
+                connectionStore.connect(device: dataStore.device, session: mainSession)
+                unpublishedSession = nil
+                isConnecting = false
+                connectionTask = nil
+                onConnected()
+                dismiss()
 
                 Task {
-                    async let discoveredLANAddress: URL? = NetworkHostClassifier.isPrivate(baseURL.host)
-                        ? nil
-                        : LANDiscoveryService.discoverDSMPlaybackLANEndpoint(
-                            timeout: 3,
-                            requiresSingleHost: true
-                        )
-                    var session = await client.addingFileStationSession(
-                        to: mainSession,
-                        account: savedAccount,
-                        password: savedPassword,
-                        oneTimeCode: savedOneTimeCode
-                    )
-                    if let lanAddress = await discoveredLANAddress {
-                        DiagnosticLogStore.shared.record(
-                            .info,
-                            categoryKey: "diagnostics.category.connection",
-                            messageKey: "diagnostics.route.smart_lan_ready",
-                            details: ["target": DiagnosticLogStore.redactedURL(lanAddress)]
-                        )
-                        session = DSMSession(
-                            baseURL: session.baseURL,
-                            sid: session.sid,
-                            fileStationSID: session.fileStationSID,
-                            account: session.account,
-                            allowsSelfSignedCertificates: session.allowsSelfSignedCertificates,
-                            deviceID: session.deviceID,
-                            endpoints: session.endpoints.addingVerifiedLANAddress(lanAddress),
-                            actualRoute: session.actualRoute
-                        )
-                    }
-                    let snapshot = await client.loadSnapshot(session: session, useAgent: false)
-                    guard await MainActor.run(body: { connectionStore.dsmSession?.sid == mainSession.sid }) else { return }
-                    await MainActor.run {
-                        dataStore.activateDSM(snapshot: snapshot, session: session, useAgent: false)
-                        connectionStore.connect(device: snapshot.device, session: session)
-                    }
-                    if shouldRememberPassword {
-                        try? KeychainStore.shared.saveNASCredential(
-                            StoredNASCredential(
-                                baseURLString: baseURL.absoluteString,
-                                account: savedAccount,
-                                password: savedPassword,
-                                useAgent: false,
-                                allowsSelfSignedCertificates: savedAllowsSelfSignedCertificates,
-                                deviceID: session.deviceID,
-                                endpoints: session.endpoints,
-                                lastKnownRoute: session.actualRoute
-                            )
-                        )
-                    }
+                    try? await dataStore.finishDSMConnection(loginResult, credential: credential,
+                        operationID: operationID, using: connectionStore, useAgent: false,
+                        saveCredential: shouldRememberPassword, oneTimeCode: savedOneTimeCode)
                 }
             } catch is CancellationError {
-                await MainActor.run {
-                    isConnecting = false
-                    connectionTask = nil
+                if let session = unpublishedSession {
+                    await DSMConnectionOperations().logout(session, connectionStore)
                 }
+                guard connectionStore.ownsDSMConnectionAttempt(operationID) else { return }
+                isConnecting = false
+                connectionTask = nil
             } catch {
-                await MainActor.run {
-                    isConnecting = false
-                    connectionTask = nil
-                    errorMessage = connectionErrorMessage(for: error)
-                    showError = true
+                if let session = unpublishedSession {
+                    await DSMConnectionOperations().logout(session, connectionStore)
                 }
+                guard !Task.isCancelled, connectionStore.ownsDSMConnectionAttempt(operationID) else { return }
+                isConnecting = false
+                connectionTask = nil
+                errorMessage = connectionErrorMessage(for: error)
+                showError = true
             }
         }
     }
@@ -624,8 +678,10 @@ struct DSMConnectionFlowView: View {
             connectionProtocol = rememberedProtocol
         }
         let credential = KeychainStore.shared.loadNASCredential()
-        allowsSelfSignedCertificates = credential?.allowsSelfSignedCertificates
-            ?? rememberedAllowsSelfSignedCertificates
+        usesOnlyConfiguredAddress = credential?.usesOnlyConfiguredAddress ?? rememberedUsesOnlyConfiguredAddress
+        allowsSelfSignedCertificates = DSMCertificateTrustPolicy.initialToggle(
+            savedTrust: credential?.allowsSelfSignedCertificates ?? rememberedAllowsSelfSignedCertificates,
+            savedAddress: credential?.baseURLString ?? rememberedHost)
         if accessLocation == .remote {
             connectionProtocol = .https
         }
@@ -670,8 +726,10 @@ struct DSMConnectionFlowView: View {
                 : DSMConnectionLocation.remote.rawValue
             rememberedProtocolRaw = baseURL.scheme?.lowercased() ?? defaultSchemeForCurrentLocation
             rememberedAllowsSelfSignedCertificates = allowsSelfSignedCertificates
+            rememberedUsesOnlyConfiguredAddress = usesOnlyConfiguredAddress
         } else {
             rememberedHost = ""
+            rememberedUsesOnlyConfiguredAddress = false
         }
 
         if rememberAccount {
@@ -854,7 +912,7 @@ private struct LANDiscoveryView: View {
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .padding(.vertical, 6)
-            }
+            }.nastartListSection()
 
             Section {
                 if discoveryService.devices.isEmpty {
@@ -882,7 +940,7 @@ private struct LANDiscoveryView: View {
                         HStack(spacing: 12) {
                             Image(systemName: "server.rack")
                                 .frame(width: 36, height: 36)
-                                .background(AppTheme.secondarySurface)
+                                .nastartSurface()
                                 .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
                             VStack(alignment: .leading, spacing: 4) {
                                 Text(device.name)
@@ -904,9 +962,10 @@ private struct LANDiscoveryView: View {
                 }
             } header: {
                 Text("connect.scan.results")
-            }
+            }.nastartListSection()
         }
         .listStyle(.insetGrouped)
+        .nastartReadableWidth().nastartPageTheme()
         .navigationTitle("connect.scan.title")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
@@ -934,7 +993,7 @@ private extension View {
     func connectionSectionStyle() -> some View {
         self
             .padding(16)
-            .background(Color(.secondarySystemGroupedBackground))
+            .nastartSurface()
             .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
     }
 }
@@ -966,7 +1025,7 @@ struct AgentSetupGuideView: View {
                         .foregroundStyle(.secondary)
                 }
                 .padding(.vertical, 8)
-            }
+            }.nastartListSection()
 
             Section {
                 compactAgentTextField(
@@ -1025,7 +1084,7 @@ struct AgentSetupGuideView: View {
                 Text("agent.pairing.section")
             } footer: {
                 Text("agent.pairing.footer")
-            }
+            }.nastartListSection()
 
             Section {
                 AgentStepRow(number: 1, titleKey: "connect.agent.step.package", detailKey: "connect.agent.step.package_detail")
@@ -1043,7 +1102,7 @@ struct AgentSetupGuideView: View {
                 Text("agent.desktop_ssh.section")
             } footer: {
                 Text("agent.desktop_ssh.footer")
-            }
+            }.nastartListSection()
 
             Section {
                 NavigationLink {
@@ -1055,9 +1114,10 @@ struct AgentSetupGuideView: View {
                 Text("agent.mobile_ssh.section")
             } footer: {
                 Text("agent.mobile_ssh.footer")
-            }
+            }.nastartListSection()
         }
         .listStyle(.insetGrouped)
+        .nastartReadableWidth().nastartPageTheme()
         .navigationTitle("connect.agent.guide")
         .task {
             guard agentAddress.isEmpty, let host = connectionStore.dsmSession?.baseURL.host else { return }
@@ -1193,7 +1253,7 @@ struct MobileSSHAgentInstallerView: View {
                 Text("agent.ssh.connection.section")
             } footer: {
                 Text("agent.ssh.connection.footer")
-            }
+            }.nastartListSection()
 
             Section {
                 Button {
@@ -1225,7 +1285,7 @@ struct MobileSSHAgentInstallerView: View {
                 Text("agent.ssh.host_key.section")
             } footer: {
                 Text("agent.ssh.host_key.footer")
-            }
+            }.nastartListSection()
 
             Section {
                 Button {
@@ -1256,8 +1316,9 @@ struct MobileSSHAgentInstallerView: View {
                 Text("agent.ssh.install.section")
             } footer: {
                 Text("agent.ssh.install.footer")
-            }
+            }.nastartListSection()
         }
+        .nastartReadableWidth().nastartPageTheme()
         .navigationTitle("agent.mobile_ssh.title")
         .navigationBarTitleDisplayMode(.inline)
         .task {
@@ -1409,7 +1470,7 @@ struct AgentStepRow: View {
             Text("\(number)")
                 .font(.caption.weight(.bold))
                 .frame(width: 26, height: 26)
-                .background(AppTheme.secondarySurface)
+                .nastartSurface()
                 .clipShape(Circle())
             VStack(alignment: .leading, spacing: 4) {
                 Text(titleKey)

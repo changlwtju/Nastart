@@ -95,6 +95,6 @@ Negative:
 
 ## References
 
-- [Nastart 视频播放新架构设计草案](../handoffs/2026-09-01-NASTART-GREENFIELD-PLAYBACK-ARCHITECTURE.md)
-- [Lenna 1.0.17 静态分析阶段记录](../handoffs/2026-09-01-LENNA-1.0.17-STATIC-ANALYSIS.md)
-- [DS One 视频播放链路证据基线](../handoffs/2026-08-27-DSONE-PLAYBACK-CHAIN-BASELINE.md)
+- [Nastart 视频播放新架构设计草案](../archive/handoffs/2026-09/2026-09-01-NASTART-GREENFIELD-PLAYBACK-ARCHITECTURE.md)
+- [Lenna 1.0.17 静态分析阶段记录](../archive/handoffs/2026-09/2026-09-01-LENNA-1.0.17-STATIC-ANALYSIS.md)
+- [DS One 视频播放链路证据基线](../archive/handoffs/2026-08/2026-08-27-DSONE-PLAYBACK-CHAIN-BASELINE.md)

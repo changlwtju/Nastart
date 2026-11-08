@@ -1,0 +1,440 @@
+{
+  "date": "2026-10-20",
+  "scope": "output-key diagnostic candidate, no playback policy optimization accepted",
+  "explicitAgentProtocol": {
+    "scope": "single Mac LAN protocol window; explicit outbound User-Agent, not captured at Jellyfin",
+    "headersUserAgentExplicit": true,
+    "noPhoneOrCellularTasks": true,
+    "rows": [
+      {
+        "sourcePathMatchesReturnedInfo": true,
+        "formulaExpectedOutputMatchesFFmpeg": true,
+        "outputStemsFound": 1,
+        "processExitLinePresent": true
+      }
+    ],
+    "roundResult": {
+      "round": 1,
+      "condition": 4,
+      "startedAt": 1792428811.3965492,
+      "sourceSeconds": 0,
+      "performanceAccepted": false,
+      "negotiation": {
+        "startedAt": 1792428811.426934,
+        "method": "POST",
+        "limitBytes": 2097152,
+        "status": 200,
+        "headersSeconds": 0.061582749942317605,
+        "httpVersion": 11,
+        "contentLength": null,
+        "contentType": "application/json",
+        "totalSeconds": 0.06319720903411508,
+        "bodyBytes": 10397,
+        "bodySHA256": "ee57390055e6d0b6874cbed3ffde1233ce3a162d86ed5caa5ffa13d2a5fc2d18",
+        "result": "complete"
+      },
+      "negotiated": {
+        "videocodec": "h264",
+        "audiocodec": "aac",
+        "subtitlemethod": "Encode",
+        "videobitrate": 1616000,
+        "audiobitrate": 384000,
+        "maxwidth": 854,
+        "maxheight": 480,
+        "audiostreamindex": 1,
+        "subtitlestreamindex": 7,
+        "segmentlength": 4,
+        "minsegments": 1
+      },
+      "sessionBinding": {
+        "responseToReturnedURL": true,
+        "uniqueDiagnosticDevice": true,
+        "firstSegmentURLMatchesNegotiatedPlaySession": true
+      },
+      "firstDeclaredSegmentDurationSeconds": 4.004,
+      "playlistDurationSeconds": 7524.767999999999,
+      "playlistSegments": 1880,
+      "playlists": [
+        {
+          "startedAt": 1792428811.491063,
+          "method": "GET",
+          "limitBytes": 3145728,
+          "status": 200,
+          "headersSeconds": 0.042180749820545316,
+          "httpVersion": 11,
+          "contentLength": "890",
+          "contentType": "application/vnd.apple.mpegurl",
+          "totalSeconds": 0.04224441689439118,
+          "bodyBytes": 890,
+          "bodySHA256": "9327c01a50247e4a7cd8f7ad248a2084529336587d821a3180bc47ecb563e386",
+          "result": "complete"
+        },
+        {
+          "startedAt": 1792428811.535381,
+          "method": "GET",
+          "limitBytes": 3145728,
+          "status": 200,
+          "headersSeconds": 0.07945462502539158,
+          "httpVersion": 11,
+          "contentLength": "1555358",
+          "contentType": "application/vnd.apple.mpegurl",
+          "totalSeconds": 0.20574833313003182,
+          "bodyBytes": 1555358,
+          "bodySHA256": "820615125f06ee454854c753c1a82006080e4179f6cdbcf8f43aa33cbe3e69c0",
+          "result": "complete"
+        }
+      ],
+      "firstSegment": {
+        "startedAt": 1792428811.745,
+        "method": "GET",
+        "limitBytes": 2097152,
+        "status": 200,
+        "headersSeconds": 2.3389866249635816,
+        "httpVersion": 11,
+        "contentLength": "744480",
+        "contentType": "video/mp2t",
+        "totalSeconds": 2.40392900002189,
+        "bodyBytes": 744480,
+        "bodySHA256": "c60581dddbd1f52e111ce3b7f537a5184c51b5c768edf5406be0b3d0f4fb8470",
+        "result": "complete"
+      },
+      "result": "complete",
+      "cleanup": {
+        "at": 1792428814.825878,
+        "status": 204,
+        "exactNegotiatedPlaySessionAndOwnDeviceID": true,
+        "encodingProcessExitNotProvenByHTTPStatusAlone": true
+      },
+      "endedAt": 1792428814.8258822,
+      "newFFmpegLogs": [
+        {
+          "index": 0,
+          "bytes": 55777,
+          "negotiatedPlaySessionLiteralPresent": false,
+          "knownMediaSourceLiteralPresent": true,
+          "processExitLinePresent": true
+        }
+      ]
+    },
+    "cleanup": {
+      "at": 1792428814.8932931,
+      "remainingOwnedSessions": 0,
+      "phoneCellularTasksStarted": false,
+      "nativeDevicesTouched": false,
+      "WiFiVPNSettingsChanged": false
+    },
+    "rootCauseOrPerformanceAccepted": false
+  },
+  "source": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "iosDiffSHA256": "35df7015b08ee4d929683983de8ac59d2d7111f94615bf85f38894fc25ae66ed"
+  },
+  "build": {
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "Xcode": "27.0",
+    "binaryBuildTime": "2026-10-20T06:48:25.326233+08:00",
+    "binaries": {
+      "Nastart": "08e79c32cfcaa4554d43b34fa0aadebc2704802325054ff402520dd8afb7a730",
+      "Nastart.debug.dylib": "1de981917130d8ddfd3db6cff043a4d393a926cc6c8aea333e137aece9d9a785",
+      "Frameworks/KSPlayer.framework/KSPlayer": "46b62a146dc5cf1aff87099675a40ea4436cb49b82ce8e9c3b2930044cd082b6"
+    },
+    "signatureVerified": true,
+    "individuallyVerifiedLibraries": 29,
+    "checkedInputs": 173,
+    "profileExpirationUTC": "2026-10-24T22:23:57",
+    "profileDeviceCount": 3,
+    "ipaSHA256": "463402be9b1838d3bb7b664e6add6f402e161a79f40afbe654b9977998c72a1a",
+    "ipaCRCAndBinaryHashesVerified": true,
+    "linkageVerified": true,
+    "tests": {
+      "targeted": 5,
+      "failed": 0,
+      "unexpected": 0
+    },
+    "preflight": {
+      "passed": 15
+    },
+    "appleDoubleCountExcluded": 160
+  },
+  "serverReportToolTests": {
+    "passed": 28,
+    "failed": 0
+  },
+  "physicalDeviceCoverage": {
+    "iphone13": "06:48 normal Debug cover and actual empty-env home verified; S03 both cellular entrances correlated",
+    "ipad": "06:48 normal Debug cover, 18 preferences retained, actual empty-env home/WiFi verified; no new playback yet",
+    "iphone18": "06:48 package installed via USB; normal launch/actual home reviewed; all 25 non-diagnostic preferences equal before/after and after launch; user has left with phone"
+  },
+  "requirementsClosed": [],
+  "openRequirementCount": 28,
+  "limits": [
+    "Output-key correlation works in two new iOS cellular windows; no first-segment readiness timestamp or cross-host clock synchronization.",
+    "Internal clocks and sampled screenshots are not exact visible-first-frame/audio/complete-subtitle/frame-time acceptance.",
+    "Initial unknown and retry failures remain in history; no performance fix accepted.",
+    "Requested 20-second helper windows actually retained the fixed 30-second observation; corrected helper afterward.",
+    "Cellular body-rate observations do not establish RSRP/RSRQ/SINR or RF weakness."
+  ],
+  "toolSetupFailure": {
+    "defaultPythonMissingTidevice": true,
+    "installationDispatchedBeforeRuntimeCorrection": false
+  },
+  "initialDiagnosticBuild": {
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "Xcode": "27.0",
+    "binaryBuildTime": "2026-10-20T00:57:37.479782+08:00",
+    "binaries": {
+      "Nastart": "bac6201886124947c92946b264aa6844f599a69575ae79f951b7559c9e95f31b",
+      "Nastart.debug.dylib": "d076fdbfb09b310bc9bb49f553aa120141abaa90f91088b3682adc20a02c5697",
+      "Frameworks/KSPlayer.framework/KSPlayer": "fdf01c378ac23c93e53e965fd02dc178bdaeeb32a802a13d74725c967fcf9b9d"
+    },
+    "signatureVerified": true,
+    "individuallyVerifiedLibraries": 29,
+    "checkedInputs": 173,
+    "ipaSHA256": "370db076dda132bf2746d79fdbf37acd0a2b6a04867f39912ac87effda706ee9",
+    "profileExpirationUTC": "2026-10-24T22:23:57",
+    "profileDeviceCount": 3,
+    "tests": {
+      "targeted": 4,
+      "failed": 0,
+      "unexpected": 0
+    },
+    "preflight": {
+      "passed": 15
+    },
+    "linkageVerified": true
+  },
+  "initialDiagnosticCellularWindow": {
+    "device": "iPhone13",
+    "sample": "S19",
+    "entry": "Jellyfin",
+    "durationSeconds": 45,
+    "sourceDiffSHA256": "9b11f25a063a87e82823ce0c4981db164f3399bf346dd1b745963b7aa32b8f55",
+    "completedURLMetrics": 24,
+    "cellularYes": 24,
+    "outputCandidatesUnknown": 24,
+    "internalClockAdvanceSeconds": 12.460374,
+    "maxSampledStallCount": 1,
+    "mediaPlaylist": {
+      "responseHeadersMs": 155,
+      "bodyMs": 3508,
+      "totalMs": 3663
+    },
+    "firstSegment": {
+      "responseHeadersMs": 2561,
+      "bodyMs": 1385,
+      "totalMs": 3947
+    },
+    "presentationReviewed": {
+      "t10": "black spinner and unknown speed",
+      "t45": "black movie frame with two different-position bilingual green cues; subtitle correctness not accepted"
+    },
+    "cleanup": {
+      "ownMediaStopped": true,
+      "originalNativeSSIDSelected": true,
+      "actualWiFiIconReviewed": true,
+      "initialRestoreScreenshotStillCellular": true
+    },
+    "performanceAccepted": false
+  },
+  "reasonGranularityFollowup": {
+    "targetedIOSTestsPassed": 4,
+    "deviceBuildSucceeded": true,
+    "playbackPolicyChanged": false,
+    "diagnosticFieldsExercisedOnDevice": true
+  },
+  "followupWindows": [
+    {
+      "entry": "Jellyfin",
+      "sourceDiffSHA256": "b30996f6a96ba14568081be0606646dbfdef1e448b134e788c819b8aab694c29",
+      "requestedWindowSeconds": 20,
+      "actualLastSampleSeconds": 30.46067500114441,
+      "completedMetrics": 17,
+      "cellularYes": 17,
+      "internalClockAdvanceSeconds": 11.358736,
+      "maxSampledStallCount": 1,
+      "candidates": {
+        "candidateReasons": {
+          "legacyParamsNotDecoded": 17
+        },
+        "stages": [
+          {
+            "event": "first_frame",
+            "fields": {}
+          }
+        ]
+      },
+      "originalWiFiAndActualIconReviewed": true,
+      "performanceAccepted": false,
+      "preferences": {
+        "nonBookmarkPreferencesUnchanged": true,
+        "originalTracksChangedCount": 0,
+        "originalBookmarksRemoved": 0
+      }
+    },
+    {
+      "entry": "Jellyfin",
+      "sourceDiffSHA256": "35df7015b08ee4d929683983de8ac59d2d7111f94615bf85f38894fc25ae66ed",
+      "requestedWindowSeconds": 20,
+      "actualLastSampleSeconds": 30.272932052612305,
+      "completedMetrics": 21,
+      "cellularYes": 21,
+      "internalClockAdvanceSeconds": 8.582656,
+      "maxSampledStallCount": 1,
+      "candidates": {
+        "candidateReasonCounts": {
+          "10.11.11FormulaActualMetricsRequest": 21
+        },
+        "distinctOutputKeyCandidates": 1,
+        "formulaVersion": "10.11.11",
+        "serverJobMatched": false
+      },
+      "originalWiFiAndActualIconReviewed": true,
+      "performanceAccepted": false,
+      "serverBinding": {
+        "readOnly": true,
+        "mediaRequests": 0,
+        "serverConfigurationChanged": false,
+        "matchedEncodingCommands": 1,
+        "uniqueOutputJobMatch": true,
+        "reportWritten": true,
+        "command": {
+          "startSegmentOrdinal": 0,
+          "seekSeconds": 0.0,
+          "videoCodec": "h264_vaapi",
+          "audioCodec": "libfdk_aac",
+          "subtitleOverlayFilter": true
+        },
+        "logMentionsOutputKey": 3,
+        "clockAlignmentAccepted": false
+      },
+      "preferences": {
+        "nonBookmarkPreferencesUnchanged": true,
+        "originalTracksChangedCount": 0,
+        "originalBookmarksRemoved": 0
+      }
+    },
+    {
+      "entry": "device file",
+      "sourceDiffSHA256": "35df7015b08ee4d929683983de8ac59d2d7111f94615bf85f38894fc25ae66ed",
+      "requestedWindowSeconds": 20,
+      "actualLastSampleSeconds": 30.244987964630127,
+      "completedMetrics": 34,
+      "cellularYes": 34,
+      "internalClockAdvanceSeconds": 6.908843,
+      "maxSampledStallCount": 1,
+      "candidates": {
+        "candidateReasonCounts": {
+          "10.11.11FormulaActualMetricsRequest": 34
+        },
+        "distinctOutputKeyCandidates": 1,
+        "formulaVersion": "10.11.11",
+        "serverJobMatched": false
+      },
+      "originalWiFiAndActualIconReviewed": true,
+      "performanceAccepted": false,
+      "serverBinding": {
+        "readOnly": true,
+        "mediaRequests": 0,
+        "serverConfigurationChanged": false,
+        "matchedEncodingCommands": 1,
+        "uniqueOutputJobMatch": true,
+        "reportWritten": true,
+        "command": {
+          "startSegmentOrdinal": 0,
+          "seekSeconds": 0.0,
+          "videoCodec": "h264_vaapi",
+          "audioCodec": "libfdk_aac",
+          "subtitleOverlayFilter": false
+        },
+        "logMentionsOutputKey": 3,
+        "clockAlignmentAccepted": false
+      },
+      "preferences": {
+        "nonBookmarkPreferencesUnchanged": true,
+        "originalTracksChangedCount": 0,
+        "originalBookmarksRemoved": 0
+      }
+    }
+  ],
+  "packedParamsFollowup": {
+    "targetedIOSTestsPassed": 5,
+    "preflightPassed": 15,
+    "deviceBuildAndSignatureVerified": true,
+    "onlyDiagnosticsChanged": true,
+    "serverRule": "Params slot1/20 non-whitespace overrides explicit device/session, blank slots retain query; repeated query/Params rejected",
+    "bothEntrancesOutputMatchesUniqueServerCommand": true
+  },
+  "boundedToolIssue": {
+    "requestedSeconds": 20,
+    "actualLastObservationAboutSeconds": 30.3,
+    "reason": "preexisting fixed 30-second sample exceeded requested duration",
+    "privateHelperCorrected": true,
+    "noReplayToHideOriginal": true
+  },
+  "bodyRateObservations": {
+    "cellular-s19-jf-output-key": {
+      "eligibleCompletedSegmentCount": 21,
+      "bodyRateDecimalMBps": {
+        "min": 1.433,
+        "median": 4.921,
+        "max": 7.027
+      },
+      "requestHeadersMsMedian": 261.0,
+      "radio": "4G observed; RSRP/RSRQ/SINR unknown",
+      "noRadioWeaknessClassificationAccepted": true,
+      "excludesFirstByteFromBodyRate": true,
+      "excludesPendingOrCancelledTasks": true
+    },
+    "cellular-s03-jf-unknown-reason": {
+      "eligibleCompletedSegmentCount": 13,
+      "bodyRateDecimalMBps": {
+        "min": 2.016,
+        "median": 4.919,
+        "max": 5.828
+      },
+      "requestHeadersMsMedian": 117.0,
+      "radio": "4G observed; RSRP/RSRQ/SINR unknown",
+      "noRadioWeaknessClassificationAccepted": true,
+      "excludesFirstByteFromBodyRate": true,
+      "excludesPendingOrCancelledTasks": true
+    },
+    "cellular-s03-jf-packed-output-key": {
+      "eligibleCompletedSegmentCount": 18,
+      "bodyRateDecimalMBps": {
+        "min": 2.615,
+        "median": 4.154,
+        "max": 5.49
+      },
+      "requestHeadersMsMedian": 117.0,
+      "radio": "4G observed; RSRP/RSRQ/SINR unknown",
+      "noRadioWeaknessClassificationAccepted": true,
+      "excludesFirstByteFromBodyRate": true,
+      "excludesPendingOrCancelledTasks": true
+    },
+    "cellular-s03-file-packed-output-key": {
+      "eligibleCompletedSegmentCount": 31,
+      "bodyRateDecimalMBps": {
+        "min": 1.279,
+        "median": 4.275,
+        "max": 6.412
+      },
+      "requestHeadersMsMedian": 350.0,
+      "radio": "4G observed; RSRP/RSRQ/SINR unknown",
+      "noRadioWeaknessClassificationAccepted": true,
+      "excludesFirstByteFromBodyRate": true,
+      "excludesPendingOrCancelledTasks": true
+    }
+  },
+  "oneBytePrimerProtocol": {
+    "scope": "one Mac LAN S03/2Mbps/PGS7, not cellular or product performance",
+    "status": 206,
+    "bodyBytes": 1,
+    "headerSeconds": 2.2710707921069115,
+    "subsequentFullGETHeaderSeconds": 0.05733316601254046,
+    "subsequentFullGETBodyBytes": 744480,
+    "exactScopedStopStatus": 204,
+    "ownedSessionsRemaining": 0,
+    "FFmpegExitLineObserved": true,
+    "productImplemented": false
+  }
+}

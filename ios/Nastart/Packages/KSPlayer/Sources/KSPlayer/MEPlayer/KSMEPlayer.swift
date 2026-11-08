@@ -434,10 +434,14 @@ extension KSMEPlayer: MediaPlayerProtocol {
         options.openTime = 0
         options.findTime = 0
         options.readyTime = 0
+        options.initialSeekStartTime = 0
+        options.initialSeekEndTime = 0
+        options.initialSeekResult = nil
         options.readAudioTime = 0
         options.readVideoTime = 0
         options.decodeAudioTime = 0
         options.decodeVideoTime = 0
+        options.videoStartupTiming.reset()
         if KSOptions.isClearVideoWhereReplace {
             videoOutput?.flush()
         }
@@ -487,12 +491,27 @@ extension KSMEPlayer: MediaPlayerProtocol {
             audioOutput.flush()
         }
     }
+
+    /// Select an owned audio stream before the caller performs one coordinated
+    /// seek. The caller must immediately seek to refresh the decoder queues.
+    /// Ordinary select(track:) keeps its existing automatic-seek behavior.
+    public func selectAudioTrackForSeek(_ track: some MediaPlayerTrack) -> Bool {
+        guard track.mediaType == .audio,
+              playerItem.assetTracks.contains(where: { $0 === track }) else { return false }
+        return playerItem.select(track: track, performSeek: false)
+    }
 }
 
 @available(tvOS 14.0, *)
 extension KSMEPlayer: AVPictureInPictureSampleBufferPlaybackDelegate {
     public func pictureInPictureController(_: AVPictureInPictureController, setPlaying playing: Bool) {
+        applySystemPictureInPicturePlayback(playing)
+    }
+
+    func applySystemPictureInPicturePlayback(_ playing: Bool) {
         playing ? play() : pause()
+        options.pictureInPicturePlaybackChanged?(playing, isPlaying, currentPlaybackTime,
+                                                ProcessInfo.processInfo.systemUptime)
     }
 
     public func pictureInPictureControllerTimeRangeForPlayback(_: AVPictureInPictureController) -> CMTimeRange {

@@ -1,0 +1,605 @@
+{
+  "date": "2026-10-26",
+  "scope": "outside-repository bounded MLSD parser and integration into private implicit-FTPS/plain passive prototype",
+  "validation": {
+    "at": "2026-10-26T17:31:00.741612+08:00",
+    "finalParserContracts": 50,
+    "parserPassed": 50,
+    "finalNetworkWindows": 9,
+    "networkPassed": 9,
+    "finalASanOperations": 8,
+    "ASanInvalidAccessReports": 0,
+    "ASanLeakDetection": false,
+    "earlierContracts": 49,
+    "earlierNetworkWindows": 9,
+    "nonAsciiKeyBaselineMisaccepted": true,
+    "allOwnedServerWindowsCleaned": 18,
+    "transportAndPassivePortCodeUnchanged": true,
+    "applicationInputCount": 375,
+    "applicationInputDriftCount": 0,
+    "applicationBinaryDriftCounts": {
+      "mobile": 0,
+      "tv": 0
+    },
+    "newAppBuilds": 0,
+    "newInstalls": 0,
+    "physicalFunctionTests": 0,
+    "directNASFileOrMediaRequests": 0,
+    "ownServicesStopped": true,
+    "noNFOorIndexOrAppIntegration": true
+  },
+  "parserContracts": {
+    "normal-nonAsciiFact": {
+      "expected": "invalidListing",
+      "observed": "invalidListing",
+      "passed": true,
+      "build": "normal",
+      "asanError": false
+    },
+    "normal-empty": {
+      "expected": "listing",
+      "observed": "listing",
+      "passed": true,
+      "build": "normal",
+      "asanError": false
+    },
+    "normal-basic": {
+      "expected": "listing",
+      "observed": "listing",
+      "passed": true,
+      "build": "normal",
+      "asanError": false
+    },
+    "normal-unicodeSpacesPercent": {
+      "expected": "listing",
+      "observed": "listing",
+      "passed": true,
+      "build": "normal",
+      "asanError": false
+    },
+    "asan-unicodeSpacesPercent": {
+      "expected": "listing",
+      "observed": "listing",
+      "passed": true,
+      "build": "asan",
+      "asanError": false
+    },
+    "normal-literalEncodedName": {
+      "expected": "listing",
+      "observed": "listing",
+      "passed": true,
+      "build": "normal",
+      "asanError": false
+    },
+    "normal-caseDistinct": {
+      "expected": "listing",
+      "observed": "listing",
+      "passed": true,
+      "build": "normal",
+      "asanError": false
+    },
+    "normal-specialDirs": {
+      "expected": "listing",
+      "observed": "listing",
+      "passed": true,
+      "build": "normal",
+      "asanError": false
+    },
+    "normal-unknownFact": {
+      "expected": "listing",
+      "observed": "listing",
+      "passed": true,
+      "build": "normal",
+      "asanError": false
+    },
+    "normal-optionalVersion": {
+      "expected": "listing",
+      "observed": "listing",
+      "passed": true,
+      "build": "normal",
+      "asanError": false
+    },
+    "normal-maxSize": {
+      "expected": "listing",
+      "observed": "listing",
+      "passed": true,
+      "build": "normal",
+      "asanError": false
+    },
+    "normal-zeroSize": {
+      "expected": "listing",
+      "observed": "listing",
+      "passed": true,
+      "build": "normal",
+      "asanError": false
+    },
+    "normal-spaceFilename": {
+      "expected": "listing",
+      "observed": "listing",
+      "passed": true,
+      "build": "normal",
+      "asanError": false
+    },
+    "normal-maxEntries": {
+      "expected": "listing",
+      "observed": "listing",
+      "passed": true,
+      "build": "normal",
+      "asanError": false
+    },
+    "normal-tooManyEntries": {
+      "expected": "limit",
+      "observed": "limit",
+      "passed": true,
+      "build": "normal",
+      "asanError": false
+    },
+    "asan-tooManyEntries": {
+      "expected": "limit",
+      "observed": "limit",
+      "passed": true,
+      "build": "asan",
+      "asanError": false
+    },
+    "normal-payloadLimit": {
+      "expected": "limit",
+      "observed": "limit",
+      "passed": true,
+      "build": "normal",
+      "asanError": false
+    },
+    "asan-payloadLimit": {
+      "expected": "limit",
+      "observed": "limit",
+      "passed": true,
+      "build": "asan",
+      "asanError": false
+    },
+    "normal-lineLimit": {
+      "expected": "limit",
+      "observed": "limit",
+      "passed": true,
+      "build": "normal",
+      "asanError": false
+    },
+    "normal-nameLimit": {
+      "expected": "invalidListing",
+      "observed": "invalidListing",
+      "passed": true,
+      "build": "normal",
+      "asanError": false
+    },
+    "normal-badUTF8": {
+      "expected": "invalidListing",
+      "observed": "invalidListing",
+      "passed": true,
+      "build": "normal",
+      "asanError": false
+    },
+    "asan-badUTF8": {
+      "expected": "invalidListing",
+      "observed": "invalidListing",
+      "passed": true,
+      "build": "asan",
+      "asanError": false
+    },
+    "normal-nul": {
+      "expected": "invalidListing",
+      "observed": "invalidListing",
+      "passed": true,
+      "build": "normal",
+      "asanError": false
+    },
+    "normal-bareLF": {
+      "expected": "invalidListing",
+      "observed": "invalidListing",
+      "passed": true,
+      "build": "normal",
+      "asanError": false
+    },
+    "normal-partialFinal": {
+      "expected": "invalidListing",
+      "observed": "invalidListing",
+      "passed": true,
+      "build": "normal",
+      "asanError": false
+    },
+    "normal-blankLine": {
+      "expected": "invalidListing",
+      "observed": "invalidListing",
+      "passed": true,
+      "build": "normal",
+      "asanError": false
+    },
+    "normal-traversal": {
+      "expected": "invalidListing",
+      "observed": "invalidListing",
+      "passed": true,
+      "build": "normal",
+      "asanError": false
+    },
+    "normal-dot": {
+      "expected": "invalidListing",
+      "observed": "invalidListing",
+      "passed": true,
+      "build": "normal",
+      "asanError": false
+    },
+    "normal-forwardSlash": {
+      "expected": "invalidListing",
+      "observed": "invalidListing",
+      "passed": true,
+      "build": "normal",
+      "asanError": false
+    },
+    "normal-backslash": {
+      "expected": "invalidListing",
+      "observed": "invalidListing",
+      "passed": true,
+      "build": "normal",
+      "asanError": false
+    },
+    "normal-duplicateName": {
+      "expected": "ambiguousListing",
+      "observed": "ambiguousListing",
+      "passed": true,
+      "build": "normal",
+      "asanError": false
+    },
+    "normal-canonicalDuplicate": {
+      "expected": "ambiguousListing",
+      "observed": "ambiguousListing",
+      "passed": true,
+      "build": "normal",
+      "asanError": false
+    },
+    "asan-canonicalDuplicate": {
+      "expected": "ambiguousListing",
+      "observed": "ambiguousListing",
+      "passed": true,
+      "build": "asan",
+      "asanError": false
+    },
+    "normal-duplicateFact": {
+      "expected": "ambiguousListing",
+      "observed": "ambiguousListing",
+      "passed": true,
+      "build": "normal",
+      "asanError": false
+    },
+    "normal-symlink": {
+      "expected": "unsupportedEntry",
+      "observed": "unsupportedEntry",
+      "passed": true,
+      "build": "normal",
+      "asanError": false
+    },
+    "normal-unknownType": {
+      "expected": "unsupportedEntry",
+      "observed": "unsupportedEntry",
+      "passed": true,
+      "build": "normal",
+      "asanError": false
+    },
+    "normal-noFacts": {
+      "expected": "unsupportedEntry",
+      "observed": "unsupportedEntry",
+      "passed": true,
+      "build": "normal",
+      "asanError": false
+    },
+    "normal-noType": {
+      "expected": "unsupportedEntry",
+      "observed": "unsupportedEntry",
+      "passed": true,
+      "build": "normal",
+      "asanError": false
+    },
+    "normal-negativeSize": {
+      "expected": "invalidListing",
+      "observed": "invalidListing",
+      "passed": true,
+      "build": "normal",
+      "asanError": false
+    },
+    "normal-sizeOverflow": {
+      "expected": "invalidListing",
+      "observed": "invalidListing",
+      "passed": true,
+      "build": "normal",
+      "asanError": false
+    },
+    "normal-badDate": {
+      "expected": "invalidListing",
+      "observed": "invalidListing",
+      "passed": true,
+      "build": "normal",
+      "asanError": false
+    },
+    "normal-badMonth": {
+      "expected": "invalidListing",
+      "observed": "invalidListing",
+      "passed": true,
+      "build": "normal",
+      "asanError": false
+    },
+    "normal-badHour": {
+      "expected": "invalidListing",
+      "observed": "invalidListing",
+      "passed": true,
+      "build": "normal",
+      "asanError": false
+    },
+    "normal-badSecond": {
+      "expected": "invalidListing",
+      "observed": "invalidListing",
+      "passed": true,
+      "build": "normal",
+      "asanError": false
+    },
+    "normal-emptyFraction": {
+      "expected": "invalidListing",
+      "observed": "invalidListing",
+      "passed": true,
+      "build": "normal",
+      "asanError": false
+    },
+    "normal-longFraction": {
+      "expected": "invalidListing",
+      "observed": "invalidListing",
+      "passed": true,
+      "build": "normal",
+      "asanError": false
+    },
+    "normal-emptyFact": {
+      "expected": "invalidListing",
+      "observed": "invalidListing",
+      "passed": true,
+      "build": "normal",
+      "asanError": false
+    },
+    "normal-partialAfterGood": {
+      "expected": "invalidListing",
+      "observed": "invalidListing",
+      "passed": true,
+      "build": "normal",
+      "asanError": false
+    },
+    "asan-partialAfterGood": {
+      "expected": "invalidListing",
+      "observed": "invalidListing",
+      "passed": true,
+      "build": "asan",
+      "asanError": false
+    },
+    "normal-skipLimit": {
+      "expected": "limit",
+      "observed": "limit",
+      "passed": true,
+      "build": "normal",
+      "asanError": false
+    }
+  },
+  "networkCases": {
+    "normal": {
+      "expected": "success",
+      "outcome": "success",
+      "passed": true,
+      "build": "normal",
+      "controlPeerEOFObserved": true,
+      "dataPeerEOFObserved": true,
+      "commands": [
+        "PBSZ",
+        "PROT",
+        "USER",
+        "PASS",
+        "TYPE",
+        "EPSV",
+        "MLSD",
+        "QUIT"
+      ]
+    },
+    "unicode": {
+      "expected": "success",
+      "outcome": "success",
+      "passed": true,
+      "build": "normal",
+      "controlPeerEOFObserved": true,
+      "dataPeerEOFObserved": true,
+      "commands": [
+        "PBSZ",
+        "PROT",
+        "USER",
+        "PASS",
+        "TYPE",
+        "EPSV",
+        "MLSD",
+        "QUIT"
+      ]
+    },
+    "plain": {
+      "expected": "success",
+      "outcome": "success",
+      "passed": true,
+      "build": "normal",
+      "controlPeerEOFObserved": true,
+      "dataPeerEOFObserved": true,
+      "commands": [
+        "USER",
+        "PASS",
+        "TYPE",
+        "EPSV",
+        "MLSD",
+        "QUIT"
+      ]
+    },
+    "badAfterGood": {
+      "expected": "invalidListing",
+      "outcome": "invalidListing",
+      "passed": true,
+      "build": "normal",
+      "controlPeerEOFObserved": true,
+      "dataPeerEOFObserved": true,
+      "commands": [
+        "PBSZ",
+        "PROT",
+        "USER",
+        "PASS",
+        "TYPE",
+        "EPSV",
+        "MLSD"
+      ]
+    },
+    "symlink": {
+      "expected": "unsupportedEntry",
+      "outcome": "unsupportedEntry",
+      "passed": true,
+      "build": "normal",
+      "controlPeerEOFObserved": true,
+      "dataPeerEOFObserved": true,
+      "commands": [
+        "PBSZ",
+        "PROT",
+        "USER",
+        "PASS",
+        "TYPE",
+        "EPSV",
+        "MLSD"
+      ]
+    },
+    "duplicate": {
+      "expected": "ambiguousListing",
+      "outcome": "ambiguousListing",
+      "passed": true,
+      "build": "normal",
+      "controlPeerEOFObserved": true,
+      "dataPeerEOFObserved": true,
+      "commands": [
+        "PBSZ",
+        "PROT",
+        "USER",
+        "PASS",
+        "TYPE",
+        "EPSV",
+        "MLSD"
+      ]
+    },
+    "missingType": {
+      "expected": "unsupportedEntry",
+      "outcome": "unsupportedEntry",
+      "passed": true,
+      "build": "normal",
+      "controlPeerEOFObserved": true,
+      "dataPeerEOFObserved": true,
+      "commands": [
+        "PBSZ",
+        "PROT",
+        "USER",
+        "PASS",
+        "TYPE",
+        "EPSV",
+        "MLSD"
+      ]
+    },
+    "asanUnicode": {
+      "expected": "success",
+      "outcome": "success",
+      "passed": true,
+      "build": "asan",
+      "controlPeerEOFObserved": true,
+      "dataPeerEOFObserved": true,
+      "commands": [
+        "PBSZ",
+        "PROT",
+        "USER",
+        "PASS",
+        "TYPE",
+        "EPSV",
+        "MLSD",
+        "QUIT"
+      ]
+    },
+    "asanBadAfterGood": {
+      "expected": "invalidListing",
+      "outcome": "invalidListing",
+      "passed": true,
+      "build": "asan",
+      "controlPeerEOFObserved": true,
+      "dataPeerEOFObserved": true,
+      "commands": [
+        "PBSZ",
+        "PROT",
+        "USER",
+        "PASS",
+        "TYPE",
+        "EPSV",
+        "MLSD"
+      ]
+    }
+  },
+  "builds": {
+    "mobile": {
+      "exit": 0,
+      "buildSucceeded": true,
+      "platform": "IOS",
+      "signed": false,
+      "embeddedInApp": false,
+      "deviceExecuted": false,
+      "sha256": "dd167b072602aeb8cb6712e6897b56b91d6d80f053c857d89f51077eb03530d8",
+      "platformVerified": true
+    },
+    "tv": {
+      "exit": 0,
+      "buildSucceeded": true,
+      "platform": "TVOS",
+      "signed": false,
+      "embeddedInApp": false,
+      "deviceExecuted": false,
+      "sha256": "a2cf425f35cdb0a52b03cdb1a0a5ab6d910796f26fe2e50ec79ef579b756e16e",
+      "platformVerified": true
+    }
+  },
+  "device": {
+    "at": "2026-10-26T17:31:00.839335+08:00",
+    "iPhone18": [
+      {
+        "model": "iPhone19,7",
+        "os": "27.0",
+        "state": "unavailable",
+        "usbPresent": false
+      }
+    ],
+    "installed": false
+  },
+  "behavior": [
+    "retain UTF8 filename bytes as text without trimming spaces or percent decoding",
+    "file/dir parsed; cdir/pdir skipped without following absolute names; unknown types/symlinks/missing type reject full listing",
+    "facts ASCII syntax before case folding; duplicate case-insensitive fact names or canonical-equivalent entry names reject",
+    "optional size/modify/unique remain optional; Int64 size and UTC calendar time validated; modify raw fractional representation retained",
+    "32KiB/1024-byte line/256 entries/16 special directories/32 facts/255-byte name bounds",
+    "parse only after data EOF and final 226; any invalid later row yields no partial result"
+  ],
+  "preservedBaseline": "Kelvin-sign Unicode fact key was accepted after lowercasing; original output and parser source retained, raw-key ASCII guard added",
+  "limitations": [
+    "private prototype only; no App dependency, signing, embedding, device regression or installation",
+    "no MLST, RETR/NFO version checks, production directory source, recursive scanner or local index transaction",
+    "no explicit AUTH TLS data upgrade or FTPS session reuse",
+    "strict bounded subset: legal fact-less listings and unsupported types rejected; name/fraction bounds are client policy, not universal RFC limits",
+    "no atomic scope proof from safe text names; SMB root containment failure remains open",
+    "unique is an opaque filesystem hint, not a media provider ID or sufficient content-version proof",
+    "no TSan or leak proof; ASan detect_leaks=0"
+  ],
+  "cleanup": {
+    "ownedNetworkWindows": 18,
+    "allStopped": true,
+    "NASVPNSystemTrustChanges": false,
+    "realNASFileOrMediaRequests": 0
+  },
+  "requirements": {
+    "open": 30,
+    "inProgress": 14,
+    "awaitingAcceptance": 5,
+    "notStarted": 11,
+    "playbackCells": 114
+  }
+}

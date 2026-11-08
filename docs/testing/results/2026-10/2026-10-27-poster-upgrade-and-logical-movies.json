@@ -1,0 +1,195 @@
+{
+  "date": "2026-10-27",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceInputCount": 388,
+  "configuration": "Debug",
+  "tests": {
+    "executed": 100,
+    "failures": 0,
+    "firstFailureRetained": "supplement suffix classified a bare title; narrowed to explicit separators"
+  },
+  "packages": {
+    "mobile": "280b183da008e571ea9808bd7b6ffc611a2c5758e7cfe760ecf0a598febae22c",
+    "tv": "b53fe5e0e3000f90779cb72140d0a16360e73ffcc73f6dec2ab12925ac367995"
+  },
+  "devices": {
+    "ipad": {
+      "installedAt": "2026-10-27T07:32:17.831584+08:00",
+      "installComplete": true,
+      "preferencesUnchanged": true,
+      "normalLaunchCaptured": true
+    },
+    "iphone13": {
+      "installedAt": "2026-10-27T07:32:28.091462+08:00",
+      "installComplete": true,
+      "preferencesUnchanged": true,
+      "normalLaunchCaptured": true
+    },
+    "tv": {
+      "installedAt": "2026-10-27T07:32:19.063580+08:00",
+      "installComplete": true,
+      "preferencesUnchanged": true,
+      "normalLaunchCaptured": true
+    }
+  },
+  "oldPackageControlledReproduction": {
+    "automaticArtworkRefs": 0,
+    "manualArtworkRefs": 2,
+    "fixtureRemoved": true,
+    "serverStopped": true
+  },
+  "projection": [
+    {
+      "allGroups": 113,
+      "discFileCounts": [
+        16,
+        22
+      ],
+      "discGroups": 2,
+      "mainCards": 112,
+      "physicalFiles": 149,
+      "physicalFilesPreserved": true,
+      "segments": 0,
+      "supplements": 1
+    }
+  ],
+  "nativeFinalFixture": {
+    "ipad": {
+      "initial-flow": {
+        "fixtureName": "NAStart 海报只读测试",
+        "sourceAdded": true,
+        "mediaCommands": 0,
+        "userCredentialsEntered": 0,
+        "posterLabelCount": 4,
+        "placeholderLabelCount": 2,
+        "cardCount": 5,
+        "initialWallCaptured": true,
+        "physicalListCount": 8
+      },
+      "migration-flow": {
+        "injectedOnlyOwnedFixtureOldSchema": true,
+        "intentionalAppRestarts": 1,
+        "userDataModified": false,
+        "before": {
+          "artworkScanVersion": null,
+          "artworkRefs": 0,
+          "videos": 8
+        },
+        "afterAutomatic": {
+          "artworkScanVersion": 2,
+          "artworkRefs": 6,
+          "videos": 8
+        },
+        "automaticUpgradeCompletedWithoutManualRescan": true,
+        "ownedFixtureLibraryRemoved": true
+      },
+      "cleanup": {
+        "sourceUnchanged": true,
+        "stopped": true,
+        "portClosed": true,
+        "requests": 35,
+        "remoteWrites": 0,
+        "videoGETs": 0,
+        "imageGETs": 4,
+        "NFOGETs": 12
+      }
+    },
+    "actualNAS": {
+      "credentialsProvidedByUser": "stored only in private local evidence and app Keychain",
+      "macRootDirectoryHTTP": 207,
+      "ipad": {
+        "actualNAS": true,
+        "device": "ipad",
+        "completed": true,
+        "artworkScanVersion": 2,
+        "files": 3408,
+        "nfo": 3369,
+        "artworkRefs": 112,
+        "uniqueImagePaths": 112,
+        "notices": {
+          "null": 3388,
+          "invalidNFO": 20
+        }
+      },
+      "firstObservationTimedOut": true,
+      "scanCompletedLater": true,
+      "iphone13": {
+        "syntheticConnectionReturned207": true,
+        "folderPageUIReadTimedOut": true,
+        "sourceAdded": false,
+        "NASNotYetTested": true
+      },
+      "ipadExistingRealPosterVisuallyReviewed": true,
+      "sameFolderAsRetainedPhone18": {
+        "sameFolderAsRetainedIPhone18Index": true,
+        "physicalFiles": 149,
+        "NFO": 128,
+        "artworkReferences": 110,
+        "source": "actual current iPad completed NAS index; no iPhone18 access"
+      },
+      "sampleMissingEpisodeAncestorImages": {
+        "actualNAS": true,
+        "sample": "one indexed episode without artwork",
+        "directories": [
+          {
+            "levelsAboveVideoParent": 0,
+            "entries": 12,
+            "images": 0,
+            "genericPoster": 0,
+            "NFOs": 0
+          },
+          {
+            "levelsAboveVideoParent": 1,
+            "entries": 8,
+            "images": 0,
+            "genericPoster": 0,
+            "NFOs": 0
+          }
+        ],
+        "videoGETs": 0,
+        "writes": 0
+      }
+    },
+    "iphone13": "in progress",
+    "tv": "ordinary launch only"
+  },
+  "iphone18": "hands off; remains previously installed 4e1661 package",
+  "NASWrites": 0,
+  "playbackMatrixNewPasses": 0,
+  "acceptedConnectionRouteExperiment": {
+    "package": "6053291edbc72660bfbfa09873c914d696f33f1d09d3f795ee5a83a4eaa6d0d7",
+    "device": "iphone13",
+    "samePageRouteReplacedComputedBindingNavigation": true,
+    "flow": {
+      "fixtureName": "NAStart 海报只读测试",
+      "sourceAdded": true,
+      "mediaCommands": 0,
+      "userCredentialsEntered": 0,
+      "posterLabelCount": 2,
+      "placeholderLabelCount": 2,
+      "cardCount": 3,
+      "initialWallCaptured": true,
+      "ownedFixtureRemoved": true
+    },
+    "cleanup": {
+      "sourceUnchanged": true,
+      "stopped": true,
+      "portClosed": true,
+      "requests": 10,
+      "remoteWrites": 0,
+      "videoGETs": 0,
+      "imageGETs": 2,
+      "NFOGETs": 3
+    }
+  },
+  "newRealNASIssue": {
+    "episodeThumbs": {
+      "directoryHasTMMEpisodeThumbs": true,
+      "exactIndexedEpisodeStemThumbMatches": 65,
+      "filesNotDownloaded": true
+    },
+    "solution": "exact-stem-thumb only when episode identity; scan version 3",
+    "tests": 102,
+    "newPackage": "building; no new final device proof yet"
+  }
+}

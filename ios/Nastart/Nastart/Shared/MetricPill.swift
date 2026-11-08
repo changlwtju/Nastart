@@ -12,7 +12,7 @@ struct MetricPill: View {
                 if let symbolName {
                     Image(systemName: symbolName)
                         .font(.caption.weight(.medium))
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(AppTheme.accent)
                 }
 
                 Text(titleKey)
@@ -35,7 +35,7 @@ struct MetricPill: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(12)
-        .background(AppTheme.secondarySurface)
+        .nastartSurface()
         .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
     }
 }
@@ -58,7 +58,7 @@ struct MetricPillSpec: Identifiable {
     private static func defaultSymbolName(for titleKey: String) -> String? {
         switch titleKey {
         case "metric.cpu": return "cpu"
-        case "metric.memory": return "memorychip"
+        case "metric.memory", "metric.memory_ram": return "memorychip"
         case "metric.storage": return "internaldrive"
         case "metric.tls": return "lock.shield"
         case "metric.uptime": return "clock"

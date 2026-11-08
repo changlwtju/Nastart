@@ -1,0 +1,99 @@
+{
+  "date": "2026-11-01",
+  "scope": "Shared connection address display only; no routing, authorization or playback change",
+  "source": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "inputCount": 446,
+    "existingFilesChanged": 5,
+    "otherHashesUnchanged": 441
+  },
+  "finalBuilds": {
+    "tv-sim-debug-cast": {
+      "startedAt": "2026-11-01T01:21:52.833973+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-11-01T01:21:58.063044+08:00"
+    },
+    "mobile-sim-debug-cast": {
+      "startedAt": "2026-11-01T01:22:53.063633+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-11-01T01:23:14.311494+08:00"
+    },
+    "mobile-debug": {
+      "startedAt": "2026-11-01T01:23:14.312437+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-11-01T01:23:53.299369+08:00"
+    },
+    "mobile-release": {
+      "startedAt": "2026-11-01T01:23:53.300048+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-11-01T01:25:36.304365+08:00"
+    },
+    "tv-unsigned-debug": {
+      "startedAt": "2026-11-01T01:25:36.305455+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-11-01T01:25:57.013875+08:00"
+    },
+    "tv-release": {
+      "startedAt": "2026-11-01T01:25:57.014645+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-11-01T01:26:35.830441+08:00"
+    }
+  },
+  "initialCompileFailureRetained": {
+    "configuration": "mobile-sim-debug-cast",
+    "exitCode": 65,
+    "reason": "Optional display String passed to nonoptional row initializer",
+    "fix": "Caller-only em dash fallback; final tests and all builds repeated"
+  },
+  "tests": {
+    "startedAt": "2026-11-01T01:21:39.039198+08:00",
+    "exitCode": 0,
+    "endedAt": "2026-11-01T01:21:40.586786+08:00",
+    "testCount": 15,
+    "newTests": 2,
+    "syntheticDataOnly": true,
+    "realServerRequests": 0
+  },
+  "behaviorSourceChecks": {
+    "mobileOnlyImportAndDisplayArgumentChanged": true,
+    "sharedMediaServicesOnlyDisplayStringsChanged": true,
+    "TVOnlyFormatterDelegationChanged": true,
+    "existingSourceContextAndActualAccountsSessionsDestinationsUnchanged": true,
+    "routingAuthorizationValidationDiscoveryAndPlaybackSourceUnchanged": true
+  },
+  "simulation": {
+    "ownedSimulatorCount": 0,
+    "newScreenshotCount": 0,
+    "UIValidated": false,
+    "reason": "Only shared pure display formatting and call sites changed; prior TV screenshot not attributed to current package",
+    "priorTVInputFailureRetained": true,
+    "physicalDevicesOperated": 0,
+    "NASRequests": 0
+  },
+  "package": {
+    "mobileSignedMachOCount": 30,
+    "physicalInstallCount": 0,
+    "tvCurrentSignedCandidate": false,
+    "tvNormalSigningRetried": false,
+    "priorProfileBlockRetained": true
+  },
+  "physicalDevicesOperated": 0,
+  "NASRequests": 0,
+  "actualCredentialReadsOrClears": 0,
+  "playbackAttempts": 0,
+  "remoteSourceWrites": 0,
+  "playbackMatrixNewPasses": 0,
+  "limitations": [
+    "No new UI screenshots or interaction regression; previous TV screenshot is older source",
+    "Address path and user-defined name are preserved, not fully anonymized",
+    "Display result must not be used as a route or server identity",
+    "No full application security audit",
+    "Prior TV toggle, credential/export, password and NAS-dependent items remain open"
+  ],
+  "recordedAt": "2026-11-01T01:26:58.563169+08:00",
+  "documentation": {
+    "documentsChecked": 567,
+    "localLinksChecked": 3586,
+    "missingDestinations": 0
+  }
+}

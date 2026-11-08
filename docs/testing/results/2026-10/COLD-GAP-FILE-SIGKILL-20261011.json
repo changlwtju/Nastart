@@ -1,0 +1,333 @@
+{
+  "recordedAt": "2026-10-11T12:29:27.068269+08:00",
+  "sourceUnchangedThisTurn": true,
+  "buildManifestOrigin": "package built and verified in prior Jellyfin boundary turn; no new build required",
+  "package": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "22c667aac7fb8abf8fbfdf09461be61c2db429f8fba6ac7f7b8e5a06a7482b69",
+    "package": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-10-11-jellyfin-boundaries-074838/Nastart-Jellyfin-Boundary-Normal-Debug.app",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "binaryBuildTime": "2026-10-11T08:13:13.492122+08:00",
+    "binaries": {
+      "Nastart": "0ed1b8ea11e7fd1971d6c3efd800ac18bbbf23a15f33819fbac670ea12e0c34a",
+      "Nastart.debug.dylib": "d2aafd6c2ca8cb5eb1c5a9761085759b394f75dcad3d75e8dad1b7fd91dd13f3",
+      "Frameworks/KSPlayer.framework/KSPlayer": "8e6bc9ccfd71d1aa406f1cf74f06201df62b90e577527315f72c040fe2465ebe"
+    },
+    "signatureVerified": true,
+    "individuallyVerifiedLibraries": 29,
+    "checkedInputs": 173,
+    "newerInputs": [],
+    "profileExpirationUTC": "2026-10-17T22:23:40",
+    "tests": "308/2 skipped/0 failures; 2 new server boundary qualification/throttle regression cases plus previous tests rerun",
+    "preflight": "15 passed",
+    "baselineSourceDiffSHA256": "6bbe470c5edbf56360564f354e73a4f47851910dcf0c0261abdff10702900eef",
+    "periodicCheckpointSeconds": 2,
+    "linkageVerified": true,
+    "sourceInputManifestSHA256": "2adb1d0cdd2f1cab3bcdb16905fa1db4ba47b5ddbb23b163a16d0d052b2c4926",
+    "frozenAt": "2026-10-11T08:14:48.606472+08:00",
+    "ipa": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-10-11-jellyfin-boundaries-074838/Nastart-Jellyfin-Boundary-Normal-Debug.ipa"
+  },
+  "validationThisTurn": {
+    "sourceInputsRechecked": 173,
+    "signatureAndPackageHashesRechecked": true,
+    "automatedTestsRerun": false,
+    "priorSameSourceTests": {
+      "count": 308,
+      "skipped": 2,
+      "failures": 0
+    },
+    "priorSameSourcePreflight": 15
+  },
+  "installationThisTurn": [
+    {
+      "device": "iphone13",
+      "recordedAt": "2026-10-11T12:16:07.158265+08:00",
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "connection": "USB",
+      "installation": "success",
+      "installationStartedAt": "2026-10-11T12:16:08.347092+08:00",
+      "installedAt": "2026-10-11T12:16:14.130021+08:00",
+      "sourceDiffSHA256": "22c667aac7fb8abf8fbfdf09461be61c2db429f8fba6ac7f7b8e5a06a7482b69",
+      "binaries": {
+        "Nastart": "0ed1b8ea11e7fd1971d6c3efd800ac18bbbf23a15f33819fbac670ea12e0c34a",
+        "Nastart.debug.dylib": "d2aafd6c2ca8cb5eb1c5a9761085759b394f75dcad3d75e8dad1b7fd91dd13f3",
+        "Frameworks/KSPlayer.framework/KSPlayer": "8e6bc9ccfd71d1aa406f1cf74f06201df62b90e577527315f72c040fe2465ebe"
+      },
+      "preservesContainer": true,
+      "samePreferenceKeys": true,
+      "nonDiagnosticKeysBefore": 25,
+      "nonDiagnosticKeysAfter": 25,
+      "unchangedPreferenceValues": 25,
+      "changedPreferenceCount": 0,
+      "postInstallLookupExists": true,
+      "actualForegroundUIVerified": true,
+      "normalLaunch": true,
+      "normalLaunchVerifiedAt": "2026-10-11T12:17:15.587767+08:00"
+    },
+    {
+      "device": "ipad",
+      "recordedAt": "2026-10-11T12:16:48.776667+08:00",
+      "model": "iPad12,1",
+      "system": "18.3.1",
+      "connection": "USB",
+      "installation": "success",
+      "installationStartedAt": "2026-10-11T12:16:48.912298+08:00",
+      "installedAt": "2026-10-11T12:16:53.482491+08:00",
+      "sourceDiffSHA256": "22c667aac7fb8abf8fbfdf09461be61c2db429f8fba6ac7f7b8e5a06a7482b69",
+      "binaries": {
+        "Nastart": "0ed1b8ea11e7fd1971d6c3efd800ac18bbbf23a15f33819fbac670ea12e0c34a",
+        "Nastart.debug.dylib": "d2aafd6c2ca8cb5eb1c5a9761085759b394f75dcad3d75e8dad1b7fd91dd13f3",
+        "Frameworks/KSPlayer.framework/KSPlayer": "8e6bc9ccfd71d1aa406f1cf74f06201df62b90e577527315f72c040fe2465ebe"
+      },
+      "preservesContainer": true,
+      "samePreferenceKeys": true,
+      "nonDiagnosticKeysBefore": 16,
+      "nonDiagnosticKeysAfter": 16,
+      "unchangedPreferenceValues": 16,
+      "changedPreferenceCount": 0,
+      "postInstallLookupExists": true,
+      "actualForegroundUIVerified": true,
+      "normalLaunch": true,
+      "normalLaunchVerifiedAt": "2026-10-11T12:17:55.458541+08:00"
+    }
+  ],
+  "fileSIGKILLFunctionalCases": [
+    {
+      "device": "iphone13",
+      "boundary": {
+        "recordedAt": "2026-10-11T12:19:04.619214+08:00",
+        "device": "iphone13",
+        "sourceDiffSHA256": "22c667aac7fb8abf8fbfdf09461be61c2db429f8fba6ac7f7b8e5a06a7482b69",
+        "signal": 9,
+        "onlyTargetAppSignaled": true,
+        "pauseHomeNormalExitBeforeSignal": false,
+        "stateAfterSignal": 1,
+        "coldPIDDifferent": true,
+        "normalEnvironment": {},
+        "normalArguments": [],
+        "lastPersistedDiagnosticClock": {
+          "clock": 737.374,
+          "reason": "telemetry_sample"
+        },
+        "savedPositionAfterCold": 737.182,
+        "savedMinusLastPersistedDiagnosticSeconds": -0.19200000000000728,
+        "diagnosticLossLowerBoundSeconds": 0.19200000000000728,
+        "sameTrackPreferences": true,
+        "sameBookmarkKeys": true,
+        "periodicSaveSourceIntervalSeconds": 2,
+        "actualUIInspected": true,
+        "performanceAccepted": false,
+        "scope": "S01 file/KSPlayer; one controlled foreground SIGKILL then normal cold startup, additional normal-home cold restart for file navigation; no playback between restarts; not spontaneous crash/jetsam or maximum durability bound",
+        "replayPending": false,
+        "extraNormalHomeColdRestartBeforeFileNavigation": true
+      },
+      "replay": {
+        "expectedSavedPosition": 737.182,
+        "firstFrameClocks": [
+          737.246
+        ],
+        "firstFrameMatchesSavedWithin2Seconds": true,
+        "actualUIInspected": true,
+        "sourceDiffSHA256": "22c667aac7fb8abf8fbfdf09461be61c2db429f8fba6ac7f7b8e5a06a7482b69",
+        "scope": "Normal cold startup then UI continue, 30 second actual movie window; internal first-frame clock verifies bookmark, not frame performance",
+        "sameReplayBookmarkIdentityVerified": true,
+        "replayChangedBookmarkCount": 1,
+        "sameReplayTrackPreferences": true
+      },
+      "exit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      }
+    },
+    {
+      "device": "ipad",
+      "boundary": {
+        "recordedAt": "2026-10-11T12:22:28.427858+08:00",
+        "device": "ipad",
+        "sourceDiffSHA256": "22c667aac7fb8abf8fbfdf09461be61c2db429f8fba6ac7f7b8e5a06a7482b69",
+        "signal": 9,
+        "onlyTargetAppSignaled": true,
+        "pauseHomeNormalExitBeforeSignal": false,
+        "stateAfterSignal": 1,
+        "coldPIDDifferent": true,
+        "normalEnvironment": {},
+        "normalArguments": [],
+        "lastPersistedDiagnosticClock": {
+          "clock": 799.984,
+          "reason": "telemetry_sample"
+        },
+        "savedPositionAfterCold": 801.285,
+        "savedMinusLastPersistedDiagnosticSeconds": 1.3009999999999309,
+        "diagnosticLossLowerBoundSeconds": 0,
+        "sameTrackPreferences": true,
+        "sameBookmarkKeys": true,
+        "periodicSaveSourceIntervalSeconds": 2,
+        "actualUIInspected": true,
+        "performanceAccepted": false,
+        "scope": "One foreground-playing SIGKILL, normal cold launch; not spontaneous crash, jetsam, device restart, or maximum durability bound",
+        "replayPending": false,
+        "initialT3BlackFrameRetained": true,
+        "extraNormalHomeColdRestartBeforeFileNavigation": false,
+        "sameColdPIDAfterNavigationVerified": true
+      },
+      "replay": {
+        "expectedSavedPosition": 801.285,
+        "firstFrameClocks": [
+          801.381
+        ],
+        "firstFrameMatchesSavedWithin2Seconds": true,
+        "actualUIInspected": true,
+        "sourceDiffSHA256": "22c667aac7fb8abf8fbfdf09461be61c2db429f8fba6ac7f7b8e5a06a7482b69",
+        "scope": "Normal cold startup then UI continue, 30 second actual movie window; internal first-frame clock verifies bookmark, not frame performance",
+        "sameReplayBookmarkIdentityVerified": true,
+        "replayChangedBookmarkCount": 1,
+        "sameReplayTrackPreferences": true
+      },
+      "exit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      }
+    }
+  ],
+  "navigationToolFailures": {
+    "at": "2026-10-11T12:26:29.417487+08:00",
+    "retainedFailures": [
+      "cold-replay-preparation navigation timeout",
+      "recovery rejected actual file page because home required",
+      "bounded root search failed despite actual displayed video row"
+    ],
+    "observedLayout": "landscape sidebar, file root, no bottom tab bar",
+    "observedVideoRowCenterY": 758,
+    "appHeight": 810,
+    "oldTabletBottomCutoffY": 740,
+    "correction": "tablet file navigation bound ends at height minus5, plus resume actual file-root stage",
+    "boundedRootGestures": 8,
+    "gesturePerformanceAccepted": false,
+    "AppRestartDuringRecovery": false,
+    "AdditionalPlaybackDuringRecovery": false,
+    "LocalBookmarkOrCredentialsRewritten": false,
+    "classification": "TOOL"
+  },
+  "historicalJellyfinGapForensics": {
+    "at": "2026-10-11T12:16:35.904860+08:00",
+    "historicalSourceDiffSHA256": "22c667aac7fb8abf8fbfdf09461be61c2db429f8fba6ac7f7b8e5a06a7482b69",
+    "sameColdPIDPreviouslyVerified": true,
+    "gapNewDiagnosticCount": 15,
+    "gapDiagnosticNames": {
+      "diagnostics.jellyfin.library_route_requested": 1,
+      "diagnostics.jellyfin.library_entry_presented": 1,
+      "diagnostics.jellyfin.playback_route_state": 2,
+      "diagnostics.jellyfin.library_loading": 1,
+      "diagnostics.jellyfin.playback_route_verified": 1,
+      "diagnostics.jellyfin.library_loaded": 7,
+      "diagnostics.media.probe_succeeded": 1,
+      "diagnostics.jellyfin.playback_preparing": 1
+    },
+    "gapFirstFrameOrPlaybackClockRecords": 0,
+    "changedLocalBookmarkCount": 0,
+    "localBeforeSeconds": 668.133,
+    "localBeforeReplaySeconds": 668.133,
+    "replayActualFirstFrameSeconds": 1143.184,
+    "differenceSeconds": 475.051,
+    "firstFramePositionAlsoVerifiedInDedicatedFirstFrameEvent": true,
+    "httpACKAndServerHistoryAvailableInStoredEvidence": false,
+    "serverCurrentStateRead": false,
+    "rootCause": "unknown; local gap playback and local bookmark mutation not observed; authoritative server progress, detail request snapshot and external clients remain unproven",
+    "rawEvidenceModified": false,
+    "classification": "historical failed comparison retained; no new device playback acceptance"
+  },
+  "wireless18ReadOnlyLiveIdentity": {
+    "identityMatches": true,
+    "paired": true,
+    "model": "iPhone19,7",
+    "system": "27.0",
+    "verifiedPort": 62078,
+    "connection": "direct Wi-Fi TCP",
+    "targetAbsentFromUSB": true,
+    "systemDNSServiceResolved": true,
+    "pairingRecordChanged": false,
+    "networkConfigurationChanged": false,
+    "appInstalledOrLaunched": false,
+    "outcome": "verified"
+  },
+  "native18": {
+    "at": "2026-10-11T12:21:12.290282+08:00",
+    "exit": 0,
+    "networkConfigurationChanged": false,
+    "AppLaunchOrScreenshotPerformed": false,
+    "identityMayBeCached": true,
+    "nativeLiveConnectionConfirmed": false,
+    "pairingState": "paired",
+    "tunnelState": "unavailable",
+    "ddiServicesAvailable": false,
+    "developerModeStatus": "enabled"
+  },
+  "18InstalledOrLaunchedThisTurn": false,
+  "18UIDeferredByUser": true,
+  "networkConfigurationChanged": false,
+  "finalNormalState": {
+    "iphone13": {
+      "at": "2026-10-11T12:28:48.710895+08:00",
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "connection": "USB",
+      "actualEmptyEnvironmentVerified": true,
+      "playerClosed": true,
+      "idleTimeoutRestored": 10,
+      "animationCoolOffRestored": 2,
+      "sourceUnchanged": true,
+      "latestInstalledBinaries": {
+        "Nastart": "0ed1b8ea11e7fd1971d6c3efd800ac18bbbf23a15f33819fbac670ea12e0c34a",
+        "Nastart.debug.dylib": "d2aafd6c2ca8cb5eb1c5a9761085759b394f75dcad3d75e8dad1b7fd91dd13f3",
+        "Frameworks/KSPlayer.framework/KSPlayer": "8e6bc9ccfd71d1aa406f1cf74f06201df62b90e577527315f72c040fe2465ebe"
+      },
+      "actualFinalHomeInspected": true,
+      "NASNormalVisible": true,
+      "DSMOnlineVisible": true,
+      "JellyfinOnlineVisible": true,
+      "warningServiceCardsPreserved": true
+    },
+    "ipad": {
+      "at": "2026-10-11T12:28:49.722131+08:00",
+      "model": "iPad12,1",
+      "system": "18.3.1",
+      "connection": "USB",
+      "actualEmptyEnvironmentVerified": true,
+      "playerClosed": true,
+      "idleTimeoutRestored": 10,
+      "animationCoolOffRestored": 2,
+      "sourceUnchanged": true,
+      "latestInstalledBinaries": {
+        "Nastart": "0ed1b8ea11e7fd1971d6c3efd800ac18bbbf23a15f33819fbac670ea12e0c34a",
+        "Nastart.debug.dylib": "d2aafd6c2ca8cb5eb1c5a9761085759b394f75dcad3d75e8dad1b7fd91dd13f3",
+        "Frameworks/KSPlayer.framework/KSPlayer": "8e6bc9ccfd71d1aa406f1cf74f06201df62b90e577527315f72c040fe2465ebe"
+      },
+      "actualFinalHomeInspected": true,
+      "NASNormalVisible": true,
+      "DSMOnlineVisible": true,
+      "JellyfinOnlineVisible": true,
+      "warningServiceCardsPreserved": true
+    }
+  },
+  "nativeActiveConditions": {
+    "iphone13": 0,
+    "ipad": 0
+  },
+  "performanceAccepted": false,
+  "competitorAccepted": false,
+  "unfinished": [
+    "Jellyfin long-gap +475.051-second origin, authoritative server history and external clients unknown",
+    "18 latest normal foreground UI deferred; native tunnel/DDI/WDA/LLDB/full wireless performance",
+    "same-source AV, Jellyfin early threshold/HTTP ACK, immediate suspension/network loss, seek and termination phases",
+    "spontaneous crash/jetsam/device restart and maximum save-loss guarantee",
+    "FileStation119/session-generation closure",
+    "real weak-cellular old ordinal0, source/probe/negotiation attribution",
+    "complete scroll displacement/frame timing and Lenna/DS One/other specified competitors",
+    "all PX/UX/CB/L2/L3/Main, formats, subtitles cue and actual audio effect"
+  ]
+}

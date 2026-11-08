@@ -1,0 +1,357 @@
+{
+  "allRows": [
+    {
+      "allocationAfterReleaseStatus": 0,
+      "colorAttachmentsExplicitNotBlindCopied": true,
+      "fifthAllocationStatus": -6689,
+      "fourHeldOutputBufferBytes": 24900480,
+      "height": 1080,
+      "highlightAboveSDRPreserved": true,
+      "highlightBefore": 4.011202812194824,
+      "maxStripeError": 0.008199930191040039,
+      "notDevicePerformanceOrDolbyVisionAcceptance": true,
+      "pixelFormat": 2016686640,
+      "poolRecoveredAfterRelease": true,
+      "range": "video",
+      "renderAndReadLockWallMs": [
+        154.92154168896377,
+        2.019166713580489,
+        1.7655834089964628,
+        1.7012916505336761
+      ],
+      "stripeAbsoluteErrors": [
+        0,
+        0.0034644603729248047,
+        0.008199930191040039,
+        0.0033996105194091797
+      ],
+      "stripeExpectedFromSource": [
+        4.011202812194824,
+        1,
+        2.505601406097412,
+        0.8022405505180359
+      ],
+      "stripeLinearSamples": [
+        4.011202812194824,
+        1.0034644603729248,
+        2.497401475906372,
+        0.8056401610374451
+      ],
+      "thresholdEnforced": true,
+      "transfer": "PQ",
+      "width": 1920
+    },
+    {
+      "allocationAfterReleaseStatus": 0,
+      "colorAttachmentsExplicitNotBlindCopied": true,
+      "fifthAllocationStatus": -6689,
+      "fourHeldOutputBufferBytes": 99567360,
+      "height": 2160,
+      "highlightAboveSDRPreserved": true,
+      "highlightBefore": 4.011202812194824,
+      "maxStripeError": 0.008199930191040039,
+      "notDevicePerformanceOrDolbyVisionAcceptance": true,
+      "pixelFormat": 2016686640,
+      "poolRecoveredAfterRelease": true,
+      "range": "video",
+      "renderAndReadLockWallMs": [
+        5.451291799545288,
+        5.035041831433773,
+        4.995166789740324,
+        4.67204162850976
+      ],
+      "stripeAbsoluteErrors": [
+        0,
+        0.0034644603729248047,
+        0.008199930191040039,
+        0.0033996105194091797
+      ],
+      "stripeExpectedFromSource": [
+        4.011202812194824,
+        1,
+        2.505601406097412,
+        0.8022405505180359
+      ],
+      "stripeLinearSamples": [
+        4.011202812194824,
+        1.0034644603729248,
+        2.497401475906372,
+        0.8056401610374451
+      ],
+      "thresholdEnforced": true,
+      "transfer": "PQ",
+      "width": 3840
+    },
+    {
+      "allocationAfterReleaseStatus": 0,
+      "colorAttachmentsExplicitNotBlindCopied": true,
+      "fifthAllocationStatus": -6689,
+      "fourHeldOutputBufferBytes": 24900480,
+      "height": 1080,
+      "highlightAboveSDRPreserved": true,
+      "highlightBefore": 4.002965450286865,
+      "maxStripeError": 0.003342151641845703,
+      "notDevicePerformanceOrDolbyVisionAcceptance": true,
+      "pixelFormat": 2019963440,
+      "poolRecoveredAfterRelease": true,
+      "range": "full",
+      "renderAndReadLockWallMs": [
+        1.0430414695292711,
+        0.6927917711436749,
+        0.726958503946662,
+        0.7114165928214788
+      ],
+      "stripeAbsoluteErrors": [
+        0,
+        0.00040656328201293945,
+        0.003342151641845703,
+        0.0029790401458740234
+      ],
+      "stripeExpectedFromSource": [
+        4.002965450286865,
+        1,
+        2.5014827251434326,
+        0.8005930781364441
+      ],
+      "stripeLinearSamples": [
+        4.002965450286865,
+        0.9995934367179871,
+        2.5048248767852783,
+        0.7976140379905701
+      ],
+      "thresholdEnforced": true,
+      "transfer": "PQ",
+      "width": 1920
+    },
+    {
+      "allocationAfterReleaseStatus": 0,
+      "colorAttachmentsExplicitNotBlindCopied": true,
+      "fifthAllocationStatus": -6689,
+      "fourHeldOutputBufferBytes": 99567360,
+      "height": 2160,
+      "highlightAboveSDRPreserved": true,
+      "highlightBefore": 4.002965450286865,
+      "maxStripeError": 0.003342151641845703,
+      "notDevicePerformanceOrDolbyVisionAcceptance": true,
+      "pixelFormat": 2019963440,
+      "poolRecoveredAfterRelease": true,
+      "range": "full",
+      "renderAndReadLockWallMs": [
+        2.15000007301569,
+        1.8560418393462896,
+        1.8366668373346329,
+        1.7052083276212215
+      ],
+      "stripeAbsoluteErrors": [
+        0,
+        0.00040656328201293945,
+        0.003342151641845703,
+        0.0029790401458740234
+      ],
+      "stripeExpectedFromSource": [
+        4.002965450286865,
+        1,
+        2.5014827251434326,
+        0.8005930781364441
+      ],
+      "stripeLinearSamples": [
+        4.002965450286865,
+        0.9995934367179871,
+        2.5048248767852783,
+        0.7976140379905701
+      ],
+      "thresholdEnforced": true,
+      "transfer": "PQ",
+      "width": 3840
+    },
+    {
+      "allocationAfterReleaseStatus": 0,
+      "colorAttachmentsExplicitNotBlindCopied": true,
+      "fifthAllocationStatus": -6689,
+      "fourHeldOutputBufferBytes": 24900480,
+      "height": 1080,
+      "highlightAboveSDRPreserved": true,
+      "highlightBefore": 3.9973294734954834,
+      "maxStripeError": 0.008469581604003906,
+      "notDevicePerformanceOrDolbyVisionAcceptance": true,
+      "pixelFormat": 2016686640,
+      "poolRecoveredAfterRelease": true,
+      "range": "video",
+      "renderAndReadLockWallMs": [
+        15.515041770413518,
+        0.7793332915753126,
+        0.8225415367633104,
+        0.6631668657064438
+      ],
+      "stripeAbsoluteErrors": [
+        0,
+        0.0007491111755371094,
+        0.008469581604003906,
+        0.0026249289512634277
+      ],
+      "stripeExpectedFromSource": [
+        3.9973294734954834,
+        1,
+        2.4986648559570312,
+        0.7994658946990967
+      ],
+      "stripeLinearSamples": [
+        3.9973294734954834,
+        1.000749111175537,
+        2.4901952743530273,
+        0.7968409657478333
+      ],
+      "thresholdEnforced": true,
+      "transfer": "HLG",
+      "width": 1920
+    },
+    {
+      "allocationAfterReleaseStatus": 0,
+      "colorAttachmentsExplicitNotBlindCopied": true,
+      "fifthAllocationStatus": -6689,
+      "fourHeldOutputBufferBytes": 99567360,
+      "height": 2160,
+      "highlightAboveSDRPreserved": true,
+      "highlightBefore": 3.9973294734954834,
+      "maxStripeError": 0.008469581604003906,
+      "notDevicePerformanceOrDolbyVisionAcceptance": true,
+      "pixelFormat": 2016686640,
+      "poolRecoveredAfterRelease": true,
+      "range": "video",
+      "renderAndReadLockWallMs": [
+        2.275124890729785,
+        1.9312500953674316,
+        1.8022081349045038,
+        1.8285417463630438
+      ],
+      "stripeAbsoluteErrors": [
+        0,
+        0.0007491111755371094,
+        0.008469581604003906,
+        0.0026249289512634277
+      ],
+      "stripeExpectedFromSource": [
+        3.9973294734954834,
+        1,
+        2.4986648559570312,
+        0.7994658946990967
+      ],
+      "stripeLinearSamples": [
+        3.9973294734954834,
+        1.000749111175537,
+        2.4901952743530273,
+        0.7968409657478333
+      ],
+      "thresholdEnforced": true,
+      "transfer": "HLG",
+      "width": 3840
+    },
+    {
+      "allocationAfterReleaseStatus": 0,
+      "colorAttachmentsExplicitNotBlindCopied": true,
+      "fifthAllocationStatus": -6689,
+      "fourHeldOutputBufferBytes": 24900480,
+      "height": 1080,
+      "highlightAboveSDRPreserved": true,
+      "highlightBefore": 3.9896602630615234,
+      "maxStripeError": 0.0022361278533935547,
+      "notDevicePerformanceOrDolbyVisionAcceptance": true,
+      "pixelFormat": 2019963440,
+      "poolRecoveredAfterRelease": true,
+      "range": "full",
+      "renderAndReadLockWallMs": [
+        0.9712083265185356,
+        0.640833517536521,
+        0.6293749902397394,
+        0.6540832109749317
+      ],
+      "stripeAbsoluteErrors": [
+        0,
+        0.0007432103157043457,
+        0.0022361278533935547,
+        0.00025093555450439453
+      ],
+      "stripeExpectedFromSource": [
+        3.9896602630615234,
+        1,
+        2.4948301315307617,
+        0.7979320883750916
+      ],
+      "stripeLinearSamples": [
+        3.9896602630615234,
+        0.9992567896842957,
+        2.4970662593841553,
+        0.798183023929596
+      ],
+      "thresholdEnforced": true,
+      "transfer": "HLG",
+      "width": 1920
+    },
+    {
+      "allocationAfterReleaseStatus": 0,
+      "colorAttachmentsExplicitNotBlindCopied": true,
+      "fifthAllocationStatus": -6689,
+      "fourHeldOutputBufferBytes": 99567360,
+      "height": 2160,
+      "highlightAboveSDRPreserved": true,
+      "highlightBefore": 3.9896602630615234,
+      "maxStripeError": 0.0022361278533935547,
+      "notDevicePerformanceOrDolbyVisionAcceptance": true,
+      "pixelFormat": 2019963440,
+      "poolRecoveredAfterRelease": true,
+      "range": "full",
+      "renderAndReadLockWallMs": [
+        2.1605417132377625,
+        1.8481665756553411,
+        1.7560417763888836,
+        1.8123751506209373
+      ],
+      "stripeAbsoluteErrors": [
+        0,
+        0.0007432103157043457,
+        0.0022361278533935547,
+        0.00025093555450439453
+      ],
+      "stripeExpectedFromSource": [
+        3.9896602630615234,
+        1,
+        2.4948301315307617,
+        0.7979320883750916
+      ],
+      "stripeLinearSamples": [
+        3.9896602630615234,
+        0.9992567896842957,
+        2.4970662593841553,
+        0.798183023929596
+      ],
+      "thresholdEnforced": true,
+      "transfer": "HLG",
+      "width": 3840
+    }
+  ],
+  "appSourceChanged": false,
+  "dolbyVisionMetadataValidated": false,
+  "newMediaRequests": 0,
+  "physicalDeviceOperated": false,
+  "policyWhiteNitsChosen": false,
+  "scope": "Mac offline synthetic HDR composition, explicit color tags, bounded pool",
+  "date": "2026-10-20",
+  "probeSourceSHA256": "1f95ca6b401b79cb9dcdb0f7b8c9f1ceca78114f143433d8a4a470769e5b4543",
+  "toolchain": "Xcode27 matched Swift/SDK",
+  "initialToolchainSDKMismatchRetained": true,
+  "maximumResidentSetBytes": 226836480,
+  "processPeakMemoryFootprintBytes": 255312808,
+  "acceptedGrayStripeAbsoluteErrorUpperBound": 0.009,
+  "resourceScope": "single Mac Swift process, not app/iOS/continuous 4K frame budget",
+  "limitations": [
+    "synthetic neutral gray source and constant stripes, not text/PGS rasterization or chroma gamut acceptance",
+    "white reference brightness not selected",
+    "no transfer/color/range or size transition pool rebuild test",
+    "no long-run memory plateau, sample-buffer downstream lifetime or foreground/PiP generation test",
+    "no Dolby Vision dynamic metadata handling",
+    "Core Image render/read-lock wall time is Mac API boundary, not iPhone GPU/display timing"
+  ],
+  "productionHDRProtectionRemoved": false,
+  "requirementsClosed": 0,
+  "openRequirementCount": 28
+}

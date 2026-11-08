@@ -1,0 +1,146 @@
+{
+  "date": "2026-11-01",
+  "scope": "TV saved connection status, sanitized display address and default Docker copy; isolated Debug preview",
+  "source": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "inputCount": 446,
+    "existingFilesChanged": 4,
+    "otherHashesUnchanged": 442
+  },
+  "finalBuilds": {
+    "mobile-sim-debug-cast": {
+      "startedAt": "2026-11-01T01:01:55.194422+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-11-01T01:02:14.809024+08:00"
+    },
+    "tv-sim-debug-cast": {
+      "startedAt": "2026-11-01T01:00:09.001758+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-11-01T01:00:22.609527+08:00"
+    },
+    "mobile-debug": {
+      "startedAt": "2026-11-01T01:02:14.809755+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-11-01T01:02:52.544732+08:00"
+    },
+    "tv-unsigned-debug": {
+      "startedAt": "2026-11-01T01:04:32.001886+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-11-01T01:04:47.966170+08:00"
+    },
+    "mobile-release": {
+      "startedAt": "2026-11-01T01:02:52.545577+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-11-01T01:04:32.000968+08:00"
+    },
+    "tv-release": {
+      "startedAt": "2026-11-01T01:04:47.967061+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-11-01T01:05:19.753769+08:00"
+    }
+  },
+  "behaviorSourceChecks": {
+    "loginSheetDismissDisconnectConfirmAndCallbacksUnchanged": true,
+    "formatterImplementationUnchanged": true,
+    "defaultDockerVisibilityUnchanged": true,
+    "allSourceFromConnectionBannerThroughPlaybackAndNetworkPagesUnchanged": true
+  },
+  "summaryChecks": {
+    "startedAt": "2026-11-01T01:00:08.599101+08:00",
+    "exitCode": 0,
+    "endedAt": "2026-11-01T01:00:08.939024+08:00",
+    "syntheticAddressFixtures": 3,
+    "savedKinds": 2,
+    "emptyKinds": 2,
+    "extractedFunctionsOnly": true,
+    "networkRequests": 0,
+    "initialHarnessVisibilityFailureRetained": true
+  },
+  "scenarioTests": {
+    "count": 4,
+    "startedAt": "2026-11-01T01:01:00.122517+08:00",
+    "exitCode": 0,
+    "endedAt": "2026-11-01T01:01:03.616100+08:00"
+  },
+  "simulation": {
+    "budget": {
+      "time": "2026-11-01T01:05:48.796679+08:00",
+      "freeGiB": 5.232391357421875,
+      "mobileMinimumGiB": 6,
+      "tvMinimumGiB": 3.8,
+      "mobileStarted": false,
+      "reasonMobile": "Below established startup budget",
+      "tvBudgetPassed": true
+    },
+    "ownedSimulatorCount": 1,
+    "ui": {
+      "scenario": "account-connections",
+      "appearance": "dark",
+      "theme": "glassDeck",
+      "textSize": "standard",
+      "staticWindowCount": 1,
+      "initialStatesObserved": [
+        "NAS saved configuration and sanitized display address",
+        "Jellyfin empty state"
+      ],
+      "interactionAttempts": [
+        {
+          "input": "Return",
+          "observedStateChange": false
+        },
+        {
+          "input": "space",
+          "observedStateChange": false
+        }
+      ],
+      "menuOpenedToShowSimulatorRemote": true,
+      "toggleInteractionValidated": false,
+      "guestAccessibilityTreeAvailable": false,
+      "voiceOverValidated": false,
+      "fullProductionPageValidated": false,
+      "physicalRemoteValidated": false,
+      "fullFrameTimingValidated": false
+    },
+    "cleanup": {
+      "startedAt": "2026-11-01T01:05:49.099066+08:00",
+      "physicalDevicesOperated": 0,
+      "NASCommands": 0,
+      "sourceInputCount": 446,
+      "builtFromUnchangedSource": true,
+      "traceExported": false,
+      "syntheticPreferencesPreserved": true,
+      "unexpectedApplicationKeys": [],
+      "installedHashesUnchanged": true,
+      "shutdownExit": 0,
+      "deleteExit": 0,
+      "freshAbsent": true,
+      "endedAt": "2026-11-01T01:11:34.641911+08:00"
+    }
+  },
+  "package": {
+    "mobileSignedMachOCount": 30,
+    "physicalInstallCount": 0,
+    "tvCurrentSignedCandidate": false,
+    "priorProfileBlockRetained": true,
+    "tvNormalSigningRetried": false
+  },
+  "physicalDevicesOperated": 0,
+  "NASRequests": 0,
+  "actualCredentialReadsOrClears": 0,
+  "playbackAttempts": 0,
+  "remoteSourceWrites": 0,
+  "playbackMatrixNewPasses": 0,
+  "limitations": [
+    "Saved configuration is not reachability or live authentication",
+    "Static TV window only; two toggle input attempts left the view unchanged",
+    "Guest accessibility, VoiceOver, physical remote and full production page not validated",
+    "Mobile simulator below startup budget; no mobile UI validation this batch",
+    "No physical device, actual server or full security audit; prior open items retained"
+  ],
+  "recordedAt": "2026-11-01T01:14:00.759346+08:00",
+  "documentation": {
+    "documentsChecked": 566,
+    "localLinksChecked": 3575,
+    "missingDestinations": 0
+  }
+}

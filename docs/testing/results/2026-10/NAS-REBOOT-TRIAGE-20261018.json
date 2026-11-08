@@ -1,0 +1,343 @@
+{
+  "at": "2026-10-18T08:41:38.016770+08:00",
+  "NASIdentityDisplay": {
+    "model": "DS918+",
+    "DSM": "7.2.1-69057 Update 5",
+    "CPUReported": "Intel Celeron J3455",
+    "clockReportedGHz": 3.6,
+    "cores": 4,
+    "memoryGB": 16,
+    "thermalStatusNow": "normal",
+    "fanMode": "quiet",
+    "notVerifiedPhysicalHardware": true
+  },
+  "currentBoot": {
+    "systemClockAtObservation": "2026-10-18 08:03:33+08:00",
+    "uptimeAtObservationSeconds": 576,
+    "inferredKernelStartApproximately": "2026-10-18 07:53:57+08:00",
+    "DSMSystemBootEvent": "2026-10-18 07:54:32+08:00",
+    "improperShutdownEvent": "2026-10-18 07:55:32+08:00",
+    "scrubStartedEvent": "2026-10-18 07:55:41+08:00"
+  },
+  "UPSNow": {
+    "vendor": "APC",
+    "model": "Back-UPS BK650M2-CH",
+    "connection": "USB",
+    "online": true,
+    "batteryPercent": 100,
+    "runtimeEstimateSeconds": 1795,
+    "waitUntilLowBattery": true,
+    "shutdownUPSWhenStandby": false,
+    "networkUPSServerEnabled": false,
+    "powerSchedulesObserved": 0,
+    "noCurrentSettingsChanged": true
+  },
+  "systemCSV": {
+    "allImproperShutdownEvents": 43,
+    "improperShutdownEventsSince20260918": [
+      "2026-10-18 07:55:32",
+      "2026-10-17 11:38:48",
+      "2026-10-16 13:26:28",
+      "2026-10-16 07:54:33",
+      "2026-10-13 08:17:06",
+      "2026-10-08 11:45:07",
+      "2026-10-07 23:46:02",
+      "2026-10-07 12:45:21",
+      "2026-09-28 21:02:03",
+      "2026-09-28 07:50:47",
+      "2026-09-28 06:29:10"
+    ],
+    "last30DayOOMEvents": 0,
+    "historicalOOMEvents": 9,
+    "recentUPSBatteryLowOrMainsFailureEventsFoundInGeneralExport": false
+  },
+  "interpretation": {
+    "wholeHostAbruptRestartConfirmed": true,
+    "containerOnlyFailureNotAdequateExplanation": true,
+    "powerVersusKernelCrashNotDistinguished": true,
+    "currentRAMPressureUnproven": true,
+    "historicalOOMNotEvidenceForThisReboot": true,
+    "UPSCurrentOnlineNotProofOfPastUninterruptedOutput": true,
+    "noRebootOrMutationPerformedByThisInvestigation": true
+  },
+  "userHardwareConfirmationPending": false,
+  "ContainerManagerNow": {
+    "at": "2026-10-18T08:13:47.498853+08:00",
+    "bytes": 23941,
+    "SHA256": "a46dd454f897f7af2cd3bf854d67b6eb5d0e0bb6c1f109ecb1c18f56a8957666",
+    "rowsIncludingHeaders": 308,
+    "UIReportedTotalItems": 306,
+    "latestActivityInUI": "2026-10-15 16:47:21",
+    "UIOverviewRunningContainers": 14,
+    "UIOverviewHealthyProjects": 13,
+    "currentAllServicesHealthyInUI": true,
+    "administrativeActivityNotDockerDaemonKernelLog": true
+  },
+  "systemLogExport": {
+    "at": "2026-10-18T08:08:59.043024+08:00",
+    "rows": 4022,
+    "bytes": 429396,
+    "SHA256": "749a41e095973b12382de8c93664a258987dc475a57f59284b71192b3cbe8510",
+    "eventCategoryCounts": {
+      "storage": 55,
+      "improperShutdown": 43,
+      "UPS": 92,
+      "boot": 118,
+      "shutdown": 17,
+      "memory": 9
+    },
+    "movedFromTemporaryDownloadsToPrivateEvidence": true,
+    "headerRows": 2
+  },
+  "mediaPauseCleanup": {
+    "ownMediaOrPadRunnerWorkers": 0,
+    "phoneExistingLaunchctlPreserved": true,
+    "NastartBothDevicesIntentionallyClosed": true,
+    "originalPhoneWiFiOnRestored": true,
+    "ownCaffeinateStopped": true,
+    "noBackgroundRetries": true
+  },
+  "pausedDeviceDataAudit": {
+    "iphone13": {
+      "at": "2026-10-18T07:56:13.816644+08:00",
+      "nonBookmarkPreferencesSame": true,
+      "bookmarksBefore": 36,
+      "bookmarksAfter": 36,
+      "removed": 0,
+      "added": 0,
+      "trackChanges": 0,
+      "intentionalPause": true
+    },
+    "ipad": {
+      "at": "2026-10-18T07:56:13.988572+08:00",
+      "nonBookmarkPreferencesSame": true,
+      "bookmarksBefore": 29,
+      "bookmarksAfter": 29,
+      "removed": 0,
+      "added": 0,
+      "trackChanges": 0,
+      "intentionalPause": true
+    }
+  },
+  "systemDiagnosticBundle": {
+    "generationRequests": 2,
+    "attempt1": "progress ended; no downloaded file obtained",
+    "attempt2": "default system plus optional Container Manager; progress still visible at checkpoint; registered 45-second download wait timed out",
+    "bundleObtained": false,
+    "noThirdRequest": true,
+    "remoteSupportNotEnabled": true,
+    "sleepFanPeriodicDebugNotEnabled": true,
+    "lastObservedProgressVisible": false,
+    "manualLocalExportRequested": true,
+    "lastObservationAt": "2026-10-18T08:41:38.016770+08:00",
+    "scope": "previous attempt selected default system plus optional Container Manager; no new generation this continuation"
+  },
+  "actualHardwareAndLoaderDetailsPending": true,
+  "userChangeConstraints": {
+    "at": "2026-10-18T08:32:47.855061+08:00",
+    "selfBuiltDSMConfirmed": true,
+    "DSMSystemUpdateProhibitedWithoutExplicitUserInstruction": true,
+    "noLoaderDriverPackageUpdatesAuthorized": true,
+    "investigationReadOnly": true,
+    "noPlaybackResumeAuthorized": true
+  },
+  "jellyfinLogTriage": {
+    "0": {
+      "firstTimestamp": "2026-10-18 02:00:01.000 +08:00",
+      "lastTimestamp": "2026-10-18 08:08:52.881 +08:00",
+      "counts": {
+        "panic": 0,
+        "oom": 0,
+        "GPUError": 0,
+        "ffmpegExit": 3,
+        "qStop": 0,
+        "shutdown": 0
+      },
+      "preRebootMarkers": [
+        {
+          "timestamp": "2026-10-18 07:51:23.918 +08:00",
+          "kind": "stop",
+          "messageClass": "3.918 +08:00] [INF] [24] Emby.Server.Implementations.Session.SessionManager: Playback stopped reported by app \"[private]\" \"[private]\" playing \"[private]\". Stopped at \"[private]\" ms"
+        },
+        {
+          "timestamp": "2026-10-18 08:08:23.400 +08:00",
+          "kind": "startup",
+          "messageClass": "[2026-10-18 08:08:23.400 +08:00] [INF] [10] Main: Jellyfin version: \"[private]\""
+        }
+      ]
+    },
+    "5": {
+      "firstTimestamp": "2026-10-17 01:35:05.085 +08:00",
+      "lastTimestamp": "2026-10-17 23:53:56.395 +08:00",
+      "counts": {
+        "panic": 0,
+        "oom": 0,
+        "GPUError": 0,
+        "ffmpegExit": 41,
+        "qStop": 0,
+        "shutdown": 0
+      },
+      "preRebootMarkers": []
+    },
+    "ffmpeg": {
+      "lastProgress": "frame= 1512 fps= 45 q=-0.0 size=N/A time=00:01:01.89 bitrate=N/A speed=1.85x    ",
+      "normalQuitMarker": false,
+      "videoDriverErrorMarkers": 0,
+      "tailStatus": [
+        "    Last message repeated 1 times",
+        "[hevc @ 0x7f77576e2680] Skipping NAL unit 63",
+        "    Last message repeated 1 times",
+        "[hevc @ 0x7f77576e2a00] Skipping NAL unit 63",
+        "    Last message repeated 1 times",
+        "[hevc @ 0x7f77576e2d80] Skipping NAL unit 63",
+        "    Last message repeated 1 times",
+        "[hevc @ 0x7f77576e3100] Skipping NAL unit 63",
+        "    Last message repeated 1 times",
+        "[hevc @ 0x7f77576e1c00] Skipping NAL unit 63",
+        "    Last message repeated 1 times"
+      ]
+    }
+  },
+  "endCheckpoint": {
+    "at": "2026-10-18T08:34:14.716261+08:00",
+    "temporaryBrowserViewportReset": true,
+    "temporaryStatusTabClosed": true,
+    "DSMTabRetainedForExistingGeneration": true,
+    "systemDiagnosticPackageObtained": false,
+    "noDSMUpdatePerformed": true,
+    "ownNASLogCaffeinate": "already ended"
+  },
+  "continuationCheckpoint": {
+    "at": "2026-10-18T08:41:38.016770+08:00",
+    "UI": "DSM support center reopened; system log generation page reachable; no progress dialog or completed download link visible",
+    "localDownloadFileObtained": false,
+    "generationRequestsThisContinuation": 0,
+    "manualLocalExportRequested": true,
+    "remoteSupportEnabled": false,
+    "DSMUpdated": false,
+    "playbackResumed": false,
+    "hardwareQuestionPending": true
+  },
+  "historicalTranscodeRebootCorrelation": {
+    "at": "2026-10-18T08:40:30.560441+08:00",
+    "daysAvailable": 3,
+    "recoveryMarkersCompared": 4,
+    "notExactPowerLossTimes": true,
+    "causationEstablished": false,
+    "cases": [
+      {
+        "day": "2026-10-16",
+        "improperRecoveryLogTime": "07:54:33",
+        "lastPriorServerEvent": "2026-10-16T07:50:35.090000",
+        "nextServerStartup": "2026-10-16T08:10:24.134000",
+        "prior15MinuteTranscodeStarts": 2,
+        "lastTranscodeStart": "2026-10-16T07:50:31.053000",
+        "lastTranscode": {
+          "VAAPIDecode": true,
+          "H264VAAPI": true,
+          "PGSCanvas": true,
+          "overlayVAAPI": true,
+          "toneMap": false
+        },
+        "FFmpegExitsAfterLastStartBeforeRecovery": []
+      },
+      {
+        "day": "2026-10-16",
+        "improperRecoveryLogTime": "13:26:28",
+        "lastPriorServerEvent": "2026-10-16T13:22:33.277000",
+        "nextServerStartup": "2026-10-16T13:33:48.251000",
+        "prior15MinuteTranscodeStarts": 3,
+        "lastTranscodeStart": "2026-10-16T13:21:27.823000",
+        "lastTranscode": {
+          "VAAPIDecode": true,
+          "H264VAAPI": true,
+          "PGSCanvas": true,
+          "overlayVAAPI": true,
+          "toneMap": false
+        },
+        "FFmpegExitsAfterLastStartBeforeRecovery": [
+          {
+            "at": "2026-10-16T13:22:13.557000",
+            "exit": 137
+          }
+        ]
+      },
+      {
+        "day": "2026-10-17",
+        "improperRecoveryLogTime": "11:38:48",
+        "lastPriorServerEvent": "2026-10-17T11:34:12.465000",
+        "nextServerStartup": "2026-10-17T11:50:26.428000",
+        "prior15MinuteTranscodeStarts": 5,
+        "lastTranscodeStart": "2026-10-17T11:33:45.440000",
+        "lastTranscode": {
+          "VAAPIDecode": true,
+          "H264VAAPI": true,
+          "PGSCanvas": true,
+          "overlayVAAPI": true,
+          "toneMap": false
+        },
+        "FFmpegExitsAfterLastStartBeforeRecovery": [
+          {
+            "at": "2026-10-17T11:33:56.478000",
+            "exit": 0
+          }
+        ]
+      },
+      {
+        "day": "2026-10-18",
+        "improperRecoveryLogTime": "07:55:32",
+        "lastPriorServerEvent": "2026-10-18T07:51:23.918000",
+        "nextServerStartup": "2026-10-18T08:08:23.400000",
+        "prior15MinuteTranscodeStarts": 1,
+        "lastTranscodeStart": "2026-10-18T07:51:16.066000",
+        "lastTranscode": {
+          "VAAPIDecode": true,
+          "H264VAAPI": true,
+          "PGSCanvas": true,
+          "overlayVAAPI": true,
+          "toneMap": false
+        },
+        "FFmpegExitsAfterLastStartBeforeRecovery": []
+      }
+    ]
+  },
+  "matchedLatestFFmpeg": {
+    "at": "2026-10-18T08:41:07.816179+08:00",
+    "transcodeStart": "2026-10-18T07:51:16.066+08:00",
+    "exactOutputPlaylistBasenameMatched": true,
+    "outputIdentifierExported": false,
+    "hardwareDecode": "VAAPI/iHD",
+    "videoEncoder": "h264_vaapi",
+    "subtitleCodec": "PGS",
+    "subtitleOverlay": "overlay_vaapi",
+    "outputDimensions": "852x480",
+    "videoBitrate": 1116000,
+    "audioEncoder": "libfdk_aac",
+    "normalQuitMarkerPresent": false,
+    "timestampedLogCanProveFinalProcessExit": false,
+    "matchedCommandNotKernelCause": true
+  },
+  "exit137ContextSummary": {
+    "observedExit137Count": 30,
+    "nearPriorKillOrQRequestCount": 28,
+    "noNearPriorKillOrQRequestCount": 2,
+    "limitations": "Nearby stop/kill entries may belong to another job; absence of nearby stop does not establish OOM. No per-job causal attribution."
+  },
+  "additionalHistoryFetch": {
+    "at": "2026-10-18T08:40:19.731148+08:00",
+    "HTTP": 200,
+    "bytes": 117051,
+    "SHA256": "1e1a615247cc3730252d78cf397d18947f3d8e6656f7b8cce34482b4ea2d2700",
+    "sourceDay": "2026-10-16",
+    "readOnly": true,
+    "mediaRequested": false
+  },
+  "taskDisposition": {
+    "at": "2026-10-18T09:44:13.160873+08:00",
+    "status": "deferredByUser",
+    "playbackResumptionAuthorized": true,
+    "DSMUpdatesStillProhibited": true,
+    "rootCauseResolved": false,
+    "noFurtherDiagnosticBundleRequested": true
+  }
+}

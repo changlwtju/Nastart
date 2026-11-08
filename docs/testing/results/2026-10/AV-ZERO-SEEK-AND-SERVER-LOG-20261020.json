@@ -1,0 +1,528 @@
+{
+  "date": "2026-10-20",
+  "scope": "isolated Mac loopback AVPlayer fixture, saved TS only; neither iOS product nor NAS/cellular playback",
+  "firstSegmentResponseDelaySeconds": 4.5,
+  "loopbackOnly": true,
+  "muted": true,
+  "automaticallyWaitsToMinimizeStalling": true,
+  "preferredForwardBufferDurationSeconds": 0.5,
+  "maxPlayerSecondsPerRun": 14,
+  "rows": [
+    {
+      "errorCode": 0,
+      "errorDomain": "none",
+      "itemFailed": false,
+      "lastClockSeconds": 0.250213125,
+      "mode": "seekZero",
+      "movingAtSeconds": 5.214585208101198,
+      "notCompositorPresentation": true,
+      "notNativePhonePlayback": true,
+      "playIssuedAtSeconds": 4.790691499831155,
+      "readyAtSeconds": 4.790691499831155,
+      "seekCompletedAtSeconds": 0.05407312489114702,
+      "seekSuccess": true,
+      "targetSeconds": 0,
+      "videoOutputAtSeconds": 4.646309333154932,
+      "videoOutputPTS": 0,
+      "round": 1,
+      "transactions": [
+        {
+          "name": "main.m3u8",
+          "method": "GET",
+          "requestMonotonic": 1.3403215419966727,
+          "headersMonotonic": 1.340715124970302,
+          "bodyBytes": 153,
+          "rangeRequested": false,
+          "result": "sent",
+          "endedMonotonic": 1.340718667022884
+        },
+        {
+          "name": "main.m3u8",
+          "method": "GET",
+          "requestMonotonic": 1.3429505000822246,
+          "headersMonotonic": 1.3429779580328614,
+          "bodyBytes": 153,
+          "rangeRequested": false,
+          "result": "sent",
+          "endedMonotonic": 1.3429805419873446
+        },
+        {
+          "name": "0.ts",
+          "method": "GET",
+          "requestMonotonic": 1.3427360830828547,
+          "headersMonotonic": 5.8530143750831485,
+          "bodyBytes": 121072,
+          "rangeRequested": false,
+          "result": "sent",
+          "endedMonotonic": 5.8531058330554515
+        },
+        {
+          "name": "1.ts",
+          "method": "GET",
+          "requestMonotonic": 5.998908499954268,
+          "headersMonotonic": 5.998945374973118,
+          "bodyBytes": 646156,
+          "rangeRequested": false,
+          "result": "sent",
+          "endedMonotonic": 5.999047917081043
+        }
+      ]
+    },
+    {
+      "errorCode": 0,
+      "errorDomain": "none",
+      "itemFailed": false,
+      "lastClockSeconds": 0.257164917,
+      "mode": "noSeek",
+      "movingAtSeconds": 5.113702124916017,
+      "notCompositorPresentation": true,
+      "notNativePhonePlayback": true,
+      "playIssuedAtSeconds": 4.697499124798924,
+      "readyAtSeconds": 4.697499124798924,
+      "seekCompletedAtSeconds": null,
+      "seekSuccess": true,
+      "targetSeconds": 0,
+      "videoOutputAtSeconds": 4.613276624819264,
+      "videoOutputPTS": 0,
+      "round": 2,
+      "transactions": [
+        {
+          "name": "main.m3u8",
+          "method": "GET",
+          "requestMonotonic": 0.09722320782020688,
+          "headersMonotonic": 0.09728562482632697,
+          "bodyBytes": 153,
+          "rangeRequested": false,
+          "result": "sent",
+          "endedMonotonic": 0.0972885419614613
+        },
+        {
+          "name": "main.m3u8",
+          "method": "GET",
+          "requestMonotonic": 0.09927562484517694,
+          "headersMonotonic": 0.099309166893363,
+          "bodyBytes": 153,
+          "rangeRequested": false,
+          "result": "sent",
+          "endedMonotonic": 0.09931612480431795
+        },
+        {
+          "name": "0.ts",
+          "method": "GET",
+          "requestMonotonic": 0.09914087480865419,
+          "headersMonotonic": 4.609432374825701,
+          "bodyBytes": 121072,
+          "rangeRequested": false,
+          "result": "sent",
+          "endedMonotonic": 4.609512957977131
+        },
+        {
+          "name": "1.ts",
+          "method": "GET",
+          "requestMonotonic": 4.694914916995913,
+          "headersMonotonic": 4.694951624842361,
+          "bodyBytes": 646156,
+          "rangeRequested": false,
+          "result": "sent",
+          "endedMonotonic": 4.695074666989967
+        }
+      ]
+    },
+    {
+      "errorCode": 0,
+      "errorDomain": "none",
+      "itemFailed": false,
+      "lastClockSeconds": 0.252224583,
+      "mode": "noSeek",
+      "movingAtSeconds": 5.109815708361566,
+      "notCompositorPresentation": true,
+      "notNativePhonePlayback": true,
+      "playIssuedAtSeconds": 4.69739650003612,
+      "readyAtSeconds": 4.69739650003612,
+      "seekCompletedAtSeconds": null,
+      "seekSuccess": true,
+      "targetSeconds": 0,
+      "videoOutputAtSeconds": 4.602938374970108,
+      "videoOutputPTS": 0,
+      "round": 3,
+      "transactions": [
+        {
+          "name": "main.m3u8",
+          "method": "GET",
+          "requestMonotonic": 0.0951010410208255,
+          "headersMonotonic": 0.09513899986632168,
+          "bodyBytes": 153,
+          "rangeRequested": false,
+          "result": "sent",
+          "endedMonotonic": 0.09514133306220174
+        },
+        {
+          "name": "main.m3u8",
+          "method": "GET",
+          "requestMonotonic": 0.09709149994887412,
+          "headersMonotonic": 0.09710966586135328,
+          "bodyBytes": 153,
+          "rangeRequested": false,
+          "result": "sent",
+          "endedMonotonic": 0.09711154107935727
+        },
+        {
+          "name": "0.ts",
+          "method": "GET",
+          "requestMonotonic": 0.09686904097907245,
+          "headersMonotonic": 4.6071890408638865,
+          "bodyBytes": 121072,
+          "rangeRequested": false,
+          "result": "sent",
+          "endedMonotonic": 4.607272000052035
+        },
+        {
+          "name": "1.ts",
+          "method": "GET",
+          "requestMonotonic": 4.694508540909737,
+          "headersMonotonic": 4.694550540996715,
+          "bodyBytes": 646156,
+          "rangeRequested": false,
+          "result": "sent",
+          "endedMonotonic": 4.694676915882155
+        }
+      ]
+    },
+    {
+      "errorCode": 0,
+      "errorDomain": "none",
+      "itemFailed": false,
+      "lastClockSeconds": 0.253847,
+      "mode": "seekZero",
+      "movingAtSeconds": 5.108636583434418,
+      "notCompositorPresentation": true,
+      "notNativePhonePlayback": true,
+      "playIssuedAtSeconds": 4.696187041699886,
+      "readyAtSeconds": 4.696187041699886,
+      "seekCompletedAtSeconds": 0.040636375080794096,
+      "seekSuccess": true,
+      "targetSeconds": 0,
+      "videoOutputAtSeconds": 4.6092943334952,
+      "videoOutputPTS": 0,
+      "round": 4,
+      "transactions": [
+        {
+          "name": "main.m3u8",
+          "method": "GET",
+          "requestMonotonic": 0.09844041708856821,
+          "headersMonotonic": 0.09849875001236796,
+          "bodyBytes": 153,
+          "rangeRequested": false,
+          "result": "sent",
+          "endedMonotonic": 0.09850133396685123
+        },
+        {
+          "name": "main.m3u8",
+          "method": "GET",
+          "requestMonotonic": 0.10050479206256568,
+          "headersMonotonic": 0.10052508395165205,
+          "bodyBytes": 153,
+          "rangeRequested": false,
+          "result": "sent",
+          "endedMonotonic": 0.10052720899693668
+        },
+        {
+          "name": "0.ts",
+          "method": "GET",
+          "requestMonotonic": 0.1003732499666512,
+          "headersMonotonic": 4.610563084017485,
+          "bodyBytes": 121072,
+          "rangeRequested": false,
+          "result": "sent",
+          "endedMonotonic": 4.610613541910425
+        },
+        {
+          "name": "1.ts",
+          "method": "GET",
+          "requestMonotonic": 4.695514624938369,
+          "headersMonotonic": 4.695550041971728,
+          "bodyBytes": 646156,
+          "rangeRequested": false,
+          "result": "sent",
+          "endedMonotonic": 4.695659917080775
+        }
+      ]
+    },
+    {
+      "errorCode": 0,
+      "errorDomain": "none",
+      "itemFailed": false,
+      "lastClockSeconds": 2.507415751,
+      "mode": "resume",
+      "movingAtSeconds": 0.5472716665826738,
+      "notCompositorPresentation": true,
+      "notNativePhonePlayback": true,
+      "playIssuedAtSeconds": 0.15469237486831844,
+      "readyAtSeconds": 0.15469237486831844,
+      "seekCompletedAtSeconds": 0.043366249883547425,
+      "seekSuccess": true,
+      "targetSeconds": 2.25,
+      "videoOutputAtSeconds": 0.09545320831239223,
+      "videoOutputPTS": 2.2105333333333332,
+      "round": 5,
+      "transactions": [
+        {
+          "name": "main.m3u8",
+          "method": "GET",
+          "requestMonotonic": 0.10042437491938472,
+          "headersMonotonic": 0.10048358305357397,
+          "bodyBytes": 153,
+          "rangeRequested": false,
+          "result": "sent",
+          "endedMonotonic": 0.1004864159040153
+        },
+        {
+          "name": "1.ts",
+          "method": "GET",
+          "requestMonotonic": 0.10213062493130565,
+          "headersMonotonic": 0.10215329099446535,
+          "bodyBytes": 646156,
+          "rangeRequested": false,
+          "result": "sent",
+          "endedMonotonic": 0.10231374995782971
+        },
+        {
+          "name": "main.m3u8",
+          "method": "GET",
+          "requestMonotonic": 0.10254291584715247,
+          "headersMonotonic": 0.10256462497636676,
+          "bodyBytes": 153,
+          "rangeRequested": false,
+          "result": "sent",
+          "endedMonotonic": 0.10256720799952745
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "Swift relative timing begins inside player process; HTTP transaction timing begins at parent subprocess dispatch; do not subtract them without a common marker",
+    "video output sample and clock advancement do not establish compositor presentation",
+    "Two repeats per zero/no-seek condition only; process warmness unknown",
+    "Resume target2.25 is a single fixture counterexample, not real deep-seek or subtitle acceptance"
+  ],
+  "conclusion": "No supported zero-seek-removal benefit: four from-head windows each requested segment0 exactly once and advanced around5.11-5.21s; nonzero resume only requested segment1. Product logic retained.",
+  "cleanup": {
+    "loopbackServerClosed": true,
+    "NASMediaRequests": 0,
+    "nativeDevicesTouched": false,
+    "productSourceChanged": false
+  },
+  "powerSleepWakeDarkWakeTransitions": 0,
+  "serverLogAttribution": {
+    "reads": [
+      {
+        "httpStatus": 200,
+        "requestedSuffixBytes": 2097152,
+        "receivedBytes": 21657,
+        "serverDeclaredContentLength": "21657",
+        "suffixHonored": false,
+        "fullLogRead": true,
+        "withinReadCap": true,
+        "elapsedSeconds": 0.030422416981309652
+      },
+      {
+        "status": 200,
+        "bytes": 170178,
+        "elapsedSeconds": 0.11250462499447167,
+        "scope": "previous day main log only; no media or configuration change"
+      }
+    ],
+    "priorCellularCandidates": [
+      {
+        "entry": "file",
+        "outputStemLiteralMatchesMainLog": true,
+        "numberOfMatchedLines": 3,
+        "timeline": [
+          {
+            "event": "ffmpegCommand",
+            "serverWallTime": "2026-10-19T22:36:36.110000+08:00",
+            "serverWallMinusClientActionSeconds": 2.8287980556488037,
+            "crossHostClockAlignmentVerified": false
+          },
+          {
+            "event": "stopCommand",
+            "serverWallTime": "2026-10-19T22:37:20.836000+08:00",
+            "serverWallMinusClientActionSeconds": 47.5547981262207,
+            "crossHostClockAlignmentVerified": false
+          },
+          {
+            "event": "deletePartial",
+            "serverWallTime": "2026-10-19T22:37:21.646000+08:00",
+            "serverWallMinusClientActionSeconds": 48.364798069000244,
+            "crossHostClockAlignmentVerified": false
+          }
+        ],
+        "playSessionLiteralInMain": false
+      },
+      {
+        "entry": "jellyfin",
+        "outputStemLiteralMatchesMainLog": true,
+        "numberOfMatchedLines": 3,
+        "timeline": [
+          {
+            "event": "ffmpegCommand",
+            "serverWallTime": "2026-10-19T22:39:00.211000+08:00",
+            "serverWallMinusClientActionSeconds": 3.4010279178619385,
+            "crossHostClockAlignmentVerified": false
+          },
+          {
+            "event": "stopCommand",
+            "serverWallTime": "2026-10-19T22:39:44.931000+08:00",
+            "serverWallMinusClientActionSeconds": 48.12102794647217,
+            "crossHostClockAlignmentVerified": false
+          },
+          {
+            "event": "deletePartial",
+            "serverWallTime": "2026-10-19T22:39:45.228000+08:00",
+            "serverWallMinusClientActionSeconds": 48.41802787780762,
+            "crossHostClockAlignmentVerified": false
+          }
+        ],
+        "playSessionLiteralInMain": false
+      }
+    ],
+    "formulaAttempt": {
+      "rows": [
+        {
+          "batch": "S03-first-only",
+          "round": 1,
+          "segmentLengthSeconds": 4,
+          "officialVersion": "10.11.11",
+          "sourceSessionAndDeviceFromReturnedURL": true,
+          "userAgentSource": "recorded helper urllib default for same Python runtime; not a server header capture",
+          "formulaExpectedOutputMatchesFFmpeg": false,
+          "outputStemsFound": 1,
+          "processExitLinePresent": true,
+          "notClientCreationTimestampEvidence": true
+        },
+        {
+          "batch": "S03-first-only",
+          "round": 2,
+          "segmentLengthSeconds": 2,
+          "officialVersion": "10.11.11",
+          "sourceSessionAndDeviceFromReturnedURL": true,
+          "userAgentSource": "recorded helper urllib default for same Python runtime; not a server header capture",
+          "formulaExpectedOutputMatchesFFmpeg": false,
+          "outputStemsFound": 1,
+          "processExitLinePresent": true,
+          "notClientCreationTimestampEvidence": true
+        },
+        {
+          "batch": "S03-first-only",
+          "round": 3,
+          "segmentLengthSeconds": 2,
+          "officialVersion": "10.11.11",
+          "sourceSessionAndDeviceFromReturnedURL": true,
+          "userAgentSource": "recorded helper urllib default for same Python runtime; not a server header capture",
+          "formulaExpectedOutputMatchesFFmpeg": false,
+          "outputStemsFound": 1,
+          "processExitLinePresent": true,
+          "notClientCreationTimestampEvidence": true
+        },
+        {
+          "batch": "S03-first-only",
+          "round": 4,
+          "segmentLengthSeconds": 4,
+          "officialVersion": "10.11.11",
+          "sourceSessionAndDeviceFromReturnedURL": true,
+          "userAgentSource": "recorded helper urllib default for same Python runtime; not a server header capture",
+          "formulaExpectedOutputMatchesFFmpeg": false,
+          "outputStemsFound": 1,
+          "processExitLinePresent": true,
+          "notClientCreationTimestampEvidence": true
+        },
+        {
+          "batch": "S03-equal-media",
+          "round": 1,
+          "segmentLengthSeconds": 2,
+          "officialVersion": "10.11.11",
+          "sourceSessionAndDeviceFromReturnedURL": true,
+          "userAgentSource": "recorded helper urllib default for same Python runtime; not a server header capture",
+          "formulaExpectedOutputMatchesFFmpeg": false,
+          "outputStemsFound": 1,
+          "processExitLinePresent": true,
+          "notClientCreationTimestampEvidence": true
+        },
+        {
+          "batch": "S03-equal-media",
+          "round": 2,
+          "segmentLengthSeconds": 4,
+          "officialVersion": "10.11.11",
+          "sourceSessionAndDeviceFromReturnedURL": true,
+          "userAgentSource": "recorded helper urllib default for same Python runtime; not a server header capture",
+          "formulaExpectedOutputMatchesFFmpeg": false,
+          "outputStemsFound": 1,
+          "processExitLinePresent": true,
+          "notClientCreationTimestampEvidence": true
+        },
+        {
+          "batch": "S03-equal-media",
+          "round": 3,
+          "segmentLengthSeconds": 4,
+          "officialVersion": "10.11.11",
+          "sourceSessionAndDeviceFromReturnedURL": true,
+          "userAgentSource": "recorded helper urllib default for same Python runtime; not a server header capture",
+          "formulaExpectedOutputMatchesFFmpeg": false,
+          "outputStemsFound": 1,
+          "processExitLinePresent": true,
+          "notClientCreationTimestampEvidence": true
+        },
+        {
+          "batch": "S03-equal-media",
+          "round": 4,
+          "segmentLengthSeconds": 2,
+          "officialVersion": "10.11.11",
+          "sourceSessionAndDeviceFromReturnedURL": true,
+          "userAgentSource": "recorded helper urllib default for same Python runtime; not a server header capture",
+          "formulaExpectedOutputMatchesFFmpeg": false,
+          "outputStemsFound": 1,
+          "processExitLinePresent": true,
+          "notClientCreationTimestampEvidence": true
+        },
+        {
+          "batch": "S19-equal-media",
+          "round": 1,
+          "segmentLengthSeconds": 4,
+          "officialVersion": "10.11.11",
+          "sourceSessionAndDeviceFromReturnedURL": true,
+          "userAgentSource": "recorded helper urllib default for same Python runtime; not a server header capture",
+          "formulaExpectedOutputMatchesFFmpeg": false,
+          "outputStemsFound": 1,
+          "processExitLinePresent": true,
+          "notClientCreationTimestampEvidence": true
+        }
+      ],
+      "matched": 0,
+      "total": 9
+    },
+    "limitations": "Main and FFmpeg logs share exact output stem; client PlaySessionId literal absent. Formula with assumed urllib user agent failed9/9; no direct client-job binding inferred. Clock alignment between server/client unverified. No process creation or segment creation duration acceptance."
+  },
+  "productSourceChanged": false,
+  "nativeRegressionAccepted": false,
+  "openRequirements": 28,
+  "requestMetricsUserAgentFeasibility": {
+    "completedWithinDeadline": true,
+    "completedWithoutError": true,
+    "metricsHasUserAgent": true,
+    "metricsUserAgentSHA256": "8a836326da08f2c0acce879a15b45e335da81e996161df285c66d6169ae18b9b",
+    "serverHasUserAgent": true,
+    "serverUserAgentSHA256": "8a836326da08f2c0acce879a15b45e335da81e996161df285c66d6169ae18b9b",
+    "metricsMatchesActualServerHeader": true
+  },
+  "requestMetricsUserAgentLimits": "One Mac URLSession loopback case only. Matching wire User-Agent hash does not prove iOS support, reverse-proxy preservation, or output-hash reconstruction. No App diagnostic added.",
+  "fixtureStartupObservation": {
+    "productFailure": false,
+    "NASRequests": 0,
+    "nativeDeviceTouched": false,
+    "fix": "loopback-only server binds address without hostname reverse lookup; outer alarm25s",
+    "observation": "HTTPServer initialization blocked in socket_gethostbyaddr before listener/test started; sampled stack retained privately",
+    "classification": "fixture startup delay; not a player failure",
+    "playerStartedAtSampleTime": false,
+    "terminatedByUs": false
+  }
+}

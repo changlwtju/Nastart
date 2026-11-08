@@ -30,6 +30,7 @@ struct TasksView: View {
                 }
                 .pickerStyle(.segmented)
                 .listRowBackground(Color.clear)
+                .listRowInsets(EdgeInsets())
 
                 Section {
                     switch segment {
@@ -82,12 +83,16 @@ struct TasksView: View {
                             }
                         }
                     }
-                } header: {
-                    Text(segment.titleKey)
-                }
+                } footer: {
+                    if segment == .watching {
+                        Text("tasks.watch.footer")
+                    }
+                }.nastartListSection()
             }
             .listStyle(.insetGrouped)
             .padding(.top, -12)
+            .nastartReadableWidth()
+            .nastartPageTheme()
             .navigationTitle("tab.tasks")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -208,7 +213,7 @@ private struct TaskRow: View {
                 .font(.subheadline)
                 .foregroundStyle(task.requiresAttention ? .orange : .primary)
                 .frame(width: 34, height: 34)
-                .background(AppTheme.secondarySurface)
+                .nastartSurface()
                 .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
 
             VStack(alignment: .leading, spacing: 4) {
@@ -260,7 +265,7 @@ private struct TaskDetailView: View {
                         .foregroundStyle(.secondary)
                 }
                 .padding(.vertical, 8)
-            }
+            }.nastartListSection()
 
             if !isHistory {
                 Section {
@@ -274,7 +279,7 @@ private struct TaskDetailView: View {
                     }
                 } header: {
                     Text("tasks.detail.actions")
-                }
+                }.nastartListSection()
             }
 
             Section {
@@ -299,9 +304,10 @@ private struct TaskDetailView: View {
                 }
             } header: {
                 Text("tasks.detail.timeline")
-            }
+            }.nastartListSection()
         }
         .listStyle(.insetGrouped)
+        .nastartReadableWidth().nastartPageTheme()
         .navigationTitle("tasks.detail.title")
     }
 }
@@ -329,14 +335,14 @@ struct ReminderCreateView: View {
                         Text(kind.titleKey).tag(kind)
                     }
                 }
-            }
+            }.nastartListSection()
 
             Section {
                 TextField("reminder.title.placeholder", text: $title)
                 TextField("reminder.target.placeholder", text: $target)
             } header: {
                 Text("reminder.section.basic")
-            }
+            }.nastartListSection()
 
             Section {
                 DatePicker(
@@ -361,7 +367,7 @@ struct ReminderCreateView: View {
                     Text("reminder.date_invalid")
                         .foregroundStyle(.red)
                 }
-            }
+            }.nastartListSection()
 
             Section {
                 Button {
@@ -386,9 +392,10 @@ struct ReminderCreateView: View {
                 .buttonStyle(.borderedProminent)
                 .tint(AppTheme.accent)
                 .disabled(!canSave)
-            }
+            }.nastartListSection()
         }
         .listStyle(.insetGrouped)
+        .nastartReadableWidth().nastartPageTheme()
         .navigationTitle("reminder.create.title")
         .onAppear {
             applyContextDefaultsIfNeeded()

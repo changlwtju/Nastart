@@ -1,0 +1,169 @@
+{
+  "date": "2026-10-28",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "dirtyTreePreserved": true,
+  "sourceInputCount": 419,
+  "configuration": "Debug",
+  "arguments": [],
+  "environment": {},
+  "packages": {
+    "mobile": {
+      "builtAt": "2026-10-28T07:44:30.409961+08:00",
+      "mainSHA256": "1a967126c897223d5f444d30c8ed78bdfd9bc80d9ff7a2faf08f1f571673012b",
+      "debugDylibSHA256": "d523129e87f4cd017b1ff13332386da77b82dee49ea286b4f14fd7d1b01fe74a",
+      "signedMachOCount": 30
+    },
+    "tv": {
+      "builtAt": "2026-10-28T07:45:08.941254+08:00",
+      "mainSHA256": "f043ec5e5b10ba3a8301ac8ced51f77e4151290f50aff41fc581306cb4b252cc",
+      "debugDylibSHA256": "edfe96d96de2bb2ad098f58e3cb4428be5677ac4ba9acc6bbeb00464ec7b2afe",
+      "signedMachOCount": 27
+    }
+  },
+  "tests": {
+    "fullNetworkMediaTests": 215,
+    "failures": 0,
+    "newSavedConnectionTests": 8,
+    "initialCompileFailureRetained": true
+  },
+  "native": {
+    "iphone13": {
+      "checks": {
+        "savedConnectionOffered": true,
+        "savedNASOffered": true,
+        "existingLoginBrowsesParent": true,
+        "connectionEditorPrefilled": true,
+        "connectionEditorCancelled": true,
+        "browseUpdatesDraftOnly": true,
+        "editorCancelled": true
+      },
+      "normalHome": true,
+      "settingsRestored": true,
+      "ownedHTTPSessionDeleted": true,
+      "mediaCommands": 0,
+      "saveCommands": 0,
+      "playbackExit": "not_applicable"
+    },
+    "ipad": {
+      "checks": {
+        "savedConnectionOffered": true,
+        "savedNASOffered": true,
+        "existingLoginBrowsesParent": true,
+        "connectionEditorPrefilled": true,
+        "connectionEditorCancelled": true,
+        "browseUpdatesDraftOnly": true,
+        "editorCancelled": true
+      },
+      "normalHome": true,
+      "settingsRestored": true,
+      "ownedHTTPSessionDeleted": true,
+      "mediaCommands": 0,
+      "saveCommands": 0,
+      "playbackExit": "not_applicable"
+    },
+    "tv": {
+      "checks": {
+        "savedConnectionOffered": true,
+        "savedNASOffered": true,
+        "existingLoginBrowsesParent": true,
+        "connectionEditorPrefilled": true,
+        "connectionEditorCancelled": true,
+        "browseUpdatesDraftOnly": true,
+        "editorCancelled": true
+      },
+      "normalHome": true,
+      "settingsRestored": true,
+      "ownedHTTPSessionDeleted": true,
+      "mediaCommands": 0,
+      "saveCommands": 0,
+      "playbackExit": "not_applicable"
+    }
+  },
+  "iphone13FolderCommit": {
+    "arguments": [],
+    "environment": {},
+    "playbackCommands": 0,
+    "nasWrites": 0,
+    "freshIdentityConnected": true,
+    "stage": "wait sibling commit",
+    "temporaryCreated": true,
+    "aFileCount": 1,
+    "newPathEntered": true,
+    "siblingCommitted": true,
+    "bFileCount": 1,
+    "replacementWallOpened": true,
+    "temporaryLibraryRemoved": true,
+    "originalIndexWholeJSONPreserved": true,
+    "normalHome": true,
+    "settingsRestored": true,
+    "ownedHTTPSessionDeleted": true,
+    "originalRunnerPreserved": true
+  },
+  "iphone13ConnectionRename": {
+    "verified": false,
+    "failureType": "TimeoutError",
+    "originalIndexWholeJSONPreserved": true,
+    "normalHome": true,
+    "settingsRestored": true,
+    "ownedHTTPSessionDeleted": true
+  },
+  "migrationPreservation": {
+    "iphone13": {
+      "originalLibrariesEqualExcludingAddedConnectionID": true,
+      "originalVideos": 149,
+      "finalVideos": 149,
+      "connections": 1,
+      "onlyExpectedCatalogPreferenceChanges": false,
+      "unrelatedNonDiagnosticPreferencesEqual": true,
+      "allLibraryReferencesResolve": true
+    },
+    "ipad": {
+      "originalLibrariesEqualExcludingAddedConnectionID": true,
+      "originalVideos": 3408,
+      "finalVideos": 3408,
+      "connections": 1,
+      "onlyExpectedCatalogPreferenceChanges": false,
+      "unrelatedNonDiagnosticPreferencesEqual": true,
+      "allLibraryReferencesResolve": true
+    },
+    "tv": {
+      "originalLibrariesEqualExcludingAddedConnectionID": true,
+      "originalVideos": 3408,
+      "finalVideos": 3408,
+      "connections": 1,
+      "onlyExpectedCatalogPreferenceChanges": true,
+      "unrelatedNonDiagnosticPreferencesEqual": true,
+      "allLibraryReferencesResolve": true
+    }
+  },
+  "iphone18": {
+    "userAway": true,
+    "discoveryAttempts": 0,
+    "installationAttempts": 0,
+    "activeControl": false
+  },
+  "remoteWrites": 0,
+  "playbackCommands": 0,
+  "fullPlaybackAcceptanceAdded": 0,
+  "open": [
+    "native connection rename/server/account/multiple-folder edit submission",
+    "current-package iPad/TV actual folder replacement",
+    "standalone save-only connection native validation",
+    "connection removal UI",
+    "FTP app integration/FTPS522",
+    "SMB strict-root violation",
+    "full playback lifecycle/iPad ordinary player exit"
+  ],
+  "documentationCheck": {
+    "documents": 505,
+    "localLinks": 2998,
+    "missingDestinations": 0
+  },
+  "finalizedAt": "2026-10-28T08:11:47.056135+08:00",
+  "finalIntegrity": {
+    "sourceInputsUnchanged": true,
+    "allBinariesUnchanged": true,
+    "signaturesVerified": true,
+    "ownedNativeDriversActive": 0
+  }
+}

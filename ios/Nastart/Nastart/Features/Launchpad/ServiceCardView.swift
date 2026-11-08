@@ -220,6 +220,7 @@ extension LaunchpadService {
         guard source != .manual, let dsmBaseURL else { return candidates.first }
         let wantsLAN = Self.isPrivateNetworkHost(dsmBaseURL.host)
         return candidates.first { Self.isPrivateNetworkHost($0.host) == wantsLAN }
+            ?? candidates.first
     }
 
     func usesLANOnlyEndpoint(for dsmBaseURL: URL?) -> Bool {

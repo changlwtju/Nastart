@@ -1,0 +1,186 @@
+{
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceDiffSHA256": "a22c8f331de393fa5127a0c4cc6e517846e008d9d8de11389da40231adb9446d",
+  "baselineSourceDiffSHA256": "79d06f27265cbfddd03d28ee57ccfccae8c9a71bd72bc5e67f66fd0d05698105",
+  "binaryBuildTime": "2026-10-16T08:50:45.106974+08:00",
+  "configuration": "normal Debug -Onone; empty launch environment",
+  "binaries": {
+    "Nastart": "bf466930e49f2db473798ccb6f21636d78d65ab3edba5b157824bc83c9cbc7b1",
+    "Nastart.debug.dylib": "933a961b6754a7d32e5a48922183fb13c4d37d4b98be582c6bf3a8c2229f0d50",
+    "Frameworks/KSPlayer.framework/KSPlayer": "731a662ded181e591054681e54a5f1aa6ee20d6b3ee32853decb2cc7994d75e7"
+  },
+  "ipaSHA256": "6a50b5a5c72954df3b8230ef535886c750af038f322ab31034ee7dbc7c588584",
+  "signatureVerified": true,
+  "individuallyVerifiedLibraries": 29,
+  "checkedInputs": 173,
+  "newerInputs": [],
+  "profileExpirationUTC": "2026-10-17T22:23:40",
+  "tests": {
+    "executed": 404,
+    "skipped": 2,
+    "failures": 0,
+    "runThisTurn": true
+  },
+  "preflight": {
+    "passed": 15,
+    "runThisTurn": true
+  },
+  "sourceEditsThisTurn": [
+    "Classify playback preparation failures and preserve cancellation; log failure stage and request identity using existing redaction",
+    "Show preparation progress and cancel action in Jellyfin detail; no retry, timeout or media constant changes",
+    "Add native bitmap screen-edge pixel rendering coverage and error-policy tests; subtitle overlay access internal for testability"
+  ],
+  "at": "2026-10-16T09:08:06.467157+08:00",
+  "paused": false,
+  "privateEvidencePointer": "/tmp/nastart-preparation-evidence",
+  "devices": {
+    "iphone13": {
+      "at": "2026-10-16T09:06:15.401646+08:00",
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "USBIdentityMatched": true,
+      "sourceDiffSHA256": "a22c8f331de393fa5127a0c4cc6e517846e008d9d8de11389da40231adb9446d",
+      "binaries": {
+        "Nastart": "bf466930e49f2db473798ccb6f21636d78d65ab3edba5b157824bc83c9cbc7b1",
+        "Nastart.debug.dylib": "933a961b6754a7d32e5a48922183fb13c4d37d4b98be582c6bf3a8c2229f0d50",
+        "Frameworks/KSPlayer.framework/KSPlayer": "731a662ded181e591054681e54a5f1aa6ee20d6b3ee32853decb2cc7994d75e7"
+      },
+      "nonBookmarkPreferenceKeys": 24,
+      "nonBookmarkPreferencesUnchanged": true,
+      "originalBookmarksChecked": 35,
+      "originalBookmarksRemoved": 0,
+      "originalTrackChangeCount": 0,
+      "newBookmarksCount": 1,
+      "naturalPositionChangesCount": 1,
+      "newCrashReports": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      },
+      "normalEmptyEnvironment": true,
+      "NASNormal": true,
+      "playerClosed": true,
+      "WDAIdleSeconds": 10,
+      "WDAAnimationCoolOffSeconds": 2,
+      "activeNativeConditions": 0,
+      "finalImageActuallyReviewed": true,
+      "finalImageObservation": "Nastart launchpad; NAS normal; player closed"
+    },
+    "ipad": {
+      "at": "2026-10-16T09:06:16.342776+08:00",
+      "model": "iPad12,1",
+      "system": "18.3.1",
+      "USBIdentityMatched": true,
+      "sourceDiffSHA256": "a22c8f331de393fa5127a0c4cc6e517846e008d9d8de11389da40231adb9446d",
+      "binaries": {
+        "Nastart": "bf466930e49f2db473798ccb6f21636d78d65ab3edba5b157824bc83c9cbc7b1",
+        "Nastart.debug.dylib": "933a961b6754a7d32e5a48922183fb13c4d37d4b98be582c6bf3a8c2229f0d50",
+        "Frameworks/KSPlayer.framework/KSPlayer": "731a662ded181e591054681e54a5f1aa6ee20d6b3ee32853decb2cc7994d75e7"
+      },
+      "nonBookmarkPreferenceKeys": 17,
+      "nonBookmarkPreferencesUnchanged": true,
+      "originalBookmarksChecked": 28,
+      "originalBookmarksRemoved": 0,
+      "originalTrackChangeCount": 0,
+      "newBookmarksCount": 1,
+      "naturalPositionChangesCount": 2,
+      "newCrashReports": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      },
+      "normalEmptyEnvironment": true,
+      "NASNormal": true,
+      "playerClosed": true,
+      "WDAIdleSeconds": 10,
+      "WDAAnimationCoolOffSeconds": 2,
+      "activeNativeConditions": 0,
+      "finalImageActuallyReviewed": true,
+      "finalImageObservation": "Nastart launchpad; NAS normal; player closed"
+    }
+  },
+  "iPhone18": {
+    "latestPackageInstalled": false,
+    "installationSent": false,
+    "currentDiscoveryOutcome": "unverified; target Bonjour service unresolved",
+    "lastVerifiedInstalledSource": "c868; 2026-10-16 07:10 batch",
+    "pairingOrNetworkConfigurationChanged": false
+  },
+  "controlledCancel": {
+    "device": "iPhone13",
+    "condition": {
+      "NASTART_TEST_PREPARED_RESULT_DELAY_SECONDS": "8"
+    },
+    "reason": "Observe already-prepared result before renderer opens, ordinary preparation too fast for this UI window",
+    "sameBinary": true,
+    "normalBaseline": false,
+    "actualPreparingAndCancelImagesReviewed": true,
+    "noLatePlayerOrAlertThroughSeconds": 10,
+    "normalEmptyEnvironmentRestored": true
+  },
+  "subtitleRendering": {
+    "simulatorPixelFixtureDimensions": [
+      [
+        844,
+        390
+      ],
+      [
+        1024,
+        768
+      ]
+    ],
+    "bottomMarginPoints": 12,
+    "actualAttachmentsReviewed": true,
+    "realPhone18Acceptance": false
+  },
+  "largeSeek": {
+    "device": "iPad",
+    "entry": "Jellyfin",
+    "source": "a22c8f331de3",
+    "engineAtSeek": "AVPlayer",
+    "requestedUserTargetSeconds": 7533,
+    "actualDiagnosticTargetSeconds": 7451.479859207154,
+    "recoveredWithin60Seconds": false,
+    "actualFrame": "black buffering, 0 KB/s",
+    "beforeSeekSubtitleQualified": false,
+    "subtitleClearOrPositionAccepted": false
+  },
+  "spider2": {
+    "entry": "Jellyfin",
+    "network": "Wi-Fi, default empty env",
+    "devices": [
+      "iPhone13",
+      "iPad"
+    ],
+    "actualT30FramesReviewed": true,
+    "normalExit": true,
+    "initialMode": "directPlay",
+    "iPadAutomaticDownshiftRequestedSeconds": 7.112,
+    "iPadDownshiftReason": "deliveryBelowSourceBitrate",
+    "iPadCandidateAlignedSeconds": 18.413,
+    "iPhone18CellularFaultResolved": false
+  },
+  "server": {
+    "publicInfoHTTP": 200,
+    "version": "10.11.11",
+    "logFilesFetchedReadOnly": 6,
+    "logBytes": 1549353,
+    "startupVersionRecordLocalTime": "2026-10-16 08:10:24.134 +08:00",
+    "mainLogEvents0755To0759": 0,
+    "userPhoneSessionOwnershipProven": false,
+    "containerRestartRootCauseProven": false
+  },
+  "brightness": {
+    "lastExactReadThisTurn": "08:19:29 25%",
+    "postPlaybackControlCenterVisuallyApproximately25Percent": true,
+    "newBrightnessMutation": false,
+    "exactPostPlaybackAXValueAvailable": false
+  },
+  "openItems": [
+    "iPhone18 latest install and cellular preparation failure",
+    "Native/PGS/text and burned-in subtitle screen bottom on real iPhone18",
+    "AVPlayer/HLS deep seek black buffering and original stale subtitle report",
+    "CPU resource warning and iPad memory peak",
+    "Complete SUB/AUD/display timing, PX/UX/CB/Main/MI2 and competitor/full matrix"
+  ]
+}

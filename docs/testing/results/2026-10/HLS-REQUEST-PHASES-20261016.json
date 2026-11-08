@@ -1,0 +1,241 @@
+{
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceDiffSHA256": "d0ae9dcdb0b915915ef55432a55f0a606defe75241c46fbedc6a8d4b7dde521d",
+  "binaryBuildTime": "2026-10-16T17:23:50.888773+08:00",
+  "configuration": "normal Debug -Onone; empty launch environment",
+  "binaries": {
+    "Nastart": "f5481a348245e8adbc4e862e74552d8b58376b4c697d87b35c4985a98d462b7e",
+    "Nastart.debug.dylib": "35cd2111ba4490dfc5dadd97c58ee0a975460913ae95be9f5e6365938cb13656",
+    "Frameworks/KSPlayer.framework/KSPlayer": "f73e8008a84286299e04dcda6b27921049f326e8190235a5fd7fcbdf5e288be0"
+  },
+  "ipaSHA256": "f644d6c980a409467ce54b038f33318cba7d9110ccd642a38d13ade490a1c263",
+  "checkedInputs": 173,
+  "individuallyVerifiedLibraries": 29,
+  "profileExpirationUTC": "2026-10-17T22:23:40",
+  "tests": {
+    "executed": 415,
+    "skipped": 2,
+    "failures": 5,
+    "passed": 408,
+    "fullSuitePassed": false,
+    "newPhaseTestsPassed": true,
+    "runThisTurn": true
+  },
+  "preflight": {
+    "passed": 15,
+    "runThisTurn": true
+  },
+  "sourceEditsThisTurn": [
+    "Read-only URLSession phase timings: task creation, first/last fetch, request send/end, response first byte/body, metrics callback; missing or reversed boundaries unknown",
+    "Per-upstream-task monotonic headers-received evidence with retry identity protection",
+    "Three phase/redirect/missing-boundary/retry-header tests; no transfer, playback, retry, timeout or bitrate policy change"
+  ],
+  "validationLimit": "Full suite failed twice: Audio RemoteIO RPC aborts in four tests; second run also loopback VOD prewarm timeout. Candidate is not full-suite validated.",
+  "at": "2026-10-16T17:45:05.789594+08:00",
+  "privateEvidencePointer": "/tmp/nastart-hls-phases-evidence",
+  "changedAppInputs": 3,
+  "unchangedAppInputs": 170,
+  "productNetworkPlaybackPolicyChanged": false,
+  "testsFirstRun": {
+    "total": 415,
+    "passed": 409,
+    "failed": 4,
+    "skipped": 2,
+    "failureKind": "four Audio RemoteIO RPC aborts; private crash stacks retained"
+  },
+  "testsSecondRun": {
+    "result": "Failed",
+    "passedTests": 408,
+    "failedTests": 5,
+    "skippedTests": 2,
+    "totalTestCount": 415,
+    "failures": [
+      {
+        "test": "PlaybackNextCoreTests/testAudioConfigurationChangeRestartsOnlyPlayingOutput()",
+        "failure": "Crash: Nastart"
+      },
+      {
+        "test": "PlaybackNextCoreTests/testAudioFormatStressReleasesOldNodesAndKeepsPause()",
+        "failure": "Crash: Nastart at +[XCTFailableInvocation invokeErrorConventionInvocation:completion:]"
+      },
+      {
+        "test": "PlaybackNextCoreTests/testOriginalReplacementDecodesPausedPreviewBeforeHandoff()",
+        "failure": "Crash: Nastart"
+      },
+      {
+        "test": "PlaybackNextCoreTests/testOriginalReplacementFailureAndCancellationKeepExistingControls()",
+        "failure": "Crash: Nastart"
+      },
+      {
+        "test": "PlaybackNextCoreTests/testVODPrewarmUsesItsFullDeadlineWhileProxyBuffersAMovingResponse()",
+        "failure": "failed: caught error: \"Error Domain=NSURLErrorDomain Code=-1001 \"(null)\"\""
+      }
+    ],
+    "newPhaseTestsPassed": true
+  },
+  "toolchain": {
+    "normalAppBuildXcode": "Xcode 27.0\nBuild version 27A266a",
+    "WDAReuseXcode": "historical Downloads/Xcode.app, separate test fixture",
+    "AppSourceEditsThisTurn": 3,
+    "productBehaviorPolicyChanged": false
+  },
+  "devices": {
+    "iphone13": {
+      "at": "2026-10-16T17:42:10.756839+08:00",
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "USBIdentityMatched": true,
+      "sourceDiffSHA256": "d0ae9dcdb0b915915ef55432a55f0a606defe75241c46fbedc6a8d4b7dde521d",
+      "binaries": {
+        "Nastart": "f5481a348245e8adbc4e862e74552d8b58376b4c697d87b35c4985a98d462b7e",
+        "Nastart.debug.dylib": "35cd2111ba4490dfc5dadd97c58ee0a975460913ae95be9f5e6365938cb13656",
+        "Frameworks/KSPlayer.framework/KSPlayer": "f73e8008a84286299e04dcda6b27921049f326e8190235a5fd7fcbdf5e288be0"
+      },
+      "nonBookmarkPreferenceKeys": 24,
+      "nonBookmarkPreferencesUnchanged": true,
+      "originalBookmarksChecked": 36,
+      "originalBookmarksRemoved": 0,
+      "originalTrackChangeCount": 0,
+      "newBookmarksCount": 0,
+      "naturalPositionChangesCount": 1,
+      "newCrashReports": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      },
+      "normalEmptyEnvironment": true,
+      "NASNormal": false,
+      "playerClosed": true,
+      "WDAIdleSeconds": 10,
+      "WDAAnimationCoolOffSeconds": 2,
+      "activeNativeConditions": 0,
+      "finalImageActuallyReviewed": true
+    },
+    "ipad": {
+      "at": "2026-10-16T17:40:41.739305+08:00",
+      "model": "iPad12,1",
+      "system": "18.3.1",
+      "USBIdentityMatched": true,
+      "nonDiagnosticPreferenceCount": 18,
+      "allPreferencesIncludingBookmarksUnchanged": true,
+      "latestCoverSucceeded": true,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "actualNormalHomeReviewPending": false,
+      "WDAPlaybackRegressionCompleted": false,
+      "WDAFailure": "connection invalidated after brief ready during existing renewed XCTest reuse",
+      "noNewRunnerBuildOrExplicitInstall": true,
+      "actualImageReviewed": true,
+      "actualNastartHomeObserved": true,
+      "actualPlayerClosed": true,
+      "actualNASNormalOnFinalNativeImage": false,
+      "activeNativeConditions": 0,
+      "newCrashReports": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      }
+    }
+  },
+  "staticHLS": {
+    "sourceDiffSHA256": "d0ae9dcdb0b915915ef55432a55f0a606defe75241c46fbedc6a8d4b7dde521d",
+    "controlledEnvironment": {
+      "NASTART_TEST_STATIC_HLS": "1"
+    },
+    "actualTargetSeconds": 357.34022855758667,
+    "nativeSeekCompletionSecondsFromDispatch": 1.5388580000000047,
+    "targetResponse": {
+      "taskCreatedToFirstFetchMs": "0",
+      "lastFetchToRequestMs": "0",
+      "lastRequestSendMs": "0",
+      "lastRequestEndToFirstByteMs": "327",
+      "lastResponseBodyMs": "1567",
+      "lastResponseEndToMetricsCallbackMs": "0",
+      "upstreamIssueToHeadersCallbackMs": "329",
+      "redirectCount": "0",
+      "transactionCount": "1",
+      "proxyBackpressureMs": "0",
+      "connectionReused": "yes",
+      "protocol": "h2"
+    },
+    "observedNewPhaseMetricsTransferCount": 35,
+    "framesActuallyReviewed": [
+      "t30",
+      "native-deep-t3",
+      "native-deep-t45"
+    ],
+    "actualInitialPictureReviewed": true,
+    "actualTargetPictureAt47Point8SecondsReviewed": true,
+    "fullContinuousPlaybackVerified": false,
+    "allHLSPerformanceAcceptance": false,
+    "diagnosticsOnlyNotPerformanceFix": true,
+    "sameRunAutomaticSourceReplacementOccurred": true,
+    "sameQualityControlledComparisonWithPriorRun": false,
+    "unexpectedPreceding15SecondSeekRetained": true,
+    "nearby15SecondSeekCompletionSeconds": 0.041411,
+    "captureT30WasLateAt38Point28Seconds": true,
+    "captureSeekT45WasLateAt47Point803Seconds": true,
+    "earlyFailureNavigationAttemptsRetained": 2
+  },
+  "normalPhoneSample": {
+    "latestSource": "d0ae9dcdb0b915915ef55432a55f0a606defe75241c46fbedc6a8d4b7dde521d",
+    "entry": "Jellyfin",
+    "requestedEnvironment": {},
+    "requestedArguments": [],
+    "actualT30ImageReviewed": true,
+    "visibleContent": "encoded opening subtitle-group credit against blue background",
+    "qualifiedNaturalMovieFrameAcceptance": false,
+    "normalExitActualDetailImageReviewed": true,
+    "fullSUBAUDOrPerformanceAcceptance": false,
+    "ordinaryUIExitSucceeded": true
+  },
+  "networkHealth": {
+    "initialMacHealth": {
+      "at": "2026-10-16T17:15:20.486268+08:00",
+      "readOnly": true,
+      "request": "System/Info/Public",
+      "failureType": "timeout",
+      "elapsedSeconds": 12.013440583
+    },
+    "configuredEndpointProbes": [
+      {
+        "index": 0,
+        "privateLiteralHost": true,
+        "fromPreviouslyConfiguredContext": true,
+        "at": "2026-10-16T17:17:47.914626+08:00",
+        "MacReadOnly": true,
+        "status": 200,
+        "serverIDMatchesPreviousKnownServer": true,
+        "serverVersion": "10.11.11",
+        "elapsedSeconds": 0.016
+      },
+      {
+        "index": 1,
+        "privateLiteralHost": false,
+        "fromPreviouslyConfiguredContext": false,
+        "at": "2026-10-16T17:17:47.915190+08:00",
+        "MacReadOnly": true,
+        "status": 200,
+        "serverIDMatchesPreviousKnownServer": true,
+        "serverVersion": "10.11.11",
+        "elapsedSeconds": 7.754
+      }
+    ],
+    "sameServerIDComparison": true,
+    "notDeviceTransportProof": true
+  },
+  "iPhone18": {
+    "deferredPerUser": true,
+    "discoveryPerformed": false,
+    "installSent": false,
+    "lastVerifiedInstalledSource": "c868 2026-10-16 07:10",
+    "resumeCondition": "user returns home and notifies us"
+  },
+  "brightnessChanged": false,
+  "remaining": [
+    "Five full-suite test failures: audio RemoteIO RPC and local VOD prewarm timeout; current source is not fully validated",
+    "iPad WDA: fixed renewed XCTest briefly ready then remote connection invalidated; only native normal UI reviewed",
+    "Original long Jellyfin deep-seek response wait and server request/session ownership; slow case not reproduced by this static run",
+    "Burn-in old movie frame and native subtitle lifecycle, source-track latency, CPU/memory, complete SUB/AUD/display timing and all prior matrix gaps"
+  ]
+}

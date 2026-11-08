@@ -1,0 +1,130 @@
+{
+  "recordedAt": "2026-10-30T22:47:07+08:00",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceInputCount": 439,
+  "changedExistingSourceOrResourceFiles": 7,
+  "newSourceOrTestFiles": 0,
+  "existingParameterTestsPassed": 4,
+  "builds": {
+    "mobile-sim-debug-cast": {
+      "startedAt": "2026-10-30T22:38:16.901160+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T22:38:55.048823+08:00"
+    },
+    "tv-sim-debug-cast": {
+      "startedAt": "2026-10-30T22:38:55.049966+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T22:39:08.591063+08:00"
+    },
+    "module-tests": {
+      "startedAt": "2026-10-30T22:39:08.591824+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T22:39:12.995746+08:00"
+    },
+    "mobile-debug": {
+      "startedAt": "2026-10-30T22:40:23.619717+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T22:40:57.219225+08:00"
+    },
+    "tv-debug": {
+      "startedAt": "2026-10-30T22:40:57.220782+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T22:41:11.241649+08:00"
+    }
+  },
+  "releaseBuildNotRepeated": true,
+  "sourcePreservation": {
+    "inputCount": 439,
+    "changedExistingSourceOrResourceFiles": 7,
+    "otherInputsUnchanged": 432,
+    "newSourceOrTestFiles": 0,
+    "mobileOutsideHomeViewByteIdentical": true,
+    "tvOutsideLibraryViewByteIdentical": true,
+    "tvAllThreeLoadingTasksByteIdentical": true,
+    "mobileStoreClientAllRequestsAndPlaybackByteIdentical": true,
+    "originalMobileRefreshAndTVReloadCallbacksPreserved": true,
+    "existingMediaComponentsByteIdentical": true,
+    "existingLocalizedMessagesAndRetryKeyPreserved": true,
+    "onlyOneNewTitleKeyPerMobileLocale": true,
+    "previewNoModelStoreVaultClientTaskOrNetwork": true
+  },
+  "packages": {
+    "mobile": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-30T22:40:57.061125+08:00",
+      "frozenAt": "2026-10-30T22:41:32.151021+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 439,
+      "mainSHA256": "c4f111e9178ef7d4a27786aeafcbda5837265977510cfdec92cef467efc63ccc",
+      "debugDylibSHA256": "daf217f241560e9ef1901f2888908bf46995222aa8a7ebe5806d9c4c2d0c13b6",
+      "signedMachOCount": 30,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false,
+      "copyMethod": "cp -cpR clone requested; hashes and signatures verified independently"
+    },
+    "tv": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-30T22:41:11.181914+08:00",
+      "frozenAt": "2026-10-30T22:41:32.511072+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 439,
+      "mainSHA256": "04f9050c25bc32343a7bff3af2df972273f48e79ef212c9aa4a9b8458ab4087c",
+      "debugDylibSHA256": "8df9ccef8989e720ed7f1e03c259a036d3a69baf4c6338760d3da575fd2a2141",
+      "signedMachOCount": 27,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false,
+      "copyMethod": "cp -cpR clone requested; hashes and signatures verified independently"
+    }
+  },
+  "capture": {
+    "accepted": 9,
+    "byPlatform": {
+      "phone": 3,
+      "pad": 3,
+      "tv": 3
+    },
+    "notStarted": {},
+    "allPassed": true,
+    "ownedSimulatorsDeleted": true,
+    "syntheticPreferencesPreserved": true,
+    "physicalDevicesOperated": 0,
+    "NASCommands": 0,
+    "interactionOrAnimationVerified": false
+  },
+  "visualReview": {
+    "recordedAt": "2026-10-30T22:47:07.464980+08:00",
+    "reviewed": true,
+    "reviewedStaticWindows": 9,
+    "reviewSheets": [
+      "phone-review-1.jpg",
+      "phone-review-2.jpg",
+      "pad-review-1.jpg",
+      "pad-review-2.jpg",
+      "tv-review-1.jpg",
+      "tv-review-2.jpg"
+    ],
+    "emptyVariantHasNoFixturePosters": true,
+    "retainedAndShelfVariantsShowFixturePostersAndActions": true,
+    "noClippingOverlapOrContrastIssueObservedInSelectedWindows": true,
+    "actualHomeDataRetryAndTVTileStyleFocusVerified": false,
+    "actualLocalizationAllLanguagesOrLargeTextVerified": false,
+    "frameTimingOrScrollSmoothnessVerified": false
+  },
+  "ownedSimulatorsDeleted": 3,
+  "physicalDevicesOperated": 0,
+  "NASCommands": 0,
+  "playbackCommands": 0,
+  "newPlaybackMatrixP": 0,
+  "notVerified": [
+    "Actual home cache data retained on refresh failure, request cancellation or recovery",
+    "Production TVTileStyle focus/click and actual mobile retry callback",
+    "Real localization across all preferred languages, large-text scroll/VoiceOver",
+    "Release build for current source and physical installation, NAS/playback"
+  ]
+}

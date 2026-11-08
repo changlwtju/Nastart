@@ -1,0 +1,147 @@
+{
+  "date": "2026-10-26",
+  "scope": "Shared read-only WebDAV directory browsing and app-private full-scan index; no SMB, metadata provider or playback delivery",
+  "source": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "workingTree": "preexisting and current uncommitted/untracked changes preserved",
+    "localInputDigestCount": 362,
+    "localInputDrift": 0,
+    "inventoryScope": "local Swift/header/resource/project snapshot, not the historical 570-input dependency inventory"
+  },
+  "builds": {
+    "mobile": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-26T02:25:10.514949+08:00",
+      "mainSHA256": "1a5389164aa6588b07bb024de316dd2d8ee22db7f3b4d05080d6d2a2f8175175",
+      "signedMachOCount": 30,
+      "defaultArguments": [],
+      "defaultEnvironment": {}
+    },
+    "tv": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-26T02:25:10.514949+08:00",
+      "mainSHA256": "b3850247ff0c3852411b81af9bf496a519bc3ce6c7abab183a64b7f7a066666f",
+      "signedMachOCount": 27,
+      "defaultArguments": [],
+      "defaultEnvironment": {}
+    }
+  },
+  "tests": {
+    "package": {
+      "executed": 15,
+      "failed": 0,
+      "coreAndStore": 10,
+      "realHTTPTransport": 5
+    },
+    "iphone13": {
+      "model": "iPhone14,5",
+      "os": "16.3.1",
+      "install": "ios-deploy wired InstallComplete",
+      "installedAt": "2026-10-26T02:29:28.000100+08:00",
+      "normalHome": true,
+      "connectionAndFolderSelection": true,
+      "selectedRootVideos": 3,
+      "differentPathsSameFilenamePreserved": true,
+      "restartPersistence": true,
+      "permissionFailurePreservedIndexByteForByte": true,
+      "rescanRecovery": true,
+      "localTestSourceRemovedViaUI": true,
+      "localIndexEmptyAfterRemoval": true,
+      "nonDiagnosticPreferencesEqual": true,
+      "originalWDAKept": true,
+      "onlyOwnHTTPSessionDeleted": true
+    },
+    "tv": {
+      "model": "AppleTV14,1",
+      "os": "18.2",
+      "transport": "LAN",
+      "installComplete": true,
+      "installedAt": "2026-10-26T02:26:08.660557+08:00",
+      "ordinaryForegroundHomeAt3And10Seconds": true,
+      "connectionFormReached": true,
+      "completeConnectionFolderIndexFlow": "not accepted: remote input/focus automation incomplete",
+      "noLocalIndexCreated": true,
+      "nonDiagnosticPreferencesEqual": true,
+      "ownedRunnerStopped": true,
+      "settingsRestoredAndReadBack": true
+    },
+    "ipad": {
+      "model": "iPad15,7",
+      "os": "26.6",
+      "transport": "wired",
+      "latestInstalled": false,
+      "initialInstallationProxyAttempt": "120s timeout after dispatch, no Complete",
+      "alternative": "IXErrorDomain 48: coordinator scoped to a different process",
+      "normalLaunch": "blocked; latest package baseline not performed",
+      "nonDiagnosticPreferencesEqualAfterAttempt": true,
+      "preferencesBackedUp": true,
+      "userActionRequestedOnce": "reconnect cable and keep unlocked"
+    },
+    "iphone18": {
+      "model": "iPhone19,7",
+      "os": "27.0",
+      "transport": "unavailable this batch",
+      "latestInstalled": false,
+      "priorOrdinaryPackage": "2026-10-25 only; not current source",
+      "DSMAddressChanged": false
+    }
+  },
+  "readOnlyEvidence": {
+    "files": 6,
+    "fileContentSizeMtimeAndPathsEqual": true,
+    "directoryStructureEqual": true,
+    "requestCount": 16,
+    "allMethodsPROPFIND": true,
+    "allDepthOne": true,
+    "unselectedDirectoryRequests": 0
+  },
+  "failuresRetained": [
+    "XML optional response mutation triggered Swift exclusivity failure; corrected before final 15 tests",
+    "HTTP redirect error was overwritten by terminal HTTP302; corrected, redirect was never followed",
+    "first public concrete SwiftUI view candidate crashed during destroy on TV; AnyView factory boundary resolved current observed startup; compiler/runtime root cause not claimed",
+    "mobile installation_proxy timeout; iPad coordinator blocked; iPhone13 recovered through wired ios-deploy",
+    "first candidate2 ios-deploy discovery failed; fresh wired detection followed by successful InstallComplete",
+    "TV element typing/keyboard navigation did not complete a connection; no TV index pass claimed",
+    "old WDA touchAndHold element endpoint rejected; own phone removal completed through coordinate endpoint",
+    "DVT process existence alone showed TV SpringBoard; final explicit foreground launch plus native3/10 images established actual NAS home"
+  ],
+  "cleanup": {
+    "mediaCommands": 0,
+    "cellularTests": 0,
+    "NASorVPNChanges": false,
+    "temporaryServerStopped": true,
+    "temporaryServerExit": "intentional SIGINT, exit130, finally snapshot written",
+    "phoneHomeWiFiIconObserved": true,
+    "ipadOriginalWiFiAndVPNIconsObserved": true,
+    "systemUpdatesOrUninstall": false
+  },
+  "acceptance": {
+    "newRequirement": "in progress, not closed",
+    "openRequirements": 29,
+    "playbackCells": 114,
+    "playbackCellsClosed": 0,
+    "notDelivered": [
+      "SMB adapter",
+      "incremental indexing",
+      "NFO or poster reading",
+      "metadata scraping or correction",
+      "network-library playback",
+      "cross-device synchronization",
+      "Release or full-device acceptance"
+    ]
+  },
+  "finalChecks": {
+    "at": "2026-10-26T02:49:01.149844+08:00",
+    "sourceInputDrift": 0,
+    "binaryDrift": 0,
+    "ownedFixtureServerStopped": true,
+    "ownedTVRunnerStopped": true,
+    "ownedPhoneHTTPSessionDeleted": true,
+    "originalPhoneRunnerKept": true,
+    "documentationDocuments": 456,
+    "documentationLocalLinks": 2640,
+    "missingLinks": 0,
+    "gitDiffCheck": 0,
+    "newPackageWhitespace": true
+  }
+}

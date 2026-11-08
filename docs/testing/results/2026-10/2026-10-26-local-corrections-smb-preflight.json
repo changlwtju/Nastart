@@ -1,0 +1,313 @@
+{
+  "date": "2026-10-26",
+  "scope": "Shared client-only identification corrections, full-row UI fixes, current signed Debug installation, and isolated SMB preflight; no source mutation or playback change",
+  "source": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "existingDirtyPreserved": true,
+    "localInputCount": 368,
+    "inputDrift": 0,
+    "binaryDrift": 0,
+    "notFullExternalDependencyInventory": true
+  },
+  "builds": {
+    "mobile": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-26T07:15:47.263459+08:00",
+      "mainSHA256": "67fbe0b9b8436ed074eed6a88dc832ba4c46f8a5ab8fe61c74a20270d4fccddb",
+      "signedMachOCount": 30,
+      "arguments": [],
+      "environment": {}
+    },
+    "tv": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-26T07:15:55.217470+08:00",
+      "mainSHA256": "1457d6799c6f016b45299f19a18351648e9a243d1c65712b7946149d425bf4cc",
+      "signedMachOCount": 27,
+      "arguments": [],
+      "environment": {}
+    }
+  },
+  "tests": {
+    "packageTests": 42,
+    "failures": 0,
+    "newCorrectionTests": 10,
+    "swiftUIRenderedByPackageTests": false,
+    "logicEvidenceBuild": "initial correction build; final changes only SwiftUI row style/hit area",
+    "additionalInitialBuildEvidence": {
+      "phoneAndPadDraftCancelIndexByteIdentical": true,
+      "threeDeviceRestartPersistence": true,
+      "padSameVersionRescanPreservesOverlay": true,
+      "padChangedAdvertisedVersionRequiresReview": true,
+      "realTVCachePressureTested": false
+    }
+  },
+  "devices": {
+    "iphone13": {
+      "productType": "iPhone14,5",
+      "osVersion": "16.3.1",
+      "installedAt": "2026-10-26T07:16:47.610477+08:00",
+      "configuration": "Debug",
+      "preserveData": true,
+      "installComplete": true,
+      "packageSHA256": "67fbe0b9b8436ed074eed6a88dc832ba4c46f8a5ab8fe61c74a20270d4fccddb",
+      "latestPackageFlow": {
+        "indexed": true,
+        "saved": true,
+        "restored": true,
+        "removed": true,
+        "home": true
+      },
+      "nonDiagnosticPreferencesEqual": true,
+      "testIndexEmpty": true,
+      "finalNativeHomeImageReviewed": true,
+      "finalWiFiIconVisible": true
+    },
+    "ipad": {
+      "productType": "iPad15,7",
+      "osVersion": "26.6",
+      "installedAt": "2026-10-26T07:16:36.903569+08:00",
+      "configuration": "Debug",
+      "preserveData": true,
+      "installComplete": true,
+      "packageSHA256": "67fbe0b9b8436ed074eed6a88dc832ba4c46f8a5ab8fe61c74a20270d4fccddb",
+      "latestPackageFlow": {
+        "indexed": true,
+        "saved": true,
+        "restored": true,
+        "removed": true,
+        "home": true
+      },
+      "nonDiagnosticPreferencesEqual": true,
+      "testIndexEmpty": true,
+      "finalNativeLaunch": {
+        "environment": {},
+        "arguments": [],
+        "processObservedAt3": true,
+        "processObservedAt10": true,
+        "screenshotsCaptured": [
+          3,
+          10
+        ]
+      },
+      "finalNativeHomeImageReviewed": true,
+      "originalWiFiAndVPNVisible": true
+    },
+    "tv": {
+      "productType": "AppleTV14,1",
+      "osVersion": "18.2",
+      "installedAt": "2026-10-26T07:16:38.229770+08:00",
+      "configuration": "Debug",
+      "preserveData": true,
+      "installComplete": true,
+      "packageSHA256": "1457d6799c6f016b45299f19a18351648e9a243d1c65712b7946149d425bf4cc",
+      "latestPackageFlow": {
+        "indexed": true,
+        "saved": true,
+        "rowWidthRatio": 0.9520833333333333,
+        "restored": true,
+        "removed": true
+      },
+      "nonDiagnosticPreferencesEqual": true,
+      "testIndexEmpty": true,
+      "finalNativeLaunch": {
+        "environment": {},
+        "arguments": [],
+        "processObservedAt3": true,
+        "processObservedAt10": true,
+        "screenshotsCaptured": [
+          3,
+          10
+        ]
+      },
+      "finalNativeHomeImageReviewed": true
+    },
+    "iphone18": {
+      "productType": "iPhone19,7",
+      "osVersion": "27.0",
+      "installComplete": false,
+      "status": "unavailable this batch; prior package is not current-source regression; original DSM domain/credentials unchanged"
+    }
+  },
+  "readOnlyEvidence": {
+    "initialFixture": {
+      "sourceFiles": 9,
+      "sourceFilesUnchanged": true,
+      "directoriesUnchanged": true,
+      "requests": 32,
+      "methods": {
+        "PROPFIND": 17,
+        "GET": 15
+      },
+      "onlyReadMethods": true,
+      "allGETNFO": true,
+      "outsideSubdirectoryRequests": 0,
+      "malformedConnectionPaths": 1
+    },
+    "finalUIFixture": {
+      "sourceFiles": 9,
+      "sourceFilesUnchanged": true,
+      "directoriesUnchanged": true,
+      "requests": 42,
+      "methods": {
+        "PROPFIND": 24,
+        "GET": 18
+      },
+      "onlyReadMethods": true,
+      "allGETNFO": true,
+      "outsideSubdirectoryRequests": 0
+    },
+    "realNASProtocolAuthenticationTested": false,
+    "mediaPlayed": false,
+    "cellularUsed": false
+  },
+  "implemented": [
+    "Independent raw metadata and local identification overlay, source UUID plus original path binding",
+    "Version hint review, stale editor rejection, restoring raw identification, bounded atomic replacement and deletion isolation",
+    "TV v2 durable source/overlay catalog with independent configuration/correction budgets; v1 success-only migration",
+    "Full-width plain rows with rectangular hit areas; full focused TV title/year/path/source display"
+  ],
+  "smbPreflight": {
+    "adoptedInNastart": false,
+    "wrapperRevision": "90737c486c9d1a6ed1c1d4307060587c7bb0dfec",
+    "actualCSubmoduleRevision": "aedafb2c8742c83188e27841e270fdaad6035d41",
+    "builds": {
+      "mobile": {
+        "arm64DynamicLibrary": true,
+        "platformIOS": true,
+        "platformTVOS": false,
+        "signed": false
+      },
+      "tv": {
+        "arm64DynamicLibrary": true,
+        "platformIOS": false,
+        "platformTVOS": true,
+        "signed": false
+      }
+    },
+    "cancellationProbe": {
+      "afterTaskCancelMs": 2748.158375,
+      "configuredTimeoutSeconds": 3,
+      "elapsedMs": 3008.796208,
+      "isCancellationError": false,
+      "outcomeType": "NSError",
+      "at": "2026-10-26T07:17:53.178124+08:00",
+      "fixture": "loopback accepts negotiation and intentionally does not answer; not a NAS test",
+      "swiftTaskCancelIssued": true,
+      "fixtureCleanup": {
+        "accepted": true,
+        "receivedBytes": 180,
+        "listenerClosed": true
+      }
+    },
+    "realNASRequests": 0,
+    "signedEmbeddedOrDeviceRun": false,
+    "next": "Extend the private raw async transport to bounded read-only directory/NFO operations; validate DNS/authentication, write-right exclusions, reparse/DFS confinement and callback races before app integration",
+    "rawAsyncPrototype": {
+      "at": "2026-10-26T07:34:31.294118+08:00",
+      "scope": "private macOS raw C transport probe; only TCP negotiation on literal loopback; not DNS/authentication/files or app delivery",
+      "cases": [
+        {
+          "afterTaskCancelMs": 4.999042,
+          "elapsedMs": 260.091167,
+          "mode": "cancel",
+          "outcome": "CancellationError",
+          "fixtureCleanup": {
+            "accepted": true,
+            "receivedBytes": 180,
+            "peerClosed": true,
+            "listenerClosed": true
+          }
+        },
+        {
+          "afterTaskCancelMs": 0,
+          "elapsedMs": 521.161333,
+          "mode": "deadline",
+          "outcome": "deadline",
+          "fixtureCleanup": {
+            "accepted": true,
+            "receivedBytes": 180,
+            "peerClosed": true,
+            "listenerClosed": true
+          }
+        }
+      ],
+      "appSourceChanged": false,
+      "projectDependencyAdded": false,
+      "platformBuilds": {
+        "mobile": {
+          "arm64DynamicLibrary": true,
+          "platformVerified": true,
+          "signed": false,
+          "embeddedInNastart": false
+        },
+        "tv": {
+          "arm64DynamicLibrary": true,
+          "platformVerified": true,
+          "signed": false,
+          "embeddedInNastart": false
+        }
+      },
+      "unchangedPinnedCFiles": 199
+    }
+  },
+  "failuresRetained": [
+    "Initial capacity fixture stayed below the advertised 256 KiB limit; one case failed three assertions, fixed fixture not product limit",
+    "Self-owned fixture tried hashing a directory; corrected, not a product network failure",
+    "Legacy WDA URL clear left text and caused a malformed fixture path/404; new empty form verified exact input",
+    "Unsupported/timeout legacy scroll endpoints and non-unique cancel roles; recorded and replaced with observed controls/native input",
+    "TV conference room foreground and wrapper focus labels; only reactivate app, no system settings changes",
+    "Initial TV capsule clipping and later plain-row empty-area hit failure; both fixed and rebuilt/reinstalled",
+    "Pad reconnect invalidated an old cleanup route; own session deleted using fresh native route",
+    "Earlier phone final image was a service info page; no inference from screenshot filename"
+  ],
+  "cleanup": {
+    "ownedFixtureServerStopped": true,
+    "ownedTVRunnerStopped": true,
+    "ownedTVSettingsRestored": true,
+    "originalPhoneAndPadRunnersKept": true,
+    "onlyOwnedMobileHTTPSessionsDeleted": true,
+    "smbLoopbackListenerClosed": true,
+    "uninstallOrCredentialClearing": false,
+    "rawPrototypePeerSocketsClosed": true
+  },
+  "acceptance": {
+    "ledgerRows": 29,
+    "ledgerStateCounts": {
+      "进行中": 13,
+      "待开始": 11,
+      "待验收": 5
+    },
+    "playbackCells": 114,
+    "newPlaybackPasses": 0,
+    "tvScanCancellation": "not accepted; previous two failed attempts retained, not rerun",
+    "notDelivered": [
+      "SMB in app",
+      "online provider matching",
+      "posters",
+      "incremental scan",
+      "standalone network library playback",
+      "cross-device sync",
+      "full episode input-method coverage",
+      "real TV cache pressure"
+    ]
+  },
+  "finalChecks": {
+    "at": "2026-10-26T07:40:08.573491+08:00",
+    "sourceInputDrift": 0,
+    "binaryDrift": 0,
+    "deepStrictSignaturesVerified": true,
+    "packageSourceWhitespace": true,
+    "documentationDocuments": 458,
+    "localLinks": 2661,
+    "missingLinks": 0,
+    "gitDiffCheck": 0,
+    "nativeHomeImagesReviewed": [
+      "iphone13",
+      "ipad",
+      "tv"
+    ],
+    "focusedTVRowAndMobileCorrectionImagesReviewed": true,
+    "allOwnedServicesStopped": true,
+    "existingDirtyPreserved": true
+  }
+}

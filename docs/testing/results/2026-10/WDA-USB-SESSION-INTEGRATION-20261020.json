@@ -1,0 +1,100 @@
+{
+  "date": "2026-10-20",
+  "scope": "structured USB/session integration; current iPhone13 read-only Settings observation",
+  "unitTests": {
+    "count": 36,
+    "pythonVersions": [
+      "3.9",
+      "3.14"
+    ],
+    "passed": true
+  },
+  "privateRawHTTPIntegration": {
+    "tests": 8,
+    "failures": 0,
+    "errors": 0,
+    "actualErrorHTTP": 404,
+    "actualErrorCode": "stale element reference",
+    "actualRawBodySHA256": "8dfbc4d3cce3882ffc0a37080da41f6d4a592b0f0c0649cfa446e708c339030f",
+    "originalErrorBodyUnmodified": true,
+    "deviceCommands": 0,
+    "socketBackend": "in-memory HTTP bytes",
+    "pauseOrRestoredMovieAccepted": false,
+    "oldFailuresRetained": true
+  },
+  "liveReadOnlyPhone": {
+    "at": "2026-10-20T21:07:34.590009+08:00",
+    "mediaStarted": false,
+    "actionsSent": 0,
+    "newSessions": 0,
+    "settingsMutated": false,
+    "appLaunches": 0,
+    "freshSceneObserved": true,
+    "sourceInputsVerified": 173,
+    "packageBinaryCount": 3,
+    "signatureVerified": true,
+    "freshDeviceNameModelSystemUDIDUSBVerified": true,
+    "model": "iPhone14,5",
+    "system": "16.3.1",
+    "priorVerifiedInstallationReused": true,
+    "newInstall": false,
+    "orientation": "PORTRAIT",
+    "observationScope": "current foreground UI only, not movie/pause/restore",
+    "pngSHA256": "3f212fb84c87f84850157f33b247fcd94d9216faaaea92792b6c3cd96a4bd3b7",
+    "sourceSHA256": "af9c34780cde3fd78c1f1d75605d74194bceb4a5e618eed488a8d97459a77173",
+    "finishedAt": "2026-10-20T21:07:37.249595+08:00",
+    "originalSSIDMatchedPrivately": true,
+    "nativeSelectedSSIDAndStatusBarWiFiVisuallyVerified": true,
+    "wifiScope": "current iPhone13 native Settings observation; no network switch requested"
+  },
+  "appChanged": false,
+  "newBuilds": 0,
+  "newInstalls": 0,
+  "mediaWindows": 0,
+  "package": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "491ed044d0c13cbf31ee3f70125f599431fcb3e783a167097fa9f3d55e7a1184",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "binaryBuildTime": "2026-10-20T16:16:59.676117+08:00",
+    "binaries": {
+      "Nastart": "df32a4befe3768aa1eac0d8175c028c00f5141eb3c93b392f88128ef4a10e1d8",
+      "Nastart.debug.dylib": "f43015ca6ce6c3e3f4b1180e1c6d16e107bab012b8d7442d5f01c574cd71bfb1",
+      "Frameworks/KSPlayer.framework/KSPlayer": "d2ccf7a95166b81d1491dea583eb4518ef23a00add3f91d8a3b9d0e9da2b7e37"
+    },
+    "profileExpirationUTC": "2026-10-24T22:23:57"
+  },
+  "deviceScope": {
+    "iphone13": "fresh identity/latest-package receipt gate and existing-session UI read only",
+    "ipad": "not probed this batch; prior results remain historical",
+    "iphone18": "away; not probed"
+  },
+  "limits": [
+    "No real PiP query, click, pause, restored movie, audio or frame pacing accepted",
+    "UI transition verifier only checks visible enabled controls plus changed screenshot bytes; never movie content",
+    "Snapshots are serial observations, not atomic scene locks",
+    "Existing live helper retained as historical evidence; next-window helper is separate",
+    "Pause effect adapter still needs new same-trace telemetry and independent native UI evidence; cached preferences alone are insufficient"
+  ],
+  "sourceInspection": {
+    "diagnosticPersistDeadlineMs": 750,
+    "KSStateTelemetryMayBeDash": true,
+    "mirroredPlanIDPrefixLength": 8,
+    "meaning": "new event identity/trace and capture boundary required; never infer pause from unchanged cached data or delta zero alone"
+  },
+  "scriptsSHA256": {
+    "scripts/wda_command_guard.py": "9da6d33d439ca275797337f6a7fcd8a3f896223b8b4c4d64d227fb8968cfaeb0",
+    "scripts/wda_usb_session.py": "9110af874b7412b733d823c80cc0c73c0d328b2df672300ab00168d78dae8fbc",
+    "scripts/test_wda_usb_session.py": "d62021707556ac016dfc1c829205130f1122217222a931c91aba3cd0151ad4b4"
+  },
+  "openRequirements": 28,
+  "checks": {
+    "unitTests": 36,
+    "privateIntegration": 8,
+    "preflight": 15,
+    "documents": 357,
+    "localLinks": 1856,
+    "missingLinks": 0,
+    "gitDiffCheck": true,
+    "evidenceRootHostProcesses": 0
+  }
+}

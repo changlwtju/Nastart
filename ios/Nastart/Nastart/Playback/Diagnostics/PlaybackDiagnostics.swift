@@ -1,5 +1,205 @@
 import AVFoundation
+import CryptoKit
 import Foundation
+
+/// Route-owned, bounded evidence. URI digests are comparison keys only and are
+/// never exported. No global fallback can attach an old request to a new route.
+final class PlaybackProxyRequestDiagnostics: @unchecked Sendable {
+    private struct Record {
+        let localKey: SHA256.Digest
+        let upstreamKey: SHA256.Digest
+        let transferID: UUID
+        let role: String
+        let childID: String
+    }
+    let routeID = UUID()
+    private let lock = NSLock()
+    private var records: [Record] = []
+    private var historyTruncated = false
+    private static let limit = 64
+
+    static func safeTrace(_ value: String?) -> String {
+        guard let value else { return "unknown" }
+        if let uuid = UUID(uuidString: value) { return uuid.uuidString }
+        if value.count == 8, value.utf8.allSatisfy({
+            (48...57).contains($0) || (65...70).contains($0) || (97...102).contains($0)
+        }) { return value.uppercased() }
+        return "unknown"
+    }
+
+    static func role(for url: URL) -> String {
+        let ext = url.pathExtension.lowercased()
+        if ext == "m3u8" { return url.path.lowercased().contains("master") ? "masterPlaylist" : "mediaPlaylist" }
+        if ["m4s", "ts", "mp4", "aac", "mp3", "ac3", "vtt"].contains(ext) { return "segment" }
+        if ["key", "bin"].contains(ext) { return "key" }
+        return "unknown"
+    }
+
+    func record(localURL: URL, upstreamURL: URL, transferID: UUID, childID: String?) {
+        let safeChild = childID.flatMap { value -> String? in
+            guard value.count <= 80, !value.isEmpty,
+                  value.utf8.allSatisfy({ (97...122).contains($0) || (48...57).contains($0) || $0 == 46 }) else { return nil }
+            return value
+        }
+        let record = Record(localKey: SHA256.hash(data: Data(localURL.absoluteString.utf8)),
+            upstreamKey: SHA256.hash(data: Data(upstreamURL.absoluteString.utf8)),
+            transferID: transferID, role: Self.role(for: upstreamURL),
+            childID: childID == nil ? "root" : (safeChild ?? "unknown"))
+        lock.lock(); defer { lock.unlock() }
+        if records.count == Self.limit { records.removeFirst(); historyTruncated = true }
+        records.append(record)
+    }
+
+    func fields(uri: String?) -> [String: String] {
+        lock.lock(); defer { lock.unlock() }
+        var fields = ["proxyDiagnosticRouteID": routeID.uuidString,
+                      "binding": "missingURI", "hlsRole": "unknown",
+                      "playlistChildID": "unknown", "transferID": "unknown",
+                      "matchingTransfers": "0", "historyTruncated": String(historyTruncated)]
+        guard let uri, let url = URL(string: uri),
+              ["http", "https"].contains(url.scheme?.lowercased() ?? "") else { return fields }
+        let key = SHA256.hash(data: Data(url.absoluteString.utf8))
+        let matches = records.filter { $0.localKey == key || $0.upstreamKey == key }
+        fields["matchingTransfers"] = String(matches.count)
+        guard let first = matches.first else { fields["binding"] = "unmatchedURI"; return fields }
+        let unique = matches.count == 1 && !historyTruncated
+        fields["binding"] = unique ? "exactSingleTransfer" : "ambiguousOrTruncated"
+        fields["transferID"] = unique ? first.transferID.uuidString : "unknown"
+        if matches.allSatisfy({ $0.role == first.role && $0.childID == first.childID }) {
+            fields["hlsRole"] = first.role; fields["playlistChildID"] = first.childID
+        }
+        return fields
+    }
+}
+
+enum PlaybackAVFailureDiagnostics {
+    private static func safeDomain(_ domain: String) -> String {
+        [NSURLErrorDomain, AVFoundationErrorDomain, NSOSStatusErrorDomain,
+         NSPOSIXErrorDomain, "CoreMediaErrorDomain", "kCFErrorDomainCFNetwork"].contains(domain) ? domain : "other"
+    }
+
+    struct ErrorEvent {
+        let domain: String
+        let status: Int
+        let date: Date?
+        let uri: String?
+    }
+
+    /// Only typed fields and exact request bindings cross the diagnostic boundary.
+    /// Raw URI, server address and error comment are deliberately absent.
+    static func fields(events: [ErrorEvent], eventCount: Int? = nil, candidateCurrent: Bool,
+                       resource: (String?) -> [String: String]) -> [String: String] {
+        var fields = ["candidateCurrentAtFailure": String(candidateCurrent),
+                      "candidateErrorLogEvents": String(eventCount ?? events.count),
+                      "candidateErrorLogRecorded": String(min(events.count, 4))]
+        for (index, event) in events.suffix(4).enumerated() {
+            let prefix = "candidateError\(index)_"
+            fields[prefix + "domain"] = safeDomain(event.domain)
+            fields[prefix + "status"] = String(event.status)
+            fields[prefix + "epochSeconds"] = event.date.flatMap {
+                $0.timeIntervalSince1970.isFinite ? String($0.timeIntervalSince1970) : nil
+            } ?? "unknown"
+            for (key, value) in resource(event.uri) { fields[prefix + key] = value }
+        }
+        return fields
+    }
+
+    /// AV errorLog can be empty even when item.error is populated. Inspect only
+    /// typed failing-URL keys and one bounded underlying chain; never descriptions
+    /// or arbitrary userInfo, which may contain credentials or private paths.
+    static func errorChainFields(_ error: NSError?, resource: (String?) -> [String: String]) -> [String: String] {
+        var current = error
+        var visited = Set<ObjectIdentifier>()
+        var fields = ["candidateNSErrorEnd": error == nil ? "missing" : "leaf"]
+        var count = 0
+        while let error = current, count < 4 {
+            guard visited.insert(ObjectIdentifier(error)).inserted else {
+                fields["candidateNSErrorEnd"] = "cycle"; break
+            }
+            let prefix = "candidateNSError\(count)_"
+            fields[prefix + "domain"] = safeDomain(error.domain)
+            fields[prefix + "code"] = String(error.code)
+            let uri = (error.userInfo[NSURLErrorFailingURLErrorKey] as? URL)?.absoluteString
+                ?? (error.userInfo[NSURLErrorFailingURLStringErrorKey] as? String)
+            for (key, value) in resource(uri) { fields[prefix + key] = value }
+            count += 1
+            current = error.userInfo[NSUnderlyingErrorKey] as? NSError
+            if count == 4, current != nil { fields["candidateNSErrorEnd"] = "limit" }
+        }
+        fields["candidateNSErrorCount"] = String(count)
+        return fields
+    }
+}
+
+/// Call under the transfer's buffer lock. Upstream received bytes are supplied
+/// separately; a partial playlist has sent zero response bytes to AVPlayer.
+struct PlaybackPlaylistDeliveryDiagnostics {
+    private(set) var headerSendCompleted = false
+    private(set) var bodySendCompletedBytes = 0
+    mutating func headerCompleted() { headerSendCompleted = true }
+    mutating func bodyCompleted(bytes: Int) { bodySendCompletedBytes += max(bytes, 0) }
+    func fields(upstreamReceived: Int) -> [String: String] {
+        ["playlistUpstreamBodyReceivedBytes": String(upstreamReceived),
+         "playlistClientHeaderSendCompleted": String(headerSendCompleted),
+         "playlistClientBodySendCompletedBytes": String(bodySendCompletedBytes),
+         "deliveredBytesMeaning": "legacyUpstreamPlaylistBodyReceived"]
+    }
+}
+
+/// A correlation candidate for Jellyfin 10.11.11, never an authentication token
+/// or proof that a server job exists. Keep paths and request headers out of logs.
+enum PlaybackJellyfinOutputDiagnostics {
+    static func mediaPath(path: String?, encoderPath: String?, hasEncoderProtocol: Bool) -> String? {
+        if hasEncoderProtocol, let encoderPath, !encoderPath.isEmpty { return encoderPath }
+        return path?.isEmpty == false ? path : nil
+    }
+
+    static func fields(mediaPath: String?, request: URLRequest, redirectCount: Int) -> [String: String] {
+        guard let mediaPath, !mediaPath.isEmpty else { return [:] }
+        func unavailable(_ reason: String) -> [String: String] {
+            ["jellyfinOutputKeyCandidate": "unknown", "jellyfinOutputKeyBasis": reason]
+        }
+        guard redirectCount == 0 else { return unavailable("redirectedRequest") }
+        guard let agent = request.value(forHTTPHeaderField: "User-Agent"), !agent.isEmpty
+        else { return unavailable("missingRequestUserAgent") }
+        guard let url = request.url,
+              let items = URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems
+        else { return unavailable("missingRequestQuery") }
+        let packed = items.filter { $0.name.lowercased() == "params" }
+        guard packed.count <= 1 else { return unavailable("repeatedParams") }
+        let positional = (packed.first?.value ?? "").components(separatedBy: ";")
+        func unique(_ name: String, position: Int) -> String? {
+            let values = items.filter { $0.name.lowercased() == name }
+            guard values.count <= 1 else { return nil }
+            // StreamingHelpers.ParseParams overrides explicit query values
+            // only for non-whitespace slots. Keep the slot's original bytes.
+            if position < positional.count,
+               !positional[position].trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                return positional[position]
+            }
+            guard let value = values.first?.value, !value.isEmpty else { return nil }
+            return value
+        }
+        guard let device = unique("deviceid", position: 1) else { return unavailable("missingOrRepeatedDeviceId") }
+        guard let session = unique("playsessionid", position: 20) else { return unavailable("missingOrRepeatedPlaySessionId") }
+        guard let data = "\(mediaPath)-\(agent)-\(device)-\(session)".data(using: .utf16LittleEndian)
+        else { return unavailable("unencodableInput") }
+        // .NET constructs Guid from the digest, reversing its first 4/2/2
+        // byte groups before ToString("N"). This is not a plain MD5 hex string.
+        let digest = Array(Insecure.MD5.hash(data: data))
+        let order = [3, 2, 1, 0, 5, 4, 7, 6, 8, 9, 10, 11, 12, 13, 14, 15]
+        return ["jellyfinOutputKeyCandidate": order.map { String(format: "%02x", digest[$0]) }.joined(),
+                "jellyfinOutputKeyBasis": "10.11.11FormulaActualMetricsRequest"]
+    }
+}
+
+enum PlaybackStageTiming {
+    /// Zero denotes a stage that has not been observed, not a zero-cost stage.
+    static func milliseconds(start: Double, end: Double) -> String {
+        guard start.isFinite, end.isFinite, start > 0, end >= start else { return "unknown" }
+        return String((end - start) * 1000)
+    }
+}
 
 enum PlaybackDiagnosticsEventName: String, Codable, CaseIterable, Sendable {
     case intentCreated = "intent_created"
@@ -369,22 +569,12 @@ final class PlaybackTelemetrySampler {
         for item: AVPlayerItem,
         playbackSeconds: TimeInterval?
     ) -> TimeInterval? {
-        let currentSeconds = playbackSeconds ?? item.currentTime().seconds
-        guard currentSeconds.isFinite else { return nil }
-        let ranges = item.loadedTimeRanges
-            .map(\.timeRangeValue)
-            .filter { $0.start.seconds.isFinite && $0.duration.seconds.isFinite }
-        guard let containingRange = ranges.first(where: { range in
-            let start = range.start.seconds
-            let end = start + range.duration.seconds
-            return currentSeconds >= start && currentSeconds <= end
-        }) ?? ranges.first else {
-            return nil
-        }
-        return max(
-            containingRange.start.seconds + containingRange.duration.seconds - currentSeconds,
-            0
-        )
+        PlaybackBufferedReservePolicy.seconds(
+            at: playbackSeconds ?? item.currentTime().seconds,
+            ranges: item.loadedTimeRanges.map {
+                let range = $0.timeRangeValue
+                return (start: range.start.seconds, end: range.end.seconds)
+            })
     }
 
     private static func throughputMbps(

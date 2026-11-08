@@ -1,0 +1,366 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-10-24T00:35:19.129321+08:00",
+  "status": "batch complete; actual automatic retry acceptance remains open",
+  "implementation": "Failed valid uncommitted candidate continuation used for next automatic negotiation; scoped source and attempt ticket; recovery withdrawal; no retained player/tracker; original cleanup, cooldown, two real attempt budget and 40 second deadline retained",
+  "build": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "e1c30ab6daafd41d5cb0eb5f9bc8dd830ab6360c97b557e0c5c569f464a6d2fd",
+    "binaryBuildTime": "2026-10-24T00:00:14.374036+08:00",
+    "ipaSHA256": "18983ee083090f1e7c4c58802d63b4d5522757345f17bd418195005ca0ecc7d6",
+    "binaries": {
+      "Nastart": "f2c14107cbf20f747722bfe14e2523065d0514e8782e67be20a9490d9b911661",
+      "Nastart.debug.dylib": "a87044bad4855e1cb41eba25f1a84ed30ca24785492a3b1176ea379a78ef87c9",
+      "Frameworks/KSPlayer.framework/KSPlayer": "0661356554757a69dacaca4d468bae4cde9d4e2074426b6a57fc8fc1a540cb83"
+    }
+  },
+  "tests": {
+    "XCTestExecuted": 37,
+    "XCTestPassed": 37,
+    "failures": 0,
+    "newRetryTests": 4,
+    "relatedPolicyBudgetReadinessTests": 13,
+    "existingCandidateTests": 20,
+    "staticPreflightPassed": 15,
+    "deviceBuildPower": "owned child assertion + AC begin/middle/end verified",
+    "simulatorPower": "wrapped; middle snapshot only, not a performance claim"
+  },
+  "iphone13S03": {
+    "sample": "S03",
+    "entry": "Jellyfin",
+    "normalDebug": true,
+    "injectedEnvironment": {},
+    "arguments": [],
+    "playCommands": 1,
+    "manualSeekAndPiPCommands": 0,
+    "requestedObservationSeconds": 150,
+    "telemetrySamples": 147,
+    "automaticDecisions": 149,
+    "automaticRequests": 0,
+    "candidateCommits": 0,
+    "observedAttempts": [
+      0
+    ],
+    "engine": "KSPlayer",
+    "route": "directPlay/localRangeProxy",
+    "network": "Wi-Fi/local",
+    "completedStallDurationsMs": [
+      1381,
+      3222
+    ],
+    "firstFrameInternalSignal": "playbackClock",
+    "firstFrameInternalMs": 2595,
+    "actualSparseImagesReviewed": [
+      "3s spinner/black",
+      "10s movie",
+      "60s changed movie",
+      "150s changed movie/bilingual cue",
+      "end 1:09:52",
+      "ordinary return original S03 detail"
+    ],
+    "normalReturnVerified": true,
+    "newCrashReportNames": {
+      "Nastart": 0,
+      "WebDriverAgent": 0,
+      "JetsamEvent": 0
+    },
+    "originalTrackAndBookmarkKeysPreserved": true,
+    "otherPreferencesUnchanged": true,
+    "ownedAppStatesAtStop": [
+      1,
+      1
+    ],
+    "ownedGuardianAndSyslogStopped": true,
+    "actualRetryBranchExercised": false,
+    "realPGSFailureFixed": false,
+    "fullFrameAndAudioAcceptance": false,
+    "comparisonToPrior7300ms": "different position/supply, no paired improvement claim"
+  },
+  "iphone18": {
+    "startedAtUTC": "2026-10-23T16:08:39.305311+00:00",
+    "stage": "installed; launch requested; actual screenshot review required",
+    "packageVerified": true,
+    "targetLiveVerified": true,
+    "preferencesSavedBeforeInstall": true,
+    "installDispatchAttempted": true,
+    "installCommandSent": true,
+    "installCompleteObserved": true,
+    "postInstallLookupExists": true,
+    "actualForegroundUIVerified": false,
+    "newPairingAttempted": false,
+    "networkOrVPNChanged": false,
+    "WDARequiredForInstallation": false,
+    "sourceDiffSHA256": "e1c30ab6daafd41d5cb0eb5f9bc8dd830ab6360c97b557e0c5c569f464a6d2fd",
+    "binaries": {
+      "Nastart": "f2c14107cbf20f747722bfe14e2523065d0514e8782e67be20a9490d9b911661",
+      "Nastart.debug.dylib": "a87044bad4855e1cb41eba25f1a84ed30ca24785492a3b1176ea379a78ef87c9",
+      "Frameworks/KSPlayer.framework/KSPlayer": "0661356554757a69dacaca4d468bae4cde9d4e2074426b6a57fc8fc1a540cb83"
+    },
+    "ipaSHA256": "18983ee083090f1e7c4c58802d63b4d5522757345f17bd418195005ca0ecc7d6",
+    "model": "iPhone19,7",
+    "system": "27.0",
+    "connection": "NETWORK",
+    "existingEscrowUsedForContainerRequest": true,
+    "dispatchAtUTC": "2026-10-23T16:08:54.891667+00:00",
+    "installProgress": [
+      {
+        "percent": 90,
+        "atUTC": "2026-10-23T16:08:57.496946+00:00"
+      },
+      {
+        "percent": 100,
+        "atUTC": "2026-10-23T16:08:57.562937+00:00"
+      }
+    ],
+    "installedAtUTC": "2026-10-23T16:08:57.568913+00:00",
+    "preferences": {
+      "beforeKeys": 25,
+      "afterKeys": 25,
+      "sameKeys": true,
+      "changedValues": 1,
+      "allNonDiagnosticPreferencesEqual": false
+    },
+    "RSDTargetVerified": true,
+    "normalLaunchRequested": true,
+    "requestedEnvironment": {},
+    "requestedArguments": [],
+    "actualScreenCaptured": true,
+    "preferencesAfterLaunch": {
+      "beforeKeys": 25,
+      "afterKeys": 25,
+      "sameKeys": true,
+      "changedValues": 1,
+      "allNonDiagnosticPreferencesEqual": false
+    },
+    "finishedAtUTC": "2026-10-23T16:09:09.018392+00:00",
+    "actualScreenshotReviewed": true,
+    "screenshotShowsDifferentForegroundApp": true,
+    "normalHomeNotVerifiedReason": "Another user app visible at screenshot; no further foreground takeover attempted",
+    "preferenceFieldAudit": {
+      "after-install": {
+        "nonDiagnosticKeySetsSame": true,
+        "other24PreferencesUnchanged": true,
+        "bookmarkKeysSame": true,
+        "changedBookmarkEntries": 1,
+        "changedFields": [
+          "positionSeconds",
+          "updatedAt"
+        ],
+        "tracksUnchanged": true,
+        "changeCause": "not inferred"
+      },
+      "after-launch": {
+        "nonDiagnosticKeySetsSame": true,
+        "other24PreferencesUnchanged": true,
+        "bookmarkKeysSame": true,
+        "changedBookmarkEntries": 1,
+        "changedFields": [
+          "positionSeconds",
+          "updatedAt"
+        ],
+        "tracksUnchanged": true,
+        "changeCause": "not inferred"
+      }
+    }
+  },
+  "ipadS01File": {
+    "sample": "S01",
+    "entry": "file",
+    "playCommands": 1,
+    "requestedMediaSeconds": 60,
+    "normalCloseEffectCaptured": true,
+    "returnOriginalDetailUIObserved": true,
+    "otherPreferencesUnchanged": true,
+    "bookmarkKeysSame": true,
+    "trackChanges": 0,
+    "newCrashInventory": {
+      "Nastart": 0,
+      "WebDriverAgent": 0,
+      "JetsamEvent": 0
+    },
+    "finalWDAAppStates": [
+      1,
+      1
+    ],
+    "ownGuardianStopped": true,
+    "ownSyslogStopped": true,
+    "telemetrySamples": 62,
+    "lastSampleStallCount": 1,
+    "completedStallDurationsMs": [
+      477
+    ],
+    "actualImagesReviewed": true,
+    "fullFrameAndAudioAcceptance": false,
+    "normalEnvironmentAndArguments": true,
+    "route": "KSPlayer/directPlay/localRangeProxy"
+  },
+  "ipadS01Jellyfin": {
+    "sample": "S01",
+    "entry": "jf",
+    "playCommands": 1,
+    "requestedMediaSeconds": 60,
+    "normalCloseEffectCaptured": true,
+    "returnOriginalDetailUIObserved": true,
+    "otherPreferencesUnchanged": true,
+    "bookmarkKeysSame": true,
+    "trackChanges": 0,
+    "newCrashInventory": {
+      "Nastart": 0,
+      "WebDriverAgent": 0,
+      "JetsamEvent": 0
+    },
+    "finalWDAAppStates": [
+      1,
+      1
+    ],
+    "ownGuardianStopped": true,
+    "ownSyslogStopped": true,
+    "telemetrySamples": 65,
+    "lastSampleStallCount": 0,
+    "completedStallDurationsMs": [],
+    "actualImagesReviewed": true,
+    "fullFrameAndAudioAcceptance": false,
+    "normalEnvironmentAndArguments": true,
+    "route": "KSPlayer/directPlay/localRangeProxy"
+  },
+  "ipadToolFailures": {
+    "attempt1": {
+      "jf": "normal home predicate in fast AX did not match",
+      "file": "phone name selector did not match Pad image identifier"
+    },
+    "attempt2": {
+      "jf": "dynamic online text changed before selector",
+      "file": "guard correctly stopped before Play: helper lacked its own child assertion"
+    },
+    "attempt3": {
+      "jf": "search button uses label instead of name"
+    },
+    "allFailedAttemptsHadZeroPlay": true,
+    "preserved": true
+  },
+  "limits": {
+    "naturalRetryOnDeviceVerified": false,
+    "prior7300msFixed": false,
+    "realPGSCandidate40sFailureFixed": false,
+    "fullMatrixAcceptance": false,
+    "releaseAcceptance": false
+  },
+  "openRequirementCount": 28,
+  "fullMatrixCells": 76,
+  "iphone13S19": {
+    "sample": "S19",
+    "entry": "jf",
+    "playCommands": 1,
+    "requestedMediaSeconds": 150,
+    "normalCloseEffectCaptured": true,
+    "returnOriginalDetailUIObserved": true,
+    "otherPreferencesUnchanged": true,
+    "bookmarkKeysSame": true,
+    "trackChanges": 0,
+    "newCrashInventory": {
+      "Nastart": 0,
+      "WebDriverAgent": 0,
+      "JetsamEvent": 0
+    },
+    "finalWDAAppStates": [
+      1,
+      1
+    ],
+    "ownGuardianStopped": true,
+    "ownSyslogStopped": true,
+    "telemetrySamples": 148,
+    "automaticDecisions": 149,
+    "observedAttempts": [
+      0
+    ],
+    "automaticRequests": 0,
+    "candidateCommits": 0,
+    "completedStallDurationsMs": [
+      2090,
+      6290
+    ],
+    "firstFrameInternalSignal": "playbackClock",
+    "firstFrameInternalMs": 3346,
+    "actualImagesReviewed": [
+      "3s black/spinner",
+      "10s movie with spinner and bilingual PGS",
+      "30s later movie/cues",
+      "150s later movie",
+      "end 2:14:33",
+      "ordinary return exact S19 detail"
+    ],
+    "actualRetryBranchExercised": false,
+    "fullFrameAndAudioAcceptance": false,
+    "route": "KSPlayer/directPlay/localRangeProxy",
+    "normalEnvironmentAndArguments": true,
+    "comparisonToPriorSamples": "Different position/supply; not paired performance"
+  },
+  "cleanup": {
+    "allFourMediaCasesStoppedOwnAppLoggerGuardian": true,
+    "iPhone13": "WDA App state1/1, defaultActiveApplication auto, idle10/coolOff2",
+    "iPad": "native App0/Runner0; owned host stopped",
+    "iPhone18": "no media started; user foreground left untouched after screenshot",
+    "networkOrVPNChanged": false,
+    "cellularMediaTests": 0,
+    "ownMediaActiveAfterBatch": false
+  },
+  "finalAudit": {
+    "iPhone13": {
+      "at": "2026-10-24T00:27:43.153318+08:00",
+      "current174InputsAndPackageAndOwnInstallReceiptVerified": true,
+      "liveModel": "iPhone14,5",
+      "liveSystem": "16.3.1",
+      "connection": "USB",
+      "WDAAppStates": [
+        1,
+        1
+      ],
+      "settingsRestored": true,
+      "fullNonDiagnosticPreferencesStableTwoReads": true,
+      "other24PreferencesUnchangedSinceInstall": true,
+      "bookmarkKeys": 36,
+      "bookmarkKeysSame": true,
+      "trackPreferencesSame": true,
+      "changedBookmarkFields": [
+        "positionSeconds",
+        "updatedAt"
+      ],
+      "homeImageReviewPending": false,
+      "actualHomeWiFiNoPiPReviewed": true
+    },
+    "iPad": {
+      "at": "2026-10-24T00:28:53.290594+08:00",
+      "current174InputsAndPackageAndOwnInstallReceiptVerified": true,
+      "model": "iPad12,1",
+      "system": "18.3.1",
+      "connection": "USB",
+      "fullNonDiagnosticPreferencesStableTwoReads": true,
+      "other17PreferencesUnchangedSinceInstall": true,
+      "bookmarkKeys": 29,
+      "bookmarkKeysSame": true,
+      "trackPreferencesSame": true,
+      "changedBookmarkFields": [
+        "positionSeconds",
+        "updatedAt"
+      ],
+      "homeImageReviewPending": false,
+      "nativeAppCount": 0,
+      "nativeRunnerCount": 0,
+      "actualHomeWiFiNoPiPReviewed": true
+    }
+  },
+  "batchFinal": {
+    "finishedAt": "2026-10-24T00:35:19.129321+08:00",
+    "currentInputCount": 174,
+    "latestPackageIdentityVerified": true,
+    "threeCurrentInstallReceipts": true,
+    "XCTestPassed": 37,
+    "preflightPassed": 15,
+    "documentationChecked": 412,
+    "localLinksChecked": 2264,
+    "missingDestinations": 0,
+    "gitWhitespaceCheckPassed": true,
+    "activeOwnedMediaCases": 0,
+    "fullAutomaticRetryDeviceAcceptance": false
+  }
+}

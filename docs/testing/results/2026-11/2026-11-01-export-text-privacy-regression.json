@@ -1,0 +1,55 @@
+{
+  "recordedAt": "2026-11-01T10:55:34.918746+08:00",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceInputCount": 446,
+  "changedExistingSourceFiles": 3,
+  "otherSourceHashesUnchanged": 443,
+  "finalInputHashesVerified": true,
+  "uniqueAcceptedPureFunctionTests": 8,
+  "testResults": {
+    "baseline-accepted": {
+      "passed": 2,
+      "failed": 6
+    },
+    "accepted": {
+      "passed": 8,
+      "failed": 0
+    }
+  },
+  "testMode": "Exact production Foundation-only method bodies and current XCTest method bodies in temporary macOS Swift package; no host App startup",
+  "fullNativeAppUnitSuiteRun": false,
+  "candidateTrailingEscapeFailureRetained": true,
+  "directSwiftCHarnessCompileFailuresRetained": 3,
+  "finalBuildExitCodes": {
+    "tv-sim-debug-cast": 0,
+    "mobile-sim-debug-cast": 0,
+    "mobile-unsigned-debug": 0,
+    "mobile-release": 0,
+    "tv-unsigned-debug": 0,
+    "tv-release": 0
+  },
+  "diagnosticFormattingLoggingAndPersistenceUnchanged": true,
+  "productionExportTextCallSites": 3,
+  "exportSchemaSelectionAndShareActionUnchanged": true,
+  "strictAnonymityDelivered": false,
+  "rawUserExportsReadOrShared": 0,
+  "realCredentialReads": 0,
+  "physicalDeviceOperations": 0,
+  "NASCommands": 0,
+  "playbackCommands": 0,
+  "newSimulatorsCreated": 0,
+  "newUIImages": 0,
+  "newSignedCandidateFrozen": false,
+  "priorProvisioningBlockersRetained": true,
+  "activeCompilationProcesses": 0,
+  "unrelatedReadOnlyXcodeMetadataProcessesLeftUntouched": 0,
+  "playbackMatrixSize": 114,
+  "newPlaybackPasses": 0,
+  "freeGiB": 14.41,
+  "documentationCheck": {
+    "documents": 573,
+    "localLinks": 3631,
+    "missingDestinations": 0
+  },
+  "finalizedAt": "2026-11-01T10:56:44.736538+08:00"
+}

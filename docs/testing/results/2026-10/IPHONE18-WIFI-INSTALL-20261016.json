@@ -1,0 +1,150 @@
+{
+  "at": "2026-10-16T07:15:23.862670+08:00",
+  "request": "Install latest current-source app on iPhone18 over existing paired Wi-Fi",
+  "discovery": {
+    "identityMatches": true,
+    "paired": true,
+    "model": "iPhone19,7",
+    "system": "27.0",
+    "verifiedPort": 62078,
+    "connection": "direct Wi-Fi TCP",
+    "targetAbsentFromUSB": true,
+    "systemDNSServiceResolved": true,
+    "resolvedInterfaceIndex": 12,
+    "pairingRecordChanged": false,
+    "networkConfigurationChanged": false,
+    "appInstalledOrLaunched": false,
+    "outcome": "verified"
+  },
+  "package": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "c868c278fcefe2411cfc07eabb4adf33ce159f0a0f9fb446897aeb2ce25ac835",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "binaryBuildTime": "2026-10-15T18:56:47.888882+08:00",
+    "binaries": {
+      "Nastart": "963906f2460a7e8ca717dbb818d7ac6e6425a0466c28d96d8a5829cd21f8a75b",
+      "Nastart.debug.dylib": "46cb682d7938d2f4d45b622dc49ca9ecc368f493717d7c23303a44196c4ba8f5",
+      "Frameworks/KSPlayer.framework/KSPlayer": "76d17821ceeba058544cad0031b0eb41f4fa6be90edb9ec36ebe2d1f24bb7b5e"
+    },
+    "ipaSHA256": "197133cef44eec71d344cf716aee716f902edcad17a2bb51da80425e970ee537",
+    "individuallyVerifiedLibraries": 29,
+    "profileExpirationUTC": "2026-10-17T22:23:40",
+    "AppSourceChangedThisTurn": false,
+    "rebuiltThisTurn": false,
+    "AppTestsRerun": false,
+    "preflightRerun": false,
+    "priorSameSourceTests": {
+      "executed": 396,
+      "skipped": 2,
+      "failures": 0,
+      "origin": "2026-10-15 18:56 build"
+    },
+    "priorSameSourcePreflightPassed": 15
+  },
+  "install": {
+    "startedAtUTC": "2026-10-15T23:10:40.662498+00:00",
+    "stage": "installed; launch requested; actual screenshot review required",
+    "packageVerified": true,
+    "targetLiveVerified": true,
+    "preferencesSavedBeforeInstall": true,
+    "installDispatchAttempted": true,
+    "installCommandSent": true,
+    "installCompleteObserved": true,
+    "postInstallLookupExists": true,
+    "actualForegroundUIVerified": false,
+    "newPairingAttempted": false,
+    "networkOrVPNChanged": false,
+    "WDARequiredForInstallation": false,
+    "sourceDiffSHA256": "c868c278fcefe2411cfc07eabb4adf33ce159f0a0f9fb446897aeb2ce25ac835",
+    "binaries": {
+      "Nastart": "963906f2460a7e8ca717dbb818d7ac6e6425a0466c28d96d8a5829cd21f8a75b",
+      "Nastart.debug.dylib": "46cb682d7938d2f4d45b622dc49ca9ecc368f493717d7c23303a44196c4ba8f5",
+      "Frameworks/KSPlayer.framework/KSPlayer": "76d17821ceeba058544cad0031b0eb41f4fa6be90edb9ec36ebe2d1f24bb7b5e"
+    },
+    "ipaSHA256": "197133cef44eec71d344cf716aee716f902edcad17a2bb51da80425e970ee537",
+    "model": "iPhone19,7",
+    "system": "27.0",
+    "connection": "NETWORK",
+    "existingEscrowUsedForContainerRequest": true,
+    "installedAtUTC": "2026-10-15T23:10:53.805191+00:00",
+    "preferences": {
+      "beforeKeys": 25,
+      "afterKeys": 25,
+      "sameKeys": true,
+      "changedValues": 0,
+      "allNonDiagnosticPreferencesEqual": true
+    },
+    "RSDTargetVerified": true,
+    "normalLaunchRequested": true,
+    "requestedEnvironment": {},
+    "requestedArguments": [],
+    "actualScreenCaptured": true,
+    "preferencesAfterLaunch": {
+      "beforeKeys": 25,
+      "afterKeys": 25,
+      "sameKeys": true,
+      "changedValues": 0,
+      "allNonDiagnosticPreferencesEqual": true
+    },
+    "finishedAtUTC": "2026-10-15T23:11:04.771066+00:00"
+  },
+  "separateStartupVerification": {
+    "originalInstallComplete": true,
+    "reinstallAttempted": false,
+    "captureDelaySeconds": 1,
+    "reason": "earlier six-second snapshot did not show target app; separate bounded startup verification",
+    "actualForegroundUIVerified": true,
+    "freshPairedIdentityMatched": true,
+    "stage": "installed; launch requested; actual screenshot review required",
+    "RSDTargetVerified": true,
+    "normalLaunchRequested": true,
+    "requestedEnvironment": {},
+    "requestedArguments": [],
+    "actualScreenCaptured": true,
+    "preferencesAfterLaunch": {
+      "beforeKeys": 25,
+      "afterKeys": 25,
+      "sameKeys": true,
+      "changedValues": 0,
+      "allNonDiagnosticPreferencesEqual": true
+    },
+    "actualNastartLaunchpadReviewed": true,
+    "playerClosedInReviewedFrame": true,
+    "NASStateInEarlyFrame": "not connected",
+    "NASConnectionAccepted": false
+  },
+  "finalPreferenceRead": {
+    "snapshotOnly": true,
+    "newLaunchOrInstallRequested": false,
+    "actualHomeReviewed": false,
+    "freshRSDIdentityVerified": true,
+    "preferences": {
+      "beforeKeys": 25,
+      "afterKeys": 25,
+      "sameKeys": true,
+      "changedValues": 0,
+      "allNonDiagnosticPreferencesEqual": true
+    },
+    "captured": true
+  },
+  "actualReview": {
+    "at": "2026-10-16T07:15:22.851110+08:00",
+    "installCompleteAndLookupVerified": true,
+    "initialSixSecondCaptureShowsTargetApp": false,
+    "oneSecondVerificationShowsNastartLaunchpad": true,
+    "actualForegroundUIVerified": true,
+    "NASConnectionAccepted": false,
+    "NASStateInEarlyFrame": "not connected; one-second startup snapshot only",
+    "captureOnlyLaterForegroundWasOtherApp": true,
+    "laterOtherAppNotUsedAsNastartEvidence": true,
+    "noFurtherPhoneCapturePlannedThisBatch": true,
+    "normalLaunchRequestedEnvironment": {},
+    "normalLaunchRequestedArguments": [],
+    "actualProcessEnvironmentRead": false,
+    "all25NonDiagnosticPreferencesEqualAfterInstallLaunchAndFinalRead": true
+  },
+  "noUninstallOrPairingOrNetworkOrWDAChange": true,
+  "playbackOrPerformanceAccepted": false,
+  "allPreviousOpenTasksRetained": true,
+  "outcome": "latest current-source package installed; actual Nastart launchpad reviewed; NAS/playback acceptance pending"
+}

@@ -1,0 +1,64 @@
+{
+  "date": "2026-10-27",
+  "scope": "production shared NetworkMedia read-only FTP/FTPS client primitives; not an App source",
+  "sourceFiles": [
+    "FTPReadOnlyClient.swift",
+    "FTPWire.swift",
+    "FTPStartTLS.swift",
+    "FTPMLSD.swift",
+    "FTPMetadataReply.swift"
+  ],
+  "clientAPI": [
+    "list selected literal FTPPath",
+    "read listed NFO",
+    "read listed existing artwork"
+  ],
+  "credentialsCodable": false,
+  "publicTrust": "system verification only",
+  "testTrust": "internal DER bytes; no serialized path",
+  "limits": {
+    "listingBytes": 32768,
+    "normalEntries": 256,
+    "nfoBytes": 65536,
+    "artworkBytes": 2097152,
+    "maximumDeadlineMilliseconds": 60000
+  },
+  "tests": {
+    "ftpOrdinary": {
+      "count": 29,
+      "failures": 0
+    },
+    "ftpASan": {
+      "count": 29,
+      "failures": 0,
+      "detectLeaks": false
+    },
+    "moduleSplit": {
+      "batches": [
+        142,
+        18
+      ],
+      "uniqueCases": 160,
+      "failures": 0,
+      "singleFullSuitePassed": false
+    }
+  },
+  "retainedFailures": [
+    "first oversized test used generic 512KiB rather than FTP 64KiB NFO cap",
+    "fixture state file read/write race; fixed by atomic replacement",
+    "180-second full-suite timeout; exact hang unresolved; owned xctest stopped"
+  ],
+  "sourceScope": "lexical byte identity and optimistic version only; no physical atomic containment guarantee",
+  "userNASAccessedForFTP": false,
+  "videoRETRExposed": false,
+  "remoteWriteAPIExposed": false,
+  "appFTPSourceDelivered": false,
+  "stillOpen": [
+    "source persistence and Keychain accounts",
+    "directory/scanner adapter and user UI",
+    "FTPS session reuse and real NAS compatibility",
+    "atomic scope strategy",
+    "non-ASCII host/IDNA"
+  ],
+  "privateEvidencePointer": "/tmp/nastart-tv-storage-ui-evidence -> current-ftp-production-client-batch-private"
+}

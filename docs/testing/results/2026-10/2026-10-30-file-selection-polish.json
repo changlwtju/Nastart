@@ -1,0 +1,123 @@
+{
+  "recordedAt": "2026-10-30T07:59:45+08:00",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceInputCount": 435,
+  "changedExistingSourceFiles": 4,
+  "testsPassed": 22,
+  "newTests": 0,
+  "testsBySuite": {
+    "MediaCatalogTests": 11,
+    "MediaPresentationTests": 7,
+    "OfflineUIScenarioTests": 4
+  },
+  "builds": {
+    "module-tests": {
+      "startedAt": "2026-10-30T07:52:06.394335+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T07:52:10.731329+08:00"
+    },
+    "mobile-sim-debug-cast": {
+      "startedAt": "2026-10-30T07:52:06.392741+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T07:52:37.359122+08:00"
+    },
+    "tv-sim-debug-cast": {
+      "startedAt": "2026-10-30T07:52:06.392790+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T07:52:23.376966+08:00"
+    },
+    "mobile-debug": {
+      "startedAt": "2026-10-30T07:52:55.885185+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T07:56:28.217970+08:00"
+    },
+    "tv-debug": {
+      "startedAt": "2026-10-30T07:52:55.885212+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T07:53:52.986023+08:00"
+    },
+    "mobile-release": {
+      "startedAt": "2026-10-30T07:56:28.219912+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T07:58:22.593728+08:00"
+    },
+    "tv-release": {
+      "startedAt": "2026-10-30T07:53:52.989219+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T07:56:37.161234+08:00"
+    }
+  },
+  "capture": {
+    "accepted": 6,
+    "byPlatform": {
+      "phone": 2,
+      "pad": 2,
+      "tv": 2
+    },
+    "allPassed": true,
+    "ownedSimulatorsDeleted": true,
+    "syntheticPreferencesPreserved": true,
+    "physicalDevicesOperated": 0,
+    "NASCommands": 0,
+    "interactionOrAnimationVerified": false
+  },
+  "allCaptureArtifactsHashChecked": true,
+  "packages": {
+    "mobile": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-30T07:56:26.813538+08:00",
+      "frozenAt": "2026-10-30T07:58:59.912630+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 435,
+      "mainSHA256": "f35bbd7e8f15139fac4860c2f3c443bdc69039cf0024c44147f90e099c88987a",
+      "debugDylibSHA256": "4a10b8e772996f80befc0d01f816123634ba3dabd5982d7f6d1365dc42f8e90f",
+      "signedMachOCount": 30,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false
+    },
+    "tv": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-30T07:53:52.510221+08:00",
+      "frozenAt": "2026-10-30T07:59:00.297839+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 435,
+      "mainSHA256": "c5bc2c1227a873ab3ec1b5f529928a3d4818dca06287e01825f0ce81e63a765c",
+      "debugDylibSHA256": "f068e6ddd2d59581fe1be35f900c9a9787e3e227a69e87d78c581577eef1145c",
+      "signedMachOCount": 27,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false
+    }
+  },
+  "sourcePreservation": {
+    "changedExistingSourceFiles": 4,
+    "networkDetailPlaybackDestinationUnchanged": true,
+    "existingSingleFilePlayActionUnchanged": true,
+    "availabilityPredicateAndPortraitLoaderUnchanged": true,
+    "originalGroupFilesAndOrderingUnchanged": true,
+    "catalogGroupingEnginesTransportUnchanged": true,
+    "selectionStillAssignsExactMember": true,
+    "sourceWrites": 0,
+    "initialAuditSelectorFailed": "Used first of two actions properties; constrained check to detail actions, source not changed for audit repair"
+  },
+  "physicalDevicesOperated": 0,
+  "NASCommands": 0,
+  "playbackCommands": 0,
+  "ownedSimulatorsDeleted": 3,
+  "privateEvidencePointer": "current-file-selection-polish-private",
+  "notVerified": [
+    "Actual file selection callback/navigation/playback",
+    "Large real disc file lists and scrolling/focus/VoiceOver",
+    "Source image/metadata reading or file transactions",
+    "Multi-version grouping, disc main-feature identification or auto-continuation"
+  ]
+}

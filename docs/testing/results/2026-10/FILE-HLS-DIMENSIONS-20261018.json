@@ -1,0 +1,943 @@
+{
+  "at": "2026-10-18T10:14:37.518226+08:00",
+  "scope": "one HLS profile fix plus bounded physical functional regressions; not complete performance acceptance",
+  "package": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "d664b96e9f59c6369709b0432db5b5f06800759d41d17d40dbbf482ec527b332",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "Xcode": "27.0/27A266a",
+    "binaryBuildTime": "2026-10-18T09:55:01.834634+08:00",
+    "binaries": {
+      "Nastart": "4d133035089027548c013fc9b9a79202dc0ed366ee9b430f2425b1213712374e",
+      "Nastart.debug.dylib": "570b2be7c6e38e4a9cba353fd4c41f41ab29f99447a13a9646ca4152d63524dd",
+      "Frameworks/KSPlayer.framework/KSPlayer": "997d6ff1e3ed18f6cebe57404b5e8b208b75f0412618b56741bd9b2ac8601c39"
+    },
+    "signatureVerified": true,
+    "individuallyVerifiedLibraries": 29,
+    "checkedInputs": 173,
+    "changedInputs": [
+      "ios/Nastart/Nastart/Features/Devices/DevicesView.swift",
+      "ios/Nastart/NastartTests/PlaybackNextCoreTests.swift"
+    ],
+    "profileExpirationUTC": "2026-10-24T22:23:57",
+    "tests": {
+      "negativeBeforeDimensions": {
+        "executed": 3,
+        "failures": 1,
+        "expectedCounterexample": true,
+        "wireDimensionAssertionFailed": true
+      },
+      "targetedAfterFix": {
+        "executed": 26,
+        "failures": 0,
+        "exitCode": 0
+      },
+      "newTests": 3,
+      "preflightPassed": 15,
+      "fullSuiteRun": false,
+      "historicalFullSuiteFailuresRemain": 5
+    },
+    "preflight": {
+      "passed": 15,
+      "runThisTurn": true
+    },
+    "sourceEditsThisTurn": [
+      "Require existing quality-policy width/height on negotiated device-file HLS only; preserve original playback, tracks, absolute timeline and timeout policy"
+    ],
+    "baselineSourceDiffSHA256": "69b11f328bdf63192e3dfbd9df7fa042e587fc9f0891a05646c4d66870b6c24f",
+    "frozenAt": "2026-10-18T09:58:26.662409+08:00",
+    "linkageVerified": true,
+    "ipaSHA256": "5e48e661327ddbdef3ce647cfebaf7897b41de20dacc3c81d34936f1fa8d7742",
+    "ipaCRCAndBinaryHashesVerified": true,
+    "reSignedAt": "2026-10-18T09:58:19.868092+08:00",
+    "profileReusedExistingThreeDeviceProfile": true,
+    "ipaMacMetadataExcluded": true
+  },
+  "offlineVerification": {
+    "negativeBeforeDimensions": {
+      "executed": 3,
+      "failures": 1,
+      "expectedCounterexample": true,
+      "wireDimensionAssertionFailed": true
+    },
+    "targetedAfterFix": {
+      "executed": 26,
+      "failures": 0,
+      "exitCode": 0
+    },
+    "newTests": 3,
+    "preflightPassed": 15,
+    "fullSuiteRun": false,
+    "historicalFullSuiteFailuresRemain": 5
+  },
+  "installations": {
+    "iphone13": {
+      "device": "iphone13",
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "connection": "USB",
+      "binaries": {
+        "Nastart": "4d133035089027548c013fc9b9a79202dc0ed366ee9b430f2425b1213712374e",
+        "Nastart.debug.dylib": "570b2be7c6e38e4a9cba353fd4c41f41ab29f99447a13a9646ca4152d63524dd",
+        "Frameworks/KSPlayer.framework/KSPlayer": "997d6ff1e3ed18f6cebe57404b5e8b208b75f0412618b56741bd9b2ac8601c39"
+      },
+      "sourceDiffSHA256": "d664b96e9f59c6369709b0432db5b5f06800759d41d17d40dbbf482ec527b332",
+      "preservesContainer": true,
+      "signatureVerified": true,
+      "actualForegroundUIVerified": true,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "installation": "success",
+      "startedAt": "2026-10-18T09:58:33.785189+08:00",
+      "installedAt": "2026-10-18T09:58:47.049578+08:00",
+      "preferenceKeysUnchanged": true,
+      "preferenceValuesUnchanged": true,
+      "nonDiagnosticKeys": 25,
+      "actualHomeReviewedAt": "2026-10-18T09:59:30+08:00"
+    },
+    "ipad": {
+      "device": "ipad",
+      "model": "iPad12,1",
+      "system": "18.3.1",
+      "connection": "USB",
+      "binaries": {
+        "Nastart": "4d133035089027548c013fc9b9a79202dc0ed366ee9b430f2425b1213712374e",
+        "Nastart.debug.dylib": "570b2be7c6e38e4a9cba353fd4c41f41ab29f99447a13a9646ca4152d63524dd",
+        "Frameworks/KSPlayer.framework/KSPlayer": "997d6ff1e3ed18f6cebe57404b5e8b208b75f0412618b56741bd9b2ac8601c39"
+      },
+      "sourceDiffSHA256": "d664b96e9f59c6369709b0432db5b5f06800759d41d17d40dbbf482ec527b332",
+      "preservesContainer": true,
+      "signatureVerified": true,
+      "actualForegroundUIVerified": true,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "installation": "success",
+      "startedAt": "2026-10-18T09:58:34.953649+08:00",
+      "installedAt": "2026-10-18T09:58:41.269178+08:00",
+      "preferenceKeysUnchanged": true,
+      "preferenceValuesUnchanged": true,
+      "nonDiagnosticKeys": 18,
+      "actualHomeReviewedAt": "2026-10-18T09:59:30+08:00"
+    },
+    "iphone18": {
+      "startedAtUTC": "2026-10-18T01:59:24.324786+00:00",
+      "stage": "installed; launch requested; actual screenshot review required",
+      "packageVerified": true,
+      "targetLiveVerified": true,
+      "preferencesSavedBeforeInstall": true,
+      "installDispatchAttempted": true,
+      "installCommandSent": true,
+      "installCompleteObserved": true,
+      "postInstallLookupExists": true,
+      "actualForegroundUIVerified": false,
+      "newPairingAttempted": false,
+      "networkOrVPNChanged": false,
+      "WDARequiredForInstallation": false,
+      "sourceDiffSHA256": "d664b96e9f59c6369709b0432db5b5f06800759d41d17d40dbbf482ec527b332",
+      "binaries": {
+        "Nastart": "4d133035089027548c013fc9b9a79202dc0ed366ee9b430f2425b1213712374e",
+        "Nastart.debug.dylib": "570b2be7c6e38e4a9cba353fd4c41f41ab29f99447a13a9646ca4152d63524dd",
+        "Frameworks/KSPlayer.framework/KSPlayer": "997d6ff1e3ed18f6cebe57404b5e8b208b75f0412618b56741bd9b2ac8601c39"
+      },
+      "ipaSHA256": "5e48e661327ddbdef3ce647cfebaf7897b41de20dacc3c81d34936f1fa8d7742",
+      "model": "iPhone19,7",
+      "system": "27.0",
+      "connection": "NETWORK",
+      "existingEscrowUsedForContainerRequest": true,
+      "installedAtUTC": "2026-10-18T01:59:41.030722+00:00",
+      "preferences": {
+        "beforeKeys": 25,
+        "afterKeys": 25,
+        "sameKeys": true,
+        "changedValues": 0,
+        "allNonDiagnosticPreferencesEqual": true
+      },
+      "RSDTargetVerified": true,
+      "normalLaunchRequested": true,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "actualScreenCaptured": true,
+      "preferencesAfterLaunch": {
+        "beforeKeys": 25,
+        "afterKeys": 25,
+        "sameKeys": true,
+        "changedValues": 0,
+        "allNonDiagnosticPreferencesEqual": true
+      },
+      "finishedAtUTC": "2026-10-18T01:59:54.035118+00:00",
+      "actualScreenReview": "Screenshot shows another app (game); Nastart foreground UI not verified; no further iPhone18 actions to avoid interfering with current use",
+      "screenshotReviewedAt": "2026-10-18T10:00:20.349351+08:00"
+    }
+  },
+  "firstWirelessFailure": {
+    "stage": "dispatchingInstall",
+    "type": "AppInstallError",
+    "cause": "Mac AppleDouble metadata in IPA; failure retained; clean IPA same signed binaries succeeded"
+  },
+  "cases": [
+    {
+      "case": "cellular-file-s19-r1",
+      "device": "iphone13",
+      "sample": "S19",
+      "entry": "device file",
+      "networkIntent": "real cellular WiFi off; no shaping",
+      "action": "从头播放",
+      "firstInternalFrameFromTouchSeconds": [
+        16.757565,
+        45.9394
+      ],
+      "seeks": [
+        {
+          "start": {
+            "secondsFromTouch": 74.222471,
+            "event": "seek_started",
+            "fields": {
+              "engine": "AVPlayer",
+              "seekDeltaSeconds": 6760.695002079605,
+              "seekTargetSeconds": 6808.195160066605
+            }
+          },
+          "signals": [
+            {
+              "secondsFromTouch": 91.792694,
+              "event": "seek_engine_completed",
+              "fields": {
+                "engine": "AVPlayer",
+                "targetSeconds": 6808.195160066605
+              }
+            },
+            {
+              "secondsFromTouch": 94.861646,
+              "event": "seek_recovered",
+              "fields": {
+                "currentSeconds": 6808.501110376,
+                "engine": "AVPlayer",
+                "evidence": "engineCompletionAndAdvancingClock",
+                "seekRecoveryMs": 20645,
+                "seekTargetSeconds": 6808.195160066605
+              }
+            }
+          ],
+          "recoveryMs": 20645,
+          "censoredAfterSeconds": null,
+          "meaning": "engine completion and advancing clock, not first visible frame"
+        }
+      ],
+      "maxSampledStallCount": 2,
+      "URLMetricsCount": 40,
+      "URLMetricsCellularYes": 40,
+      "URLMetricsCellularNo": 0,
+      "completedTaskBodyBytes": 183886724,
+      "byteMeaning": "persisted completed URL tasks only; not total interface or billed usage",
+      "HLSNegotiation": [
+        {
+          "result": "playbackInfoPrepared",
+          "bitrate": "12000000",
+          "requestedMaxWidth": "1920",
+          "requestedMaxHeight": "1080",
+          "elapsedMs": "370"
+        },
+        {
+          "result": "negotiatedDimensions",
+          "bitrate": "12000000",
+          "maxWidth": "1920",
+          "maxHeight": "1080"
+        },
+        {
+          "result": "playbackInfoPrepared",
+          "bitrate": "1500000",
+          "requestedMaxWidth": "854",
+          "requestedMaxHeight": "480",
+          "elapsedMs": "205"
+        },
+        {
+          "result": "negotiatedDimensions",
+          "bitrate": "1500000",
+          "maxWidth": "854",
+          "maxHeight": "480"
+        }
+      ],
+      "preparation": [],
+      "exit": {
+        "normalUIExit": true,
+        "requestedSeekWindowSeconds": 20,
+        "performanceAccepted": false,
+        "sourceSHA256": "d664b96e9f59c6369709b0432db5b5f06800759d41d17d40dbbf482ec527b332"
+      },
+      "visualReview": {
+        "reviewedAt": "2026-10-18T10:09:33.965766+08:00",
+        "t10": "still preparing preview, player not presented",
+        "t30": "New Line animation with buffering indicator and4.8MB/s",
+        "t60": "black image; not alone sufficient to classify buffering",
+        "routeAtDeepSeek": "AVPlayer compatible HLS after replacement_committed45.089s; further lower candidate pending",
+        "subtitleAcceptance": false,
+        "audioListeningAcceptance": false,
+        "performanceAcceptance": false,
+        "deepSeekReviewPending": false,
+        "deepSeekT10": "black buffering with0KB/s",
+        "deepSeekT30": "Aragorn snow mountain target frame",
+        "deepSeekInternalRecoveryMs": 20645,
+        "deepSeekReviewedAt": "2026-10-18T10:10:04.542937+08:00"
+      },
+      "replacementEvents": [
+        {
+          "secondsFromTouch": 20.083898,
+          "event": "automatic_downshift_requested",
+          "fields": {
+            "attempt": 1,
+            "bufferTargetSeconds": 4,
+            "bufferedAheadSeconds": 1.0841249693922408,
+            "deliveryCapacity": 36776359,
+            "engine": "KSPlayer",
+            "reason": "deliveryBelowSourceBitrate",
+            "runtimeDemand": 41118436
+          }
+        },
+        {
+          "secondsFromTouch": 20.533895,
+          "event": "replacement_warmup_started",
+          "fields": {
+            "engine": "KSPlayer"
+          }
+        },
+        {
+          "secondsFromTouch": 45.088965,
+          "event": "replacement_committed",
+          "fields": {
+            "candidateBufferAheadSeconds": 1.3146666666666675,
+            "candidateSeconds": 19.116666666666667,
+            "engine": "KSPlayer",
+            "seconds": 19.017
+          }
+        },
+        {
+          "secondsFromTouch": 56.670291,
+          "event": "automatic_downshift_requested",
+          "fields": {
+            "attempt": 1,
+            "bufferedAheadSeconds": 5.706013064777775,
+            "deliveryCapacity": 3823061,
+            "engine": "AVPlayer",
+            "reason": "deliveryBelowSourceBitrate"
+          }
+        },
+        {
+          "secondsFromTouch": 56.935997,
+          "event": "replacement_warmup_started",
+          "fields": {
+            "engine": "AVPlayer"
+          }
+        },
+        {
+          "secondsFromTouch": 74.266047,
+          "event": "replacement_warmup_failed",
+          "fields": {
+            "accessLogStalls": 85,
+            "availableReserveSeconds": 5.449108785777778,
+            "bufferEmpty": "false",
+            "candidate": 42.582637379,
+            "candidateBufferAheadSeconds": 1.377926398777781,
+            "candidateRate": 2,
+            "candidateSeconds": 42.582651379,
+            "candidateStatus": 1,
+            "current": 6808.195160066605,
+            "deadlineRemainingMs": 22695,
+            "downloadedMediaSeconds": 12.011999999999999,
+            "elapsedMs": 17304,
+            "engine": "AVPlayer",
+            "errorDomain": "-",
+            "framePTS": 42.50077777777778,
+            "indicatedBitrate": 1500000,
+            "itemStatus": 1,
+            "likelyToKeepUp": "false",
+            "liveSeconds": 6808.195160066605,
+            "loadedRangeCount": 1,
+            "loadedRangeFirstEnd": 43.96057777777778,
+            "loadedRangeFirstStart": 32.03198888888889,
+            "mediaRequests": 3,
+            "observedBitrate": 530118,
+            "preparationLeadSeconds": 5.199108785777778,
+            "reason": "candidateInvalidated",
+            "stage": "alignment",
+            "target": 35.70261023577778,
+            "timeControlStatus": 2,
+            "transferSeconds": 15.7646105,
+            "transferredBytes": 687140
+          }
+        }
+      ],
+      "performanceAccepted": false,
+      "cacheState": "unknown",
+      "sameConditionRepetitions": 1
+    },
+    {
+      "case": "cellular-jf-s19-r1",
+      "device": "iphone13",
+      "sample": "S19",
+      "entry": "Jellyfin",
+      "networkIntent": "real cellular WiFi off; no shaping",
+      "action": "在 Nastart 中播放",
+      "firstInternalFrameFromTouchSeconds": [
+        1.842355,
+        55.661223
+      ],
+      "seeks": [],
+      "maxSampledStallCount": 1,
+      "URLMetricsCount": 21,
+      "URLMetricsCellularYes": 21,
+      "URLMetricsCellularNo": 0,
+      "completedTaskBodyBytes": 160717004,
+      "byteMeaning": "persisted completed URL tasks only; not total interface or billed usage",
+      "HLSNegotiation": [],
+      "preparation": [],
+      "exit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "visualReview": {
+        "reviewedAt": "2026-10-18T10:12:39.635173+08:00",
+        "t10": "actual New Line animation plusbuffer5.2MB/s",
+        "t30": "New Line Cinema Presents title actual image",
+        "t60": "black image; alone not proof of stall or normal fade",
+        "seek": "NOT_RUN this window; ordinary exit after60s",
+        "performanceAcceptance": false,
+        "subtitleAcceptance": false,
+        "audioListeningAcceptance": false
+      },
+      "replacementEvents": [
+        {
+          "secondsFromTouch": 15.335911,
+          "event": "automatic_downshift_requested",
+          "fields": {
+            "attempt": 1,
+            "bufferTargetSeconds": 4,
+            "bufferedAheadSeconds": 4.107124887771551,
+            "deliveryCapacity": 42984975,
+            "engine": "KSPlayer",
+            "reason": "deliveryBelowSourceBitrate",
+            "runtimeDemand": 73202430
+          }
+        },
+        {
+          "secondsFromTouch": 15.832381,
+          "event": "replacement_warmup_started",
+          "fields": {
+            "engine": "KSPlayer"
+          }
+        },
+        {
+          "secondsFromTouch": 51.927496,
+          "event": "replacement_committed",
+          "fields": {
+            "candidateBufferAheadSeconds": 0.5510810462222224,
+            "candidateSeconds": 43.958241176,
+            "engine": "KSPlayer",
+            "seconds": 43.871
+          }
+        }
+      ],
+      "performanceAccepted": false,
+      "cacheState": "unknown",
+      "sameConditionRepetitions": 1
+    },
+    {
+      "case": "wifi-file-s01",
+      "device": "iphone13",
+      "sample": "S01",
+      "entry": "device file",
+      "networkIntent": "WiFi no shaping",
+      "action": "从头播放",
+      "firstInternalFrameFromTouchSeconds": [
+        0.754666
+      ],
+      "seeks": [],
+      "maxSampledStallCount": 0,
+      "URLMetricsCount": 2,
+      "URLMetricsCellularYes": 0,
+      "URLMetricsCellularNo": 2,
+      "completedTaskBodyBytes": 213947,
+      "byteMeaning": "persisted completed URL tasks only; not total interface or billed usage",
+      "HLSNegotiation": [],
+      "preparation": [],
+      "exit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "visualReview": {
+        "t10": "Walt Disney Studios Presents white title",
+        "t30": "foggy hillside actual scene",
+        "subtitleAcceptance": false,
+        "audioListeningAcceptance": false,
+        "performanceAcceptance": false
+      },
+      "replacementEvents": [],
+      "performanceAccepted": false,
+      "cacheState": "unknown",
+      "sameConditionRepetitions": 1
+    },
+    {
+      "case": "wifi-jf-s01",
+      "device": "iphone13",
+      "sample": "S01",
+      "entry": "Jellyfin",
+      "networkIntent": "WiFi no shaping",
+      "action": "在 Nastart 中播放",
+      "firstInternalFrameFromTouchSeconds": [
+        1.111399
+      ],
+      "seeks": [],
+      "maxSampledStallCount": 0,
+      "URLMetricsCount": 2,
+      "URLMetricsCellularYes": 0,
+      "URLMetricsCellularNo": 2,
+      "completedTaskBodyBytes": 272572,
+      "byteMeaning": "persisted completed URL tasks only; not total interface or billed usage",
+      "HLSNegotiation": [],
+      "preparation": [],
+      "exit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "visualReview": {
+        "t10": "Walt Disney Studios Presents white title on black",
+        "t30": "foggy blue sky and faint hillside actual scene",
+        "performanceAccepted": false,
+        "subtitleAccepted": false,
+        "audioListeningAccepted": false
+      },
+      "replacementEvents": [],
+      "performanceAccepted": false,
+      "cacheState": "unknown",
+      "sameConditionRepetitions": 1
+    },
+    {
+      "case": "wifi-file-s01",
+      "device": "ipad",
+      "sample": "S01",
+      "entry": "device file",
+      "networkIntent": "WiFi no shaping",
+      "action": "从头播放",
+      "firstInternalFrameFromTouchSeconds": [
+        2.216537
+      ],
+      "seeks": [],
+      "maxSampledStallCount": 0,
+      "URLMetricsCount": 2,
+      "URLMetricsCellularYes": 0,
+      "URLMetricsCellularNo": 2,
+      "completedTaskBodyBytes": 283451,
+      "byteMeaning": "persisted completed URL tasks only; not total interface or billed usage",
+      "HLSNegotiation": [],
+      "preparation": [],
+      "exit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "visualReview": {
+        "t30": "foggy sky actual scene and white multi-line Chinese production subtitle at screen bottom",
+        "completeSubtitleAcceptance": false,
+        "audioListeningAcceptance": false,
+        "performanceAcceptance": false
+      },
+      "replacementEvents": [],
+      "performanceAccepted": false,
+      "cacheState": "unknown",
+      "sameConditionRepetitions": 1
+    },
+    {
+      "case": "wifi-file-s19-r1",
+      "device": "ipad",
+      "sample": "S19",
+      "entry": "device file",
+      "networkIntent": "WiFi no shaping",
+      "action": "从头播放",
+      "firstInternalFrameFromTouchSeconds": [
+        4.332544
+      ],
+      "seeks": [
+        {
+          "start": {
+            "secondsFromTouch": 72.291105,
+            "event": "seek_started",
+            "fields": {
+              "engine": "KSPlayer",
+              "seekDeltaSeconds": 6762.664649032593,
+              "seekTargetSeconds": 6826.018649032593
+            }
+          },
+          "signals": [
+            {
+              "secondsFromTouch": 73.611734,
+              "event": "seek_engine_completed",
+              "fields": {
+                "engine": "KSPlayer",
+                "targetSeconds": 6826.018649032593
+              }
+            },
+            {
+              "secondsFromTouch": 75.888984,
+              "event": "seek_recovered",
+              "fields": {
+                "currentSeconds": 6826.077,
+                "engine": "KSPlayer",
+                "evidence": "engineCompletionAndAdvancingClock",
+                "seekRecoveryMs": 3615,
+                "seekTargetSeconds": 6826.018649032593
+              }
+            }
+          ],
+          "recoveryMs": 3615,
+          "censoredAfterSeconds": null,
+          "meaning": "engine completion and advancing clock, not first visible frame"
+        }
+      ],
+      "maxSampledStallCount": 2,
+      "URLMetricsCount": 33,
+      "URLMetricsCellularYes": 0,
+      "URLMetricsCellularNo": 33,
+      "completedTaskBodyBytes": 587690636,
+      "byteMeaning": "persisted completed URL tasks only; not total interface or billed usage",
+      "HLSNegotiation": [
+        {
+          "result": "playbackInfoPrepared",
+          "bitrate": "20000000",
+          "requestedMaxWidth": "1920",
+          "requestedMaxHeight": "1080",
+          "elapsedMs": "181"
+        },
+        {
+          "result": "negotiatedDimensions",
+          "bitrate": "20000000",
+          "maxWidth": "1920",
+          "maxHeight": "1080"
+        },
+        {
+          "result": "playbackInfoPrepared",
+          "bitrate": "30000000",
+          "requestedMaxWidth": "3840",
+          "requestedMaxHeight": "2160",
+          "elapsedMs": "174"
+        },
+        {
+          "result": "negotiatedDimensions",
+          "bitrate": "30000000",
+          "maxWidth": "3840",
+          "maxHeight": "2160"
+        }
+      ],
+      "preparation": [],
+      "exit": {
+        "normalUIExit": true,
+        "requestedSeekWindowSeconds": 20,
+        "performanceAccepted": false,
+        "sourceSHA256": "d664b96e9f59c6369709b0432db5b5f06800759d41d17d40dbbf482ec527b332"
+      },
+      "visualReview": {
+        "reviewedAt": "2026-10-18T10:02:56.465117+08:00",
+        "t20": "New Line Cinema actual image",
+        "t60": "black frame; could be scene fade, not alone a buffering conclusion",
+        "deepSeekT3": "old title image plus buffering; pending seek",
+        "deepSeekT10": "Boromir mountain target scene",
+        "deepSeekT30": "target scene progresses",
+        "routeForDeepSeek": "KSPlayer original, replacement warmup failed before seek; NOT HLS-seek regression",
+        "subtitleAcceptance": false,
+        "audioListeningAcceptance": false,
+        "performanceAcceptance": false,
+        "cacheState": "unknown"
+      },
+      "replacementEvents": [
+        {
+          "secondsFromTouch": 8.704853,
+          "event": "automatic_downshift_requested",
+          "fields": {
+            "attempt": 1,
+            "bufferTargetSeconds": 4,
+            "bufferedAheadSeconds": 0.6780416473951139,
+            "deliveryCapacity": 41469300,
+            "engine": "KSPlayer",
+            "reason": "deliveryBelowSourceBitrate",
+            "runtimeDemand": 41370729
+          }
+        },
+        {
+          "secondsFromTouch": 10.216921,
+          "event": "replacement_warmup_started",
+          "fields": {
+            "engine": "KSPlayer"
+          }
+        },
+        {
+          "secondsFromTouch": 50.252023,
+          "event": "replacement_warmup_failed",
+          "fields": {
+            "accessLogStalls": 10,
+            "availableReserveSeconds": 0,
+            "bufferEmpty": "false",
+            "candidate": 21.373923245,
+            "candidateBufferAheadSeconds": 2.5646448187777793,
+            "candidateRate": 2,
+            "candidateSeconds": 21.375932959,
+            "candidateStatus": 1,
+            "current": 41.318,
+            "deadlineRemainingMs": 0,
+            "downloadedMediaSeconds": 20.019999999999996,
+            "elapsedMs": 40026,
+            "engine": "KSPlayer",
+            "errorDomain": "-",
+            "framePTS": 21.187822222222223,
+            "indicatedBitrate": 20000000,
+            "itemStatus": 1,
+            "likelyToKeepUp": "false",
+            "liveSeconds": 41.318,
+            "loadedRangeCount": 1,
+            "loadedRangeFirstEnd": 23.94057777777778,
+            "loadedRangeFirstStart": 4.003988888888889,
+            "mediaRequests": 5,
+            "observedBitrate": 4212119,
+            "preparationLeadSeconds": 0,
+            "reason": "notAlignedBeforeDeadlineOrPlaybackStopped",
+            "stage": "alignment",
+            "target": 5.914,
+            "timeControlStatus": 2,
+            "transferSeconds": 37.5148425,
+            "transferredBytes": 24058736
+          }
+        },
+        {
+          "secondsFromTouch": 69.140514,
+          "event": "automatic_downshift_requested",
+          "fields": {
+            "attempt": 2,
+            "bufferTargetSeconds": 4,
+            "bufferedAheadSeconds": 9.634624738133617,
+            "deliveryCapacity": 39715561,
+            "engine": "KSPlayer",
+            "reason": "deliveryBelowSourceBitrate",
+            "runtimeDemand": 48192562
+          }
+        }
+      ],
+      "performanceAccepted": false,
+      "cacheState": "unknown",
+      "sameConditionRepetitions": 1
+    },
+    {
+      "case": "wifi-jf-s01",
+      "device": "ipad",
+      "sample": "S01",
+      "entry": "Jellyfin",
+      "networkIntent": "WiFi no shaping",
+      "action": "在 Nastart 中播放",
+      "firstInternalFrameFromTouchSeconds": [
+        1.870864
+      ],
+      "seeks": [],
+      "maxSampledStallCount": 0,
+      "URLMetricsCount": 2,
+      "URLMetricsCellularYes": 0,
+      "URLMetricsCellularNo": 2,
+      "completedTaskBodyBytes": 409471,
+      "byteMeaning": "persisted completed URL tasks only; not total interface or billed usage",
+      "HLSNegotiation": [],
+      "preparation": [],
+      "exit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "visualReview": {
+        "t10": "Walt Disney Studios Presents white title on black",
+        "t30": "fog and hillside actual scene",
+        "performanceAccepted": false,
+        "subtitleAccepted": false,
+        "audioListeningAccepted": false
+      },
+      "replacementEvents": [],
+      "performanceAccepted": false,
+      "cacheState": "unknown",
+      "sameConditionRepetitions": 1
+    }
+  ],
+  "sameWindowServerEncoding": [
+    {
+      "logIndex": "1",
+      "outputDimensions": [
+        [
+          1920,
+          1080
+        ]
+      ],
+      "lastProgress": [
+        "687",
+        "00:00:27.36",
+        "0.773"
+      ],
+      "scaleVAAPI": true,
+      "overlayVAAPI": false,
+      "tonemap": false,
+      "ordinaryQuit": true,
+      "logStopCaptured": true,
+      "clientPlaySessionExactMatch": false
+    }
+  ],
+  "serverSessionExactMatch": false,
+  "prohibitionsRespected": {
+    "DSMUpdated": false,
+    "NASConfigurationChanged": false,
+    "artificialThrottling": false,
+    "parallelLargeMediaStress": false,
+    "dataUninstalledOrCleared": false
+  },
+  "openRequirementsCount": 28,
+  "requirementsClosed": [],
+  "fullL2FormatFamilyRegressionComplete": false,
+  "performanceAcceptance": false,
+  "finalAudit": {
+    "sourceInputsVerified": 173,
+    "binaryHashesVerified": true,
+    "signatureVerified": true,
+    "devices": {
+      "iphone13": {
+        "at": "2026-10-18T10:12:40.748450+08:00",
+        "model": "iPhone14,5",
+        "system": "16.3.1",
+        "connection": "USB",
+        "sourceDiffSHA256": "d664b96e9f59c6369709b0432db5b5f06800759d41d17d40dbbf482ec527b332",
+        "latestPackage": {
+          "Nastart": "4d133035089027548c013fc9b9a79202dc0ed366ee9b430f2425b1213712374e",
+          "Nastart.debug.dylib": "570b2be7c6e38e4a9cba353fd4c41f41ab29f99447a13a9646ca4152d63524dd",
+          "Frameworks/KSPlayer.framework/KSPlayer": "997d6ff1e3ed18f6cebe57404b5e8b208b75f0412618b56741bd9b2ac8601c39"
+        },
+        "nonBookmarkPreferenceKeys": 24,
+        "nonBookmarkPreferencesExactlyUnchanged": true,
+        "naturalBookmarkChangesCount": 4,
+        "originalBookmarksChecked": 36,
+        "originalBookmarksRemoved": 0,
+        "originalTrackChangeCount": 0,
+        "allOriginalTracksUnchanged": true,
+        "newBookmarksCount": 0,
+        "crashInventoryDelta": {
+          "Nastart": 0,
+          "WebDriverAgent": 0,
+          "JetsamEvent": 0
+        },
+        "normalEmptyEnvironment": true,
+        "NASNormal": true,
+        "playerClosed": true,
+        "WDAIdleSeconds": 10,
+        "WDAAnimationCoolOffSeconds": 2,
+        "nativeConditionsNotRecheckedThisTurn": false,
+        "noConditionInjectedThisTurn": true,
+        "nativeActiveConditions": 0,
+        "finalHomeActuallyReviewed": true,
+        "homeReviewedAt": "2026-10-18T10:13:04.317607+08:00"
+      },
+      "ipad": {
+        "at": "2026-10-18T10:12:41.535914+08:00",
+        "model": "iPad12,1",
+        "system": "18.3.1",
+        "connection": "USB",
+        "sourceDiffSHA256": "d664b96e9f59c6369709b0432db5b5f06800759d41d17d40dbbf482ec527b332",
+        "latestPackage": {
+          "Nastart": "4d133035089027548c013fc9b9a79202dc0ed366ee9b430f2425b1213712374e",
+          "Nastart.debug.dylib": "570b2be7c6e38e4a9cba353fd4c41f41ab29f99447a13a9646ca4152d63524dd",
+          "Frameworks/KSPlayer.framework/KSPlayer": "997d6ff1e3ed18f6cebe57404b5e8b208b75f0412618b56741bd9b2ac8601c39"
+        },
+        "nonBookmarkPreferenceKeys": 17,
+        "nonBookmarkPreferencesExactlyUnchanged": true,
+        "naturalBookmarkChangesCount": 3,
+        "originalBookmarksChecked": 29,
+        "originalBookmarksRemoved": 0,
+        "originalTrackChangeCount": 0,
+        "allOriginalTracksUnchanged": true,
+        "newBookmarksCount": 0,
+        "crashInventoryDelta": {
+          "Nastart": 0,
+          "WebDriverAgent": 0,
+          "JetsamEvent": 0
+        },
+        "normalEmptyEnvironment": true,
+        "NASNormal": true,
+        "playerClosed": true,
+        "WDAIdleSeconds": 10,
+        "WDAAnimationCoolOffSeconds": 2,
+        "nativeConditionsNotRecheckedThisTurn": false,
+        "noConditionInjectedThisTurn": true,
+        "nativeActiveConditions": 0,
+        "finalHomeActuallyReviewed": true,
+        "homeReviewedAt": "2026-10-18T10:13:04.317607+08:00"
+      }
+    }
+  },
+  "power": {
+    "startLocal": "2026-10-18 09:51:57",
+    "endLocal": "2026-10-18 10:13:04",
+    "boundedAwakeSeconds": 3600,
+    "startMiddleLateEndAssertionSnapshotsSaved": true,
+    "ownAwakeStopped": true,
+    "sameWindowSleepWakeTransitionCount": 0,
+    "currentPowerSourceSaved": true,
+    "powerSettingsChanged": false,
+    "noPerformanceAcceptanceInferred": true
+  },
+  "processCleanup": {
+    "at": "2026-10-18T10:13:04.317607+08:00",
+    "noMediaWorkerExpected": true,
+    "originalPhoneLaunchctlServicePreserved": true,
+    "ownPadRunnerStopped": true,
+    "ownBoundedCaffeinateStopped": true,
+    "originalPhoneServiceReadExitCode": 0,
+    "actualOwnedPythonWorkersRemaining": 0,
+    "ownPadRunnerExitCode": 130,
+    "ownPadRunnerExitReason": "intentional SIGINT after final home/preference/crash checks",
+    "ownCaffeinateExitCode": 143,
+    "ownCaffeinateExitReason": "intentional end of bounded work session"
+  },
+  "serverFinalSessions": {
+    "at": "2026-10-18T10:13:13.260808+08:00",
+    "readOnly": true,
+    "serverMutation": false,
+    "allEncodingProcessesExitedProven": false,
+    "fetchSucceeded": true,
+    "devices": {
+      "iphone13": {
+        "exactOwnDeviceIDMatched": true,
+        "matchingSessionCount": 1,
+        "anyNowPlaying": false,
+        "anyTranscodingInfo": true
+      },
+      "ipad": {
+        "exactOwnDeviceIDMatched": true,
+        "matchingSessionCount": 1,
+        "anyNowPlaying": false,
+        "anyTranscodingInfo": false
+      }
+    }
+  },
+  "toolFailures": {
+    "signingGate": "default build profile included onlyPad; caught before install; existing valid three-device profile reused and all29libraries checked",
+    "wirelessPackaging": "first IPA AppleDouble CFBundle failure retained; clean IPA same binaries installed",
+    "PadRefresh": "before startup session ready, refresh label absent; no click sent; file navigation then succeeded",
+    "phoneFileNavigation": "cold DSM session absent; initial bounded helper stopped, existing App refresh restored access; retry succeeded, no player had opened",
+    "phoneJellyfinNavigation": "service badge changed toUnknown while native name locator used previous badge;404 element lookup, App remained Nastart; current-UI retry succeeded",
+    "AppCrashEvidence": "see final inventories; tool errors not recategorized as playback success"
+  },
+  "restoredPhoneNetwork": {
+    "originalWiFiSwitch": "1",
+    "shapingRequested": false,
+    "phoneVPNChanged": false,
+    "MacVPNChanged": false,
+    "at": "2026-10-18T10:12:17.088442+08:00",
+    "actualWiFiSwitch": "1",
+    "restored": true
+  }
+}

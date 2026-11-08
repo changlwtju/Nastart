@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 1,
+  "kind": "offline historical evidence/source audit, zero device request or media",
+  "reviewedAt": "2026-10-22",
+  "windows": [
+    {
+      "window": "ass-portrait",
+      "build": "historical 2026-10-21 15:39 normal Debug",
+      "events": [
+        {
+          "timeLocal": "2026-10-21T16:30:53.468819+08:00",
+          "event": "seek_started",
+          "fields": {
+            "seekDeltaSeconds": "0.08599999999999852",
+            "seekTargetSeconds": "61.364"
+          }
+        },
+        {
+          "timeLocal": "2026-10-21T16:30:53.747210+08:00",
+          "event": "seek_engine_completed",
+          "fields": {
+            "completed": "true",
+            "targetSeconds": "61.364"
+          }
+        },
+        {
+          "timeLocal": "2026-10-21T16:30:57.431957+08:00",
+          "event": "playback_ended",
+          "fields": {}
+        }
+      ],
+      "normalCloseDispatchLocal": "2026-10-21T16:30:56.529985+08:00",
+      "seekCompletedBeforeCloseDispatchSeconds": 2.782775,
+      "bookmarks": {
+        "originalBookmarkCount": 36,
+        "originalTrackChanges": 1,
+        "bookmarksAdded": 0,
+        "bookmarksRemoved": 0
+      },
+      "memoryStoreSnapshotAtSaveBoundary": "missing",
+      "fullSaveGuardStateAtClose": "missing"
+    },
+    {
+      "window": "track-save-boundary",
+      "build": "historical 2026-10-21 15:39 normal Debug",
+      "events": [
+        {
+          "timeLocal": "2026-10-21T16:48:00.775113+08:00",
+          "event": "seek_started",
+          "fields": {
+            "seekDeltaSeconds": "0.06400000000000006",
+            "seekTargetSeconds": "13.086"
+          }
+        },
+        {
+          "timeLocal": "2026-10-21T16:48:01.395396+08:00",
+          "event": "seek_engine_completed",
+          "fields": {
+            "completed": "true",
+            "targetSeconds": "13.086"
+          }
+        },
+        {
+          "timeLocal": "2026-10-21T16:48:09.637251+08:00",
+          "event": "playback_ended",
+          "fields": {}
+        }
+      ],
+      "normalCloseDispatchLocal": "2026-10-21T16:48:08.724738+08:00",
+      "seekCompletedBeforeCloseDispatchSeconds": 7.329342,
+      "bookmarks": {
+        "originalBookmarkCount": 36,
+        "originalTrackChanges": 0,
+        "bookmarksAdded": 0,
+        "bookmarksRemoved": 0
+      },
+      "memoryStoreSnapshotAtSaveBoundary": "missing",
+      "fullSaveGuardStateAtClose": "missing"
+    }
+  ],
+  "source": {
+    "resumePersistence": "GreenfieldVideoPlayerView.persistLocalProgress requires non-direct source, localResumeKey and controls.canPersistResumeProgress; derives committed source tracks then calls LocalPlaybackResumeStore.save",
+    "seekGuard": "pending seek can block progress writes, but observed completion precedes close in failed window; not proven exclusive cause",
+    "store": "serialized read-modify-encode defaults.set before notification; no explicit disk acknowledgement",
+    "missing": "same-key in-process entry()/guard-state/set completion at close, compared with external plist and cold read"
+  },
+  "conclusion": "old disk snapshot alone cannot distinguish no memory commit from delayed disk visibility; do not insert waits/synchronize or relax resume safety guards",
+  "sourceChanged": false,
+  "newBuildInstallTestOrMedia": false
+}

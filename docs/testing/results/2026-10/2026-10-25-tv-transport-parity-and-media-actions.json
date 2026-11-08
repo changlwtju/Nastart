@@ -1,0 +1,117 @@
+{
+  "startedAt": "2026-10-25T11:17:22.522869+08:00",
+  "PlayCommands": 1,
+  "environment": {},
+  "arguments": [],
+  "sample": "S01",
+  "entry": "Jellyfin",
+  "nativeSystemMenusRemoved": true,
+  "checks": [
+    {
+      "case": "transportControls",
+      "present": true
+    },
+    {
+      "case": "settingsOpened",
+      "nativeScreenshot": true
+    },
+    {
+      "case": "seekCommandsSent",
+      "forward": 1,
+      "backward": 1,
+      "actualPositionsNeedInspection": true
+    }
+  ],
+  "stableExit": true,
+  "audio": "not listened",
+  "completeSubtitles": "not verified",
+  "frameTiming": "not measured",
+  "subtitleSeekCommandCount": 11,
+  "subtitleSeekStartSeconds": 827,
+  "burstSeek": {
+    "start": 827,
+    "commands": 11,
+    "expected": 662,
+    "actualDisplayed": 662,
+    "withinTwoSeconds": true
+  },
+  "captionObserved": true,
+  "captionCandidateFrame": "dialogue-0",
+  "audioLabels": [
+    "未知"
+  ],
+  "subtitleLabels": [
+    "关闭字幕",
+    "Unknown"
+  ],
+  "sameProcess": true,
+  "finishedAt": "2026-10-25T11:18:56.140466+08:00",
+  "subtitleMenuSameCue": {
+    "visuallyInspected": true,
+    "sameBoundsBeforeOpenClosed": true,
+    "normalizedBox": {
+      "x": 0.398256,
+      "y": 0.072222,
+      "width": 0.203488,
+      "height": 0.056977
+    },
+    "fullSubtitleAcceptance": false
+  },
+  "tests": {
+    "logic": 37,
+    "noMediaUI": 4,
+    "failures": 0
+  },
+  "package": {
+    "configuration": "normal Debug",
+    "mainSHA256": "650e4ee223f5a10f5b4bf1cfdab505a962b923909d5f32bf7f0499ddde265c30",
+    "signedBinaries": 27,
+    "installedAt": "2026-10-25T11:14:49+08:00",
+    "preserveData": true
+  },
+  "cleanup": {
+    "settingsRestoredWithGET": true,
+    "ownedRunnerStopped": true,
+    "normalHomeCaptured": true,
+    "originalPreferencesChanged": 0
+  },
+  "boundaries": [
+    "No actual audio listening",
+    "No complete track catalog or switch acceptance",
+    "TV files controls remain KS",
+    "No frame timing or Release acceptance",
+    "iPhone18 installation paused by user"
+  ],
+  "mobileBaseline": {
+    "sameNormalPackageInstalled": true,
+    "iPhone13": {
+      "s01JellyfinPlayCommands": 1,
+      "capturesSeconds": [
+        3,
+        10,
+        30
+      ],
+      "differentMovieFramesVisuallyInspected": true,
+      "controlLayoutInspected": true,
+      "normalReturn": true,
+      "normalHomeRestored": true,
+      "onlyNaturalPlaybackDiagnosticPreferenceChanges": true,
+      "unknownRunnerNotChanged": true
+    },
+    "iPadA16": {
+      "s01JellyfinPlayCommands": 1,
+      "capturesSeconds": [
+        3,
+        10,
+        30
+      ],
+      "actualMovieImages": true,
+      "normalReturn": true,
+      "nativePixelWindow": "desktop floating movie surface; fullscreen/control layout not accepted",
+      "normalHomeRestored": true,
+      "settingsGETRestored": true,
+      "ownedRunnerStopped": true,
+      "onlyNaturalPlaybackDiagnosticPreferenceChanges": true
+    }
+  }
+}

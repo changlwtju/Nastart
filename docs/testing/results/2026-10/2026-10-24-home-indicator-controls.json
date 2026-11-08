@@ -1,0 +1,897 @@
+{
+  "at": "2026-10-24T12:00:51.180466+08:00",
+  "activity": "iPhone13 native idle and AX polling controls, plus local manual KS-to-AV transition; real PGS candidate tap unconfirmed",
+  "sourceChanged": false,
+  "newBuild": false,
+  "newXCTestRun": false,
+  "package": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "260b03606d7b8f298f42332ab23adb11160cd901ec9aba37c53f5c3a95cae463",
+    "binaryBuildTime": "2026-10-24T10:57:06.047670+08:00",
+    "ipaSHA256": "05e0b1c72c8c5aac00b1ba3b7fd6f22ae8584c1f19e198159cb4ec88e069270e",
+    "binaries": {
+      "Nastart": "7911c95c40dcfa227a1168254e553dadfa572e30d9aaccc89822da845eb89dc2",
+      "Nastart.debug.dylib": "cfe4d1001d717a99ac31a301ba9c0f04533129789091b2aed1a94c70876d5e8d",
+      "Frameworks/KSPlayer.framework/KSPlayer": "029ab5b148dbb5db4fa14f79cc5ff902f2f37a8cd939501dcfb7932b7e9feded"
+    },
+    "checkedInputs": 174,
+    "individuallyVerifiedLibraries": 29
+  },
+  "freshDevices": {
+    "iphone13": {
+      "currentUSBMatch": true,
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "locked": false,
+      "foregroundBundle": "com.apple.springboard"
+    },
+    "ipad": {
+      "currentUSBMatch": false
+    }
+  },
+  "iphone13Install": {
+    "device": "iphone13",
+    "model": "iPhone14,5",
+    "system": "16.3.1",
+    "connection": "USB",
+    "binaries": {
+      "Nastart": "7911c95c40dcfa227a1168254e553dadfa572e30d9aaccc89822da845eb89dc2",
+      "Nastart.debug.dylib": "cfe4d1001d717a99ac31a301ba9c0f04533129789091b2aed1a94c70876d5e8d",
+      "Frameworks/KSPlayer.framework/KSPlayer": "029ab5b148dbb5db4fa14f79cc5ff902f2f37a8cd939501dcfb7932b7e9feded"
+    },
+    "sourceDiffSHA256": "260b03606d7b8f298f42332ab23adb11160cd901ec9aba37c53f5c3a95cae463",
+    "preservesContainer": true,
+    "signatureVerified": true,
+    "actualForegroundUIVerified": true,
+    "requestedEnvironment": {},
+    "requestedArguments": [],
+    "installation": "success",
+    "startedAt": "2026-10-24T11:43:57.757275+08:00",
+    "installedAt": "2026-10-24T11:44:11.892533+08:00",
+    "preferenceKeysUnchanged": true,
+    "preferenceValuesUnchanged": true,
+    "nonDiagnosticKeys": 25,
+    "emptyEnvironmentHomeVerified": true
+  },
+  "localControls": {
+    "native-idle-control": {
+      "startedAt": "2026-10-24T11:45:54.377527+08:00",
+      "scope": "local H264/AAC HLS fixture through same normal fullscreen host; no AX/source polling after launch",
+      "NASRequests": 0,
+      "cellularTasks": 0,
+      "wdaSourceCallsAfterLaunch": 0,
+      "captures": [
+        {
+          "label": "native-idle-0",
+          "secondsSinceLastWDA": 0.860758916,
+          "provenance": "native screenshot service",
+          "imageReviewPending": false
+        },
+        {
+          "label": "native-idle-10",
+          "secondsSinceLastWDA": 10.798357165999999,
+          "provenance": "native screenshot service",
+          "imageReviewPending": false
+        },
+        {
+          "label": "native-idle-20",
+          "secondsSinceLastWDA": 20.789716916,
+          "provenance": "native screenshot service",
+          "imageReviewPending": false
+        }
+      ],
+      "freshDeviceSourcePackageOwnReceiptVerified": true,
+      "power": [
+        {
+          "label": "begin",
+          "ownAssertionObserved": true,
+          "AC": true
+        },
+        {
+          "label": "native-idle-0",
+          "ownAssertionObserved": true,
+          "AC": true
+        },
+        {
+          "label": "native-idle-10",
+          "ownAssertionObserved": true,
+          "AC": true
+        },
+        {
+          "label": "native-idle-20",
+          "ownAssertionObserved": true,
+          "AC": true
+        },
+        {
+          "label": "end",
+          "ownAssertionObserved": true,
+          "AC": true
+        }
+      ],
+      "lastWDAAfterLaunchMonotonic": 4.197952,
+      "freshFirstClockSignalObserved": true,
+      "firstClockAfterLastWDASeconds": 0.0014855410000000902,
+      "capturePlanCompleted": true,
+      "finalWDAAppStates": [
+        1,
+        1
+      ],
+      "ownGuardStopped": true,
+      "ownFixtureServerStopped": true,
+      "ownSyslogStopped": true,
+      "settingsRestored": true,
+      "nonDiagnosticPreferencesUnchanged": true,
+      "fixtureBytesReserved": 3918228,
+      "finishedAt": "2026-10-24T11:46:21.091626+08:00",
+      "actualNativeImagesReviewed": true,
+      "homeIndicatorVisibleAt0": true,
+      "homeIndicatorHiddenAt10And20": true,
+      "actualFixtureClockAt10": 10.8,
+      "actualFixtureClockAt20": 20.8,
+      "notNASPGSSubtitleAcceptance": true,
+      "imageSHA256": {
+        "native-idle-10-private.png": "e01025807f014aae0a9d8ff3295a3e13e583def6d2397575489eb59c460d70d6",
+        "native-idle-0-private.png": "63ebed642ba074b7376fa06acbd2722f0b7525500603c259f3200a8fac0c1c13",
+        "native-idle-20-private.png": "a22e1257da1ac8447d29c22d6f00758c69e328bcbbce92cd6ba40d18db9803ad"
+      },
+      "enginesObserved": [
+        "KSPlayer"
+      ],
+      "maxReportedStallCount": 0
+    },
+    "ax-poll-control": {
+      "startedAt": "2026-10-24T11:48:28.309047+08:00",
+      "scope": "same local H264/AAC HLS fixture and host; AX source every2sec then10sec quiet recovery",
+      "NASRequests": 0,
+      "cellularTasks": 0,
+      "wdaSourceCallsAfterLaunch": 10,
+      "captures": [
+        {
+          "label": "native-idle-0",
+          "provenance": "native screenshot service",
+          "imageReviewPending": false,
+          "secondsSinceInitialLaunchWDA": 0.859265792
+        },
+        {
+          "label": "native-idle-10",
+          "provenance": "native screenshot service",
+          "imageReviewPending": false,
+          "secondsSinceInitialLaunchWDA": 10.799025499999999
+        },
+        {
+          "label": "native-idle-20",
+          "provenance": "native screenshot service",
+          "imageReviewPending": false,
+          "secondsSinceInitialLaunchWDA": 20.771455458000002
+        },
+        {
+          "label": "native-idle-30",
+          "provenance": "native screenshot service",
+          "imageReviewPending": false,
+          "secondsSinceInitialLaunchWDA": 30.811109417
+        }
+      ],
+      "freshDeviceSourcePackageOwnReceiptVerified": true,
+      "power": [
+        {
+          "label": "begin",
+          "ownAssertionObserved": true,
+          "AC": true
+        },
+        {
+          "label": "native-idle-0",
+          "ownAssertionObserved": true,
+          "AC": true
+        },
+        {
+          "label": "native-idle-10",
+          "ownAssertionObserved": true,
+          "AC": true
+        },
+        {
+          "label": "native-idle-20",
+          "ownAssertionObserved": true,
+          "AC": true
+        },
+        {
+          "label": "native-idle-30",
+          "ownAssertionObserved": true,
+          "AC": true
+        },
+        {
+          "label": "end",
+          "ownAssertionObserved": true,
+          "AC": true
+        }
+      ],
+      "lastWDAAfterLaunchMonotonic": 3.091155708,
+      "freshFirstClockSignalObserved": true,
+      "firstClockAfterLastWDASeconds": 0.0012972499999999165,
+      "AXPollTimesSinceFirstClock": [
+        1.1043818329999997,
+        3.380354833,
+        5.586870833,
+        7.7928623329999995,
+        10.012329042000001,
+        11.012906458,
+        13.273093833,
+        15.534304292000002,
+        17.749865625,
+        19.999375583000003
+      ],
+      "capturePlanCompleted": true,
+      "finalWDAAppStates": [
+        1,
+        1
+      ],
+      "ownGuardStopped": true,
+      "ownFixtureServerStopped": true,
+      "ownSyslogStopped": true,
+      "settingsRestored": true,
+      "nonDiagnosticPreferencesUnchanged": true,
+      "fixtureBytesReserved": 5385380,
+      "finishedAt": "2026-10-24T11:49:03.397215+08:00",
+      "actualNativeImagesReviewed": true,
+      "homeIndicatorHiddenAt10And20And30": true,
+      "sourcePollingDidNotReproducePersistentHomeIndicator": true,
+      "imageSHA256": {
+        "native-idle-10-private.png": "27f978a2d4d093595ea4e9491e71bf6044881612c2f8a3c35a9e7cbcc526ca36",
+        "native-idle-0-private.png": "5e87215fe8bb3bee16cc6fa8efee975cb1c55bf542c3fe753fed60495aca9e9e",
+        "native-idle-20-private.png": "a468c31791c5716f41bede6870b54ecc72f13906ebdeb73b6dc9a6d66f95e264",
+        "native-idle-30-private.png": "4a13d5c4eedd36a1a48961237e873d58d8b4e5f6ee6bcd41cbb08414a5b03996"
+      },
+      "enginesObserved": [
+        "KSPlayer"
+      ],
+      "maxReportedStallCount": 0,
+      "timingLabelCorrection": "Native capture offsets are relative to initial launch WDA; AX polls subsequently occur at the recorded AXPollTimesSinceFirstClock. They are not elapsed since the latest AX request."
+    },
+    "local-handoff-control": {
+      "startedAt": "2026-10-24T11:52:45.094518+08:00",
+      "scope": "same continuous synthetic H264/AAC fixture original MKV KS to explicit manual AV HLS handoff; native-only idle after trigger; no NAS",
+      "NASRequests": 0,
+      "cellularTasks": 0,
+      "captures": [
+        {
+          "label": "native-idle-0",
+          "secondsSinceLastWDA": 0.8390362499999995,
+          "provenance": "native screenshot service",
+          "imageReviewPending": false
+        },
+        {
+          "label": "native-idle-3",
+          "secondsSinceLastWDA": 3.7468077079999995,
+          "provenance": "native screenshot service",
+          "imageReviewPending": false
+        },
+        {
+          "label": "native-idle-10",
+          "secondsSinceLastWDA": 10.787603042,
+          "provenance": "native screenshot service",
+          "imageReviewPending": false
+        },
+        {
+          "label": "native-idle-20",
+          "secondsSinceLastWDA": 20.774359333,
+          "provenance": "native screenshot service",
+          "imageReviewPending": false
+        },
+        {
+          "label": "native-idle-30",
+          "secondsSinceLastWDA": 30.778382500000003,
+          "provenance": "native screenshot service",
+          "imageReviewPending": false
+        }
+      ],
+      "freshDeviceSourcePackageOwnReceiptVerified": true,
+      "power": [
+        {
+          "label": "begin",
+          "ownAssertionObserved": true,
+          "AC": true
+        },
+        {
+          "label": "native-idle-0",
+          "ownAssertionObserved": true,
+          "AC": true
+        },
+        {
+          "label": "native-idle-3",
+          "ownAssertionObserved": true,
+          "AC": true
+        },
+        {
+          "label": "native-idle-10",
+          "ownAssertionObserved": true,
+          "AC": true
+        },
+        {
+          "label": "native-idle-20",
+          "ownAssertionObserved": true,
+          "AC": true
+        },
+        {
+          "label": "native-idle-30",
+          "ownAssertionObserved": true,
+          "AC": true
+        },
+        {
+          "label": "end",
+          "ownAssertionObserved": true,
+          "AC": true
+        }
+      ],
+      "candidateTriggerCommands": 1,
+      "freshFirstClockSignalObserved": true,
+      "capturePlanCompleted": true,
+      "replacementCommitSignalObserved": true,
+      "finalWDAAppStates": [
+        1,
+        1
+      ],
+      "ownGuardStopped": true,
+      "ownFixtureServerStopped": true,
+      "ownSyslogStopped": true,
+      "settingsRestored": true,
+      "nonDiagnosticPreferencesUnchanged": true,
+      "fixtureBytesReserved": 18692488,
+      "finishedAt": "2026-10-24T11:53:21.536924+08:00",
+      "wdaSourceCallsDuringNativeOnlyWindow": 0,
+      "AXReadsAndSingleGuardedCandidateTapBeforeNativeOnlyWindow": true,
+      "nativeWindowBaseline": "after guarded manual candidate effect confirmation",
+      "lastWDAInitialLaunchMonotonic": 3.104857125,
+      "timingLabelCorrection": "Original helper kept the initial launch WDA timestamp field while native screenshot gaps were measured after candidate effect. Preserve original result separately; use nativeWindowBaseline and per-capture gaps.",
+      "actualNativeImagesReviewed": true,
+      "homeIndicatorHiddenAt3And10And20And30": true,
+      "actualDecodedFixtureClockAt10": 11.7,
+      "actualDecodedFixtureClockAt30": 31.2,
+      "notNASPGSSubtitleAcceptance": true,
+      "imageSHA256": {
+        "native-idle-10-private.png": "3ece910eaaa733a5a6d0f42ab997ca39ff598ea3e248af83c7867259369412eb",
+        "native-idle-3-private.png": "9a81c23b1f7357b78a2946e255c00729273d1d9c7b1f15b583888c941c85c722",
+        "native-idle-0-private.png": "38df6fa156aa5836433857ea02c4b25a3477465edc173251911efeac58044ef2",
+        "native-idle-20-private.png": "5aec5bc998d8cc3566bec2d910faf410f2c723b46f0c140001570890d0e5c640",
+        "native-idle-30-private.png": "75e9f48e9ac56c9b9d885086e00f7a4dc9b49382281f1e1c0bae19209f64946a"
+      },
+      "enginesObserved": [
+        "AVPlayer",
+        "KSPlayer"
+      ],
+      "maxReportedStallCount": 1
+    }
+  },
+  "realPGSCase": {
+    "startedAt": "2026-10-24T11:55:45.827555+08:00",
+    "mode": "S19",
+    "scope": "Real NAS S19 original static MKV KSPlayer plus fresh12Mbps H264 AAC PGS8 Encode candidate; explicit Debug manual replacement; no bandwidth shaping; not ordinary automatic acceptance",
+    "normalPlayCommands": 0,
+    "labPlaybackLaunches": 1,
+    "originalInitialRequestedSeconds": 4000,
+    "candidateNegotiatedStartSeconds": 4012.008,
+    "candidateMaxStreamingBitrate": 12000000,
+    "candidateTriggerCommands": 1,
+    "seekCommands": 0,
+    "pipCommands": 0,
+    "MacMediaGETRequests": 0,
+    "subtitleCaptureCondition": "Native screenshots only after trigger confirmation through45sec; no AX reads or taps in that idle interval",
+    "latestSourcePackageAndOwnReceiptVerified": true,
+    "powerEvidence": [
+      {
+        "label": "before-lab",
+        "ownCaffeinateAssertionObserved": true,
+        "ACPower": true,
+        "atUnix": 1792814147.4586859
+      },
+      {
+        "label": "after-lab-stop",
+        "ownCaffeinateAssertionObserved": true,
+        "ACPower": true,
+        "atUnix": 1792814177.05954
+      }
+    ],
+    "originalDeepFirstClockPositionSeconds": 4000.094,
+    "originalPositionBoundary": "current-window first_frame syslog; actual image reviewed separately",
+    "captures": [
+      {
+        "label": "playing-original-ready",
+        "nativeStartedAt": 1792814151.881717,
+        "nativeFinishedAt": 1792814153.367764,
+        "screenshotProvenance": "nativeScreenshotService",
+        "startedAt": 1792814151.881717,
+        "finishedAt": 1792814153.367764,
+        "uiReadSkippedForNativeIdle": true
+      },
+      {
+        "label": "playing-original-before-candidate",
+        "nativeStartedAt": 1792814161.378193,
+        "nativeFinishedAt": 1792814162.74228,
+        "screenshotProvenance": "nativeScreenshotService",
+        "startedAt": 1792814161.378193,
+        "finishedAt": 1792814162.74228,
+        "uiReadSkippedForNativeIdle": true
+      }
+    ],
+    "originalPositionVerifiedBeforeCandidateTrigger": true,
+    "candidateTriggerDispatchAt": 1792814162.920066,
+    "failureType": "ActionUnconfirmed",
+    "failureReason": "private details",
+    "finalWDAAppStates": [
+      1,
+      1
+    ],
+    "serverCleanup": {
+      "stopHTTPStatus": 204,
+      "exactOwnDeviceAndNegotiatedPlaySession": true,
+      "remainingOwnedSessions": 0,
+      "encodingProcessExitNotProvenByHTTPStatusAlone": true
+    },
+    "ownGuardianStopped": true,
+    "ownSyslogStopped": true,
+    "allNonDiagnosticPreferencesUnchanged": true,
+    "newCrashInventory": {
+      "Nastart": 0,
+      "WebDriverAgent": 0,
+      "JetsamEvent": 0
+    },
+    "finishedAt": "2026-10-24T11:56:17.061329+08:00",
+    "actualOriginalNativeImagesReviewed": true,
+    "originalHomeIndicatorHiddenInBothImages": true,
+    "candidateAppCallbacksObserved": 0,
+    "candidateWarmupStarted": false,
+    "candidateCommitted": false,
+    "normalNativeIdleCandidateWindowReached": false,
+    "oneTapSentNotReplayed": true
+  },
+  "finalIPhone13": {
+    "at": "2026-10-24T11:57:26.190490+08:00",
+    "current174InputsAndPackageAndOwnInstallReceiptVerified": true,
+    "liveModel": "iPhone14,5",
+    "liveSystem": "16.3.1",
+    "connection": "USB",
+    "WDAAppStates": [
+      1,
+      1
+    ],
+    "settingsRestored": true,
+    "fullNonDiagnosticPreferencesStableTwoReads": true,
+    "other24PreferencesUnchangedSinceInstall": true,
+    "bookmarkKeys": 36,
+    "bookmarkKeysSame": true,
+    "trackPreferencesSame": true,
+    "changedBookmarkFields": [],
+    "homeImageReviewPending": false,
+    "actualNativeHomeNoPiPReviewed": true,
+    "actualNativeWiFiIconReviewed": true
+  },
+  "iphone18": {
+    "browse": {
+      "advertisedInstances": 2,
+      "normalizedSameTargetMatches": 0,
+      "networkConfigurationChanged": false,
+      "pairingChanged": false
+    },
+    "freshKnownPairedResolveExit": 1,
+    "deviceIdentityVerified": false,
+    "backupUploadInstallLaunchCommands": 0,
+    "latestPackageInstalled": false,
+    "fixedDomainEnabledAndVerified": false,
+    "singlePriorUserActionRequestPreservedNotRepeated": true
+  },
+  "NASMediaGETOnMac": 0,
+  "cellularTasks": 0,
+  "ownRootActiveHostProcesses": 0,
+  "limits": [
+    "Local cases do not reproduce persistent Home indicator, including AX polling and real local KS-to-AV handoff.",
+    "These controls reject a simple universal explanation; actual NAS PGS subtitle occlusion remains open.",
+    "Real PGS tap response did not produce app callback or candidate preparation; no candidate subtitle result, no replay.",
+    "No actual view-controller delegation chain inspection was performed; no change based on an unproved hierarchy hypothesis.",
+    "Sparse native frames and internal clocks are not full-frame timing, audio or full subtitle acceptance."
+  ],
+  "openRequirements": 28,
+  "matrixCells": 76,
+  "candidateButtonGeometry": {
+    "nativePixels": [
+      2532,
+      1170
+    ],
+    "approxBlueButtonPixelBounds": [
+      531,
+      162,
+      811,
+      265
+    ],
+    "sourceButtonFramesObserved": [
+      {
+        "reply": "reply-20911022916-private.json",
+        "x": "177",
+        "y": "54",
+        "width": "94",
+        "height": "35",
+        "enabled": "true",
+        "visible": null,
+        "accessible": null,
+        "hittable": null
+      },
+      {
+        "reply": "reply-27703360000-private.json",
+        "x": "177",
+        "y": "54",
+        "width": "94",
+        "height": "35",
+        "enabled": "true",
+        "visible": null,
+        "accessible": null,
+        "hittable": null
+      },
+      {
+        "reply": "reply-23310203291-private.json",
+        "x": "177",
+        "y": "54",
+        "width": "94",
+        "height": "35",
+        "enabled": "true",
+        "visible": null,
+        "accessible": null,
+        "hittable": null
+      },
+      {
+        "reply": "reply-3873833875-private.json",
+        "x": "177",
+        "y": "54",
+        "width": "94",
+        "height": "35",
+        "enabled": "true",
+        "visible": null,
+        "accessible": null,
+        "hittable": null
+      },
+      {
+        "reply": "reply-5709427041-private.json",
+        "x": "177",
+        "y": "54",
+        "width": "94",
+        "height": "35",
+        "enabled": "true",
+        "visible": null,
+        "accessible": null,
+        "hittable": null
+      },
+      {
+        "reply": "reply-23725430458-private.json",
+        "x": "177",
+        "y": "54",
+        "width": "94",
+        "height": "35",
+        "enabled": "true",
+        "visible": null,
+        "accessible": null,
+        "hittable": null
+      },
+      {
+        "reply": "reply-18893650500-private.json",
+        "x": "177",
+        "y": "54",
+        "width": "94",
+        "height": "35",
+        "enabled": "true",
+        "visible": null,
+        "accessible": null,
+        "hittable": null
+      },
+      {
+        "reply": "reply-6163611291-private.json",
+        "x": "177",
+        "y": "54",
+        "width": "94",
+        "height": "35",
+        "enabled": "true",
+        "visible": null,
+        "accessible": null,
+        "hittable": null
+      },
+      {
+        "reply": "reply-20518622416-private.json",
+        "x": "177",
+        "y": "54",
+        "width": "94",
+        "height": "35",
+        "enabled": "true",
+        "visible": null,
+        "accessible": null,
+        "hittable": null
+      },
+      {
+        "reply": "reply-4761926625-private.json",
+        "x": "177",
+        "y": "54",
+        "width": "94",
+        "height": "35",
+        "enabled": "true",
+        "visible": null,
+        "accessible": null,
+        "hittable": null
+      },
+      {
+        "reply": "reply-26495261791-private.json",
+        "x": "177",
+        "y": "54",
+        "width": "94",
+        "height": "35",
+        "enabled": "true",
+        "visible": null,
+        "accessible": null,
+        "hittable": null
+      },
+      {
+        "reply": "reply-18487772125-private.json",
+        "x": "177",
+        "y": "54",
+        "width": "94",
+        "height": "35",
+        "enabled": "true",
+        "visible": null,
+        "accessible": null,
+        "hittable": null
+      },
+      {
+        "reply": "reply-17221010583-private.json",
+        "x": "177",
+        "y": "54",
+        "width": "94",
+        "height": "35",
+        "enabled": "true",
+        "visible": null,
+        "accessible": null,
+        "hittable": null
+      },
+      {
+        "reply": "reply-26901422666-private.json",
+        "x": "177",
+        "y": "54",
+        "width": "94",
+        "height": "35",
+        "enabled": "true",
+        "visible": null,
+        "accessible": null,
+        "hittable": null
+      },
+      {
+        "reply": "reply-22514789708-private.json",
+        "x": "177",
+        "y": "54",
+        "width": "94",
+        "height": "35",
+        "enabled": "true",
+        "visible": null,
+        "accessible": null,
+        "hittable": null
+      },
+      {
+        "reply": "reply-24914652833-private.json",
+        "x": "177",
+        "y": "54",
+        "width": "94",
+        "height": "35",
+        "enabled": "true",
+        "visible": null,
+        "accessible": null,
+        "hittable": null
+      },
+      {
+        "reply": "reply-25296896791-private.json",
+        "x": "177",
+        "y": "54",
+        "width": "94",
+        "height": "35",
+        "enabled": "true",
+        "visible": null,
+        "accessible": null,
+        "hittable": null
+      },
+      {
+        "reply": "reply-19724526541-private.json",
+        "x": "177",
+        "y": "54",
+        "width": "94",
+        "height": "35",
+        "enabled": "true",
+        "visible": null,
+        "accessible": null,
+        "hittable": null
+      },
+      {
+        "reply": "reply-22102325250-private.json",
+        "x": "177",
+        "y": "54",
+        "width": "94",
+        "height": "35",
+        "enabled": "true",
+        "visible": null,
+        "accessible": null,
+        "hittable": null
+      },
+      {
+        "reply": "reply-21702807125-private.json",
+        "x": "177",
+        "y": "54",
+        "width": "94",
+        "height": "35",
+        "enabled": "true",
+        "visible": null,
+        "accessible": null,
+        "hittable": null
+      },
+      {
+        "reply": "reply-28106840875-private.json",
+        "x": "177",
+        "y": "54",
+        "width": "94",
+        "height": "35",
+        "enabled": "true",
+        "visible": null,
+        "accessible": null,
+        "hittable": null
+      },
+      {
+        "reply": "reply-27308762083-private.json",
+        "x": "177",
+        "y": "54",
+        "width": "94",
+        "height": "35",
+        "enabled": "true",
+        "visible": null,
+        "accessible": null,
+        "hittable": null
+      },
+      {
+        "reply": "reply-20131089458-private.json",
+        "x": "177",
+        "y": "54",
+        "width": "94",
+        "height": "35",
+        "enabled": "true",
+        "visible": null,
+        "accessible": null,
+        "hittable": null
+      },
+      {
+        "reply": "reply-5227676666-private.json",
+        "x": "177",
+        "y": "54",
+        "width": "94",
+        "height": "35",
+        "enabled": "true",
+        "visible": null,
+        "accessible": null,
+        "hittable": null
+      },
+      {
+        "reply": "reply-4307903416-private.json",
+        "x": "177",
+        "y": "54",
+        "width": "94",
+        "height": "35",
+        "enabled": "true",
+        "visible": null,
+        "accessible": null,
+        "hittable": null
+      },
+      {
+        "reply": "reply-26093812041-private.json",
+        "x": "177",
+        "y": "54",
+        "width": "94",
+        "height": "35",
+        "enabled": "true",
+        "visible": null,
+        "accessible": null,
+        "hittable": null
+      },
+      {
+        "reply": "reply-25702033333-private.json",
+        "x": "177",
+        "y": "54",
+        "width": "94",
+        "height": "35",
+        "enabled": "true",
+        "visible": null,
+        "accessible": null,
+        "hittable": null
+      },
+      {
+        "reply": "reply-19312507916-private.json",
+        "x": "177",
+        "y": "54",
+        "width": "94",
+        "height": "35",
+        "enabled": "true",
+        "visible": null,
+        "accessible": null,
+        "hittable": null
+      },
+      {
+        "reply": "reply-22907431416-private.json",
+        "x": "177",
+        "y": "54",
+        "width": "94",
+        "height": "35",
+        "enabled": "true",
+        "visible": null,
+        "accessible": null,
+        "hittable": null
+      },
+      {
+        "reply": "reply-24523148625-private.json",
+        "x": "177",
+        "y": "54",
+        "width": "94",
+        "height": "35",
+        "enabled": "true",
+        "visible": null,
+        "accessible": null,
+        "hittable": null
+      },
+      {
+        "reply": "reply-24125676166-private.json",
+        "x": "177",
+        "y": "54",
+        "width": "94",
+        "height": "35",
+        "enabled": "true",
+        "visible": null,
+        "accessible": null,
+        "hittable": null
+      },
+      {
+        "reply": "reply-21311101416-private.json",
+        "x": "177",
+        "y": "54",
+        "width": "94",
+        "height": "35",
+        "enabled": "true",
+        "visible": null,
+        "accessible": null,
+        "hittable": null
+      },
+      {
+        "reply": "reply-18082748333-private.json",
+        "x": "177",
+        "y": "54",
+        "width": "94",
+        "height": "35",
+        "enabled": "true",
+        "visible": null,
+        "accessible": null,
+        "hittable": null
+      }
+    ],
+    "coordinatesNeedFullOrientationAndScaleBeforeComparing": true,
+    "AXFrameUIKitPoints": [
+      177,
+      54,
+      94,
+      35
+    ],
+    "AXFrameNativePixels": [
+      531,
+      162,
+      282,
+      105
+    ],
+    "AXCenterNativePixels": [
+      672,
+      214.5
+    ],
+    "AXCenterWithinObservedBlueButton": true,
+    "obviousStaticFrameOffsetObserved": false,
+    "hittableAttributeRecorded": false,
+    "limits": "A captured matching rectangle does not prove actual hit testing or dispatched touch delivery; no action replay.",
+    "AXApplicationSizes": [
+      [
+        "844",
+        "390"
+      ]
+    ],
+    "nativePixelsPerAXPointVerifiedFromFullFrame": 3
+  }
+}

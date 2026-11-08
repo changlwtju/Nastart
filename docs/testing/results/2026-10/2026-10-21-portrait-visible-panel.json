@@ -1,0 +1,273 @@
+{
+  "date": "2026-10-21",
+  "scope": "iPhone13 S03/Jellyfin portrait and ASS text; not complete subtitle/PiP acceptance",
+  "sourceChanged": false,
+  "builds": 0,
+  "installs": 0,
+  "packageEvidence": "2026-10-21-auth-ambiguous-response.json",
+  "network": "unchanged Wi-Fi; no cellular/VPN/SSID changes",
+  "windows": {
+    "clipped_panel_failure": {
+      "startedAt": "2026-10-21T16:10:17.122828+08:00",
+      "finishedAt": "2026-10-21T16:10:53.993929+08:00",
+      "playCommands": 1,
+      "pipCommands": 0,
+      "environment": {},
+      "method": "settings panel lock portrait; semantic element click",
+      "latestPackageVerified": true,
+      "sourceDiffSHA256": "6fd78d20f8d406a7794686d7e92c5316274b707ac12cac8a4a7dd52563d8d6e7",
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "emptyEnvironmentVerified": true,
+      "failureType": "AssertionError",
+      "failureReason": "Effect unconfirmed; do not replay action",
+      "nativeAppAbsent": true,
+      "ownedGuardianStopped": true,
+      "WDASettingsRestored": true,
+      "ownedSyslogStopped": true,
+      "nonBookmarkPreferencesUnchanged": true,
+      "originalBookmarkCount": 36,
+      "originalTrackChanges": 0,
+      "bookmarksAdded": 0,
+      "bookmarksRemoved": 0,
+      "bookmarkProgressChanges": 1,
+      "newCrashInventory": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      }
+    },
+    "visible_panel_portrait": {
+      "startedAt": "2026-10-21T16:15:23.711202+08:00",
+      "finishedAt": "2026-10-21T16:16:00.020243+08:00",
+      "playCommands": 1,
+      "pipCommands": 0,
+      "environment": {},
+      "method": "settings panel lock portrait; semantic element click",
+      "latestPackageVerified": true,
+      "sourceDiffSHA256": "6fd78d20f8d406a7794686d7e92c5316274b707ac12cac8a4a7dd52563d8d6e7",
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "emptyEnvironmentVerified": true,
+      "settingsScrollGroundedInFreshRect": true,
+      "portraitTargetFullyWithinScrollViewport": true,
+      "portraitAppBoundsVerified": true,
+      "observationCompleted": true,
+      "nativeAppAbsent": true,
+      "ownedGuardianStopped": true,
+      "WDASettingsRestored": true,
+      "ownedSyslogStopped": true,
+      "nonBookmarkPreferencesUnchanged": true,
+      "originalBookmarkCount": 36,
+      "originalTrackChanges": 0,
+      "bookmarksAdded": 0,
+      "bookmarksRemoved": 0,
+      "bookmarkProgressChanges": 1,
+      "newCrashInventory": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      }
+    },
+    "detail_codec_inventory": {
+      "startedAt": "2026-10-21T16:21:12.853939+08:00",
+      "finishedAt": "2026-10-21T16:21:36.415886+08:00",
+      "playCommands": 0,
+      "pipCommands": 0,
+      "environment": {},
+      "method": "S03 detail subtitle menu inventory; no media or track selection",
+      "latestPackageVerified": true,
+      "sourceDiffSHA256": "6fd78d20f8d406a7794686d7e92c5316274b707ac12cac8a4a7dd52563d8d6e7",
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "emptyEnvironmentVerified": true,
+      "nativeAppAbsent": true,
+      "WDASettingsRestored": true,
+      "ownedSyslogStopped": true,
+      "nonBookmarkPreferencesUnchanged": true,
+      "originalBookmarkCount": 36,
+      "originalTrackChanges": 0,
+      "bookmarksAdded": 0,
+      "bookmarksRemoved": 0,
+      "bookmarkProgressChanges": 0,
+      "newCrashInventory": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      }
+    },
+    "ass_portrait_and_incomplete_restore": {
+      "startedAt": "2026-10-21T16:29:36.199757+08:00",
+      "finishedAt": "2026-10-21T16:31:02.971823+08:00",
+      "playCommands": 1,
+      "pipCommands": 0,
+      "environment": {},
+      "method": "settings panel lock portrait; semantic element click",
+      "latestPackageVerified": true,
+      "sourceDiffSHA256": "6fd78d20f8d406a7794686d7e92c5316274b707ac12cac8a4a7dd52563d8d6e7",
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "emptyEnvironmentVerified": true,
+      "settingsScrollGroundedInFreshRect": true,
+      "portraitTargetFullyWithinScrollViewport": true,
+      "portraitAppBoundsVerified": true,
+      "observationCompleted": true,
+      "normalPlayerCloseObserved": true,
+      "originalTrackRestoreUIResponseObserved": true,
+      "nativeAppAbsent": true,
+      "ownedGuardianStopped": true,
+      "WDASettingsRestored": true,
+      "ownedSyslogStopped": true,
+      "nonBookmarkPreferencesUnchanged": true,
+      "originalBookmarkCount": 36,
+      "originalTrackChanges": 1,
+      "bookmarksAdded": 0,
+      "bookmarksRemoved": 0,
+      "bookmarkProgressChanges": 1,
+      "newCrashInventory": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      }
+    },
+    "original_pgs_recovery": {
+      "startedAt": "2026-10-21T16:38:11.116891+08:00",
+      "finishedAt": "2026-10-21T16:38:55.072885+08:00",
+      "playCommands": 1,
+      "pipCommands": 0,
+      "environment": {},
+      "method": "fresh original source PGS playback and normal close to restore persisted legacy track",
+      "latestPackageVerified": true,
+      "sourceDiffSHA256": "6fd78d20f8d406a7794686d7e92c5316274b707ac12cac8a4a7dd52563d8d6e7",
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "emptyEnvironmentVerified": true,
+      "observationCompleted": true,
+      "normalPlayerCloseObserved": true,
+      "nativeAppAbsent": true,
+      "ownedGuardianStopped": true,
+      "WDASettingsRestored": true,
+      "ownedSyslogStopped": true,
+      "nonBookmarkPreferencesUnchanged": true,
+      "originalBookmarkCount": 36,
+      "originalTrackChanges": 0,
+      "bookmarksAdded": 0,
+      "bookmarksRemoved": 0,
+      "bookmarkProgressChanges": 1,
+      "newCrashInventory": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      }
+    },
+    "track_save_boundary": {
+      "startedAt": "2026-10-21T16:47:31.551499+08:00",
+      "finishedAt": "2026-10-21T16:48:25.269536+08:00",
+      "playCommands": 1,
+      "pipCommands": 0,
+      "environment": {},
+      "method": "ASS to PGS save boundary; snapshot while active and after normal close; no rotation or PiP",
+      "latestPackageVerified": true,
+      "sourceDiffSHA256": "6fd78d20f8d406a7794686d7e92c5316274b707ac12cac8a4a7dd52563d8d6e7",
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "emptyEnvironmentVerified": true,
+      "observationCompleted": true,
+      "normalPlayerCloseObserved": true,
+      "originalTrackRestoreUIResponseObserved": true,
+      "nativeAppAbsent": true,
+      "ownedGuardianStopped": true,
+      "WDASettingsRestored": true,
+      "ownedSyslogStopped": true,
+      "nonBookmarkPreferencesUnchanged": true,
+      "originalBookmarkCount": 36,
+      "originalTrackChanges": 0,
+      "bookmarksAdded": 0,
+      "bookmarksRemoved": 0,
+      "bookmarkProgressChanges": 1,
+      "newCrashInventory": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      }
+    }
+  },
+  "actualTextFramesAfterSelectionSeconds": [
+    35,
+    45
+  ],
+  "ASSLoadedCueCount": 1288,
+  "actualPortraitNativePixels": [
+    1170,
+    2532
+  ],
+  "persistedTrackMismatch": {
+    "before": 7,
+    "afterRestoreClickAndClose": 5,
+    "storedUpdatePrecedesRestoreClick": true,
+    "subsequentFreshPGSPlaybackRestoredOriginal": true,
+    "rootCause": "unresolved; dispatch is not persistence confirmation",
+    "laterBoundaryWindowRetainedPGSBeforeAndAfterNormalClose": true,
+    "boundaryCaveat": "Multiple timing conditions changed; ASS persistence not confirmed in the short window; no unique cause or app fix established"
+  },
+  "totalPlayCommands": 5,
+  "totalPiPCommands": 0,
+  "iphone18": "away; no device requests or install; remains old package",
+  "claimsExcluded": [
+    "complete SUB",
+    "complete PiP",
+    "all rotation",
+    "iPhone18 screenshot regression",
+    "font-size paired comparison",
+    "audio",
+    "frame-time or stability acceptance",
+    "NAS speed or timeout root cause"
+  ],
+  "trackSaveBoundarySnapshots": {
+    "before": [],
+    "ASS-active": [
+      {
+        "subtitleTrackID": 7,
+        "positionSeconds": 4.126,
+        "updatedAtLocal": "2026-10-21T16:47:51.801433+08:00"
+      }
+    ],
+    "PGS-active": [
+      {
+        "subtitleTrackID": 7,
+        "positionSeconds": 13.329,
+        "updatedAtLocal": "2026-10-21T16:48:02.074685+08:00"
+      }
+    ],
+    "detail-after-close-3": [
+      {
+        "subtitleTrackID": 7,
+        "positionSeconds": 20.71,
+        "updatedAtLocal": "2026-10-21T16:48:09.463623+08:00"
+      }
+    ],
+    "detail-after-close-10": [
+      {
+        "subtitleTrackID": 7,
+        "positionSeconds": 20.71,
+        "updatedAtLocal": "2026-10-21T16:48:09.463623+08:00"
+      }
+    ],
+    "after": [
+      {
+        "subtitleTrackID": 7,
+        "positionSeconds": 20.71,
+        "updatedAtLocal": "2026-10-21T16:48:09.463623+08:00"
+      }
+    ]
+  },
+  "finalAudit": {
+    "at": "2026-10-21T16:49:28.201098+08:00",
+    "checkedInputs": 173,
+    "sourceAndPackageUnchanged": true,
+    "sourceDiffSHA256": "6fd78d20f8d406a7794686d7e92c5316274b707ac12cac8a4a7dd52563d8d6e7",
+    "ipaSHA256": "e0c196cf2195de31426041d4acfe7175298c06f1c1e618d6fbd903747ae2c877",
+    "normalPackagePointerPreserved": true,
+    "latestWindowTracksRestored": true
+  }
+}

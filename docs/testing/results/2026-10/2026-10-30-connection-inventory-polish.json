@@ -1,0 +1,141 @@
+{
+  "recordedAt": "2026-10-30T10:04:28+08:00",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceInputCount": 435,
+  "changedExistingSourceFiles": 3,
+  "existingOfflineParameterTestsPassed": 4,
+  "newRepositoryTests": 0,
+  "builds": {
+    "module-tests": {
+      "startedAt": "2026-10-30T09:34:25.344370+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T09:34:29.267625+08:00"
+    },
+    "mobile-sim-debug-cast": {
+      "startedAt": "2026-10-30T09:54:27.842831+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T09:54:48.450315+08:00"
+    },
+    "tv-sim-debug-cast": {
+      "startedAt": "2026-10-30T09:54:27.842880+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T09:54:43.156969+08:00"
+    },
+    "mobile-debug": {
+      "startedAt": "2026-10-30T09:55:45.403977+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T10:00:32.820747+08:00"
+    },
+    "tv-debug": {
+      "startedAt": "2026-10-30T09:55:45.404006+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T09:56:41.504333+08:00"
+    },
+    "mobile-release": {
+      "startedAt": "2026-10-30T10:00:32.828527+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T10:03:28.295306+08:00"
+    },
+    "tv-release": {
+      "startedAt": "2026-10-30T09:56:41.506683+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T10:00:46.409973+08:00"
+    }
+  },
+  "capture": {
+    "accepted": 9,
+    "byPlatform": {
+      "phone": 3,
+      "pad": 3,
+      "tv": 3
+    },
+    "allPassed": true,
+    "ownedSimulatorsDeleted": true,
+    "syntheticPreferencesPreserved": true,
+    "physicalDevicesOperated": 0,
+    "NASCommands": 0,
+    "interactionOrAnimationVerified": false
+  },
+  "allCaptureArtifactsHashChecked": true,
+  "sourcePreservation": {
+    "changedExistingSourceFiles": 3,
+    "changedFileNames": [
+      "LibraryViews.swift",
+      "OfflineMediaScene.swift",
+      "OfflineUIScenario.swift"
+    ],
+    "folderPickerAndBusyBoundariesUnchanged": true,
+    "sourceStorePlaybackAndCredentialPathsUnchanged": true,
+    "onlyConnectionInventoryPresentationAndLabelsChanged": true,
+    "sourceWrites": 0,
+    "newRepositoryTests": 0,
+    "finalRefinementRechecked": true,
+    "savedConnectionsExpressionCountInBody": 1,
+    "explicitOptInTextColorRechecked": true,
+    "otherActionLabelCallsitesRetainDefault": true
+  },
+  "refinement": {
+    "savedConnectionsReadOncePerBody": true,
+    "NASFriendlyNameRequiresMatchingAccountAndCanonicalAddress": true,
+    "fallbackOnlyHostPortNoUserinfoOrQuery": true,
+    "rowTextSemanticPrimaryAndSecondaryWithWarmIcons": true,
+    "initialBuildsAndNineCapturesRetainedButExcludedFromFinalEvidence": true,
+    "newFinalBuildsAndCapturesRequired": true,
+    "moduleTestInputsUnchanged": true
+  },
+  "colorCorrection": {
+    "outerHierarchicalPrimaryDidNotOverrideButtonTint": true,
+    "failureRetainedAndExcluded": true,
+    "finalApproach": "Opt-in semanticText on existing NetworkActionLabel; explicit Color.primary and Color.secondary directly on Text, icons unchanged",
+    "defaultBehaviorForOtherCallsitesPreserved": true,
+    "finalBuildAndNineWindowRecaptureRequired": true,
+    "moduleTestInputsUnchanged": true
+  },
+  "packages": {
+    "mobile": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-30T10:00:27.986321+08:00",
+      "frozenAt": "2026-10-30T10:03:59.128534+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 435,
+      "mainSHA256": "87dec6cd831cf38fa50650696d7a5258d7a9c451c3d653946ae3a510df814757",
+      "debugDylibSHA256": "4b227a517699e403d188f5a2638e2c0f0aa2caa75d8a6d14c3d21e94c7f70a69",
+      "signedMachOCount": 30,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false
+    },
+    "tv": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-30T09:56:41.166295+08:00",
+      "frozenAt": "2026-10-30T10:03:59.535016+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 435,
+      "mainSHA256": "d222229c98d1ee3292fd08424e48f1bcb45afa8984651588eab0c67342855e16",
+      "debugDylibSHA256": "e27954647ec003893bcb147c6dc67c01ba1d5bb4992bec09955897e6de7a6f8e",
+      "signedMachOCount": 27,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false
+    }
+  },
+  "physicalDevicesOperated": 0,
+  "NASCommands": 0,
+  "playbackCommands": 0,
+  "ownedSimulatorsDeleted": 9,
+  "privateEvidencePointer": "current-connection-inventory-polish-private",
+  "notVerified": [
+    "Actual connection management navigation or saved source authentication",
+    "Actual NAS name matching or legacy host caption with user data",
+    "Actual scroll/focus/VoiceOver or performance",
+    "Directory persistence, source access, images or playback"
+  ]
+}

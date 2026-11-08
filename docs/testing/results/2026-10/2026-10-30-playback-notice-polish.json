@@ -1,0 +1,119 @@
+{
+  "recordedAt": "2026-10-30T08:44:26+08:00",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceInputCount": 435,
+  "changedExistingSourceFiles": 4,
+  "existingOfflineParameterTestsPassed": 4,
+  "newRepositoryTests": 0,
+  "builds": {
+    "module-tests": {
+      "startedAt": "2026-10-30T08:24:13.132053+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T08:24:16.924341+08:00"
+    },
+    "mobile-sim-debug-cast": {
+      "startedAt": "2026-10-30T08:35:38.819290+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T08:35:57.104686+08:00"
+    },
+    "tv-sim-debug-cast": {
+      "startedAt": "2026-10-30T08:35:38.819324+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T08:35:50.592282+08:00"
+    },
+    "mobile-debug": {
+      "startedAt": "2026-10-30T08:36:28.595483+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T08:40:29.132393+08:00"
+    },
+    "tv-debug": {
+      "startedAt": "2026-10-30T08:36:28.595548+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T08:37:17.569341+08:00"
+    },
+    "mobile-release": {
+      "startedAt": "2026-10-30T08:40:29.137139+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T08:43:05.064968+08:00"
+    },
+    "tv-release": {
+      "startedAt": "2026-10-30T08:37:17.574831+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T08:40:41.171532+08:00"
+    }
+  },
+  "capture": {
+    "accepted": 9,
+    "byPlatform": {
+      "phone": 3,
+      "pad": 3,
+      "tv": 3
+    },
+    "allPassed": true,
+    "ownedSimulatorsDeleted": true,
+    "syntheticPreferencesPreserved": true,
+    "physicalDevicesOperated": 0,
+    "NASCommands": 0,
+    "interactionOrAnimationVerified": false
+  },
+  "allCaptureArtifactsHashChecked": true,
+  "sourcePreservation": {
+    "changedExistingSourceFiles": 4,
+    "originalAvailabilityPredicateUnchanged": true,
+    "originalSingleFileActionsUnchanged": true,
+    "networkPlaybackCoverAndPortraitLoaderUnchanged": true,
+    "memberSelectionActionUnchanged": true,
+    "classificationTransportEngineAndJellyfinSourcesUnchanged": true,
+    "onlyExistingLimitationsExplained": true,
+    "sourceWrites": 0,
+    "previousFileFieldsDisclosureAndSelectionSectionUnchanged": true
+  },
+  "packages": {
+    "mobile": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-30T08:40:27.502093+08:00",
+      "frozenAt": "2026-10-30T08:43:58.886996+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 435,
+      "mainSHA256": "2874147146a790c07715eed487699aef21f15fdeb8af06c8b3a70a101cfef60a",
+      "debugDylibSHA256": "90e4c3968d192e38253064eea76f2ccc59163ce07bd840a65d807a227c2a92a5",
+      "signedMachOCount": 30,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false
+    },
+    "tv": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-30T08:37:17.114978+08:00",
+      "frozenAt": "2026-10-30T08:43:59.306339+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 435,
+      "mainSHA256": "4c1c572d7b3e5f17721b1d9f627559cfb6b5f5555c9d5e7be00ffc9a61cc2dd3",
+      "debugDylibSHA256": "a8464a6060679b0aff35d7a9184d0d9556aecd954011b4b32b1d572d0d52d48f",
+      "signedMachOCount": 27,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false
+    }
+  },
+  "physicalDevicesOperated": 0,
+  "NASCommands": 0,
+  "playbackCommands": 0,
+  "ownSimulatorsDeleted": 3,
+  "privateEvidencePointer": "current-playback-notice-polish-private",
+  "syntheticFixtureRefinement": "Unsupported fixture renamed .mkv to .bin; visual review then found white hero heading outside hero in light preview. Corrected Debug preview to semantic text, rebuilt simulator and native products, replaced all nine captures. Earlier artifacts retained and excluded; parameter-test inputs unchanged.",
+  "notVerified": [
+    "Actual source capability/format or playback",
+    "Actual navigation, long-text scrolling, TV remote or VoiceOver",
+    "Actual ISO, main-feature, auto-continuation or weak-cellular playback",
+    "Missing metadata/image retrieval or local correction persistence"
+  ]
+}

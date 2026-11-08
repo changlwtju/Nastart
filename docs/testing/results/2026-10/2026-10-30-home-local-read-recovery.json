@@ -1,0 +1,153 @@
+{
+  "recordedAt": "2026-10-30T17:01:12+08:00",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceInputCount": 437,
+  "changedExistingSourceFiles": 3,
+  "newSourceOrTestFiles": 0,
+  "tests": {
+    "existingScenarioParameters": 4,
+    "existingReadRequestOwnership": 3,
+    "failures": 0
+  },
+  "builds": {
+    "module-tests": {
+      "startedAt": "2026-10-30T16:52:00.576586+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T16:52:02.430341+08:00"
+    },
+    "mobile-sim-debug-cast": {
+      "startedAt": "2026-10-30T16:51:30.978450+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T16:51:49.651384+08:00"
+    },
+    "tv-sim-debug-cast": {
+      "startedAt": "2026-10-30T16:51:49.651800+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T16:52:00.576263+08:00"
+    },
+    "mobile-debug": {
+      "startedAt": "2026-10-30T16:55:39.006397+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T16:56:24.575109+08:00"
+    },
+    "tv-debug": {
+      "startedAt": "2026-10-30T16:58:00.641528+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T16:58:15.080899+08:00"
+    },
+    "mobile-release": {
+      "startedAt": "2026-10-30T16:56:24.576128+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T16:58:00.640545+08:00"
+    },
+    "tv-release": {
+      "startedAt": "2026-10-30T16:58:15.082023+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T16:58:43.154715+08:00"
+    }
+  },
+  "capture": {
+    "accepted": 7,
+    "byPlatform": {
+      "tv": 7
+    },
+    "notStarted": {
+      "phone": {
+        "reason": "Simulator startup free-space budget unmet; no device created",
+        "requiredFreeGiB": 4.8,
+        "observedFreeGiB": 3.8
+      },
+      "pad": {
+        "reason": "Simulator startup free-space budget unmet; no device created",
+        "requiredFreeGiB": 4.8,
+        "observedFreeGiB": 3.8
+      }
+    },
+    "allPassed": true,
+    "ownedSimulatorsDeleted": true,
+    "syntheticPreferencesPreserved": true,
+    "physicalDevicesOperated": 0,
+    "NASCommands": 0,
+    "interactionOrAnimationVerified": false
+  },
+  "visualReview": {
+    "reviewed": true,
+    "at": "2026-10-30T16:56:52.326037+08:00",
+    "method": "Four comparison sheets from seven qualified TV screenshots",
+    "windows": 7,
+    "checks": [
+      "Home idle/error/combined: retry visible; no redundant inline back",
+      "Loading and ready: retry absent; ready read status removed",
+      "Synthetic library remains visible in all five home states",
+      "Combined operation and read errors both visible",
+      "Existing read error and connection error retain retry and back",
+      "Warm icons, semantic text, themes and footer markers have no visible overlap"
+    ],
+    "sheetSHA256": [
+      "5d03c7a26be53145a6d9a27ef410383b89a96496fda34860ac72b79b352b7cc0",
+      "9c0cbb41736a85df49275a45d606be3bbb2db8c0f11b685ebd22d3920b9d664a",
+      "497ab8e16fce8021e8498fa0ab716a2300526764af4124f2cc54a11dfec35f78",
+      "e09d1fcfbdc065c6f39374ecec1ebb82262bcc3efd10d375bda9029584cc0c19"
+    ],
+    "actualRetryBackTaskFocusOrMobileLayoutVerified": false
+  },
+  "sourcePreservation": {
+    "allModelMethodsAndNetworkMessageByteIdentical": true,
+    "wallLayoutAndPlaybackByteIdentical": true,
+    "pureLocalReadStateAndTestsUnchanged": true,
+    "newTaskIsExistingPageTaskWithExtendedIdentity": true,
+    "newRetryGuardAcceptsOnlyIdleOrFailed": true,
+    "newPreviewUsesNoModelStoreVaultClient": true,
+    "changedExistingSourceFiles": 3,
+    "newSourceOrTestFiles": 0
+  },
+  "packages": {
+    "mobile": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-30T16:56:24.367403+08:00",
+      "frozenAt": "2026-10-30T16:59:47.825669+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 437,
+      "mainSHA256": "2895a04d9bb1579b70966559d16ac8381814d2911cf0f77c93344423067c5198",
+      "debugDylibSHA256": "fe061d4bab6d9b1a86a7e25ed04da82f8ab7fb2de40cfda41aa739a7a2d135ab",
+      "signedMachOCount": 30,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false,
+      "copyMethod": "cp -cpR clone requested; hashes and signatures verified independently"
+    },
+    "tv": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-30T16:58:15.001191+08:00",
+      "frozenAt": "2026-10-30T16:59:48.158407+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 437,
+      "mainSHA256": "9ffbe7f105494b86859b05a2c35735e8632c8a514afcd240989f67d71c3d8655",
+      "debugDylibSHA256": "83a2a3f1b8ef2eabd278831b0e204df0506b4bb609922037e573ddc2c038415c",
+      "signedMachOCount": 27,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false,
+      "copyMethod": "cp -cpR clone requested; hashes and signatures verified independently"
+    }
+  },
+  "ownedSimulatorsDeleted": 1,
+  "physicalDevicesOperated": 0,
+  "NASCommands": 0,
+  "playbackCommands": 0,
+  "privateEvidencePointer": "current-home-local-read-retry-private",
+  "notVerified": [
+    "Mobile/tablet layouts including large text: startup disk budget unmet",
+    "Actual home retry, task cancellation, repeated tap, navigation or retained library reads",
+    "Model/store/vault migration integration or read/operation-error transition",
+    "Remote focus movement, accessibility reading, scrolling, images or playback"
+  ]
+}

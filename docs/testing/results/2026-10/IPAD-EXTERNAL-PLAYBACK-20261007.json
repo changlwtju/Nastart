@@ -1,0 +1,232 @@
+{
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceDiffSHA256": "1c6f3e35ebb6e3b86720e33b79b54fce20e0ebecf49ab1997d00590f0071385d",
+  "configuration": "normal Debug -Onone; empty launch environment",
+  "binaryBuildTime": "2026-10-07T19:15:29.836395+08:00",
+  "binaries": {
+    "Nastart": "51ae4a5864b7e0e1bd4adaf6a8e254864359c0d3f8920836e28ce2d670f86557",
+    "Nastart.debug.dylib": "8a3316adba82d551bfd7918442b17c57b088986971a4c79a137b66cfda7f7deb",
+    "Frameworks/KSPlayer.framework/KSPlayer": "5fa42aac977408c21c0a85c45b0d806490c3d7dc2048f0e84ea00eb0dc591cf0"
+  },
+  "signatureVerified": true,
+  "individuallyVerifiedLibraries": 29,
+  "checkedInputs": 128,
+  "newerInputs": [],
+  "profileExpirationUTC": "2026-10-10T22:03:15",
+  "preflight": "15 passed",
+  "tests": "previous externalOriginal source 184/2 skipped/0 failures; UI-only share activity delta verified by device build and native regression",
+  "linkageVerified": true,
+  "previousOriginalCandidate": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "650b7080fbe3723713067b0e6e817bbad6fdd1580f0ead4d72439a2769180e71",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "binaryBuildTime": "2026-10-07T19:00:55.411866+08:00",
+    "binaries": {
+      "Nastart": "5493a766ed132856138235f789c59f7de19f01efaa4563a8f62539e69ef6cf93",
+      "Nastart.debug.dylib": "7e67e46c6d8aabc0e1f469d0a0aed81cf22f64f9c4f9870f96735fd85f588528",
+      "Frameworks/KSPlayer.framework/KSPlayer": "5fa42aac977408c21c0a85c45b0d806490c3d7dc2048f0e84ea00eb0dc591cf0"
+    },
+    "signatureVerified": true,
+    "individuallyVerifiedLibraries": 29,
+    "checkedInputs": 176,
+    "newerInputs": [],
+    "profileExpirationUTC": "2026-10-10T22:03:15",
+    "tests": {
+      "executed": 184,
+      "skipped": 2,
+      "failed": 0
+    },
+    "iPad": {
+      "recordedAt": "2026-10-07T19:02:49.245854+08:00",
+      "device": "iPad",
+      "model": "iPad12,1",
+      "os": "18.3.1",
+      "systemBuild": "22D72",
+      "freshUSBIdentity": true,
+      "binaries": {
+        "Nastart": "5493a766ed132856138235f789c59f7de19f01efaa4563a8f62539e69ef6cf93",
+        "Nastart.debug.dylib": "7e67e46c6d8aabc0e1f469d0a0aed81cf22f64f9c4f9870f96735fd85f588528",
+        "Frameworks/KSPlayer.framework/KSPlayer": "5fa42aac977408c21c0a85c45b0d806490c3d7dc2048f0e84ea00eb0dc591cf0"
+      },
+      "sourceDiffSHA256": "650b7080fbe3723713067b0e6e817bbad6fdd1580f0ead4d72439a2769180e71",
+      "configuration": "normal Debug -Onone; empty launch environment",
+      "binaryBuildTime": "2026-10-07T19:00:55.411866+08:00",
+      "signatureVerified": true,
+      "dataPreservingCoverInstall": true,
+      "installation": "success",
+      "unchangedNonDiagnosticPreferences": 16,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "actualForegroundUIVerified": true,
+      "playbackRegression": "pending actual UI",
+      "regressions": {
+        "portraitDetail": "S03 actual poster/title/originalTitle fully visible; overview not overlapped",
+        "externalCredentialDialog": "actual centered alert visible and actionable",
+        "infuse": "original link accepted; t3 opening, t10/t30 Pro purchase page; first frame BLOCKED_PRO_LICENSE; no purchase made",
+        "fileball": "system open accepted; t3 landing page, t10/t30 actual different movie frames; normal close and return captured. Audio, subtitles and frame-time smoothness unqualified.",
+        "otherApps": "system share had no Fileball action; reproduced, new custom-player activities being built"
+      }
+    },
+    "iPhone13": {
+      "recordedAt": "2026-10-07T19:03:52.622559+08:00",
+      "device": "iPhone13",
+      "model": "iPhone14,5",
+      "os": "16.3.1",
+      "systemBuild": "20D67",
+      "freshUSBIdentity": true,
+      "binaries": {
+        "Nastart": "5493a766ed132856138235f789c59f7de19f01efaa4563a8f62539e69ef6cf93",
+        "Nastart.debug.dylib": "7e67e46c6d8aabc0e1f469d0a0aed81cf22f64f9c4f9870f96735fd85f588528",
+        "Frameworks/KSPlayer.framework/KSPlayer": "5fa42aac977408c21c0a85c45b0d806490c3d7dc2048f0e84ea00eb0dc591cf0"
+      },
+      "sourceDiffSHA256": "650b7080fbe3723713067b0e6e817bbad6fdd1580f0ead4d72439a2769180e71",
+      "configuration": "normal Debug -Onone; empty launch environment",
+      "binaryBuildTime": "2026-10-07T19:00:55.411866+08:00",
+      "signatureVerified": true,
+      "dataPreservingCoverInstall": true,
+      "installation": "success",
+      "unchangedNonDiagnosticPreferences": 25,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "actualForegroundUIVerified": true,
+      "playbackRegression": "pending actual UI",
+      "regressions": {
+        "containerDiscovery": "normal startup public login timed out then LAN login succeeded, both Docker.Container list calls timed out; zero container services, Jellyfin launchpad missing; not a preference loss"
+      }
+    },
+    "iPhone18": {
+      "status": "disconnected by user; previous 906e package remains; latest 5493 not installed",
+      "regression": "latest source not tested on this device"
+    },
+    "preflight": "15 passed",
+    "linkageVerified": true,
+    "issuesResolvedGlobally": false,
+    "mainPushed": false
+  },
+  "iPad": {
+    "recordedAt": "2026-10-07T19:17:33.236995+08:00",
+    "device": "ipad",
+    "model": "iPad12,1",
+    "os": "18.3.1",
+    "systemBuild": "22D72",
+    "freshUSBIdentity": true,
+    "signatureVerified": true,
+    "targetInValidProfile": true,
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "binaryBuildTime": "2026-10-07T19:15:29.836395+08:00",
+    "sourceDiffSHA256": "1c6f3e35ebb6e3b86720e33b79b54fce20e0ebecf49ab1997d00590f0071385d",
+    "binaries": {
+      "Nastart": "51ae4a5864b7e0e1bd4adaf6a8e254864359c0d3f8920836e28ce2d670f86557",
+      "Nastart.debug.dylib": "8a3316adba82d551bfd7918442b17c57b088986971a4c79a137b66cfda7f7deb",
+      "Frameworks/KSPlayer.framework/KSPlayer": "5fa42aac977408c21c0a85c45b0d806490c3d7dc2048f0e84ea00eb0dc591cf0"
+    },
+    "dataPreservingCoverInstall": true,
+    "installation": "success",
+    "unchangedNonDiagnosticPreferences": 16,
+    "requestedEnvironment": {},
+    "requestedArguments": [],
+    "actualForegroundUIVerified": true,
+    "normalLaunchSucceeded": true,
+    "wdaReinstall": false
+  },
+  "iPhone13": {
+    "recordedAt": "2026-10-07T19:17:53.675705+08:00",
+    "device": "iphone13",
+    "model": "iPhone14,5",
+    "os": "16.3.1",
+    "systemBuild": "20D67",
+    "freshUSBIdentity": true,
+    "signatureVerified": true,
+    "targetInValidProfile": true,
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "binaryBuildTime": "2026-10-07T19:15:29.836395+08:00",
+    "sourceDiffSHA256": "1c6f3e35ebb6e3b86720e33b79b54fce20e0ebecf49ab1997d00590f0071385d",
+    "binaries": {
+      "Nastart": "51ae4a5864b7e0e1bd4adaf6a8e254864359c0d3f8920836e28ce2d670f86557",
+      "Nastart.debug.dylib": "8a3316adba82d551bfd7918442b17c57b088986971a4c79a137b66cfda7f7deb",
+      "Frameworks/KSPlayer.framework/KSPlayer": "5fa42aac977408c21c0a85c45b0d806490c3d7dc2048f0e84ea00eb0dc591cf0"
+    },
+    "dataPreservingCoverInstall": true,
+    "installation": "success",
+    "unchangedNonDiagnosticPreferences": 25,
+    "requestedEnvironment": {},
+    "requestedArguments": [],
+    "actualForegroundUIVerified": true,
+    "normalLaunchSucceeded": true,
+    "wdaReinstall": false
+  },
+  "iPhone18": {
+    "status": "disconnected by user; previous 906e package remains; latest 51ae not installed",
+    "regression": "current source not tested"
+  },
+  "regressions": {
+    "iPadShare": "actual native activities Infuse/Fileball visible; selected Fileball movie frame at t10 with spinner, different frame at t30/followup; normal close/activate captured. Audio/subtitle/full frame times unqualified.",
+    "iPhone13Share": "installed player actions visible in actual followup screenshot; ordinary share close captured, target selection deferred until isolated iPad tests finish",
+    "iPadPiP": {
+      "qualifiedBackgroundStart": true,
+      "backgroundSamplesSeconds": [
+        0,
+        30,
+        60,
+        120,
+        180,
+        240,
+        300
+      ],
+      "beforeAndAfterNastartPID": 2733,
+      "backgroundVideoFramesChanged": true,
+      "returnAppKeptPiP": true,
+      "systemRestoreActualFullscreenAndSubtitles": true,
+      "restoreCallbackSuccess": true,
+      "samePlanTraceRoute": true,
+      "normalStopCaptured": true,
+      "audioAndSmoothness": "not_qualified",
+      "wholeBackgroundBugResolved": false,
+      "lastMetrics": {
+        "bufferedAheadSeconds": "15.837874568090513",
+        "bytesRead": "3479386939",
+        "currentSeconds": "473.957",
+        "droppedVideoFrames": "67",
+        "elapsedMs": "475121",
+        "engine": "KSPlayer",
+        "planID": "0158F968",
+        "playbackTraceID": "D1E01663",
+        "routeID": "577238FD",
+        "stallActive": "no",
+        "stallCount": "1"
+      }
+    },
+    "iPadDetail": "S03 and Transformers portrait: actual poster/title/originalTitle fully visible; overview below and not overlapped. Landscape rotation TOOL, no PASS.",
+    "containerDiscovery": "13 original candidate startup list timeouts preserved; new candidate later container services/Jellyfin recovered without targeted discovery fix; intermittent issue open",
+    "iPadTransformersResume": {
+      "entry": "Jellyfin",
+      "film": "Transformers (2007)",
+      "source": "1080p H264 TrueHD; decoder output inventory eight subtitle tracks",
+      "requested": "continue watching existing position",
+      "firstFrameInternalClockMs": 5599,
+      "firstWaitConsumeMs": 5186,
+      "actualFirstMovieFrameUpperBoundSeconds": 10,
+      "samplesSeconds": [
+        3,
+        10,
+        30,
+        60,
+        120
+      ],
+      "playingSampleCount": 147,
+      "postStartupStallCounts": [
+        "1"
+      ],
+      "lastDroppedVideoFrames": 1,
+      "defaultSubtitle": "off; reproduced, unresolved",
+      "layoutPortrait": "S03 and Transformers actual screenshots verified separated",
+      "layoutLandscape": "TOOL unable to rotate; no PASS",
+      "audioAndFrameTimeSmoothness": "not qualified",
+      "resumeBugResolvedGlobally": false,
+      "telemetryPositionStartSeconds": 4201.126,
+      "telemetryPositionEndSeconds": 4356.048
+    }
+  },
+  "issuesResolvedGlobally": false,
+  "mainPushed": false
+}

@@ -1,0 +1,1402 @@
+{
+  "recordedAt": "2026-10-25T13:24:03.822911+08:00",
+  "HEAD": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "dirtySourcePreserved": true,
+  "configuration": "ordinary Debug",
+  "environment": {},
+  "arguments": [],
+  "mainSHA256": "f453254b97a6e68d0fc3ed790b28049b36492b7c9d57c1bac6f86da41f9c2525",
+  "sourceInputs": 570,
+  "signedMachOCount": 30,
+  "tests": {
+    "targeted": 8,
+    "failures": 0,
+    "newTests": 3,
+    "httpFixtureDoesNotProveTLS": true
+  },
+  "installations": [
+    {
+      "device": "iPhone 13",
+      "installedAt": "2026-10-25T12:51:23.629254+08:00",
+      "mainSHA256": "f453254b97a6e68d0fc3ed790b28049b36492b7c9d57c1bac6f86da41f9c2525",
+      "profileTargetVerified": true,
+      "AppIDAndKeychainGroupsPreserved": true,
+      "changedPreferencesAtInstall": []
+    },
+    {
+      "device": "iPad A16",
+      "installedAt": "2026-10-25T13:02:17.462809+08:00",
+      "mainSHA256": "f453254b97a6e68d0fc3ed790b28049b36492b7c9d57c1bac6f86da41f9c2525",
+      "profileTargetVerified": true,
+      "AppIDAndKeychainGroupsPreserved": true,
+      "changedPreferencesAtInstall": []
+    }
+  ],
+  "windows": [
+    {
+      "window": "file-cellular-1",
+      "startedAt": "2026-10-25T11:42:44.029707+08:00",
+      "finishedAt": "2026-10-25T11:42:44.212839+08:00",
+      "entry": "files",
+      "sample": "S19",
+      "PlayCommands": 0,
+      "normalReturn": false,
+      "wifiChanged": false,
+      "wifiRestored": false,
+      "failure": "ValueError",
+      "restoreFailure": "ValueError",
+      "mainSHA256": "d1e2aed691409851d541e98acb5b745c2079a109d09b8341e5b655f201fe07d8"
+    },
+    {
+      "window": "file-cellular-2",
+      "startedAt": "2026-10-25T11:43:58.112283+08:00",
+      "finishedAt": "2026-10-25T11:45:13.532447+08:00",
+      "entry": "files",
+      "sample": "S19",
+      "PlayCommands": 0,
+      "normalReturn": false,
+      "wifiChanged": false,
+      "wifiRestored": true,
+      "failure": "timeout",
+      "originalNetworkSelected": true,
+      "finalSettingsMatch": true,
+      "mainSHA256": "d1e2aed691409851d541e98acb5b745c2079a109d09b8341e5b655f201fe07d8"
+    },
+    {
+      "window": "file-cellular-3",
+      "startedAt": "2026-10-25T11:46:52.948603+08:00",
+      "finishedAt": "2026-10-25T11:47:02.146936+08:00",
+      "entry": "files",
+      "sample": "S19",
+      "PlayCommands": 0,
+      "normalReturn": false,
+      "wifiChanged": false,
+      "wifiRestored": true,
+      "failure": "AssertionError",
+      "originalNetworkSelected": true,
+      "finalSettingsMatch": true,
+      "mainSHA256": "d1e2aed691409851d541e98acb5b745c2079a109d09b8341e5b655f201fe07d8"
+    },
+    {
+      "window": "file-cellular-4",
+      "startedAt": "2026-10-25T11:48:47.294174+08:00",
+      "finishedAt": "2026-10-25T11:49:54.735503+08:00",
+      "entry": "files",
+      "sample": "S19",
+      "PlayCommands": 1,
+      "normalReturn": false,
+      "wifiChanged": true,
+      "wifiRestored": false,
+      "failure": "AssertionError",
+      "restoreFailure": "RuntimeError",
+      "mainSHA256": "d1e2aed691409851d541e98acb5b745c2079a109d09b8341e5b655f201fe07d8",
+      "completedURLMetrics": 21,
+      "cellularYes": 21,
+      "cellularNo": 0,
+      "scopeMetrics": [
+        {
+          "scope": "not instrumented",
+          "reused": "no",
+          "count": 7
+        },
+        {
+          "scope": "not instrumented",
+          "reused": "yes",
+          "count": 14
+        }
+      ],
+      "routes": [
+        {
+          "t": 1.21,
+          "routeKind": "localRangeProxy",
+          "decodeEngine": "ksPlayer",
+          "playMethod": "directPlay",
+          "connectionAddressKind": "publicDomain"
+        },
+        {
+          "t": 22.879,
+          "routeKind": "localHLS",
+          "decodeEngine": "systemAVPlayer",
+          "playMethod": "localRemux",
+          "connectionAddressKind": "loopback"
+        }
+      ],
+      "observedSeekOperations": 1,
+      "lastInBatchOrSingleSeeks": [
+        {
+          "operation": 1,
+          "engine": "AVPlayer",
+          "targetSeconds": 7020.007143956,
+          "completionMs": 4074.866,
+          "internalClockRecoveryMs": 4676.0,
+          "recoveryCensored": false
+        }
+      ],
+      "networkTimingMs": {
+        "lastRequestEndToFirstByteMs": {
+          "n": 21,
+          "median": 156.0,
+          "max": 2561.0
+        },
+        "lastFetchToRequestMs": {
+          "n": 21,
+          "median": 0.0,
+          "max": 730.0
+        },
+        "upstreamCancelToCallbackMs": {
+          "n": 4,
+          "median": 0.0,
+          "max": 0.0
+        },
+        "proxyBackpressureMs": {
+          "n": 21,
+          "median": 0.0,
+          "max": 0.0
+        }
+      },
+      "receivedBodyWindowMbps": {
+        "min": 12.964632,
+        "max": 33.607813,
+        "meaning": "bits per second in data-bearing windows, excludes silent waits"
+      },
+      "laterNetworkRecovery": "separate 11:50 receipt/native original Selected plus Wi-Fi icon; historical restore failure retained"
+    },
+    {
+      "window": "file-cellular-buttons-1",
+      "startedAt": "2026-10-25T12:36:09.992528+08:00",
+      "finishedAt": "2026-10-25T12:38:03.079464+08:00",
+      "entry": "files",
+      "sample": "S19",
+      "PlayCommands": 1,
+      "normalReturn": false,
+      "wifiChanged": true,
+      "wifiRestored": true,
+      "failure": "AssertionError",
+      "originalNetworkSelected": true,
+      "finalSettingsMatch": true,
+      "mainSHA256": "d1e2aed691409851d541e98acb5b745c2079a109d09b8341e5b655f201fe07d8",
+      "completedURLMetrics": 48,
+      "cellularYes": 48,
+      "cellularNo": 0,
+      "scopeMetrics": [
+        {
+          "scope": "not instrumented",
+          "reused": "no",
+          "count": 44
+        },
+        {
+          "scope": "not instrumented",
+          "reused": "yes",
+          "count": 4
+        }
+      ],
+      "routes": [
+        {
+          "t": 1.192,
+          "routeKind": "localRangeProxy",
+          "decodeEngine": "ksPlayer",
+          "playMethod": "directPlay",
+          "connectionAddressKind": "publicDomain"
+        },
+        {
+          "t": 31.805,
+          "routeKind": "localHLS",
+          "decodeEngine": "systemAVPlayer",
+          "playMethod": "localRemux",
+          "connectionAddressKind": "loopback"
+        }
+      ],
+      "observedSeekOperations": 40,
+      "lastInBatchOrSingleSeeks": [
+        {
+          "operation": 20,
+          "engine": "KSPlayer",
+          "targetSeconds": 314.076,
+          "completionMs": 719.392,
+          "internalClockRecoveryMs": 7011.0,
+          "recoveryCensored": false
+        },
+        {
+          "operation": 40,
+          "engine": "KSPlayer",
+          "targetSeconds": 15.576999999999998,
+          "completionMs": 400.231,
+          "internalClockRecoveryMs": 1694.0,
+          "recoveryCensored": false
+        }
+      ],
+      "networkTimingMs": {
+        "lastRequestEndToFirstByteMs": {
+          "n": 48,
+          "median": 277.0,
+          "max": 875.0
+        },
+        "lastFetchToRequestMs": {
+          "n": 48,
+          "median": 178.0,
+          "max": 645.0
+        },
+        "upstreamCancelToCallbackMs": {
+          "n": 41,
+          "median": 0.0,
+          "max": 1.0
+        },
+        "proxyBackpressureMs": {
+          "n": 48,
+          "median": 0.0,
+          "max": 0.0
+        }
+      },
+      "receivedBodyWindowMbps": {
+        "min": 5.362842,
+        "max": 39.909041,
+        "meaning": "bits per second in data-bearing windows, excludes silent waits"
+      }
+    },
+    {
+      "window": "file-cellular-deep-1",
+      "startedAt": "2026-10-25T12:28:14.243576+08:00",
+      "finishedAt": "2026-10-25T12:29:54.825934+08:00",
+      "entry": "files",
+      "sample": "S19",
+      "PlayCommands": 1,
+      "normalReturn": false,
+      "wifiChanged": true,
+      "wifiRestored": true,
+      "failure": "AssertionError",
+      "originalNetworkSelected": true,
+      "finalSettingsMatch": true,
+      "mainSHA256": "d1e2aed691409851d541e98acb5b745c2079a109d09b8341e5b655f201fe07d8",
+      "completedURLMetrics": 50,
+      "cellularYes": 50,
+      "cellularNo": 0,
+      "scopeMetrics": [
+        {
+          "scope": "not instrumented",
+          "reused": "no",
+          "count": 1
+        },
+        {
+          "scope": "not instrumented",
+          "reused": "yes",
+          "count": 49
+        }
+      ],
+      "routes": [
+        {
+          "t": 9.847,
+          "routeKind": "localHLS",
+          "decodeEngine": "systemAVPlayer",
+          "playMethod": "localRemux",
+          "connectionAddressKind": "loopback"
+        }
+      ],
+      "observedSeekOperations": 2,
+      "lastInBatchOrSingleSeeks": [
+        {
+          "operation": 1,
+          "engine": "AVPlayer",
+          "targetSeconds": 0.0,
+          "completionMs": 2573.995,
+          "internalClockRecoveryMs": 3177.0,
+          "recoveryCensored": false
+        },
+        {
+          "operation": 2,
+          "engine": "AVPlayer",
+          "targetSeconds": 0.0,
+          "completionMs": 147.775,
+          "internalClockRecoveryMs": 727.0,
+          "recoveryCensored": false
+        }
+      ],
+      "networkTimingMs": {
+        "lastRequestEndToFirstByteMs": {
+          "n": 50,
+          "median": 421.0,
+          "max": 2765.0
+        },
+        "lastFetchToRequestMs": {
+          "n": 50,
+          "median": 0.0,
+          "max": 413.0
+        },
+        "proxyBackpressureMs": {
+          "n": 50,
+          "median": 0.0,
+          "max": 0.0
+        }
+      },
+      "receivedBodyWindowMbps": null,
+      "inputQualification": "rejected: requested remote positions became zero, not remote seek performance evidence"
+    },
+    {
+      "window": "file-cellular-pan-1",
+      "startedAt": "2026-10-25T12:33:01.139963+08:00",
+      "finishedAt": "2026-10-25T12:34:43.874694+08:00",
+      "entry": "files",
+      "sample": "S19",
+      "PlayCommands": 1,
+      "normalReturn": false,
+      "wifiChanged": true,
+      "wifiRestored": true,
+      "failure": "AssertionError",
+      "originalNetworkSelected": true,
+      "finalSettingsMatch": true,
+      "mainSHA256": "d1e2aed691409851d541e98acb5b745c2079a109d09b8341e5b655f201fe07d8",
+      "completedURLMetrics": 12,
+      "cellularYes": 12,
+      "cellularNo": 0,
+      "scopeMetrics": [
+        {
+          "scope": "not instrumented",
+          "reused": "no",
+          "count": 8
+        },
+        {
+          "scope": "not instrumented",
+          "reused": "yes",
+          "count": 4
+        }
+      ],
+      "routes": [
+        {
+          "t": 1.179,
+          "routeKind": "localRangeProxy",
+          "decodeEngine": "ksPlayer",
+          "playMethod": "directPlay",
+          "connectionAddressKind": "publicDomain"
+        }
+      ],
+      "observedSeekOperations": 2,
+      "lastInBatchOrSingleSeeks": [
+        {
+          "operation": 1,
+          "engine": "KSPlayer",
+          "targetSeconds": 0.0,
+          "completionMs": 438.281,
+          "internalClockRecoveryMs": 1497.0,
+          "recoveryCensored": false
+        },
+        {
+          "operation": 2,
+          "engine": "KSPlayer",
+          "targetSeconds": 0.0,
+          "completionMs": 493.75,
+          "internalClockRecoveryMs": 1092.0,
+          "recoveryCensored": false
+        }
+      ],
+      "networkTimingMs": {
+        "lastRequestEndToFirstByteMs": {
+          "n": 12,
+          "median": 183.0,
+          "max": 279.0
+        },
+        "lastFetchToRequestMs": {
+          "n": 12,
+          "median": 107.0,
+          "max": 398.0
+        },
+        "upstreamCancelToCallbackMs": {
+          "n": 5,
+          "median": 0.0,
+          "max": 1.0
+        },
+        "proxyBackpressureMs": {
+          "n": 12,
+          "median": 0.0,
+          "max": 13382.0
+        }
+      },
+      "receivedBodyWindowMbps": {
+        "min": 4.648621,
+        "max": 44.145866,
+        "meaning": "bits per second in data-bearing windows, excludes silent waits"
+      },
+      "inputQualification": "rejected: requested remote positions became zero, not remote seek performance evidence"
+    },
+    {
+      "window": "file-cellular-pinned-buttons-1",
+      "startedAt": "2026-10-25T12:53:41.725482+08:00",
+      "finishedAt": "2026-10-25T12:53:59.750007+08:00",
+      "entry": "files",
+      "sample": "S19",
+      "PlayCommands": 0,
+      "normalReturn": false,
+      "wifiChanged": true,
+      "wifiRestored": true,
+      "failure": "AssertionError",
+      "originalNetworkSelected": true,
+      "finalSettingsMatch": true,
+      "mainSHA256": "f453254b97a6e68d0fc3ed790b28049b36492b7c9d57c1bac6f86da41f9c2525"
+    },
+    {
+      "window": "file-cellular-pinned-buttons-2",
+      "startedAt": "2026-10-25T12:56:00.020885+08:00",
+      "finishedAt": "2026-10-25T12:57:55.200961+08:00",
+      "entry": "files",
+      "sample": "S19",
+      "PlayCommands": 1,
+      "normalReturn": true,
+      "wifiChanged": true,
+      "wifiRestored": true,
+      "originalNetworkSelected": true,
+      "finalSettingsMatch": true,
+      "mainSHA256": "f453254b97a6e68d0fc3ed790b28049b36492b7c9d57c1bac6f86da41f9c2525",
+      "completedURLMetrics": 75,
+      "cellularYes": 75,
+      "cellularNo": 0,
+      "scopeMetrics": [
+        {
+          "scope": "pinnedRoute",
+          "reused": "yes",
+          "count": 18
+        },
+        {
+          "scope": "systemShared",
+          "reused": "no",
+          "count": 2
+        },
+        {
+          "scope": "systemShared",
+          "reused": "yes",
+          "count": 55
+        }
+      ],
+      "routes": [
+        {
+          "t": 1.254,
+          "routeKind": "localRangeProxy",
+          "decodeEngine": "ksPlayer",
+          "playMethod": "directPlay",
+          "connectionAddressKind": "publicDomain"
+        },
+        {
+          "t": 15.857,
+          "routeKind": "localHLS",
+          "decodeEngine": "systemAVPlayer",
+          "playMethod": "localRemux",
+          "connectionAddressKind": "loopback"
+        }
+      ],
+      "observedSeekOperations": 40,
+      "lastInBatchOrSingleSeeks": [
+        {
+          "operation": 20,
+          "engine": "AVPlayer",
+          "targetSeconds": 349.5,
+          "completionMs": 9165.386,
+          "internalClockRecoveryMs": 9832.0,
+          "recoveryCensored": false
+        },
+        {
+          "operation": 40,
+          "engine": "AVPlayer",
+          "targetSeconds": 54.000510788999975,
+          "completionMs": 861.997,
+          "internalClockRecoveryMs": 1451.0,
+          "recoveryCensored": false
+        }
+      ],
+      "networkTimingMs": {
+        "lastRequestEndToFirstByteMs": {
+          "n": 75,
+          "median": 395.0,
+          "max": 13434.0
+        },
+        "lastFetchToRequestMs": {
+          "n": 75,
+          "median": 0.0,
+          "max": 388.0
+        },
+        "upstreamCancelToCallbackMs": {
+          "n": 18,
+          "median": 0.0,
+          "max": 1.0
+        },
+        "proxyBackpressureMs": {
+          "n": 75,
+          "median": 0.0,
+          "max": 7291.0
+        }
+      },
+      "receivedBodyWindowMbps": {
+        "min": 6.307139,
+        "max": 42.429457,
+        "meaning": "bits per second in data-bearing windows, excludes silent waits"
+      },
+      "reportedScopeAtCompletionReliable": false,
+      "correctedScopeMetricsFromRequestIssued": [
+        {
+          "scope": "pinnedRoute",
+          "reused": "yes",
+          "count": 6
+        },
+        {
+          "scope": "pinnedRoute",
+          "reused": "no",
+          "count": 1
+        },
+        {
+          "scope": "systemShared",
+          "reused": "no",
+          "count": 1
+        },
+        {
+          "scope": "systemShared",
+          "reused": "yes",
+          "count": 67
+        }
+      ],
+      "scopeMismatches": 19,
+      "scopeCorrectionUnmatchedMetrics": 0
+    },
+    {
+      "window": "file-cellular-pinned-early-1",
+      "startedAt": "2026-10-25T12:59:04.383239+08:00",
+      "finishedAt": "2026-10-25T13:00:41.505485+08:00",
+      "entry": "files",
+      "sample": "S19",
+      "PlayCommands": 1,
+      "normalReturn": true,
+      "wifiChanged": true,
+      "wifiRestored": true,
+      "originalNetworkSelected": true,
+      "finalSettingsMatch": true,
+      "mainSHA256": "f453254b97a6e68d0fc3ed790b28049b36492b7c9d57c1bac6f86da41f9c2525",
+      "completedURLMetrics": 41,
+      "cellularYes": 41,
+      "cellularNo": 0,
+      "scopeMetrics": [
+        {
+          "scope": "systemShared",
+          "reused": "no",
+          "count": 1
+        },
+        {
+          "scope": "pinnedRoute",
+          "reused": "yes",
+          "count": 3
+        },
+        {
+          "scope": "systemShared",
+          "reused": "yes",
+          "count": 37
+        }
+      ],
+      "routes": [
+        {
+          "t": 1.123,
+          "routeKind": "localRangeProxy",
+          "decodeEngine": "ksPlayer",
+          "playMethod": "directPlay",
+          "connectionAddressKind": "publicDomain"
+        }
+      ],
+      "observedSeekOperations": 40,
+      "lastInBatchOrSingleSeeks": [
+        {
+          "operation": 20,
+          "engine": "KSPlayer",
+          "targetSeconds": 366.114411,
+          "completionMs": 737.383,
+          "internalClockRecoveryMs": 6009.0,
+          "recoveryCensored": false
+        },
+        {
+          "operation": 40,
+          "engine": "KSPlayer",
+          "targetSeconds": 67.851,
+          "completionMs": 4040.14,
+          "internalClockRecoveryMs": 9443.0,
+          "recoveryCensored": false
+        }
+      ],
+      "networkTimingMs": {
+        "lastRequestEndToFirstByteMs": {
+          "n": 41,
+          "median": 524.0,
+          "max": 3325.0
+        },
+        "lastFetchToRequestMs": {
+          "n": 41,
+          "median": 0.0,
+          "max": 365.0
+        },
+        "upstreamCancelToCallbackMs": {
+          "n": 38,
+          "median": 0.0,
+          "max": 1.0
+        },
+        "proxyBackpressureMs": {
+          "n": 41,
+          "median": 0.0,
+          "max": 414.0
+        }
+      },
+      "receivedBodyWindowMbps": {
+        "min": 5.094383,
+        "max": 32.570513,
+        "meaning": "bits per second in data-bearing windows, excludes silent waits"
+      },
+      "reportedScopeAtCompletionReliable": false,
+      "correctedScopeMetricsFromRequestIssued": [
+        {
+          "scope": "pinnedRoute",
+          "reused": "no",
+          "count": 1
+        },
+        {
+          "scope": "pinnedRoute",
+          "reused": "yes",
+          "count": 40
+        }
+      ],
+      "scopeMismatches": 38,
+      "scopeCorrectionUnmatchedMetrics": 0
+    },
+    {
+      "window": "file-wifi-s01-1",
+      "startedAt": "2026-10-25T13:21:06.056065+08:00",
+      "finishedAt": "2026-10-25T13:22:29.381581+08:00",
+      "entry": "files",
+      "sample": "S01",
+      "PlayCommands": 1,
+      "normalReturn": true,
+      "wifiChanged": false,
+      "wifiRestored": true,
+      "originalNetworkSelected": true,
+      "finalSettingsMatch": true,
+      "networkCondition": "original Wi-Fi",
+      "mainSHA256": "f453254b97a6e68d0fc3ed790b28049b36492b7c9d57c1bac6f86da41f9c2525",
+      "completedURLMetrics": 8,
+      "cellularYes": 0,
+      "cellularNo": 8,
+      "scopeMetrics": [
+        {
+          "scope": "systemShared",
+          "reused": "no",
+          "count": 4
+        },
+        {
+          "scope": "pinnedRoute",
+          "reused": "no",
+          "count": 2
+        },
+        {
+          "scope": "systemShared",
+          "reused": "yes",
+          "count": 2
+        }
+      ],
+      "routes": [
+        {
+          "t": 0.987,
+          "routeKind": "localRangeProxy",
+          "decodeEngine": "ksPlayer",
+          "playMethod": "directPlay",
+          "connectionAddressKind": "privateIP"
+        }
+      ],
+      "observedSeekOperations": 2,
+      "lastInBatchOrSingleSeeks": [
+        {
+          "operation": 1,
+          "engine": "KSPlayer",
+          "targetSeconds": 213.068,
+          "completionMs": 154.672,
+          "internalClockRecoveryMs": 647.0,
+          "recoveryCensored": false
+        },
+        {
+          "operation": 2,
+          "engine": "KSPlayer",
+          "targetSeconds": 210.524,
+          "completionMs": 42.564,
+          "internalClockRecoveryMs": 568.0,
+          "recoveryCensored": false
+        }
+      ],
+      "networkTimingMs": {
+        "lastRequestEndToFirstByteMs": {
+          "n": 8,
+          "median": 21.0,
+          "max": 47.0
+        },
+        "lastFetchToRequestMs": {
+          "n": 8,
+          "median": 2.5,
+          "max": 109.0
+        },
+        "upstreamCancelToCallbackMs": {
+          "n": 6,
+          "median": 0.0,
+          "max": 0.0
+        },
+        "proxyBackpressureMs": {
+          "n": 8,
+          "median": 0.0,
+          "max": 30738.0
+        }
+      },
+      "receivedBodyWindowMbps": {
+        "min": 8.663608,
+        "max": 62.022691,
+        "meaning": "bits per second in data-bearing windows, excludes silent waits"
+      }
+    },
+    {
+      "window": "jf-cellular-1",
+      "startedAt": "2026-10-25T12:16:26.844087+08:00",
+      "finishedAt": "2026-10-25T12:17:42.111480+08:00",
+      "entry": "Jellyfin",
+      "sample": "S19",
+      "PlayCommands": 0,
+      "normalReturn": false,
+      "wifiChanged": false,
+      "wifiRestored": true,
+      "failure": "timeout",
+      "originalNetworkSelected": true,
+      "finalSettingsMatch": true,
+      "mainSHA256": "d1e2aed691409851d541e98acb5b745c2079a109d09b8341e5b655f201fe07d8"
+    },
+    {
+      "window": "jf-cellular-2",
+      "startedAt": "2026-10-25T12:21:00.161076+08:00",
+      "finishedAt": "2026-10-25T12:21:57.583301+08:00",
+      "entry": "Jellyfin",
+      "sample": "S19",
+      "PlayCommands": 1,
+      "normalReturn": false,
+      "wifiChanged": true,
+      "wifiRestored": true,
+      "failure": "AssertionError",
+      "originalNetworkSelected": true,
+      "finalSettingsMatch": true,
+      "mainSHA256": "d1e2aed691409851d541e98acb5b745c2079a109d09b8341e5b655f201fe07d8",
+      "completedURLMetrics": 9,
+      "cellularYes": 9,
+      "cellularNo": 0,
+      "scopeMetrics": [
+        {
+          "scope": "not instrumented",
+          "reused": "no",
+          "count": 1
+        },
+        {
+          "scope": "not instrumented",
+          "reused": "yes",
+          "count": 8
+        }
+      ],
+      "routes": [
+        {
+          "t": 5.211,
+          "routeKind": "localRangeProxy",
+          "decodeEngine": "ksPlayer",
+          "playMethod": "directPlay",
+          "connectionAddressKind": "publicDomain"
+        },
+        {
+          "t": 18.405,
+          "routeKind": "localHLS",
+          "decodeEngine": "systemAVPlayer",
+          "playMethod": "localRemux",
+          "connectionAddressKind": "publicDomain"
+        }
+      ],
+      "observedSeekOperations": 0,
+      "lastInBatchOrSingleSeeks": [],
+      "networkTimingMs": {
+        "lastRequestEndToFirstByteMs": {
+          "n": 9,
+          "median": 189.0,
+          "max": 529.0
+        },
+        "lastFetchToRequestMs": {
+          "n": 9,
+          "median": 0.0,
+          "max": 392.0
+        },
+        "upstreamCancelToCallbackMs": {
+          "n": 3,
+          "median": 0.0,
+          "max": 0.0
+        },
+        "proxyBackpressureMs": {
+          "n": 9,
+          "median": 0.0,
+          "max": 0.0
+        }
+      },
+      "receivedBodyWindowMbps": {
+        "min": 10.337755,
+        "max": 31.947331,
+        "meaning": "bits per second in data-bearing windows, excludes silent waits"
+      }
+    },
+    {
+      "window": "jf-cellular-3",
+      "startedAt": "2026-10-25T12:24:11.230198+08:00",
+      "finishedAt": "2026-10-25T12:25:59.568074+08:00",
+      "entry": "Jellyfin",
+      "sample": "S19",
+      "PlayCommands": 1,
+      "normalReturn": true,
+      "wifiChanged": true,
+      "wifiRestored": true,
+      "originalNetworkSelected": true,
+      "finalSettingsMatch": true,
+      "mainSHA256": "d1e2aed691409851d541e98acb5b745c2079a109d09b8341e5b655f201fe07d8",
+      "completedURLMetrics": 25,
+      "cellularYes": 25,
+      "cellularNo": 0,
+      "scopeMetrics": [
+        {
+          "scope": "not instrumented",
+          "reused": "no",
+          "count": 7
+        },
+        {
+          "scope": "not instrumented",
+          "reused": "yes",
+          "count": 18
+        }
+      ],
+      "routes": [
+        {
+          "t": 5.187,
+          "routeKind": "localRangeProxy",
+          "decodeEngine": "ksPlayer",
+          "playMethod": "directPlay",
+          "connectionAddressKind": "publicDomain"
+        },
+        {
+          "t": 23.466,
+          "routeKind": "localHLS",
+          "decodeEngine": "systemAVPlayer",
+          "playMethod": "localRemux",
+          "connectionAddressKind": "publicDomain"
+        }
+      ],
+      "observedSeekOperations": 2,
+      "lastInBatchOrSingleSeeks": [
+        {
+          "operation": 1,
+          "engine": "AVPlayer",
+          "targetSeconds": 9435.500941134,
+          "completionMs": 1592.0,
+          "internalClockRecoveryMs": 2150.0,
+          "recoveryCensored": false
+        },
+        {
+          "operation": 2,
+          "engine": "AVPlayer",
+          "targetSeconds": 9442.024912041,
+          "completionMs": 145.122,
+          "internalClockRecoveryMs": 706.0,
+          "recoveryCensored": false
+        }
+      ],
+      "networkTimingMs": {
+        "lastRequestEndToFirstByteMs": {
+          "n": 25,
+          "median": 164.0,
+          "max": 2566.0
+        },
+        "lastFetchToRequestMs": {
+          "n": 25,
+          "median": 0.0,
+          "max": 434.0
+        },
+        "upstreamCancelToCallbackMs": {
+          "n": 5,
+          "median": 0.0,
+          "max": 1.0
+        },
+        "proxyBackpressureMs": {
+          "n": 25,
+          "median": 0.0,
+          "max": 0.0
+        }
+      },
+      "receivedBodyWindowMbps": {
+        "min": 11.853095,
+        "max": 38.195699,
+        "meaning": "bits per second in data-bearing windows, excludes silent waits"
+      }
+    },
+    {
+      "window": "jf-cellular-pinned-single-1",
+      "startedAt": "2026-10-25T13:09:53.823580+08:00",
+      "finishedAt": "2026-10-25T13:11:49.933575+08:00",
+      "entry": "Jellyfin",
+      "sample": "S19",
+      "PlayCommands": 1,
+      "normalReturn": true,
+      "wifiChanged": true,
+      "wifiRestored": true,
+      "originalNetworkSelected": true,
+      "finalSettingsMatch": true,
+      "mainSHA256": "f453254b97a6e68d0fc3ed790b28049b36492b7c9d57c1bac6f86da41f9c2525",
+      "completedURLMetrics": 28,
+      "cellularYes": 28,
+      "cellularNo": 0,
+      "scopeMetrics": [
+        {
+          "scope": "systemShared",
+          "reused": "yes",
+          "count": 23
+        },
+        {
+          "scope": "pinnedRoute",
+          "reused": "no",
+          "count": 1
+        },
+        {
+          "scope": "pinnedRoute",
+          "reused": "yes",
+          "count": 4
+        }
+      ],
+      "routes": [
+        {
+          "t": 1.368,
+          "routeKind": "localRangeProxy",
+          "decodeEngine": "ksPlayer",
+          "playMethod": "directPlay",
+          "connectionAddressKind": "publicDomain"
+        },
+        {
+          "t": 9.145,
+          "routeKind": "localHLS",
+          "decodeEngine": "systemAVPlayer",
+          "playMethod": "localRemux",
+          "connectionAddressKind": "publicDomain"
+        }
+      ],
+      "observedSeekOperations": 2,
+      "lastInBatchOrSingleSeeks": [
+        {
+          "operation": 1,
+          "engine": "AVPlayer",
+          "targetSeconds": 9499.547207347,
+          "completionMs": 1002.262,
+          "internalClockRecoveryMs": 1543.0,
+          "recoveryCensored": false
+        },
+        {
+          "operation": 2,
+          "engine": "AVPlayer",
+          "targetSeconds": 9508.501070801,
+          "completionMs": 154.988,
+          "internalClockRecoveryMs": 733.0,
+          "recoveryCensored": false
+        }
+      ],
+      "networkTimingMs": {
+        "lastRequestEndToFirstByteMs": {
+          "n": 28,
+          "median": 149.0,
+          "max": 3038.0
+        },
+        "lastFetchToRequestMs": {
+          "n": 28,
+          "median": 0.0,
+          "max": 117.0
+        },
+        "upstreamCancelToCallbackMs": {
+          "n": 5,
+          "median": 0.0,
+          "max": 1.0
+        },
+        "proxyBackpressureMs": {
+          "n": 28,
+          "median": 0.0,
+          "max": 0.0
+        }
+      },
+      "receivedBodyWindowMbps": {
+        "min": 19.374167,
+        "max": 44.484251,
+        "meaning": "bits per second in data-bearing windows, excludes silent waits"
+      },
+      "reportedScopeAtCompletionReliable": false,
+      "correctedScopeMetricsFromRequestIssued": [
+        {
+          "scope": "systemShared",
+          "reused": "yes",
+          "count": 27
+        },
+        {
+          "scope": "systemShared",
+          "reused": "no",
+          "count": 1
+        }
+      ],
+      "scopeMismatches": 5,
+      "scopeCorrectionUnmatchedMetrics": 0
+    },
+    {
+      "window": "jf-wifi-s01-1",
+      "startedAt": "2026-10-25T13:14:49.933942+08:00",
+      "finishedAt": "2026-10-25T13:16:15.376123+08:00",
+      "entry": "Jellyfin",
+      "sample": "S01",
+      "PlayCommands": 1,
+      "normalReturn": true,
+      "wifiChanged": false,
+      "wifiRestored": true,
+      "originalNetworkSelected": true,
+      "finalSettingsMatch": true,
+      "networkCondition": "original Wi-Fi",
+      "mainSHA256": "f453254b97a6e68d0fc3ed790b28049b36492b7c9d57c1bac6f86da41f9c2525",
+      "completedURLMetrics": 8,
+      "cellularYes": 0,
+      "cellularNo": 8,
+      "scopeMetrics": [
+        {
+          "scope": "pinnedRoute",
+          "reused": "no",
+          "count": 4
+        },
+        {
+          "scope": "systemShared",
+          "reused": "no",
+          "count": 2
+        },
+        {
+          "scope": "pinnedRoute",
+          "reused": "yes",
+          "count": 2
+        }
+      ],
+      "routes": [
+        {
+          "t": 1.266,
+          "routeKind": "localRangeProxy",
+          "decodeEngine": "ksPlayer",
+          "playMethod": "directPlay",
+          "connectionAddressKind": "privateIP"
+        }
+      ],
+      "observedSeekOperations": 2,
+      "lastInBatchOrSingleSeeks": [
+        {
+          "operation": 1,
+          "engine": "KSPlayer",
+          "targetSeconds": 819.308,
+          "completionMs": 37.438,
+          "internalClockRecoveryMs": 645.0,
+          "recoveryCensored": false
+        },
+        {
+          "operation": 2,
+          "engine": "KSPlayer",
+          "targetSeconds": 817.532,
+          "completionMs": 41.645,
+          "internalClockRecoveryMs": 544.0,
+          "recoveryCensored": false
+        }
+      ],
+      "networkTimingMs": {
+        "lastRequestEndToFirstByteMs": {
+          "n": 8,
+          "median": 26.5,
+          "max": 40.0
+        },
+        "lastFetchToRequestMs": {
+          "n": 8,
+          "median": 2.5,
+          "max": 12.0
+        },
+        "upstreamCancelToCallbackMs": {
+          "n": 6,
+          "median": 0.0,
+          "max": 0.0
+        },
+        "proxyBackpressureMs": {
+          "n": 8,
+          "median": 0.0,
+          "max": 30503.0
+        }
+      },
+      "receivedBodyWindowMbps": {
+        "min": 7.97426,
+        "max": 7.97426,
+        "meaning": "bits per second in data-bearing windows, excludes silent waits"
+      }
+    }
+  ],
+  "acceptance": {
+    "scopedConnectionReuseObserved": true,
+    "sustainedKBpsIssueReproduced": false,
+    "fullPerformanceFixAccepted": false,
+    "strictMatchedEntryPerformanceComparison": false,
+    "ReleaseAccepted": false,
+    "audio": "not listened",
+    "frameTiming": "not measured",
+    "openRequirements": 28,
+    "matrixCells": 114,
+    "iPhone18": "away, installation paused",
+    "TV": "no mobile transport source change compiled into TV"
+  },
+  "ipadRegression": {
+    "Jellyfin": {
+      "sample": "S01",
+      "PlayCommands": 1,
+      "normalReturn": true,
+      "startedAt": "2026-10-25T13:08:46.980109+08:00",
+      "finishedAt": "2026-10-25T13:09:33.956762+08:00",
+      "failure": null
+    },
+    "files": {
+      "sample": "S01",
+      "PlayCommands": 1,
+      "normalReturn": true,
+      "startedAt": "2026-10-25T13:13:50.632468+08:00",
+      "finishedAt": "2026-10-25T13:14:25.066358+08:00",
+      "failure": null
+    },
+    "presentation": "Actual 30-second movie pixels inspected, remains desktop floating presentation; fullscreen control parity not accepted"
+  },
+  "ipadCleanup": {
+    "at": "2026-10-25T13:14:50.993892+08:00",
+    "settingsRestored": true,
+    "changedKeys": [
+      "playback.localResume.v1",
+      "diagnostics.entries.v1"
+    ],
+    "onlyNaturalPlaybackDiagnosticChanges": true
+  },
+  "ipadRunner": {
+    "startedAt": "2026-10-25T13:07:11.236408+08:00",
+    "limitSeconds": 900,
+    "runnerStopped": true,
+    "finishedAt": "2026-10-25T13:14:58.267547+08:00"
+  },
+  "lateKSSeekCapacitySignals": {
+    "seekOperation": 40,
+    "engineCompletionMs": 4040.14,
+    "internalClockRecoveryMs": 9443.0,
+    "targetSeconds": 67.851,
+    "samples": [
+      {
+        "sinceRequestMs": "4286.619375110604",
+        "phase": "waiting",
+        "seekGeneration": "41",
+        "bufferTargetSeconds": "1.0",
+        "loadedSeconds": "0.0",
+        "videoFrames": "0",
+        "videoPackets": "0",
+        "videoLoadedSeconds": "0.0",
+        "videoSeekSinceFlushMs": "250.99966663401574",
+        "videoSeekFirstCallbackMs": null,
+        "videoSeekFirstAcceptedMs": null,
+        "videoSeekDiscardedBeforeTarget": "0",
+        "videoSeekQueueSpanSeconds": null,
+        "videoSeekQueueUnionSeconds": null,
+        "videoSeekProbeTargetMatchesRequest": "true"
+      },
+      {
+        "sinceRequestMs": "4842.434250051156",
+        "phase": "waiting",
+        "seekGeneration": "41",
+        "bufferTargetSeconds": "1.0",
+        "loadedSeconds": "0.0",
+        "videoFrames": "0",
+        "videoPackets": "0",
+        "videoLoadedSeconds": "0.0",
+        "videoSeekSinceFlushMs": "806.8145415745676",
+        "videoSeekFirstCallbackMs": null,
+        "videoSeekFirstAcceptedMs": null,
+        "videoSeekDiscardedBeforeTarget": "0",
+        "videoSeekQueueSpanSeconds": null,
+        "videoSeekQueueUnionSeconds": null,
+        "videoSeekProbeTargetMatchesRequest": "true"
+      },
+      {
+        "sinceRequestMs": "5386.238958337344",
+        "phase": "waiting",
+        "seekGeneration": "41",
+        "bufferTargetSeconds": "1.0",
+        "loadedSeconds": "0.0",
+        "videoFrames": "0",
+        "videoPackets": "0",
+        "videoLoadedSeconds": "0.0",
+        "videoSeekSinceFlushMs": "1350.619249860756",
+        "videoSeekFirstCallbackMs": "1301.5008750371635",
+        "videoSeekFirstAcceptedMs": null,
+        "videoSeekDiscardedBeforeTarget": "1",
+        "videoSeekQueueSpanSeconds": null,
+        "videoSeekQueueUnionSeconds": null,
+        "videoSeekProbeTargetMatchesRequest": "true"
+      },
+      {
+        "sinceRequestMs": "5886.445208336227",
+        "phase": "waiting",
+        "seekGeneration": "41",
+        "bufferTargetSeconds": "1.0",
+        "loadedSeconds": "0.0",
+        "videoFrames": "0",
+        "videoPackets": "0",
+        "videoLoadedSeconds": "0.0",
+        "videoSeekSinceFlushMs": "1850.8254998596385",
+        "videoSeekFirstCallbackMs": "1301.5008750371635",
+        "videoSeekFirstAcceptedMs": null,
+        "videoSeekDiscardedBeforeTarget": "6",
+        "videoSeekQueueSpanSeconds": null,
+        "videoSeekQueueUnionSeconds": null,
+        "videoSeekProbeTargetMatchesRequest": "true"
+      },
+      {
+        "sinceRequestMs": "6387.7953334013",
+        "phase": "waiting",
+        "seekGeneration": "41",
+        "bufferTargetSeconds": "1.0",
+        "loadedSeconds": "0.20854166099856314",
+        "videoFrames": "5",
+        "videoPackets": "0",
+        "videoLoadedSeconds": "0.20854166099856314",
+        "videoSeekSinceFlushMs": "2352.175624924712",
+        "videoSeekFirstCallbackMs": "1301.5008750371635",
+        "videoSeekFirstAcceptedMs": "1931.4749166369438",
+        "videoSeekDiscardedBeforeTarget": "6",
+        "videoSeekQueueSpanSeconds": "0.2079999999999984",
+        "videoSeekQueueUnionSeconds": "0.2049999999999983",
+        "videoSeekProbeTargetMatchesRequest": "true"
+      },
+      {
+        "sinceRequestMs": "6936.598791740835",
+        "phase": "waiting",
+        "seekGeneration": "41",
+        "bufferTargetSeconds": "1.0",
+        "loadedSeconds": "0.3753749897974136",
+        "videoFrames": "9",
+        "videoPackets": "0",
+        "videoLoadedSeconds": "0.3753749897974136",
+        "videoSeekSinceFlushMs": "2900.9790832642466",
+        "videoSeekFirstCallbackMs": "1301.5008750371635",
+        "videoSeekFirstAcceptedMs": "1931.4749166369438",
+        "videoSeekDiscardedBeforeTarget": "6",
+        "videoSeekQueueSpanSeconds": "0.3739999999999952",
+        "videoSeekQueueUnionSeconds": "0.36899999999998556",
+        "videoSeekProbeTargetMatchesRequest": "true"
+      },
+      {
+        "sinceRequestMs": "7436.693958356045",
+        "phase": "waiting",
+        "seekGeneration": "41",
+        "bufferTargetSeconds": "1.0",
+        "loadedSeconds": "0.5839166507959768",
+        "videoFrames": "14",
+        "videoPackets": "0",
+        "videoLoadedSeconds": "0.5839166507959768",
+        "videoSeekSinceFlushMs": "3401.074249879457",
+        "videoSeekFirstCallbackMs": "1301.5008750371635",
+        "videoSeekFirstAcceptedMs": "1931.4749166369438",
+        "videoSeekDiscardedBeforeTarget": "6",
+        "videoSeekQueueSpanSeconds": "0.5829999999999984",
+        "videoSeekQueueUnionSeconds": "0.5739999999999696",
+        "videoSeekProbeTargetMatchesRequest": "true"
+      },
+      {
+        "sinceRequestMs": "7986.660791677423",
+        "phase": "waiting",
+        "seekGeneration": "41",
+        "bufferTargetSeconds": "1.0",
+        "loadedSeconds": "0.7090416473951147",
+        "videoFrames": "16",
+        "videoPackets": "1",
+        "videoLoadedSeconds": "0.7090416473951147",
+        "videoSeekSinceFlushMs": "3951.0410832008347",
+        "videoSeekFirstCallbackMs": "1301.5008750371635",
+        "videoSeekFirstAcceptedMs": "1931.4749166369438",
+        "videoSeekDiscardedBeforeTarget": "6",
+        "videoSeekQueueSpanSeconds": "0.6659999999999968",
+        "videoSeekQueueUnionSeconds": "0.6559999999999633",
+        "videoSeekProbeTargetMatchesRequest": "true"
+      },
+      {
+        "sinceRequestMs": "8494.422916672193",
+        "phase": "waiting",
+        "seekGeneration": "41",
+        "bufferTargetSeconds": "1.0",
+        "loadedSeconds": "0.8758749761939651",
+        "videoFrames": "16",
+        "videoPackets": "5",
+        "videoLoadedSeconds": "0.8758749761939651",
+        "videoSeekSinceFlushMs": "4458.803208195604",
+        "videoSeekFirstCallbackMs": "1301.5008750371635",
+        "videoSeekFirstAcceptedMs": "1931.4749166369438",
+        "videoSeekDiscardedBeforeTarget": "6",
+        "videoSeekQueueSpanSeconds": "0.6659999999999968",
+        "videoSeekQueueUnionSeconds": "0.6559999999999633",
+        "videoSeekProbeTargetMatchesRequest": "true"
+      },
+      {
+        "sinceRequestMs": "9036.367875058204",
+        "phase": "waiting",
+        "seekGeneration": "41",
+        "bufferTargetSeconds": "1.0",
+        "loadedSeconds": "0.9175833083936777",
+        "videoFrames": "16",
+        "videoPackets": "6",
+        "videoLoadedSeconds": "0.9175833083936777",
+        "videoSeekSinceFlushMs": "5000.748166581616",
+        "videoSeekFirstCallbackMs": "1301.5008750371635",
+        "videoSeekFirstAcceptedMs": "1931.4749166369438",
+        "videoSeekDiscardedBeforeTarget": "6",
+        "videoSeekQueueSpanSeconds": "0.6659999999999968",
+        "videoSeekQueueUnionSeconds": "0.6559999999999633",
+        "videoSeekProbeTargetMatchesRequest": "true"
+      },
+      {
+        "sinceRequestMs": "9186.48820836097",
+        "phase": "playable",
+        "seekGeneration": "41",
+        "bufferTargetSeconds": "1.0",
+        "loadedSeconds": "1.000999972793103",
+        "videoFrames": "16",
+        "videoPackets": "8",
+        "videoLoadedSeconds": "1.000999972793103",
+        "videoSeekSinceFlushMs": "5150.868499884382",
+        "videoSeekFirstCallbackMs": "1301.5008750371635",
+        "videoSeekFirstAcceptedMs": "1931.4749166369438",
+        "videoSeekDiscardedBeforeTarget": "6",
+        "videoSeekQueueSpanSeconds": "0.6659999999999968",
+        "videoSeekQueueUnionSeconds": "0.6559999999999633",
+        "videoSeekProbeTargetMatchesRequest": "true"
+      }
+    ],
+    "scope": "capacity signals, not presentation proof; no general root-cause acceptance"
+  },
+  "limitations": [
+    "Default subtitle selection and timeline position differ across entry windows; no ranking.",
+    "Engine clock/capacity timings are not visible frame recovery or audible output.",
+    "Two unsupported deep-seek UI inputs and all tool/restore failures retained.",
+    "S03/S08/S11/S18 format families, concurrency, ten-minute windows, full SUB/AUD/HDR/PiP remain open.",
+    "No NAS/VPN/cellular-data/credential changes. Original Wi-Fi native selection and icon restored."
+  ],
+  "finalAudit": {
+    "at": "2026-10-25T13:24:41.238218+08:00",
+    "compiledInputDrift": 0,
+    "iPhone13ChangedPreferenceKeys": [
+      "playback.localResume.v1",
+      "diagnostics.entries.v1"
+    ],
+    "onlyNaturalPlaybackAndDiagnosticsChanged": true,
+    "iPhone13OriginalWiFiSelected": true,
+    "iPhone13RunnerOwnership": "preexisting unknown; not started/stopped; global settings unchanged",
+    "iPadOwnedRunnerStopped": true,
+    "noOwnMediaActive": true
+  },
+  "transportScopeCorrection": {
+    "date": "2026-10-25T13:38:40.559120+08:00",
+    "source": "2026-10-25-transport-scope-correction.json",
+    "historicalScopeMetricsRetained": true,
+    "cause": "optional session identity comparison after finish released references",
+    "reusedMetricAndPlaybackTimingUnaffected": true
+  }
+}

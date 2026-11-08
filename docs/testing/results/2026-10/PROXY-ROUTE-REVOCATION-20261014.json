@@ -1,0 +1,1994 @@
+{
+  "date": "2026-10-14",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceDiffSHA256": "24007d408f33389955233b4e13e284f919690e58a6b81828fd91d4b31c013676",
+  "buildConfiguration": "normal Debug -Onone; empty launch environment",
+  "buildTime": "2026-10-14T02:29:13.376617+08:00",
+  "binaries": {
+    "Nastart": "739a065d9572e6ca23a55e8ff3e58e06c1fad49deab09880c0e86f5c6447f09e",
+    "Nastart.debug.dylib": "42d569022f6d1587593278b8fe9d8771ddd67bde672e0d2db890725e7f1a5a27",
+    "Frameworks/KSPlayer.framework/KSPlayer": "691afae0a0b9f8870c472449a808530a7a940331cd55d09a95d9fc7f1d37a1d4"
+  },
+  "sourceInputsVerified": 173,
+  "librariesIndividuallySignatureVerified": 29,
+  "unitTests": {
+    "executed": 371,
+    "skipped": 2,
+    "failures": 0,
+    "runThisTurn": true
+  },
+  "preflight": {
+    "passed": 15,
+    "runThisTurn": true
+  },
+  "controlledOldBehaviourNegative": {
+    "tests": 1,
+    "failures": 2,
+    "unexpected": 1,
+    "durationSeconds": 5.744,
+    "retained": true
+  },
+  "newTargetedTestDurationSeconds": 0.066,
+  "sourceChanges": {
+    "changedSourceInputs": [
+      "ios/Nastart/Nastart/Features/Devices/DevicesView.swift",
+      "ios/Nastart/NastartTests/PlaybackNextCoreTests.swift"
+    ],
+    "otherSourceInputsUnchanged": true
+  },
+  "installs": {
+    "iphone13": {
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "connection": "USB",
+      "sourceDiffSHA256": "24007d408f33389955233b4e13e284f919690e58a6b81828fd91d4b31c013676",
+      "binaries": {
+        "Nastart": "739a065d9572e6ca23a55e8ff3e58e06c1fad49deab09880c0e86f5c6447f09e",
+        "Nastart.debug.dylib": "42d569022f6d1587593278b8fe9d8771ddd67bde672e0d2db890725e7f1a5a27",
+        "Frameworks/KSPlayer.framework/KSPlayer": "691afae0a0b9f8870c472449a808530a7a940331cd55d09a95d9fc7f1d37a1d4"
+      },
+      "preservesContainer": true,
+      "signatureVerified": true,
+      "installation": "success",
+      "actualForegroundUIVerified": true,
+      "installedAt": "2026-10-14T02:30:59.913976+08:00",
+      "preferenceValuesUnchanged": true,
+      "nonDiagnosticKeys": 25
+    },
+    "ipad": {
+      "model": "iPad12,1",
+      "system": "18.3.1",
+      "connection": "USB",
+      "sourceDiffSHA256": "24007d408f33389955233b4e13e284f919690e58a6b81828fd91d4b31c013676",
+      "binaries": {
+        "Nastart": "739a065d9572e6ca23a55e8ff3e58e06c1fad49deab09880c0e86f5c6447f09e",
+        "Nastart.debug.dylib": "42d569022f6d1587593278b8fe9d8771ddd67bde672e0d2db890725e7f1a5a27",
+        "Frameworks/KSPlayer.framework/KSPlayer": "691afae0a0b9f8870c472449a808530a7a940331cd55d09a95d9fc7f1d37a1d4"
+      },
+      "preservesContainer": true,
+      "signatureVerified": true,
+      "installation": "success",
+      "actualForegroundUIVerified": true,
+      "installedAt": "2026-10-14T02:31:11.472801+08:00",
+      "preferenceValuesUnchanged": true,
+      "nonDiagnosticKeys": 18
+    },
+    "iphone18": {
+      "model": "iPhone19,7",
+      "system": "27.0",
+      "connection": "NETWORK",
+      "sourceDiffSHA256": "24007d408f33389955233b4e13e284f919690e58a6b81828fd91d4b31c013676",
+      "binaries": {
+        "Nastart": "739a065d9572e6ca23a55e8ff3e58e06c1fad49deab09880c0e86f5c6447f09e",
+        "Nastart.debug.dylib": "42d569022f6d1587593278b8fe9d8771ddd67bde672e0d2db890725e7f1a5a27",
+        "Frameworks/KSPlayer.framework/KSPlayer": "691afae0a0b9f8870c472449a808530a7a940331cd55d09a95d9fc7f1d37a1d4"
+      },
+      "preservesContainer": true,
+      "signatureVerified": true,
+      "installation": "BLOCKED before observed InstallComplete",
+      "actualForegroundUIVerified": false,
+      "primaryFailureStage": "AFC create PublicStaging before upload",
+      "IPAUploaded": false,
+      "InstallCommandSent": false,
+      "InstallCompleteObserved": false
+    }
+  },
+  "cellularWindows": [
+    {
+      "device": "iphone13",
+      "sampleFamily": "S11",
+      "entry": "Jellyfin",
+      "startupAction": "在 Nastart 中播放",
+      "sourceDiffSHA256": "24007d408f33389955233b4e13e284f919690e58a6b81828fd91d4b31c013676",
+      "networkIntent": "real cellular WiFi off; no shaping",
+      "URLMetricsCount": 41,
+      "URLMetricsCellularYes": 41,
+      "URLMetricsCellularNo": 0,
+      "seeks": [
+        {
+          "start": {
+            "secondsFromTouch": 225.516523,
+            "event": "seek_started",
+            "fields": {
+              "engine": "AVPlayer",
+              "seekDeltaSeconds": 15,
+              "seekTargetSeconds": 234.001170665
+            }
+          },
+          "signals": [
+            {
+              "secondsFromTouch": 227.017075,
+              "event": "seek_engine_completed",
+              "fields": {
+                "engine": "AVPlayer",
+                "targetSeconds": 234.001170665
+              }
+            },
+            {
+              "secondsFromTouch": 227.67471,
+              "event": "seek_recovered",
+              "fields": {
+                "currentSeconds": 234.501125179,
+                "engine": "AVPlayer",
+                "evidence": "engineCompletionAndAdvancingClock",
+                "seekRecoveryMs": 2106,
+                "seekTargetSeconds": 234.001170665
+              }
+            }
+          ],
+          "recoveryMs": 2106,
+          "censoredAfterSeconds": null,
+          "meaning": "engine completion and advancing clock, not first visible frame"
+        },
+        {
+          "start": {
+            "secondsFromTouch": 247.130349,
+            "event": "seek_started",
+            "fields": {
+              "engine": "AVPlayer",
+              "seekDeltaSeconds": -15,
+              "seekTargetSeconds": 238.507693233
+            }
+          },
+          "signals": [
+            {
+              "secondsFromTouch": 247.302845,
+              "event": "seek_engine_completed",
+              "fields": {
+                "engine": "AVPlayer",
+                "targetSeconds": 238.507693233
+              }
+            },
+            {
+              "secondsFromTouch": 247.839184,
+              "event": "seek_recovered",
+              "fields": {
+                "currentSeconds": 239.001094505,
+                "engine": "AVPlayer",
+                "evidence": "engineCompletionAndAdvancingClock",
+                "seekRecoveryMs": 730,
+                "seekTargetSeconds": 238.507693233
+              }
+            }
+          ],
+          "recoveryMs": 730,
+          "censoredAfterSeconds": null,
+          "meaning": "engine completion and advancing clock, not first visible frame"
+        }
+      ],
+      "maxStallCount": 2,
+      "windowEndSeconds": 285.14092111587524,
+      "performanceAccepted": false,
+      "firstFrameSignals": [
+        {
+          "secondsFromTouch": 5.825629,
+          "event": "first_frame",
+          "fields": {
+            "firstFramePositionSeconds": 0.137,
+            "tapToFirstFrameMs": 1376
+          }
+        },
+        {
+          "secondsFromTouch": 217.680509,
+          "event": "first_frame",
+          "fields": {
+            "firstFramePositionSeconds": 211.5,
+            "tapToFirstFrameMs": 12318
+          }
+        }
+      ],
+      "replacementStages": [
+        {
+          "secondsFromTouch": 201.184203,
+          "event": "automatic_downshift_requested",
+          "fields": {
+            "attempt": 1,
+            "bufferTargetSeconds": 4,
+            "bufferedAheadSeconds": 12.198541334515795,
+            "deliveryCapacity": 3539016,
+            "engine": "KSPlayer",
+            "reason": "deliveryBelowSourceBitrate",
+            "runtimeDemand": 13223512
+          }
+        },
+        {
+          "secondsFromTouch": 205.402127,
+          "event": "replacement_warmup_started",
+          "fields": {
+            "engine": "KSPlayer"
+          }
+        },
+        {
+          "secondsFromTouch": 217.07948,
+          "event": "replacement_committed",
+          "fields": {
+            "candidateBufferAheadSeconds": 1.0185428617777745,
+            "candidateSeconds": 211.110034916,
+            "engine": "KSPlayer",
+            "seconds": 211.124
+          }
+        }
+      ],
+      "actualImages": {
+        "sourceDiffSHA256": "24007d408f33389955233b4e13e284f919690e58a6b81828fd91d4b31c013676",
+        "actualImagesReviewed": [
+          "t3",
+          "t10",
+          "t30",
+          "forward-t3",
+          "forward-t20",
+          "backward-t3",
+          "backward-t20",
+          "closed"
+        ],
+        "observed": "t3 detail; t10 black clock00:04; t30 title; later downshift to AVPlayer, forward/backward actual movie+Chinese subtitles; ordinary detail exit",
+        "performanceAccepted": false
+      },
+      "differentEnginePlaybackTimesAndCacheFromBaseline": true
+    },
+    {
+      "device": "iphone13",
+      "sampleFamily": "S03",
+      "entry": "Jellyfin",
+      "startupAction": "在 Nastart 中播放",
+      "sourceDiffSHA256": "24007d408f33389955233b4e13e284f919690e58a6b81828fd91d4b31c013676",
+      "networkIntent": "real cellular WiFi off; no shaping",
+      "URLMetricsCount": 74,
+      "URLMetricsCellularYes": 74,
+      "URLMetricsCellularNo": 0,
+      "seeks": [
+        {
+          "start": {
+            "secondsFromTouch": 208.737121,
+            "event": "seek_started",
+            "fields": {
+              "engine": "AVPlayer",
+              "seekDeltaSeconds": 15,
+              "seekTargetSeconds": 185.016058567
+            }
+          },
+          "signals": [
+            {
+              "secondsFromTouch": 208.89761,
+              "event": "seek_engine_completed",
+              "fields": {
+                "engine": "AVPlayer",
+                "targetSeconds": 185.016058567
+              }
+            },
+            {
+              "secondsFromTouch": 209.459576,
+              "event": "seek_recovered",
+              "fields": {
+                "currentSeconds": 185.501083965,
+                "engine": "AVPlayer",
+                "evidence": "engineCompletionAndAdvancingClock",
+                "seekRecoveryMs": 734,
+                "seekTargetSeconds": 185.016058567
+              }
+            }
+          ],
+          "recoveryMs": 734,
+          "censoredAfterSeconds": null,
+          "meaning": "engine completion and advancing clock, not first visible frame"
+        },
+        {
+          "start": {
+            "secondsFromTouch": 230.888446,
+            "event": "seek_started",
+            "fields": {
+              "engine": "AVPlayer",
+              "seekDeltaSeconds": -15,
+              "seekTargetSeconds": 191.500128961
+            }
+          },
+          "signals": [
+            {
+              "secondsFromTouch": 231.022475,
+              "event": "seek_engine_completed",
+              "fields": {
+                "engine": "AVPlayer",
+                "targetSeconds": 191.500128961
+              }
+            },
+            {
+              "secondsFromTouch": 231.652502,
+              "event": "seek_recovered",
+              "fields": {
+                "currentSeconds": 192.001098524,
+                "engine": "AVPlayer",
+                "evidence": "engineCompletionAndAdvancingClock",
+                "seekRecoveryMs": 721,
+                "seekTargetSeconds": 191.500128961
+              }
+            }
+          ],
+          "recoveryMs": 721,
+          "censoredAfterSeconds": null,
+          "meaning": "engine completion and advancing clock, not first visible frame"
+        }
+      ],
+      "maxStallCount": 3,
+      "windowEndSeconds": 269.12561321258545,
+      "performanceAccepted": false,
+      "firstFrameSignals": [
+        {
+          "secondsFromTouch": 6.273509,
+          "event": "first_frame",
+          "fields": {
+            "firstFramePositionSeconds": 0.137,
+            "tapToFirstFrameMs": 1920
+          }
+        },
+        {
+          "secondsFromTouch": 94.436653,
+          "event": "first_frame",
+          "fields": {
+            "firstFramePositionSeconds": 56.017,
+            "tapToFirstFrameMs": 32228
+          }
+        }
+      ],
+      "replacementStages": [
+        {
+          "secondsFromTouch": 9.696111,
+          "event": "automatic_downshift_requested",
+          "fields": {
+            "attempt": 1,
+            "bufferTargetSeconds": 4,
+            "bufferedAheadSeconds": 6.631624819754308,
+            "deliveryCapacity": 25197319,
+            "engine": "KSPlayer",
+            "reason": "deliveryBelowSourceBitrate",
+            "runtimeDemand": 2882874
+          }
+        },
+        {
+          "secondsFromTouch": 57.591689,
+          "event": "automatic_downshift_requested",
+          "fields": {
+            "attempt": 2,
+            "bufferTargetSeconds": 4,
+            "bufferedAheadSeconds": 1.7517499523879323,
+            "deliveryCapacity": 20117714,
+            "engine": "KSPlayer",
+            "reason": "sustainedRebuffering",
+            "runtimeDemand": 62656467
+          }
+        },
+        {
+          "secondsFromTouch": 62.246541,
+          "event": "replacement_warmup_started",
+          "fields": {
+            "engine": "KSPlayer"
+          }
+        },
+        {
+          "secondsFromTouch": 93.73745,
+          "event": "replacement_committed",
+          "fields": {
+            "candidateBufferAheadSeconds": 4.501577777777776,
+            "candidateSeconds": 55.475,
+            "engine": "KSPlayer",
+            "seconds": 55.476
+          }
+        }
+      ],
+      "actualImages": {
+        "sourceDiffSHA256": "24007d408f33389955233b4e13e284f919690e58a6b81828fd91d4b31c013676",
+        "actualImagesReviewed": [
+          "t3",
+          "t10",
+          "t30",
+          "forward-t3",
+          "forward-t20",
+          "backward-t3",
+          "backward-t20",
+          "closed",
+          "failure"
+        ],
+        "observed": "head actual movie; first controls TOOL during actual spinner; original fault and crash pull retained; native element click restored controls later AVPlayer, forward/backward actual movie+subtitles; ordinary detail exit",
+        "performanceAccepted": false
+      },
+      "differentEnginePlaybackTimesAndCacheFromBaseline": true
+    }
+  ],
+  "routeRevocationProof": [
+    {
+      "sample": "S11",
+      "revokedRouteFinishes": [
+        {
+          "secondsFromTouch": 217.080466,
+          "event": "proxy_transfer_finished",
+          "fields": {
+            "hlsRole": "-",
+            "proxyKind": "mediaRange",
+            "segmentOrdinal": "-",
+            "upstreamTaskIndex": "17",
+            "status": "206",
+            "errorCode": "-999",
+            "durationMs": "212148",
+            "deliveredBytes": "553483974",
+            "expectedBytes": "33554432",
+            "taskReceivedBytes": "16613062",
+            "finishSource": "routeRevoked",
+            "transferID": "I1",
+            "playlistChildID": "I2",
+            "playbackTraceID": "I3"
+          }
+        }
+      ],
+      "matchingCancellationRequests": [
+        {
+          "secondsFromTouch": 217.080709,
+          "event": "proxy_transfer_finished",
+          "fields": {
+            "stage": "upstreamCancellationRequested",
+            "hlsRole": "-",
+            "proxyKind": "mediaRange",
+            "segmentOrdinal": "-",
+            "upstreamTaskIndex": "17",
+            "transferID": "I1",
+            "playlistChildID": "I2",
+            "playbackTraceID": "I3"
+          },
+          "secondsAfterRevokedFinish": 0.000243
+        }
+      ],
+      "seekHLSRequestsByAction": [
+        16,
+        0
+      ],
+      "HLSURLMetricsByAction": [
+        15,
+        1
+      ],
+      "safeChronologyContainsOnlyAliasedIdentity": true,
+      "NASCeasedTransferConfirmed": false
+    },
+    {
+      "sample": "S03",
+      "revokedRouteFinishes": [
+        {
+          "secondsFromTouch": 93.74487,
+          "event": "proxy_transfer_finished",
+          "fields": {
+            "hlsRole": "-",
+            "proxyKind": "mediaRange",
+            "segmentOrdinal": "-",
+            "upstreamTaskIndex": "7",
+            "status": "206",
+            "errorCode": "-999",
+            "durationMs": "88155",
+            "deliveredBytes": "227741382",
+            "expectedBytes": "33554432",
+            "taskReceivedBytes": "26414790",
+            "finishSource": "routeRevoked",
+            "transferID": "I5",
+            "playlistChildID": "I2",
+            "playbackTraceID": "I3"
+          }
+        }
+      ],
+      "matchingCancellationRequests": [
+        {
+          "secondsFromTouch": 93.745134,
+          "event": "proxy_transfer_finished",
+          "fields": {
+            "stage": "upstreamCancellationRequested",
+            "hlsRole": "-",
+            "proxyKind": "mediaRange",
+            "segmentOrdinal": "-",
+            "upstreamTaskIndex": "7",
+            "transferID": "I5",
+            "playlistChildID": "I2",
+            "playbackTraceID": "I3"
+          },
+          "secondsAfterRevokedFinish": 0.000264
+        }
+      ],
+      "seekHLSRequestsByAction": [
+        0,
+        0
+      ],
+      "HLSURLMetricsByAction": [
+        0,
+        0
+      ],
+      "safeChronologyContainsOnlyAliasedIdentity": true,
+      "NASCeasedTransferConfirmed": false
+    }
+  ],
+  "representativeWiFiWindows": [
+    {
+      "device": "iphone13",
+      "sample": "S01",
+      "entry": "device file",
+      "startupAction": "从头播放",
+      "ordinaryExit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "observedSnapshots": {
+        "actualImagesReviewed": [
+          "t3",
+          "t10",
+          "t30",
+          "closed"
+        ],
+        "observed": "t3/t10 studio title; t30 sky real movie; ordinary preview/detail exit",
+        "performanceAccepted": false
+      },
+      "firstFrameSignals": [
+        {
+          "secondsFromTouch": 1.584318,
+          "event": "first_frame",
+          "fields": {
+            "firstFramePositionSeconds": 0.137,
+            "tapToFirstFrameMs": 972
+          }
+        }
+      ],
+      "URLMetricsCount": 2,
+      "URLMetricsCellularYes": 0,
+      "URLMetricsCellularNo": 2,
+      "maxStallCount": 0,
+      "windowEndSeconds": 30.26038384437561,
+      "sourceDiffSHA256": "24007d408f33389955233b4e13e284f919690e58a6b81828fd91d4b31c013676",
+      "performanceAccepted": false,
+      "fullL2Accepted": false
+    },
+    {
+      "device": "iphone13",
+      "sample": "S01",
+      "entry": "Jellyfin",
+      "startupAction": "在 Nastart 中播放",
+      "ordinaryExit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "observedSnapshots": {
+        "actualImagesReviewed": [
+          "t3",
+          "t10",
+          "t30",
+          "closed"
+        ],
+        "observed": "t3/t10 studio title; t30 sky real movie; ordinary preview/detail exit",
+        "performanceAccepted": false
+      },
+      "firstFrameSignals": [
+        {
+          "secondsFromTouch": 0.914783,
+          "event": "first_frame",
+          "fields": {
+            "firstFramePositionSeconds": 0.052,
+            "tapToFirstFrameMs": 562
+          }
+        }
+      ],
+      "URLMetricsCount": 2,
+      "URLMetricsCellularYes": 0,
+      "URLMetricsCellularNo": 2,
+      "maxStallCount": 0,
+      "windowEndSeconds": 30.466477155685425,
+      "sourceDiffSHA256": "24007d408f33389955233b4e13e284f919690e58a6b81828fd91d4b31c013676",
+      "performanceAccepted": false,
+      "fullL2Accepted": false
+    },
+    {
+      "device": "iphone13",
+      "sample": "S03",
+      "entry": "device file",
+      "startupAction": "从头播放",
+      "ordinaryExit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "observedSnapshots": {
+        "actualImagesReviewed": [
+          "t3",
+          "t10",
+          "t30",
+          "closed"
+        ],
+        "observed": "t3 preparation preview; t10 studio stars scene; t30 Paramount title; ordinary preview exit",
+        "performanceAccepted": false
+      },
+      "firstFrameSignals": [
+        {
+          "secondsFromTouch": 6.104674,
+          "event": "first_frame",
+          "fields": {
+            "firstFramePositionSeconds": 0.116,
+            "tapToFirstFrameMs": 770
+          }
+        }
+      ],
+      "URLMetricsCount": 5,
+      "URLMetricsCellularYes": 0,
+      "URLMetricsCellularNo": 5,
+      "maxStallCount": 0,
+      "windowEndSeconds": 30.27512001991272,
+      "sourceDiffSHA256": "24007d408f33389955233b4e13e284f919690e58a6b81828fd91d4b31c013676",
+      "performanceAccepted": false,
+      "fullL2Accepted": false
+    },
+    {
+      "device": "iphone13",
+      "sample": "S03",
+      "entry": "Jellyfin",
+      "startupAction": "在 Nastart 中播放",
+      "ordinaryExit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "observedSnapshots": {
+        "actualImagesReviewed": [
+          "t3",
+          "t10",
+          "t30",
+          "closed"
+        ],
+        "observed": "t3 black clock00:01; t10 studio star close-up; t30 Cruise/Wagner title; ordinary detail exit",
+        "performanceAccepted": false
+      },
+      "firstFrameSignals": [
+        {
+          "secondsFromTouch": 1.412011,
+          "event": "first_frame",
+          "fields": {
+            "firstFramePositionSeconds": 0.051,
+            "tapToFirstFrameMs": 990
+          }
+        }
+      ],
+      "URLMetricsCount": 5,
+      "URLMetricsCellularYes": 0,
+      "URLMetricsCellularNo": 5,
+      "maxStallCount": 0,
+      "windowEndSeconds": 30.313371181488037,
+      "sourceDiffSHA256": "24007d408f33389955233b4e13e284f919690e58a6b81828fd91d4b31c013676",
+      "performanceAccepted": false,
+      "fullL2Accepted": false
+    },
+    {
+      "device": "iphone13",
+      "sample": "S08",
+      "entry": "device file",
+      "startupAction": "从头播放",
+      "ordinaryExit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "observedSnapshots": {
+        "actualImagesReviewed": [
+          "t3",
+          "t10",
+          "t30",
+          "closed"
+        ],
+        "observed": "t3 black spinner00:00; t10 black; t30 actual movie, normal preview/detail exit",
+        "performanceAccepted": false
+      },
+      "firstFrameSignals": [
+        {
+          "secondsFromTouch": 3.496479,
+          "event": "first_frame",
+          "fields": {
+            "firstFramePositionSeconds": 0.051,
+            "tapToFirstFrameMs": 3270
+          }
+        }
+      ],
+      "URLMetricsCount": 2,
+      "URLMetricsCellularYes": 0,
+      "URLMetricsCellularNo": 2,
+      "maxStallCount": 0,
+      "windowEndSeconds": 30.413981914520264,
+      "sourceDiffSHA256": "24007d408f33389955233b4e13e284f919690e58a6b81828fd91d4b31c013676",
+      "performanceAccepted": false,
+      "fullL2Accepted": false
+    },
+    {
+      "device": "iphone13",
+      "sample": "S08",
+      "entry": "Jellyfin",
+      "startupAction": "在 Nastart 中播放",
+      "ordinaryExit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "observedSnapshots": {
+        "actualImagesReviewed": [
+          "t3",
+          "t10",
+          "t30",
+          "closed"
+        ],
+        "observed": "t3 black spinner00:00; t10 black; t30 actual movie, normal preview/detail exit",
+        "performanceAccepted": false
+      },
+      "firstFrameSignals": [
+        {
+          "secondsFromTouch": 3.695785,
+          "event": "first_frame",
+          "fields": {
+            "firstFramePositionSeconds": 0.115,
+            "tapToFirstFrameMs": 3300
+          }
+        }
+      ],
+      "URLMetricsCount": 2,
+      "URLMetricsCellularYes": 0,
+      "URLMetricsCellularNo": 2,
+      "maxStallCount": 0,
+      "windowEndSeconds": 30.488624811172485,
+      "sourceDiffSHA256": "24007d408f33389955233b4e13e284f919690e58a6b81828fd91d4b31c013676",
+      "performanceAccepted": false,
+      "fullL2Accepted": false
+    },
+    {
+      "device": "iphone13",
+      "sample": "S11",
+      "entry": "device file",
+      "startupAction": "从头播放",
+      "ordinaryExit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "observedSnapshots": {
+        "actualImagesReviewed": [
+          "t3",
+          "t10",
+          "t30",
+          "closed"
+        ],
+        "observed": "t3 black clock00:00; t10 studio logo; t30 moving title close-up; ordinary preview/detail exit",
+        "performanceAccepted": false
+      },
+      "firstFrameSignals": [
+        {
+          "secondsFromTouch": 2.480539,
+          "event": "first_frame",
+          "fields": {
+            "firstFramePositionSeconds": 0.222,
+            "tapToFirstFrameMs": 800
+          }
+        }
+      ],
+      "URLMetricsCount": 3,
+      "URLMetricsCellularYes": 0,
+      "URLMetricsCellularNo": 3,
+      "maxStallCount": 0,
+      "windowEndSeconds": 30.48240828514099,
+      "sourceDiffSHA256": "24007d408f33389955233b4e13e284f919690e58a6b81828fd91d4b31c013676",
+      "performanceAccepted": false,
+      "fullL2Accepted": false
+    },
+    {
+      "device": "iphone13",
+      "sample": "S11",
+      "entry": "Jellyfin",
+      "startupAction": "在 Nastart 中播放",
+      "ordinaryExit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "observedSnapshots": {
+        "actualImagesReviewed": [
+          "t3",
+          "t10",
+          "t30",
+          "closed"
+        ],
+        "observed": "t3 black clock00:00; t10 studio logo; t30 moving title close-up; ordinary preview/detail exit",
+        "performanceAccepted": false
+      },
+      "firstFrameSignals": [
+        {
+          "secondsFromTouch": 1.1786,
+          "event": "first_frame",
+          "fields": {
+            "firstFramePositionSeconds": 0.051,
+            "tapToFirstFrameMs": 749
+          }
+        }
+      ],
+      "URLMetricsCount": 3,
+      "URLMetricsCellularYes": 0,
+      "URLMetricsCellularNo": 3,
+      "maxStallCount": 0,
+      "windowEndSeconds": 30.542325973510742,
+      "sourceDiffSHA256": "24007d408f33389955233b4e13e284f919690e58a6b81828fd91d4b31c013676",
+      "performanceAccepted": false,
+      "fullL2Accepted": false
+    },
+    {
+      "device": "iphone13",
+      "sample": "S18",
+      "entry": "device file",
+      "startupAction": "从头播放",
+      "ordinaryExit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "observedSnapshots": {
+        "actualImagesReviewed": [
+          "t3",
+          "t10",
+          "t30",
+          "closed"
+        ],
+        "observed": "t3 black clock00:00; t10 blue/red studio logo; t30 Jet Li opening credits; normal preview/detail exit",
+        "performanceAccepted": false
+      },
+      "firstFrameSignals": [
+        {
+          "secondsFromTouch": 2.605255,
+          "event": "first_frame",
+          "fields": {
+            "firstFramePositionSeconds": 0.094,
+            "tapToFirstFrameMs": 2371
+          }
+        }
+      ],
+      "URLMetricsCount": 4,
+      "URLMetricsCellularYes": 0,
+      "URLMetricsCellularNo": 4,
+      "maxStallCount": 0,
+      "windowEndSeconds": 30.286881923675537,
+      "sourceDiffSHA256": "24007d408f33389955233b4e13e284f919690e58a6b81828fd91d4b31c013676",
+      "performanceAccepted": false,
+      "fullL2Accepted": false
+    },
+    {
+      "device": "iphone13",
+      "sample": "S18",
+      "entry": "Jellyfin",
+      "startupAction": "在 Nastart 中播放",
+      "ordinaryExit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "observedSnapshots": {
+        "actualImagesReviewed": [
+          "t3",
+          "t10",
+          "t30",
+          "closed"
+        ],
+        "observed": "t3 black clock00:00; t10 blue/red studio logo; t30 Jet Li opening credits; normal preview/detail exit",
+        "performanceAccepted": false
+      },
+      "firstFrameSignals": [
+        {
+          "secondsFromTouch": 2.723652,
+          "event": "first_frame",
+          "fields": {
+            "firstFramePositionSeconds": 0.073,
+            "tapToFirstFrameMs": 2328
+          }
+        }
+      ],
+      "URLMetricsCount": 4,
+      "URLMetricsCellularYes": 0,
+      "URLMetricsCellularNo": 4,
+      "maxStallCount": 0,
+      "windowEndSeconds": 30.358161211013794,
+      "sourceDiffSHA256": "24007d408f33389955233b4e13e284f919690e58a6b81828fd91d4b31c013676",
+      "performanceAccepted": false,
+      "fullL2Accepted": false
+    },
+    {
+      "device": "ipad",
+      "sample": "S01",
+      "entry": "device file",
+      "startupAction": "从头播放",
+      "ordinaryExit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "observedSnapshots": {
+        "actualImagesReviewed": [
+          "t3",
+          "t10",
+          "t30",
+          "closed"
+        ],
+        "observed": "t3 black spinner00:00; t10 studio title; t30 actual sky; ordinary preview exit",
+        "performanceAccepted": false
+      },
+      "firstFrameSignals": [
+        {
+          "secondsFromTouch": 3.419715,
+          "event": "first_frame",
+          "fields": {
+            "firstFramePositionSeconds": 0.176,
+            "tapToFirstFrameMs": 2971
+          }
+        }
+      ],
+      "URLMetricsCount": 2,
+      "URLMetricsCellularYes": 0,
+      "URLMetricsCellularNo": 2,
+      "maxStallCount": 0,
+      "windowEndSeconds": 30.352685689926147,
+      "sourceDiffSHA256": "24007d408f33389955233b4e13e284f919690e58a6b81828fd91d4b31c013676",
+      "performanceAccepted": false,
+      "fullL2Accepted": false
+    },
+    {
+      "device": "ipad",
+      "sample": "S01",
+      "entry": "Jellyfin",
+      "startupAction": "在 Nastart 中播放",
+      "ordinaryExit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "observedSnapshots": {
+        "actualImagesReviewed": [
+          "t3",
+          "t10",
+          "t30",
+          "closed"
+        ],
+        "observed": "t3/t10 studio title; t30 actual sky; ordinary detail exit",
+        "performanceAccepted": false
+      },
+      "firstFrameSignals": [
+        {
+          "secondsFromTouch": 1.478145,
+          "event": "first_frame",
+          "fields": {
+            "firstFramePositionSeconds": 0.133,
+            "tapToFirstFrameMs": 827
+          }
+        }
+      ],
+      "URLMetricsCount": 2,
+      "URLMetricsCellularYes": 0,
+      "URLMetricsCellularNo": 2,
+      "maxStallCount": 0,
+      "windowEndSeconds": 30.50426697731018,
+      "sourceDiffSHA256": "24007d408f33389955233b4e13e284f919690e58a6b81828fd91d4b31c013676",
+      "performanceAccepted": false,
+      "fullL2Accepted": false
+    },
+    {
+      "device": "ipad",
+      "sample": "S03",
+      "entry": "device file",
+      "startupAction": "从头播放",
+      "ordinaryExit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "observedSnapshots": {
+        "actualImagesReviewed": [
+          "t3",
+          "t10",
+          "t30",
+          "closed"
+        ],
+        "observed": "t3 dark clock00:00; t10 studio stars/clouds; t30 Cruise/Wagner title; ordinary preview/detail exit; file t3 transient left rotated status text retained",
+        "performanceAccepted": false
+      },
+      "firstFrameSignals": [
+        {
+          "secondsFromTouch": 3.317286,
+          "event": "first_frame",
+          "fields": {
+            "firstFramePositionSeconds": 0.315,
+            "tapToFirstFrameMs": 1519
+          }
+        }
+      ],
+      "URLMetricsCount": 5,
+      "URLMetricsCellularYes": 0,
+      "URLMetricsCellularNo": 5,
+      "maxStallCount": 0,
+      "windowEndSeconds": 30.325467824935913,
+      "sourceDiffSHA256": "24007d408f33389955233b4e13e284f919690e58a6b81828fd91d4b31c013676",
+      "performanceAccepted": false,
+      "fullL2Accepted": false
+    },
+    {
+      "device": "ipad",
+      "sample": "S03",
+      "entry": "Jellyfin",
+      "startupAction": "在 Nastart 中播放",
+      "ordinaryExit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "observedSnapshots": {
+        "actualImagesReviewed": [
+          "t3",
+          "t10",
+          "t30",
+          "closed"
+        ],
+        "observed": "t3 dark clock00:00; t10 studio stars/clouds; t30 Cruise/Wagner title; ordinary preview/detail exit; file t3 transient left rotated status text retained",
+        "performanceAccepted": false
+      },
+      "firstFrameSignals": [
+        {
+          "secondsFromTouch": 2.554046,
+          "event": "first_frame",
+          "fields": {
+            "firstFramePositionSeconds": 0.411,
+            "tapToFirstFrameMs": 1885
+          }
+        }
+      ],
+      "URLMetricsCount": 4,
+      "URLMetricsCellularYes": 0,
+      "URLMetricsCellularNo": 4,
+      "maxStallCount": 0,
+      "windowEndSeconds": 30.63111925125122,
+      "sourceDiffSHA256": "24007d408f33389955233b4e13e284f919690e58a6b81828fd91d4b31c013676",
+      "performanceAccepted": false,
+      "fullL2Accepted": false
+    },
+    {
+      "device": "ipad",
+      "sample": "S08",
+      "entry": "device file",
+      "startupAction": "从头播放",
+      "ordinaryExit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "observedSnapshots": {
+        "actualImagesReviewed": [
+          "t3",
+          "t10",
+          "t30",
+          "closed"
+        ],
+        "observed": "t3 black spinner00:00; t10 black, file contains Chinese/English subtitle; t30 actual movie; ordinary preview/detail exit; black alone not a startup failure",
+        "performanceAccepted": false
+      },
+      "firstFrameSignals": [
+        {
+          "secondsFromTouch": 4.823769,
+          "event": "first_frame",
+          "fields": {
+            "firstFramePositionSeconds": 0.08,
+            "tapToFirstFrameMs": 4383
+          }
+        }
+      ],
+      "URLMetricsCount": 2,
+      "URLMetricsCellularYes": 0,
+      "URLMetricsCellularNo": 2,
+      "maxStallCount": 0,
+      "windowEndSeconds": 30.602931022644043,
+      "sourceDiffSHA256": "24007d408f33389955233b4e13e284f919690e58a6b81828fd91d4b31c013676",
+      "performanceAccepted": false,
+      "fullL2Accepted": false
+    },
+    {
+      "device": "ipad",
+      "sample": "S08",
+      "entry": "Jellyfin",
+      "startupAction": "在 Nastart 中播放",
+      "ordinaryExit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "observedSnapshots": {
+        "actualImagesReviewed": [
+          "t3",
+          "t10",
+          "t30",
+          "closed"
+        ],
+        "observed": "t3 black spinner00:00; t10 black, file contains Chinese/English subtitle; t30 actual movie; ordinary preview/detail exit; black alone not a startup failure",
+        "performanceAccepted": false
+      },
+      "firstFrameSignals": [
+        {
+          "secondsFromTouch": 5.378577,
+          "event": "first_frame",
+          "fields": {
+            "firstFramePositionSeconds": 0.059,
+            "tapToFirstFrameMs": 4762
+          }
+        }
+      ],
+      "URLMetricsCount": 2,
+      "URLMetricsCellularYes": 0,
+      "URLMetricsCellularNo": 2,
+      "maxStallCount": 0,
+      "windowEndSeconds": 30.868741035461426,
+      "sourceDiffSHA256": "24007d408f33389955233b4e13e284f919690e58a6b81828fd91d4b31c013676",
+      "performanceAccepted": false,
+      "fullL2Accepted": false
+    },
+    {
+      "device": "ipad",
+      "sample": "S11",
+      "entry": "device file",
+      "startupAction": "从头播放",
+      "ordinaryExit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "observedSnapshots": {
+        "actualImagesReviewed": [
+          "t3",
+          "t10",
+          "t30",
+          "closed"
+        ],
+        "observed": "t3 dark clock00:00; t10 moving studio logo; t30 title close-up; ordinary preview/detail exit",
+        "performanceAccepted": false
+      },
+      "firstFrameSignals": [
+        {
+          "secondsFromTouch": 2.989573,
+          "event": "first_frame",
+          "fields": {
+            "firstFramePositionSeconds": 0.474,
+            "tapToFirstFrameMs": 1270
+          }
+        }
+      ],
+      "URLMetricsCount": 3,
+      "URLMetricsCellularYes": 0,
+      "URLMetricsCellularNo": 3,
+      "maxStallCount": 0,
+      "windowEndSeconds": 30.772577047348022,
+      "sourceDiffSHA256": "24007d408f33389955233b4e13e284f919690e58a6b81828fd91d4b31c013676",
+      "performanceAccepted": false,
+      "fullL2Accepted": false
+    },
+    {
+      "device": "ipad",
+      "sample": "S11",
+      "entry": "Jellyfin",
+      "startupAction": "在 Nastart 中播放",
+      "ordinaryExit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "observedSnapshots": {
+        "actualImagesReviewed": [
+          "t3",
+          "t10",
+          "t30",
+          "closed"
+        ],
+        "observed": "t3 dark clock00:00; t10 moving studio logo; t30 title close-up; ordinary preview/detail exit",
+        "performanceAccepted": false
+      },
+      "firstFrameSignals": [
+        {
+          "secondsFromTouch": 2.052758,
+          "event": "first_frame",
+          "fields": {
+            "firstFramePositionSeconds": 0.272,
+            "tapToFirstFrameMs": 1367
+          }
+        }
+      ],
+      "URLMetricsCount": 3,
+      "URLMetricsCellularYes": 0,
+      "URLMetricsCellularNo": 3,
+      "maxStallCount": 0,
+      "windowEndSeconds": 30.886922121047974,
+      "sourceDiffSHA256": "24007d408f33389955233b4e13e284f919690e58a6b81828fd91d4b31c013676",
+      "performanceAccepted": false,
+      "fullL2Accepted": false
+    },
+    {
+      "device": "ipad",
+      "sample": "S18",
+      "entry": "device file",
+      "startupAction": "从头播放",
+      "ordinaryExit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "observedSnapshots": {
+        "actualImagesReviewed": [
+          "t3",
+          "t10",
+          "t30",
+          "closed"
+        ],
+        "observed": "t3 black spinner00:00; t10 blue/red studio logo; t30 Jet Li opening credits; ordinary preview/detail exit",
+        "performanceAccepted": false
+      },
+      "firstFrameSignals": [
+        {
+          "secondsFromTouch": 3.246508,
+          "event": "first_frame",
+          "fields": {
+            "firstFramePositionSeconds": 0.175,
+            "tapToFirstFrameMs": 2824
+          }
+        }
+      ],
+      "URLMetricsCount": 4,
+      "URLMetricsCellularYes": 0,
+      "URLMetricsCellularNo": 4,
+      "maxStallCount": 0,
+      "windowEndSeconds": 30.41745090484619,
+      "sourceDiffSHA256": "24007d408f33389955233b4e13e284f919690e58a6b81828fd91d4b31c013676",
+      "performanceAccepted": false,
+      "fullL2Accepted": false
+    },
+    {
+      "device": "ipad",
+      "sample": "S18",
+      "entry": "Jellyfin",
+      "startupAction": "在 Nastart 中播放",
+      "ordinaryExit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "observedSnapshots": {
+        "actualImagesReviewed": [
+          "t3",
+          "t10",
+          "t30",
+          "closed"
+        ],
+        "observed": "t3 black spinner00:00; t10 blue/red studio logo; t30 Jet Li opening credits; ordinary preview/detail exit",
+        "performanceAccepted": false
+      },
+      "firstFrameSignals": [
+        {
+          "secondsFromTouch": 3.275919,
+          "event": "first_frame",
+          "fields": {
+            "firstFramePositionSeconds": 0.101,
+            "tapToFirstFrameMs": 2713
+          }
+        }
+      ],
+      "URLMetricsCount": 4,
+      "URLMetricsCellularYes": 0,
+      "URLMetricsCellularNo": 4,
+      "maxStallCount": 0,
+      "windowEndSeconds": 30.751494884490967,
+      "sourceDiffSHA256": "24007d408f33389955233b4e13e284f919690e58a6b81828fd91d4b31c013676",
+      "performanceAccepted": false,
+      "fullL2Accepted": false
+    }
+  ],
+  "candidateCaptureAuth": {
+    "iphone13": {
+      "uniqueCapturedEventsAfterLatestInstall": 4065,
+      "api119": 0,
+      "logout": 0,
+      "rollingFinalZeroDoesNotEraseEarlierFailures": true,
+      "historicalFailuresStillOpen": true,
+      "reportHTTPAccepted": 93,
+      "reportFailures": 0,
+      "ownSessionFallbackPositiveRows": 15
+    },
+    "ipad": {
+      "uniqueCapturedEventsAfterLatestInstall": 2685,
+      "api119": 0,
+      "logout": 0,
+      "rollingFinalZeroDoesNotEraseEarlierFailures": true,
+      "historicalFailuresStillOpen": true,
+      "reportHTTPAccepted": 56,
+      "reportFailures": 0,
+      "ownSessionFallbackPositiveRows": 0
+    }
+  },
+  "finalAudit": {
+    "sourceInputsVerified": 173,
+    "binaryHashesVerified": true,
+    "deepSignatureVerified": true,
+    "devices": {
+      "iphone13": {
+        "at": "2026-10-14T03:16:26.831145+08:00",
+        "model": "iPhone14,5",
+        "system": "16.3.1",
+        "connection": "USB",
+        "sourceDiffSHA256": "24007d408f33389955233b4e13e284f919690e58a6b81828fd91d4b31c013676",
+        "latestPackage": {
+          "Nastart": "739a065d9572e6ca23a55e8ff3e58e06c1fad49deab09880c0e86f5c6447f09e",
+          "Nastart.debug.dylib": "42d569022f6d1587593278b8fe9d8771ddd67bde672e0d2db890725e7f1a5a27",
+          "Frameworks/KSPlayer.framework/KSPlayer": "691afae0a0b9f8870c472449a808530a7a940331cd55d09a95d9fc7f1d37a1d4"
+        },
+        "nonBookmarkPreferenceKeys": 24,
+        "nonBookmarkPreferencesExactlyUnchanged": true,
+        "changedBookmarksCount": 10,
+        "originalS03TrackChanges": {
+          "file": {},
+          "Jellyfin": {}
+        },
+        "originalS03FileAndJellyfinTracksUnchanged": true,
+        "normalEmptyEnvironment": true,
+        "NASNormal": true,
+        "playerClosed": true,
+        "finalHomeScreenshotReviewed": true,
+        "WDAIdleSeconds": 10,
+        "WDAAnimationCoolOffSeconds": 2,
+        "crashInventoryNotCheckedThisTurn": false,
+        "baselineAppCrashRecordedThisTurn": false,
+        "reviewedFinalCapture": "final-home-after-cellular",
+        "historicalIPhone13NetworkCrashUnresolved": true,
+        "candidateCrashInventoryDelta": {
+          "Nastart": 0,
+          "WebDriverAgent": 0,
+          "JetsamEvent": 0
+        },
+        "performanceAccepted": false,
+        "fullSubtitleAudioHDRAccepted": false
+      },
+      "ipad": {
+        "at": "2026-10-14T03:16:27.638636+08:00",
+        "model": "iPad12,1",
+        "system": "18.3.1",
+        "connection": "USB",
+        "sourceDiffSHA256": "24007d408f33389955233b4e13e284f919690e58a6b81828fd91d4b31c013676",
+        "latestPackage": {
+          "Nastart": "739a065d9572e6ca23a55e8ff3e58e06c1fad49deab09880c0e86f5c6447f09e",
+          "Nastart.debug.dylib": "42d569022f6d1587593278b8fe9d8771ddd67bde672e0d2db890725e7f1a5a27",
+          "Frameworks/KSPlayer.framework/KSPlayer": "691afae0a0b9f8870c472449a808530a7a940331cd55d09a95d9fc7f1d37a1d4"
+        },
+        "nonBookmarkPreferenceKeys": 17,
+        "nonBookmarkPreferencesExactlyUnchanged": true,
+        "changedBookmarksCount": 10,
+        "originalS03TrackChanges": {
+          "file": {},
+          "Jellyfin": {}
+        },
+        "originalS03FileAndJellyfinTracksUnchanged": true,
+        "normalEmptyEnvironment": true,
+        "NASNormal": true,
+        "playerClosed": true,
+        "finalHomeScreenshotReviewed": true,
+        "WDAIdleSeconds": 10,
+        "WDAAnimationCoolOffSeconds": 2,
+        "crashInventoryNotCheckedThisTurn": false,
+        "baselineAppCrashRecordedThisTurn": false,
+        "reviewedFinalCapture": "final-restored-home",
+        "historicalIPhone13NetworkCrashUnresolved": true,
+        "candidateCrashInventoryDelta": {
+          "Nastart": 0,
+          "WebDriverAgent": 0,
+          "JetsamEvent": 0
+        },
+        "performanceAccepted": false,
+        "fullSubtitleAudioHDRAccepted": false
+      }
+    }
+  },
+  "knownToolFailuresRetained": [
+    "baseline pre-play metadata absent; WiFi restored; not App failure",
+    "S03 first control reveal failed during observed spinner; actual report pull retained; later native element click recovered control and successful seeks in same player"
+  ],
+  "scopeLimits": [
+    "30-second sparse screenshots are not continuous presentation/frame-time/visible-first-frame or heard-audio proof",
+    "S11 and S03 later seeks used AVPlayer after automatic replacement, not like-for-like initial KSPlayer baseline speed acceptance",
+    "NAS cessation of traffic not proved by task cancellation request",
+    "cold cellular without RAM primary identity, abrupt-loss/cellular durable resume, other-source resume, deep S19 and ten-minute pressure remain unaccepted",
+    "historical API119, Pad TS02, iPhone13 Network physical-footprint, growing TS, rotation, SUB/AUD/HDR/PiP, competitor full-frame and all matrices/backlog remain open",
+    "latest candidate not installed iPhone18"
+  ],
+  "coldResumeS03": {
+    "device": "ipad",
+    "sample": "S03",
+    "entry": "Jellyfin",
+    "sourceDiffSHA256": "24007d408f33389955233b4e13e284f919690e58a6b81828fd91d4b31c013676",
+    "requestedNativeSliderRatio": 0.2,
+    "midpointLocalSavedSeconds": 1545.217,
+    "coldStartInitialSeconds": 1545.0789999999997,
+    "sameCanonicalKeyBeforeMidpointAfterExitBeforeColdAndAfterCold": true,
+    "canonicalKeyDefinitionIncludesLibraryServerAccountItemMediaSourceAndSize": true,
+    "coldBeforeSameSavedPosition": true,
+    "absoluteColdStartPositionDeltaSeconds": 0.1380000000003747,
+    "afterColdExitSeconds": 1571.377,
+    "trackSelectionUnchanged": true,
+    "normalColdLaunchEmptyEnvironment": true,
+    "resumeButtonActualScreenshotReviewed": true,
+    "startupAction": "继续观看",
+    "firstFrameSignals": [
+      {
+        "secondsFromTouch": 5.113218,
+        "event": "first_frame",
+        "fields": {
+          "firstFramePositionSeconds": 1545.159,
+          "tapToFirstFrameMs": 4504
+        }
+      }
+    ],
+    "ordinaryExit": {
+      "normalUIExit": true,
+      "playbackErrorVisible": false,
+      "completionMatches": 1,
+      "playerOpened": true
+    },
+    "performanceAccepted": false,
+    "scope": "one normal-exit WiFi cold-resume position check; not cellular, abrupt termination, low percentage policy or full durability"
+  },
+  "initialHLSSegmentWait": {
+    "sample": "S03",
+    "sourceDiffSHA256": "24007d408f33389955233b4e13e284f919690e58a6b81828fd91d4b31c013676",
+    "mediaPlaylistTotalMs": 993,
+    "firstSegmentRows": [
+      {
+        "secondsFromTouch": 63.465428,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "stage": "upstreamRequestIssued",
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": "10",
+          "upstreamTaskIndex": "1",
+          "requestReceivedToIssueMs": "0",
+          "queryBytesBefore": "768",
+          "queryBytesAfter": "768",
+          "playlistQueryCompacted": "false",
+          "transferID": "I10",
+          "playlistChildID": "I11",
+          "playbackTraceID": "I7"
+        }
+      },
+      {
+        "secondsFromTouch": 67.471125,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "stage": "clientReadEnded",
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": "10",
+          "upstreamTaskIndex": "1",
+          "clientReadAfterFinish": "false",
+          "clientReadComplete": "true",
+          "clientReadErrorCode": "unknown",
+          "transferID": "I10",
+          "playlistChildID": "I11",
+          "playbackTraceID": "I7"
+        }
+      },
+      {
+        "secondsFromTouch": 67.474207,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "stage": "upstreamRequestIssued",
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": "10",
+          "upstreamTaskIndex": "1",
+          "requestReceivedToIssueMs": "0",
+          "queryBytesBefore": "768",
+          "queryBytesAfter": "768",
+          "playlistQueryCompacted": "false",
+          "transferID": "I12",
+          "playlistChildID": "I11",
+          "playbackTraceID": "I7"
+        }
+      },
+      {
+        "secondsFromTouch": 77.49236,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "stage": "clientReadEnded",
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": "10",
+          "upstreamTaskIndex": "1",
+          "clientReadAfterFinish": "false",
+          "clientReadComplete": "true",
+          "clientReadErrorCode": "unknown",
+          "transferID": "I12",
+          "playlistChildID": "I11",
+          "playbackTraceID": "I7"
+        }
+      },
+      {
+        "secondsFromTouch": 77.492878,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "stage": "upstreamRequestIssued",
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": "10",
+          "upstreamTaskIndex": "1",
+          "requestReceivedToIssueMs": "0",
+          "queryBytesBefore": "768",
+          "queryBytesAfter": "768",
+          "playlistQueryCompacted": "false",
+          "transferID": "I13",
+          "playlistChildID": "I11",
+          "playbackTraceID": "I7"
+        }
+      },
+      {
+        "secondsFromTouch": 87.407944,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": "10",
+          "upstreamTaskIndex": "1",
+          "status": "200",
+          "contentLength": "723424",
+          "transferID": "I10",
+          "playlistChildID": "I11",
+          "playbackTraceID": "I7"
+        }
+      },
+      {
+        "secondsFromTouch": 87.40838,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": "10",
+          "upstreamTaskIndex": "1",
+          "status": "200",
+          "contentLength": "723424",
+          "transferID": "I12",
+          "playlistChildID": "I11",
+          "playbackTraceID": "I7"
+        }
+      },
+      {
+        "secondsFromTouch": 87.408657,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": "10",
+          "upstreamTaskIndex": "1",
+          "status": "200",
+          "contentLength": "723424",
+          "transferID": "I13",
+          "playlistChildID": "I11",
+          "playbackTraceID": "I7"
+        }
+      },
+      {
+        "secondsFromTouch": 87.409246,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": "10",
+          "upstreamTaskIndex": "1",
+          "status": "200",
+          "errorCode": "0",
+          "durationMs": "23944",
+          "deliveredBytes": "3755",
+          "expectedBytes": "723424",
+          "taskReceivedBytes": "3755",
+          "finishSource": "clientBodySend",
+          "transferID": "I10",
+          "playlistChildID": "I11",
+          "playbackTraceID": "I7"
+        }
+      },
+      {
+        "secondsFromTouch": 87.409941,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "stage": "upstreamCancellationRequested",
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": "10",
+          "upstreamTaskIndex": "1",
+          "transferID": "I10",
+          "playlistChildID": "I11",
+          "playbackTraceID": "I7"
+        }
+      },
+      {
+        "secondsFromTouch": 87.428592,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": "10",
+          "upstreamTaskIndex": "1",
+          "status": "200",
+          "errorCode": "0",
+          "durationMs": "19936",
+          "deliveredBytes": "12046",
+          "expectedBytes": "723424",
+          "taskReceivedBytes": "12046",
+          "finishSource": "clientFailed",
+          "transferID": "I12",
+          "playlistChildID": "I11",
+          "playbackTraceID": "I7"
+        }
+      },
+      {
+        "secondsFromTouch": 87.428883,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "stage": "urlSessionTaskMetrics",
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": "10",
+          "upstreamTaskIndex": "1",
+          "totalMs": "-",
+          "responseMs": "-",
+          "requestMs": "23942",
+          "tcpMs": "-",
+          "tlsMs": "-",
+          "dnsMs": "-",
+          "cellular": "yes",
+          "callbackAfterClientFinish": "true",
+          "upstreamCancellationRequested": "true",
+          "upstreamIssuedToCallbackMs": "23947",
+          "transferID": "I10",
+          "playlistChildID": "I11",
+          "playbackTraceID": "I7"
+        }
+      },
+      {
+        "secondsFromTouch": 87.429181,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "stage": "upstreamCancellationRequested",
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": "10",
+          "upstreamTaskIndex": "1",
+          "transferID": "I12",
+          "playlistChildID": "I11",
+          "playbackTraceID": "I7"
+        }
+      },
+      {
+        "secondsFromTouch": 87.429374,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "stage": "upstreamTaskCompleted",
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": "10",
+          "upstreamTaskIndex": "1",
+          "errorCode": "-999",
+          "expectedBytes": "723424",
+          "taskReceivedBytes": "3755",
+          "callbackAfterClientFinish": "true",
+          "upstreamCancellationRequested": "true",
+          "upstreamIssuedToCallbackMs": "23948",
+          "transferID": "I10",
+          "playlistChildID": "I11",
+          "playbackTraceID": "I7"
+        }
+      },
+      {
+        "secondsFromTouch": 87.429618,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "stage": "urlSessionTaskMetrics",
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": "10",
+          "upstreamTaskIndex": "1",
+          "totalMs": "-",
+          "responseMs": "-",
+          "requestMs": "19930",
+          "tcpMs": "-",
+          "tlsMs": "-",
+          "dnsMs": "-",
+          "cellular": "yes",
+          "callbackAfterClientFinish": "true",
+          "upstreamCancellationRequested": "true",
+          "upstreamIssuedToCallbackMs": "19938",
+          "transferID": "I12",
+          "playlistChildID": "I11",
+          "playbackTraceID": "I7"
+        }
+      },
+      {
+        "secondsFromTouch": 87.429884,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "stage": "upstreamTaskCompleted",
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": "10",
+          "upstreamTaskIndex": "1",
+          "errorCode": "-999",
+          "expectedBytes": "723424",
+          "taskReceivedBytes": "12046",
+          "callbackAfterClientFinish": "true",
+          "upstreamCancellationRequested": "true",
+          "upstreamIssuedToCallbackMs": "19939",
+          "transferID": "I12",
+          "playlistChildID": "I11",
+          "playbackTraceID": "I7"
+        }
+      },
+      {
+        "secondsFromTouch": 87.487198,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "stage": "clientReadEnded",
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": "10",
+          "upstreamTaskIndex": "1",
+          "clientReadAfterFinish": "false",
+          "clientReadComplete": "true",
+          "clientReadErrorCode": "unknown",
+          "transferID": "I13",
+          "playlistChildID": "I11",
+          "playbackTraceID": "I7"
+        }
+      },
+      {
+        "secondsFromTouch": 87.502077,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "stage": "upstreamRequestIssued",
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": "10",
+          "upstreamTaskIndex": "1",
+          "requestReceivedToIssueMs": "0",
+          "queryBytesBefore": "768",
+          "queryBytesAfter": "768",
+          "playlistQueryCompacted": "false",
+          "transferID": "I14",
+          "playlistChildID": "I11",
+          "playbackTraceID": "I7"
+        }
+      },
+      {
+        "secondsFromTouch": 87.770536,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": "10",
+          "upstreamTaskIndex": "1",
+          "status": "200",
+          "errorCode": "0",
+          "durationMs": "10288",
+          "deliveredBytes": "7951",
+          "expectedBytes": "723424",
+          "taskReceivedBytes": "7951",
+          "finishSource": "clientFailed",
+          "transferID": "I13",
+          "playlistChildID": "I11",
+          "playbackTraceID": "I7"
+        }
+      },
+      {
+        "secondsFromTouch": 87.771015,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "stage": "upstreamCancellationRequested",
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": "10",
+          "upstreamTaskIndex": "1",
+          "transferID": "I13",
+          "playlistChildID": "I11",
+          "playbackTraceID": "I7"
+        }
+      },
+      {
+        "secondsFromTouch": 87.777176,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "stage": "urlSessionTaskMetrics",
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": "10",
+          "upstreamTaskIndex": "1",
+          "totalMs": "-",
+          "responseMs": "-",
+          "requestMs": "9922",
+          "tcpMs": "-",
+          "tlsMs": "-",
+          "dnsMs": "-",
+          "cellular": "yes",
+          "callbackAfterClientFinish": "true",
+          "upstreamCancellationRequested": "true",
+          "upstreamIssuedToCallbackMs": "10289",
+          "transferID": "I13",
+          "playlistChildID": "I11",
+          "playbackTraceID": "I7"
+        }
+      },
+      {
+        "secondsFromTouch": 87.777581,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "stage": "upstreamTaskCompleted",
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": "10",
+          "upstreamTaskIndex": "1",
+          "errorCode": "-999",
+          "expectedBytes": "723424",
+          "taskReceivedBytes": "7951",
+          "callbackAfterClientFinish": "true",
+          "upstreamCancellationRequested": "true",
+          "upstreamIssuedToCallbackMs": "10289",
+          "transferID": "I13",
+          "playlistChildID": "I11",
+          "playbackTraceID": "I7"
+        }
+      },
+      {
+        "secondsFromTouch": 88.792782,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": "10",
+          "upstreamTaskIndex": "1",
+          "status": "200",
+          "contentLength": "723424",
+          "transferID": "I14",
+          "playlistChildID": "I11",
+          "playbackTraceID": "I7"
+        }
+      },
+      {
+        "secondsFromTouch": 89.013736,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "stage": "urlSessionTaskMetrics",
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": "10",
+          "upstreamTaskIndex": "1",
+          "totalMs": "1510",
+          "responseMs": "209",
+          "requestMs": "1301",
+          "tcpMs": "-",
+          "tlsMs": "-",
+          "dnsMs": "-",
+          "cellular": "yes",
+          "callbackAfterClientFinish": "false",
+          "upstreamCancellationRequested": "false",
+          "upstreamIssuedToCallbackMs": "1511",
+          "transferID": "I14",
+          "playlistChildID": "I11",
+          "playbackTraceID": "I7"
+        }
+      },
+      {
+        "secondsFromTouch": 89.014089,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "stage": "clientReadEnded",
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": "10",
+          "upstreamTaskIndex": "1",
+          "clientReadAfterFinish": "false",
+          "clientReadComplete": "true",
+          "clientReadErrorCode": "unknown",
+          "transferID": "I14",
+          "playlistChildID": "I11",
+          "playbackTraceID": "I7"
+        }
+      },
+      {
+        "secondsFromTouch": 89.014307,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "stage": "upstreamTaskCompleted",
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": "10",
+          "upstreamTaskIndex": "1",
+          "errorCode": "-",
+          "expectedBytes": "723424",
+          "taskReceivedBytes": "723424",
+          "callbackAfterClientFinish": "false",
+          "upstreamCancellationRequested": "false",
+          "upstreamIssuedToCallbackMs": "1512",
+          "transferID": "I14",
+          "playlistChildID": "I11",
+          "playbackTraceID": "I7"
+        }
+      },
+      {
+        "secondsFromTouch": 89.014534,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": "10",
+          "upstreamTaskIndex": "1",
+          "status": "200",
+          "errorCode": "-",
+          "result": "complete",
+          "durationMs": "1513",
+          "deliveredBytes": "723424",
+          "expectedBytes": "723424",
+          "taskReceivedBytes": "723424",
+          "finishSource": "clientTerminalSend",
+          "transferID": "I14",
+          "playlistChildID": "I11",
+          "playbackTraceID": "I7"
+        }
+      }
+    ],
+    "firstSegmentOriginalIssueSeconds": 63.465428,
+    "firstResponseHeaderSeconds": 87.407944,
+    "firstResponseWaitSeconds": 23.942516,
+    "overlappingOriginalRequestIssuesSeconds": [
+      63.465428,
+      67.474207,
+      77.492878
+    ],
+    "firstCompleteReaderMetricMs": 1510,
+    "currentRootCause": "unproven; requires matching server segment readiness vs transport evidence",
+    "TCPReadFINMustNotBeTreatedAsFullClientCancellation": "existing legitimate write-half-close test remains required; no source changes made"
+  },
+  "latestStartupWindowsCount": 24,
+  "coldResumeScope": "iPad normal exit, WiFi, same canonical selected-source identity; other networks and abrupt termination unaccepted"
+}

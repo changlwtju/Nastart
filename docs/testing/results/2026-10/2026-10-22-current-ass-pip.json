@@ -1,0 +1,107 @@
+{
+  "date": "2026-10-22",
+  "device": "iPhone14,5/iOS16.3.1/USB; name and UDID private",
+  "package": {
+    "build": "05:26 normal Debug/-Onone",
+    "sourceDiffSHA256": "e65a8da17ea0db5e1a22d374c2bb79c5d5d8dd4eb4acb4a5fedd8f3057cbaa16",
+    "ipaSHA256": "45d213bafb07a70a3543980ff961388a817172e7e9176185f67c76fb2b1eaf9b",
+    "freshIdentity173Inputs29SignaturesProfileOwnDeviceReceiptVerified": true,
+    "newBuildsOrInstalls": 0
+  },
+  "mainWindow": {
+    "startedAt": "2026-10-22T06:50:34.101162+08:00",
+    "finishedAt": "2026-10-22T06:52:29.113872+08:00",
+    "environmentReadback": {},
+    "playCommands": 1,
+    "pipCommands": 1,
+    "nativePiPCaptionImagesReviewedAtSeconds": [
+      3,
+      10,
+      30
+    ],
+    "captionSlice": "Chinese and English visible, changing film frames; no later natural cue or full SUB/AUD/frame-time acceptance",
+    "systemChromeRevealCommands": 1,
+    "systemPauseCommands": 0,
+    "systemResumeCommands": 0,
+    "systemRestoreCommands": 0,
+    "preservedFailure": "Pause control not exposed after one current-rect reveal; no replay, no cause attribution",
+    "cleanupTrackRestore": "App foreground guard rejected while system target remained active; original track not yet restored at this intermediate point",
+    "nativeAppAbsent": true,
+    "ownedLoggerGuardianStopped": true,
+    "reportNameInventoryDelta": {
+      "Nastart": 0,
+      "WebDriverAgent": 0,
+      "JetsamEvent": 0
+    }
+  },
+  "necessaryOriginalTrackRecovery": {
+    "startedAt": "2026-10-22T06:55:50.393515+08:00",
+    "finishedAt": "2026-10-22T06:56:45.075257+08:00",
+    "environmentReadback": {},
+    "playCommands": 1,
+    "pipCommands": 0,
+    "explicitOriginalPGSDetailChoice": true,
+    "normalPlayerCloseObserved": true,
+    "directPreferenceWrites": 0,
+    "purpose": "restore original PGS7 after ASS5 test, not candidate replay or acceptance"
+  },
+  "combinedFinalPreferences": {
+    "nonBookmarkPreferencesUnchangedFromMainStart": true,
+    "originalBookmarkCount": 36,
+    "originalTrackChanges": 0,
+    "bookmarkAdditions": 0,
+    "bookmarkRemovals": 0,
+    "progressChanges": 1,
+    "at": "2026-10-22T06:57:54.350494+08:00"
+  },
+  "finalAudit": {
+    "at": "2026-10-22T06:57:21.713660+08:00",
+    "sourceInputs": 173,
+    "sourceAndPackageUnchanged": true,
+    "sourceDiffSHA256": "e65a8da17ea0db5e1a22d374c2bb79c5d5d8dd4eb4acb4a5fedd8f3057cbaa16",
+    "ipaSHA256": "45d213bafb07a70a3543980ff961388a817172e7e9176185f67c76fb2b1eaf9b",
+    "allBinariesAnd29LibrariesVerified": true,
+    "profileValid": true,
+    "freshUSBIdentityVerified": true,
+    "WDAAutoIdle10CoolOff2ReadbackVerified": true,
+    "ownedPlaybackOrBuildProcessesRemaining": 0,
+    "nativeAppAbsent": true,
+    "all25PreferencesUnchangedSinceWindowEnd": true,
+    "bookmarksUnchangedSinceWindowEnd": true,
+    "networkChanged": false,
+    "mediaPlayCommands": 0,
+    "newCrashReportNamesCollected": true,
+    "NASOnlineHomeVerifiedInPriorStartupWindow": true,
+    "nativeHomeWiFiNoPiPVisuallyReviewed": true
+  },
+  "unchangedBoundaries": [
+    "28 requirements remain open",
+    "no iPhone18 operation; user deferred",
+    "no App/WDA source edit or test rerun",
+    "no network/cellular/VPN/credential changes",
+    "old PGS candidate failures and old ASS roundtrip retained; not inherited as current roundtrip success"
+  ],
+  "privateEvidencePointer": "/tmp/nastart-ass-pip-current-evidence",
+  "offlineControlComparison": {
+    "revealFunctionASTMatchesHistoricalSuccess": true,
+    "bothWindowsPointSize": [
+      246,
+      138
+    ],
+    "currentX": 134,
+    "historicalX": 124,
+    "bothUsedOwnFreshRectCenter": true,
+    "historicalPostRevealControls": [
+      "close",
+      "restore",
+      "pause"
+    ],
+    "currentPostRevealControls": [],
+    "currentPostRevealNativeImageAvailable": false,
+    "fileTimeIntervalsNotInputLatencySeconds": {
+      "current": 1.690938,
+      "historical": 1.8574
+    },
+    "cause": "unknown; no App change, added wait, repeat media or timing claim justified"
+  }
+}

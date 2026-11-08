@@ -50,13 +50,16 @@ enum KSVideoPlayerViewBuilder {
                 config.playerLayer?.player.select(track: info)
             }
         }) {
-            Text("Off").tag(nil as String?)
+            Text("关闭字幕").tag(nil as String?)
             ForEach(config.subtitleModel.subtitleInfos, id: \.subtitleID) { track in
                 Text(track.name).tag(track.subtitleID as String?)
             }
         } label: {
             Image(systemName: "text.bubble.fill")
         }
+        .accessibilityLabel("字幕")
+        .accessibilityValue(config.subtitleModel.selectedSubtitleInfo?.name ?? "关闭")
+        .accessibilityIdentifier("ks.player.subtitleMenu")
     }
 
     @MainActor
@@ -70,6 +73,9 @@ enum KSVideoPlayerViewBuilder {
         } label: {
             Image(systemName: "gauge.with.dots.needle.67percent")
         }
+        .accessibilityLabel("播放速度")
+        .accessibilityValue(Text("\(playbackRate.wrappedValue, specifier: "%g") 倍"))
+        .accessibilityIdentifier("ks.player.speedMenu")
     }
 
     @MainActor

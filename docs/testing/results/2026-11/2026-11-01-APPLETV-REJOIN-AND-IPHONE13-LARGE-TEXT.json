@@ -1,0 +1,169 @@
+{
+  "recordedAt": "2026-11-01T19:31:34.257075+08:00",
+  "scope": "User enabled temporary Apple TV + USB iPhone13; NAS tests remain paused",
+  "source": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "diffSHA256": "994ca42ce4dcbed7900a67f756aba00d24c260ba576e0490c8b06745a132d449",
+    "inputs": 446,
+    "productSourceChangedThisBatch": false
+  },
+  "package": {
+    "configuration": "normal Debug -Onone",
+    "buildStartedAt": "2026-11-01T18:42:00.071758+08:00",
+    "builtAt": "2026-11-01T18:45:06.340650+08:00",
+    "mainSHA256": "8dbd451b31a19ed0fae703d3cff86f7dbc0ea4c43a2263ac884cbabbdea11db7",
+    "debugDylibSHA256": "dd0b7b0a67de264bc13cf49efa650b062d9948e7fae74a450d3b59ce1119088c"
+  },
+  "appleTV": {
+    "freshIdentity": {
+      "checkedAt": "2026-11-01T19:25:49.485157+08:00",
+      "detailExit": 0,
+      "name": "客厅",
+      "model": "AppleTV14,1",
+      "system": "18.2",
+      "connection": "unavailable",
+      "identityMatches": true
+    },
+    "signedBuild": {
+      "startedAt": "2026-11-01T19:25:30.859970+08:00",
+      "configuration": "Debug",
+      "signingConfigurationChanged": false,
+      "provisioningUpdatesRequested": false,
+      "exitCode": 65,
+      "endedAt": "2026-11-01T19:25:38.671528+08:00"
+    },
+    "nativeRSD": {
+      "startedAt": "2026-11-01T19:26:05.468012+08:00",
+      "pairingChanged": false,
+      "applicationStarted": false,
+      "failureType": "_RemotePairingError"
+    },
+    "priorProfileExpired": true,
+    "priorProfileExpirationUTC": "2026-10-31T05:46:14Z",
+    "latestPackageInstalled": false,
+    "latestPackageUIRegressionStarted": false,
+    "pairingAndSigningConfigurationChanged": false,
+    "manualXcodeConnectionRequestedOnce": true,
+    "manualResultPending": true
+  },
+  "iphone13": {
+    "installation": {
+      "startedAt": "2026-11-01T19:26:28.774300+08:00",
+      "preserveContainer": true,
+      "uninstallAttempted": false,
+      "installComplete": true,
+      "normalLaunchVerified": false,
+      "NASPaused": true,
+      "sourceDiffSHA256": "994ca42ce4dcbed7900a67f756aba00d24c260ba576e0490c8b06745a132d449",
+      "freshTargetIdentityVerified": true,
+      "name": "iPhone",
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "connection": "USB",
+      "packageVerified": true,
+      "backupSaved": true,
+      "installExitCode": 0,
+      "installedAt": "2026-11-01T19:26:46.451253+08:00",
+      "postInstallLookupExists": true,
+      "preferences": {
+        "beforeKeys": 26,
+        "afterKeys": 26,
+        "sameKeys": true,
+        "changedValues": 0,
+        "allNonDiagnosticPreferencesEqual": true
+      }
+    },
+    "chineseLarge": {
+      "startedAt": "2026-11-01T19:28:11.981118+08:00",
+      "requestedArguments": [
+        "--offline-ui",
+        "privacy-export",
+        "--offline-ui-theme",
+        "glassDeck",
+        "--offline-ui-appearance",
+        "dark",
+        "--offline-ui-text-size",
+        "large"
+      ],
+      "requestedEnvironment": {},
+      "normalStartupVerified": false,
+      "reason": "NAS recovery pause; early isolated root with synthetic providers, no production stores/real user data",
+      "actualUIInspected": true,
+      "testProcessStopped": true,
+      "normalSignedPackageLeftInstalled": true,
+      "latestSourceAndPackageVerified": true,
+      "testLaunchSucceeded": true,
+      "testPIDAliveAtCapture": true,
+      "actualScreenCaptured": true,
+      "preferences": {
+        "beforeKeys": 26,
+        "afterKeys": 26,
+        "sameKeys": true,
+        "changedValues": 0,
+        "allNonDiagnosticPreferencesEqual": true
+      },
+      "allPreferenceValuesEqual": true,
+      "endedAt": "2026-11-01T19:28:19.349100+08:00",
+      "observedLanguage": "zh-Hans",
+      "observedThreeTogglesAndFullFooterAndExportActionInInitialViewport": true,
+      "accessibilityOverlayVisible": true,
+      "fullAccessibilityAuditPassed": false,
+      "interactionOrShareCompletionVerified": false
+    },
+    "englishLarge": {
+      "startedAt": "2026-11-01T19:29:46.574542+08:00",
+      "requestedArguments": [
+        "--offline-ui",
+        "privacy-export",
+        "--offline-ui-theme",
+        "glassDeck",
+        "--offline-ui-appearance",
+        "dark",
+        "--offline-ui-text-size",
+        "large",
+        "-AppleLanguages",
+        "(en)",
+        "-AppleLocale",
+        "en_US"
+      ],
+      "requestedEnvironment": {},
+      "normalStartupVerified": false,
+      "reason": "NAS recovery pause; early isolated root with synthetic providers, no production stores/real user data",
+      "actualUIInspected": true,
+      "testProcessStopped": true,
+      "normalSignedPackageLeftInstalled": true,
+      "latestSourceAndPackageVerified": true,
+      "testLaunchSucceeded": true,
+      "testPIDAliveAtCapture": true,
+      "actualScreenCaptured": true,
+      "preferences": {
+        "beforeKeys": 26,
+        "afterKeys": 26,
+        "sameKeys": true,
+        "changedValues": 0,
+        "allNonDiagnosticPreferencesEqual": true
+      },
+      "allPreferenceValuesEqual": true,
+      "endedAt": "2026-11-01T19:29:53.968958+08:00",
+      "observedLanguage": "en",
+      "observedThreeTogglesAndFullFooterAndExportActionInInitialViewport": true,
+      "accessibilityOverlayVisible": true,
+      "fullAccessibilityAuditPassed": false,
+      "interactionOrShareCompletionVerified": false
+    }
+  },
+  "NASCommands": 0,
+  "playbackTests": 0,
+  "simulatorsCreated": 0,
+  "newPlaybackPassCells": 0,
+  "priorPreflightFailuresUnchangedAndNotRerun": true,
+  "normalAccountRootLaunched": false,
+  "ownAppStopped": true,
+  "validation": {
+    "documentationDocuments": 580,
+    "documentationLinks": 3667,
+    "missingDestinations": 0,
+    "gitDiffCheckPassed": true,
+    "finalSourceInputsUnchanged": true
+  }
+}

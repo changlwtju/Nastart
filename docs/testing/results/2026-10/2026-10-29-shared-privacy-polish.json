@@ -1,0 +1,125 @@
+{
+  "recordedAt": "2026-10-29T19:40:08+08:00",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceInputCount": 433,
+  "changedExistingFiles": 7,
+  "existingConfigurationTestsPassed": 4,
+  "builds": {
+    "scenario-tests": {
+      "startedAt": "2026-10-29T19:19:17.510019+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-29T19:19:21.926886+08:00"
+    },
+    "localization-lint": {
+      "exitCode": 0
+    },
+    "mobile-sim-debug-privacy-r2": {
+      "startedAt": "2026-10-29T19:25:45.162677+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-29T19:26:04.024510+08:00"
+    },
+    "tv-sim-debug-privacy-r3": {
+      "startedAt": "2026-10-29T19:34:49.183182+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-29T19:35:07.638190+08:00"
+    },
+    "mobile-debug": {
+      "startedAt": "2026-10-29T19:34:50.376447+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-29T19:35:34.668897+08:00"
+    },
+    "tv-debug": {
+      "startedAt": "2026-10-29T19:37:42.960601+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "retryAfterSimulatorCompleted": true,
+      "exitCode": 0,
+      "endedAt": "2026-10-29T19:37:57.817403+08:00"
+    },
+    "mobile-release": {
+      "startedAt": "2026-10-29T19:35:34.670012+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-29T19:37:10.928376+08:00"
+    },
+    "tv-release": {
+      "startedAt": "2026-10-29T19:37:57.818679+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "retryAfterSimulatorCompleted": true,
+      "exitCode": 0,
+      "endedAt": "2026-10-29T19:38:25.064359+08:00"
+    }
+  },
+  "capture": {
+    "accepted": 12,
+    "allPassed": true,
+    "allOwnedSimulatorsDeleted": true,
+    "byPlatform": {
+      "phone": 5,
+      "pad": 4,
+      "tv": 3
+    },
+    "method": "Expected text and offline marker with consecutive backdrop sampling; selected frames reviewed",
+    "fullInteractionOrPerformanceAcceptance": false,
+    "sourceScope": {
+      "componentSourceSHA256": "1a56ab443341efc44d4afefa7dd2b58fd533b965f447ba605bd627a1e902c3f8",
+      "renderedComponentUnchangedAfterR2Capture": true,
+      "laterChange": "TVNASViews account configuration copy only; not mounted in offline root",
+      "fullLatestApplicationVisualAcceptance": false
+    }
+  },
+  "retainedFailures": [
+    "Initial confirmation popover lacked an explicit visible Cancel control; corrected to alert",
+    "Initial native TV Debug database lock (65); sequential retry passed"
+  ],
+  "physicalDevicesOperated": 0,
+  "NASCommands": 0,
+  "playbackCommands": 0,
+  "actualCredentialCacheOrCertificateClearActionsIssued": 0,
+  "realDestructiveCallbackExecutedInPreview": false,
+  "sourcePreservation": {
+    "keychainSettingsAndActionsUnchanged": true,
+    "cacheClearCallbackUnchanged": true,
+    "certificateClearCallbackStillCallsExistingClearAllOnlyAfterPrompt": true,
+    "actualActionsExecuted": 0
+  },
+  "packages": {
+    "mobile": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-29T19:35:34.481241+08:00",
+      "frozenAt": "2026-10-29T19:39:12.794598+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 433,
+      "mainSHA256": "8f22779bae32fe97b298d9a69085e25b108c9b2011652312548df7b34abba1ac",
+      "debugDylibSHA256": "3d8b5a489034c9ead8d48881e4c26d2896538983cfcc564437e45af96436220e",
+      "signedMachOCount": 30,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false
+    },
+    "tv": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-29T19:37:57.739410+08:00",
+      "frozenAt": "2026-10-29T19:39:13.210957+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 433,
+      "mainSHA256": "e87f92fafb9571cea98ab17902c8fc9c14102d9bf82f692773f12986da35e362",
+      "debugDylibSHA256": "90b4f4ba0d3c379549df10699daa8b1ff7158c09760f28fc96b7772aef4a57be",
+      "signedMachOCount": 27,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false
+    }
+  },
+  "privateEvidencePointer": "current-shared-privacy-polish-private",
+  "notVerified": [
+    "Real privacy/account/cache state and full production page",
+    "Confirm/cancel actions and success alert interaction",
+    "Complete VoiceOver, remote navigation, scrolling and width combinations",
+    "NAS, playback and performance"
+  ]
+}

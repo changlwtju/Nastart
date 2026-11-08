@@ -1,0 +1,119 @@
+{
+  "updatedAt": "2026-10-29T09:25+08:00",
+  "authorization": "Resume offline App playback integration; defer NAS incident and device performance work",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceInputCount": 430,
+  "sourceUnchangedAfterBuild": true,
+  "sharedImplementation": "PlaybackSeekCommandExecutor",
+  "productionAdapters": [
+    "mobile AV",
+    "mobile KS",
+    "tvOS AV",
+    "tvOS KS"
+  ],
+  "reproduction": {
+    "previousSourceControlledTVTestExitCode": 65,
+    "failedAssertions": 2,
+    "originalFailureRetained": true,
+    "realDeviceReproduction": false
+  },
+  "tests": {
+    "module": {
+      "passed": 32,
+      "failed": 0
+    },
+    "tv": {
+      "passed": 61,
+      "failed": 0
+    },
+    "mobile": {
+      "selected": 34,
+      "passed": 33,
+      "skipped": 1,
+      "failed": 0,
+      "skipReason": "Simulator cannot create PiP controller; real-device check remains open"
+    }
+  },
+  "builds": {
+    "mobile-debug": {
+      "startedAt": "2026-10-29T09:20:04.748870+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-29T09:20:53.481706+08:00"
+    },
+    "tv-debug": {
+      "startedAt": "2026-10-29T09:20:04.749435+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-29T09:20:30.092309+08:00"
+    },
+    "mobile-release": {
+      "startedAt": "2026-10-29T09:20:53.482437+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-29T09:22:31.080245+08:00"
+    },
+    "tv-release": {
+      "startedAt": "2026-10-29T09:20:30.093238+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-29T09:21:07.046812+08:00"
+    }
+  },
+  "packages": {
+    "mobile": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-29T09:20:53.260722+08:00",
+      "frozenAt": "2026-10-29T09:23:14.963112+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 430,
+      "mainSHA256": "14a868c197855513cb01848b87ed2409476af0d0264373ad2864defc86701279",
+      "debugDylibSHA256": "f89c190070c523449426be8fc3ee587a5efe0599c35141629e1e97b4465aaca5",
+      "signedMachOCount": 30,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false
+    },
+    "tv": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-29T09:20:29.917305+08:00",
+      "frozenAt": "2026-10-29T09:23:15.377233+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 430,
+      "mainSHA256": "3f3109c47a276a00a7adcb9817f61555972b5a465055663de68a1bc87f626ec6",
+      "debugDylibSHA256": "c2ca36cc72ccb46609b2a5d0d30bfc289b8f84e63036d7a18e96c2b00c88a1ea",
+      "signedMachOCount": 27,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false
+    }
+  },
+  "signatureVerified": "every Mach-O + deep/strict; TV embedded libraries",
+  "deviceInstallOrControlCommands": 0,
+  "NASProbeOrAuthenticationCommands": 0,
+  "NASMediaWrites": 0,
+  "oldNASCredentialsUsed": false,
+  "cellularWindows": 0,
+  "newPlaybackMatrixPasses": 0,
+  "decoderOrBufferPerformanceParametersChanged": false,
+  "KSPlayerCoreChangedThisBatch": false,
+  "modelSwitchPerformed": false,
+  "limitations": [
+    "Native rendering and server handoff remain platform adapters",
+    "No real-device or performance acceptance",
+    "Unsigned Release compile only",
+    "PiP skipped on simulator",
+    "NAS recovery requires new environment authorization; old credentials/SIDs not reused"
+  ],
+  "finalSourceHashCheck": true,
+  "changedLinesWhitespaceClean": true,
+  "documentationCheck": {
+    "documents": 514,
+    "localLinks": 3090,
+    "missingDestinations": 0
+  }
+}

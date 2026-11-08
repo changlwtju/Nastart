@@ -1,0 +1,278 @@
+{
+  "date": "2026-11-03T16:24:39.487614+08:00",
+  "request": "docs/archive/handoffs/2026-11/2026-11-03-1600-CLAUDE-INTEGRATION-REQUEST.md",
+  "report": "docs/archive/handoffs/2026-11/CODEX-2026-11-03-CLAUDE-UI-INTEGRATION.md",
+  "baseline": {
+    "baselineCount": 447,
+    "currentCount": 447,
+    "unchanged": 419,
+    "changed": 28,
+    "missing": [],
+    "extraRelevant": [
+      "ios/Nastart/Packages/NetworkMedia/.swiftpm/xcode/xcuserdata/lagransun.xcuserdatad/xcschemes/xcschememanagement.plist"
+    ],
+    "codexProductWritesBetween1314And1618": false,
+    "reason": "Saved-password completed13:37, afterwards fixture and Claude session setup only; 28 original bytes independently recovered from prior same-source workspaces and SHA-256 verified",
+    "beforeManifestSHA256": "617f1a573102eb8d6128f9ab8c0c1dca187c01f7cc035d9d83c99894c0b45d08",
+    "currentManifestSHA256": "3a3f2c0a00f709163b0c41f2239d61a46e55446385b57adca070500eb2b04ae5"
+  },
+  "commits": {
+    "mainHEAD": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "baselineCommit": "9e4feb769af5d95bc80254caa32b56ddcc56a32c",
+    "uiCommit": "c89c2a0584d9f804086d8dfeabc2b02f006b77e9",
+    "branch": "codex/ui-integration-20261103",
+    "mainAndIndexUnchanged": true,
+    "sourceDeltaFileCount": 28,
+    "checkpointBuildPaths": 307
+  },
+  "changedFiles": {
+    "ios/Nastart/Nastart/Core/Design/AppTheme.swift": {
+      "beforeSHA256": "c8e9b0d6b2908ea647cbd9d9d5b112c4824051ec95e2efad9eee00e35d96ae6d",
+      "afterSHA256": "bf3ac95b82edff75a7556febecfc1cb3dd850ba760262270753b68bacee2d285"
+    },
+    "ios/Nastart/Nastart/Core/SampleData/SampleData.swift": {
+      "beforeSHA256": "7997e9a7877c1b630b9805ab7dd4e10bb9a270b07ff0373e9933d2a52d5d3138",
+      "afterSHA256": "1b0015c824079474b281cd957d1c8f56bb4d00114d1f772364b74d7b098aa721"
+    },
+    "ios/Nastart/Nastart/Core/Stores/AppStateStores.swift": {
+      "beforeSHA256": "b035f7e9e6e06d1352511a1e2134e1bbe78e7ca520f0ef252e9f776111cca484",
+      "afterSHA256": "2c17f9963fa7d5078bc3ef49bd395d79f2a97fd30b68e7c4c08bf7406447b917"
+    },
+    "ios/Nastart/Nastart/Core/Stores/DSMClient.swift": {
+      "beforeSHA256": "eddd45b7d2dbc52f2b647d53654845cb345fce1f2d4ea1afc1ff2d3e11430d5c",
+      "afterSHA256": "7e8f57818f8f552139bf0b35e454cd85bca3024d5b3c87fd151d3b53fa582101"
+    },
+    "ios/Nastart/Nastart/Core/Stores/LocalTaskStore.swift": {
+      "beforeSHA256": "aa8b5c465671d85e827f66af5e3e9289b06ccb6d1448052ac2dfdae6193728fe",
+      "afterSHA256": "5cc15ae4c264bc5fb46517bbb9f78afa167557a80c6f029e9b63844737e09075"
+    },
+    "ios/Nastart/Nastart/Core/Stores/ManualLaunchpadServiceStore.swift": {
+      "beforeSHA256": "93bf5804cf557f32e61faeac09335c0223ea9404495112ef7a732657d972967b",
+      "afterSHA256": "1df57a2d8c23307ccc6e32cad5041d2aa9e59fa6b222da9a7005df9910487eee"
+    },
+    "ios/Nastart/Nastart/Core/Stores/NASConnectionStore.swift": {
+      "beforeSHA256": "a3d96ac16d968c94776329a76272ba8025d49b184031075de11cf67c8bf73e35",
+      "afterSHA256": "1c6d4a0281433b0dc06c27a60a94605226cfc709967c79267f94529e581cf08e"
+    },
+    "ios/Nastart/Nastart/Features/Devices/DevicesView.swift": {
+      "beforeSHA256": "4e51698e006fbb3e7d1ddc3d7dbf3e21f38d1e74e81cb1f91a4e3be777906e62",
+      "afterSHA256": "2124f69347b0be2dd1b65fc36887a2c5e637da798d537bebed38d928f01c1ca4"
+    },
+    "ios/Nastart/Nastart/Features/Launchpad/LaunchpadConnectionViews.swift": {
+      "beforeSHA256": "7990d51e6e664d1dd88147a7bb7b7fe267161d764391d48852830dbd83e35eb9",
+      "afterSHA256": "c1af5569b0e3fd389ce0c4ae0ce5578217f56b6e2c3b94158b2202998d3f6e79"
+    },
+    "ios/Nastart/Nastart/Features/Launchpad/LaunchpadDirectMediaSetupView.swift": {
+      "beforeSHA256": "0cd06a032e91568f22ed258acbabdbfc6104ced3d1d37c75445d6e893a1fb563",
+      "afterSHA256": "b7425ea6ff45d171e753c2c1cd7ed4fb32cd7554e60d2951bf7829cff469846e"
+    },
+    "ios/Nastart/Nastart/Features/Launchpad/LaunchpadLayoutViews.swift": {
+      "beforeSHA256": "f784e6fcfaf395d199061fea548db054c7388929f3cf69e5badcfb1e73adf4ea",
+      "afterSHA256": "6ef616547ee1a08321835da1be1d6152edbf8835f397b7e8ffc2b7b490283e28"
+    },
+    "ios/Nastart/Nastart/Features/Launchpad/LaunchpadMediaLibraryViews.swift": {
+      "beforeSHA256": "1d8d4f7069978f5afdedcd0eee5d064fbe8f94b5be00e6bd549c5b83329269c1",
+      "afterSHA256": "4bec9ec775986fde43307b8898562f560f76a628bb064fd954b7acce1c096ef4"
+    },
+    "ios/Nastart/Nastart/Features/Launchpad/LaunchpadServiceDetailViews.swift": {
+      "beforeSHA256": "c43691e6b1f91105a119024db8d8a108448c32a26751bbe4c3298f80dfc5769b",
+      "afterSHA256": "595836d86e90661e6ea71dddb3b16a0a3bae973030ca5eb57ce3ff5ff72c1d1f"
+    },
+    "ios/Nastart/Nastart/Features/Launchpad/LaunchpadSharedViews.swift": {
+      "beforeSHA256": "3f2ad0f65764deb19686a90a1fd1bcda448b78d597a42b0dba0897a3fe3d3f84",
+      "afterSHA256": "a78960a622558a25588e1fbb827bd9bbec6b68ef35e0e1de4faf0caa5ba2708b"
+    },
+    "ios/Nastart/Nastart/Features/Mine/MineView.swift": {
+      "beforeSHA256": "0caad2561baaf625762534e3191855441f57cbb045e314802dd712be954528c5",
+      "afterSHA256": "2b84b49ea34d14e67bd7db29f06c30a6eaa8644ed925d1afaf77d562c5688f18"
+    },
+    "ios/Nastart/Nastart/Features/Tasks/TasksView.swift": {
+      "beforeSHA256": "3ee9bfb60fb5649515da709027b641c5efb96eb4fdcddba462ecdb5e632275a6",
+      "afterSHA256": "5904a9632be57a35806c4835c9b4cf55e4f482badae6169d79d6e65828e81191"
+    },
+    "ios/Nastart/NastartTests/NonPlaybackPolicyTests.swift": {
+      "beforeSHA256": "19d0101fd5f92b2cadd12d23b71df96810661d8fab4d68747539fe5c08833d4e",
+      "afterSHA256": "22fcb7834d22e664e5934b9941a97cfceb587493d58d1b69fc0a497742b86c27"
+    },
+    "ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/LibraryPosterWall.swift": {
+      "beforeSHA256": "e6a9dd46b18a4c28b4c122ade5bb0c807a04a58b4fe24a43169fc004316d0835",
+      "afterSHA256": "92a0e715579636c79d566c84868e3d5cb86c220cbe449f3ce57d67a6b7345e6c"
+    },
+    "ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/LibraryViews.swift": {
+      "beforeSHA256": "b0d81db08225a00c2402671c1402b29bfad78dcbee0b1b2ceb50d7fad40365f5",
+      "afterSHA256": "630447404a47419173a04e703a688df1553fc9b0404bb9da097275069f7cc77d"
+    },
+    "ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/MediaDetailPresentation.swift": {
+      "beforeSHA256": "7967cb7a72931d7e9938d1b787dfe5f483ada5bb28b8ae2bdf18cf56db7a294d",
+      "afterSHA256": "467eb63d8bca1468a705654d0a68571b63eea864a8429fd7b26c86b529a6e05d"
+    },
+    "ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/MediaPosterCard.swift": {
+      "beforeSHA256": "2c7c391e5357e87393e7cc9669fa567cd7281481db3f1329fd977c5fb801b1c5",
+      "afterSHA256": "79a0cc601f52482310af1f7e2b1ecdbf682167628704b1f07151a330a93e2d27"
+    },
+    "ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/OfflineMediaScene.swift": {
+      "beforeSHA256": "5ad6fc93c09622ff01920f3e61fae54d0802399f94228a41d26f610e2ec22a77",
+      "afterSHA256": "f162d4ebfe3d90d97cc7f717cd8f9182f1233cc7c0cddcbb281e34b644215a83"
+    },
+    "ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/OfflineUIScenario.swift": {
+      "beforeSHA256": "05710a31998376dbc43f74d98ff2c1248212be4293eca2b8db14bcca780da4c1",
+      "afterSHA256": "fb5f9fc16ea686582d99095db1dcb687e90b15880883a14f5dfc400d0e46fafd"
+    },
+    "ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/SourceContext.swift": {
+      "beforeSHA256": "2c83e033b5a8e47d63b9d8ea4eed381e21ffa4d6dfd1f604fd22b4b59f64594a",
+      "afterSHA256": "1fdefee5d6c3f9b65f4a55116f942e195dc14cedbe0ed9a353d4fc33e0eaeb71"
+    },
+    "ios/Nastart/Packages/NetworkMedia/Tests/NetworkMediaTests/OfflineUIScenarioTests.swift": {
+      "beforeSHA256": "b18d585d7e8199ddc7691da1ccacdcd1a40454135e830b69071b7343efaddccf",
+      "afterSHA256": "56f0e526abab23d0197982322424bd45b04411c61c84a228e3b963cc6acce734"
+    },
+    "tvos/NastartTV/Sources/NastartTVApp.swift": {
+      "beforeSHA256": "344b0020b39dd543340ff9d08702074a750b64e0530305a8bf8815bb2cc53852",
+      "afterSHA256": "2b413167f02f24d940986289a3a9a82f1c33748649315bc3082464bd7b15755b"
+    },
+    "tvos/NastartTV/Sources/TVNASViews.swift": {
+      "beforeSHA256": "ee74a1e3140b9c63e681caeaedafa6a084522a321e77a2f605a0e30ad6c26b32",
+      "afterSHA256": "b1268d2285779945d760ac30856c5d37cbcb0765a797028013ba2b1b9d5850e8"
+    },
+    "tvos/NastartTV/Sources/TVViews.swift": {
+      "beforeSHA256": "6ee11dccd248b81e528ef3ded8eb445760c19fcecdc4475d70cc9265b1758ff0",
+      "afterSHA256": "fbe0cc43fa6ed249da51fd165eb27ff9ed56f03a35cabd242fabc7df4ac918af"
+    }
+  },
+  "builds": {
+    "mobile-sim-debug": {
+      "stage": "mobile-sim-debug",
+      "startedAt": "2026-11-03T16:09:54.966843+08:00",
+      "freeGiBBefore": 11.287666320800781,
+      "sourceInputs": 447,
+      "initialBatchGateGiB": 6,
+      "runtimeReserveGiB": 2,
+      "exitCode": 0,
+      "endedAt": "2026-11-03T16:10:15.121772+08:00",
+      "freeGiBAfter": 11.262443542480469,
+      "sourceUnchanged": true
+    },
+    "mobile-device-debug": {
+      "stage": "mobile-device-debug",
+      "startedAt": "2026-11-03T16:10:27.335595+08:00",
+      "freeGiBBefore": 11.261032104492188,
+      "sourceInputs": 447,
+      "initialBatchGateGiB": 6,
+      "runtimeReserveGiB": 2,
+      "exitCode": 0,
+      "endedAt": "2026-11-03T16:11:17.701653+08:00",
+      "freeGiBAfter": 11.257575988769531,
+      "sourceUnchanged": true
+    },
+    "mobile-device-release": {
+      "stage": "mobile-device-release",
+      "startedAt": "2026-11-03T16:11:18.760213+08:00",
+      "freeGiBBefore": 11.257701873779297,
+      "sourceInputs": 447,
+      "initialBatchGateGiB": 6,
+      "runtimeReserveGiB": 2,
+      "exitCode": 0,
+      "endedAt": "2026-11-03T16:13:02.661852+08:00",
+      "freeGiBAfter": 11.2525634765625,
+      "sourceUnchanged": true
+    },
+    "tv-sim-debug": {
+      "stage": "tv-sim-debug",
+      "startedAt": "2026-11-03T16:13:03.721729+08:00",
+      "freeGiBBefore": 11.252525329589844,
+      "sourceInputs": 447,
+      "initialBatchGateGiB": 6,
+      "runtimeReserveGiB": 2,
+      "exitCode": 0,
+      "endedAt": "2026-11-03T16:13:12.801681+08:00",
+      "freeGiBAfter": 11.2275390625,
+      "sourceUnchanged": true
+    },
+    "tv-device-debug": {
+      "stage": "tv-device-debug",
+      "startedAt": "2026-11-03T16:13:13.841026+08:00",
+      "freeGiBBefore": 11.227516174316406,
+      "sourceInputs": 447,
+      "initialBatchGateGiB": 6,
+      "runtimeReserveGiB": 2,
+      "exitCode": 0,
+      "endedAt": "2026-11-03T16:13:26.938873+08:00",
+      "freeGiBAfter": 11.224506378173828,
+      "sourceUnchanged": true
+    },
+    "tv-device-release": {
+      "stage": "tv-device-release",
+      "startedAt": "2026-11-03T16:13:28.005152+08:00",
+      "freeGiBBefore": 11.225517272949219,
+      "sourceInputs": 447,
+      "initialBatchGateGiB": 6,
+      "runtimeReserveGiB": 2,
+      "exitCode": 0,
+      "endedAt": "2026-11-03T16:13:58.253396+08:00",
+      "freeGiBAfter": 11.220832824707031,
+      "sourceUnchanged": true
+    }
+  },
+  "packageTests": {
+    "initialRun": "hung in existing TransportIntegrationTests.tearDown Process.waitUntilExit; own sample saved; own group terminated",
+    "retry": {
+      "passed": 305,
+      "failed": 0,
+      "exitCode": 0,
+      "seconds": 9.384,
+      "sourceChanged": false,
+      "bounded": true
+    }
+  },
+  "hostedTests": {
+    "total": 203,
+    "passed": 202,
+    "skipped": 1,
+    "failed": 0,
+    "skip": "testDeviceEnvironmentPublicEndpoints: Device endpoints must be explicitly configured",
+    "classes": [
+      "NonPlaybackPolicyTests",
+      "OfflineRootFixtureTests",
+      "AppearanceStoreInjectionTests",
+      "PrivacyCacheCleanerTests",
+      "NastartShareOutcomeTests"
+    ],
+    "ownedSimulatorDeleted": true,
+    "ownedDataPathAbsent": true
+  },
+  "releaseMarkers": {
+    "checked": 27,
+    "iOSReleaseAllAbsent": true,
+    "tvOSReleaseAllAbsent": true,
+    "platformDebugControlsPassed": true
+  },
+  "normalPackage": {
+    "configuration": "normal Debug -Onone; existing automatic signing; no test variables/flags or provisioning updates",
+    "builtAt": "2026-11-03T16:22:25.282432+08:00",
+    "sourceInputCount": 447,
+    "sourceManifestSHA256": "3a3f2c0a00f709163b0c41f2239d61a46e55446385b57adca070500eb2b04ae5",
+    "appPath": "/Users/lagransun/Downloads/Nastart-CodexEvidence-2026-11-03-ui-integration/normal-package/Payload/Nastart.app",
+    "ipaPath": "/Users/lagransun/Downloads/Nastart-CodexEvidence-2026-11-03-ui-integration/normal-package/Nastart-Normal-Debug-20261103.ipa",
+    "mainSHA256": "0a63856a30314abb8f56bdf67804a45b79c2eab7f38891f201fff0799c28fc60",
+    "debugDylibSHA256": "8c8637f5379c9a9958d9dc83441dab88a41ecda0568f9688760d3bc6c9146135",
+    "ipaSHA256": "ab1f1a805ff73b180794d21e573bedb85e2a03b63b368962d4f125a054abb3d0",
+    "signedMachOCount": 30,
+    "profileExpirationUTC": "2026-11-08T01:08:19Z",
+    "deepAndIndividualSignatureVerificationPassed": true,
+    "ipaArchiveAndCurrentInputsVerified": true,
+    "physicalDevicesInstalledThisBatch": 0,
+    "normalRootLaunched": false
+  },
+  "productFilesChangedByCodex": 0,
+  "physicalDevicesOperated": 0,
+  "NASRequestsAllowed": false,
+  "inheritedDirtyPreserved": true,
+  "requirementsStatusChanges": 0,
+  "newPlaybackMatrixPasses": 0,
+  "remaining": [
+    "fresh13/Pad identity, retained-data installation and isolatedUI regression",
+    "normal account root, credentials, share delivery, real cache cancel",
+    "VoiceOver, actual frame-time, TV physical signing"
+  ],
+  "mainAndIndexPreserved": true
+}

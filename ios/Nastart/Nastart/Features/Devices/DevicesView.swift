@@ -70,7 +70,7 @@ struct DevicesView: View {
                     }
                 } header: {
                     Text("devices.section.resources")
-                }
+                }.nastartListSection()
 
                 Section {
                     NavigationLink {
@@ -119,10 +119,12 @@ struct DevicesView: View {
                     }
                 } header: {
                     Text("devices.section.maintenance")
-                }
+                }.nastartListSection()
             }
             .listStyle(.insetGrouped)
             .padding(.top, -12)
+            .nastartReadableWidth()
+            .nastartPageTheme()
             .navigationTitle("tab.devices")
             .navigationBarTitleDisplayMode(.inline)
             .alert("devices.discovery.result", isPresented: $showRediscoverHint) {
@@ -168,11 +170,13 @@ struct DeviceStatusView: View {
                 LabeledContent("metric.uptime", value: device.uptimeText)
                 LabeledContent("devices.detail.mode", value: deviceConnectionText(device.mode))
                 LabeledContent("devices.detail.certificate", value: certificateDaysText(device.certificateDaysRemaining))
-                LabeledContent("devices.status.temperature", value: device.temperatureText ?? "-")
+                if let temperature = device.temperatureText {
+                    LabeledContent("devices.status.temperature", value: temperature)
+                }
                 LabeledContent("devices.security.ssh", value: sshStatusText(device.sshStatus))
             } header: {
                 Text("devices.detail.status")
-            }
+            }.nastartListSection()
 
             Section {
                 LabeledContent("metric.memory_ram", value: device.memoryDisplayText)
@@ -180,7 +184,7 @@ struct DeviceStatusView: View {
                 LabeledContent("devices.status.storage_free", value: device.storageFreeText)
             } header: {
                 Text("devices.status.capacity")
-            }
+            }.nastartListSection()
 
             Section {
                 DiagnosisRow(titleKey: "devices.diagnosis.reachable", valueKey: "devices.diagnosis.good", symbol: "checkmark.circle")
@@ -191,15 +195,16 @@ struct DeviceStatusView: View {
                 )
                 DiagnosisRow(
                     titleKey: "devices.diagnosis.agent",
-                    valueKey: device.mode == .dsmWithAgent ? "devices.diagnosis.good" : "status.unknown",
+                    valueKey: device.mode == .dsmWithAgent ? "devices.diagnosis.good" : "state.not_connected",
                     symbol: "antenna.radiowaves.left.and.right"
                 )
             } header: {
                 Text("devices.status.diagnosis")
-            }
+            }.nastartListSection()
         }
         .listStyle(.insetGrouped)
         .padding(.top, -12)
+        .nastartReadableWidth().nastartPageTheme()
         .navigationTitle(device.name)
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -280,9 +285,10 @@ private struct DockerContainersView: View {
                         DockerContainerRow(container: container)
                     }
                 }
-            }
+            }.nastartListSection()
         }
         .listStyle(.insetGrouped)
+        .nastartReadableWidth().nastartPageTheme()
         .navigationTitle("devices.resource.containers")
     }
 }
@@ -328,7 +334,7 @@ private struct ServiceResourcesView: View {
                 )
             } header: {
                 Text("devices.resources.system")
-            }
+            }.nastartListSection()
 
             Section {
                 Picker("devices.resources.sort", selection: $sort) {
@@ -337,7 +343,7 @@ private struct ServiceResourcesView: View {
                     }
                 }
                 .pickerStyle(.segmented)
-            }
+            }.nastartListSection()
 
             Section {
                 if sortedContainers.isEmpty {
@@ -360,9 +366,10 @@ private struct ServiceResourcesView: View {
                 Text("devices.resources.services")
             } footer: {
                 Text("devices.resources.footer")
-            }
+            }.nastartListSection()
         }
         .listStyle(.insetGrouped)
+        .nastartReadableWidth().nastartPageTheme()
         .navigationTitle("devices.resource.services")
         .navigationBarTitleDisplayMode(.inline)
         .refreshable {
@@ -517,6 +524,14 @@ private struct ContainerServiceIcon: View {
 private struct PackageServicesView: View {
     let services: [LaunchpadService]
 
+    private func packageStatusKey(_ status: ServiceStatus) -> LocalizedStringKey {
+        switch status {
+        case .online: return "devices.packages.running"
+        case .offline: return "devices.packages.stopped"
+        default: return status.devicesTitleKey
+        }
+    }
+
     var body: some View {
         List {
             Section {
@@ -530,7 +545,7 @@ private struct PackageServicesView: View {
                             VStack(alignment: .leading, spacing: 4) {
                                 Text(service.name)
                                     .font(.body.weight(.medium))
-                                Text(service.status.devicesTitleKey)
+                                Text(packageStatusKey(service.status))
                                     .font(.caption)
                                     .foregroundStyle(.secondary)
                             }
@@ -542,9 +557,10 @@ private struct PackageServicesView: View {
                 }
             } footer: {
                 Text("devices.packages.footer")
-            }
+            }.nastartListSection()
         }
         .listStyle(.insetGrouped)
+        .nastartReadableWidth().nastartPageTheme()
         .navigationTitle("devices.resource.packages")
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -600,7 +616,7 @@ private struct DockerContainerDetailView: View {
         List {
             Section {
                 DockerContainerRow(container: container)
-            }
+            }.nastartListSection()
 
             Section {
                 LabeledContent("metric.cpu", value: containerPercentText(container.cpu))
@@ -611,7 +627,7 @@ private struct DockerContainerDetailView: View {
                 LabeledContent("devices.container.runtime_memory", value: container.memoryText)
             } header: {
                 Text("devices.container.metrics")
-            }
+            }.nastartListSection()
 
             Section {
                 if container.ports.isEmpty {
@@ -624,21 +640,22 @@ private struct DockerContainerDetailView: View {
                 }
             } header: {
                 Text("devices.container.ports")
-            }
+            }.nastartListSection()
 
             Section {
                 Label("devices.container.agent_required", systemImage: "lock.shield")
                     .foregroundStyle(.secondary)
             } header: {
                 Text("devices.container.actions")
-            }
+            }.nastartListSection()
         }
         .listStyle(.insetGrouped)
+        .nastartReadableWidth().nastartPageTheme()
         .navigationTitle(container.name)
     }
 }
 
-private struct FileBrowserView: View {
+struct FileBrowserView: View {
     @EnvironmentObject private var dataStore: AppDataStore
     @EnvironmentObject private var connectionStore: NASConnectionStore
     let titleKey: LocalizedStringKey
@@ -647,10 +664,18 @@ private struct FileBrowserView: View {
     @State private var query = ""
     @AppStorage("devices.files.sort") private var sort: FileBrowserSort = .name
     @AppStorage("devices.files.sort.ascending") private var sortAscending = true
-    @State private var loadedItems: [FileItem] = []
-    @State private var didLoad = false
-    @State private var isLoading = false
-    @State private var loadErrorKey: String?
+    @AppStorage("devices.files.showSystemItems") private var showsSystemItems = false
+    @StateObject private var loader = FolderBrowserLoader()
+    @State private var retryRevision = 0
+
+    private struct LoadID: Equatable {
+        let sourceID: UUID
+        let retry: Int
+    }
+    private var isLoading: Bool { folderPath != nil && (loader.isLoading || loader.sourceID != dataStore.folderSourceID) }
+    private var loadErrorKey: String? {
+        loader.sourceID == dataStore.folderSourceID ? loader.errorKey : nil
+    }
 
     init(titleKey: LocalizedStringKey, items: [FileItem], folderPath: String? = nil) {
         self.titleKey = titleKey
@@ -660,11 +685,12 @@ private struct FileBrowserView: View {
 
     private var baseItems: [FileItem] {
         if folderPath == nil { return items }
-        return didLoad ? loadedItems : items
+        return loader.sourceID == dataStore.folderSourceID ? loader.items : []
     }
 
     private var visibleItems: [FileItem] {
-        sort.sorted(filteredItems(baseItems), ascending: sortAscending)
+        let shown = showsSystemItems ? baseItems : baseItems.filter { !FileBrowserSystemItems.isSystemItem(named: $0.name) }
+        return sort.sorted(filteredItems(shown), ascending: sortAscending)
     }
 
     var body: some View {
@@ -692,8 +718,7 @@ private struct FileBrowserView: View {
                             .foregroundStyle(.secondary)
                             .multilineTextAlignment(.center)
                         Button("action.retry") {
-                            didLoad = false
-                            Task { await loadIfNeeded() }
+                            retryRevision += 1
                         }
                         .buttonStyle(.bordered)
                     }
@@ -701,7 +726,10 @@ private struct FileBrowserView: View {
                     .padding(.vertical, 24)
                 }
 
-                if !isLoading && visibleItems.isEmpty && loadErrorKey == nil {
+                if !isLoading && loader.needsRetry && loadErrorKey == nil {
+                    Button("action.retry") { retryRevision += 1 }
+                }
+                if !isLoading && !loader.needsRetry && visibleItems.isEmpty && loadErrorKey == nil {
                     VStack(spacing: 10) {
                         Image(systemName: "tray")
                             .font(.title2)
@@ -717,9 +745,10 @@ private struct FileBrowserView: View {
                 }
             } header: {
                 Text(folderPath == nil ? "devices.files.favorites" : "devices.resource.files")
-            }
+            }.nastartListSection()
         }
         .listStyle(.insetGrouped)
+        .nastartReadableWidth().nastartPageTheme()
         .navigationTitle(titleKey)
         .navigationBarTitleDisplayMode(.inline)
         .searchable(text: $query, placement: .navigationBarDrawer(displayMode: .automatic),
@@ -737,6 +766,8 @@ private struct FileBrowserView: View {
                         Text("devices.files.sort.descending").tag(false)
                     }
                     Text("devices.files.sort.folders_first")
+                    Divider()
+                    Toggle("devices.files.show_system", isOn: $showsSystemItems)
                     if let folderPath {
                         Divider()
                         Text(folderPath)
@@ -753,10 +784,11 @@ private struct FileBrowserView: View {
             }
         }
 
-        .task { await loadIfNeeded() }
-        .refreshable {
-            await reloadFolder()
+        .task(id: LoadID(sourceID: dataStore.folderSourceID, retry: retryRevision)) {
+            await loadFolder(forceRefresh: retryRevision > 0)
         }
+        .refreshable { await loadFolder(forceRefresh: true) }
+        .onDisappear { loader.invalidate() }
     }
 
     private func filteredItems(_ items: [FileItem]) -> [FileItem] {
@@ -770,59 +802,28 @@ private struct FileBrowserView: View {
     }
 
     @MainActor
-    private func loadIfNeeded() async {
-        guard let folderPath, !didLoad else { return }
-        isLoading = true
-        loadErrorKey = nil
-        do {
-            loadedItems = try await dataStore.loadFolder(path: folderPath)
-            if loadedItems.isEmpty,
-               let session = connectionStore.dsmSession {
-                // A device can render a persisted empty snapshot, or a nested
-                // folder can arrive while the DSM source is still restoring.
-                // Rebuild the active source once before treating any folder
-                // as genuinely empty.
-                _ = await dataStore.refreshDSM(
-                    session: session,
-                    useAgent: connectionStore.usesAgent
-                )
-                loadedItems = try await dataStore.loadFolder(
-                    path: folderPath,
-                    forceRefresh: true
-                )
-            }
-            if loadedItems.isEmpty, folderPath == "/", !dataStore.files.isEmpty {
-                // File Station can acknowledge list_share with an empty
-                // payload while the authenticated snapshot already contains
-                // the same live shared-folder inventory. Keep the DSM root
-                // navigable instead of presenting a false empty directory.
-                loadedItems = dataStore.files
-            }
-            if loadedItems.isEmpty && connectionStore.dsmSession == nil {
-                loadErrorKey = "devices.files.dsm_disconnected"
-            }
-            didLoad = true
-        } catch {
-            loadErrorKey = "devices.files.folder_load_failed"
-        }
-        isLoading = false
-    }
-
-    @MainActor
-    private func reloadFolder() async {
+    private func loadFolder(forceRefresh: Bool) async {
         guard let folderPath else { return }
-        loadErrorKey = nil
-        do {
-            loadedItems = try await dataStore.loadFolder(
-                path: folderPath,
-                forceRefresh: true
-            )
-            if loadedItems.isEmpty && connectionStore.dsmSession == nil {
-                loadErrorKey = "devices.files.dsm_disconnected"
+        let sourceID = dataStore.folderSourceID
+        await loader.load(sourceID: sourceID, forceRefresh: forceRefresh,
+                          isConnected: { connectionStore.dsmSession != nil }) {
+            var result = try await dataStore.loadFolder(path: folderPath, forceRefresh: forceRefresh)
+            try Task.checkCancellation()
+            guard sourceID == dataStore.folderSourceID else { throw CancellationError() }
+            if !forceRefresh, result.isEmpty, let session = connectionStore.dsmSession {
+                // Retain the existing single empty-snapshot refresh, scoped to
+                // this directory source. A source change starts a new view task.
+                _ = await dataStore.refreshDSM(session: session, useAgent: connectionStore.usesAgent)
+                try Task.checkCancellation()
+                guard sourceID == dataStore.folderSourceID else { throw CancellationError() }
+                result = try await dataStore.loadFolder(path: folderPath, forceRefresh: true)
+                try Task.checkCancellation()
+                guard sourceID == dataStore.folderSourceID else { throw CancellationError() }
             }
-            didLoad = true
-        } catch {
-            loadErrorKey = "devices.files.folder_load_failed"
+            if result.isEmpty, folderPath == "/", dataStore.folderSnapshotMatchesSource, !dataStore.files.isEmpty {
+                result = dataStore.files
+            }
+            return result
         }
     }
 }
@@ -889,16 +890,16 @@ private struct FilePreviewView: View {
     @State private var externalMessageKey = "external.open_failed"
     @State private var showExternalHint = false
     @State private var playbackRequest: MediaPlaybackRequest?
-#if DEBUG
-    @AppStorage(GreenfieldPlaybackDebugSettings.useGreenfieldPlayerKey)
-    private var usesGreenfieldPlayer = true
+    @ObservedObject private var resumeStore = LocalPlaybackResumeStore.shared
+    private let usesGreenfieldPlayer = true
     @State private var greenfieldPlaybackRequest: GreenfieldPlaybackLaunchRequest?
-#endif
     @State private var localPreview: LocalFilePreview?
     @StateObject private var preparation = PlaybackPreparation()
     private var isPreparingPreview: Bool { preparation.isPreparing }
     @State private var verifiedStreamLookup: Task<JellyfinMatchedFileStream.Match?, Never>?
     @State private var playsFromBeginning = false
+    @State private var recordingIdentityTask: Task<String?, Never>?
+    @State private var recordingResumeKey: String?
     @State private var externalPlaybackURL: URL?
     @State private var showExternalPicker = false
     @State private var externalSharePayload: FileExternalSharePayload?
@@ -906,20 +907,55 @@ private struct FilePreviewView: View {
     @State private var pendingExternalShare = false
     @State private var showCredentialHandoffWarning = false
 
+    private var hasLocalResumePosition: Bool {
+        guard let key = localResumeKey else { return false }
+        return (resumeStore.entry(for: key)?.positionSeconds ?? 0) > 0
+    }
+
     private var previewTitleKey: String {
-#if DEBUG
-        if usesGreenfieldPlayer, let key = localResumeKey,
-           (LocalPlaybackResumeStore.shared.entry(for: key)?.positionSeconds ?? 0) > 0 {
+        if usesGreenfieldPlayer, hasLocalResumePosition {
             return "media.continue.title"
         }
-#endif
-        return "devices.files.preview"
+        return item.kind == .video || item.kind == .discImage ? "player.play" : "devices.files.preview"
     }
 
     private var localResumeKey: String? {
         guard let session = connectionStore.dsmSession else { return nil }
+        if isTransportStreamRecording { return recordingResumeKey }
         return LocalPlaybackResumeStore.key(server: session.endpoints.primaryDomain ?? session.endpoints.publicAddress ?? session.endpoints.lanAddress ?? session.baseURL,
             account: session.account, path: item.path, byteLength: item.sizeBytes, modifiedAt: item.modifiedAt)
+    }
+
+    private var isTransportStreamRecording: Bool {
+        item.kind == .video && ["ts", "m2ts", "mts"].contains((item.name as NSString).pathExtension.lowercased())
+    }
+
+    private func prepareRecordingIdentity() {
+        guard isTransportStreamRecording, recordingIdentityTask == nil,
+              let session = connectionStore.dsmSession else { return }
+        let file = item
+        let server = session.endpoints.primaryDomain ?? session.endpoints.publicAddress
+            ?? session.endpoints.lanAddress ?? session.baseURL
+        recordingIdentityTask = Task {
+            let candidates = session.fileStationOpenURLs(path: file.path)
+            guard let url = await AuthenticatedMediaPlaybackResolver.firstPlayableURL(
+                candidates: candidates, allowsSelfSignedCertificates: session.allowsSelfSignedCertificates,
+                diagnosticStage: "recordingIdentity", timeout: 2,
+                expectedContentLength: file.sizeBytes.flatMap(Int.init(exactly:)), allowsContentGrowth: true)
+            else { return nil }
+            let key = await LocalPlaybackResumeStore.shared.prepareRecordingKey(
+                server: server, account: session.account, path: file.path,
+                byteLength: file.sizeBytes, modifiedAt: file.modifiedAt,
+                readRange: { offset, count in
+                    await AuthenticatedMediaPlaybackResolver.recordingIdentityBytes(
+                        url: url, offset: offset, count: count,
+                        allowsSelfSignedCertificates: session.allowsSelfSignedCertificates,
+                        minimumLength: file.sizeBytes ?? 0)
+                })
+            guard !Task.isCancelled else { return nil }
+            await MainActor.run { recordingResumeKey = key }
+            return key
+        }
     }
 
     var body: some View {
@@ -935,7 +971,7 @@ private struct FilePreviewView: View {
                         .foregroundStyle(.secondary)
                 }
                 .padding(.vertical, 8)
-            }
+            }.nastartListSection()
 
             Section {
                 Button {
@@ -952,8 +988,7 @@ private struct FilePreviewView: View {
                     }
                 }
                 .disabled(isPreparingPreview)
-#if DEBUG
-                if usesGreenfieldPlayer && (item.kind == .video || item.kind == .discImage) {
+                if usesGreenfieldPlayer && (item.kind == .video || item.kind == .discImage), hasLocalResumePosition {
                     Button {
                         playsFromBeginning = true
                         previewFile()
@@ -962,15 +997,11 @@ private struct FilePreviewView: View {
                     }
                     .disabled(isPreparingPreview)
                 }
+#if DEBUG
                 if usesGreenfieldPlayer && item.kind == .video &&
                     ProcessInfo.processInfo.environment["NASTART_TEST_STATIC_HLS"] == "1" {
                     Button("静态 HLS 弱网测试") { prepareStaticHLSPlayback() }
                         .disabled(isPreparingPreview)
-                }
-#endif
-#if DEBUG
-                if item.kind == .video || item.kind == .audio {
-                    PlaybackArchitecturePicker(usesGreenfieldPlayer: $usesGreenfieldPlayer)
                 }
 #endif
             } header: {
@@ -979,15 +1010,18 @@ private struct FilePreviewView: View {
                 if item.kind == .discImage {
                     Text("devices.files.iso_playback_hint")
                 }
-            }
+            }.nastartListSection()
         }
         .listStyle(.insetGrouped)
-        .navigationTitle("devices.files.preview")
-        .onAppear { warmVerifiedStreamMatch() }
+        .nastartReadableWidth().nastartPageTheme()
+        .navigationTitle("devices.files.detail")
+        .onAppear { warmVerifiedStreamMatch(); prepareRecordingIdentity() }
         .onDisappear {
             preparation.cancel()
             verifiedStreamLookup?.cancel()
             verifiedStreamLookup = nil
+            recordingIdentityTask?.cancel()
+            recordingIdentityTask = nil
         }
         .alert(LocalizedStringKey(externalMessageKey), isPresented: $showExternalHint) {
             Button("action.ok", role: .cancel) {}
@@ -999,9 +1033,7 @@ private struct FilePreviewView: View {
                 BuiltInMediaPlayerView(request: request)
             }
         }
-#if DEBUG
         .greenfieldPlaybackCover(item: $greenfieldPlaybackRequest)
-#endif
         .fullScreenCover(item: $localPreview) { preview in
             LocalFilePreviewScreen(preview: preview)
         }
@@ -1013,7 +1045,7 @@ private struct FilePreviewView: View {
             Button("action.cancel", role: .cancel) {}
         }
         .sheet(item: $externalSharePayload) { payload in
-            SystemShareView(items: [payload.url])
+            SystemShareView(items: [payload.url], includesVideoPlayers: item.kind == .video)
         }
         .confirmationDialog(
             "external.credential_warning.title",
@@ -1104,6 +1136,7 @@ private struct FilePreviewView: View {
                         initialPosition: playsFromBeginning ? 0 : nil,
                         initialOrientationMode: .landscape,
                         isPrivateNetworkRoute: NetworkHostClassifier.isPrivate(selectedURL.host),
+                        playbackTracker: prepared.makePlaybackTracker(),
                         externalHandoffResource: MediaPlaybackResource(
                             url: selectedURL,
                             fileExtensionOverride: "iso",
@@ -1111,14 +1144,10 @@ private struct FilePreviewView: View {
                         ),
                         localResumeKey: localResumeKey
                     )
-#if DEBUG
                     if usesGreenfieldPlayer {
                         PlayerOrientationController.prepareForPresentation(request.initialOrientationMode)
                         greenfieldPlaybackRequest = request.greenfieldPlaybackLaunchRequest()
                     } else { playbackRequest = request }
-#else
-                    playbackRequest = request
-#endif
                     DiagnosticLogStore.shared.record(
                         .info,
                         categoryKey: "diagnostics.category.media",
@@ -1153,7 +1182,6 @@ private struct FilePreviewView: View {
     }
 
     private func warmVerifiedStreamMatch() {
-#if DEBUG
         guard usesGreenfieldPlayer, item.kind == .video,
               (item.sizeBytes ?? 0) >= 16 * 1024 * 1024 * 1024,
               PlaybackNetworkObserver.shared.snapshot().cacheKey != "wifi",
@@ -1169,25 +1197,49 @@ private struct FilePreviewView: View {
                 file: file, services: services,
                 siblingItems: siblings, dsmSession: session)
         }
-#endif
     }
 
     private func prepareMediaPlayback(from url: URL) {
         let requestedAt = Date()
         let playbackTraceID = String(UUID().uuidString.prefix(8))
+        let preparationStartedAt = ProcessInfo.processInfo.systemUptime
+        // Bounded phase timing separates metadata/route waiting from decoder
+        // startup without recording file paths, credentials or folder contents.
+        func recordPhase(_ phase: String, result: String, startedAt: TimeInterval) {
+#if DEBUG
+            let now = ProcessInfo.processInfo.systemUptime
+            DiagnosticLogStore.shared.record(.info,
+                categoryKey: "diagnostics.category.media",
+                messageKey: "diagnostics.files.playback_preparation_phase",
+                details: ["phase": phase, "result": result,
+                          "elapsedMs": String(Int(max(0, now - startedAt) * 1_000)),
+                          "sinceRequestMs": String(Int(max(0, now - preparationStartedAt) * 1_000)),
+                          "playbackTraceID": playbackTraceID])
+#endif
+        }
+        func measured<T>(_ phase: String, operation: () async -> T) async -> T {
+            let startedAt = ProcessInfo.processInfo.systemUptime
+            recordPhase(phase, result: "started", startedAt: startedAt)
+            let value = await operation()
+            recordPhase(phase, result: Task.isCancelled ? "cancelled" : "completed", startedAt: startedAt)
+            return value
+        }
         let fileExtension = (item.name as NSString).pathExtension.lowercased()
         let session = connectionStore.dsmSession
         let candidates = session?.fileStationOpenURLs(path: item.path) ?? [url]
         let jellyfinServices = dataStore.services.filter(\.isJellyfin)
         let expectedContentLength = item.sizeBytes.flatMap { $0 > 0 ? Int(exactly: $0) : nil }
-#if DEBUG
+        // A transport-stream recording can grow after the directory snapshot.
+        // Keep exact length checks for other files and reject TS truncation.
+        let allowsContentGrowth = ["ts", "m2ts", "mts"].contains(fileExtension)
         let greenfieldRequested = usesGreenfieldPlayer && item.kind == .video
-#else
-        let greenfieldRequested = false
-#endif
         preparation.start { preparationID in
+            let playbackResumeKey = isTransportStreamRecording
+                ? await recordingIdentityTask?.value : localResumeKey
             let directory = (item.path as NSString).deletingLastPathComponent
-            let siblingItems = try? await dataStore.loadFolder(path: directory)
+            let siblingItems = await measured("siblingDirectory") {
+                try? await dataStore.loadFolder(path: directory)
+            }
             guard preparation.isCurrent(preparationID) else { return }
             let lyricsItem = item.kind == .audio ? siblingItems?.first {
                 ($0.name as NSString).pathExtension.lowercased() == "lrc"
@@ -1195,15 +1247,16 @@ private struct FilePreviewView: View {
                         (item.name as NSString).deletingPathExtension) == .orderedSame
             } : nil
             let lyricsURL = lyricsItem.flatMap { session?.fileStationOpenURL(path: $0.path) }
-            async let sidecarSubtitle = NASSubtitleAssetResolver.resolve(
-                videoPath: item.path,
-                videoName: item.name,
-                session: session,
-                siblingItems: siblingItems
-            )
+            async let sidecarSubtitle = measured("sidecarSubtitle") {
+                await NASSubtitleAssetResolver.resolve(
+                    videoPath: item.path, videoName: item.name,
+                    session: session, siblingItems: siblingItems)
+            }
             // A verified Jellyfin copy can supply a sustainable stream before
             // a large original repeatedly stalls on cellular.
             let fileNetwork = PlaybackNetworkObserver.shared.snapshot()
+            let matchedStreamStartedAt = ProcessInfo.processInfo.systemUptime
+            recordPhase("verifiedStreamMatch", result: "started", startedAt: matchedStreamStartedAt)
             let matchedStream: JellyfinMatchedFileStream.Match?
             if greenfieldRequested, fileNetwork.cacheKey != "wifi" {
                 if let warm = await verifiedStreamLookup?.value,
@@ -1217,23 +1270,31 @@ private struct FilePreviewView: View {
             } else {
                 matchedStream = nil
             }
-#if DEBUG
+            recordPhase("verifiedStreamMatch", result: matchedStream == nil ? "unavailable" : "matched",
+                        startedAt: matchedStreamStartedAt)
             if let match = matchedStream,
                let sourceBitrate = match.sourceBitrate ?? match.durationSeconds.flatMap({ duration in
                     duration > 0 ? Int(Double(item.sizeBytes ?? 0) * 8 / duration) : nil
                }),
                PlaybackAdaptiveBitratePolicy.isOriginalClearlyUnsustainable(
-                    sourceBitrate: sourceBitrate, measuredCapacity: match.measuredCapacity
-                        ?? fileNetwork.bitrateCap,
+                    sourceBitrate: sourceBitrate, measuredCapacity: match.measuredCapacity,
                     isPrivateRoute: false, forcesOriginal: false),
                let bitrate = PlaybackAdaptiveBitratePolicy.target(
                     currentCeiling: sourceBitrate, capacity: match.measuredCapacity,
                     networkKey: fileNetwork.cacheKey),
+               let selection = JellyfinMatchedFileStream.initialSelection(
+                    match: match,
+                    resume: playbackResumeKey.flatMap { LocalPlaybackResumeStore.shared.entry(for: $0) },
+                    playsFromBeginning: playsFromBeginning,
+                    externalSubtitleURL: (await sidecarSubtitle)?.playbackURL),
                let request = await JellyfinMatchedFileStream.playbackRequest(
                     file: item, match: match, bitrate: bitrate,
-                    startSeconds: nil, initialPosition: playsFromBeginning ? 0 : nil,
-                    subtitleURL: (await sidecarSubtitle)?.playbackURL,
-                    localResumeKey: localResumeKey, requestedAt: requestedAt) {
+                    startSeconds: nil, initialPosition: selection.initialPosition,
+                    subtitleURL: selection.tracks.externalSubtitleURL,
+                    localResumeKey: playbackResumeKey, requestedAt: requestedAt,
+                    preferredAudioStreamIndex: selection.tracks.audioIndex,
+                    preferredSubtitleStreamIndex: selection.tracks.subtitleIndex,
+                    availableExternalSubtitleURL: (await sidecarSubtitle)?.playbackURL) {
                 await preparation.holdPreparedResultForDebugIfRequested(preparationID, entry: "dsmMatchedHLS")
                 await MainActor.run {
                     guard preparation.isCurrent(preparationID) else {
@@ -1253,43 +1314,64 @@ private struct FilePreviewView: View {
                 }
                 return
             }
-#endif
             guard preparation.isCurrent(preparationID) else { return }
             // Validate DSM's authenticated Range endpoint before passing it
             // to KSPlayer; a login/error JSON response is not a media stream.
-            let matchingJellyfinOriginal = greenfieldRequested
-                ? await JellyfinOriginalFileRouteResolver.resolve(
-                    file: item, services: jellyfinServices, dsmSession: session
-                ) : nil
+            var matchingJellyfinOriginal: URL?
             let selectedURL: URL
             if greenfieldRequested {
                 let localCandidates = candidates.filter { NetworkHostClassifier.isPrivate($0.host) }
                 let remoteCandidates = candidates.filter { !NetworkHostClassifier.isPrivate($0.host) }
-                let localURL: URL?
-                if let matchingJellyfinOriginal {
-                    localURL = matchingJellyfinOriginal
-                } else if !localCandidates.isEmpty {
-                    localURL = await AuthenticatedMediaPlaybackResolver.firstPlayableURL(
-                        candidates: localCandidates,
-                        allowsSelfSignedCertificates: session?.allowsSelfSignedCertificates == true,
-                        diagnosticStage: "dsmGreenfieldLANRange", timeout: 2,
-                        expectedContentLength: expectedContentLength
-                    )
-                } else {
-                    localURL = nil
-                }
-                let remoteURL: URL?
-                if localURL == nil, !remoteCandidates.isEmpty {
-                    remoteURL = await AuthenticatedMediaPlaybackResolver.firstPlayableURL(
-                        candidates: remoteCandidates,
-                        allowsSelfSignedCertificates: session?.allowsSelfSignedCertificates == true,
-                        diagnosticStage: "dsmGreenfieldRange", timeout: 4,
-                        expectedContentLength: expectedContentLength
-                    )
-                } else {
-                    remoteURL = nil
-                }
-                let resolved = localURL ?? remoteURL
+                let resolved = await PlaybackFileOriginalRouteSelection.resolve(
+                    publicFirst: PlaybackFileOriginalRouteSelection.prefersPublicFirst(
+                        networkKey: PlaybackNetworkObserver.shared.snapshot().cacheKey,
+                        remoteCandidates: remoteCandidates),
+                    isCurrent: { preparation.isCurrent(preparationID) },
+                    local: {
+                        // Both routes authenticate the same original file. A
+                        // slow optional Jellyfin lookup must not delay a valid
+                        // File Station Range response on the local network.
+                        let winner = await PlaybackOriginalRouteRace.resolve(jellyfin: {
+                            guard !Task.isCancelled, preparation.isCurrent(preparationID) else { return nil }
+                            let startedAt = ProcessInfo.processInfo.systemUptime
+                            recordPhase("verifiedOriginalRoute", result: "started", startedAt: startedAt)
+                            let matching = await JellyfinOriginalFileRouteResolver.resolve(
+                                file: item, services: jellyfinServices, dsmSession: session)
+                            recordPhase("verifiedOriginalRoute",
+                                        result: Task.isCancelled ? "cancelled" : (matching == nil ? "unavailable" : "matched"),
+                                        startedAt: startedAt)
+                            return matching
+                        }, fileStation: {
+                            guard !Task.isCancelled, preparation.isCurrent(preparationID) else { return nil }
+                            let startedAt = ProcessInfo.processInfo.systemUptime
+                            recordPhase("localRange", result: "started", startedAt: startedAt)
+                            let localURL = await AuthenticatedMediaPlaybackResolver.firstPlayableURL(
+                                candidates: localCandidates,
+                                allowsSelfSignedCertificates: session?.allowsSelfSignedCertificates == true,
+                                diagnosticStage: "dsmGreenfieldLANRange", timeout: 2,
+                                expectedContentLength: expectedContentLength,
+                                allowsContentGrowth: allowsContentGrowth)
+                            recordPhase("localRange",
+                                        result: Task.isCancelled ? "cancelled" : (localURL == nil ? "unavailable" : "validated"),
+                                        startedAt: startedAt)
+                            return localURL
+                        })
+                        guard !Task.isCancelled, preparation.isCurrent(preparationID) else { return nil }
+                        matchingJellyfinOriginal = winner?.source == .jellyfin ? winner?.url : nil
+                        return winner?.url
+                    }, remote: {
+                        let startedAt = ProcessInfo.processInfo.systemUptime
+                        recordPhase("remoteRange", result: "started", startedAt: startedAt)
+                        let remoteURL = await AuthenticatedMediaPlaybackResolver.firstPlayableURL(
+                            candidates: remoteCandidates,
+                            allowsSelfSignedCertificates: session?.allowsSelfSignedCertificates == true,
+                            diagnosticStage: "dsmGreenfieldRange", timeout: 4,
+                            expectedContentLength: expectedContentLength,
+                            allowsContentGrowth: allowsContentGrowth)
+                        recordPhase("remoteRange", result: remoteURL == nil ? "unavailable" : "validated",
+                                    startedAt: startedAt)
+                        return remoteURL
+                    })
                 guard let resolved else {
                     await MainActor.run {
                         guard preparation.isCurrent(preparationID) else { return }
@@ -1331,6 +1413,21 @@ private struct FilePreviewView: View {
             }
             let playbackURL = preparedProxyURL ?? selectedURL
             let playbackUsesLocalProxy = preparedProxyURL != nil
+            // Healthy Wi-Fi keeps the original route. Resolve and negotiate a
+            // verified candidate only when the common downshift policy asks.
+            let originalFallbackLoader = greenfieldRequested
+                ? JellyfinMatchedFileStream.originalFallbackRequestLoader(
+                    file: item, sourceTraceID: playbackTraceID,
+                    networkKey: fileNetwork.cacheKey, subtitleURL: subtitleAsset?.playbackURL,
+                    localResumeKey: playbackResumeKey, resolveMatch: {
+                        if let matchedStream,
+                           Date().timeIntervalSince(matchedStream.measuredAt) < 30 {
+                            return matchedStream
+                        }
+                        return await JellyfinMatchedFileStream.resolve(
+                            file: item, services: jellyfinServices,
+                            siblingItems: siblingItems, dsmSession: session)
+                    }) : nil
             await preparation.holdPreparedResultForDebugIfRequested(preparationID, entry: "dsmOriginal")
             await MainActor.run {
                 guard preparation.isCurrent(preparationID) else {
@@ -1367,6 +1464,7 @@ private struct FilePreviewView: View {
                     initialPosition: playsFromBeginning ? 0 : nil,
                     externalSubtitleURL: subtitleAsset?.playbackURL,
                     initialOrientationMode: item.kind == .video ? .landscape : .automatic,
+                    byteLength: item.sizeBytes,
                     isPrivateNetworkRoute: isPrivateRoute,
                     externalHandoffResource: MediaPlaybackResource(
                         url: selectedURL,
@@ -1400,11 +1498,11 @@ private struct FilePreviewView: View {
                             )
                         }
                         : nil,
+                    compatibilityFallbackRequestLoader: originalFallbackLoader,
                     playbackTraceID: playbackTraceID,
                     audioLyricsURL: lyricsURL,
-                    localResumeKey: item.kind == .video ? localResumeKey : nil
+                    localResumeKey: item.kind == .video ? playbackResumeKey : nil
                 )
-#if DEBUG
                 if greenfieldRequested {
                     PlayerOrientationController.prepareForPresentation(request.initialOrientationMode)
                         greenfieldPlaybackRequest = request.greenfieldPlaybackLaunchRequest()
@@ -1414,12 +1512,6 @@ private struct FilePreviewView: View {
                     )
                     playbackRequest = request
                 }
-#else
-                PlayerOrientationController.prepareForPresentation(
-                    item.kind == .video ? .landscape : .automatic
-                )
-                playbackRequest = request
-#endif
             }
         }
     }
@@ -1759,12 +1851,20 @@ enum JellyfinOriginalFileRouteResolver {
               let expectedLength = Int(exactly: size),
               let lanHost = dsmSession?.endpoints.lanAddress?.host,
               NetworkHostClassifier.isPrivate(lanHost) else { return nil }
-        let stored: StoredJellyfinSession? = services.lazy
-            .flatMap { [$0.endpoint, $0.alternateEndpoint].compactMap { $0 } }
-            .compactMap { KeychainStore.shared.loadJellyfinSession(endpoint: $0) }
+        let endpoints = services.flatMap {
+            JellyfinSessionEndpointPolicy.configuredEndpoints(for: $0, dsmBaseURL: dsmSession?.baseURL)
+        }
+        let restored = JellyfinSessionEndpointPolicy.candidates(from: endpoints).lazy
+            .compactMap { candidate in
+                KeychainStore.shared.loadJellyfinSession(endpoint: candidate).map {
+                    (endpoint: candidate, session: $0)
+                }
+            }
             .first
-        guard let stored, let publicEndpoint = URL(string: stored.endpointString),
-              let lanEndpoint = URL(string: "http://\(lanHost):8096"),
+        guard let restored else { return nil }
+        let stored = restored.session
+        let publicEndpoint = restored.endpoint
+        guard let lanEndpoint = URL(string: "http://\(lanHost):8096"),
               let publicID = await publicServerID(at: publicEndpoint),
               let lanID = await publicServerID(at: lanEndpoint),
               publicID == lanID else { return nil }
@@ -1870,23 +1970,47 @@ enum JellyfinMatchedFileStream {
         let durationSeconds: Double?
         let measuredCapacity: Int?
         let measuredAt: Date
+        var firstAudioStreamIndex: Int? = nil
+        var mediaStreams: [MediaStream] = []
     }
 
     static func resolve(file: FileItem, services: [LaunchpadService],
                         siblingItems: [FileItem]?, dsmSession: DSMSession?) async -> Match? {
         guard let size = file.sizeBytes, size >= 16 * 1024 * 1024 * 1024 else { return nil }
-        let sessions: [StoredJellyfinSession] = services.lazy
-            .flatMap { [$0.endpoint, $0.alternateEndpoint].compactMap { $0 } }
-            .compactMap { KeychainStore.shared.loadJellyfinSession(endpoint: $0) }
-        let stored = sessions.first(where: {
-            !NetworkHostClassifier.isPrivate(URL(string: $0.endpointString)?.host)
+        let rawEndpoints = services.flatMap { [$0.endpoint, $0.alternateEndpoint].compactMap { $0 } }
+        let endpoints = services.flatMap {
+            JellyfinSessionEndpointPolicy.configuredEndpoints(for: $0, dsmBaseURL: dsmSession?.baseURL)
+        }
+        let candidates = JellyfinSessionEndpointPolicy.candidates(from: endpoints)
+        let sessions = candidates.compactMap { candidate in
+            KeychainStore.shared.loadJellyfinSession(endpoint: candidate).map {
+                (endpoint: candidate, session: $0)
+            }
+        }
+        let selected = sessions.first(where: {
+            !NetworkHostClassifier.isPrivate($0.endpoint.host)
         }) ?? sessions.first
-        guard let stored, let endpoint = URL(string: stored.endpointString) else {
+        let rawSessionCount = rawEndpoints.filter {
+            KeychainStore.shared.loadJellyfinSession(endpoint: $0) != nil
+        }.count
+        DiagnosticLogStore.shared.record(.info, categoryKey: "diagnostics.category.media",
+            messageKey: "diagnostics.files.jellyfin_original_lookup",
+            details: ["result": "sessionCandidates", "serviceCount": String(services.count),
+                      "candidateCount": String(candidates.count), "rawSessionCount": String(rawSessionCount),
+                      "storedSessionCount": String(sessions.count),
+                      "selectedPath": selected.map {
+                          let path = $0.endpoint.path
+                          return path.isEmpty || path == "/" ? "root"
+                              : path == "/jellyfin" ? "jellyfin" : path == "/emby" ? "emby" : "custom"
+                      } ?? "none"])
+        guard let selected else {
             DiagnosticLogStore.shared.record(.info, categoryKey: "diagnostics.category.media",
                 messageKey: "diagnostics.files.jellyfin_original_lookup",
                 details: ["result": "noStoredJellyfinSession"])
             return nil
         }
+        let stored = selected.session
+        let endpoint = selected.endpoint
         let configuration = URLSessionConfiguration.ephemeral
         configuration.timeoutIntervalForRequest = 5
         configuration.timeoutIntervalForResource = 10
@@ -1898,6 +2022,8 @@ enum JellyfinMatchedFileStream {
                 ?? UIDevice.current.identifierForVendor?.uuidString ?? "Nastart",
             version: Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0.1"
         ), sessionConfiguration: configuration)
+        let playbackClient = JellyfinClient(configuration: client.configuration,
+            sessionConfiguration: JellyfinPlaybackSessionPolicy.configuration())
         var parameters = Paths.GetItemsParameters()
         parameters.userID = stored.userID
         parameters.isRecursive = true
@@ -1910,11 +2036,20 @@ enum JellyfinMatchedFileStream {
         parameters.includeItemTypes = itemTypes
         let probeTask = Task { () -> Int? in
             let started = ProcessInfo.processInfo.systemUptime
-            guard let data = try? await client.send(
-                Paths.getBitrateTestBytes(size: 1024 * 1024)).value,
-                !data.isEmpty else { return nil }
-            let elapsed = max(ProcessInfo.processInfo.systemUptime - started, 0.05)
-            return Int(Double(data.count * 8) / elapsed)
+            let delegate = PlaybackBandwidthProbeDelegate()
+            guard let data = try? await playbackClient.send(
+                Paths.getBitrateTestBytes(size: 1024 * 1024), delegate: delegate).value,
+                !Task.isCancelled, data.count == 1024 * 1024,
+                let sample = delegate.sample(bytes: data.count,
+                    totalSeconds: ProcessInfo.processInfo.systemUptime - started) else { return nil }
+            DiagnosticLogStore.shared.record(.info, categoryKey: "diagnostics.category.media",
+                messageKey: "diagnostics.files.jellyfin_original_lookup",
+                details: ["result": "bandwidthProbe", "sampleBytes": String(data.count),
+                          "measuredBitrate": String(sample.bitrate),
+                          "measurementBasis": sample.usesNetworkBodyTiming ? "networkBody" : "totalRequest",
+                          "totalMs": String(Int(sample.totalSeconds * 1000)),
+                          "bodyMs": sample.bodySeconds.map { String(Int($0 * 1000)) } ?? "unknown"])
+            return sample.usesNetworkBodyTiming ? sample.bitrate : nil
         }
         let parentName = ((file.path as NSString).deletingLastPathComponent as NSString)
             .lastPathComponent
@@ -1925,17 +2060,32 @@ enum JellyfinMatchedFileStream {
         if itemTypes == [.movie], searchName.count >= 4 {
             parameters.searchTerm = searchName
         }
-        var items: [BaseItemDto] = []
-        do {
-            for pageIndex in 0..<(parameters.searchTerm == nil ? 3 : 1) {
-                parameters.startIndex = pageIndex * 200
-                let page = try await client.send(Paths.getItems(parameters: parameters)).value
-                let batch = page.items ?? []
-                items.append(contentsOf: batch)
-                if batch.count < 200 || items.count >= (page.totalRecordCount ?? Int.max) {
-                    break
+        func exactMatches(in items: [BaseItemDto]) -> [(String, String, Int?, Double?, Int?, [MediaStream])] {
+            items.flatMap { item in
+                (item.mediaSources ?? []).compactMap { source -> (String, String, Int?, Double?, Int?, [MediaStream])? in
+                    guard let itemID = item.id, let sourceID = source.id,
+                          let sourceSize = source.size, Int64(sourceSize) == size,
+                          let path = source.path ?? item.path,
+                          VerifiedFileIdentityPolicy.matches(
+                            dsmPath: file.path, dsmSize: size,
+                            jellyfinPath: path, jellyfinSize: Int64(sourceSize)) else { return nil }
+                    return (itemID, sourceID, source.bitrate,
+                            item.runTimeTicks.map { Double($0) / 10_000_000 },
+                            source.mediaStreams?.first(where: { $0.type == .audio })?.index,
+                            source.mediaStreams ?? [])
                 }
             }
+        }
+        let lookup: VerifiedFileLookupPolicy.Outcome<BaseItemDto>
+        do {
+            lookup = try await VerifiedFileLookupPolicy.load(searchHint: parameters.searchTerm,
+                fetch: { hint, startIndex in
+                    var query = parameters
+                    query.searchTerm = hint
+                    query.startIndex = startIndex
+                    let page = try await client.send(Paths.getItems(parameters: query)).value
+                    return .init(items: page.items ?? [], totalCount: page.totalRecordCount)
+                }, hasExactMatch: { !exactMatches(in: $0).isEmpty })
         } catch {
             probeTask.cancel()
             let nsError = error as NSError
@@ -1946,6 +2096,7 @@ enum JellyfinMatchedFileStream {
                           "target": DiagnosticLogStore.redactedURL(endpoint)])
             return nil
         }
+        let items = lookup.items
         let filename = file.name.lowercased()
         let sources = items.flatMap { $0.mediaSources ?? [] }
         let matchingSizes = sources.filter {
@@ -1957,19 +2108,8 @@ enum JellyfinMatchedFileStream {
                     .lastPathComponent.lowercased() == filename
             } == true
         }
-        let matches = items.flatMap { item in
-            (item.mediaSources ?? []).compactMap { source -> (String, String, Int?, Double?)? in
-                guard let itemID = item.id, let sourceID = source.id,
-                      let sourceSize = source.size, Int64(sourceSize) == size,
-                      let path = source.path ?? item.path else { return nil }
-                guard VerifiedFileIdentityPolicy.matches(
-                    dsmPath: file.path, dsmSize: size,
-                    jellyfinPath: path, jellyfinSize: Int64(sourceSize)) else { return nil }
-                let duration = item.runTimeTicks.map { Double($0) / 10_000_000 }
-                return (itemID, sourceID, source.bitrate, duration)
-            }
-        }
-        guard matches.count == 1, let match = matches.first else {
+        let matches = exactMatches(in: items)
+        guard lookup.isComplete, matches.count == 1, let match = matches.first else {
             probeTask.cancel()
             DiagnosticLogStore.shared.record(.info, categoryKey: "diagnostics.category.media",
                 messageKey: "diagnostics.files.jellyfin_original_lookup",
@@ -1979,6 +2119,8 @@ enum JellyfinMatchedFileStream {
                           "nameMatches": String(matchingNames.count),
                           "movieFolder": pathLower.contains("/movie/") ? "yes" : "no",
                           "searchUsed": parameters.searchTerm == nil ? "no" : "yes",
+                          "searchBroadened": lookup.broadenedSearch ? "yes" : "no",
+                          "lookupComplete": lookup.isComplete ? "yes" : "no",
                           "searchSource": nfoName == nil ? "folder" : "nfo"])
             return nil
         }
@@ -1986,10 +2128,190 @@ enum JellyfinMatchedFileStream {
         DiagnosticLogStore.shared.record(.info, categoryKey: "diagnostics.category.media",
             messageKey: "diagnostics.files.jellyfin_original_lookup",
             details: ["result": "verifiedTranscodeSource", "identity": "parentTailSizeAndFilename",
+                      "searchBroadened": lookup.broadenedSearch ? "yes" : "no",
+                      "lookupComplete": "yes",
                       "measuredBitrate": capacity.map(String.init) ?? "unknown"])
-        return Match(client: client, itemID: match.0, mediaSourceID: match.1,
+        return Match(client: playbackClient, itemID: match.0, mediaSourceID: match.1,
                      sourceBitrate: match.2, durationSeconds: match.3,
-                     measuredCapacity: capacity, measuredAt: Date())
+                     measuredCapacity: capacity, measuredAt: Date(), firstAudioStreamIndex: match.4,
+                     mediaStreams: match.5)
+    }
+
+    struct TrackSelection: Equatable {
+        let audioIndex: Int
+        let subtitleIndex: Int?
+        let externalSubtitleURL: URL?
+    }
+
+    struct InitialSelection: Equatable {
+        let tracks: TrackSelection
+        let initialPosition: Double?
+    }
+
+    /// An initial HLS renderer's ordinal zero is not a source stream identity.
+    /// Verify the saved selection before taking this shortcut, as we do for a
+    /// runtime handoff. Otherwise leave preparation on the original-file path.
+    static func initialSelection(match: Match, resume: LocalPlaybackResumeStore.Entry?,
+                                 playsFromBeginning: Bool,
+                                 externalSubtitleURL: URL?) -> InitialSelection? {
+        guard let audio = resume?.audioTrackID ?? match.firstAudioStreamIndex else { return nil }
+        let subtitle: Int?
+        let external: URL?
+        if let resume {
+            if resume.subtitlesDisabled {
+                subtitle = nil; external = nil
+            } else if resume.subtitleTrackID == -2 {
+                guard let externalSubtitleURL else { return nil }
+                subtitle = nil; external = externalSubtitleURL
+            } else {
+                guard let savedSubtitle = resume.subtitleTrackID, savedSubtitle >= 0 else { return nil }
+                subtitle = savedSubtitle; external = nil
+            }
+        } else {
+            subtitle = nil; external = externalSubtitleURL
+        }
+        let state = MediaPlaybackRuntimeState(
+            normalizedPosition: 0, positionSeconds: 0, playbackRate: 1,
+            audioTrackOrdinal: nil, subtitleTrackOrdinal: subtitle == nil ? nil : 0,
+            subtitlesDisabled: subtitle == nil && external == nil,
+            subtitleSelectionKnown: true, orientationMode: .landscape,
+            sourceAudioStreamIndex: audio, sourceSubtitleStreamIndex: subtitle,
+            activeExternalSubtitleURL: external)
+        guard let tracks = verifiedTracks(match: match, runtime: state) else { return nil }
+        let position: Double?
+        if playsFromBeginning {
+            position = 0
+        } else if let resume {
+            guard resume.positionSeconds.isFinite, resume.positionSeconds >= 0,
+                  let duration = match.durationSeconds, duration.isFinite, duration > 0,
+                  resume.positionSeconds <= duration else { return nil }
+            position = resume.positionSeconds / duration
+        } else {
+            position = nil
+        }
+        return InitialSelection(tracks: tracks, initialPosition: position)
+    }
+
+    static func verifiedTracks(match: Match, runtime: MediaPlaybackRuntimeState) -> TrackSelection? {
+        guard runtime.subtitleSelectionKnown, let audio = runtime.sourceAudioStreamIndex,
+              audio >= 0, match.mediaStreams.filter({ $0.index == audio }).count == 1,
+              match.mediaStreams.first(where: { $0.index == audio })?.type == .audio else { return nil }
+        if runtime.subtitlesDisabled {
+            guard runtime.subtitleTrackOrdinal == nil, runtime.activeExternalSubtitleURL == nil else { return nil }
+            return .init(audioIndex: audio, subtitleIndex: nil, externalSubtitleURL: nil)
+        }
+        if let external = runtime.activeExternalSubtitleURL {
+            return .init(audioIndex: audio, subtitleIndex: nil, externalSubtitleURL: external)
+        }
+        guard let subtitle = runtime.sourceSubtitleStreamIndex, subtitle >= 0,
+              match.mediaStreams.filter({ $0.index == subtitle }).count == 1,
+              match.mediaStreams.filter({ $0.type == .subtitle && $0.index == subtitle
+                  && $0.isExternal != true && $0.codec?.isEmpty == false }).count == 1 else { return nil }
+        return .init(audioIndex: audio, subtitleIndex: subtitle, externalSubtitleURL: nil)
+    }
+
+    static func originalFallbackRequestLoader(
+        file: FileItem, sourceTraceID: String, networkKey: String,
+        subtitleURL: URL?, localResumeKey: String?,
+        resolveMatch: @escaping () async -> Match?,
+        prepareRequest: ((Match, Int, Double, TrackSelection) async -> MediaPlaybackRequest?)? = nil
+    ) -> ((MediaPlaybackRuntimeState?) async -> MediaPlaybackRequest?)? {
+        guard file.kind == .video, (file.sizeBytes ?? 0) >= 16 * 1024 * 1024 * 1024 else { return nil }
+        return { runtime in
+            guard !Task.isCancelled else { return nil }
+            guard let runtime, let position = runtime.positionSeconds,
+                  position.isFinite, position >= 0, runtime.subtitleSelectionKnown,
+                  runtime.sourceAudioStreamIndex != nil,
+                  runtime.subtitlesDisabled
+                    ? (runtime.subtitleTrackOrdinal == nil && runtime.activeExternalSubtitleURL == nil)
+                    : (runtime.activeExternalSubtitleURL != nil || runtime.sourceSubtitleStreamIndex != nil) else {
+                recordTrackDecline(runtime, traceID: sourceTraceID, reason: "runtimeTracks")
+                return nil
+            }
+            guard let match = await resolveMatch(), !Task.isCancelled else { return nil }
+            guard let tracks = verifiedTracks(match: match, runtime: runtime) else {
+                recordTrackDecline(runtime, traceID: sourceTraceID, reason: "unverifiedSourceTracks")
+                return nil
+            }
+            let sourceBitrate = match.sourceBitrate.flatMap { $0 > 0 ? $0 : nil }
+                ?? match.durationSeconds.flatMap { duration -> Int? in
+                    guard duration.isFinite, duration > 0, let size = file.sizeBytes else { return nil }
+                    let value = Double(size) * 8 / duration
+                    return value.isFinite && value > 0 && value < Double(Int.max) ? Int(value) : nil
+                }
+            let observed = PlaybackRecentThroughputStore.shared.estimate(
+                traceID: sourceTraceID, now: ProcessInfo.processInfo.systemUptime)
+            let freshProbe = Date().timeIntervalSince(match.measuredAt) < 30 ? match.measuredCapacity : nil
+            let capacity = [observed, freshProbe].compactMap { $0 }.filter { $0 > 0 }.min()
+            guard let sourceBitrate, let bitrate = PlaybackAdaptiveBitratePolicy.target(
+                currentCeiling: sourceBitrate, capacity: capacity, networkKey: networkKey) else { return nil }
+            let request: MediaPlaybackRequest?
+            if let prepareRequest { request = await prepareRequest(match, bitrate, position, tracks) }
+            else {
+                request = await playbackRequest(file: file, match: match, bitrate: bitrate,
+                    startSeconds: position, initialPosition: nil, subtitleURL: tracks.externalSubtitleURL,
+                    localResumeKey: localResumeKey, preferredAudioStreamIndex: tracks.audioIndex,
+                    preferredSubtitleStreamIndex: tracks.subtitleIndex,
+                    availableExternalSubtitleURL: tracks.externalSubtitleURL ?? subtitleURL)
+            }
+            guard let request else { return nil }
+            guard !Task.isCancelled else {
+                request.playbackTracker?.releasePreparedResources()
+                return nil
+            }
+            DiagnosticLogStore.shared.record(.info, categoryKey: "diagnostics.category.media",
+                messageKey: "diagnostics.files.jellyfin_original_lookup",
+                details: ["result": "originalFallbackPrepared", "bitrate": String(bitrate),
+                          "audioStreamIndex": String(tracks.audioIndex),
+                          "subtitleStreamIndex": tracks.subtitleIndex.map(String.init) ?? "-1",
+                          "externalSubtitleActive": tracks.externalSubtitleURL == nil ? "no" : "yes",
+                          "playbackTraceID": sourceTraceID])
+            return request.applyingRuntimePreferences(runtime)
+        }
+    }
+
+    private static func recordTrackDecline(_ runtime: MediaPlaybackRuntimeState?, traceID: String, reason: String) {
+        DiagnosticLogStore.shared.record(.info, categoryKey: "diagnostics.category.media",
+            messageKey: "diagnostics.files.jellyfin_original_lookup",
+            details: ["result": "originalFallbackUnavailable", "reason": reason,
+                      "audioOrdinal": runtime?.audioTrackOrdinal.map(String.init) ?? "unknown",
+                      "audioStreamIndex": runtime?.sourceAudioStreamIndex.map(String.init) ?? "unknown",
+                      "subtitleOrdinal": runtime?.subtitleTrackOrdinal.map(String.init) ?? "none",
+                      "subtitleStreamIndex": runtime?.sourceSubtitleStreamIndex.map(String.init) ?? "none",
+                      "subtitleSelectionKnown": runtime?.subtitleSelectionKnown == true ? "yes" : "no",
+                      "subtitlesDisabled": runtime?.subtitlesDisabled == true ? "yes" : "no",
+                      "externalSubtitleActive": runtime?.activeExternalSubtitleURL == nil ? "no" : "yes",
+                      "playbackTraceID": traceID])
+    }
+
+    static func negotiatedTracksMatch(url: URL, audioIndex: Int, subtitleIndex: Int?,
+        negotiatedAudioIndex: Int? = nil, negotiatedSubtitleIndex: Int? = nil) -> Bool {
+        let items = URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems ?? []
+        func values(_ name: String) -> [String] {
+            items.filter { $0.name.caseInsensitiveCompare(name) == .orderedSame }.map { $0.value ?? "" }
+        }
+        guard values("AudioStreamIndex") == [String(audioIndex)],
+              negotiatedAudioIndex == nil || negotiatedAudioIndex == audioIndex else { return false }
+        let subtitles = values("SubtitleStreamIndex")
+        if let subtitleIndex {
+            return subtitles == [String(subtitleIndex)]
+                && (negotiatedSubtitleIndex == nil || negotiatedSubtitleIndex == subtitleIndex)
+                && values("SubtitleMethod").map { $0.lowercased() } == ["encode"]
+        }
+        guard negotiatedSubtitleIndex == nil || negotiatedSubtitleIndex == -1 else { return false }
+        // Jellyfin StreamInfo.ToUrl deliberately omits SubtitleStreamIndex=-1.
+        // Accept that form only when PlaybackInfo explicitly confirms Off;
+        // an absent query on its own is never proof of the user's selection.
+        return subtitles == ["-1"] || (subtitles.isEmpty && negotiatedSubtitleIndex == -1)
+    }
+
+    private static func queryIndex(_ name: String, in url: URL) -> String {
+        let items = URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems ?? []
+        let values = items.filter { $0.name.caseInsensitiveCompare(name) == .orderedSame }
+        guard values.count == 1, let value = values.first?.value, let index = Int(value) else {
+            return values.isEmpty ? "none" : "invalidOrRepeated"
+        }
+        return String(index)
     }
 
     private static func nfoTitle(siblingItems: [FileItem]?,
@@ -2028,23 +2350,67 @@ enum JellyfinMatchedFileStream {
         }
     }
 
-    private static func stream(for match: Match, bitrate: Int, startSeconds: Double?,
-                               playbackTraceID: String) async -> PreparedStream? {
-        let profile = DeviceProfile(maxStreamingBitrate: bitrate,
+    static func playbackInfoRequest(for match: Match, bitrate: Int, startSeconds: Double?,
+                                    preferredAudioStreamIndex: Int? = nil,
+                                    preferredSubtitleStreamIndex: Int? = nil) -> PlaybackInfoDto {
+        let size = GreenfieldQualityPolicy.maximumVideoSize(bitrate: bitrate)
+        // A bitrate ceiling does not constrain the encoder's pixel workload.
+        // Keep this verified-file HLS route on the same resolution ladder as
+        // Jellyfin playback; the 20 Mbps rung otherwise negotiated 1440p.
+        let profile = DeviceProfile(codecProfiles: [CodecProfile(codec: "h264", conditions: [
+            ProfileCondition(condition: .lessThanEqual, isRequired: true,
+                property: .width, value: String(size.width)),
+            ProfileCondition(condition: .lessThanEqual, isRequired: true,
+                property: .height, value: String(size.height))
+        ], type: .video)], maxStreamingBitrate: bitrate,
             name: "Nastart Verified File HLS",
+            subtitleProfiles: preferredSubtitleStreamIndex.flatMap { index in
+                match.mediaStreams.first { $0.type == .subtitle && $0.index == index }?.codec
+            }.map { [SubtitleProfile(format: $0, method: .encode)] },
             transcodingProfiles: [TranscodingProfile(
                 protocol: .hls, audioCodec: "aac", container: "ts",
                 context: .streaming, isBreakOnNonKeyFrames: true,
                 maxAudioChannels: "8", minSegments: 1, segmentLength: 4,
                 transcodeSeekInfo: .auto, type: .video, videoCodec: "h264")])
-        let request = PlaybackInfoDto(allowAudioStreamCopy: false,
+        var request = PlaybackInfoDto(allowAudioStreamCopy: false,
             allowVideoStreamCopy: false, deviceProfile: profile,
             enableDirectPlay: false, enableDirectStream: false,
             enableTranscoding: true, maxStreamingBitrate: bitrate,
             mediaSourceID: match.mediaSourceID,
             startTimeTicks: startSeconds.map { Int(max($0, 0) * 10_000_000) })
-        guard let response = try? await match.client.send(Paths.getPostedPlaybackInfo(
-            itemID: match.itemID, parameters: nil, request)).value else { return nil }
+        if let preferredAudioStreamIndex {
+            request.audioStreamIndex = preferredAudioStreamIndex
+            request.subtitleStreamIndex = preferredSubtitleStreamIndex ?? -1
+        }
+        return request
+    }
+
+    private static func stream(for match: Match, bitrate: Int, startSeconds: Double?,
+                               playbackTraceID: String, preferredAudioStreamIndex: Int? = nil,
+                               preferredSubtitleStreamIndex: Int? = nil) async -> PreparedStream? {
+        let request = playbackInfoRequest(for: match, bitrate: bitrate, startSeconds: startSeconds,
+            preferredAudioStreamIndex: preferredAudioStreamIndex,
+            preferredSubtitleStreamIndex: preferredSubtitleStreamIndex)
+        let started = ProcessInfo.processInfo.systemUptime
+        let response: PlaybackInfoResponse
+        do {
+            response = try await match.client.send(Paths.getPostedPlaybackInfo(
+                itemID: match.itemID, parameters: nil, request)).value
+            DiagnosticLogStore.shared.record(.info, categoryKey: "diagnostics.category.media",
+                messageKey: "diagnostics.files.jellyfin_original_lookup",
+                details: ["result": "playbackInfoPrepared", "bitrate": String(bitrate),
+                          "requestedMaxWidth": String(GreenfieldQualityPolicy.maximumVideoSize(bitrate: bitrate).width),
+                          "requestedMaxHeight": String(GreenfieldQualityPolicy.maximumVideoSize(bitrate: bitrate).height),
+                          "elapsedMs": String(Int((ProcessInfo.processInfo.systemUptime - started) * 1000))])
+        } catch {
+            let error = error as NSError
+            DiagnosticLogStore.shared.record(.warning, categoryKey: "diagnostics.category.media",
+                messageKey: "diagnostics.files.jellyfin_original_lookup",
+                details: ["result": "playbackInfoFailed", "errorDomain": error.domain,
+                          "errorCode": String(error.code), "bitrate": String(bitrate),
+                          "elapsedMs": String(Int((ProcessInfo.processInfo.systemUptime - started) * 1000))])
+            return nil
+        }
         guard let mediaSource = response.mediaSources?.first(where: { $0.id == match.mediaSourceID }),
               mediaSource.transcodingSubProtocol == .hls,
               let path = mediaSource.transcodingURL,
@@ -2052,6 +2418,28 @@ enum JellyfinMatchedFileStream {
               var components = URLComponents(url: serverURL, resolvingAgainstBaseURL: false)
         else {
             stopEncoding(match: match, playSessionID: response.playSessionID)
+            return nil
+        }
+        DiagnosticLogStore.shared.record(.info, categoryKey: "diagnostics.category.media",
+            messageKey: "diagnostics.files.jellyfin_original_lookup",
+            details: ["result": "negotiatedDimensions", "bitrate": String(bitrate),
+                      "maxWidth": queryIndex("MaxWidth", in: serverURL),
+                      "maxHeight": queryIndex("MaxHeight", in: serverURL),
+                      "playbackTraceID": playbackTraceID])
+        if let audio = preferredAudioStreamIndex,
+           !negotiatedTracksMatch(url: serverURL, audioIndex: audio, subtitleIndex: preferredSubtitleStreamIndex,
+                negotiatedAudioIndex: mediaSource.defaultAudioStreamIndex,
+                negotiatedSubtitleIndex: mediaSource.defaultSubtitleStreamIndex) {
+            stopEncoding(match: match, playSessionID: response.playSessionID)
+            DiagnosticLogStore.shared.record(.warning, categoryKey: "diagnostics.category.media",
+                messageKey: "diagnostics.files.jellyfin_original_lookup",
+                details: ["result": "negotiatedTracksRejected", "audioStreamIndex": String(audio),
+                          "subtitleStreamIndex": preferredSubtitleStreamIndex.map(String.init) ?? "-1",
+                          "returnedAudioIndex": mediaSource.defaultAudioStreamIndex.map(String.init) ?? "none",
+                          "returnedSubtitleIndex": mediaSource.defaultSubtitleStreamIndex.map(String.init) ?? "none",
+                          "urlAudioIndex": queryIndex("AudioStreamIndex", in: serverURL),
+                          "urlSubtitleIndex": queryIndex("SubtitleStreamIndex", in: serverURL),
+                          "playbackTraceID": playbackTraceID])
             return nil
         }
         if components.queryItems?.contains(where: {
@@ -2067,9 +2455,33 @@ enum JellyfinMatchedFileStream {
         }
         guard let proxyURL = try? await AuthenticatedMediaStreamProxy.shared.register(
             upstreamURL: authenticatedURL, filename: "verified-file.m3u8",
-            allowsSelfSignedCertificates: false, playbackTraceID: playbackTraceID) else {
+            allowsSelfSignedCertificates: false, playbackTraceID: playbackTraceID,
+            jellyfinMediaPath: PlaybackJellyfinOutputDiagnostics.mediaPath(
+                path: mediaSource.path, encoderPath: mediaSource.encoderPath,
+                hasEncoderProtocol: mediaSource.encoderProtocol != nil)) else {
             stopEncoding(match: match, playSessionID: response.playSessionID)
             return nil
+        }
+        if startSeconds == nil, PlaybackNetworkObserver.shared.snapshot().cacheKey == "cellular" {
+            let started = ProcessInfo.processInfo.systemUptime
+            do {
+                let warmed = try await AuthenticatedMediaStreamProxy.shared.prewarmVODPlaylist(proxyURL)
+                try Task.checkCancellation()
+                DiagnosticLogStore.shared.record(.info, categoryKey: "diagnostics.category.media",
+                    messageKey: "diagnostics.files.jellyfin_original_lookup",
+                    details: ["result": warmed ? "cachedVOD" : "notCacheable",
+                              "stage": "cellularVODPlaylistPrewarm",
+                              "elapsedMs": String(Int((ProcessInfo.processInfo.systemUptime - started) * 1000))])
+            } catch {
+                AuthenticatedMediaStreamProxy.shared.unregister(proxyURL)
+                stopEncoding(match: match, playSessionID: response.playSessionID)
+                let error = error as NSError
+                DiagnosticLogStore.shared.record(.warning, categoryKey: "diagnostics.category.media",
+                    messageKey: "diagnostics.files.jellyfin_original_lookup",
+                    details: ["result": "playlistPrewarmFailed", "errorDomain": error.domain,
+                              "errorCode": String(error.code)])
+                return nil
+            }
         }
         return PreparedStream(url: proxyURL, playSessionID: response.playSessionID)
     }
@@ -2077,23 +2489,57 @@ enum JellyfinMatchedFileStream {
     static func playbackRequest(file: FileItem, match: Match, bitrate: Int,
                                 startSeconds: Double?, initialPosition: Double?,
                                 subtitleURL: URL?, localResumeKey: String?,
-                                requestedAt: Date = Date()) async -> MediaPlaybackRequest? {
+                                requestedAt: Date = Date(),
+                                preferredAudioStreamIndex: Int? = nil,
+                                preferredSubtitleStreamIndex: Int? = nil,
+                                availableExternalSubtitleURL: URL? = nil) async -> MediaPlaybackRequest? {
         let traceID = String(UUID().uuidString.prefix(8))
         guard let prepared = await stream(for: match, bitrate: bitrate,
-                                          startSeconds: startSeconds, playbackTraceID: traceID) else { return nil }
+                                          startSeconds: startSeconds, playbackTraceID: traceID,
+                                          preferredAudioStreamIndex: preferredAudioStreamIndex,
+                                          preferredSubtitleStreamIndex: preferredSubtitleStreamIndex) else { return nil }
         let url = prepared.url
         let tracker = MediaPlaybackTracker(releaseResources: {
             AuthenticatedMediaStreamProxy.shared.unregister(url)
             stopEncoding(match: match, playSessionID: prepared.playSessionID)
         }, eventHandler: { _ in })
         let networkKey = PlaybackNetworkObserver.shared.snapshot().cacheKey
+        let hasVerifiedSelection = preferredAudioStreamIndex != nil
+        let audioTracks = hasVerifiedSelection ? match.mediaStreams.filter { $0.type == .audio }
+            .compactMap { stream -> MediaPlaybackSourceTrack? in
+                guard let index = stream.index, index >= 0 else { return nil }
+                return .init(id: index, name: stream.displayTitle ?? stream.title ?? stream.language ?? String(index))
+            }.sorted { $0.id < $1.id } : []
+        let availableSidecar = availableExternalSubtitleURL ?? subtitleURL
+        let subtitleTracks = hasVerifiedSelection
+            ? subtitleCatalog(match: match, availableExternalSubtitleURL: availableSidecar) : []
+        let selectedSubtitle = subtitleURL == nil ? preferredSubtitleStreamIndex : -2
+        let trackLoader: ((Int?, Int?, MediaPlaybackRuntimeState) async -> MediaPlaybackRequest?)? = hasVerifiedSelection ? { audio, subtitle, state in
+            let selected = MediaPlaybackRuntimeState(normalizedPosition: state.normalizedPosition,
+                positionSeconds: state.positionSeconds, playbackRate: state.playbackRate,
+                audioTrackOrdinal: state.audioTrackOrdinal,
+                subtitleTrackOrdinal: subtitle == nil ? nil : 0,
+                subtitlesDisabled: subtitle == nil, subtitleSelectionKnown: true,
+                orientationMode: state.orientationMode,
+                sourceAudioStreamIndex: audio ?? state.sourceAudioStreamIndex ?? preferredAudioStreamIndex,
+                sourceSubtitleStreamIndex: subtitle == -2 ? nil : subtitle,
+                activeExternalSubtitleURL: subtitle == -2 ? availableSidecar : nil)
+            return await requestForVerifiedRuntime(file: file, match: match, bitrate: bitrate,
+                runtime: selected, localResumeKey: localResumeKey, availableExternalSubtitleURL: availableSidecar)
+        } : nil
+        let seekLoader: ((Double, MediaPlaybackRuntimeState) async -> MediaPlaybackRequest?)? = hasVerifiedSelection ? { seconds, state in
+            await requestForVerifiedRuntime(file: file, match: match, bitrate: bitrate,
+                runtime: state, position: seconds, localResumeKey: localResumeKey, availableExternalSubtitleURL: availableSidecar)
+        } : nil
         return MediaPlaybackRequest(
             requestedAt: requestedAt, url: url, title: file.name,
             source: .dsmFile, contentKind: .video,
             fileExtensionOverride: "m3u8", initialPosition: initialPosition,
             externalSubtitleURL: subtitleURL,
+            prefersSubtitlesDisabled: hasVerifiedSelection && preferredSubtitleStreamIndex == nil && subtitleURL == nil,
             initialOrientationMode: .landscape,
             timelineOffsetSeconds: startSeconds ?? 0,
+            timelineDomain: .sourceAbsolute,
             totalDurationSeconds: match.durationSeconds,
             estimatedBitrate: bitrate,
             streamBitrateCeiling: bitrate,
@@ -2102,20 +2548,56 @@ enum JellyfinMatchedFileStream {
             compatibilityFallbackRequestLoader: { runtime in
                 let observed = PlaybackRecentThroughputStore.shared.estimate(
                     traceID: traceID, now: ProcessInfo.processInfo.systemUptime)
-                let capacity = [observed, match.measuredCapacity].compactMap { $0 }.min()
+                let freshProbe = Date().timeIntervalSince(match.measuredAt) < 30 ? match.measuredCapacity : nil
+                let capacity = [observed, freshProbe].compactMap { $0 }.filter { $0 > 0 }.min()
                 guard let lower = PlaybackAdaptiveBitratePolicy.target(
                     currentCeiling: bitrate, capacity: capacity,
                     networkKey: networkKey) else { return nil }
+                if hasVerifiedSelection {
+                    guard let runtime else { return nil }
+                    return await requestForVerifiedRuntime(file: file, match: match, bitrate: lower,
+                        runtime: runtime, localResumeKey: localResumeKey, availableExternalSubtitleURL: availableSidecar)
+                }
                 guard let replacement = await playbackRequest(file: file, match: match,
                     bitrate: lower, startSeconds: runtime?.positionSeconds,
                     initialPosition: nil, subtitleURL: subtitleURL,
                     localResumeKey: localResumeKey) else { return nil }
                 return runtime.map { replacement.applyingRuntimePreferences($0) } ?? replacement
             },
-            selectedQualityID: "auto",
-            playbackTraceID: traceID,
+            sourceAudioTracks: audioTracks, sourceSubtitleTracks: subtitleTracks,
+            selectedSourceAudioTrackID: preferredAudioStreamIndex,
+            selectedSourceSubtitleTrackID: selectedSubtitle,
+            sourceTrackRequestLoader: trackLoader, serverSeekRequestLoader: seekLoader,
+            selectedQualityID: "auto", playbackTraceID: traceID,
             localResumeKey: localResumeKey)
     }
+
+    static func subtitleCatalog(match: Match, availableExternalSubtitleURL: URL?) -> [MediaPlaybackSourceTrack] {
+        var tracks = match.mediaStreams.filter { $0.type == .subtitle && $0.isExternal != true }
+            .compactMap { stream -> MediaPlaybackSourceTrack? in
+                guard let index = stream.index, index >= 0 else { return nil }
+                return .init(id: index, name: stream.displayTitle ?? stream.title ?? stream.language ?? String(index))
+            }.sorted { $0.id < $1.id }
+        if let url = availableExternalSubtitleURL {
+            tracks.append(.init(id: -2, name: NSLocalizedString("player.subtitles.external", comment: ""), externalURL: url))
+        }
+        return tracks
+    }
+
+    private static func requestForVerifiedRuntime(file: FileItem, match: Match, bitrate: Int,
+        runtime: MediaPlaybackRuntimeState, position: Double? = nil, localResumeKey: String?,
+        availableExternalSubtitleURL: URL?) async -> MediaPlaybackRequest? {
+        guard !Task.isCancelled, let seconds = position ?? runtime.positionSeconds,
+              seconds.isFinite, seconds >= 0, let tracks = verifiedTracks(match: match, runtime: runtime) else { return nil }
+        guard let request = await playbackRequest(file: file, match: match, bitrate: bitrate,
+            startSeconds: seconds, initialPosition: nil, subtitleURL: tracks.externalSubtitleURL,
+            localResumeKey: localResumeKey, preferredAudioStreamIndex: tracks.audioIndex,
+            preferredSubtitleStreamIndex: tracks.subtitleIndex,
+            availableExternalSubtitleURL: availableExternalSubtitleURL) else { return nil }
+        guard !Task.isCancelled else { request.playbackTracker?.releasePreparedResources(); return nil }
+        return request.applyingRuntimePreferences(runtime)
+    }
+
 }
 
 private extension Collection {
@@ -2123,15 +2605,74 @@ private extension Collection {
 }
 
 enum AuthenticatedMediaPlaybackResolver {
+    static func recordingIdentityResponseIsValid(_ response: HTTPURLResponse,
+                                                 offset: Int64, count: Int, minimumLength: Int64) -> Bool {
+        guard response.statusCode == 206,
+              isPlayableResponse(response, expectedContentLength: nil, allowsContentGrowth: true),
+              let range = MediaRangePolicy.contentRange(from: response.value(forHTTPHeaderField: "Content-Range")),
+              range.start == offset, range.bodyLength == Int64(count),
+              range.totalLength >= minimumLength else { return false }
+        return response.value(forHTTPHeaderField: "Content-Encoding").map {
+            $0.caseInsensitiveCompare("identity") == .orderedSame
+        } ?? true
+    }
+
+    static func recordingIdentityBytes(url: URL, offset: Int64, count: Int,
+                                       allowsSelfSignedCertificates: Bool, minimumLength: Int64) async -> Data? {
+        guard offset >= 0, count > 0, count <= LocalPlaybackResumeStore.recordingSampleBytes,
+              offset <= Int64.max - Int64(count) else { return nil }
+        let delegate = FilePreviewTrustDelegate(trustedHost: url.host,
+            allowsSelfSignedCertificates: allowsSelfSignedCertificates && url.scheme?.lowercased() == "https")
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.timeoutIntervalForRequest = 2
+        configuration.timeoutIntervalForResource = 4
+        configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
+        let session = URLSession(configuration: configuration, delegate: delegate, delegateQueue: nil)
+        defer { session.invalidateAndCancel() }
+        var request = URLRequest(url: url)
+        request.setValue("bytes=\(offset)-\(offset + Int64(count) - 1)", forHTTPHeaderField: "Range")
+        request.setValue("identity", forHTTPHeaderField: "Accept-Encoding")
+        do {
+            let (bytes, response) = try await session.bytes(for: request)
+            guard let response = response as? HTTPURLResponse,
+                  recordingIdentityResponseIsValid(response, offset: offset, count: count,
+                                                   minimumLength: minimumLength) else { return nil }
+            var data = Data()
+            data.reserveCapacity(count)
+            for try await byte in bytes {
+                guard !Task.isCancelled else { return nil }
+                data.append(byte)
+                if data.count == count { return data }
+            }
+            return nil
+        } catch { return nil }
+    }
+
+    static func contentLengthMatches(expected: Int?, actual: Int64?, allowsGrowth: Bool) -> Bool {
+        guard let expected, expected > 0, let actual else { return true }
+        return allowsGrowth ? actual >= Int64(expected) : actual == Int64(expected)
+    }
+
+    static func isPlayableResponse(_ response: HTTPURLResponse,
+                                  expectedContentLength: Int?, allowsContentGrowth: Bool) -> Bool {
+        let mime = response.mimeType?.lowercased() ?? ""
+        return contentLengthMatches(expected: expectedContentLength,
+                                    actual: totalContentLength(from: response), allowsGrowth: allowsContentGrowth)
+            && (response.statusCode == 200 || response.statusCode == 206)
+            && !mime.contains("json") && !mime.contains("html")
+    }
+
     static func firstPlayableURL(
         candidates: [URL],
         allowsSelfSignedCertificates: Bool,
         diagnosticStage: String,
         timeout: TimeInterval = 8,
-        expectedContentLength: Int? = nil
+        expectedContentLength: Int? = nil,
+        allowsContentGrowth: Bool = false
     ) async -> URL? {
         let cacheKey = candidates.map(\.absoluteString).joined(separator: "|")
             + "|length=\(expectedContentLength.map(String.init) ?? "unknown")"
+            + "|growth=\(allowsContentGrowth)"
         if let cached = await MediaPlaybackRouteCache.shared.url(
             for: cacheKey,
             candidates: candidates
@@ -2149,7 +2690,8 @@ enum AuthenticatedMediaPlaybackResolver {
                         allowsSelfSignedCertificates: allowsSelfSignedCertificates,
                         diagnosticStage: diagnosticStage,
                         timeout: timeout,
-                        expectedContentLength: expectedContentLength
+                        expectedContentLength: expectedContentLength,
+                        allowsContentGrowth: allowsContentGrowth
                     )
                 }
             }
@@ -2172,7 +2714,8 @@ enum AuthenticatedMediaPlaybackResolver {
         allowsSelfSignedCertificates: Bool,
         diagnosticStage: String,
         timeout: TimeInterval,
-        expectedContentLength: Int?
+        expectedContentLength: Int?,
+        allowsContentGrowth: Bool
     ) async -> URL? {
         let delegate = FilePreviewTrustDelegate(
             trustedHost: candidate.host,
@@ -2200,14 +2743,10 @@ enum AuthenticatedMediaPlaybackResolver {
             guard let response = response as? HTTPURLResponse else { return nil }
             let mimeType = response.mimeType?.lowercased() ?? ""
             let responseContentLength = totalContentLength(from: response)
-            let contentLengthMatches = expectedContentLength.map { expectedLength in
-                guard expectedLength > 0, let responseContentLength else { return true }
-                return Int64(expectedLength) == responseContentLength
-            } ?? true
-            let isMediaResponse = contentLengthMatches
-                && (response.statusCode == 200 || response.statusCode == 206)
-                && !mimeType.contains("json")
-                && !mimeType.contains("html")
+            let contentLengthMatches = Self.contentLengthMatches(expected: expectedContentLength,
+                actual: responseContentLength, allowsGrowth: allowsContentGrowth)
+            let isMediaResponse = isPlayableResponse(response,
+                expectedContentLength: expectedContentLength, allowsContentGrowth: allowsContentGrowth)
             DiagnosticLogStore.shared.record(
                 isMediaResponse ? .info : .warning,
                 categoryKey: "diagnostics.category.media",
@@ -2220,7 +2759,10 @@ enum AuthenticatedMediaPlaybackResolver {
                     "status": "\(response.statusCode)",
                     "mime": mimeType.isEmpty ? "-" : mimeType,
                     "acceptRanges": response.value(forHTTPHeaderField: "Accept-Ranges") ?? "-",
-                    "lengthCheck": contentLengthMatches ? "matchedOrUnavailable" : "mismatch"
+                    "lengthCheck": contentLengthMatches ? "matchedOrUnavailable" : "mismatch",
+                    "allowsContentGrowth": String(allowsContentGrowth),
+                    "expectedBytes": expectedContentLength.map(String.init) ?? "-",
+                    "responseTotalBytes": responseContentLength.map(String.init) ?? "-"
                 ]
             )
             return isMediaResponse ? (response.url ?? candidate) : nil
@@ -2276,8 +2818,12 @@ enum MediaRangePolicy {
     // a particular title, container, or bitrate.
     static let upstreamWindowBytes: Int64 = 32 * 1024 * 1024
 
-    static func boundedRange(_ value: String, maximumLength: Int64 = upstreamWindowBytes) -> String {
-        let fallbackEnd = max(maximumLength - 1, 0)
+    enum RequestedRange: Equatable {
+        case offset(start: Int64, end: Int64?)
+        case suffix(Int64)
+    }
+
+    static func requestedRange(_ value: String) -> RequestedRange? {
         let normalized = value.trimmingCharacters(in: .whitespacesAndNewlines)
         let rangeText: Substring?
         if normalized.lowercased().hasPrefix("bytes=") {
@@ -2291,33 +2837,51 @@ enum MediaRangePolicy {
                 ? components[1]
                 : nil
         }
-        guard let firstRange = rangeText?.split(separator: ",", maxSplits: 1).first,
+        guard let firstRange = rangeText, !firstRange.contains(","),
               let separator = firstRange.firstIndex(of: "-"),
-              let start = Int64(firstRange[..<separator]),
-              start >= 0 else {
-            return "bytes=0-\(fallbackEnd)"
+              firstRange.filter({ $0 == "-" }).count == 1 else { return nil }
+        func decimal(_ text: Substring) -> Int64? {
+            guard !text.isEmpty, text.utf8.allSatisfy({ (48...57).contains($0) }) else { return nil }
+            return Int64(text)
         }
+        let startText = firstRange[..<separator]
         let endText = firstRange[firstRange.index(after: separator)...]
-        let requestedEnd = Int64(endText)
-        let maximumEnd = start + fallbackEnd
-        let end = min(requestedEnd ?? maximumEnd, maximumEnd)
-        return "bytes=\(start)-\(max(start, end))"
+        if startText.isEmpty {
+            guard let count = decimal(endText), count > 0 else { return nil }
+            return .suffix(count)
+        }
+        guard let start = decimal(startText) else { return nil }
+        if endText.isEmpty { return .offset(start: start, end: nil) }
+        guard let end = decimal(endText), end >= start else { return nil }
+        return .offset(start: start, end: end)
+    }
+
+    // A suffix cannot be converted into offsets until the upstream length is
+    // known. Never substitute the file head or issue an unbounded suffix read.
+    static func boundedRange(_ value: String, maximumLength: Int64 = upstreamWindowBytes,
+                             totalLength: Int64? = nil) -> String? {
+        guard maximumLength > 0, let range = requestedRange(value) else { return nil }
+        let start: Int64
+        let requestedEnd: Int64?
+        switch range {
+        case let .offset(offset, end):
+            start = offset
+            requestedEnd = end
+        case let .suffix(count):
+            guard let totalLength, totalLength > 0 else { return nil }
+            start = totalLength - min(count, totalLength)
+            requestedEnd = totalLength - 1
+        }
+        if let totalLength, start >= totalLength { return nil }
+        let remaining = min(maximumLength - 1, Int64.max - start)
+        var end = min(requestedEnd ?? Int64.max, start + remaining)
+        if let totalLength { end = min(end, totalLength - 1) }
+        return "bytes=\(start)-\(end)"
     }
 
     static func isOpenEnded(_ value: String) -> Bool {
-        let normalized = value.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
-        guard normalized.hasPrefix("bytes=") else { return false }
-        guard let firstRange = normalized.dropFirst("bytes=".count)
-            .split(separator: ",", maxSplits: 1)
-            .first,
-            let separator = firstRange.firstIndex(of: "-") else {
-            return false
-        }
-        guard firstRange[firstRange.index(after: separator)...].isEmpty,
-              let start = Int64(firstRange[..<separator]) else {
-            return false
-        }
-        return start >= 0
+        if case .offset(_, nil) = requestedRange(value) { return true }
+        return false
     }
 
     static func requestedRangeStart(from value: String?) -> Int64? {
@@ -2408,12 +2972,23 @@ enum PlaybackHLSRequestDiagnostics {
         }.filter { $0.isFinite && $0 >= 0 }
         let segments = lines.filter { !$0.isEmpty && !$0.hasPrefix("#") }
         let firstOrdinal = segments.first.flatMap(URL.init(string:)).flatMap(segmentOrdinal)
+        let targets = lines.filter { $0.hasPrefix("#EXT-X-TARGETDURATION:") }
+        let target = targets.count == 1 ? targets[0].dropFirst("#EXT-X-TARGETDURATION:".count) : ""
+        let targetSeconds = !target.isEmpty && target.utf8.allSatisfy({ (48...57).contains($0) })
+            ? Int(target).flatMap { $0 > 0 ? $0 : nil } : nil
+        // Use the first declared duration, never the next parsable duration.
+        // Otherwise a malformed first segment would silently acquire a peer's time.
+        let firstDuration = lines.first { $0.hasPrefix("#EXTINF:") }.flatMap {
+            Double($0.dropFirst(8).split(separator: ",", omittingEmptySubsequences: false).first ?? "")
+        }.flatMap { $0.isFinite && $0 > 0 ? $0 : nil }
         return [
             "playlistMediaSequence": sequence.map(String.init) ?? "unknown",
             "playlistSegments": String(durations.count),
             "playlistDurationSeconds": String(durations.reduce(0, +)),
             "playlistEndlist": String(lines.contains("#EXT-X-ENDLIST")),
-            "playlistFirstSegmentOrdinal": firstOrdinal.map(String.init) ?? "unknown"
+            "playlistFirstSegmentOrdinal": firstOrdinal.map(String.init) ?? "unknown",
+            "playlistTargetDurationSeconds": targetSeconds.map(String.init) ?? "unknown",
+            "playlistFirstSegmentDurationSeconds": firstDuration.map { String($0) } ?? "unknown"
         ]
     }
 }
@@ -2507,6 +3082,15 @@ private final class DebugMediaDeliveryThrottle: @unchecked Sendable {
 }
 #endif
 
+/// The presentation keeps the capability alive across dismissal for PiP.
+final class PlaybackProxyRouteLease {
+    let url: URL
+
+    init(url: URL) { self.url = url }
+
+    deinit { AuthenticatedMediaStreamProxy.shared.unregister(url) }
+}
+
 final class AuthenticatedMediaStreamProxy: @unchecked Sendable {
     static let shared = AuthenticatedMediaStreamProxy()
 
@@ -2516,11 +3100,16 @@ final class AuthenticatedMediaStreamProxy: @unchecked Sendable {
         let filename: String
         let isPlaylist: Bool
         let prefersFiniteRangeResponse: Bool
+        let upstreamIsNetworkLibraryBridge: Bool
         let playbackTraceID: String?
+        let jellyfinMediaPath: String?
         let localPort: NWEndpoint.Port
         let createdAt: Date
+        let pinnedTransport: PlaybackPinnedRouteTransport?
         var playlistStartSeconds: Double? = nil
         let children = PlaybackPlaylistChildren()
+        let requestDiagnostics = PlaybackProxyRequestDiagnostics()
+        var startupPrimer: PlaybackHLSStartupPrimer?
     }
 
     private let queue = DispatchQueue(label: "com.nastart.authenticated-media-stream-proxy")
@@ -2529,9 +3118,24 @@ final class AuthenticatedMediaStreamProxy: @unchecked Sendable {
     private var routes: [String: Route] = [:]
     private let vodPlaylistCache = PlaybackVODPlaylistCache()
     private var transfers: [UUID: AuthenticatedMediaProxyTransfer] = [:]
+    private var manifestPreparations: [UUID: (permit: PlaybackStartupPrimerPermit, route: String, port: NWEndpoint.Port)] = [:]
     private var listenerWaiters: [(Result<NWEndpoint.Port, Error>) -> Void] = []
 
     private init() {}
+
+    /// Read-only lookup on this exact route; revoked/other routes stay unknown.
+    func diagnosticResource(_ uri: String?, for rootURL: URL) -> [String: String] {
+        guard rootURL.host == "127.0.0.1" else { return ["binding": "notLocalProxy"] }
+        let parts = rootURL.path.split(separator: "/")
+        guard parts.count == 3, parts[0] == "media" else { return ["binding": "invalidRoot"] }
+        return queue.sync {
+            guard let route = routes[String(parts[1])],
+                  rootURL.port == Int(route.localPort.rawValue) else { return ["binding": "routeInactive"] }
+            var fields = route.requestDiagnostics.fields(uri: uri)
+            fields["proxyPlaybackTraceID"] = PlaybackProxyRequestDiagnostics.safeTrace(route.playbackTraceID)
+            return fields
+        }
+    }
 
     func unregister(_ url: URL) {
         guard url.host == "127.0.0.1" else { return }
@@ -2540,8 +3144,16 @@ final class AuthenticatedMediaStreamProxy: @unchecked Sendable {
         let token = String(parts[1])
         queue.async {
             guard let route = self.routes[token], url.port == Int(route.localPort.rawValue) else { return }
+            route.startupPrimer?.cancel()
+            route.pinnedTransport?.invalidate()
             self.routes[token] = nil
             self.vodPlaylistCache.remove(route: token)
+            // Removing the URL must also release already accepted readers.
+            // Each transfer belongs to this route, even when its upstream
+            // transport session is shared with another playing source.
+            for transfer in self.transfers.values {
+                transfer.cancelIfOwned(byRoute: token, port: route.localPort)
+            }
         }
     }
 
@@ -2553,7 +3165,21 @@ final class AuthenticatedMediaStreamProxy: @unchecked Sendable {
             let token = String(parts[1])
             guard let route = routes[token], route.isPlaylist,
                   url.port == Int(route.localPort.rawValue) else { return }
+            if seconds > 0 { route.startupPrimer?.cancel() }
             routes[token]?.playlistStartSeconds = seconds
+        }
+    }
+
+    /// Candidate preparation may only read a route already owned by this proxy.
+    /// A loopback host alone does not identify one of our HLS registrations.
+    func isRegisteredPlaylistRoot(_ url: URL) -> Bool {
+        guard url.host == "127.0.0.1", url.pathExtension.lowercased() == "m3u8" else { return false }
+        let parts = url.path.split(separator: "/")
+        guard parts.count == 3, parts[0] == "media" else { return false }
+        return queue.sync {
+            guard let route = routes[String(parts[1])], route.isPlaylist,
+                  url.port == Int(route.localPort.rawValue) else { return false }
+            return true
         }
     }
 
@@ -2564,12 +3190,14 @@ final class AuthenticatedMediaStreamProxy: @unchecked Sendable {
         filename: String,
         allowsSelfSignedCertificates: Bool,
         usesGreenfieldPlayback: Bool = true,
-        playbackTraceID: String? = nil
+        playbackTraceID: String? = nil,
+        upstreamIsNetworkLibraryBridge: Bool = false
     ) async throws -> URL {
         try await register(upstreamURL: upstreamURL, filename: filename,
             allowsSelfSignedCertificates: allowsSelfSignedCertificates,
             prefersFiniteRangeResponse: usesGreenfieldPlayback,
-            playbackTraceID: playbackTraceID)
+            playbackTraceID: playbackTraceID,
+            upstreamIsNetworkLibraryBridge: upstreamIsNetworkLibraryBridge)
     }
 
     func register(
@@ -2577,8 +3205,17 @@ final class AuthenticatedMediaStreamProxy: @unchecked Sendable {
         filename: String,
         allowsSelfSignedCertificates: Bool,
         prefersFiniteRangeResponse: Bool = false,
-        playbackTraceID: String? = nil
+        playbackTraceID: String? = nil,
+        jellyfinMediaPath: String? = nil,
+        upstreamIsNetworkLibraryBridge: Bool = false
     ) async throws -> URL {
+        if upstreamIsNetworkLibraryBridge {
+            guard upstreamURL.scheme == "http", upstreamURL.host == "127.0.0.1",
+                  upstreamURL.port != nil, upstreamURL.user == nil, upstreamURL.password == nil,
+                  upstreamURL.query == nil, upstreamURL.fragment == nil else {
+                throw URLError(.badURL)
+            }
+        }
         let port = try await healthyListenerPort()
         let token = UUID().uuidString.lowercased()
         let safeFilename = filename
@@ -2588,6 +3225,8 @@ final class AuthenticatedMediaStreamProxy: @unchecked Sendable {
             queue.async {
                 let cutoff = Date().addingTimeInterval(-6 * 60 * 60)
                 for (expired, route) in self.routes where route.createdAt <= cutoff {
+                    route.startupPrimer?.cancel()
+                    route.pinnedTransport?.invalidate()
                     self.vodPlaylistCache.remove(route: expired)
                 }
                 self.routes = self.routes.filter { $0.value.createdAt > cutoff }
@@ -2595,11 +3234,15 @@ final class AuthenticatedMediaStreamProxy: @unchecked Sendable {
                     upstreamURL: upstreamURL,
                     allowsSelfSignedCertificates: allowsSelfSignedCertificates,
                     filename: safeFilename,
-                    isPlaylist: upstreamURL.pathExtension.lowercased() == "m3u8",
+                    isPlaylist: !upstreamIsNetworkLibraryBridge && upstreamURL.pathExtension.lowercased() == "m3u8",
                     prefersFiniteRangeResponse: prefersFiniteRangeResponse,
+                    upstreamIsNetworkLibraryBridge: upstreamIsNetworkLibraryBridge,
                     playbackTraceID: playbackTraceID?.isEmpty == false ? playbackTraceID : nil,
+                    jellyfinMediaPath: jellyfinMediaPath,
                     localPort: port,
-                    createdAt: Date()
+                    createdAt: Date(),
+                    pinnedTransport: allowsSelfSignedCertificates
+                        ? PlaybackPinnedRouteTransport(upstreamURL: upstreamURL) : nil
                 )
                 continuation.resume()
             }
@@ -2615,18 +3258,48 @@ final class AuthenticatedMediaStreamProxy: @unchecked Sendable {
 
     /// Slow cellular manifests can exceed AVFoundation's initial resource wait.
     /// Fetch text before creating the decoder; its subsequent VOD read is local.
-    /// No segment, key, live manifest, credential or external URL is prefetched.
-    func prewarmVODPlaylist(_ url: URL) async throws -> Bool {
+    /// Optional from-head priming only starts after complete VOD validation.
+    /// It never waits for segment generation on the preparation return path.
+    func prewarmVODPlaylist(_ url: URL, primesFirstSegment: Bool = false) async throws -> Bool {
         try Task.checkCancellation()
         guard url.host == "127.0.0.1" else { return false }
-        return try await withThrowingTaskGroup(of: Bool.self) { group in
-            group.addTask { try await self.loadVODPlaylist(url) }
-            group.addTask {
-                try await Task.sleep(nanoseconds: 35_000_000_000)
-                throw URLError(.timedOut)
+        let permit = PlaybackStartupPrimerPermit()
+        let preparationID = UUID()
+        let registered = queue.sync { () -> Bool in
+            let parts = url.path.split(separator: "/")
+            guard parts.count == 3, parts[0] == "media", let route = routes[String(parts[1])],
+                  route.isPlaylist, url.port == Int(route.localPort.rawValue) else { return false }
+            manifestPreparations[preparationID] = (permit, String(parts[1]), route.localPort)
+            return true
+        }
+        guard registered else { return false }
+        defer { queue.sync { _ = manifestPreparations.removeValue(forKey: preparationID) } }
+        do { return try await withTaskCancellationHandler(operation: {
+            try await withThrowingTaskGroup(of: Bool.self) { group in
+                group.addTask { try await self.loadVODPlaylist(url, primesFirstSegment: primesFirstSegment,
+                    permit: permit, preparationID: preparationID) }
+                group.addTask {
+                    try await Task.sleep(nanoseconds: 35_000_000_000)
+                    throw URLError(.timedOut)
+                }
+                defer { group.cancelAll() }
+                return try await group.next() ?? false
             }
-            defer { group.cancelAll() }
-            return try await group.next() ?? false
+        }, onCancel: {
+            permit.cancel()
+            guard primesFirstSegment else { return }
+            let parts = url.path.split(separator: "/")
+            guard parts.count >= 3, parts[0] == "media" else { return }
+            let token = String(parts[1])
+            self.queue.async {
+                guard let route = self.routes[token], url.port == Int(route.localPort.rawValue) else { return }
+                route.startupPrimer?.cancel()
+            }
+        }) } catch {
+            // The local reader closing is not proof that its proxy upstream
+            // stopped. Cancel only the transfers attached to this preparation.
+            permit.cancel()
+            throw error
         }
     }
 
@@ -2642,11 +3315,16 @@ final class AuthenticatedMediaStreamProxy: @unchecked Sendable {
         }
     }
 
-    private func loadVODPlaylist(_ url: URL) async throws -> Bool {
+    private func loadVODPlaylist(_ url: URL, primesFirstSegment: Bool, permit: PlaybackStartupPrimerPermit,
+                                preparationID: UUID) async throws -> Bool {
         let configuration = URLSessionConfiguration.ephemeral
-        configuration.timeoutIntervalForRequest = 30
+        // The proxy buffers a complete manifest before sending its headers.
+        // Use the enclosing 35-second prewarm deadline, rather than expiring
+        // an otherwise progressing child manifest at 30 seconds.
+        configuration.timeoutIntervalForRequest = 35
         configuration.timeoutIntervalForResource = 35
         configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
+        configuration.httpAdditionalHeaders = ["X-Nastart-Manifest-Preparation": preparationID.uuidString]
         let session = URLSession(configuration: configuration)
         defer { session.invalidateAndCancel() }
         let (root, response) = try await session.data(from: url)
@@ -2655,17 +3333,52 @@ final class AuthenticatedMediaStreamProxy: @unchecked Sendable {
               let text = String(data: root, encoding: .utf8), text.hasPrefix("#EXTM3U") else {
             throw URLError(.cannotParseResponse)
         }
-        if text.components(separatedBy: .newlines).contains("#EXT-X-ENDLIST") { return hasCachedVOD(url) }
+        if text.components(separatedBy: .newlines).contains("#EXT-X-ENDLIST") {
+            let cached = hasCachedVOD(url)
+            if cached && primesFirstSegment { startStartupPrimer(text: text, playlistURL: url, permit: permit) }
+            return cached
+        }
         guard text.contains("#EXT-X-STREAM-INF:"),
               let child = text.components(separatedBy: .newlines)
                 .map({ $0.trimmingCharacters(in: .whitespacesAndNewlines) })
                 .first(where: { !$0.isEmpty && !$0.hasPrefix("#") }).flatMap(URL.init(string:)),
               child.scheme == url.scheme, child.host == url.host, child.port == url.port,
               child.path.hasPrefix(url.deletingLastPathComponent().path + "/child/") else { return false }
-        let (_, childResponse) = try await session.data(from: child)
+        let (childData, childResponse) = try await session.data(from: child)
         try Task.checkCancellation()
         guard (childResponse as? HTTPURLResponse)?.statusCode == 200 else { throw URLError(.badServerResponse) }
-        return hasCachedVOD(child)
+        let cached = hasCachedVOD(child)
+        if cached && primesFirstSegment, let text = String(data: childData, encoding: .utf8) {
+            startStartupPrimer(text: text, playlistURL: child, permit: permit)
+        }
+        return cached
+    }
+
+    private func startStartupPrimer(text: String, playlistURL: URL, permit: PlaybackStartupPrimerPermit) {
+        guard !Task.isCancelled,
+              let local = PlaybackHLSStartupPrimerPolicy.candidate(in: text, playlistURL: playlistURL) else { return }
+        let parts = local.path.split(separator: "/")
+        guard parts.count == 4, parts[0] == "media", parts[2] == "child" else { return }
+        queue.sync {
+            let token = String(parts[1])
+            guard permit.isActive, let route = routes[token], local.port == Int(route.localPort.rawValue),
+                  route.startupPrimer == nil, (route.playlistStartSeconds ?? 0) == 0,
+                  route.jellyfinMediaPath != nil,
+                  let upstream = route.children.url(for: String(parts[3])),
+                  upstream.scheme == route.upstreamURL.scheme, upstream.host == route.upstreamURL.host,
+                  upstream.port == route.upstreamURL.port,
+                  PlaybackHLSRequestDiagnostics.segmentOrdinal(upstream) == 0 else { return }
+            let primer = PlaybackHLSStartupPrimer(url: local, traceID: route.playbackTraceID) { [weak self] in
+                self?.queue.async { [weak self] in
+                    guard let self else { return }
+                    for transfer in self.transfers.values {
+                        transfer.cancelStartupPrimerIfOwned(byRoute: token, port: route.localPort)
+                    }
+                }
+            }
+            routes[token]?.startupPrimer = primer
+            primer.start()
+        }
     }
 
     private func listenerPort() async throws -> NWEndpoint.Port {
@@ -2688,15 +3401,20 @@ final class AuthenticatedMediaStreamProxy: @unchecked Sendable {
     /// lifecycle transition even though new loopback requests no longer reach
     /// the proxy. Verify the HTTP handler before handing its URL to FFmpeg.
     private func healthyListenerPort() async throws -> NWEndpoint.Port {
+        try Task.checkCancellation()
         let firstPort = try await listenerPort()
-        if await respondsOnLoopback(firstPort) { return firstPort }
+        let firstHealthy = await respondsOnLoopback(firstPort)
+        try Task.checkCancellation()
+        if firstHealthy { return firstPort }
         DiagnosticLogStore.shared.record(.warning,
             categoryKey: "diagnostics.category.media",
             messageKey: "diagnostics.media.proxy_listener_restarting",
             details: ["port": String(firstPort.rawValue)])
         await invalidateListener(ifUsing: firstPort)
         let replacementPort = try await listenerPort()
-        guard await respondsOnLoopback(replacementPort) else {
+        let replacementHealthy = await respondsOnLoopback(replacementPort)
+        try Task.checkCancellation()
+        guard replacementHealthy else {
             await invalidateListener(ifUsing: replacementPort)
             throw URLError(.cannotConnectToHost)
         }
@@ -2804,7 +3522,8 @@ final class AuthenticatedMediaStreamProxy: @unchecked Sendable {
             if let data { requestData.append(data) }
             let headerDelimiter = Data([13, 10, 13, 10])
             if requestData.range(of: headerDelimiter) != nil {
-                self.handleRequest(requestData, on: connection)
+                self.handleRequest(requestData, on: connection,
+                    initialReadComplete: isComplete, initialReadError: error)
                 return
             }
             if error != nil || isComplete || requestData.count > 64 * 1024 {
@@ -2815,7 +3534,8 @@ final class AuthenticatedMediaStreamProxy: @unchecked Sendable {
         }
     }
 
-    private func handleRequest(_ data: Data, on connection: NWConnection) {
+    private func handleRequest(_ data: Data, on connection: NWConnection,
+                               initialReadComplete: Bool, initialReadError: NWError?) {
         guard
             let header = String(data: data, encoding: .isoLatin1),
             let requestLine = header.components(separatedBy: "\r\n").first
@@ -2849,7 +3569,13 @@ final class AuthenticatedMediaStreamProxy: @unchecked Sendable {
             return
         }
         let requestedUpstreamURL: URL
-        if pathParts.count == 4, pathParts[2] == "child" {
+        if route.upstreamIsNetworkLibraryBridge {
+            guard path == "/media/\(token)/\(route.filename)", requestComponents?.percentEncodedQuery == nil else {
+                sendError(404, on: connection)
+                return
+            }
+            requestedUpstreamURL = route.upstreamURL
+        } else if pathParts.count == 4, pathParts[2] == "child" {
             guard let child = route.children.url(for: String(pathParts[3])) else {
                 sendError(404, on: connection)
                 return
@@ -2872,31 +3598,65 @@ final class AuthenticatedMediaStreamProxy: @unchecked Sendable {
             headers[key] = value
         }
 
+        var manifestPermit: PlaybackStartupPrimerPermit?
+        if let identity = headers["x-nastart-manifest-preparation"] {
+            guard requestParts[0] == "GET", requestedUpstreamURL.pathExtension.lowercased() == "m3u8",
+                  let id = UUID(uuidString: identity), let preparation = manifestPreparations[id],
+                  preparation.route == token, preparation.port == route.localPort,
+                  preparation.permit.isActive else { sendError(410, on: connection); return }
+            manifestPermit = preparation.permit
+        }
+
+        let isStartupPrimer = headers["x-nastart-startup-primer"] == "1"
+        if isStartupPrimer && (requestParts[0] != "GET" || headers["range"] != "bytes=0-0"
+            || pathParts.count != 4 || pathParts[2] != "child") {
+            sendError(400, on: connection); return
+        }
+        if isStartupPrimer && (route.startupPrimer?.isActive != true || (route.playlistStartSeconds ?? 0) > 0) {
+            sendError(410, on: connection); return
+        }
         let transferID = UUID()
+        let childID = pathParts.count == 4 && pathParts[2] == "child" ? String(pathParts[3]) : nil
+        if let localURL = URL(string: "http://127.0.0.1:\(route.localPort.rawValue)\(requestTarget)") {
+            route.requestDiagnostics.record(localURL: localURL, upstreamURL: requestedUpstreamURL,
+                transferID: transferID, childID: childID)
+        }
         let transfer = AuthenticatedMediaProxyTransfer(
             connection: connection,
             upstreamURL: requestedUpstreamURL,
             method: requestParts[0],
             requestHeaders: headers,
+            diagnosticTransferID: transferID,
+            isStartupPrimer: isStartupPrimer,
             allowsSelfSignedCertificates: route.allowsSelfSignedCertificates,
+            pinnedTransport: route.pinnedTransport,
             prefersFiniteRangeResponse: route.prefersFiniteRangeResponse,
+            upstreamIsNetworkLibraryBridge: route.upstreamIsNetworkLibraryBridge,
             isPlaylist: route.isPlaylist
                 && requestedUpstreamURL.pathExtension.lowercased() == "m3u8",
             isHLSChildRequest: route.isPlaylist
                 && requestedUpstreamURL.pathExtension.lowercased() != "m3u8",
             playbackTraceID: route.playbackTraceID,
+            jellyfinMediaPath: route.jellyfinMediaPath,
             playlistToken: token,
             playlistFilename: route.filename,
             playlistPort: route.localPort,
             playlistStartSeconds: route.playlistStartSeconds,
             playlistChildren: route.children,
             vodPlaylistCache: vodPlaylistCache,
-            playlistChildID: pathParts.count == 4 && pathParts[2] == "child" ? String(pathParts[3]) : nil
+            playlistChildID: childID
         ) { [weak self] in
             self?.queue.async { self?.transfers[transferID] = nil }
         }
         transfers[transferID] = transfer
-        transfer.start()
+        if let manifestPermit, !manifestPermit.registerCancellation({ [weak self, weak transfer] in
+            self?.queue.async { transfer?.cancelManifestPreparation() }
+        }) {
+            transfers[transferID] = nil
+            sendError(410, on: connection)
+            return
+        }
+        transfer.start(initialReadComplete: initialReadComplete, initialReadError: initialReadError)
     }
 
     private func sendError(_ statusCode: Int, on connection: NWConnection) {
@@ -2905,6 +3665,113 @@ final class AuthenticatedMediaStreamProxy: @unchecked Sendable {
         connection.send(content: Data(response.utf8), isComplete: true, completion: .contentProcessed { _ in
             connection.cancel()
         })
+    }
+}
+
+private final class PlaybackStartupPrimerPermit: @unchecked Sendable {
+    private let lock = NSLock()
+    private var cancelled = false
+    private var cancellations: [@Sendable () -> Void] = []
+    var isActive: Bool { lock.lock(); defer { lock.unlock() }; return !cancelled }
+    func registerCancellation(_ action: @escaping @Sendable () -> Void) -> Bool {
+        lock.lock(); defer { lock.unlock() }
+        guard !cancelled else { return false }
+        cancellations.append(action)
+        return true
+    }
+    func cancel() {
+        lock.lock()
+        guard !cancelled else { lock.unlock(); return }
+        cancelled = true
+        let actions = cancellations
+        cancellations.removeAll()
+        lock.unlock()
+        actions.forEach { $0() }
+    }
+}
+
+private final class PlaybackHLSStartupPrimer: @unchecked Sendable {
+    private let url: URL
+    private let traceID: String?
+    private let lock = NSLock()
+    private let queue = DispatchQueue(label: "com.nastart.startup-segment-primer")
+    private var connection: NWConnection?
+    private var timeout: DispatchWorkItem?
+    private var stopped = false
+
+    private let onCancel: @Sendable () -> Void
+    init(url: URL, traceID: String?, onCancel: @escaping @Sendable () -> Void) {
+        self.url = url; self.traceID = traceID; self.onCancel = onCancel
+    }
+
+    func start() {
+        lock.lock(); defer { lock.unlock() }
+        guard !stopped, connection == nil, let port = url.port.flatMap({ NWEndpoint.Port(rawValue: UInt16($0)) }) else { return }
+        // A one-shot loopback request has no automatic HTTP retries. The proxy
+        // still owns the authenticated upstream task, telemetry and cancellation.
+        let connection = NWConnection(host: "127.0.0.1", port: port, using: .tcp)
+        self.connection = connection
+        connection.stateUpdateHandler = { [weak self, weak connection] state in
+            guard let self, let connection else { return }
+            switch state {
+            case .ready:
+                let request = "GET \(self.url.path) HTTP/1.1\r\nHost: 127.0.0.1\r\nRange: bytes=0-0\r\nX-Nastart-Startup-Primer: 1\r\nConnection: close\r\n\r\n"
+                connection.send(content: Data(request.utf8), completion: .contentProcessed { [weak self] error in
+                    if error != nil { self?.cancel() } else { self?.read(connection, data: Data()) }
+                })
+            case .failed, .cancelled: self.cancel()
+            default: break
+            }
+        }
+        let timeout = DispatchWorkItem { [weak self] in self?.cancel() }
+        self.timeout = timeout
+        queue.asyncAfter(deadline: .now() + 5, execute: timeout)
+        connection.start(queue: queue)
+    }
+
+    var isActive: Bool {
+        lock.lock(); defer { lock.unlock() }
+        return !stopped && connection != nil
+    }
+
+    private func read(_ connection: NWConnection, data: Data) {
+        connection.receive(minimumIncompleteLength: 1, maximumLength: 4096) { [weak self] chunk, _, complete, error in
+            guard let self else { return }
+            let received = data + (chunk ?? Data())
+            if let boundary = received.range(of: Data("\r\n\r\n".utf8)) {
+                let lines = String(decoding: received[..<boundary.lowerBound], as: UTF8.self).components(separatedBy: "\r\n")
+                let status = lines.first?.split(separator: " ").dropFirst().first.flatMap { Int($0) } ?? 0
+                var headers: [String: String] = [:]
+                for line in lines.dropFirst() {
+                    guard let colon = line.firstIndex(of: ":") else { continue }
+                    headers[String(line[..<colon]).lowercased()] = line[line.index(after: colon)...].trimmingCharacters(in: .whitespaces)
+                }
+                guard PlaybackHLSStartupPrimerPolicy.accepts(status: status,
+                    contentRange: headers["content-range"], contentLength: headers["content-length"]) else { self.cancel(); return }
+                let bodyCount = received.distance(from: boundary.upperBound, to: received.endIndex)
+                if bodyCount == 1 { self.finish(complete: true); return }
+                if bodyCount > 1 { self.cancel(); return }
+            }
+            guard error == nil, !complete, received.count < 16 * 1024 else { self.cancel(); return }
+            self.read(connection, data: received)
+        }
+    }
+
+    func cancel() { finish(complete: false) }
+
+    private func finish(complete: Bool) {
+        lock.lock()
+        guard !stopped else { lock.unlock(); return }
+        stopped = true
+        let connection = self.connection; self.connection = nil
+        timeout?.cancel(); timeout = nil
+        lock.unlock()
+        connection?.stateUpdateHandler = nil
+        connection?.cancel()
+        if !complete { onCancel() }
+        DiagnosticLogStore.shared.record(.info, categoryKey: "diagnostics.category.media",
+            messageKey: "diagnostics.media.startup_segment_primer",
+            details: ["result": complete ? "complete" : "stopped", "playbackTraceID": traceID ?? "-", "optional": "true"])
     }
 }
 
@@ -2975,6 +3842,58 @@ private final class PlaybackPlaylistChildren {
     }
 }
 
+/// One registration owns this connection pool. Pinned trust must never become
+/// a process-wide session decision or survive revocation of its route.
+final class PlaybackPinnedRouteTransport {
+    let session: URLSession
+    private let origin: URL
+
+    init(upstreamURL: URL) {
+        origin = upstreamURL
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.timeoutIntervalForRequest = 30
+        configuration.timeoutIntervalForResource = 24 * 60 * 60
+        configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
+        configuration.httpMaximumConnectionsPerHost = 4
+        configuration.httpCookieStorage = nil
+        configuration.urlCredentialStorage = nil
+        configuration.allowsCellularAccess = true
+        configuration.allowsExpensiveNetworkAccess = true
+        configuration.waitsForConnectivity = true
+        let queue = OperationQueue()
+        queue.maxConcurrentOperationCount = 1
+        session = URLSession(configuration: configuration,
+            delegate: PlaybackPinnedRouteTrustDelegate(host: upstreamURL.host), delegateQueue: queue)
+    }
+
+    func accepts(_ url: URL) -> Bool {
+        guard let scheme = url.scheme?.lowercased(), ["http", "https"].contains(scheme),
+              let host = url.host, !host.isEmpty else { return false }
+        func port(_ url: URL) -> Int? { url.port ?? (url.scheme?.lowercased() == "https" ? 443 : 80) }
+        return scheme == origin.scheme?.lowercased()
+            && host.lowercased() == origin.host?.lowercased() && port(url) == port(origin)
+    }
+
+    func invalidate() { session.invalidateAndCancel() }
+    deinit { session.invalidateAndCancel() }
+}
+
+private final class PlaybackPinnedRouteTrustDelegate: NSObject, URLSessionDelegate {
+    let host: String?
+    init(host: String?) { self.host = host }
+
+    func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge,
+                    completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
+        // Identical pin lookup and rejection behavior to the isolated transfer.
+        guard let credential = CertificatePinStore.shared.credential(for: challenge, expectedHost: host) else {
+            completionHandler(challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust
+                ? .cancelAuthenticationChallenge : .performDefaultHandling, nil)
+            return
+        }
+        completionHandler(.useCredential, credential)
+    }
+}
+
 private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDelegate, URLSessionTaskDelegate {
     // Share transport connections, not request credentials or cookies. Creating
     // a session per HLS segment repeatedly pays DNS/TCP/TLS costs on WAN routes.
@@ -2994,18 +3913,25 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
         return URLSession(configuration: configuration, delegate: nil, delegateQueue: queue)
     }()
     private var usesSharedTransport = false
+    // Metrics can arrive after finish() releases session. Preserve the selected
+    // transport instead of comparing optional session identities at callback time.
+    private var selectedTransportScope = "unselected"
     private let connection: NWConnection
     private let upstreamURL: URL
     private let method: String
     private let requestHeaders: [String: String]
     private let allowsSelfSignedCertificates: Bool
+    private let pinnedTransport: PlaybackPinnedRouteTransport?
     private let prefersFiniteRangeResponse: Bool
+    private let upstreamIsNetworkLibraryBridge: Bool
     private let isPlaylist: Bool
     private let isHLSChildRequest: Bool
     private let playbackTraceID: String?
+    private let jellyfinMediaPath: String?
     // Task indices restart for every transfer, including concurrent HLS
     // children. Correlate metrics/completion without exposing request URLs.
-    private let diagnosticTransferID = UUID().uuidString
+    private let diagnosticTransferID: String
+    private var playlistDeliveryDiagnostics = PlaybackPlaylistDeliveryDiagnostics()
     private let playlistToken: String?
     private let playlistFilename: String?
     private let playlistPort: NWEndpoint.Port?
@@ -3029,8 +3955,13 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
     private var bodyBytesAtTaskStart: Int64 = 0
     private var activeRequestedRange: String?
     private var activeRequestedRangeStart: Int64?
+    private var resolvingSuffixLength = false
+    private var suffixTotalLength: Int64?
+    private var suffixValidator: String?
     private var lastStatusCode: Int?
+    private let isStartupPrimer: Bool
     private let startedAt = Date()
+    private let startedUptime = ProcessInfo.processInfo.systemUptime
     private let bufferLock = NSLock()
     // Keep received chunks independent after they leave the URLSession
     // callback. Mutating one large Data buffer while a slice is still owned by
@@ -3051,6 +3982,7 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
     private var upstreamCompleted = false
     private var didScheduleConnectionClose = false
     private var upstreamTaskIndex = 0
+    private let taskDiagnostics = PlaybackProxyTaskDiagnostics()
     private var bodyWindowSampler = PlaybackBodyWindowSampler()
     private var retriesUncompactedPlaylist = false
     private var usesCompactedPlaylistQuery = false
@@ -3069,12 +4001,18 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
     private var clientUsesChunkedMediaResponse: Bool {
         guard !prefersFiniteRangeResponse else { return false }
         guard !isPlaylist, !isHLSChildRequest else { return false }
-        return MediaRangePolicy.isOpenEnded(requestHeaders["range"] ?? "bytes=0-")
+        return clientRequestsThroughEnd
     }
 
     private var clientUsesContinuousRangeResponse: Bool {
         guard prefersFiniteRangeResponse, !isPlaylist, !isHLSChildRequest else { return false }
-        return MediaRangePolicy.isOpenEnded(requestHeaders["range"] ?? "bytes=0-")
+        return clientRequestsThroughEnd
+    }
+
+    private var clientRequestsThroughEnd: Bool {
+        let value = requestHeaders["range"] ?? "bytes=0-"
+        if case .suffix = MediaRangePolicy.requestedRange(value) { return true }
+        return MediaRangePolicy.isOpenEnded(value)
     }
 
     private var proxyKind: String {
@@ -3103,6 +4041,7 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
     private var diagnosticContext: [String: String] {
         [
             "proxyKind": proxyKind,
+            "startupPrimer": String(isStartupPrimer),
             "hlsRole": hlsRole,
             "pathExtension": upstreamURL.pathExtension.lowercased().isEmpty
                 ? "-"
@@ -3112,12 +4051,18 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
             "playlistChildID": playlistChildID ?? "root",
             "segmentOrdinal": isHLSChildRequest
                 ? PlaybackHLSRequestDiagnostics.segmentOrdinal(upstreamURL).map(String.init) ?? "unknown" : "-",
-            "playbackTraceID": playbackTraceID ?? "-"
+            "playbackTraceID": playbackTraceID ?? "-",
+            "transportScope": selectedTransportScope
         ]
     }
 
     private func diagnosticDetails(_ details: [String: String]) -> [String: String] {
-        diagnosticContext.merging(details) { _, new in new }
+        var fields = diagnosticContext.merging(details) { _, new in new }
+        if upstreamIsNetworkLibraryBridge {
+            fields["measurementBoundary"] = "bridgeDelivery"
+            fields["upstreamKind"] = "networkLibraryBridge"
+        }
+        return fields
     }
 
     init(
@@ -3125,11 +4070,16 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
         upstreamURL: URL,
         method: String,
         requestHeaders: [String: String],
+        diagnosticTransferID: UUID = UUID(),
+        isStartupPrimer: Bool = false,
         allowsSelfSignedCertificates: Bool,
+        pinnedTransport: PlaybackPinnedRouteTransport?,
         prefersFiniteRangeResponse: Bool,
+        upstreamIsNetworkLibraryBridge: Bool,
         isPlaylist: Bool,
         isHLSChildRequest: Bool,
         playbackTraceID: String?,
+        jellyfinMediaPath: String?,
         playlistToken: String?,
         playlistFilename: String?,
         playlistPort: NWEndpoint.Port?,
@@ -3143,11 +4093,15 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
         self.upstreamURL = upstreamURL
         self.method = method
         self.requestHeaders = requestHeaders
+        self.isStartupPrimer = isStartupPrimer
         self.allowsSelfSignedCertificates = allowsSelfSignedCertificates
+        self.pinnedTransport = pinnedTransport
         self.prefersFiniteRangeResponse = prefersFiniteRangeResponse
+        self.upstreamIsNetworkLibraryBridge = upstreamIsNetworkLibraryBridge
         self.isPlaylist = isPlaylist
         self.isHLSChildRequest = isHLSChildRequest
         self.playbackTraceID = playbackTraceID?.isEmpty == false ? playbackTraceID : nil
+        self.jellyfinMediaPath = jellyfinMediaPath
         self.playlistToken = playlistToken
         self.playlistFilename = playlistFilename
         self.playlistPort = playlistPort
@@ -3155,11 +4109,40 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
         self.playlistChildren = playlistChildren
         self.vodPlaylistCache = vodPlaylistCache
         self.playlistChildID = playlistChildID
+        self.diagnosticTransferID = diagnosticTransferID.uuidString
         self.playlistContext = PlaybackPlaylistContext(upstreamURL)
         self.completion = completion
     }
 
-    func start() {
+    func cancelStartupPrimerIfOwned(byRoute token: String, port: NWEndpoint.Port) {
+        guard isStartupPrimer else { return }
+        cancelIfOwned(byRoute: token, port: port)
+    }
+
+    func cancelManifestPreparation() {
+        let cancel = { [self] in finish(with: URLError(.cancelled), source: "manifestPreparationCancelled") }
+        if let session { session.delegateQueue.addOperation(cancel) }
+        else { cancel() }
+    }
+
+    func cancelIfOwned(byRoute token: String, port: NWEndpoint.Port) {
+        guard playlistToken == token, playlistPort == port else { return }
+        let cancel = { [self] in
+            finish(with: URLError(.cancelled), source: "routeRevoked")
+            // A previously queued playlist callback may have populated the
+            // cache after the route was removed; release that data as well.
+            vodPlaylistCache.remove(route: token)
+        }
+        if let session {
+            // Serialize with upstream completion and continuation callbacks.
+            // Do not invalidate the shared session or another route's tasks.
+            session.delegateQueue.addOperation(cancel)
+        } else {
+            cancel()
+        }
+    }
+
+    func start(initialReadComplete: Bool, initialReadError: NWError?) {
         connection.stateUpdateHandler = { [weak self] state in
             switch state {
             case .cancelled:
@@ -3169,6 +4152,12 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
             default:
                 break
             }
+        }
+        if initialReadComplete || initialReadError != nil {
+            recordClientReadEnd(isComplete: initialReadComplete, error: initialReadError,
+                bytes: 0, observation: "requestHeader")
+        } else {
+            observeClientReadEnd()
         }
         if isPlaylist, method == "GET", requestHeaders["range"] == nil,
            let token = playlistToken,
@@ -3182,7 +4171,15 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
         }
         if !allowsSelfSignedCertificates {
             usesSharedTransport = true
+            selectedTransportScope = "systemShared"
             session = Self.transportSession
+            startUpstreamTask()
+            return
+        }
+        if let pinnedTransport, pinnedTransport.accepts(upstreamURL) {
+            usesSharedTransport = true
+            selectedTransportScope = "pinnedRoute"
+            session = pinnedTransport.session
             startUpstreamTask()
             return
         }
@@ -3197,8 +4194,46 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
         let delegateQueue = OperationQueue()
         delegateQueue.maxConcurrentOperationCount = 1
         let session = URLSession(configuration: configuration, delegate: self, delegateQueue: delegateQueue)
+        selectedTransportScope = "isolated"
         self.session = session
         startUpstreamTask()
+    }
+
+    // TCP receive completion describes the peer's write direction. A valid
+    // GET may send FIN and still read our entire response. Observe EOF/errors
+    // without cancelling upstream or changing the existing send/state rules.
+    private func observeClientReadEnd() {
+        guard !isFinished else { return }
+        connection.receive(minimumIncompleteLength: 1, maximumLength: 32 * 1024) {
+            [weak self] data, _, isComplete, error in
+            guard let self else { return }
+            if isComplete || error != nil {
+                self.recordClientReadEnd(isComplete: isComplete, error: error,
+                    bytes: data?.count ?? 0, observation: "afterRequest")
+                return
+            }
+            self.observeClientReadEnd()
+        }
+    }
+
+    private func recordClientReadEnd(isComplete: Bool, error: NWError?, bytes: Int,
+                                     observation: String) {
+        let transport = transportErrorDetails(error)
+        let details: [String: String] = [
+            "stage": "clientReadEnded",
+            "clientReadComplete": String(isComplete),
+            "clientReadAfterFinish": String(isFinished),
+            "clientReadObservation": observation,
+            "clientReadBytes": String(bytes),
+            "clientReadErrorKind": transport["transportErrorKind"] ?? "unknown",
+            "clientReadErrorCode": transport["transportErrorCode"] ?? "unknown",
+            "requestReceivedToReadEndMs": String(Int(max(
+                ProcessInfo.processInfo.systemUptime - startedUptime, 0) * 1_000))
+        ]
+        DiagnosticLogStore.shared.record(error == nil ? .info : .warning,
+            categoryKey: "diagnostics.category.media",
+            messageKey: "diagnostics.media.proxy_transfer_started",
+            details: diagnosticDetails(details))
     }
 
     private func startUpstreamTask(rangeOverride: String? = nil) {
@@ -3216,16 +4251,31 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
             activeRange = rangeOverride ?? requestHeaders["range"]
         } else {
             let requestedRange = rangeOverride ?? requestHeaders["range"] ?? "bytes=0-"
+            guard let parsed = MediaRangePolicy.requestedRange(requestedRange) else {
+                rejectClientRange()
+                return
+            }
             // Never turn a client's open-ended first request into a
             // progressive 200 response. VLC can retain the resulting
             // Matroska stream while probing/seeking and push the app past
             // iOS's per-process memory limit. Every media request therefore
             // starts with a finite Range window; interrupted transfers are
             // resumed from the received offset below.
-            activeRange = MediaRangePolicy.boundedRange(
-                requestedRange,
-                maximumLength: maximumMediaSegmentBytes
-            )
+            resolvingSuffixLength = false
+            if case .suffix = parsed, suffixTotalLength == nil {
+                // Learn only the length from a one-byte Range response header.
+                // Cancel before accepting its body, then request finite tail
+                // windows using that length and an If-Range validator if given.
+                resolvingSuffixLength = true
+                activeRange = "bytes=0-0"
+            } else {
+                guard let bounded = MediaRangePolicy.boundedRange(requestedRange,
+                    maximumLength: maximumMediaSegmentBytes, totalLength: suffixTotalLength) else {
+                    rejectClientRange(totalLength: suffixTotalLength)
+                    return
+                }
+                activeRange = bounded
+            }
         }
         activeRequestedRange = activeRange
         activeRequestedRangeStart = MediaRangePolicy.requestedRangeStart(from: activeRange)
@@ -3258,6 +4308,7 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
         if let activeRange {
             request.setValue(activeRange, forHTTPHeaderField: "Range")
         }
+        if let suffixValidator { request.setValue(suffixValidator, forHTTPHeaderField: "If-Range") }
         guard let session else {
             finish(with: URLError(.cancelled))
             return
@@ -3265,11 +4316,12 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
         let task = session.dataTask(with: request)
         if usesSharedTransport { task.delegate = self }
         self.task = task
+        taskDiagnostics.issued(taskID: task.taskIdentifier, now: ProcessInfo.processInfo.systemUptime)
         if method == "GET" {
             DiagnosticLogStore.shared.record(.info, categoryKey: "diagnostics.category.media",
                 messageKey: "diagnostics.media.proxy_transfer_started", details: diagnosticDetails([
                     "stage": "upstreamRequestIssued", "method": method,
-                    "range": activeRange ?? "full",
+                    "range": activeRange ?? "full", "suffixLengthProbe": String(resolvingSuffixLength),
                     "playlistQueryCompacted": String(usesCompactedPlaylistQuery),
                     "queryBytesBefore": String(URLComponents(url: upstreamURL, resolvingAgainstBaseURL: false)?.percentEncodedQuery?.utf8.count ?? 0),
                     "queryBytesAfter": String(URLComponents(url: requestURL, resolvingAgainstBaseURL: false)?.percentEncodedQuery?.utf8.count ?? 0),
@@ -3277,6 +4329,13 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
                 ]))
         }
         task.resume()
+    }
+
+    func urlSession(_ session: URLSession, task: URLSessionTask,
+                    willPerformHTTPRedirection response: HTTPURLResponse, newRequest request: URLRequest,
+                    completionHandler: @escaping (URLRequest?) -> Void) {
+        // Optional work must never follow another endpoint with inherited auth.
+        completionHandler(isStartupPrimer ? nil : request)
     }
 
     func urlSession(
@@ -3294,6 +4353,8 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
             finish(with: URLError(.badServerResponse))
             return
         }
+        taskDiagnostics.responseHeadersReceived(taskID: dataTask.taskIdentifier,
+            now: ProcessInfo.processInfo.systemUptime)
         if isPlaylist, usesCompactedPlaylistQuery, !retriesUncompactedPlaylist,
            [400, 422].contains(response.statusCode) {
             retriesUncompactedPlaylist = true
@@ -3306,6 +4367,13 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
             return
         }
         lastStatusCode = response.statusCode
+        if isStartupPrimer && !PlaybackHLSStartupPrimerPolicy.accepts(status: response.statusCode,
+            contentRange: response.value(forHTTPHeaderField: "Content-Range"),
+            contentLength: response.value(forHTTPHeaderField: "Content-Length")) {
+            completionHandler(.cancel)
+            finish(with: URLError(.badServerResponse), source: "startupPrimerRejected")
+            return
+        }
         bodyWindowSampler.beginResponse(now: ProcessInfo.processInfo.systemUptime)
         if isPlaylist {
             playlistStatusCode = response.statusCode
@@ -3333,6 +4401,53 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
         }
         let contentRange = response.value(forHTTPHeaderField: "Content-Range")
         let parsedRange = MediaRangePolicy.contentRange(from: contentRange)
+        if !isHLSChildRequest, !didSendResponseHeaders, response.statusCode == 416 {
+            completionHandler(.cancel)
+            let total = contentRange.flatMap { value -> Int64? in
+                guard value.hasPrefix("bytes */") else { return nil }
+                let text = value.dropFirst("bytes */".count)
+                guard !text.isEmpty, text.utf8.allSatisfy({ (48...57).contains($0) }),
+                      let length = Int64(text), length >= 0 else { return nil }
+                return length
+            }
+            rejectClientRange(totalLength: total)
+            return
+        }
+        if resolvingSuffixLength {
+            completionHandler(.cancel)
+            guard response.statusCode == 206, let parsedRange,
+                  parsedRange.start == 0, parsedRange.end == 0,
+                  response.value(forHTTPHeaderField: "Content-Length").map({ $0 == "1" }) ?? true,
+                  response.value(forHTTPHeaderField: "Content-Encoding").map({ $0.lowercased() == "identity" }) ?? true else {
+                rejectUpstreamResponse()
+                return
+            }
+            suffixTotalLength = parsedRange.totalLength
+            let etag = response.value(forHTTPHeaderField: "ETag")
+            suffixValidator = etag.flatMap { $0.hasPrefix("W/") ? nil : $0 }
+                ?? response.value(forHTTPHeaderField: "Last-Modified")
+            resolvingSuffixLength = false
+            startUpstreamTask()
+            return
+        }
+        if let suffixTotalLength, parsedRange?.totalLength != suffixTotalLength {
+            completionHandler(.cancel)
+            rejectUpstreamResponse()
+            return
+        }
+        if !isHLSChildRequest, let parsedRange,
+           let activeRequestedRange,
+           case let .offset(_, requestedEnd) = MediaRangePolicy.requestedRange(activeRequestedRange) {
+            let bodyLength = response.value(forHTTPHeaderField: "Content-Length")
+            let encoding = response.value(forHTTPHeaderField: "Content-Encoding")
+            guard requestedEnd.map({ parsedRange.end <= $0 }) ?? false,
+                  bodyLength.map({ Int64($0) == parsedRange.bodyLength }) ?? true,
+                  encoding.map({ $0.lowercased() == "identity" }) ?? true else {
+                completionHandler(.cancel)
+                rejectUpstreamResponse()
+                return
+            }
+        }
         responseTotalLength = parsedRange?.totalLength
         if !isHLSChildRequest,
            let requestedStart = activeRequestedRangeStart,
@@ -3447,6 +4562,8 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
 
     func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
         guard !isFinished, task === dataTask else { return }
+        taskDiagnostics.receivedBody(taskID: dataTask.taskIdentifier, bytes: Int64(data.count),
+            now: ProcessInfo.processInfo.systemUptime)
         if isPlaylist {
             playlistBody.append(data)
             return
@@ -3467,10 +4584,12 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
     }
 
     /// Two stable, unthrottled Range windows can supply a short-lived estimate
-    /// before completion. Completed transfer metrics remain authoritative.
+    /// before completion, superseding older startup/tail completions. A newer
+    /// completed transfer can still replace this short-lived estimate.
     private func recordBodyProgress(bytes: Int) {
-        guard method == "GET", !isPlaylist,
+        guard !isStartupPrimer, method == "GET", !isPlaylist,
               !isHLSChildRequest || hlsRole == "segment" else { return }
+        PlaybackDownloadMeter.shared.receive(bytes: bytes, traceID: playbackTraceID)
         let now = ProcessInfo.processInfo.systemUptime
         bufferLock.lock()
         let pressure = upstreamSuspendedSeconds
@@ -3479,7 +4598,8 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
         bufferLock.unlock()
         guard let window = bodyWindowSampler.receive(bytes: bytes, now: now,
             totalBackpressure: pressure, queuedBytes: queued,
-            eligible: !isHLSChildRequest && lastStatusCode == 206 && activeRequestedRange != nil) else { return }
+            eligible: !upstreamIsNetworkLibraryBridge && !isHLSChildRequest
+                && lastStatusCode == 206 && activeRequestedRange != nil) else { return }
         let capacity = window.capacity
         if let capacity {
             PlaybackRecentThroughputStore.shared.recordQualifiedBodyWindow(
@@ -3505,21 +4625,36 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
         task: URLSessionTask,
         didFinishCollecting metrics: URLSessionTaskMetrics
     ) {
-        guard task === self.task else { return }
-        guard let transaction = metrics.transactionMetrics.last else { return }
+        guard let observation = taskDiagnostics.callback(taskID: task.taskIdentifier) else { return }
+        let now = ProcessInfo.processInfo.systemUptime
+        guard let transaction = metrics.transactionMetrics.last else {
+            DiagnosticLogStore.shared.record(.info, categoryKey: "diagnostics.category.media",
+                messageKey: "diagnostics.media.proxy_transfer_finished",
+                details: diagnosticDetails(observation.fields(at: now).merging([
+                    "stage": "urlSessionTaskMetrics", "transactionCount": "0",
+                    "taskIntervalMs": String(Int(metrics.taskInterval.duration * 1_000))
+                ]) { _, new in new }))
+            return
+        }
         bufferLock.lock()
-        let backpressureSeconds = upstreamSuspendedSeconds
-            + (suspendedSinceUptime.map { max(ProcessInfo.processInfo.systemUptime - $0, 0) } ?? 0)
-        let suspendCount = upstreamSuspendCount
-        let queuedBytes = pendingBodyBytes
+        let backpressureSeconds = observation.clientFinished ? observation.finalBackpressure
+            : upstreamSuspendedSeconds + (suspendedSinceUptime.map { max(now - $0, 0) } ?? 0)
+        let suspendCount = observation.clientFinished ? observation.finalSuspendCount : upstreamSuspendCount
+        let queuedBytes = observation.clientFinished ? observation.finalQueuedBytes : pendingBodyBytes
         bufferLock.unlock()
-        if !isPlaylist, (!isHLSChildRequest || hlsRole == "segment"),
-           let responseStart = transaction.responseStartDate,
-           let responseEnd = transaction.responseEndDate {
+        let isHLSSegment = isHLSChildRequest && hlsRole == "segment"
+        let measurementSeconds = PlaybackTransferCapacityPolicy.seconds(
+            isHLSSegment: isHLSSegment,
+            fetchStart: transaction.fetchStartDate,
+            responseStart: transaction.responseStartDate,
+            responseEnd: transaction.responseEndDate
+        )
+        if !upstreamIsNetworkLibraryBridge, !isStartupPrimer, !observation.clientFinished, !isFinished, task === self.task,
+           !isPlaylist, (!isHLSChildRequest || isHLSSegment), let measurementSeconds {
             PlaybackRecentThroughputStore.shared.record(
                 traceID: playbackTraceID,
                 bytes: task.countOfBytesReceived,
-                seconds: responseEnd.timeIntervalSince(responseStart),
+                seconds: measurementSeconds,
                 backpressureSeconds: backpressureSeconds,
                 now: ProcessInfo.processInfo.systemUptime
             )
@@ -3532,8 +4667,34 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
             .info,
             categoryKey: "diagnostics.category.media",
             messageKey: "diagnostics.media.proxy_transfer_finished",
-            details: diagnosticDetails([
+            details: diagnosticDetails(observation.fields(at: now).merging(
+                PlaybackRequestPhaseDiagnostics.fields(
+                    created: metrics.taskInterval.start,
+                    firstFetch: metrics.transactionMetrics.first?.fetchStartDate,
+                    lastFetch: transaction.fetchStartDate,
+                    requestStart: transaction.requestStartDate,
+                    requestEnd: transaction.requestEndDate,
+                    responseStart: transaction.responseStartDate,
+                    responseEnd: transaction.responseEndDate,
+                    callback: Date())) { _, new in new }.merging(
+                PlaybackResponseBodyDiagnostics.fields(
+                    received: transaction.countOfResponseBodyBytesReceived,
+                    decoded: transaction.countOfResponseBodyBytesAfterDecoding,
+                    contentLength: (transaction.response as? HTTPURLResponse)?.value(forHTTPHeaderField: "Content-Length"),
+                    contentEncoding: (transaction.response as? HTTPURLResponse)?.value(forHTTPHeaderField: "Content-Encoding"),
+                    status: (transaction.response as? HTTPURLResponse)?.statusCode)
+            ) { _, new in new }.merging(
+                PlaybackJellyfinOutputDiagnostics.fields(mediaPath: jellyfinMediaPath,
+                    request: transaction.request, redirectCount: metrics.redirectCount)
+            ) { _, new in new }.merging([
                 "stage": "urlSessionTaskMetrics",
+                "transactionCount": String(metrics.transactionMetrics.count),
+                "redirectCount": String(metrics.redirectCount),
+                "taskIntervalMs": String(Int(metrics.taskInterval.duration * 1_000)),
+                "adaptiveMeasurementBoundary": upstreamIsNetworkLibraryBridge ? "ineligibleBridgeDelivery"
+                    : isHLSSegment ? "fetchToResponseEnd" : "responseBody",
+                "adaptiveTransferMs": upstreamIsNetworkLibraryBridge ? "unknown"
+                    : measurementSeconds.map { String(Int($0 * 1_000)) } ?? "unknown",
                 "target": DiagnosticLogStore.redactedURL(upstreamURL),
                 "dnsMs": milliseconds(
                     transaction.domainLookupStartDate,
@@ -3568,34 +4729,33 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
                 "expensive": transaction.isExpensive ? "yes" : "no",
                 "constrained": transaction.isConstrained ? "yes" : "no",
                 "remoteAddress": transaction.remoteAddress ?? "-"
-            ])
+            ]) { _, new in new })
         )
     }
 
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-        guard !isFinished, task === self.task else { return }
-        if isPlaylist {
-            guard error == nil else {
-                finish(with: error)
-                return
-            }
-            sendPlaylist()
-            return
-        }
+        guard let observation = taskDiagnostics.callback(taskID: task.taskIdentifier, completed: true) else { return }
         DiagnosticLogStore.shared.record(
             error == nil ? .info : .warning,
             categoryKey: "diagnostics.category.media",
             messageKey: "diagnostics.media.proxy_transfer_finished",
-            details: diagnosticDetails([
+            details: diagnosticDetails(observation.fields(at: ProcessInfo.processInfo.systemUptime).merging([
                 "stage": "upstreamTaskCompleted",
                 "range": activeRequestedRange ?? "-",
-                "taskReceivedBytes": "\(max(deliveredBodyBytes - bodyBytesAtTaskStart, 0))",
-                "cumulativeReceivedBytes": "\(deliveredBodyBytes)",
-                "expectedBytes": expectedBodyBytes.map(String.init) ?? "-",
+                "taskReceivedBytes": String(observation.receivedBodyBytes),
+                "cumulativeReceivedBytes": String(isPlaylist ? Int64(playlistBody.count) : deliveredBodyBytes),
+                "expectedBytes": (isPlaylist ? playlistExpectedBodyBytes : expectedBodyBytes).map(String.init) ?? "-",
                 "errorDomain": error.map { ($0 as NSError).domain } ?? "-",
                 "errorCode": error.map { String(($0 as NSError).code) } ?? "-"
-            ])
+            ]) { _, new in new })
         )
+        // A late completion is evidence only; never resume a closed client.
+        guard !isFinished, task === self.task else { return }
+        if isPlaylist {
+            guard error == nil else { finish(with: error); return }
+            sendPlaylist()
+            return
+        }
         if retryInterruptedTransfer(after: error) {
             return
         }
@@ -3603,10 +4763,10 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
             finish(with: error)
             return
         }
-        if continueChunkedMediaResponseIfNeeded() {
-            return
-        }
-        if continueContinuousRangeResponseIfNeeded() {
+        // A HEAD completes after the headers. Its zero body bytes must never
+        // advance an open-ended Range or repeat the first upstream request.
+        if method == "GET",
+           continueChunkedMediaResponseIfNeeded() || continueContinuousRangeResponseIfNeeded() {
             return
         }
         bufferLock.lock()
@@ -3619,6 +4779,11 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
         guard !isFinished else { return }
         if playlistStatusCode == 200, activeRequestedRange == nil, let token = playlistToken {
             vodPlaylistCache.store(playlistBody, route: token, url: upstreamURL)
+            if let text = String(data: playlistBody, encoding: .utf8),
+               let uri = PlaybackVODPlaylistCache.singleVariantURI(in: text),
+               let child = playlistContext.resolve(uri) {
+                vodPlaylistCache.storeMaster(playlistBody, route: token, url: upstreamURL, childURL: child)
+            }
         }
         let rewriteStarted = Date()
         let body = rewritePlaylist(playlistBody)
@@ -3644,8 +4809,31 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
                 self.finish(with: error)
                 return
             }
+            self.bufferLock.lock()
+            self.playlistDeliveryDiagnostics.headerCompleted()
+            let headerEvidence = self.playlistDeliveryDiagnostics.fields(upstreamReceived: self.playlistBody.count)
+            self.bufferLock.unlock()
+            DiagnosticLogStore.shared.record(.info, categoryKey: "diagnostics.category.media",
+                messageKey: "diagnostics.media.proxy_transfer_finished",
+                details: self.diagnosticDetails(headerEvidence.merging([
+                    "stage": "playlistClientHeaderSendCompleted",
+                    "callbackAfterClientFinish": String(self.isFinished)
+                ]) { _, new in new }))
             self.connection.send(content: body, isComplete: true, completion: .contentProcessed { [weak self] error in
-                if let error { self?.finish(with: error) } else { self?.finish(with: nil) }
+                guard let self else { return }
+                if let error { self.finish(with: error) } else {
+                    self.bufferLock.lock()
+                    self.playlistDeliveryDiagnostics.bodyCompleted(bytes: body.count)
+                    let bodyEvidence = self.playlistDeliveryDiagnostics.fields(upstreamReceived: self.playlistBody.count)
+                    self.bufferLock.unlock()
+                    DiagnosticLogStore.shared.record(.info, categoryKey: "diagnostics.category.media",
+                        messageKey: "diagnostics.media.proxy_transfer_finished",
+                        details: self.diagnosticDetails(bodyEvidence.merging([
+                            "stage": "playlistClientBodySendCompleted",
+                            "callbackAfterClientFinish": String(self.isFinished)
+                        ]) { _, new in new }))
+                    self.finish(with: nil)
+                }
             })
         })
     }
@@ -3820,7 +5008,7 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
                         }
                     }
                     self.bufferLock.unlock()
-                    if let window = shapedWindow, window.seconds >= 0.25 {
+                    if !self.upstreamIsNetworkLibraryBridge, let window = shapedWindow, window.seconds >= 0.25 {
                         PlaybackRecentThroughputStore.shared.record(
                             traceID: self.playbackTraceID, bytes: window.bytes,
                             seconds: window.seconds, backpressureSeconds: 0, now: deliveredAt)
@@ -3852,7 +5040,7 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
             send()
 #endif
         } else if shouldClose {
-            let terminalChunk = clientUsesChunkedMediaResponse
+            let terminalChunk = method == "GET" && clientUsesChunkedMediaResponse
                 ? Data("0\r\n\r\n".utf8)
                 : nil
             connection.send(content: terminalChunk, isComplete: true, completion: .contentProcessed { [weak self] error in
@@ -3872,7 +5060,8 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
             return false
         }
         upstreamCompleted = false
-        let nextRange = "bytes=\(nextOffset)-\(min(nextOffset + maximumMediaSegmentBytes - 1, total - 1))"
+        let end = nextOffset + min(maximumMediaSegmentBytes - 1, total - 1 - nextOffset)
+        let nextRange = "bytes=\(nextOffset)-\(end)"
         startUpstreamTask(rangeOverride: nextRange)
         return true
     }
@@ -3888,7 +5077,8 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
             return false
         }
         upstreamCompleted = false
-        let nextRange = "bytes=\(nextOffset)-\(min(nextOffset + maximumMediaSegmentBytes - 1, total - 1))"
+        let end = nextOffset + min(maximumMediaSegmentBytes - 1, total - 1 - nextOffset)
+        let nextRange = "bytes=\(nextOffset)-\(end)"
         startUpstreamTask(rangeOverride: nextRange)
         return true
     }
@@ -3914,7 +5104,7 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
         let rangeEnd = responseEndOffset.flatMap { end in
             end >= nextOffset ? end : nil
         } ?? responseTotalLength.map { total in
-            min(nextOffset + maximumMediaSegmentBytes - 1, total - 1)
+            nextOffset + min(maximumMediaSegmentBytes - 1, max(total - 1 - nextOffset, 0))
         }
         let range = "bytes=\(nextOffset)-\(rangeEnd.map { String($0) } ?? "")"
         DiagnosticLogStore.shared.record(
@@ -3933,7 +5123,21 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
         return true
     }
 
+    private func rejectClientRange(totalLength: Int64? = nil) {
+        lastStatusCode = 416
+        let lengthHeader = totalLength.map { "Content-Range: bytes */\($0)\r\n" } ?? ""
+        let response = "HTTP/1.1 416 Range Not Satisfiable\r\n\(lengthHeader)Content-Length: 0\r\nConnection: close\r\n\r\n"
+        connection.send(content: Data(response.utf8), isComplete: true,
+            completion: .contentProcessed { [weak self] _ in
+                self?.finish(with: URLError(.badURL), source: "invalidOrUnsatisfiableRange")
+            })
+    }
+
     private func rejectUpstreamResponse() {
+        guard !didSendResponseHeaders else {
+            finish(with: URLError(.cannotParseResponse), source: "invalidContinuationResponse")
+            return
+        }
         let response = "HTTP/1.1 502 Bad Gateway\r\nContent-Length: 0\r\nConnection: close\r\n\r\n"
         connection.send(
             content: Data(response.utf8),
@@ -3965,6 +5169,19 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
         completionHandler(.useCredential, credential)
     }
 
+    private func transportErrorDetails(_ error: Error?) -> [String: String] {
+        guard let error else { return ["transportErrorKind": "none"] }
+        if let networkError = error as? NWError {
+            switch networkError {
+            case .posix(let code): return ["transportErrorKind": "posix", "transportErrorCode": String(code.rawValue)]
+            case .dns(let code): return ["transportErrorKind": "dns", "transportErrorCode": String(code)]
+            case .tls(let code): return ["transportErrorKind": "tls", "transportErrorCode": String(code)]
+            @unknown default: return ["transportErrorKind": "unknown"]
+            }
+        }
+        return ["transportErrorKind": "other", "transportErrorCode": String((error as NSError).code)]
+    }
+
     private func finish(with error: Error?, source: String = #function) {
         finishLock.lock()
         guard !finished else {
@@ -3978,13 +5195,19 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
         let shapedStart = firstShapedSendAt
         let shapedBytes = shapedBodyBytes
 #endif
+        taskDiagnostics.clientFinished(
+            backpressure: upstreamSuspendedSeconds
+                + (suspendedSinceUptime.map { max(ProcessInfo.processInfo.systemUptime - $0, 0) } ?? 0),
+            suspendCount: upstreamSuspendCount, queuedBytes: pendingBodyBytes)
         suspendedDataTask = nil
         suspendedSinceUptime = nil
         pendingBodyChunks.removeAll(keepingCapacity: false)
         pendingBodyBytes = 0
+        let playlistDeliveryEvidence = isPlaylist
+            ? playlistDeliveryDiagnostics.fields(upstreamReceived: playlistBody.count) : [:]
         bufferLock.unlock()
 #if DEBUG
-        if error == nil, let shapedStart, shapedBytes >= 1_048_576 {
+        if !upstreamIsNetworkLibraryBridge, error == nil, let shapedStart, shapedBytes >= 1_048_576 {
             let elapsed = ProcessInfo.processInfo.systemUptime - shapedStart
             PlaybackRecentThroughputStore.shared.record(
                 traceID: playbackTraceID, bytes: shapedBytes,
@@ -4000,16 +5223,14 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
             )
         }
 #endif
-        DiagnosticLogStore.shared.record(
-            error == nil ? .info : .warning,
-            categoryKey: "diagnostics.category.media",
-            messageKey: "diagnostics.media.proxy_transfer_finished",
-            details: diagnosticDetails([
+        let terminalDetails: [String: String] = [
                 "status": lastStatusCode.map(String.init) ?? "-",
                 "finishSource": source,
                 "errorDomain": error.map { ($0 as NSError).domain } ?? "-",
                 "errorCode": error.map { String(($0 as NSError).code) } ?? "-",
-                "taskReceivedBytes": "\(max(deliveredBodyBytes - bodyBytesAtTaskStart, 0))",
+                "taskReceivedBytes": task.flatMap {
+                    taskDiagnostics.callback(taskID: $0.taskIdentifier).map { String($0.receivedBodyBytes) }
+                } ?? "unknown",
                 "responseStartOffset": responseStartOffset.map(String.init) ?? "-",
                 "responseEndOffset": responseEndOffset.map(String.init) ?? "-",
                 "range": activeRequestedRange ?? "-",
@@ -4019,10 +5240,23 @@ private final class AuthenticatedMediaProxyTransfer: NSObject, URLSessionDataDel
                 "durationMs": "\(Int(Date().timeIntervalSince(startedAt) * 1_000))",
                 "retries": "\(retryAttempts)",
                 "result": error?.localizedDescription ?? "complete"
-            ])
+        ]
+        let terminalWithTransport = terminalDetails.merging(transportErrorDetails(error)) { _, new in new }
+            .merging(playlistDeliveryEvidence) { _, new in new }
+        DiagnosticLogStore.shared.record(
+            error == nil ? .info : .warning,
+            categoryKey: "diagnostics.category.media",
+            messageKey: "diagnostics.media.proxy_transfer_finished",
+            details: diagnosticDetails(terminalWithTransport)
         )
         connection.stateUpdateHandler = nil
         connection.cancel()
+        if let task, task.state != .completed {
+            taskDiagnostics.cancellationRequested(now: ProcessInfo.processInfo.systemUptime)
+            DiagnosticLogStore.shared.record(.info, categoryKey: "diagnostics.category.media",
+                messageKey: "diagnostics.media.proxy_transfer_finished",
+                details: diagnosticDetails(["stage": "upstreamCancellationRequested"]))
+        }
         task?.cancel()
         task = nil
         if !usesSharedTransport { session?.invalidateAndCancel() }
@@ -4174,6 +5408,7 @@ private struct LocalFilePreviewScreen: View {
         NavigationStack {
             QuickLookPreviewController(url: preview.url)
                 .ignoresSafeArea(edges: .bottom)
+                .nastartPageTheme()
                 .navigationTitle(preview.url.lastPathComponent)
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
@@ -4241,7 +5476,7 @@ private struct NetworkDetailView: View {
                 }
             } header: {
                 Text("devices.network.connection")
-            }
+            }.nastartListSection()
 
             Section {
                 LabeledContent("devices.network.primary_domain", value: endpointSummary(endpoints?.primaryDomain))
@@ -4249,14 +5484,14 @@ private struct NetworkDetailView: View {
                 LabeledContent("devices.network.public_address", value: endpointSummary(endpoints?.publicAddress))
             } header: {
                 Text("devices.network.endpoints")
-            }
+            }.nastartListSection()
 
             Section {
                 LabeledContent("devices.network.online_count", value: "\(reachableEntries.count)")
                 LabeledContent("devices.network.proxy_count", value: "\(reverseProxyCount)")
             } header: {
                 Text("devices.network.summary")
-            }
+            }.nastartListSection()
 
             Section {
                 if reachableEntries.isEmpty {
@@ -4284,9 +5519,10 @@ private struct NetworkDetailView: View {
                 }
             } header: {
                 Text("devices.network.available_entries")
-            }
+            }.nastartListSection()
         }
         .listStyle(.insetGrouped)
+        .nastartReadableWidth().nastartPageTheme()
         .navigationTitle("devices.resource.network")
     }
 
@@ -4357,13 +5593,13 @@ private struct CertificateSecurityView: View {
                 }
             } header: {
                 Text("devices.cert.https")
-            }
+            }.nastartListSection()
 
             Section {
                 LabeledContent("devices.security.ssh", value: sshStatusText(device.sshStatus))
             } footer: {
                 Text("devices.security.ssh.footer")
-            }
+            }.nastartListSection()
 
             Section {
                 NavigationLink {
@@ -4385,10 +5621,11 @@ private struct CertificateSecurityView: View {
                 .disabled(isChecking || connectionStore.dsmSession == nil)
             } header: {
                 Text("devices.cert.actions")
-            }
+            }.nastartListSection()
         }
         .listStyle(.insetGrouped)
         .padding(.top, -12)
+        .nastartReadableWidth().nastartPageTheme()
         .navigationTitle("devices.maintenance.certificate")
         .navigationBarTitleDisplayMode(.inline)
         .alert(
@@ -4429,7 +5666,7 @@ private struct AgentStatusView: View {
                     "devices.security.ssh",
                     value: sshStatusText(dataStore.device.sshStatus)
                 )
-            }
+            }.nastartListSection()
 
             Section {
                 NavigationLink {
@@ -4441,7 +5678,7 @@ private struct AgentStatusView: View {
                 Text("devices.agent.setup_paths")
             } footer: {
                 Text("devices.agent.ssh.footer")
-            }
+            }.nastartListSection()
 
             Section {
                 Label {
@@ -4454,10 +5691,18 @@ private struct AgentStatusView: View {
                     Image(systemName: "antenna.radiowaves.left.and.right")
                 }
                     .foregroundStyle(connectionStore.usesAgent ? .green : .secondary)
-            }
+            }.nastartListSection()
         }
         .listStyle(.insetGrouped)
+        .nastartReadableWidth().nastartPageTheme()
         .navigationTitle("devices.maintenance.agent")
         .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+/// DSM and macOS bookkeeping such as `#recycle`, `@eaDir` and `.fseventsd`.
+enum FileBrowserSystemItems {
+    static func isSystemItem(named name: String) -> Bool {
+        name.hasPrefix(".") || name.hasPrefix("#") || name.hasPrefix("@")
     }
 }

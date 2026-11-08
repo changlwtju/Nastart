@@ -1,74 +1,34 @@
 # Nastart
 
-Nastart is a local-first NAS and HomeLab companion for Apple platforms.
+Nastart 是面向 iPhone、iPad 的 NAS 与 HomeLab 管理应用，当前重点为群晖 DSM、服务启动台、文件管理与视频播放。产品采用本地优先设计，Agent 是可选的 NAS 端组件。
 
-The first product version is optimized for Synology DSM users while keeping the
-architecture open for other NAS and HomeLab systems. V1 should prioritize
-automatic DSM API, app-side probing, and optional Agent flows for Synology DSM.
-Manual entry remains a fallback, not the primary experience. Deep support for
-other NAS platforms is planned for later versions through the Agent/provider
-architecture.
+## 从这里开始
 
-The optional Nastart Agent is intended to run as a Docker container on the
-user's own NAS or Linux host. Synology is the primary tested target for v1.
-Other Docker-capable NAS systems are a future compatibility path through the
-same Agent/provider architecture.
+| 要做什么 | 入口 |
+| --- | --- |
+| 看当前进度 | [PROGRESS.md](PROGRESS.md) |
+| 看详细开发进度、问题与后续计划 | [开发状态](docs/project/DEVELOPMENT_STATUS.md) |
+| 全面了解功能、架构、源码与协作开发 | [2026-11-02全面盘点](docs/project/APP-DEVELOPMENT-OVERVIEW-2026-11-02.md)、[Claude协作接续单](docs/development/CLAUDE-PRIMARY-DEVELOPMENT-HANDOFF.md)、[可转发推进指令](docs/development/CLAUDE-NEXT-DEVELOPMENT-PROMPT.md) |
+| 了解播放技术路线与当前真机矩阵 | [技术路线](docs/architecture/VIDEO_PLAYBACK_PIPELINE.md)、[测试矩阵](docs/testing/PLAYBACK-FUNCTION-MATRIX.md) |
+| 继续开发或调试 | [当前播放交接](docs/handoffs/CURRENT-PLAYBACK-HANDOFF.md) |
+| 找需求、设计、规范或历史记录 | [文档导航](docs/README.md) |
+| 核对真机安装与工作约定 | [AGENTS.md](AGENTS.md) |
+| 复用USB/Wi-Fi安装、原生调试及WDA遥控 | [真机安装与远控手册](docs/development/PHYSICAL-DEVICE-REMOTE-CONTROL.md) |
 
-It is intended to become an intelligent launchpad, service discovery center,
-status monitor, and lifecycle assistant for NAS users, starting with iPhone and
-iPad, then expanding toward macOS and other Apple platforms.
+## 项目目录
 
-## 真机调试基本门槛
+| 目录 | 内容 |
+| --- | --- |
+| [ios/](ios/README.md) | iOS/iPadOS 应用、Xcode 工程、测试与本地播放依赖 |
+| [tvos/](tvos/README.md) | Apple TV 原生首版、独立工程与测试 |
+| [agent/](agent/README.md) | 可选 NAS Agent、Docker 配置与测试 |
+| [scripts/](scripts/README.md) | 构建、设备操作、诊断与文档检查工具 |
+| [docs/](docs/README.md) | 按主题组织的需求、设计、开发规范、测试及历史交接 |
+| [cloud/](cloud/README.md)、[website/](website/README.md) | 后续能力的边界与说明 |
+| `tmp` | 指向仓库外私有调试产物的兼容链接；不参与版本管理 |
 
-每次在 iPhone 13、iPhone 18 或 iPad 开始调试，必须逐台确认 Nastart 为当前源码的最新安装包；无法确认时先保存诊断，再保留数据覆盖安装并核实正常启动。仅凭版本号或其他设备已更新不算核对通过。执行与证据要求见 [项目基本调试要求](AGENTS.md)。
+## 开发约定
 
-## Playback Architecture Decision
+视频播放按 [ADR 0002](docs/adr/0002-single-playback-optimization-mainline.md) 集中优化 Greenfield 主线，按[分层回归流程](docs/development/playback-development-workflow.md) 验证。每台真机调试前必须核对最新包身份，无法确认时保留数据覆盖安装，不能仅凭版本号判断。
 
-视频播放集中优化 Greenfield 新架构，旧架构仅作回退与必要对照；验收完成后删除旧架构。播放入口只保留新/旧两项选择。后续工作遵循 [ADR 0002：新播放架构唯一优化主线](docs/adr/0002-single-playback-optimization-mainline.md)。
-
-## Product Direction
-
-Nastart is not planned as a simple mobile clone of Homepage, Homarr, MyServers,
-or DS One. Its core position is:
-
-> A beautiful, secure, local-first control center for NAS services, access
-> diagnosis, service discovery, and lifecycle reminders.
-
-## Initial Principles
-
-- User data security comes first.
-- The client is never trusted as a security boundary.
-- Local-first is the default.
-- iCloud/CloudKit sync should support Apple-device continuity without exposing
-  plaintext NAS secrets.
-- Agent permissions should be minimal and explainable.
-- The product should be Synology-first in v1, but provider-ready for future NAS
-  platforms.
-- iPhone and iPad should be planned from day one.
-
-## Repository Structure
-
-```text
-Nastart/
-├── README.md
-├── docs/
-│   ├── README.md
-│   ├── strategy/
-│   ├── product/
-│   ├── research/
-│   ├── security/
-│   ├── architecture/
-│   ├── project/
-│   ├── design/
-│   └── adr/
-├── ios/
-├── agent/
-├── cloud/
-└── website/
-```
-
-## Current Status
-
-This project is currently in product definition and architecture planning.
-The first local files are generated from the shared ChatGPT planning
-conversation about Nastart.
+本地静态检查：`bash scripts/preflight.sh`；文档路径检查：`python3 scripts/check_documentation.py`。实际编译、签名及真机验收在 Mac/Xcode 上执行。

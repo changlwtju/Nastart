@@ -1,0 +1,168 @@
+{
+  "updatedAt": "2026-10-29T07:15+08:00",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "inheritedWorkingChangesPreserved": true,
+  "frozenInputCount": 424,
+  "sourceInputsMatch": true,
+  "changedSourceFiles": [
+    "tvos/NastartTV/Sources/TVNASViews.swift"
+  ],
+  "mobileSourceAndBinaryUnchanged": true,
+  "builds": {
+    "TVSignedDebug": {
+      "startedAt": "2026-10-29T06:52:13.401895+08:00",
+      "configuration": "Debug",
+      "exitCode": 0,
+      "endedAt": "2026-10-29T06:52:30.098939+08:00"
+    },
+    "TVUnsignedReleaseCompileOnly": {
+      "startedAt": "2026-10-29T06:56:45.281998+08:00",
+      "configuration": "Release",
+      "exitCode": 0,
+      "endedAt": "2026-10-29T06:57:16.888917+08:00"
+    }
+  },
+  "packages": {
+    "mobile": {
+      "configuration": "Debug",
+      "mainSHA256": "a1db5798d8a330aaaf47d23cefccc49154556636141daabdc5a70ee1d2ecd91b",
+      "debugSHA256": "ef57460372114e0d6ff18f17835f39e7bc749b6f7f8cbd87ff9744ffb392ad31",
+      "signedMachOCount": 30
+    },
+    "TV": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-29T06:52:30.009595+08:00",
+      "mainSHA256": "2a2f80ddf947a0011c0d4b07baf97cf3eba04393396cf4c4ce99c76d3a4c32e8",
+      "debugSHA256": "81631028507125823b25f23af1502db596c51cf56133950c759eab7bcfaf53cb",
+      "signedMachOCount": 27
+    }
+  },
+  "devices": {
+    "iPhone18": {
+      "model": "iPhone19,7",
+      "system": "27.0",
+      "connection": "NETWORK",
+      "installedAtUTC": "2026-10-28T22:45:57.026469+00:00",
+      "installCompleteObserved": true,
+      "postInstallLookupExists": true,
+      "actualForegroundUIVerified": false,
+      "preferences": {
+        "beforeKeys": 27,
+        "afterKeys": 27,
+        "sameKeys": true,
+        "changedValues": 0,
+        "allNonDiagnosticPreferencesEqual": true
+      },
+      "newPairingAttempted": false,
+      "networkOrVPNChanged": false
+    },
+    "AppleTV": {
+      "startedAt": "2026-10-29T06:53:45.238745+08:00",
+      "preserveData": true,
+      "configuration": "Debug",
+      "arguments": [],
+      "environment": {},
+      "mediaCommands": 0,
+      "deviceName": "客厅",
+      "model": "AppleTV14,1",
+      "system": "18.2",
+      "connection": "LAN",
+      "freshIdentityVerified": true,
+      "mainSHA256": "2a2f80ddf947a0011c0d4b07baf97cf3eba04393396cf4c4ce99c76d3a4c32e8",
+      "debugSHA256": "81631028507125823b25f23af1502db596c51cf56133950c759eab7bcfaf53cb",
+      "installComplete": true,
+      "installedAt": "2026-10-29T06:53:49.854120+08:00",
+      "preferences": {
+        "beforeKeys": 15,
+        "afterKeys": 15,
+        "sameKeys": true,
+        "changedValues": 0,
+        "allNonDiagnosticPreferencesEqual": true
+      },
+      "normalLaunchAcknowledged": true,
+      "normalProcessAt3": true,
+      "normalProcessAt10": true,
+      "endedAt": "2026-10-29T06:54:06.847076+08:00"
+    }
+  },
+  "ui": {
+    "actualScreensReviewed": [
+      "DSM-disconnected launchpad",
+      "DSM-disconnected My page",
+      "DSM-disconnected connection manager",
+      "DSM-disconnected Devices resources and maintenance"
+    ],
+    "connectedStateSharedFeatureEnumeration": true,
+    "networkLibraryIndependentFromDSM": "implemented; existing library destination and player reused; no new playback window",
+    "darkThemeNativeReview": false,
+    "actualScreenshotsReviewed": true
+  },
+  "DSMLogin": {
+    "route": "household LAN IP + port",
+    "credentials": "existing authorized local input",
+    "initialResult": "server requires two-factor authentication",
+    "userOTPAttempted": true,
+    "finalResult": "generic connection failure; not signed in",
+    "causeConfirmed": false,
+    "otpRetainedInProjectFiles": false,
+    "unauthenticatedPostAttemptProbe": {
+      "at": "2026-10-29T07:13:16.910620+08:00",
+      "authenticationSent": false,
+      "route": "household LAN IP + port",
+      "http": 200,
+      "success": true,
+      "durationSeconds": 0.05
+    }
+  },
+  "cleanup": {
+    "native": {
+      "at": "2026-10-29T07:14:13.384499+08:00",
+      "mediaCommands": 0,
+      "DSMSignInComplete": false,
+      "noNetworkOrVPNChanges": true,
+      "freshIdentityVerified": true,
+      "ownedRunnerStopped": true,
+      "normalLaunchAcknowledged": true,
+      "finalImageCaptured": true,
+      "normalAppProcessPresent": true,
+      "preferences": {
+        "beforeKeys": 15,
+        "afterKeys": 15,
+        "sameKeys": true,
+        "changedValues": 0,
+        "allNonDiagnosticPreferencesEqual": true
+      },
+      "actualNormalHomeImageReviewed": true
+    },
+    "HTTPAndSettings": {
+      "settingsRestoredAndReadBack": true,
+      "ownedSessionDeleted": true,
+      "mediaCommands": 0
+    },
+    "controller": {
+      "startedAt": "2026-10-29T06:54:26.272924+08:00",
+      "reason": "User requested fresh disconnected-state UI inspection; latest 424 package now installed",
+      "mediaCommands": 0,
+      "existingRunnerCount": 0,
+      "ready": true,
+      "ownedXcodeStopped": true,
+      "endedAt": "2026-10-29T07:13:17.441279+08:00"
+    }
+  },
+  "mediaCommands": 0,
+  "cellularWindows": 0,
+  "NASMediaWrites": 0,
+  "newPlaybackMatrixPasses": 0,
+  "AstraSwitchPerformed": false,
+  "limitations": [
+    "iPhone18 install only; normal launch/actual DSM route not revalidated",
+    "TV DSM login remains blocked after two-factor attempt",
+    "No Release real-device acceptance or playback performance claim",
+    "Full renderer lifecycle unification and prior playback failures remain open"
+  ],
+  "documentationCheck": {
+    "documents": 510,
+    "localLinks": 3063,
+    "missingDestinations": 0
+  }
+}

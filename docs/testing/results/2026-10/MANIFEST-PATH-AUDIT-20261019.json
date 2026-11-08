@@ -1,0 +1,395 @@
+{
+  "date": "2026-10-19",
+  "scope": "offline trace/source audit; no new physical-device playback or source changes",
+  "sourceDiffSHA256": "0ca9a6ef74d4165c25dc58bda66b99ec111f017bf3b39737d592fabc482ff52a",
+  "packageBuildTime": "2026-10-19T12:14:58.574893+08:00",
+  "checkedSourceInputs": 173,
+  "findings": {
+    "duplicateLargeMediaPlaylistFetchRejectedByEvidence": true,
+    "rawVODCacheReusesOneUpstreamMediaResponsePerRoute": true,
+    "masterFetchedTwiceButOnly807to882DecodedBytes": true,
+    "mediaRewrittenTo354671Bytes": true,
+    "mediaRewriteCostMs": [
+      44,
+      58
+    ],
+    "mediaQueryAlreadyCompactedViaMasterParams": true,
+    "prewarmOnlyManifestNoSegmentsOrKeys": true,
+    "fullVODPrewarmMustNotBeBlindlyRemoved": "Existing slow progressing 30/35-second boundary regression; current cost includes full fetch before AV resource creation",
+    "wireCompressionOrWireByteSizeNotRecordedInExistingTrace": true,
+    "decodedManifestBytesAreNotActualBillableCellularBytes": true,
+    "noNewBandwidthOrStartupPerformanceClaim": true
+  },
+  "windows": [
+    {
+      "entry": "Jellyfin",
+      "repeat": 1,
+      "newDeviceTest": false,
+      "sourceWindow": "previous 12:16–12:25 S19 real4G",
+      "events": [
+        {
+          "secondsFromTouch": 1.375615,
+          "hlsRole": "masterPlaylist",
+          "playlistQueryCompacted": "true",
+          "queryBytesAfter": "713",
+          "queryBytesBefore": "819",
+          "stage": "upstreamRequestIssued"
+        },
+        {
+          "secondsFromTouch": 1.917492,
+          "cellular": "yes",
+          "hlsRole": "masterPlaylist",
+          "lastRequestEndToFirstByteMs": "164",
+          "lastResponseBodyMs": "0",
+          "protocol": "h2",
+          "stage": "urlSessionTaskMetrics",
+          "totalMs": "524"
+        },
+        {
+          "secondsFromTouch": 1.91819,
+          "hlsRole": "masterPlaylist",
+          "inputBytes": "882",
+          "outputBytes": "237",
+          "playlistDurationSeconds": "0.0",
+          "playlistEndlist": "false",
+          "playlistSegments": "0",
+          "rewriteMs": "0",
+          "stage": "playlistRewritten"
+        },
+        {
+          "secondsFromTouch": 1.918926,
+          "hlsRole": "mediaPlaylist",
+          "playlistQueryCompacted": "false",
+          "queryBytesAfter": "713",
+          "queryBytesBefore": "713",
+          "stage": "upstreamRequestIssued"
+        },
+        {
+          "secondsFromTouch": 5.423523,
+          "cellular": "yes",
+          "hlsRole": "mediaPlaylist",
+          "lastRequestEndToFirstByteMs": "131",
+          "lastResponseBodyMs": "3378",
+          "protocol": "h2",
+          "stage": "urlSessionTaskMetrics",
+          "totalMs": "3510"
+        },
+        {
+          "secondsFromTouch": 5.572589,
+          "hlsRole": "mediaPlaylist",
+          "inputBytes": "2791993",
+          "outputBytes": "354671",
+          "playlistDurationSeconds": "13698.368000000955",
+          "playlistEndlist": "true",
+          "playlistSegments": "3422",
+          "rewriteMs": "58",
+          "stage": "playlistRewritten"
+        },
+        {
+          "secondsFromTouch": 6.411355,
+          "hlsRole": "masterPlaylist",
+          "playlistQueryCompacted": "true",
+          "queryBytesAfter": "713",
+          "queryBytesBefore": "819",
+          "stage": "upstreamRequestIssued"
+        },
+        {
+          "secondsFromTouch": 6.504691,
+          "cellular": "yes",
+          "hlsRole": "masterPlaylist",
+          "lastRequestEndToFirstByteMs": "88",
+          "lastResponseBodyMs": "4",
+          "protocol": "h2",
+          "stage": "urlSessionTaskMetrics",
+          "totalMs": "93"
+        },
+        {
+          "secondsFromTouch": 6.505375,
+          "hlsRole": "masterPlaylist",
+          "inputBytes": "882",
+          "outputBytes": "237",
+          "playlistDurationSeconds": "0.0",
+          "playlistEndlist": "false",
+          "playlistSegments": "0",
+          "rewriteMs": "0",
+          "stage": "playlistRewritten"
+        },
+        {
+          "secondsFromTouch": 6.509742,
+          "bytes": "2791993",
+          "hlsRole": "mediaPlaylist",
+          "stage": "vodPlaylistCacheHit"
+        },
+        {
+          "secondsFromTouch": 6.604577,
+          "hlsRole": "mediaPlaylist",
+          "inputBytes": "2791993",
+          "outputBytes": "354671",
+          "playlistDurationSeconds": "13698.368000000955",
+          "playlistEndlist": "true",
+          "playlistSegments": "3422",
+          "rewriteMs": "45",
+          "stage": "playlistRewritten"
+        }
+      ],
+      "mediaPlaylistUpstreamFetchCount": 1,
+      "mediaPlaylistLocalCacheHits": 1,
+      "masterUpstreamFetchCount": 2
+    },
+    {
+      "entry": "Jellyfin",
+      "repeat": 2,
+      "newDeviceTest": false,
+      "sourceWindow": "previous 12:16–12:25 S19 real4G",
+      "events": [
+        {
+          "secondsFromTouch": 1.291747,
+          "hlsRole": "masterPlaylist",
+          "playlistQueryCompacted": "true",
+          "queryBytesAfter": "711",
+          "queryBytesBefore": "817",
+          "stage": "upstreamRequestIssued"
+        },
+        {
+          "secondsFromTouch": 1.47072,
+          "cellular": "yes",
+          "hlsRole": "masterPlaylist",
+          "lastRequestEndToFirstByteMs": "115",
+          "lastResponseBodyMs": "0",
+          "protocol": "h2",
+          "stage": "urlSessionTaskMetrics",
+          "totalMs": "177"
+        },
+        {
+          "secondsFromTouch": 1.495484,
+          "hlsRole": "masterPlaylist",
+          "inputBytes": "876",
+          "outputBytes": "233",
+          "playlistDurationSeconds": "0.0",
+          "playlistEndlist": "false",
+          "playlistSegments": "0",
+          "rewriteMs": "0",
+          "stage": "playlistRewritten"
+        },
+        {
+          "secondsFromTouch": 1.496385,
+          "hlsRole": "mediaPlaylist",
+          "playlistQueryCompacted": "false",
+          "queryBytesAfter": "711",
+          "queryBytesBefore": "711",
+          "stage": "upstreamRequestIssued"
+        },
+        {
+          "secondsFromTouch": 4.492903,
+          "cellular": "yes",
+          "hlsRole": "mediaPlaylist",
+          "lastRequestEndToFirstByteMs": "135",
+          "lastResponseBodyMs": "2859",
+          "protocol": "h2",
+          "stage": "urlSessionTaskMetrics",
+          "totalMs": "2994"
+        },
+        {
+          "secondsFromTouch": 4.59763,
+          "hlsRole": "mediaPlaylist",
+          "inputBytes": "2785149",
+          "outputBytes": "354671",
+          "playlistDurationSeconds": "13698.368000000955",
+          "playlistEndlist": "true",
+          "playlistSegments": "3422",
+          "rewriteMs": "53",
+          "stage": "playlistRewritten"
+        },
+        {
+          "secondsFromTouch": 5.112586,
+          "hlsRole": "masterPlaylist",
+          "playlistQueryCompacted": "true",
+          "queryBytesAfter": "711",
+          "queryBytesBefore": "817",
+          "stage": "upstreamRequestIssued"
+        },
+        {
+          "secondsFromTouch": 5.219877,
+          "cellular": "yes",
+          "hlsRole": "masterPlaylist",
+          "lastRequestEndToFirstByteMs": "113",
+          "lastResponseBodyMs": "0",
+          "protocol": "h2",
+          "stage": "urlSessionTaskMetrics",
+          "totalMs": "114"
+        },
+        {
+          "secondsFromTouch": 5.230026,
+          "hlsRole": "masterPlaylist",
+          "inputBytes": "876",
+          "outputBytes": "233",
+          "playlistDurationSeconds": "0.0",
+          "playlistEndlist": "false",
+          "playlistSegments": "0",
+          "rewriteMs": "0",
+          "stage": "playlistRewritten"
+        },
+        {
+          "secondsFromTouch": 5.249405,
+          "bytes": "2785149",
+          "hlsRole": "mediaPlaylist",
+          "stage": "vodPlaylistCacheHit"
+        },
+        {
+          "secondsFromTouch": 5.343989,
+          "hlsRole": "mediaPlaylist",
+          "inputBytes": "2785149",
+          "outputBytes": "354671",
+          "playlistDurationSeconds": "13698.368000000955",
+          "playlistEndlist": "true",
+          "playlistSegments": "3422",
+          "rewriteMs": "47",
+          "stage": "playlistRewritten"
+        }
+      ],
+      "mediaPlaylistUpstreamFetchCount": 1,
+      "mediaPlaylistLocalCacheHits": 1,
+      "masterUpstreamFetchCount": 2
+    },
+    {
+      "entry": "device file",
+      "repeat": 1,
+      "newDeviceTest": false,
+      "sourceWindow": "previous 12:16–12:25 S19 real4G",
+      "events": [
+        {
+          "secondsFromTouch": 0.847332,
+          "hlsRole": "masterPlaylist",
+          "playlistQueryCompacted": "true",
+          "queryBytesAfter": "642",
+          "queryBytesBefore": "727",
+          "stage": "upstreamRequestIssued"
+        },
+        {
+          "secondsFromTouch": 1.083737,
+          "cellular": "yes",
+          "hlsRole": "masterPlaylist",
+          "lastRequestEndToFirstByteMs": "142",
+          "lastResponseBodyMs": "0",
+          "protocol": "h2",
+          "stage": "urlSessionTaskMetrics",
+          "totalMs": "233"
+        },
+        {
+          "secondsFromTouch": 1.114888,
+          "hlsRole": "masterPlaylist",
+          "inputBytes": "807",
+          "outputBytes": "233",
+          "playlistDurationSeconds": "0.0",
+          "playlistEndlist": "false",
+          "playlistSegments": "0",
+          "rewriteMs": "0",
+          "stage": "playlistRewritten"
+        },
+        {
+          "secondsFromTouch": 1.115802,
+          "hlsRole": "mediaPlaylist",
+          "playlistQueryCompacted": "false",
+          "queryBytesAfter": "642",
+          "queryBytesBefore": "642",
+          "stage": "upstreamRequestIssued"
+        },
+        {
+          "secondsFromTouch": 3.256317,
+          "cellular": "yes",
+          "hlsRole": "mediaPlaylist",
+          "lastRequestEndToFirstByteMs": "91",
+          "lastResponseBodyMs": "2066",
+          "protocol": "h2",
+          "stage": "urlSessionTaskMetrics",
+          "totalMs": "2158"
+        },
+        {
+          "secondsFromTouch": 3.400607,
+          "hlsRole": "mediaPlaylist",
+          "inputBytes": "2549031",
+          "outputBytes": "354671",
+          "playlistDurationSeconds": "13698.368000000955",
+          "playlistEndlist": "true",
+          "playlistSegments": "3422",
+          "rewriteMs": "58",
+          "stage": "playlistRewritten"
+        },
+        {
+          "secondsFromTouch": 3.680202,
+          "hlsRole": "masterPlaylist",
+          "playlistQueryCompacted": "true",
+          "queryBytesAfter": "642",
+          "queryBytesBefore": "727",
+          "stage": "upstreamRequestIssued"
+        },
+        {
+          "secondsFromTouch": 3.792086,
+          "cellular": "yes",
+          "hlsRole": "masterPlaylist",
+          "lastRequestEndToFirstByteMs": "103",
+          "lastResponseBodyMs": "0",
+          "protocol": "h2",
+          "stage": "urlSessionTaskMetrics",
+          "totalMs": "104"
+        },
+        {
+          "secondsFromTouch": 3.793051,
+          "hlsRole": "masterPlaylist",
+          "inputBytes": "807",
+          "outputBytes": "233",
+          "playlistDurationSeconds": "0.0",
+          "playlistEndlist": "false",
+          "playlistSegments": "0",
+          "rewriteMs": "0",
+          "stage": "playlistRewritten"
+        },
+        {
+          "secondsFromTouch": 3.793908,
+          "bytes": "2549031",
+          "hlsRole": "mediaPlaylist",
+          "stage": "vodPlaylistCacheHit"
+        },
+        {
+          "secondsFromTouch": 3.882714,
+          "hlsRole": "mediaPlaylist",
+          "inputBytes": "2549031",
+          "outputBytes": "354671",
+          "playlistDurationSeconds": "13698.368000000955",
+          "playlistEndlist": "true",
+          "playlistSegments": "3422",
+          "rewriteMs": "44",
+          "stage": "playlistRewritten"
+        }
+      ],
+      "mediaPlaylistUpstreamFetchCount": 1,
+      "mediaPlaylistLocalCacheHits": 1,
+      "masterUpstreamFetchCount": 2
+    }
+  ],
+  "next": "Retain working prewarm/cache/seek semantics; verify encoded/decoded byte and content-encoding boundaries before any manifest optimization. First target-segment response and later buffered decode remain separate.",
+  "validation": {
+    "selectedExistingXCTest": 8,
+    "failed": 0,
+    "simulatorOnly": true,
+    "testNames": [
+      "testJellyfinPlaylistCompactQueryPreservesServerValuesAndIdentity",
+      "testJellyfinPlaylistCompactQueryRejectsAmbiguousAndForeignRequests",
+      "testCompactPlaylistKeepsSourceDeviceAndDecimalHintsWithoutChangingAuthentication",
+      "testVODPrewarmUsesItsFullDeadlineWhileProxyBuffersAMovingResponse",
+      "testCompactPlaylistRejectionRetriesOriginalOnceWithoutOldTaskCancellation",
+      "testVODPlaylistCacheRejectsLiveAndBoundsAndPartitionsRoutes",
+      "testVODPrewarmReusesManifestAndRewritesNewSeekWithoutFetchingSegments",
+      "testLivePlaylistPrewarmDoesNotClaimReusableVOD"
+    ],
+    "slowProgressing32SecondResponseActuallyExercised": true
+  },
+  "cleanup": {
+    "testSimulatorShutdown": true,
+    "actualSleepWakeDarkWakeEvents": 0,
+    "powerWindowStartedLocal": "2026-10-19 12:48:48",
+    "phoneCellularTestStarted": false,
+    "noNewPhoneOrPadOperation": true
+  },
+  "completedAt": "2026-10-19T12:50:49.091080+08:00"
+}

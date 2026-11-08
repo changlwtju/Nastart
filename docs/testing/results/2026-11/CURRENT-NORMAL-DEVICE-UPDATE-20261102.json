@@ -1,0 +1,290 @@
+{
+  "recordedAt": "2026-11-02T07:05:58.472178+08:00",
+  "devices": {
+    "iphone13": {
+      "identity": "iPhone13 / iOS16.3.1 / USB",
+      "installation": {
+        "startedAt": "2026-11-02T06:58:48.590869+08:00",
+        "stage": "installed; isolated startup pending",
+        "installDispatched": true,
+        "installComplete": true,
+        "uninstallAttempted": false,
+        "ordinaryRootStarted": false,
+        "NASCommands": 0,
+        "mainSHA256": "56d9431957728339a65f2b34191567f724e723aeabc84d5d18137a9699bc19e8",
+        "debugDylibSHA256": "26b87a16d0e1648977024acff0f87df1272ecb500313af50cb782fa1658d6b54",
+        "sourceDiffSHA256": "4f97dc8ebfaccb6d24ef886cfac625c3d8deb6efdcebd8a037d98ebe85f67fd0",
+        "configuration": "normal Debug -Onone",
+        "freshNameAndUDIDRecordedPrivately": true,
+        "model": "iPhone14,5",
+        "system": "16.3.1",
+        "connection": "USB",
+        "freshIdentityVerified": true,
+        "currentSignedPackageVerified": true,
+        "existingNastartProcesses": 1,
+        "identifiedInstalledAppStopped": true,
+        "allPreferencesEqualAcrossIdentifiedStop": true,
+        "allPreferencesBackedUp": true,
+        "installExitCode": 0,
+        "installedAt": "2026-11-02T06:59:09.898054+08:00",
+        "postInstallBundleLookupConfirmed": true,
+        "preferences": {
+          "beforeKeys": 26,
+          "afterKeys": 26,
+          "sameKeys": true,
+          "changedValues": 0,
+          "allNonDiagnosticPreferencesEqual": true
+        },
+        "allPreferenceValuesEqual": true,
+        "remainingNastartProcesses": 0,
+        "endedAt": "2026-11-02T06:59:11.192322+08:00"
+      },
+      "isolatedWindows": {
+        "startedAt": "2026-11-02T07:01:47.057326+08:00",
+        "ordinaryRootStarted": false,
+        "NASCommands": 0,
+        "environment": {},
+        "windows": [
+          {
+            "scene": "theme-gallery-standard",
+            "arguments": [
+              "--offline-ui",
+              "theme-gallery",
+              "--offline-ui-theme",
+              "glassDeck",
+              "--offline-ui-appearance",
+              "dark",
+              "--offline-ui-text-size",
+              "standard",
+              "-AppleLanguages",
+              "(en)",
+              "-AppleLocale",
+              "en_US"
+            ],
+            "startedAt": "2026-11-02T07:01:49.392457+08:00",
+            "ownProcessStopped": true,
+            "launchAcknowledged": true,
+            "ownPID": 52083,
+            "ownPIDAliveAtCapture": true,
+            "screenCaptured": true,
+            "endedAt": "2026-11-02T07:01:53.213758+08:00"
+          },
+          {
+            "scene": "theme-gallery-large",
+            "arguments": [
+              "--offline-ui",
+              "theme-gallery",
+              "--offline-ui-theme",
+              "glassDeck",
+              "--offline-ui-appearance",
+              "dark",
+              "--offline-ui-text-size",
+              "large",
+              "-AppleLanguages",
+              "(zh-Hans)",
+              "-AppleLocale",
+              "zh_CN"
+            ],
+            "startedAt": "2026-11-02T07:01:53.275141+08:00",
+            "ownProcessStopped": true,
+            "launchAcknowledged": true,
+            "ownPID": 52085,
+            "ownPIDAliveAtCapture": true,
+            "screenCaptured": true,
+            "endedAt": "2026-11-02T07:01:57.049391+08:00"
+          }
+        ],
+        "actualUIInspected": true,
+        "installedPackageIdentity": {
+          "mainSHA256": "56d9431957728339a65f2b34191567f724e723aeabc84d5d18137a9699bc19e8",
+          "debugDylibSHA256": "26b87a16d0e1648977024acff0f87df1272ecb500313af50cb782fa1658d6b54"
+        },
+        "freshNameAndUDIDRecordedPrivately": true,
+        "model": "iPhone14,5",
+        "system": "16.3.1",
+        "connection": "USB",
+        "latestPackageAndFreshIdentityVerified": true,
+        "remainingNastartProcesses": 0,
+        "preferences": {
+          "beforeKeys": 26,
+          "afterKeys": 26,
+          "sameKeys": true,
+          "changedValues": 0,
+          "allNonDiagnosticPreferencesEqual": true
+        },
+        "allPreferenceValuesEqual": true,
+        "endedAt": "2026-11-02T07:01:58.326134+08:00",
+        "visualScope": "Initial portrait static frames only; no taps, scroll, rotation, full VoiceOver, real account root or theme application."
+      }
+    },
+    "ipad": {
+      "identity": "A16 iPad / iPadOS26.6 / wired",
+      "installation": {
+        "startedAt": "2026-11-02T06:59:57.246046+08:00",
+        "stage": "installed; isolated startup pending",
+        "installDispatched": true,
+        "installComplete": true,
+        "uninstallAttempted": false,
+        "ordinaryRootStarted": false,
+        "NASCommands": 0,
+        "mainSHA256": "56d9431957728339a65f2b34191567f724e723aeabc84d5d18137a9699bc19e8",
+        "debugDylibSHA256": "26b87a16d0e1648977024acff0f87df1272ecb500313af50cb782fa1658d6b54",
+        "sourceDiffSHA256": "4f97dc8ebfaccb6d24ef886cfac625c3d8deb6efdcebd8a037d98ebe85f67fd0",
+        "configuration": "normal Debug -Onone",
+        "freshIdentityVerified": true,
+        "freshNameAndUDIDRecordedPrivately": true,
+        "model": "iPad15,7",
+        "system": "26.6",
+        "connection": "wired",
+        "connectionState": "connected",
+        "currentSignedPackageVerified": true,
+        "existingNastartProcesses": 1,
+        "preferencesSavedBeforeIdentifiedStop": true,
+        "identifiedInstalledAppStopped": true,
+        "allPreferencesEqualAcrossIdentifiedStop": true,
+        "allPreferencesBackedUp": true,
+        "installedAt": "2026-11-02T07:00:09.109261+08:00",
+        "installExitCode": 0,
+        "postInstallBundleLookupConfirmed": true,
+        "preferences": {
+          "beforeKeys": 19,
+          "afterKeys": 19,
+          "sameKeys": true,
+          "changedValues": 0,
+          "allNonDiagnosticPreferencesEqual": true
+        },
+        "allPreferenceValuesEqual": true,
+        "remainingNastartProcesses": 0,
+        "endedAt": "2026-11-02T07:00:10.753932+08:00"
+      },
+      "isolatedWindows": {
+        "startedAt": "2026-11-02T07:02:41.767780+08:00",
+        "ordinaryRootStarted": false,
+        "NASCommands": 0,
+        "testEnvironmentVariables": false,
+        "windows": [
+          {
+            "scene": "theme-gallery",
+            "language": "zh-Hans",
+            "textSize": "large",
+            "startedAt": "2026-11-02T07:02:45.358298+08:00",
+            "ownProcessStopped": true,
+            "launchExitCode": 0,
+            "launchAcknowledged": true,
+            "ownPIDAliveAtCapture": true,
+            "screenCaptured": true,
+            "remainingNastartProcesses": 0,
+            "endedAt": "2026-11-02T07:02:49.645326+08:00"
+          },
+          {
+            "scene": "theme-gallery",
+            "language": "en",
+            "textSize": "standard",
+            "startedAt": "2026-11-02T07:02:50.824616+08:00",
+            "ownProcessStopped": true,
+            "launchExitCode": 0,
+            "launchAcknowledged": true,
+            "ownPIDAliveAtCapture": true,
+            "screenCaptured": true,
+            "remainingNastartProcesses": 0,
+            "endedAt": "2026-11-02T07:02:55.125371+08:00"
+          }
+        ],
+        "actualUIInspected": true,
+        "mainSHA256": "56d9431957728339a65f2b34191567f724e723aeabc84d5d18137a9699bc19e8",
+        "debugDylibSHA256": "26b87a16d0e1648977024acff0f87df1272ecb500313af50cb782fa1658d6b54",
+        "freshIdentityAndLatestPackageVerified": true,
+        "preferences": {
+          "beforeKeys": 19,
+          "afterKeys": 19,
+          "sameKeys": true,
+          "changedValues": 0,
+          "allNonDiagnosticPreferencesEqual": true
+        },
+        "allPreferenceValuesEqual": true,
+        "allPreferencesEqualFromBeforeStopToFinal": true,
+        "remainingNastartProcesses": 0,
+        "endedAt": "2026-11-02T07:02:56.559486+08:00",
+        "visualScope": "Initial portrait static frames only; no taps, scroll, rotation, full VoiceOver, real account root or theme application."
+      }
+    }
+  },
+  "phoneInspectorCleanup": {
+    "startedAt": "2026-11-02T07:04:09.258544+08:00",
+    "ordinaryRootStarted": false,
+    "NASCommands": 0,
+    "environment": {},
+    "windows": [
+      {
+        "scene": "theme-gallery-standard",
+        "arguments": [
+          "--offline-ui",
+          "theme-gallery",
+          "--offline-ui-theme",
+          "glassDeck",
+          "--offline-ui-appearance",
+          "dark",
+          "--offline-ui-text-size",
+          "standard",
+          "-AppleLanguages",
+          "(en)",
+          "-AppleLocale",
+          "en_US"
+        ],
+        "startedAt": "2026-11-02T07:04:11.960970+08:00",
+        "ownProcessStopped": true,
+        "launchAcknowledged": true,
+        "ownPID": 52104,
+        "ownPIDAliveAtCapture": true,
+        "screenCaptured": true,
+        "endedAt": "2026-11-02T07:04:15.745859+08:00"
+      }
+    ],
+    "actualUIInspected": true,
+    "installedPackageIdentity": {
+      "mainSHA256": "56d9431957728339a65f2b34191567f724e723aeabc84d5d18137a9699bc19e8",
+      "debugDylibSHA256": "26b87a16d0e1648977024acff0f87df1272ecb500313af50cb782fa1658d6b54"
+    },
+    "freshNameAndUDIDRecordedPrivately": true,
+    "model": "iPhone14,5",
+    "system": "16.3.1",
+    "connection": "USB",
+    "latestPackageAndFreshIdentityVerified": true,
+    "priorDebugInspectorOverlayDisableRequested": true,
+    "remainingNastartProcesses": 0,
+    "preferences": {
+      "beforeKeys": 26,
+      "afterKeys": 26,
+      "sameKeys": true,
+      "changedValues": 0,
+      "allNonDiagnosticPreferencesEqual": true
+    },
+    "allPreferenceValuesEqual": true,
+    "endedAt": "2026-11-02T07:04:16.999874+08:00",
+    "visualResult": "Central green inspector highlight no longer obscures artwork; tiny green edge remains at upper-left. Do not claim complete overlay removal."
+  },
+  "initialPreflightFailuresPreserved": true,
+  "userAuthorizedIdentifiedAppProcessExit": true,
+  "ordinaryRootStarted": false,
+  "NASCommands": 0,
+  "newPlaybackPassCells": 0,
+  "physicalInteractionOrRotationVerified": false,
+  "normalMobileInputCount": 415,
+  "normalMobileInputsUnchangedAfterTVOnlyChange": true,
+  "normalPackageMainSHA256": "56d9431957728339a65f2b34191567f724e723aeabc84d5d18137a9699bc19e8",
+  "normalPackageDebugDylibSHA256": "26b87a16d0e1648977024acff0f87df1272ecb500313af50cb782fa1658d6b54",
+  "evidencePointer": "/tmp/nastart-current-device-verification-path",
+  "finalChecks": {
+    "recordedAt": "2026-11-02T07:08:25.490190+08:00",
+    "documentationDocuments": 607,
+    "localLinks": 3758,
+    "missingDestinations": 0,
+    "gitDiffCheckExitCode": 0,
+    "sourceInputsUnchanged": 446,
+    "mobileInputsUnchanged": 415,
+    "originalIndexUnchanged": true,
+    "claudeFourFilesUnchanged": true,
+    "activeBuildWorkers": 0,
+    "activeDeviceOwners": 0
+  }
+}

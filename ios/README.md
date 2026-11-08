@@ -1,5 +1,7 @@
 # Nastart iOS
 
+> 当前实施（2026-10-19）：普通Debug三个视频入口统一Greenfield，架构选择UI已移除；技术链路/条件编译边界见[当前播放技术路线](../docs/architecture/VIDEO_PLAYBACK_PIPELINE.md)，模块进度与计划见[开发状态](../docs/project/DEVELOPMENT_STATUS.md)。后文早期AVPlayer/VLC及选择器描述保留历史，不作为当前Debug默认路线说明。
+
 > 2026-09-06 已确定：[新架构唯一优化主线](../docs/adr/0002-single-playback-optimization-mainline.md)。旧架构仅作回退，验收后移除；新旧两项选择取代此前 Greenfield/Force 调试开关。后文历史测试记录不改变此决策。
 
 This directory contains the first SwiftUI prototype for Nastart.
@@ -137,9 +139,9 @@ Launch variables are process-local and do not change the user's player setting.
 
 For Jellyfin playback work, use the telemetry-first route documented in:
 
-- `../docs/handoffs/PLAYBACK_OFFLINE_DIAGNOSTICS.md`
-- `../docs/handoffs/PLAYBACK_VALIDATION_TARGETS.md`
-- `../docs/handoffs/MAC_PLAYBACK_DEBUG_TODO.md`
+- `../docs/development/PLAYBACK_OFFLINE_DIAGNOSTICS.md`
+- `../docs/testing/PLAYBACK_VALIDATION_TARGETS.md`
+- `../docs/development/MAC_PLAYBACK_DEBUG_TODO.md`
 
 WDA screenshots are supporting visual evidence only. Timing, buffering,
 throughput, stalls, and route-policy decisions should come from Nastart's

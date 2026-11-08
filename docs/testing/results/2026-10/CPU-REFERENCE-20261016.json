@@ -1,0 +1,119 @@
+{
+  "priorFrozenWindowsOnly": true,
+  "newDevicePlaybackOrRequests": false,
+  "CPUUnitsEvidence": "installed pymobiledevice3 sysmon/process.py derived field docs: percent-of-one-core scale; can exceed 100",
+  "windows": [
+    {
+      "case": "wifi-memory-s19-jf-r2",
+      "source": "c868 normal Debug -Onone, Sysmontap ~1Hz and sparse image reads; no Allocations",
+      "startup0to60": {
+        "samples": 59,
+        "validCPU": 57,
+        "missingOrInvalidCPU": 2,
+        "medianPercentOfOneCore": 71.637,
+        "arithmeticMeanPercentOfOneCore": 75.665,
+        "maximumPercentOfOneCore": 135.975,
+        "integratedCPUTimeAccepted": false
+      },
+      "sameProcessHome10to30": {
+        "samples": 20,
+        "validCPU": 20,
+        "missingOrInvalidCPU": 0,
+        "medianPercentOfOneCore": 0.15,
+        "arithmeticMeanPercentOfOneCore": 1.348,
+        "maximumPercentOfOneCore": 13.219,
+        "integratedCPUTimeAccepted": false
+      }
+    },
+    {
+      "case": "wifi-memory-s19-jf-r3",
+      "source": "c868 normal Debug -Onone, Sysmontap ~1Hz and sparse image reads; no Allocations",
+      "startup0to60": {
+        "samples": 61,
+        "validCPU": 61,
+        "missingOrInvalidCPU": 0,
+        "medianPercentOfOneCore": 64.8,
+        "arithmeticMeanPercentOfOneCore": 74.79,
+        "maximumPercentOfOneCore": 153.024,
+        "integratedCPUTimeAccepted": false
+      },
+      "sameProcessHome10to30": {
+        "samples": 20,
+        "validCPU": 20,
+        "missingOrInvalidCPU": 0,
+        "medianPercentOfOneCore": 0.122,
+        "arithmeticMeanPercentOfOneCore": 1.365,
+        "maximumPercentOfOneCore": 14.386,
+        "integratedCPUTimeAccepted": false
+      }
+    },
+    {
+      "case": "wifi-memory-s19-jf-r4",
+      "source": "c868 normal Debug -Onone, Sysmontap ~1Hz and sparse image reads; no Allocations",
+      "startup0to60": {
+        "samples": 60,
+        "validCPU": 60,
+        "missingOrInvalidCPU": 0,
+        "medianPercentOfOneCore": 72.37,
+        "arithmeticMeanPercentOfOneCore": 73.757,
+        "maximumPercentOfOneCore": 134.486,
+        "integratedCPUTimeAccepted": false
+      },
+      "sameProcessHome10to30": {
+        "samples": 20,
+        "validCPU": 20,
+        "missingOrInvalidCPU": 0,
+        "medianPercentOfOneCore": 0.138,
+        "arithmeticMeanPercentOfOneCore": 1.364,
+        "maximumPercentOfOneCore": 13.921,
+        "integratedCPUTimeAccepted": false
+      }
+    },
+    {
+      "case": "wifi-memory-s01-jf-r1",
+      "source": "c868 normal Debug -Onone, Sysmontap ~1Hz and sparse image reads; no Allocations",
+      "startup0to60": {
+        "samples": 61,
+        "validCPU": 61,
+        "missingOrInvalidCPU": 0,
+        "medianPercentOfOneCore": 48.715,
+        "arithmeticMeanPercentOfOneCore": 51.913,
+        "maximumPercentOfOneCore": 124.474,
+        "integratedCPUTimeAccepted": false
+      },
+      "sameProcessHome10to30": {
+        "samples": 20,
+        "validCPU": 20,
+        "missingOrInvalidCPU": 0,
+        "medianPercentOfOneCore": 0.142,
+        "arithmeticMeanPercentOfOneCore": 1.368,
+        "maximumPercentOfOneCore": 14.652,
+        "integratedCPUTimeAccepted": false
+      }
+    }
+  ],
+  "pairedWithAllocationDiagnostic": false,
+  "versionOrSampleRankingAccepted": false,
+  "normalPackageStabilityAccepted": false,
+  "sourceDiffSHA256": "c868c278fcefe2411cfc07eabb4adf33ce159f0a0f9fb446897aeb2ce25ac835",
+  "resourceReportSymbolication": {
+    "imageUUIDsMatched": true,
+    "frames": [
+      {
+        "image": "Nastart.debug.dylib",
+        "offset": 143060,
+        "symbol": "__debug_main_executable_dylib_entry_point (in Nastart.debug.dylib) + 12"
+      },
+      {
+        "image": "Nastart.debug.dylib",
+        "offset": 99544,
+        "symbol": "static NastartApp.$main() (in Nastart.debug.dylib) + 40"
+      }
+    ],
+    "allocationOwnershipOrCPUFunctionCostAccepted": false,
+    "onlyHeaviestStackAppFramesMatched": true
+  },
+  "newAppSourceEditsOrBuildOrTests": false,
+  "resourceCPUWarningExplainedOrFixed": false,
+  "allocationOwnershipProven": false
+}

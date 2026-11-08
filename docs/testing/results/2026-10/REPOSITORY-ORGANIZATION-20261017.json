@@ -1,0 +1,26 @@
+{
+  "date": "2026-10-17",
+  "movedFiles": 384,
+  "datedHandoffs": 222,
+  "datedTestResults": 154,
+  "updatedReferenceFiles": 179,
+  "preservedHistorySnapshots": 3,
+  "ledgerRequirementRowsPreserved": 28,
+  "noAppSourceOrProjectPathChanged": true,
+  "allMovedSourceBytesVerifiedBeforeReferenceRebase": true,
+  "activeEntryBytesBefore": 764590,
+  "activeEntryBytesAfter": 16428,
+  "activeEntryReductionPercent": 97.85,
+  "rootLegacyTraceDirectoriesMoved": 10,
+  "privateLegacyApproxGiB": 6.6,
+  "oldTmpCompatibilityLinkValid": true,
+  "exactDuplicateDocumentFilesFound": 0,
+  "ledgerRowsExactlyPreserved": true,
+  "documentationPathCheck": {
+    "documents": 298,
+    "localLinksChecked": 1405,
+    "missingDestinations": 0
+  },
+  "preflightPassed": 15,
+  "historicalJSONBytesPreserved": true
+}

@@ -1,0 +1,775 @@
+{
+  "at": "2026-10-12T11:52:43.972971+08:00",
+  "scope": [
+    "USB iPhone13",
+    "USB iPad"
+  ],
+  "iPhone18": "user took device to work; not discovered/connected/installed/tested this turn",
+  "source": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "832259d17114836b84f145463af869c000e8913b8f7c79467ab3d64cb5bd6c3b",
+    "baselineSourceDiffSHA256": "9fe56dbe9b04ea7aef6fed7c563febf006fab70e1621b0a20224ed7a749d188f",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "binaryBuildTime": "2026-10-12T11:22:29.283846+08:00",
+    "binaries": {
+      "Nastart": "7b48bcc467cb70c5000f903c0603600492f19552c60e9d4dd60e850330ffc994",
+      "Nastart.debug.dylib": "f8f2b30e029120d49a7c634b2723454d98af5da7dc7edbc3fdb9f3909ab8eb57",
+      "Frameworks/KSPlayer.framework/KSPlayer": "a8b150bb68836745c5f5749d138cdc7b173eedb7cfc138ade464cb2cac9cdf28"
+    },
+    "checkedInputs": 173,
+    "individuallyVerifiedLibraries": 29,
+    "signatureVerified": true,
+    "linkageVerified": true,
+    "profileExpirationUTC": "2026-10-17T22:23:40",
+    "tests": {
+      "executed": 324,
+      "skipped": 2,
+      "failures": 0,
+      "runThisTurn": true
+    },
+    "preflight": {
+      "passed": 15,
+      "runThisTurn": true
+    }
+  },
+  "privateEvidenceDirectory": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-10-12-subtitle-continuation-105527",
+  "latestGate": {
+    "sourceInputsVerified": 173,
+    "binaryHashesVerified": true,
+    "deepSignatureVerified": true,
+    "devices": {
+      "iphone13": {
+        "at": "2026-10-12T11:49:29.260219+08:00",
+        "model": "iPhone14,5",
+        "system": "16.3.1",
+        "connection": "USB",
+        "latestPackage": {
+          "Nastart": "7b48bcc467cb70c5000f903c0603600492f19552c60e9d4dd60e850330ffc994",
+          "Nastart.debug.dylib": "f8f2b30e029120d49a7c634b2723454d98af5da7dc7edbc3fdb9f3909ab8eb57",
+          "Frameworks/KSPlayer.framework/KSPlayer": "a8b150bb68836745c5f5749d138cdc7b173eedb7cfc138ade464cb2cac9cdf28"
+        },
+        "sourceDiffSHA256": "832259d17114836b84f145463af869c000e8913b8f7c79467ab3d64cb5bd6c3b",
+        "nonBookmarkPreferenceKeys": 24,
+        "nonBookmarkPreferencesUnchanged": true,
+        "changedBookmarksCount": 4,
+        "originalTrackSelectionsRestored": true,
+        "finalS03": {
+          "S03File": {
+            "positionSeconds": 621.342,
+            "audioTrackID": 4,
+            "subtitleTrackID": 5,
+            "subtitlesDisabled": false
+          },
+          "S03Jellyfin": {
+            "positionSeconds": 4232.274,
+            "audioTrackID": 1,
+            "subtitleTrackID": 7,
+            "subtitlesDisabled": false
+          }
+        },
+        "newCrashReports": 0,
+        "normalEmptyEnvironment": true,
+        "NASNormal": true,
+        "playerClosed": true,
+        "finalScreenshotReviewed": true,
+        "WDAIdleSeconds": 10,
+        "WDAAnimationCoolOffSeconds": 2,
+        "cases": {
+          "s03-jf-ass-final": {
+            "packageSHA": {
+              "Nastart": "7b48bcc467cb70c5000f903c0603600492f19552c60e9d4dd60e850330ffc994",
+              "Nastart.debug.dylib": "f8f2b30e029120d49a7c634b2723454d98af5da7dc7edbc3fdb9f3909ab8eb57",
+              "Frameworks/KSPlayer.framework/KSPlayer": "a8b150bb68836745c5f5749d138cdc7b173eedb7cfc138ade464cb2cac9cdf28"
+            },
+            "lastFile": "closed-private.plist",
+            "newDiagnosticEvents": 203,
+            "selectedDiagnostics": [
+              {
+                "event": "diagnostics.playback.next.detail_track_request",
+                "fields": {
+                  "detailSubtitleID": "5",
+                  "requestSubtitleDisabled": "true",
+                  "requestSubtitleID": "5"
+                }
+              },
+              {
+                "event": "diagnostics.playback.next.route_selected",
+                "fields": {
+                  "decodeEngine": "ksPlayer",
+                  "routeKind": "localRangeProxy"
+                }
+              },
+              {
+                "event": "diagnostics.playback.subtitle_overlay_loaded",
+                "fields": {
+                  "cueCount": "1288",
+                  "currentSeconds": "0.0",
+                  "visible": "false"
+                }
+              },
+              {
+                "event": "diagnostics.playback.subtitle_overlay_loaded",
+                "fields": {
+                  "cueCount": "1288",
+                  "currentSeconds": "4119.028",
+                  "visible": "false"
+                }
+              }
+            ],
+            "bookmarks": [
+              {
+                "positionSeconds": 4142.759,
+                "audioTrackID": 1,
+                "subtitleTrackID": 5,
+                "subtitlesDisabled": false
+              }
+            ],
+            "playbackGate": {
+              "normalUIExit": true,
+              "playbackErrorVisible": false,
+              "completionMatches": 1,
+              "playerOpened": true,
+              "sampledImagesReviewed": [
+                3,
+                10,
+                30
+              ],
+              "continuousFrames": false,
+              "fullSubtitleAudioHDRPass": false
+            },
+            "notFullFrameOrAudioAcceptance": true
+          },
+          "s03-jf-ass-cold-final": {
+            "packageSHA": {
+              "Nastart": "7b48bcc467cb70c5000f903c0603600492f19552c60e9d4dd60e850330ffc994",
+              "Nastart.debug.dylib": "f8f2b30e029120d49a7c634b2723454d98af5da7dc7edbc3fdb9f3909ab8eb57",
+              "Frameworks/KSPlayer.framework/KSPlayer": "a8b150bb68836745c5f5749d138cdc7b173eedb7cfc138ade464cb2cac9cdf28"
+            },
+            "lastFile": "closed-private.plist",
+            "newDiagnosticEvents": 246,
+            "selectedDiagnostics": [
+              {
+                "event": "diagnostics.playback.next.detail_track_request",
+                "fields": {
+                  "detailSubtitleID": "5",
+                  "requestSubtitleDisabled": "true",
+                  "requestSubtitleID": "5"
+                }
+              },
+              {
+                "event": "diagnostics.playback.next.route_selected",
+                "fields": {
+                  "decodeEngine": "ksPlayer",
+                  "routeKind": "localRangeProxy"
+                }
+              },
+              {
+                "event": "diagnostics.playback.subtitle_overlay_loaded",
+                "fields": {
+                  "cueCount": "1288",
+                  "currentSeconds": "0.0",
+                  "visible": "false"
+                }
+              },
+              {
+                "event": "diagnostics.playback.subtitle_overlay_loaded",
+                "fields": {
+                  "cueCount": "1288",
+                  "currentSeconds": "4142.652999999999",
+                  "visible": "false"
+                }
+              }
+            ],
+            "bookmarks": [
+              {
+                "positionSeconds": 4182.832,
+                "audioTrackID": 1,
+                "subtitleTrackID": 5,
+                "subtitlesDisabled": false
+              }
+            ],
+            "playbackGate": {
+              "normalUIExit": true,
+              "playbackErrorVisible": false,
+              "completionMatches": 1,
+              "playerOpened": true,
+              "sampledImagesReviewed": [
+                3,
+                10,
+                30,
+                45
+              ],
+              "continuousFrames": false,
+              "fullSubtitleAudioHDRPass": false
+            },
+            "notFullFrameOrAudioAcceptance": true
+          },
+          "s03-jf-pgs-restored-final": {
+            "packageSHA": {
+              "Nastart": "7b48bcc467cb70c5000f903c0603600492f19552c60e9d4dd60e850330ffc994",
+              "Nastart.debug.dylib": "f8f2b30e029120d49a7c634b2723454d98af5da7dc7edbc3fdb9f3909ab8eb57",
+              "Frameworks/KSPlayer.framework/KSPlayer": "a8b150bb68836745c5f5749d138cdc7b173eedb7cfc138ade464cb2cac9cdf28"
+            },
+            "lastFile": "closed-private.plist",
+            "newDiagnosticEvents": 202,
+            "selectedDiagnostics": [
+              {
+                "event": "diagnostics.playback.next.detail_track_request",
+                "fields": {
+                  "detailSubtitleID": "7",
+                  "requestSubtitleDisabled": "false",
+                  "requestSubtitleID": "7"
+                }
+              },
+              {
+                "event": "diagnostics.playback.next.route_selected",
+                "fields": {
+                  "decodeEngine": "ksPlayer",
+                  "routeKind": "localRangeProxy"
+                }
+              }
+            ],
+            "bookmarks": [
+              {
+                "positionSeconds": 4232.274,
+                "audioTrackID": 1,
+                "subtitleTrackID": 7,
+                "subtitlesDisabled": false
+              }
+            ],
+            "playbackGate": {
+              "normalUIExit": true,
+              "playbackErrorVisible": false,
+              "completionMatches": 1,
+              "playerOpened": true,
+              "sampledImagesReviewed": [
+                3,
+                10,
+                30
+              ],
+              "continuousFrames": false,
+              "fullSubtitleAudioHDRPass": false
+            },
+            "notFullFrameOrAudioAcceptance": true
+          },
+          "s03-file-final": {
+            "packageSHA": {
+              "Nastart": "7b48bcc467cb70c5000f903c0603600492f19552c60e9d4dd60e850330ffc994",
+              "Nastart.debug.dylib": "f8f2b30e029120d49a7c634b2723454d98af5da7dc7edbc3fdb9f3909ab8eb57",
+              "Frameworks/KSPlayer.framework/KSPlayer": "a8b150bb68836745c5f5749d138cdc7b173eedb7cfc138ade464cb2cac9cdf28"
+            },
+            "lastFile": "closed-private.plist",
+            "newDiagnosticEvents": 163,
+            "selectedDiagnostics": [
+              {
+                "event": "diagnostics.playback.next.route_selected",
+                "fields": {
+                  "decodeEngine": "ksPlayer",
+                  "routeKind": "localRangeProxy"
+                }
+              }
+            ],
+            "bookmarks": [
+              {
+                "positionSeconds": 621.342,
+                "audioTrackID": 4,
+                "subtitleTrackID": 5,
+                "subtitlesDisabled": false
+              }
+            ],
+            "playbackGate": {
+              "normalUIExit": true,
+              "playbackErrorVisible": false,
+              "completionMatches": 1,
+              "playerOpened": true,
+              "sampledImagesReviewed": [
+                3,
+                10,
+                30
+              ],
+              "continuousFrames": false,
+              "fullSubtitleAudioHDRPass": false,
+              "earlySample": "t3 preparing preview; t10/t30 movie"
+            },
+            "notFullFrameOrAudioAcceptance": true
+          },
+          "s01-file-final": {
+            "packageSHA": {
+              "Nastart": "7b48bcc467cb70c5000f903c0603600492f19552c60e9d4dd60e850330ffc994",
+              "Nastart.debug.dylib": "f8f2b30e029120d49a7c634b2723454d98af5da7dc7edbc3fdb9f3909ab8eb57",
+              "Frameworks/KSPlayer.framework/KSPlayer": "a8b150bb68836745c5f5749d138cdc7b173eedb7cfc138ade464cb2cac9cdf28"
+            },
+            "lastFile": "closed-private.plist",
+            "newDiagnosticEvents": 81,
+            "selectedDiagnostics": [
+              {
+                "event": "diagnostics.playback.next.route_selected",
+                "fields": {
+                  "decodeEngine": "ksPlayer",
+                  "routeKind": "localRangeProxy"
+                }
+              }
+            ],
+            "bookmarks": [],
+            "playbackGate": {
+              "normalUIExit": true,
+              "playbackErrorVisible": false,
+              "completionMatches": 1,
+              "playerOpened": true,
+              "sampledImagesReviewed": [
+                3,
+                10,
+                30
+              ],
+              "continuousFrames": false,
+              "fullSubtitleAudioHDRPass": false,
+              "earlySample": "t3/t10 opening title; t30 blue opening movie frame"
+            },
+            "notFullFrameOrAudioAcceptance": true
+          },
+          "s01-jf-final": {
+            "packageSHA": {
+              "Nastart": "7b48bcc467cb70c5000f903c0603600492f19552c60e9d4dd60e850330ffc994",
+              "Nastart.debug.dylib": "f8f2b30e029120d49a7c634b2723454d98af5da7dc7edbc3fdb9f3909ab8eb57",
+              "Frameworks/KSPlayer.framework/KSPlayer": "a8b150bb68836745c5f5749d138cdc7b173eedb7cfc138ade464cb2cac9cdf28"
+            },
+            "lastFile": "closed-private.plist",
+            "newDiagnosticEvents": 130,
+            "selectedDiagnostics": [
+              {
+                "event": "diagnostics.playback.next.detail_track_request",
+                "fields": {
+                  "detailSubtitleID": "none",
+                  "requestSubtitleDisabled": "true",
+                  "requestSubtitleID": "none"
+                }
+              },
+              {
+                "event": "diagnostics.playback.next.route_selected",
+                "fields": {
+                  "decodeEngine": "ksPlayer",
+                  "routeKind": "localRangeProxy"
+                }
+              }
+            ],
+            "bookmarks": [],
+            "playbackGate": {
+              "normalUIExit": true,
+              "playbackErrorVisible": false,
+              "completionMatches": 1,
+              "playerOpened": true,
+              "sampledImagesReviewed": [
+                3,
+                10,
+                30
+              ],
+              "continuousFrames": false,
+              "fullSubtitleAudioHDRPass": false
+            },
+            "notFullFrameOrAudioAcceptance": true
+          }
+        },
+        "performanceAccepted": false,
+        "cellularNetworkTested": false,
+        "fullSubtitleAudioHDRAccepted": false
+      },
+      "ipad": {
+        "at": "2026-10-12T11:49:30.502175+08:00",
+        "model": "iPad12,1",
+        "system": "18.3.1",
+        "connection": "USB",
+        "latestPackage": {
+          "Nastart": "7b48bcc467cb70c5000f903c0603600492f19552c60e9d4dd60e850330ffc994",
+          "Nastart.debug.dylib": "f8f2b30e029120d49a7c634b2723454d98af5da7dc7edbc3fdb9f3909ab8eb57",
+          "Frameworks/KSPlayer.framework/KSPlayer": "a8b150bb68836745c5f5749d138cdc7b173eedb7cfc138ade464cb2cac9cdf28"
+        },
+        "sourceDiffSHA256": "832259d17114836b84f145463af869c000e8913b8f7c79467ab3d64cb5bd6c3b",
+        "nonBookmarkPreferenceKeys": 15,
+        "nonBookmarkPreferencesUnchanged": true,
+        "changedBookmarksCount": 4,
+        "originalTrackSelectionsRestored": true,
+        "finalS03": {
+          "S03File": {
+            "positionSeconds": 886.587,
+            "audioTrackID": 4,
+            "subtitleTrackID": null,
+            "subtitlesDisabled": true
+          },
+          "S03Jellyfin": {
+            "positionSeconds": 4307.197,
+            "audioTrackID": 1,
+            "subtitleTrackID": 7,
+            "subtitlesDisabled": false
+          }
+        },
+        "newCrashReports": 0,
+        "normalEmptyEnvironment": true,
+        "NASNormal": true,
+        "playerClosed": true,
+        "finalScreenshotReviewed": true,
+        "WDAIdleSeconds": 10,
+        "WDAAnimationCoolOffSeconds": 2,
+        "cases": {
+          "s03-jf-ass-reset-final": {
+            "packageSHA": {
+              "Nastart": "7b48bcc467cb70c5000f903c0603600492f19552c60e9d4dd60e850330ffc994",
+              "Nastart.debug.dylib": "f8f2b30e029120d49a7c634b2723454d98af5da7dc7edbc3fdb9f3909ab8eb57",
+              "Frameworks/KSPlayer.framework/KSPlayer": "a8b150bb68836745c5f5749d138cdc7b173eedb7cfc138ade464cb2cac9cdf28"
+            },
+            "lastFile": "closed-private.plist",
+            "newDiagnosticEvents": 275,
+            "selectedDiagnostics": [
+              {
+                "event": "diagnostics.playback.next.detail_track_request",
+                "fields": {
+                  "detailSubtitleID": "5",
+                  "requestSubtitleDisabled": "true",
+                  "requestSubtitleID": "5"
+                }
+              },
+              {
+                "event": "diagnostics.playback.next.route_selected",
+                "fields": {
+                  "decodeEngine": "ksPlayer",
+                  "routeKind": "localRangeProxy"
+                }
+              },
+              {
+                "event": "diagnostics.playback.subtitle_overlay_loaded",
+                "fields": {
+                  "cueCount": "1288",
+                  "currentSeconds": "0.0",
+                  "visible": "false"
+                }
+              },
+              {
+                "event": "diagnostics.playback.subtitle_overlay_loaded",
+                "fields": {
+                  "cueCount": "1288",
+                  "currentSeconds": "4182.8099999999995",
+                  "visible": "false"
+                }
+              }
+            ],
+            "bookmarks": [
+              {
+                "positionSeconds": 4235.21,
+                "audioTrackID": 1,
+                "subtitleTrackID": 5,
+                "subtitlesDisabled": false
+              }
+            ],
+            "playbackGate": {
+              "normalUIExit": true,
+              "playbackErrorVisible": false,
+              "completionMatches": 1,
+              "playerOpened": true,
+              "sampledImagesReviewed": [
+                3,
+                10,
+                30,
+                45
+              ],
+              "continuousFrames": false,
+              "fullSubtitleAudioHDRPass": false
+            },
+            "notFullFrameOrAudioAcceptance": true
+          },
+          "s03-jf-ass-cold-final": {
+            "packageSHA": {
+              "Nastart": "7b48bcc467cb70c5000f903c0603600492f19552c60e9d4dd60e850330ffc994",
+              "Nastart.debug.dylib": "f8f2b30e029120d49a7c634b2723454d98af5da7dc7edbc3fdb9f3909ab8eb57",
+              "Frameworks/KSPlayer.framework/KSPlayer": "a8b150bb68836745c5f5749d138cdc7b173eedb7cfc138ade464cb2cac9cdf28"
+            },
+            "lastFile": "closed-private.plist",
+            "newDiagnosticEvents": 275,
+            "selectedDiagnostics": [
+              {
+                "event": "diagnostics.playback.next.detail_track_request",
+                "fields": {
+                  "detailSubtitleID": "5",
+                  "requestSubtitleDisabled": "true",
+                  "requestSubtitleID": "5"
+                }
+              },
+              {
+                "event": "diagnostics.playback.next.route_selected",
+                "fields": {
+                  "decodeEngine": "ksPlayer",
+                  "routeKind": "localRangeProxy"
+                }
+              },
+              {
+                "event": "diagnostics.playback.subtitle_overlay_loaded",
+                "fields": {
+                  "cueCount": "1288",
+                  "currentSeconds": "0.0",
+                  "visible": "false"
+                }
+              },
+              {
+                "event": "diagnostics.playback.subtitle_overlay_loaded",
+                "fields": {
+                  "cueCount": "1288",
+                  "currentSeconds": "4232.189",
+                  "visible": "false"
+                }
+              }
+            ],
+            "bookmarks": [
+              {
+                "positionSeconds": 4276.951,
+                "audioTrackID": 1,
+                "subtitleTrackID": 5,
+                "subtitlesDisabled": false
+              }
+            ],
+            "playbackGate": {
+              "normalUIExit": true,
+              "playbackErrorVisible": false,
+              "completionMatches": 1,
+              "playerOpened": true,
+              "sampledImagesReviewed": [
+                3,
+                10,
+                30,
+                45
+              ],
+              "continuousFrames": false,
+              "fullSubtitleAudioHDRPass": false
+            },
+            "notFullFrameOrAudioAcceptance": true
+          },
+          "s03-jf-pgs-restored-final": {
+            "packageSHA": {
+              "Nastart": "7b48bcc467cb70c5000f903c0603600492f19552c60e9d4dd60e850330ffc994",
+              "Nastart.debug.dylib": "f8f2b30e029120d49a7c634b2723454d98af5da7dc7edbc3fdb9f3909ab8eb57",
+              "Frameworks/KSPlayer.framework/KSPlayer": "a8b150bb68836745c5f5749d138cdc7b173eedb7cfc138ade464cb2cac9cdf28"
+            },
+            "lastFile": "closed-private.plist",
+            "newDiagnosticEvents": 209,
+            "selectedDiagnostics": [
+              {
+                "event": "diagnostics.playback.next.detail_track_request",
+                "fields": {
+                  "detailSubtitleID": "7",
+                  "requestSubtitleDisabled": "false",
+                  "requestSubtitleID": "7"
+                }
+              },
+              {
+                "event": "diagnostics.playback.next.route_selected",
+                "fields": {
+                  "decodeEngine": "ksPlayer",
+                  "routeKind": "localRangeProxy"
+                }
+              }
+            ],
+            "bookmarks": [
+              {
+                "positionSeconds": 4307.197,
+                "audioTrackID": 1,
+                "subtitleTrackID": 7,
+                "subtitlesDisabled": false
+              }
+            ],
+            "playbackGate": {
+              "normalUIExit": true,
+              "playbackErrorVisible": false,
+              "completionMatches": 1,
+              "playerOpened": true,
+              "sampledImagesReviewed": [
+                3,
+                10,
+                30
+              ],
+              "continuousFrames": false,
+              "fullSubtitleAudioHDRPass": false
+            },
+            "notFullFrameOrAudioAcceptance": true
+          },
+          "s03-file-final": {
+            "packageSHA": {
+              "Nastart": "7b48bcc467cb70c5000f903c0603600492f19552c60e9d4dd60e850330ffc994",
+              "Nastart.debug.dylib": "f8f2b30e029120d49a7c634b2723454d98af5da7dc7edbc3fdb9f3909ab8eb57",
+              "Frameworks/KSPlayer.framework/KSPlayer": "a8b150bb68836745c5f5749d138cdc7b173eedb7cfc138ade464cb2cac9cdf28"
+            },
+            "lastFile": "closed-private.plist",
+            "newDiagnosticEvents": 172,
+            "selectedDiagnostics": [
+              {
+                "event": "diagnostics.playback.next.route_selected",
+                "fields": {
+                  "decodeEngine": "ksPlayer",
+                  "routeKind": "localRangeProxy"
+                }
+              }
+            ],
+            "bookmarks": [
+              {
+                "positionSeconds": 886.587,
+                "audioTrackID": 4,
+                "subtitleTrackID": null,
+                "subtitlesDisabled": true
+              }
+            ],
+            "playbackGate": {
+              "normalUIExit": true,
+              "playbackErrorVisible": false,
+              "completionMatches": 1,
+              "playerOpened": true,
+              "sampledImagesReviewed": [
+                3,
+                10,
+                30
+              ],
+              "continuousFrames": false,
+              "fullSubtitleAudioHDRPass": false,
+              "earlySample": "t3 black spinner and orientation transition; t10/t30 movie"
+            },
+            "notFullFrameOrAudioAcceptance": true
+          },
+          "s01-file-final": {
+            "packageSHA": {
+              "Nastart": "7b48bcc467cb70c5000f903c0603600492f19552c60e9d4dd60e850330ffc994",
+              "Nastart.debug.dylib": "f8f2b30e029120d49a7c634b2723454d98af5da7dc7edbc3fdb9f3909ab8eb57",
+              "Frameworks/KSPlayer.framework/KSPlayer": "a8b150bb68836745c5f5749d138cdc7b173eedb7cfc138ade464cb2cac9cdf28"
+            },
+            "lastFile": "closed-private.plist",
+            "newDiagnosticEvents": 84,
+            "selectedDiagnostics": [
+              {
+                "event": "diagnostics.playback.next.route_selected",
+                "fields": {
+                  "decodeEngine": "ksPlayer",
+                  "routeKind": "localRangeProxy"
+                }
+              }
+            ],
+            "bookmarks": [],
+            "playbackGate": {
+              "normalUIExit": true,
+              "playbackErrorVisible": false,
+              "completionMatches": 1,
+              "playerOpened": true,
+              "sampledImagesReviewed": [
+                3,
+                10,
+                30
+              ],
+              "continuousFrames": false,
+              "fullSubtitleAudioHDRPass": false
+            },
+            "notFullFrameOrAudioAcceptance": true
+          },
+          "s01-jf-final": {
+            "packageSHA": {
+              "Nastart": "7b48bcc467cb70c5000f903c0603600492f19552c60e9d4dd60e850330ffc994",
+              "Nastart.debug.dylib": "f8f2b30e029120d49a7c634b2723454d98af5da7dc7edbc3fdb9f3909ab8eb57",
+              "Frameworks/KSPlayer.framework/KSPlayer": "a8b150bb68836745c5f5749d138cdc7b173eedb7cfc138ade464cb2cac9cdf28"
+            },
+            "lastFile": "closed-private.plist",
+            "newDiagnosticEvents": 136,
+            "selectedDiagnostics": [
+              {
+                "event": "diagnostics.playback.next.detail_track_request",
+                "fields": {
+                  "detailSubtitleID": "none",
+                  "requestSubtitleDisabled": "true",
+                  "requestSubtitleID": "none"
+                }
+              },
+              {
+                "event": "diagnostics.playback.next.route_selected",
+                "fields": {
+                  "decodeEngine": "ksPlayer",
+                  "routeKind": "localRangeProxy"
+                }
+              }
+            ],
+            "bookmarks": [],
+            "playbackGate": {
+              "normalUIExit": true,
+              "playbackErrorVisible": false,
+              "completionMatches": 1,
+              "playerOpened": true,
+              "sampledImagesReviewed": [
+                3,
+                10,
+                30
+              ],
+              "continuousFrames": false,
+              "fullSubtitleAudioHDRPass": false
+            },
+            "notFullFrameOrAudioAcceptance": true
+          }
+        },
+        "performanceAccepted": false,
+        "cellularNetworkTested": false,
+        "fullSubtitleAudioHDRAccepted": false
+      }
+    }
+  },
+  "baselineFailure": {
+    "sourceDiffSHA256": "9fe56dbe9b04ea7aef6fed7c563febf006fab70e1621b0a20224ed7a749d188f",
+    "device": "iphone13",
+    "sample": "S03 Jellyfin normalized ASS5 as external SRT",
+    "overlayLoadedCount": 0,
+    "ordinaryExitPositionSeconds": 4119.071,
+    "savedSubtitleTrackID": null,
+    "savedSubtitlesDisabled": true,
+    "status": "FAIL_EXTERNAL_SUBTITLE_COLD_START",
+    "notLatestPackageResult": true
+  },
+  "rejectedValidation": {
+    "executed": 324,
+    "skipped": 2,
+    "failures": 1,
+    "installed": false,
+    "reason": "second subtitlePlan disabled guard still interpreted embedded disabled as all subtitles off; corrected before final build"
+  },
+  "failedOrExcludedRuns": [
+    {
+      "case": "ipad/jf-sidecar-window",
+      "classification": "TOOL_EXIT_BEFORE_AV_CANDIDATE_COMMIT",
+      "latestPackage": false,
+      "countsAsPreparationFailureRollback": false
+    },
+    {
+      "case": "ipad/jf-pgs-commit-window",
+      "classification": "TOOL_EXPECTED_AV_REPLACEMENT_WHILE_ACTUAL_KS_NATIVE_SWITCH",
+      "latestPackage": false,
+      "countsAsAppPreparationFailure": false
+    },
+    {
+      "case": "iphone13/s03-av-overlap-excluded",
+      "classification": "OVERLAPPING_STREAM_EXCLUDED_FROM_SINGLE_STREAM_ACCEPTANCE",
+      "latestPackage": false
+    },
+    {
+      "case": "ipad/s03-jf-ass-final",
+      "classification": "TOOL_TAP_DID_NOT_OPEN_PLAYER",
+      "latestPackage": true
+    },
+    {
+      "case": "ipad/s03-jf-ass-retry-final",
+      "classification": "TOOL_TAP_DID_NOT_OPEN_PLAYER",
+      "latestPackage": true
+    },
+    {
+      "case": "iphone13/s01-jf-final-not-started",
+      "classification": "TOOL_EXPECTED_ABSENT_BUTTON",
+      "actionSubmitted": false,
+      "latestPackage": true
+    }
+  ],
+  "limitations": [
+    "All latest windows selected KSPlayer/localRangeProxy; AV external text and PiP actual UI not accepted",
+    "Sparse screenshots and diagnostic clocks are not continuous display frame times or fluency acceptance",
+    "Phone ASS windows retain spinner samples; S03 file t3 preparing/rotation spinner retained",
+    "Full subtitles/animations/audio/HDR/MTP not accepted",
+    "No cellular/performance/formal Lenna or DS One pair this turn",
+    "Actual failed-preparation rollback not achieved; canceled candidate/tool timeout cannot replace it",
+    "All prior PX/UX/CB/L2/L3/Main, 475/119 and feed/read/callback/HLS gaps retained"
+  ]
+}

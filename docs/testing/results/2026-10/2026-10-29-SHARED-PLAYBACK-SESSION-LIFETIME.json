@@ -1,0 +1,132 @@
+{
+  "updatedAt": "2026-10-29T07:42+08:00",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "inheritedWorkingChangesPreserved": true,
+  "userConstraint": "Container Manager under repair; pause NAS-dependent real-device work and prioritize offline playback integration",
+  "frozenInputCount": 426,
+  "sourceInputsMatch": true,
+  "changedFiles": [
+    "ios/Nastart/Nastart/Playback/GreenfieldVideoPlayerView.swift",
+    "tvos/NastartTV/Sources/TVUnifiedPlayback.swift",
+    "tvos/NastartTV/Sources/TVPlaybackSession.swift",
+    "tvos/NastartTV/Sources/TVNASViews.swift",
+    "ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/PlaybackSessionLifetime.swift",
+    "ios/Nastart/Packages/NetworkMedia/Tests/NetworkMediaTests/PlaybackSessionLifetimeTests.swift",
+    "ios/Nastart/NastartTests/PlaybackNextCoreTests.swift",
+    "tvos/NastartTV/Tests/TVClientTests.swift"
+  ],
+  "sharedImplementation": "NetworkMedia.PlaybackSessionLifetime<Resource>",
+  "productionConsumers": [
+    "GreenfieldVideoPlayerModel: mobile Jellyfin/device-file/network video",
+    "TVUnifiedPlaybackSession: TV Jellyfin/device-file/network video"
+  ],
+  "removedUnreferencedClasses": [
+    "TVPlaybackSession",
+    "TVNASPlaybackSession"
+  ],
+  "releaseParityChange": "GreenfieldVideoPlayerView.replaceSource no longer DEBUG-only",
+  "engineBufferParametersChanged": false,
+  "tests": {
+    "sharedModule": {
+      "count": 18,
+      "newLifetimeCases": 6,
+      "exitCode": 0
+    },
+    "TVAllUnit": {
+      "count": 54,
+      "exitCode": 0
+    },
+    "mobileFocusedFinal": {
+      "count": 15,
+      "exitCode": 0
+    },
+    "mobileFirstAttempt": {
+      "count": 15,
+      "failures": 1,
+      "exitCode": 65,
+      "cause": "new fixture wrongly expected a rebuilt fallback route to reuse its old UUID; assert actual URL and installed finishing-plan identity instead",
+      "retained": true
+    }
+  },
+  "builds": {
+    "mobile-debug-final": {
+      "startedAt": "2026-10-29T07:33:51.666709+08:00",
+      "devicesTouched": false,
+      "exitCode": 0,
+      "endedAt": "2026-10-29T07:34:43.877929+08:00"
+    },
+    "tv-debug-final": {
+      "startedAt": "2026-10-29T07:33:51.666615+08:00",
+      "devicesTouched": false,
+      "exitCode": 0,
+      "endedAt": "2026-10-29T07:34:16.359099+08:00"
+    },
+    "mobile-release-final": {
+      "startedAt": "2026-10-29T07:36:05.562297+08:00",
+      "devicesTouched": false,
+      "exitCode": 0,
+      "endedAt": "2026-10-29T07:37:48.005541+08:00"
+    },
+    "tv-release": {
+      "startedAt": "2026-10-29T07:30:52.635365+08:00",
+      "devicesTouched": false,
+      "exitCode": 0,
+      "endedAt": "2026-10-29T07:31:36.559225+08:00"
+    }
+  },
+  "packages": {
+    "mobile": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-29T07:34:43.671021+08:00",
+      "frozenAt": "2026-10-29T07:39:34.526761+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 426,
+      "mainSHA256": "f3916629070956af05b60b48fc3c0129e5805c0d8e2a6937e6a58885ab230ee4",
+      "debugDylibSHA256": "c5ea7b351288fbdb000cbd57b1b970629beb62baf345edb12e09422ecdb995ae",
+      "signedMachOCount": 30,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false
+    },
+    "tv": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-29T07:34:16.195521+08:00",
+      "frozenAt": "2026-10-29T07:39:34.918381+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 426,
+      "mainSHA256": "a244fd32f3dddf7b0291e7ed15e62ac51b3e067b5b3079baab30e5006ee08f5d",
+      "debugDylibSHA256": "7be895637b205f898c90cb1d1993eb6d39096f5537eda433e44da53d4362f4b5",
+      "signedMachOCount": 27,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false
+    }
+  },
+  "signatureVerification": "deep/strict, every Mach-O; TV embedded-library check passed",
+  "devicesTouched": false,
+  "deviceInstalls": 0,
+  "normalDeviceLaunchVerified": false,
+  "NASAuthenticationOrProbeCommands": 0,
+  "NASMediaWrites": 0,
+  "cellularWindows": 0,
+  "mediaPerformanceWindows": 0,
+  "newPlaybackMatrixPasses": 0,
+  "modelSwitchPerformed": false,
+  "notYetUnified": [
+    "native renderer/control implementations still platform-specific",
+    "mobile warm replacement and TV compatibility/source-switch execution still have separate platform handling"
+  ],
+  "pendingDeviceAcceptance": [
+    "NAS recovery and fresh device/package checks before preserve-data overlay",
+    "large-file Wi-Fi/cellular startup, resume, seek, audio/subtitle response",
+    "TV DSM two-factor connection failure diagnosis and Pad normal playback exit",
+    "Release, ISO, existing weak-cellular buffering and former NAS restart segments remain open"
+  ],
+  "documentationCheck": {
+    "documents": 511,
+    "localLinks": 3072,
+    "missingDestinations": 0
+  },
+  "finalSourceHashCheck": true,
+  "changedFilesWhitespaceCheck": true
+}

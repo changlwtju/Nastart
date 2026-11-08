@@ -1,0 +1,265 @@
+{
+  "date": "2026-10-21",
+  "scope": "Ordinary empty-env Debug fixed 4K x420 PQ compatible HDR base captions; Release off; no Dolby dynamic-output acceptance",
+  "package": {
+    "sourceDiffSHA256": "4b21ef47f66e81c6ff1468497a56eb5325515bff0b207fcd44a4a1d089e6144c",
+    "binaryBuildTime": "2026-10-21T05:31:36.792475+08:00",
+    "binaries": {
+      "Nastart": "515a532b49cc4afa296e50f65d53111ef8d9b4101e08fdb799d46f00ad043d62",
+      "Nastart.debug.dylib": "d23ffc37cdd6128548b1128cbe0cc19ad3cf2867b490bafd0b736bae7a9bf2dd",
+      "Frameworks/KSPlayer.framework/KSPlayer": "1c408f8f28e260ea956b3c86f083c13adaa659719db6748abaa99b5e3ce8e7b6"
+    },
+    "ipaSHA256": "67184ddc7138c71ed00099e9b7cfd835556e465c45214645b8cc2c54a20d6dbc"
+  },
+  "tests": {
+    "passed": 14,
+    "normalXcodeExit": true
+  },
+  "devices": {
+    "iphone13": {
+      "frames": [
+        {
+          "composited": "true",
+          "compositionReason": "hdrPQOutputCreated",
+          "hdrCheckoutStatus": "0",
+          "hdrDynamicPayloadCopied": "false",
+          "hdrLifetimeSurfaceGuard": "disableOnFifthNeverAllocateSixth",
+          "hdrNominalOutputSurfaces": "4",
+          "hdrObservedUniqueSurfaces": "4",
+          "hdrOriginalContentLightMetadataCopied": "false",
+          "hdrOutputMode": "compatibleHDR10BaseWithCaptions",
+          "hdrPoolCreationStatus": "0",
+          "hdrProbeHeldAliasAllocationRefused": "true",
+          "hdrProbeNativeWhiteNits": "99.91279848944153",
+          "hdrProbeRoundtripCodeDelta": "0",
+          "hdrProbeWhiteNits": "203.70295787737396",
+          "hdrRenderMilliseconds": "39.287124993279576",
+          "hdrSubtitleLinearGain": "2.031771735644582",
+          "imageCount": "1",
+          "sourceDolbyCompatibilityID": "6",
+          "sourceDolbyProfile": "7"
+        },
+        {
+          "composited": "true",
+          "compositionReason": "hdrPQOutputCreated",
+          "hdrCheckoutStatus": "0",
+          "hdrDynamicPayloadCopied": "false",
+          "hdrLifetimeSurfaceGuard": "disableOnFifthNeverAllocateSixth",
+          "hdrNominalOutputSurfaces": "4",
+          "hdrObservedUniqueSurfaces": "4",
+          "hdrOriginalContentLightMetadataCopied": "false",
+          "hdrOutputMode": "compatibleHDR10BaseWithCaptions",
+          "hdrPoolCreationStatus": "0",
+          "hdrProbeHeldAliasAllocationRefused": "true",
+          "hdrProbeNativeWhiteNits": "99.91279848944153",
+          "hdrProbeRoundtripCodeDelta": "0",
+          "hdrProbeWhiteNits": "203.70295787737396",
+          "hdrRenderMilliseconds": "19.04062501853332",
+          "hdrSubtitleLinearGain": "2.031771735644582",
+          "imageCount": "1",
+          "sourceDolbyCompatibilityID": "6",
+          "sourceDolbyProfile": "7"
+        },
+        {
+          "composited": "false",
+          "compositionReason": "noCue",
+          "imageCount": "0",
+          "sourceDolbyCompatibilityID": "6",
+          "sourceDolbyProfile": "7"
+        }
+      ],
+      "result": {
+        "startedAt": "2026-10-21T05:35:29.973249+08:00",
+        "network": "Wi-Fi unchanged",
+        "sample": "S03",
+        "entry": "Jellyfin",
+        "playCommands": 1,
+        "pipCommands": 1,
+        "HDRCompositionEnabled": true,
+        "windowPurpose": "Ordinary empty-env Debug compatible HDR base captions; not Release or Dolby dynamic output acceptance",
+        "testEnvironment": {},
+        "latestPackageGate": true,
+        "actualEmptyEnvironment": true,
+        "playAction": "从头播放",
+        "manualHomeSent": true,
+        "inventoryWindowCompleted": true,
+        "ownedAppStoppedAndAbsent": true,
+        "WDASettingsRestored": true,
+        "normalEnvironmentRestored": true,
+        "finalOwnedAppAbsent": true,
+        "nonBookmarkPreferencesExactlyUnchanged": true,
+        "originalBookmarkCount": 36,
+        "originalTrackChanges": 0,
+        "bookmarkProgressChanges": 1,
+        "bookmarksAdded": 0,
+        "bookmarksRemoved": 0,
+        "crashInventoryDelta": {
+          "Nastart": 0,
+          "WebDriverAgent": 0,
+          "JetsamEvent": 0
+        },
+        "finishedAt": "2026-10-21T05:37:58.467507+08:00"
+      },
+      "visualReview": "PiP3/PiP10 sampled no subtitle; actual caption presentation not certified from these two frames, despite two active-cue composed output rows",
+      "memory": {
+        "sampleCount": 72,
+        "physMiBPeak": 1043.5665893554688,
+        "rssMiBPeak": 271.140625,
+        "longPlateauVerified": false
+      }
+    },
+    "ipad": {
+      "frames": [],
+      "result": {
+        "startedAt": "2026-10-21T05:40:46.308895+08:00",
+        "network": "Wi-Fi unchanged",
+        "sample": "S03",
+        "entry": "Jellyfin",
+        "playCommands": 1,
+        "pipCommands": 1,
+        "HDRCompositionEnabled": true,
+        "windowPurpose": "Ordinary empty-env Debug compatible HDR base captions; not Release or Dolby dynamic output acceptance",
+        "testEnvironment": {},
+        "latestPackageGate": true,
+        "actualEmptyEnvironment": true,
+        "memorySampling": "Not collected; avoid a second native RSD owner during XCTest",
+        "playAction": "在 Nastart 中播放",
+        "manualHomeSent": true,
+        "inventoryWindowCompleted": true,
+        "ownedAppStoppedWDAStateNotRunning": true,
+        "WDASettingsRestored": true,
+        "normalEnvironmentRestored": true,
+        "finalOwnedAppWDAStateNotRunning": true,
+        "nonBookmarkPreferencesExactlyUnchanged": true,
+        "originalBookmarkCount": 29,
+        "originalTrackChanges": 0,
+        "bookmarkProgressChanges": 1,
+        "bookmarksAdded": 0,
+        "bookmarksRemoved": 0,
+        "crashInventoryDelta": {
+          "Nastart": 0,
+          "WebDriverAgent": 0,
+          "JetsamEvent": 0
+        },
+        "finishedAt": "2026-10-21T05:43:18.742995+08:00"
+      },
+      "visualReview": "PiP3 and PiP10 native images both have readable bilingual PGS"
+    }
+  },
+  "ipadNativeCleanup": {
+    "ownedRunnerAbsent": true,
+    "ownedAppAbsent": true,
+    "runnerProcessesStopped": 0,
+    "existingPhoneRunnerUntouched": true
+  },
+  "iphone18Installation": {
+    "installDispatchAttempted": true,
+    "installCommandSent": true,
+    "installCompleteObserved": true,
+    "actualForegroundUIVerified": false,
+    "RSDTargetVerified": true,
+    "transport": "Existing paired Wi-Fi userspace RSD; legacy container handshake failure retained",
+    "sourceDiffSHA256": "4b21ef47f66e81c6ff1468497a56eb5325515bff0b207fcd44a4a1d089e6144c",
+    "binaries": {
+      "Nastart": "515a532b49cc4afa296e50f65d53111ef8d9b4101e08fdb799d46f00ad043d62",
+      "Nastart.debug.dylib": "d23ffc37cdd6128548b1128cbe0cc19ad3cf2867b490bafd0b736bae7a9bf2dd",
+      "Frameworks/KSPlayer.framework/KSPlayer": "1c408f8f28e260ea956b3c86f083c13adaa659719db6748abaa99b5e3ce8e7b6"
+    },
+    "ipaSHA256": "67184ddc7138c71ed00099e9b7cfd835556e465c45214645b8cc2c54a20d6dbc",
+    "stage": "Install confirmed; current screen review pending, no duplicate blocked launch",
+    "preferencesSavedBeforeInstall": true,
+    "installedAtUTC": "2026-10-20T21:34:37.238585+00:00",
+    "postInstallLookupExists": true,
+    "preferences": {
+      "beforeKeys": 25,
+      "afterKeys": 25,
+      "sameKeys": true,
+      "changedValues": 0,
+      "allNonDiagnosticPreferencesEqual": true
+    },
+    "normalLaunchRequested": false,
+    "requestedEnvironment": {},
+    "requestedArguments": [],
+    "normalLaunchDeferredForScreenReview": true,
+    "actualScreenshotCaptured": true
+  },
+  "iphone18ScreenReview": "After installation native screenshot shows another user app in foreground, unlocked; no forced app switch or repeat blocked launch. Normal home/movie not verified.",
+  "portraitAttempts": [
+    {
+      "startedAt": "2026-10-21T05:46:39.950290+08:00",
+      "network": "Wi-Fi unchanged",
+      "sample": "S03",
+      "entry": "Jellyfin",
+      "playCommands": 0,
+      "pipCommands": 0,
+      "HDRCompositionEnabled": true,
+      "windowPurpose": "Ordinary empty-env portrait video-anchored captions and bounded cue-visible PiP observation; no pause/restore commands",
+      "testEnvironment": {},
+      "latestPackageGate": true,
+      "actualEmptyEnvironment": true,
+      "failureType": "RuntimeError",
+      "failureReason": "Navigation effect unconfirmed; no repeat",
+      "ownedAppStoppedAndAbsent": true,
+      "WDASettingsRestored": true,
+      "normalEnvironmentRestored": true,
+      "finalOwnedAppAbsent": true,
+      "nonBookmarkPreferencesExactlyUnchanged": true,
+      "originalBookmarkCount": 36,
+      "originalTrackChanges": 0,
+      "bookmarkProgressChanges": 0,
+      "bookmarksAdded": 0,
+      "bookmarksRemoved": 0,
+      "crashInventoryDelta": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      },
+      "finishedAt": "2026-10-21T05:47:53.498456+08:00"
+    },
+    {
+      "startedAt": "2026-10-21T05:50:23.859873+08:00",
+      "network": "Wi-Fi unchanged",
+      "sample": "S03",
+      "entry": "Jellyfin",
+      "playCommands": 0,
+      "pipCommands": 0,
+      "HDRCompositionEnabled": true,
+      "windowPurpose": "Ordinary empty-env portrait video-anchored captions and bounded cue-visible PiP observation; no pause/restore commands",
+      "testEnvironment": {},
+      "latestPackageGate": true,
+      "actualEmptyEnvironment": true,
+      "failureType": "AssertionError",
+      "failureReason": "No unique current S03 library tile; failed search is not repeated",
+      "ownedAppStoppedAndAbsent": true,
+      "WDASettingsRestored": true,
+      "normalEnvironmentRestored": true,
+      "finalOwnedAppAbsent": true,
+      "nonBookmarkPreferencesExactlyUnchanged": true,
+      "originalBookmarkCount": 36,
+      "originalTrackChanges": 0,
+      "bookmarkProgressChanges": 0,
+      "bookmarksAdded": 0,
+      "bookmarksRemoved": 0,
+      "crashInventoryDelta": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      },
+      "finishedAt": "2026-10-21T05:51:05.367177+08:00"
+    }
+  ],
+  "laterIPhone13Block": {
+    "diagnostics": [
+      {
+        "errorCode": "0",
+        "errorDomain": "Get.APIError",
+        "errorType": "Get.APIError",
+        "httpStatus": "502"
+      }
+    ],
+    "nativeHome": "App home rendered; NAS shown not connected",
+    "wifi": "Original SSID and Wi-Fi icon reviewed",
+    "rootCause": "Unknown gateway/service; not classified as API119 or VPN cause",
+    "newMediaWindows": 0
+  }
+}

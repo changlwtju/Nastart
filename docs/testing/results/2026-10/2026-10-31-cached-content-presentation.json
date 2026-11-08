@@ -1,0 +1,139 @@
+{
+  "recordedAt": "2026-10-31T05:32:26+08:00",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceInputCount": 439,
+  "changedExistingSourceOrResourceFiles": 6,
+  "newSourceOrTestFiles": 0,
+  "existingParameterTestsPassed": 4,
+  "builds": {
+    "mobile-sim-debug-cast": {
+      "startedAt": "2026-10-31T05:22:44.462135+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-31T05:23:21.856631+08:00"
+    },
+    "tv-sim-debug-cast": {
+      "startedAt": "2026-10-31T05:23:21.857456+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-31T05:23:35.214653+08:00"
+    },
+    "module-tests": {
+      "startedAt": "2026-10-31T05:23:35.215481+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-31T05:23:39.241570+08:00"
+    },
+    "mobile-debug": {
+      "startedAt": "2026-10-31T05:24:20.307708+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-31T05:24:52.968865+08:00"
+    },
+    "tv-debug": {
+      "startedAt": "2026-10-31T05:24:52.970130+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-31T05:25:06.657012+08:00"
+    }
+  },
+  "releaseBuildNotRepeated": true,
+  "sourcePreservation": {
+    "existingSourceOrResourceFilesChanged": 6,
+    "newSourceOrTestFiles": 0,
+    "mobileOutsideCollectionAndSeriesViewsByteIdentical": true,
+    "loadAndLoadEpisodesAndSearchGroupingMethodsByteIdentical": true,
+    "allStoreClientAuthenticationAndPlaybackCodeByteIdentical": true,
+    "existingRecoveryCallbacksPreserved": true,
+    "existingSharedComponentsByteIdentical": true,
+    "oneNewLazyPresentationContainerOwnsNoRequestStorageOrState": true,
+    "onlyFourNewEpisodeTextKeysPerLocale": true,
+    "previewUsesNoModelStoreVaultClientTaskOrNetwork": true,
+    "sourceInputCount": 439,
+    "otherSourceInputsUnchanged": 433
+  },
+  "packages": {
+    "mobile": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-31T05:24:52.816517+08:00",
+      "frozenAt": "2026-10-31T05:25:26.556305+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 439,
+      "mainSHA256": "b6ecdb7b70bfee0bf52393f6ebbc2c9a2f0c31c06d0bbff05da4cb9e85f61a4c",
+      "debugDylibSHA256": "ba55c647a81cdb850eb5dd7aa246adfaf8ae0ca7ef439f6c4b0897715153fe60",
+      "signedMachOCount": 30,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false,
+      "copyMethod": "cp -cpR clone requested; hashes and signatures verified independently"
+    },
+    "tv": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-31T05:25:06.594856+08:00",
+      "frozenAt": "2026-10-31T05:25:26.950298+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 439,
+      "mainSHA256": "24a4a3de480e4571221c6546c9a500024b152eae7edbba219015ddf81f2f127c",
+      "debugDylibSHA256": "5fc9e306eb94f838ceafe3ed6ec0a1112d936e85679b9790a770f1ab9ffacf64",
+      "signedMachOCount": 27,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false,
+      "copyMethod": "cp -cpR clone requested; hashes and signatures verified independently"
+    }
+  },
+  "capture": {
+    "accepted": 14,
+    "byPlatform": {
+      "phone": 6,
+      "pad": 6,
+      "tv": 2
+    },
+    "notStarted": {},
+    "allPassed": true,
+    "ownedSimulatorsDeleted": true,
+    "syntheticPreferencesPreserved": true,
+    "physicalDevicesOperated": 0,
+    "NASCommands": 0,
+    "interactionOrAnimationVerified": false
+  },
+  "visualReview": {
+    "recordedAt": "2026-10-31T05:32:26.851574+08:00",
+    "reviewed": true,
+    "reviewedStaticWindows": 14,
+    "reviewSheets": [
+      "phone-review-1.jpg",
+      "phone-review-2.jpg",
+      "phone-review-3.jpg",
+      "pad-review-1.jpg",
+      "pad-review-2.jpg",
+      "pad-review-3.jpg",
+      "tv-review-1.jpg"
+    ],
+    "initialLoadingProgressVisibleWithoutSuccessEmptyState": true,
+    "cachedLoadingAndFailureShowSyntheticContent": true,
+    "failedSearchShowsSearchEmptyInsteadOfLibraryEmpty": true,
+    "successfulEmptyStateOnlyShownWithoutLoadingOrFailure": true,
+    "noClippingOverlapOrContrastIssueObservedInSelectedWindows": true,
+    "actualDataTransitionsImagesRecoveryNavigationOrFocusVerified": false,
+    "actualCollectionGridOrSeasonListLayoutVerified": false,
+    "largeTextOrAllLanguagesOrVoiceOverVerified": false,
+    "frameTimingOrScrollSmoothnessVerified": false
+  },
+  "baselineRecovery": {
+    "temporaryEvidencePointerRestored": true,
+    "firstBaselineCommandFailedBeforeAnyBaselineWrite": true,
+    "posterBaselineReconstructedByRemovingOnlyCurrentAddedBlock": true,
+    "allSixBaselineHashesMatchPreviousFrozenInputs": true
+  },
+  "ownedSimulatorsDeleted": 3,
+  "physicalDevicesOperated": 0,
+  "NASCommands": 0,
+  "playbackCommands": 0,
+  "newPlaybackMatrixP": 0,
+  "notVerified": [
+    "Real retained-data transitions, image identity/flash and repeat recovery",
+    "Production callback/cancellation/navigation/focus/scroll/VoiceOver",
+    "All preferred languages and large-text layouts",
+    "New-source Release build and physical installation, NAS/playback"
+  ]
+}

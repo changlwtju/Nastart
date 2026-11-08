@@ -1,0 +1,280 @@
+{
+  "recordedAt": "2026-10-07T13:36:09.550558+08:00",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceDiffSHA256": "fb2f60a61701861c7c8a9a39df8553540e55696d39f33f5cf498f8ae19dc0f01",
+  "configuration": "normal Debug -Onone; no test environment variables",
+  "binaryBuildTime": "2026-10-07T12:33:05.820945+08:00",
+  "binaries": {
+    "Nastart": "a495e914a3f7894ef4f87bcde7a23db0a28c9ab6e18f92c8f2697d5e4702c33b",
+    "Nastart.debug.dylib": "d5245a9e9250523082c583cd5a9d4df398d9afb2a8be96d97a88db802c559765",
+    "Frameworks/KSPlayer.framework/KSPlayer": "c814c6b3f8d1beaddef93e8c77935aa9d653835244ae7a0b772d9900e709a704"
+  },
+  "verification": "178 tests, 1 skip, 0 failures; 15 preflight; normal device build; signature/linkage",
+  "deviceInstallGates": {
+    "iphone13": {
+      "time": "2026-10-07T13:10:00.393333+08:00",
+      "mainSHA256": "a495e914a3f7894ef4f87bcde7a23db0a28c9ab6e18f92c8f2697d5e4702c33b",
+      "sourceDiffSHA256": "fb2f60a61701861c7c8a9a39df8553540e55696d39f33f5cf498f8ae19dc0f01",
+      "dataPreservingCoverInstall": true,
+      "unchangedPreferenceCount": 25,
+      "normalForegroundVerified": true,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "freshIdentityRecordedPrivately": true
+    },
+    "ipad": {
+      "time": "2026-10-07T13:15:40.823276+08:00",
+      "mainSHA256": "a495e914a3f7894ef4f87bcde7a23db0a28c9ab6e18f92c8f2697d5e4702c33b",
+      "sourceDiffSHA256": "fb2f60a61701861c7c8a9a39df8553540e55696d39f33f5cf498f8ae19dc0f01",
+      "dataPreservingCoverInstall": true,
+      "unchangedPreferenceCount": 16,
+      "normalForegroundVerified": true,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "freshIdentityRecordedPrivately": true
+    }
+  },
+  "tests": {
+    "postNasS19JellyfinLAN": {
+      "device": "iphone13",
+      "packageMainSHA256": "a495e914a3f7894ef4f87bcde7a23db0a28c9ab6e18f92c8f2697d5e4702c33b",
+      "requestedSeconds": 180,
+      "naturalBoundarySeconds": 162.8206181526184,
+      "serial": true,
+      "networkShaping": false,
+      "forcedQuality": false,
+      "telemetry": {
+        "8359FAA4": {
+          "count": 30,
+          "coverageSeconds": 30.93195676803589,
+          "first": {
+            "elapsed": 0.8799891471862793,
+            "event": "telemetry_sample",
+            "bufferedCount": "-",
+            "consumeMs": "-",
+            "currentSeconds": "-",
+            "elapsedMs": "0",
+            "engine": "KSPlayer",
+            "networkClass": "local",
+            "playMethod": "directPlay",
+            "playbackTraceID": "8359FAA4",
+            "stallActive": "no",
+            "stallCount": "0"
+          },
+          "last": {
+            "elapsed": 31.811945915222168,
+            "event": "telemetry_sample",
+            "elapsedMs": "30354",
+            "engine": "KSPlayer",
+            "networkClass": "local",
+            "playMethod": "directPlay",
+            "playbackTraceID": "8359FAA4",
+            "stallActive": "no",
+            "stallCount": "1"
+          },
+          "maxStalls": 1,
+          "maxDrops": 6,
+          "postFirstFrame": {
+            "coverageSeconds": 28.76178288459778,
+            "startStallCount": 0,
+            "lastStallCount": 1,
+            "observedStallDelta": 1
+          }
+        },
+        "1F6EE272": {
+          "count": 103,
+          "coverageSeconds": 130.62445998191833,
+          "first": {
+            "elapsed": 31.812412977218628,
+            "event": "telemetry_sample",
+            "accessLogStalls": "0",
+            "bufferEmpty": "no",
+            "currentSeconds": "20.067",
+            "elapsedMs": "0",
+            "engine": "AVPlayer",
+            "indicatedBitrate": "12000000",
+            "itemStatus": "readyToPlay",
+            "likelyToKeepUp": "no",
+            "loadedRangeCount": "1",
+            "networkClass": "local",
+            "observedBitrate": "4328923",
+            "playMethod": "localRemux",
+            "playbackTraceID": "1F6EE272",
+            "stallActive": "no",
+            "stallCount": "0",
+            "timeControlStatus": "playing"
+          },
+          "last": {
+            "elapsed": 162.43687295913696,
+            "event": "telemetry_sample",
+            "accessLogStalls": "1",
+            "bufferEmpty": "no",
+            "currentSeconds": "150.001",
+            "elapsedMs": "131271",
+            "engine": "AVPlayer",
+            "indicatedBitrate": "12000000",
+            "itemStatus": "readyToPlay",
+            "likelyToKeepUp": "yes",
+            "loadedRangeCount": "1",
+            "networkClass": "local",
+            "observedBitrate": "29731277",
+            "playMethod": "localRemux",
+            "playbackTraceID": "1F6EE272",
+            "stallActive": "no",
+            "stallCount": "1",
+            "timeControlStatus": "playing"
+          },
+          "maxStalls": 1,
+          "maxDrops": null,
+          "postFirstFrame": {
+            "coverageSeconds": 130.39861011505127,
+            "startStallCount": 0,
+            "lastStallCount": 1,
+            "observedStallDelta": 1
+          }
+        }
+      },
+      "events": [
+        {
+          "elapsed": 17.445255041122437,
+          "event": "automatic_downshift_requested",
+          "attempt": "1",
+          "bufferTargetSeconds": "4.0",
+          "bufferedAheadSeconds": "3.836874894573274",
+          "deliveryCapacity": "25905799",
+          "deliveryCapacitySource": "completedTransfer",
+          "engine": "KSPlayer",
+          "playbackTraceID": "8359FAA4",
+          "reason": "deliveryBelowSourceBitrate",
+          "runtimeDemand": "77216601"
+        },
+        {
+          "elapsed": 31.080278873443604,
+          "event": "replacement_candidate_aligned",
+          "accessLogStalls": "0",
+          "availableReserveSeconds": "3.50349990477586",
+          "bufferEmpty": "false",
+          "candidate": "19.868167029",
+          "candidateBufferAheadSeconds": "0.6198218598888907",
+          "candidateRate": "1.0",
+          "candidateSeconds": "19.868167029",
+          "candidateStatus": "1",
+          "current": "19.871",
+          "deadlineRemainingMs": "27212",
+          "downloadedMediaSeconds": "16.016",
+          "elapsedMs": "12787",
+          "engine": "KSPlayer",
+          "errorCode": "-",
+          "errorDomain": "-",
+          "framePTS": "19.853155555555556",
+          "indicatedBitrate": "12000000.0",
+          "itemStatus": "1",
+          "likelyToKeepUp": "false",
+          "liveSeconds": "19.871",
+          "loadedRangeCount": "1",
+          "loadedRangeFirstEnd": "20.48798888888889",
+          "loadedRangeFirstStart": "8.007988888888889",
+          "mediaRequests": "4",
+          "observedBitrate": "4328923.0",
+          "playbackTraceID": "8359FAA4",
+          "preparationLeadSeconds": "3.25349990477586",
+          "seekResult": "true",
+          "timeControlStatus": "2",
+          "transferSeconds": "6.273924249999999",
+          "transferredBytes": "8752528",
+          "waitingReason": "-"
+        },
+        {
+          "elapsed": 31.50614905357361,
+          "event": "replacement_committed",
+          "candidateBufferAheadSeconds": "0.5015982268888877",
+          "candidateSeconds": "19.986400371",
+          "engine": "KSPlayer",
+          "playbackTraceID": "8359FAA4",
+          "seconds": "19.913"
+        }
+      ],
+      "result": "FAIL_STALL",
+      "completeDisplayAndAudio": false,
+      "timingQualification": "guard offset corrected from actual touch; missed 3/10-second captures; approximately 162 seconds after touch, not full planned 180"
+    },
+    "postNasPadS19FileLAN": {
+      "device": "ipad",
+      "packageMainSHA256": "a495e914a3f7894ef4f87bcde7a23db0a28c9ab6e18f92c8f2697d5e4702c33b",
+      "requestedSeconds": 180,
+      "naturalBoundarySeconds": 180.59581208229065,
+      "serial": true,
+      "networkShaping": false,
+      "forcedQuality": false,
+      "telemetry": {
+        "7FBF90E1": {
+          "count": 43,
+          "coverageSeconds": 173.34347009658813,
+          "first": {
+            "elapsed": 6.5192930698394775,
+            "event": "telemetry_sample",
+            "bufferedCount": "-",
+            "consumeMs": "-",
+            "currentSeconds": "-",
+            "elapsedMs": "0",
+            "engine": "KSPlayer",
+            "networkClass": "local",
+            "playMethod": "directPlay",
+            "playbackTraceID": "7FBF90E1",
+            "stallActive": "no",
+            "stallCount": "0"
+          },
+          "last": {
+            "elapsed": 179.8627631664276,
+            "event": "telemetry_sample",
+            "bufferTargetSeconds": "4.0",
+            "bufferedAheadSeconds": "3.5034999047758504",
+            "bufferedCount": "-",
+            "consumeMs": "-",
+            "currentSeconds": "141.093",
+            "droppedVideoFrames": "8",
+            "elapsedMs": "173542",
+            "engine": "KSPlayer",
+            "networkClass": "local",
+            "playMethod": "directPlay",
+            "playbackTraceID": "7FBF90E1",
+            "stallActive": "no",
+            "stallCount": "3"
+          },
+          "maxStalls": 3,
+          "maxDrops": 8
+        }
+      },
+      "events": [],
+      "result": "FAIL_STALL",
+      "completeDisplayAndAudio": false
+    }
+  },
+  "pending": [
+    "iPhone13 latest real cellular and rules VPN dual entries",
+    "MI2/S03 latest dual entries",
+    "automatic quality upshift and quality criteria",
+    "File Station early restoration 119 root cause",
+    "system compositor memory incident isolation",
+    "S01/representative L2 and original performance/competitor matrix",
+    "current source Main synchronization"
+  ],
+  "systemIncident": {
+    "timeLocal": "2026-10-07 13:22:42",
+    "processWithPerProcessLimit": "backboardd",
+    "approxResidentMiB": 2099.4,
+    "nastartKillReasonInReport": null,
+    "nastartLifetimePeakMiB": 862.0,
+    "laterNastartProcessAbsent": true,
+    "appCrashRootCauseProven": false,
+    "ordinaryPhoneExit": "TOOL"
+  },
+  "toolRecovery": {
+    "singleManagedWDAHost": true,
+    "managedJob": "local.nastart.wda-iphone13",
+    "wdaReinstall": false,
+    "normalNastartForegroundVerified": true,
+    "fileRootAndVideoFolderNowReadable": true,
+    "uncommandedNavigationRootCauseProven": false
+  }
+}

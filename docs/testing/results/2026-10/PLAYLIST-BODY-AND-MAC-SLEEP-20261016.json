@@ -1,0 +1,376 @@
+{
+  "recordedAt": "2026-10-16T20:08:04.930480+08:00",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceDiffSHA256": "cc64de38bfaadefeb5fd792ab03780a9dd59e1147609ed09dd44212a35fcf17d",
+  "binaryBuildTime": "2026-10-16T19:50:56.667851+08:00",
+  "configuration": "normal Debug -Onone; empty launch environment",
+  "Xcode": "27.0/27A266a",
+  "binaries": {
+    "Nastart": "bb99a1095301a72b870ed8419a37de71cfe6a53f6934a20fa91df973baa40593",
+    "Nastart.debug.dylib": "f0bc22616f4982c4378213b7c6f837158731d0a154a97df6dff8218501d2a08b",
+    "Frameworks/KSPlayer.framework/KSPlayer": "f73e8008a84286299e04dcda6b27921049f326e8190235a5fd7fcbdf5e288be0"
+  },
+  "checkedInputs": 173,
+  "changedInputs": [
+    "ios/Nastart/Nastart/Features/Devices/DevicesView.swift",
+    "ios/Nastart/Nastart/Playback/Core/PlaybackPlanningPolicy.swift",
+    "ios/Nastart/NastartTests/PlaybackNextCoreTests.swift"
+  ],
+  "individuallyVerifiedLibraries": 29,
+  "signatureAndIPAVerified": true,
+  "KSBinaryUnchanged": true,
+  "iPhone18": "deferred; no discovery/install/playback",
+  "brightnessChanged": false,
+  "networkPairingOrSystemPowerSettingsChanged": false,
+  "tests": {
+    "total": 9,
+    "passed": 9,
+    "failed": 0,
+    "newBodyTests": 3,
+    "fullSuiteRun": false,
+    "oldFullSuiteFailuresPreserved": 5,
+    "sourceCompletionSeconds": [
+      32.017997375,
+      32.01752725
+    ],
+    "originalRequestDeadlineSeconds": 30,
+    "prewarmDeadlineSeconds": 35,
+    "temporaryACSleepAssertionUsed": true
+  },
+  "preflightPassed": 15,
+  "wrapperChecks": [
+    {
+      "case": "usage",
+      "exit": 64,
+      "expected": 64
+    },
+    {
+      "case": "childSuccess",
+      "exit": 0,
+      "expected": 0
+    },
+    {
+      "case": "childFailure",
+      "exit": 17,
+      "expected": 17
+    }
+  ],
+  "retainedFailures": {
+    "initialCompilerExpressionFailure": true,
+    "firstTargetedRun": {
+      "total": 9,
+      "passed": 8,
+      "failed": 1,
+      "hostMaintenanceSleepObserved": true
+    },
+    "previousFullSuiteFailures": 5,
+    "fullSuitePassed": false
+  },
+  "maintenanceSleep": {
+    "events": [
+      {
+        "localTime": "2026-10-16 19:51:32 +0800",
+        "event": "maintenanceSleep",
+        "sleepDurationSeconds": 15
+      },
+      {
+        "localTime": "2026-10-16 19:51:47 +0800",
+        "event": "darkWake",
+        "sleepDurationSeconds": null
+      }
+    ],
+    "targetedTestWallSeconds": 35.289,
+    "upstreamMonotonicIssuedToCompletionSeconds": 21.891,
+    "firstResponseReceivedBytes": 655360,
+    "expectedBytes": 1048574,
+    "causalScope": "Local paced source was suspended during host sleep; does not establish phone or NAS playback root cause"
+  },
+  "awakePowerWindow": {
+    "assertionStartedAt": "2026-10-16T19:54:07.035510+08:00",
+    "checkedAt": "2026-10-16T20:06:55.684477+08:00",
+    "recordedSleepEventsDuringAssertion": [],
+    "count": 0
+  },
+  "audio": {
+    "independentSimulatorProbeAfterBridgeRestartExit": 134,
+    "independentSimulatorProbeWithACSleepAssertionExit": 134,
+    "onlyUserOwnedSimulatorAudioHelperRestarted": true,
+    "macCoreaudiodRestarted": false,
+    "audioIssueResolved": false
+  },
+  "ipadAutomation": {
+    "stoppedAt": "2026-10-16T20:05:57.891005+08:00",
+    "readyImmediatelyBeforeStop": true,
+    "readyObservationSpanSeconds": 550.347301,
+    "reason": "Bounded batch complete; deliberately stop this batch Runner before releasing temporary AC sleep assertion",
+    "unexpectedDisconnectThisAwakeWindow": false,
+    "newRunnerBuildOrExplicitInstall": false,
+    "intentionalXcodeExit": 75
+  },
+  "ipadPostStop": {
+    "at": "2026-10-16T20:06:08.977182+08:00",
+    "requestedEnvironment": {},
+    "requestedArguments": [],
+    "launchSucceeded": true,
+    "deviceIdentityFreshMatched": true,
+    "actualImageReviewed": true,
+    "WDAUnavailable": true,
+    "finalRestore": true,
+    "playbackRegressionPerformed": false,
+    "runnerStoppedIntentionally": true,
+    "preferencesUnchangedSinceFinalAudit": true,
+    "finalPostStopImageActuallyReviewed": true,
+    "finalNASNormal": true
+  },
+  "deviceAudits": {
+    "iphone13": {
+      "at": "2026-10-16T20:05:08.353874+08:00",
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "USBIdentityMatched": true,
+      "sourceDiffSHA256": "cc64de38bfaadefeb5fd792ab03780a9dd59e1147609ed09dd44212a35fcf17d",
+      "binaries": {
+        "Nastart": "bb99a1095301a72b870ed8419a37de71cfe6a53f6934a20fa91df973baa40593",
+        "Nastart.debug.dylib": "f0bc22616f4982c4378213b7c6f837158731d0a154a97df6dff8218501d2a08b",
+        "Frameworks/KSPlayer.framework/KSPlayer": "f73e8008a84286299e04dcda6b27921049f326e8190235a5fd7fcbdf5e288be0"
+      },
+      "nonBookmarkPreferenceKeys": 24,
+      "nonBookmarkPreferencesUnchanged": true,
+      "originalBookmarksChecked": 36,
+      "originalBookmarksRemoved": 0,
+      "originalTrackChangeCount": 0,
+      "newBookmarksCount": 0,
+      "naturalPositionChangesCount": 1,
+      "newCrashReports": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      },
+      "normalEmptyEnvironment": true,
+      "NASNormal": true,
+      "playerClosed": true,
+      "WDAIdleSeconds": 10,
+      "WDAAnimationCoolOffSeconds": 2,
+      "activeNativeConditions": 0,
+      "finalImageActuallyReviewed": true,
+      "actualImageReviewed": true
+    },
+    "ipad": {
+      "at": "2026-10-16T20:05:09.312132+08:00",
+      "model": "iPad12,1",
+      "system": "18.3.1",
+      "USBIdentityMatched": true,
+      "sourceDiffSHA256": "cc64de38bfaadefeb5fd792ab03780a9dd59e1147609ed09dd44212a35fcf17d",
+      "binaries": {
+        "Nastart": "bb99a1095301a72b870ed8419a37de71cfe6a53f6934a20fa91df973baa40593",
+        "Nastart.debug.dylib": "f0bc22616f4982c4378213b7c6f837158731d0a154a97df6dff8218501d2a08b",
+        "Frameworks/KSPlayer.framework/KSPlayer": "f73e8008a84286299e04dcda6b27921049f326e8190235a5fd7fcbdf5e288be0"
+      },
+      "nonBookmarkPreferenceKeys": 17,
+      "nonBookmarkPreferencesUnchanged": true,
+      "originalBookmarksChecked": 29,
+      "originalBookmarksRemoved": 0,
+      "originalTrackChangeCount": 0,
+      "newBookmarksCount": 0,
+      "naturalPositionChangesCount": 1,
+      "newCrashReports": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      },
+      "normalEmptyEnvironment": true,
+      "NASNormal": true,
+      "playerClosed": true,
+      "WDAIdleSeconds": 10,
+      "WDAAnimationCoolOffSeconds": 2,
+      "activeNativeConditions": 0,
+      "finalImageActuallyReviewed": true,
+      "actualImageReviewed": true
+    }
+  },
+  "phonePlayback": {
+    "entrance": "Jellyfin",
+    "sample": "S19",
+    "normalEmptyEnvironment": true,
+    "startedVia": "resume",
+    "actualEngineAtSeek": "AVPlayer/HLS",
+    "actualPreSeekClockSeconds": 7504.3095,
+    "actualTargetSeconds": 381.1933689874411,
+    "AVSeekDispatchToCompletionSeconds": 9.013189,
+    "targetWasLoaded": false,
+    "targetWasAdvertisedSeekable": true,
+    "oldBurnedCaptionAndFrameAtT3ActuallyReviewed": true,
+    "targetPictureAndDifferentCaptionAtT10AndT30ActuallyReviewed": true,
+    "targetPictureTimingIsSparseCaptureNotExactPresentation": true,
+    "subtitleRequestedIndex": 8,
+    "subtitleNegotiatedIndex": 8,
+    "subtitleCodec": "PGSSUB",
+    "subtitleMethod": "Encode",
+    "independentNativeSubtitleAXImageObserved": false,
+    "nativePGSBottomAndClearanceAccepted": false,
+    "requestGroups": 43,
+    "newMetricsGroups": 43,
+    "criticalTargetRequests": [
+      {
+        "sample": 29,
+        "hlsRole": "segment",
+        "segmentOrdinal": "93",
+        "evidenceOnly": true,
+        "requestSecondsFromPlay": 78.402116,
+        "headerSecondsFromPlay": 84.827029,
+        "status": 200,
+        "clientFinish": {
+          "finishSource": "clientBodySend",
+          "errorDomain": "Network.NWError",
+          "errorCode": "0",
+          "durationMs": "6443",
+          "deliveredBytes": "69390",
+          "expectedBytes": "5633044"
+        },
+        "metrics": {
+          "upstreamTaskBodyBytes": "69390",
+          "upstreamIssueToFirstBodyCallbackMs": "6442",
+          "upstreamIssueToLastBodyCallbackMs": "6442",
+          "taskCreatedToFirstFetchMs": "1",
+          "lastFetchToRequestMs": "0",
+          "lastRequestSendMs": "0",
+          "lastRequestEndToFirstByteMs": "6437",
+          "lastResponseBodyMs": "unknown",
+          "lastResponseEndToMetricsCallbackMs": "unknown",
+          "upstreamIssueToHeadersCallbackMs": "6440",
+          "upstreamHeadersObserved": "true",
+          "redirectCount": "0",
+          "transactionCount": "1",
+          "requestMs": "6437",
+          "responseMs": "-",
+          "totalMs": "-",
+          "taskIntervalMs": "6444",
+          "proxyBackpressureMs": "0",
+          "proxySuspendCount": "0",
+          "proxyQueuedBytes": "65536",
+          "connectionReused": "yes",
+          "protocol": "h2",
+          "upstreamCancellationRequested": "true",
+          "callbackAfterClientFinish": "true",
+          "upstreamIssuedToCallbackMs": "6444"
+        }
+      },
+      {
+        "sample": 30,
+        "hlsRole": "segment",
+        "segmentOrdinal": "93",
+        "evidenceOnly": true,
+        "requestSecondsFromPlay": 82.439658,
+        "headerSecondsFromPlay": 84.561882,
+        "status": 200,
+        "metrics": {
+          "upstreamTaskBodyBytes": "5633044",
+          "upstreamIssueToFirstBodyCallbackMs": "2165",
+          "upstreamIssueToLastBodyCallbackMs": "3331",
+          "taskCreatedToFirstFetchMs": "1",
+          "lastFetchToRequestMs": "0",
+          "lastRequestSendMs": "0",
+          "lastRequestEndToFirstByteMs": "2159",
+          "lastResponseBodyMs": "1169",
+          "lastResponseEndToMetricsCallbackMs": "0",
+          "upstreamIssueToHeadersCallbackMs": "2162",
+          "upstreamHeadersObserved": "true",
+          "redirectCount": "0",
+          "transactionCount": "1",
+          "requestMs": "2159",
+          "responseMs": "1169",
+          "totalMs": "3329",
+          "taskIntervalMs": "3331",
+          "proxyBackpressureMs": "0",
+          "proxySuspendCount": "0",
+          "proxyQueuedBytes": "0",
+          "connectionReused": "yes",
+          "protocol": "h2",
+          "upstreamCancellationRequested": "false",
+          "callbackAfterClientFinish": "false",
+          "upstreamIssuedToCallbackMs": "3331"
+        },
+        "clientFinish": {
+          "finishSource": "clientTerminalSend",
+          "errorDomain": "-",
+          "errorCode": "-",
+          "durationMs": "3339",
+          "deliveredBytes": "5633044",
+          "expectedBytes": "5633044"
+        }
+      },
+      {
+        "sample": 31,
+        "hlsRole": "segment",
+        "segmentOrdinal": "94",
+        "evidenceOnly": true,
+        "requestSecondsFromPlay": 85.781436,
+        "headerSecondsFromPlay": 85.811343,
+        "status": 200,
+        "metrics": {
+          "upstreamTaskBodyBytes": "6539580",
+          "upstreamIssueToFirstBodyCallbackMs": "71",
+          "upstreamIssueToLastBodyCallbackMs": "1181",
+          "taskCreatedToFirstFetchMs": "1",
+          "lastFetchToRequestMs": "0",
+          "lastRequestSendMs": "0",
+          "lastRequestEndToFirstByteMs": "68",
+          "lastResponseBodyMs": "1110",
+          "lastResponseEndToMetricsCallbackMs": "0",
+          "upstreamIssueToHeadersCallbackMs": "71",
+          "upstreamHeadersObserved": "true",
+          "redirectCount": "0",
+          "transactionCount": "1",
+          "requestMs": "69",
+          "responseMs": "1110",
+          "totalMs": "1179",
+          "taskIntervalMs": "1181",
+          "proxyBackpressureMs": "0",
+          "proxySuspendCount": "0",
+          "proxyQueuedBytes": "0",
+          "connectionReused": "yes",
+          "protocol": "h2",
+          "upstreamCancellationRequested": "false",
+          "callbackAfterClientFinish": "false",
+          "upstreamIssuedToCallbackMs": "1181"
+        },
+        "clientFinish": {
+          "finishSource": "clientTerminalSend",
+          "errorDomain": "-",
+          "errorCode": "-",
+          "durationMs": "1188",
+          "deliveredBytes": "6539580",
+          "expectedBytes": "6539580"
+        }
+      }
+    ],
+    "ordinaryCloseActuallyReviewed": true,
+    "toolWindowsPreserved": [
+      "search text contained extra characters; corrected actual field value and reviewed image",
+      "foreground unexpectedly changed to SpringBoard before play; actual reports pulled, no new app crash, state2/background; reactivated and captured separately"
+    ]
+  },
+  "ipadPlayback": {
+    "entrance": "Jellyfin",
+    "sample": "S01",
+    "engine": "KSPlayer",
+    "normalEmptyEnvironment": true,
+    "durationRequestedSeconds": 60,
+    "actualT60CaptureWindowSeconds": [
+      60.006,
+      60.616
+    ],
+    "actualNaturalMoviePictureReviewed": true,
+    "lastSampledClockSeconds": 48.475,
+    "sampledStallCount": 0,
+    "continuousFPSorAudioAcceptance": false,
+    "ordinaryCloseActuallyReviewed": true
+  },
+  "acceptance": {
+    "performanceImprovementProven": false,
+    "fullMatrixPassed": false,
+    "allOriginalUnacceptedGapsRemainOpen": true
+  },
+  "temporaryAssertionReleased": true,
+  "temporaryAssertionReleaseAt": "2026-10-16T20:08:14.659109+08:00"
+}

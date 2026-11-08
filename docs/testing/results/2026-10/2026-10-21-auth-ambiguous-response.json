@@ -1,0 +1,224 @@
+{
+  "date": "2026-10-21",
+  "scope": "Ambiguous login response and no credential replay",
+  "sourceChanged": true,
+  "package": {
+    "sourceDiffSHA256": "6fd78d20f8d406a7794686d7e92c5316274b707ac12cac8a4a7dd52563d8d6e7",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "Xcode": "27.0",
+    "binaryBuildTime": "2026-10-21T15:39:10.241904+08:00",
+    "binaries": {
+      "Nastart": "a935d645868c9dc198838cc0e8848aaa7e0d5fb961fd7bd753c768081eae391f",
+      "Nastart.debug.dylib": "36eb752fab4b727af5bcbc313f655bba3ac81411834297750a58791e11fa88ed",
+      "Frameworks/KSPlayer.framework/KSPlayer": "74d72624f133edcad4bc334febb5b0e7da0934f64db81665d24c15af61ff559e"
+    },
+    "ipaSHA256": "e0c196cf2195de31426041d4acfe7175298c06f1c1e618d6fbd903747ae2c877",
+    "checkedInputs": 173,
+    "individuallyVerifiedLibraries": 29,
+    "signatureVerified": true,
+    "ipaCRCAndBinaryHashesVerified": true,
+    "linkageVerified": true,
+    "tests": {
+      "executed": 125,
+      "passed": 124,
+      "skipped": 1,
+      "failed": 0,
+      "commandNormalExit": true,
+      "source": "NonPlaybackPolicyTests lifecycle/auth/deadline, missing SID and HTTP response no replay, explicit version compatibility"
+    }
+  },
+  "preflightPassed": 15,
+  "faultEvidence": "Controlled local URLProtocol; not an observed cause of iPhone18 timeout",
+  "testsAdded": [
+    "Missing/empty/whitespace SID each sends only one credential POST",
+    "Explicit 104 still allows compatible authentication",
+    "HTTP502 after credential POST does not cause restore LAN fallback",
+    "invalidResponse/missingSession restoration fails without saving credentials"
+  ],
+  "devices": {
+    "iphone13": {
+      "installation": {
+        "device": "iphone13",
+        "model": "iPhone14,5",
+        "system": "16.3.1",
+        "connection": "USB",
+        "binaries": {
+          "Nastart": "a935d645868c9dc198838cc0e8848aaa7e0d5fb961fd7bd753c768081eae391f",
+          "Nastart.debug.dylib": "36eb752fab4b727af5bcbc313f655bba3ac81411834297750a58791e11fa88ed",
+          "Frameworks/KSPlayer.framework/KSPlayer": "74d72624f133edcad4bc334febb5b0e7da0934f64db81665d24c15af61ff559e"
+        },
+        "sourceDiffSHA256": "6fd78d20f8d406a7794686d7e92c5316274b707ac12cac8a4a7dd52563d8d6e7",
+        "preservesContainer": true,
+        "signatureVerified": true,
+        "actualForegroundUIVerified": true,
+        "requestedEnvironment": {},
+        "requestedArguments": [],
+        "installation": "success",
+        "startedAt": "2026-10-21T15:41:05.428170+08:00",
+        "installedAt": "2026-10-21T15:41:18.204503+08:00",
+        "preferenceKeysUnchanged": true,
+        "preferenceValuesUnchanged": true,
+        "nonDiagnosticKeys": 25,
+        "normalLaunchEvidence": "early-file-session-ui/result-safe.json"
+      },
+      "ui": {
+        "playCommands": 0,
+        "environment": {},
+        "startedAt": "2026-10-21T15:41:47.973304+08:00",
+        "model": "iPhone14,5",
+        "system": "16.3.1",
+        "connection": "USB",
+        "latestPackageVerified": true,
+        "emptyEnvironmentVerified": true,
+        "dashboardObserved": true,
+        "folderContentsObserved": true,
+        "fullNonDiagnosticPreferences": {
+          "beforeKeys": 25,
+          "afterKeys": 25,
+          "sameKeys": true,
+          "changedValues": 0,
+          "allNonDiagnosticPreferencesEqual": true
+        },
+        "ownedAppStopped": true,
+        "WDASettingsRestored": true,
+        "ownedSyslogStopped": true,
+        "nativeAppAbsent": true,
+        "finishedAt": "2026-10-21T15:42:08.285350+08:00"
+      },
+      "actualDashboardAndFolderImagesReviewed": true,
+      "finalHomeWifiIconReviewed": true
+    },
+    "ipad": {
+      "installation": {
+        "device": "ipad",
+        "model": "iPad12,1",
+        "system": "18.3.1",
+        "connection": "USB",
+        "binaries": {
+          "Nastart": "a935d645868c9dc198838cc0e8848aaa7e0d5fb961fd7bd753c768081eae391f",
+          "Nastart.debug.dylib": "36eb752fab4b727af5bcbc313f655bba3ac81411834297750a58791e11fa88ed",
+          "Frameworks/KSPlayer.framework/KSPlayer": "74d72624f133edcad4bc334febb5b0e7da0934f64db81665d24c15af61ff559e"
+        },
+        "sourceDiffSHA256": "6fd78d20f8d406a7794686d7e92c5316274b707ac12cac8a4a7dd52563d8d6e7",
+        "preservesContainer": true,
+        "signatureVerified": true,
+        "installation": "success",
+        "installedAt": "2026-10-21T07:46:04.445913+00:00",
+        "preferenceKeysUnchanged": true,
+        "preferenceValuesUnchanged": true,
+        "nonDiagnosticKeys": 18,
+        "actualForegroundUIVerified": true,
+        "requestedEnvironment": {},
+        "requestedArguments": [],
+        "transport": "native USB RSD/installation_proxy",
+        "installCompleteObserved": true,
+        "normalLaunchEvidence": "early-file-session-ui-sidebar/result-safe.json"
+      },
+      "ui": {
+        "playCommands": 0,
+        "environment": {},
+        "startedAt": "2026-10-21T15:47:18.173757+08:00",
+        "model": "iPad12,1",
+        "system": "18.3.1",
+        "connection": "USB",
+        "latestPackageVerified": true,
+        "emptyEnvironmentVerified": true,
+        "dashboardObserved": true,
+        "folderContentsObserved": true,
+        "fullNonDiagnosticPreferences": {
+          "beforeKeys": 18,
+          "afterKeys": 18,
+          "sameKeys": true,
+          "changedValues": 0,
+          "allNonDiagnosticPreferencesEqual": true
+        },
+        "ownedAppStopped": true,
+        "WDASettingsRestored": true,
+        "ownedSyslogStopped": true,
+        "finishedAt": "2026-10-21T15:47:39.572630+08:00"
+      },
+      "actualDashboardAndFolderImagesReviewed": true,
+      "finalHomeWifiIconReviewed": true
+    }
+  },
+  "iphone13FolderResponses": [
+    {
+      "folderOrigin": "snapshot",
+      "responseKind": "success",
+      "httpStatus": "200",
+      "envelopeSuccess": "true"
+    },
+    {
+      "folderOrigin": "browserRoot",
+      "responseKind": "success",
+      "httpStatus": "200",
+      "envelopeSuccess": "true"
+    },
+    {
+      "folderOrigin": "browserFolder",
+      "responseKind": "success",
+      "httpStatus": "200",
+      "envelopeSuccess": "true"
+    }
+  ],
+  "ipadFailedChannel": {
+    "tool": "devicectl",
+    "domain": "com.apple.dt.CoreDeviceError",
+    "code": -1,
+    "underlyingDomain": "com.apple.mobiledevice",
+    "underlyingCode": -402653181,
+    "description": "Failed to allocate RSD device",
+    "installCompleteObserved": false
+  },
+  "ipadAlternative": {
+    "target": "ipad",
+    "model": "iPad12,1",
+    "system": "18.3.1",
+    "transport": "native USB RSD; existing install helper",
+    "preservesContainer": true,
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "stage": "installed; normal launch and actual UI review pending",
+    "preferencesSavedBeforeInstall": true,
+    "installDispatchAttempted": true,
+    "installCommandSent": true,
+    "installCompleteObserved": true,
+    "installedAtUTC": "2026-10-21T07:46:04.445913+00:00",
+    "postInstallLookupExists": true,
+    "preferences": {
+      "beforeKeys": 18,
+      "afterKeys": 18,
+      "sameKeys": true,
+      "changedValues": 0,
+      "allNonDiagnosticPreferencesEqual": true
+    }
+  },
+  "ipadCleanup": {
+    "ownedRunnerAbsent": true,
+    "ownedAppAbsent": true,
+    "runnerProcessesStopped": 0,
+    "existingPhoneRunnerUntouched": true
+  },
+  "iphone18": {
+    "updateDeferredByUser": true,
+    "operationsAfterAwayInstruction": 0,
+    "installedPackageRemains": "05:31"
+  },
+  "playCommands": 0,
+  "newPlaybackMatrixPasses": 0,
+  "performanceVerdict": "Not measured; no competitor ranking",
+  "networkSettingsChanged": false,
+  "cellularTesting": false,
+  "crashBaselineCollected": false,
+  "finalVerification": {
+    "sourceInputsUnchanged": 173,
+    "sourceDiffAndThreeBinariesAndIPAUnchanged": true,
+    "bothDeviceReceiptsMatch": true,
+    "activeOwnedBatchPythonHosts": 0
+  },
+  "documentationCheck": {
+    "documents": 367,
+    "localLinks": 1910,
+    "missingDestinations": 0,
+    "gitDiffWhitespacePassed": true
+  }
+}

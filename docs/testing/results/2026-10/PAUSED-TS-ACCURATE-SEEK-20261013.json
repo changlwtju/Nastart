@@ -1,0 +1,483 @@
+{
+  "updatedAt": "2026-10-13T05:06:27.227672+08:00",
+  "status": "CANDIDATE scoped S05 baseline reproduction improved; L1 incomplete second source and L2 required",
+  "baselineSourceSHA256": "860f470425e1dd18810766a784768fb196a7b2a46f57454e2b32b183218f506b",
+  "candidate": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "35ed118b8950dd091dffbd566c7d56dfc87e40971179354ba980943fa81f44f5",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "binaryBuildTime": "2026-10-13T04:45:34.616194+08:00",
+    "binaries": {
+      "Nastart": "18970d8d518f74b4fcd4fd264ef32434be813119ea1ef49b07c6adbafb6e4d63",
+      "Nastart.debug.dylib": "16193dda4ee733abd36a73f56bc3b7a85e48f6eb3bd1ae491a5cd827c9649c4d",
+      "Frameworks/KSPlayer.framework/KSPlayer": "ba329d9e1b6d91dafd5f9d0185eade3d82e250aaa7219e95e0dac76fbc71b2ab"
+    },
+    "tests": {
+      "executed": 348,
+      "skipped": 2,
+      "failures": 0,
+      "runThisTurn": true
+    },
+    "preflight": {
+      "passed": 15,
+      "runThisTurn": true
+    },
+    "signatureVerified": true,
+    "checkedInputs": 173,
+    "individuallyVerifiedLibraries": 29
+  },
+  "baselineCrash": {
+    "timestamp": "2026-10-13T04:32:02.602+08:00",
+    "confirmedAppCrash": true,
+    "exception": "EXC_BREAKPOINT/SIGTRAP",
+    "faultingThread": 27,
+    "faultQueue": "com.apple.network.connections",
+    "frames": [
+      "nw_calloc_type<unsigned char>",
+      "nw_socket_get_input_frames",
+      "nw_flow_service_reads"
+    ],
+    "mallocVirtualGiB": 6.7,
+    "physicalFootprintMeasured": false,
+    "rootCauseConfirmed": false,
+    "signatureFailure": false,
+    "WDAFailure": false,
+    "sourcePackage": "baseline860f",
+    "notes": [
+      "Allocation trap alone does not identify retention owner",
+      "Matching forced-frame mismatch reproduced on both USB devices",
+      "No decoder/Range/buffer tuning before crash report captured"
+    ]
+  },
+  "candidateWindows": [
+    {
+      "device": "ipad",
+      "sample": "S05",
+      "entry": "deviceFiles",
+      "case": "candidate-s05-run1",
+      "sourceSHA256": "35ed118b8950dd091dffbd566c7d56dfc87e40971179354ba980943fa81f44f5",
+      "normalUIExit": true,
+      "events": [
+        {
+          "event": "video_frame_submitted",
+          "at": "2026-10-13T04:48:42.121107+08:00",
+          "fields": {
+            "controlSeconds": "0.0",
+            "framePTSSeconds": "86998.6232",
+            "outputPath": "sampleBufferEnqueued"
+          }
+        },
+        {
+          "event": "seek_started",
+          "at": "2026-10-13T04:49:15.686833+08:00",
+          "fields": {
+            "seekTargetSeconds": "3057.48017950058"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "at": "2026-10-13T04:49:17.279071+08:00",
+          "fields": {
+            "targetSeconds": "3057.48017950058",
+            "completed": "true"
+          }
+        },
+        {
+          "event": "video_frame_submitted",
+          "at": "2026-10-13T04:49:17.387465+08:00",
+          "fields": {
+            "controlSeconds": "3057.480177777778",
+            "framePTSSeconds": "90056.1432",
+            "outputPath": "sampleBufferEnqueued"
+          }
+        },
+        {
+          "event": "seek_started",
+          "at": "2026-10-13T04:49:48.941929+08:00",
+          "fields": {
+            "seekTargetSeconds": "3072.480177777778"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "at": "2026-10-13T04:49:49.228991+08:00",
+          "fields": {
+            "targetSeconds": "3072.480177777778",
+            "completed": "true"
+          }
+        },
+        {
+          "event": "video_frame_submitted",
+          "at": "2026-10-13T04:49:49.322375+08:00",
+          "fields": {
+            "controlSeconds": "3072.480177777778",
+            "framePTSSeconds": "90071.5032",
+            "outputPath": "sampleBufferEnqueued"
+          }
+        }
+      ],
+      "actualImagesReviewed": [
+        "mid-seek-t10",
+        "paused-forward-t3",
+        "resumed-t30",
+        "resumed-t90",
+        "normal-closed"
+      ],
+      "requestedResumeObservationSeconds": 90,
+      "includesNaturalEOF": false,
+      "frameExactnessAccepted": false,
+      "performanceAccepted": false,
+      "audioAccepted": false,
+      "fullSubtitleHDRAccepted": false
+    },
+    {
+      "device": "ipad",
+      "sample": "S05",
+      "entry": "deviceFiles",
+      "case": "candidate-s05-tail",
+      "sourceSHA256": "35ed118b8950dd091dffbd566c7d56dfc87e40971179354ba980943fa81f44f5",
+      "normalUIExit": true,
+      "events": [
+        {
+          "event": "video_frame_submitted",
+          "at": "2026-10-13T04:56:39.002381+08:00",
+          "fields": {
+            "controlSeconds": "0.0",
+            "framePTSSeconds": "86998.6232",
+            "outputPath": "sampleBufferEnqueued"
+          }
+        },
+        {
+          "event": "seek_started",
+          "at": "2026-10-13T04:57:13.492365+08:00",
+          "fields": {
+            "seekTargetSeconds": "5994.970175206661"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "at": "2026-10-13T04:57:15.087597+08:00",
+          "fields": {
+            "targetSeconds": "5994.970175206661",
+            "completed": "true"
+          }
+        },
+        {
+          "event": "video_frame_submitted",
+          "at": "2026-10-13T04:57:15.252186+08:00",
+          "fields": {
+            "controlSeconds": "5994.970166666667",
+            "framePTSSeconds": "92993.8832",
+            "outputPath": "sampleBufferEnqueued"
+          }
+        },
+        {
+          "event": "seek_started",
+          "at": "2026-10-13T04:57:46.680407+08:00",
+          "fields": {
+            "seekTargetSeconds": "6009.970166666667"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "at": "2026-10-13T04:57:47.295282+08:00",
+          "fields": {
+            "targetSeconds": "6009.970166666667",
+            "completed": "true"
+          }
+        },
+        {
+          "event": "video_frame_submitted",
+          "at": "2026-10-13T04:57:47.364947+08:00",
+          "fields": {
+            "controlSeconds": "6009.970166666667",
+            "framePTSSeconds": "93008.7632",
+            "outputPath": "sampleBufferEnqueued"
+          }
+        }
+      ],
+      "actualImagesReviewed": [
+        "ipad/candidate-s05-tail/mid-seek-t10",
+        "ipad/candidate-s05-tail/paused-forward-t3",
+        "ipad/candidate-s05-tail/resumed-t30",
+        "ipad/candidate-s05-tail/resumed-t90",
+        "ipad/candidate-s05-tail/normal-closed"
+      ],
+      "requestedResumeObservationSeconds": 90,
+      "includesNaturalEOF": true,
+      "frameExactnessAccepted": false,
+      "performanceAccepted": false,
+      "audioAccepted": false,
+      "fullSubtitleHDRAccepted": false
+    },
+    {
+      "device": "iphone13",
+      "sample": "S05",
+      "entry": "deviceFiles",
+      "case": "candidate-s05-run1",
+      "sourceSHA256": "35ed118b8950dd091dffbd566c7d56dfc87e40971179354ba980943fa81f44f5",
+      "normalUIExit": true,
+      "events": [
+        {
+          "event": "video_frame_submitted",
+          "at": "2026-10-13T04:52:49.613372+08:00",
+          "fields": {
+            "controlSeconds": "0.0",
+            "framePTSSeconds": "86998.6232",
+            "outputPath": "sampleBufferEnqueued"
+          }
+        },
+        {
+          "event": "seek_started",
+          "at": "2026-10-13T04:53:24.030771+08:00",
+          "fields": {
+            "seekTargetSeconds": "3063.394884133339"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "at": "2026-10-13T04:53:24.719988+08:00",
+          "fields": {
+            "targetSeconds": "3063.394884133339",
+            "completed": "true"
+          }
+        },
+        {
+          "event": "video_frame_submitted",
+          "at": "2026-10-13T04:53:24.801635+08:00",
+          "fields": {
+            "controlSeconds": "3063.3948777777778",
+            "framePTSSeconds": "90062.3832",
+            "outputPath": "sampleBufferEnqueued"
+          }
+        },
+        {
+          "event": "seek_started",
+          "at": "2026-10-13T04:53:56.289676+08:00",
+          "fields": {
+            "seekTargetSeconds": "3078.3948777777778"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "at": "2026-10-13T04:53:56.635260+08:00",
+          "fields": {
+            "targetSeconds": "3078.3948777777778",
+            "completed": "true"
+          }
+        },
+        {
+          "event": "video_frame_submitted",
+          "at": "2026-10-13T04:53:56.726955+08:00",
+          "fields": {
+            "controlSeconds": "3078.3948777777778",
+            "framePTSSeconds": "90077.2632",
+            "outputPath": "sampleBufferEnqueued"
+          }
+        }
+      ],
+      "actualImagesReviewed": [
+        "iphone13/candidate-s05-run1/mid-seek-t10",
+        "iphone13/candidate-s05-run1/paused-forward-t3",
+        "iphone13/candidate-s05-run1/resumed-t30",
+        "iphone13/candidate-s05-run1/resumed-t90",
+        "iphone13/candidate-s05-run1/normal-closed"
+      ],
+      "requestedResumeObservationSeconds": 90,
+      "includesNaturalEOF": false,
+      "frameExactnessAccepted": false,
+      "performanceAccepted": false,
+      "audioAccepted": false,
+      "fullSubtitleHDRAccepted": false
+    },
+    {
+      "device": "iphone13",
+      "sample": "S05",
+      "entry": "deviceFiles",
+      "case": "candidate-s05-tail",
+      "sourceSHA256": "35ed118b8950dd091dffbd566c7d56dfc87e40971179354ba980943fa81f44f5",
+      "normalUIExit": true,
+      "events": [
+        {
+          "event": "video_frame_submitted",
+          "at": "2026-10-13T05:00:21.979371+08:00",
+          "fields": {
+            "controlSeconds": "0.0",
+            "framePTSSeconds": "86998.6232",
+            "outputPath": "sampleBufferEnqueued"
+          }
+        },
+        {
+          "event": "seek_started",
+          "at": "2026-10-13T05:00:56.227877+08:00",
+          "fields": {
+            "seekTargetSeconds": "5997.946780645848"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "at": "2026-10-13T05:00:57.324143+08:00",
+          "fields": {
+            "targetSeconds": "5997.946780645848",
+            "completed": "true"
+          }
+        },
+        {
+          "event": "video_frame_submitted",
+          "at": "2026-10-13T05:00:57.414742+08:00",
+          "fields": {
+            "controlSeconds": "5997.946777777778",
+            "framePTSSeconds": "92996.7632",
+            "outputPath": "sampleBufferEnqueued"
+          }
+        },
+        {
+          "event": "seek_started",
+          "at": "2026-10-13T05:01:28.669386+08:00",
+          "fields": {
+            "seekTargetSeconds": "6012.946777777778"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "at": "2026-10-13T05:01:28.970337+08:00",
+          "fields": {
+            "targetSeconds": "6012.946777777778",
+            "completed": "true"
+          }
+        },
+        {
+          "event": "video_frame_submitted",
+          "at": "2026-10-13T05:01:29.059406+08:00",
+          "fields": {
+            "controlSeconds": "6012.946777777778",
+            "framePTSSeconds": "93011.6432",
+            "outputPath": "sampleBufferEnqueued"
+          }
+        }
+      ],
+      "actualImagesReviewed": [
+        "iphone13/candidate-s05-tail/mid-seek-t10",
+        "iphone13/candidate-s05-tail/paused-forward-t3",
+        "iphone13/candidate-s05-tail/resumed-t30",
+        "iphone13/candidate-s05-tail/resumed-t90",
+        "iphone13/candidate-s05-tail/normal-closed"
+      ],
+      "requestedResumeObservationSeconds": 90,
+      "includesNaturalEOF": true,
+      "frameExactnessAccepted": false,
+      "performanceAccepted": false,
+      "audioAccepted": false,
+      "fullSubtitleHDRAccepted": false
+    }
+  ],
+  "finalAudit": {
+    "sourceInputsVerified": 173,
+    "binaryHashesVerified": true,
+    "deepSignatureVerified": true,
+    "devices": {
+      "iphone13": {
+        "at": "2026-10-13T05:04:48.338349+08:00",
+        "model": "iPhone14,5",
+        "system": "16.3.1",
+        "connection": "USB",
+        "sourceDiffSHA256": "35ed118b8950dd091dffbd566c7d56dfc87e40971179354ba980943fa81f44f5",
+        "latestPackage": {
+          "Nastart": "18970d8d518f74b4fcd4fd264ef32434be813119ea1ef49b07c6adbafb6e4d63",
+          "Nastart.debug.dylib": "16193dda4ee733abd36a73f56bc3b7a85e48f6eb3bd1ae491a5cd827c9649c4d",
+          "Frameworks/KSPlayer.framework/KSPlayer": "ba329d9e1b6d91dafd5f9d0185eade3d82e250aaa7219e95e0dac76fbc71b2ab"
+        },
+        "nonBookmarkPreferenceKeys": 24,
+        "nonBookmarkPreferencesExactlyUnchanged": true,
+        "changedBookmarksCount": 1,
+        "originalS03FileAndJellyfinTracksUnchanged": true,
+        "normalEmptyEnvironment": true,
+        "NASNormal": true,
+        "playerClosed": true,
+        "finalHomeScreenshotReviewed": true,
+        "WDAIdleSeconds": 10,
+        "WDAAnimationCoolOffSeconds": 2,
+        "crashInventoryNotCheckedThisTurn": false,
+        "baselineAppCrashRecorded": true,
+        "candidateCrashInventoryDelta": {
+          "Nastart": 0,
+          "WebDriverAgent": 0,
+          "JetsamEvent": 0
+        },
+        "performanceAccepted": false,
+        "fullSubtitleAudioHDRAccepted": false,
+        "originalTurnNonBookmarkPreferencesVerified": true
+      },
+      "ipad": {
+        "at": "2026-10-13T05:04:49.054263+08:00",
+        "model": "iPad12,1",
+        "system": "18.3.1",
+        "connection": "USB",
+        "sourceDiffSHA256": "35ed118b8950dd091dffbd566c7d56dfc87e40971179354ba980943fa81f44f5",
+        "latestPackage": {
+          "Nastart": "18970d8d518f74b4fcd4fd264ef32434be813119ea1ef49b07c6adbafb6e4d63",
+          "Nastart.debug.dylib": "16193dda4ee733abd36a73f56bc3b7a85e48f6eb3bd1ae491a5cd827c9649c4d",
+          "Frameworks/KSPlayer.framework/KSPlayer": "ba329d9e1b6d91dafd5f9d0185eade3d82e250aaa7219e95e0dac76fbc71b2ab"
+        },
+        "nonBookmarkPreferenceKeys": 17,
+        "nonBookmarkPreferencesExactlyUnchanged": true,
+        "changedBookmarksCount": 1,
+        "originalS03FileAndJellyfinTracksUnchanged": true,
+        "normalEmptyEnvironment": true,
+        "NASNormal": true,
+        "playerClosed": true,
+        "finalHomeScreenshotReviewed": true,
+        "WDAIdleSeconds": 10,
+        "WDAAnimationCoolOffSeconds": 2,
+        "crashInventoryNotCheckedThisTurn": false,
+        "baselineAppCrashRecorded": false,
+        "candidateCrashInventoryDelta": {
+          "Nastart": 0,
+          "WebDriverAgent": 0,
+          "JetsamEvent": 0
+        },
+        "performanceAccepted": false,
+        "fullSubtitleAudioHDRAccepted": false,
+        "originalTurnNonBookmarkPreferencesVerified": true
+      }
+    }
+  },
+  "naturalEOFBookmarks": [
+    {
+      "device": "iphone13",
+      "positionSeconds": 6094.5754,
+      "durationSeconds": 6094.6,
+      "audioTrackID": 1,
+      "subtitleTrackID": null,
+      "subtitlesDisabled": false
+    },
+    {
+      "device": "ipad",
+      "positionSeconds": 6094.582944444444,
+      "durationSeconds": 6094.6,
+      "audioTrackID": 1,
+      "subtitleTrackID": null,
+      "subtitlesDisabled": false
+    }
+  ],
+  "crashClosed": false,
+  "physicalMemoryMeasured": false,
+  "liveRecordingTailAccepted": false,
+  "fullSeekFrameAccuracyAccepted": false,
+  "L2Accepted": false,
+  "iphone18": "not operated or updated to current candidate",
+  "next": [
+    "second TS recording source paused/repeated/backward/rapid seeks",
+    "representative S01 four units, S03/S08/S11/S18 and concurrency/deep S19 affected checks",
+    "physical footprint and longer original crash pressure",
+    "real growing TS tail waiting/append resume/duration update"
+  ],
+  "privateEvidenceDirectory": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-10-13-paused-ts-seek-042439",
+  "rawCredentialsOrPreferencesExported": false,
+  "coarseReference": {
+    "method": "initial submitted frame PTS as reference, not independently established media origin or per-frame screen match",
+    "minimumSeconds": 0.039822222226121085,
+    "maximumSeconds": 0.39982222222670316,
+    "acceptedFrameAccuracy": false
+  }
+}

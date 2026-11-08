@@ -1,0 +1,38 @@
+{
+  "recordedAt": "2026-11-02T07:46:49.963135+08:00",
+  "patchSHA256": "3c05a5f760581d208257feacd69aec86c973ad387404e2ce7d84794f3aa72436",
+  "filesChanged": 4,
+  "baselineAndPatchVerified": true,
+  "writeGrantReleased": true,
+  "integrated": true,
+  "baselineTypeTests": {
+    "startedAt": "2026-11-02T07:11:22.315591+08:00",
+    "expectedExistingTests": 3,
+    "expectedNewRegressionFailures": 1,
+    "NASCommands": 0,
+    "exitCode": 1,
+    "expectedMixedCaseFailureObserved": true,
+    "endedAt": "2026-11-02T07:11:30.926754+08:00",
+    "actualExistingTestsPassed": 3,
+    "actualRegressionFailures": 1,
+    "initialHarnessParserFailureRetained": true,
+    "parserCorrection": "XCTest emitted caught error, not threw error; classified completed log without rerunning"
+  },
+  "finalTypeTests": {
+    "startedAt": "2026-11-02T07:13:18.883622+08:00",
+    "actualSourceTypePrefix": true,
+    "fieldsFileCopiedVerbatim": true,
+    "existingTests": 3,
+    "newRegressionTests": 3,
+    "NASCommands": 0,
+    "exitCode": 0,
+    "sixTestsNoFailure": true,
+    "endedAt": "2026-11-02T07:13:21.266091+08:00"
+  },
+  "fullCurrentConfigurationBuildsComplete": false,
+  "currentNormalSignedPackageBuilt": false,
+  "currentSourcePhysicalRegressionComplete": false,
+  "implementationBoundary": "Only http/https scheme case normalization, conservative saved-address comparison and edit no-network early return; no stored-address migration, credentials, transport or origin relaxation",
+  "NASCommands": 0,
+  "newPlaybackMatrixPasses": 0
+}

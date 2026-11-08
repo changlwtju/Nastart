@@ -1,0 +1,532 @@
+{
+  "auditedAt": "2026-10-24T23:44:11.257680+08:00",
+  "HEAD": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "dirtyPreserved": true,
+  "scope": "source ownership / entry-to-output cross-platform audit; not exhaustive runtime certification",
+  "inventory": {
+    "mobile": {
+      "fileCount": 54,
+      "lineCount": 48588,
+      "files": [
+        "ios/Nastart/Nastart/App/AppTabRootView.swift",
+        "ios/Nastart/Nastart/App/NastartApp.swift",
+        "ios/Nastart/Nastart/Core/Design/AppTheme.swift",
+        "ios/Nastart/Nastart/Core/Models/NASModels.swift",
+        "ios/Nastart/Nastart/Core/SampleData/SampleData.swift",
+        "ios/Nastart/Nastart/Core/Stores/AgentClient.swift",
+        "ios/Nastart/Nastart/Core/Stores/AppStateStores.swift",
+        "ios/Nastart/Nastart/Core/Stores/CloudSyncStore.swift",
+        "ios/Nastart/Nastart/Core/Stores/DSMClient.swift",
+        "ios/Nastart/Nastart/Core/Stores/DiagnosticLogStore.swift",
+        "ios/Nastart/Nastart/Core/Stores/KeychainStore.swift",
+        "ios/Nastart/Nastart/Core/Stores/LANDiscoveryService.swift",
+        "ios/Nastart/Nastart/Core/Stores/LocalTaskStore.swift",
+        "ios/Nastart/Nastart/Core/Stores/ManualLaunchpadServiceStore.swift",
+        "ios/Nastart/Nastart/Core/Stores/NASConnectionStore.swift",
+        "ios/Nastart/Nastart/Core/Stores/NetworkErrorClassification.swift",
+        "ios/Nastart/Nastart/Core/Stores/SSHAgentInstaller.swift",
+        "ios/Nastart/Nastart/Core/Stores/ServiceHealthProbe.swift",
+        "ios/Nastart/Nastart/Features/Devices/DevicesView.swift",
+        "ios/Nastart/Nastart/Features/Launchpad/AudioPlayerView.swift",
+        "ios/Nastart/Nastart/Features/Launchpad/ISOPlaybackAdapter.swift",
+        "ios/Nastart/Nastart/Features/Launchpad/LaunchpadConnectionViews.swift",
+        "ios/Nastart/Nastart/Features/Launchpad/LaunchpadDirectMediaSetupView.swift",
+        "ios/Nastart/Nastart/Features/Launchpad/LaunchpadLayoutViews.swift",
+        "ios/Nastart/Nastart/Features/Launchpad/LaunchpadMediaLibraryViews.swift",
+        "ios/Nastart/Nastart/Features/Launchpad/LaunchpadPlaybackCore.swift",
+        "ios/Nastart/Nastart/Features/Launchpad/LaunchpadServiceDetailViews.swift",
+        "ios/Nastart/Nastart/Features/Launchpad/LaunchpadSharedViews.swift",
+        "ios/Nastart/Nastart/Features/Launchpad/LaunchpadView.swift",
+        "ios/Nastart/Nastart/Features/Launchpad/ServiceCardView.swift",
+        "ios/Nastart/Nastart/Features/Mine/MineView.swift",
+        "ios/Nastart/Nastart/Features/Tasks/TasksView.swift",
+        "ios/Nastart/Nastart/Playback/Core/PlaybackEngine.swift",
+        "ios/Nastart/Nastart/Playback/Core/PlaybackIntent.swift",
+        "ios/Nastart/Nastart/Playback/Core/PlaybackPlan.swift",
+        "ios/Nastart/Nastart/Playback/Core/PlaybackPlanningPolicy.swift",
+        "ios/Nastart/Nastart/Playback/Core/PlaybackRoute.swift",
+        "ios/Nastart/Nastart/Playback/Core/PlaybackSessionCoordinator.swift",
+        "ios/Nastart/Nastart/Playback/Core/URLPlaybackSourceResolver.swift",
+        "ios/Nastart/Nastart/Playback/Diagnostics/PlaybackDiagnostics.swift",
+        "ios/Nastart/Nastart/Playback/Diagnostics/PlaybackScenarioMatrix.swift",
+        "ios/Nastart/Nastart/Playback/Engines/GreenfieldKSPlayerRenderer.swift",
+        "ios/Nastart/Nastart/Playback/Engines/KSPlayerEngineSpike.swift",
+        "ios/Nastart/Nastart/Playback/Engines/PlaybackEngineAvailability.swift",
+        "ios/Nastart/Nastart/Playback/GreenfieldPlaybackBridge.swift",
+        "ios/Nastart/Nastart/Playback/GreenfieldVideoPlayerView.swift",
+        "ios/Nastart/Nastart/Playback/IO/PlaybackByteRange.swift",
+        "ios/Nastart/Nastart/Playback/IO/PlaybackIOContext.swift",
+        "ios/Nastart/Nastart/Playback/IO/PreloadCoordinator.swift",
+        "ios/Nastart/Nastart/Playback/IO/RangeCacheStore.swift",
+        "ios/Nastart/Nastart/Shared/MetricPill.swift",
+        "ios/Nastart/Nastart/Shared/PlaceholderView.swift",
+        "ios/Nastart/Nastart/Shared/SectionHeader.swift",
+        "ios/Nastart/Nastart/Shared/StatusDot.swift"
+      ]
+    },
+    "tv": {
+      "fileCount": 8,
+      "lineCount": 3038,
+      "files": [
+        "tvos/NastartTV/Sources/NastartTVApp.swift",
+        "tvos/NastartTV/Sources/TVAccountVault.swift",
+        "tvos/NastartTV/Sources/TVDSMClient.swift",
+        "tvos/NastartTV/Sources/TVJellyfinClient.swift",
+        "tvos/NastartTV/Sources/TVModels.swift",
+        "tvos/NastartTV/Sources/TVNASViews.swift",
+        "tvos/NastartTV/Sources/TVPlaybackSession.swift",
+        "tvos/NastartTV/Sources/TVViews.swift"
+      ]
+    },
+    "sharedKS": {
+      "fileCount": 58,
+      "lineCount": 18782,
+      "files": [
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/AVPlayer/KSAVPlayer.swift",
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/AVPlayer/KSOptions.swift",
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/AVPlayer/KSPictureInPictureController.swift",
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/AVPlayer/KSPlayerLayer.swift",
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/AVPlayer/KSVideoPlayer.swift",
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/AVPlayer/MediaPlayerProtocol.swift",
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/AVPlayer/PlayerDefines.swift",
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/Audio/AudioPlayerView.swift",
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/Core/AppKitExtend.swift",
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/Core/PlayerToolBar.swift",
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/Core/PlayerView.swift",
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/Core/UIKitExtend.swift",
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/Core/UXKit.swift",
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/Core/Utility.swift",
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/MEPlayer/AVFFmpegExtension.swift",
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/MEPlayer/AVFoundationExtension.swift",
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/MEPlayer/AudioEnginePlayer.swift",
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/MEPlayer/AudioGraphPlayer.swift",
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/MEPlayer/AudioRendererPlayer.swift",
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/MEPlayer/AudioUnitPlayer.swift",
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/MEPlayer/CircularBuffer.swift",
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/MEPlayer/EmbedDataSouce.swift",
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/MEPlayer/FFmpegAssetTrack.swift",
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/MEPlayer/FFmpegDecode.swift",
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/MEPlayer/Filter.swift",
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/MEPlayer/KSMEPlayer.swift",
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/MEPlayer/KSSeekFrameDiagnostics.swift",
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/MEPlayer/MEPlayerItem.swift",
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/MEPlayer/MEPlayerItemTrack.swift",
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/MEPlayer/MetalPlayView.swift",
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/MEPlayer/Model.swift",
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/MEPlayer/Resample.swift",
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/MEPlayer/SubtitleDecode.swift",
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/MEPlayer/ThumbnailController.swift",
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/MEPlayer/VideoToolboxDecode.swift",
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/Metal/DisplayModel.swift",
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/Metal/MetalRender.swift",
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/Metal/MotionSensor.swift",
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/Metal/PixelBufferProtocol.swift",
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/Metal/Transforms.swift",
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/Subtitle/AudioRecognize.swift",
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/Subtitle/KSParseProtocol.swift",
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/Subtitle/KSSubtitle.swift",
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/Subtitle/SubtitleDataSouce.swift",
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/SwiftUI/AirPlayView.swift",
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/SwiftUI/KSVideoPlayerView.swift",
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/SwiftUI/KSVideoPlayerViewBuilder.swift",
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/SwiftUI/LiveTextImage.swift",
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/SwiftUI/Slider.swift",
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/Video/BrightnessVolume.swift",
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/Video/IOSVideoPlayerView.swift",
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/Video/KSMenu.swift",
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/Video/KSPlayerItem.swift",
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/Video/MacVideoPlayerView.swift",
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/Video/PlayerFullScreenViewController.swift",
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/Video/PlayerTransitionAnimator.swift",
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/Video/SeekView.swift",
+        "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/Video/VideoPlayerView.swift"
+      ]
+    },
+    "sharedUDF": {
+      "fileCount": 0,
+      "lineCount": 0,
+      "files": []
+    }
+  },
+  "comparison": [
+    {
+      "domain": "应用与四Tab",
+      "mobile": {
+        "path": "ios/Nastart/Nastart/App/AppTabRootView.swift",
+        "line": 4,
+        "symbol": "struct AppTabRootView"
+      },
+      "tv": {
+        "path": "tvos/NastartTV/Sources/TVNASViews.swift",
+        "line": 7,
+        "symbol": "struct TVHomeView"
+      },
+      "finding": "同一信息结构；导航与焦点保留平台适配"
+    },
+    {
+      "domain": "登录/会话恢复",
+      "mobile": {
+        "path": "ios/Nastart/Nastart/Core/Stores/AppStateStores.swift",
+        "line": 1833,
+        "symbol": "func restoreDSMConnection"
+      },
+      "tv": {
+        "path": "tvos/NastartTV/Sources/NastartTVApp.swift",
+        "line": 22,
+        "symbol": "final class TVAppState"
+      },
+      "finding": "移动重新认证/主与FileStation双会话；TV保存SID、失效提示，无同等恢复状态机"
+    },
+    {
+      "domain": "DSM协议/接口发现",
+      "mobile": {
+        "path": "ios/Nastart/Nastart/Core/Stores/DSMClient.swift",
+        "line": 839,
+        "symbol": "func loadSnapshot"
+      },
+      "tv": {
+        "path": "tvos/NastartTV/Sources/TVDSMClient.swift",
+        "line": 81,
+        "symbol": "struct TVDSMClient"
+      },
+      "finding": "请求/错误/路径校验/DTO重复；认证信息不能在迁移中跨域或重发"
+    },
+    {
+      "domain": "资源与缓存新鲜度",
+      "mobile": {
+        "path": "ios/Nastart/Nastart/Core/Stores/AppStateStores.swift",
+        "line": 864,
+        "symbol": "var dataRefreshState"
+      },
+      "tv": {
+        "path": "tvos/NastartTV/Sources/TVNASViews.swift",
+        "line": 472,
+        "symbol": "struct TVNASOverview"
+      },
+      "finding": "移动持久快照+未知/缓存/实时；TV并行状态/发现、无同等持久快照"
+    },
+    {
+      "domain": "服务状态含义",
+      "mobile": {
+        "path": "ios/Nastart/Nastart/Core/Stores/ServiceHealthProbe.swift",
+        "line": 15,
+        "symbol": "enum ServiceHealthProbe"
+      },
+      "tv": {
+        "path": "tvos/NastartTV/Sources/TVNASViews.swift",
+        "line": 940,
+        "symbol": "private func row(_ service"
+      },
+      "finding": "移动HEAD可达检查；TV容器running；语义不等同，不能按首屏绿点比网络性能"
+    },
+    {
+      "domain": "文件目录/排序",
+      "mobile": {
+        "path": "ios/Nastart/Nastart/Features/Devices/DevicesView.swift",
+        "line": 647,
+        "symbol": "struct FileBrowserView"
+      },
+      "tv": {
+        "path": "tvos/NastartTV/Sources/TVNASViews.swift",
+        "line": 622,
+        "symbol": "struct TVNASFiles"
+      },
+      "finding": "四排序方向含义相近、DTO与分页/偏好不同；共享请求/排序契约，视图分离"
+    },
+    {
+      "domain": "播放入口/计划",
+      "mobile": {
+        "path": "ios/Nastart/Nastart/Playback/Core/PlaybackIntent.swift",
+        "line": 163,
+        "symbol": "struct PlaybackIntent"
+      },
+      "tv": {
+        "path": "tvos/NastartTV/Sources/TVViews.swift",
+        "line": 639,
+        "symbol": "struct TVPlayIntent"
+      },
+      "finding": "TV只有item/resume，未接移动Intent/Plan/Route；高优先级统一契约"
+    },
+    {
+      "domain": "选流与能力",
+      "mobile": {
+        "path": "ios/Nastart/Nastart/Playback/Core/PlaybackPlanningPolicy.swift",
+        "line": 1221,
+        "symbol": "enum PlaybackPlanningPolicy"
+      },
+      "tv": {
+        "path": "tvos/NastartTV/Sources/TVJellyfinClient.swift",
+        "line": 174,
+        "symbol": "func route("
+      },
+      "finding": "TV原生容器优先/20Mbps H2641080p方案；移动按原流/网络/轨道/兼容条件规划"
+    },
+    {
+      "domain": "文件播放与传输",
+      "mobile": {
+        "path": "ios/Nastart/Nastart/Features/Devices/DevicesView.swift",
+        "line": 647,
+        "symbol": "struct FileBrowserView"
+      },
+      "tv": {
+        "path": "tvos/NastartTV/Sources/TVNASViews.swift",
+        "line": 801,
+        "symbol": "final class TVNASPlaybackSession"
+      },
+      "finding": "移动代理/Range与原流路线；TVdownload URL直交KS，KS共用不代表请求与生命周期共用"
+    },
+    {
+      "domain": "播放生命周期",
+      "mobile": {
+        "path": "ios/Nastart/Nastart/Playback/Core/PlaybackSessionCoordinator.swift",
+        "line": 9,
+        "symbol": "actor PlaybackSessionCoordinator"
+      },
+      "tv": {
+        "path": "tvos/NastartTV/Sources/TVPlaybackSession.swift",
+        "line": 6,
+        "symbol": "final class TVPlaybackSession"
+      },
+      "finding": "TV AVPlayer与文件KS另有两套prepare/stop；取消/错误/资源所有权须统一状态契约"
+    },
+    {
+      "domain": "字幕位置与缩放",
+      "mobile": {
+        "path": "ios/Nastart/Nastart/Features/Launchpad/LaunchpadPlaybackCore.swift",
+        "line": 236,
+        "symbol": "enum PlaybackSubtitleViewportPolicy"
+      },
+      "tv": {
+        "path": "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/SwiftUI/KSVideoPlayerView.swift",
+        "line": 594,
+        "symbol": "public struct VideoSubtitleView"
+      },
+      "finding": "移动按fit/fill视频可见矩形+安全边距；TV文件按整播放器默认布局；TVJF系统/烧录又一条"
+    },
+    {
+      "domain": "内置文字/位图字幕",
+      "mobile": {
+        "path": "ios/Nastart/Nastart/Playback/Engines/GreenfieldKSPlayerRenderer.swift",
+        "line": 607,
+        "symbol": "struct GreenfieldSubtitleOverlay"
+      },
+      "tv": {
+        "path": "tvos/NastartTV/Sources/TVJellyfinClient.swift",
+        "line": 146,
+        "symbol": "\"SubtitleProfiles\""
+      },
+      "finding": "移动本地文本/PGS等、外置文字及偏好；TVJF只声明VTT HLS及多格式Encode，不能等同本地渲染"
+    },
+    {
+      "domain": "音轨与字幕偏好",
+      "mobile": {
+        "path": "ios/Nastart/Nastart/Features/Launchpad/LaunchpadView.swift",
+        "line": 11457,
+        "symbol": "private func restoreSavedTrackSelection"
+      },
+      "tv": {
+        "path": "tvos/NastartTV/Sources/TVViews.swift",
+        "line": 680,
+        "symbol": "struct TVNativePlayer"
+      },
+      "finding": "移动保存选择和off/sidecar/切源规则；TV系统轨道菜单，未接完整偏好与切源策略"
+    },
+    {
+      "domain": "续播和进度上报",
+      "mobile": {
+        "path": "ios/Nastart/Nastart/Features/Launchpad/LaunchpadView.swift",
+        "line": 7244,
+        "symbol": "LocalPlaybackResumeStore.key"
+      },
+      "tv": {
+        "path": "tvos/NastartTV/Sources/TVPlaybackSession.swift",
+        "line": 65,
+        "symbol": "private func beginPlayback"
+      },
+      "finding": "移动身份隔离/来源偏好；TV文件本机哈希键自动续播、JF本地seek和10秒上报独立"
+    },
+    {
+      "domain": "退出/清理",
+      "mobile": {
+        "path": "ios/Nastart/Nastart/Playback/Engines/GreenfieldKSPlayerRenderer.swift",
+        "line": 780,
+        "symbol": ".onDisappear"
+      },
+      "tv": {
+        "path": "tvos/NastartTV/Sources/TVNASViews.swift",
+        "line": 858,
+        "symbol": "struct TVNASPlayerView"
+      },
+      "finding": "TV文件宿主与KS嵌套ExitCommand有竞争，23:10窗三次Menu未退出；未修复，不当PASS"
+    },
+    {
+      "domain": "PiP与HDR",
+      "mobile": {
+        "path": "ios/Nastart/Nastart/Playback/Engines/GreenfieldKSPlayerRenderer.swift",
+        "line": 122,
+        "symbol": "GreenfieldPiPSubtitleCompositor"
+      },
+      "tv": {
+        "path": "tvos/NastartTV/Sources/TVViews.swift",
+        "line": 680,
+        "symbol": "struct TVNativePlayer"
+      },
+      "finding": "移动有受条件约束的PiP/HDR字幕链，TV未接同等策略；显示/输出能力应注入而非复制常量"
+    },
+    {
+      "domain": "主题和显示参数",
+      "mobile": {
+        "path": "ios/Nastart/Nastart/Core/Design/AppTheme.swift",
+        "line": 3,
+        "symbol": "enum AppTheme"
+      },
+      "tv": {
+        "path": "tvos/NastartTV/Sources/TVViews.swift",
+        "line": 4,
+        "symbol": "enum TVTheme"
+      },
+      "finding": "命名/规则分开；应共用语义token与主题值，焦点材质/尺寸平台适配"
+    },
+    {
+      "domain": "事项/存储/云",
+      "mobile": {
+        "path": "ios/Nastart/Nastart/Core/Stores/CloudSyncStore.swift",
+        "line": 73,
+        "symbol": "class CloudSyncStore"
+      },
+      "tv": {
+        "path": "tvos/NastartTV/Sources/TVNASViews.swift",
+        "line": 297,
+        "symbol": "struct TVTaskRecord"
+      },
+      "finding": "TV独立本机模型且真实CloudKit未接；免费签名无权限，不为一致性伪造同步"
+    },
+    {
+      "domain": "媒体库/海报/搜索",
+      "mobile": {
+        "path": "ios/Nastart/Nastart/Features/Launchpad/LaunchpadMediaLibraryViews.swift",
+        "line": 4,
+        "symbol": "struct MediaLibraryView"
+      },
+      "tv": {
+        "path": "tvos/NastartTV/Sources/TVViews.swift",
+        "line": 302,
+        "symbol": "struct TVLibraryView"
+      },
+      "finding": "移动库路由/多服务与TV独立Items/详情DTO；统一元数据/页状态/海报语义，遥控焦点单列适配"
+    },
+    {
+      "domain": "凭据与持久化隔离",
+      "mobile": {
+        "path": "ios/Nastart/Nastart/Core/Stores/KeychainStore.swift",
+        "line": 41,
+        "symbol": "final class KeychainStore"
+      },
+      "tv": {
+        "path": "tvos/NastartTV/Sources/TVAccountVault.swift",
+        "line": 5,
+        "symbol": "enum TVAccountVault"
+      },
+      "finding": "TV独立SID/token单账号；共享schema/迁移规则不等于跨端复制密码或共用Keychain命名空间"
+    },
+    {
+      "domain": "服务显示/顺序",
+      "mobile": {
+        "path": "ios/Nastart/Nastart/Core/Stores/ManualLaunchpadServiceStore.swift",
+        "line": 3,
+        "symbol": "struct LaunchpadVisibilityStore"
+      },
+      "tv": {
+        "path": "tvos/NastartTV/Sources/TVNASViews.swift",
+        "line": 954,
+        "symbol": "struct TVServiceVisibilityView"
+      },
+      "finding": "TV独立UserDefaults可见表，无完整移动收藏/排序/手动添加；需稳定共享服务身份"
+    },
+    {
+      "domain": "任务模型/规则/通知",
+      "mobile": {
+        "path": "ios/Nastart/Nastart/Core/Stores/LocalTaskStore.swift",
+        "line": 51,
+        "symbol": "final class LocalTaskStore"
+      },
+      "tv": {
+        "path": "tvos/NastartTV/Sources/TVNASViews.swift",
+        "line": 297,
+        "symbol": "struct TVTaskRecord"
+      },
+      "finding": "移动提醒持久化/调度与TV本机待办独立，表单相似不等于规则/状态一致"
+    },
+    {
+      "domain": "错误和恢复语义",
+      "mobile": {
+        "path": "ios/Nastart/Nastart/Core/Stores/DSMClient.swift",
+        "line": 13,
+        "symbol": "enum DSMClientError"
+      },
+      "tv": {
+        "path": "tvos/NastartTV/Sources/TVDSMClient.swift",
+        "line": 59,
+        "symbol": "enum TVDSMError"
+      },
+      "finding": "认证失效/权限/取消/错误文案重复；不能把不同错误都降为无法播放"
+    },
+    {
+      "domain": "诊断与可观测性",
+      "mobile": {
+        "path": "ios/Nastart/Nastart/Core/Stores/DiagnosticLogStore.swift",
+        "line": 103,
+        "symbol": "final class DiagnosticLogStore"
+      },
+      "tv": {
+        "path": "tvos/NastartTV/Sources/TVPlaybackSession.swift",
+        "line": 20,
+        "symbol": "var playbackInfo"
+      },
+      "finding": "移动结构化日志与代次/阶段记录，TV仅简化播放信息/错误，无同等诊断导出"
+    },
+    {
+      "domain": "文件模型/身份/媒体识别",
+      "mobile": {
+        "path": "ios/Nastart/Nastart/Core/Models/NASModels.swift",
+        "line": 755,
+        "symbol": "struct FileItem"
+      },
+      "tv": {
+        "path": "tvos/NastartTV/Sources/TVDSMClient.swift",
+        "line": 14,
+        "symbol": "struct TVNASFile"
+      },
+      "finding": "TV按扩展名枚举、mobile更多文件/光盘路径；共同格式与身份契约优先，能力输入与真实回归分别验证"
+    },
+    {
+      "domain": "协议与回归用例",
+      "mobile": {
+        "path": "ios/Nastart/NastartTests/NonPlaybackPolicyTests.swift",
+        "line": 5,
+        "symbol": "final class NonPlaybackPolicyTests"
+      },
+      "tv": {
+        "path": "tvos/NastartTV/Tests/TVClientTests.swift",
+        "line": 4,
+        "symbol": "final class TVClientTests"
+      },
+      "finding": "两App当前测试独立；抽共享规则后同fixture同边界，仍保留各平台真实渲染/返回测试"
+    }
+  ],
+  "sharingConfirmed": [
+    "iPhone and iPad use the same Nastart target with TARGETED_DEVICE_FAMILY=1,2",
+    "Both app projects reference the same local KSPlayer package"
+  ],
+  "notShared": [
+    "Mobile app Playback/Core, bridge, renderer and request/proxy lifecycle are not linked by TV target",
+    "TV DSM and Jellyfin DTO/client/session/persistence/UI are independent"
+  ],
+  "runtimeBoundaries": {
+    "latestTVFileWindow": "2026-10-24 23:10 60-second progressing native images; ordinary Menu exit failed; owned playback stopped intentionally",
+    "mobileServiceChange": "157 executed, 1 skipped, 0 failures; immediate health and incremental publication; normal Debug installed on iPhone13 at 23:44:00 and iPad at 23:43:42, native NAS/service states viewed; not paired launch timing",
+    "newSubtitleFixInstalled": false,
+    "fullPlaybackUnificationDelivered": false,
+    "evidence": "docs/testing/results/2026-10/2026-10-24-code-audit-and-service-health.json"
+  }
+}

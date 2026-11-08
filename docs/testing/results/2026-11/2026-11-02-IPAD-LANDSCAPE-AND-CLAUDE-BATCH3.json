@@ -1,0 +1,132 @@
+{
+  "recordedAt": "2026-11-02T02:07:11.177866+08:00",
+  "simulatorWindow": {
+    "simulatorModel": "iPad (A16)",
+    "simulatorSystem": "iOS27",
+    "physicalIpadSystemNotEqual": "26.6",
+    "startedAt": "2026-11-02T02:01:22.774665+08:00",
+    "physicalDevicesControlled": 0,
+    "NASCommands": 0,
+    "normalRootLaunched": false,
+    "launches": [
+      {
+        "at": "2026-11-02T02:02:03.176922+08:00",
+        "scene": "mine-info",
+        "language": "zh-Hans",
+        "size": "large",
+        "explicitFixtureArguments": true,
+        "testEnvironmentVariables": false
+      },
+      {
+        "at": "2026-11-02T02:03:36.289255+08:00",
+        "scene": "diagnostics",
+        "language": "zh-Hans",
+        "size": "large",
+        "explicitFixtureArguments": true,
+        "testEnvironmentVariables": false
+      },
+      {
+        "at": "2026-11-02T02:04:49.267619+08:00",
+        "scene": "diagnostics",
+        "language": "en",
+        "size": "standard",
+        "explicitFixtureArguments": true,
+        "testEnvironmentVariables": false
+      }
+    ],
+    "mobileInputsUnchanged": 415,
+    "packageReusedAfterMobileOnlyHashVerification": true,
+    "mainSHA256": "a14854ba92b04aa772c266475ad036ae35538e8aa9bca2687e6afb2a79765fa5",
+    "debugDylibSHA256": "1952cccf64b3a196dfdef6a422ec8ae63248fc84a49476bf46444cf87212fea7",
+    "fixturePreferencesSeeded": true,
+    "fixturePreferencesPreserved": true,
+    "additionalPreferenceKeys": 0,
+    "shutdownExitCode": 0,
+    "deleteExitCode": 0,
+    "ownedSimulatorAbsent": true,
+    "endedAt": "2026-11-02T02:05:10.713220+08:00"
+  },
+  "observations": {
+    "evidence": "Actual CUA screenshots and AX tool trail, no standalone saved UI PNGs",
+    "ChineseAccessibility2": {
+      "minePortraitToLandscapeStable": true,
+      "connectedInfoAlertVisible": true,
+      "infoDismissKeptSignOutCountZero": true,
+      "separateSignOutCountOneNoAlert": true,
+      "disconnectedSignOutDisabled": true,
+      "disconnectedInfoStillReadable": true,
+      "diagnosticTilesVertical": true,
+      "copyFixtureCount": 1,
+      "clearFixtureCount": 1,
+      "AXScrollDownAndUpActualDisplacement": true,
+      "emptyDisablesAllThreeActions": true,
+      "portraitReturnPreservesEmptyAndCounts": true
+    },
+    "excludedObservations": [
+      "Rotation transition image not a stable layout result",
+      "First diagnostic launch white startup frame not accepted as a loaded page; later AX and full image verified"
+    ],
+    "limits": [
+      "No physical device controls",
+      "iOS27 simulator differs from A16 physical iPadOS26.6",
+      "Native alert text visible, OS-wide accessibility text scaling not changed or verified",
+      "No full VoiceOver/real logs/real signout/sharing/frame-time pass",
+      "Transparent debug banner still underlaps initial landscape lower summary; scrolling exposes full time"
+    ],
+    "EnglishStandardLandscape": {
+      "threeTilesHorizontalAndReadable": true,
+      "threeMetricsHorizontalAndTimeVisible": true,
+      "fixtureControlsAndFooterVisible": true
+    }
+  },
+  "productCodeChanged": false,
+  "sourceInputsUnchanged": 446,
+  "newBuilds": 0,
+  "physicalDevicesControlled": 0,
+  "NASPaused": true,
+  "ordinaryRootLaunched": false,
+  "newPlaybackPassCells": 0,
+  "requirementsClosed": 0,
+  "historicalPreflightFailureCategories": 5,
+  "claudeBatch3": {
+    "preparedAt": "2026-11-02T02:00:32.581624+08:00",
+    "workspace": "/Users/lagransun/workspace/Nastart-Claude-ThemeAccessibility-20261102",
+    "branch": "claude/theme-accessibility-batch3",
+    "baselineCommit": "a03d6a1006396f1346c33e4403d90735a7c45005",
+    "baselineParentHEAD": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "acceptedIOSDiffSHA256": "b9463286e205aec3aab82ba2902700ab4d76673662dde5c0ee59f3e1ad80563f",
+    "sourceInputs": 446,
+    "allAcceptedInputsMatch": true,
+    "originalHEADAndIndexUnchanged": true,
+    "independentGitRepository": true,
+    "gitWorktree": false,
+    "remoteConfigured": false,
+    "copiedNonignoredFiles": 1750,
+    "privateEvidenceCopied": false,
+    "buildDependenciesPrepared": false,
+    "productCodeChanged": false,
+    "buildsRun": 0,
+    "devicesControlled": 0,
+    "assignment": "docs/development/CLAUDE-BATCH3-ASSIGNMENT.md",
+    "writableFiles": [
+      "ios/Nastart/Nastart/Features/Mine/MineView.swift"
+    ],
+    "sourceOnlyGrant": true,
+    "buildOrRuntimeGrant": false,
+    "implementationObserved": false
+  },
+  "evidencePointer": "/tmp/nastart-ipad-landscape-path",
+  "workspaceEvidencePointer": "/tmp/nastart-claude-batch3-path",
+  "finalValidation": {
+    "at": "2026-11-02T02:07:56.942512+08:00",
+    "documentationDocuments": 597,
+    "localLinks": 3741,
+    "missingDestinations": 0,
+    "gitDiffCheckExitCode": 0,
+    "frozenSourceInputsUnchanged": 446,
+    "batch3WorkspaceInputsMatch": 446,
+    "batch3WorkspaceClean": true,
+    "activeBuildWorkers": 0,
+    "activeSimulatorLease": false
+  }
+}

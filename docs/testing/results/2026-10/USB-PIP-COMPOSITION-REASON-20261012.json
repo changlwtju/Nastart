@@ -1,0 +1,470 @@
+{
+  "at": "2026-10-12T19:44:24.700665+08:00",
+  "scope": [
+    "USB iPhone13",
+    "USB iPad"
+  ],
+  "iPhone18Touched": false,
+  "package": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "69395e7ce67ff97898f90a2d4c9cc92832087c3bd928f104d073cd01b83ac224",
+    "package": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-10-12-pip-composition-reason-175252/Nastart-PiP-Composition-Reason-Normal-Debug.app",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "binaryBuildTime": "2026-10-12T17:55:42.266483+08:00",
+    "binaries": {
+      "Nastart": "7d9c741fc3d79d69debd290996a4f790f926039de5c65d4402e764aa0a9e1d33",
+      "Nastart.debug.dylib": "593b5bfba294720050782c386441f00d4adaafba90157b579ea5beb2ec0de3e0",
+      "Frameworks/KSPlayer.framework/KSPlayer": "df76e71df756331a8e80a0e0550683b73a24af6282db214a7401fd975af643c4"
+    },
+    "signatureVerified": true,
+    "individuallyVerifiedLibraries": 29,
+    "checkedInputs": 173,
+    "newerInputs": [],
+    "profileExpirationUTC": "2026-10-17T22:23:40",
+    "tests": {
+      "executed": 326,
+      "skipped": 2,
+      "failures": 0,
+      "runThisTurn": true
+    },
+    "preflight": {
+      "passed": 15,
+      "runThisTurn": true
+    },
+    "sourceEditsThisTurn": [
+      "One renderer file adds PiP composition outcomes, CV allocation status and actual source transfer/pixel format/dimensions; preserves HDR protection and output behavior"
+    ],
+    "baselineSourceDiffSHA256": "5907048189b28f527c02383402938fb06907a12bfd2f57bca80407eed0cab7af",
+    "sourceInputManifestSHA256": "1aa547584121e2463985d2a6566a7c34acb564341719051562b1f145bac10012",
+    "frozenAt": "2026-10-12T17:56:35.827416+08:00",
+    "linkageVerified": true,
+    "ipa": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-10-12-pip-composition-reason-175252/Nastart-PiP-Composition-Reason-Normal-Debug.ipa"
+  },
+  "audit": {
+    "sourceInputsVerified": 173,
+    "binaryHashesVerified": true,
+    "deepSignatureVerified": true,
+    "devices": {
+      "iphone13": {
+        "at": "2026-10-12T19:41:32.041830+08:00",
+        "model": "iPhone14,5",
+        "system": "16.3.1",
+        "connection": "USB",
+        "latestPackage": {
+          "Nastart": "7d9c741fc3d79d69debd290996a4f790f926039de5c65d4402e764aa0a9e1d33",
+          "Nastart.debug.dylib": "593b5bfba294720050782c386441f00d4adaafba90157b579ea5beb2ec0de3e0",
+          "Frameworks/KSPlayer.framework/KSPlayer": "df76e71df756331a8e80a0e0550683b73a24af6282db214a7401fd975af643c4"
+        },
+        "sourceDiffSHA256": "69395e7ce67ff97898f90a2d4c9cc92832087c3bd928f104d073cd01b83ac224",
+        "nonBookmarkPreferenceKeys": 24,
+        "nonBookmarkPreferencesUnchanged": true,
+        "changedBookmarksCount": 2,
+        "originalTrackSelectionsRestored": true,
+        "finalS03": {
+          "S03File": {
+            "positionSeconds": 711.945,
+            "audioTrackID": 4,
+            "subtitleTrackID": 5,
+            "subtitlesDisabled": false
+          },
+          "S03Jellyfin": {
+            "positionSeconds": 5984.26,
+            "audioTrackID": 1,
+            "subtitleTrackID": 7,
+            "subtitlesDisabled": false
+          }
+        },
+        "newCrashReports": 0,
+        "normalEmptyEnvironment": true,
+        "NASNormal": true,
+        "playerClosed": true,
+        "finalScreenshotReviewed": true,
+        "WDAIdleSeconds": 10,
+        "WDAAnimationCoolOffSeconds": 2,
+        "cases": {
+          "s03-file-pip-reason": {
+            "freshPiPFrameEvents": 8,
+            "framesWithText": 2,
+            "compositionGroups": [
+              {
+                "count": 6,
+                "compositionReason": "noCue",
+                "allocationStatus": "notAttempted",
+                "sourceTransfer": "SMPTE_ST_2084_PQ",
+                "sourcePixelFormat": "2016686640",
+                "sourceWidth": "3840",
+                "sourceHeight": "2160",
+                "composited": "false",
+                "external": "false"
+              },
+              {
+                "count": 2,
+                "compositionReason": "hdrPQPreserved",
+                "allocationStatus": "notAttempted",
+                "sourceTransfer": "SMPTE_ST_2084_PQ",
+                "sourcePixelFormat": "2016686640",
+                "sourceWidth": "3840",
+                "sourceHeight": "2160",
+                "composited": "false",
+                "external": "false"
+              }
+            ],
+            "pipLifecycle": [
+              {
+                "event": "pip_started",
+                "fields": {}
+              },
+              {
+                "event": "pip_restore_completed",
+                "fields": {
+                  "success": "true"
+                }
+              },
+              {
+                "event": "pip_stopped",
+                "fields": {
+                  "restoring": "true"
+                }
+              }
+            ],
+            "performanceAccepted": false,
+            "fullSubtitleAudioHDRAccepted": false,
+            "exit": {
+              "normalUIExit": true,
+              "playerOpened": true,
+              "playbackErrorVisible": false,
+              "fullscreenRestoredSamePID": true,
+              "sampledImagesReviewed": [
+                "normal-10",
+                "normal-30",
+                "home-pip-10",
+                "home-pip-30",
+                "restored-15",
+                "closed-15"
+              ],
+              "performanceAccepted": false,
+              "fullSubtitleAccepted": false
+            }
+          },
+          "s03-jf-pip-reason": {
+            "freshPiPFrameEvents": 4,
+            "framesWithText": 0,
+            "compositionGroups": [
+              {
+                "count": 4,
+                "compositionReason": "noCue",
+                "allocationStatus": "notAttempted",
+                "sourceTransfer": "SMPTE_ST_2084_PQ",
+                "sourcePixelFormat": "2016686640",
+                "sourceWidth": "3840",
+                "sourceHeight": "2160",
+                "composited": "false",
+                "external": "true"
+              }
+            ],
+            "pipLifecycle": [
+              {
+                "event": "pip_started",
+                "fields": {}
+              },
+              {
+                "event": "pip_restore_completed",
+                "fields": {
+                  "success": "true"
+                }
+              },
+              {
+                "event": "pip_stopped",
+                "fields": {
+                  "restoring": "true"
+                }
+              }
+            ],
+            "performanceAccepted": false,
+            "fullSubtitleAudioHDRAccepted": false,
+            "exit": {
+              "normalUIExit": true,
+              "playerOpened": true,
+              "playbackErrorVisible": false,
+              "fullscreenRestoredSamePID": true,
+              "sampledImagesReviewed": [
+                "home-pip-10",
+                "restored-3",
+                "restored-15",
+                "closed-15"
+              ],
+              "performanceAccepted": false,
+              "fullSubtitleAccepted": false,
+              "subtitleContentResult": "FAIL",
+              "failure": "Same bilingual cue rendered as white and yellow layers in restored-15 actual image; cause not determined",
+              "systemPopupAndToolRetriesRetained": true
+            }
+          }
+        },
+        "performanceAccepted": false,
+        "cellularNetworkTested": false,
+        "fullSubtitleAudioHDRAccepted": false
+      },
+      "ipad": {
+        "at": "2026-10-12T19:41:33.347353+08:00",
+        "model": "iPad12,1",
+        "system": "18.3.1",
+        "connection": "USB",
+        "latestPackage": {
+          "Nastart": "7d9c741fc3d79d69debd290996a4f790f926039de5c65d4402e764aa0a9e1d33",
+          "Nastart.debug.dylib": "593b5bfba294720050782c386441f00d4adaafba90157b579ea5beb2ec0de3e0",
+          "Frameworks/KSPlayer.framework/KSPlayer": "df76e71df756331a8e80a0e0550683b73a24af6282db214a7401fd975af643c4"
+        },
+        "sourceDiffSHA256": "69395e7ce67ff97898f90a2d4c9cc92832087c3bd928f104d073cd01b83ac224",
+        "nonBookmarkPreferenceKeys": 15,
+        "nonBookmarkPreferencesUnchanged": true,
+        "changedBookmarksCount": 2,
+        "originalTrackSelectionsRestored": true,
+        "finalS03": {
+          "S03File": {
+            "positionSeconds": 912.997,
+            "audioTrackID": 4,
+            "subtitleTrackID": null,
+            "subtitlesDisabled": true
+          },
+          "S03Jellyfin": {
+            "positionSeconds": 5650.009,
+            "audioTrackID": 1,
+            "subtitleTrackID": 7,
+            "subtitlesDisabled": false
+          }
+        },
+        "newCrashReports": 0,
+        "normalEmptyEnvironment": true,
+        "NASNormal": true,
+        "playerClosed": true,
+        "finalScreenshotReviewed": true,
+        "WDAIdleSeconds": 10,
+        "WDAAnimationCoolOffSeconds": 2,
+        "cases": {
+          "s01-file-pip-reason": {
+            "freshPiPFrameEvents": 122,
+            "framesWithText": 46,
+            "compositionGroups": [
+              {
+                "count": 76,
+                "compositionReason": "noCue",
+                "allocationStatus": "notAttempted",
+                "sourceTransfer": "ITU_R_709_2",
+                "sourcePixelFormat": "875704438",
+                "sourceWidth": "1280",
+                "sourceHeight": "688",
+                "composited": "false",
+                "external": "false"
+              },
+              {
+                "count": 46,
+                "compositionReason": "outputCreated",
+                "allocationStatus": "0",
+                "sourceTransfer": "ITU_R_709_2",
+                "sourcePixelFormat": "875704438",
+                "sourceWidth": "1280",
+                "sourceHeight": "688",
+                "composited": "true",
+                "external": "false"
+              }
+            ],
+            "pipLifecycle": [
+              {
+                "event": "pip_started",
+                "fields": {}
+              },
+              {
+                "event": "pip_restore_completed",
+                "fields": {
+                  "success": "true"
+                }
+              },
+              {
+                "event": "pip_stopped",
+                "fields": {
+                  "restoring": "true"
+                }
+              }
+            ],
+            "performanceAccepted": false,
+            "fullSubtitleAudioHDRAccepted": false,
+            "exit": {
+              "normalUIExit": true,
+              "playerOpened": true,
+              "playbackErrorVisible": false,
+              "fullscreenRestoredSamePID": true,
+              "sampledImagesReviewed": [
+                "normal-3",
+                "normal-10",
+                "normal-30",
+                "selected-menu",
+                "home-pip-3",
+                "home-pip-10",
+                "home-pip-30",
+                "after-system-restore",
+                "restored-3",
+                "restored-10",
+                "restored-15",
+                "closed-15"
+              ],
+              "performanceAccepted": false,
+              "actualPiPSubtitleReviewed": [
+                "after-system-restore-first-attempt (original screenshot subsequently replaced)",
+                "reveal-immediate"
+              ],
+              "systemRestoreRetriesRetained": true
+            }
+          },
+          "s03-jf-hdr-cue-pip-reason": {
+            "freshPiPFrameEvents": 11,
+            "framesWithText": 0,
+            "compositionGroups": [
+              {
+                "count": 11,
+                "compositionReason": "noCue",
+                "allocationStatus": "notAttempted",
+                "sourceTransfer": "SMPTE_ST_2084_PQ",
+                "sourcePixelFormat": "2016686640",
+                "sourceWidth": "3840",
+                "sourceHeight": "2160",
+                "composited": "false",
+                "external": "true"
+              }
+            ],
+            "pipLifecycle": [
+              {
+                "event": "pip_started",
+                "fields": {}
+              },
+              {
+                "event": "pip_restore_completed",
+                "fields": {
+                  "success": "true"
+                }
+              },
+              {
+                "event": "pip_stopped",
+                "fields": {
+                  "restoring": "true"
+                }
+              }
+            ],
+            "performanceAccepted": false,
+            "fullSubtitleAudioHDRAccepted": false,
+            "exit": {
+              "normalUIExit": true,
+              "playerOpened": true,
+              "playbackErrorVisible": false,
+              "fullscreenRestoredSamePID": true,
+              "sampledImagesReviewed": [
+                "normal-10",
+                "home-pip-10",
+                "home-pip-30",
+                "restored-15",
+                "closed-15"
+              ],
+              "performanceAccepted": false,
+              "fullSubtitleAccepted": false
+            }
+          },
+          "s03-jf-pip-reason": {
+            "freshPiPFrameEvents": 7,
+            "framesWithText": 0,
+            "compositionGroups": [
+              {
+                "count": 7,
+                "compositionReason": "noCue",
+                "allocationStatus": "notAttempted",
+                "sourceTransfer": "SMPTE_ST_2084_PQ",
+                "sourcePixelFormat": "2016686640",
+                "sourceWidth": "3840",
+                "sourceHeight": "2160",
+                "composited": "false",
+                "external": "true"
+              }
+            ],
+            "pipLifecycle": [
+              {
+                "event": "pip_started",
+                "fields": {}
+              }
+            ],
+            "performanceAccepted": false,
+            "fullSubtitleAudioHDRAccepted": false,
+            "continuation": {
+              "samePlayerContinuedInto": "s03-jf-hdr-cue-pip-reason",
+              "firstFullscreenRestoreSamePIDVerified": true,
+              "separateNormalExit": false,
+              "successorNormalExitVerified": true
+            }
+          }
+        },
+        "performanceAccepted": false,
+        "cellularNetworkTested": false,
+        "fullSubtitleAudioHDRAccepted": false
+      }
+    }
+  },
+  "findings": {
+    "SDRPiP": {
+      "device": "ipad",
+      "sample": "S01 file",
+      "subtitleVisible": true,
+      "outputCreatedFrames": 46,
+      "allFreshFrames": 122,
+      "allocationStatus": 0,
+      "transfer": "ITU_R_709_2",
+      "fullscreenRestoredSamePID": true
+    },
+    "HDREmbeddedPiP": {
+      "device": "iphone13",
+      "sample": "S03 file",
+      "allFreshFrames": 8,
+      "nonemptyCueFrames": 2,
+      "hdrPQPreservedFrames": 2,
+      "allocationAttempted": false,
+      "subtitleFixed": false
+    },
+    "HDRExternalPiP": {
+      "iphone13FreshFrames": 4,
+      "ipadFirstFreshFrames": 7,
+      "ipadContinuedFreshFrames": 11,
+      "allReason": "noCue",
+      "actualTransfer": "SMPTE_ST_2084_PQ",
+      "HDRGuardCauseProven": false
+    },
+    "duplicateSubtitle": {
+      "device": "iphone13",
+      "sample": "S03 Jellyfin external ASS",
+      "window": "restored-15",
+      "actualImageReviewed": true,
+      "result": "FAIL",
+      "cause": "undetermined",
+      "fixed": false
+    }
+  },
+  "toolFailuresRetained": true,
+  "shortPlaybackOverlapRetained": true,
+  "strictSingleStreamOrPerformanceAccepted": false,
+  "ipadWrongRestartRecoveredByNormalUI": {
+    "positionSeconds": 5650.009,
+    "audioTrackID": 1,
+    "subtitleTrackID": 7,
+    "subtitlesDisabled": false,
+    "targetSeconds": 5476.244,
+    "normalUIExit": true,
+    "nativeSliderApproximate": true,
+    "preferencesManuallyWritten": false,
+    "closedScreenshotReviewed": true,
+    "naturalPlaybackProlongedByHiddenControls": true
+  },
+  "next": [
+    "Reproduce same subtitle cue and determine full-screen white/yellow duplicate-layer source, fix and re-cover both USB devices",
+    "Capture nonempty external subtitle cue in HDR PiP; distinguish subtitle state/update failure from HDR rejection",
+    "Preserve HDR signal and design compliant PiP subtitle rendering before claiming HDR acceptance",
+    "Actual manual preparation failure rollback and iPhone13 AV path",
+    "Representative family and complete frame timing with Lenna/DS One"
+  ],
+  "fullSUBAudioHDRPerformanceCellularMTPAccepted": false
+}

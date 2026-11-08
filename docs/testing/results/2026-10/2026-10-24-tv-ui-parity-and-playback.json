@@ -1,0 +1,112 @@
+{
+  "updatedAt": "2026-10-24 18:06",
+  "scope": "Apple TV UI parity migration, not full parity acceptance",
+  "device": {
+    "model": "Apple TV 4K (3rd generation)",
+    "productType": "AppleTV14,1",
+    "os": "tvOS18.2",
+    "connection": "paired localNetwork; native RSD"
+  },
+  "package": {
+    "HEAD": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "configuration": "normal Debug",
+    "sourceInputs": 508,
+    "signedMachOCount": 27,
+    "embeddedDependenciesChecked": true,
+    "profileContainsTarget": true,
+    "applicationIdentifierAndKeychainGroupsPreserved": true,
+    "installationExit": 0,
+    "installedAt": "2026-10-24T17:57:36.060613+08:00"
+  },
+  "mainBinarySHA256": "5165285f1eb6c56ed230be90b79ad800c24465d6c20257d1d1c93ab182c3df7d",
+  "tests": {
+    "logicProtocol": 20,
+    "launchUI": 1,
+    "failures": 0
+  },
+  "normalLaunch": {
+    "environment": {},
+    "arguments": [],
+    "nativeImagesSeconds": [
+      3,
+      10
+    ],
+    "DSMAndJellyfinPreserved": true
+  },
+  "UI": {
+    "tabs": [
+      "启动台",
+      "设备",
+      "事项",
+      "我的"
+    ],
+    "themes": [
+      "清流",
+      "栈列",
+      "流光"
+    ],
+    "themesActualRootImagesReviewed": true,
+    "themeRestored": "清流",
+    "themeFullRealSelectionPackage": "17:50 UI package",
+    "finalTypographyPackageAppearanceReviewed": true,
+    "dockerDefaultCount": 14,
+    "discoveredTotalEarlierUI": 46,
+    "deviceFileShares": 12,
+    "serviceDetailReviewed": true,
+    "taskCreateEditorOpenedThenCancelled": true,
+    "taskCreationCompletionCycleTested": false
+  },
+  "latestJellyfinVideo": {
+    "title": "A计划",
+    "playCommands": 1,
+    "captures": [
+      {
+        "targetSeconds": 3,
+        "actualSeconds": 3.2488755406811833
+      },
+      {
+        "targetSeconds": 10,
+        "actualSeconds": 10.50235604075715
+      },
+      {
+        "targetSeconds": 30,
+        "actualSeconds": 30.300168624613434
+      }
+    ],
+    "nativeDifferentFramesReviewedAtSeconds": [
+      10,
+      30
+    ],
+    "pauseControlTime": "00:26",
+    "remoteMenuPresses": 2,
+    "nativeActualReturnReviewed": true,
+    "audibleOutput": "unknown",
+    "fullFrameTiming": "unknown",
+    "longPlayback": "not tested",
+    "allMenuActions": "not tested"
+  },
+  "preservedFailures": [
+    "First core package missing embedded KSPlayer DYLD failure (earlier batch)",
+    "First MKV exit automation failed; intentional cleanup (earlier batch)",
+    "Theme nested Button focus timeouts; corrected using observed native Cell and remote Select",
+    "Underlying AVKit AX falsely suggested return; native image correction preserved",
+    "Final movie navigation sought missing From Start; zero Play; corrected to observed tv.play"
+  ],
+  "audioSample": "Jellyfin music catalog empty; audio output not verified",
+  "mobileMatrixClosedCells": 0,
+  "openLedgerItems": 28,
+  "cellularActions": 0,
+  "iPhone18": "paused per user; no interaction",
+  "cleanup": {
+    "pending": true
+  },
+  "remaining": [
+    "Full mobile UI component parity",
+    "Service favorite/sort/write operations",
+    "File details/search/sort/operations",
+    "Task full CRUD and sync",
+    "Real seek/speed/aspect/track/subtitle actions",
+    "Audio samples and output",
+    "Long playback/HDR/Dolby output"
+  ]
+}

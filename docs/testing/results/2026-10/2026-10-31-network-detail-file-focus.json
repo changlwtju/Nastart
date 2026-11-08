@@ -1,0 +1,174 @@
+{
+  "recordedAt": "2026-10-31T09:02:47+08:00",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceInputCount": 442,
+  "changedExistingSourceOrTestFiles": 7,
+  "newSourceFiles": 1,
+  "unchangedOldInputs": 434,
+  "unitTestsPassed": 29,
+  "newUnitMethods": 5,
+  "uniqueUITestsPassed": 6,
+  "newUITestMethods": 2,
+  "uiExecutionRuns": 3,
+  "firstUIRun": {
+    "exitCode": 65,
+    "passed": 5,
+    "failed": 1,
+    "reason": "File information up-return selected previous person two instead of requested person one. Raw failure, source hashes, app and xcresult retained.",
+    "ownSimulatorDeleted": true
+  },
+  "secondUIRun": {
+    "exitCode": 65,
+    "passed": 5,
+    "failed": 1,
+    "reason": "Actor return fixed; removing overview then requested first file but native focus settled on second. Old-revision callback was correctly invalidated; repair now explicitly commits under the new revision."
+  },
+  "builds": {
+    "mobile-sim-debug-cast": {
+      "startedAt": "2026-10-31T08:43:08.424622+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-31T08:43:37.685177+08:00"
+    },
+    "tv-sim-debug-cast": {
+      "startedAt": "2026-10-31T08:43:37.685866+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-31T08:43:50.145287+08:00"
+    },
+    "module-tests": {
+      "startedAt": "2026-10-31T08:43:50.145637+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-31T08:43:54.142517+08:00"
+    },
+    "ui-build": {
+      "startedAt": "2026-10-31T08:54:48.128376+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-31T08:54:58.396423+08:00"
+    },
+    "mobile-debug": {
+      "startedAt": "2026-10-31T08:58:13.733727+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-31T08:59:00.226918+08:00"
+    },
+    "mobile-release": {
+      "startedAt": "2026-10-31T08:59:00.229794+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-31T09:00:37.415778+08:00"
+    },
+    "tv-debug": {
+      "startedAt": "2026-10-31T09:00:37.416731+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-31T09:00:53.164823+08:00"
+    },
+    "tv-release": {
+      "startedAt": "2026-10-31T09:00:53.165485+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-31T09:01:23.793433+08:00"
+    }
+  },
+  "sourcePreservation": {
+    "recordedAt": "2026-10-31T08:47:44.370149+08:00",
+    "sourceInputCount": 442,
+    "changedExistingSourceOrTestFiles": 7,
+    "newSourceFiles": 1,
+    "unchangedOldInputs": 434,
+    "metadataAndCreditsTasksUnchanged": true,
+    "sheetAndPlayerCoverUnchanged": true,
+    "playbackCapabilitiesAndSelectionCallbacksUnchanged": true,
+    "networkPortraitLoaderAndOtherNetworkViewsUnchanged": true,
+    "mobileContextNilNoFocusNavigation": true,
+    "readOnlyFileRowsRemainNonButtons": true,
+    "existingTVJellyfinViewsUnchanged": true,
+    "scopeAndFixtureHaveNoClientStoreVaultNetworkOrMediaTask": true,
+    "newUnitMethods": 5,
+    "newUITestMethods": 2,
+    "queuedFocusRevisionGuard": true,
+    "newRevisionRecoveryCommit": true,
+    "requestedActorSectionDefault": true
+  },
+  "packages": {
+    "mobile": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-31T08:58:59.973718+08:00",
+      "frozenAt": "2026-10-31T09:02:02.362199+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 442,
+      "mainSHA256": "415b809e68dbd4d1eafdc366e49e1af5804aed2d9d56afdc1f3e58c2cdbbf6d6",
+      "debugDylibSHA256": "d81ae9e46b11c1aa555df590a6f549a44badf5524c6b4d487278623d48b857d5",
+      "signedMachOCount": 30,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false,
+      "copyMethod": "cp -cpR clone requested; hashes and signatures verified independently"
+    },
+    "tv": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-31T09:00:53.077385+08:00",
+      "frozenAt": "2026-10-31T09:02:02.729489+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 442,
+      "mainSHA256": "a5200665aa8b14f960a196d20a34e24d8592fbb9e625e159c5b8fcb0b7feda05",
+      "debugDylibSHA256": "d8537495c729ae95724662db09921611005d7bf68eab6a2b157fa1d57dfbf272",
+      "signedMachOCount": 27,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false,
+      "copyMethod": "cp -cpR clone requested; hashes and signatures verified independently"
+    }
+  },
+  "finalUIRun": {
+    "started": true,
+    "startedAt": "2026-10-31T08:55:24.125872+08:00",
+    "physicalDevicesOperated": 0,
+    "NASCommands": 0,
+    "playbackCommands": 0,
+    "customAppLaunchEnvironment": {},
+    "fixture": "early offline branch, no app state/client/store/task",
+    "sourceInputCount": 442,
+    "exitCode": 0,
+    "inputHashesUnchanged": true,
+    "installedBinaryHashesMatchAfterTests": true,
+    "endedAt": "2026-10-31T08:57:23.937203+08:00",
+    "syntheticPreferencesPreserved": true,
+    "unexpectedApplicationKeys": [],
+    "shutdownExit": 0,
+    "deleteExit": 0
+  },
+  "visualReview": {
+    "recordedAt": "2026-10-31T08:59:12.456234+08:00",
+    "reviewed": true,
+    "reviewedAttachmentCount": 3,
+    "attachmentHashes": {
+      "B97E8A26-B221-48DC-83BC-6D386CBCF34B.png": "4bed74b7a18628328d79b3cf981dfde8fe62c5d5a8c9a1ad100d6428667ddc07",
+      "38683D5B-2BD2-45D0-9646-35E80EE697F8.png": "67db2984a3ab4edea967eebb1b13502a26defdd64abd2d06a010b1363b0cd061",
+      "4B8E43AA-A3BF-4445-AA18-77C661AC864C.png": "c0cac8b45d01e3858882a780a8998410ca8c64d18ce6042d37598c1067b7b6ed"
+    },
+    "observations": [
+      "Network synthetic page shows overview removed and first file row with accent focus border, second row and read-only ISO explanation still present. Receipt/focus diagnostic are below screenshot and are not visually claimed.",
+      "Original hero fixture shows play focus after retry/overview removal; receipt is outside screenshot.",
+      "Original related fixture shows second related card focus, retry absent and receipt one visible."
+    ],
+    "notVerified": [
+      "Production model-backed detail page and real metadata/file capability replacement",
+      "Long lists, touchpad, Menu/Back, intermediate focus events or frame timing",
+      "Actual edit sheet or player presentation/return and mobile touch interaction"
+    ]
+  },
+  "ownedSimulatorsDeleted": 3,
+  "physicalDevicesOperated": 0,
+  "NASCommands": 0,
+  "playbackCommands": 0,
+  "newPlaybackMatrixP": 0,
+  "notVerified": [
+    "Production model-backed detail page and real metadata/file capability replacement",
+    "Long horizontal/vertical lists, touchpad, Menu/Back, intermediate focus events and frame timing",
+    "Actual edit sheet, player presentation/return, physical devices and NAS"
+  ]
+}

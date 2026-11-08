@@ -1,5 +1,110 @@
 # Nastart 视频播放调试总规范
 
+设备实现方法集中在[真机安装与远控手册](../development/PHYSICAL-DEVICE-REMOTE-CONTROL.md)：13/Pad USB、18/TV Wi-Fi，安装与原生服务、WDA/XCTest分层，包含精确退出、端口独占和收尾。该手册不替代本规范或当前NAS暂停/18 hands off/TV阻塞。
+
+2026-11-02 [第八批app-hosted核对](../archive/handoffs/2026-11/2026-11-02-BATCH8-HOSTED-TEST-SAFETY-AND-RESULT.md)：`only-testing`不隔离宿主普通根，先核凭据、快照和手动服务；本次用户指定测试只在新建空白模拟器运行9/9过并删除，不放宽真机/旧实例或NAS限制。
+
+## 2026-10-28 长窗口诊断读取与当前标签
+
+[独立连接批](../archive/handoffs/2026-10/2026-10-28-SAVED-CONNECTIONS-AND-ATOMIC-EDITING.md)13首窗长时间复用设备诊断连接，在HouseArrest StartService/关闭遇BrokenPipe，fresh读发现本机临时库已提交；不能把诊断链路失败定为App闪退。每次索引取证独立建立/关闭设备读取服务，清理异常不要覆盖原异常堆栈。清理失败须继续保存现场并有界移除本轮临时项，不以HTTP会话删除代表测试数据已清。
+
+来源行的组合AX标签分隔符在当前系统为逗号，旧顿号硬编码导致0匹配；依据当前树和本轮临时项名称取唯一完整标签，再精确定位。保留旧失败，核当前原库/临时ID与完整索引，未知项不删。本批迁移只增加connectionID与连接目录，使用完整语义比较核原资料保留，不能假称旧整份字节相等。0播放的normalExit字段不适用。连接改名输入超时未提交/索引同仍是未验，不能被215模型测试关闭。
+
+## 2026-10-28 当前目录基线与到页/数据就绪
+
+[来源与目录批](../archive/handoffs/2026-10/2026-10-28-STORAGE-REFERENCE-AND-FOLDER-BROWSER.md)TV已到来源页却尚无库条目，不能继续按旧首页标识补Select；先核新页结构，再等实际条目。目录浏览页已读出，但用旧批149/movie期望对当前3408/media导致假超时；当前UUID在覆盖前持久配置已存在，不能归因本轮草稿或擅自恢复旧库。每轮从现场只读当前配置/完整索引建立路径基线并保留读取时间，不以历史快照固定路径。无证据不推断由用户或iCloud造成。
+
+先保留失败和当前页，再按已证实原因修正驱动；不盲改网络/idle参数。成功后的草稿与取消须对本轮fresh基线核完整索引及原偏好，不只对版本号或旧快照。本批0播放，驱动通用normalExit=false不适用，不能写普通播放退出通过。
+
+
+2026-10-28[详情信息核对](../archive/handoffs/2026-10/2026-10-28-DETAIL-INFORMATION-LAYOUT.md)：SwiftUI父容器标记可能覆盖子项，先按原生文字/实图核对再判页面缺失；AX visible=true也可能仍在屏幕外，须核当前视口和实际PNG，不能拿标记或可见布尔值代替真实呈现。
+
+2026-10-28[取消清理与Pad观察](../archive/handoffs/2026-10/2026-10-28-SHARED-PREPARATION-COORDINATOR.md)：source不响应取消时，共用执行器必须拒绝迟到交付并在未取消的独立Task中等待释放，不能让stopEncoding沿用已取消调用者。受控测试不代替真实服务器释放验收。Pad一次中心点触摸可能收起控制栏，须以本轮实图确认；未看见关闭控件就不猜旧X坐标，观察截止先native止流量并保留失败。
+
+## 2026-10-28 准备就绪与在播取证
+
+[共用准备批](../archive/handoffs/2026-10/2026-10-28-SHARED-PLAYBACK-PREPARATION.md)：TV Jellyfin恢复既有进度时，播放器surface/按钮和初始图可以先出现，“正在准备播放”仍在；此时按钮可能仍为播放，不能按一次Select后期待暂停。分别保留点击、准备/恢复完成、控制操作的计时边界；先核覆盖层已消失、实际画面及当前控制状态，再测暂停/继续。早期3/10图原样留存，不当首帧时间、已续播或帧时间证据。
+
+Pad在播/source曾在12秒、另25秒边界超时，而独立DVT同时有真实帧；先native停止本轮流量，再作长分析。正常退出按当前系统实际控件验证，不能统一猜旧“完成/Done”；失败或内部观察截止不当App故障。finally的第一步止流量须有独立native兜底，避免WDA超时再打断整段清理。只读列到0份已有报告、未flush，不能据此声称没有系统崩溃。
+
+
+## 2026-10-28 转场等待与点击目标
+
+[人物与文件夹接续](../archive/handoffs/2026-10/2026-10-28-ENDPOINT-SCOPED-CREDITS.md)中，Pad关闭原生idle/cool-off等待的自动化发生了误导航：AX中已能找到目标标识，实际取图却进了Jellyfin首页。不能据此将超时归于WebDAV编辑。保留原生等待、来源列表实图与新页状态核对后，同包菜单→编辑→取消及演员实图成立；多项操作同时收紧，不将效果只归于一个参数。TV同法保留原生等待，核遥控焦点后Select，编辑/取消实图成立。
+
+页面标识出现不单独证明原生转场和点击坐标已稳定。默认保留原生等待；确需关闭时独立记录原因并补实际目标/转场证据。超时先在清理前取当前页，记录实际到达位置；不盲发Select、不在未知页面连按。HTTP成功、底层AX仍在或固定sleep均不能单独当作操作通过。每轮finally恢复工具设置并读回、只删除自有会话，原Runner按所有权保留。
+
+
+## 2026-10-27 TV遥控交互与截图隔离
+
+[同包真实WebDAV对照](../archive/handoffs/2026-10/2026-10-27-TV-WEBDAV-SCREENSHOT-INTERFERENCE.md)显示：XCUIScreen A一次Menu返回→DVT截图B三次不返回→XCUIScreen C含暂停继续又一次返回；具体系统消费Menu机制未证，不能将所有旧失败追溯定为工具干扰。
+
+TV遥控器/普通退出验收的同一交互窗口优先使用XCUIScreen图像，避免在每次按键前或按键间重复调用DVT截图。确需DVT画面证据时另列采集窗；如果紧接取图出现事件缺失，先用同包/同文件/相同路径且隔离取图的窗口对照，再判产品故障。固定等8秒或请求成功本身均不证明已消除干扰。保留失败/主动停止/版本、同正AUT前台PID、实际播放器消失与返回页图；底层详情AX或App进程存在不足以证明退出/普通启动成功。原生性能采集与画面/控制验收仍分开，不把该规则当作不采集真实帧的理由。
+
+
+当前实现与诊断阶段见[视频播放技术路线](../architecture/VIDEO_PLAYBACK_PIPELINE.md)，按容量/格式/网络选择测试及计时口径见[矩阵当前执行版](../testing/PLAYBACK-FUNCTION-MATRIX.md)。每批新证据或链路修改同步更新[开发状态](../project/DEVELOPMENT_STATUS.md)及相应文档，历史失败保留；本文旧日期的chunked、网络限制或架构开关描述不能覆盖当前实现与最新用户约束。
+
+2026-10-19信号条件补充：用户报告当前iPhone13蜂窝信号偏弱，现场后续结果单列弱蜂窝，普通/强信号及外部Wi-Fi另组；实际无线指标未测保留未知，不能凭用户当前描述追溯重标旧窗。信号影响与客户端/服务端等待分别举证，不因弱网跳过已授权大文件调试。
+
+2026-10-19用户明确补充：**每轮蜂窝任务收尾立即停止本轮播放/下载，自动恢复测试前的Wi-Fi连接，并以原生已连接状态和Wi-Fi图标核实后再离线分析或结束。** 正常结束、失败、超时、打断均执行，自动化放最外层`finally`/退出清理，不只在成功分支恢复。开关开启不等于连接完成；保留用户原蜂窝/VPN设置。恢复受阻时先停自有流量，记录实际未完成项并一次说明所需动作，不能把蜂窝后台空跑当作正常待机。
+
+## 覆盖层下的同名按钮（2026-10-27）
+
+[Pad暂停跳转窗](../archive/handoffs/2026-10/2026-10-27-DISTINCT-AUDIO-TRACKS-AND-IPAD-PAUSED-SEEK.md)中，全屏暂停后`play.fill`同时存在于可见播放控制和被盖住的详情。优先实际业务标识，图标名称定位必须同时核可见且唯一；不可取第一个匹配。返回验收仍要求覆盖层消失、实际详情图和同进程，不能只看底层AX节点。首窗目标数2主动停止保留，visible-only复验才算完整有限窗口。
+
+## 同项目媒体任务互斥（2026-10-19补充）
+
+### 手动操作与自动控制隔离（2026-10-27）
+
+安装/保留数据覆盖、普通基线重启、WDA创建或删除会话及Runner收尾均按可能影响App生命周期的动作记录，不能因没有显式terminate命令就称只读。上游WDA创建会先清理旧会话、删除会调用kill；是否结束AUT依配置和版本，见[会话命令](https://raw.githubusercontent.com/appium/WebDriverAgent/master/WebDriverAgentLib/Commands/FBSessionCommands.m)及[会话生命周期](https://raw.githubusercontent.com/appium/WebDriverAgent/master/WebDriverAgentLib/Routing/FBSession.m)。这不是当前所有已装Runner清理行为的实测。
+
+用户手动输入或复现时保留草稿和现场，暂停自动安装、启动/切页及会话创建；需要控制时先与用户分开窗口，独占授权后才执行。每次记录设备/包/PID、wall-clock和动作原因，有意停止与系统watchdog、Jetsam、应用异常分别归类。日志检查只列/读/复制已有报告，不默认flush/move/erase。停止自有服务/恢复设置也需记录可能影响，不以末进程消失单独判崩溃。
+
+Debug启动器UUID可能跨包相同；崩溃归包应核实际Nastart.debug.dylib UUID/SHA及安装时间线，不能只用版本号或主stub UUID。[本批](../archive/handoffs/2026-10/2026-10-27-OFFLINE-ARTWORK-AND-CONTROL-AUDIT.md)13旧包在覆盖窗口有真实scene-update watchdog，因果未定，不能全当主动重启，也不能归于新海报页。shouldTerminateApp=false等未来清理策略先核当前Runner实际支持和行为，再宣称无副作用。
+
+用户最新现场：18已完成07:00紧急无线更新并带去上班，不再控制/采集；其余Pad/13/客厅TV已获空闲独占调试授权。以当前交接和后续用户指示更新，不把历史许可扩大为用户正在手动操作时可随意打断。
+
+手机播放与Mac公网分片/转码探针共享NAS供给，均属于媒体任务。发起前核共享当前交接、进程及应用中的其他同项目活动任务；仅没有构建/采集进程不足以证明没有短命curl/Python媒体读取。已有媒体任务时保留其所有权，继续独立离线或小型只读元数据工作，不能并发发片；同窗关联不明时保留日志并标可能重叠，不作受控速度比较。不要为协调另开对话、发送未经用户授权的跨对话消息或停止不属于自己的任务。
+
+## 2026-10-17 用户已更换电话卡并解除流量限制
+
+最新用户指示：iPhone13已换为流量充足的新SIM，明确要求基于连接的iPhone13与iPad开展Wi-Fi及蜂窝播放调试。此指示覆盖下方历史少流量预算及“蜂窝追加关闭”的执行限制；后续不再因旧20MB/96MiB预算、已知蜂窝接口数据或未完成精确计量而阻止已授权蜂窝播放。旧超额FAIL与计量边界仍保留为历史证据，不改成成功。仍现场核SIM/设备/实际网络、最新包身份，记录字节与首帧/seek/换轨证据，并保留有界任务收尾与故障诊断；原Wi-Fi/用户偏好在测试后恢复。iPad是否有蜂窝硬件以现场型号为准，不把Wi-Fi测试或热点链路写成iPad内置蜂窝。
+
+
+## 大文件蜂窝测试的流量闸门（2026-10-17）
+
+用户允许iPhone13蜂窝测试，要求仍用《指环王》等大文件、缩短时长并避免大量流量。09:00的一轮虽在15.15秒由独立时间守卫停止，完成任务的媒体正文已达213,439,783 bytes；原计划约20MB，流量控制失败。Instruments连接监测仅计到几KB，不能当作总流量或可靠预算闸门；11项URLSession指标均为cellular=yes/h2，按transferID及upstreamTaskIndex去重后的正文计量一致。保留超额事实，不以短时、少量连接字节或文件入口日志未及时落盘掩盖。
+
+追加蜂窝媒体播放前，先在Wi-Fi上用已知字节量验证计量覆盖、采样延迟及独立停止动作；同时覆盖媒体实际传输路径，不能只监测部分接口/PID，也不能把启动前探针成功当预算校准。先保留当前证据并恢复原Wi-Fi；内部首帧信号、实际截图、测试时限主动终止及真实播放超时分别记录。数据上限不能保证时，不继续以蜂窝播放来校准计量。此次细节见[当轮交接](../archive/handoffs/2026-10/2026-10-17-MANUAL-SUBTITLE-PIPELINE.md)。
+
+## 真片 Wi-Fi 守卫的边界（2026-10-17）
+
+S19实际LAN HTTP/1.1测试中，96MiB阈值到终止约135ms，尾部IP仍多4.65MB；不能把小片2MB/s的0.55MB余量直接移用。另一轮数据开关OFF后仍捕获pdp_ip1的6,276 IP bytes，守卫约93ms主动停；保存影片metrics cellular=no不等于其他接口无流量。保留意外接口停止，先证实包协议/归属，不能按接口名或开关状态直接归为影片/IMS/计费或静默丢掉。新计量原语保留基本IP protocol，旧捕获没有的字段不追填猜测。
+
+正常Jellyfin Wi-Fi入口会选同服LAN HTTP/1.1，本轮不覆盖此前蜂窝HTTPS/h2。主动杀App后，已持久化完成任务的正文不含所有在途/未落盘任务，不能用这部分之和精确验全流量覆盖。普通完成按钮发送成功、即时源树未消失与普通退出实际验收分开；所有守卫终止均标intentional，先拉报告排除另有崩溃。见[真片交接](../archive/handoffs/2026-10/2026-10-17-JELLYFIN-WIFI-BUDGET.md)。
+
+## pcapd 计量校准补充（2026-10-17 10:30）
+
+`pcapd.watch()` 对未知 protocol_family（实见 vlan 字样值）枚举转换会中断，且 en 上 frame_pre_length=0 时原帧可能已有 Ethernet 头。读取原始 `device_packet_struct`，用 `scripts/device_packet_budget.py` 的 `raw=True` 路径解析，按真实 EtherType/VLAN 区分 IP；不可无条件补头或忽略未知 IP 错误。基名与 unit 合并后计 en/pdp_ip，UDP/重传/ACK均计；不按 App PID 过滤，不重复累计 lo/utun。此模块仅为计量原语。
+
+本轮2MB/s本机HTTP/1.1已知正文约20MB被覆盖，4MiB阈值到停止约68ms，但总IP仍超阈值约0.55MB、采集延迟约1秒。**尚不能作为蜂窝严格上限或实际Jellyfin链路验收，原蜂窝闸门不解除。** 必须先Wi-Fi补验实际HTTPS/h2/QUIC/高吞吐突发和失效停止；记录IP长度、TCP正文/响应、服务端成功写出及写前预留量的不同口径。保留解析/自动化失败与主动终止，勿标普通退出或性能PASS。见[当轮交接](../archive/handoffs/2026-10/2026-10-17-WIFI-PACKET-BUDGET-CALIBRATION.md)。
+
+## 持久构建缓存（2026-10-17）
+
+旧 `/tmp/NastartPlaybackSept26X26` 与 `/tmp/NastartIPhone13PerfOct02` 本轮存在依赖目录但缺少包清单，部分 Git 元数据亦不可读；清理原因未证。首次测试在解析依赖时退出 74，不能算 App 编译或测试断言失败。旧失败保留，不重置仓库源码或升级依赖来绕过。
+
+本轮已按现有 `Package.resolved` 成功重建：`-derivedDataPath "$HOME/Library/Developer/Xcode/DerivedData/Nastart-Playback-Oct17" -clonedSourcePackagesDirPath "$HOME/Library/Caches/Nastart/SourcePackages-20261017" -onlyUsePackageVersionsFromResolvedFile`。模拟器与真机按顺序构建，使用 Xcode27 与普通 Debug；新包从该持久目录冻结到仓库外证据目录，再重核输入、签名和哈希。下轮先核实际路径与锁定版本，不沿用旧 `/tmp` 产物作为最新包。
+
+## Mac 维护睡眠与调试计时（2026-10-16）
+
+Mac 在维护唤醒期间仍可能再次进入 Maintenance Sleep，即使已有 Electron 的 idle-sleep assertion。10-16 的本地慢清单测试墙钟 35 秒、上游单调计时约 21.9 秒，同窗电源日志记录约 15 秒维护睡眠；不得将这种窗口归为 NAS/播放性能。
+
+测试、WDA 与连续真机采集使用 `bash scripts/with_awake_mac.sh command [args...]`，由 `caffeinate -is` 持有命令生命周期内的临时断言；不修改 `pmset` 或显示/设备亮度设置。`-s` 只在交流电供电下有效，应记录电源与实际断言。长时间 Runner 在本批结束后主动停止并保留停止原因，避免为了调试让 Mac 无限保持清醒。不要用保活取代崩溃、签名或连接诊断。
+
+2026-10-17 补充：不要在短命 Python/exec 调用中只 `Popen(caffeinate)` 后立即退出；本轮该进程在后续检查已不在，期间实有 Maintenance Sleep。应把整批命令放进上述 wrapper，或用保持运行的 exec 会话启动有界 `caffeinate -is -t ...`。开始、采样中和结束前分别核对确切 PID 与 `pmset -g assertions`；结束后检查同窗电源日志并主动停止自有进程。只在启动瞬间看到断言，不算覆盖整段测试。受睡眠干扰的旧样本保留，不能转写成性能通过。
+
+采样保留墙钟、单调时钟与实际采集窗口；异常时读取本机私有电源日志核对睡眠，不清除原失败。保活后的单次成功不能证明所有历史断连或真机播放等待都由睡眠导致。10-16 的模拟器独立音频探针在保活后仍崩溃，须继续单独处理。
+
 2026-09-14 执行更新：按 [分层开发与回归流程](../development/playback-development-workflow.md) 区分 L0 逻辑、L1 定向、L2 代表集与 L3 完整矩阵。本文继续定义真机证据及传输硬门槛；逐片全验收顺序适用于 L3，日常修复按影响范围执行 L1/L2。S19 保留压力回归，不再作为所有优化的唯一入口。
 
 更新时间：2026-08-15（Asia/Shanghai）
@@ -8,7 +113,7 @@
 
 2026-09-11 起，播放优化需求和分批状态统一维护在 [PX-01～PX-21、UX-01～UX-04 任务总账](../project/PLAYBACK_EXPERIENCE_PRIORITIES.md)。用户已授权分批实施，要求不得遗漏；恢复任务及每批结束必须核对全部未验收编号，受阻项目保留原因和下一步。本规范继续约束验收，历史手动清晰度秒切优先级由总账中的“基础播放优先、自动画质”取代。
 
-2026-09-12 用户新增 **S19《指环王 1》100 GB 以上文件**，并要求优先用于首帧、续播及音轨/字幕/画质切换测试。当前矩阵为 19×4，按 [S19 专项](2026-09-12-S19-LORD-OF-THE-RINGS.md) 执行本轮大文件压力测试；下文历史 S01→S18 顺序保留，其未完成项不得因新增专项删除。不得按 S19 单独硬编码缓冲/解码参数。
+2026-09-12 用户新增 **S19《指环王 1》100 GB 以上文件**，并要求优先用于首帧、续播及音轨/字幕/画质切换测试。当前矩阵为 19×4，按 [S19 专项](../testing/samples/2026-09-12-S19-LORD-OF-THE-RINGS.md) 执行本轮大文件压力测试；下文历史 S01→S18 顺序保留，其未完成项不得因新增专项删除。不得按 S19 单独硬编码缓冲/解码参数。
 
 设备手动签名补充：无签名构建的 app 根目录可能包含 `Nastart.debug.dylib`、`__preview.dylib`，必须与 Frameworks 中所有动态库一起签名，并对每个动态库独立执行签名验证。只验证 app 外壳或链接隔离不足以排除启动时 DYLD 签名失败。2026-09-11 已遇到并修正该打包故障，不能将其计作播放器失败。
 
@@ -19,6 +124,8 @@
 ## 真机调试基本门槛
 
 每次在 iPhone 13、iPhone 18 或 iPad 开始调试，必须逐台确认 Nastart 为当前源码的最新安装包；无法确认时先保存诊断，再保留数据覆盖安装并核实正常启动。仅凭版本号或其他设备已更新不算核对通过。执行与证据要求见 [项目基本调试要求](../../AGENTS.md)。
+
+已配对iPhone 18仅通过局域网Wi‑Fi更新时，执行[无线安装操作手册](../development/IPHONE18-WIFI-UPDATE.md)。安装/数据保持、RSD正常启动及截图、WDA交互分别验收；容器备份失败不得继续安装，不能凭设备在线或PID替代实际正常首页。
 
 ## 2026-08-15 本轮通用修复门槛
 
@@ -47,7 +154,7 @@ WDA 不是普通 App：直接用 `devicectl device process launch` 启动 Runner
 
 故障分支固定如下：`testmanagerd` 错误先重跑标准 `xcodebuild test`；`Connection reset` 先检查 Runner 是否退出及 `iproxy` 端口映射；`destination unavailable` 检查 USB 配对、`xctrace list devices`、DeviceSupport 和 Xcode/CoreDevice 状态；只有签名校验失败、包缺失或 XCTest 明确报告安装/验证失败时才重新构建/安装 WDA。WDA 不按样本、按参数或按天重复安装。
 
-本次恢复证据：iPad `00008030-001168403C43C02E` 的 WDA `16.2.0` 返回 `ready: true`；S01 设备文件入口截图目录为 `/tmp/nastart-s01-wda-retry/`，t=0/3/10/30 均取得真实视频帧。iPhone `00008110-001E543122E0401E` 已于 2026-08-15 用历史 Bundle ID + DVT 复原，`127.0.0.1:8102/status` 返回 WDA `16.1.5`、`ready: true`，并成功建立 session、读取启动台和“设备→文件”页面；这只证明工具链恢复，不替代 iPhone 播放回归。
+本次恢复证据：iPad `REDACTED-DEVICE-02` 的 WDA `16.2.0` 返回 `ready: true`；S01 设备文件入口截图目录为 `/tmp/nastart-s01-wda-retry/`，t=0/3/10/30 均取得真实视频帧。iPhone `REDACTED-DEVICE-01` 已于 2026-08-15 用历史 Bundle ID + DVT 复原，`127.0.0.1:8102/status` 返回 WDA `16.1.5`、`ready: true`，并成功建立 session、读取启动台和“设备→文件”页面；这只证明工具链恢复，不替代 iPhone 播放回归。
 
 ### XCTest 已启动但 HTTP 未监听时的设备授权检查
 
@@ -79,6 +186,12 @@ iPhone iOS 16 的历史成功证据不是“直接启动 Runner App”，而是 
 暂停时也须先确认字幕cue能持续保持，再用该位置计关闭/恢复响应。本轮DS One DSM的ASS重新选择后首图有字幕、第二图消失，而时钟仍01:14；恢复播放后新cue正常。因此关闭后的消失不能直接归为关闭操作耗时，也不能仅凭首图重现判稳定恢复PASS。先补同位置不切轨暂停对照，记录自然消失及全部等待样本。
 
 ## 不可变约束
+
+2026-10-21 系统PiP输入补充：复用现有有效App会话指定SpringBoard时，以当前系统树的实际容器与唯一按钮，核显示/启用/矩形/前台及边界后一次W3C触摸；本次采用观察返回后1秒失效门槛，中间不插截图，不用缓存EID，不重发未知动作。恢复全屏后先将目标设回auto再核App前台。旧stale最后刷新树到点击约0.686秒，而新成功约0.705–0.752秒，不能将成功单归缩短延迟。只有独立回调和实际电影画面才能确认功能，缺按钮且播放已停滞时先结束保存，不硬等或调参。见[ASS有限往返与PGS失败](../archive/handoffs/2026-10/2026-10-21-PIP-FAST-INPUT-ROUNDTRIP.md)。
+
+2026-10-21 轨道恢复补充：测试前记录实际原轨道 ID/格式与原始书签基线；结束时显式恢复并核实际起播/运行轨道及保存值。重新打开详情可能沿用刚测试的 ASS，不能凭恢复函数名、旧默认或菜单点击返回就声称恢复为 PGS。AFC 读取的是磁盘偏好，需同时记录存储更新时间；它可能仍是选择前的快照，不直接等同内存提交。失败保持，必要正常播放恢复只改回测试选择，不直接覆盖原始偏好或清登录数据。见[实际收尾反例](../archive/handoffs/2026-10/2026-10-21-ASS-PIP-NATIVE.md)。
+
+首页仍有恢复提示、控制矩形尚在变化时，不注入依赖旧位置的导航。先等当前状态稳定并现场核矩形/可见范围；导航若出现操作菜单，保存失败，不重发同窗未知动作或点击隐藏等无关选项。系统 session 创建超时后，不继续用旧 session 假设其仍有效，也不盲重建会话；先停 owned 媒体并保留未知结果/后续 invalid session 证据，再独立恢复正常控制和偏好。
 
 - 不更新 iPhone/iPad 系统。
 - 不按样本或按天重复安装 WDA。WDA 失效时按上面的固定顺序先检查 XCTest/DVT runner、iproxy 和 `/status`；只有包缺失、签名/描述文件失效或 XCTest 明确报告安装验证失败时才重建/安装。
@@ -197,10 +310,10 @@ iPhone iOS 16 的历史成功证据不是“直接启动 Runner App”，而是 
 
 ## 相关文件
 
-- 18 部样本：[2026-08-12-PLAYBACK-MATRIX-18-SAMPLES.md](./2026-08-12-PLAYBACK-MATRIX-18-SAMPLES.md)
-- 结果表：[2026-08-12-PLAYBACK-MATRIX-RESULTS.md](./2026-08-12-PLAYBACK-MATRIX-RESULTS.md)
-- 功能验收矩阵：[PLAYBACK-FUNCTION-MATRIX.md](./PLAYBACK-FUNCTION-MATRIX.md)
-- 当前续接记录：[2026-08-12-CONTINUE-REAL-DEVICE-DEBUG.md](./2026-08-12-CONTINUE-REAL-DEVICE-DEBUG.md)
+- 18 部样本：[2026-08-12-PLAYBACK-MATRIX-18-SAMPLES.md](../testing/samples/2026-08-12-PLAYBACK-MATRIX-18-SAMPLES.md)
+- 结果表：[2026-08-12-PLAYBACK-MATRIX-RESULTS.md](../archive/handoffs/2026-08/2026-08-12-PLAYBACK-MATRIX-RESULTS.md)
+- 功能验收矩阵：[PLAYBACK-FUNCTION-MATRIX.md](../testing/PLAYBACK-FUNCTION-MATRIX.md)
+- 当前续接记录：[2026-08-12-CONTINUE-REAL-DEVICE-DEBUG.md](../archive/handoffs/2026-08/2026-08-12-CONTINUE-REAL-DEVICE-DEBUG.md)
 
 ## WDA iPhone 固化链路（2026-08-27，已在真机验证）
 
@@ -210,7 +323,7 @@ iPhone iOS 16 的历史成功证据不是“直接启动 Runner App”，而是 
 
 对这台 iOS 16 设备，应先交叉检查 usbmux 枚举、配对、设备信息和 ios-deploy，再判断是否需要用户处理数据线或信任状态。CoreDevice 状态异常与设备物理离线分开记录；不要让单一工具误报阻止已经授权的真机安装与验证。
 
-这条链路已在 iPhone 13 / iOS 16.3.1（UDID `00008110-001E543122E0401E`）上验证通过，未升级、重启或修改系统。WDA host Bundle ID 固定为 `com.changliwen.nastart.WebDriverAgentRunner.xctrunner`，test Bundle ID 固定为 `com.changliwen.nastart.WebDriverAgentRunner`。
+这条链路已在 iPhone 13 / iOS 16.3.1（UDID `REDACTED-DEVICE-01`）上验证通过，未升级、重启或修改系统。WDA host Bundle ID 固定为 `com.changliwen.nastart.WebDriverAgentRunner.xctrunner`，test Bundle ID 固定为 `com.changliwen.nastart.WebDriverAgentRunner`。
 
 - 持久化包目录：`/Users/lagransun/Library/Application Support/Nastart/WDA/iPhone-16.3.1`
 - WDA 包：`WebDriverAgentRunner-Runner.app`，WDA 源码版本 16.8.0
@@ -257,4 +370,13 @@ PiP 的播放器入口和系统退出控件属于两个不同的 UI 会话，必
 
 - DS One session 的 `window/size` 可能仍是横屏 `844×390`，而原始截图是竖屏 `1170×2532`；不要把截图像素直接当作 DS One 的坐标。
 - PiP 控件属于 SpringBoard；DS One 树中的 `PIPUIView` 可能是 `visible=false`，这不表示 PiP 不存在。
-- 自动点击失败时，先区分“控件不在当前会话树”和“元素点击失败”，不能通过重新启动 DS One 代替 PiP 退出验收。完整复现记录见 [DS One 视频播放链路证据基线](./2026-08-27-DSONE-PLAYBACK-CHAIN-BASELINE.md)。
+- 自动点击失败时，先区分“控件不在当前会话树”和“元素点击失败”，不能通过重新启动 DS One 代替 PiP 退出验收。完整复现记录见 [DS One 视频播放链路证据基线](../archive/handoffs/2026-08/2026-08-27-DSONE-PLAYBACK-CHAIN-BASELINE.md)。
+
+
+## Jellyfin 生命周期与冷续播的证据边界（2026-10-11）
+
+Jellyfin 入口的本地书签用于轨道偏好；新开的详情页从服务端获取续播位置。不能把本地 `playback.localResume.v1` 的位置直接当成服务端应恢复的位置。相同账号/同一影片的另一台设备会更新同一个服务端进度，因此暂停/Home/终止/冷启动/实际续播的完整链条必须串行完成，中途不要在另一设备播放同一项。记录本地稳定保存、冷详情按钮/服务端启动位置与真实首帧，失败及差异保留。
+
+片头短播放还可能落在服务器最小续播比例以下。Jellyfin 官方实现按该比例归零，默认值为5%，但当前NAS的实际配置须单独核对；不要因官方默认就声称现场值已确认。可通过实际播放器进度控件进入影片中段进行独立复验，保存动作及实际画面，不改服务器配置、不回写偏好或进度。参见[官方进度规则](https://github.com/jellyfin/jellyfin/blob/master/Emby.Server.Implementations/Library/UserDataManager.cs)及[官方默认配置](https://github.com/jellyfin/jellyfin/blob/master/MediaBrowser.Model/Configuration/ServerConfiguration.cs)。
+
+边界的主动服务端进度上报仍是异步网络请求；请求排队不等于服务端已确认，立即杀进程、离线与Jetsam需要独立证据。不得用定时本地checkpoint的2秒间隔承诺Jellyfin最大进度丢失或网络耐久。

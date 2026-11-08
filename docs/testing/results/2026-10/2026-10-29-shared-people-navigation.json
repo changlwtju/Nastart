@@ -1,0 +1,129 @@
+{
+  "recordedAt": "2026-10-29T23:15:49+08:00",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceInputCount": 433,
+  "changedExistingSourceFiles": 5,
+  "existingTestsPassed": 6,
+  "builds": {
+    "module-tests": {
+      "startedAt": "2026-10-29T22:23:43.971248+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-29T22:23:46.358377+08:00"
+    },
+    "mobile-sim-debug-cast": {
+      "startedAt": "2026-10-29T22:23:43.971191+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-29T22:23:59.982883+08:00"
+    },
+    "tv-sim-debug-cast": {
+      "startedAt": "2026-10-29T22:23:43.971228+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-29T22:23:53.789812+08:00"
+    },
+    "mobile-debug": {
+      "startedAt": "2026-10-29T23:09:54.063192+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-29T23:11:51.941157+08:00"
+    },
+    "tv-debug": {
+      "startedAt": "2026-10-29T23:09:54.063134+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-29T23:11:11.682323+08:00"
+    },
+    "mobile-release": {
+      "startedAt": "2026-10-29T23:11:51.942700+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-29T23:13:50.565199+08:00"
+    },
+    "tv-release": {
+      "startedAt": "2026-10-29T23:11:11.686096+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-29T23:12:00.425394+08:00"
+    }
+  },
+  "staticComponentBaselines": {
+    "phone": "glassDeck light accessibility size",
+    "pad": "cleanGrid light standard size",
+    "tv": "glassDeck dark standard size"
+  },
+  "staticBaselineCount": 3,
+  "phoneInteraction": {
+    "at": "2026-10-29T22:31:46.413827+08:00",
+    "windowObserved": "Nastart-People-phone-222549",
+    "dragRequests": 3,
+    "scrollRequests": 2,
+    "actualDisplacementVerified": false,
+    "lastItemVisible": false,
+    "result": "Unverified: no visible movement after drag and wheel approaches; stop further input attempts",
+    "productFailureEstablished": false,
+    "smoothnessVerified": false
+  },
+  "tvInteraction": {
+    "recordedAt": "2026-10-29T23:09:52.758158+08:00",
+    "initialFocusFrameObserved": true,
+    "directionRequests": 1,
+    "focusDisplacementVerified": false,
+    "lastItemVisible": false,
+    "result": "Interactive gate expired and owned simulator cleaned before follow-up; original one Right request produced no confirmed movement",
+    "cleanupRecorded": true,
+    "otherSimulatorOperated": false,
+    "smoothnessVerified": false
+  },
+  "padInputCommands": 0,
+  "fullInteractionAccepted": false,
+  "sourcePreservation": {
+    "networkPortraitUnchanged": true,
+    "mobileImageLoaderUnchanged": true,
+    "tvPlaybackSuffixUnchanged": true
+  },
+  "ownedSimulatorsDeleted": 3,
+  "syntheticPreferencesPreserved": true,
+  "packages": {
+    "mobile": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-29T23:11:51.414868+08:00",
+      "frozenAt": "2026-10-29T23:15:18.731932+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 433,
+      "mainSHA256": "ee376a332eb2bc08a6af65ea4084833b4c5fbffbe69e4ae188289fee2aaacd3b",
+      "debugDylibSHA256": "99b6654661ddfd6941eeec7f3e2c9eb6c763bc6e34fcba543c7b6d42194a08e6",
+      "signedMachOCount": 30,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false
+    },
+    "tv": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-29T23:11:11.415254+08:00",
+      "frozenAt": "2026-10-29T23:15:19.219284+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 433,
+      "mainSHA256": "523f78fe977c3f89b1ac80355617391da872b75b1a7a6674c0f6dd6ce37b1f17",
+      "debugDylibSHA256": "45fe93881826d764b4db585ddfd545b7ff34c7c4e01df56cf608dab583508c2f",
+      "signedMachOCount": 27,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false
+    }
+  },
+  "physicalDevicesOperated": 0,
+  "NASCommands": 0,
+  "playbackCommands": 0,
+  "privateEvidencePointer": "current-shared-people-navigation-private",
+  "retainedSetupIssue": "System Python lacked PIL before device creation; bundled runtime used",
+  "retainedIncompleteInteraction": "Phone drag/wheel no confirmed displacement; TV gate timed out and cleaned owned simulator; no second simulator window was operated",
+  "notVerified": [
+    "Actual horizontal browsing or TV focus movement",
+    "Jellyfin host direction navigation",
+    "VoiceOver, animation/frame times, real avatar loading",
+    "Physical-device UI, source connections and playback"
+  ]
+}

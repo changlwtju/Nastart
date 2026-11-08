@@ -1,0 +1,1038 @@
+{
+  "date": "2026-10-20",
+  "source": {
+    "HEAD": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "uncommittedIOSDiffSHA256": "73cfcd889b2222bc5a1f32ee22a049d1501184d48134fe0a7011404ef941b8d2",
+    "configuration": "normal Debug -Onone",
+    "builtAt": "2026-10-20T13:50:08.600645+08:00",
+    "binaries": {
+      "Nastart": "45a63d1347c44c98e15d595dff3097c7edd92ecd8276b84a7863986e71599365",
+      "Nastart.debug.dylib": "ebf56fe06038be8e91dbda14abf996eda7cc7ea3782b54036179fef293812c9e",
+      "Frameworks/KSPlayer.framework/KSPlayer": "26e648bb9519518ebda7470a8f6727e83c51ab4814b7d087d856aaa39dc003ce"
+    },
+    "buildsThisBatch": 1,
+    "signedLibrariesVerified": 29,
+    "sourceInputsVerified": 173,
+    "normalEntrancesAndProxyImplementationUnchanged": true,
+    "acceptedChange": "explicit Debug lab PROXY/PREWARM topology only"
+  },
+  "tests": {
+    "acceptedTargeted": 8,
+    "acceptedFailures": 0,
+    "initialTargetedFailures": 1,
+    "initialFailureReason": "new test passed seconds into an existing normalized-position input; test corrected, no production position change",
+    "preflightAccepted": 15,
+    "initialPreflightTextMatcherFailureRetained": true,
+    "DebugScopeCounterexamples": 5
+  },
+  "device": {
+    "target": "iPhone 13",
+    "model": "iPhone14,5",
+    "system": "16.3.1",
+    "USBAndIdentityVerifiedPrivately": true,
+    "coverInstallPreservedData": true,
+    "nonDiagnosticPreferenceKeysRetainedOnInstall": 25,
+    "iPad": "not operated; prior 09:47 package, not current-source regression",
+    "iPhone18": "away with user; not probed or operated"
+  },
+  "fixture": {
+    "NASMediaRequests": 0,
+    "cellularPlayback": false,
+    "savedSegmentBytes": [
+      121072,
+      646156
+    ],
+    "singleSegmentLayoutBytes": 767228,
+    "TSConcatenationPacketSyncContinuityPTSVerified": true,
+    "normalEntryAcceptance": false,
+    "ReleaseAcceptance": false,
+    "allConditionsSingleWindowsNotPerformanceStatistics": true
+  },
+  "windows": [
+    {
+      "label": "wifi-local-proxy-master-held",
+      "playlistMode": "master",
+      "targetDurationSeconds": 3,
+      "EXTINFSeconds": [
+        2.002,
+        2.002
+      ],
+      "totalContentSeconds": 4.004,
+      "headerDelaySeconds": 4.5,
+      "oneSharedSegmentReadyTime": true,
+      "prewarm": false,
+      "primerUsed": false,
+      "actualSystemAV": true,
+      "actualProductionHLSProxyEvents": true,
+      "HTTPFixtureUpstream": "HTTP/1.1 on original Wi-Fi",
+      "firstSegmentGETs": 2,
+      "serverSecondGETAfterFirstSeconds": 2.031436,
+      "clockSignalMs": 5567,
+      "clockIsScreenPresentation": false,
+      "t10PictureVisuallyReviewed": true,
+      "initialSnapshotHadClock": true,
+      "laterTraceReadUsed": true,
+      "firstSegmentTransfers": [
+        {
+          "issuedFromRouteSeconds": 0.101883,
+          "events": [
+            {
+              "recordedFromIssueSeconds": 0.0,
+              "stage": "upstreamRequestIssued"
+            },
+            {
+              "recordedFromIssueSeconds": 2.013603,
+              "stage": "clientReadEnded",
+              "clientReadComplete": "true",
+              "clientReadErrorKind": "none",
+              "requestReceivedToReadEndMs": "2011"
+            },
+            {
+              "recordedFromIssueSeconds": 4.62089,
+              "status": "200"
+            },
+            {
+              "recordedFromIssueSeconds": 4.62219,
+              "result": "未能完成操作。（Network.NWError错误0。）",
+              "finishSource": "clientFailed",
+              "status": "200",
+              "deliveredBytes": "14480",
+              "expectedBytes": "121072",
+              "errorCode": "0",
+              "errorDomain": "Network.NWError"
+            },
+            {
+              "recordedFromIssueSeconds": 4.622998,
+              "stage": "upstreamCancellationRequested"
+            },
+            {
+              "recordedFromIssueSeconds": 4.623586,
+              "stage": "urlSessionTaskMetrics",
+              "upstreamTaskBodyBytes": "14480",
+              "upstreamIssueToHeadersCallbackMs": "4592",
+              "upstreamIssueToLastBodyCallbackMs": "4595",
+              "cellular": "no",
+              "protocol": "http/1.1"
+            }
+          ]
+        },
+        {
+          "issuedFromRouteSeconds": 2.145504,
+          "events": [
+            {
+              "recordedFromIssueSeconds": 0.0,
+              "stage": "upstreamRequestIssued"
+            },
+            {
+              "recordedFromIssueSeconds": 2.548236,
+              "status": "200"
+            },
+            {
+              "recordedFromIssueSeconds": 2.581832,
+              "stage": "clientReadEnded",
+              "clientReadComplete": "true",
+              "clientReadErrorKind": "none",
+              "requestReceivedToReadEndMs": "2596"
+            },
+            {
+              "recordedFromIssueSeconds": 2.582512,
+              "stage": "urlSessionTaskMetrics",
+              "upstreamTaskBodyBytes": "121072",
+              "upstreamIssueToHeadersCallbackMs": "2571",
+              "upstreamIssueToLastBodyCallbackMs": "2595",
+              "cellular": "no",
+              "protocol": "http/1.1"
+            },
+            {
+              "recordedFromIssueSeconds": 2.584193,
+              "result": "complete",
+              "finishSource": "clientTerminalSend",
+              "status": "200",
+              "deliveredBytes": "121072",
+              "expectedBytes": "121072",
+              "errorCode": "-",
+              "errorDomain": "-"
+            }
+          ]
+        }
+      ],
+      "serverRequests": [
+        {
+          "name": "master.m3u8",
+          "method": "GET",
+          "requestSeconds": 1.7926307080000001,
+          "headersSeconds": 1.7937260830000001,
+          "bodyBytes": 164,
+          "status": 200,
+          "result": "sent",
+          "endSeconds": 1.7937450000000001,
+          "rangeRequested": false
+        },
+        {
+          "name": "main.m3u8",
+          "method": "GET",
+          "requestSeconds": 1.813723541,
+          "headersSeconds": 1.814277166,
+          "bodyBytes": 153,
+          "status": 200,
+          "result": "sent",
+          "endSeconds": 1.8142895410000002,
+          "rangeRequested": false
+        },
+        {
+          "name": "0.ts",
+          "method": "GET",
+          "requestSeconds": 1.831144,
+          "headersSeconds": 6.339311541,
+          "bodyBytes": 121072,
+          "status": 200,
+          "result": "sent",
+          "endSeconds": 6.339414790999999,
+          "rangeRequested": false
+        },
+        {
+          "name": "0.ts",
+          "method": "GET",
+          "requestSeconds": 3.862579958,
+          "headersSeconds": 6.338518832999999,
+          "bodyBytes": 121072,
+          "status": 200,
+          "result": "sent",
+          "endSeconds": 6.338672291,
+          "rangeRequested": false
+        },
+        {
+          "name": "1.ts",
+          "method": "GET",
+          "requestSeconds": 6.470166,
+          "headersSeconds": 6.471529083,
+          "bodyBytes": 646156,
+          "status": 200,
+          "result": "sent",
+          "endSeconds": 6.494122666,
+          "rangeRequested": false
+        }
+      ],
+      "ownMediaStopped": true,
+      "fixtureServerClosed": true,
+      "emptyEnvironmentRestored": true
+    },
+    {
+      "label": "wifi-local-proxy-master-immediate",
+      "playlistMode": "master",
+      "targetDurationSeconds": 3,
+      "EXTINFSeconds": [
+        2.002,
+        2.002
+      ],
+      "totalContentSeconds": 4.004,
+      "headerDelaySeconds": 0.0,
+      "oneSharedSegmentReadyTime": true,
+      "prewarm": false,
+      "primerUsed": false,
+      "actualSystemAV": true,
+      "actualProductionHLSProxyEvents": true,
+      "HTTPFixtureUpstream": "HTTP/1.1 on original Wi-Fi",
+      "firstSegmentGETs": 1,
+      "serverSecondGETAfterFirstSeconds": null,
+      "clockSignalMs": 1018,
+      "clockIsScreenPresentation": false,
+      "t10PictureVisuallyReviewed": true,
+      "initialSnapshotHadClock": true,
+      "laterTraceReadUsed": true,
+      "firstSegmentTransfers": [
+        {
+          "issuedFromRouteSeconds": 0.108332,
+          "events": [
+            {
+              "recordedFromIssueSeconds": 0.0,
+              "stage": "upstreamRequestIssued"
+            },
+            {
+              "recordedFromIssueSeconds": 0.023443,
+              "status": "200"
+            },
+            {
+              "recordedFromIssueSeconds": 0.084281,
+              "stage": "clientReadEnded",
+              "clientReadComplete": "true",
+              "clientReadErrorKind": "none",
+              "requestReceivedToReadEndMs": "85"
+            },
+            {
+              "recordedFromIssueSeconds": 0.084694,
+              "stage": "urlSessionTaskMetrics",
+              "upstreamTaskBodyBytes": "121072",
+              "upstreamIssueToHeadersCallbackMs": "24",
+              "upstreamIssueToLastBodyCallbackMs": "85",
+              "cellular": "no",
+              "protocol": "http/1.1"
+            },
+            {
+              "recordedFromIssueSeconds": 0.086663,
+              "result": "complete",
+              "finishSource": "clientTerminalSend",
+              "status": "200",
+              "deliveredBytes": "121072",
+              "expectedBytes": "121072",
+              "errorCode": "-",
+              "errorDomain": "-"
+            }
+          ]
+        }
+      ],
+      "serverRequests": [
+        {
+          "name": "master.m3u8",
+          "method": "GET",
+          "requestSeconds": 1.887844375,
+          "headersSeconds": 1.891694292,
+          "bodyBytes": 164,
+          "status": 200,
+          "result": "sent",
+          "endSeconds": 1.89171825,
+          "rangeRequested": false
+        },
+        {
+          "name": "main.m3u8",
+          "method": "GET",
+          "requestSeconds": 1.91015525,
+          "headersSeconds": 1.910897959,
+          "bodyBytes": 153,
+          "status": 200,
+          "result": "sent",
+          "endSeconds": 1.910921459,
+          "rangeRequested": false
+        },
+        {
+          "name": "0.ts",
+          "method": "GET",
+          "requestSeconds": 1.937697042,
+          "headersSeconds": 1.938795,
+          "bodyBytes": 121072,
+          "status": 200,
+          "result": "sent",
+          "endSeconds": 1.938925792,
+          "rangeRequested": false
+        },
+        {
+          "name": "1.ts",
+          "method": "GET",
+          "requestSeconds": 2.0145497920000004,
+          "headersSeconds": 2.0178322499999997,
+          "bodyBytes": 646156,
+          "status": 200,
+          "result": "sent",
+          "endSeconds": 2.066527625,
+          "rangeRequested": false
+        }
+      ],
+      "ownMediaStopped": true,
+      "fixtureServerClosed": true,
+      "emptyEnvironmentRestored": true
+    },
+    {
+      "label": "wifi-local-proxy-master-prewarm-held",
+      "playlistMode": "master",
+      "targetDurationSeconds": 3,
+      "EXTINFSeconds": [
+        2.002,
+        2.002
+      ],
+      "totalContentSeconds": 4.004,
+      "headerDelaySeconds": 4.5,
+      "oneSharedSegmentReadyTime": true,
+      "prewarm": true,
+      "primerUsed": false,
+      "actualSystemAV": true,
+      "actualProductionHLSProxyEvents": true,
+      "HTTPFixtureUpstream": "HTTP/1.1 on original Wi-Fi",
+      "firstSegmentGETs": 2,
+      "serverSecondGETAfterFirstSeconds": 2.13218,
+      "clockSignalMs": 5538,
+      "clockIsScreenPresentation": false,
+      "t10PictureVisuallyReviewed": true,
+      "initialSnapshotHadClock": false,
+      "laterTraceReadUsed": true,
+      "firstSegmentTransfers": [
+        {
+          "issuedFromRouteSeconds": 0.073499,
+          "events": [
+            {
+              "recordedFromIssueSeconds": 0.0,
+              "stage": "upstreamRequestIssued"
+            },
+            {
+              "recordedFromIssueSeconds": 2.010373,
+              "stage": "clientReadEnded",
+              "clientReadComplete": "true",
+              "clientReadErrorKind": "none",
+              "requestReceivedToReadEndMs": "2008"
+            },
+            {
+              "recordedFromIssueSeconds": 4.583346,
+              "status": "200"
+            },
+            {
+              "recordedFromIssueSeconds": 4.609232,
+              "result": "未能完成操作。（Network.NWError错误0。）",
+              "finishSource": "clientFailed",
+              "status": "200",
+              "deliveredBytes": "0",
+              "expectedBytes": "121072",
+              "errorCode": "0",
+              "errorDomain": "Network.NWError"
+            },
+            {
+              "recordedFromIssueSeconds": 4.609594,
+              "stage": "upstreamCancellationRequested"
+            },
+            {
+              "recordedFromIssueSeconds": 4.609827,
+              "stage": "urlSessionTaskMetrics",
+              "upstreamTaskBodyBytes": "0",
+              "upstreamIssueToHeadersCallbackMs": "4580",
+              "upstreamIssueToLastBodyCallbackMs": "unknown",
+              "cellular": "no",
+              "protocol": "http/1.1"
+            }
+          ]
+        },
+        {
+          "issuedFromRouteSeconds": 2.112366,
+          "events": [
+            {
+              "recordedFromIssueSeconds": 0.0,
+              "stage": "upstreamRequestIssued"
+            },
+            {
+              "recordedFromIssueSeconds": 2.540895,
+              "status": "200"
+            },
+            {
+              "recordedFromIssueSeconds": 2.571855,
+              "stage": "clientReadEnded",
+              "clientReadComplete": "true",
+              "clientReadErrorKind": "none",
+              "requestReceivedToReadEndMs": "2591"
+            },
+            {
+              "recordedFromIssueSeconds": 2.572101,
+              "stage": "urlSessionTaskMetrics",
+              "upstreamTaskBodyBytes": "121072",
+              "upstreamIssueToHeadersCallbackMs": "2564",
+              "upstreamIssueToLastBodyCallbackMs": "2591",
+              "cellular": "no",
+              "protocol": "http/1.1"
+            },
+            {
+              "recordedFromIssueSeconds": 2.57275,
+              "result": "complete",
+              "finishSource": "clientTerminalSend",
+              "status": "200",
+              "deliveredBytes": "121072",
+              "expectedBytes": "121072",
+              "errorCode": "-",
+              "errorDomain": "-"
+            }
+          ]
+        }
+      ],
+      "serverRequests": [
+        {
+          "name": "master.m3u8",
+          "method": "GET",
+          "requestSeconds": 2.142345584,
+          "headersSeconds": 2.1445042500000002,
+          "bodyBytes": 164,
+          "status": 200,
+          "result": "sent",
+          "endSeconds": 2.1445553750000004,
+          "rangeRequested": false
+        },
+        {
+          "name": "main.m3u8",
+          "method": "GET",
+          "requestSeconds": 2.976350667,
+          "headersSeconds": 2.9772226670000004,
+          "bodyBytes": 153,
+          "status": 200,
+          "result": "sent",
+          "endSeconds": 2.977249,
+          "rangeRequested": false
+        },
+        {
+          "name": "master.m3u8",
+          "method": "GET",
+          "requestSeconds": 3.1308212500000003,
+          "headersSeconds": 3.1320171670000003,
+          "bodyBytes": 164,
+          "status": 200,
+          "result": "sent",
+          "endSeconds": 3.1320465000000004,
+          "rangeRequested": false
+        },
+        {
+          "name": "0.ts",
+          "method": "GET",
+          "requestSeconds": 3.156183792,
+          "headersSeconds": 7.667383249999999,
+          "bodyBytes": 121072,
+          "status": 200,
+          "result": "sent",
+          "endSeconds": 7.6674672919999995,
+          "rangeRequested": false
+        },
+        {
+          "name": "0.ts",
+          "method": "GET",
+          "requestSeconds": 5.288363416999999,
+          "headersSeconds": 7.6656263749999995,
+          "bodyBytes": 121072,
+          "status": 200,
+          "result": "sent",
+          "endSeconds": 7.6657775,
+          "rangeRequested": false
+        },
+        {
+          "name": "1.ts",
+          "method": "GET",
+          "requestSeconds": 7.7749785,
+          "headersSeconds": 7.776315917,
+          "bodyBytes": 646156,
+          "status": 200,
+          "result": "sent",
+          "endSeconds": 7.801043958999999,
+          "rangeRequested": false
+        }
+      ],
+      "ownMediaStopped": true,
+      "fixtureServerClosed": true,
+      "emptyEnvironmentRestored": true
+    },
+    {
+      "label": "wifi-local-proxy-media-held",
+      "playlistMode": "media",
+      "targetDurationSeconds": 3,
+      "EXTINFSeconds": [
+        2.002,
+        2.002
+      ],
+      "totalContentSeconds": 4.004,
+      "headerDelaySeconds": 4.5,
+      "oneSharedSegmentReadyTime": true,
+      "prewarm": false,
+      "primerUsed": false,
+      "actualSystemAV": true,
+      "actualProductionHLSProxyEvents": true,
+      "HTTPFixtureUpstream": "HTTP/1.1 on original Wi-Fi",
+      "firstSegmentGETs": 1,
+      "serverSecondGETAfterFirstSeconds": null,
+      "clockSignalMs": 5673,
+      "clockIsScreenPresentation": false,
+      "t10PictureVisuallyReviewed": true,
+      "initialSnapshotHadClock": true,
+      "laterTraceReadUsed": true,
+      "firstSegmentTransfers": [
+        {
+          "issuedFromRouteSeconds": 0.178888,
+          "events": [
+            {
+              "recordedFromIssueSeconds": 0.0,
+              "stage": "upstreamRequestIssued"
+            },
+            {
+              "recordedFromIssueSeconds": 4.619701,
+              "status": "200"
+            },
+            {
+              "recordedFromIssueSeconds": 4.651441,
+              "stage": "clientReadEnded",
+              "clientReadComplete": "true",
+              "clientReadErrorKind": "none",
+              "requestReceivedToReadEndMs": "4644"
+            },
+            {
+              "recordedFromIssueSeconds": 4.65233,
+              "stage": "urlSessionTaskMetrics",
+              "upstreamTaskBodyBytes": "121072",
+              "upstreamIssueToHeadersCallbackMs": "4622",
+              "upstreamIssueToLastBodyCallbackMs": "4643",
+              "cellular": "no",
+              "protocol": "http/1.1"
+            },
+            {
+              "recordedFromIssueSeconds": 4.654225,
+              "result": "complete",
+              "finishSource": "clientTerminalSend",
+              "status": "200",
+              "deliveredBytes": "121072",
+              "expectedBytes": "121072",
+              "errorCode": "-",
+              "errorDomain": "-"
+            }
+          ]
+        }
+      ],
+      "serverRequests": [
+        {
+          "name": "main.m3u8",
+          "method": "GET",
+          "requestSeconds": 1.7747870829999999,
+          "headersSeconds": 1.776453875,
+          "bodyBytes": 153,
+          "status": 200,
+          "result": "sent",
+          "endSeconds": 1.77649075,
+          "rangeRequested": false
+        },
+        {
+          "name": "0.ts",
+          "method": "GET",
+          "requestSeconds": 1.886598,
+          "headersSeconds": 6.397495167000001,
+          "bodyBytes": 121072,
+          "status": 200,
+          "result": "sent",
+          "endSeconds": 6.397634375,
+          "rangeRequested": false
+        },
+        {
+          "name": "1.ts",
+          "method": "GET",
+          "requestSeconds": 6.559729167,
+          "headersSeconds": 6.560974542,
+          "bodyBytes": 646156,
+          "status": 200,
+          "result": "sent",
+          "endSeconds": 6.582428542000001,
+          "rangeRequested": false
+        }
+      ],
+      "ownMediaStopped": true,
+      "fixtureServerClosed": true,
+      "emptyEnvironmentRestored": true
+    },
+    {
+      "label": "wifi-local-proxy-target5-single-held",
+      "playlistMode": "master",
+      "targetDurationSeconds": 5,
+      "EXTINFSeconds": [
+        4.004
+      ],
+      "totalContentSeconds": 4.004,
+      "headerDelaySeconds": 4.5,
+      "oneSharedSegmentReadyTime": true,
+      "prewarm": true,
+      "primerUsed": false,
+      "actualSystemAV": true,
+      "actualProductionHLSProxyEvents": true,
+      "HTTPFixtureUpstream": "HTTP/1.1 on original Wi-Fi",
+      "firstSegmentGETs": 2,
+      "serverSecondGETAfterFirstSeconds": 4.02932,
+      "clockSignalMs": 5597,
+      "clockIsScreenPresentation": false,
+      "t10PictureVisuallyReviewed": true,
+      "initialSnapshotHadClock": true,
+      "laterTraceReadUsed": true,
+      "firstSegmentTransfers": [
+        {
+          "issuedFromRouteSeconds": 0.069518,
+          "events": [
+            {
+              "recordedFromIssueSeconds": 0.0,
+              "stage": "upstreamRequestIssued"
+            },
+            {
+              "recordedFromIssueSeconds": 4.010809,
+              "stage": "clientReadEnded",
+              "clientReadComplete": "true",
+              "clientReadErrorKind": "none",
+              "requestReceivedToReadEndMs": "4008"
+            },
+            {
+              "recordedFromIssueSeconds": 4.635891,
+              "status": "200"
+            },
+            {
+              "recordedFromIssueSeconds": 4.663669,
+              "result": "未能完成操作。（Network.NWError错误0。）",
+              "finishSource": "clientFailed",
+              "status": "200",
+              "deliveredBytes": "15928",
+              "expectedBytes": "767228",
+              "errorCode": "0",
+              "errorDomain": "Network.NWError"
+            },
+            {
+              "recordedFromIssueSeconds": 4.664441,
+              "stage": "upstreamCancellationRequested"
+            },
+            {
+              "recordedFromIssueSeconds": 4.665022,
+              "stage": "urlSessionTaskMetrics",
+              "upstreamTaskBodyBytes": "15928",
+              "upstreamIssueToHeadersCallbackMs": "4632",
+              "upstreamIssueToLastBodyCallbackMs": "4635",
+              "cellular": "no",
+              "protocol": "http/1.1"
+            }
+          ]
+        },
+        {
+          "issuedFromRouteSeconds": 4.108594,
+          "events": [
+            {
+              "recordedFromIssueSeconds": 0.0,
+              "stage": "upstreamRequestIssued"
+            },
+            {
+              "recordedFromIssueSeconds": 0.593162,
+              "status": "200"
+            },
+            {
+              "recordedFromIssueSeconds": 0.69499,
+              "stage": "clientReadEnded",
+              "clientReadComplete": "true",
+              "clientReadErrorKind": "none",
+              "requestReceivedToReadEndMs": "720"
+            },
+            {
+              "recordedFromIssueSeconds": 0.696032,
+              "stage": "urlSessionTaskMetrics",
+              "upstreamTaskBodyBytes": "767228",
+              "upstreamIssueToHeadersCallbackMs": "616",
+              "upstreamIssueToLastBodyCallbackMs": "719",
+              "cellular": "no",
+              "protocol": "http/1.1"
+            },
+            {
+              "recordedFromIssueSeconds": 0.699329,
+              "result": "complete",
+              "finishSource": "clientTerminalSend",
+              "status": "200",
+              "deliveredBytes": "767228",
+              "expectedBytes": "767228",
+              "errorCode": "-",
+              "errorDomain": "-"
+            }
+          ]
+        }
+      ],
+      "serverRequests": [
+        {
+          "name": "master.m3u8",
+          "method": "GET",
+          "requestSeconds": 1.8739368330000001,
+          "headersSeconds": 1.875780083,
+          "bodyBytes": 164,
+          "status": 200,
+          "result": "sent",
+          "endSeconds": 1.875814833,
+          "rangeRequested": false
+        },
+        {
+          "name": "main.m3u8",
+          "method": "GET",
+          "requestSeconds": 1.92972875,
+          "headersSeconds": 1.930784375,
+          "bodyBytes": 133,
+          "status": 200,
+          "result": "sent",
+          "endSeconds": 1.9308120420000001,
+          "rangeRequested": false
+        },
+        {
+          "name": "master.m3u8",
+          "method": "GET",
+          "requestSeconds": 2.0784116249999998,
+          "headersSeconds": 2.0797827079999998,
+          "bodyBytes": 164,
+          "status": 200,
+          "result": "sent",
+          "endSeconds": 2.0798168749999997,
+          "rangeRequested": false
+        },
+        {
+          "name": "0.ts",
+          "method": "GET",
+          "requestSeconds": 2.0987685419999997,
+          "headersSeconds": 6.609678292,
+          "bodyBytes": 767228,
+          "status": 200,
+          "result": "BrokenPipeError",
+          "endSeconds": 6.751832458,
+          "rangeRequested": false
+        },
+        {
+          "name": "0.ts",
+          "method": "GET",
+          "requestSeconds": 6.1280889169999995,
+          "headersSeconds": 6.609372875,
+          "bodyBytes": 767228,
+          "status": 200,
+          "result": "sent",
+          "endSeconds": 6.766398583,
+          "rangeRequested": false
+        }
+      ],
+      "ownMediaStopped": true,
+      "fixtureServerClosed": true,
+      "emptyEnvironmentRestored": true
+    },
+    {
+      "label": "wifi-local-proxy-target5-two-held",
+      "playlistMode": "master",
+      "targetDurationSeconds": 5,
+      "EXTINFSeconds": [
+        2.002,
+        2.002
+      ],
+      "totalContentSeconds": 4.004,
+      "headerDelaySeconds": 4.5,
+      "oneSharedSegmentReadyTime": true,
+      "prewarm": true,
+      "primerUsed": false,
+      "actualSystemAV": true,
+      "actualProductionHLSProxyEvents": true,
+      "HTTPFixtureUpstream": "HTTP/1.1 on original Wi-Fi",
+      "firstSegmentGETs": 2,
+      "serverSecondGETAfterFirstSeconds": 2.508153,
+      "clockSignalMs": 5614,
+      "clockIsScreenPresentation": false,
+      "t10PictureVisuallyReviewed": true,
+      "initialSnapshotHadClock": true,
+      "laterTraceReadUsed": true,
+      "firstSegmentTransfers": [
+        {
+          "issuedFromRouteSeconds": 0.084672,
+          "events": [
+            {
+              "recordedFromIssueSeconds": 0.0,
+              "stage": "upstreamRequestIssued"
+            },
+            {
+              "recordedFromIssueSeconds": 2.502383,
+              "stage": "clientReadEnded",
+              "clientReadComplete": "true",
+              "clientReadErrorKind": "none",
+              "requestReceivedToReadEndMs": "2502"
+            },
+            {
+              "recordedFromIssueSeconds": 4.618091,
+              "status": "200"
+            },
+            {
+              "recordedFromIssueSeconds": 4.648096,
+              "result": "未能完成操作。（Network.NWError错误0。）",
+              "finishSource": "clientFailed",
+              "status": "200",
+              "deliveredBytes": "0",
+              "expectedBytes": "121072",
+              "errorCode": "0",
+              "errorDomain": "Network.NWError"
+            },
+            {
+              "recordedFromIssueSeconds": 4.648832,
+              "stage": "upstreamCancellationRequested"
+            },
+            {
+              "recordedFromIssueSeconds": 4.649417,
+              "stage": "urlSessionTaskMetrics",
+              "upstreamTaskBodyBytes": "0",
+              "upstreamIssueToHeadersCallbackMs": "4618",
+              "upstreamIssueToLastBodyCallbackMs": "unknown",
+              "cellular": "no",
+              "protocol": "http/1.1"
+            }
+          ]
+        },
+        {
+          "issuedFromRouteSeconds": 2.611772,
+          "events": [
+            {
+              "recordedFromIssueSeconds": 0.0,
+              "stage": "upstreamRequestIssued"
+            },
+            {
+              "recordedFromIssueSeconds": 2.119777,
+              "status": "200"
+            },
+            {
+              "recordedFromIssueSeconds": 2.124091,
+              "stage": "clientReadEnded",
+              "clientReadComplete": "true",
+              "clientReadErrorKind": "none",
+              "requestReceivedToReadEndMs": "2139"
+            },
+            {
+              "recordedFromIssueSeconds": 2.124726,
+              "stage": "urlSessionTaskMetrics",
+              "upstreamTaskBodyBytes": "121072",
+              "upstreamIssueToHeadersCallbackMs": "2113",
+              "upstreamIssueToLastBodyCallbackMs": "2138",
+              "cellular": "no",
+              "protocol": "http/1.1"
+            },
+            {
+              "recordedFromIssueSeconds": 2.140277,
+              "result": "complete",
+              "finishSource": "clientTerminalSend",
+              "status": "200",
+              "deliveredBytes": "121072",
+              "expectedBytes": "121072",
+              "errorCode": "-",
+              "errorDomain": "-"
+            }
+          ]
+        }
+      ],
+      "serverRequests": [
+        {
+          "name": "master.m3u8",
+          "method": "GET",
+          "requestSeconds": 1.82434,
+          "headersSeconds": 1.825620083,
+          "bodyBytes": 164,
+          "status": 200,
+          "result": "sent",
+          "endSeconds": 1.8256397500000001,
+          "rangeRequested": false
+        },
+        {
+          "name": "main.m3u8",
+          "method": "GET",
+          "requestSeconds": 1.870329791,
+          "headersSeconds": 1.870921958,
+          "bodyBytes": 153,
+          "status": 200,
+          "result": "sent",
+          "endSeconds": 1.8709331660000001,
+          "rangeRequested": false
+        },
+        {
+          "name": "master.m3u8",
+          "method": "GET",
+          "requestSeconds": 2.0328562079999997,
+          "headersSeconds": 2.033511666,
+          "bodyBytes": 164,
+          "status": 200,
+          "result": "sent",
+          "endSeconds": 2.0335224579999998,
+          "rangeRequested": false
+        },
+        {
+          "name": "0.ts",
+          "method": "GET",
+          "requestSeconds": 2.0778607499999997,
+          "headersSeconds": 6.586103291000001,
+          "bodyBytes": 121072,
+          "status": 200,
+          "result": "sent",
+          "endSeconds": 6.586248083,
+          "rangeRequested": false
+        },
+        {
+          "name": "0.ts",
+          "method": "GET",
+          "requestSeconds": 4.586014083,
+          "headersSeconds": 6.5868462910000005,
+          "bodyBytes": 121072,
+          "status": 200,
+          "result": "sent",
+          "endSeconds": 6.586946833000001,
+          "rangeRequested": false
+        },
+        {
+          "name": "1.ts",
+          "method": "GET",
+          "requestSeconds": 6.729115041,
+          "headersSeconds": 6.729761,
+          "bodyBytes": 646156,
+          "status": 200,
+          "result": "sent",
+          "endSeconds": 6.749999208,
+          "rangeRequested": false
+        }
+      ],
+      "ownMediaStopped": true,
+      "fixtureServerClosed": true,
+      "emptyEnvironmentRestored": true
+    }
+  ],
+  "interpretation": [
+    "Master duplicate reads reproduced with production HLS proxy, including existing VOD prewarm; direct media delayed condition remains one GET.",
+    "Read-direction EOF precedes failed old send and replacement success; EOF alone does not prove a full socket close.",
+    "With target duration 5, first-read EOF was about 2.50 s for 2.002 s segments and 4.01 s for one 4.004 s segment. This does not establish a universal formula or fixed four-second timeout.",
+    "No basis to change production segment duration, flatten master playlists, merge readers, or claim cellular speed improvement.",
+    "Initial preference snapshots can omit late events; subsequent trace-matched read recovered all clock events without replaying media."
+  ],
+  "cleanup": {
+    "allSixMediaAndServersStopped": true,
+    "normalEmptyEnvironmentRestored": true,
+    "nativeOriginalWiFiCheckmarkAndStatusBarIconActuallyReviewed": true,
+    "nonBookmarkPreferencesUnchanged": true,
+    "originalBookmarks": 36,
+    "originalTrackChanges": 0,
+    "newCrashCounts": {
+      "Nastart": 0,
+      "WebDriverAgent": 0,
+      "JetsamEvent": 0
+    },
+    "WDAIdleSeconds": 10,
+    "WDAAnimationCoolOffSeconds": 2,
+    "defaultActiveApplication": "auto",
+    "originalPersistent13RunnerPreserved": true,
+    "batches": [
+      {
+        "batch": "proxy-fixture-batch",
+        "startDuringEndAssertionsVerified": true,
+        "sleepWakeEvents": 0,
+        "originalNetworkSelectedBeforeAndAfter": true,
+        "ownedMediaStopped": true,
+        "normalHomeRestored": true
+      },
+      {
+        "batch": "proxy-boundary-batch",
+        "startDuringEndAssertionsVerified": true,
+        "sleepWakeEvents": 0,
+        "originalNetworkSelectedBeforeAndAfter": true,
+        "ownedMediaStopped": true,
+        "normalHomeRestored": true
+      }
+    ],
+    "ownFixtureProcessesAndKeepAwakeAbsent": true,
+    "finalNormalHomeVisuallyReviewed": true
+  },
+  "realWindowManifestTimingAudit": [
+    {
+      "entry": "jf",
+      "historicalCandidateSourceDiffSHA256": "0d54a71cf005386dad2485805d78af9ca36bd2a2c08a7c6981083513b3f806bf",
+      "exactUniqueEncodingJobBindingAlreadyVerified": true,
+      "encoderRequestedHLSTimeSeconds": 4.0,
+      "observedPlaylistTotalSeconds": 7524.767999999851,
+      "observedPlaylistSegmentCount": 1880,
+      "observedMediaSequence": 0,
+      "actualManifestTargetDurationSeconds": "unknown",
+      "actualFirstSegmentEXTINFSeconds": "unknown",
+      "rawManifestSavedInExactCandidateBatch": false,
+      "cannotInferFirstDurationFromAverageOrEncoderOption": true,
+      "newMediaRequests": 0
+    },
+    {
+      "entry": "file",
+      "historicalCandidateSourceDiffSHA256": "0d54a71cf005386dad2485805d78af9ca36bd2a2c08a7c6981083513b3f806bf",
+      "exactUniqueEncodingJobBindingAlreadyVerified": true,
+      "encoderRequestedHLSTimeSeconds": 4.0,
+      "observedPlaylistTotalSeconds": 7524.767999999851,
+      "observedPlaylistSegmentCount": 1880,
+      "observedMediaSequence": 0,
+      "actualManifestTargetDurationSeconds": "unknown",
+      "actualFirstSegmentEXTINFSeconds": "unknown",
+      "rawManifestSavedInExactCandidateBatch": false,
+      "cannotInferFirstDurationFromAverageOrEncoderOption": true,
+      "newMediaRequests": 0
+    }
+  ],
+  "clockSignalTimeOrigin": "Debug MediaPlaybackRequest creation after proxy preparation/prewarm; not launch action or screen presentation"
+}

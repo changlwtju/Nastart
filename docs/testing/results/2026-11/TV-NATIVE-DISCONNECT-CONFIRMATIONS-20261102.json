@@ -1,0 +1,98 @@
+{
+  "recordedAt": "2026-11-02T07:05:58.472178+08:00",
+  "status": "three_builds_and_static_native_host_only_confirmation_interaction_unverified",
+  "source": {
+    "HEAD": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceInputs": 446,
+    "iosDiffSHA256": "4f97dc8ebfaccb6d24ef886cfac625c3d8deb6efdcebd8a037d98ebe85f67fd0",
+    "changedInputs": [
+      "/Users/lagransun/workspace/Nastart/tvos/NastartTV/Sources/NastartTVApp.swift",
+      "/Users/lagransun/workspace/Nastart/tvos/NastartTV/Sources/TVNASViews.swift"
+    ]
+  },
+  "builds": {
+    "tv-sim-debug-cast": {
+      "startedAt": "2026-11-02T06:52:21.235878+08:00",
+      "freeGiBBefore": 14.043624877929688,
+      "reserveGiB": 2,
+      "exitCode": 0,
+      "endedAt": "2026-11-02T06:52:37.369957+08:00",
+      "freeGiBAfter": 14.052108764648438
+    },
+    "tv-unsigned-debug": {
+      "startedAt": "2026-11-02T06:52:37.370747+08:00",
+      "freeGiBBefore": 14.05209732055664,
+      "reserveGiB": 2,
+      "exitCode": 0,
+      "endedAt": "2026-11-02T06:52:52.480055+08:00",
+      "freeGiBAfter": 14.033924102783203
+    },
+    "tv-release": {
+      "startedAt": "2026-11-02T06:52:52.482327+08:00",
+      "freeGiBBefore": 14.033912658691406,
+      "reserveGiB": 2,
+      "exitCode": 0,
+      "endedAt": "2026-11-02T06:53:21.709540+08:00",
+      "freeGiBAfter": 14.029136657714844
+    }
+  },
+  "productionCallbacks": {
+    "allThreeProductionCallbackBodiesRemainExactlyPresent": true,
+    "logoutAndKeychainCodeChanged": false,
+    "additionalOnlyDEBUGEntrypoint": true,
+    "mobileBuildInputsUnchanged": 415
+  },
+  "nativeWindow": {
+    "startedAt": "2026-11-02T06:54:15.625500+08:00",
+    "model": "Apple TV 4K simulator",
+    "system": "tvOS27",
+    "physicalDevicesControlled": 0,
+    "NASCommands": 0,
+    "ordinaryRootStarted": false,
+    "testEnvironmentVariables": false,
+    "launches": [
+      {
+        "size": "standard",
+        "at": "2026-11-02T06:54:25.881514+08:00"
+      }
+    ],
+    "binaries": {
+      "NastartTV": "83fa9a228d53781700889fd71171e55e10cbacadc40e0d6e1ef0bc1287b30164",
+      "NastartTV.debug.dylib": "1d1c1557bc9c99e761b32139823a5f4205a1ea8efe1862f72e4e36c313c76c1b"
+    },
+    "fixturePreferencesPreserved": true,
+    "additionalPreferenceKeys": 0,
+    "shutdownExitCode": 0,
+    "deleteExitCode": 0,
+    "ownedSimulatorAbsent": true,
+    "endedAt": "2026-11-02T06:57:34.247787+08:00"
+  },
+  "initialFixtureVisible": true,
+  "attemptsAfterCUAInputs": 0,
+  "CUAInputs": [
+    "Return",
+    "coordinate click first button",
+    "Send Keyboard Input to Device then Return and space"
+  ],
+  "guestAccessibilityTreeMissing": true,
+  "nativeConfirmationPresented": false,
+  "cancelOrConfirmOrReturnFocusVerified": false,
+  "keyboardCaptureRestoredByMenuAndVerifiedTitle": true,
+  "screenshotAndAXEvidence": "CUA tool trail, no standalone PNG claimed",
+  "NASCommands": 0,
+  "newPlaybackPassCells": 0,
+  "next": "Use existing TV XCUIRemote test target for actual component confirmation/cancel/focus; do not repeat ineffective CUA keyboard tuning",
+  "finalChecks": {
+    "recordedAt": "2026-11-02T07:08:25.490696+08:00",
+    "documentationDocuments": 607,
+    "localLinks": 3758,
+    "missingDestinations": 0,
+    "gitDiffCheckExitCode": 0,
+    "sourceInputsUnchanged": 446,
+    "mobileInputsUnchanged": 415,
+    "originalIndexUnchanged": true,
+    "claudeFourFilesUnchanged": true,
+    "activeBuildWorkers": 0,
+    "activeDeviceOwners": 0
+  }
+}

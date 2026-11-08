@@ -1,0 +1,78 @@
+{
+  "date": "2026-10-22",
+  "packageUnchanged": {
+    "build": "05:26 normal Debug/-Onone",
+    "sourceDiffSHA256": "e65a8da17ea0db5e1a22d374c2bb79c5d5d8dd4eb4acb4a5fedd8f3057cbaa16",
+    "IPA": "45d213bafb07a70a3543980ff961388a817172e7e9176185f67c76fb2b1eaf9b",
+    "fresh173Inputs29SignaturesProfileOwnPadReceiptVerified": true
+  },
+  "device": "iPad12,1/iPadOS18.3.1/USB; name and UDID private",
+  "readonlyInitial": {
+    "samePriorUnknownPIDPresent": true,
+    "startUTC": "2026-10-21T21:51:23.959804+00:00",
+    "originStillUnknown": true,
+    "nativeHomeNoPiP": true,
+    "persistedDiagnosticsStaleNotProofOfNoMedia": true
+  },
+  "preservedFailures": [
+    {
+      "stage": "system session App activation observation",
+      "AppStatesBefore": [
+        2,
+        2
+      ],
+      "meaning": "XCTest runningBackgroundSuspended (local Xcode SDK enum)",
+      "activationCommands": 1,
+      "observedForegroundImmediatelyAfter": "SpringBoard; activation effect not confirmed",
+      "cleanupHome": "wrong session-scoped /wda/homescreen returned404; not App failure",
+      "laterRead": "owned120s Runner deadline expired; MuxReplyError; no activation replay or media"
+    },
+    {
+      "stage": "explicit-state followup",
+      "AppStatesBefore": [
+        3,
+        3
+      ],
+      "activationCommands": 0,
+      "meaning": "guard stopped before activation; not proven suspended then",
+      "mediaCommands": 0
+    }
+  ],
+  "acceptedNormalWindow": {
+    "authorization": "existing normal App debugging/restart after saved diagnostics/preferences; prior PID existence alone is not active media task evidence",
+    "launches": 1,
+    "environmentReadback": {},
+    "ownedPIDRecordedAndStopped": true,
+    "dashboardNASOnlineAndMineWithoutRestoringAXAndImages": true,
+    "launchRequestToOnlineObservationSeconds": 5.306884042,
+    "timingLimit": "one WDA UI observation, not strict performance comparison",
+    "all18NonDiagnosticPreferencesUnchanged": true,
+    "playCommands": 0,
+    "pipCommands": 0,
+    "AppStateAfterTerminate": 1
+  },
+  "finalNativeAudit": {
+    "at": "2026-10-22T06:45:22.245000+08:00",
+    "mediaCommands": 0,
+    "buildOrInstallCommands": 0,
+    "networkChanges": false,
+    "freshPadIdentitySource173SignedPackageVerified": true,
+    "preferences": {
+      "beforeKeys": 18,
+      "afterKeys": 18,
+      "sameKeys": true,
+      "changedValues": 0,
+      "allNonDiagnosticPreferencesEqual": true
+    },
+    "oldUnknownPIDAbsent": true,
+    "newOwnedNormalAppPIDAbsent": true,
+    "nativeNastartProcessCount": 0,
+    "nativeOwnedRunnerAbsent": true,
+    "ownedRunnerCleanupCount": 0,
+    "ownedHostProcessesRemaining": 0,
+    "finalNativeHomeNoPiPAndWiFiVisuallyReviewed": true
+  },
+  "WDA": "existing signed Runner reused only; owned host/Runner stopped, no retained Pad session; no build/install",
+  "formalStatus": "finite Pad NAS two-page consistency slice; no caption/PiP/strict-speed acceptance or origin claim; 28 items remain open",
+  "privateEvidencePointer": "/tmp/nastart-pad-process-audit-evidence"
+}

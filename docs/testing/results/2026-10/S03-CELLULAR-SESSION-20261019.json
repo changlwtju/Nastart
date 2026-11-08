@@ -1,0 +1,478 @@
+{
+  "at": "2026-10-19T18:12:39.052708+08:00",
+  "sample": "S03",
+  "configuration": "normal Debug -Onone; empty launch environment",
+  "sourceDiffSHA256": "139d9310d91cf0643129a51bfeaa4d2238499e8049086dbf6f50626ea806b5be",
+  "binaryBuildTime": "2026-10-19T17:16:11.246555+08:00",
+  "binaries": {
+    "Nastart": "da9c7334a3b8af543aa661eec4f8f020ae1ea8dad5118a5fd86a81a16f365c42",
+    "Nastart.debug.dylib": "c5cce68ac4282a2e7d1eac0fcfcd82d056fdf1df24fbac6cde32f482c4d3ec84",
+    "Frameworks/KSPlayer.framework/KSPlayer": "c40cb67b13d4becf363db59714223eb506d6f6f5ae8f9b0adbc8c2a81bf79e73"
+  },
+  "productCodeEdits": false,
+  "newBuild": false,
+  "freshDevice": {
+    "at": "2026-10-19T18:02:10.949869+08:00",
+    "model": "iPhone14,5",
+    "system": "16.3.1",
+    "connection": "USB",
+    "nameAndUDIDRecordedPrivately": true
+  },
+  "preserveDataCover": {
+    "device": "iphone13",
+    "model": "iPhone14,5",
+    "system": "16.3.1",
+    "connection": "USB",
+    "binaries": {
+      "Nastart": "da9c7334a3b8af543aa661eec4f8f020ae1ea8dad5118a5fd86a81a16f365c42",
+      "Nastart.debug.dylib": "c5cce68ac4282a2e7d1eac0fcfcd82d056fdf1df24fbac6cde32f482c4d3ec84",
+      "Frameworks/KSPlayer.framework/KSPlayer": "c40cb67b13d4becf363db59714223eb506d6f6f5ae8f9b0adbc8c2a81bf79e73"
+    },
+    "sourceDiffSHA256": "139d9310d91cf0643129a51bfeaa4d2238499e8049086dbf6f50626ea806b5be",
+    "preservesContainer": true,
+    "signatureVerified": true,
+    "actualForegroundUIVerified": true,
+    "requestedEnvironment": {},
+    "requestedArguments": [],
+    "installation": "success",
+    "startedAt": "2026-10-19T18:02:11.649475+08:00",
+    "installedAt": "2026-10-19T18:02:25.910484+08:00",
+    "preferenceKeysUnchanged": true,
+    "preferenceValuesUnchanged": true,
+    "nonDiagnosticKeys": 25,
+    "actualHomeImageReviewed": true
+  },
+  "windows": [
+    {
+      "entry": "Jellyfin",
+      "windowLabel": "cellular-s03-jf-session-pgs",
+      "startTimeTicks": 0,
+      "firstClockSeconds": 7.820731,
+      "negotiated": {
+        "maxBitrate": "4000000",
+        "negotiatedVideoBitrate": "3360000",
+        "negotiatedVideoCodec": "h264",
+        "negotiatedAudioCodec": "aac",
+        "negotiatedSubtitleIndex": "7",
+        "negotiatedSubtitleMethod": "Encode",
+        "subtitleCodec": "PGSSUB"
+      },
+      "firstOrdinalRequests": [
+        {
+          "ordinal": "0",
+          "issuedSeconds": 3.865885,
+          "headersSeconds": 6.232505,
+          "lastRequestEndToFirstByteMs": "2362",
+          "bodyBytesAfterDecoding": "1355480",
+          "connectionReused": "yes",
+          "completedSeconds": 6.870768,
+          "taskErrorCode": "-"
+        }
+      ],
+      "metricsCount": 28,
+      "metricsCellularYes": 28,
+      "completedBodyBytesAfterDecoding": 48499018,
+      "maxStallCountIncludingInitial": 1,
+      "automaticDownshiftRequests": 0,
+      "serverSession": {
+        "totalReads": 15,
+        "errors": 0,
+        "freshActiveSameDeviceS03Reads": 8,
+        "firstFreshReadSeconds": 4.233891,
+        "lastFreshReadSeconds": 38.916275,
+        "transcodingStates": [
+          {
+            "AudioCodec": "aac",
+            "VideoCodec": "h264",
+            "Container": "ts",
+            "IsVideoDirect": false,
+            "IsAudioDirect": false,
+            "Bitrate": 4000000,
+            "Framerate": 144,
+            "Width": 853,
+            "Height": 480,
+            "AudioChannels": 6,
+            "TranscodeReasons": [
+              "ContainerBitrateExceedsLimit"
+            ]
+          },
+          {
+            "AudioCodec": "aac",
+            "VideoCodec": "h264",
+            "Container": "ts",
+            "IsVideoDirect": false,
+            "IsAudioDirect": false,
+            "Bitrate": 4000000,
+            "Framerate": 140,
+            "Width": 853,
+            "Height": 480,
+            "AudioChannels": 6,
+            "TranscodeReasons": [
+              "ContainerBitrateExceedsLimit"
+            ]
+          },
+          {
+            "AudioCodec": "aac",
+            "VideoCodec": "h264",
+            "Container": "ts",
+            "IsVideoDirect": false,
+            "IsAudioDirect": false,
+            "Bitrate": 4000000,
+            "Framerate": 137,
+            "Width": 853,
+            "Height": 480,
+            "AudioChannels": 6,
+            "TranscodeReasons": [
+              "ContainerBitrateExceedsLimit"
+            ]
+          },
+          {
+            "AudioCodec": "aac",
+            "VideoCodec": "h264",
+            "Container": "ts",
+            "IsVideoDirect": false,
+            "IsAudioDirect": false,
+            "Bitrate": 4000000,
+            "Framerate": 136,
+            "Width": 853,
+            "Height": 480,
+            "AudioChannels": 6,
+            "TranscodeReasons": [
+              "ContainerBitrateExceedsLimit"
+            ]
+          },
+          {
+            "AudioCodec": "aac",
+            "VideoCodec": "h264",
+            "Container": "ts",
+            "IsVideoDirect": false,
+            "IsAudioDirect": false,
+            "Bitrate": 4000000,
+            "Framerate": 134,
+            "Width": 853,
+            "Height": 480,
+            "AudioChannels": 6,
+            "TranscodeReasons": [
+              "ContainerBitrateExceedsLimit"
+            ]
+          },
+          {
+            "AudioCodec": "aac",
+            "VideoCodec": "h264",
+            "Container": "ts",
+            "IsVideoDirect": false,
+            "IsAudioDirect": false,
+            "Bitrate": 4000000,
+            "Framerate": 133,
+            "Width": 853,
+            "Height": 480,
+            "AudioChannels": 6,
+            "TranscodeReasons": [
+              "ContainerBitrateExceedsLimit"
+            ]
+          },
+          {
+            "AudioCodec": "aac",
+            "VideoCodec": "h264",
+            "Container": "ts",
+            "IsVideoDirect": false,
+            "IsAudioDirect": false,
+            "Bitrate": 4000000,
+            "Framerate": 130,
+            "Width": 853,
+            "Height": 480,
+            "AudioChannels": 6,
+            "TranscodeReasons": [
+              "ContainerBitrateExceedsLimit"
+            ]
+          }
+        ],
+        "selectedSubtitleIndices": [
+          7
+        ],
+        "processBindingVerified": false,
+        "oldItemAtFirstRead": true,
+        "reportedDimensionsAreNotDecodedOutputProof": true,
+        "reportedFramerateIsNotScreenTimingProof": true
+      },
+      "ordinaryExit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "nativePresentationReviewed": {
+        "at10": "starfield and moving clouds; sparse frame only",
+        "at30": "not reviewed",
+        "firstVisibleFrameTimeAccepted": false,
+        "audioAccepted": false,
+        "fullSubtitleAccepted": false
+      },
+      "cache": "unknown; no cache cleared"
+    },
+    {
+      "entry": "device files",
+      "windowLabel": "cellular-s03-file-session-off",
+      "startTimeTicks": null,
+      "firstClockSeconds": 6.740687,
+      "negotiated": {
+        "bitrateCeiling": 10000000,
+        "maximumWidthConstraint": 1920,
+        "maximumHeightConstraint": 1080,
+        "subtitleMode": "disabled",
+        "actualDecoderDimensions": "unknown",
+        "codecsFromThisClientLog": "not established by selected fields"
+      },
+      "firstOrdinalRequests": [
+        {
+          "ordinal": "0",
+          "issuedSeconds": 2.274416,
+          "headersSeconds": 4.906028,
+          "lastRequestEndToFirstByteMs": "2628",
+          "bodyBytesAfterDecoding": "1941476",
+          "connectionReused": "yes",
+          "completedSeconds": 5.604457,
+          "taskErrorCode": "-"
+        }
+      ],
+      "metricsCount": 26,
+      "metricsCellularYes": 26,
+      "completedBodyBytesAfterDecoding": 105016956,
+      "maxStallCountIncludingInitial": 1,
+      "automaticDownshiftRequests": 0,
+      "serverSession": {
+        "totalReads": 18,
+        "errors": 0,
+        "freshActiveSameDeviceS03Reads": 0,
+        "firstFreshReadSeconds": null,
+        "lastFreshReadSeconds": null,
+        "transcodingStates": [],
+        "selectedSubtitleIndices": [],
+        "processBindingVerified": false,
+        "oldItemAtFirstRead": false,
+        "absenceExplanationFromSource": "Verified-file fallback tracker has an empty event handler and cleanup-only release; this window is not a Jellyfin Playing report. Missing NowPlayingItem is not proof that transcode or data was absent."
+      },
+      "ordinaryExit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "nativePresentationReviewed": {
+        "at10": "starfield and moving clouds; sparse frame only",
+        "at30": "Paramount Pictures Presents",
+        "firstVisibleFrameTimeAccepted": false,
+        "audioAccepted": false,
+        "fullSubtitleAccepted": false
+      },
+      "cache": "unknown; no cache cleared",
+      "fromHeadEvidence": {
+        "normalUIAction": "从头播放",
+        "firstSegmentOrdinal": 0,
+        "firstClockNearStart": true,
+        "startTimeTicksExplicitlyObserved": false
+      }
+    }
+  ],
+  "strictPairedComparisonAccepted": false,
+  "reasonNotStrictPair": "Jellyfin 4Mbps with PGS7 burn-in, file 10Mbps with subtitles disabled; cache unknown; one window each",
+  "completedDecodedResponseBytesAcrossWindows": 153515974,
+  "completedDecodedBytesNotTotalCellularBilling": true,
+  "serverSessionRequests": 33,
+  "serverSessionErrors": 0,
+  "finalAudit": {
+    "at": "2026-10-19T18:11:51.102051+08:00",
+    "liveUSBNameModelSystemUDIDMatchedPrivately": true,
+    "sourceInputsVerified": 173,
+    "binaryHashesAndSignatureReverified": true,
+    "nonBookmarkPreferenceKeys": 24,
+    "nonBookmarkPreferencesUnchanged": true,
+    "originalTracksChanged": 0,
+    "naturalBookmarkChanges": 2,
+    "originalBookmarksRemoved": 0,
+    "newBookmarks": 0,
+    "crashCounts": {
+      "Nastart": 14,
+      "WDA": 0,
+      "Jetsam": 26
+    },
+    "crashDeltaForThisBatchNotEstablished": true,
+    "nativeConditionsInventoryNotRechecked": true,
+    "noNewTestEnvironmentOrSystemConditionInjected": true,
+    "finalOwnAppIntentionallyStopped": true,
+    "persistentWDAKept": true
+  },
+  "cleanup": {
+    "Jellyfin": {
+      "startedAt": "2026-10-19T18:03:21.704161+08:00",
+      "automaticFinally": true,
+      "networkRestored": true,
+      "noDeepSeekRequested": true,
+      "normalEnvironment": true,
+      "cellularSwitchTaskStartedAt": "2026-10-19T18:03:30.970871+08:00",
+      "normalWindowCompleted": true,
+      "normalMediaExitVerified": true,
+      "nativeOriginalNetworkSelected": true,
+      "wifiIconActualReviewPending": false,
+      "serverSamplerStopped": true,
+      "finishedAt": "2026-10-19T18:05:06.611505+08:00",
+      "nativeScreenshotOriginalNetworkAndWiFiIconActuallyReviewed": true,
+      "WDARestorationImagesStillDisplayed4G": true,
+      "underlyingCauseOfScreenshotDifferenceUnknown": true,
+      "ownAppTerminatedAfterNormalExit": true,
+      "finalNativeWiFiVerifiedAt": "2026-10-19T18:06:16.271101+08:00"
+    },
+    "file": {
+      "startedAt": "2026-10-19T18:06:49.460848+08:00",
+      "automaticFinally": true,
+      "networkRestored": true,
+      "noDeepSeekRequested": true,
+      "normalEnvironment": true,
+      "cellularSwitchTaskStartedAt": "2026-10-19T18:06:56.202918+08:00",
+      "normalWindowCompleted": true,
+      "normalMediaExitVerified": true,
+      "serverSamplerStopped": true,
+      "finishedAt": "2026-10-19T18:08:56.022588+08:00",
+      "nativeScreenshotOriginalNetworkCheckmarkAndWiFiIconActuallyReviewed": true,
+      "sourceBasedSelectionCheckFailed": true,
+      "restorationValidatedUsingIndependentNativeScreenshot": true,
+      "ownAppStopped": true,
+      "finalVerificationAt": "2026-10-19T18:09:35.580155+08:00"
+    },
+    "noOwnedMediaSamplerOrBuildLeft": true,
+    "finalNativeWiFiNetworkCheckmarkAndStatusIconReviewed": true,
+    "ownAppStopped": true,
+    "persistentWDAKept": true
+  },
+  "acceptance": {
+    "historicalS03SlowStartupResolved": false,
+    "sameEntryPGSOffControlledPairDone": false,
+    "preciseDeepSeekInputResolved": false,
+    "fullAudioSubtitlesFramesAccepted": false,
+    "newMatrixPass": false,
+    "openRequirements": 28
+  },
+  "next": [
+    "Before any further media task, inspect other active same-project runs; current other run reports metadata-only follow-up. Do not create overlapping media windows.",
+    "Read-only same-window transcode process/output binding remains to add; DeviceId session binding alone does not identify FFmpeg output.",
+    "Prepare same-entry zero-start PGS/Off comparison with fixed actual output and track preferences restored; cache remains explicit.",
+    "Do not repeat two rejected slider candidates or the AV automatic-waiting experiment.",
+    "iPad and iPhone18 not updated to this package this batch; preserve existing blockers."
+  ],
+  "serverLogReadContext": {
+    "at": "2026-10-19T18:15:07.232201+08:00",
+    "readOnly": true,
+    "ffmpegLogs": 4,
+    "mainLogs": 1,
+    "rows": [
+      {
+        "index": 0,
+        "isFFmpeg": true,
+        "bytes": 148018,
+        "sha256": "34e305e5130d7be4d9369caebf59e042cc7214c73d068121fe08184e1113597d",
+        "dateModified": "2026-10-19T10:09:21.5585751Z"
+      },
+      {
+        "index": 1,
+        "isFFmpeg": true,
+        "bytes": 415071,
+        "sha256": "500c2f67d2e9c524a505aaceadc3236bb2d6c94f92b403e645fa716232d6ce95",
+        "dateModified": "2026-10-19T10:08:13.919412Z"
+      },
+      {
+        "index": 2,
+        "isFFmpeg": true,
+        "bytes": 95103,
+        "sha256": "43996ca3a56ef9479cde982678fe11004d4cee9cc0a45f56668157528ad84d07",
+        "dateModified": "2026-10-19T10:07:52.7633609Z"
+      },
+      {
+        "index": 3,
+        "isFFmpeg": true,
+        "bytes": 485106,
+        "sha256": "b65339d283b4629df5a0d8cb30fe0327b74dfcd1a086c05145eb9a1b98c59b54",
+        "dateModified": "2026-10-19T10:04:40.4748929Z"
+      },
+      {
+        "index": 4,
+        "isFFmpeg": false,
+        "bytes": 149157,
+        "sha256": "85853aee9e08f53048a04f47fa0194e040930a1d4938ad8a595b265c6bf65df8",
+        "dateModified": "2026-10-19T10:13:38.5171948Z"
+      }
+    ],
+    "clientTranscodeProcessIdentityVerified": false,
+    "mediaRequests": 0
+  },
+  "unboundServerOutputContext": [
+    {
+      "localIndex": 0,
+      "dateModified": "2026-10-19T10:09:21.5585751Z",
+      "startOrdinal": 0,
+      "startSecondsOptionPresent": false,
+      "videoEncoder": "h264_vaapi",
+      "videoBitrate": 1616000,
+      "audioEncoder": "libfdk_aac",
+      "PGS7Overlay": false,
+      "outputDimensionsFromServerLog": [
+        852,
+        480
+      ],
+      "clientProcessBindingVerified": false
+    },
+    {
+      "localIndex": 1,
+      "dateModified": "2026-10-19T10:08:13.919412Z",
+      "startOrdinal": 0,
+      "startSecondsOptionPresent": false,
+      "videoEncoder": "h264_vaapi",
+      "videoBitrate": 9360000,
+      "audioEncoder": "libfdk_aac",
+      "PGS7Overlay": false,
+      "outputDimensionsFromServerLog": [
+        1920,
+        1080
+      ],
+      "clientProcessBindingVerified": false
+    },
+    {
+      "localIndex": 2,
+      "dateModified": "2026-10-19T10:07:52.7633609Z",
+      "startOrdinal": 0,
+      "startSecondsOptionPresent": false,
+      "videoEncoder": "h264_vaapi",
+      "videoBitrate": 1616000,
+      "audioEncoder": "libfdk_aac",
+      "PGS7Overlay": true,
+      "outputDimensionsFromServerLog": [
+        852,
+        480
+      ],
+      "clientProcessBindingVerified": false
+    },
+    {
+      "localIndex": 3,
+      "dateModified": "2026-10-19T10:04:40.4748929Z",
+      "startOrdinal": 0,
+      "startSecondsOptionPresent": false,
+      "videoEncoder": "h264_vaapi",
+      "videoBitrate": 3360000,
+      "audioEncoder": "libfdk_aac",
+      "PGS7Overlay": true,
+      "outputDimensionsFromServerLog": [
+        852,
+        480
+      ],
+      "clientProcessBindingVerified": false
+    }
+  ],
+  "environmentConcurrency": {
+    "anotherSameProjectThreadWasActiveOnLaterCheck": true,
+    "otherThreadReportedBoundedMacPublicPGSOffSegmentProbesThenMetadataOnly": true,
+    "uncontrolledOverlapCannotBeExcluded": true,
+    "notIntentionalConcurrentMovieStress": true,
+    "fourSamePeriodFFmpegLogsNotAssumedAllOwnedByThisBatch": true,
+    "cleanPerformanceWindowAccepted": false,
+    "noFurtherMediaStartedAfterDiscovery": true
+  }
+}

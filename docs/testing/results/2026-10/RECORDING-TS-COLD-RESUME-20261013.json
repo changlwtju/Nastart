@@ -1,0 +1,603 @@
+{
+  "updatedAt": "2026-10-13T00:09:33.249551+08:00",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceDiffSHA256": "3e3aa7b7c6dfd15bfe1faad767abb5386e3e18eba57776348b235749423183be",
+  "configuration": "normal Debug -Onone; empty launch environment",
+  "buildTime": "2026-10-12T23:46:31.128172+08:00",
+  "packagePath": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-10-12-recording-ts-resume-233923/Nastart-Recording-Resume-Content-Witness-Normal-Debug.app",
+  "ipaPath": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-10-12-recording-ts-resume-233923/Nastart-Recording-Resume-Content-Witness-Normal-Debug.ipa",
+  "binarySHA256": {
+    "Nastart": "db592e17b0ec4b0f87c245d60e34906c125ffc8a24b7f1073d612c47df1adc42",
+    "Nastart.debug.dylib": "2a88b4525cb835b49ba39f3f8ba2aa456531e71fe58e4f7565b754833e7cb831",
+    "Frameworks/KSPlayer.framework/KSPlayer": "e68d742056f06b8806d18ce13f3027b47a2d9bc380671b7371a985b6d139f785"
+  },
+  "sourceInputsVerified": 173,
+  "individualLibrarySignaturesVerified": 29,
+  "signatureProfileIPALinkageVerified": true,
+  "profileExpirationUTC": "2026-10-17T22:23:40",
+  "tests": {
+    "executed": 344,
+    "skipped": 2,
+    "failures": 0,
+    "runThisTurn": true
+  },
+  "preflight": {
+    "passed": 15,
+    "runThisTurn": true
+  },
+  "devices": {
+    "iphone13": {
+      "device": "iphone13",
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "connection": "USB",
+      "binaries": {
+        "Nastart": "db592e17b0ec4b0f87c245d60e34906c125ffc8a24b7f1073d612c47df1adc42",
+        "Nastart.debug.dylib": "2a88b4525cb835b49ba39f3f8ba2aa456531e71fe58e4f7565b754833e7cb831",
+        "Frameworks/KSPlayer.framework/KSPlayer": "e68d742056f06b8806d18ce13f3027b47a2d9bc380671b7371a985b6d139f785"
+      },
+      "sourceDiffSHA256": "3e3aa7b7c6dfd15bfe1faad767abb5386e3e18eba57776348b235749423183be",
+      "preservesContainer": true,
+      "signatureVerified": true,
+      "actualForegroundUIVerified": true,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "installation": "success",
+      "startedAt": "2026-10-12T23:48:03.885709+08:00",
+      "installedAt": "2026-10-12T23:48:19.199037+08:00",
+      "preferenceKeysUnchanged": true,
+      "preferenceValuesUnchanged": true,
+      "nonDiagnosticKeys": 25
+    },
+    "ipad": {
+      "device": "ipad",
+      "model": "iPad12,1",
+      "system": "18.3.1",
+      "connection": "USB",
+      "binaries": {
+        "Nastart": "db592e17b0ec4b0f87c245d60e34906c125ffc8a24b7f1073d612c47df1adc42",
+        "Nastart.debug.dylib": "2a88b4525cb835b49ba39f3f8ba2aa456531e71fe58e4f7565b754833e7cb831",
+        "Frameworks/KSPlayer.framework/KSPlayer": "e68d742056f06b8806d18ce13f3027b47a2d9bc380671b7371a985b6d139f785"
+      },
+      "sourceDiffSHA256": "3e3aa7b7c6dfd15bfe1faad767abb5386e3e18eba57776348b235749423183be",
+      "preservesContainer": true,
+      "signatureVerified": true,
+      "actualForegroundUIVerified": true,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "installation": "success",
+      "startedAt": "2026-10-12T23:48:03.925731+08:00",
+      "installedAt": "2026-10-12T23:48:09.814846+08:00",
+      "preferenceKeysUnchanged": true,
+      "preferenceValuesUnchanged": true,
+      "nonDiagnosticKeys": 18
+    },
+    "iphone18": {
+      "device": "iphone18",
+      "installation": "success",
+      "sourceDiffSHA256": "3e3aa7b7c6dfd15bfe1faad767abb5386e3e18eba57776348b235749423183be",
+      "binaries": {
+        "Nastart": "db592e17b0ec4b0f87c245d60e34906c125ffc8a24b7f1073d612c47df1adc42",
+        "Nastart.debug.dylib": "2a88b4525cb835b49ba39f3f8ba2aa456531e71fe58e4f7565b754833e7cb831",
+        "Frameworks/KSPlayer.framework/KSPlayer": "e68d742056f06b8806d18ce13f3027b47a2d9bc380671b7371a985b6d139f785"
+      },
+      "method": "direct Bonjour TCP lockdown using existing Mac legacy pairing + AFC + installation_proxy Install; preserve container",
+      "newPairingAttempted": false,
+      "preservesContainer": true,
+      "signatureVerified": true,
+      "librariesVerified": 29,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "normalLaunch": "deferred per user; no UI launch requested",
+      "actualForegroundUIVerified": false,
+      "model": "iPhone19,7",
+      "system": "27.0",
+      "connection": "NETWORK",
+      "installationStartedAt": "2026-10-12T23:49:08.852411+08:00",
+      "installedAt": "2026-10-12T23:49:22.199328+08:00",
+      "postInstallLookupExists": true,
+      "samePreferenceKeys": true,
+      "nonDiagnosticKeysBefore": 25,
+      "nonDiagnosticKeysAfter": 25,
+      "unchangedPreferenceValues": 25,
+      "changedPreferenceCount": 0
+    }
+  },
+  "audit": {
+    "sourceInputsVerified": 173,
+    "binaryHashesVerified": true,
+    "deepSignatureVerified": true,
+    "devices": {
+      "iphone13": {
+        "at": "2026-10-13T00:04:45.421435+08:00",
+        "model": "iPhone14,5",
+        "system": "16.3.1",
+        "connection": "USB",
+        "latestPackage": {
+          "Nastart": "db592e17b0ec4b0f87c245d60e34906c125ffc8a24b7f1073d612c47df1adc42",
+          "Nastart.debug.dylib": "2a88b4525cb835b49ba39f3f8ba2aa456531e71fe58e4f7565b754833e7cb831",
+          "Frameworks/KSPlayer.framework/KSPlayer": "e68d742056f06b8806d18ce13f3027b47a2d9bc380671b7371a985b6d139f785"
+        },
+        "sourceDiffSHA256": "3e3aa7b7c6dfd15bfe1faad767abb5386e3e18eba57776348b235749423183be",
+        "nonBookmarkPreferenceKeys": 24,
+        "nonBookmarkPreferencesUnchanged": true,
+        "changedBookmarksCount": 1,
+        "originalTrackSelectionsRestored": true,
+        "finalS03": {
+          "S03File": {
+            "positionSeconds": 739.444,
+            "audioTrackID": 4,
+            "subtitleTrackID": 5,
+            "subtitlesDisabled": false
+          },
+          "S03Jellyfin": {
+            "positionSeconds": 6128.139,
+            "audioTrackID": 1,
+            "subtitleTrackID": 7,
+            "subtitlesDisabled": false
+          }
+        },
+        "newCrashReports": 0,
+        "normalEmptyEnvironment": true,
+        "NASNormal": true,
+        "playerClosed": true,
+        "finalScreenshotReviewed": true,
+        "WDAIdleSeconds": 10,
+        "WDAAnimationCoolOffSeconds": 2,
+        "cases": {},
+        "performanceAccepted": false,
+        "cellularNetworkTested": false,
+        "fullSubtitleAudioHDRAccepted": false
+      },
+      "ipad": {
+        "at": "2026-10-13T00:04:46.621712+08:00",
+        "model": "iPad12,1",
+        "system": "18.3.1",
+        "connection": "USB",
+        "latestPackage": {
+          "Nastart": "db592e17b0ec4b0f87c245d60e34906c125ffc8a24b7f1073d612c47df1adc42",
+          "Nastart.debug.dylib": "2a88b4525cb835b49ba39f3f8ba2aa456531e71fe58e4f7565b754833e7cb831",
+          "Frameworks/KSPlayer.framework/KSPlayer": "e68d742056f06b8806d18ce13f3027b47a2d9bc380671b7371a985b6d139f785"
+        },
+        "sourceDiffSHA256": "3e3aa7b7c6dfd15bfe1faad767abb5386e3e18eba57776348b235749423183be",
+        "nonBookmarkPreferenceKeys": 17,
+        "nonBookmarkPreferencesUnchanged": true,
+        "changedBookmarksCount": 2,
+        "originalTrackSelectionsRestored": true,
+        "finalS03": {
+          "S03File": {
+            "positionSeconds": 938.896,
+            "audioTrackID": 4,
+            "subtitleTrackID": null,
+            "subtitlesDisabled": true
+          },
+          "S03Jellyfin": {
+            "positionSeconds": 5860.423337333334,
+            "audioTrackID": 1,
+            "subtitleTrackID": 7,
+            "subtitlesDisabled": false
+          }
+        },
+        "newCrashReports": 0,
+        "normalEmptyEnvironment": true,
+        "NASNormal": true,
+        "playerClosed": true,
+        "finalScreenshotReviewed": true,
+        "WDAIdleSeconds": 10,
+        "WDAAnimationCoolOffSeconds": 2,
+        "cases": {},
+        "performanceAccepted": false,
+        "cellularNetworkTested": false,
+        "fullSubtitleAudioHDRAccepted": false
+      }
+    }
+  },
+  "windows": {
+    "iphone13": {
+      "witness-phone-cold-file": {
+        "sourceDiffSHA256": "3e3aa7b7c6dfd15bfe1faad767abb5386e3e18eba57776348b235749423183be",
+        "isFinalPackage": true,
+        "freshEventCount": 165,
+        "firstClock": {
+          "currentSeconds": "0.000",
+          "durationSeconds": "2876.659",
+          "enginePlaying": "true",
+          "controlsPlaying": "true",
+          "sampleReason": "playbackTick",
+          "playbackTraceID": "4897EF4B",
+          "planID": "C1F097F0",
+          "routeKind": "localRangeProxy"
+        },
+        "lastClock": {
+          "currentSeconds": "82.569",
+          "durationSeconds": "2876.659",
+          "enginePlaying": "true",
+          "controlsPlaying": "true",
+          "sampleReason": "playbackTick",
+          "playbackTraceID": "4897EF4B",
+          "planID": "C1F097F0",
+          "routeKind": "localRangeProxy"
+        },
+        "errors": [],
+        "probes": [
+          {
+            "event": "probe_succeeded",
+            "stage": "dsmGreenfieldLANRange",
+            "allowsContentGrowth": "true",
+            "expectedBytes": "1243611136",
+            "responseTotalBytes": "1255407616",
+            "status": "206",
+            "mime": "video/mpeg",
+            "lengthCheck": "matchedOrUnavailable"
+          }
+        ],
+        "startup": [
+          {
+            "playbackTraceID": "4897EF4B",
+            "planID": "C1F097F0",
+            "initialPositionSeconds": "42.270066666666665",
+            "initialSeekResult": "0",
+            "initialSeekMs": "1084.9194582551718",
+            "acceptedVideoFrameMs": "2292.270666686818",
+            "firstPlayableVideoFrames": "10",
+            "discardedVideoFramesBeforeAccepted": "0"
+          }
+        ],
+        "screenshotReviewed": true,
+        "continuousFramesOrAudioAccepted": false,
+        "liveTailFollowAccepted": false,
+        "exit": {
+          "normalUIExit": true,
+          "playbackErrorVisible": false,
+          "completionMatches": 1,
+          "playerOpened": true
+        },
+        "changedBookmarkCount": 1,
+        "savedEntries": [
+          {
+            "positionSeconds": 83.16606666666667,
+            "audioTrackID": 1,
+            "subtitleTrackID": null,
+            "subtitlesDisabled": false
+          }
+        ],
+        "reviewScope": "Selected actual t30; cold recording t3/t10/t30 reviewed; no full-frame/audio acceptance",
+        "startupPlaceholderZeroIsNotResumeStart": true,
+        "growingFileColdResumeAccepted": true,
+        "resumeProof": {
+          "sameBookmarkKey": true,
+          "firstSavedPosition": 42.270066666666665,
+          "coldSavedPosition": 83.16606666666667,
+          "firstWitnessLength": 1186201600,
+          "coldWitnessLength": 1243611136,
+          "originalTrackSelectionUnchanged": true,
+          "witnessEvidencePrivatelyRecorded": true
+        },
+        "t3LoadingVisible": true
+      },
+      "witness-phone-first-file": {
+        "sourceDiffSHA256": "3e3aa7b7c6dfd15bfe1faad767abb5386e3e18eba57776348b235749423183be",
+        "isFinalPackage": true,
+        "freshEventCount": 397,
+        "firstClock": {
+          "currentSeconds": "0.094",
+          "durationSeconds": "-",
+          "sampleReason": "firstFrame",
+          "playbackTraceID": "5EB15DAC",
+          "planID": "9517C337",
+          "routeKind": "localRangeProxy"
+        },
+        "lastClock": {
+          "currentSeconds": "41.801",
+          "durationSeconds": "2751.326",
+          "enginePlaying": "true",
+          "controlsPlaying": "true",
+          "sampleReason": "playbackTick",
+          "playbackTraceID": "5EB15DAC",
+          "planID": "9517C337",
+          "routeKind": "localRangeProxy"
+        },
+        "errors": [],
+        "probes": [
+          {
+            "event": "probe_succeeded",
+            "stage": "dsmGreenfieldLANRange",
+            "allowsContentGrowth": "true",
+            "expectedBytes": "1186201600",
+            "responseTotalBytes": "1194328064",
+            "status": "206",
+            "mime": "video/mpeg",
+            "lengthCheck": "matchedOrUnavailable"
+          }
+        ],
+        "startup": [
+          {
+            "playbackTraceID": "5EB15DAC",
+            "planID": "9517C337",
+            "initialPositionSeconds": "0.0",
+            "initialSeekResult": "notRequested",
+            "initialSeekMs": "unknown",
+            "acceptedVideoFrameMs": "546.0697915405035",
+            "firstPlayableVideoFrames": "16",
+            "discardedVideoFramesBeforeAccepted": "0"
+          }
+        ],
+        "screenshotReviewed": true,
+        "continuousFramesOrAudioAccepted": false,
+        "liveTailFollowAccepted": false,
+        "exit": {
+          "normalUIExit": true,
+          "playbackErrorVisible": false,
+          "completionMatches": 1,
+          "playerOpened": true
+        },
+        "changedBookmarkCount": 1,
+        "savedEntries": [
+          {
+            "positionSeconds": 42.270066666666665,
+            "audioTrackID": 1,
+            "subtitleTrackID": null,
+            "subtitlesDisabled": false
+          }
+        ],
+        "reviewScope": "Selected actual t30; cold recording t3/t10/t30 reviewed; no full-frame/audio acceptance"
+      }
+    },
+    "ipad": {
+      "witness-pad-cold-file": {
+        "sourceDiffSHA256": "3e3aa7b7c6dfd15bfe1faad767abb5386e3e18eba57776348b235749423183be",
+        "isFinalPackage": true,
+        "freshEventCount": 191,
+        "firstClock": {
+          "currentSeconds": "0.000",
+          "durationSeconds": "3347.359",
+          "enginePlaying": "true",
+          "controlsPlaying": "true",
+          "sampleReason": "playbackTick",
+          "playbackTraceID": "0BE47FC1",
+          "planID": "BE835FFF",
+          "routeKind": "localRangeProxy"
+        },
+        "lastClock": {
+          "currentSeconds": "78.054",
+          "durationSeconds": "3347.359",
+          "enginePlaying": "true",
+          "controlsPlaying": "true",
+          "sampleReason": "playbackTick",
+          "playbackTraceID": "0BE47FC1",
+          "planID": "BE835FFF",
+          "routeKind": "localRangeProxy"
+        },
+        "errors": [],
+        "probes": [
+          {
+            "event": "probe_succeeded",
+            "stage": "dsmGreenfieldLANRange",
+            "allowsContentGrowth": "true",
+            "expectedBytes": "1492385792",
+            "responseTotalBytes": "1526464512",
+            "status": "206",
+            "mime": "video/mpeg",
+            "lengthCheck": "matchedOrUnavailable"
+          }
+        ],
+        "startup": [
+          {
+            "playbackTraceID": "0BE47FC1",
+            "planID": "BE835FFF",
+            "initialPositionSeconds": "40.51761111111111",
+            "initialSeekResult": "0",
+            "initialSeekMs": "2332.8357083373703",
+            "acceptedVideoFrameMs": "5525.627041701227",
+            "firstPlayableVideoFrames": "7",
+            "discardedVideoFramesBeforeAccepted": "0"
+          }
+        ],
+        "screenshotReviewed": true,
+        "continuousFramesOrAudioAccepted": false,
+        "liveTailFollowAccepted": false,
+        "exit": {
+          "normalUIExit": true,
+          "playbackErrorVisible": false,
+          "completionMatches": 1,
+          "playerOpened": true
+        },
+        "changedBookmarkCount": 1,
+        "savedEntries": [
+          {
+            "positionSeconds": 78.33094444444444,
+            "audioTrackID": 1,
+            "subtitleTrackID": null,
+            "subtitlesDisabled": false
+          }
+        ],
+        "reviewScope": "Selected actual t30; cold recording t3/t10/t30 reviewed; no full-frame/audio acceptance",
+        "startupPlaceholderZeroIsNotResumeStart": true,
+        "growingFileColdResumeAccepted": true,
+        "resumeProof": {
+          "sameBookmarkKey": true,
+          "firstSavedPosition": 40.51761111111111,
+          "coldSavedPosition": 78.33094444444444,
+          "firstWitnessLength": 1319108608,
+          "coldWitnessLength": 1492385792,
+          "originalTrackSelectionUnchanged": true,
+          "witnessEvidencePrivatelyRecorded": true
+        },
+        "t3LoadingVisible": true
+      },
+      "witness-pad-legacy-s05-file": {
+        "sourceDiffSHA256": "3e3aa7b7c6dfd15bfe1faad767abb5386e3e18eba57776348b235749423183be",
+        "isFinalPackage": true,
+        "freshEventCount": 208,
+        "firstClock": {
+          "currentSeconds": "0.000",
+          "durationSeconds": "6094.600",
+          "enginePlaying": "true",
+          "controlsPlaying": "true",
+          "sampleReason": "playbackTick",
+          "playbackTraceID": "4330CD76",
+          "planID": "424AE354",
+          "routeKind": "localRangeProxy"
+        },
+        "lastClock": {
+          "currentSeconds": "793.899",
+          "durationSeconds": "6094.600",
+          "enginePlaying": "true",
+          "controlsPlaying": "true",
+          "sampleReason": "playbackTick",
+          "playbackTraceID": "4330CD76",
+          "planID": "424AE354",
+          "routeKind": "localRangeProxy"
+        },
+        "errors": [],
+        "probes": [
+          {
+            "event": "probe_succeeded",
+            "stage": "dsmGreenfieldLANRange",
+            "allowsContentGrowth": "true",
+            "expectedBytes": "5315092196",
+            "responseTotalBytes": "5315092196",
+            "status": "206",
+            "mime": "video/mpeg",
+            "lengthCheck": "matchedOrUnavailable"
+          }
+        ],
+        "startup": [
+          {
+            "playbackTraceID": "4330CD76",
+            "planID": "424AE354",
+            "initialPositionSeconds": "769.4696111111111",
+            "initialSeekResult": "0",
+            "initialSeekMs": "2198.1271249824204",
+            "acceptedVideoFrameMs": "5731.1702916631475",
+            "firstPlayableVideoFrames": "16",
+            "discardedVideoFramesBeforeAccepted": "0"
+          }
+        ],
+        "screenshotReviewed": true,
+        "continuousFramesOrAudioAccepted": false,
+        "liveTailFollowAccepted": false,
+        "exit": {
+          "normalUIExit": true,
+          "playbackErrorVisible": false,
+          "completionMatches": 1,
+          "playerOpened": true
+        },
+        "changedBookmarkCount": 1,
+        "savedEntries": [
+          {
+            "positionSeconds": 794.6136111111111,
+            "audioTrackID": 1,
+            "subtitleTrackID": null,
+            "subtitlesDisabled": false
+          }
+        ],
+        "reviewScope": "Selected actual t30; cold recording t3/t10/t30 reviewed; no full-frame/audio acceptance"
+      },
+      "witness-pad-first-file": {
+        "sourceDiffSHA256": "3e3aa7b7c6dfd15bfe1faad767abb5386e3e18eba57776348b235749423183be",
+        "isFinalPackage": true,
+        "freshEventCount": 356,
+        "firstClock": {
+          "currentSeconds": "0.038",
+          "durationSeconds": "3154.826",
+          "enginePlaying": "true",
+          "controlsPlaying": "true",
+          "sampleReason": "playbackTick",
+          "playbackTraceID": "AA1C45F4",
+          "planID": "4AD47E47",
+          "routeKind": "localRangeProxy"
+        },
+        "lastClock": {
+          "currentSeconds": "39.632",
+          "durationSeconds": "3154.826",
+          "enginePlaying": "true",
+          "controlsPlaying": "true",
+          "sampleReason": "playbackTick",
+          "playbackTraceID": "AA1C45F4",
+          "planID": "4AD47E47",
+          "routeKind": "localRangeProxy"
+        },
+        "errors": [],
+        "probes": [
+          {
+            "event": "probe_succeeded",
+            "stage": "dsmGreenfieldLANRange",
+            "allowsContentGrowth": "true",
+            "expectedBytes": "1319108608",
+            "responseTotalBytes": "1415315456",
+            "status": "206",
+            "mime": "video/mpeg",
+            "lengthCheck": "matchedOrUnavailable"
+          }
+        ],
+        "startup": [
+          {
+            "playbackTraceID": "AA1C45F4",
+            "planID": "4AD47E47",
+            "initialPositionSeconds": "0.0",
+            "initialSeekResult": "notRequested",
+            "initialSeekMs": "unknown",
+            "acceptedVideoFrameMs": "2744.592749979347",
+            "firstPlayableVideoFrames": "11",
+            "discardedVideoFramesBeforeAccepted": "0"
+          }
+        ],
+        "screenshotReviewed": true,
+        "continuousFramesOrAudioAccepted": false,
+        "liveTailFollowAccepted": false,
+        "exit": {
+          "normalUIExit": true,
+          "playbackErrorVisible": false,
+          "completionMatches": 1,
+          "playerOpened": true
+        },
+        "changedBookmarkCount": 1,
+        "savedEntries": [
+          {
+            "positionSeconds": 40.51761111111111,
+            "audioTrackID": 1,
+            "subtitleTrackID": null,
+            "subtitlesDisabled": false
+          }
+        ],
+        "reviewScope": "Selected actual t30; cold recording t3/t10/t30 reviewed; no full-frame/audio acceptance"
+      }
+    }
+  },
+  "recordingResumeProof": {
+    "iphone13": {
+      "sameBookmarkKey": true,
+      "firstSavedPosition": 42.270066666666665,
+      "coldSavedPosition": 83.16606666666667,
+      "firstWitnessLength": 1186201600,
+      "coldWitnessLength": 1243611136,
+      "originalTrackSelectionUnchanged": true,
+      "witnessEvidencePrivatelyRecorded": true
+    },
+    "ipad": {
+      "sameBookmarkKey": true,
+      "firstSavedPosition": 40.51761111111111,
+      "coldSavedPosition": 78.33094444444444,
+      "firstWitnessLength": 1319108608,
+      "coldWitnessLength": 1492385792,
+      "originalTrackSelectionUnchanged": true,
+      "witnessEvidencePrivatelyRecorded": true
+    }
+  },
+  "legacyMigration": {
+    "originalStrictBookmarkRetained": true,
+    "exactLegacyRevisionMigrated": true,
+    "initialPositionSeconds": 769.4696111111111,
+    "newSavedPositionSeconds": 794.6136111111111,
+    "actualMovieScreenshotReviewed": true
+  },
+  "evidenceScope": "R01 same actively growing TS and Pad S05 fixed TS; selected real screenshots; serial playback; all raw identities/preferences/content fingerprints privately stored",
+  "replacementNegativeFixturePassed": true,
+  "realNASRecordingReplacedForTest": false,
+  "contentIdentityLimit": "Two bounded 64 KiB samples; not a digest of the full historical file. Interior-only mutation preserving both samples is not covered. Failed content evidence disables restore, without preventing media open.",
+  "liveTailFollow": "NOT IMPLEMENTED / NOT VALIDATED",
+  "dynamicDurationRefresh": "NOT VALIDATED",
+  "allHistoricalBacklogRetained": true,
+  "privateEvidenceRoot": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-10-12-recording-ts-resume-233923"
+}

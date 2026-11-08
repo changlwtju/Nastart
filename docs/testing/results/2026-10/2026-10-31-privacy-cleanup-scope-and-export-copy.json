@@ -1,0 +1,109 @@
+{
+  "date": "2026-10-31",
+  "scope": "Privacy cleanup scope and export copy; local source only",
+  "source": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "inputCount": 446,
+    "existingFilesChanged": 6,
+    "otherHashesUnchanged": 440
+  },
+  "finalBuilds": {
+    "mobile-sim-debug-cast": {
+      "startedAt": "2026-10-31T21:43:10.427965+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-31T21:43:26.507601+08:00"
+    },
+    "mobile-debug": {
+      "startedAt": "2026-10-31T21:44:04.712677+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-31T21:44:44.793205+08:00"
+    },
+    "mobile-release": {
+      "startedAt": "2026-10-31T21:44:44.794217+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-31T21:46:21.974898+08:00"
+    },
+    "tv-sim-debug-cast": {
+      "startedAt": "2026-10-31T21:46:21.975661+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-31T21:46:29.100981+08:00"
+    },
+    "tv-unsigned-debug": {
+      "startedAt": "2026-10-31T21:46:29.101715+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-31T21:46:41.925149+08:00"
+    },
+    "tv-release": {
+      "startedAt": "2026-10-31T21:46:41.925828+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-31T21:47:10.446135+08:00"
+    }
+  },
+  "previousBuildStageRetained": true,
+  "tests": {
+    "OfflineUIScenarioTests": {
+      "passed": 4,
+      "failed": 0
+    },
+    "exportCopyCheck": {
+      "startedAt": "2026-10-31T21:49:01.699489+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-31T21:49:01.925802+08:00",
+      "sourceFunctionsExtractedOnly": true,
+      "syntheticCounterexamples": 2,
+      "configuredFieldMaskCheckCount": 1,
+      "realDataExported": false,
+      "productSanitizerChanged": false
+    },
+    "localization": {
+      "privacyKeyCountPerLocale": 45,
+      "matchingKeySets": true,
+      "duplicatePrivacyKeys": 0,
+      "languages": [
+        "en",
+        "zh-Hans"
+      ]
+    },
+    "cleanupSourceCheck": {
+      "actionSequenceUnchanged": true,
+      "temporaryCleanupAndFollowingSourceUnchanged": true,
+      "cleanupExecuted": false
+    }
+  },
+  "simulation": {
+    "budget": {
+      "time": "2026-10-31T21:37:13.519574+08:00",
+      "freeGiB": 3.5656471252441406,
+      "minimumMobileGiB": 6.0,
+      "minimumTVGiB": 3.8,
+      "mobileStarted": false,
+      "tvStarted": false,
+      "reason": "Below established startup budgets; no simulator created"
+    },
+    "ownedSimulatorCount": 0,
+    "newScreenshotCount": 0,
+    "UIValidated": false
+  },
+  "package": {
+    "mobileSignedMachOCount": 30,
+    "physicalInstallCount": 0,
+    "tvCurrentSignedCandidate": false,
+    "priorProfileBlockRetained": true,
+    "tvNormalSigningRetried": false
+  },
+  "physicalDevicesOperated": 0,
+  "NASRequests": 0,
+  "cleanupActionsExecuted": 0,
+  "realExportsGeneratedOrShared": 0,
+  "playbackAttempts": 0,
+  "remoteSourceWrites": 0,
+  "playbackMatrixNewPasses": 0,
+  "limitations": [
+    "Actual cleanup success, confirmation/cancel behavior, layouts and VoiceOver not tested",
+    "Synthetic extracted-function checks do not validate full export or guarantee anonymization",
+    "Product sanitizer, export schema, share and cleanup operations unchanged",
+    "TV cleanup capability unchanged; no new TV clear action",
+    "Old device/NAS and password/folder open items retained"
+  ],
+  "recordedAt": "2026-10-31T21:51:39.448480+08:00"
+}

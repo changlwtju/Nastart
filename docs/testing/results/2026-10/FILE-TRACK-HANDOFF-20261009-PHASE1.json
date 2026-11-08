@@ -1,0 +1,156 @@
+{
+  "recordedAt": "2026-10-09T15:15:43.275222+08:00",
+  "package": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "f8d248ec9ad5d1f491a7f465d0c3a554653565e72620b42609b7c23d6aed2e69",
+    "package": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-10-09-file-track-handoff-141330/Nastart-File-Track-Handoff-Normal-Debug.app",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "binaryBuildTime": "2026-10-09T15:08:18.836162+08:00",
+    "binaries": {
+      "Nastart": "a145d4fe2420405eba3bfa6904e86eab76fedc9f8725012ac468ad9972d7aee1",
+      "Nastart.debug.dylib": "4bb03a63aac9c6758d600fff10ffb392919e1b6d405d4fb32d4962dc64c7afc6",
+      "Frameworks/KSPlayer.framework/KSPlayer": "eda16e6d0e22bc81045752f2f54a263b0f4f8500912378d5ac141013c9042b52"
+    },
+    "signatureVerified": true,
+    "individuallyVerifiedLibraries": 29,
+    "checkedInputs": 137,
+    "newerInputs": [],
+    "profileExpirationUTC": "2026-10-10T22:03:15",
+    "tests": "217/2 skipped/0 failures; ten file fallback/track rules and existing actual decoder tests",
+    "preflight": "15 passed",
+    "linkageVerified": true
+  },
+  "scope": "first f8d248 source only; not final source regression",
+  "device": "iphone13",
+  "case": "weakwifi-resume-s03-file",
+  "duration": 180,
+  "recognizableMovieInspected": true,
+  "visualEvidence": "t180.png",
+  "normalUIExit": {
+    "normalUIExit": true,
+    "playbackErrorVisible": false,
+    "completionMatches": 1,
+    "playerOpened": true
+  },
+  "maxStallCountPerTrace": 5,
+  "maxDroppedVideoFrames": null,
+  "fileFallbackLookups": [
+    {
+      "event": "diagnostics.files.jellyfin_original_lookup",
+      "actionElapsedSeconds": -0.373,
+      "fields": {
+        "identity": "parentTailSizeAndFilename",
+        "lookupComplete": "yes",
+        "result": "verifiedTranscodeSource",
+        "searchBroadened": "no"
+      }
+    },
+    {
+      "event": "diagnostics.files.jellyfin_original_lookup",
+      "actionElapsedSeconds": 1.883,
+      "fields": {
+        "exactPathMatches": "0",
+        "result": "ambiguousOrUnavailable"
+      }
+    },
+    {
+      "event": "diagnostics.files.jellyfin_original_lookup",
+      "actionElapsedSeconds": 47.834,
+      "fields": {
+        "candidateCount": "6",
+        "result": "sessionCandidates"
+      }
+    },
+    {
+      "event": "diagnostics.files.jellyfin_original_lookup",
+      "actionElapsedSeconds": 50.063,
+      "fields": {
+        "identity": "parentTailSizeAndFilename",
+        "lookupComplete": "yes",
+        "result": "verifiedTranscodeSource",
+        "searchBroadened": "no"
+      }
+    },
+    {
+      "event": "diagnostics.files.jellyfin_original_lookup",
+      "actionElapsedSeconds": 50.181,
+      "fields": {
+        "bitrate": "1500000",
+        "elapsedMs": "114",
+        "result": "playbackInfoPrepared"
+      }
+    },
+    {
+      "event": "diagnostics.files.jellyfin_original_lookup",
+      "actionElapsedSeconds": 50.182,
+      "fields": {
+        "audioStreamIndex": "4",
+        "playbackTraceID": "A04AD42A",
+        "result": "negotiatedTracksRejected",
+        "subtitleStreamIndex": "-1"
+      }
+    },
+    {
+      "event": "diagnostics.files.jellyfin_original_lookup",
+      "actionElapsedSeconds": 96.509,
+      "fields": {
+        "candidateCount": "6",
+        "result": "sessionCandidates"
+      }
+    },
+    {
+      "event": "diagnostics.files.jellyfin_original_lookup",
+      "actionElapsedSeconds": 99.128,
+      "fields": {
+        "identity": "parentTailSizeAndFilename",
+        "lookupComplete": "yes",
+        "result": "verifiedTranscodeSource",
+        "searchBroadened": "no"
+      }
+    },
+    {
+      "event": "diagnostics.files.jellyfin_original_lookup",
+      "actionElapsedSeconds": 99.354,
+      "fields": {
+        "bitrate": "1500000",
+        "elapsedMs": "217",
+        "result": "playbackInfoPrepared"
+      }
+    },
+    {
+      "event": "diagnostics.files.jellyfin_original_lookup",
+      "actionElapsedSeconds": 99.355,
+      "fields": {
+        "audioStreamIndex": "4",
+        "playbackTraceID": "D5856554",
+        "result": "negotiatedTracksRejected",
+        "subtitleStreamIndex": "-1"
+      }
+    }
+  ],
+  "condition": {
+    "recordedAt": "2026-10-09T15:10:34.152436+08:00",
+    "device": "iphone13",
+    "profile": "SlowNetworkWiFi",
+    "profileDescription": "Name: Nominal Wi-Fi Scenario\nDownlink Bandwidth: 40 Mbps\nDownlink Latency: 1 ms\nDownlink Packet Loss Ratio: 0%\nUplink Bandwidth: 33 Mbps\nUplink Latency: 1 ms\nUplink Packet Loss Ratio: 0%",
+    "physicalBearer": "Wi-Fi requested; actual URL metrics verify separately",
+    "scope": "controlled constrained Wi-Fi on current home-connected USB environment; external Wi-Fi not verified",
+    "originalActiveCount": 0,
+    "noAppTestEnvironment": true,
+    "cases": [
+      [
+        "iphone13",
+        "S03",
+        "file",
+        180,
+        "weakwifi"
+      ]
+    ],
+    "conditionRestored": true,
+    "activeVerifiedAt": "2026-10-09T15:10:34.713132+08:00",
+    "batchExitCode": 0,
+    "restoredActiveCount": 0,
+    "restoredAt": "2026-10-09T15:14:08.642141+08:00"
+  },
+  "conclusion": "FAIL: two explicit audio4/Off negotiations refused by URL validator; no candidate prepared/commit, buffering persists; preserved before protocol fix"
+}

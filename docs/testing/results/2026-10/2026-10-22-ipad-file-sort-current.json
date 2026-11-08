@@ -1,0 +1,37 @@
+{
+  "date": "2026-10-22",
+  "packageBuiltAt": "2026-10-22T05:26:28.931374+08:00",
+  "configuration": "ordinary Debug -Onone",
+  "freshPadNameModelSystemUDIDUSBAndReceiptVerifiedEachWindow": true,
+  "sourceInputs": 173,
+  "signedLibraries": 29,
+  "buildInstallTestRuns": 0,
+  "normalEmptyEnvironmentReadBack": true,
+  "nativeBeforeAndAfterHomeWiFiNoPiPVisuallyReviewed": true,
+  "windows": [
+    {
+      "actionsDispatched": 0,
+      "result": "TOOL: iPhone name selector absent on actual iPad; actual label and SF-symbol name differ",
+      "sortCommandsDispatched": 0
+    },
+    {
+      "actionsDispatched": 2,
+      "result": "normal Device and Files navigation observed; sort menu displayed guard false before dispatch",
+      "rootRowsObserved": 12,
+      "sortCommandsDispatched": 0,
+      "finallyOriginalSortRequestAlsoBlockedBeforeDispatch": true
+    }
+  ],
+  "sortAcceptanceAdded": false,
+  "NASOnlineHomeSliceObserved": true,
+  "newMediaPreviewDownloadCommands": 0,
+  "all18NonDiagnosticPreferencesUnchanged": true,
+  "finalNativeNastartCount": 0,
+  "finalNativeRunnerCount": 0,
+  "ownedHostAndLoggerProcessesRemaining": 0,
+  "WDAAutoIdle10CoolOff2GETVerified": true,
+  "thirdSameConditionWindowStopped": true,
+  "networkChanged": false,
+  "iPhone18": "deferred by user, no probe/install/foreground",
+  "acceptanceStatusChanged": false
+}

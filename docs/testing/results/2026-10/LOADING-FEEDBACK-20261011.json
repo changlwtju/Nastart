@@ -1,0 +1,1180 @@
+{
+  "at": "2026-10-11T16:14:16.437256+08:00",
+  "package": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "27adfe361189fac22c586f25648742806f7b179afc5690b5074f9f63fbaf0c9d",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "binaryBuildTime": "2026-10-11T15:55:47.222799+08:00",
+    "frozenAt": "2026-10-11T15:56:51.815120+08:00",
+    "package": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-10-11-loading-feedback-155411/Nastart-Loading-Feedback-Normal-Debug.app",
+    "ipa": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-10-11-loading-feedback-155411/Nastart-Loading-Feedback-Normal-Debug.ipa",
+    "binaries": {
+      "Nastart": "2bbb9f4a92a8f9c8317972838960bda9f3094cbc67f2babb879151c1c10f3b42",
+      "Nastart.debug.dylib": "fae73a0fc504b7b056fc4377989f389362532c5b9f0866d7adbc6083825fab68",
+      "Frameworks/KSPlayer.framework/KSPlayer": "8e6bc9ccfd71d1aa406f1cf74f06201df62b90e577527315f72c040fe2465ebe"
+    },
+    "checkedInputs": 173,
+    "newerInputs": [],
+    "signatureVerified": true,
+    "individuallyVerifiedLibraries": 29,
+    "profileExpirationUTC": "2026-10-17T22:23:40"
+  },
+  "tests": {
+    "executed": 318,
+    "skipped": 2,
+    "failures": 0,
+    "runThisTurn": true,
+    "controlledBaseline": {
+      "tests": 3,
+      "failedTests": 3,
+      "failedAssertions": 6
+    }
+  },
+  "preflight": {
+    "passed": 15,
+    "runThisTurn": true
+  },
+  "devices": {
+    "ipad": {
+      "recordedAt": "2026-10-11T15:57:12.093759+08:00",
+      "device": "ipad",
+      "model": "iPad12,1",
+      "system": "18.3.1",
+      "connection": "USB",
+      "sourceDiffSHA256": "27adfe361189fac22c586f25648742806f7b179afc5690b5074f9f63fbaf0c9d",
+      "binaries": {
+        "Nastart": "2bbb9f4a92a8f9c8317972838960bda9f3094cbc67f2babb879151c1c10f3b42",
+        "Nastart.debug.dylib": "fae73a0fc504b7b056fc4377989f389362532c5b9f0866d7adbc6083825fab68",
+        "Frameworks/KSPlayer.framework/KSPlayer": "8e6bc9ccfd71d1aa406f1cf74f06201df62b90e577527315f72c040fe2465ebe"
+      },
+      "method": "Apple devicectl data-preserving cover",
+      "preservesContainer": true,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "actualForegroundUIVerified": true,
+      "installation": "success",
+      "signatureVerified": true,
+      "librariesVerified": 29,
+      "installationStartedAt": "2026-10-11T15:57:12.273256+08:00",
+      "nativeInstallExitCode": 0,
+      "nativeInstallErrorCode": null,
+      "installedAt": "2026-10-11T15:57:19.565017+08:00",
+      "nonDiagnosticKeysBefore": 16,
+      "nonDiagnosticKeysAfter": 16,
+      "samePreferenceKeys": true,
+      "unchangedPreferenceValues": 16,
+      "changedPreferenceCount": 0,
+      "postInstallLookupExists": true,
+      "normalHomeInspectedAt": "2026-10-11T15:58:21.748397+08:00",
+      "actualEmptyEnvironmentVerified": true
+    },
+    "iphone13": {
+      "recordedAt": "2026-10-11T15:59:39.259754+08:00",
+      "device": "iphone13",
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "connection": "USB",
+      "sourceDiffSHA256": "27adfe361189fac22c586f25648742806f7b179afc5690b5074f9f63fbaf0c9d",
+      "binaries": {
+        "Nastart": "2bbb9f4a92a8f9c8317972838960bda9f3094cbc67f2babb879151c1c10f3b42",
+        "Nastart.debug.dylib": "fae73a0fc504b7b056fc4377989f389362532c5b9f0866d7adbc6083825fab68",
+        "Frameworks/KSPlayer.framework/KSPlayer": "8e6bc9ccfd71d1aa406f1cf74f06201df62b90e577527315f72c040fe2465ebe"
+      },
+      "preservesContainer": true,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "actualForegroundUIVerified": true,
+      "installation": "success",
+      "installationStartedAt": "2026-10-11T15:59:40.484217+08:00",
+      "installedAt": "2026-10-11T15:59:47.192641+08:00",
+      "nonDiagnosticKeysBefore": 25,
+      "nonDiagnosticKeysAfter": 25,
+      "samePreferenceKeys": true,
+      "unchangedPreferenceValues": 25,
+      "changedPreferenceCount": 0,
+      "postInstallLookupExists": true,
+      "actualEmptyEnvironmentVerified": true,
+      "normalHomeInspectedAt": "2026-10-11T16:00:55.359973+08:00"
+    },
+    "iphone18": {
+      "device": "iphone18",
+      "installation": "success",
+      "sourceDiffSHA256": "27adfe361189fac22c586f25648742806f7b179afc5690b5074f9f63fbaf0c9d",
+      "binaries": {
+        "Nastart": "2bbb9f4a92a8f9c8317972838960bda9f3094cbc67f2babb879151c1c10f3b42",
+        "Nastart.debug.dylib": "fae73a0fc504b7b056fc4377989f389362532c5b9f0866d7adbc6083825fab68",
+        "Frameworks/KSPlayer.framework/KSPlayer": "8e6bc9ccfd71d1aa406f1cf74f06201df62b90e577527315f72c040fe2465ebe"
+      },
+      "method": "direct Bonjour TCP lockdown using existing Mac legacy pairing + AFC + installation_proxy Install; preserve container",
+      "newPairingAttempted": false,
+      "preservesContainer": true,
+      "signatureVerified": true,
+      "librariesVerified": 29,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "normalLaunch": "deferred by user; no App launch or screenshot this turn",
+      "actualForegroundUIVerified": false,
+      "model": "iPhone19,7",
+      "system": "27.0",
+      "connection": "NETWORK",
+      "installationStartedAt": "2026-10-11T15:58:58.557184+08:00",
+      "installedAt": "2026-10-11T15:59:12.891892+08:00",
+      "postInstallLookupExists": true,
+      "samePreferenceKeys": true,
+      "nonDiagnosticKeysBefore": 25,
+      "nonDiagnosticKeysAfter": 25,
+      "unchangedPreferenceValues": 25,
+      "changedPreferenceCount": 0,
+      "newPackageUploaded": true
+    }
+  },
+  "cases": [
+    {
+      "device": "ipad",
+      "sample": "S01",
+      "entry": "Jellyfin",
+      "sourceDiffSHA256": "27adfe361189fac22c586f25648742806f7b179afc5690b5074f9f63fbaf0c9d",
+      "actualEmptyEnvironmentVerifiedBeforeEntry": true,
+      "network": "ordinary Wi-Fi; no shaping; existing network retained",
+      "cacheState": "unknown; no cache clear",
+      "stageTimeline": [
+        {
+          "secondsFromTouchRequestStart": 0.9519252777099609,
+          "event": "playback_route_state",
+          "fields": {}
+        },
+        {
+          "secondsFromTouchRequestStart": 1.7151191234588623,
+          "event": "engine_ready",
+          "fields": {
+            "engine": "KSPlayer",
+            "state": "preparing"
+          }
+        },
+        {
+          "secondsFromTouchRequestStart": 1.7153019905090332,
+          "event": "engine_ready",
+          "fields": {
+            "engine": "KSPlayer",
+            "state": "rendererAppeared"
+          }
+        },
+        {
+          "secondsFromTouchRequestStart": 1.835340976715088,
+          "event": "engine_ready",
+          "fields": {
+            "engine": "KSPlayer",
+            "state": "readyToPlay"
+          }
+        },
+        {
+          "secondsFromTouchRequestStart": 1.8355822563171387,
+          "event": "engine_ready",
+          "fields": {
+            "engine": "KSPlayer",
+            "state": "buffering"
+          }
+        },
+        {
+          "secondsFromTouchRequestStart": 3.7914161682128906,
+          "event": "engine_ready",
+          "fields": {
+            "engine": "KSPlayer",
+            "state": "bufferFinished"
+          }
+        },
+        {
+          "secondsFromTouchRequestStart": 4.027695178985596,
+          "event": "engine_startup_timing",
+          "fields": {
+            "engine": "KSPlayer",
+            "evidence": "engineMonotonicStagesAndAdvancingClock",
+            "initialPositionSeconds": "1507.856",
+            "initialSeekMs": "444.6623333496973",
+            "initialSeekResult": "0",
+            "readyToClockMs": "2268.374291656073"
+          }
+        },
+        {
+          "secondsFromTouchRequestStart": 4.036550045013428,
+          "event": "first_frame",
+          "fields": {
+            "firstFramePositionSeconds": "1507.995"
+          }
+        }
+      ],
+      "visualInspection": {
+        "t1": "black with spinner",
+        "t2": "black with spinner and resumed clock",
+        "t3": "black with spinner",
+        "t4": "movie, no spinner",
+        "t5": "movie, no spinner",
+        "t30": "movie",
+        "closed": "detail, player closed"
+      },
+      "lastInspectedBlackTarget": 3,
+      "firstInspectedMovieTarget": 4,
+      "blackScreenshotRequestWindowSeconds": [
+        3.4186861515045166,
+        3.602741003036499
+      ],
+      "movieScreenshotRequestWindowSeconds": [
+        4.00484824180603,
+        4.601185083389282
+      ],
+      "conservativeMovieDelayFromTouchReleaseSeconds": [
+        2.2977681159973145,
+        4.601185083389282
+      ],
+      "exactFirstDisplayedFrameMeasured": false,
+      "first_frameDiagnosticMeaning": "advancing clock; not visual frame proof",
+      "actualT30Movie": true,
+      "normalUIExitInspected": true,
+      "oneUpdatedBookmark": true,
+      "sameTrackPreferences": true,
+      "continuous30SecondsAccepted": false,
+      "performanceAccepted": false,
+      "captureWindows": [
+        {
+          "targetSeconds": 0,
+          "requestStart": 1791705528.648449,
+          "screenshotResponseEnd": 1791705529.212878,
+          "responseEnd": 1791705529.80136,
+          "clocks": [
+            "0%"
+          ],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 1,
+          "requestStart": 1791705529.832436,
+          "screenshotResponseEnd": 1791705530.006197,
+          "responseEnd": 1791705530.4409332,
+          "clocks": [
+            "21%"
+          ],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 2,
+          "requestStart": 1791705530.474855,
+          "screenshotResponseEnd": 1791705530.686153,
+          "responseEnd": 1791705530.911021,
+          "clocks": [
+            "21%"
+          ],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 3,
+          "requestStart": 1791705530.945605,
+          "screenshotResponseEnd": 1791705531.12966,
+          "responseEnd": 1791705531.4619038,
+          "clocks": [
+            "21%"
+          ],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 4,
+          "requestStart": 1791705531.5317671,
+          "screenshotResponseEnd": 1791705532.128104,
+          "responseEnd": 1791705532.390429,
+          "clocks": [
+            "21%"
+          ],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 5,
+          "requestStart": 1791705532.5319612,
+          "screenshotResponseEnd": 1791705532.951058,
+          "responseEnd": 1791705533.248419,
+          "clocks": [
+            "21%"
+          ],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 6,
+          "requestStart": 1791705533.53197,
+          "screenshotResponseEnd": 1791705533.967915,
+          "responseEnd": 1791705534.4113111,
+          "clocks": [
+            "21%"
+          ],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 7,
+          "requestStart": 1791705534.5279381,
+          "screenshotResponseEnd": 1791705535.011712,
+          "responseEnd": 1791705535.345582,
+          "clocks": [
+            "21%"
+          ],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 8,
+          "requestStart": 1791705535.5309691,
+          "screenshotResponseEnd": 1791705535.974327,
+          "responseEnd": 1791705536.364337,
+          "clocks": [],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 9,
+          "requestStart": 1791705536.528608,
+          "screenshotResponseEnd": 1791705537.020965,
+          "responseEnd": 1791705537.386392,
+          "clocks": [],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 10,
+          "requestStart": 1791705537.531928,
+          "screenshotResponseEnd": 1791705538.019556,
+          "responseEnd": 1791705538.425361,
+          "clocks": [],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 15,
+          "requestStart": 1791705542.5280588,
+          "screenshotResponseEnd": 1791705542.9660249,
+          "responseEnd": 1791705543.294245,
+          "clocks": [],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 30,
+          "requestStart": 1791705557.530963,
+          "screenshotResponseEnd": 1791705558.032813,
+          "responseEnd": 1791705558.331563,
+          "clocks": [],
+          "playerVisible": true
+        }
+      ],
+      "submittedCount": 6,
+      "acceptedCount": 6,
+      "failedCount": 0,
+      "everySubmissionMatchedHTTPAcceptance": true,
+      "acceptedStartedPositionsSeconds": [
+        1507.856
+      ],
+      "serverDurabilityProven": false
+    },
+    {
+      "device": "ipad",
+      "sample": "S01",
+      "entry": "device file",
+      "sourceDiffSHA256": "27adfe361189fac22c586f25648742806f7b179afc5690b5074f9f63fbaf0c9d",
+      "actualEmptyEnvironmentVerifiedBeforeEntry": true,
+      "network": "ordinary Wi-Fi; no shaping; existing network retained",
+      "cacheState": "unknown; no cache clear",
+      "stageTimeline": [
+        {
+          "secondsFromTouchRequestStart": 0.8845229148864746,
+          "event": "engine_ready",
+          "fields": {
+            "engine": "KSPlayer",
+            "state": "preparing"
+          }
+        },
+        {
+          "secondsFromTouchRequestStart": 0.8848109245300293,
+          "event": "engine_ready",
+          "fields": {
+            "engine": "KSPlayer",
+            "state": "rendererAppeared"
+          }
+        },
+        {
+          "secondsFromTouchRequestStart": 1.4379911422729492,
+          "event": "engine_ready",
+          "fields": {
+            "engine": "KSPlayer",
+            "state": "readyToPlay"
+          }
+        },
+        {
+          "secondsFromTouchRequestStart": 1.438277006149292,
+          "event": "engine_ready",
+          "fields": {
+            "engine": "KSPlayer",
+            "state": "buffering"
+          }
+        },
+        {
+          "secondsFromTouchRequestStart": 2.851963996887207,
+          "event": "engine_ready",
+          "fields": {
+            "engine": "KSPlayer",
+            "state": "bufferFinished"
+          }
+        },
+        {
+          "secondsFromTouchRequestStart": 3.0552749633789062,
+          "event": "engine_startup_timing",
+          "fields": {
+            "engine": "KSPlayer",
+            "evidence": "engineMonotonicStagesAndAdvancingClock",
+            "initialPositionSeconds": "919.963",
+            "initialSeekMs": "329.6187083469704",
+            "initialSeekResult": "0",
+            "readyToClockMs": "1757.8713750117458"
+          }
+        },
+        {
+          "secondsFromTouchRequestStart": 3.0838961601257324,
+          "event": "first_frame",
+          "fields": {
+            "firstFramePositionSeconds": "920.069"
+          }
+        }
+      ],
+      "visualInspection": {
+        "t1": "black with spinner, orientation transition",
+        "t2": "black with spinner and resumed clock",
+        "t3": "movie, no spinner",
+        "t30": "movie",
+        "closed": "file preview, player closed"
+      },
+      "lastInspectedBlackTarget": 2,
+      "firstInspectedMovieTarget": 3,
+      "blackScreenshotRequestWindowSeconds": [
+        2.0031442642211914,
+        2.232248067855835
+      ],
+      "movieScreenshotRequestWindowSeconds": [
+        3.0050530433654785,
+        3.623922109603882
+      ],
+      "conservativeMovieDelayFromTouchReleaseSeconds": [
+        1.2825803756713867,
+        3.623922109603882
+      ],
+      "exactFirstDisplayedFrameMeasured": false,
+      "first_frameDiagnosticMeaning": "advancing clock; not visual frame proof",
+      "actualT30Movie": true,
+      "normalUIExitInspected": true,
+      "oneUpdatedBookmark": true,
+      "sameTrackPreferences": true,
+      "continuous30SecondsAccepted": false,
+      "performanceAccepted": false,
+      "captureWindows": [
+        {
+          "targetSeconds": 0,
+          "requestStart": 1791705657.062836,
+          "screenshotResponseEnd": 1791705657.3354828,
+          "responseEnd": 1791705657.469588,
+          "clocks": [
+            "13%"
+          ],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 1,
+          "requestStart": 1791705657.503789,
+          "screenshotResponseEnd": 1791705657.734456,
+          "responseEnd": 1791705658.026907,
+          "clocks": [
+            "0%"
+          ],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 2,
+          "requestStart": 1791705658.3445172,
+          "screenshotResponseEnd": 1791705658.573621,
+          "responseEnd": 1791705658.6271842,
+          "clocks": [
+            "13%"
+          ],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 3,
+          "requestStart": 1791705659.346426,
+          "screenshotResponseEnd": 1791705659.965295,
+          "responseEnd": 1791705660.198538,
+          "clocks": [
+            "13%"
+          ],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 4,
+          "requestStart": 1791705660.346405,
+          "screenshotResponseEnd": 1791705660.9722722,
+          "responseEnd": 1791705661.08623,
+          "clocks": [
+            "13%"
+          ],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 5,
+          "requestStart": 1791705661.345186,
+          "screenshotResponseEnd": 1791705661.9844532,
+          "responseEnd": 1791705662.1403751,
+          "clocks": [
+            "13%"
+          ],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 6,
+          "requestStart": 1791705662.346406,
+          "screenshotResponseEnd": 1791705662.913001,
+          "responseEnd": 1791705663.0613298,
+          "clocks": [
+            "13%"
+          ],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 7,
+          "requestStart": 1791705663.341656,
+          "screenshotResponseEnd": 1791705663.925869,
+          "responseEnd": 1791705664.043711,
+          "clocks": [],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 8,
+          "requestStart": 1791705664.343234,
+          "screenshotResponseEnd": 1791705664.919899,
+          "responseEnd": 1791705665.012467,
+          "clocks": [],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 9,
+          "requestStart": 1791705665.344584,
+          "screenshotResponseEnd": 1791705665.958346,
+          "responseEnd": 1791705666.053673,
+          "clocks": [],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 10,
+          "requestStart": 1791705666.34641,
+          "screenshotResponseEnd": 1791705666.976705,
+          "responseEnd": 1791705667.0625641,
+          "clocks": [],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 15,
+          "requestStart": 1791705671.3420842,
+          "screenshotResponseEnd": 1791705671.938966,
+          "responseEnd": 1791705672.2241752,
+          "clocks": [],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 30,
+          "requestStart": 1791705686.343539,
+          "screenshotResponseEnd": 1791705686.959069,
+          "responseEnd": 1791705687.0347562,
+          "clocks": [],
+          "playerVisible": true
+        }
+      ]
+    },
+    {
+      "device": "iphone13",
+      "sample": "S01",
+      "entry": "Jellyfin",
+      "sourceDiffSHA256": "27adfe361189fac22c586f25648742806f7b179afc5690b5074f9f63fbaf0c9d",
+      "actualEmptyEnvironmentVerifiedBeforeEntry": true,
+      "network": "ordinary Wi-Fi; no shaping; existing network retained",
+      "cacheState": "unknown; no cache clear",
+      "stageTimeline": [
+        {
+          "secondsFromTouchRequestStart": 0.7221930027008057,
+          "event": "playback_route_state",
+          "fields": {}
+        },
+        {
+          "secondsFromTouchRequestStart": 0.9558930397033691,
+          "event": "engine_ready",
+          "fields": {
+            "engine": "KSPlayer",
+            "state": "preparing"
+          }
+        },
+        {
+          "secondsFromTouchRequestStart": 0.9564859867095947,
+          "event": "engine_ready",
+          "fields": {
+            "engine": "KSPlayer",
+            "state": "rendererAppeared"
+          }
+        },
+        {
+          "secondsFromTouchRequestStart": 1.1725940704345703,
+          "event": "engine_ready",
+          "fields": {
+            "engine": "KSPlayer",
+            "state": "readyToPlay"
+          }
+        },
+        {
+          "secondsFromTouchRequestStart": 1.172766923904419,
+          "event": "engine_ready",
+          "fields": {
+            "engine": "KSPlayer",
+            "state": "buffering"
+          }
+        },
+        {
+          "secondsFromTouchRequestStart": 1.6369788646697998,
+          "event": "engine_ready",
+          "fields": {
+            "engine": "KSPlayer",
+            "state": "bufferFinished"
+          }
+        },
+        {
+          "secondsFromTouchRequestStart": 1.8371641635894775,
+          "event": "engine_startup_timing",
+          "fields": {
+            "engine": "KSPlayer",
+            "evidence": "engineMonotonicStagesAndAdvancingClock",
+            "initialPositionSeconds": "1538.085",
+            "initialSeekMs": "103.8325831759721",
+            "initialSeekResult": "0",
+            "readyToClockMs": "718.2844164781272"
+          }
+        },
+        {
+          "secondsFromTouchRequestStart": 1.841459035873413,
+          "event": "first_frame",
+          "fields": {
+            "firstFramePositionSeconds": "1538.174"
+          }
+        }
+      ],
+      "visualInspection": {
+        "t1": "black with spinner and resumed clock, orientation transition",
+        "t2": "movie, no spinner",
+        "t3": "movie, no spinner",
+        "t30": "movie",
+        "closed": "detail, player closed"
+      },
+      "lastInspectedBlackTarget": 1,
+      "firstInspectedMovieTarget": 2,
+      "blackScreenshotRequestWindowSeconds": [
+        1.4496262073516846,
+        1.5666999816894531
+      ],
+      "movieScreenshotRequestWindowSeconds": [
+        2.002331018447876,
+        2.3738601207733154
+      ],
+      "conservativeMovieDelayFromTouchReleaseSeconds": [
+        0.6495511531829834,
+        2.3738601207733154
+      ],
+      "exactFirstDisplayedFrameMeasured": false,
+      "first_frameDiagnosticMeaning": "advancing clock; not visual frame proof",
+      "actualT30Movie": true,
+      "normalUIExitInspected": true,
+      "oneUpdatedBookmark": true,
+      "sameTrackPreferences": true,
+      "continuous30SecondsAccepted": false,
+      "performanceAccepted": false,
+      "captureWindows": [
+        {
+          "targetSeconds": 0,
+          "requestStart": 1791705780.962969,
+          "screenshotResponseEnd": 1791705781.208726,
+          "responseEnd": 1791705781.584539,
+          "clocks": [
+            "21%"
+          ],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 1,
+          "requestStart": 1791705781.6118212,
+          "screenshotResponseEnd": 1791705781.728895,
+          "responseEnd": 1791705781.813525,
+          "clocks": [
+            "21%"
+          ],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 2,
+          "requestStart": 1791705782.164526,
+          "screenshotResponseEnd": 1791705782.536055,
+          "responseEnd": 1791705782.648957,
+          "clocks": [
+            "21%"
+          ],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 3,
+          "requestStart": 1791705783.171005,
+          "screenshotResponseEnd": 1791705783.512409,
+          "responseEnd": 1791705783.665183,
+          "clocks": [
+            "21%"
+          ],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 4,
+          "requestStart": 1791705784.170777,
+          "screenshotResponseEnd": 1791705784.52004,
+          "responseEnd": 1791705784.676588,
+          "clocks": [
+            "22%"
+          ],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 5,
+          "requestStart": 1791705785.170759,
+          "screenshotResponseEnd": 1791705785.504416,
+          "responseEnd": 1791705785.613007,
+          "clocks": [
+            "22%"
+          ],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 6,
+          "requestStart": 1791705786.172238,
+          "screenshotResponseEnd": 1791705786.517236,
+          "responseEnd": 1791705786.66652,
+          "clocks": [],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 7,
+          "requestStart": 1791705787.1642292,
+          "screenshotResponseEnd": 1791705787.522615,
+          "responseEnd": 1791705787.687783,
+          "clocks": [],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 8,
+          "requestStart": 1791705788.169843,
+          "screenshotResponseEnd": 1791705788.51531,
+          "responseEnd": 1791705788.674697,
+          "clocks": [],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 9,
+          "requestStart": 1791705789.1696131,
+          "screenshotResponseEnd": 1791705789.520569,
+          "responseEnd": 1791705789.673561,
+          "clocks": [],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 10,
+          "requestStart": 1791705790.168926,
+          "screenshotResponseEnd": 1791705790.497791,
+          "responseEnd": 1791705790.666112,
+          "clocks": [],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 15,
+          "requestStart": 1791705795.172252,
+          "screenshotResponseEnd": 1791705795.5085518,
+          "responseEnd": 1791705795.610851,
+          "clocks": [],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 30,
+          "requestStart": 1791705810.170691,
+          "screenshotResponseEnd": 1791705810.50987,
+          "responseEnd": 1791705810.619364,
+          "clocks": [],
+          "playerVisible": true
+        }
+      ],
+      "submittedCount": 7,
+      "acceptedCount": 7,
+      "failedCount": 0,
+      "everySubmissionMatchedHTTPAcceptance": true,
+      "acceptedStartedPositionsSeconds": [
+        1538.085
+      ],
+      "serverDurabilityProven": false
+    },
+    {
+      "device": "iphone13",
+      "sample": "S01",
+      "entry": "device file",
+      "sourceDiffSHA256": "27adfe361189fac22c586f25648742806f7b179afc5690b5074f9f63fbaf0c9d",
+      "actualEmptyEnvironmentVerifiedBeforeEntry": true,
+      "network": "ordinary Wi-Fi; no shaping; existing network retained",
+      "cacheState": "unknown; no cache clear",
+      "stageTimeline": [
+        {
+          "secondsFromTouchRequestStart": 0.7049810886383057,
+          "event": "engine_ready",
+          "fields": {
+            "engine": "KSPlayer",
+            "state": "preparing"
+          }
+        },
+        {
+          "secondsFromTouchRequestStart": 0.7051870822906494,
+          "event": "engine_ready",
+          "fields": {
+            "engine": "KSPlayer",
+            "state": "rendererAppeared"
+          }
+        },
+        {
+          "secondsFromTouchRequestStart": 0.8557500839233398,
+          "event": "engine_ready",
+          "fields": {
+            "engine": "KSPlayer",
+            "state": "readyToPlay"
+          }
+        },
+        {
+          "secondsFromTouchRequestStart": 0.8559432029724121,
+          "event": "engine_ready",
+          "fields": {
+            "engine": "KSPlayer",
+            "state": "buffering"
+          }
+        },
+        {
+          "secondsFromTouchRequestStart": 1.6139860153198242,
+          "event": "engine_ready",
+          "fields": {
+            "engine": "KSPlayer",
+            "state": "bufferFinished"
+          }
+        },
+        {
+          "secondsFromTouchRequestStart": 1.854039192199707,
+          "event": "engine_startup_timing",
+          "fields": {
+            "engine": "KSPlayer",
+            "evidence": "engineMonotonicStagesAndAdvancingClock",
+            "initialPositionSeconds": "829.673",
+            "initialSeekMs": "265.5333748552948",
+            "initialSeekResult": "0",
+            "readyToClockMs": "1016.8781250249594"
+          }
+        },
+        {
+          "secondsFromTouchRequestStart": 1.8593530654907227,
+          "event": "first_frame",
+          "fields": {
+            "firstFramePositionSeconds": "829.780"
+          }
+        },
+        {
+          "secondsFromTouchRequestStart": 194.6623411178589,
+          "event": "engine_ready",
+          "fields": {
+            "engine": "KSPlayer",
+            "state": "paused"
+          }
+        },
+        {
+          "secondsFromTouchRequestStart": 199.95677208900452,
+          "event": "engine_ready",
+          "fields": {
+            "engine": "KSPlayer",
+            "state": "bufferFinished"
+          }
+        }
+      ],
+      "visualInspection": {
+        "t1": "black with spinner",
+        "t2": "movie, no spinner",
+        "t3": "movie, no spinner",
+        "t30": "movie",
+        "closed": "file preview, player closed",
+        "paused-early": "movie, play icon,17:02, no spinner",
+        "paused-later": "same movie, play icon,17:02, no spinner",
+        "resumed-feedback": "changed movie, pause icon,17:05, no spinner"
+      },
+      "lastInspectedBlackTarget": 1,
+      "firstInspectedMovieTarget": 2,
+      "blackScreenshotRequestWindowSeconds": [
+        1.0072910785675049,
+        1.154508113861084
+      ],
+      "movieScreenshotRequestWindowSeconds": [
+        2.006472110748291,
+        2.3534929752349854
+      ],
+      "conservativeMovieDelayFromTouchReleaseSeconds": [
+        0.46961402893066406,
+        2.3534929752349854
+      ],
+      "exactFirstDisplayedFrameMeasured": false,
+      "first_frameDiagnosticMeaning": "advancing clock; not visual frame proof",
+      "actualT30Movie": true,
+      "normalUIExitInspected": true,
+      "oneUpdatedBookmark": true,
+      "sameTrackPreferences": true,
+      "continuous30SecondsAccepted": false,
+      "performanceAccepted": false,
+      "captureWindows": [
+        {
+          "targetSeconds": 0,
+          "requestStart": 1791705965.829366,
+          "screenshotResponseEnd": 1791705965.978497,
+          "responseEnd": 1791705966.1742542,
+          "clocks": [
+            "0%"
+          ],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 1,
+          "requestStart": 1791705966.298713,
+          "screenshotResponseEnd": 1791705966.44593,
+          "responseEnd": 1791705966.4749959,
+          "clocks": [
+            "12%"
+          ],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 2,
+          "requestStart": 1791705967.297894,
+          "screenshotResponseEnd": 1791705967.6449149,
+          "responseEnd": 1791705967.7487402,
+          "clocks": [
+            "12%"
+          ],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 3,
+          "requestStart": 1791705968.297823,
+          "screenshotResponseEnd": 1791705968.6550531,
+          "responseEnd": 1791705968.722778,
+          "clocks": [
+            "12%"
+          ],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 4,
+          "requestStart": 1791705969.291683,
+          "screenshotResponseEnd": 1791705969.64775,
+          "responseEnd": 1791705969.716876,
+          "clocks": [
+            "12%"
+          ],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 5,
+          "requestStart": 1791705970.299691,
+          "screenshotResponseEnd": 1791705970.641855,
+          "responseEnd": 1791705970.683164,
+          "clocks": [
+            "12%"
+          ],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 6,
+          "requestStart": 1791705971.2978802,
+          "screenshotResponseEnd": 1791705971.646471,
+          "responseEnd": 1791705971.691644,
+          "clocks": [],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 7,
+          "requestStart": 1791705972.295167,
+          "screenshotResponseEnd": 1791705972.6491342,
+          "responseEnd": 1791705972.781303,
+          "clocks": [],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 8,
+          "requestStart": 1791705973.2918038,
+          "screenshotResponseEnd": 1791705973.629824,
+          "responseEnd": 1791705973.679181,
+          "clocks": [],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 9,
+          "requestStart": 1791705974.296491,
+          "screenshotResponseEnd": 1791705974.6254551,
+          "responseEnd": 1791705974.701843,
+          "clocks": [],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 10,
+          "requestStart": 1791705975.3014631,
+          "screenshotResponseEnd": 1791705975.665397,
+          "responseEnd": 1791705975.7099211,
+          "clocks": [],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 15,
+          "requestStart": 1791705980.2978702,
+          "screenshotResponseEnd": 1791705980.6511402,
+          "responseEnd": 1791705980.70777,
+          "clocks": [],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 30,
+          "requestStart": 1791705995.301458,
+          "screenshotResponseEnd": 1791705995.678337,
+          "responseEnd": 1791705995.755251,
+          "clocks": [],
+          "playerVisible": true
+        }
+      ],
+      "post30FeedbackCheck": {
+        "separateFromStartupTiming": true,
+        "pauseImagesInspected": true,
+        "pausedClockText": "17:02",
+        "pausedFrameAndClockHeldAcrossTwoScreenshots": true,
+        "resumedClockText": "17:05",
+        "resumedImageChanged": true,
+        "noSpinnerOnPreparedPauseOrResumedMovie": true,
+        "normalExitAfterRecovery": true,
+        "soundOutputVerified": false,
+        "originalToolFailureRetained": true,
+        "extraPlaybackBeyond30Seconds": true
+      }
+    }
+  ],
+  "scope": "loading feedback correctness; readiness OR transport buffering, change-only publication; no buffer/seek/decoder policy edits",
+  "iPhone18Wireless": {
+    "identityMatches": true,
+    "paired": true,
+    "model": "iPhone19,7",
+    "system": "27.0",
+    "verifiedPort": 62078,
+    "connection": "direct Wi-Fi TCP",
+    "targetAbsentFromUSB": true,
+    "systemDNSServiceResolved": true,
+    "resolvedInterfaceIndex": 12,
+    "pairingRecordChanged": false,
+    "networkConfigurationChanged": false,
+    "appInstalledOrLaunched": false,
+    "outcome": "verified"
+  },
+  "networkConfigurationChanged": false,
+  "performanceAccepted": false,
+  "competitorAccepted": false,
+  "privateEvidenceDirectory": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-10-11-loading-feedback-155411",
+  "sourceFilesChangedThisTurn": [
+    "ios/Nastart/Nastart/Features/Launchpad/LaunchpadView.swift",
+    "ios/Nastart/Nastart/Playback/Engines/GreenfieldKSPlayerRenderer.swift",
+    "ios/Nastart/NastartTests/PlaybackNextCoreTests.swift"
+  ],
+  "baselineSourceDiffSHA256": "a7f69445bb8c42a359e104b9006753ddc2b9f059d5e02a248abeeecaea6fd5c4",
+  "finalStates": {
+    "iphone13": {
+      "at": "2026-10-11T16:11:43.184033+08:00",
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "connection": "USB",
+      "actualEmptyEnvironmentVerified": true,
+      "playerClosed": true,
+      "idleTimeoutRestored": 10,
+      "animationCoolOffRestored": 2,
+      "sourceUnchanged": true,
+      "latestInstalledBinaries": {
+        "Nastart": "2bbb9f4a92a8f9c8317972838960bda9f3094cbc67f2babb879151c1c10f3b42",
+        "Nastart.debug.dylib": "fae73a0fc504b7b056fc4377989f389362532c5b9f0866d7adbc6083825fab68",
+        "Frameworks/KSPlayer.framework/KSPlayer": "8e6bc9ccfd71d1aa406f1cf74f06201df62b90e577527315f72c040fe2465ebe"
+      },
+      "actualFinalHomeInspected": true,
+      "visibleServiceState": "NAS/DSM/Homepage/Jellyfin online; Radarr/Sonarr warning, iPad also Prowlarr warning"
+    },
+    "ipad": {
+      "at": "2026-10-11T16:11:44.184409+08:00",
+      "model": "iPad12,1",
+      "system": "18.3.1",
+      "connection": "USB",
+      "actualEmptyEnvironmentVerified": true,
+      "playerClosed": true,
+      "idleTimeoutRestored": 10,
+      "animationCoolOffRestored": 2,
+      "sourceUnchanged": true,
+      "latestInstalledBinaries": {
+        "Nastart": "2bbb9f4a92a8f9c8317972838960bda9f3094cbc67f2babb879151c1c10f3b42",
+        "Nastart.debug.dylib": "fae73a0fc504b7b056fc4377989f389362532c5b9f0866d7adbc6083825fab68",
+        "Frameworks/KSPlayer.framework/KSPlayer": "8e6bc9ccfd71d1aa406f1cf74f06201df62b90e577527315f72c040fe2465ebe"
+      },
+      "actualFinalHomeInspected": true,
+      "visibleServiceState": "NAS/DSM/Homepage/Jellyfin online; Radarr/Sonarr warning, iPad also Prowlarr warning"
+    }
+  },
+  "nativeConditions": {
+    "iphone13": {
+      "recordedAt": "2026-10-11T16:11:07.172201+08:00",
+      "activeCount": 0,
+      "mutationPerformed": false
+    },
+    "ipad": {
+      "recordedAt": "2026-10-11T16:11:07.242526+08:00",
+      "rootRequired": false,
+      "systemRemotedChanged": false,
+      "pairingRecordChanged": false,
+      "rsdConnected": true,
+      "containerReadable": true,
+      "DVTServiceAdvertised": true,
+      "activeCount": 0,
+      "mutationPerformed": false
+    }
+  },
+  "tools": [
+    {
+      "device": "ipad",
+      "stage": "initial post-install activeAppInfo read",
+      "result": "HTTP400 before ordinary launch; retained; subsequent terminated state1 and normal home verified",
+      "appFailureProven": false
+    },
+    {
+      "device": "iphone13",
+      "stage": "post30 feedback control lookup",
+      "result": "TOOL_UNCONFIRMED_CURRENT_CONTROL_NAME; pause.fill absent; no pause sent; actual fresh buttons later localized as 暂停/播放; corrected helper and same playback session recovered",
+      "appFailureProven": false,
+      "nativeTouchAPIRootCauseProven": false,
+      "startupWindowRetained": true
+    }
+  ],
+  "acceptance": {
+    "loadingFeedback": "L0 controlled counterexamples and S01 four device/entry targeted visual checks completed",
+    "L2": "representative format/AV/HLS/paused prewarm/rebuffer failure runtime coverage pending; no full matrix acceptance",
+    "L3": "not triggered by UI feedback-only change; unchanged route/buffer/seek/decoder policy; existing matrix pending",
+    "iPhone18": "current signed package wirelessly installed, data retained; UI deferred by user",
+    "performance": "INSUFFICIENT, sparse shots not complete display timing; no competitor ranking"
+  },
+  "remaining": [
+    "actual accepted target-frame and presentation timing before reducing startup waits",
+    "S03/S08/other representative families, AV/HLS, paused prewarm and real later rebuffer/error/rapid cancel coverage",
+    "iPhone18 normal UI deferred; native Xcode automatic discovery/tunnel/DDI path discrepancy and intermittent service disconnect cause unproven; keep network unchanged",
+    "historical +475.051 server resume gap and server durability/threshold, FileStation119/account session generation",
+    "iPhone13 actual weak cellular old ordinal0 and negotiation, complete displacement/display-frame timing, Lenna/DS One/Jellyfin/Popcorn full CB-01..26",
+    "all unaccepted PX-01..21/UX-01..04/MTP/L2/L3/Main remain open"
+  ]
+}

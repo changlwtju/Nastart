@@ -1,0 +1,309 @@
+{
+  "updated": "2026-10-24 22:20",
+  "HEAD": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "existingDirtyPreserved": true,
+  "source": {
+    "mobile": {
+      "inputs": 569,
+      "drift": []
+    },
+    "tv": {
+      "inputs": 508,
+      "drift": []
+    }
+  },
+  "packages": {
+    "iPhone13": {
+      "at": "2026-10-24T21:56:01.357026+08:00",
+      "configuration": "normal Debug",
+      "signedMachOCount": 30,
+      "profileContainsDevice": true,
+      "identityPreserved": true,
+      "minimumOS": "16.0",
+      "installExit": 0,
+      "installedAt": "2026-10-24T21:56:17.097593+08:00",
+      "InstallComplete": true,
+      "binaries": {
+        "Nastart": "57100ddcd932e7a28f9b69da22772aeefaa2315dcf5064fc9e60ad0566f21cb6",
+        "__preview.dylib": "24cd6c1411a72fb6b7175d380cffa5513877f0025df7fa1a3534b42b2d7f94f1",
+        "Nastart.debug.dylib": "1cfb3e10b73db5be016e6ff0c4364c54e2f67ab2e75d57916225a00fe4560ee8"
+      }
+    },
+    "iPad": {
+      "at": "2026-10-24T21:53:52.581662+08:00",
+      "HEAD": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "configuration": "normal Debug",
+      "sourceInputs": 569,
+      "sourceDrift": 0,
+      "signedMachOCount": 30,
+      "profileContainsTarget": true,
+      "identityPreserved": true,
+      "profileExpirationUTC": "2026-10-31 04:23:18",
+      "binaries": {
+        "__preview.dylib": "5cc2c1bd02ce2e5e6b2f67a7923b00949fb59fadaa5bbe25187df9481fd3dae7",
+        "Nastart": "c4f686d7c5c247fba39b808e95fb0242793a628f930d1984d0fd29a787573acb",
+        "Nastart.debug.dylib": "994db51fbf1f62cf6dfeae99c15429bf56a47b35470427a56b72a7bfeaa64959"
+      },
+      "installation": {
+        "at": "2026-10-24T21:53:57.510259+08:00",
+        "exit": 0,
+        "preserveData": true
+      }
+    },
+    "AppleTV": {
+      "at": "2026-10-24T21:53:53.764882+08:00",
+      "configuration": "normal Debug",
+      "HEAD": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputs": 508,
+      "signedMachOCount": 27,
+      "embeddedDependenciesChecked": true,
+      "profileContainsTarget": true,
+      "profileExpirationUTC": "2026-10-31 05:46:14",
+      "applicationIdentifierAndKeychainGroupsPreserved": true,
+      "installationExit": 0,
+      "installedAt": "2026-10-24T21:53:59.560490+08:00",
+      "binaries": {
+        "__preview.dylib": "a12782a99bcef0af08c42574d2154a9d3d26bb0a1e98b291d6879f3762d836b9",
+        "NastartTV": "cbb1a073be3b581eedc7c8e57330ffb176ad1c19177af15ef59031bdc8eac50e",
+        "NastartTV.debug.dylib": "c016d01d5ecd908dc0da38ed13fe17d5f243f51218bbee0ac38b855ffc4e9883"
+      }
+    }
+  },
+  "tests": {
+    "startedAt": "2026-10-24T21:53:54.035682+08:00",
+    "finishedAt": "2026-10-24T21:54:29.163510+08:00",
+    "exit": 0
+  },
+  "testCounts": {
+    "logic": 28,
+    "UI": 1,
+    "failures": 0
+  },
+  "iPhone13": {
+    "startedAt": "2026-10-24T22:08:44.986960+08:00",
+    "mediaCommands": 0,
+    "checks": [
+      "00-normal",
+      "01-command-devices",
+      "02-0-detail",
+      "03-0-back",
+      "02-1-detail",
+      "03-1-back",
+      "02-2-detail",
+      "03-2-back",
+      "04-command-tasks",
+      "05-0-form",
+      "06-0-form-back",
+      "05-1-form",
+      "06-1-form-back",
+      "05-2-form",
+      "06-2-form-back",
+      "07-command-dark-devices",
+      "08-restored-home"
+    ],
+    "runnerOwnership": "preexisting; preserve",
+    "normalEmptyEnvironment": true,
+    "noTaskWrites": true,
+    "appearanceRestored": true,
+    "wdaSettingsRestored": true,
+    "finalTheme": "glassDeck",
+    "finalMode": "system",
+    "finishedAt": "2026-10-24T22:11:20.889270+08:00"
+  },
+  "iPad": {
+    "startedAt": "2026-10-24T22:05:05.396829+08:00",
+    "mediaCommands": 0,
+    "checks": [
+      "00-normal",
+      "01-command-devices",
+      "02-0-detail",
+      "03-0-back",
+      "02-1-detail",
+      "03-1-back",
+      "02-2-detail",
+      "03-2-back",
+      "02-3-detail",
+      "03-3-back",
+      "04-command-tasks",
+      "05-0-form",
+      "06-0-form-back",
+      "05-1-form",
+      "06-1-form-back",
+      "05-2-form",
+      "06-2-form-back",
+      "07-command-dark-devices",
+      "08-restored-home"
+    ],
+    "runnerOwnership": "owned; bounded 900s",
+    "normalEmptyEnvironment": true,
+    "noTaskWrites": true,
+    "appearanceRestored": true,
+    "wdaSettingsRestored": true,
+    "finishedAt": "2026-10-24T22:06:23.801625+08:00"
+  },
+  "AppleTVNavigation": {
+    "startedAt": "2026-10-24T22:04:59.593521+08:00",
+    "mediaCommands": 0,
+    "checks": [
+      "01-command-my",
+      "02-command-devices",
+      "03-resource",
+      "04-resource-back",
+      "05-network",
+      "06-network-back",
+      "07-security",
+      "08-security-back",
+      "09-command-services",
+      "10-services-back",
+      "11-command-tasks",
+      "12-task-editor",
+      "13-task-editor-back",
+      "14-help",
+      "21-restored-home"
+    ],
+    "normalEmptyEnvironment": true,
+    "singleColumnDeviceRows": true,
+    "failure": "AssertionError(('prefix', 0, '遥控器与 iPhone 输入'))",
+    "appearanceRestored": true,
+    "wdaSettingsRestored": true,
+    "finishedAt": "2026-10-24T22:07:20.911329+08:00"
+  },
+  "AppleTVRemainingNavigation": {
+    "startedAt": "2026-10-24T22:10:47.647662+08:00",
+    "mediaCommands": 0,
+    "checks": [
+      "help-remote",
+      "help-remote-back",
+      "help-connection",
+      "help-connection-back",
+      "help-media",
+      "help-media-back",
+      "help-privacy",
+      "help-privacy-back",
+      "help-root-back",
+      "glass-devices",
+      "device-containers",
+      "device-containers-back",
+      "device-packages",
+      "device-packages-back",
+      "device-files",
+      "device-files-back",
+      "device-rediscover",
+      "device-rediscover-back",
+      "glass-services",
+      "glass-services-back",
+      "21-restored-home"
+    ],
+    "normalEmptyEnvironment": true,
+    "jellyfinButtonWidths": [],
+    "appearanceRestored": true,
+    "wdaSettingsRestored": true,
+    "finishedAt": "2026-10-24T22:13:34.964489+08:00"
+  },
+  "TVObservedCheckpoints": 35,
+  "serviceLayout": {
+    "navigation-final": {
+      "observedJellyfinButtons": [
+        {
+          "width": "1622",
+          "height": "130"
+        }
+      ]
+    },
+    "navigation-tail": {
+      "observedJellyfinButtons": [
+        {
+          "width": "800",
+          "height": "162"
+        }
+      ]
+    }
+  },
+  "preferences": {
+    "iPad": {
+      "at": "2026-10-24T22:10:54.029575+08:00",
+      "theme": "cleanGrid",
+      "mode": "system",
+      "tasksUnchanged": null,
+      "posterDensity": null
+    },
+    "AppleTV": {
+      "at": "2026-10-24T22:17:42.972653+08:00",
+      "theme": "glassDeck",
+      "mode": "system",
+      "posterDensity": 5,
+      "tasksUnchanged": true
+    }
+  },
+  "runners": {
+    "ipad": {
+      "startedAt": "2026-10-24T22:04:13.054161+08:00",
+      "limitSeconds": 900,
+      "runnerStopped": true,
+      "finishedAt": "2026-10-24T22:06:24.809019+08:00"
+    },
+    "tv": {
+      "startedAt": "2026-10-24T21:56:00.901709+08:00",
+      "limitSeconds": 900,
+      "runnerStopped": true,
+      "finishedAt": "2026-10-24T21:58:12.458007+08:00"
+    },
+    "tv/navigation-retry": {
+      "startedAt": "2026-10-24T22:00:17.396676+08:00",
+      "limitSeconds": 900,
+      "runnerStopped": true,
+      "finishedAt": "2026-10-24T22:02:03.609677+08:00"
+    },
+    "tv/navigation-final": {
+      "startedAt": "2026-10-24T22:04:11.973058+08:00",
+      "limitSeconds": 900,
+      "runnerStopped": true,
+      "finishedAt": "2026-10-24T22:07:21.886951+08:00"
+    },
+    "tv/navigation-tail": {
+      "startedAt": "2026-10-24T22:09:45.352548+08:00",
+      "limitSeconds": 900,
+      "runnerStopped": true,
+      "finishedAt": "2026-10-24T22:13:36.720008+08:00"
+    }
+  },
+  "normalLaunch": {
+    "iPad": {
+      "startedAt": "2026-10-24T22:13:20.771176+08:00",
+      "environment": {},
+      "arguments": [],
+      "mediaCommands": 0,
+      "activation": "prior devicectl foreground launch",
+      "nativeImagesCaptured": true,
+      "finishedAt": "2026-10-24T22:13:31.173427+08:00"
+    },
+    "AppleTV": {
+      "startedAt": "2026-10-24T22:17:43.238930+08:00",
+      "environment": {},
+      "arguments": [],
+      "mediaCommands": 0,
+      "PID": 2428,
+      "nativeImagesCaptured": true,
+      "finishedAt": "2026-10-24T22:17:56.506506+08:00"
+    }
+  },
+  "failuresRetained": [
+    "TV row focus scale moves left edge; initial x-only layout assertion was wrong; center comparison passed",
+    "TV LazyVGrid target outside viewport not materialized; bounded remote reveal added to tool",
+    "TV help topic uses stable tv.help.remote identifier, not localized title prefix",
+    "Mobile service row accessibility labels include a count; exact title selector failed",
+    "iPhone gallery combines labels with commas, iPad with ideographic separator",
+    "iPhone third gallery card partly below viewport; initial coordinate hit missed theme detail and restoration readback remained commandCenter; final visible hit and verified preview restored glassDeck/system",
+    "An intermediate viewport guard wrongly excluded the native Tab bar; fixed in tool, no App change"
+  ],
+  "limits": [
+    "UI layout and bounded return regression only; no video/audio playback or throughput/frame-time result",
+    "Native Dynamic Type behavior retained, but maximum font and VoiceOver not exhaustively verified",
+    "Not every file/folder/media/account/error route is covered",
+    "No new task saved, NAS write, credential clear, cloud write, or cellular test",
+    "iPhone18 remains paused and untouched",
+    "TV remains separate business implementation; CloudKit free-signing constraint and missing sync model remain"
+  ],
+  "openRequirements": 28,
+  "playbackMatrixCellsClosed": 0
+}

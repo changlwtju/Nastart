@@ -1,0 +1,72 @@
+{
+  "date": "2026-11-02",
+  "fixtureDirectory": "~/Downloads/Nastart-ClaudeEvidence-2026-11-02-fakelib",
+  "server": {
+    "host": "127.0.0.1",
+    "port": 8089,
+    "auth": "anonymous",
+    "readonly": true,
+    "methods": [
+      "OPTIONS",
+      "PROPFIND",
+      "GET",
+      "HEAD"
+    ],
+    "running": true,
+    "LAN": false,
+    "IPv6": false,
+    "export": "library/ only"
+  },
+  "counts": {
+    "movies": 40,
+    "series": 6,
+    "seasonsPerSeries": 2,
+    "episodesPerSeason": 4,
+    "anime": 4,
+    "works": 50,
+    "videos": 92,
+    "posters": 45,
+    "movieNFOs": 45,
+    "tvshowNFOs": 6
+  },
+  "missingPosterWorkIDs": [
+    "movie-001",
+    "movie-011",
+    "movie-021",
+    "movie-031",
+    "series-003"
+  ],
+  "missingNFOWorkIDs": [
+    "movie-004",
+    "movie-014",
+    "movie-024",
+    "movie-034",
+    "anime-002"
+  ],
+  "videoMode": "empty-mkv-placeholder-no-ffmpeg",
+  "allSynthetic": true,
+  "Pillow": "13.0.0",
+  "WsgiDAV": "4.4.0",
+  "libraryFileCount": 188,
+  "libraryBytes": 1400262,
+  "curlChecks": 25,
+  "postRestartPROPFIND": 207,
+  "writeMethodsDenied": 10,
+  "filesUnchangedAfterRequests": true,
+  "startStopRestartPassed": true,
+  "initialHelperParseErrorsPreserved": true,
+  "AppInputsUnchanged": 447,
+  "gitIndexUnchanged": true,
+  "AppConnectionsOrCodeChanges": 0,
+  "NASOperations": 0,
+  "physicalDeviceOperations": 0,
+  "LANScans": 0,
+  "newPlaybackMatrixPasses": 0,
+  "privateEvidencePointer": "/tmp/nastart-codex-fakelib-path",
+  "documentationCheck": {
+    "exitCode": 0,
+    "documents": 636,
+    "localLinks": 3907,
+    "missingDestinations": 0
+  }
+}

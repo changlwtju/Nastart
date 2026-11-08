@@ -44,7 +44,7 @@ extension KSVideoPlayer: UIViewRepresentable {
 
     // iOS tvOS真机先调用onDisappear在调用dismantleUIView，但是模拟器就反过来了。
     public static func dismantleUIView(_: UIViewType, coordinator: Coordinator) {
-        coordinator.resetPlayer()
+        coordinator.detachView()
     }
     #else
     public typealias NSViewType = UIView
@@ -58,7 +58,7 @@ extension KSVideoPlayer: UIViewRepresentable {
 
     // macOS先调用onDisappear在调用dismantleNSView
     public static func dismantleNSView(_ view: NSViewType, coordinator: Coordinator) {
-        coordinator.resetPlayer()
+        coordinator.detachView()
         view.window?.aspectRatio = CGSize(width: 16, height: 9)
     }
     #endif
@@ -72,6 +72,25 @@ extension KSVideoPlayer: UIViewRepresentable {
 
     @MainActor
     public final class Coordinator: ObservableObject {
+        /// The system PiP session owns the decoder while its SwiftUI surface
+        /// is detached. Explicit session teardown still calls resetPlayer.
+        public var retainsPlayerForPictureInPicture = false
+
+        private var viewAttachmentGeneration = 0
+
+        public func detachView() {
+            guard !retainsPlayerForPictureInPicture else { return }
+            let generation = viewAttachmentGeneration
+            // SwiftUI calls dismantle while invalidating its graph. Reset can
+            // publish subtitle selection/parts; doing that synchronously here
+            // re-enters GraphHost and aborts on Swift exclusivity enforcement.
+            // Retain the coordinator (and its AVStream owner) until cleanup.
+            DispatchQueue.main.async { [self] in
+                guard viewAttachmentGeneration == generation,
+                      !retainsPlayerForPictureInPicture else { return }
+                resetPlayer()
+            }
+        }
         public var state: KSPlayerState {
             playerLayer?.state ?? .initialized
         }
@@ -139,9 +158,14 @@ extension KSVideoPlayer: UIViewRepresentable {
         public init() {}
 
         public func makeView(url: URL, options: KSOptions) -> UIView {
+            viewAttachmentGeneration &+= 1
             defer {
+                let expectedLayer = playerLayer
                 DispatchQueue.main.async { [weak self] in
-                    self?.subtitleModel.url = url
+                    guard let self, self.playerLayer === expectedLayer,
+                          self.playerLayer?.url == url,
+                          self.subtitleModel.url != url else { return }
+                    self.subtitleModel.url = url
                 }
             }
             if let playerLayer {
@@ -160,6 +184,8 @@ extension KSVideoPlayer: UIViewRepresentable {
         }
 
         public func resetPlayer() {
+            viewAttachmentGeneration &+= 1
+            retainsPlayerForPictureInPicture = false
             onStateChanged = nil
             onPlay = nil
             onFinish = nil
@@ -170,7 +196,9 @@ extension KSVideoPlayer: UIViewRepresentable {
             // Embedded subtitle infos borrow AVStream from the player. Clear
             // selection (which disables the old track) before releasing its
             // owner, and leave no selected track for a repeated teardown.
-            subtitleModel.selectedSubtitleInfo = nil
+            if subtitleModel.selectedSubtitleInfo != nil {
+                subtitleModel.selectedSubtitleInfo = nil
+            }
             playerLayer = nil
             delayHide?.cancel()
             delayHide = nil

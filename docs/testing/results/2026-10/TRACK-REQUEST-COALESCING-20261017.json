@@ -1,0 +1,241 @@
+{
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceDiffSHA256": "8e71c89113fb0aab7cf3ac1142bc98603d4e960f65fb029bc0da754dadbad054",
+  "binaryBuildTime": "2026-10-17T06:29:01.969488+08:00",
+  "configuration": "normal Debug -Onone; empty launch environment",
+  "Xcode": "27.0/27A266a",
+  "binaries": {
+    "Nastart": "eb372e791b5575f3057297c212aacc1de85a6e54c82a1f5c6587d1ef1031c929",
+    "Nastart.debug.dylib": "6aa69f7ed3e03eb3b03cd0580524b000fa46ab8a0146e4a119fcf4d91696b520",
+    "Frameworks/KSPlayer.framework/KSPlayer": "f2fa00a53667087342ffc3b3076303ad82c5b9f66b19e6d1c69f24c7255ae9f3"
+  },
+  "ipaSHA256": "60c5694c70750013ab12c006fb111c8a18dc49fddb61810425fff4d68551bbf4",
+  "checkedInputs": 173,
+  "changedInputs": [
+    "ios/Nastart/Nastart/Playback/Core/PlaybackPlanningPolicy.swift",
+    "ios/Nastart/Nastart/Playback/GreenfieldVideoPlayerView.swift",
+    "ios/Nastart/NastartTests/PlaybackNextCoreTests.swift"
+  ],
+  "individuallyVerifiedLibraries": 29,
+  "profileExpirationUTC": "2026-10-17T22:23:40",
+  "baselineSourceDiffSHA256": "cc64de38bfaadefeb5fd792ab03780a9dd59e1147609ed09dd44212a35fcf17d",
+  "recordedAt": "2026-10-17T06:43:39.110486+08:00",
+  "appSourceChanged": true,
+  "sourceEdits": "Deduplicate repeated pending source-track choices without invalidating the prepared candidate; keep changed choices, seek/PiP ownership and retries.",
+  "targetedTests": {
+    "total": 8,
+    "passed": 8,
+    "new": 3,
+    "failed": 0,
+    "fullSuiteRun": false,
+    "historicalFullSuiteFailuresNotWithdrawn": 5
+  },
+  "preflightPassed": 15,
+  "normalDeviceBuildSucceeded": true,
+  "sourceAndPackageReverifiedAtEnd": true,
+  "buildCache": {
+    "firstAttemptExit": 74,
+    "stage": "Package resolution; missing Package.swift in old temporary cache",
+    "reasonForMissingFiles": "unknown",
+    "recoveredWithPinnedVersions": true,
+    "resolvedFileChanged": false,
+    "persistentDerivedData": true,
+    "persistentSourcePackageCache": true
+  },
+  "iPhone18": {
+    "discovery": {
+      "outcome": "unverified",
+      "failureType": "ValueError",
+      "pairingRecordChanged": false,
+      "networkConfigurationChanged": false
+    },
+    "failureStage": "Known Bonjour service did not resolve",
+    "installSent": false,
+    "newPackageInstalled": false,
+    "lastConfirmedInstalledSource": "cc64de38bfaadefeb5fd792ab03780a9dd59e1147609ed09dd44212a35fcf17d",
+    "playbackPerformed": false,
+    "lastAuthorization": "Previous system XCTest local passcode prompt; completion not verified this batch"
+  },
+  "devices": {
+    "iphone13": {
+      "installation": {
+        "device": "iphone13",
+        "model": "iPhone14,5",
+        "system": "16.3.1",
+        "connection": "USB",
+        "binaries": {
+          "Nastart": "eb372e791b5575f3057297c212aacc1de85a6e54c82a1f5c6587d1ef1031c929",
+          "Nastart.debug.dylib": "6aa69f7ed3e03eb3b03cd0580524b000fa46ab8a0146e4a119fcf4d91696b520",
+          "Frameworks/KSPlayer.framework/KSPlayer": "f2fa00a53667087342ffc3b3076303ad82c5b9f66b19e6d1c69f24c7255ae9f3"
+        },
+        "sourceDiffSHA256": "8e71c89113fb0aab7cf3ac1142bc98603d4e960f65fb029bc0da754dadbad054",
+        "preservesContainer": true,
+        "signatureVerified": true,
+        "actualForegroundUIVerified": true,
+        "requestedEnvironment": {},
+        "requestedArguments": [],
+        "installation": "success",
+        "startedAt": "2026-10-17T06:29:32.922853+08:00",
+        "installedAt": "2026-10-17T06:29:44.824655+08:00",
+        "preferenceKeysUnchanged": true,
+        "preferenceValuesUnchanged": true,
+        "nonDiagnosticKeys": 25
+      },
+      "audit": {
+        "at": "2026-10-17T06:40:20.358389+08:00",
+        "model": "iPhone14,5",
+        "system": "16.3.1",
+        "USBIdentityMatched": true,
+        "sourceDiffSHA256": "8e71c89113fb0aab7cf3ac1142bc98603d4e960f65fb029bc0da754dadbad054",
+        "binaries": {
+          "Nastart": "eb372e791b5575f3057297c212aacc1de85a6e54c82a1f5c6587d1ef1031c929",
+          "Nastart.debug.dylib": "6aa69f7ed3e03eb3b03cd0580524b000fa46ab8a0146e4a119fcf4d91696b520",
+          "Frameworks/KSPlayer.framework/KSPlayer": "f2fa00a53667087342ffc3b3076303ad82c5b9f66b19e6d1c69f24c7255ae9f3"
+        },
+        "nonBookmarkPreferenceKeys": 24,
+        "nonBookmarkPreferencesUnchanged": true,
+        "originalBookmarksChecked": 36,
+        "originalBookmarksRemoved": 0,
+        "originalTrackChangeCount": 0,
+        "newBookmarksCount": 0,
+        "naturalPositionChangesCount": 1,
+        "newCrashReports": {
+          "Nastart": 0,
+          "WebDriverAgent": 0,
+          "JetsamEvent": 0
+        },
+        "normalEmptyEnvironment": true,
+        "NASNormal": true,
+        "playerClosed": true,
+        "WDAIdleSeconds": 10,
+        "WDAAnimationCoolOffSeconds": 2,
+        "activeNativeConditions": 0,
+        "finalImageActuallyReviewed": true
+      }
+    },
+    "ipad": {
+      "installation": {
+        "device": "ipad",
+        "model": "iPad12,1",
+        "system": "18.3.1",
+        "connection": "USB",
+        "binaries": {
+          "Nastart": "eb372e791b5575f3057297c212aacc1de85a6e54c82a1f5c6587d1ef1031c929",
+          "Nastart.debug.dylib": "6aa69f7ed3e03eb3b03cd0580524b000fa46ab8a0146e4a119fcf4d91696b520",
+          "Frameworks/KSPlayer.framework/KSPlayer": "f2fa00a53667087342ffc3b3076303ad82c5b9f66b19e6d1c69f24c7255ae9f3"
+        },
+        "sourceDiffSHA256": "8e71c89113fb0aab7cf3ac1142bc98603d4e960f65fb029bc0da754dadbad054",
+        "preservesContainer": true,
+        "signatureVerified": true,
+        "actualForegroundUIVerified": true,
+        "requestedEnvironment": {},
+        "requestedArguments": [],
+        "installation": "success",
+        "startedAt": "2026-10-17T06:30:35.598363+08:00",
+        "installedAt": "2026-10-17T06:30:41.736731+08:00",
+        "preferenceKeysUnchanged": true,
+        "preferenceValuesUnchanged": true,
+        "nonDiagnosticKeys": 18,
+        "normalUIVerified": true,
+        "actualImageViewed": true
+      },
+      "audit": {
+        "at": "2026-10-17T06:40:21.081361+08:00",
+        "model": "iPad12,1",
+        "system": "18.3.1",
+        "USBIdentityMatched": true,
+        "sourceDiffSHA256": "8e71c89113fb0aab7cf3ac1142bc98603d4e960f65fb029bc0da754dadbad054",
+        "binaries": {
+          "Nastart": "eb372e791b5575f3057297c212aacc1de85a6e54c82a1f5c6587d1ef1031c929",
+          "Nastart.debug.dylib": "6aa69f7ed3e03eb3b03cd0580524b000fa46ab8a0146e4a119fcf4d91696b520",
+          "Frameworks/KSPlayer.framework/KSPlayer": "f2fa00a53667087342ffc3b3076303ad82c5b9f66b19e6d1c69f24c7255ae9f3"
+        },
+        "nonBookmarkPreferenceKeys": 17,
+        "nonBookmarkPreferencesUnchanged": true,
+        "originalBookmarksChecked": 29,
+        "originalBookmarksRemoved": 0,
+        "originalTrackChangeCount": 0,
+        "newBookmarksCount": 0,
+        "naturalPositionChangesCount": 1,
+        "newCrashReports": {
+          "Nastart": 0,
+          "WebDriverAgent": 0,
+          "JetsamEvent": 0
+        },
+        "normalEmptyEnvironment": true,
+        "NASNormal": false,
+        "playerClosed": true,
+        "WDAIdleSeconds": 10,
+        "WDAAnimationCoolOffSeconds": 2,
+        "activeNativeConditions": 0,
+        "finalImageActuallyReviewed": true
+      }
+    }
+  },
+  "iPhone13Playback": {
+    "case": "S19 Jellyfin ordinary resume",
+    "sample60": {
+      "bufferedAheadSeconds": "9.2524999999996",
+      "currentSeconds": "7465.244",
+      "durationSeconds": "13698.368",
+      "engine": "KSPlayer",
+      "stallCount": "3"
+    },
+    "laterSample": {
+      "bufferedAheadSeconds": "0.0",
+      "currentSeconds": "7479.730",
+      "durationSeconds": "13698.368",
+      "engine": "KSPlayer",
+      "stallCount": "4"
+    },
+    "actualT10T30T60AndExitImagesViewed": true,
+    "continuousFluencyAcceptance": false,
+    "coalescingLive": {
+      "repeatedTrackChoiceSent": false,
+      "normalEnvironment": true,
+      "engineBeforeSelection": "KSPlayer",
+      "failureType": "AssertionError",
+      "restorationRequired": false
+    },
+    "coalescingLiveAcceptance": "INSUFFICIENT: no HLS replacement path; no repeat choice dispatched",
+    "toolNavigationFailureRetained": true
+  },
+  "iPadPlayback": {
+    "case": "S01 Jellyfin ordinary play from available play button",
+    "sample60": {
+      "bufferedAheadSeconds": "18.729166666666664",
+      "currentSeconds": "48.912",
+      "durationSeconds": "7165.010",
+      "engine": "KSPlayer",
+      "stallCount": "0"
+    },
+    "actualT30T60AndExitImagesViewed": true,
+    "normalUIExit": true,
+    "wrongFromBeginningButtonGuardRetained": true,
+    "guardDispatchedPlayback": false,
+    "earlyLateCaptureWindowsPreserved": true,
+    "fullSUBorAUDorFluencyAcceptance": false
+  },
+  "iPadRunner": {
+    "reuseValidFixedFixture": true,
+    "newBuildOrExplicitInstall": false,
+    "intentionalXCTestExit": 75,
+    "postStop": {
+      "at": "2026-10-17T06:42:52.743417+08:00",
+      "allNonDiagnosticPreferencesUnchangedSinceAudit": true,
+      "sameRawFileBytes": false,
+      "actualHomeViewed": true,
+      "NASNormal": false,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "scope": "Post intentional XCTest stop ordinary startup only"
+    }
+  },
+  "temporaryMacAssertion": {
+    "at": "2026-10-17T06:42:52.750867+08:00",
+    "ownedTemporaryAssertionReleased": true,
+    "systemPowerSettingsChanged": false
+  },
+  "networkPairingOrBrightnessChanged": false,
+  "allOutstandingPlaybackMatrixAndCompetitorGapsPreserved": true
+}

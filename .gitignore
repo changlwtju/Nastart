@@ -39,4 +39,6 @@ __pycache__/
 
 # Local diagnostics, private NAS/Jellyfin credentials and generated media
 /tmp/
+# Also ignore the compatibility symlink to private local diagnostics.
+/tmp
 **/xcuserdata/

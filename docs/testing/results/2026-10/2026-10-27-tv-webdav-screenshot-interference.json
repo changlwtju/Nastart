@@ -1,0 +1,351 @@
+{
+  "date": "2026-10-27",
+  "scope": "TV actual saved read-only WebDAV MKV 2949955051 bytes; no-search path and same-package screenshot-method contrasts",
+  "sourceHead": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceInputCount": 399,
+  "changedSourceFiles": [
+    "tvos/NastartTV/Sources/NastartTVApp.swift"
+  ],
+  "productionPlaybackChanged": false,
+  "newDebugFixture": "preparation button focus followed by delayed AnyView/local KS player replacement",
+  "configuration": "Debug",
+  "builtAt": "2026-10-27T15:43:39.020440+08:00",
+  "mainSHA256": "d8e9df5408b5181434c654a879dc6d9ec4b29a0582431e64841a685a1e695f84",
+  "debugDylibSHA256": "ff89966404bf50565cc4cb6204d416929acd38f468b73b2f70e605d69e7fc3c1",
+  "signedMachOCount": 27,
+  "install": {
+    "at": "2026-10-27T15:44:00.203605+08:00",
+    "packageSHA256": "d8e9df5408b5181434c654a879dc6d9ec4b29a0582431e64841a685a1e695f84",
+    "configuration": "Debug",
+    "preserveData": true,
+    "freshIdentityConnected": true,
+    "preferencesBackedUp": true,
+    "exitCode": 0,
+    "installComplete": true,
+    "installedAt": "2026-10-27T15:44:03.542710+08:00",
+    "preferences": {
+      "beforeKeys": 15,
+      "afterKeys": 15,
+      "sameKeys": true,
+      "changedValues": 0,
+      "allNonDiagnosticPreferencesEqual": true
+    }
+  },
+  "device": {
+    "model": "AppleTV14,1",
+    "os": "18.2",
+    "connection": "LAN"
+  },
+  "realWindows": [
+    {
+      "label": "initial DVT",
+      "mainSHA256": "df96adfac3dd25f9f7749781988e1762bcf74c48b4cc2c35f9e307a3335f780e",
+      "closeRequestedAt": "2026-10-27T15:42:30.819768+08:00",
+      "normalExit": false,
+      "intentionalTermination": true,
+      "menuPresses": 3,
+      "frames": {
+        "play-3": {
+          "elapsed": 3.3228103751316667,
+          "samePID": true
+        },
+        "play-10": {
+          "elapsed": 10.288232459221035,
+          "samePID": true
+        },
+        "after-menu-1": {
+          "elapsed": 16.629089375026524,
+          "samePID": true
+        },
+        "after-menu-2": {
+          "elapsed": 22.7415088750422,
+          "samePID": true
+        },
+        "after-menu-3": {
+          "elapsed": 28.81015312485397,
+          "samePID": true
+        },
+        "after-close-1": {
+          "elapsed": 30.469161834102124,
+          "samePID": true
+        },
+        "after-close-4": {
+          "elapsed": 34.15877649979666,
+          "samePID": true
+        }
+      }
+    },
+    {
+      "label": "XCUIScreen A",
+      "mainSHA256": "d8e9df5408b5181434c654a879dc6d9ec4b29a0582431e64841a685a1e695f84",
+      "closeRequestedAt": "2026-10-27T16:15:07.267914+08:00",
+      "normalExit": true,
+      "intentionalTermination": false,
+      "menuPresses": 1,
+      "frames": {
+        "play-3": {
+          "elapsed": 3.407674000132829,
+          "samePID": true
+        },
+        "play-10": {
+          "elapsed": 10.387428999878466,
+          "samePID": true
+        },
+        "after-menu-1": {
+          "elapsed": 12.275022124871612,
+          "samePID": true
+        },
+        "after-close-1": {
+          "elapsed": 14.27751037478447,
+          "samePID": true
+        },
+        "after-close-4": {
+          "elapsed": 18.07040512515232,
+          "samePID": true
+        }
+      }
+    },
+    {
+      "label": "DVT paired B",
+      "mainSHA256": "d8e9df5408b5181434c654a879dc6d9ec4b29a0582431e64841a685a1e695f84",
+      "closeRequestedAt": "2026-10-27T16:16:11.092950+08:00",
+      "normalExit": false,
+      "intentionalTermination": true,
+      "menuPresses": 3,
+      "frames": {
+        "play-3": {
+          "elapsed": 3.336202667094767,
+          "samePID": true
+        },
+        "play-10": {
+          "elapsed": 10.27650291705504,
+          "samePID": true
+        },
+        "after-menu-1": {
+          "elapsed": 16.59933404205367,
+          "samePID": true
+        },
+        "after-menu-2": {
+          "elapsed": 22.77869450021535,
+          "samePID": true
+        },
+        "after-menu-3": {
+          "elapsed": 29.0296592079103,
+          "samePID": true
+        },
+        "after-close-1": {
+          "elapsed": 30.929728041868657,
+          "samePID": true
+        },
+        "after-close-4": {
+          "elapsed": 34.55858220811933,
+          "samePID": true
+        }
+      }
+    },
+    {
+      "label": "XCUIScreen C with pause/resume",
+      "mainSHA256": "d8e9df5408b5181434c654a879dc6d9ec4b29a0582431e64841a685a1e695f84",
+      "closeRequestedAt": "2026-10-27T16:18:03.146264+08:00",
+      "normalExit": true,
+      "intentionalTermination": false,
+      "menuPresses": 1,
+      "frames": {
+        "play-3": {
+          "elapsed": 3.384739208035171,
+          "samePID": true
+        },
+        "play-10": {
+          "elapsed": 10.345146165695041,
+          "samePID": true
+        },
+        "paused-1": {
+          "elapsed": 12.511880374979228,
+          "samePID": true
+        },
+        "paused-4": {
+          "elapsed": 16.433780749794096,
+          "samePID": true
+        },
+        "resumed-4": {
+          "elapsed": 21.95545091573149,
+          "samePID": true
+        },
+        "after-menu-1": {
+          "elapsed": 23.96414287481457,
+          "samePID": true
+        },
+        "after-close-1": {
+          "elapsed": 25.88983641564846,
+          "samePID": true
+        },
+        "after-close-4": {
+          "elapsed": 29.72632437478751,
+          "samePID": true
+        }
+      }
+    }
+  ],
+  "offlineControls": [
+    {
+      "mode": "player-ks-local-lazy-edge",
+      "returned": true,
+      "menuPresses": 1,
+      "samePositivePID": true,
+      "ordinaryLaunchRestored": true
+    },
+    {
+      "mode": "player-ks-local-lazy-async-edge",
+      "returned": true,
+      "menuPresses": 2,
+      "samePositivePID": true,
+      "ordinaryLaunchRestored": true,
+      "preparationSeen": true,
+      "preparationFocused": true,
+      "playerReplacedPreparation": true
+    },
+    {
+      "mode": "player-ks-local-lazy-async-edge-nested",
+      "returned": true,
+      "menuPresses": 2,
+      "samePositivePID": true,
+      "ordinaryLaunchRestored": true,
+      "preparationSeen": true,
+      "preparationFocused": true,
+      "playerReplacedPreparation": true
+    }
+  ],
+  "pauseEvidence": {
+    "visibleClockStable": "00:09",
+    "pausedObservationSeconds": 3.921900374814868,
+    "resumeImageAdvancedReviewed": true,
+    "resumeClockHiddenNotAssumedZero": true,
+    "audibleOutputVerified": false
+  },
+  "conclusion": "Same package/source/file and no-search path: XCUIScreen return succeeds before and after a DVT screenshot failure; screenshot-method interaction is reproducible, exact system Menu consumer not identified. Do not attribute all prior failures or all user scenarios to this.",
+  "finalBaseline": {
+    "at": "2026-10-27T16:28:14.893195+08:00",
+    "environment": {},
+    "arguments": [],
+    "mediaCommands": 0,
+    "processObservedAt3": true,
+    "processObservedAt10": true,
+    "nativeBaselineCaptured": true
+  },
+  "finalProcesses": {
+    "normalAppPresent": true,
+    "ownedRunnerAbsent": true,
+    "normalHomePageVisuallyConfirmed": true,
+    "earlierSystemHomeBaselinesRetained": 2,
+    "causeOfFirstLaunchHomeUnknown": true
+  },
+  "preferences": {
+    "beforeKeys": 15,
+    "afterKeys": 15,
+    "sameKeys": true,
+    "changedValues": 0,
+    "allNonDiagnosticPreferencesEqual": true
+  },
+  "index": {
+    "fileCount": 149,
+    "fullJSONEqual": true
+  },
+  "sessionCleanup": {
+    "at": "2026-10-27T16:27:06.053638+08:00",
+    "device": "tv",
+    "ownedSessionSettingsRestored": true,
+    "ownedHTTPSessionDeleted": true,
+    "runnerStopRequested": true
+  },
+  "runnerCleanup": {
+    "startedAt": "2026-10-27T16:24:21.663441+08:00",
+    "limitSeconds": 270,
+    "runnerStopped": true,
+    "finishedAt": "2026-10-27T16:27:07.294489+08:00"
+  },
+  "ownedClientFixtureCleanup": {
+    "clientOwnedFixtureRemoved": true,
+    "existedBeforeCleanup": true,
+    "hashVerifiedBeforeRemoval": true,
+    "bytes": 2640017,
+    "sha256": "71e02c56b1f0395fb38574d65aa08b784dc5235662ccf12679440860f6d947b0",
+    "networkMedia": false
+  },
+  "mobileDevicesAccessed": false,
+  "iPhone18HandsOff": true,
+  "newPlaybackMatrixPasses": 0,
+  "requirementsCounts": {
+    "inProgress": 14,
+    "awaitingAcceptance": 5,
+    "notStarted": 11
+  },
+  "retainedFailures": [
+    "offscreen poster click HTTP400",
+    "resume navigation without reset reached management row; stopped",
+    "first ordinary cleanup launch showed system Home despite App PID",
+    "DVT real-media windows failed Menu and were intentionally terminated",
+    "after-seek first ordinary launch again showed system Home even after Runner stop was confirmed; cause unknown, later ordinary restart visually succeeded"
+  ],
+  "remaining": [
+    "seek and target-frame validation",
+    "audio/subtitle switching and audible verification",
+    "cross-platform representative files/PiP/resume",
+    "FTP production source/FTPS session reuse",
+    "SMB strict negotiation/root containment"
+  ],
+  "seekEvidence": {
+    "normalExit": true,
+    "intentionalTermination": false,
+    "menuPresses": 2,
+    "seekObservation": {
+      "beforeSeconds": 10,
+      "afterForwardSeconds": 34,
+      "afterBackSeconds": 24,
+      "forwardElapsedWallSeconds": 5.0787702081725,
+      "backElapsedWallSeconds": 5.068637415766716,
+      "forwardRequestSeconds": 15,
+      "backRequestSeconds": -15,
+      "exactSourceFrameMatched": false
+    },
+    "frames": {
+      "play-3": {
+        "elapsed": 3.397202749736607,
+        "samePID": true
+      },
+      "play-10": {
+        "elapsed": 10.362875666934997,
+        "samePID": true
+      },
+      "before-seek": {
+        "elapsed": 12.251251499634236,
+        "samePID": true
+      },
+      "after-forward": {
+        "elapsed": 18.206910624634475,
+        "samePID": true
+      },
+      "after-back": {
+        "elapsed": 24.151941333897412,
+        "samePID": true
+      },
+      "after-menu-1": {
+        "elapsed": 30.45776258362457,
+        "samePID": true
+      },
+      "after-menu-2": {
+        "elapsed": 32.35465337475762,
+        "samePID": true
+      },
+      "after-close-1": {
+        "elapsed": 34.14904179191217,
+        "samePID": true
+      },
+      "after-close-4": {
+        "elapsed": 37.99507337482646,
+        "samePID": true
+      }
+    },
+    "actualForwardBackAndReturnImagesReviewed": true,
+    "limitation": "Visible clocks sampled after commands and natural playback, not exact source-frame or precise 15-second accuracy validation."
+  }
+}

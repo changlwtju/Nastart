@@ -1,0 +1,499 @@
+{
+  "checkedAt": "2026-10-25T19:46:20.105250+08:00",
+  "phase": "directional_gap_fixed_installed_representative_device_checks_passed",
+  "sourceHEAD": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "normalDebugPackage": {
+    "mainSHA256": "9896b4c924dd3bd4858a08ed8808aa3d24821e101f70fa4c4255266f9d494404",
+    "debugDylibSHA256": "e02545bd664c58e7afd1db81d4b2191f3e4ebf49190343d8ef386c4189cfc69c",
+    "sourceInputs": 510,
+    "signedMachOCount": 27,
+    "builtAt": "2026-10-25T19:30:47.108994+08:00",
+    "installedAt": "2026-10-25T19:30:50.356086+08:00",
+    "preserveData": true,
+    "normalLaunchArguments": [],
+    "normalLaunchEnvironment": {}
+  },
+  "tests": {
+    "logicPassed": 40,
+    "noMediaUIPassed": 6,
+    "newUITest": "testCastEdgesMoveUpToHeroAndDownToRelatedShelf"
+  },
+  "detailDevice": {
+    "at": "2026-10-25T19:34:27.982536+08:00",
+    "firstCastUp": true,
+    "lastCastUp": true,
+    "relatedTransitions": true,
+    "mediaCommands": 0,
+    "directionCount": 31,
+    "normalHome": true
+  },
+  "globalDevice": {
+    "at": "2026-10-25T19:37:30.606475+08:00",
+    "checks": [
+      "tv.tab.devices enter",
+      "tv.device.overview focus",
+      "tv.device.services focus",
+      "tv.device.containers focus",
+      "tv.device.packages focus",
+      "tv.device.files focus",
+      "tv.device.network enter",
+      "Back restored tv.device.network",
+      "tv.device.security focus",
+      "tv.device.rediscover focus",
+      "tv.device.overview focus",
+      "tv.tab.tasks enter",
+      "添加事项 enter",
+      "tv.task.kind.certificate focus",
+      "tv.task.kind.subscription focus",
+      "tv.task.date.30 focus",
+      "Blank title Save correctly disabled",
+      "tv.task.cancel focus",
+      "Back restored tv.tasks.watching",
+      "tv.tab.mine enter",
+      "tv.settings.appearance focus",
+      "tv.settings.icloud enter",
+      "Back restored tv.settings.icloud",
+      "tv.settings.help enter",
+      "tv.help.remote enter",
+      "Back restored tv.help.remote",
+      "Back restored tv.settings.help",
+      "tv.settings.connections focus",
+      "tv.tab.launchpad enter",
+      "tv.open.files enter",
+      "tv.files.sort enter",
+      "Back restored tv.open.files"
+    ],
+    "mediaCommands": 0,
+    "normalHome": true,
+    "completed": true,
+    "settingsRestored": true
+  },
+  "finalAudit": {
+    "at": "2026-10-25T19:40:40.914034+08:00",
+    "sourceInputCount": 510,
+    "sourceDrift": 0,
+    "preferenceChangesSincePreviousBatch": 0,
+    "ownRunnersStopped": true,
+    "temporarySettingsRestored": true,
+    "mediaCommands": 0,
+    "mobileDeviceOperations": 0
+  },
+  "originalArtwork": {
+    "at": "2026-10-25T19:35:56.005028+08:00",
+    "readOnly": true,
+    "mediaCommands": 0,
+    "rows": [
+      {
+        "library": "电视剧",
+        "title": "爱情公寓",
+        "images": [
+          {
+            "type": "Primary",
+            "width": 500,
+            "height": 750
+          },
+          {
+            "type": "Backdrop",
+            "width": 1280,
+            "height": 720
+          }
+        ],
+        "hasTMDBIdentity": true
+      },
+      {
+        "library": "电视剧",
+        "title": "白夜追凶",
+        "images": [
+          {
+            "type": "Primary",
+            "width": 500,
+            "height": 750
+          },
+          {
+            "type": "Backdrop",
+            "width": 1920,
+            "height": 1080
+          }
+        ],
+        "hasTMDBIdentity": true
+      },
+      {
+        "library": "电视剧",
+        "title": "边水往事",
+        "images": [
+          {
+            "type": "Primary",
+            "width": 960,
+            "height": 1280
+          },
+          {
+            "type": "Backdrop",
+            "width": 1280,
+            "height": 720
+          }
+        ],
+        "hasTMDBIdentity": true
+      },
+      {
+        "library": "电视剧",
+        "title": "藏海传",
+        "images": [
+          {
+            "type": "Primary",
+            "width": 500,
+            "height": 750
+          },
+          {
+            "type": "Backdrop",
+            "width": 2280,
+            "height": 1283
+          }
+        ],
+        "hasTMDBIdentity": true
+      },
+      {
+        "library": "电视剧",
+        "title": "沉默的真相",
+        "images": [
+          {
+            "type": "Primary",
+            "width": 1200,
+            "height": 1794
+          },
+          {
+            "type": "Backdrop",
+            "width": 1280,
+            "height": 720
+          }
+        ],
+        "hasTMDBIdentity": true
+      },
+      {
+        "library": "电视剧",
+        "title": "Chief of Staff",
+        "images": [
+          {
+            "type": "Primary",
+            "width": 680,
+            "height": 1000
+          },
+          {
+            "type": "Backdrop",
+            "width": 1280,
+            "height": 720
+          }
+        ],
+        "hasTMDBIdentity": true
+      },
+      {
+        "library": "电影",
+        "title": "A计划",
+        "images": [
+          {
+            "type": "Primary",
+            "width": 1019,
+            "height": 1529
+          },
+          {
+            "type": "Backdrop",
+            "width": 1920,
+            "height": 1080
+          }
+        ],
+        "hasTMDBIdentity": true
+      },
+      {
+        "library": "电影",
+        "title": "A计划续集",
+        "images": [
+          {
+            "type": "Primary",
+            "width": 1000,
+            "height": 1500
+          },
+          {
+            "type": "Backdrop",
+            "width": 1920,
+            "height": 1080
+          }
+        ],
+        "hasTMDBIdentity": true
+      },
+      {
+        "library": "电影",
+        "title": "爱情神话",
+        "images": [
+          {
+            "type": "Primary",
+            "width": 2000,
+            "height": 3000
+          },
+          {
+            "type": "Backdrop",
+            "width": 2000,
+            "height": 1124
+          }
+        ],
+        "hasTMDBIdentity": true
+      },
+      {
+        "library": "电影",
+        "title": "奥本海默",
+        "images": [
+          {
+            "type": "Primary",
+            "width": 2000,
+            "height": 3000
+          },
+          {
+            "type": "Backdrop",
+            "width": 3840,
+            "height": 2160
+          }
+        ],
+        "hasTMDBIdentity": true
+      },
+      {
+        "library": "电影",
+        "title": "百变星君.Sixty.Million.Dollar.Man.1995.BluRay.1080p.x265.10bit.2Audio.MNHD-FRDS",
+        "images": [
+          {
+            "type": "Primary",
+            "width": 546,
+            "height": 720
+          },
+          {
+            "type": "Backdrop",
+            "width": 1920,
+            "height": 1080
+          }
+        ],
+        "hasTMDBIdentity": true
+      },
+      {
+        "library": "电影",
+        "title": "白日焰火",
+        "images": [
+          {
+            "type": "Primary",
+            "width": 1400,
+            "height": 2100
+          },
+          {
+            "type": "Backdrop",
+            "width": 3840,
+            "height": 2160
+          }
+        ],
+        "hasTMDBIdentity": true
+      },
+      {
+        "library": "动漫",
+        "title": "[GM-Team][国漫][诛仙 第2季][Jade Dynasty Ⅱ][2024][01-26 Fin][AVC][GB][1080P]",
+        "images": [],
+        "hasTMDBIdentity": false
+      },
+      {
+        "library": "动漫",
+        "title": "火影忍者",
+        "images": [
+          {
+            "type": "Primary",
+            "width": 1708,
+            "height": 2562
+          },
+          {
+            "type": "Backdrop",
+            "width": 1280,
+            "height": 720
+          }
+        ],
+        "hasTMDBIdentity": true
+      },
+      {
+        "library": "动漫",
+        "title": "One-Punch Man S02 2019 1080p NF WEB-DL H",
+        "images": [
+          {
+            "type": "Primary",
+            "width": 680,
+            "height": 1000
+          },
+          {
+            "type": "Backdrop",
+            "width": 1280,
+            "height": 720
+          }
+        ],
+        "hasTMDBIdentity": false
+      },
+      {
+        "library": "动漫",
+        "title": "水属性的魔法师",
+        "images": [
+          {
+            "type": "Primary",
+            "width": 500,
+            "height": 750
+          },
+          {
+            "type": "Backdrop",
+            "width": 1280,
+            "height": 720
+          }
+        ],
+        "hasTMDBIdentity": true
+      },
+      {
+        "library": "动漫",
+        "title": "Strange Tales of Tang Dynasty S03",
+        "images": [],
+        "hasTMDBIdentity": false
+      },
+      {
+        "library": "动漫",
+        "title": "一拳超人",
+        "images": [
+          {
+            "type": "Primary",
+            "width": 500,
+            "height": 750
+          },
+          {
+            "type": "Backdrop",
+            "width": 1280,
+            "height": 720
+          }
+        ],
+        "hasTMDBIdentity": true
+      }
+    ],
+    "complete": true
+  },
+  "imageDelivery": {
+    "readOnly": true,
+    "mediaCommands": 0,
+    "samples": [
+      {
+        "title": "白夜追凶",
+        "requestedWidth": 1000,
+        "quality": 92,
+        "deliveredWidth": 500,
+        "deliveredHeight": 750,
+        "bodyBytes": 59053,
+        "elapsedSeconds": 0.066
+      },
+      {
+        "title": "奥本海默",
+        "requestedWidth": 1000,
+        "quality": 92,
+        "deliveredWidth": 1000,
+        "deliveredHeight": 1500,
+        "bodyBytes": 528461,
+        "elapsedSeconds": 0.099
+      }
+    ]
+  },
+  "hdCandidateLookup": {
+    "at": "2026-10-25T19:40:38.855403+08:00",
+    "readOnly": true,
+    "itemTitle": "白夜追凶",
+    "mediaCommands": 0,
+    "serverImageWrites": 0,
+    "newExternalCredentials": false,
+    "providers": [
+      "TheMovieDb"
+    ],
+    "elapsedSeconds": 1.924,
+    "reportedTotal": 9,
+    "candidates": [
+      {
+        "ProviderName": "TheMovieDb",
+        "Width": 1200,
+        "Height": 1800,
+        "Language": "zh-cn",
+        "Type": "Primary"
+      },
+      {
+        "ProviderName": "TheMovieDb",
+        "Width": 2000,
+        "Height": 3000,
+        "Language": null,
+        "Type": "Primary"
+      },
+      {
+        "ProviderName": "TheMovieDb",
+        "Width": 1200,
+        "Height": 1800,
+        "Language": null,
+        "Type": "Primary"
+      },
+      {
+        "ProviderName": "TheMovieDb",
+        "Width": 2000,
+        "Height": 3000,
+        "Language": null,
+        "Type": "Primary"
+      },
+      {
+        "ProviderName": "TheMovieDb",
+        "Width": 1000,
+        "Height": 1500,
+        "Language": null,
+        "Type": "Primary"
+      },
+      {
+        "ProviderName": "TheMovieDb",
+        "Width": 1000,
+        "Height": 1500,
+        "Language": null,
+        "Type": "Primary"
+      },
+      {
+        "ProviderName": "TheMovieDb",
+        "Width": 2000,
+        "Height": 3000,
+        "Language": "en",
+        "Type": "Primary"
+      },
+      {
+        "ProviderName": "TheMovieDb",
+        "Width": 2000,
+        "Height": 3000,
+        "Language": "vi",
+        "Type": "Primary"
+      }
+    ],
+    "outcome": "returned"
+  },
+  "hdCandidateDownload": {
+    "mediaCommands": 0,
+    "serverWrites": 0,
+    "jellyfinCredentialForwarded": false,
+    "declaredWidth": 1200,
+    "declaredHeight": 1800,
+    "outcome": "downloaded",
+    "actualWidth": 1200,
+    "actualHeight": 1800,
+    "bytes": 451406,
+    "sha256": "ac9d5f699863b63447aeb3bb0e7c33f69da529b71c99d003b280b4cc3498529d",
+    "elapsedSeconds": 2.593
+  },
+  "hdFeatureImplemented": false,
+  "fullGlobalFocusAcceptance": false,
+  "frameTimingPerformanceAcceptance": false,
+  "mediaCommands": 0,
+  "cellularTests": 0,
+  "mobileDevicesTouched": false,
+  "openRequirements": 28,
+  "matrixCells": 114,
+  "failuresRetained": [
+    "Initial Debug fixture ternary dictionary failed Swift compiler diagnostic; replaced explicit typed branches",
+    "First global runner tried to focus disabled Save for empty title; stopped/restored, corrected fixture to assert disabled without saving, reran same normal package"
+  ],
+  "limitations": [
+    "The original user Spider-Man photo is a user-reported baseline; current real navigation used Transformers 3 with the same production detail layout",
+    "Native keyboard, every service/modal/long list variation and playback controls are not exhaustive focus acceptance",
+    "Only existing Jellyfin TMDB identity and remote image availability demonstrated; standalone file scanner and automatic local HD poster integration not delivered"
+  ]
+}

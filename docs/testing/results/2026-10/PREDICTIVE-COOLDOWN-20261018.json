@@ -1,0 +1,343 @@
+{
+  "at": "2026-10-18T19:51:24.426489+08:00",
+  "scope": "PX-01/PX-03 predictive cooldown retained across automatic replacements; not full playback acceptance",
+  "package": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "636ee55a19c09aa0ec243d92784c9359005a88c47964e43fb10c4aa3a4421a59",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "Xcode": "27.0/27A266a",
+    "binaryBuildTime": "2026-10-18T19:30:39.744371+08:00",
+    "binaries": {
+      "Nastart": "c2c1264d0a754009745a3babe5017d9a8b66541d079b8bda2bf0a6f864f5032a",
+      "Nastart.debug.dylib": "aa91f7c2b22824bdc3c4472563fa65be7bd883a34ff94c4a6e1dcadc0feaff97",
+      "Frameworks/KSPlayer.framework/KSPlayer": "124f6d00e045c95010f9188d67541519fdaf361fc9d23f0d69ee80f0a5096d03"
+    },
+    "signatureVerified": true,
+    "individuallyVerifiedLibraries": 29,
+    "checkedInputs": 173,
+    "profileExpirationUTC": "2026-10-24T22:23:57",
+    "tests": {
+      "targeted": 23,
+      "failed": 0
+    },
+    "linkageVerified": true,
+    "ipaSHA256": "4586671caf6d6be0dcc526189548649fb4b43ddeff87651d5c7fdf37fce9a5c8",
+    "ipaCRCAndBinaryHashesVerified": true
+  },
+  "historicalCounterexamples": [
+    {
+      "entry": "jellyfin",
+      "oldPackage": true,
+      "originalPackageSourceDiff": "9a878e3076c493408a7f365a67375f9f8f5dc46afb8b0dd620e29f6655821abf",
+      "condition": "iPhone13/cellular=yes metrics/normal Debug",
+      "attempts": [
+        {
+          "secondsFromTouch": 6.339387,
+          "attempt": 1,
+          "reason": "deliveryBelowSourceBitrate"
+        }
+      ],
+      "startupMediaPlaylists": [
+        {
+          "responseHeadersSecondsFromTouch": 8.233534,
+          "uncompressedBodyBytes": 2791993
+        }
+      ],
+      "movieSpecificHackApplied": false,
+      "serverRootCauseConfirmed": false
+    },
+    {
+      "entry": "deviceFile",
+      "oldPackage": true,
+      "originalPackageSourceDiff": "9a878e3076c493408a7f365a67375f9f8f5dc46afb8b0dd620e29f6655821abf",
+      "condition": "iPhone13/cellular=yes metrics/normal Debug",
+      "attempts": [
+        {
+          "secondsFromTouch": 9.863228,
+          "attempt": 1,
+          "reason": "deliveryBelowSourceBitrate"
+        },
+        {
+          "secondsFromTouch": 30.673015,
+          "attempt": 1,
+          "reason": "deliveryBelowSourceBitrate"
+        }
+      ],
+      "startupMediaPlaylists": [
+        {
+          "responseHeadersSecondsFromTouch": 11.963814,
+          "uncompressedBodyBytes": 2559297
+        }
+      ],
+      "predictiveRequestGapSeconds": 20.809787,
+      "movieSpecificHackApplied": false,
+      "serverRootCauseConfirmed": false
+    }
+  ],
+  "installations": {
+    "iphone13": {
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "connection": "USB",
+      "preservesContainer": true,
+      "signatureVerified": true,
+      "actualForegroundUIVerified": true,
+      "installation": "success",
+      "installedAt": "2026-10-18T19:33:09.650596+08:00",
+      "preferenceKeysUnchanged": true,
+      "preferenceValuesUnchanged": true,
+      "nonDiagnosticKeys": 25,
+      "emptyEnvironmentHomeScreenshotViewed": true
+    },
+    "ipad": {
+      "model": "iPad12,1",
+      "system": "18.3.1",
+      "connection": "USB",
+      "preservesContainer": true,
+      "signatureVerified": true,
+      "actualForegroundUIVerified": true,
+      "installation": "success",
+      "installedAt": "2026-10-18T19:33:17.602483+08:00",
+      "preferenceKeysUnchanged": true,
+      "preferenceValuesUnchanged": true,
+      "nonDiagnosticKeys": 18,
+      "emptyEnvironmentHomeScreenshotViewed": true
+    },
+    "iphone18": {
+      "thisFixInstalled": false,
+      "status": "previous route-race package installed; this batch has not operated this device"
+    }
+  },
+  "physicalWindows": [
+    {
+      "device": "iphone13",
+      "case": "wifi-s01-file-cooldown",
+      "ordinaryUIExit": true,
+      "observedSnapshotSeconds": [
+        0,
+        3,
+        6,
+        10,
+        20,
+        30
+      ],
+      "framesActuallyViewed": [
+        3,
+        10,
+        30
+      ],
+      "firstInternalFrameSeconds": [
+        1.54188
+      ],
+      "maxReportedStalls": 0,
+      "cacheState": "unknown",
+      "repetitions": 1,
+      "actualSoundOrFullSubtitleAccepted": false,
+      "performanceAccepted": false
+    },
+    {
+      "device": "iphone13",
+      "case": "wifi-s01-jf-cooldown-retry1",
+      "ordinaryUIExit": true,
+      "observedSnapshotSeconds": [
+        0,
+        3,
+        6,
+        10,
+        20,
+        30
+      ],
+      "framesActuallyViewed": [
+        3,
+        10,
+        30
+      ],
+      "firstInternalFrameSeconds": [
+        1.254297
+      ],
+      "maxReportedStalls": 0,
+      "cacheState": "unknown",
+      "repetitions": 1,
+      "actualSoundOrFullSubtitleAccepted": false,
+      "performanceAccepted": false
+    },
+    {
+      "device": "ipad",
+      "case": "wifi-s01-file-cooldown",
+      "ordinaryUIExit": true,
+      "observedSnapshotSeconds": [
+        0,
+        3,
+        6,
+        10,
+        20,
+        30
+      ],
+      "framesActuallyViewed": [
+        3,
+        10,
+        30
+      ],
+      "firstInternalFrameSeconds": [
+        1.913471
+      ],
+      "maxReportedStalls": 0,
+      "cacheState": "unknown",
+      "repetitions": 1,
+      "actualSoundOrFullSubtitleAccepted": false,
+      "performanceAccepted": false
+    },
+    {
+      "device": "ipad",
+      "case": "wifi-s01-jf-cooldown",
+      "ordinaryUIExit": true,
+      "observedSnapshotSeconds": [
+        0,
+        3,
+        6,
+        10,
+        20,
+        30
+      ],
+      "framesActuallyViewed": [
+        3,
+        10,
+        30
+      ],
+      "firstInternalFrameSeconds": [
+        1.675928
+      ],
+      "maxReportedStalls": 0,
+      "cacheState": "unknown",
+      "repetitions": 1,
+      "actualSoundOrFullSubtitleAccepted": false,
+      "performanceAccepted": false
+    }
+  ],
+  "toolFailures": [
+    {
+      "case": "iphone13/wifi-s01-jf-cooldown",
+      "failure": "toolPreActionAssertion",
+      "cause": "Jellyfin detail offers initial play button instead of explicit from-head button. No playback action sent.",
+      "retained": true,
+      "retryUsesActualInitialPlayOrFromHead": true
+    },
+    {
+      "case": "iphone13/wifi-s03-file-cooldown",
+      "failure": "WDA connection closed at t6 screenshot, later status connection refused",
+      "playbackActionSent": true,
+      "snapshotsCompletedSeconds": [
+        0,
+        3
+      ],
+      "independentNativeScreenshotViewed": "movie frame present after interruption",
+      "newAppWDAJetsamReports": 0,
+      "failureRootCauseConfirmed": false,
+      "intentionalNativeAppStopAfterSavingDiagnostics": true,
+      "ordinaryUIExit": false,
+      "knownLocalIPhoneRecoveryFixtureProfileExpired": true,
+      "existingValidWDAProfileCoversIPhone13": false,
+      "installedRunnerProfileIdentityProven": false,
+      "next": "Renew/verify correct iPhone runner recovery artifacts; restore XCTest and repeat interrupted case before S19 cellular"
+    }
+  ],
+  "AppleTVConnectionDeferredByUser": true,
+  "MacRestartPerformed": false,
+  "DSMUpdated": false,
+  "allRequirementsAccepted": false,
+  "performanceAccepted": false,
+  "actualSoundAndFullSubtitleAccepted": false,
+  "finalDeviceAudit": {
+    "iphone13": {
+      "at": "2026-10-18T19:49:37.685369+08:00",
+      "liveIdentityReverified": true,
+      "nonBookmarkPreferencesExactlyUnchanged": true,
+      "nonBookmarkPreferenceKeys": 24,
+      "changedPreferenceKeyCount": 0,
+      "removedPreferenceKeyCount": 0,
+      "originalBookmarksChecked": 36,
+      "originalBookmarksRemoved": 0,
+      "originalTrackChangeCount": 0,
+      "naturalBookmarkChangesCount": 3,
+      "newReports": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      },
+      "WiFiChangedThisBatch": false,
+      "testNetworkConditionInjected": false
+    },
+    "ipad": {
+      "at": "2026-10-18T19:49:37.910663+08:00",
+      "liveIdentityReverified": true,
+      "nonBookmarkPreferencesExactlyUnchanged": true,
+      "nonBookmarkPreferenceKeys": 17,
+      "changedPreferenceKeyCount": 0,
+      "removedPreferenceKeyCount": 0,
+      "originalBookmarksChecked": 29,
+      "originalBookmarksRemoved": 0,
+      "originalTrackChangeCount": 0,
+      "naturalBookmarkChangesCount": 2,
+      "newReports": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      },
+      "WiFiChangedThisBatch": false,
+      "testNetworkConditionInjected": false
+    }
+  },
+  "serverReadOnlyFinal": {
+    "at": "2026-10-18T19:49:38.004615+08:00",
+    "readOnly": true,
+    "serverMutation": false,
+    "allEncodingProcessesExitedProven": false,
+    "fetchSucceeded": true,
+    "devices": {
+      "iphone13": {
+        "exactOwnDeviceIDMatched": true,
+        "matchingSessionCount": 1,
+        "anyNowPlaying": false,
+        "anyTranscodingInfo": false
+      },
+      "ipad": {
+        "exactOwnDeviceIDMatched": true,
+        "matchingSessionCount": 1,
+        "anyNowPlaying": false,
+        "anyTranscodingInfo": false
+      }
+    }
+  },
+  "representativeRegressionComplete": false,
+  "automaticHandoffCooldownPhysicallyVerified": false,
+  "remaining": [
+    "iPhone13 S03 file interrupted repeat and remaining S03/S08 four-unit representative coverage",
+    "S19 cellular both entries: no new cellular test sent in this batch",
+    "same-condition three repeats and full audio/subtitle/frame timing",
+    "iPhone18 this fix not installed"
+  ],
+  "cleanup": {
+    "ownPadRunnerStopped": true,
+    "ownAwakeAssertionStopped": true,
+    "phoneOriginalLaunchctlServicePreserved": true,
+    "phoneOriginalServiceHealthy": false,
+    "phoneWDAReadyAtEnd": false,
+    "bothActualNastartHomeScreensViewed": true,
+    "phoneFinalNativeLaunchRequestedEnvironment": {},
+    "phoneFinalLaunchEnvironmentIndependentlyRead": false,
+    "wifiChangedThisBatch": false,
+    "networkShapingInjected": false
+  },
+  "finalVerification": {
+    "at": "2026-10-18T19:52:38.132100+08:00",
+    "sourceInputs": 173,
+    "sourceDiffAndBinaryHashesMatched": true,
+    "deepStrictSignature": true,
+    "preflightChecksPassed": 15,
+    "documentationFiles": 308,
+    "localLinks": 1472,
+    "missingLinks": 0,
+    "ownPadRunnerExitVerified": true,
+    "ownAwakeExitVerified": true
+  }
+}

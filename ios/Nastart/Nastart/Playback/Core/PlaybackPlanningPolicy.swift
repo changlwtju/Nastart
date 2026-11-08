@@ -1,8 +1,84 @@
 import Foundation
 
+/// Repeating the same pending track choice must not invalidate its candidate.
+/// Timeline/PiP ownership and non-track requests remain distinct user intents.
+struct PlaybackSourceChangeRequestTracker {
+    struct Tracks: Equatable {
+        let audio: Int?
+        let subtitle: Int?
+        let seekGeneration: Int
+        let pictureInPictureGeneration: Int
+    }
+
+    private var latestTracks: Tracks?
+
+    mutating func accept(_ tracks: Tracks?) -> Bool {
+        if let tracks, latestTracks == tracks { return false }
+        latestTracks = tracks
+        return true
+    }
+
+    mutating func finish() { latestTracks = nil }
+}
+
+/// A missing Jellyfin index asks the server to choose its default subtitle.
+/// Off and a client-rendered sidecar must explicitly suppress that stream.
+enum PlaybackJellyfinSubtitleDeliveryPolicy {
+    static func serverIndex(selected: Int?, usesExternalText: Bool, usesGreenfield: Bool) -> Int? {
+        guard usesGreenfield else { return selected }
+        return usesExternalText ? -1 : (selected ?? -1)
+    }
+}
+
+/// Metadata defaults may be absent even when a movie has usable subtitles.
+/// Saved user selections (including Off) are applied separately afterwards.
+enum PlaybackDefaultSubtitlePolicy {
+    struct Track {
+        let index: Int
+        let language: String?
+        var isForced = false
+        var isDefault = false
+    }
+
+    static func select(tracks: [Track], serverDefault: Int?,
+                       preferredLanguages: [String] = Locale.preferredLanguages) -> Int? {
+        let available = tracks.filter { $0.index >= 0 }
+        if let serverDefault, available.contains(where: { $0.index == serverDefault }) {
+            return serverDefault
+        }
+        if let forced = available.first(where: { $0.isForced }) { return forced.index }
+        if let marked = available.first(where: { $0.isDefault }) { return marked.index }
+        for language in preferredLanguages {
+            let preferred = languageFamily(language)
+            if let matching = available.first(where: {
+                $0.language.map(languageFamily) == preferred
+            }) { return matching.index }
+        }
+        return available.first?.index
+    }
+
+    private static func languageFamily(_ value: String) -> String {
+        let base = value.trimmingCharacters(in: .whitespacesAndNewlines)
+            .lowercased().split(whereSeparator: { $0 == "-" || $0 == "_" }).first.map(String.init) ?? ""
+        switch base {
+        case "chi", "zho", "cmn", "yue": return "zh"
+        case "eng": return "en"
+        case "jpn": return "ja"
+        case "kor": return "ko"
+        case "fra", "fre": return "fr"
+        case "deu", "ger": return "de"
+        case "spa": return "es"
+        case "rus": return "ru"
+        case "ita": return "it"
+        case "por": return "pt"
+        default: return base
+        }
+    }
+}
+
 /// Jellyfin repeats the playlist request's query on every VOD segment URI.
-/// Its existing Params contract can express the same numeric/boolean hints
-/// without repeating their names. Keep codecs, authentication and session
+/// Its existing Params contract can express optional hints without repeating
+/// their names. Keep codecs, authentication and source/device/play-session
 /// identity explicit, and leave unknown or ambiguous requests untouched.
 enum PlaybackJellyfinPlaylistQuery {
     static func compact(_ url: URL) -> URL? {
@@ -21,15 +97,19 @@ enum PlaybackJellyfinPlaylistQuery {
         let integers = ["audiostreamindex": 6, "subtitlestreamindex": 7,
             "videobitrate": 8, "audiobitrate": 9, "maxaudiochannels": 10,
             "maxwidth": 12, "maxheight": 13, "starttimeticks": 14,
-            "maxrefframes": 16, "maxvideobitdepth": 17]
+            "maxrefframes": 16, "maxvideobitdepth": 17, "transcodingmaxaudiochannels": 26]
         let booleans = ["static": 3, "copytimestamps": 24, "requireavc": 29,
-            "requirenonanamorphic": 31, "deinterlace": 32]
+            "enablesubtitlesinmanifest": 27, "requirenonanamorphic": 31, "deinterlace": 32]
+        // The master endpoint validates its required mediaSourceId query
+        // before ParseParams runs; moving it to slot 2 causes HTTP 400.
+        let identifiers = ["profile": 18]
+        let decimals = ["maxframerate": 11, "level": 15]
         var fields = Array(repeating: "", count: 33)
         var remaining: [URLQueryItem] = []
         var moved = Set<String>()
         for item in items {
             let name = item.name.lowercased()
-            guard let position = integers[name] ?? booleans[name] else {
+            guard let position = integers[name] ?? booleans[name] ?? identifiers[name] ?? decimals[name] else {
                 remaining.append(item); continue
             }
             guard moved.insert(name).inserted, let value = item.value,
@@ -37,8 +117,18 @@ enum PlaybackJellyfinPlaylistQuery {
             if integers[name] != nil {
                 guard Int64(value) != nil, value.utf8.allSatisfy({ (48...57).contains($0) || $0 == 45 }) else { return nil }
                 guard position == 14 || Int32(value) != nil else { return nil }
-            } else {
+            } else if booleans[name] != nil {
                 guard ["true", "false"].contains(value.lowercased()) else { return nil }
+            } else if identifiers[name] != nil {
+                // Params uses semicolons as delimiters. Preserve identifiers
+                // byte-for-byte and leave unusual values on the original URL.
+                guard value.utf8.allSatisfy({
+                    (48...57).contains($0) || (65...90).contains($0) || (97...122).contains($0)
+                        || [45, 95, 44].contains($0)
+                }) else { return nil }
+            } else {
+                guard value.range(of: #"^[0-9]+(?:\.[0-9]+)?$"#, options: .regularExpression) != nil,
+                      let number = Float(value), number.isFinite else { return nil }
             }
             fields[position] = value
         }
@@ -52,10 +142,10 @@ enum PlaybackJellyfinPlaylistQuery {
     }
 }
 
-/// Only complete VOD manifests are immutable for a single playback route.
-/// Keep raw text so each proxy read can apply its current seek offset.
+/// Complete VOD media and single-variant masters backed by that media are
+/// reusable within one route. Keep raw text for current URI/seek rewriting.
 final class PlaybackVODPlaylistCache: @unchecked Sendable {
-    private struct Entry { let route: String; let data: Data }
+    private struct Entry { let route: String; let data: Data; let vodChildKey: String? }
     private let lock = NSLock()
     private var entries: [String: Entry] = [:]
     private var order: [String] = []
@@ -68,16 +158,52 @@ final class PlaybackVODPlaylistCache: @unchecked Sendable {
     private func key(route: String, url: URL) -> String { route + "|" + url.absoluteString }
     func data(route: String, url: URL) -> Data? {
         lock.lock(); defer { lock.unlock() }
-        return entries[key(route: route, url: url)]?.data
+        guard let entry = entries[key(route: route, url: url)] else { return nil }
+        if let child = entry.vodChildKey {
+            guard let media = entries[child], media.vodChildKey == nil else { return nil }
+        }
+        return entry.data
     }
     func store(_ data: Data, route: String, url: URL) {
         guard data.count <= maximumEntryBytes, data.count <= maximumBytes,
               let text = String(data: data, encoding: .utf8),
               text.hasPrefix("#EXTM3U"),
               text.components(separatedBy: .newlines).contains("#EXT-X-ENDLIST") else { return }
+        insert(data, route: route, url: url, vodChildKey: nil)
+    }
+    /// A master alone cannot establish VOD. Its sole media dependency must
+    /// still be cached in this exact route at every read, including eviction.
+    func storeMaster(_ data: Data, route: String, url: URL, childURL: URL) {
+        guard data.count <= maximumEntryBytes, data.count <= maximumBytes,
+              let text = String(data: data, encoding: .utf8),
+              Self.singleVariantURI(in: text) != nil,
+              ["http", "https"].contains(url.scheme?.lowercased() ?? ""),
+              childURL.scheme == url.scheme, childURL.host == url.host, childURL.port == url.port,
+              childURL.user == nil, childURL.password == nil, childURL.fragment == nil,
+              childURL.pathExtension.lowercased() == "m3u8", childURL != url else { return }
+        insert(data, route: route, url: url, vodChildKey: key(route: route, url: childURL))
+    }
+    static func singleVariantURI(in text: String) -> String? {
+        let lines = text.components(separatedBy: .newlines)
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }.filter { !$0.isEmpty }
+        guard lines.first == "#EXTM3U",
+              lines.filter({ $0.hasPrefix("#EXT-X-STREAM-INF:") }).count == 1,
+              lines.filter({ !$0.hasPrefix("#") }).count == 1,
+              !lines.contains(where: { line in
+                  line.hasPrefix("#EXT") && line != "#EXTM3U"
+                      && line != "#EXT-X-INDEPENDENT-SEGMENTS"
+                      && !line.hasPrefix("#EXT-X-VERSION:")
+                      && !line.hasPrefix("#EXT-X-STREAM-INF:")
+              }),
+              let index = lines.firstIndex(where: { $0.hasPrefix("#EXT-X-STREAM-INF:") }),
+              lines.indices.contains(index + 1), !lines[index + 1].hasPrefix("#"),
+              !lines[index].contains("URI=") else { return nil }
+        return lines[index + 1]
+    }
+    private func insert(_ data: Data, route: String, url: URL, vodChildKey: String?) {
         lock.lock(); defer { lock.unlock() }
         let k = key(route: route, url: url)
-        entries[k] = Entry(route: route, data: data)
+        entries[k] = Entry(route: route, data: data, vodChildKey: vodChildKey)
         order.removeAll { $0 == k }; order.append(k)
         while entries.values.reduce(0, { $0 + $1.data.count }) > maximumBytes,
               let oldest = order.first {
@@ -88,6 +214,73 @@ final class PlaybackVODPlaylistCache: @unchecked Sendable {
         lock.lock(); defer { lock.unlock() }
         entries = entries.filter { $0.value.route != route }
         order.removeAll { entries[$0] == nil }
+    }
+}
+
+/// Restrict optional startup work to an already complete, unencrypted TS VOD.
+/// No URI is guessed from a duration, and resumed/nonzero timelines opt out.
+enum PlaybackHLSStartupPrimerPolicy {
+    static func candidate(in text: String, playlistURL: URL) -> URL? {
+        let lines = text.components(separatedBy: .newlines)
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+        guard lines.first == "#EXTM3U", lines.contains("#EXT-X-ENDLIST"),
+              lines.contains(where: { $0.hasPrefix("#EXTINF:") }),
+              !lines.contains(where: { line in
+                  ["#EXT-X-STREAM-INF", "#EXT-X-MEDIA:", "#EXT-X-KEY:", "#EXT-X-MAP:",
+                   "#EXT-X-BYTERANGE:", "#EXT-X-START:", "#EXT-X-PART:", "#EXT-X-SKIP:"].contains {
+                      line.hasPrefix($0)
+                  }
+              }),
+              !lines.contains(where: { $0.hasPrefix("#EXT-X-MEDIA-SEQUENCE:") && $0 != "#EXT-X-MEDIA-SEQUENCE:0" }),
+              let first = lines.first(where: { !$0.isEmpty && !$0.hasPrefix("#") }),
+              let url = URL(string: first, relativeTo: playlistURL)?.absoluteURL,
+              url.scheme == playlistURL.scheme, url.host == playlistURL.host,
+              url.port == playlistURL.port, url.user == nil, url.password == nil,
+              url.query == nil, url.fragment == nil,
+              url.path.split(separator: "/").count == 4,
+              url.path.split(separator: "/").prefix(2) == playlistURL.path.split(separator: "/").prefix(2),
+              url.path.split(separator: "/")[2] == "child",
+              url.pathExtension == "ts" else { return nil }
+        return url
+    }
+
+    static func accepts(status: Int, contentRange: String?, contentLength: String?) -> Bool {
+        guard status == 206, contentLength == "1", let range = contentRange?.lowercased(),
+              range.hasPrefix("bytes 0-0/"),
+              let total = Int64(range.dropFirst("bytes 0-0/".count)), total > 0 else { return false }
+        return true
+    }
+}
+
+/// Read-only numeric evidence. Advertised seekability and already downloaded
+/// media are different facts, especially for a server-generated VOD playlist.
+enum PlaybackSeekRangeDiagnostics {
+    static func fields(target: Double, current: Double,
+                       loaded: [(start: Double, duration: Double)],
+                       seekable: [(start: Double, duration: Double)]) -> [String: String] {
+        func valid(_ ranges: [(start: Double, duration: Double)]) -> [(start: Double, end: Double)] {
+            ranges.compactMap { range in
+                let end = range.start + range.duration
+                guard range.start.isFinite, range.duration.isFinite,
+                      range.duration > 0, end.isFinite, end > range.start else { return nil }
+                return (range.start, end)
+            }
+        }
+        let loaded = valid(loaded), seekable = valid(seekable)
+        func contains(_ ranges: [(start: Double, end: Double)]) -> Bool {
+            target.isFinite && target >= 0 && ranges.contains { $0.start <= target && target < $0.end }
+        }
+        var fields = ["seekTargetSeconds": target.isFinite && target >= 0 ? String(target) : "unknown",
+                      "engineCurrentSeconds": current.isFinite && current >= 0 ? String(current) : "unknown",
+                      "validLoadedRangeCount": String(loaded.count),
+                      "validSeekableRangeCount": String(seekable.count),
+                      "targetAlreadyLoaded": String(contains(loaded)),
+                      "targetAdvertisedSeekable": String(contains(seekable))]
+        for (prefix, ranges) in [("loaded", loaded), ("seekable", seekable)] {
+            fields[prefix + "FirstStart"] = ranges.map(\.start).min().map { String($0) } ?? "unknown"
+            fields[prefix + "LastEnd"] = ranges.map(\.end).max().map { String($0) } ?? "unknown"
+        }
+        return fields
     }
 }
 
@@ -210,6 +403,28 @@ struct PlaybackBodyWindowSampler {
     }
 }
 
+/// A prepared/seeked AV item may already hold a large absolute position while
+/// paused. Startup clock evidence requires two advancing playback samples.
+/// This establishes clock progress, not decoder/compositor/audio presentation.
+struct PlaybackClockStartupPolicy {
+    private var previous: (seconds: Double, uptime: TimeInterval, generation: Int, playing: Bool)?
+
+    mutating func sample(seconds: Double, uptime: TimeInterval, isPlaying: Bool,
+                         seekGeneration: Int, rate: Double) -> Bool {
+        guard seconds.isFinite, seconds >= 0, uptime.isFinite, rate.isFinite, rate > 0 else {
+            previous = nil
+            return false
+        }
+        let last = previous
+        previous = (seconds, uptime, seekGeneration, isPlaying)
+        guard isPlaying, let last, last.playing, last.generation == seekGeneration else { return false }
+        let wall = uptime - last.uptime
+        let media = seconds - last.seconds
+        return wall > 0 && wall <= 2.5 && media > 0.05
+            && media <= wall * max(rate, 1) * 1.25 + 0.5
+    }
+}
+
 struct PlaybackPredictiveGracePolicy {
     private var generation: Int?
     private var normalUntil: TimeInterval = .infinity
@@ -227,6 +442,190 @@ struct PlaybackPredictiveGracePolicy {
     }
 }
 
+/// Owned by the playback presentation, rather than a rendition's sampling task.
+/// Preparing, abandoning or committing an automatic replacement must not erase
+/// the interval between predictive requests. Reactive stall recovery is separate.
+struct PlaybackPredictiveCooldownPolicy {
+    private var nextAllowedUptime: TimeInterval = -.infinity
+
+    func allows(now: TimeInterval) -> Bool {
+        now.isFinite && now >= nextAllowedUptime
+    }
+
+    mutating func requested(now: TimeInterval) {
+        guard now.isFinite else { return }
+        nextAllowedUptime = max(nextAllowedUptime, now + 60)
+    }
+
+    mutating func manualSourceCommitted() {
+        nextAllowedUptime = -.infinity
+    }
+}
+
+/// HLS spends reserve while requesting every segment, before its body arrives.
+/// A continuous Range body retains its existing response-body measurement.
+enum PlaybackTransferCapacityPolicy {
+    static func seconds(isHLSSegment: Bool, fetchStart: Date?,
+                        responseStart: Date?, responseEnd: Date?) -> TimeInterval? {
+        guard let responseStart, let responseEnd else { return nil }
+        let bodyDuration = responseEnd.timeIntervalSince(responseStart)
+        guard bodyDuration.isFinite, bodyDuration > 0 else { return nil }
+        guard isHLSSegment else { return bodyDuration }
+        guard let fetchStart else { return nil }
+        let requestDuration = responseStart.timeIntervalSince(fetchStart)
+        guard requestDuration.isFinite, requestDuration >= 0 else { return nil }
+        let duration = responseEnd.timeIntervalSince(fetchStart)
+        guard duration.isFinite, duration > 0 else { return nil }
+        return duration
+    }
+}
+
+/// Observation only: URLSession retains its delegate through cancellation,
+/// while the proxy releases its active task when the client finishes.
+/// Keep numeric identity, never the task/session, to recognize late callbacks.
+enum PlaybackResponseBodyDiagnostics {
+    /// Transaction counters are observations, not a cellular billing total.
+    /// Received bytes include framing/encoding; decoded bytes describe what
+    /// URLSession delivers. Compression can legitimately reverse their order.
+    static func fields(received: Int64, decoded: Int64, contentLength: String?,
+                       contentEncoding: String?, status: Int?) -> [String: String] {
+        let length = contentLength.flatMap {
+            Int64($0.trimmingCharacters(in: .whitespacesAndNewlines))
+        }.flatMap { $0 >= 0 ? $0 : nil }
+        let encoding = contentEncoding?.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() ?? ""
+        let codings = encoding.split(separator: ",", omittingEmptySubsequences: false)
+            .map { $0.trimmingCharacters(in: .whitespaces) }
+        let safeEncoding = encoding.isEmpty ? "unspecified"
+            : codings.allSatisfy({ ["identity", "gzip", "deflate", "br", "zstd"].contains($0) })
+                ? codings.joined(separator: ",") : "other"
+        return [
+            "responseBodyBytesReceivedIncludingProtocol": received >= 0 ? String(received) : "unknown",
+            "responseBodyBytesAfterDecoding": decoded >= 0 ? String(decoded) : "unknown",
+            "responseContentLength": length.map(String.init) ?? "unknown",
+            "responseContentEncoding": safeEncoding,
+            "responseStatusCode": status.flatMap { (100...599).contains($0) ? String($0) : nil } ?? "unknown"
+        ]
+    }
+}
+
+enum PlaybackRequestPhaseDiagnostics {
+    /// URLSession dates describe transport phases, not isolated server work.
+    /// Report missing/reversed boundaries as unknown rather than zero latency.
+    static func fields(created: Date, firstFetch: Date?, lastFetch: Date?,
+                       requestStart: Date?, requestEnd: Date?, responseStart: Date?,
+                       responseEnd: Date?, callback: Date) -> [String: String] {
+        func milliseconds(_ start: Date?, _ end: Date?) -> String {
+            guard let start, let end else { return "unknown" }
+            let elapsed = end.timeIntervalSince(start)
+            guard elapsed.isFinite, elapsed >= 0,
+                  elapsed * 1_000 < Double(Int.max) else { return "unknown" }
+            return String(Int(elapsed * 1_000))
+        }
+        return [
+            "taskCreatedToFirstFetchMs": milliseconds(created, firstFetch),
+            "lastFetchToRequestMs": milliseconds(lastFetch, requestStart),
+            "lastRequestSendMs": milliseconds(requestStart, requestEnd),
+            "lastRequestEndToFirstByteMs": milliseconds(requestEnd, responseStart),
+            "lastResponseBodyMs": milliseconds(responseStart, responseEnd),
+            "lastResponseEndToMetricsCallbackMs": milliseconds(responseEnd, callback)
+        ]
+    }
+}
+
+final class PlaybackProxyTaskDiagnostics: @unchecked Sendable {
+    struct Snapshot {
+        let taskID: Int
+        let issuedAt: TimeInterval
+        var clientFinished = false
+        var cancelledAt: TimeInterval?
+        var completionObserved = false
+        var headersReceivedAt: TimeInterval?
+        var receivedBodyBytes: Int64 = 0
+        var firstBodyReceivedAt: TimeInterval?
+        var lastBodyReceivedAt: TimeInterval?
+        var finalBackpressure: TimeInterval = 0
+        var finalSuspendCount = 0
+        var finalQueuedBytes = 0
+
+        func fields(at now: TimeInterval) -> [String: String] {
+            var result: [String: String] = [
+                "callbackAfterClientFinish": String(clientFinished),
+                "upstreamCancellationRequested": String(cancelledAt != nil),
+                "upstreamCompletionObserved": String(completionObserved),
+                "upstreamHeadersObserved": String(headersReceivedAt != nil),
+                "upstreamTaskBodyBytes": String(receivedBodyBytes),
+                "upstreamIssuedToCallbackMs": String(Int(max(now - issuedAt, 0) * 1_000))
+            ]
+            func bodyMilliseconds(_ time: TimeInterval?) -> String {
+                guard let time else { return "unknown" }
+                return String(Int((time - issuedAt) * 1_000))
+            }
+            result["upstreamIssueToFirstBodyCallbackMs"] = bodyMilliseconds(firstBodyReceivedAt)
+            result["upstreamIssueToLastBodyCallbackMs"] = bodyMilliseconds(lastBodyReceivedAt)
+            if let cancelledAt {
+                result["upstreamCancelToCallbackMs"] = String(Int(max(now - cancelledAt, 0) * 1_000))
+            }
+            if let headersReceivedAt {
+                result["upstreamIssueToHeadersCallbackMs"] = String(Int(max(headersReceivedAt - issuedAt, 0) * 1_000))
+            }
+            return result
+        }
+    }
+
+    private let lock = NSLock()
+    private var latest: Snapshot?
+
+    func issued(taskID: Int, now: TimeInterval) {
+        lock.lock(); defer { lock.unlock() }
+        latest = Snapshot(taskID: taskID, issuedAt: now)
+    }
+
+    func clientFinished(backpressure: TimeInterval, suspendCount: Int, queuedBytes: Int) {
+        lock.lock(); defer { lock.unlock() }
+        guard latest?.clientFinished == false else { return }
+        latest?.clientFinished = true
+        latest?.finalBackpressure = backpressure
+        latest?.finalSuspendCount = suspendCount
+        latest?.finalQueuedBytes = queuedBytes
+    }
+
+    func responseHeadersReceived(taskID: Int, now: TimeInterval) {
+        lock.lock(); defer { lock.unlock() }
+        guard let current = latest, current.taskID == taskID,
+              current.headersReceivedAt == nil, now.isFinite, now >= current.issuedAt else { return }
+        latest?.headersReceivedAt = now
+    }
+
+    func cancellationRequested(now: TimeInterval) {
+        lock.lock(); defer { lock.unlock() }
+        guard latest?.completionObserved == false, latest?.cancelledAt == nil else { return }
+        latest?.cancelledAt = now
+    }
+
+    /// Count delegate-delivered bytes for both buffered playlists and media.
+    /// This is an upstream callback boundary, not delivery to the local client.
+    func receivedBody(taskID: Int, bytes: Int64, now: TimeInterval) {
+        lock.lock(); defer { lock.unlock() }
+        guard let current = latest, current.taskID == taskID, !current.completionObserved,
+              bytes > 0, now.isFinite, now >= current.issuedAt,
+              (now - current.issuedAt).isFinite,
+              now - current.issuedAt < Double(Int.max) / 1_000,
+              now >= (current.lastBodyReceivedAt ?? current.issuedAt) else { return }
+        let (total, overflow) = current.receivedBodyBytes.addingReportingOverflow(bytes)
+        guard !overflow else { return }
+        latest?.receivedBodyBytes = total
+        if current.firstBodyReceivedAt == nil { latest?.firstBodyReceivedAt = now }
+        latest?.lastBodyReceivedAt = now
+    }
+
+    func callback(taskID: Int, completed: Bool = false) -> Snapshot? {
+        lock.lock(); defer { lock.unlock() }
+        guard latest?.taskID == taskID else { return nil }
+        if completed { latest?.completionObserved = true }
+        return latest
+    }
+}
+
 final class PlaybackRecentThroughputStore: @unchecked Sendable {
     static let shared = PlaybackRecentThroughputStore()
 
@@ -234,6 +633,12 @@ final class PlaybackRecentThroughputStore: @unchecked Sendable {
         enum Source: String { case completedTransfer, bodyWindow }
         let bitrate: Int
         let source: Source
+        // A single startup/tail completion is a conservative budget hint,
+        // not enough evidence to replace a stream that is already advancing.
+        let predictiveBitrate: Int?
+        // Oldest observation supporting this prediction, rather than the
+        // time a caller reread it. Recovery must not reuse pre-request supply.
+        let predictionEvidenceUptime: TimeInterval?
     }
 
     private struct Sample {
@@ -249,6 +654,13 @@ final class PlaybackRecentThroughputStore: @unchecked Sendable {
     func recordQualifiedBodyWindow(traceID: String?, bitrate: Int, now: TimeInterval) {
         guard let traceID, !traceID.isEmpty, bitrate > 0, now.isFinite else { return }
         lock.lock(); defer { lock.unlock() }
+        guard !bodySamples.contains(where: { $0.traceID == traceID && $0.uptime > now }) else { return }
+        // Two adjacent, unpressured body windows are newer delivery evidence
+        // than startup/tail requests. Retire those older completions so their
+        // lower quartile cannot pin the estimate after supply has recovered.
+        // Completions recorded after this window still take precedence, and
+        // expired body evidence must not resurrect the superseded samples.
+        samples.removeAll { $0.traceID == traceID && $0.uptime <= now }
         bodySamples.removeAll { now - $0.uptime > 6 || now < $0.uptime || $0.traceID == traceID }
         bodySamples.append(Sample(traceID: traceID, bitrate: bitrate, uptime: now))
         if bodySamples.count > 32 { bodySamples.removeFirst(bodySamples.count - 32) }
@@ -274,15 +686,23 @@ final class PlaybackRecentThroughputStore: @unchecked Sendable {
 
     func estimateSample(traceID: String, now: TimeInterval) -> Estimate? {
         lock.lock(); defer { lock.unlock() }
-        let rates = samples.filter { $0.traceID == traceID
+        let current = samples.filter { $0.traceID == traceID
             && now >= $0.uptime && now - $0.uptime <= 60 }
-            .map(\.bitrate).sorted()
+        let rates = current.map(\.bitrate).sorted()
         if !rates.isEmpty {
-            return Estimate(bitrate: rates[(rates.count - 1) / 4], source: .completedTransfer)
+            // Confirm the prediction with a majority of the latest three
+            // completions. The lower quartile can otherwise remain pinned by
+            // one first-segment generation wait after later supply recovers.
+            let observations = current.sorted { $0.uptime < $1.uptime }.suffix(3)
+            let recent = observations.map(\.bitrate).sorted()
+            return Estimate(bitrate: rates[(rates.count - 1) / 4], source: .completedTransfer,
+                predictiveBitrate: recent.count == 3 ? recent[1] : nil,
+                predictionEvidenceUptime: recent.count == 3 ? observations.first?.uptime : nil)
         }
         guard let body = bodySamples.last(where: { $0.traceID == traceID
             && now >= $0.uptime && now - $0.uptime <= 6 }) else { return nil }
-        return Estimate(bitrate: body.bitrate, source: .bodyWindow)
+        return Estimate(bitrate: body.bitrate, source: .bodyWindow, predictiveBitrate: body.bitrate,
+            predictionEvidenceUptime: body.uptime)
     }
 }
 
@@ -294,6 +714,22 @@ enum PlaybackAdaptiveBitratePolicy {
 
     static func allowsAutomaticAdjustment(selectedQualityID: String?) -> Bool {
         selectedQualityID == nil || selectedQualityID == "auto"
+    }
+
+    /// A file's size and the decoder's complete duration provide its average
+    /// demand even while the opening credits have a very low runtime bitrate.
+    /// Explicit rendition/source metadata retains precedence. Unknown length
+    /// or duration must not invent a demand estimate.
+    static func sourceBitrate(streamBitrateCeiling: Int?, estimatedBitrate: Int?,
+                              byteLength: Int64?, durationSeconds: Double) -> Int? {
+        if let explicit = streamBitrateCeiling ?? estimatedBitrate {
+            return explicit > 0 ? explicit : nil
+        }
+        guard let byteLength, byteLength > 0,
+              durationSeconds.isFinite, durationSeconds > 0 else { return nil }
+        let bitrate = Double(byteLength) * 8 / durationSeconds
+        guard bitrate.isFinite, bitrate >= 1, bitrate < Double(Int.max) else { return nil }
+        return Int(bitrate)
     }
 
     static func isOriginalClearlyUnsustainable(sourceBitrate: Int?,
@@ -314,6 +750,150 @@ enum PlaybackAdaptiveBitratePolicy {
         let unknownCapacityLimit = networkKey == "cellular" ? 4_000_000 : 8_000_000
         let limit = min(currentCeiling - 1, safeCapacity ?? unknownCapacityLimit)
         return ladder.first { $0 <= limit } ?? 250_000
+    }
+}
+
+/// Keep only the failed candidate's negotiation continuation, never its player
+/// or tracker. An uncommitted candidate still provides a newer ceiling and
+/// throughput trace than the original request's fallback closure.
+struct PlaybackFailedCandidateRetry<Loader> {
+    let sourceID: UUID
+    private var pendingTicket: UUID?
+    private var continuation: Loader?
+
+    init(sourceID: UUID) { self.sourceID = sourceID }
+
+    func loader(or original: Loader) -> Loader { continuation ?? original }
+
+    mutating func begin() -> UUID {
+        let ticket = UUID()
+        pendingTicket = ticket
+        return ticket
+    }
+
+    mutating func withdraw(ticket: UUID) {
+        if pendingTicket == ticket { pendingTicket = nil }
+    }
+
+    @discardableResult
+    mutating func failed(ticket: UUID, currentSourceID: UUID,
+                         cancelled: Bool, candidateStillCurrent: Bool,
+                         continuation: Loader?) -> Bool {
+        guard pendingTicket == ticket, currentSourceID == sourceID,
+              !cancelled, candidateStillCurrent else { return false }
+        pendingTicket = nil
+        guard let continuation else { return false }
+        self.continuation = continuation
+        return true
+    }
+}
+
+/// A recovered prediction must not consume both later stall-recovery attempts.
+/// Refund at most two such preparations, keeping the overall work bounded.
+struct PlaybackDownshiftAttemptBudget {
+    private(set) var attempts = 0
+    private(set) var recoveredWithdrawals = 0
+    private var sequence = 0
+    private var refundableTicket: Int?
+
+    var canWithdrawStaticPrediction: Bool { recoveredWithdrawals < 2 }
+
+    mutating func begin(staticPrediction: Bool) -> Int? {
+        guard attempts < 2 else { return nil }
+        attempts += 1
+        sequence += 1
+        refundableTicket = staticPrediction && canWithdrawStaticPrediction ? sequence : nil
+        return sequence
+    }
+
+    @discardableResult
+    mutating func withdrawRecoveredPrediction(ticket: Int) -> Bool {
+        guard refundableTicket == ticket, canWithdrawStaticPrediction, attempts > 0 else { return false }
+        refundableTicket = nil
+        recoveredWithdrawals += 1
+        attempts -= 1
+        return true
+    }
+}
+
+/// Withdraw only a static prediction that has lost its basis while the original
+/// is advancing with a healthy reserve. Reactive recovery uses a separate path.
+struct PlaybackPredictiveRecoveryPolicy {
+    private struct Sample {
+        let time: TimeInterval
+        let clock: TimeInterval
+        let ahead: TimeInterval
+        let target: TimeInterval
+        let rate: Double
+    }
+    let startedAt: TimeInterval
+    private var samples: [Sample] = []
+    private(set) var recovered = false
+
+    init(startedAt: TimeInterval) { self.startedAt = startedAt }
+
+    mutating func sample(now: TimeInterval, eligible: Bool,
+                         currentSeconds: TimeInterval, aheadSeconds: TimeInterval?,
+                         targetSeconds: TimeInterval?, sourceBitrate: Int?,
+                         runtimeDemand: Int?, rate: Double, capacity: Int?,
+                         evidenceUptime: TimeInterval?) -> Bool {
+        if recovered { return true }
+        guard eligible, startedAt.isFinite, now.isFinite, now >= startedAt,
+              currentSeconds.isFinite, currentSeconds >= 0,
+              let aheadSeconds, aheadSeconds.isFinite, aheadSeconds >= 0,
+              let targetSeconds, targetSeconds.isFinite, targetSeconds > 0,
+              aheadSeconds >= targetSeconds * 1.5,
+              let sourceBitrate, sourceBitrate > 0,
+              let runtimeDemand, runtimeDemand > 0,
+              rate.isFinite, rate > 0,
+              let capacity, capacity > 0,
+              let evidenceUptime, evidenceUptime.isFinite,
+              evidenceUptime >= startedAt, evidenceUptime <= now,
+              now - evidenceUptime <= 6,
+              Double(sourceBitrate) * rate <= Double(capacity) * 1.5,
+              Double(runtimeDemand) * 1.5 <= Double(capacity) else {
+            samples.removeAll()
+            return false
+        }
+        if let previous = samples.last {
+            let delta = now - previous.time
+            // Warmup checks can run every 20ms; those are not independent
+            // advancing observations and must not manufacture confirmation.
+            if delta > 0, delta < 0.75 { return false }
+            if delta <= 0 || delta > 2.5 || currentSeconds <= previous.clock + 0.25
+                || abs(targetSeconds - previous.target) > 0.001
+                || abs(rate - previous.rate) > 0.001 {
+                samples.removeAll()
+            }
+        }
+        samples.append(Sample(time: now, clock: currentSeconds, ahead: aheadSeconds,
+                              target: targetSeconds, rate: rate))
+        if samples.count > 3 { samples.removeFirst(samples.count - 3) }
+        guard samples.count == 3, let first = samples.first,
+              now - first.time >= 2, aheadSeconds >= first.ahead - 0.25 else { return false }
+        recovered = true
+        return true
+    }
+}
+
+/// Reserve must be reachable from the current item clock without a buffer hole.
+enum PlaybackBufferedReservePolicy {
+    static func seconds(at current: TimeInterval,
+                        ranges: [(start: Double, end: Double)]) -> TimeInterval? {
+        guard current.isFinite, current >= 0 else { return nil }
+        let valid = ranges.filter {
+            $0.start.isFinite && $0.end.isFinite && $0.start >= 0 && $0.end >= $0.start
+        }.sorted { $0.start < $1.start }
+        guard !valid.isEmpty else { return nil }
+        guard let index = valid.firstIndex(where: { $0.start <= current && current <= $0.end }) else {
+            return 0
+        }
+        var end = valid[index].end
+        for range in valid.dropFirst(index + 1) {
+            guard range.start <= end else { break }
+            end = max(end, range.end)
+        }
+        return end - current
     }
 }
 
@@ -454,6 +1034,57 @@ struct PlaybackReserveDepletionPolicy {
               let lowestDemand = samples.map(\.demand).min(),
               let highestCapacity = samples.map(\.capacity).max() else { return false }
         return Double(lowestDemand) > Double(highestCapacity) * 1.5
+    }
+}
+
+/// A title is only a discovery hint; file identity is checked independently.
+enum VerifiedFileLookupPolicy {
+    struct Page<Item> {
+        let items: [Item]
+        let totalCount: Int?
+    }
+
+    struct Outcome<Item> {
+        let items: [Item]
+        let isComplete: Bool
+        let broadenedSearch: Bool
+    }
+
+    static func load<Item>(searchHint: String?, pageSize: Int = 200,
+                           maximumPages: Int = 3,
+                           fetch: (String?, Int) async throws -> Page<Item>,
+                           hasExactMatch: ([Item]) -> Bool) async throws -> Outcome<Item> {
+        func collect(hint: String?, pages: Int, broadened: Bool) async throws -> Outcome<Item> {
+            var items: [Item] = []
+            for pageIndex in 0..<pages {
+                try Task.checkCancellation()
+                let page = try await fetch(hint, pageIndex * pageSize)
+                try Task.checkCancellation()
+                items.append(contentsOf: page.items)
+                let complete = page.totalCount.map { $0 >= 0 && items.count >= $0 }
+                    ?? (page.items.count < pageSize)
+                if complete {
+                    return Outcome(items: items, isComplete: true, broadenedSearch: broadened)
+                }
+                if page.items.count < pageSize {
+                    // A short page cannot overrule a reported unread total.
+                    // Advancing by pageSize would also skip unreturned items.
+                    return Outcome(items: items, isComplete: false, broadenedSearch: broadened)
+                }
+            }
+            return Outcome(items: items, isComplete: false, broadenedSearch: broadened)
+        }
+        guard pageSize > 0, maximumPages > 0 else {
+            return Outcome(items: [], isComplete: false, broadenedSearch: false)
+        }
+        if let hint = searchHint, !hint.isEmpty {
+            let hinted = try await collect(hint: hint, pages: 1, broadened: false)
+            // Do not infer uniqueness from a truncated page or hide ambiguity
+            // by discarding matching candidates and searching a different scope.
+            if !hinted.isComplete || hasExactMatch(hinted.items) { return hinted }
+            return try await collect(hint: nil, pages: maximumPages, broadened: true)
+        }
+        return try await collect(hint: nil, pages: maximumPages, broadened: false)
     }
 }
 

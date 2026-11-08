@@ -1,0 +1,124 @@
+{
+  "recordedAt": "2026-10-30T09:31:18+08:00",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceInputCount": 435,
+  "changedExistingSourceFiles": 3,
+  "existingOfflineParameterTestsPassed": 4,
+  "existingLibraryFolderEditingTestsPassed": 10,
+  "newRepositoryTests": 0,
+  "builds": {
+    "module-tests": {
+      "startedAt": "2026-10-30T09:22:03.138811+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T09:22:07.879166+08:00"
+    },
+    "mobile-sim-debug-cast": {
+      "startedAt": "2026-10-30T09:22:03.137079+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T09:22:34.823891+08:00"
+    },
+    "tv-sim-debug-cast": {
+      "startedAt": "2026-10-30T09:22:03.137029+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T09:22:20.313081+08:00"
+    },
+    "mobile-debug": {
+      "startedAt": "2026-10-30T09:23:31.466560+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T09:26:52.753986+08:00"
+    },
+    "tv-debug": {
+      "startedAt": "2026-10-30T09:23:31.466615+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T09:24:22.438829+08:00"
+    },
+    "mobile-release": {
+      "startedAt": "2026-10-30T09:26:52.756525+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T09:29:51.076241+08:00"
+    },
+    "tv-release": {
+      "startedAt": "2026-10-30T09:24:22.452957+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T09:27:11.607352+08:00"
+    }
+  },
+  "capture": {
+    "accepted": 13,
+    "byPlatform": {
+      "phone": 4,
+      "pad": 4,
+      "tv": 5
+    },
+    "allPassed": true,
+    "ownedSimulatorsDeleted": true,
+    "syntheticPreferencesPreserved": true,
+    "physicalDevicesOperated": 0,
+    "NASCommands": 0,
+    "interactionOrAnimationVerified": false
+  },
+  "allCaptureArtifactsHashChecked": true,
+  "sourcePreservation": {
+    "changedExistingSourceFiles": 3,
+    "changedFileNames": [
+      "LibraryViews.swift",
+      "OfflineMediaScene.swift",
+      "OfflineUIScenario.swift"
+    ],
+    "sourceAndStorageModelUnchanged": true,
+    "originalAddCallbacksAndScopeRulesPreserved": true,
+    "connectionEditorAndCorrectionFormUnchanged": true,
+    "directoryReadOnlyProtocolUnchanged": true,
+    "playbackAndArtworkSourcesUnchanged": true,
+    "sourceWrites": 0,
+    "newRepositoryTests": 0
+  },
+  "packages": {
+    "mobile": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-30T09:26:50.907420+08:00",
+      "frozenAt": "2026-10-30T09:30:44.442427+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 435,
+      "mainSHA256": "b38300f0dae0ed6042ccec716527c026d5af2eb51cd5bb8ced4b1479301165b0",
+      "debugDylibSHA256": "8237456f87abd037723fb23de41104e720d95bb251dd845889391fa89b7c6e48",
+      "signedMachOCount": 30,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false
+    },
+    "tv": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-30T09:24:22.016924+08:00",
+      "frozenAt": "2026-10-30T09:30:44.826298+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 435,
+      "mainSHA256": "e0a0d724c446ea4b620abf0bb5404a759423ad9d38ce0359dff035d94e5290fb",
+      "debugDylibSHA256": "ee10cf12db5abf18733b83566bfb712dfefb6f77392940945010c98925d4ab5c",
+      "signedMachOCount": 27,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false
+    }
+  },
+  "physicalDevicesOperated": 0,
+  "NASCommands": 0,
+  "playbackCommands": 0,
+  "ownedSimulatorsDeleted": 3,
+  "privateEvidencePointer": "current-folder-picker-polish-private",
+  "notVerified": [
+    "Real directory listing, retry, selection or persistence",
+    "Actual back/cancel/name edit/child selection suppression while saving",
+    "Stale/cancelled source response behavior in real UI",
+    "Actual TV remote, keyboard, VoiceOver or complete scrolling",
+    "NAS permissions, actual images, return flicker or playback"
+  ]
+}

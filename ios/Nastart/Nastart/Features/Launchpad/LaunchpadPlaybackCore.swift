@@ -3,12 +3,309 @@ import UIKit
 import Network
 import Combine
 import Get
+import KSPlayer
+import NetworkMedia
+
+/// Race authenticated probes for the same original file. A transcode or local
+/// proxy is created only after a winning original route has been selected.
+enum PlaybackOriginalRouteRace {
+    enum Source: Sendable { case jellyfin, fileStation }
+    struct Route: Sendable {
+        let url: URL
+        let source: Source
+    }
+
+    @MainActor
+    static func resolve(
+        jellyfin: @escaping @MainActor () async -> URL?,
+        fileStation: (@MainActor () async -> URL?)? = nil
+    ) async -> Route? {
+        guard !Task.isCancelled else { return nil }
+        return await withTaskGroup(of: Route?.self) { group in
+            group.addTask {
+                guard !Task.isCancelled, let url = await jellyfin(), !Task.isCancelled else { return nil }
+                return Route(url: url, source: .jellyfin)
+            }
+            if let fileStation {
+                group.addTask {
+                    guard !Task.isCancelled, let url = await fileStation(), !Task.isCancelled else { return nil }
+                    return Route(url: url, source: .fileStation)
+                }
+            }
+            while let result = await group.next() {
+                guard !Task.isCancelled else { group.cancelAll(); return nil }
+                if let result { group.cancelAll(); return result }
+            }
+            return nil
+        }
+    }
+
+    /// Task.value doesn't propagate cancellation to a reused warmup/probe.
+    static func consume(_ task: Task<URL?, Never>) async -> URL? {
+        await withTaskCancellationHandler {
+            let url = await task.value
+            return Task.isCancelled ? nil : url
+        } onCancel: {
+            task.cancel()
+        }
+    }
+}
+
+/// Try an already configured public media endpoint before private probes on
+/// cellular. Both callbacks still perform the full authenticated Range check.
+enum PlaybackFileOriginalRouteSelection {
+    static func prefersPublicFirst(networkKey: String, remoteCandidates: [URL]) -> Bool {
+        networkKey == "cellular" && !remoteCandidates.isEmpty && remoteCandidates.allSatisfy {
+            $0.scheme?.lowercased() == "https" && $0.host != nil && $0.user == nil && $0.password == nil
+                && !NetworkHostClassifier.isPrivate($0.host)
+        }
+    }
+
+    @MainActor
+    static func resolve(publicFirst: Bool, isCurrent: () -> Bool,
+                        local: () async -> URL?, remote: () async -> URL?) async -> URL? {
+        guard !Task.isCancelled, isCurrent() else { return nil }
+        let first = await (publicFirst ? remote() : local())
+        guard !Task.isCancelled, isCurrent() else { return nil }
+        if let first { return first }
+        let fallback = await (publicFirst ? local() : remote())
+        guard !Task.isCancelled, isCurrent() else { return nil }
+        return fallback
+    }
+}
+
+/// A small probe's connection and first-byte wait are startup latency, not a
+/// delivery-rate ceiling. Only a complete, uncached network body can rule out
+/// original playback; an unavailable body timing remains a rendition hint.
+struct PlaybackBandwidthProbeSample: Equatable {
+    let bitrate: Int
+    let usesNetworkBodyTiming: Bool
+    let totalSeconds: TimeInterval
+    let bodySeconds: TimeInterval?
+
+    /// Foundation's received count includes protocol framing and transfer
+    /// encoding. Compare the delivered payload with the requested bytes, not
+    /// that wire count; an HTTP/2 frame or chunk must not disqualify a probe.
+    static func networkPayloadBytes(received: Int64, decoded: Int64,
+                                    contentEncoding: String?, transferEncoding: String?) -> Int64? {
+        let identityContent = contentEncoding.map {
+            $0.trimmingCharacters(in: .whitespacesAndNewlines)
+                .caseInsensitiveCompare("identity") == .orderedSame
+        } ?? true
+        let framingOnlyTransfer = transferEncoding.map {
+            $0.split(separator: ",", omittingEmptySubsequences: false).allSatisfy {
+                let coding = $0.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+                return coding == "chunked" || coding == "identity"
+            }
+        } ?? true
+        guard identityContent, framingOnlyTransfer, decoded > 0, received >= decoded else { return nil }
+        return decoded
+    }
+
+    static func estimate(bytes: Int, totalSeconds: TimeInterval,
+                         networkBodyBytes: Int64?, networkBodySeconds: TimeInterval?) -> Self? {
+        guard bytes > 0, totalSeconds.isFinite, totalSeconds > 0 else { return nil }
+        let qualified = bytes >= 128 * 1024 && networkBodyBytes == Int64(bytes)
+            && networkBodySeconds.map {
+                $0.isFinite && $0 > 0 && $0 <= totalSeconds + 0.1
+            } == true
+        let seconds = qualified ? networkBodySeconds! : totalSeconds
+        let rate = Double(bytes) * 8 / max(seconds, 0.05)
+        guard rate.isFinite, rate >= 1, rate < Double(Int.max) else { return nil }
+        return Self(bitrate: Int(rate), usesNetworkBodyTiming: qualified,
+                    totalSeconds: totalSeconds, bodySeconds: qualified ? seconds : nil)
+    }
+}
+
+final class PlaybackBandwidthProbeDelegate: NSObject, URLSessionDataDelegate, @unchecked Sendable {
+    private let lock = NSLock()
+    private var body: (bytes: Int64, seconds: TimeInterval)?
+
+    func urlSession(_ session: URLSession, task: URLSessionTask,
+                    didFinishCollecting metrics: URLSessionTaskMetrics) {
+        let value = metrics.transactionMetrics.last.flatMap { metric -> (Int64, TimeInterval)? in
+            guard metric.resourceFetchType == .networkLoad,
+                  let response = metric.response as? HTTPURLResponse, response.statusCode == 200,
+                  let start = metric.responseStartDate, let end = metric.responseEndDate,
+                  let payloadBytes = PlaybackBandwidthProbeSample.networkPayloadBytes(
+                    received: metric.countOfResponseBodyBytesReceived,
+                    decoded: metric.countOfResponseBodyBytesAfterDecoding,
+                    contentEncoding: response.value(forHTTPHeaderField: "Content-Encoding"),
+                    transferEncoding: response.value(forHTTPHeaderField: "Transfer-Encoding"))
+            else { return nil }
+            return (payloadBytes, end.timeIntervalSince(start))
+        }
+        lock.lock()
+        body = value
+        lock.unlock()
+    }
+
+    func sample(bytes: Int, totalSeconds: TimeInterval) -> PlaybackBandwidthProbeSample? {
+        lock.lock()
+        let value = body
+        lock.unlock()
+        return PlaybackBandwidthProbeSample.estimate(bytes: bytes, totalSeconds: totalSeconds,
+            networkBodyBytes: value?.bytes, networkBodySeconds: value?.seconds)
+    }
+}
+
+struct PlaybackDownloadByteSample: Equatable {
+    let sourceID: String
+    let bytes: Int64
+}
+
+/// Counts received media bodies, including prefetch, rather than rendition
+/// bitrate or the proxy's loopback delivery. No requests are made by this meter.
+final class PlaybackDownloadMeter: @unchecked Sendable {
+    static let shared = PlaybackDownloadMeter()
+    private let lock = NSLock()
+    private var totals: [String: (bytes: Int64, lastReceived: TimeInterval)] = [:]
+
+    func receive(bytes: Int, traceID: String?, now: TimeInterval = ProcessInfo.processInfo.systemUptime) {
+        guard bytes > 0, let traceID, !traceID.isEmpty, now.isFinite else { return }
+        lock.lock()
+        defer { lock.unlock() }
+        let old = totals[traceID]?.bytes ?? 0
+        totals[traceID] = (old > Int64.max - Int64(bytes) ? Int64.max : old + Int64(bytes), now)
+        if totals.count > 32, let oldest = totals.min(by: { $0.value.lastReceived < $1.value.lastReceived })?.key {
+            totals.removeValue(forKey: oldest)
+        }
+    }
+
+    func sample(traceID: String?) -> PlaybackDownloadByteSample? {
+        guard let traceID else { return nil }
+        lock.lock()
+        defer { lock.unlock() }
+        return totals[traceID].map { PlaybackDownloadByteSample(sourceID: "proxy:" + traceID, bytes: $0.bytes) }
+    }
+}
+
+struct PlaybackDownloadRateSampler {
+    private var previous: (sample: PlaybackDownloadByteSample, time: TimeInterval)?
+
+    mutating func update(_ sample: PlaybackDownloadByteSample?, now: TimeInterval) -> Double? {
+        guard let sample, sample.bytes >= 0, now.isFinite else { previous = nil; return nil }
+        let old = previous
+        previous = (sample, now)
+        guard let old, old.sample.sourceID == sample.sourceID,
+              sample.bytes >= old.sample.bytes, now > old.time, now - old.time <= 5 else { return nil }
+        return Double(sample.bytes - old.sample.bytes) / (now - old.time)
+    }
+
+    static func text(bytesPerSecond: Double?) -> String {
+        guard let rate = bytesPerSecond, rate.isFinite, rate >= 0 else { return "— KB/s" }
+        return rate >= 1_000_000 ? String(format: "%.1f MB/s", rate / 1_000_000)
+            : String(format: "%.0f KB/s", rate / 1_000)
+    }
+}
+
+enum PlaybackConnectionKind {
+    case unknown, offline, wifi, cellular, wired, other
+    var titleKey: String {
+        switch self {
+        case .unknown: return "player.status.network_unknown"
+        case .offline: return "player.status.network_offline"
+        case .wifi: return "player.status.network_wifi"
+        case .cellular: return "player.status.network_cellular"
+        case .wired: return "player.status.network_wired"
+        case .other: return "player.status.network_other"
+        }
+    }
+    var symbol: String {
+        switch self {
+        case .wifi: return "wifi"
+        case .cellular: return "antenna.radiowaves.left.and.right"
+        case .wired: return "network"
+        case .offline: return "wifi.slash"
+        default: return "network"
+        }
+    }
+}
+
+enum PlaybackSubtitleScreenEdgePolicy {
+    static let edgeInset: CGFloat = 12
+    // Reserve the same caption band even with subtitles off, so opening menus
+    // or changing tracks cannot move either captions or playback buttons.
+    static let captionBand: CGFloat = 44
+
+    static func bottomInset(safeAreaBottom: CGFloat) -> CGFloat {
+        edgeInset + (safeAreaBottom.isFinite ? max(safeAreaBottom, 0) : 0)
+    }
+}
+
+/// Captions follow the displayed video, including portrait letterboxing and fill.
+/// Unknown geometry has no caption frame until the engine supplies its dimensions.
+typealias PlaybackSubtitleViewportPolicy = SubtitleViewportGeometry
+
+/// Playback and its bandwidth probe outlive the short directory-identity lookup.
+/// Keep file and library playback on the library's established request budget.
+enum JellyfinPlaybackSessionPolicy {
+    static func configuration() -> URLSessionConfiguration {
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.timeoutIntervalForRequest = 20
+        configuration.timeoutIntervalForResource = 60
+        configuration.waitsForConnectivity = false
+        return configuration
+    }
+}
 
 enum JellyfinHTTPStatus {
     static func code(for error: Error) -> Int? {
         guard case let APIError.unacceptableStatusCode(status) = error,
               (100...599).contains(status) else { return nil }
         return status
+    }
+}
+
+enum JellyfinLibraryError: Error {
+    case missingSession
+    case missingItem
+    case missingPlaybackURL
+}
+
+enum JellyfinPlaybackPreparationErrorPolicy {
+    /// Cancellation belongs to navigation/user intent, not a playback failure.
+    /// Only a missing negotiated URL establishes that no playable stream was
+    /// returned; transport failures must not receive that diagnosis.
+    static func messageKey(for error: Error) -> String? {
+        if error is CancellationError { return nil }
+        var underlying: NSError? = error as NSError
+        var networkCode: Int?
+        for _ in 0..<4 {
+            guard let value = underlying else { break }
+            if value.domain == NSURLErrorDomain {
+                if value.code == NSURLErrorCancelled { return nil }
+                if networkCode == nil { networkCode = value.code }
+            }
+            underlying = value.userInfo[NSUnderlyingErrorKey] as? NSError
+        }
+        if networkCode == NSURLErrorTimedOut {
+            return "jellyfin.player.prepare_timeout"
+        }
+        if let networkCode, [NSURLErrorNotConnectedToInternet, NSURLErrorNetworkConnectionLost,
+                             NSURLErrorCannotFindHost, NSURLErrorCannotConnectToHost,
+                             NSURLErrorDNSLookupFailed, NSURLErrorInternationalRoamingOff,
+                             NSURLErrorDataNotAllowed].contains(networkCode) {
+            return "jellyfin.player.prepare_connection_failed"
+        }
+        if let networkCode, [NSURLErrorSecureConnectionFailed, NSURLErrorServerCertificateUntrusted,
+                             NSURLErrorServerCertificateHasBadDate, NSURLErrorServerCertificateHasUnknownRoot,
+                             NSURLErrorServerCertificateNotYetValid].contains(networkCode) {
+            return "jellyfin.player.prepare_secure_connection_failed"
+        }
+        switch JellyfinHTTPStatus.code(for: error) {
+        case .some(401), .some(403): return "jellyfin.player.prepare_access_denied"
+        case .some(429), .some(500...599): return "jellyfin.player.prepare_server_unavailable"
+        default: break
+        }
+        if let error = error as? JellyfinLibraryError {
+            switch error {
+            case .missingSession: return "jellyfin.player.prepare_access_denied"
+            case .missingPlaybackURL: return "jellyfin.player.prepare_failed_detail"
+            case .missingItem: break
+            }
+        }
+        return "jellyfin.player.prepare_unknown_failure"
     }
 }
 
@@ -141,6 +438,332 @@ struct PlaybackNetworkSnapshot: Sendable {
     let cacheKey: String
     let bitrateCap: Int?
     let fallbackBitrate: Int
+    // Local path observation identity, separate from the bitrate cache bucket.
+    // Returning to Wi-Fi must not resurrect a verification from an old path.
+    var pathGeneration: UInt64 = 0
+}
+
+/// A saved token or public server-info response alone is not an authenticated
+/// route identity. Both identifiers must come from a successful Users/Me reply.
+struct JellyfinAuthenticatedIdentity: Equatable, Sendable {
+    let userID: String
+    let serverID: String
+
+    static func response(data: Data, status: Int) -> Self? {
+        guard status == 200,
+              let object = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let user = object["Id"] as? String,
+              let server = object["ServerId"] as? String,
+              !user.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+              !server.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return nil }
+        return Self(userID: user, serverID: server)
+    }
+
+    static func matches(primary: Self?, candidate: Self?, expectedUserID: String) -> Bool {
+        guard !expectedUserID.isEmpty, let primary, let candidate,
+              !primary.serverID.isEmpty, !candidate.serverID.isEmpty else { return false }
+        return primary.userID == expectedUserID && candidate.userID == expectedUserID
+            && primary.serverID == candidate.serverID
+    }
+
+    static func canPublish(startedOn: PlaybackNetworkSnapshot, current: PlaybackNetworkSnapshot,
+                           startedSession: UUID, currentSession: UUID, cancelled: Bool) -> Bool {
+        !cancelled && startedSession == currentSession && startedOn.cacheKey != "unknown"
+            && startedOn.cacheKey == current.cacheKey && startedOn.pathGeneration != 0
+            && startedOn.pathGeneration == current.pathGeneration
+    }
+}
+
+/// A completed TLS response from the unchanged public library endpoint does
+/// not inherit LAN verification from its carrier path. Keep that preparation
+/// across cellular path updates; alternate origins and LAN identity proofs
+/// still require the exact path generation that authenticated them.
+enum JellyfinPublicCellularPreparationPolicy {
+    static func permitsPathChange(startedOn: PlaybackNetworkSnapshot,
+                                  current: PlaybackNetworkSnapshot,
+                                  currentConnectionIsCellular: Bool,
+                                  endpoint: URL, libraryEndpoint: URL,
+                                  selectsLibraryEndpoint: Bool,
+                                  allowsSelfSignedCertificates: Bool) -> Bool {
+        rejectionReason(startedOn: startedOn, current: current,
+            currentConnectionIsCellular: currentConnectionIsCellular,
+            endpoint: endpoint, libraryEndpoint: libraryEndpoint,
+            selectsLibraryEndpoint: selectsLibraryEndpoint,
+            allowsSelfSignedCertificates: allowsSelfSignedCertificates) == nil
+    }
+
+    /// Preserve the existing publication rules while making a discarded
+    /// preparation distinguishable from a slow media response. No URL or
+    /// credential is included in this diagnostic reason.
+    static func rejectionReason(startedOn: PlaybackNetworkSnapshot,
+                                current: PlaybackNetworkSnapshot,
+                                currentConnectionIsCellular: Bool,
+                                endpoint: URL, libraryEndpoint: URL,
+                                selectsLibraryEndpoint: Bool,
+                                allowsSelfSignedCertificates: Bool) -> String? {
+        guard startedOn.cacheKey == "cellular", current.cacheKey == "cellular" else { return "networkBucketChanged" }
+        guard currentConnectionIsCellular else { return "connectionNotCellular" }
+        guard startedOn.pathGeneration != 0, current.pathGeneration != 0 else { return "pathIdentityUnknown" }
+        guard startedOn.pathGeneration != current.pathGeneration else { return "pathGenerationUnchanged" }
+        guard selectsLibraryEndpoint else { return "alternateEndpointSelection" }
+        guard !allowsSelfSignedCertificates else { return "certificateOverrideEnabled" }
+        guard endpoint == libraryEndpoint else { return "libraryEndpointMismatch" }
+        guard endpoint.scheme?.lowercased() == "https" else { return "httpsRequired" }
+        guard let host = endpoint.host, !host.isEmpty else { return "hostMissing" }
+        guard !NetworkHostClassifier.isPrivate(host) else { return "privateHost" }
+        return nil
+    }
+}
+
+/// Reference capture does not publish media or transfer trust between origins.
+/// Even when the user permits certificate overrides, a changed carrier path
+/// must authenticate this exact saved library origin again before publication.
+enum JellyfinPreparedLibraryRevalidation {
+    static func permitsReference(startedOn: PlaybackNetworkSnapshot, endpoint: URL,
+                                 libraryEndpoint: URL, savedEndpoint: URL,
+                                 librarySelected: Bool, ownCredentialsMatch: Bool) -> Bool {
+        librarySelected && ownCredentialsMatch && startedOn.cacheKey == "cellular"
+            && startedOn.pathGeneration != 0 && endpoint == libraryEndpoint && endpoint == savedEndpoint
+            && endpoint.scheme?.lowercased() == "https"
+            && endpoint.host.map { !$0.isEmpty && !NetworkHostClassifier.isPrivate($0) } == true
+    }
+
+    /// A matching response on a path that changed in flight permits one fresh
+    /// probe, never publication of the old response or full media negotiation.
+    /// The caller continues to own and recheck the exact saved library origin.
+    @MainActor
+    static func authenticate(expected: JellyfinAuthenticatedIdentity, userID: String,
+                             session: UUID, network: () -> PlaybackNetworkSnapshot,
+                             ownershipCurrent: () -> Bool,
+                             probe: () async -> JellyfinAuthenticatedIdentity?,
+                             observed: (Int, JellyfinPreparedFallbackRevalidation.Outcome) -> Void = { _, _ in }) async
+        -> JellyfinPreparedFallbackRevalidation.Outcome {
+        for attempt in 1...2 {
+            let result = await JellyfinPreparedFallbackRevalidation.authenticationAttempt(
+                expected: expected, userID: userID, session: session, network: network,
+                ownershipCurrent: ownershipCurrent, probe: probe)
+            observed(attempt, result)
+            guard attempt == 1, result.rejection == .pathChanged else { return result }
+        }
+        return .rejected(.pathChanged)
+    }
+
+    static func permitsRevalidation(startedOn: PlaybackNetworkSnapshot, current: PlaybackNetworkSnapshot,
+                                    cellular: Bool, referenceAge: TimeInterval) -> Bool {
+        cellular && startedOn.cacheKey == "cellular" && current.cacheKey == "cellular"
+            && startedOn.pathGeneration != 0 && current.pathGeneration != 0
+            && startedOn.pathGeneration != current.pathGeneration
+            && JellyfinAuthenticatedFallbackPolicy.canUsePrimaryIdentity(age: referenceAge)
+    }
+}
+
+/// A prepared alternate origin still needs a fresh authenticated response on
+/// the new path. Revalidate that origin without negotiating the media twice.
+enum JellyfinPreparedFallbackRevalidation {
+    static func permitsProbe(startedOn: PlaybackNetworkSnapshot, current: PlaybackNetworkSnapshot,
+                             endpoint: URL, savedEndpoint: URL, ownFallback: Bool,
+                             cellular: Bool, allowsSelfSignedCertificates: Bool) -> Bool {
+        ownFallback && cellular && !allowsSelfSignedCertificates
+            && startedOn.cacheKey == "cellular" && current.cacheKey == "cellular"
+            && startedOn.pathGeneration != 0 && current.pathGeneration != 0
+            && startedOn.pathGeneration != current.pathGeneration
+            && endpoint == savedEndpoint && endpoint.scheme?.lowercased() == "https"
+            && endpoint.host.map { !$0.isEmpty && !NetworkHostClassifier.isPrivate($0) } == true
+    }
+
+    enum Rejection: String {
+        case cancelled, ownershipChanged, unknownPath, nonCellularPath
+        case missingIdentity, identityMismatch, pathChanged
+    }
+
+    enum Outcome {
+        case authenticated(PlaybackNetworkSnapshot)
+        case rejected(Rejection)
+
+        var network: PlaybackNetworkSnapshot? {
+            if case .authenticated(let network) = self { return network }
+            return nil
+        }
+        var rejection: Rejection? {
+            if case .rejected(let reason) = self { return reason }
+            return nil
+        }
+    }
+
+    @MainActor
+    static func authenticationAttempt(expected: JellyfinAuthenticatedIdentity, userID: String,
+                             session: UUID, network: () -> PlaybackNetworkSnapshot,
+                             ownershipCurrent: () -> Bool,
+                             probe: () async -> JellyfinAuthenticatedIdentity?) async -> Outcome {
+        guard !Task.isCancelled else { return .rejected(.cancelled) }
+        guard ownershipCurrent() else { return .rejected(.ownershipChanged) }
+        let started = network()
+        guard started.cacheKey != "unknown", started.pathGeneration != 0 else { return .rejected(.unknownPath) }
+        guard started.cacheKey == "cellular" else { return .rejected(.nonCellularPath) }
+        let identity = await probe()
+        let current = network()
+        guard !Task.isCancelled else { return .rejected(.cancelled) }
+        guard ownershipCurrent() else { return .rejected(.ownershipChanged) }
+        guard let identity else { return .rejected(.missingIdentity) }
+        guard JellyfinAuthenticatedIdentity.matches(primary: expected, candidate: identity, expectedUserID: userID)
+            else { return .rejected(.identityMismatch) }
+        guard current.cacheKey != "unknown", current.pathGeneration != 0 else { return .rejected(.unknownPath) }
+        guard current.cacheKey == "cellular" else { return .rejected(.nonCellularPath) }
+        guard JellyfinAuthenticatedIdentity.canPublish(startedOn: started, current: current,
+            startedSession: session, currentSession: session, cancelled: Task.isCancelled)
+            else { return .rejected(.pathChanged) }
+        return .authenticated(current)
+    }
+
+    @MainActor
+    static func authenticate(expected: JellyfinAuthenticatedIdentity, userID: String,
+                             session: UUID, network: () -> PlaybackNetworkSnapshot,
+                             ownershipCurrent: () -> Bool,
+                             probe: () async -> JellyfinAuthenticatedIdentity?) async -> PlaybackNetworkSnapshot? {
+        let result = await authenticationAttempt(expected: expected, userID: userID, session: session,
+            network: network, ownershipCurrent: ownershipCurrent, probe: probe)
+        return result.network
+    }
+}
+
+// Only a cancelled preparation waits for a settled path. No previous response
+// becomes valid here; the caller must authenticate and prepare afresh.
+struct JellyfinPlaybackPathSettling {
+    enum Result { case waiting, ready, expired }
+    private var lastPath: (key: String, generation: UInt64)?
+    private var stableSince: TimeInterval = 0
+    mutating func observe(_ network: PlaybackNetworkSnapshot, elapsed: TimeInterval) -> Result {
+        guard elapsed.isFinite, elapsed >= 0, elapsed < 8 else { return .expired }
+        guard network.cacheKey != "unknown", network.pathGeneration != 0 else {
+            lastPath = nil
+            stableSince = elapsed
+            return .waiting
+        }
+        if lastPath?.key != network.cacheKey || lastPath?.generation != network.pathGeneration {
+            lastPath = (network.cacheKey, network.pathGeneration)
+            stableSince = elapsed
+        }
+        return elapsed - stableSince >= 4 ? .ready : .waiting
+    }
+}
+
+enum JellyfinAuthenticatedFallbackPolicy {
+    static func canProbeCurrentPublic(startedOn: PlaybackNetworkSnapshot, current: PlaybackNetworkSnapshot,
+                                      startedSession: UUID, currentSession: UUID, primaryStatus: Int?,
+                                      primaryFailure: String?, credentialsUnchanged: Bool, cancelled: Bool) -> Bool {
+        !cancelled && credentialsUnchanged && startedSession == currentSession
+            && startedOn.cacheKey == "cellular" && current.cacheKey == "cellular" && current.pathGeneration != 0
+            && primaryIsUnreachable(status: primaryStatus, failure: primaryFailure)
+    }
+    static func canRestart(attempt: Int, startedOn: PlaybackNetworkSnapshot,
+                           current: PlaybackNetworkSnapshot, startedSession: UUID,
+                           currentSession: UUID, credentialsUnchanged: Bool, cancelled: Bool) -> Bool {
+        attempt == 0 && !cancelled && credentialsUnchanged && startedSession == currentSession
+            && current.cacheKey != "unknown" && current.pathGeneration != 0
+            && current.pathGeneration != startedOn.pathGeneration
+    }
+    static func primaryIsUnreachable(status: Int?, failure: String?) -> Bool {
+        guard status == nil else { return false }
+        return ["URL_-1001", "URL_-1003", "URL_-1004", "URL_-1005", "URL_-1006",
+                "URL_-1009", "URL_-1018"].contains(failure ?? "")
+    }
+    static func canUsePrimaryIdentity(age: TimeInterval) -> Bool {
+        age.isFinite && age >= 0 && age < 300
+    }
+    static func canReuse(age: TimeInterval) -> Bool {
+        age.isFinite && age >= 0 && age < 120
+    }
+}
+
+/// Overlap only the first saved public origin with the private control probe.
+/// A completed public response is not a route decision: the private result and
+/// current ownership still gate its consumption, and the caller rechecks after
+/// the await before publishing. Each operation owns its ephemeral URLSession.
+@MainActor
+final class JellyfinOverlappingIdentityProbes {
+    typealias Result = (identity: JellyfinAuthenticatedIdentity?, status: Int?, failure: String?)
+
+    let candidateEndpoint: URL
+    let candidateNetwork: PlaybackNetworkSnapshot
+    private let session: UUID
+    private let primaryTask: Task<Result, Never>
+    private let candidateTask: Task<Result, Never>
+    private var completedPrimary: Result?
+
+    init(candidateEndpoint: URL, network: PlaybackNetworkSnapshot, session: UUID,
+         primary: @escaping @MainActor @Sendable () async -> Result,
+         candidate: @escaping @MainActor @Sendable () async -> Result) {
+        self.candidateEndpoint = candidateEndpoint
+        self.candidateNetwork = network
+        self.session = session
+        primaryTask = Task { await primary() }
+        candidateTask = Task { await candidate() }
+    }
+
+    func primaryResult() async -> Result {
+        let result = await value(of: primaryTask)
+        completedPrimary = result
+        if !JellyfinAuthenticatedFallbackPolicy.primaryIsUnreachable(status: result.status,
+                                                                     failure: result.failure) {
+            candidateTask.cancel()
+        }
+        return result
+    }
+
+    func candidateResult(on current: PlaybackNetworkSnapshot, session currentSession: UUID,
+                         credentialsCurrent: Bool) async -> Result? {
+        guard let primary = completedPrimary,
+              JellyfinAuthenticatedFallbackPolicy.primaryIsUnreachable(status: primary.status,
+                                                                       failure: primary.failure) else {
+            // Checking before the primary finishes must not cancel the useful
+            // overlap; a definitive non-transport result cancels it above.
+            return nil
+        }
+        guard credentialsCurrent,
+              JellyfinAuthenticatedIdentity.canPublish(startedOn: candidateNetwork, current: current,
+                startedSession: session, currentSession: currentSession, cancelled: Task.isCancelled) else {
+            candidateTask.cancel()
+            return nil
+        }
+        return await value(of: candidateTask)
+    }
+
+    func cancel() {
+        primaryTask.cancel()
+        candidateTask.cancel()
+    }
+
+    private func value(of task: Task<Result, Never>) async -> Result {
+        let primary = primaryTask
+        let candidate = candidateTask
+        return await withTaskCancellationHandler {
+            await task.value
+        } onCancel: {
+            // Awaiting an unstructured task alone does not forward the parent's
+            // cancellation to either independent URLSession.data request.
+            primary.cancel()
+            candidate.cancel()
+        }
+    }
+}
+
+struct JellyfinLANPlaybackRouteCache {
+    private var verification: (endpoint: URL, pathGeneration: UInt64)?
+
+    func endpoint(on network: PlaybackNetworkSnapshot) -> URL? {
+        guard network.cacheKey != "unknown", network.pathGeneration != 0,
+              verification?.pathGeneration == network.pathGeneration else { return nil }
+        return verification?.endpoint
+    }
+
+    @discardableResult
+    mutating func publish(_ endpoint: URL, startedOn: PlaybackNetworkSnapshot,
+                          current: PlaybackNetworkSnapshot) -> Bool {
+        guard startedOn.cacheKey != "unknown", startedOn.pathGeneration != 0,
+              startedOn.pathGeneration == current.pathGeneration else { return false }
+        verification = (endpoint, current.pathGeneration)
+        return true
+    }
 }
 
 /// The source media and the device runtime are separate capability inputs.
@@ -176,11 +799,24 @@ struct MediaPlaybackCapabilities {
     }
 }
 
+struct PlaybackPathGeneration<Path: Equatable> {
+    private var previous: Path?
+    private(set) var generation: UInt64 = 0
+    mutating func observe(_ path: Path) -> Bool {
+        guard previous != path else { return false }
+        previous = path
+        generation &+= 1
+        return true
+    }
+}
+
 final class PlaybackNetworkObserver: @unchecked Sendable {
     static let shared = PlaybackNetworkObserver()
 
     private let monitor = NWPathMonitor()
     private let lock = NSLock()
+    private var pathGeneration = PlaybackPathGeneration<NWPath>()
+    private var currentConnectionKind = PlaybackConnectionKind.unknown
     private var currentSnapshot = PlaybackNetworkSnapshot(
         cacheKey: "unknown",
         bitrateCap: 20_000_000,
@@ -189,7 +825,7 @@ final class PlaybackNetworkObserver: @unchecked Sendable {
 
     private init() {
         monitor.pathUpdateHandler = { [weak self] path in
-            let snapshot: PlaybackNetworkSnapshot
+            var snapshot: PlaybackNetworkSnapshot
             if path.isConstrained {
                 snapshot = PlaybackNetworkSnapshot(
                     cacheKey: "constrained",
@@ -215,9 +851,26 @@ final class PlaybackNetworkObserver: @unchecked Sendable {
                     fallbackBitrate: path.isExpensive ? 3_500_000 : 6_000_000
                 )
             }
-            self?.lock.lock()
-            self?.currentSnapshot = snapshot
-            self?.lock.unlock()
+            guard let self else { return }
+            self.lock.lock()
+            self.currentConnectionKind = path.status != .satisfied ? .offline
+                : path.usesInterfaceType(.wifi) ? .wifi
+                : path.usesInterfaceType(.cellular) ? .cellular
+                : path.usesInterfaceType(.wiredEthernet) ? .wired : .other
+            let changed = self.pathGeneration.observe(path)
+            snapshot.pathGeneration = self.pathGeneration.generation
+            if changed { self.currentSnapshot = snapshot }
+            self.lock.unlock()
+#if DEBUG
+            DiagnosticLogStore.shared.record(.info, categoryKey: "diagnostics.category.media",
+                messageKey: "diagnostics.jellyfin.playback_route_state", details: [
+                    "stage": "networkPathObserved", "network": snapshot.cacheKey,
+                    "networkPathGeneration": String(snapshot.pathGeneration),
+                    "pathEquivalent": String(!changed), "status": String(describing: path.status),
+                    "supportsIPv4": String(path.supportsIPv4), "supportsIPv6": String(path.supportsIPv6),
+                    "supportsDNS": String(path.supportsDNS), "expensive": String(path.isExpensive),
+                    "constrained": String(path.isConstrained)])
+#endif
         }
         monitor.start(queue: DispatchQueue(label: "com.changliwen.nastart.playback-network"))
     }
@@ -226,6 +879,12 @@ final class PlaybackNetworkObserver: @unchecked Sendable {
         lock.lock()
         defer { lock.unlock() }
         return currentSnapshot
+    }
+
+    func connectionKind() -> PlaybackConnectionKind {
+        lock.lock()
+        defer { lock.unlock() }
+        return currentConnectionKind
     }
 }
 
@@ -269,6 +928,10 @@ struct MediaPlaybackRuntimeState {
     let subtitlesDisabled: Bool
     let subtitleSelectionKnown: Bool
     let orientationMode: PlayerOrientationMode
+    // Absolute demuxer/source indexes, distinct from a rendition's ordinals.
+    var sourceAudioStreamIndex: Int? = nil
+    var sourceSubtitleStreamIndex: Int? = nil
+    var activeExternalSubtitleURL: URL? = nil
 }
 
 struct MediaPlaybackSourceTrack: Identifiable, Equatable {
@@ -301,10 +964,16 @@ struct MediaPlaybackEpisodeNavigation {
     let next: (() async -> MediaPlaybackRequest?)?
 }
 
+enum MediaPlaybackTimelineDomain: Equatable {
+    case resourceRelative
+    case sourceAbsolute
+}
+
 struct MediaPlaybackRequest: Identifiable {
     let id = UUID()
     let requestedAt: Date
     let url: URL
+    let networkSource: NetworkMediaPlaybackSource?
     let title: String
     let allowsSelfSignedCertificates: Bool
     let source: MediaPlaybackSource
@@ -318,6 +987,7 @@ struct MediaPlaybackRequest: Identifiable {
     let initialOrientationMode: PlayerOrientationMode
     let initialPlaybackRate: Float
     let timelineOffsetSeconds: Double
+    let timelineDomain: MediaPlaybackTimelineDomain
     var totalDurationSeconds: Double?
     let byteLength: Int64?
     let estimatedBitrate: Int?
@@ -351,6 +1021,7 @@ struct MediaPlaybackRequest: Identifiable {
         requestedAt: Date = Date(),
         url: URL,
         title: String,
+        networkSource: NetworkMediaPlaybackSource? = nil,
         allowsSelfSignedCertificates: Bool = false,
         source: MediaPlaybackSource = .directURL,
         contentKind: MediaPlaybackContentKind = .automatic,
@@ -363,6 +1034,7 @@ struct MediaPlaybackRequest: Identifiable {
         initialOrientationMode: PlayerOrientationMode = .landscape,
         initialPlaybackRate: Float = 1,
         timelineOffsetSeconds: Double = 0,
+        timelineDomain: MediaPlaybackTimelineDomain = .resourceRelative,
         totalDurationSeconds: Double? = nil,
         byteLength: Int64? = nil,
         estimatedBitrate: Int? = nil,
@@ -406,7 +1078,9 @@ struct MediaPlaybackRequest: Identifiable {
         self.initialOrientationMode = initialOrientationMode
         self.initialPlaybackRate = min(max(initialPlaybackRate, 0.25), 4)
         self.timelineOffsetSeconds = max(timelineOffsetSeconds, 0)
+        self.timelineDomain = timelineDomain
         self.totalDurationSeconds = totalDurationSeconds.flatMap { $0 > 0 ? $0 : nil }
+        self.networkSource = networkSource
         self.byteLength = byteLength.flatMap { $0 > 0 ? $0 : nil }
         self.estimatedBitrate = estimatedBitrate.flatMap { $0 > 0 ? $0 : nil }
         self.streamBitrateCeiling = streamBitrateCeiling.flatMap { $0 > 0 ? $0 : nil }
@@ -432,7 +1106,7 @@ struct MediaPlaybackRequest: Identifiable {
         self.playbackTraceID = playbackTraceID?.isEmpty == false ? playbackTraceID : nil
         self.episodeNavigationLoader = episodeNavigationLoader
         self.audioLyricsURL = audioLyricsURL
-        self.localResumeKey = localResumeKey
+        self.localResumeKey = localResumeKey ?? networkSource.map { "network-file:" + $0.stableID }
     }
 
     var fileExtensionHint: String {
@@ -441,6 +1115,11 @@ struct MediaPlaybackRequest: Identifiable {
         }
         let titleExtension = URL(fileURLWithPath: title).pathExtension.lowercased()
         return titleExtension.isEmpty ? url.pathExtension.lowercased() : titleExtension
+    }
+
+    var rendererTimelineOffsetSeconds: Double {
+        if timelineDomain == .sourceAbsolute || (source == .jellyfin && fileExtensionHint == "m3u8") { return 0 }
+        return timelineOffsetSeconds
     }
 
     var mimeTypeHint: String? {
@@ -511,7 +1190,33 @@ struct MediaPlaybackRequest: Identifiable {
     }
 
     var networkOriginURL: URL {
-        externalHandoffResource?.url ?? url
+        networkSource?.originURL ?? externalHandoffResource?.url ?? url
+    }
+
+    // Legacy normalization disables the embedded ASS renderer while supplying
+    // an external SRT. Greenfield's shared overlay must still display that SRT.
+    var greenfieldSubtitlesDisabled: Bool {
+        prefersSubtitlesDisabled && externalSubtitleURL == nil
+    }
+
+    func sourceSubtitleTrackID(forExternalURL url: URL) -> Int? {
+        let matches = sourceSubtitleTracks.filter { $0.id >= 0 && $0.externalURL == url }
+        return matches.count == 1 ? matches[0].id : nil
+    }
+
+    func committedSourceSubtitleTrackID(forRuntimeState state: MediaPlaybackRuntimeState) -> Int? {
+        guard state.subtitleSelectionKnown else { return selectedSourceSubtitleTrackID }
+        guard !state.subtitlesDisabled else { return nil }
+        if let url = state.activeExternalSubtitleURL {
+            return sourceSubtitleTrackID(forExternalURL: url)
+        }
+        if let id = state.sourceSubtitleStreamIndex {
+            return sourceSubtitleTracks.contains { $0.id == id && id >= 0 } ? id : nil
+        }
+        return state.subtitleTrackOrdinal.flatMap { ordinal in
+            guard sourceSubtitleTracks.indices.contains(ordinal), sourceSubtitleTracks[ordinal].id >= 0 else { return nil }
+            return sourceSubtitleTracks[ordinal].id
+        }
     }
 
     var compatibilityPlaybackRequest: MediaPlaybackRequest {
@@ -529,6 +1234,7 @@ struct MediaPlaybackRequest: Identifiable {
             requestedAt: requestedAt,
             url: resource.url,
             title: title,
+            networkSource: networkSource,
             allowsSelfSignedCertificates: resource.allowsSelfSignedCertificates
                 ?? allowsSelfSignedCertificates,
             source: source,
@@ -546,6 +1252,7 @@ struct MediaPlaybackRequest: Identifiable {
             initialOrientationMode: runtimeState?.orientationMode ?? initialOrientationMode,
             initialPlaybackRate: runtimeState?.playbackRate ?? initialPlaybackRate,
             timelineOffsetSeconds: resource.timelineOffsetSeconds ?? timelineOffsetSeconds,
+            timelineDomain: timelineDomain,
             totalDurationSeconds: resource.totalDurationSeconds ?? totalDurationSeconds,
             byteLength: byteLength,
             estimatedBitrate: estimatedBitrate,
@@ -578,11 +1285,46 @@ struct MediaPlaybackRequest: Identifiable {
         )
     }
 
-    func applyingRuntimePreferences(_ runtimeState: MediaPlaybackRuntimeState) -> MediaPlaybackRequest {
+    func runtimeStateForSourceChange(_ state: MediaPlaybackRuntimeState,
+                                     selectedAudioID: Int?, selectedSubtitleID: Int?) -> MediaPlaybackRuntimeState {
+        // Menu ordinals describe this catalog, not the absolute source stream.
+        // A verified file HLS seek needs both identities, including a sidecar
+        // that never appears in AVPlayer's legible group. Reject unknown or
+        // duplicate catalog IDs instead of guessing from rendition ordinals.
+        let audioMatches = sourceAudioTracks.filter { $0.id == selectedAudioID && $0.id >= 0 }
+        let audio = audioMatches.count == 1 ? audioMatches.first : nil
+        let subtitleMatches = sourceSubtitleTracks.filter {
+            $0.id == selectedSubtitleID && ($0.id >= 0 || $0.externalURL != nil)
+        }
+        let subtitle = subtitleMatches.count == 1 ? subtitleMatches.first : nil
+        return MediaPlaybackRuntimeState(
+            normalizedPosition: state.normalizedPosition,
+            positionSeconds: state.positionSeconds,
+            playbackRate: state.playbackRate,
+            audioTrackOrdinal: audio.flatMap { track in sourceAudioTracks.firstIndex { $0.id == track.id } },
+            subtitleTrackOrdinal: subtitle.flatMap { track in sourceSubtitleTracks.firstIndex { $0.id == track.id } },
+            subtitlesDisabled: selectedSubtitleID == nil,
+            subtitleSelectionKnown: selectedSubtitleID == nil || subtitle != nil,
+            orientationMode: state.orientationMode,
+            sourceAudioStreamIndex: audio?.id,
+            sourceSubtitleStreamIndex: subtitle?.externalURL == nil ? subtitle?.id : nil,
+            activeExternalSubtitleURL: subtitle?.externalURL
+        )
+    }
+
+    /// Manual track loading and the final live refresh must both preserve the
+    /// negotiated selection; an earlier copy of outgoing Off is irreversible.
+    func applyingSourceTrackRuntimePreferences(_ runtimeState: MediaPlaybackRuntimeState) -> MediaPlaybackRequest {
+        applyingRuntimePreferences(runtimeState, preservingRequestedSubtitleSelection: true)
+    }
+
+    func applyingRuntimePreferences(_ runtimeState: MediaPlaybackRuntimeState,
+                                    preservingRequestedSubtitleSelection: Bool = false) -> MediaPlaybackRequest {
         MediaPlaybackRequest(
             requestedAt: requestedAt,
             url: url,
             title: title,
+            networkSource: networkSource,
             allowsSelfSignedCertificates: allowsSelfSignedCertificates,
             source: source,
             contentKind: contentKind,
@@ -598,12 +1340,15 @@ struct MediaPlaybackRequest: Identifiable {
             externalSubtitleURL: externalSubtitleURL,
             preferredAudioTrackOrdinal: preferredAudioTrackOrdinal,
             preferredSubtitleTrackOrdinal: preferredSubtitleTrackOrdinal,
-            prefersSubtitlesDisabled: runtimeState.subtitleSelectionKnown
+            // A manual track replacement owns its new selection. Refreshing
+            // the outgoing live clock/rate must not restore its old Off state.
+            prefersSubtitlesDisabled: !preservingRequestedSubtitleSelection && runtimeState.subtitleSelectionKnown
                 ? runtimeState.subtitlesDisabled
                 : prefersSubtitlesDisabled,
             initialOrientationMode: runtimeState.orientationMode,
             initialPlaybackRate: runtimeState.playbackRate,
             timelineOffsetSeconds: timelineOffsetSeconds,
+            timelineDomain: timelineDomain,
             totalDurationSeconds: totalDurationSeconds,
             byteLength: byteLength,
             estimatedBitrate: estimatedBitrate,

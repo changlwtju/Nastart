@@ -1,0 +1,1295 @@
+{
+  "date": "2026-10-28",
+  "sample": "S19",
+  "bytes": 128795641934,
+  "device": "iPhone 13 / iPhone14,5 / iOS 16.3.1",
+  "configuration": "Normal Debug; empty args/env",
+  "entry": "Jellyfin",
+  "network": "Wi-Fi shown in native frame; cellular not used",
+  "window": {
+    "startedAt": "2026-10-28T18:41:41.484602+08:00",
+    "endedAt": "2026-10-28T18:42:23.791699+08:00",
+    "screenCaptureCount": 6,
+    "normalExit": false,
+    "intentionalStop": "WDA",
+    "toolFailure": "HTTP 404 before first seek; response body not retained by initial helper",
+    "validSeekActions": 0
+  },
+  "observations": {
+    "initialEngine": "KSPlayer",
+    "initialPlayMethod": "directPlay",
+    "initialRoute": "localRangeProxy",
+    "laterEngine": "systemAVPlayer",
+    "laterRoute": "localHLS",
+    "downshiftReason": "deliveryBelowSourceBitrate",
+    "observedCapacityBitsPerSecond": 45844535,
+    "reportedRuntimeDemandBitsPerSecond": 73202430,
+    "compatibilityBitrate": 12000000,
+    "reportedSubtitleCodec": "PGSSUB",
+    "firstFrameClockSignalMs": 1461,
+    "firstFrameClockSignalIsScreenPresentation": false
+  },
+  "selectionComplete": true,
+  "strictPairedComparison": false,
+  "nasRestart": {
+    "at": "2026-10-28T18:50:18.731293+08:00",
+    "reason": "User reports NAS crash; allow restart around ten minutes",
+    "networkToggles": 0,
+    "mediaRestarted": false,
+    "nasProbes": 0,
+    "ownedAppStopped": true,
+    "settingsRestored": true,
+    "ownedHTTPSessionDeleted": true
+  },
+  "userSampleConstraint": "Use large files and representative formats; S01 small file is not selection basis",
+  "modelBoundary": "6.1 Sol performs native comparison and selection; Astra only optimizes after selection",
+  "sourceChanged": false,
+  "newPlaybackMatrixPasses": 0,
+  "recoveryProbe": {
+    "at": "2026-10-28T19:03:20.704642+08:00",
+    "secondsSincePause": 782,
+    "requestCount": 1,
+    "method": "HEAD",
+    "credentialsSent": false,
+    "mediaBodyRequested": false,
+    "authenticationAndListingVerified": false,
+    "status": 401,
+    "httpResponseReceived": true,
+    "elapsedSeconds": 5.063
+  },
+  "strictPreAndPostRestartComparison": false,
+  "postFirstRestartWindows": [
+    {
+      "window": "dav-avc-wifi-1",
+      "startedAt": "2026-10-28T20:50:56.688217+08:00",
+      "endedAt": "2026-10-28T20:52:16.931628+08:00",
+      "network": "Wi-Fi; original connection unchanged",
+      "normalExit": true,
+      "intentionalStop": "WDA",
+      "toolFailure": null,
+      "guardTriggered": null,
+      "validSeekUIActions": 2,
+      "firstFrameClockSignals": [
+        {
+          "tapToFirstFrameMs": "12424",
+          "firstFramePositionSeconds": "0.115",
+          "firstFrameSignal": "playbackClock"
+        }
+      ],
+      "seeks": [
+        {
+          "event": "seek_started",
+          "engine": "KSPlayer",
+          "seekTargetSeconds": "23.982066666666668"
+        },
+        {
+          "event": "seek_started",
+          "engine": "KSPlayer",
+          "seekTargetSeconds": "8.982066666666668"
+        }
+      ],
+      "trackSelections": [
+        {
+          "event": "subtitle_track_changed",
+          "engine": "KSPlayer",
+          "requestedTrackID": "4",
+          "selectionDispatchMs": "0",
+          "evidence": "selectionAndCueInventoryNotScreenPresentation",
+          "visibleParts": "0"
+        }
+      ],
+      "committedReplacements": [],
+      "traceStartPosition": null,
+      "nativeScreens": 10,
+      "audibleResponseMeasured": false,
+      "screenPresentationTimingMeasured": false,
+      "sample": "AVC-M2TS-LPCM",
+      "sampleBytes": 38626369536,
+      "trackUIChecks": [],
+      "deepSeek": null
+    },
+    {
+      "window": "dav-s19-wifi-postrestart-1",
+      "startedAt": "2026-10-28T19:07:25.149615+08:00",
+      "endedAt": "2026-10-28T19:08:13.558264+08:00",
+      "network": "Wi-Fi; original connection unchanged",
+      "normalExit": false,
+      "intentionalStop": "WDA",
+      "toolFailure": "AssertionError",
+      "guardTriggered": null,
+      "validSeekUIActions": 0,
+      "firstFrameClockSignals": [
+        {
+          "tapToFirstFrameMs": "4459",
+          "firstFramePositionSeconds": "0.073",
+          "firstFrameSignal": "playbackClock"
+        }
+      ],
+      "seeks": [],
+      "trackSelections": [
+        {
+          "event": "subtitle_track_changed",
+          "engine": "KSPlayer",
+          "requestedTrackID": "8",
+          "selectionDispatchMs": "0",
+          "evidence": "selectionAndCueInventoryNotScreenPresentation",
+          "visibleParts": "0"
+        }
+      ],
+      "committedReplacements": [],
+      "traceStartPosition": null,
+      "nativeScreens": 6,
+      "audibleResponseMeasured": false,
+      "screenPresentationTimingMeasured": false,
+      "sample": "S19",
+      "sampleBytes": 128795641934,
+      "trackUIChecks": [],
+      "deepSeek": null
+    },
+    {
+      "window": "file-s19-cellular-cold-resume-2",
+      "startedAt": "2026-10-28T20:14:28.481547+08:00",
+      "endedAt": "2026-10-28T20:15:12.448702+08:00",
+      "network": "user-reported weak cellular",
+      "normalExit": true,
+      "intentionalStop": "WDA",
+      "toolFailure": null,
+      "guardTriggered": null,
+      "validSeekUIActions": 0,
+      "firstFrameClockSignals": [
+        {
+          "tapToFirstFrameMs": "3962",
+          "firstFramePositionSeconds": "26.501",
+          "firstFrameSignal": "playbackClock"
+        }
+      ],
+      "seeks": [],
+      "trackSelections": [],
+      "committedReplacements": [],
+      "traceStartPosition": null,
+      "nativeScreens": 6,
+      "audibleResponseMeasured": false,
+      "screenPresentationTimingMeasured": false,
+      "sample": "S19",
+      "sampleBytes": 128795641934,
+      "trackUIChecks": [],
+      "deepSeek": null
+    },
+    {
+      "window": "file-s19-cellular-head-1",
+      "startedAt": "2026-10-28T20:02:53.683606+08:00",
+      "endedAt": "2026-10-28T20:03:38.331116+08:00",
+      "network": "user-reported weak cellular",
+      "normalExit": true,
+      "intentionalStop": "WDA",
+      "toolFailure": null,
+      "guardTriggered": null,
+      "validSeekUIActions": 0,
+      "firstFrameClockSignals": [
+        {
+          "tapToFirstFrameMs": "2050",
+          "firstFramePositionSeconds": "0.051",
+          "firstFrameSignal": "playbackClock"
+        },
+        {
+          "tapToFirstFrameMs": "8129",
+          "firstFramePositionSeconds": "5.501",
+          "firstFrameSignal": "playbackClock"
+        }
+      ],
+      "seeks": [],
+      "trackSelections": [
+        {
+          "event": "subtitle_track_changed",
+          "engine": "KSPlayer",
+          "requestedTrackID": "8",
+          "selectionDispatchMs": "0",
+          "evidence": "selectionAndCueInventoryNotScreenPresentation",
+          "visibleParts": "0"
+        }
+      ],
+      "committedReplacements": [
+        {
+          "engine": "KSPlayer"
+        }
+      ],
+      "traceStartPosition": null,
+      "nativeScreens": 6,
+      "audibleResponseMeasured": false,
+      "screenPresentationTimingMeasured": false,
+      "sample": "S19",
+      "sampleBytes": 128795641934,
+      "trackUIChecks": [],
+      "deepSeek": null
+    },
+    {
+      "window": "file-s19-cellular-resume-1",
+      "startedAt": "2026-10-28T19:51:17.267972+08:00",
+      "endedAt": "2026-10-28T19:52:52.760172+08:00",
+      "network": "user-reported weak cellular",
+      "normalExit": true,
+      "intentionalStop": "WDA",
+      "toolFailure": null,
+      "guardTriggered": null,
+      "validSeekUIActions": 2,
+      "firstFrameClockSignals": [
+        {
+          "tapToFirstFrameMs": "8172",
+          "firstFramePositionSeconds": "3516.001",
+          "firstFrameSignal": "playbackClock"
+        },
+        {
+          "tapToFirstFrameMs": "11663",
+          "firstFramePositionSeconds": "3583.501",
+          "firstFrameSignal": "playbackClock"
+        }
+      ],
+      "seeks": [
+        {
+          "event": "seek_started",
+          "engine": "AVPlayer",
+          "seekTargetSeconds": "3555.00118804"
+        },
+        {
+          "event": "seek_recovered",
+          "engine": "AVPlayer",
+          "seekTargetSeconds": "3555.00118804",
+          "seekRecoveryMs": "755",
+          "evidence": "engineCompletionAndAdvancingClock"
+        },
+        {
+          "event": "seek_started",
+          "engine": "AVPlayer",
+          "seekTargetSeconds": "3547.505780275"
+        },
+        {
+          "event": "seek_recovered",
+          "engine": "AVPlayer",
+          "seekTargetSeconds": "3547.505780275",
+          "seekRecoveryMs": "772",
+          "evidence": "engineCompletionAndAdvancingClock"
+        }
+      ],
+      "trackSelections": [],
+      "committedReplacements": [
+        {
+          "engine": "AVPlayer"
+        }
+      ],
+      "traceStartPosition": null,
+      "nativeScreens": 14,
+      "audibleResponseMeasured": false,
+      "screenPresentationTimingMeasured": false,
+      "sample": "S19",
+      "sampleBytes": 128795641934,
+      "trackUIChecks": [
+        {
+          "kind": "audio",
+          "restored": true,
+          "original": "playback.track.1",
+          "target": "playback.track.2",
+          "requestSincePlay": 51.73732583317906,
+          "replySincePlay": 52.26737083308399,
+          "selectedAfter": "playback.track.2"
+        },
+        {
+          "kind": "subtitle",
+          "restored": true,
+          "original": "playback.track.-1",
+          "target": "playback.track.8",
+          "requestSincePlay": 69.17229395825416,
+          "replySincePlay": 69.68812349997461,
+          "failureType": "AssertionError"
+        }
+      ],
+      "deepSeek": null
+    },
+    {
+      "window": "file-s19-wifi-postrestart-1",
+      "startedAt": "2026-10-28T19:16:21.215127+08:00",
+      "endedAt": "2026-10-28T19:17:13.283878+08:00",
+      "network": "Wi-Fi; original connection unchanged",
+      "normalExit": false,
+      "intentionalStop": "WDA",
+      "toolFailure": "AssertionError",
+      "guardTriggered": null,
+      "validSeekUIActions": 2,
+      "firstFrameClockSignals": [
+        {
+          "tapToFirstFrameMs": "2024",
+          "firstFramePositionSeconds": "0.180",
+          "firstFrameSignal": "playbackClock"
+        }
+      ],
+      "seeks": [
+        {
+          "event": "seek_started",
+          "engine": "KSPlayer",
+          "seekTargetSeconds": "38.027"
+        },
+        {
+          "event": "seek_recovered",
+          "engine": "KSPlayer",
+          "seekTargetSeconds": "38.027",
+          "seekRecoveryMs": "1164",
+          "evidence": "engineCompletionAndAdvancingClock"
+        },
+        {
+          "event": "seek_started",
+          "engine": "KSPlayer",
+          "seekTargetSeconds": "29.564"
+        },
+        {
+          "event": "seek_recovered",
+          "engine": "KSPlayer",
+          "seekTargetSeconds": "29.564",
+          "seekRecoveryMs": "882",
+          "evidence": "engineCompletionAndAdvancingClock"
+        }
+      ],
+      "trackSelections": [],
+      "committedReplacements": [],
+      "traceStartPosition": null,
+      "nativeScreens": 9,
+      "audibleResponseMeasured": false,
+      "screenPresentationTimingMeasured": false,
+      "sample": "S19",
+      "sampleBytes": 128795641934,
+      "trackUIChecks": [],
+      "deepSeek": null
+    },
+    {
+      "window": "file-s19-wifi-resume-1",
+      "startedAt": "2026-10-28T19:25:59.684517+08:00",
+      "endedAt": "2026-10-28T19:27:01.057532+08:00",
+      "network": "Wi-Fi; original connection unchanged",
+      "normalExit": true,
+      "intentionalStop": "WDA",
+      "toolFailure": null,
+      "guardTriggered": null,
+      "validSeekUIActions": 2,
+      "firstFrameClockSignals": [
+        {
+          "tapToFirstFrameMs": "2117",
+          "firstFramePositionSeconds": "34.852",
+          "firstFrameSignal": "playbackClock"
+        }
+      ],
+      "seeks": [
+        {
+          "event": "seek_started",
+          "engine": "KSPlayer",
+          "seekTargetSeconds": "77.799"
+        },
+        {
+          "event": "seek_recovered",
+          "engine": "KSPlayer",
+          "seekTargetSeconds": "77.799",
+          "seekRecoveryMs": "3939",
+          "evidence": "engineCompletionAndAdvancingClock"
+        },
+        {
+          "event": "seek_started",
+          "engine": "KSPlayer",
+          "seekTargetSeconds": "65.752"
+        },
+        {
+          "event": "seek_recovered",
+          "engine": "KSPlayer",
+          "seekTargetSeconds": "65.752",
+          "seekRecoveryMs": "2614",
+          "evidence": "engineCompletionAndAdvancingClock"
+        }
+      ],
+      "trackSelections": [],
+      "committedReplacements": [],
+      "traceStartPosition": null,
+      "nativeScreens": 10,
+      "audibleResponseMeasured": false,
+      "screenPresentationTimingMeasured": false,
+      "sample": "S19",
+      "sampleBytes": 128795641934,
+      "trackUIChecks": [],
+      "deepSeek": null
+    },
+    {
+      "window": "file-s19-wifi-tracks-deep-short-1",
+      "startedAt": "2026-10-28T19:43:19.914018+08:00",
+      "endedAt": "2026-10-28T19:44:29.834534+08:00",
+      "network": "Wi-Fi; original connection unchanged",
+      "normalExit": true,
+      "intentionalStop": "WDA",
+      "toolFailure": null,
+      "guardTriggered": null,
+      "validSeekUIActions": 0,
+      "firstFrameClockSignals": [
+        {
+          "tapToFirstFrameMs": "2355",
+          "firstFramePositionSeconds": "66.985",
+          "firstFrameSignal": "playbackClock"
+        }
+      ],
+      "seeks": [
+        {
+          "event": "seek_started",
+          "engine": "KSPlayer",
+          "seekTargetSeconds": "3504.519482620239"
+        },
+        {
+          "event": "seek_recovered",
+          "engine": "KSPlayer",
+          "seekTargetSeconds": "3504.519482620239",
+          "seekRecoveryMs": "5090",
+          "evidence": "engineCompletionAndAdvancingClock"
+        },
+        {
+          "event": "seek_started",
+          "engine": "KSPlayer",
+          "seekTargetSeconds": "3506.406"
+        },
+        {
+          "event": "seek_recovered",
+          "engine": "KSPlayer",
+          "seekTargetSeconds": "3506.406",
+          "seekRecoveryMs": "2607",
+          "evidence": "engineCompletionAndAdvancingClock"
+        },
+        {
+          "event": "seek_started",
+          "engine": "KSPlayer",
+          "seekTargetSeconds": "3510.249"
+        },
+        {
+          "event": "seek_recovered",
+          "engine": "KSPlayer",
+          "seekTargetSeconds": "3510.249",
+          "seekRecoveryMs": "4113",
+          "evidence": "engineCompletionAndAdvancingClock"
+        },
+        {
+          "event": "seek_started",
+          "engine": "KSPlayer",
+          "seekTargetSeconds": "3512.84"
+        },
+        {
+          "event": "seek_recovered",
+          "engine": "KSPlayer",
+          "seekTargetSeconds": "3512.84",
+          "seekRecoveryMs": "7010",
+          "evidence": "engineCompletionAndAdvancingClock"
+        }
+      ],
+      "trackSelections": [
+        {
+          "event": "audio_track_changed",
+          "engine": "KSPlayer",
+          "requestedTrackID": "2",
+          "selectionDispatchMs": "0",
+          "evidence": "engineTrackInventoryNotAudibleRecovery"
+        },
+        {
+          "event": "audio_track_changed",
+          "engine": "KSPlayer",
+          "requestedTrackID": "1",
+          "selectionDispatchMs": "1",
+          "evidence": "engineTrackInventoryNotAudibleRecovery"
+        },
+        {
+          "event": "subtitle_track_changed",
+          "engine": "KSPlayer",
+          "requestedTrackID": "8",
+          "selectionDispatchMs": "0",
+          "evidence": "selectionAndCueInventoryNotScreenPresentation",
+          "visibleParts": "0"
+        },
+        {
+          "event": "subtitle_track_changed",
+          "engine": "KSPlayer",
+          "requestedTrackID": "-1",
+          "selectionDispatchMs": "0",
+          "evidence": "selectionAndCueInventoryNotScreenPresentation",
+          "visibleParts": "0"
+        }
+      ],
+      "committedReplacements": [],
+      "traceStartPosition": null,
+      "nativeScreens": 9,
+      "audibleResponseMeasured": false,
+      "screenPresentationTimingMeasured": false,
+      "sample": "S19",
+      "sampleBytes": 128795641934,
+      "trackUIChecks": [
+        {
+          "kind": "audio",
+          "restored": true,
+          "original": "playback.track.1",
+          "target": "playback.track.2",
+          "requestSincePlay": 23.65910316677764,
+          "replySincePlay": 24.161642792169005,
+          "selectedAfter": "playback.track.2"
+        },
+        {
+          "kind": "subtitle",
+          "restored": true,
+          "original": "playback.track.-1",
+          "target": "playback.track.8",
+          "requestSincePlay": 42.26802362501621,
+          "replySincePlay": 42.75855945888907,
+          "selectedAfter": "playback.track.8"
+        }
+      ],
+      "deepSeek": {
+        "fraction": 0.25,
+        "requestSincePlay": 10.983652167022228
+      }
+    },
+    {
+      "window": "jf-s19-cellular-cold-2",
+      "startedAt": "2026-10-28T19:57:22.628819+08:00",
+      "endedAt": "2026-10-28T19:57:46.349322+08:00",
+      "network": "user-reported weak cellular",
+      "normalExit": true,
+      "intentionalStop": "WDA",
+      "toolFailure": null,
+      "guardTriggered": null,
+      "validSeekUIActions": 0,
+      "firstFrameClockSignals": [],
+      "seeks": [],
+      "trackSelections": [],
+      "committedReplacements": [],
+      "traceStartPosition": null,
+      "nativeScreens": 4,
+      "audibleResponseMeasured": false,
+      "screenPresentationTimingMeasured": false,
+      "sample": "S19",
+      "sampleBytes": 128795641934,
+      "trackUIChecks": [],
+      "deepSeek": null
+    },
+    {
+      "window": "jf-s19-cellular-cold-full-1",
+      "startedAt": "2026-10-28T19:59:48.050067+08:00",
+      "endedAt": "2026-10-28T20:01:32.060602+08:00",
+      "network": "user-reported weak cellular",
+      "normalExit": true,
+      "intentionalStop": "WDA",
+      "toolFailure": null,
+      "guardTriggered": null,
+      "validSeekUIActions": 2,
+      "firstFrameClockSignals": [
+        {
+          "tapToFirstFrameMs": "6461",
+          "firstFramePositionSeconds": "3491.002",
+          "firstFrameSignal": "playbackClock"
+        },
+        {
+          "tapToFirstFrameMs": "9954",
+          "firstFramePositionSeconds": "3562.001",
+          "firstFrameSignal": "playbackClock"
+        }
+      ],
+      "seeks": [
+        {
+          "event": "seek_started",
+          "engine": "AVPlayer",
+          "seekTargetSeconds": "3531.502240321"
+        },
+        {
+          "event": "seek_recovered",
+          "engine": "AVPlayer",
+          "seekTargetSeconds": "3531.502240321",
+          "seekRecoveryMs": "750",
+          "evidence": "engineCompletionAndAdvancingClock"
+        },
+        {
+          "event": "seek_started",
+          "engine": "AVPlayer",
+          "seekTargetSeconds": "3524.001074439"
+        },
+        {
+          "event": "seek_recovered",
+          "engine": "AVPlayer",
+          "seekTargetSeconds": "3524.001074439",
+          "seekRecoveryMs": "738",
+          "evidence": "engineCompletionAndAdvancingClock"
+        }
+      ],
+      "trackSelections": [],
+      "committedReplacements": [
+        {
+          "engine": "AVPlayer"
+        }
+      ],
+      "traceStartPosition": null,
+      "nativeScreens": 14,
+      "audibleResponseMeasured": false,
+      "screenPresentationTimingMeasured": false,
+      "sample": "S19",
+      "sampleBytes": 128795641934,
+      "trackUIChecks": [
+        {
+          "kind": "audio",
+          "restored": true,
+          "original": "playback.track.1",
+          "target": "playback.track.2",
+          "requestSincePlay": 52.11672774981707,
+          "replySincePlay": 52.63849554210901,
+          "selectedAfter": "playback.track.2"
+        },
+        {
+          "kind": "subtitle",
+          "restored": true,
+          "original": "playback.track.8",
+          "target": "playback.track.-1",
+          "requestSincePlay": 70.33713525021449,
+          "replySincePlay": 70.85446862503886,
+          "failureType": "AssertionError"
+        }
+      ],
+      "deepSeek": null
+    },
+    {
+      "window": "jf-s19-cellular-head-1",
+      "startedAt": "2026-10-28T20:05:55.908937+08:00",
+      "endedAt": "2026-10-28T20:06:45.795956+08:00",
+      "network": "user-reported weak cellular",
+      "normalExit": true,
+      "intentionalStop": "WDA",
+      "toolFailure": null,
+      "guardTriggered": null,
+      "validSeekUIActions": 0,
+      "firstFrameClockSignals": [
+        {
+          "tapToFirstFrameMs": "5385",
+          "firstFramePositionSeconds": "0.507",
+          "firstFrameSignal": "playbackClock"
+        }
+      ],
+      "seeks": [],
+      "trackSelections": [],
+      "committedReplacements": [],
+      "traceStartPosition": null,
+      "nativeScreens": 6,
+      "audibleResponseMeasured": false,
+      "screenPresentationTimingMeasured": false,
+      "sample": "S19",
+      "sampleBytes": 128795641934,
+      "trackUIChecks": [],
+      "deepSeek": null
+    },
+    {
+      "window": "jf-s19-cellular-resume-1",
+      "startedAt": "2026-10-28T19:48:41.753254+08:00",
+      "endedAt": "2026-10-28T19:50:14.873868+08:00",
+      "network": "user-reported weak cellular",
+      "normalExit": true,
+      "intentionalStop": "WDA",
+      "toolFailure": null,
+      "guardTriggered": null,
+      "validSeekUIActions": 2,
+      "firstFrameClockSignals": [],
+      "seeks": [],
+      "trackSelections": [],
+      "committedReplacements": [],
+      "traceStartPosition": null,
+      "nativeScreens": 14,
+      "audibleResponseMeasured": false,
+      "screenPresentationTimingMeasured": false,
+      "sample": "S19",
+      "sampleBytes": 128795641934,
+      "trackUIChecks": [
+        {
+          "kind": "audio",
+          "restored": true,
+          "original": "playback.track.1",
+          "target": "playback.track.2",
+          "requestSincePlay": 46.23764391709119,
+          "replySincePlay": 46.74261070927605,
+          "selectedAfter": "playback.track.2"
+        },
+        {
+          "kind": "subtitle",
+          "restored": true,
+          "original": "playback.track.8",
+          "target": "playback.track.-1",
+          "requestSincePlay": 62.7783307088539,
+          "replySincePlay": 63.289517167024314,
+          "selectedAfter": "playback.track.-1"
+        }
+      ],
+      "deepSeek": null
+    },
+    {
+      "window": "jf-s19-wifi-1",
+      "startedAt": "2026-10-28T18:41:41.484602+08:00",
+      "endedAt": "2026-10-28T18:42:23.791699+08:00",
+      "network": "Wi-Fi; original connection unchanged",
+      "normalExit": false,
+      "intentionalStop": "WDA",
+      "toolFailure": "HTTPError",
+      "guardTriggered": null,
+      "validSeekUIActions": 0,
+      "firstFrameClockSignals": [
+        {
+          "tapToFirstFrameMs": "1461",
+          "firstFramePositionSeconds": "0.265",
+          "firstFrameSignal": "playbackClock"
+        },
+        {
+          "tapToFirstFrameMs": "19469",
+          "firstFramePositionSeconds": "24.512",
+          "firstFrameSignal": "playbackClock"
+        }
+      ],
+      "seeks": [],
+      "trackSelections": [
+        {
+          "event": "subtitle_track_changed",
+          "engine": "KSPlayer",
+          "requestedTrackID": "8",
+          "selectionDispatchMs": "0",
+          "evidence": "selectionAndCueInventoryNotScreenPresentation",
+          "visibleParts": "0"
+        }
+      ],
+      "committedReplacements": [
+        {
+          "engine": "KSPlayer"
+        }
+      ],
+      "traceStartPosition": null,
+      "nativeScreens": 6,
+      "audibleResponseMeasured": false,
+      "screenPresentationTimingMeasured": false,
+      "sample": "S19",
+      "sampleBytes": 128795641934,
+      "trackUIChecks": [],
+      "deepSeek": null
+    },
+    {
+      "window": "jf-s19-wifi-deep-resume-tracks-1",
+      "startedAt": "2026-10-28T19:40:41.053316+08:00",
+      "endedAt": "2026-10-28T19:41:46.339135+08:00",
+      "network": "Wi-Fi; original connection unchanged",
+      "normalExit": true,
+      "intentionalStop": "WDA",
+      "toolFailure": null,
+      "guardTriggered": null,
+      "validSeekUIActions": 0,
+      "firstFrameClockSignals": [
+        {
+          "tapToFirstFrameMs": "4001",
+          "firstFramePositionSeconds": "3483.592",
+          "firstFrameSignal": "playbackClock"
+        }
+      ],
+      "seeks": [
+        {
+          "event": "seek_started",
+          "engine": "KSPlayer",
+          "seekTargetSeconds": "3484.936"
+        },
+        {
+          "event": "seek_recovered",
+          "engine": "KSPlayer",
+          "seekTargetSeconds": "3484.936",
+          "seekRecoveryMs": "5612",
+          "evidence": "engineCompletionAndAdvancingClock"
+        },
+        {
+          "event": "seek_started",
+          "engine": "KSPlayer",
+          "seekTargetSeconds": "3486.836"
+        },
+        {
+          "event": "seek_recovered",
+          "engine": "KSPlayer",
+          "seekTargetSeconds": "3486.836",
+          "seekRecoveryMs": "8605",
+          "evidence": "engineCompletionAndAdvancingClock"
+        },
+        {
+          "event": "seek_started",
+          "engine": "KSPlayer",
+          "seekTargetSeconds": "3488.85"
+        },
+        {
+          "event": "seek_recovered",
+          "engine": "KSPlayer",
+          "seekTargetSeconds": "3488.85",
+          "seekRecoveryMs": "3305",
+          "evidence": "engineCompletionAndAdvancingClock"
+        }
+      ],
+      "trackSelections": [
+        {
+          "event": "subtitle_track_changed",
+          "engine": "KSPlayer",
+          "requestedTrackID": "8",
+          "selectionDispatchMs": "0",
+          "evidence": "selectionAndCueInventoryNotScreenPresentation",
+          "visibleParts": "0"
+        },
+        {
+          "event": "audio_track_changed",
+          "engine": "KSPlayer",
+          "requestedTrackID": "2",
+          "selectionDispatchMs": "0",
+          "evidence": "engineTrackInventoryNotAudibleRecovery"
+        },
+        {
+          "event": "audio_track_changed",
+          "engine": "KSPlayer",
+          "requestedTrackID": "1",
+          "selectionDispatchMs": "1",
+          "evidence": "engineTrackInventoryNotAudibleRecovery"
+        },
+        {
+          "event": "subtitle_track_changed",
+          "engine": "KSPlayer",
+          "requestedTrackID": "-1",
+          "selectionDispatchMs": "0",
+          "evidence": "selectionAndCueInventoryNotScreenPresentation",
+          "visibleParts": "0"
+        },
+        {
+          "event": "subtitle_track_changed",
+          "engine": "KSPlayer",
+          "requestedTrackID": "8",
+          "selectionDispatchMs": "0",
+          "evidence": "selectionAndCueInventoryNotScreenPresentation",
+          "visibleParts": "0"
+        }
+      ],
+      "committedReplacements": [],
+      "traceStartPosition": null,
+      "nativeScreens": 8,
+      "audibleResponseMeasured": false,
+      "screenPresentationTimingMeasured": false,
+      "sample": "S19",
+      "sampleBytes": 128795641934,
+      "trackUIChecks": [
+        {
+          "kind": "audio",
+          "restored": true,
+          "original": "playback.track.1",
+          "target": "playback.track.2",
+          "requestSincePlay": 12.288029457908124,
+          "replySincePlay": 12.86126216687262,
+          "selectedAfter": "playback.track.2"
+        },
+        {
+          "kind": "subtitle",
+          "restored": true,
+          "original": "playback.track.8",
+          "target": "playback.track.-1",
+          "requestSincePlay": 31.576766457874328,
+          "replySincePlay": 32.099996333010495,
+          "selectedAfter": "playback.track.-1"
+        }
+      ],
+      "deepSeek": null
+    },
+    {
+      "window": "jf-s19-wifi-postrestart-1",
+      "startedAt": "2026-10-28T19:19:49.521647+08:00",
+      "endedAt": "2026-10-28T19:19:53.557248+08:00",
+      "network": "Wi-Fi; original connection unchanged",
+      "normalExit": false,
+      "intentionalStop": null,
+      "toolFailure": "AssertionError",
+      "guardTriggered": null,
+      "validSeekUIActions": 0,
+      "firstFrameClockSignals": [],
+      "seeks": [],
+      "trackSelections": [],
+      "committedReplacements": [],
+      "traceStartPosition": null,
+      "nativeScreens": 0,
+      "audibleResponseMeasured": false,
+      "screenPresentationTimingMeasured": false,
+      "sample": "S19",
+      "sampleBytes": 128795641934,
+      "trackUIChecks": [],
+      "deepSeek": null
+    },
+    {
+      "window": "jf-s19-wifi-postrestart-2",
+      "startedAt": "2026-10-28T19:21:56.347224+08:00",
+      "endedAt": "2026-10-28T19:23:02.210514+08:00",
+      "network": "Wi-Fi; original connection unchanged",
+      "normalExit": true,
+      "intentionalStop": "WDA",
+      "toolFailure": null,
+      "guardTriggered": null,
+      "validSeekUIActions": 2,
+      "firstFrameClockSignals": [
+        {
+          "tapToFirstFrameMs": "904",
+          "firstFramePositionSeconds": "0.051",
+          "firstFrameSignal": "playbackClock"
+        }
+      ],
+      "seeks": [
+        {
+          "event": "seek_started",
+          "engine": "KSPlayer",
+          "seekTargetSeconds": "42.486000000000004"
+        },
+        {
+          "event": "seek_recovered",
+          "engine": "KSPlayer",
+          "seekTargetSeconds": "42.486000000000004",
+          "seekRecoveryMs": "1550",
+          "evidence": "engineCompletionAndAdvancingClock"
+        },
+        {
+          "event": "seek_started",
+          "engine": "KSPlayer",
+          "seekTargetSeconds": "34.024"
+        },
+        {
+          "event": "seek_recovered",
+          "engine": "KSPlayer",
+          "seekTargetSeconds": "34.024",
+          "seekRecoveryMs": "2569",
+          "evidence": "engineCompletionAndAdvancingClock"
+        }
+      ],
+      "trackSelections": [
+        {
+          "event": "subtitle_track_changed",
+          "engine": "KSPlayer",
+          "requestedTrackID": "8",
+          "selectionDispatchMs": "0",
+          "evidence": "selectionAndCueInventoryNotScreenPresentation",
+          "visibleParts": "0"
+        }
+      ],
+      "committedReplacements": [],
+      "traceStartPosition": null,
+      "nativeScreens": 10,
+      "audibleResponseMeasured": false,
+      "screenPresentationTimingMeasured": false,
+      "sample": "S19",
+      "sampleBytes": 128795641934,
+      "trackUIChecks": [],
+      "deepSeek": null
+    },
+    {
+      "window": "jf-s19-wifi-tracks-deep-1",
+      "startedAt": "2026-10-28T19:34:59.870078+08:00",
+      "endedAt": "2026-10-28T19:35:45.507712+08:00",
+      "network": "Wi-Fi; original connection unchanged",
+      "normalExit": false,
+      "intentionalStop": "WDA",
+      "toolFailure": "TimeoutError",
+      "guardTriggered": null,
+      "validSeekUIActions": 0,
+      "firstFrameClockSignals": [
+        {
+          "tapToFirstFrameMs": "2141",
+          "firstFramePositionSeconds": "0.201",
+          "firstFrameSignal": "playbackClock"
+        }
+      ],
+      "seeks": [],
+      "trackSelections": [
+        {
+          "event": "subtitle_track_changed",
+          "engine": "KSPlayer",
+          "requestedTrackID": "8",
+          "selectionDispatchMs": "0",
+          "evidence": "selectionAndCueInventoryNotScreenPresentation",
+          "visibleParts": "0"
+        }
+      ],
+      "committedReplacements": [],
+      "traceStartPosition": null,
+      "nativeScreens": 5,
+      "audibleResponseMeasured": false,
+      "screenPresentationTimingMeasured": false,
+      "sample": "S19",
+      "sampleBytes": 128795641934,
+      "trackUIChecks": [],
+      "deepSeek": null
+    },
+    {
+      "window": "jf-s19-wifi-tracks-deep-short-1",
+      "startedAt": "2026-10-28T19:37:59.564948+08:00",
+      "endedAt": "2026-10-28T19:38:40.385476+08:00",
+      "network": "Wi-Fi; original connection unchanged",
+      "normalExit": true,
+      "intentionalStop": "WDA",
+      "toolFailure": null,
+      "guardTriggered": null,
+      "validSeekUIActions": 0,
+      "firstFrameClockSignals": [
+        {
+          "tapToFirstFrameMs": "1061",
+          "firstFramePositionSeconds": "0.201",
+          "firstFrameSignal": "playbackClock"
+        }
+      ],
+      "seeks": [
+        {
+          "event": "seek_started",
+          "engine": "KSPlayer",
+          "seekTargetSeconds": "3479.9265052547457"
+        },
+        {
+          "event": "seek_recovered",
+          "engine": "KSPlayer",
+          "seekTargetSeconds": "3479.9265052547457",
+          "seekRecoveryMs": "5415",
+          "evidence": "engineCompletionAndAdvancingClock"
+        }
+      ],
+      "trackSelections": [
+        {
+          "event": "subtitle_track_changed",
+          "engine": "KSPlayer",
+          "requestedTrackID": "8",
+          "selectionDispatchMs": "0",
+          "evidence": "selectionAndCueInventoryNotScreenPresentation",
+          "visibleParts": "0"
+        }
+      ],
+      "committedReplacements": [],
+      "traceStartPosition": null,
+      "nativeScreens": 5,
+      "audibleResponseMeasured": false,
+      "screenPresentationTimingMeasured": false,
+      "sample": "S19",
+      "sampleBytes": 128795641934,
+      "trackUIChecks": [
+        {
+          "kind": "audio",
+          "restored": false,
+          "failureType": "AssertionError"
+        }
+      ],
+      "deepSeek": {
+        "fraction": 0.25,
+        "requestSincePlay": 10.577190749812871
+      }
+    }
+  ],
+  "metricsBoundary": {
+    "firstFrame": "playbackClock diagnostic; native frames sampled separately, not exact screen presentation",
+    "seek": "engine completion plus advancing clock; UI command return is not recovery",
+    "audio": "selection/inventory dispatch and native menu readback; audible recovery not measured",
+    "subtitle": "menu selection and screenshots; HLS transitions may change asynchronously; not all cue response measured",
+    "comparison": "Default source, subtitle and quality differ; no strict global speed ranking"
+  },
+  "nasSecondRestart": {
+    "at": "2026-10-28T20:17:00.681234+08:00",
+    "reason": "User reports second NAS reboot; wait at least fifteen minutes",
+    "ownedProcessesSignaled": [],
+    "ownedAppStopAcknowledged": true,
+    "nasProbesAfterReport": 0,
+    "mediaRestarted": false,
+    "nativeOriginalWiFiSelected": true,
+    "WiFiSwitchOn": true,
+    "nativeWiFiIconVerified": true,
+    "originalToolSettingsRestored": true,
+    "ownedHTTPSessionDeleted": true,
+    "originalRunnerPreserved": true,
+    "cleanupAt": "2026-10-28T20:20:20.205059+08:00"
+  },
+  "latestUserScope": "Wi-Fi and cellular; large-file first frame, resume, forward/back seek, audio/subtitle switch; focus Jellyfin and device files; limited selection, not optimization",
+  "nativeRadio": "4G shown; user-reported weak cellular; RSRP/RSRQ/SINR unknown",
+  "networkWindows": [
+    {
+      "entry": "file",
+      "at": "2026-10-28T20:07:50.545264+08:00",
+      "endedAt": "2026-10-28T20:08:28.148396+08:00",
+      "failure": "AssertionError",
+      "restoreFailure": "RuntimeError",
+      "ownedAppStopped": true,
+      "wifiRestored": false,
+      "originalSSIDRestored": false,
+      "toolSettingsRestored": true,
+      "userConfirmedManualInterference": true,
+      "excludedFromProductFailureAndRanking": true,
+      "laterRecovery": {
+        "at": "2026-10-28T20:12:21.287475+08:00",
+        "ownedAppStopped": true,
+        "explicitSettingsActivated": true,
+        "nativeOriginalNetworkSelected": true,
+        "nativeWiFiIconVerified": true,
+        "initialRestoreFailurePreserved": true
+      },
+      "window": "file-s19-cellular-cold-resume-1-network"
+    },
+    {
+      "entry": "file",
+      "at": "2026-10-28T20:13:49.166106+08:00",
+      "endedAt": "2026-10-28T20:15:25.766441+08:00",
+      "ownedAppStopped": true,
+      "wifiRestored": true,
+      "originalSSIDRestored": true,
+      "toolSettingsRestored": true,
+      "window": "file-s19-cellular-cold-resume-2-network"
+    },
+    {
+      "entry": "file",
+      "at": "2026-10-28T20:02:12.022205+08:00",
+      "endedAt": "2026-10-28T20:03:49.847862+08:00",
+      "ownedAppStopped": true,
+      "wifiRestored": true,
+      "originalSSIDRestored": true,
+      "toolSettingsRestored": true,
+      "window": "file-s19-cellular-head-1-network"
+    },
+    {
+      "entry": "file",
+      "at": "2026-10-28T19:50:37.846091+08:00",
+      "endedAt": "2026-10-28T19:53:00.274108+08:00",
+      "ownedAppStopped": true,
+      "wifiRestored": true,
+      "originalSSIDRestored": true,
+      "toolSettingsRestored": true,
+      "window": "file-s19-cellular-resume-1-network"
+    },
+    {
+      "entry": "jf",
+      "at": "2026-10-28T19:54:46.286980+08:00",
+      "endedAt": "2026-10-28T19:55:10.827148+08:00",
+      "failure": "AssertionError",
+      "ownedAppStopped": true,
+      "wifiRestored": true,
+      "originalSSIDRestored": true,
+      "toolSettingsRestored": true,
+      "window": "jf-s19-cellular-cold-1-network"
+    },
+    {
+      "entry": "jf",
+      "at": "2026-10-28T19:56:37.360968+08:00",
+      "endedAt": "2026-10-28T19:57:57.705296+08:00",
+      "ownedAppStopped": true,
+      "wifiRestored": true,
+      "originalSSIDRestored": true,
+      "toolSettingsRestored": true,
+      "window": "jf-s19-cellular-cold-2-network"
+    },
+    {
+      "entry": "jf",
+      "at": "2026-10-28T19:59:02.164295+08:00",
+      "endedAt": "2026-10-28T20:01:43.634283+08:00",
+      "ownedAppStopped": true,
+      "wifiRestored": true,
+      "originalSSIDRestored": true,
+      "toolSettingsRestored": true,
+      "window": "jf-s19-cellular-cold-full-1-network"
+    },
+    {
+      "entry": "jf",
+      "at": "2026-10-28T20:05:09.701018+08:00",
+      "endedAt": "2026-10-28T20:06:58.142339+08:00",
+      "ownedAppStopped": true,
+      "wifiRestored": true,
+      "originalSSIDRestored": true,
+      "toolSettingsRestored": true,
+      "window": "jf-s19-cellular-head-1-network"
+    },
+    {
+      "entry": "jf",
+      "at": "2026-10-28T19:47:59.513287+08:00",
+      "endedAt": "2026-10-28T19:50:22.266376+08:00",
+      "ownedAppStopped": true,
+      "wifiRestored": true,
+      "originalSSIDRestored": true,
+      "toolSettingsRestored": true,
+      "window": "jf-s19-cellular-resume-1-network"
+    }
+  ],
+  "windowCollectionScope": "18 playback-window records across both NAS restarts; pre-first-restart window also retained; navigation-only/network cleanup failures separately retained",
+  "selectionCompletionScope": "Limited engineering foundation selection only; no statistically established fastest entry, no all-metric/all-device acceptance",
+  "selection": {
+    "foundation": "Existing mobile Greenfield shared playback core used by device files and Jellyfin in the current ordinary Debug package",
+    "enginePolicy": "KS original-stream first with necessary AV/HLS compatibility inside the same orchestrator; no fixed engine per entry",
+    "sourceAdapters": "Authentication, exact source identity/version, upstream origin, location and server capabilities; preserve scope/read-only constraints",
+    "applyTo": [
+      "Jellyfin",
+      "device files",
+      "WebDAV",
+      "future FTP/SMB"
+    ],
+    "deviceScope": "iPhone 13 real-device evidence; iPad/Apple TV not newly performance-tested in this batch; iPhone 18 away and untouched",
+    "releaseStatus": "Selection only; non-Debug legacy host and TV split sessions still exist; unified production lifecycle not delivered",
+    "reason": "Existing shared core already demonstrates original-stream playback and cellular compatibility; entry timing varies with route, quality and tracks; WebDAV standalone bridge has limited origin/state delivery and observed buffering",
+    "notClaimed": [
+      "Global fastest entry",
+      "Exact displayed first-frame latency",
+      "Audible track-switch recovery",
+      "Complete subtitle presentation timing",
+      "NAS reboot root cause",
+      "TV/iPad performance superiority"
+    ]
+  },
+  "remainingEvidenceGaps": [
+    "Same-position Wi-Fi resume pair absent",
+    "Audio recovery not physically measured",
+    "Cellular subtitle readback did not reach expected state; original restored",
+    "Representative H264 large M2TS tested through WebDAV only; Jellyfin entry absent after second restart",
+    "No exact display presentation timing or sustained stability acceptance",
+    "No new ISO or Release acceptance"
+  ],
+  "nasSecondRecoveryProbe": {
+    "at": "2026-10-28T20:33:38.328254+08:00",
+    "secondsSincePause": 997.640626,
+    "requestCount": 1,
+    "method": "HEAD",
+    "credentialsSent": false,
+    "mediaBodyRequested": false,
+    "status": 401,
+    "elapsedSeconds": 7.617735124658793
+  },
+  "postSecondRestartInstallation": {
+    "at": "2026-10-28T20:36:27.551774+08:00",
+    "packageSHA256": "1a967126c897223d5f444d30c8ed78bdfd9bc80d9ff7a2faf08f1f571673012b",
+    "configuration": "Debug",
+    "preserveData": true,
+    "preferencesBackedUp": true,
+    "exitCode": 0,
+    "installComplete": true,
+    "installedAt": "2026-10-28T20:36:43.624319+08:00",
+    "preferences": {
+      "beforeKeys": 26,
+      "afterKeys": 26,
+      "sameKeys": true,
+      "changedValues": 0,
+      "allNonDiagnosticPreferencesEqual": true
+    }
+  },
+  "finalCleanup": {
+    "at": "2026-10-28T21:00:26.129123+08:00",
+    "networkTogglePerformed": false,
+    "originalNetworkSelected": true,
+    "wifiSwitchOn": true,
+    "nativeScreenshotCaptured": true,
+    "originalSettingsRestored": true,
+    "ownHTTPSessionDeleted": true,
+    "originalRunnerRetained": true,
+    "endedAt": "2026-10-28T21:00:50.471386+08:00",
+    "nativeWiFiIconVisuallyVerified": true,
+    "ownAppStoppedBeforeSettings": true
+  },
+  "postSecondRestartNavigation": {
+    "at": "2026-10-28T20:59:59.153376+08:00",
+    "jfPostRestartRepresentativeNavigation": "network.browse.media absent after guarded wait; no playback command sent",
+    "sourceUnchanged": true,
+    "ownAppStopped": true
+  },
+  "completedAt": "2026-10-28T21:04:14.375924+08:00",
+  "nextModelBoundary": "Remain on 6.1 Sol now. Foundation selection alone is not a switch trigger. Prepare bounded evidence, implicated code and acceptance criteria first; prompt human to switch to Astra6 only for a specific critical playback-core optimization task; return to 6.1 for routine work and regression. No automatic switch or delegated-model workaround.",
+  "modelSwitchRequestedNow": false,
+  "laterEvidenceAudit": {
+    "reference": "2026-10-28-PLAYBACK-SOURCE-CONTEXT-PRECHECK.json",
+    "originalWindowFailuresRetained": true,
+    "subtitleTargetsDidCommitInBothCellularWindows": true,
+    "menuReadbackNotSameAsCommittedOrRenderedState": true,
+    "originalTrackPreferencesLaterRestoredAndVerified": true
+  }
+}

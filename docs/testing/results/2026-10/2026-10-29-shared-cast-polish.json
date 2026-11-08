@@ -1,0 +1,134 @@
+{
+  "recordedAt": "2026-10-29T22:10:10+08:00",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceInputCount": 433,
+  "changedExistingSourceFiles": 6,
+  "existingTestsPassed": 6,
+  "testsBySuite": {
+    "OfflineUIScenarioTests": 4,
+    "MediaPosterGridLayoutTests": 2
+  },
+  "builds": {
+    "module-tests": {
+      "startedAt": "2026-10-29T21:36:18.493079+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-29T21:36:22.962459+08:00"
+    },
+    "mobile-sim-debug-cast": {
+      "startedAt": "2026-10-29T21:36:18.493011+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-29T21:36:52.546900+08:00"
+    },
+    "tv-sim-debug-cast": {
+      "startedAt": "2026-10-29T21:36:18.493050+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-29T21:36:34.976669+08:00"
+    },
+    "mobile-debug": {
+      "startedAt": "2026-10-29T22:01:01.655175+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-29T22:01:57.918593+08:00"
+    },
+    "tv-debug": {
+      "startedAt": "2026-10-29T22:01:01.655197+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-29T22:01:24.254984+08:00"
+    },
+    "mobile-release": {
+      "startedAt": "2026-10-29T22:01:57.919732+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-29T22:03:36.446446+08:00"
+    },
+    "tv-release": {
+      "startedAt": "2026-10-29T22:01:24.256442+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-29T22:02:03.577750+08:00"
+    }
+  },
+  "capture": {
+    "accepted": 10,
+    "byPlatform": {
+      "phone": 4,
+      "pad": 3,
+      "tv": 3
+    },
+    "allPassed": true,
+    "allOwnedSimulatorsDeleted": true,
+    "navigationRetryBaselineNotCounted": true,
+    "initialNavigationTimeoutRetained": true
+  },
+  "navigation": {
+    "recordedAt": "2026-10-29T21:54:41.173412+08:00",
+    "ownedWindowObserved": "Nastart-CastNav-phone-214835",
+    "enteredSyntheticDetail": true,
+    "returnedToSyntheticLibrary": true,
+    "UIInputActionsIssued": 2,
+    "baselineSHA256": "5d618a1c57b4ab0a198b55a6ff7b7b9f77546ebc72104f6cc0805ec4ab1664f7",
+    "detailSHA256": "ee359f8936a7a4da3766b167ebb9cbd61addfd389dc94c741d8ea366ad2e2d0f",
+    "returnSHA256": "1518f11982f375b1745adf88b27e0ff4644420cc881c0c67187a4230f9872321",
+    "comparisonCrop": [
+      0,
+      314,
+      1206,
+      2359
+    ],
+    "staticCropIdentical": true,
+    "changedPixelFractionAbove2": 0.0,
+    "realSourceOrPlaybackTested": false,
+    "fullFrameFlashOrSmoothnessVerified": false
+  },
+  "sourcePreservation": {
+    "networkPortraitTaskUnchanged": true,
+    "tvPlaybackCodeUnchanged": true,
+    "mobilePortraitLoadingTaskPreserved": true
+  },
+  "physicalDevicesOperated": 0,
+  "NASCommands": 0,
+  "playbackCommands": 0,
+  "realAvatarFetchVerified": false,
+  "packages": {
+    "mobile": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-29T22:01:57.648067+08:00",
+      "frozenAt": "2026-10-29T22:08:28.516015+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 433,
+      "mainSHA256": "aeffa59bbbf16ef218b000dcfe83f6e0015121e8c5c13a7d7c4b589fb191ef18",
+      "debugDylibSHA256": "5bdda785fa97f21fd9eac325bcd219b02dbb342b55a7a62f933975b8f8450f34",
+      "signedMachOCount": 30,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false
+    },
+    "tv": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-29T22:01:24.098450+08:00",
+      "frozenAt": "2026-10-29T22:08:28.918287+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 433,
+      "mainSHA256": "17b479553ae227ae88bf39a18b56e79f8e138bf30636120f8ff95e65709e0460",
+      "debugDylibSHA256": "dd0f9e38af3dcce03d5a1c44664eec1c41ee9e1c4acd50a1c2c345c9bdb7be6f",
+      "signedMachOCount": 27,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false
+    }
+  },
+  "retainedFailure": "Initial navigation capture timeout cleaned its owned simulator before final screenshot (148); independent same-binary retry completed",
+  "privateEvidencePointer": "current-shared-cast-polish-private",
+  "notVerified": [
+    "Actual source image loading, missing actors or server credits",
+    "Real-source return animation/flash and frame times",
+    "Full horizontal scrolling, TV focus and VoiceOver",
+    "All entry hosts, orientations and language combinations",
+    "Playback and physical-device experience"
+  ]
+}

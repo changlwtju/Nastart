@@ -90,11 +90,11 @@ class MetalRender {
     }
 
     @MainActor
-    func draw(pixelBuffer: PixelBufferProtocol, display: DisplayEnum = .plane, drawable: CAMetalDrawable) {
+    func draw(pixelBuffer: PixelBufferProtocol, display: DisplayEnum = .plane, drawable: CAMetalDrawable) -> Bool {
         let inputTextures = pixelBuffer.textures()
         renderPassDescriptor.colorAttachments[0].texture = drawable.texture
         guard !inputTextures.isEmpty, let commandBuffer = commandQueue?.makeCommandBuffer(), let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor) else {
-            return
+            return false
         }
         encoder.pushDebugGroup("RenderFrame")
         let state = display.pipeline(planeCount: pixelBuffer.planeCount, bitDepth: pixelBuffer.bitDepth)
@@ -111,6 +111,7 @@ class MetalRender {
         commandBuffer.present(drawable)
         commandBuffer.commit()
         commandBuffer.waitUntilCompleted()
+        return commandBuffer.status == .completed
     }
 
     private func setFragmentBuffer(pixelBuffer: PixelBufferProtocol, encoder: MTLRenderCommandEncoder) {

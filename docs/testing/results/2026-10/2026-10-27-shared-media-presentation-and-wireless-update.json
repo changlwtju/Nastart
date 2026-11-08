@@ -1,0 +1,141 @@
+{
+  "date": "2026-10-27",
+  "scope": "shared media presentation and offline detail metadata",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "dirty": true,
+  "sourceInputCount": 409,
+  "configuration": "Debug",
+  "launch": {
+    "arguments": [],
+    "environment": {}
+  },
+  "builds": {
+    "tv": {
+      "builtAt": "2026-10-27T20:12:43+08:00",
+      "mainSHA256": "1ecf07d42ae85cbcf1ab0e8be67cfc977300d3b84a6024ebba4cec0739b2ea65",
+      "debugSHA256": "4cc29f36cf6f80db55e1dc46c98f3536209ad331f857469fa1ea79c55ff7bd51",
+      "signedMachOCount": 27,
+      "stableDetailImageReviewed": true
+    },
+    "mobile": {
+      "builtAt": "2026-10-27T20:12:49+08:00",
+      "mainSHA256": "dad07d9f82b8e56222637758fe9a21dd88d6bedf7f95d7732a97236dcd03e594",
+      "debugSHA256": "9ffa89a007706b068f40c3d71ee12f80583d5798b64a4db113875e1c02993ef7",
+      "signedMachOCount": 30
+    }
+  },
+  "latestInstalled": {
+    "tv": true,
+    "iphone13": true,
+    "ipad": false,
+    "iphone18": false
+  },
+  "blocked": {
+    "ipad": "CoreDevice and USB unavailable at latest gate",
+    "iphone18": "Preserve observed active user call; intermediate backdrop package installed at 19:28"
+  },
+  "tests": {
+    "localMetadata": 15,
+    "artworkSelection": 11,
+    "artworkCache": 4,
+    "separateTargetedRuns": true
+  },
+  "native": {
+    "tv": {
+      "latestPackage": true,
+      "actualDetailImageReviewed": true,
+      "pauseResume": true,
+      "normalExitSamePID": true,
+      "playbackEvidencePackage": "previousBuilds.tv"
+    },
+    "iphone13": {
+      "latestPackage": true,
+      "actualDetailImageReviewed": true,
+      "normalExitSamePID": true,
+      "audioSubtitleMenuAssertion": false,
+      "playbackEvidencePackage": "previousBuilds.mobile"
+    },
+    "ipad": {
+      "latestPackage": false
+    },
+    "iphone18": {
+      "latestPackage": false
+    }
+  },
+  "fullPlaybackPipelineUnified": false,
+  "releaseAccepted": false,
+  "remoteWriteCount": 0,
+  "tmdbCalls": 0,
+  "cellularTests": 0,
+  "matrixNewPass": 0,
+  "requirements": {
+    "total": 30,
+    "inProgress": 14,
+    "awaitingAcceptance": 5,
+    "notStarted": 11
+  },
+  "remaining": [
+    "complete source adapter/session convergence",
+    "latest Pad and iPhone18 gates",
+    "series and season detail parity",
+    "same-terminal native Jellyfin comparisons",
+    "SMB scope and negotiation",
+    "FTP App integration and FTPS session reuse"
+  ],
+  "previousBuilds": {
+    "tv": {
+      "mainSHA256": "90c4422f19f4d2ffd60b23927791e365ebab6f3647eb9204c63e450006ec6d63",
+      "debugSHA256": "2cd2193b07d5eabdf4fd0c5a171d0afd553f3a630bbea71a39ab5bb0b0959a98",
+      "signedMachOCount": 27
+    },
+    "mobile": {
+      "mainSHA256": "a6fc5562957704484bd13d6aa145ba4eab09dbe41a13427646125ac78f1ff127",
+      "debugSHA256": "7627f5e6985cadce18be9ed6b698a6980473c4162ed2ade7e701c3a3d284b9a3",
+      "signedMachOCount": 30
+    }
+  },
+  "sameTerminalComparison": {
+    "device": "iphone13",
+    "sameItem": true,
+    "jellyfinAndWebDAVActualImagesReviewed": true,
+    "themePropagationFailureReproduced": true,
+    "themeFixedLatestPackageReviewed": true,
+    "remaining": [
+      "local resume and source track preselection",
+      "metadata field availability",
+      "series/season page structure"
+    ]
+  },
+  "finalPreservation": {
+    "tv": {
+      "fullIndexJSONUnchanged": true,
+      "nonDiagnosticPreferencesUnchanged": true
+    },
+    "iphone13": {
+      "fullIndexJSONUnchanged": true,
+      "nonDiagnosticPreferencesUnchanged": true
+    },
+    "frozenSourceMatches": true
+  },
+  "finalHomeImagesReviewed": {
+    "tv": true,
+    "iphone13": true
+  },
+  "cleanup": {
+    "tv": {
+      "settingsRestoredReadback": true,
+      "ownedHTTPSessionDeleted": true,
+      "preexistingRunnerPreserved": true
+    },
+    "iphone13": {
+      "ownedSettingsRestored": true,
+      "ownedHTTPSessionDeleted": true,
+      "preexistingRunnerPreserved": true
+    }
+  },
+  "latestInstallTimes": {
+    "tv": "2026-10-27T20:14:00.776135+08:00",
+    "iphone13": "2026-10-27T20:13:55.275301+08:00"
+  },
+  "latestSourceFreezeMatches": true
+}

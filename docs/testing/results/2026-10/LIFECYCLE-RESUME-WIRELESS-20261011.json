@@ -1,0 +1,287 @@
+{
+  "recordedAt": "2026-10-11T01:20:12.188787+08:00",
+  "scope": "Normal Debug, S01 file KSPlayer, ordinary Wi-Fi, no shaping, orderly XCTest terminate. No frame-performance acceptance.",
+  "package": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "a56c92d3fd10dae04b2a5c50e8e4f09c4fdc7587441b8dbae01726b968b3743c",
+    "package": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-10-11-background-save-000557/Nastart-Lifecycle-Resume-v3-Normal-Debug.app",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "binaryBuildTime": "2026-10-11T00:59:15.598915+08:00",
+    "binaries": {
+      "Nastart": "c9435d29e16ec25bb35e10c1461349433dc1c11835c2efbf331d3553fb0b5710",
+      "Nastart.debug.dylib": "0d0459c93bdba5ef97ec53f51f2d1a94d9ad9d075e25119acf7e8a43cce95bcf",
+      "Frameworks/KSPlayer.framework/KSPlayer": "8e6bc9ccfd71d1aa406f1cf74f06201df62b90e577527315f72c040fe2465ebe"
+    },
+    "signatureVerified": true,
+    "individuallyVerifiedLibraries": 29,
+    "checkedInputs": 173,
+    "newerInputs": [],
+    "profileExpirationUTC": "2026-10-10T22:03:15",
+    "tests": "306/2 skipped/0 failures; existing guard/auth/cache/playback fixtures rerun, actual old-package PiP loss baseline retained",
+    "preflight": "15 passed",
+    "sourceEditsThisTurn": [
+      "GreenfieldPlaybackControls: synchronous native background observers and pause boundary persistence, active-engine guarded weak callback",
+      "GreenfieldVideoPlayerView.swift: real UIScene notifications and pre-PiP delegate save via shared guarded persistence helper",
+      "GreenfieldKSPlayerRenderer.swift: automatic and manual PiP delegate binding on ready/replaced controller, weak pre-PiP lifecycle callback"
+    ],
+    "baselineSourceDiffSHA256": "082517c576b9e4e59c464aa44b20993953260eb08eefdf1e58d35edabcfec62e",
+    "linkageVerified": true,
+    "sourceInputManifestSHA256": "9f3a5bc0475c592d2ccca14a97e324d81c04bd99bf1af65e34b4a3d97b6fa947"
+  },
+  "devices": {
+    "iphone13": {
+      "recordedAt": "2026-10-11T01:01:00.874686+08:00",
+      "device": "iphone13",
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "connection": "USB",
+      "sourceDiffSHA256": "a56c92d3fd10dae04b2a5c50e8e4f09c4fdc7587441b8dbae01726b968b3743c",
+      "binaries": {
+        "Nastart": "c9435d29e16ec25bb35e10c1461349433dc1c11835c2efbf331d3553fb0b5710",
+        "Nastart.debug.dylib": "0d0459c93bdba5ef97ec53f51f2d1a94d9ad9d075e25119acf7e8a43cce95bcf",
+        "Frameworks/KSPlayer.framework/KSPlayer": "8e6bc9ccfd71d1aa406f1cf74f06201df62b90e577527315f72c040fe2465ebe"
+      },
+      "preservesContainer": true,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "actualForegroundUIVerified": true,
+      "installation": "success",
+      "installationStartedAt": "2026-10-11T01:01:05.036105+08:00",
+      "installedAt": "2026-10-11T01:01:12.687381+08:00",
+      "nonDiagnosticKeysBefore": 25,
+      "nonDiagnosticKeysAfter": 25,
+      "samePreferenceKeys": true,
+      "unchangedPreferenceValues": 25,
+      "changedPreferenceCount": 0,
+      "postInstallLookupExists": true,
+      "normalLaunch": "WDA empty environment/arguments and actual normal home inspected"
+    },
+    "ipad": {
+      "recordedAt": "2026-10-11T01:01:21.398933+08:00",
+      "device": "ipad",
+      "model": "iPad12,1",
+      "system": "18.3.1",
+      "connection": "USB",
+      "sourceDiffSHA256": "a56c92d3fd10dae04b2a5c50e8e4f09c4fdc7587441b8dbae01726b968b3743c",
+      "binaries": {
+        "Nastart": "c9435d29e16ec25bb35e10c1461349433dc1c11835c2efbf331d3553fb0b5710",
+        "Nastart.debug.dylib": "0d0459c93bdba5ef97ec53f51f2d1a94d9ad9d075e25119acf7e8a43cce95bcf",
+        "Frameworks/KSPlayer.framework/KSPlayer": "8e6bc9ccfd71d1aa406f1cf74f06201df62b90e577527315f72c040fe2465ebe"
+      },
+      "method": "Apple devicectl data-preserving cover",
+      "preservesContainer": true,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "actualForegroundUIVerified": true,
+      "installation": "success",
+      "signatureVerified": true,
+      "librariesVerified": 29,
+      "installationStartedAt": "2026-10-11T01:01:22.621115+08:00",
+      "nativeInstallExitCode": 0,
+      "nativeInstallErrorCode": null,
+      "installedAt": "2026-10-11T01:01:27.605777+08:00",
+      "nonDiagnosticKeysBefore": 16,
+      "nonDiagnosticKeysAfter": 16,
+      "samePreferenceKeys": true,
+      "unchangedPreferenceValues": 16,
+      "changedPreferenceCount": 0,
+      "postInstallLookupExists": true,
+      "normalLaunch": "WDA actual empty environment/arguments and normal home inspected",
+      "NASStatusInStartupImage": "normal"
+    },
+    "iphone18": {
+      "device": "iphone18",
+      "installation": "success",
+      "sourceDiffSHA256": "a56c92d3fd10dae04b2a5c50e8e4f09c4fdc7587441b8dbae01726b968b3743c",
+      "binaries": {
+        "Nastart": "c9435d29e16ec25bb35e10c1461349433dc1c11835c2efbf331d3553fb0b5710",
+        "Nastart.debug.dylib": "0d0459c93bdba5ef97ec53f51f2d1a94d9ad9d075e25119acf7e8a43cce95bcf",
+        "Frameworks/KSPlayer.framework/KSPlayer": "8e6bc9ccfd71d1aa406f1cf74f06201df62b90e577527315f72c040fe2465ebe"
+      },
+      "method": "direct Bonjour TCP lockdown using existing Mac legacy pairing + AFC + installation_proxy Install; preserve container",
+      "newPairingAttempted": false,
+      "preservesContainer": true,
+      "signatureVerified": true,
+      "librariesVerified": 29,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "normalLaunch": "Direct RSD/DVT launch requested env{} args[]; actual Nastart home inspected; independent process environment not read",
+      "actualForegroundUIVerified": true,
+      "model": "iPhone19,7",
+      "system": "27.0",
+      "connection": "NETWORK",
+      "installationStartedAt": "2026-10-11T01:02:05.906944+08:00",
+      "installedAt": "2026-10-11T01:02:18.295854+08:00",
+      "postInstallLookupExists": true,
+      "samePreferenceKeys": true,
+      "nonDiagnosticKeysBefore": 25,
+      "nonDiagnosticKeysAfter": 25,
+      "unchangedPreferenceValues": 25,
+      "changedPreferenceCount": 0,
+      "NASStatusInStartupImage": "initial disconnected; later actual home shows NAS normal after async startup",
+      "latestHomeUIEvidence": "latest-wireless-normal-home.png",
+      "latestWirelessLaunchEvidence": "userspace-launch-safe.json"
+    }
+  },
+  "iphone13": {
+    "pausedBackground": {
+      "recordedAt": "2026-10-11T01:03:12.031266+08:00",
+      "device": "iphone13",
+      "normalEnvironment": {},
+      "normalArguments": [],
+      "backgroundStateVerified": 3,
+      "samePIDBeforeBackground": true,
+      "pausedBeforeHome": true,
+      "playerCloseBeforeTermination": false,
+      "terminatedStateVerified": 1,
+      "freshColdPIDDifferent": true,
+      "actualUIInspected": true,
+      "testScope": "S01 file KSPlayer, actual pause -> Home -> verified background -> orderly XCTest terminate -> normal cold launch; not jetsam/crash/PiP proof",
+      "timingEvidence": "transition-safe.json",
+      "sourceDiffSHA256": "a56c92d3fd10dae04b2a5c50e8e4f09c4fdc7587441b8dbae01726b968b3743c",
+      "bookmarkCountBefore": 18,
+      "sameBookmarkKeys": true,
+      "beforePosition": 513.417,
+      "persistedAfterColdLaunch": 543.86,
+      "sameTrackPreferences": true,
+      "lastObservedClock": {
+        "clock": 543.86,
+        "reason": "pause_resume_boundary"
+      },
+      "savedMinusLastObservedSeconds": 0.0,
+      "lostPositionLowerBoundSeconds": 0,
+      "boundarySaveWithin2Seconds": true,
+      "lifecycleEventNames": [
+        "pause_resume_boundary",
+        "scene_notification_inactive",
+        "native_resume_boundary",
+        "native_resume_boundary",
+        "scene_notification_background",
+        "native_resume_boundary",
+        "native_resume_boundary"
+      ],
+      "performanceAccepted": false,
+      "persistenceScope": "one orderly XCTest terminate window at this boundary; no crash/jetsam/all-PiP coverage",
+      "pausedPlaybackControlVerifiedInImage": true
+    },
+    "automaticPiPEntry": {
+      "recordedAt": "2026-10-11T01:05:45.379663+08:00",
+      "device": "iphone13",
+      "normalEnvironment": {},
+      "normalArguments": [],
+      "XCTestApplicationStateWhilePiP": 4,
+      "realSpringBoardPiPWindowVerified": true,
+      "samePIDBeforeBackground": true,
+      "playerCloseBeforeTermination": false,
+      "terminatedStateVerified": 1,
+      "freshColdPIDDifferent": true,
+      "actualUIInspected": true,
+      "testScope": "S01 file KSPlayer, Home -> actual system PiP -> orderly XCTest terminate -> normal cold launch; not jetsam/crash/audio/PiP subtitle proof",
+      "timingEvidence": "transition-safe.json",
+      "sourceDiffSHA256": "a56c92d3fd10dae04b2a5c50e8e4f09c4fdc7587441b8dbae01726b968b3743c",
+      "bookmarkCountBefore": 18,
+      "sameBookmarkKeys": true,
+      "beforePosition": 543.86,
+      "persistedAfterColdLaunch": 575.465,
+      "sameTrackPreferences": true,
+      "lastObservedClock": {
+        "clock": 574.91,
+        "reason": "pip_will_start"
+      },
+      "savedMinusLastObservedSeconds": 0.5550000000000637,
+      "lostPositionLowerBoundSeconds": 0,
+      "boundarySaveWithin2Seconds": true,
+      "lifecycleEventNames": [
+        "scene_notification_inactive",
+        "native_resume_boundary",
+        "native_resume_boundary",
+        "pip_will_start"
+      ],
+      "performanceAccepted": false,
+      "persistenceScope": "one orderly XCTest terminate window at this boundary; no crash/jetsam/all-PiP coverage",
+      "actualPiPImage": "entry animation contains actual movie; stable window/performance not accepted"
+    },
+    "pausedBookmarkColdReplay": {
+      "expectedSavedPosition": 543.86,
+      "firstFrameClocks": [
+        543.956
+      ],
+      "firstFrameMatchesSavedWithin2Seconds": true,
+      "actualUIInspected": true,
+      "sourceDiffSHA256": "a56c92d3fd10dae04b2a5c50e8e4f09c4fdc7587441b8dbae01726b968b3743c",
+      "scope": "Normal cold startup then UI continue, 30 second actual movie window; internal first-frame clock verifies bookmark, not frame performance"
+    },
+    "PiPBookmarkColdReplay": {
+      "expectedSavedPosition": 575.465,
+      "firstFrameClocks": [
+        575.529
+      ],
+      "firstFrameMatchesSavedWithin2Seconds": true,
+      "actualUIInspected": true,
+      "sourceDiffSHA256": "a56c92d3fd10dae04b2a5c50e8e4f09c4fdc7587441b8dbae01726b968b3743c",
+      "scope": "Normal cold startup then UI continue, 30 second actual movie window; internal first-frame clock verifies bookmark, not frame performance"
+    },
+    "finalState": {
+      "at": "2026-10-11T01:16:48.368890+08:00",
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "connection": "USB",
+      "actualEmptyEnvironmentVerified": true,
+      "playerClosed": true,
+      "idleTimeoutRestored": 10,
+      "animationCoolOffRestored": 2,
+      "sourceUnchanged": true,
+      "latestInstalledBinaries": {
+        "Nastart": "c9435d29e16ec25bb35e10c1461349433dc1c11835c2efbf331d3553fb0b5710",
+        "Nastart.debug.dylib": "0d0459c93bdba5ef97ec53f51f2d1a94d9ad9d075e25119acf7e8a43cce95bcf",
+        "Frameworks/KSPlayer.framework/KSPlayer": "8e6bc9ccfd71d1aa406f1cf74f06201df62b90e577527315f72c040fe2465ebe"
+      }
+    }
+  },
+  "ipad": {
+    "installationAndStartup": "verified final v3, USB",
+    "backgroundRegression": "INCOMPLETE: first read failed after t0; restarted observer on already-open player invalid and retained; normal close executed",
+    "fileService": "HTTP200/API119 persisted through UI retry and refresh",
+    "normalReconnect": "NAS requires 2FA; existing fields remembered; input window kept, awaiting user on device",
+    "finalState": {
+      "at": "2026-10-11T01:16:49.726951+08:00",
+      "model": "iPad12,1",
+      "system": "18.3.1",
+      "connection": "USB",
+      "actualEmptyEnvironmentVerified": true,
+      "playerClosed": true,
+      "idleTimeoutRestored": 10,
+      "animationCoolOffRestored": 2,
+      "sourceUnchanged": true,
+      "latestInstalledBinaries": {
+        "Nastart": "c9435d29e16ec25bb35e10c1461349433dc1c11835c2efbf331d3553fb0b5710",
+        "Nastart.debug.dylib": "0d0459c93bdba5ef97ec53f51f2d1a94d9ad9d075e25119acf7e8a43cce95bcf",
+        "Frameworks/KSPlayer.framework/KSPlayer": "8e6bc9ccfd71d1aa406f1cf74f06201df62b90e577527315f72c040fe2465ebe"
+      }
+    }
+  },
+  "iphone18": {
+    "wireless": "existing pairing, direct Bonjour lockdown install; userspace RSD/DVT normal launch and screenshot; no root/system remoted/pairing/network changes",
+    "normalNASHomeInspected": true,
+    "actualEnvironmentIndependentlyRead": false,
+    "nativeCache": "fresh paired/developerMode enabled, tunnel unavailable and DDI false; native devicectl launch 4016 retained",
+    "WDA_LLDB_and_fullPerformanceMatrix": "not run"
+  },
+  "earlierFailureEvidence": {
+    "baselinePiPLostLowerBoundSeconds": 9.686,
+    "candidate1PiPLostLowerBoundSeconds": 12.416,
+    "candidate2PausedBackgroundLostLowerBoundSeconds": 12.587,
+    "initialPiPState4ObserverAssumption": "failed before terminate; actual PiP held state4; preserved",
+    "iPadEvidenceReadFailure": "preserved, not counted as PASS",
+    "iPadFileAPISession119": "preserved, not counted as PASS"
+  },
+  "performanceAccepted": false,
+  "pending": [
+    "iPad device-side NAS 2FA then recheck fresh device and final package and rerun paused/PiP/cold replay",
+    "iPhone18 wireless WDA/debugger/performance service confirmation",
+    "S01 source expansion, AVPlayer, long PiP/audio/subtitle/restore/close, crash/jetsam",
+    "iPhone13 real cellular, complete frame-time scroll evidence, Lenna and competitor matrix"
+  ],
+  "privateEvidenceRoot": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-10-11-background-save-000557",
+  "helperSHA256Manifest": "helpers/sha256-safe.json"
+}

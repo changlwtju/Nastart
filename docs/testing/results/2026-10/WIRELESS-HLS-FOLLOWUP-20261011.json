@@ -1,0 +1,5129 @@
+{
+  "at": "2026-10-11T19:01:31.807876+08:00",
+  "package": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "c6922e99474b4cc0f6ae1f6f2981fa76e0e2c6f9a4ec828e70dca7aae9e96305",
+    "package": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-10-11-startup-work-breakdown-173240/Nastart-Startup-Work-Breakdown-Normal-Debug.app",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "binaryBuildTime": "2026-10-11T17:36:31.155727+08:00",
+    "binaries": {
+      "Nastart": "c86667effb6b441321a634bccca6372434393e86b5fb239fb7630a05179e4747",
+      "Nastart.debug.dylib": "ee937c5646b45709ae98eaa81bb1136b352b4e386ce9c817e73a5a9ce3895f18",
+      "Frameworks/KSPlayer.framework/KSPlayer": "9764ba65bd197b17931a6fff5220d2883cab665daf93bcaaaa99a972de5f2c6b"
+    },
+    "signatureVerified": true,
+    "individuallyVerifiedLibraries": 29,
+    "checkedInputs": 173,
+    "newerInputs": [],
+    "profileExpirationUTC": "2026-10-17T22:23:40",
+    "tests": "322/2 skipped/0 failures; diagnostic clipping/late completion, packet/capacity invalid/stale/reset and existing output-boundary tests",
+    "preflight": "15 passed",
+    "periodicCheckpointSeconds": 2,
+    "linkageVerified": true,
+    "sourceInputManifestSHA256": "2d5acdb140ede42eb53e800d72d7fc2bf615f30957966b8c918dc949ee3c3412",
+    "frozenAt": "2026-10-11T17:38:03.703738+08:00",
+    "ipa": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-10-11-startup-work-breakdown-173240/Nastart-Startup-Work-Breakdown-Normal-Debug.ipa",
+    "historicalBuildSourceEdits": [
+      "KSPlayer pre-accepted demux/decode/putPacket wall intervals and routed packets",
+      "First successful decoder callback and first decode invocation plus first-playable/output queue capacity",
+      "Renderer safe metrics and XCTest clipping/late completion/invalid/stale/reset invariants"
+    ],
+    "historicalBuildBaselineSourceDiffSHA256": "aba9b086f29c3b5ebf7bf34a92973d8627bc15694c2c71f6712e86ab7dc57776",
+    "identityVerifiedThisTurn": true
+  },
+  "appSourceChangedThisTurn": false,
+  "tests": {
+    "executed": 322,
+    "skipped": 2,
+    "failures": 0,
+    "runThisTurn": false,
+    "origin": "previous final same-source tests"
+  },
+  "preflight": {
+    "passed": 15,
+    "runThisTurn": false
+  },
+  "devices": {
+    "ipad": {
+      "installation": {
+        "recordedAt": "2026-10-11T18:51:08.831072+08:00",
+        "device": "ipad",
+        "model": "iPad12,1",
+        "system": "18.3.1",
+        "connection": "USB",
+        "sourceDiffSHA256": "c6922e99474b4cc0f6ae1f6f2981fa76e0e2c6f9a4ec828e70dca7aae9e96305",
+        "binaries": {
+          "Nastart": "c86667effb6b441321a634bccca6372434393e86b5fb239fb7630a05179e4747",
+          "Nastart.debug.dylib": "ee937c5646b45709ae98eaa81bb1136b352b4e386ce9c817e73a5a9ce3895f18",
+          "Frameworks/KSPlayer.framework/KSPlayer": "9764ba65bd197b17931a6fff5220d2883cab665daf93bcaaaa99a972de5f2c6b"
+        },
+        "method": "Apple devicectl data-preserving cover",
+        "preservesContainer": true,
+        "requestedEnvironment": {},
+        "requestedArguments": [],
+        "actualForegroundUIVerified": true,
+        "installation": "success",
+        "signatureVerified": true,
+        "librariesVerified": 29,
+        "installationStartedAt": "2026-10-11T18:51:09.015197+08:00",
+        "nativeInstallExitCode": 0,
+        "nativeInstallErrorCode": null,
+        "installedAt": "2026-10-11T18:51:14.192697+08:00",
+        "nonDiagnosticKeysBefore": 16,
+        "nonDiagnosticKeysAfter": 16,
+        "samePreferenceKeys": true,
+        "unchangedPreferenceValues": 16,
+        "changedPreferenceCount": 0,
+        "postInstallLookupExists": true,
+        "actualEmptyEnvVerified": true
+      },
+      "finalState": {
+        "at": "2026-10-11T18:57:44.002422+08:00",
+        "model": "iPad12,1",
+        "system": "18.3.1",
+        "connection": "USB",
+        "actualEmptyEnvironmentVerified": true,
+        "playerClosed": true,
+        "idleTimeoutRestored": 10,
+        "animationCoolOffRestored": 2,
+        "sourceUnchanged": true,
+        "latestInstalledBinaries": {
+          "Nastart": "c86667effb6b441321a634bccca6372434393e86b5fb239fb7630a05179e4747",
+          "Nastart.debug.dylib": "ee937c5646b45709ae98eaa81bb1136b352b4e386ce9c817e73a5a9ce3895f18",
+          "Frameworks/KSPlayer.framework/KSPlayer": "9764ba65bd197b17931a6fff5220d2883cab665daf93bcaaaa99a972de5f2c6b"
+        },
+        "actualFinalHomeInspected": true,
+        "homeVisibleServices": "NAS normal; other visible services unknown"
+      },
+      "finalNativeConditions": {
+        "recordedAt": "2026-10-11T18:57:44.370756+08:00",
+        "rootRequired": false,
+        "systemRemotedChanged": false,
+        "pairingRecordChanged": false,
+        "rsdConnected": true,
+        "containerReadable": true,
+        "DVTServiceAdvertised": true,
+        "activeCount": 0,
+        "mutationPerformed": false
+      }
+    },
+    "iphone13": {
+      "at": "2026-10-11T18:58:23.029434+08:00",
+      "appCommandsSent": false,
+      "currentPackageInstalledThisTurn": false,
+      "regressionThisTurn": false,
+      "identityMatches": true,
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "connection": "USB"
+    },
+    "iphone18": {
+      "initialDiscovery": {
+        "outcome": "unverified",
+        "failureType": "ValueError",
+        "pairingRecordChanged": false,
+        "networkConfigurationChanged": false
+      },
+      "directVerification": {
+        "recordedAt": "2026-10-11T18:55:34.516132+08:00",
+        "endpointSource": "user supplied current Wi-Fi screenshot; live UDID revalidation required",
+        "networkConfigurationChanged": false,
+        "appCommandsSent": false,
+        "USBPresent": false,
+        "outcome": "verified",
+        "model": "iPhone19,7",
+        "system": "27.0",
+        "paired": true,
+        "identityMatches": true
+      },
+      "installation": {
+        "device": "iphone18",
+        "installation": "success",
+        "sourceDiffSHA256": "c6922e99474b4cc0f6ae1f6f2981fa76e0e2c6f9a4ec828e70dca7aae9e96305",
+        "binaries": {
+          "Nastart": "c86667effb6b441321a634bccca6372434393e86b5fb239fb7630a05179e4747",
+          "Nastart.debug.dylib": "ee937c5646b45709ae98eaa81bb1136b352b4e386ce9c817e73a5a9ce3895f18",
+          "Frameworks/KSPlayer.framework/KSPlayer": "9764ba65bd197b17931a6fff5220d2883cab665daf93bcaaaa99a972de5f2c6b"
+        },
+        "method": "direct Bonjour TCP lockdown using existing Mac legacy pairing + AFC + installation_proxy Install; preserve container",
+        "newPairingAttempted": false,
+        "preservesContainer": true,
+        "signatureVerified": true,
+        "librariesVerified": 29,
+        "requestedEnvironment": {},
+        "requestedArguments": [],
+        "normalLaunch": "deferred per user; no UI launch requested",
+        "actualForegroundUIVerified": false,
+        "model": "iPhone19,7",
+        "system": "27.0",
+        "connection": "NETWORK",
+        "installationStartedAt": "2026-10-11T18:55:43.828501+08:00",
+        "installedAt": "2026-10-11T18:55:55.995495+08:00",
+        "postInstallLookupExists": true,
+        "samePreferenceKeys": true,
+        "nonDiagnosticKeysBefore": 25,
+        "nonDiagnosticKeysAfter": 25,
+        "unchangedPreferenceValues": 25,
+        "changedPreferenceCount": 0
+      },
+      "nativeChannel": {
+        "at": "2026-10-11T18:57:37.911745+08:00",
+        "networkChanged": false,
+        "appCommandsSent": false,
+        "exitCode": 0,
+        "tunnelState": "unavailable",
+        "transportType": null,
+        "developerModeStatus": "enabled",
+        "ddiServicesAvailable": false
+      },
+      "wirelessDebugService": {
+        "at": "2026-10-11T18:56:58.804708+08:00",
+        "target": "iphone18",
+        "rsdConnected": true,
+        "dvtAdvertised": true,
+        "dvtConnected": true,
+        "rootRequired": false,
+        "systemRemotedChanged": false,
+        "networkConfigurationChanged": false,
+        "pairingRecordChanged": false,
+        "DDIMountAttempted": false,
+        "appInstalledOrLaunched": false,
+        "stage": "DVT session connected without app command"
+      },
+      "wirelessDomain": {
+        "at": "2026-10-11T18:59:34.481513+08:00",
+        "domainReadable": true,
+        "bonjourNameAvailable": true,
+        "wifiConnectionsEnabled": true,
+        "configuredNameMatchesLive": false,
+        "networkChanged": false
+      },
+      "liveNameDiscovery": {
+        "identityMatches": true,
+        "paired": true,
+        "model": "iPhone19,7",
+        "system": "27.0",
+        "verifiedPort": 62078,
+        "connection": "direct Wi-Fi TCP",
+        "targetAbsentFromUSB": true,
+        "systemDNSServiceResolved": true,
+        "resolvedInterfaceIndex": 12,
+        "pairingRecordChanged": false,
+        "networkConfigurationChanged": false,
+        "appInstalledOrLaunched": false,
+        "outcome": "verified",
+        "localPrivateDiscoveryConfigRefreshed": true,
+        "deviceSettingChanged": false
+      },
+      "normalUIDeferredByUser": true,
+      "normalStartupVerified": false
+    }
+  },
+  "case": {
+    "device": "ipad",
+    "sample": "S03",
+    "entry": "device file",
+    "sourceDiffSHA256": "c6922e99474b4cc0f6ae1f6f2981fa76e0e2c6f9a4ec828e70dca7aae9e96305",
+    "network": "ordinary Wi-Fi; existing network unchanged; no shaping",
+    "cacheState": "unknown; no cache clear",
+    "launch": "state1 recorded before empty-env normal launch; actual home inspected; same PID not reused for cold-cache claim",
+    "stageTimeline": [
+      {
+        "secondsFromTouchRequestStart": 3.0270190238952637,
+        "event": "engine_ready",
+        "fields": {
+          "engine": "KSPlayer",
+          "state": "preparing"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 3.027358055114746,
+        "event": "engine_ready",
+        "fields": {
+          "engine": "KSPlayer",
+          "state": "rendererAppeared"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 3.4267098903656006,
+        "event": "engine_ready",
+        "fields": {
+          "engine": "KSPlayer",
+          "state": "readyToPlay"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 3.426931858062744,
+        "event": "engine_ready",
+        "fields": {
+          "engine": "KSPlayer",
+          "state": "buffering"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 5.8051629066467285,
+        "event": "video_frame_submitted",
+        "fields": {
+          "acceptedVideoFrameMs": "2853.7648750352673",
+          "acceptedVideoFramePTS": "77.786",
+          "audioFirstKeyPacketPTS": "76.928",
+          "audioFirstPacketPTS": "76.928",
+          "audioLastPacketPTS": "78.24",
+          "audioPutPacketCalls": "42",
+          "audioPutPacketClippedCalls": "0",
+          "audioPutPacketMaxWallMs": "0.267",
+          "audioPutPacketWallMs": "0.605",
+          "audioRoutedBytes": "107520",
+          "audioRoutedPackets": "42",
+          "controlSeconds": "77.787",
+          "decodeInvocationMs": "711.347",
+          "decodeInvocationPTS": "76.91",
+          "decodedCallbackMs": "1620.567",
+          "decodedCallbackPTS": "76.91",
+          "demuxReadCalls": "73",
+          "demuxReadClippedCalls": "0",
+          "demuxReadMaxWallMs": "375.333",
+          "demuxReadWallMs": "2207.029",
+          "discardedVideoFramesBeforeAccepted": "21",
+          "engine": "KSPlayer",
+          "evidence": "rendererAttemptAndOutputAPIBoundaryNotPresentation",
+          "firstOutputAudioFPS": "48.0",
+          "firstOutputAudioFrames": "16",
+          "firstOutputAudioMaximumFrames": "256",
+          "firstOutputAudioPackets": "0",
+          "firstOutputCapacityMs": "2870.429",
+          "firstOutputVideoFPS": "23.976025",
+          "firstOutputVideoFrames": "0",
+          "firstOutputVideoMaximumFrames": "16",
+          "firstOutputVideoPackets": "0",
+          "forcedPreview": "true",
+          "framePTSSeconds": "77.786",
+          "outputAttemptMs": "2870.966208341997",
+          "outputPath": "sampleBufferEnqueued",
+          "outputSubmittedMs": "2880.2165833185427",
+          "outputSubmittedPTS": "77.786",
+          "videoDecodeCallCalls": "31",
+          "videoDecodeCallClippedCalls": "1",
+          "videoDecodeCallMaxWallMs": "3.987",
+          "videoDecodeCallWallMs": "12.360",
+          "videoFirstKeyPacketPTS": "76.91",
+          "videoFirstPacketPTS": "76.91",
+          "videoLastPacketPTS": "78.161",
+          "videoPutPacketCalls": "31",
+          "videoPutPacketClippedCalls": "0",
+          "videoPutPacketMaxWallMs": "0.093",
+          "videoPutPacketWallMs": "0.688",
+          "videoRoutedBytes": "8312724",
+          "videoRoutedPackets": "31",
+          "workCoverage": "completedCallsOnlyInFlightUnmeasured",
+          "workMeaning": "overlappingWallIntervalsClippedAtAcceptedFrameNotCPUOrNetwork",
+          "workSnapshotAfterAccepted": "true"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 6.595594882965088,
+        "event": "buffer_updated",
+        "fields": {
+          "bufferedCount": "0",
+          "consumeMs": "3644",
+          "engine": "KSPlayer"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 6.596035957336426,
+        "event": "engine_ready",
+        "fields": {
+          "engine": "KSPlayer",
+          "state": "bufferFinished"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 6.9903929233551025,
+        "event": "engine_startup_timing",
+        "fields": {
+          "acceptedVideoFrameMs": "2853.7648750352673",
+          "audioFirstKeyPacketPTS": "76.928",
+          "audioFirstPacketPTS": "76.928",
+          "audioLastPacketPTS": "78.24",
+          "audioPutPacketCalls": "42",
+          "audioPutPacketClippedCalls": "0",
+          "audioPutPacketMaxWallMs": "0.267",
+          "audioPutPacketWallMs": "0.605",
+          "audioRoutedBytes": "107520",
+          "audioRoutedPackets": "42",
+          "decodeInvocationMs": "711.347",
+          "decodeInvocationPTS": "76.91",
+          "decodeTimerMeaning": "invocationNotAcceptedFrame",
+          "decodedCallbackMs": "1620.567",
+          "decodedCallbackPTS": "76.91",
+          "demuxReadCalls": "74",
+          "demuxReadClippedCalls": "1",
+          "demuxReadMaxWallMs": "375.333",
+          "demuxReadWallMs": "2207.202",
+          "discardedVideoFramesBeforeAccepted": "21",
+          "engine": "KSPlayer",
+          "evidence": "engineMonotonicStagesAndAdvancingClock",
+          "firstOutputAudioFPS": "48.0",
+          "firstOutputAudioFrames": "16",
+          "firstOutputAudioMaximumFrames": "256",
+          "firstOutputAudioPackets": "0",
+          "firstOutputCapacityMs": "2870.429",
+          "firstOutputVideoFPS": "23.976025",
+          "firstOutputVideoFrames": "0",
+          "firstOutputVideoMaximumFrames": "16",
+          "firstOutputVideoPackets": "0",
+          "firstPlayableAudioFPS": "48.0",
+          "firstPlayableAudioFrames": "47",
+          "firstPlayableAudioMaximumFrames": "256",
+          "firstPlayableAudioPackets": "0",
+          "firstPlayableCapacityMs": "3643.048",
+          "firstPlayableVideoFPS": "23.976025",
+          "firstPlayableVideoFrames": "16",
+          "firstPlayableVideoMaximumFrames": "16",
+          "firstPlayableVideoPackets": "8",
+          "firstVideoDecodeMs": "711.6013750201091",
+          "firstVideoPacketMs": "706.9252916844562",
+          "initialPositionSeconds": "77.787",
+          "initialSeekMs": "261.21112500550225",
+          "initialSeekResult": "0",
+          "openMs": "200.31504170037806",
+          "outputAttemptMs": "2870.966208341997",
+          "outputSubmittedMs": "2880.2165833185427",
+          "readyMs": "19.772500032559037",
+          "readyToClockMs": "3687.108708312735",
+          "streamInfoMs": "160.44179163873196",
+          "videoDecodeCallCalls": "31",
+          "videoDecodeCallClippedCalls": "1",
+          "videoDecodeCallMaxWallMs": "3.987",
+          "videoDecodeCallWallMs": "12.360",
+          "videoFirstKeyPacketPTS": "76.91",
+          "videoFirstPacketPTS": "76.91",
+          "videoLastPacketPTS": "78.161",
+          "videoPutPacketCalls": "31",
+          "videoPutPacketClippedCalls": "0",
+          "videoPutPacketMaxWallMs": "0.093",
+          "videoPutPacketWallMs": "0.688",
+          "videoRoutedBytes": "8312724",
+          "videoRoutedPackets": "31",
+          "workCoverage": "completedCallsOnlyInFlightUnmeasured",
+          "workMeaning": "overlappingWallIntervalsClippedAtAcceptedFrameNotCPUOrNetwork",
+          "workSnapshotAfterAccepted": "true"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 7.007230997085571,
+        "event": "first_frame",
+        "fields": {
+          "firstFramePositionSeconds": "77.979",
+          "firstFrameSignal": "playbackClock",
+          "tapToFirstFrameMs": "4442"
+        }
+      }
+    ],
+    "timingFromEnginePrepareMs": {
+      "openMs": 200.31504170037806,
+      "streamInfoMs": 160.44179163873196,
+      "readyMs": 19.772500032559037,
+      "initialSeekMs": 261.21112500550225,
+      "firstVideoPacketMs": 706.9252916844562,
+      "firstVideoDecodeMs": 711.6013750201091,
+      "acceptedVideoFrameMs": 2853.7648750352673,
+      "outputAttemptMs": 2870.966208341997,
+      "outputSubmittedMs": 2880.2165833185427,
+      "readyToClockMs": 3687.108708312735
+    },
+    "invocationMarkerToAcceptedMs": 2142.163500015158,
+    "acceptedToOutputAttemptMs": 17.201333306729794,
+    "outputAttemptToAPIBoundaryMs": 9.250374976545572,
+    "acceptedToAPIBoundaryMs": 26.451708283275366,
+    "discardedVideoFramesBeforeAccepted": 21,
+    "outputPath": "sampleBufferEnqueued",
+    "firstAcceptedPTS": 77.786,
+    "outputPTS": 77.786,
+    "initialPositionSeconds": 77.787,
+    "initialSeekResult": "0",
+    "workBreakdownFields": {
+      "audioFirstKeyPacketPTS": "76.928",
+      "audioFirstPacketPTS": "76.928",
+      "audioLastPacketPTS": "78.24",
+      "audioPutPacketCalls": "42",
+      "audioPutPacketClippedCalls": "0",
+      "audioPutPacketMaxWallMs": "0.267",
+      "audioPutPacketWallMs": "0.605",
+      "audioRoutedBytes": "107520",
+      "audioRoutedPackets": "42",
+      "decodeInvocationMs": "711.347",
+      "decodeInvocationPTS": "76.91",
+      "decodedCallbackMs": "1620.567",
+      "decodedCallbackPTS": "76.91",
+      "demuxReadCalls": "74",
+      "demuxReadClippedCalls": "1",
+      "demuxReadMaxWallMs": "375.333",
+      "demuxReadWallMs": "2207.202",
+      "firstOutputAudioFPS": "48.0",
+      "firstOutputAudioFrames": "16",
+      "firstOutputAudioMaximumFrames": "256",
+      "firstOutputAudioPackets": "0",
+      "firstOutputCapacityMs": "2870.429",
+      "firstOutputVideoFPS": "23.976025",
+      "firstOutputVideoFrames": "0",
+      "firstOutputVideoMaximumFrames": "16",
+      "firstOutputVideoPackets": "0",
+      "firstPlayableAudioFPS": "48.0",
+      "firstPlayableAudioFrames": "47",
+      "firstPlayableAudioMaximumFrames": "256",
+      "firstPlayableAudioPackets": "0",
+      "firstPlayableCapacityMs": "3643.048",
+      "firstPlayableVideoFPS": "23.976025",
+      "firstPlayableVideoFrames": "16",
+      "firstPlayableVideoMaximumFrames": "16",
+      "firstPlayableVideoPackets": "8",
+      "videoDecodeCallCalls": "31",
+      "videoDecodeCallClippedCalls": "1",
+      "videoDecodeCallMaxWallMs": "3.987",
+      "videoDecodeCallWallMs": "12.360",
+      "videoFirstKeyPacketPTS": "76.91",
+      "videoFirstPacketPTS": "76.91",
+      "videoLastPacketPTS": "78.161",
+      "videoPutPacketCalls": "31",
+      "videoPutPacketClippedCalls": "0",
+      "videoPutPacketMaxWallMs": "0.093",
+      "videoPutPacketWallMs": "0.688",
+      "videoRoutedBytes": "8312724",
+      "videoRoutedPackets": "31",
+      "workCoverage": "completedCallsOnlyInFlightUnmeasured",
+      "workMeaning": "overlappingWallIntervalsClippedAtAcceptedFrameNotCPUOrNetwork",
+      "workSnapshotAfterAccepted": "true"
+    },
+    "firstCallbackToAcceptedMs": 1233.1978750352673,
+    "firstInvocationToCallbackMs": 909.22,
+    "acceptedFrameMeaning": "typed decoder callback survived frame-end seek filtering; PTS may overlap target",
+    "outputMeaning": "API enqueue/completed Metal command; not compositor or first visible frame",
+    "lastInspectedNoMovieTarget": 5,
+    "firstInspectedMovieTarget": 6,
+    "visualInspection": {
+      "noMovie": "actual inspected preceding screenshot without movie; detail/black/orientation retained",
+      "movie": "actual movie frame; a spinner may still overlay the first movie capture, recorded separately",
+      "t30": "actual movie frame",
+      "closed": "original detail/preview, player closed",
+      "specific": "t3 orientation/black; t4/t5 black with spinner; t6 movie WITH spinner; t7 movie without spinner; t30/t60/t90 movie without spinner; normal detail exit inspected"
+    },
+    "observedTransitionBoundsRelativeToTouchRequestSeconds": [
+      5.005040884017944,
+      6.5516180992126465
+    ],
+    "captureWindows": [
+      {
+        "targetSeconds": 0,
+        "requestStart": 1791715952.076104,
+        "screenshotResponseEnd": 1791715952.280542,
+        "responseEnd": 1791715952.4294221,
+        "clocks": [],
+        "playerVisible": false
+      },
+      {
+        "targetSeconds": 1,
+        "requestStart": 1791715952.467177,
+        "screenshotResponseEnd": 1791715952.655529,
+        "responseEnd": 1791715952.887507,
+        "clocks": [],
+        "playerVisible": false
+      },
+      {
+        "targetSeconds": 2,
+        "requestStart": 1791715953.3694022,
+        "screenshotResponseEnd": 1791715953.5392141,
+        "responseEnd": 1791715954.1087139,
+        "clocks": [],
+        "playerVisible": false
+      },
+      {
+        "targetSeconds": 3,
+        "requestStart": 1791715954.3741388,
+        "screenshotResponseEnd": 1791715954.5408561,
+        "responseEnd": 1791715955.025297,
+        "clocks": [
+          "1%"
+        ],
+        "playerVisible": true
+      },
+      {
+        "targetSeconds": 4,
+        "requestStart": 1791715955.370445,
+        "screenshotResponseEnd": 1791715955.5824761,
+        "responseEnd": 1791715955.633646,
+        "clocks": [
+          "1%"
+        ],
+        "playerVisible": true
+      },
+      {
+        "targetSeconds": 5,
+        "requestStart": 1791715956.374152,
+        "screenshotResponseEnd": 1791715956.609904,
+        "responseEnd": 1791715956.668919,
+        "clocks": [
+          "1%"
+        ],
+        "playerVisible": true
+      },
+      {
+        "targetSeconds": 6,
+        "requestStart": 1791715957.3732219,
+        "screenshotResponseEnd": 1791715957.9207292,
+        "responseEnd": 1791715958.387244,
+        "clocks": [
+          "1%"
+        ],
+        "playerVisible": true
+      },
+      {
+        "targetSeconds": 7,
+        "requestStart": 1791715958.443435,
+        "screenshotResponseEnd": 1791715958.957168,
+        "responseEnd": 1791715959.2068312,
+        "clocks": [
+          "1%"
+        ],
+        "playerVisible": true
+      },
+      {
+        "targetSeconds": 8,
+        "requestStart": 1791715959.372682,
+        "screenshotResponseEnd": 1791715959.971673,
+        "responseEnd": 1791715960.156883,
+        "clocks": [
+          "1%"
+        ],
+        "playerVisible": true
+      },
+      {
+        "targetSeconds": 9,
+        "requestStart": 1791715960.374141,
+        "screenshotResponseEnd": 1791715960.8766541,
+        "responseEnd": 1791715960.9475892,
+        "clocks": [
+          "1%"
+        ],
+        "playerVisible": true
+      },
+      {
+        "targetSeconds": 10,
+        "requestStart": 1791715961.372438,
+        "screenshotResponseEnd": 1791715961.881597,
+        "responseEnd": 1791715961.9536982,
+        "clocks": [
+          "1%"
+        ],
+        "playerVisible": true
+      },
+      {
+        "targetSeconds": 15,
+        "requestStart": 1791715966.369236,
+        "screenshotResponseEnd": 1791715966.909012,
+        "responseEnd": 1791715966.9550562,
+        "clocks": [],
+        "playerVisible": true
+      },
+      {
+        "targetSeconds": 30,
+        "requestStart": 1791715981.3721018,
+        "screenshotResponseEnd": 1791715981.8908632,
+        "responseEnd": 1791715982.0028758,
+        "clocks": [],
+        "playerVisible": true
+      },
+      {
+        "targetSeconds": 60,
+        "requestStart": 1791716011.374154,
+        "screenshotResponseEnd": 1791716012.125514,
+        "responseEnd": 1791716012.5305972,
+        "clocks": [],
+        "playerVisible": true
+      },
+      {
+        "targetSeconds": 90,
+        "requestStart": 1791716041.371576,
+        "screenshotResponseEnd": 1791716042.217345,
+        "responseEnd": 1791716042.415261,
+        "clocks": [],
+        "playerVisible": true
+      }
+    ],
+    "normalUIExitInspected": true,
+    "actualT30MovieInspected": true,
+    "oneUpdatedBookmark": true,
+    "sameTrackPreferences": true,
+    "exactFirstDisplayedFrameMeasured": false,
+    "continuous30SecondsAccepted": false,
+    "performanceAccepted": false,
+    "label": "s03-candidate-deadline",
+    "measurementWindowSeconds": 90,
+    "actualT60MovieInspected": true,
+    "actualT90MovieInspected": true,
+    "automaticDownshiftRequested": false,
+    "candidateCreated": false,
+    "replacementCommitted": false,
+    "candidateDeadlineObserved": false,
+    "requestedGoal": "observe ordinary HLS candidate through preparation deadline if automatic switch occurs",
+    "outcome": "KS ordinary playback observation; HLS automatic candidate did not trigger",
+    "bookmarkAfterSeconds": 164.667,
+    "trackPreferenceSummary": {
+      "audioTrackID": 4,
+      "subtitleTrackID": null,
+      "subtitlesDisabled": true
+    },
+    "continuous90SecondsAccepted": false,
+    "transferAndPredictionTimeline": [
+      {
+        "secondsFromTouchRequestStart": 2.9708058834075928,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamRequestIssued"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 3.037348985671997,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": "33554432",
+          "contentRange": "bytes 0-33554431/54005939750",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "status": "206"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 3.075015068054199,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamRequestIssued"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 3.1186060905456543,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": "3673",
+          "contentRange": "bytes 54005936077-54005939749/54005939750",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "status": "206"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 3.1189229488372803,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "urlSessionTaskMetrics"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 3.1192429065704346,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "errorCode": "-",
+          "errorDomain": "-",
+          "expectedBytes": "3673",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamTaskCompleted"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 3.1194698810577393,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "clientReadEnded"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 3.119682788848877,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "deliveredBytes": "565837",
+          "errorCode": "54",
+          "errorDomain": "Network.NWError",
+          "expectedBytes": "33554432",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "status": "206"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 3.119947910308838,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamCancellationRequested"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 3.1201348304748535,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "deliveredBytes": "3673",
+          "errorCode": "-",
+          "errorDomain": "-",
+          "expectedBytes": "3673",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "status": "206"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 3.120339870452881,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamRequestIssued"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 3.1205477714538574,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "urlSessionTaskMetrics"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 3.1208138465881348,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "errorCode": "-999",
+          "errorDomain": "NSURLErrorDomain",
+          "expectedBytes": "33554432",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamTaskCompleted"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 3.1214470863342285,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": "33554432",
+          "contentRange": "bytes 259795-33814226/54005939750",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "status": "206"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 3.372159957885742,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamRequestIssued"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 3.3754379749298096,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": "366747",
+          "contentRange": "bytes 54005573003-54005939749/54005939750",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "status": "206"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 3.3757059574127197,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "clientReadEnded"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 3.3759219646453857,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "deliveredBytes": "1279696",
+          "errorCode": "54",
+          "errorDomain": "Network.NWError",
+          "expectedBytes": "33554432",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "status": "206"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 3.3761749267578125,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamCancellationRequested"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 3.386600971221924,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "urlSessionTaskMetrics"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 3.409060001373291,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "errorCode": "-999",
+          "errorDomain": "NSURLErrorDomain",
+          "expectedBytes": "33554432",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamTaskCompleted"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 3.5012741088867188,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "urlSessionTaskMetrics"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 3.5016608238220215,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "errorCode": "-",
+          "errorDomain": "-",
+          "expectedBytes": "366747",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamTaskCompleted"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 3.5018889904022217,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamRequestIssued"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 3.502084970474243,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "deliveredBytes": "366747",
+          "errorCode": "-",
+          "errorDomain": "-",
+          "expectedBytes": "366747",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "status": "206"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 3.5416698455810547,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": "33554432",
+          "contentRange": "bytes 896839-34451270/54005939750",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "status": "206"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 3.5420007705688477,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamRequestIssued"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 3.5866408348083496,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": "33554432",
+          "contentRange": "bytes 348394302-381948733/54005939750",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "status": "206"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 3.5869851112365723,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "clientReadEnded"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 3.5872139930725098,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "deliveredBytes": "224104",
+          "errorCode": "54",
+          "errorDomain": "Network.NWError",
+          "expectedBytes": "33554432",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "status": "206"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 3.5874810218811035,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamCancellationRequested"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 3.587662935256958,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "urlSessionTaskMetrics"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 3.587923049926758,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "errorCode": "-999",
+          "errorDomain": "NSURLErrorDomain",
+          "expectedBytes": "33554432",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamTaskCompleted"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 3.8432838916778564,
+        "event": "automatic_downshift_sample",
+        "fields": {
+          "buffering": "true",
+          "changingSource": "false",
+          "eligible": "true",
+          "pendingSeek": "false",
+          "playing": "false",
+          "ready": "true"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 3.843630790710449,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "0.0",
+          "buffering": "true",
+          "changingSource": "false",
+          "clockAdvanced": "false",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "77.787",
+          "deliveryCapacity": "unknown",
+          "deliveryCapacitySource": "unknown",
+          "eligible": "true",
+          "graceAllowsPrediction": "false",
+          "pendingSeek": "false",
+          "playing": "false",
+          "predictiveEligible": "false",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "unknown",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 4.901454925537109,
+        "event": "automatic_downshift_sample",
+        "fields": {
+          "buffering": "true",
+          "changingSource": "false",
+          "eligible": "true",
+          "pendingSeek": "false",
+          "playing": "false",
+          "ready": "true"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 4.901998043060303,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "0.0",
+          "buffering": "true",
+          "changingSource": "false",
+          "clockAdvanced": "false",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "77.787",
+          "deliveryCapacity": "unknown",
+          "deliveryCapacitySource": "unknown",
+          "eligible": "true",
+          "graceAllowsPrediction": "false",
+          "pendingSeek": "false",
+          "playing": "false",
+          "predictiveEligible": "false",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "unknown",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 5.580487966537476,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "elapsedMs": "2015",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamBodyProgress"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 5.927879810333252,
+        "event": "automatic_downshift_sample",
+        "fields": {
+          "buffering": "true",
+          "changingSource": "false",
+          "eligible": "true",
+          "pendingSeek": "false",
+          "playing": "false",
+          "ready": "true"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 5.928194999694824,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "0.0",
+          "buffering": "true",
+          "changingSource": "false",
+          "clockAdvanced": "false",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "77.787",
+          "deliveryCapacity": "unknown",
+          "deliveryCapacitySource": "unknown",
+          "eligible": "true",
+          "graceAllowsPrediction": "false",
+          "pendingSeek": "false",
+          "playing": "false",
+          "predictiveEligible": "false",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "50748458",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 6.9434990882873535,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "0.56004164739511",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "false",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "77.787",
+          "deliveryCapacity": "unknown",
+          "deliveryCapacitySource": "unknown",
+          "eligible": "true",
+          "graceAllowsPrediction": "false",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "false",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "49013065",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 7.581126928329468,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "elapsedMs": "2000",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamBodyProgress"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 7.963490962982178,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "1.2791666666666828",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "78.885",
+          "deliveryCapacity": "60823475",
+          "deliveryCapacitySource": "bodyWindow",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "49013065",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 8.361795902252197,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "urlSessionTaskMetrics"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 8.363399982452393,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "errorCode": "-",
+          "errorDomain": "-",
+          "expectedBytes": "33554432",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamTaskCompleted"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 8.396267890930176,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamRequestIssued"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 8.437478065490723,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": "33554432",
+          "contentRange": "bytes 381948734-415503165/54005939750",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "continuationResponse",
+          "status": "206"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 8.983850002288818,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "1.9998333333333278",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "79.973",
+          "deliveryCapacity": "55950362",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "false",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "false",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "49331330",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 9.58232307434082,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "elapsedMs": "2003",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamBodyProgress"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 10.003830909729004,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "2.37466666666667",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "80.976",
+          "deliveryCapacity": "55950362",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "false",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "false",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "49964738",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 11.040148973464966,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "urlSessionTaskMetrics"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 11.040653944015503,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "errorCode": "-",
+          "errorDomain": "-",
+          "expectedBytes": "33554432",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamTaskCompleted"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 11.048902034759521,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamRequestIssued"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 11.0714430809021,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "3.019666666666666",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "81.979",
+          "deliveryCapacity": "55950362",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "false",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "false",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "50556434",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 11.199634075164795,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": "33554432",
+          "contentRange": "bytes 415503166-449057597/54005939750",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "continuationResponse",
+          "status": "206"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 11.652265071868896,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "elapsedMs": "2073",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamBodyProgress"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 12.075366020202637,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "3.6458333333333286",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "83.067",
+          "deliveryCapacity": "55950362",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "false",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "false",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "50734273",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 13.128954887390137,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "4.083166666666671",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "84.069",
+          "deliveryCapacity": "55950362",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "false",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "false",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "50058484",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 13.653384923934937,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "elapsedMs": "2001",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamBodyProgress"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 13.776696920394897,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "urlSessionTaskMetrics"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 13.777338027954102,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "errorCode": "-",
+          "errorDomain": "-",
+          "expectedBytes": "33554432",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamTaskCompleted"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 13.777662992477417,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamRequestIssued"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 13.81711196899414,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": "33554432",
+          "contentRange": "bytes 449057598-482612029/54005939750",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "continuationResponse",
+          "status": "206"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 14.176350116729736,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "4.394666666666666",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "85.179",
+          "deliveryCapacity": "55950362",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "49579435",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 15.19455099105835,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "4.602833333333322",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "86.181",
+          "deliveryCapacity": "55950362",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "50463687",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 15.653453826904297,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "elapsedMs": "2000",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamBodyProgress"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 16.262029886245728,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "5.0",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "87.173",
+          "deliveryCapacity": "55950362",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "52791327",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 16.44835376739502,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "urlSessionTaskMetrics"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 16.449091911315918,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "errorCode": "-",
+          "errorDomain": "-",
+          "expectedBytes": "33554432",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamTaskCompleted"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 16.458648920059204,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamRequestIssued"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 16.508752822875977,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": "33554432",
+          "contentRange": "bytes 482612030-516166461/54005939750",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "continuationResponse",
+          "status": "206"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 17.275214910507202,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "5.020833333333329",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "88.272",
+          "deliveryCapacity": "55950362",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "53854512",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 17.6540789604187,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "elapsedMs": "2000",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamBodyProgress"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 18.296284914016724,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "5.353999999999999",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "89.264",
+          "deliveryCapacity": "55950362",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "54404970",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 19.181748867034912,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "urlSessionTaskMetrics"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 19.182195901870728,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "errorCode": "-",
+          "errorDomain": "-",
+          "expectedBytes": "33554432",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamTaskCompleted"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 19.18242311477661,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamRequestIssued"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 19.248263835906982,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": "33554432",
+          "contentRange": "bytes 516166462-549720893/54005939750",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "continuationResponse",
+          "status": "206"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 19.361735820770264,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "5.645833333333329",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "90.288",
+          "deliveryCapacity": "100504011",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "54404970",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 19.65415596961975,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "elapsedMs": "2000",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamBodyProgress"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 20.3751540184021,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "6.270666666666671",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "91.376",
+          "deliveryCapacity": "100504011",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "62124215",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 21.39551591873169,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "6.831999999999994",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "92.379",
+          "deliveryCapacity": "100504011",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "69048702",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 21.661695957183838,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "elapsedMs": "2007",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamBodyProgress"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 21.922749042510986,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "urlSessionTaskMetrics"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 21.92321491241455,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "errorCode": "-",
+          "errorDomain": "-",
+          "expectedBytes": "33554432",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamTaskCompleted"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 21.930471897125244,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamRequestIssued"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 21.98092293739319,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": "33554432",
+          "contentRange": "bytes 549720894-583275325/54005939750",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "continuationResponse",
+          "status": "206"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 22.462027072906494,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "7.041666666666671",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "93.381",
+          "deliveryCapacity": "100016452",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "69162516",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 23.47617197036743,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "7.604166666666671",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "94.469",
+          "deliveryCapacity": "100016452",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "68145341",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 23.706448078155518,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "elapsedMs": "2044",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamBodyProgress"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 24.541321992874146,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "8.52066666666667",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "95.461",
+          "deliveryCapacity": "100016452",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "67442868",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 24.768256902694702,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "urlSessionTaskMetrics"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 24.769246101379395,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "errorCode": "-",
+          "errorDomain": "-",
+          "expectedBytes": "33554432",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamTaskCompleted"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 24.780860900878906,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamRequestIssued"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 24.818696975708008,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": "33554432",
+          "contentRange": "bytes 583275326-616829757/54005939750",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "continuationResponse",
+          "status": "206"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 25.57772994041443,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "9.4165",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "96.581",
+          "deliveryCapacity": "95821794",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "67442868",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 25.77142095565796,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "elapsedMs": "2000",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamBodyProgress"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 26.640958786010742,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "9.58316666666667",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "97.584",
+          "deliveryCapacity": "95821794",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "68721867",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 27.492461919784546,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "urlSessionTaskMetrics"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 27.492948055267334,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "errorCode": "-",
+          "errorDomain": "-",
+          "expectedBytes": "33554432",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamTaskCompleted"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 27.493175983428955,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamRequestIssued"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 27.52512788772583,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": "33554432",
+          "contentRange": "bytes 616829758-650384189/54005939750",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "continuationResponse",
+          "status": "206"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 27.6757230758667,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "9.583333333333329",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "98.672",
+          "deliveryCapacity": "95821794",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "58965747",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 27.707190990447998,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "elapsedMs": "2000",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamBodyProgress"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 28.743326902389526,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "9.748833333333323",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "99.664",
+          "deliveryCapacity": "95821794",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "50804420",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 29.71890091896057,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "elapsedMs": "2000",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamBodyProgress"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 29.775865077972412,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "10.14566666666667",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "100.784",
+          "deliveryCapacity": "95821794",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "35745449",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 30.213520050048828,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "urlSessionTaskMetrics"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 30.214155912399292,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "errorCode": "-",
+          "errorDomain": "-",
+          "expectedBytes": "33554432",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamTaskCompleted"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 30.239897966384888,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamRequestIssued"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 30.29216480255127,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": "33554432",
+          "contentRange": "bytes 650384190-683938621/54005939750",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "continuationResponse",
+          "status": "206"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 30.80074691772461,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "9.92616666666666",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "101.787",
+          "deliveryCapacity": "99637049",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "52238376",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 31.737860918045044,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "elapsedMs": "2000",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamBodyProgress"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 31.858338832855225,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "10.322000000000003",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "102.779",
+          "deliveryCapacity": "99637049",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "68549101",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 32.90860176086426,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "10.697000000000003",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "103.867",
+          "deliveryCapacity": "99637049",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "58795963",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 33.26669502258301,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "urlSessionTaskMetrics"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 33.28930902481079,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "errorCode": "-",
+          "errorDomain": "-",
+          "expectedBytes": "33554432",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamTaskCompleted"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 33.294872760772705,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamRequestIssued"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 33.329461097717285,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": "33554432",
+          "contentRange": "bytes 683938622-717493053/54005939750",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "continuationResponse",
+          "status": "206"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 33.7475209236145,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "elapsedMs": "2010",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamBodyProgress"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 33.979816913604736,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "10.873833333333337",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "104.987",
+          "deliveryCapacity": "95821794",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "58795963",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 35.03993606567383,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "11.2915",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "105.989",
+          "deliveryCapacity": "95821794",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "46125274",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 35.768348932266235,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "elapsedMs": "2050",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamBodyProgress"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 36.06385898590088,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "urlSessionTaskMetrics"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 36.06433296203613,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "errorCode": "-",
+          "errorDomain": "-",
+          "expectedBytes": "33554432",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamTaskCompleted"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 36.072324991226196,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamRequestIssued"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 36.09470510482788,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "11.666666666666671",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "106.981",
+          "deliveryCapacity": "95821794",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "35692922",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 36.18841791152954,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": "33554432",
+          "contentRange": "bytes 717493054-751047485/54005939750",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "continuationResponse",
+          "status": "206"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 37.13818979263306,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "12.062333333333328",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "108.069",
+          "deliveryCapacity": "95821794",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "35692922",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 37.768213987350464,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "elapsedMs": "2000",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamBodyProgress"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 38.2679009437561,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "12.5",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "109.168",
+          "deliveryCapacity": "95821794",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "33229136",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 38.77745294570923,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "urlSessionTaskMetrics"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 38.78931999206543,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "errorCode": "-",
+          "errorDomain": "-",
+          "expectedBytes": "33554432",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamTaskCompleted"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 38.803277015686035,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamRequestIssued"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 38.91580009460449,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": "33554432",
+          "contentRange": "bytes 751047486-784601917/54005939750",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "continuationResponse",
+          "status": "206"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 39.23435401916504,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "12.738500000000002",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "110.075",
+          "deliveryCapacity": "95821794",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "31596962",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 39.76882076263428,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "elapsedMs": "2000",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamBodyProgress"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 40.28691005706787,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "13.166666666666671",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "111.28",
+          "deliveryCapacity": "95821794",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "70347515",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 41.30473279953003,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "13.530333333333331",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "112.283",
+          "deliveryCapacity": "95821794",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "76706548",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 41.665055990219116,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "urlSessionTaskMetrics"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 41.665513038635254,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "errorCode": "-",
+          "errorDomain": "-",
+          "expectedBytes": "33554432",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamTaskCompleted"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 41.68402576446533,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamRequestIssued"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 41.72517108917236,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": "33554432",
+          "contentRange": "bytes 784601918-818156349/54005939750",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "continuationResponse",
+          "status": "206"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 41.76871991157532,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "elapsedMs": "2000",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamBodyProgress"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 42.36978578567505,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "13.979166666666671",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "113.317",
+          "deliveryCapacity": "97589401",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "76769637",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 43.37602186203003,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "14.479166666666657",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "114.363",
+          "deliveryCapacity": "97589401",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "75069754",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 43.76887893676758,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "elapsedMs": "2000",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamBodyProgress"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 44.33191204071045,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "urlSessionTaskMetrics"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 44.332390785217285,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "errorCode": "-",
+          "errorDomain": "-",
+          "expectedBytes": "33554432",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamTaskCompleted"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 44.33262491226196,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamRequestIssued"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 44.44399094581604,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": "33554432",
+          "contentRange": "bytes 818156350-851710781/54005939750",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "continuationResponse",
+          "status": "206"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 44.44590497016907,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "14.748499999999993",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "115.344",
+          "deliveryCapacity": "97589401",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "70904991",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 45.47609186172485,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "15.113833333333346",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "116.485",
+          "deliveryCapacity": "97589401",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "67237786",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 45.76914691925049,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "elapsedMs": "2000",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamBodyProgress"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 46.53694009780884,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "15.102666666666664",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "117.435",
+          "deliveryCapacity": "97589401",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "67237786",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 47.14269781112671,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "urlSessionTaskMetrics"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 47.14319181442261,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "errorCode": "-",
+          "errorDomain": "-",
+          "expectedBytes": "33554432",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamTaskCompleted"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 47.15051794052124,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamRequestIssued"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 47.20338988304138,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": "33554432",
+          "contentRange": "bytes 851710782-885265213/54005939750",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "continuationResponse",
+          "status": "206"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 47.577112913131714,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "15.541666666666657",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "118.565",
+          "deliveryCapacity": "96693181",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "69160262",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 47.82215404510498,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "elapsedMs": "2052",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamBodyProgress"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 48.63653802871704,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "15.735999999999976",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "119.472",
+          "deliveryCapacity": "96693181",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "60779780",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 49.67757797241211,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "15.780500000000004",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "120.688",
+          "deliveryCapacity": "96693181",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "56493017",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 49.82199478149414,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "elapsedMs": "2000",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamBodyProgress"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 50.746448040008545,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "15.027666666666661",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "121.584",
+          "deliveryCapacity": "96693181",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "56199847",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 51.7782518863678,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "14.4375",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "122.768",
+          "deliveryCapacity": "96693181",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "56654984",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 52.85138988494873,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "13.74866666666665",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "123.749",
+          "deliveryCapacity": "96693181",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "59573329",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 53.87736988067627,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "13.051333333333318",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "124.891",
+          "deliveryCapacity": "96693181",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "60947595",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 54.95287799835205,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "12.373333333333335",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "125.819",
+          "deliveryCapacity": "96693181",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "61169317",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 55.97723889350891,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "11.708333333333343",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "126.971",
+          "deliveryCapacity": "96693181",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "57649423",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 57.034886837005615,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "10.998499999999979",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "127.931",
+          "deliveryCapacity": "96693181",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "54525945",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 58.077871799468994,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "10.30133333333336",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "129.061",
+          "deliveryCapacity": "96693181",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "54525945",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 59.141716957092285,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "9.526166666666654",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "129.989",
+          "deliveryCapacity": "96693181",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "59015823",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 60.178218841552734,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "8.958166666666642",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "131.173",
+          "deliveryCapacity": "96693181",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "60167271",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 61.234227895736694,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "8.26933333333335",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "132.133",
+          "deliveryCapacity": "96693181",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "54816089",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 61.73939394950867,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "elapsedMs": "11916",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamBodyProgress"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 61.76856589317322,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "urlSessionTaskMetrics"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 61.76897192001343,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "errorCode": "-",
+          "errorDomain": "-",
+          "expectedBytes": "33554432",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamTaskCompleted"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 61.76920294761658,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamRequestIssued"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 61.802881956100464,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": "33554432",
+          "contentRange": "bytes 885265214-918819645/54005939750",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "continuationResponse",
+          "status": "206"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 62.27616500854492,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "8.25",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "133.264",
+          "deliveryCapacity": "96693181",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "54816089",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 63.31009888648987,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "8.498333333333335",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "134.224",
+          "deliveryCapacity": "96693181",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "57991609",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 63.74435901641846,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "elapsedMs": "2005",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamBodyProgress"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 64.36385893821716,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "9.25",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "135.291",
+          "deliveryCapacity": "96693181",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "57069858",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 64.50001287460327,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "urlSessionTaskMetrics"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 64.50062799453735,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "errorCode": "-",
+          "errorDomain": "-",
+          "expectedBytes": "33554432",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamTaskCompleted"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 64.50871086120605,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamRequestIssued"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 64.60364007949829,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": "33554432",
+          "contentRange": "bytes 918819646-952374077/54005939750",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "continuationResponse",
+          "status": "206"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 65.45921182632446,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "9.216333333333324",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "136.283",
+          "deliveryCapacity": "96693181",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "57069858",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 65.74528694152832,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "elapsedMs": "2000",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamBodyProgress"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 66.47570085525513,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "9.8125",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "137.467",
+          "deliveryCapacity": "96693181",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "61856430",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 67.3292338848114,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "urlSessionTaskMetrics"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 67.3402829170227,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "errorCode": "-",
+          "errorDomain": "-",
+          "expectedBytes": "33554432",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamTaskCompleted"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 67.34060382843018,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamRequestIssued"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 67.41910696029663,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": "33554432",
+          "contentRange": "bytes 952374078-985928509/54005939750",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "continuationResponse",
+          "status": "206"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 67.51837491989136,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "9.860833333333318",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "138.331",
+          "deliveryCapacity": "97589401",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "65153181",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 67.74938583374023,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "elapsedMs": "2003",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamBodyProgress"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 68.5815999507904,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "10.113833333333332",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "139.589",
+          "deliveryCapacity": "97589401",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "63234196",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 69.59726810455322,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "10.10299999999998",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "140.581",
+          "deliveryCapacity": "97589401",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "63496494",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 69.75503301620483,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "elapsedMs": "2005",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamBodyProgress"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 70.66107511520386,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "10.312166666666656",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "141.584",
+          "deliveryCapacity": "97589401",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "62707043",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 70.73667597770691,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "urlSessionTaskMetrics"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 70.73718881607056,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "errorCode": "-",
+          "errorDomain": "-",
+          "expectedBytes": "33554432",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamTaskCompleted"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 70.74509692192078,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamRequestIssued"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 70.80071592330933,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": "33554432",
+          "contentRange": "bytes 985928510-1019482941/54005939750",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "continuationResponse",
+          "status": "206"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 71.72131109237671,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "10.466333333333324",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "142.576",
+          "deliveryCapacity": "96693181",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "62837505",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 71.75568795204163,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "elapsedMs": "2000",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamBodyProgress"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 72.77802181243896,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "10.697166666666647",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "143.792",
+          "deliveryCapacity": "96693181",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "72146091",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 73.81666278839111,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "urlSessionTaskMetrics"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 73.81707286834717,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "errorCode": "-",
+          "errorDomain": "-",
+          "expectedBytes": "33554432",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamTaskCompleted"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 73.81730794906616,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamRequestIssued"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 73.81751680374146,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": "33554432",
+          "contentRange": "bytes 1019482942-1053037373/54005939750",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "continuationResponse",
+          "status": "206"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 73.81771278381348,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "elapsedMs": "2018",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamBodyProgress"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 73.82799911499023,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "10.862166666666639",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "144.688",
+          "deliveryCapacity": "95821794",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "76825997",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 74.87788200378418,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "11.166666666666657",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "145.872",
+          "deliveryCapacity": "95821794",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "76825997",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 75.80373096466064,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "elapsedMs": "2000",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamBodyProgress"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 75.94961309432983,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "11.581500000000005",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "146.811",
+          "deliveryCapacity": "95821794",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "64653779",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 76.76254606246948,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "urlSessionTaskMetrics"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 76.76310110092163,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "errorCode": "-",
+          "errorDomain": "-",
+          "expectedBytes": "33554432",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamTaskCompleted"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 76.77058291435242,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamRequestIssued"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 76.82215189933777,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": "33554432",
+          "contentRange": "bytes 1053037374-1086591805/54005939750",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "continuationResponse",
+          "status": "206"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 76.99243497848511,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "11.96799999999999",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "147.963",
+          "deliveryCapacity": "90288826",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "64653779",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 77.7777669429779,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "elapsedMs": "2002",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamBodyProgress"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 78.00810599327087,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "12.228999999999985",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "148.987",
+          "deliveryCapacity": "90288826",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "56394979",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 79.07664799690247,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "12.790500000000009",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "150.075",
+          "deliveryCapacity": "90288826",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "57080343",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 79.57548093795776,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "urlSessionTaskMetrics"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 79.57588195800781,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "errorCode": "-",
+          "errorDomain": "-",
+          "expectedBytes": "33554432",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamTaskCompleted"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 79.5761170387268,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamRequestIssued"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 79.61712598800659,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": "33554432",
+          "contentRange": "bytes 1086591806-1120146237/54005939750",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "continuationResponse",
+          "status": "206"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 79.81122994422913,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "elapsedMs": "2033",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamBodyProgress"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 80.15285301208496,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "13.207000000000022",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "151.056",
+          "deliveryCapacity": "90288826",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "69786919",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 81.17687797546387,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "13.833333333333343",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "152.165",
+          "deliveryCapacity": "90288826",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "40630040",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 81.81274604797363,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "elapsedMs": "2001",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamBodyProgress"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 82.23159694671631,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "14.205666666666644",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "153.125",
+          "deliveryCapacity": "90288826",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "51847922",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 82.26400899887085,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "urlSessionTaskMetrics"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 82.26441097259521,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "errorCode": "-",
+          "errorDomain": "-",
+          "expectedBytes": "33554432",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamTaskCompleted"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 82.26464891433716,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamRequestIssued"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 82.29842805862427,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": "33554432",
+          "contentRange": "bytes 1120146238-1153700669/54005939750",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "continuationResponse",
+          "status": "206"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 83.27719211578369,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "14.604000000000013",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "154.277",
+          "deliveryCapacity": "90288826",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "72987578",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 83.81859588623047,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "elapsedMs": "2005",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamBodyProgress"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 84.33173990249634,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "14.811000000000007",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "155.237",
+          "deliveryCapacity": "90288826",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "75636090",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 84.93678998947144,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "urlSessionTaskMetrics"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 84.93727588653564,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "errorCode": "-",
+          "errorDomain": "-",
+          "expectedBytes": "33554432",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamTaskCompleted"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 84.94482183456421,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamRequestIssued"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 85.0553560256958,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": "33554432",
+          "contentRange": "bytes 1153700670-1187255101/54005939750",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "continuationResponse",
+          "status": "206"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 85.37625694274902,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "15.416666666666657",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "156.368",
+          "deliveryCapacity": "90288826",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "51794392",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 85.82099390029907,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "elapsedMs": "2002",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamBodyProgress"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 86.42144680023193,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "15.549666666666667",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "157.275",
+          "deliveryCapacity": "90288826",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "51794392",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 87.47786378860474,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "15.874833333333356",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "158.48",
+          "deliveryCapacity": "90288826",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "57748645",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 87.7232460975647,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "urlSessionTaskMetrics"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 87.7240788936615,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "errorCode": "-",
+          "errorDomain": "-",
+          "expectedBytes": "33554432",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamTaskCompleted"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 87.73546195030212,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamRequestIssued"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 87.78748989105225,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": "33554432",
+          "contentRange": "bytes 1187255102-1220809533/54005939750",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "continuationResponse",
+          "status": "206"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 88.54696297645569,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "15.18616666666668",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "159.461",
+          "deliveryCapacity": "90288826",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "57748645",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 89.60702610015869,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "14.488833333333332",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "160.571",
+          "deliveryCapacity": "90288826",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "61721437",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 90.70754480361938,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "13.724499999999978",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "161.477",
+          "deliveryCapacity": "90288826",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "61721437",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 91.8418550491333,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "13.061000000000007",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "162.683",
+          "deliveryCapacity": "90288826",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "62413371",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 93.29106593132019,
+        "event": "automatic_prediction_decision",
+        "fields": {
+          "bufferedAheadSeconds": "12.169166666666655",
+          "buffering": "false",
+          "changingSource": "false",
+          "clockAdvanced": "true",
+          "cooldownAllowsPrediction": "true",
+          "currentSeconds": "163.589",
+          "deliveryCapacity": "90288826",
+          "deliveryCapacitySource": "completedTransfer",
+          "eligible": "true",
+          "graceAllowsPrediction": "true",
+          "pendingSeek": "false",
+          "playing": "true",
+          "predictiveEligible": "true",
+          "predictsReserveDepletion": "false",
+          "predictsUnsustainableDelivery": "false",
+          "ready": "true",
+          "repeatedStalls": "false",
+          "runtimeDemand": "46278067",
+          "sourceBitrate": "57416722"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 94.15537405014038,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "clientReadEnded"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 94.15565299987793,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "deliveredBytes": "838976298",
+          "errorCode": "32",
+          "errorDomain": "Network.NWError",
+          "expectedBytes": "33554432",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "status": "206"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 94.15590810775757,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamCancellationRequested"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 94.15610408782959,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "urlSessionTaskMetrics"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 94.15638494491577,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "errorCode": "-999",
+          "errorDomain": "NSURLErrorDomain",
+          "expectedBytes": "33554432",
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "segmentOrdinal": "-",
+          "stage": "upstreamTaskCompleted"
+        }
+      }
+    ]
+  },
+  "historicalHLSExtendedReview": {
+    "historicalEvidence": true,
+    "sameAppSource": true,
+    "sourceCase": "fixed-s03-file from previous fixed-point handoff",
+    "timelineIncludesPostClose": true,
+    "rows": [
+      {
+        "secondsFromTouchRequestStart": 19.045114040374756,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "masterPlaylist",
+          "proxyKind": "hlsPlaylist",
+          "segmentOrdinal": "-",
+          "stage": "upstreamRequestIssued"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 20.57054901123047,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": "798",
+          "hlsRole": "masterPlaylist",
+          "proxyKind": "hlsPlaylist",
+          "segmentOrdinal": "-",
+          "status": "200"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 20.596145153045654,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "hlsRole": "masterPlaylist",
+          "proxyKind": "hlsPlaylist",
+          "segmentOrdinal": "-",
+          "stage": "urlSessionTaskMetrics"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 20.601553201675415,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "errorCode": "-",
+          "errorDomain": "-",
+          "expectedBytes": "-",
+          "hlsRole": "masterPlaylist",
+          "proxyKind": "hlsPlaylist",
+          "segmentOrdinal": "-",
+          "stage": "upstreamTaskCompleted"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 20.603134155273438,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "hlsRole": "masterPlaylist",
+          "inputBytes": "798",
+          "outputBytes": "231",
+          "playlistDurationSeconds": "0.0",
+          "playlistEndlist": "false",
+          "playlistFirstSegmentOrdinal": "unknown",
+          "playlistMediaSequence": "unknown",
+          "playlistSegments": "0",
+          "proxyKind": "hlsPlaylist",
+          "rewriteMs": "1",
+          "segmentOrdinal": "-",
+          "stage": "playlistRewritten"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 20.60343027114868,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "deliveredBytes": "798",
+          "errorCode": "-",
+          "errorDomain": "-",
+          "expectedBytes": "798",
+          "hlsRole": "masterPlaylist",
+          "proxyKind": "hlsPlaylist",
+          "segmentOrdinal": "-",
+          "status": "200"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 20.60364317893982,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "masterPlaylist",
+          "proxyKind": "hlsPlaylist",
+          "segmentOrdinal": "-",
+          "stage": "clientReadEnded"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 20.605652332305908,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "mediaPlaylist",
+          "proxyKind": "hlsPlaylist",
+          "segmentOrdinal": "-",
+          "stage": "upstreamRequestIssued"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 21.29783320426941,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": "1386158",
+          "hlsRole": "mediaPlaylist",
+          "proxyKind": "hlsPlaylist",
+          "segmentOrdinal": "-",
+          "status": "200"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 29.399211168289185,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "hlsRole": "mediaPlaylist",
+          "proxyKind": "hlsPlaylist",
+          "segmentOrdinal": "-",
+          "stage": "urlSessionTaskMetrics"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 29.43763303756714,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "errorCode": "-",
+          "errorDomain": "-",
+          "expectedBytes": "-",
+          "hlsRole": "mediaPlaylist",
+          "proxyKind": "hlsPlaylist",
+          "segmentOrdinal": "-",
+          "stage": "upstreamTaskCompleted"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 29.538090229034424,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "hlsRole": "mediaPlaylist",
+          "inputBytes": "1386158",
+          "outputBytes": "194347",
+          "playlistDurationSeconds": "7524.767999999851",
+          "playlistEndlist": "true",
+          "playlistFirstSegmentOrdinal": "0",
+          "playlistMediaSequence": "0",
+          "playlistSegments": "1880",
+          "proxyKind": "hlsPlaylist",
+          "rewriteMs": "54",
+          "segmentOrdinal": "-",
+          "stage": "playlistRewritten"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 29.539258003234863,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "deliveredBytes": "1386158",
+          "errorCode": "-",
+          "errorDomain": "-",
+          "expectedBytes": "1386158",
+          "hlsRole": "mediaPlaylist",
+          "proxyKind": "hlsPlaylist",
+          "segmentOrdinal": "-",
+          "status": "200"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 29.539626121520996,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "mediaPlaylist",
+          "proxyKind": "hlsPlaylist",
+          "segmentOrdinal": "-",
+          "stage": "clientReadEnded"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 29.58391523361206,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": "16",
+          "stage": "upstreamRequestIssued"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 33.00694704055786,
+        "event": "replacement_warmup_failed",
+        "fields": {
+          "cancelled": "true",
+          "elapsedMs": "14065",
+          "errorCode": "-",
+          "errorDomain": "-",
+          "itemStatus": "0",
+          "loadedRangeCount": "0",
+          "seekResult": "true",
+          "stage": "decodedFrame"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 33.02454113960266,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": "16",
+          "stage": "clientReadEnded"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 36.5287721157074,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": "-",
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": "16",
+          "status": "500"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 36.61606812477112,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "deliveredBytes": "25",
+          "errorCode": "32",
+          "errorDomain": "Network.NWError",
+          "expectedBytes": "-",
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": "16",
+          "status": "500"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 36.61747717857361,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": "16",
+          "stage": "urlSessionTaskMetrics"
+        }
+      },
+      {
+        "secondsFromTouchRequestStart": 36.61987519264221,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "errorCode": "-",
+          "errorDomain": "-",
+          "expectedBytes": "-",
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": "16",
+          "stage": "upstreamTaskCompleted"
+        }
+      }
+    ],
+    "interpretation": [
+      "master upstream798 rewritten231 bytes; media upstream1386158 rewritten194347 bytes,1880 segments,7524.768 sec complete VOD",
+      "media playlist request t20.606, response headers t21.298, complete body t29.438, rewrite t29.538",
+      "segment request t29.584 before t33.007 warmup cancellation; upstream500 t36.529 AFTER ordinary close",
+      "500 is observed after cancellation; pre-close failure cause and 40-second deadline outcome remain unproven",
+      "deliveredBytes for playlist is original upstream body count; use outputBytes for rewritten body length; no media payload pass based on playlist200"
+    ]
+  },
+  "networkConfigurationChanged": false,
+  "pairingRecordChanged": false,
+  "testPreferenceWrites": false,
+  "performanceAccepted": false,
+  "competitorAccepted": false,
+  "limitations": [
+    "90 second ordinary observation did not trigger automatic HLS candidate, not candidate deadline test success",
+    "sparse inspected PNGs and clocks do not prove continuous playback/full frames/audio",
+    "historical segment500 arrived after UI close/cancellation, not established pre-close cause",
+    "same source ordinary Debug; thermal/cache/server state not controlled; different bookmark from historical case",
+    "Xcode native tunnel state remains unavailable despite live paired DNS-SD/direct RSD/DVT success",
+    "iPhone18 UI deferred; iPhone13 no current-turn latest cover or regression"
+  ],
+  "privateEvidenceDirectory": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-10-11-wireless-hls-followup-185012"
+}

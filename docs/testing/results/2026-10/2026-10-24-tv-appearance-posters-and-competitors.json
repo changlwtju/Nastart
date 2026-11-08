@@ -1,0 +1,161 @@
+{
+  "updatedAt": "2026-10-24T19:59:02.354598+08:00",
+  "status": "in-progress",
+  "latestCandidate": "cross-platform-status-tasks-final",
+  "sourceScope": "tvOS only; other dirty work preserved",
+  "realDevice": "AppleTV14,1 / tvOS18.2 / localNetwork",
+  "latestRealRegression": "final package pending; first resource/tasks package has 11 navigation checks",
+  "previousReviewFixes": {
+    "normalLaunch": true,
+    "tests": "20 logic + 1 UI",
+    "networkMenuAndButtonNativeReturnReviewed": true
+  },
+  "previousPosterReference": {
+    "tests": "22 logic + 1 UI",
+    "layoutAccepted": false,
+    "userReportedOverlappingRecentPosters": true
+  },
+  "competitors": [
+    {
+      "name": "DS One",
+      "version": "2.2",
+      "build": "5"
+    },
+    {
+      "name": "Lenna",
+      "version": "1.0.16",
+      "build": "539"
+    },
+    {
+      "name": "Infuse",
+      "version": "8.1.8",
+      "build": "8.1.5221",
+      "detail": "saved server unavailable; preserved"
+    },
+    {
+      "name": "网易爆米花",
+      "version": "2.6.12",
+      "build": "58",
+      "role": "user-selected visual reference"
+    }
+  ],
+  "comparison": "qualitative UI/navigation; no performance ranking",
+  "explicitPlayCommands": 0,
+  "mobileMatrixClosedCells": 0,
+  "openLedgerItems": 28,
+  "iPhone18": "paused; untouched",
+  "cleanup": "pending",
+  "previousContinuousWall": {
+    "installed": true,
+    "normalEnvironment": {},
+    "normalNativeReviewed": true,
+    "logic": 22,
+    "UI": 1,
+    "failures": 0,
+    "recentNoOverlapNativeReviewed": true,
+    "movieWallNoManualMoreButton": true,
+    "cross60Boundary": "not proven; intervening manual navigation"
+  },
+  "newUserReports": [
+    "Recent episode image blurred",
+    "Help style and Menu exits app",
+    "Device overview resembles launchpad and return issue"
+  ],
+  "wholeApplicationAudit": "APPLE-TV-FUNCTION-PARITY.md: code inventory across four features and stores; not full three-device runtime acceptance",
+  "previousStatusTasks": {
+    "logic": 28,
+    "UI": 1,
+    "installedAndNormalLaunch": true,
+    "navigationCases": 11,
+    "templatePrefill": "found empty in native image; corrected sheet(item:) in final source",
+    "storageMeasured": true,
+    "themes": "cleanGrid captured; next theme navigation landed on Device root, not accepted",
+    "runnerStopped": true,
+    "mediaCommands": 0
+  },
+  "finalStatusTasksRegression": {
+    "stage": "cross-platform-status-tasks-final",
+    "at": "2026-10-24T20:08:41+08:00",
+    "tests": {
+      "logic": 28,
+      "UI": 1,
+      "failures": 0
+    },
+    "navigationChecks": [
+      {
+        "at": "2026-10-24T20:00:14.220884+08:00",
+        "case": "证书到期检查、 correct title/date/Menu",
+        "observed": true,
+        "saved": false
+      },
+      {
+        "at": "2026-10-24T20:00:26.806310+08:00",
+        "case": "域名续费检查、 correct title/date/Menu",
+        "observed": true,
+        "saved": false
+      },
+      {
+        "at": "2026-10-24T20:00:39.383115+08:00",
+        "case": "服务运行检查、 correct title/date/Menu",
+        "observed": true,
+        "saved": false
+      },
+      {
+        "at": "2026-10-24T20:00:58.078027+08:00",
+        "case": "General subscription editor explicit cancel",
+        "observed": true,
+        "saved": false
+      },
+      {
+        "at": "2026-10-24T20:01:14.521718+08:00",
+        "case": "Resource overview Menu returns Device root",
+        "observed": true
+      },
+      {
+        "at": "2026-10-24T20:01:19.275443+08:00",
+        "case": "服务资源 Menu returns Device root",
+        "observed": true
+      },
+      {
+        "at": "2026-10-24T20:01:24.706809+08:00",
+        "case": "Docker 容器 Menu returns Device root",
+        "observed": true
+      },
+      {
+        "at": "2026-10-24T20:01:29.201142+08:00",
+        "case": "套件服务 Menu returns Device root",
+        "observed": true
+      },
+      {
+        "at": "2026-10-24T20:01:33.602741+08:00",
+        "case": "网络信息 Menu returns Device root",
+        "observed": true
+      },
+      {
+        "at": "2026-10-24T20:01:41.994654+08:00",
+        "case": "Certificate Menu returns Device root",
+        "observed": true
+      },
+      {
+        "at": "2026-10-24T20:01:49.321295+08:00",
+        "case": "Service rediscovery and Menu returns Device root",
+        "observed": true
+      },
+      {
+        "at": "2026-10-24T20:02:01.681568+08:00",
+        "case": "Privacy Menu returns My",
+        "observed": true
+      },
+      {
+        "at": "2026-10-24T20:02:11.389913+08:00",
+        "case": "Help article/root Menu returns My",
+        "observed": true
+      }
+    ],
+    "themeTrial": "failed preference readback and restore page assertion; no full three-theme acceptance; later global-themes batch restores via UI",
+    "runnerStopped": true,
+    "sourceDriftAtFreeze": 0
+  },
+  "latestStage": "global-themes-media-entry",
+  "latestStageStatus": "superseded by 2026-10-24-global-themes-and-media-entry.json; older playback evidence remains historical"
+}

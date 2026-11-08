@@ -1,0 +1,36 @@
+{
+  "date": "2026-10-23",
+  "privateEvidencePointer": "/tmp/nastart-wda-user-recovery-evidence",
+  "iphone13": {
+    "userOpenedRunner": true,
+    "readyWithoutSessionObserved": true,
+    "newSessionCreated": true,
+    "actualSettingsOpenedAndHomeReturned": true,
+    "originalSettingsRestoredAndReadBack": true,
+    "WDAReinstalled": false
+  },
+  "ipad": {
+    "model": "iPad12,1",
+    "system": "18.3.1",
+    "manualTapCrash": {
+      "localTime": "2026-10-23T06:44:04+08:00",
+      "exception": "EXC_CRASH/SIGABRT",
+      "lastExceptionArea": "XCTRunnerDaemonSession/XCUIInitializeForUITesting",
+      "uniqueRootCauseEstablished": false
+    },
+    "existingSignedRunnerStartedViaXCTest": true,
+    "firstRunLimitSeconds": 600,
+    "firstRunEndedAtLimit": true,
+    "nativeRunnerAbsentIndependentlyAt0703": true,
+    "actualSettingsOpenedAndHomeReturned": true,
+    "originalSettingsRestoredAndReadBack": true,
+    "WDAReinstalled": false
+  },
+  "observedToolCorrections": [
+    "Create session when ready has no session",
+    "SpringBoard-bound activeAppInfo can disagree with actual Settings screenshot",
+    "Home uses global /wda/homescreen; session-prefixed path returned 404",
+    "Nastart latest build installed separately before media windows"
+  ],
+  "acceptance": "Finite actual control proof only; each later media window owns a separate gate, Runner and cleanup"
+}

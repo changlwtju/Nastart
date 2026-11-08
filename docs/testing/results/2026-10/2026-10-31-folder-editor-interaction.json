@@ -1,0 +1,26 @@
+{
+  "scene": "folder-edit",
+  "sourceInputCount": 446,
+  "initialUnchangedSaveDisabled": true,
+  "syntheticBrowseChangesDraftAndEnablesSave": true,
+  "localValidationFeedbackObserved": true,
+  "keyboardOpenSaveReachableViaAXScroll": true,
+  "parentTraversalInvalidPathErrorObserved": true,
+  "editingClearsError": true,
+  "trailingSlashEquivalentSaveDisabled": true,
+  "validChangedPathSaveEnabled": true,
+  "cancelOnlyFixtureMessageObserved": true,
+  "resubmitAfterCancelLocalFeedbackObserved": true,
+  "originalCurrentPathUnchanged": true,
+  "fixtureRetainsPreviousNoteDuringError": true,
+  "fixtureSubmitAndCancelKeepKeyboard": true,
+  "realEditorDismissOrTransactionTested": false,
+  "realFolderBrowserTested": false,
+  "automatedTest": false,
+  "cleanup": {
+    "freshAbsent": true,
+    "syntheticPreferencesPreserved": true,
+    "installedHashesUnchanged": true,
+    "traceExported": false
+  }
+}

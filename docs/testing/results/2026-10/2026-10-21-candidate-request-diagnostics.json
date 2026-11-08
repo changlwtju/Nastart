@@ -1,0 +1,190 @@
+{
+  "date": "2026-10-21",
+  "kind": "diagnostic-only first observation",
+  "package": {
+    "sourceDiffSHA256": "0f68321dd95486927f50fa1114fdf1a5dd3b83881778812f25515342383f8e69",
+    "binaryBuildTime": "2026-10-21T19:36:57.046115+08:00",
+    "ipaSHA256": "5905c072bf0db4651ef5acb588d4f743c4abc0dd6b8906abc173cb29631d6838",
+    "binaries": {
+      "Nastart": "ec97ce6f1e8733f4f5b9914bd1635fba5435c8888dd8ffd74d19d223f782b9d8",
+      "Nastart.debug.dylib": "c8efdcdbc00ef9a6e9c4f6acb83aa1bb78828b831e98021ada7fc59de5194d38",
+      "Frameworks/KSPlayer.framework/KSPlayer": "bf0a802243983db3430bb54a213c662925258d40063e51c691ad33af5cb7104a"
+    }
+  },
+  "tests": {
+    "executed": 132,
+    "passed": 131,
+    "skipped": 1,
+    "failed": 0,
+    "normalExit": true
+  },
+  "preflight": 15,
+  "window": {
+    "startedAt": "2026-10-21T19:42:38.393800+08:00",
+    "playCommands": 1,
+    "pipCommands": 0,
+    "environment": {},
+    "actions": [
+      {
+        "label": "Jellyfin",
+        "dispatchWall": 1792582967.018293,
+        "dispatchMono": 8.893154708,
+        "responseMono": 9.331032333
+      },
+      {
+        "label": "library",
+        "dispatchWall": 1792582968.135471,
+        "dispatchMono": 10.010330291,
+        "responseMono": 10.435166708
+      },
+      {
+        "label": "search",
+        "dispatchWall": 1792582969.320539,
+        "dispatchMono": 11.195394458,
+        "responseMono": 11.658373625
+      },
+      {
+        "label": "S03 detail",
+        "dispatchWall": 1792582973.278968,
+        "dispatchMono": 15.153809875,
+        "responseMono": 15.913300166
+      },
+      {
+        "label": "open current detail subtitle choices",
+        "dispatchWall": 1792582976.353468,
+        "dispatchMono": 18.2282985,
+        "responseMono": 18.7387025
+      },
+      {
+        "label": "explicit original simplified PGS",
+        "dispatchWall": 1792582979.391209,
+        "dispatchMono": 21.266030875,
+        "responseMono": 21.812317125
+      },
+      {
+        "label": "play",
+        "dispatchWall": 1792582982.3243809,
+        "dispatchMono": 24.199192375,
+        "responseMono": 24.729230083
+      },
+      {
+        "label": "show chrome for close",
+        "dispatchWall": 1792583044.742113,
+        "dispatchMono": 86.616718208,
+        "responseMono": 87.074862708
+      },
+      {
+        "label": "normal player close",
+        "dispatchWall": 1792583045.889962,
+        "dispatchMono": 87.764563333,
+        "responseMono": 88.22433475
+      }
+    ],
+    "method": "PGS normal source; one bounded failure observation with exact AV resource binding; zero PiP or system playback commands",
+    "latestPackageVerified": true,
+    "sourceDiffSHA256": "0f68321dd95486927f50fa1114fdf1a5dd3b83881778812f25515342383f8e69",
+    "model": "iPhone14,5",
+    "system": "16.3.1",
+    "normalBaselineRestart": true,
+    "emptyEnvironmentVerified": true,
+    "restoringBannerAbsentAndTargetStable": true,
+    "explicitOriginalPGSChoiceObserved": true,
+    "playDispatchWall": 1792582981.57212,
+    "candidateFailureObserved": true,
+    "failureDetectedMono": 80.67933475,
+    "observationBudgetSeconds": 70,
+    "normalPlayerCloseObserved": true,
+    "observationCompleted": true,
+    "nativeAppAbsent": true,
+    "ownedGuardianStopped": true,
+    "WDASettingsRestored": true,
+    "ownedSyslogStopped": true,
+    "nonBookmarkPreferencesUnchanged": true,
+    "originalBookmarkCount": 36,
+    "originalTrackChanges": 0,
+    "bookmarksAdded": 0,
+    "bookmarksRemoved": 0,
+    "bookmarkProgressChanges": 1,
+    "newCrashInventory": {
+      "Nastart": 0,
+      "WebDriverAgent": 0,
+      "JetsamEvent": 0
+    },
+    "finishedAt": "2026-10-21T19:44:19.641087+08:00"
+  },
+  "failureSnapshot": {
+    "availableReserveSeconds": "0.2502499931982758",
+    "bufferEmpty": "true",
+    "cancelled": "false",
+    "candidateAccessLast_binding": "missingURI",
+    "candidateAccessLast_historyTruncated": "false",
+    "candidateAccessLast_hlsRole": "unknown",
+    "candidateAccessLast_matchingTransfers": "0",
+    "candidateAccessLast_playlistChildID": "unknown",
+    "candidateAccessLast_proxyPlaybackTraceID": "unknown",
+    "candidateBufferAheadSeconds": "0.0",
+    "candidateCurrentAtFailure": "true",
+    "candidateErrorLogEvents": "0",
+    "candidateErrorLogRecorded": "0",
+    "candidateRate": "0.0",
+    "candidateRoot_binding": "exactSingleTransfer",
+    "candidateRoot_historyTruncated": "false",
+    "candidateRoot_hlsRole": "masterPlaylist",
+    "candidateRoot_matchingTransfers": "1",
+    "candidateRoot_playlistChildID": "root",
+    "candidateRoot_proxyPlaybackTraceID": "unknown",
+    "candidateSeconds": "8.905",
+    "candidateStatus": "1",
+    "deadlineRemainingMs": "12188",
+    "elapsedMs": "27811",
+    "engine": "KSPlayer",
+    "errorCode": "-1008",
+    "errorDomain": "NSURLErrorDomain",
+    "itemStatus": "2",
+    "likelyToKeepUp": "false",
+    "liveSeconds": "23.092",
+    "loadedRangeCount": "0",
+    "loadedRangeFirstEnd": "unknown",
+    "loadedRangeFirstStart": "unknown",
+    "preparationLeadSeconds": "0.0",
+    "seekResult": "true",
+    "stage": "decodedFrame",
+    "target": "8.905",
+    "timeControlStatus": "0",
+    "waitingReason": "-"
+  },
+  "candidateTransfer": {
+    "master": {
+      "upstreamBodyReceived": 876,
+      "clientBodySendCompleted": 233,
+      "headerCompleted": true,
+      "durationMs": 7691
+    },
+    "media": {
+      "upstreamBodyReceived": 437124,
+      "expectedBytes": 1529038,
+      "headerCompleted": false,
+      "clientBodySendCompleted": 0,
+      "durationMs": 20061,
+      "finishSource": "routeRevoked",
+      "errorCode": -999,
+      "afterCandidateItemFailure": true
+    }
+  },
+  "actualScreen": {
+    "atFailure": "black sampled frame; natural scene versus presentation cause unassigned",
+    "normalPGSDetailAfterCloseReviewed": true,
+    "finalHomeWiFiNoPiPReviewed": true
+  },
+  "limits": [
+    "errorLog empty and access last URI absent: no specific failed resource identified",
+    "root exact binding locates master transfer only",
+    "proxy short trace rejected by UUID-only validation; evidence limitation, fix next",
+    "no product behavior or performance fix"
+  ],
+  "devices": {
+    "iphone13": "current package installed and normal home verified",
+    "ipad": "not operated; 15:39 historical package",
+    "iphone18": "not operated per user; 15:39 historical package, later update required"
+  }
+}

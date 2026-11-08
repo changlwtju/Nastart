@@ -1,0 +1,84 @@
+{
+  "date": "2026-10-27",
+  "sourceHEAD": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "dirtyTreePreserved": true,
+  "configuration": "ordinary Debug",
+  "sourceInputs": 411,
+  "targetedTests": 27,
+  "fullFlashResolution": false,
+  "actorPhotosImplemented": false,
+  "sourceWrites": 0,
+  "onlineMetadataRequests": 0,
+  "matrixNewFullPasses": 0,
+  "devices": {
+    "tv": {
+      "mainSHA256": "2a986f0779f94cef186eb0e6a0b42672b5cba3c117a2d83b33bc82999c955a59",
+      "debugSHA256": "781d2f3df78d639ea97549184c6cd7e782a4a032b6b0851ac8b5e5823659cc04",
+      "installComplete": true,
+      "installedAt": "2026-10-27T21:45:16.004500+08:00",
+      "preferences": {
+        "beforeKeys": 15,
+        "afterKeys": 15,
+        "sameKeys": true,
+        "changedValues": 0,
+        "allNonDiagnosticPreferencesEqual": true
+      },
+      "nativeResult": "finite play/pause/resume/normal exit; return snapshots"
+    },
+    "iphone13": {
+      "mainSHA256": "fecf8530fc9d8296bf817f4958269e1fd24bd8e137ccb6f997185513c73677ca",
+      "debugSHA256": "f381836861805421a2bf7d2a6a45de9bab0faa277b1800900cd2f2adbfe4f1a5",
+      "installComplete": true,
+      "installedAt": "2026-10-27T21:45:36.237288+08:00",
+      "preferences": {
+        "beforeKeys": 26,
+        "afterKeys": 26,
+        "sameKeys": true,
+        "changedValues": 0,
+        "allNonDiagnosticPreferencesEqual": true
+      },
+      "nativeResult": "ordinary launch; UI window interrupted by external foreground change; no playback attempted"
+    },
+    "iphone18": {
+      "mainSHA256": "fecf8530fc9d8296bf817f4958269e1fd24bd8e137ccb6f997185513c73677ca",
+      "debugSHA256": "f381836861805421a2bf7d2a6a45de9bab0faa277b1800900cd2f2adbfe4f1a5",
+      "installComplete": true,
+      "installedAtUTC": "2026-10-27T13:50:35.826676+00:00",
+      "preferences": {
+        "beforeKeys": 27,
+        "afterKeys": 27,
+        "sameKeys": true,
+        "changedValues": 0,
+        "allNonDiagnosticPreferencesEqual": true
+      },
+      "normalLaunchActualScreenshotReviewed": true,
+      "DSMActualEndpointReverified": false
+    },
+    "ipad": {
+      "latestInstalled": false,
+      "reason": "User reports temporarily unable to reconnect."
+    }
+  },
+  "actorSample": {
+    "movieEntries": 6,
+    "localActorDirectories": 0,
+    "nfoActorCount": 57,
+    "externalActorThumbs": 26,
+    "localActorThumbHints": 0,
+    "actorImageFiles": 0,
+    "imageGETs": 0
+  },
+  "baseline": {
+    "coarseReturnFrames": 5,
+    "transientEmptyImageCaptured": false,
+    "driverReturnedToWallFalseNegative": true,
+    "hiddenDetailAXRetained": true
+  },
+  "cleanup": {
+    "tvOriginalRunnerPreserved": true,
+    "iphone13OwnedSessionDeleted": true,
+    "iphone13SettingsRestored": true,
+    "cellularUsed": false,
+    "NASConfigurationChanged": false
+  }
+}

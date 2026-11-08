@@ -1,0 +1,1029 @@
+{
+  "date": "2026-10-26",
+  "scope": "repository-external native DNS and numeric-only SMB connection",
+  "baseCRevision": "aedafb2c8742c83188e27841e270fdaad6035d41",
+  "changes": [
+    "native DNSServiceGetAddrInfo lifecycle on a dedicated dispatch queue; cancellation/deadline deallocate query before resuming",
+    "IPv4/IPv6 specific lookup for chosen family; 30ms bounded snapshot for general lookups with familiesComplete flag",
+    "8-address/32-callback caps and host/control-character/numeric/scope validation",
+    "numeric-only AI_NUMERICHOST|AI_NUMERICSERV C connection entry; original UNC host independent of transport address; no hostname fallback",
+    "one overall query/connection budget; no automatic credential retry"
+  ],
+  "nativeCaseCount": 17,
+  "nativeCases": {
+    "literalScan4": {
+      "scan": {
+        "entryCount": 2,
+        "skippedLinks": 0,
+        "nfoBytes": 50001,
+        "dialect": 514,
+        "pages": 1
+      },
+      "elapsedMs": 12.919458,
+      "diagnostics": {
+        "started": 0,
+        "finished": 1,
+        "initializationMs": 0,
+        "callbacks": 0,
+        "numericBypass": true,
+        "released": 0
+      },
+      "outcome": "success",
+      "sourceUnchanged": true,
+      "TCPConnectionsClosed": 1,
+      "SMBNegotiations": 1,
+      "writeRequests": 0,
+      "mediaReadRequested": false,
+      "UNCNameMatchesInput": true,
+      "ASan": false
+    },
+    "literalScan6": {
+      "outcome": "success",
+      "diagnostics": {
+        "started": 0,
+        "callbacks": 0,
+        "numericBypass": true,
+        "initializationMs": 0,
+        "released": 0,
+        "finished": 1
+      },
+      "elapsedMs": 13.186375,
+      "scan": {
+        "dialect": 514,
+        "entryCount": 2,
+        "pages": 1,
+        "nfoBytes": 50001,
+        "skippedLinks": 0
+      },
+      "sourceUnchanged": true,
+      "TCPConnectionsClosed": 1,
+      "SMBNegotiations": 1,
+      "writeRequests": 0,
+      "mediaReadRequested": false,
+      "UNCNameMatchesInput": true,
+      "ASan": false
+    },
+    "native4": {
+      "outcome": "success",
+      "elapsedMs": 53.266917,
+      "diagnostics": {
+        "numericBypass": false,
+        "initializationMs": 0.103791,
+        "callbacks": 1,
+        "released": 1,
+        "started": 1,
+        "finished": 1
+      },
+      "scan": {
+        "nfoBytes": 50001,
+        "dialect": 514,
+        "pages": 1,
+        "entryCount": 2,
+        "skippedLinks": 0
+      },
+      "sourceUnchanged": true,
+      "TCPConnectionsClosed": 1,
+      "SMBNegotiations": 1,
+      "writeRequests": 0,
+      "mediaReadRequested": false,
+      "UNCNameMatchesInput": true,
+      "ASan": false
+    },
+    "native6": {
+      "scan": {
+        "skippedLinks": 0,
+        "nfoBytes": 50001,
+        "dialect": 514,
+        "entryCount": 2,
+        "pages": 1
+      },
+      "outcome": "success",
+      "diagnostics": {
+        "started": 1,
+        "released": 1,
+        "finished": 1,
+        "numericBypass": false,
+        "initializationMs": 0.091667,
+        "callbacks": 1
+      },
+      "elapsedMs": 51.257666,
+      "sourceUnchanged": true,
+      "TCPConnectionsClosed": 1,
+      "SMBNegotiations": 1,
+      "writeRequests": 0,
+      "mediaReadRequested": false,
+      "UNCNameMatchesInput": true,
+      "ASan": false
+    },
+    "identity": {
+      "elapsedMs": 12.220292,
+      "outcome": "success",
+      "scan": {
+        "skippedLinks": 0,
+        "entryCount": 2,
+        "pages": 1,
+        "nfoBytes": 50001,
+        "dialect": 514
+      },
+      "diagnostics": {
+        "finished": 0,
+        "released": 0,
+        "numericBypass": false,
+        "started": 0,
+        "callbacks": 0,
+        "initializationMs": 0
+      },
+      "sourceUnchanged": true,
+      "TCPConnectionsClosed": 1,
+      "SMBNegotiations": 1,
+      "writeRequests": 0,
+      "mediaReadRequested": false,
+      "UNCNameMatchesInput": true,
+      "ASan": false
+    },
+    "numericReject": {
+      "diagnostics": {
+        "numericBypass": false,
+        "started": 0,
+        "initializationMs": 0,
+        "released": 0,
+        "callbacks": 0,
+        "finished": 0
+      },
+      "outcome": "remote(-5)",
+      "elapsedMs": 0.422417,
+      "sourceUnchanged": true,
+      "TCPConnectionsClosed": 0,
+      "SMBNegotiations": 0,
+      "writeRequests": 0,
+      "mediaReadRequested": false,
+      "UNCNameMatchesInput": false,
+      "ASan": false
+    },
+    "cancelBeforeTCP": {
+      "afterCancelMs": 0.078417,
+      "elapsedMs": 2.229792,
+      "outcome": "CancellationError",
+      "diagnostics": {
+        "released": 1,
+        "finished": 1,
+        "callbacks": 1,
+        "started": 1,
+        "numericBypass": false,
+        "initializationMs": 0.11525
+      },
+      "activeAtCancel": true,
+      "sourceUnchanged": true,
+      "TCPConnectionsClosed": 0,
+      "SMBNegotiations": 0,
+      "writeRequests": 0,
+      "mediaReadRequested": false,
+      "UNCNameMatchesInput": false,
+      "ASan": false
+    },
+    "deadlineBeforeTCP": {
+      "elapsedMs": 5.772625,
+      "outcome": "deadline",
+      "diagnostics": {
+        "started": 1,
+        "finished": 1,
+        "numericBypass": false,
+        "callbacks": 1,
+        "initializationMs": 0.146042,
+        "released": 1
+      },
+      "sourceUnchanged": true,
+      "TCPConnectionsClosed": 0,
+      "SMBNegotiations": 0,
+      "writeRequests": 0,
+      "mediaReadRequested": false,
+      "UNCNameMatchesInput": false,
+      "ASan": false
+    },
+    "auth": {
+      "diagnostics": {
+        "started": 0,
+        "numericBypass": false,
+        "callbacks": 0,
+        "released": 0,
+        "initializationMs": 0,
+        "finished": 0
+      },
+      "elapsedMs": 3.244417,
+      "outcome": "authenticationRejected(3221225581)",
+      "sourceUnchanged": true,
+      "TCPConnectionsClosed": 1,
+      "SMBNegotiations": 1,
+      "writeRequests": 0,
+      "mediaReadRequested": false,
+      "UNCNameMatchesInput": false,
+      "ASan": false
+    },
+    "pendingCancel": {
+      "outcome": "CancellationError",
+      "afterCancelMs": 0.078125,
+      "elapsedMs": 2.22175,
+      "diagnostics": {
+        "finished": 1,
+        "initializationMs": 0.734917,
+        "released": 1,
+        "started": 1,
+        "callbacks": 0,
+        "numericBypass": false
+      },
+      "activeAtCancel": true,
+      "sourceUnchanged": true,
+      "TCPConnectionsClosed": 0,
+      "SMBNegotiations": 0,
+      "writeRequests": 0,
+      "mediaReadRequested": false,
+      "UNCNameMatchesInput": false,
+      "ASan": false
+    },
+    "pendingDeadline": {
+      "elapsedMs": 6.526084,
+      "outcome": "deadline",
+      "diagnostics": {
+        "finished": 1,
+        "numericBypass": false,
+        "started": 1,
+        "released": 1,
+        "callbacks": 0,
+        "initializationMs": 0.606959
+      },
+      "sourceUnchanged": true,
+      "TCPConnectionsClosed": 0,
+      "SMBNegotiations": 0,
+      "writeRequests": 0,
+      "mediaReadRequested": false,
+      "UNCNameMatchesInput": false,
+      "ASan": false
+    },
+    "asanNative4": {
+      "elapsedMs": 55.358542,
+      "diagnostics": {
+        "started": 1,
+        "released": 1,
+        "callbacks": 1,
+        "finished": 1,
+        "numericBypass": false,
+        "initializationMs": 0.226792
+      },
+      "scan": {
+        "entryCount": 2,
+        "skippedLinks": 0,
+        "pages": 1,
+        "dialect": 514,
+        "nfoBytes": 50001
+      },
+      "outcome": "success",
+      "sourceUnchanged": true,
+      "TCPConnectionsClosed": 1,
+      "SMBNegotiations": 1,
+      "writeRequests": 0,
+      "mediaReadRequested": false,
+      "UNCNameMatchesInput": true,
+      "ASan": true
+    },
+    "asanNative6": {
+      "scan": {
+        "entryCount": 2,
+        "nfoBytes": 50001,
+        "skippedLinks": 0,
+        "dialect": 514,
+        "pages": 1
+      },
+      "diagnostics": {
+        "callbacks": 1,
+        "finished": 1,
+        "numericBypass": false,
+        "initializationMs": 0.149042,
+        "started": 1,
+        "released": 1
+      },
+      "elapsedMs": 53.674375,
+      "outcome": "success",
+      "sourceUnchanged": true,
+      "TCPConnectionsClosed": 1,
+      "SMBNegotiations": 1,
+      "writeRequests": 0,
+      "mediaReadRequested": false,
+      "UNCNameMatchesInput": true,
+      "ASan": true
+    },
+    "asanPendingCancel": {
+      "outcome": "CancellationError",
+      "diagnostics": {
+        "finished": 1,
+        "released": 1,
+        "callbacks": 0,
+        "initializationMs": 1.73525,
+        "numericBypass": false,
+        "started": 1
+      },
+      "afterCancelMs": 0.136334,
+      "activeAtCancel": true,
+      "elapsedMs": 2.543,
+      "sourceUnchanged": true,
+      "TCPConnectionsClosed": 0,
+      "SMBNegotiations": 0,
+      "writeRequests": 0,
+      "mediaReadRequested": false,
+      "UNCNameMatchesInput": false,
+      "ASan": true
+    },
+    "asanParallel": {
+      "activeDNSCancellations": 6,
+      "results": [
+        {
+          "outcome": "CancellationError",
+          "diagnostics": {
+            "initializationMs": 0.133,
+            "released": 1,
+            "callbacks": 1,
+            "numericBypass": false,
+            "finished": 1,
+            "started": 1
+          },
+          "elapsedMs": 0
+        },
+        {
+          "outcome": "CancellationError",
+          "diagnostics": {
+            "started": 1,
+            "callbacks": 1,
+            "finished": 1,
+            "numericBypass": false,
+            "released": 1,
+            "initializationMs": 0.143625
+          },
+          "elapsedMs": 0
+        },
+        {
+          "outcome": "CancellationError",
+          "diagnostics": {
+            "initializationMs": 0.139417,
+            "numericBypass": false,
+            "callbacks": 1,
+            "finished": 1,
+            "released": 1,
+            "started": 1
+          },
+          "elapsedMs": 0
+        },
+        {
+          "outcome": "CancellationError",
+          "diagnostics": {
+            "started": 1,
+            "callbacks": 1,
+            "finished": 1,
+            "numericBypass": false,
+            "released": 1,
+            "initializationMs": 0.158709
+          },
+          "elapsedMs": 0
+        },
+        {
+          "outcome": "CancellationError",
+          "diagnostics": {
+            "released": 1,
+            "started": 1,
+            "callbacks": 1,
+            "numericBypass": false,
+            "finished": 1,
+            "initializationMs": 0.128917
+          },
+          "elapsedMs": 0
+        },
+        {
+          "outcome": "CancellationError",
+          "diagnostics": {
+            "started": 1,
+            "finished": 1,
+            "callbacks": 1,
+            "numericBypass": false,
+            "released": 1,
+            "initializationMs": 0.137416
+          },
+          "elapsedMs": 0
+        },
+        {
+          "scan": {
+            "entryCount": 2,
+            "pages": 1,
+            "nfoBytes": 50001,
+            "skippedLinks": 0,
+            "dialect": 514
+          },
+          "outcome": "success",
+          "elapsedMs": 0,
+          "diagnostics": {
+            "initializationMs": 0.181708,
+            "finished": 1,
+            "callbacks": 1,
+            "numericBypass": false,
+            "released": 1,
+            "started": 1
+          }
+        },
+        {
+          "scan": {
+            "dialect": 514,
+            "pages": 1,
+            "nfoBytes": 50001,
+            "entryCount": 2,
+            "skippedLinks": 0
+          },
+          "outcome": "success",
+          "elapsedMs": 0,
+          "diagnostics": {
+            "started": 1,
+            "released": 1,
+            "callbacks": 1,
+            "finished": 1,
+            "numericBypass": false,
+            "initializationMs": 0.105292
+          }
+        },
+        {
+          "scan": {
+            "skippedLinks": 0,
+            "pages": 1,
+            "nfoBytes": 50001,
+            "entryCount": 2,
+            "dialect": 514
+          },
+          "outcome": "success",
+          "elapsedMs": 0,
+          "diagnostics": {
+            "initializationMs": 0.174625,
+            "numericBypass": false,
+            "callbacks": 1,
+            "finished": 1,
+            "released": 1,
+            "started": 1
+          }
+        },
+        {
+          "scan": {
+            "dialect": 514,
+            "pages": 1,
+            "nfoBytes": 50001,
+            "skippedLinks": 0,
+            "entryCount": 2
+          },
+          "outcome": "success",
+          "elapsedMs": 0,
+          "diagnostics": {
+            "initializationMs": 0.133292,
+            "numericBypass": false,
+            "callbacks": 1,
+            "finished": 1,
+            "released": 1,
+            "started": 1
+          }
+        },
+        {
+          "scan": {
+            "skippedLinks": 0,
+            "pages": 1,
+            "nfoBytes": 50001,
+            "dialect": 514,
+            "entryCount": 2
+          },
+          "outcome": "success",
+          "elapsedMs": 0,
+          "diagnostics": {
+            "numericBypass": false,
+            "initializationMs": 0.167791,
+            "finished": 1,
+            "callbacks": 1,
+            "released": 1,
+            "started": 1
+          }
+        },
+        {
+          "scan": {
+            "skippedLinks": 0,
+            "pages": 1,
+            "nfoBytes": 50001,
+            "dialect": 514,
+            "entryCount": 2
+          },
+          "outcome": "success",
+          "elapsedMs": 0,
+          "diagnostics": {
+            "initializationMs": 0.15325,
+            "released": 1,
+            "callbacks": 1,
+            "finished": 1,
+            "numericBypass": false,
+            "started": 1
+          }
+        }
+      ],
+      "sourceUnchanged": true,
+      "TCPConnectionsClosed": 6,
+      "SMBNegotiations": 6,
+      "writeRequests": 0,
+      "mediaReadRequested": false,
+      "UNCNameMatchesInput": true,
+      "ASan": true
+    },
+    "asanPendingScanCancel": {
+      "elapsedMs": 1.829834,
+      "afterCancelMs": 0.074042,
+      "outcome": "CancellationError",
+      "diagnostics": {
+        "initializationMs": 1.2055,
+        "numericBypass": false,
+        "finished": 1,
+        "started": 1,
+        "released": 1,
+        "callbacks": 0
+      },
+      "activeAtCancel": true,
+      "sourceUnchanged": true,
+      "TCPConnectionsClosed": 0,
+      "SMBNegotiations": 0,
+      "writeRequests": 0,
+      "mediaReadRequested": false,
+      "UNCIdentities": [],
+      "ASan": true
+    },
+    "asanPendingScanDeadline": {
+      "outcome": "deadline",
+      "diagnostics": {
+        "released": 1,
+        "callbacks": 0,
+        "numericBypass": false,
+        "initializationMs": 1.216167,
+        "finished": 1,
+        "started": 1
+      },
+      "elapsedMs": 7.302542,
+      "sourceUnchanged": true,
+      "TCPConnectionsClosed": 0,
+      "SMBNegotiations": 0,
+      "writeRequests": 0,
+      "mediaReadRequested": false,
+      "UNCIdentities": [],
+      "ASan": true
+    }
+  },
+  "resolverBoundaryCaseCount": 12,
+  "resolverBoundaryCases": {
+    "localhost": {
+      "outcome": "success",
+      "result": {
+        "familiesComplete": true,
+        "addressCount": 2,
+        "families": [
+          "IPv4",
+          "IPv6"
+        ],
+        "identityHostRetained": true
+      },
+      "elapsedMs": 40.454916,
+      "diagnostics": {
+        "finished": 1,
+        "started": 1,
+        "released": 1,
+        "callbacks": 2,
+        "numericBypass": false,
+        "initializationMs": 0.091333
+      }
+    },
+    "literal4": {
+      "result": {
+        "identityHostRetained": true,
+        "familiesComplete": true,
+        "addressCount": 1,
+        "families": [
+          "IPv4"
+        ]
+      },
+      "elapsedMs": 0.134208,
+      "diagnostics": {
+        "released": 0,
+        "initializationMs": 0,
+        "finished": 1,
+        "callbacks": 0,
+        "started": 0,
+        "numericBypass": true
+      },
+      "outcome": "success"
+    },
+    "literal6": {
+      "outcome": "success",
+      "result": {
+        "addressCount": 1,
+        "families": [
+          "IPv6"
+        ],
+        "familiesComplete": true,
+        "identityHostRetained": true
+      },
+      "diagnostics": {
+        "numericBypass": true,
+        "initializationMs": 0,
+        "released": 0,
+        "started": 0,
+        "callbacks": 0,
+        "finished": 1
+      },
+      "elapsedMs": 0.165375
+    },
+    "cancelAfterAnswers": {
+      "activeAtCancel": true,
+      "diagnostics": {
+        "started": 1,
+        "numericBypass": false,
+        "finished": 1,
+        "initializationMs": 0.088292,
+        "callbacks": 2,
+        "released": 1
+      },
+      "elapsedMs": 2.176125,
+      "outcome": "CancellationError",
+      "afterCancelMs": 0.043167
+    },
+    "deadlineAfterAnswers": {
+      "outcome": "deadline",
+      "diagnostics": {
+        "initializationMs": 0.1035,
+        "started": 1,
+        "callbacks": 2,
+        "numericBypass": false,
+        "finished": 1,
+        "released": 1
+      },
+      "elapsedMs": 8.402625
+    },
+    "invalidURL": {
+      "diagnostics": {
+        "callbacks": 0,
+        "finished": 0,
+        "released": 0,
+        "numericBypass": false,
+        "initializationMs": 0,
+        "started": 0
+      },
+      "elapsedMs": 0.206583,
+      "outcome": "invalidHost"
+    },
+    "wildcard": {
+      "diagnostics": {
+        "callbacks": 0,
+        "initializationMs": 0,
+        "finished": 0,
+        "released": 0,
+        "started": 0,
+        "numericBypass": false
+      },
+      "elapsedMs": 0.250792,
+      "outcome": "invalidHost"
+    },
+    "multicast": {
+      "elapsedMs": 0.195042,
+      "diagnostics": {
+        "callbacks": 0,
+        "finished": 0,
+        "started": 0,
+        "initializationMs": 0,
+        "released": 0,
+        "numericBypass": false
+      },
+      "outcome": "invalidAddress"
+    },
+    "unspecified4": {
+      "elapsedMs": 0.2935,
+      "diagnostics": {
+        "numericBypass": false,
+        "started": 0,
+        "initializationMs": 0,
+        "released": 0,
+        "callbacks": 0,
+        "finished": 0
+      },
+      "outcome": "invalidAddress"
+    },
+    "unscopedLinkLocal": {
+      "diagnostics": {
+        "initializationMs": 0,
+        "finished": 0,
+        "released": 0,
+        "numericBypass": false,
+        "started": 0,
+        "callbacks": 0
+      },
+      "outcome": "invalidAddress",
+      "elapsedMs": 0.243958
+    },
+    "scopedLinkLocal": {
+      "diagnostics": {
+        "numericBypass": true,
+        "finished": 1,
+        "released": 0,
+        "callbacks": 0,
+        "started": 0,
+        "initializationMs": 0
+      },
+      "result": {
+        "addressCount": 1,
+        "families": [
+          "IPv6"
+        ],
+        "identityHostRetained": true,
+        "familiesComplete": true
+      },
+      "elapsedMs": 0.186875,
+      "outcome": "success"
+    },
+    "embeddedNUL": {
+      "diagnostics": {
+        "initializationMs": 0,
+        "finished": 0,
+        "numericBypass": false,
+        "started": 0,
+        "released": 0,
+        "callbacks": 0
+      },
+      "elapsedMs": 0.275667,
+      "outcome": "invalidHost"
+    }
+  },
+  "localOnlyRecordCaseCount": 4,
+  "localOnlyRecordCases": {
+    "dual": {
+      "outcome": "success",
+      "result": {
+        "identityHostRetained": true,
+        "addressCount": 2,
+        "families": [
+          "IPv4",
+          "IPv6"
+        ],
+        "familiesComplete": true
+      },
+      "elapsedMs": 42.005958,
+      "diagnostics": {
+        "numericBypass": false,
+        "callbacks": 2,
+        "released": 1,
+        "finished": 1,
+        "initializationMs": 3.966833,
+        "started": 1
+      },
+      "registeredRecords": 2,
+      "localOnly": true,
+      "afterRecordRelease": {
+        "outcome": "deadline",
+        "diagnostics": {
+          "released": 1,
+          "numericBypass": false,
+          "callbacks": 0,
+          "initializationMs": 2.973334,
+          "started": 1,
+          "finished": 1
+        },
+        "elapsedMs": 1065.859833
+      },
+      "registrationReleased": true
+    },
+    "eight": {
+      "outcome": "success",
+      "diagnostics": {
+        "initializationMs": 2.072084,
+        "started": 1,
+        "numericBypass": false,
+        "callbacks": 8,
+        "finished": 1,
+        "released": 1
+      },
+      "result": {
+        "addressCount": 8,
+        "families": [
+          "IPv4",
+          "IPv6"
+        ],
+        "identityHostRetained": true,
+        "familiesComplete": true
+      },
+      "elapsedMs": 41.818125,
+      "registeredRecords": 8,
+      "localOnly": true,
+      "afterRecordRelease": {
+        "outcome": "deadline",
+        "diagnostics": {
+          "callbacks": 0,
+          "started": 1,
+          "numericBypass": false,
+          "initializationMs": 2.065625,
+          "finished": 1,
+          "released": 1
+        },
+        "elapsedMs": 1061.967041
+      },
+      "registrationReleased": true
+    },
+    "nine": {
+      "elapsedMs": 4.237458,
+      "outcome": "tooManyRecords",
+      "diagnostics": {
+        "numericBypass": false,
+        "released": 1,
+        "initializationMs": 2.826958,
+        "callbacks": 9,
+        "finished": 1,
+        "started": 1
+      },
+      "registeredRecords": 9,
+      "localOnly": true,
+      "afterRecordRelease": {
+        "outcome": "deadline",
+        "diagnostics": {
+          "finished": 1,
+          "callbacks": 0,
+          "numericBypass": false,
+          "initializationMs": 3.47225,
+          "released": 1,
+          "started": 1
+        },
+        "elapsedMs": 1064.961875
+      },
+      "registrationReleased": true
+    },
+    "asanNine": {
+      "diagnostics": {
+        "numericBypass": false,
+        "started": 1,
+        "released": 1,
+        "finished": 1,
+        "initializationMs": 3.475375,
+        "callbacks": 9
+      },
+      "outcome": "tooManyRecords",
+      "elapsedMs": 4.57925,
+      "registeredRecords": 9,
+      "localOnly": true,
+      "afterRecordRelease": {
+        "outcome": "deadline",
+        "diagnostics": {
+          "released": 1,
+          "started": 1,
+          "callbacks": 0,
+          "finished": 1,
+          "numericBypass": false,
+          "initializationMs": 3.770792
+        },
+        "elapsedMs": 1066.67525
+      },
+      "registrationReleased": true
+    }
+  },
+  "localOnlySMBReadCaseCount": 2,
+  "localOnlySMBReads": {
+    "localScan4": {
+      "elapsedMs": 60.639084,
+      "outcome": "success",
+      "scan": {
+        "dialect": 514,
+        "skippedLinks": 0,
+        "nfoBytes": 50001,
+        "pages": 1,
+        "entryCount": 2
+      },
+      "diagnostics": {
+        "finished": 1,
+        "started": 1,
+        "callbacks": 1,
+        "initializationMs": 3.779417,
+        "numericBypass": false,
+        "released": 1
+      },
+      "sourceUnchanged": true,
+      "identityPreserved": true,
+      "ASan": true,
+      "onlyLocalDNS": true,
+      "peerClosed": true,
+      "writeRequests": 0,
+      "mediaReadRequested": false
+    },
+    "localScan6": {
+      "elapsedMs": 59.017041,
+      "outcome": "success",
+      "scan": {
+        "pages": 1,
+        "entryCount": 2,
+        "dialect": 514,
+        "skippedLinks": 0,
+        "nfoBytes": 50001
+      },
+      "diagnostics": {
+        "started": 1,
+        "finished": 1,
+        "released": 1,
+        "initializationMs": 1.822541,
+        "numericBypass": false,
+        "callbacks": 1
+      },
+      "sourceUnchanged": true,
+      "identityPreserved": true,
+      "ASan": true,
+      "onlyLocalDNS": true,
+      "peerClosed": true,
+      "writeRequests": 0,
+      "mediaReadRequested": false
+    }
+  },
+  "lifetime": {
+    "DNSQueryRefsCreated": 36,
+    "DNSQueryRefsDeallocated": 36,
+    "publisherRefsDeallocated": 6,
+    "registeredRecordCount": 32,
+    "afterPublisherReleaseObservation": "deadline/no returned address in local-only lookup budget; not authoritative NXDOMAIN"
+  },
+  "ASan": {
+    "mainWindows": 9,
+    "taskOperations": 20,
+    "runtimeLinked": true,
+    "socketAndNativeDNSObjectInstrumentationConfirmed": true,
+    "invalidMemoryReportsObserved": 0,
+    "notThreadSanitizerOrLeakAudit": true
+  },
+  "builds": {
+    "mobile": {
+      "configuration": "Debug",
+      "platform": "IOS",
+      "architecture": "arm64",
+      "sha256": "0a460e7e3acfbd6c8e71ba2b05508269f4ab34816222173dd15eb4c4947b6212",
+      "builtAt": "2026-10-26T12:47:27.186858+08:00",
+      "signed": false,
+      "embeddedInApp": false,
+      "deviceExecuted": false
+    },
+    "tv": {
+      "configuration": "Debug",
+      "platform": "TVOS",
+      "architecture": "arm64",
+      "sha256": "91c24d6c954fddb4ccb4182bbe8dcdfb3977814787c1bb61072d43e7ff4c6c98",
+      "builtAt": "2026-10-26T12:47:27.375811+08:00",
+      "signed": false,
+      "embeddedInApp": false,
+      "deviceExecuted": false
+    }
+  },
+  "integrity": {
+    "at": "2026-10-26T12:50:26.130120+08:00",
+    "baseDependencyFileCount": 199,
+    "intentionallyChangedCFiles": [
+      "include/smb2/libsmb2.h",
+      "lib/libsmb2.c",
+      "lib/smb2-cmd-error.c",
+      "lib/socket.c"
+    ],
+    "applicationLocalInputCount": 375,
+    "applicationInputDriftCount": 0,
+    "applicationBinaryDriftCounts": {
+      "mobile": 0,
+      "tv": 0
+    },
+    "ownSMBServersStopped": true,
+    "ownDNSPublishersStopped": true,
+    "systemDNSSettingsChanged": false,
+    "physicalDeviceTests": 0,
+    "directNASFileOrMediaRequests": 0,
+    "systemDNSUpstreamRouteAudited": false
+  },
+  "iphone18": {
+    "checkedAt": "2026-10-26T12:50:26.129971+08:00",
+    "connectionStates": [
+      "unavailable"
+    ],
+    "installedThisBatch": false
+  },
+  "retainedFailures": [
+    "initial public diagnostics initializer visibility compile error; fixed",
+    "explicit dns_sd link not present in Apple SDK; using SDK module/system linkage fixed",
+    "first UNC audit used fixture Buffer alignment incorrectly; server hook threw, source frame-offset audit corrected; original failure kept",
+    "pre-family-completeness and pre-host-boundary windows retained as earlier source results"
+  ],
+  "remaining": [
+    "DNSServiceGetAddrInfo initial local-daemon call itself is synchronous; a hung daemon startup was not simulated or bounded internally",
+    "general address snapshot is not guaranteed exhaustive; automatic multi-address connection fallback/Happy Eyeballs and interface churn not implemented",
+    "ASCII hostname prototype only; UI/IDNA/real-device local-network permissions and NAS mDNS/WAN variations pending",
+    "SMB3 encryption/reauthentication, full C allocation review and real Windows/Samba/NAS compatibility",
+    "atomic root containment and NFO post-read version/old-index transaction, adapter and app UI",
+    "signing/embedding/licensing/distribution and real-device integration"
+  ],
+  "appBuildInstallChanged": false,
+  "requirements": {
+    "open": 30,
+    "inProgress": 14,
+    "awaitingAcceptance": 5,
+    "notStarted": 11,
+    "playbackMatrixCells": 114,
+    "closedThisBatch": 0
+  }
+}

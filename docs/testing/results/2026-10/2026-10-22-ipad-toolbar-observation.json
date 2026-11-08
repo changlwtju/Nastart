@@ -1,0 +1,135 @@
+{
+  "date": "2026-10-22",
+  "packageBuiltAt": "2026-10-22T05:26:28.931374+08:00",
+  "configuration": "ordinary Debug -Onone",
+  "sourceInputs": 173,
+  "signedLibraries": 29,
+  "eachWindowFreshPadIdentityUSBSourcePackageSignatureOwnReceiptVerified": true,
+  "newAppSourceBuildInstallTestRuns": 0,
+  "environmentReadBack": {},
+  "propertyWindow": {
+    "menuActions": 0,
+    "sameSceneVerified": true,
+    "orientation": "PORTRAIT",
+    "outerMenu": {
+      "type": "XCUIElementTypeOther",
+      "displayed": true,
+      "enabled": true,
+      "rect": {
+        "y": 28,
+        "x": 756,
+        "width": 34,
+        "height": 34
+      },
+      "accessible": false,
+      "hittable": true
+    },
+    "innerButton": {
+      "type": "XCUIElementTypeButton",
+      "displayed": false,
+      "enabled": true,
+      "rect": {
+        "y": 28,
+        "x": 756,
+        "width": 34,
+        "height": 34
+      },
+      "accessible": true,
+      "hittable": false
+    },
+    "folderResponses": [
+      {
+        "folderOrigin": "snapshot",
+        "apiVersion": "2",
+        "method": "list_share",
+        "folderAttempt": "1",
+        "sessionRole": "fileStation",
+        "httpStatus": "200",
+        "apiErrorCode": "119",
+        "responseKind": "apiFailure",
+        "requestUsesAttachedFileStationGeneration": true
+      },
+      {
+        "folderOrigin": "snapshot",
+        "apiVersion": "1",
+        "method": "list_share",
+        "folderAttempt": "2",
+        "sessionRole": "fileStation",
+        "httpStatus": "200",
+        "apiErrorCode": "119",
+        "responseKind": "apiFailure",
+        "requestUsesAttachedFileStationGeneration": true
+      },
+      {
+        "folderOrigin": "browserRoot",
+        "apiVersion": "2",
+        "method": "list_share",
+        "folderAttempt": "1",
+        "sessionRole": "fileStation",
+        "httpStatus": "200",
+        "apiErrorCode": "119",
+        "responseKind": "apiFailure",
+        "requestUsesAttachedFileStationGeneration": true
+      }
+    ],
+    "actualFilePageErrorVisuallyReviewed": true
+  },
+  "wrapperWindow": {
+    "target": "unique actual navigation-bar menu wrapper, independently displayed/enabled/hittable with matching fresh AX rectangle; no fallback after action failure",
+    "menuClicks": 1,
+    "actualMenuOpenAndOriginalChoiceClosedAndNASHomeReturnVisuallyReviewed": true,
+    "changedSortValues": 0,
+    "rootRowsObserved": 12,
+    "folderResponses": [
+      {
+        "folderOrigin": "snapshot",
+        "apiVersion": "2",
+        "method": "list_share",
+        "folderAttempt": "1",
+        "sessionRole": "fileStation",
+        "httpStatus": "200",
+        "apiErrorCode": null,
+        "responseKind": "success",
+        "requestUsesAttachedFileStationGeneration": true
+      },
+      {
+        "folderOrigin": "browserRoot",
+        "apiVersion": "2",
+        "method": "list_share",
+        "folderAttempt": "1",
+        "sessionRole": "fileStation",
+        "httpStatus": "200",
+        "apiErrorCode": null,
+        "responseKind": "success",
+        "requestUsesAttachedFileStationGeneration": true
+      }
+    ]
+  },
+  "all18NonDiagnosticPreferencesUnchanged": true,
+  "finalNativeNastartCount": 0,
+  "finalNativeRunnerCount": 0,
+  "ownedHostLoggerRemaining": 0,
+  "WDAAutoIdle10CoolOff2GETVerified": true,
+  "nativeFinalHomeWiFiNoPiPVisuallyReviewed": true,
+  "mediaCommands": 0,
+  "networkChanges": false,
+  "iPhone18": "deferred by user; no action",
+  "acceptanceBoundary": "Menu control/tool target only. API119 root cause, complete sorting and playback remain unaccepted.",
+  "existingWindowComparison": {
+    "comparison": "existing two windows only; no device/network/test action",
+    "loginStartedPerWindow": [
+      2,
+      2
+    ],
+    "sameConfiguredTargetAcrossFourLoginStarts": true,
+    "sameAccountAsLoggedAcrossFourStarts": true,
+    "sameMainSessionLabelAcrossWindows": true,
+    "sameFileStationSessionLabelAcrossWindows": true,
+    "windowLogoutStages": [
+      0,
+      0
+    ],
+    "requestUsesNewAttachedPairInBothWindows": true,
+    "limitations": "Targets/accounts are compared only as logged; no exact wire SID or NAS server session lifecycle trace. No logout event in captured windows does not rule out another client or pre-window activity."
+  }
+}

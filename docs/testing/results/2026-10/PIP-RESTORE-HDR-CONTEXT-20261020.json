@@ -1,0 +1,374 @@
+{
+  "date": "2026-10-20",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "iOSSourceDiffSHA256": "491ed044d0c13cbf31ee3f70125f599431fcb3e783a167097fa9f3d55e7a1184",
+  "configuration": "normal Debug -Onone; empty launch environment",
+  "Xcode": "27.0",
+  "binaryBuildTime": "2026-10-20T16:16:59.676117+08:00",
+  "binaries": {
+    "Nastart": "df32a4befe3768aa1eac0d8175c028c00f5141eb3c93b392f88128ef4a10e1d8",
+    "Nastart.debug.dylib": "f43015ca6ce6c3e3f4b1180e1c6d16e107bab012b8d7442d5f01c574cd71bfb1",
+    "Frameworks/KSPlayer.framework/KSPlayer": "d2ccf7a95166b81d1491dea583eb4518ef23a00add3f91d8a3b9d0e9da2b7e37"
+  },
+  "ipaSHA256": "cbafcdb52b4d6939636eff7cba6636eec50109c5d201785f0bee64347cbb9092",
+  "profileExpirationUTC": "2026-10-24T22:23:57",
+  "sourceInputsReverified": 173,
+  "normalPackageSignatureReverified": true,
+  "noAppOrFrameworkSourceChanges": true,
+  "devices": {
+    "iphone13": {
+      "sample": "S01",
+      "entry": "Jellyfin",
+      "liveUSBNameModelOSUDIDVerifiedPrivately": true,
+      "verifiedInstallationReused": true,
+      "newBuildOrInstall": false,
+      "normalEnvironment": {},
+      "result": "TOOL_INSUFFICIENT",
+      "restoreExecuted": false,
+      "nativePauseConfirmed": false,
+      "normalUIExit": false,
+      "ownedMediaStopped": true,
+      "guardSeconds": 120,
+      "guardianFired": false,
+      "failure": "native restore button missing after conditional container reveal",
+      "partialEvents": [
+        {
+          "relativeSeconds": 1.76,
+          "event": "diagnostics.playback.next.first_frame",
+          "fields": {
+            "planID": "185776BC"
+          }
+        },
+        {
+          "relativeSeconds": 11.009,
+          "event": "diagnostics.playback.next.pip_will_start",
+          "fields": {
+            "controlsPlaying": "true",
+            "currentSeconds": "9.332",
+            "enginePlaybackState": "playing",
+            "enginePlaying": "true",
+            "layerPlaybackState": "bufferFinished",
+            "planID": "185776BC"
+          }
+        },
+        {
+          "relativeSeconds": 11.563,
+          "event": "diagnostics.playback.next.pip_started",
+          "fields": {
+            "planID": "185776BC"
+          }
+        },
+        {
+          "relativeSeconds": 11.647,
+          "event": "diagnostics.playback.next.pip_subtitle_frame",
+          "fields": {
+            "planID": "185776BC",
+            "seconds": "10.014"
+          }
+        }
+      ],
+      "audit": {
+        "at": "2026-10-20T19:54:28.056585+08:00",
+        "model": "iPhone14,5",
+        "system": "16.3.1",
+        "connection": "USB",
+        "sourceDiffSHA256": "491ed044d0c13cbf31ee3f70125f599431fcb3e783a167097fa9f3d55e7a1184",
+        "latestPackage": {
+          "Nastart": "df32a4befe3768aa1eac0d8175c028c00f5141eb3c93b392f88128ef4a10e1d8",
+          "Nastart.debug.dylib": "f43015ca6ce6c3e3f4b1180e1c6d16e107bab012b8d7442d5f01c574cd71bfb1",
+          "Frameworks/KSPlayer.framework/KSPlayer": "d2ccf7a95166b81d1491dea583eb4518ef23a00add3f91d8a3b9d0e9da2b7e37"
+        },
+        "nonBookmarkPreferenceKeys": 24,
+        "nonBookmarkPreferencesExactlyUnchanged": true,
+        "naturalBookmarkChangesCount": 1,
+        "originalBookmarksChecked": 36,
+        "originalBookmarksRemoved": 0,
+        "originalTrackChangeCount": 0,
+        "allOriginalTracksUnchanged": true,
+        "newBookmarksCount": 0,
+        "crashInventoryDelta": {
+          "Nastart": 0,
+          "WebDriverAgent": 0,
+          "JetsamEvent": 0
+        },
+        "normalEmptyEnvironment": true,
+        "NASNormal": true,
+        "playerClosed": true,
+        "WDAIdleSeconds": 10,
+        "WDAAnimationCoolOffSeconds": 2,
+        "nativeConditionsNotRecheckedThisTurn": true,
+        "noConditionInjectedThisTurn": true,
+        "nativeActiveConditions": "not remeasured",
+        "finalHomeActuallyReviewed": true,
+        "nativeWiFiIconActuallyReviewed": true,
+        "finalNativeOwnedAppAbsent": true
+      }
+    },
+    "ipad": {
+      "sample": "S01",
+      "entry": "deviceFile",
+      "liveUSBNameModelOSUDIDVerifiedPrivately": true,
+      "verifiedInstallationReused": true,
+      "newBuildOrInstall": false,
+      "normalEnvironment": {},
+      "result": "TOOL_INSUFFICIENT",
+      "restoreExecuted": false,
+      "nativePauseConfirmed": false,
+      "normalUIExit": false,
+      "ownedMediaStopped": true,
+      "guardSeconds": 120,
+      "guardianFired": false,
+      "failure": "HTTP 404 stale element reference during native pause elements query",
+      "partialEvents": [
+        {
+          "relativeSeconds": 1.504,
+          "event": "diagnostics.playback.next.first_frame",
+          "fields": {
+            "planID": "2E822036"
+          }
+        }
+      ],
+      "audit": {
+        "at": "2026-10-20T19:58:37.643822+08:00",
+        "model": "iPad12,1",
+        "system": "18.3.1",
+        "connection": "USB",
+        "sourceDiffSHA256": "491ed044d0c13cbf31ee3f70125f599431fcb3e783a167097fa9f3d55e7a1184",
+        "latestPackage": {
+          "Nastart": "df32a4befe3768aa1eac0d8175c028c00f5141eb3c93b392f88128ef4a10e1d8",
+          "Nastart.debug.dylib": "f43015ca6ce6c3e3f4b1180e1c6d16e107bab012b8d7442d5f01c574cd71bfb1",
+          "Frameworks/KSPlayer.framework/KSPlayer": "d2ccf7a95166b81d1491dea583eb4518ef23a00add3f91d8a3b9d0e9da2b7e37"
+        },
+        "nonBookmarkPreferenceKeys": 17,
+        "nonBookmarkPreferencesExactlyUnchanged": true,
+        "naturalBookmarkChangesCount": 1,
+        "originalBookmarksChecked": 29,
+        "originalBookmarksRemoved": 0,
+        "originalTrackChangeCount": 0,
+        "allOriginalTracksUnchanged": true,
+        "newBookmarksCount": 0,
+        "crashInventoryDelta": {
+          "Nastart": 0,
+          "WebDriverAgent": 0,
+          "JetsamEvent": 0
+        },
+        "normalEmptyEnvironment": true,
+        "NASNormal": false,
+        "playerClosed": true,
+        "WDAIdleSeconds": 10,
+        "WDAAnimationCoolOffSeconds": 2,
+        "nativeConditionsNotRecheckedThisTurn": true,
+        "noConditionInjectedThisTurn": true,
+        "nativeActiveConditions": "not remeasured",
+        "finalHomeActuallyReviewed": true,
+        "nativeWiFiIconActuallyReviewed": true,
+        "finalNativeOwnedAppAbsent": true
+      }
+    }
+  },
+  "originalPhoneSSIDSelectedAndNativeWiFiReviewed": true,
+  "padNativeWiFiReviewedSSIDNotRemeasured": true,
+  "nativeConditionerActiveValueNotRemeasured": true,
+  "noNetworkConditionInjected": true,
+  "ownedTemporaryPadRunnerStopped": true,
+  "persistentPhoneRunnerPreserved": true,
+  "ownEvidenceRootProcessesAtEnd": 0,
+  "powerWindow": {
+    "window": "2026-10-20 19:52:00–19:59:59 +0800",
+    "systemSleepWakeEvents": 0,
+    "awakeWrapperUsed": true,
+    "midWindowAssertionsNotSeparatelyCaptured": true
+  },
+  "privateNativeHelperOfflineTests": 7,
+  "liveHelperAcceptance": false,
+  "HDRContextOfflineProbe": {
+    "actualHardwareMetadataMeasured": false,
+    "caseCount": 20,
+    "cases": [
+      {
+        "case": "retiredOwnerBeforeMetadataRead",
+        "contextOnlyEligible": false,
+        "metadataReads": 0,
+        "originalObjectAndTagsPreserved": true,
+        "reason": "retiredPlan",
+        "rendererAttempts": 0
+      },
+      {
+        "case": "noCueBeforeMetadataRead",
+        "contextOnlyEligible": false,
+        "metadataReads": 0,
+        "originalObjectAndTagsPreserved": true,
+        "reason": "noCue",
+        "rendererAttempts": 0
+      },
+      {
+        "case": "currentCallbackLacksFrameIdentity",
+        "contextOnlyEligible": false,
+        "metadataReads": 0,
+        "originalObjectAndTagsPreserved": true,
+        "reason": "unknownFrameDolbyIdentity",
+        "rendererAttempts": 0
+      },
+      {
+        "case": "noDoviFlagIsNotDynamicInventory",
+        "contextOnlyEligible": false,
+        "metadataReads": 0,
+        "originalObjectAndTagsPreserved": true,
+        "reason": "unknownDynamicInventory",
+        "rendererAttempts": 0
+      },
+      {
+        "case": "explicitDVWithPQTags",
+        "contextOnlyEligible": false,
+        "metadataReads": 0,
+        "originalObjectAndTagsPreserved": true,
+        "reason": "dolbyVisionUnhandled",
+        "rendererAttempts": 0
+      },
+      {
+        "case": "explicitDVWithoutTransfer",
+        "contextOnlyEligible": false,
+        "metadataReads": 0,
+        "originalObjectAndTagsPreserved": true,
+        "reason": "dolbyVisionUnhandled",
+        "rendererAttempts": 0
+      },
+      {
+        "case": "DVSideDataWithoutTrackFlag",
+        "contextOnlyEligible": false,
+        "metadataReads": 0,
+        "originalObjectAndTagsPreserved": true,
+        "reason": "dolbyVisionUnhandled",
+        "rendererAttempts": 0
+      },
+      {
+        "case": "HDR10PlusSideData",
+        "contextOnlyEligible": false,
+        "metadataReads": 0,
+        "originalObjectAndTagsPreserved": true,
+        "reason": "hdr10PlusUnhandled",
+        "rendererAttempts": 0
+      },
+      {
+        "case": "vividSideData",
+        "contextOnlyEligible": false,
+        "metadataReads": 0,
+        "originalObjectAndTagsPreserved": true,
+        "reason": "vividUnhandled",
+        "rendererAttempts": 0
+      },
+      {
+        "case": "staticContextAbsentFromCallback",
+        "contextOnlyEligible": false,
+        "metadataReads": 0,
+        "originalObjectAndTagsPreserved": true,
+        "reason": "unknownStaticHDRContext",
+        "rendererAttempts": 0
+      },
+      {
+        "case": "staticEDROpaqueUnhandled",
+        "contextOnlyEligible": false,
+        "metadataReads": 0,
+        "originalObjectAndTagsPreserved": true,
+        "reason": "staticHDRUnhandled",
+        "rendererAttempts": 0
+      },
+      {
+        "case": "sourceDescriptionMissing",
+        "contextOnlyEligible": false,
+        "metadataReads": 0,
+        "originalObjectAndTagsPreserved": true,
+        "reason": "unknownSourceDescriptionContext",
+        "rendererAttempts": 0
+      },
+      {
+        "case": "transferMissing",
+        "contextOnlyEligible": false,
+        "metadataReads": 1,
+        "originalObjectAndTagsPreserved": true,
+        "reason": "unknownOrUnsupportedTransfer",
+        "rendererAttempts": 0
+      },
+      {
+        "case": "transfer709IsNotHDRProbeAdmission",
+        "contextOnlyEligible": false,
+        "metadataReads": 1,
+        "originalObjectAndTagsPreserved": true,
+        "reason": "unknownOrUnsupportedTransfer",
+        "rendererAttempts": 0
+      },
+      {
+        "case": "primariesMissing",
+        "contextOnlyEligible": false,
+        "metadataReads": 1,
+        "originalObjectAndTagsPreserved": true,
+        "reason": "missingOrUnsupportedColorTags",
+        "rendererAttempts": 0
+      },
+      {
+        "case": "eightBitRejected",
+        "contextOnlyEligible": false,
+        "metadataReads": 1,
+        "originalObjectAndTagsPreserved": true,
+        "reason": "unsupportedPixelFormat",
+        "rendererAttempts": 0
+      },
+      {
+        "case": "explicitKnownFixture_PQ_video",
+        "contextOnlyEligible": true,
+        "metadataReads": 1,
+        "originalObjectAndTagsPreserved": true,
+        "reason": "contextOnlyEligibleNotProductAdmission",
+        "rendererAttempts": 1
+      },
+      {
+        "case": "explicitKnownFixture_PQ_full",
+        "contextOnlyEligible": true,
+        "metadataReads": 1,
+        "originalObjectAndTagsPreserved": true,
+        "reason": "contextOnlyEligibleNotProductAdmission",
+        "rendererAttempts": 1
+      },
+      {
+        "case": "explicitKnownFixture_HLG_video",
+        "contextOnlyEligible": true,
+        "metadataReads": 1,
+        "originalObjectAndTagsPreserved": true,
+        "reason": "contextOnlyEligibleNotProductAdmission",
+        "rendererAttempts": 1
+      },
+      {
+        "case": "explicitKnownFixture_HLG_full",
+        "contextOnlyEligible": true,
+        "metadataReads": 1,
+        "originalObjectAndTagsPreserved": true,
+        "reason": "contextOnlyEligibleNotProductAdmission",
+        "rendererAttempts": 1
+      }
+    ],
+    "iOSPiPOrHDRPresentationAccepted": false,
+    "outputBuffersAllocated": 0,
+    "productPolicyInstalled": false,
+    "resourceOwnershipSolved": false,
+    "sameArgumentContextDecisions": [
+      "contextOnlyEligibleNotProductAdmission",
+      "dolbyVisionUnhandled"
+    ],
+    "samePixelBufferAndTimeCanRepresentDifferentSimulatedFrameContexts": true,
+    "scope": "Mac synthetic context experiment only",
+    "scriptSHA256": "bcb5bccebc65c3c6b8a2955821fdc79658e9d12252c374a755ddb16e58b2bf1f"
+  },
+  "openRequirements": 28,
+  "checks": {
+    "MacSyntheticContextProbeCases": 20,
+    "privateNativeHelperOfflineCases": 7,
+    "liveNativeHelperAccepted": false,
+    "preflightPassed": 15,
+    "documentationDocuments": 355,
+    "documentationLocalLinks": 1839,
+    "missingLocalLinks": 0,
+    "gitDiffCheck": true,
+    "frozenSourceInputsBinariesAndSignatureVerified": true,
+    "AppXCTestNotRepeatedBecauseAppUnchanged": true
+  }
+}

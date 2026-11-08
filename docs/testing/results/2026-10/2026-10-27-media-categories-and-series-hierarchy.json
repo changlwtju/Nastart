@@ -1,0 +1,197 @@
+{
+  "recordedAt": "2026-10-27T08:46:43.107996+08:00",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "dirtyPreserved": true,
+  "sourceInputs": 391,
+  "sourceDrift": 0,
+  "tests": {
+    "module": "NetworkMedia",
+    "executed": 111,
+    "failures": 0,
+    "scope": "host XCTest; native UI evidenced separately"
+  },
+  "builds": {
+    "mobile": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-27T08:40:14.585680+08:00",
+      "mainSHA256": "fa423b10fd74f3da47f62ce76da98e80c568e966f9ac01886ca45961ce0f2bcf",
+      "signedMachOCount": 30
+    },
+    "tv": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-27T08:40:09.876500+08:00",
+      "mainSHA256": "a629804a266f6a3acb626717eb595233c0e4de76215151074cb42157f0790afe",
+      "signedMachOCount": 27
+    }
+  },
+  "accepted": [
+    "category projection movies/television/animation/unclassified",
+    "series to season to episode navigation",
+    "selected-root-only existing tvshow.nfo and series poster inheritance",
+    "episode exact stem-thumb separated from series artwork",
+    "version-matched local correction overlay for type/season/episode without raw index mutation",
+    "inline folder browser and explicit tvOS selection focus"
+  ],
+  "devices": {
+    "ipad": {
+      "freshIdentityChecked": true,
+      "installedAt": "2026-10-27T08:41:15.711830+08:00",
+      "mainSHA256": "fa423b10fd74f3da47f62ce76da98e80c568e966f9ac01886ca45961ce0f2bcf",
+      "overlayInstallComplete": true,
+      "preferences": {
+        "beforeKeys": 19,
+        "afterKeys": 19,
+        "sameKeys": true,
+        "changedValues": 0,
+        "allNonDiagnosticPreferencesEqual": true
+      },
+      "finalPreferencesSame": true,
+      "normalLaunchEmptyArgumentsEnvironment": true,
+      "actualNAS": true,
+      "files": 3408,
+      "artworkScanVersion": 4,
+      "native": {
+        "device": "ipad",
+        "actualNAS": true,
+        "seriesReached": true,
+        "seasonReached": true,
+        "episodeDetailReached": true,
+        "seriesPosterVisible": 2,
+        "seasonOptions": 4,
+        "episodeThumbnailVisible": 6
+      },
+      "localCorrectionsAfter": 0
+    },
+    "iphone13": {
+      "freshIdentityChecked": true,
+      "installedAt": "2026-10-27T08:41:26.530661+08:00",
+      "mainSHA256": "fa423b10fd74f3da47f62ce76da98e80c568e966f9ac01886ca45961ce0f2bcf",
+      "overlayInstallComplete": true,
+      "preferences": {
+        "beforeKeys": 26,
+        "afterKeys": 26,
+        "sameKeys": true,
+        "changedValues": 0,
+        "allNonDiagnosticPreferencesEqual": true
+      },
+      "finalPreferencesSame": true,
+      "normalLaunchEmptyArgumentsEnvironment": true,
+      "actualNAS": true,
+      "files": 149,
+      "artworkScanVersion": 4,
+      "native": {
+        "device": "iphone13",
+        "actualNAS": true,
+        "wallReached": true,
+        "posters": 8,
+        "categoryButtons": [
+          "network.category.movies"
+        ],
+        "managementMaterialized": false,
+        "markerNote": "Lazy management below fold, use visible grid/category",
+        "packageSHA256": "fa423b10fd74f3da47f62ce76da98e80c568e966f9ac01886ca45961ce0f2bcf"
+      },
+      "localCorrectionsAfter": 0
+    },
+    "tv": {
+      "freshIdentityChecked": true,
+      "installedAt": "2026-10-27T08:41:17.019622+08:00",
+      "mainSHA256": "a629804a266f6a3acb626717eb595233c0e4de76215151074cb42157f0790afe",
+      "overlayInstallComplete": true,
+      "preferences": {
+        "beforeKeys": 15,
+        "afterKeys": 15,
+        "sameKeys": true,
+        "changedValues": 0,
+        "allNonDiagnosticPreferencesEqual": true
+      },
+      "finalPreferencesSame": true,
+      "normalLaunchEmptyArgumentsEnvironment": true,
+      "actualNAS": true,
+      "files": 149,
+      "artworkScanVersion": 4,
+      "native": {
+        "device": "tv",
+        "actualNAS": true,
+        "savedConnectionReopened": true,
+        "visiblePosters": 6,
+        "categoryButtons": [
+          "network.category.movies"
+        ]
+      },
+      "localCorrectionsAfter": 0
+    },
+    "iphone18": {
+      "handsOff": true,
+      "newPackageInstalled": false,
+      "retainedBatch": "07:00 previous artwork package"
+    }
+  },
+  "actualNFOConflict": {
+    "sampleCount": 2,
+    "sameNFOEpisodeSlot": true,
+    "indexMatchesExistingNFO": true,
+    "rawFilesPreserved": true,
+    "writes": 0,
+    "videoRequests": 0
+  },
+  "cleanup": {
+    "at": "2026-10-27T08:44:26.175840+08:00",
+    "originalPhoneRunnersPreserved": true,
+    "ownSessions": {
+      "ipad": {
+        "ownSessionDeleteRequested": true,
+        "mayAffectAppLifecycle": true,
+        "status": 200
+      },
+      "iphone13": {
+        "ownSessionDeleteRequested": true,
+        "mayAffectAppLifecycle": true,
+        "status": 200
+      }
+    },
+    "ownedTVRunnerStopRequested": true,
+    "ownedTVRunnerStopped": true,
+    "TVSettingsRestored": true,
+    "TVSettingsRestorationFresh": true
+  },
+  "limits": [
+    "not all artwork references visually checked",
+    "TV and iPhone13 actual sample is movie child; season navigation native verified on iPad only",
+    "native local editing/restore, last-episode reclassification and empty series navigation still need dedicated regression",
+    "episode multiversions and conflicting existing NFO numbers remain separate physical files",
+    "independent network source playback not implemented",
+    "SMB production selected-root boundary remains unresolved",
+    "FTP/FTPS production adapter and cross-channel session reuse pending",
+    "iPhone18 away, hands off, this package not installed there"
+  ],
+  "mediaRequests": 0,
+  "remoteWrites": 0,
+  "cellularTests": 0,
+  "playbackMatrixNewPasses": 0,
+  "openRequirements": {
+    "total": 30,
+    "inProgress": 14,
+    "pendingAcceptance": 5,
+    "notStarted": 11
+  },
+  "failedWindowsRetained": [
+    "series test compile missing try",
+    "series test fixture used decoded space key, caused test bounds failure; fixture fixed",
+    "correction test compile immutable etag and missing try; tests fixed",
+    "13 prior package authenticated root but recursive child navigation timeout",
+    "TV earlier shared identifier control selected an extra folder; no source saved",
+    "TV no focused item after inline folder change, 400 and bounded interrupted driver retained"
+  ],
+  "ipadScan": {
+    "device": "ipad",
+    "actualNAS": true,
+    "files": 3408,
+    "artworkScanVersion": 4,
+    "seriesMetadataReferences": 3252,
+    "seriesFolders": 59,
+    "seriesArtworkPaths": 56,
+    "episodeArtworkPaths": 2308,
+    "allPhysicalFileIDsPreserved": true
+  }
+}

@@ -1,0 +1,140 @@
+{
+  "at": "2026-10-17T10:30:23.893109+08:00",
+  "scope": "Wi-Fi IPv4 HTTP/1.1 local video byte accounting and intentional stop only",
+  "cellularPlaybackThisBatch": false,
+  "cellularRetryStillBlocked": true,
+  "appSourceChangedThisBatch": false,
+  "sourceHead": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "appSourceDiffSHA256": "e82c4c41675dd3f1c29d3a6bc40e90d5d03fcb303b2dec0e680bfa239c9eb2e1",
+  "configuration": "normal Debug -Onone; empty launch environment",
+  "buildTime": "2026-10-17T08:23:45.550174+08:00",
+  "Xcode": "27.0/27A266a",
+  "binarySHA256": {
+    "Nastart": "4947a184e9c4addf9dedd3ffa5096189c19e1277379092e94ccb881a3d7b6d52",
+    "Nastart.debug.dylib": "95eec6fb9d96eb1b1f9663240d678b235311617cc27e3f33dc071bca147588e2",
+    "Frameworks/KSPlayer.framework/KSPlayer": "f4dc3f88d9c967a8ca53f93a7315e7c8ce70b65f4864722006f8f0fff8347d06"
+  },
+  "appInputsVerified": 173,
+  "appRebuiltThisBatch": false,
+  "historicalFullSuiteFailuresStillOpen": 5,
+  "newPythonUnitTests": {
+    "passed": 18,
+    "total": 18
+  },
+  "iphone13": {
+    "installation": {
+      "device": "iphone13",
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "connection": "USB",
+      "binaries": {
+        "Nastart": "4947a184e9c4addf9dedd3ffa5096189c19e1277379092e94ccb881a3d7b6d52",
+        "Nastart.debug.dylib": "95eec6fb9d96eb1b1f9663240d678b235311617cc27e3f33dc071bca147588e2",
+        "Frameworks/KSPlayer.framework/KSPlayer": "f4dc3f88d9c967a8ca53f93a7315e7c8ce70b65f4864722006f8f0fff8347d06"
+      },
+      "sourceDiffSHA256": "e82c4c41675dd3f1c29d3a6bc40e90d5d03fcb303b2dec0e680bfa239c9eb2e1",
+      "preservesContainer": true,
+      "signatureVerified": true,
+      "actualForegroundUIVerified": true,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "installation": "success",
+      "startedAt": "2026-10-17T10:04:28.813195+08:00",
+      "installedAt": "2026-10-17T10:04:42.212547+08:00",
+      "preferenceKeysUnchanged": true,
+      "preferenceValuesUnchanged": true,
+      "nonDiagnosticKeys": 25
+    },
+    "final": {
+      "at": "2026-10-17T10:27:39.836408+08:00",
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "connection": "USB",
+      "sourceDiffSHA256": "e82c4c41675dd3f1c29d3a6bc40e90d5d03fcb303b2dec0e680bfa239c9eb2e1",
+      "latestPackage": {
+        "Nastart": "4947a184e9c4addf9dedd3ffa5096189c19e1277379092e94ccb881a3d7b6d52",
+        "Nastart.debug.dylib": "95eec6fb9d96eb1b1f9663240d678b235311617cc27e3f33dc071bca147588e2",
+        "Frameworks/KSPlayer.framework/KSPlayer": "f4dc3f88d9c967a8ca53f93a7315e7c8ce70b65f4864722006f8f0fff8347d06"
+      },
+      "nonBookmarkPreferenceKeys": 24,
+      "nonBookmarkPreferencesExactlyUnchanged": true,
+      "naturalBookmarkChangesCount": 0,
+      "originalBookmarksChecked": 36,
+      "originalBookmarksRemoved": 0,
+      "originalTrackChangeCount": 0,
+      "allOriginalTracksUnchanged": true,
+      "newBookmarksCount": 0,
+      "crashInventoryDelta": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      },
+      "normalEmptyEnvironment": true,
+      "NASNormal": true,
+      "playerClosed": true,
+      "WDAIdleSeconds": 10,
+      "WDAAnimationCoolOffSeconds": 2,
+      "nativeConditionsNotRecheckedThisTurn": false,
+      "noConditionInjectedThisTurn": true,
+      "nativeActiveConditions": 0,
+      "finalHomeActuallyReviewed": true
+    },
+    "networkRestore": {
+      "at": "2026-10-17T10:26:49.340084+08:00",
+      "cellularDataRestored": true,
+      "cellularDataSwitch": "1",
+      "WiFiAssistUnchanged": true,
+      "VPNChanged": false,
+      "actualWiFiOn": true,
+      "actualNativeScreenshotsViewed": true
+    },
+    "runnerCleanup": {
+      "at": "2026-10-17T10:28:19.495495+08:00",
+      "fixedRunnerNameMatched": true,
+      "intentionalRunnerTerminationCount": 1,
+      "runnerAbsentAfter": true,
+      "appPresentAfter": true,
+      "actualFinalHomeViewed": true
+    }
+  },
+  "otherDevicesTouchedThisBatch": [],
+  "full": {
+    "serverCompletedBodyBytes": 20162249,
+    "capturedTCPResponseBytes": 20162512,
+    "excessTCPBytesIncludingHTTPHeaders": 263,
+    "capturedBothDirectionPhysicalIPBytes": 21124573,
+    "maxCaptureLagSeconds": 1.0014550685882568,
+    "parseErrors": 0,
+    "cellularIPBytes": 0,
+    "actualFixtureImageViewed": true
+  },
+  "guard": {
+    "thresholdBytes": 4194304,
+    "observedThresholdIPBytes": 4194752,
+    "finalCapturedPhysicalIPBytes": 4746419,
+    "overshootAboveBudgetBytes": 552115,
+    "captureThresholdToKillReturnedSeconds": 0.06802892684936523,
+    "captureThresholdToKillRequestedSeconds": 0.06667804718017578,
+    "serverCompletedWriteBodyBytes": 4521984,
+    "serverPreWriteReservedBytes": 4538368,
+    "capturedTargetTCPResponseBytes": 4522247,
+    "maxCaptureLagSeconds": 1.0063071250915527,
+    "parseErrors": 0,
+    "cellularIPBytes": 0,
+    "stopWasIntentional": true,
+    "ordinaryExitAcceptance": false
+  },
+  "limitations": [
+    "Paced 2000000 B/s local HTTP/1.1 fixture; no Jellyfin HTTPS/h2/QUIC or cellular path coverage",
+    "One-second capture lag and in-flight bytes prevent strict budget guarantee at higher rate",
+    "IPv6 extension headers count IP length but do not classify fixture TCP ports; jumbograms unsupported and fail closed",
+    "Not a playback startup/seek/track-switch performance result; prior 213439783-byte cellular overrun remains FAIL"
+  ],
+  "power": {
+    "sleepWakeEventsCount": 0,
+    "startLocal": "2026-10-17 10:03:29",
+    "endLocal": "2026-10-17T10:28:39.209055",
+    "temporaryOwnAssertionReleaseRequested": true
+  },
+  "privateEvidencePointer": "/tmp/nastart-wifi-budget-evidence"
+}

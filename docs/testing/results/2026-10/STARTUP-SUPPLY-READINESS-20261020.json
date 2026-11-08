@@ -1,0 +1,318 @@
+{
+  "date": "2026-10-20",
+  "newNetworkOrDeviceActions": 0,
+  "usesHistoricalCandidateNotCurrentPackageAcceptance": true,
+  "windows": [
+    {
+      "entry": "jf",
+      "network": "user-reported weak cellular; historical visible 4G; RSRP/RSRQ/SINR unknown",
+      "sourceDiffSHA256": "0d54a71cf005386dad2485805d78af9ca36bd2a2c08a7c6981083513b3f806bf",
+      "candidateDisabledNow": true,
+      "uniqueTraceVerifiedPrivately": true,
+      "identityGrouping": "trace + transfer + taskIndex; private IDs omitted",
+      "boundariesFromTouch": {
+        "layerReadySeconds": 7.85457,
+        "itemReadySeconds": 9.086671,
+        "playingSeconds": 9.109979,
+        "clockSignalSeconds": 9.656759,
+        "readyToPlayingMs": 23.308,
+        "playingToClockSignalMs": 546.78
+      },
+      "segmentsStartedBeforeClockSignal": [
+        {
+          "ordinal": 0,
+          "optionalPrimer": true,
+          "issueSeconds": 3.062872,
+          "headersRecordedSeconds": 8.047673,
+          "upstreamTaskBodyBytes": 1,
+          "upstreamIssueToHeadersCallbackMs": 5001,
+          "upstreamIssueToLastBodyCallbackMs": 5003,
+          "completeRecordedSeconds": 8.086969,
+          "terminalAndReadEvents": [
+            {
+              "recordedSeconds": 8.085596,
+              "stage": "clientReadEnded"
+            },
+            {
+              "recordedSeconds": 8.086969,
+              "result": "complete",
+              "status": "206",
+              "deliveredBytes": "1",
+              "expectedBytes": "1",
+              "errorDomain": "-",
+              "errorCode": "-",
+              "transportErrorKind": "none",
+              "finishSource": "clientTerminalSend"
+            }
+          ]
+        },
+        {
+          "ordinal": 0,
+          "optionalPrimer": false,
+          "issueSeconds": 3.585974,
+          "headersRecordedSeconds": 8.078751,
+          "upstreamTaskBodyBytes": 28430,
+          "upstreamIssueToHeadersCallbackMs": 4471,
+          "upstreamIssueToLastBodyCallbackMs": 4471,
+          "terminalAndReadEvents": [
+            {
+              "recordedSeconds": 7.581677,
+              "stage": "clientReadEnded"
+            },
+            {
+              "recordedSeconds": 8.084144,
+              "result": "未能完成操作。（Network.NWError错误0。）",
+              "status": "200",
+              "deliveredBytes": "28430",
+              "expectedBytes": "1355480",
+              "errorDomain": "Network.NWError",
+              "errorCode": "0",
+              "transportErrorKind": "posix",
+              "finishSource": "clientBodySend"
+            },
+            {
+              "recordedSeconds": 8.084621,
+              "stage": "upstreamCancellationRequested"
+            }
+          ]
+        },
+        {
+          "ordinal": 0,
+          "optionalPrimer": false,
+          "issueSeconds": 7.619219,
+          "headersRecordedSeconds": 7.714356,
+          "upstreamTaskBodyBytes": 1355480,
+          "upstreamIssueToHeadersCallbackMs": 129,
+          "upstreamIssueToLastBodyCallbackMs": 729,
+          "completeRecordedSeconds": 8.321326,
+          "terminalAndReadEvents": [
+            {
+              "recordedSeconds": 8.314033,
+              "stage": "clientReadEnded"
+            },
+            {
+              "recordedSeconds": 8.321326,
+              "result": "complete",
+              "status": "200",
+              "deliveredBytes": "1355480",
+              "expectedBytes": "1355480",
+              "errorDomain": "-",
+              "errorCode": "-",
+              "transportErrorKind": "none",
+              "finishSource": "clientTerminalSend"
+            }
+          ]
+        },
+        {
+          "ordinal": 1,
+          "optionalPrimer": false,
+          "issueSeconds": 8.321664,
+          "headersRecordedSeconds": 8.396713,
+          "upstreamTaskBodyBytes": 2534616,
+          "upstreamIssueToHeadersCallbackMs": 80,
+          "upstreamIssueToLastBodyCallbackMs": 570,
+          "completeRecordedSeconds": 8.959519,
+          "terminalAndReadEvents": [
+            {
+              "recordedSeconds": 8.889191,
+              "stage": "clientReadEnded"
+            },
+            {
+              "recordedSeconds": 8.959519,
+              "result": "complete",
+              "status": "200",
+              "deliveredBytes": "2534616",
+              "expectedBytes": "2534616",
+              "errorDomain": "-",
+              "errorCode": "-",
+              "transportErrorKind": "none",
+              "finishSource": "clientTerminalSend"
+            }
+          ]
+        },
+        {
+          "ordinal": 2,
+          "optionalPrimer": false,
+          "issueSeconds": 8.959882,
+          "headersRecordedSeconds": 9.090434,
+          "upstreamTaskBodyBytes": 2233440,
+          "upstreamIssueToHeadersCallbackMs": 182,
+          "upstreamIssueToLastBodyCallbackMs": 621,
+          "completeRecordedSeconds": 9.544885,
+          "terminalAndReadEvents": [
+            {
+              "recordedSeconds": 9.520538,
+              "stage": "clientReadEnded"
+            },
+            {
+              "recordedSeconds": 9.544885,
+              "result": "complete",
+              "status": "200",
+              "deliveredBytes": "2233440",
+              "expectedBytes": "2233440",
+              "errorDomain": "-",
+              "errorCode": "-",
+              "transportErrorKind": "none",
+              "finishSource": "clientTerminalSend"
+            }
+          ]
+        },
+        {
+          "ordinal": 3,
+          "optionalPrimer": false,
+          "issueSeconds": 9.545161,
+          "headersRecordedSeconds": 9.757743,
+          "upstreamTaskBodyBytes": 1943544,
+          "upstreamIssueToHeadersCallbackMs": 232,
+          "upstreamIssueToLastBodyCallbackMs": 653,
+          "completeRecordedSeconds": 10.218329,
+          "terminalAndReadEvents": [
+            {
+              "recordedSeconds": 10.17921,
+              "stage": "clientReadEnded"
+            },
+            {
+              "recordedSeconds": 10.218329,
+              "result": "complete",
+              "status": "200",
+              "deliveredBytes": "1943544",
+              "expectedBytes": "1943544",
+              "errorDomain": "-",
+              "errorCode": "-",
+              "transportErrorKind": "none",
+              "finishSource": "clientTerminalSend"
+            }
+          ]
+        }
+      ],
+      "importantLimit": "Supply, AV readiness and rendering overlap. These are recorded client event times, not additive exclusive costs or screen presentation."
+    },
+    {
+      "entry": "file",
+      "network": "user-reported weak cellular; historical visible 4G; RSRP/RSRQ/SINR unknown",
+      "sourceDiffSHA256": "0d54a71cf005386dad2485805d78af9ca36bd2a2c08a7c6981083513b3f806bf",
+      "candidateDisabledNow": true,
+      "uniqueTraceVerifiedPrivately": true,
+      "identityGrouping": "trace + transfer + taskIndex; private IDs omitted",
+      "boundariesFromTouch": {
+        "layerReadySeconds": 4.384002,
+        "itemReadySeconds": 5.615454,
+        "playingSeconds": 5.640962,
+        "clockSignalSeconds": 6.22448,
+        "readyToPlayingMs": 25.508,
+        "playingToClockSignalMs": 583.518
+      },
+      "segmentsStartedBeforeClockSignal": [
+        {
+          "ordinal": 0,
+          "optionalPrimer": true,
+          "issueSeconds": 1.792294,
+          "headersRecordedSeconds": 4.292051,
+          "upstreamTaskBodyBytes": 1,
+          "upstreamIssueToHeadersCallbackMs": 2511,
+          "upstreamIssueToLastBodyCallbackMs": 2515,
+          "completeRecordedSeconds": 4.337028,
+          "terminalAndReadEvents": [
+            {
+              "recordedSeconds": 4.327331,
+              "stage": "clientReadEnded"
+            },
+            {
+              "recordedSeconds": 4.337028,
+              "result": "complete",
+              "status": "206",
+              "deliveredBytes": "1",
+              "expectedBytes": "1",
+              "errorDomain": "-",
+              "errorCode": "-",
+              "transportErrorKind": "none",
+              "finishSource": "clientTerminalSend"
+            }
+          ]
+        },
+        {
+          "ordinal": 0,
+          "optionalPrimer": false,
+          "issueSeconds": 2.160843,
+          "headersRecordedSeconds": 4.295222,
+          "upstreamTaskBodyBytes": 1941476,
+          "upstreamIssueToHeadersCallbackMs": 2132,
+          "upstreamIssueToLastBodyCallbackMs": 2637,
+          "completeRecordedSeconds": 4.824027,
+          "terminalAndReadEvents": [
+            {
+              "recordedSeconds": 4.798446,
+              "stage": "clientReadEnded"
+            },
+            {
+              "recordedSeconds": 4.824027,
+              "result": "complete",
+              "status": "200",
+              "deliveredBytes": "1941476",
+              "expectedBytes": "1941476",
+              "errorDomain": "-",
+              "errorCode": "-",
+              "transportErrorKind": "none",
+              "finishSource": "clientTerminalSend"
+            }
+          ]
+        },
+        {
+          "ordinal": 1,
+          "optionalPrimer": false,
+          "issueSeconds": 4.824447,
+          "headersRecordedSeconds": 5.121969,
+          "upstreamTaskBodyBytes": 5597136,
+          "upstreamIssueToHeadersCallbackMs": 317,
+          "upstreamIssueToLastBodyCallbackMs": 1302,
+          "completeRecordedSeconds": 6.131847,
+          "terminalAndReadEvents": [
+            {
+              "recordedSeconds": 6.129557,
+              "stage": "clientReadEnded"
+            },
+            {
+              "recordedSeconds": 6.131847,
+              "result": "complete",
+              "status": "200",
+              "deliveredBytes": "5597136",
+              "expectedBytes": "5597136",
+              "errorDomain": "-",
+              "errorCode": "-",
+              "transportErrorKind": "none",
+              "finishSource": "clientTerminalSend"
+            }
+          ]
+        },
+        {
+          "ordinal": 2,
+          "optionalPrimer": false,
+          "issueSeconds": 6.132363,
+          "headersRecordedSeconds": 6.22745,
+          "upstreamTaskBodyBytes": 6529616,
+          "upstreamIssueToHeadersCallbackMs": 91,
+          "upstreamIssueToLastBodyCallbackMs": 1377,
+          "completeRecordedSeconds": 7.514351,
+          "terminalAndReadEvents": [
+            {
+              "recordedSeconds": 7.493385,
+              "stage": "clientReadEnded"
+            },
+            {
+              "recordedSeconds": 7.514351,
+              "result": "complete",
+              "status": "200",
+              "deliveredBytes": "6529616",
+              "expectedBytes": "6529616",
+              "errorDomain": "-",
+              "errorCode": "-",
+              "transportErrorKind": "none",
+              "finishSource": "clientTerminalSend"
+            }
+          ]
+        }
+      ],
+      "importantLimit": "Supply, AV readiness and rendering overlap. These are recorded client event times, not additive exclusive costs or screen presentation."
+    }
+  ]
+}

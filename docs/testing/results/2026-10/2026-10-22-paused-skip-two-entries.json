@@ -1,0 +1,385 @@
+{
+  "date": "2026-10-22",
+  "scope": "iPhone13 S01 two ordinary Debug entry points; pause and +/-15sec buttons only",
+  "configuration": "normal Debug -Onone, empty environment and arguments",
+  "sourceDiffSHA256": "e65a8da17ea0db5e1a22d374c2bb79c5d5d8dd4eb4acb4a5fedd8f3057cbaa16",
+  "ipaSHA256": "45d213bafb07a70a3543980ff961388a817172e7e9176185f67c76fb2b1eaf9b",
+  "newProductSourceOrBuild": false,
+  "newTestExecution": false,
+  "mediaPlayCommands": 2,
+  "pipCommands": 0,
+  "normalPlayerExitConfirmed": {
+    "jellyfin": true,
+    "deviceFile": false
+  },
+  "screenEvidenceActuallyReviewed": true,
+  "wholeRequirementClosed": false,
+  "strictEntryPerformanceComparison": false,
+  "nativeProcessInventoryUnavailable": true,
+  "earlierZeroPlayFailures": [
+    {
+      "window": "initial native baseline",
+      "failure": "DTX SocketError in runningProcesses before app_stop completed",
+      "playCommands": 0
+    },
+    {
+      "window": "independent WDA gate",
+      "failure": "helper incorrectly required state1; actual state2 means background suspended; later native Home, unlocked, SpringBoard and state2/2 observed",
+      "playCommands": 0
+    },
+    {
+      "window": "file navigation",
+      "failure": "270sec independent guardian stopped owned App during manual navigation; later foreground guard prevented folder click",
+      "playCommands": 0
+    }
+  ],
+  "finalAudit": {
+    "at": "2026-10-22T22:17:32.437483+08:00",
+    "latestPackageReverified": true,
+    "sourceInputs": 173,
+    "librariesIndividuallyReverified": 29,
+    "sourceDiffSHA256": "e65a8da17ea0db5e1a22d374c2bb79c5d5d8dd4eb4acb4a5fedd8f3057cbaa16",
+    "ipaSHA256": "45d213bafb07a70a3543980ff961388a817172e7e9176185f67c76fb2b1eaf9b",
+    "freshDeviceIdentityUSBVerified": true,
+    "model": "iPhone14,5",
+    "system": "16.3.1",
+    "WDAModeAutoIdle10Cool2Verified": true,
+    "WDAAppStates": [
+      1,
+      1
+    ],
+    "activeSpringboard": true,
+    "nativeProcessInventoryUnavailable": true,
+    "allNonBookmarkPreferencesEqualToJFWindowStart": true,
+    "bookmarkKeyCount": 36,
+    "trackChanges": 0,
+    "progressEntriesChangedSinceJFStart": 2,
+    "networkConfigurationChanged": false,
+    "newAppBuildOrTests": false,
+    "nativeHomeReviewPending": false,
+    "nativeHomeWiFiNoPiPActuallyReviewed": true
+  },
+  "observations": {
+    "jellyfin": {
+      "start": "2026-10-22T22:04:24.139959+08:00",
+      "end": "2026-10-22T22:07:14.042504+08:00",
+      "playCommands": 1,
+      "events": [
+        {
+          "sincePlayDispatchSeconds": 2.0911,
+          "event": "first_frame",
+          "metrics": {}
+        },
+        {
+          "sincePlayDispatchSeconds": 46.783,
+          "event": "local_resume_save_boundary",
+          "metrics": {
+            "boundary": "nativeCallback",
+            "engine": "KSPlayer",
+            "memoryReadback": "match",
+            "saveOutcome": "submitted",
+            "sourceKind": "jellyfin"
+          }
+        },
+        {
+          "sincePlayDispatchSeconds": 46.7849,
+          "event": "paused",
+          "metrics": {
+            "currentSeconds": "44.745",
+            "engine": "KSPlayer"
+          }
+        },
+        {
+          "sincePlayDispatchSeconds": 46.7853,
+          "event": "control_action",
+          "metrics": {
+            "action": "pause",
+            "engine": "KSPlayer",
+            "value": "-"
+          }
+        },
+        {
+          "sincePlayDispatchSeconds": 61.8285,
+          "event": "seek_started",
+          "metrics": {
+            "engine": "KSPlayer",
+            "seekDeltaSeconds": "15.021",
+            "seekTargetSeconds": "59.766"
+          }
+        },
+        {
+          "sincePlayDispatchSeconds": 61.8292,
+          "event": "seek_dispatched",
+          "metrics": {
+            "engine": "KSPlayer",
+            "mainThreadSubmissionMs": "0.1365416683256626"
+          }
+        },
+        {
+          "sincePlayDispatchSeconds": 61.8298,
+          "event": "control_action",
+          "metrics": {
+            "action": "seekRequested",
+            "engine": "KSPlayer",
+            "value": "59.766"
+          }
+        },
+        {
+          "sincePlayDispatchSeconds": 79.4837,
+          "event": "seek_started",
+          "metrics": {
+            "engine": "KSPlayer",
+            "seekDeltaSeconds": "-15.0",
+            "seekTargetSeconds": "44.766"
+          }
+        },
+        {
+          "sincePlayDispatchSeconds": 79.4842,
+          "event": "seek_dispatched",
+          "metrics": {
+            "engine": "KSPlayer",
+            "mainThreadSubmissionMs": "0.07354165427386761"
+          }
+        },
+        {
+          "sincePlayDispatchSeconds": 79.4846,
+          "event": "control_action",
+          "metrics": {
+            "action": "seekRequested",
+            "engine": "KSPlayer",
+            "value": "44.766"
+          }
+        },
+        {
+          "sincePlayDispatchSeconds": 93.7249,
+          "event": "control_action",
+          "metrics": {
+            "action": "play",
+            "engine": "KSPlayer",
+            "value": "-"
+          }
+        },
+        {
+          "sincePlayDispatchSeconds": 94.0091,
+          "event": "resumed",
+          "metrics": {
+            "engine": "KSPlayer",
+            "pauseDurationMs": "47027",
+            "resumeRecoveryMs": "300"
+          }
+        },
+        {
+          "sincePlayDispatchSeconds": 94.0094,
+          "event": "seek_recovered",
+          "metrics": {
+            "currentSeconds": "44.916",
+            "engine": "KSPlayer",
+            "seekRecoveryMs": "14605",
+            "seekTargetSeconds": "44.766"
+          }
+        },
+        {
+          "sincePlayDispatchSeconds": 114.2373,
+          "event": "local_resume_save_boundary",
+          "metrics": {
+            "boundary": "close",
+            "engine": "KSPlayer",
+            "memoryReadback": "match",
+            "saveOutcome": "submitted",
+            "sourceKind": "jellyfin"
+          }
+        },
+        {
+          "sincePlayDispatchSeconds": 114.768,
+          "event": "local_resume_save_boundary",
+          "metrics": {
+            "boundary": "viewDisappear",
+            "engine": "KSPlayer",
+            "memoryReadback": "match",
+            "saveOutcome": "submitted",
+            "sourceKind": "jellyfin"
+          }
+        }
+      ],
+      "failureType": null,
+      "ownedGuardianStopped": true,
+      "ownedSyslogStopped": true,
+      "finalWDAAppStates": [
+        1,
+        1
+      ],
+      "nonBookmarkPreferencesUnchanged": true,
+      "originalTrackChanges": 0,
+      "bookmarkProgressChanges": 1,
+      "newReportNameInventory": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      },
+      "actualUI": {
+        "pausedSeconds": 44,
+        "forwardSeconds": 59,
+        "backwardSeconds": 44,
+        "resumedSeconds": 48,
+        "normalReturnToOriginalDetailVisible": true
+      }
+    },
+    "deviceFile": {
+      "start": "2026-10-22T22:14:35.337112+08:00",
+      "end": "2026-10-22T22:16:20.379159+08:00",
+      "playCommands": 1,
+      "events": [
+        {
+          "sincePlayDispatchSeconds": 1.5054,
+          "event": "first_frame",
+          "metrics": {}
+        },
+        {
+          "sincePlayDispatchSeconds": 21.5455,
+          "event": "local_resume_save_boundary",
+          "metrics": {
+            "boundary": "nativeCallback",
+            "engine": "KSPlayer",
+            "memoryReadback": "match",
+            "saveOutcome": "submitted",
+            "sourceKind": "dsmFile"
+          }
+        },
+        {
+          "sincePlayDispatchSeconds": 21.5475,
+          "event": "paused",
+          "metrics": {
+            "currentSeconds": "20.126",
+            "engine": "KSPlayer"
+          }
+        },
+        {
+          "sincePlayDispatchSeconds": 21.5482,
+          "event": "control_action",
+          "metrics": {
+            "action": "pause",
+            "engine": "KSPlayer",
+            "value": "-"
+          }
+        },
+        {
+          "sincePlayDispatchSeconds": 33.3037,
+          "event": "seek_started",
+          "metrics": {
+            "engine": "KSPlayer",
+            "seekDeltaSeconds": "15.042999999999996",
+            "seekTargetSeconds": "35.169"
+          }
+        },
+        {
+          "sincePlayDispatchSeconds": 33.3047,
+          "event": "seek_dispatched",
+          "metrics": {
+            "engine": "KSPlayer",
+            "mainThreadSubmissionMs": "0.16820832388475537"
+          }
+        },
+        {
+          "sincePlayDispatchSeconds": 33.3056,
+          "event": "control_action",
+          "metrics": {
+            "action": "seekRequested",
+            "engine": "KSPlayer",
+            "value": "35.169"
+          }
+        },
+        {
+          "sincePlayDispatchSeconds": 38.0577,
+          "event": "seek_started",
+          "metrics": {
+            "engine": "KSPlayer",
+            "seekDeltaSeconds": "-15.0",
+            "seekTargetSeconds": "20.168999999999997"
+          }
+        },
+        {
+          "sincePlayDispatchSeconds": 38.0588,
+          "event": "seek_dispatched",
+          "metrics": {
+            "engine": "KSPlayer",
+            "mainThreadSubmissionMs": "0.1113333273679018"
+          }
+        },
+        {
+          "sincePlayDispatchSeconds": 38.0594,
+          "event": "control_action",
+          "metrics": {
+            "action": "seekRequested",
+            "engine": "KSPlayer",
+            "value": "20.169"
+          }
+        },
+        {
+          "sincePlayDispatchSeconds": 53.2209,
+          "event": "control_action",
+          "metrics": {
+            "action": "play",
+            "engine": "KSPlayer",
+            "value": "-"
+          }
+        },
+        {
+          "sincePlayDispatchSeconds": 53.5008,
+          "event": "resumed",
+          "metrics": {
+            "engine": "KSPlayer",
+            "pauseDurationMs": "31666",
+            "resumeRecoveryMs": "299"
+          }
+        },
+        {
+          "sincePlayDispatchSeconds": 53.5012,
+          "event": "seek_recovered",
+          "metrics": {
+            "currentSeconds": "20.318",
+            "engine": "KSPlayer",
+            "seekRecoveryMs": "15471",
+            "seekTargetSeconds": "20.168999999999997"
+          }
+        }
+      ],
+      "failureType": "WDAResponseError",
+      "ownedGuardianStopped": true,
+      "ownedSyslogStopped": true,
+      "finalWDAAppStates": [
+        1,
+        1
+      ],
+      "nonBookmarkPreferencesUnchanged": true,
+      "originalTrackChanges": 0,
+      "bookmarkProgressChanges": 1,
+      "newReportNameInventory": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      },
+      "actualUI": {
+        "pausedSeconds": 20,
+        "forwardSeconds": 35,
+        "backwardSeconds": 20,
+        "resumedSeconds": 23,
+        "resumedScreenshot": "studio text card changed to blue transition; sparse frame only",
+        "normalReturnToOriginalDetailVisible": false,
+        "closeRequestFailure": "HTTP404 stale element reference; no replay; owned App terminated by cleanup"
+      }
+    }
+  },
+  "closeBoundaryOfflineReview": {
+    "reviewedAt": "2026-10-22T22:22:01.046882+08:00",
+    "productAutoHideSeconds": 4.5,
+    "productFadeSeconds": 0.25,
+    "resumeDispatchToCloseDispatchSeconds": 4.843976020812988,
+    "resumedXMLHadCloseButton": true,
+    "failureXMLHadCloseButton": false,
+    "nativeImageSavedAfterXMLSeconds": 0.8335120677947998,
+    "inference": "Timing is consistent with normal chrome auto-hide between query and click; no instrumented controlsRevision task-start event, so no unique causal claim",
+    "requestedAppChange": false,
+    "requestedReplay": false,
+    "nextObservation": "Fresh control geometry with bounded observation-to-input age; save response/event and post-input frame; reject expired observation before dispatch; do not replay uncertain action"
+  }
+}

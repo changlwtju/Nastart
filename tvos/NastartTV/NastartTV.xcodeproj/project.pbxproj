@@ -1,0 +1,674 @@
+// !$*UTF8*$!
+{
+	"archiveVersion" = 1;
+	"classes" = {
+	};
+	"objectVersion" = 56;
+	"objects" = {
+        "8AC15821D124878CE6128AC8" = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "../../ios/Nastart/Nastart/Playback/Core/PlaybackKSOptionsPolicy.swift"; sourceTree = SOURCE_ROOT; };
+        "90F3C38B0AA754A62CB4533B" = { isa = PBXBuildFile; fileRef = "8AC15821D124878CE6128AC8"; };
+        "E3E0C01AE941BAD8F9D2E527" = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "../../ios/Nastart/Nastart/Playback/Core/LocalPlaybackResumeStore.swift"; sourceTree = SOURCE_ROOT; };
+        "6792AF52CE7FF89660648BD4" = { isa = PBXBuildFile; fileRef = "E3E0C01AE941BAD8F9D2E527"; };
+        "F9C364EE259059DCC945E0DD" = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TVUnifiedPlayback.swift"; sourceTree = "<group>"; };
+        "AA483777D31296E23EF48309" = { isa = PBXBuildFile; fileRef = "F9C364EE259059DCC945E0DD"; };
+        "14587296EB88A5BC17189D29" = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "../../ios/Nastart/Nastart/Playback/Core/PlaybackEngine.swift"; sourceTree = SOURCE_ROOT; };
+        "D87234C107FD4132F4275A3D" = { isa = PBXBuildFile; fileRef = "14587296EB88A5BC17189D29"; };
+        "2C0AE782019544F95A438E5E" = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "../../ios/Nastart/Nastart/Playback/Core/PlaybackIntent.swift"; sourceTree = SOURCE_ROOT; };
+        "4BBB16629C6798E11300A12D" = { isa = PBXBuildFile; fileRef = "2C0AE782019544F95A438E5E"; };
+        "0313115EBA86144CCEBA47B6" = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "../../ios/Nastart/Nastart/Playback/Core/PlaybackPlan.swift"; sourceTree = SOURCE_ROOT; };
+        "188F765490C03A8F814A6DFE" = { isa = PBXBuildFile; fileRef = "0313115EBA86144CCEBA47B6"; };
+        "F350BB51103212798DB2F858" = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "../../ios/Nastart/Nastart/Playback/Core/PlaybackPlanningPolicy.swift"; sourceTree = SOURCE_ROOT; };
+        "496B6FBCEE1E03DD5CEBC324" = { isa = PBXBuildFile; fileRef = "F350BB51103212798DB2F858"; };
+        "12C1F549EF15F6D21466F191" = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "../../ios/Nastart/Nastart/Playback/Core/PlaybackRoute.swift"; sourceTree = SOURCE_ROOT; };
+        "5AEADD9A6BED6BE218E42E8D" = { isa = PBXBuildFile; fileRef = "12C1F549EF15F6D21466F191"; };
+        "C960C69588B0656509FD8C40" = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "../../ios/Nastart/Nastart/Playback/Core/PlaybackSessionCoordinator.swift"; sourceTree = SOURCE_ROOT; };
+        "B97223ACB0D10A4949798251" = { isa = PBXBuildFile; fileRef = "C960C69588B0656509FD8C40"; };
+        "894389ECD5623DEED105CFD5" = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "../../ios/Nastart/Nastart/Playback/Core/URLPlaybackSourceResolver.swift"; sourceTree = SOURCE_ROOT; };
+        "CA8231BC4EE1339EDF731D2E" = { isa = PBXBuildFile; fileRef = "894389ECD5623DEED105CFD5"; };
+        "0B5D5D6FFEB6E4B93B6E024C" = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "../../ios/Nastart/Nastart/Playback/IO/PlaybackByteRange.swift"; sourceTree = SOURCE_ROOT; };
+        "D76ACFD6A6214313809FC0FD" = { isa = PBXBuildFile; fileRef = "0B5D5D6FFEB6E4B93B6E024C"; };
+        "CD377AF1E6B4AEF026501C29" = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "../../ios/Nastart/Nastart/Playback/IO/PlaybackIOContext.swift"; sourceTree = SOURCE_ROOT; };
+        "F79BB20721D2278975EA8A08" = { isa = PBXBuildFile; fileRef = "CD377AF1E6B4AEF026501C29"; };
+        "68239F467604F9F8CD29410E" = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "../../ios/Nastart/Nastart/Playback/IO/PreloadCoordinator.swift"; sourceTree = SOURCE_ROOT; };
+        "EB1FF007ACB2DF18CADD060F" = { isa = PBXBuildFile; fileRef = "68239F467604F9F8CD29410E"; };
+        "BAEAECE44601F9A5347B7370" = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "../../ios/Nastart/Nastart/Playback/IO/RangeCacheStore.swift"; sourceTree = SOURCE_ROOT; };
+        "47721B6D8E204E834550DABB" = { isa = PBXBuildFile; fileRef = "BAEAECE44601F9A5347B7370"; };
+        "F0899FF91321AB2E0BA94FD0" = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "../../ios/Nastart/Nastart/Playback/Diagnostics/PlaybackDiagnostics.swift"; sourceTree = SOURCE_ROOT; };
+        "01FD572A0D2DD99C6C88CFB9" = { isa = PBXBuildFile; fileRef = "F0899FF91321AB2E0BA94FD0"; };
+        "5E1BD0FA9B5BA5060E36FE0D" = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "../../ios/Nastart/Nastart/Playback/Diagnostics/PlaybackScenarioMatrix.swift"; sourceTree = SOURCE_ROOT; };
+        "62CF9F731A3B271E3424E5F4" = { isa = PBXBuildFile; fileRef = "5E1BD0FA9B5BA5060E36FE0D"; };
+        "02F43BD1E574F2D3D60E447C" = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "../../ios/Nastart/Nastart/Playback/Engines/PlaybackEngineAvailability.swift"; sourceTree = SOURCE_ROOT; };
+        "7F3BBF1F3DBD08ACE0C1D24E" = { isa = PBXBuildFile; fileRef = "02F43BD1E574F2D3D60E447C"; };
+        "47F8619351D1EFEBB3F58991" = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "../../ios/Nastart/Nastart/Core/Stores/DiagnosticLogStore.swift"; sourceTree = SOURCE_ROOT; };
+        "0F0F8BC0C4967387EEE433BA" = { isa = PBXBuildFile; fileRef = "47F8619351D1EFEBB3F58991"; };
+        "C02610260000000000000001" = { isa = XCLocalSwiftPackageReference; relativePath = "../../ios/Nastart/Packages/NetworkMedia"; };
+        "C02610260000000000000002" = { isa = XCSwiftPackageProductDependency; package = "C02610260000000000000001"; productName = NetworkMedia; };
+        "C02610260000000000000003" = { isa = PBXBuildFile; productRef = "C02610260000000000000002"; };
+        "D3516ED3516ED3516ED3516E1" = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "../../ios/Nastart/Nastart/Core/Design/AppTheme.swift"; sourceTree = SOURCE_ROOT; };
+        "D3516ED3516ED3516ED3516E2" = { isa = PBXBuildFile; fileRef = "D3516ED3516ED3516ED3516E1"; };
+        "A0A0A0A0A0A0A0A0A0A0A001" = { isa = XCLocalSwiftPackageReference; relativePath = "../../ios/Nastart/Packages/KSPlayer"; };
+        "A0A0A0A0A0A0A0A0A0A0A002" = { isa = XCSwiftPackageProductDependency; package = "A0A0A0A0A0A0A0A0A0A0A001"; productName = KSPlayer; };
+        "A0A0A0A0A0A0A0A0A0A0A006" = { isa = PBXBuildFile; productRef = "A0A0A0A0A0A0A0A0A0A0A002"; };
+        "A0A0A0A0A0A0A0A0A0A0A003" = { isa = PBXBuildFile; productRef = "A0A0A0A0A0A0A0A0A0A0A002"; };
+        "A0A0A0A0A0A0A0A0A0A0A004" = { isa = PBXBuildFile; productRef = "A0A0A0A0A0A0A0A0A0A0A002"; settings = { ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy); }; };
+        "A0A0A0A0A0A0A0A0A0A0A005" = { isa = PBXCopyFilesBuildPhase; buildActionMask = 2147483647; dstPath = ""; dstSubfolderSpec = 10; files = ("A0A0A0A0A0A0A0A0A0A0A004"); name = "Embed Frameworks"; runOnlyForDeploymentPostprocessing = 0; };
+
+		"5CB4CA877082BE838906D46F" = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TVDSMClient.swift"; sourceTree = "<group>"; };
+		"98BB0B3EA7206302396BF073" = { isa = PBXBuildFile; fileRef = "5CB4CA877082BE838906D46F"; };
+		"58589B594EB5FBF9C72EE55B" = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TVNASViews.swift"; sourceTree = "<group>"; };
+		"2151F6EEEB448FAFA182A83B" = { isa = PBXBuildFile; fileRef = "58589B594EB5FBF9C72EE55B"; };
+		"A011C0A011C0A011C0A011C0" = { isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Assets.xcassets"; sourceTree = "<group>"; };
+		"B011C0B011C0B011C0B011C0" = { isa = PBXBuildFile; fileRef = "A011C0A011C0A011C0A011C0"; };
+		"502473C5BF8E3E6EB2714B1B" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "sourcecode.swift";
+			"path" = "NastartTVApp.swift";
+			"sourceTree" = "<group>";
+		};
+		"133B50A28D531BA9BBD66092" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "sourcecode.swift";
+			"path" = "TVAccountVault.swift";
+			"sourceTree" = "<group>";
+		};
+		"4E83625AF7DF46CE0A3B34B7" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "sourcecode.swift";
+			"path" = "TVJellyfinClient.swift";
+			"sourceTree" = "<group>";
+		};
+		"8690F969CE8D2B1A8EB1AB3B" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "sourcecode.swift";
+			"path" = "TVModels.swift";
+			"sourceTree" = "<group>";
+		};
+		"C74965FCAA8744255B006E18" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "sourcecode.swift";
+			"path" = "TVPlaybackSession.swift";
+			"sourceTree" = "<group>";
+		};
+		"1984D06666F1A47AAAFCF4AE" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "sourcecode.swift";
+			"path" = "TVViews.swift";
+			"sourceTree" = "<group>";
+		};
+		"5494262DC15AACDA8B53D907" = {
+			"isa" = "PBXGroup";
+			"children" = (
+				"F9C364EE259059DCC945E0DD",
+                "D3516ED3516ED3516ED3516E1",
+                "8AC15821D124878CE6128AC8",
+
+                "E3E0C01AE941BAD8F9D2E527",
+
+                "14587296EB88A5BC17189D29",
+                "2C0AE782019544F95A438E5E",
+                "0313115EBA86144CCEBA47B6",
+                "F350BB51103212798DB2F858",
+                "12C1F549EF15F6D21466F191",
+                "C960C69588B0656509FD8C40",
+                "894389ECD5623DEED105CFD5",
+                "0B5D5D6FFEB6E4B93B6E024C",
+                "CD377AF1E6B4AEF026501C29",
+                "68239F467604F9F8CD29410E",
+                "BAEAECE44601F9A5347B7370",
+                "F0899FF91321AB2E0BA94FD0",
+                "5E1BD0FA9B5BA5060E36FE0D",
+                "02F43BD1E574F2D3D60E447C",
+                "47F8619351D1EFEBB3F58991",
+
+				"5CB4CA877082BE838906D46F",
+				"58589B594EB5FBF9C72EE55B",
+
+				"502473C5BF8E3E6EB2714B1B",
+				"133B50A28D531BA9BBD66092",
+				"4E83625AF7DF46CE0A3B34B7",
+				"8690F969CE8D2B1A8EB1AB3B",
+				"C74965FCAA8744255B006E18",
+				"1984D06666F1A47AAAFCF4AE",
+			);
+			"path" = "Sources";
+			"sourceTree" = "<group>";
+		};
+		"39B30539CB2886BD05253E1B" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "sourcecode.swift";
+			"path" = "TVClientTests.swift";
+			"sourceTree" = "<group>";
+		};
+		"3A70420C8C30B687D5A7E450" = {
+			"isa" = "PBXGroup";
+			"children" = (
+				"39B30539CB2886BD05253E1B",
+			);
+			"path" = "Tests";
+			"sourceTree" = "<group>";
+		};
+		"2D48A0D6465633F61E0336D1" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "sourcecode.swift";
+			"path" = "TVLaunchTests.swift";
+			"sourceTree" = "<group>";
+		};
+		"98C1F91E716CEFFAD6C8DC95" = {
+			"isa" = "PBXGroup";
+			"children" = (
+				"2D48A0D6465633F61E0336D1",
+			);
+			"path" = "UITests";
+			"sourceTree" = "<group>";
+		};
+		"4BE8D3865E4213C2173930E8" = {
+			"isa" = "PBXFileReference";
+			"explicitFileType" = "wrapper.application";
+			"includeInIndex" = 0;
+			"path" = "NastartTV.app";
+			"sourceTree" = "BUILT_PRODUCTS_DIR";
+		};
+		"BCFD578F407E450EC74E0CCF" = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "502473C5BF8E3E6EB2714B1B";
+		};
+		"9772520E9C8B780A3BDF4BBE" = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "133B50A28D531BA9BBD66092";
+		};
+		"82611FED7719592290024B06" = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "4E83625AF7DF46CE0A3B34B7";
+		};
+		"AF2946B135186D62DDF8A0B1" = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "8690F969CE8D2B1A8EB1AB3B";
+		};
+		"98B02F47963632BD555C244D" = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "C74965FCAA8744255B006E18";
+		};
+		"C58EB8AD6AC5028E0BEE4B86" = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "1984D06666F1A47AAAFCF4AE";
+		};
+		"85D2836A1C73E754B912DF63" = {
+			"isa" = "PBXSourcesBuildPhase";
+			"buildActionMask" = 2147483647;
+			"files" = (
+				"AA483777D31296E23EF48309",
+                "D3516ED3516ED3516ED3516E2",
+                "90F3C38B0AA754A62CB4533B",
+
+                "6792AF52CE7FF89660648BD4",
+
+                "D87234C107FD4132F4275A3D",
+                "4BBB16629C6798E11300A12D",
+                "188F765490C03A8F814A6DFE",
+                "496B6FBCEE1E03DD5CEBC324",
+                "5AEADD9A6BED6BE218E42E8D",
+                "B97223ACB0D10A4949798251",
+                "CA8231BC4EE1339EDF731D2E",
+                "D76ACFD6A6214313809FC0FD",
+                "F79BB20721D2278975EA8A08",
+                "EB1FF007ACB2DF18CADD060F",
+                "47721B6D8E204E834550DABB",
+                "01FD572A0D2DD99C6C88CFB9",
+                "62CF9F731A3B271E3424E5F4",
+                "7F3BBF1F3DBD08ACE0C1D24E",
+                "0F0F8BC0C4967387EEE433BA",
+
+				"98BB0B3EA7206302396BF073",
+				"2151F6EEEB448FAFA182A83B",
+
+				"BCFD578F407E450EC74E0CCF",
+				"9772520E9C8B780A3BDF4BBE",
+				"82611FED7719592290024B06",
+				"AF2946B135186D62DDF8A0B1",
+				"98B02F47963632BD555C244D",
+				"C58EB8AD6AC5028E0BEE4B86",
+			);
+			"runOnlyForDeploymentPostprocessing" = 0;
+		};
+		"617001E0212DDAF22A99563B" = {
+			"isa" = "PBXFrameworksBuildPhase";
+			"buildActionMask" = 2147483647;
+			"files" = (
+                "A0A0A0A0A0A0A0A0A0A0A003",
+                "C02610260000000000000003",
+			);
+			"runOnlyForDeploymentPostprocessing" = 0;
+		};
+		"8BBAFF2F89B5F2856B2DD954" = {
+			"isa" = "PBXResourcesBuildPhase";
+			"buildActionMask" = 2147483647;
+			"files" = (
+				"B011C0B011C0B011C0B011C0",
+			);
+			"runOnlyForDeploymentPostprocessing" = 0;
+		};
+		"0621BAEABF7BDBECE77CA9F5" = {
+			"isa" = "XCBuildConfiguration";
+			"buildSettings" = {
+				"PRODUCT_NAME" = "$(TARGET_NAME)";
+				"PRODUCT_BUNDLE_IDENTIFIER" = "com.changliwen.nastart.tv";
+				"GENERATE_INFOPLIST_FILE" = "NO";
+				"SWIFT_VERSION" = "5.0";
+				"TARGETED_DEVICE_FAMILY" = "3";
+				"TVOS_DEPLOYMENT_TARGET" = "16.0";
+				"SDKROOT" = "appletvos";
+				"SUPPORTED_PLATFORMS" = "appletvos appletvsimulator";
+				"DEVELOPMENT_TEAM" = "5436TB5498";
+				"CODE_SIGN_STYLE" = "Automatic";
+				"SWIFT_OPTIMIZATION_LEVEL" = "-Onone";
+				"SWIFT_ACTIVE_COMPILATION_CONDITIONS" = "DEBUG";
+				"LD_RUNPATH_SEARCH_PATHS" = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				"MARKETING_VERSION" = "0.1.0";
+				"CURRENT_PROJECT_VERSION" = "1";
+				"ENABLE_TESTABILITY" = "YES";
+				"INFOPLIST_KEY_CFBundleDisplayName" = "Nastart";
+				"INFOPLIST_FILE" = "Info.plist";
+				"ASSETCATALOG_COMPILER_APPICON_NAME" = "App Icon";
+			};
+			"name" = "Debug";
+		};
+		"5DC8C5451DB0F325A67CE499" = {
+			"isa" = "XCBuildConfiguration";
+			"buildSettings" = {
+				"PRODUCT_NAME" = "$(TARGET_NAME)";
+				"PRODUCT_BUNDLE_IDENTIFIER" = "com.changliwen.nastart.tv";
+				"GENERATE_INFOPLIST_FILE" = "NO";
+				"SWIFT_VERSION" = "5.0";
+				"TARGETED_DEVICE_FAMILY" = "3";
+				"TVOS_DEPLOYMENT_TARGET" = "16.0";
+				"SDKROOT" = "appletvos";
+				"SUPPORTED_PLATFORMS" = "appletvos appletvsimulator";
+				"DEVELOPMENT_TEAM" = "5436TB5498";
+				"CODE_SIGN_STYLE" = "Automatic";
+				"SWIFT_OPTIMIZATION_LEVEL" = "-O";
+				"SWIFT_ACTIVE_COMPILATION_CONDITIONS" = "";
+				"LD_RUNPATH_SEARCH_PATHS" = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				"MARKETING_VERSION" = "0.1.0";
+				"CURRENT_PROJECT_VERSION" = "1";
+				"ENABLE_TESTABILITY" = "NO";
+				"INFOPLIST_KEY_CFBundleDisplayName" = "Nastart";
+				"INFOPLIST_FILE" = "Info.plist";
+				"ASSETCATALOG_COMPILER_APPICON_NAME" = "App Icon";
+			};
+			"name" = "Release";
+		};
+		"26C993D45E1364D496B1121A" = {
+			"isa" = "XCConfigurationList";
+			"buildConfigurations" = (
+				"0621BAEABF7BDBECE77CA9F5",
+				"5DC8C5451DB0F325A67CE499",
+			);
+			"defaultConfigurationIsVisible" = 0;
+			"defaultConfigurationName" = "Release";
+		};
+		"AFA453D66BD56200F8309211" = {
+			"isa" = "PBXNativeTarget";
+            packageProductDependencies = ("A0A0A0A0A0A0A0A0A0A0A002", "C02610260000000000000002");
+			"buildConfigurationList" = "26C993D45E1364D496B1121A";
+			"buildPhases" = (
+				"85D2836A1C73E754B912DF63",
+				"617001E0212DDAF22A99563B",
+				"8BBAFF2F89B5F2856B2DD954",
+                "A0A0A0A0A0A0A0A0A0A0A005",
+			);
+			"buildRules" = (
+			);
+			"dependencies" = (
+			);
+			"name" = "NastartTV";
+			"productName" = "NastartTV";
+			"productReference" = "4BE8D3865E4213C2173930E8";
+			"productType" = "com.apple.product-type.application";
+		};
+		"5B26DA128914D67F559FA928" = {
+			"isa" = "PBXFileReference";
+			"explicitFileType" = "wrapper.cfbundle";
+			"includeInIndex" = 0;
+			"path" = "NastartTVTests.xctest";
+			"sourceTree" = "BUILT_PRODUCTS_DIR";
+		};
+		"A20D9E5838E45B9205F128CE" = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "39B30539CB2886BD05253E1B";
+		};
+		"D6232EDFA2CED3B8A28CE270" = {
+			"isa" = "PBXSourcesBuildPhase";
+			"buildActionMask" = 2147483647;
+			"files" = (
+				"A20D9E5838E45B9205F128CE",
+			);
+			"runOnlyForDeploymentPostprocessing" = 0;
+		};
+		"7CC1956663FB7387D7CF9950" = {
+			"isa" = "PBXFrameworksBuildPhase";
+			"buildActionMask" = 2147483647;
+			"files" = (
+                "A0A0A0A0A0A0A0A0A0A0A006",
+			);
+			"runOnlyForDeploymentPostprocessing" = 0;
+		};
+		"5D00669C8B47F5C392460976" = {
+			"isa" = "PBXResourcesBuildPhase";
+			"buildActionMask" = 2147483647;
+			"files" = (
+			);
+			"runOnlyForDeploymentPostprocessing" = 0;
+		};
+		"C5134DBDAEA213BEB8A402E6" = {
+			"isa" = "XCBuildConfiguration";
+			"buildSettings" = {
+				"PRODUCT_NAME" = "$(TARGET_NAME)";
+				"PRODUCT_BUNDLE_IDENTIFIER" = "com.changliwen.nastart.tv.tests";
+				"GENERATE_INFOPLIST_FILE" = "YES";
+				"SWIFT_VERSION" = "5.0";
+				"TARGETED_DEVICE_FAMILY" = "3";
+				"TVOS_DEPLOYMENT_TARGET" = "16.0";
+				"SDKROOT" = "appletvos";
+				"SUPPORTED_PLATFORMS" = "appletvos appletvsimulator";
+				"DEVELOPMENT_TEAM" = "5436TB5498";
+				"CODE_SIGN_STYLE" = "Automatic";
+				"SWIFT_OPTIMIZATION_LEVEL" = "-Onone";
+				"SWIFT_ACTIVE_COMPILATION_CONDITIONS" = "DEBUG";
+				"LD_RUNPATH_SEARCH_PATHS" = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				"MARKETING_VERSION" = "0.1.0";
+				"CURRENT_PROJECT_VERSION" = "1";
+				"ENABLE_TESTABILITY" = "YES";
+				"TEST_HOST" = "$(BUILT_PRODUCTS_DIR)/NastartTV.app/NastartTV";
+				"BUNDLE_LOADER" = "$(TEST_HOST)";
+			};
+			"name" = "Debug";
+		};
+		"ACF905070C05B0D9B8ACFC64" = {
+			"isa" = "XCBuildConfiguration";
+			"buildSettings" = {
+				"PRODUCT_NAME" = "$(TARGET_NAME)";
+				"PRODUCT_BUNDLE_IDENTIFIER" = "com.changliwen.nastart.tv.tests";
+				"GENERATE_INFOPLIST_FILE" = "YES";
+				"SWIFT_VERSION" = "5.0";
+				"TARGETED_DEVICE_FAMILY" = "3";
+				"TVOS_DEPLOYMENT_TARGET" = "16.0";
+				"SDKROOT" = "appletvos";
+				"SUPPORTED_PLATFORMS" = "appletvos appletvsimulator";
+				"DEVELOPMENT_TEAM" = "5436TB5498";
+				"CODE_SIGN_STYLE" = "Automatic";
+				"SWIFT_OPTIMIZATION_LEVEL" = "-O";
+				"SWIFT_ACTIVE_COMPILATION_CONDITIONS" = "";
+				"LD_RUNPATH_SEARCH_PATHS" = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				"MARKETING_VERSION" = "0.1.0";
+				"CURRENT_PROJECT_VERSION" = "1";
+				"ENABLE_TESTABILITY" = "NO";
+				"TEST_HOST" = "$(BUILT_PRODUCTS_DIR)/NastartTV.app/NastartTV";
+				"BUNDLE_LOADER" = "$(TEST_HOST)";
+			};
+			"name" = "Release";
+		};
+		"36E855B7A617DD6A179069AE" = {
+			"isa" = "XCConfigurationList";
+			"buildConfigurations" = (
+				"C5134DBDAEA213BEB8A402E6",
+				"ACF905070C05B0D9B8ACFC64",
+			);
+			"defaultConfigurationIsVisible" = 0;
+			"defaultConfigurationName" = "Release";
+		};
+		"A47A503C7DA8A38F4EFB0308" = {
+			"isa" = "PBXContainerItemProxy";
+			"containerPortal" = "DA75D0EE092E82CC5364D451";
+			"proxyType" = 1;
+			"remoteGlobalIDString" = "AFA453D66BD56200F8309211";
+			"remoteInfo" = "NastartTV";
+		};
+		"7337631C6D162C16C33534E8" = {
+			"isa" = "PBXTargetDependency";
+			"target" = "AFA453D66BD56200F8309211";
+			"targetProxy" = "A47A503C7DA8A38F4EFB0308";
+		};
+		"947BD83B46AAA4B64737E498" = {
+			"isa" = "PBXNativeTarget";
+            packageProductDependencies = ("A0A0A0A0A0A0A0A0A0A0A002");
+			"buildConfigurationList" = "36E855B7A617DD6A179069AE";
+			"buildPhases" = (
+				"D6232EDFA2CED3B8A28CE270",
+				"7CC1956663FB7387D7CF9950",
+				"5D00669C8B47F5C392460976",
+			);
+			"buildRules" = (
+			);
+			"dependencies" = (
+				"7337631C6D162C16C33534E8",
+			);
+			"name" = "NastartTVTests";
+			"productName" = "NastartTVTests";
+			"productReference" = "5B26DA128914D67F559FA928";
+			"productType" = "com.apple.product-type.bundle.unit-test";
+		};
+		"DEB6E397226B6D710656EA7C" = {
+			"isa" = "PBXFileReference";
+			"explicitFileType" = "wrapper.cfbundle";
+			"includeInIndex" = 0;
+			"path" = "NastartTVUITests.xctest";
+			"sourceTree" = "BUILT_PRODUCTS_DIR";
+		};
+		"C1EF6AEDCCF2C75CC7E08544" = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "2D48A0D6465633F61E0336D1";
+		};
+		"4F1751DA195169D6507AB3D3" = {
+			"isa" = "PBXSourcesBuildPhase";
+			"buildActionMask" = 2147483647;
+			"files" = (
+				"C1EF6AEDCCF2C75CC7E08544",
+			);
+			"runOnlyForDeploymentPostprocessing" = 0;
+		};
+		"CA1F72E09B2B4A090BCA85BF" = {
+			"isa" = "PBXFrameworksBuildPhase";
+			"buildActionMask" = 2147483647;
+			"files" = (
+			);
+			"runOnlyForDeploymentPostprocessing" = 0;
+		};
+		"B55BAD71F22DB25680B4080C" = {
+			"isa" = "PBXResourcesBuildPhase";
+			"buildActionMask" = 2147483647;
+			"files" = (
+			);
+			"runOnlyForDeploymentPostprocessing" = 0;
+		};
+		"445F30C0639A234C24325A1D" = {
+			"isa" = "XCBuildConfiguration";
+			"buildSettings" = {
+				"PRODUCT_NAME" = "$(TARGET_NAME)";
+				"PRODUCT_BUNDLE_IDENTIFIER" = "com.changliwen.nastart.tv.uitests";
+				"GENERATE_INFOPLIST_FILE" = "YES";
+				"SWIFT_VERSION" = "5.0";
+				"TARGETED_DEVICE_FAMILY" = "3";
+				"TVOS_DEPLOYMENT_TARGET" = "16.0";
+				"SDKROOT" = "appletvos";
+				"SUPPORTED_PLATFORMS" = "appletvos appletvsimulator";
+				"DEVELOPMENT_TEAM" = "5436TB5498";
+				"CODE_SIGN_STYLE" = "Automatic";
+				"SWIFT_OPTIMIZATION_LEVEL" = "-Onone";
+				"SWIFT_ACTIVE_COMPILATION_CONDITIONS" = "DEBUG";
+				"LD_RUNPATH_SEARCH_PATHS" = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				"MARKETING_VERSION" = "0.1.0";
+				"CURRENT_PROJECT_VERSION" = "1";
+				"ENABLE_TESTABILITY" = "YES";
+				"TEST_TARGET_NAME" = "NastartTV";
+			};
+			"name" = "Debug";
+		};
+		"01522B9A827C40C36C604BE4" = {
+			"isa" = "XCBuildConfiguration";
+			"buildSettings" = {
+				"PRODUCT_NAME" = "$(TARGET_NAME)";
+				"PRODUCT_BUNDLE_IDENTIFIER" = "com.changliwen.nastart.tv.uitests";
+				"GENERATE_INFOPLIST_FILE" = "YES";
+				"SWIFT_VERSION" = "5.0";
+				"TARGETED_DEVICE_FAMILY" = "3";
+				"TVOS_DEPLOYMENT_TARGET" = "16.0";
+				"SDKROOT" = "appletvos";
+				"SUPPORTED_PLATFORMS" = "appletvos appletvsimulator";
+				"DEVELOPMENT_TEAM" = "5436TB5498";
+				"CODE_SIGN_STYLE" = "Automatic";
+				"SWIFT_OPTIMIZATION_LEVEL" = "-O";
+				"SWIFT_ACTIVE_COMPILATION_CONDITIONS" = "";
+				"LD_RUNPATH_SEARCH_PATHS" = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				"MARKETING_VERSION" = "0.1.0";
+				"CURRENT_PROJECT_VERSION" = "1";
+				"ENABLE_TESTABILITY" = "NO";
+				"TEST_TARGET_NAME" = "NastartTV";
+			};
+			"name" = "Release";
+		};
+		"5697D4CE8E83E39E90562D79" = {
+			"isa" = "XCConfigurationList";
+			"buildConfigurations" = (
+				"445F30C0639A234C24325A1D",
+				"01522B9A827C40C36C604BE4",
+			);
+			"defaultConfigurationIsVisible" = 0;
+			"defaultConfigurationName" = "Release";
+		};
+		"762449C749A6E4063CABF72F" = {
+			"isa" = "PBXContainerItemProxy";
+			"containerPortal" = "DA75D0EE092E82CC5364D451";
+			"proxyType" = 1;
+			"remoteGlobalIDString" = "AFA453D66BD56200F8309211";
+			"remoteInfo" = "NastartTV";
+		};
+		"23512AAC4FE77CC2C28D0922" = {
+			"isa" = "PBXTargetDependency";
+			"target" = "AFA453D66BD56200F8309211";
+			"targetProxy" = "762449C749A6E4063CABF72F";
+		};
+		"1668773C33B85B4DE3C9B542" = {
+			"isa" = "PBXNativeTarget";
+			"buildConfigurationList" = "5697D4CE8E83E39E90562D79";
+			"buildPhases" = (
+				"4F1751DA195169D6507AB3D3",
+				"CA1F72E09B2B4A090BCA85BF",
+				"B55BAD71F22DB25680B4080C",
+			);
+			"buildRules" = (
+			);
+			"dependencies" = (
+				"23512AAC4FE77CC2C28D0922",
+			);
+			"name" = "NastartTVUITests";
+			"productName" = "NastartTVUITests";
+			"productReference" = "DEB6E397226B6D710656EA7C";
+			"productType" = "com.apple.product-type.bundle.ui-testing";
+		};
+		"54E96A62494E0532543FCC92" = {
+			"isa" = "PBXGroup";
+			"children" = (
+				"4BE8D3865E4213C2173930E8",
+				"5B26DA128914D67F559FA928",
+				"DEB6E397226B6D710656EA7C",
+			);
+			"name" = "Products";
+			"sourceTree" = "<group>";
+		};
+		"F8793245419C1202F976993A" = {
+			"isa" = "PBXGroup";
+			"children" = (
+				"A011C0A011C0A011C0A011C0",
+				"5494262DC15AACDA8B53D907",
+				"3A70420C8C30B687D5A7E450",
+				"98C1F91E716CEFFAD6C8DC95",
+				"54E96A62494E0532543FCC92",
+			);
+			"sourceTree" = "<group>";
+		};
+		"D2E97EC9EB63C369DE162684" = {
+			"isa" = "XCBuildConfiguration";
+			"buildSettings" = {
+				"CLANG_ENABLE_MODULES" = "YES";
+				"SWIFT_VERSION" = "5.0";
+				"SDKROOT" = "appletvos";
+				"TVOS_DEPLOYMENT_TARGET" = "16.0";
+			};
+			"name" = "Debug";
+		};
+		"5A5A318227A43C4C6808976D" = {
+			"isa" = "XCBuildConfiguration";
+			"buildSettings" = {
+				"CLANG_ENABLE_MODULES" = "YES";
+				"SWIFT_VERSION" = "5.0";
+				"SDKROOT" = "appletvos";
+				"TVOS_DEPLOYMENT_TARGET" = "16.0";
+			};
+			"name" = "Release";
+		};
+		"E7EBAB45C4C9FE7A344B205A" = {
+			"isa" = "XCConfigurationList";
+			"buildConfigurations" = (
+				"D2E97EC9EB63C369DE162684",
+				"5A5A318227A43C4C6808976D",
+			);
+			"defaultConfigurationIsVisible" = 0;
+			"defaultConfigurationName" = "Release";
+		};
+		"DA75D0EE092E82CC5364D451" = {
+			"isa" = "PBXProject";
+            packageReferences = ("A0A0A0A0A0A0A0A0A0A0A001", "C02610260000000000000001");
+			"attributes" = {
+				"LastUpgradeCheck" = "2700";
+				"TargetAttributes" = {
+					"AFA453D66BD56200F8309211" = {
+						"CreatedOnToolsVersion" = "27.0";
+					};
+				};
+			};
+			"buildConfigurationList" = "E7EBAB45C4C9FE7A344B205A";
+			"compatibilityVersion" = "Xcode 14.0";
+			"developmentRegion" = "zh-Hans";
+			"hasScannedForEncodings" = 0;
+			"knownRegions" = (
+				"en",
+				"zh-Hans",
+				"Base",
+			);
+			"mainGroup" = "F8793245419C1202F976993A";
+			"productRefGroup" = "54E96A62494E0532543FCC92";
+			"projectDirPath" = "";
+			"projectRoot" = "";
+			"targets" = (
+				"AFA453D66BD56200F8309211",
+				"947BD83B46AAA4B64737E498",
+				"1668773C33B85B4DE3C9B542",
+			);
+		};
+	};
+	"rootObject" = "DA75D0EE092E82CC5364D451";
+}

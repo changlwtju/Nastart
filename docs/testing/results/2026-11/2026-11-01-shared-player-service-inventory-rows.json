@@ -1,0 +1,199 @@
+{
+  "date": "2026-11-01",
+  "scope": "Shared player-settings service inventory presentation; actual inventory/auth/transport unchanged",
+  "source": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "inputCount": 446,
+    "existingSourceAndResourceFilesChanged": 5,
+    "otherHashesUnchanged": 441
+  },
+  "initialWording": {
+    "sourceManifestSHA256": "d8c9803f9abba2320a2353c63ac9eed53aaf99799b56ba17950810237e27b1e4",
+    "builds": {
+      "tv-sim-debug-cast": {
+        "startedAt": "2026-11-01T02:58:30.170588+08:00",
+        "exitCode": 0,
+        "endedAt": "2026-11-01T02:58:44.031822+08:00"
+      },
+      "mobile-sim-debug-cast": {
+        "startedAt": "2026-11-01T03:01:49.721206+08:00",
+        "freeGiBBefore": 3.5359764099121094,
+        "reserveGiB": 2,
+        "exitCode": 0,
+        "endedAt": "2026-11-01T03:02:16.939230+08:00",
+        "freeGiBAfter": 3.5065460205078125
+      },
+      "mobile-debug": {
+        "startedAt": "2026-11-01T03:02:16.940580+08:00",
+        "freeGiBBefore": 3.50653076171875,
+        "reserveGiB": 2,
+        "exitCode": 0,
+        "endedAt": "2026-11-01T03:02:54.222633+08:00",
+        "freeGiBAfter": 3.352996826171875
+      },
+      "mobile-release": {
+        "startedAt": "2026-11-01T03:02:54.223964+08:00",
+        "freeGiBBefore": 3.352985382080078,
+        "reserveGiB": 2,
+        "exitCode": 0,
+        "endedAt": "2026-11-01T03:04:33.995761+08:00",
+        "freeGiBAfter": 3.0886497497558594
+      },
+      "tv-unsigned-debug": {
+        "startedAt": "2026-11-01T03:04:33.998213+08:00",
+        "freeGiBBefore": 3.0886306762695312,
+        "reserveGiB": 2,
+        "exitCode": 0,
+        "endedAt": "2026-11-01T03:04:50.144233+08:00",
+        "freeGiBAfter": 3.1043739318847656
+      },
+      "tv-release": {
+        "startedAt": "2026-11-01T03:04:50.148188+08:00",
+        "freeGiBBefore": 3.104358673095703,
+        "reserveGiB": 2,
+        "exitCode": 0,
+        "endedAt": "2026-11-01T03:05:22.420828+08:00",
+        "freeGiBAfter": 2.0570030212402344
+      }
+    },
+    "reasonNotFinal": "Online inventory may include manual entries; changed running copy to listed-as-online without process-health inference",
+    "UIValidated": false
+  },
+  "finalBuilds": {
+    "tv-sim-debug-cast": {
+      "startedAt": "2026-11-01T03:06:21.566853+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-11-01T03:06:32.061783+08:00"
+    },
+    "mobile-sim-debug-cast": {
+      "startedAt": "2026-11-01T03:06:59.994662+08:00",
+      "freeGiBBefore": 2.027080535888672,
+      "reserveGiB": 2,
+      "stoppedForDiskReserve": true,
+      "exitCode": -15,
+      "endedAt": "2026-11-01T03:07:11.106307+08:00",
+      "freeGiBAfter": 1.9953842163085938
+    },
+    "mobile-debug": {
+      "runAfterFinalWording": false
+    },
+    "mobile-release": {
+      "runAfterFinalWording": false
+    },
+    "tv-unsigned-debug": {
+      "runAfterFinalWording": false
+    },
+    "tv-release": {
+      "runAfterFinalWording": false
+    }
+  },
+  "behaviorSource": {
+    "existingInventoryMatchingAndFourProductsPreserved": true,
+    "TVDiscoveryTaskAndFollowingSourceUnchanged": true,
+    "TVSourceBeforePlayerSettingsUnchanged": true,
+    "modelAuthenticationTransportPlaybackAndScenarioSourcesUnchanged": true,
+    "noNewCredentialsOrNetworkCalls": true
+  },
+  "localization": {
+    "en": {
+      "oldValuesUnchanged": true,
+      "newKeys": [
+        "mine.players.integration.discovered",
+        "mine.players.integration.installed",
+        "mine.players.integration.native_pending",
+        "mine.players.integration.notObserved",
+        "mine.players.integration.notice",
+        "mine.players.integration.online",
+        "mine.players.integration.savedAuthorization",
+        "mine.players.integration.stopped",
+        "mine.players.integration.unknown",
+        "mine.players.integration.warning"
+      ],
+      "allEightDisplayStatesLocalized": true,
+      "lintPassed": true
+    },
+    "zh-Hans": {
+      "oldValuesUnchanged": true,
+      "newKeys": [
+        "mine.players.integration.discovered",
+        "mine.players.integration.installed",
+        "mine.players.integration.native_pending",
+        "mine.players.integration.notObserved",
+        "mine.players.integration.notice",
+        "mine.players.integration.online",
+        "mine.players.integration.savedAuthorization",
+        "mine.players.integration.stopped",
+        "mine.players.integration.unknown",
+        "mine.players.integration.warning"
+      ],
+      "allEightDisplayStatesLocalized": true,
+      "lintPassed": true
+    }
+  },
+  "simulation": {
+    "budget": {
+      "freeGiBBeforeStart": 3.5499229431152344,
+      "tvMinimumGiB": 3.8,
+      "mobileMinimumGiB": 6,
+      "runtimeReserveGiB": 2,
+      "mobileStarted": false
+    },
+    "notStarted": {
+      "recordedAt": "2026-11-01T03:00:59.130141+08:00",
+      "simulatorStarted": false,
+      "reason": "Below TV 3.8GiB startup gate before create",
+      "budgetPreparationAssertionExitCode": 1,
+      "runnerGateAssertionExitCode": 1,
+      "ownedSimulatorCount": 0,
+      "NASRequests": 0,
+      "physicalDevicesOperated": 0
+    },
+    "ownedSimulatorCount": 0,
+    "newScreenshotCount": 0,
+    "UIValidated": false
+  },
+  "diskBlock": {
+    "recordedAt": "2026-11-01T03:08:44.408577+08:00",
+    "currentSourceManifestSHA256": "eac690f3762b660d3fc12499af4c0e4e2e6f3191d63a6742ff9e5d3b0f8b3f03",
+    "currentSourceInputCount": 446,
+    "latestSignedMobileCandidateMatchesCurrentSource": false,
+    "newCandidateFrozenThisBatch": false,
+    "finalTVSimulatorDebugCompilePassed": true,
+    "finalMobileSimulatorBuildStoppedForReserve": true,
+    "remainingFinalBuildsNotRun": true,
+    "freeGiB": 2.0043792724609375,
+    "ownedSimulatorCount": 0,
+    "UIValidated": false,
+    "nextStep": "Free disk space before rebuilding; never treat retained older package as latest"
+  },
+  "testsRunThisBatch": 0,
+  "testsReason": "Low-impact presentation/copy changes; no mirror tests added or old test results counted",
+  "packages": {
+    "newCandidateFrozenThisBatch": false,
+    "retainedOlderMobileCandidateMatchesCurrentSource": false,
+    "physicalInstallCount": 0,
+    "normalTVSigningRetried": false,
+    "tvCurrentSignedCandidate": false,
+    "priorProfileBlockRetained": true
+  },
+  "physicalDevicesOperated": 0,
+  "NASRequests": 0,
+  "actualCredentialReadsOrClears": 0,
+  "playbackAttempts": 0,
+  "remoteSourceWrites": 0,
+  "playbackMatrixNewPasses": 0,
+  "limitations": [
+    "Final mobile simulator compilation deliberately stopped at disk reserve; remaining final configurations unbuilt",
+    "Intermediate six successful builds do not validate final source",
+    "No current-source UI rendering or interaction validation",
+    "Existing name-contains and first-match inventory heuristics retained",
+    "Saved authorization and inventory status are not a current login verification",
+    "No physical devices or NAS operated; all prior open items retained"
+  ],
+  "recordedAt": "2026-11-01T03:09:52.579386+08:00",
+  "documentation": {
+    "documentsChecked": 570,
+    "localLinksChecked": 3615,
+    "missingDestinations": 0
+  }
+}

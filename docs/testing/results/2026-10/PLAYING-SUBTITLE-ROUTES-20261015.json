@@ -1,0 +1,468 @@
+{
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceDiffSHA256": "db8730452eaa5f58db20b0e1f74323da31540bf40575e3784d09c0f7ca1cb570",
+  "configuration": "normal Debug -Onone; empty launch environment",
+  "binaryBuildTime": "2026-10-15T11:39:36.195627+08:00",
+  "binaries": {
+    "Nastart": "8783f0dda631046c2ba6554cc60bf719cfeef5dd17c703f081be8924bb51ee70",
+    "Nastart.debug.dylib": "824fe9f607d850e103b113bc0a453012ccc90632d60990cf091089be0af0841b",
+    "Frameworks/KSPlayer.framework/KSPlayer": "98c29f6b9d6f42738801bd5834de45a95a692d923e52e6c614d16907a72dbfc5"
+  },
+  "ipaSHA256": "0bb445ce5646de25514b3cd446330fc1386680496af27de8e337cc81943c47fb",
+  "profileExpirationUTC": "2026-10-17T22:23:40",
+  "tests": {
+    "executed": 394,
+    "skipped": 2,
+    "failures": 0,
+    "runThisTurn": false
+  },
+  "preflight": {
+    "passed": 15,
+    "runThisTurn": false
+  },
+  "recordedAt": "2026-10-15T17:08:39.855357+08:00",
+  "appSourceChangedThisTurn": false,
+  "newBuildThisTurn": false,
+  "sourceInputsVerified": 173,
+  "validationReusedFrom": "2026-10-15 11:39 normal Debug; XCTest and preflight not rerun this turn",
+  "installations": {
+    "iphone13": {
+      "device": "iphone13",
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "connection": "USB",
+      "binaries": {
+        "Nastart": "8783f0dda631046c2ba6554cc60bf719cfeef5dd17c703f081be8924bb51ee70",
+        "Nastart.debug.dylib": "824fe9f607d850e103b113bc0a453012ccc90632d60990cf091089be0af0841b",
+        "Frameworks/KSPlayer.framework/KSPlayer": "98c29f6b9d6f42738801bd5834de45a95a692d923e52e6c614d16907a72dbfc5"
+      },
+      "sourceDiffSHA256": "db8730452eaa5f58db20b0e1f74323da31540bf40575e3784d09c0f7ca1cb570",
+      "preservesContainer": true,
+      "signatureVerified": true,
+      "actualForegroundUIVerified": true,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "installation": "success",
+      "startedAt": "2026-10-15T16:41:54.532580+08:00",
+      "installedAt": "2026-10-15T16:42:06.699153+08:00",
+      "preferenceKeysUnchanged": true,
+      "preferenceValuesUnchanged": true,
+      "nonDiagnosticKeys": 25
+    },
+    "ipad": {
+      "device": "ipad",
+      "model": "iPad12,1",
+      "system": "18.3.1",
+      "connection": "USB",
+      "binaries": {
+        "Nastart": "8783f0dda631046c2ba6554cc60bf719cfeef5dd17c703f081be8924bb51ee70",
+        "Nastart.debug.dylib": "824fe9f607d850e103b113bc0a453012ccc90632d60990cf091089be0af0841b",
+        "Frameworks/KSPlayer.framework/KSPlayer": "98c29f6b9d6f42738801bd5834de45a95a692d923e52e6c614d16907a72dbfc5"
+      },
+      "sourceDiffSHA256": "db8730452eaa5f58db20b0e1f74323da31540bf40575e3784d09c0f7ca1cb570",
+      "preservesContainer": true,
+      "signatureVerified": true,
+      "actualForegroundUIVerified": true,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "installation": "success",
+      "startedAt": "2026-10-15T16:42:30.218363+08:00",
+      "installedAt": "2026-10-15T16:42:34.777885+08:00",
+      "preferenceKeysUnchanged": true,
+      "preferenceValuesUnchanged": true,
+      "nonDiagnosticKeys": 18
+    }
+  },
+  "packageVerification": {
+    "at": "2026-10-15T17:04:29.308196+08:00",
+    "ipaSHA256Verified": true,
+    "ipaCRCVerified": true,
+    "binaryHashesVerified": true,
+    "individuallyVerifiedLibraries": 29,
+    "deepSignatureVerified": true,
+    "sourceInputsVerified": 173,
+    "profileExpirationUTC": "2026-10-17T22:23:40"
+  },
+  "phonePlayingPGSReplacement": {
+    "device": "iphone13",
+    "entry": "Jellyfin",
+    "sampleFamily": "S19",
+    "sourceDiffSHA256": "db8730452eaa5f58db20b0e1f74323da31540bf40575e3784d09c0f7ca1cb570",
+    "automaticDownshift": {
+      "reason": "deliveryBelowSourceBitrate",
+      "secondsFromStartupTouch": 14.03,
+      "committedSecondsFromStartupTouch": 29.956
+    },
+    "actions": [
+      {
+        "operation": "subtitle-r1-back",
+        "counts": {
+          "replacement_committed": 1,
+          "seek_started": 0,
+          "subtitle_track_changed": 0
+        },
+        "scope": "AVPlayer HLS server subtitle replacement; not native PGS switch; no audible or continuous frame acceptance",
+        "playback_preparedSecondsFromTouch": 0.642217,
+        "replacement_warmup_startedSecondsFromTouch": 0.667542,
+        "replacement_candidate_decodedSecondsFromTouch": 7.081433,
+        "replacement_candidate_alignedSecondsFromTouch": 9.42026,
+        "replacement_committedSecondsFromTouch": 9.420775,
+        "firstSegmentRequestSecondsFromTouch": 1.444754,
+        "firstSegment200HeadersSecondsFromTouch": 6.732354
+      },
+      {
+        "operation": "subtitle-r1-out",
+        "counts": {
+          "replacement_committed": 1,
+          "seek_started": 0,
+          "subtitle_track_changed": 0
+        },
+        "scope": "AVPlayer HLS server subtitle replacement; not native PGS switch; no audible or continuous frame acceptance",
+        "playback_preparedSecondsFromTouch": 0.593035,
+        "replacement_warmup_startedSecondsFromTouch": 0.610747,
+        "replacement_candidate_decodedSecondsFromTouch": 8.130122,
+        "replacement_candidate_alignedSecondsFromTouch": 10.16563,
+        "replacement_committedSecondsFromTouch": 10.166075,
+        "firstSegmentRequestSecondsFromTouch": 1.234171,
+        "firstSegment200HeadersSecondsFromTouch": 6.223886
+      },
+      {
+        "operation": "subtitle-r2-back",
+        "counts": {
+          "replacement_committed": 1,
+          "seek_started": 0,
+          "subtitle_track_changed": 0
+        },
+        "scope": "AVPlayer HLS server subtitle replacement; not native PGS switch; no audible or continuous frame acceptance",
+        "playback_preparedSecondsFromTouch": 0.605247,
+        "replacement_warmup_startedSecondsFromTouch": 0.627262,
+        "replacement_candidate_decodedSecondsFromTouch": 6.891753,
+        "replacement_candidate_alignedSecondsFromTouch": 10.494988,
+        "replacement_committedSecondsFromTouch": 10.495472,
+        "firstSegmentRequestSecondsFromTouch": 1.22135,
+        "firstSegment200HeadersSecondsFromTouch": 6.259477
+      },
+      {
+        "operation": "subtitle-r2-out",
+        "counts": {
+          "replacement_committed": 1,
+          "seek_started": 0,
+          "subtitle_track_changed": 0
+        },
+        "scope": "AVPlayer HLS server subtitle replacement; not native PGS switch; no audible or continuous frame acceptance",
+        "playback_preparedSecondsFromTouch": 0.604263,
+        "replacement_warmup_startedSecondsFromTouch": 0.609755,
+        "replacement_candidate_decodedSecondsFromTouch": 6.487102,
+        "replacement_candidate_alignedSecondsFromTouch": 9.007216,
+        "replacement_committedSecondsFromTouch": 9.007618,
+        "firstSegmentRequestSecondsFromTouch": 1.117899,
+        "firstSegment200HeadersSecondsFromTouch": 6.268283
+      },
+      {
+        "operation": "subtitle-r3-back",
+        "counts": {
+          "replacement_committed": 1,
+          "seek_started": 0,
+          "subtitle_track_changed": 0
+        },
+        "scope": "AVPlayer HLS server subtitle replacement; not native PGS switch; no audible or continuous frame acceptance",
+        "playback_preparedSecondsFromTouch": 0.778253,
+        "replacement_warmup_startedSecondsFromTouch": 0.785459,
+        "replacement_candidate_decodedSecondsFromTouch": 7.353981,
+        "replacement_candidate_alignedSecondsFromTouch": 10.593501,
+        "replacement_committedSecondsFromTouch": 10.594214,
+        "firstSegmentRequestSecondsFromTouch": 1.50679,
+        "firstSegment200HeadersSecondsFromTouch": 6.418768
+      },
+      {
+        "operation": "subtitle-r3-out",
+        "counts": {
+          "replacement_committed": 1,
+          "seek_started": 0,
+          "subtitle_track_changed": 0
+        },
+        "scope": "AVPlayer HLS server subtitle replacement; not native PGS switch; no audible or continuous frame acceptance",
+        "playback_preparedSecondsFromTouch": 0.690298,
+        "replacement_warmup_startedSecondsFromTouch": 0.70014,
+        "replacement_candidate_decodedSecondsFromTouch": 6.881,
+        "replacement_candidate_alignedSecondsFromTouch": 10.227185,
+        "replacement_committedSecondsFromTouch": 10.227858,
+        "firstSegmentRequestSecondsFromTouch": 1.229545,
+        "firstSegment200HeadersSecondsFromTouch": 6.307769
+      }
+    ],
+    "URLMetricsCount": 131,
+    "URLMetricsCellularYes": 0,
+    "URLMetricsCellularNo": 131,
+    "actualSelectedPNGReviewed": true,
+    "selectedReviewConclusion": "spinner/frozen prior frame during preparation; later movie frames; reviewed pictures did not establish duplicate subtitle layers",
+    "actualFirstNewFrameTimingAccepted": false,
+    "wholeSUBAccepted": false,
+    "actualAudibleAccepted": false,
+    "cacheControlled": false,
+    "samePointControlled": false,
+    "versionPerformanceCompared": false,
+    "eventsUnionAllSnapshots": true,
+    "routeScope": "KS directPlay startup, automatic deliveryBelowSourceBitrate -> AV localHLS committed at +29.956s; all six subtitle choices are AV/HLS Transcode/burn-in replacement",
+    "fullSubtitleAccepted": false,
+    "contentReview": "reviewed t3/t10/t30 selected original frames; no duplicate confirmed; r1 back t10 contains no visible subtitle cue so cannot qualify subtitle completeness",
+    "serverLogsAvailable": false,
+    "unresolved": "separate server segment generation/queue versus transport delay using synchronized server logs; do not change timeouts/codec/buffers speculatively"
+  },
+  "padPlayingASSComparison": {
+    "device": "ipad",
+    "sampleFamily": "S03",
+    "entry": "Jellyfin",
+    "sourceDiffSHA256": "db8730452eaa5f58db20b0e1f74323da31540bf40575e3784d09c0f7ca1cb570",
+    "actions": [
+      {
+        "operation": "subtitle-r1-back",
+        "source": "ordinary visible UI",
+        "eventTimesSecondsFromTouch": {
+          "subtitle_track_changed": [],
+          "seek_started": [],
+          "seek_engine_completed": [],
+          "seek_preview_ready": [],
+          "seek_recovered": [],
+          "replacement_warmup_started": [],
+          "replacement_candidate_decoded": [],
+          "replacement_candidate_aligned": [],
+          "replacement_committed": []
+        },
+        "engineStates": [
+          "KSPlayer"
+        ],
+        "observedViaDiagnosticUnion": true
+      },
+      {
+        "operation": "subtitle-r1-out",
+        "source": "ordinary visible UI",
+        "eventTimesSecondsFromTouch": {
+          "subtitle_track_changed": [],
+          "seek_started": [],
+          "seek_engine_completed": [],
+          "seek_preview_ready": [],
+          "seek_recovered": [],
+          "replacement_warmup_started": [],
+          "replacement_candidate_decoded": [],
+          "replacement_candidate_aligned": [],
+          "replacement_committed": []
+        },
+        "engineStates": [
+          "KSPlayer"
+        ],
+        "observedViaDiagnosticUnion": true
+      }
+    ],
+    "URLMetricsCount": 42,
+    "URLMetricsCellularYes": 0,
+    "URLMetricsCellularNo": 42,
+    "networkMeaning": "event count, not traffic bytes",
+    "actualSelectedPNGReviewed": true,
+    "wholeSUBAccepted": false,
+    "actualAudibleAccepted": false,
+    "continuousFramesAccepted": false,
+    "samePointControlled": false,
+    "coldCacheControlled": false,
+    "crossDevicePerformanceCompared": false,
+    "eventsUnionAllSnapshots": true,
+    "sourceBeforeActionStillNeedsInspection": false,
+    "actualReviewScope": "initial ASS selected while playing; out t3/t30 and back t3/t30 reviewed; actual cues at out t3 and back t30; not full cue table",
+    "positivePathEvidence": "KSPlayer telemetry throughout; subtitle_overlay_loaded with 1288 cues at out +2.175s; no replacement/seek events in complete union window",
+    "initialASSLoadedSecondsBeforeFirstOut": 11.424,
+    "outOverlayLoadedSecondsFromTouch": 2.175,
+    "samePointAndSameDevicePerformancePair": false,
+    "restorationToOriginalPGSRequired": false,
+    "originalPGSRestoredViaNormalUI": true,
+    "restorationPNGReviewed": true,
+    "outOverlayLoadMeaning": "subtitle model load completion log, not exact first visible subtitle or audible/frame performance",
+    "backOverlayCacheInference": "source uses per-URL cue cache without loaded log; back had no loaded log and later actual cue; cache inferred, not direct cache telemetry"
+  },
+  "usbCaptureFailures": [
+    {
+      "at": "2026-10-15T16:47:49.310093+08:00",
+      "kind": "TOOL",
+      "initialNastartForegroundGuard": true,
+      "subsequentGuardRead": "ConnectionResetError",
+      "captureStoppedInFinally": true,
+      "audioBuffers": 0,
+      "videoBuffers": 0,
+      "NastartCrashInventoryDelta": 0,
+      "WDAReadyAfterProbe": true,
+      "noAppSourceChange": true,
+      "notAppAudioFailure": true,
+      "retrySeparateDirectory": true
+    },
+    {
+      "kind": "TOOL",
+      "beforeCaptureStarted": true,
+      "reason": "Initial activeAppInfo on previous session returned404",
+      "captureSessionSpawned": false,
+      "recovery": "new normal WDA session, no Runner reinstall",
+      "unsupportedSessionInventoryRequestNotUsedAsEvidence": true
+    },
+    {
+      "kind": "TOOL",
+      "captureInputPorts": [
+        "vide",
+        "soun",
+        "clcp",
+        "mobj"
+      ],
+      "noMicrophoneInput": true,
+      "captureRunningFlagObserved": true,
+      "guardReadThenSessionRecoveryFailed": "ConnectionRefusedError",
+      "captureStoppedInFinally": true,
+      "audioBuffers": 0,
+      "videoBuffers": 0,
+      "actualCaptureIdentityChallengeCompleted": false,
+      "noPCMConclusion": true,
+      "NastartCrashInventoryDelta": 0,
+      "WDAReadyAfterStop": true,
+      "capabilityTrialsStoppedAfterSecondCaptureAttempt": true,
+      "notEvidenceAppAudioFailed": true
+    }
+  ],
+  "extraToolFailures": {
+    "at": "2026-10-15T17:05:15.368943+08:00",
+    "legacyPhaseAnalyzerScopeError": {
+      "clippedAt": "startup observations 30sec; suffix jf misclassified entry",
+      "correction": "retained original safe output; independent all-snapshot union with explicit Jellyfin entry used for playing subtitle report",
+      "notEvidenceLaterEventsAbsent": true
+    },
+    "iphone18HelperInterpreterFailures": [
+      {
+        "interpreter": "old temporary venv",
+        "failure": "path missing; helper did not execute"
+      },
+      {
+        "interpreter": "reference venv",
+        "failure": "pymobiledevice3 missing; helper did not execute"
+      }
+    ],
+    "iphone18HelperRecovered": "existing system Python with installed pymobiledevice3; no install or dependency change"
+  },
+  "finalAudit": {
+    "sourceInputsVerified": 173,
+    "binaryHashesVerified": true,
+    "signatureVerified": true,
+    "devices": {
+      "iphone13": {
+        "at": "2026-10-15T17:08:07.457890+08:00",
+        "model": "iPhone14,5",
+        "system": "16.3.1",
+        "connection": "USB",
+        "sourceDiffSHA256": "db8730452eaa5f58db20b0e1f74323da31540bf40575e3784d09c0f7ca1cb570",
+        "latestPackage": {
+          "Nastart": "8783f0dda631046c2ba6554cc60bf719cfeef5dd17c703f081be8924bb51ee70",
+          "Nastart.debug.dylib": "824fe9f607d850e103b113bc0a453012ccc90632d60990cf091089be0af0841b",
+          "Frameworks/KSPlayer.framework/KSPlayer": "98c29f6b9d6f42738801bd5834de45a95a692d923e52e6c614d16907a72dbfc5"
+        },
+        "nonBookmarkPreferenceKeys": 24,
+        "nonBookmarkPreferencesExactlyUnchanged": true,
+        "naturalBookmarkChangesCount": 1,
+        "originalBookmarksChecked": 35,
+        "originalBookmarksRemoved": 0,
+        "originalTrackChangeCount": 0,
+        "allOriginalTracksUnchanged": true,
+        "newBookmarksCount": 0,
+        "crashInventoryDelta": {
+          "Nastart": 0,
+          "WebDriverAgent": 0,
+          "JetsamEvent": 0
+        },
+        "normalEmptyEnvironment": true,
+        "NASNormal": true,
+        "playerClosed": true,
+        "WDAIdleSeconds": 10,
+        "WDAAnimationCoolOffSeconds": 2,
+        "nativeConditionsNotRecheckedThisTurn": false,
+        "noConditionInjectedThisTurn": true,
+        "nativeActiveConditions": 0,
+        "finalHomeActuallyReviewed": true
+      },
+      "ipad": {
+        "at": "2026-10-15T17:08:08.358028+08:00",
+        "model": "iPad12,1",
+        "system": "18.3.1",
+        "connection": "USB",
+        "sourceDiffSHA256": "db8730452eaa5f58db20b0e1f74323da31540bf40575e3784d09c0f7ca1cb570",
+        "latestPackage": {
+          "Nastart": "8783f0dda631046c2ba6554cc60bf719cfeef5dd17c703f081be8924bb51ee70",
+          "Nastart.debug.dylib": "824fe9f607d850e103b113bc0a453012ccc90632d60990cf091089be0af0841b",
+          "Frameworks/KSPlayer.framework/KSPlayer": "98c29f6b9d6f42738801bd5834de45a95a692d923e52e6c614d16907a72dbfc5"
+        },
+        "nonBookmarkPreferenceKeys": 17,
+        "nonBookmarkPreferencesExactlyUnchanged": true,
+        "naturalBookmarkChangesCount": 1,
+        "originalBookmarksChecked": 28,
+        "originalBookmarksRemoved": 0,
+        "originalTrackChangeCount": 0,
+        "allOriginalTracksUnchanged": true,
+        "newBookmarksCount": 0,
+        "crashInventoryDelta": {
+          "Nastart": 0,
+          "WebDriverAgent": 0,
+          "JetsamEvent": 0
+        },
+        "normalEmptyEnvironment": true,
+        "NASNormal": true,
+        "playerClosed": true,
+        "WDAIdleSeconds": 10,
+        "WDAAnimationCoolOffSeconds": 2,
+        "nativeConditionsNotRecheckedThisTurn": false,
+        "noConditionInjectedThisTurn": true,
+        "nativeActiveConditions": 0,
+        "finalHomeActuallyReviewed": true
+      }
+    }
+  },
+  "iphone18": {
+    "at": "2026-10-15T17:03:40.590976+08:00",
+    "latestInstallCompleted": false,
+    "InstallSent": false,
+    "historicalAddressCheck": {
+      "at": "2026-10-15T17:03:26.632857+08:00",
+      "historicalAddressesRequireLiveIdentity": true,
+      "candidateCount": 2,
+      "targetVerified": false,
+      "newPairingAttempted": false,
+      "failures": [
+        "TimeoutError",
+        "TimeoutError"
+      ]
+    },
+    "freshServicesCheck": {
+      "at": "2026-10-15T17:03:40.590976+08:00",
+      "newPairingAttempted": false,
+      "targetLiveVerified": false,
+      "containerReadable": false,
+      "attempts": [
+        {
+          "family": "IPv6",
+          "targetMatches": false,
+          "containerReadable": false,
+          "failureType": "TimeoutError"
+        },
+        {
+          "family": "IPv6",
+          "targetMatches": false,
+          "containerReadable": false,
+          "failureType": "TimeoutError"
+        },
+        {
+          "family": "IPv4",
+          "targetMatches": false,
+          "containerReadable": false,
+          "failureType": "TimeoutError"
+        }
+      ]
+    },
+    "lastConfirmedInstallation": "2026-10-15 07:29 f5 older ordinary Debug; does not include subsequent status/subtitle/audio changes",
+    "reason": "No live paired iPhone18 identity verified; do not use old metadata to install or claim latest regression"
+  },
+  "wholePlaybackAccepted": false,
+  "wholeSubtitleAccepted": false,
+  "actualAudibleAccepted": false,
+  "pairedPerformanceAccepted": false
+}

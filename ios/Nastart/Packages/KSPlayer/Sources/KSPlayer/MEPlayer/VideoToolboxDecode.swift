@@ -38,7 +38,13 @@ class VideoToolboxDecode: DecodeProtocol {
             return
         }
         do {
-            let sampleBuffer = try session.formatDescription.getSampleBuffer(isConvertNALSize: session.assetTrack.isConvertNALSize, data: data, size: Int(corePacket.size))
+            // The async output must carry the session that accepted this packet,
+            // even if a later decode reconfigures self.session before completion.
+            let sourceFormat = session.formatDescription
+            let sourceDolby = session.assetTrack.dovi
+            let sourceFrameRate = session.assetTrack.nominalFrameRate
+            let sourceTimebase = session.assetTrack.timebase
+            let sampleBuffer = try sourceFormat.getSampleBuffer(isConvertNALSize: session.assetTrack.isConvertNALSize, data: data, size: Int(corePacket.size))
             let flags: VTDecodeFrameFlags = [
                 ._EnableAsynchronousDecompression,
             ]
@@ -62,9 +68,12 @@ class VideoToolboxDecode: DecodeProtocol {
                     }
                     return
                 }
-                let frame = VideoVTBFrame(fps: session.assetTrack.nominalFrameRate, isDovi: session.assetTrack.dovi != nil)
+                let frame = VideoVTBFrame(fps: sourceFrameRate, isDovi: sourceDolby != nil)
                 frame.corePixelBuffer = imageBuffer
-                frame.timebase = session.assetTrack.timebase
+                frame.sideDataInspection = "notExposedByVideoToolbox"
+                frame.dolbyConfiguration = sourceDolby
+                frame.compressedFormatDescription = sourceFormat
+                frame.timebase = sourceTimebase
                 if packet.isKeyFrame, packetFlags & AV_PKT_FLAG_DISCARD != 0, self.lastPosition > 0 {
                     self.startTime = self.lastPosition - timestamp
                 }

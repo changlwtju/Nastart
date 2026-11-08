@@ -1,0 +1,805 @@
+{
+  "date": "2026-10-25",
+  "scope": "TV detail focus; no playback or cellular acceptance",
+  "package": {
+    "at": "2026-10-25T21:03:33.820667+08:00",
+    "configuration": "normal Debug",
+    "HEAD": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceInputs": 510,
+    "binaries": {
+      "__preview.dylib": "4e7e482609edf58137391e4e4a5a50b7dc2969215f7fc5fde4bf89fa8e968111",
+      "NastartTV": "1e3555910a80dc8833ba46916027db59e1fc9ce8f15884d7153c16e391d91d1b",
+      "NastartTV.debug.dylib": "f20557a762a86ddfff386b254e5e6f8284b7aada637c6f8e15d88beda5c577c6",
+      "Frameworks/Libswresample.framework/Libswresample": "0248cd11622bf34e8e12ea2384191f3f5a7fcca21b5afd2acf76a640cfd9f7f0",
+      "Frameworks/Libavfilter.framework/Libavfilter": "c878237c59edbfc0a1b18cf7ba32bc94048f6ce73be835ff8e9fbbe1238903b5",
+      "Frameworks/KSPlayer.framework/KSPlayer": "a5fa6583b11fae9a7435b4e2668c6167a2a9aeaf8d352a5ed67ec6ec60552547",
+      "Frameworks/Libavformat.framework/Libavformat": "a4387a55f532ab71c9c57a0b4d4919a9342aa1888b91d64a940d80b45b252776",
+      "Frameworks/libshaderc_combined.framework/libshaderc_combined": "b9b4856f545f3f06617e1c7ad120e48134ba7a09317bdb20b3431d2d982a09f0",
+      "Frameworks/Libavutil.framework/Libavutil": "9f47f291d006f259a86a9d4f578d6a5e497d7b58f5399e95976e5baeafaecd05",
+      "Frameworks/libharfbuzz.framework/libharfbuzz": "2fa8e17f7fb4248cb77793638b7df8da60d7f7130e840914cfbf2770284bd88c",
+      "Frameworks/libdav1d.framework/libdav1d": "65951f5b38b4aab6a506efa43766a30e47f9f42478d361133ea8d1249e4e7233",
+      "Frameworks/libfontconfig.framework/libfontconfig": "deea0a600d2a1d7b214ac2fcef9c8929cbf5143159642975e6ff385911960dfa",
+      "Frameworks/libfreetype.framework/libfreetype": "3c44f4cef7c08af3ff37965c9b4375c8a29c2352dff59f64c6d5bae737954805",
+      "Frameworks/libfribidi.framework/libfribidi": "945fcbbb7d148dd863e459e1281ac7579492e0df528c138e74b570f1fab03a2a",
+      "Frameworks/libsmbclient.framework/libsmbclient": "46bcc09abf3f34bf0322c83519ffacadb5b4f23a74d1b1a8edbb35deeb1d23d7",
+      "Frameworks/hogweed.framework/hogweed": "1911ef0eea6aff11b4bf1f2a51ea2075873a89ce7fc5a96393f1f76ab6713bb0",
+      "Frameworks/Libswscale.framework/Libswscale": "74f5a8701f603af74d2ec6d13ac2e90a9e1fed8d399d1c18311803aac9845464",
+      "Frameworks/Libavdevice.framework/Libavdevice": "0d51820e370cb80eceda22ca99a9ebebf5ac5d044f7d6eb72f74dc94ae26af60",
+      "Frameworks/gnutls.framework/gnutls": "1de6a7b54cd55edb99e26a773c18ea4fe2734ebe984107591c00892dacb8560f",
+      "Frameworks/libass.framework/libass": "d7346f4eea3e9ee26c52890a5bfd52bd24f8f1ef91c586af89dd2f879555a0d3",
+      "Frameworks/Libavcodec.framework/Libavcodec": "302ee649f33f0715470c59e79cd9eb15535b2780e4801aacea1e54675669991d",
+      "Frameworks/lcms2.framework/lcms2": "84fb6f08e190a458685239a2f43de725d56043db5c6a80a68663787b5e266da9",
+      "Frameworks/nettle.framework/nettle": "270add856b37235b732099217ca8e2c3286d1de22dae84bceb789514a6c9bfcf",
+      "Frameworks/gmp.framework/gmp": "60468a6d439b36bd8339de2d0213cf6b36f5abef503da282cc377007b61d97b4",
+      "Frameworks/libplacebo.framework/libplacebo": "861e1931951ac4f2b4372c09f7bb1aebc46bf247f91b6e4ad4f7e1b80720c646",
+      "Frameworks/libzvbi.framework/libzvbi": "3c7a05db9b5a3b0730e21c2292e69e041133e92d8713f951824ad65ad0b9b5aa",
+      "Frameworks/libsrt.framework/libsrt": "211c387e47e7c4ec31b7f671b1df9b6eade88ab37cfa82fe25960edd5592706f"
+    },
+    "signedMachOCount": 27,
+    "embeddedDependenciesChecked": true,
+    "profileContainsTarget": true,
+    "profileExpirationUTC": "2026-10-31 05:46:14",
+    "applicationIdentifierAndKeychainGroupsPreserved": true,
+    "installationExit": 0,
+    "installedAt": "2026-10-25T21:03:36.048824+08:00"
+  },
+  "tests": {
+    "logic": 40,
+    "UI": 7,
+    "failures": 0,
+    "nativeIntermediateFocusAssertions": true
+  },
+  "hardwareFixture": {
+    "at": "2026-10-25T21:05:28.539180+08:00",
+    "configuration": "ordinary signed Debug with explicit no-network fixture launch arguments",
+    "mediaCommands": 0,
+    "steps": [
+      {
+        "key": "down",
+        "expected": "tv.detail.person.cast-0",
+        "actual": "tv.detail.person.cast-0",
+        "nativeCommits": [
+          "tv.detail.person.cast-0"
+        ],
+        "passed": true
+      },
+      {
+        "key": "right",
+        "expected": "tv.detail.person.cast-1",
+        "actual": "tv.detail.person.cast-1",
+        "nativeCommits": [
+          "tv.detail.person.cast-1"
+        ],
+        "passed": true
+      },
+      {
+        "key": "right",
+        "expected": "tv.detail.person.cast-2",
+        "actual": "tv.detail.person.cast-2",
+        "nativeCommits": [
+          "tv.detail.person.cast-2"
+        ],
+        "passed": true
+      },
+      {
+        "key": "left",
+        "expected": "tv.detail.person.cast-1",
+        "actual": "tv.detail.person.cast-1",
+        "nativeCommits": [
+          "tv.detail.person.cast-1"
+        ],
+        "passed": true
+      },
+      {
+        "key": "down",
+        "expected": "tv.detail.similar.related-0",
+        "actual": "tv.detail.similar.related-0",
+        "nativeCommits": [
+          "tv.detail.similar.related-0"
+        ],
+        "passed": true
+      },
+      {
+        "key": "right",
+        "expected": "tv.detail.similar.related-1",
+        "actual": "tv.detail.similar.related-1",
+        "nativeCommits": [
+          "tv.detail.similar.related-1"
+        ],
+        "passed": true
+      },
+      {
+        "key": "right",
+        "expected": "tv.detail.similar.related-2",
+        "actual": "tv.detail.similar.related-2",
+        "nativeCommits": [
+          "tv.detail.similar.related-2"
+        ],
+        "passed": true
+      },
+      {
+        "key": "left",
+        "expected": "tv.detail.similar.related-1",
+        "actual": "tv.detail.similar.related-1",
+        "nativeCommits": [
+          "tv.detail.similar.related-1"
+        ],
+        "passed": true
+      },
+      {
+        "key": "up",
+        "expected": "tv.detail.person.cast-1",
+        "actual": "tv.detail.person.cast-1",
+        "nativeCommits": [
+          "tv.detail.person.cast-1"
+        ],
+        "passed": true
+      },
+      {
+        "key": "right",
+        "expected": "tv.detail.person.cast-2",
+        "actual": "tv.detail.person.cast-2",
+        "nativeCommits": [
+          "tv.detail.person.cast-2"
+        ],
+        "passed": true
+      },
+      {
+        "key": "left",
+        "expected": "tv.detail.person.cast-1",
+        "actual": "tv.detail.person.cast-1",
+        "nativeCommits": [
+          "tv.detail.person.cast-1"
+        ],
+        "passed": true
+      },
+      {
+        "key": "up",
+        "expected": "tv.play",
+        "actual": "tv.play",
+        "nativeCommits": [
+          "tv.play"
+        ],
+        "passed": true
+      },
+      {
+        "key": "right",
+        "expected": "tv.play.restart",
+        "actual": "tv.play.restart",
+        "nativeCommits": [
+          "tv.play.restart"
+        ],
+        "passed": true
+      },
+      {
+        "key": "down",
+        "expected": "tv.detail.person.cast-0",
+        "actual": "tv.detail.person.cast-0",
+        "nativeCommits": [
+          "tv.detail.person.cast-0"
+        ],
+        "passed": true
+      },
+      {
+        "key": "left",
+        "expected": "tv.detail.person.cast-0",
+        "actual": "tv.detail.person.cast-0",
+        "nativeCommits": [],
+        "passed": true
+      },
+      {
+        "key": "right",
+        "expected": "tv.detail.person.cast-1",
+        "actual": "tv.detail.person.cast-1",
+        "nativeCommits": [
+          "tv.detail.person.cast-1"
+        ],
+        "passed": true
+      },
+      {
+        "key": "right",
+        "expected": "tv.detail.person.cast-2",
+        "actual": "tv.detail.person.cast-2",
+        "nativeCommits": [
+          "tv.detail.person.cast-2"
+        ],
+        "passed": true
+      },
+      {
+        "key": "right",
+        "expected": "tv.detail.person.cast-3",
+        "actual": "tv.detail.person.cast-3",
+        "nativeCommits": [
+          "tv.detail.person.cast-3"
+        ],
+        "passed": true
+      },
+      {
+        "key": "right",
+        "expected": "tv.detail.person.cast-4",
+        "actual": "tv.detail.person.cast-4",
+        "nativeCommits": [
+          "tv.detail.person.cast-4"
+        ],
+        "passed": true
+      },
+      {
+        "key": "right",
+        "expected": "tv.detail.person.cast-5",
+        "actual": "tv.detail.person.cast-5",
+        "nativeCommits": [
+          "tv.detail.person.cast-5"
+        ],
+        "passed": true
+      },
+      {
+        "key": "right",
+        "expected": "tv.detail.person.cast-6",
+        "actual": "tv.detail.person.cast-6",
+        "nativeCommits": [
+          "tv.detail.person.cast-6"
+        ],
+        "passed": true
+      },
+      {
+        "key": "right",
+        "expected": "tv.detail.person.cast-7",
+        "actual": "tv.detail.person.cast-7",
+        "nativeCommits": [
+          "tv.detail.person.cast-7"
+        ],
+        "passed": true
+      },
+      {
+        "key": "right",
+        "expected": "tv.detail.person.cast-8",
+        "actual": "tv.detail.person.cast-8",
+        "nativeCommits": [
+          "tv.detail.person.cast-8"
+        ],
+        "passed": true
+      },
+      {
+        "key": "right",
+        "expected": "tv.detail.person.cast-9",
+        "actual": "tv.detail.person.cast-9",
+        "nativeCommits": [
+          "tv.detail.person.cast-9"
+        ],
+        "passed": true
+      },
+      {
+        "key": "right",
+        "expected": "tv.detail.person.cast-10",
+        "actual": "tv.detail.person.cast-10",
+        "nativeCommits": [
+          "tv.detail.person.cast-10"
+        ],
+        "passed": true
+      },
+      {
+        "key": "right",
+        "expected": "tv.detail.person.cast-11",
+        "actual": "tv.detail.person.cast-11",
+        "nativeCommits": [
+          "tv.detail.person.cast-11"
+        ],
+        "passed": true
+      },
+      {
+        "key": "right",
+        "expected": "tv.detail.person.cast-11",
+        "actual": "tv.detail.person.cast-11",
+        "nativeCommits": [],
+        "passed": true
+      },
+      {
+        "key": "down",
+        "expected": "tv.detail.similar.related-0",
+        "actual": "tv.detail.similar.related-0",
+        "nativeCommits": [
+          "tv.detail.similar.related-0"
+        ],
+        "passed": true
+      },
+      {
+        "key": "right",
+        "expected": "tv.detail.similar.related-1",
+        "actual": "tv.detail.similar.related-1",
+        "nativeCommits": [
+          "tv.detail.similar.related-1"
+        ],
+        "passed": true
+      },
+      {
+        "key": "right",
+        "expected": "tv.detail.similar.related-2",
+        "actual": "tv.detail.similar.related-2",
+        "nativeCommits": [
+          "tv.detail.similar.related-2"
+        ],
+        "passed": true
+      },
+      {
+        "key": "right",
+        "expected": "tv.detail.similar.related-3",
+        "actual": "tv.detail.similar.related-3",
+        "nativeCommits": [
+          "tv.detail.similar.related-3"
+        ],
+        "passed": true
+      },
+      {
+        "key": "right",
+        "expected": "tv.detail.similar.related-4",
+        "actual": "tv.detail.similar.related-4",
+        "nativeCommits": [
+          "tv.detail.similar.related-4"
+        ],
+        "passed": true
+      },
+      {
+        "key": "right",
+        "expected": "tv.detail.similar.related-5",
+        "actual": "tv.detail.similar.related-5",
+        "nativeCommits": [
+          "tv.detail.similar.related-5"
+        ],
+        "passed": true
+      },
+      {
+        "key": "right",
+        "expected": "tv.detail.similar.related-6",
+        "actual": "tv.detail.similar.related-6",
+        "nativeCommits": [
+          "tv.detail.similar.related-6"
+        ],
+        "passed": true
+      },
+      {
+        "key": "right",
+        "expected": "tv.detail.similar.related-6",
+        "actual": "tv.detail.similar.related-6",
+        "nativeCommits": [],
+        "passed": true
+      },
+      {
+        "key": "left",
+        "expected": "tv.detail.similar.related-5",
+        "actual": "tv.detail.similar.related-5",
+        "nativeCommits": [
+          "tv.detail.similar.related-5"
+        ],
+        "passed": true
+      },
+      {
+        "key": "up",
+        "expected": "tv.detail.person.cast-11",
+        "actual": "tv.detail.person.cast-11",
+        "nativeCommits": [
+          "tv.detail.person.cast-11"
+        ],
+        "passed": true
+      },
+      {
+        "key": "left",
+        "expected": "tv.detail.person.cast-10",
+        "actual": "tv.detail.person.cast-10",
+        "nativeCommits": [
+          "tv.detail.person.cast-10"
+        ],
+        "passed": true
+      },
+      {
+        "key": "up",
+        "expected": "tv.play.restart",
+        "actual": "tv.play.restart",
+        "nativeCommits": [
+          "tv.play.restart"
+        ],
+        "passed": true
+      },
+      {
+        "key": "down",
+        "expected": "tv.detail.person.cast-0",
+        "actual": "tv.detail.person.cast-0",
+        "nativeCommits": [
+          "tv.detail.person.cast-0"
+        ],
+        "passed": true
+      },
+      {
+        "key": "down",
+        "expected": "tv.detail.similar.related-0",
+        "actual": "tv.detail.similar.related-0",
+        "nativeCommits": [
+          "tv.detail.similar.related-0"
+        ],
+        "passed": true
+      },
+      {
+        "key": "up",
+        "expected": "tv.detail.person.cast-0",
+        "actual": "tv.detail.person.cast-0",
+        "nativeCommits": [
+          "tv.detail.person.cast-0"
+        ],
+        "passed": true
+      },
+      {
+        "key": "up",
+        "expected": "tv.play.restart",
+        "actual": "tv.play.restart",
+        "nativeCommits": [
+          "tv.play.restart"
+        ],
+        "passed": true
+      },
+      {
+        "key": "left",
+        "expected": "tv.play",
+        "actual": "tv.play",
+        "nativeCommits": [
+          "tv.play"
+        ],
+        "passed": true
+      }
+    ],
+    "completed": true,
+    "normalRestored": true
+  },
+  "ordinaryRealMetadata": {
+    "at": "2026-10-25T21:06:29.131441+08:00",
+    "mediaCommands": 0,
+    "steps": [
+      {
+        "case": "play-down-first",
+        "key": "down",
+        "passed": true,
+        "settlingPolls": 1
+      },
+      {
+        "case": "cast-right-second",
+        "key": "right",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "cast-right-third",
+        "key": "right",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "cast-left-second",
+        "key": "left",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "cast-down-first-related",
+        "key": "down",
+        "passed": true,
+        "settlingPolls": 1
+      },
+      {
+        "case": "related-right-second",
+        "key": "right",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "related-right-third",
+        "key": "right",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "related-left-second",
+        "key": "left",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "related-up-remembered-cast",
+        "key": "up",
+        "passed": true,
+        "settlingPolls": 1
+      },
+      {
+        "case": "cast-right-third-again",
+        "key": "right",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "cast-left-second-again",
+        "key": "left",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "cast-up-play",
+        "key": "up",
+        "passed": true,
+        "settlingPolls": 1
+      },
+      {
+        "case": "play-right-restart",
+        "key": "right",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 68.0
+      },
+      {
+        "case": "restart-down-first",
+        "key": "down",
+        "passed": true,
+        "settlingPolls": 1
+      },
+      {
+        "case": "cast-first-left-boundary",
+        "key": "left",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "cast-right-1",
+        "key": "right",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "cast-right-2",
+        "key": "right",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "cast-right-3",
+        "key": "right",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "cast-right-4",
+        "key": "right",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "cast-right-5",
+        "key": "right",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "cast-right-6",
+        "key": "right",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "cast-right-7",
+        "key": "right",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "cast-right-8",
+        "key": "right",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": -8.0
+      },
+      {
+        "case": "cast-right-9",
+        "key": "right",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "cast-right-10",
+        "key": "right",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "cast-right-11",
+        "key": "right",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": -7.0
+      },
+      {
+        "case": "cast-right-12",
+        "key": "right",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "cast-right-13",
+        "key": "right",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "cast-right-14",
+        "key": "right",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "cast-right-15",
+        "key": "right",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": -7.0
+      },
+      {
+        "case": "cast-right-16",
+        "key": "right",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "cast-right-17",
+        "key": "right",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "cast-right-18",
+        "key": "right",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "cast-right-19",
+        "key": "right",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "cast-last-right-boundary",
+        "key": "right",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "cast-down-first-related-after-reentry",
+        "key": "down",
+        "passed": true,
+        "settlingPolls": 1
+      },
+      {
+        "case": "related-right-1",
+        "key": "right",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "related-right-2",
+        "key": "right",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "related-left-from-edge",
+        "key": "left",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "related-up-last-cast",
+        "key": "up",
+        "passed": true,
+        "settlingPolls": 1
+      },
+      {
+        "case": "cast-left-from-edge",
+        "key": "left",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "last-cast-up-restart",
+        "key": "up",
+        "passed": true,
+        "settlingPolls": 1
+      },
+      {
+        "case": "hero-reenter-first-after-edge",
+        "key": "down",
+        "passed": true,
+        "settlingPolls": 1
+      },
+      {
+        "case": "hero-down-down-first-related",
+        "key": "down",
+        "passed": true,
+        "settlingPolls": 1
+      },
+      {
+        "case": "related-up-first-cast",
+        "key": "up",
+        "passed": true,
+        "settlingPolls": 1
+      },
+      {
+        "case": "first-cast-up-remembered-action",
+        "key": "up",
+        "passed": true,
+        "settlingPolls": 1
+      },
+      {
+        "case": "restart-left-play",
+        "key": "left",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 68.0
+      }
+    ],
+    "completed": true,
+    "normalHome": true,
+    "actorCount": 20,
+    "actualUISimilarPrefixVerified": 3,
+    "settingsRestored": true
+  },
+  "runnerCleanup": {
+    "startedAt": "2026-10-25T21:04:17.378097+08:00",
+    "limitSeconds": 600,
+    "runnerStopped": true,
+    "finishedAt": "2026-10-25T21:08:07.109409+08:00"
+  },
+  "sourceInputDrift": 0,
+  "frozenBinaryDrift": 0,
+  "mobileOperations": 0,
+  "mediaCommands": 0,
+  "cellularCommands": 0,
+  "preferenceReference": {
+    "reference": "previous batch final snapshot; not a fresh pre-install snapshot",
+    "changedKeyCount": 0
+  },
+  "limitations": [
+    "Ordinary metadata chain verifies settled targets; exact native commits are measured in the separate on-device production-view fixture.",
+    "No rapid-repeat/empty/dynamic full UI acceptance; no playback or frame-time performance acceptance.",
+    "28 open requirements / 114 playback cells unchanged."
+  ],
+  "documentationValidation": {
+    "documents": 452,
+    "localLinks": 2600,
+    "missingDestinations": 0,
+    "gitDiffCheckExit": 0
+  }
+}

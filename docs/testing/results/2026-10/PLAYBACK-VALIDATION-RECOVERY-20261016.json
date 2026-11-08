@@ -1,0 +1,200 @@
+{
+  "recordedAt": "2026-10-16T19:39:45.546281+08:00",
+  "sourceDiffSHA256": "d0ae9dcdb0b915915ef55432a55f0a606defe75241c46fbedc6a8d4b7dde521d",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "configuration": "normal Debug -Onone; empty launch environment",
+  "binaryBuildTime": "2026-10-16T17:23:50.888773+08:00",
+  "binaries": {
+    "Nastart": "f5481a348245e8adbc4e862e74552d8b58376b4c697d87b35c4985a98d462b7e",
+    "Nastart.debug.dylib": "35cd2111ba4490dfc5dadd97c58ee0a975460913ae95be9f5e6365938cb13656",
+    "Frameworks/KSPlayer.framework/KSPlayer": "f73e8008a84286299e04dcda6b27921049f326e8190235a5fd7fcbdf5e288be0"
+  },
+  "checkedInputs": 173,
+  "appSourceChanged": false,
+  "appRebuilt": false,
+  "sourceAndPackageReverified": true,
+  "iPhone18": "deferred per user; no discovery/install/playback",
+  "brightnessChanged": false,
+  "fullSuitePassed": false,
+  "focusedOriginalRuntime": {
+    "selected": 3,
+    "audioCrashes": 2,
+    "prewarmTimeouts": 1,
+    "driverStalledAfterTests": true,
+    "boundedStop": true,
+    "xcresultSummaryUnavailable": true
+  },
+  "focusedAlternateRuntime": {
+    "runtime": "iOS27.0",
+    "selected": 5,
+    "passed": 0,
+    "failed": 5,
+    "audioCrashes": 4,
+    "prewarmTimeouts": 1,
+    "exit": 65
+  },
+  "audioProbe": {
+    "exception": {
+      "codes": "0x0000000000000000, 0x0000000000000000",
+      "rawCodes": [
+        0,
+        0
+      ],
+      "type": "EXC_CRASH",
+      "signal": "SIGABRT"
+    },
+    "triggeredSymbols": [
+      "__pthread_kill",
+      "pthread_kill",
+      "abort",
+      "_ReportRPCTimeout(char const*, int)",
+      "_CheckRPCError(char const*, int, int)",
+      "AURemoteIO::Cleanup()",
+      "ausdk::AUMethodUninitialize(void*)",
+      "-[AUAudioUnitV2Bridge internalDeallocateRenderResources]",
+      "-[AUAudioUnit deallocateRenderResources]",
+      "AUInterfaceBaseV3::Uninitialize()",
+      "AVAudioIONodeImpl::GetOutputFormat(unsigned long)",
+      "-[AVAudioNode outputFormatForBus:]",
+      "AVAudioEngineImpl::UpdateOutputNode(bool)",
+      "AVAudioEngineImpl::GetOutputNode()",
+      "-[AVAudioEngine outputNode]",
+      "main",
+      "start_sim",
+      "start"
+    ],
+    "hostProbeExit": 0,
+    "simulatorProbeExit": 134,
+    "simulatorRebootProbeExit": 134,
+    "containsNastartCode": false
+  },
+  "ipadAutomation": {
+    "reusedSignedExistingRunner": true,
+    "runnerRebuiltOrExplicitlyInstalled": false,
+    "Xcode27": {
+      "readyAndNormalHomeSessionObserved": true,
+      "subsequentlyLostConnection": true,
+      "exit": 65,
+      "errorDomain": "com.apple.Mercury.error",
+      "errorCode": 1001
+    },
+    "nativeXCTest": {
+      "attempts": 2,
+      "readyObserved": true,
+      "subsequentlyLostDTXConnection": true,
+      "firstAttemptMissingFixtureIdentityVariable": true,
+      "secondAttemptFixtureIdentityCorrect": true
+    },
+    "newNastartWDAMemoryReports": 0,
+    "playbackRegressionPerformed": false,
+    "recovered": false
+  },
+  "phonePlayback": {
+    "entrance": "Jellyfin",
+    "sample": "S19",
+    "ordinaryEmptyEnvironment": true,
+    "initialEngine": "KSPlayer",
+    "deepSeekEngine": "KSPlayer",
+    "HLSSeekAcceptance": false,
+    "normalUIExitActuallyReviewed": true,
+    "startupTarget30ActualCaptureStartSeconds": 36.739,
+    "deepSeekTargetSeconds": 7488.605493934631,
+    "seekTimeline": [
+      {
+        "event": "seek_started",
+        "secondsFromTouchRequest": 0.722836,
+        "fields": {
+          "engine": "KSPlayer",
+          "seekTargetSeconds": "7488.605493934631"
+        }
+      },
+      {
+        "event": "seek_engine_completed",
+        "secondsFromTouchRequest": 2.096755,
+        "fields": {
+          "completed": "true",
+          "engine": "KSPlayer",
+          "targetSeconds": "7488.605493934631"
+        }
+      },
+      {
+        "event": "seek_preview_ready",
+        "secondsFromTouchRequest": 3.35442,
+        "fields": {
+          "engine": "KSPlayer",
+          "evidence": "rendererOutputNotPresentation",
+          "framePTSSeconds": "7488.606",
+          "seekTargetSeconds": "7488.605493934631"
+        }
+      }
+    ],
+    "engineCompletionFromSeekStartedSeconds": 1.373919,
+    "outputSubmissionFromSeekStartedSeconds": 2.631584,
+    "outputIsPresentationEvidence": false,
+    "actualTargetPictureObservedByCaptureEndSeconds": 19.970939,
+    "oldPictureCaptureWindowSeconds": [
+      3.008732,
+      3.39285
+    ],
+    "samplingCaveat": "t10 actually captured at19.448..19.971s; output submission at3.354s from touch overlaps t3 capture; cannot prove an extra renderer lag or continuous recovery latency",
+    "qualifiedSubtitleCueBeforeSeek": false,
+    "subtitleClearanceOrBottomPositionAccepted": false,
+    "newRequestPhaseRecords": 36,
+    "totalRequests": 37,
+    "originalPauseModeTypoRetainedAsToolFailure": true
+  },
+  "phoneFinal": {
+    "at": "2026-10-16T19:38:13.466925+08:00",
+    "model": "iPhone14,5",
+    "system": "16.3.1",
+    "USBIdentityMatched": true,
+    "sourceDiffSHA256": "d0ae9dcdb0b915915ef55432a55f0a606defe75241c46fbedc6a8d4b7dde521d",
+    "binaries": {
+      "Nastart": "f5481a348245e8adbc4e862e74552d8b58376b4c697d87b35c4985a98d462b7e",
+      "Nastart.debug.dylib": "35cd2111ba4490dfc5dadd97c58ee0a975460913ae95be9f5e6365938cb13656",
+      "Frameworks/KSPlayer.framework/KSPlayer": "f73e8008a84286299e04dcda6b27921049f326e8190235a5fd7fcbdf5e288be0"
+    },
+    "nonBookmarkPreferenceKeys": 24,
+    "nonBookmarkPreferencesUnchanged": true,
+    "originalBookmarksChecked": 36,
+    "originalBookmarksRemoved": 0,
+    "originalTrackChangeCount": 0,
+    "newBookmarksCount": 0,
+    "naturalPositionChangesCount": 1,
+    "newCrashReports": {
+      "Nastart": 0,
+      "WebDriverAgent": 0,
+      "JetsamEvent": 0
+    },
+    "normalEmptyEnvironment": true,
+    "NASNormal": true,
+    "playerClosed": true,
+    "WDAIdleSeconds": 10,
+    "WDAAnimationCoolOffSeconds": 2,
+    "activeNativeConditions": 0,
+    "finalImageActuallyReviewed": true,
+    "crashDeltaBaseline": "previous batch finalized inventory, not fresh round-start inventory"
+  },
+  "ipadFinal": {
+    "at": "2026-10-16T19:37:36.720675+08:00",
+    "wholeNonDiagnosticPreferencesUnchanged": true,
+    "nonDiagnosticKeys": 18,
+    "latestNativeHomeImageActuallyReviewed": true,
+    "playerClosed": true,
+    "requestedEnvironment": {},
+    "requestedArguments": [],
+    "actualEnvironmentReadbackAtEarlierWDAHome": true,
+    "finalLaunchEnvironmentReadback": false,
+    "NASConnected": false,
+    "newNastartWDAMemoryReports": 0,
+    "nativeConditionsActive": 0,
+    "WDAStillUnavailable": true
+  },
+  "acceptance": {
+    "allOriginalGapsRemainOpen": true,
+    "performanceImprovementProven": false,
+    "prewarmTimeoutRootCauseProven": false,
+    "simulatorFailureReproducedWithoutNastart": true,
+    "physicalDeviceAudioAcceptance": false
+  }
+}

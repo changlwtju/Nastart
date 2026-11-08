@@ -1,0 +1,107 @@
+{
+  "date": "2026-10-28",
+  "sourceInputCount": 414,
+  "sourceChangesDuringNativeWindows": false,
+  "configuration": "Debug",
+  "arguments": [],
+  "environment": {},
+  "iphone13": {
+    "arguments": [],
+    "environment": {},
+    "playbackCommands": 0,
+    "nasWrites": 0,
+    "freshIdentityConnected": true,
+    "stage": "wait sibling commit",
+    "temporaryCreatedPreviously": true,
+    "newPathEntered": true,
+    "siblingCommitted": true,
+    "bFileCount": 1,
+    "replacementWallOpened": true,
+    "temporaryLibraryRemoved": true,
+    "originalIndexWholeJSONPreserved": true,
+    "normalHome": true,
+    "settingsRestored": true,
+    "ownedHTTPSessionDeleted": true,
+    "originalRunnerPreserved": true
+  },
+  "iphone13InitialFailure": {
+    "arguments": [],
+    "environment": {},
+    "playbackCommands": 0,
+    "nasWrites": 0,
+    "freshIdentityConnected": true,
+    "stage": "reuse connection",
+    "temporaryCreated": true,
+    "aFileCount": 1,
+    "settingsRestored": true,
+    "ownedHTTPSessionDeleted": true,
+    "originalRunnerPreserved": true,
+    "failureType": "AssertionError"
+  },
+  "tvFirstFailure": {
+    "arguments": [],
+    "environment": {},
+    "playbackCommands": 0,
+    "nasWrites": 0,
+    "freshIdentityConnected": true,
+    "originalRunnerPresent": true,
+    "stage": "reuse saved connection",
+    "originalIndexWholeJSONPreserved": true,
+    "normalHome": true,
+    "settingsRestored": true,
+    "ownedHTTPSessionDeleted": true,
+    "originalRunnerPreserved": true,
+    "failureType": "AssertionError"
+  },
+  "tvSecondWindow": {
+    "arguments": [],
+    "environment": {},
+    "playbackCommands": 0,
+    "nasWrites": 0,
+    "freshIdentityConnected": true,
+    "originalRunnerPresent": true,
+    "stage": "edit sibling path",
+    "temporaryCreated": true,
+    "aFileCount": 1,
+    "temporaryLibraryRemoved": true,
+    "originalIndexWholeJSONPreserved": true,
+    "normalHome": true,
+    "settingsRestored": true,
+    "ownedHTTPSessionDeleted": true,
+    "originalRunnerPreserved": true,
+    "failureType": "TimeoutError"
+  },
+  "migration": {
+    "sameOrigin": true,
+    "newLocalID": true,
+    "sameLibraryName": true,
+    "originalLibraryUnchangedAtBothCommits": true,
+    "firstFilm": "哈尔的移动城堡",
+    "secondFilm": "碟中谍 3",
+    "fileCounts": [
+      1,
+      1
+    ],
+    "bothPosterWallsVisuallyReviewed": true
+  },
+  "iphone13Preferences": {
+    "beforeKeys": 26,
+    "afterKeys": 26,
+    "sameKeys": true,
+    "changedValues": 0,
+    "allNonDiagnosticPreferencesEqual": true
+  },
+  "tvPreferences": {
+    "changedKeys": [
+      "networkMedia.sourceCatalog.v2"
+    ],
+    "sameNonCatalogPreferences": true,
+    "catalogJSONEqual": {
+      "networkMedia.sourceCatalog.v2": true
+    }
+  },
+  "newPlaybackPasses": 0,
+  "nasWrites": 0,
+  "temporaryLibrariesRemaining": 0,
+  "ipadAndIphone18NotOperated": true
+}

@@ -1,4 +1,5 @@
 import Foundation
+import NetworkMedia
 
 enum NetworkHostClassifier {
     static func isLiteralAddress(_ host: String?) -> Bool {
@@ -371,16 +372,8 @@ enum LaunchpadDefaultVisibilityPolicy {
         image: String,
         hasEndpoint: Bool
     ) -> LaunchpadDefaultVisibilityReason {
-        guard !isInfrastructureContainer(image: image) else { return .systemOrUnknown }
         guard hasEndpoint else { return .noReachableEndpoint }
-        let imageIdentity = ServiceIconRegistry.identity(name: image)
-        if imageIdentity.displayName != nil {
-            return imageIdentity.defaultVisibilityReason == .recognizedWebUI ? .recognizedWebUI : .systemOrUnknown
-        }
-        if ServiceIconRegistry.identity(name: name, subtitle: image).defaultVisibilityReason == .recognizedWebUI {
-            return .recognizedWebUI
-        }
-        return .systemOrUnknown
+        return NASServiceCategory.defaultVisibleContainer(name: name, image: image, hasAddress: hasEndpoint) ? .recognizedWebUI : .systemOrUnknown
     }
 }
 
@@ -420,9 +413,9 @@ enum ServiceIconRegistry {
         }
         return ServiceIconIdentity(
             displayName: rule?.displayName,
-            symbolName: rule?.symbolName,
+            symbolName: NASServiceCategory.symbolName(name: name, detail: subtitle + " " + detail, aliases: endpointHosts),
             badgeText: rule?.badgeText,
-            category: rule?.category,
+            category: NASServiceCategory.matching(name: name, detail: subtitle + " " + detail, aliases: endpointHosts).flatMap { ServiceCategory(rawValue: $0.rawValue) },
             prefersBadge: rule?.prefersBadge ?? false,
             defaultVisibilityReason: rule?.defaultVisibilityReason
         )
@@ -449,26 +442,20 @@ enum ServiceIconRegistry {
     private struct Rule {
         let tokens: [String]
         let displayName: String?
-        let symbolName: String?
         let badgeText: String?
-        let category: ServiceCategory?
         let prefersBadge: Bool
         let defaultVisibilityReason: LaunchpadDefaultVisibilityReason?
 
         init(
             _ tokens: [String],
             displayName: String? = nil,
-            symbolName: String,
             badgeText: String? = nil,
-            category: ServiceCategory? = nil,
             prefersBadge: Bool = false,
             defaultVisibilityReason: LaunchpadDefaultVisibilityReason? = nil
         ) {
             self.tokens = tokens.map(Self.compactIdentifier)
             self.displayName = displayName
-            self.symbolName = symbolName
             self.badgeText = badgeText
-            self.category = category
             self.prefersBadge = prefersBadge
             self.defaultVisibilityReason = defaultVisibilityReason
         }
@@ -481,60 +468,60 @@ enum ServiceIconRegistry {
     }
 
     private static let rules: [Rule] = [
-        Rule(["file station", "filebrowser", "文件"], displayName: "File Station", symbolName: "folder", badgeText: "FS", category: .favorites),
-        Rule(["container manager"], displayName: "Container Manager", symbolName: "shippingbox", badgeText: "CT", category: .favorites),
-        Rule(["download station"], displayName: "Download Station", symbolName: "arrow.down.circle", badgeText: "DL", category: .downloads, defaultVisibilityReason: .synologyApp),
-        Rule(["synology photos", "photostation", "photos"], displayName: "Synology Photos", symbolName: "photo", badgeText: "PH", category: .media, defaultVisibilityReason: .synologyApp),
-        Rule(["synology drive", "cloudstation", "cloudstationserver"], displayName: "Synology Drive", symbolName: "externaldrive", badgeText: "DR", category: .favorites, defaultVisibilityReason: .synologyApp),
-        Rule(["video station"], displayName: "Video Station", symbolName: "play.rectangle", badgeText: "VD", category: .media, defaultVisibilityReason: .synologyApp),
-        Rule(["audio station"], displayName: "Audio Station", symbolName: "music.note.list", badgeText: "AU", category: .media, defaultVisibilityReason: .synologyApp),
-        Rule(["surveillance station"], symbolName: "video", category: .tools, defaultVisibilityReason: .synologyApp),
-        Rule(["virtual machine manager"], displayName: "Virtual Machine Manager", symbolName: "desktopcomputer", badgeText: "VM", category: .tools, defaultVisibilityReason: .synologyApp),
-        Rule(["web station"], symbolName: "globe", category: .network),
-        Rule(["jellyfin"], displayName: "Jellyfin", symbolName: "play.rectangle", badgeText: "JF", category: .media, defaultVisibilityReason: .recognizedWebUI),
-        Rule(["emby"], displayName: "Emby", symbolName: "play.tv", badgeText: "EM", category: .media, defaultVisibilityReason: .recognizedWebUI),
-        Rule(["plex", "plexmediaserver"], displayName: "Plex", symbolName: "play.circle", badgeText: "PX", category: .media, defaultVisibilityReason: .recognizedWebUI),
-        Rule(["navidrome"], displayName: "Navidrome", symbolName: "music.note.list", badgeText: "NV", category: .media, defaultVisibilityReason: .recognizedWebUI),
-        Rule(["audiobookshelf"], displayName: "Audiobookshelf", symbolName: "books.vertical", badgeText: "AB", category: .media, defaultVisibilityReason: .recognizedWebUI),
-        Rule(["immich"], displayName: "Immich", symbolName: "photo.on.rectangle", badgeText: "IM", category: .media, defaultVisibilityReason: .recognizedWebUI),
-        Rule(["photoprism"], displayName: "PhotoPrism", symbolName: "camera.aperture", badgeText: "PP", category: .media, defaultVisibilityReason: .recognizedWebUI),
-        Rule(["qbittorrent"], displayName: "qBittorrent", symbolName: "arrow.down.circle", badgeText: "QB", category: .downloads, defaultVisibilityReason: .recognizedWebUI),
-        Rule(["transmission"], displayName: "Transmission", symbolName: "arrow.down.circle", badgeText: "TR", category: .downloads, prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
-        Rule(["aria2"], displayName: "Aria2", symbolName: "arrow.down.circle", badgeText: "A2", category: .downloads, prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
-        Rule(["prowlarr"], displayName: "Prowlarr", symbolName: "magnifyingglass.circle", badgeText: "PR", category: .downloads, prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
-        Rule(["radarr"], displayName: "Radarr", symbolName: "film", badgeText: "RD", category: .media, prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
-        Rule(["sonarr"], displayName: "Sonarr", symbolName: "tv", badgeText: "SN", category: .media, prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
-        Rule(["lidarr"], displayName: "Lidarr", symbolName: "music.mic", badgeText: "LD", category: .media, prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
-        Rule(["readarr"], displayName: "Readarr", symbolName: "book", badgeText: "RA", category: .media, prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
-        Rule(["bazarr"], displayName: "Bazarr", symbolName: "captions.bubble", badgeText: "BZ", category: .media, prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
-        Rule(["overseerr"], displayName: "Overseerr", symbolName: "person.badge.plus", badgeText: "OS", category: .downloads, prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
-        Rule(["tinymediamanager", "tiny media manager"], displayName: "tinyMediaManager", symbolName: "film.stack", badgeText: "TM", category: .tools, defaultVisibilityReason: .recognizedWebUI),
-        Rule(["homeassistant", "home assistant", "home-assistant"], displayName: "Home Assistant", symbolName: "house", badgeText: "HA", category: .tools, defaultVisibilityReason: .recognizedWebUI),
-        Rule(["homebridge"], displayName: "Homebridge", symbolName: "house", badgeText: "HB", category: .tools, prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
-        Rule(["portainer"], displayName: "Portainer", symbolName: "square.stack.3d.up", badgeText: "PT", category: .tools, defaultVisibilityReason: .recognizedWebUI),
-        Rule(["homepage"], displayName: "Homepage", symbolName: "house", badgeText: "HP", category: .favorites, prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
-        Rule(["codeserver", "code-server", "codexserver", "codex-server"], symbolName: "terminal", badgeText: "CD", category: .tools, prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
-        Rule(["jupyter"], displayName: "Jupyter", symbolName: "terminal", badgeText: "JP", category: .tools, prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
-        Rule(["grafana"], displayName: "Grafana", symbolName: "chart.xyaxis.line", badgeText: "GF", category: .tools, defaultVisibilityReason: .recognizedWebUI),
-        Rule(["gitea"], displayName: "Gitea", symbolName: "point.3.connected.trianglepath.dotted", badgeText: "GT", category: .tools, prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
-        Rule(["gitlab"], displayName: "GitLab", symbolName: "point.3.connected.trianglepath.dotted", badgeText: "GL", category: .tools, prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
-        Rule(["nginx proxy", "nginxproxymanager", "reverse proxy", "traefik", "caddy"], symbolName: "lock.rectangle", category: .network, defaultVisibilityReason: .recognizedWebUI),
-        Rule(["mihomo", "clash"], displayName: "Mihomo", symbolName: "network", category: .network),
-        Rule(["metacubexd", "metacube"], displayName: "MetaCubeXD", symbolName: "network", badgeText: "MX", category: .network, prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
-        Rule(["tailscale", "zerotier", "vpn"], symbolName: "lock.shield", category: .network),
-        Rule(["adguard"], displayName: "AdGuard", symbolName: "shield", badgeText: "AG", category: .network, prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
-        Rule(["pihole", "pi-hole"], displayName: "Pi-hole", symbolName: "shield", badgeText: "PH", category: .network, prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
-        Rule(["vaultwarden"], displayName: "Vaultwarden", symbolName: "key", badgeText: "VW", category: .tools, prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
-        Rule(["bitwarden"], displayName: "Bitwarden", symbolName: "key", badgeText: "BW", category: .tools, prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
-        Rule(["mariadb", "mysql", "postgres"], symbolName: "cylinder", category: .tools),
-        Rule(["nextcloud"], displayName: "Nextcloud", symbolName: "cloud", badgeText: "NC", category: .tools, defaultVisibilityReason: .recognizedWebUI),
-        Rule(["paperlessngx", "paperless"], displayName: "Paperless-ngx", symbolName: "doc.text", badgeText: "PN", category: .tools, prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
-        Rule(["calibreweb"], displayName: "Calibre-Web", symbolName: "books.vertical", badgeText: "CW", category: .media, prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
-        Rule(["mealie"], displayName: "Mealie", symbolName: "fork.knife", badgeText: "ML", category: .tools, defaultVisibilityReason: .recognizedWebUI),
-        Rule(["uptimekuma", "healthchecks", "uptime"], symbolName: "waveform.path.ecg", category: .tools, defaultVisibilityReason: .recognizedWebUI),
-        Rule(["calendar"], symbolName: "calendar", category: .tools),
-        Rule(["contacts"], symbolName: "person.crop.circle", category: .tools),
-        Rule(["note station"], symbolName: "note.text", category: .tools)
+        Rule(["file station", "filebrowser", "文件"], displayName: "File Station", badgeText: "FS"),
+        Rule(["container manager"], displayName: "Container Manager", badgeText: "CT"),
+        Rule(["download station"], displayName: "Download Station", badgeText: "DL", defaultVisibilityReason: .synologyApp),
+        Rule(["synology photos", "photostation", "photos"], displayName: "Synology Photos", badgeText: "PH", defaultVisibilityReason: .synologyApp),
+        Rule(["synology drive", "cloudstation", "cloudstationserver"], displayName: "Synology Drive", badgeText: "DR", defaultVisibilityReason: .synologyApp),
+        Rule(["video station"], displayName: "Video Station", badgeText: "VD", defaultVisibilityReason: .synologyApp),
+        Rule(["audio station"], displayName: "Audio Station", badgeText: "AU", defaultVisibilityReason: .synologyApp),
+        Rule(["surveillance station"], defaultVisibilityReason: .synologyApp),
+        Rule(["virtual machine manager"], displayName: "Virtual Machine Manager", badgeText: "VM", defaultVisibilityReason: .synologyApp),
+        Rule(["web station"]),
+        Rule(["jellyfin"], displayName: "Jellyfin", badgeText: "JF", defaultVisibilityReason: .recognizedWebUI),
+        Rule(["emby"], displayName: "Emby", badgeText: "EM", defaultVisibilityReason: .recognizedWebUI),
+        Rule(["plex", "plexmediaserver"], displayName: "Plex", badgeText: "PX", defaultVisibilityReason: .recognizedWebUI),
+        Rule(["navidrome"], displayName: "Navidrome", badgeText: "NV", defaultVisibilityReason: .recognizedWebUI),
+        Rule(["audiobookshelf"], displayName: "Audiobookshelf", badgeText: "AB", defaultVisibilityReason: .recognizedWebUI),
+        Rule(["immich"], displayName: "Immich", badgeText: "IM", defaultVisibilityReason: .recognizedWebUI),
+        Rule(["photoprism"], displayName: "PhotoPrism", badgeText: "PP", defaultVisibilityReason: .recognizedWebUI),
+        Rule(["qbittorrent"], displayName: "qBittorrent", badgeText: "QB", defaultVisibilityReason: .recognizedWebUI),
+        Rule(["transmission"], displayName: "Transmission", badgeText: "TR", prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["aria2"], displayName: "Aria2", badgeText: "A2", prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["prowlarr"], displayName: "Prowlarr", badgeText: "PR", prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["radarr"], displayName: "Radarr", badgeText: "RD", prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["sonarr"], displayName: "Sonarr", badgeText: "SN", prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["lidarr"], displayName: "Lidarr", badgeText: "LD", prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["readarr"], displayName: "Readarr", badgeText: "RA", prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["bazarr"], displayName: "Bazarr", badgeText: "BZ", prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["overseerr"], displayName: "Overseerr", badgeText: "OS", prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["tinymediamanager", "tiny media manager"], displayName: "tinyMediaManager", badgeText: "TM", defaultVisibilityReason: .recognizedWebUI),
+        Rule(["homeassistant", "home assistant", "home-assistant"], displayName: "Home Assistant", badgeText: "HA", defaultVisibilityReason: .recognizedWebUI),
+        Rule(["homebridge"], displayName: "Homebridge", badgeText: "HB", prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["portainer"], displayName: "Portainer", badgeText: "PT", defaultVisibilityReason: .recognizedWebUI),
+        Rule(["homepage"], displayName: "Homepage", badgeText: "HP", prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["codeserver", "code-server", "codexserver", "codex-server"], badgeText: "CD", prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["jupyter"], displayName: "Jupyter", badgeText: "JP", prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["grafana"], displayName: "Grafana", badgeText: "GF", defaultVisibilityReason: .recognizedWebUI),
+        Rule(["gitea"], displayName: "Gitea", badgeText: "GT", prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["gitlab"], displayName: "GitLab", badgeText: "GL", prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["nginx proxy", "nginxproxymanager", "reverse proxy", "traefik", "caddy"], defaultVisibilityReason: .recognizedWebUI),
+        Rule(["mihomo", "clash"], displayName: "Mihomo"),
+        Rule(["metacubexd", "metacube"], displayName: "MetaCubeXD", badgeText: "MX", prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["tailscale", "zerotier", "vpn"]),
+        Rule(["adguard"], displayName: "AdGuard", badgeText: "AG", prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["pihole", "pi-hole"], displayName: "Pi-hole", badgeText: "PH", prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["vaultwarden"], displayName: "Vaultwarden", badgeText: "VW", prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["bitwarden"], displayName: "Bitwarden", badgeText: "BW", prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["mariadb", "mysql", "postgres"]),
+        Rule(["nextcloud"], displayName: "Nextcloud", badgeText: "NC", defaultVisibilityReason: .recognizedWebUI),
+        Rule(["paperlessngx", "paperless"], displayName: "Paperless-ngx", badgeText: "PN", prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["calibreweb"], displayName: "Calibre-Web", badgeText: "CW", prefersBadge: true, defaultVisibilityReason: .recognizedWebUI),
+        Rule(["mealie"], displayName: "Mealie", badgeText: "ML", defaultVisibilityReason: .recognizedWebUI),
+        Rule(["uptimekuma", "healthchecks", "uptime"], defaultVisibilityReason: .recognizedWebUI),
+        Rule(["calendar"]),
+        Rule(["contacts"]),
+        Rule(["note station"])
     ]
 
     private static func compactIdentifier(_ value: String) -> String {

@@ -1,0 +1,1326 @@
+{
+  "recordedAt": "2026-10-18T20:45:52.190215+08:00",
+  "package": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "636ee55a19c09aa0ec243d92784c9359005a88c47964e43fb10c4aa3a4421a59",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "Xcode": "27.0/27A266a",
+    "binaryBuildTime": "2026-10-18T19:30:39.744371+08:00",
+    "binaries": {
+      "Nastart": "c2c1264d0a754009745a3babe5017d9a8b66541d079b8bda2bf0a6f864f5032a",
+      "Nastart.debug.dylib": "aa91f7c2b22824bdc3c4472563fa65be7bd883a34ff94c4a6e1dcadc0feaff97",
+      "Frameworks/KSPlayer.framework/KSPlayer": "124f6d00e045c95010f9188d67541519fdaf361fc9d23f0d69ee80f0a5096d03"
+    },
+    "profileExpirationUTC": "2026-10-24T22:23:57",
+    "checkedInputs": 173,
+    "tests": {
+      "targeted": 23,
+      "failed": 0
+    }
+  },
+  "completedWindowCount": 14,
+  "allPlannedWindowsCompleted": true,
+  "appSourceChangedInThisResume": false,
+  "testsWereRunInPriorBuildBatch": true,
+  "recovery": {
+    "iphone13ExpiredPersistentRunnerReplacedWithRenewedSameRunner": true,
+    "signingCarrierBuiltOnlyNeverInstalled": true,
+    "Xcode": "26.6",
+    "profileExpiresUTC": "2026-10-25T12:00:45",
+    "originalLaunchServiceConfigurationUnchanged": true,
+    "priorCaptureFailureRootCauseProven": false
+  },
+  "cases": [
+    {
+      "device": "iphone13",
+      "case": "cellular-s19-file-r1",
+      "sample": "S19",
+      "entry": "device file",
+      "network": "real cellular WiFi off; no shaping",
+      "configuration": "normal Debug, empty environment",
+      "startupAction": "从头播放",
+      "startupWindowActualSeconds": 90.368058,
+      "firstInternalFrameSeconds": [
+        4.47797,
+        18.031858
+      ],
+      "firstVisibleFrameSeconds": null,
+      "maxReportedStallCountWithinStartup": 1.0,
+      "metricsWithinStartup": 26,
+      "metricsCellularYes": 26,
+      "metricsCellularNo": 0,
+      "completedTaskBodyByteLowerBound": 93410685,
+      "bodyBytesAreNotTotalNetworkUsage": true,
+      "criticalEarlyHLSRequests": [
+        {
+          "hlsRole": "mediaPlaylist",
+          "segmentOrdinal": "-",
+          "upstreamTaskBodyBytes": "2555875",
+          "lastRequestEndToFirstByteMs": "368",
+          "lastResponseBodyMs": "2004",
+          "proxyBackpressureMs": "0"
+        },
+        {
+          "hlsRole": "segment",
+          "segmentOrdinal": "1",
+          "upstreamTaskBodyBytes": "4480416",
+          "lastRequestEndToFirstByteMs": "2643",
+          "lastResponseBodyMs": "2277",
+          "proxyBackpressureMs": "0"
+        }
+      ],
+      "cooldown": {
+        "observation": "bounded startup before first user seek; no manual source change executed in this interval",
+        "automaticRequests": [
+          {
+            "secondsFromTouch": 8.375461,
+            "reason": "deliveryBelowSourceBitrate",
+            "previousAutomaticRequestGapSeconds": null,
+            "reactiveStallRecovery": false
+          }
+        ],
+        "committedSeconds": [
+          15.716624
+        ],
+        "firstInternalFrameSeconds": [
+          4.47797,
+          18.031858
+        ],
+        "cooldownDeniedDecisions": 57,
+        "cooldownDeniedAfterAutomaticCommit": 50,
+        "otherwiseEligiblePostCommitDecisionsDeniedByCooldown": 40,
+        "predictiveIntervalViolations": [],
+        "hasAutomaticCommitEvidence": true,
+        "actualRuleEvidencePresent": true,
+        "fullPlaybackPerformanceAccepted": false,
+        "actualSoundOrContinuousFrameTimingAccepted": false
+      },
+      "ordinaryUIExit": true,
+      "actualImagesReviewed": true,
+      "visualReview": {
+        "actualImagesViewed": [
+          "t3.png",
+          "t10.png",
+          "t30.png",
+          "t60.png",
+          "t90.png"
+        ],
+        "observations": "t3 unknown speed; t10 logo plus spinner 3.1MB/s; t30 dark logo; t60 black; t90 film scene snapshot",
+        "continuousFrameTimingAccepted": false,
+        "soundAccepted": false,
+        "subtitleTimingAccepted": false
+      },
+      "seekEvents": [],
+      "totalDiagnosticWindowSeconds": 90.3680579662323,
+      "cacheState": "unknown; no clearing",
+      "performanceAccepted": false
+    },
+    {
+      "device": "iphone13",
+      "case": "cellular-s19-file-r2",
+      "sample": "S19",
+      "entry": "device file",
+      "network": "real cellular WiFi off; no shaping",
+      "configuration": "normal Debug, empty environment",
+      "startupAction": "从头播放",
+      "startupWindowActualSeconds": 90.350041,
+      "firstInternalFrameSeconds": [
+        4.872025,
+        20.460379
+      ],
+      "firstVisibleFrameSeconds": null,
+      "maxReportedStallCountWithinStartup": 1.0,
+      "metricsWithinStartup": 24,
+      "metricsCellularYes": 24,
+      "metricsCellularNo": 0,
+      "completedTaskBodyByteLowerBound": 115280060,
+      "bodyBytesAreNotTotalNetworkUsage": true,
+      "criticalEarlyHLSRequests": [
+        {
+          "hlsRole": "mediaPlaylist",
+          "segmentOrdinal": "-",
+          "upstreamTaskBodyBytes": "2559297",
+          "lastRequestEndToFirstByteMs": "193",
+          "lastResponseBodyMs": "3050",
+          "proxyBackpressureMs": "0"
+        },
+        {
+          "hlsRole": "segment",
+          "segmentOrdinal": "1",
+          "upstreamTaskBodyBytes": "5354616",
+          "lastRequestEndToFirstByteMs": "2881",
+          "lastResponseBodyMs": "2230",
+          "proxyBackpressureMs": "0"
+        }
+      ],
+      "cooldown": {
+        "observation": "bounded startup before first user seek; no manual source change executed in this interval",
+        "automaticRequests": [
+          {
+            "secondsFromTouch": 9.481362,
+            "reason": "deliveryBelowSourceBitrate",
+            "previousAutomaticRequestGapSeconds": null,
+            "reactiveStallRecovery": false
+          }
+        ],
+        "committedSeconds": [
+          18.259651
+        ],
+        "firstInternalFrameSeconds": [
+          4.872025,
+          20.460379
+        ],
+        "cooldownDeniedDecisions": 57,
+        "cooldownDeniedAfterAutomaticCommit": 49,
+        "otherwiseEligiblePostCommitDecisionsDeniedByCooldown": 39,
+        "predictiveIntervalViolations": [],
+        "hasAutomaticCommitEvidence": true,
+        "actualRuleEvidencePresent": true,
+        "fullPlaybackPerformanceAccepted": false,
+        "actualSoundOrContinuousFrameTimingAccepted": false
+      },
+      "ordinaryUIExit": true,
+      "actualImagesReviewed": true,
+      "visualReview": {
+        "actualImagesViewed": [
+          "t3.png",
+          "t10.png",
+          "t30.png",
+          "t60.png",
+          "t90.png"
+        ],
+        "observations": "t3 spinner unknown speed cellular; t10 logo/spinner4.2MB/s; t30 logo; t60 black; t90 film scene",
+        "continuousFrameTimingAccepted": false,
+        "soundAccepted": false,
+        "subtitleTimingAccepted": false
+      },
+      "seekEvents": [],
+      "totalDiagnosticWindowSeconds": 90.35004091262817,
+      "cacheState": "unknown; no clearing",
+      "performanceAccepted": false
+    },
+    {
+      "device": "iphone13",
+      "case": "cellular-s19-file-r3",
+      "sample": "S19",
+      "entry": "device file",
+      "network": "real cellular WiFi off; no shaping",
+      "configuration": "normal Debug, empty environment",
+      "startupAction": "从头播放",
+      "startupWindowActualSeconds": 90.349777,
+      "firstInternalFrameSeconds": [
+        5.182618,
+        28.747126,
+        81.640114
+      ],
+      "firstVisibleFrameSeconds": null,
+      "maxReportedStallCountWithinStartup": 1.0,
+      "metricsWithinStartup": 33,
+      "metricsCellularYes": 33,
+      "metricsCellularNo": 0,
+      "completedTaskBodyByteLowerBound": 160767542,
+      "bodyBytesAreNotTotalNetworkUsage": true,
+      "criticalEarlyHLSRequests": [
+        {
+          "hlsRole": "mediaPlaylist",
+          "segmentOrdinal": "-",
+          "upstreamTaskBodyBytes": "2559297",
+          "lastRequestEndToFirstByteMs": "126",
+          "lastResponseBodyMs": "6491",
+          "proxyBackpressureMs": "0"
+        },
+        {
+          "hlsRole": "segment",
+          "segmentOrdinal": "1",
+          "upstreamTaskBodyBytes": "9699860",
+          "lastRequestEndToFirstByteMs": "2751",
+          "lastResponseBodyMs": "4206",
+          "proxyBackpressureMs": "0"
+        },
+        {
+          "hlsRole": "mediaPlaylist",
+          "segmentOrdinal": "-",
+          "upstreamTaskBodyBytes": "2549031",
+          "lastRequestEndToFirstByteMs": "114",
+          "lastResponseBodyMs": "562",
+          "proxyBackpressureMs": "0"
+        }
+      ],
+      "cooldown": {
+        "observation": "bounded startup before first user seek; no manual source change executed in this interval",
+        "automaticRequests": [
+          {
+            "secondsFromTouch": 9.483386,
+            "reason": "deliveryBelowSourceBitrate",
+            "previousAutomaticRequestGapSeconds": null,
+            "reactiveStallRecovery": false
+          },
+          {
+            "secondsFromTouch": 70.406864,
+            "reason": "deliveryBelowSourceBitrate",
+            "previousAutomaticRequestGapSeconds": 60.923478,
+            "reactiveStallRecovery": false
+          }
+        ],
+        "committedSeconds": [
+          28.467894,
+          81.063538
+        ],
+        "firstInternalFrameSeconds": [
+          5.182618,
+          28.747126,
+          81.640114
+        ],
+        "cooldownDeniedDecisions": 77,
+        "cooldownDeniedAfterAutomaticCommit": 59,
+        "otherwiseEligiblePostCommitDecisionsDeniedByCooldown": 29,
+        "predictiveIntervalViolations": [],
+        "hasAutomaticCommitEvidence": true,
+        "actualRuleEvidencePresent": true,
+        "fullPlaybackPerformanceAccepted": false,
+        "actualSoundOrContinuousFrameTimingAccepted": false
+      },
+      "ordinaryUIExit": true,
+      "actualImagesReviewed": true,
+      "visualReview": {
+        "actualImagesViewed": [
+          "t3.png",
+          "t10.png",
+          "t30.png",
+          "t60.png",
+          "t90.png",
+          "deep-seek-t3.png",
+          "deep-seek-t10.png",
+          "deep-seek-t30.png"
+        ],
+        "observations": "Startup t3 unknown speed cellular; t10 logo; t30 clock13 logo; t60 black; t90 film. Deepseek t3 old frame spinner0KB/s with target1:51:33; t10/t30 target scene. File subtitles off; no subtitle acceptance.",
+        "continuousFrameTimingAccepted": false,
+        "soundAccepted": false,
+        "subtitleTimingAccepted": false
+      },
+      "seekEvents": [
+        {
+          "start": {
+            "secondsFromTouch": 92.572302,
+            "event": "seek_started",
+            "fields": {
+              "engine": "AVPlayer",
+              "seekDeltaSeconds": 6617.926723644729,
+              "seekTargetSeconds": 6693.427388036728
+            }
+          },
+          "signals": [
+            {
+              "secondsFromTouch": 99.55419,
+              "event": "seek_engine_completed",
+              "fields": {
+                "engine": "AVPlayer",
+                "targetSeconds": 6693.427388036728
+              }
+            },
+            {
+              "secondsFromTouch": 99.708715,
+              "event": "seek_recovered",
+              "fields": {
+                "currentSeconds": 6693.500225421,
+                "engine": "AVPlayer",
+                "evidence": "engineCompletionAndAdvancingClock",
+                "seekRecoveryMs": 7146,
+                "seekTargetSeconds": 6693.427388036728
+              }
+            }
+          ],
+          "recoveryMs": 7146,
+          "censoredAfterSeconds": null,
+          "meaning": "engine completion and advancing clock, not first visible frame"
+        }
+      ],
+      "totalDiagnosticWindowSeconds": 139.2860550880432,
+      "cacheState": "unknown; no clearing",
+      "performanceAccepted": false
+    },
+    {
+      "device": "iphone13",
+      "case": "cellular-s19-jf-r1",
+      "sample": "S19",
+      "entry": "Jellyfin",
+      "network": "real cellular WiFi off; no shaping",
+      "configuration": "normal Debug, empty environment",
+      "startupAction": "从头播放",
+      "startupWindowActualSeconds": 90.412657,
+      "firstInternalFrameSeconds": [
+        4.62923,
+        14.482962
+      ],
+      "firstVisibleFrameSeconds": null,
+      "maxReportedStallCountWithinStartup": 1.0,
+      "metricsWithinStartup": 26,
+      "metricsCellularYes": 26,
+      "metricsCellularNo": 0,
+      "completedTaskBodyByteLowerBound": 38860768,
+      "bodyBytesAreNotTotalNetworkUsage": true,
+      "criticalEarlyHLSRequests": [
+        {
+          "hlsRole": "mediaPlaylist",
+          "segmentOrdinal": "-",
+          "upstreamTaskBodyBytes": "2785149",
+          "lastRequestEndToFirstByteMs": "832",
+          "lastResponseBodyMs": "1861",
+          "proxyBackpressureMs": "0"
+        },
+        {
+          "hlsRole": "segment",
+          "segmentOrdinal": "0",
+          "upstreamTaskBodyBytes": "1028360",
+          "lastRequestEndToFirstByteMs": "2350",
+          "lastResponseBodyMs": "550",
+          "proxyBackpressureMs": "0"
+        },
+        {
+          "hlsRole": "segment",
+          "segmentOrdinal": "1",
+          "upstreamTaskBodyBytes": "2472764",
+          "lastRequestEndToFirstByteMs": "389",
+          "lastResponseBodyMs": "1068",
+          "proxyBackpressureMs": "0"
+        }
+      ],
+      "cooldown": {
+        "observation": "bounded startup before first user seek; no manual source change executed in this interval",
+        "automaticRequests": [
+          {
+            "secondsFromTouch": 6.790709,
+            "reason": "deliveryBelowSourceBitrate",
+            "previousAutomaticRequestGapSeconds": null,
+            "reactiveStallRecovery": false
+          }
+        ],
+        "committedSeconds": [
+          14.161868
+        ],
+        "firstInternalFrameSeconds": [
+          4.62923,
+          14.482962
+        ],
+        "cooldownDeniedDecisions": 57,
+        "cooldownDeniedAfterAutomaticCommit": 50,
+        "otherwiseEligiblePostCommitDecisionsDeniedByCooldown": 40,
+        "predictiveIntervalViolations": [],
+        "hasAutomaticCommitEvidence": true,
+        "actualRuleEvidencePresent": true,
+        "fullPlaybackPerformanceAccepted": false,
+        "actualSoundOrContinuousFrameTimingAccepted": false
+      },
+      "ordinaryUIExit": true,
+      "actualImagesReviewed": true,
+      "visualReview": {
+        "actualImagesViewed": [
+          "t3.png",
+          "t10.png",
+          "t30.png",
+          "t60.png",
+          "t90.png"
+        ],
+        "observations": "t3 unknown speed cellular; t10 spinner367KB/s; t30/t60 black; t90 film scene and subtitles",
+        "continuousFrameTimingAccepted": false,
+        "soundAccepted": false,
+        "subtitleTimingAccepted": false
+      },
+      "seekEvents": [],
+      "totalDiagnosticWindowSeconds": 90.4126570224762,
+      "cacheState": "unknown; no clearing",
+      "performanceAccepted": false
+    },
+    {
+      "device": "iphone13",
+      "case": "cellular-s19-jf-r2",
+      "sample": "S19",
+      "entry": "Jellyfin",
+      "network": "real cellular WiFi off; no shaping",
+      "configuration": "normal Debug, empty environment",
+      "startupAction": "在 Nastart 中播放",
+      "startupWindowActualSeconds": 90.491851,
+      "firstInternalFrameSeconds": [
+        3.893508,
+        33.853418
+      ],
+      "firstVisibleFrameSeconds": null,
+      "maxReportedStallCountWithinStartup": 1.0,
+      "metricsWithinStartup": 27,
+      "metricsCellularYes": 27,
+      "metricsCellularNo": 0,
+      "completedTaskBodyByteLowerBound": 141557029,
+      "bodyBytesAreNotTotalNetworkUsage": true,
+      "criticalEarlyHLSRequests": [
+        {
+          "hlsRole": "mediaPlaylist",
+          "segmentOrdinal": "-",
+          "upstreamTaskBodyBytes": "2785149",
+          "lastRequestEndToFirstByteMs": "1070",
+          "lastResponseBodyMs": "7284",
+          "proxyBackpressureMs": "0"
+        }
+      ],
+      "cooldown": {
+        "observation": "bounded startup before first user seek; no manual source change executed in this interval",
+        "automaticRequests": [
+          {
+            "secondsFromTouch": 17.992559,
+            "reason": "deliveryBelowSourceBitrate",
+            "previousAutomaticRequestGapSeconds": null,
+            "reactiveStallRecovery": false
+          }
+        ],
+        "committedSeconds": [
+          33.108608
+        ],
+        "firstInternalFrameSeconds": [
+          3.893508,
+          33.853418
+        ],
+        "cooldownDeniedDecisions": 56,
+        "cooldownDeniedAfterAutomaticCommit": 42,
+        "otherwiseEligiblePostCommitDecisionsDeniedByCooldown": 32,
+        "predictiveIntervalViolations": [],
+        "hasAutomaticCommitEvidence": true,
+        "actualRuleEvidencePresent": true,
+        "fullPlaybackPerformanceAccepted": false,
+        "actualSoundOrContinuousFrameTimingAccepted": false
+      },
+      "ordinaryUIExit": true,
+      "actualImagesReviewed": true,
+      "visualReview": {
+        "actualImagesViewed": [
+          "t3.png",
+          "t10.png",
+          "t30.png",
+          "t60.png",
+          "t90.png"
+        ],
+        "observations": "t3 spinner unknown speed cellular; t10 logo/spinner4.4MB/s; t30 black; t60 subtitle on black; t90 film scene with subtitles",
+        "continuousFrameTimingAccepted": false,
+        "soundAccepted": false,
+        "subtitleTimingAccepted": false
+      },
+      "seekEvents": [],
+      "totalDiagnosticWindowSeconds": 90.49185109138489,
+      "cacheState": "unknown; no clearing",
+      "performanceAccepted": false
+    },
+    {
+      "device": "iphone13",
+      "case": "cellular-s19-jf-r3",
+      "sample": "S19",
+      "entry": "Jellyfin",
+      "network": "real cellular WiFi off; no shaping",
+      "configuration": "normal Debug, empty environment",
+      "startupAction": "在 Nastart 中播放",
+      "startupWindowActualSeconds": 90.468107,
+      "firstInternalFrameSeconds": [
+        3.810367,
+        16.711212
+      ],
+      "firstVisibleFrameSeconds": null,
+      "maxReportedStallCountWithinStartup": 1.0,
+      "metricsWithinStartup": 26,
+      "metricsCellularYes": 26,
+      "metricsCellularNo": 0,
+      "completedTaskBodyByteLowerBound": 85680462,
+      "bodyBytesAreNotTotalNetworkUsage": true,
+      "criticalEarlyHLSRequests": [
+        {
+          "hlsRole": "mediaPlaylist",
+          "segmentOrdinal": "-",
+          "upstreamTaskBodyBytes": "2785149",
+          "lastRequestEndToFirstByteMs": "150",
+          "lastResponseBodyMs": "1072",
+          "proxyBackpressureMs": "0"
+        },
+        {
+          "hlsRole": "segment",
+          "segmentOrdinal": "1",
+          "upstreamTaskBodyBytes": "2046756",
+          "lastRequestEndToFirstByteMs": "2872",
+          "lastResponseBodyMs": "1799",
+          "proxyBackpressureMs": "0"
+        }
+      ],
+      "cooldown": {
+        "observation": "bounded startup before first user seek; no manual source change executed in this interval",
+        "automaticRequests": [
+          {
+            "secondsFromTouch": 8.584403,
+            "reason": "deliveryBelowSourceBitrate",
+            "previousAutomaticRequestGapSeconds": null,
+            "reactiveStallRecovery": false
+          }
+        ],
+        "committedSeconds": [
+          16.463084
+        ],
+        "firstInternalFrameSeconds": [
+          3.810367,
+          16.711212
+        ],
+        "cooldownDeniedDecisions": 56,
+        "cooldownDeniedAfterAutomaticCommit": 49,
+        "otherwiseEligiblePostCommitDecisionsDeniedByCooldown": 39,
+        "predictiveIntervalViolations": [],
+        "hasAutomaticCommitEvidence": true,
+        "actualRuleEvidencePresent": true,
+        "fullPlaybackPerformanceAccepted": false,
+        "actualSoundOrContinuousFrameTimingAccepted": false
+      },
+      "ordinaryUIExit": true,
+      "actualImagesReviewed": true,
+      "visualReview": {
+        "actualImagesViewed": [
+          "t3.png",
+          "t10.png",
+          "t30.png",
+          "t60.png",
+          "t90.png",
+          "deep-seek-t3.png",
+          "deep-seek-t10.png",
+          "deep-seek-t30.png"
+        ],
+        "observations": "Startup t3 unknown speed cellular; t10 logo/spinner4.5MB/s; t30 darktitle; t60 black; t90 film and subtitles. Deepseek t3 old film and old burned subtitles plus spinner0KB/s; t10/t30 target scenes and target subtitles; no claim of continuous sync.",
+        "continuousFrameTimingAccepted": false,
+        "soundAccepted": false,
+        "subtitleTimingAccepted": false
+      },
+      "seekEvents": [
+        {
+          "start": {
+            "secondsFromTouch": 93.561394,
+            "event": "seek_started",
+            "fields": {
+              "engine": "AVPlayer",
+              "seekDeltaSeconds": 6610.927333020728,
+              "seekTargetSeconds": 6693.427388036728
+            }
+          },
+          "signals": [
+            {
+              "secondsFromTouch": 97.816669,
+              "event": "seek_engine_completed",
+              "fields": {
+                "engine": "AVPlayer",
+                "targetSeconds": 6693.427388036728
+              }
+            },
+            {
+              "secondsFromTouch": 98.747389,
+              "event": "seek_recovered",
+              "fields": {
+                "currentSeconds": 6693.50109165,
+                "engine": "AVPlayer",
+                "evidence": "engineCompletionAndAdvancingClock",
+                "seekRecoveryMs": 5196,
+                "seekTargetSeconds": 6693.427388036728
+              }
+            }
+          ],
+          "recoveryMs": 5196,
+          "censoredAfterSeconds": null,
+          "meaning": "engine completion and advancing clock, not first visible frame"
+        }
+      ],
+      "totalDiagnosticWindowSeconds": 141.44092202186584,
+      "cacheState": "unknown; no clearing",
+      "performanceAccepted": false
+    },
+    {
+      "device": "iphone13",
+      "case": "wifi-s03-file-resume",
+      "sample": "S03",
+      "entry": "device file",
+      "network": "WiFi no shaping",
+      "configuration": "normal Debug, empty environment",
+      "startupAction": "从头播放",
+      "startupWindowActualSeconds": 30.276375,
+      "firstInternalFrameSeconds": [
+        5.5731,
+        29.180102
+      ],
+      "firstVisibleFrameSeconds": null,
+      "maxReportedStallCountWithinStartup": 1.0,
+      "metricsWithinStartup": 11,
+      "metricsCellularYes": 0,
+      "metricsCellularNo": 11,
+      "completedTaskBodyByteLowerBound": 84212990,
+      "bodyBytesAreNotTotalNetworkUsage": true,
+      "criticalEarlyHLSRequests": [
+        {
+          "hlsRole": "mediaPlaylist",
+          "segmentOrdinal": "-",
+          "upstreamTaskBodyBytes": "1404958",
+          "lastRequestEndToFirstByteMs": "41",
+          "lastResponseBodyMs": "208",
+          "proxyBackpressureMs": "0"
+        }
+      ],
+      "cooldown": {
+        "observation": "bounded startup before first user seek; no manual source change executed in this interval",
+        "automaticRequests": [
+          {
+            "secondsFromTouch": 16.054239,
+            "reason": "deliveryBelowSourceBitrate",
+            "previousAutomaticRequestGapSeconds": null,
+            "reactiveStallRecovery": false
+          }
+        ],
+        "committedSeconds": [
+          28.078184
+        ],
+        "firstInternalFrameSeconds": [
+          5.5731,
+          29.180102
+        ],
+        "cooldownDeniedDecisions": 12,
+        "cooldownDeniedAfterAutomaticCommit": 1,
+        "otherwiseEligiblePostCommitDecisionsDeniedByCooldown": 0,
+        "predictiveIntervalViolations": [],
+        "hasAutomaticCommitEvidence": true,
+        "actualRuleEvidencePresent": true,
+        "fullPlaybackPerformanceAccepted": false,
+        "actualSoundOrContinuousFrameTimingAccepted": false
+      },
+      "ordinaryUIExit": true,
+      "actualImagesReviewed": true,
+      "visualReview": {
+        "at": "2026-10-18T20:10:43.101358+08:00",
+        "framesActuallyViewed": [
+          3,
+          10,
+          30
+        ],
+        "observations": {
+          "3": "File detail still preparing preview; no visible video frame yet",
+          "10": "Paramount opening stars/clouds with controls hidden",
+          "30": "Paramount title over playback controls, clock 00:23, WiFi speed visible"
+        },
+        "visuallyReviewed": true,
+        "performanceAccepted": false,
+        "fullSubtitleOrAudibleOutputAccepted": false
+      },
+      "seekEvents": [],
+      "totalDiagnosticWindowSeconds": 30.27637505531311,
+      "cacheState": "unknown; no clearing",
+      "performanceAccepted": false
+    },
+    {
+      "device": "iphone13",
+      "case": "wifi-s03-jf-resume",
+      "sample": "S03",
+      "entry": "Jellyfin",
+      "network": "WiFi no shaping",
+      "configuration": "normal Debug, empty environment",
+      "startupAction": "在 Nastart 中播放",
+      "startupWindowActualSeconds": 30.28857,
+      "firstInternalFrameSeconds": [
+        1.316781,
+        17.511893
+      ],
+      "firstVisibleFrameSeconds": null,
+      "maxReportedStallCountWithinStartup": 1.0,
+      "metricsWithinStartup": 12,
+      "metricsCellularYes": 0,
+      "metricsCellularNo": 12,
+      "completedTaskBodyByteLowerBound": 59438842,
+      "bodyBytesAreNotTotalNetworkUsage": true,
+      "criticalEarlyHLSRequests": [
+        {
+          "hlsRole": "mediaPlaylist",
+          "segmentOrdinal": "-",
+          "upstreamTaskBodyBytes": "1532798",
+          "lastRequestEndToFirstByteMs": "278",
+          "lastResponseBodyMs": "1361",
+          "proxyBackpressureMs": "0"
+        }
+      ],
+      "cooldown": {
+        "observation": "bounded startup before first user seek; no manual source change executed in this interval",
+        "automaticRequests": [
+          {
+            "secondsFromTouch": 8.014771,
+            "reason": "deliveryBelowSourceBitrate",
+            "previousAutomaticRequestGapSeconds": null,
+            "reactiveStallRecovery": false
+          }
+        ],
+        "committedSeconds": [
+          16.851589
+        ],
+        "firstInternalFrameSeconds": [
+          1.316781,
+          17.511893
+        ],
+        "cooldownDeniedDecisions": 20,
+        "cooldownDeniedAfterAutomaticCommit": 12,
+        "otherwiseEligiblePostCommitDecisionsDeniedByCooldown": 2,
+        "predictiveIntervalViolations": [],
+        "hasAutomaticCommitEvidence": true,
+        "actualRuleEvidencePresent": true,
+        "fullPlaybackPerformanceAccepted": false,
+        "actualSoundOrContinuousFrameTimingAccepted": false
+      },
+      "ordinaryUIExit": true,
+      "actualImagesReviewed": true,
+      "visualReview": {
+        "at": "2026-10-18T20:12:41.317276+08:00",
+        "framesActuallyViewed": [
+          3,
+          10,
+          30
+        ],
+        "observations": {
+          "3": "Playback controls over black opening image, clock00:01; visible first frame not established by this image",
+          "10": "Paramount star/cloud opening image",
+          "30": "Cruise/Wagner production opening title"
+        },
+        "visuallyReviewed": true,
+        "performanceAccepted": false,
+        "fullSubtitleOrAudibleOutputAccepted": false
+      },
+      "seekEvents": [],
+      "totalDiagnosticWindowSeconds": 30.288570165634155,
+      "cacheState": "unknown; no clearing",
+      "performanceAccepted": false
+    },
+    {
+      "device": "iphone13",
+      "case": "wifi-s08-file-resume",
+      "sample": "S08",
+      "entry": "device file",
+      "network": "WiFi no shaping",
+      "configuration": "normal Debug, empty environment",
+      "startupAction": "从头播放",
+      "startupWindowActualSeconds": 30.469943,
+      "firstInternalFrameSeconds": [
+        3.643761
+      ],
+      "firstVisibleFrameSeconds": null,
+      "maxReportedStallCountWithinStartup": 0.0,
+      "metricsWithinStartup": 2,
+      "metricsCellularYes": 0,
+      "metricsCellularNo": 2,
+      "completedTaskBodyByteLowerBound": 11900856,
+      "bodyBytesAreNotTotalNetworkUsage": true,
+      "criticalEarlyHLSRequests": [],
+      "cooldown": {
+        "observation": "bounded startup before first user seek; no manual source change executed in this interval",
+        "automaticRequests": [],
+        "committedSeconds": [],
+        "firstInternalFrameSeconds": [
+          3.643761
+        ],
+        "cooldownDeniedDecisions": 0,
+        "cooldownDeniedAfterAutomaticCommit": 0,
+        "otherwiseEligiblePostCommitDecisionsDeniedByCooldown": 0,
+        "predictiveIntervalViolations": [],
+        "hasAutomaticCommitEvidence": false,
+        "actualRuleEvidencePresent": false,
+        "fullPlaybackPerformanceAccepted": false,
+        "actualSoundOrContinuousFrameTimingAccepted": false
+      },
+      "ordinaryUIExit": true,
+      "actualImagesReviewed": true,
+      "visualReview": {
+        "at": "2026-10-18T20:15:22.841481+08:00",
+        "framesActuallyViewed": [
+          3,
+          10,
+          30
+        ],
+        "observations": {
+          "3": "Spinner with4.6MB/s, clock00:00",
+          "10": "Black opening image with controls hidden; no continuous frame inference",
+          "30": "Laboratory scene with character visible"
+        },
+        "visuallyReviewed": true,
+        "performanceAccepted": false,
+        "fullSubtitleOrAudibleOutputAccepted": false
+      },
+      "seekEvents": [],
+      "totalDiagnosticWindowSeconds": 30.469943046569824,
+      "cacheState": "unknown; no clearing",
+      "performanceAccepted": false
+    },
+    {
+      "device": "iphone13",
+      "case": "wifi-s08-jf-resume",
+      "sample": "S08",
+      "entry": "Jellyfin",
+      "network": "WiFi no shaping",
+      "configuration": "normal Debug, empty environment",
+      "startupAction": "在 Nastart 中播放",
+      "startupWindowActualSeconds": 30.601734,
+      "firstInternalFrameSeconds": [
+        3.856088
+      ],
+      "firstVisibleFrameSeconds": null,
+      "maxReportedStallCountWithinStartup": 0.0,
+      "metricsWithinStartup": 2,
+      "metricsCellularYes": 0,
+      "metricsCellularNo": 2,
+      "completedTaskBodyByteLowerBound": 11709760,
+      "bodyBytesAreNotTotalNetworkUsage": true,
+      "criticalEarlyHLSRequests": [],
+      "cooldown": {
+        "observation": "bounded startup before first user seek; no manual source change executed in this interval",
+        "automaticRequests": [],
+        "committedSeconds": [],
+        "firstInternalFrameSeconds": [
+          3.856088
+        ],
+        "cooldownDeniedDecisions": 0,
+        "cooldownDeniedAfterAutomaticCommit": 0,
+        "otherwiseEligiblePostCommitDecisionsDeniedByCooldown": 0,
+        "predictiveIntervalViolations": [],
+        "hasAutomaticCommitEvidence": false,
+        "actualRuleEvidencePresent": false,
+        "fullPlaybackPerformanceAccepted": false,
+        "actualSoundOrContinuousFrameTimingAccepted": false
+      },
+      "ordinaryUIExit": true,
+      "actualImagesReviewed": true,
+      "visualReview": {
+        "at": "2026-10-18T20:20:40.104076+08:00",
+        "framesActuallyViewed": [
+          3,
+          10,
+          30
+        ],
+        "observations": {
+          "3": "Buffer spinner and 4.4MB/s with clock00:00",
+          "10": "Black opening image, sparse snapshot cannot certify continuous playback",
+          "30": "Laboratory scene and character visible"
+        },
+        "visuallyReviewed": true,
+        "performanceAccepted": false,
+        "fullSubtitleOrAudibleOutputAccepted": false
+      },
+      "seekEvents": [],
+      "totalDiagnosticWindowSeconds": 30.601733922958374,
+      "cacheState": "unknown; no clearing",
+      "performanceAccepted": false
+    },
+    {
+      "device": "ipad",
+      "case": "wifi-s03-file-resume",
+      "sample": "S03",
+      "entry": "device file",
+      "network": "WiFi no shaping",
+      "configuration": "normal Debug, empty environment",
+      "startupAction": "从头播放",
+      "startupWindowActualSeconds": 30.387727,
+      "firstInternalFrameSeconds": [
+        4.168291,
+        27.892043
+      ],
+      "firstVisibleFrameSeconds": null,
+      "maxReportedStallCountWithinStartup": 1.0,
+      "metricsWithinStartup": 14,
+      "metricsCellularYes": 0,
+      "metricsCellularNo": 14,
+      "completedTaskBodyByteLowerBound": 102659836,
+      "bodyBytesAreNotTotalNetworkUsage": true,
+      "criticalEarlyHLSRequests": [
+        {
+          "hlsRole": "mediaPlaylist",
+          "segmentOrdinal": "-",
+          "upstreamTaskBodyBytes": "1404958",
+          "lastRequestEndToFirstByteMs": "103",
+          "lastResponseBodyMs": "179",
+          "proxyBackpressureMs": "0"
+        }
+      ],
+      "cooldown": {
+        "observation": "bounded startup before first user seek; no manual source change executed in this interval",
+        "automaticRequests": [
+          {
+            "secondsFromTouch": 14.214606,
+            "reason": "deliveryBelowSourceBitrate",
+            "previousAutomaticRequestGapSeconds": null,
+            "reactiveStallRecovery": false
+          }
+        ],
+        "committedSeconds": [
+          26.44117
+        ],
+        "firstInternalFrameSeconds": [
+          4.168291,
+          27.892043
+        ],
+        "cooldownDeniedDecisions": 14,
+        "cooldownDeniedAfterAutomaticCommit": 3,
+        "otherwiseEligiblePostCommitDecisionsDeniedByCooldown": 0,
+        "predictiveIntervalViolations": [],
+        "hasAutomaticCommitEvidence": true,
+        "actualRuleEvidencePresent": true,
+        "fullPlaybackPerformanceAccepted": false,
+        "actualSoundOrContinuousFrameTimingAccepted": false
+      },
+      "ordinaryUIExit": true,
+      "actualImagesReviewed": true,
+      "visualReview": {
+        "at": "2026-10-18T20:13:07.479060+08:00",
+        "framesActuallyViewed": [
+          3,
+          10,
+          30
+        ],
+        "observations": {
+          "3": "Startup rotation/presentation in progress; black video and spinner/unknown speed with part of detail behind",
+          "10": "Paramount opening stars/clouds visible",
+          "30": "Black image with controls, clock00:25 and zero instantaneous speed; this sparse frame alone cannot prove a stall"
+        },
+        "visuallyReviewed": true,
+        "performanceAccepted": false,
+        "fullSubtitleOrAudibleOutputAccepted": false
+      },
+      "seekEvents": [],
+      "totalDiagnosticWindowSeconds": 30.3877272605896,
+      "cacheState": "unknown; no clearing",
+      "performanceAccepted": false
+    },
+    {
+      "device": "ipad",
+      "case": "wifi-s03-jf-resume",
+      "sample": "S03",
+      "entry": "Jellyfin",
+      "network": "WiFi no shaping",
+      "configuration": "normal Debug, empty environment",
+      "startupAction": "在 Nastart 中播放",
+      "startupWindowActualSeconds": 30.579223,
+      "firstInternalFrameSeconds": [
+        2.56059
+      ],
+      "firstVisibleFrameSeconds": null,
+      "maxReportedStallCountWithinStartup": 0.0,
+      "metricsWithinStartup": 4,
+      "metricsCellularYes": 0,
+      "metricsCellularNo": 4,
+      "completedTaskBodyByteLowerBound": 67594435,
+      "bodyBytesAreNotTotalNetworkUsage": true,
+      "criticalEarlyHLSRequests": [],
+      "cooldown": {
+        "observation": "bounded startup before first user seek; no manual source change executed in this interval",
+        "automaticRequests": [],
+        "committedSeconds": [],
+        "firstInternalFrameSeconds": [
+          2.56059
+        ],
+        "cooldownDeniedDecisions": 0,
+        "cooldownDeniedAfterAutomaticCommit": 0,
+        "otherwiseEligiblePostCommitDecisionsDeniedByCooldown": 0,
+        "predictiveIntervalViolations": [],
+        "hasAutomaticCommitEvidence": false,
+        "actualRuleEvidencePresent": false,
+        "fullPlaybackPerformanceAccepted": false,
+        "actualSoundOrContinuousFrameTimingAccepted": false
+      },
+      "ordinaryUIExit": true,
+      "actualImagesReviewed": true,
+      "visualReview": {
+        "at": "2026-10-18T20:15:22.841300+08:00",
+        "framesActuallyViewed": [
+          3,
+          10,
+          30
+        ],
+        "observations": {
+          "3": "Controls over black opening image, clock00:01",
+          "10": "Paramount opening stars/clouds visible",
+          "30": "Cruise/Wagner production title visible"
+        },
+        "visuallyReviewed": true,
+        "performanceAccepted": false,
+        "fullSubtitleOrAudibleOutputAccepted": false
+      },
+      "seekEvents": [],
+      "totalDiagnosticWindowSeconds": 30.579223155975342,
+      "cacheState": "unknown; no clearing",
+      "performanceAccepted": false
+    },
+    {
+      "device": "ipad",
+      "case": "wifi-s08-file-resume",
+      "sample": "S08",
+      "entry": "device file",
+      "network": "WiFi no shaping",
+      "configuration": "normal Debug, empty environment",
+      "startupAction": "从头播放",
+      "startupWindowActualSeconds": 30.519274,
+      "firstInternalFrameSeconds": [
+        5.714539
+      ],
+      "firstVisibleFrameSeconds": null,
+      "maxReportedStallCountWithinStartup": 0.0,
+      "metricsWithinStartup": 2,
+      "metricsCellularYes": 0,
+      "metricsCellularNo": 2,
+      "completedTaskBodyByteLowerBound": 11685104,
+      "bodyBytesAreNotTotalNetworkUsage": true,
+      "criticalEarlyHLSRequests": [],
+      "cooldown": {
+        "observation": "bounded startup before first user seek; no manual source change executed in this interval",
+        "automaticRequests": [],
+        "committedSeconds": [],
+        "firstInternalFrameSeconds": [
+          5.714539
+        ],
+        "cooldownDeniedDecisions": 0,
+        "cooldownDeniedAfterAutomaticCommit": 0,
+        "otherwiseEligiblePostCommitDecisionsDeniedByCooldown": 0,
+        "predictiveIntervalViolations": [],
+        "hasAutomaticCommitEvidence": false,
+        "actualRuleEvidencePresent": false,
+        "fullPlaybackPerformanceAccepted": false,
+        "actualSoundOrContinuousFrameTimingAccepted": false
+      },
+      "ordinaryUIExit": true,
+      "actualImagesReviewed": true,
+      "visualReview": {
+        "at": "2026-10-18T20:20:40.104076+08:00",
+        "framesActuallyViewed": [
+          3,
+          10,
+          30
+        ],
+        "observations": {
+          "3": "Buffer spinner and 4.8MB/s with clock00:00",
+          "10": "Black opening image, sparse snapshot cannot certify continuous playback",
+          "30": "Laboratory scene and character visible"
+        },
+        "visuallyReviewed": true,
+        "performanceAccepted": false,
+        "fullSubtitleOrAudibleOutputAccepted": false
+      },
+      "seekEvents": [],
+      "totalDiagnosticWindowSeconds": 30.51927399635315,
+      "cacheState": "unknown; no clearing",
+      "performanceAccepted": false
+    },
+    {
+      "device": "ipad",
+      "case": "wifi-s08-jf-resume",
+      "sample": "S08",
+      "entry": "Jellyfin",
+      "network": "WiFi no shaping",
+      "configuration": "normal Debug, empty environment",
+      "startupAction": "在 Nastart 中播放",
+      "startupWindowActualSeconds": 30.857299,
+      "firstInternalFrameSeconds": [
+        5.816221
+      ],
+      "firstVisibleFrameSeconds": null,
+      "maxReportedStallCountWithinStartup": 0.0,
+      "metricsWithinStartup": 2,
+      "metricsCellularYes": 0,
+      "metricsCellularNo": 2,
+      "completedTaskBodyByteLowerBound": 11741615,
+      "bodyBytesAreNotTotalNetworkUsage": true,
+      "criticalEarlyHLSRequests": [],
+      "cooldown": {
+        "observation": "bounded startup before first user seek; no manual source change executed in this interval",
+        "automaticRequests": [],
+        "committedSeconds": [],
+        "firstInternalFrameSeconds": [
+          5.816221
+        ],
+        "cooldownDeniedDecisions": 0,
+        "cooldownDeniedAfterAutomaticCommit": 0,
+        "otherwiseEligiblePostCommitDecisionsDeniedByCooldown": 0,
+        "predictiveIntervalViolations": [],
+        "hasAutomaticCommitEvidence": false,
+        "actualRuleEvidencePresent": false,
+        "fullPlaybackPerformanceAccepted": false,
+        "actualSoundOrContinuousFrameTimingAccepted": false
+      },
+      "ordinaryUIExit": true,
+      "actualImagesReviewed": true,
+      "visualReview": {
+        "at": "2026-10-18T20:20:40.104076+08:00",
+        "framesActuallyViewed": [
+          3,
+          10,
+          30
+        ],
+        "observations": {
+          "3": "Buffer spinner and 6.1MB/s with clock00:00",
+          "10": "Black opening image, sparse snapshot cannot certify continuous playback",
+          "30": "Laboratory scene and character visible"
+        },
+        "visuallyReviewed": true,
+        "performanceAccepted": false,
+        "fullSubtitleOrAudibleOutputAccepted": false
+      },
+      "seekEvents": [],
+      "totalDiagnosticWindowSeconds": 30.857298851013184,
+      "cacheState": "unknown; no clearing",
+      "performanceAccepted": false
+    }
+  ],
+  "scopeLimitations": [
+    "Sparse screenshots and internal first-frame signals do not prove presentation timing, continuous smoothness, sound or subtitle synchronization",
+    "Three cellular repetitions per entry are exploratory; cache state unknown, no P95 or universal performance threshold",
+    "File subtitles and Jellyfin PGS differ; entries are not a controlled equal-track performance comparison",
+    "Historical S01 windows from the same binary are separately retained in prior report",
+    "All 28 requirements remain open; no NAS/VPN configuration or DSM updates"
+  ],
+  "iphone18": {
+    "model": "iPhone19,7",
+    "system": "27.0",
+    "connection": "paired WiFi",
+    "installationComplete": true,
+    "postInstallLookup": true,
+    "nonDiagnosticPreferencesExactlyUnchanged": 25,
+    "actualNastartForegroundVerified": false,
+    "reason": "Installation screenshot showed another App; no further foreground operations"
+  },
+  "installations": {
+    "iphone13": {
+      "latestNormalCoverInstall": true,
+      "nonDiagnosticPreferenceKeysUnchanged": 25,
+      "actualEmptyEnvironmentHomeVerified": true
+    },
+    "ipad": {
+      "latestNormalCoverInstall": true,
+      "nonDiagnosticPreferenceKeysUnchanged": 18,
+      "actualEmptyEnvironmentHomeVerified": true
+    }
+  },
+  "finalAudits": {
+    "iphone13": {
+      "at": "2026-10-18T20:41:08.152008+08:00",
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "connection": "USB",
+      "sourceDiffSHA256": "636ee55a19c09aa0ec243d92784c9359005a88c47964e43fb10c4aa3a4421a59",
+      "latestPackage": {
+        "Nastart": "c2c1264d0a754009745a3babe5017d9a8b66541d079b8bda2bf0a6f864f5032a",
+        "Nastart.debug.dylib": "aa91f7c2b22824bdc3c4472563fa65be7bd883a34ff94c4a6e1dcadc0feaff97",
+        "Frameworks/KSPlayer.framework/KSPlayer": "124f6d00e045c95010f9188d67541519fdaf361fc9d23f0d69ee80f0a5096d03"
+      },
+      "nonBookmarkPreferenceKeys": 24,
+      "nonBookmarkPreferencesExactlyUnchanged": true,
+      "naturalBookmarkChangesCount": 6,
+      "originalBookmarksChecked": 36,
+      "originalBookmarksRemoved": 0,
+      "originalTrackChangeCount": 0,
+      "allOriginalTracksUnchanged": true,
+      "newBookmarksCount": 0,
+      "crashInventoryDelta": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      },
+      "normalEmptyEnvironment": true,
+      "playerClosed": true,
+      "WDAIdleSeconds": 10,
+      "WDAAnimationCoolOffSeconds": 2,
+      "nativeConditionsNotRecheckedThisTurn": false,
+      "noConditionInjectedThisTurn": true,
+      "nativeActiveConditions": 0,
+      "finalHomeActuallyReviewed": true,
+      "visibleNASCard": "not connected; services individually have status dots; not NAS health acceptance"
+    },
+    "ipad": {
+      "at": "2026-10-18T20:26:01.184708+08:00",
+      "latestNormalPackageInstalledAndHomeVerified": true,
+      "actualEmptyEnvironmentReadBack": true,
+      "actualFinalHomeScreenshotViewed": true,
+      "playerClosed": true,
+      "WDAIdleSeconds": 10,
+      "WDAAnimationCoolOffSeconds": 2,
+      "nonBookmarkPreferenceKeys": 17,
+      "nonBookmarkPreferencesExactlyUnchanged": true,
+      "originalBookmarksChecked": 29,
+      "originalBookmarksRemoved": 0,
+      "originalTrackChangeCount": 0,
+      "naturalBookmarkChangesCount": 4,
+      "newReports": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      },
+      "nativeActiveConditions": 0
+    }
+  },
+  "readOnlyServerCleanup": {
+    "at": "2026-10-18T20:43:03.183309+08:00",
+    "readOnly": true,
+    "serverMutation": false,
+    "allEncodingProcessesExitedProven": false,
+    "fetchSucceeded": true,
+    "devices": {
+      "iphone13": {
+        "exactOwnDeviceIDMatched": true,
+        "matchingSessionCount": 1,
+        "anyNowPlaying": false,
+        "anyTranscodingInfo": true
+      },
+      "ipad": {
+        "exactOwnDeviceIDMatched": true,
+        "matchingSessionCount": 1,
+        "anyNowPlaying": false,
+        "anyTranscodingInfo": false
+      }
+    }
+  },
+  "phoneWiFiRestoration": {
+    "originalWiFiSwitch": "1",
+    "actualWiFiSwitch": "1",
+    "restored": true,
+    "shapingRequested": false,
+    "phoneVPNChanged": false,
+    "MacVPNChanged": false
+  },
+  "cleanup": {
+    "at": "2026-10-18T20:42:42.084571+08:00",
+    "ownPadRunnerStopped": true,
+    "ownBoundedCaffeinateStopRequested": true,
+    "originalIPhone13ServicePreserved": true,
+    "phoneWiFiRestoredAndSettingsImageActuallyViewed": true,
+    "normalPhoneHomeActuallyViewed": true,
+    "ownBoundedCaffeinateStoppedAndPIDAbsent": true
+  },
+  "hostPowerEvidence": {
+    "at": "2026-10-18T20:45:52.093607+08:00",
+    "windowStartLocal": "2026-10-18 20:00:00",
+    "windowEndLocal": "2026-10-18 20:41:08",
+    "sleepWakeEntriesWithinPhysicalWindow": 0,
+    "rawStoredPrivately": true
+  },
+  "firstPostCloseServerRead": {
+    "at": "2026-10-18T20:41:08.256946+08:00",
+    "readOnly": true,
+    "serverMutation": false,
+    "allEncodingProcessesExitedProven": false,
+    "fetchSucceeded": true,
+    "devices": {
+      "iphone13": {
+        "exactOwnDeviceIDMatched": true,
+        "matchingSessionCount": 1,
+        "anyNowPlaying": false,
+        "anyTranscodingInfo": true
+      },
+      "ipad": {
+        "exactOwnDeviceIDMatched": true,
+        "matchingSessionCount": 1,
+        "anyNowPlaying": false,
+        "anyTranscodingInfo": false
+      }
+    }
+  },
+  "finalChecks": {
+    "sourceDiffStillMatches": true,
+    "currentBatchPreflightPassCount": 15,
+    "documentationDocuments": 309,
+    "documentationLocalLinks": 1477,
+    "documentationMissingLinks": 0,
+    "gitWhitespacePass": true
+  }
+}

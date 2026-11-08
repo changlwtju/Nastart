@@ -1,0 +1,204 @@
+{
+  "at": "2026-10-19T14:59:56.263509+08:00",
+  "controlledTransportTests": {
+    "new": 3,
+    "initialHarnessFailures": 3,
+    "initialHarnessFailureNotProductBug": true,
+    "relatedSelectionPassed": 11,
+    "finalStrengthenedNewTestsPassed": 3,
+    "newProductionFix": false,
+    "rawTCP": true,
+    "fullChildGetWithoutRange": true,
+    "httpVersion": "1.1",
+    "realMediaDecoded": false,
+    "http2OrCellularCoverage": false
+  },
+  "serverReadOnly": {
+    "indexEntries": 137,
+    "ffmpegLogs": 4,
+    "ffmpegBytes": 1690077,
+    "mainLogBytes": 111768,
+    "mediaRequestsIssued": 0,
+    "changesToServer": false,
+    "clientSessionIdentityVerified": false,
+    "serverClockOffsetVerified": false,
+    "PGS7OverlayObserved": true,
+    "noSubtitleOverlayObserved": true,
+    "serverOutputVideoCodec": "h264",
+    "serverOutputDimensions": [
+      852,
+      480
+    ],
+    "sameTranscodeOutputIdentifierReusedAcrossSeek": true,
+    "clientToServerAssociation": "time and start ordinal only; not authenticated session identity",
+    "firstSegmentCreationWallTimeKnown": false,
+    "slowCellularIssueResolved": false
+  },
+  "source": {
+    "onlyTestSourceChangedSince1342Package": true,
+    "changedInputCount": 1,
+    "sourceDiffSHA256": "139d9310d91cf0643129a51bfeaa4d2238499e8049086dbf6f50626ea806b5be",
+    "physicalDeviceBuildOrInstallThisBatch": false,
+    "testFileSHA256": "6b55adae02b4a4fb234eef8e7c2ff4754d29ab7da7bed3e49ba60bfd1c0dcede"
+  },
+  "devices": {
+    "iPhone13": "not touched; previous verified Wi-Fi state not revalidated this batch",
+    "iPad": "not touched",
+    "iPhone18": "not touched; latest package install remains blocked/not done",
+    "newPhysicalPackageBuildOrInstall": false
+  },
+  "cleanup": {
+    "newCellularTaskStarted": false,
+    "ownMediaTaskStarted": false,
+    "simulator": {
+      "shutdownCommandExit": 149,
+      "alreadyShutdownError": true,
+      "matchingOwnSimulatorCount": 1,
+      "state": "Shutdown"
+    },
+    "activeOwnedBuildOrTest": false
+  },
+  "next": [
+    "fix and verify native seek target input before strict pairs",
+    "controlled same-entry PGS/Off first-segment investigation with output/cache conditions recorded",
+    "normal physical build and fresh signature/source attestation before next device window"
+  ],
+  "recoveredAt": "2026-10-19 17:18 +08:00",
+  "recovery": "Verified existing logs, result bundles and unchanged test source; no tests or server reads rerun.",
+  "selectedTests": [
+    "testHLSChildDelayedFirstSegmentKeepsThreeHalfClosedReadersAlive",
+    "testHLSChildResetDoesNotAbortReplacementReader",
+    "testRevokingHLSRootCancelsPendingChildrenWithoutAffectingPeerRoute",
+    "testProxyStreamsSeparateRequestsOverAReusedUpstreamConnection",
+    "testRangeFixtureAcceptsRequestWithWriteHalfClose",
+    "testRevokedProxyRouteStopsItsActiveTransferWithoutCancellingPeerRoute",
+    "testProxyWriteHalfCloseStillDeliversFullDelayedResponse",
+    "testProxyObservesResetBeforeDelayedUpstreamResponse",
+    "testOverlappingIdenticalProxyRequestsRemainIndependentAfterHalfClose",
+    "testVODPrewarmReusesManifestAndRewritesNewSeekWithoutFetchingSegments",
+    "testLivePlaylistPrewarmDoesNotClaimReusableVOD"
+  ],
+  "serverLogIdentity": [
+    {
+      "localLogIndex": 0,
+      "timestampedMainCommandMatchedByPrivateOutputIdentifierAndStartOrdinal": true,
+      "outputIdentifierAloneCommandCount": 2,
+      "serverCommandTime": "2026-10-19 14:22:38.662 +08:00",
+      "serverMinusClientClockOffsetVerified": false,
+      "startOrdinal": 916,
+      "videoCodec": "h264_vaapi",
+      "audioCodec": "libfdk_aac",
+      "videoBitrate": 1616000,
+      "PGS7Overlay": false,
+      "serverOutputStreams": [
+        {
+          "kind": "video",
+          "codec": "h264",
+          "dimensions": [
+            852,
+            480
+          ]
+        },
+        {
+          "kind": "audio",
+          "codec": "aac",
+          "dimensions": null
+        }
+      ],
+      "FFmpegErrorWordCount": 0,
+      "firstProgressHasWallClockTimestamp": false,
+      "transcodeExitCode": null
+    },
+    {
+      "localLogIndex": 1,
+      "timestampedMainCommandMatchedByPrivateOutputIdentifierAndStartOrdinal": true,
+      "outputIdentifierAloneCommandCount": 2,
+      "serverCommandTime": "2026-10-19 14:21:54.230 +08:00",
+      "serverMinusClientClockOffsetVerified": false,
+      "startOrdinal": 0,
+      "videoCodec": "h264_vaapi",
+      "audioCodec": "libfdk_aac",
+      "videoBitrate": 1616000,
+      "PGS7Overlay": false,
+      "serverOutputStreams": [
+        {
+          "kind": "video",
+          "codec": "h264",
+          "dimensions": [
+            852,
+            480
+          ]
+        },
+        {
+          "kind": "audio",
+          "codec": "aac",
+          "dimensions": null
+        }
+      ],
+      "FFmpegErrorWordCount": 0,
+      "firstProgressHasWallClockTimestamp": false,
+      "transcodeExitCode": null
+    },
+    {
+      "localLogIndex": 2,
+      "timestampedMainCommandMatchedByPrivateOutputIdentifierAndStartOrdinal": true,
+      "outputIdentifierAloneCommandCount": 2,
+      "serverCommandTime": "2026-10-19 14:19:09.673 +08:00",
+      "serverMinusClientClockOffsetVerified": false,
+      "startOrdinal": 932,
+      "videoCodec": "h264_vaapi",
+      "audioCodec": "libfdk_aac",
+      "videoBitrate": 1616000,
+      "PGS7Overlay": true,
+      "serverOutputStreams": [
+        {
+          "kind": "video",
+          "codec": "h264",
+          "dimensions": [
+            852,
+            480
+          ]
+        },
+        {
+          "kind": "audio",
+          "codec": "aac",
+          "dimensions": null
+        }
+      ],
+      "FFmpegErrorWordCount": 0,
+      "firstProgressHasWallClockTimestamp": false,
+      "transcodeExitCode": null
+    },
+    {
+      "localLogIndex": 3,
+      "timestampedMainCommandMatchedByPrivateOutputIdentifierAndStartOrdinal": true,
+      "outputIdentifierAloneCommandCount": 2,
+      "serverCommandTime": "2026-10-19 14:18:25.548 +08:00",
+      "serverMinusClientClockOffsetVerified": false,
+      "startOrdinal": 0,
+      "videoCodec": "h264_vaapi",
+      "audioCodec": "libfdk_aac",
+      "videoBitrate": 1616000,
+      "PGS7Overlay": true,
+      "serverOutputStreams": [
+        {
+          "kind": "video",
+          "codec": "h264",
+          "dimensions": [
+            852,
+            480
+          ]
+        },
+        {
+          "kind": "audio",
+          "codec": "aac",
+          "dimensions": null
+        }
+      ],
+      "FFmpegErrorWordCount": 0,
+      "firstProgressHasWallClockTimestamp": false,
+      "transcodeExitCode": null
+    }
+  ],
+  "serverCorrelationWarning": "Automatic JF seek operation selected ordinal40, not requested deep target; exclude that operation from deep-seek attribution. Timestamp/ordinal only does not identify client session."
+}

@@ -1,0 +1,1284 @@
+{
+  "at": "2026-10-14T21:25:11.083459+08:00",
+  "scope": "PX-02/PX-20 shared timeline clock layout; USB iPhone13/iPad; ordinary Debug, empty env/args, WiFi only",
+  "source": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "f5d06b2c9a8906ba769b6ed207377f7feb6002aa5c005b1cd078ebe1b4b1a572",
+    "baselineSourceDiffSHA256": "ce538bed01f20d4e123d4a45fc9238edd6988afedc9902feeece1aea31c65d61",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "binaryBuildTime": "2026-10-14T20:56:00.037456+08:00",
+    "package": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-10-14-native-slider-cue-201359/Nastart-Stable-Timeline-Clock-Normal-Debug.app",
+    "binaries": {
+      "Nastart": "a9ab92a85a6d0232421b6fce6b940d1e5767de133d77360c754114e68e13c55a",
+      "Nastart.debug.dylib": "22fe9271410b518e0e60e32ae06c9f608b5a6b192eb65daeb265dac6e20baa61",
+      "Frameworks/KSPlayer.framework/KSPlayer": "0b41cde45c806504810100a3e86d64f9ad352b69a6337ce77b8767d89dae161e"
+    },
+    "checkedInputs": 173,
+    "signatureVerified": true,
+    "individuallyVerifiedLibraries": 29,
+    "linkageVerified": true,
+    "profileExpirationUTC": "2026-10-17T22:23:40",
+    "tests": {
+      "executed": 385,
+      "skipped": 2,
+      "failures": 0,
+      "runThisTurn": true
+    },
+    "preflight": {
+      "passed": 15,
+      "runThisTurn": true
+    },
+    "ipaSHA256": "27ff7f67ec6253de383508a4ad24bfcecc4181318649f4a9daa5f21fb82f43a5",
+    "ipaThreeBinariesVerified": true,
+    "sourceEditsThisTurn": [
+      "Reserve elapsed timeline label width using duration format so crossing the hour boundary does not move the slider during one drag; production SwiftUI layout tests at three Dynamic Type sizes; two inputs changed, other171 unchanged; no seek/media/network/subtitle policy changes"
+    ]
+  },
+  "sourceChanges": {
+    "changedInputs": [
+      "ios/Nastart/Nastart/Features/Launchpad/LaunchpadView.swift",
+      "ios/Nastart/NastartTests/PlaybackNextCoreTests.swift"
+    ],
+    "other171IOSInputsUnchanged": true,
+    "allPriorUncommittedChangesPreserved": true
+  },
+  "baselineEvidence": {
+    "sourceDiffSHA256": "ce538bed01f20d4e123d4a45fc9238edd6988afedc9902feeece1aea31c65d61",
+    "sliderBefore": {
+      "x": 72,
+      "width": 925
+    },
+    "sliderAfter": {
+      "x": 83,
+      "width": 914
+    },
+    "clockWidthPairsPoints": [
+      [
+        31.3333333333,
+        41.6666666667
+      ],
+      [
+        34,
+        45
+      ],
+      [
+        115,
+        151
+      ]
+    ],
+    "negativeExecuted": 2,
+    "negativeFailures": 5,
+    "negativeUnexpected": 0,
+    "baselineEquivalentExtraction": "Extracted production elapsed Text without reserved duration width; compiled and ran new layout tests before activating reserve",
+    "requestedSeconds": 4750,
+    "actualSeekTargetSeconds": 4698.588852172851,
+    "entireTargetErrorAttributableToLabel": false,
+    "baselineEvidenceNotLatestPackageAcceptance": true
+  },
+  "latestInstallations": {
+    "iphone13": {
+      "device": "iphone13",
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "connection": "USB",
+      "binaries": {
+        "Nastart": "a9ab92a85a6d0232421b6fce6b940d1e5767de133d77360c754114e68e13c55a",
+        "Nastart.debug.dylib": "22fe9271410b518e0e60e32ae06c9f608b5a6b192eb65daeb265dac6e20baa61",
+        "Frameworks/KSPlayer.framework/KSPlayer": "0b41cde45c806504810100a3e86d64f9ad352b69a6337ce77b8767d89dae161e"
+      },
+      "sourceDiffSHA256": "f5d06b2c9a8906ba769b6ed207377f7feb6002aa5c005b1cd078ebe1b4b1a572",
+      "preservesContainer": true,
+      "signatureVerified": true,
+      "actualForegroundUIVerified": true,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "installation": "success",
+      "startedAt": "2026-10-14T20:57:19.923079+08:00",
+      "installedAt": "2026-10-14T20:57:35.715101+08:00",
+      "preferenceKeysUnchanged": true,
+      "preferenceValuesUnchanged": true,
+      "nonDiagnosticKeys": 25,
+      "actualPictureReviewedThisTurn": true
+    },
+    "ipad": {
+      "device": "ipad",
+      "model": "iPad12,1",
+      "system": "18.3.1",
+      "connection": "USB",
+      "binaries": {
+        "Nastart": "a9ab92a85a6d0232421b6fce6b940d1e5767de133d77360c754114e68e13c55a",
+        "Nastart.debug.dylib": "22fe9271410b518e0e60e32ae06c9f608b5a6b192eb65daeb265dac6e20baa61",
+        "Frameworks/KSPlayer.framework/KSPlayer": "0b41cde45c806504810100a3e86d64f9ad352b69a6337ce77b8767d89dae161e"
+      },
+      "sourceDiffSHA256": "f5d06b2c9a8906ba769b6ed207377f7feb6002aa5c005b1cd078ebe1b4b1a572",
+      "preservesContainer": true,
+      "signatureVerified": true,
+      "actualForegroundUIVerified": true,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "installation": "success",
+      "startedAt": "2026-10-14T20:57:19.886909+08:00",
+      "installedAt": "2026-10-14T20:57:26.248274+08:00",
+      "preferenceKeysUnchanged": true,
+      "preferenceValuesUnchanged": true,
+      "nonDiagnosticKeys": 18,
+      "actualPictureReviewedThisTurn": true
+    }
+  },
+  "layoutResults": [
+    {
+      "device": "iphone13",
+      "case": "wifi-mi2-file-stable-clock",
+      "sourceDiffSHA256": "f5d06b2c9a8906ba769b6ed207377f7feb6002aa5c005b1cd078ebe1b4b1a572",
+      "conditions": "ordinary early pause through native UI; empty env/args; WiFi, no shaping",
+      "allThreeSeeksSameSliderBounds": true,
+      "threeTransitions": [
+        {
+          "requestedSeconds": 4750.0,
+          "durationLabelSeconds": 7415,
+          "requestedRatio": 0.6405933917734322,
+          "seekStartedTargets": [
+            4719.714853321076
+          ],
+          "targetErrorSeconds": -30.28514667892432,
+          "nativePlayAtAllObservations": true,
+          "effect": "UNVERIFIED until actual target and screenshots reviewed",
+          "tag": "hour-r1-retry",
+          "boundsStableAcrossAllSevenObservations": true,
+          "geometry": [
+            {
+              "name": "before",
+              "bounds": {
+                "x": 130.0,
+                "y": 267.0,
+                "width": 584.0,
+                "height": 44.0
+              },
+              "clocks": [
+                "00:00",
+                "2:03:35"
+              ]
+            },
+            {
+              "name": "t0",
+              "bounds": {
+                "x": 130.0,
+                "y": 267.0,
+                "width": 584.0,
+                "height": 44.0
+              },
+              "clocks": [
+                "1:18:39",
+                "2:03:35"
+              ]
+            },
+            {
+              "name": "t1",
+              "bounds": {
+                "x": 130.0,
+                "y": 267.0,
+                "width": 584.0,
+                "height": 44.0
+              },
+              "clocks": [
+                "1:18:39",
+                "2:03:35"
+              ]
+            },
+            {
+              "name": "t3",
+              "bounds": {
+                "x": 130.0,
+                "y": 267.0,
+                "width": 584.0,
+                "height": 44.0
+              },
+              "clocks": [
+                "1:18:39",
+                "2:03:35"
+              ]
+            },
+            {
+              "name": "t8",
+              "bounds": {
+                "x": 130.0,
+                "y": 267.0,
+                "width": 584.0,
+                "height": 44.0
+              },
+              "clocks": [
+                "1:18:39",
+                "2:03:35"
+              ]
+            },
+            {
+              "name": "t15",
+              "bounds": {
+                "x": 130.0,
+                "y": 267.0,
+                "width": 584.0,
+                "height": 44.0
+              },
+              "clocks": [
+                "1:18:39",
+                "2:03:35"
+              ]
+            },
+            {
+              "name": "t20",
+              "bounds": {
+                "x": 130.0,
+                "y": 267.0,
+                "width": 584.0,
+                "height": 44.0
+              },
+              "clocks": [
+                "1:18:39",
+                "2:03:35"
+              ]
+            }
+          ],
+          "engine": "KSPlayer",
+          "meaning": "Shared timeline layout stability; not absolute target accuracy or continuous display timing",
+          "selectedActualPicturesReviewed": true
+        },
+        {
+          "requestedSeconds": 3580.0,
+          "durationLabelSeconds": 7415,
+          "requestedRatio": 0.48280512474713416,
+          "seekStartedTargets": [
+            3588.048521659851
+          ],
+          "targetErrorSeconds": 8.048521659850849,
+          "nativePlayAtAllObservations": true,
+          "effect": "UNVERIFIED until actual target and screenshots reviewed",
+          "tag": "minute-r2",
+          "boundsStableAcrossAllSevenObservations": true,
+          "geometry": [
+            {
+              "name": "before",
+              "bounds": {
+                "x": 130.0,
+                "y": 267.0,
+                "width": 584.0,
+                "height": 44.0
+              },
+              "clocks": [
+                "1:18:39",
+                "2:03:35"
+              ]
+            },
+            {
+              "name": "t0",
+              "bounds": {
+                "x": 130.0,
+                "y": 267.0,
+                "width": 584.0,
+                "height": 44.0
+              },
+              "clocks": [
+                "59:48",
+                "2:03:35"
+              ]
+            },
+            {
+              "name": "t1",
+              "bounds": {
+                "x": 130.0,
+                "y": 267.0,
+                "width": 584.0,
+                "height": 44.0
+              },
+              "clocks": [
+                "59:48",
+                "2:03:35"
+              ]
+            },
+            {
+              "name": "t3",
+              "bounds": {
+                "x": 130.0,
+                "y": 267.0,
+                "width": 584.0,
+                "height": 44.0
+              },
+              "clocks": [
+                "59:48",
+                "2:03:35"
+              ]
+            },
+            {
+              "name": "t8",
+              "bounds": {
+                "x": 130.0,
+                "y": 267.0,
+                "width": 584.0,
+                "height": 44.0
+              },
+              "clocks": [
+                "59:48",
+                "2:03:35"
+              ]
+            },
+            {
+              "name": "t15",
+              "bounds": {
+                "x": 130.0,
+                "y": 267.0,
+                "width": 584.0,
+                "height": 44.0
+              },
+              "clocks": [
+                "59:48",
+                "2:03:35"
+              ]
+            },
+            {
+              "name": "t20",
+              "bounds": {
+                "x": 130.0,
+                "y": 267.0,
+                "width": 584.0,
+                "height": 44.0
+              },
+              "clocks": [
+                "59:48",
+                "2:03:35"
+              ]
+            }
+          ],
+          "engine": "KSPlayer",
+          "meaning": "Shared timeline layout stability; not absolute target accuracy or continuous display timing",
+          "selectedActualPicturesReviewed": true
+        },
+        {
+          "requestedSeconds": 4750.0,
+          "durationLabelSeconds": 7415,
+          "requestedRatio": 0.6405933917734322,
+          "seekStartedTargets": [
+            4741.904337234497
+          ],
+          "targetErrorSeconds": -8.09566276550322,
+          "nativePlayAtAllObservations": true,
+          "effect": "UNVERIFIED until actual target and screenshots reviewed",
+          "tag": "hour-r3",
+          "boundsStableAcrossAllSevenObservations": true,
+          "geometry": [
+            {
+              "name": "before",
+              "bounds": {
+                "x": 130.0,
+                "y": 267.0,
+                "width": 584.0,
+                "height": 44.0
+              },
+              "clocks": [
+                "59:48",
+                "2:03:35"
+              ]
+            },
+            {
+              "name": "t0",
+              "bounds": {
+                "x": 130.0,
+                "y": 267.0,
+                "width": 584.0,
+                "height": 44.0
+              },
+              "clocks": [
+                "1:19:01",
+                "2:03:35"
+              ]
+            },
+            {
+              "name": "t1",
+              "bounds": {
+                "x": 130.0,
+                "y": 267.0,
+                "width": 584.0,
+                "height": 44.0
+              },
+              "clocks": [
+                "1:19:01",
+                "2:03:35"
+              ]
+            },
+            {
+              "name": "t3",
+              "bounds": {
+                "x": 130.0,
+                "y": 267.0,
+                "width": 584.0,
+                "height": 44.0
+              },
+              "clocks": [
+                "1:19:01",
+                "2:03:35"
+              ]
+            },
+            {
+              "name": "t8",
+              "bounds": {
+                "x": 130.0,
+                "y": 267.0,
+                "width": 584.0,
+                "height": 44.0
+              },
+              "clocks": [
+                "1:19:01",
+                "2:03:35"
+              ]
+            },
+            {
+              "name": "t15",
+              "bounds": {
+                "x": 130.0,
+                "y": 267.0,
+                "width": 584.0,
+                "height": 44.0
+              },
+              "clocks": [
+                "1:19:01",
+                "2:03:35"
+              ]
+            },
+            {
+              "name": "t20",
+              "bounds": {
+                "x": 130.0,
+                "y": 267.0,
+                "width": 584.0,
+                "height": 44.0
+              },
+              "clocks": [
+                "1:19:01",
+                "2:03:35"
+              ]
+            }
+          ],
+          "engine": "KSPlayer",
+          "meaning": "Shared timeline layout stability; not absolute target accuracy or continuous display timing",
+          "selectedActualPicturesReviewed": true
+        }
+      ],
+      "WiFiMetrics": 20,
+      "cellularMetrics": 0,
+      "phaseFailures": [],
+      "ordinaryUIExit": true,
+      "fullSubtitleAcceptance": false,
+      "performanceAcceptance": false,
+      "selectedActualPicturesReviewed": true,
+      "thirdTransitionVideoArtifact": true,
+      "fullPlaybackAccepted": false,
+      "artifactEvidence": "video-artifact-observation-safe.json"
+    },
+    {
+      "device": "ipad",
+      "case": "wifi-mi2-file-stable-clock",
+      "sourceDiffSHA256": "f5d06b2c9a8906ba769b6ed207377f7feb6002aa5c005b1cd078ebe1b4b1a572",
+      "conditions": "ordinary early pause through native UI; empty env/args; WiFi, no shaping",
+      "allThreeSeeksSameSliderBounds": true,
+      "threeTransitions": [
+        {
+          "requestedSeconds": 4750.0,
+          "durationLabelSeconds": 7415,
+          "requestedRatio": 0.6405933917734322,
+          "seekStartedTargets": [
+            4732.030655601501
+          ],
+          "targetErrorSeconds": -17.969344398498833,
+          "nativePlayAtAllObservations": true,
+          "effect": "UNVERIFIED until actual target and screenshots reviewed",
+          "tag": "hour-r1",
+          "boundsStableAcrossAllSevenObservations": true,
+          "geometry": [
+            {
+              "name": "before",
+              "bounds": {
+                "x": 83.0,
+                "y": 708.0,
+                "width": 914.0,
+                "height": 44.0
+              },
+              "clocks": [
+                "00:00",
+                "2:03:35"
+              ]
+            },
+            {
+              "name": "t0",
+              "bounds": {
+                "x": 83.0,
+                "y": 708.0,
+                "width": 914.0,
+                "height": 44.0
+              },
+              "clocks": [
+                "1:18:52",
+                "2:03:35"
+              ]
+            },
+            {
+              "name": "t1",
+              "bounds": {
+                "x": 83.0,
+                "y": 708.0,
+                "width": 914.0,
+                "height": 44.0
+              },
+              "clocks": [
+                "1:18:52",
+                "2:03:35"
+              ]
+            },
+            {
+              "name": "t3",
+              "bounds": {
+                "x": 83.0,
+                "y": 708.0,
+                "width": 914.0,
+                "height": 44.0
+              },
+              "clocks": [
+                "1:18:52",
+                "2:03:35"
+              ]
+            },
+            {
+              "name": "t8",
+              "bounds": {
+                "x": 83.0,
+                "y": 708.0,
+                "width": 914.0,
+                "height": 44.0
+              },
+              "clocks": [
+                "1:18:52",
+                "2:03:35"
+              ]
+            },
+            {
+              "name": "t15",
+              "bounds": {
+                "x": 83.0,
+                "y": 708.0,
+                "width": 914.0,
+                "height": 44.0
+              },
+              "clocks": [
+                "1:18:52",
+                "2:03:35"
+              ]
+            },
+            {
+              "name": "t20",
+              "bounds": {
+                "x": 83.0,
+                "y": 708.0,
+                "width": 914.0,
+                "height": 44.0
+              },
+              "clocks": [
+                "1:18:52",
+                "2:03:35"
+              ]
+            }
+          ],
+          "engine": "KSPlayer",
+          "meaning": "Shared timeline layout stability; not absolute target accuracy or continuous display timing",
+          "selectedActualPicturesReviewed": true
+        },
+        {
+          "requestedSeconds": 3580.0,
+          "durationLabelSeconds": 7415,
+          "requestedRatio": 0.48280512474713416,
+          "seekStartedTargets": [
+            3595.0055819187164
+          ],
+          "targetErrorSeconds": 15.005581918716416,
+          "nativePlayAtAllObservations": true,
+          "effect": "UNVERIFIED until actual target and screenshots reviewed",
+          "tag": "minute-r2",
+          "boundsStableAcrossAllSevenObservations": true,
+          "geometry": [
+            {
+              "name": "before",
+              "bounds": {
+                "x": 83.0,
+                "y": 708.0,
+                "width": 914.0,
+                "height": 44.0
+              },
+              "clocks": [
+                "1:18:52",
+                "2:03:35"
+              ]
+            },
+            {
+              "name": "t0",
+              "bounds": {
+                "x": 83.0,
+                "y": 708.0,
+                "width": 914.0,
+                "height": 44.0
+              },
+              "clocks": [
+                "59:55",
+                "2:03:35"
+              ]
+            },
+            {
+              "name": "t1",
+              "bounds": {
+                "x": 83.0,
+                "y": 708.0,
+                "width": 914.0,
+                "height": 44.0
+              },
+              "clocks": [
+                "59:55",
+                "2:03:35"
+              ]
+            },
+            {
+              "name": "t3",
+              "bounds": {
+                "x": 83.0,
+                "y": 708.0,
+                "width": 914.0,
+                "height": 44.0
+              },
+              "clocks": [
+                "59:55",
+                "2:03:35"
+              ]
+            },
+            {
+              "name": "t8",
+              "bounds": {
+                "x": 83.0,
+                "y": 708.0,
+                "width": 914.0,
+                "height": 44.0
+              },
+              "clocks": [
+                "59:55",
+                "2:03:35"
+              ]
+            },
+            {
+              "name": "t15",
+              "bounds": {
+                "x": 83.0,
+                "y": 708.0,
+                "width": 914.0,
+                "height": 44.0
+              },
+              "clocks": [
+                "59:55",
+                "2:03:35"
+              ]
+            },
+            {
+              "name": "t20",
+              "bounds": {
+                "x": 83.0,
+                "y": 708.0,
+                "width": 914.0,
+                "height": 44.0
+              },
+              "clocks": [
+                "59:55",
+                "2:03:35"
+              ]
+            }
+          ],
+          "engine": "KSPlayer",
+          "meaning": "Shared timeline layout stability; not absolute target accuracy or continuous display timing",
+          "selectedActualPicturesReviewed": true
+        },
+        {
+          "requestedSeconds": 4750.0,
+          "durationLabelSeconds": 7415,
+          "requestedRatio": 0.6405933917734322,
+          "seekStartedTargets": [
+            4752.93167224121
+          ],
+          "targetErrorSeconds": 2.9316722412104355,
+          "nativePlayAtAllObservations": true,
+          "effect": "UNVERIFIED until actual target and screenshots reviewed",
+          "tag": "hour-r3",
+          "boundsStableAcrossAllSevenObservations": true,
+          "geometry": [
+            {
+              "name": "before",
+              "bounds": {
+                "x": 83.0,
+                "y": 708.0,
+                "width": 914.0,
+                "height": 44.0
+              },
+              "clocks": [
+                "59:55",
+                "2:03:35"
+              ]
+            },
+            {
+              "name": "t0",
+              "bounds": {
+                "x": 83.0,
+                "y": 708.0,
+                "width": 914.0,
+                "height": 44.0
+              },
+              "clocks": [
+                "1:19:12",
+                "2:03:35"
+              ]
+            },
+            {
+              "name": "t1",
+              "bounds": {
+                "x": 83.0,
+                "y": 708.0,
+                "width": 914.0,
+                "height": 44.0
+              },
+              "clocks": [
+                "1:19:12",
+                "2:03:35"
+              ]
+            },
+            {
+              "name": "t3",
+              "bounds": {
+                "x": 83.0,
+                "y": 708.0,
+                "width": 914.0,
+                "height": 44.0
+              },
+              "clocks": [
+                "1:19:12",
+                "2:03:35"
+              ]
+            },
+            {
+              "name": "t8",
+              "bounds": {
+                "x": 83.0,
+                "y": 708.0,
+                "width": 914.0,
+                "height": 44.0
+              },
+              "clocks": [
+                "1:19:12",
+                "2:03:35"
+              ]
+            },
+            {
+              "name": "t15",
+              "bounds": {
+                "x": 83.0,
+                "y": 708.0,
+                "width": 914.0,
+                "height": 44.0
+              },
+              "clocks": [
+                "1:19:12",
+                "2:03:35"
+              ]
+            },
+            {
+              "name": "t20",
+              "bounds": {
+                "x": 83.0,
+                "y": 708.0,
+                "width": 914.0,
+                "height": 44.0
+              },
+              "clocks": [
+                "1:19:12",
+                "2:03:35"
+              ]
+            }
+          ],
+          "engine": "KSPlayer",
+          "meaning": "Shared timeline layout stability; not absolute target accuracy or continuous display timing",
+          "selectedActualPicturesReviewed": true
+        }
+      ],
+      "WiFiMetrics": 27,
+      "cellularMetrics": 0,
+      "phaseFailures": [],
+      "ordinaryUIExit": true,
+      "fullSubtitleAcceptance": false,
+      "performanceAcceptance": false,
+      "selectedActualPicturesReviewed": true,
+      "ordinaryExitPictureReviewed": true
+    }
+  ],
+  "basicWindows": [
+    {
+      "device": "iphone13",
+      "case": "wifi-subtitle-clearance-s01-file-head",
+      "sample": "S01",
+      "entry": "device file",
+      "sourceDiffSHA256": "f5d06b2c9a8906ba769b6ed207377f7feb6002aa5c005b1cd078ebe1b4b1a572",
+      "normalUIExit": true,
+      "selectedStartupAndExitImagesReviewed": true,
+      "capturedTargetsSeconds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        15,
+        30
+      ],
+      "actualScreenshotTimingRecorded": true,
+      "URLMetricsCellularNo": 8,
+      "URLMetricsCellularYes": 0,
+      "diagnosticFailures": [],
+      "resultScope": "startup3/10/30 and normal exit; sparse selected images, not complete functionality or fluency",
+      "S03ActualSelection": null,
+      "fileSeekScope": "position and paused±15; Pad original backward capture timeout retainedTOOL, separately named bounded repeat completed",
+      "fullSUBAccepted": false,
+      "AUDaccepted": false,
+      "performanceAccepted": false
+    },
+    {
+      "device": "iphone13",
+      "case": "wifi-subtitle-clearance-s01-jf-head",
+      "sample": "S01",
+      "entry": "Jellyfin",
+      "sourceDiffSHA256": "f5d06b2c9a8906ba769b6ed207377f7feb6002aa5c005b1cd078ebe1b4b1a572",
+      "normalUIExit": true,
+      "selectedStartupAndExitImagesReviewed": true,
+      "capturedTargetsSeconds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        15,
+        30
+      ],
+      "actualScreenshotTimingRecorded": true,
+      "URLMetricsCellularNo": 3,
+      "URLMetricsCellularYes": 0,
+      "diagnosticFailures": [],
+      "resultScope": "startup3/10/30 and normal exit; sparse selected images, not complete functionality or fluency",
+      "S03ActualSelection": null,
+      "fileSeekScope": null,
+      "fullSUBAccepted": false,
+      "AUDaccepted": false,
+      "performanceAccepted": false
+    },
+    {
+      "device": "iphone13",
+      "case": "wifi-subtitle-clearance-s03-jf-head",
+      "sample": "S03",
+      "entry": "Jellyfin",
+      "sourceDiffSHA256": "f5d06b2c9a8906ba769b6ed207377f7feb6002aa5c005b1cd078ebe1b4b1a572",
+      "normalUIExit": true,
+      "selectedStartupAndExitImagesReviewed": true,
+      "capturedTargetsSeconds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        15,
+        30
+      ],
+      "actualScreenshotTimingRecorded": true,
+      "URLMetricsCellularNo": 6,
+      "URLMetricsCellularYes": 0,
+      "diagnosticFailures": [],
+      "resultScope": "startup3/10/30 and normal exit; sparse selected images, not complete functionality or fluency",
+      "S03ActualSelection": "original PGS; no ASS selection acceptance in this window",
+      "fileSeekScope": null,
+      "fullSUBAccepted": false,
+      "AUDaccepted": false,
+      "performanceAccepted": false
+    },
+    {
+      "device": "ipad",
+      "case": "wifi-subtitle-clearance-s01-file-head",
+      "sample": "S01",
+      "entry": "device file",
+      "sourceDiffSHA256": "f5d06b2c9a8906ba769b6ed207377f7feb6002aa5c005b1cd078ebe1b4b1a572",
+      "normalUIExit": true,
+      "selectedStartupAndExitImagesReviewed": true,
+      "capturedTargetsSeconds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        15,
+        30
+      ],
+      "actualScreenshotTimingRecorded": true,
+      "URLMetricsCellularNo": 11,
+      "URLMetricsCellularYes": 0,
+      "diagnosticFailures": [],
+      "resultScope": "startup3/10/30 and normal exit; sparse selected images, not complete functionality or fluency",
+      "S03ActualSelection": null,
+      "fileSeekScope": "position and paused±15; Pad original backward capture timeout retainedTOOL, separately named bounded repeat completed",
+      "fullSUBAccepted": false,
+      "AUDaccepted": false,
+      "performanceAccepted": false
+    },
+    {
+      "device": "ipad",
+      "case": "wifi-subtitle-clearance-s01-jf-head",
+      "sample": "S01",
+      "entry": "Jellyfin",
+      "sourceDiffSHA256": "f5d06b2c9a8906ba769b6ed207377f7feb6002aa5c005b1cd078ebe1b4b1a572",
+      "normalUIExit": true,
+      "selectedStartupAndExitImagesReviewed": true,
+      "capturedTargetsSeconds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        15,
+        30
+      ],
+      "actualScreenshotTimingRecorded": true,
+      "URLMetricsCellularNo": 3,
+      "URLMetricsCellularYes": 0,
+      "diagnosticFailures": [],
+      "resultScope": "startup3/10/30 and normal exit; sparse selected images, not complete functionality or fluency",
+      "S03ActualSelection": null,
+      "fileSeekScope": null,
+      "fullSUBAccepted": false,
+      "AUDaccepted": false,
+      "performanceAccepted": false
+    },
+    {
+      "device": "ipad",
+      "case": "wifi-subtitle-clearance-s03-jf-head",
+      "sample": "S03",
+      "entry": "Jellyfin",
+      "sourceDiffSHA256": "f5d06b2c9a8906ba769b6ed207377f7feb6002aa5c005b1cd078ebe1b4b1a572",
+      "normalUIExit": true,
+      "selectedStartupAndExitImagesReviewed": true,
+      "capturedTargetsSeconds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        15,
+        30
+      ],
+      "actualScreenshotTimingRecorded": true,
+      "URLMetricsCellularNo": 12,
+      "URLMetricsCellularYes": 0,
+      "diagnosticFailures": [
+        {
+          "secondsFromTouch": 34.364173,
+          "event": "replacement_warmup_failed",
+          "fields": {
+            "accessLogStalls": 7,
+            "availableReserveSeconds": 12.429082995514362,
+            "bufferEmpty": "true",
+            "candidate": 24.097510778,
+            "candidateBufferAheadSeconds": 0,
+            "candidateRate": 0,
+            "candidateSeconds": 24.097510778,
+            "candidateStatus": 1,
+            "current": 32.261,
+            "deadlineRemainingMs": 18579,
+            "downloadedMediaSeconds": 4.004,
+            "elapsedMs": 21420,
+            "engine": "KSPlayer",
+            "errorDomain": "-",
+            "framePTS": 23.815444444444445,
+            "indicatedBitrate": 12000000,
+            "itemStatus": 1,
+            "likelyToKeepUp": "false",
+            "liveSeconds": 32.261,
+            "loadedRangeCount": 1,
+            "loadedRangeFirstEnd": 23.94057777777778,
+            "loadedRangeFirstStart": 20.01998888888889,
+            "mediaRequests": 1,
+            "observedBitrate": 360059,
+            "preparationLeadSeconds": 11,
+            "reason": "notAlignedBeforeDeadlineOrPlaybackStopped",
+            "stage": "alignment",
+            "target": 22.045,
+            "timeControlStatus": 0,
+            "transferSeconds": 20.159608875,
+            "transferredBytes": 680184
+          }
+        }
+      ],
+      "resultScope": "startup3/10/30 and normal exit; sparse selected images, not complete functionality or fluency",
+      "S03ActualSelection": "original PGS; no ASS selection acceptance in this window",
+      "fileSeekScope": null,
+      "fullSUBAccepted": false,
+      "AUDaccepted": false,
+      "performanceAccepted": false
+    }
+  ],
+  "latestWiFiMetricsCount": 90,
+  "latestCellularMetricsCount": 0,
+  "absoluteCoordinateTargetErrorsSeconds": [
+    -30.285,
+    8.049,
+    -8.096,
+    -17.969,
+    15.006,
+    2.932
+  ],
+  "seekAccuracyAccepted": false,
+  "videoArtifact": {
+    "classification": "OBSERVED_VIDEO_DECODE_ARTIFACT",
+    "sourceDiffSHA256": "f5d06b2c9a8906ba769b6ed207377f7feb6002aa5c005b1cd078ebe1b4b1a572",
+    "device": "iphone13",
+    "sample": "MI2 file",
+    "engine": "KSPlayer",
+    "case": "hour-r3",
+    "requestedSeconds": 4750,
+    "actualSeekTargetSeconds": 4741.904337234497,
+    "observed": "Third paused slider jump after hour→minute→hour sequence: target images t3/t15 show severe block corruption. Not accepted as successful playback. First and second target images did not show this corruption. Cause and source introduction unknown; UI-only two-input change cannot establish decoder causation.",
+    "originalImages": [
+      "hour-r3/t3.png",
+      "hour-r3/t15.png",
+      "hour-r3/t20.png"
+    ],
+    "fullPlaybackAccepted": false,
+    "next": "Reproduce same sequence with latest source and equivalent baseline; correlate key packet, codec flush/generation and target frame before changing decoder/media policy.",
+    "diagnosticErrorAndDecodeFields": [
+      {
+        "event": "proxy_transfer_started",
+        "fields": {
+          "clientReadErrorCode": "54"
+        }
+      },
+      {
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "errorCode": "0",
+          "transportErrorCode": "54"
+        }
+      },
+      {
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "errorCode": "-999"
+        }
+      },
+      {
+        "event": "video_frame_submitted",
+        "fields": {
+          "decodeInvocationMs": "213.656",
+          "decodeInvocationPTS": "0.0",
+          "decodedCallbackMs": "346.196",
+          "decodedCallbackPTS": "0.0",
+          "videoDecodeCallCalls": "10",
+          "videoDecodeCallClippedCalls": "1",
+          "videoDecodeCallMaxWallMs": "44.622",
+          "videoDecodeCallWallMs": "132.478"
+        }
+      },
+      {
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "errorCode": "-",
+          "errorDomain": "-"
+        }
+      },
+      {
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "errorCode": "-",
+          "errorDomain": "-"
+        }
+      },
+      {
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "errorCode": "-",
+          "errorDomain": "-"
+        }
+      }
+    ],
+    "diagnosticInterpretation": "Proxy read/end/cancel error fields are retained for chronology; they are not a decoder error diagnosis or proof of cause. Successful output APIs cannot certify picture quality."
+  },
+  "toolLimitations": [
+    {
+      "case": "baseline native slider value",
+      "classification": "INVALID_ACTION_EFFECT",
+      "result": "WDA success, no seek_started, new play action; excluded from cue and seek acceptance; original request/response/frame and events preserved; normal pause restored."
+    },
+    {
+      "case": "iphone13 first measured thumb before touch",
+      "classification": "TOOL_SCREENSHOT_ORIENTATION",
+      "result": "Guard refused before touch because WDA PNG portrait encoded landscape UI. Actual original PNG and native bounds reviewed; normalized counterclockwise90 only for detector; retry uses new directory; app unchanged."
+    },
+    {
+      "case": "coordinate mapping",
+      "classification": "ABSOLUTE_TARGET_UNVERIFIED",
+      "result": "Stable clock geometry is independently verified. Pixel touch endpoint still has target errors, report each actual internal target; never accept expected subtitle solely from requested seconds."
+    },
+    {
+      "case": "ipad S01 file first paused-backward",
+      "classification": "TOOL_AFC_READ_TIMEOUT",
+      "submittedSeek": true,
+      "lastOriginalObservation": "t0 screenshot/XML/native paused Play; preference pull after it hung; wrapper180s killed capture",
+      "independentRecovery": "Fresh WDA image shows paused48:34 target and no spinner; foreground normal empty env/args. Fresh bounded AFC read0.187s; original wrapper traceback, t0 observations and crash inventory preserved.",
+      "acceptance": "Original incomplete sample remains TOOL, not player seek latency or full PASS; later separately named forward/back probes use bounded10s local diagnostic socket with3retries."
+    }
+  ],
+  "diagnosticReadDelay": {
+    "classification": "TOOL_DIAGNOSTIC_READ_DELAY",
+    "case": "iphone13 S01 JF close",
+    "readAttempts": 21,
+    "maxReadWallSeconds": 86.40624690055847,
+    "failedReadAttempts": 1,
+    "independentActualUIDuringRead": "Native WDA actual screenshot shows normal detail after user Done, no player; normal empty env/args. Do not count private preference reading as player exit or seek latency.",
+    "privateToolAdjustment": "After this observed read stall, future AFC preference reads use existing Sync.psock socket timeout10s within existing3retries. This is local evidence acquisition only; App source, media/network timeout parameters, WDA and login state unchanged."
+  },
+  "finalAudit": {
+    "sourceInputsVerified": 173,
+    "binaryHashesVerified": true,
+    "signatureVerified": true,
+    "devices": {
+      "iphone13": {
+        "at": "2026-10-14T21:21:36.448387+08:00",
+        "model": "iPhone14,5",
+        "system": "16.3.1",
+        "connection": "USB",
+        "sourceDiffSHA256": "f5d06b2c9a8906ba769b6ed207377f7feb6002aa5c005b1cd078ebe1b4b1a572",
+        "latestPackage": {
+          "Nastart": "a9ab92a85a6d0232421b6fce6b940d1e5767de133d77360c754114e68e13c55a",
+          "Nastart.debug.dylib": "22fe9271410b518e0e60e32ae06c9f608b5a6b192eb65daeb265dac6e20baa61",
+          "Frameworks/KSPlayer.framework/KSPlayer": "0b41cde45c806504810100a3e86d64f9ad352b69a6337ce77b8767d89dae161e"
+        },
+        "nonBookmarkPreferenceKeys": 24,
+        "nonBookmarkPreferencesExactlyUnchanged": true,
+        "naturalBookmarkChangesCount": 4,
+        "originalBookmarksChecked": 34,
+        "originalBookmarksRemoved": 0,
+        "originalTrackChangeCount": 0,
+        "allOriginalTracksUnchanged": true,
+        "newBookmarksCount": 0,
+        "crashInventoryDelta": {
+          "Nastart": 0,
+          "WebDriverAgent": 0,
+          "JetsamEvent": 0
+        },
+        "normalEmptyEnvironment": true,
+        "NASNormal": true,
+        "playerClosed": true,
+        "WDAIdleSeconds": 10,
+        "WDAAnimationCoolOffSeconds": 2,
+        "nativeConditionsNotRecheckedThisTurn": false,
+        "noConditionInjectedThisTurn": true,
+        "nativeActiveConditions": 0,
+        "finalHomeActuallyReviewed": true
+      },
+      "ipad": {
+        "at": "2026-10-14T21:21:37.279682+08:00",
+        "model": "iPad12,1",
+        "system": "18.3.1",
+        "connection": "USB",
+        "sourceDiffSHA256": "f5d06b2c9a8906ba769b6ed207377f7feb6002aa5c005b1cd078ebe1b4b1a572",
+        "latestPackage": {
+          "Nastart": "a9ab92a85a6d0232421b6fce6b940d1e5767de133d77360c754114e68e13c55a",
+          "Nastart.debug.dylib": "22fe9271410b518e0e60e32ae06c9f608b5a6b192eb65daeb265dac6e20baa61",
+          "Frameworks/KSPlayer.framework/KSPlayer": "0b41cde45c806504810100a3e86d64f9ad352b69a6337ce77b8767d89dae161e"
+        },
+        "nonBookmarkPreferenceKeys": 17,
+        "nonBookmarkPreferencesExactlyUnchanged": true,
+        "naturalBookmarkChangesCount": 4,
+        "originalBookmarksChecked": 27,
+        "originalBookmarksRemoved": 0,
+        "originalTrackChangeCount": 0,
+        "allOriginalTracksUnchanged": true,
+        "newBookmarksCount": 0,
+        "crashInventoryDelta": {
+          "Nastart": 0,
+          "WebDriverAgent": 0,
+          "JetsamEvent": 0
+        },
+        "normalEmptyEnvironment": true,
+        "NASNormal": true,
+        "playerClosed": true,
+        "WDAIdleSeconds": 10,
+        "WDAAnimationCoolOffSeconds": 2,
+        "nativeConditionsNotRecheckedThisTurn": false,
+        "noConditionInjectedThisTurn": true,
+        "nativeActiveConditions": 0,
+        "finalHomeActuallyReviewed": true
+      }
+    }
+  },
+  "acceptance": {
+    "timelineLayoutStability": true,
+    "fullPlaybackRegression": false,
+    "originalPGSGhostClosed": false,
+    "fullSUB": false,
+    "fullASS": false,
+    "AUD": false,
+    "HDR": false,
+    "PiP": false,
+    "continuousFramePerformance": false,
+    "competitor": false
+  },
+  "limitations": [
+    "Six actual paused slider targets have coordinate errors despite stable bounds; requested seconds are not cue ground truth. Native slider value command had a play side effect and is excluded.",
+    "Latest phone MI2 third paused target contains severe corrupted video at t3/t15/t20; kept FAIL_VIDEO observation, cause/introduction unproved. No assumption that UI-only source edits prove an unrelated decoder cause.",
+    "Pad S01 original backward probe submitted then AFC read hung; wrapper180s aborted. Independent native target frame and bounded repeat are separate, original incomplete window staysTOOL.",
+    "Phone S01 JF evidence file read86.406s is not App exit latency; actual UI showed closed player. Local tool socket bound does not modify App network/media policy.",
+    "S03 basic windows actually keep original PGS. Planned ASS follow-up is not executed or accepted here. Empty/default subtitle tracks at MI2 targets do not close originalPGS lifecycle issue.",
+    "No reinstallation of WDA, no removal of App/login data; no cellular/performance build/traffic shaping, no iPhone18 install of f5. All prior incomplete matrix and competitor work remains open."
+  ],
+  "next": [
+    "Same-sequence latest and equivalent baseline investigation of phone MI2 corrupted target: key packet, codec flush/generation, decoded target quality; keep all failing samples.",
+    "PGS independent cue/display-set timing and original paused target reproduction; exact native input calibration still not accepted.",
+    "Continue existing AV first-HLS-segment/server preparation observations, S03 two-entry seek/cold resume, complete L2/L3 and competitor full-frame evidence."
+  ],
+  "privateEvidenceDirectory": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-10-14-native-slider-cue-201359"
+}

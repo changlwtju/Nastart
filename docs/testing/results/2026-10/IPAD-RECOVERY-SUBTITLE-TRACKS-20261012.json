@@ -1,0 +1,465 @@
+{
+  "at": "2026-10-12T06:05:37.537521+08:00",
+  "package": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "615edbaa8b6c70c6291daef434109e914c4e5cf2774d7985076e0d5f63e63670",
+    "package": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-10-12-subtitle-transition-021635/Nastart-Subtitle-Controls-Normal-Debug.app",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "binaryBuildTime": "2026-10-12T02:24:09.337451+08:00",
+    "binaries": {
+      "Nastart": "ab816cecf83f09cdfbe60735bc3f6310cceab2cd1d702e7ed9705ade3c9538f1",
+      "Nastart.debug.dylib": "1e4912d5d68d538f25cdd05a056221e9101cbcc2f0108d74c54a668049d04a9d",
+      "Frameworks/KSPlayer.framework/KSPlayer": "a981b6ce9643d58ef5cbdd81b3f1aa2c1878e6c4e590ee41f1afd510bc3da83c"
+    },
+    "signatureVerified": true,
+    "individuallyVerifiedLibraries": 29,
+    "checkedInputs": 173,
+    "newerInputs": [],
+    "profileExpirationUTC": "2026-10-17T22:23:40",
+    "tests": {
+      "executed": 322,
+      "skipped": 2,
+      "failures": 0,
+      "runThisTurn": false,
+      "referenceHandoff": "2026-10-12-SUBTITLE-TRANSITIONS.md"
+    },
+    "preflight": {
+      "passed": 15,
+      "runThisTurn": false,
+      "referenceHandoff": "2026-10-12-SUBTITLE-TRANSITIONS.md"
+    },
+    "sourceEditsThisTurn": [],
+    "baselineSourceDiffSHA256": "2946c84b6a1831e41220671b9807bf56dba8d28643a238fa3aee78d8805e525c",
+    "sourceInputManifestSHA256": "8070d046853c20a599bcde1b53dbfb5baf0e6a93d35c5157b326528e0ffb801e",
+    "frozenAt": "2026-10-12T02:26:08.969163+08:00",
+    "linkageVerified": true,
+    "ipa": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-10-12-subtitle-transition-021635/Nastart-Subtitle-Controls-Normal-Debug.ipa",
+    "dependencyCacheRepairedAtExactPinnedRevisions": true,
+    "checkedAgainAt": "2026-10-12T05:46:19.977045+08:00",
+    "sourceEditsInBuild": [
+      "SharedBuiltInPlayerView retains subtitle clearance for 300ms through toolbar fade-out with cancellation on reveal",
+      "Embedded and external subtitle padding ignores inherited control opacity animation"
+    ],
+    "sourceChangedThisTurn": false
+  },
+  "recheck": {
+    "at": "2026-10-12T06:02:56.165528+08:00",
+    "sourceChangedThisTurn": false,
+    "inputsAndMtimeVerified": 173,
+    "binaryHashesVerified": 3,
+    "individualLibrariesVerified": 29,
+    "deepSignatureVerified": true,
+    "testsRerunThisTurn": false,
+    "preflightRerunThisTurn": false
+  },
+  "priority": [
+    "iphone13 USB",
+    "ipad USB",
+    "iphone18 wireless"
+  ],
+  "devices": {
+    "iphone13": {
+      "identity": {
+        "device": "iphone13",
+        "at": "2026-10-12T05:46:20.019779+08:00",
+        "USBPresent": true,
+        "deviceInfoRead": true,
+        "model": "iPhone14,5",
+        "system": "16.3.1",
+        "nameMatchesPreviousTarget": true,
+        "WDAReady": true,
+        "locked": false
+      },
+      "installation": {
+        "device": "iphone13",
+        "model": "iPhone14,5",
+        "system": "16.3.1",
+        "connection": "USB",
+        "binaries": {
+          "Nastart": "ab816cecf83f09cdfbe60735bc3f6310cceab2cd1d702e7ed9705ade3c9538f1",
+          "Nastart.debug.dylib": "1e4912d5d68d538f25cdd05a056221e9101cbcc2f0108d74c54a668049d04a9d",
+          "Frameworks/KSPlayer.framework/KSPlayer": "a981b6ce9643d58ef5cbdd81b3f1aa2c1878e6c4e590ee41f1afd510bc3da83c"
+        },
+        "sourceDiffSHA256": "615edbaa8b6c70c6291daef434109e914c4e5cf2774d7985076e0d5f63e63670",
+        "preservesContainer": true,
+        "signatureVerified": true,
+        "actualForegroundUIVerified": true,
+        "requestedEnvironment": {},
+        "requestedArguments": [],
+        "installation": "success",
+        "startedAt": "2026-10-12T05:46:29.573032+08:00",
+        "installedAt": "2026-10-12T05:46:46.715367+08:00",
+        "preferenceKeysUnchanged": true,
+        "preferenceValuesUnchanged": true,
+        "nonDiagnosticKeys": 25,
+        "actualClearHomeManuallyReviewed": false,
+        "systemAlertObservedEarlier": true,
+        "systemAlertNoLongerPresent": false,
+        "alertDismissAttemptSucceeded": false,
+        "unobstructedHomeManuallyReviewed": true,
+        "systemAlertCancelSucceeded": true
+      },
+      "final": {
+        "at": "2026-10-12T06:02:56.157148+08:00",
+        "otherPreferencesUnchanged": 24,
+        "onlyS03BookmarkChanged": true,
+        "exitPosition": 396.809,
+        "finalTracks": {
+          "audioTrackID": 4,
+          "subtitleTrackID": 5,
+          "subtitlesDisabled": false
+        },
+        "newCrashInventoryEntries": 0,
+        "normalHomeRestored": true,
+        "actualEmptyEnvironment": true,
+        "playerClosed": true,
+        "settingsRestored": {
+          "idle": 10,
+          "animation": 2
+        },
+        "alternateTrack": 7,
+        "settledAlternatePause": 363.486,
+        "states": {
+          "hidden-alternate": {
+            "positionSeconds": 363.486,
+            "audioTrackID": 4,
+            "subtitleTrackID": 7,
+            "subtitlesDisabled": false
+          },
+          "restored-t10": {
+            "positionSeconds": 371.828,
+            "audioTrackID": 4,
+            "subtitleTrackID": 5,
+            "subtitlesDisabled": false
+          },
+          "before": {
+            "positionSeconds": 416.254,
+            "audioTrackID": 4,
+            "subtitleTrackID": 5,
+            "subtitlesDisabled": false
+          },
+          "restored-t3": {
+            "positionSeconds": 363.529,
+            "audioTrackID": 4,
+            "subtitleTrackID": 5,
+            "subtitlesDisabled": false
+          },
+          "restored-t30": {
+            "positionSeconds": 392.436,
+            "audioTrackID": 4,
+            "subtitleTrackID": 5,
+            "subtitlesDisabled": false
+          },
+          "revealed-alternate": {
+            "positionSeconds": 363.486,
+            "audioTrackID": 4,
+            "subtitleTrackID": 7,
+            "subtitlesDisabled": false
+          },
+          "paused-alternate": {
+            "positionSeconds": 363.486,
+            "audioTrackID": 4,
+            "subtitleTrackID": 7,
+            "subtitlesDisabled": false
+          },
+          "restored-original": {
+            "positionSeconds": 363.486,
+            "audioTrackID": 4,
+            "subtitleTrackID": 7,
+            "subtitlesDisabled": false
+          },
+          "closed": {
+            "positionSeconds": 396.809,
+            "audioTrackID": 4,
+            "subtitleTrackID": 5,
+            "subtitlesDisabled": false
+          }
+        },
+        "alternateCodecVerified": false,
+        "bitmapAccepted": false,
+        "originalTrackRestoredViaUI": true,
+        "AFCReadFailureRetained": true,
+        "firstReadAfterRestoreStale": true,
+        "longCueScreenshotReviewed": true,
+        "sourceLongCueContainsOwnTrailingEllipsis": true,
+        "sampledOverlapObserved": false,
+        "completeAnimationFrames": false,
+        "performanceAccepted": false
+      },
+      "ordinaryHome": {
+        "at": "2026-10-12T06:01:03.054779+08:00",
+        "normalUIVerified": true,
+        "requestedEnvironment": {},
+        "requestedArguments": [],
+        "terminatedState": 1,
+        "actualForeground": true,
+        "actualEmptyEnvironment": true,
+        "NASNormal": true,
+        "playerClosed": true,
+        "originalScreenshotManuallyReviewed": true,
+        "settingsRestored": {
+          "idle": 10,
+          "animation": 2
+        }
+      }
+    },
+    "ipad": {
+      "identity": {
+        "device": "ipad",
+        "at": "2026-10-12T05:46:20.191109+08:00",
+        "USBPresent": true,
+        "deviceInfoRead": true,
+        "model": "iPad12,1",
+        "system": "18.3.1",
+        "nameMatchesPreviousTarget": true,
+        "WDAReady": true,
+        "locked": false
+      },
+      "installation": {
+        "device": "ipad",
+        "model": "iPad12,1",
+        "system": "18.3.1",
+        "connection": "USB",
+        "binaries": {
+          "Nastart": "ab816cecf83f09cdfbe60735bc3f6310cceab2cd1d702e7ed9705ade3c9538f1",
+          "Nastart.debug.dylib": "1e4912d5d68d538f25cdd05a056221e9101cbcc2f0108d74c54a668049d04a9d",
+          "Frameworks/KSPlayer.framework/KSPlayer": "a981b6ce9643d58ef5cbdd81b3f1aa2c1878e6c4e590ee41f1afd510bc3da83c"
+        },
+        "sourceDiffSHA256": "615edbaa8b6c70c6291daef434109e914c4e5cf2774d7985076e0d5f63e63670",
+        "preservesContainer": true,
+        "signatureVerified": true,
+        "actualForegroundUIVerified": true,
+        "requestedEnvironment": {},
+        "requestedArguments": [],
+        "installation": "success",
+        "startedAt": "2026-10-12T05:47:55.585956+08:00",
+        "installedAt": "2026-10-12T05:48:02.286829+08:00",
+        "preferenceKeysUnchanged": true,
+        "preferenceValuesUnchanged": true,
+        "nonDiagnosticKeys": 16,
+        "unobstructedHomeManuallyReviewed": true,
+        "storageNoticeDeferredWithoutDeletingData": true
+      },
+      "final": {
+        "at": "2026-10-12T06:02:55.679795+08:00",
+        "otherPreferencesUnchanged": 15,
+        "onlyS03BookmarkChanged": true,
+        "exitPosition": 442.469,
+        "finalTracks": {
+          "audioTrackID": 4,
+          "subtitleTrackID": null,
+          "subtitlesDisabled": true
+        },
+        "newCrashInventoryEntries": 0,
+        "normalHomeRestored": true,
+        "actualEmptyEnvironment": true,
+        "playerClosed": true,
+        "settingsRestored": {
+          "idle": 10,
+          "animation": 2
+        }
+      },
+      "ordinaryHome": {
+        "at": "2026-10-12T05:56:43.389000+08:00",
+        "normalUIVerified": true,
+        "requestedEnvironment": {},
+        "requestedArguments": [],
+        "terminatedState": 1,
+        "actualForeground": true,
+        "actualEmptyEnvironment": true,
+        "NASNormal": true,
+        "playerClosed": true,
+        "originalScreenshotManuallyReviewed": true,
+        "settingsRestored": {
+          "idle": 10,
+          "animation": 2
+        }
+      },
+      "regression": {
+        "at": "2026-10-12T05:59:16.556448+08:00",
+        "states": {
+          "resumed-30": {
+            "positionSeconds": 392.336,
+            "audioTrackID": 4,
+            "subtitleTrackID": 5,
+            "subtitlesDisabled": false
+          },
+          "resumed-3": {
+            "positionSeconds": 363.664,
+            "audioTrackID": 4,
+            "subtitleTrackID": 5,
+            "subtitlesDisabled": false
+          },
+          "paused-visible": {
+            "positionSeconds": 354.907,
+            "audioTrackID": 4,
+            "subtitleTrackID": 5,
+            "subtitlesDisabled": false
+          },
+          "locked": {
+            "positionSeconds": 363.664,
+            "audioTrackID": 4,
+            "subtitleTrackID": 5,
+            "subtitlesDisabled": false
+          },
+          "reveal-settled": {
+            "positionSeconds": 363.664,
+            "audioTrackID": 4,
+            "subtitleTrackID": 5,
+            "subtitlesDisabled": false
+          },
+          "portrait": {
+            "positionSeconds": 363.664,
+            "audioTrackID": 4,
+            "subtitleTrackID": 5,
+            "subtitlesDisabled": false
+          },
+          "before": {
+            "positionSeconds": 170.693,
+            "audioTrackID": 4,
+            "subtitleTrackID": null,
+            "subtitlesDisabled": true
+          },
+          "rapid-toggle": {
+            "positionSeconds": 363.664,
+            "audioTrackID": 4,
+            "subtitleTrackID": 5,
+            "subtitlesDisabled": false
+          },
+          "resumed-10": {
+            "positionSeconds": 371.739,
+            "audioTrackID": 4,
+            "subtitleTrackID": 5,
+            "subtitlesDisabled": false
+          },
+          "unlocked": {
+            "positionSeconds": 363.664,
+            "audioTrackID": 4,
+            "subtitleTrackID": 5,
+            "subtitlesDisabled": false
+          },
+          "closed": {
+            "positionSeconds": 442.469,
+            "audioTrackID": 4,
+            "subtitleTrackID": null,
+            "subtitlesDisabled": true
+          },
+          "hide-settled": {
+            "positionSeconds": 363.664,
+            "audioTrackID": 4,
+            "subtitleTrackID": 5,
+            "subtitlesDisabled": false
+          },
+          "landscape-restored": {
+            "positionSeconds": 363.664,
+            "audioTrackID": 4,
+            "subtitleTrackID": 5,
+            "subtitlesDisabled": false
+          },
+          "selected-paused": {
+            "positionSeconds": 170.693,
+            "audioTrackID": 4,
+            "subtitleTrackID": null,
+            "subtitlesDisabled": true
+          },
+          "resumed-45": {
+            "positionSeconds": 402.736,
+            "audioTrackID": 4,
+            "subtitleTrackID": 5,
+            "subtitlesDisabled": false
+          }
+        },
+        "settledPause": 363.664,
+        "initialPausePreferenceSnapshotStale": true,
+        "initialPauseSnapshot": 354.907,
+        "exit": 442.469,
+        "originalAudioAndSubtitleRestoredViaUI": true,
+        "otherPreferencesUnchanged": 15,
+        "onlyS03BookmarkChanged": true,
+        "newCrashInventoryEntries": 0,
+        "installationRestoredWithoutDeletingData": true,
+        "storageFullStillObserved": true,
+        "AFCFreeBytesBeforeInstall": 475246592,
+        "completeAnimationFrames": false,
+        "fullSubtitleAccepted": false,
+        "performanceAccepted": false,
+        "screenshotReviewScope": "selected original images reviewed; full animation not covered",
+        "firstExitFailureRetained": true,
+        "observedFirstExitFailureCause": "enabled subtitle button name becomes captions.bubble.fill",
+        "playbackExceededNominal45Seconds": true
+      }
+    },
+    "iphone18": {
+      "identity": {
+        "freshPairedWirelessIdentityVerified": true,
+        "model": "iPhone19,7",
+        "system": "27.0",
+        "connection": "NETWORK"
+      },
+      "installation": {
+        "device": "iphone18",
+        "installation": "success",
+        "sourceDiffSHA256": "615edbaa8b6c70c6291daef434109e914c4e5cf2774d7985076e0d5f63e63670",
+        "binaries": {
+          "Nastart": "ab816cecf83f09cdfbe60735bc3f6310cceab2cd1d702e7ed9705ade3c9538f1",
+          "Nastart.debug.dylib": "1e4912d5d68d538f25cdd05a056221e9101cbcc2f0108d74c54a668049d04a9d",
+          "Frameworks/KSPlayer.framework/KSPlayer": "a981b6ce9643d58ef5cbdd81b3f1aa2c1878e6c4e590ee41f1afd510bc3da83c"
+        },
+        "method": "direct Bonjour TCP lockdown using existing Mac legacy pairing + AFC + installation_proxy Install; preserve container",
+        "newPairingAttempted": false,
+        "preservesContainer": true,
+        "signatureVerified": true,
+        "librariesVerified": 29,
+        "requestedEnvironment": {},
+        "requestedArguments": [],
+        "normalLaunch": "BLOCKED by device Locked; latest UI not verified",
+        "actualForegroundUIVerified": false,
+        "model": "iPhone19,7",
+        "system": "27.0",
+        "connection": "NETWORK",
+        "installationStartedAt": "2026-10-12T05:48:09.951388+08:00",
+        "installedAt": "2026-10-12T05:48:20.250001+08:00",
+        "postInstallLookupExists": true,
+        "samePreferenceKeys": true,
+        "nonDiagnosticKeysBefore": 25,
+        "nonDiagnosticKeysAfter": 25,
+        "unchangedPreferenceValues": 25,
+        "changedPreferenceCount": 0
+      },
+      "current": {
+        "at": "2026-10-12T05:59:47.187181+08:00",
+        "WDAReady": true,
+        "normalUIVerified": false,
+        "latestPackageInstalled": true,
+        "normalLaunch": "Blocked by Locked",
+        "networkChanged": false,
+        "WDAReinstalled": false,
+        "existingRunnerSessionRestored": true,
+        "locked": true
+      },
+      "initialConnection": {
+        "freshPairedWirelessIdentityVerified": true,
+        "WDAReady": true,
+        "locked": false
+      }
+    }
+  },
+  "AppSourceModifiedThisRound": false,
+  "toolFailuresRetained": [
+    "13 system alert endpoint did not locate Springboard alert",
+    "Pad exit used unfilled subtitle icon after track enabled",
+    "13 AFC persistent connection BrokenPipe",
+    "18 WDA port refused before runner recovery",
+    "18 normal launch rejected Locked"
+  ],
+  "readImmediatelyAfterSelectionOrPauseIsDurabilityAcceptance": false,
+  "fullAnimationAccepted": false,
+  "audioAccepted": false,
+  "HDRVerified": false,
+  "bitmapCodecVerified": false,
+  "performanceOrCompetitorRankingAccepted": false,
+  "cellularTest": false,
+  "rawSensitiveEvidencePublic": false,
+  "helperSnapshots": 19,
+  "committedOrPushed": false
+}

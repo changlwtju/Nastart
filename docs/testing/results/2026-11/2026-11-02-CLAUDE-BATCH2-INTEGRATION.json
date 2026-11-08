@@ -1,0 +1,169 @@
+{
+  "recordedAt": "2026-11-02T01:51:08.402941+08:00",
+  "source": {
+    "HEAD": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceInputs": 446,
+    "changedInputs": [
+      "tvos/NastartTV/Sources/TVNASViews.swift"
+    ],
+    "unchangedInputs": 445,
+    "mobileInputsUnchanged": 415,
+    "iosDiffSHA256": "b9463286e205aec3aab82ba2902700ab4d76673662dde5c0ee59f3e1ad80563f",
+    "claudePatchSHA256": "66364a44380765776dc96ce31a4cb2d0f455f823e398a9eb19311127fc754db8",
+    "integratedAt": "2026-11-02T01:47:17.947343+08:00",
+    "trackedTVGitDiffSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "tvInputManifestSHA256": "8a3377fe5b96d39cbaa9447c5d7de0bfe0d202bbf43957fd2e53e78964ecf6ba",
+    "tvSourceInputCount": 31,
+    "tvGitDiffOmitsUntrackedSources": true
+  },
+  "builds": {
+    "tv-sim-debug-cast": {
+      "startedAt": "2026-11-02T01:47:43.206472+08:00",
+      "freeGiBBefore": 17.778045654296875,
+      "reserveGiB": 2,
+      "exitCode": 0,
+      "endedAt": "2026-11-02T01:47:56.281315+08:00",
+      "freeGiBAfter": 17.79625701904297
+    },
+    "tv-unsigned-debug": {
+      "startedAt": "2026-11-02T01:47:56.284485+08:00",
+      "freeGiBBefore": 17.79623794555664,
+      "reserveGiB": 2,
+      "exitCode": 0,
+      "endedAt": "2026-11-02T01:48:10.359881+08:00",
+      "freeGiBAfter": 17.7939453125
+    },
+    "tv-release": {
+      "startedAt": "2026-11-02T01:48:10.362243+08:00",
+      "freeGiBBefore": 17.793933868408203,
+      "reserveGiB": 2,
+      "exitCode": 0,
+      "endedAt": "2026-11-02T01:48:39.502991+08:00",
+      "freeGiBAfter": 17.79224395751953
+    }
+  },
+  "sourceActionHarness": {
+    "startedAt": "2026-11-02T01:48:56.560381+08:00",
+    "source": "Exact three production Button action bodies extracted verbatim; dependency replaced by in-memory FakeState, no SwiftUI/TVAppState/credentials/NAS",
+    "cancelCoverage": "Static handlers unchanged; no runtime confirmation or cancellation UI claim",
+    "variants": {
+      "before": {
+        "compileExitCode": 0,
+        "checks": [
+          {
+            "case": "settings.currentFailurePreserved",
+            "passed": true
+          },
+          {
+            "case": "settings.retrySuccessClearsOldError",
+            "passed": false
+          },
+          {
+            "case": "settings.nextFailureClearsThenShowsCurrent",
+            "passed": false
+          },
+          {
+            "case": "connections.currentFailurePreserved",
+            "passed": true
+          },
+          {
+            "case": "connections.retrySuccessClearsOldError",
+            "passed": false
+          },
+          {
+            "case": "connections.nextFailureClearsThenShowsCurrent",
+            "passed": false
+          },
+          {
+            "case": "media.currentFailurePreserved",
+            "passed": true
+          },
+          {
+            "case": "media.retrySuccessClearsOldError",
+            "passed": false
+          },
+          {
+            "case": "media.nextFailureClearsThenShowsCurrent",
+            "passed": false
+          }
+        ],
+        "failed": 6,
+        "passed": 3,
+        "runtimeExitCode": 0
+      },
+      "integrated": {
+        "compileExitCode": 0,
+        "checks": [
+          {
+            "case": "settings.currentFailurePreserved",
+            "passed": true
+          },
+          {
+            "case": "settings.retrySuccessClearsOldError",
+            "passed": true
+          },
+          {
+            "case": "settings.nextFailureClearsThenShowsCurrent",
+            "passed": true
+          },
+          {
+            "case": "connections.currentFailurePreserved",
+            "passed": true
+          },
+          {
+            "case": "connections.retrySuccessClearsOldError",
+            "passed": true
+          },
+          {
+            "case": "connections.nextFailureClearsThenShowsCurrent",
+            "passed": true
+          },
+          {
+            "case": "media.currentFailurePreserved",
+            "passed": true
+          },
+          {
+            "case": "media.retrySuccessClearsOldError",
+            "passed": true
+          },
+          {
+            "case": "media.nextFailureClearsThenShowsCurrent",
+            "passed": true
+          }
+        ],
+        "failed": 0,
+        "passed": 9,
+        "runtimeExitCode": 0
+      }
+    },
+    "endedAt": "2026-11-02T01:48:58.594174+08:00"
+  },
+  "claudeDelivery": "docs/archive/handoffs/2026-11/2026-11-02-0145-CLAUDE-BATCH2-DELIVERY.md",
+  "claudeCompiledOrRan": false,
+  "patchAppliedByCodex": true,
+  "sourceHashesUnchangedAfterBuilds": true,
+  "newNativeUIScenesAdded": false,
+  "nativeConfirmationUIOrCancelVerified": false,
+  "TVLatestSignedPackageInstalled": false,
+  "physicalDevicesOperatedAfterTVSourceChange": 0,
+  "NASCommands": 0,
+  "ordinaryRootStarted": false,
+  "realCredentialStoresConstructed": false,
+  "mobileSourceInputsUnchanged": 415,
+  "mobileNormalPackageMainSHA256": "a03b284f9428c830aab4ce03c3c37cdc16aecfa08c6109ee6c8ee73e01382f89",
+  "mobileNormalPackageDebugDylibSHA256": "6a588beffff1cd3ab979fb5f459ff8445941aa141b0c28ec04b49044237022f9",
+  "newPlaybackPassCells": 0,
+  "requirementsClosed": 0,
+  "historicalPreflightFailureCategories": 5,
+  "evidencePointer": "/tmp/nastart-claude-batch2-integration-path",
+  "finalValidation": {
+    "at": "2026-11-02T01:57:51.976885+08:00",
+    "documentationDocuments": 595,
+    "documentationLocalLinks": 3730,
+    "missingDestinations": 0,
+    "gitDiffCheckExitCode": 0,
+    "sourceInputsUnchanged": 446,
+    "activeBuildWorkersAtCleanup": 0,
+    "activeDeviceLease": false
+  }
+}

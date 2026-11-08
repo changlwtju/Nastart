@@ -1,5 +1,17 @@
 # Nastart Media Service Flows
 
+2026-10-26用户最新规则：Plus并入三端“设置”组；TV固定六项等大三列两行。TV启动台默认显示全部Docker（可手动隐藏），不展示套件，分类与设备→容器目录及手机共享规则一致；套件入口留设备资源组。TV Docker 服务及管理显示最终改为双列等大卡，奇数末张靠左；分组标题整行，暖色焦点不使用覆盖名称的系统白条。存储入口仍保持“浏览文件/已有库/添加目录”，连接表单分HTTP/HTTPS、地址、端口和路径，发现线索不等于已有授权。具体实施与未接能力见[当前批](../archive/handoffs/2026-10/2026-10-26-CROSS-PLATFORM-CARD-RULES-WEBDAV.md)。
+
+2026-10-26最新补充：最新独立卡片/暖色图标与逐机安装按本批；完整WebDAV新增在13/iOS16发生布局循环，两轮无改善回退，不能把已写成功回调当端到端验收。 见[最新批](../archive/handoffs/2026-10/2026-10-26-INDEPENDENT-STORAGE-CARD-AND-ACCENT.md)。
+
+2026-10-26当前交互已收敛：存储与媒体→浏览文件 / 已连接媒体库 / 添加媒体文件夹；协议与六类服务目录移入连接管理。已有Jellyfin从媒体首页一步进入真实库，当前NAS添加目录复用File Station会话；首次协议授权仍需该服务账号。库来源按选根整理，本机资料与海报目标不写源目录。WebDAV可连，SMB/FTP与新服务原生客户端仍未交付。下文早期分层方案不再作为首页结构，见[最终UI批](../archive/handoffs/2026-10/2026-10-26-UNIFIED-MEDIA-HOME-AND-TV-UI.md)。
+
+2026-10-26服务区已接：存储与媒体→候选服务/独立已存连接→身份与登录状态→现有Jellyfin库；已有授权进入后仍由该服务验证，首次授权不借DSM密码。未确认地址、缓存/部分清单、授权要求、产品冲突及原生能力未接均有对应状态；Emby/Plex/Navidrome/Subsonic/Audio Station不展示虚假的已可播放按钮。刷新会重取清单，离页停止本轮公开探测。见[当前实现](../archive/handoffs/2026-10/2026-10-26-MEDIA-SERVICE-DISCOVERY-AND-ENTRY.md)。
+
+2026-10-26已接首切片：存储与媒体→当前NAS→选共享/子文件夹→本机库，无需第二次NAS登录；已有WebDAV库→再选文件夹，用已存协议凭据。新增服务的独立授权/发现仍为方案；实际边界见[本批](../archive/handoffs/2026-10/2026-10-26-NAS-SESSION-SOURCE-HUB-NATIVE.md)。
+
+2026-10-26当前补充：[统一存储与媒体来源方案](../architecture/UNIFIED_SOURCE_DISCOVERY_AND_ACCESS.md)覆盖FTP/FTPS、独立SFTP、NAS会话接入、服务发现/授权恢复及原生主题；以本轮方案/总账区分当前已实现与计划。下文2026-07初版中“自定义播放/刮削一律延后”不代表10月当前交付现状；播放进度以当前交接及唯一总账为准，不新增媒体主Tab。
+
 Version: 0.2
 Status: Draft
 Last updated: 2026-07-27

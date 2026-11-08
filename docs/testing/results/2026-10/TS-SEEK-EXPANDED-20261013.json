@@ -1,0 +1,1166 @@
+{
+  "recordedAt": "2026-10-13T07:11:33.524508+08:00",
+  "issue": "PX-02/PX-20/PX-21: repeated paused multi-seek corruption on iPad TS02",
+  "status": "FAILED expanded image validation; root cause unresolved",
+  "sourceChangedThisTurn": false,
+  "package": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "35ed118b8950dd091dffbd566c7d56dfc87e40971179354ba980943fa81f44f5",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "binaryBuildTime": "2026-10-13T04:45:34.616194+08:00",
+    "binaries": {
+      "Nastart": "18970d8d518f74b4fcd4fd264ef32434be813119ea1ef49b07c6adbafb6e4d63",
+      "Nastart.debug.dylib": "16193dda4ee733abd36a73f56bc3b7a85e48f6eb3bd1ae491a5cd827c9649c4d",
+      "Frameworks/KSPlayer.framework/KSPlayer": "ba329d9e1b6d91dafd5f9d0185eade3d82e250aaa7219e95e0dac76fbc71b2ab"
+    },
+    "checkedInputs": 173,
+    "individuallyVerifiedLibraries": 29
+  },
+  "L0": {
+    "tests": {
+      "executed": 348,
+      "skipped": 2,
+      "failures": 0,
+      "runThisTurn": false
+    },
+    "preflight": {
+      "passed": 15,
+      "runThisTurn": false
+    },
+    "provenance": "previous turn same source/package; not run this turn"
+  },
+  "sample": {
+    "id": "TS02",
+    "container": "mpegts confirmed in current iPad FFmpeg logs",
+    "video": "HEVC Main 1920x1080 yuv420p 8-bit, 30fps",
+    "audio": "AAC LC",
+    "bytes": 1126170624,
+    "durationSeconds": 1802.641677,
+    "bitrate": 4997867,
+    "mime": "video/mpeg",
+    "rangeStatus": 206,
+    "firstSubmittedPTSSeconds": 1.5983333333333334,
+    "differentFromS05": ">24h timestamp origin / H.264 interlace coverage still missing",
+    "growthAcceptance": false
+  },
+  "cases": [
+    {
+      "device": "iphone13",
+      "case": "second-ts",
+      "sample": "TS02 existing recording; completion/growth status not accepted",
+      "entry": "device files",
+      "dragCount": 4,
+      "dragRequestedRatios": [
+        0.5,
+        0.85,
+        0.25,
+        0.5
+      ],
+      "actualDragRequestStartIntervalsSeconds": [
+        1.2234301567077637,
+        1.1172218322753906,
+        1.1052782535552979
+      ],
+      "forwardBackwardButtonCount": 8,
+      "actualButtonRequestStartIntervalsSeconds": [
+        0.7076849937438965,
+        0.7130959033966064,
+        0.7149591445922852,
+        0.7390530109405518,
+        0.6999650001525879,
+        0.7418348789215088,
+        0.6910669803619385
+      ],
+      "pausedDragVisibleCorruption": false,
+      "pausedDragPositionAccepted": "coarse observation only",
+      "requestedResumeWindowSeconds": 90,
+      "normalUIExit": true,
+      "events": [
+        {
+          "event": "seek_started",
+          "at": "2026-10-13T06:50:21.792035+08:00",
+          "fields": {
+            "seekTargetSeconds": "884.7161619694255"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "at": "2026-10-13T06:50:22.336619+08:00",
+          "fields": {
+            "completed": "true",
+            "targetSeconds": "884.7161619694255"
+          }
+        },
+        {
+          "event": "seek_started",
+          "at": "2026-10-13T06:50:22.978347+08:00",
+          "fields": {
+            "seekTargetSeconds": "1522.957207347946"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "at": "2026-10-13T06:50:23.710886+08:00",
+          "fields": {
+            "completed": "true",
+            "targetSeconds": "1522.957207347946"
+          }
+        },
+        {
+          "event": "seek_started",
+          "at": "2026-10-13T06:50:24.079319+08:00",
+          "fields": {
+            "seekTargetSeconds": "473.7512236813312"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "at": "2026-10-13T06:50:24.555659+08:00",
+          "fields": {
+            "completed": "true",
+            "targetSeconds": "473.7512236813312"
+          }
+        },
+        {
+          "event": "video_frame_submitted",
+          "at": "2026-10-13T06:50:24.950344+08:00",
+          "fields": {
+            "controlSeconds": "473.75122366666665",
+            "forcedPreview": "true",
+            "framePTSSeconds": "476.093",
+            "outputPath": "sampleBufferEnqueued"
+          }
+        },
+        {
+          "event": "seek_started",
+          "at": "2026-10-13T06:50:25.179568+08:00",
+          "fields": {
+            "seekTargetSeconds": "899.2452002107698"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "at": "2026-10-13T06:50:25.543224+08:00",
+          "fields": {
+            "completed": "true",
+            "targetSeconds": "899.2452002107698"
+          }
+        },
+        {
+          "event": "video_frame_submitted",
+          "at": "2026-10-13T06:50:26.021457+08:00",
+          "fields": {
+            "controlSeconds": "899.2452001111111",
+            "forcedPreview": "true",
+            "framePTSSeconds": "902.093",
+            "outputPath": "sampleBufferEnqueued"
+          }
+        },
+        {
+          "event": "seek_started",
+          "at": "2026-10-13T06:50:56.618879+08:00",
+          "fields": {
+            "seekTargetSeconds": "914.2452001111111"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "at": "2026-10-13T06:50:57.016515+08:00",
+          "fields": {
+            "completed": "true",
+            "targetSeconds": "914.2452001111111"
+          }
+        },
+        {
+          "event": "video_frame_submitted",
+          "at": "2026-10-13T06:50:57.254518+08:00",
+          "fields": {
+            "controlSeconds": "914.2452001111111",
+            "forcedPreview": "true",
+            "framePTSSeconds": "916.093",
+            "outputPath": "sampleBufferEnqueued"
+          }
+        },
+        {
+          "event": "seek_started",
+          "at": "2026-10-13T06:50:57.302765+08:00",
+          "fields": {
+            "seekTargetSeconds": "929.2452001111111"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "at": "2026-10-13T06:50:57.591147+08:00",
+          "fields": {
+            "completed": "true",
+            "targetSeconds": "929.2452001111111"
+          }
+        },
+        {
+          "event": "seek_started",
+          "at": "2026-10-13T06:50:58.019007+08:00",
+          "fields": {
+            "seekTargetSeconds": "944.2452001111111"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "at": "2026-10-13T06:50:58.354278+08:00",
+          "fields": {
+            "completed": "true",
+            "targetSeconds": "944.2452001111111"
+          }
+        },
+        {
+          "event": "video_frame_submitted",
+          "at": "2026-10-13T06:50:58.541121+08:00",
+          "fields": {
+            "controlSeconds": "944.2452001111111",
+            "forcedPreview": "true",
+            "framePTSSeconds": "946.093",
+            "outputPath": "sampleBufferEnqueued"
+          }
+        },
+        {
+          "event": "seek_started",
+          "at": "2026-10-13T06:50:58.702636+08:00",
+          "fields": {
+            "seekTargetSeconds": "929.2452001111111"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "at": "2026-10-13T06:50:58.939295+08:00",
+          "fields": {
+            "completed": "true",
+            "targetSeconds": "929.2452001111111"
+          }
+        },
+        {
+          "event": "video_frame_submitted",
+          "at": "2026-10-13T06:50:59.025708+08:00",
+          "fields": {
+            "controlSeconds": "929.2452001111111",
+            "forcedPreview": "true",
+            "framePTSSeconds": "930.659",
+            "outputPath": "sampleBufferEnqueued"
+          }
+        },
+        {
+          "event": "seek_started",
+          "at": "2026-10-13T06:50:59.452468+08:00",
+          "fields": {
+            "seekTargetSeconds": "914.2452001111111"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "at": "2026-10-13T06:50:59.729166+08:00",
+          "fields": {
+            "completed": "true",
+            "targetSeconds": "914.2452001111111"
+          }
+        },
+        {
+          "event": "video_frame_submitted",
+          "at": "2026-10-13T06:50:59.917476+08:00",
+          "fields": {
+            "controlSeconds": "914.2452001111111",
+            "forcedPreview": "true",
+            "framePTSSeconds": "916.093",
+            "outputPath": "sampleBufferEnqueued"
+          }
+        },
+        {
+          "event": "seek_started",
+          "at": "2026-10-13T06:51:00.151874+08:00",
+          "fields": {
+            "seekTargetSeconds": "899.2452001111111"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "at": "2026-10-13T06:51:00.625041+08:00",
+          "fields": {
+            "completed": "true",
+            "targetSeconds": "899.2452001111111"
+          }
+        },
+        {
+          "event": "video_frame_submitted",
+          "at": "2026-10-13T06:51:00.664417+08:00",
+          "fields": {
+            "controlSeconds": "899.2452001111111",
+            "forcedPreview": "true",
+            "framePTSSeconds": "900.659",
+            "outputPath": "sampleBufferEnqueued"
+          }
+        },
+        {
+          "event": "seek_started",
+          "at": "2026-10-13T06:51:00.885658+08:00",
+          "fields": {
+            "seekTargetSeconds": "884.2452001111111"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "at": "2026-10-13T06:51:01.187033+08:00",
+          "fields": {
+            "completed": "true",
+            "targetSeconds": "884.2452001111111"
+          }
+        },
+        {
+          "event": "video_frame_submitted",
+          "at": "2026-10-13T06:51:01.369459+08:00",
+          "fields": {
+            "controlSeconds": "884.2452001111111",
+            "forcedPreview": "true",
+            "framePTSSeconds": "886.093",
+            "outputPath": "sampleBufferEnqueued"
+          }
+        },
+        {
+          "event": "seek_started",
+          "at": "2026-10-13T06:51:01.585024+08:00",
+          "fields": {
+            "seekTargetSeconds": "899.2452001111111"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "at": "2026-10-13T06:51:01.810675+08:00",
+          "fields": {
+            "completed": "true",
+            "targetSeconds": "899.2452001111111"
+          }
+        },
+        {
+          "event": "video_frame_submitted",
+          "at": "2026-10-13T06:51:02.295079+08:00",
+          "fields": {
+            "controlSeconds": "899.2452001111111",
+            "forcedPreview": "true",
+            "framePTSSeconds": "902.093",
+            "outputPath": "sampleBufferEnqueued"
+          }
+        }
+      ],
+      "actualImageReview": {
+        "iphone13/second-ts-rapid/rapid-alternating-t10": {
+          "pausedVideo": true,
+          "clock": "14:59",
+          "ringComplete": true
+        },
+        "iphone13/second-ts-rapid/resumed-t90": {
+          "actualVideo": true,
+          "clock": "16:30"
+        },
+        "iphone13/second-ts-rapid/normal-closed": {
+          "actualPreview": true,
+          "playerClosed": true
+        },
+        "iphone13/second-ts-rapid/rapid-drag-t10": {
+          "videoClear": true,
+          "clock": "14:59"
+        }
+      },
+      "rootCauseConfirmed": false,
+      "frameExactnessAccepted": false,
+      "allDecoderCallbacksCaptured": false,
+      "audioAccepted": false,
+      "fullSubtitleAccepted": false,
+      "physicalMemoryMeasured": false
+    },
+    {
+      "device": "ipad",
+      "case": "second-ts",
+      "sample": "TS02 existing recording; completion/growth status not accepted",
+      "entry": "device files",
+      "dragCount": 4,
+      "dragRequestedRatios": [
+        0.5,
+        0.85,
+        0.25,
+        0.5
+      ],
+      "actualDragRequestStartIntervalsSeconds": [
+        1.3382220268249512,
+        1.8420748710632324,
+        1.8519999980926514
+      ],
+      "forwardBackwardButtonCount": 8,
+      "actualButtonRequestStartIntervalsSeconds": [
+        0.8904380798339844,
+        0.7931036949157715,
+        1.0217862129211426,
+        1.417316198348999,
+        1.1722118854522705,
+        0.9153621196746826,
+        1.0902159214019775
+      ],
+      "pausedDragVisibleCorruption": true,
+      "pausedDragPositionAccepted": false,
+      "requestedResumeWindowSeconds": 90,
+      "normalUIExit": true,
+      "events": [
+        {
+          "event": "seek_started",
+          "at": "2026-10-13T06:54:34.859514+08:00",
+          "fields": {
+            "seekTargetSeconds": "888.4306713025334"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "at": "2026-10-13T06:54:35.966526+08:00",
+          "fields": {
+            "completed": "true",
+            "targetSeconds": "888.4306713025334"
+          }
+        },
+        {
+          "event": "video_frame_submitted",
+          "at": "2026-10-13T06:54:36.190742+08:00",
+          "fields": {
+            "controlSeconds": "888.4306666666666",
+            "forcedPreview": "true",
+            "framePTSSeconds": "890.093",
+            "outputPath": "sampleBufferEnqueued"
+          }
+        },
+        {
+          "event": "seek_started",
+          "at": "2026-10-13T06:54:36.732012+08:00",
+          "fields": {
+            "seekTargetSeconds": "1528.9733135230458"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "at": "2026-10-13T06:54:37.833814+08:00",
+          "fields": {
+            "completed": "true",
+            "targetSeconds": "1528.9733135230458"
+          }
+        },
+        {
+          "event": "video_frame_submitted",
+          "at": "2026-10-13T06:54:38.446041+08:00",
+          "fields": {
+            "controlSeconds": "1528.9733134444446",
+            "forcedPreview": "true",
+            "framePTSSeconds": "1532.093",
+            "outputPath": "sampleBufferEnqueued"
+          }
+        },
+        {
+          "event": "seek_started",
+          "at": "2026-10-13T06:54:38.598713+08:00",
+          "fields": {
+            "seekTargetSeconds": "461.07170400773015"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "at": "2026-10-13T06:54:38.932289+08:00",
+          "fields": {
+            "completed": "true",
+            "targetSeconds": "461.07170400773015"
+          }
+        },
+        {
+          "event": "video_frame_submitted",
+          "at": "2026-10-13T06:54:39.083371+08:00",
+          "fields": {
+            "controlSeconds": "461.071704",
+            "forcedPreview": "true",
+            "framePTSSeconds": "462.493",
+            "outputPath": "sampleBufferEnqueued"
+          }
+        },
+        {
+          "event": "seek_started",
+          "at": "2026-10-13T06:54:40.011917+08:00",
+          "fields": {
+            "seekTargetSeconds": "885.4559801411044"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "at": "2026-10-13T06:54:40.754143+08:00",
+          "fields": {
+            "completed": "true",
+            "targetSeconds": "885.4559801411044"
+          }
+        },
+        {
+          "event": "video_frame_submitted",
+          "at": "2026-10-13T06:54:41.006057+08:00",
+          "fields": {
+            "controlSeconds": "885.4559801111111",
+            "forcedPreview": "true",
+            "framePTSSeconds": "886.859",
+            "outputPath": "sampleBufferEnqueued"
+          }
+        },
+        {
+          "event": "seek_started",
+          "at": "2026-10-13T06:55:11.909089+08:00",
+          "fields": {
+            "seekTargetSeconds": "900.4559801111111"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "at": "2026-10-13T06:55:12.190134+08:00",
+          "fields": {
+            "completed": "true",
+            "targetSeconds": "900.4559801111111"
+          }
+        },
+        {
+          "event": "seek_started",
+          "at": "2026-10-13T06:55:12.720026+08:00",
+          "fields": {
+            "seekTargetSeconds": "915.4559801111111"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "at": "2026-10-13T06:55:13.110814+08:00",
+          "fields": {
+            "completed": "true",
+            "targetSeconds": "915.4559801111111"
+          }
+        },
+        {
+          "event": "video_frame_submitted",
+          "at": "2026-10-13T06:55:13.508713+08:00",
+          "fields": {
+            "controlSeconds": "915.4559801111111",
+            "forcedPreview": "true",
+            "framePTSSeconds": "918.093",
+            "outputPath": "sampleBufferEnqueued"
+          }
+        },
+        {
+          "event": "seek_started",
+          "at": "2026-10-13T06:55:13.564829+08:00",
+          "fields": {
+            "seekTargetSeconds": "930.4559801111111"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "at": "2026-10-13T06:55:14.289438+08:00",
+          "fields": {
+            "completed": "true",
+            "targetSeconds": "930.4559801111111"
+          }
+        },
+        {
+          "event": "video_frame_submitted",
+          "at": "2026-10-13T06:55:14.582287+08:00",
+          "fields": {
+            "controlSeconds": "930.4559801111111",
+            "forcedPreview": "true",
+            "framePTSSeconds": "932.093",
+            "outputPath": "sampleBufferEnqueued"
+          }
+        },
+        {
+          "event": "seek_started",
+          "at": "2026-10-13T06:55:14.802661+08:00",
+          "fields": {
+            "seekTargetSeconds": "915.4559801111111"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "at": "2026-10-13T06:55:15.649652+08:00",
+          "fields": {
+            "completed": "true",
+            "targetSeconds": "915.4559801111111"
+          }
+        },
+        {
+          "event": "video_frame_submitted",
+          "at": "2026-10-13T06:55:15.697931+08:00",
+          "fields": {
+            "controlSeconds": "915.4559801111111",
+            "forcedPreview": "true",
+            "framePTSSeconds": "916.859",
+            "outputPath": "sampleBufferEnqueued"
+          }
+        },
+        {
+          "event": "seek_started",
+          "at": "2026-10-13T06:55:15.996164+08:00",
+          "fields": {
+            "seekTargetSeconds": "900.4559801111111"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "at": "2026-10-13T06:55:16.731486+08:00",
+          "fields": {
+            "completed": "true",
+            "targetSeconds": "900.4559801111111"
+          }
+        },
+        {
+          "event": "video_frame_submitted",
+          "at": "2026-10-13T06:55:16.901419+08:00",
+          "fields": {
+            "controlSeconds": "900.4559801111111",
+            "forcedPreview": "true",
+            "framePTSSeconds": "902.093",
+            "outputPath": "sampleBufferEnqueued"
+          }
+        },
+        {
+          "event": "seek_started",
+          "at": "2026-10-13T06:55:17.151336+08:00",
+          "fields": {
+            "seekTargetSeconds": "885.4559801111111"
+          }
+        },
+        {
+          "event": "seek_started",
+          "at": "2026-10-13T06:55:18.152640+08:00",
+          "fields": {
+            "seekTargetSeconds": "870.4559801111111"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "at": "2026-10-13T06:55:19.050035+08:00",
+          "fields": {
+            "completed": "true",
+            "targetSeconds": "870.4559801111111"
+          }
+        },
+        {
+          "event": "video_frame_submitted",
+          "at": "2026-10-13T06:55:19.264751+08:00",
+          "fields": {
+            "controlSeconds": "870.4559801111111",
+            "forcedPreview": "true",
+            "framePTSSeconds": "872.093",
+            "outputPath": "sampleBufferEnqueued"
+          }
+        },
+        {
+          "event": "seek_started",
+          "at": "2026-10-13T06:55:19.487358+08:00",
+          "fields": {
+            "seekTargetSeconds": "885.4559801111111"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "at": "2026-10-13T06:55:20.100889+08:00",
+          "fields": {
+            "completed": "true",
+            "targetSeconds": "885.4559801111111"
+          }
+        },
+        {
+          "event": "video_frame_submitted",
+          "at": "2026-10-13T06:55:20.532391+08:00",
+          "fields": {
+            "controlSeconds": "885.4559801111111",
+            "forcedPreview": "true",
+            "framePTSSeconds": "888.093",
+            "outputPath": "sampleBufferEnqueued"
+          }
+        }
+      ],
+      "actualImageReview": {
+        "ipad/second-ts-rapid/rapid-drag-t10": {
+          "actualVideo": true,
+          "visibleCorruption": true,
+          "paused": true,
+          "clock": "14:45"
+        },
+        "ipad/second-ts-rapid/rapid-alternating-t30": {
+          "videoClear": true,
+          "clock": "14:45"
+        },
+        "ipad/second-ts-rapid/resumed-t10": {
+          "videoClear": true,
+          "clock": "14:57"
+        },
+        "ipad/second-ts-rapid/resumed-t90": {
+          "videoClear": true
+        },
+        "ipad/second-ts-rapid/normal-closed": {
+          "actualPreview": true,
+          "playerClosed": true
+        },
+        "ipad/second-ts-rapid/rapid-drag-t30": {
+          "videoCorruption": true,
+          "paused": true,
+          "clock": "14:45"
+        }
+      },
+      "rootCauseConfirmed": false,
+      "frameExactnessAccepted": false,
+      "allDecoderCallbacksCaptured": false,
+      "audioAccepted": false,
+      "fullSubtitleAccepted": false,
+      "physicalMemoryMeasured": false
+    },
+    {
+      "device": "ipad",
+      "case": "second-isolated",
+      "sample": "TS02 existing recording; completion/growth status not accepted",
+      "entry": "device files",
+      "dragCount": 1,
+      "dragRequestedRatios": [
+        0.5
+      ],
+      "actualDragRequestStartIntervalsSeconds": [],
+      "forwardBackwardButtonCount": 0,
+      "actualButtonRequestStartIntervalsSeconds": [],
+      "pausedDragVisibleCorruption": false,
+      "pausedDragPositionAccepted": "coarse observation only",
+      "requestedResumeWindowSeconds": 30,
+      "normalUIExit": true,
+      "events": [
+        {
+          "event": "seek_started",
+          "at": "2026-10-13T07:03:24.880714+08:00",
+          "fields": {
+            "seekTargetSeconds": "888.4306713025334"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "at": "2026-10-13T07:03:25.962327+08:00",
+          "fields": {
+            "completed": "true",
+            "targetSeconds": "888.4306713025334"
+          }
+        },
+        {
+          "event": "video_frame_submitted",
+          "at": "2026-10-13T07:03:26.272248+08:00",
+          "fields": {
+            "controlSeconds": "888.4306666666666",
+            "forcedPreview": "true",
+            "framePTSSeconds": "890.093",
+            "outputPath": "sampleBufferEnqueued"
+          }
+        }
+      ],
+      "actualImageReview": {
+        "ipad/second-isolated-rapid/isolated-drag-t10": {
+          "videoClear": true,
+          "clock": "14:48",
+          "actualTargetDifferentFromRapidFailure": true
+        }
+      },
+      "rootCauseConfirmed": false,
+      "frameExactnessAccepted": false,
+      "allDecoderCallbacksCaptured": false,
+      "audioAccepted": false,
+      "fullSubtitleAccepted": false,
+      "physicalMemoryMeasured": false
+    },
+    {
+      "device": "ipad",
+      "case": "second-repeat",
+      "sample": "TS02 existing recording; completion/growth status not accepted",
+      "entry": "device files",
+      "dragCount": 4,
+      "dragRequestedRatios": [
+        0.5,
+        0.85,
+        0.25,
+        0.5
+      ],
+      "actualDragRequestStartIntervalsSeconds": [
+        1.455881118774414,
+        1.7856311798095703,
+        1.5181808471679688
+      ],
+      "forwardBackwardButtonCount": 8,
+      "actualButtonRequestStartIntervalsSeconds": [
+        1.4384403228759766,
+        1.203749656677246,
+        1.882925271987915,
+        1.0801327228546143,
+        0.8511102199554443,
+        0.8432939052581787,
+        1.590837001800537
+      ],
+      "pausedDragVisibleCorruption": true,
+      "pausedDragPositionAccepted": false,
+      "requestedResumeWindowSeconds": 90,
+      "normalUIExit": true,
+      "events": [
+        {
+          "event": "seek_started",
+          "at": "2026-10-13T07:05:46.271865+08:00",
+          "fields": {
+            "seekTargetSeconds": "894.3799999024827"
+          }
+        },
+        {
+          "event": "seek_started",
+          "at": "2026-10-13T07:05:48.158316+08:00",
+          "fields": {
+            "seekTargetSeconds": "1516.0831463255793"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "at": "2026-10-13T07:05:49.527098+08:00",
+          "fields": {
+            "completed": "true",
+            "targetSeconds": "1516.0831463255793"
+          }
+        },
+        {
+          "event": "seek_started",
+          "at": "2026-10-13T07:05:49.702918+08:00",
+          "fields": {
+            "seekTargetSeconds": "468.01259632815584"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "at": "2026-10-13T07:05:50.211581+08:00",
+          "fields": {
+            "completed": "true",
+            "targetSeconds": "468.01259632815584"
+          }
+        },
+        {
+          "event": "video_frame_submitted",
+          "at": "2026-10-13T07:05:50.453177+08:00",
+          "fields": {
+            "controlSeconds": "468.0125962222222",
+            "forcedPreview": "true",
+            "framePTSSeconds": "470.093",
+            "outputPath": "sampleBufferEnqueued"
+          }
+        },
+        {
+          "event": "seek_started",
+          "at": "2026-10-13T07:05:51.124654+08:00",
+          "fields": {
+            "seekTargetSeconds": "893.3884361820064"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "at": "2026-10-13T07:05:52.645843+08:00",
+          "fields": {
+            "completed": "true",
+            "targetSeconds": "893.3884361820064"
+          }
+        },
+        {
+          "event": "video_frame_submitted",
+          "at": "2026-10-13T07:05:52.677326+08:00",
+          "fields": {
+            "controlSeconds": "893.3884361111111",
+            "forcedPreview": "true",
+            "framePTSSeconds": "894.793",
+            "outputPath": "sampleBufferEnqueued"
+          }
+        },
+        {
+          "event": "seek_started",
+          "at": "2026-10-13T07:06:23.102884+08:00",
+          "fields": {
+            "seekTargetSeconds": "908.3884361111111"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "at": "2026-10-13T07:06:24.223776+08:00",
+          "fields": {
+            "completed": "true",
+            "targetSeconds": "908.3884361111111"
+          }
+        },
+        {
+          "event": "video_frame_submitted",
+          "at": "2026-10-13T07:06:24.380497+08:00",
+          "fields": {
+            "controlSeconds": "908.3884361111111",
+            "forcedPreview": "true",
+            "framePTSSeconds": "910.093",
+            "outputPath": "sampleBufferEnqueued"
+          }
+        },
+        {
+          "event": "seek_started",
+          "at": "2026-10-13T07:06:24.465168+08:00",
+          "fields": {
+            "seekTargetSeconds": "923.3884361111111"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "at": "2026-10-13T07:06:25.786215+08:00",
+          "fields": {
+            "completed": "true",
+            "targetSeconds": "923.3884361111111"
+          }
+        },
+        {
+          "event": "video_frame_submitted",
+          "at": "2026-10-13T07:06:25.863838+08:00",
+          "fields": {
+            "controlSeconds": "923.3884361111111",
+            "forcedPreview": "true",
+            "framePTSSeconds": "924.793",
+            "outputPath": "sampleBufferEnqueued"
+          }
+        },
+        {
+          "event": "seek_started",
+          "at": "2026-10-13T07:06:26.179075+08:00",
+          "fields": {
+            "seekTargetSeconds": "938.3884361111111"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "at": "2026-10-13T07:06:27.461257+08:00",
+          "fields": {
+            "completed": "true",
+            "targetSeconds": "938.3884361111111"
+          }
+        },
+        {
+          "event": "video_frame_submitted",
+          "at": "2026-10-13T07:06:27.692696+08:00",
+          "fields": {
+            "controlSeconds": "938.3884361111111",
+            "forcedPreview": "true",
+            "framePTSSeconds": "940.093",
+            "outputPath": "sampleBufferEnqueued"
+          }
+        },
+        {
+          "event": "seek_started",
+          "at": "2026-10-13T07:06:27.749269+08:00",
+          "fields": {
+            "seekTargetSeconds": "923.3884361111111"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "at": "2026-10-13T07:06:28.193854+08:00",
+          "fields": {
+            "completed": "true",
+            "targetSeconds": "923.3884361111111"
+          }
+        },
+        {
+          "event": "seek_started",
+          "at": "2026-10-13T07:06:28.646452+08:00",
+          "fields": {
+            "seekTargetSeconds": "908.3884361111111"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "at": "2026-10-13T07:06:28.973388+08:00",
+          "fields": {
+            "completed": "true",
+            "targetSeconds": "908.3884361111111"
+          }
+        },
+        {
+          "event": "video_frame_submitted",
+          "at": "2026-10-13T07:06:29.098129+08:00",
+          "fields": {
+            "controlSeconds": "908.3884361111111",
+            "forcedPreview": "true",
+            "framePTSSeconds": "910.093",
+            "outputPath": "sampleBufferEnqueued"
+          }
+        },
+        {
+          "event": "seek_started",
+          "at": "2026-10-13T07:06:29.515766+08:00",
+          "fields": {
+            "seekTargetSeconds": "893.3884361111111"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "at": "2026-10-13T07:06:29.873587+08:00",
+          "fields": {
+            "completed": "true",
+            "targetSeconds": "893.3884361111111"
+          }
+        },
+        {
+          "event": "seek_started",
+          "at": "2026-10-13T07:06:30.348289+08:00",
+          "fields": {
+            "seekTargetSeconds": "878.3884361111111"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "at": "2026-10-13T07:06:31.582468+08:00",
+          "fields": {
+            "completed": "true",
+            "targetSeconds": "878.3884361111111"
+          }
+        },
+        {
+          "event": "video_frame_submitted",
+          "at": "2026-10-13T07:06:31.675990+08:00",
+          "fields": {
+            "controlSeconds": "878.3884361111111",
+            "forcedPreview": "true",
+            "framePTSSeconds": "880.093",
+            "outputPath": "sampleBufferEnqueued"
+          }
+        },
+        {
+          "event": "seek_started",
+          "at": "2026-10-13T07:06:31.932388+08:00",
+          "fields": {
+            "seekTargetSeconds": "893.3884361111111"
+          }
+        },
+        {
+          "event": "seek_engine_completed",
+          "at": "2026-10-13T07:06:32.302474+08:00",
+          "fields": {
+            "completed": "true",
+            "targetSeconds": "893.3884361111111"
+          }
+        },
+        {
+          "event": "video_frame_submitted",
+          "at": "2026-10-13T07:06:32.731183+08:00",
+          "fields": {
+            "controlSeconds": "893.3884361111111",
+            "forcedPreview": "true",
+            "framePTSSeconds": "896.093",
+            "outputPath": "sampleBufferEnqueued"
+          }
+        }
+      ],
+      "actualImageReview": {
+        "ipad/second-repeat-rapid/rapid-drag-t10": {
+          "videoCorruption": true,
+          "paused": true,
+          "clock": "14:53"
+        },
+        "ipad/second-repeat-rapid/resumed-t90": {
+          "actualVideoClear": true,
+          "clock": "16:24"
+        },
+        "ipad/second-repeat-rapid/normal-closed": {
+          "actualPreview": true,
+          "playerClosed": true
+        }
+      },
+      "rootCauseConfirmed": false,
+      "frameExactnessAccepted": false,
+      "allDecoderCallbacksCaptured": false,
+      "audioAccepted": false,
+      "fullSubtitleAccepted": false,
+      "physicalMemoryMeasured": false
+    }
+  ],
+  "finalDevices": {
+    "iphone13": {
+      "at": "2026-10-13T07:10:15.882843+08:00",
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "connection": "USB",
+      "sourceDiffSHA256": "35ed118b8950dd091dffbd566c7d56dfc87e40971179354ba980943fa81f44f5",
+      "latestPackage": {
+        "Nastart": "18970d8d518f74b4fcd4fd264ef32434be813119ea1ef49b07c6adbafb6e4d63",
+        "Nastart.debug.dylib": "16193dda4ee733abd36a73f56bc3b7a85e48f6eb3bd1ae491a5cd827c9649c4d",
+        "Frameworks/KSPlayer.framework/KSPlayer": "ba329d9e1b6d91dafd5f9d0185eade3d82e250aaa7219e95e0dac76fbc71b2ab"
+      },
+      "nonBookmarkPreferenceKeys": 24,
+      "nonBookmarkPreferencesExactlyUnchanged": true,
+      "changedBookmarksCount": 1,
+      "originalS03FileAndJellyfinTracksUnchanged": true,
+      "normalEmptyEnvironment": true,
+      "NASNormal": true,
+      "playerClosed": true,
+      "finalHomeScreenshotReviewed": true,
+      "WDAIdleSeconds": 10,
+      "WDAAnimationCoolOffSeconds": 2,
+      "crashInventoryNotCheckedThisTurn": false,
+      "baselineAppCrashRecordedThisTurn": false,
+      "historicalIPhone13NetworkCrashUnresolved": true,
+      "candidateCrashInventoryDelta": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      },
+      "performanceAccepted": false,
+      "fullSubtitleAudioHDRAccepted": false,
+      "originalS03FileAndJellyfinEntireBookmarkUnchanged": true
+    },
+    "ipad": {
+      "at": "2026-10-13T07:10:16.650121+08:00",
+      "model": "iPad12,1",
+      "system": "18.3.1",
+      "connection": "USB",
+      "sourceDiffSHA256": "35ed118b8950dd091dffbd566c7d56dfc87e40971179354ba980943fa81f44f5",
+      "latestPackage": {
+        "Nastart": "18970d8d518f74b4fcd4fd264ef32434be813119ea1ef49b07c6adbafb6e4d63",
+        "Nastart.debug.dylib": "16193dda4ee733abd36a73f56bc3b7a85e48f6eb3bd1ae491a5cd827c9649c4d",
+        "Frameworks/KSPlayer.framework/KSPlayer": "ba329d9e1b6d91dafd5f9d0185eade3d82e250aaa7219e95e0dac76fbc71b2ab"
+      },
+      "nonBookmarkPreferenceKeys": 17,
+      "nonBookmarkPreferencesExactlyUnchanged": true,
+      "changedBookmarksCount": 1,
+      "originalS03FileAndJellyfinTracksUnchanged": true,
+      "normalEmptyEnvironment": true,
+      "NASNormal": true,
+      "playerClosed": true,
+      "finalHomeScreenshotReviewed": true,
+      "WDAIdleSeconds": 10,
+      "WDAAnimationCoolOffSeconds": 2,
+      "crashInventoryNotCheckedThisTurn": false,
+      "baselineAppCrashRecordedThisTurn": false,
+      "historicalIPhone13NetworkCrashUnresolved": true,
+      "candidateCrashInventoryDelta": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      },
+      "performanceAccepted": false,
+      "fullSubtitleAudioHDRAccepted": false,
+      "originalS03FileAndJellyfinEntireBookmarkUnchanged": true
+    }
+  },
+  "historicalIPhone13NetworkCrashUnresolved": true,
+  "iPhone18Operated": false,
+  "failedToolAttemptsRetained": [
+    "Both tidevice transfers stalled before installation success and bounded-canceled",
+    "iPad devicectl coordinated install conflict code3002/IX48",
+    "iPad PMD legacy installation timeout70s",
+    "Unavailable former venv path corrected to installed system runtime",
+    "First file row pointer did not navigate; actual screenshot retained and element-click retry succeeded",
+    "Previous growing R01 row not visible; bounded scan selected actual TS02",
+    "Pad diagnostics ring requires per-snapshot union; incomplete callback coverage retained"
+  ],
+  "next": [
+    "Instrument FFmpeg decoder/flush generation and packet-to-frame ownership, establish same-frame source or serial reference",
+    "Fix only confirmed shared defect, run deterministic tests and original sequence on both USB devices",
+    "Retain shared L1 S01 four units and L2 S01/S03/S08/S11/S18/S19 plus MTP as unverified",
+    "Historical memory-pressure ownership, growing TS tail and duration refresh remain unverified"
+  ]
+}

@@ -1,0 +1,161 @@
+{
+  "date": "2026-10-21",
+  "scope": "iPhone18 home Wi-Fi latest data-preserving package update; actual Nastart foreground pending",
+  "package": {
+    "at": "2026-10-21T18:33:56.654139+08:00",
+    "sourceAndPackageUnchanged": true,
+    "checkedInputs": 173,
+    "sourceDiffSHA256": "6fd78d20f8d406a7794686d7e92c5316274b707ac12cac8a4a7dd52563d8d6e7",
+    "ipaSHA256": "e0c196cf2195de31426041d4acfe7175298c06f1c1e618d6fbd903747ae2c877",
+    "binaries": {
+      "Nastart": "a935d645868c9dc198838cc0e8848aaa7e0d5fb961fd7bd753c768081eae391f",
+      "Nastart.debug.dylib": "36eb752fab4b727af5bcbc313f655bba3ac81411834297750a58791e11fa88ed",
+      "Frameworks/KSPlayer.framework/KSPlayer": "74d72624f133edcad4bc334febb5b0e7da0934f64db81665d24c15af61ff559e"
+    },
+    "configuration": "normal Debug -Onone",
+    "buildAt": "2026-10-21T15:39:10.241904+08:00",
+    "newBuild": false,
+    "targetInCurrentProfile": true
+  },
+  "discovery": {
+    "identityMatches": true,
+    "paired": true,
+    "model": "iPhone19,7",
+    "system": "27.0",
+    "verifiedPort": 62078,
+    "connection": "direct Wi-Fi TCP",
+    "targetAbsentFromUSB": true,
+    "systemDNSServiceResolved": true,
+    "resolvedInterfaceIndex": 12,
+    "pairingRecordChanged": false,
+    "networkConfigurationChanged": false,
+    "appInstalledOrLaunched": false,
+    "outcome": "verified"
+  },
+  "install": {
+    "startedAtUTC": "2026-10-21T10:34:37.503625+00:00",
+    "stage": "installed; launch requested; actual screenshot review required",
+    "packageVerified": true,
+    "targetLiveVerified": true,
+    "preferencesSavedBeforeInstall": true,
+    "installDispatchAttempted": true,
+    "installCommandSent": true,
+    "installCompleteObserved": true,
+    "postInstallLookupExists": true,
+    "actualForegroundUIVerified": false,
+    "newPairingAttempted": false,
+    "networkOrVPNChanged": false,
+    "WDARequiredForInstallation": false,
+    "sourceDiffSHA256": "6fd78d20f8d406a7794686d7e92c5316274b707ac12cac8a4a7dd52563d8d6e7",
+    "binaries": {
+      "Nastart": "a935d645868c9dc198838cc0e8848aaa7e0d5fb961fd7bd753c768081eae391f",
+      "Nastart.debug.dylib": "36eb752fab4b727af5bcbc313f655bba3ac81411834297750a58791e11fa88ed",
+      "Frameworks/KSPlayer.framework/KSPlayer": "74d72624f133edcad4bc334febb5b0e7da0934f64db81665d24c15af61ff559e"
+    },
+    "ipaSHA256": "e0c196cf2195de31426041d4acfe7175298c06f1c1e618d6fbd903747ae2c877",
+    "model": "iPhone19,7",
+    "system": "27.0",
+    "connection": "NETWORK",
+    "existingEscrowUsedForContainerRequest": true,
+    "installedAtUTC": "2026-10-21T10:34:56.370429+00:00",
+    "preferences": {
+      "beforeKeys": 25,
+      "afterKeys": 25,
+      "sameKeys": true,
+      "changedValues": 0,
+      "allNonDiagnosticPreferencesEqual": true
+    },
+    "RSDTargetVerified": true,
+    "normalLaunchRequested": true,
+    "requestedEnvironment": {},
+    "requestedArguments": [],
+    "actualScreenCaptured": true,
+    "preferencesAfterLaunch": {
+      "beforeKeys": 25,
+      "afterKeys": 25,
+      "sameKeys": true,
+      "changedValues": 0,
+      "allNonDiagnosticPreferencesEqual": true
+    },
+    "finishedAtUTC": "2026-10-21T10:35:27.854997+00:00"
+  },
+  "followup": {
+    "at": "2026-10-21T18:38:09.230240+08:00",
+    "identityVerified": true,
+    "preferences": {
+      "beforeKeys": 25,
+      "afterKeys": 25,
+      "sameKeys": true,
+      "changedValues": 0,
+      "allNonDiagnosticPreferencesEqual": true
+    },
+    "appLaunchedOrForegroundChanged": false
+  },
+  "loginLogIntervals": {
+    "observedSessionCount": 1,
+    "scope": "internal same-launch login intervals, not app dispatch or screen ready and not stable cold-start benchmark",
+    "stages": [
+      {
+        "at": "2026-10-21T18:35:21.708698+08:00",
+        "stage": "sourcePrepared"
+      },
+      {
+        "at": "2026-10-21T18:35:21.709016+08:00",
+        "stage": "connectionPublished"
+      },
+      {
+        "at": "2026-10-21T18:35:22.901856+08:00",
+        "stage": "fileStationAttached"
+      },
+      {
+        "at": "2026-10-21T18:35:22.922743+08:00",
+        "stage": "sourcePrepared"
+      },
+      {
+        "at": "2026-10-21T18:35:22.923104+08:00",
+        "stage": "connectionPublished"
+      },
+      {
+        "at": "2026-10-21T18:35:27.885619+08:00",
+        "stage": "sourcePrepared"
+      },
+      {
+        "at": "2026-10-21T18:35:27.885685+08:00",
+        "stage": "connectionPublished"
+      },
+      {
+        "at": "2026-10-21T18:35:29.747808+08:00",
+        "stage": "sourcePrepared"
+      },
+      {
+        "at": "2026-10-21T18:35:29.747999+08:00",
+        "stage": "connectionPublished"
+      }
+    ],
+    "actualHomeUIVerified": false,
+    "reason": "other user app foreground; user asked to defer home check",
+    "matchedNonOverlappingLoggedIntervals": [
+      {
+        "session": "Nastart",
+        "startedToSucceededLoggedSeconds": 1.7726930379867554
+      },
+      {
+        "session": "FileStation",
+        "startedToSucceededLoggedSeconds": 1.184783935546875
+      }
+    ],
+    "sameFileStationPairPublicationCount": 3,
+    "firstToSecondSamePairPublicationLoggedSeconds": 4.962580919265747,
+    "unmatchedPendingLogin": false
+  },
+  "actualNastartHomeVerified": false,
+  "actualScreenshotReview": "Another user app foreground; no app UI acceptance",
+  "userConstraint": "User selected later; continue other work. No further foreground changes or repeated requests.",
+  "WDA": "Known Security/target profile issue; no new Runner launch or install",
+  "sourceChanges": false,
+  "newBuilds": 0,
+  "playCommands": 0,
+  "pipCommands": 0,
+  "networkChanged": false,
+  "scheduledTasksCreated": 0
+}

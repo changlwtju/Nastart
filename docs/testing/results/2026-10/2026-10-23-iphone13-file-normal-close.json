@@ -1,0 +1,74 @@
+{
+  "startedAt": "2026-10-23T06:29:29.078754+08:00",
+  "playCommands": 1,
+  "pipCommands": 0,
+  "newCondition": "current session after user Home confirmation; <=2s transient selection age; measured stable actual return orientation; one close while controls visible, no resume delay",
+  "latestSourcePackageAndOwnReceiptVerified": true,
+  "lastConfirmedAction": "完成",
+  "captures": [
+    {
+      "label": "original-detail",
+      "startedAt": 1792708196.811069,
+      "finishedAt": 1792708198.733579,
+      "orientation": "PORTRAIT"
+    },
+    {
+      "label": "playing",
+      "startedAt": 1792708204.031808,
+      "finishedAt": 1792708205.573809,
+      "orientation": "LANDSCAPE"
+    },
+    {
+      "label": "normal-return",
+      "startedAt": 1792708209.229864,
+      "finishedAt": 1792708211.090347,
+      "orientation": "PORTRAIT"
+    }
+  ],
+  "incomingOrientation": "PORTRAIT",
+  "playDispatchAt": 1792708199.042602,
+  "returnOriginalDetailUIObserved": false,
+  "failureType": "AssertionError",
+  "failureReason": "private details",
+  "finalWDAAppStates": [
+    1,
+    1
+  ],
+  "ownGuardianStopped": true,
+  "ownSyslogStopped": true,
+  "otherPreferencesUnchanged": true,
+  "originalBookmarks": 36,
+  "finalBookmarks": 36,
+  "bookmarkKeysSame": true,
+  "trackChanges": 0,
+  "progressEntriesChanged": 1,
+  "newCrashInventory": {
+    "Nastart": 0,
+    "WebDriverAgent": 0,
+    "JetsamEvent": 0
+  },
+  "finishedAt": "2026-10-23T06:30:14.319324+08:00",
+  "actualUIReview": {
+    "nativePlayingAndOriginalDetailReturnActuallyViewed": true,
+    "stableOriginalVisibleFilePathExactMatch": true,
+    "normalCloseVerifiedByIndependentReview": true,
+    "postReturnPlayerOverlayAbsent": true,
+    "postReturnPortrait": true,
+    "finalNativeHomeWiFiNoPiPActuallyViewed": true,
+    "rawObserverIdentityAssertionFailed": true,
+    "rawAssertionFailureInterpretation": "file list accessibility name included more fields than detail label; exact visible full file path before/after independently matches; raw failure retained",
+    "postReturnTitleLayoutChanged": "Original title wrapped to multiple lines; after return shown as one truncated line; retained screenshot observation, cause and repeatability unknown",
+    "replayedActions": 0,
+    "newMediaRunsForReview": 0
+  },
+  "closeDispatchAgesSeconds": [
+    0.30011587500000303,
+    0.3324603330000002
+  ],
+  "settingsRestoredReadback": {
+    "defaultActiveApplication": "auto",
+    "waitForIdleTimeout": 10,
+    "animationCoolOffTimeout": 2
+  },
+  "rawObserverFailureRetained": true
+}

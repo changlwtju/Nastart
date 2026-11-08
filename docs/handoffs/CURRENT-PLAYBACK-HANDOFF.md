@@ -1,357 +1,38 @@
-# 当前播放任务接续入口
+# 当前接续：共享代理第一步与 Apple TV 连接
 
-2026-10-07 08:14 主题流程更新及S19弱蜂窝接续（源码ce3ca94已推送Main并核验）：新412b/a21a普通包iPhone13保留数据更新，三主题即时应用自动显示启动台/重开保存已核、原栈列恢复；旧精确失效未稳定复现。S19设备文件当前128795641934 bytes及大偏移尾索引已核，但原流144遥测/177.631秒停于1.844秒、1缓冲/1丢帧，无可辨电影画面，noStoredJellyfinSession待定位。收尾其他App前台/Wi-Fi ON，停止手机输入并清除条件全inactive，Jellyfin对照/十分钟/退出未验。iPad空间错误阻止新App（旧Runner免安装恢复）、18未连接，全部PX/UX/CB保留。见[本轮接续](2026-10-07-LAUNCHPAD-THEME-AND-WEAK-LARGE-FILES.md)。
+2026-11-08 用户将《指环王》样本调试交给 Codex。完整 NAS 路径保存在本机私有交接原件，公开的[新样本一节](../archive/handoffs/2026-11/2026-11-08-0130-CLAUDE-TRANSITION-TO-CODEX.md#新样本11-08-1720用户经-radarr-下载)记录了样本边界和待测项。先核 NAS 可用性、样本元数据和目标设备最新包，再串行测起播、跳转、长时、HDR、TrueHD 与 NAS 负载。Safari 的黑屏和约 60% CPU 为用户提供的前序观察，Codex 尚未独立复现。
 
-2026-10-07 07:44 iPhone18已重连：最新ac5d/bf0b普通包已逐项验签、保留数据覆盖安装及普通启动，25偏好一致、同进程约46.3秒后仍在；截图TOOL/播放性能未验。最新项目源码9410d80已推送GitHub main并独立远端核验；安装包与其iOS内容一致，41工具测试/15预检通过。双入口弱蜂窝大文件及原PX/UX/CB保留。见[安装与同步交接](2026-10-07-IPHONE18-INSTALL-MAIN-SYNC.md)。
+2026-11-08 Apple TV 已升级至 tvOS 27.2（24K122）。16:18 截图的两次 DeviceKit 5000/-1 均发生在验证码认证前，广播的手动配对 TCP 55747 在 IPv4/IPv6 拒连，16:21 复核仍拒连且同主机 AirPlay 7000 可连。下次重新进入电视配对页后先核对新广播和端口。此前 13:08/13:09 两次配对成功后报开发隧道 1005，13:11 条目转为不可用。独立 Mac 对照暂缓。[升级后日志](../archive/handoffs/2026-11/CODEX-2026-11-08-APPLE-TV-27-2-DEVICE-HUB-LOGS.md)。
 
-2026-10-07 07:36 用户强调：优先补实际弱蜂窝下《碟中谍》（MI2/S03）及《指环王》（S19，100GB以上）大文件；设备文件与Jellyfin入口同步优化、分别取证回归。最新S03仅Jellyfin部分证据，MI2弱蜂窝、S19最新弱蜂窝及设备文件对应单元仍待补，不能由小片或单入口推断通过。执行[弱蜂窝大文件双入口卡](../testing/WEAK-CELLULAR-LARGE-FILE-DUAL-ENTRY.md)，既有矩阵状态保留。
+回查历史，同一电视 10 月 18 日配对后也报过 1005，10 月 24 日已有可用开发会话并成功安装。此前刷新 Mac 用户级设备服务只恢复过发现，未恢复当时安装能力。成功连接首次出现的触发动作未留证。[历史核对](../development/APPLE-TV-PREPARATION.md)。
 
-2026-10-07 07:35 本轮检查点：无锁屏密码两机最新ac5d/bf0b普通包逐台验签、保留数据覆盖及普通启动完成。手机LAN119.399秒0缓冲/1丢帧、弱网S03及S01三轮首帧后无新增计数；暂停seek/恢复单次图片上界1.220/4.512秒，旧意外退出仍待查。iPad120秒电影/双语画面变化及普通退出已核，遥测未刷新；Nastart12位移与Lenna采样均INSUFFICIENT，18工具测试通过、正式配对0。两机最新普通启动台/WDA ready/unlocked/idleWait10；手机条件全关、原Wi-Fi ON恢复。18离线、全PX/UX/CB保留。详见[本轮双设备接续](2026-10-07-UNLOCKED-DEVICE-RESUME.md)及[脱敏量化](../testing/UNLOCKED-DEVICE-RESUME-20261007.json)。
+2026-11-08 当前包为正常签名 `97b35832…`，源为 main4de732dd+dirty，542项清单 `fae72d6dccea751980dd8708a688a8309edd760e550b60b0680ae19d96660318`。13已fresh保留覆盖并真机FTP短播+短跳转，App/Runner/转发/采集收尾。iPad截至10:12:39不在USB，用户暂不方便接回，仍保留此前bb4d安装证据。源码映射、两阶段测试失败及修正、完整包SHA与私有路径见 [最新阶段](../archive/handoffs/2026-11/CODEX-2026-11-08-NETWORK-SOURCES-SHARED-PROXY-PHASE1.md)。下文bb4d与Range为前批现场，非当前13包。
 
-2026-10-07 06:14 工作中：135测试通过，ac5d/bf0b最新普通包已核验安装；正常/弱蜂窝54.01GB S03及S01、LAN回归中。见[本轮清单与大文件专项](2026-10-07-IPHONE13-MANIFEST-LATENCY.md)。
+当前接续为同包iPad安装及真机回归，补13正常退出及协议对照，再接公共ByteReader、可消费预读。TV配对认证已成功，重启后仍缺开发服务。接同一路由器网线后复查仍无开发目标。现有配对保留，下次复现时可同步采集隧道日志及该电视的定向网络流量。iPhone18仍仅按明确请求安装。
 
-2026-10-07 05:37 最新接续：连续Range供流资格修正，受控旧反例失败/新132核心测试与15预检通过；850d/06d9普通包本机验签保留数据覆盖及25偏好/前台核验。LAN三轮119.441/119.934/119.650秒0缓冲、丢帧0/1/0，供流变量/缓存unknown不作因果修复声明；正常蜂窝119.096秒0/0，弱蜂窝默认初始250kbps HLS首帧22.923秒、首帧后155.489秒无新增计数，暂停seek新画面上界1.954秒/恢复1.936秒单样本。弱网原画body资格未实机覆盖，旧候选/36秒seek失败仍未关闭；清单准备18.154秒待优化。限速全inactive、原Wi-Fi ON恢复、最新正常首页/WDA ready/unlocked；iPad断开、18离线、正式竞品配对0，全部PX/UX/CB保留。 见[本轮交接](2026-10-07-IPHONE13-RANGE-SUPPLY.md)。
+2026-11-08 [Jellyfin恢复及TV连接](../archive/handoffs/2026-11/CODEX-2026-11-08-JELLYFIN-LOGIN-AND-APPLE-TV-CONNECTION.md)。13同源bb4d保留安装，用户重登后资源库/搜索/详情恢复，《赌侠》原流短时实际画面由两种截图证实。续播、seek、声音、字幕、普通退出及全程帧时间待验，预读仍0。客厅TV认证配对成功，重启后开发连接仍不可用。30项/114格无新增验收。
 
-2026-10-07 最新接续：保留停滞位置/连续储备及提交复核/预热origin网络绑定修正，延后自动等待实验两轮暂停FAIL已撤回。128核心/15预检、最新93a1/6a0a普通包验签保留数据安装及25偏好核验通过；新包40Mbps仍首卡/接手等待FAIL，但持续实播恢复；正常LAN5150ms缓冲、弱蜂窝两次候选失败及暂停seek旧画面36.324秒FAIL；正常蜂窝119.238秒0计数，只适用各单样本。所有限速关闭、本轮无线原状态恢复，最新正常启动台/WDA ready/unlocked。正式竞品配对0，iPad断开、18离线，全部PX/UX/CB缺口保留。 见[本轮交接](2026-10-06-IPHONE13-STALLED-HANDOFF.md)。
+最新批次：[Range前置与两机结果](../archive/handoffs/2026-11/CODEX-2026-11-08-RANGE-PREREQUISITE-AND-DEVICE-BASELINE.md)。此前[Claude总接续](../archive/handoffs/2026-11/2026-11-08-0130-CLAUDE-TRANSITION-TO-CODEX.md)、[接收核对](../archive/handoffs/2026-11/CODEX-2026-11-08-TRANSITION-INTAKE.md)、[代理方案审查](../archive/handoffs/2026-11/CODEX-2026-11-08-SHARED-PROXY-PLAN-REVIEW.md)保留归属，后续均由Codex接手；具体余额未知。资源见[登记](../development/AGENT-RESOURCE-STATE.json)。
 
+## 当前源、包与设备
 
+main HEAD4de732dd、继承dirty保持；整批Claude代码接受审查尚待，NetworkMedia/LibSMB2整体未跟踪不可遗漏。本批Codex修改DevicesView的Range边界及PlaybackNextCoreTests，不提交/不改真实index。选定542仓库输入冻结（非外部SDK全量传递清单），正常Debug构建/31核签及22SMB导入绑定过，iOS Release仅编译过。
 
-2026-10-06 20:20 最新接续：加入原画206 Range两段合格body供流估计、6秒有效期与初始3秒预测宽限，完成122核心测试/15预检、普通Debug构建验签及iPhone13保留数据安装；最新包LAN、40Mbps控制供流、真实弱蜂窝及正常蜂窝串行回归。 LAN MI2/S01遥测179.937/119.640秒0缓冲，丢帧1/0、无降档；40Mbps分支6.356秒提前触发，但15551ms首卡仍FAIL，候选17.876秒接手。最新弱蜂窝首帧27.403秒、首帧后151.483秒无新增计数，单次暂停seek新画面上界1.885秒、精确落点待验；最新正常蜂窝首帧2.593秒、遥测119.531秒。iPad用户确认已断开，18离线，未更新c46；正式竞品配对0。收尾最新正常包/限速全关/原无线状态恢复。 优先隔离原画与HLS候选共享供流、缩短候选准备接手及健康爬升/高储备误降档边界；重复弱蜂窝暂停seek历史黑屏与长清单等待，再补字幕音轨/精确cue、Lenna及DS One Jellyfin/DSM至少五组量化和全部PX/UX/CB缺口。 见[本轮接续](2026-10-06-IPHONE13-EARLY-SUPPLY.md)及[脱敏量化](../testing/IPHONE13-EARLY-SUPPLY-20261006.json)。旧包/TOOL/失败保留；不关闭全局验收。
+最终正常包 main `384be2453843e34fa463b6f75f6aa8232c669f87abbf5b6dfdbf6cc40a65fdff`、dylib `bb4defd4dcd424acfe0b7e3c540da8f0869d0d8b52cabec510a2e01e242c7c39`，profile到11-15 08:30:17+08；冻结包和原始证据通过私有指针 `/tmp/nastart-codex-device-resume-path`。旧4744/到期09:08状态已过时，不能继续当当前候选。
 
+13 iPhone14,5/16.3.1/USB与Pad iPad15,7/26.6/wired，均fresh核名/UDID/连接、核签/当前源码后保留数据覆盖同包。首个627c安装13于08:44:17、Pad08:44:46，成功+lookup，安装前后29/20项及全部偏好同；默认无测试环境启动。复用既有有效Runner，无重新部署。
 
-2026-10-06 19:10 最新接续：完成真实5G及SlowNetwork3G蜂窝专项；修复初始VOD清单晚到失败、加入375/250kbps自动档、缓冲内候选seek及早期供流诊断。119核心测试/15预检通过，e52/f6f普通包双机保留数据安装、逐台身份及启动核验。 最新正常5G首帧2.884秒、118.568秒0缓冲/丢帧；弱蜂窝两轮首帧23.943/21.948秒，首帧后154.502/96.495秒无新增缓冲。弱网暂停seek黑屏仍慢；iPad最新LAN MI2再现7550ms/14丢帧，HLS29.571秒接手后133.672秒无新增。失败/TOOL/未验音频保留，竞品配对0，18离线旧e855。两机正常收尾/Wi-Fi原状/限速全关闭。 优先验证首个完整Range前供流窗口与预测宽限、健康误降档边界，以及弱蜂窝暂停seek黑屏/长清单等待；继续字幕音轨/精确旧cue、Lenna及DS One Jellyfin/DSM五组量化和全部PX/UX/CB缺口。 见[本轮蜂窝及LAN交接](2026-10-06-IPHONE13-CELLULAR-VOD-PREWARM.md)和[脱敏量化](../testing/IPHONE13-CELLULAR-VOD-PREWARM-20261006.json)。旧包证据不移用为最新回归；不作竞品排名或全矩阵验收。
+627c基线（不是最终包播放回归）：13正常首页/Wi-Fi和FTP《赌侠》短时实际片头图；Jellyfin401已停止重试，等待用户App内重登。控制条合成触摸两次无变化、seek/普通关闭未验，未判页面缺陷。旧cleanup BrokenPipe，独立fresh原生通道08:55:59精确停，App/Runner0；最终只诊断/续播偏好变化。Pad：正常首页/存储页，FTP/SMB各2292，与旧交接不同；WebDAV未选/待首次整理。未合成点媒体库行，手动入详情未获结果，09:06:37收窗，0播放/App/Runner0/全偏好同。Pad首轮预检finally误停已知App但缺当次画面/偏好备份的工具缺陷已修并留证。
 
+两机自有syslog和8102/8104转发已结束，未知8101不接管。iPhone18仅枚举无操作，用户/Claude08:30报告9a17仅为其归属；未装本批bb4d，仍仅按明确请求安装，不启动/测试。TV无运行窗口。
 
-2026-10-06 16:04 最新接续：补HLS分段/请求/取消数字关联，114核心测试和15预检通过；6f58/7881普通包双机验签保留数据覆盖，25/14偏好一致，双机串行自然180秒及控制退出补验。 iPad178.296秒0缓冲/4丢帧；iPhone原画5737ms缓冲/33丢帧，HLS请求至接手37.548秒，接手后120.113秒无新增计数。首段4被重复请求、未取0已证实；手机完成退出单次通过，iPad慢采集仍INSUFFICIENT、暂停补验PASS。根因未闭环、竞品配对0，18离线保留旧e855。 优先首个32MiB完成前供流/储备与预测首卡窗口、同段重试/取消；补精确字幕cue及控制，再推进Lenna/DS One Jellyfin/DSM五组量化及全部PX/UX/CB缺口。 见[本轮交接](2026-10-06-IPHONE13-IPAD-SEGMENT-ASSOCIATION.md)。
+最终测试文件变化后正常重构建，五个Mach-O哈希改变，已冻结bb4d（私有normal-package-final）。最终542输入清单SHA `4d99ee1bce4cc990497f825e7c866c4834ec9e31634f9e3e8aa08616da196918`，与627c仅测试文件不同；产品源码相同不替代安装核对。13于09:16:53、Pad09:17:26再次fresh保留安装成功及lookup，全部偏好安装时同。最终正常首页两机实看/Wi-Fi，13收窗09:18:31、Pad09:19:38，App/Runner0、自有转发停，最终仅诊断偏好变化。**bb4d没有播放回归；627c FTP画面不能当最新包结果。** 原13控制/JF401与Pad手动入口待验分别保留。
 
+## 验证与下一步
 
-2026-10-06 15:31 最新接续：按用户打断要求，现场重核刚接入iPhone18 Pro Max/iOS27.0，将同源码e855/38ce最新普通包验签后保留数据覆盖；正常系统启动成功、约69.8秒后同进程仍在，安装及启动后25项偏好一致，WDA未重装。 iPhone18已从旧d84f更新到当前e855；本轮只安装及进程启动核验，原生截图TOOL、实际前台UI/播放性能未验。iPhone13既有宿主ready时恢复一次no-launch session，13/iPad正常启动台重核；无新源码或播放采样。 返回iPhone13/iPad原画供流和HLS首段等待/取消关联、健康预测边界与控制/字幕，再推进Lenna/DS One Jellyfin和DSM全面量化；保留所有PX/UX/CB未验收项。 见[安装续记](2026-10-06-IPHONE18-LATEST-APP.md)及[供流排查](2026-10-06-IPHONE13-IPAD-UPSTREAM-LOADING.md)。
+1. Range边界/跨窗等8项、补充5项及1项12次异常交换分批通过；继承夹具3.84秒不足两个2秒采样窗，仅延长测试载荷后5/5通过。一次构建重叠已中断自有补测/实例删除，不接受该结果；失败保留。空416/忽略Range/If-Range后200/206总长度变动均正确拒绝。
+2. 前批记录的第一代理接入当时未实现：NetworkLibraryPlayerPresentation注册原流、路由lease/迟到取消、稳定trace/扩展名、桥接上限至少4和诊断测量边界，一起接入后同源正常包重新逐机核验。
+3. 前批13控制条输入机制/Jellyfin用户重登、Pad手动入口后FTP/SMB/WebDAV实播待补。不重复猜密码，不以自动化派发等同实际交互。iPad不要合成点network.library.source，包括通过label绕过也不允许。
+4. 第二步公共ByteReader路由与可消费共享预读由Codex继续；默认Observing IO不物化导致0字节已定位，Range元数据不是缓存字节。补可靠首帧呈现及网络/读取/解码分段。按实际网络环境统一链路、FTP/SMB限LAN。
 
-
-2026-10-06 15:01 最新接续：补候选每秒加载/访问日志与Jellyfin编码协商诊断；113核心测试/15preflight通过，e855/38ce普通包双机验签保留数据覆盖；两机串行自然重复与竞品安装清单重核。 合格iPhone13遥测119.318秒0缓冲/1丢帧；iPad首轮原画3缓冲/5丢帧，两次HLS请求至接手25.601/35.543秒，接手后计数无新增。首段慢请求/Broken pipe取消保留；一手机晚切设备gate与一iPad预导航TOOL单列。卡顿未闭环，正式竞品配对0；两台普通启动台/视频结束/WDA ready/unlocked。 继续原画供流/储备与HLS首段等待/取消、健康预测边界和40秒失败；补旧精确cue、控制退出与Lenna/DS One Jellyfin/DSM五组量化，保留音频/完整滚动显示、格式/双设备、所有PX/UX/CB缺口。 见[本轮交接](2026-10-06-IPHONE13-IPAD-UPSTREAM-LOADING.md)。
-
-
-2026-10-06 14:03 最新接续：接入iPad并保留数据安装App/固定WDA；双设备复现原画缓冲，修正AV候选把大准备迟滞误当seek，113核心测试/15preflight通过；最终500f/eeb6包逐台验签覆盖、普通启动及短段实测。 最终iPhone13遥测59.591秒0缓冲/1丢帧，iPad59.401秒3缓冲/3丢帧；iPad候选落后14.120秒仍继续至40.013秒期限，但未对齐接手。手势试验撤回；正常UI退出未验，收尾已停止视频并空环境重启至启动台/WDA ready/unlocked。根因未闭环、竞品配对0；iPhone18离线保留旧d84f。 优先原画供流/储备与HLS空缓冲/期限对齐重复、真实失效边界及控制输入/退出；补最新HLS旧失败cue、Lenna/DS One Jellyfin/DSM五组同条件量化，保留声音/完整滚动、格式/双设备和全部PX/UX/CB缺口。 见[本轮交接](2026-10-06-IPHONE13-IPAD-CANDIDATE-VALIDITY.md)及[脱敏量化](../testing/IPHONE13-IPAD-CANDIDATE-VALIDITY-20261006.json)。180秒中间包与最终60秒证据分开；不提供竞品排名、整体改善百分比或全矩阵PASS。
-
-2026-10-06 09:59 最新接续：修复快速进入搜索/详情后丢失晚到DSM局域网上下文，最新d84f/a389普通包验签保留数据安装、25偏好一致；113核心测试/15项preflight通过，补旧公网MI2十分钟、新私网MI2完整五分钟及S03两分钟自然实播。 新包两次冷启动均收到晚到候选并验证同服务器LAN，实际媒体私网HTTP8096；MI2/S03数值遥测303.311/124.096秒，0缓冲、丢帧1/0。新首轮AFC工具错误及2丢帧完整保留，未完成计划300秒；历史间歇卡顿/HLS同失败cue仍未闭环，正式竞品配对0。 收尾最新正常启动台/视频退出/手机unlocked，既有WDA ready/idleWait10及Mac有界keepawake保留，无一天免授权保证。 优先补同私网MI2自然首卡和候选重复/HLS精确失败cue，再建立Lenna/DS One Jellyfin及DSM同条件至少五组全面量化；声音、完整显示滚动、代表格式、iPad/iPhone18最新包回归及全部PX/UX/CB缺口保留。 见[本轮交接](2026-10-06-IPHONE13-LATE-LAN-CONTEXT.md)及[脱敏量化](../testing/IPHONE13-LATE-LAN-CONTEXT-20261006.json)。旧公网与新私网结果分别记录，不提供因果改善比例、竞品排名或全矩阵验收。
-
-2026-10-06 09:13 最新接续：真机触发储备耗尽预测并修正HLS固定11秒未来目标超出可用储备；112核心测试/15项preflight通过，最终4743/8027普通包验签保留数据安装、25偏好一致；补三段限速诊断、最新S03正常120秒及DS One DSM暂停观察。 新分支与提前量真机生效；两轮诊断请求至提交17.226/11.938秒，条件不同不作因果改善，首卡仍在。正常S03遥测118.594秒零缓冲/丢帧；中间包旧失败字幕句完整，最终包同cue未捕获。DS One实际01:18画面保持31.137秒、错过字幕；正式配对0，根因未闭环。 收尾普通Nastart PID24629/实际启动台/视频退出，手机unlocked，既有WDA70500 ready/idleWait10和Mac有界keepawake保留，无一天免授权保证。 优先补最新包自然MI2首卡及候选重复取证、HLS精确同失败cue，再统一Lenna/DS One Jellyfin与DSM条件各做至少五组；声音/完整显示滚动、代表格式及iPad/iPhone18最新包回归、全部PX/UX/CB缺口保留。 见[本轮交接](2026-10-06-IPHONE13-RESERVE-BOUNDED-HANDOFF.md)及[脱敏量化](../testing/IPHONE13-RESERVE-BOUNDED-HANDOFF-20261006.json)。下方旧包轨迹属于历史证据，不移用为最终包结果；不提供竞品排名或全矩阵验收。
-
-2026-10-06 08:08 最新接续：新增运行需求/低储备下降预测候选，110核心测试及15项preflight通过；最新普通c2d4/edc9包验签保留数据安装、25偏好一致，完成MI2自然300秒、限速诊断及恢复后的S03正常120秒回归。 正常MI2/S03遥测294.115/117.195秒零缓冲、丢帧1/0、无误降档；限速轮13651ms缓冲保留，既有持续缓冲规则HLS请求至接手15.607秒，新预测分支未真机触发。1607历史样本反事实重放不证明首卡预防；根因未闭环，正式竞品配对0。 收尾最新正常Nastart PID23203/启动台/视频退出、手机unlocked、既有WDA ready/idleWait10及Mac有界keepawake保留，无一天免授权保证。优先补新预测分支真机触发/候选提前量和最新HLS同失败cue；继续Lenna/DS One Jellyfin与DSM至少五组同条件对照、声音/完整显示滚动、格式及iPad/iPhone18最新包回归，保留全部PX/UX/CB未验收项。 见[本轮交接](2026-10-06-IPHONE13-RESERVE-PREDICTION.md)及[脱敏量化](../testing/IPHONE13-RESERVE-PREDICTION-20261006.json)。下方旧包轨迹属于历史证据；本轮不提供竞品排名或全矩阵验收。
-
-2026-10-06 07:13 最新接续：重核iPhone13最新普通baa9/bddf包、保留数据覆盖安装及25偏好一致；补两段自然原画观察、70秒有缺口CPU/内存、失败与健康供流/储备轨迹交叉核验，以及DS One DSM不切轨暂停字幕对照。 本轮215.723/282.091秒零新增缓冲（丢帧1/0），既有5200ms失败保留。新线索为64.05Mbps全片估算未覆盖约89～96Mbps短时需求、失败轮慢供流导致储备耗尽；策略未改、根因未闭环。DS One 01:16双语暂停保持至32.454秒，仅单次控制；正式配对0、HLS同失败cue及全部PX/UX缺口保留。 收尾最新正常Nastart/视频退出/手机unlocked/既有WDA ready/idleWait10及Mac有界keepawake仍可用，无一天免授权保证。 优先验证实时需求/储备斜率预测的健康轮误降档边界及自然HLS候选诊断；DS One同精确暂停点重复对照，再推进Lenna/DS One Jellyfin与DSM五组受控配对、声音/完整显示滚动、代表格式及其他设备最新包回归。 见[本轮交接](2026-10-06-IPHONE13-PEAK-DEMAND-PAUSE-CONTROL.md)及[脱敏量化](../testing/IPHONE13-PEAK-DEMAND-PAUSE-CONTROL-20261006.json)。本轮未改iOS策略；旧失败保留，稀疏截图与有缺口CPU采样不证明完整流畅。
-
-2026-10-06 04:49 最新接续：重核iPhone13最新包并完成两段自然十分钟MI2观察；新增候选阶段/期限/缓冲错误诊断和transferID窗口关联，普通Debug构建、验签、25偏好保留安装及15项preflight通过。 前段599.183秒零缓冲/丢帧，最新诊断包再次5200ms缓冲及丢帧4，根因未解决；供流初段慢且无backpressure，不能归因CLI/NAS。HLS同失败cue仍未触发验证，正式配对0及全部PX/UX缺口保留。最新普通包/视频退出/WDA既有宿主ready/idleWait10。 优先定位初段储备耗尽及候选自然准备/对齐；补新诊断实际分支与HLS同字幕cue，再补DS One不切轨暂停对照和Lenna/DS One Jellyfin/DSM五组同条件配对、声音/完整滚动显示、格式及其他设备。 见[本轮交接](2026-10-06-IPHONE13-WARMUP-DIAGNOSTICS.md)及[脱敏量化](../testing/IPHONE13-WARMUP-DIAGNOSTICS-20261006.json)。旧包结果不归给最新baa9/bddf；此前竞品探索值不作本轮正式样本。
-
-2026-10-06 02:58 最新接续：重核iPhone13及d62b/53a2最新普通包，保留数据安装/25偏好一致/无变量启动；补原画167.728秒和41完整供流窗口，Lenna及DS One Jellyfin/DSM三路实播、原生USB首画面/控制/路由证据；新增前台与坐标守卫W3C输入工具，15项preflight及负例通过。 本轮原画零新增缓冲/丢帧计数1，但既有间歇卡顿未解决；三个竞品探索首画面区间已量化，实际公网端点与Nastart私网不同，正式配对0。DS One暂停字幕瞬态消失保留INSUFFICIENT。iOS源码未改，新包HLS同失败cue/完整音频显示及全部PX/UX仍待验。收尾最新Nastart PID17700/播放器退出/手机unlocked/WDA70500 ready/idleWait10，有界keepawake保留。 优先隔离同私网MI2供流/储备耗尽及HLS候选准备对齐，补最新包HLS同字幕cue；竞品先补不切轨暂停对照和统一路线/文件/方向/构建资格，再做五组受控配对，继续字幕音轨、完整滚动/显示、代表格式及iPad/iPhone18。 详见[本轮交接](2026-10-06-IPHONE13-SUPPLY-NATIVE-CONTROLS.md)及[脱敏量化](../testing/IPHONE13-SUPPLY-NATIVE-CONTROLS-20261006.json)。下方旧轮包/状态为历史记录，不移用为本轮结果；正式竞品配对仍0。
-
-2026-10-06 02:11 最新接续：普通Debug最新d62b/53a2已验签、保留数据安装、25项偏好一致且无变量启动；修正全屏Home指示条遮挡字幕，真机隐藏及返回普通页恢复均已核。旧3663/f76a私网MI2再次复现，12Mbps自动HLS本轮实际对齐接手；Lenna MI2实播/双语已补，首帧采集连接中断保留TOOL，既有WDA宿主自动恢复后一次no-launch session恢复。 旧包原画两次7902/3727ms缓冲FAIL；最新UI改动包173.294秒计数零缓冲/零丢帧，仅证明该区间，不能覆盖既有失败或归因UI优化。AV bufferEmpty活动时49→50→51秒时钟推进，保留显示风险而不冒充已确认画面停滞。新包HLS原失败字幕cue仍待重放，正式竞品配对0，所有原PX/UX缺口保留。收尾手机unlocked、最新Nastart PID17307、视频已退出、WDA ready/宿主70500/idleWait10，Mac有界keepawake保留，不保证一天免授权。 继续原画窗口交付/储备耗尽与候选准备/对齐波动隔离，先补新包HLS同字幕cue；恢复稳定共同采样后做Lenna/DS One Jellyfin与DSM五组受控配对，再补字幕音轨响应、完整滚动/显示、代表格式与iPad/iPhone18最新包回归。 详见[本轮交接](2026-10-06-IPHONE13-AUTO-HANDOFF-HOME.md)及[最新量化](../testing/IPHONE13-AUTO-HANDOFF-HOME-20261006.json)。本轮仅正常设备构建、15项preflight和定向真机验证；105核心测试属于此前源码，未在UI改动后重跑。下方10月5日及更早记录为历史包/历史状态，不归给当前d62b/53a2。
-
-2026-10-05 21:43 最新接续：修正观察型I/O伪造缓存/预加载完成及失败任务未清理，旧实现3反例失败、105核心测试通过；新增分类LAN路由诊断。最新普通3663/f76a保留数据安装、25项偏好一致、无变量启动和定向真机回归已执行；DS One DSM大文件/真实双语字幕补证，普通锁屏通过现有已授权WDA恢复，未重装Runner或改安全设置。 同实际私网MI2三轮旧包仍6139/4999/2999ms缓冲FAIL；最新包一轮176.691秒无缓冲，补跑两次9300/9400ms及HLS候选对齐失败，卡顿未解决。正式竞品配对0，PiP/声音/完整显示及全部PX/UX缺口保留。收尾手机unlocked、Nastart普通PID14260、视频退出、WDA idleWait10与Mac有界防休眠保留，不保证一天免授权。 详见[本轮交接](2026-10-05-IPHONE13-PRIVATE-PATH-PRELOAD.md)及[最新量化](../testing/IPHONE13-PRELOAD-EVIDENCE-20261005.json)。优先定位供流及候选对齐，全部未验收编号保持。下方19:59及更早记录为历史包/历史状态，不归给当前3663/f76a。
-
-2026-10-05 19:59 最新接续：修复相对跳转采用精确引擎/待跳目标，102核心测试通过，最新普通Debug7dd0/ad7d已核签名、保留数据安装与无变量启动。S03已知PGS7/88.308秒真实15秒往返5/5恢复、10个seek成功且无缓存复用；恢复后171遥测/181.887秒无缓冲，完整显示/声音仍不足。MI2首轮私网原画5039ms缓冲FAIL保留；同源码优化轮实际走公网HTTPS8097，前后普通轮走私网HTTP8096，比较INVALID，不能归因编译/CLI或宣布修复。19:38恢复普通包，视频全部退出，WDA独立宿主ready、idleWait恢复10，Mac有界防休眠保留。正式竞品配对仍0，本轮无新竞品样本。先读[本轮接续](2026-10-05-IPHONE13-RESUME-ISOLATION.md)和[脱敏量化](../testing/IPHONE13-RESUME-AND-MI2-20261005.json)；继续实际路由一致的MI2供流定位及Lenna/DS One双入口全面配对。
-
-2026-10-05 11:02 收尾补证：Lenna与DS One Jellyfin/DSM双入口均已新实播并退出，四入口默认片头可辨画面请求区间及菜单能力已量化。正式同条件配对仍0；坐标动作失败/字幕cue不足继续保留，不能排名。最新正常Nastart回前台、WDA独立宿主仍ready；无iOS新修改。见[本轮交接](2026-10-05-IPHONE13-PGS-EXTERNAL-RETURN.md)。
-
-## 当前工作环境：MacBook + iPhone13
-
-2026-10-05 10:25 最新接续：用户报告手机已解锁，现场iPhone13/iOS16.3.1 USB/配对恢复；固定WDA由独立launchctl宿主持有、ready，无循环重启，Mac有界防休眠仍运行，但不保证24小时iOS免授权。eef/d0旧候选真实外置ASS返回PGS五次失败已保留；补齐provider清空前捕获，99核心测试/正常Debug构建/preflight通过，最新4148b9a0/777ca0b5已验签保留数据安装、25项偏好一致、正常无变量启动。六次已知PGS暂停cue返回均正确复用、无新seek，关闭/返回繁英PGS也正确。恢复后583有效遥测覆盖625.169秒，无缓冲、138有限32MiB窗口完成；初段丢帧6→101保留，未判整体流畅。真实seek后PGS fresh-cue精确区间仍不足，不关闭全局PX/UX。正常退出/结束事件已核，WDA继续保留；Lenna/DS One最新安装元数据重读，竞品接续中，正式受控配对仍0。先读[本轮回归及剩余项](2026-10-05-IPHONE13-PGS-EXTERNAL-RETURN.md)。
-
-2026-10-04 19:37 人员约束：用户在外地，10月7日才能回家，此前按无人能现场操作手机安排。XCTest本机授权/首次蓝牙Pair无已验证远程输入通道，不循环重启WDA或重复要求手机端确认；可推进既有日志、代码、模拟器验证。回家后先现场授权并验证备用输入通道，再按下文最新包身份门槛恢复真机。此约束不改变候选未验收、竞品正式配对0的事实。
-
-2026-10-04 18:59 最新：现场iPhone13/iOS16.3.1/USB/配对通过，WDA跨轮进程结束后复用恢复，但原生截图再次是XCTest本机密码页；HTTP未ready，有界尝试已清理，未重装WDA。继续完成“暂停同位置切回已显示PGS”的冗余seek候选：仅同轨/同归一化时刻/同plan及seek代次复用已知图，其他情况仍原路径；98结构化XCTest/正常设备Debug构建/preflight/diff通过。最新eefefaed…/d0ee7e8a…及KS568a9c04…（18:52:03）已深严格验签、保留数据InstallComplete/退出0，25项非诊断偏好一致。**本轮App正常启动与最新包UI回归未完成**，仍待手机本机授权，不能把旧302/6e2的5/5和626秒归给新包，也不能称卡顿已修。正式竞品配对0、PX/UX状态保留。先读[本轮候选与授权门槛](2026-10-04-IPHONE13-PAUSED-PGS-REUSE.md)，再继续受控“保留轨道/切回PGS”对照及负例。
-
-2026-10-04 16:11 最新覆盖：普通Debug30210177/6e2a2c5c最新包和93核心测试有效，未再修改App源码。新S03原画LAN无切轨trace7F24240D，实际字幕PGS7/TrueHD1，586带时钟遥测覆盖626.086秒、1.225→627.316秒，缓冲计数/活动样本0，丢帧1→2、最小稳态储备7.923秒；11张定时实际图及t3/10/30已核，139个已完成上游窗口足长且无任务错误。仅该区间稳定，不代表逐帧FPS/音频/全片通过。5次暂停PGS切回功能回归通过，但另次同位置seek后4501ms原画缓冲仍待修；正式竞品有效配对0。此前ASS只确认会话实际显示，重开轨道偏好未验，新从头运行实际PGS不可写ASS。最新包保持，真正退出到详情、playback_ended已证实；WDA和Mac防休眠任务仍可用。见[最新基线与变更卡](2026-10-04-IPHONE13-USB-RECOVERY-COMPETITORS.md#1611-最新包十分钟无切轨基线)及[机器摘要](../testing/IPHONE13-PGS-REGRESSION-20261004.json)。
-
-2026-10-04 15:46 最新覆盖：iPhone13/iOS16.3.1/USB及配对重新核对，当前普通Debug最新main30210177…/dylib6e2a2c5c…（15:23:51）深严格验签并保留数据覆盖安装InstallComplete/退出0，无变量PID97411、真实启动及既有库已验。有效字幕过滤及暂停解码通知修正，93核心测试/设备构建/preflight通过；实际已知PGS暂停cue切回5/5，响应中位上下界486～1602ms、最大上界1881ms，仅同App功能回归。恢复播放32.244秒再次原画LAN缓冲4501ms后恢复，连续性FAIL，整体卡顿未解决。当时会话切回ASS（持久偏好未验）并真正退出到详情，playback_ended已证实。Lenna/DS One已实播且媒体公网端点与Nastart私网端点不同，NAT回环未知，正式有效配对0；音频、完整显示采样及代表集待验。优先隔离同位置字幕seek清空音视频队列后的储备与供流。详见[最新检查点](2026-10-04-IPHONE13-USB-RECOVERY-COMPETITORS.md#1546-最新包pgs暂停回归与原画再次缓冲)、[脱敏量化记录](../testing/IPHONE13-PGS-REGRESSION-20261004.json)及[扩展对照](../testing/IPHONE13-COMPETITOR-EXPANDED-20261004.md)。
-
-2026-10-04 15:15 最新覆盖：USB/固定WDA已恢复，目标iPhone13/iOS16.3.1、普通Debug最新ad238335…/64cd008f…（15:09:57）保留数据安装InstallComplete退出0，无变量PID97315/启动台和既有Jellyfin库已验。新增有效字幕跨seek过滤修正，92个核心测试、设备构建/preflight通过；新包同暂停PGS回归进行中。4c3e包ASS暂停真实关闭/恢复及短段播放属于历史包；Lenna/DS One Jellyfin媒体公网IP8097、DS One DSM公网5001、Nastart大流私网8096已由进程TCP元数据证实，公网端点不证明WAN、NAT回环待核。正式有效配对0、整体卡顿/音频/完整滚动未验收。详见[最新批次](2026-10-04-IPHONE13-USB-RECOVERY-COMPETITORS.md)和[扩展对照](../testing/IPHONE13-COMPETITOR-EXPANDED-20261004.md)。
-
-
-2026-10-04 14:32 最新安装覆盖13:46：跳转恢复诊断修正，88核心测试/构建/preflight通过；正常Debug main4c3ecf20…/dylib308b3969…已保留数据安装、无变量启动及真实启动台核实。WDA恢复且普通锁屏已实际解锁；DS One DSM MI3真实播放/ASS双语/暂停/退出取证，字幕切换生效时间仍待隔离。新包MI3前进/暂停回退诊断反例实证，见[本轮交接](2026-10-04-IPHONE13-USB-RECOVERY-COMPETITORS.md)。
-
-2026-10-04 13:46 最新状态：USB配置恢复且固定WDA ready；已保留数据恢复正常Debug b2a/6ab并确认无变量启动及真实启动台，覆盖下方12:16阻碍。手机切换控制已真实确认关闭。DS One MI2从头可见缓冲6.658～8.711秒后恢复，首可辨识画面含自然黑场，暂不排名。音轨、字幕、DSM直播放及Lenna共同计时继续补，正式配对仍0。先读[本轮恢复与竞品记录](2026-10-04-IPHONE13-USB-RECOVERY-COMPETITORS.md)。
-
-2026-10-04 12:16 最新状态覆盖下方11:49构建描述：标准Release9b…实播为旧VLC，校准样本排除Greenfield排名；优化Debug-O/DEBUG main415f…已签名保留数据安装并普通启动，Greenfield实播未开始。USB原生录屏-11805后USB/WDA失效，目标USB重枚举API成功但调试服务仍无设备，正常Debug收尾恢复未完成；Mac未锁屏，原因未知。竞品范围已扩展CB-01～26，DS One2.4.5(4)既有DSM登录/Jellyfin库可进，有效播放配对0。先读[本轮最新阻碍](2026-10-04-IPHONE13-POST-AUTH.md)，连接恢复后先核对/恢复正常包，再继续实测。
-
-2026-10-04 11:49 授权后接续：先读[本轮真机记录](2026-10-04-IPHONE13-POST-AUTH.md)。XCTest/WDA已恢复；最新正常Debug安装后MI3回退后段600秒无新增缓冲，MI2原画两次等待仍失败、自动12Mbps HLS接手后约298秒计数0。Nastart/Lenna各12位移，但显示表仅覆盖前段，两者INSUFFICIENT、不排名。用户新增DS One双入口与全面量化，见[执行卡](../testing/IPHONE13-COMPETITOR-EXPANDED-20261004.md)。DS One2.4.5(4)既有DSM登录/Jellyfin入口已核；无iCloud权限Release优化构建9b454ee…保留数据安装/普通启动/真实启动台已验，播放基线与配对待补，结束须恢复正常Debug。PX/UX状态保持。
-
-2026-10-04 06:14 其他远程操作方式核查：新增[KeyPad官方设置](https://bluetooth-keyboard.com/setup/)候选，Mac模拟蓝牙键盘/鼠标；官方要求手机设置→蓝牙及手机上Pair确认，鼠标需[AssistiveTouch](https://bluetooth-keyboard.com/for/iphone/)。同开发者[Screen Mirror & Control](https://toolbunch.com/screenmirror/)是USB显示+蓝牙输入，同样需手机侧初始化，不能凭软件宣传证明XCTest密码页可操作。本轮只查资料，未安装/配对/改设置/启动WDA；当前无人触碰手机下仍无已验证可用新路线。Apple镜像iOS18+门槛仍不满足，保持不升级系统与放弃切换控制约束。两包续签及当前授权阻塞以续签交接为准。
-
-2026-10-04 06:11 两包续签已完成：先读[续签交接](2026-10-04-IPHONE13-SIGNATURE-RENEWAL.md)。Nastart正常Debug新main b2a72e…/dylib6ab619…、保留数据覆盖安装及无变量启动PID93033/真实启动台确认，25项非诊断偏好全部一致；WDA复用固定fixture重新签名并覆盖安装。手机实际profile逐字节对应包，Nastart北京时间10月11日06:03:15、WDA06:05:26到期。WDA本机XCTest密码授权仍未完成，HTTP有界超时并清理本轮Runner/转发，收尾无WDA进程。脚本默认读取当前包embedded profile，避免旧UUID旁文件误判。无新播放/滚动/竞品PASS，后续不得沿用旧af8dd6…包验收。
-
-2026-10-04 06:00 签名到期复核：现场USB确认iPhone13/iPhone14,5/iOS16.3.1，同UDID连接；两App仍已安装，手机实际profile由昨日9份变7份，两App匹配profile不再列出，也没有新有效匹配项。昨日精确匹配两profile期限为北京时间10月4日00:26:35（Nastart）、00:28:33（WDA），本轮约已过期5.5小时。安装元数据ProfileValidated=true不视作当前有效期限证明；未发现续签证据。用户本轮询问状态，仅只读核查，未重新安装/卸载/输入凭据/新App回归。后续须新有效签名保留数据覆盖安装、核对最新包与启动；XCTest授权仍独立验证。原始仅本机私有2026-10-04-signature-check-055844。
-
-2026-10-03 11:45 取消密码请求：用户已表达关闭iPhone13解锁密码的意图；本轮只读USB核对iPhone14,5/iOS16.3.1，实时截图仍XCTest两位未知输入/两位空、外部切换警告，WDA HTTP不可连接。当前无手机设置输入通道，未发送密码或执行关闭。电脑控制工具要求认证凭据变更最终输入、确认、提交由用户接手；指导现场人员可直接设置→面容ID与密码→关闭密码，无需先恢复WDA。关闭将降低数据保护并停用Apple Pay付款卡，依手机提示由用户决定。原始证据仅本机私有2026-10-03-passcode-handoff-114142。完成后需实测WDA并更新有效签名/安装身份，不能预先报告恢复或新包回归成功。
-
-2026-10-03 11:40 授权周期重要修正：[Apple开发工具工程师](https://developer.apple.com/forums/thread/693273)说明iOS UI自动化在设备设有密码时大约每天需手动输入一次，且无官方支持的自动输入方式。续签与此设备授权独立，不应承诺“找人完成一次即可后续数日无人值守”。本机10月1日同包WDA重启曾无新提示，10月2日又提示，未定位精确触发时间；续签后是否当即提示须实测。建议先更新有效签名，再现场授权与重启验证；没有实际续签/改变密码。此修正优先于此前笼统的一次授权恢复建议。
-
-2026-10-03 11:33 签名到期核验：从USB iPhone13只读复制实际描述文件，安装元数据精确匹配各自application-identifier，唯一对应profile与最近安装包embedded身份一致。Nastart北京时间2026-10-04 00:26:35、WDA00:28:33到期，11:32核查均余约13小时；证书到2027-07-27，先到期的是七天profile。尚未续签/安装/操作App，原XCTest授权独立未完成。WDA后续若profile过期已属于runbook允许签名恢复分支，仍须固定Bundle ID/宿主/Team且不反复盲装。私有证据2026-10-03-signature-expiry-113156。
-
-2026-10-02 20:44 实时截屏：USB身份再次核实iPhone13/iOS16.3.1，新截图仍XCTest两位填充/两位空，顶部找不到外部切换警告再次可见；20:38关闭Mac后的警告消失只是当时证据，未重新核对Mac开关，不推断自动恢复原因。本轮只读、不重启用户已放弃方案；原图仅本机私有2026-10-02-iphone13-live-204351。
-
-2026-10-02 20:40 最新接续：用户放弃切换控制，纠正客户端名称为VNC Lite（开发商未核实，不再沿用Mocha界面假设）。Mac临时切换控制已原生关闭并确认off，手机警告消失但两位未知密码输入仍在。官方替代核查：iPhone镜像要求iOS18+、当前16.3.1不适用；Typeeto需iOS端发起连接且本机未安装，XCTest密码页支持未测；AnyDesk/TeamViewer iOS仅查看限制。未找到当前无人操作条件下已验证可行的新输入路线，不安装付费软件/升级系统/重启WDA循环，不再重复该方法。手机授权及原App回归仍待恢复；原始蓝牙/截图仅本机私有2026-10-02-remote-alternatives-203821。
-
-2026-10-02 20:35 最新只读核验：新USB截图仍同一XCTest页（两位已填/两位空、找不到外部切换）。设备全进程枚举未见WebDriverAgentRunner，Nastart PID74540、assistivetouchd PID79748；提示留屏不代表正在运行的测试服务或授权完成。本轮未发输入/重启服务/新增App回归。私有证据2026-10-02-auth-check-203323。
-
-2026-10-02 20:30 只读复核：新USB截图仍为同一XCTest授权状态（两位填充、两位空，找不到外部切换），8102不可连接；未发送输入或开始App回归。证据仅本机私有2026-10-02-auth-recheck-202947。
-
-2026-10-02 20:25 最新接续：用户要求再查看，现场USB iPhone13/iOS16.3.1与原生截图确认授权页仍两位已填/两位空、数字键盘缺失、找不到外部切换；没有可见清除/授权变化，8102 HTTP不可连接。本轮只读、未发输入/凭据/重启WDA或进行App回归。下一步仍需可靠清空未知输入并恢复XCTest授权，不把Mac连接或普通App启动当授权成功。私有证据2026-10-02-switch-recheck-202410。见[续记](2026-10-02-IPHONE13-POST-UNLOCK.md)。
-
-2026-10-02 11:48 最新接续：用户说明未输入数字、可能误按其他键；11:46 USB截图仍两位密码填充/无数字键盘/找不到外部切换。电脑工具一次BackSpace后两位未变，已请用户经Mocha普通键盘退格一次作两位→一位对照；输入验证前不补齐或提交、不重新拉起WDA。无新App回归，keepawake仍运行。详见[续记](2026-10-02-IPHONE13-POST-UNLOCK.md)。
-
-2026-10-02 11:14 最新接续：用户按一次Space后，Mac日志11:09:27明确Forwarding switch event按下/释放（配置空格→选择项目），首次证实真实开关已转发。USB手机两次截图仍警告找不到外部切换，XCTest页变为两位密码填充/无数字键盘；两位来源未知，已暂停按键并询问是否还有数字输入，不盲目补齐/提交。未启动WDA、8102无监听，无授权完成或新App回归。详见[续记](2026-10-02-IPHONE13-POST-UNLOCK.md)。
-
-2026-10-02 11:03 最新接续：用户按Shift后USB截图新出现“切换控制，找不到外部切换”；四个密码圆点仍空。Mac设置及只读偏好核实唯一选择开关为空格(keycode49)，Shift未绑定；没有修改开关映射。10:59:04再次进入Connected As Forwarder，连接目标此前手机接收证据已核实，实际选择动作仍待验；用户反馈找不到空格，已按官方帮助与既有截图指引底部第一个QWERTY键盘按钮打开普通键盘后按空格；此次Space对照尚未发生。保持当前切换控制连接。没有重新启动WDA或新增App回归。见[续记](2026-10-02-IPHONE13-POST-UNLOCK.md)。
-
-2026-10-02 10:58 最新接续：用户第一次空格后手机回到Nastart启动台，但固定WDA重启又出现XCTest密码页、HTTP未恢复，超时后自己的Runner/转发已清理。USB手机syslog的assistivetouchd确实接收本Mac连接数据，目标iPhone13已核实；当前仅dummy/心跳，没有真实选择动作证据。再次现场对照时用户反馈Mocha已断开；Mac原生UI仍可访问、keepawake运行。待Mocha重连后验证一次选择动作，不输入未确认目的地的密码，不报告新App回归。详见[续记](2026-10-02-IPHONE13-POST-UNLOCK.md)。
-
-2026-10-02 10:50 最新接续：针对用户“连接后无窗口”，私有系统日志已确认10:38:55进入 `Connected As Forwarder`，无镜像窗口不能据此断言连接失败。10:45与10:49实际USB iPhone13仍为XCTest密码页、四个空圆点、无扫描框；工具一次空格没有可见响应，已请用户Mocha发送一次空格作对照。发现多个同名iPhone，目标与输入须继续核定；未输入密码、未完成授权、无新App回归。七天有界keepawake仍running/PID52029。详见[续记](2026-10-02-IPHONE13-POST-UNLOCK.md)。
-
-2026-10-02 10:36 最新接续：用户已点击iPhone连接，但工具仍读到“iPhone／返回／连接”，实际iPhone13未见扫描框；固定WDA已拉起XCTest密码提示、HTTP仍未就绪，超时后本轮进程/转发已清理。未输入密码，待用户确认Mocha实际连接状态；不能把discovery Peer Connected当手机可操作。最新af8dd6…包/USB/配对重核无变化，无新App回归。见[续记](2026-10-02-IPHONE13-POST-UNLOCK.md)。
-
-2026-10-02 10:21 最新状态：用户Mocha手动开启后，切换控制主面板已实证出现，系统agent running，更新此前未启动结论；电脑工具仍读不到浮动主面板按钮，已请用户缩小/右移手机视口，点“位置”右侧“设备”检查家里iPhone并连接，等待结果。手机XCTest授权尚未完成、未输入凭据。本轮USB/配对及正常af8dd6…包签名/哈希再核无变化，无新播放回归；屏保永不和七天有界keepawake已处理。详见[续记](2026-10-02-IPHONE13-POST-UNLOCK.md)。
-
-2026-10-02 10:13 最新接续：详见[解锁后记录的远程输入/再次锁屏续记](2026-10-02-IPHONE13-POST-UNLOCK.md)。切换控制主面板/设备发现尚未取得，XCTest授权未完成；临时开关已恢复关闭，待用户Mocha手动点击对照。09:41再次锁屏已定位为20分钟闲置屏保触发；旧caffeinate在09:22提前退出。Mac已再次解锁，屏保自动启动已设永不并保存复核，独立七天有界keepawake LaunchAgent运行/电源断言已验证。正常af8dd6…包签名/哈希核实，无新源码/安装/播放回归；MI2原画供流不足及完整滚动/竞品仍待真机输入恢复。
-
-2026-10-02 07:38 最新接续：先读 [Mac 解锁后接续记录](2026-10-02-IPHONE13-POST-UNLOCK.md)。Mac 已解锁、Instruments 目标枚举及实际八秒录制/导出恢复；手机启动 UI 自动化时仍需本机 XCTest 密码授权，WDA HTTP 未就绪。本轮减少播放轮询中未变化元数据的 SwiftUI 发布，87 项核心测试、构建/签名/链接/preflight 通过；最新正常 Debug dylib `af8dd6beb0…` 已保留数据覆盖安装、无变量启动与真实启动台确认。本轮未完成播放/滚动/竞品回归，不沿用下面旧包的性能结果。四小时 caffeinate 临时保持唤醒已验证；原有接电不休眠/密码永不/自动注销关闭均已现场确认，本次历史锁屏原因仍未知。
-
-用户已暂停Codex CLI专项，未来几天通过VS Code插件和ChatGPT客户端继续单机优化。优先读 [单机环境及本轮记录](2026-10-01-IPHONE13-TRAVEL-BASELINE.md)。iPad/iPhone18专项保留待验，不阻塞iPhone13独立工作；回老家后网络与媒体上游须现场确认。底层成功脚本继续复用。
-
-
-## 2026-10-02 iPhone 13 Jellyfin 大文件优先修复
-
-Tailscale补充：本机客户端Running/Online，既有屏幕共享5900在监听，通过本机Tailscale IPv4已取得正常RFB握手；可让用户从同一tailnet的外部设备尝试屏幕共享登录。仅验证本机服务连通，不代表外部ACL/账户认证或Mac解锁成功；未修改远程访问或安全设置。连接信息私有存本机`2026-10-02-tailscale-remote-*`。iPhone XCTest本机授权与Mac解锁分开验收。
-
-07:20远程接续：Mocha外部连接已实证；此前三次Mac密码校验成功却因remote management权限level0拒绝。用户执行仅lagransun控制/观察授权后，naprivs=-2147483646，07:17:04/07:17:56认证成功。首次桌面代理端口报错并断开，随后重连开始数据发送、代理running；07:19系统仍锁屏，待用户远程完成锁屏密码输入。认证/画面发送不等于Mac解锁；未重启Mac或改其他账号/关闭认证。日志私有存`2026-10-02-vnc-auth-071155`和`2026-10-02-vnc-disconnect-071918`。
-
-06:48远程接续补充：用户外出数日无法现场操作；Mac锁屏已由系统会话确认，电脑控制工具自动解锁失败且未暴露密码输入入口。USB/配对仍有效，只读下载诊断与原生截图成功；最新正常包签名/哈希、源码时间再次核对未变，但固定WDA启动后手机明确出现“为XCTest输入iPhone密码 / Enable UI Automation”，Runner进入test plan而HTTP拒绝连接。须按runbook本机授权分支恢复，不能宣称UI回归可继续；本轮未操作App、未安装新包/重装WDA、未修改安全设置，自己的WDA/转发已停止。原始证据私有存`~/Library/Application Support/Nastart/DebugEvidence/2026-10-02-locked-mac-usb-064750/`。可独立继续日志/源码/构建检查；Mac锁屏与Instruments枚举故障因果仍未证实。
-
-先读 [本轮复现与修复](2026-10-02-IPHONE13-JELLYFIN-STALL.md)。已在现场USB iPhone13/iOS16.3.1正常包复现S03局域网54GB原画频繁缓冲，未发现CLI残留强制原画证据。LAN首帧后储备提高至4秒/上限16，并修正回退仍参照最初续播位置导致储备无法恢复的确定缺陷；86项核心测试、设备构建/签名/链接隔离/preflight通过。最新正常Debug `-Onone` dylib `8a3e77e1…`，保留数据安装成功且无变量启动；私有持久包路径见本轮记录。S03同6144.551回退目标观察638秒：最初28秒2次缓冲，随后610秒无新增活动缓冲、保持原画LAN，末计数4（含启动/seek）、丢帧13。仅此缺陷与原故障区间闭环，不能报整片零卡顿/关闭PX-03。
-
-WDA旧宿主中途结束，原生截图继续取得真实画面，固定runner重启ready后新session已恢复。Downloads Xcode设备枚举需先xcdevice刷新，预检ready；后续已补S01双入口有限持续/退出/热续播，均无缓冲且每轮0～2累计丢帧；MI2原画实际供流约35Mbps低于片头约90Mbps，仍2次缓冲，自动12Mbps候选成功接手、约287秒后正常退出，不能算原画通过。Lenna已核对1.0.17(610)、同名详情和默认真实播放/退出，实际路由/轨道/缓存未对齐，有效配对0。正式滚动0手势/INSUFFICIENT：当前Instruments缺目标，Mac锁屏阻止GUI排查，待用户解锁。ios-deploy后段枚举超时已以新只读VendContainer脚本恢复诊断，不意味着采样或安装身份自动恢复。收尾Nastart正常启动台/PID73932，自己的WDA/syslog停止；详情见本轮记录。iPad/iPhone18仍待设备接入，不沿用历史安装身份。
-
-## 2026-10-01 20:33 iPhone 13 页面保护与现场接续
-
-先读 [本轮记录](2026-10-01-IPHONE13-SCROLL-PAGE-GUARD.md)。已现场核对同一 iPhone13，并通过设备暂存二进制回读哈希与原生安装完整回执完成最新正常 Debug `a79ae773…` 保留数据覆盖安装；无变量启动及真实启动台确认。本会话 Downloads Xcode 预检仍为空，WDA/截图可用。随后动作观察前页面已变成横屏《碟中谍3》播放器，5次动作后前台切到系统桌面，整轮排除滚动验收；已停止自动化并询问设备是否空闲，等待确认。新增正式滚动页面标识/视口保护，15项工具测试通过；本轮WDA启动进程已停止。无滚动PASS、无Lenna有效配对，不沿用之前会话采样成功作为本轮通过。未改App源码或PROGRESS.md。
-
-## 2026-10-01 CLI 观测恢复（本轮）
-
-先读 [本轮记录](2026-10-01-CLI-OBSERVATION-RECOVERY.md) 与 [可复制命令手册](../testing/CLI-DEVICE-OBSERVATION.md)。视频截图与逐帧采样独立推进，不互设前置。本轮最新包S01真实30秒截图及退出取证完成，历史源帧匹配离线复验一致。显式使用 Downloads Xcode26.6后，iPhone13 Instruments录制与TOC/display/hitch导出均成功（374条display/16条hitch）；逐帧覆盖和正式滚动仍待验。不要沿用下午“所有采样不可用”或中途“设备发现仍失败”的结论。
-
-## 2026-10-01 17:32 CoreProfile 原始事件流取得进展
-
-见 [原始事件探测记录](2026-10-01-COREPROFILE-RAW-PROBE.md)。iPhone 13 USB/配对现场正常；WDA 8102 本轮不可达，未重装。本轮只探测采样服务，未核对 App 安装身份或操作 UI。定位 tidevice 对 `DTKTraceTapMessage` 解码失败后，临时保留原始 payload，8 秒取得 52 块约 33 MB；42 个压缩块全部按声明长度解压，kdebug v2 解析得到 1,898,765 个事件。显示事件映射、timebase、丢事件/覆盖率与 App 归属仍待建立，不能称完整帧采样恢复或滚动 PASS。下一轮从本机私有原始证据继续映射验证，再完成当轮包核对及 UI/Lenna 取证；iPad 仍暂缓。未写 PROGRESS.md。
-
-## 2026-10-01 17:16 DVT 替代采样取得数据
-
-见 [替代采样记录](2026-10-01-DVT-SAMPLER-ALTERNATIVE.md)。已通过 USB/DVT 实测设备图形 FPS 数据流，两次分别取得 14 / 8 条样本，新增有界诊断脚本 `scripts/device_graphics_probe.py`。约 1 Hz 的全设备聚合数据可用于诊断，不能代替逐帧证据；完整滚动验收仍 INSUFFICIENT。本轮仅采样服务能力探测，未做 App 包身份复核、UI 回归或竞品对照。不要继续称所有采样不可用，也不要误称完整帧采样已恢复。未写 PROGRESS.md。
-
-## 2026-10-01 17:06 采样环境对照待补
-
-见 [本轮环境核查](2026-10-01-IPHONE13-SAMPLER-ENVIRONMENT.md)。iPhone 13 在线、配对正常，本机正常 Debug `a79ae773…` 的签名/哈希/源码时间重新核实；本轮尚未重新确认设备安装身份，未开始 UI 回归。采样预检仍为三项能力缺失、INSUFFICIENT、0 手势。当前会话受沙箱限制且禁止提权，已请求用户在普通 Terminal 执行只读 `xcrun xctrace list instruments`，用于区分当前执行环境与宿主 Instruments 问题，待输出。不要重复重装 WDA或将上轮安装回执视为本轮回归；恢复采样后再过安装门槛，继续滚动与 Lenna 配对。未修改 PROGRESS.md。
-
-## 2026-10-01 17:02 iPhone 13 安装回执恢复与采样预检
-
-先读 [本轮安装与采样预检记录](2026-10-01-IPHONE13-SAMPLER-PREFLIGHT.md)。固定 WDA 恢复 ready；正常 Debug `a79ae773…` 包验签、设备暂存二进制回读哈希一致，以 Developer `.app` 目录方式保留数据覆盖安装取得 `InstallComplete 100% / Complete` 完整回执。无变量启动、真实启动台及收尾 PID 68158 已核对；进程检查须用 `ps --all --json`，默认列表的 isApplication 过滤会漏掉本轮 App。Instruments 不仅无设备，还无 instruments/Animation Hitches 模板，本机录制及历史导出也失败。采样工具新增动作前预检、超时证据和提前保存元数据；13 项测试通过，现场 INSUFFICIENT、0 手势。本轮未播放视频或操作 Lenna，无滚动验收/竞品排名。下一轮恢复宿主采样能力，再继续逐页滚动和 Lenna 配对；iPad 暂缓，未写 PROGRESS.md。
-
-## 2026-10-01 16:10 iPhone 13 显示采样门槛续查
-
-先读 [本轮工具与门槛记录](2026-10-01-IPHONE13-FRAME-GATE.md)。固定 WDA 已重新恢复 ready，App 收尾 PID 67785 存活；两套 Instruments 无设备，历史 trace 导出也失败。正常 Debug a79ae773… 包/IPA 验签与哈希核实，但本轮覆盖安装缺完整回执，最新包回归未开始。滚动工具新增逐拖动显示采样连续性检查及异常 INSUFFICIENT 持久化，11 项工具测试通过；实际录制开始前失败，0 手势，无滚动 PASS/播放回归/Lenna 配对。下一轮优先完成安装回执和显示采样恢复。iPad 仍暂缓，未写 PROGRESS.md。
-
-## 2026-10-01 15:56 iPhone 13 WDA 恢复与短回归
-
-先读 [本轮恢复与短回归](2026-10-01-IPHONE13-RECOVERED.md)。iPhone 13 USB/配对现场核实，最新正常 Debug `a79ae773…` 验签/IPA 哈希一致，保留数据覆盖安装取得完整完成回执，无变量启动与持续进程/真实截图已确认。固定 WDA 不重装恢复 ready；启动脚本补身份变量并核对 ready 服务身份，重启及复用实测成功。S01 Jellyfin 新架构原画从头约 52 秒、热续播约 41 秒，真实画面和两次退出回同一详情齐全；热续播启动有 1 次缓冲计数、累计丢帧 1，不能报整轮零卡顿。Instruments 仍未枚举设备，滚动自动结果 INSUFFICIENT；Lenna 已进入同名 S01 详情，但片源/路径/轨道/缓存及共同计时未对齐，无性能排名。收尾正常 App PID 67681、WDA Runner PID 67680，视频全部退出，syslog 已停止；下一轮现场重验。iPad 继续暂缓，未写 PROGRESS.md。
-
-## 2026-10-01 15:28 XCTest 授权阻塞定位
-
-先读 [本轮定位记录](2026-10-01-IPHONE13-WDA-AUTH.md)。iPhone 13 USB/配对正常，固定 WDA Runner 已进入 test plan 但 HTTP 未监听；15:24 原生截图显示“为 XCTest 输入 iPhone 密码 / Enable UI Automation”，已请求用户在设备本机完成授权。启动脚本超时退出，下次授权后重启固定 XCTest 链路，不重装 WDA。本轮本地正常 `a79ae773…` 包验签/哈希通过，但覆盖安装没有完整回执，不能声称最新包回归完成；App 无变量启动截图已取得，进程持续证据未完成。无滚动/播放/Lenna PASS，iPad 继续暂缓。
-
-## 2026-10-01 15:12 iPhone 13 单机接续
-
-用户已明确暂缓 iPad；下一轮只处理 Mac 已连接 iPhone 13。先读 [单机接续记录](2026-10-01-IPHONE13-NEXT.md)：USB/配对现场核实，最新正常 `a79ae773…` 包再次保留数据安装成功，无测试变量启动 PID 67371、真实启动台截图已取得。WDA HTTP 仍 reset，Instruments 枚举无录制设备；未完成滚动/播放/Lenna 验收。WDA preflight 的 CMS 解码权限阻塞已修正并实际通过，启动脚本增加可写日志目录参数和 HTTP 超时；不宣称服务已恢复或 App 性能改善。先恢复 iPhone 工具链，不等待 iPad 接入。
-
-## 2026-10-01 下午最新接续
-
-先读 [14:48～14:59 双机接续记录](2026-10-01-DEVICE-RESUME.md)。iPhone 13 已现场核实 USB、保存原诊断、保留数据覆盖安装正常 Debug `a79ae773…` 包并无变量启动；iPad 本轮枚举不可见，安装身份未完成核对，不能沿用早晨设备状态。WDA/帧采样工具未就绪，本轮无真机回归通过结论。滚动工具已从 ≥10 次请求加强为 ≥12 次逐滑实际位移/前台/完整动作时间验证，9 项工具测试通过；07:34 启动台的旧 PASS 缺逐滑位移，不作为加强规则验收。用户确认连接与解锁后继续 iPad 包核对、逐页滚动及 Lenna 配对；现有源码修改全部保留。
-
-跨账号、白天在单位接手时先读 [2026-09-29 跨账号远程接手卡](2026-09-29-OTHER-ACCOUNT-REMOTE.md)。其中的 07:09 现场与最终包信息晚于本文件下方较早的历史检查点；其 HEAD/工作区描述是推送前快照，接手须重新执行 `git rev-parse HEAD`、`git status --short`。任何 PID、USB 和服务状态也须现场重验。该卡写明 Remote 同账号前提与可直接发给新账号的指令。
-
-更新时间：2026-10-01 07:35；上一轮收尾时间为 2026-09-29 12:40 双入口准备取消、iPad 请求路径实测完成。面向同一台 Mac 上的新会话/另一个用户本人持有的账号；本文件传递工程事实，不负责复制账号会话历史或登录凭据。
-
-## 2026-10-01 iPad 自动滚动验收与竞品矩阵（进行中）
-
-优先读 [今日实机记录](2026-10-01-IPAD-SCROLL-COMPETITORS.md)。已复现海报严重卡滞和静止详情持续布局；仅编译优化无效，导航根隔离显著降低主线程活动。正式 iPadOS 18 自适应 TabView/侧栏候选 `a79ae773…` 正常 Debug 包已装 iPad/iPhone 13，逐页 Instruments 自动回归进行中，尚未通过。不要把上一轮能滑动的结论当成流畅验收。
-
-用户指定 Lenna 为两机主对照，DS One/Jellyfin/网易爆米花为扩展；[CB-01～20 竞品矩阵](../testing/COMPETITOR-DEVICE-MATRIX.md) 与 JSON 模板已新增，涵盖首帧、续播、轨道实际生效、滚动和网络/资源指标。对照结果尚待采集，不给速度排名。
-
-## 2026-09-30 21:56 真机包核对门槛与 iPad 滚动
-
-**每次换设备或开始真机调试，必须先按根目录 [AGENTS.md](../../AGENTS.md) 核对最新安装包。** 无法确认身份时保存诊断后保留数据覆盖安装，不能凭 0.1.0(1) 判定最新。
-
-iPhone 13/iPad 已先更新 ISO 基线包，再更新本轮滚动优化 `dd26df8f…` 最新包并正常启动。默认启动台改惰性布局，海报后台预解码并按真实像素内存计缓存。设备构建/签名/preflight 通过，iPad WDA 8103 本轮恢复。性能量化/长期流畅尚未验收，见 [iPad 滚动专项](2026-09-30-IPAD-SCROLL.md)。iPhone 18 未装本轮包，下次调试先更新。
-
-## 2026-09-30 21:47 iPhone 18 ISO 错误修复
-
-已读取用户连接设备后的诊断：双入口五次 ISO 打开失败均零读取、同一本机端口；发现并修复 ISO 监听失效仍复用旧端口、并发启动与重建后资源释放问题。3 项代理集成测试、设备构建/签名/preflight 通过。最新 `343f0b3a…` 包已保留数据安装 iPhone 18 并无测试变量启动，PID 3935。**旧端口为强嫌疑，真实蜂窝 ISO 播放及切网复测仍待验**。详见 [ISO 蜂窝诊断及修复](2026-09-30-ISO-CELLULAR.md)。本节包比下方 17:58 包新。
-
-## 2026-09-30 17:58 iPhone 18 安装
-
-已确认 iPhone 18 Pro Max USB 接入；将当前最新签名 Debug 包 `cbfff361…` 保留数据安装并正常启动，PID 2178，启动后进程持续存在。仅完成安装与启动，不含该设备的播放回归；细节及签名到期时间见 [iPhone 18 安装记录](2026-09-30-IPHONE18-INSTALL.md)。
-
-## 2026-09-30 下午 iPhone 13 与 iPad 接续
-
-- iPhone 13：早上签名包 `86f6c8eb…` 在家中 Wi-Fi 用 Jellyfin S01 原画 LAN 上游单路运行 trace `99B41B69`，650 条遥测覆盖约 701 秒，时钟 0.073→700.574 秒、读取 1,874,559→278,581,897 bytes，卡顿计数/活动状态及可用丢帧样本均为 0；上游实际为 `192.168.1.64:8096` HTTP/1.1，正常退出回详情。将 LAN 探测两次有界重试与同服判定提为可测试策略，2 项定向模拟器 XCTest、最终 Debug 设备构建/签名、preflight 与 diff 检查通过。最终包 dylib `cbfff361…` 已保留数据装到 iPhone 13、正常无变量启动 PID 57920；续播短回归 trace `999FBE0C` 时钟 700.809→776.414 秒、LAN 上游、退出事件 1，首帧前一次约 301 ms 缓冲，首帧后无新增卡顿。长播属于 `86f6…`，不移作 `cbfff…` 的长播结论；旧 247.710 秒停滞根因、真实回退和真机失败后重试仍未验。详见 [当日 iPhone 13 续查](2026-09-30-IPHONE13-STALL.md)。
-- iPad 今日重新接 USB。14:52 现场 DSM 主会话/File Station 登录成功；旧日志有 `urlError:-1005`、DSM API `403` 和多次无保存凭据跳过恢复。保存登录后两次正常冷启动均重新登录、发现 LAN、刷新 47 个服务条目；最新签名正常包 `cbfff361…` 当前 PID 8238。iPad 原生设备测试 1 项通过，DSM/Jellyfin LAN/公网四接口 HTTP 200、有效 JSON、事务 HTTP `proxy=false`。iPad WDA 8103 未 ready，UI 可见状态、后台恢复、VPN A/B 与间歇故障原因仍未验。见 [iPad 环境续查](2026-09-30-IPAD-ENVIRONMENT.md)。
-- 两台设备播放均已退出。全部已有未提交修改与 KSPlayer 未跟踪内容保留，新增源码/测试/文档仍未提交；原始诊断仅在本机私有证据目录，不上传。下一批先围绕 iPad 真正复现时的日志区分凭据、DSM API、网络与 UI 延迟；iPhone 13 继续低负载 S01 追原画冻结现场。PX-03、UX-05 状态按唯一总账。
-
-## 2026-09-30 iPhone 13 停滞续查
-
-已重新核实 USB/iPhone WDA/签名包与 NAS/Jellyfin；iPad 今日未接入。iPhone 13 旧 f08bf… 包 S01 单路原画监测约 603 秒完成，trace `FC0BA914`，557 条实际时钟遥测到 621.598 秒，卡顿/丢帧 0，退出回同一详情；没有复现旧次 247.710 秒停滞，真实故障恢复未验。此轮媒体上游走公网域名 HTTP/2（`cellular=no`），因为 10:00:48 局域网同服验证暂报 `publicInfoUnavailable`；重进库后 10:24:38 同服 LAN 验证成功。已给这种暂时不可用加 2/6 秒有界重试，保留服务器 ID 相等门槛。新 Debug 包 dylib `86f6c8eb…` 构建/签名/preflight 通过，保留数据安装并无变量启动 PID 56199；DSM 恢复，10:33:15 局域网同服验证成功，新包 S01 LAN 原画 trace `B2246D1A` 约 37 秒实际画面/时钟、卡顿/丢帧 0、退出事件 1。失败后重试分支和新包十分钟 LAN 稳定性尚未实机验收；不能把公网十分钟成功归因于旧 LAN 停滞修复。现场和证据边界见 [当日交接](2026-09-30-IPHONE13-STALL.md)。PX 状态按唯一总账。
-
-## 2026-09-29 继续调试（历史记录）
-
-- 12:41 收尾刷新资源快照：NAS 在线，CPU 49% / RAM 20% / 磁盘 92% / uptime 15小时41分钟（开播前15小时25分钟），未见本轮重启；Jellyfin LAN/公网均 HTTP 200 / 10.11.11。正常 iPhone App PID 48256、WDA ready，播放已全部退出。
-
-- 2026-09-29 12:40 本批收尾：最新正常 f08bf… 包已保留数据安装两机、明确无测试变量启动。iPhone 13 S01 Jellyfin 原画 trace 14B2F3F7 单路观察 606 秒完成，实际画面、时钟和读取持续推进至 601.310 秒，556 条相关遥测，卡顿/丢帧计数均 0，停止事件 1、上报失败 0；没有自动回退请求。这只证明该包本轮十分钟未重现，不证明旧包原始停滞根因已解决，也不能代替真实故障下的回退恢复或人工听音。旧 37b0… 的持续停滞与两次候选对齐失败证据保留，修正了“缓冲仍按播放意图提前预热”的回退缺陷，实际解码反例通过。4cdd… 候选双入口原画呈现前取消有效窗口通过。iPhone 13 WDA ready、正常 App PID 48256、所有视频已退出；USB 仍为 iPhone 13+iPad，无本轮新 Nastart 崩溃（最新仍 9月28日20:21）。iPad 正常 f08bf… PID 7846，新进程12:26:02仍无保存 DSM 凭据；四接口/HTTP代理指标已验，UI/登录恢复未验。全部未提交修改保留，未改 VPN/Wi-Fi/NAS、未跑大电影限速转码。
-
-- 2026-09-29 12:25 设备文件 S01 有效取消窗口通过：4cdd… 包准备本地原画后 held(8秒)，返回原文件夹使 released(cancelled=yes)，等待超过原延迟仍在原文件夹，无迟到播放器/首帧。与 Jellyfin 原画一起补双入口呈现前取消证据，不扩大到 HLS 或完整资源矩阵。最新 f08bf… 回退候选 Debug 构建/签名通过；其 Release 无签名编译也通过，现有 iCloud 签名限制仍保留。
-
-- 2026-09-29 12:21 缓冲回退修正 L0 通过：预热提前量现在独立参考实际推进状态；缓冲中保留用户播放意图、候选从冻结的旧时钟开始，正常推进/暂停逻辑保持。模拟器实际 1 项解码 XCTest 通过，包含冻结时钟的候选首帧/对齐/恢复播放、暂停候选、正常推进候选及 KS 原画预热。设备 Debug 构建通过，正常签名候选 f08bfde1c3f3f9eaa811bb7eb7f4f43b1e31a32c31589b7458b4e17402c11bd2 待实机。首次测试卡在模拟器启动已留采样并终止，单设备重跑通过；不是断言失败。准备取消钩子对应的 Release 签名被现有 profile 缺 iCloud 权限阻止；CODE_SIGNING_ALLOWED=NO 的该版 Release 编译通过，只证明编译、不证明可安装的 Release。最新缓冲回退改动待补 Release 编译。单设备 XCTest 已报告 1 项 Passed，但 xcodebuild 收尾仍挂起，采样后终止；不记整个工具正常完成。
-
-- 2026-09-29 12:18 Jellyfin S01 有效取消窗口通过：取消候选 4cdd… 包，准备 trace AAC904DA 已建立本地 Range；诊断 held(8秒)→返回搜索列表→2.662秒后 released(cancelled=yes)，等待超过原延迟仍在同一搜索页，无播放器/首帧/开播事件。截图与实际请求 ID 完整；这项仅覆盖原画已准备、呈现前离开，不覆盖 HLS/连续选片/全部资源回收。WDA activeAppInfo 的 env={} 来自其 XCUIApplication 对象，不能用于证明实际进程环境；本次等待确由 App held 日志证明生效，收尾须终止后明确无变量启动。
-
-- 2026-09-29 12:13 持续播放失败补证：37b0… 包 S01 Jellyfin 原画 trace 25F1BD23，监测 606 秒已退出，但播放器在 247.710 秒起持续 buffering，末段时钟和 bytesRead 均不再推进，stallCount=1，最终 stallDuration 约 439 秒；不能记十分钟稳定通过。局域网接口持续 HTTP 200。自动回退两次准备/解码 HLS 成功但候选起点领先停住的时钟 11/15 秒，alignment 均被拒绝，未接手。正在修正“想播放但正在缓冲”被误当持续推进的预热提前量；原画停止读取的初始原因仍待取证，不将回退修正称为原始故障根因。仅 S01 自动回退发生转码，没有大电影/人为限速。
-
-- 2026-09-29 12:04 iPad 请求路径实测完成：原生设备 XCTest 实际 1 项通过 / 0 失败；DSM API Info 与 Jellyfin Public 的 LAN/公网四地址均 HTTP 200、有效 JSON、API 成功。四次 URLSession 事务 isProxyConnection=false，LAN 使用 HTTP/1.1，公网使用 h2，均未复用连接。此指标只排除这些请求的 HTTP 代理连接，不能证明 VPN 已关闭或排除 IP 隧道/间歇故障。新进程仍报 restore.missing_credentials；UX-05 保持进行中。附件留在本机 continuous/ipad-route.xcresult 与 ipad-route-attachments/，不含请求凭据。
-
-- 12:02 用户要求继续下一批。两机 USB/iPhone WDA/无变量 App/Jellyfin 可用，S01 原画 trace `25F1BD23` 十分钟基线正在进行；本次开始后先不覆盖安装运行中的 App。Debug 准备结果等待已构建、3 项取消测试通过，真机受控取消窗口待验；iPad 正在补真实请求代理指标，未改 VPN。以 [持续播放与取消专项](2026-09-29-CONTINUOUS-CANCEL.md) 为本轮详细记录，尚无十分钟/取消真机通过结论。
-
-- 用户已授权必要时直接远程解锁 iPad，不重复询问；具体凭据不保存于项目/日志。补查仍 `passcodeRequired=false` / `unlockedSinceBoot=true`，当前无需输入。DSM 无保存凭据及 UI 自动化初始化超时分别继续跟踪，不将系统解锁授权记成 DSM 登录恢复通过。
-
-- 最后现场复核：iPhone 13 WDA `ready=true`、正常 App PID `47083` / `env={}` / `args=[]`；刷新已结束，NAS CPU 47% / RAM 20% / 磁盘 92% / uptime 12小时54分钟。USB 两机仍在。iPad WDA 未 ready，已停掉本轮失效的 8103 转发，iPhone 8102 保留；有效的 iPad WDA 副本在 `~/Library/Application Support/Nastart/WDA/iPad-18.3.1/`，profile 到期 2026-10-03，未来仍需重新核实。`git diff --check` 通过。
-
-- 本轮收尾：两机保留数据安装/启动正常 `37b0…` 包；iPad 测试注入包已覆盖回持久正常包，CoreDevice 无 `DEVICECTL_CHILD_*` 注入启动成功。iPhone 13 无变量回启动台，所有视频已退出。iPad 四接口附件明确为 HTTP 200 / json=true / success=true；WDA 最后仍超时，不能当 ready 使用。工作区 HEAD `9a9941c`，本轮源码/测试/记录未提交，既有修改及 KSPlayer 未跟踪内容全部保留。8 项定向检查、最终相关 2 项复测、iPad 1 项实际环境测试、设备构建/preflight 通过；不能合并这些证据冒充全矩阵或听音验收。
-- 下一入口：iPad 需在正常包登录一次并确认记住密码（现 Keychain 恢复无凭据），再补冷启动/后台恢复。系统 UI 自动化初始化问题需继续单独处理；当前屏幕亮/已解锁、Developer Mode Enabled、DDI usable，重启测试守护进程只恢复了原生单元测试。没有当前 VPN UI 状态或开/关 A/B，不改家中远程网络。iPhone 13 下一批仍以 S01 为限，补准备取消受控窗口、单路十分钟/听音与双入口基线，禁止大电影限速转码。
-
-- 09:50 设备网络实测完成：仅重启 iPad 上挂起的 testmanagerd（SIGTERM 后未换 PID，SIGKILL 后 `4564`→`7690`），不改 Mac/路由器/VPN。原生测试实际 1 项 Passed / 0 失败，四个无凭据 DSM/Jellyfin 局域网/公网 API 均成功返回 JSON；当前 VPN 状态尚未由界面确认，不算 VPN 开/关 A/B。该测试进程再次报无 DSM 保存凭据。证据 `ipad-environment/endpoint-probe-v3.xcresult`。正在恢复正常包和 WDA。
-- iPhone 13 最终轨道修正实机闭环：热重开 trace `8D996A55` 首帧 762.782 秒；冷续播 `75817272` 首帧 770.697 秒；从头 `4D56A7BC` 首帧 0.073 秒。三次国语选中/字幕关闭均保持、实际画面与停止事件齐全，无本轮新 Nastart 崩溃报告；听音、完整矩阵仍待验。用户偏好与位置现是分别验证，未宣称全部 PX 验收。
-
-- 09:46 最新实机补证：最终 `37b0…` 包 S01 Jellyfin 冷启动续播确认国语/字幕关闭保持，位置约 12:58 且有真实画面；热重开已通过同项。听音、双入口完整矩阵仍待验。iPad UI 自动化仍超时，单元测试宿主已运行，并在 09:45:59 新日志再次报 `restore.missing_credentials`；四接口设备网络测试进行中。
-
-- 09:44 最新候选是 `37b0fc03e608700b0a2bbe1734e7f4690bbe28b35a5cc7ce5b321e7826656f50`（同 `iphone13-next/Nastart.app` 路径），`74f…` 已留作 `Nastart-track-v1.app`。第一版被详情默认 selection 覆盖，最终修正详情加载与停止后的偏好同步，不覆盖详情中用户刚手动选择的轨道。S01 热重开已确认国语/字幕关闭选中与约 12:50 位置；冷启动复测进行中，未听音。最终设备构建与相关测试复测通过。
-
-- 09:33 新发现/修复：S01 Jellyfin 原画暂停 +15/-15 秒时钟恢复 92/369 ms，国语切轨/字幕关闭后退出重开丢失轨道偏好（位置保留）。原因是本地保存只覆盖 `.dsmFile`。已给 Jellyfin 使用服务器/用户/媒体源/文件大小隔离键，在准备前读取有效轨道，保存源轨道而非 HLS 解码器索引；Jellyfin 位置仍使用服务器记录，显式 selection 不被旧偏好覆盖。设备构建和 7 项定向 XCTest 通过，真机复测进行中。新候选包 dylib SHA-256 `74f647ee36c955ef93d55681105fc0e9049037190e3003e87d08d4895c1e5ca5`，路径同下；状态诊断单独版本已留为 `Nastart-status-only.app`。下一会话不可将下面旧 `7f74…` 当最新包。
-
-- 用户已要求 iPad 专项实际测试，早期“仅核实 iPad”范围不再是本轮限制。iPad USB/CoreDevice 可见，安装前诊断确认多次手动登录后重启因无保存凭据跳过恢复；VPN 因果尚未证明。两次 WDA 系统自动化初始化超时，需解锁/确认系统提示。见 [iPad 环境专项](2026-09-29-IPAD-ENVIRONMENT.md) 与总账 UX-05。
-- Jellyfin `httpStatus` 诊断及登录错误分类不再扫描描述中的任意数字，改用 Get SDK 明确的 `APIError.unacceptableStatusCode`。设备 Debug 构建、2 项错误反例 XCTest 通过；保留数据安装及 S01 回归进行中。新持久包 `~/Library/Application Support/Nastart/DebugEvidence/2026-09-29-iphone13-next/Nastart.app`，dylib SHA-256 `7f74b29fb1441f8ac4c52b543f8cbecb3aa1f30148f5b0257a80f77c739ace5e`。不将此修正视为已解决 -1017 网络响应问题。
-- HEAD 仍 `9a9941c`；全部既有未提交修改保留，本轮新增源码/测试与记录未提交。只使用 S01，禁止大电影限速转码。
-
-## 2026-09-29 白天 iPhone 13 低负载回归（最新现场）
-
-**收尾摘要：** 同一 `46df8558…` 包，iPhone 13 家中 Wi-Fi，S01 双入口各三次退出/热续播，暂停退出、暂停 seek/恢复和两入口冷启动断点均已补实际执行证据。准备中取消未捕获有效窗口；人工声音/连续流畅、静态 HLS 最终时间轴与 iPad 仍待验。播放器全部退出，App 正常启动台、无测试变量；下一批先补准备取消及短片头续播规则/上报响应核查，再考虑单路 S01 10 分钟基线，不进入大电影限速转码。
-
-- 开始只读核对时 HEAD 为 `a5022d25409f1537f4441142863d3d26801d0c39`，既有内容保留，开始时 `git diff --check` 通过；本任务之外后续提交使当前 HEAD 变为 `9a9941c`，见本节记录。起始 status 与 tracked diff 已留本机证据目录。
-- USB 实查仅 iPhone 13 `00008110-001E543122E0401E`（iPhone14,5 / iOS 16.3.1）和 iPad `00008030-001168403C43C02E`（iPad12,1 / iPadOS 18.3.1）；iPhone 18 不在。iPad 实际已存在 Nastart 0.1.0(1) 和 WDA Runner，早晨卡片的“尚未安装”不能继续当作现场事实；未核实其包哈希、WDA ready、登录或播放，仍未验收，本轮不操作其界面。
-- iPhone 13 本机 8102 WDA `ready=true`。初始 Nastart PID `45856`、`env={}`、`args=[]`。持久交接包签名验证通过，`Nastart.debug.dylib` SHA-256 `46df855867b2cc37d25309ae4092eddc4d15cf911d80aceeebdc2dc7158ccb26`。由于设备版本号不能唯一识别二进制，本轮用该包经 ios-deploy 覆盖安装（未卸载、保留数据），安装 `InstallComplete`；随后 WDA 无测试变量正常启动。没有重新构建源码。
-- Jellyfin 局域网 `System/Info/Public` HTTP 200（10.11.11）；初始 App 资源卡为 CPU 30%、RAM 19%、磁盘 92%（既有空间警告）。重启 App 后 DSM 登录恢复待核实，不能以初始“未连接”判 NAS 故障。下一步等待登录后补资源/实际路径，再 S01 单路 30 秒，禁止大电影限速转码。
-- 本轮持久证据：`~/Library/Application Support/Nastart/DebugEvidence/2026-09-29-iphone13-lowload/`。原始 UI/诊断只留本机，不提交。
-- 完成 Jellyfin S01 三次进入/退出同一详情，后两次为“继续观看”；截图实际画面可见，三路均有 `playback_ended`。首轮约 51.9 秒，trace `A1F0CBB3` 首帧时钟 0.052 秒、点击至时钟事件 1260 ms；第二轮 trace `E1F4D0E8` 首帧位置 50.910 秒，末轮 `2CEC7436` 首帧位置 112.116 秒，证明本轮热重开恢复位置。第二轮约 63 秒日志含 `stallCount=1`：发生在首帧前 1043→1834 ms（约 791 ms），首帧后未增加；不记三轮全程零卡顿；声音、人工连续流畅、重启持久化尚待验。媒体实际走本机 Range → NAS 局域网 8096，元数据/上报为公网域名，不能按蜂窝解释。
-- Jellyfin 本轮有 `playback_report_failed`（NSURLError -1017 / 无法解析响应，日志 httpStatus=281），但详情继续按钮、重开和 App 存活正常；服务前后 HTTP 200。保留为上报路径待查，不认定服务器断点已保存成功。退出后某些 WDA 完整 UI 树查询超时，截图和点按仍成功；无证据将其归因于 App 崩溃。实际截图及 `jf-final-confirmed/` 诊断留本机。下一步设备文件 S01，再准备中离开与 App 重启断点。
-- 设备文件 S01 同一 2.7 GB MKV：完成从头播放约 34.6 秒、退出回同一文件预览、两次继续观看重开及退出，共三次往返；第二轮补暂停后退出。真实画面截图、暂停截图及 `file-final3/` 诊断已留本机。首轮 trace `F0C1503F` 首帧时钟 0.073 秒、点击至时钟事件 622 ms，退出时卡顿计数 0；实际原画上游为局域网 DSM FileStation 5000，不代表与 Jellyfin 首帧的严格 A/B。同条件基线、听音/音画同步、重启断点仍待验。复制真机 Nastart 崩溃报告保留设备原件，最新仍为 9 月 28 日 20:21，没有本轮新报告。
-- 设备文件补充诊断（`file-full-final/`）：第二轮 trace `62930273` 首帧 34.121 秒、暂停 89.31 秒、停止；第三轮 `8103139A` 首帧 89.460 秒、停止，恢复误差约 0.15 秒（播放器时钟事件，不是帧级听音验收）。准备中取消尝试先点击“从头播放”再返回，但截图已是播放器呈现/旋转，之后真实进入播放；没有捕获准备中离开，已退出清理，**不得计为取消通过或取消失败**，该项继续待验。此尝试确实播放了 S01，不是静态素材，也没有大文件转码。
-- 冷启动短断点核对：设备文件持久化值 15.582 秒，重启 App 无测试变量/DSM 恢复登录后，trace `A4381270` 首帧时钟为 15.646 秒（差约 0.064 秒），点击至时钟事件 3775 ms；3 秒时的首张截图仍是黑屏/启动状态，后续日志推进到约 33.8 秒并有停止事件，未取得冷启动首帧之后的真实视频截图，视觉闭环仍待补。Jellyfin 冷启动详情没有继续按钮，trace `66BF11B2` 从 0.137 秒开始，短片头断点跨进程没有恢复；尚未核对服务器续播规则，不能直接认定是客户端丢断点。正在补约十分钟位置的暂停 seek→播放→退出→冷启动对照。
-- 工作区复核发现本任务之外于 07:26:57 提交了 `9a9941cd4ec82625f680b5193b3a0f66797eb851`（37 个文件，原播放/脚本/文档修改进入该提交）；本任务没有执行 commit/reset/clean。起始只读检查时为 `a5022d2`，持久快照采集时已提交，所以 `git-diff-start.patch` 为零字节。当前仅本轮三份记录文件为 tracked 差异，原 KSPlayer 未跟踪目录仍保留，播放源码本轮没有修改。不能继续把“全部既有修改尚未提交”当当前现场。
-- 上报日志中的 `httpStatus=281` 未经 HTTP 响应核实：现有 `httpStatusCode(for:)` 会从错误描述任意数字推断状态，故该字段本轮只能当原日志值；确定的错误是 NSURLError -1017。后续需核对真实响应及服务器保存结果，不以 281 判定 NAS 故障。
-- Jellyfin 深位置断点对照完成：S01 暂停后 slider 定位到 624.415 秒，`23CDB28A` 引擎完成/时钟恢复约 1475 ms，恢复播放截图见约 10:26，退出前末个 tick 627.785 秒；再次无变量重启 App 后详情显示“继续观看”，trace `DC9225F1` 首帧 628.510 秒（点击至时钟事件 1086 ms），真实影片画面可见并已退出。由此本轮**十分钟位置的跨进程续播成功**；两分钟短片头从头开始的原因尚未核对服务器配置，不能写成普遍断点丢失。该暂停 seek/恢复是单次探索性回归，不代替三对性能基线或听音验收。
-- 设备文件冷启动视觉复核补齐：再次无变量重启 App，持久化 S01 位置 34.036 秒，trace `B73C6427` 首帧时钟 34.110 秒（差约 0.074 秒，点击至时钟事件 2127 ms），8 秒时截图见真实城堡画面，退出回同一预览并有停止事件；证据 `last-cold-file-{detail,play,exit}.png` 与 `final/` 诊断。此前黑屏启动截图的限制由此轮后续视觉闭环补齐，不代表所有冷启动首帧统一耗时。
-- 07:55 收尾：iPhone 13 与 iPad USB 仍在；iPhone 13 WDA ready，Nastart PID `46268`，`env={}`/`args=[]`，前台为正常启动台。Jellyfin 局域网及公网公共接口均 HTTP 200。刷新后 NAS CPU 44%、RAM 19%、磁盘 92%，运行时间 10小时57分钟（初始 10小时25分钟），本轮没有观察到运行时间重置；未取 NAS 系统日志，不作重启原因结论。再次保留原件复制 Nastart 崩溃报告，最新仍是 9 月 28 日 20:21。WDA 为避免动画等待在本轮设置 `waitForIdleTimeout=0`、`animationCoolOffTimeout=0`；这些是自动化会话设置，App/系统网络没有调整。
-- 本轮仅修改三份记录文件（本文件、跨账号卡、唯一总账），源码未改、未重建、未执行 git commit/reset/clean。初轮导航/断点结果不等于 PX 项整体已验收；PX-01/PX-02/PX-03/PX-20/PX-21 状态保持进行中，其他所有编号状态保留。原始证据、包身份与本轮索引在上述持久目录，禁止上传含连接信息的 plist。
-
-## 2026-09-29 早晨最新检查点（优先读）
-
-- 用户已把 iPhone 18 切至蜂窝网络，约 07:00 会带走，iPhone 13 留家中 Wi-Fi。两机 USB 接入本机；iPhone 18 UDID `00008160-001468D401A0000A`，iPhone 13 UDID `00008110-001E543122E0401E`。HEAD 仍为 `a5022d25409f1537f4441142863d3d26801d0c39`，保留现有大量未提交修改。
-- Jellyfin 搜索中《碟中谍 2》约 54.92 GB / 64 Mbps、《碟中谍 3》约 54.01 GB / 62.7 Mbps，均为 4K H.265 HDR 高码率片源；它们不比《指环王》更适合在 NAS 曾重启的现场做多路弱网转码。因此本轮没有请求这些影片的视频流。Jellyfin 仅用于进入详情 UI，弱网播放走独立的预编码 Apple HLS 素材。
-- 新增 `#if DEBUG` 且仅显式设置 `NASTART_TEST_STATIC_HLS=1` 时启用的静态 HLS 测试入口；高档约 8 Mbps、低档约 1.3 Mbps。Debug 媒体代理限速也仅在带测试环境变量的 Nastart 进程内生效，不改 iPhone 的蜂窝、Wi-Fi 或 VPN 系统设置，不启动 NAS 编码器。Apple 测试素材地址及实测见 [蜂窝记录](2026-09-27-IPHONE18-CELLULAR-ADAPTIVE.md)。
-- iPhone 18 4G 实测：高档首帧时钟约 6.25 秒；5 秒后开始 2.4 Mbps 限速，实际样本约 2.23 Mbps；播放时钟约 7 秒即请求自动降档。候选于 22:29:47 UTC 解码、22:29:51 UTC 时钟对齐并接手，接手时旧流缓冲约 0.33 秒，新流缓冲约 6.5 秒；新流首帧事件距交接约 86 ms。两路在首帧后的采样均 `accessLogStalls=0`、`bufferEmpty=no`；新流继续至约 62.5 秒、缓冲约 40.6 秒。原始诊断 `/tmp/nastart-v9-followup.plist`，trace `50C76D01`→`10BBEF9D`。这证明可控降速时完成自动交接；没有真人连续观看或外部摄像机证据，不能宣称无感验收完成。
-- 测试进程已用不带环境变量的 `devicectl device process launch --terminate-existing` 重启，WDA 核对 iPhone 18 Nastart PID `13339`、`env={}`；Jellyfin 公共接口 HTTP 200。系统网络设置本轮未动。设备文件匹配 Jellyfin HLS 的准备流现在注册清理器，退出/放弃候选时会注销代理并调用 Jellyfin `stopEncodingProcess`；相关 3 条定向测试通过。静态 HLS 的 v9 签名 Debug 构建 `/tmp/nastart-static-hls-v9-build.log` 成功。另有收尾修复的最终编译/两机安装状态见本节后续追加记录；接手须重新核实。
-- iPhone 18 WDA 当前本机 `8104→8100`，XCTest/转发 PID 可能随时变化；iPhone 13 WDA `8102→8100`。iPhone 13 已安装清理修复版并启动，最终静态测试版是否同步安装见后续记录。继续调试时优先避免再次向 NAS 发起大影片限速转码；真实 Jellyfin 大片场景仍待 NAS 稳定后单路验证。
-- 06:34 收尾：设备文件 HLS 准备响应即使字段无效，也会调用 `stopEncodingProcess` 关闭已创建的服务器会话。最终签名 Debug 包 `/tmp/nastart-iphone18-adaptive-derived/Build/Products/Debug-iphoneos/Nastart.app` 的 `Nastart.debug.dylib` SHA-256 为 `7d7690a9f788fcc19677a747ccb75858d4aa79dd77d275e228d656e48617e473`；标准 workspace 构建 `** BUILD SUCCEEDED **`，日志 `/tmp/nastart-sept29-final-build.log`。该包已安装两机（安装日志 `/tmp/nastart-sept29-final-iphone18-install.log`、`/tmp/nastart-sept29-final-iphone13-install.log`），并以无测试变量正常启动；WDA 核对 iPhone 18 PID `13366`、iPhone 13 PID `45709`，两者 `env={}`。`git diff --check` 通过。静态 HLS 自动交接实测发生在最终编译前的 v9 包；最终源码只多了一处服务器会话清理修复，没有重跑同一真机播放。
-- 收尾又停止了 iPhone 18 的 WDA XCTest 与本机 8104 转发，App PID `13366` 仍存活；iPhone 13 的 8102 WDA `/status` 仍为 `ready=true`，方便留家远程调试。Jellyfin 公共接口 HTTP 200。上述“iPhone 18 WDA 当前 8104”仅描述停止前现场；下一会话须重新启动 WDA 才能控制它。
-
-## 2026-09-29 06:54 设备文件安全测试接续
-
-- 继续补设备文件入口的弱网交接。最初把静态 HLS 挂在常规“从头播放”分支；WDA 创建会话后可能重新启动 App，测试环境变量未生效，第一次点播 26 GB《Spider-Man 2》文件时实际进入了约 1.5 Mbps 的 Jellyfin 匹配转码，trace `87223463`。发现播放器显示真实影片标题/时长后立即替换 App 进程停止播放。Jellyfin 公共接口持续 HTTP 200；未取得 NAS 系统日志，不能据此判定 NAS 是否受到额外压力。后续自动化不得以普通播放按钮推定测试隔离已经生效。
-- 已将设备文件静态测试改成 **只有 `NASTART_TEST_STATIC_HLS=1` 时才出现的独立 Debug 按钮“静态 HLS 弱网测试”**，常规播放不再被测试代码拦截。必须先在 UI 树确认该按钮出现，再点击；播放页标题须为 `Static HLS fixture`。26 GB 文件详情上按此流程实测，视频请求为 Apple 静态 HLS；没有请求该文件视频流。iPhone 18 4G 下高档 trace `86961AEB` 首帧约 4.89 秒，5 秒后限速到 2.4 Mbps，实测约 2.22 Mbps；约 13.5 秒播放位置发起降档，低档 trace `258309A5` 解码、对齐、接手。旧流交接前约 2.82 秒缓冲，候选约 6.96 秒，新流首帧事件约 54 ms；交接附近两路样本 `accessLogStalls=0`、`bufferEmpty=no`。原始诊断 `/tmp/nastart-sept29-filefixture-t20.plist`。缺真人观看/声音证据，不能定为无感验收。
-- 此轮发现 Debug 素材给 `.dsmFile` 候选重复附加时间轴偏移，使 `firstFramePositionSeconds` 报约 37 秒而实际播放器时钟约 24 秒。已将静态素材时间轴偏移固定为 0；最终标准 workspace Debug 构建 `** BUILD SUCCEEDED **`，日志 `/tmp/nastart-sept29-filefixture-final-build.log`。最终包 `Nastart.debug.dylib` SHA-256 `96fd636d74080854a11085871f8d0cd0ea44bc959970afdd25b71a034ab58874` 已安装两机，日志 `/tmp/nastart-sept29-filefixture-final-iphone{18,13}-install.log`。时间轴修正后试图复核，App 文件页提示“DSM 当前未连接”，故未继续请求视频；该修正尚未真机重验。
-- 已结束所有 iPhone 18 带限速变量的进程，用无变量命令正常启动；WDA 核对 iPhone 18 PID `13536`、iPhone 13 PID `45837`，均 `env={}`。iPhone 18 WDA XCTest 与 8104 转发已停止，iPhone 13 的 8102 WDA 保留。Jellyfin 公共接口 HTTP 200，`git diff --check` 通过。系统 Wi-Fi、蜂窝、VPN 设置均未由本轮改变。下一步先核对 DSM 会话/服务是否稳定，再用独立按钮短测最终包的时间轴和交接；真实大片与设备文件匹配转码仍需 NAS 稳定后单路验证。
-- 06:57 最终安全收尾：Jellyfin 详情页也改为独立的 Debug“静态 HLS 弱网测试”按钮，普通播放按钮不再受测试变量拦截。最终签名 Debug 包 `Nastart.debug.dylib` SHA-256 `46df855867b2cc37d25309ae4092eddc4d15cf911d80aceeebdc2dc7158ccb26`，标准 workspace 构建 `** BUILD SUCCEEDED **`，日志 `/tmp/nastart-sept29-safe-buttons-build.log`，已安装两机（`/tmp/nastart-sept29-safe-buttons-iphone{18,13}-install.log`）。iPhone 18 用无环境变量命令正常启动，PID `13557`；iPhone 13 WDA 正常启动 PID `45856`、`env={}`。此最终按钮版本只完成构建/安装/启动，未重复视频短测；上段设备文件自动交接实测属于按钮已独立、时间轴偏移尚未修正的前一包。
-- 06:58 只读诊断复核：DSM 文件页的“未连接”发生在新进程恢复登录期间；该设备诊断随后记录 Nastart/FileStation 登录成功和资源快照完成，但登录历时约 20–30 秒。不能据那一屏判断 NAS 已离线，也未在登录完成后重试视频。诊断副本 `/tmp/nastart-sept29-dsm-final.plist` 含连接信息，仅留本机。Jellyfin 公共接口依旧 HTTP 200。
-
-## 先读与当前目标
-
-项目：`/Users/lagransun/workspace/Nastart`。
-
-1. [本轮播放就绪度审计](2026-09-28-PLAYBACK-READINESS-AUDIT.md)：回答功能成熟度、开口项和矩阵准入。
-2. [常态远程流程](../development/remote-playback-routine.md)、[分层回归](../development/playback-development-workflow.md)：白天 iPhone 13/后续 iPad，晚上用户及 iPhone 18；按修改影响选回归，不每次重跑 76 单元。
-3. [唯一任务总账](../project/PLAYBACK_EXPERIENCE_PRIORITIES.md)、[19×4 矩阵](PLAYBACK-FUNCTION-MATRIX.md)、[ADR 0002](../adr/0002-single-playback-optimization-mainline.md)。手动清晰度入口暂缓，不删除、不记通过。Greenfield 唯一优化主线，旧实现保留回退，暂未迁移 Release。
-
-用户最新要求是完成源码审计及双账号远程接续方案；不要把审计表里每个缺口都直接当成本轮全面开发任务。
-
-## 工作区与安装状态
-
-- HEAD `a5022d25409f1537f4441142863d3d26801d0c39`，有大量既有未提交源码、KSPlayer、脚本与文档修改。接手先读 git status/diff；不要 reset、清理或覆盖未知修改。不要只用 commit/0.1.0(1) 判断包是否最新。
-- 前序已修复 `AppTabRootView.swift`：iPhone 不再随 horizontalSizeClass 切换根导航。实源码模拟器反例通过；修复包安装 iPhone 13 并确认启动，**真实视频退出尚未复测**。
-- 最近有安装记录的包：`/tmp/nastart-iphone18-adaptive-derived/Build/Products/Debug-iphoneos/Nastart.app`。安装日志 `/tmp/nastart-navigation-return-iphone13-install.log`。不能由此保证当前设备仍是该包，重新核实。
-- iPhone 13：UDID `00008110-001E543122E0401E`，上次系统 iOS 16.3.1。已验证 USB/libimobiledevice/ios-deploy；CoreDevice 不支持不等于离线。WDA 常用本机 8102→设备 8100，接手必须检查服务是否运行。
-- iPhone 18：交接时尚未核实 USB 接入或安装修复包；本文件下方 20:30 检查点已补实测。iPad 后续接入。
-- NAS 先前有重启/资源压力记录；默认单路，先正常短时再长时。不要更改承担远程连接的路由/VPN 来造弱网。
-
-## 最新验证与优先事项
-
-- 前次审计的 generic iOS Release 编译失败，`DevicesView.swift:1215` 引用 DEBUG 专有标识；本文件下方检查点已重跑并通过标准 workspace Release 构建。
-- 2026-09-28 晚模拟器测试日志报告 109 项、0 失败，但 xcodebuild 在测试结束后收尾卡住数分钟，采样保留后终止；没有正常完成标记，不算整套工具运行通过。日志 `/tmp/nastart-audit-tests-resumed.log` 与 `nastart-audit-xcodebuild-hang.txt` 已留本机证据目录；下午中断的那次同样不能算整套通过。后续需定位测试工具收尾问题，不能把它当作某个测试断言失败。
-- 下一开发工作包：双入口退出回详情与重开；准备中离开/连续选片/旧响应晚到；S01/S03 稳定性与断点。静态风险需复现或用证据排除，不直接宣称已发生。
-- 随后 S01/S03/S08 代表片基线，再补弱网候选对齐交接；完整矩阵前规范字段、构建身份及证据索引。HDR+PiP 字幕、自动连播、高级字幕等缺口见审计。
-- 不把日志进度增长当实际画面流畅/声音可听/HDR 输出证明。缺人工和设备项目保留待验。
-
-原始日志与源码差异指纹等本机材料：`~/Library/Application Support/Nastart/DebugEvidence/2026-09-28-readiness/`。临时工具的会话 ID、进程 ID 在新会话中不能假定有效。
-
-## 2026-09-28 20:30 接续检查点
-
-- HEAD 仍为 `a5022d25409f1537f4441142863d3d26801d0c39`；既有未提交修改保留。本次仅更新本交接文件，未修改播放源码。两机均由 `idevice_id -l` 识别：iPhone 13 `00008110-001E543122E0401E`（iOS 16.3.1），iPhone 18 Pro Max `00008160-001468D401A0000A`（iOS 27）。Jellyfin 公共信息接口测试前后 HTTP 200。
-- 两机已安装同一 Debug 包：`/tmp/nastart-iphone18-adaptive-derived/Build/Products/Debug-iphoneos/Nastart.app`，其 `Nastart.debug.dylib` SHA-256 为 `fe6b5acd0fe3a5dff0e4774a9689b8c2555bbe8458d8c221c12de87cdc68510d`。iPhone 18 安装日志 `/tmp/nastart-preparation-iphone18-install.log`；iPhone 13 本次 USB 安装日志 `/tmp/nastart-handoff-iphone13-install.log`。iPhone 13 需用 `ios-deploy` 安装，当前 CoreDevice 不能按其 UDID 查到 iOS 16 设备。
-- iPhone 18 真机 S01《哈尔的移动城堡》设备文件入口：原有播放画面退出回同一文件预览，点“继续观看”后再次显示真实视频画面。Jellyfin 入口：从搜索结果详情进入新架构，看到真实首屏画面，点“完成”回同一 Jellyfin 详情，点“继续观看”再次看到真实画面，再次退出仍回详情。这只覆盖短路径；未据此证明声音、长时流畅、断点精度、自动降档或完整矩阵通过。截图仅在本机 `/tmp/nastart-handoff-iphone18-jellyfin-s01-{first,reopen}.png` 等处，不纳入仓库。
-- Jellyfin S01 后续又完成一次短进出导航（共两次）；第三次尚未开始时微信通知使 WDA 前台快照短暂切为 SpringBoard，App 进程仍在，通知消退后又显示同一详情页。未将自动化中断记作 App 故障，也未计为第三次通过。
-- iPhone 18 在先前设备文件重开后，创建新的 WDA 会话时 Nastart 进程退出；未取到对应崩溃报告，原因不明，不能归因于 App。其后普通启动及上述 Jellyfin 往返均成功。测试已退出播放器，没有设置限速环境或改路由/VPN。
-- 当前 `PlaybackPreparation` 通过请求 UUID 和取消标识拒绝离开详情后的晚响应及旧请求覆盖；`PlaybackNextCoreTests.swift` 中两条确定性测试本次定向重跑 `2 tests, 0 failures`，xcodebuild 正常以 `** TEST SUCCEEDED **` 结束，日志 `/tmp/nastart-handoff-preparation-tests.log`。真机“准备中离开/连续选片”仍未完成。
-- generic iOS Release：直接用 `.xcodeproj` 编译已越过先前 `DevicesView.swift:1215` 错误，但因绕开 Pods workspace 在链接时缺 `MobileVLCKit`。改用标准 `.xcworkspace` 后 `** BUILD SUCCEEDED **`，日志 `/tmp/nastart-handoff-release-workspace-build.log`。这只证明当前源码可编译，不代表 Release 真机功能已验。
-- iPhone 13 安装后用 `ios-deploy --justlaunch` 启动出现一次 `SIGTRAP` 报告 `/tmp/nastart-handoff-iphone13-crashes/Nastart-2026-09-28-202102.ips`；报告没有可用线程栈，且该路径紧接调试器 `safequit`。随后通过 WDA 常规启动和一次 terminate→launch，Nastart 均显示启动台并保持进程，未生成更新的崩溃报告。不能把该 SIGTRAP 单独认定为普通用户启动闪退；后续仍需无调试器冷启动复测。
-- iPhone 13 在同包、家中 Wi-Fi 上又完成 Jellyfin S01 一次新架构播放：屏幕见实际影片画面，点“完成”回《哈尔的移动城堡》详情，“继续观看”出现，Nastart PID `42144` 在退出后仍在。证据截图 `/tmp/nastart-handoff-iphone13-jellyfin-s01-play.png` 与 `...-after-exit.png` 仅留本机；尚未测声音、长时稳定、断点精度或 iPhone 13 设备文件入口。
-- 当前 iPhone 13 WDA `8102→8100`、iPhone 18 WDA `8104→8100` 均曾返回 `ready=true`；接手重新核对，不沿用会话 ID。iPhone 13 启动截图 `/tmp/nastart-handoff-iphone13-startup.png`。后续先补 S01/S03 定向稳定性与准备中取消，再做代表片持续播放及弱网自适应；NAS 有过重启记录，保持单路、先短后长。
-- 20:34 收尾核对：Jellyfin HTTP 200（约 0.10 秒）；iPhone 13 Nastart PID `42144`、iPhone 18 Nastart PID `10637` 均在，播放器已退出；iPhone 13 无 20:21 后的新 Nastart 崩溃报告。两机截图状态栏均显示 Wi-Fi 图标，本轮不能按蜂窝弱网结果解释。未设置限速，也无网络环境需要恢复。
-
-## 2026-09-28 21:05 蜂窝自动降档检查点
-
-- iPhone 13 在家中 Wi-Fi 上完成设备文件 S01 一次播放、退出、继续观看重开，实际画面可见且进程存活；证据仅在本机 `/tmp/nastart-next-iphone13-file-s01-*.png`。iPhone 18 已切蜂窝 4G，本次 Debug 进程限速 S19 由 4 Mbps HLS 降至约 2.2 Mbps 传输能力，自动请求 1.5 Mbps 候选，第二次候选解码与时钟对齐后实际接手。
-- 接手时新播放器缓冲只剩 0.07 秒并停在 2:29，**自动降档尚未通过流畅验收**。源码修复见 `GreenfieldVideoPlayerView.swift`：预热期为追时钟而关闭的 AVPlayer 自动等待，在接手时恢复；预热流接手后保留 3 秒前向缓冲目标，并记录交接时播放意图与缓冲。标准 workspace Debug iphoneos 构建 `** BUILD SUCCEEDED **`，日志 `/tmp/nastart-adaptive-handoff-build.log`；签名包已安装两机。iPhone 18 用无测试变量启动，WDA 显示 PID 11028、`env={}`；iPhone 13 经 WDA 常规激活，PID 42436、`env={}`，安装日志 `/tmp/nastart-adaptive-handoff-iphone13-install.log`。真机降档复验未开始。完整诊断见 [蜂窝测试记录](2026-09-27-IPHONE18-CELLULAR-ADAPTIVE.md)。
-- 此轮后 NAS 的 DSM/Jellyfin 局域网与公网入口失联，Mac 路由器和外网仍可用；原因未知，停止真机视频请求。约 21:06 DSM 局域网已恢复 HTTP 200，Jellyfin 局域网连接仍被重置、公网仍返回 502。iPhone 18 限速进程结束，系统网络配置未更改。Jellyfin 恢复后先确认服务与负载，再单路短时复验；不要把候选接手事件当成无感切换通过。
-- 21:10 以后 Jellyfin 公网接口在 200 与 503 之间波动、局域网 8096 仍曾连接重置；iPhone 18 的启动台截图显示 4G、NAS CPU 70%、磁盘 92%、Jellyfin 灰点。暂不启动视频转码。只读检查还发现 2.2 Mbps 实际传输能力下安全上限约 1.1 Mbps，但旧策略最低强制选 1.5 Mbps；已补 1 Mbps、750 kbps、500 kbps 档。定向测试 `testAdaptiveTargetFitsCapacityAndStepsDownAgain` 正常 `** TEST SUCCEEDED **`，日志 `/tmp/nastart-adaptive-low-bitrate-test.log`；标准 workspace Debug iphoneos `** BUILD SUCCEEDED **`，日志 `/tmp/nastart-adaptive-low-bitrate-device-build.log`。
-- 最新签名 Debug 包已再次安装 iPhone 18 与 iPhone 13；iPhone 13 安装日志 `/tmp/nastart-adaptive-low-bitrate-iphone13-install.log`。两机用无测试变量常规启动，WDA 分别显示 iPhone 18 PID 11075、iPhone 13 PID 42470，`env={}`。新低码率档及交接缓冲修复均未做真机视频复验。
-- 约 21:15 Jellyfin 公网接口连续三次 HTTP 200，iPhone 18 启动台显示 4G、Jellyfin 在线、NAS CPU 57%。准备复验时，WDA 的完整 UI 树查询卡住；恢复 WDA 后屏幕显示手机已切到其他个人应用，表明设备当时正在被使用。**没有启动视频或限速**，立即停止界面操作并删除该私人屏幕临时截图。后续真机操作需待用户确认手机空闲并回到 Nastart；WDA 重启日志 `/tmp/nastart-adaptive-wda-restart.log`，新会话 ID 不应沿用。
-
-## 两个账号轮换方案（尚未实机演练）
-
-官方 Remote 要求手机与桌面主机使用同一账号及工作区；切账号会使旧身份的远程会话失效。只在手机换号不能保证接管 Mac。配对从桌面 Settings → Connections → Control this Mac or PC 开始，再用手机扫码和完成身份验证。
-
-因此建议先在家准备一个独立于 ChatGPT 额度的远程桌面访问方式，并用手机外网做完整演练：停止 A 当前修改/设备操作、更新交接文件 → 从独立通道进入 Mac → Mac 和手机均切 B → 检查 B 的 Remote 配对，必要时重建 → 在 B 打开同一项目，新会话读本文件接续。扫码在同一手机远程画面中的可行性及登录验证必须提前实测；不能承诺无人值守自动切换。本轮未配置远程桌面、未切账号。
-
-未找到官方支持把两个账号的额度或历史会话合并后原地接续的流程。工程接续以本机文件为准；不要复制认证缓存或依赖旧账号聊天自动出现在新账号中。单一工作区/单台测试手机同一时间只由一个会话写入和控制；另一个账号先停止后再接手。
-
-每批结束或额度接近用尽时，更新本文件的当前包、实际通过/失败、在跑进程与下一步。这样即使额度突然用尽，也有上一检查点可读；接手还需核对现场，不能假定记录之后没有变化。
-
-官方依据（2026-09-28 查询）：[Remote connections](https://learn.chatgpt.com/docs/remote-connections)、[账号切换使旧远程会话失效的更新记录](https://learn.chatgpt.com/docs/changelog)。
-
-给新账号的起始指令：
-
-> 打开 /Users/lagransun/workspace/Nastart，先读取 docs/handoffs/CURRENT-PLAYBACK-HANDOFF.md 及其中的审计和总账，再核实工作区、设备和当前构建。沿既定播放主线继续，保留未提交修改，按影响范围回归；先报告已完成与待验证的边界，不从头重建方案。
+NAS业务可只读访问，原文件/目录/配置/VPN不得修改；密码/TMDB令牌由用户App内输入、不读实际Keychain/密码眼睛。TMDB真实API/UI、NAS安全收尾/样本缺口、声音/字幕实际呈现/帧时间/PiP/长时仍待。需求编号仅在唯一总账，30项/114格保持。

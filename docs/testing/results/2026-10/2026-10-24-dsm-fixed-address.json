@@ -1,0 +1,273 @@
+{
+  "at": "2026-10-24T10:04:57.851711+08:00",
+  "implementation": "Per-connection Always use this address; Keychain and remembered input persistence, DSM restoration limited to configured origin and no discovery/authentication fallback on failure; legacy defaultfalse. Optional media routing separate.",
+  "sourceFiles": [
+    "ios/Nastart/Nastart/Core/Stores/AppStateStores.swift",
+    "ios/Nastart/Nastart/Features/Launchpad/LaunchpadConnectionViews.swift",
+    "ios/Nastart/Nastart/en.lproj/Localizable.strings",
+    "ios/Nastart/Nastart/zh-Hans.lproj/Localizable.strings",
+    "ios/Nastart/NastartTests/NonPlaybackPolicyTests.swift"
+  ],
+  "package": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "binaryBuildTime": "2026-10-24T09:48:23.163629+08:00",
+    "sourceDiffSHA256": "9b99045c40b459fa2788aa3a3fe08cc681812390a6d42dc59a327608bf06ba81",
+    "binaries": {
+      "Nastart": "26fff4ab034e0833fcc56e52a130ec96ba8ccc3a33df7859bd4d2190bcc43524",
+      "Nastart.debug.dylib": "ab88292957d556b1fbdfa8090e947c3fd87e7f83e77e600d7e5baeb2cf33120b",
+      "Frameworks/KSPlayer.framework/KSPlayer": "7091aad71bb399c23e285419afbe1cd055eb242cb5c6e4651a4fff7a4b181a4c"
+    },
+    "ipaSHA256": "f972d6ad78aa0c1d687079e982506024f68448fc874d2f1d56dfd1f0b0c561bc",
+    "checkedInputs": 174,
+    "individuallyVerifiedLibraries": 29,
+    "profileExpirationUTC": "2026-10-24T22:23:57",
+    "tests": {
+      "executed": 19,
+      "passed": 19,
+      "note": "3 new fixed-address persistence/domain-only restore/failure tests plus15 existing connection isolation and1 actual decoded output adoption regression; normal TEST SUCCEEDED"
+    },
+    "preflight": {
+      "passed": 15,
+      "failed": 0
+    }
+  },
+  "selectedTests": [
+    "NastartTests/NonPlaybackPolicyTests/testFixedDSMAddressCredentialRoundTripAndLegacyDefault",
+    "NastartTests/NonPlaybackPolicyTests/testFixedDSMAddressRestoresOnlyDomainAndPersistsAcrossDiscoveredLANAndRestart",
+    "NastartTests/NonPlaybackPolicyTests/testFixedDSMAddressFailureDoesNotDiscoverOrAuthenticateAnotherAddress",
+    "NastartTests/NonPlaybackPolicyTests/testAutomaticRestoreSelectsResponsiveConfiguredLANBeforeCredentials",
+    "NastartTests/NonPlaybackPolicyTests/testCancellingAutomaticRestoreCancelsAllProbesWithoutCredentialPOST",
+    "NastartTests/NonPlaybackPolicyTests/testSelectedEndpointAmbiguousPOSTNeverReplaysOnOtherConfiguredAddress",
+    "NastartTests/NonPlaybackPolicyTests/testPreparedEndpointStillAllowsExplicitVersionCompatibilityOnSameHost",
+    "NastartTests/NonPlaybackPolicyTests/testUnusableOrCrossOriginMetadataCannotWinEndpointSelection",
+    "NastartTests/NonPlaybackPolicyTests/testManualLoginAndSingleEndpointRestoreKeepTheirOriginalQueryOrder",
+    "NastartTests/NonPlaybackPolicyTests/testEndpointPreparationFiltersInvalidAndDuplicateAddressesBeforeRequests",
+    "NastartTests/NonPlaybackPolicyTests/testHTTPErrorAfterCredentialPOSTDoesNotCauseRestoreFallback",
+    "NastartTests/NonPlaybackPolicyTests/testAmbiguousResponseRestoreDoesNotScanLANOrReauthenticate",
+    "NastartTests/NonPlaybackPolicyTests/testTimedOutRestoreShowsRecoveryFailureWithoutLANScanOrReauthentication",
+    "NastartTests/NonPlaybackPolicyTests/testRestorePublishesFileSessionWhileLANDiscoveryIsStillPending",
+    "NastartTests/NonPlaybackPolicyTests/testRestoreCancelledBeforeStartDoesNotAuthenticate",
+    "NastartTests/NonPlaybackPolicyTests/testRestoreLateLoginCannotReplaceManualSession",
+    "NastartTests/NonPlaybackPolicyTests/testManualTailLateLANDiscoveryCannotPublishToNewLogin",
+    "NastartTests/NonPlaybackPolicyTests/testRestoreCurrentCredentialWriteFailureRemainsVisibleAndDoesNotPublishSnapshot",
+    "NastartTests/PlaybackNextCoreTests/testOriginalReplacementDecodesPausedPreviewBeforeHandoff"
+  ],
+  "testExit": 0,
+  "buildExit": 0,
+  "iphone13Install": {
+    "device": "iphone13",
+    "model": "iPhone14,5",
+    "system": "16.3.1",
+    "connection": "USB",
+    "binaries": {
+      "Nastart": "26fff4ab034e0833fcc56e52a130ec96ba8ccc3a33df7859bd4d2190bcc43524",
+      "Nastart.debug.dylib": "ab88292957d556b1fbdfa8090e947c3fd87e7f83e77e600d7e5baeb2cf33120b",
+      "Frameworks/KSPlayer.framework/KSPlayer": "7091aad71bb399c23e285419afbe1cd055eb242cb5c6e4651a4fff7a4b181a4c"
+    },
+    "sourceDiffSHA256": "9b99045c40b459fa2788aa3a3fe08cc681812390a6d42dc59a327608bf06ba81",
+    "preservesContainer": true,
+    "signatureVerified": true,
+    "actualForegroundUIVerified": true,
+    "requestedEnvironment": {},
+    "requestedArguments": [],
+    "installation": "success",
+    "startedAt": "2026-10-24T09:50:21.466203+08:00",
+    "installedAt": "2026-10-24T09:50:36.604592+08:00",
+    "preferenceKeysUnchanged": true,
+    "preferenceValuesUnchanged": true,
+    "nonDiagnosticKeys": 25,
+    "emptyEnvironmentHomeVerified": true
+  },
+  "iphone13FormInspection": {
+    "mediaCommands": 0,
+    "connectCommands": 0,
+    "fieldEdits": 0,
+    "switchToggles": 0,
+    "latestSourcePackageOwnReceiptAndFreshDeviceVerified": true,
+    "fixedAddressSwitchPresentAndOff": true,
+    "formHostKind": "domain",
+    "rememberedInputStillDomain": true,
+    "formImageReviewPending": false,
+    "allNonDiagnosticPreferencesUnchanged": true,
+    "cancelReturnedToNormalNASHome": true,
+    "ownedNastartStopped": true,
+    "actualNativeFormImageReviewed": true,
+    "formHostAndExplicitPortConfirmedPrivately": true,
+    "switchVisibleOffOnActualImage": true,
+    "actualCancelReturnedNASHomeImageReviewed": true
+  },
+  "iphone13LoginTargetClasses": [
+    {
+      "at": "2026-10-24T09:37:28.191469+08:00",
+      "targetKind": "redactedRFC1918IPv4",
+      "scheme": "http",
+      "hasExplicitPort": true
+    },
+    {
+      "at": "2026-10-24T09:37:29.426316+08:00",
+      "targetKind": "redactedRFC1918IPv4",
+      "scheme": "http",
+      "hasExplicitPort": true
+    },
+    {
+      "at": "2026-10-24T09:51:26.480598+08:00",
+      "targetKind": "redactedRFC1918IPv4",
+      "scheme": "http",
+      "hasExplicitPort": true
+    },
+    {
+      "at": "2026-10-24T09:51:27.734514+08:00",
+      "targetKind": "redactedRFC1918IPv4",
+      "scheme": "http",
+      "hasExplicitPort": true
+    }
+  ],
+  "iphone13Final": {
+    "at": "2026-10-24T10:00:27.045786+08:00",
+    "current174InputsAndPackageAndOwnInstallReceiptVerified": true,
+    "liveModel": "iPhone14,5",
+    "liveSystem": "16.3.1",
+    "connection": "USB",
+    "WDAAppStates": [
+      1,
+      1
+    ],
+    "settingsRestored": true,
+    "fullNonDiagnosticPreferencesStableTwoReads": true,
+    "other24PreferencesUnchangedSinceInstall": true,
+    "bookmarkKeys": 36,
+    "bookmarkKeysSame": true,
+    "trackPreferencesSame": true,
+    "changedBookmarkFields": [],
+    "homeImageReviewPending": false,
+    "actualNormalNASHomeAndFormReviewedAt0953": true,
+    "finalNativeImageWasBlackRetained": true,
+    "oneHomeWakeConfirmedLockScreen": true,
+    "finalUnlocked": false,
+    "finalWiFiIconVisible": true,
+    "noPiPVisible": true,
+    "noAppPlaybackActive": true
+  },
+  "ipadInstall": {
+    "device": "ipad",
+    "model": "iPad12,1",
+    "system": "18.3.1",
+    "connection": "USB",
+    "binaries": {
+      "Nastart": "26fff4ab034e0833fcc56e52a130ec96ba8ccc3a33df7859bd4d2190bcc43524",
+      "Nastart.debug.dylib": "ab88292957d556b1fbdfa8090e947c3fd87e7f83e77e600d7e5baeb2cf33120b",
+      "Frameworks/KSPlayer.framework/KSPlayer": "7091aad71bb399c23e285419afbe1cd055eb242cb5c6e4651a4fff7a4b181a4c"
+    },
+    "sourceDiffSHA256": "9b99045c40b459fa2788aa3a3fe08cc681812390a6d42dc59a327608bf06ba81",
+    "preservesContainer": true,
+    "signatureVerified": true,
+    "actualForegroundUIVerified": true,
+    "requestedEnvironment": {},
+    "requestedArguments": [],
+    "installation": "success",
+    "startedAt": "2026-10-24T10:00:25.428080+08:00",
+    "installedAt": "2026-10-24T10:00:48.498840+08:00",
+    "preferenceKeysUnchanged": true,
+    "preferenceValuesUnchanged": true,
+    "nonDiagnosticKeys": 18,
+    "emptyEnvironmentHomeVerified": true
+  },
+  "ipadFinal": {
+    "at": "2026-10-24T10:01:06.989251+08:00",
+    "current174InputsAndPackageAndOwnInstallReceiptVerified": true,
+    "model": "iPad12,1",
+    "system": "18.3.1",
+    "connection": "USB",
+    "fullNonDiagnosticPreferencesStableTwoReads": true,
+    "other17PreferencesUnchangedSinceInstall": true,
+    "bookmarkKeys": 29,
+    "bookmarkKeysSame": true,
+    "trackPreferencesSame": true,
+    "changedBookmarkFields": [],
+    "homeImageReviewPending": false,
+    "nativeAppCount": 0,
+    "nativeRunnerCount": 0,
+    "actualNormalNASHomeImageReviewed": true,
+    "actualFinalHomeImageReviewed": true,
+    "WiFiIconVisible": true,
+    "noPiPVisible": true,
+    "zeroMediaThisBatch": true
+  },
+  "ipadRecovery": {
+    "startedAt": "2026-10-24T10:00:48.868351+08:00",
+    "mediaCommands": 0,
+    "networkChanges": false,
+    "newWDABuildOrInstall": false,
+    "scope": "latest package installation followup normal home only; no media",
+    "freshDeviceSourcePackageAndOwnReceiptVerifiedBeforeRunner": true,
+    "preexistingNastartProcessCount": 0,
+    "nativeForegroundHomeNoPiPReviewedBeforeRunner": true,
+    "nativeRunnerAbsentBeforeOwnedLaunch": true,
+    "powerEvidence": [
+      {
+        "label": "before-owned-runner",
+        "ownCaffeinateAssertionObserved": true,
+        "ACPower": true,
+        "atUnix": 1792807251.205478
+      },
+      {
+        "label": "after-home-capture",
+        "ownCaffeinateAssertionObserved": true,
+        "ACPower": true,
+        "atUnix": 1792807261.459883
+      },
+      {
+        "label": "after-owned-cleanup",
+        "ownCaffeinateAssertionObserved": true,
+        "ACPower": true,
+        "atUnix": 1792807263.6140642
+      }
+    ],
+    "existingRunnerNativeXCTestReady": true,
+    "normalHomeHelperExitCode": 0,
+    "normalEmptyEnvironmentNASHomeObserved": true,
+    "nativeHomeImageReviewPending": false,
+    "normalHomeOnlyNoPlaybackRegression": true,
+    "ownRunnerHostStopped": true,
+    "finalNativeAppCount": 0,
+    "finalNativeRunnerCount": 0,
+    "rawCompletePreferencesEqualToPreInstall": true,
+    "finishedAt": "2026-10-24T10:01:03.615640+08:00",
+    "actualNormalNASHomeImageReviewed": true,
+    "actualPostCleanupHomeImageReviewed": true,
+    "afterInstallBeforeRunnerImageReviewedAfterBatch": true
+  },
+  "iphone18": {
+    "knownPairedCurrentDiscovery": {
+      "outcome": "unverified",
+      "failureType": "ValueError",
+      "pairingRecordChanged": false,
+      "networkConfigurationChanged": false
+    },
+    "browser": {
+      "advertisedInstances": 2,
+      "normalizedSameTargetMatches": 0,
+      "networkConfigurationChanged": false,
+      "pairingChanged": false
+    },
+    "backupUploadInstallLaunchCommands": 0,
+    "latestPackageInstalled": false,
+    "fixedAddressEnabledOnActualDevice": false,
+    "reason": "same paired service did not currently resolve and no normalized same-target advertisement; existing unlock/familyWiFi request remains pending, not repeated",
+    "lastConfirmedInstalledPackage": "00:00 historical package; normal home then not confirmed"
+  },
+  "mediaPlaybackCommandsThisBatch": 0,
+  "mediaAndAcceptanceLimits": [
+    "No latest09:48 media regression; prior09:23 S19 manual candidate results historical for this package",
+    "No actualiPhone18 fixed-domain or cellular migration acceptance",
+    "19 tests model actual protocol requests/persistence; real form only observedOff and cancelled without authentication",
+    "No NAS/VPN/network configuration change or credential clearing; no same-device pin default applied to13/Pad",
+    "28 open and76 complete-status cells unchanged"
+  ],
+  "hostFinal": {
+    "thisPrivateRootActiveProcesses": 0,
+    "ownedInstallationRunnerCaffeinateAndCollectionStopped": true,
+    "priorUnownedIPhone13WDAKept": true
+  }
+}

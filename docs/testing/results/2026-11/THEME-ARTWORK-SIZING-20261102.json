@@ -1,0 +1,172 @@
+{
+  "recordedAt": "2026-11-02T06:40:45.034782+08:00",
+  "changedSourceCount": 1,
+  "otherSourceInputsUnchanged": 445,
+  "changedSource": "ios/Nastart/Nastart/Features/Mine/MineView.swift",
+  "change": "Fix decorative miniature at standard large Dynamic Type size; semantic title/description/status scaling unaffected",
+  "indexUnchanged": true,
+  "claudeGrantedFilesUnchanged": 4,
+  "physicalDevicesControlled": 0,
+  "NASCommands": 0,
+  "status": "source_build_component_UI_and_normal_package_verified_physical_pending",
+  "source": {
+    "HEAD": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceInputs": 446,
+    "iosDiffSHA256": "4f97dc8ebfaccb6d24ef886cfac625c3d8deb6efdcebd8a037d98ebe85f67fd0",
+    "changedInputs": [
+      "/Users/lagransun/workspace/Nastart/ios/Nastart/Nastart/Features/Mine/MineView.swift"
+    ]
+  },
+  "builds": {
+    "mobile-sim-debug-cast": {
+      "startedAt": "2026-11-02T06:30:46.894447+08:00",
+      "freeGiBBefore": 16.06808853149414,
+      "reserveGiB": 2,
+      "exitCode": 0,
+      "endedAt": "2026-11-02T06:31:08.988080+08:00",
+      "freeGiBAfter": 15.971569061279297
+    },
+    "mobile-unsigned-debug": {
+      "startedAt": "2026-11-02T06:31:08.991400+08:00",
+      "freeGiBBefore": 15.971561431884766,
+      "reserveGiB": 2,
+      "exitCode": 0,
+      "endedAt": "2026-11-02T06:31:48.143396+08:00",
+      "freeGiBAfter": 15.984077453613281
+    },
+    "mobile-release": {
+      "startedAt": "2026-11-02T06:31:48.144605+08:00",
+      "freeGiBBefore": 15.984062194824219,
+      "reserveGiB": 2,
+      "exitCode": 0,
+      "endedAt": "2026-11-02T06:33:38.620836+08:00",
+      "freeGiBAfter": 15.975826263427734
+    }
+  },
+  "phone": {
+    "case": "iPhone13 iOS27 simulator, Chinese accessibility2, dark glassDeck",
+    "actualObservation": "Three miniature headers/metric panels/service rows fit without prior large-text cropping; actual Chinese title/description/status remain large and fully readable; Glow expanded artwork full and synthetic preview/back retain selection; sample metrics excluded from combined AX labels",
+    "evidence": "CUA AX/screenshot tool trail; no standalone PNG claimed",
+    "cleanup": {
+      "startedAt": "2026-11-02T06:33:54.181662+08:00",
+      "model": "iPhone13",
+      "system": "iOS27",
+      "physicalDevicesControlled": 0,
+      "NASCommands": 0,
+      "ordinaryRootStarted": false,
+      "testEnvironmentVariables": false,
+      "launches": [
+        {
+          "at": "2026-11-02T06:35:09.881072+08:00",
+          "language": "zh-Hans",
+          "size": "large",
+          "theme": "glassDeck",
+          "appearance": "dark"
+        }
+      ],
+      "binaries": {
+        "Nastart": "a14854ba92b04aa772c266475ad036ae35538e8aa9bca2687e6afb2a79765fa5",
+        "Nastart.debug.dylib": "f487a8f1f4e0b5a6dba941fa74caa01152b697c0933073cfad561e21ab042dac"
+      },
+      "fixturePreferencesPreserved": true,
+      "additionalPreferenceKeys": 0,
+      "passwordTraceAbsent": true,
+      "shutdownExitCode": 0,
+      "deleteExitCode": 0,
+      "ownedSimulatorAbsent": true,
+      "endedAt": "2026-11-02T06:37:02.767091+08:00"
+    }
+  },
+  "notVerified": [
+    "physical device",
+    "full VoiceOver",
+    "touch scroll and performance",
+    "real account or theme apply"
+  ],
+  "claude5": {
+    "messageQueued": true,
+    "permissionPromptBlocked": true,
+    "permissionControlsOperatedByCodex": false,
+    "deliveryObserved": false
+  },
+  "goalActive": true,
+  "pad": {
+    "case": "A16 iPad iOS27 simulator, English accessibility2, dark commandCenter",
+    "actualObservation": "All three decorative headers/metrics/service rows visible within miniature artwork; full descriptions and Active/Plus remain large, below text; Stack expanded artwork full and synthetic preview/back retain selection; decorative content absent from AX labels",
+    "evidence": "CUA AX/screenshot tool trail; no standalone PNG claimed",
+    "cleanup": {
+      "startedAt": "2026-11-02T06:37:18.228528+08:00",
+      "model": "A16 iPad",
+      "system": "iOS27",
+      "physicalDevicesControlled": 0,
+      "NASCommands": 0,
+      "ordinaryRootStarted": false,
+      "testEnvironmentVariables": false,
+      "launches": [
+        {
+          "at": "2026-11-02T06:38:32.713655+08:00",
+          "language": "en",
+          "size": "large",
+          "theme": "commandCenter",
+          "appearance": "dark"
+        }
+      ],
+      "binaries": {
+        "Nastart": "a14854ba92b04aa772c266475ad036ae35538e8aa9bca2687e6afb2a79765fa5",
+        "Nastart.debug.dylib": "f487a8f1f4e0b5a6dba941fa74caa01152b697c0933073cfad561e21ab042dac"
+      },
+      "fixturePreferencesPreserved": true,
+      "additionalPreferenceKeys": 0,
+      "passwordTraceAbsent": true,
+      "shutdownExitCode": 0,
+      "deleteExitCode": 0,
+      "ownedSimulatorAbsent": true,
+      "endedAt": "2026-11-02T06:39:42.735642+08:00"
+    }
+  },
+  "sameSimulatorBinariesInBothWindows": true,
+  "allOwnedSimulatorsRemoved": true,
+  "normalSignedPackageFrozen": true,
+  "normalBuild": {
+    "startedAt": "2026-11-02T06:40:11.414107+08:00",
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceInputCount": 446,
+    "sourceDiffSHA256": "4f97dc8ebfaccb6d24ef886cfac625c3d8deb6efdcebd8a037d98ebe85f67fd0",
+    "developerDir": "/Applications/Xcode.app/Contents/Developer",
+    "xcodeVersion": "Xcode 27.0\nBuild version 27A266a",
+    "configuration": "normal Debug -Onone",
+    "provisioningUpdatesRequested": false,
+    "exitCode": 0,
+    "endedAt": "2026-11-02T06:41:18.048958+08:00",
+    "inputHashesUnchanged": true
+  },
+  "normalPackage": {
+    "configuration": "normal Debug -Onone",
+    "builtAt": "2026-11-02T06:41:18.048958+08:00",
+    "sourceInputCount": 446,
+    "sourceDiffSHA256": "4f97dc8ebfaccb6d24ef886cfac625c3d8deb6efdcebd8a037d98ebe85f67fd0",
+    "mainSHA256": "56d9431957728339a65f2b34191567f724e723aeabc84d5d18137a9699bc19e8",
+    "debugDylibSHA256": "26b87a16d0e1648977024acff0f87df1272ecb500313af50cb782fa1658d6b54",
+    "ipaSHA256": "c114c0bb5ea279079424b12ba8fd94c776491e5efb702cad8d215e29ff9dad08",
+    "signedMachOCount": 30,
+    "individuallyVerifiedLibraries": 29,
+    "profileExpirationUTC": "2026-11-08T01:08:19+00:00",
+    "deepAndIndividualSignatureVerificationPassed": true,
+    "ipaArchiveAndCurrentInputsVerified": true,
+    "provisioningUpdatesRequested": false,
+    "physicalDevicesInstalled": 0,
+    "normalRootLaunched": false
+  },
+  "finalChecks": {
+    "at": "2026-11-02T06:44:12.526244+08:00",
+    "documentationDocuments": 604,
+    "localLinks": 3753,
+    "missingDestinations": 0,
+    "gitDiffCheckExitCode": 0,
+    "sourceInputsUnchanged": 446,
+    "indexUnchanged": true,
+    "claudeGrantedFilesUnchanged": 4,
+    "activeBuildWorkers": 0,
+    "ownedSimulatorsAbsent": true
+  }
+}

@@ -1,0 +1,163 @@
+{
+  "updatedAt": "2026-10-24 23:04",
+  "scope": "TV read-only file browsing and service filtering",
+  "HEAD": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "configuration": "normal Debug",
+  "source": {
+    "inputs": 508,
+    "driftCount": 0
+  },
+  "device": {
+    "at": "2026-10-24T22:38:47.333011+08:00",
+    "model": "AppleTV14,1",
+    "system": "18.2",
+    "matchedIdentifier": true,
+    "detailsRead": true,
+    "preferencesSaved": true
+  },
+  "package": {
+    "signedMachOCount": 27,
+    "profileExpirationUTC": "2026-10-31 05:46:14",
+    "identityPreserved": true,
+    "installedAt": "2026-10-24T22:40:30.976238+08:00",
+    "installationExit": 0,
+    "executableSHA256": "d8dd24196ddf15c957c28b83b510b61ba99720df907100aa2c90be54b51a65a8",
+    "debugDylibSHA256": "5dd25e0f4c6568e7df69ab292e18d4b25618d693ee0129e345ae01a248a223b9"
+  },
+  "normalLaunch": {
+    "startedAt": "2026-10-24T22:41:18.790033+08:00",
+    "environment": {},
+    "arguments": [],
+    "mediaCommands": 0,
+    "PID": 2432,
+    "nativeImagesCaptured": true,
+    "finishedAt": "2026-10-24T22:41:31.153534+08:00"
+  },
+  "tests": {
+    "logic": 32,
+    "startupUI": 1,
+    "failures": 0,
+    "startedAt": "2026-10-24T22:41:18.505015+08:00",
+    "finishedAt": "2026-10-24T22:41:50.884323+08:00",
+    "exit": 0
+  },
+  "observedCheckpoints": [
+    {
+      "at": "2026-10-24T22:54:35.498734+08:00",
+      "case": "Root descending reloaded",
+      "observed": true,
+      "count": 6
+    },
+    {
+      "at": "2026-10-24T22:55:06.113990+08:00",
+      "case": "Directory modified-time sort returns list",
+      "observed": true,
+      "sortPanelDismissed": true
+    },
+    {
+      "at": "2026-10-24T22:56:04.576770+08:00",
+      "case": "Ordinary text file opens real metadata information",
+      "observed": true
+    },
+    {
+      "at": "2026-10-24T22:56:06.892207+08:00",
+      "case": "Information Menu returns to same directory",
+      "observed": true
+    },
+    {
+      "at": "2026-10-24T22:56:17.190617+08:00",
+      "case": "Directory size sort selected",
+      "observed": true
+    },
+    {
+      "at": "2026-10-24T22:56:21.363989+08:00",
+      "case": "Sort panel Menu returns to same directory",
+      "observed": true
+    },
+    {
+      "at": "2026-10-24T22:56:23.278914+08:00",
+      "case": "Nested directory returns to shared-folder root",
+      "observed": true
+    },
+    {
+      "at": "2026-10-24T22:56:25.263514+08:00",
+      "case": "File browser returns to launchpad",
+      "observed": true
+    },
+    {
+      "at": "2026-10-24T22:56:36.042471+08:00",
+      "case": "Service directory filter and count available",
+      "observed": true
+    },
+    {
+      "at": "2026-10-24T23:01:12.961918+08:00",
+      "case": "Service filter matches actual Jellyfin image",
+      "observed": true,
+      "count": "1 / 46 项"
+    },
+    {
+      "at": "2026-10-24T23:01:27.567575+08:00",
+      "case": "Service no-match message observed",
+      "observed": true
+    },
+    {
+      "at": "2026-10-24T23:01:31.371147+08:00",
+      "case": "Clear service filter restores discovered directory",
+      "observed": true,
+      "count": "46 / 46 项"
+    },
+    {
+      "at": "2026-10-24T23:01:34.194708+08:00",
+      "case": "Service directory returns to device",
+      "observed": true
+    },
+    {
+      "at": "2026-10-24T23:01:59.623829+08:00",
+      "case": "Loaded-file filter no-match message observed",
+      "observed": true
+    },
+    {
+      "at": "2026-10-24T23:02:15.162614+08:00",
+      "case": "Clearing file filter restores directories",
+      "observed": true
+    },
+    {
+      "at": "2026-10-24T23:02:17.753607+08:00",
+      "case": "Final launchpad return",
+      "observed": true
+    }
+  ],
+  "preferences": {
+    "at": "2026-10-24T23:03:01.795334+08:00",
+    "allOriginalPreferencesPreserved": true,
+    "changedKeyCount": 0,
+    "theme": "glassDeck",
+    "mode": "system",
+    "posterDensity": 5
+  },
+  "runner": {
+    "startedAt": "2026-10-24T22:53:43.885155+08:00",
+    "limitSeconds": 900,
+    "runnerStopped": true,
+    "finishedAt": "2026-10-24T23:02:18.597381+08:00"
+  },
+  "interruptedInitialRunner": {
+    "at": "2026-10-24T22:53:04.400206+08:00",
+    "reason": "host execution interrupted; only this owned TV runner",
+    "countStopped": 0,
+    "runnerStopped": true
+  },
+  "limitations": [
+    "No new playback, download, cellular, NAS writes or cloud writes in this UI batch",
+    "No new iPhone/iPad device regression; mobile source unchanged",
+    "Server sorting paginated; loaded-file filter is not whole-NAS search",
+    "Large-directory second-page live verification, ordinary file preview, write operations, favorites and custom order remain pending",
+    "No complete frame timing or competitor performance conclusion",
+    "28 requirements and 114 playback cells unchanged"
+  ],
+  "retainedFailures": [
+    "Initial compile: Menu requires tvOS17; replaced with tvOS16-compatible sort sheet",
+    "Host execution interruption; old owned Runner was already absent on recovery",
+    "Keyboard Done selector matched Button and StaticText; precise element click then timed out; observed keyboard still open, remote focus/select completed"
+  ]
+}

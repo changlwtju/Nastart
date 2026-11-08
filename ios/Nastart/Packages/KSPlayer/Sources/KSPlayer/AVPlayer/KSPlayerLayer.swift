@@ -188,6 +188,8 @@ open class KSPlayerLayer: NSObject {
 
     private var urls = [URL]()
     private var isAutoPlay: Bool
+    /// User intent remains playing while the transport waits for buffered data.
+    public var wantsPlayback: Bool { isAutoPlay }
     private var isWirelessRouteActive = false
     private var bufferedCount = 0
     private var shouldSeekTo: TimeInterval = 0

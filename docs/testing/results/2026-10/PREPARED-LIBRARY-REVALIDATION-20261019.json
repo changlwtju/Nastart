@@ -1,0 +1,774 @@
+{
+  "date": "2026-10-19",
+  "change": "prepared library same-origin authenticated revalidation candidate",
+  "package": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "0ca9a6ef74d4165c25dc58bda66b99ec111f017bf3b39737d592fabc482ff52a",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "Xcode": "27.0/27A266a",
+    "binaryBuildTime": "2026-10-19T12:14:58.574893+08:00",
+    "binaries": {
+      "Nastart": "938803b516ffcc22841bfcc1a7dd7367a23ef9835d4aa9f37adac7359b024129",
+      "Nastart.debug.dylib": "037c6e0cf0e1e885c75dc4b4e3af2c4444a421945776f589ffcb31258c1e2bde",
+      "Frameworks/KSPlayer.framework/KSPlayer": "866f9699b66464cc007dbc27ed82e83f613325e6667045e49701568ab03b600b"
+    },
+    "checkedInputs": 173,
+    "individuallyVerifiedLibraries": 29,
+    "signatureVerified": true,
+    "ipaCRCAndBinaryHashesVerified": true,
+    "profileExpirationUTC": "2026-10-24T22:23:57"
+  },
+  "validation": {
+    "finalSelectedXCTest": 51,
+    "failures": 0,
+    "preflight": 15,
+    "interim51PassedButNotFinalSource": true,
+    "fullSuiteRun": false
+  },
+  "cellular": [
+    {
+      "entry": "Jellyfin",
+      "repeat": 1,
+      "sample": "S19",
+      "real4GObserved": true,
+      "signalStrength": "user reported weak; no quantitative measurement",
+      "cache": "unknown",
+      "internalFirstClockSecondsFromTouch": 12.628691,
+      "internalClockIsNotVisibleFrame": true,
+      "seek": [
+        {
+          "start": {
+            "secondsFromTouch": 48.175515,
+            "event": "seek_started",
+            "fields": {
+              "engine": "AVPlayer",
+              "seekDeltaSeconds": 6747.601511072932,
+              "seekTargetSeconds": 6783.601774457932
+            }
+          },
+          "signals": [
+            {
+              "secondsFromTouch": 54.68571,
+              "event": "seek_engine_completed",
+              "fields": {
+                "engine": "AVPlayer",
+                "targetSeconds": 6783.601774457932
+              }
+            },
+            {
+              "secondsFromTouch": 55.13655,
+              "event": "seek_recovered",
+              "fields": {
+                "currentSeconds": 6784.001167248,
+                "engine": "AVPlayer",
+                "evidence": "engineCompletionAndAdvancingClock",
+                "seekRecoveryMs": 6962,
+                "seekTargetSeconds": 6783.601774457932
+              }
+            }
+          ],
+          "recoveryMs": 6962,
+          "censoredAfterSeconds": null,
+          "meaning": "engine completion and advancing clock, not first visible frame"
+        }
+      ],
+      "completedURLMetrics": 47,
+      "cellularYes": 47,
+      "maxStallCountIncludingSeek": 2,
+      "publication": [
+        {
+          "secondsFromTouch": 5.601455,
+          "reason": "freshSameOriginAfterCellularPathChange",
+          "stage": "preparedLibraryRevalidationStarted"
+        },
+        {
+          "secondsFromTouch": 6.106513,
+          "elapsedMs": "483",
+          "mediaRenegotiated": "false",
+          "ownEndpointTokenUsed": "true",
+          "preparedPathGeneration": "5",
+          "reason": "sameServerAndAccountOnCurrentPath",
+          "stage": "preparedLibraryRevalidated"
+        },
+        {
+          "secondsFromTouch": 6.1073,
+          "preparedPathGeneration": "5",
+          "reason": "libraryEndpoint",
+          "stage": "publicCellularPreparationRetained",
+          "startedPathGeneration": "3"
+        }
+      ],
+      "negotiated": [
+        {
+          "audioStreamIndex": "1",
+          "container": "m3u8",
+          "maxBitrate": "10000000",
+          "mode": "serverNegotiatedHLS",
+          "negotiatedAudioCodec": "aac",
+          "negotiatedSubtitleIndex": "8",
+          "negotiatedSubtitleMethod": "Encode",
+          "negotiatedVideoBitrate": "9360000",
+          "negotiatedVideoCodec": "h264",
+          "prepareMs": "4545"
+        }
+      ],
+      "automaticDownshiftRequests": 0,
+      "replacementCommitted": 0,
+      "actualVisualReview": {
+        "startup": "t10 spinner; t30 black; t45 green subtitle over black; visible video frame onset not established",
+        "deepSeekT10": "snow panorama with location subtitle",
+        "actualFramesReviewed": true
+      },
+      "ordinaryExit": true,
+      "wifiRestore": {
+        "startedAt": "2026-10-19T12:16:23.232616+08:00",
+        "networkRestored": true,
+        "automaticFinally": true,
+        "ordinaryExit": true,
+        "nativeSelectedOriginalNetworkVerified": true,
+        "wifiScreenshotNeedsActualReview": true,
+        "finishedAt": "2026-10-19T12:18:49.588369+08:00",
+        "wifiIconActuallyReviewed": true,
+        "nativeOriginalNetworkActuallyReviewed": true
+      },
+      "performanceAccepted": false
+    },
+    {
+      "entry": "Jellyfin",
+      "repeat": 2,
+      "sample": "S19",
+      "real4GObserved": true,
+      "signalStrength": "user reported weak; no quantitative measurement",
+      "cache": "unknown",
+      "internalFirstClockSecondsFromTouch": 9.530002,
+      "internalClockIsNotVisibleFrame": true,
+      "seek": [
+        {
+          "start": {
+            "secondsFromTouch": 48.442213,
+            "event": "seek_started",
+            "fields": {
+              "engine": "AVPlayer",
+              "seekDeltaSeconds": 6769.194077619605,
+              "seekTargetSeconds": 6808.195160066605
+            }
+          },
+          "signals": [
+            {
+              "secondsFromTouch": 52.975508,
+              "event": "seek_engine_completed",
+              "fields": {
+                "engine": "AVPlayer",
+                "targetSeconds": 6808.195160066605
+              }
+            },
+            {
+              "secondsFromTouch": 53.360939,
+              "event": "seek_recovered",
+              "fields": {
+                "currentSeconds": 6808.500157882,
+                "engine": "AVPlayer",
+                "evidence": "engineCompletionAndAdvancingClock",
+                "seekRecoveryMs": 4924,
+                "seekTargetSeconds": 6808.195160066605
+              }
+            }
+          ],
+          "recoveryMs": 4924,
+          "censoredAfterSeconds": null,
+          "meaning": "engine completion and advancing clock, not first visible frame"
+        }
+      ],
+      "completedURLMetrics": 58,
+      "cellularYes": 58,
+      "maxStallCountIncludingSeek": 2,
+      "publication": [
+        {
+          "secondsFromTouch": 4.623053,
+          "reason": "freshSameOriginAfterCellularPathChange",
+          "stage": "preparedLibraryRevalidationStarted"
+        },
+        {
+          "secondsFromTouch": 4.825766,
+          "elapsedMs": "184",
+          "mediaRenegotiated": "false",
+          "ownEndpointTokenUsed": "true",
+          "preparedPathGeneration": "7",
+          "reason": "sameServerAndAccountOnCurrentPath",
+          "stage": "preparedLibraryRevalidated"
+        },
+        {
+          "secondsFromTouch": 4.826429,
+          "preparedPathGeneration": "7",
+          "reason": "libraryEndpoint",
+          "stage": "publicCellularPreparationRetained",
+          "startedPathGeneration": "5"
+        }
+      ],
+      "negotiated": [
+        {
+          "audioStreamIndex": "1",
+          "container": "m3u8",
+          "maxBitrate": "4000000",
+          "mode": "serverNegotiatedHLS",
+          "negotiatedAudioCodec": "aac",
+          "negotiatedSubtitleIndex": "8",
+          "negotiatedSubtitleMethod": "Encode",
+          "negotiatedVideoBitrate": "3360000",
+          "negotiatedVideoCodec": "h264",
+          "prepareMs": "3581"
+        }
+      ],
+      "automaticDownshiftRequests": 0,
+      "replacementCommitted": 0,
+      "actualVisualReview": {
+        "startup": "t30 New Line Cinema presents",
+        "deepSeekT10": "Boromir holding ring in snow",
+        "actualFramesReviewed": true
+      },
+      "ordinaryExit": true,
+      "wifiRestore": {
+        "startedAt": "2026-10-19T12:20:19.787597+08:00",
+        "networkRestored": true,
+        "automaticFinally": true,
+        "ordinaryExit": true,
+        "nativeSelectedOriginalNetworkVerified": true,
+        "wifiScreenshotNeedsActualReview": true,
+        "finishedAt": "2026-10-19T12:22:52.002392+08:00",
+        "wifiIconActuallyReviewed": true,
+        "nativeOriginalNetworkActuallyReviewed": true
+      },
+      "performanceAccepted": false
+    },
+    {
+      "entry": "device file",
+      "repeat": 1,
+      "sample": "S19",
+      "real4GObserved": true,
+      "signalStrength": "user reported weak; no quantitative measurement",
+      "cache": "unknown",
+      "internalFirstClockSecondsFromTouch": 7.582214,
+      "internalClockIsNotVisibleFrame": true,
+      "seek": [
+        {
+          "start": {
+            "secondsFromTouch": 47.571083,
+            "event": "seek_started",
+            "fields": {
+              "engine": "AVPlayer",
+              "seekDeltaSeconds": 6767.694055875605,
+              "seekTargetSeconds": 6808.195160066605
+            }
+          },
+          "signals": [
+            {
+              "secondsFromTouch": 52.072207,
+              "event": "seek_engine_completed",
+              "fields": {
+                "engine": "AVPlayer",
+                "targetSeconds": 6808.195160066605
+              }
+            },
+            {
+              "secondsFromTouch": 52.457735,
+              "event": "seek_recovered",
+              "fields": {
+                "currentSeconds": 6808.500137415,
+                "engine": "AVPlayer",
+                "evidence": "engineCompletionAndAdvancingClock",
+                "seekRecoveryMs": 4891,
+                "seekTargetSeconds": 6808.195160066605
+              }
+            }
+          ],
+          "recoveryMs": 4891,
+          "censoredAfterSeconds": null,
+          "meaning": "engine completion and advancing clock, not first visible frame"
+        }
+      ],
+      "completedURLMetrics": 92,
+      "cellularYes": 92,
+      "maxStallCountIncludingSeek": 2,
+      "publication": [],
+      "negotiated": [],
+      "automaticDownshiftRequests": 0,
+      "replacementCommitted": 0,
+      "actualVisualReview": {
+        "startup": "t30 New Line Cinema presents",
+        "deepSeekT10": "Boromir holding ring in snow",
+        "actualFramesReviewed": true
+      },
+      "ordinaryExit": true,
+      "wifiRestore": {
+        "startedAt": "2026-10-19T12:23:19.288872+08:00",
+        "networkRestored": true,
+        "automaticFinally": true,
+        "ordinaryExit": true,
+        "nativeSelectedOriginalNetworkVerified": true,
+        "wifiScreenshotNeedsActualReview": true,
+        "finishedAt": "2026-10-19T12:25:46.581336+08:00",
+        "wifiIconActuallyReviewed": true,
+        "nativeOriginalNetworkActuallyReviewed": true
+      },
+      "performanceAccepted": false
+    }
+  ],
+  "wifiS01": [
+    {
+      "device": "iphone13",
+      "entry": "device file",
+      "secondsFromClick": 30,
+      "ordinaryExit": true,
+      "URLMetricsCount": 2,
+      "URLMetricsCellularNo": 2,
+      "maxStallCount": 0,
+      "t30ActuallyReviewed": true,
+      "t30Image": "blue mist; Pad file also readable opening credits",
+      "audioFullSubtitleFrameTimingUnverified": true,
+      "fullAcceptance": false
+    },
+    {
+      "device": "iphone13",
+      "entry": "Jellyfin",
+      "secondsFromClick": 30,
+      "ordinaryExit": true,
+      "URLMetricsCount": 2,
+      "URLMetricsCellularNo": 2,
+      "maxStallCount": 0,
+      "t30ActuallyReviewed": true,
+      "t30Image": "blue mist; Pad file also readable opening credits",
+      "audioFullSubtitleFrameTimingUnverified": true,
+      "fullAcceptance": false
+    },
+    {
+      "device": "ipad",
+      "entry": "device file",
+      "secondsFromClick": 30,
+      "ordinaryExit": true,
+      "URLMetricsCount": 2,
+      "URLMetricsCellularNo": 2,
+      "maxStallCount": 0,
+      "t30ActuallyReviewed": true,
+      "t30Image": "blue mist; Pad file also readable opening credits",
+      "audioFullSubtitleFrameTimingUnverified": true,
+      "fullAcceptance": false
+    },
+    {
+      "device": "ipad",
+      "entry": "Jellyfin",
+      "secondsFromClick": 30,
+      "ordinaryExit": true,
+      "URLMetricsCount": 2,
+      "URLMetricsCellularNo": 2,
+      "maxStallCount": 0,
+      "t30ActuallyReviewed": true,
+      "t30Image": "blue mist; Pad file also readable opening credits",
+      "audioFullSubtitleFrameTimingUnverified": true,
+      "fullAcceptance": false
+    }
+  ],
+  "cleanup": {
+    "PadOwnedRunner": {
+      "at": "2026-10-19T12:35:03.322690+08:00",
+      "fixedRunnerNameMatched": true,
+      "intentionalRunnerTerminationCount": 1,
+      "runnerAbsentAfter": true,
+      "appPresentAfter": true,
+      "actualFinalHomeViewed": true,
+      "finalWiFiIconActuallyReviewed": true
+    },
+    "simulator": {
+      "ownedTestSimulatorShutdown": true,
+      "commandExitCode": 149
+    },
+    "power": {
+      "sinceLocal": "2026-10-19 12:10:57",
+      "actualSleepWakeDarkWakeEvents": 0,
+      "assertionRowsNotCountedAsSleep": true,
+      "checkedAt": "2026-10-19T12:39:44.640218+08:00"
+    },
+    "final": {
+      "ownedPadRunnerStopped": true,
+      "ownedPadHostRunning": false,
+      "ownedMediaBuildCaptureProcesses": [],
+      "ownedSimulatorShutdown": true,
+      "originalPhonePersistentWDAPreserved": true,
+      "cellularWindowsFinallyRestoredAndActuallyReviewed": 3,
+      "power": {
+        "sinceLocal": "2026-10-19 12:10:57",
+        "actualSleepWakeDarkWakeEvents": 0,
+        "assertionRowsNotCountedAsSleep": true,
+        "checkedAt": "2026-10-19T12:39:44.640218+08:00"
+      }
+    }
+  },
+  "constraints": {
+    "requirementsClosed": 0,
+    "all28RemainOpen": true,
+    "ReleaseValidated": false,
+    "wirelessStrengthQuantified": false,
+    "RSRP": null,
+    "RSRQ": null,
+    "SINR": null,
+    "noNASVPNSystemChanges": true,
+    "iphone18NotRetriedOrInstalledThisBatch": true
+  },
+  "deviceAudits": {
+    "iphone13": {
+      "at": "2026-10-19T12:34:23.739616+08:00",
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "connection": "USB",
+      "sourceDiffSHA256": "0ca9a6ef74d4165c25dc58bda66b99ec111f017bf3b39737d592fabc482ff52a",
+      "latestPackage": {
+        "Nastart": "938803b516ffcc22841bfcc1a7dd7367a23ef9835d4aa9f37adac7359b024129",
+        "Nastart.debug.dylib": "037c6e0cf0e1e885c75dc4b4e3af2c4444a421945776f589ffcb31258c1e2bde",
+        "Frameworks/KSPlayer.framework/KSPlayer": "866f9699b66464cc007dbc27ed82e83f613325e6667045e49701568ab03b600b"
+      },
+      "nonBookmarkPreferenceKeys": 24,
+      "nonBookmarkPreferencesExactlyUnchanged": true,
+      "naturalBookmarkChangesCount": 4,
+      "originalBookmarksChecked": 36,
+      "originalBookmarksRemoved": 0,
+      "originalTrackChangeCount": 0,
+      "allOriginalTracksUnchanged": true,
+      "newBookmarksCount": 0,
+      "crashInventoryDelta": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      },
+      "normalEmptyEnvironment": true,
+      "NASNormal": true,
+      "playerClosed": true,
+      "WDAIdleSeconds": 10,
+      "WDAAnimationCoolOffSeconds": 2,
+      "nativeConditionsNotRecheckedThisTurn": false,
+      "noConditionInjectedThisTurn": true,
+      "nativeActiveConditions": 0,
+      "finalHomeActuallyReviewed": true,
+      "finalWiFiIconActuallyReviewed": true
+    },
+    "ipad": {
+      "at": "2026-10-19T12:34:24.516478+08:00",
+      "model": "iPad12,1",
+      "system": "18.3.1",
+      "connection": "USB",
+      "sourceDiffSHA256": "0ca9a6ef74d4165c25dc58bda66b99ec111f017bf3b39737d592fabc482ff52a",
+      "latestPackage": {
+        "Nastart": "938803b516ffcc22841bfcc1a7dd7367a23ef9835d4aa9f37adac7359b024129",
+        "Nastart.debug.dylib": "037c6e0cf0e1e885c75dc4b4e3af2c4444a421945776f589ffcb31258c1e2bde",
+        "Frameworks/KSPlayer.framework/KSPlayer": "866f9699b66464cc007dbc27ed82e83f613325e6667045e49701568ab03b600b"
+      },
+      "nonBookmarkPreferenceKeys": 17,
+      "nonBookmarkPreferencesExactlyUnchanged": true,
+      "naturalBookmarkChangesCount": 2,
+      "originalBookmarksChecked": 29,
+      "originalBookmarksRemoved": 0,
+      "originalTrackChangeCount": 0,
+      "allOriginalTracksUnchanged": true,
+      "newBookmarksCount": 0,
+      "crashInventoryDelta": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      },
+      "normalEmptyEnvironment": true,
+      "NASNormal": true,
+      "playerClosed": true,
+      "WDAIdleSeconds": 10,
+      "WDAAnimationCoolOffSeconds": 2,
+      "nativeConditionsNotRecheckedThisTurn": false,
+      "noConditionInjectedThisTurn": true,
+      "nativeActiveConditions": 0,
+      "finalHomeActuallyReviewed": true,
+      "finalWiFiIconActuallyReviewed": true
+    }
+  },
+  "toolingFailure": {
+    "setupMissingOldPadSessionBeforeTests": true,
+    "noDeviceTouchedForFailure": true,
+    "fixedByNotCopyingUnusedOldSession": true
+  },
+  "next": [
+    "Inspect existing 2.5–2.8MB preparation media-playlist read/rewrite/preload/cache; then fixed-output third repeat and S03/S08",
+    "Bind first HLS headers/body/completion to decoder and reserve for remaining startup/deepseek waits",
+    "Preserve original WiFi restoration after every cellular window",
+    "iPhone18 install only after genuinely changed wireless availability; no repeated unchanged discovery"
+  ],
+  "boundTransferAnalysis": [
+    {
+      "entry": "Jellyfin",
+      "repeat": 1,
+      "exactPrivateBinding": "playbackTraceID + transferID + upstreamTaskIndex; no IDs exported",
+      "metricsMatchedCount": 47,
+      "preparationMediaPlaylist": {
+        "role": "mediaPlaylist",
+        "ordinal": null,
+        "issuedSecondsFromTouch": 1.918926,
+        "metricsCallbackSecondsFromTouch": 5.423523,
+        "issueToHeadersCallbackMs": 132,
+        "issueToFirstBodyCallbackMs": 132,
+        "responseBodyMs": 3378,
+        "totalMs": 3510,
+        "decodedBodyBytes": 2791993,
+        "cancellationRequested": false,
+        "proxyBackpressureMs": 0.0,
+        "metricsAfterClientFinish": false,
+        "protocol": "h2"
+      },
+      "initialSuccessfulSegment": {
+        "role": "segment",
+        "ordinal": 0,
+        "issuedSecondsFromTouch": 6.634646,
+        "metricsCallbackSecondsFromTouch": 10.455491,
+        "issueToHeadersCallbackMs": 2559,
+        "issueToFirstBodyCallbackMs": 2560,
+        "responseBodyMs": 1244,
+        "totalMs": 3802,
+        "decodedBodyBytes": 1984152,
+        "cancellationRequested": false,
+        "proxyBackpressureMs": 0.0,
+        "metricsAfterClientFinish": false,
+        "protocol": "h2"
+      },
+      "nextTwoInitialSegments": [
+        {
+          "role": "segment",
+          "ordinal": 1,
+          "issuedSecondsFromTouch": 10.459846,
+          "metricsCallbackSecondsFromTouch": 13.541388,
+          "issueToHeadersCallbackMs": 95,
+          "issueToFirstBodyCallbackMs": 95,
+          "responseBodyMs": 2972,
+          "totalMs": 3067,
+          "decodedBodyBytes": 6326200,
+          "cancellationRequested": false,
+          "proxyBackpressureMs": 0.0,
+          "metricsAfterClientFinish": false,
+          "protocol": "h2"
+        },
+        {
+          "role": "segment",
+          "ordinal": 2,
+          "issuedSecondsFromTouch": 13.547434,
+          "metricsCallbackSecondsFromTouch": 15.369068,
+          "issueToHeadersCallbackMs": 144,
+          "issueToFirstBodyCallbackMs": 144,
+          "responseBodyMs": 1702,
+          "totalMs": 1845,
+          "decodedBodyBytes": 5051936,
+          "cancellationRequested": false,
+          "proxyBackpressureMs": 0.0,
+          "metricsAfterClientFinish": false,
+          "protocol": "h2"
+        }
+      ],
+      "firstClockSecondsFromTouch": 12.628691,
+      "firstSegmentCompletionToFirstClockSeconds": 2.1732,
+      "deepSeekStartedSecondsFromTouch": 48.175515,
+      "firstTargetSegment": {
+        "role": "segment",
+        "ordinal": 1692,
+        "issuedSecondsFromTouch": 48.176662,
+        "metricsCallbackSecondsFromTouch": 52.964211,
+        "issueToHeadersCallbackMs": 3373,
+        "issueToFirstBodyCallbackMs": 3374,
+        "responseBodyMs": 1370,
+        "totalMs": 4743,
+        "decodedBodyBytes": 5023924,
+        "cancellationRequested": false,
+        "proxyBackpressureMs": 0.0,
+        "metricsAfterClientFinish": false,
+        "protocol": "h2"
+      },
+      "seekTouchToIssuedMs": 1.147,
+      "firstTargetSegmentCompletionToRecoveredClockSeconds": 2.172339,
+      "interpretation": "Header wait cannot distinguish carrier/network from server generation. Post-first-segment wait includes subsequent fetches, decoder/buffer; not decoder alone. Internal clocks are not visible frame presentation."
+    },
+    {
+      "entry": "Jellyfin",
+      "repeat": 2,
+      "exactPrivateBinding": "playbackTraceID + transferID + upstreamTaskIndex; no IDs exported",
+      "metricsMatchedCount": 58,
+      "preparationMediaPlaylist": {
+        "role": "mediaPlaylist",
+        "ordinal": null,
+        "issuedSecondsFromTouch": 1.496385,
+        "metricsCallbackSecondsFromTouch": 4.492903,
+        "issueToHeadersCallbackMs": 135,
+        "issueToFirstBodyCallbackMs": 136,
+        "responseBodyMs": 2859,
+        "totalMs": 2994,
+        "decodedBodyBytes": 2785149,
+        "cancellationRequested": false,
+        "proxyBackpressureMs": 0.0,
+        "metricsAfterClientFinish": false,
+        "protocol": "h2"
+      },
+      "initialSuccessfulSegment": {
+        "role": "segment",
+        "ordinal": 0,
+        "issuedSecondsFromTouch": 5.400644,
+        "metricsCallbackSecondsFromTouch": 8.065753,
+        "issueToHeadersCallbackMs": 2036,
+        "issueToFirstBodyCallbackMs": 2038,
+        "responseBodyMs": 643,
+        "totalMs": 2678,
+        "decodedBodyBytes": 1028360,
+        "cancellationRequested": false,
+        "proxyBackpressureMs": 0.0,
+        "metricsAfterClientFinish": false,
+        "protocol": "h2"
+      },
+      "nextTwoInitialSegments": [
+        {
+          "role": "segment",
+          "ordinal": 1,
+          "issuedSecondsFromTouch": 8.066643,
+          "metricsCallbackSecondsFromTouch": 9.434832,
+          "issueToHeadersCallbackMs": 92,
+          "issueToFirstBodyCallbackMs": 93,
+          "responseBodyMs": 1286,
+          "totalMs": 1379,
+          "decodedBodyBytes": 2472764,
+          "cancellationRequested": false,
+          "proxyBackpressureMs": 0.0,
+          "metricsAfterClientFinish": false,
+          "protocol": "h2"
+        },
+        {
+          "role": "segment",
+          "ordinal": 2,
+          "issuedSecondsFromTouch": 9.483044,
+          "metricsCallbackSecondsFromTouch": 10.482431,
+          "issueToHeadersCallbackMs": 92,
+          "issueToFirstBodyCallbackMs": 92,
+          "responseBodyMs": 945,
+          "totalMs": 1036,
+          "decodedBodyBytes": 2134552,
+          "cancellationRequested": false,
+          "proxyBackpressureMs": 0.0,
+          "metricsAfterClientFinish": false,
+          "protocol": "h2"
+        }
+      ],
+      "firstClockSecondsFromTouch": 9.530002,
+      "firstSegmentCompletionToFirstClockSeconds": 1.464249,
+      "deepSeekStartedSecondsFromTouch": 48.442213,
+      "firstTargetSegment": {
+        "role": "segment",
+        "ordinal": 1698,
+        "issuedSecondsFromTouch": 48.444034,
+        "metricsCallbackSecondsFromTouch": 51.709575,
+        "issueToHeadersCallbackMs": 2675,
+        "issueToFirstBodyCallbackMs": 2676,
+        "responseBodyMs": 595,
+        "totalMs": 3270,
+        "decodedBodyBytes": 2042432,
+        "cancellationRequested": false,
+        "proxyBackpressureMs": 0.0,
+        "metricsAfterClientFinish": false,
+        "protocol": "h2"
+      },
+      "seekTouchToIssuedMs": 1.821,
+      "firstTargetSegmentCompletionToRecoveredClockSeconds": 1.651364,
+      "interpretation": "Header wait cannot distinguish carrier/network from server generation. Post-first-segment wait includes subsequent fetches, decoder/buffer; not decoder alone. Internal clocks are not visible frame presentation."
+    },
+    {
+      "entry": "device file",
+      "repeat": 1,
+      "exactPrivateBinding": "playbackTraceID + transferID + upstreamTaskIndex; no IDs exported",
+      "metricsMatchedCount": 92,
+      "preparationMediaPlaylist": {
+        "role": "mediaPlaylist",
+        "ordinal": null,
+        "issuedSecondsFromTouch": 1.115802,
+        "metricsCallbackSecondsFromTouch": 3.256317,
+        "issueToHeadersCallbackMs": 92,
+        "issueToFirstBodyCallbackMs": 93,
+        "responseBodyMs": 2066,
+        "totalMs": 2158,
+        "decodedBodyBytes": 2549031,
+        "cancellationRequested": false,
+        "proxyBackpressureMs": 0.0,
+        "metricsAfterClientFinish": false,
+        "protocol": "h2"
+      },
+      "initialSuccessfulSegment": {
+        "role": "segment",
+        "ordinal": 0,
+        "issuedSecondsFromTouch": 3.914786,
+        "metricsCallbackSecondsFromTouch": 6.313127,
+        "issueToHeadersCallbackMs": 2027,
+        "issueToFirstBodyCallbackMs": 2030,
+        "responseBodyMs": 339,
+        "totalMs": 2366,
+        "decodedBodyBytes": 564752,
+        "cancellationRequested": false,
+        "proxyBackpressureMs": 0.0,
+        "metricsAfterClientFinish": false,
+        "protocol": "h2"
+      },
+      "nextTwoInitialSegments": [
+        {
+          "role": "segment",
+          "ordinal": 1,
+          "issuedSecondsFromTouch": 6.32366,
+          "metricsCallbackSecondsFromTouch": 7.147325,
+          "issueToHeadersCallbackMs": 319,
+          "issueToFirstBodyCallbackMs": 320,
+          "responseBodyMs": 519,
+          "totalMs": 837,
+          "decodedBodyBytes": 1238356,
+          "cancellationRequested": false,
+          "proxyBackpressureMs": 0.0,
+          "metricsAfterClientFinish": false,
+          "protocol": "h2"
+        },
+        {
+          "role": "segment",
+          "ordinal": 2,
+          "issuedSecondsFromTouch": 7.148724,
+          "metricsCallbackSecondsFromTouch": 7.708861,
+          "issueToHeadersCallbackMs": 202,
+          "issueToFirstBodyCallbackMs": 204,
+          "responseBodyMs": 370,
+          "totalMs": 571,
+          "decodedBodyBytes": 1055808,
+          "cancellationRequested": false,
+          "proxyBackpressureMs": 0.0,
+          "metricsAfterClientFinish": false,
+          "protocol": "h2"
+        }
+      ],
+      "firstClockSecondsFromTouch": 7.582214,
+      "firstSegmentCompletionToFirstClockSeconds": 1.269087,
+      "deepSeekStartedSecondsFromTouch": 47.571083,
+      "firstTargetSegment": {
+        "role": "segment",
+        "ordinal": 1698,
+        "issuedSecondsFromTouch": 47.573017,
+        "metricsCallbackSecondsFromTouch": 50.757929,
+        "issueToHeadersCallbackMs": 2719,
+        "issueToFirstBodyCallbackMs": 2720,
+        "responseBodyMs": 461,
+        "totalMs": 3179,
+        "decodedBodyBytes": 1029112,
+        "cancellationRequested": false,
+        "proxyBackpressureMs": 0.0,
+        "metricsAfterClientFinish": false,
+        "protocol": "h2"
+      },
+      "seekTouchToIssuedMs": 1.934,
+      "firstTargetSegmentCompletionToRecoveredClockSeconds": 1.699806,
+      "interpretation": "Header wait cannot distinguish carrier/network from server generation. Post-first-segment wait includes subsequent fetches, decoder/buffer; not decoder alone. Internal clocks are not visible frame presentation."
+    }
+  ],
+  "offlineBindingToolFailure": {
+    "unknownTimingWasNotCoercedToZero": true,
+    "initialParserFailed": true,
+    "correctedToNullAndRetainedAllRows": true,
+    "deviceNotTouched": true
+  }
+}

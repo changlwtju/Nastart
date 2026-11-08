@@ -1,0 +1,231 @@
+{
+  "date": "2026-10-20",
+  "scope": "offline WDA command policy plus Mac generated hardware-codec metadata inventory",
+  "hostOS": "26.7",
+  "WDA": {
+    "unitCasesPassed": 17,
+    "originalErrorReplay": {
+      "scope": "offline replay of original private WDA error; subsequent success/selection synthetic",
+      "actualOriginalResponseSHA256": "8dfbc4d3cce3882ffc0a37080da41f6d4a592b0f0c0649cfa446e708c339030f",
+      "actualError": "stale element reference",
+      "actualHTTPStatusFromPriorTrace": 404,
+      "readReplayCalls": [
+        "/elements",
+        "/elements"
+      ],
+      "syntheticFollowupMatches": 0,
+      "actionRequests": 1,
+      "unconfirmedActionRemainsBlocked": true,
+      "traceOmitsOriginalMessageAndElementIDs": true,
+      "liveDeviceCommandsSent": 0,
+      "realPiPRestoreAccepted": false
+    },
+    "wiredIntoLiveDeviceHarness": false,
+    "deviceCommandsSent": 0,
+    "PiPPauseRestoreAndPadDelayedPictureAccepted": false
+  },
+  "HDR": {
+    "scriptSHA256": "8c20a3d5c75fc49ac2eec5b66e4a9fd141b1f56f82479c3467ad576cce3e7324",
+    "fixtures": [
+      {
+        "fixture": "PQ_staticHDR_auto",
+        "profileConfigured": "HEVC Main10",
+        "size": [
+          192,
+          128
+        ],
+        "encoderHDRMetadataInsertionMode": "HDRMetadataInsertionMode_Auto",
+        "hardwareEncoderRequired": true,
+        "hardwareDecoderRequired": true,
+        "hardwareDecodeReported": true,
+        "hardwareDecodePropertyStatus": 0,
+        "encodedSamples": 12,
+        "decodedFrames": 12,
+        "decodedPixelFormats": [
+          2016686640
+        ],
+        "decoderGenerateHDRMetadataFalseStatus": 0,
+        "decoderPropagateHDRMetadataTrueStatus": 0,
+        "staticMetadataPropertyStatuses": {
+          "ContentLightLevelInfo": 0,
+          "MasteringDisplayColorVolume": 0
+        },
+        "encodedNALTypeCounts": {
+          "1": 11,
+          "20": 1,
+          "39": 1
+        },
+        "staticMetadata": {
+          "MasteringDisplayColorVolume": {
+            "compressed": {
+              "bytes": 24,
+              "sha256": "7ac208a2a0ed8471c9db18162ef66348d6c27604841fd8246e671c96540c67f2",
+              "type": "data"
+            },
+            "decodedPresenceCount": 12,
+            "decodedAllMatchCompressed": true,
+            "rebuiltPresenceCount": 12,
+            "rebuiltAllMatchCompressed": true
+          },
+          "ContentLightLevelInfo": {
+            "compressed": {
+              "bytes": 4,
+              "sha256": "133ec5e4e7a5a0ae0394e803c831614507dabd8f195cbc2443ec87397ef6a139",
+              "type": "data"
+            },
+            "decodedPresenceCount": 12,
+            "decodedAllMatchCompressed": true,
+            "rebuiltPresenceCount": 12,
+            "rebuiltAllMatchCompressed": true
+          }
+        },
+        "decodedRPUDataPresenceCount": 0,
+        "decodedRPUDataDistinctHashes": 0,
+        "decodedRPUDataByteLengths": [],
+        "rebuiltDescriptionRPUKeyPresenceCount": 0
+      },
+      {
+        "fixture": "HLG_auto",
+        "profileConfigured": "HEVC Main10",
+        "size": [
+          192,
+          128
+        ],
+        "encoderHDRMetadataInsertionMode": "HDRMetadataInsertionMode_Auto",
+        "hardwareEncoderRequired": true,
+        "hardwareDecoderRequired": true,
+        "hardwareDecodeReported": true,
+        "hardwareDecodePropertyStatus": 0,
+        "encodedSamples": 12,
+        "decodedFrames": 12,
+        "decodedPixelFormats": [
+          2016686640
+        ],
+        "decoderGenerateHDRMetadataFalseStatus": 0,
+        "decoderPropagateHDRMetadataTrueStatus": 0,
+        "staticMetadataPropertyStatuses": {},
+        "encodedNALTypeCounts": {
+          "1": 11,
+          "20": 1,
+          "39": 1,
+          "62": 12
+        },
+        "staticMetadata": {
+          "MasteringDisplayColorVolume": {
+            "compressed": null,
+            "decodedPresenceCount": 0,
+            "decodedAllMatchCompressed": true,
+            "rebuiltPresenceCount": 0,
+            "rebuiltAllMatchCompressed": true
+          },
+          "ContentLightLevelInfo": {
+            "compressed": null,
+            "decodedPresenceCount": 0,
+            "decodedAllMatchCompressed": true,
+            "rebuiltPresenceCount": 0,
+            "rebuiltAllMatchCompressed": true
+          }
+        },
+        "decodedRPUDataPresenceCount": 12,
+        "decodedRPUDataDistinctHashes": 12,
+        "decodedRPUDataByteLengths": [
+          420
+        ],
+        "rebuiltDescriptionRPUKeyPresenceCount": 0
+      },
+      {
+        "fixture": "HLG_none",
+        "profileConfigured": "HEVC Main10",
+        "size": [
+          192,
+          128
+        ],
+        "encoderHDRMetadataInsertionMode": "HDRMetadataInsertionMode_None",
+        "hardwareEncoderRequired": true,
+        "hardwareDecoderRequired": true,
+        "hardwareDecodeReported": true,
+        "hardwareDecodePropertyStatus": 0,
+        "encodedSamples": 12,
+        "decodedFrames": 12,
+        "decodedPixelFormats": [
+          2016686640
+        ],
+        "decoderGenerateHDRMetadataFalseStatus": 0,
+        "decoderPropagateHDRMetadataTrueStatus": -12900,
+        "staticMetadataPropertyStatuses": {},
+        "encodedNALTypeCounts": {
+          "1": 11,
+          "20": 1,
+          "39": 1
+        },
+        "staticMetadata": {
+          "MasteringDisplayColorVolume": {
+            "compressed": null,
+            "decodedPresenceCount": 0,
+            "decodedAllMatchCompressed": true,
+            "rebuiltPresenceCount": 0,
+            "rebuiltAllMatchCompressed": true
+          },
+          "ContentLightLevelInfo": {
+            "compressed": null,
+            "decodedPresenceCount": 0,
+            "decodedAllMatchCompressed": true,
+            "rebuiltPresenceCount": 0,
+            "rebuiltAllMatchCompressed": true
+          }
+        },
+        "decodedRPUDataPresenceCount": 0,
+        "decodedRPUDataDistinctHashes": 0,
+        "decodedRPUDataByteLengths": [],
+        "rebuiltDescriptionRPUKeyPresenceCount": 0
+      }
+    ],
+    "finalFixtureCount": 3,
+    "finalHardwareDecodedFrames": 36,
+    "renderingOrHDRPresentationAccepted": false,
+    "realMovieDVProfilesOrKSPlayerIOSMeasured": false,
+    "defaultModeTwoFixtureExplorationRetainedPrivately": true,
+    "recreatedDescriptionMissingRPUKeyDoesNotProveOriginalBufferMetadataLost": true,
+    "resourceOwnershipSolved": false,
+    "allRebuiltDescriptionCallsSucceeded": true
+  },
+  "noAppOrFrameworkChanges": true,
+  "noAppBuildInstallOrDeviceNetworkOperation": true,
+  "openRequirements": 28,
+  "checks": {
+    "boundaryUnitCasesPassed": 17,
+    "priorActualErrorReplayPassed": true,
+    "finalMacHardwareCodecFixtures": 3,
+    "finalHardwareDecodedFrames": 36,
+    "preflightPassed": 15,
+    "documentationDocuments": 356,
+    "documentationLocalLinks": 1846,
+    "missingLocalLinks": 0,
+    "gitDiffCheck": true,
+    "noAppBuildRequired": true,
+    "noNewDeviceOrPlaybackAcceptance": true
+  },
+  "frozenAppSourceDiffSHA256": "491ed044d0c13cbf31ee3f70125f599431fcb3e783a167097fa9f3d55e7a1184",
+  "frozenAppSourceInputsUnchanged": 173,
+  "scriptsSHA256": {
+    "wda_command_guard.py": "9da6d33d439ca275797337f6a7fcd8a3f896223b8b4c4d64d227fb8968cfaeb0",
+    "test_wda_command_guard.py": "b9e5025960f20f731ef44d8277e2ae35186c9918e65f0700bd733731eaf1df0a",
+    "hdr_pip_metadata_probe.swift": "8c20a3d5c75fc49ac2eec5b66e4a9fd141b1f56f82479c3467ad576cce3e7324"
+  },
+  "frozenAppHead": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "normalPackageBinariesAndSignatureVerifiedOffline": true,
+  "deviceInstalledPackageNotRecheckedThisBatch": true,
+  "ownEvidenceRootProcessesAtEnd": 0,
+  "normalPackageIdentity": {
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "Xcode": "27.0",
+    "binaryBuildTime": "2026-10-20T16:16:59.676117+08:00",
+    "binaries": {
+      "Nastart": "df32a4befe3768aa1eac0d8175c028c00f5141eb3c93b392f88128ef4a10e1d8",
+      "Nastart.debug.dylib": "f43015ca6ce6c3e3f4b1180e1c6d16e107bab012b8d7442d5f01c574cd71bfb1",
+      "Frameworks/KSPlayer.framework/KSPlayer": "d2ccf7a95166b81d1491dea583eb4518ef23a00add3f91d8a3b9d0e9da2b7e37"
+    },
+    "ipaSHA256": "cbafcdb52b4d6939636eff7cba6636eec50109c5d201785f0bee64347cbb9092",
+    "profileExpirationUTC": "2026-10-24T22:23:57"
+  }
+}

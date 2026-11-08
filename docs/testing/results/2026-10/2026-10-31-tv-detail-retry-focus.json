@@ -1,0 +1,160 @@
+{
+  "recordedAt": "2026-10-31T07:26:22+08:00",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceInputCount": 441,
+  "changedExistingSourceOrTestFiles": 5,
+  "newSourceOrTestFiles": 2,
+  "unitTestsPassed": 19,
+  "existingUnitTests": 12,
+  "newUnitTests": 7,
+  "newUITestsPassed": 3,
+  "uiExecutionRuns": 2,
+  "uniqueUITests": 3,
+  "builds": {
+    "mobile-sim-debug-cast": {
+      "startedAt": "2026-10-31T07:07:56.685751+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-31T07:08:25.180149+08:00"
+    },
+    "tv-sim-debug-cast": {
+      "startedAt": "2026-10-31T07:08:25.180619+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-31T07:08:37.424848+08:00"
+    },
+    "module-tests": {
+      "startedAt": "2026-10-31T07:08:37.425309+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-31T07:08:41.497373+08:00"
+    },
+    "ui-build": {
+      "startedAt": "2026-10-31T07:12:09.600610+08:00",
+      "reason": "Final focus repair before removal; prevent stale requested target stealing other focus",
+      "exitCode": 0,
+      "endedAt": "2026-10-31T07:12:18.516930+08:00"
+    },
+    "mobile-debug": {
+      "startedAt": "2026-10-31T07:18:39.755264+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-31T07:19:22.871450+08:00"
+    },
+    "tv-debug": {
+      "startedAt": "2026-10-31T07:20:57.381869+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-31T07:21:11.525477+08:00"
+    },
+    "mobile-release": {
+      "startedAt": "2026-10-31T07:19:22.872571+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-31T07:20:57.380771+08:00"
+    },
+    "tv-release": {
+      "startedAt": "2026-10-31T07:21:11.526221+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-31T07:21:37.523572+08:00"
+    }
+  },
+  "sourcePreservation": {
+    "sourceInputCount": 441,
+    "changedExistingSourceOrTestFiles": 5,
+    "newSourceOrTestFiles": 2,
+    "otherExistingInputsUnchanged": 434,
+    "unitTestsPassed": 19,
+    "existingUnitTests": 12,
+    "newFocusRuleTests": 7,
+    "uiTestsPassed": 3,
+    "newUITests": 3,
+    "tvOnlyDetailFocusBlockAndNewPureFixtureHelperChanged": true,
+    "allTVClientRequestsReadStatesAndPlaybackTasksByteIdentical": true,
+    "allOtherTVViewsAndImageLoadersByteIdentical": true,
+    "mobileProductionViewsAndPlaybackSourceUnchanged": true,
+    "offlineRootBranchesBeforeNormalAppStateCreation": true,
+    "noStoreVaultClientMediaOrNetworkTaskInNewFixture": true,
+    "actualRetryStyleAndFocusMapReusedByFixture": true,
+    "appLaunchEnvironment": {},
+    "oldTVExitProbeAndClientFixtureNotUsed": true
+  },
+  "packages": {
+    "mobile": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-31T07:19:22.678053+08:00",
+      "frozenAt": "2026-10-31T07:22:09.658645+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 441,
+      "mainSHA256": "8ec24ce21f2283b06c0f8e509a5bd447b74813a8b90ff4137180e1e6a48b2d9a",
+      "debugDylibSHA256": "cc3da849663656fa74e3fed62dcf23feaf729f6f47d95e0557468de351b072a0",
+      "signedMachOCount": 30,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false,
+      "copyMethod": "cp -cpR clone requested; hashes and signatures verified independently"
+    },
+    "tv": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-31T07:21:11.451117+08:00",
+      "frozenAt": "2026-10-31T07:22:10.040330+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 441,
+      "mainSHA256": "5d4db4d9ffaf4995f661dd587248970d858954f39678d1c895873eeccde4c3f8",
+      "debugDylibSHA256": "fd50f0811700fdf67e12ef6bae55abb132f6fd750ae54a12c7a7b86dd2d4e985",
+      "signedMachOCount": 27,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false,
+      "copyMethod": "cp -cpR clone requested; hashes and signatures verified independently"
+    }
+  },
+  "uiRun": {
+    "started": true,
+    "startedAt": "2026-10-31T07:16:07.556500+08:00",
+    "physicalDevicesOperated": 0,
+    "NASCommands": 0,
+    "playbackCommands": 0,
+    "customAppLaunchEnvironment": {},
+    "fixture": "early offline branch, no app state/client/store/task",
+    "sourceInputCount": 441,
+    "exitCode": 0,
+    "inputHashesUnchanged": true,
+    "installedBinaryHashesMatchAfterTests": true,
+    "endedAt": "2026-10-31T07:17:11.709479+08:00",
+    "syntheticPreferencesPreserved": true,
+    "unexpectedApplicationKeys": [],
+    "shutdownExit": 0,
+    "deleteExit": 0
+  },
+  "visualReview": {
+    "recordedAt": "2026-10-31T07:21:37.604268+08:00",
+    "reviewed": true,
+    "reviewedAttachmentCount": 1,
+    "attachmentSHA256": "67db2984a3ab4edea967eebb1b13502a26defdd64abd2d06a010b1363b0cd061",
+    "syntheticReceiptOneAndRetryAbsent": true,
+    "secondRelatedCardFocusBorderVisible": true,
+    "existingCardsAndFileDisclosureVisible": true,
+    "qualification": "Success attachment supports completed synthetic focus loop; native hasFocus/select assertions cover 3 UI cases",
+    "actualClientDetailPageLongRowsTouchpadOrFrameTimingVerified": false
+  },
+  "initialHarnessAttempt": {
+    "uiExitCode": 0,
+    "uniqueUITestsPassed": 3,
+    "completionVerificationQualified": false,
+    "reason": "XCTest reinstalled target into new app/data container paths; initial post-run lookup used old paths. Initial empty-preference read is not evidence of data loss. Original records retained.",
+    "ownSimulatorDeleted": true
+  },
+  "ownedSimulatorsDeleted": 2,
+  "physicalDevicesOperated": 0,
+  "NASCommands": 0,
+  "playbackCommands": 0,
+  "newPlaybackMatrixP": 0,
+  "notVerified": [
+    "Production client-backed detail page, long rows and changing server results",
+    "Native intermediate focus landings, touchpad gestures, Menu/Back or frame timing",
+    "Physical Apple TV, real NAS/media or playback"
+  ]
+}

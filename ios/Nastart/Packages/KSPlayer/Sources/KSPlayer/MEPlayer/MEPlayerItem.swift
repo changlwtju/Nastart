@@ -90,15 +90,31 @@ public final class MEPlayerItem: Sendable {
         return seconds
     }
 
-    private static func normalizedStartTime(_ rawStartTime: Int64) -> CMTime {
-        let maximumPlausibleMediaStart: TimeInterval = 24 * 60 * 60
-        guard rawStartTime != Int64.min, rawStartTime > 0 else { return .zero }
-        let seconds = TimeInterval(rawStartTime) / TimeInterval(AV_TIME_BASE)
-        guard seconds.isFinite, seconds <= maximumPlausibleMediaStart else {
-            KSLog(level: .warning, "Ignoring implausible FFmpeg start_time \(rawStartTime)")
-            return .zero
-        }
+    static func normalizedStartTime(_ rawStartTime: Int64) -> CMTime {
+        // FFmpeg's start_time is a timestamp origin, not an elapsed duration.
+        // Broadcast TS recordings may start beyond 24 hours, and other
+        // containers may start below zero. Preserve every known origin so
+        // clocks and seeks use the same timeline as the decoded frames.
+        guard rawStartTime != Int64.min else { return .zero } // AV_NOPTS_VALUE
         return CMTime(value: rawStartTime, timescale: AV_TIME_BASE)
+    }
+
+    static func initialSeekParameters(startTime: CMTime, position: TimeInterval,
+                                      accurate: Bool) -> (timestamp: Int64, maximum: Int64, flags: Int32) {
+        let timestamp = CMTimeConvertScale(startTime + CMTime(seconds: position),
+                                          timescale: AV_TIME_BASE, method: .default).value
+        // This value is in AV_TIME_BASE units. AVSEEK_FLAG_BYTE would instead
+        // interpret it as a byte offset, potentially seeking beyond a TS file.
+        return (timestamp, accurate ? timestamp : Int64.max, 0)
+    }
+
+    static func usesByteSeeking(formatFlags: Int32, formatName: String,
+                                accurate: Bool, prefersTimestampSeeking: Bool) -> Bool {
+        // Average bitrate and a previously rendered packet's byte position
+        // cannot locate an exact media time. In particular, a paused preview
+        // may leave the audio byte position on the pre-seek timeline.
+        !accurate && !prefersTimestampSeeking && (formatFlags & AVFMT_NO_BYTE_SEEK == 0)
+            && (formatFlags & AVFMT_TS_DISCONT != 0) && formatName != "ogg"
     }
 
     private lazy var timer: Timer = .scheduledTimer(withTimeInterval: 0.05, repeats: true) { [weak self] _ in
@@ -156,7 +172,7 @@ public final class MEPlayerItem: Sendable {
         _ = MEPlayerItem.onceInitial
     }
 
-    func select(track: some MediaPlayerTrack) -> Bool {
+    func select(track: some MediaPlayerTrack, performSeek: Bool = true) -> Bool {
         if track.isEnabled {
             return false
         }
@@ -177,7 +193,8 @@ public final class MEPlayerItem: Sendable {
                 return false
             }
         }
-        seek(time: currentPlaybackTime) { _ in
+        if performSeek {
+            seek(time: currentPlaybackTime) { _ in }
         }
         return true
     }
@@ -275,7 +292,8 @@ extension MEPlayerItem {
         maxFrameDuration = flags & AVFMT_TS_DISCONT == AVFMT_TS_DISCONT ? 10.0 : 3600.0
         options.findTime = CACurrentMediaTime()
         options.formatName = String(cString: formatCtx.pointee.iformat.pointee.name)
-        seekByBytes = !options.prefersTimestampSeeking && (flags & AVFMT_NO_BYTE_SEEK == 0) && (flags & AVFMT_TS_DISCONT != 0) && options.formatName != "ogg"
+        seekByBytes = Self.usesByteSeeking(formatFlags: flags, formatName: options.formatName,
+            accurate: options.isAccurateSeek, prefersTimestampSeeking: options.prefersTimestampSeeking)
         startTime = Self.normalizedStartTime(formatCtx.pointee.start_time)
         videoClock.time = startTime
         audioClock.time = startTime
@@ -482,6 +500,7 @@ extension MEPlayerItem {
             videoAudioTracks.append(track)
             isAudioStalled = false
         }
+        allPlayerItemTracks.forEach { $0.timestampOrigin = startTime }
     }
 
     private func read() {
@@ -502,10 +521,14 @@ extension MEPlayerItem {
         if state == .opened {
             if options.startPlayTime > 0 {
                 let timestamp = startTime + CMTime(seconds: options.startPlayTime)
-                let flags = seekByBytes ? AVSEEK_FLAG_BYTE : 0
+                let parameters = Self.initialSeekParameters(startTime: startTime,
+                    position: options.startPlayTime, accurate: options.isAccurateSeek)
                 let seekStartTime = CACurrentMediaTime()
-                let maximum = options.isAccurateSeek && !seekByBytes ? timestamp.value : Int64.max
-                let result = avformat_seek_file(formatCtx, -1, Int64.min, timestamp.value, maximum, flags)
+                options.initialSeekStartTime = seekStartTime
+                let result = avformat_seek_file(formatCtx, -1, Int64.min,
+                    parameters.timestamp, parameters.maximum, parameters.flags)
+                options.initialSeekEndTime = CACurrentMediaTime()
+                options.initialSeekResult = result
                 audioClock.time = timestamp
                 videoClock.time = timestamp
                 // Demux seeks may land on an earlier keyframe. Apply the same
@@ -601,7 +624,11 @@ extension MEPlayerItem {
         guard let corePacket = packet.corePacket else {
             return 0
         }
+        let startupGeneration = options.videoStartupTiming.snapshot.generation
+        let readStart = CACurrentMediaTime()
         let readResult = av_read_frame(formatCtx, corePacket)
+        options.videoStartupTiming.recordWork(.demuxRead, start: readStart,
+            end: CACurrentMediaTime(), generation: startupGeneration)
         if state == .closed {
             return 0
         }
@@ -639,12 +666,22 @@ extension MEPlayerItem {
                     if options.readVideoTime == 0 {
                         options.readVideoTime = CACurrentMediaTime()
                     }
+                    let putStart = CACurrentMediaTime()
+                    options.videoStartupTiming.recordPacket(media: "video", time: putStart, bytes: Int(packet.size),
+                        pts: packet.seconds, keyFrame: packet.isKeyFrame, generation: startupGeneration)
                     videoTrack?.putPacket(packet: packet)
+                    options.videoStartupTiming.recordWork(.videoPutPacket, start: putStart,
+                        end: CACurrentMediaTime(), generation: startupGeneration)
                 } else if first.mediaType == .audio {
                     if options.readAudioTime == 0 {
                         options.readAudioTime = CACurrentMediaTime()
                     }
+                    let putStart = CACurrentMediaTime()
+                    options.videoStartupTiming.recordPacket(media: "audio", time: putStart, bytes: Int(packet.size),
+                        pts: packet.seconds, keyFrame: packet.isKeyFrame, generation: startupGeneration)
                     audioTrack?.putPacket(packet: packet)
+                    options.videoStartupTiming.recordWork(.audioPutPacket, start: putStart,
+                        end: CACurrentMediaTime(), generation: startupGeneration)
                 } else {
                     first.subtitle?.putPacket(packet: packet)
                 }
@@ -795,6 +832,9 @@ extension MEPlayerItem: MediaPlayback {
 extension MEPlayerItem: CodecCapacityDelegate {
     func codecDidChangeCapacity() {
         let loadingState = options.playable(capacitys: videoAudioTracks, isFirst: isFirst, isSeek: isSeek)
+        if isFirst, loadingState.isPlayable {
+            recordStartupCapacity(.firstPlayable)
+        }
         delegate?.sourceDidChange(loadingState: loadingState)
         if loadingState.isPlayable {
             isFirst = false
@@ -951,7 +991,19 @@ extension MEPlayerItem: OutputRenderSourceDelegate {
                 } while packet != nil
             }
         }
+        if frame != nil { recordStartupCapacity(.firstOutput) }
         return frame
+    }
+
+    private func recordStartupCapacity(_ phase: KSVideoStartupTiming.CapacityPhase) {
+        let startup = options.videoStartupTiming.snapshot
+        guard startup.capacities[phase] == nil else { return }
+        let tracks = videoAudioTracks.map {
+            KSVideoStartupTiming.CapacitySample(media: $0.mediaType == .video ? "video" : "audio",
+                packets: $0.packetCount, frames: $0.frameCount, maximumFrames: $0.frameMaxCount, fps: $0.fps)
+        }
+        options.videoStartupTiming.recordCapacity(phase, time: CACurrentMediaTime(),
+            tracks: tracks, generation: startup.generation)
     }
 
     public func getAudioOutputRender() -> AudioFrame? {

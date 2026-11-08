@@ -1,0 +1,215 @@
+{
+  "date": "2026-10-20",
+  "scope": "S01 KS SDR Wi-Fi functional observations only; no full PP/SUB/AUD/frame-time acceptance",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceDiffSHA256": "491ed044d0c13cbf31ee3f70125f599431fcb3e783a167097fa9f3d55e7a1184",
+  "configuration": "normal Debug -Onone; empty launch environment",
+  "Xcode": "27.0",
+  "binaryBuildTime": "2026-10-20T16:16:59.676117+08:00",
+  "binaries": {
+    "Nastart": "df32a4befe3768aa1eac0d8175c028c00f5141eb3c93b392f88128ef4a10e1d8",
+    "Nastart.debug.dylib": "f43015ca6ce6c3e3f4b1180e1c6d16e107bab012b8d7442d5f01c574cd71bfb1",
+    "Frameworks/KSPlayer.framework/KSPlayer": "d2ccf7a95166b81d1491dea583eb4518ef23a00add3f91d8a3b9d0e9da2b7e37"
+  },
+  "ipaSHA256": "cbafcdb52b4d6939636eff7cba6636eec50109c5d201785f0bee64347cbb9092",
+  "profileExpirationUTC": "2026-10-24T22:23:57",
+  "sourceInputsVerifiedThisBatch": 173,
+  "deepSignatureAndThreeBinariesVerifiedThisBatch": true,
+  "originalFreezeIndividualLibraries": 29,
+  "appSourceModifiedThisBatch": false,
+  "newBuildOrInstallationThisBatch": false,
+  "devices": {
+    "iphone13": {
+      "entry": "Jellyfin",
+      "sample": "S01",
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "freshUSBNameModelOSUDIDVerifiedPrivately": true,
+      "verifiedPriorDataPreservingInstallationReused": true,
+      "newInstall": false,
+      "requestedEnvironment": {},
+      "landscapeRect": {
+        "width": "844",
+        "height": "390"
+      },
+      "portraitRect": {
+        "width": "390",
+        "height": "844"
+      },
+      "pausedAfterActualAppRotation": true,
+      "firstNativeHomePausedActuallyReviewed": true,
+      "firstWindowUnconditionalContainerClickContaminatedPauseObservation": true,
+      "automaticResumeProductFailureClaimWithdrawn": true,
+      "systemPiPCloseAndOldPlayerClosedBeforeFinalKill": true,
+      "oldAndNewPlanPrefixes": [
+        "32BFA5A7",
+        "42930973"
+      ],
+      "sameEntryNewPlanPiPReentry": true,
+      "normalUICompletionAndFollowupBeforeFinalKill": true,
+      "reentryRestoreVisual": "actual movie visible",
+      "correctedPauseWindow": {
+        "nativePlayButtonBeforeAnyPiPTouch": 1,
+        "nativePauseButtonBeforeAnyPiPTouch": 0,
+        "pausedPiPHeldAtLeastFiveSecondsBeforeExplicitPlay": true,
+        "firstPiPTouch": "unique native 播放 button",
+        "nativePauseClicked": false,
+        "nativeRepausedMovieAndPlayButtonActuallyViewed": false,
+        "nativeRepausedFollowupSeconds": null,
+        "restoreAfterNativePause": "not completed",
+        "toolFailure": "native pause control hidden; bounded stop",
+        "unconditionalPiPContainerClick": false,
+        "conditionalHiddenControlsRevealGuards": []
+      },
+      "manualHomeInAllWindows": true,
+      "ownedMediaStopped": true,
+      "guardianDeadlinesFired": 0,
+      "finalAudit": {
+        "at": "2026-10-20T17:45:30.400721+08:00",
+        "model": "iPhone14,5",
+        "system": "16.3.1",
+        "connection": "USB",
+        "sourceDiffSHA256": "491ed044d0c13cbf31ee3f70125f599431fcb3e783a167097fa9f3d55e7a1184",
+        "latestPackage": {
+          "Nastart": "df32a4befe3768aa1eac0d8175c028c00f5141eb3c93b392f88128ef4a10e1d8",
+          "Nastart.debug.dylib": "f43015ca6ce6c3e3f4b1180e1c6d16e107bab012b8d7442d5f01c574cd71bfb1",
+          "Frameworks/KSPlayer.framework/KSPlayer": "d2ccf7a95166b81d1491dea583eb4518ef23a00add3f91d8a3b9d0e9da2b7e37"
+        },
+        "nonBookmarkPreferenceKeys": 24,
+        "nonBookmarkPreferencesExactlyUnchanged": true,
+        "naturalBookmarkChangesCount": 1,
+        "originalBookmarksChecked": 36,
+        "originalBookmarksRemoved": 0,
+        "originalTrackChangeCount": 0,
+        "allOriginalTracksUnchanged": true,
+        "newBookmarksCount": 0,
+        "crashInventoryDelta": {
+          "Nastart": 0,
+          "WebDriverAgent": 0,
+          "JetsamEvent": 0
+        },
+        "normalEmptyEnvironment": true,
+        "NASNormal": true,
+        "playerClosed": true,
+        "WDAIdleSeconds": 10,
+        "WDAAnimationCoolOffSeconds": 2,
+        "nativeConditionsNotRecheckedThisTurn": true,
+        "noConditionInjectedThisTurn": true,
+        "nativeActiveConditions": "not remeasured",
+        "finalHomeActuallyReviewed": true,
+        "nativeWiFiIconActuallyReviewed": true,
+        "finalNativeOwnedAppAbsent": true,
+        "originalSSIDActuallySelected": true
+      }
+    },
+    "ipad": {
+      "entry": "deviceFile",
+      "sample": "S01",
+      "model": "iPad12,1",
+      "system": "18.3.1",
+      "freshUSBNameModelOSUDIDVerifiedPrivately": true,
+      "verifiedPriorDataPreservingInstallationReused": true,
+      "newInstall": false,
+      "requestedEnvironment": {},
+      "landscapeRect": {
+        "width": "1080",
+        "height": "810"
+      },
+      "portraitRect": {
+        "width": "810",
+        "height": "1080"
+      },
+      "pausedAfterActualAppRotation": true,
+      "firstNativeHomePausedActuallyReviewed": true,
+      "firstWindowUnconditionalContainerClickContaminatedPauseObservation": true,
+      "automaticResumeProductFailureClaimWithdrawn": true,
+      "systemPiPCloseAndOldPlayerClosedBeforeFinalKill": true,
+      "oldAndNewPlanPrefixes": [
+        "57EF3025",
+        "3CB252AD"
+      ],
+      "sameEntryNewPlanPiPReentry": true,
+      "normalUICompletionAndFollowupBeforeFinalKill": true,
+      "reentryRestoreVisual": "2-second capture rotated black transition; no delayed movie acceptance",
+      "correctedPauseWindow": {
+        "nativePlayButtonBeforeAnyPiPTouch": 1,
+        "nativePauseButtonBeforeAnyPiPTouch": 0,
+        "pausedPiPHeldAtLeastFiveSecondsBeforeExplicitPlay": true,
+        "firstPiPTouch": "unique native 播放 button",
+        "nativePauseClicked": true,
+        "nativeRepausedMovieAndPlayButtonActuallyViewed": true,
+        "nativeRepausedFollowupSeconds": 3,
+        "restoreAfterNativePause": "not completed",
+        "toolFailure": "list passed to element-click helper; bounded stop",
+        "unconditionalPiPContainerClick": false,
+        "conditionalHiddenControlsRevealGuards": [
+          {
+            "播放": 0,
+            "暂停": 0,
+            "关闭画中画": 0,
+            "恢复全屏幕": 0
+          }
+        ]
+      },
+      "manualHomeInAllWindows": true,
+      "ownedMediaStopped": true,
+      "guardianDeadlinesFired": 0,
+      "finalAudit": {
+        "at": "2026-10-20T17:47:39.417619+08:00",
+        "model": "iPad12,1",
+        "system": "18.3.1",
+        "connection": "USB",
+        "sourceDiffSHA256": "491ed044d0c13cbf31ee3f70125f599431fcb3e783a167097fa9f3d55e7a1184",
+        "latestPackage": {
+          "Nastart": "df32a4befe3768aa1eac0d8175c028c00f5141eb3c93b392f88128ef4a10e1d8",
+          "Nastart.debug.dylib": "f43015ca6ce6c3e3f4b1180e1c6d16e107bab012b8d7442d5f01c574cd71bfb1",
+          "Frameworks/KSPlayer.framework/KSPlayer": "d2ccf7a95166b81d1491dea583eb4518ef23a00add3f91d8a3b9d0e9da2b7e37"
+        },
+        "nonBookmarkPreferenceKeys": 17,
+        "nonBookmarkPreferencesExactlyUnchanged": true,
+        "naturalBookmarkChangesCount": 1,
+        "originalBookmarksChecked": 29,
+        "originalBookmarksRemoved": 0,
+        "originalTrackChangeCount": 0,
+        "allOriginalTracksUnchanged": true,
+        "newBookmarksCount": 0,
+        "crashInventoryDelta": {
+          "Nastart": 0,
+          "WebDriverAgent": 0,
+          "JetsamEvent": 0
+        },
+        "normalEmptyEnvironment": true,
+        "NASNormal": false,
+        "playerClosed": true,
+        "WDAIdleSeconds": 10,
+        "WDAAnimationCoolOffSeconds": 2,
+        "nativeConditionsNotRecheckedThisTurn": true,
+        "noConditionInjectedThisTurn": true,
+        "nativeActiveConditions": "not remeasured",
+        "finalHomeActuallyReviewed": true,
+        "nativeWiFiIconActuallyReviewed": true,
+        "finalNativeOwnedAppAbsent": true,
+        "originalSSIDActuallySelected": "not remeasured; Wi-Fi-only device and no network changes"
+      }
+    }
+  },
+  "ownedTemporaryPadRunnerStopped": true,
+  "persistentPhoneRunnerPreserved": true,
+  "hostOwnedEvidenceProcessesAtEnd": 0,
+  "powerWindow": {
+    "window": "2026-10-20 17:35:50–17:49:59 +0800",
+    "systemSleepWakeEvents": 0
+  },
+  "nativeConditionsActiveValue": "not remeasured; no conditions injected",
+  "openRequirements": 28,
+  "checks": {
+    "preflightPassed": 15,
+    "documentationDocuments": 354,
+    "documentationLocalLinks": 1834,
+    "missingLocalLinks": 0,
+    "gitDiffCheck": true,
+    "privateHarnessOfflineSyntaxAndSingleElementRestoreChecked": true,
+    "privateHarnessMediaRerunAfterFinalCorrection": false,
+    "XCTestNotRepeatedWithUnchangedAppSource": true
+  }
+}

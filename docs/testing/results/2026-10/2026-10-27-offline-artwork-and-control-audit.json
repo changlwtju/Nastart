@@ -1,0 +1,266 @@
+{
+  "date": "2026-10-27",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceInputCount": 386,
+  "sourceDrift": 0,
+  "configuration": "ordinary Debug arm64",
+  "packages": {
+    "mobile": {
+      "mainSHA256": "4e1661c2926ac930d3989f2e149459bc4b2e2e3daab9327366ae885b6c6de050",
+      "debugDylibSHA256": "5e7dbefdfef27126f8164a171da81fb733d9241fdd0159d86a883530a7e786c9",
+      "builtAt": "2026-10-27T06:29:15.631689+08:00",
+      "signedMachOCount": 30
+    },
+    "tv": {
+      "mainSHA256": "649b5884501c8a91ea3e3dc78e61c4a36464edd06bab52016779aa34b55bdb73",
+      "debugDylibSHA256": "88dbb82c96dd224e4129dbcf96822eb6f917c54ddd06b9317ec4a4592271f67f",
+      "builtAt": "2026-10-27T06:29:11.598224+08:00",
+      "signedMachOCount": 27
+    }
+  },
+  "tests": {
+    "exitCode": 0,
+    "testCount": 93,
+    "failures": 0,
+    "passed": true
+  },
+  "userPriority": "no TMDB authorization yet; offline NFO and poster wall first; existing tinyMediaManager outputs read-only",
+  "sourceLibraryBeforeBlockedInstall": {
+    "freshPairedIdentityVerified": true,
+    "libraries": [
+      {
+        "videoCount": 149,
+        "originCounts": {
+          "nfo": 90,
+          "filename": 59
+        },
+        "withPlot": 90,
+        "withProviderIDs": 90,
+        "withCorrections": 0,
+        "NASFileStationSource": false
+      }
+    ],
+    "indexChangedByTool": false
+  },
+  "posterImplementation": {
+    "NFOAndLocalSidecarSelection": true,
+    "JPGJPEGPNGOnly": true,
+    "maximumImageBytes": 2097152,
+    "maximumPixelDimensions": 8192,
+    "maximumPixels": 32000000,
+    "thumbnailMaxDimension": 768,
+    "concurrentImageTransfers": 2,
+    "cacheBytes": 67108864,
+    "cacheFiles": 300,
+    "noExternalNFOImageURLs": true,
+    "readOnlyNAS": true,
+    "nativePosterWallImageDisplayAccepted": false,
+    "nativePlaybackFromStandaloneLibrary": false,
+    "onlineScraping": false,
+    "TMMHTTPCommandsSent": 0,
+    "userReportedAllPlaceholdersOnIPhone18": true,
+    "userReportedSplitFilesAndSupplementsBecomeSeparateMovies": true
+  },
+  "devices": {
+    "iphone13": {
+      "installComplete": true,
+      "installedAt": "2026-10-27T06:40:38.520902+08:00",
+      "mainSHA256": "4e1661c2926ac930d3989f2e149459bc4b2e2e3daab9327366ae885b6c6de050",
+      "preferenceComparison": {
+        "beforeKeys": 26,
+        "afterKeys": 26,
+        "sameKeys": true,
+        "changedValues": 0,
+        "allNonDiagnosticPreferencesEqual": true
+      },
+      "nativePosterPageAccepted": false
+    },
+    "ipad": {
+      "installComplete": true,
+      "installedAt": "2026-10-27T06:32:40.509734+08:00",
+      "mainSHA256": "4e1661c2926ac930d3989f2e149459bc4b2e2e3daab9327366ae885b6c6de050",
+      "preferenceComparison": {
+        "beforeKeys": 19,
+        "afterKeys": 19,
+        "sameKeys": true,
+        "changedValues": 0,
+        "allNonDiagnosticPreferencesEqual": true
+      },
+      "nativePosterPageAccepted": false
+    },
+    "tv": {
+      "installComplete": true,
+      "installedAt": "2026-10-27T06:39:39.276679+08:00",
+      "mainSHA256": "649b5884501c8a91ea3e3dc78e61c4a36464edd06bab52016779aa34b55bdb73",
+      "preferenceComparison": {
+        "beforeKeys": 14,
+        "afterKeys": 14,
+        "sameKeys": true,
+        "changedValues": 0,
+        "allNonDiagnosticPreferencesEqual": true
+      },
+      "nativePosterPageAccepted": false
+    },
+    "iphone18": {
+      "lastConfirmedPackageMainSHA256": "a34a6a291c4d058a82582488c410da3c8d5b1c04d1cc609196ba2ef383a24d78",
+      "lastConfirmedPackageNormalLaunchVerified": true,
+      "normalLaunchScreen": "NAS folder picker with FileStation unavailable message",
+      "newPackageInstallCompleteObserved": true,
+      "newPackageFailureStage": null,
+      "newPackageFailureType": null,
+      "newPackageIdentityUnconfirmed": false,
+      "retainedLibraryVideoCounts": [
+        149
+      ],
+      "indexUnchangedAfterTimedOutAttempt": true,
+      "urgentRetry": {
+        "at": "2026-10-27T07:05:18.577835+08:00",
+        "mainSHA256": "4e1661c2926ac930d3989f2e149459bc4b2e2e3daab9327366ae885b6c6de050",
+        "installComplete": true,
+        "postInstallLookupExists": true,
+        "installedAtUTC": "2026-10-26T23:00:30.734087+00:00",
+        "normalEnvironment": {},
+        "normalArguments": [],
+        "actualNormalNASHomeImageReviewed": true,
+        "WiFiIconReviewed": true,
+        "preferences": {
+          "beforeKeys": 27,
+          "afterKeys": 27,
+          "sameKeys": true,
+          "changedValues": 0,
+          "allNonDiagnosticPreferencesEqual": true
+        },
+        "afterwardUserReportedAllPosterPlaceholders": true,
+        "afterwardUserReportedMultipartAndSupplementGroupingWrong": true
+      },
+      "currentPackageMainSHA256": "4e1661c2926ac930d3989f2e149459bc4b2e2e3daab9327366ae885b6c6de050",
+      "currentNormalNASHomeImageReviewed": true,
+      "priorTimeoutRetainedInFailures": true
+    }
+  },
+  "interruptionAudit": {
+    "controlTimeline": {
+      "actions": [
+        {
+          "device": "iphone13",
+          "at": "2026-10-27T06:40:38.520902+08:00",
+          "action": "preserve-data package overlay",
+          "completed": true,
+          "packageSHA256": "4e1661c2926ac930d3989f2e149459bc4b2e2e3daab9327366ae885b6c6de050"
+        },
+        {
+          "device": "iphone13",
+          "at": "2026-10-27T06:40:48.014237+08:00",
+          "action": "explicit ordinary App restart for baseline",
+          "intentional": true
+        },
+        {
+          "device": "ipad",
+          "at": "2026-10-27T06:32:40.509734+08:00",
+          "action": "preserve-data package overlay",
+          "completed": true,
+          "packageSHA256": "4e1661c2926ac930d3989f2e149459bc4b2e2e3daab9327366ae885b6c6de050"
+        },
+        {
+          "device": "ipad",
+          "at": "2026-10-27T06:33:01.080382+08:00",
+          "action": "explicit ordinary App restart for baseline",
+          "intentional": true
+        },
+        {
+          "device": "tv",
+          "at": "2026-10-27T06:39:39.276679+08:00",
+          "action": "preserve-data package overlay",
+          "completed": true,
+          "packageSHA256": "649b5884501c8a91ea3e3dc78e61c4a36464edd06bab52016779aa34b55bdb73"
+        },
+        {
+          "device": "tv",
+          "at": "2026-10-27T06:39:40.806157+08:00",
+          "action": "explicit ordinary App restart for baseline",
+          "intentional": true
+        },
+        {
+          "device": "iphone18",
+          "startedUTC": "2026-10-26T22:03:34.899638+00:00",
+          "finishedUTC": "2026-10-26T22:04:20.293440+00:00",
+          "action": "wireless overlay then ordinary restart",
+          "installComplete": true,
+          "normalLaunchRequested": true,
+          "failureType": null
+        },
+        {
+          "device": "iphone18",
+          "startedUTC": "2026-10-26T22:40:33.689075+00:00",
+          "finishedUTC": "2026-10-26T22:42:39.135541+00:00",
+          "action": "wireless installation dispatch",
+          "installComplete": false,
+          "normalLaunchRequested": false,
+          "failureType": "TimeoutError"
+        }
+      ],
+      "controlStoppedAt": "2026-10-27T06:47:31.084137+08:00",
+      "futureUnattendedDeviceMutationPaused": true,
+      "readOnlyAuditContinues": true,
+      "independentCodeAndDocsWorkContinues": true,
+      "iPadUserDraftPreserved": true
+    },
+    "iphone13Watchdog": {
+      "crashAt": "2026-10-27T06:40:34+08:00",
+      "captureAt": "2026-10-27T06:40:32.1223+08:00",
+      "processLaunchedAt": "2026-10-27T05:40:36.6910+08:00",
+      "termination": "FRONTBOARD scene-update watchdog",
+      "code": "0x8BADF00D",
+      "wallClockLimitSeconds": 10,
+      "mainThread": "SwiftUI / AttributeGraph layout",
+      "crashingPackageMainSHA256": "a34a6a291c4d058a82582488c410da3c8d5b1c04d1cc609196ba2ef383a24d78",
+      "crashingDebugDylibSHA256": "5f6a118527d3e7771edf8be4161b2dc610a51b61375a5157fbd28ade8acc5479",
+      "crashingDebugDylibUUID": "c2e5c58c-c4ca-3190-bbd7-12e81f0186cf",
+      "newArtworkPackageMainSHA256": "4e1661c2926ac930d3989f2e149459bc4b2e2e3daab9327366ae885b6c6de050",
+      "newArtworkDebugDylibUUID": "a839756b-3b39-3eff-a25c-12326c07e37b",
+      "oldPackageIdentityVerifiedByDebugDylibUUID": true,
+      "duringOverlayWindow": true,
+      "causalTriggerEstablished": false,
+      "ordinaryIntentionalTermination": false,
+      "newArtworkPageAttributedAsCause": false
+    },
+    "iphone18IndexRead": {
+      "appLaunchTerminateInstallCommands": 0,
+      "appStillInstalled": true,
+      "latestBinaryIdentityProvenByLookup": false,
+      "libraryVideoCounts": [
+        149
+      ],
+      "indexBytesEqualToBeforeBlockedInstall": true
+    },
+    "currentControlMode": "User authorized exclusive iPad/iPhone13/TV; iPhone18 hands off after urgent update",
+    "WDADELETECanTerminateAUTAccordingToUpstream": true,
+    "exactInstalledRunnerCleanupSemanticsVerified": false
+  },
+  "cleanup": {
+    "tvRunnerStopped": true,
+    "tvSettingsRestored": true,
+    "fixture": {
+      "sourceUnchanged": true,
+      "stopped": true,
+      "portClosed": true,
+      "requests": 0,
+      "remoteWrites": 0,
+      "videoGETs": 0,
+      "imageGETs": 0,
+      "NFOGETs": 0
+    },
+    "ownHTTPSessionsDeleted": true,
+    "originalMobileRunnersPreserved": true,
+    "userIPadDraftUnedited": true,
+    "noNASVPNOrNetworkConfigurationChanges": true
+  },
+  "retainedFailures": [
+    "new cache test missing try compilation error, corrected",
+    "tvOS DisclosureGroup unavailable, replaced shared expandable management section",
+    "iPhone18 artwork-package wireless install completion timed out; latest binary identity remains unconfirmed",
+    "iPhone13 old-package scene-update watchdog overlaps overlay; causal trigger undetermined",
+    "iPhone13 passive DVT process read ConnectionTerminatedError",
+    "native poster fixture flow stopped before connection, zero fixture requests; no native poster acceptance"
+  ]
+}

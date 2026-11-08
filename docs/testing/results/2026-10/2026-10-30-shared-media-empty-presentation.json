@@ -1,0 +1,195 @@
+{
+  "recordedAt": "2026-10-30T18:13:33+08:00",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceInputCount": 439,
+  "changedExistingSourceFiles": 6,
+  "newSourceOrTestFiles": 0,
+  "existingScenarioParameterTests": 4,
+  "builds": {
+    "module-tests": {
+      "startedAt": "2026-10-30T17:55:00.583935+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T17:55:04.225582+08:00"
+    },
+    "mobile-sim-debug-cast": {
+      "startedAt": "2026-10-30T17:54:15.790100+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T17:54:48.699148+08:00"
+    },
+    "tv-sim-debug-cast": {
+      "startedAt": "2026-10-30T17:54:48.699791+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T17:55:00.583589+08:00"
+    },
+    "mobile-debug": {
+      "startedAt": "2026-10-30T18:00:13.158542+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T18:00:55.354197+08:00"
+    },
+    "tv-debug": {
+      "startedAt": "2026-10-30T18:02:31.949529+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T18:02:46.366204+08:00"
+    },
+    "mobile-release": {
+      "startedAt": "2026-10-30T18:00:55.355163+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T18:02:31.947910+08:00"
+    },
+    "tv-release": {
+      "startedAt": "2026-10-30T18:02:46.393834+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T18:03:16.409854+08:00"
+    }
+  },
+  "capture": {
+    "accepted": 5,
+    "byPlatform": {
+      "tv": 5
+    },
+    "notStarted": {
+      "phone": {
+        "reason": "Simulator startup free-space budget unmet; no device created",
+        "requiredFreeGiB": 4.8,
+        "observedFreeGiB": 3.15
+      },
+      "pad": {
+        "reason": "Simulator startup free-space budget unmet; no device created",
+        "requiredFreeGiB": 4.8,
+        "observedFreeGiB": 3.15
+      }
+    },
+    "allPassed": true,
+    "ownedSimulatorsDeleted": true,
+    "syntheticPreferencesPreserved": true,
+    "physicalDevicesOperated": 0,
+    "NASCommands": 0,
+    "interactionOrAnimationVerified": false
+  },
+  "visualReview": {
+    "reviewed": true,
+    "at": "2026-10-30T18:13:33.031208+08:00",
+    "windows": 5,
+    "method": "Three comparison sheets from five final-source TV screenshots",
+    "checks": [
+      "Library with no action, search with clear, failure with retry, long text, actual network empty-state wrapper",
+      "Warm symbols, primary/secondary text and themes consistent",
+      "No visible clipping or overlapping labels/markers",
+      "Expected controls present, inappropriate controls absent"
+    ],
+    "sheetSHA256": [
+      "801c841cb77d48e68f18727bb7fa680972963b469cc61311730927f52c09f690",
+      "2ef3ac058cd7ecee88d99f9891912a9a79608465002b1672bbfc05e5fb6ada76",
+      "2c0e8b868ed2a97edcad5595437ba1095ba792e75d1d8aabafb7c3499f9accc5"
+    ],
+    "actualJellyfinLocalizationRetryClearFocusAndMobileLayoutVerified": false
+  },
+  "sourcePreservation": {
+    "networkWallControllerSelectionTasksNavigationAndPlaybackByteIdentical": true,
+    "networkModelAndHomeRecoveryByteIdentical": true,
+    "posterCardFocusGridHeadingAndToolbarComponentsByteIdentical": true,
+    "mobileJellyfinOnlyEmptyWrapperAndCollectionErrorPresentationChanged": true,
+    "mobileRetryActionAndLocalizedKeysPreserved": true,
+    "tvGridRequestPaginationFocusAndExitCodeByteIdentical": true,
+    "tvHomeRequestTasksPreserved": true,
+    "sourceDataAndPlaybackRoutesUnchanged": true,
+    "newPreviewUsesNoModelStoreVaultClientTask": true,
+    "changedExistingSourceFiles": 6,
+    "newSourceOrTestFiles": 0,
+    "frozenInputChanges": [
+      "LaunchpadView.swift",
+      "LibraryPosterWall.swift",
+      "MediaPosterCard.swift",
+      "OfflineMediaScene.swift",
+      "OfflineUIScenario.swift",
+      "TVViews.swift"
+    ],
+    "other433InputsUnchanged": true,
+    "fullTVSourceHasOnlyTwoPresentationBlockChanges": true
+  },
+  "nextFailureAudit": {
+    "readOnlySourceAudit": true,
+    "tvGridErrorUsedByInitialLoadAndPagination": true,
+    "paginationFailureKeepsItemsAndOffsetUntilUserRetries": true,
+    "existingRetrySetsReloadUUIDAndReloadClearsItems": true,
+    "nextScope": "Unify failure presentation with explicit initial versus retained-content context; preserve current callbacks/pagination in this batch, behavior changes need separate synthetic concurrency coverage.",
+    "codeChangedByAudit": false,
+    "NASCommands": 0
+  },
+  "packages": {
+    "mobile": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-30T18:00:55.140935+08:00",
+      "frozenAt": "2026-10-30T18:05:30.664418+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 439,
+      "mainSHA256": "c995ac8b24266cb7ac13b26e6bd16e8833f50e25dca51dbceb7d5d74db8cb2e4",
+      "debugDylibSHA256": "2bfdbc6642677ff1e5888b087226bd65ab855332562d044797ffa5b1175da441",
+      "signedMachOCount": 30,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false,
+      "copyMethod": "cp -cpR clone requested; hashes and signatures verified independently"
+    },
+    "tv": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-30T18:02:46.286410+08:00",
+      "frozenAt": "2026-10-30T18:05:31.013698+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 439,
+      "mainSHA256": "a1bcca4e098c9c80998646d76177ebb00e24bf99e19d87c72f4dbea6732e9813",
+      "debugDylibSHA256": "2473683516cdbdf04d9c1e1612762c9560d89419d1e1fbe5431e7d93e12eb9a4",
+      "signedMachOCount": 27,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false,
+      "copyMethod": "cp -cpR clone requested; hashes and signatures verified independently"
+    }
+  },
+  "physicalDevicesOperated": 0,
+  "NASCommands": 0,
+  "playbackCommands": 0,
+  "ownedSimulatorsCreated": 1,
+  "privateEvidencePointer": "current-shared-empty-presentation-private",
+  "notVerified": [
+    "Phone/tablet current layouts and actual Jellyfin localized rendering: mobile startup budgets unmet",
+    "Real favorites/search/collection empty state and account visibility",
+    "Retry/clear search/focus/scroll/navigation/pagination interactions",
+    "Real media, images, server failures or playback"
+  ],
+  "initialBlockedCapture": {
+    "accepted": 0,
+    "byPlatform": {},
+    "notStarted": {
+      "phone": {
+        "reason": "Simulator startup free-space budget unmet; no device created",
+        "requiredFreeGiB": 4.8,
+        "observedFreeGiB": 3.15
+      },
+      "pad": {
+        "reason": "Simulator startup free-space budget unmet; no device created",
+        "requiredFreeGiB": 4.8,
+        "observedFreeGiB": 3.15
+      },
+      "tv": {
+        "reason": "Simulator startup free-space budget unmet; no device created",
+        "requiredFreeGiB": 3.8,
+        "observedFreeGiB": 3.15
+      }
+    },
+    "allPassed": false,
+    "ownedSimulatorsDeleted": true,
+    "syntheticPreferencesPreserved": true,
+    "physicalDevicesOperated": 0,
+    "NASCommands": 0,
+    "interactionOrAnimationVerified": false
+  }
+}

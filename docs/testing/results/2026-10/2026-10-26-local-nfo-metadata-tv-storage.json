@@ -1,0 +1,200 @@
+{
+  "date": "2026-10-26",
+  "scope": "Shared filename hints and read-only existing NFO metadata; tvOS local storage repair",
+  "source": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "workingTree": "preexisting and current dirty/untracked changes preserved",
+    "localInputCount": 366,
+    "localInputDrift": 0,
+    "inventoryScope": "local source/project/resource snapshot, not historical dependency inventory"
+  },
+  "builds": {
+    "mobile": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-26T03:53:01.092802+08:00",
+      "mainSHA256": "255dd0691df000e2c4346f931b11b57eb05671afea44316e3ed3f1209ab603c1",
+      "signedMachOCount": 30,
+      "arguments": [],
+      "environment": {}
+    },
+    "tv": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-26T03:53:01.092802+08:00",
+      "mainSHA256": "b7c524489dbf857be321cdd53df24bfe789cd11ed26017e3a5669face31db1fc",
+      "signedMachOCount": 27,
+      "arguments": [],
+      "environment": {}
+    }
+  },
+  "tests": {
+    "executed": 32,
+    "failed": 0,
+    "originalCoreStore": 10,
+    "filenameNFO": 10,
+    "recoverableTVSourceCatalog": 3,
+    "realLoopbackHTTP": 9
+  },
+  "implemented": [
+    "filename title/year/SxxExx/specials/multi-episode hints with explicit unconfirmed provenance",
+    "listed same-stem NFO preferred; movie.nfo fallback only for a single non-episode video",
+    "movie and episodedetails title/year/plot/season/episode and typed imdb/tmdb/tvdb IDs; no external lookup",
+    "NFO GET only, same selected root, no redirect, 512KiB streamed bound; scan cap32MiB/4096 NFOs",
+    "invalid/ambiguous/declared oversized NFO retains filename hint; permission/network errors abort replacement index",
+    "tvOS rebuildable Caches index plus bounded64KiB UserDefaults source catalog; credentials remain endpoint-bound Keychain",
+    "shared actor store and explicit local removal; keyboard submit focus routing"
+  ],
+  "devices": {
+    "iphone13": {
+      "model": "iPhone14,5",
+      "os": "16.3.1",
+      "installedAt": "2026-10-26T03:53:46.159966+08:00",
+      "installComplete": true,
+      "normalLaunch": true,
+      "selectedRoot": "synthetic Movies folder",
+      "indexedVideos": 4,
+      "adoptedExistingNFO": 2,
+      "invalidNFOFilenameFallback": true,
+      "localIndexRetrievedAndChecked": true,
+      "localRemovalVerified": true,
+      "preferencesEqual": true,
+      "cancelIndexByteIdentical": true,
+      "nfo403IndexByteIdentical": true,
+      "restartPersistence": true,
+      "recoveryRescan": true
+    },
+    "ipad": {
+      "model": "iPad15,7",
+      "os": "26.6",
+      "installedAt": "2026-10-26T03:53:35.216772+08:00",
+      "installComplete": true,
+      "normalLaunch": true,
+      "selectedRoot": "synthetic Movies folder",
+      "indexedVideos": 4,
+      "adoptedExistingNFO": 2,
+      "invalidNFOFilenameFallback": true,
+      "localIndexRetrievedAndChecked": true,
+      "localRemovalVerified": true,
+      "preferencesEqual": true,
+      "priorInstallationCoordinatorNowCleared": true,
+      "clearanceCauseUnknown": true,
+      "cancelIndexByteIdentical": true
+    },
+    "tv": {
+      "model": "AppleTV14,1",
+      "os": "18.2",
+      "installedAt": "2026-10-26T03:53:36.341573+08:00",
+      "installComplete": true,
+      "normalLaunch": true,
+      "selectedRoot": "synthetic Movies folder",
+      "indexedVideos": 4,
+      "adoptedExistingNFO": 2,
+      "invalidNFOFilenameFallback": true,
+      "localIndexRetrievedAndChecked": true,
+      "localRemovalVerified": true,
+      "preferencesEqual": true,
+      "restartPersistence": true,
+      "cancelNotAccepted": true,
+      "connection": "anonymous self-owned fixture; real authenticated TV NAS connection not verified"
+    }
+  },
+  "readOnlyEvidence": {
+    "sourceFiles": 9,
+    "fileContentSizeMtimePathsAndDirectoriesUnchanged": true,
+    "requests": 53,
+    "propfind": 29,
+    "nfoGET": 24,
+    "onlyReadMethods": true,
+    "allGETNFO": true,
+    "outsideSelectedFolderRequests": 0
+  },
+  "storageFault": {
+    "operation": "index-write",
+    "domain": "NSCocoaErrorDomain",
+    "code": 513,
+    "credentialSaveWasNotFailure": true,
+    "repair": "tvOS Caches snapshot and persistent small source catalog",
+    "purgeRecoveryTest": "simulated in isolated unit storage; no real-device pressure/purge performed"
+  },
+  "failuresRetained": [
+    "NFO oversized-header HTTP fixture sent no declared body, produced -1005; fixed fixture to send complete advertised body, no transport bypass",
+    "TV conference-room display stole foreground; activeAppInfo confirmed system app, reactivated Nastart only, system configuration unchanged",
+    "TV List cells and nested buttons caused rejected clicks; evidence checked before native Select",
+    "TV cancel attempt1 blind extra Select removed only temporary local source; rebuilt fixture, no NAS mutation",
+    "TV cancel attempt2 control unreachable after scan already finished; files same but scan date changed; not accepted and further repeats stopped",
+    "phone immediate post-relaunch navigation landed on read-only DSM detail; no endpoint edits; returned to fresh home then verified library persistence and recovery",
+    "iPad first directory assertion before successful confirmed connection failed; rechecked current enabled control and completed flow"
+  ],
+  "cleanup": {
+    "sourceLibrariesRemovedViaUIOnAllThree": true,
+    "allLocalIndexesEmpty": true,
+    "nonDiagnosticPreferencesEqualOnAllThree": true,
+    "TVSourceCatalogKeyRemovedAfterLastSourceRemoval": true,
+    "ownedTVRunnerStopped": true,
+    "TVModifiedSettingsRestoredAndGETVerified": true,
+    "phoneAndPadOnlyOwnHTTPSessionsDeleted": true,
+    "originalPhoneAndPadRunnersKept": true,
+    "ownFixtureServerStopped": true,
+    "fixtureStop": "intentional SIGINT/exit130 with finally snapshots",
+    "normalHomeScreensReviewedOnAllThree": true,
+    "mediaCommands": 0,
+    "cellularTests": 0,
+    "NASorVPNConfigurationChanges": false,
+    "systemUpdatesUninstallOrDataReset": false
+  },
+  "acceptance": {
+    "openRequirements": 29,
+    "states": {
+      "inProgress": 13,
+      "pendingAcceptance": 5,
+      "notStarted": 11
+    },
+    "playbackCells": 114,
+    "playbackCellsClosed": 0,
+    "notDelivered": [
+      "SMB adapter",
+      "online scraping or artwork provider",
+      "manual metadata correction",
+      "tvshow.nfo hierarchy/multi-root NFO variants",
+      "incremental scanning",
+      "network-library playback",
+      "cross-device sync",
+      "Release acceptance"
+    ],
+    "tvCancelRealDevice": "not accepted; preserve failures",
+    "iphone18": "not connected; no current-source install or regression; original DSM domain config untouched"
+  },
+  "finalChecks": {
+    "at": "2026-10-26T04:22:57.175397+08:00",
+    "sourceInputDrift": 0,
+    "binaryDrift": 0,
+    "documentationDocuments": 457,
+    "localLinks": 2650,
+    "missingLinks": 0,
+    "gitDiffCheck": 0,
+    "newPackageWhitespace": true,
+    "ledgerRows": 29,
+    "ledgerStates": {
+      "进行中": 13,
+      "待开始": 11,
+      "待验收": 5
+    },
+    "ownFixtureServerStopped": true,
+    "ownedTVRunnerStopped": true,
+    "originalPhoneAndPadRunnersKept": true
+  },
+  "followupDependencyReview": {
+    "at": "2026-10-26T04:29:54.689712+08:00",
+    "kind": "documentation-only; not shipped functionality",
+    "architecture": "docs/architecture/READ_ONLY_NETWORK_MEDIA_LIBRARY.md",
+    "localCorrection": "next independent slice; separate recoverable override, no provider token required",
+    "onlineProvider": "TMDB candidate only; project authorization and attribution unresolved, no provider adopted or key copied",
+    "smb": "AMSMB2 candidate only; dynamic product and credential-encoding observed; dependency/license/read-only/root/cancellation/signing audit required before integration",
+    "applicationSourceChanged": false,
+    "dependenciesAdded": false,
+    "deviceActionsAdded": false,
+    "documentationDocuments": 457,
+    "localLinks": 2654,
+    "missingLinks": 0,
+    "gitDiffCheck": 0
+  }
+}

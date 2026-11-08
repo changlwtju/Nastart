@@ -3,6 +3,8 @@ import UIKit
 
 struct AppTabRootView: View {
     @State private var selectedSection: AppSection? = .launchpad
+    /// Bumped when the selected tab is tapped again, which returns that tab to its root page.
+    @State private var tabRootGeneration: [AppSection: Int] = [:]
     @StateObject private var mediaLibraryRouter = MediaLibraryRouter()
 
     var body: some View {
@@ -51,26 +53,36 @@ struct AppTabRootView: View {
     }
 
     private var phoneTabs: some View {
-        TabView(selection: $selectedSection) {
+        TabView(selection: Binding(get: { selectedSection }, set: { section in
+            // On iOS 16 (iPhone 13, 16.3.1) navigation links in a rebuilt tab stop responding.
+            if #available(iOS 17.0, *), section == selectedSection, let section {
+                tabRootGeneration[section, default: 0] += 1
+            }
+            selectedSection = section
+        })) {
             LaunchpadView()
+                .id(tabRootGeneration[.launchpad, default: 0])
                 .tag(Optional(AppSection.launchpad))
                 .tabItem {
                     Label("tab.launchpad", systemImage: "square.grid.2x2")
                 }
 
             DevicesView()
+                .id(tabRootGeneration[.devices, default: 0])
                 .tag(Optional(AppSection.devices))
                 .tabItem {
                     Label("tab.devices", systemImage: "server.rack")
                 }
 
             TasksView()
+                .id(tabRootGeneration[.tasks, default: 0])
                 .tag(Optional(AppSection.tasks))
                 .tabItem {
                     Label("tab.tasks", systemImage: "checklist")
                 }
 
             MineView()
+                .id(tabRootGeneration[.mine, default: 0])
                 .tag(Optional(AppSection.mine))
                 .tabItem {
                     Label("tab.mine", systemImage: "person")

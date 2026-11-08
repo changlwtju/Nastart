@@ -1,0 +1,1352 @@
+{
+  "recordedAt": "2026-10-08T11:01:19.005462+08:00",
+  "scope": "fixed batch diagnostic persistence and KS initial-seek/startup stages; actual cellular S03 dual entry and iPad ISO dual entry",
+  "source": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "hasUncommittedChanges": true,
+    "iOSWorkingDiffSHA256": "e942c3d3f5648b0ddb1011400af409c6c0008563e5414739994d5e390d13b247",
+    "previousChangesPreserved": true
+  },
+  "package": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "e942c3d3f5648b0ddb1011400af409c6c0008563e5414739994d5e390d13b247",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "package": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-10-07-083328-dual-entry-session/network-background-profiles-175119/iso-device-files-20261008-072518/Nastart-DiagnosticStages-Latest-Debug.app",
+    "binaryBuildTime": "2026-10-08T10:41:14.713785+08:00",
+    "binaries": {
+      "Nastart": "777911af4e815a76912599e95f176facb0418cf3aafc8918b687194f01950b65",
+      "Nastart.debug.dylib": "01874cce91dae3115ba9f1116979416c3244d090cc053e972be2b1e9e2a63ba0",
+      "Frameworks/KSPlayer.framework/KSPlayer": "eda16e6d0e22bc81045752f2f54a263b0f4f8500912378d5ac141013c9042b52"
+    },
+    "signatureVerified": true,
+    "individuallyVerifiedLibraries": 29,
+    "checkedInputs": 137,
+    "profileExpirationUTC": "2026-10-10T22:03:15",
+    "tests": "Executed 193 tests, with 2 tests skipped and 0 failures (0 unexpected) in 56.213 (56.257) seconds",
+    "preflight": "15 passed",
+    "linkageVerified": true
+  },
+  "devices": [
+    {
+      "recordedAt": "2026-10-08T10:42:26.553861+08:00",
+      "device": "iphone13",
+      "model": "iPhone14,5",
+      "os": "16.3.1",
+      "systemBuild": "20D67",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceDiffSHA256": "e942c3d3f5648b0ddb1011400af409c6c0008563e5414739994d5e390d13b247",
+      "binaries": {
+        "Nastart": "777911af4e815a76912599e95f176facb0418cf3aafc8918b687194f01950b65",
+        "Nastart.debug.dylib": "01874cce91dae3115ba9f1116979416c3244d090cc053e972be2b1e9e2a63ba0",
+        "Frameworks/KSPlayer.framework/KSPlayer": "eda16e6d0e22bc81045752f2f54a263b0f4f8500912378d5ac141013c9042b52"
+      },
+      "binaryBuildTime": "2026-10-08T10:41:14.713785+08:00",
+      "configuration": "normal Debug -Onone; empty launch environment",
+      "freshUSBIdentity": true,
+      "pairingValid": true,
+      "signatureVerified": true,
+      "verifiedLibraries": 29,
+      "checkedInputs": 137,
+      "targetInValidProfile": true,
+      "dataPreservingCoverInstall": true,
+      "installation": "success",
+      "unchangedNonDiagnosticPreferences": 25,
+      "normalLaunchSucceeded": true,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "actualForegroundUIVerified": true,
+      "foregroundEvidence": "normal-launch.png/xml",
+      "wdaReinstallRequested": false,
+      "cellularAvailability": "iPhone13 available per latest user update; no injected limit, actual route to be checked",
+      "networkSettingsChanged": false
+    },
+    {
+      "recordedAt": "2026-10-08T10:42:28.079795+08:00",
+      "device": "ipad",
+      "model": "iPad12,1",
+      "os": "18.3.1",
+      "systemBuild": "22D72",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceDiffSHA256": "e942c3d3f5648b0ddb1011400af409c6c0008563e5414739994d5e390d13b247",
+      "binaries": {
+        "Nastart": "777911af4e815a76912599e95f176facb0418cf3aafc8918b687194f01950b65",
+        "Nastart.debug.dylib": "01874cce91dae3115ba9f1116979416c3244d090cc053e972be2b1e9e2a63ba0",
+        "Frameworks/KSPlayer.framework/KSPlayer": "eda16e6d0e22bc81045752f2f54a263b0f4f8500912378d5ac141013c9042b52"
+      },
+      "binaryBuildTime": "2026-10-08T10:41:14.713785+08:00",
+      "configuration": "normal Debug -Onone; empty launch environment",
+      "freshUSBIdentity": true,
+      "pairingValid": true,
+      "signatureVerified": true,
+      "verifiedLibraries": 29,
+      "checkedInputs": 137,
+      "targetInValidProfile": true,
+      "dataPreservingCoverInstall": true,
+      "installation": "success",
+      "unchangedNonDiagnosticPreferences": 16,
+      "normalLaunchSucceeded": true,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "actualForegroundUIVerified": true,
+      "foregroundEvidence": "normal-launch.png/xml",
+      "wdaReinstallRequested": false,
+      "cellularAvailability": "Wi-Fi",
+      "networkSettingsChanged": false
+    }
+  ],
+  "cases": [
+    {
+      "device": "ipad",
+      "case": "latest-jellyfin-iso",
+      "traceID": "9DE40951",
+      "entryCount": 68,
+      "firstClockSignal": {
+        "event": "diagnostics.playback.next.first_frame",
+        "date": 813120237.785286,
+        "fields": {
+          "firstFramePositionSeconds": "0.134",
+          "firstFrameSignal": "playbackClock",
+          "playbackTraceID": "9DE40951",
+          "tapToFirstFrameMs": "1665"
+        }
+      },
+      "startupStages": [
+        {
+          "event": "diagnostics.playback.next.engine_startup_timing",
+          "date": 813120237.778844,
+          "fields": {
+            "engine": "KSPlayer",
+            "evidence": "engineMonotonicStagesAndAdvancingClock",
+            "firstVideoDecodeMs": "863.1606249982724",
+            "firstVideoPacketMs": "861.9574166659731",
+            "initialPositionSeconds": "0.0",
+            "initialSeekResult": "notRequested",
+            "openMs": "167.50374999537598",
+            "playbackTraceID": "9DE40951",
+            "readyMs": "25.628083327319473",
+            "readyToClockMs": "424.7651250043418",
+            "streamInfoMs": "605.6966250034748"
+          }
+        }
+      ],
+      "telemetryCount": 40,
+      "firstTelemetry": {
+        "event": "diagnostics.playback.next.telemetry_sample",
+        "date": 813120236.673755,
+        "fields": {
+          "elapsedMs": "0",
+          "engine": "KSPlayer",
+          "networkClass": "local",
+          "playMethod": "directPlay",
+          "playbackTraceID": "9DE40951",
+          "routeKind": "localRangeProxy",
+          "sampleIndex": "1",
+          "sampleReason": "planReady",
+          "stallActive": "no",
+          "stallCount": "0"
+        }
+      },
+      "lastTelemetry": {
+        "event": "diagnostics.playback.next.telemetry_sample",
+        "date": 813120277.085865,
+        "fields": {
+          "audioBitrate": "2141478",
+          "bufferLimitSeconds": "16.0",
+          "bufferTargetSeconds": "4.0",
+          "bufferedAheadSeconds": "14.826832929764358",
+          "bytesRead": "93294736",
+          "currentSeconds": "39.440",
+          "deltaSeconds": "1.088",
+          "displayFPS": "24.9",
+          "droppedVideoFrames": "1",
+          "droppedVideoPackets": "0",
+          "durationSeconds": "8607.339",
+          "elapsedMs": "40610",
+          "engine": "KSPlayer",
+          "networkClass": "local",
+          "playMethod": "directPlay",
+          "playbackTraceID": "9DE40951",
+          "routeKind": "localRangeProxy",
+          "sampleIndex": "40",
+          "sampleReason": "playbackTick",
+          "stallActive": "no",
+          "stallCount": "1",
+          "videoBitrate": "4444564"
+        }
+      },
+      "maxStallCount": 1,
+      "urlMetricsCount": 0,
+      "urlMetricsCellularYes": 0,
+      "errors": [],
+      "diskSnapshots": [
+        {
+          "file": "t0-private.plist",
+          "maxDate": 813120234.487549,
+          "matchingTraceEntries": 1
+        },
+        {
+          "file": "t10-private.plist",
+          "maxDate": 813120234.487549,
+          "matchingTraceEntries": 1
+        },
+        {
+          "file": "t3-private.plist",
+          "maxDate": 813120234.487549,
+          "matchingTraceEntries": 1
+        },
+        {
+          "file": "t30-private.plist",
+          "maxDate": 813120256.783701,
+          "matchingTraceEntries": 48
+        },
+        {
+          "file": "t45-private.plist",
+          "maxDate": 813120277.085865,
+          "matchingTraceEntries": 68
+        }
+      ],
+      "verdict": "diagnosticsObserved_notPerformanceAcceptance",
+      "visualObservation": "movie/logos; no verifiable Chinese cue within this 45-second opening",
+      "observationRequests": [
+        {
+          "targetSeconds": 0,
+          "requestStart": 1791427434.711703,
+          "responseEnd": 1791427435.502581,
+          "clocks": [],
+          "playerVisible": false
+        },
+        {
+          "targetSeconds": 3,
+          "requestStart": 1791427436.6968262,
+          "responseEnd": 1791427437.195307,
+          "clocks": [
+            "0%"
+          ],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 10,
+          "requestStart": 1791427443.696834,
+          "responseEnd": 1791427444.2308679,
+          "clocks": [],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 30,
+          "requestStart": 1791427463.696824,
+          "responseEnd": 1791427464.339823,
+          "clocks": [],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 45,
+          "requestStart": 1791427478.688123,
+          "responseEnd": 1791427479.2422678,
+          "clocks": [],
+          "playerVisible": true
+        }
+      ]
+    },
+    {
+      "device": "ipad",
+      "case": "latest-file-iso-resume",
+      "traceID": "7A9D25CF",
+      "entryCount": 53,
+      "firstClockSignal": {
+        "event": "diagnostics.playback.next.first_frame",
+        "date": 813120694.74127,
+        "fields": {
+          "firstFramePositionSeconds": "178.662",
+          "firstFrameSignal": "playbackClock",
+          "playbackTraceID": "7A9D25CF",
+          "tapToFirstFrameMs": "5847"
+        }
+      },
+      "startupStages": [
+        {
+          "event": "diagnostics.playback.next.engine_startup_timing",
+          "date": 813120694.73377,
+          "fields": {
+            "engine": "KSPlayer",
+            "evidence": "engineMonotonicStagesAndAdvancingClock",
+            "firstVideoDecodeMs": "4523.685708321864",
+            "firstVideoPacketMs": "4523.003541660728",
+            "initialPositionSeconds": "178.52294444444445",
+            "initialSeekMs": "2590.269291657023",
+            "initialSeekResult": "0",
+            "openMs": "177.75529166101478",
+            "playbackTraceID": "7A9D25CF",
+            "readyMs": "8.87495833740104",
+            "readyToClockMs": "4708.712666659267",
+            "streamInfoMs": "804.2045416659676"
+          }
+        }
+      ],
+      "telemetryCount": 28,
+      "firstTelemetry": {
+        "event": "diagnostics.playback.next.telemetry_sample",
+        "date": 813120689.090932,
+        "fields": {
+          "elapsedMs": "0",
+          "engine": "KSPlayer",
+          "networkClass": "local",
+          "playMethod": "directPlay",
+          "playbackTraceID": "7A9D25CF",
+          "routeKind": "localRangeProxy",
+          "sampleIndex": "1",
+          "sampleReason": "planReady",
+          "stallActive": "no",
+          "stallCount": "0"
+        }
+      },
+      "lastTelemetry": {
+        "event": "diagnostics.playback.next.telemetry_sample",
+        "date": 813120717.136109,
+        "fields": {
+          "audioBitrate": "639999",
+          "bufferLimitSeconds": "16.0",
+          "bufferTargetSeconds": "4.0",
+          "bufferedAheadSeconds": "14.645333333333326",
+          "bytesRead": "134190576",
+          "currentSeconds": "201.062",
+          "deltaSeconds": "1.109",
+          "displayFPS": "24.2",
+          "droppedVideoFrames": "2",
+          "droppedVideoPackets": "0",
+          "durationSeconds": "8607.339",
+          "elapsedMs": "28122",
+          "engine": "KSPlayer",
+          "networkClass": "local",
+          "playMethod": "directPlay",
+          "playbackTraceID": "7A9D25CF",
+          "routeKind": "localRangeProxy",
+          "sampleIndex": "28",
+          "sampleReason": "playbackTick",
+          "stallActive": "no",
+          "stallCount": "1",
+          "videoBitrate": "8842389"
+        }
+      },
+      "maxStallCount": 1,
+      "urlMetricsCount": 0,
+      "urlMetricsCellularYes": 0,
+      "errors": [],
+      "diskSnapshots": [
+        {
+          "file": "tool-recovery-private.plist",
+          "maxDate": 813120717.136109,
+          "matchingTraceEntries": 53
+        }
+      ],
+      "verdict": "TOOL_incompletePlannedWindow",
+      "visualObservation": "recovery screen; ordinary exit; retained separately"
+    },
+    {
+      "device": "ipad",
+      "case": "latest-file-iso-resume-r2",
+      "traceID": "5AD0DE3A",
+      "entryCount": 67,
+      "firstClockSignal": {
+        "event": "diagnostics.playback.next.first_frame",
+        "date": 813120751.884185,
+        "fields": {
+          "firstFramePositionSeconds": "212.518",
+          "firstFrameSignal": "playbackClock",
+          "playbackTraceID": "5AD0DE3A",
+          "tapToFirstFrameMs": "5492"
+        }
+      },
+      "startupStages": [
+        {
+          "event": "diagnostics.playback.next.engine_startup_timing",
+          "date": 813120751.877089,
+          "fields": {
+            "engine": "KSPlayer",
+            "evidence": "engineMonotonicStagesAndAdvancingClock",
+            "firstVideoDecodeMs": "3722.8735416720156",
+            "firstVideoPacketMs": "3722.214791676379",
+            "initialPositionSeconds": "212.46427777777777",
+            "initialSeekMs": "2288.2957916735904",
+            "initialSeekResult": "0",
+            "openMs": "347.5868750101654",
+            "playbackTraceID": "5AD0DE3A",
+            "readyMs": "6.902499997522682",
+            "readyToClockMs": "4406.861583338468",
+            "streamInfoMs": "608.55941666523"
+          }
+        }
+      ],
+      "telemetryCount": 41,
+      "firstTelemetry": {
+        "event": "diagnostics.playback.next.telemetry_sample",
+        "date": 813120746.569871,
+        "fields": {
+          "elapsedMs": "0",
+          "engine": "KSPlayer",
+          "networkClass": "local",
+          "playMethod": "directPlay",
+          "playbackTraceID": "5AD0DE3A",
+          "routeKind": "localRangeProxy",
+          "sampleIndex": "1",
+          "sampleReason": "planReady",
+          "stallActive": "no",
+          "stallCount": "0"
+        }
+      },
+      "lastTelemetry": {
+        "event": "diagnostics.playback.next.telemetry_sample",
+        "date": 813120787.380282,
+        "fields": {
+          "audioBitrate": "639999",
+          "bufferLimitSeconds": "16.0",
+          "bufferTargetSeconds": "4.0",
+          "bufferedAheadSeconds": "13.978666666666669",
+          "bytesRead": "193304048",
+          "currentSeconds": "248.016",
+          "deltaSeconds": "0.992",
+          "displayFPS": "24.2",
+          "droppedVideoFrames": "2",
+          "droppedVideoPackets": "0",
+          "durationSeconds": "8607.339",
+          "elapsedMs": "40890",
+          "engine": "KSPlayer",
+          "networkClass": "local",
+          "playMethod": "directPlay",
+          "playbackTraceID": "5AD0DE3A",
+          "routeKind": "localRangeProxy",
+          "sampleIndex": "41",
+          "sampleReason": "playbackTick",
+          "stallActive": "no",
+          "stallCount": "1",
+          "videoBitrate": "13260755"
+        }
+      },
+      "maxStallCount": 1,
+      "urlMetricsCount": 0,
+      "urlMetricsCellularYes": 0,
+      "errors": [],
+      "diskSnapshots": [
+        {
+          "file": "t0-private.plist",
+          "maxDate": 813120728.678845,
+          "matchingTraceEntries": 0
+        },
+        {
+          "file": "t10-private.plist",
+          "maxDate": 813120747.619986,
+          "matchingTraceEntries": 20
+        },
+        {
+          "file": "t3-private.plist",
+          "maxDate": 813120728.678845,
+          "matchingTraceEntries": 0
+        },
+        {
+          "file": "t30-private.plist",
+          "maxDate": 813120767.479925,
+          "matchingTraceEntries": 47
+        },
+        {
+          "file": "t45-private.plist",
+          "maxDate": 813120787.380282,
+          "matchingTraceEntries": 67
+        }
+      ],
+      "verdict": "diagnosticsAndChineseCueObserved_startupStillSlow",
+      "visualObservation": "t45 movie and Chinese subtitle",
+      "observationRequests": [
+        {
+          "targetSeconds": 0,
+          "requestStart": 1791427945.022839,
+          "responseEnd": 1791427945.4189901,
+          "clocks": [],
+          "playerVisible": false
+        },
+        {
+          "targetSeconds": 3,
+          "requestStart": 1791427947.300472,
+          "responseEnd": 1791427947.620595,
+          "clocks": [
+            "0%"
+          ],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 10,
+          "requestStart": 1791427954.2950232,
+          "responseEnd": 1791427954.8671842,
+          "clocks": [
+            "3%"
+          ],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 30,
+          "requestStart": 1791427974.295972,
+          "responseEnd": 1791427974.8076642,
+          "clocks": [],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 45,
+          "requestStart": 1791427989.300479,
+          "responseEnd": 1791427989.80929,
+          "clocks": [],
+          "playerVisible": true
+        }
+      ]
+    },
+    {
+      "device": "iphone13",
+      "case": "cellular-s03-jellyfin",
+      "traceID": "9F51281B",
+      "entryCount": 258,
+      "firstClockSignal": {
+        "event": "diagnostics.playback.next.first_frame",
+        "date": 813120373.176694,
+        "fields": {
+          "firstFramePositionSeconds": "0.510",
+          "firstFrameSignal": "playbackClock",
+          "playbackTraceID": "9F51281B",
+          "tapToFirstFrameMs": "29571"
+        }
+      },
+      "startupStages": [],
+      "telemetryCount": 71,
+      "firstTelemetry": {
+        "event": "diagnostics.playback.next.telemetry_sample",
+        "date": 813120343.94892,
+        "fields": {
+          "elapsedMs": "0",
+          "engine": "AVPlayer",
+          "itemStatus": "unknown",
+          "loadedRangeCount": "0",
+          "networkClass": "unknown",
+          "playMethod": "localRemux",
+          "playbackTraceID": "9F51281B",
+          "rate": "0.000",
+          "routeKind": "localHLS",
+          "sampleIndex": "1",
+          "sampleReason": "itemInstalled",
+          "stallActive": "no",
+          "stallCount": "0",
+          "timeControlStatus": "paused"
+        }
+      },
+      "lastTelemetry": {
+        "event": "diagnostics.playback.next.telemetry_sample",
+        "date": 813120464.778832,
+        "fields": {
+          "elapsedMs": "120844",
+          "engine": "AVPlayer",
+          "networkClass": "unknown",
+          "playMethod": "localRemux",
+          "playbackTraceID": "9F51281B",
+          "routeKind": "localHLS",
+          "sampleIndex": "71",
+          "sampleReason": "viewDisappear",
+          "stallActive": "yes",
+          "stallCount": "2"
+        }
+      },
+      "maxStallCount": 2,
+      "urlMetricsCount": 26,
+      "urlMetricsCellularYes": 26,
+      "errors": [
+        {
+          "event": "diagnostics.media.proxy_transfer_finished",
+          "date": 813120357.4746,
+          "fields": {
+            "deliveredBytes": "12045",
+            "durationMs": "13236",
+            "errorCode": "0",
+            "errorDomain": "Network.NWError",
+            "expectedBytes": "2074392",
+            "finishSource": "clientFailed",
+            "playbackTraceID": "9F51281B",
+            "responseStartOffset": "0",
+            "result": "未能完成操作。（Network.NWError错误0。）",
+            "retries": "0",
+            "segmentOrdinal": "0",
+            "taskReceivedBytes": "12045",
+            "upstreamTaskIndex": "1"
+          }
+        },
+        {
+          "event": "diagnostics.media.proxy_transfer_finished",
+          "date": 813120367.485492,
+          "fields": {
+            "deliveredBytes": "12046",
+            "durationMs": "4567",
+            "errorCode": "0",
+            "errorDomain": "Network.NWError",
+            "expectedBytes": "5110968",
+            "finishSource": "clientBodySend",
+            "playbackTraceID": "9F51281B",
+            "responseStartOffset": "0",
+            "result": "未能完成操作。（Network.NWError错误0。）",
+            "retries": "0",
+            "segmentOrdinal": "2",
+            "taskReceivedBytes": "12046",
+            "upstreamTaskIndex": "1"
+          }
+        },
+        {
+          "event": "diagnostics.media.proxy_transfer_finished",
+          "date": 813120404.419358,
+          "fields": {
+            "deliveredBytes": "12046",
+            "durationMs": "6532",
+            "errorCode": "0",
+            "errorDomain": "Network.NWError",
+            "expectedBytes": "4135624",
+            "finishSource": "clientBodySend",
+            "playbackTraceID": "9F51281B",
+            "responseStartOffset": "0",
+            "result": "未能完成操作。（Network.NWError错误0。）",
+            "retries": "0",
+            "segmentOrdinal": "15",
+            "taskReceivedBytes": "12046",
+            "upstreamTaskIndex": "1"
+          }
+        },
+        {
+          "event": "diagnostics.media.proxy_transfer_finished",
+          "date": 813120438.678509,
+          "fields": {
+            "deliveredBytes": "12045",
+            "durationMs": "13346",
+            "errorCode": "0",
+            "errorDomain": "Network.NWError",
+            "expectedBytes": "4130172",
+            "finishSource": "clientBodySend",
+            "playbackTraceID": "9F51281B",
+            "responseStartOffset": "0",
+            "result": "未能完成操作。（Network.NWError错误0。）",
+            "retries": "0",
+            "segmentOrdinal": "20",
+            "taskReceivedBytes": "12045",
+            "upstreamTaskIndex": "1"
+          }
+        },
+        {
+          "event": "diagnostics.media.proxy_transfer_finished",
+          "date": 813120439.571964,
+          "fields": {
+            "deliveredBytes": "7950",
+            "durationMs": "10254",
+            "errorCode": "0",
+            "errorDomain": "Network.NWError",
+            "expectedBytes": "4130172",
+            "finishSource": "clientBodySend",
+            "playbackTraceID": "9F51281B",
+            "responseStartOffset": "0",
+            "result": "未能完成操作。（Network.NWError错误0。）",
+            "retries": "0",
+            "segmentOrdinal": "20",
+            "taskReceivedBytes": "7950",
+            "upstreamTaskIndex": "1"
+          }
+        },
+        {
+          "event": "diagnostics.media.proxy_transfer_finished",
+          "date": 813120449.30636,
+          "fields": {
+            "deliveredBytes": "102158",
+            "durationMs": "10003",
+            "errorCode": "0",
+            "errorDomain": "Network.NWError",
+            "expectedBytes": "4130172",
+            "finishSource": "clientFailed",
+            "playbackTraceID": "9F51281B",
+            "responseStartOffset": "0",
+            "result": "未能完成操作。（Network.NWError错误0。）",
+            "retries": "0",
+            "segmentOrdinal": "20",
+            "taskReceivedBytes": "102158",
+            "upstreamTaskIndex": "1"
+          }
+        }
+      ],
+      "diskSnapshots": [
+        {
+          "file": "t0-private.plist",
+          "maxDate": 813120313.05453,
+          "matchingTraceEntries": 0
+        },
+        {
+          "file": "t10-private.plist",
+          "maxDate": 813120344.192863,
+          "matchingTraceEntries": 34
+        },
+        {
+          "file": "t120-private.plist",
+          "maxDate": 813120455.17524,
+          "matchingTraceEntries": 237
+        },
+        {
+          "file": "t3-private.plist",
+          "maxDate": 813120313.05453,
+          "matchingTraceEntries": 0
+        },
+        {
+          "file": "t30-private.plist",
+          "maxDate": 813120362.916594,
+          "matchingTraceEntries": 49
+        },
+        {
+          "file": "t60-private.plist",
+          "maxDate": 813120394.587985,
+          "matchingTraceEntries": 141
+        },
+        {
+          "file": "t90-private.plist",
+          "maxDate": 813120425.312294,
+          "matchingTraceEntries": 202
+        }
+      ],
+      "verdict": "FAIL_longStartupAndLaterStall",
+      "visualObservation": "t120 movie and bilingual subtitle; ordinary exit",
+      "observationRequests": [
+        {
+          "targetSeconds": 0,
+          "requestStart": 1791427542.45713,
+          "responseEnd": 1791427543.06,
+          "clocks": [],
+          "playerVisible": false
+        },
+        {
+          "targetSeconds": 3,
+          "requestStart": 1791427544.691825,
+          "responseEnd": 1791427545.0366411,
+          "clocks": [
+            "0%"
+          ],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 10,
+          "requestStart": 1791427551.6980941,
+          "responseEnd": 1791427551.979533,
+          "clocks": [
+            "0%"
+          ],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 30,
+          "requestStart": 1791427571.689405,
+          "responseEnd": 1791427572.022327,
+          "clocks": [
+            "0%"
+          ],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 60,
+          "requestStart": 1791427601.688294,
+          "responseEnd": 1791427602.046784,
+          "clocks": [],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 90,
+          "requestStart": 1791427631.69505,
+          "responseEnd": 1791427632.102425,
+          "clocks": [],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 120,
+          "requestStart": 1791427661.6889899,
+          "responseEnd": 1791427662.135604,
+          "clocks": [],
+          "playerVisible": true
+        }
+      ]
+    },
+    {
+      "device": "iphone13",
+      "case": "cellular-s03-file",
+      "traceID": "FD1FA59D",
+      "entryCount": 338,
+      "firstClockSignal": {
+        "event": "diagnostics.playback.next.first_frame",
+        "date": 813120907.036946,
+        "fields": {
+          "firstFramePositionSeconds": "1870.501",
+          "firstFrameSignal": "playbackClock",
+          "playbackTraceID": "FD1FA59D",
+          "tapToFirstFrameMs": "11871"
+        }
+      },
+      "startupStages": [],
+      "telemetryCount": 88,
+      "firstTelemetry": {
+        "event": "diagnostics.playback.next.telemetry_sample",
+        "date": 813120895.322297,
+        "fields": {
+          "elapsedMs": "0",
+          "engine": "AVPlayer",
+          "itemStatus": "unknown",
+          "loadedRangeCount": "0",
+          "networkClass": "unknown",
+          "playMethod": "localRemux",
+          "playbackTraceID": "FD1FA59D",
+          "rate": "0.000",
+          "routeKind": "localHLS",
+          "sampleIndex": "1",
+          "sampleReason": "itemInstalled",
+          "stallActive": "no",
+          "stallCount": "0",
+          "timeControlStatus": "paused"
+        }
+      },
+      "lastTelemetry": {
+        "event": "diagnostics.playback.next.telemetry_sample",
+        "date": 813121015.150704,
+        "fields": {
+          "elapsedMs": "119787",
+          "engine": "AVPlayer",
+          "networkClass": "unknown",
+          "playMethod": "localRemux",
+          "playbackTraceID": "FD1FA59D",
+          "routeKind": "localHLS",
+          "sampleIndex": "88",
+          "sampleReason": "viewDisappear",
+          "stallActive": "no",
+          "stallCount": "1"
+        }
+      },
+      "maxStallCount": 1,
+      "urlMetricsCount": 41,
+      "urlMetricsCellularYes": 41,
+      "errors": [
+        {
+          "event": "diagnostics.media.proxy_transfer_finished",
+          "date": 813120900.850386,
+          "fields": {
+            "deliveredBytes": "12046",
+            "durationMs": "5339",
+            "errorCode": "0",
+            "errorDomain": "Network.NWError",
+            "expectedBytes": "1027984",
+            "finishSource": "clientFailed",
+            "playbackTraceID": "FD1FA59D",
+            "responseStartOffset": "0",
+            "result": "未能完成操作。（Network.NWError错误0。）",
+            "retries": "0",
+            "segmentOrdinal": "467",
+            "taskReceivedBytes": "12046",
+            "upstreamTaskIndex": "1"
+          }
+        },
+        {
+          "event": "diagnostics.media.proxy_transfer_finished",
+          "date": 813120917.422828,
+          "fields": {
+            "deliveredBytes": "7950",
+            "durationMs": "7578",
+            "errorCode": "0",
+            "errorDomain": "Network.NWError",
+            "expectedBytes": "1054868",
+            "finishSource": "clientBodySend",
+            "playbackTraceID": "FD1FA59D",
+            "responseStartOffset": "0",
+            "result": "未能完成操作。（Network.NWError错误0。）",
+            "retries": "0",
+            "segmentOrdinal": "472",
+            "taskReceivedBytes": "7950",
+            "upstreamTaskIndex": "1"
+          }
+        },
+        {
+          "event": "diagnostics.media.proxy_transfer_finished",
+          "date": 813120922.197955,
+          "fields": {
+            "deliveredBytes": "12048",
+            "durationMs": "4326",
+            "errorCode": "0",
+            "errorDomain": "Network.NWError",
+            "expectedBytes": "971208",
+            "finishSource": "clientBodySend",
+            "playbackTraceID": "FD1FA59D",
+            "responseStartOffset": "0",
+            "result": "未能完成操作。（Network.NWError错误0。）",
+            "retries": "0",
+            "segmentOrdinal": "473",
+            "taskReceivedBytes": "12048",
+            "upstreamTaskIndex": "1"
+          }
+        },
+        {
+          "event": "diagnostics.media.proxy_transfer_finished",
+          "date": 813120932.325048,
+          "fields": {
+            "deliveredBytes": "3854",
+            "durationMs": "8594",
+            "errorCode": "0",
+            "errorDomain": "Network.NWError",
+            "expectedBytes": "1036068",
+            "finishSource": "clientBodySend",
+            "playbackTraceID": "FD1FA59D",
+            "responseStartOffset": "0",
+            "result": "未能完成操作。（Network.NWError错误0。）",
+            "retries": "0",
+            "segmentOrdinal": "475",
+            "taskReceivedBytes": "3854",
+            "upstreamTaskIndex": "1"
+          }
+        },
+        {
+          "event": "diagnostics.media.proxy_transfer_finished",
+          "date": 813120953.076827,
+          "fields": {
+            "deliveredBytes": "16143",
+            "durationMs": "7198",
+            "errorCode": "0",
+            "errorDomain": "Network.NWError",
+            "expectedBytes": "1038512",
+            "finishSource": "clientBodySend",
+            "playbackTraceID": "FD1FA59D",
+            "responseStartOffset": "0",
+            "result": "未能完成操作。（Network.NWError错误0。）",
+            "retries": "0",
+            "segmentOrdinal": "483",
+            "taskReceivedBytes": "16143",
+            "upstreamTaskIndex": "1"
+          }
+        },
+        {
+          "event": "diagnostics.media.proxy_transfer_finished",
+          "date": 813120962.136354,
+          "fields": {
+            "deliveredBytes": "12046",
+            "durationMs": "6030",
+            "errorCode": "0",
+            "errorDomain": "Network.NWError",
+            "expectedBytes": "1020276",
+            "finishSource": "clientBodySend",
+            "playbackTraceID": "FD1FA59D",
+            "responseStartOffset": "0",
+            "result": "未能完成操作。（Network.NWError错误0。）",
+            "retries": "0",
+            "segmentOrdinal": "486",
+            "taskReceivedBytes": "12046",
+            "upstreamTaskIndex": "1"
+          }
+        },
+        {
+          "event": "diagnostics.media.proxy_transfer_finished",
+          "date": 813120976.978411,
+          "fields": {
+            "deliveredBytes": "7950",
+            "durationMs": "6037",
+            "errorCode": "0",
+            "errorDomain": "Network.NWError",
+            "expectedBytes": "1019900",
+            "finishSource": "clientFailed",
+            "playbackTraceID": "FD1FA59D",
+            "responseStartOffset": "0",
+            "result": "未能完成操作。（Network.NWError错误0。）",
+            "retries": "0",
+            "segmentOrdinal": "493",
+            "taskReceivedBytes": "7950",
+            "upstreamTaskIndex": "1"
+          }
+        },
+        {
+          "event": "diagnostics.media.proxy_transfer_finished",
+          "date": 813120991.085306,
+          "fields": {
+            "deliveredBytes": "3853",
+            "durationMs": "11010",
+            "errorCode": "0",
+            "errorDomain": "Network.NWError",
+            "expectedBytes": "1070472",
+            "finishSource": "clientBodySend",
+            "playbackTraceID": "FD1FA59D",
+            "responseStartOffset": "0",
+            "result": "未能完成操作。（Network.NWError错误0。）",
+            "retries": "0",
+            "segmentOrdinal": "497",
+            "taskReceivedBytes": "3853",
+            "upstreamTaskIndex": "1"
+          }
+        },
+        {
+          "event": "diagnostics.media.proxy_transfer_finished",
+          "date": 813121007.349145,
+          "fields": {
+            "deliveredBytes": "0",
+            "durationMs": "9244",
+            "errorCode": "0",
+            "errorDomain": "Network.NWError",
+            "expectedBytes": "1093220",
+            "finishSource": "clientFailed",
+            "playbackTraceID": "FD1FA59D",
+            "responseStartOffset": "0",
+            "result": "未能完成操作。（Network.NWError错误0。）",
+            "retries": "0",
+            "segmentOrdinal": "503",
+            "taskReceivedBytes": "0",
+            "upstreamTaskIndex": "1"
+          }
+        },
+        {
+          "event": "diagnostics.media.proxy_transfer_finished",
+          "date": 813121015.23921,
+          "fields": {
+            "deliveredBytes": "3854",
+            "durationMs": "3802",
+            "errorCode": "0",
+            "errorDomain": "Network.NWError",
+            "expectedBytes": "1081564",
+            "finishSource": "clientBodySend",
+            "playbackTraceID": "FD1FA59D",
+            "responseStartOffset": "0",
+            "result": "未能完成操作。（Network.NWError错误0。）",
+            "retries": "0",
+            "segmentOrdinal": "505",
+            "taskReceivedBytes": "3854",
+            "upstreamTaskIndex": "1"
+          }
+        }
+      ],
+      "diskSnapshots": [
+        {
+          "file": "t0-private.plist",
+          "maxDate": 813120877.957348,
+          "matchingTraceEntries": 0
+        },
+        {
+          "file": "t10-private.plist",
+          "maxDate": 813120893.914237,
+          "matchingTraceEntries": 7
+        },
+        {
+          "file": "t120-private.plist",
+          "maxDate": 813121003.544058,
+          "matchingTraceEntries": 314
+        },
+        {
+          "file": "t3-private.plist",
+          "maxDate": 813120893.914237,
+          "matchingTraceEntries": 7
+        },
+        {
+          "file": "t30-private.plist",
+          "maxDate": 813120914.545715,
+          "matchingTraceEntries": 70
+        },
+        {
+          "file": "t60-private.plist",
+          "maxDate": 813120943.543088,
+          "matchingTraceEntries": 151
+        },
+        {
+          "file": "t90-private.plist",
+          "maxDate": 813120973.544682,
+          "matchingTraceEntries": 235
+        }
+      ],
+      "verdict": "startupStillSlow_noNewPostStartupStallInSample",
+      "visualObservation": "t120 movie and bilingual subtitle; ordinary exit",
+      "observationRequests": [
+        {
+          "targetSeconds": 0,
+          "requestStart": 1791428093.560256,
+          "responseEnd": 1791428093.816638,
+          "clocks": [],
+          "playerVisible": false
+        },
+        {
+          "targetSeconds": 3,
+          "requestStart": 1791428095.959096,
+          "responseEnd": 1791428096.14734,
+          "clocks": [
+            "25%"
+          ],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 10,
+          "requestStart": 1791428102.95427,
+          "responseEnd": 1791428103.312267,
+          "clocks": [
+            "25%"
+          ],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 30,
+          "requestStart": 1791428122.9545522,
+          "responseEnd": 1791428123.240778,
+          "clocks": [],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 60,
+          "requestStart": 1791428152.9549801,
+          "responseEnd": 1791428153.19964,
+          "clocks": [],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 90,
+          "requestStart": 1791428182.9532301,
+          "responseEnd": 1791428183.2171772,
+          "clocks": [],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 120,
+          "requestStart": 1791428212.959095,
+          "responseEnd": 1791428213.22496,
+          "clocks": [],
+          "playerVisible": true
+        }
+      ]
+    },
+    {
+      "device": "ipad",
+      "case": "latest-jellyfin-iso-cue",
+      "traceID": "14A42834",
+      "entryCount": 110,
+      "firstClockSignal": {
+        "event": "diagnostics.playback.next.first_frame",
+        "date": 813121053.722548,
+        "fields": {
+          "firstFramePositionSeconds": "0.198",
+          "firstFrameSignal": "playbackClock",
+          "playbackTraceID": "14A42834",
+          "tapToFirstFrameMs": "3703"
+        }
+      },
+      "startupStages": [
+        {
+          "event": "diagnostics.playback.next.engine_startup_timing",
+          "date": 813121053.670279,
+          "fields": {
+            "engine": "KSPlayer",
+            "evidence": "engineMonotonicStagesAndAdvancingClock",
+            "firstVideoDecodeMs": "2988.8390416599577",
+            "firstVideoPacketMs": "2988.158583335462",
+            "initialPositionSeconds": "0.0",
+            "initialSeekResult": "notRequested",
+            "openMs": "206.67962500010617",
+            "playbackTraceID": "14A42834",
+            "readyMs": "9.376708345371298",
+            "readyToClockMs": "571.4433749963064",
+            "streamInfoMs": "2672.882208324154"
+          }
+        }
+      ],
+      "telemetryCount": 82,
+      "firstTelemetry": {
+        "event": "diagnostics.playback.next.telemetry_sample",
+        "date": 813121050.2342,
+        "fields": {
+          "elapsedMs": "0",
+          "engine": "KSPlayer",
+          "networkClass": "local",
+          "playMethod": "directPlay",
+          "playbackTraceID": "14A42834",
+          "routeKind": "localRangeProxy",
+          "sampleIndex": "1",
+          "sampleReason": "planReady",
+          "stallActive": "no",
+          "stallCount": "0"
+        }
+      },
+      "lastTelemetry": {
+        "event": "diagnostics.playback.next.telemetry_sample",
+        "date": 813121137.131156,
+        "fields": {
+          "audioBitrate": "3671226",
+          "bufferLimitSeconds": "16.0",
+          "bufferTargetSeconds": "4.0",
+          "bufferedAheadSeconds": "8.717041429739936",
+          "bytesRead": "235901072",
+          "currentSeconds": "83.600",
+          "deltaSeconds": "1.013",
+          "displayFPS": "21.7",
+          "droppedVideoFrames": "26",
+          "droppedVideoPackets": "0",
+          "durationSeconds": "8607.339",
+          "elapsedMs": "86897",
+          "engine": "KSPlayer",
+          "networkClass": "local",
+          "playMethod": "directPlay",
+          "playbackTraceID": "14A42834",
+          "routeKind": "localRangeProxy",
+          "sampleIndex": "82",
+          "sampleReason": "playbackTick",
+          "stallActive": "no",
+          "stallCount": "0",
+          "videoBitrate": "14750985"
+        }
+      },
+      "maxStallCount": 0,
+      "urlMetricsCount": 0,
+      "urlMetricsCellularYes": 0,
+      "errors": [],
+      "diskSnapshots": [
+        {
+          "file": "t0-private.plist",
+          "maxDate": 813121048.245013,
+          "matchingTraceEntries": 1
+        },
+        {
+          "file": "t10-private.plist",
+          "maxDate": 813121048.245013,
+          "matchingTraceEntries": 1
+        },
+        {
+          "file": "t3-private.plist",
+          "maxDate": 813121048.245013,
+          "matchingTraceEntries": 1
+        },
+        {
+          "file": "t30-private.plist",
+          "maxDate": 813121067.389999,
+          "matchingTraceEntries": 43
+        },
+        {
+          "file": "t60-private.plist",
+          "maxDate": 813121097.118708,
+          "matchingTraceEntries": 72
+        },
+        {
+          "file": "t90-private.plist",
+          "maxDate": 813121127.611027,
+          "matchingTraceEntries": 101
+        }
+      ],
+      "verdict": "ChineseCueObserved_notPerformanceAcceptance",
+      "visualObservation": "t90 movie and Chinese subtitle; ordinary exit; 26 decoded dropped frames",
+      "observationRequests": [
+        {
+          "targetSeconds": 0,
+          "requestStart": 1791428248.496338,
+          "responseEnd": 1791428249.428844,
+          "clocks": [],
+          "playerVisible": false
+        },
+        {
+          "targetSeconds": 3,
+          "requestStart": 1791428250.090537,
+          "responseEnd": 1791428250.888607,
+          "clocks": [
+            "0%"
+          ],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 10,
+          "requestStart": 1791428257.0934389,
+          "responseEnd": 1791428257.550454,
+          "clocks": [
+            "0%"
+          ],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 30,
+          "requestStart": 1791428277.085614,
+          "responseEnd": 1791428277.9558861,
+          "clocks": [],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 60,
+          "requestStart": 1791428307.093429,
+          "responseEnd": 1791428307.6880121,
+          "clocks": [],
+          "playerVisible": true
+        },
+        {
+          "targetSeconds": 90,
+          "requestStart": 1791428337.085712,
+          "responseEnd": 1791428337.795916,
+          "clocks": [],
+          "playerVisible": true
+        }
+      ]
+    }
+  ],
+  "network": {
+    "phoneOriginalWiFi": 1,
+    "phoneTemporaryWiFi": 0,
+    "phoneRestoredWiFi": 1,
+    "injectedTestEnvironment": false,
+    "conditionInventoryReadOnly": {
+      "networkProfilesActive": false,
+      "anyConditionActive": false,
+      "scope": "after Jellyfin before file cellular trial; read only"
+    },
+    "vpnRuleState": "unverified; unchanged; do not classify as VPN test",
+    "jellyfinCellularURLMetricsYes": 26,
+    "fileCellularURLMetricsYes": 41,
+    "entryComparison": "not comparable: 8Mbps from 0 versus 2Mbps resume1870.132s; no speed ranking"
+  },
+  "completion": [
+    {
+      "time": 1791428316.300101,
+      "normalLaunchEnvironment": {},
+      "arguments": [],
+      "foreground": "com.changliwen.nastart",
+      "playerClosed": true,
+      "waitForIdleTimeout": 10,
+      "animationCoolOffTimeout": 2,
+      "wifiRestoration": {
+        "time": 1791428272.845749,
+        "switchBefore": "0",
+        "switchAfter": "1",
+        "controlCenterConnectionPausedNotice": false,
+        "originalThisTurn": {
+          "value": "1",
+          "time": 1791427411.590047,
+          "controlCenterPausedNotice": false
+        },
+        "onlyWiFiSwitchChanged": true
+      }
+    },
+    {
+      "time": 1791428379.547342,
+      "normalLaunchEnvironment": {},
+      "arguments": [],
+      "foreground": "com.changliwen.nastart",
+      "playerClosed": true,
+      "waitForIdleTimeout": 10,
+      "animationCoolOffTimeout": 2,
+      "networkChanged": false
+    }
+  ],
+  "limits": [
+    "UserDefaults disk flush delay remains; fixed750ms schedules a save, not guaranteed AFC disk visibility",
+    "1000-entry cap remains; independently captured early snapshots retained",
+    "engine clock and decoded FPS are not presentation-frame or scrolling PASS evidence",
+    "26 dropped frames retained in additional iPad Jellyfin cue trial",
+    "source position/cache and throughput vary; no playback-speed improvement claim",
+    "all client NWError results and TOOL failures retained",
+    "AUD and Dolby output unverified",
+    "iPhone18 disconnected and not updated to this new source",
+    "all original PX/UX/CB/L2 acceptance gaps remain; formal competitor pairs0; no commit/push"
+  ],
+  "finalConnectionScreenObservations": [
+    {
+      "time": 1791428375.6076648,
+      "hasUnconnectedLabel": false,
+      "hasConnectedLabel": false,
+      "evidence": "final-normal-settled.png/xml",
+      "verdict": "screen observation only; no connection fix claim"
+    },
+    {
+      "time": 1791428514.511631,
+      "hasUnconnectedLabel": false,
+      "evidence": "final-normal-settled.png/xml",
+      "scope": "startup screen observation; no connection fix claim"
+    }
+  ]
+}

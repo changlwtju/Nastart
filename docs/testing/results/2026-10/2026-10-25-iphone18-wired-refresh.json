@@ -1,0 +1,102 @@
+{
+  "recordedAt": "2026-10-25T07:49:12.845874+08:00",
+  "device": {
+    "label": "iPhone18",
+    "model": "iPhone19,7",
+    "system": "iOS27.0 (24A8428)",
+    "transport": "USB wired",
+    "liveIdentityAndHardwareMatchVerified": true,
+    "rawIdentity": "private evidence only"
+  },
+  "package": {
+    "at": "2026-10-25T07:33:42.361144+08:00",
+    "configuration": "normal Debug",
+    "HEAD": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceInputs": 570,
+    "sourceDrift": 0,
+    "profileContainsTarget": true,
+    "profileExpirationUTC": "2026-10-31 23:29:58",
+    "binaries": {
+      "__preview.dylib": "2510e2b0430fc0e50add6f413d1b449308433791e2b4eb81e746258ee2c21229",
+      "Nastart": "8eacebaba9cadcdee248818b72051626cd1733c4288661380868cfc57dcddfa6",
+      "Nastart.debug.dylib": "55c410e1f2e5f98f4268da5103748201d982630be3f31c0b30b4081e0218be31",
+      "Frameworks/Libswresample.framework/Libswresample": "2022806f9891e8cfe31483645cdd2edd24f6883e6309228691d8b47133ca55f4",
+      "Frameworks/Libavfilter.framework/Libavfilter": "94467f8430701b923c4ce9810528aaf241a99102a2d513cb93bb55883de78d3e",
+      "Frameworks/KSPlayer.framework/KSPlayer": "3748c2ca24bf19637b5aa7bacc559eee6d4fef467a59e797e294f21eafbc00b6",
+      "Frameworks/Libavformat.framework/Libavformat": "0719f73e25477c878d339ed7f3f5ea57708a88cb7695f2e7257bdc27df8f016f",
+      "Frameworks/libshaderc_combined.framework/libshaderc_combined": "cb4d445c2615c90782b40c695a30ba99edd03b13175efcc54f00cde097d6276c",
+      "Frameworks/Libavutil.framework/Libavutil": "910cc2bbacee6a8f143e5a8b6d2d7e6fa606862ae49ff12d56c100d6e1924895",
+      "Frameworks/libharfbuzz.framework/libharfbuzz": "5e943d28de153eefa36c645430850f83e879cf7aefb9109ab02f06ec1127a974",
+      "Frameworks/libdav1d.framework/libdav1d": "1280c36e0f9e8cf405932611232ce1a149ef7f9e127416ad5de8988821261d44",
+      "Frameworks/libfontconfig.framework/libfontconfig": "f76bb2fde014f5c5e8c8278bc094d5022abf2a32fb711828c35f1e1d476cdf09",
+      "Frameworks/UDFRead.framework/UDFRead": "04ab5aa3af62d301ec1ed99b641a54ac4aba6ed0edc51438366e94c002bcc3e5",
+      "Frameworks/libfreetype.framework/libfreetype": "6f742f9883a071d43516feb870701147dab3ce6c57d2ac7f6e35b23ed7604188",
+      "Frameworks/libfribidi.framework/libfribidi": "a0eae0de71691834af8abbf9b12d4038d0baf1ddcf6d5356f6b062970c31ff52",
+      "Frameworks/libsmbclient.framework/libsmbclient": "c02e2517a53d8a605cad864a880855e41a445fdcede8b911ecd71e8cee913a0d",
+      "Frameworks/MobileVLCKit.framework/MobileVLCKit": "9cd0e2a310ec7c15346b60a8b544d68f0c1a7ce919315197762cea25352f08ba",
+      "Frameworks/hogweed.framework/hogweed": "003ec172d579250179269a544f11cfe035ecebf7603912a27536efea4e072455",
+      "Frameworks/Libswscale.framework/Libswscale": "419baf06f7d87f1bcd296d8024ba5a10357e103b7ae22708db382180b8054e30",
+      "Frameworks/Libavdevice.framework/Libavdevice": "755d86e5f02f99b3c1e38f8d306ba6af43388c07dbcd5d41300db710e22c587d",
+      "Frameworks/gnutls.framework/gnutls": "f46aa92c414da09849bc81d947a9f516751282e8c7b4223b391d66b7f14f2a0f",
+      "Frameworks/libass.framework/libass": "7908ae48b17dcf934d51ea8bce9e313bf0da2f0216f8661a272712f9727fec0f",
+      "Frameworks/Libavcodec.framework/Libavcodec": "58ca6deef1700b42bcfdb4cd496adfd8c673bb69eefbe40080f16486a25b8938",
+      "Frameworks/lcms2.framework/lcms2": "95742776e2fd56c482517d10e4f3cecf31d22bc5e8e3c47806f9938608804a07",
+      "Frameworks/nettle.framework/nettle": "55115bbbabc116d110c6a0ce9b6e848e3a8c604469db66416c7fe08d402cf77a",
+      "Frameworks/gmp.framework/gmp": "2d0cd4ec6b634edd3f0030434845b681eac10da83b0ce934545b9ea4d41af86f",
+      "Frameworks/libplacebo.framework/libplacebo": "d1327c6aee6ccf8d6e5774d3be71ff9426a5182d1cf17a84022ccb41a32f2b3e",
+      "Frameworks/libzvbi.framework/libzvbi": "389d0b22c82579f32fa36911b10a8b1c42c3b6a96b982de062d0754032233b9d",
+      "Frameworks/libsrt.framework/libsrt": "a90e314e39b12f5c10b168db6363280bb41d5e4cefdc794da89d50f5e676909e"
+    },
+    "AppIDAndKeychainGroupsPreserved": true,
+    "preserveData": true,
+    "transport": "wired",
+    "signedMachOCount": 29,
+    "targetBuildRemovedLegacySpanCompatibilityLibrary": true,
+    "installationExit": 0,
+    "installedAt": "2026-10-25T07:33:48.118710+08:00",
+    "binaryBuildTime": "2026-10-25T07:30:03.309071+08:00",
+    "compiledMobileSourceDriftAtClose": 0,
+    "laterTVOnlyInputChanges": 2,
+    "actualForegroundHomeVerified": true,
+    "WiFiStatusBarVerified": true
+  },
+  "preferences": {
+    "at": "2026-10-25T07:39:40.455043+08:00",
+    "beforeKeys": 27,
+    "afterKeys": 27,
+    "changedKeys": [
+      "diagnostics.entries.v1"
+    ],
+    "allNonDiagnosticPreferencesPreserved": true
+  },
+  "startup": {
+    "startedAt": "2026-10-25T07:37:12.836596+08:00",
+    "environment": {},
+    "arguments": [],
+    "mediaCommands": 0,
+    "activation": "prior devicectl foreground launch",
+    "nativeImagesCaptured": true,
+    "finishedAt": "2026-10-25T07:37:23.407972+08:00"
+  },
+  "address": {
+    "savedAddressKind": "domain",
+    "rememberedFixedAddress": false,
+    "actualSessionEvidence": "diagnostics.snapshot.started (redacted by app)",
+    "actualSnapshotTargetKind": "redacted IPv4",
+    "fixedDomainVerified": false,
+    "keychainPolicy": "not directly read",
+    "addressSettingsChanged": false,
+    "repairPausedPerUser": true,
+    "mediaCommands": 0
+  },
+  "scope": {
+    "preserveDataOverlay": true,
+    "uninstall": false,
+    "normalEnvironment": {},
+    "mediaCommands": 0,
+    "networkOrNASChanges": 0,
+    "wirelessFailureRootCause": "not established; old authentication succeeded but target provisioning/Xcode availability failed; USB refreshed device-specific profile",
+    "WDARequired": false,
+    "wholePlaybackMatrixPasses": 0
+  }
+}

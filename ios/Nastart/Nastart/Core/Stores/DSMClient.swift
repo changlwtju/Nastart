@@ -1,5 +1,6 @@
 import Foundation
 import CryptoKit
+import NetworkMedia
 
 private enum StableIdentifier {
     static func uuid(_ value: String) -> UUID {
@@ -15,7 +16,23 @@ enum DSMClientError: LocalizedError {
     case insecureHTTP
     case invalidResponse
     case apiFailed(code: Int?)
+    /// `SYNO.API.Auth` refused this account or source address. Repeating the
+    /// request cannot succeed and can trigger DSM auto block.
+    case loginRejected(code: Int)
     case missingSession
+
+    /// Auth codes that a retry cannot fix. 403/404/406 stay `apiFailed`: they ask for a 2FA code.
+    static func rejectedLoginError(from error: Error) -> Error {
+        guard case DSMClientError.apiFailed(let code?) = error,
+              [400, 401, 402, 407, 408, 409, 410, 411].contains(code) else { return error }
+        return DSMClientError.loginRejected(code: code)
+    }
+
+    /// Only a changed DSM setting can fix these, so retrying with the same credential is still useful.
+    var allowsRetryWithSameCredential: Bool {
+        guard case .loginRejected(let code) = self else { return true }
+        return code == 402 || code == 407
+    }
 
     var errorDescription: String? {
         switch self {
@@ -33,6 +50,15 @@ enum DSMClientError: LocalizedError {
                 return String(format: NSLocalizedString("connect.error.api_code", comment: ""), code)
             }
             return NSLocalizedString("connect.error.api", comment: "")
+        case .loginRejected(let code):
+            switch code {
+            case 400: return NSLocalizedString("connect.error.login.credentials", comment: "")
+            case 401: return NSLocalizedString("connect.error.login.disabled", comment: "")
+            case 402: return NSLocalizedString("connect.error.login.denied", comment: "")
+            case 407: return NSLocalizedString("connect.error.login.blocked_ip", comment: "")
+            case 408, 409, 410: return NSLocalizedString("connect.error.login.password_expired", comment: "")
+            default: return NSLocalizedString("connect.error.login.locked", comment: "")
+            }
         case .missingSession:
             return NSLocalizedString("connect.error.missing_session", comment: "")
         }
@@ -199,6 +225,67 @@ struct DSMAPIErrorPayload: Decodable {
     let code: Int?
 }
 
+/// Label a folder operation without retaining its path or authentication data.
+struct DSMFolderDiagnosticContext {
+    enum Origin: String { case snapshot, browserRoot, browserFolder }
+    let origin: Origin
+    let session: DSMSession
+    // Random operation identity only; never derive a token from credentials.
+    let operationID = String(UUID().uuidString.prefix(8))
+
+    func fields(attempt: Int) -> [String: String] {
+        session.authenticationObservationFields.merging([
+            "folderOrigin": origin.rawValue, "folderOperationID": operationID,
+            "sessionRole": session.fileStationSID != nil ? "fileStation" : "dsmFallback",
+            "requestAuthenticationGeneration": (session.fileStationGeneration ?? session.authenticationGeneration).uuidString,
+            "folderAttempt": String(attempt)]) { _, new in new }
+    }
+}
+
+/// Classify responses without copying URLs, headers or payloads into logs.
+/// Keep the API's existing result and error semantics.
+enum DSMAPIResponseDecoder {
+    static func decode(_ data: Data, response: URLResponse,
+                       report: ([String: String]) -> Void) throws -> DSMJSONValue {
+        let mime = response.mimeType?.lowercased()
+        let contentType: String
+        switch mime {
+        case "application/json", "text/json": contentType = "json"
+        case "text/html": contentType = "html"
+        case "text/plain": contentType = "plainText"
+        case nil: contentType = "unknown"
+        default: contentType = "other"
+        }
+        var fields = ["bodyBytes": String(data.count), "contentType": contentType]
+        guard let http = response as? HTTPURLResponse else {
+            fields["responseKind"] = "nonHTTP"
+            report(fields)
+            throw DSMClientError.invalidResponse
+        }
+        fields["httpStatus"] = String(http.statusCode)
+        guard (200..<300).contains(http.statusCode) else {
+            fields["responseKind"] = "httpFailure"
+            report(fields)
+            throw DSMClientError.invalidResponse
+        }
+        let envelope: DSMAPIEnvelope
+        do {
+            envelope = try JSONDecoder().decode(DSMAPIEnvelope.self, from: data)
+        } catch {
+            fields["responseKind"] = "malformedEnvelope"
+            report(fields)
+            throw error
+        }
+        fields["envelopeSuccess"] = String(envelope.success)
+        fields["hasData"] = String(envelope.data != nil)
+        if let code = envelope.error?.code { fields["apiErrorCode"] = String(code) }
+        fields["responseKind"] = envelope.success ? "success" : "apiFailure"
+        report(fields)
+        guard envelope.success else { throw DSMClientError.apiFailed(code: envelope.error?.code) }
+        return envelope.data ?? .object([:])
+    }
+}
+
 private enum DSMFormatters {
     static func shortNumber(_ value: Double) -> String {
         if value.rounded() == value {
@@ -285,6 +372,7 @@ final class DSMClient {
     private let sessionDelegate: URLSessionDelegate?
     private let apiInfoCacheLock = NSLock()
     private var cachedFileStationAPIInfo: DSMJSONValue?
+    private let diagnosticClientID = String(UUID().uuidString.prefix(8))
 
     init(
         baseURL: URL,
@@ -375,8 +463,14 @@ final class DSMClient {
         return url
     }
 
-    /// Try the configured endpoint graph in order. We never rewrite a domain
-    /// URL to an IP address, so HTTPS certificate matching remains correct.
+    private enum AuthenticationAPIInfo {
+        case query
+        case prepared(DSMJSONValue?)
+    }
+
+    /// Manual login retains the configured order. Automatic restore can first
+    /// race credential-free metadata on those same URLs, without rewriting hosts
+    /// or sending concurrent credential POSTs.
     static func login(
         endpoints: DSMConnectionEndpoints,
         allowsSelfSignedCertificates: Bool = false,
@@ -385,7 +479,9 @@ final class DSMClient {
         oneTimeCode: String = "",
         deviceID: String? = nil,
         preferredRoute: DSMConnectionRoute? = nil,
-        sessionName: String = "Nastart"
+        sessionName: String = "Nastart",
+        prepareConfiguredEndpoints: Bool = false,
+        urlSession: URLSession? = nil
     ) async throws -> DSMLoginResult {
         let candidates = endpoints
             .candidates(preferredRoute: preferredRoute)
@@ -409,27 +505,35 @@ final class DSMClient {
             throw DSMClientError.invalidAddress
         }
 
+        let clients = candidates.map {
+            DSMClient(baseURL: $0.url, allowsSelfSignedCertificates: allowsSelfSignedCertificates,
+                      urlSession: urlSession)
+        }
+        var order = Array(candidates.indices)
+        var prepared = Array(repeating: AuthenticationAPIInfo.query, count: candidates.count)
+        if prepareConfiguredEndpoints, candidates.count > 1 {
+            let preparation = await prepareAuthenticationEndpoints(clients)
+            prepared = preparation.info
+            if let first = preparation.first {
+                order = [first] + order.filter { $0 != first }
+            }
+        }
+        try Task.checkCancellation()
         var lastError: Error?
-        for candidate in candidates {
-            let client = DSMClient(
-                baseURL: candidate.url,
-                allowsSelfSignedCertificates: allowsSelfSignedCertificates
-            )
+        for index in order {
+            try Task.checkCancellation()
+            let candidate = candidates[index]
+            let client = clients[index]
             do {
                 let authenticatedSession = try await client.login(
                     account: account,
                     password: password,
                     oneTimeCode: oneTimeCode,
                     deviceID: deviceID,
-                    sessionName: sessionName
+                    sessionName: sessionName,
+                    apiInfoPreparation: prepared[index]
                 )
-                let session = DSMSession(
-                    baseURL: authenticatedSession.baseURL,
-                    sid: authenticatedSession.sid,
-                    fileStationSID: authenticatedSession.fileStationSID,
-                    account: authenticatedSession.account,
-                    allowsSelfSignedCertificates: authenticatedSession.allowsSelfSignedCertificates,
-                    deviceID: authenticatedSession.deviceID,
+                let session = authenticatedSession.replacingConnection(
                     endpoints: endpoints,
                     actualRoute: DSMConnectionRouteResolver.route(
                         for: candidate.url,
@@ -445,16 +549,90 @@ final class DSMClient {
         throw lastError ?? DSMClientError.missingSession
     }
 
-    private static func shouldRetryLogin(on error: Error) -> Bool {
+    private static func prepareAuthenticationEndpoints(
+        _ clients: [DSMClient]
+    ) async -> (first: Int?, info: [AuthenticationAPIInfo]) {
+        await withTaskGroup(of: (Int, AuthenticationAPIInfo).self) { group in
+            for (index, client) in clients.enumerated() {
+                group.addTask {
+                    do {
+                        let info = try await client.authenticationEndpointInfo()
+                        return (index, .prepared(info))
+                    } catch {
+                        // Cancelled losers have no completed metadata query. A
+                        // later safe connect failure may query them normally.
+                        return (index, Task.isCancelled ? .query : .prepared(nil))
+                    }
+                }
+            }
+            var first: Int?
+            var info = Array(repeating: AuthenticationAPIInfo.query, count: clients.count)
+            for await (index, result) in group {
+                info[index] = result
+                if first == nil, case .prepared(.some) = result {
+                    first = index
+                    group.cancelAll()
+                }
+            }
+            return (first, info)
+        }
+    }
+
+    /// A bounded GET, with no account, SID, password or OTP. Only metadata from
+    /// the configured origin can select a route; this is not authentication.
+    private func authenticationEndpointInfo() async throws -> DSMJSONValue {
+        guard let target = DSMURLBuilder.url(baseURL: baseURL, appending: "/webapi/query.cgi"),
+              var components = URLComponents(url: target, resolvingAgainstBaseURL: false) else {
+            throw DSMClientError.invalidAddress
+        }
+        components.queryItems = [
+            URLQueryItem(name: "api", value: "SYNO.API.Info"),
+            URLQueryItem(name: "version", value: "1"),
+            URLQueryItem(name: "method", value: "query"),
+            URLQueryItem(name: "query", value: "SYNO.API.Auth")
+        ]
+        guard let url = components.url else { throw DSMClientError.invalidAddress }
+        var request = URLRequest(url: url)
+        request.timeoutInterval = Self.snapshotRequestTimeout
+        request.cachePolicy = .reloadIgnoringLocalCacheData
+        try Task.checkCancellation()
+        let (data, response) = try await dataWithAbsoluteTimeout(for: request, timeout: Self.snapshotRequestTimeout)
+        try Task.checkCancellation()
+        func port(_ url: URL) -> Int { url.port ?? (url.scheme?.lowercased() == "https" ? 443 : 80) }
+        guard let origin = response.url,
+              origin.scheme?.lowercased() == url.scheme?.lowercased(),
+              origin.host?.lowercased() == url.host?.lowercased(),
+              port(origin) == port(url), origin.path == url.path else {
+            throw DSMClientError.invalidResponse
+        }
+        let info = try DSMAPIResponseDecoder.decode(data, response: response) { _ in }
+        // Reject malformed/unbounded version ranges before authLoginRequests
+        // materializes the compatibility list from this unauthenticated data.
+        guard let auth = info.objectValue?["SYNO.API.Auth"],
+              let path = auth.firstString(for: ["path"]), !path.isEmpty,
+              let version = auth.firstDouble(for: ["maxVersion", "max_version"]),
+              version.isFinite, (1...100).contains(version), version.rounded(.down) == version else {
+            throw DSMClientError.invalidResponse
+        }
+        return info
+    }
+
+    static func shouldRetryLogin(on error: Error) -> Bool {
         if let dsmError = error as? DSMClientError {
             switch dsmError {
-            case .invalidResponse:
-                return true
-            case .invalidAddress, .insecureHTTP, .apiFailed, .missingSession:
+            case .invalidAddress, .insecureHTTP, .invalidResponse, .apiFailed, .loginRejected, .missingSession:
                 return false
             }
         }
-        return error is URLError
+        guard let error = error as? URLError else { return false }
+        switch error.code {
+        case .cannotConnectToHost, .cannotFindHost, .dnsLookupFailed, .notConnectedToInternet:
+            return true
+        default:
+            // A lost response or timeout does not prove that authentication
+            // failed on the server. Preserve the outcome instead of replaying.
+            return false
+        }
     }
 
     func login(
@@ -464,6 +642,19 @@ final class DSMClient {
         deviceID: String? = nil,
         sessionName: String = "Nastart"
     ) async throws -> DSMSession {
+        try await login(account: account, password: password, oneTimeCode: oneTimeCode,
+                        deviceID: deviceID, sessionName: sessionName, apiInfoPreparation: .query)
+    }
+
+    private func login(
+        account: String,
+        password: String,
+        oneTimeCode: String,
+        deviceID: String?,
+        sessionName: String,
+        apiInfoPreparation: AuthenticationAPIInfo
+    ) async throws -> DSMSession {
+        try Task.checkCancellation()
         record(
             .info,
             categoryKey: "diagnostics.category.connection",
@@ -477,15 +668,22 @@ final class DSMClient {
             ]
         )
 
-        let apiInfo = await optionalCall(
-            path: "/webapi/query.cgi",
-            queryItems: [
-                URLQueryItem(name: "api", value: "SYNO.API.Info"),
-                URLQueryItem(name: "version", value: "1"),
-                URLQueryItem(name: "method", value: "query"),
-                URLQueryItem(name: "query", value: "SYNO.API.Auth")
-            ]
-        )
+        let apiInfo: DSMJSONValue?
+        switch apiInfoPreparation {
+        case .prepared(let value):
+            apiInfo = value
+        case .query:
+            apiInfo = await optionalCall(
+                path: "/webapi/query.cgi",
+                queryItems: [
+                    URLQueryItem(name: "api", value: "SYNO.API.Info"),
+                    URLQueryItem(name: "version", value: "1"),
+                    URLQueryItem(name: "method", value: "query"),
+                    URLQueryItem(name: "query", value: "SYNO.API.Auth")
+                ]
+            )
+        }
+        try Task.checkCancellation()
         record(
             apiInfo == nil ? .warning : .info,
             categoryKey: "diagnostics.category.dsm_api",
@@ -512,25 +710,29 @@ final class DSMClient {
                     formItems: request.1,
                     timeout: Self.requestTimeout
                 )
-                if let sid = data.firstString(for: ["sid"]) {
-                    let trustedDeviceID = data.firstString(
-                        for: ["device_id", "deviceId", "did", "device_token"]
-                    ) ?? deviceID
-                    record(
-                        .info,
-                        categoryKey: "diagnostics.category.connection",
-                        messageKey: "diagnostics.login.succeeded",
-                        details: requestSummary(path: request.0, queryItems: request.1)
-                    )
-                    return DSMSession(
-                        baseURL: baseURL,
-                        sid: sid,
-                        fileStationSID: nil,
-                        account: account,
-                        allowsSelfSignedCertificates: allowsSelfSignedCertificates,
-                        deviceID: trustedDeviceID
-                    )
+                // A successful envelope without a usable SID is ambiguous:
+                // DSM may already have created the session. Do not submit the
+                // same credentials again with an older API version.
+                guard let sid = data.firstString(for: ["sid"]),
+                      !sid.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+                    throw DSMClientError.missingSession
                 }
+                let trustedDeviceID = data.firstString(
+                    for: ["device_id", "deviceId", "did", "device_token"]
+                ) ?? deviceID
+                let session = DSMSession(
+                    baseURL: baseURL,
+                    sid: sid,
+                    fileStationSID: nil,
+                    account: account,
+                    allowsSelfSignedCertificates: allowsSelfSignedCertificates,
+                    deviceID: trustedDeviceID
+                )
+                record(.info, categoryKey: "diagnostics.category.connection",
+                    messageKey: "diagnostics.login.succeeded",
+                    details: requestSummary(path: request.0, queryItems: request.1)
+                        .merging(session.authenticationObservationFields) { _, new in new })
+                return session
             } catch {
                 lastError = error
                 record(
@@ -551,7 +753,7 @@ final class DSMClient {
                         "error": diagnosticMessage(for: error)
                     ]
                 )
-                throw error
+                throw DSMClientError.rejectedLoginError(from: error)
             }
         }
         record(
@@ -564,10 +766,55 @@ final class DSMClient {
     }
 
     func logout(session: DSMSession) async {
-        _ = try? await logout(sid: session.sid, sessionName: "Nastart")
+        await logoutObserved(session: session, sid: session.sid, sessionName: "Nastart", generation: session.authenticationGeneration)
         if let fileStationSID = session.fileStationSID {
-            _ = try? await logout(sid: fileStationSID, sessionName: "FileStation")
+            await logoutObserved(session: session, sid: fileStationSID, sessionName: "FileStation",
+                                 generation: session.fileStationGeneration ?? session.authenticationGeneration)
         }
+    }
+
+    /// A losing connection task may clean up only SIDs unused by the current login.
+    @MainActor
+    func logout(session: DSMSession, protectingCurrentSession: @MainActor () -> DSMSession?) async {
+        if Self.mayLogout(sid: session.sid, session: session, current: protectingCurrentSession()) {
+            await logoutObserved(session: session, sid: session.sid, sessionName: "Nastart", generation: session.authenticationGeneration)
+        }
+        if let sid = session.fileStationSID,
+           Self.mayLogout(sid: sid, session: session, current: protectingCurrentSession()) {
+            await logoutObserved(session: session, sid: sid, sessionName: "FileStation",
+                                 generation: session.fileStationGeneration ?? session.authenticationGeneration)
+        }
+    }
+
+    static func mayLogout(sid: String, session: DSMSession, current: DSMSession?) -> Bool {
+        guard let current else { return true }
+        func origin(_ url: URL) -> String {
+            let scheme = url.scheme?.lowercased() ?? ""
+            let port = url.port ?? (scheme == "https" ? 443 : 80)
+            return "\(scheme)://\(url.host?.lowercased() ?? ""):\(port)"
+        }
+        let oldOrigins = Set(([session.baseURL] + session.endpoints.candidates.map { $0.url }).map(origin))
+        let currentOrigins = Set(([current.baseURL] + current.endpoints.candidates.map { $0.url }).map(origin))
+        guard !oldOrigins.isDisjoint(with: currentOrigins) else { return true }
+        return sid != current.sid && sid != current.fileStationSID
+    }
+
+    private func logoutObserved(session: DSMSession, sid: String, sessionName: String, generation: UUID) async {
+        func report(_ stage: DSMAuthenticationStage, error: Error? = nil) {
+            var fields = session.authenticationObservationFields.merging([
+                "authenticationStage": stage.rawValue,
+                "sessionRole": sessionName == "FileStation" ? "fileStation" : "dsmFallback",
+                "requestAuthenticationGeneration": generation.uuidString]) { _, new in new }
+            if let dsmError = error as? DSMClientError, case .apiFailed(let code) = dsmError, let code {
+                fields["apiErrorCode"] = String(code)
+            }
+            record(stage == .logoutFailed ? .warning : .info, categoryKey: "diagnostics.category.connection",
+                messageKey: "diagnostics.connection.session_lifecycle",
+                details: fields)
+        }
+        report(.logoutStarted)
+        do { try await logout(sid: sid, sessionName: sessionName); report(.logoutSucceeded) }
+        catch { report(.logoutFailed, error: error) }
     }
 
     func addingFileStationSession(
@@ -583,16 +830,9 @@ final class DSMClient {
             deviceID: session.deviceID,
             sessionName: "FileStation"
         )
-        return DSMSession(
-            baseURL: session.baseURL,
-            sid: session.sid,
-            fileStationSID: fileStationSession?.sid,
-            account: session.account,
-            allowsSelfSignedCertificates: session.allowsSelfSignedCertificates,
-            deviceID: fileStationSession?.deviceID ?? session.deviceID,
-            endpoints: session.endpoints,
-            actualRoute: session.actualRoute
-        )
+        let combined = session.attachingFileStationSession(fileStationSession)
+        combined.recordAuthenticationStage(fileStationSession == nil ? .fileStationUnavailable : .fileStationAttached)
+        return combined
     }
 
     private func logout(sid: String, sessionName: String) async throws {
@@ -700,14 +940,16 @@ final class DSMClient {
             fallbackPath: "/webapi/entry.cgi",
             fallbackMaxVersion: 2,
             method: "list_share"
-        ))
+        ), folderContext: .init(origin: .snapshot, session: session))
         async let packageData = firstSuccessfulCall(apiRequests(
             session,
             apiInfo: apiInfo,
             apiName: "SYNO.Core.Package",
             fallbackPath: "/webapi/entry.cgi",
             fallbackMaxVersion: 2,
-            method: "list"
+            method: "list",
+            // Running state is only returned on request; without it every package reads "unknown".
+            extras: [[URLQueryItem(name: "additional", value: "[\"status\"]")]]
         ), timeout: Self.packageSnapshotRequestTimeout, maximumAttempts: 1)
         async let reverseProxyData = firstSuccessfulCall(apiRequests(
             session,
@@ -818,6 +1060,9 @@ final class DSMClient {
 
     func listFolder(session: DSMSession, folderPath: String) async throws -> [FileItem] {
         let normalizedPath = folderPath.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? "/" : folderPath
+        let folderContext = DSMFolderDiagnosticContext(
+            origin: normalizedPath == "/" ? .browserRoot : .browserFolder,
+            session: session)
         let startedAt = Date()
         let cachedAPIInfo = fileStationAPIInfo()
         let apiInfo: DSMJSONValue?
@@ -837,15 +1082,14 @@ final class DSMClient {
             apiInfo = loadedAPIInfo
         }
         if normalizedPath == "/" {
-            let data = await firstSuccessfulCall(apiRequests(
+            let data = try await firstSuccessfulFolderCall(apiRequests(
                 session,
                 apiInfo: apiInfo,
                 apiName: "SYNO.FileStation.List",
                 fallbackPath: "/webapi/entry.cgi",
                 fallbackMaxVersion: 2,
                 method: "list_share"
-            ))
-            guard let data else { throw DSMClientError.invalidResponse }
+            ), folderContext: folderContext)
             let items = DSMClient.mapSharedFolders(data)
             record(
                 .info,
@@ -882,7 +1126,7 @@ final class DSMClient {
                 ] + common,
                 [URLQueryItem(name: "folder_path", value: normalizedPath)] + common
             ]
-            let data = await firstSuccessfulCall(apiRequests(
+            let data = try await firstSuccessfulFolderCall(apiRequests(
                 session,
                 apiInfo: apiInfo,
                 apiName: "SYNO.FileStation.List",
@@ -890,8 +1134,7 @@ final class DSMClient {
                 fallbackMaxVersion: 2,
                 method: "list",
                 extras: parameterVariants
-            ))
-            guard let data else { throw DSMClientError.invalidResponse }
+            ), folderContext: folderContext)
 
             let page = DSMClient.mapFileItems(data, parentPath: normalizedPath)
             pageCount += 1
@@ -932,7 +1175,9 @@ final class DSMClient {
     private func call(
         path: String,
         queryItems: [URLQueryItem],
-        timeout: TimeInterval = requestTimeout
+        timeout: TimeInterval = requestTimeout,
+        folderContext: DSMFolderDiagnosticContext? = nil,
+        folderAttempt: Int = 0
     ) async throws -> DSMJSONValue {
         guard
             let requestURL = DSMURLBuilder.url(baseURL: baseURL, appending: path),
@@ -948,15 +1193,23 @@ final class DSMClient {
         request.cachePolicy = .reloadIgnoringLocalCacheData
         let (data, response) = try await idempotentData(for: request)
         try Task.checkCancellation()
-        guard let httpResponse = response as? HTTPURLResponse, (200..<300).contains(httpResponse.statusCode) else {
-            throw DSMClientError.invalidResponse
+        return try DSMAPIResponseDecoder.decode(data, response: response) { fields in
+            // File-list failures used to collapse into invalidResponse after
+            // all variants failed. Keep each HTTP/envelope boundary separately.
+            guard queryItems.contains(where: { $0.name == "api" && $0.value == "SYNO.FileStation.List" }) else { return }
+            var details = fields
+            if let folderContext {
+                details.merge(folderContext.fields(attempt: folderAttempt)) { _, new in new }
+                details["diagnosticClientID"] = diagnosticClientID
+            }
+            if let version = queryItems.first(where: { $0.name == "version" })?.value,
+               let number = Int(version), number > 0 { details["apiVersion"] = String(number) }
+            if let method = queryItems.first(where: { $0.name == "method" })?.value,
+               ["list", "list_share"].contains(method) { details["method"] = method }
+            self.record(fields["responseKind"] == "success" ? .info : .warning,
+                categoryKey: "diagnostics.category.dsm_api",
+                messageKey: "diagnostics.files.folder_response", details: details)
         }
-
-        let envelope = try JSONDecoder().decode(DSMAPIEnvelope.self, from: data)
-        guard envelope.success else {
-            throw DSMClientError.apiFailed(code: envelope.error?.code)
-        }
-        return envelope.data ?? .object([:])
     }
 
     private func idempotentData(for request: URLRequest) async throws -> (Data, URLResponse) {
@@ -978,12 +1231,15 @@ final class DSMClient {
     private func callWithAbsoluteTimeout(
         path: String,
         queryItems: [URLQueryItem],
-        timeout: TimeInterval
+        timeout: TimeInterval,
+        folderContext: DSMFolderDiagnosticContext? = nil,
+        folderAttempt: Int = 0
     ) async throws -> DSMJSONValue {
         try await withThrowingTaskGroup(of: DSMJSONValue.self) { group in
             defer { group.cancelAll() }
             group.addTask {
-                try await self.call(path: path, queryItems: queryItems, timeout: timeout)
+                try await self.call(path: path, queryItems: queryItems, timeout: timeout,
+                                    folderContext: folderContext, folderAttempt: folderAttempt)
             }
             group.addTask {
                 try await Task.sleep(nanoseconds: Self.nanoseconds(for: timeout))
@@ -1035,7 +1291,7 @@ final class DSMClient {
             forHTTPHeaderField: "Content-Type"
         )
         try Task.checkCancellation()
-        let (data, response) = try await urlSession.data(for: request)
+        let (data, response) = try await dataWithAbsoluteTimeout(for: request, timeout: timeout)
         try Task.checkCancellation()
         guard let httpResponse = response as? HTTPURLResponse,
               (200..<300).contains(httpResponse.statusCode) else {
@@ -1047,6 +1303,21 @@ final class DSMClient {
             throw DSMClientError.apiFailed(code: envelope.error?.code)
         }
         return envelope.data ?? .object([:])
+    }
+
+    /// Credential POSTs use a wall deadline, not URLSession's inactivity timer.
+    /// Cancellation also cancels the underlying data task; POST is never retried here.
+    func dataWithAbsoluteTimeout(for request: URLRequest, timeout: TimeInterval) async throws -> (Data, URLResponse) {
+        try await withThrowingTaskGroup(of: (Data, URLResponse).self) { group in
+            defer { group.cancelAll() }
+            group.addTask { try await self.urlSession.data(for: request) }
+            group.addTask {
+                try await Task.sleep(nanoseconds: Self.nanoseconds(for: timeout))
+                throw URLError(.timedOut)
+            }
+            guard let response = try await group.next() else { throw CancellationError() }
+            return response
+        }
     }
 
     private func optionalCall(path: String, queryItems: [URLQueryItem]) async -> DSMJSONValue? {
@@ -1075,29 +1346,61 @@ final class DSMClient {
     private func firstSuccessfulCall(
         _ requests: [(String, [URLQueryItem])],
         timeout: TimeInterval = DSMClient.snapshotRequestTimeout,
-        maximumAttempts: Int? = nil
+        maximumAttempts: Int? = nil,
+        folderContext: DSMFolderDiagnosticContext? = nil
     ) async -> DSMJSONValue? {
+        try? await firstSuccessfulCallThrowing(requests, timeout: timeout,
+            maximumAttempts: maximumAttempts, folderContext: folderContext,
+            stopOnInvalidSession: false)
+    }
+
+    private func firstSuccessfulFolderCall(
+        _ requests: [(String, [URLQueryItem])],
+        folderContext: DSMFolderDiagnosticContext
+    ) async throws -> DSMJSONValue {
+        try await firstSuccessfulCallThrowing(requests, timeout: Self.snapshotRequestTimeout,
+            folderContext: folderContext, stopOnInvalidSession: true)
+    }
+
+    private func firstSuccessfulCallThrowing(
+        _ requests: [(String, [URLQueryItem])],
+        timeout: TimeInterval,
+        maximumAttempts: Int? = nil,
+        folderContext: DSMFolderDiagnosticContext?,
+        stopOnInvalidSession: Bool
+    ) async throws -> DSMJSONValue {
         let attempts = maximumAttempts.map { Array(requests.prefix(max($0, 0))) } ?? requests
-        for request in attempts {
-            guard !Task.isCancelled else { return nil }
+        var lastError: Error = DSMClientError.invalidResponse
+        for (index, request) in attempts.enumerated() {
+            try Task.checkCancellation()
             do {
-                let value = try await callWithAbsoluteTimeout(
-                    path: request.0,
-                    queryItems: request.1,
-                    timeout: timeout
-                )
-                return value
+                return try await callWithAbsoluteTimeout(
+                    path: request.0, queryItems: request.1, timeout: timeout,
+                    folderContext: folderContext, folderAttempt: index + 1)
             } catch {
-                if Task.isCancelled { return nil }
+                try Task.checkCancellation()
                 record(
                     .warning,
                     categoryKey: "diagnostics.category.dsm_api",
                     messageKey: "diagnostics.api_request.failed",
                     details: requestSummary(path: request.0, queryItems: request.1).merging(["error": diagnosticMessage(for: error)]) { current, _ in current }
                 )
+                // A different path/version with the same SID cannot restore it.
+                // Snapshot enrichment remains best-effort; browsing retains 119.
+                if stopOnInvalidSession, case DSMClientError.apiFailed(code: 119) = error {
+                    throw error
+                }
+                // Directory fallbacks negotiate API compatibility. A URL loading
+                // failure supplies no compatibility response, so changing query
+                // parameters on the same endpoint only repeats the transport wait.
+                // Leave HTTP/API/decoding fallbacks and optional snapshot calls alone.
+                if stopOnInvalidSession, error is URLError {
+                    throw error
+                }
+                lastError = error
             }
         }
-        return nil
+        throw lastError
     }
 
     private func sessionItems(_ session: DSMSession, api: String, version: String, method: String, extra: [URLQueryItem] = []) -> [URLQueryItem] {
@@ -1718,7 +2021,7 @@ final class DSMClient {
         else {
             return nil
         }
-        return "\(Int(value.rounded())) C"
+        return "\(Int(value.rounded())) °C"
     }
 
     private static func mapCertificate(
@@ -2129,7 +2432,7 @@ final class DSMClient {
         let containerEndpoints = await resolvedContainerEndpoints(
             containers,
             reverseProxyRules: reverseProxyRules,
-            lanHosts: lanHosts,
+            lanHosts: Self.uniqueStrings([session.endpoints.lanAddress?.host].compactMap { $0 } + lanHosts),
             baseURL: session.baseURL
         )
         record(
@@ -2472,13 +2775,17 @@ final class DSMClient {
             .joined()
     }
 
-    private static func unverifiedFallbackEndpoint(
+    static func unverifiedFallbackEndpoint(
         for container: DockerContainer,
         candidates: [URL]
     ) -> URL? {
         let name = container.name.lowercased()
         guard !name.contains("jellyfin"), !name.contains("emby") else { return nil }
-        return isLikelyWebContainer(container) ? candidates.first : nil
+        // A published Docker port is a LAN observation, not evidence of a
+        // router mapping or reverse proxy on the DSM login domain.
+        return isLikelyWebContainer(container)
+            ? candidates.first { isPrivateNetworkHost($0.host) }
+            : nil
     }
 
     private func firstReachableWebEndpoint(
@@ -2487,7 +2794,7 @@ final class DSMClient {
     ) async -> URL? {
         if serviceName?.lowercased().contains("jellyfin") == true
             || serviceName?.lowercased().contains("emby") == true {
-            return await firstReachableJellyfinEndpoint(candidates)
+            return await firstReachableJellyfinEndpoint(candidates, expectedProduct: serviceName?.lowercased().contains("emby") == true ? .emby : .jellyfin)
         }
         return await withTaskGroup(
             of: (Int, URL?).self,
@@ -2518,7 +2825,7 @@ final class DSMClient {
         }
     }
 
-    private func firstReachableJellyfinEndpoint(_ candidates: [URL]) async -> URL? {
+    private func firstReachableJellyfinEndpoint(_ candidates: [URL], expectedProduct: MediaServiceProduct) async -> URL? {
         var bases: [URL] = []
         var seen = Set<String>()
         for candidate in candidates.prefix(8) {
@@ -2540,28 +2847,14 @@ final class DSMClient {
         return await withTaskGroup(of: (Int, URL?).self, returning: URL?.self) { group in
             for (index, base) in bases.enumerated() {
                 group.addTask {
-                    guard let probeURL = DSMURLBuilder.url(
-                        baseURL: base,
-                        appending: "/System/Info/Public"
-                    ) else {
-                        return (index, nil)
-                    }
-                    var request = URLRequest(url: probeURL)
-                    request.timeoutInterval = 3
-                    request.cachePolicy = .reloadIgnoringLocalCacheData
-                    request.setValue("application/json", forHTTPHeaderField: "Accept")
-                    do {
-                        let response = try await self.endpointProbeResponse(for: request)
-                        guard
-                            let response = response as? HTTPURLResponse,
-                            (200..<300).contains(response.statusCode)
-                        else {
-                            return (index, nil)
-                        }
-                        return (index, base)
-                    } catch {
-                        return (index, nil)
-                    }
+                    let candidate = MediaServiceCandidate(id: String(index), name: expectedProduct.title,
+                        hint: expectedProduct, running: nil, endpoints: [base])
+                    var certificates: [URL: Data] = [:]
+                    if self.allowsSelfSignedCertificates, base.host?.lowercased() == self.baseURL.host?.lowercased(),
+                       let data = CertificatePinStore.shared.trustedCertificateData(host: base.host, port: base.port) { certificates[base] = data }
+                    guard let observation = try? await MediaServiceProbe(transport: PublicMediaServiceHTTP(trustedCertificates: certificates)).inspect(candidate),
+                          observation.identity?.product == expectedProduct else { return (index, nil) }
+                    return (index, base)
                 }
             }
 
@@ -2970,13 +3263,15 @@ final class DSMClient {
         return container.ports.joined(separator: " · ")
     }
 
-    private static func endpointCandidates(
+    static func endpointCandidates(
         for container: DockerContainer,
         baseURL: URL,
         lanHosts: [String]
     ) -> [URL] {
-        let hosts = uniqueStrings((Self.isPrivateNetworkHost(baseURL.host) ? lanHosts : [])
-            + [baseURL.host].compactMap { $0 })
+        let knownLANHosts = lanHosts.filter { Self.isPrivateNetworkHost($0) }
+        let hosts = uniqueStrings(Self.isPrivateNetworkHost(baseURL.host)
+            ? [baseURL.host].compactMap { $0 } + knownLANHosts
+            : knownLANHosts + [baseURL.host].compactMap { $0 })
         guard !hosts.isEmpty else { return [] }
         let preferredContainerPorts = preferredWebPorts(for: container.name)
         var sortedMappings = container.ports.compactMap(portMapping(from:)).filter { $0.transport == "tcp" }

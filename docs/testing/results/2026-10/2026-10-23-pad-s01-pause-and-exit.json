@@ -1,0 +1,432 @@
+{
+  "updatedAt": "2026-10-23T05:53:53.357426+08:00",
+  "deviceModel": "iPad12,1",
+  "system": "18.3.1",
+  "configuration": "2026-10-22 05:26 normal Debug -Onone, empty environment and arguments",
+  "newAppSourceBuildOrInstall": false,
+  "mediaPlayRequestAttempts": 3,
+  "pipCommands": 0,
+  "actualAcceptedSlice": "S01 Jellyfin actual frames at nominal 3/10/30; pause 38 sec, +15 to53, -15 to38; kept paused",
+  "normalExitAcceptance": false,
+  "wholeRequirementClosed": false,
+  "hostWDAToolTestsPassed": 70,
+  "cases": [
+    {
+      "label": "s01-paused-exit-053300",
+      "startUnix": 1792704888.236264,
+      "endUnix": 1792704903.692093,
+      "playRequestAttempts": 0,
+      "pipCommands": 0,
+      "lastAction": "搜索 Jellyfin",
+      "failureType": "ObservationExpired",
+      "completedGuardedClicks": 2,
+      "captures": [],
+      "normalReturnToOriginalDetailVerified": false,
+      "dispatchAges": [
+        {
+          "selectionAgeAtDispatchSeconds": 1.1514031669999998,
+          "maximumObservationAgeSeconds": 2
+        },
+        {
+          "selectionAgeAtDispatchSeconds": 1.166349459000001,
+          "maximumObservationAgeSeconds": 2
+        }
+      ],
+      "lastGuardStates": [
+        {
+          "operation": "nativeAction",
+          "state": "responseReceivedEffectUnknown",
+          "selectionAgeAtDispatchSeconds": 1.166349459000001,
+          "maximumObservationAgeSeconds": 2,
+          "atMono": 11.159877583
+        },
+        {
+          "operation": "nativeAction",
+          "state": "effectVerifiedByCaller",
+          "atMono": 12.729219041
+        },
+        {
+          "operation": "elementQuery",
+          "attempt": 1,
+          "status": 200,
+          "matches": 1,
+          "atMono": 14.215380666
+        }
+      ],
+      "settingsRestoreReadbackVerified": true,
+      "nativeAppCountAfterCleanup": 0,
+      "nativeRunnerCountAfterCleanup": 0,
+      "ownedRunnerHostStopped": true
+    },
+    {
+      "label": "s01-stable-navigation-053614",
+      "startUnix": 1792705011.1773272,
+      "endUnix": 1792705103.108428,
+      "playRequestAttempts": 1,
+      "pipCommands": 0,
+      "lastAction": "完成",
+      "failureType": "ActionUnconfirmed",
+      "completedGuardedClicks": 9,
+      "captures": [
+        {
+          "label": "detail-before",
+          "startedAt": 1792705038.4132679,
+          "finishedAt": 1792705040.039579,
+          "clockLabels": []
+        },
+        {
+          "label": "playing-3",
+          "startedAt": 1792705048.5783339,
+          "finishedAt": 1792705049.5935612,
+          "clockLabels": []
+        },
+        {
+          "label": "playing-10",
+          "startedAt": 1792705055.5782778,
+          "finishedAt": 1792705056.677889,
+          "clockLabels": []
+        },
+        {
+          "label": "playing-30",
+          "startedAt": 1792705075.578109,
+          "finishedAt": 1792705076.671819,
+          "clockLabels": []
+        },
+        {
+          "label": "paused",
+          "startedAt": 1792705083.799453,
+          "finishedAt": 1792705085.0312362,
+          "clockLabels": [
+            "00:38",
+            "1:59:25"
+          ]
+        },
+        {
+          "label": "paused-forward15",
+          "startedAt": 1792705090.475243,
+          "finishedAt": 1792705091.657543,
+          "clockLabels": [
+            "00:53",
+            "1:59:25"
+          ]
+        },
+        {
+          "label": "paused-backward15",
+          "startedAt": 1792705097.2759051,
+          "finishedAt": 1792705098.587968,
+          "clockLabels": [
+            "00:38",
+            "1:59:25"
+          ]
+        }
+      ],
+      "normalReturnToOriginalDetailVerified": false,
+      "dispatchAges": [
+        {
+          "selectionAgeAtDispatchSeconds": 1.4592923329999934,
+          "maximumObservationAgeSeconds": 2
+        },
+        {
+          "selectionAgeAtDispatchSeconds": 1.450644957999998,
+          "maximumObservationAgeSeconds": 2
+        },
+        {
+          "selectionAgeAtDispatchSeconds": 1.4855013339999914,
+          "maximumObservationAgeSeconds": 2
+        },
+        {
+          "selectionAgeAtDispatchSeconds": 1.574579500000013,
+          "maximumObservationAgeSeconds": 2
+        },
+        {
+          "selectionAgeAtDispatchSeconds": 1.5703414580000015,
+          "maximumObservationAgeSeconds": 2
+        }
+      ],
+      "lastGuardStates": [
+        {
+          "operation": "nativeAction",
+          "state": "sendingOnce",
+          "atMono": 89.356846333
+        },
+        {
+          "operation": "nativeAction",
+          "state": "responseReceivedEffectUnknown",
+          "selectionAgeAtDispatchSeconds": 1.5703414580000015,
+          "maximumObservationAgeSeconds": 2,
+          "atMono": 90.106456083
+        },
+        {
+          "operation": "nativeAction",
+          "state": "effectUnconfirmed",
+          "failureType": "SceneChanged",
+          "atMono": 91.849215125
+        }
+      ],
+      "settingsRestoreReadbackVerified": true,
+      "nativeAppCountAfterCleanup": 0,
+      "nativeRunnerCountAfterCleanup": 0,
+      "ownedRunnerHostStopped": true
+    },
+    {
+      "label": "s01-rotation-exit-054430",
+      "startUnix": 1792705510.109858,
+      "endUnix": 1792705546.408334,
+      "playRequestAttempts": 1,
+      "pipCommands": 0,
+      "lastAction": "在 Nastart 中播放",
+      "failureType": "ActionUnconfirmed",
+      "completedGuardedClicks": 4,
+      "captures": [
+        {
+          "label": "detail-before",
+          "startedAt": 1792705538.7645109,
+          "finishedAt": 1792705540.3769238,
+          "clockLabels": []
+        }
+      ],
+      "normalReturnToOriginalDetailVerified": false,
+      "dispatchAges": [],
+      "lastGuardStates": [
+        {
+          "operation": "nativeAction",
+          "state": "sendingOnce",
+          "atMono": 32.787174208
+        },
+        {
+          "operation": "nativeAction",
+          "state": "responseReceivedEffectUnknown",
+          "atMono": 33.74398775
+        },
+        {
+          "operation": "nativeAction",
+          "state": "effectUnconfirmed",
+          "failureType": "OrientationChanged",
+          "atMono": 35.794084083
+        }
+      ],
+      "settingsRestoreReadbackVerified": true,
+      "nativeAppCountAfterCleanup": 0,
+      "nativeRunnerCountAfterCleanup": 0,
+      "ownedRunnerHostStopped": true
+    },
+    {
+      "label": "s01-explicit-orientations-054717",
+      "startUnix": 1792705700.902414,
+      "endUnix": 1792705778.7140758,
+      "playRequestAttempts": 1,
+      "pipCommands": 0,
+      "lastAction": "完成",
+      "failureType": "ActionUnconfirmed",
+      "completedGuardedClicks": 7,
+      "captures": [
+        {
+          "label": "detail-before",
+          "startedAt": 1792705730.567038,
+          "finishedAt": 1792705732.217133,
+          "clockLabels": []
+        },
+        {
+          "label": "playing-3",
+          "startedAt": 1792705740.6861708,
+          "finishedAt": 1792705741.8857758,
+          "clockLabels": []
+        },
+        {
+          "label": "playing-10",
+          "startedAt": 1792705747.686079,
+          "finishedAt": 1792705748.645796,
+          "clockLabels": []
+        },
+        {
+          "label": "paused",
+          "startedAt": 1792705756.6983,
+          "finishedAt": 1792705757.93209,
+          "clockLabels": [
+            "00:18",
+            "1:59:25"
+          ]
+        }
+      ],
+      "normalReturnToOriginalDetailVerified": false,
+      "dispatchAges": [
+        {
+          "selectionAgeAtDispatchSeconds": 1.332555708000001,
+          "maximumObservationAgeSeconds": 2
+        },
+        {
+          "selectionAgeAtDispatchSeconds": 1.3720049160000016,
+          "maximumObservationAgeSeconds": 2
+        },
+        {
+          "selectionAgeAtDispatchSeconds": 1.4739794580000023,
+          "maximumObservationAgeSeconds": 2
+        }
+      ],
+      "lastGuardStates": [
+        {
+          "operation": "nativeAction",
+          "state": "responseReceivedEffectUnknown",
+          "selectionAgeAtDispatchSeconds": 1.4739794580000023,
+          "maximumObservationAgeSeconds": 2,
+          "atMono": 60.016605
+        },
+        {
+          "operation": "postExitRead",
+          "state": "expectedRotationNotSettled",
+          "attempt": 1,
+          "atMono": 60.933028125
+        },
+        {
+          "operation": "nativeAction",
+          "state": "effectUnconfirmed",
+          "failureType": "timeout",
+          "atMono": 69.899616875
+        }
+      ],
+      "settingsRestoreReadbackVerified": false,
+      "nativeAppCountAfterCleanup": 0,
+      "nativeRunnerCountAfterCleanup": 0,
+      "ownedRunnerHostStopped": true
+    }
+  ],
+  "finalAudit": {
+    "at": "2026-10-23T05:51:29.653074+08:00",
+    "readOnlyFinalAudit": true,
+    "noNewMediaOrAppLaunch": true,
+    "latestSource173Package29SignaturesProfileVerified": true,
+    "allNonBookmarkPreferencesEqualToFirstMediaStart": true,
+    "originalBookmarkCount": 29,
+    "finalBookmarkCount": 29,
+    "bookmarkKeysSame": true,
+    "trackChanges": 0,
+    "progressEntriesChanged": 1,
+    "nativeAppCount": 0,
+    "nativeRunnerCount": 0,
+    "ownedObserverOrRunnerHostCount": 0
+  },
+  "finalNativeHomeWiFiNoPiPActuallyViewed": true,
+  "lastSettingsRestoration": "WDA read timed out; no final GET proof; Runner/host stopped; next session must explicitly configure and read back",
+  "diagnosticEvents": [
+    {
+      "event": "route_selected",
+      "sincePlayDispatchSeconds": 3.8916,
+      "metrics": {
+        "playMethod": "directPlay",
+        "routeKind": "localRangeProxy"
+      }
+    },
+    {
+      "event": "first_frame",
+      "sincePlayDispatchSeconds": 4.7008,
+      "metrics": {}
+    },
+    {
+      "event": "local_resume_save_boundary",
+      "sincePlayDispatchSeconds": 42.7945,
+      "metrics": {
+        "boundary": "nativeCallback",
+        "engine": "KSPlayer",
+        "memoryReadback": "match",
+        "pendingSeek": "false",
+        "resumeTimelineConfirmed": "true",
+        "saveOutcome": "submitted",
+        "skipReason": "none",
+        "sourceKind": "jellyfin",
+        "waitingForPausedPreview": "false"
+      }
+    },
+    {
+      "event": "paused",
+      "sincePlayDispatchSeconds": 42.8007,
+      "metrics": {
+        "currentSeconds": "38.235",
+        "engine": "KSPlayer"
+      }
+    },
+    {
+      "event": "seek_started",
+      "sincePlayDispatchSeconds": 47.2938,
+      "metrics": {
+        "engine": "KSPlayer",
+        "seekDeltaSeconds": "15.096000000000004",
+        "seekTargetSeconds": "53.331"
+      }
+    },
+    {
+      "event": "seek_dispatched",
+      "sincePlayDispatchSeconds": 47.2945,
+      "metrics": {
+        "engine": "KSPlayer"
+      }
+    },
+    {
+      "event": "seek_started",
+      "sincePlayDispatchSeconds": 54.1903,
+      "metrics": {
+        "engine": "KSPlayer",
+        "seekDeltaSeconds": "-15.0",
+        "seekTargetSeconds": "38.331"
+      }
+    },
+    {
+      "event": "seek_dispatched",
+      "sincePlayDispatchSeconds": 54.1909,
+      "metrics": {
+        "engine": "KSPlayer"
+      }
+    }
+  ],
+  "failureInterpretation": {
+    "firstMediaClose": "HTTP200 input; read crossed orientation under strict same-scene verifier; no original-detail frame",
+    "nextEntry": "HTTP200 input; orientation change stopped effect read; no subsequent action",
+    "lastClose": "HTTP200 within age1.474s; expected portrait not settled on first read, subsequent read timeout; no accepted effect",
+    "portraitTargetAssumption": "detail-before was landscape; helper target portrait was not derived from measured incoming orientation; do not classify pending as App exit failure"
+  },
+  "noNewCrashInventoryBaseline": true,
+  "offlineReturnObservationAudit": {
+    "scope": "offline inspection only; no device requests, media, settings or App changes",
+    "incomingDetailViewportPoints": [
+      1080,
+      810
+    ],
+    "pausedViewportPoints": [
+      1080,
+      810
+    ],
+    "cleanupHomeViewportPoints": [
+      1080,
+      810
+    ],
+    "beforeCloseMeasuredOrientation": "LANDSCAPE",
+    "closeEffectHelperRequestedOrientation": "PORTRAIT",
+    "requestLedgerContains": [
+      "route",
+      "start",
+      "end"
+    ],
+    "requestLedgerHasReplyValues": false,
+    "lastTimedRequests": [
+      {
+        "route": "/source",
+        "durationSeconds": 8.003
+      },
+      {
+        "route": "/appium/settings",
+        "durationSeconds": 8.003
+      }
+    ],
+    "sourceReadTimeoutIsNotOrientationEndpointTimeout": true,
+    "originalDetailReturnStillUnverified": true,
+    "cleanupHomeIsNotNormalExitEvidence": true,
+    "newMediaAttempts": 0,
+    "futureObservationRequirements": [
+      "save actual incoming Scene and stable original detail XML/PNG",
+      "preserve input guards and single dispatch",
+      "read stable actual post-action Scene without assuming portrait; same orientation needs no rotation helper",
+      "verify original detail identity plus absence of player with complete XML and actual PNG",
+      "save each orientation and command reply privately with capture start/end; bound read-only observation; never replay unknown action",
+      "stop media independently of WDA and verify final resources and original network"
+    ]
+  }
+}

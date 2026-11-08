@@ -1,0 +1,414 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-10-24T05:29:39.218760+08:00",
+  "status": "bounded automatic retry and cancel verified; normal source restored; final18 update blocked before install",
+  "source": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "651473ca741de5118a916b47777bf98943082f0af4393f5a51eb5723131c1c61",
+    "binaryBuildTime": "2026-10-24T05:05:07.683936+08:00",
+    "ipaSHA256": "e871defaaa3ec0d35da7bf2e3a054360e370a781b46acb7edf7e70e652fb48c6",
+    "binaries": {
+      "Nastart": "aaf218612a32b4d91695b809513b0172ec2567bc65cac7d25b1b496c130ddb35",
+      "Nastart.debug.dylib": "12174888be2bf69687708ef3942647aca630a6b6ee492d3705b6c5cc4dde3a02",
+      "Frameworks/KSPlayer.framework/KSPlayer": "053eb8cab45ff14cf5c3eea855d1e47eab130f8a68ca3b93ffc04eabc199cfa3"
+    }
+  },
+  "XCTest": {
+    "executed": 40,
+    "passed": 40,
+    "failures": 0,
+    "newDebugLabTests": 3,
+    "priorSharedTests": 37
+  },
+  "preflightPassed": 15,
+  "scope": "Explicit Debug local continuous H264/AAC MKV to same preencoded HLS, normal sampler and budget; server128kbps original after1MiB burst, first candidate segment503; no NAS or cellular",
+  "firstFailureThenLowerCandidate": {
+    "mode": "failureThenReady",
+    "startedAt": "2026-10-24T05:08:02.247135+08:00",
+    "finishedAt": "2026-10-24T05:10:15.595155+08:00",
+    "normalPlayCommands": 0,
+    "labAutoPlaybackLaunches": 1,
+    "candidateTriggerCommands": 0,
+    "seekCommands": 0,
+    "pipCommands": 0,
+    "NASMediaRequests": 0,
+    "latestSourcePackageAndOwnReceiptVerified": true,
+    "powerEvidence": [
+      {
+        "label": "before-lab",
+        "ownCaffeinateAssertionObserved": true,
+        "ACPower": true,
+        "atUnix": 1792789684.647807
+      },
+      {
+        "label": "during-auto-20",
+        "ownCaffeinateAssertionObserved": true,
+        "ACPower": true,
+        "atUnix": 1792789709.2970948
+      },
+      {
+        "label": "during-auto-60",
+        "ownCaffeinateAssertionObserved": true,
+        "ACPower": true,
+        "atUnix": 1792789749.30528
+      },
+      {
+        "label": "during-auto-100",
+        "ownCaffeinateAssertionObserved": true,
+        "ACPower": true,
+        "atUnix": 1792789789.172674
+      },
+      {
+        "label": "after-lab-stop",
+        "ownCaffeinateAssertionObserved": true,
+        "ACPower": true,
+        "atUnix": 1792789815.59479
+      }
+    ],
+    "finalWDAAppStates": [
+      1,
+      1
+    ],
+    "fixtureServerStopped": true,
+    "ownGuardianStopped": true,
+    "ownSyslogStopped": true,
+    "allNonDiagnosticPreferencesUnchanged": true,
+    "newCrashInventory": {
+      "Nastart": 0,
+      "WebDriverAgent": 0,
+      "JetsamEvent": 0
+    },
+    "persistedEventsFilteredByExactCaseWallClock": true,
+    "caseEventCount": 573,
+    "chain": [
+      {
+        "event": "diagnostics.playback.next.automatic_downshift_requested",
+        "at": "2026-10-24T05:08:31.977470+08:00",
+        "fields": {
+          "attempt": "1",
+          "reason": "sustainedRebuffering",
+          "playbackTraceID": "971581B3"
+        }
+      },
+      {
+        "event": "diagnostics.playback.debug_automatic_retry_negotiated",
+        "at": "2026-10-24T05:08:32.005282+08:00",
+        "fields": {
+          "fromCeiling": "20000000",
+          "toCeiling": "8000000",
+          "sourceTraceID": "971581B3",
+          "playbackTraceID": "124BAEC9",
+          "capacity": "unknown"
+        }
+      },
+      {
+        "event": "diagnostics.playback.next.replacement_warmup_failed",
+        "at": "2026-10-24T05:09:02.745924+08:00",
+        "fields": {
+          "playbackTraceID": "971581B3",
+          "stage": "decodedFrame",
+          "elapsedMs": "30732",
+          "cancelled": "false",
+          "candidateCurrentAtFailure": "true",
+          "candidateSeconds": "12.488333333333333",
+          "liveSeconds": "15.923",
+          "candidateBufferAheadSeconds": "0.0",
+          "deadlineRemainingMs": "9267"
+        }
+      },
+      {
+        "event": "diagnostics.playback.next.automatic_downshift_retry_context_updated",
+        "at": "2026-10-24T05:09:02.747827+08:00",
+        "fields": {
+          "playbackTraceID": "971581B3",
+          "failedCandidateCeiling": "8000000",
+          "failedCandidateTraceID": "124BAEC9"
+        }
+      },
+      {
+        "event": "diagnostics.playback.next.automatic_downshift_requested",
+        "at": "2026-10-24T05:09:48.123600+08:00",
+        "fields": {
+          "attempt": "2",
+          "reason": "sustainedRebuffering",
+          "playbackTraceID": "971581B3"
+        }
+      },
+      {
+        "event": "diagnostics.playback.debug_automatic_retry_negotiated",
+        "at": "2026-10-24T05:09:48.141750+08:00",
+        "fields": {
+          "fromCeiling": "8000000",
+          "toCeiling": "4000000",
+          "sourceTraceID": "124BAEC9",
+          "playbackTraceID": "7735B269",
+          "capacity": "unknown"
+        }
+      },
+      {
+        "event": "diagnostics.playback.next.replacement_committed",
+        "at": "2026-10-24T05:09:49.118660+08:00",
+        "fields": {
+          "playbackTraceID": "971581B3",
+          "candidateSeconds": "22.842711447",
+          "seconds": "22.793",
+          "candidateBufferAheadSeconds": "1.0912885530000018",
+          "startsPaused": "false"
+        }
+      }
+    ],
+    "preencodedSameH264AACMedia": true,
+    "ceilingIsNegotiationStateNotNewEncoderOutput": true,
+    "fullFrameAudioOrRealNASAcceptance": false
+  },
+  "cancelDuringPreparation": {
+    "mode": "cancel",
+    "startedAt": "2026-10-24T05:11:21.017137+08:00",
+    "finishedAt": "2026-10-24T05:12:03.875050+08:00",
+    "normalPlayCommands": 0,
+    "labAutoPlaybackLaunches": 1,
+    "candidateTriggerCommands": 0,
+    "seekCommands": 0,
+    "pipCommands": 0,
+    "NASMediaRequests": 0,
+    "latestSourcePackageAndOwnReceiptVerified": true,
+    "powerEvidence": [
+      {
+        "label": "before-lab",
+        "ownCaffeinateAssertionObserved": true,
+        "ACPower": true,
+        "atUnix": 1792789882.3133
+      },
+      {
+        "label": "during-auto-before-cancel",
+        "ownCaffeinateAssertionObserved": true,
+        "ACPower": true,
+        "atUnix": 1792789913.805492
+      },
+      {
+        "label": "after-lab-stop",
+        "ownCaffeinateAssertionObserved": true,
+        "ACPower": true,
+        "atUnix": 1792789923.8747299
+      }
+    ],
+    "finalWDAAppStates": [
+      1,
+      1
+    ],
+    "fixtureServerStopped": true,
+    "ownGuardianStopped": true,
+    "ownSyslogStopped": true,
+    "allNonDiagnosticPreferencesUnchanged": true,
+    "newCrashInventory": {
+      "Nastart": 0,
+      "WebDriverAgent": 0,
+      "JetsamEvent": 0
+    },
+    "persistedEventsFilteredByExactCaseWallClock": true,
+    "caseEventCount": 159,
+    "chain": [
+      {
+        "event": "diagnostics.playback.next.automatic_downshift_requested",
+        "at": "2026-10-24T05:11:50.498511+08:00",
+        "fields": {
+          "attempt": "1",
+          "reason": "sustainedRebuffering",
+          "playbackTraceID": "3F4F0171"
+        }
+      },
+      {
+        "event": "diagnostics.playback.debug_automatic_retry_negotiated",
+        "at": "2026-10-24T05:11:50.526479+08:00",
+        "fields": {
+          "fromCeiling": "20000000",
+          "toCeiling": "8000000",
+          "sourceTraceID": "3F4F0171",
+          "playbackTraceID": "64429443",
+          "capacity": "unknown"
+        }
+      },
+      {
+        "event": "diagnostics.playback.next.replacement_warmup_failed",
+        "at": "2026-10-24T05:11:56.038287+08:00",
+        "fields": {
+          "playbackTraceID": "3F4F0171",
+          "stage": "decodedFrame",
+          "elapsedMs": "5497",
+          "cancelled": "true",
+          "candidateCurrentAtFailure": "true",
+          "candidateSeconds": "12.466666666666667",
+          "liveSeconds": "12.467",
+          "candidateBufferAheadSeconds": "0.0",
+          "deadlineRemainingMs": "34502"
+        }
+      }
+    ],
+    "preencodedSameH264AACMedia": true,
+    "ceilingIsNegotiationStateNotNewEncoderOutput": true,
+    "fullFrameAudioOrRealNASAcceptance": false
+  },
+  "interpretation": {
+    "automaticSamplerAndFailedContextRealDeviceVerified": true,
+    "firstNegotiationCeiling": 8000000,
+    "secondFromFailedCeiling": 8000000,
+    "secondNegotiationCeiling": 4000000,
+    "candidateThroughputBothUnknown": true,
+    "secondUsesFailedCandidateTrace": true,
+    "actualEncodingBitrateWasChanged": false,
+    "fixtureUsesSameCompressedH264AAC": true,
+    "candidate2ActuallyCommitted": true,
+    "sparsePostCommitFrameReviewed": true,
+    "firstFailureKeptOriginalSession": true,
+    "cancellationObservedUpstreamSocketClose": true,
+    "routeUnregistrationRuntimeHTTP404Probed": false,
+    "routeUnregistrationCoveredByActualRequestL0": true,
+    "fullBudgetExhaustionOnDeviceTested": false,
+    "fullBudgetCoveredByL0": true,
+    "realPGSAndPrior7300msFixed": false,
+    "fullFrameAudioOrReleaseAcceptance": false
+  },
+  "restoration": {
+    "startedAt": "2026-10-24T05:19:24.604427+08:00",
+    "mediaCommands": 0,
+    "sourcePackageAndOwnInstallReceiptVerified": true,
+    "normalEmptyEnvironmentAndArgumentsVerified": true,
+    "NASOnlineHomeObserved": true,
+    "allNonDiagnosticPreferencesUnchanged": true,
+    "nonDiagnosticKeys": 25,
+    "finishedAt": "2026-10-24T05:19:32.737394+08:00"
+  },
+  "device13CurrentReceipt": {
+    "device": "iphone13",
+    "model": "iPhone14,5",
+    "system": "16.3.1",
+    "connection": "USB",
+    "binaries": {
+      "Nastart": "aaf218612a32b4d91695b809513b0172ec2567bc65cac7d25b1b496c130ddb35",
+      "Nastart.debug.dylib": "12174888be2bf69687708ef3942647aca630a6b6ee492d3705b6c5cc4dde3a02",
+      "Frameworks/KSPlayer.framework/KSPlayer": "053eb8cab45ff14cf5c3eea855d1e47eab130f8a68ca3b93ffc04eabc199cfa3"
+    },
+    "sourceDiffSHA256": "651473ca741de5118a916b47777bf98943082f0af4393f5a51eb5723131c1c61",
+    "preservesContainer": true,
+    "signatureVerified": true,
+    "actualForegroundUIVerified": true,
+    "requestedEnvironment": {},
+    "requestedArguments": [],
+    "installation": "success",
+    "startedAt": "2026-10-24T05:06:20.101382+08:00",
+    "installedAt": "2026-10-24T05:06:36.184942+08:00",
+    "preferenceKeysUnchanged": true,
+    "preferenceValuesUnchanged": true,
+    "nonDiagnosticKeys": 25,
+    "emptyEnvironmentHomeVerified": true
+  },
+  "ipad": "No operation; remains00:00 package; cannot inherit05:05 results",
+  "requirementsOpen": 28,
+  "fullMatrixCells": 76,
+  "normalS01Baseline": {
+    "sample": "S01",
+    "entry": "jf",
+    "playCommands": 1,
+    "requestedMediaSeconds": 30,
+    "normalCloseEffectCaptured": true,
+    "returnOriginalDetailUIObserved": true,
+    "otherPreferencesUnchanged": true,
+    "bookmarkKeysSame": true,
+    "trackChanges": 0,
+    "newCrashInventory": {
+      "Nastart": 0,
+      "WebDriverAgent": 0,
+      "JetsamEvent": 0
+    },
+    "finalWDAAppStates": [
+      1,
+      1
+    ],
+    "ownGuardianStopped": true,
+    "ownSyslogStopped": true,
+    "telemetrySamples": 34,
+    "lastStallCount": 0,
+    "normalEnvironmentAndArguments": true,
+    "explicitLabEnabled": false,
+    "newDebugNegotiationEvents": 0,
+    "route": "KSPlayer/directPlay/localRangeProxy",
+    "actualImagesReviewed": true,
+    "fullFrameOrAudioAcceptance": false
+  },
+  "iphone18CurrentAttempt": {
+    "startedAtUTC": "2026-10-23T21:14:44.794850+00:00",
+    "stage": "blocked; install not confirmed",
+    "packageVerified": true,
+    "targetLiveVerified": true,
+    "preferencesSavedBeforeInstall": false,
+    "installDispatchAttempted": false,
+    "installCommandSent": false,
+    "installCompleteObserved": false,
+    "postInstallLookupExists": false,
+    "actualForegroundUIVerified": false,
+    "newPairingAttempted": false,
+    "networkOrVPNChanged": false,
+    "WDARequiredForInstallation": false,
+    "sourceDiffSHA256": "651473ca741de5118a916b47777bf98943082f0af4393f5a51eb5723131c1c61",
+    "binaries": {
+      "Nastart": "aaf218612a32b4d91695b809513b0172ec2567bc65cac7d25b1b496c130ddb35",
+      "Nastart.debug.dylib": "12174888be2bf69687708ef3942647aca630a6b6ee492d3705b6c5cc4dde3a02",
+      "Frameworks/KSPlayer.framework/KSPlayer": "053eb8cab45ff14cf5c3eea855d1e47eab130f8a68ca3b93ffc04eabc199cfa3"
+    },
+    "ipaSHA256": "e871defaaa3ec0d35da7bf2e3a054360e370a781b46acb7edf7e70e652fb48c6",
+    "model": "iPhone19,7",
+    "system": "27.0",
+    "connection": "NETWORK",
+    "existingEscrowUsedForContainerRequest": true,
+    "failedAtStage": "savingPreferences",
+    "failureType": "ConnectionTerminatedError",
+    "finishedAtUTC": "2026-10-23T21:14:45.989613+00:00"
+  },
+  "iphone18ReadOnlyInspection": {
+    "installNotConfirmed": true,
+    "newInstallCommands": 0,
+    "launchCommands": 0,
+    "failureType": "ConnectionResetError"
+  },
+  "finalAudit13": {
+    "at": "2026-10-24T05:20:46.228253+08:00",
+    "current174InputsAndPackageAndOwnInstallReceiptVerified": true,
+    "liveModel": "iPhone14,5",
+    "liveSystem": "16.3.1",
+    "connection": "USB",
+    "WDAAppStates": [
+      1,
+      1
+    ],
+    "settingsRestored": true,
+    "fullNonDiagnosticPreferencesStableTwoReads": true,
+    "other24PreferencesUnchangedSinceInstall": true,
+    "bookmarkKeys": 36,
+    "bookmarkKeysSame": true,
+    "trackPreferencesSame": true,
+    "changedBookmarkFields": [
+      "positionSeconds",
+      "updatedAt"
+    ],
+    "homeImageReviewPending": false,
+    "actualHomeWiFiNoPiPReviewed": true
+  },
+  "ownedActiveMediaAndCollectorHelpers": 0,
+  "cellularTests": 0,
+  "networkOrVPNChanged": false,
+  "iphone18ConfirmedCurrentPackage": "00:00 package installed at00:08:57;05:05 package not sent because container backup failed",
+  "realLoaderSourceAudit": {
+    "at": "2026-10-24T05:29:03+08:00",
+    "evidenceType": "source inspection only",
+    "entries": [
+      "Jellyfin",
+      "verified matched file"
+    ],
+    "candidateOwnCeilingAndTraceCaptured": true,
+    "newTracePerRequest": true,
+    "livePositionAndSourceTrackSelectionMapped": true,
+    "newNASOrDeviceRequests": 0,
+    "sourceChanged": false,
+    "realSecondNegotiationOrPGSAcceptance": false
+  }
+}

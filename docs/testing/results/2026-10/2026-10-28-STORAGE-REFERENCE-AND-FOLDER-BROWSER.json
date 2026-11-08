@@ -1,0 +1,146 @@
+{
+  "date": "2026-10-28",
+  "scope": "existing connection reuse and folder browsing/draft/cancel",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "dirtyTreePreserved": true,
+  "sourceInputs": 418,
+  "configuration": "Debug",
+  "arguments": [],
+  "environment": {},
+  "tests": {
+    "executed": 35,
+    "failures": 0,
+    "folderEditingTests": 9
+  },
+  "packages": {
+    "mobile": {
+      "builtAt": "2026-10-28T06:59:50.481559+08:00",
+      "mainSHA256": "6b9b02dddb42cfdc60f00896ebb3bd763165681d611df7127e108cf0929bd80c",
+      "debugDylibSHA256": "ed591b99015c7690e22d01e9ad274d5659bdeabd5fbda972e079b45fa35e25a6",
+      "signedMachOCount": 30
+    },
+    "tv": {
+      "builtAt": "2026-10-28T07:01:24.598129+08:00",
+      "mainSHA256": "461bd9bdaa30b568205bfd828e0dfa390f5e85ca2edcb56c9fd87d7f937e7145",
+      "debugDylibSHA256": "009c27e020500eafd3f4dd295eb8a982cb8fb6734ae708b444ec1feba6a6bc71",
+      "signedMachOCount": 27
+    }
+  },
+  "native": {
+    "iphone13": {
+      "folderFlowVerified": true,
+      "normalHome": true,
+      "settingsRestored": true,
+      "ownedHTTPSessionDeleted": true,
+      "checks": {
+        "savedConnectionOffered": true,
+        "savedNASOffered": true,
+        "existingLoginBrowsesParent": true,
+        "browseUpdatesDraftOnly": true,
+        "editorCancelled": true
+      },
+      "mediaCommands": 0,
+      "saveCommands": 0,
+      "normalExit": "not_applicable_no_playback"
+    },
+    "ipad": {
+      "folderFlowVerified": true,
+      "normalHome": true,
+      "settingsRestored": true,
+      "ownedHTTPSessionDeleted": true,
+      "checks": {
+        "savedConnectionOffered": true,
+        "savedNASOffered": true,
+        "existingLoginBrowsesParent": true,
+        "browseUpdatesDraftOnly": true,
+        "editorCancelled": true
+      },
+      "mediaCommands": 0,
+      "saveCommands": 0,
+      "normalExit": "not_applicable_no_playback"
+    },
+    "tv": {
+      "folderFlowVerified": true,
+      "normalHome": true,
+      "settingsRestored": true,
+      "ownedHTTPSessionDeleted": true,
+      "checks": {
+        "savedConnectionOffered": true,
+        "savedNASOffered": true,
+        "existingLoginBrowsesParent": true,
+        "browseUpdatesDraftOnly": true,
+        "editorCancelled": true
+      },
+      "mediaCommands": 0,
+      "saveCommands": 0,
+      "normalExit": "not_applicable_no_playback"
+    }
+  },
+  "indexPreservation": {
+    "iphone13": {
+      "completeIndexJSONEqual": true,
+      "libraries": 1,
+      "videos": 149
+    },
+    "ipad": {
+      "completeIndexJSONEqual": true,
+      "libraries": 1,
+      "videos": 3408
+    },
+    "tv": {
+      "completeIndexJSONEqual": false,
+      "libraries": 1,
+      "videos": 3408,
+      "historicalComparisonOnly": true,
+      "freshBaselineIndexJSONEqual": true,
+      "currentConfigurationAlreadyPresentBeforeInstall": true
+    }
+  },
+  "preferencesEqualToPreInstall": {
+    "iphone13": true,
+    "ipad": true,
+    "tv": true
+  },
+  "iphone18": {
+    "latestBatchInstalled": false,
+    "reason": "paired wireless discovery failed before installation dispatch",
+    "lastConfirmedBatch": "detail-information-final-20261028-055450",
+    "activeControl": false,
+    "discoveryAttempts": 2,
+    "installationDispatched": false
+  },
+  "reference": {
+    "iphone13Infuse": "8.1.8: add share WebDAV empty form/advanced, existing FTP directory, favorite rename draft cancelled",
+    "iphone13Filmly": "2.15.2: update prompt only; cancel locator failed, connection flow unverified",
+    "tv": "installed app inventory only",
+    "ipad": "reference apps not installed"
+  },
+  "failedWindowsRetained": [
+    "TV first unknown Select guard",
+    "TV navigation guard: destination arrived but content not ready",
+    "TV staged folder expectation from stale historical index"
+  ],
+  "tvFreshBaseline": {
+    "videos": 3408,
+    "completeIndexJSONEqual": true,
+    "currentIDsAlreadyInPreInstallDurableCatalog": true,
+    "old149SnapshotNotCurrentBaseline": true
+  },
+  "remoteWrites": 0,
+  "playbackCommands": 0,
+  "folderCommitCommands": 0,
+  "fullPlaybackAcceptanceAdded": 0,
+  "open": [
+    "standalone saved connection and server/account editing",
+    "new native folder commit/replacement in this package",
+    "FTP app integration/FTPS data channel 522",
+    "SMB strict root violation",
+    "full player lifecycle and iPad ordinary exit"
+  ],
+  "documentationCheck": {
+    "documents": 504,
+    "localLinks": 2993,
+    "missingDestinations": 0
+  },
+  "finalizedAt": "2026-10-28T07:31:03.490007+08:00"
+}

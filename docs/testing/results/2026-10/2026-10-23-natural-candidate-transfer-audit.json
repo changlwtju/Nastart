@@ -1,0 +1,905 @@
+{
+  "at": "2026-10-23T23:39:32.162533+08:00",
+  "scope": "Saved true automatic S03/JF candidate transfer/server evidence plus two controlled iPhone13 local transport cases",
+  "appSourceChanged": false,
+  "latestPackageIPA_SHA256": "3aa6244882e38faac2404cf1b0cf6f7912cddc0a302f4ee4ceb4b6a08a883052",
+  "source174InputsAndIOSDiffStillMatch": true,
+  "newBuildOrXCTestClaimed": false,
+  "serverReadOnlyMetadata": {
+    "startedAt": "2026-10-23T23:21:06.649287+08:00",
+    "readOnlyMetadataRequests": 8,
+    "mediaRequests": 0,
+    "writesOrServerSettingChanges": 0,
+    "serverVersion": "10.11.11",
+    "serverIdentitySHA256": "ec26777332a4767ec1b8511854d2c01cec0d8976670759310cd7a7d8ae333894",
+    "exactOutputKeyFilenameMatches": 0,
+    "mainLogBytes": 15400,
+    "matchingOutputKeyLines": 3,
+    "serverMetadataReadEndedAt": "2026-10-23T23:21:55.227260+08:00",
+    "ffmpegLogBytesRead": 988026,
+    "exactFFmpegLogMatches": 1,
+    "readOnlyMetadataFinishedAt": "2026-10-23T23:23:58.602927+08:00"
+  },
+  "trueFailureTransferTimeline": [
+    {
+      "role": "mediaPlaylist",
+      "ordinal": "-",
+      "issueAfterWarmupSeconds": null,
+      "endAfterWarmupSeconds": 12.940294,
+      "taskIntervalMs": null,
+      "lastFetchToRequestMs": null,
+      "tcpMs": null,
+      "requestMs": null,
+      "responseMs": null,
+      "responseBodyBytesAfterDecoding": null,
+      "responseStatusCode": null,
+      "proxyBackpressureMs": null,
+      "proxySuspendCount": null,
+      "finishSource": "sendPlaylist()",
+      "deliveredBytes": "1534678",
+      "result": "complete"
+    },
+    {
+      "role": "masterPlaylist",
+      "ordinal": "-",
+      "issueAfterWarmupSeconds": 0.022749,
+      "endAfterWarmupSeconds": 1.947783,
+      "taskIntervalMs": "1908",
+      "lastFetchToRequestMs": "798",
+      "tcpMs": "796",
+      "requestMs": "1108",
+      "responseMs": "0",
+      "responseBodyBytesAfterDecoding": "883",
+      "responseStatusCode": "200",
+      "proxyBackpressureMs": "0",
+      "proxySuspendCount": "0",
+      "finishSource": "sendPlaylist()",
+      "deliveredBytes": "883",
+      "result": "complete"
+    },
+    {
+      "role": "mediaPlaylist",
+      "ordinal": "-",
+      "issueAfterWarmupSeconds": 1.951639,
+      "endAfterWarmupSeconds": 12.04005,
+      "taskIntervalMs": "10036",
+      "lastFetchToRequestMs": "0",
+      "tcpMs": "-",
+      "requestMs": "697",
+      "responseMs": "9336",
+      "responseBodyBytesAfterDecoding": "1534678",
+      "responseStatusCode": "200",
+      "proxyBackpressureMs": "0",
+      "proxySuspendCount": "0",
+      "finishSource": "sendPlaylist()",
+      "deliveredBytes": "1534678",
+      "result": "complete"
+    },
+    {
+      "role": "masterPlaylist",
+      "ordinal": "-",
+      "issueAfterWarmupSeconds": 12.131217,
+      "endAfterWarmupSeconds": 12.867482,
+      "taskIntervalMs": "718",
+      "lastFetchToRequestMs": "0",
+      "tcpMs": "-",
+      "requestMs": "717",
+      "responseMs": "0",
+      "responseBodyBytesAfterDecoding": "883",
+      "responseStatusCode": "200",
+      "proxyBackpressureMs": "0",
+      "proxySuspendCount": "0",
+      "finishSource": "sendPlaylist()",
+      "deliveredBytes": "883",
+      "result": "complete"
+    },
+    {
+      "role": "segment",
+      "ordinal": "1002",
+      "issueAfterWarmupSeconds": 12.962071,
+      "endAfterWarmupSeconds": 25.848158,
+      "taskIntervalMs": "12884",
+      "lastFetchToRequestMs": "0",
+      "tcpMs": "-",
+      "requestMs": "12879",
+      "responseMs": "-",
+      "responseBodyBytesAfterDecoding": "14256",
+      "responseStatusCode": "200",
+      "proxyBackpressureMs": "0",
+      "proxySuspendCount": "0",
+      "finishSource": "clientBodySend",
+      "deliveredBytes": "14256",
+      "result": "未能完成操作。（Network.NWError错误0。）"
+    },
+    {
+      "role": "segment",
+      "ordinal": "1002",
+      "issueAfterWarmupSeconds": 16.968997,
+      "endAfterWarmupSeconds": 35.828647,
+      "taskIntervalMs": "18725",
+      "lastFetchToRequestMs": "446",
+      "tcpMs": "442",
+      "requestMs": "8420",
+      "responseMs": "9856",
+      "responseBodyBytesAfterDecoding": "6053412",
+      "responseStatusCode": "200",
+      "proxyBackpressureMs": "0",
+      "proxySuspendCount": "0",
+      "finishSource": "clientTerminalSend",
+      "deliveredBytes": "6053412",
+      "result": "complete"
+    },
+    {
+      "role": "segment",
+      "ordinal": "1003",
+      "issueAfterWarmupSeconds": 35.829235,
+      "endAfterWarmupSeconds": 38.906915,
+      "taskIntervalMs": "3120",
+      "lastFetchToRequestMs": "1",
+      "tcpMs": "-",
+      "requestMs": "388",
+      "responseMs": "2730",
+      "responseBodyBytesAfterDecoding": "6118648",
+      "responseStatusCode": "200",
+      "proxyBackpressureMs": "0",
+      "proxySuspendCount": "0",
+      "finishSource": "clientTerminalSend",
+      "deliveredBytes": "6118648",
+      "result": "complete"
+    },
+    {
+      "role": "segment",
+      "ordinal": "1004",
+      "issueAfterWarmupSeconds": 38.92848,
+      "endAfterWarmupSeconds": 40.014434,
+      "taskIntervalMs": "1092",
+      "lastFetchToRequestMs": "1",
+      "tcpMs": "-",
+      "requestMs": "324",
+      "responseMs": "-",
+      "responseBodyBytesAfterDecoding": "3087616",
+      "responseStatusCode": "200",
+      "proxyBackpressureMs": "0",
+      "proxySuspendCount": "0",
+      "finishSource": "routeRevoked",
+      "deliveredBytes": "3026152",
+      "result": "未能完成操作。（NSURLErrorDomain错误-999。）"
+    }
+  ],
+  "exactOutputAndOrdinalCorrelation": {
+    "operations": [
+      {
+        "operation": 1,
+        "observationSeconds": 41.011207,
+        "requestSelectionBoundary": "actionStart",
+        "seekDispatchSecondsFromAction": null,
+        "seekDispatchTraceAvailable": false,
+        "excludedSegmentRequests": [],
+        "firstSegmentRequests": [
+          {
+            "requestSeconds": 12.962071,
+            "segmentOrdinal": 1002,
+            "responseHeadersSeconds": 25.83702,
+            "responseStatus": 200,
+            "headersObserved": true,
+            "bodyBytesObserved": 14256,
+            "cancelRequestedSeconds": 25.848623,
+            "requestMs": 12879.0,
+            "completionSeconds": 25.849533,
+            "errorCode": -999.0
+          },
+          {
+            "requestSeconds": 16.968997,
+            "segmentOrdinal": 1002,
+            "responseHeadersSeconds": 25.837901,
+            "responseStatus": 200,
+            "headersObserved": true,
+            "bodyBytesObserved": 6053412,
+            "requestMs": 8420.0,
+            "completionSeconds": 35.828053,
+            "errorCode": null
+          }
+        ],
+        "serverCandidateCount": 1,
+        "clientOutputKeyCandidateCount": 1,
+        "serverOutputKeyCommandCount": 1,
+        "association": "outputKeyAndOrdinalMatch",
+        "serverCommand": {
+          "startSegmentOrdinal": 1002,
+          "seekSeconds": 4012.008,
+          "videoCodec": "h264_vaapi",
+          "audioCodec": "libfdk_aac",
+          "subtitleOverlayFilter": true,
+          "secondsFromAction": null
+        },
+        "replacement_candidate_decodedSeconds": [
+          34.324182
+        ],
+        "replacement_committedSeconds": [],
+        "candidateFailures": [
+          {
+            "secondsFromAction": 40.011207,
+            "stage": "alignment",
+            "elapsedMs": 40005.0
+          }
+        ]
+      }
+    ],
+    "serverMinusClientOffsetSecondsUsed": null,
+    "matchingWindowSeconds": 5.0,
+    "matchingBoundary": "firstSegmentRequest",
+    "sessionIdentityVerified": false,
+    "firstVisibleFrameAccepted": false,
+    "actualAudibleAccepted": false,
+    "limitations": [
+      "Server command times are log records, not exact process or segment readiness.",
+      "Time and ordinal correlation does not exclude unrelated concurrent sessions.",
+      "Output-key candidates use a version-specific formula; a match is not segment readiness or clock synchronization.",
+      "Pre-dispatch requests are retained separately; touch start is not seek dispatch.",
+      "Missing events or commands stay unknown; request intervals may overlap.",
+      "Exact output-key/ordinal association accepted; server command relative-to-client time suppressed because clocks were not calibrated."
+    ],
+    "serverClockOffsetCalibrated": false
+  },
+  "exactEncoderOptions": {
+    "-ss": "01:06:52.008",
+    "-analyzeduration": "200M",
+    "-probesize": "1G",
+    "-b:v": "11360000",
+    "-maxrate": "11360000",
+    "-bufsize": "22720000",
+    "-hls_time": "4",
+    "-start_number": "1002",
+    "-threads": "0",
+    "-copyts": "present"
+  },
+  "encoderProgress": [
+    {
+      "frame": "13",
+      "fps": "0.0",
+      "mediaTime": "00:00:00.00",
+      "speed": "0"
+    },
+    {
+      "frame": "67",
+      "fps": "67",
+      "mediaTime": "00:00:02.25",
+      "speed": "2.25"
+    },
+    {
+      "frame": "120",
+      "fps": "80",
+      "mediaTime": "00:00:04.46",
+      "speed": "2.97"
+    },
+    {
+      "frame": "173",
+      "fps": "86",
+      "mediaTime": "00:00:06.67",
+      "speed": "3.34"
+    },
+    {
+      "frame": "227",
+      "fps": "91",
+      "mediaTime": "00:00:08.92",
+      "speed": "3.57"
+    },
+    {
+      "frame": "278",
+      "fps": "93",
+      "mediaTime": "00:00:11.05",
+      "speed": "3.68"
+    },
+    {
+      "frame": "326",
+      "fps": "93",
+      "mediaTime": "00:00:13.05",
+      "speed": "3.73"
+    },
+    {
+      "frame": "379",
+      "fps": "95",
+      "mediaTime": "00:00:15.26",
+      "speed": "3.82"
+    },
+    {
+      "frame": "427",
+      "fps": "95",
+      "mediaTime": "00:00:17.26",
+      "speed": "3.84"
+    },
+    {
+      "frame": "478",
+      "fps": "96",
+      "mediaTime": "00:00:19.39",
+      "speed": "3.88"
+    },
+    {
+      "frame": "527",
+      "fps": "96",
+      "mediaTime": "00:00:21.43",
+      "speed": "3.9"
+    },
+    {
+      "frame": "579",
+      "fps": "96",
+      "mediaTime": "00:00:23.60",
+      "speed": "3.93"
+    },
+    {
+      "frame": "630",
+      "fps": "97",
+      "mediaTime": "00:00:25.73",
+      "speed": "3.96"
+    },
+    {
+      "frame": "685",
+      "fps": "98",
+      "mediaTime": "00:00:28.02",
+      "speed": "4"
+    },
+    {
+      "frame": "726",
+      "fps": "97",
+      "mediaTime": "00:00:29.73",
+      "speed": "3.96"
+    },
+    {
+      "frame": "778",
+      "fps": "97",
+      "mediaTime": "00:00:31.90",
+      "speed": "3.99"
+    },
+    {
+      "frame": "829",
+      "fps": "98",
+      "mediaTime": "00:00:34.03",
+      "speed": "4"
+    },
+    {
+      "frame": "872",
+      "fps": "97",
+      "mediaTime": "00:00:35.82",
+      "speed": "3.98"
+    },
+    {
+      "frame": "921",
+      "fps": "97",
+      "mediaTime": "00:00:37.87",
+      "speed": "3.99"
+    },
+    {
+      "frame": "975",
+      "fps": "97",
+      "mediaTime": "00:00:40.12",
+      "speed": "4.01"
+    },
+    {
+      "frame": "1030",
+      "fps": "98",
+      "mediaTime": "00:00:42.41",
+      "speed": "4.04"
+    },
+    {
+      "frame": "1083",
+      "fps": "98",
+      "mediaTime": "00:00:44.62",
+      "speed": "4.06"
+    },
+    {
+      "frame": "1134",
+      "fps": "99",
+      "mediaTime": "00:00:46.75",
+      "speed": "4.06"
+    },
+    {
+      "frame": "1189",
+      "fps": "99",
+      "mediaTime": "00:00:49.04",
+      "speed": "4.09"
+    },
+    {
+      "frame": "1237",
+      "fps": "99",
+      "mediaTime": "00:00:51.05",
+      "speed": "4.08"
+    },
+    {
+      "frame": "1276",
+      "fps": "98",
+      "mediaTime": "00:00:52.67",
+      "speed": "4.05"
+    },
+    {
+      "frame": "1318",
+      "fps": "98",
+      "mediaTime": "00:00:54.42",
+      "speed": "4.03"
+    },
+    {
+      "frame": "1371",
+      "fps": "98",
+      "mediaTime": "00:00:56.63",
+      "speed": "4.04"
+    },
+    {
+      "frame": "1424",
+      "fps": "98",
+      "mediaTime": "00:00:58.85",
+      "speed": "4.06"
+    },
+    {
+      "frame": "1478",
+      "fps": "99",
+      "mediaTime": "00:01:01.10",
+      "speed": "4.07"
+    },
+    {
+      "frame": "1529",
+      "fps": "99",
+      "mediaTime": "00:01:03.22",
+      "speed": "4.08"
+    },
+    {
+      "frame": "1573",
+      "fps": "98",
+      "mediaTime": "00:01:05.06",
+      "speed": "4.07"
+    },
+    {
+      "frame": "1621",
+      "fps": "98",
+      "mediaTime": "00:01:07.06",
+      "speed": "4.06"
+    },
+    {
+      "frame": "1685",
+      "fps": "98",
+      "mediaTime": "00:01:09.73",
+      "speed": "4.07"
+    }
+  ],
+  "clientPhasePartition": {
+    "manifestPreparationMs": 12059,
+    "masterFirstTaskMs": 1908,
+    "mediaPlaylistBodyMs": 9336,
+    "mediaPlaylistBytes": 1534678,
+    "mediaPlaylistRewriteMs": 28,
+    "extraMasterRequestMs": 718,
+    "firstSegmentRequestSinceWarmupSeconds": 12.962071,
+    "firstSegmentHeadersSinceWarmupSeconds": 25.83702,
+    "firstDecodedSinceWarmupMs": 34323,
+    "afterManifestToFirstDecodeMs": 22264,
+    "afterManifestToFirstSegmentRequestMs": 903,
+    "firstSegmentRequestToHeadersMs": 12875,
+    "headersToFirstDecodedMs": 8486,
+    "headersToFirstDecodedIncludesOngoingBody": true,
+    "pureDecoderTimeMeasured": false
+  },
+  "controls": [
+    {
+      "case": "lab-transport-late",
+      "scope": "Debug synthetic KS to AV controlled transport:12.059s media playlist, shared first target segment body begins12.881s later and paces9.856s; header mode late or early; no real NAS performance or causal root claim",
+      "labAutoPlaybackLaunches": 1,
+      "manualCandidateTriggers": 1,
+      "normalFilmOrNASMediaCommands": 0,
+      "latestSourcePackageAndReceiptVerified": true,
+      "events": [
+        {
+          "event": "replacement_candidate_manifest_prepared",
+          "secondsSinceWarmup": 12.58694,
+          "snapshot": {
+            "elapsedMs": 12565.0,
+            "cachedVOD": true
+          }
+        },
+        {
+          "event": "replacement_candidate_preparing",
+          "secondsSinceWarmup": 12.590608,
+          "snapshot": {
+            "preparationLeadSeconds": 11.0,
+            "target": 26.283,
+            "itemStatus": 0.0,
+            "liveSeconds": 15.283,
+            "availableReserveSeconds": 30.39566666666667,
+            "candidateStatus": 0.0,
+            "candidateSeconds": 0.0,
+            "loadedRangeCount": 0.0,
+            "candidateBufferAheadSeconds": 0.0,
+            "elapsedMs": 12584.0,
+            "candidateRate": 0.0,
+            "bufferEmpty": true,
+            "likelyToKeepUp": false,
+            "deadlineRemainingMs": 27415.0
+          }
+        },
+        {
+          "event": "replacement_candidate_decoded",
+          "secondsSinceWarmup": 31.331636,
+          "snapshot": {
+            "preparationLeadSeconds": 11.0,
+            "target": 26.283,
+            "itemStatus": 0.0,
+            "liveSeconds": 34.035,
+            "availableReserveSeconds": 30.39566666666667,
+            "framePTS": 26.267,
+            "candidateStatus": 1.0,
+            "candidateSeconds": 26.281666666666666,
+            "loadedRangeCount": 0.0,
+            "candidateBufferAheadSeconds": 0.0,
+            "elapsedMs": 31325.0,
+            "candidateRate": 0.0,
+            "bufferEmpty": true,
+            "likelyToKeepUp": false,
+            "seekResult": true,
+            "deadlineRemainingMs": 8674.0
+          }
+        },
+        {
+          "event": "replacement_candidate_buffered_seek_started",
+          "secondsSinceWarmup": 37.006692,
+          "snapshot": {
+            "preparationLeadSeconds": 11.0,
+            "target": 26.283,
+            "itemStatus": 1.0,
+            "liveSeconds": 39.603,
+            "bufferedTarget": 39.853,
+            "availableReserveSeconds": 30.39566666666667,
+            "candidateStatus": 1.0,
+            "candidateSeconds": 32.340070503,
+            "fromSeconds": 32.339157077,
+            "loadedRangeFirstStart": 26.281666666666666,
+            "loadedRangeCount": 1.0,
+            "loadedRangeFirstEnd": 41.934,
+            "candidateBufferAheadSeconds": 9.593929496999998,
+            "elapsedMs": 36884.0,
+            "candidateRate": 0.0,
+            "bufferEmpty": false,
+            "likelyToKeepUp": true,
+            "seekResult": true,
+            "deadlineRemainingMs": 3115.0
+          }
+        },
+        {
+          "event": "replacement_candidate_buffered_seek_completed",
+          "secondsSinceWarmup": 37.029364,
+          "snapshot": {
+            "preparationLeadSeconds": 11.0,
+            "target": 26.283,
+            "itemStatus": 1.0,
+            "liveSeconds": 39.731,
+            "bufferedTarget": 39.853,
+            "availableReserveSeconds": 30.39566666666667,
+            "candidateStatus": 1.0,
+            "candidateSeconds": 39.85166666666667,
+            "loadedRangeFirstStart": 26.281666666666666,
+            "loadedRangeCount": 1.0,
+            "loadedRangeFirstEnd": 43.934,
+            "candidateBufferAheadSeconds": 4.082333333333331,
+            "elapsedMs": 37028.0,
+            "candidateRate": 0.0,
+            "bufferEmpty": false,
+            "likelyToKeepUp": true,
+            "seekResult": true,
+            "deadlineRemainingMs": 2971.0
+          }
+        },
+        {
+          "event": "replacement_candidate_aligned",
+          "secondsSinceWarmup": 37.12804,
+          "snapshot": {
+            "preparationLeadSeconds": 11.0,
+            "target": 26.283,
+            "itemStatus": 1.0,
+            "liveSeconds": 39.774,
+            "availableReserveSeconds": 30.39566666666667,
+            "framePTS": 39.833,
+            "candidateStatus": 1.0,
+            "candidateSeconds": 39.85166666666667,
+            "loadedRangeFirstStart": 26.281666666666666,
+            "loadedRangeCount": 1.0,
+            "loadedRangeFirstEnd": 43.934,
+            "candidateBufferAheadSeconds": 4.082333333333331,
+            "elapsedMs": 37052.0,
+            "candidateRate": 0.0,
+            "bufferEmpty": false,
+            "likelyToKeepUp": true,
+            "seekResult": true,
+            "deadlineRemainingMs": 2947.0,
+            "candidate": 39.85166666666667,
+            "current": 39.774
+          }
+        },
+        {
+          "event": "replacement_committed",
+          "secondsSinceWarmup": 37.129491,
+          "snapshot": {
+            "candidateSeconds": 39.85166666666667,
+            "candidateBufferAheadSeconds": 4.082333333333331
+          }
+        }
+      ],
+      "firstDelayedSegmentRequestCount": 1,
+      "firstDelayedSegmentRequests": [
+        {
+          "startedAt": 0.0,
+          "bytesWritten": 255492,
+          "headersSentAt": 12.891347,
+          "firstBodySentAt": 13.207246,
+          "result": "complete",
+          "elapsedSeconds": 22.746972,
+          "finishedAt": 22.746933
+        }
+      ],
+      "allNonDiagnosticPreferencesUnchanged": true,
+      "newCrashInventory": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      },
+      "stopStates": [
+        1,
+        1
+      ],
+      "fixtureServerStopped": true,
+      "collectorAndGuardianStopped": true,
+      "powerEvidence": [
+        {
+          "label": "before-lab",
+          "ownCaffeinateAssertionObserved": true,
+          "ACPower": true,
+          "atUnix": 1792769267.4975119
+        },
+        {
+          "label": "during-candidate-10",
+          "ownCaffeinateAssertionObserved": true,
+          "ACPower": true,
+          "atUnix": 1792769281.543967
+        },
+        {
+          "label": "during-candidate-30",
+          "ownCaffeinateAssertionObserved": true,
+          "ACPower": true,
+          "atUnix": 1792769301.537029
+        },
+        {
+          "label": "after-lab-stop",
+          "ownCaffeinateAssertionObserved": true,
+          "ACPower": true,
+          "atUnix": 1792769322.519564
+        }
+      ],
+      "stoppedAt": "2026-10-23T23:28:42.519931+08:00",
+      "endNativeImageIndependentlyReviewed": true,
+      "endTitleAndClock": "Candidate Lab/00:49",
+      "limitations": [
+        "Continuous H264 AAC synthetic; no realNAS/HEVC/TrueHD/PGS performance or audio/full-frame acceptance",
+        "Single media playlist topology; cannot reproduce master-specific retry or infer universal4s cancellation",
+        "Cases differ in media segment duration, subsequent supply pacing and original reserve; not single-variable performance comparison"
+      ]
+    },
+    {
+      "case": "lab-transport-paced4",
+      "scope": "Debug transport counterexample:continuous H264 AAC4s segments,12.059s manifest, first shared target segment12.881s wait9.856s body, later segments2.730s body, original1.05Mbps cap; observed reserves not assumed; no NAS/CPU sole cause proof",
+      "labAutoPlaybackLaunches": 1,
+      "manualCandidateTriggers": 1,
+      "normalFilmOrNASMediaCommands": 0,
+      "latestSourcePackageAndReceiptVerified": true,
+      "events": [
+        {
+          "event": "replacement_candidate_manifest_prepared",
+          "secondsSinceWarmup": 12.489689,
+          "snapshot": {
+            "elapsedMs": 12485.0,
+            "cachedVOD": true
+          }
+        },
+        {
+          "event": "replacement_candidate_preparing",
+          "secondsSinceWarmup": 12.491544,
+          "snapshot": {
+            "preparationLeadSeconds": 2.8736666666666686,
+            "target": 17.175666666666668,
+            "itemStatus": 0.0,
+            "liveSeconds": 14.302,
+            "availableReserveSeconds": 3.1236666666666686,
+            "candidateStatus": 0.0,
+            "candidateSeconds": 0.0,
+            "loadedRangeCount": 0.0,
+            "candidateBufferAheadSeconds": 0.0,
+            "elapsedMs": 12489.0,
+            "candidateRate": 0.0,
+            "bufferEmpty": true,
+            "likelyToKeepUp": false,
+            "deadlineRemainingMs": 27510.0
+          }
+        },
+        {
+          "event": "replacement_candidate_decoded",
+          "secondsSinceWarmup": 31.288611,
+          "snapshot": {
+            "preparationLeadSeconds": 2.8736666666666686,
+            "target": 17.175666666666668,
+            "itemStatus": 0.0,
+            "liveSeconds": 33.097,
+            "availableReserveSeconds": 3.1236666666666686,
+            "framePTS": 17.167,
+            "candidateStatus": 1.0,
+            "candidateSeconds": 17.175,
+            "loadedRangeFirstStart": 16.0,
+            "loadedRangeCount": 1.0,
+            "loadedRangeFirstEnd": 16.426833333333335,
+            "candidateBufferAheadSeconds": 0.0,
+            "elapsedMs": 31286.0,
+            "candidateRate": 0.0,
+            "bufferEmpty": false,
+            "likelyToKeepUp": false,
+            "seekResult": true,
+            "deadlineRemainingMs": 8713.0
+          }
+        },
+        {
+          "event": "replacement_warmup_failed",
+          "secondsSinceWarmup": 40.383737,
+          "snapshot": {
+            "preparationLeadSeconds": 2.8736666666666686,
+            "target": 17.175666666666668,
+            "itemStatus": 1.0,
+            "liveSeconds": 41.737,
+            "availableReserveSeconds": 3.1236666666666686,
+            "framePTS": 24.333,
+            "candidateStatus": 1.0,
+            "candidateSeconds": 25.164111252,
+            "loadedRangeFirstStart": 16.0,
+            "loadedRangeCount": 1.0,
+            "loadedRangeFirstEnd": 24.426833333333335,
+            "candidateBufferAheadSeconds": 0.0,
+            "elapsedMs": 40361.0,
+            "candidateRate": 0.0,
+            "bufferEmpty": true,
+            "likelyToKeepUp": false,
+            "seekResult": true,
+            "stage": "alignment",
+            "deadlineRemainingMs": 0.0,
+            "candidate": 25.161611892,
+            "current": 41.737
+          }
+        }
+      ],
+      "firstDelayedSegmentRequestCount": 1,
+      "firstDelayedSegmentRequests": [
+        {
+          "startedAt": 0.0,
+          "bytesWritten": 493876,
+          "headersSentAt": 12.891322,
+          "firstBodySentAt": 13.052831,
+          "result": "complete",
+          "elapsedSeconds": 22.742603,
+          "finishedAt": 22.742554
+        }
+      ],
+      "allNonDiagnosticPreferencesUnchanged": true,
+      "newCrashInventory": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      },
+      "stopStates": [
+        1,
+        1
+      ],
+      "fixtureServerStopped": true,
+      "collectorAndGuardianStopped": true,
+      "powerEvidence": [
+        {
+          "label": "before-lab",
+          "ownCaffeinateAssertionObserved": true,
+          "ACPower": true,
+          "atUnix": 1792769617.06655
+        },
+        {
+          "label": "during-candidate-10",
+          "ownCaffeinateAssertionObserved": true,
+          "ACPower": true,
+          "atUnix": 1792769632.093348
+        },
+        {
+          "label": "during-candidate-30",
+          "ownCaffeinateAssertionObserved": true,
+          "ACPower": true,
+          "atUnix": 1792769652.091294
+        },
+        {
+          "label": "after-lab-stop",
+          "ownCaffeinateAssertionObserved": true,
+          "ACPower": true,
+          "atUnix": 1792769673.388515
+        }
+      ],
+      "stoppedAt": "2026-10-23T23:34:33.388863+08:00",
+      "endNativeImageIndependentlyReviewed": true,
+      "endTitleAndClock": "Original Lab/00:48",
+      "limitations": [
+        "Continuous H264 AAC synthetic; no realNAS/HEVC/TrueHD/PGS performance or audio/full-frame acceptance",
+        "Single media playlist topology; cannot reproduce master-specific retry or infer universal4s cancellation",
+        "Cases differ in media segment duration, subsequent supply pacing and original reserve; not single-variable performance comparison"
+      ]
+    }
+  ],
+  "normalEnvironmentRestoration": {
+    "startedAt": "2026-10-23T23:36:42.751265+08:00",
+    "mediaCommands": 0,
+    "sourcePackageAndOwnInstallReceiptVerified": true,
+    "normalEmptyEnvironmentAndArgumentsVerified": true,
+    "NASOnlineHomeObserved": true,
+    "allNonDiagnosticPreferencesUnchanged": true,
+    "nonDiagnosticKeys": 25,
+    "finishedAt": "2026-10-23T23:36:50.991334+08:00"
+  },
+  "finalAudit": {
+    "at": "2026-10-23T23:38:10.056849+08:00",
+    "freshDeviceNameModelSystemUDIDUSBVerified": true,
+    "current174Inputs3Binaries29SignaturesProfileIPAAndOwnInstallReceiptVerified": true,
+    "normalEmptyEnvironmentAndArgumentsRestoredAndReviewed": true,
+    "allNonDiagnosticPreferencesStableOn2IndependentReads": true,
+    "other24NonDiagnosticPreferencesEqualBeforeInstall": true,
+    "all36BookmarkKeysAndTracksUnchanged": true,
+    "naturalProgressBookmarksChanged": 3,
+    "WDASettingsAuto10_2Verified": true,
+    "WDAAppStates": [
+      1,
+      1
+    ],
+    "HomeForeground": true,
+    "ownedMediaBuildLoggerHostCount": 0,
+    "nativePIDAbsenceClaimed": false,
+    "networkOrVPNChanged": false,
+    "iphone18CurrentIPAInstallAndActualHomepageReceiptVerified": true,
+    "actualFinalHomeImageReviewPending": false,
+    "actualHomeWiFiNoPiPReviewed": true
+  },
+  "otherDevices": {
+    "ipadNewCommands": 0,
+    "iphone18NewCommands": 0,
+    "currentPackageInstallsAndNormalHomesRemainPreviouslyVerified": true
+  },
+  "acceptance": {
+    "trueServerOutputMatchedSingleEncoderAtSegment1002": true,
+    "twoConsumerRequestsNotTwoEncoders": true,
+    "lateFirstSegmentAloneUniversalFailureClaimed": false,
+    "syntheticLimitedSupplyCounterexampleObserved": true,
+    "realMovieRebufferFixed": false,
+    "NASAutomaticHandoffAccepted": false,
+    "gaplessSoundOrFullFrameTimeAccepted": false,
+    "requirements28OrFullMatrix76StatusChanged": false
+  },
+  "limits": [
+    "No cross-host clock calibration; server-to-client relative timestamps remain null",
+    "Hardware encoder stable progress approaches4x, not proof of initial segment readiness or absence of startup/disk/network wait",
+    "Analyze duration200M/probesize1G are command limits, not measured actual scan time or bytes",
+    "Two controls change segment duration, original reserve and subsequent supply; not isolated single-factor performance comparison",
+    "Single media playlist controls did not repeat4s reGET; master-specific real retry is not generalized",
+    "No additional same-condition movie/PGS replay or header-only third control; no settings/threshold change"
+  ],
+  "next": [
+    "Preserve failed-candidate fallback loader/budget within original-request generation; add cancellation/recovery/stale-source and strict-lower retry counterexamples before minimal implementation.",
+    "Keep two-attempt budget and40s/readiness/track rules; computed1Mbps is an example, not a forced target or demonstrated benefit.",
+    "Then run actual failed操作 and same-format second source under a verified current package; Pad S01 dual entry remains pending."
+  ],
+  "logicalSwiftRetryCounterexample": {
+    "candidateEffectiveFetchToEndCapacity": 2586237,
+    "firstBitrate": 12000000,
+    "hypotheticalRetainedCandidateRetry": 1000000,
+    "performanceBenefitProven": false,
+    "productionRetryChanged": false,
+    "sourcePolicyCounterexamplePassed": true,
+    "unchangedOriginalClosureRetry": 12000000,
+    "firstAttemptToolchainSDKMismatchPreserved": true
+  },
+  "finalVerification": {
+    "at": "2026-10-23T23:48:38.599888+08:00",
+    "all174SourceInputsAndIOSDiffMatch": true,
+    "ownedMediaCollectorBuildRunnerHosts": 0,
+    "documentationCheckAndGitDiffCheckPassed": true
+  }
+}

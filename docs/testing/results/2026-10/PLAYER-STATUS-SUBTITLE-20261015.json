@@ -1,0 +1,1142 @@
+{
+  "source": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "2012608ee0f6097069f1b0724f3f6e533ba06f722b7bb541a2a2558a34dbb807",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "binaryBuildTime": "2026-10-15T10:23:26.868342+08:00",
+    "binaries": {
+      "Nastart": "b5ec79d56c9248d9004f262b1d0373114604c8089b2b32e95a0b02f7f9846d55",
+      "Nastart.debug.dylib": "2cc8c634f7d5f82d0117b5e7312c8bcd903d5f3f486c3df32c71596c548d7008",
+      "Frameworks/KSPlayer.framework/KSPlayer": "99d1434e54108886da1c7d645731b9d6f07e2d81e314cda518d85dedfb847215"
+    },
+    "ipaSHA256": "0a8da98eef6eb35b49eaa52009c3bf109b9241b4e853349dd971351efe6decb5",
+    "checkedInputs": 173,
+    "sourceInputManifestSHA256": "24a0a6a42b53fb62681a171f7c84ce41a4c919d5bdd5a5d6c3a100278367515a",
+    "profileExpirationUTC": "2026-10-17T22:23:40"
+  },
+  "validation": {
+    "tests": {
+      "executed": 390,
+      "skipped": 2,
+      "failures": 0,
+      "runThisTurn": true
+    },
+    "preflight": {
+      "passed": 15,
+      "runThisTurn": true
+    },
+    "signatureVerified": true,
+    "individuallyVerifiedLibraries": 29,
+    "linkageVerified": true,
+    "ipaCRCAndBinaryHashesVerified": true
+  },
+  "scope": {
+    "baselineSourceDiffSHA256": "f5d06b2c9a8906ba769b6ed207377f7feb6002aa5c005b1cd078ebe1b4b1a572",
+    "changedCount": 8,
+    "changed": [
+      "ios/Nastart/Nastart/zh-Hans.lproj/Localizable.strings",
+      "ios/Nastart/Nastart/en.lproj/Localizable.strings",
+      "ios/Nastart/Nastart/Features/Launchpad/LaunchpadView.swift",
+      "ios/Nastart/Nastart/Features/Launchpad/LaunchpadPlaybackCore.swift",
+      "ios/Nastart/Nastart/Features/Devices/DevicesView.swift",
+      "ios/Nastart/Nastart/Playback/GreenfieldVideoPlayerView.swift",
+      "ios/Nastart/Nastart/Playback/Engines/GreenfieldKSPlayerRenderer.swift",
+      "ios/Nastart/NastartTests/PlaybackNextCoreTests.swift"
+    ],
+    "totalInputs": 173,
+    "preservedCount": 165,
+    "temporaryMetalRestored": true
+  },
+  "presentation": {
+    "top": "current local time, received-media download speed, connection kind, battery/charging",
+    "buffering": "same shared speed sample below spinner; remains live with chrome hidden",
+    "networkRequestsAdded": 0,
+    "refreshSeconds": 1,
+    "unknownSpeed": "— KB/s",
+    "noNewBytes": "0 KB/s",
+    "capacityOrMediaBitrateUsedAsSpeed": false
+  },
+  "testsAdded": 5,
+  "negativeCounterexample": {
+    "tests": 2,
+    "failures": 2,
+    "unexpected": 0,
+    "cause": "Fullscreen/PiP independently fetch the same token-scoped subtitle"
+  },
+  "deviceRegression": {
+    "basicWindows": [
+      {
+        "device": "iphone13",
+        "entry": "file",
+        "sourceDiffSHA256": "2012608ee0f6097069f1b0724f3f6e533ba06f722b7bb541a2a2558a34dbb807",
+        "sample": "S01",
+        "ordinaryStartup30Seconds": true,
+        "selectedT0T3T10T30PNGReviewed": true,
+        "pauseResumeAndExitPNGReviewed": true,
+        "normalUIExit": true,
+        "URLMetricsCount": 7,
+        "URLMetricsCellularNo": 7,
+        "URLMetricsCellularYes": 0,
+        "fileForwardBackwardAlsoCaptured": true,
+        "sparseFramesNotContinuousFrameAcceptance": true
+      },
+      {
+        "device": "iphone13",
+        "entry": "jf",
+        "sourceDiffSHA256": "2012608ee0f6097069f1b0724f3f6e533ba06f722b7bb541a2a2558a34dbb807",
+        "sample": "S01",
+        "ordinaryStartup30Seconds": true,
+        "selectedT0T3T10T30PNGReviewed": true,
+        "pauseResumeAndExitPNGReviewed": true,
+        "normalUIExit": true,
+        "URLMetricsCount": 2,
+        "URLMetricsCellularNo": 2,
+        "URLMetricsCellularYes": 0,
+        "fileForwardBackwardAlsoCaptured": false,
+        "sparseFramesNotContinuousFrameAcceptance": true
+      },
+      {
+        "device": "ipad",
+        "entry": "file",
+        "sourceDiffSHA256": "2012608ee0f6097069f1b0724f3f6e533ba06f722b7bb541a2a2558a34dbb807",
+        "sample": "S01",
+        "ordinaryStartup30Seconds": true,
+        "selectedT0T3T10T30PNGReviewed": true,
+        "pauseResumeAndExitPNGReviewed": true,
+        "normalUIExit": true,
+        "URLMetricsCount": 7,
+        "URLMetricsCellularNo": 7,
+        "URLMetricsCellularYes": 0,
+        "fileForwardBackwardAlsoCaptured": true,
+        "sparseFramesNotContinuousFrameAcceptance": true
+      },
+      {
+        "device": "ipad",
+        "entry": "jf",
+        "sourceDiffSHA256": "2012608ee0f6097069f1b0724f3f6e533ba06f722b7bb541a2a2558a34dbb807",
+        "sample": "S01",
+        "ordinaryStartup30Seconds": true,
+        "selectedT0T3T10T30PNGReviewed": true,
+        "pauseResumeAndExitPNGReviewed": true,
+        "normalUIExit": true,
+        "URLMetricsCount": 3,
+        "URLMetricsCellularNo": 3,
+        "URLMetricsCellularYes": 0,
+        "fileForwardBackwardAlsoCaptured": false,
+        "sparseFramesNotContinuousFrameAcceptance": true
+      }
+    ],
+    "finalAudit": {
+      "sourceInputsVerified": 173,
+      "binaryHashesVerified": true,
+      "signatureVerified": true,
+      "devices": {
+        "iphone13": {
+          "at": "2026-10-15T10:48:24.760350+08:00",
+          "model": "iPhone14,5",
+          "system": "16.3.1",
+          "connection": "USB",
+          "sourceDiffSHA256": "2012608ee0f6097069f1b0724f3f6e533ba06f722b7bb541a2a2558a34dbb807",
+          "latestPackage": {
+            "Nastart": "b5ec79d56c9248d9004f262b1d0373114604c8089b2b32e95a0b02f7f9846d55",
+            "Nastart.debug.dylib": "2cc8c634f7d5f82d0117b5e7312c8bcd903d5f3f486c3df32c71596c548d7008",
+            "Frameworks/KSPlayer.framework/KSPlayer": "99d1434e54108886da1c7d645731b9d6f07e2d81e314cda518d85dedfb847215"
+          },
+          "nonBookmarkPreferenceKeys": 24,
+          "nonBookmarkPreferencesExactlyUnchanged": true,
+          "naturalBookmarkChangesCount": 5,
+          "originalBookmarksChecked": 34,
+          "originalBookmarksRemoved": 0,
+          "originalTrackChangeCount": 0,
+          "allOriginalTracksUnchanged": true,
+          "newBookmarksCount": 1,
+          "crashInventoryDelta": {
+            "Nastart": 0,
+            "WebDriverAgent": 0,
+            "JetsamEvent": 0
+          },
+          "normalEmptyEnvironment": true,
+          "NASNormal": true,
+          "playerClosed": true,
+          "WDAIdleSeconds": 10,
+          "WDAAnimationCoolOffSeconds": 2,
+          "nativeConditionsNotRecheckedThisTurn": false,
+          "noConditionInjectedThisTurn": true,
+          "nativeActiveConditions": 0,
+          "finalHomeActuallyReviewed": true
+        },
+        "ipad": {
+          "at": "2026-10-15T10:48:25.516004+08:00",
+          "model": "iPad12,1",
+          "system": "18.3.1",
+          "connection": "USB",
+          "sourceDiffSHA256": "2012608ee0f6097069f1b0724f3f6e533ba06f722b7bb541a2a2558a34dbb807",
+          "latestPackage": {
+            "Nastart": "b5ec79d56c9248d9004f262b1d0373114604c8089b2b32e95a0b02f7f9846d55",
+            "Nastart.debug.dylib": "2cc8c634f7d5f82d0117b5e7312c8bcd903d5f3f486c3df32c71596c548d7008",
+            "Frameworks/KSPlayer.framework/KSPlayer": "99d1434e54108886da1c7d645731b9d6f07e2d81e314cda518d85dedfb847215"
+          },
+          "nonBookmarkPreferenceKeys": 17,
+          "nonBookmarkPreferencesExactlyUnchanged": true,
+          "naturalBookmarkChangesCount": 4,
+          "originalBookmarksChecked": 27,
+          "originalBookmarksRemoved": 0,
+          "originalTrackChangeCount": 0,
+          "allOriginalTracksUnchanged": true,
+          "newBookmarksCount": 1,
+          "crashInventoryDelta": {
+            "Nastart": 0,
+            "WebDriverAgent": 0,
+            "JetsamEvent": 0
+          },
+          "normalEmptyEnvironment": true,
+          "NASNormal": true,
+          "playerClosed": true,
+          "WDAIdleSeconds": 10,
+          "WDAAnimationCoolOffSeconds": 2,
+          "nativeConditionsNotRecheckedThisTurn": false,
+          "noConditionInjectedThisTurn": true,
+          "nativeActiveConditions": 0,
+          "finalHomeActuallyReviewed": true
+        }
+      }
+    },
+    "installations": {
+      "iphone13": {
+        "device": "iphone13",
+        "model": "iPhone14,5",
+        "system": "16.3.1",
+        "connection": "USB",
+        "binaries": {
+          "Nastart": "b5ec79d56c9248d9004f262b1d0373114604c8089b2b32e95a0b02f7f9846d55",
+          "Nastart.debug.dylib": "2cc8c634f7d5f82d0117b5e7312c8bcd903d5f3f486c3df32c71596c548d7008",
+          "Frameworks/KSPlayer.framework/KSPlayer": "99d1434e54108886da1c7d645731b9d6f07e2d81e314cda518d85dedfb847215"
+        },
+        "sourceDiffSHA256": "2012608ee0f6097069f1b0724f3f6e533ba06f722b7bb541a2a2558a34dbb807",
+        "preservesContainer": true,
+        "signatureVerified": true,
+        "actualForegroundUIVerified": true,
+        "requestedEnvironment": {},
+        "requestedArguments": [],
+        "installation": "success",
+        "startedAt": "2026-10-15T10:23:39.103362+08:00",
+        "installedAt": "2026-10-15T10:23:53.549813+08:00",
+        "preferenceKeysUnchanged": true,
+        "preferenceValuesUnchanged": true,
+        "nonDiagnosticKeys": 25
+      },
+      "ipad": {
+        "device": "ipad",
+        "model": "iPad12,1",
+        "system": "18.3.1",
+        "connection": "USB",
+        "binaries": {
+          "Nastart": "b5ec79d56c9248d9004f262b1d0373114604c8089b2b32e95a0b02f7f9846d55",
+          "Nastart.debug.dylib": "2cc8c634f7d5f82d0117b5e7312c8bcd903d5f3f486c3df32c71596c548d7008",
+          "Frameworks/KSPlayer.framework/KSPlayer": "99d1434e54108886da1c7d645731b9d6f07e2d81e314cda518d85dedfb847215"
+        },
+        "sourceDiffSHA256": "2012608ee0f6097069f1b0724f3f6e533ba06f722b7bb541a2a2558a34dbb807",
+        "preservesContainer": true,
+        "signatureVerified": true,
+        "actualForegroundUIVerified": true,
+        "requestedEnvironment": {},
+        "requestedArguments": [],
+        "installation": "success",
+        "startedAt": "2026-10-15T10:23:59.992950+08:00",
+        "installedAt": "2026-10-15T10:24:10.936722+08:00",
+        "preferenceKeysUnchanged": true,
+        "preferenceValuesUnchanged": true,
+        "nonDiagnosticKeys": 18
+      }
+    },
+    "iphone18": {
+      "at": "2026-10-15T10:48:46.486418+08:00",
+      "sourceDiffSHA256": "2012608ee0f6097069f1b0724f3f6e533ba06f722b7bb541a2a2558a34dbb807",
+      "installation": "BLOCKED: no current paired live identity",
+      "installAttemptSent": false,
+      "normalLaunchAndLatestRegressionAccepted": false,
+      "historicalLiveIdentityCheck": {
+        "at": "2026-10-15T10:23:13.005980+08:00",
+        "historicalAddressesRequireLiveIdentity": true,
+        "candidateCount": 2,
+        "targetVerified": false,
+        "newPairingAttempted": false,
+        "failures": [
+          "OSError",
+          "TimeoutError"
+        ]
+      },
+      "freshServiceLiveIdentityCheck": {
+        "at": "2026-10-15T10:23:32.403735+08:00",
+        "newPairingAttempted": false,
+        "targetLiveVerified": false,
+        "containerReadable": false,
+        "attempts": [
+          {
+            "family": "IPv6",
+            "targetMatches": false,
+            "containerReadable": false,
+            "failureType": "TimeoutError"
+          },
+          {
+            "family": "IPv6",
+            "targetMatches": false,
+            "containerReadable": false,
+            "failureType": "TimeoutError"
+          },
+          {
+            "family": "IPv4",
+            "targetMatches": false,
+            "containerReadable": false,
+            "failureType": "ConnectionRefusedError"
+          },
+          {
+            "family": "IPv6",
+            "targetMatches": false,
+            "containerReadable": false,
+            "failureType": "TimeoutError"
+          },
+          {
+            "family": "IPv6",
+            "targetMatches": false,
+            "containerReadable": false,
+            "failureType": "TimeoutError"
+          },
+          {
+            "family": "IPv4",
+            "targetMatches": false,
+            "containerReadable": false,
+            "failureType": "TimeoutError"
+          }
+        ]
+      },
+      "lastConfirmedInstallation": "2026-10-15 07:29 normal f5 package; does not contain this source change",
+      "currentPackageVerifiedSignedAndAvailable": true,
+      "finalHistoricalLiveIdentityCheck": {
+        "at": "2026-10-15T10:47:46.006536+08:00",
+        "historicalAddressesRequireLiveIdentity": true,
+        "candidateCount": 2,
+        "targetVerified": false,
+        "newPairingAttempted": false,
+        "failures": [
+          "TimeoutError",
+          "OSError"
+        ]
+      }
+    },
+    "subtitleLayout": [
+      {
+        "device": "iphone13",
+        "sample": "S19",
+        "kind": "pgs",
+        "sourceDiffSHA256": "2012608ee0f6097069f1b0724f3f6e533ba06f722b7bb541a2a2558a34dbb807",
+        "sameCueExactRects": true,
+        "pausedTransportIndependentlyGuarded": true,
+        "rects": {
+          "pgs-fixed-shown": {
+            "x": 347.0,
+            "y": 223.0,
+            "width": 150.0,
+            "height": 36.0
+          },
+          "pgs-fixed-hidden": {
+            "x": 347.0,
+            "y": 223.0,
+            "width": 150.0,
+            "height": 36.0
+          },
+          "pgs-fixed-reshown": {
+            "x": 347.0,
+            "y": 223.0,
+            "width": 150.0,
+            "height": 36.0
+          },
+          "pgs-fixed-landscape-restored": {
+            "x": 347.0,
+            "y": 223.0,
+            "width": 150.0,
+            "height": 36.0
+          }
+        },
+        "actualPNGReviewStillRequired": false,
+        "fullSUBAccepted": false,
+        "actualLandscapeAndPortraitPNGReviewed": true
+      },
+      {
+        "device": "iphone13",
+        "sample": "S03",
+        "kind": "ass",
+        "sourceDiffSHA256": "2012608ee0f6097069f1b0724f3f6e533ba06f722b7bb541a2a2558a34dbb807",
+        "sameCueExactRects": true,
+        "pausedTransportIndependentlyGuarded": true,
+        "rects": {
+          "shown": {
+            "x": 376.0,
+            "y": 211.0,
+            "width": 92.0,
+            "height": 48.0
+          },
+          "hidden": {
+            "x": 376.0,
+            "y": 211.0,
+            "width": 92.0,
+            "height": 48.0
+          },
+          "reshown": {
+            "x": 376.0,
+            "y": 211.0,
+            "width": 92.0,
+            "height": 48.0
+          },
+          "landscape-restored": {
+            "x": 376.0,
+            "y": 211.0,
+            "width": 92.0,
+            "height": 48.0
+          }
+        },
+        "actualPNGReviewStillRequired": false,
+        "actualLandscapeAndPortraitPNGReviewed": true,
+        "earlierSixTargetGuardFailureRetained": true,
+        "guardFailureReason": "cue present at y211 of390; prior automated .6H lower bound too restrictive; native PNG and XML independently reviewed; captured same paused target without media source changes",
+        "originalSubtitleRestoredThroughUI": true,
+        "fullSUBAccepted": false
+      },
+      {
+        "device": "ipad",
+        "sample": "S19",
+        "kind": "pgs",
+        "sourceDiffSHA256": "2012608ee0f6097069f1b0724f3f6e533ba06f722b7bb541a2a2558a34dbb807",
+        "sameCueExactRects": true,
+        "pausedTransportIndependentlyGuarded": true,
+        "rects": {
+          "pgs-fixed-shown": {
+            "x": 429.0,
+            "y": 646.0,
+            "width": 222.0,
+            "height": 54.0
+          },
+          "pgs-fixed-hidden": {
+            "x": 429.0,
+            "y": 646.0,
+            "width": 222.0,
+            "height": 54.0
+          },
+          "pgs-fixed-reshown": {
+            "x": 429.0,
+            "y": 646.0,
+            "width": 222.0,
+            "height": 54.0
+          },
+          "pgs-fixed-landscape-restored": {
+            "x": 429.0,
+            "y": 646.0,
+            "width": 222.0,
+            "height": 54.0
+          }
+        },
+        "actualPNGReviewStillRequired": false,
+        "fullSUBAccepted": false,
+        "actualLandscapeAndPortraitPNGReviewed": true
+      },
+      {
+        "device": "ipad",
+        "sample": "S03",
+        "kind": "ass",
+        "sourceDiffSHA256": "2012608ee0f6097069f1b0724f3f6e533ba06f722b7bb541a2a2558a34dbb807",
+        "sameCueExactRects": true,
+        "pausedTransportIndependentlyGuarded": true,
+        "rects": {
+          "shown": {
+            "x": 320.0,
+            "y": 652.0,
+            "width": 440.0,
+            "height": 48.0
+          },
+          "hidden": {
+            "x": 320.0,
+            "y": 652.0,
+            "width": 440.0,
+            "height": 48.0
+          },
+          "reshown": {
+            "x": 320.0,
+            "y": 652.0,
+            "width": 440.0,
+            "height": 48.0
+          },
+          "landscape-restored": {
+            "x": 320.0,
+            "y": 652.0,
+            "width": 440.0,
+            "height": 48.0
+          }
+        },
+        "actualPNGReviewStillRequired": false,
+        "actualLandscapeAndPortraitPNGReviewed": true,
+        "method": "distinct native paused +15 targets; two targets observed before stable cue",
+        "initialNaturalPauseCueFailureRetained": true,
+        "originalSubtitleRestoredThroughUI": true,
+        "fullSUBAccepted": false
+      }
+    ],
+    "bufferingSpeed": [
+      {
+        "sourceDiffSHA256": "2012608ee0f6097069f1b0724f3f6e533ba06f722b7bb541a2a2558a34dbb807",
+        "device": "iphone13",
+        "sample": "S19",
+        "entry": "Jellyfin",
+        "directions": [
+          {
+            "direction": "forward",
+            "samples": [
+              {
+                "secondsRequested": 0,
+                "values": {
+                  "playback.status.downloadSpeed": "4.4 MB/s",
+                  "playback.buffering.downloadSpeed": "4.4 MB/s"
+                },
+                "spinnerCount": 2
+              },
+              {
+                "secondsRequested": 1,
+                "values": {
+                  "playback.status.downloadSpeed": "4.4 MB/s"
+                },
+                "spinnerCount": 0
+              },
+              {
+                "secondsRequested": 2,
+                "values": {
+                  "playback.status.downloadSpeed": "14.4 MB/s"
+                },
+                "spinnerCount": 0
+              },
+              {
+                "secondsRequested": 3,
+                "values": {
+                  "playback.status.downloadSpeed": "14.7 MB/s"
+                },
+                "spinnerCount": 0
+              },
+              {
+                "secondsRequested": 5,
+                "values": {
+                  "playback.status.downloadSpeed": "15.7 MB/s"
+                },
+                "spinnerCount": 0
+              },
+              {
+                "secondsRequested": 8,
+                "values": {
+                  "playback.status.downloadSpeed": "10.2 MB/s"
+                },
+                "spinnerCount": 0
+              },
+              {
+                "secondsRequested": 12,
+                "values": {
+                  "playback.status.downloadSpeed": "10.9 MB/s"
+                },
+                "spinnerCount": 0
+              }
+            ],
+            "XMLWithBothLabels": 1,
+            "bothLabelsMatchWheneverCoObserved": true,
+            "goneByFinalSample": true,
+            "actualPNGContactReviewed": true,
+            "bufferSpeedVisibleAndSameAsTopInFirstPNG": true,
+            "PNGAndXMLAreSequentialNotSameInstant": true,
+            "notExactBufferRecoveryTiming": true
+          },
+          {
+            "direction": "backward",
+            "samples": [
+              {
+                "secondsRequested": 0,
+                "values": {
+                  "playback.status.downloadSpeed": "8.0 MB/s"
+                },
+                "spinnerCount": 0
+              },
+              {
+                "secondsRequested": 1,
+                "values": {
+                  "playback.status.downloadSpeed": "5.7 MB/s"
+                },
+                "spinnerCount": 0
+              },
+              {
+                "secondsRequested": 2,
+                "values": {
+                  "playback.status.downloadSpeed": "14.9 MB/s"
+                },
+                "spinnerCount": 0
+              },
+              {
+                "secondsRequested": 3,
+                "values": {
+                  "playback.status.downloadSpeed": "14.4 MB/s"
+                },
+                "spinnerCount": 0
+              },
+              {
+                "secondsRequested": 5,
+                "values": {
+                  "playback.status.downloadSpeed": "13.4 MB/s"
+                },
+                "spinnerCount": 0
+              },
+              {
+                "secondsRequested": 8,
+                "values": {
+                  "playback.status.downloadSpeed": "0 KB/s"
+                },
+                "spinnerCount": 0
+              },
+              {
+                "secondsRequested": 12,
+                "values": {
+                  "playback.status.downloadSpeed": "0 KB/s"
+                },
+                "spinnerCount": 0
+              }
+            ],
+            "XMLWithBothLabels": 0,
+            "bothLabelsMatchWheneverCoObserved": null,
+            "goneByFinalSample": true,
+            "actualPNGContactReviewed": true,
+            "bufferSpeedVisibleAndSameAsTopInFirstPNG": true,
+            "PNGAndXMLAreSequentialNotSameInstant": true,
+            "notExactBufferRecoveryTiming": true
+          }
+        ],
+        "speedNotPacketCaptureAccuracyCalibrated": true
+      },
+      {
+        "device": "iphone13",
+        "sample": "S01",
+        "entry": "device file",
+        "sourceDiffSHA256": "2012608ee0f6097069f1b0724f3f6e533ba06f722b7bb541a2a2558a34dbb807",
+        "directions": [
+          {
+            "direction": "forward",
+            "samples": [
+              {
+                "targetSeconds": 0,
+                "values": {
+                  "playback.status.downloadSpeed": "0 KB/s",
+                  "playback.buffering.downloadSpeed": "0 KB/s"
+                }
+              },
+              {
+                "targetSeconds": 1,
+                "values": {
+                  "playback.status.downloadSpeed": "10.2 MB/s"
+                }
+              },
+              {
+                "targetSeconds": 2,
+                "values": {
+                  "playback.status.downloadSpeed": "8.4 MB/s"
+                }
+              },
+              {
+                "targetSeconds": 3,
+                "values": {
+                  "playback.status.downloadSpeed": "0 KB/s"
+                }
+              },
+              {
+                "targetSeconds": 5,
+                "values": {
+                  "playback.status.downloadSpeed": "0 KB/s"
+                }
+              },
+              {
+                "targetSeconds": 8,
+                "values": {
+                  "playback.status.downloadSpeed": "0 KB/s"
+                }
+              },
+              {
+                "targetSeconds": 12,
+                "values": {
+                  "playback.status.downloadSpeed": "0 KB/s"
+                }
+              }
+            ],
+            "bothLabelXMLCount": 1,
+            "sameTextWhenCoObserved": true,
+            "actualPNGContactReviewed": true,
+            "bufferSpeedPNGSeen": true,
+            "noBufferLabelAtFinalSample": true
+          },
+          {
+            "direction": "backward",
+            "samples": [
+              {
+                "targetSeconds": 0,
+                "values": {
+                  "playback.status.downloadSpeed": "0 KB/s"
+                }
+              },
+              {
+                "targetSeconds": 1,
+                "values": {
+                  "playback.status.downloadSpeed": "10.3 MB/s"
+                }
+              },
+              {
+                "targetSeconds": 2,
+                "values": {
+                  "playback.status.downloadSpeed": "5.5 MB/s"
+                }
+              },
+              {
+                "targetSeconds": 3,
+                "values": {
+                  "playback.status.downloadSpeed": "0 KB/s"
+                }
+              },
+              {
+                "targetSeconds": 5,
+                "values": {
+                  "playback.status.downloadSpeed": "0 KB/s"
+                }
+              },
+              {
+                "targetSeconds": 8,
+                "values": {
+                  "playback.status.downloadSpeed": "0 KB/s"
+                }
+              },
+              {
+                "targetSeconds": 12,
+                "values": {
+                  "playback.status.downloadSpeed": "0 KB/s"
+                }
+              }
+            ],
+            "bothLabelXMLCount": 0,
+            "sameTextWhenCoObserved": null,
+            "actualPNGContactReviewed": true,
+            "bufferSpeedPNGSeen": false,
+            "noBufferLabelAtFinalSample": true
+          }
+        ],
+        "notPerformanceAcceptance": true
+      },
+      {
+        "sourceDiffSHA256": "2012608ee0f6097069f1b0724f3f6e533ba06f722b7bb541a2a2558a34dbb807",
+        "device": "ipad",
+        "sample": "S19",
+        "entry": "Jellyfin",
+        "directions": [
+          {
+            "direction": "forward",
+            "samples": [
+              {
+                "secondsRequested": 0,
+                "values": {
+                  "playback.status.downloadSpeed": "7.1 MB/s",
+                  "playback.buffering.downloadSpeed": "7.1 MB/s"
+                },
+                "spinnerCount": 2
+              },
+              {
+                "secondsRequested": 1,
+                "values": {
+                  "playback.status.downloadSpeed": "7.8 MB/s"
+                },
+                "spinnerCount": 0
+              },
+              {
+                "secondsRequested": 2,
+                "values": {
+                  "playback.status.downloadSpeed": "7.8 MB/s"
+                },
+                "spinnerCount": 0
+              },
+              {
+                "secondsRequested": 3,
+                "values": {
+                  "playback.status.downloadSpeed": "9.2 MB/s"
+                },
+                "spinnerCount": 0
+              },
+              {
+                "secondsRequested": 5,
+                "values": {
+                  "playback.status.downloadSpeed": "7.9 MB/s"
+                },
+                "spinnerCount": 0
+              },
+              {
+                "secondsRequested": 8,
+                "values": {
+                  "playback.status.downloadSpeed": "9.4 MB/s"
+                },
+                "spinnerCount": 0
+              },
+              {
+                "secondsRequested": 12,
+                "values": {
+                  "playback.status.downloadSpeed": "11.1 MB/s"
+                },
+                "spinnerCount": 0
+              }
+            ],
+            "XMLWithBothLabels": 1,
+            "bothLabelsMatchWheneverCoObserved": true,
+            "goneByFinalSample": true,
+            "actualPNGContactReviewed": true,
+            "PNGAndXMLAreSequentialNotSameInstant": true,
+            "notExactBufferRecoveryTiming": true
+          },
+          {
+            "direction": "backward",
+            "samples": [
+              {
+                "secondsRequested": 0,
+                "values": {
+                  "playback.status.downloadSpeed": "10.7 MB/s",
+                  "playback.buffering.downloadSpeed": "10.7 MB/s"
+                },
+                "spinnerCount": 2
+              },
+              {
+                "secondsRequested": 1,
+                "values": {
+                  "playback.status.downloadSpeed": "10.1 MB/s"
+                },
+                "spinnerCount": 0
+              },
+              {
+                "secondsRequested": 2,
+                "values": {
+                  "playback.status.downloadSpeed": "12.5 MB/s"
+                },
+                "spinnerCount": 0
+              },
+              {
+                "secondsRequested": 3,
+                "values": {
+                  "playback.status.downloadSpeed": "12.3 MB/s"
+                },
+                "spinnerCount": 0
+              },
+              {
+                "secondsRequested": 5,
+                "values": {
+                  "playback.status.downloadSpeed": "11.8 MB/s"
+                },
+                "spinnerCount": 0
+              },
+              {
+                "secondsRequested": 8,
+                "values": {
+                  "playback.status.downloadSpeed": "12.8 MB/s"
+                },
+                "spinnerCount": 0
+              },
+              {
+                "secondsRequested": 12,
+                "values": {
+                  "playback.status.downloadSpeed": "11.6 MB/s"
+                },
+                "spinnerCount": 0
+              }
+            ],
+            "XMLWithBothLabels": 1,
+            "bothLabelsMatchWheneverCoObserved": true,
+            "goneByFinalSample": true,
+            "actualPNGContactReviewed": true,
+            "PNGAndXMLAreSequentialNotSameInstant": true,
+            "notExactBufferRecoveryTiming": true
+          }
+        ],
+        "speedNotPacketCaptureAccuracyCalibrated": true
+      },
+      {
+        "device": "ipad",
+        "sample": "S01",
+        "entry": "device file",
+        "sourceDiffSHA256": "2012608ee0f6097069f1b0724f3f6e533ba06f722b7bb541a2a2558a34dbb807",
+        "directions": [
+          {
+            "direction": "forward",
+            "samples": [
+              {
+                "targetSeconds": 0,
+                "values": {
+                  "playback.status.downloadSpeed": "播放下载速度",
+                  "playback.buffering.downloadSpeed": "播放下载速度"
+                }
+              },
+              {
+                "targetSeconds": 1,
+                "values": {
+                  "playback.status.downloadSpeed": "播放下载速度"
+                }
+              },
+              {
+                "targetSeconds": 2,
+                "values": {
+                  "playback.status.downloadSpeed": "播放下载速度"
+                }
+              },
+              {
+                "targetSeconds": 3,
+                "values": {
+                  "playback.status.downloadSpeed": "播放下载速度"
+                }
+              },
+              {
+                "targetSeconds": 5,
+                "values": {
+                  "playback.status.downloadSpeed": "播放下载速度"
+                }
+              },
+              {
+                "targetSeconds": 8,
+                "values": {
+                  "playback.status.downloadSpeed": "播放下载速度"
+                }
+              },
+              {
+                "targetSeconds": 12,
+                "values": {
+                  "playback.status.downloadSpeed": "播放下载速度"
+                }
+              }
+            ],
+            "bothLabelXMLCount": 1,
+            "sameTextWhenCoObserved": true,
+            "actualPNGContactReviewed": true,
+            "noBufferLabelAtFinalSample": true
+          },
+          {
+            "direction": "backward",
+            "samples": [
+              {
+                "targetSeconds": 0,
+                "values": {
+                  "playback.status.downloadSpeed": "播放下载速度"
+                }
+              },
+              {
+                "targetSeconds": 1,
+                "values": {
+                  "playback.status.downloadSpeed": "播放下载速度"
+                }
+              },
+              {
+                "targetSeconds": 2,
+                "values": {
+                  "playback.status.downloadSpeed": "播放下载速度"
+                }
+              },
+              {
+                "targetSeconds": 3,
+                "values": {
+                  "playback.status.downloadSpeed": "播放下载速度"
+                }
+              },
+              {
+                "targetSeconds": 5,
+                "values": {
+                  "playback.status.downloadSpeed": "播放下载速度"
+                }
+              },
+              {
+                "targetSeconds": 8,
+                "values": {
+                  "playback.status.downloadSpeed": "播放下载速度"
+                }
+              },
+              {
+                "targetSeconds": 12,
+                "values": {
+                  "playback.status.downloadSpeed": "播放下载速度"
+                }
+              }
+            ],
+            "bothLabelXMLCount": 0,
+            "sameTextWhenCoObserved": null,
+            "actualPNGContactReviewed": true,
+            "noBufferLabelAtFinalSample": true
+          }
+        ],
+        "notPerformanceAcceptance": true
+      }
+    ],
+    "selectedNetworkWindows": [
+      {
+        "device": "iphone13",
+        "case": "wifi-buffer-s01-file-head",
+        "sourceDiffSHA256": "2012608ee0f6097069f1b0724f3f6e533ba06f722b7bb541a2a2558a34dbb807",
+        "URLMetricsCount": 7,
+        "URLMetricsCellularNo": 7,
+        "URLMetricsCellularYes": 0
+      },
+      {
+        "device": "iphone13",
+        "case": "wifi-buffer-s01-jf-head",
+        "sourceDiffSHA256": "2012608ee0f6097069f1b0724f3f6e533ba06f722b7bb541a2a2558a34dbb807",
+        "URLMetricsCount": 2,
+        "URLMetricsCellularNo": 2,
+        "URLMetricsCellularYes": 0
+      },
+      {
+        "device": "iphone13",
+        "case": "wifi-buffer-s19-jf-head",
+        "sourceDiffSHA256": "2012608ee0f6097069f1b0724f3f6e533ba06f722b7bb541a2a2558a34dbb807",
+        "URLMetricsCount": 22,
+        "URLMetricsCellularNo": 22,
+        "URLMetricsCellularYes": 0
+      },
+      {
+        "device": "iphone13",
+        "case": "wifi-buffer-s19-jf-fixed-pgs-r2",
+        "sourceDiffSHA256": "2012608ee0f6097069f1b0724f3f6e533ba06f722b7bb541a2a2558a34dbb807",
+        "URLMetricsCount": 16,
+        "URLMetricsCellularNo": 16,
+        "URLMetricsCellularYes": 0
+      },
+      {
+        "device": "iphone13",
+        "case": "wifi-buffer-s03-jf-fixed-ass-r2",
+        "sourceDiffSHA256": "2012608ee0f6097069f1b0724f3f6e533ba06f722b7bb541a2a2558a34dbb807",
+        "URLMetricsCount": 29,
+        "URLMetricsCellularNo": 29,
+        "URLMetricsCellularYes": 0
+      },
+      {
+        "device": "ipad",
+        "case": "wifi-buffer-s01-file-head",
+        "sourceDiffSHA256": "2012608ee0f6097069f1b0724f3f6e533ba06f722b7bb541a2a2558a34dbb807",
+        "URLMetricsCount": 7,
+        "URLMetricsCellularNo": 7,
+        "URLMetricsCellularYes": 0
+      },
+      {
+        "device": "ipad",
+        "case": "wifi-buffer-s01-jf-head",
+        "sourceDiffSHA256": "2012608ee0f6097069f1b0724f3f6e533ba06f722b7bb541a2a2558a34dbb807",
+        "URLMetricsCount": 3,
+        "URLMetricsCellularNo": 3,
+        "URLMetricsCellularYes": 0
+      },
+      {
+        "device": "ipad",
+        "case": "wifi-buffer-s19-jf-head",
+        "sourceDiffSHA256": "2012608ee0f6097069f1b0724f3f6e533ba06f722b7bb541a2a2558a34dbb807",
+        "URLMetricsCount": 26,
+        "URLMetricsCellularNo": 26,
+        "URLMetricsCellularYes": 0
+      },
+      {
+        "device": "ipad",
+        "case": "wifi-buffer-s19-jf-fixed-pgs",
+        "sourceDiffSHA256": "2012608ee0f6097069f1b0724f3f6e533ba06f722b7bb541a2a2558a34dbb807",
+        "URLMetricsCount": 17,
+        "URLMetricsCellularNo": 17,
+        "URLMetricsCellularYes": 0
+      },
+      {
+        "device": "ipad",
+        "case": "wifi-buffer-s03-jf-fixed-ass",
+        "sourceDiffSHA256": "2012608ee0f6097069f1b0724f3f6e533ba06f722b7bb541a2a2558a34dbb807",
+        "URLMetricsCount": 19,
+        "URLMetricsCellularNo": 19,
+        "URLMetricsCellularYes": 0
+      }
+    ],
+    "networkMetricsTotal": 148,
+    "networkCellularTotal": 0
+  },
+  "wholePlaybackAccepted": false,
+  "recordedAt": "2026-10-15T10:50:46.620344+08:00",
+  "earlierSourceSwitchEvidence": {
+    "sourceDiffSHA256": "32e6dfd89bc45dc242b1422a971fa5839dc05bb8845e92ffd2838c907b594291",
+    "currentFinalSourceRegression": false,
+    "playingRounds": 3,
+    "pausedRounds": 3,
+    "partialToolFailureRoundsRetained": 1,
+    "nativePGSSeekThenRestorePlayingInternalBoundaries": [
+      {
+        "seek_engine_completed": 0.618341,
+        "seek_recovered": 1.992832
+      },
+      {
+        "seek_engine_completed": 0.743766,
+        "seek_recovered": 2.543938
+      },
+      {
+        "seek_engine_completed": 0.501345,
+        "seek_recovered": 1.797127
+      },
+      {
+        "seek_engine_completed": 0.60754,
+        "seek_recovered": 2.261959
+      },
+      {
+        "seek_engine_completed": 0.403837,
+        "seek_recovered": 2.198659
+      },
+      {
+        "seek_engine_completed": 0.782291,
+        "seek_recovered": 3.339704
+      }
+    ],
+    "noSamePointPairedBeforeAfterSpeedClaim": true,
+    "actualPNGReviewed": true,
+    "someAudioSamplesStillWaitAtT3": true,
+    "audibleRecoveryNotMeasured": true,
+    "possiblePGSResidualNeedsIndependentCueOracle": true,
+    "textCoalescingDoesNotOptimizeEmbeddedPGSDecoding": true
+  },
+  "temporaryProbeRestored": {
+    "restoredExactMetalOriginalBytes": true,
+    "optInProbeMarkerAbsentFromFinalFramework": true,
+    "finalNormalPackageSourceDiffSHA256": "2012608ee0f6097069f1b0724f3f6e533ba06f722b7bb541a2a2558a34dbb807",
+    "requestedLaunchEnvironment": {},
+    "requestedLaunchArguments": []
+  },
+  "MI2PreOutputEvidence": {
+    "classification": "CORRUPTION_ALREADY_IN_PRE_OUTPUT_PIXEL_BUFFER",
+    "temporarySourceSHA256": "deac5f98d5f453dae22e0b59b089b40d51cf2b02cc1532e77e7882838319a908",
+    "actualSeekTargetSeconds": 4741.904337234497,
+    "capturedFramePTS": 4741.904,
+    "actualSnapshotAndWDAPicturesReviewed": true,
+    "snapshotMatchesWDASevereBlockCorruption": true,
+    "independentMacSoftwareAndHardwareSamePTSNormal": true,
+    "displayMenuNotSoleCause": true,
+    "remainingCandidates": "iPhone hardware decoder context, reference-picture state, or buffer ownership before renderer; bitstream in device memory not yet hashed",
+    "notPerformanceMeasurement": "Opt-in snapshot writes large pixel planes and PNG synchronously; timings cannot rank normal playback speed",
+    "probeMustBeRemovedAndNormalPackageRestored": true
+  },
+  "failuresRetained": [
+    "Earlier S19 partial WDA session reset; no WDA reinstall",
+    "Phone incoming call interrupted search before playback; no call action performed; personal identity private",
+    "Phone early subtitle attempt failed actual-paused guard; not accepted",
+    "Pad ASS natural pause cue expired in three attempts; recovered using distinct paused seek target",
+    "Phone ASS six-target guard excluded real y211/H390 text; original frames retained; independent XML/PNG verified and same paused target recaptured",
+    "AFC bounded retry failures retained; no App-network setting changes",
+    "Temporary probe timings excluded from normal performance claims"
+  ],
+  "open": [
+    "S19 audio/subtitle audible/content recovery and matched before/after performance; native PGS cue oracle",
+    "MI2 iPhone decode/reference/context/buffer ownership before renderer",
+    "Latest final package on iPhone18",
+    "All prior playback matrix and competitor continuous frame evidence"
+  ],
+  "notAccepted": [
+    "whole playback",
+    "all subtitles/audio/HDR/PiP",
+    "first display presentation latency",
+    "continuous-frame scrolling",
+    "packet capture calibrated throughput"
+  ]
+}

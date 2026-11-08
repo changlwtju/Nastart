@@ -1,0 +1,243 @@
+{
+  "recordedAt": "2026-10-10T23:31:26.984874+08:00",
+  "status": "L0 passed; iPhone13 normal KSPlayer file L1 targeted; iPhone18/iPad latest package regression blocked",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceDiffSHA256": "120c092e5787126ded18916f59807d06a640b079414d98410c23bf1b0655ff70",
+  "configuration": "normal Debug -Onone; empty launch environment",
+  "binaryBuildTime": "2026-10-10T23:10:14.677282+08:00",
+  "packagePath": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-10-10-resume-startup-save-230033/Nastart-Resume-Startup-Normal-Debug.app",
+  "binaries": {
+    "Nastart": "9e8f21ecdb989ca5cbc99f5cc06b22a60bdc981f80d1aae679e0d771dbe5e894",
+    "Nastart.debug.dylib": "2c3a2ca09b38e86713dc51a0eba5fa137ad07d92ce9a1f9cb2848f7de33faf28",
+    "Frameworks/KSPlayer.framework/KSPlayer": "eda16e6d0e22bc81045752f2f54a263b0f4f8500912378d5ac141013c9042b52"
+  },
+  "sourceInputs": 173,
+  "signedLibraries": 29,
+  "tests": {
+    "total": 306,
+    "skipped": 2,
+    "failures": 0,
+    "newStartupFixtures": 8,
+    "baselineFailedScenarios": 4,
+    "baselineAssertionFailures": 10
+  },
+  "preflightPassed": 15,
+  "deviceResults": {
+    "iphone13": {
+      "recordedAt": "2026-10-10T23:18:03.667643+08:00",
+      "device": "iphone13",
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "connection": "USB",
+      "sourceDiffSHA256": "120c092e5787126ded18916f59807d06a640b079414d98410c23bf1b0655ff70",
+      "binaries": {
+        "Nastart": "9e8f21ecdb989ca5cbc99f5cc06b22a60bdc981f80d1aae679e0d771dbe5e894",
+        "Nastart.debug.dylib": "2c3a2ca09b38e86713dc51a0eba5fa137ad07d92ce9a1f9cb2848f7de33faf28",
+        "Frameworks/KSPlayer.framework/KSPlayer": "eda16e6d0e22bc81045752f2f54a263b0f4f8500912378d5ac141013c9042b52"
+      },
+      "preservesContainer": true,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "actualForegroundUIVerified": true,
+      "installation": "success",
+      "installationStartedAt": "2026-10-10T23:18:07.022150+08:00",
+      "installedAt": "2026-10-10T23:18:21.346359+08:00",
+      "nonDiagnosticKeysBefore": 25,
+      "nonDiagnosticKeysAfter": 25,
+      "samePreferenceKeys": true,
+      "unchangedPreferenceValues": 25,
+      "changedPreferenceCount": 0,
+      "postInstallLookupExists": true,
+      "normalLaunch": "success",
+      "normalLaunchVerifiedAt": "2026-10-10T23:28:49.377616+08:00",
+      "actualProcessArguments": {
+        "env": {},
+        "args": []
+      },
+      "pid": 81981,
+      "UIEvidence": "new-package-normal-home.png/xml",
+      "actualUIInspected": true
+    },
+    "iphone18": {
+      "recordedAt": "2026-10-10T23:18:35.659834+08:00",
+      "device": "iphone18",
+      "installation": "BLOCKED target absent from fresh usbmux enumeration",
+      "normalLaunch": "not attempted for new package",
+      "actualForegroundUIVerified": false,
+      "existingPairingConfirmedByUserScreenshotAndLocalMacIdentity": true,
+      "newPackageInstalled": false,
+      "previousPackageEvidence": "old source 5ec2/ba52",
+      "latestBinaries": {
+        "Nastart": "9e8f21ecdb989ca5cbc99f5cc06b22a60bdc981f80d1aae679e0d771dbe5e894",
+        "Nastart.debug.dylib": "2c3a2ca09b38e86713dc51a0eba5fa137ad07d92ce9a1f9cb2848f7de33faf28",
+        "Frameworks/KSPlayer.framework/KSPlayer": "eda16e6d0e22bc81045752f2f54a263b0f4f8500912378d5ac141013c9042b52"
+      }
+    },
+    "ipad": {
+      "freshEnumeration": "absent",
+      "latestPackageInstalled": false,
+      "latestRegression": "not run"
+    }
+  },
+  "physicalCases": {
+    "earlyExit": {
+      "recordedAt": "2026-10-10T23:22:34.864331+08:00",
+      "earlyCloseRequestSecondsAfterResumeTap": 0.9067909717559814,
+      "normalUIExit": true,
+      "sameBookmarkKeys": true,
+      "unchangedBookmarksAtAllSamples": false,
+      "observedBeforeInitialSeek": false,
+      "actualUIInspected": false,
+      "scope": "Close requested 0.907s after tap; clock at old 60.617s observed 1.628s after tap before viewDisappear at 1.958s. This is not physical proof of the pre-seek admission race.",
+      "savedPositionAfterExit": 60.702,
+      "savedPositionBefore": 60.617,
+      "sameTrackPreferences": true,
+      "noZeroResetObserved": true,
+      "filePersistenceVisibleBySampleSeconds": 15
+    },
+    "normalResume": {
+      "durationSeconds": 30,
+      "savedBefore": 60.702,
+      "settledSaved": 91.422,
+      "actualFilmFramesInspected": true,
+      "normalUIExit": true,
+      "sameTrackPreferences": true
+    },
+    "coldReopen": {
+      "expectedSavedPosition": 91.422,
+      "firstClocks": [
+        {
+          "afterTapSeconds": 1.556,
+          "clockSeconds": 91.508,
+          "traceID": "48A9B928",
+          "sampleReason": "firstFrame"
+        },
+        {
+          "afterTapSeconds": 2.561,
+          "clockSeconds": 92.51,
+          "traceID": "48A9B928",
+          "sampleReason": "playbackTick"
+        },
+        {
+          "afterTapSeconds": 3.66,
+          "clockSeconds": 93.62,
+          "traceID": "48A9B928",
+          "sampleReason": "playbackTick"
+        },
+        {
+          "afterTapSeconds": 4.76,
+          "clockSeconds": 94.708,
+          "traceID": "48A9B928",
+          "sampleReason": "playbackTick"
+        }
+      ],
+      "persistedEntryMatchesExpectedBeforeTap": true,
+      "resumeClockNearSaved": true,
+      "diagnosticDelivery": "t3 file had not delivered new clock events; final file used, not inferred from missing early diagnostics",
+      "actualUIInspected": true
+    },
+    "secondExitDiskSamples": [
+      {
+        "targetAfterCloseSeconds": 0,
+        "actualReadStartSecondsAfterClose": 0.0,
+        "position": 105.908,
+        "entryUpdatedAt": 813338806.094834,
+        "sameTrackPreferences": true
+      },
+      {
+        "targetAfterCloseSeconds": 1,
+        "actualReadStartSecondsAfterClose": 1.009,
+        "position": 105.908,
+        "entryUpdatedAt": 813338806.094834,
+        "sameTrackPreferences": true
+      },
+      {
+        "targetAfterCloseSeconds": 3,
+        "actualReadStartSecondsAfterClose": 3.005,
+        "position": 105.908,
+        "entryUpdatedAt": 813338806.094834,
+        "sameTrackPreferences": true
+      },
+      {
+        "targetAfterCloseSeconds": 10,
+        "actualReadStartSecondsAfterClose": 10.01,
+        "position": 121.908,
+        "entryUpdatedAt": 813338822.091245,
+        "sameTrackPreferences": true
+      },
+      {
+        "targetAfterCloseSeconds": 15,
+        "actualReadStartSecondsAfterClose": 15.008,
+        "position": 121.908,
+        "entryUpdatedAt": 813338822.091245,
+        "sameTrackPreferences": true
+      }
+    ]
+  },
+  "wirelessPairing": {
+    "existingPairingConfirmed": true,
+    "currentMacIdentityPrivatelyMatchesScreenshot": true,
+    "pendingPINInferenceWithdrawn": true,
+    "pairingRecordPreserved": true,
+    "userXPCServiceRefreshRecoveredNativeConnection": false,
+    "nativeState": "paired/tunnel unavailable/DDI false",
+    "freshUsbmuxTargetPresent": false
+  },
+  "privateEvidenceRoot": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-10-10-resume-startup-save-230033",
+  "wirelessPrivateEvidenceRoot": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-10-10-wireless-recovery-222221/resume-225107",
+  "limitations": [
+    "Early physical close was applied after initial clock had arrived; deterministic fixtures establish the pre-seek causal failure/fix.",
+    "Only normal Wi-Fi KSPlayer S01 file target regression; no fresh cellular, AVPlayer live, iPad, iPhone18, competitor, or continuous frame acceptance.",
+    "Disk flush delay remains; second exit file is stale at 0/1/3s and converges by 10s.",
+    "Normal first exit settled check at 76.9s is not an immediate upper bound.",
+    "No commit/push; retain all prior modifications; source base includes earlier uncommitted work."
+  ],
+  "remaining": [
+    "save convergence full boundaries",
+    "119 root cause",
+    "original weak cellular and old ordinal0",
+    "iPhone18 native development service and newest package install",
+    "iPad reconnect and latest package regression",
+    "continuous frame / Lenna competition",
+    "all pending PX/UX/CB/L2/L3/Main"
+  ],
+  "finalState": {
+    "recordedAt": "2026-10-10T23:28:50.287346+08:00",
+    "freshUSBIdentity": true,
+    "sourceAndBinariesMatchLatest": true,
+    "binaries": {
+      "Nastart": "9e8f21ecdb989ca5cbc99f5cc06b22a60bdc981f80d1aae679e0d771dbe5e894",
+      "Nastart.debug.dylib": "2c3a2ca09b38e86713dc51a0eba5fa137ad07d92ce9a1f9cb2848f7de33faf28",
+      "Frameworks/KSPlayer.framework/KSPlayer": "eda16e6d0e22bc81045752f2f54a263b0f4f8500912378d5ac141013c9042b52"
+    },
+    "normalLaunch": true,
+    "actualProcessArguments": {
+      "env": {},
+      "args": []
+    },
+    "pid": 81981,
+    "playerClosed": true,
+    "idleWaitRestored": 10,
+    "animationCoolOffRestored": 2,
+    "wdaReady": true,
+    "wdaReinstalled": false,
+    "actualUIInspected": true,
+    "UIEvidence": "final-latest-normal-home.png/xml"
+  },
+  "finalNativeConditions": {
+    "recordedAt": "2026-10-10T23:28:50.718325+08:00",
+    "activeCount": 0,
+    "mutationPerformed": false
+  },
+  "finalFreshDeviceInventory": {
+    "recordedAt": "2026-10-10T23:30:34.539058+08:00",
+    "devices": [
+      {
+        "device": "iphone13",
+        "connection": "ConnectionType.USB"
+      }
+    ],
+    "ipadPresent": false,
+    "iphone18Present": false
+  }
+}

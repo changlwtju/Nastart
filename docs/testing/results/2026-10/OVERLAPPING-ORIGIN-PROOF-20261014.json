@@ -1,0 +1,627 @@
+{
+  "recordedAt": "2026-10-14T06:40:04.312707+08:00",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceDiffSHA256": "5b8afe21d0ce1af67bfcd90380d3d5a51323a58b01952e310d06b817d0b1b346",
+  "configuration": "normal Debug -Onone; empty launch environment",
+  "buildTime": "2026-10-14T06:06:17.061227+08:00",
+  "binarySHA256": {
+    "Nastart": "202e26a3d9b6b6bb81a779eebccfd09475cf3bc0d68e3c15e296c731bf2600dd",
+    "Nastart.debug.dylib": "b35fa59db32d3115def38b490999aa7b541eef9ac8db294a5a614e0f2a27a183",
+    "Frameworks/KSPlayer.framework/KSPlayer": "691afae0a0b9f8870c472449a808530a7a940331cd55d09a95d9fc7f1d37a1d4"
+  },
+  "inputs": 173,
+  "changedSourceInputs": [
+    "ios/Nastart/Nastart/Features/Launchpad/LaunchpadPlaybackCore.swift",
+    "ios/Nastart/Nastart/Features/Launchpad/LaunchpadView.swift",
+    "ios/Nastart/NastartTests/PlaybackNextCoreTests.swift"
+  ],
+  "otherInputsUnchanged": 170,
+  "tests": {
+    "executed": 377,
+    "skipped": 2,
+    "failures": 0,
+    "runThisTurn": true
+  },
+  "preflight": {
+    "passed": 15,
+    "runThisTurn": true
+  },
+  "independentLibrarySignatures": 29,
+  "profileExpirationUTC": "2026-10-17T22:23:40",
+  "devices": {
+    "iphone13": {
+      "device": "iphone13",
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "connection": "USB",
+      "binaries": {
+        "Nastart": "202e26a3d9b6b6bb81a779eebccfd09475cf3bc0d68e3c15e296c731bf2600dd",
+        "Nastart.debug.dylib": "b35fa59db32d3115def38b490999aa7b541eef9ac8db294a5a614e0f2a27a183",
+        "Frameworks/KSPlayer.framework/KSPlayer": "691afae0a0b9f8870c472449a808530a7a940331cd55d09a95d9fc7f1d37a1d4"
+      },
+      "sourceDiffSHA256": "5b8afe21d0ce1af67bfcd90380d3d5a51323a58b01952e310d06b817d0b1b346",
+      "preservesContainer": true,
+      "signatureVerified": true,
+      "actualForegroundUIVerified": true,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "installation": "success",
+      "startedAt": "2026-10-14T06:08:11.492984+08:00",
+      "installedAt": "2026-10-14T06:08:27.699007+08:00",
+      "preferenceKeysUnchanged": true,
+      "preferenceValuesUnchanged": true,
+      "nonDiagnosticKeys": 25
+    },
+    "ipad": {
+      "device": "ipad",
+      "model": "iPad12,1",
+      "system": "18.3.1",
+      "connection": "USB",
+      "binaries": {
+        "Nastart": "202e26a3d9b6b6bb81a779eebccfd09475cf3bc0d68e3c15e296c731bf2600dd",
+        "Nastart.debug.dylib": "b35fa59db32d3115def38b490999aa7b541eef9ac8db294a5a614e0f2a27a183",
+        "Frameworks/KSPlayer.framework/KSPlayer": "691afae0a0b9f8870c472449a808530a7a940331cd55d09a95d9fc7f1d37a1d4"
+      },
+      "sourceDiffSHA256": "5b8afe21d0ce1af67bfcd90380d3d5a51323a58b01952e310d06b817d0b1b346",
+      "preservesContainer": true,
+      "signatureVerified": true,
+      "actualForegroundUIVerified": true,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "installation": "success",
+      "startedAt": "2026-10-14T06:08:11.550886+08:00",
+      "installedAt": "2026-10-14T06:08:18.215362+08:00",
+      "preferenceKeysUnchanged": true,
+      "preferenceValuesUnchanged": true,
+      "nonDiagnosticKeys": 18
+    },
+    "iphone18": {
+      "device": "iphone18",
+      "installation": "success",
+      "sourceDiffSHA256": "5b8afe21d0ce1af67bfcd90380d3d5a51323a58b01952e310d06b817d0b1b346",
+      "binaries": {
+        "Nastart": "202e26a3d9b6b6bb81a779eebccfd09475cf3bc0d68e3c15e296c731bf2600dd",
+        "Nastart.debug.dylib": "b35fa59db32d3115def38b490999aa7b541eef9ac8db294a5a614e0f2a27a183",
+        "Frameworks/KSPlayer.framework/KSPlayer": "691afae0a0b9f8870c472449a808530a7a940331cd55d09a95d9fc7f1d37a1d4"
+      },
+      "newPairingAttempted": false,
+      "preservesContainer": true,
+      "signatureVerified": true,
+      "librariesVerified": 29,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "normalLaunch": "empty env/args ordinary DVT launch with kill_existing=True, actual Nastart NAS home reviewed",
+      "actualForegroundUIVerified": true,
+      "model": "iPhone19,7",
+      "system": "27.0",
+      "connection": "NETWORK",
+      "installationStartedAt": "2026-10-14T06:09:32.828092+08:00",
+      "currentPreferencesSavedBeforeInstall": true,
+      "installedAt": "2026-10-14T06:09:43.829142+08:00",
+      "postInstallLookupExists": true,
+      "samePreferenceKeys": true,
+      "nonDiagnosticKeysBefore": 25,
+      "nonDiagnosticKeysAfter": 25,
+      "unchangedPreferenceValues": 25,
+      "changedPreferenceCount": 0,
+      "preferenceValuesUnchanged": true,
+      "preferenceKeysUnchanged": true
+    }
+  },
+  "wifiWindows": [
+    {
+      "device": "iphone13",
+      "label": "wifi-overlap-l2-s01-file-head",
+      "sample": "S01",
+      "entry": "device file",
+      "action": "从头播放",
+      "durationSeconds": 30.33329200744629,
+      "firstFrameSignalSecondsFromOuterTouch": 1.005374,
+      "metricCount": 2,
+      "cellularYes": 0,
+      "cellularNo": 2,
+      "maxStallCount": 0,
+      "exit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "actualSelectedImagesReviewed": true,
+      "performanceAccepted": false,
+      "evidenceBoundary": "sparse selected native screenshots; first_frame signal is not exact first visible picture; uncontrolled cache/network"
+    },
+    {
+      "device": "iphone13",
+      "label": "wifi-overlap-l2-s01-jf-head",
+      "sample": "S01",
+      "entry": "Jellyfin",
+      "action": "在 Nastart 中播放",
+      "durationSeconds": 30.415146112442017,
+      "firstFrameSignalSecondsFromOuterTouch": 1.068404,
+      "metricCount": 2,
+      "cellularYes": 0,
+      "cellularNo": 2,
+      "maxStallCount": 0,
+      "exit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "actualSelectedImagesReviewed": true,
+      "performanceAccepted": false,
+      "evidenceBoundary": "sparse selected native screenshots; first_frame signal is not exact first visible picture; uncontrolled cache/network"
+    },
+    {
+      "device": "iphone13",
+      "label": "wifi-overlap-l2-s03-jf-head",
+      "sample": "S03",
+      "entry": "Jellyfin",
+      "action": "在 Nastart 中播放",
+      "durationSeconds": 30.36754012107849,
+      "firstFrameSignalSecondsFromOuterTouch": 1.353211,
+      "metricCount": 4,
+      "cellularYes": 0,
+      "cellularNo": 4,
+      "maxStallCount": 0,
+      "exit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "actualSelectedImagesReviewed": true,
+      "performanceAccepted": false,
+      "evidenceBoundary": "sparse selected native screenshots; first_frame signal is not exact first visible picture; uncontrolled cache/network"
+    },
+    {
+      "device": "iphone13",
+      "label": "wifi-overlap-l2-s08-jf-head",
+      "sample": "S08",
+      "entry": "Jellyfin",
+      "action": "在 Nastart 中播放",
+      "durationSeconds": 30.532527685165405,
+      "firstFrameSignalSecondsFromOuterTouch": 3.813003,
+      "metricCount": 2,
+      "cellularYes": 0,
+      "cellularNo": 2,
+      "maxStallCount": 0,
+      "exit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "actualSelectedImagesReviewed": true,
+      "performanceAccepted": false,
+      "evidenceBoundary": "sparse selected native screenshots; first_frame signal is not exact first visible picture; uncontrolled cache/network"
+    },
+    {
+      "device": "iphone13",
+      "label": "wifi-overlap-l2-s11-jf-head",
+      "sample": "S11",
+      "entry": "Jellyfin",
+      "action": "在 Nastart 中播放",
+      "durationSeconds": 30.505312204360962,
+      "firstFrameSignalSecondsFromOuterTouch": 1.259086,
+      "metricCount": 3,
+      "cellularYes": 0,
+      "cellularNo": 3,
+      "maxStallCount": 0,
+      "exit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "actualSelectedImagesReviewed": true,
+      "performanceAccepted": false,
+      "evidenceBoundary": "sparse selected native screenshots; first_frame signal is not exact first visible picture; uncontrolled cache/network"
+    },
+    {
+      "device": "iphone13",
+      "label": "wifi-overlap-l2-s18-jf-head",
+      "sample": "S18",
+      "entry": "Jellyfin",
+      "action": "在 Nastart 中播放",
+      "durationSeconds": 30.411515712738037,
+      "firstFrameSignalSecondsFromOuterTouch": 3.272188,
+      "metricCount": 4,
+      "cellularYes": 0,
+      "cellularNo": 4,
+      "maxStallCount": 0,
+      "exit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "actualSelectedImagesReviewed": true,
+      "performanceAccepted": false,
+      "evidenceBoundary": "sparse selected native screenshots; first_frame signal is not exact first visible picture; uncontrolled cache/network"
+    },
+    {
+      "device": "ipad",
+      "label": "wifi-overlap-l2-s01-file-head",
+      "sample": "S01",
+      "entry": "device file",
+      "action": "从头播放",
+      "durationSeconds": 30.291833639144897,
+      "firstFrameSignalSecondsFromOuterTouch": 1.818601,
+      "metricCount": 2,
+      "cellularYes": 0,
+      "cellularNo": 2,
+      "maxStallCount": 0,
+      "exit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "actualSelectedImagesReviewed": true,
+      "performanceAccepted": false,
+      "evidenceBoundary": "sparse selected native screenshots; first_frame signal is not exact first visible picture; uncontrolled cache/network"
+    },
+    {
+      "device": "ipad",
+      "label": "wifi-overlap-l2-s01-jf-head",
+      "sample": "S01",
+      "entry": "Jellyfin",
+      "action": "在 Nastart 中播放",
+      "durationSeconds": 30.55626893043518,
+      "firstFrameSignalSecondsFromOuterTouch": 1.468612,
+      "metricCount": 2,
+      "cellularYes": 0,
+      "cellularNo": 2,
+      "maxStallCount": 0,
+      "exit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "actualSelectedImagesReviewed": true,
+      "performanceAccepted": false,
+      "evidenceBoundary": "sparse selected native screenshots; first_frame signal is not exact first visible picture; uncontrolled cache/network"
+    },
+    {
+      "device": "ipad",
+      "label": "wifi-overlap-l2-s03-jf-head",
+      "sample": "S03",
+      "entry": "Jellyfin",
+      "action": "在 Nastart 中播放",
+      "durationSeconds": 30.472137928009033,
+      "firstFrameSignalSecondsFromOuterTouch": 2.526077,
+      "metricCount": 5,
+      "cellularYes": 0,
+      "cellularNo": 5,
+      "maxStallCount": 0,
+      "exit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "actualSelectedImagesReviewed": true,
+      "performanceAccepted": false,
+      "evidenceBoundary": "sparse selected native screenshots; first_frame signal is not exact first visible picture; uncontrolled cache/network"
+    },
+    {
+      "device": "ipad",
+      "label": "wifi-overlap-l2-s08-jf-head",
+      "sample": "S08",
+      "entry": "Jellyfin",
+      "action": "在 Nastart 中播放",
+      "durationSeconds": 30.729113817214966,
+      "firstFrameSignalSecondsFromOuterTouch": 6.047544,
+      "metricCount": 2,
+      "cellularYes": 0,
+      "cellularNo": 2,
+      "maxStallCount": 0,
+      "exit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "actualSelectedImagesReviewed": true,
+      "performanceAccepted": false,
+      "evidenceBoundary": "sparse selected native screenshots; first_frame signal is not exact first visible picture; uncontrolled cache/network"
+    },
+    {
+      "device": "ipad",
+      "label": "wifi-overlap-l2-s11-jf-head",
+      "sample": "S11",
+      "entry": "Jellyfin",
+      "action": "在 Nastart 中播放",
+      "durationSeconds": 31.03256916999817,
+      "firstFrameSignalSecondsFromOuterTouch": 2.749388,
+      "metricCount": 3,
+      "cellularYes": 0,
+      "cellularNo": 3,
+      "maxStallCount": 0,
+      "exit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "actualSelectedImagesReviewed": true,
+      "performanceAccepted": false,
+      "evidenceBoundary": "sparse selected native screenshots; first_frame signal is not exact first visible picture; uncontrolled cache/network"
+    },
+    {
+      "device": "ipad",
+      "label": "wifi-overlap-l2-s18-jf-head",
+      "sample": "S18",
+      "entry": "Jellyfin",
+      "action": "在 Nastart 中播放",
+      "durationSeconds": 30.703895092010498,
+      "firstFrameSignalSecondsFromOuterTouch": 3.873674,
+      "metricCount": 4,
+      "cellularYes": 0,
+      "cellularNo": 4,
+      "maxStallCount": 0,
+      "exit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "actualSelectedImagesReviewed": true,
+      "performanceAccepted": false,
+      "evidenceBoundary": "sparse selected native screenshots; first_frame signal is not exact first visible picture; uncontrolled cache/network"
+    }
+  ],
+  "cellularWindows": [
+    {
+      "device": "iphone13",
+      "label": "cellular-overlap-s03-jf-150",
+      "sample": "S03",
+      "entry": "Jellyfin",
+      "action": "在 Nastart 中播放",
+      "durationSeconds": 150.5729250907898,
+      "firstFrameSignalSecondsFromOuterTouch": 5.608155,
+      "metricCount": 31,
+      "cellularYes": 31,
+      "cellularNo": 0,
+      "maxStallCount": 1,
+      "exit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "actualSelectedImagesReviewed": true,
+      "performanceAccepted": false,
+      "evidenceBoundary": "sparse selected native screenshots; first_frame signal is not exact first visible picture; uncontrolled cache/network"
+    },
+    {
+      "device": "iphone13",
+      "label": "cellular-overlap-s11-jf-150",
+      "sample": "S11",
+      "entry": "Jellyfin",
+      "action": "在 Nastart 中播放",
+      "durationSeconds": 150.5447359085083,
+      "firstFrameSignalSecondsFromOuterTouch": 5.229393,
+      "metricCount": 13,
+      "cellularYes": 13,
+      "cellularNo": 0,
+      "maxStallCount": 0,
+      "exit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "actualSelectedImagesReviewed": true,
+      "performanceAccepted": false,
+      "evidenceBoundary": "sparse selected native screenshots; first_frame signal is not exact first visible picture; uncontrolled cache/network"
+    }
+  ],
+  "finalAudit": {
+    "sourceInputsVerified": 173,
+    "binaryHashesVerified": true,
+    "deepSignatureVerified": true,
+    "devices": {
+      "iphone13": {
+        "at": "2026-10-14T06:35:30.779386+08:00",
+        "model": "iPhone14,5",
+        "system": "16.3.1",
+        "connection": "USB",
+        "sourceDiffSHA256": "5b8afe21d0ce1af67bfcd90380d3d5a51323a58b01952e310d06b817d0b1b346",
+        "latestPackage": {
+          "Nastart": "202e26a3d9b6b6bb81a779eebccfd09475cf3bc0d68e3c15e296c731bf2600dd",
+          "Nastart.debug.dylib": "b35fa59db32d3115def38b490999aa7b541eef9ac8db294a5a614e0f2a27a183",
+          "Frameworks/KSPlayer.framework/KSPlayer": "691afae0a0b9f8870c472449a808530a7a940331cd55d09a95d9fc7f1d37a1d4"
+        },
+        "nonBookmarkPreferenceKeys": 24,
+        "nonBookmarkPreferencesExactlyUnchanged": true,
+        "changedBookmarksCount": 6,
+        "originalS03TrackChanges": {
+          "file": {},
+          "Jellyfin": {}
+        },
+        "originalS03FileAndJellyfinTracksUnchanged": true,
+        "normalEmptyEnvironment": true,
+        "NASNormal": true,
+        "playerClosed": true,
+        "finalHomeScreenshotReviewed": true,
+        "WDAIdleSeconds": 10,
+        "WDAAnimationCoolOffSeconds": 2,
+        "crashInventoryNotCheckedThisTurn": false,
+        "baselineAppCrashRecordedThisTurn": false,
+        "reviewedFinalCapture": "final-home-after-cellular",
+        "historicalIPhone13NetworkCrashUnresolved": true,
+        "candidateCrashInventoryDelta": {
+          "Nastart": 0,
+          "WebDriverAgent": 0,
+          "JetsamEvent": 0
+        },
+        "performanceAccepted": false,
+        "fullSubtitleAudioHDRAccepted": false
+      },
+      "ipad": {
+        "at": "2026-10-14T06:35:31.567238+08:00",
+        "model": "iPad12,1",
+        "system": "18.3.1",
+        "connection": "USB",
+        "sourceDiffSHA256": "5b8afe21d0ce1af67bfcd90380d3d5a51323a58b01952e310d06b817d0b1b346",
+        "latestPackage": {
+          "Nastart": "202e26a3d9b6b6bb81a779eebccfd09475cf3bc0d68e3c15e296c731bf2600dd",
+          "Nastart.debug.dylib": "b35fa59db32d3115def38b490999aa7b541eef9ac8db294a5a614e0f2a27a183",
+          "Frameworks/KSPlayer.framework/KSPlayer": "691afae0a0b9f8870c472449a808530a7a940331cd55d09a95d9fc7f1d37a1d4"
+        },
+        "nonBookmarkPreferenceKeys": 17,
+        "nonBookmarkPreferencesExactlyUnchanged": true,
+        "changedBookmarksCount": 6,
+        "originalS03TrackChanges": {
+          "file": {},
+          "Jellyfin": {}
+        },
+        "originalS03FileAndJellyfinTracksUnchanged": true,
+        "normalEmptyEnvironment": true,
+        "NASNormal": true,
+        "playerClosed": true,
+        "finalHomeScreenshotReviewed": true,
+        "WDAIdleSeconds": 10,
+        "WDAAnimationCoolOffSeconds": 2,
+        "crashInventoryNotCheckedThisTurn": false,
+        "baselineAppCrashRecordedThisTurn": false,
+        "reviewedFinalCapture": "final-restored-home",
+        "historicalIPhone13NetworkCrashUnresolved": true,
+        "candidateCrashInventoryDelta": {
+          "Nastart": 0,
+          "WebDriverAgent": 0,
+          "JetsamEvent": 0
+        },
+        "performanceAccepted": false,
+        "fullSubtitleAudioHDRAccepted": false
+      }
+    }
+  },
+  "nativeConditions": {
+    "iphone13": {
+      "recordedAt": "2026-10-14T06:34:43.174399+08:00",
+      "activeCount": 0,
+      "mutationPerformed": false
+    },
+    "ipad": {
+      "recordedAt": "2026-10-14T06:34:47.971277+08:00",
+      "activeCount": 0,
+      "mutationPerformed": false
+    }
+  },
+  "iPhone13WiFiRestoredON": true,
+  "implementation": "Only overlap first saved public own-session probe with private identity probe; private transport failure, same server/account, current path/login/credentials gate publication; positive private stays preferred; parent cancellation cancels both owned requests; unchanged two-attempt ceiling.",
+  "mediaParametersChanged": false,
+  "NASSettingsChanged": false,
+  "MacNetworkSettingsChanged": false,
+  "performanceAccepted": false,
+  "historicHLSWaitSeconds": 23.942516,
+  "historicHLSWaitReproducedOrFixedThisTurn": false,
+  "S03SingleUncontrolledReference": {
+    "previousContextSeconds": 3.596,
+    "currentContextProbeMs": 3036,
+    "previousFirstFrameSignalSeconds": 6.113346,
+    "currentFirstFrameSignalSeconds": 5.608155,
+    "stableCausalGainEstablished": false
+  },
+  "privateEvidenceDirectoryName": "2026-10-14-parallel-origin-proof-055530",
+  "authenticationTimelines": {
+    "cellular-overlap-s11-jf-150": [
+      {
+        "secondsFromOuterTouch": 0.483784,
+        "event": "playback_route_state",
+        "reason": "libraryEndpoint",
+        "stage": "playbackContextRequested"
+      },
+      {
+        "secondsFromOuterTouch": 0.484733,
+        "event": "playback_route_state",
+        "candidateProbePathGeneration": "2",
+        "reason": "overlapFirstOwnPublicSession",
+        "stage": "authenticatedOriginProbesStarted"
+      },
+      {
+        "secondsFromOuterTouch": 3.544306,
+        "event": "playback_route_state",
+        "candidateAttempt": "0",
+        "candidateProbePathGeneration": "2",
+        "reason": "overlappedOwnSession",
+        "stage": "authenticatedOriginProbeCompleted"
+      },
+      {
+        "secondsFromOuterTouch": 3.5446,
+        "event": "playback_route_state",
+        "candidateHTTPStatus": "200",
+        "candidateProbePathGeneration": "2",
+        "contextProbeMs": "3059",
+        "primaryFailure": "URL_-1001",
+        "primaryHTTPStatus": "none",
+        "primaryProbePathGeneration": "2",
+        "reason": "sameServerAndAccountCurrentPublicReachable",
+        "stage": "authenticatedPlaybackContext"
+      },
+      {
+        "secondsFromOuterTouch": 5.229393,
+        "event": "first_frame"
+      }
+    ],
+    "cellular-overlap-s03-jf-150": [
+      {
+        "secondsFromOuterTouch": 0.428238,
+        "event": "playback_route_state",
+        "reason": "libraryEndpoint",
+        "stage": "playbackContextRequested"
+      },
+      {
+        "secondsFromOuterTouch": 0.429194,
+        "event": "playback_route_state",
+        "candidateProbePathGeneration": "2",
+        "reason": "overlapFirstOwnPublicSession",
+        "stage": "authenticatedOriginProbesStarted"
+      },
+      {
+        "secondsFromOuterTouch": 3.470256,
+        "event": "playback_route_state",
+        "candidateAttempt": "0",
+        "candidateProbePathGeneration": "2",
+        "reason": "overlappedOwnSession",
+        "stage": "authenticatedOriginProbeCompleted"
+      },
+      {
+        "secondsFromOuterTouch": 3.470553,
+        "event": "playback_route_state",
+        "candidateHTTPStatus": "200",
+        "candidateProbePathGeneration": "2",
+        "contextProbeMs": "3036",
+        "primaryFailure": "URL_-1001",
+        "primaryHTTPStatus": "none",
+        "primaryProbePathGeneration": "2",
+        "reason": "sameServerAndAccountCurrentPublicReachable",
+        "stage": "authenticatedPlaybackContext"
+      },
+      {
+        "secondsFromOuterTouch": 5.608155,
+        "event": "first_frame"
+      }
+    ]
+  },
+  "openItems": [
+    "S19 128.8GB two entries/HLS/deep seek/10min",
+    "cold cellular without fresh identity remains fail-closed",
+    "abrupt-stop durable resume",
+    "historic NAS API119 and logout",
+    "Pad TS02 HEVC corruption/ghost seeks",
+    "iPhone13 historical Network crash and physical memory",
+    "growing TS append/tail/replacement negatives",
+    "rotation/control outline transitions",
+    "full SUB/AUD/HDR/PiP",
+    "Lenna and competitor complete frame/displacement evidence",
+    "weak RF/external WiFi/MTP",
+    "full19x4/L2/L3/PX/UX/CB/Main",
+    "iPhone18 automatic Xcode discovery/WDA/full wireless playback"
+  ]
+}

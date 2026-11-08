@@ -1,0 +1,1607 @@
+{
+  "recordedAt": "2026-10-19T08:25:59.124786+08:00",
+  "appSourceChanged": false,
+  "sourceInputsVerified": 173,
+  "package": {
+    "Nastart": "ac2b24d581b1e61b1cf8b031aaac7b39f9b77cf8146681b3a3579a36290725b1",
+    "Nastart.debug.dylib": "b4805e82313a2b939d1195ed70494723c116dd72179a58dd515233d608d86647",
+    "Frameworks/KSPlayer.framework/KSPlayer": "c9abcf7de82104759edab22db9e8bf8d410b2319b62a6a3163a328a5be3389f1"
+  },
+  "device": "iPhone13",
+  "model": "iPhone14,5",
+  "system": "16.3.1",
+  "buildConfiguration": "ordinary Debug, empty environment",
+  "networkAssessment": {
+    "at": "2026-10-19T08:15:12.465074+08:00",
+    "scope": "physical iPhone13 Safari fetch; no playback acceptance or general carrier coverage conclusion",
+    "deviceModel": "iPhone14,5",
+    "system": "16.3.1",
+    "visibleRadio": "4G",
+    "WiFiOffNativeVerified": true,
+    "originalWiFiOnToRestore": true,
+    "fieldTest": "Connecting only; no RSRP/RSRQ/SINR",
+    "radioStrength": "unconfirmed",
+    "classification": "Current sampled cellular throughput does not support a blanket weak/slow cellular path classification; sustained 82Mbps original not established",
+    "NASPublicPrivateExactServerIDMatched": true,
+    "VPNChanged": false,
+    "artificialShaping": false,
+    "sequentialMeasurements": true,
+    "repetitionsEach": 3,
+    "orderCounterbalanced": false,
+    "sameWindowLossOrJitterMeasured": false,
+    "cache": "fetch no-store with unique query; actual client/server cache not fully controlled",
+    "sets": [
+      {
+        "case": "network-wifi-cf",
+        "network": "wifi",
+        "originClass": "independentEdge",
+        "latencyValidCount": 5,
+        "headersMs": [
+          694,
+          283,
+          311,
+          305.0000000000291,
+          408
+        ],
+        "bulkCompleted": 3,
+        "bulkFailed": 0,
+        "bulkBytes": 6291456,
+        "totalMbps": [
+          2.0694728012828416,
+          2.411559005318374,
+          2.2280499335989377
+        ],
+        "bodyMbps": [
+          2.166199612653325,
+          2.5854855910001424,
+          2.333085245445696
+        ],
+        "p50TotalMbps": 2.2280499335989377,
+        "p50BodyMbps": 2.333085245445696,
+        "rows": [
+          {
+            "requestedBytes": 0,
+            "ordinal": 0,
+            "startUnixMs": 1792367877583,
+            "status": 200,
+            "contentType": "application/octet-stream",
+            "contentEncoding": null,
+            "bytes": 0,
+            "headersMs": 694,
+            "firstBodyMs": null,
+            "bodyMs": 3,
+            "totalMs": 697,
+            "ok": true,
+            "resource": {
+              "dnsMs": 2,
+              "connectMs": 438,
+              "requestToResponseMs": 226,
+              "responseBodyMs": 1,
+              "protocol": "http/1.1"
+            }
+          },
+          {
+            "requestedBytes": 0,
+            "ordinal": 1,
+            "startUnixMs": 1792367878281,
+            "status": 200,
+            "contentType": "application/octet-stream",
+            "contentEncoding": null,
+            "bytes": 0,
+            "headersMs": 283,
+            "firstBodyMs": null,
+            "bodyMs": 0,
+            "totalMs": 283,
+            "ok": true,
+            "resource": {
+              "dnsMs": 0,
+              "connectMs": 0,
+              "requestToResponseMs": 266.9999999999709,
+              "responseBodyMs": 1.0000000000291038,
+              "protocol": "http/1.1"
+            }
+          },
+          {
+            "requestedBytes": 0,
+            "ordinal": 2,
+            "startUnixMs": 1792367878565,
+            "status": 200,
+            "contentType": "application/octet-stream",
+            "contentEncoding": null,
+            "bytes": 0,
+            "headersMs": 311,
+            "firstBodyMs": null,
+            "bodyMs": 1,
+            "totalMs": 312,
+            "ok": true,
+            "resource": {
+              "dnsMs": 0,
+              "connectMs": 0,
+              "requestToResponseMs": 293.0000000000291,
+              "responseBodyMs": 0.9999999999708962,
+              "protocol": "http/1.1"
+            }
+          },
+          {
+            "requestedBytes": 0,
+            "ordinal": 3,
+            "startUnixMs": 1792367878877,
+            "status": 200,
+            "contentType": "application/octet-stream",
+            "contentEncoding": null,
+            "bytes": 0,
+            "headersMs": 305.0000000000291,
+            "firstBodyMs": null,
+            "bodyMs": 0,
+            "totalMs": 305.0000000000291,
+            "ok": true,
+            "resource": {
+              "dnsMs": 0,
+              "connectMs": 0,
+              "requestToResponseMs": 286,
+              "responseBodyMs": 1,
+              "protocol": "http/1.1"
+            }
+          },
+          {
+            "requestedBytes": 0,
+            "ordinal": 4,
+            "startUnixMs": 1792367879182,
+            "status": 200,
+            "contentType": "application/octet-stream",
+            "contentEncoding": null,
+            "bytes": 0,
+            "headersMs": 408,
+            "firstBodyMs": null,
+            "bodyMs": 0,
+            "totalMs": 408,
+            "ok": true,
+            "resource": {
+              "dnsMs": 0,
+              "connectMs": 0,
+              "requestToResponseMs": 391,
+              "responseBodyMs": 1,
+              "protocol": "http/1.1"
+            }
+          },
+          {
+            "requestedBytes": 2097152,
+            "ordinal": 5,
+            "startUnixMs": 1792367879592,
+            "status": 200,
+            "contentType": "application/octet-stream",
+            "contentEncoding": null,
+            "bytes": 2097152,
+            "headersMs": 303,
+            "firstBodyMs": 362,
+            "bodyMs": 7745,
+            "totalMs": 8107,
+            "ok": true,
+            "resource": {
+              "dnsMs": 0,
+              "connectMs": 0,
+              "requestToResponseMs": 286,
+              "responseBodyMs": 7817,
+              "protocol": "http/1.1"
+            }
+          },
+          {
+            "requestedBytes": 2097152,
+            "ordinal": 6,
+            "startUnixMs": 1792367887701,
+            "status": 200,
+            "contentType": "application/octet-stream",
+            "contentEncoding": null,
+            "bytes": 2097152,
+            "headersMs": 413,
+            "firstBodyMs": 468,
+            "bodyMs": 6489.000000000029,
+            "totalMs": 6957.000000000029,
+            "ok": true,
+            "resource": {
+              "dnsMs": 0,
+              "connectMs": 0,
+              "requestToResponseMs": 395,
+              "responseBodyMs": 6557,
+              "protocol": "http/1.1"
+            }
+          },
+          {
+            "requestedBytes": 2097152,
+            "ordinal": 7,
+            "startUnixMs": 1792367894660,
+            "status": 200,
+            "contentType": "application/octet-stream",
+            "contentEncoding": null,
+            "bytes": 2097152,
+            "headersMs": 284,
+            "firstBodyMs": 339,
+            "bodyMs": 7191,
+            "totalMs": 7530,
+            "ok": true,
+            "resource": {
+              "dnsMs": 0,
+              "connectMs": 0,
+              "requestToResponseMs": 268,
+              "responseBodyMs": 7258,
+              "protocol": "http/1.1"
+            }
+          }
+        ]
+      },
+      {
+        "case": "network-wifi-nas",
+        "network": "wifi",
+        "originClass": "ownPrivateNAS",
+        "latencyValidCount": 0,
+        "headersMs": [],
+        "bulkCompleted": 3,
+        "bulkFailed": 0,
+        "bulkBytes": 6291456,
+        "totalMbps": [
+          1.5605260905962237,
+          3.2928785083415115,
+          2.9305180786026197
+        ],
+        "bodyMbps": [
+          1.5790320941176472,
+          3.35947456948338,
+          2.9757389145086908
+        ],
+        "p50TotalMbps": 2.9305180786026197,
+        "p50BodyMbps": 2.9757389145086908,
+        "rows": [
+          {
+            "requestedBytes": 0,
+            "ordinal": 0,
+            "startUnixMs": 1792367931882,
+            "status": 400,
+            "contentType": "application/json; charset=utf-8",
+            "contentEncoding": "gzip",
+            "bytes": 304,
+            "headersMs": 227,
+            "firstBodyMs": 231,
+            "bodyMs": 0,
+            "totalMs": 231,
+            "ok": false,
+            "resource": {
+              "dnsMs": 0,
+              "connectMs": 0,
+              "requestToResponseMs": 221,
+              "responseBodyMs": 1,
+              "protocol": "http/1.1"
+            }
+          },
+          {
+            "requestedBytes": 0,
+            "ordinal": 1,
+            "startUnixMs": 1792367932114,
+            "status": 400,
+            "contentType": "application/json; charset=utf-8",
+            "contentEncoding": "gzip",
+            "bytes": 304,
+            "headersMs": 29,
+            "firstBodyMs": 30,
+            "bodyMs": 0,
+            "totalMs": 30,
+            "ok": false,
+            "resource": {
+              "dnsMs": 0,
+              "connectMs": 0,
+              "requestToResponseMs": 26,
+              "responseBodyMs": 1,
+              "protocol": "http/1.1"
+            }
+          },
+          {
+            "requestedBytes": 0,
+            "ordinal": 2,
+            "startUnixMs": 1792367932145,
+            "status": 400,
+            "contentType": "application/json; charset=utf-8",
+            "contentEncoding": "gzip",
+            "bytes": 304,
+            "headersMs": 29.000000000000227,
+            "firstBodyMs": 29.000000000000227,
+            "bodyMs": 0.9999999999997726,
+            "totalMs": 30,
+            "ok": false,
+            "resource": {
+              "dnsMs": 0,
+              "connectMs": 0,
+              "requestToResponseMs": 27,
+              "responseBodyMs": 1.0000000000002274,
+              "protocol": "http/1.1"
+            }
+          },
+          {
+            "requestedBytes": 0,
+            "ordinal": 3,
+            "startUnixMs": 1792367932175,
+            "status": 400,
+            "contentType": "application/json; charset=utf-8",
+            "contentEncoding": "gzip",
+            "bytes": 304,
+            "headersMs": 36,
+            "firstBodyMs": 36,
+            "bodyMs": 0,
+            "totalMs": 36,
+            "ok": false,
+            "resource": {
+              "dnsMs": 0,
+              "connectMs": 0,
+              "requestToResponseMs": 32,
+              "responseBodyMs": 2,
+              "protocol": "http/1.1"
+            }
+          },
+          {
+            "requestedBytes": 0,
+            "ordinal": 4,
+            "startUnixMs": 1792367932213,
+            "status": 400,
+            "contentType": "application/json; charset=utf-8",
+            "contentEncoding": "gzip",
+            "bytes": 304,
+            "headersMs": 53,
+            "firstBodyMs": 54,
+            "bodyMs": 0,
+            "totalMs": 54,
+            "ok": false,
+            "resource": {
+              "dnsMs": 0,
+              "connectMs": 0,
+              "requestToResponseMs": 48,
+              "responseBodyMs": 2,
+              "protocol": "http/1.1"
+            }
+          },
+          {
+            "requestedBytes": 2097152,
+            "ordinal": 5,
+            "startUnixMs": 1792367932269,
+            "status": 200,
+            "contentType": "application/octet-stream",
+            "contentEncoding": null,
+            "bytes": 2097152,
+            "headersMs": 70,
+            "firstBodyMs": 126,
+            "bodyMs": 10625,
+            "totalMs": 10751,
+            "ok": true,
+            "resource": {
+              "dnsMs": 0,
+              "connectMs": 0,
+              "requestToResponseMs": 67,
+              "responseBodyMs": 10680,
+              "protocol": "http/1.1"
+            }
+          },
+          {
+            "requestedBytes": 2097152,
+            "ordinal": 6,
+            "startUnixMs": 1792367943022,
+            "status": 200,
+            "contentType": "application/octet-stream",
+            "contentEncoding": null,
+            "bytes": 2097152,
+            "headersMs": 50,
+            "firstBodyMs": 101,
+            "bodyMs": 4994,
+            "totalMs": 5095,
+            "ok": true,
+            "resource": {
+              "dnsMs": 0,
+              "connectMs": 0,
+              "requestToResponseMs": 45.99999999999818,
+              "responseBodyMs": 5045,
+              "protocol": "http/1.1"
+            }
+          },
+          {
+            "requestedBytes": 2097152,
+            "ordinal": 7,
+            "startUnixMs": 1792367948119,
+            "status": 200,
+            "contentType": "application/octet-stream",
+            "contentEncoding": null,
+            "bytes": 2097152,
+            "headersMs": 34,
+            "firstBodyMs": 87,
+            "bodyMs": 5638,
+            "totalMs": 5725,
+            "ok": true,
+            "resource": {
+              "dnsMs": 0,
+              "connectMs": 0,
+              "requestToResponseMs": 30,
+              "responseBodyMs": 5691,
+              "protocol": "http/1.1"
+            }
+          }
+        ]
+      },
+      {
+        "case": "network-cellular-nas",
+        "network": "cellular",
+        "originClass": "ownPublicNAS",
+        "latencyValidCount": 5,
+        "headersMs": [
+          629.0000000000009,
+          62,
+          77,
+          72.00000000000091,
+          75
+        ],
+        "bulkCompleted": 3,
+        "bulkFailed": 0,
+        "bulkBytes": 6291456,
+        "totalMbps": [
+          17.49449009384776,
+          37.786522522522525,
+          34.8075020746888
+        ],
+        "bodyMbps": [
+          36.63147598253275,
+          58.66159440559441,
+          53.261003174603175
+        ],
+        "p50TotalMbps": 34.8075020746888,
+        "p50BodyMbps": 53.261003174603175,
+        "rows": [
+          {
+            "requestedBytes": 1024,
+            "ordinal": 0,
+            "startUnixMs": 1792368767740,
+            "status": 200,
+            "contentType": "application/octet-stream",
+            "contentEncoding": null,
+            "bytes": 1024,
+            "headersMs": 629.0000000000009,
+            "firstBodyMs": 633,
+            "bodyMs": 0,
+            "totalMs": 633,
+            "ok": true,
+            "resource": {
+              "dnsMs": 0,
+              "connectMs": 0,
+              "requestToResponseMs": 609,
+              "responseBodyMs": 0,
+              "protocol": "h2"
+            }
+          },
+          {
+            "requestedBytes": 1024,
+            "ordinal": 1,
+            "startUnixMs": 1792368768376,
+            "status": 200,
+            "contentType": "application/octet-stream",
+            "contentEncoding": null,
+            "bytes": 1024,
+            "headersMs": 62,
+            "firstBodyMs": 62,
+            "bodyMs": 0,
+            "totalMs": 62,
+            "ok": true,
+            "resource": {
+              "dnsMs": 0,
+              "connectMs": 0,
+              "requestToResponseMs": 49.99999999999909,
+              "responseBodyMs": 0,
+              "protocol": "h2"
+            }
+          },
+          {
+            "requestedBytes": 1024,
+            "ordinal": 2,
+            "startUnixMs": 1792368768438,
+            "status": 200,
+            "contentType": "application/octet-stream",
+            "contentEncoding": null,
+            "bytes": 1024,
+            "headersMs": 77,
+            "firstBodyMs": 77,
+            "bodyMs": 0,
+            "totalMs": 77,
+            "ok": true,
+            "resource": {
+              "dnsMs": 0,
+              "connectMs": 0,
+              "requestToResponseMs": 60,
+              "responseBodyMs": 1,
+              "protocol": "h2"
+            }
+          },
+          {
+            "requestedBytes": 1024,
+            "ordinal": 3,
+            "startUnixMs": 1792368768516,
+            "status": 200,
+            "contentType": "application/octet-stream",
+            "contentEncoding": null,
+            "bytes": 1024,
+            "headersMs": 72.00000000000091,
+            "firstBodyMs": 72.00000000000091,
+            "bodyMs": 0,
+            "totalMs": 72.00000000000091,
+            "ok": true,
+            "resource": {
+              "dnsMs": 0,
+              "connectMs": 0,
+              "requestToResponseMs": 57,
+              "responseBodyMs": 1.0000000000009095,
+              "protocol": "h2"
+            }
+          },
+          {
+            "requestedBytes": 1024,
+            "ordinal": 4,
+            "startUnixMs": 1792368768589,
+            "status": 200,
+            "contentType": "application/octet-stream",
+            "contentEncoding": null,
+            "bytes": 1024,
+            "headersMs": 75,
+            "firstBodyMs": 75,
+            "bodyMs": 0,
+            "totalMs": 75,
+            "ok": true,
+            "resource": {
+              "dnsMs": 0,
+              "connectMs": 0,
+              "requestToResponseMs": 61,
+              "responseBodyMs": 1.0000000000009095,
+              "protocol": "h2"
+            }
+          },
+          {
+            "requestedBytes": 2097152,
+            "ordinal": 5,
+            "startUnixMs": 1792368768665,
+            "status": 200,
+            "contentType": "application/octet-stream",
+            "contentEncoding": null,
+            "bytes": 2097152,
+            "headersMs": 445,
+            "firstBodyMs": 501,
+            "bodyMs": 458,
+            "totalMs": 959,
+            "ok": true,
+            "resource": {
+              "dnsMs": 0,
+              "connectMs": 0,
+              "requestToResponseMs": 437,
+              "responseBodyMs": 519,
+              "protocol": "h2"
+            }
+          },
+          {
+            "requestedBytes": 2097152,
+            "ordinal": 6,
+            "startUnixMs": 1792368769626,
+            "status": 200,
+            "contentType": "application/octet-stream",
+            "contentEncoding": null,
+            "bytes": 2097152,
+            "headersMs": 106.00000000000091,
+            "firstBodyMs": 158,
+            "bodyMs": 286,
+            "totalMs": 444,
+            "ok": true,
+            "resource": {
+              "dnsMs": 0,
+              "connectMs": 0,
+              "requestToResponseMs": 87.00000000000091,
+              "responseBodyMs": 351.9999999999991,
+              "protocol": "h2"
+            }
+          },
+          {
+            "requestedBytes": 2097152,
+            "ordinal": 7,
+            "startUnixMs": 1792368770072,
+            "status": 200,
+            "contentType": "application/octet-stream",
+            "contentEncoding": null,
+            "bytes": 2097152,
+            "headersMs": 116.00000000000182,
+            "firstBodyMs": 167,
+            "bodyMs": 315,
+            "totalMs": 482,
+            "ok": true,
+            "resource": {
+              "dnsMs": 0,
+              "connectMs": 0,
+              "requestToResponseMs": 95,
+              "responseBodyMs": 381,
+              "protocol": "h2"
+            }
+          }
+        ]
+      },
+      {
+        "case": "network-cellular-cf",
+        "network": "cellular",
+        "originClass": "independentEdge",
+        "latencyValidCount": 5,
+        "headersMs": [
+          189,
+          200,
+          179,
+          169,
+          171
+        ],
+        "bulkCompleted": 3,
+        "bulkFailed": 0,
+        "bulkBytes": 6291456,
+        "totalMbps": [
+          20.48500122100122,
+          32.38844787644788,
+          29.746836879432603
+        ],
+        "bodyMbps": [
+          28.292101180438447,
+          87.8388272251309,
+          74.89828571428556
+        ],
+        "p50TotalMbps": 29.746836879432603,
+        "p50BodyMbps": 74.89828571428556,
+        "rows": [
+          {
+            "requestedBytes": 0,
+            "ordinal": 0,
+            "startUnixMs": 1792368810350,
+            "status": 200,
+            "contentType": "application/octet-stream",
+            "contentEncoding": null,
+            "bytes": 0,
+            "headersMs": 189,
+            "firstBodyMs": null,
+            "bodyMs": 2,
+            "totalMs": 191,
+            "ok": true,
+            "resource": {
+              "dnsMs": 0,
+              "connectMs": 0,
+              "requestToResponseMs": 170,
+              "responseBodyMs": 1.0000000000002274,
+              "protocol": "http/1.1"
+            }
+          },
+          {
+            "requestedBytes": 0,
+            "ordinal": 1,
+            "startUnixMs": 1792368810542,
+            "status": 200,
+            "contentType": "application/octet-stream",
+            "contentEncoding": null,
+            "bytes": 0,
+            "headersMs": 200,
+            "firstBodyMs": null,
+            "bodyMs": 0,
+            "totalMs": 200,
+            "ok": true,
+            "resource": {
+              "dnsMs": 0,
+              "connectMs": 0,
+              "requestToResponseMs": 183,
+              "responseBodyMs": 0,
+              "protocol": "http/1.1"
+            }
+          },
+          {
+            "requestedBytes": 0,
+            "ordinal": 2,
+            "startUnixMs": 1792368810742,
+            "status": 200,
+            "contentType": "application/octet-stream",
+            "contentEncoding": null,
+            "bytes": 0,
+            "headersMs": 179,
+            "firstBodyMs": null,
+            "bodyMs": 0,
+            "totalMs": 179,
+            "ok": true,
+            "resource": {
+              "dnsMs": 0,
+              "connectMs": 0,
+              "requestToResponseMs": 161.00000000000023,
+              "responseBodyMs": 0,
+              "protocol": "http/1.1"
+            }
+          },
+          {
+            "requestedBytes": 0,
+            "ordinal": 3,
+            "startUnixMs": 1792368810922,
+            "status": 200,
+            "contentType": "application/octet-stream",
+            "contentEncoding": null,
+            "bytes": 0,
+            "headersMs": 169,
+            "firstBodyMs": null,
+            "bodyMs": 1,
+            "totalMs": 170,
+            "ok": true,
+            "resource": {
+              "dnsMs": 0,
+              "connectMs": 0,
+              "requestToResponseMs": 153,
+              "responseBodyMs": 1,
+              "protocol": "http/1.1"
+            }
+          },
+          {
+            "requestedBytes": 0,
+            "ordinal": 4,
+            "startUnixMs": 1792368811092,
+            "status": 200,
+            "contentType": "application/octet-stream",
+            "contentEncoding": null,
+            "bytes": 0,
+            "headersMs": 171,
+            "firstBodyMs": null,
+            "bodyMs": 0,
+            "totalMs": 171,
+            "ok": true,
+            "resource": {
+              "dnsMs": 0,
+              "connectMs": 0,
+              "requestToResponseMs": 156,
+              "responseBodyMs": 0,
+              "protocol": "http/1.1"
+            }
+          },
+          {
+            "requestedBytes": 2097152,
+            "ordinal": 5,
+            "startUnixMs": 1792368811265,
+            "status": 200,
+            "contentType": "application/octet-stream",
+            "contentEncoding": null,
+            "bytes": 2097152,
+            "headersMs": 170,
+            "firstBodyMs": 226,
+            "bodyMs": 593,
+            "totalMs": 819,
+            "ok": true,
+            "resource": {
+              "dnsMs": 0,
+              "connectMs": 0,
+              "requestToResponseMs": 153.99999999999955,
+              "responseBodyMs": 661,
+              "protocol": "http/1.1"
+            }
+          },
+          {
+            "requestedBytes": 2097152,
+            "ordinal": 6,
+            "startUnixMs": 1792368812086,
+            "status": 200,
+            "contentType": "application/octet-stream",
+            "contentEncoding": null,
+            "bytes": 2097152,
+            "headersMs": 268,
+            "firstBodyMs": 327,
+            "bodyMs": 191,
+            "totalMs": 518,
+            "ok": true,
+            "resource": {
+              "dnsMs": 0,
+              "connectMs": 0,
+              "requestToResponseMs": 251,
+              "responseBodyMs": 262,
+              "protocol": "http/1.1"
+            }
+          },
+          {
+            "requestedBytes": 2097152,
+            "ordinal": 7,
+            "startUnixMs": 1792368812606,
+            "status": 200,
+            "contentType": "application/octet-stream",
+            "contentEncoding": null,
+            "bytes": 2097152,
+            "headersMs": 284,
+            "firstBodyMs": 340,
+            "bodyMs": 224.00000000000045,
+            "totalMs": 564.0000000000005,
+            "ok": true,
+            "resource": {
+              "dnsMs": 0,
+              "connectMs": 0,
+              "requestToResponseMs": 266,
+              "responseBodyMs": 293.00000000000045,
+              "protocol": "http/1.1"
+            }
+          }
+        ]
+      },
+      {
+        "case": "network-cellular-nas-8MiB",
+        "network": "cellular",
+        "originClass": "ownPublicNAS",
+        "latencyValidCount": 5,
+        "headersMs": [
+          127,
+          98,
+          62,
+          64,
+          79
+        ],
+        "bulkCompleted": 3,
+        "bulkFailed": 0,
+        "bulkBytes": 25165824,
+        "totalMbps": [
+          41.86454398003743,
+          43.804741514360316,
+          38.43577548682703
+        ],
+        "bodyMbps": [
+          47.29306835799859,
+          49.30849669360761,
+          43.35197932816538
+        ],
+        "p50TotalMbps": 41.86454398003743,
+        "p50BodyMbps": 47.29306835799859,
+        "rows": [
+          {
+            "requestedBytes": 1024,
+            "ordinal": 0,
+            "startUnixMs": 1792368830341,
+            "status": 200,
+            "contentType": "application/octet-stream",
+            "contentEncoding": null,
+            "bytes": 1024,
+            "headersMs": 127,
+            "firstBodyMs": 130,
+            "bodyMs": 0,
+            "totalMs": 130,
+            "ok": true,
+            "resource": {
+              "dnsMs": 0,
+              "connectMs": 0,
+              "requestToResponseMs": 108,
+              "responseBodyMs": 1,
+              "protocol": "h2"
+            }
+          },
+          {
+            "requestedBytes": 1024,
+            "ordinal": 1,
+            "startUnixMs": 1792368830472,
+            "status": 200,
+            "contentType": "application/octet-stream",
+            "contentEncoding": null,
+            "bytes": 1024,
+            "headersMs": 98,
+            "firstBodyMs": 98,
+            "bodyMs": 0,
+            "totalMs": 98,
+            "ok": true,
+            "resource": {
+              "dnsMs": 0,
+              "connectMs": 0,
+              "requestToResponseMs": 81,
+              "responseBodyMs": 1,
+              "protocol": "h2"
+            }
+          },
+          {
+            "requestedBytes": 1024,
+            "ordinal": 2,
+            "startUnixMs": 1792368830571,
+            "status": 200,
+            "contentType": "application/octet-stream",
+            "contentEncoding": null,
+            "bytes": 1024,
+            "headersMs": 62,
+            "firstBodyMs": 62,
+            "bodyMs": 0,
+            "totalMs": 62,
+            "ok": true,
+            "resource": {
+              "dnsMs": 0,
+              "connectMs": 0,
+              "requestToResponseMs": 48,
+              "responseBodyMs": 0,
+              "protocol": "h2"
+            }
+          },
+          {
+            "requestedBytes": 1024,
+            "ordinal": 3,
+            "startUnixMs": 1792368830634,
+            "status": 200,
+            "contentType": "application/octet-stream",
+            "contentEncoding": null,
+            "bytes": 1024,
+            "headersMs": 64,
+            "firstBodyMs": 64.99999999999909,
+            "bodyMs": 0,
+            "totalMs": 64.99999999999909,
+            "ok": true,
+            "resource": {
+              "dnsMs": 0,
+              "connectMs": 0,
+              "requestToResponseMs": 51,
+              "responseBodyMs": 1,
+              "protocol": "h2"
+            }
+          },
+          {
+            "requestedBytes": 1024,
+            "ordinal": 4,
+            "startUnixMs": 1792368830700,
+            "status": 200,
+            "contentType": "application/octet-stream",
+            "contentEncoding": null,
+            "bytes": 1024,
+            "headersMs": 79,
+            "firstBodyMs": 79,
+            "bodyMs": 0,
+            "totalMs": 79,
+            "ok": true,
+            "resource": {
+              "dnsMs": 0,
+              "connectMs": 0,
+              "requestToResponseMs": 62,
+              "responseBodyMs": 1,
+              "protocol": "h2"
+            }
+          },
+          {
+            "requestedBytes": 8388608,
+            "ordinal": 5,
+            "startUnixMs": 1792368830779,
+            "status": 200,
+            "contentType": "application/octet-stream",
+            "contentEncoding": null,
+            "bytes": 8388608,
+            "headersMs": 131,
+            "firstBodyMs": 184,
+            "bodyMs": 1419,
+            "totalMs": 1603,
+            "ok": true,
+            "resource": {
+              "dnsMs": 0,
+              "connectMs": 0,
+              "requestToResponseMs": 112.00000000000091,
+              "responseBodyMs": 1487.999999999999,
+              "protocol": "h2"
+            }
+          },
+          {
+            "requestedBytes": 8388608,
+            "ordinal": 6,
+            "startUnixMs": 1792368832384,
+            "status": 200,
+            "contentType": "application/octet-stream",
+            "contentEncoding": null,
+            "bytes": 8388608,
+            "headersMs": 114.99999999999909,
+            "firstBodyMs": 170.9999999999991,
+            "bodyMs": 1361.000000000001,
+            "totalMs": 1532,
+            "ok": true,
+            "resource": {
+              "dnsMs": 0,
+              "connectMs": 0,
+              "requestToResponseMs": 97,
+              "responseBodyMs": 1431,
+              "protocol": "h2"
+            }
+          },
+          {
+            "requestedBytes": 8388608,
+            "ordinal": 7,
+            "startUnixMs": 1792368833918,
+            "status": 200,
+            "contentType": "application/octet-stream",
+            "contentEncoding": null,
+            "bytes": 8388608,
+            "headersMs": 142,
+            "firstBodyMs": 198,
+            "bodyMs": 1548,
+            "totalMs": 1746,
+            "ok": true,
+            "resource": {
+              "dnsMs": 0,
+              "connectMs": 0,
+              "requestToResponseMs": 123,
+              "responseBodyMs": 1615,
+              "protocol": "h2"
+            }
+          }
+        ]
+      },
+      {
+        "case": "network-wifi-nas-public-repeat",
+        "network": "wifi",
+        "originClass": "ownPublicNAS",
+        "latencyValidCount": 5,
+        "headersMs": [
+          241,
+          59.99999999999909,
+          34,
+          53,
+          34.99999999999909
+        ],
+        "bulkCompleted": 3,
+        "bulkFailed": 0,
+        "bulkBytes": 6291456,
+        "totalMbps": [
+          26.973016077170417,
+          65.02796899224806,
+          61.90854612546125
+        ],
+        "bodyMbps": [
+          31.47695309568486,
+          139.81013333333334,
+          136.40013008130285
+        ],
+        "p50TotalMbps": 61.90854612546125,
+        "p50BodyMbps": 136.40013008130285,
+        "rows": [
+          {
+            "requestedBytes": 1024,
+            "ordinal": 0,
+            "startUnixMs": 1792368872780,
+            "status": 200,
+            "contentType": "application/octet-stream",
+            "contentEncoding": null,
+            "bytes": 1024,
+            "headersMs": 241,
+            "firstBodyMs": 244,
+            "bodyMs": 0,
+            "totalMs": 244,
+            "ok": true,
+            "resource": {
+              "dnsMs": 18.99999999999909,
+              "connectMs": 31,
+              "requestToResponseMs": 29,
+              "responseBodyMs": 0,
+              "protocol": "h2"
+            }
+          },
+          {
+            "requestedBytes": 1024,
+            "ordinal": 1,
+            "startUnixMs": 1792368873025,
+            "status": 200,
+            "contentType": "application/octet-stream",
+            "contentEncoding": null,
+            "bytes": 1024,
+            "headersMs": 59.99999999999909,
+            "firstBodyMs": 60.99999999999909,
+            "bodyMs": 0,
+            "totalMs": 60.99999999999909,
+            "ok": true,
+            "resource": {
+              "dnsMs": 0,
+              "connectMs": 0,
+              "requestToResponseMs": 49,
+              "responseBodyMs": 0,
+              "protocol": "h2"
+            }
+          },
+          {
+            "requestedBytes": 1024,
+            "ordinal": 2,
+            "startUnixMs": 1792368873086,
+            "status": 200,
+            "contentType": "application/octet-stream",
+            "contentEncoding": null,
+            "bytes": 1024,
+            "headersMs": 34,
+            "firstBodyMs": 34,
+            "bodyMs": 0,
+            "totalMs": 34,
+            "ok": true,
+            "resource": {
+              "dnsMs": 0,
+              "connectMs": 0,
+              "requestToResponseMs": 25,
+              "responseBodyMs": 0,
+              "protocol": "h2"
+            }
+          },
+          {
+            "requestedBytes": 1024,
+            "ordinal": 3,
+            "startUnixMs": 1792368873121,
+            "status": 200,
+            "contentType": "application/octet-stream",
+            "contentEncoding": null,
+            "bytes": 1024,
+            "headersMs": 53,
+            "firstBodyMs": 53,
+            "bodyMs": 0,
+            "totalMs": 53,
+            "ok": true,
+            "resource": {
+              "dnsMs": 0,
+              "connectMs": 0,
+              "requestToResponseMs": 41,
+              "responseBodyMs": 1,
+              "protocol": "h2"
+            }
+          },
+          {
+            "requestedBytes": 1024,
+            "ordinal": 4,
+            "startUnixMs": 1792368873175,
+            "status": 200,
+            "contentType": "application/octet-stream",
+            "contentEncoding": null,
+            "bytes": 1024,
+            "headersMs": 34.99999999999909,
+            "firstBodyMs": 34.99999999999909,
+            "bodyMs": 0,
+            "totalMs": 34.99999999999909,
+            "ok": true,
+            "resource": {
+              "dnsMs": 0,
+              "connectMs": 0,
+              "requestToResponseMs": 25,
+              "responseBodyMs": 1,
+              "protocol": "h2"
+            }
+          },
+          {
+            "requestedBytes": 2097152,
+            "ordinal": 5,
+            "startUnixMs": 1792368873210,
+            "status": 200,
+            "contentType": "application/octet-stream",
+            "contentEncoding": null,
+            "bytes": 2097152,
+            "headersMs": 34,
+            "firstBodyMs": 89.00000000000091,
+            "bodyMs": 532.9999999999991,
+            "totalMs": 622,
+            "ok": true,
+            "resource": {
+              "dnsMs": 0,
+              "connectMs": 0,
+              "requestToResponseMs": 25,
+              "responseBodyMs": 594,
+              "protocol": "h2"
+            }
+          },
+          {
+            "requestedBytes": 2097152,
+            "ordinal": 6,
+            "startUnixMs": 1792368873834,
+            "status": 200,
+            "contentType": "application/octet-stream",
+            "contentEncoding": null,
+            "bytes": 2097152,
+            "headersMs": 81.00000000000182,
+            "firstBodyMs": 138,
+            "bodyMs": 120,
+            "totalMs": 258,
+            "ok": true,
+            "resource": {
+              "dnsMs": 0,
+              "connectMs": 0,
+              "requestToResponseMs": 61,
+              "responseBodyMs": 192,
+              "protocol": "h2"
+            }
+          },
+          {
+            "requestedBytes": 2097152,
+            "ordinal": 7,
+            "startUnixMs": 1792368874094,
+            "status": 200,
+            "contentType": "application/octet-stream",
+            "contentEncoding": null,
+            "bytes": 2097152,
+            "headersMs": 94,
+            "firstBodyMs": 148.00000000000182,
+            "bodyMs": 122.99999999999818,
+            "totalMs": 271,
+            "ok": true,
+            "resource": {
+              "dnsMs": 0,
+              "connectMs": 0,
+              "requestToResponseMs": 75,
+              "responseBodyMs": 192,
+              "protocol": "h2"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "playbackWindows": [
+    {
+      "case": "wifi-s19-file-current-baseline",
+      "sample": "S19",
+      "entry": "device file",
+      "networkIntent": "WiFi no shaping",
+      "initialInternalClockSecondsFromTouch": 8.866827,
+      "meaning": "internal clock/engine signal, not first visible frame",
+      "seeks": [
+        {
+          "start": {
+            "secondsFromTouch": 33.037429,
+            "event": "seek_started",
+            "fields": {
+              "engine": "KSPlayer",
+              "seekDeltaSeconds": 6732.315411483764,
+              "seekTargetSeconds": 6734.415411483765
+            }
+          },
+          "signals": [],
+          "recoveryMs": null,
+          "censoredAfterSeconds": 45.848,
+          "meaning": "engine completion and advancing clock, not first visible frame"
+        }
+      ],
+      "maxStallCountIncludingSeek": 1,
+      "URLMetricsCount": 4,
+      "URLMetricsCellularYes": 0,
+      "URLMetricsCellularNo": 4,
+      "ordinaryExit": {
+        "normalUIExit": true,
+        "requestedSeekWindowSeconds": 30,
+        "performanceAccepted": false,
+        "sourceSHA256": "e78a756b5cea1d7ac31e8858e1d77beb8fe0308c09e1e05799accdd5d9f742ae"
+      },
+      "visualReview": {
+        "actuallyViewed": [
+          "t3.png",
+          "deep-seek-t3.png",
+          "t30.png",
+          "deep-seek-t30.png"
+        ],
+        "observations": [
+          "t3 still in file preview with preparing indicator",
+          "seek+3 black spinner, 460KB/s, play triangle, target around1:52:14",
+          "t30 black with spinner and 74KB/s",
+          "seek+30 black with spinner and 0KB/s, play triangle at1:52:14; retained failure"
+        ],
+        "screenFirstFrameAccepted": false,
+        "continuousSmoothnessAccepted": false,
+        "soundAccepted": false,
+        "firstScreenFrameAccepted": false,
+        "fullSubtitlesSoundSmoothnessAccepted": false
+      },
+      "performanceAccepted": false,
+      "actualOutput": {
+        "engine": "KSPlayer",
+        "route": "private LAN original"
+      }
+    },
+    {
+      "case": "cellular-s19-file-measured-path",
+      "sample": "S19",
+      "entry": "device file",
+      "networkIntent": "real cellular WiFi off; no shaping",
+      "initialInternalClockSecondsFromTouch": 4.266384,
+      "meaning": "internal clock/engine signal, not first visible frame",
+      "seeks": [
+        {
+          "start": {
+            "secondsFromTouch": 47.928852,
+            "event": "seek_started",
+            "fields": {
+              "engine": "AVPlayer",
+              "seekDeltaSeconds": 6748.100677339932,
+              "seekTargetSeconds": 6783.601774457932
+            }
+          },
+          "signals": [
+            {
+              "secondsFromTouch": 55.303465,
+              "event": "seek_engine_completed",
+              "fields": {
+                "engine": "AVPlayer",
+                "targetSeconds": 6783.601774457932
+              }
+            },
+            {
+              "secondsFromTouch": 55.841521,
+              "event": "seek_recovered",
+              "fields": {
+                "currentSeconds": 6784.004020877,
+                "engine": "AVPlayer",
+                "evidence": "engineCompletionAndAdvancingClock",
+                "seekRecoveryMs": 7931,
+                "seekTargetSeconds": 6783.601774457932
+              }
+            }
+          ],
+          "recoveryMs": 7931,
+          "censoredAfterSeconds": null,
+          "meaning": "engine completion and advancing clock, not first visible frame"
+        }
+      ],
+      "maxStallCountIncludingSeek": 2,
+      "URLMetricsCount": 27,
+      "URLMetricsCellularYes": 27,
+      "URLMetricsCellularNo": 0,
+      "ordinaryExit": {
+        "normalUIExit": true,
+        "requestedSeekWindowSeconds": 30,
+        "performanceAccepted": false,
+        "sourceSHA256": "e78a756b5cea1d7ac31e8858e1d77beb8fe0308c09e1e05799accdd5d9f742ae"
+      },
+      "visualReview": {
+        "actuallyViewed": [
+          "t10.png",
+          "t30.png",
+          "t45.png",
+          "deep-seek-t3.png",
+          "deep-seek-t30.png"
+        ],
+        "observations": [
+          "t10 video frame with buffering 5.3MB/s",
+          "t30 black frame controls position00:18 pause icon and unknown speed",
+          "t45 black without controls; not alone proof of frozen picture",
+          "seek+3 black spinner 0KB/s target1:53:03",
+          "seek+30 mountain and ring film frame; sparse observation does not prove complete smoothness"
+        ],
+        "firstScreenFrameAccepted": false,
+        "fullSubtitlesSoundSmoothnessAccepted": false
+      },
+      "performanceAccepted": false,
+      "segmentPhases": {
+        "candidateFirstSegment": {
+          "issuedFromTouchSeconds": 21.364862,
+          "identityMatchedBy": "private transferID and upstreamTaskIndex",
+          "metrics": {
+            "segmentOrdinal": 2,
+            "upstreamIssueToFirstBodyCallbackMs": 3835,
+            "lastResponseBodyMs": 2734,
+            "upstreamTaskBodyBytes": 8634088,
+            "totalMs": 6568,
+            "proxyBackpressureMs": 0,
+            "proxySuspendCount": 0
+          },
+          "completedFromTouchSeconds": 27.938144
+        },
+        "seekFirstSegment": {
+          "issuedFromTouchSeconds": 47.931304,
+          "identityMatchedBy": "private transferID and upstreamTaskIndex",
+          "metrics": {
+            "segmentOrdinal": 1692,
+            "upstreamIssueToFirstBodyCallbackMs": 2941,
+            "lastResponseBodyMs": 1908,
+            "upstreamTaskBodyBytes": 10257092,
+            "totalMs": 4848,
+            "proxyBackpressureMs": 0,
+            "proxySuspendCount": 0
+          },
+          "completedFromTouchSeconds": 52.787031,
+          "requestAfterSeekMs": 2.452,
+          "firstSegmentCompletionToInternalRecoverySeconds": 3.05449
+        }
+      },
+      "actualOutput": {
+        "engine": "AVPlayer",
+        "container": "HLS",
+        "requestedBitrate": 20000000,
+        "actualSourceAudioIndex": 1,
+        "subtitle": {
+          "disabled": true
+        }
+      },
+      "handoffCommitFromTouchSeconds": 29.824644
+    },
+    {
+      "case": "cellular-s19-jf-measured-path",
+      "sample": "S19",
+      "entry": "Jellyfin",
+      "networkIntent": "real cellular WiFi off; no shaping",
+      "initialInternalClockSecondsFromTouch": 3.681101,
+      "meaning": "internal clock/engine signal, not first visible frame",
+      "seeks": [
+        {
+          "start": {
+            "secondsFromTouch": 48.550021,
+            "event": "seek_started",
+            "fields": {
+              "engine": "AVPlayer",
+              "seekDeltaSeconds": 6747.600715451932,
+              "seekTargetSeconds": 6783.601774457932
+            }
+          },
+          "signals": [
+            {
+              "secondsFromTouch": 54.242668,
+              "event": "seek_engine_completed",
+              "fields": {
+                "engine": "AVPlayer",
+                "targetSeconds": 6783.601774457932
+              }
+            },
+            {
+              "secondsFromTouch": 54.690065,
+              "event": "seek_recovered",
+              "fields": {
+                "currentSeconds": 6784.001299189,
+                "engine": "AVPlayer",
+                "evidence": "engineCompletionAndAdvancingClock",
+                "seekRecoveryMs": 6163,
+                "seekTargetSeconds": 6783.601774457932
+              }
+            }
+          ],
+          "recoveryMs": 6163,
+          "censoredAfterSeconds": null,
+          "meaning": "engine completion and advancing clock, not first visible frame"
+        }
+      ],
+      "maxStallCountIncludingSeek": 2,
+      "URLMetricsCount": 27,
+      "URLMetricsCellularYes": 27,
+      "URLMetricsCellularNo": 0,
+      "ordinaryExit": {
+        "normalUIExit": true,
+        "requestedSeekWindowSeconds": 30,
+        "performanceAccepted": false,
+        "sourceSHA256": "e78a756b5cea1d7ac31e8858e1d77beb8fe0308c09e1e05799accdd5d9f742ae"
+      },
+      "visualReview": {
+        "actuallyViewed": [
+          "t10.png",
+          "deep-seek-t3.png",
+          "deep-seek-t30.png"
+        ],
+        "observations": [
+          "t10 actual video with buffering, 3.6MB/s",
+          "seek+3 black with spinner, 0KB/s and previous opening cue; old subtitle issue remains",
+          "seek+30 mountain and ring film frame, no visible spinner in this sparse frame"
+        ],
+        "firstScreenFrameAccepted": false,
+        "fullSubtitlesSoundSmoothnessAccepted": false
+      },
+      "performanceAccepted": false,
+      "segmentPhases": {
+        "candidateFirstSegment": {
+          "issuedFromTouchSeconds": 10.798024,
+          "identityMatchedBy": "private transferID and upstreamTaskIndex",
+          "metrics": {
+            "segmentOrdinal": 1,
+            "upstreamIssueToFirstBodyCallbackMs": 3142,
+            "lastResponseBodyMs": 2014,
+            "upstreamTaskBodyBytes": 4480416,
+            "totalMs": 5154,
+            "proxyBackpressureMs": 0,
+            "proxySuspendCount": 0
+          },
+          "completedFromTouchSeconds": 15.971709
+        },
+        "seekFirstSegment": {
+          "issuedFromTouchSeconds": 48.552448,
+          "identityMatchedBy": "private transferID and upstreamTaskIndex",
+          "metrics": {
+            "segmentOrdinal": 1692,
+            "upstreamIssueToFirstBodyCallbackMs": 3261,
+            "lastResponseBodyMs": 1014,
+            "upstreamTaskBodyBytes": 5023924,
+            "totalMs": 4272,
+            "proxyBackpressureMs": 0,
+            "proxySuspendCount": 0
+          },
+          "completedFromTouchSeconds": 52.820454,
+          "requestAfterSeekMs": 2.427,
+          "firstSegmentCompletionToInternalRecoverySeconds": 1.869611
+        }
+      },
+      "actualOutput": {
+        "engine": "AVPlayer",
+        "container": "HLS",
+        "requestedBitrate": 10000000,
+        "actualSourceAudioIndex": 1,
+        "subtitle": {
+          "index": 8,
+          "method": "Encode"
+        }
+      },
+      "handoffCommitFromTouchSeconds": 14.827921
+    }
+  ],
+  "caveats": [
+    "single playback window per condition; unknown media/server cache; not counterbalanced",
+    "this LAN window failed and seek target differs from cellular; do not pool with earlier LAN pass",
+    "all durations internal unless explicitly visual; no full sound/subtitle/smoothness acceptance",
+    "short throughput not sustained capacity or radio RSRP/RSRQ/SINR evidence"
+  ],
+  "cleanup": {
+    "wifi": {
+      "originalWiFiSwitch": "1",
+      "shapingRequested": false,
+      "phoneVPNChanged": false,
+      "MacVPNChanged": false,
+      "at": "2026-10-19T08:22:29.738383+08:00",
+      "actualWiFiSwitch": "1",
+      "restored": true,
+      "nativeElementClickVerified": true,
+      "actualWiFiConnected": true,
+      "originalNetworkActuallyReviewed": true,
+      "connectedNetworkCheckmarkAndStatusIconReviewed": true,
+      "SSIDPublished": false
+    },
+    "audit": {
+      "at": "2026-10-19T08:22:49.155314+08:00",
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "connection": "USB",
+      "sourceDiffSHA256": "e78a756b5cea1d7ac31e8858e1d77beb8fe0308c09e1e05799accdd5d9f742ae",
+      "latestPackage": {
+        "Nastart": "ac2b24d581b1e61b1cf8b031aaac7b39f9b77cf8146681b3a3579a36290725b1",
+        "Nastart.debug.dylib": "b4805e82313a2b939d1195ed70494723c116dd72179a58dd515233d608d86647",
+        "Frameworks/KSPlayer.framework/KSPlayer": "c9abcf7de82104759edab22db9e8bf8d410b2319b62a6a3163a328a5be3389f1"
+      },
+      "nonBookmarkPreferenceKeys": 24,
+      "nonBookmarkPreferencesExactlyUnchanged": true,
+      "naturalBookmarkChangesCount": 2,
+      "originalBookmarksChecked": 36,
+      "originalBookmarksRemoved": 0,
+      "originalTrackChangeCount": 0,
+      "allOriginalTracksUnchanged": true,
+      "newBookmarksCount": 0,
+      "crashInventoryDelta": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      },
+      "normalEmptyEnvironment": true,
+      "NASNormal": true,
+      "playerClosed": true,
+      "WDAIdleSeconds": 10,
+      "WDAAnimationCoolOffSeconds": 2,
+      "nativeConditionsNotRecheckedThisTurn": false,
+      "noConditionInjectedThisTurn": true,
+      "nativeActiveConditions": 0,
+      "finalHomeActuallyReviewed": true,
+      "playerClosedActuallyReviewed": true,
+      "postCleanupHomeActuallyReviewed": true
+    },
+    "browser": {
+      "at": "2026-10-19T08:22:27.733184+08:00",
+      "ownProbeTabsClosed": 2,
+      "previouslyVisibleUserTabsStillPresent": true,
+      "visibleUserTabsAfter": 6,
+      "fullUserTabCountUnknown": true,
+      "virtualizedTabCountAssertionFailedThenReviewed": true
+    },
+    "serverFinal": {
+      "at": "2026-10-19T08:23:09.256772+08:00",
+      "readOnly": true,
+      "exactIPhone13DeviceMatched": true,
+      "nowPlayingPresent": false,
+      "transcodingInfoPresent": true,
+      "transcoding": {
+        "AudioCodec": "aac",
+        "VideoCodec": "h264",
+        "Container": "ts",
+        "IsVideoDirect": false,
+        "IsAudioDirect": false,
+        "Bitrate": 10000000,
+        "Width": 1920,
+        "Height": 1080,
+        "AudioChannels": 6,
+        "TranscodeReasons": [
+          "ContainerBitrateExceedsLimit"
+        ]
+      },
+      "paused": false,
+      "positionSeconds": 0.0
+    },
+    "power": {
+      "start": "2026-10-19 07:46:00",
+      "end": "2026-10-19 08:23:17",
+      "powerEventCount": 0,
+      "powerEventTypes": [],
+      "filter": "pmset log timestamp range; actual Sleep/Wake/DarkWake event columns, not assertion names"
+    },
+    "ownCaffeinateStopped": true,
+    "originalIPhone13PersistentWDAServicePreserved": true
+  },
+  "acceptance": "all 28 requirements remain open"
+}

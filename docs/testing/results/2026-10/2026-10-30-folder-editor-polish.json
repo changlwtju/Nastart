@@ -1,0 +1,117 @@
+{
+  "recordedAt": "2026-10-30T05:50:30+08:00",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceInputCount": 435,
+  "changedExistingSourceFiles": 5,
+  "testsPassed": 22,
+  "newTests": 1,
+  "testsBySuite": {
+    "LibraryFolderEditingTests": 10,
+    "SavedConnectionTests": 8,
+    "OfflineUIScenarioTests": 4
+  },
+  "builds": {
+    "module-tests": {
+      "startedAt": "2026-10-30T05:40:14.295105+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T05:40:16.635097+08:00"
+    },
+    "mobile-sim-debug-cast": {
+      "startedAt": "2026-10-30T05:40:14.295085+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T05:40:30.604047+08:00"
+    },
+    "tv-sim-debug-cast": {
+      "startedAt": "2026-10-30T05:40:14.295057+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T05:40:24.509192+08:00"
+    },
+    "mobile-debug": {
+      "startedAt": "2026-10-30T05:41:50.026408+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T05:44:07.566201+08:00"
+    },
+    "tv-debug": {
+      "startedAt": "2026-10-30T05:41:50.026469+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T05:43:05.921377+08:00"
+    },
+    "mobile-release": {
+      "startedAt": "2026-10-30T05:44:07.567705+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T05:46:32.170370+08:00"
+    },
+    "tv-release": {
+      "startedAt": "2026-10-30T05:43:05.923337+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T05:44:18.708770+08:00"
+    }
+  },
+  "captures": {
+    "accepted": 12,
+    "byPlatform": {
+      "phone": 4,
+      "pad": 4,
+      "tv": 4
+    },
+    "allPassed": true,
+    "initialFailedOCRWindowRetained": true,
+    "failedWindowOnlyRetried": true,
+    "allOwnedSimulatorsDeleted": true,
+    "syntheticPreferencesPreserved": true,
+    "fullFormInteractionVerified": false
+  },
+  "sourcePreservation": {
+    "relocateTransactionSuffixUnchanged": true,
+    "connectionEditorAndPickerUnchanged": true,
+    "folderStoreTransactionUnchanged": true
+  },
+  "packages": {
+    "mobile": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-30T05:44:06.969952+08:00",
+      "frozenAt": "2026-10-30T05:47:49.650823+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 435,
+      "mainSHA256": "b105c32703fb02bd2298fac895da51f8e908c15fb0229d5158ed26434d6c8a75",
+      "debugDylibSHA256": "c70b25d045a2b6e2ea4f694a81113bdca8318763fbcc8ee41f348bd5cbd08d6a",
+      "signedMachOCount": 30,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false
+    },
+    "tv": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-30T05:43:05.549944+08:00",
+      "frozenAt": "2026-10-30T05:47:53.394938+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 435,
+      "mainSHA256": "b3a353fe1c099d726c3af75c4d6c34a24e0e4e2bafc21fb9f620953ec70de316",
+      "debugDylibSHA256": "ef50299b3263a67ae7cbb9a56dee935b540adf29ce4ba0532bcb01fe065e1f59",
+      "signedMachOCount": 27,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false
+    }
+  },
+  "ownedSimulatorsDeleted": 4,
+  "supersededUninstalledBundleCopiesRemoved": 6,
+  "physicalDevicesOperated": 0,
+  "NASCommands": 0,
+  "playbackCommands": 0,
+  "privateEvidencePointer": "current-folder-editor-polish-private",
+  "notVerified": [
+    "Production folder browser, editing transaction or Keychain",
+    "Actual confirmation/cancel/keyboard/remote focus interaction",
+    "Offscreen actions in large-text top-of-form screenshots",
+    "Real media source images/return flicker/playback"
+  ]
+}

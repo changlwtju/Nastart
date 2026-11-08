@@ -1,0 +1,296 @@
+{
+  "date": "2026-10-25",
+  "HEAD": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "dirtyWorktreePreserved": true,
+  "designAuthority": "iPhone/iPad; shared AppTheme.swift compiled by both targets",
+  "tv": {
+    "configuration": "normal Debug",
+    "sourceInputs": 510,
+    "mainBinarySHA256": "70901e1953d3a743c9f16067721652711e64f3ba310402ade1a2323316fc21d1",
+    "signedMachOCount": 27,
+    "installedAt": "2026-10-25T09:18:52.044348+08:00",
+    "installationExit": 0,
+    "normalEnvironment": {},
+    "normalArguments": [],
+    "focus": {
+      "at": "2026-10-25T09:20:28.457806+08:00",
+      "tabSelectCommands": 0,
+      "steps": [
+        {
+          "direction": "right",
+          "expectedTab": "devices",
+          "focusAfterTwoSeconds": "tv.tab.devices",
+          "focusCorrect": true,
+          "renderVerification": "native screenshot saved; AX visibility excluded due retained-stack stale visibility"
+        },
+        {
+          "direction": "right",
+          "expectedTab": "tasks",
+          "focusAfterTwoSeconds": "tv.tab.tasks",
+          "focusCorrect": true,
+          "renderVerification": "native screenshot saved; AX visibility excluded due retained-stack stale visibility"
+        },
+        {
+          "direction": "right",
+          "expectedTab": "mine",
+          "focusAfterTwoSeconds": "tv.tab.mine",
+          "focusCorrect": true,
+          "renderVerification": "native screenshot saved; AX visibility excluded due retained-stack stale visibility"
+        },
+        {
+          "direction": "left",
+          "expectedTab": "tasks",
+          "focusAfterTwoSeconds": "tv.tab.tasks",
+          "focusCorrect": true,
+          "renderVerification": "native screenshot saved; AX visibility excluded due retained-stack stale visibility"
+        },
+        {
+          "direction": "left",
+          "expectedTab": "devices",
+          "focusAfterTwoSeconds": "tv.tab.devices",
+          "focusCorrect": true,
+          "renderVerification": "native screenshot saved; AX visibility excluded due retained-stack stale visibility"
+        },
+        {
+          "direction": "left",
+          "expectedTab": "launchpad",
+          "focusAfterTwoSeconds": "tv.tab.launchpad",
+          "focusCorrect": true,
+          "renderVerification": "native screenshot saved; AX visibility excluded due retained-stack stale visibility"
+        }
+      ],
+      "initialFocus": "tv.tab.launchpad",
+      "downCanEnterBody": true,
+      "upReturnFocus": "tv.tab.launchpad"
+    },
+    "navigation": {
+      "checks": [
+        {
+          "case": "help-no-return-row",
+          "focusedTypes": [
+            "XCUIElementTypeButton"
+          ],
+          "duplicateBackRowAbsent": true,
+          "nativeScreenshotSaved": true
+        },
+        {
+          "case": "help-topic-no-return-row",
+          "focusedTypes": [
+            "XCUIElementTypeStaticText"
+          ],
+          "duplicateBackRowAbsent": true,
+          "nativeScreenshotSaved": true
+        },
+        {
+          "case": "help-topic-to-help",
+          "focusedTypes": [
+            "XCUIElementTypeButton"
+          ],
+          "duplicateBackRowAbsent": true,
+          "nativeScreenshotSaved": true
+        },
+        {
+          "case": "help-to-mine",
+          "focusedTypes": [
+            "XCUIElementTypeButton"
+          ],
+          "duplicateBackRowAbsent": true,
+          "nativeScreenshotSaved": true
+        },
+        {
+          "case": "network-no-return-row",
+          "focusedTypes": [
+            "XCUIElementTypeStaticText"
+          ],
+          "duplicateBackRowAbsent": true,
+          "nativeScreenshotSaved": true
+        },
+        {
+          "case": "network-to-devices",
+          "focusedTypes": [
+            "XCUIElementTypeButton"
+          ],
+          "duplicateBackRowAbsent": true,
+          "nativeScreenshotSaved": true
+        },
+        {
+          "case": "files-no-return-row",
+          "focusedTypes": [
+            "XCUIElementTypeButton"
+          ],
+          "duplicateBackRowAbsent": true,
+          "nativeScreenshotSaved": true
+        },
+        {
+          "case": "sort-no-return-row",
+          "focusedTypes": [
+            "XCUIElementTypeButton"
+          ],
+          "duplicateBackRowAbsent": true,
+          "nativeScreenshotSaved": true
+        },
+        {
+          "case": "sort-to-files",
+          "focusedTypes": [
+            "XCUIElementTypeButton"
+          ],
+          "duplicateBackRowAbsent": true,
+          "nativeScreenshotSaved": true
+        },
+        {
+          "case": "files-to-devices",
+          "focusedTypes": [
+            "XCUIElementTypeButton"
+          ],
+          "duplicateBackRowAbsent": true,
+          "nativeScreenshotSaved": true
+        },
+        {
+          "case": "library-no-return-row",
+          "focusedTypes": [
+            "XCUIElementTypeButton"
+          ],
+          "duplicateBackRowAbsent": true,
+          "nativeScreenshotSaved": true
+        },
+        {
+          "case": "detail-no-return-row-and-play-focused",
+          "focusedTypes": [
+            "XCUIElementTypeButton"
+          ],
+          "duplicateBackRowAbsent": true,
+          "nativeScreenshotSaved": true
+        }
+      ],
+      "renderedImagesInspected": [
+        "help-topic-to-help",
+        "s01-focused-before-play",
+        "final-normal-10"
+      ]
+    },
+    "testsExit": 0,
+    "tests": {
+      "logic": 35,
+      "noMediaPlayerUI": 3
+    },
+    "JFWindow": {
+      "startedAt": "2026-10-25T09:23:42.480786+08:00",
+      "environment": {},
+      "arguments": [],
+      "sample": "S01",
+      "entry": "Jellyfin",
+      "engine": "AVPlayer (existing TV route)",
+      "PlayCommands": 1,
+      "MenuCommands": 2,
+      "normalReturn": false,
+      "captures": [
+        {
+          "targetSeconds": 3,
+          "requestedAtSeconds": 3.002249917,
+          "returnedAtSeconds": 4.506073042000001
+        },
+        {
+          "targetSeconds": 10,
+          "requestedAtSeconds": 10.002275584000001,
+          "returnedAtSeconds": 10.606250875
+        }
+      ],
+      "audio": "not listened",
+      "completeSubtitles": "not verified",
+      "frameTiming": "not measured",
+      "network": "existing home LAN; no settings changed",
+      "playAt": "2026-10-25T09:23:43.929620+08:00",
+      "selectReply": "completed",
+      "focusAfterMenu": [
+        {
+          "type": "XCUIElementTypeButton",
+          "identifier": "tv.play"
+        }
+      ],
+      "sameProcess": true,
+      "finishedAt": "2026-10-25T09:24:04.693731+08:00",
+      "instantaneousDetailAfterSecondMenu": true,
+      "firstMenuNativeImage": "movie still visible, not black",
+      "secondMenuNativeImage": "detail visible with highlighted play button",
+      "laterReturnFollowup": "A later Menu intended to leave detail instead captured active full-screen playback; stable dismissal NOT confirmed",
+      "ordinaryExitAccepted": false,
+      "laterFollowupObservedAt": "2026-10-25T09:28:39.767364+08:00",
+      "cleanup": "normal-final-home performs intentional owned-App restart to stop all media; receipt separate"
+    },
+    "settingsRestored": {
+      "verified": true,
+      "at": "2026-10-25T09:26:18.090619+08:00"
+    },
+    "runner": {
+      "startedAt": "2026-10-25T09:19:20.792803+08:00",
+      "limitSeconds": 600,
+      "runnerStopped": true,
+      "finishedAt": "2026-10-25T09:26:18.980658+08:00"
+    },
+    "preferences": {
+      "at": "2026-10-25T09:28:08.595907+08:00",
+      "beforeKeys": 10,
+      "afterKeys": 10,
+      "changedKeys": [],
+      "sourceDrift": 0,
+      "sourceDriftTV": 0
+    },
+    "mediaPageReturnFollowup": {
+      "steps": [],
+      "passed": false,
+      "failure": "First detail-to-search Menu observed player surface instead of search parent",
+      "nativeImageInspected": true,
+      "stablePlayerDismissal": false
+    },
+    "finalNormalLaunch": {
+      "startedAt": "2026-10-25T09:27:53.661801+08:00",
+      "environment": {},
+      "arguments": [],
+      "mediaCommands": 0,
+      "PID": 2667,
+      "nativeImagesCaptured": true,
+      "finishedAt": "2026-10-25T09:28:07.503578+08:00"
+    },
+    "nativeImagesActuallyInspected": [
+      "help-topic-to-help",
+      "s01-focused-before-play",
+      "jf-play-10",
+      "jf-exit-0",
+      "jf-exit-1",
+      "detail-to-search",
+      "final-normal-10"
+    ],
+    "stableMediaDismissalAccepted": false,
+    "sharedUIDelivery": "installed and limited real-device UI checks passed; not all pages"
+  },
+  "mobile": {
+    "configuration": "normal Debug",
+    "sourceInputs": 570,
+    "signedMachOCount": 30,
+    "iPhone13": "shared design package installed and normal Mine screenshot inspected",
+    "iPhone18": "07:33 wired refresh succeeded; later shared design package NOT installed because device disappeared from USB before install",
+    "iPad": "absent; no current install/regression; prior device Runner/settings cleanup remains unverified"
+  },
+  "limitations": [
+    "Full page/three-device design parity incomplete",
+    "iPhone18 actual DSM LAN route issue paused by user",
+    "Real CloudKit unavailable with free signing; TV sync not implemented",
+    "AV/JF one-Menu exit not accepted from no-media fixtures",
+    "28 requirements and 114 matrix cells remain open",
+    "No audio listening or complete subtitle/frame-time acceptance"
+  ],
+  "historicalFailuresRetained": [
+    "AX hidden-stack stale visibility: prior 21/12 node checks not rendered PASS",
+    "First JF exit tree-only success corrected to native black surface failure",
+    "First explicit-close fix needed two Menu presses",
+    "Strong callback priority-stage real media attempt aborted at start-focus guard with zero Play",
+    "TV iOS-only semantic-color and mobile circular-alias build failures repaired before installation",
+    "Earlier Runner settings restore timeout kept; later priority cleanup GET verified and Runner stopped"
+  ],
+  "documentationCheck": {
+    "documents": 441,
+    "localLinks": 2527,
+    "missingDestinations": 0
+  },
+  "diffCheck": "passed"
+}

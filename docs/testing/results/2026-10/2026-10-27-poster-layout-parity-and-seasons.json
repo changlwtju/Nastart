@@ -1,0 +1,282 @@
+{
+  "recordedAt": "2026-10-27T10:31:19.616983+08:00",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "dirtyPreserved": true,
+  "sourceInputCount": 393,
+  "moduleTests": {
+    "executed": 113,
+    "failures": 0,
+    "firstFullRunTimeoutSeconds": 120,
+    "firstTimeoutRetained": true,
+    "timedOutOwnHostProcessStopped": true
+  },
+  "sourceChanges": [
+    "shared MediaPosterGridLayout for Jellyfin collection/search and network poster wall",
+    "phone 3 columns and readable narrow/accessibility fallback; tablet 960 content cap",
+    "tvOS reuses saved 3/4/5 density and common gaps; current density remains 5",
+    "fixed poster canvases and title slots",
+    "TV search opens on request; initial poster focus",
+    "empty series after reclassification uses empty current content, not stale fallback"
+  ],
+  "builds": {
+    "mobile": {
+      "mainSHA256": "fa4c989c074b352120a7de259667bf1aac9aa4a58413b5085a5fde54d2960599",
+      "builtAt": "2026-10-27T09:19:58.496372+08:00",
+      "configuration": "Debug",
+      "sourceInputCount": 393,
+      "signedMachOCount": 30
+    },
+    "tv": {
+      "mainSHA256": "831f473ba9c8edb3bd058e12b5ff01aa88b462e3cc937eef64bada57101be2e2",
+      "builtAt": "2026-10-27T09:19:52.485141+08:00",
+      "configuration": "Debug",
+      "sourceInputCount": 393,
+      "signedMachOCount": 27
+    }
+  },
+  "devices": {
+    "ipad": {
+      "installation": {
+        "at": "2026-10-27T09:21:57.049818+08:00",
+        "packageSHA256": "fa4c989c074b352120a7de259667bf1aac9aa4a58413b5085a5fde54d2960599",
+        "configuration": "Debug",
+        "preserveData": true,
+        "freshIdentityConnected": true,
+        "preferencesBackedUp": true,
+        "exitCode": 0,
+        "installComplete": true,
+        "installedAt": "2026-10-27T09:22:02.418796+08:00",
+        "preferences": {
+          "beforeKeys": 19,
+          "afterKeys": 19,
+          "sameKeys": true,
+          "changedValues": 0,
+          "allNonDiagnosticPreferencesEqual": true
+        }
+      },
+      "finalPreferences": {
+        "beforeKeys": 19,
+        "afterKeys": 19,
+        "sameKeys": true,
+        "changedValues": 0,
+        "allNonDiagnosticPreferencesEqual": true
+      },
+      "originalIndex": {
+        "originalSnapshotEqual": true,
+        "libraryCount": 1,
+        "fileCount": 3408,
+        "noExtraLibraries": true
+      },
+      "ordinaryLaunchEmptyArgsEnvironment": true
+    },
+    "iphone13": {
+      "installation": {
+        "at": "2026-10-27T09:21:57.046597+08:00",
+        "packageSHA256": "fa4c989c074b352120a7de259667bf1aac9aa4a58413b5085a5fde54d2960599",
+        "configuration": "Debug",
+        "preserveData": true,
+        "preferencesBackedUp": true,
+        "exitCode": 0,
+        "installComplete": true,
+        "installedAt": "2026-10-27T09:22:12.903417+08:00",
+        "preferences": {
+          "beforeKeys": 26,
+          "afterKeys": 26,
+          "sameKeys": true,
+          "changedValues": 0,
+          "allNonDiagnosticPreferencesEqual": true
+        }
+      },
+      "finalPreferences": {
+        "beforeKeys": 26,
+        "afterKeys": 26,
+        "sameKeys": true,
+        "changedValues": 0,
+        "allNonDiagnosticPreferencesEqual": true
+      },
+      "originalIndex": {
+        "originalSnapshotEqual": true,
+        "libraryCount": 1,
+        "fileCount": 149,
+        "noExtraLibraries": true
+      },
+      "ordinaryLaunchEmptyArgsEnvironment": true
+    },
+    "tv": {
+      "installation": {
+        "at": "2026-10-27T09:21:57.049929+08:00",
+        "packageSHA256": "831f473ba9c8edb3bd058e12b5ff01aa88b462e3cc937eef64bada57101be2e2",
+        "configuration": "Debug",
+        "preserveData": true,
+        "freshIdentityConnected": true,
+        "preferencesBackedUp": true,
+        "exitCode": 0,
+        "installComplete": true,
+        "installedAt": "2026-10-27T09:22:03.728298+08:00",
+        "preferences": {
+          "beforeKeys": 15,
+          "afterKeys": 15,
+          "sameKeys": true,
+          "changedValues": 0,
+          "allNonDiagnosticPreferencesEqual": true
+        }
+      },
+      "finalPreferences": {
+        "beforeKeys": 15,
+        "afterKeys": 15,
+        "sameKeys": true,
+        "changedValues": 1,
+        "allNonDiagnosticPreferencesEqual": false
+      },
+      "originalIndex": {
+        "originalSnapshotEqual": true,
+        "libraryCount": 1,
+        "fileCount": 149,
+        "noExtraLibraries": true
+      },
+      "ordinaryLaunchEmptyArgsEnvironment": true
+    }
+  },
+  "layoutPairs": {
+    "iphone13Portrait": {
+      "jellyfin": 3,
+      "webdav": 3
+    },
+    "ipadLandscape": {
+      "jellyfin": 5,
+      "webdav": 5
+    },
+    "ipadPortrait": {
+      "jellyfin": 4,
+      "webdav": 4
+    },
+    "tvCurrentDensity": {
+      "jellyfin": 5,
+      "webdav": 5
+    },
+    "baseline": {
+      "iphone13": {
+        "jellyfin": 3,
+        "webdav": 2
+      },
+      "ipadLandscape": {
+        "jellyfin": 5,
+        "webdav": 6
+      },
+      "tv": {
+        "jellyfin": 5,
+        "webdav": 6,
+        "firstTopEdgeDetectorWasIncorrect": [
+          1,
+          2
+        ]
+      }
+    }
+  },
+  "originalIndexes": {
+    "ipad": {
+      "originalSnapshotEqual": true,
+      "libraryCount": 1,
+      "fileCount": 3408,
+      "noExtraLibraries": true
+    },
+    "iphone13": {
+      "originalSnapshotEqual": true,
+      "libraryCount": 1,
+      "fileCount": 149,
+      "noExtraLibraries": true
+    },
+    "tv": {
+      "originalSnapshotEqual": true,
+      "libraryCount": 1,
+      "fileCount": 149,
+      "noExtraLibraries": true
+    }
+  },
+  "noNewPlaybackMatrixPasses": true,
+  "requirements": {
+    "total": 30,
+    "inProgress": 14,
+    "pendingAcceptance": 5,
+    "notStarted": 11
+  },
+  "limits": [
+    "normal Debug only; no Release or frame timing/performance claim",
+    "iPhone18 away/hands off; package not installed there",
+    "split view and system accessibility sizes have policy tests, not native acceptance",
+    "TV real series path was reached but reuse/save/parent sheet control did not finish acceptance",
+    "native metadata correction/restore and last-episode reclassification still pending",
+    "independent network library playback, FTP/SMB still pending"
+  ],
+  "cleanup": {
+    "at": "2026-10-27T10:24:37.273928+08:00",
+    "ownMobileSessions": {
+      "ipad": {
+        "deleted": true,
+        "mayAffectAppLifecycle": true
+      },
+      "iphone13": {
+        "deleted": true,
+        "mayAffectAppLifecycle": true
+      }
+    },
+    "originalPhoneRunnersPreserved": true,
+    "TVRunner": {
+      "startedAt": "2026-10-27T10:04:43.829164+08:00",
+      "limitSeconds": 900,
+      "runnerStopped": true,
+      "finishedAt": "2026-10-27T10:19:49.057792+08:00"
+    },
+    "TVSettingsRestored": true,
+    "TVSettingsRestoredAt": "2026-10-27T10:19:48.451152+08:00"
+  },
+  "ipadOrientation": {
+    "orientationRestored": true,
+    "pairedPortraitAttempted": true,
+    "original": "LANDSCAPE",
+    "portraitReported": "PORTRAIT",
+    "driverExit": 0,
+    "restoredReported": "LANDSCAPE",
+    "restoredSceneLandscape": true
+  },
+  "phoneRealSeries": {
+    "device": "iphone13",
+    "actualNAS": true,
+    "sourceAdded": true,
+    "seriesReached": true,
+    "seasonReached": true,
+    "episodeReached": true,
+    "temporaryRemoved": true,
+    "mediaCommands": 0,
+    "remoteWrites": 0,
+    "savedLoginReused": true,
+    "packageSHA256": "fa4c989c074b352120a7de259667bf1aac9aa4a58413b5085a5fde54d2960599",
+    "seriesPosterVisible": 1,
+    "visibleSeasonOptions": 2,
+    "visibleEpisodeThumbnails": 7
+  },
+  "tvRealSeries": {
+    "status": "not_accepted",
+    "selectedRealFolderReached": true,
+    "sourceSaveConfirmationAndParentNavigationIncomplete": true,
+    "lastAttemptCouldNotStartAfterOwnedRunnerDeadline": true,
+    "finalNoTemporaryLibrary": true
+  },
+  "tvPreferenceDifference": {
+    "strictByteComparisonEqual": false,
+    "differentValueCount": 1,
+    "valueType": "catalog JSON Data",
+    "semanticJSONEqual": true,
+    "allOtherPreferencesEqual": true,
+    "densityUnchanged": true
+  },
+  "failureWindowsRetained": [
+    "host test timeout at pre-existing HTTP Basic case; retry full suite passed",
+    "TV first row detector ignored focus/label bounds; corrected using row centres and screenshots",
+    "TV media entry missing before asynchronous discovery; later ready-state pair passed",
+    "first iPad portrait driver started from wrong page; retry passed and orientation restored",
+    "reused connection button query lacked type filter",
+    "directory target not materialized below keyboard/lazy list; phone scrolling and later naming worked",
+    "TV longer list and reuse parent navigation unaccepted; tool deadline/refused connection retained"
+  ]
+}

@@ -14,10 +14,54 @@ import OSLog
 #if canImport(UIKit)
 import UIKit
 #endif
+/// Facts captured from the same decoded frame before the PiP transform runs.
+/// VideoToolbox does not expose AVFrame side data; its absence is not "none".
+public struct KSPictureInPictureFrameContext {
+    public let isDolbyVision: Bool
+    public let dolbyConfiguration: DOVIDecoderConfigurationRecord?
+    public let masteringDisplayData: Data?
+    public let masteringMaximumNits: Double?
+    public let hasStaticEDR: Bool
+    public let sideDataInspection: String
+    public let sideDataSizes: [String: Int]
+    public let compressedFormatDescription: CMFormatDescription?
+    public let displayFormatDescription: CMVideoFormatDescription
+
+    public init(isDolbyVision: Bool, dolbyConfiguration: DOVIDecoderConfigurationRecord? = nil,
+                masteringDisplayData: Data? = nil, masteringMaximumNits: Double? = nil,
+                hasStaticEDR: Bool, sideDataInspection: String,
+                sideDataSizes: [String: Int], compressedFormatDescription: CMFormatDescription?,
+                displayFormatDescription: CMVideoFormatDescription) {
+        self.isDolbyVision = isDolbyVision
+        self.dolbyConfiguration = dolbyConfiguration
+        self.masteringDisplayData = masteringDisplayData
+        self.masteringMaximumNits = masteringMaximumNits
+        self.hasStaticEDR = hasStaticEDR
+        self.sideDataInspection = sideDataInspection
+        self.sideDataSizes = sideDataSizes
+        self.compressedFormatDescription = compressedFormatDescription
+        self.displayFormatDescription = displayFormatDescription
+    }
+}
+
 open class KSOptions {
-    /// Frame handed to the display layer/Metal renderer, not compositor presentation.
+    #if DEBUG
+    /// Optional UI interaction trace. No URL, account or media identifiers.
+    public var viewInteractionObserved: ((String, [String: String]) -> Void)?
+    #endif
+    /// Renderer attempt callback; does not by itself prove output API submission.
     public var pictureInPictureFrameTransform: ((CVPixelBuffer, TimeInterval) -> CVPixelBuffer?)?
+    /// Preferred contextual transform. A nil result preserves the original frame;
+    /// it never falls through to a legacy transform after rejecting a frame.
+    public var pictureInPictureFrameTransformWithContext:
+        ((CVPixelBuffer, TimeInterval, KSPictureInPictureFrameContext) -> CVPixelBuffer?)?
+    /// Observation after a system PiP playback command has reached this player.
+    /// Values are captured synchronously; consumers marshal their own UI work.
+    public var pictureInPicturePlaybackChanged: ((Bool, Bool, TimeInterval, TimeInterval) -> Void)?
     public var videoFrameSubmitted: ((TimeInterval, Bool) -> Void)?
+    /// A forced preview accepted by the output API, rather than only attempted.
+    public var pausedSeekPreviewSubmitted: ((TimeInterval) -> Void)?
+    public let videoStartupTiming = KSVideoStartupTiming()
     /// Reports the video decoder actually selected, including fallback.
     public var videoDecoderSelected: ((String) -> Void)?
     /// Called after an embedded subtitle display set enters its render queue.
@@ -113,6 +157,9 @@ open class KSOptions {
     public internal(set) var openTime = 0.0
     public internal(set) var findTime = 0.0
     public internal(set) var readyTime = 0.0
+    public internal(set) var initialSeekStartTime = 0.0
+    public internal(set) var initialSeekEndTime = 0.0
+    public internal(set) var initialSeekResult: Int32?
     public internal(set) var readAudioTime = 0.0
     public internal(set) var readVideoTime = 0.0
     public internal(set) var decodeAudioTime = 0.0
@@ -689,5 +736,168 @@ public struct KSClock {
 
     func getTime() -> TimeInterval {
         time.seconds + CACurrentMediaTime() - lastMediaTime
+    }
+}
+
+/// One-shot startup diagnostics. Decode callbacks may arrive on other queues;
+/// an earlier prepare generation cannot populate a reset session's evidence.
+/// Output completion is an API boundary, never compositor/visible-frame proof.
+public final class KSVideoStartupTiming {
+    public enum Stage: String { case decodeInvocation, decodedCallback, acceptedFrame, outputAttempt, outputSubmitted }
+    public struct Sample {
+        public let time: TimeInterval
+        public let pts: TimeInterval
+        public let path: String
+    }
+    public enum Work: String { case demuxRead, videoDecodeCall, videoPutPacket, audioPutPacket }
+    public enum CapacityPhase: String { case firstPlayable, firstOutput }
+    public struct WorkSample {
+        public var calls = 0
+        public var seconds: TimeInterval = 0
+        public var maximumSeconds: TimeInterval = 0
+        public var clippedCalls = 0
+    }
+    public struct PacketSample {
+        public var count = 0
+        public var bytes = 0
+        public var firstPTS: TimeInterval?
+        public var lastPTS: TimeInterval?
+        public var firstKeyPTS: TimeInterval?
+    }
+    public struct CapacitySample {
+        public let media: String
+        public let packets: Int
+        public let frames: Int
+        public let maximumFrames: Int
+        public let fps: Float
+        public init(media: String, packets: Int, frames: Int, maximumFrames: Int, fps: Float) {
+            self.media = media; self.packets = packets; self.frames = frames
+            self.maximumFrames = maximumFrames; self.fps = fps
+        }
+    }
+    public struct CapacitySnapshot {
+        public let time: TimeInterval
+        public let tracks: [CapacitySample]
+    }
+    public struct Snapshot {
+        public let work: [Work: WorkSample]
+        public let packets: [String: PacketSample]
+        public let capacities: [CapacityPhase: CapacitySnapshot]
+        public let generation: UInt64
+        public let samples: [Stage: Sample]
+        public let discardedBeforeFirstAccepted: Int
+    }
+    private let lock = NSLock()
+    private var generation: UInt64 = 0
+    private var samples: [Stage: Sample] = [:]
+    private var discarded = 0
+    private var work: [Work: WorkSample] = [:]
+    private var packets: [String: PacketSample] = [:]
+    private var capacities: [CapacityPhase: CapacitySnapshot] = [:]
+
+    public init() {}
+    public var snapshot: Snapshot {
+        lock.lock(); defer { lock.unlock() }
+        return Snapshot(work: work, packets: packets, capacities: capacities, generation: generation, samples: samples,
+                        discardedBeforeFirstAccepted: discarded)
+    }
+    public func reset() {
+        lock.lock(); defer { lock.unlock() }
+        generation &+= 1
+        samples.removeAll()
+        discarded = 0
+        work.removeAll(); packets.removeAll(); capacities.removeAll()
+    }
+    public func discardedBeforeTarget(generation token: UInt64) {
+        lock.lock(); defer { lock.unlock() }
+        guard token == generation, samples[.acceptedFrame] == nil else { return }
+        discarded += 1
+    }
+    public func record(_ stage: Stage, time: TimeInterval, pts: TimeInterval,
+                       path: String, generation token: UInt64) {
+        guard time.isFinite, time > 0, pts.isFinite else { return }
+        lock.lock(); defer { lock.unlock() }
+        guard token == generation, samples[stage] == nil else { return }
+        samples[stage] = Sample(time: time, pts: pts, path: path)
+    }
+}
+
+public extension KSVideoStartupTiming {
+    /// Wall time in independent, possibly overlapping lanes; never additive CPU/network time.
+    /// A call completing after acceptance contributes only its pre-acceptance interval.
+    func recordWork(_ lane: Work, start: TimeInterval, end: TimeInterval, generation token: UInt64) {
+        guard start.isFinite, end.isFinite, start > 0, end >= start else { return }
+        lock.lock(); defer { lock.unlock() }
+        guard token == generation else { return }
+        let boundary = samples[.acceptedFrame]?.time ?? end
+        guard start < boundary else { return }
+        let duration = min(end, boundary) - start
+        var value = work[lane] ?? WorkSample()
+        value.calls += 1; value.seconds += duration
+        value.maximumSeconds = max(value.maximumSeconds, duration)
+        if end > boundary { value.clippedCalls += 1 }
+        work[lane] = value
+    }
+    /// Packet routing before putPacket, not network bytes or proof of queue insertion.
+    func recordPacket(media: String, time: TimeInterval, bytes: Int, pts: TimeInterval,
+                      keyFrame: Bool, generation token: UInt64) {
+        guard time.isFinite, time > 0, bytes > 0, pts.isFinite,
+              media == "video" || media == "audio" else { return }
+        lock.lock(); defer { lock.unlock() }
+        guard token == generation, time <= (samples[.acceptedFrame]?.time ?? time) else { return }
+        var value = packets[media] ?? PacketSample()
+        value.count += 1; value.bytes += bytes
+        if value.firstPTS == nil { value.firstPTS = pts }
+        value.lastPTS = pts
+        if keyFrame, value.firstKeyPTS == nil { value.firstKeyPTS = pts }
+        packets[media] = value
+    }
+    func recordCapacity(_ phase: CapacityPhase, time: TimeInterval, tracks: [CapacitySample], generation token: UInt64) {
+        guard time.isFinite, time > 0, !tracks.isEmpty,
+              tracks.allSatisfy({ ($0.media == "video" || $0.media == "audio") && $0.packets >= 0 && $0.frames >= 0 && $0.maximumFrames >= 0 && $0.fps.isFinite && $0.fps > 0 }) else { return }
+        lock.lock(); defer { lock.unlock() }
+        guard token == generation, capacities[phase] == nil else { return }
+        capacities[phase] = CapacitySnapshot(time: time, tracks: tracks)
+    }
+}
+
+public extension KSVideoStartupTiming.Snapshot {
+    /// A snapshot may precede completion of an in-flight call; keep its capture boundary explicit.
+    func fields(prepare: TimeInterval) -> [String: String] {
+        func ms(_ seconds: TimeInterval) -> String { String(format: "%.3f", seconds * 1000) }
+        var result = ["workMeaning": "overlappingWallIntervalsClippedAtAcceptedFrameNotCPUOrNetwork",
+                      "workSnapshotAfterAccepted": String(samples[.acceptedFrame] != nil),
+                      "workCoverage": "completedCallsOnlyInFlightUnmeasured"]
+        for stage in [KSVideoStartupTiming.Stage.decodeInvocation, .decodedCallback] {
+            if let value = samples[stage], prepare > 0, value.time >= prepare {
+                result[stage.rawValue + "Ms"] = ms(value.time - prepare)
+                result[stage.rawValue + "PTS"] = String(value.pts)
+            }
+        }
+        for (lane, value) in work {
+            let key = lane.rawValue
+            result[key + "Calls"] = String(value.calls)
+            result[key + "WallMs"] = ms(value.seconds)
+            result[key + "MaxWallMs"] = ms(value.maximumSeconds)
+            result[key + "ClippedCalls"] = String(value.clippedCalls)
+        }
+        for (media, value) in packets {
+            result[media + "RoutedPackets"] = String(value.count)
+            result[media + "RoutedBytes"] = String(value.bytes)
+            result[media + "FirstPacketPTS"] = value.firstPTS.map { String($0) } ?? "missing"
+            result[media + "LastPacketPTS"] = value.lastPTS.map { String($0) } ?? "missing"
+            result[media + "FirstKeyPacketPTS"] = value.firstKeyPTS.map { String($0) } ?? "missing"
+        }
+        for (phase, value) in capacities {
+            if prepare > 0, value.time >= prepare { result[phase.rawValue + "CapacityMs"] = ms(value.time - prepare) }
+            for track in value.tracks {
+                let key = phase.rawValue + track.media.capitalized
+                result[key + "Packets"] = String(track.packets)
+                result[key + "Frames"] = String(track.frames)
+                result[key + "MaximumFrames"] = String(track.maximumFrames)
+                result[key + "FPS"] = String(track.fps)
+            }
+        }
+        return result
     }
 }

@@ -1,0 +1,109 @@
+{
+  "recordedAt": "2026-10-10T22:46:02.043834+08:00",
+  "source": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "diffSHA256": "5ec2da7280c45943a286ad76e1c0b47fb34badcd55fe18a4cdccebd034f84290",
+    "unchangedThisRound": true,
+    "inputCount": 173,
+    "inputMismatches": []
+  },
+  "package": {
+    "path": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-10-10-foreground-ownership-final-181404/Nastart-Foreground-Ownership-Normal-Debug.app",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "binaryBuildTime": "2026-10-10T18:21:10.548811+08:00",
+    "binaries": {
+      "Nastart": "ba52bac0047a93a11312a59deae37bfeb74f5b310a8e10f735ee3884afba096d",
+      "Nastart.debug.dylib": "5e0cdd388f3cb7e2625d5b4d6c6796e2acd93a3d0476816e19dc7d0efd384f71",
+      "Frameworks/KSPlayer.framework/KSPlayer": "eda16e6d0e22bc81045752f2f54a263b0f4f8500912378d5ac141013c9042b52"
+    },
+    "deepSignatureVerifiedThisRound": true,
+    "profileValidAtCheck": true,
+    "targetInProfile": true,
+    "profileExpiresChina": "2026-10-11T06:03:15+08:00",
+    "individuallySignedLibrariesPriorFrozenBuild": 29
+  },
+  "devices": {
+    "iphone18": {
+      "model": "iPhone 18 Pro Max / iPhone19,7",
+      "system": "27.0 / 24A8428",
+      "connection": "NETWORK; USB absent",
+      "privateUDIDRecorded": true,
+      "latestCoverInstall": "success",
+      "installStartedAt": "2026-10-10T22:40:48.578374+08:00",
+      "installCompletedAt": "2026-10-10T22:41:19.654088+08:00",
+      "lookupPresent": true,
+      "preferenceKeySetPreserved": true,
+      "nonDiagnosticPreferences": 25,
+      "exactlyUnchangedPreferences": 24,
+      "changedBookmarkRecords": 1,
+      "bookmarkRecordCountBeforeAfter": [
+        55,
+        55
+      ],
+      "allPreferencesEqual": false,
+      "normalLaunch": "not verified after this install",
+      "actualAppUI": "not verified",
+      "nativePairingState": "paired",
+      "nativeTunnel": "unavailable",
+      "developerMode": "enabled",
+      "ddiServicesAvailable": false,
+      "pairRefreshBeforeAndAfterUnlockErrorCode": 4000,
+      "postReportedPhonePairDDIErrorCode": 4016,
+      "developerBonjourEndpointMatchesLegacyAddress": true,
+      "developerPortTCPConnect": {
+        "IPv4": true,
+        "IPv6": true
+      },
+      "appleNativeRemoteDiscoveryFindsTarget": false,
+      "appleNativeRemoteDiscoveryOtherModel": "Watch6,12",
+      "officialDeviceHub": "Waiting to pair; sheet left open",
+      "userReportedUnlockedSameWiFi": true,
+      "userReportedPhonePairCompleted": true,
+      "sixDigitHandshakeConfirmation": "pending user clarification"
+    },
+    "iphone13": {
+      "model": "iPhone13 / iPhone14,5",
+      "system": "16.3.1 / 20D67",
+      "connection": "USB",
+      "baselineOrRegressionThisRound": false,
+      "currentInstalledPackageVerifiedThisRound": false
+    },
+    "ipad": {
+      "connection": "not present in fresh usbmux inventory; DeviceHub unavailable",
+      "currentInstalledPackageVerifiedThisRound": false,
+      "wirelessRegressionThisRound": false
+    }
+  },
+  "boundaries": {
+    "newPlaybackAcceptance": false,
+    "newPerformanceAcceptance": false,
+    "competitorAcceptance": false,
+    "vpnCauseEstablished": false,
+    "firewallDisabledAtReadOnlyCheck": true,
+    "settingsChanged": false,
+    "unpairRequested": false,
+    "uninstallRequested": false,
+    "credentialsErased": false,
+    "preferenceRestorationForced": false,
+    "classicBonjourCLI": "refused root privilege; not completed",
+    "replacementReadOnlyBonjour": "completed via dns-sd and library browse only; remoted not suspended"
+  },
+  "tests": "No App source change; prior frozen package 298 tests/2 skipped/0 failures is historical, not rerun this round",
+  "next": [
+    "Complete the official phone-to-this-Mac six-digit pairing handshake and verify native discovery/DDI/tunnel before declaring recovery.",
+    "Once connected, recheck source/package/profile and installed receipt; launch with env={} and args=[] and verify actual UI before 18 playback/automation/performance.",
+    "If signature expires or source changes, build/sign current source and cover install preserving data before next physical baseline.",
+    "iPhone13 retain USB for true-cellular media; Pad requires fresh reconnect/identity/package verification.",
+    "Continue bookmark saving convergence / 119 / weak cellular dual-entry / frame-time and Lenna matrix without discarding prior failures."
+  ],
+  "pairingCorrection": {
+    "recordedAt": "2026-10-10T23:24:28.898376+08:00",
+    "existingPairingConfirmed": true,
+    "currentMacIdentityPrivatelyMatchesScreenshot": true,
+    "pendingPINInferenceWithdrawn": true,
+    "pairingRecordPreserved": true,
+    "nativeServicesRecovered": false,
+    "newSource120cPackageInstalledOn18": false,
+    "latestFreshUsbmuxTargetPresent": false
+  }
+}

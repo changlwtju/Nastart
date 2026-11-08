@@ -1,0 +1,150 @@
+{
+  "recordedDate": "2026-10-08",
+  "issue": "Jellyfin detail metadata obscured after closing playback",
+  "userScreenshotPackageIdentity": "unknown",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceDiffSHA256": "b07d419170d7e4f105ca95f98ab1d1b137c0faf6aa5b1d4177e959003609ff88",
+  "buildTime": "2026-10-08T00:39:57.686712+08:00",
+  "configuration": "normal Debug -Onone; empty launch environment",
+  "packageFileName": "Nastart-ExitDetail-Latest-Debug.app",
+  "binaries": {
+    "Nastart": "a6f75669bea14ffb6363a8ebf419b5dabf12f36b55597b1e7e7ae03f58522cc8",
+    "Nastart.debug.dylib": "21aeb7297612ae52843d5bed33e0e134f5d31a35ed3d53d3cf45e1a614cd530e",
+    "Frameworks/KSPlayer.framework/KSPlayer": "5fa42aac977408c21c0a85c45b0d806490c3d7dc2048f0e84ea00eb0dc591cf0"
+  },
+  "validation": {
+    "tests": 185,
+    "skipped": 2,
+    "failures": 0,
+    "preflightPassed": 15,
+    "individuallySignedLibraries": 29,
+    "checkedBuildInputs": 128
+  },
+  "baseline": {
+    "device": "iPhone 13",
+    "binaries": {
+      "Nastart": "823e80c660b24eabe46350e78a85da76815f64e6abb627ca5e7ce1e3c471d9c4",
+      "Nastart.debug.dylib": "758d7ef9eb82defa658aebc59cf4725a7734dfe642c9082e1a111ed955755305",
+      "Frameworks/KSPlayer.framework/KSPlayer": "5fa42aac977408c21c0a85c45b0d806490c3d7dc2048f0e84ea00eb0dc591cf0"
+    },
+    "sample": "S03",
+    "action": "play about 30 seconds then ordinary close",
+    "settledScreenshotAtRequestedSeconds": 6,
+    "result": "FAIL dark rectangle over metadata",
+    "normalEntryDoesNotProveExitFixed": true
+  },
+  "devices": [
+    {
+      "device": "iphone13",
+      "model": "iPhone14,5",
+      "os": "16.3.1",
+      "systemBuild": "20D67",
+      "recordedAt": "2026-10-08T00:42:17.403778+08:00",
+      "dataPreservingCoverInstall": true,
+      "unchangedNonDiagnosticPreferences": 25,
+      "normalLaunchSucceeded": true,
+      "actualForegroundUIVerified": true,
+      "requestedEnvironment": {},
+      "requestedArguments": []
+    },
+    {
+      "device": "ipad",
+      "model": "iPad12,1",
+      "os": "18.3.1",
+      "systemBuild": "22D72",
+      "recordedAt": "2026-10-08T00:42:58.463074+08:00",
+      "dataPreservingCoverInstall": true,
+      "unchangedNonDiagnosticPreferences": 16,
+      "normalLaunchSucceeded": true,
+      "actualForegroundUIVerified": true,
+      "requestedEnvironment": {},
+      "requestedArguments": []
+    }
+  ],
+  "targetedResults": [
+    {
+      "device": "iPhone 13",
+      "sample": "S03",
+      "scenario": "playing close",
+      "result": "readable metadata; no dark spill in inspected exit image"
+    },
+    {
+      "device": "iPhone 13",
+      "sample": "S03",
+      "scenario": "paused close",
+      "result": "readable metadata; no dark spill in inspected exit image"
+    },
+    {
+      "device": "iPhone 13",
+      "sample": "S03",
+      "scenario": "portrait before close",
+      "result": "readable metadata; no dark spill in inspected exit image"
+    },
+    {
+      "device": "iPhone 13",
+      "sample": "MI2",
+      "scenario": "playing close",
+      "result": "readable metadata; no dark spill in inspected exit image"
+    },
+    {
+      "device": "iPad 9",
+      "sample": "S03",
+      "scenario": "playing close after tool retries",
+      "result": "readable metadata and overview in settled actual image"
+    },
+    {
+      "device": "iPad 9",
+      "sample": "MI2",
+      "scenario": "pause input then close; pause state not separately captured",
+      "result": "readable metadata and overview in settled actual image"
+    }
+  ],
+  "toolFailures": [
+    "iPhone initial navigation had not completed; no playback button",
+    "iPad AX close lookup failed; HUD and coordinate attempts retained",
+    "additional iPad pause/close inputs did not establish pause or dismissal; retained, later native close succeeded"
+  ],
+  "limitations": [
+    "sparse images do not establish full display or audio performance",
+    "natural EOF, long background and PiP return combinations remain pending",
+    "iPhone 18 disconnected and not updated",
+    "default subtitle inconsistency remains pending",
+    "shared playback L2 and Main push remain pending"
+  ],
+  "networkChanges": false,
+  "concurrentPlayback": false,
+  "additionalPlaybackFailure": {
+    "device": "iPad 9",
+    "sample": "S03",
+    "blackLoadingImageAtRequestedSeconds": 30,
+    "failureEvents": [
+      {
+        "elapsedMs": "40036",
+        "engine": "KSPlayer",
+        "errorCode": "-",
+        "errorDomain": "-",
+        "itemStatus": "1",
+        "playbackTraceID": "DD42F46D",
+        "stage": "alignment"
+      },
+      {
+        "elapsedMs": "20182",
+        "engine": "KSPlayer",
+        "errorCode": "-1008",
+        "errorDomain": "NSURLErrorDomain",
+        "itemStatus": "2",
+        "playbackTraceID": "9CDA66B9",
+        "stage": "decodedFrame"
+      }
+    ],
+    "laterActualMovieObserved": true,
+    "normalNativeCloseThenReadableDetailObserved": true,
+    "pausedExitNotValidated": true
+  },
+  "finish": {
+    "bothPlayersClosed": true,
+    "ordinaryDetailVisible": true,
+    "environmentStillEmpty": true,
+    "networkChanges": false
+  }
+}

@@ -1,0 +1,269 @@
+{
+  "date": "2026-10-27",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceInputs": 399,
+  "sourceDrift": 0,
+  "configuration": "normal Debug; no app test arguments/environment",
+  "tests": {
+    "total": 129,
+    "failures": 0,
+    "new": 16,
+    "finalCompletedAt": "2026-10-27T12:19:11+08:00",
+    "initialFullSuiteTimedOutSeconds": 120,
+    "timeoutRetained": true,
+    "causeOfInitialTimeout": "undetermined, last printed log in pre-existing NFO/network tests",
+    "ownedTestTreeStopped": true
+  },
+  "packages": {
+    "mobile": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-27T12:18:56.325690+08:00",
+      "mainSHA256": "4d82d6adfe8f30ca0edccef8bef03533ada02bed5ef645b90f3eacce65d40f20",
+      "debugDylibSHA256": "4e86c224439279b8b5d0039d36f74a498f3dc9b1b63c4c4cb626ab989703e685",
+      "sourceInputCount": 399,
+      "signedMachOCount": 30,
+      "arguments": [],
+      "environment": {}
+    },
+    "tv": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-27T12:18:44.395767+08:00",
+      "mainSHA256": "00ec0f2254a1ae4aa7af5fc2312fc1691714493f24a5f921c946868f6b4b4614",
+      "debugDylibSHA256": "7fdc6622c76365596e450bd7e6d63590e6aa85746f7628922a8e3983ea4b60c7",
+      "sourceInputCount": 399,
+      "signedMachOCount": 27,
+      "arguments": [],
+      "environment": {}
+    }
+  },
+  "installs": {
+    "ipad": {
+      "packageSHA256": "4d82d6adfe8f30ca0edccef8bef03533ada02bed5ef645b90f3eacce65d40f20",
+      "installComplete": true,
+      "preferences": {
+        "beforeKeys": 19,
+        "afterKeys": 19,
+        "sameKeys": true,
+        "changedValues": 0,
+        "allNonDiagnosticPreferencesEqual": true
+      },
+      "installedAt": "2026-10-27T12:19:27.367698+08:00",
+      "identity": "fresh name/model/OS/UDID and connection recorded privately before overlay"
+    },
+    "iphone13": {
+      "packageSHA256": "4d82d6adfe8f30ca0edccef8bef03533ada02bed5ef645b90f3eacce65d40f20",
+      "installComplete": true,
+      "preferences": {
+        "beforeKeys": 26,
+        "afterKeys": 26,
+        "sameKeys": true,
+        "changedValues": 0,
+        "allNonDiagnosticPreferencesEqual": true
+      },
+      "installedAt": "2026-10-27T12:20:45.584468+08:00",
+      "identity": "fresh name/model/OS/UDID and connection recorded privately before overlay"
+    },
+    "tv": {
+      "packageSHA256": "00ec0f2254a1ae4aa7af5fc2312fc1691714493f24a5f921c946868f6b4b4614",
+      "installComplete": true,
+      "preferences": {
+        "beforeKeys": 15,
+        "afterKeys": 15,
+        "sameKeys": true,
+        "changedValues": 0,
+        "allNonDiagnosticPreferencesEqual": true
+      },
+      "installedAt": "2026-10-27T12:21:05.156580+08:00",
+      "identity": "fresh name/model/OS/UDID and connection recorded privately before overlay"
+    }
+  },
+  "implementation": {
+    "source": "indexed WebDAV video only",
+    "boundTo": "exact library UUID, selected-root indexed file, positive size and version hint",
+    "upstreamWindowBytes": 1048576,
+    "requires": "exact 206/range/total/body/version, identity encoding; strong ETag or exact HTTP date",
+    "auth": "ephemeral Basic/Digest, exact request origin, no redirects/cookies/ambient credentials",
+    "decoderURL": "random revocable 127.0.0.1 URL, no origin/account/credentials",
+    "localConnectionsPerPlayback": 2,
+    "localHeaderLimitBytes": 16384,
+    "localIdleTimeoutSeconds": 30,
+    "listenerStartupTimeoutSeconds": 10,
+    "clientResponse": "one continuous known-length response; upstream windows are not exposed as EOF",
+    "hostPlayers": "existing mobile Greenfield view; TV device-file KS renderer",
+    "multiFilePolicy": "explicit selected member; no automatic Blu-ray main-title or segment chaining",
+    "notImplemented": [
+      "File Station indexed-source playback",
+      "FTP/SMB playback",
+      "ISO playback",
+      "stable resume/auto next/sidecar subtitle provider for this source",
+      "validated external-player handoff/offline download for this loopback source"
+    ]
+  },
+  "ipad": {
+    "fixture": {
+      "movingBarH264MP4Seconds": 45,
+      "audioPresent": false,
+      "firstWindowFramesAtSeconds": [
+        3,
+        10,
+        30
+      ],
+      "firstNormalExit": false,
+      "firstStop": "intentional guard cleanup after unsupported WDA tap endpoint",
+      "secondWindowFramesAtSeconds": [
+        3,
+        10
+      ],
+      "secondNormalExit": true,
+      "secondExitEvidence": "native-playback-private.log NORMAL_EXIT and after-normal-player-close screenshot; a later driver reused the temporary safe JSON filename, so that JSON is not cited as fixture result",
+      "HTTP": {
+        "sourceUnchanged": true,
+        "stopped": true,
+        "portClosed": true,
+        "requests": 18,
+        "remoteWrites": 0,
+        "video206s": 6,
+        "largestPlannedResponse": 1048576
+      }
+    },
+    "actualNAS": {
+      "sample": "existing S01 indexed MKV",
+      "indexedBytes": 2949955051,
+      "savedWebDAVLoginReused": true,
+      "pathMatchedAgainstPrivateIndex": true,
+      "nativeCaptures": {
+        "3": {
+          "elapsed": 3.7098827082663774,
+          "at": "2026-10-27T12:28:56.169402+08:00",
+          "appPresent": true
+        },
+        "10": {
+          "elapsed": 10.65593475010246,
+          "at": "2026-10-27T12:29:03.115545+08:00",
+          "appPresent": true
+        },
+        "30": {
+          "elapsed": 30.691311832983047,
+          "at": "2026-10-27T12:29:23.151178+08:00",
+          "appPresent": true
+        }
+      },
+      "differentFramesVisuallyInspected": true,
+      "normalExit": false,
+      "intentionalTermination": true,
+      "firstAttempt": "WDA click timeout before captures; owned App intentionally terminated",
+      "secondAttempt": "independent native screenshots succeeded; WDA /source timed out after 30s, App intentionally stopped",
+      "audioVerified": false,
+      "subtitleVerified": false,
+      "frameTimingVerified": false,
+      "nativeHTTPFieldCapture": false,
+      "routeInference": "frozen source maps this loopback session only to selected WebDAV file; no DSM/Jellyfin fallback implemented",
+      "MACDiagnostic": {
+        "diagnosticOnly": true,
+        "bytesLimit": 65536,
+        "videoCommands": 1,
+        "sourceWrites": 0,
+        "status": 206,
+        "bodyBytes": 65536,
+        "contentRangeMatches": true,
+        "etagMatches": true,
+        "bodyWithinLimit": true,
+        "elapsedSeconds": 14.427715957630426
+      }
+    }
+  },
+  "phone13AndTV": "final package fresh overlay install and normal home only; independent WebDAV playback not yet tested",
+  "iphone18": {
+    "accessed": false,
+    "updated": false,
+    "reason": "user took device to work; hands off"
+  },
+  "retainedFailures": [
+    "first full module suite 120s timeout",
+    "first iPad form automation 110s, stopped at loaded folder picker",
+    "second iPad macro 65s, reached detail with no playback button",
+    "first environment-based playback destination did not reach detail, replaced with shared model callback",
+    "first fixture normal-exit attempt used unsupported /wda/tap/0; own guard stopped App; corrected against upstream primary source",
+    "first real NAS WDA click timeout; second /source timeout with native frames present",
+    "private temporary result filename reused by driver; fixture acceptance uses retained logs/images instead"
+  ],
+  "cleanup": {
+    "at": "2026-10-27T12:32:33.873066+08:00",
+    "devices": {
+      "ipad": {
+        "libraries": 1,
+        "files": 3408,
+        "originalSnapshotEqual": true,
+        "reference": "fresh batch baseline",
+        "finalPreferenceChangedValues": 1,
+        "preferenceKeysEqual": true,
+        "latestInstallToFinalNonDiagnosticEqual": true,
+        "firstToFinalDiagnosticOnly": true
+      },
+      "iphone13": {
+        "libraries": 1,
+        "files": 149,
+        "originalSnapshotEqual": true,
+        "reference": "prior finalized read-only baseline",
+        "finalPreferenceChangedValues": 1,
+        "preferenceKeysEqual": true,
+        "latestInstallToFinalNonDiagnosticEqual": true,
+        "firstToFinalDiagnosticOnly": true
+      },
+      "tv": {
+        "libraries": 1,
+        "files": 149,
+        "originalSnapshotEqual": true,
+        "reference": "prior finalized read-only baseline",
+        "finalPreferenceChangedValues": 0,
+        "preferenceKeysEqual": true,
+        "latestInstallToFinalNonDiagnosticEqual": true,
+        "firstToFinalDiagnosticOnly": true
+      }
+    },
+    "frozenSourceInputs": 399,
+    "sourceDrift": 0,
+    "HTTPsessionCleanup": {
+      "ipad": {
+        "status": 200,
+        "originalRunnerKept": true
+      },
+      "iphone13": {
+        "status": 200,
+        "originalRunnerKept": true
+      }
+    }
+  },
+  "WDAsettingsRestored": true,
+  "NASWritesIssued": 0,
+  "cellularTasks": 0,
+  "NASOrVPNChanges": 0,
+  "playbackMatrix": {
+    "cells": 114,
+    "newPassCells": 0,
+    "reason": "new WebDAV route with limited frame evidence; native exit/full controls/audio/format coverage not complete"
+  },
+  "requirements": {
+    "total": 30,
+    "inProgress": 14,
+    "awaitingAcceptance": 5,
+    "notStarted": 11
+  },
+  "remaining": [
+    "actual NAS playback normal exit and WDA responsiveness diagnosis",
+    "phone13 and TV WebDAV playback, seek/pause/tracks/PiP/resume",
+    "other formats/big files/version failures on actual service",
+    "FTP production adaptation and FTPS session reuse",
+    "SMB selected-root and negotiation failures"
+  ],
+  "validation": {
+    "documentationFiles": 486,
+    "localLinks": 2878,
+    "missingDestinations": 0,
+    "gitDiffCheckPassed": true,
+    "frozenInputCount": 399,
+    "sourceDrift": 0,
+    "publicCredentialValueMatches": 0,
+    "finalSignedPackagesAndInstallReceiptsChecked": true
+  }
+}

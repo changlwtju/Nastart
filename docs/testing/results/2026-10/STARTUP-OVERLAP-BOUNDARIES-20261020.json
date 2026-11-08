@@ -1,0 +1,80 @@
+[
+  {
+    "entry": "Jellyfin",
+    "sourceDiffSHA256": "35df7015b08ee4d929683983de8ac59d2d7111f94615bf85f38894fc25ae66ed",
+    "sample": "S03",
+    "network": "actual cellular, no shaping; radio quality unquantified",
+    "route": "AV HLS",
+    "budgetAndSubtitle": {
+      "maximumBitrate": 10000000,
+      "subtitle": "PGS7 Encode"
+    },
+    "firstOrdinal": 0,
+    "firstSegmentAttempts": 1,
+    "internalClockAdvanceSeconds": 8.582656145095825,
+    "callbackBoundaryParts": {
+      "touchToFirstSegmentIssuedSeconds": 3.9016411304473877,
+      "firstIssuedToHeaderCallbackSeconds": 2.6994967460632324,
+      "headerToCompletionCallbackSeconds": 0.5248641967773438,
+      "completionToClockAdvanceSeconds": 1.4566540718078613
+    },
+    "URLSessionFirstSegment": {
+      "requestToResponseHeaderMs": 2717,
+      "responseBodyMs": 472,
+      "totalMs": 3190
+    },
+    "manifestRewriteCompleteSecondsFromTouch": 2.7295429706573486,
+    "mediaHeaderCallbackSecondsFromTouch": 1.7153429985046387,
+    "postManifestHeadStartCeilingSeconds": 1.172098159790039,
+    "prefixHeadStartOptimisticCeilingSeconds": 2.186298131942749,
+    "subsequentSegmentsRequestedBeforeClockAdvance": [
+      1
+    ],
+    "interpretation": [
+      "ceiling is overlap opportunity in this recorded schedule, not measured speedup",
+      "prefix body availability and trusted VOD identity not measured; header is only an optimistic earliest bound",
+      "post-first-segment time overlaps further fetching and engine work; not wholly decoder or AV waiting",
+      "entries have different budgets/subtitles and are not a speed ranking"
+    ]
+  },
+  {
+    "entry": "device file",
+    "sourceDiffSHA256": "35df7015b08ee4d929683983de8ac59d2d7111f94615bf85f38894fc25ae66ed",
+    "sample": "S03",
+    "network": "actual cellular, no shaping; radio quality unquantified",
+    "route": "AV HLS",
+    "budgetAndSubtitle": {
+      "maximumBitrate": 2000000,
+      "subtitle": "Off"
+    },
+    "firstOrdinal": 0,
+    "firstSegmentAttempts": 1,
+    "internalClockAdvanceSeconds": 6.9088428020477295,
+    "callbackBoundaryParts": {
+      "touchToFirstSegmentIssuedSeconds": 3.0857441425323486,
+      "firstIssuedToHeaderCallbackSeconds": 2.1414318084716797,
+      "headerToCompletionCallbackSeconds": 0.5887761116027832,
+      "completionToClockAdvanceSeconds": 1.092890739440918
+    },
+    "URLSessionFirstSegment": {
+      "requestToResponseHeaderMs": 2199,
+      "responseBodyMs": 582,
+      "totalMs": 2782
+    },
+    "manifestRewriteCompleteSecondsFromTouch": 2.614871025085449,
+    "mediaHeaderCallbackSecondsFromTouch": 0.9599180221557617,
+    "postManifestHeadStartCeilingSeconds": 0.4708731174468994,
+    "prefixHeadStartOptimisticCeilingSeconds": 2.125826120376587,
+    "subsequentSegmentsRequestedBeforeClockAdvance": [
+      1,
+      2,
+      3
+    ],
+    "interpretation": [
+      "ceiling is overlap opportunity in this recorded schedule, not measured speedup",
+      "prefix body availability and trusted VOD identity not measured; header is only an optimistic earliest bound",
+      "post-first-segment time overlaps further fetching and engine work; not wholly decoder or AV waiting",
+      "entries have different budgets/subtitles and are not a speed ranking"
+    ]
+  }
+]

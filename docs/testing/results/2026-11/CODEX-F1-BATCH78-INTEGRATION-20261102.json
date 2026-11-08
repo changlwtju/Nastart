@@ -1,0 +1,70 @@
+{
+  "date": "2026-11-02",
+  "patchesApplied": true,
+  "applyCheck": {
+    "batch7": 0,
+    "batch8All": 0,
+    "combined": 0
+  },
+  "applyExit": 0,
+  "changedFiles": [
+    "ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/LibraryViews.swift",
+    "ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/OfflineMediaScene.swift",
+    "ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/OfflinePasswordProbeScene.swift",
+    "ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/OfflineUIScenario.swift",
+    "ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/PasswordInputDiagnostics.swift",
+    "ios/Nastart/Packages/NetworkMedia/Tests/NetworkMediaTests/OfflineUIScenarioTests.swift",
+    "ios/Nastart/Nastart/Core/Stores/AppStateStores.swift",
+    "ios/Nastart/Nastart/Features/Mine/MineView.swift",
+    "ios/Nastart/Nastart/Core/Design/AppTheme.swift",
+    "ios/Nastart/Nastart/en.lproj/Localizable.strings",
+    "ios/Nastart/Nastart/zh-Hans.lproj/Localizable.strings",
+    "ios/Nastart/NastartTests/NonPlaybackPolicyTests.swift"
+  ],
+  "indexUnchanged": true,
+  "F1": {
+    "device": "task-owned iPhone 17 Pro simulator",
+    "os": "iOS 27.0",
+    "uniquePhoneCells": 6,
+    "allBefore": 12,
+    "allAfter": 1,
+    "classification": "replaced",
+    "traceCells": 4,
+    "traceEvents": 44,
+    "noTraceCells": 2,
+    "screenshotOnlyRepeatWindows": 2,
+    "padCellsNotExecuted": 6,
+    "doneFlagsWritten": 6,
+    "simulatorRetained": true,
+    "stopCommandRun": false
+  },
+  "packageTests": {
+    "sourceFilesMatched": 90,
+    "reusedCompiledBinary": true,
+    "passed": 14,
+    "failed": 0,
+    "exitCode": 0,
+    "rebuiltInIntegrationWorkspace": false
+  },
+  "sixConfigurations": {
+    "executed": 0,
+    "total": 6,
+    "status": "blocked by disk <6GiB"
+  },
+  "appHosted13Tests": "not run; no current compiled bundle",
+  "releaseExclusion": "not run for integrated source",
+  "staticPreflight": {
+    "exitCode": 1,
+    "failureCategories": 5
+  },
+  "physicalDeviceOperations": 0,
+  "NASOperations": 0,
+  "playbackMatrixNewPasses": 0,
+  "privateEvidencePointer": "/tmp/nastart-codex-batch78-integration-path",
+  "documentationCheck": {
+    "exitCode": 0,
+    "documents": 628,
+    "links": 3883,
+    "missingDestinations": 0
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "updatedAt": "2026-10-29T08:53+08:00",
+  "incident": {
+    "at": "2026-10-29T08:34:18.531916+08:00",
+    "reportedRansomware": true,
+    "userAwayFromHome": true,
+    "NASIsolationConfirmed": false,
+    "NASCommandsIssued": 0,
+    "developmentPaused": true,
+    "updatedAt": "2026-10-29T08:43:50.888754+08:00",
+    "familyCanDisconnectNetwork": true,
+    "userPlansShutdown": true,
+    "userPrefersCleanRebuild": true,
+    "userAcceptsPossibleDataLoss": true,
+    "shutdownConfirmed": false,
+    "NASRequestsByAssistant": 0,
+    "remoteWipeAuthorizedOrExecuted": false
+  },
+  "observedEvidence": "user-supplied photograph shows ransom note; family/variant, encryption extent and initial access unconfirmed",
+  "localWorktreeCredentialAudit": {
+    "at": "2026-10-29T08:36:21.724884+08:00",
+    "scope": "current Git-tracked and nonignored untracked worktree files, max 8MiB per file; not Git history or ignored files",
+    "checkedFiles": 1438,
+    "checkedBytes": 54340780,
+    "skippedLargeFiles": 0,
+    "credentialMatches": 0,
+    "trackedFileCredentialMatches": 0,
+    "untrackedFileCredentialMatches": 0,
+    "historicalWebDAVScheme": "HTTP",
+    "historicalTVDSMScheme": "http",
+    "privatePlaintextCredentialFilesVerified": 2,
+    "checkedCredentialFileModes": [
+      "0o600",
+      "0o644"
+    ],
+    "NASRequests": 0,
+    "secretsPrinted": false
+  },
+  "localGitObjectCredentialAudit": {
+    "at": "2026-10-29T08:40:23.242634+08:00",
+    "scope": "all locally stored Git blob objects including unreachable objects; each <=8MiB; bounded 1024MiB/25sec",
+    "totalLocalBlobs": 6127,
+    "checkedBlobs": 6127,
+    "checkedBytes": 417950760,
+    "skippedLargeBlobs": 0,
+    "limitReached": false,
+    "matches": 0,
+    "NASRequests": 0
+  },
+  "privateCredentialPermissionRemediation": {
+    "verifiedFiles": 2,
+    "changedPermissionCount": 1,
+    "allNowOwnerReadWriteOnly": true,
+    "contentUnchanged": true
+  },
+  "credentialLeakAttribution": "unknown; local no-match does not rule out other disclosure paths",
+  "userRecoveryPreference": "considering data-only format while retaining DSM versus DSM reinstall; no final erasure/rebuild decision",
+  "NASActionsExecutedByAssistant": 0,
+  "ransomLinksVisitedOrFilesUploaded": false,
+  "projectDevelopmentPaused": true,
+  "interruptedPlaybackWork": {
+    "moduleTestsExit": 0,
+    "moduleTestCount": 32,
+    "redTVRegressionAgainstPreviousSource": {
+      "startedAt": "2026-10-29T08:25:05.382104+08:00",
+      "expectation": "red reproduction against previous production source",
+      "devicesTouched": false,
+      "exitCode": 65,
+      "endedAt": "2026-10-29T08:25:23.086028+08:00"
+    },
+    "greenTVAndMobileIntegrationTestsRun": false,
+    "latestCurrentSourceBuiltOrInstalled": false,
+    "latestVerifiedPackagesRemainPrevious428InputBuilds": true,
+    "newExecutionSourceAndSnapshotsPreservedPrivately": true
+  },
+  "unknowns": [
+    "NAS isolation and shutdown completion",
+    "backups/snapshots and photo copies",
+    "affected clients and whether NAS or writable-share client was initial compromise",
+    "attacker login IPs, persistence, data exfiltration and exact encryption onset"
+  ],
+  "requiredBeforeAnyNASResume": "fresh explicit user authorization and rebuilt environment; never reuse prior password/SID as trusted credentials",
+  "recoveryChoiceClarification": {
+    "DSMAndDataPartitionSeparate": true,
+    "dataOnlyFormatDoesNotEstablishSystemCleanliness": true,
+    "NASCompromiseVersusClientShareEncryptionUnknown": true,
+    "loaderRecreationNotUniversallyRequired": true,
+    "NASActionsExecuted": 0
+  }
+}

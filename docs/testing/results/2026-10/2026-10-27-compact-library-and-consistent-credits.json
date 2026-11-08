@@ -1,0 +1,136 @@
+{
+  "date": "2026-10-27",
+  "scope": "shared compact wall and stable credits layout",
+  "source": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "dirty": true,
+    "inputCount": 409
+  },
+  "configuration": "Debug",
+  "launch": {
+    "arguments": [],
+    "environment": {}
+  },
+  "builds": {
+    "tv": {
+      "builtAt": "2026-10-27T20:44:22.175697+08:00",
+      "mainSHA256": "9c9012ff98118194928a5920de63326c16eef77198079d15e079be6234ed8bd5",
+      "debugDylibSHA256": "c108f95f2e18126c18802fdae1003e17642e253716522631b0f33cca87a92b87",
+      "signedMachOCount": 27
+    },
+    "mobile": {
+      "builtAt": "2026-10-27T20:44:37.787044+08:00",
+      "mainSHA256": "d5cfec4bf1f17f43eceb3b243bff0e895f6c5a97c926402e23b4e3be3bb433c9",
+      "debugDylibSHA256": "aea8041fb2efb4240e2ba63f3561df7363b2666b42dbc5d573bbeab6f313bad3",
+      "signedMachOCount": 30
+    }
+  },
+  "latestInstalled": {
+    "tv": true,
+    "iphone13": true,
+    "ipad": false,
+    "iphone18": false
+  },
+  "installationTimes": {
+    "tv": "2026-10-27T20:45:37.072011+08:00",
+    "iphone13": "2026-10-27T20:45:55.706046+08:00"
+  },
+  "testRuns": {
+    "localMetadata": {
+      "tests": 19,
+      "failures": 0
+    },
+    "groupingArtworkReadOnly": {
+      "tests": 39,
+      "failures": 0
+    },
+    "fullModuleRun": false
+  },
+  "native": {
+    "tv": {
+      "actualMovieAndDiscImagesReviewed": true,
+      "duplicateCenteredTitleRemoved": true,
+      "categoryCountBoxRemoved": true,
+      "statisticsMovedToDisclosure": true,
+      "directorAndActorsInSameShelf": true,
+      "fileInformationExpanded": true,
+      "discRichNFOObserved": true,
+      "discPosterAvailable": false,
+      "videoCommands": 0
+    },
+    "iphone13": {
+      "wallAndMovieDetailImagesReviewed": true,
+      "fileInformationExpanded": true,
+      "videoCommands": 0
+    },
+    "ipad": {
+      "latestPackageTested": false
+    },
+    "iphone18": {
+      "latestPackageTested": false,
+      "wirelessIPAPreparedOnly": true
+    }
+  },
+  "diagnosticFailuresPreserved": [
+    "TV title substring matched sequel",
+    "TV incorrect AX label separator stopped at grid boundary"
+  ],
+  "sourceLibraryObservation": {
+    "files": 149,
+    "filesWithNFO": 128,
+    "filesWithAncestorNFO": 38
+  },
+  "fullPlaybackSessionUnified": false,
+  "releaseAccepted": false,
+  "onlineMetadataRequests": 0,
+  "remoteWrites": 0,
+  "matrixNewPass": 0,
+  "requirements": {
+    "total": 30,
+    "inProgress": 14,
+    "awaitingAcceptance": 5,
+    "notStarted": 11
+  },
+  "remaining": [
+    "latest iPad and iPhone18 installs and native reviews",
+    "missing local artwork and incomplete metadata coverage",
+    "series and season presentation",
+    "shared playback session and resume",
+    "FTP App integration and FTPS reuse",
+    "SMB negotiation and selected root safety"
+  ],
+  "finalPreservation": {
+    "frozenSourceMatches": true,
+    "tv": {
+      "fullIndexJSONUnchanged": true,
+      "preferences": true
+    },
+    "iphone13": {
+      "fullIndexJSONUnchanged": true,
+      "preferences": true
+    }
+  },
+  "finalHomeImagesReviewed": {
+    "tv": true,
+    "iphone13": true
+  },
+  "cleanup": {
+    "tv": {
+      "ownedSettingsRestoredReadback": true,
+      "ownedHTTPSessionDeleted": true,
+      "preexistingRunnerPreserved": true
+    },
+    "iphone13": {
+      "ownedSettingsRestored": true,
+      "ownedHTTPSessionDeleted": true,
+      "preexistingRunnerPreserved": true
+    }
+  },
+  "documentationCheck": {
+    "documents": 495,
+    "localLinks": 2942,
+    "missingDestinations": 0,
+    "diffCheckExitCode": 0
+  },
+  "statusAt": "2026-10-27T21:04:12.413186+08:00"
+}

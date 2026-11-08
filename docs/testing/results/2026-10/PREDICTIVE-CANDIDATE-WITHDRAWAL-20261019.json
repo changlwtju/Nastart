@@ -1,0 +1,1316 @@
+{
+  "at": "2026-10-19T20:07:50.782955+08:00",
+  "implementation": "candidate ordinary Debug implementation; physical L1 pending",
+  "sourceDiffSHA256": "120355b2f216d12bb333fb597cb92d7e3ddd9b81f6e0b61c10767b5c341176e9",
+  "binaryBuildTime": "2026-10-19T19:37:28.009420+08:00",
+  "binaries": {
+    "Nastart": "6334c2a229f31942c590edce0af3a51dea014493cd25c4005b5d3f8b7cbf1a64",
+    "Nastart.debug.dylib": "beeb387a725925a1e66b6c41a5c6dce58734a2e3a5e902467b919f344bce4c5b",
+    "Frameworks/KSPlayer.framework/KSPlayer": "9fab6793a194b52a8400933496d1e5047411614c204018cb7a5ddb0bacb98065"
+  },
+  "inputCount": 173,
+  "tests": {
+    "relatedPassed": 24,
+    "failed": 0,
+    "preflightPassed": 15,
+    "fullSuiteRun": false
+  },
+  "earlierFailures": {
+    "oldSimulatorDestinationUnavailable": true,
+    "newTestCompileBeforePolicyExistsFailed": true,
+    "certificateExtractionArgumentFixedWithoutRebuild": true
+  },
+  "productScope": "static predictive candidate only; manual and reactive replacements unchanged",
+  "physical": {
+    "ipad": {
+      "packageCoveredPreservingData": true,
+      "actualNormalHomeReviewed": true,
+      "S03FileWiFi": {
+        "URLMetricsCount": 11,
+        "URLMetricsCellularNo": 11,
+        "URLMetricsCellularYes": 0,
+        "maxStallCount": 0,
+        "stages": [
+          {
+            "secondsFromTouch": 3.127559,
+            "event": "engine_ready",
+            "fields": {
+              "engine": "KSPlayer",
+              "state": "preparing"
+            }
+          },
+          {
+            "secondsFromTouch": 3.127837,
+            "event": "engine_ready",
+            "fields": {
+              "engine": "KSPlayer",
+              "state": "rendererAppeared"
+            }
+          },
+          {
+            "secondsFromTouch": 3.488717,
+            "event": "engine_ready",
+            "fields": {
+              "engine": "KSPlayer",
+              "state": "readyToPlay"
+            }
+          },
+          {
+            "secondsFromTouch": 3.489077,
+            "event": "engine_ready",
+            "fields": {
+              "engine": "KSPlayer",
+              "state": "buffering"
+            }
+          },
+          {
+            "secondsFromTouch": 3.558525,
+            "event": "video_frame_submitted",
+            "fields": {
+              "acceptedVideoFrameMs": 466.21516649611294,
+              "acceptedVideoFramePTS": 0,
+              "audioFirstKeyPacketPTS": 0,
+              "audioFirstPacketPTS": 0,
+              "audioLastPacketPTS": 4.288,
+              "audioPutPacketCalls": 135,
+              "audioPutPacketClippedCalls": 0,
+              "audioPutPacketMaxWallMs": 0.078,
+              "audioPutPacketWallMs": 0.489,
+              "audioRoutedBytes": 345600,
+              "audioRoutedPackets": 135,
+              "controlSeconds": 0,
+              "decodeInvocationMs": 302.709,
+              "decodeInvocationPTS": 0,
+              "decodedCallbackMs": 466.205,
+              "decodedCallbackPTS": 0,
+              "demuxReadCalls": 2859,
+              "demuxReadClippedCalls": 0,
+              "demuxReadMaxWallMs": 17.409,
+              "demuxReadWallMs": 143.464,
+              "discardedVideoFramesBeforeAccepted": 0,
+              "engine": "KSPlayer",
+              "evidence": "rendererAttemptAndOutputAPIBoundaryNotPresentation",
+              "firstOutputAudioFPS": 48,
+              "firstOutputAudioFrames": 135,
+              "firstOutputAudioMaximumFrames": 256,
+              "firstOutputAudioPackets": 0,
+              "firstOutputCapacityMs": 476.757,
+              "firstOutputVideoFPS": 23.976025,
+              "firstOutputVideoFrames": 0,
+              "firstOutputVideoMaximumFrames": 16,
+              "firstOutputVideoPackets": 83,
+              "framePTSSeconds": 0,
+              "outputAttemptMs": 476.7904581967741,
+              "outputPath": "sampleBufferEnqueued",
+              "outputSubmittedMs": 486.7275832220912,
+              "outputSubmittedPTS": 0,
+              "videoDecodeCallCalls": 10,
+              "videoDecodeCallClippedCalls": 1,
+              "videoDecodeCallMaxWallMs": 36.594,
+              "videoDecodeCallWallMs": 163.369,
+              "videoFirstKeyPacketPTS": 0,
+              "videoFirstPacketPTS": 0,
+              "videoLastPacketPTS": 3.837,
+              "videoPutPacketCalls": 94,
+              "videoPutPacketClippedCalls": 0,
+              "videoPutPacketMaxWallMs": 0.035,
+              "videoPutPacketWallMs": 0.374,
+              "videoRoutedBytes": 974501,
+              "videoRoutedPackets": 94
+            }
+          },
+          {
+            "secondsFromTouch": 3.899287,
+            "event": "engine_ready",
+            "fields": {
+              "engine": "KSPlayer",
+              "state": "bufferFinished"
+            }
+          },
+          {
+            "secondsFromTouch": 3.986812,
+            "event": "engine_startup_timing",
+            "fields": {
+              "acceptedVideoFrameMs": 466.21516649611294,
+              "audioFirstKeyPacketPTS": 0,
+              "audioFirstPacketPTS": 0,
+              "audioLastPacketPTS": 4.288,
+              "audioPutPacketCalls": 135,
+              "audioPutPacketClippedCalls": 0,
+              "audioPutPacketMaxWallMs": 0.078,
+              "audioPutPacketWallMs": 0.489,
+              "audioRoutedBytes": 345600,
+              "audioRoutedPackets": 135,
+              "decodeInvocationMs": 302.709,
+              "decodeInvocationPTS": 0,
+              "decodedCallbackMs": 466.205,
+              "decodedCallbackPTS": 0,
+              "demuxReadCalls": 2860,
+              "demuxReadClippedCalls": 1,
+              "demuxReadMaxWallMs": 17.409,
+              "demuxReadWallMs": 155.409,
+              "discardedVideoFramesBeforeAccepted": 0,
+              "engine": "KSPlayer",
+              "evidence": "engineMonotonicStagesAndAdvancingClock",
+              "firstOutputAudioFPS": 48,
+              "firstOutputAudioFrames": 135,
+              "firstOutputAudioMaximumFrames": 256,
+              "firstOutputAudioPackets": 0,
+              "firstOutputCapacityMs": 476.757,
+              "firstOutputVideoFPS": 23.976025,
+              "firstOutputVideoFrames": 0,
+              "firstOutputVideoMaximumFrames": 16,
+              "firstOutputVideoPackets": 83,
+              "firstPlayableAudioFPS": 48,
+              "firstPlayableAudioFrames": 190,
+              "firstPlayableAudioMaximumFrames": 256,
+              "firstPlayableAudioPackets": 0,
+              "firstPlayableCapacityMs": 652.848,
+              "firstPlayableVideoFPS": 23.976025,
+              "firstPlayableVideoFrames": 15,
+              "firstPlayableVideoMaximumFrames": 16,
+              "firstPlayableVideoPackets": 108,
+              "firstVideoDecodeMs": 302.7654583565891,
+              "firstVideoPacketMs": 301.1744583491236,
+              "initialPositionSeconds": 0,
+              "initialSeekResult": "notRequested",
+              "openMs": 188.47191659733653,
+              "outputAttemptMs": 476.7904581967741,
+              "outputSubmittedMs": 486.7275832220912,
+              "readyMs": 23.787999991327524,
+              "readyToClockMs": 674.7951665893197,
+              "streamInfoMs": 88.71666667982936,
+              "videoDecodeCallCalls": 10,
+              "videoDecodeCallClippedCalls": 1,
+              "videoDecodeCallMaxWallMs": 36.594,
+              "videoDecodeCallWallMs": 163.369,
+              "videoFirstKeyPacketPTS": 0,
+              "videoFirstPacketPTS": 0,
+              "videoLastPacketPTS": 3.837,
+              "videoPutPacketCalls": 94,
+              "videoPutPacketClippedCalls": 0,
+              "videoPutPacketMaxWallMs": 0.035,
+              "videoPutPacketWallMs": 0.374,
+              "videoRoutedBytes": 974501,
+              "videoRoutedPackets": 94
+            }
+          },
+          {
+            "secondsFromTouch": 4.018357,
+            "event": "first_frame",
+            "fields": {
+              "firstFramePositionSeconds": 0.176,
+              "tapToFirstFrameMs": 1441
+            }
+          }
+        ],
+        "failures": []
+      },
+      "representativeScreensT10T45Reviewed": true,
+      "ordinaryExit": true,
+      "staticPredictionTriggeredInWindow": false,
+      "newRecoveryBranchExercised": false,
+      "cacheState": "unknown",
+      "performanceAccepted": false,
+      "S01FileWiFi": {
+        "URLMetricsCount": 3,
+        "URLMetricsCellularNo": 3,
+        "URLMetricsCellularYes": 0,
+        "maxStallCount": 0,
+        "stages": [
+          {
+            "secondsFromTouch": 1.377737,
+            "event": "engine_ready",
+            "fields": {
+              "engine": "KSPlayer",
+              "state": "preparing"
+            }
+          },
+          {
+            "secondsFromTouch": 1.37804,
+            "event": "engine_ready",
+            "fields": {
+              "engine": "KSPlayer",
+              "state": "rendererAppeared"
+            }
+          },
+          {
+            "secondsFromTouch": 2.261196,
+            "event": "engine_ready",
+            "fields": {
+              "engine": "KSPlayer",
+              "state": "readyToPlay"
+            }
+          },
+          {
+            "secondsFromTouch": 2.261368,
+            "event": "engine_ready",
+            "fields": {
+              "engine": "KSPlayer",
+              "state": "buffering"
+            }
+          },
+          {
+            "secondsFromTouch": 2.277013,
+            "event": "video_frame_submitted",
+            "fields": {
+              "acceptedVideoFrameMs": 968.0764582008123,
+              "acceptedVideoFramePTS": 0,
+              "audioFirstKeyPacketPTS": 0,
+              "audioFirstPacketPTS": 0,
+              "audioLastPacketPTS": 2.496,
+              "audioPutPacketCalls": 79,
+              "audioPutPacketClippedCalls": 0,
+              "audioPutPacketMaxWallMs": 0.007,
+              "audioPutPacketWallMs": 0.167,
+              "audioRoutedBytes": 141568,
+              "audioRoutedPackets": 79,
+              "controlSeconds": 0,
+              "decodeInvocationMs": 931.46,
+              "decodeInvocationPTS": 0,
+              "decodedCallbackMs": 968.071,
+              "decodedCallbackPTS": 0,
+              "demuxReadCalls": 163,
+              "demuxReadClippedCalls": 0,
+              "demuxReadMaxWallMs": 3.902,
+              "demuxReadWallMs": 23.108,
+              "discardedVideoFramesBeforeAccepted": 0,
+              "engine": "KSPlayer",
+              "evidence": "rendererAttemptAndOutputAPIBoundaryNotPresentation",
+              "firstOutputAudioFPS": 48,
+              "firstOutputAudioFrames": 32,
+              "firstOutputAudioMaximumFrames": 32,
+              "firstOutputAudioPackets": 47,
+              "firstOutputCapacityMs": 1004.402,
+              "firstOutputVideoFPS": 29.97009,
+              "firstOutputVideoFrames": 12,
+              "firstOutputVideoMaximumFrames": 16,
+              "firstOutputVideoPackets": 47,
+              "firstPlayableAudioFPS": 48,
+              "firstPlayableAudioFrames": 32,
+              "firstPlayableAudioMaximumFrames": 32,
+              "firstPlayableAudioPackets": 47,
+              "firstPlayableCapacityMs": 1004.363,
+              "firstPlayableVideoFPS": 29.97009,
+              "firstPlayableVideoFrames": 13,
+              "firstPlayableVideoMaximumFrames": 16,
+              "firstPlayableVideoPackets": 47,
+              "framePTSSeconds": 0,
+              "outputAttemptMs": 1004.4086666312069,
+              "outputPath": "sampleBufferEnqueued",
+              "outputSubmittedMs": 1007.7815833501518,
+              "outputSubmittedPTS": 0,
+              "videoDecodeCallCalls": 8,
+              "videoDecodeCallClippedCalls": 1,
+              "videoDecodeCallMaxWallMs": 21.097,
+              "videoDecodeCallWallMs": 36.546,
+              "videoFirstKeyPacketPTS": 0,
+              "videoFirstPacketPTS": 0,
+              "videoLastPacketPTS": 2.236,
+              "videoPutPacketCalls": 68,
+              "videoPutPacketClippedCalls": 0,
+              "videoPutPacketMaxWallMs": 0.017,
+              "videoPutPacketWallMs": 0.227,
+              "videoRoutedBytes": 125226,
+              "videoRoutedPackets": 68
+            }
+          },
+          {
+            "secondsFromTouch": 2.278363,
+            "event": "engine_ready",
+            "fields": {
+              "engine": "KSPlayer",
+              "state": "bufferFinished"
+            }
+          },
+          {
+            "secondsFromTouch": 2.439926,
+            "event": "engine_startup_timing",
+            "fields": {
+              "acceptedVideoFrameMs": 968.0764582008123,
+              "audioFirstKeyPacketPTS": 0,
+              "audioFirstPacketPTS": 0,
+              "audioLastPacketPTS": 2.496,
+              "audioPutPacketCalls": 79,
+              "audioPutPacketClippedCalls": 0,
+              "audioPutPacketMaxWallMs": 0.007,
+              "audioPutPacketWallMs": 0.167,
+              "audioRoutedBytes": 141568,
+              "audioRoutedPackets": 79,
+              "decodeInvocationMs": 931.46,
+              "decodeInvocationPTS": 0,
+              "decodedCallbackMs": 968.071,
+              "decodedCallbackPTS": 0,
+              "demuxReadCalls": 164,
+              "demuxReadClippedCalls": 1,
+              "demuxReadMaxWallMs": 12.988,
+              "demuxReadWallMs": 36.095,
+              "discardedVideoFramesBeforeAccepted": 0,
+              "engine": "KSPlayer",
+              "evidence": "engineMonotonicStagesAndAdvancingClock",
+              "firstOutputAudioFPS": 48,
+              "firstOutputAudioFrames": 32,
+              "firstOutputAudioMaximumFrames": 32,
+              "firstOutputAudioPackets": 47,
+              "firstOutputCapacityMs": 1004.402,
+              "firstOutputVideoFPS": 29.97009,
+              "firstOutputVideoFrames": 12,
+              "firstOutputVideoMaximumFrames": 16,
+              "firstOutputVideoPackets": 47,
+              "firstPlayableAudioFPS": 48,
+              "firstPlayableAudioFrames": 32,
+              "firstPlayableAudioMaximumFrames": 32,
+              "firstPlayableAudioPackets": 47,
+              "firstPlayableCapacityMs": 1004.363,
+              "firstPlayableVideoFPS": 29.97009,
+              "firstPlayableVideoFrames": 13,
+              "firstPlayableVideoMaximumFrames": 16,
+              "firstPlayableVideoPackets": 47,
+              "firstVideoDecodeMs": 931.5014164894819,
+              "firstVideoPacketMs": 930.4729166906327,
+              "initialPositionSeconds": 0,
+              "initialSeekResult": "notRequested",
+              "openMs": 899.834374897182,
+              "outputAttemptMs": 1004.4086666312069,
+              "outputSubmittedMs": 1007.7815833501518,
+              "readyMs": 19.329458475112915,
+              "readyToClockMs": 250.7289166096598,
+              "streamInfoMs": 11.12304162234068,
+              "videoDecodeCallCalls": 8,
+              "videoDecodeCallClippedCalls": 1,
+              "videoDecodeCallMaxWallMs": 21.097,
+              "videoDecodeCallWallMs": 36.546,
+              "videoFirstKeyPacketPTS": 0,
+              "videoFirstPacketPTS": 0,
+              "videoLastPacketPTS": 2.236,
+              "videoPutPacketCalls": 68,
+              "videoPutPacketClippedCalls": 0,
+              "videoPutPacketMaxWallMs": 0.017,
+              "videoPutPacketWallMs": 0.227,
+              "videoRoutedBytes": 125226,
+              "videoRoutedPackets": 68
+            }
+          },
+          {
+            "secondsFromTouch": 2.450683,
+            "event": "first_frame",
+            "fields": {
+              "firstFramePositionSeconds": 0.08,
+              "tapToFirstFrameMs": 1504
+            }
+          }
+        ],
+        "failures": [],
+        "ordinaryExit": true,
+        "representativeT10T30ScreensReviewed": true,
+        "exactVisibleFirstFrameNotMeasured": true,
+        "fullAudioSubtitleNotAccepted": true
+      },
+      "S01JellyfinWiFi": {
+        "URLMetricsCount": 3,
+        "URLMetricsCellularNo": 3,
+        "URLMetricsCellularYes": 0,
+        "maxStallCount": 0,
+        "stages": [
+          {
+            "secondsFromTouch": 1.951133,
+            "event": "engine_ready",
+            "fields": {
+              "engine": "KSPlayer",
+              "state": "preparing"
+            }
+          },
+          {
+            "secondsFromTouch": 1.959421,
+            "event": "engine_ready",
+            "fields": {
+              "engine": "KSPlayer",
+              "state": "rendererAppeared"
+            }
+          },
+          {
+            "secondsFromTouch": 2.187228,
+            "event": "engine_ready",
+            "fields": {
+              "engine": "KSPlayer",
+              "state": "readyToPlay"
+            }
+          },
+          {
+            "secondsFromTouch": 2.187518,
+            "event": "engine_ready",
+            "fields": {
+              "engine": "KSPlayer",
+              "state": "buffering"
+            }
+          },
+          {
+            "secondsFromTouch": 2.318843,
+            "event": "video_frame_submitted",
+            "fields": {
+              "acceptedVideoFrameMs": 337.6192916184664,
+              "acceptedVideoFramePTS": 0,
+              "audioFirstKeyPacketPTS": 0,
+              "audioFirstPacketPTS": 0,
+              "audioLastPacketPTS": 4.256,
+              "audioPutPacketCalls": 134,
+              "audioPutPacketClippedCalls": 0,
+              "audioPutPacketMaxWallMs": 0.029,
+              "audioPutPacketWallMs": 0.313,
+              "audioRoutedBytes": 240128,
+              "audioRoutedPackets": 134,
+              "controlSeconds": 0,
+              "decodeInvocationMs": 305.524,
+              "decodeInvocationPTS": 0,
+              "decodedCallbackMs": 337.614,
+              "decodedCallbackPTS": 0,
+              "demuxReadCalls": 276,
+              "demuxReadClippedCalls": 1,
+              "demuxReadMaxWallMs": 3.537,
+              "demuxReadWallMs": 31.019,
+              "discardedVideoFramesBeforeAccepted": 0,
+              "engine": "KSPlayer",
+              "evidence": "rendererAttemptAndOutputAPIBoundaryNotPresentation",
+              "firstOutputAudioFPS": 48,
+              "firstOutputAudioFrames": 32,
+              "firstOutputAudioMaximumFrames": 32,
+              "firstOutputAudioPackets": 189,
+              "firstOutputCapacityMs": 379.64,
+              "firstOutputVideoFPS": 29.97009,
+              "firstOutputVideoFrames": 15,
+              "firstOutputVideoMaximumFrames": 16,
+              "firstOutputVideoPackets": 189,
+              "firstPlayableAudioFPS": 48,
+              "firstPlayableAudioFrames": 32,
+              "firstPlayableAudioMaximumFrames": 32,
+              "firstPlayableAudioPackets": 189,
+              "firstPlayableCapacityMs": 379.61,
+              "firstPlayableVideoFPS": 29.97009,
+              "firstPlayableVideoFrames": 16,
+              "firstPlayableVideoMaximumFrames": 16,
+              "firstPlayableVideoPackets": 189,
+              "framePTSSeconds": 0,
+              "outputAttemptMs": 379.64729173108935,
+              "outputPath": "sampleBufferEnqueued",
+              "outputSubmittedMs": 381.10679178498685,
+              "outputSubmittedPTS": 0,
+              "videoDecodeCallCalls": 8,
+              "videoDecodeCallClippedCalls": 1,
+              "videoDecodeCallMaxWallMs": 14.407,
+              "videoDecodeCallWallMs": 32.011,
+              "videoFirstKeyPacketPTS": 0,
+              "videoFirstPacketPTS": 0,
+              "videoLastPacketPTS": 4.104,
+              "videoPutPacketCalls": 125,
+              "videoPutPacketClippedCalls": 0,
+              "videoPutPacketMaxWallMs": 0.015,
+              "videoPutPacketWallMs": 0.336,
+              "videoRoutedBytes": 216030,
+              "videoRoutedPackets": 125
+            }
+          },
+          {
+            "secondsFromTouch": 2.31979,
+            "event": "engine_ready",
+            "fields": {
+              "engine": "KSPlayer",
+              "state": "bufferFinished"
+            }
+          },
+          {
+            "secondsFromTouch": 2.402055,
+            "event": "engine_startup_timing",
+            "fields": {
+              "acceptedVideoFrameMs": 337.6192916184664,
+              "audioFirstKeyPacketPTS": 0,
+              "audioFirstPacketPTS": 0,
+              "audioLastPacketPTS": 4.256,
+              "audioPutPacketCalls": 134,
+              "audioPutPacketClippedCalls": 0,
+              "audioPutPacketMaxWallMs": 0.029,
+              "audioPutPacketWallMs": 0.313,
+              "audioRoutedBytes": 240128,
+              "audioRoutedPackets": 134,
+              "decodeInvocationMs": 305.524,
+              "decodeInvocationPTS": 0,
+              "decodedCallbackMs": 337.614,
+              "decodedCallbackPTS": 0,
+              "demuxReadCalls": 276,
+              "demuxReadClippedCalls": 1,
+              "demuxReadMaxWallMs": 3.537,
+              "demuxReadWallMs": 31.019,
+              "discardedVideoFramesBeforeAccepted": 0,
+              "engine": "KSPlayer",
+              "evidence": "engineMonotonicStagesAndAdvancingClock",
+              "firstOutputAudioFPS": 48,
+              "firstOutputAudioFrames": 32,
+              "firstOutputAudioMaximumFrames": 32,
+              "firstOutputAudioPackets": 189,
+              "firstOutputCapacityMs": 379.64,
+              "firstOutputVideoFPS": 29.97009,
+              "firstOutputVideoFrames": 15,
+              "firstOutputVideoMaximumFrames": 16,
+              "firstOutputVideoPackets": 189,
+              "firstPlayableAudioFPS": 48,
+              "firstPlayableAudioFrames": 32,
+              "firstPlayableAudioMaximumFrames": 32,
+              "firstPlayableAudioPackets": 189,
+              "firstPlayableCapacityMs": 379.61,
+              "firstPlayableVideoFPS": 29.97009,
+              "firstPlayableVideoFrames": 16,
+              "firstPlayableVideoMaximumFrames": 16,
+              "firstPlayableVideoPackets": 189,
+              "firstVideoDecodeMs": 305.57575006969273,
+              "firstVideoPacketMs": 304.00533345527947,
+              "initialPositionSeconds": 0,
+              "initialSeekResult": "notRequested",
+              "openMs": 290.9364583902061,
+              "outputAttemptMs": 379.64729173108935,
+              "outputSubmittedMs": 381.10679178498685,
+              "readyMs": 9.725374868139625,
+              "readyToClockMs": 251.24766677618027,
+              "streamInfoMs": 3.1843334436416626,
+              "videoDecodeCallCalls": 8,
+              "videoDecodeCallClippedCalls": 1,
+              "videoDecodeCallMaxWallMs": 14.407,
+              "videoDecodeCallWallMs": 32.011,
+              "videoFirstKeyPacketPTS": 0,
+              "videoFirstPacketPTS": 0,
+              "videoLastPacketPTS": 4.104,
+              "videoPutPacketCalls": 125,
+              "videoPutPacketClippedCalls": 0,
+              "videoPutPacketMaxWallMs": 0.015,
+              "videoPutPacketWallMs": 0.336,
+              "videoRoutedBytes": 216030,
+              "videoRoutedPackets": 125
+            }
+          },
+          {
+            "secondsFromTouch": 2.504145,
+            "event": "first_frame",
+            "fields": {
+              "firstFramePositionSeconds": 0.059,
+              "tapToFirstFrameMs": 891
+            }
+          }
+        ],
+        "failures": [],
+        "ordinaryExit": true,
+        "representativeT10T30ScreensReviewed": true,
+        "exactVisibleFirstFrameNotMeasured": true,
+        "fullAudioSubtitleNotAccepted": true
+      },
+      "finalAudit": {
+        "at": "2026-10-19T19:45:45.150871+08:00",
+        "model": "iPad12,1",
+        "system": "18.3.1",
+        "connection": "USB",
+        "sourceDiffSHA256": "120355b2f216d12bb333fb597cb92d7e3ddd9b81f6e0b61c10767b5c341176e9",
+        "latestPackage": {
+          "Nastart": "6334c2a229f31942c590edce0af3a51dea014493cd25c4005b5d3f8b7cbf1a64",
+          "Nastart.debug.dylib": "beeb387a725925a1e66b6c41a5c6dce58734a2e3a5e902467b919f344bce4c5b",
+          "Frameworks/KSPlayer.framework/KSPlayer": "9fab6793a194b52a8400933496d1e5047411614c204018cb7a5ddb0bacb98065"
+        },
+        "nonBookmarkPreferenceKeys": 17,
+        "nonBookmarkPreferencesExactlyUnchanged": true,
+        "naturalBookmarkChangesCount": 3,
+        "originalBookmarksChecked": 29,
+        "originalBookmarksRemoved": 0,
+        "originalTrackChangeCount": 0,
+        "allOriginalTracksUnchanged": true,
+        "newBookmarksCount": 0,
+        "crashInventoryDelta": {
+          "Nastart": 0,
+          "WebDriverAgent": 0,
+          "JetsamEvent": 0
+        },
+        "normalEmptyEnvironment": true,
+        "NASNormal": true,
+        "playerClosed": true,
+        "WDAIdleSeconds": 10,
+        "WDAAnimationCoolOffSeconds": 2,
+        "nativeConditionsNotRecheckedThisTurn": true,
+        "noConditionInjectedThisTurn": true,
+        "nativeActiveConditions": "not remeasured",
+        "finalHomeActuallyReviewed": true
+      },
+      "fixedRunnerCleanup": {
+        "at": "2026-10-19T19:45:47.178418+08:00",
+        "fixedRunnerNameMatched": true,
+        "intentionalRunnerTerminationCount": 1,
+        "runnerAbsentAfter": true,
+        "appPresentAfter": true,
+        "actualFinalHomeViewed": true
+      }
+    },
+    "iphone13": {
+      "packageCoveredPreservingData": true,
+      "unchangedNonDiagnosticKeys": 25,
+      "actualNormalHomeReviewed": true,
+      "S01WiFi": "both entries completed",
+      "S01FileWiFi": {
+        "URLMetricsCount": 3,
+        "URLMetricsCellularNo": 3,
+        "URLMetricsCellularYes": 0,
+        "maxStallCount": 0,
+        "stages": [
+          {
+            "secondsFromTouch": 1.00897,
+            "event": "engine_ready",
+            "fields": {
+              "engine": "KSPlayer",
+              "state": "preparing"
+            }
+          },
+          {
+            "secondsFromTouch": 1.009187,
+            "event": "engine_ready",
+            "fields": {
+              "engine": "KSPlayer",
+              "state": "rendererAppeared"
+            }
+          },
+          {
+            "secondsFromTouch": 1.190462,
+            "event": "engine_ready",
+            "fields": {
+              "engine": "KSPlayer",
+              "state": "readyToPlay"
+            }
+          },
+          {
+            "secondsFromTouch": 1.190712,
+            "event": "engine_ready",
+            "fields": {
+              "engine": "KSPlayer",
+              "state": "buffering"
+            }
+          },
+          {
+            "secondsFromTouch": 1.211901,
+            "event": "video_frame_submitted",
+            "fields": {
+              "acceptedVideoFrameMs": 170.96750001655892,
+              "acceptedVideoFramePTS": 0,
+              "audioFirstKeyPacketPTS": 0,
+              "audioFirstPacketPTS": 0,
+              "audioLastPacketPTS": 3.008,
+              "audioPutPacketCalls": 95,
+              "audioPutPacketClippedCalls": 0,
+              "audioPutPacketMaxWallMs": 0.016,
+              "audioPutPacketWallMs": 0.25,
+              "audioRoutedBytes": 170240,
+              "audioRoutedPackets": 95,
+              "controlSeconds": 0,
+              "decodeInvocationMs": 144.781,
+              "decodeInvocationPTS": 0,
+              "decodedCallbackMs": 170.961,
+              "decodedCallbackPTS": 0,
+              "demuxReadCalls": 204,
+              "demuxReadClippedCalls": 1,
+              "demuxReadMaxWallMs": 3.257,
+              "demuxReadWallMs": 26.297,
+              "discardedVideoFramesBeforeAccepted": 0,
+              "engine": "KSPlayer",
+              "evidence": "rendererAttemptAndOutputAPIBoundaryNotPresentation",
+              "firstOutputAudioFPS": 48,
+              "firstOutputAudioFrames": 128,
+              "firstOutputAudioMaximumFrames": 128,
+              "firstOutputAudioPackets": 85,
+              "firstOutputCapacityMs": 218.293,
+              "firstOutputVideoFPS": 29.97009,
+              "firstOutputVideoFrames": 15,
+              "firstOutputVideoMaximumFrames": 16,
+              "firstOutputVideoPackets": 180,
+              "firstPlayableAudioFPS": 48,
+              "firstPlayableAudioFrames": 128,
+              "firstPlayableAudioMaximumFrames": 128,
+              "firstPlayableAudioPackets": 85,
+              "firstPlayableCapacityMs": 217.952,
+              "firstPlayableVideoFPS": 29.97009,
+              "firstPlayableVideoFrames": 16,
+              "firstPlayableVideoMaximumFrames": 16,
+              "firstPlayableVideoPackets": 180,
+              "framePTSSeconds": 0,
+              "outputAttemptMs": 218.29854167299345,
+              "outputPath": "sampleBufferEnqueued",
+              "outputSubmittedMs": 224.19437501230277,
+              "outputSubmittedPTS": 0,
+              "videoDecodeCallCalls": 8,
+              "videoDecodeCallClippedCalls": 1,
+              "videoDecodeCallMaxWallMs": 14.758,
+              "videoDecodeCallWallMs": 26.163,
+              "videoFirstKeyPacketPTS": 0,
+              "videoFirstPacketPTS": 0,
+              "videoLastPacketPTS": 3.003,
+              "videoPutPacketCalls": 92,
+              "videoPutPacketClippedCalls": 0,
+              "videoPutPacketMaxWallMs": 0.01,
+              "videoPutPacketWallMs": 0.13,
+              "videoRoutedBytes": 152198,
+              "videoRoutedPackets": 92
+            }
+          },
+          {
+            "secondsFromTouch": 1.212723,
+            "event": "engine_ready",
+            "fields": {
+              "engine": "KSPlayer",
+              "state": "bufferFinished"
+            }
+          },
+          {
+            "secondsFromTouch": 1.452627,
+            "event": "engine_startup_timing",
+            "fields": {
+              "acceptedVideoFrameMs": 170.96750001655892,
+              "audioFirstKeyPacketPTS": 0,
+              "audioFirstPacketPTS": 0,
+              "audioLastPacketPTS": 3.008,
+              "audioPutPacketCalls": 95,
+              "audioPutPacketClippedCalls": 0,
+              "audioPutPacketMaxWallMs": 0.016,
+              "audioPutPacketWallMs": 0.25,
+              "audioRoutedBytes": 170240,
+              "audioRoutedPackets": 95,
+              "decodeInvocationMs": 144.781,
+              "decodeInvocationPTS": 0,
+              "decodedCallbackMs": 170.961,
+              "decodedCallbackPTS": 0,
+              "demuxReadCalls": 204,
+              "demuxReadClippedCalls": 1,
+              "demuxReadMaxWallMs": 3.257,
+              "demuxReadWallMs": 26.297,
+              "discardedVideoFramesBeforeAccepted": 0,
+              "engine": "KSPlayer",
+              "evidence": "engineMonotonicStagesAndAdvancingClock",
+              "firstOutputAudioFPS": 48,
+              "firstOutputAudioFrames": 128,
+              "firstOutputAudioMaximumFrames": 128,
+              "firstOutputAudioPackets": 85,
+              "firstOutputCapacityMs": 218.293,
+              "firstOutputVideoFPS": 29.97009,
+              "firstOutputVideoFrames": 15,
+              "firstOutputVideoMaximumFrames": 16,
+              "firstOutputVideoPackets": 180,
+              "firstPlayableAudioFPS": 48,
+              "firstPlayableAudioFrames": 128,
+              "firstPlayableAudioMaximumFrames": 128,
+              "firstPlayableAudioPackets": 85,
+              "firstPlayableCapacityMs": 217.952,
+              "firstPlayableVideoFPS": 29.97009,
+              "firstPlayableVideoFrames": 16,
+              "firstPlayableVideoMaximumFrames": 16,
+              "firstPlayableVideoPackets": 180,
+              "firstVideoDecodeMs": 144.85479166614823,
+              "firstVideoPacketMs": 143.2608333416283,
+              "initialPositionSeconds": 0,
+              "initialSeekResult": "notRequested",
+              "openMs": 124.50012500630692,
+              "outputAttemptMs": 218.29854167299345,
+              "outputSubmittedMs": 224.19437501230277,
+              "readyMs": 9.881166683044285,
+              "readyToClockMs": 342.3802916659042,
+              "streamInfoMs": 8.752624999033287,
+              "videoDecodeCallCalls": 8,
+              "videoDecodeCallClippedCalls": 1,
+              "videoDecodeCallMaxWallMs": 14.758,
+              "videoDecodeCallWallMs": 26.163,
+              "videoFirstKeyPacketPTS": 0,
+              "videoFirstPacketPTS": 0,
+              "videoLastPacketPTS": 3.003,
+              "videoPutPacketCalls": 92,
+              "videoPutPacketClippedCalls": 0,
+              "videoPutPacketMaxWallMs": 0.01,
+              "videoPutPacketWallMs": 0.13,
+              "videoRoutedBytes": 152198,
+              "videoRoutedPackets": 92
+            }
+          },
+          {
+            "secondsFromTouch": 1.460706,
+            "event": "first_frame",
+            "fields": {
+              "firstFramePositionSeconds": 0.137,
+              "tapToFirstFrameMs": 787
+            }
+          }
+        ],
+        "failures": [],
+        "ordinaryExit": true,
+        "representativeScreensReviewed": true,
+        "firstVisibleFrameNotExactlyMeasured": true,
+        "fullAudioSubtitleNotAccepted": true,
+        "cacheState": "unknown"
+      },
+      "S01JellyfinWiFi": {
+        "URLMetricsCount": 3,
+        "URLMetricsCellularNo": 3,
+        "URLMetricsCellularYes": 0,
+        "maxStallCount": 0,
+        "stages": [
+          {
+            "secondsFromTouch": 1.231955,
+            "event": "engine_ready",
+            "fields": {
+              "engine": "KSPlayer",
+              "state": "preparing"
+            }
+          },
+          {
+            "secondsFromTouch": 1.232176,
+            "event": "engine_ready",
+            "fields": {
+              "engine": "KSPlayer",
+              "state": "rendererAppeared"
+            }
+          },
+          {
+            "secondsFromTouch": 1.558791,
+            "event": "engine_ready",
+            "fields": {
+              "engine": "KSPlayer",
+              "state": "readyToPlay"
+            }
+          },
+          {
+            "secondsFromTouch": 1.559103,
+            "event": "engine_ready",
+            "fields": {
+              "engine": "KSPlayer",
+              "state": "buffering"
+            }
+          },
+          {
+            "secondsFromTouch": 1.559309,
+            "event": "video_frame_submitted",
+            "fields": {
+              "acceptedVideoFrameMs": 274.87850000034086,
+              "acceptedVideoFramePTS": 0,
+              "audioFirstKeyPacketPTS": 0,
+              "audioFirstPacketPTS": 0,
+              "audioLastPacketPTS": 0.48,
+              "audioPutPacketCalls": 16,
+              "audioPutPacketClippedCalls": 0,
+              "audioPutPacketMaxWallMs": 0.011,
+              "audioPutPacketWallMs": 0.036,
+              "audioRoutedBytes": 28672,
+              "audioRoutedPackets": 16,
+              "controlSeconds": 0,
+              "decodeInvocationMs": 252.36,
+              "decodeInvocationPTS": 0,
+              "decodedCallbackMs": 274.877,
+              "decodedCallbackPTS": 0,
+              "demuxReadCalls": 45,
+              "demuxReadClippedCalls": 1,
+              "demuxReadMaxWallMs": 19.946,
+              "demuxReadWallMs": 23.383,
+              "discardedVideoFramesBeforeAccepted": 0,
+              "engine": "KSPlayer",
+              "evidence": "rendererAttemptAndOutputAPIBoundaryNotPresentation",
+              "firstOutputAudioFPS": 48,
+              "firstOutputAudioFrames": 103,
+              "firstOutputAudioMaximumFrames": 128,
+              "firstOutputAudioPackets": 0,
+              "firstOutputCapacityMs": 329.234,
+              "firstOutputVideoFPS": 29.97009,
+              "firstOutputVideoFrames": 15,
+              "firstOutputVideoMaximumFrames": 16,
+              "firstOutputVideoPackets": 69,
+              "firstPlayableAudioFPS": 48,
+              "firstPlayableAudioFrames": 103,
+              "firstPlayableAudioMaximumFrames": 128,
+              "firstPlayableAudioPackets": 0,
+              "firstPlayableCapacityMs": 329.214,
+              "firstPlayableVideoFPS": 29.97009,
+              "firstPlayableVideoFrames": 16,
+              "firstPlayableVideoMaximumFrames": 16,
+              "firstPlayableVideoPackets": 69,
+              "framePTSSeconds": 0,
+              "outputAttemptMs": 329.23900001333095,
+              "outputPath": "sampleBufferEnqueued",
+              "outputSubmittedMs": 330.04441668163054,
+              "outputSubmittedPTS": 0,
+              "videoDecodeCallCalls": 8,
+              "videoDecodeCallClippedCalls": 1,
+              "videoDecodeCallMaxWallMs": 8.483,
+              "videoDecodeCallWallMs": 18.799,
+              "videoFirstKeyPacketPTS": 0,
+              "videoFirstPacketPTS": 0,
+              "videoLastPacketPTS": 0.334,
+              "videoPutPacketCalls": 12,
+              "videoPutPacketClippedCalls": 0,
+              "videoPutPacketMaxWallMs": 0.01,
+              "videoPutPacketWallMs": 0.032,
+              "videoRoutedBytes": 47678,
+              "videoRoutedPackets": 12
+            }
+          },
+          {
+            "secondsFromTouch": 1.560027,
+            "event": "engine_ready",
+            "fields": {
+              "engine": "KSPlayer",
+              "state": "bufferFinished"
+            }
+          },
+          {
+            "secondsFromTouch": 1.732085,
+            "event": "engine_startup_timing",
+            "fields": {
+              "acceptedVideoFrameMs": 274.87850000034086,
+              "audioFirstKeyPacketPTS": 0,
+              "audioFirstPacketPTS": 0,
+              "audioLastPacketPTS": 0.48,
+              "audioPutPacketCalls": 16,
+              "audioPutPacketClippedCalls": 0,
+              "audioPutPacketMaxWallMs": 0.011,
+              "audioPutPacketWallMs": 0.036,
+              "audioRoutedBytes": 28672,
+              "audioRoutedPackets": 16,
+              "decodeInvocationMs": 252.36,
+              "decodeInvocationPTS": 0,
+              "decodedCallbackMs": 274.877,
+              "decodedCallbackPTS": 0,
+              "demuxReadCalls": 45,
+              "demuxReadClippedCalls": 1,
+              "demuxReadMaxWallMs": 19.946,
+              "demuxReadWallMs": 23.383,
+              "discardedVideoFramesBeforeAccepted": 0,
+              "engine": "KSPlayer",
+              "evidence": "engineMonotonicStagesAndAdvancingClock",
+              "firstOutputAudioFPS": 48,
+              "firstOutputAudioFrames": 103,
+              "firstOutputAudioMaximumFrames": 128,
+              "firstOutputAudioPackets": 0,
+              "firstOutputCapacityMs": 329.234,
+              "firstOutputVideoFPS": 29.97009,
+              "firstOutputVideoFrames": 15,
+              "firstOutputVideoMaximumFrames": 16,
+              "firstOutputVideoPackets": 69,
+              "firstPlayableAudioFPS": 48,
+              "firstPlayableAudioFrames": 103,
+              "firstPlayableAudioMaximumFrames": 128,
+              "firstPlayableAudioPackets": 0,
+              "firstPlayableCapacityMs": 329.214,
+              "firstPlayableVideoFPS": 29.97009,
+              "firstPlayableVideoFrames": 16,
+              "firstPlayableVideoMaximumFrames": 16,
+              "firstPlayableVideoPackets": 69,
+              "firstVideoDecodeMs": 252.39133334252983,
+              "firstVideoPacketMs": 251.09895833884366,
+              "initialPositionSeconds": 0,
+              "initialSeekResult": "notRequested",
+              "openMs": 242.92341666296124,
+              "outputAttemptMs": 329.23900001333095,
+              "outputSubmittedMs": 330.04441668163054,
+              "readyMs": 3.979999979492277,
+              "readyToClockMs": 284.8974583321251,
+              "streamInfoMs": 4.091041686479002,
+              "videoDecodeCallCalls": 8,
+              "videoDecodeCallClippedCalls": 1,
+              "videoDecodeCallMaxWallMs": 8.483,
+              "videoDecodeCallWallMs": 18.799,
+              "videoFirstKeyPacketPTS": 0,
+              "videoFirstPacketPTS": 0,
+              "videoLastPacketPTS": 0.334,
+              "videoPutPacketCalls": 12,
+              "videoPutPacketClippedCalls": 0,
+              "videoPutPacketMaxWallMs": 0.01,
+              "videoPutPacketWallMs": 0.032,
+              "videoRoutedBytes": 47678,
+              "videoRoutedPackets": 12
+            }
+          },
+          {
+            "secondsFromTouch": 1.755564,
+            "event": "first_frame",
+            "fields": {
+              "firstFramePositionSeconds": 0.094,
+              "tapToFirstFrameMs": 713
+            }
+          }
+        ],
+        "failures": [],
+        "ordinaryExit": true,
+        "representativeScreensReviewed": true,
+        "firstVisibleFrameNotExactlyMeasured": true,
+        "fullAudioSubtitleNotAccepted": true,
+        "cacheState": "unknown"
+      },
+      "S03FileCellular": {
+        "URLMetricsCount": 26,
+        "URLMetricsCellularNo": 0,
+        "URLMetricsCellularYes": 26,
+        "maxStallCount": 1,
+        "stages": [
+          {
+            "secondsFromTouch": 6.579967,
+            "event": "first_frame",
+            "fields": {
+              "firstFramePositionSeconds": 0.525,
+              "tapToFirstFrameMs": 5089
+            }
+          }
+        ],
+        "failures": [],
+        "ordinaryExit": true,
+        "representativeScreensReviewed": true,
+        "firstVisibleFrameNotExactlyMeasured": true,
+        "fullAudioSubtitleNotAccepted": true,
+        "cacheState": "unknown",
+        "cleanup": {
+          "at": "2026-10-19T19:50:41.431316+08:00",
+          "device": "iphone13",
+          "sample": "S03",
+          "entry": "file",
+          "normalEnvironment": true,
+          "shaping": false,
+          "cellularAndVPNSettingsChanged": false,
+          "windowCompleted": true,
+          "ownMediaStoppedBeforeWiFiRestore": true,
+          "nativeOriginalNetworkSelected": true,
+          "wifiIconActualReviewPending": true,
+          "finishedAt": "2026-10-19T19:52:35.720867+08:00",
+          "wifiIconActualReviewComplete": true,
+          "nativeOriginalNetworkAndStatusWiFiIconVerified": true,
+          "wifiFollowupActuallyReviewedAt": "2026-10-19T19:55:17.503277+08:00",
+          "initialRestorationImageStill4G": true
+        },
+        "serverAudit": {
+          "at": "2026-10-19T19:56:31.896113+08:00",
+          "readOnly": true,
+          "extraMediaStarted": false,
+          "serverConfigurationChanged": false,
+          "clientTaskToJobBound": false,
+          "firstSegmentCreationTimeKnown": false,
+          "rows": [
+            {
+              "index": 0,
+              "bytes": 456409,
+              "SHA256": "e274322e62d0b7f12ec51c89f10858738ea9f66f262ffa9e39e76cfa85cf620d",
+              "createdUTC": "2026-10-19T11:52:09.8819384Z",
+              "modifiedUTC": "2026-10-19T11:52:09.8819384Z",
+              "explicitClientSessionIdMatches": 0,
+              "conversionFailed": false
+            }
+          ],
+          "currentServerMinusMacOffsetBoundsSeconds": [
+            0.2873530387878418,
+            0.3069460391998291
+          ],
+          "clientSessionIdentifiersFound": 0,
+          "fetchCompleted": true,
+          "downloadedBytes": 456409
+        },
+        "firstServerAuditFailure": "Python 3.9 ISO fractional digits normalization; original failure retained; corrected read only fetch succeeded",
+        "radio": {
+          "observedMode": "4G",
+          "visibleBars": "3 of 4 in native screenshot",
+          "RSRP": "unknown",
+          "RSRQ": "unknown",
+          "SINR": "unknown",
+          "quantitativeWeakRadioProven": false
+        }
+      },
+      "S03JellyfinCellular": {
+        "URLMetricsCount": 26,
+        "URLMetricsCellularNo": 0,
+        "URLMetricsCellularYes": 26,
+        "maxStallCount": 1,
+        "stages": [
+          {
+            "secondsFromTouch": 7.552059,
+            "event": "first_frame",
+            "fields": {
+              "firstFramePositionSeconds": 0.501,
+              "tapToFirstFrameMs": 5038
+            }
+          }
+        ],
+        "failures": [],
+        "ordinaryExit": true,
+        "representativeT10T45ScreensReviewed": true,
+        "cacheState": "unknown",
+        "performanceAccepted": false,
+        "cleanup": {
+          "at": "2026-10-19T19:57:06.896261+08:00",
+          "device": "iphone13",
+          "sample": "S03",
+          "entry": "jf",
+          "normalEnvironment": true,
+          "shaping": false,
+          "cellularAndVPNSettingsChanged": false,
+          "windowCompleted": true,
+          "ownMediaStoppedBeforeWiFiRestore": true,
+          "nativeOriginalNetworkSelected": true,
+          "wifiIconActualReviewPending": true,
+          "finishedAt": "2026-10-19T19:58:48.484547+08:00",
+          "wifiIconActualReviewComplete": true,
+          "nativeOriginalNetworkAndStatusWiFiIconVerified": true,
+          "wifiFollowupActuallyReviewedAt": "2026-10-19T20:00:16.718683+08:00",
+          "initialRestorationImageStill4G": true
+        },
+        "serverAudit": {
+          "at": "2026-10-19T20:00:16.821353+08:00",
+          "readOnly": true,
+          "extraMediaStarted": false,
+          "serverConfigurationChanged": false,
+          "clientTaskToJobBound": false,
+          "firstSegmentCreationTimeKnown": false,
+          "rows": [
+            {
+              "index": 0,
+              "bytes": 419730,
+              "SHA256": "87bdf6dbcb914a3dc37f9ff3ec977fcd126b69c3ddc50dcd261e9f6dd2dc4844",
+              "createdUTC": "2026-10-19T11:58:22.860727Z",
+              "modifiedUTC": "2026-10-19T11:58:22.860727Z",
+              "explicitClientSessionIdMatches": 0,
+              "conversionFailed": false
+            }
+          ],
+          "currentServerMinusMacOffsetBoundsSeconds": [
+            0.29319119453430176,
+            0.3154752254486084
+          ],
+          "clientSessionIdentifiersFound": 0,
+          "fetchCompleted": true,
+          "downloadedBytes": 419730
+        }
+      },
+      "auditBeforeS19": {
+        "at": "2026-10-19T20:00:22.803482+08:00",
+        "model": "iPhone14,5",
+        "system": "16.3.1",
+        "connection": "USB",
+        "sourceDiffSHA256": "120355b2f216d12bb333fb597cb92d7e3ddd9b81f6e0b61c10767b5c341176e9",
+        "latestPackage": {
+          "Nastart": "6334c2a229f31942c590edce0af3a51dea014493cd25c4005b5d3f8b7cbf1a64",
+          "Nastart.debug.dylib": "beeb387a725925a1e66b6c41a5c6dce58734a2e3a5e902467b919f344bce4c5b",
+          "Frameworks/KSPlayer.framework/KSPlayer": "9fab6793a194b52a8400933496d1e5047411614c204018cb7a5ddb0bacb98065"
+        },
+        "nonBookmarkPreferenceKeys": 24,
+        "nonBookmarkPreferencesExactlyUnchanged": true,
+        "naturalBookmarkChangesCount": 4,
+        "originalBookmarksChecked": 36,
+        "originalBookmarksRemoved": 0,
+        "originalTrackChangeCount": 0,
+        "allOriginalTracksUnchanged": true,
+        "newBookmarksCount": 0,
+        "crashInventoryDelta": {
+          "Nastart": 0,
+          "WebDriverAgent": 0,
+          "JetsamEvent": 0
+        },
+        "normalEmptyEnvironment": true,
+        "NASNormal": true,
+        "playerClosed": true,
+        "WDAIdleSeconds": 10,
+        "WDAAnimationCoolOffSeconds": 2,
+        "nativeConditionsNotRecheckedThisTurn": true,
+        "noConditionInjectedThisTurn": true,
+        "nativeActiveConditions": "not remeasured",
+        "finalHomeActuallyReviewed": true
+      },
+      "S19JellyfinCellular": "active; cleanup pending"
+    },
+    "iphone18": {
+      "stage": "installed; post-install verification incomplete",
+      "packageVerified": true,
+      "targetLiveVerified": true,
+      "installCommandSent": true,
+      "installCompleteObserved": true,
+      "postInstallLookupExists": true,
+      "actualForegroundUIVerified": false,
+      "binaries": {
+        "Nastart": "6334c2a229f31942c590edce0af3a51dea014493cd25c4005b5d3f8b7cbf1a64",
+        "Nastart.debug.dylib": "beeb387a725925a1e66b6c41a5c6dce58734a2e3a5e902467b919f344bce4c5b",
+        "Frameworks/KSPlayer.framework/KSPlayer": "9fab6793a194b52a8400933496d1e5047411614c204018cb7a5ddb0bacb98065"
+      },
+      "sourceDiffSHA256": "120355b2f216d12bb333fb597cb92d7e3ddd9b81f6e0b61c10767b5c341176e9",
+      "preferences": {
+        "beforeKeys": 25,
+        "afterKeys": 25,
+        "sameKeys": true,
+        "changedValues": 0,
+        "allNonDiagnosticPreferencesEqual": true
+      },
+      "normalLaunchRequested": true,
+      "failureType": "TimeoutError",
+      "postVerification": {
+        "at": "2026-10-19T20:06:02.540400+08:00",
+        "installationAlreadyComplete": true,
+        "noReinstallOrPairing": true,
+        "newLaunchRequested": false,
+        "actualScreenReviewed": false,
+        "verificationComplete": false,
+        "failureType": "_RemotePairingError"
+      }
+    }
+  },
+  "performanceAccepted": false,
+  "closedRequirements": [],
+  "iphone13S19": {
+    "normalEnvironment": true,
+    "durationSeconds": 45,
+    "internalClockSignalSecondsFromTouch": 10.435871,
+    "internalTapToFirstClockMs": 7633,
+    "metricsCellularYes": 36,
+    "metricsCellularNo": 0,
+    "maxStallCountIncludingStartup": 1,
+    "firstOrdinalZeroRequests": 2,
+    "firstRequestHeaderMs": 4979,
+    "firstRequestUpstreamCancelledAfterClientSendFailure": true,
+    "secondRequestHeaderMs": 1069,
+    "secondRequestBodyMs": 330,
+    "secondRequestDecodedBytes": 1028360,
+    "actualT10Image": "black opening with controls at 00:00",
+    "actualT45Image": "black opening with bilingual The world is changed subtitle",
+    "exactFirstVisibleFrameUnknown": true,
+    "noAutomaticDownshiftObserved": true,
+    "wifiRestorationActuallyReviewed": true,
+    "followupNativeImageAt": "2026-10-19T20:14:24+08:00",
+    "radioQuantities": "RSRP/RSRQ/SINR unknown",
+    "conclusion": "Retain 4014ms receive EOF, 4979ms response header and 4983ms send failure separately; FIN alone is not full client closure. Does not prove old zero-speed defect resolved",
+    "firstRequestReceiveEOFMs": 4014,
+    "receiveEOFDoesNotProveFullClientClosure": true,
+    "firstRequestSendFailedMs": 4983
+  },
+  "iphone13FinalAudit": {
+    "at": "2026-10-19T22:17:15.948983+08:00",
+    "model": "iPhone14,5",
+    "system": "16.3.1",
+    "connection": "USB",
+    "sourceDiffSHA256": "120355b2f216d12bb333fb597cb92d7e3ddd9b81f6e0b61c10767b5c341176e9",
+    "latestPackage": {
+      "Nastart": "6334c2a229f31942c590edce0af3a51dea014493cd25c4005b5d3f8b7cbf1a64",
+      "Nastart.debug.dylib": "beeb387a725925a1e66b6c41a5c6dce58734a2e3a5e902467b919f344bce4c5b",
+      "Frameworks/KSPlayer.framework/KSPlayer": "9fab6793a194b52a8400933496d1e5047411614c204018cb7a5ddb0bacb98065"
+    },
+    "nonBookmarkPreferenceKeys": 24,
+    "nonBookmarkPreferencesExactlyUnchanged": true,
+    "naturalBookmarkChangesCount": 5,
+    "originalBookmarksChecked": 36,
+    "originalBookmarksRemoved": 0,
+    "originalTrackChangeCount": 0,
+    "allOriginalTracksUnchanged": true,
+    "newBookmarksCount": 0,
+    "crashInventoryDelta": {
+      "Nastart": 0,
+      "WebDriverAgent": 0,
+      "JetsamEvent": 0
+    },
+    "normalEmptyEnvironment": true,
+    "NASNormal": true,
+    "playerClosed": true,
+    "WDAIdleSeconds": 10,
+    "WDAAnimationCoolOffSeconds": 2,
+    "nativeConditionsNotRecheckedThisTurn": true,
+    "noConditionInjectedThisTurn": true,
+    "nativeActiveConditions": "not remeasured",
+    "finalHomeActuallyReviewed": true,
+    "finalHomeNASConnected": false,
+    "finalHomeWiFiIconVisible": true
+  },
+  "nextBatch": "Bounded refund of recovered static-prediction attempts; new source requires new build and device cover"
+}

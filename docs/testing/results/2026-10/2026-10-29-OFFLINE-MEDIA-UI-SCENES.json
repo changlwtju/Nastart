@@ -1,0 +1,163 @@
+{
+  "updatedAt": "2026-10-29T13:29+08:00",
+  "scope": "Debug-only shared media UI fixtures; all real devices and NAS remain paused",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceInputCount": 433,
+  "existingSourcesChanged": 3,
+  "newFiles": 3,
+  "moduleTests": {
+    "passed": 4,
+    "failed": 0
+  },
+  "finalAcceptedSimulatorWindows": 30,
+  "OCRExpectedPageAndSyntheticBannerPassed": 30,
+  "fullVisualAcceptance": false,
+  "simulatorHardwareIsNotPhysicalDevices": true,
+  "sourceSelectionBeforeAccountStoreCreation": true,
+  "sceneHasTransportClientOrPersistence": false,
+  "syntheticPreferencesPreserved": true,
+  "debugOnlySymbols": {
+    "mobile": {
+      "debug": {
+        "OfflineUIConfiguration": 159,
+        "OfflineMediaScene": 250,
+        "NastartOfflineUIRoot": 49
+      },
+      "release": {
+        "OfflineUIConfiguration": 0,
+        "OfflineMediaScene": 0,
+        "NastartOfflineUIRoot": 0
+      }
+    },
+    "tv": {
+      "debug": {
+        "OfflineUIConfiguration": 147,
+        "OfflineMediaScene": 148,
+        "NastartOfflineUIRoot": 40
+      },
+      "release": {
+        "OfflineUIConfiguration": 0,
+        "OfflineMediaScene": 0,
+        "NastartOfflineUIRoot": 0
+      }
+    }
+  },
+  "builds": {
+    "mobile-sim-debug-final": {
+      "startedAt": "2026-10-29T13:13:35.029120+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-29T13:13:54.024838+08:00"
+    },
+    "tv-sim-debug-final": {
+      "startedAt": "2026-10-29T13:13:35.029080+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-29T13:13:48.575552+08:00"
+    },
+    "mobile-debug": {
+      "startedAt": "2026-10-29T13:15:46.971443+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-29T13:16:52.578910+08:00"
+    },
+    "tv-debug": {
+      "startedAt": "2026-10-29T13:15:46.971469+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-29T13:16:06.171325+08:00"
+    },
+    "mobile-release": {
+      "startedAt": "2026-10-29T13:16:52.580168+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-29T13:19:29.831359+08:00"
+    },
+    "tv-release": {
+      "startedAt": "2026-10-29T13:16:06.174129+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-29T13:16:57.623772+08:00"
+    }
+  },
+  "packages": {
+    "mobile": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-29T13:16:52.213778+08:00",
+      "frozenAt": "2026-10-29T13:21:04.228048+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 433,
+      "mainSHA256": "abe237d6ce4333f3e116633d6aff5bc35228636657044051d491add421fe1709",
+      "debugDylibSHA256": "c7f2a2f9c1fe6a57e8b50ef6500f600717e2c3bac8a4f52c1ace4be7028fe1f9",
+      "signedMachOCount": 30,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false
+    },
+    "tv": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-29T13:16:05.952352+08:00",
+      "frozenAt": "2026-10-29T13:21:04.866935+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 433,
+      "mainSHA256": "1b3c26d02e56efb3a37645ce2b4e5db078489e6d75156bd3a45a5da8d22ae5e1",
+      "debugDylibSHA256": "fbbca793ce09f6e7ca30237394a3bb0511b5ddd57f8cc540219a3e04b776d352",
+      "signedMachOCount": 27,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false
+    }
+  },
+  "realDeviceInstallOrControlCommands": 0,
+  "NASCommands": 0,
+  "NASMediaWrites": 0,
+  "oldCredentialsUsed": false,
+  "playbackWindows": 0,
+  "newPlaybackMatrixPasses": 0,
+  "modelSwitchPerformed": false,
+  "retainedFailures": [
+    "Both first sim build commands exit64: testing-only coverage option",
+    "Initial mobile/Pad white screenshots not accepted",
+    "Pillow floating variance error and Pad wrong crop false-empty",
+    "Initial TV light library OCR miss; single retry accepted",
+    "System Python missing PIL; bundled runtime used",
+    "First mangled-symbol assertion; corrected demangled check",
+    "Old OCR waiter timed out on abandoned partial manifest"
+  ],
+  "limitations": [
+    "Only media component/state fixtures, not complete four tabs/settings",
+    "No full theme cross product, large type, rotation or remote navigation acceptance",
+    "Normal root lifecycle refactor compile only; real device behavior pending",
+    "No performance or Release presentation acceptance"
+  ],
+  "finalSourceHashCheck": true,
+  "changedLinesWhitespaceClean": true,
+  "ownedSimulatorsDeleted": true,
+  "simulatorCleanup": {
+    "phone": {
+      "syntheticPreferencesPreserved": true,
+      "unexpectedApplicationKeys": [],
+      "ownedSimulatorShutdownExit": 0,
+      "ownedSimulatorDeleteExit": 0
+    },
+    "pad": {
+      "syntheticPreferencesPreserved": true,
+      "unexpectedApplicationKeys": [],
+      "ownedSimulatorShutdownExit": 0,
+      "ownedSimulatorDeleteExit": 0
+    },
+    "tv": {
+      "syntheticPreferencesPreserved": true,
+      "unexpectedApplicationKeys": [],
+      "ownedSimulatorShutdownExit": 0,
+      "ownedSimulatorDeleteExit": 0
+    }
+  },
+  "documentationCheck": {
+    "documents": 518,
+    "localLinks": 3120,
+    "missingDestinations": 0
+  }
+}

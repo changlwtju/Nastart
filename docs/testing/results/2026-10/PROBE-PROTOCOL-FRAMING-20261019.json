@@ -1,0 +1,432 @@
+{
+  "recordedAt": "2026-10-19T08:45:58.690271+08:00",
+  "scope": "Protocol framing correction; iPhone13 ordinary Debug regression; performance not accepted",
+  "source": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "diffSHA256": "d9b6e18e49d0c5f06ad292d12192423828c12ea6ff8282778e9898672ee81604",
+    "inputsVerified": 173,
+    "changedInputs": [
+      "ios/Nastart/Nastart/Features/Launchpad/LaunchpadPlaybackCore.swift",
+      "ios/Nastart/NastartTests/PlaybackNextCoreTests.swift"
+    ]
+  },
+  "package": {
+    "builtAt": "2026-10-19T08:31:39.259337+08:00",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "binaries": {
+      "Nastart": "78377effad844176565694e29bf77e759440590c973517350b04e57906b5d91b",
+      "Nastart.debug.dylib": "5bf4ba514cc3aaec9cb01646c45218d457b470a7f31546cbb4498d820eba755c",
+      "Frameworks/KSPlayer.framework/KSPlayer": "ae90077cf5f57f43331ff251081bfc734babe24041a9e92bb948c4146d60c3a8"
+    },
+    "independentlyVerifiedLibraries": 29,
+    "signatureVerified": true,
+    "ipaCRCAndHashesVerified": true
+  },
+  "tests": {
+    "exitCode": 0,
+    "finishedAt": 1792369867.285716,
+    "selected": 37
+  },
+  "preflightPassed": 15,
+  "windows": [
+    {
+      "device": "iphone13",
+      "sampleFamily": "S01",
+      "entry": "device file",
+      "startupAction": "从头播放",
+      "sourceDiffSHA256": "d9b6e18e49d0c5f06ad292d12192423828c12ea6ff8282778e9898672ee81604",
+      "networkIntent": "WiFi no shaping",
+      "URLMetricsCount": 2,
+      "URLMetricsCellularYes": 0,
+      "URLMetricsCellularNo": 2,
+      "seeks": [],
+      "maxStallCount": 0,
+      "windowEndSeconds": 30.256117820739746,
+      "performanceAccepted": false,
+      "cacheState": "unknown, no cache clear",
+      "case": "wifi-s01-file-framing",
+      "stages": [
+        {
+          "secondsFromTouch": 3.454097,
+          "event": "first_frame",
+          "fields": {
+            "firstFramePositionSeconds": 0.137,
+            "tapToFirstFrameMs": 2411
+          }
+        }
+      ],
+      "ordinaryExit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "visualReview": {
+        "actuallyViewed": [
+          "t30.png"
+        ],
+        "observation": "t30 blue cloudy image with faint lower detail, no visible spinner; movie identity/first frame not established from this image alone",
+        "fullSoundSubtitleSmoothnessAccepted": false
+      }
+    },
+    {
+      "device": "iphone13",
+      "sampleFamily": "S01",
+      "entry": "Jellyfin",
+      "startupAction": "在 Nastart 中播放",
+      "sourceDiffSHA256": "d9b6e18e49d0c5f06ad292d12192423828c12ea6ff8282778e9898672ee81604",
+      "networkIntent": "WiFi no shaping",
+      "URLMetricsCount": 2,
+      "URLMetricsCellularYes": 0,
+      "URLMetricsCellularNo": 2,
+      "seeks": [],
+      "maxStallCount": 1,
+      "windowEndSeconds": 30.285408973693848,
+      "performanceAccepted": false,
+      "cacheState": "unknown, no cache clear",
+      "case": "wifi-s01-jf-framing",
+      "stages": [
+        {
+          "secondsFromTouch": 2.68633,
+          "event": "first_frame",
+          "fields": {
+            "firstFramePositionSeconds": 0.052,
+            "tapToFirstFrameMs": 1445
+          }
+        }
+      ],
+      "ordinaryExit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "visualReview": {
+        "actuallyViewed": [
+          "t10.png",
+          "t30.png"
+        ],
+        "observations": [
+          "t10 recognizable opening title and Chinese release credit, no spinner",
+          "t30 blue cloudy image matching device-file t30; no visible spinner; identity not inferred from t30 alone"
+        ],
+        "fullSoundSubtitleSmoothnessAccepted": false
+      }
+    },
+    {
+      "device": "iphone13",
+      "sampleFamily": "S19",
+      "entry": "device file",
+      "startupAction": "从头播放",
+      "sourceDiffSHA256": "d9b6e18e49d0c5f06ad292d12192423828c12ea6ff8282778e9898672ee81604",
+      "networkIntent": "real cellular WiFi off; no shaping",
+      "URLMetricsCount": 40,
+      "URLMetricsCellularYes": 40,
+      "URLMetricsCellularNo": 0,
+      "seeks": [
+        {
+          "start": {
+            "secondsFromTouch": 47.950092,
+            "event": "seek_started",
+            "fields": {
+              "engine": "AVPlayer",
+              "seekDeltaSeconds": 6769.694926303605,
+              "seekTargetSeconds": 6808.195160066605
+            }
+          },
+          "signals": [
+            {
+              "secondsFromTouch": 52.565261,
+              "event": "seek_engine_completed",
+              "fields": {
+                "engine": "AVPlayer",
+                "targetSeconds": 6808.195160066605
+              }
+            },
+            {
+              "secondsFromTouch": 52.954986,
+              "event": "seek_recovered",
+              "fields": {
+                "currentSeconds": 6808.505807764,
+                "engine": "AVPlayer",
+                "evidence": "engineCompletionAndAdvancingClock",
+                "seekRecoveryMs": 5012,
+                "seekTargetSeconds": 6808.195160066605
+              }
+            }
+          ],
+          "recoveryMs": 5012,
+          "censoredAfterSeconds": null,
+          "meaning": "engine completion and advancing clock, not first visible frame"
+        }
+      ],
+      "maxStallCount": 2,
+      "windowEndSeconds": 94.38238215446472,
+      "performanceAccepted": false,
+      "cacheState": "unknown, no cache clear",
+      "case": "cellular-s19-file-framing-retry",
+      "stages": [
+        {
+          "secondsFromTouch": 9.658048,
+          "event": "first_frame",
+          "fields": {
+            "firstFramePositionSeconds": 0.5,
+            "tapToFirstFrameMs": 7195
+          }
+        },
+        {
+          "secondsFromTouch": 14.078581,
+          "event": "automatic_downshift_requested",
+          "fields": {
+            "attempt": 1,
+            "bufferedAheadSeconds": 26.94857683588889,
+            "deliveryCapacity": 4631890,
+            "engine": "AVPlayer",
+            "reason": "deliveryBelowSourceBitrate"
+          }
+        },
+        {
+          "secondsFromTouch": 25.303485,
+          "event": "replacement_committed",
+          "fields": {
+            "candidateBufferAheadSeconds": 12.975822222222224,
+            "candidateSeconds": 16.22,
+            "engine": "AVPlayer",
+            "seconds": 16.001049146
+          }
+        },
+        {
+          "secondsFromTouch": 25.904659,
+          "event": "first_frame",
+          "fields": {
+            "firstFramePositionSeconds": 16.506,
+            "tapToFirstFrameMs": 11589
+          }
+        }
+      ],
+      "ordinaryExit": {
+        "normalUIExit": true,
+        "requestedSeekWindowSeconds": 30,
+        "performanceAccepted": false,
+        "sourceSHA256": "d9b6e18e49d0c5f06ad292d12192423828c12ea6ff8282778e9898672ee81604"
+      },
+      "detailProbe": [
+        {
+          "secondsFromTouch": -1.20336,
+          "fields": {
+            "bodyMs": "343",
+            "measuredBitrate": "24397402",
+            "measurementBasis": "networkBody",
+            "sampleBytes": "1048576",
+            "totalMs": "875"
+          }
+        }
+      ],
+      "visualReview": {
+        "actuallyViewed": [
+          "t10.png",
+          "deep-seek-t30.png"
+        ],
+        "observations": [
+          "t10 black 00:01 with5.8MB/s, no visible spinner; black opening not first movie frame proof",
+          "seek+30 recognizable Boromir and ring film frame, no visible spinner"
+        ],
+        "fullSoundSubtitleSmoothnessAccepted": false
+      }
+    },
+    {
+      "device": "iphone13",
+      "sampleFamily": "S19",
+      "entry": "Jellyfin",
+      "startupAction": "从头播放",
+      "sourceDiffSHA256": "d9b6e18e49d0c5f06ad292d12192423828c12ea6ff8282778e9898672ee81604",
+      "networkIntent": "real cellular WiFi off; no shaping",
+      "URLMetricsCount": 4,
+      "URLMetricsCellularYes": 4,
+      "URLMetricsCellularNo": 0,
+      "seeks": [],
+      "maxStallCount": null,
+      "windowEndSeconds": 45.718486070632935,
+      "performanceAccepted": false,
+      "cacheState": "unknown, no cache clear",
+      "case": "cellular-s19-jf-framing",
+      "stages": [],
+      "detailProbe": [
+        {
+          "secondsFromTouch": -7.838089,
+          "event": "bitrate_measured",
+          "fields": {
+            "bodyMs": "711",
+            "measuredBitrate": "11790560",
+            "measurementBasis": "networkBody",
+            "sampleBytes": "1048576",
+            "totalMs": "769"
+          }
+        },
+        {
+          "secondsFromTouch": 3.409677,
+          "event": "playback_prepared",
+          "fields": {
+            "maxBitrate": "4000000",
+            "negotiatedVideoBitrate": "3360000"
+          }
+        },
+        {
+          "secondsFromTouch": 3.409924,
+          "event": "playback_prepared",
+          "fields": {
+            "playMethod": "Transcode"
+          }
+        },
+        {
+          "secondsFromTouch": 8.910964,
+          "event": "playback_prepared",
+          "fields": {
+            "maxBitrate": "4000000",
+            "negotiatedVideoBitrate": "3360000"
+          }
+        },
+        {
+          "secondsFromTouch": 8.911217,
+          "event": "playback_prepared",
+          "fields": {
+            "playMethod": "Transcode"
+          }
+        }
+      ],
+      "visualReview": {
+        "actuallyViewed": [
+          "t10.png",
+          "t30.png"
+        ],
+        "observations": [
+          "Both remain portrait Jellyfin detail, no player; no first frame accepted"
+        ],
+        "fullSoundSubtitleSmoothnessAccepted": false
+      },
+      "failure": {
+        "at": "2026-10-19T08:41:50.533619+08:00",
+        "noPlayerThrough45SecondStartupWindow": true,
+        "t10AndT30DetailPageActuallyViewed": true,
+        "seekNotExecuted": "no player",
+        "ownSeekHelperStoppedToTriggerFinally": false,
+        "performanceAccepted": false
+      }
+    }
+  ],
+  "cleanup": {
+    "audit": {
+      "sourceInputsVerified": 173,
+      "binaryHashesVerified": true,
+      "signatureVerified": true,
+      "devices": {
+        "iphone13": {
+          "at": "2026-10-19T08:43:11.940519+08:00",
+          "model": "iPhone14,5",
+          "system": "16.3.1",
+          "connection": "USB",
+          "sourceDiffSHA256": "d9b6e18e49d0c5f06ad292d12192423828c12ea6ff8282778e9898672ee81604",
+          "latestPackage": {
+            "Nastart": "78377effad844176565694e29bf77e759440590c973517350b04e57906b5d91b",
+            "Nastart.debug.dylib": "5bf4ba514cc3aaec9cb01646c45218d457b470a7f31546cbb4498d820eba755c",
+            "Frameworks/KSPlayer.framework/KSPlayer": "ae90077cf5f57f43331ff251081bfc734babe24041a9e92bb948c4146d60c3a8"
+          },
+          "nonBookmarkPreferenceKeys": 24,
+          "nonBookmarkPreferencesExactlyUnchanged": true,
+          "naturalBookmarkChangesCount": 3,
+          "originalBookmarksChecked": 36,
+          "originalBookmarksRemoved": 0,
+          "originalTrackChangeCount": 0,
+          "allOriginalTracksUnchanged": true,
+          "newBookmarksCount": 0,
+          "crashInventoryDelta": {
+            "Nastart": 0,
+            "WebDriverAgent": 0,
+            "JetsamEvent": 0
+          },
+          "normalEmptyEnvironment": true,
+          "NASNormal": true,
+          "playerClosed": true,
+          "WDAIdleSeconds": 10,
+          "WDAAnimationCoolOffSeconds": 2,
+          "nativeConditionsNotRecheckedThisTurn": false,
+          "noConditionInjectedThisTurn": true,
+          "nativeActiveConditions": 0,
+          "finalHomeActuallyReviewed": true,
+          "WiFiStatusIconActuallyReviewed": true
+        }
+      }
+    },
+    "network": {
+      "originalWiFiSwitch": "1",
+      "shapingRequested": false,
+      "phoneVPNChanged": false,
+      "MacVPNChanged": false,
+      "at": "2026-10-19T08:41:40.751197+08:00",
+      "actualWiFiSwitch": "1",
+      "restored": true,
+      "nativeElementClickVerified": true,
+      "finalWiFiConnectedToOriginalNetwork": true,
+      "finalWiFiIconActuallyReviewed": true,
+      "finalHomeActuallyReviewed": true,
+      "finalVerifiedAt": "2026-10-19T08:44:12.039695+08:00"
+    },
+    "attempts": [
+      {
+        "startedAt": "2026-10-19T08:36:26.702317+08:00",
+        "networkRestored": true,
+        "automaticFinally": true,
+        "ordinaryExit": false,
+        "intentionalCleanupTermination": true,
+        "nativeSelectedOriginalNetworkVerified": true,
+        "wifiScreenshotNeedsActualReview": false,
+        "finishedAt": "2026-10-19T08:36:43.584220+08:00",
+        "wifiScreenshotActuallyReviewed": true,
+        "toolFailure": "native element lookup lost switch between source and click; no media window launched",
+        "offLogWasOverwrittenByCleanup": true,
+        "WDAFailureRetainedSeparately": true
+      },
+      {
+        "startedAt": "2026-10-19T08:37:22.259600+08:00",
+        "networkRestored": true,
+        "automaticFinally": true,
+        "ordinaryExit": true,
+        "nativeSelectedOriginalNetworkVerified": true,
+        "wifiScreenshotNeedsActualReview": false,
+        "finishedAt": "2026-10-19T08:39:42.705088+08:00",
+        "wifiScreenshotActuallyReviewed": true,
+        "nativeOriginalWiFiConnected": true,
+        "immediateRestorationScreenshotStatusIcon": "4G still visible despite selected WiFi; final batch WiFi icon check pending"
+      },
+      {
+        "startedAt": "2026-10-19T08:40:05.528073+08:00",
+        "networkRestored": true,
+        "automaticFinally": true,
+        "ordinaryExit": false,
+        "intentionalCleanupTermination": true,
+        "nativeSelectedOriginalNetworkVerified": true,
+        "wifiScreenshotNeedsActualReview": false,
+        "finishedAt": "2026-10-19T08:41:48.510201+08:00",
+        "wifiScreenshotActuallyReviewed": true,
+        "immediateRestoreStatusIcon": "4G while selected WiFi; later settled normal home shows WiFi",
+        "finalWiFiIconActuallyReviewed": true,
+        "normalHomeActuallyReviewed": true
+      }
+    ],
+    "power": {
+      "start": "2026-10-19 08:29:45",
+      "end": "2026-10-19 08:44:13",
+      "SleepWakeEventCount": 0
+    },
+    "simulator": {
+      "state": "Shutdown",
+      "onlyOwnedTestSimulatorTargeted": true
+    }
+  },
+  "deployment": {
+    "iphone13": "updated and normal home reviewed; JF cellular no-player failure preserved",
+    "ipad": "not updated to this candidate",
+    "iphone18": "not updated to this candidate; withhold pending JF regression resolution"
+  },
+  "remaining": "All 28 requirements open; exact path-retention rejection guard to be determined"
+}

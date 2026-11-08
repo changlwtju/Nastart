@@ -1,0 +1,1411 @@
+{
+  "at": "2026-10-14T19:47:31.824100+08:00",
+  "scope": "PX-02/PX-20; MI2 subtitle lifecycle investigation; USB iPhone13/iPad; WiFi only",
+  "source": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "ce538bed01f20d4e123d4a45fc9238edd6988afedc9902feeece1aea31c65d61",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "binaryBuildTime": "2026-10-14T18:19:28.479335+08:00",
+    "package": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-10-14-seek-output-stages-180034/Nastart-Pending-Seek-Preview-Normal-Debug.app",
+    "binaries": {
+      "Nastart": "c377c2bf2dee1eaa40b53e324e94410e2c496f3a21b3599b1ea0bd2088c7b413",
+      "Nastart.debug.dylib": "e1741042286d559de72035399ebc11f995261f7ccb449e7ef41f350eb9d15a7c",
+      "Frameworks/KSPlayer.framework/KSPlayer": "914b39e4d9e33542081fd61d7dc4a291114472f8cf9f0832222e709f965b7bee"
+    },
+    "checkedInputs": 173,
+    "signatureVerified": true,
+    "individuallyVerifiedLibraries": 29,
+    "linkageVerified": true,
+    "profileExpirationUTC": "2026-10-17T22:23:40",
+    "tests": {
+      "executed": 383,
+      "skipped": 2,
+      "failures": 0,
+      "runThisTurn": false
+    },
+    "preflight": {
+      "passed": 15,
+      "runThisTurn": false
+    }
+  },
+  "sourceChangesThisTurn": 0,
+  "all173IOSInputsUnchanged": true,
+  "noNewBuildOrXCTestThisTurn": true,
+  "historicalValidation": "383 tests, 2 skipped, 0 failures and15preflight belong to previous validation of identical source; not rerun this turn",
+  "latestInstallations": {
+    "iphone13": {
+      "device": "iphone13",
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "connection": "USB",
+      "binaries": {
+        "Nastart": "c377c2bf2dee1eaa40b53e324e94410e2c496f3a21b3599b1ea0bd2088c7b413",
+        "Nastart.debug.dylib": "e1741042286d559de72035399ebc11f995261f7ccb449e7ef41f350eb9d15a7c",
+        "Frameworks/KSPlayer.framework/KSPlayer": "914b39e4d9e33542081fd61d7dc4a291114472f8cf9f0832222e709f965b7bee"
+      },
+      "sourceDiffSHA256": "ce538bed01f20d4e123d4a45fc9238edd6988afedc9902feeece1aea31c65d61",
+      "preservesContainer": true,
+      "signatureVerified": true,
+      "actualForegroundUIVerified": true,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "installation": "success",
+      "startedAt": "2026-10-14T19:15:47.870350+08:00",
+      "installedAt": "2026-10-14T19:16:01.816255+08:00",
+      "preferenceKeysUnchanged": true,
+      "preferenceValuesUnchanged": true,
+      "nonDiagnosticKeys": 25,
+      "actualPictureReviewedThisTurn": true
+    },
+    "ipad": {
+      "device": "ipad",
+      "model": "iPad12,1",
+      "system": "18.3.1",
+      "connection": "USB",
+      "binaries": {
+        "Nastart": "c377c2bf2dee1eaa40b53e324e94410e2c496f3a21b3599b1ea0bd2088c7b413",
+        "Nastart.debug.dylib": "e1741042286d559de72035399ebc11f995261f7ccb449e7ef41f350eb9d15a7c",
+        "Frameworks/KSPlayer.framework/KSPlayer": "914b39e4d9e33542081fd61d7dc4a291114472f8cf9f0832222e709f965b7bee"
+      },
+      "sourceDiffSHA256": "ce538bed01f20d4e123d4a45fc9238edd6988afedc9902feeece1aea31c65d61",
+      "preservesContainer": true,
+      "signatureVerified": true,
+      "actualForegroundUIVerified": true,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "installation": "success",
+      "startedAt": "2026-10-14T19:16:05.504458+08:00",
+      "installedAt": "2026-10-14T19:16:10.158595+08:00",
+      "preferenceKeysUnchanged": true,
+      "preferenceValuesUnchanged": true,
+      "nonDiagnosticKeys": 18,
+      "actualPictureReviewedThisTurn": true
+    }
+  },
+  "cases": [
+    {
+      "device": "iphone13",
+      "case": "wifi-mi2-jf-pgs-baseline",
+      "sourceDiffSHA256": "ce538bed01f20d4e123d4a45fc9238edd6988afedc9902feeece1aea31c65d61",
+      "entry": "Jellyfin",
+      "network": "WiFi, no shaping",
+      "URLMetricsCellularYes": 0,
+      "URLMetricsCellularNo": 59,
+      "enginesObserved": [
+        "KSPlayer"
+      ],
+      "seeks": [
+        {
+          "tag": "cue-back-1",
+          "action": "后退 15 秒",
+          "engine": "KSPlayer",
+          "targetSeconds": 4753.04,
+          "engineCompletedMs": 53.854,
+          "outputPreviewReadyMs": 338.351,
+          "pausedAtAllCapturedObservations": true,
+          "observations": [
+            {
+              "nominalSeconds": 0,
+              "screenshotRequestAfterActionSeconds": 0.473,
+              "screenshotResponseAfterActionSeconds": 0.871,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 1,
+              "screenshotRequestAfterActionSeconds": 1.169,
+              "screenshotResponseAfterActionSeconds": 1.557,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 2,
+              "screenshotRequestAfterActionSeconds": 2.01,
+              "screenshotResponseAfterActionSeconds": 2.385,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 3,
+              "screenshotRequestAfterActionSeconds": 3.01,
+              "screenshotResponseAfterActionSeconds": 3.427,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 5,
+              "screenshotRequestAfterActionSeconds": 5.01,
+              "screenshotResponseAfterActionSeconds": 5.418,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 8,
+              "screenshotRequestAfterActionSeconds": 8.0,
+              "screenshotResponseAfterActionSeconds": 8.402,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 12,
+              "screenshotRequestAfterActionSeconds": 12.008,
+              "screenshotResponseAfterActionSeconds": 12.42,
+              "activityIndicators": 0
+            }
+          ],
+          "visibleCompletionTime": "not measured continuously",
+          "advancingClockRecoveryExcluded": "Intentional pause can defer seek_recovered until later resume; not seek latency"
+        },
+        {
+          "tag": "cue-back-2",
+          "action": "后退 15 秒",
+          "engine": "KSPlayer",
+          "targetSeconds": 4738.04,
+          "engineCompletedMs": 45.611,
+          "outputPreviewReadyMs": 347.418,
+          "pausedAtAllCapturedObservations": true,
+          "observations": [
+            {
+              "nominalSeconds": 0,
+              "screenshotRequestAfterActionSeconds": 0.503,
+              "screenshotResponseAfterActionSeconds": 0.888,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 1,
+              "screenshotRequestAfterActionSeconds": 1.198,
+              "screenshotResponseAfterActionSeconds": 1.672,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 2,
+              "screenshotRequestAfterActionSeconds": 2.002,
+              "screenshotResponseAfterActionSeconds": 2.414,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 3,
+              "screenshotRequestAfterActionSeconds": 3.004,
+              "screenshotResponseAfterActionSeconds": 3.421,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 5,
+              "screenshotRequestAfterActionSeconds": 5.01,
+              "screenshotResponseAfterActionSeconds": 5.426,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 8,
+              "screenshotRequestAfterActionSeconds": 8.007,
+              "screenshotResponseAfterActionSeconds": 8.407,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 12,
+              "screenshotRequestAfterActionSeconds": 12.009,
+              "screenshotResponseAfterActionSeconds": 12.441,
+              "activityIndicators": 0
+            }
+          ],
+          "visibleCompletionTime": "not measured continuously",
+          "advancingClockRecoveryExcluded": "Intentional pause can defer seek_recovered until later resume; not seek latency"
+        },
+        {
+          "tag": "cue-forward-1",
+          "action": "前进 15 秒",
+          "engine": "KSPlayer",
+          "targetSeconds": 4753.04,
+          "engineCompletedMs": 38.137,
+          "outputPreviewReadyMs": 333.693,
+          "pausedAtAllCapturedObservations": true,
+          "observations": [
+            {
+              "nominalSeconds": 0,
+              "screenshotRequestAfterActionSeconds": 0.495,
+              "screenshotResponseAfterActionSeconds": 0.925,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 1,
+              "screenshotRequestAfterActionSeconds": 1.235,
+              "screenshotResponseAfterActionSeconds": 1.632,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 2,
+              "screenshotRequestAfterActionSeconds": 2.002,
+              "screenshotResponseAfterActionSeconds": 2.386,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 3,
+              "screenshotRequestAfterActionSeconds": 3.009,
+              "screenshotResponseAfterActionSeconds": 3.404,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 5,
+              "screenshotRequestAfterActionSeconds": 5.008,
+              "screenshotResponseAfterActionSeconds": 5.384,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 8,
+              "screenshotRequestAfterActionSeconds": 8.002,
+              "screenshotResponseAfterActionSeconds": 8.415,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 12,
+              "screenshotRequestAfterActionSeconds": 12.008,
+              "screenshotResponseAfterActionSeconds": 12.407,
+              "activityIndicators": 0
+            }
+          ],
+          "visibleCompletionTime": "not measured continuously",
+          "advancingClockRecoveryExcluded": "Intentional pause can defer seek_recovered until later resume; not seek latency"
+        },
+        {
+          "tag": "paused-forward",
+          "action": "前进 15 秒",
+          "engine": "KSPlayer",
+          "targetSeconds": 4750.531,
+          "engineCompletedMs": 101.46,
+          "outputPreviewReadyMs": 563.208,
+          "pausedAtAllCapturedObservations": true,
+          "observations": [
+            {
+              "nominalSeconds": 0,
+              "screenshotRequestAfterActionSeconds": 0.492,
+              "screenshotResponseAfterActionSeconds": 0.875,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 1,
+              "screenshotRequestAfterActionSeconds": 1.155,
+              "screenshotResponseAfterActionSeconds": 1.539,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 2,
+              "screenshotRequestAfterActionSeconds": 2.007,
+              "screenshotResponseAfterActionSeconds": 2.403,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 3,
+              "screenshotRequestAfterActionSeconds": 3.009,
+              "screenshotResponseAfterActionSeconds": 3.379,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 5,
+              "screenshotRequestAfterActionSeconds": 5.004,
+              "screenshotResponseAfterActionSeconds": 5.383,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 8,
+              "screenshotRequestAfterActionSeconds": 8.007,
+              "screenshotResponseAfterActionSeconds": 8.379,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 12,
+              "screenshotRequestAfterActionSeconds": 12.007,
+              "screenshotResponseAfterActionSeconds": 12.394,
+              "activityIndicators": 0
+            }
+          ],
+          "visibleCompletionTime": "not measured continuously",
+          "advancingClockRecoveryExcluded": "Intentional pause can defer seek_recovered until later resume; not seek latency"
+        },
+        {
+          "tag": "pgs-back-1",
+          "action": "后退 15 秒",
+          "engine": "KSPlayer",
+          "targetSeconds": 4751.754,
+          "engineCompletedMs": 75.469,
+          "outputPreviewReadyMs": 710.151,
+          "pausedAtAllCapturedObservations": true,
+          "observations": [
+            {
+              "nominalSeconds": 0,
+              "screenshotRequestAfterActionSeconds": 0.492,
+              "screenshotResponseAfterActionSeconds": 0.889,
+              "activityIndicators": 2
+            },
+            {
+              "nominalSeconds": 1,
+              "screenshotRequestAfterActionSeconds": 1.188,
+              "screenshotResponseAfterActionSeconds": 1.569,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 2,
+              "screenshotRequestAfterActionSeconds": 2.008,
+              "screenshotResponseAfterActionSeconds": 2.398,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 3,
+              "screenshotRequestAfterActionSeconds": 3.008,
+              "screenshotResponseAfterActionSeconds": 3.406,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 5,
+              "screenshotRequestAfterActionSeconds": 5.003,
+              "screenshotResponseAfterActionSeconds": 5.415,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 8,
+              "screenshotRequestAfterActionSeconds": 8.009,
+              "screenshotResponseAfterActionSeconds": 8.405,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 12,
+              "screenshotRequestAfterActionSeconds": 12.007,
+              "screenshotResponseAfterActionSeconds": 12.403,
+              "activityIndicators": 0
+            }
+          ],
+          "visibleCompletionTime": "not measured continuously",
+          "advancingClockRecoveryExcluded": "Intentional pause can defer seek_recovered until later resume; not seek latency"
+        },
+        {
+          "tag": "pgs-back-2",
+          "action": "后退 15 秒",
+          "engine": "KSPlayer",
+          "targetSeconds": 4736.754,
+          "engineCompletedMs": 45.612,
+          "outputPreviewReadyMs": 624.347,
+          "pausedAtAllCapturedObservations": true,
+          "observations": [
+            {
+              "nominalSeconds": 0,
+              "screenshotRequestAfterActionSeconds": 0.484,
+              "screenshotResponseAfterActionSeconds": 0.873,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 1,
+              "screenshotRequestAfterActionSeconds": 1.174,
+              "screenshotResponseAfterActionSeconds": 1.581,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 2,
+              "screenshotRequestAfterActionSeconds": 2.009,
+              "screenshotResponseAfterActionSeconds": 2.403,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 3,
+              "screenshotRequestAfterActionSeconds": 3.009,
+              "screenshotResponseAfterActionSeconds": 3.413,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 5,
+              "screenshotRequestAfterActionSeconds": 5.01,
+              "screenshotResponseAfterActionSeconds": 5.404,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 8,
+              "screenshotRequestAfterActionSeconds": 8.005,
+              "screenshotResponseAfterActionSeconds": 8.405,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 12,
+              "screenshotRequestAfterActionSeconds": 12.008,
+              "screenshotResponseAfterActionSeconds": 12.42,
+              "activityIndicators": 0
+            }
+          ],
+          "visibleCompletionTime": "not measured continuously",
+          "advancingClockRecoveryExcluded": "Intentional pause can defer seek_recovered until later resume; not seek latency"
+        },
+        {
+          "tag": "pgs-forward-2",
+          "action": "前进 15 秒",
+          "engine": "KSPlayer",
+          "targetSeconds": 4751.754,
+          "engineCompletedMs": 45.249,
+          "outputPreviewReadyMs": 692.74,
+          "pausedAtAllCapturedObservations": true,
+          "observations": [
+            {
+              "nominalSeconds": 0,
+              "screenshotRequestAfterActionSeconds": 0.5,
+              "screenshotResponseAfterActionSeconds": 0.882,
+              "activityIndicators": 2
+            },
+            {
+              "nominalSeconds": 1,
+              "screenshotRequestAfterActionSeconds": 1.169,
+              "screenshotResponseAfterActionSeconds": 1.563,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 2,
+              "screenshotRequestAfterActionSeconds": 2.064,
+              "screenshotResponseAfterActionSeconds": 2.453,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 3,
+              "screenshotRequestAfterActionSeconds": 3.001,
+              "screenshotResponseAfterActionSeconds": 3.38,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 5,
+              "screenshotRequestAfterActionSeconds": 5.002,
+              "screenshotResponseAfterActionSeconds": 5.39,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 8,
+              "screenshotRequestAfterActionSeconds": 8.002,
+              "screenshotResponseAfterActionSeconds": 8.375,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 12,
+              "screenshotRequestAfterActionSeconds": 12.01,
+              "screenshotResponseAfterActionSeconds": 12.408,
+              "activityIndicators": 0
+            }
+          ],
+          "visibleCompletionTime": "not measured continuously",
+          "advancingClockRecoveryExcluded": "Intentional pause can defer seek_recovered until later resume; not seek latency"
+        }
+      ],
+      "replacementBoundaries": [],
+      "failures": [],
+      "fullSUBAccepted": false,
+      "performanceAccepted": false,
+      "cacheState": "unknown, no cache clear",
+      "actualPicturesReviewed": true,
+      "visualScope": "Startup3/10/30, seven paused targets, two natural PGS intervals, control/rotation comparison and normal exit inspected. First forward target has a changed bilingual PGS cue; other empty target images have no independent expected cue table. Historical same-caption anomaly not closed."
+    },
+    {
+      "device": "ipad",
+      "case": "wifi-mi2-jf-pgs-baseline",
+      "sourceDiffSHA256": "ce538bed01f20d4e123d4a45fc9238edd6988afedc9902feeece1aea31c65d61",
+      "entry": "Jellyfin",
+      "network": "WiFi, no shaping",
+      "URLMetricsCellularYes": 0,
+      "URLMetricsCellularNo": 56,
+      "enginesObserved": [
+        "AVPlayer",
+        "KSPlayer"
+      ],
+      "seeks": [
+        {
+          "tag": "cue-back-1",
+          "action": "后退 15 秒",
+          "engine": "AVPlayer",
+          "targetSeconds": 4730.666856651,
+          "engineCompletedMs": 109.846,
+          "outputPreviewReadyMs": null,
+          "pausedAtAllCapturedObservations": true,
+          "observations": [
+            {
+              "nominalSeconds": 0,
+              "screenshotRequestAfterActionSeconds": 0.635,
+              "screenshotResponseAfterActionSeconds": 1.033,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 1,
+              "screenshotRequestAfterActionSeconds": 1.764,
+              "screenshotResponseAfterActionSeconds": 2.18,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 2,
+              "screenshotRequestAfterActionSeconds": 2.896,
+              "screenshotResponseAfterActionSeconds": 3.316,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 3,
+              "screenshotRequestAfterActionSeconds": 3.941,
+              "screenshotResponseAfterActionSeconds": 4.36,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 5,
+              "screenshotRequestAfterActionSeconds": 5.068,
+              "screenshotResponseAfterActionSeconds": 5.45,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 8,
+              "screenshotRequestAfterActionSeconds": 8.01,
+              "screenshotResponseAfterActionSeconds": 8.426,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 12,
+              "screenshotRequestAfterActionSeconds": 12.01,
+              "screenshotResponseAfterActionSeconds": 12.42,
+              "activityIndicators": 0
+            }
+          ],
+          "visibleCompletionTime": "not measured continuously",
+          "advancingClockRecoveryExcluded": "Intentional pause can defer seek_recovered until later resume; not seek latency"
+        },
+        {
+          "tag": "cue-back-2",
+          "action": "后退 15 秒",
+          "engine": "AVPlayer",
+          "targetSeconds": 4715.666666666667,
+          "engineCompletedMs": 1879.793,
+          "outputPreviewReadyMs": null,
+          "pausedAtAllCapturedObservations": true,
+          "observations": [
+            {
+              "nominalSeconds": 0,
+              "screenshotRequestAfterActionSeconds": 0.689,
+              "screenshotResponseAfterActionSeconds": 1.166,
+              "activityIndicators": 2
+            },
+            {
+              "nominalSeconds": 1,
+              "screenshotRequestAfterActionSeconds": 1.735,
+              "screenshotResponseAfterActionSeconds": 2.15,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 2,
+              "screenshotRequestAfterActionSeconds": 2.949,
+              "screenshotResponseAfterActionSeconds": 3.467,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 3,
+              "screenshotRequestAfterActionSeconds": 4.016,
+              "screenshotResponseAfterActionSeconds": 4.469,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 5,
+              "screenshotRequestAfterActionSeconds": 5.117,
+              "screenshotResponseAfterActionSeconds": 5.571,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 8,
+              "screenshotRequestAfterActionSeconds": 8.002,
+              "screenshotResponseAfterActionSeconds": 8.467,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 12,
+              "screenshotRequestAfterActionSeconds": 12.002,
+              "screenshotResponseAfterActionSeconds": 12.466,
+              "activityIndicators": 0
+            }
+          ],
+          "visibleCompletionTime": "not measured continuously",
+          "advancingClockRecoveryExcluded": "Intentional pause can defer seek_recovered until later resume; not seek latency"
+        },
+        {
+          "tag": "cue-forward-1",
+          "action": "前进 15 秒",
+          "engine": "AVPlayer",
+          "targetSeconds": 4730.666666666667,
+          "engineCompletedMs": 1963.02,
+          "outputPreviewReadyMs": null,
+          "pausedAtAllCapturedObservations": true,
+          "observations": [
+            {
+              "nominalSeconds": 0,
+              "screenshotRequestAfterActionSeconds": 0.667,
+              "screenshotResponseAfterActionSeconds": 1.141,
+              "activityIndicators": 2
+            },
+            {
+              "nominalSeconds": 1,
+              "screenshotRequestAfterActionSeconds": 1.848,
+              "screenshotResponseAfterActionSeconds": 2.282,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 2,
+              "screenshotRequestAfterActionSeconds": 2.892,
+              "screenshotResponseAfterActionSeconds": 3.269,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 3,
+              "screenshotRequestAfterActionSeconds": 3.792,
+              "screenshotResponseAfterActionSeconds": 4.152,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 5,
+              "screenshotRequestAfterActionSeconds": 5.003,
+              "screenshotResponseAfterActionSeconds": 5.414,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 8,
+              "screenshotRequestAfterActionSeconds": 8.001,
+              "screenshotResponseAfterActionSeconds": 8.417,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 12,
+              "screenshotRequestAfterActionSeconds": 12.008,
+              "screenshotResponseAfterActionSeconds": 12.426,
+              "activityIndicators": 0
+            }
+          ],
+          "visibleCompletionTime": "not measured continuously",
+          "advancingClockRecoveryExcluded": "Intentional pause can defer seek_recovered until later resume; not seek latency"
+        },
+        {
+          "tag": "paused-forward",
+          "action": "前进 15 秒",
+          "engine": "AVPlayer",
+          "targetSeconds": 4725.146364107,
+          "engineCompletedMs": 2062.814,
+          "outputPreviewReadyMs": null,
+          "pausedAtAllCapturedObservations": true,
+          "observations": [
+            {
+              "nominalSeconds": 0,
+              "screenshotRequestAfterActionSeconds": 0.7,
+              "screenshotResponseAfterActionSeconds": 1.173,
+              "activityIndicators": 2
+            },
+            {
+              "nominalSeconds": 1,
+              "screenshotRequestAfterActionSeconds": 1.912,
+              "screenshotResponseAfterActionSeconds": 2.397,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 2,
+              "screenshotRequestAfterActionSeconds": 3.11,
+              "screenshotResponseAfterActionSeconds": 3.514,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 3,
+              "screenshotRequestAfterActionSeconds": 4.274,
+              "screenshotResponseAfterActionSeconds": 4.722,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 5,
+              "screenshotRequestAfterActionSeconds": 5.36,
+              "screenshotResponseAfterActionSeconds": 5.793,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 8,
+              "screenshotRequestAfterActionSeconds": 8.01,
+              "screenshotResponseAfterActionSeconds": 8.455,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 12,
+              "screenshotRequestAfterActionSeconds": 12.01,
+              "screenshotResponseAfterActionSeconds": 12.453,
+              "activityIndicators": 0
+            }
+          ],
+          "visibleCompletionTime": "not measured continuously",
+          "advancingClockRecoveryExcluded": "Intentional pause can defer seek_recovered until later resume; not seek latency"
+        }
+      ],
+      "replacementBoundaries": [
+        {
+          "event": "replacement_warmup_started",
+          "secondsFromTouch": 25.490484,
+          "fields": {
+            "engine": "KSPlayer"
+          }
+        },
+        {
+          "event": "replacement_candidate_decoded",
+          "secondsFromTouch": 38.415324,
+          "fields": {
+            "cancelled": "false",
+            "elapsedMs": 12955,
+            "engine": "KSPlayer",
+            "seekResult": "true"
+          }
+        },
+        {
+          "event": "replacement_candidate_aligned",
+          "secondsFromTouch": 49.401486,
+          "fields": {
+            "cancelled": "false",
+            "elapsedMs": 23813,
+            "engine": "KSPlayer",
+            "seekResult": "true"
+          }
+        },
+        {
+          "event": "replacement_warmup_completed",
+          "secondsFromTouch": 49.401985,
+          "fields": {
+            "engine": "KSPlayer"
+          }
+        },
+        {
+          "event": "replacement_committed",
+          "secondsFromTouch": 49.402179,
+          "fields": {
+            "engine": "KSPlayer",
+            "startsPaused": "false"
+          }
+        }
+      ],
+      "failures": [],
+      "fullSUBAccepted": false,
+      "performanceAccepted": false,
+      "cacheState": "unknown, no cache clear",
+      "actualPicturesReviewed": true,
+      "visualScope": "Startup3/10/30, position3/10/30, four paused targets, natural interval, rotations and normal exit inspected. Automatic AV compatibility committed before seek probes; burned-in PGS is not native PGS lifecycle evidence."
+    },
+    {
+      "device": "ipad",
+      "case": "wifi-mi2-file-pgs-native",
+      "sourceDiffSHA256": "ce538bed01f20d4e123d4a45fc9238edd6988afedc9902feeece1aea31c65d61",
+      "entry": "device file",
+      "network": "WiFi, no shaping",
+      "URLMetricsCellularYes": 0,
+      "URLMetricsCellularNo": 48,
+      "enginesObserved": [
+        "AVPlayer",
+        "KSPlayer"
+      ],
+      "seeks": [],
+      "replacementBoundaries": [
+        {
+          "event": "replacement_warmup_started",
+          "secondsFromTouch": 16.151181,
+          "fields": {
+            "engine": "KSPlayer"
+          }
+        },
+        {
+          "event": "replacement_candidate_decoded",
+          "secondsFromTouch": 29.688133,
+          "fields": {
+            "cancelled": "false",
+            "elapsedMs": 13533,
+            "engine": "KSPlayer",
+            "seekResult": "true"
+          }
+        },
+        {
+          "event": "replacement_candidate_aligned",
+          "secondsFromTouch": 33.073198,
+          "fields": {
+            "cancelled": "false",
+            "elapsedMs": 16858,
+            "engine": "KSPlayer",
+            "seekResult": "true"
+          }
+        },
+        {
+          "event": "replacement_warmup_completed",
+          "secondsFromTouch": 33.07365,
+          "fields": {
+            "engine": "KSPlayer"
+          }
+        },
+        {
+          "event": "replacement_committed",
+          "secondsFromTouch": 33.073837,
+          "fields": {
+            "engine": "KSPlayer",
+            "startsPaused": "false"
+          }
+        },
+        {
+          "event": "replacement_warmup_started",
+          "secondsFromTouch": 130.146197,
+          "fields": {
+            "engine": "AVPlayer"
+          }
+        },
+        {
+          "event": "replacement_candidate_decoded",
+          "secondsFromTouch": 134.166451,
+          "fields": {
+            "cancelled": "false",
+            "elapsedMs": 4015,
+            "engine": "AVPlayer",
+            "seekResult": "true"
+          }
+        },
+        {
+          "event": "replacement_candidate_aligned",
+          "secondsFromTouch": 135.658143,
+          "fields": {
+            "cancelled": "false",
+            "elapsedMs": 5431,
+            "engine": "AVPlayer",
+            "seekResult": "true"
+          }
+        },
+        {
+          "event": "replacement_warmup_completed",
+          "secondsFromTouch": 135.658614,
+          "fields": {
+            "engine": "AVPlayer"
+          }
+        },
+        {
+          "event": "replacement_committed",
+          "secondsFromTouch": 135.658819,
+          "fields": {
+            "engine": "AVPlayer",
+            "startsPaused": "true"
+          }
+        },
+        {
+          "event": "replacement_warmup_started",
+          "secondsFromTouch": 214.129014,
+          "fields": {
+            "engine": "AVPlayer"
+          }
+        },
+        {
+          "event": "replacement_candidate_decoded",
+          "secondsFromTouch": 217.518157,
+          "fields": {
+            "cancelled": "false",
+            "elapsedMs": 3411,
+            "engine": "AVPlayer",
+            "seekResult": "true"
+          }
+        },
+        {
+          "event": "replacement_candidate_aligned",
+          "secondsFromTouch": 218.172037,
+          "fields": {
+            "cancelled": "false",
+            "elapsedMs": 4023,
+            "engine": "AVPlayer",
+            "seekResult": "true"
+          }
+        },
+        {
+          "event": "replacement_warmup_completed",
+          "secondsFromTouch": 218.172506,
+          "fields": {
+            "engine": "AVPlayer"
+          }
+        },
+        {
+          "event": "replacement_committed",
+          "secondsFromTouch": 218.172679,
+          "fields": {
+            "engine": "AVPlayer",
+            "startsPaused": "true"
+          }
+        }
+      ],
+      "failures": [],
+      "fullSUBAccepted": false,
+      "performanceAccepted": false,
+      "cacheState": "unknown, no cache clear",
+      "actualPicturesReviewed": true,
+      "visualScope": "Directory name was an intended native route; actual default playback automatically committed AV before track selection. Paused ASS to PGS and original ASS restoration/exit inspected; no native PGS seek acceptance."
+    },
+    {
+      "device": "ipad",
+      "case": "wifi-mi2-file-pgs-early-pause",
+      "sourceDiffSHA256": "ce538bed01f20d4e123d4a45fc9238edd6988afedc9902feeece1aea31c65d61",
+      "entry": "device file",
+      "network": "WiFi, no shaping",
+      "URLMetricsCellularYes": 0,
+      "URLMetricsCellularNo": 63,
+      "enginesObserved": [
+        "AVPlayer",
+        "KSPlayer"
+      ],
+      "seeks": [
+        {
+          "tag": "pgs-back-1",
+          "action": "后退 15 秒",
+          "engine": "KSPlayer",
+          "targetSeconds": 4694.213,
+          "engineCompletedMs": 773.826,
+          "outputPreviewReadyMs": 1808.935,
+          "pausedAtAllCapturedObservations": true,
+          "observations": [
+            {
+              "nominalSeconds": 0,
+              "screenshotRequestAfterActionSeconds": 0.462,
+              "screenshotResponseAfterActionSeconds": 1.047,
+              "activityIndicators": 2
+            },
+            {
+              "nominalSeconds": 1,
+              "screenshotRequestAfterActionSeconds": 1.403,
+              "screenshotResponseAfterActionSeconds": 2.002,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 2,
+              "screenshotRequestAfterActionSeconds": 2.275,
+              "screenshotResponseAfterActionSeconds": 2.797,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 3,
+              "screenshotRequestAfterActionSeconds": 3.167,
+              "screenshotResponseAfterActionSeconds": 3.657,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 5,
+              "screenshotRequestAfterActionSeconds": 5.01,
+              "screenshotResponseAfterActionSeconds": 5.555,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 8,
+              "screenshotRequestAfterActionSeconds": 8.01,
+              "screenshotResponseAfterActionSeconds": 8.535,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 12,
+              "screenshotRequestAfterActionSeconds": 12.006,
+              "screenshotResponseAfterActionSeconds": 12.52,
+              "activityIndicators": 0
+            }
+          ],
+          "visibleCompletionTime": "not measured continuously",
+          "advancingClockRecoveryExcluded": "Intentional pause can defer seek_recovered until later resume; not seek latency"
+        },
+        {
+          "tag": "pgs-back-2",
+          "action": "后退 15 秒",
+          "engine": "KSPlayer",
+          "targetSeconds": 4679.213,
+          "engineCompletedMs": 645.266,
+          "outputPreviewReadyMs": 1787.177,
+          "pausedAtAllCapturedObservations": true,
+          "observations": [
+            {
+              "nominalSeconds": 0,
+              "screenshotRequestAfterActionSeconds": 0.397,
+              "screenshotResponseAfterActionSeconds": 0.899,
+              "activityIndicators": 2
+            },
+            {
+              "nominalSeconds": 1,
+              "screenshotRequestAfterActionSeconds": 1.188,
+              "screenshotResponseAfterActionSeconds": 1.654,
+              "activityIndicators": 2
+            },
+            {
+              "nominalSeconds": 2,
+              "screenshotRequestAfterActionSeconds": 2.001,
+              "screenshotResponseAfterActionSeconds": 2.579,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 3,
+              "screenshotRequestAfterActionSeconds": 3.007,
+              "screenshotResponseAfterActionSeconds": 3.584,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 5,
+              "screenshotRequestAfterActionSeconds": 5.005,
+              "screenshotResponseAfterActionSeconds": 5.555,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 8,
+              "screenshotRequestAfterActionSeconds": 8.006,
+              "screenshotResponseAfterActionSeconds": 8.597,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 12,
+              "screenshotRequestAfterActionSeconds": 12.005,
+              "screenshotResponseAfterActionSeconds": 12.572,
+              "activityIndicators": 0
+            }
+          ],
+          "visibleCompletionTime": "not measured continuously",
+          "advancingClockRecoveryExcluded": "Intentional pause can defer seek_recovered until later resume; not seek latency"
+        },
+        {
+          "tag": "pgs-forward-1",
+          "action": "前进 15 秒",
+          "engine": "KSPlayer",
+          "targetSeconds": 4709.213,
+          "engineCompletedMs": 161.844,
+          "outputPreviewReadyMs": 599.923,
+          "pausedAtAllCapturedObservations": true,
+          "observations": [
+            {
+              "nominalSeconds": 0,
+              "screenshotRequestAfterActionSeconds": 0.462,
+              "screenshotResponseAfterActionSeconds": 0.996,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 1,
+              "screenshotRequestAfterActionSeconds": 1.246,
+              "screenshotResponseAfterActionSeconds": 1.817,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 2,
+              "screenshotRequestAfterActionSeconds": 2.09,
+              "screenshotResponseAfterActionSeconds": 2.707,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 3,
+              "screenshotRequestAfterActionSeconds": 3.05,
+              "screenshotResponseAfterActionSeconds": 3.653,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 5,
+              "screenshotRequestAfterActionSeconds": 5.006,
+              "screenshotResponseAfterActionSeconds": 5.564,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 8,
+              "screenshotRequestAfterActionSeconds": 8.006,
+              "screenshotResponseAfterActionSeconds": 8.58,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 12,
+              "screenshotRequestAfterActionSeconds": 12.01,
+              "screenshotResponseAfterActionSeconds": 12.643,
+              "activityIndicators": 0
+            }
+          ],
+          "visibleCompletionTime": "not measured continuously",
+          "advancingClockRecoveryExcluded": "Intentional pause can defer seek_recovered until later resume; not seek latency"
+        },
+        {
+          "tag": "pgs-forward-2",
+          "action": "前进 15 秒",
+          "engine": "KSPlayer",
+          "targetSeconds": 4694.213,
+          "engineCompletedMs": 764.144,
+          "outputPreviewReadyMs": 2182.667,
+          "pausedAtAllCapturedObservations": true,
+          "observations": [
+            {
+              "nominalSeconds": 0,
+              "screenshotRequestAfterActionSeconds": 0.448,
+              "screenshotResponseAfterActionSeconds": 0.979,
+              "activityIndicators": 2
+            },
+            {
+              "nominalSeconds": 1,
+              "screenshotRequestAfterActionSeconds": 1.33,
+              "screenshotResponseAfterActionSeconds": 1.929,
+              "activityIndicators": 2
+            },
+            {
+              "nominalSeconds": 2,
+              "screenshotRequestAfterActionSeconds": 2.205,
+              "screenshotResponseAfterActionSeconds": 2.783,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 3,
+              "screenshotRequestAfterActionSeconds": 3.016,
+              "screenshotResponseAfterActionSeconds": 3.55,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 5,
+              "screenshotRequestAfterActionSeconds": 5.01,
+              "screenshotResponseAfterActionSeconds": 5.527,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 8,
+              "screenshotRequestAfterActionSeconds": 8.007,
+              "screenshotResponseAfterActionSeconds": 8.485,
+              "activityIndicators": 0
+            },
+            {
+              "nominalSeconds": 12,
+              "screenshotRequestAfterActionSeconds": 12.01,
+              "screenshotResponseAfterActionSeconds": 12.521,
+              "activityIndicators": 0
+            }
+          ],
+          "visibleCompletionTime": "not measured continuously",
+          "advancingClockRecoveryExcluded": "Intentional pause can defer seek_recovered until later resume; not seek latency"
+        }
+      ],
+      "replacementBoundaries": [
+        {
+          "event": "replacement_warmup_started",
+          "secondsFromTouch": 390.218172,
+          "fields": {
+            "engine": "KSPlayer"
+          }
+        },
+        {
+          "event": "replacement_candidate_decoded",
+          "secondsFromTouch": 393.783865,
+          "fields": {
+            "cancelled": "false",
+            "elapsedMs": 3521,
+            "engine": "KSPlayer",
+            "seekResult": "true"
+          }
+        },
+        {
+          "event": "replacement_candidate_aligned",
+          "secondsFromTouch": 401.145663,
+          "fields": {
+            "cancelled": "false",
+            "elapsedMs": 10846,
+            "engine": "KSPlayer",
+            "seekResult": "true"
+          }
+        },
+        {
+          "event": "replacement_warmup_completed",
+          "secondsFromTouch": 401.146127,
+          "fields": {
+            "engine": "KSPlayer"
+          }
+        },
+        {
+          "event": "replacement_committed",
+          "secondsFromTouch": 401.14632,
+          "fields": {
+            "engine": "KSPlayer",
+            "startsPaused": "false"
+          }
+        },
+        {
+          "event": "replacement_warmup_started",
+          "secondsFromTouch": 471.235921,
+          "fields": {
+            "engine": "AVPlayer"
+          }
+        },
+        {
+          "event": "replacement_candidate_decoded",
+          "secondsFromTouch": 474.685931,
+          "fields": {
+            "cancelled": "false",
+            "elapsedMs": 3449,
+            "engine": "AVPlayer",
+            "seekResult": "true"
+          }
+        },
+        {
+          "event": "replacement_candidate_aligned",
+          "secondsFromTouch": 475.662902,
+          "fields": {
+            "cancelled": "false",
+            "elapsedMs": 4361,
+            "engine": "AVPlayer",
+            "seekResult": "true"
+          }
+        },
+        {
+          "event": "replacement_warmup_completed",
+          "secondsFromTouch": 475.663416,
+          "fields": {
+            "engine": "AVPlayer"
+          }
+        },
+        {
+          "event": "replacement_committed",
+          "secondsFromTouch": 475.663592,
+          "fields": {
+            "engine": "AVPlayer",
+            "startsPaused": "true"
+          }
+        }
+      ],
+      "failures": [],
+      "fullSUBAccepted": false,
+      "performanceAccepted": false,
+      "cacheState": "unknown, no cache clear",
+      "actualPicturesReviewed": true,
+      "visualScope": "Ordinary early pause retained KS for four paused probes and both large seeks. Sampled target images lack a verified expected native PGS cue; natural-play t3/t8 have no cue, later compatibility switch precedes the paused image with subtitles. Original ASS restored by semantic codec/selection after menu labels changed; exact original bookmark fields verified. First large-position raw frames partly overwritten: previously inspected contact sheets and preserved final paused PNGs remain; do not claim complete original capture."
+    }
+  ],
+  "pausedNativeUIProbes": 15,
+  "WiFiURLMetrics": 226,
+  "cellularURLMetrics": 0,
+  "metricCorrection": {
+    "advancingClockRecoveriesSecondsExcluded": [
+      101.009,
+      45.646
+    ],
+    "reason": "Intentional stopped timeline before a later resume is included by seek_recovered. Engine completion and paused preview output are reported separately; neither is exact screen presentation.",
+    "replacementEventEngine": "origin renderer; target engine is determined by subsequent active engine events and seeks"
+  },
+  "sourceCueTimetableRetrieved": false,
+  "activeNormalizedSubtitleCacheFiles": 0,
+  "sourceCueCacheLimitation": "ASS switched locally as embedded track on phone; cache empty does not prove no native subtitles or no valid cue. No independent expected PGS cue/end table obtained.",
+  "hypothesisStatus": "SubtitleModel infinity-end fallback across discontinuity remains a code hypothesis. No speculative application change or claimed fix; deterministic production counterexample still needed.",
+  "evidenceLimitations": [
+    {
+      "classification": "TOOL_CONTACT_GENERATED_BEFORE_CAPTURE_COMPLETE",
+      "count": 2,
+      "effect": "Read-only contact generation asserted missing future screenshot; no device action and no source change. Completed contacts generated afterward, original tool errors retained in conversation."
+    },
+    {
+      "classification": "TOOL_FILE_SUBTITLE_MENU_NOT_OPEN_ON_FIRST_TAP",
+      "count": 1,
+      "effect": "Original screenshot/XML retained; later native menu verified; no selection on first attempt."
+    },
+    {
+      "classification": "TOOL_HIDDEN_PAUSE_MISCLASSIFIED_AS_PAUSED",
+      "count": 1,
+      "effect": "Original pause helper bounded lookup failed before transport action. Corrected private helper reveals transport then observes Pause/Play; source/package unchanged."
+    },
+    {
+      "classification": "TOOL_NATIVE_FILE_GENERIC_LABELS_NOT_JELLYFIN_CODEC_SUFFIXES",
+      "count": 1,
+      "effect": "PGSSUB suffix lookup asserted before selection; actual generic duplicate labels reviewed, existing file-native row action used afterward."
+    },
+    {
+      "classification": "TOOL_DEPENDENT_SETTLE_WITHOUT_SUBMITTED_ACTION",
+      "count": 1,
+      "effect": "Missing action file after preceding pre-tap assertion; no device action. Later command sequences use set -e."
+    },
+    {
+      "classification": "TOOL_RESTORE_GENERIC_LABEL_AFTER_AUTOMATIC_ROUTE_CHANGE",
+      "count": 1,
+      "effect": "Old native file label no longer matched codec-suffixed compatibility menu. Failed before selection; observed rich menu reviewed and original simplified ASS selected explicitly afterward. Final five-field bookmark audit required."
+    },
+    {
+      "classification": "TOOL_EVIDENCE_FILENAME_COLLISION",
+      "secondPositionActionStart": 1791978019.552377,
+      "preservedBeforeOverwrite": [
+        "final-pgs-hidden.xml",
+        "final-pgs-hidden.png",
+        "final-pgs-shown-private.plist",
+        "final-pgs-hidden-private.plist",
+        "final-pgs-shown.png",
+        "final-pgs-shown.xml",
+        "final-pgs-reshown.xml",
+        "final-pgs-reshown.png",
+        "final-pgs-reshown-private.plist"
+      ],
+      "limitation": "Second position helper reused first midpoint/final filenames; some first original PNG/XML/plist already overwritten. Earlier reviewed contact sheets and paused-seek observations remain. First-position sparse visuals may only be cited as contact-sheet evidence; no complete original-frame claim.",
+      "firstTargetObservedClockLabel": "1:18:10",
+      "futureGuard": "Paused position helper now refuses existing midpoint-t0.png; new positions require a new directory"
+    }
+  ],
+  "privateHelperGuardValidation": {
+    "expectedRefusal": true,
+    "exit": 1,
+    "allExistingCaseFilesByteForByteUnchanged": true,
+    "guardPrecedesDeviceActions": true,
+    "scope": "private capture helper, not application XCTest"
+  },
+  "finalAudit": {
+    "sourceInputsVerified": 173,
+    "binaryHashesVerified": true,
+    "signatureVerified": true,
+    "devices": {
+      "iphone13": {
+        "at": "2026-10-14T19:44:55.992138+08:00",
+        "model": "iPhone14,5",
+        "system": "16.3.1",
+        "connection": "USB",
+        "sourceDiffSHA256": "ce538bed01f20d4e123d4a45fc9238edd6988afedc9902feeece1aea31c65d61",
+        "latestPackage": {
+          "Nastart": "c377c2bf2dee1eaa40b53e324e94410e2c496f3a21b3599b1ea0bd2088c7b413",
+          "Nastart.debug.dylib": "e1741042286d559de72035399ebc11f995261f7ccb449e7ef41f350eb9d15a7c",
+          "Frameworks/KSPlayer.framework/KSPlayer": "914b39e4d9e33542081fd61d7dc4a291114472f8cf9f0832222e709f965b7bee"
+        },
+        "nonBookmarkPreferenceKeys": 24,
+        "nonBookmarkPreferencesExactlyUnchanged": true,
+        "naturalBookmarkChangesCount": 1,
+        "originalBookmarksChecked": 34,
+        "originalBookmarksRemoved": 0,
+        "originalTrackChangeCount": 0,
+        "allOriginalTracksUnchanged": true,
+        "newBookmarksCount": 0,
+        "crashInventoryDelta": {
+          "Nastart": 0,
+          "WebDriverAgent": 0,
+          "JetsamEvent": 0
+        },
+        "normalEmptyEnvironment": true,
+        "NASNormal": true,
+        "playerClosed": true,
+        "WDAIdleSeconds": 10,
+        "WDAAnimationCoolOffSeconds": 2,
+        "nativeConditionsNotRecheckedThisTurn": false,
+        "noConditionInjectedThisTurn": true,
+        "nativeActiveConditions": 0,
+        "finalHomeActuallyReviewed": true
+      },
+      "ipad": {
+        "at": "2026-10-14T19:44:56.801562+08:00",
+        "model": "iPad12,1",
+        "system": "18.3.1",
+        "connection": "USB",
+        "sourceDiffSHA256": "ce538bed01f20d4e123d4a45fc9238edd6988afedc9902feeece1aea31c65d61",
+        "latestPackage": {
+          "Nastart": "c377c2bf2dee1eaa40b53e324e94410e2c496f3a21b3599b1ea0bd2088c7b413",
+          "Nastart.debug.dylib": "e1741042286d559de72035399ebc11f995261f7ccb449e7ef41f350eb9d15a7c",
+          "Frameworks/KSPlayer.framework/KSPlayer": "914b39e4d9e33542081fd61d7dc4a291114472f8cf9f0832222e709f965b7bee"
+        },
+        "nonBookmarkPreferenceKeys": 17,
+        "nonBookmarkPreferencesExactlyUnchanged": true,
+        "naturalBookmarkChangesCount": 2,
+        "originalBookmarksChecked": 27,
+        "originalBookmarksRemoved": 0,
+        "originalTrackChangeCount": 0,
+        "allOriginalTracksUnchanged": true,
+        "newBookmarksCount": 0,
+        "crashInventoryDelta": {
+          "Nastart": 0,
+          "WebDriverAgent": 0,
+          "JetsamEvent": 0
+        },
+        "normalEmptyEnvironment": true,
+        "NASNormal": true,
+        "playerClosed": true,
+        "WDAIdleSeconds": 10,
+        "WDAAnimationCoolOffSeconds": 2,
+        "nativeConditionsNotRecheckedThisTurn": false,
+        "noConditionInjectedThisTurn": true,
+        "nativeActiveConditions": 0,
+        "finalHomeActuallyReviewed": true
+      }
+    }
+  },
+  "privateEvidenceDirectory": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-10-14-pgs-seek-lifecycle-191546",
+  "acceptance": {
+    "fullSUB": false,
+    "AUD": false,
+    "HDR": false,
+    "PiP": false,
+    "continuousFramesOrCompetitor": false,
+    "performanceImprovement": false,
+    "historicalPGSGhostClosed": false
+  },
+  "notRun": "No source change; no new S01/L2/L3/Lenna/DS One/weakRF/cellular/18 acceptance. Prior results retained at original build scope."
+}

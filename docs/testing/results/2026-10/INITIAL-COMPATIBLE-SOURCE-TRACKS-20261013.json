@@ -1,0 +1,413 @@
+{
+  "package": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "79e7709199679751d8332f6b51b6f9d4dcea83ffa830df5ed3db6550056b5b2c",
+    "baselineSourceDiffSHA256": "ac8f176e1d138ab418055d894cddd7d6858dc95d3059b3ed1878a24cc78bb1b1",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "binaryBuildTime": "2026-10-13T08:55:41.919837+08:00",
+    "binaries": {
+      "Nastart": "b1b877167a58beeb935a072a8d2fcb4b8eccd98c5fe1b8cbd20d32bcd2eb2ac6",
+      "Nastart.debug.dylib": "2108343c21e4443a5688b57c64440094c9152fbb5b35380e4a97499d5fe013c8",
+      "Frameworks/KSPlayer.framework/KSPlayer": "6be1f6780b3edd377d2ef6ee2e144c9213b831f45969eedbb7f7601b93067559"
+    },
+    "tests": {
+      "executed": 351,
+      "skipped": 2,
+      "failures": 0,
+      "runThisTurn": true
+    },
+    "preflight": {
+      "passed": 15,
+      "runThisTurn": true
+    },
+    "checkedInputs": 173,
+    "individuallyVerifiedLibraries": 29
+  },
+  "fixScope": "initial matched file HLS verified source tracks and mapped initial position; no buffer/seek/decoder/Range strategy change",
+  "originalPositiveHardwareBranchAccepted": false,
+  "performanceAccepted": false,
+  "iphone18LatestCandidateInstalled": false,
+  "baseline": [
+    {
+      "device": "iphone13",
+      "sample": "S19",
+      "network": "actual cellular; WiFi off; no shaping",
+      "stage": "NAS restore; before player",
+      "result": "login failure about 75 seconds; media window not run; WiFi restored"
+    },
+    {
+      "device": "ipad",
+      "sample": "S19",
+      "entry": "file",
+      "network": "WiFi",
+      "sourceDiffSHA256": "ac8f176e1d138ab418055d894cddd7d6858dc95d3059b3ed1878a24cc78bb1b1",
+      "internalFirstFrameSeconds": 7.949593,
+      "seekEngineRecoveryMs": [
+        6073,
+        4194,
+        4366
+      ],
+      "deepSeekActualTargetSeconds": 6617.531715,
+      "URLMetricsCellularNo": 39,
+      "HLSAlignmentFailureMs": 8618,
+      "HLSCommitted": false,
+      "performanceAccepted": false
+    }
+  ],
+  "candidateS01": [
+    {
+      "device": "iphone13",
+      "entry": "file",
+      "actualAction": "从头播放",
+      "startedAt": "2026-10-13T09:00:14.317742+08:00",
+      "finishedAt": "2026-10-13T09:01:42.964359+08:00",
+      "ordinaryExit": true,
+      "selectedTitlePNGViewed": true,
+      "closedDetailPNGViewed": true,
+      "URLMetricsCellularNo": 3,
+      "URLMetricsCellularYes": 0,
+      "internalFirstFrameSeconds": 1.362913,
+      "warningEvents": [],
+      "performanceAccepted": false
+    },
+    {
+      "device": "iphone13",
+      "entry": "jf",
+      "actualAction": "在 Nastart 中播放",
+      "startedAt": "2026-10-13T09:05:37.218190+08:00",
+      "finishedAt": "2026-10-13T09:07:15.629118+08:00",
+      "ordinaryExit": true,
+      "selectedTitlePNGViewed": true,
+      "closedDetailPNGViewed": true,
+      "URLMetricsCellularNo": 3,
+      "URLMetricsCellularYes": 0,
+      "internalFirstFrameSeconds": 0.954712,
+      "warningEvents": [],
+      "performanceAccepted": false
+    },
+    {
+      "device": "ipad",
+      "entry": "file",
+      "actualAction": "从头播放",
+      "startedAt": "2026-10-13T09:08:32.715007+08:00",
+      "finishedAt": "2026-10-13T09:10:03.650723+08:00",
+      "ordinaryExit": true,
+      "selectedTitlePNGViewed": true,
+      "closedDetailPNGViewed": true,
+      "URLMetricsCellularNo": 3,
+      "URLMetricsCellularYes": 0,
+      "internalFirstFrameSeconds": 3.235574,
+      "warningEvents": [],
+      "performanceAccepted": false
+    },
+    {
+      "device": "ipad",
+      "entry": "jf",
+      "actualAction": "在 Nastart 中播放",
+      "startedAt": "2026-10-13T09:10:03.651036+08:00",
+      "finishedAt": "2026-10-13T09:12:11.156681+08:00",
+      "ordinaryExit": true,
+      "selectedTitlePNGViewed": true,
+      "closedDetailPNGViewed": true,
+      "URLMetricsCellularNo": 3,
+      "URLMetricsCellularYes": 0,
+      "internalFirstFrameSeconds": 1.562784,
+      "warningEvents": [
+        {
+          "secondsFromTouch": 1.866611,
+          "event": "request_failed",
+          "fields": {
+            "version": 1
+          }
+        },
+        {
+          "secondsFromTouch": 9.899672,
+          "event": "request_failed",
+          "fields": {
+            "version": 1
+          }
+        }
+      ],
+      "performanceAccepted": false
+    }
+  ],
+  "preservedToolFailures": [
+    {
+      "device": "iphone13",
+      "entry": "jf",
+      "action": "从头播放",
+      "startedAt": "2026-10-13T09:01:42.964643+08:00",
+      "finishedAt": "2026-10-13T09:02:10.936251+08:00",
+      "failureType": "AssertionError"
+    },
+    {
+      "device": "ipad",
+      "entry": "file",
+      "action": "从头播放",
+      "startedAt": "2026-10-13T09:07:15.629448+08:00",
+      "finishedAt": "2026-10-13T09:07:41.028294+08:00",
+      "failureType": "AssertionError"
+    }
+  ],
+  "candidatePreparedCellularAttempts": [
+    {
+      "sourceDiffSHA256": "79e7709199679751d8332f6b51b6f9d4dcea83ffa830df5ed3db6550056b5b2c",
+      "condition": "WiFi prepares native S03 file detail; actual WiFi off; activate existing normal App, no cold restart; not comparable to cold cellular login failure",
+      "startedAt": "2026-10-13T09:12:33.066540+08:00",
+      "navigationExit": 1,
+      "result": "failure preserved",
+      "errorType": "AssertionError",
+      "wifiRestoreExit": 0,
+      "finishedAt": "2026-10-13T09:13:09.734842+08:00"
+    },
+    {
+      "sourceDiffSHA256": "79e7709199679751d8332f6b51b6f9d4dcea83ffa830df5ed3db6550056b5b2c",
+      "condition": "WiFi prepares native S03 file detail; actual WiFi off; activate existing normal App, no cold restart; not comparable to cold cellular login failure",
+      "startedAt": "2026-10-13T09:13:51.862756+08:00",
+      "navigationExit": 1,
+      "result": "failure preserved",
+      "errorType": "AssertionError",
+      "wifiRestoreExit": 0,
+      "finishedAt": "2026-10-13T09:15:10.634778+08:00"
+    },
+    {
+      "label": "cellular-candidate-s03-existing-session",
+      "sourceDiffSHA256": "79e7709199679751d8332f6b51b6f9d4dcea83ffa830df5ed3db6550056b5b2c",
+      "condition": "Existing recovered normal App session; WiFi prepares native S03 file detail; actual WiFi off; activate same App, no cold restart; not comparable to cold cellular login failure",
+      "startedAt": "2026-10-13T09:20:19.151314+08:00",
+      "navigationExit": 0,
+      "wifiOffExit": 0,
+      "startupAndExit": 1,
+      "result": "failure preserved",
+      "errorType": "AssertionError",
+      "wifiRestoreExit": 1,
+      "finishedAt": "2026-10-13T09:22:34.013310+08:00"
+    }
+  ],
+  "finalAuditBeforeAdditionalCellularWindow": {
+    "sourceInputsVerified": 173,
+    "binaryHashesVerified": true,
+    "deepSignatureVerified": true,
+    "devices": {
+      "iphone13": {
+        "at": "2026-10-13T09:18:27.405280+08:00",
+        "model": "iPhone14,5",
+        "system": "16.3.1",
+        "connection": "USB",
+        "sourceDiffSHA256": "79e7709199679751d8332f6b51b6f9d4dcea83ffa830df5ed3db6550056b5b2c",
+        "latestPackage": {
+          "Nastart": "b1b877167a58beeb935a072a8d2fcb4b8eccd98c5fe1b8cbd20d32bcd2eb2ac6",
+          "Nastart.debug.dylib": "2108343c21e4443a5688b57c64440094c9152fbb5b35380e4a97499d5fe013c8",
+          "Frameworks/KSPlayer.framework/KSPlayer": "6be1f6780b3edd377d2ef6ee2e144c9213b831f45969eedbb7f7601b93067559"
+        },
+        "nonBookmarkPreferenceKeys": 24,
+        "nonBookmarkPreferencesExactlyUnchanged": true,
+        "changedBookmarksCount": 2,
+        "originalS03TrackChanges": {
+          "file": {},
+          "Jellyfin": {}
+        },
+        "originalS03FileAndJellyfinTracksUnchanged": true,
+        "normalEmptyEnvironment": true,
+        "NASNormal": true,
+        "playerClosed": true,
+        "finalHomeScreenshotReviewed": true,
+        "WDAIdleSeconds": 10,
+        "WDAAnimationCoolOffSeconds": 2,
+        "crashInventoryNotCheckedThisTurn": false,
+        "baselineAppCrashRecordedThisTurn": false,
+        "historicalIPhone13NetworkCrashUnresolved": true,
+        "candidateCrashInventoryDelta": {
+          "Nastart": 0,
+          "WebDriverAgent": 0,
+          "JetsamEvent": 0
+        },
+        "performanceAccepted": false,
+        "fullSubtitleAudioHDRAccepted": false
+      },
+      "ipad": {
+        "at": "2026-10-13T09:18:28.204344+08:00",
+        "model": "iPad12,1",
+        "system": "18.3.1",
+        "connection": "USB",
+        "sourceDiffSHA256": "79e7709199679751d8332f6b51b6f9d4dcea83ffa830df5ed3db6550056b5b2c",
+        "latestPackage": {
+          "Nastart": "b1b877167a58beeb935a072a8d2fcb4b8eccd98c5fe1b8cbd20d32bcd2eb2ac6",
+          "Nastart.debug.dylib": "2108343c21e4443a5688b57c64440094c9152fbb5b35380e4a97499d5fe013c8",
+          "Frameworks/KSPlayer.framework/KSPlayer": "6be1f6780b3edd377d2ef6ee2e144c9213b831f45969eedbb7f7601b93067559"
+        },
+        "nonBookmarkPreferenceKeys": 17,
+        "nonBookmarkPreferencesExactlyUnchanged": true,
+        "changedBookmarksCount": 3,
+        "originalS03TrackChanges": {
+          "file": {},
+          "Jellyfin": {}
+        },
+        "originalS03FileAndJellyfinTracksUnchanged": true,
+        "normalEmptyEnvironment": true,
+        "NASNormal": true,
+        "playerClosed": true,
+        "finalHomeScreenshotReviewed": true,
+        "WDAIdleSeconds": 10,
+        "WDAAnimationCoolOffSeconds": 2,
+        "crashInventoryNotCheckedThisTurn": false,
+        "baselineAppCrashRecordedThisTurn": false,
+        "historicalIPhone13NetworkCrashUnresolved": true,
+        "candidateCrashInventoryDelta": {
+          "Nastart": 0,
+          "WebDriverAgent": 0,
+          "JetsamEvent": 0
+        },
+        "performanceAccepted": false,
+        "fullSubtitleAudioHDRAccepted": false
+      }
+    }
+  },
+  "homeRecoverySnapshots": {
+    "iphone13": {
+      "at": "2026-10-13T09:19:43.987783+08:00",
+      "actualEmptyEnvironment": true,
+      "playerClosed": true,
+      "NASNormal": true,
+      "previousBoundedHomeWaitNASNormal": false,
+      "coldRestartRepeated": false
+    },
+    "ipad": {
+      "at": "2026-10-13T09:19:44.644054+08:00",
+      "actualEmptyEnvironment": true,
+      "playerClosed": true,
+      "NASNormal": true,
+      "previousBoundedHomeWaitNASNormal": false,
+      "coldRestartRepeated": false
+    }
+  },
+  "candidateActualCellular": {
+    "device": "iphone13",
+    "sample": "S03",
+    "entry": "file",
+    "actualAction": "从头播放",
+    "condition": "existing recovered normal session, WiFi prepares detail then actual WiFi off; no cold launch",
+    "internalFirstFrameSeconds": 16.065182,
+    "internalTapToFirstFrameMs": 3849,
+    "enginePreparingSecondsFromTouch": 12.516324,
+    "initialEngine": "KSPlayer",
+    "initialRoute": "localRangeProxy",
+    "initialPlayMethod": "directPlay",
+    "initialPositionSeconds": 0,
+    "URLMetricsCellularYes": 9,
+    "URLMetricsCellularNo": 0,
+    "observationEndSeconds": 61.415082931518555,
+    "selectedT10": "preparing preview",
+    "selectedT60": "actual film with spinner",
+    "automaticDownshiftSeconds": 20.784175,
+    "warmupStartSeconds": 21.103614,
+    "warmupCommitWithinWindow": false,
+    "ordinaryFullscreenExit": "TOOL_FAILURE; no completion button match; not ordinary exit PASS",
+    "subsequentSystemPiPCloseSubmitted": true,
+    "wifiRestoreInitialResult": "TOOL_FAILURE, system PiP covered upper controls",
+    "wifiRestoreFinalActualSwitch": "1",
+    "otherObservedNetworkSwitch": "WAPI 1 before and after",
+    "performanceAccepted": false,
+    "initialMatchedHLSPositiveBranchCovered": false
+  },
+  "finalAudit": {
+    "sourceInputsVerified": 173,
+    "binaryHashesVerified": true,
+    "deepSignatureVerified": true,
+    "devices": {
+      "iphone13": {
+        "at": "2026-10-13T09:28:04.249597+08:00",
+        "model": "iPhone14,5",
+        "system": "16.3.1",
+        "connection": "USB",
+        "sourceDiffSHA256": "79e7709199679751d8332f6b51b6f9d4dcea83ffa830df5ed3db6550056b5b2c",
+        "latestPackage": {
+          "Nastart": "b1b877167a58beeb935a072a8d2fcb4b8eccd98c5fe1b8cbd20d32bcd2eb2ac6",
+          "Nastart.debug.dylib": "2108343c21e4443a5688b57c64440094c9152fbb5b35380e4a97499d5fe013c8",
+          "Frameworks/KSPlayer.framework/KSPlayer": "6be1f6780b3edd377d2ef6ee2e144c9213b831f45969eedbb7f7601b93067559"
+        },
+        "nonBookmarkPreferenceKeys": 24,
+        "nonBookmarkPreferencesExactlyUnchanged": true,
+        "changedBookmarksCount": 3,
+        "originalS03TrackChanges": {
+          "file": {
+            "audioTrackID": {
+              "before": 0,
+              "after": 4
+            }
+          },
+          "Jellyfin": {}
+        },
+        "originalS03FileAndJellyfinTracksUnchanged": false,
+        "normalEmptyEnvironment": true,
+        "NASNormal": true,
+        "playerClosed": true,
+        "finalHomeScreenshotReviewed": true,
+        "WDAIdleSeconds": 10,
+        "WDAAnimationCoolOffSeconds": 2,
+        "crashInventoryNotCheckedThisTurn": false,
+        "baselineAppCrashRecordedThisTurn": false,
+        "reviewedFinalCapture": "final-home-after-cellular",
+        "historicalIPhone13NetworkCrashUnresolved": true,
+        "candidateCrashInventoryDelta": {
+          "Nastart": 0,
+          "WebDriverAgent": 0,
+          "JetsamEvent": 0
+        },
+        "performanceAccepted": false,
+        "fullSubtitleAudioHDRAccepted": false
+      },
+      "ipad": {
+        "at": "2026-10-13T09:28:05.053465+08:00",
+        "model": "iPad12,1",
+        "system": "18.3.1",
+        "connection": "USB",
+        "sourceDiffSHA256": "79e7709199679751d8332f6b51b6f9d4dcea83ffa830df5ed3db6550056b5b2c",
+        "latestPackage": {
+          "Nastart": "b1b877167a58beeb935a072a8d2fcb4b8eccd98c5fe1b8cbd20d32bcd2eb2ac6",
+          "Nastart.debug.dylib": "2108343c21e4443a5688b57c64440094c9152fbb5b35380e4a97499d5fe013c8",
+          "Frameworks/KSPlayer.framework/KSPlayer": "6be1f6780b3edd377d2ef6ee2e144c9213b831f45969eedbb7f7601b93067559"
+        },
+        "nonBookmarkPreferenceKeys": 17,
+        "nonBookmarkPreferencesExactlyUnchanged": true,
+        "changedBookmarksCount": 3,
+        "originalS03TrackChanges": {
+          "file": {},
+          "Jellyfin": {}
+        },
+        "originalS03FileAndJellyfinTracksUnchanged": true,
+        "normalEmptyEnvironment": true,
+        "NASNormal": true,
+        "playerClosed": true,
+        "finalHomeScreenshotReviewed": true,
+        "WDAIdleSeconds": 10,
+        "WDAAnimationCoolOffSeconds": 2,
+        "crashInventoryNotCheckedThisTurn": false,
+        "baselineAppCrashRecordedThisTurn": false,
+        "reviewedFinalCapture": "final-restored-home",
+        "historicalIPhone13NetworkCrashUnresolved": true,
+        "candidateCrashInventoryDelta": {
+          "Nastart": 0,
+          "WebDriverAgent": 0,
+          "JetsamEvent": 0
+        },
+        "performanceAccepted": false,
+        "fullSubtitleAudioHDRAccepted": false
+      }
+    }
+  },
+  "finalPhoneHome": {
+    "at": "2026-10-13T09:27:29.561989+08:00",
+    "actualEmptyEnvironment": true,
+    "actualNastart": true,
+    "playerClosed": true,
+    "NASNormal": true,
+    "nativePiPClosed": true,
+    "coldLaunchRepeated": false
+  },
+  "recordedAt": "2026-10-13T09:30:15.106825+08:00",
+  "finalNativeConditionActiveCounts": {
+    "iphone13": 0,
+    "ipad": 0
+  }
+}

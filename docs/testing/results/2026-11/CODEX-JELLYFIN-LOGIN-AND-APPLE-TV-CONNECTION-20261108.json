@@ -1,0 +1,234 @@
+{
+  "date": "2026-11-08",
+  "iphone13": {
+    "model": "iPhone14,5",
+    "os": "16.3.1",
+    "connection": "USB development and Wi-Fi LAN media",
+    "buildConfiguration": "normal Debug -Onone; existing automatic signing; no test variables/flags or provisioning updates",
+    "buildFrozenAt": "2026-11-08T09:15:50.547365+08:00",
+    "sourceHead": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceInputCount": 542,
+    "sourceManifestSHA256": "4d99ee1bce4cc990497f825e7c866c4834ec9e31634f9e3e8aa08616da196918",
+    "mainSHA256": "384be2453843e34fa463b6f75f6aa8232c669f87abbf5b6dfdbf6cc40a65fdff",
+    "debugDylibSHA256": "bb4defd4dcd424acfe0b7e3c540da8f0869d0d8b52cabec510a2e01e242c7c39",
+    "profileExpiryUTC": "2026-11-15T00:30:17Z",
+    "retainedInstallAt": "2026-11-08T09:25:27.205005+08:00",
+    "installCompleteAndLookup": true,
+    "installPreferencesEqual": true,
+    "jellyfinLibrarySearchAndDetailVerified": true,
+    "jellyfin401Reproduced": false,
+    "film": "赌侠 (1990)",
+    "directPlay": "existing Jellyfin shared HTTP proxy, MKV HEVC1080p AC3 stereo PGS inventory",
+    "preloadBytes": 0,
+    "preloadReason": "bytesNotMaterialized",
+    "firstWindowClockLastSeconds": 26.889,
+    "firstWindowScreenshotObservations": [
+      "~5s dark with controls",
+      "~16s movie frame",
+      "~31s near black"
+    ],
+    "navigationOnlyAbort": "Jellyfin row moved while sources loaded. Unexpected SMB list observed. No playback in that attempt.",
+    "stableLayoutPlayback": {
+      "playButtonLabel": "在 Nastart 中播放",
+      "wdaCaptureElapsed": 9.159588124603033,
+      "nativeCaptureElapsed": 10.028616874944419,
+      "lateCaptureElapsed": 18.979439166840166
+    },
+    "nativeAndWDADistinctMovieFrames": true,
+    "resumeVerified": false,
+    "seekAndOrdinaryExitVerified": false,
+    "finalOwnedAppAndRunnerCount": 0,
+    "ownedCollectorStopped": true
+  },
+  "appleTV": {
+    "name": "客厅",
+    "model": "AppleTV14,1 from prior known hardware; current Device Hub reports tvOS18.2",
+    "pairingAuthenticatedInMacLog": true,
+    "displayedInDeviceHub": true,
+    "coreDeviceTargetDetailsAvailable": false,
+    "nativeRSDMatched": false,
+    "userRestarted": true,
+    "afterRestartEndpoints": [
+      {
+        "service": "_airplay._tcp",
+        "freshAdvertisementResolved": true,
+        "tcp": [
+          {
+            "family": "IPv6",
+            "reachable": true
+          },
+          {
+            "family": "IPv6",
+            "reachable": true
+          },
+          {
+            "family": "IPv4",
+            "reachable": true
+          }
+        ]
+      },
+      {
+        "service": "_remotepairing._tcp",
+        "freshAdvertisementResolved": true,
+        "tcp": [
+          {
+            "family": "IPv6",
+            "reachable": true
+          },
+          {
+            "family": "IPv6",
+            "reachable": true
+          },
+          {
+            "family": "IPv4",
+            "reachable": true
+          }
+        ]
+      },
+      {
+        "service": "_apple-mobdev2._tcp",
+        "freshAdvertisementResolved": true,
+        "tcp": [
+          {
+            "family": "IPv6",
+            "reachable": false,
+            "error": "ConnectionRefusedError"
+          },
+          {
+            "family": "IPv6",
+            "reachable": false,
+            "error": "ConnectionRefusedError"
+          },
+          {
+            "family": "IPv4",
+            "reachable": false,
+            "error": "ConnectionRefusedError"
+          }
+        ]
+      }
+    ],
+    "afterRestartDeviceGate": {
+      "at": "2026-11-08T09:53:40.117712+08:00",
+      "userReportsRestartAndDiscoveryPage": true,
+      "detailsExit": 1,
+      "nativeRSDMatches": false,
+      "nativeErrorType": "_RemotePairingError",
+      "notFound": true
+    },
+    "appInstalledOrLaunchedThisWindow": false,
+    "alternatePortObservation": {
+      "at": "2026-11-08T10:06:39.062183+08:00",
+      "standardLockdownPortMatchesAdvert": false,
+      "standardLockdownPort": [
+        {
+          "family": "IPv6",
+          "reachable": true
+        },
+        {
+          "family": "IPv6",
+          "reachable": true
+        },
+        {
+          "family": "IPv4",
+          "reachable": true
+        }
+      ],
+      "coreDeviceDNSLookupExit": 1
+    },
+    "legacyLockdownRead": {
+      "at": "2026-11-08T10:07:06.618330+08:00",
+      "attemptedAutopair": false,
+      "identityMatches": false,
+      "productType": "AppleTV14,1",
+      "osVersion": "18.2",
+      "paired": false,
+      "deviceNameMatches": true
+    },
+    "afterUserConnectedEthernet": {
+      "at": "2026-11-08T10:15:17.006686+08:00",
+      "userReportedEthernet": true,
+      "endpoints": [
+        {
+          "service": "_airplay._tcp",
+          "advertResolved": true,
+          "tcp": [
+            {
+              "family": "IPv6",
+              "reachable": true
+            },
+            {
+              "family": "IPv6",
+              "reachable": true
+            },
+            {
+              "family": "IPv4",
+              "reachable": true
+            }
+          ]
+        },
+        {
+          "service": "_remotepairing._tcp",
+          "advertResolved": true,
+          "tcp": [
+            {
+              "family": "IPv6",
+              "reachable": true
+            },
+            {
+              "family": "IPv6",
+              "reachable": true
+            },
+            {
+              "family": "IPv4",
+              "reachable": true
+            }
+          ]
+        },
+        {
+          "service": "_apple-mobdev2._tcp",
+          "advertResolved": true,
+          "tcp": [
+            {
+              "family": "IPv6",
+              "reachable": false,
+              "error": "ConnectionRefusedError"
+            },
+            {
+              "family": "IPv6",
+              "reachable": false,
+              "error": "ConnectionRefusedError"
+            },
+            {
+              "family": "IPv4",
+              "reachable": false,
+              "error": "ConnectionRefusedError"
+            }
+          ]
+        }
+      ],
+      "coreDevice": {
+        "exit": 1
+      },
+      "nativeRSD": {
+        "identityMatches": false,
+        "errorType": "_RemotePairingError",
+        "notFound": true
+      }
+    },
+    "afterEthernetDeviceHub": {
+      "listedPhysicalTV": false,
+      "nearbyTVFound": false,
+      "repeatPairingDispatched": false
+    },
+    "macNetworkObservation": {
+      "targetEndpointRouteInterfaces": [
+        "en0"
+      ],
+      "configuredVPNConnectionsActive": 2,
+      "vpnCausalEffectEstablished": false
+    }
+  },
+  "newMatrixPasses": 0,
+  "openRequirements": 30,
+  "matrixCells": 114
+}

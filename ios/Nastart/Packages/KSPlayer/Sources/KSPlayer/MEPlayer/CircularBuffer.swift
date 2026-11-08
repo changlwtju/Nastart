@@ -153,6 +153,18 @@ public class CircularBuffer<Item: ObjectQueueItem> {
         return result
     }
 
+#if DEBUG
+    /// Copy bounded value metadata under the queue lock; never consume or retain frames.
+    func diagnosticSnapshot<Value>(limit: Int, transform: (Item) -> Value) -> (count: Int, values: [Value])? {
+        condition.lock(); defer { condition.unlock() }
+        guard !destroyed, limit > 0, _count <= limit else { return nil }
+        let values = (0..<_count).compactMap { offset in
+            _buffer[Int((headIndex &+ UInt(offset)) & mask)].map(transform)
+        }
+        return (_count, values)
+    }
+#endif
+
     public func flush() {
         condition.lock()
         defer { condition.unlock() }

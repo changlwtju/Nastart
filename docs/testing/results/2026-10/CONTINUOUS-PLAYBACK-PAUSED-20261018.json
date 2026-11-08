@@ -1,0 +1,4024 @@
+{
+  "at": "2026-10-18T08:27:38.465922+08:00",
+  "package": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "69b11f328bdf63192e3dfbd9df7fa042e587fc9f0891a05646c4d66870b6c24f",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "Xcode": "27.0/27A266a",
+    "binaryBuildTime": "2026-10-18T06:24:02.596640+08:00",
+    "binaries": {
+      "Nastart": "36e06e744cf26780bbe04e290c99b723186f0a739cb586c33682c7e66abeebf2",
+      "Nastart.debug.dylib": "cc148fe87cd80e24410696a186b55d76d2cc03add18f0d13bcc006262ee10e39",
+      "Frameworks/KSPlayer.framework/KSPlayer": "deacdd11f289ce60b1222de4b954fb32c3a3175e1dd6a78524c99379342cdf0e"
+    },
+    "ipaSHA256": "970670a67a2fff5e03a0ddad511451ac76fa7cd8b700aff1646708687de44fe4",
+    "profileExpirationUTC": "2026-10-24T22:23:57"
+  },
+  "installations": {
+    "iphone13": {
+      "device": "iphone13",
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "connection": "USB",
+      "binaries": {
+        "Nastart": "36e06e744cf26780bbe04e290c99b723186f0a739cb586c33682c7e66abeebf2",
+        "Nastart.debug.dylib": "cc148fe87cd80e24410696a186b55d76d2cc03add18f0d13bcc006262ee10e39",
+        "Frameworks/KSPlayer.framework/KSPlayer": "deacdd11f289ce60b1222de4b954fb32c3a3175e1dd6a78524c99379342cdf0e"
+      },
+      "sourceDiffSHA256": "69b11f328bdf63192e3dfbd9df7fa042e587fc9f0891a05646c4d66870b6c24f",
+      "preservesContainer": true,
+      "signatureVerified": true,
+      "actualForegroundUIVerified": true,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "installation": "success",
+      "startedAt": "2026-10-18T07:45:41.286846+08:00",
+      "installedAt": "2026-10-18T07:45:56.288292+08:00",
+      "preferenceKeysUnchanged": true,
+      "preferenceValuesUnchanged": true,
+      "nonDiagnosticKeys": 25,
+      "normalUIVerified": true,
+      "actuallyViewed": true
+    },
+    "ipad": {
+      "device": "ipad",
+      "model": "iPad12,1",
+      "system": "18.3.1",
+      "connection": "USB",
+      "binaries": {
+        "Nastart": "36e06e744cf26780bbe04e290c99b723186f0a739cb586c33682c7e66abeebf2",
+        "Nastart.debug.dylib": "cc148fe87cd80e24410696a186b55d76d2cc03add18f0d13bcc006262ee10e39",
+        "Frameworks/KSPlayer.framework/KSPlayer": "deacdd11f289ce60b1222de4b954fb32c3a3175e1dd6a78524c99379342cdf0e"
+      },
+      "sourceDiffSHA256": "69b11f328bdf63192e3dfbd9df7fa042e587fc9f0891a05646c4d66870b6c24f",
+      "preservesContainer": true,
+      "signatureVerified": true,
+      "actualForegroundUIVerified": true,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "installation": "success",
+      "startedAt": "2026-10-18T07:47:54.447954+08:00",
+      "installedAt": "2026-10-18T07:47:59.130148+08:00",
+      "preferenceKeysUnchanged": true,
+      "preferenceValuesUnchanged": true,
+      "nonDiagnosticKeys": 18,
+      "actuallyViewedThisBatch": true
+    }
+  },
+  "caseTimeline": [
+    {
+      "case": "wifi-jf-s03-primer",
+      "startAtLocal": "2026-10-18T07:48:27.206345+08:00",
+      "lastCaptureRequestedSeconds": 30,
+      "lastCaptureActualSeconds": 30.312,
+      "ordinaryExitVerified": true,
+      "interruptedByReportedNASRestart": false
+    },
+    {
+      "case": "cellular-jf-s03-continuous-1",
+      "startAtLocal": "2026-10-18T07:50:28.072084+08:00",
+      "lastCaptureRequestedSeconds": 120,
+      "lastCaptureActualSeconds": 120.453,
+      "ordinaryExitVerified": true,
+      "interruptedByReportedNASRestart": false
+    },
+    {
+      "case": "cellular-jf-s03-continuous-2",
+      "startAtLocal": "2026-10-18T07:52:47.490321+08:00",
+      "lastCaptureRequestedSeconds": 30,
+      "lastCaptureActualSeconds": 30.364,
+      "ordinaryExitVerified": false,
+      "interruptedByReportedNASRestart": true
+    }
+  ],
+  "completedCellularWindow": {
+    "device": "iphone13",
+    "sampleFamily": "S03",
+    "entry": "Jellyfin",
+    "startupAction": "从头播放",
+    "sourceDiffSHA256": "69b11f328bdf63192e3dfbd9df7fa042e587fc9f0891a05646c4d66870b6c24f",
+    "networkIntent": "real cellular WiFi off; no shaping",
+    "URLMetricsCount": 29,
+    "URLMetricsCellularYes": 29,
+    "URLMetricsCellularNo": 0,
+    "stages": [
+      {
+        "secondsFromTouch": 1.153715,
+        "event": "engine_ready",
+        "fields": {
+          "engine": "KSPlayer",
+          "state": "preparing"
+        }
+      },
+      {
+        "secondsFromTouch": 1.153918,
+        "event": "engine_ready",
+        "fields": {
+          "engine": "KSPlayer",
+          "state": "rendererAppeared"
+        }
+      },
+      {
+        "secondsFromTouch": 2.194557,
+        "event": "engine_ready",
+        "fields": {
+          "engine": "KSPlayer",
+          "state": "readyToPlay"
+        }
+      },
+      {
+        "secondsFromTouch": 2.194758,
+        "event": "engine_ready",
+        "fields": {
+          "engine": "KSPlayer",
+          "state": "buffering"
+        }
+      },
+      {
+        "secondsFromTouch": 2.297776,
+        "event": "video_frame_submitted",
+        "fields": {
+          "acceptedVideoFrameMs": 1121.3805833249353,
+          "acceptedVideoFramePTS": 0,
+          "audioFirstKeyPacketPTS": 0,
+          "audioFirstPacketPTS": 0,
+          "audioLastPacketPTS": 2.816,
+          "audioPutPacketCalls": 3380,
+          "audioPutPacketClippedCalls": 0,
+          "audioPutPacketMaxWallMs": 0.568,
+          "audioPutPacketWallMs": 6.707,
+          "audioRoutedBytes": 124254,
+          "audioRoutedPackets": 3380,
+          "controlSeconds": 0,
+          "decodeInvocationMs": 1016.25,
+          "decodeInvocationPTS": 0,
+          "decodedCallbackMs": 1121.37,
+          "decodedCallbackPTS": 0,
+          "demuxReadCalls": 3641,
+          "demuxReadClippedCalls": 1,
+          "demuxReadMaxWallMs": 50.901,
+          "demuxReadWallMs": 87.146,
+          "discardedVideoFramesBeforeAccepted": 0,
+          "engine": "KSPlayer",
+          "evidence": "rendererAttemptAndOutputAPIBoundaryNotPresentation",
+          "firstOutputAudioFPS": 1200,
+          "firstOutputAudioFrames": 256,
+          "firstOutputAudioMaximumFrames": 256,
+          "firstOutputAudioPackets": 3949,
+          "firstOutputCapacityMs": 1164.41,
+          "firstOutputVideoFPS": 23.976025,
+          "firstOutputVideoFrames": 4,
+          "firstOutputVideoMaximumFrames": 16,
+          "firstOutputVideoPackets": 66,
+          "firstPlayableAudioFPS": 1200,
+          "firstPlayableAudioFrames": 256,
+          "firstPlayableAudioMaximumFrames": 256,
+          "firstPlayableAudioPackets": 3949,
+          "firstPlayableCapacityMs": 1164.393,
+          "firstPlayableVideoFPS": 23.976025,
+          "firstPlayableVideoFrames": 5,
+          "firstPlayableVideoMaximumFrames": 16,
+          "firstPlayableVideoPackets": 66,
+          "framePTSSeconds": 0,
+          "outputAttemptMs": 1164.4166666665114,
+          "outputPath": "sampleBufferEnqueued",
+          "outputSubmittedMs": 1169.592874997761,
+          "outputSubmittedPTS": 0,
+          "videoDecodeCallCalls": 10,
+          "videoDecodeCallClippedCalls": 1,
+          "videoDecodeCallMaxWallMs": 25.148,
+          "videoDecodeCallWallMs": 103.632,
+          "videoFirstKeyPacketPTS": 0,
+          "videoFirstPacketPTS": 0,
+          "videoLastPacketPTS": 2.544,
+          "videoPutPacketCalls": 62,
+          "videoPutPacketClippedCalls": 0,
+          "videoPutPacketMaxWallMs": 0.018,
+          "videoPutPacketWallMs": 0.127,
+          "videoRoutedBytes": 436180,
+          "videoRoutedPackets": 62
+        }
+      },
+      {
+        "secondsFromTouch": 2.302289,
+        "event": "engine_ready",
+        "fields": {
+          "engine": "KSPlayer",
+          "state": "bufferFinished"
+        }
+      },
+      {
+        "secondsFromTouch": 2.555354,
+        "event": "engine_startup_timing",
+        "fields": {
+          "acceptedVideoFrameMs": 1121.3805833249353,
+          "audioFirstKeyPacketPTS": 0,
+          "audioFirstPacketPTS": 0,
+          "audioLastPacketPTS": 2.816,
+          "audioPutPacketCalls": 3380,
+          "audioPutPacketClippedCalls": 0,
+          "audioPutPacketMaxWallMs": 0.568,
+          "audioPutPacketWallMs": 6.707,
+          "audioRoutedBytes": 124254,
+          "audioRoutedPackets": 3380,
+          "decodeInvocationMs": 1016.25,
+          "decodeInvocationPTS": 0,
+          "decodedCallbackMs": 1121.37,
+          "decodedCallbackPTS": 0,
+          "demuxReadCalls": 3641,
+          "demuxReadClippedCalls": 1,
+          "demuxReadMaxWallMs": 50.901,
+          "demuxReadWallMs": 87.146,
+          "discardedVideoFramesBeforeAccepted": 0,
+          "engine": "KSPlayer",
+          "evidence": "engineMonotonicStagesAndAdvancingClock",
+          "firstOutputAudioFPS": 1200,
+          "firstOutputAudioFrames": 256,
+          "firstOutputAudioMaximumFrames": 256,
+          "firstOutputAudioPackets": 3949,
+          "firstOutputCapacityMs": 1164.41,
+          "firstOutputVideoFPS": 23.976025,
+          "firstOutputVideoFrames": 4,
+          "firstOutputVideoMaximumFrames": 16,
+          "firstOutputVideoPackets": 66,
+          "firstPlayableAudioFPS": 1200,
+          "firstPlayableAudioFrames": 256,
+          "firstPlayableAudioMaximumFrames": 256,
+          "firstPlayableAudioPackets": 3949,
+          "firstPlayableCapacityMs": 1164.393,
+          "firstPlayableVideoFPS": 23.976025,
+          "firstPlayableVideoFrames": 5,
+          "firstPlayableVideoMaximumFrames": 16,
+          "firstPlayableVideoPackets": 66,
+          "firstVideoDecodeMs": 1016.3030833209632,
+          "firstVideoPacketMs": 1013.4239999897545,
+          "initialPositionSeconds": 0,
+          "initialSeekResult": "notRequested",
+          "openMs": 935.9617916634306,
+          "outputAttemptMs": 1164.4166666665114,
+          "outputSubmittedMs": 1169.592874997761,
+          "readyMs": 6.110833332058974,
+          "readyToClockMs": 428.76195833378006,
+          "streamInfoMs": 71.16058333485853,
+          "videoDecodeCallCalls": 10,
+          "videoDecodeCallClippedCalls": 1,
+          "videoDecodeCallMaxWallMs": 25.148,
+          "videoDecodeCallWallMs": 103.632,
+          "videoFirstKeyPacketPTS": 0,
+          "videoFirstPacketPTS": 0,
+          "videoLastPacketPTS": 2.544,
+          "videoPutPacketCalls": 62,
+          "videoPutPacketClippedCalls": 0,
+          "videoPutPacketMaxWallMs": 0.018,
+          "videoPutPacketWallMs": 0.127,
+          "videoRoutedBytes": 436180,
+          "videoRoutedPackets": 62
+        }
+      },
+      {
+        "secondsFromTouch": 2.562125,
+        "event": "first_frame",
+        "fields": {
+          "firstFramePositionSeconds": 0.137,
+          "tapToFirstFrameMs": 1611
+        }
+      },
+      {
+        "secondsFromTouch": 44.497193,
+        "event": "automatic_downshift_requested",
+        "fields": {
+          "attempt": 1,
+          "bufferTargetSeconds": 4,
+          "bufferedAheadSeconds": 8.02641644674425,
+          "deliveryCapacity": 41250692,
+          "engine": "KSPlayer",
+          "reason": "deliveryBelowSourceBitrate",
+          "runtimeDemand": 41056299
+        }
+      },
+      {
+        "secondsFromTouch": 45.020316,
+        "event": "replacement_warmup_started",
+        "fields": {
+          "engine": "KSPlayer"
+        }
+      },
+      {
+        "secondsFromTouch": 55.58679,
+        "event": "replacement_committed",
+        "fields": {
+          "candidateBufferAheadSeconds": 3.0113837267777797,
+          "candidateSeconds": 52.961194051,
+          "engine": "KSPlayer",
+          "seconds": 53.022
+        }
+      },
+      {
+        "secondsFromTouch": 55.746838,
+        "event": "engine_ready",
+        "fields": {
+          "engine": "KSPlayer",
+          "state": "paused"
+        }
+      },
+      {
+        "secondsFromTouch": 56.395073,
+        "event": "first_frame",
+        "fields": {
+          "firstFramePositionSeconds": 53.501,
+          "tapToFirstFrameMs": 11409
+        }
+      }
+    ],
+    "seeks": [],
+    "maxStallCount": 2,
+    "slowestMetrics": [
+      {
+        "secondsFromTouch": 27.736505,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "adaptiveTransferMs": 21505,
+          "cellular": "yes",
+          "connectionReused": "yes",
+          "hlsRole": "-",
+          "lastFetchToRequestMs": 0,
+          "lastRequestEndToFirstByteMs": 145,
+          "lastRequestSendMs": 0,
+          "lastResponseBodyMs": 21505,
+          "lastResponseEndToMetricsCallbackMs": 0,
+          "protocol": "h2",
+          "proxyBackpressureMs": 17818,
+          "proxyKind": "mediaRange",
+          "proxyQueuedBytes": 0,
+          "proxySuspendCount": 4,
+          "redirectCount": 0,
+          "requestMs": 145,
+          "responseMs": 21505,
+          "stage": "urlSessionTaskMetrics",
+          "taskCreatedToFirstFetchMs": 0,
+          "taskIntervalMs": 21652,
+          "totalMs": 21651,
+          "transactionCount": 1,
+          "upstreamIssueToFirstBodyCallbackMs": 148,
+          "upstreamIssueToHeadersCallbackMs": 147,
+          "upstreamIssueToLastBodyCallbackMs": 21652,
+          "upstreamIssuedToCallbackMs": 21653,
+          "upstreamTaskBodyBytes": 33554432,
+          "upstreamTaskIndex": 2
+        }
+      },
+      {
+        "secondsFromTouch": 44.406962,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "adaptiveTransferMs": 6507,
+          "cellular": "yes",
+          "connectionReused": "yes",
+          "hlsRole": "-",
+          "lastFetchToRequestMs": 1,
+          "lastRequestEndToFirstByteMs": 80,
+          "lastRequestSendMs": 0,
+          "lastResponseBodyMs": 6507,
+          "lastResponseEndToMetricsCallbackMs": 0,
+          "protocol": "h2",
+          "proxyBackpressureMs": 0,
+          "proxyKind": "mediaRange",
+          "proxyQueuedBytes": 0,
+          "proxySuspendCount": 0,
+          "redirectCount": 0,
+          "requestMs": 81,
+          "responseMs": 6507,
+          "stage": "urlSessionTaskMetrics",
+          "taskCreatedToFirstFetchMs": 1,
+          "taskIntervalMs": 6591,
+          "totalMs": 6589,
+          "transactionCount": 1,
+          "upstreamIssueToFirstBodyCallbackMs": 85,
+          "upstreamIssueToHeadersCallbackMs": 84,
+          "upstreamIssueToLastBodyCallbackMs": 6591,
+          "upstreamIssuedToCallbackMs": 6591,
+          "upstreamTaskBodyBytes": 33554432,
+          "upstreamTaskIndex": 5
+        }
+      },
+      {
+        "secondsFromTouch": 50.697782,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "adaptiveTransferMs": 6192,
+          "cellular": "yes",
+          "connectionReused": "yes",
+          "hlsRole": "-",
+          "lastFetchToRequestMs": 0,
+          "lastRequestEndToFirstByteMs": 84,
+          "lastRequestSendMs": 0,
+          "lastResponseBodyMs": 6192,
+          "lastResponseEndToMetricsCallbackMs": 0,
+          "protocol": "h2",
+          "proxyBackpressureMs": 0,
+          "proxyKind": "mediaRange",
+          "proxyQueuedBytes": 0,
+          "proxySuspendCount": 0,
+          "redirectCount": 0,
+          "requestMs": 84,
+          "responseMs": 6192,
+          "stage": "urlSessionTaskMetrics",
+          "taskCreatedToFirstFetchMs": 0,
+          "taskIntervalMs": 6278,
+          "totalMs": 6277,
+          "transactionCount": 1,
+          "upstreamIssueToFirstBodyCallbackMs": 86,
+          "upstreamIssueToHeadersCallbackMs": 85,
+          "upstreamIssueToLastBodyCallbackMs": 6278,
+          "upstreamIssuedToCallbackMs": 6278,
+          "upstreamTaskBodyBytes": 33554432,
+          "upstreamTaskIndex": 6
+        }
+      },
+      {
+        "secondsFromTouch": 37.813355,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "adaptiveTransferMs": 5365,
+          "cellular": "yes",
+          "connectionReused": "yes",
+          "hlsRole": "-",
+          "lastFetchToRequestMs": 0,
+          "lastRequestEndToFirstByteMs": 181,
+          "lastRequestSendMs": 0,
+          "lastResponseBodyMs": 5365,
+          "lastResponseEndToMetricsCallbackMs": 0,
+          "protocol": "h2",
+          "proxyBackpressureMs": 0,
+          "proxyKind": "mediaRange",
+          "proxyQueuedBytes": 0,
+          "proxySuspendCount": 0,
+          "redirectCount": 0,
+          "requestMs": 181,
+          "responseMs": 5365,
+          "stage": "urlSessionTaskMetrics",
+          "taskCreatedToFirstFetchMs": 0,
+          "taskIntervalMs": 5548,
+          "totalMs": 5547,
+          "transactionCount": 1,
+          "upstreamIssueToFirstBodyCallbackMs": 184,
+          "upstreamIssueToHeadersCallbackMs": 183,
+          "upstreamIssueToLastBodyCallbackMs": 5548,
+          "upstreamIssuedToCallbackMs": 5549,
+          "upstreamTaskBodyBytes": 33554432,
+          "upstreamTaskIndex": 4
+        }
+      },
+      {
+        "secondsFromTouch": 32.29232,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "adaptiveTransferMs": 4400,
+          "cellular": "yes",
+          "connectionReused": "yes",
+          "hlsRole": "-",
+          "lastFetchToRequestMs": 0,
+          "lastRequestEndToFirstByteMs": 129,
+          "lastRequestSendMs": 0,
+          "lastResponseBodyMs": 4400,
+          "lastResponseEndToMetricsCallbackMs": 0,
+          "protocol": "h2",
+          "proxyBackpressureMs": 0,
+          "proxyKind": "mediaRange",
+          "proxyQueuedBytes": 0,
+          "proxySuspendCount": 0,
+          "redirectCount": 0,
+          "requestMs": 129,
+          "responseMs": 4400,
+          "stage": "urlSessionTaskMetrics",
+          "taskCreatedToFirstFetchMs": 0,
+          "taskIntervalMs": 4531,
+          "totalMs": 4530,
+          "transactionCount": 1,
+          "upstreamIssueToFirstBodyCallbackMs": 130,
+          "upstreamIssueToHeadersCallbackMs": 130,
+          "upstreamIssueToLastBodyCallbackMs": 4531,
+          "upstreamIssuedToCallbackMs": 4531,
+          "upstreamTaskBodyBytes": 33554432,
+          "upstreamTaskIndex": 3
+        }
+      }
+    ],
+    "transferEvents": [
+      {
+        "secondsFromTouch": 1.150079,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "queryBytesAfter": 99,
+          "queryBytesBefore": 99,
+          "requestReceivedToIssueMs": 0,
+          "stage": "upstreamRequestIssued",
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 1.616932,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": 33554432,
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "status": 206,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 1.759645,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "queryBytesAfter": 99,
+          "queryBytesBefore": 99,
+          "requestReceivedToIssueMs": 0,
+          "stage": "upstreamRequestIssued",
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 1.90014,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": 3673,
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "status": 206,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 1.901803,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "deliveredBytes": 1371855,
+          "durationMs": 788,
+          "errorCode": 0,
+          "errorDomain": "Network.NWError",
+          "expectedBytes": 33554432,
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "responseEndOffset": 33554431,
+          "responseStartOffset": 0,
+          "retries": 0,
+          "status": 206,
+          "taskReceivedBytes": 1371855,
+          "transportErrorCode": 32,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 1.92978,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "stage": "upstreamCancellationRequested",
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 1.930243,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "adaptiveTransferMs": 0,
+          "cellular": "yes",
+          "connectionReused": "yes",
+          "hlsRole": "-",
+          "lastFetchToRequestMs": 0,
+          "lastRequestEndToFirstByteMs": 138,
+          "lastRequestSendMs": 0,
+          "lastResponseBodyMs": 0,
+          "lastResponseEndToMetricsCallbackMs": 1,
+          "protocol": "h2",
+          "proxyBackpressureMs": 0,
+          "proxyKind": "mediaRange",
+          "proxyQueuedBytes": 0,
+          "proxySuspendCount": 0,
+          "redirectCount": 0,
+          "requestMs": 138,
+          "responseMs": 0,
+          "stage": "urlSessionTaskMetrics",
+          "taskCreatedToFirstFetchMs": 0,
+          "taskIntervalMs": 141,
+          "totalMs": 139,
+          "transactionCount": 1,
+          "upstreamIssueToFirstBodyCallbackMs": 141,
+          "upstreamIssueToHeadersCallbackMs": 140,
+          "upstreamIssueToLastBodyCallbackMs": 141,
+          "upstreamIssuedToCallbackMs": 141,
+          "upstreamTaskBodyBytes": 3673,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 1.934692,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "clientReadBytes": 0,
+          "clientReadErrorCode": 54,
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "requestReceivedToReadEndMs": 789,
+          "stage": "clientReadEnded",
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 1.935069,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "queryBytesAfter": 99,
+          "queryBytesBefore": 99,
+          "requestReceivedToIssueMs": 0,
+          "stage": "upstreamRequestIssued",
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 1.935402,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "cellular": "yes",
+          "connectionReused": "no",
+          "dnsMs": 0,
+          "hlsRole": "-",
+          "lastFetchToRequestMs": 367,
+          "lastRequestEndToFirstByteMs": 134,
+          "lastRequestSendMs": 0,
+          "protocol": "h2",
+          "proxyBackpressureMs": 0,
+          "proxyKind": "mediaRange",
+          "proxyQueuedBytes": 0,
+          "proxySuspendCount": 0,
+          "redirectCount": 0,
+          "requestMs": 134,
+          "stage": "urlSessionTaskMetrics",
+          "taskCreatedToFirstFetchMs": 0,
+          "taskIntervalMs": 789,
+          "tcpMs": 110,
+          "tlsMs": 62,
+          "transactionCount": 1,
+          "upstreamCancelToCallbackMs": 1,
+          "upstreamIssueToFirstBodyCallbackMs": 503,
+          "upstreamIssueToHeadersCallbackMs": 503,
+          "upstreamIssueToLastBodyCallbackMs": 787,
+          "upstreamIssuedToCallbackMs": 790,
+          "upstreamTaskBodyBytes": 1371855,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 1.935909,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "cumulativeReceivedBytes": 3673,
+          "errorDomain": "-",
+          "expectedBytes": 3673,
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "stage": "upstreamTaskCompleted",
+          "taskReceivedBytes": 3673,
+          "upstreamIssueToFirstBodyCallbackMs": 141,
+          "upstreamIssueToHeadersCallbackMs": 140,
+          "upstreamIssueToLastBodyCallbackMs": 141,
+          "upstreamIssuedToCallbackMs": 145,
+          "upstreamTaskBodyBytes": 3673,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 1.936309,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "deliveredBytes": 3673,
+          "durationMs": 146,
+          "errorDomain": "-",
+          "expectedBytes": 3673,
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "responseEndOffset": 54005939749,
+          "responseStartOffset": 54005936077,
+          "result": "complete",
+          "retries": 0,
+          "status": 206,
+          "taskReceivedBytes": 3673,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 1.936661,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "cumulativeReceivedBytes": 1371855,
+          "errorCode": -999,
+          "errorDomain": "NSURLErrorDomain",
+          "expectedBytes": 33554432,
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "stage": "upstreamTaskCompleted",
+          "taskReceivedBytes": 1371855,
+          "upstreamCancelToCallbackMs": 3,
+          "upstreamIssueToFirstBodyCallbackMs": 503,
+          "upstreamIssueToHeadersCallbackMs": 503,
+          "upstreamIssueToLastBodyCallbackMs": 787,
+          "upstreamIssuedToCallbackMs": 792,
+          "upstreamTaskBodyBytes": 1371855,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 2.047054,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": 33554432,
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "status": 206,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 4.197698,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "bodyWindowMinimumBytes": 131072,
+          "bytes": 18112202,
+          "effectiveBps": 68081105,
+          "elapsedMs": 2128,
+          "hlsRole": "-",
+          "proxyBackpressureMs": 0,
+          "proxyKind": "mediaRange",
+          "proxyQueuedBytes": 1269760,
+          "stage": "upstreamBodyProgress",
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 6.074948,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "adaptiveTransferMs": 4024,
+          "cellular": "yes",
+          "connectionReused": "yes",
+          "hlsRole": "-",
+          "lastFetchToRequestMs": 0,
+          "lastRequestEndToFirstByteMs": 140,
+          "lastRequestSendMs": 0,
+          "lastResponseBodyMs": 4024,
+          "lastResponseEndToMetricsCallbackMs": 0,
+          "protocol": "h2",
+          "proxyBackpressureMs": 0,
+          "proxyKind": "mediaRange",
+          "proxyQueuedBytes": 0,
+          "proxySuspendCount": 0,
+          "redirectCount": 0,
+          "requestMs": 140,
+          "responseMs": 4024,
+          "stage": "urlSessionTaskMetrics",
+          "taskCreatedToFirstFetchMs": 1,
+          "taskIntervalMs": 4167,
+          "totalMs": 4165,
+          "transactionCount": 1,
+          "upstreamIssueToFirstBodyCallbackMs": 143,
+          "upstreamIssueToHeadersCallbackMs": 142,
+          "upstreamIssueToLastBodyCallbackMs": 4167,
+          "upstreamIssuedToCallbackMs": 4167,
+          "upstreamTaskBodyBytes": 33554432,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 6.076036,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "cumulativeReceivedBytes": 33554432,
+          "errorDomain": "-",
+          "expectedBytes": 33554432,
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "stage": "upstreamTaskCompleted",
+          "taskReceivedBytes": 33554432,
+          "upstreamIssueToFirstBodyCallbackMs": 143,
+          "upstreamIssueToHeadersCallbackMs": 142,
+          "upstreamIssueToLastBodyCallbackMs": 4167,
+          "upstreamIssuedToCallbackMs": 4169,
+          "upstreamTaskBodyBytes": 33554432,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 6.076687,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "queryBytesAfter": 99,
+          "queryBytesBefore": 99,
+          "requestReceivedToIssueMs": 4170,
+          "stage": "upstreamRequestIssued",
+          "upstreamTaskIndex": 2
+        }
+      },
+      {
+        "secondsFromTouch": 6.221847,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": 33554432,
+          "cumulativeReceivedBytes": 33554432,
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "stage": "continuationResponse",
+          "status": 206,
+          "upstreamTaskIndex": 2
+        }
+      },
+      {
+        "secondsFromTouch": 6.249626,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "bodyWindowMinimumBytes": 131072,
+          "bytes": 15493574,
+          "effectiveBps": 60546051,
+          "elapsedMs": 2047,
+          "hlsRole": "-",
+          "proxyBackpressureMs": 0,
+          "proxyKind": "mediaRange",
+          "proxyQueuedBytes": 51344,
+          "stage": "upstreamBodyProgress",
+          "upstreamTaskIndex": 2
+        }
+      },
+      {
+        "secondsFromTouch": 13.629932,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "bodyWindowMinimumBytes": 131072,
+          "bytes": 8320448,
+          "effectiveBps": 8985466,
+          "elapsedMs": 7407,
+          "hlsRole": "-",
+          "proxyBackpressureMs": 6833,
+          "proxyKind": "mediaRange",
+          "proxyQueuedBytes": 4599808,
+          "stage": "upstreamBodyProgress",
+          "upstreamTaskIndex": 2
+        }
+      },
+      {
+        "secondsFromTouch": 25.46086,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "bodyWindowMinimumBytes": 131072,
+          "bytes": 8433664,
+          "effectiveBps": 5702633,
+          "elapsedMs": 11831,
+          "hlsRole": "-",
+          "proxyBackpressureMs": 17816,
+          "proxyKind": "mediaRange",
+          "proxyQueuedBytes": 4730880,
+          "stage": "upstreamBodyProgress",
+          "upstreamTaskIndex": 2
+        }
+      },
+      {
+        "secondsFromTouch": 27.504141,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "bodyWindowMinimumBytes": 131072,
+          "bytes": 14225408,
+          "effectiveBps": 56821654,
+          "elapsedMs": 2002,
+          "hlsRole": "-",
+          "proxyBackpressureMs": 17818,
+          "proxyKind": "mediaRange",
+          "proxyQueuedBytes": 90112,
+          "stage": "upstreamBodyProgress",
+          "upstreamTaskIndex": 2
+        }
+      },
+      {
+        "secondsFromTouch": 27.736505,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "adaptiveTransferMs": 21505,
+          "cellular": "yes",
+          "connectionReused": "yes",
+          "hlsRole": "-",
+          "lastFetchToRequestMs": 0,
+          "lastRequestEndToFirstByteMs": 145,
+          "lastRequestSendMs": 0,
+          "lastResponseBodyMs": 21505,
+          "lastResponseEndToMetricsCallbackMs": 0,
+          "protocol": "h2",
+          "proxyBackpressureMs": 17818,
+          "proxyKind": "mediaRange",
+          "proxyQueuedBytes": 0,
+          "proxySuspendCount": 4,
+          "redirectCount": 0,
+          "requestMs": 145,
+          "responseMs": 21505,
+          "stage": "urlSessionTaskMetrics",
+          "taskCreatedToFirstFetchMs": 0,
+          "taskIntervalMs": 21652,
+          "totalMs": 21651,
+          "transactionCount": 1,
+          "upstreamIssueToFirstBodyCallbackMs": 148,
+          "upstreamIssueToHeadersCallbackMs": 147,
+          "upstreamIssueToLastBodyCallbackMs": 21652,
+          "upstreamIssuedToCallbackMs": 21653,
+          "upstreamTaskBodyBytes": 33554432,
+          "upstreamTaskIndex": 2
+        }
+      },
+      {
+        "secondsFromTouch": 27.736909,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "cumulativeReceivedBytes": 67108864,
+          "errorDomain": "-",
+          "expectedBytes": 33554432,
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "stage": "upstreamTaskCompleted",
+          "taskReceivedBytes": 33554432,
+          "upstreamIssueToFirstBodyCallbackMs": 148,
+          "upstreamIssueToHeadersCallbackMs": 147,
+          "upstreamIssueToLastBodyCallbackMs": 21652,
+          "upstreamIssuedToCallbackMs": 21653,
+          "upstreamTaskBodyBytes": 33554432,
+          "upstreamTaskIndex": 2
+        }
+      },
+      {
+        "secondsFromTouch": 27.737177,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "queryBytesAfter": 99,
+          "queryBytesBefore": 99,
+          "requestReceivedToIssueMs": 25823,
+          "stage": "upstreamRequestIssued",
+          "upstreamTaskIndex": 3
+        }
+      },
+      {
+        "secondsFromTouch": 27.858123,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": 33554432,
+          "cumulativeReceivedBytes": 67108864,
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "stage": "continuationResponse",
+          "status": 206,
+          "upstreamTaskIndex": 3
+        }
+      },
+      {
+        "secondsFromTouch": 29.466233,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "bodyWindowMinimumBytes": 131072,
+          "bytes": 14831736,
+          "effectiveBps": 59318664,
+          "elapsedMs": 2000,
+          "hlsRole": "-",
+          "proxyBackpressureMs": 0,
+          "proxyKind": "mediaRange",
+          "proxyQueuedBytes": 45056,
+          "stage": "upstreamBodyProgress",
+          "upstreamTaskIndex": 3
+        }
+      },
+      {
+        "secondsFromTouch": 31.46571,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "bodyWindowMinimumBytes": 131072,
+          "bytes": 15462400,
+          "effectiveBps": 61822989,
+          "elapsedMs": 2000,
+          "hlsRole": "-",
+          "proxyBackpressureMs": 0,
+          "proxyKind": "mediaRange",
+          "proxyQueuedBytes": 36864,
+          "stage": "upstreamBodyProgress",
+          "upstreamTaskIndex": 3
+        }
+      },
+      {
+        "secondsFromTouch": 32.29232,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "adaptiveTransferMs": 4400,
+          "cellular": "yes",
+          "connectionReused": "yes",
+          "hlsRole": "-",
+          "lastFetchToRequestMs": 0,
+          "lastRequestEndToFirstByteMs": 129,
+          "lastRequestSendMs": 0,
+          "lastResponseBodyMs": 4400,
+          "lastResponseEndToMetricsCallbackMs": 0,
+          "protocol": "h2",
+          "proxyBackpressureMs": 0,
+          "proxyKind": "mediaRange",
+          "proxyQueuedBytes": 0,
+          "proxySuspendCount": 0,
+          "redirectCount": 0,
+          "requestMs": 129,
+          "responseMs": 4400,
+          "stage": "urlSessionTaskMetrics",
+          "taskCreatedToFirstFetchMs": 0,
+          "taskIntervalMs": 4531,
+          "totalMs": 4530,
+          "transactionCount": 1,
+          "upstreamIssueToFirstBodyCallbackMs": 130,
+          "upstreamIssueToHeadersCallbackMs": 130,
+          "upstreamIssueToLastBodyCallbackMs": 4531,
+          "upstreamIssuedToCallbackMs": 4531,
+          "upstreamTaskBodyBytes": 33554432,
+          "upstreamTaskIndex": 3
+        }
+      },
+      {
+        "secondsFromTouch": 32.297168,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "cumulativeReceivedBytes": 100663296,
+          "errorDomain": "-",
+          "expectedBytes": 33554432,
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "stage": "upstreamTaskCompleted",
+          "taskReceivedBytes": 33554432,
+          "upstreamIssueToFirstBodyCallbackMs": 130,
+          "upstreamIssueToHeadersCallbackMs": 130,
+          "upstreamIssueToLastBodyCallbackMs": 4531,
+          "upstreamIssuedToCallbackMs": 4534,
+          "upstreamTaskBodyBytes": 33554432,
+          "upstreamTaskIndex": 3
+        }
+      },
+      {
+        "secondsFromTouch": 32.297655,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "queryBytesAfter": 99,
+          "queryBytesBefore": 99,
+          "requestReceivedToIssueMs": 30358,
+          "stage": "upstreamRequestIssued",
+          "upstreamTaskIndex": 4
+        }
+      },
+      {
+        "secondsFromTouch": 32.446421,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": 33554432,
+          "cumulativeReceivedBytes": 100663296,
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "stage": "continuationResponse",
+          "status": 206,
+          "upstreamTaskIndex": 4
+        }
+      },
+      {
+        "secondsFromTouch": 33.466321,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "bodyWindowMinimumBytes": 131072,
+          "bytes": 13025592,
+          "effectiveBps": 52087286,
+          "elapsedMs": 2000,
+          "hlsRole": "-",
+          "proxyBackpressureMs": 0,
+          "proxyKind": "mediaRange",
+          "proxyQueuedBytes": 57344,
+          "qualifiedBodyCapacity": 61822989,
+          "stage": "upstreamBodyProgress",
+          "upstreamTaskIndex": 4
+        }
+      },
+      {
+        "secondsFromTouch": 35.471279,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "bodyWindowMinimumBytes": 131072,
+          "bytes": 12189696,
+          "effectiveBps": 48635269,
+          "elapsedMs": 2005,
+          "hlsRole": "-",
+          "proxyBackpressureMs": 0,
+          "proxyKind": "mediaRange",
+          "proxyQueuedBytes": 86016,
+          "qualifiedBodyCapacity": 52087286,
+          "stage": "upstreamBodyProgress",
+          "upstreamTaskIndex": 4
+        }
+      },
+      {
+        "secondsFromTouch": 37.473027,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "bodyWindowMinimumBytes": 131072,
+          "bytes": 12005376,
+          "effectiveBps": 47960567,
+          "elapsedMs": 2002,
+          "hlsRole": "-",
+          "proxyBackpressureMs": 0,
+          "proxyKind": "mediaRange",
+          "proxyQueuedBytes": 45056,
+          "qualifiedBodyCapacity": 48635269,
+          "stage": "upstreamBodyProgress",
+          "upstreamTaskIndex": 4
+        }
+      },
+      {
+        "secondsFromTouch": 37.813355,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "adaptiveTransferMs": 5365,
+          "cellular": "yes",
+          "connectionReused": "yes",
+          "hlsRole": "-",
+          "lastFetchToRequestMs": 0,
+          "lastRequestEndToFirstByteMs": 181,
+          "lastRequestSendMs": 0,
+          "lastResponseBodyMs": 5365,
+          "lastResponseEndToMetricsCallbackMs": 0,
+          "protocol": "h2",
+          "proxyBackpressureMs": 0,
+          "proxyKind": "mediaRange",
+          "proxyQueuedBytes": 0,
+          "proxySuspendCount": 0,
+          "redirectCount": 0,
+          "requestMs": 181,
+          "responseMs": 5365,
+          "stage": "urlSessionTaskMetrics",
+          "taskCreatedToFirstFetchMs": 0,
+          "taskIntervalMs": 5548,
+          "totalMs": 5547,
+          "transactionCount": 1,
+          "upstreamIssueToFirstBodyCallbackMs": 184,
+          "upstreamIssueToHeadersCallbackMs": 183,
+          "upstreamIssueToLastBodyCallbackMs": 5548,
+          "upstreamIssuedToCallbackMs": 5549,
+          "upstreamTaskBodyBytes": 33554432,
+          "upstreamTaskIndex": 4
+        }
+      },
+      {
+        "secondsFromTouch": 37.821979,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "cumulativeReceivedBytes": 134217728,
+          "errorDomain": "-",
+          "expectedBytes": 33554432,
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "stage": "upstreamTaskCompleted",
+          "taskReceivedBytes": 33554432,
+          "upstreamIssueToFirstBodyCallbackMs": 184,
+          "upstreamIssueToHeadersCallbackMs": 183,
+          "upstreamIssueToLastBodyCallbackMs": 5548,
+          "upstreamIssuedToCallbackMs": 5551,
+          "upstreamTaskBodyBytes": 33554432,
+          "upstreamTaskIndex": 4
+        }
+      },
+      {
+        "secondsFromTouch": 37.840528,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "queryBytesAfter": 99,
+          "queryBytesBefore": 99,
+          "requestReceivedToIssueMs": 35910,
+          "stage": "upstreamRequestIssued",
+          "upstreamTaskIndex": 5
+        }
+      },
+      {
+        "secondsFromTouch": 37.913335,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": 33554432,
+          "cumulativeReceivedBytes": 134217728,
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "stage": "continuationResponse",
+          "status": 206,
+          "upstreamTaskIndex": 5
+        }
+      },
+      {
+        "secondsFromTouch": 39.499254,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "bodyWindowMinimumBytes": 131072,
+          "bytes": 9506502,
+          "effectiveBps": 37541938,
+          "elapsedMs": 2025,
+          "hlsRole": "-",
+          "proxyBackpressureMs": 0,
+          "proxyKind": "mediaRange",
+          "proxyQueuedBytes": 4096,
+          "qualifiedBodyCapacity": 47960567,
+          "stage": "upstreamBodyProgress",
+          "upstreamTaskIndex": 5
+        }
+      },
+      {
+        "secondsFromTouch": 41.498986,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "bodyWindowMinimumBytes": 131072,
+          "bytes": 9183232,
+          "effectiveBps": 36723535,
+          "elapsedMs": 2000,
+          "hlsRole": "-",
+          "proxyBackpressureMs": 0,
+          "proxyKind": "mediaRange",
+          "proxyQueuedBytes": 40960,
+          "qualifiedBodyCapacity": 37541938,
+          "stage": "upstreamBodyProgress",
+          "upstreamTaskIndex": 5
+        }
+      },
+      {
+        "secondsFromTouch": 43.511509,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "bodyWindowMinimumBytes": 131072,
+          "bytes": 12062720,
+          "effectiveBps": 48217386,
+          "elapsedMs": 2001,
+          "hlsRole": "-",
+          "proxyBackpressureMs": 0,
+          "proxyKind": "mediaRange",
+          "proxyQueuedBytes": 12288,
+          "qualifiedBodyCapacity": 48217386,
+          "stage": "upstreamBodyProgress",
+          "upstreamTaskIndex": 5
+        }
+      },
+      {
+        "secondsFromTouch": 44.406962,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "adaptiveTransferMs": 6507,
+          "cellular": "yes",
+          "connectionReused": "yes",
+          "hlsRole": "-",
+          "lastFetchToRequestMs": 1,
+          "lastRequestEndToFirstByteMs": 80,
+          "lastRequestSendMs": 0,
+          "lastResponseBodyMs": 6507,
+          "lastResponseEndToMetricsCallbackMs": 0,
+          "protocol": "h2",
+          "proxyBackpressureMs": 0,
+          "proxyKind": "mediaRange",
+          "proxyQueuedBytes": 0,
+          "proxySuspendCount": 0,
+          "redirectCount": 0,
+          "requestMs": 81,
+          "responseMs": 6507,
+          "stage": "urlSessionTaskMetrics",
+          "taskCreatedToFirstFetchMs": 1,
+          "taskIntervalMs": 6591,
+          "totalMs": 6589,
+          "transactionCount": 1,
+          "upstreamIssueToFirstBodyCallbackMs": 85,
+          "upstreamIssueToHeadersCallbackMs": 84,
+          "upstreamIssueToLastBodyCallbackMs": 6591,
+          "upstreamIssuedToCallbackMs": 6591,
+          "upstreamTaskBodyBytes": 33554432,
+          "upstreamTaskIndex": 5
+        }
+      },
+      {
+        "secondsFromTouch": 44.40773,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "cumulativeReceivedBytes": 167772160,
+          "errorDomain": "-",
+          "expectedBytes": 33554432,
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "stage": "upstreamTaskCompleted",
+          "taskReceivedBytes": 33554432,
+          "upstreamIssueToFirstBodyCallbackMs": 85,
+          "upstreamIssueToHeadersCallbackMs": 84,
+          "upstreamIssueToLastBodyCallbackMs": 6591,
+          "upstreamIssuedToCallbackMs": 6592,
+          "upstreamTaskBodyBytes": 33554432,
+          "upstreamTaskIndex": 5
+        }
+      },
+      {
+        "secondsFromTouch": 44.408473,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "queryBytesAfter": 99,
+          "queryBytesBefore": 99,
+          "requestReceivedToIssueMs": 42504,
+          "stage": "upstreamRequestIssued",
+          "upstreamTaskIndex": 6
+        }
+      },
+      {
+        "secondsFromTouch": 44.4965,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": 33554432,
+          "cumulativeReceivedBytes": 167772160,
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "stage": "continuationResponse",
+          "status": 206,
+          "upstreamTaskIndex": 6
+        }
+      },
+      {
+        "secondsFromTouch": 45.089763,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "masterPlaylist",
+          "proxyKind": "hlsPlaylist",
+          "queryBytesAfter": 711,
+          "queryBytesBefore": 817,
+          "requestReceivedToIssueMs": 1,
+          "stage": "upstreamRequestIssued",
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 45.528314,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "bodyWindowMinimumBytes": 131072,
+          "bytes": 9293824,
+          "effectiveBps": 37170410,
+          "elapsedMs": 2000,
+          "hlsRole": "-",
+          "proxyBackpressureMs": 0,
+          "proxyKind": "mediaRange",
+          "proxyQueuedBytes": 20480,
+          "qualifiedBodyCapacity": 48217386,
+          "stage": "upstreamBodyProgress",
+          "upstreamTaskIndex": 6
+        }
+      },
+      {
+        "secondsFromTouch": 45.745202,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": 876,
+          "hlsRole": "masterPlaylist",
+          "proxyKind": "hlsPlaylist",
+          "status": 200,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 45.747228,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "adaptiveTransferMs": 0,
+          "cellular": "yes",
+          "connectionReused": "yes",
+          "hlsRole": "masterPlaylist",
+          "lastFetchToRequestMs": 0,
+          "lastRequestEndToFirstByteMs": 660,
+          "lastRequestSendMs": 0,
+          "lastResponseBodyMs": 0,
+          "lastResponseEndToMetricsCallbackMs": 1,
+          "protocol": "h2",
+          "proxyBackpressureMs": 0,
+          "proxyKind": "hlsPlaylist",
+          "proxyQueuedBytes": 0,
+          "proxySuspendCount": 0,
+          "redirectCount": 0,
+          "requestMs": 660,
+          "responseMs": 0,
+          "stage": "urlSessionTaskMetrics",
+          "taskCreatedToFirstFetchMs": 0,
+          "taskIntervalMs": 662,
+          "totalMs": 660,
+          "transactionCount": 1,
+          "upstreamIssueToFirstBodyCallbackMs": 662,
+          "upstreamIssueToHeadersCallbackMs": 661,
+          "upstreamIssueToLastBodyCallbackMs": 662,
+          "upstreamIssuedToCallbackMs": 662,
+          "upstreamTaskBodyBytes": 876,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 45.748894,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "cumulativeReceivedBytes": 876,
+          "errorDomain": "-",
+          "expectedBytes": 876,
+          "hlsRole": "masterPlaylist",
+          "proxyKind": "hlsPlaylist",
+          "stage": "upstreamTaskCompleted",
+          "taskReceivedBytes": 876,
+          "upstreamIssueToFirstBodyCallbackMs": 662,
+          "upstreamIssueToHeadersCallbackMs": 661,
+          "upstreamIssueToLastBodyCallbackMs": 662,
+          "upstreamIssuedToCallbackMs": 664,
+          "upstreamTaskBodyBytes": 876,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 45.785796,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "hlsRole": "masterPlaylist",
+          "inputBytes": 876,
+          "outputBytes": 233,
+          "playlistDurationSeconds": 0,
+          "playlistSegments": 0,
+          "proxyKind": "hlsPlaylist",
+          "rewriteMs": 0,
+          "stage": "playlistRewritten",
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 45.786246,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "deliveredBytes": 876,
+          "durationMs": 668,
+          "errorDomain": "-",
+          "expectedBytes": 876,
+          "hlsRole": "masterPlaylist",
+          "proxyKind": "hlsPlaylist",
+          "result": "complete",
+          "retries": 0,
+          "status": 200,
+          "taskReceivedBytes": 876,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 45.786554,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "clientReadBytes": 0,
+          "hlsRole": "masterPlaylist",
+          "proxyKind": "hlsPlaylist",
+          "requestReceivedToReadEndMs": 669,
+          "stage": "clientReadEnded",
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 45.786876,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "mediaPlaylist",
+          "proxyKind": "hlsPlaylist",
+          "queryBytesAfter": 711,
+          "queryBytesBefore": 711,
+          "requestReceivedToIssueMs": 0,
+          "stage": "upstreamRequestIssued",
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 46.376727,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": 1529038,
+          "hlsRole": "mediaPlaylist",
+          "proxyKind": "hlsPlaylist",
+          "status": 200,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 47.558082,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "bodyWindowMinimumBytes": 131072,
+          "bytes": 10547200,
+          "effectiveBps": 41398894,
+          "elapsedMs": 2038,
+          "hlsRole": "-",
+          "proxyBackpressureMs": 0,
+          "proxyKind": "mediaRange",
+          "proxyQueuedBytes": 28672,
+          "qualifiedBodyCapacity": 41398894,
+          "stage": "upstreamBodyProgress",
+          "upstreamTaskIndex": 6
+        }
+      },
+      {
+        "secondsFromTouch": 47.558498,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "adaptiveTransferMs": 1162,
+          "cellular": "yes",
+          "connectionReused": "yes",
+          "hlsRole": "mediaPlaylist",
+          "lastFetchToRequestMs": 0,
+          "lastRequestEndToFirstByteMs": 613,
+          "lastRequestSendMs": 0,
+          "lastResponseBodyMs": 1162,
+          "lastResponseEndToMetricsCallbackMs": 0,
+          "protocol": "h2",
+          "proxyBackpressureMs": 0,
+          "proxyKind": "hlsPlaylist",
+          "proxyQueuedBytes": 0,
+          "proxySuspendCount": 0,
+          "redirectCount": 0,
+          "requestMs": 613,
+          "responseMs": 1162,
+          "stage": "urlSessionTaskMetrics",
+          "taskCreatedToFirstFetchMs": 0,
+          "taskIntervalMs": 1777,
+          "totalMs": 1776,
+          "transactionCount": 1,
+          "upstreamIssueToFirstBodyCallbackMs": 615,
+          "upstreamIssueToHeadersCallbackMs": 615,
+          "upstreamIssueToLastBodyCallbackMs": 1777,
+          "upstreamIssuedToCallbackMs": 1777,
+          "upstreamTaskBodyBytes": 1529038,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 47.55896,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "cumulativeReceivedBytes": 1529038,
+          "errorDomain": "-",
+          "expectedBytes": 1529038,
+          "hlsRole": "mediaPlaylist",
+          "proxyKind": "hlsPlaylist",
+          "stage": "upstreamTaskCompleted",
+          "taskReceivedBytes": 1529038,
+          "upstreamIssueToFirstBodyCallbackMs": 615,
+          "upstreamIssueToHeadersCallbackMs": 615,
+          "upstreamIssueToLastBodyCallbackMs": 1777,
+          "upstreamIssuedToCallbackMs": 1778,
+          "upstreamTaskBodyBytes": 1529038,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 47.624217,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "hlsRole": "mediaPlaylist",
+          "inputBytes": 1529038,
+          "outputBytes": 194347,
+          "playlistDurationSeconds": 7524.767999999851,
+          "playlistFirstSegmentOrdinal": 0,
+          "playlistMediaSequence": 0,
+          "playlistSegments": 1880,
+          "proxyKind": "hlsPlaylist",
+          "rewriteMs": 45,
+          "stage": "playlistRewritten",
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 47.625673,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "deliveredBytes": 1529038,
+          "durationMs": 1864,
+          "errorDomain": "-",
+          "expectedBytes": 1529038,
+          "hlsRole": "mediaPlaylist",
+          "proxyKind": "hlsPlaylist",
+          "result": "complete",
+          "retries": 0,
+          "status": 200,
+          "taskReceivedBytes": 1529038,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 47.631281,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "clientReadBytes": 0,
+          "hlsRole": "mediaPlaylist",
+          "proxyKind": "hlsPlaylist",
+          "requestReceivedToReadEndMs": 1865,
+          "stage": "clientReadEnded",
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 47.649382,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "queryBytesAfter": 768,
+          "queryBytesBefore": 768,
+          "requestReceivedToIssueMs": 0,
+          "segmentOrdinal": 12,
+          "stage": "upstreamRequestIssued",
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 49.584704,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "bodyWindowMinimumBytes": 131072,
+          "bytes": 12095488,
+          "effectiveBps": 47501795,
+          "elapsedMs": 2037,
+          "hlsRole": "-",
+          "proxyBackpressureMs": 0,
+          "proxyKind": "mediaRange",
+          "proxyQueuedBytes": 45056,
+          "qualifiedBodyCapacity": 47501795,
+          "stage": "upstreamBodyProgress",
+          "upstreamTaskIndex": 6
+        }
+      },
+      {
+        "secondsFromTouch": 50.697782,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "adaptiveTransferMs": 6192,
+          "cellular": "yes",
+          "connectionReused": "yes",
+          "hlsRole": "-",
+          "lastFetchToRequestMs": 0,
+          "lastRequestEndToFirstByteMs": 84,
+          "lastRequestSendMs": 0,
+          "lastResponseBodyMs": 6192,
+          "lastResponseEndToMetricsCallbackMs": 0,
+          "protocol": "h2",
+          "proxyBackpressureMs": 0,
+          "proxyKind": "mediaRange",
+          "proxyQueuedBytes": 0,
+          "proxySuspendCount": 0,
+          "redirectCount": 0,
+          "requestMs": 84,
+          "responseMs": 6192,
+          "stage": "urlSessionTaskMetrics",
+          "taskCreatedToFirstFetchMs": 0,
+          "taskIntervalMs": 6278,
+          "totalMs": 6277,
+          "transactionCount": 1,
+          "upstreamIssueToFirstBodyCallbackMs": 86,
+          "upstreamIssueToHeadersCallbackMs": 85,
+          "upstreamIssueToLastBodyCallbackMs": 6278,
+          "upstreamIssuedToCallbackMs": 6278,
+          "upstreamTaskBodyBytes": 33554432,
+          "upstreamTaskIndex": 6
+        }
+      },
+      {
+        "secondsFromTouch": 50.698387,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "cumulativeReceivedBytes": 201326592,
+          "errorDomain": "-",
+          "expectedBytes": 33554432,
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "stage": "upstreamTaskCompleted",
+          "taskReceivedBytes": 33554432,
+          "upstreamIssueToFirstBodyCallbackMs": 86,
+          "upstreamIssueToHeadersCallbackMs": 85,
+          "upstreamIssueToLastBodyCallbackMs": 6278,
+          "upstreamIssuedToCallbackMs": 6279,
+          "upstreamTaskBodyBytes": 33554432,
+          "upstreamTaskIndex": 6
+        }
+      },
+      {
+        "secondsFromTouch": 50.698761,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "queryBytesAfter": 99,
+          "queryBytesBefore": 99,
+          "requestReceivedToIssueMs": 48784,
+          "stage": "upstreamRequestIssued",
+          "upstreamTaskIndex": 7
+        }
+      },
+      {
+        "secondsFromTouch": 50.822944,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": 33554432,
+          "cumulativeReceivedBytes": 201326592,
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "stage": "continuationResponse",
+          "status": 206,
+          "upstreamTaskIndex": 7
+        }
+      },
+      {
+        "secondsFromTouch": 51.59107,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "bodyWindowMinimumBytes": 131072,
+          "bytes": 12120378,
+          "effectiveBps": 48352947,
+          "elapsedMs": 2005,
+          "hlsRole": "-",
+          "proxyBackpressureMs": 0,
+          "proxyKind": "mediaRange",
+          "proxyQueuedBytes": 40960,
+          "qualifiedBodyCapacity": 48352947,
+          "stage": "upstreamBodyProgress",
+          "upstreamTaskIndex": 7
+        }
+      },
+      {
+        "secondsFromTouch": 51.655764,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "clientReadBytes": 0,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "requestReceivedToReadEndMs": 4012,
+          "segmentOrdinal": 12,
+          "stage": "clientReadEnded",
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 51.656905,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "queryBytesAfter": 768,
+          "queryBytesBefore": 768,
+          "requestReceivedToIssueMs": 0,
+          "segmentOrdinal": 12,
+          "stage": "upstreamRequestIssued",
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 53.588419,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "bodyWindowMinimumBytes": 131072,
+          "bytes": 15921152,
+          "effectiveBps": 63568456,
+          "elapsedMs": 2003,
+          "hlsRole": "-",
+          "proxyBackpressureMs": 0,
+          "proxyKind": "mediaRange",
+          "proxyQueuedBytes": 45056,
+          "qualifiedBodyCapacity": 63568456,
+          "stage": "upstreamBodyProgress",
+          "upstreamTaskIndex": 7
+        }
+      },
+      {
+        "secondsFromTouch": 53.779548,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": 749556,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": 12,
+          "status": 200,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 53.78067,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": 749556,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": 12,
+          "status": 200,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 53.813353,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "deliveredBytes": 3856,
+          "durationMs": 6139,
+          "errorCode": 0,
+          "errorDomain": "Network.NWError",
+          "expectedBytes": 749556,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "responseStartOffset": 0,
+          "retries": 0,
+          "segmentOrdinal": 12,
+          "status": 200,
+          "taskReceivedBytes": 3856,
+          "transportErrorCode": 32,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 53.813843,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": 12,
+          "stage": "upstreamCancellationRequested",
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 53.814156,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "cellular": "yes",
+          "connectionReused": "yes",
+          "hlsRole": "segment",
+          "lastFetchToRequestMs": 0,
+          "lastRequestEndToFirstByteMs": 6135,
+          "lastRequestSendMs": 0,
+          "protocol": "h2",
+          "proxyBackpressureMs": 0,
+          "proxyKind": "hlsChild",
+          "proxyQueuedBytes": 0,
+          "proxySuspendCount": 0,
+          "redirectCount": 0,
+          "requestMs": 6135,
+          "segmentOrdinal": 12,
+          "stage": "urlSessionTaskMetrics",
+          "taskCreatedToFirstFetchMs": 0,
+          "taskIntervalMs": 6140,
+          "transactionCount": 1,
+          "upstreamCancelToCallbackMs": 0,
+          "upstreamIssueToFirstBodyCallbackMs": 6138,
+          "upstreamIssueToHeadersCallbackMs": 6136,
+          "upstreamIssueToLastBodyCallbackMs": 6138,
+          "upstreamIssuedToCallbackMs": 6141,
+          "upstreamTaskBodyBytes": 3856,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 53.814648,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "cumulativeReceivedBytes": 3856,
+          "errorCode": -999,
+          "errorDomain": "NSURLErrorDomain",
+          "expectedBytes": 749556,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": 12,
+          "stage": "upstreamTaskCompleted",
+          "taskReceivedBytes": 3856,
+          "upstreamCancelToCallbackMs": 2,
+          "upstreamIssueToFirstBodyCallbackMs": 6138,
+          "upstreamIssueToHeadersCallbackMs": 6136,
+          "upstreamIssueToLastBodyCallbackMs": 6138,
+          "upstreamIssuedToCallbackMs": 6142,
+          "upstreamTaskBodyBytes": 3856,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 53.886173,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "clientReadBytes": 0,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "requestReceivedToReadEndMs": 2211,
+          "segmentOrdinal": 12,
+          "stage": "clientReadEnded",
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 53.886453,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "adaptiveTransferMs": 2210,
+          "cellular": "yes",
+          "connectionReused": "yes",
+          "hlsRole": "segment",
+          "lastFetchToRequestMs": 0,
+          "lastRequestEndToFirstByteMs": 2121,
+          "lastRequestSendMs": 0,
+          "lastResponseBodyMs": 89,
+          "lastResponseEndToMetricsCallbackMs": 0,
+          "protocol": "h2",
+          "proxyBackpressureMs": 0,
+          "proxyKind": "hlsChild",
+          "proxyQueuedBytes": 0,
+          "proxySuspendCount": 0,
+          "redirectCount": 0,
+          "requestMs": 2121,
+          "responseMs": 89,
+          "segmentOrdinal": 12,
+          "stage": "urlSessionTaskMetrics",
+          "taskCreatedToFirstFetchMs": 0,
+          "taskIntervalMs": 2211,
+          "totalMs": 2210,
+          "transactionCount": 1,
+          "upstreamIssueToFirstBodyCallbackMs": 2124,
+          "upstreamIssueToHeadersCallbackMs": 2123,
+          "upstreamIssueToLastBodyCallbackMs": 2211,
+          "upstreamIssuedToCallbackMs": 2211,
+          "upstreamTaskBodyBytes": 749556,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 53.886778,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "cumulativeReceivedBytes": 749556,
+          "errorDomain": "-",
+          "expectedBytes": 749556,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": 12,
+          "stage": "upstreamTaskCompleted",
+          "taskReceivedBytes": 749556,
+          "upstreamIssueToFirstBodyCallbackMs": 2124,
+          "upstreamIssueToHeadersCallbackMs": 2123,
+          "upstreamIssueToLastBodyCallbackMs": 2211,
+          "upstreamIssuedToCallbackMs": 2213,
+          "upstreamTaskBodyBytes": 749556,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 53.887042,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "deliveredBytes": 749556,
+          "durationMs": 2214,
+          "errorDomain": "-",
+          "expectedBytes": 749556,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "responseStartOffset": 0,
+          "result": "complete",
+          "retries": 0,
+          "segmentOrdinal": 12,
+          "status": 200,
+          "taskReceivedBytes": 749556,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 53.889741,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "queryBytesAfter": 768,
+          "queryBytesBefore": 768,
+          "requestReceivedToIssueMs": 0,
+          "segmentOrdinal": 13,
+          "stage": "upstreamRequestIssued",
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 54.541005,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": 828328,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": 13,
+          "status": 200,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 54.62454,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "clientReadBytes": 0,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "requestReceivedToReadEndMs": 744,
+          "segmentOrdinal": 13,
+          "stage": "clientReadEnded",
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 54.625266,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "adaptiveTransferMs": 742,
+          "cellular": "yes",
+          "connectionReused": "yes",
+          "hlsRole": "segment",
+          "lastFetchToRequestMs": 0,
+          "lastRequestEndToFirstByteMs": 658,
+          "lastRequestSendMs": 0,
+          "lastResponseBodyMs": 83,
+          "lastResponseEndToMetricsCallbackMs": 0,
+          "protocol": "h2",
+          "proxyBackpressureMs": 0,
+          "proxyKind": "hlsChild",
+          "proxyQueuedBytes": 0,
+          "proxySuspendCount": 0,
+          "redirectCount": 0,
+          "requestMs": 658,
+          "responseMs": 83,
+          "segmentOrdinal": 13,
+          "stage": "urlSessionTaskMetrics",
+          "taskCreatedToFirstFetchMs": 0,
+          "taskIntervalMs": 743,
+          "totalMs": 742,
+          "transactionCount": 1,
+          "upstreamIssueToFirstBodyCallbackMs": 660,
+          "upstreamIssueToHeadersCallbackMs": 659,
+          "upstreamIssueToLastBodyCallbackMs": 743,
+          "upstreamIssuedToCallbackMs": 743,
+          "upstreamTaskBodyBytes": 828328,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 54.631069,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "cumulativeReceivedBytes": 828328,
+          "errorDomain": "-",
+          "expectedBytes": 828328,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": 13,
+          "stage": "upstreamTaskCompleted",
+          "taskReceivedBytes": 828328,
+          "upstreamIssueToFirstBodyCallbackMs": 660,
+          "upstreamIssueToHeadersCallbackMs": 659,
+          "upstreamIssueToLastBodyCallbackMs": 743,
+          "upstreamIssuedToCallbackMs": 744,
+          "upstreamTaskBodyBytes": 828328,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 54.631362,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "deliveredBytes": 828328,
+          "durationMs": 745,
+          "errorDomain": "-",
+          "expectedBytes": 828328,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "responseStartOffset": 0,
+          "result": "complete",
+          "retries": 0,
+          "segmentOrdinal": 13,
+          "status": 200,
+          "taskReceivedBytes": 828328,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 54.631589,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "queryBytesAfter": 768,
+          "queryBytesBefore": 768,
+          "requestReceivedToIssueMs": 0,
+          "segmentOrdinal": 14,
+          "stage": "upstreamRequestIssued",
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 55.586986,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": 778884,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": 14,
+          "status": 200,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 55.593575,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "deliveredBytes": 234520576,
+          "durationMs": 53606,
+          "errorCode": -999,
+          "errorDomain": "NSURLErrorDomain",
+          "expectedBytes": 33554432,
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "responseEndOffset": 235140818,
+          "responseStartOffset": 259795,
+          "retries": 0,
+          "status": 206,
+          "taskReceivedBytes": 33193984,
+          "transportErrorCode": -999,
+          "upstreamTaskIndex": 7
+        }
+      },
+      {
+        "secondsFromTouch": 55.59381,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "stage": "upstreamCancellationRequested",
+          "upstreamTaskIndex": 7
+        }
+      },
+      {
+        "secondsFromTouch": 55.593997,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "clientReadBytes": 0,
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "requestReceivedToReadEndMs": 53609,
+          "stage": "clientReadEnded",
+          "upstreamTaskIndex": 7
+        }
+      },
+      {
+        "secondsFromTouch": 55.594207,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "cellular": "yes",
+          "connectionReused": "yes",
+          "hlsRole": "-",
+          "lastFetchToRequestMs": 0,
+          "lastRequestEndToFirstByteMs": 133,
+          "lastRequestSendMs": 0,
+          "protocol": "h2",
+          "proxyBackpressureMs": 0,
+          "proxyKind": "mediaRange",
+          "proxyQueuedBytes": 0,
+          "proxySuspendCount": 0,
+          "redirectCount": 0,
+          "requestMs": 133,
+          "stage": "urlSessionTaskMetrics",
+          "taskCreatedToFirstFetchMs": 0,
+          "taskIntervalMs": 4823,
+          "transactionCount": 1,
+          "upstreamCancelToCallbackMs": 0,
+          "upstreamIssueToFirstBodyCallbackMs": 135,
+          "upstreamIssueToHeadersCallbackMs": 134,
+          "upstreamIssueToLastBodyCallbackMs": 4816,
+          "upstreamIssuedToCallbackMs": 4823,
+          "upstreamTaskBodyBytes": 33193984,
+          "upstreamTaskIndex": 7
+        }
+      },
+      {
+        "secondsFromTouch": 55.594515,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "cumulativeReceivedBytes": 234520576,
+          "errorCode": -999,
+          "errorDomain": "NSURLErrorDomain",
+          "expectedBytes": 33554432,
+          "hlsRole": "-",
+          "proxyKind": "mediaRange",
+          "stage": "upstreamTaskCompleted",
+          "taskReceivedBytes": 33193984,
+          "upstreamCancelToCallbackMs": 1,
+          "upstreamIssueToFirstBodyCallbackMs": 135,
+          "upstreamIssueToHeadersCallbackMs": 134,
+          "upstreamIssueToLastBodyCallbackMs": 4816,
+          "upstreamIssuedToCallbackMs": 4824,
+          "upstreamTaskBodyBytes": 33193984,
+          "upstreamTaskIndex": 7
+        }
+      },
+      {
+        "secondsFromTouch": 55.74745,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "adaptiveTransferMs": 966,
+          "cellular": "yes",
+          "connectionReused": "yes",
+          "hlsRole": "segment",
+          "lastFetchToRequestMs": 0,
+          "lastRequestEndToFirstByteMs": 876,
+          "lastRequestSendMs": 0,
+          "lastResponseBodyMs": 89,
+          "lastResponseEndToMetricsCallbackMs": 0,
+          "protocol": "h2",
+          "proxyBackpressureMs": 0,
+          "proxyKind": "hlsChild",
+          "proxyQueuedBytes": 0,
+          "proxySuspendCount": 0,
+          "redirectCount": 0,
+          "requestMs": 876,
+          "responseMs": 89,
+          "segmentOrdinal": 14,
+          "stage": "urlSessionTaskMetrics",
+          "taskCreatedToFirstFetchMs": 0,
+          "taskIntervalMs": 966,
+          "totalMs": 966,
+          "transactionCount": 1,
+          "upstreamIssueToFirstBodyCallbackMs": 877,
+          "upstreamIssueToHeadersCallbackMs": 876,
+          "upstreamIssueToLastBodyCallbackMs": 966,
+          "upstreamIssuedToCallbackMs": 966,
+          "upstreamTaskBodyBytes": 778884,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 55.7478,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "clientReadBytes": 0,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "requestReceivedToReadEndMs": 967,
+          "segmentOrdinal": 14,
+          "stage": "clientReadEnded",
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 55.748003,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "cumulativeReceivedBytes": 778884,
+          "errorDomain": "-",
+          "expectedBytes": 778884,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": 14,
+          "stage": "upstreamTaskCompleted",
+          "taskReceivedBytes": 778884,
+          "upstreamIssueToFirstBodyCallbackMs": 877,
+          "upstreamIssueToHeadersCallbackMs": 876,
+          "upstreamIssueToLastBodyCallbackMs": 966,
+          "upstreamIssuedToCallbackMs": 967,
+          "upstreamTaskBodyBytes": 778884,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 55.748255,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "deliveredBytes": 778884,
+          "durationMs": 968,
+          "errorDomain": "-",
+          "expectedBytes": 778884,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "responseStartOffset": 0,
+          "result": "complete",
+          "retries": 0,
+          "segmentOrdinal": 14,
+          "status": 200,
+          "taskReceivedBytes": 778884,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 57.811113,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "queryBytesAfter": 768,
+          "queryBytesBefore": 768,
+          "requestReceivedToIssueMs": 0,
+          "segmentOrdinal": 15,
+          "stage": "upstreamRequestIssued",
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 61.389715,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": 784336,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": 15,
+          "status": 200,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 61.627312,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "clientReadBytes": 0,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "requestReceivedToReadEndMs": 3816,
+          "segmentOrdinal": 15,
+          "stage": "clientReadEnded",
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 61.658096,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "adaptiveTransferMs": 3814,
+          "cellular": "yes",
+          "connectionReused": "yes",
+          "hlsRole": "segment",
+          "lastFetchToRequestMs": 0,
+          "lastRequestEndToFirstByteMs": 3561,
+          "lastRequestSendMs": 0,
+          "lastResponseBodyMs": 253,
+          "lastResponseEndToMetricsCallbackMs": 0,
+          "protocol": "h2",
+          "proxyBackpressureMs": 0,
+          "proxyKind": "hlsChild",
+          "proxyQueuedBytes": 0,
+          "proxySuspendCount": 0,
+          "redirectCount": 0,
+          "requestMs": 3561,
+          "responseMs": 253,
+          "segmentOrdinal": 15,
+          "stage": "urlSessionTaskMetrics",
+          "taskCreatedToFirstFetchMs": 0,
+          "taskIntervalMs": 3815,
+          "totalMs": 3814,
+          "transactionCount": 1,
+          "upstreamIssueToFirstBodyCallbackMs": 3563,
+          "upstreamIssueToHeadersCallbackMs": 3562,
+          "upstreamIssueToLastBodyCallbackMs": 3815,
+          "upstreamIssuedToCallbackMs": 3815,
+          "upstreamTaskBodyBytes": 784336,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 61.658786,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "cumulativeReceivedBytes": 784336,
+          "errorDomain": "-",
+          "expectedBytes": 784336,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": 15,
+          "stage": "upstreamTaskCompleted",
+          "taskReceivedBytes": 784336,
+          "upstreamIssueToFirstBodyCallbackMs": 3563,
+          "upstreamIssueToHeadersCallbackMs": 3562,
+          "upstreamIssueToLastBodyCallbackMs": 3815,
+          "upstreamIssuedToCallbackMs": 3817,
+          "upstreamTaskBodyBytes": 784336,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 61.659212,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "deliveredBytes": 784336,
+          "durationMs": 3819,
+          "errorDomain": "-",
+          "expectedBytes": 784336,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "responseStartOffset": 0,
+          "result": "complete",
+          "retries": 0,
+          "segmentOrdinal": 15,
+          "status": 200,
+          "taskReceivedBytes": 784336,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 61.813932,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "queryBytesAfter": 768,
+          "queryBytesBefore": 768,
+          "requestReceivedToIssueMs": 0,
+          "segmentOrdinal": 16,
+          "stage": "upstreamRequestIssued",
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 61.906108,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": 780200,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": 16,
+          "status": 200,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 62.019975,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "clientReadBytes": 0,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "requestReceivedToReadEndMs": 206,
+          "segmentOrdinal": 16,
+          "stage": "clientReadEnded",
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 62.020509,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "adaptiveTransferMs": 205,
+          "cellular": "yes",
+          "connectionReused": "yes",
+          "hlsRole": "segment",
+          "lastFetchToRequestMs": 0,
+          "lastRequestEndToFirstByteMs": 91,
+          "lastRequestSendMs": 0,
+          "lastResponseBodyMs": 113,
+          "lastResponseEndToMetricsCallbackMs": 0,
+          "protocol": "h2",
+          "proxyBackpressureMs": 0,
+          "proxyKind": "hlsChild",
+          "proxyQueuedBytes": 0,
+          "proxySuspendCount": 0,
+          "redirectCount": 0,
+          "requestMs": 91,
+          "responseMs": 113,
+          "segmentOrdinal": 16,
+          "stage": "urlSessionTaskMetrics",
+          "taskCreatedToFirstFetchMs": 0,
+          "taskIntervalMs": 206,
+          "totalMs": 205,
+          "transactionCount": 1,
+          "upstreamIssueToFirstBodyCallbackMs": 92,
+          "upstreamIssueToHeadersCallbackMs": 92,
+          "upstreamIssueToLastBodyCallbackMs": 206,
+          "upstreamIssuedToCallbackMs": 206,
+          "upstreamTaskBodyBytes": 780200,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 62.02602,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "cumulativeReceivedBytes": 780200,
+          "errorDomain": "-",
+          "expectedBytes": 780200,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": 16,
+          "stage": "upstreamTaskCompleted",
+          "taskReceivedBytes": 780200,
+          "upstreamIssueToFirstBodyCallbackMs": 92,
+          "upstreamIssueToHeadersCallbackMs": 92,
+          "upstreamIssueToLastBodyCallbackMs": 206,
+          "upstreamIssuedToCallbackMs": 207,
+          "upstreamTaskBodyBytes": 780200,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 62.037883,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "deliveredBytes": 780200,
+          "durationMs": 207,
+          "errorDomain": "-",
+          "expectedBytes": 780200,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "responseStartOffset": 0,
+          "result": "complete",
+          "retries": 0,
+          "segmentOrdinal": 16,
+          "status": 200,
+          "taskReceivedBytes": 780200,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 65.81766,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "queryBytesAfter": 768,
+          "queryBytesBefore": 768,
+          "requestReceivedToIssueMs": 0,
+          "segmentOrdinal": 17,
+          "stage": "upstreamRequestIssued",
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 65.932897,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": 785840,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": 17,
+          "status": 200,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 66.18085,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "adaptiveTransferMs": 361,
+          "cellular": "yes",
+          "connectionReused": "yes",
+          "hlsRole": "segment",
+          "lastFetchToRequestMs": 0,
+          "lastRequestEndToFirstByteMs": 114,
+          "lastRequestSendMs": 0,
+          "lastResponseBodyMs": 247,
+          "lastResponseEndToMetricsCallbackMs": 0,
+          "protocol": "h2",
+          "proxyBackpressureMs": 0,
+          "proxyKind": "hlsChild",
+          "proxyQueuedBytes": 0,
+          "proxySuspendCount": 0,
+          "redirectCount": 0,
+          "requestMs": 114,
+          "responseMs": 247,
+          "segmentOrdinal": 17,
+          "stage": "urlSessionTaskMetrics",
+          "taskCreatedToFirstFetchMs": 0,
+          "taskIntervalMs": 362,
+          "totalMs": 361,
+          "transactionCount": 1,
+          "upstreamIssueToFirstBodyCallbackMs": 115,
+          "upstreamIssueToHeadersCallbackMs": 115,
+          "upstreamIssueToLastBodyCallbackMs": 362,
+          "upstreamIssuedToCallbackMs": 362,
+          "upstreamTaskBodyBytes": 785840,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 66.195597,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "clientReadBytes": 0,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "requestReceivedToReadEndMs": 363,
+          "segmentOrdinal": 17,
+          "stage": "clientReadEnded",
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 66.198336,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "cumulativeReceivedBytes": 785840,
+          "errorDomain": "-",
+          "expectedBytes": 785840,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": 17,
+          "stage": "upstreamTaskCompleted",
+          "taskReceivedBytes": 785840,
+          "upstreamIssueToFirstBodyCallbackMs": 115,
+          "upstreamIssueToHeadersCallbackMs": 115,
+          "upstreamIssueToLastBodyCallbackMs": 362,
+          "upstreamIssuedToCallbackMs": 363,
+          "upstreamTaskBodyBytes": 785840,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 66.198628,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "deliveredBytes": 785840,
+          "durationMs": 364,
+          "errorDomain": "-",
+          "expectedBytes": 785840,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "responseStartOffset": 0,
+          "result": "complete",
+          "retries": 0,
+          "segmentOrdinal": 17,
+          "status": 200,
+          "taskReceivedBytes": 785840,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 69.82841,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "queryBytesAfter": 768,
+          "queryBytesBefore": 768,
+          "requestReceivedToIssueMs": 0,
+          "segmentOrdinal": 18,
+          "stage": "upstreamRequestIssued",
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 69.945125,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": 815920,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": 18,
+          "status": 200,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 70.194562,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "clientReadBytes": 0,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "requestReceivedToReadEndMs": 368,
+          "segmentOrdinal": 18,
+          "stage": "clientReadEnded",
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 70.195069,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "adaptiveTransferMs": 365,
+          "cellular": "yes",
+          "connectionReused": "yes",
+          "hlsRole": "segment",
+          "lastFetchToRequestMs": 1,
+          "lastRequestEndToFirstByteMs": 114,
+          "lastRequestSendMs": 0,
+          "lastResponseBodyMs": 249,
+          "lastResponseEndToMetricsCallbackMs": 0,
+          "protocol": "h2",
+          "proxyBackpressureMs": 0,
+          "proxyKind": "hlsChild",
+          "proxyQueuedBytes": 0,
+          "proxySuspendCount": 0,
+          "redirectCount": 0,
+          "requestMs": 114,
+          "responseMs": 249,
+          "segmentOrdinal": 18,
+          "stage": "urlSessionTaskMetrics",
+          "taskCreatedToFirstFetchMs": 2,
+          "taskIntervalMs": 367,
+          "totalMs": 365,
+          "transactionCount": 1,
+          "upstreamIssueToFirstBodyCallbackMs": 118,
+          "upstreamIssueToHeadersCallbackMs": 118,
+          "upstreamIssueToLastBodyCallbackMs": 367,
+          "upstreamIssuedToCallbackMs": 367,
+          "upstreamTaskBodyBytes": 815920,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 70.212714,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "cumulativeReceivedBytes": 815920,
+          "errorDomain": "-",
+          "expectedBytes": 815920,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": 18,
+          "stage": "upstreamTaskCompleted",
+          "taskReceivedBytes": 815920,
+          "upstreamIssueToFirstBodyCallbackMs": 118,
+          "upstreamIssueToHeadersCallbackMs": 118,
+          "upstreamIssueToLastBodyCallbackMs": 367,
+          "upstreamIssuedToCallbackMs": 368,
+          "upstreamTaskBodyBytes": 815920,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 70.213051,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "deliveredBytes": 815920,
+          "durationMs": 369,
+          "errorDomain": "-",
+          "expectedBytes": 815920,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "responseStartOffset": 0,
+          "result": "complete",
+          "retries": 0,
+          "segmentOrdinal": 18,
+          "status": 200,
+          "taskReceivedBytes": 815920,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 73.839031,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "queryBytesAfter": 768,
+          "queryBytesBefore": 768,
+          "requestReceivedToIssueMs": 0,
+          "segmentOrdinal": 19,
+          "stage": "upstreamRequestIssued",
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 77.881452,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "clientReadBytes": 0,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "requestReceivedToReadEndMs": 4011,
+          "segmentOrdinal": 19,
+          "stage": "clientReadEnded",
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 77.882081,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "queryBytesAfter": 768,
+          "queryBytesBefore": 768,
+          "requestReceivedToIssueMs": 0,
+          "segmentOrdinal": 19,
+          "stage": "upstreamRequestIssued",
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 81.317955,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": 760648,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": 19,
+          "status": 200,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 81.32055,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "deliveredBytes": 12047,
+          "durationMs": 7490,
+          "errorCode": 0,
+          "errorDomain": "Network.NWError",
+          "expectedBytes": 760648,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "responseStartOffset": 0,
+          "retries": 0,
+          "segmentOrdinal": 19,
+          "status": 200,
+          "taskReceivedBytes": 12047,
+          "transportErrorCode": 54,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 81.360381,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": 19,
+          "stage": "upstreamCancellationRequested",
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 81.365716,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "cellular": "yes",
+          "connectionReused": "yes",
+          "hlsRole": "segment",
+          "lastFetchToRequestMs": 0,
+          "lastRequestEndToFirstByteMs": 7483,
+          "lastRequestSendMs": 0,
+          "protocol": "h2",
+          "proxyBackpressureMs": 0,
+          "proxyKind": "hlsChild",
+          "proxyQueuedBytes": 0,
+          "proxySuspendCount": 0,
+          "redirectCount": 0,
+          "requestMs": 7483,
+          "segmentOrdinal": 19,
+          "stage": "urlSessionTaskMetrics",
+          "taskCreatedToFirstFetchMs": 2,
+          "taskIntervalMs": 7492,
+          "transactionCount": 1,
+          "upstreamCancelToCallbackMs": 1,
+          "upstreamIssueToFirstBodyCallbackMs": 7489,
+          "upstreamIssueToHeadersCallbackMs": 7487,
+          "upstreamIssueToLastBodyCallbackMs": 7489,
+          "upstreamIssuedToCallbackMs": 7492,
+          "upstreamTaskBodyBytes": 12047,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 81.366331,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "cumulativeReceivedBytes": 12047,
+          "errorCode": -999,
+          "errorDomain": "NSURLErrorDomain",
+          "expectedBytes": 760648,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": 19,
+          "stage": "upstreamTaskCompleted",
+          "taskReceivedBytes": 12047,
+          "upstreamCancelToCallbackMs": 4,
+          "upstreamIssueToFirstBodyCallbackMs": 7489,
+          "upstreamIssueToHeadersCallbackMs": 7487,
+          "upstreamIssueToLastBodyCallbackMs": 7489,
+          "upstreamIssuedToCallbackMs": 7496,
+          "upstreamTaskBodyBytes": 12047,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 81.391146,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": 760648,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": 19,
+          "status": 200,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 81.635215,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "adaptiveTransferMs": 3784,
+          "cellular": "yes",
+          "connectionReused": "yes",
+          "hlsRole": "segment",
+          "lastFetchToRequestMs": 0,
+          "lastRequestEndToFirstByteMs": 3529,
+          "lastRequestSendMs": 0,
+          "lastResponseBodyMs": 254,
+          "lastResponseEndToMetricsCallbackMs": 0,
+          "protocol": "h2",
+          "proxyBackpressureMs": 0,
+          "proxyKind": "hlsChild",
+          "proxyQueuedBytes": 35656,
+          "proxySuspendCount": 0,
+          "redirectCount": 0,
+          "requestMs": 3529,
+          "responseMs": 254,
+          "segmentOrdinal": 19,
+          "stage": "urlSessionTaskMetrics",
+          "taskCreatedToFirstFetchMs": 1,
+          "taskIntervalMs": 3786,
+          "totalMs": 3784,
+          "transactionCount": 1,
+          "upstreamIssueToFirstBodyCallbackMs": 3532,
+          "upstreamIssueToHeadersCallbackMs": 3531,
+          "upstreamIssueToLastBodyCallbackMs": 3786,
+          "upstreamIssuedToCallbackMs": 3786,
+          "upstreamTaskBodyBytes": 760648,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 81.635873,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "cumulativeReceivedBytes": 760648,
+          "errorDomain": "-",
+          "expectedBytes": 760648,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": 19,
+          "stage": "upstreamTaskCompleted",
+          "taskReceivedBytes": 760648,
+          "upstreamIssueToFirstBodyCallbackMs": 3532,
+          "upstreamIssueToHeadersCallbackMs": 3531,
+          "upstreamIssueToLastBodyCallbackMs": 3786,
+          "upstreamIssuedToCallbackMs": 3786,
+          "upstreamTaskBodyBytes": 760648,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 81.65823,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "deliveredBytes": 760648,
+          "durationMs": 3787,
+          "errorDomain": "-",
+          "expectedBytes": 760648,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "responseStartOffset": 0,
+          "result": "complete",
+          "retries": 0,
+          "segmentOrdinal": 19,
+          "status": 200,
+          "taskReceivedBytes": 760648,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 81.658764,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "queryBytesAfter": 768,
+          "queryBytesBefore": 768,
+          "requestReceivedToIssueMs": 0,
+          "segmentOrdinal": 20,
+          "stage": "upstreamRequestIssued",
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 81.725215,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": 782644,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": 20,
+          "status": 200,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 81.82967,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "clientReadBytes": 0,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "requestReceivedToReadEndMs": 194,
+          "segmentOrdinal": 20,
+          "stage": "clientReadEnded",
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 81.837085,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "adaptiveTransferMs": 192,
+          "cellular": "yes",
+          "connectionReused": "yes",
+          "hlsRole": "segment",
+          "lastFetchToRequestMs": 0,
+          "lastRequestEndToFirstByteMs": 88,
+          "lastRequestSendMs": 0,
+          "lastResponseBodyMs": 104,
+          "lastResponseEndToMetricsCallbackMs": 0,
+          "protocol": "h2",
+          "proxyBackpressureMs": 0,
+          "proxyKind": "hlsChild",
+          "proxyQueuedBytes": 0,
+          "proxySuspendCount": 0,
+          "redirectCount": 0,
+          "requestMs": 88,
+          "responseMs": 104,
+          "segmentOrdinal": 20,
+          "stage": "urlSessionTaskMetrics",
+          "taskCreatedToFirstFetchMs": 0,
+          "taskIntervalMs": 193,
+          "totalMs": 192,
+          "transactionCount": 1,
+          "upstreamIssueToFirstBodyCallbackMs": 89,
+          "upstreamIssueToHeadersCallbackMs": 89,
+          "upstreamIssueToLastBodyCallbackMs": 193,
+          "upstreamIssuedToCallbackMs": 193,
+          "upstreamTaskBodyBytes": 782644,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 81.83762,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "cumulativeReceivedBytes": 782644,
+          "errorDomain": "-",
+          "expectedBytes": 782644,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": 20,
+          "stage": "upstreamTaskCompleted",
+          "taskReceivedBytes": 782644,
+          "upstreamIssueToFirstBodyCallbackMs": 89,
+          "upstreamIssueToHeadersCallbackMs": 89,
+          "upstreamIssueToLastBodyCallbackMs": 193,
+          "upstreamIssuedToCallbackMs": 194,
+          "upstreamTaskBodyBytes": 782644,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 81.83795,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "deliveredBytes": 782644,
+          "durationMs": 195,
+          "errorDomain": "-",
+          "expectedBytes": 782644,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "responseStartOffset": 0,
+          "result": "complete",
+          "retries": 0,
+          "segmentOrdinal": 20,
+          "status": 200,
+          "taskReceivedBytes": 782644,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 82.256039,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "queryBytesAfter": 768,
+          "queryBytesBefore": 768,
+          "requestReceivedToIssueMs": 0,
+          "segmentOrdinal": 21,
+          "stage": "upstreamRequestIssued",
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 82.372077,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": 783960,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": 21,
+          "status": 200,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 82.505565,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "adaptiveTransferMs": 240,
+          "cellular": "yes",
+          "connectionReused": "yes",
+          "hlsRole": "segment",
+          "lastFetchToRequestMs": 0,
+          "lastRequestEndToFirstByteMs": 114,
+          "lastRequestSendMs": 0,
+          "lastResponseBodyMs": 125,
+          "lastResponseEndToMetricsCallbackMs": 0,
+          "protocol": "h2",
+          "proxyBackpressureMs": 0,
+          "proxyKind": "hlsChild",
+          "proxyQueuedBytes": 0,
+          "proxySuspendCount": 0,
+          "redirectCount": 0,
+          "requestMs": 114,
+          "responseMs": 125,
+          "segmentOrdinal": 21,
+          "stage": "urlSessionTaskMetrics",
+          "taskCreatedToFirstFetchMs": 2,
+          "taskIntervalMs": 243,
+          "totalMs": 240,
+          "transactionCount": 1,
+          "upstreamIssueToFirstBodyCallbackMs": 117,
+          "upstreamIssueToHeadersCallbackMs": 117,
+          "upstreamIssueToLastBodyCallbackMs": 242,
+          "upstreamIssuedToCallbackMs": 243,
+          "upstreamTaskBodyBytes": 783960,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 82.505941,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "clientReadBytes": 0,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "requestReceivedToReadEndMs": 243,
+          "segmentOrdinal": 21,
+          "stage": "clientReadEnded",
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 82.506176,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "cumulativeReceivedBytes": 783960,
+          "errorDomain": "-",
+          "expectedBytes": 783960,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": 21,
+          "stage": "upstreamTaskCompleted",
+          "taskReceivedBytes": 783960,
+          "upstreamIssueToFirstBodyCallbackMs": 117,
+          "upstreamIssueToHeadersCallbackMs": 117,
+          "upstreamIssueToLastBodyCallbackMs": 242,
+          "upstreamIssuedToCallbackMs": 243,
+          "upstreamTaskBodyBytes": 783960,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 82.506421,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "deliveredBytes": 783960,
+          "durationMs": 245,
+          "errorDomain": "-",
+          "expectedBytes": 783960,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "responseStartOffset": 0,
+          "result": "complete",
+          "retries": 0,
+          "segmentOrdinal": 21,
+          "status": 200,
+          "taskReceivedBytes": 783960,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 86.257835,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "queryBytesAfter": 768,
+          "queryBytesBefore": 768,
+          "requestReceivedToIssueMs": 0,
+          "segmentOrdinal": 22,
+          "stage": "upstreamRequestIssued",
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 86.375818,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": 778132,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": 22,
+          "status": 200,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 86.619858,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "clientReadBytes": 0,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "requestReceivedToReadEndMs": 363,
+          "segmentOrdinal": 22,
+          "stage": "clientReadEnded",
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 86.622067,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "adaptiveTransferMs": 361,
+          "cellular": "yes",
+          "connectionReused": "yes",
+          "hlsRole": "segment",
+          "lastFetchToRequestMs": 0,
+          "lastRequestEndToFirstByteMs": 116,
+          "lastRequestSendMs": 0,
+          "lastResponseBodyMs": 243,
+          "lastResponseEndToMetricsCallbackMs": 0,
+          "protocol": "h2",
+          "proxyBackpressureMs": 0,
+          "proxyKind": "hlsChild",
+          "proxyQueuedBytes": 0,
+          "proxySuspendCount": 0,
+          "redirectCount": 0,
+          "requestMs": 116,
+          "responseMs": 243,
+          "segmentOrdinal": 22,
+          "stage": "urlSessionTaskMetrics",
+          "taskCreatedToFirstFetchMs": 1,
+          "taskIntervalMs": 362,
+          "totalMs": 361,
+          "transactionCount": 1,
+          "upstreamIssueToFirstBodyCallbackMs": 120,
+          "upstreamIssueToHeadersCallbackMs": 119,
+          "upstreamIssueToLastBodyCallbackMs": 362,
+          "upstreamIssuedToCallbackMs": 362,
+          "upstreamTaskBodyBytes": 778132,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 86.624319,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "cumulativeReceivedBytes": 778132,
+          "errorDomain": "-",
+          "expectedBytes": 778132,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": 22,
+          "stage": "upstreamTaskCompleted",
+          "taskReceivedBytes": 778132,
+          "upstreamIssueToFirstBodyCallbackMs": 120,
+          "upstreamIssueToHeadersCallbackMs": 119,
+          "upstreamIssueToLastBodyCallbackMs": 362,
+          "upstreamIssuedToCallbackMs": 366,
+          "upstreamTaskBodyBytes": 778132,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 86.639538,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "deliveredBytes": 778132,
+          "durationMs": 368,
+          "errorDomain": "-",
+          "expectedBytes": 778132,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "responseStartOffset": 0,
+          "result": "complete",
+          "retries": 0,
+          "segmentOrdinal": 22,
+          "status": 200,
+          "taskReceivedBytes": 778132,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 90.242508,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "queryBytesAfter": 768,
+          "queryBytesBefore": 768,
+          "requestReceivedToIssueMs": 0,
+          "segmentOrdinal": 23,
+          "stage": "upstreamRequestIssued",
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 91.295695,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": 779072,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": 23,
+          "status": 200,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 91.624968,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "clientReadBytes": 0,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "requestReceivedToReadEndMs": 1382,
+          "segmentOrdinal": 23,
+          "stage": "clientReadEnded",
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 91.628037,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "adaptiveTransferMs": 1379,
+          "cellular": "yes",
+          "connectionReused": "yes",
+          "hlsRole": "segment",
+          "lastFetchToRequestMs": 0,
+          "lastRequestEndToFirstByteMs": 1052,
+          "lastRequestSendMs": 0,
+          "lastResponseBodyMs": 326,
+          "lastResponseEndToMetricsCallbackMs": 0,
+          "protocol": "h2",
+          "proxyBackpressureMs": 0,
+          "proxyKind": "hlsChild",
+          "proxyQueuedBytes": 0,
+          "proxySuspendCount": 0,
+          "redirectCount": 0,
+          "requestMs": 1052,
+          "responseMs": 326,
+          "segmentOrdinal": 23,
+          "stage": "urlSessionTaskMetrics",
+          "taskCreatedToFirstFetchMs": 1,
+          "taskIntervalMs": 1381,
+          "totalMs": 1379,
+          "transactionCount": 1,
+          "upstreamIssueToFirstBodyCallbackMs": 1055,
+          "upstreamIssueToHeadersCallbackMs": 1054,
+          "upstreamIssueToLastBodyCallbackMs": 1381,
+          "upstreamIssuedToCallbackMs": 1381,
+          "upstreamTaskBodyBytes": 779072,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 91.629889,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "cumulativeReceivedBytes": 779072,
+          "errorDomain": "-",
+          "expectedBytes": 779072,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": 23,
+          "stage": "upstreamTaskCompleted",
+          "taskReceivedBytes": 779072,
+          "upstreamIssueToFirstBodyCallbackMs": 1055,
+          "upstreamIssueToHeadersCallbackMs": 1054,
+          "upstreamIssueToLastBodyCallbackMs": 1381,
+          "upstreamIssuedToCallbackMs": 1387,
+          "upstreamTaskBodyBytes": 779072,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 91.678265,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "deliveredBytes": 779072,
+          "durationMs": 1388,
+          "errorDomain": "-",
+          "expectedBytes": 779072,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "responseStartOffset": 0,
+          "result": "complete",
+          "retries": 0,
+          "segmentOrdinal": 23,
+          "status": 200,
+          "taskReceivedBytes": 779072,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 94.218225,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "queryBytesAfter": 768,
+          "queryBytesBefore": 768,
+          "requestReceivedToIssueMs": 0,
+          "segmentOrdinal": 24,
+          "stage": "upstreamRequestIssued",
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 95.881123,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": 784712,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": 24,
+          "status": 200,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 96.189148,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "clientReadBytes": 0,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "requestReceivedToReadEndMs": 1970,
+          "segmentOrdinal": 24,
+          "stage": "clientReadEnded",
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 96.228789,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "adaptiveTransferMs": 1968,
+          "cellular": "yes",
+          "connectionReused": "yes",
+          "hlsRole": "segment",
+          "lastFetchToRequestMs": 0,
+          "lastRequestEndToFirstByteMs": 1660,
+          "lastRequestSendMs": 0,
+          "lastResponseBodyMs": 307,
+          "lastResponseEndToMetricsCallbackMs": 0,
+          "protocol": "h2",
+          "proxyBackpressureMs": 0,
+          "proxyKind": "hlsChild",
+          "proxyQueuedBytes": 0,
+          "proxySuspendCount": 0,
+          "redirectCount": 0,
+          "requestMs": 1660,
+          "responseMs": 307,
+          "segmentOrdinal": 24,
+          "stage": "urlSessionTaskMetrics",
+          "taskCreatedToFirstFetchMs": 1,
+          "taskIntervalMs": 1970,
+          "totalMs": 1968,
+          "transactionCount": 1,
+          "upstreamIssueToFirstBodyCallbackMs": 1663,
+          "upstreamIssueToHeadersCallbackMs": 1662,
+          "upstreamIssueToLastBodyCallbackMs": 1970,
+          "upstreamIssuedToCallbackMs": 1970,
+          "upstreamTaskBodyBytes": 784712,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 96.234345,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "cumulativeReceivedBytes": 784712,
+          "errorDomain": "-",
+          "expectedBytes": 784712,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": 24,
+          "stage": "upstreamTaskCompleted",
+          "taskReceivedBytes": 784712,
+          "upstreamIssueToFirstBodyCallbackMs": 1663,
+          "upstreamIssueToHeadersCallbackMs": 1662,
+          "upstreamIssueToLastBodyCallbackMs": 1970,
+          "upstreamIssuedToCallbackMs": 1973,
+          "upstreamTaskBodyBytes": 784712,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 96.23486,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "deliveredBytes": 784712,
+          "durationMs": 1975,
+          "errorDomain": "-",
+          "expectedBytes": 784712,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "responseStartOffset": 0,
+          "result": "complete",
+          "retries": 0,
+          "segmentOrdinal": 24,
+          "status": 200,
+          "taskReceivedBytes": 784712,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 98.226288,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "queryBytesAfter": 769,
+          "queryBytesBefore": 769,
+          "requestReceivedToIssueMs": 0,
+          "segmentOrdinal": 25,
+          "stage": "upstreamRequestIssued",
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 99.937419,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": 783396,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": 25,
+          "status": 200,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 100.151422,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "clientReadBytes": 0,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "requestReceivedToReadEndMs": 1926,
+          "segmentOrdinal": 25,
+          "stage": "clientReadEnded",
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 100.153128,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "adaptiveTransferMs": 1922,
+          "cellular": "yes",
+          "connectionReused": "yes",
+          "hlsRole": "segment",
+          "lastFetchToRequestMs": 0,
+          "lastRequestEndToFirstByteMs": 1708,
+          "lastRequestSendMs": 0,
+          "lastResponseBodyMs": 213,
+          "lastResponseEndToMetricsCallbackMs": 0,
+          "protocol": "h2",
+          "proxyBackpressureMs": 0,
+          "proxyKind": "hlsChild",
+          "proxyQueuedBytes": 0,
+          "proxySuspendCount": 0,
+          "redirectCount": 0,
+          "requestMs": 1708,
+          "responseMs": 213,
+          "segmentOrdinal": 25,
+          "stage": "urlSessionTaskMetrics",
+          "taskCreatedToFirstFetchMs": 2,
+          "taskIntervalMs": 1925,
+          "totalMs": 1922,
+          "transactionCount": 1,
+          "upstreamIssueToFirstBodyCallbackMs": 1713,
+          "upstreamIssueToHeadersCallbackMs": 1712,
+          "upstreamIssueToLastBodyCallbackMs": 1925,
+          "upstreamIssuedToCallbackMs": 1925,
+          "upstreamTaskBodyBytes": 783396,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 100.187809,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "cumulativeReceivedBytes": 783396,
+          "errorDomain": "-",
+          "expectedBytes": 783396,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": 25,
+          "stage": "upstreamTaskCompleted",
+          "taskReceivedBytes": 783396,
+          "upstreamIssueToFirstBodyCallbackMs": 1713,
+          "upstreamIssueToHeadersCallbackMs": 1712,
+          "upstreamIssueToLastBodyCallbackMs": 1925,
+          "upstreamIssuedToCallbackMs": 1928,
+          "upstreamTaskBodyBytes": 783396,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 100.192915,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "deliveredBytes": 783396,
+          "durationMs": 1930,
+          "errorDomain": "-",
+          "expectedBytes": 783396,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "responseStartOffset": 0,
+          "result": "complete",
+          "retries": 0,
+          "segmentOrdinal": 25,
+          "status": 200,
+          "taskReceivedBytes": 783396,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 102.225281,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "queryBytesAfter": 769,
+          "queryBytesBefore": 769,
+          "requestReceivedToIssueMs": 0,
+          "segmentOrdinal": 26,
+          "stage": "upstreamRequestIssued",
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 102.301385,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": 778508,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": 26,
+          "status": 200,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 102.537887,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "clientReadBytes": 0,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "requestReceivedToReadEndMs": 313,
+          "segmentOrdinal": 26,
+          "stage": "clientReadEnded",
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 102.538524,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "adaptiveTransferMs": 311,
+          "cellular": "yes",
+          "connectionReused": "yes",
+          "hlsRole": "segment",
+          "lastFetchToRequestMs": 0,
+          "lastRequestEndToFirstByteMs": 75,
+          "lastRequestSendMs": 0,
+          "lastResponseBodyMs": 236,
+          "lastResponseEndToMetricsCallbackMs": 0,
+          "protocol": "h2",
+          "proxyBackpressureMs": 0,
+          "proxyKind": "hlsChild",
+          "proxyQueuedBytes": 0,
+          "proxySuspendCount": 0,
+          "redirectCount": 0,
+          "requestMs": 75,
+          "responseMs": 236,
+          "segmentOrdinal": 26,
+          "stage": "urlSessionTaskMetrics",
+          "taskCreatedToFirstFetchMs": 1,
+          "taskIntervalMs": 312,
+          "totalMs": 311,
+          "transactionCount": 1,
+          "upstreamIssueToFirstBodyCallbackMs": 77,
+          "upstreamIssueToHeadersCallbackMs": 76,
+          "upstreamIssueToLastBodyCallbackMs": 312,
+          "upstreamIssuedToCallbackMs": 312,
+          "upstreamTaskBodyBytes": 778508,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 102.547545,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "cumulativeReceivedBytes": 778508,
+          "errorDomain": "-",
+          "expectedBytes": 778508,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": 26,
+          "stage": "upstreamTaskCompleted",
+          "taskReceivedBytes": 778508,
+          "upstreamIssueToFirstBodyCallbackMs": 77,
+          "upstreamIssueToHeadersCallbackMs": 76,
+          "upstreamIssueToLastBodyCallbackMs": 312,
+          "upstreamIssuedToCallbackMs": 313,
+          "upstreamTaskBodyBytes": 778508,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 102.564486,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "deliveredBytes": 778508,
+          "durationMs": 315,
+          "errorDomain": "-",
+          "expectedBytes": 778508,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "responseStartOffset": 0,
+          "result": "complete",
+          "retries": 0,
+          "segmentOrdinal": 26,
+          "status": 200,
+          "taskReceivedBytes": 778508,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 106.235196,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "queryBytesAfter": 769,
+          "queryBytesBefore": 769,
+          "requestReceivedToIssueMs": 0,
+          "segmentOrdinal": 27,
+          "stage": "upstreamRequestIssued",
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 106.45769,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "contentLength": 793360,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": 27,
+          "status": 200,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 106.751758,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "clientReadBytes": 0,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "requestReceivedToReadEndMs": 517,
+          "segmentOrdinal": 27,
+          "stage": "clientReadEnded",
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 106.753524,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "adaptiveTransferMs": 513,
+          "cellular": "yes",
+          "connectionReused": "yes",
+          "hlsRole": "segment",
+          "lastFetchToRequestMs": 0,
+          "lastRequestEndToFirstByteMs": 218,
+          "lastRequestSendMs": 0,
+          "lastResponseBodyMs": 294,
+          "lastResponseEndToMetricsCallbackMs": 0,
+          "protocol": "h2",
+          "proxyBackpressureMs": 0,
+          "proxyKind": "hlsChild",
+          "proxyQueuedBytes": 0,
+          "proxySuspendCount": 0,
+          "redirectCount": 0,
+          "requestMs": 218,
+          "responseMs": 294,
+          "segmentOrdinal": 27,
+          "stage": "urlSessionTaskMetrics",
+          "taskCreatedToFirstFetchMs": 2,
+          "taskIntervalMs": 516,
+          "totalMs": 513,
+          "transactionCount": 1,
+          "upstreamIssueToFirstBodyCallbackMs": 224,
+          "upstreamIssueToHeadersCallbackMs": 222,
+          "upstreamIssueToLastBodyCallbackMs": 515,
+          "upstreamIssuedToCallbackMs": 516,
+          "upstreamTaskBodyBytes": 793360,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 106.756704,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "cumulativeReceivedBytes": 793360,
+          "errorDomain": "-",
+          "expectedBytes": 793360,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "segmentOrdinal": 27,
+          "stage": "upstreamTaskCompleted",
+          "taskReceivedBytes": 793360,
+          "upstreamIssueToFirstBodyCallbackMs": 224,
+          "upstreamIssueToHeadersCallbackMs": 222,
+          "upstreamIssueToLastBodyCallbackMs": 515,
+          "upstreamIssuedToCallbackMs": 519,
+          "upstreamTaskBodyBytes": 793360,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 106.757619,
+        "event": "proxy_transfer_finished",
+        "fields": {
+          "deliveredBytes": 793360,
+          "durationMs": 521,
+          "errorDomain": "-",
+          "expectedBytes": 793360,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "responseStartOffset": 0,
+          "result": "complete",
+          "retries": 0,
+          "segmentOrdinal": 27,
+          "status": 200,
+          "taskReceivedBytes": 793360,
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 110.232747,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "queryBytesAfter": 769,
+          "queryBytesBefore": 769,
+          "requestReceivedToIssueMs": 0,
+          "segmentOrdinal": 28,
+          "stage": "upstreamRequestIssued",
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 114.262807,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "clientReadBytes": 0,
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "requestReceivedToReadEndMs": 4009,
+          "segmentOrdinal": 28,
+          "stage": "clientReadEnded",
+          "upstreamTaskIndex": 1
+        }
+      },
+      {
+        "secondsFromTouch": 114.263162,
+        "event": "proxy_transfer_started",
+        "fields": {
+          "hlsRole": "segment",
+          "proxyKind": "hlsChild",
+          "queryBytesAfter": 769,
+          "queryBytesBefore": 769,
+          "requestReceivedToIssueMs": 0,
+          "segmentOrdinal": 28,
+          "stage": "upstreamRequestIssued",
+          "upstreamTaskIndex": 1
+        }
+      }
+    ],
+    "failures": [],
+    "windowEndSeconds": 120.45289897918701,
+    "freshIDsOnly": true,
+    "firstVisibleFrame": "t90 actual film scene and bilingual subtitle viewed; not exact first frame time",
+    "cacheState": "unknown, no cache clear",
+    "performanceAccepted": false,
+    "actualSelectedImageViewed": "t90.png"
+  },
+  "interruptedSecondWindow": {
+    "at": "2026-10-18T07:56:13.988970+08:00",
+    "reason": "user reported abnormal NAS shutdown/reboot",
+    "classification": "INTERRUPTED_INFRASTRUCTURE_RESTART",
+    "AppIntentionallyTerminated": true,
+    "ordinaryExitVerified": false,
+    "performanceAccepted": false,
+    "notDiscardedFromResults": true
+  },
+  "thirdWindow": {
+    "status": "NOT_RUN_USER_NAS_REBOOT_PAUSE",
+    "case": "cellular-jf-s03-continuous-3",
+    "playbackActionSent": false
+  },
+  "userPause": {
+    "at": "2026-10-18T07:53:41.770149+08:00",
+    "reason": "User reports NAS abnormal shutdown/reboot and asks to wait",
+    "newPlaybackWindowsAllowed": false,
+    "NASLogFetchAllowed": false,
+    "sequenceSuspendedBeforeStoppingCurrentWindow": true
+  },
+  "cleanup": {
+    "ownMediaOrPadRunnerWorkers": 0,
+    "phoneExistingLaunchctlPreserved": true,
+    "NastartBothDevicesIntentionallyClosed": true,
+    "originalPhoneWiFiOnRestored": true,
+    "ownCaffeinateStopped": true,
+    "noBackgroundRetries": true
+  },
+  "dataAudit": {
+    "iphone13": {
+      "at": "2026-10-18T07:56:13.816644+08:00",
+      "nonBookmarkPreferencesSame": true,
+      "bookmarksBefore": 36,
+      "bookmarksAfter": 36,
+      "removed": 0,
+      "added": 0,
+      "trackChanges": 0,
+      "intentionalPause": true
+    },
+    "ipad": {
+      "at": "2026-10-18T07:56:13.988572+08:00",
+      "nonBookmarkPreferencesSame": true,
+      "bookmarksBefore": 29,
+      "bookmarksAfter": 29,
+      "removed": 0,
+      "added": 0,
+      "trackChanges": 0,
+      "intentionalPause": true
+    }
+  },
+  "runnerRenewal": {
+    "at": "2026-10-18T07:50:02.522890+08:00",
+    "reason": "existing Runner profile expired and original project absent from known local roots",
+    "method": "existing App ID profile renewal via noninstalled local signing carrier; existing Runner re-signed",
+    "carrierInstalled": false,
+    "oldFixturePreserved": true,
+    "fixedBundleIDUnchanged": true,
+    "entitlementsPreserved": true,
+    "targetProvisioned": true,
+    "signatureDeepStrictVerified": true,
+    "profileExpirationUTC": "2026-10-24T23:48:37",
+    "RunnerBinarySHA256": "eeda051372cef947ef87b6c2479ce1150c7fce884ba6e1ce89e4431cf862672e",
+    "newRunnerSourceOrDependencies": false,
+    "firstCertificateExtractionOptionErrorRetained": true
+  },
+  "acceptance": {
+    "noNewAppCode": true,
+    "threeComparableRepeatsCompleted": false,
+    "NASRestartIsConfounder": true,
+    "wholePlaybackPerformanceAccepted": false,
+    "iPadPlaybackWindows": 0,
+    "iPhone18TouchedThisBatch": false
+  }
+}

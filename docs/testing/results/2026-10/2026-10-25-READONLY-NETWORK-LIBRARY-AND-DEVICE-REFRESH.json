@@ -1,0 +1,137 @@
+{
+  "at": "2026-10-25T23:08:32.363209+08:00",
+  "scope": "Read-only network-media-library research, competitor UI observation and current-device refresh; no new source adapter shipped",
+  "mobilePackage": {
+    "mainSHA256": "7f0f18cc675e45a9293be2e55b2a27f61287bb198d1fab8217da11153dfb8886",
+    "configuration": "ordinary Debug",
+    "signedMachOCount": 30,
+    "broadInputCount": 570,
+    "mobileCompiledInputDrift": 0,
+    "TVOnlySourceTestDifferences": 7,
+    "binaryBuildTime": "2026-10-25T20:24:39.981755+08:00"
+  },
+  "devices": {
+    "iPhone18": {
+      "model": "iPhone19,7",
+      "OS": "27.0",
+      "connectionAtInstall": "wired",
+      "installedAt": "2026-10-25T22:13:59.694340+08:00",
+      "installExit": 0,
+      "actualNormalHomeObserved": true,
+      "nonDiagnosticPreferenceChanges": 0,
+      "DSMActualHost": "redacted IPv4",
+      "fixedDomainAccepted": false,
+      "videoRouteTested": false,
+      "now": "later disconnected by environment change"
+    },
+    "iPhone13": {
+      "model": "iPhone14,5",
+      "OS": "16.3.1",
+      "USBVerifiedDespiteCoreDeviceUnavailable": true,
+      "installedAt": "2026-10-25T22:31:19.848087+08:00",
+      "installationExit": 0,
+      "configuration": "ordinary Debug",
+      "mainSHA256": "7f0f18cc675e45a9293be2e55b2a27f61287bb198d1fab8217da11153dfb8886",
+      "signedMachOCount": 30,
+      "dataPreservingInstall": true,
+      "liveProductType": "iPhone14,5",
+      "liveOS": "16.3.1",
+      "mobileCompiledInputDrift": 0,
+      "actualNormalHomeObserved": true,
+      "nonDiagnosticPreferenceChanges": 0,
+      "originalUnknownRunnerPreserved": true,
+      "ownHTTPSessionOnlyDeleted": true
+    },
+    "iPad": {
+      "model": "iPad15,7",
+      "OS": "26.6",
+      "installationExit": 0,
+      "installedAt": "2026-10-25T22:31:16.988821+08:00",
+      "mainSHA256": "7f0f18cc675e45a9293be2e55b2a27f61287bb198d1fab8217da11153dfb8886",
+      "signedMachOCount": 30,
+      "configuration": "normal Debug",
+      "dataPreservingInstall": true,
+      "sourceCompiledInputDrift": 0,
+      "actualNormalHomeObserved": true,
+      "nonDiagnosticPreferenceChanges": 0,
+      "noRunnerStartedOrSettingsChanged": true,
+      "existingVPNPreserved": true
+    },
+    "TV": {
+      "model": "AppleTV14,1",
+      "OS": "18.2",
+      "packageMainSHA256": "86cb61994c8195e40c62e7e32f997e87c668df8fb87c6e0e5be4939fae3beb97",
+      "sourceInputs": 510,
+      "sourceDrift": 0,
+      "signedMachOCount": 27,
+      "normalHomeRestored": true
+    }
+  },
+  "competitor": {
+    "TV": {
+      "bundle": "com.netease.filmlytv",
+      "version": "2.6.12",
+      "build": "58",
+      "observed": [
+        "aggregate poster wall",
+        "category sidebar",
+        "settings and add-resource-tutorial entry"
+      ],
+      "tutorialContentEntered": false
+    },
+    "iPhone13": {
+      "phoneModel": "iPhone14,5",
+      "app": "网易爆米花",
+      "version": "2.15.2",
+      "build": "158",
+      "realExistingWebDAVDirectoryListing": true,
+      "directoryRows": 4,
+      "newConnectionSubmitted": false,
+      "importSubmitted": false,
+      "credentialsCopied": false,
+      "remoteMutationSubmitted": false,
+      "mediaPlayCommands": 0
+    },
+    "iPhone18": {
+      "version": "2.15.13",
+      "build": "169",
+      "inventoryOnly": true,
+      "UIInspectionBlockedByLaterDisconnect": true
+    }
+  },
+  "cleanup": {
+    "TV": {
+      "restored": true
+    },
+    "TVRunnerStopped": true,
+    "iPhone13": {
+      "originalRunnerPreserved": true,
+      "noGlobalSettingsChanged": true,
+      "normalHomeRestored": true,
+      "onlyOwnedHTTPSessionDeleted": true
+    },
+    "NASConfigurationsChanged": false,
+    "newCredentialsOrSourcesSubmitted": false,
+    "importsSubmitted": false,
+    "mediaPlayCommands": 0,
+    "cellularCommands": 0
+  },
+  "status": {
+    "legacyOpenRequirements": 28,
+    "newReadOnlyLibraryRequirement": 1,
+    "totalOpen": 29,
+    "existingPlaybackMatrixCells": 114,
+    "WebDAVSMBClientOrIndependentScraperShipped": false
+  },
+  "privateEvidencePointer": "/tmp/nastart-readonly-library-evidence",
+  "validation": {
+    "documentationDocuments": 455,
+    "localLinks": 2631,
+    "missingDestinations": 0,
+    "gitDiffCheckExit": 0,
+    "TVCompiledInputDrift": 0,
+    "TVFrozenBinaryDrift": 0,
+    "mobileFrozenBinaryDrift": 0,
+    "openRequirementCount": 29
+  }
+}

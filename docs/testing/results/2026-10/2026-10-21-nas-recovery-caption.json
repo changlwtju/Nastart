@@ -1,0 +1,226 @@
+{
+  "date": "2026-10-21",
+  "sourceChanged": true,
+  "tests": {
+    "executed": 124,
+    "skipped": 1,
+    "failed": 0,
+    "normalXcodeExit": true
+  },
+  "preflightPassed": 15,
+  "installedNewPackage": {
+    "iphone13": true,
+    "ipad": true,
+    "iphone18": false
+  },
+  "stage": "Normal Debug package frozen; iPhone13 and iPad preserve-data installed and empty-env home actually viewed; iPhone18 update deferred by user until returning home",
+  "WDA": {
+    "systemSecurityRejectionConfirmed": true,
+    "domains": [
+      "com.apple.dt.deviceprocesscontrolservice:2",
+      "FBSOpenApplicationServiceErrorDomain:1",
+      "FBSOpenApplicationErrorDomain:3"
+    ],
+    "oldHistoricalProfileExpirationUTC": "2026-10-17T22:28:19",
+    "oldEmbeddedExpirationExtracted": false,
+    "onDeviceProfileValidatedIsNotSufficient": true,
+    "newCachedProfileTargetsDevice": false,
+    "targetedXcodeDestinationAvailable": false,
+    "newWDAInstall": false
+  },
+  "changes": [
+    "Visible-video-height subtitle text sizing, 12–20pt, shared embedded and external text",
+    "Explicit restoring/failed presentation replaces first-NAS setup while a saved connection is recovering",
+    "Credential POST absolute 18s wall deadline with cancellation; no silent replay after ambiguous timeout/lost-response; pre-connect route failures retain fallback"
+  ],
+  "limitations": [
+    "iPhone18 remains 05:31 old package by explicit user request until return home",
+    "NAS successful cold-start speed and DS One comparison remain unaccepted; original server POST timeout cause unknown",
+    "Portrait text pixel/size regression passed; actual movie portrait/subtitle still unverified",
+    "No new complete PiP, Dolby dynamic, audio, whole-frame time or Release acceptance"
+  ],
+  "privateEvidencePointer": "/tmp/nastart-nas-recovery-caption-evidence",
+  "package": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "e2cddab7aeb9c9fbe3c090d88fed772a75be21cf2081f9fc56da607382b59ff7",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "binaryBuildTime": "2026-10-21T07:14:22.524181+08:00",
+    "binaries": {
+      "Nastart": "53a64f657da05acaff064c9104f1e2bfe24657a463c1a85f57d69dd2ce4a2a86",
+      "Nastart.debug.dylib": "2c5c88dbe59dd1a2472e529ce5a8190e0fb571a56196b0886a70117e1b6fc67d",
+      "Frameworks/KSPlayer.framework/KSPlayer": "828c936b8dc94fc27057a01eebc4ec2d38fd744358a9e15186c54ea8340fc44d"
+    },
+    "ipaSHA256": "b4d3e112e56df3fb1e05e4926f4bead14e89a0420ae3bbd593ef6ee9a648c59b",
+    "profileExpirationUTC": "2026-10-24T22:23:57"
+  },
+  "testSkipReason": "DeviceEnvironmentPublicEndpoints requires explicit endpoint configuration; no real endpoint test was claimed",
+  "iPhone18UserConstraint": "User reports device away from home; no further phone18 requests or update until it returns; no schedule created",
+  "normalDeviceUI": {
+    "iphone13": {
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "startedAt": "2026-10-21T11:30:32.929390+08:00",
+      "finishedAt": "2026-10-21T11:31:12.438223+08:00",
+      "samples": [
+        {
+          "secondsFromSessionReady": 0.5,
+          "recoveryView": true,
+          "restoring": true,
+          "failed": false,
+          "firstNASWelcome": false,
+          "playerVisible": false
+        },
+        {
+          "secondsFromSessionReady": 5.53,
+          "recoveryView": false,
+          "restoring": false,
+          "failed": false,
+          "firstNASWelcome": false,
+          "playerVisible": false
+        },
+        {
+          "secondsFromSessionReady": 20.61,
+          "recoveryView": false,
+          "restoring": false,
+          "failed": false,
+          "firstNASWelcome": false,
+          "playerVisible": false
+        },
+        {
+          "secondsFromSessionReady": 26.6,
+          "recoveryView": false,
+          "restoring": false,
+          "failed": false,
+          "firstNASWelcome": false,
+          "playerVisible": false
+        }
+      ],
+      "emptyEnvironmentVerified": true,
+      "ownedAppStopped": true,
+      "WDASettingsRestored": true,
+      "fullNonDiagnosticPreferences": {
+        "beforeKeys": 25,
+        "afterKeys": 25,
+        "sameKeys": true,
+        "changedValues": 0,
+        "allNonDiagnosticPreferencesEqual": true
+      },
+      "actualNormalHomeReviewed": true,
+      "actualHomeNASBadge": "online on reviewed screenshot; service health/snapshot freshness is separate"
+    },
+    "ipad": {
+      "model": "iPad12,1",
+      "system": "18.3.1",
+      "startedAt": "2026-10-21T11:33:26.181620+08:00",
+      "finishedAt": "2026-10-21T11:34:17.640247+08:00",
+      "samples": [
+        {
+          "secondsFromSessionReady": 3.31,
+          "recoveryView": false,
+          "restoring": false,
+          "failed": false,
+          "firstNASWelcome": false,
+          "playerVisible": false
+        },
+        {
+          "secondsFromSessionReady": 7.54,
+          "recoveryView": false,
+          "restoring": false,
+          "failed": false,
+          "firstNASWelcome": false,
+          "playerVisible": false
+        },
+        {
+          "secondsFromSessionReady": 22.51,
+          "recoveryView": false,
+          "restoring": false,
+          "failed": false,
+          "firstNASWelcome": false,
+          "playerVisible": false
+        },
+        {
+          "secondsFromSessionReady": 29.48,
+          "recoveryView": false,
+          "restoring": false,
+          "failed": false,
+          "firstNASWelcome": false,
+          "playerVisible": false
+        }
+      ],
+      "emptyEnvironmentVerified": true,
+      "ownedAppStopped": true,
+      "WDASettingsRestored": true,
+      "fullNonDiagnosticPreferences": {
+        "beforeKeys": 18,
+        "afterKeys": 18,
+        "sameKeys": true,
+        "changedValues": 0,
+        "allNonDiagnosticPreferencesEqual": true
+      },
+      "actualNormalHomeReviewed": true,
+      "actualHomeNASBadge": "online on reviewed screenshot; service health/snapshot freshness is separate"
+    }
+  },
+  "phone13MainLoginSingleObservationSeconds": 2.225596,
+  "performanceVerdict": "Not accepted: one window/device; UI sampling begins after session readiness, not app dispatch; no DS One same-condition comparison and no cold-start latency budget",
+  "mediaAttempts": [
+    {
+      "startedAt": "2026-10-21T11:37:46.302240+08:00",
+      "finishedAt": "2026-10-21T11:39:18.389241+08:00",
+      "playCommands": 1,
+      "pipCommands": 0,
+      "failureType": "HTTPError",
+      "failureReason": "Private tool/transport failure",
+      "ownedAppStoppedAndAbsent": true,
+      "finalOwnedAppAbsent": true,
+      "nonBookmarkPreferencesExactlyUnchanged": true,
+      "originalTrackChanges": 0,
+      "bookmarkProgressChanges": 1,
+      "bookmarksAdded": 0,
+      "bookmarksRemoved": 0,
+      "crashInventoryDelta": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      }
+    },
+    {
+      "startedAt": "2026-10-21T11:42:24.408256+08:00",
+      "finishedAt": "2026-10-21T11:44:12.510781+08:00",
+      "playCommands": 1,
+      "pipCommands": 0,
+      "failureType": "RuntimeError",
+      "failureReason": "Navigation effect unconfirmed; no repeat",
+      "ownedAppStoppedAndAbsent": true,
+      "finalOwnedAppAbsent": true,
+      "nonBookmarkPreferencesExactlyUnchanged": true,
+      "originalTrackChanges": 0,
+      "bookmarkProgressChanges": 1,
+      "bookmarksAdded": 0,
+      "bookmarksRemoved": 0,
+      "crashInventoryDelta": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      }
+    }
+  ],
+  "portraitVerdict": "Unverified: WDA device orientation HTTP500 then actual app control injection without confirmed orientation effect; both final native PNGs remained landscape. No third retry; no actual subtitle presentation PASS.",
+  "cleanup": {
+    "iPadAppAndOwnedRunnerAbsent": true,
+    "phone13AppAbsentAfterEachMediaWindow": true,
+    "nativeWiFiIconReviewed": true,
+    "noNetworkOrVPNChanges": true,
+    "noWDAInstallOrBuild": true,
+    "iPhone18NotTouchedAfterAwayInstruction": true,
+    "noPeriodicTaskCreated": true,
+    "ownBatchHostProcessesRemaining": 0
+  },
+  "finalPackageAnd173InputsVerified": true,
+  "documentation": {
+    "documents": 365,
+    "localLinks": 1901,
+    "missingDestinations": 0,
+    "preflightPassed": 15
+  }
+}

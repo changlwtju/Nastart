@@ -1,0 +1,233 @@
+{
+  "at": "2026-10-19T17:48:00.567524+08:00",
+  "scope": "offline reanalysis of 17:25/17:26 saved Wi-Fi input calibration only",
+  "newDeviceOrMediaRequests": 0,
+  "productCodeChanged": false,
+  "testPackageChanged": false,
+  "lanes": [
+    {
+      "entry": "file",
+      "inputHTTPEnvelopeSeconds": 1.0901031494140625,
+      "seekStartedSecondsFromInputHTTPStart": 0.7182612419128418,
+      "seekStartedBeforeHTTPReturned": true,
+      "durationSecondsFromTelemetry": 7165.01,
+      "currentSecondsAtSeekStartDerivedFromDelta": 1.012000000000171,
+      "seekTargetSeconds": 3556.777790556252,
+      "committedRatioDerivedFromTargetAndDuration": 0.4964093267917633,
+      "requestedRatio": 0.5,
+      "targetDifferenceFromRequestedHalfSeconds": -25.727209443748052,
+      "firstFrameBeforeActionSeconds": -6.3740317821502686,
+      "sameDurationDoesNotFreezeMediaIdentity": true,
+      "postInputUIClockMatchesCommittedTargetFloor": true,
+      "postInputThumbStableAcrossSavedSnapshots": true,
+      "snapshots": [
+        {
+          "label": "before-input",
+          "sliderAccessibilityValue": "0%",
+          "sliderFramePoints": [
+            130.0,
+            223.0,
+            584.0,
+            44.0
+          ],
+          "whiteThumbCenterPoints": [
+            143.33333333333334,
+            245.0
+          ],
+          "whiteThumbWidthPoints": 27.0,
+          "currentTextSeconds": 1,
+          "durationTextSeconds": 7165,
+          "pngFileSavedBeforeXML": true,
+          "pngToXmlFileSaveGapSeconds": 0.06431341171264648,
+          "simultaneousCaptureGuaranteed": false
+        },
+        {
+          "label": "after-input-t0",
+          "sliderAccessibilityValue": "50%",
+          "sliderFramePoints": [
+            130.0,
+            223.0,
+            584.0,
+            44.0
+          ],
+          "whiteThumbCenterPoints": [
+            419.3333333333333,
+            245.0
+          ],
+          "whiteThumbWidthPoints": 27.0,
+          "currentTextSeconds": 3556,
+          "durationTextSeconds": 7165,
+          "pngFileSavedBeforeXML": true,
+          "pngToXmlFileSaveGapSeconds": 0.0692903995513916,
+          "simultaneousCaptureGuaranteed": false
+        },
+        {
+          "label": "after-input-t3",
+          "sliderAccessibilityValue": "50%",
+          "sliderFramePoints": [
+            130.0,
+            223.0,
+            584.0,
+            44.0
+          ],
+          "whiteThumbCenterPoints": [
+            419.3333333333333,
+            245.0
+          ],
+          "whiteThumbWidthPoints": 27.0,
+          "currentTextSeconds": 3556,
+          "durationTextSeconds": 7165,
+          "pngFileSavedBeforeXML": true,
+          "pngToXmlFileSaveGapSeconds": 0.07317829132080078,
+          "simultaneousCaptureGuaranteed": false
+        },
+        {
+          "label": "after-input-t10",
+          "sliderAccessibilityValue": "50%",
+          "sliderFramePoints": [
+            130.0,
+            223.0,
+            584.0,
+            44.0
+          ],
+          "whiteThumbCenterPoints": [
+            419.3333333333333,
+            245.0
+          ],
+          "whiteThumbWidthPoints": 27.0,
+          "currentTextSeconds": 3556,
+          "durationTextSeconds": 7165,
+          "pngFileSavedBeforeXML": true,
+          "pngToXmlFileSaveGapSeconds": 0.05939364433288574,
+          "simultaneousCaptureGuaranteed": false
+        }
+      ]
+    },
+    {
+      "entry": "jf",
+      "inputHTTPEnvelopeSeconds": 1.0955538749694824,
+      "seekStartedSecondsFromInputHTTPStart": 0.8287599086761475,
+      "seekStartedBeforeHTTPReturned": true,
+      "durationSecondsFromTelemetry": 7165.01,
+      "currentSecondsAtSeekStartDerivedFromDelta": 10.846000000000004,
+      "seekTargetSeconds": 3569.641502045095,
+      "committedRatioDerivedFromTargetAndDuration": 0.49820467829704285,
+      "requestedRatio": 0.5,
+      "targetDifferenceFromRequestedHalfSeconds": -12.863497954905142,
+      "firstFrameBeforeActionSeconds": -12.80016303062439,
+      "sameDurationDoesNotFreezeMediaIdentity": true,
+      "postInputUIClockMatchesCommittedTargetFloor": true,
+      "postInputThumbStableAcrossSavedSnapshots": false,
+      "snapshots": [
+        {
+          "label": "before-input",
+          "sliderAccessibilityValue": "0%",
+          "sliderFramePoints": [
+            130.0,
+            223.0,
+            584.0,
+            44.0
+          ],
+          "whiteThumbCenterPoints": [
+            144.16666666666666,
+            245.0
+          ],
+          "whiteThumbWidthPoints": 26.666666666666668,
+          "currentTextSeconds": 10,
+          "durationTextSeconds": 7165,
+          "pngFileSavedBeforeXML": true,
+          "pngToXmlFileSaveGapSeconds": 0.16959571838378906,
+          "simultaneousCaptureGuaranteed": false
+        },
+        {
+          "label": "after-input-t0",
+          "sliderAccessibilityValue": "50%",
+          "sliderFramePoints": [
+            130.0,
+            223.0,
+            584.0,
+            44.0
+          ],
+          "whiteThumbCenterPoints": [
+            421.1666666666667,
+            245.0
+          ],
+          "whiteThumbWidthPoints": 26.666666666666668,
+          "currentTextSeconds": 3569,
+          "durationTextSeconds": 7165,
+          "pngFileSavedBeforeXML": true,
+          "pngToXmlFileSaveGapSeconds": 0.1818079948425293,
+          "simultaneousCaptureGuaranteed": false
+        },
+        {
+          "label": "after-input-t3",
+          "sliderAccessibilityValue": "50%",
+          "sliderFramePoints": [
+            130.0,
+            223.0,
+            584.0,
+            44.0
+          ],
+          "whiteThumbCenterPoints": [
+            421.1666666666667,
+            245.0
+          ],
+          "whiteThumbWidthPoints": 26.666666666666668,
+          "currentTextSeconds": 3569,
+          "durationTextSeconds": 7165,
+          "pngFileSavedBeforeXML": true,
+          "pngToXmlFileSaveGapSeconds": 0.13211607933044434,
+          "simultaneousCaptureGuaranteed": false
+        },
+        {
+          "label": "after-input-t10",
+          "sliderAccessibilityValue": "50%",
+          "sliderFramePoints": [
+            130.0,
+            223.0,
+            584.0,
+            44.0
+          ],
+          "whiteThumbCenterPoints": [
+            420.3333333333333,
+            245.0
+          ],
+          "whiteThumbWidthPoints": 26.333333333333332,
+          "currentTextSeconds": 3569,
+          "durationTextSeconds": 7165,
+          "pngFileSavedBeforeXML": true,
+          "pngToXmlFileSaveGapSeconds": 0.17893099784851074,
+          "simultaneousCaptureGuaranteed": false
+        }
+      ]
+    }
+  ],
+  "actualTargetGapSeconds": 12.86371148884291,
+  "nominalScaleFromFullAccessibilityWidth": {
+    "durationSeconds": 7165.01,
+    "widthPoints": 584.0,
+    "secondsPerPoint": 12.268852739726027,
+    "secondsPerImagePixelAt3x": 4.089617579908675,
+    "oneSecondNominalMovementPoints": 0.08150721352796438,
+    "physicalSliderEffectiveTrackWidthUnknown": true,
+    "notAValidatedErrorBound": true
+  },
+  "findings": [
+    "Both windows report the same exact telemetry duration 7165.01 seconds; a duration difference does not explain this pair.",
+    "The two different targets are already present in seek_started before the input HTTP call returns. Later decoder/network waiting cannot retroactively cause that committed-target difference.",
+    "Both native integer accessibility values are 50%, but displayed elapsed clocks agree with distinct committed targets; 50% is insufficient proof of an equal target.",
+    "The requested endpoint is identical while the resulting rendered thumb centers differ. Saved image/XML captures are sequential and are not touch-event telemetry.",
+    "No proof yet distinguishes input coordinate rounding, UIKit slider gesture offset, or view state at release. Do not repair the media timebase or repeat the two rejected input candidates."
+  ],
+  "next": [
+    "Keep strict deep-seek comparison blocked until the actual committed target is verified.",
+    "Do not block zero-start startup PGS/Off investigation on exact deep-seek input; it can use independent from-head windows.",
+    "Prefer controlled evidence of the actual UI release value and source duration before a new input hypothesis, keeping Debug-only instrumentation distinct from delivered behavior."
+  ],
+  "acceptance": {
+    "strictSeekPair": false,
+    "cellularPlaybackFixed": false,
+    "actualSeekRecovered": false,
+    "newMatrixPass": false
+  }
+}

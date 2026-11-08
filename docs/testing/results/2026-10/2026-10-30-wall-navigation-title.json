@@ -1,0 +1,171 @@
+{
+  "recordedAt": "2026-10-30T21:37:54+08:00",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceInputCount": 439,
+  "changedExistingSourceFiles": 2,
+  "restoredIgnoredDependencyBinaries": 2,
+  "dependencyVersion": "3.7.3 unchanged",
+  "builds": {
+    "mobile-sim-debug-cast": {
+      "startedAt": "2026-10-30T21:24:04.167481+08:00",
+      "retryReason": "Established source-cache root cause; original matching 3.7.3 binaries restored, no parameter tuning",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T21:24:19.944864+08:00"
+    },
+    "tv-sim-debug-cast": {
+      "startedAt": "2026-10-30T21:15:22.870062+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T21:15:32.930803+08:00"
+    },
+    "mobile-debug": {
+      "startedAt": "2026-10-30T21:25:14.710661+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T21:26:00.585914+08:00"
+    },
+    "tv-debug": {
+      "startedAt": "2026-10-30T21:26:00.587375+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T21:26:16.277639+08:00"
+    }
+  },
+  "releaseBuildNotRepeatedThisBatch": true,
+  "newTests": 0,
+  "parameterTestsNotRepeatedBecauseParserAndTestsUnchanged": true,
+  "sourcePreservation": {
+    "twoExistingSourceFilesOnlyNavigationModifiersChanged": true,
+    "productionAndDebugWallBothUseOnePlatformTitle": true,
+    "allDataSearchPagingPlaybackRecoveryActionsUnchanged": true,
+    "tvStillHasOnlyEmptyNavigationTitle": true,
+    "noNewTestsForPresentationOnlyChange": true,
+    "sourceInputCount": 439,
+    "changedExistingSourceFiles": 2,
+    "otherSourceInputsByteIdentical": 437,
+    "sourceInputHashesStillMatch": true
+  },
+  "initialMobileSimulatorFailure": "Missing MobileVLCKit binary in dependency source; intermediate-only copy deleted by CocoaPods rsync. Both failed logs retained; matching original local 3.7.3 cache restored source binaries. No build-parameter tuning.",
+  "dependencyOriginalCache": [
+    {
+      "slice": "ios-arm64_i386_x86_64-simulator",
+      "size": 126015168,
+      "sha256": "eb44ce79a0fc86e544c1b0db92a5c49d2af55786706d9dbf0e1383c7a7f262be",
+      "resourceSignatureExitCode": 0,
+      "unchangedLocalFilesMatch": true
+    },
+    {
+      "slice": "ios-arm64_armv7_armv7s",
+      "size": 97897888,
+      "sha256": "86186f43ec1cf3d74bb84ae11e4eeda4a3a4aa1f1fcfd0c255ca0adc0fa954e3",
+      "resourceSignatureExitCode": 1,
+      "unchangedLocalFilesMatch": true
+    }
+  ],
+  "packages": {
+    "mobile": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-30T21:26:00.372678+08:00",
+      "frozenAt": "2026-10-30T21:26:27.535638+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 439,
+      "mainSHA256": "fb5d29a1adbed9be224c9613c9b0714dca27ad20a8c04b1d75c0eaab216709dd",
+      "debugDylibSHA256": "33e800b9a884be59e576405b88f5751a57aa04a35dca5ac7954448ef5be7d90e",
+      "signedMachOCount": 30,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false,
+      "copyMethod": "cp -cpR clone requested; hashes and signatures verified independently"
+    },
+    "tv": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-30T21:26:16.194956+08:00",
+      "frozenAt": "2026-10-30T21:26:27.904074+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 439,
+      "mainSHA256": "8d533762476f72edb08d0e74bd18ad2d212fc258228a2a74138c6822433b81b2",
+      "debugDylibSHA256": "6aeefeceb472613954cdb56346e5ee4a060bd36df4f09b67f23216e9d1efe75a",
+      "signedMachOCount": 27,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false,
+      "copyMethod": "cp -cpR clone requested; hashes and signatures verified independently"
+    }
+  },
+  "capture": {
+    "accepted": 3,
+    "byPlatform": {
+      "phone": 1,
+      "pad": 1,
+      "tv": 1
+    },
+    "notStarted": {},
+    "allPassed": true,
+    "ownedSimulatorsDeleted": true,
+    "syntheticPreferencesPreserved": true,
+    "physicalDevicesOperated": 0,
+    "NASCommands": 0,
+    "interactionOrAnimationVerified": false
+  },
+  "visualReview": {
+    "recordedAt": "2026-10-30T21:31:44.111635+08:00",
+    "reviewed": true,
+    "reviewedStaticWindows": 3,
+    "titleVisibleInPhoneAndTablet": true,
+    "noticeTextVisible": true,
+    "televisionLayoutPreserved": true,
+    "reviewSheet": "wall-title-review.jpg",
+    "actualProductionModelNavigationAndLocalizationVerified": false
+  },
+  "largeNoticeScroll": {
+    "physicalDevicesOperated": 0,
+    "NASCommands": 0,
+    "playbackCommands": 0,
+    "fixtureActionExecuted": false,
+    "started": true,
+    "before": {
+      "screenshot": "before.png",
+      "sha256": "0e9e2917f2cd15464c6a17c6c5cef9db966de699d9a0858c9c8a969c8e1e7dac",
+      "reloadVisibleInOCR": false,
+      "syntheticMarkerVisible": true
+    },
+    "after": {
+      "screenshot": "after.png",
+      "sha256": "ee5d3705a69c9b43e724772977930ac5b0859da22f592240587b5338c96277ed",
+      "reloadVisibleInOCR": false,
+      "syntheticMarkerVisible": true
+    },
+    "actionRevealedAfterScroll": false,
+    "interactionLimit": "Scroll position and action visibility only; no frame timing, no tap or actual recovery",
+    "syntheticPreferencesPreserved": true,
+    "unexpectedApplicationKeys": [],
+    "shutdownExit": 0,
+    "deleteExit": 0
+  },
+  "scrollInputAttempts": {
+    "at": "2026-10-30T21:36:40.186477+08:00",
+    "tool": "cua_repl Simulator only",
+    "attempts": [
+      "scroll at message element down one page",
+      "drag at screenshot coordinates upward",
+      "drag at half-scale coordinates upward"
+    ],
+    "observedDisplacementQualified": false,
+    "reloadVisible": false,
+    "noFixtureButtonTapped": true,
+    "conclusion": "Input requests accepted but screenshots did not show qualified movement. Do not infer content cannot scroll or action is reachable. Stop repeated equivalent input attempts."
+  },
+  "ownedSimulatorsDeleted": 4,
+  "physicalDevicesOperated": 0,
+  "NASCommands": 0,
+  "playbackCommands": 0,
+  "newPlaybackMatrixP": 0,
+  "notVerified": [
+    "Phone large-text scroll displacement and reload reachability remain unverified",
+    "Actual model/navigation data or actual recovery button action",
+    "Frame timing/scroll smoothness/remote focus/actual localization",
+    "New-source Release build and physical installation",
+    "Real NAS or playback"
+  ]
+}

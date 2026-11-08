@@ -1,0 +1,1032 @@
+{
+  "updatedAt": "2026-10-13T04:22:08.923777+08:00",
+  "status": "L0 and scoped L1 tail bookmark protection verified; live-tail playback and wider L2/L3 pending",
+  "package": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "860f470425e1dd18810766a784768fb196a7b2a46f57454e2b32b183218f506b",
+    "package": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-10-13-recording-tail-bookmark-034254/Nastart-Recording-Tail-Bookmark-Normal-Debug.app",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "binaryBuildTime": "2026-10-13T03:48:46.003733+08:00",
+    "binaries": {
+      "Nastart": "4f662129940d44f58cf59b809773f2c6161a1cbbcf5707bfe094d2a8e66ed02e",
+      "Nastart.debug.dylib": "1b9f34cbd514a0075a552b53a5178bbc1b9e81bd9c7a9f37811af4dc8443325f",
+      "Frameworks/KSPlayer.framework/KSPlayer": "e68d742056f06b8806d18ce13f3027b47a2d9bc380671b7371a985b6d139f785"
+    },
+    "signatureVerified": true,
+    "individuallyVerifiedLibraries": 29,
+    "checkedInputs": 173,
+    "newerInputs": [],
+    "profileExpirationUTC": "2026-10-17T22:23:40",
+    "tests": {
+      "executed": 346,
+      "skipped": 2,
+      "failures": 0,
+      "runThisTurn": true
+    },
+    "preflight": {
+      "passed": 15,
+      "runThisTurn": true
+    },
+    "sourceEditsThisTurn": [
+      "Recording resume store retains verified TS position at temporary tail and beyond stale duration; two cold-append and launch regression tests; ordinary completion unchanged; no decoder, transport or live-tail waiting changes"
+    ],
+    "baselineSourceDiffSHA256": "e82a5bde1c5840c55b4ba5a8953b9bb5f41ff47ccfa9b7d27164772c838580b1",
+    "sourceInputManifestSHA256": "05f3033a141abd2927f79f730c930128147e0daa85d82c26628bbc89b9cf24c4",
+    "frozenAt": "2026-10-13T03:50:09.807084+08:00",
+    "linkageVerified": true,
+    "ipa": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-10-13-recording-tail-bookmark-034254/Nastart-Recording-Tail-Bookmark-Normal-Debug.ipa"
+  },
+  "devices": {
+    "iphone13": {
+      "recordedAt": "2026-10-13T03:50:22.075155+08:00",
+      "device": "iphone13",
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "connection": "USB",
+      "sourceDiffSHA256": "860f470425e1dd18810766a784768fb196a7b2a46f57454e2b32b183218f506b",
+      "binaries": {
+        "Nastart": "4f662129940d44f58cf59b809773f2c6161a1cbbcf5707bfe094d2a8e66ed02e",
+        "Nastart.debug.dylib": "1b9f34cbd514a0075a552b53a5178bbc1b9e81bd9c7a9f37811af4dc8443325f",
+        "Frameworks/KSPlayer.framework/KSPlayer": "e68d742056f06b8806d18ce13f3027b47a2d9bc380671b7371a985b6d139f785"
+      },
+      "method": "ios-deploy data-preserving cover",
+      "preservesContainer": true,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "actualForegroundUIVerified": true,
+      "installation": "success",
+      "signatureVerified": true,
+      "librariesVerified": 29,
+      "installationStartedAt": "2026-10-13T03:50:22.187031+08:00",
+      "nativeInstallExitCode": 0,
+      "installedAt": "2026-10-13T03:52:20.445671+08:00",
+      "nonDiagnosticKeysBefore": 25,
+      "nonDiagnosticKeysAfter": 25,
+      "samePreferenceKeys": true,
+      "unchangedPreferenceValues": 25,
+      "changedPreferenceCount": 0,
+      "postInstallLookupExists": true,
+      "actualHomeReviewed": true
+    },
+    "ipad": {
+      "recordedAt": "2026-10-13T03:50:23.109831+08:00",
+      "device": "ipad",
+      "model": "iPad12,1",
+      "system": "18.3.1",
+      "connection": "USB",
+      "sourceDiffSHA256": "860f470425e1dd18810766a784768fb196a7b2a46f57454e2b32b183218f506b",
+      "binaries": {
+        "Nastart": "4f662129940d44f58cf59b809773f2c6161a1cbbcf5707bfe094d2a8e66ed02e",
+        "Nastart.debug.dylib": "1b9f34cbd514a0075a552b53a5178bbc1b9e81bd9c7a9f37811af4dc8443325f",
+        "Frameworks/KSPlayer.framework/KSPlayer": "e68d742056f06b8806d18ce13f3027b47a2d9bc380671b7371a985b6d139f785"
+      },
+      "method": "Apple devicectl data-preserving cover",
+      "preservesContainer": true,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "actualForegroundUIVerified": true,
+      "installation": "success",
+      "signatureVerified": true,
+      "librariesVerified": 29,
+      "installationStartedAt": "2026-10-13T03:50:23.278295+08:00",
+      "nativeInstallExitCode": 0,
+      "nativeInstallErrorCode": null,
+      "installedAt": "2026-10-13T03:50:29.097548+08:00",
+      "nonDiagnosticKeysBefore": 18,
+      "nonDiagnosticKeysAfter": 18,
+      "samePreferenceKeys": true,
+      "unchangedPreferenceValues": 18,
+      "changedPreferenceCount": 0,
+      "postInstallLookupExists": true,
+      "actualHomeReviewed": true
+    },
+    "iphone18": {
+      "device": "iphone18",
+      "installation": "success",
+      "sourceDiffSHA256": "860f470425e1dd18810766a784768fb196a7b2a46f57454e2b32b183218f506b",
+      "binaries": {
+        "Nastart": "4f662129940d44f58cf59b809773f2c6161a1cbbcf5707bfe094d2a8e66ed02e",
+        "Nastart.debug.dylib": "1b9f34cbd514a0075a552b53a5178bbc1b9e81bd9c7a9f37811af4dc8443325f",
+        "Frameworks/KSPlayer.framework/KSPlayer": "e68d742056f06b8806d18ce13f3027b47a2d9bc380671b7371a985b6d139f785"
+      },
+      "method": "direct Bonjour TCP lockdown using existing Mac legacy pairing + AFC + installation_proxy Install; preserve container",
+      "newPairingAttempted": false,
+      "preservesContainer": true,
+      "signatureVerified": true,
+      "librariesVerified": 29,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "normalLaunch": "deferred per user; no UI launch requested",
+      "actualForegroundUIVerified": false,
+      "model": "iPhone19,7",
+      "system": "27.0",
+      "connection": "NETWORK",
+      "installationStartedAt": "2026-10-13T03:52:37.393537+08:00",
+      "installedAt": "2026-10-13T03:52:48.052350+08:00",
+      "postInstallLookupExists": true,
+      "samePreferenceKeys": true,
+      "nonDiagnosticKeysBefore": 25,
+      "nonDiagnosticKeysAfter": 25,
+      "unchangedPreferenceValues": 25,
+      "changedPreferenceCount": 0
+    }
+  },
+  "tailProof": {
+    "iphone13": {
+      "nearTailPosition": 6068.478233333333,
+      "durationSnapshot": 6094.6,
+      "remainingSeconds": 26.1217666666671,
+      "coldBeforeEntryExactlyMatchesExit": true,
+      "coldStartupInitialPosition": 6068.478233333333,
+      "coldT3AndT30ActualImagesReviewed": true,
+      "coldT3": "actual end credits, 1:41:09",
+      "coldT30": "later end credits, 1:41:34, play button",
+      "pausedSeekFrameAccuracyAccepted": false,
+      "growingRealFileValidated": false,
+      "coldAfterExitSavedPosition": 6094.580733333333
+    },
+    "ipad": {
+      "nearTailPosition": 6080.857988888889,
+      "durationSnapshot": 6094.6,
+      "remainingSeconds": 13.742011111111424,
+      "coldBeforeEntryExactlyMatchesExit": true,
+      "coldStartupInitialPosition": 6080.857988888889,
+      "coldT3T10T30ActualImagesReviewed": true,
+      "coldT3T10": "changing end credits",
+      "coldT30": "end credits, 1:41:34, Play icon",
+      "coldAfterExitSavedPosition": 6094.577611111111,
+      "pausedSeekFrameAccuracyAccepted": false,
+      "growingRealFileValidated": false
+    }
+  },
+  "windows": {
+    "iphone13": {
+      "tail-s05-native-thumb": {
+        "sourceDiffSHA256": "860f470425e1dd18810766a784768fb196a7b2a46f57454e2b32b183218f506b",
+        "isFinalPackage": true,
+        "freshEventCount": 195,
+        "firstClock": {
+          "currentSeconds": "0.000",
+          "durationSeconds": "6094.600",
+          "enginePlaying": "true",
+          "controlsPlaying": "true",
+          "sampleReason": "playbackTick",
+          "playbackTraceID": "058F37F2",
+          "planID": "B84A5B49",
+          "routeKind": "localRangeProxy"
+        },
+        "lastClock": {
+          "currentSeconds": "39.217",
+          "durationSeconds": "6094.600",
+          "enginePlaying": "true",
+          "controlsPlaying": "true",
+          "sampleReason": "playbackTick",
+          "playbackTraceID": "058F37F2",
+          "planID": "B84A5B49",
+          "routeKind": "localRangeProxy"
+        },
+        "errors": [],
+        "probes": [],
+        "startup": [
+          {
+            "playbackTraceID": "058F37F2",
+            "planID": "B84A5B49",
+            "initialPositionSeconds": "30.574066666666667",
+            "initialSeekResult": "0",
+            "initialSeekMs": "933.5487915668637",
+            "acceptedVideoFrameMs": "1573.4132917132229",
+            "firstPlayableVideoFrames": "16",
+            "discardedVideoFramesBeforeAccepted": "0"
+          }
+        ],
+        "screenshotReviewed": true,
+        "continuousFramesOrAudioAccepted": false,
+        "liveTailFollowAccepted": false,
+        "changedBookmarkCount": 1,
+        "savedEntries": [
+          {
+            "positionSeconds": 6068.478233333333,
+            "audioTrackID": 1,
+            "subtitleTrackID": null,
+            "subtitlesDisabled": false
+          }
+        ],
+        "exit": {
+          "normalUIExit": true,
+          "evidence": "ts-ui close plus closed actual source and persisted bookmark; cold entry matches"
+        },
+        "review": {
+          "observed": "near-end-step3 actual image reviewed; clock near end, paused image held; follow-up cold actual credits reviewed"
+        }
+      },
+      "tail-s05-cold": {
+        "sourceDiffSHA256": "860f470425e1dd18810766a784768fb196a7b2a46f57454e2b32b183218f506b",
+        "isFinalPackage": true,
+        "freshEventCount": 171,
+        "firstClock": {
+          "currentSeconds": "0.000",
+          "durationSeconds": "6094.600",
+          "enginePlaying": "true",
+          "controlsPlaying": "true",
+          "sampleReason": "playbackTick",
+          "playbackTraceID": "5A42F1BC",
+          "planID": "45AA38FA",
+          "routeKind": "localRangeProxy"
+        },
+        "lastClock": {
+          "currentSeconds": "6094.047",
+          "durationSeconds": "6094.600",
+          "enginePlaying": "true",
+          "controlsPlaying": "true",
+          "sampleReason": "playbackTick",
+          "playbackTraceID": "5A42F1BC",
+          "planID": "45AA38FA",
+          "routeKind": "localRangeProxy"
+        },
+        "errors": [],
+        "probes": [
+          {
+            "event": "probe_succeeded",
+            "stage": "recordingIdentity",
+            "allowsContentGrowth": "true",
+            "expectedBytes": "5315092196",
+            "responseTotalBytes": "5315092196",
+            "status": "206",
+            "mime": "video/mpeg",
+            "lengthCheck": "matchedOrUnavailable"
+          },
+          {
+            "event": "probe_succeeded",
+            "stage": "dsmGreenfieldLANRange",
+            "allowsContentGrowth": "true",
+            "expectedBytes": "5315092196",
+            "responseTotalBytes": "5315092196",
+            "status": "206",
+            "mime": "video/mpeg",
+            "lengthCheck": "matchedOrUnavailable"
+          }
+        ],
+        "startup": [
+          {
+            "playbackTraceID": "5A42F1BC",
+            "planID": "45AA38FA",
+            "initialPositionSeconds": "6068.478233333333",
+            "initialSeekResult": "0",
+            "initialSeekMs": "713.2351666223258",
+            "acceptedVideoFrameMs": "1240.2767082676291",
+            "firstPlayableVideoFrames": "16",
+            "discardedVideoFramesBeforeAccepted": "0"
+          }
+        ],
+        "screenshotReviewed": true,
+        "continuousFramesOrAudioAccepted": false,
+        "liveTailFollowAccepted": false,
+        "exit": {
+          "normalUIExit": true,
+          "playbackErrorVisible": false,
+          "completionMatches": 1,
+          "playerOpened": true
+        },
+        "changedBookmarkCount": 1,
+        "savedEntries": [
+          {
+            "positionSeconds": 6094.580733333333,
+            "audioTrackID": 1,
+            "subtitleTrackID": null,
+            "subtitlesDisabled": false
+          }
+        ],
+        "review": {
+          "images": [
+            "t3.png",
+            "t30.png"
+          ],
+          "observed": "credits, 1:41:09 then 1:41:34 and play icon at EOF",
+          "subtitleAudioHDRAndFramePerformanceAccepted": false
+        }
+      },
+      "tail-s01-file": {
+        "sourceDiffSHA256": "860f470425e1dd18810766a784768fb196a7b2a46f57454e2b32b183218f506b",
+        "isFinalPackage": true,
+        "freshEventCount": 104,
+        "firstClock": {
+          "currentSeconds": "52.318",
+          "durationSeconds": "-",
+          "sampleReason": "firstFrame",
+          "playbackTraceID": "63319449",
+          "planID": "77B8DDE7",
+          "routeKind": "localRangeProxy"
+        },
+        "lastClock": {
+          "currentSeconds": "82.441",
+          "durationSeconds": "7165.010",
+          "enginePlaying": "true",
+          "controlsPlaying": "true",
+          "sampleReason": "playbackTick",
+          "playbackTraceID": "63319449",
+          "planID": "77B8DDE7",
+          "routeKind": "localRangeProxy"
+        },
+        "errors": [],
+        "probes": [
+          {
+            "event": "probe_succeeded",
+            "stage": "dsmGreenfieldLANRange",
+            "allowsContentGrowth": "false",
+            "expectedBytes": "2949955051",
+            "responseTotalBytes": "2949955051",
+            "status": "206",
+            "mime": "video/x-matroska",
+            "lengthCheck": "matchedOrUnavailable"
+          }
+        ],
+        "startup": [
+          {
+            "playbackTraceID": "63319449",
+            "planID": "77B8DDE7",
+            "initialPositionSeconds": "52.169",
+            "initialSeekResult": "0",
+            "initialSeekMs": "87.27658353745937",
+            "acceptedVideoFrameMs": "518.0430000182241",
+            "firstPlayableVideoFrames": "16",
+            "discardedVideoFramesBeforeAccepted": "149"
+          }
+        ],
+        "screenshotReviewed": true,
+        "continuousFramesOrAudioAccepted": false,
+        "liveTailFollowAccepted": false,
+        "exit": {
+          "normalUIExit": true,
+          "playbackErrorVisible": false,
+          "completionMatches": 1,
+          "playerOpened": true
+        },
+        "changedBookmarkCount": 1,
+        "savedEntries": [
+          {
+            "positionSeconds": 82.953,
+            "audioTrackID": 1,
+            "subtitleTrackID": null,
+            "subtitlesDisabled": true
+          }
+        ],
+        "review": {
+          "at": "2026-10-13T04:10:07.757153+08:00",
+          "images": [
+            "t3.png",
+            "t10.png",
+            "t30.png"
+          ],
+          "observed": "t3 cloud video and full control circle; t10 landscape and t30 flying castle scene, changing actual movie image",
+          "subtitleAudioHDRAndFramePerformanceAccepted": false
+        }
+      },
+      "tail-s01-jf": {
+        "sourceDiffSHA256": "860f470425e1dd18810766a784768fb196a7b2a46f57454e2b32b183218f506b",
+        "isFinalPackage": true,
+        "freshEventCount": 147,
+        "firstClock": {
+          "currentSeconds": "0.094",
+          "durationSeconds": "-",
+          "sampleReason": "firstFrame",
+          "playbackTraceID": "3C8C6441",
+          "planID": "711E10AF",
+          "routeKind": "localRangeProxy"
+        },
+        "lastClock": {
+          "currentSeconds": "30.985",
+          "durationSeconds": "7165.010",
+          "enginePlaying": "true",
+          "controlsPlaying": "true",
+          "sampleReason": "playbackTick",
+          "playbackTraceID": "3C8C6441",
+          "planID": "711E10AF",
+          "routeKind": "localRangeProxy"
+        },
+        "errors": [],
+        "probes": [
+          {
+            "event": "probe_succeeded",
+            "stage": "jellyfinRange",
+            "allowsContentGrowth": "false",
+            "expectedBytes": "2949955051",
+            "responseTotalBytes": "2949955051",
+            "status": "206",
+            "mime": "video/x-matroska",
+            "lengthCheck": "matchedOrUnavailable"
+          }
+        ],
+        "startup": [
+          {
+            "playbackTraceID": "3C8C6441",
+            "planID": "711E10AF",
+            "initialPositionSeconds": "0.0",
+            "initialSeekResult": "notRequested",
+            "initialSeekMs": "unknown",
+            "acceptedVideoFrameMs": "136.9578333105892",
+            "firstPlayableVideoFrames": "3",
+            "discardedVideoFramesBeforeAccepted": "0"
+          }
+        ],
+        "screenshotReviewed": true,
+        "continuousFramesOrAudioAccepted": false,
+        "liveTailFollowAccepted": false,
+        "exit": {
+          "normalUIExit": true,
+          "playbackErrorVisible": false,
+          "completionMatches": 1,
+          "playerOpened": true
+        },
+        "changedBookmarkCount": 1,
+        "savedEntries": [
+          {
+            "positionSeconds": 31.476,
+            "audioTrackID": 1,
+            "subtitleTrackID": null,
+            "subtitlesDisabled": true
+          }
+        ],
+        "review": {
+          "images": [
+            "t3.png",
+            "t10.png",
+            "t30.png"
+          ],
+          "observed": "actual studio title at t3/t10; t30 blue cloud scene; control circles complete at t3",
+          "subtitleAudioHDRAndFramePerformanceAccepted": false
+        }
+      },
+      "tail-s03-jf": {
+        "sourceDiffSHA256": "860f470425e1dd18810766a784768fb196a7b2a46f57454e2b32b183218f506b",
+        "isFinalPackage": true,
+        "freshEventCount": 242,
+        "firstClock": {
+          "currentSeconds": "6128.054",
+          "durationSeconds": "7524.768",
+          "enginePlaying": "true",
+          "controlsPlaying": "true",
+          "sampleReason": "playbackTick",
+          "playbackTraceID": "A28824D0",
+          "planID": "EFA58338",
+          "routeKind": "localRangeProxy"
+        },
+        "lastClock": {
+          "currentSeconds": "6157.055",
+          "durationSeconds": "7524.768",
+          "enginePlaying": "true",
+          "controlsPlaying": "true",
+          "sampleReason": "playbackTick",
+          "playbackTraceID": "A28824D0",
+          "planID": "EFA58338",
+          "routeKind": "localRangeProxy"
+        },
+        "errors": [],
+        "probes": [
+          {
+            "event": "probe_succeeded",
+            "stage": "jellyfinRange",
+            "allowsContentGrowth": "false",
+            "expectedBytes": "54005939750",
+            "responseTotalBytes": "54005939750",
+            "status": "206",
+            "mime": "video/x-matroska",
+            "lengthCheck": "matchedOrUnavailable"
+          }
+        ],
+        "startup": [
+          {
+            "playbackTraceID": "A28824D0",
+            "planID": "EFA58338",
+            "initialPositionSeconds": "6128.054",
+            "initialSeekResult": "0",
+            "initialSeekMs": "178.63433342427015",
+            "acceptedVideoFrameMs": "1135.2299582213163",
+            "firstPlayableVideoFrames": "16",
+            "discardedVideoFramesBeforeAccepted": "17"
+          }
+        ],
+        "screenshotReviewed": true,
+        "continuousFramesOrAudioAccepted": false,
+        "liveTailFollowAccepted": false,
+        "exit": {
+          "normalUIExit": true,
+          "playbackErrorVisible": false,
+          "completionMatches": 1,
+          "playerOpened": true
+        },
+        "changedBookmarkCount": 1,
+        "savedEntries": [
+          {
+            "positionSeconds": 6158.036,
+            "audioTrackID": 1,
+            "subtitleTrackID": 7,
+            "subtitlesDisabled": false
+          }
+        ],
+        "review": {
+          "images": [
+            "t3.png",
+            "t10.png",
+            "t30.png"
+          ],
+          "observed": "actual changing phone-call scene; t10 single grey Chinese/yellow English subtitle layer for sampled sentence; not historical duplicate-cue acceptance",
+          "subtitleAudioHDRAndFramePerformanceAccepted": false
+        }
+      }
+    },
+    "ipad": {
+      "tail-s05-near-end": {
+        "sourceDiffSHA256": "860f470425e1dd18810766a784768fb196a7b2a46f57454e2b32b183218f506b",
+        "isFinalPackage": true,
+        "freshEventCount": 199,
+        "firstClock": {
+          "currentSeconds": "0.000",
+          "durationSeconds": "6094.600",
+          "enginePlaying": "true",
+          "controlsPlaying": "true",
+          "sampleReason": "playbackTick",
+          "playbackTraceID": "10A48A67",
+          "planID": "830E5F09",
+          "routeKind": "localRangeProxy"
+        },
+        "lastClock": {
+          "currentSeconds": "820.971",
+          "durationSeconds": "6094.600",
+          "enginePlaying": "true",
+          "controlsPlaying": "true",
+          "sampleReason": "playbackTick",
+          "playbackTraceID": "10A48A67",
+          "planID": "830E5F09",
+          "routeKind": "localRangeProxy"
+        },
+        "errors": [],
+        "probes": [
+          {
+            "event": "probe_succeeded",
+            "stage": "recordingIdentity",
+            "allowsContentGrowth": "true",
+            "expectedBytes": "5315092196",
+            "responseTotalBytes": "5315092196",
+            "status": "206",
+            "mime": "video/mpeg",
+            "lengthCheck": "matchedOrUnavailable"
+          },
+          {
+            "event": "probe_succeeded",
+            "stage": "dsmGreenfieldLANRange",
+            "allowsContentGrowth": "true",
+            "expectedBytes": "5315092196",
+            "responseTotalBytes": "5315092196",
+            "status": "206",
+            "mime": "video/mpeg",
+            "lengthCheck": "matchedOrUnavailable"
+          }
+        ],
+        "startup": [
+          {
+            "playbackTraceID": "10A48A67",
+            "planID": "830E5F09",
+            "initialPositionSeconds": "794.6136111111111",
+            "initialSeekResult": "0",
+            "initialSeekMs": "1185.5161666753702",
+            "acceptedVideoFrameMs": "3816.668458341155",
+            "firstPlayableVideoFrames": "5",
+            "discardedVideoFramesBeforeAccepted": "0"
+          }
+        ],
+        "screenshotReviewed": true,
+        "continuousFramesOrAudioAccepted": false,
+        "liveTailFollowAccepted": false,
+        "changedBookmarkCount": 1,
+        "savedEntries": [
+          {
+            "positionSeconds": 6080.857988888889,
+            "audioTrackID": 1,
+            "subtitleTrackID": null,
+            "subtitlesDisabled": false
+          }
+        ],
+        "exit": {
+          "normalUIExit": true,
+          "evidence": "ts-ui close plus closed actual source and persisted bookmark; cold entry matches"
+        },
+        "review": {
+          "images": [
+            "within-old-completion-threshold.png"
+          ],
+          "observed": "paused player clock 1:41:20 / 1:41:34; full control circles; picture remains earlier magenta scene, paused seek frame accuracy not accepted",
+          "subtitleAudioHDRAndFramePerformanceAccepted": false
+        }
+      },
+      "tail-s05-cold": {
+        "sourceDiffSHA256": "860f470425e1dd18810766a784768fb196a7b2a46f57454e2b32b183218f506b",
+        "isFinalPackage": true,
+        "freshEventCount": 149,
+        "firstClock": {
+          "currentSeconds": "0.000",
+          "durationSeconds": "6094.600",
+          "enginePlaying": "true",
+          "controlsPlaying": "true",
+          "sampleReason": "playbackTick",
+          "playbackTraceID": "AFB6E4F4",
+          "planID": "8A482D76",
+          "routeKind": "localRangeProxy"
+        },
+        "lastClock": {
+          "currentSeconds": "6094.600",
+          "durationSeconds": "6094.600",
+          "enginePlaying": "false",
+          "controlsPlaying": "false",
+          "sampleReason": "playbackTick",
+          "playbackTraceID": "AFB6E4F4",
+          "planID": "8A482D76",
+          "routeKind": "localRangeProxy"
+        },
+        "errors": [],
+        "probes": [
+          {
+            "event": "probe_succeeded",
+            "stage": "recordingIdentity",
+            "allowsContentGrowth": "true",
+            "expectedBytes": "5315092196",
+            "responseTotalBytes": "5315092196",
+            "status": "206",
+            "mime": "video/mpeg",
+            "lengthCheck": "matchedOrUnavailable"
+          },
+          {
+            "event": "probe_succeeded",
+            "stage": "dsmGreenfieldLANRange",
+            "allowsContentGrowth": "true",
+            "expectedBytes": "5315092196",
+            "responseTotalBytes": "5315092196",
+            "status": "206",
+            "mime": "video/mpeg",
+            "lengthCheck": "matchedOrUnavailable"
+          }
+        ],
+        "startup": [
+          {
+            "playbackTraceID": "AFB6E4F4",
+            "planID": "8A482D76",
+            "initialPositionSeconds": "6080.857988888889",
+            "initialSeekResult": "0",
+            "initialSeekMs": "702.4451666511595",
+            "acceptedVideoFrameMs": "1415.0112916831858",
+            "firstPlayableVideoFrames": "16",
+            "discardedVideoFramesBeforeAccepted": "0"
+          }
+        ],
+        "screenshotReviewed": true,
+        "continuousFramesOrAudioAccepted": false,
+        "liveTailFollowAccepted": false,
+        "exit": {
+          "normalUIExit": true,
+          "playbackErrorVisible": false,
+          "completionMatches": 1,
+          "playerOpened": true
+        },
+        "changedBookmarkCount": 1,
+        "savedEntries": [
+          {
+            "positionSeconds": 6094.577611111111,
+            "audioTrackID": 1,
+            "subtitleTrackID": null,
+            "subtitlesDisabled": false
+          }
+        ],
+        "review": {
+          "images": [
+            "t3.png",
+            "t10.png",
+            "t30.png"
+          ],
+          "observed": "changing credits; t30 1:41:34 and play icon",
+          "subtitleAudioHDRAndFramePerformanceAccepted": false
+        }
+      },
+      "tail-s01-file": {
+        "sourceDiffSHA256": "860f470425e1dd18810766a784768fb196a7b2a46f57454e2b32b183218f506b",
+        "isFinalPackage": true,
+        "freshEventCount": 103,
+        "firstClock": {
+          "currentSeconds": "816.272",
+          "durationSeconds": "-",
+          "sampleReason": "firstFrame",
+          "playbackTraceID": "FCD05969",
+          "planID": "8FAB731C",
+          "routeKind": "localRangeProxy"
+        },
+        "lastClock": {
+          "currentSeconds": "846.277",
+          "durationSeconds": "7165.010",
+          "enginePlaying": "true",
+          "controlsPlaying": "true",
+          "sampleReason": "playbackTick",
+          "playbackTraceID": "FCD05969",
+          "planID": "8FAB731C",
+          "routeKind": "localRangeProxy"
+        },
+        "errors": [],
+        "probes": [
+          {
+            "event": "probe_succeeded",
+            "stage": "dsmGreenfieldLANRange",
+            "allowsContentGrowth": "false",
+            "expectedBytes": "2949955051",
+            "responseTotalBytes": "2949955051",
+            "status": "206",
+            "mime": "video/x-matroska",
+            "lengthCheck": "matchedOrUnavailable"
+          }
+        ],
+        "startup": [
+          {
+            "playbackTraceID": "FCD05969",
+            "planID": "8FAB731C",
+            "initialPositionSeconds": "816.197",
+            "initialSeekResult": "0",
+            "initialSeekMs": "177.50525003066286",
+            "acceptedVideoFrameMs": "658.1310832989402",
+            "firstPlayableVideoFrames": "16",
+            "discardedVideoFramesBeforeAccepted": "42"
+          }
+        ],
+        "screenshotReviewed": true,
+        "continuousFramesOrAudioAccepted": false,
+        "liveTailFollowAccepted": false,
+        "exit": {
+          "normalUIExit": true,
+          "playbackErrorVisible": false,
+          "completionMatches": 1,
+          "playerOpened": true
+        },
+        "changedBookmarkCount": 1,
+        "savedEntries": [
+          {
+            "positionSeconds": 847.184,
+            "audioTrackID": 1,
+            "subtitleTrackID": 4,
+            "subtitlesDisabled": false
+          }
+        ],
+        "review": {
+          "images": [
+            "t3.png",
+            "t10.png",
+            "t30.png"
+          ],
+          "observed": "actual changing animated scene; two sampled Chinese subtitle sentences complete and single layer; not full historical subtitle acceptance",
+          "subtitleAudioHDRAndFramePerformanceAccepted": false
+        }
+      },
+      "tail-s01-jf": {
+        "sourceDiffSHA256": "860f470425e1dd18810766a784768fb196a7b2a46f57454e2b32b183218f506b",
+        "isFinalPackage": true,
+        "freshEventCount": 136,
+        "firstClock": {
+          "currentSeconds": "0.101",
+          "durationSeconds": "-",
+          "sampleReason": "firstFrame",
+          "playbackTraceID": "6D72C6D1",
+          "planID": "DE43C218",
+          "routeKind": "localRangeProxy"
+        },
+        "lastClock": {
+          "currentSeconds": "31.803",
+          "durationSeconds": "7165.010",
+          "enginePlaying": "true",
+          "controlsPlaying": "true",
+          "sampleReason": "playbackTick",
+          "playbackTraceID": "6D72C6D1",
+          "planID": "DE43C218",
+          "routeKind": "localRangeProxy"
+        },
+        "errors": [],
+        "probes": [
+          {
+            "event": "probe_succeeded",
+            "stage": "jellyfinRange",
+            "allowsContentGrowth": "false",
+            "expectedBytes": "2949955051",
+            "responseTotalBytes": "2949955051",
+            "status": "206",
+            "mime": "video/x-matroska",
+            "lengthCheck": "matchedOrUnavailable"
+          }
+        ],
+        "startup": [
+          {
+            "playbackTraceID": "6D72C6D1",
+            "planID": "DE43C218",
+            "initialPositionSeconds": "0.0",
+            "initialSeekResult": "notRequested",
+            "initialSeekMs": "unknown",
+            "acceptedVideoFrameMs": "210.78637498430908",
+            "firstPlayableVideoFrames": "7",
+            "discardedVideoFramesBeforeAccepted": "0"
+          }
+        ],
+        "screenshotReviewed": true,
+        "continuousFramesOrAudioAccepted": false,
+        "liveTailFollowAccepted": false,
+        "exit": {
+          "normalUIExit": true,
+          "playbackErrorVisible": false,
+          "completionMatches": 1,
+          "playerOpened": true
+        },
+        "changedBookmarkCount": 1,
+        "savedEntries": [
+          {
+            "positionSeconds": 31.824,
+            "audioTrackID": 1,
+            "subtitleTrackID": null,
+            "subtitlesDisabled": true
+          }
+        ],
+        "review": {
+          "images": [
+            "t3.png",
+            "t10.png",
+            "t30.png"
+          ],
+          "observed": "actual studio titles then blue cloud scene; complete control circles at t3",
+          "subtitleAudioHDRAndFramePerformanceAccepted": false
+        }
+      },
+      "tail-s03-file": {
+        "sourceDiffSHA256": "860f470425e1dd18810766a784768fb196a7b2a46f57454e2b32b183218f506b",
+        "isFinalPackage": true,
+        "freshEventCount": 175,
+        "firstClock": {
+          "currentSeconds": "938.896",
+          "durationSeconds": "7524.768",
+          "enginePlaying": "true",
+          "controlsPlaying": "true",
+          "sampleReason": "playbackTick",
+          "playbackTraceID": "DD394A46",
+          "planID": "0A8C3B14",
+          "routeKind": "localRangeProxy"
+        },
+        "lastClock": {
+          "currentSeconds": "965.872",
+          "durationSeconds": "7524.768",
+          "enginePlaying": "true",
+          "controlsPlaying": "true",
+          "sampleReason": "playbackTick",
+          "playbackTraceID": "DD394A46",
+          "planID": "0A8C3B14",
+          "routeKind": "localRangeProxy"
+        },
+        "errors": [],
+        "probes": [
+          {
+            "event": "probe_succeeded",
+            "stage": "dsmGreenfieldLANRange",
+            "allowsContentGrowth": "false",
+            "expectedBytes": "54005939750",
+            "responseTotalBytes": "54005939750",
+            "status": "206",
+            "mime": "video/x-matroska",
+            "lengthCheck": "matchedOrUnavailable"
+          }
+        ],
+        "startup": [
+          {
+            "playbackTraceID": "DD394A46",
+            "planID": "0A8C3B14",
+            "initialPositionSeconds": "938.896",
+            "initialSeekResult": "0",
+            "initialSeekMs": "371.04670831467956",
+            "acceptedVideoFrameMs": "1555.0928333541378",
+            "firstPlayableVideoFrames": "16",
+            "discardedVideoFramesBeforeAccepted": "4"
+          }
+        ],
+        "screenshotReviewed": true,
+        "continuousFramesOrAudioAccepted": false,
+        "liveTailFollowAccepted": false,
+        "exit": {
+          "normalUIExit": true,
+          "playbackErrorVisible": false,
+          "completionMatches": 1,
+          "playerOpened": true
+        },
+        "changedBookmarkCount": 1,
+        "savedEntries": [
+          {
+            "positionSeconds": 966.32,
+            "audioTrackID": 4,
+            "subtitleTrackID": null,
+            "subtitlesDisabled": true
+          }
+        ],
+        "review": {
+          "images": [
+            "t3.png",
+            "t10.png",
+            "t30.png"
+          ],
+          "observed": "t3 preparation spinner and rotation transition with partial circular outline; t10 actual man beside wall; t30 changed actual movie; first-frame and transition layout acceptance withheld",
+          "subtitleAudioHDRAndFramePerformanceAccepted": false
+        }
+      }
+    }
+  },
+  "finalAudit": {
+    "sourceInputsVerified": 173,
+    "binaryHashesVerified": true,
+    "deepSignatureVerified": true,
+    "devices": {
+      "iphone13": {
+        "at": "2026-10-13T04:21:54.125618+08:00",
+        "model": "iPhone14,5",
+        "system": "16.3.1",
+        "connection": "USB",
+        "sourceDiffSHA256": "860f470425e1dd18810766a784768fb196a7b2a46f57454e2b32b183218f506b",
+        "latestPackage": {
+          "Nastart": "4f662129940d44f58cf59b809773f2c6161a1cbbcf5707bfe094d2a8e66ed02e",
+          "Nastart.debug.dylib": "1b9f34cbd514a0075a552b53a5178bbc1b9e81bd9c7a9f37811af4dc8443325f",
+          "Frameworks/KSPlayer.framework/KSPlayer": "e68d742056f06b8806d18ce13f3027b47a2d9bc380671b7371a985b6d139f785"
+        },
+        "nonBookmarkPreferenceKeys": 24,
+        "nonBookmarkPreferencesExactlyUnchanged": true,
+        "changedBookmarksCount": 4,
+        "originalS03FileAndJellyfinTracksUnchanged": true,
+        "normalEmptyEnvironment": true,
+        "NASNormal": true,
+        "playerClosed": true,
+        "finalHomeScreenshotReviewed": true,
+        "WDAIdleSeconds": 10,
+        "WDAAnimationCoolOffSeconds": 2,
+        "crashInventoryNotCheckedThisTurn": true,
+        "performanceAccepted": false,
+        "fullSubtitleAudioHDRAccepted": false
+      },
+      "ipad": {
+        "at": "2026-10-13T04:21:55.030730+08:00",
+        "model": "iPad12,1",
+        "system": "18.3.1",
+        "connection": "USB",
+        "sourceDiffSHA256": "860f470425e1dd18810766a784768fb196a7b2a46f57454e2b32b183218f506b",
+        "latestPackage": {
+          "Nastart": "4f662129940d44f58cf59b809773f2c6161a1cbbcf5707bfe094d2a8e66ed02e",
+          "Nastart.debug.dylib": "1b9f34cbd514a0075a552b53a5178bbc1b9e81bd9c7a9f37811af4dc8443325f",
+          "Frameworks/KSPlayer.framework/KSPlayer": "e68d742056f06b8806d18ce13f3027b47a2d9bc380671b7371a985b6d139f785"
+        },
+        "nonBookmarkPreferenceKeys": 17,
+        "nonBookmarkPreferencesExactlyUnchanged": true,
+        "changedBookmarksCount": 4,
+        "originalS03FileAndJellyfinTracksUnchanged": true,
+        "normalEmptyEnvironment": true,
+        "NASNormal": true,
+        "playerClosed": true,
+        "finalHomeScreenshotReviewed": true,
+        "WDAIdleSeconds": 10,
+        "WDAAnimationCoolOffSeconds": 2,
+        "crashInventoryNotCheckedThisTurn": true,
+        "performanceAccepted": false,
+        "fullSubtitleAudioHDRAccepted": false
+      }
+    }
+  },
+  "retainedFailuresAndLimits": [
+    {
+      "classification": "TOOL_COMPILE",
+      "evidence": "baseline-tail-tests-first-compile-private.log",
+      "result": "new test argument order corrected before actual baseline run"
+    },
+    {
+      "classification": "EXPECTED_OLD_LOGIC_FAILURE",
+      "evidence": "baseline-tail-tests-private.log",
+      "assertionsFailed": 6,
+      "tests": 2
+    },
+    {
+      "classification": "TOOL_DISCOVERY",
+      "result": "12-hour AM/PM date parsing failed; retained original log; corrected helper only checked first page of latest visible folder; latest file across all pages and actively growing TS not verified"
+    },
+    {
+      "classification": "INVALID_ACTION_EFFECT",
+      "device": "iphone13",
+      "window": "tail-s05-near-end",
+      "result": "first drag returned success but clock/bookmark remained near 30s; retained and excluded from tail success; actual-thumb retry succeeded"
+    }
+  ],
+  "ordinaryCompletionUnitTestPassed": true,
+  "verifiedTSCompletionPolicy": "Keep observed position conservatively even in a complete TS because content identity does not establish recording finality. Explicit from-head entry remains available. Ordinary MP4/MKV completion rule unchanged.",
+  "liveTailWaitingAndDurationRefreshValidated": false,
+  "pausedSeekFrameAccuracyAccepted": false,
+  "remaining": [
+    "identify current growing recorder TS across all pages",
+    "real growing-tail wait and append recovery, dynamic duration, recording-end and replacement negatives",
+    "paused TS seek held image: separate frame-accuracy investigation",
+    "S19 deep position and related MTP exit/reopen, repeated stop and old-response device cases",
+    "iPhone18 latest actual foreground UI/launch and Xcode automatic discovery/tunnel",
+    "Pad S03 t3 loading rotation transition partial circle: transient layout/frame timing not accepted",
+    "historical subtitle duplicate exact cue and HDR PiP",
+    "complete SUB/AUD/HDR/performance/cellular/competitor/19x4 and old PX/UX/CB/Main/L2/L3 ledgers"
+  ],
+  "privateEvidenceRoot": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-10-13-recording-tail-bookmark-034254"
+}

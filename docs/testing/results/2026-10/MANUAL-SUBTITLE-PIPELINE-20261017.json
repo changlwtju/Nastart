@@ -1,0 +1,571 @@
+{
+  "at": "2026-10-17T09:12:37.231350+08:00",
+  "scope": "Manual subtitle pipeline fix; latest normal package installed on three devices; bounded real cellular S19 startup with FAILED traffic budget control",
+  "source": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "e82c4c41675dd3f1c29d3a6bc40e90d5d03fcb303b2dec0e680bfa239c9eb2e1",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "Xcode": "27.0/27A266a",
+    "binaryBuildTime": "2026-10-17T08:23:45.550174+08:00",
+    "binaries": {
+      "Nastart": "4947a184e9c4addf9dedd3ffa5096189c19e1277379092e94ccb881a3d7b6d52",
+      "Nastart.debug.dylib": "95eec6fb9d96eb1b1f9663240d678b235311617cc27e3f33dc071bca147588e2",
+      "Frameworks/KSPlayer.framework/KSPlayer": "f4dc3f88d9c967a8ca53f93a7315e7c8ce70b65f4864722006f8f0fff8347d06"
+    },
+    "ipaSHA256": "09a5284e9a751388fd4cd043d7034f50d17621b5f3246cb356e0bbd7ebf40bc4",
+    "checkedInputs": 173,
+    "changedInputs": [
+      "ios/Nastart/Nastart/Features/Launchpad/LaunchpadPlaybackCore.swift",
+      "ios/Nastart/Nastart/Features/Launchpad/LaunchpadView.swift",
+      "ios/Nastart/Nastart/Playback/GreenfieldVideoPlayerView.swift",
+      "ios/Nastart/NastartTests/PlaybackNextCoreTests.swift"
+    ],
+    "individuallyVerifiedLibraries": 29,
+    "profileExpirationUTC": "2026-10-17T22:23:40",
+    "tests": {
+      "targetedTotal": 9,
+      "targetedPassed": 9,
+      "targetedFailures": 0,
+      "newManualSubtitlePipelineTestPassed": 1,
+      "fullSuiteRunThisTurn": false,
+      "fullSuitePassed": false,
+      "previousFullSuiteFailuresRemain": 5
+    },
+    "preflight": {
+      "passed": 15,
+      "runThisTurn": true
+    }
+  },
+  "sourceFix": "Preserve newly negotiated subtitle on/off at both manual track loader and final live runtime merge; automatic replacements retain committed runtime selection",
+  "latestInstallations": {
+    "iphone13": {
+      "device": "iphone13",
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "connection": "USB",
+      "binaries": {
+        "Nastart": "4947a184e9c4addf9dedd3ffa5096189c19e1277379092e94ccb881a3d7b6d52",
+        "Nastart.debug.dylib": "95eec6fb9d96eb1b1f9663240d678b235311617cc27e3f33dc071bca147588e2",
+        "Frameworks/KSPlayer.framework/KSPlayer": "f4dc3f88d9c967a8ca53f93a7315e7c8ce70b65f4864722006f8f0fff8347d06"
+      },
+      "sourceDiffSHA256": "e82c4c41675dd3f1c29d3a6bc40e90d5d03fcb303b2dec0e680bfa239c9eb2e1",
+      "preservesContainer": true,
+      "signatureVerified": true,
+      "actualForegroundUIVerified": true,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "installation": "success",
+      "startedAt": "2026-10-17T08:24:57.656628+08:00",
+      "installedAt": "2026-10-17T08:25:15.235318+08:00",
+      "preferenceKeysUnchanged": true,
+      "preferenceValuesUnchanged": true,
+      "nonDiagnosticKeys": 25
+    },
+    "ipad": {
+      "device": "ipad",
+      "model": "iPad12,1",
+      "system": "18.3.1",
+      "connection": "USB",
+      "binaries": {
+        "Nastart": "4947a184e9c4addf9dedd3ffa5096189c19e1277379092e94ccb881a3d7b6d52",
+        "Nastart.debug.dylib": "95eec6fb9d96eb1b1f9663240d678b235311617cc27e3f33dc071bca147588e2",
+        "Frameworks/KSPlayer.framework/KSPlayer": "f4dc3f88d9c967a8ca53f93a7315e7c8ce70b65f4864722006f8f0fff8347d06"
+      },
+      "sourceDiffSHA256": "e82c4c41675dd3f1c29d3a6bc40e90d5d03fcb303b2dec0e680bfa239c9eb2e1",
+      "preservesContainer": true,
+      "signatureVerified": true,
+      "actualForegroundUIVerified": true,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "installation": "success",
+      "startedAt": "2026-10-17T08:25:20.908225+08:00",
+      "installedAt": "2026-10-17T08:25:27.379805+08:00",
+      "preferenceKeysUnchanged": true,
+      "preferenceValuesUnchanged": true,
+      "nonDiagnosticKeys": 18
+    }
+  },
+  "ordinaryUSBAudit": {
+    "checkedInputs": 173,
+    "signatureAndBinaryHashesReverified": true,
+    "devices": {
+      "iphone13": {
+        "at": "2026-10-17T08:31:17.659308+08:00",
+        "model": "iPhone14,5",
+        "system": "16.3.1",
+        "USBIdentityMatched": true,
+        "sourceDiffSHA256": "e82c4c41675dd3f1c29d3a6bc40e90d5d03fcb303b2dec0e680bfa239c9eb2e1",
+        "binaries": {
+          "Nastart": "4947a184e9c4addf9dedd3ffa5096189c19e1277379092e94ccb881a3d7b6d52",
+          "Nastart.debug.dylib": "95eec6fb9d96eb1b1f9663240d678b235311617cc27e3f33dc071bca147588e2",
+          "Frameworks/KSPlayer.framework/KSPlayer": "f4dc3f88d9c967a8ca53f93a7315e7c8ce70b65f4864722006f8f0fff8347d06"
+        },
+        "nonBookmarkPreferenceKeys": 24,
+        "nonBookmarkPreferencesUnchanged": true,
+        "originalBookmarksChecked": 36,
+        "originalBookmarksRemoved": 0,
+        "originalTrackChangeCount": 0,
+        "newBookmarksCount": 0,
+        "naturalPositionChangesCount": 1,
+        "newCrashReports": {
+          "Nastart": 0,
+          "WebDriverAgent": 0,
+          "JetsamEvent": 0
+        },
+        "normalEmptyEnvironment": true,
+        "NASNormal": true,
+        "playerClosed": true,
+        "WDAIdleSeconds": 10,
+        "WDAAnimationCoolOffSeconds": 2,
+        "activeNativeConditions": 0,
+        "finalImageActuallyReviewed": true,
+        "finalImageReviewAt": "2026-10-17T08:33:19.830539+08:00"
+      },
+      "ipad": {
+        "at": "2026-10-17T08:31:18.651708+08:00",
+        "model": "iPad12,1",
+        "system": "18.3.1",
+        "USBIdentityMatched": true,
+        "sourceDiffSHA256": "e82c4c41675dd3f1c29d3a6bc40e90d5d03fcb303b2dec0e680bfa239c9eb2e1",
+        "binaries": {
+          "Nastart": "4947a184e9c4addf9dedd3ffa5096189c19e1277379092e94ccb881a3d7b6d52",
+          "Nastart.debug.dylib": "95eec6fb9d96eb1b1f9663240d678b235311617cc27e3f33dc071bca147588e2",
+          "Frameworks/KSPlayer.framework/KSPlayer": "f4dc3f88d9c967a8ca53f93a7315e7c8ce70b65f4864722006f8f0fff8347d06"
+        },
+        "nonBookmarkPreferenceKeys": 17,
+        "nonBookmarkPreferencesUnchanged": true,
+        "originalBookmarksChecked": 29,
+        "originalBookmarksRemoved": 0,
+        "originalTrackChangeCount": 0,
+        "newBookmarksCount": 0,
+        "naturalPositionChangesCount": 1,
+        "newCrashReports": {
+          "Nastart": 0,
+          "WebDriverAgent": 0,
+          "JetsamEvent": 0
+        },
+        "normalEmptyEnvironment": true,
+        "NASNormal": false,
+        "playerClosed": true,
+        "WDAIdleSeconds": 10,
+        "WDAAnimationCoolOffSeconds": 2,
+        "activeNativeConditions": 0,
+        "finalImageActuallyReviewed": true,
+        "finalImageReviewAt": "2026-10-17T08:33:19.830979+08:00"
+      }
+    }
+  },
+  "ipadNativeAfterOwnRunnerStop": {
+    "at": "2026-10-17T08:33:24.256052+08:00",
+    "requestedEnvironment": {},
+    "requestedArguments": [],
+    "launchSucceeded": true,
+    "deviceIdentityFreshMatched": true,
+    "actualImageReviewed": true,
+    "WDAIntentionallyStopped": true,
+    "finalRestore": true,
+    "playbackRegressionPerformed": false,
+    "actualNormalHome": true,
+    "actualNASStatus": "未连接",
+    "actualPlayerClosed": true,
+    "runnerWrapperExitCode": 75,
+    "runnerStopIntentional": true,
+    "allNonDiagnosticPreferencesExactlyPreservedAfterNativeLaunch": true
+  },
+  "iPhone18": {
+    "userPauseRevoked": true,
+    "install": {
+      "startedAtUTC": "2026-10-17T00:42:56.369798+00:00",
+      "stage": "installed; launch requested; actual screenshot review required",
+      "packageVerified": true,
+      "targetLiveVerified": true,
+      "preferencesSavedBeforeInstall": true,
+      "installDispatchAttempted": true,
+      "installCommandSent": true,
+      "installCompleteObserved": true,
+      "postInstallLookupExists": true,
+      "actualForegroundUIVerified": true,
+      "newPairingAttempted": false,
+      "networkOrVPNChanged": false,
+      "WDARequiredForInstallation": false,
+      "sourceDiffSHA256": "e82c4c41675dd3f1c29d3a6bc40e90d5d03fcb303b2dec0e680bfa239c9eb2e1",
+      "binaries": {
+        "Nastart": "4947a184e9c4addf9dedd3ffa5096189c19e1277379092e94ccb881a3d7b6d52",
+        "Nastart.debug.dylib": "95eec6fb9d96eb1b1f9663240d678b235311617cc27e3f33dc071bca147588e2",
+        "Frameworks/KSPlayer.framework/KSPlayer": "f4dc3f88d9c967a8ca53f93a7315e7c8ce70b65f4864722006f8f0fff8347d06"
+      },
+      "ipaSHA256": "09a5284e9a751388fd4cd043d7034f50d17621b5f3246cb356e0bbd7ebf40bc4",
+      "model": "iPhone19,7",
+      "system": "27.0",
+      "connection": "NETWORK",
+      "existingEscrowUsedForContainerRequest": true,
+      "installedAtUTC": "2026-10-17T00:43:10.568635+00:00",
+      "preferences": {
+        "beforeKeys": 25,
+        "afterKeys": 25,
+        "sameKeys": true,
+        "changedValues": 0,
+        "allNonDiagnosticPreferencesEqual": true
+      },
+      "RSDTargetVerified": true,
+      "normalLaunchRequested": true,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "actualScreenCaptured": true,
+      "preferencesAfterLaunch": {
+        "beforeKeys": 25,
+        "afterKeys": 25,
+        "sameKeys": true,
+        "changedValues": 0,
+        "allNonDiagnosticPreferencesEqual": true
+      },
+      "finishedAtUTC": "2026-10-17T00:43:23.283234+00:00",
+      "actualNormalHome": true,
+      "actualNASStatus": "正常",
+      "actualPlayerClosed": true,
+      "actualScreenshotReviewedAt": "2026-10-17T08:43:57.130379+08:00"
+    },
+    "automatedPlaybackActionSent": false,
+    "discoveryOldInstanceFailuresRetained": true,
+    "currentAdvertisedKnownIdentityVerified": true,
+    "WDAWasReadyWithExistingValidRunner": true,
+    "wirelessEndpointChangedDuringNavigation": true,
+    "postTimeoutStandardCrashPullExit": 1,
+    "RSDFinalCrashReportPullSucceeded": true,
+    "finalActualForeground": "Codex chat, not Nastart home",
+    "userConcurrentCellularPlaybackReported": true,
+    "userReportedSlowFirstFrameSeekAndFewMBps": true,
+    "pauseAnyFurtherDeviceControlDuringUserTrial": true,
+    "finalRestore": {
+      "at": "2026-10-17T08:53:38.898019+08:00",
+      "playbackActionSent": false,
+      "ownXCTestIntentionallyStopped": true,
+      "finalActualImageReviewed": true,
+      "WDASettingsAfterStopReverified": false,
+      "newReports": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      },
+      "actualNastartReportPullComplete": true,
+      "preferences": {
+        "beforeKeys": 25,
+        "afterKeys": 25,
+        "sameKeys": true,
+        "changedValues": 1,
+        "allNonDiagnosticPreferencesEqual": false
+      },
+      "normalEnvironmentRequested": {},
+      "normalArgumentsRequested": [],
+      "normalLaunchSucceeded": true,
+      "actualForegroundImage": "Codex chat; user concurrently operating phone",
+      "actualNastartHomeVerified": false,
+      "finalNormalLaunchNotCountedAsHomeRegression": true,
+      "latestInstalledPackageRemainsVerified": true
+    },
+    "finalBookmarkAudit": {
+      "nonBookmarkPreferencesExactlyUnchanged": true,
+      "originalBookmarks": 65,
+      "removed": 0,
+      "added": 0,
+      "trackChangeCount": 0,
+      "bookmarkChangeCount": 3,
+      "userConcurrentManualPlayback": true,
+      "rawPreferencesRestored": false
+    },
+    "cachedManualWifiObservation": {
+      "source": "already acquired local diagnostics; no additional device or network operation",
+      "titleIndependentlyMatched": false,
+      "latestTraceURLSessionMetrics": 9,
+      "latestTraceCellularYes": 0,
+      "latestTraceCellularNo": 9,
+      "internalFirstFrameSignalMs": 6027,
+      "latestSeekStartToEngineCompletionSeconds": 1.66485,
+      "latestSeekStartToRecoverySeconds": 7.951741,
+      "exactScreenCompletionVerified": false,
+      "notCurrentUserReportedCellularReproduction": true
+    }
+  },
+  "oldPackageControlledHLS": {
+    "sourceDiffPrefix": "8e71c89113fb",
+    "oneProcessTestEnvironment": {
+      "NASTART_TEST_STARTUP_HLS_BPS": "2000000"
+    },
+    "PGSReadySeconds": 42.928,
+    "offReadySeconds": 11.953,
+    "pairedPerformanceComparison": false,
+    "duplicateSelectionsCoalesced": 2,
+    "manualWarmupsStarted": 1,
+    "manualWarmupCommitted": 0,
+    "previousAutomaticCandidateInvalidated": 1,
+    "manualCandidateInvalidations": 0,
+    "manualFailureElapsedMs": 20073,
+    "manualFailureDomain": "NSURLErrorDomain",
+    "manualFailureCode": -1008,
+    "fullWarmupTimeoutIncreased": false
+  },
+  "previousOwnedFFmpegExit": {
+    "matchingServerCommandCount": 1,
+    "allMatchedInputsAgree": true,
+    "terminalQuitMarker": true,
+    "terminalMuxSummary": true,
+    "relevantMarkers": [
+      {
+        "line": 57,
+        "kind": "ffmpegExit",
+        "code": 0,
+        "time": "2026-10-17 03:54:58.985 +08:00"
+      },
+      {
+        "line": 67,
+        "kind": "ffmpegExit",
+        "code": 137,
+        "time": "2026-10-17 03:57:53.715 +08:00"
+      },
+      {
+        "line": 75,
+        "kind": "ffmpegExit",
+        "code": 0,
+        "time": "2026-10-17 06:34:49.593 +08:00"
+      },
+      {
+        "line": 106,
+        "kind": "ffmpegExit",
+        "code": 137,
+        "time": "2026-10-17 07:11:00.298 +08:00"
+      },
+      {
+        "line": 117,
+        "kind": "ffmpegExit",
+        "code": 137,
+        "time": "2026-10-17 07:11:29.936 +08:00"
+      },
+      {
+        "line": 119,
+        "kind": "ffmpegExit",
+        "code": 0,
+        "time": "2026-10-17 07:14:14.870 +08:00"
+      },
+      {
+        "line": 128,
+        "kind": "exactOutputStop"
+      },
+      {
+        "line": 131,
+        "kind": "ffmpegExit",
+        "code": 137,
+        "time": "2026-10-17 07:35:41.143 +08:00"
+      }
+    ],
+    "exactOutputStopSequence": [
+      {
+        "at": "2026-10-17 07:35:35.802 +08:00",
+        "event": "stopExactOutput"
+      },
+      {
+        "at": "2026-10-17 07:35:40.803 +08:00",
+        "event": "other"
+      },
+      {
+        "at": "2026-10-17 07:35:40.803 +08:00",
+        "event": "other"
+      },
+      {
+        "at": "2026-10-17 07:35:41.143 +08:00",
+        "event": "exit",
+        "exitCode": 137
+      },
+      {
+        "at": "2026-10-17 07:37:06.535 +08:00",
+        "event": "other"
+      }
+    ],
+    "serverReportedOwnedJobExit": true,
+    "staleTranscodingInfoNotActiveProcessProof": true,
+    "exit137DoesNotEstablishOOMOrContainerRestart": true
+  },
+  "latestOwnSessionsAfterUSBSmoke": {
+    "at": "2026-10-17T08:38:13.844515+08:00",
+    "readOnly": true,
+    "serverMainLogBytes": 54267,
+    "devices": {
+      "iphone13": {
+        "exactOwnSessionMatches": 1,
+        "nowPlayingPresent": false,
+        "staleTranscodingInfoPresent": true
+      },
+      "ipad": {
+        "exactOwnSessionMatches": 1,
+        "nowPlayingPresent": false,
+        "staleTranscodingInfoPresent": false
+      }
+    }
+  },
+  "powerForUSBSmoke": {
+    "startLocal": "2026-10-17 07:57:22",
+    "logReadBefore18": true,
+    "actualSleepWakeEvents": [],
+    "matchingUsesEventColumnOnly": true
+  },
+  "cellular13": {
+    "userAuthorized": true,
+    "requiredLargeFile": "S19 Lord of the Rings",
+    "shortDurationRequired": true,
+    "testStarted": true,
+    "initialAction": "resume, actual initial position11591.817 seconds; not from-head comparison",
+    "normalEmptyEnvironment": true,
+    "WiFiSwitchOffActuallyVerified": true,
+    "systemConditionActiveCount": 0,
+    "VPNSettingsChanged": false,
+    "VPNActualRouteIndependentlyVerified": false,
+    "actualMediaURLSessionCellularVerified": true,
+    "protocol": "h2",
+    "plannedBudgetMB": 20,
+    "trafficBudgetControlPassed": false,
+    "completedUpstreamBodyBytes": {
+      "completedUpstreamTaskKeys": 11,
+      "deduplicatedReceivedBytesByTaskSum": 213439783,
+      "notCarrierBillMeasurement": true,
+      "missingInFlightBytesPossible": true,
+      "rawConnectionMonitorIncomplete": true,
+      "urlSessionMetricRows": 11,
+      "allMetricsCellularYes": true,
+      "protocols": [
+        "h2"
+      ],
+      "metricBodyBytesSum": 213439783
+    },
+    "originalConnectionCounterNotTotalTraffic": {
+      "countedReceiveBytesByInterfaceAndOwner": {
+        "pdp_ip0 / Nastart": 4460,
+        "en0 / other": 999,
+        "anpi0 / other": 0
+      },
+      "ambiguousFirstSnapshotBytesByInterfaceAndOwner": {
+        "unknown / other": 0
+      },
+      "eventCounts": {
+        "pdp_ip0 / Nastart": 13,
+        "en0 / other": 6,
+        "unknown / other": 31,
+        "anpi0 / other": 17
+      },
+      "allCountedReceiveBytes": 5459,
+      "initialSnapshotExcluded": true,
+      "oldSelectiveCounterNotReliableTrafficBudget": true
+    },
+    "limitedByTimeGuardSeconds": 15.150313,
+    "AppIntentionallyTerminatedByIndependentGuard": true,
+    "normalUIExit": false,
+    "reasonNormalExitNotReached": "AFC diagnostic file read failed after t6 capture; guard stayed armed and stopped App at deadline",
+    "uiAndDiagnosticToolFailuresRetained": true,
+    "initialMonitorSerializationFailureBeforeWiFiChangeRetained": true,
+    "initialInvalidSessionBeforePlaybackRetainedAndWiFiRestored": true,
+    "actualReviewedPictures": [
+      "t0 detail preparing",
+      "t3 black player with spinner",
+      "t6 movie at3:13:13; PNG saved6.488 seconds after action"
+    ],
+    "internalFirstFrameSignalSecondsFromAction": 4.591234,
+    "internalTapToFirstFrameMs": 3375,
+    "lastTelemetry": {
+      "engine": "KSPlayer",
+      "currentSeconds": "11601.510",
+      "stallCount": "1",
+      "bytesRead": "213223446",
+      "bufferedAheadSeconds": "7.131833138351794",
+      "routeKind": "localRangeProxy",
+      "networkClass": "unknown"
+    },
+    "newSeekPerformed": false,
+    "stabilityOrPerformanceAccepted": false,
+    "actualCarrierBilledBytesKnown": false,
+    "totalUsageMayExceedCompletedBodyBytes": true,
+    "WiFiRestoredAndNoFurtherCellularMediaTest": true,
+    "finalAudit": {
+      "at": "2026-10-17T09:03:21.436246+08:00",
+      "freshUSBIdentityVerified": true,
+      "nonBookmarkPreferencesExactlyPreserved": true,
+      "originalBookmarksChecked": 36,
+      "originalBookmarksRemoved": 0,
+      "newBookmarksAdded": 0,
+      "originalTrackChangeCount": 0,
+      "bookmarkChangesCount": 1,
+      "crashInventoryDelta": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      },
+      "WiFiRestored": true,
+      "finalNormalImageReviewed": true,
+      "actualFinalNASStatus": "未连接",
+      "finalPlayerClosed": true,
+      "normalHomeEmptyEnvironmentVerified": true,
+      "WDAIdleSeconds": 10,
+      "WDAAnimationCoolOffSeconds": 2,
+      "activeNativeConditions": 0
+    },
+    "ownServerSessionCleanup": {
+      "at": "2026-10-17T09:04:36.658552+08:00",
+      "reason": "Cleanup own iPhone13 short cellular playback after intentional deadline guard; user iPhone18 session is not targeted",
+      "exactPersistentDeviceIDMatched": true,
+      "freshSessionIDAndItemMatched": true,
+      "targetsOnlyOwnIPhone13Session": true,
+      "stopEncodingWithoutPlaySessionNotAttempted": true,
+      "HTTPStatus": 204,
+      "ownNowPlayingCleared": true,
+      "ownTranscodingInfoCleared": true,
+      "serverProcessExitNotYetVerified": true
+    },
+    "requiredNextAction": "Wi-Fi validation of full byte accounting and independent stop guard before additional cellular media",
+    "privateRetryGuardVerified": {
+      "blockedBeforeProcessOrDeviceMutation": true,
+      "existingCaptureLogHashUnchanged": true,
+      "reason": "Wi-Fi budget calibration required before another cellular media test",
+      "testType": "private control guard, not App XCTest"
+    }
+  },
+  "acceptance": {
+    "fullSubtitle": false,
+    "successfulManualHLSHandoffAfterFix": false,
+    "firstFrameOrSeekSpeedImprovement": false,
+    "continuousFramesOrCompetitor": false,
+    "fullMatrix": false
+  },
+  "packageClosure": {
+    "at": "2026-10-17T09:09:46.318558+08:00",
+    "all173InputsAndCurrentSourceDiffMatched": true,
+    "allThreeBinaryAndIPASHA256Matched": true,
+    "IPACRCAndInternalBinaryHashesVerified": true,
+    "deepStrictAnd29IndividualLibrariesVerified": true,
+    "allThreeDevicesProvisionedAndProfileValid": true
+  },
+  "ownPowerCleanup": {
+    "at": "2026-10-17T09:09:43.577956+08:00",
+    "onlyOwnBoundedAssertionsHandled": true,
+    "processes": [
+      {
+        "pidFile": "awake-pid",
+        "wasRunning": false,
+        "released": false
+      },
+      {
+        "pidFile": "fix-awake-pid",
+        "wasRunning": false,
+        "released": false
+      },
+      {
+        "pidFile": "iphone18-awake-pid",
+        "wasRunning": false,
+        "released": false
+      }
+    ],
+    "permanentPowerSettingsChanged": false
+  },
+  "playbackWindowPowerAudit": {
+    "startLocal": "2026-10-17 07:57:22",
+    "endLocal": "2026-10-17 09:01:00",
+    "matchingEventColumnOnly": true,
+    "actualPowerEvents": []
+  }
+}

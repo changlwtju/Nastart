@@ -7,6 +7,24 @@ struct ISOPlaybackPreparation {
     let fileExtension: String
     let selectedPath: String
     let titleCount: Int
+
+    /// Keep the extracted title alive for playback/PiP, then release it on
+    /// normal stop or abandonment without losing the upstream watch reports.
+    func makePlaybackTracker(reportingTo tracker: MediaPlaybackTracker? = nil) -> MediaPlaybackTracker {
+        MediaPlaybackTracker(releaseResources: {
+            ISOPlaybackAdapter.release(playbackURL)
+            tracker?.releasePreparedResources()
+        }) { event in
+            switch event {
+            case .started(let position):
+                tracker?.started(positionSeconds: position)
+            case .progressed(let position, let isPaused):
+                tracker?.progressed(positionSeconds: position, isPaused: isPaused, force: true)
+            case .stopped(let position, let failed):
+                tracker?.stopped(failed: failed, positionSeconds: position)
+            }
+        }
+    }
 }
 
 enum ISOPlaybackError: Error {
@@ -26,17 +44,22 @@ enum ISOPlaybackAdapter {
         sourceURL: URL,
         allowsSelfSignedCertificates: Bool
     ) async throws -> ISOPlaybackPreparation {
+        let started = ProcessInfo.processInfo.systemUptime
         let reader = ISOHTTPRangeReader(
             url: sourceURL,
             allowsSelfSignedCertificates: allowsSelfSignedCertificates
         )
         let selections: [ISOPlaybackSelection]
+        let indexFormat: String
         do {
             selections = try await ISO9660Index.load(using: reader).selections
+            indexFormat = "iso9660"
         } catch ISOPlaybackError.invalidImage {
             selections = try await UDFRemoteIndex(url: sourceURL,
                 allowsSelfSignedCertificates: allowsSelfSignedCertificates).load()
+            indexFormat = "udf"
         }
+        let indexFinished = ProcessInfo.processInfo.systemUptime
         try Task.checkCancellation()
         guard let selection = selections.first else {
             throw ISOPlaybackError.noPlayableTitle
@@ -47,6 +70,7 @@ enum ISOPlaybackAdapter {
             segments: selection.segments,
             fileExtension: selection.fileExtension
         )
+        let preparedAt = ProcessInfo.processInfo.systemUptime
         DiagnosticLogStore.shared.record(
             .info,
             categoryKey: "diagnostics.category.media",
@@ -56,7 +80,11 @@ enum ISOPlaybackAdapter {
                 "segmentCount": String(selection.segments.count),
                 "titleCount": String(selections.count),
                 "virtualBytes": String(selection.segments.reduce(Int64(0)) { $0 + $1.length }),
-                "format": selection.fileExtension
+                "format": selection.fileExtension,
+                "indexFormat": indexFormat,
+                "indexElapsedMs": String(Int((indexFinished - started) * 1000)),
+                "proxyElapsedMs": String(Int((preparedAt - indexFinished) * 1000)),
+                "preparationElapsedMs": String(Int((preparedAt - started) * 1000))
             ]
         )
         return ISOPlaybackPreparation(
@@ -469,6 +497,7 @@ final class ISOPlaybackProxy: @unchecked Sendable {
         queue.async {
             guard url.port == self.resources[token].map({ Int($0.localPort.rawValue) }) else { return }
             self.resources[token] = nil
+            self.recordResources("diagnostics.media.iso_resource_released")
         }
     }
 
@@ -490,11 +519,19 @@ final class ISOPlaybackProxy: @unchecked Sendable {
             totalLength: segments.reduce(0) { $0 + $1.length },
             localPort: activePort
         )
-        queue.sync { resources[token] = resource }
+        queue.sync {
+            resources[token] = resource
+            recordResources("diagnostics.media.iso_resource_registered")
+        }
         guard let url = URL(string: "http://127.0.0.1:\(activePort.rawValue)/iso/\(token).\(fileExtension)") else {
             throw ISOPlaybackError.proxyUnavailable
         }
         return url
+    }
+
+    private func recordResources(_ messageKey: String) {
+        DiagnosticLogStore.shared.record(.info, categoryKey: "diagnostics.category.media",
+            messageKey: messageKey, details: ["registeredCount": String(resources.count)])
     }
 
     private func ensureStarted() async throws -> NWEndpoint.Port {

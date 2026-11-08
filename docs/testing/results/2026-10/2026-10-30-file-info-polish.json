@@ -1,0 +1,131 @@
+{
+  "recordedAt": "2026-10-30T08:17:49+08:00",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceInputCount": 435,
+  "changedExistingSourceFiles": 7,
+  "existingOfflineParameterTestsPassed": 4,
+  "newRepositoryTests": 0,
+  "localProbe": {
+    "recordedAt": "2026-10-30T08:09:16.684445+08:00",
+    "exitCode": 0,
+    "TVModelCases": 3,
+    "TVFocusLogicTransitions": 9,
+    "exactProductionSourceSlices": true,
+    "TVModelsSHA256": "6723330698e765d375d31a26bfcfd4c373c3ecf3ddfff94be0935d5ee75b57ff",
+    "TVViewsSHA256": "b4cecd7e0f73c929fa82f87038a3604160de53b405fd838374730b1231ffd3dc",
+    "actualTVRemoteMovementVerified": false,
+    "appRootsLaunched": 0,
+    "NASCommands": 0
+  },
+  "builds": {
+    "module-tests": {
+      "startedAt": "2026-10-30T08:07:58.057657+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T08:08:01.984709+08:00"
+    },
+    "mobile-sim-debug-cast": {
+      "startedAt": "2026-10-30T08:07:58.056461+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T08:08:31.687598+08:00"
+    },
+    "tv-sim-debug-cast": {
+      "startedAt": "2026-10-30T08:07:58.056489+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T08:08:16.374418+08:00"
+    },
+    "mobile-debug": {
+      "startedAt": "2026-10-30T08:09:30.830806+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T08:12:45.177868+08:00"
+    },
+    "tv-debug": {
+      "startedAt": "2026-10-30T08:09:30.830832+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T08:10:21.096268+08:00"
+    },
+    "mobile-release": {
+      "startedAt": "2026-10-30T08:12:45.180783+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T08:14:43.945839+08:00"
+    },
+    "tv-release": {
+      "startedAt": "2026-10-30T08:10:21.099206+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T08:12:59.367644+08:00"
+    }
+  },
+  "capture": {
+    "accepted": 6,
+    "byPlatform": {
+      "phone": 2,
+      "pad": 2,
+      "tv": 2
+    },
+    "allPassed": true,
+    "ownedSimulatorsDeleted": true,
+    "syntheticPreferencesPreserved": true,
+    "physicalDevicesOperated": 0,
+    "NASCommands": 0,
+    "interactionOrAnimationVerified": false
+  },
+  "allCaptureArtifactsHashChecked": true,
+  "sourcePreservation": {
+    "changedExistingSourceFiles": 7,
+    "TVPlaybackSuffixUnchanged": true,
+    "mobileOutsideFileInformationViewUnchanged": true,
+    "networkPlaybackCoverPredicateAndActionsUnchanged": true,
+    "networkPortraitLoaderUnchanged": true,
+    "groupSelectionAndClassificationUnchanged": true,
+    "TVFileMetadataReadOnly": true,
+    "playbackCommands": 0,
+    "TVMediaItemAndPlaybackModelsUnchanged": true,
+    "onlyOptionalReadOnlySourceFieldsAdded": true
+  },
+  "packages": {
+    "mobile": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-30T08:12:43.752167+08:00",
+      "frozenAt": "2026-10-30T08:17:04.466414+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 435,
+      "mainSHA256": "d5a2230e2d47c94838fa97af00e7d4fbe616b451614475e3fea5882766a9b4f7",
+      "debugDylibSHA256": "95ad0ad9a0fe85b2c55358e58eb0d6ce8b3bb29804798736ef47cc1429902aef",
+      "signedMachOCount": 30,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false
+    },
+    "tv": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-30T08:10:20.826661+08:00",
+      "frozenAt": "2026-10-30T08:17:04.844049+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 435,
+      "mainSHA256": "b0779cea0fbe5502db324358730a06851e6cdb0d33d040ae4c92700d3fe88653",
+      "debugDylibSHA256": "94c40cee4d877342073bb99fa66c5312490522263d26f6d1b77bd268a85e63fb",
+      "signedMachOCount": 27,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false
+    }
+  },
+  "physicalDevicesOperated": 0,
+  "NASCommands": 0,
+  "playbackCommands": 0,
+  "ownSimulatorsDeleted": 3,
+  "privateEvidencePointer": "current-file-info-polish-private",
+  "notVerified": [
+    "Actual disclosure interaction or TV remote movement",
+    "Long field scrolling, VoiceOver, full English layout or performance",
+    "Live Jellyfin fields and folder metadata/artwork retrieval",
+    "Single-file ISO status, disc main-feature selection or real playback"
+  ]
+}

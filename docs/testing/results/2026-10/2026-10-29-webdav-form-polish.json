@@ -1,0 +1,118 @@
+{
+  "recordedAt": "2026-10-29T16:05:31+08:00",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceInputCount": 433,
+  "changedExistingSourceFiles": 4,
+  "physicalDevicesOperated": 0,
+  "NASCommands": 0,
+  "playbackCommands": 0,
+  "realCredentialsLoaded": false,
+  "distinctExistingModuleTestsPassed": 24,
+  "testsBySuite": {
+    "LibraryFolderEditingTests": 9,
+    "OfflineUIScenarioTests": 4,
+    "WebDAVConnectionFieldsTests": 3,
+    "SavedConnectionTests": 8
+  },
+  "builds": {
+    "scenario-tests-final": {
+      "startedAt": "2026-10-29T15:22:35.619583+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-29T15:22:39.820804+08:00"
+    },
+    "saved-connections-tests": {
+      "startedAt": "2026-10-29T15:25:19.676129+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-29T15:25:21.166308+08:00"
+    },
+    "mobile-sim-debug-r3": {
+      "startedAt": "2026-10-29T15:52:19.896146+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-29T15:52:39.630610+08:00"
+    },
+    "tv-sim-debug-r3": {
+      "startedAt": "2026-10-29T15:52:19.896177+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-29T15:52:33.961902+08:00"
+    },
+    "mobile-debug": {
+      "startedAt": "2026-10-29T16:00:45.352924+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-29T16:01:39.650676+08:00"
+    },
+    "tv-debug": {
+      "startedAt": "2026-10-29T16:00:45.352895+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-29T16:01:11.526241+08:00"
+    },
+    "mobile-release": {
+      "startedAt": "2026-10-29T16:01:39.651506+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-29T16:03:30.163137+08:00"
+    },
+    "tv-release": {
+      "startedAt": "2026-10-29T16:01:11.527730+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-29T16:01:52.057650+08:00"
+    }
+  },
+  "capture": {
+    "accepted": 24,
+    "allPassed": true,
+    "allOwnedSimulatorsDeleted": true,
+    "counts": {
+      "phone": 9,
+      "pad": 9,
+      "tv": 6
+    },
+    "method": "Expected text, synthetic marker and adjacent backdrop color checks; selected images visually inspected",
+    "fullInteractionOrPerformanceAcceptance": false
+  },
+  "packages": {
+    "mobile": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-29T16:01:39.408316+08:00",
+      "frozenAt": "2026-10-29T16:04:40.351583+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 433,
+      "mainSHA256": "e0df7f46a60e96da76aed7fdbc8208616e3e650bbd7e32f0b08b294e9fde6346",
+      "debugDylibSHA256": "f6b45ae6f068322b288b9712246409c66d8b7667ebdc03a4beaf6c12e64f2a71",
+      "signedMachOCount": 30,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false
+    },
+    "tv": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-29T16:01:11.359917+08:00",
+      "frozenAt": "2026-10-29T16:04:40.755511+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 433,
+      "mainSHA256": "210f016b1dfe8d71941bae73111301066287c1c7c59b4deeb7fb2a01c60eb622",
+      "debugDylibSHA256": "a649c85185cab7f7396ff31daf1d4bdb75a0225c37aef28e2e153128fb3b8db3",
+      "signedMachOCount": 27,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false
+    }
+  },
+  "physicalInstallations": 0,
+  "newPlaybackMatrixPasses": 0,
+  "unverified": [
+    "Real login and directory listing",
+    "Production keyboard, password visibility and focus retention",
+    "Touch/remote navigation, scrolling and cancellation",
+    "Real saved credentials and preferences",
+    "FTP/SMB connectivity",
+    "Playback performance"
+  ],
+  "privateEvidencePointer": "current-connection-form-polish-private"
+}

@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+        1288C82C18B921AD931082AC /* PlaybackKSOptionsPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AC15821D124878CE6128AC8; };
+        992741065E3781297B79510C /* LocalPlaybackResumeStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AAA36221FB7E286554FEDC0; };
+		C02610260000000000000003 /* NetworkMedia in Frameworks */ = {isa = PBXBuildFile; productRef = C02610260000000000000002 /* NetworkMedia */; };
 		CA070908CA070908CA070908 /* KSPlayer in Test Frameworks */ = {isa = PBXBuildFile; productRef = 0B0B0B0B0B0B0B0B0B0B0006 /* KSPlayer */; };
 		010101010101010101010001 /* NastartApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020001 /* NastartApp.swift */; };
 		010101010101010101010002 /* AppTabRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020202020202020202020002 /* AppTabRootView.swift */; };
@@ -90,6 +93,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+        8AC15821D124878CE6128AC8 /* PlaybackKSOptionsPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackKSOptionsPolicy.swift; sourceTree = "<group>"; };
+        0AAA36221FB7E286554FEDC0 /* LocalPlaybackResumeStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalPlaybackResumeStore.swift; sourceTree = "<group>"; };
 		020202020202020202020001 /* NastartApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NastartApp.swift; sourceTree = "<group>"; };
 		020202020202020202020002 /* AppTabRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTabRootView.swift; sourceTree = "<group>"; };
 		020202020202020202020003 /* NASModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NASModels.swift; sourceTree = "<group>"; };
@@ -187,6 +192,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				010101010101010101010018 /* JellyfinAPI in Frameworks */,
+				C02610260000000000000003 /* NetworkMedia in Frameworks */,
 				010101010101010101010027 /* NIOSSH in Frameworks */,
 				010101010101010101010060 /* KSPlayer in Frameworks */,
                 ABCD00000000000000000001,
@@ -399,7 +405,9 @@
 		050505050505050505050017 /* Core */ = {
 			isa = PBXGroup;
 			children = (
+                8AC15821D124878CE6128AC8 /* PlaybackKSOptionsPolicy.swift */,
 				020202020202020202020041 /* PlaybackIntent.swift */,
+                0AAA36221FB7E286554FEDC0 /* LocalPlaybackResumeStore.swift */,
 				020202020202020202020042 /* PlaybackRoute.swift */,
 				020202020202020202020043 /* PlaybackPlan.swift */,
 				020202020202020202020044 /* PlaybackEngine.swift */,
@@ -490,6 +498,7 @@
 			);
 			name = Nastart;
 			packageProductDependencies = (
+				C02610260000000000000002 /* NetworkMedia */,
 				0B0B0B0B0B0B0B0B0B0B0002 /* JellyfinAPI */,
 				0B0B0B0B0B0B0B0B0B0B0004 /* NIOSSH */,
 				0B0B0B0B0B0B0B0B0B0B0006 /* KSPlayer */,
@@ -547,6 +556,7 @@
 			);
 			mainGroup = 050505050505050505050000;
 			packageReferences = (
+				C02610260000000000000001 /* NetworkMedia */,
 				0B0B0B0B0B0B0B0B0B0B0001 /* XCRemoteSwiftPackageReference "jellyfin-sdk-swift" */,
 				0B0B0B0B0B0B0B0B0B0B0003 /* XCRemoteSwiftPackageReference "swift-nio-ssh" */,
 				0B0B0B0B0B0B0B0B0B0B0005 /* XCLocalSwiftPackageReference "KSPlayer" */,
@@ -699,6 +709,8 @@
 				010101010101010101010039 /* KeychainStore.swift in Sources */,
 				010101010101010101010040 /* NetworkErrorClassification.swift in Sources */,
 				010101010101010101010041 /* PlaybackIntent.swift in Sources */,
+                992741065E3781297B79510C /* LocalPlaybackResumeStore.swift in Sources */,
+                1288C82C18B921AD931082AC /* PlaybackKSOptionsPolicy.swift in Sources */,
 				010101010101010101010042 /* PlaybackRoute.swift in Sources */,
 				010101010101010101010043 /* PlaybackPlan.swift in Sources */,
 				010101010101010101010044 /* PlaybackEngine.swift in Sources */,
@@ -1055,6 +1067,7 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Packages/KSPlayer;
 		};
+		C02610260000000000000001 = {isa = XCLocalSwiftPackageReference; relativePath = Packages/NetworkMedia; };
 		ABCD00000000000000000002 = {isa = XCLocalSwiftPackageReference; relativePath = Packages/UDFRead; };
 /* End XCRemoteSwiftPackageReference section */
 
@@ -1074,6 +1087,7 @@
 			package = 0B0B0B0B0B0B0B0B0B0B0005 /* XCLocalSwiftPackageReference "KSPlayer" */;
 			productName = KSPlayer;
 		};
+		C02610260000000000000002 = {isa = XCSwiftPackageProductDependency; package = C02610260000000000000001; productName = NetworkMedia; };
 		ABCD00000000000000000003 = {isa = XCSwiftPackageProductDependency; package = ABCD00000000000000000002; productName = UDFRead; };
 /* End XCSwiftPackageProductDependency section */
 	};

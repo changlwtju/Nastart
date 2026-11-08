@@ -1,0 +1,97 @@
+{
+  "recordedAt": "2026-10-15T21:51:20.192752+08:00",
+  "status": "latest package installed over direct paired Wi-Fi; actual normal home reviewed",
+  "device": {
+    "model": "iPhone19,7",
+    "system": "27.0",
+    "connection": "NETWORK",
+    "targetAbsentFromUSB": true,
+    "livePairedIdentityVerified": true
+  },
+  "package": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "c868c278fcefe2411cfc07eabb4adf33ce159f0a0f9fb446897aeb2ce25ac835",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "binaryBuildTime": "2026-10-15T18:56:47.888882+08:00",
+    "binaries": {
+      "Nastart": "963906f2460a7e8ca717dbb818d7ac6e6425a0466c28d96d8a5829cd21f8a75b",
+      "Nastart.debug.dylib": "46cb682d7938d2f4d45b622dc49ca9ecc368f493717d7c23303a44196c4ba8f5",
+      "Frameworks/KSPlayer.framework/KSPlayer": "76d17821ceeba058544cad0031b0eb41f4fa6be90edb9ec36ebe2d1f24bb7b5e"
+    },
+    "ipaSHA256": "197133cef44eec71d344cf716aee716f902edcad17a2bb51da80425e970ee537",
+    "checkedInputs": 173,
+    "individuallyVerifiedLibraries": 29,
+    "profileExpirationUTC": "2026-10-17T22:23:40",
+    "appFilename": "Nastart-Live-Track-Handoff-Final-Normal-Debug.app",
+    "ipaFilename": "Nastart-Live-Track-Handoff-Final-Normal-Debug.ipa"
+  },
+  "sameSourcePriorAppTestEvidence": {
+    "executed": 396,
+    "skipped": 2,
+    "failures": 0,
+    "preflightPassed": 15,
+    "rerunInThisInstallationTask": false
+  },
+  "installedAt": "2026-10-15T21:49:20.742898+08:00",
+  "installCommand": "Install",
+  "installCompleteObserved": true,
+  "postInstallLookupExists": true,
+  "preferencesAfterInstall": {
+    "beforeKeys": 25,
+    "afterKeys": 25,
+    "sameKeys": true,
+    "changedValues": 0,
+    "allNonDiagnosticPreferencesEqual": true
+  },
+  "preferencesAfterNormalLaunch": {
+    "beforeKeys": 25,
+    "afterKeys": 25,
+    "sameKeys": true,
+    "changedValues": 0,
+    "allNonDiagnosticPreferencesEqual": true
+  },
+  "normalLaunchRequestedEnvironment": {},
+  "normalLaunchRequestedArguments": [],
+  "actualUI": {
+    "actualScreenshotReviewed": true,
+    "NastartNormalHomeVisible": true,
+    "NASStatusNormal": true,
+    "playerClosed": true,
+    "normalLaunchEmptyEnvironmentAndArgsRequested": true,
+    "actualProcessEnvironmentRead": false,
+    "sourceDiffSHA256": "c868c278fcefe2411cfc07eabb4adf33ce159f0a0f9fb446897aeb2ce25ac835",
+    "latestPayloadInstallCompleteAndLookupVerified": true,
+    "WDAUsed": false,
+    "playbackRegressionPerformed": false
+  },
+  "discovery": {
+    "systemDNSSDUsed": true,
+    "realtimePairedUDIDMatched": true,
+    "advertisedPortRequiresProtocolDistinction": true,
+    "standardLockdownEndpointVerified": true
+  },
+  "authorization": {
+    "usesOnlyExistingHostEscrowForHouseArrest": true,
+    "newPairingAttempted": false,
+    "networkOrVPNChanged": false,
+    "WDAUsed": false,
+    "rootOrSystemServiceRestartUsed": false,
+    "escrowCausalIsolationExperimentPerformed": false
+  },
+  "retainedFailures": [
+    "Before-user-readiness HouseArrest ConnectionTerminatedError; no install sent",
+    "After-user-readiness ordinary HouseArrest ConnectionTerminatedError; no install sent",
+    "Read-only userspace RSD attempt ConnectionTerminatedError before eventual successful run",
+    "First escrow wrapper selected RSD service name because provider type changed: InvalidService; corrected to preserve original client type",
+    "Two new constructor tests initially lacked asyncio event loop; fixture corrected, final11passed"
+  ],
+  "toolTests": {
+    "passed": 11,
+    "failed": 0,
+    "appTestsNotRepeated": true
+  },
+  "privateEvidenceDirectory": "2026-10-15-iphone18-wifi-update-213932",
+  "playbackOrPerformanceRegressionPerformedOnIPhone18": false,
+  "otherUnfinishedPlaybackTasksRemainOpen": true,
+  "finalSourceAndPayloadRevalidated": true
+}

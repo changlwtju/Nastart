@@ -1,0 +1,299 @@
+{
+  "updatedAt": "2026-10-13T00:30:13.294704+08:00",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceDiffSHA256": "3e3aa7b7c6dfd15bfe1faad767abb5386e3e18eba57776348b235749423183be",
+  "configuration": "normal Debug -Onone; empty launch environment",
+  "packagePath": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-10-12-recording-ts-resume-233923/Nastart-Recording-Resume-Content-Witness-Normal-Debug.app",
+  "buildTime": "2026-10-12T23:46:31.128172+08:00",
+  "binarySHA256": {
+    "Nastart": "db592e17b0ec4b0f87c245d60e34906c125ffc8a24b7f1073d612c47df1adc42",
+    "Nastart.debug.dylib": "2a88b4525cb835b49ba39f3f8ba2aa456531e71fe58e4f7565b754833e7cb831",
+    "Frameworks/KSPlayer.framework/KSPlayer": "e68d742056f06b8806d18ce13f3027b47a2d9bc380671b7371a985b6d139f785"
+  },
+  "sourceInputsVerified": 173,
+  "sourceEditedThisTurn": false,
+  "rebuildNeeded": false,
+  "priorTests": {
+    "executed": 344,
+    "skipped": 2,
+    "failures": 0,
+    "runThisTurn": false
+  },
+  "priorPreflight": {
+    "passed": 15,
+    "runThisTurn": false
+  },
+  "signatureVerifiedAgain": true,
+  "devices": [
+    {
+      "device": "iphone13",
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "connection": "USB",
+      "latestPackageCover": true,
+      "installedAt": "2026-10-13T00:23:57.956771+08:00",
+      "installationPreferencesUnchanged": true,
+      "installationPreferenceCount": 25,
+      "normalEmptyEnvironmentHomeReviewed": true,
+      "sample": "S01 device file",
+      "frames": [
+        {
+          "stage": "landscape-paused",
+          "appBounds": {
+            "x": 0.0,
+            "y": 0.0,
+            "width": 844.0,
+            "height": 390.0
+          },
+          "closeButtons": [
+            {
+              "name": "完成",
+              "label": "完成",
+              "x": "63",
+              "y": "10",
+              "width": "44",
+              "height": "44"
+            }
+          ],
+          "reviewed": true,
+          "reviewedAt": "2026-10-13T00:28:58.047014+08:00",
+          "actualCloseFullyVisible": true
+        },
+        {
+          "stage": "portrait-paused",
+          "appBounds": {
+            "x": 0.0,
+            "y": 0.0,
+            "width": 390.0,
+            "height": 844.0
+          },
+          "closeButtons": [
+            {
+              "name": "完成",
+              "label": "完成",
+              "x": "16",
+              "y": "57",
+              "width": "44",
+              "height": "44"
+            }
+          ],
+          "reviewed": true,
+          "reviewedAt": "2026-10-13T00:28:58.047895+08:00",
+          "actualCloseFullyVisible": true
+        },
+        {
+          "stage": "landscape-return",
+          "appBounds": {
+            "x": 0.0,
+            "y": 0.0,
+            "width": 844.0,
+            "height": 390.0
+          },
+          "closeButtons": [
+            {
+              "name": "完成",
+              "label": "完成",
+              "x": "63",
+              "y": "10",
+              "width": "44",
+              "height": "44"
+            }
+          ],
+          "reviewed": true,
+          "reviewedAt": "2026-10-13T00:28:58.047657+08:00",
+          "actualCloseFullyVisible": true
+        },
+        {
+          "stage": "before-close",
+          "appBounds": {
+            "x": 0.0,
+            "y": 0.0,
+            "width": 844.0,
+            "height": 390.0
+          },
+          "closeButtons": [
+            {
+              "name": "完成",
+              "label": "完成",
+              "x": "63",
+              "y": "10",
+              "width": "44",
+              "height": "44"
+            }
+          ],
+          "reviewed": true,
+          "reviewedAt": "2026-10-13T00:28:58.047211+08:00",
+          "actualCloseFullyVisible": true
+        },
+        {
+          "stage": "after-close",
+          "appBounds": {
+            "x": 0.0,
+            "y": 0.0,
+            "width": 390.0,
+            "height": 844.0
+          },
+          "closeButtons": [],
+          "reviewed": true,
+          "reviewedAt": "2026-10-13T00:28:58.047326+08:00",
+          "actualCloseFullyVisible": false
+        }
+      ],
+      "actualReportedClippingReproduced": false,
+      "normalCloseToDetail": true,
+      "finalPlayerClosed": true,
+      "audit": {
+        "nonBookmarkPreferencesUnchanged": true,
+        "nonBookmarkPreferenceCount": 24,
+        "naturalBookmarkChanges": 1,
+        "sourceDiffUnchanged": true,
+        "rawEvidenceLocalPrivate": true
+      },
+      "originalS03FileAndJFEntriesUnchanged": true
+    },
+    {
+      "device": "ipad",
+      "model": "iPad12,1",
+      "system": "18.3.1",
+      "connection": "USB",
+      "latestPackageCover": true,
+      "installedAt": "2026-10-13T00:16:41.474984+08:00",
+      "installationPreferencesUnchanged": true,
+      "installationPreferenceCount": 18,
+      "normalEmptyEnvironmentHomeReviewed": true,
+      "sample": "S01 device file",
+      "frames": [
+        {
+          "stage": "landscape-paused",
+          "appBounds": {
+            "x": 0.0,
+            "y": 0.0,
+            "width": 1080.0,
+            "height": 810.0
+          },
+          "closeButtons": [
+            {
+              "name": "xmark",
+              "label": "完成",
+              "x": "16",
+              "y": "30",
+              "width": "44",
+              "height": "44"
+            }
+          ],
+          "reviewed": true,
+          "actualCloseFullyVisible": true,
+          "afterDismissNoClose": false,
+          "reviewedAt": "2026-10-13T00:28:58.048523+08:00"
+        },
+        {
+          "stage": "portrait-paused",
+          "appBounds": {
+            "x": 0.0,
+            "y": 0.0,
+            "width": 810.0,
+            "height": 1080.0
+          },
+          "closeButtons": [
+            {
+              "name": "xmark",
+              "label": "完成",
+              "x": "16",
+              "y": "30",
+              "width": "44",
+              "height": "44"
+            }
+          ],
+          "reviewed": true,
+          "actualCloseFullyVisible": true,
+          "afterDismissNoClose": false,
+          "reviewedAt": "2026-10-13T00:28:58.049390+08:00"
+        },
+        {
+          "stage": "landscape-return",
+          "appBounds": {
+            "x": 0.0,
+            "y": 0.0,
+            "width": 1080.0,
+            "height": 810.0
+          },
+          "closeButtons": [
+            {
+              "name": "xmark",
+              "label": "完成",
+              "x": "16",
+              "y": "30",
+              "width": "44",
+              "height": "44"
+            }
+          ],
+          "reviewed": true,
+          "reviewedAt": "2026-10-13T00:28:58.049155+08:00",
+          "actualCloseFullyVisible": true
+        },
+        {
+          "stage": "before-close",
+          "appBounds": {
+            "x": 0.0,
+            "y": 0.0,
+            "width": 1080.0,
+            "height": 810.0
+          },
+          "closeButtons": [
+            {
+              "name": "xmark",
+              "label": "完成",
+              "x": "16",
+              "y": "30",
+              "width": "44",
+              "height": "44"
+            }
+          ],
+          "reviewed": true,
+          "actualCloseFullyVisible": true,
+          "afterDismissNoClose": false,
+          "reviewedAt": "2026-10-13T00:28:58.048715+08:00"
+        },
+        {
+          "stage": "after-close",
+          "appBounds": {
+            "x": 0.0,
+            "y": 0.0,
+            "width": 810.0,
+            "height": 1080.0
+          },
+          "closeButtons": [],
+          "reviewed": true,
+          "actualCloseFullyVisible": false,
+          "afterDismissNoClose": true,
+          "reviewedAt": "2026-10-13T00:28:58.048985+08:00"
+        }
+      ],
+      "actualReportedClippingReproduced": false,
+      "normalCloseToDetail": true,
+      "finalPlayerClosed": true,
+      "audit": {
+        "nonBookmarkPreferencesUnchanged": true,
+        "nonBookmarkPreferenceCount": 17,
+        "naturalBookmarkChanges": 1,
+        "sourceDiffUnchanged": true,
+        "rawEvidenceLocalPrivate": true
+      },
+      "originalS03FileAndJFEntriesUnchanged": true
+    }
+  ],
+  "reportedIssueStatus": "OPEN: user-visible incomplete top-left close symbol; not reproduced in selected current USB screenshots",
+  "dynamicTypeCauseConfirmed": false,
+  "physicalDisplayCornerMaskVerified": false,
+  "oppositeLandscapeVerified": false,
+  "actualEOFVerified": false,
+  "iphone18Tested": false,
+  "toolFailuresRetained": [
+    "iPhone13 tidevice upload stalled and terminated; ios-deploy short transfers timed out; bounded longer cover succeeded with preferences intact",
+    "iPad first portrait label did not match current localized label; corrected from fresh XML",
+    "iPad seek-end gesture did not change position: INVALID_ACTION, not EOF result",
+    "iPhone13 opposite orientation rejected: Unable To Rotate Device"
+  ],
+  "privateEvidenceRoot": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-10-13-player-close-safearea-001414",
+  "next": "Obtain affected device, orientation and actual clipped image; reproduce original condition before fixing shared control layout; then USB regression. Retain growing TS tail and all prior playback backlog."
+}

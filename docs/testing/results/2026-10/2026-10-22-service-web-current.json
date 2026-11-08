@@ -1,0 +1,62 @@
+{
+  "date": "2026-10-22",
+  "device": "iPhone14,5/iOS16.3.1/USB; identity private",
+  "sourceAndPackage": {
+    "normalBuild": "05:26 Debug/-Onone",
+    "sourceDiffSHA256": "e65a8da17ea0db5e1a22d374c2bb79c5d5d8dd4eb4acb4a5fedd8f3057cbaa16",
+    "freshIdentity173Inputs29LibrariesProfileOwnReceiptVerified": true,
+    "sourceEditsBuildsInstallsTests": 0
+  },
+  "activityAudit": {
+    "initialNativeAppAbsentPreconditionFailed": true,
+    "subsequentXCTestStates": [
+      2,
+      2
+    ],
+    "SpringBoardForeground": true,
+    "nativeHomeNoPiPWiFiReviewed": true,
+    "priorIdlePIDOriginUnknown": true,
+    "authorizedNormalBaselineRestartAfterPreferencesAndDiagnostics": true
+  },
+  "firstWindow": {
+    "playCommands": 0,
+    "pipCommands": 0,
+    "webOpened": true,
+    "menuOpenedAndDismissed": true,
+    "embeddedCompactWebHasNoVisibleAppTabBarInNativeImage": true,
+    "returnedDetailWithVisibleAppTabBarInNativeImage": true,
+    "webContent": "white page still loading; not service health acceptance",
+    "preservedFailure": "home-return selector expected navigation title launchpad, actual back label was current NAS name; no matching target, no home-return action"
+  },
+  "secondWindow": {
+    "playCommands": 0,
+    "pipCommands": 0,
+    "webOpened": true,
+    "preservedFailure": "menu dismiss target exists in AX but is not displayed/enabled; visibility guard stopped before input",
+    "homeReturnNotReached": true,
+    "thirdSameConditionWindow": false
+  },
+  "cleanup": {
+    "at": "2026-10-22T07:15:00.905517+08:00",
+    "sourceInputs": 173,
+    "sourceAndPackageUnchanged": true,
+    "sourceDiffSHA256": "e65a8da17ea0db5e1a22d374c2bb79c5d5d8dd4eb4acb4a5fedd8f3057cbaa16",
+    "ipaSHA256": "45d213bafb07a70a3543980ff961388a817172e7e9176185f67c76fb2b1eaf9b",
+    "allBinariesAnd29LibrariesVerified": true,
+    "profileValid": true,
+    "freshUSBIdentityVerified": true,
+    "WDAAutoIdle10CoolOff2ReadbackVerified": true,
+    "ownedPlaybackOrBuildProcessesRemaining": 0,
+    "nativeAppAbsent": true,
+    "all25PreferencesUnchangedSinceWindowEnd": true,
+    "bookmarksUnchangedSinceWindowEnd": true,
+    "networkChanged": false,
+    "mediaPlayCommands": 0,
+    "newCrashReportNamesCollected": true,
+    "NASOnlineHomeVerifiedInPriorStartupWindow": true,
+    "nativeHomeWiFiNoPiPVisuallyReviewed": true
+  },
+  "formalStatus": "UX-03 finite compact-web hiding and return-to-detail navigation slice only; UX-03/04 and all28 remain open",
+  "privateEvidencePointer": "/tmp/nastart-service-web-current-evidence",
+  "all25PreferencesIncluding36BookmarksUnchangedAcrossBothWindows": true
+}

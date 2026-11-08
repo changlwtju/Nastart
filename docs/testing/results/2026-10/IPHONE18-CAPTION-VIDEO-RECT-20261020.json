@@ -1,0 +1,78 @@
+{
+  "date": "2026-10-20",
+  "sourceDiffSHA256": "7f60418a8418bcfcc1043983a8f5b228a47f4e9555ee8307f475d76760c2f629",
+  "configuration": "normal Debug -Onone; empty launch environment",
+  "binaryBuildTime": "2026-10-20T23:03:59.403640+08:00",
+  "binaries": {
+    "Nastart": "03b2b47c9459a1e8f90ce57d1717da29b278a4c9f64cc065a5545d25ac0cca71",
+    "Nastart.debug.dylib": "d633fe2ddc6cc62e976a603a188f22d11069f2e095be5b0bd66212d0dccc0fd4",
+    "Frameworks/KSPlayer.framework/KSPlayer": "24e61e5112ba5ee6c30a78fc37fb4d5a05af3988fd19a714848b575a11a4b497"
+  },
+  "ipaSHA256": "417c3e5bcabd66658db5efb958db88cdeaed48657eb87244ba4a478925a8c900",
+  "sourceInputs": 173,
+  "signedLibraries": 29,
+  "newDeviceBuilds": 1,
+  "layoutTests": {
+    "count": 4,
+    "passed": 4,
+    "normalCommandExit": true,
+    "actualPortraitTextAndBitmapAttachmentsReviewed": true,
+    "priorCompileAndFloatAssertionFailuresPreserved": true
+  },
+  "iphone18": {
+    "installComplete": true,
+    "lookup": true,
+    "normalLaunch": true,
+    "actualNormalHomeReviewed": true,
+    "NASNormal": true,
+    "playerClosed": true,
+    "preferenceCount": 25,
+    "allNonDiagnosticPreferencesIncludingBookmarksEqual": true,
+    "latestPackageMovieCaptionRegression": false
+  },
+  "ipadLatestPackage": false,
+  "HDRPiP": {
+    "currentUserTest": "21:39 package",
+    "engine": "KSPlayer",
+    "transfer": "SMPTE_ST_2084_PQ",
+    "pixelFormat": 2016686640,
+    "width": 3840,
+    "height": 2160,
+    "externalText": true,
+    "observedTextLengths": [
+      31,
+      57
+    ],
+    "compositionReason": "hdrPQPreserved",
+    "composited": false,
+    "fixedByThisBatch": false,
+    "DolbyVisionProfile": "unknown"
+  },
+  "mediaWindowsThisBatch": 0,
+  "networkVPNChanged": false,
+  "requirementsClosed": 0,
+  "iphone13": {
+    "installation": "success",
+    "normalHomeActuallyReviewed": true,
+    "nonBookmarkPreferenceCount": 24,
+    "originalBookmarkCount": 36,
+    "preferencesAndWholeBookmarksUnchanged": true,
+    "crashInventoryDelta": {
+      "Nastart": 0,
+      "WebDriverAgent": 0,
+      "JetsamEvent": 0
+    },
+    "ownedAppStoppedAndAbsent": true,
+    "nativeOriginalNetworkAndWiFiIconActuallyReviewed": true,
+    "systemSessionCleanupTimeoutPreserved": true,
+    "latestPackageMovieCaptionRegression": false
+  },
+  "checks": {
+    "documentationDocuments": 360,
+    "localLinks": 1882,
+    "missingDestinations": 0,
+    "preflightPassed": 15,
+    "whitespacePassed": true
+  },
+  "ownedBuildTestAndTemporaryPadRunnerEnded": true
+}

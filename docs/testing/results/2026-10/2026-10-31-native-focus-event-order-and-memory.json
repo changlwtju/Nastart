@@ -1,0 +1,215 @@
+{
+  "recordedAt": "2026-10-31T14:11:47+08:00",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceInputCount": 445,
+  "changedExistingSourceOrTestFiles": 5,
+  "newSourceFiles": 1,
+  "unchangedOldInputs": 439,
+  "sourcePreservation": {
+    "recordedAt": "2026-10-31T13:53:59.892587+08:00",
+    "sourceInputCount": 445,
+    "changedExistingSourceOrTestFiles": 5,
+    "newDiagnosticSourceFiles": 1,
+    "unchangedOldInputs": 439,
+    "behaviorChanges": [
+      "Route source move despite native focus arriving first",
+      "Remember requested destination when actual focus already equals it"
+    ],
+    "existingFocusAssignmentsAndOtherRestoreGuardsUnchanged": true,
+    "diagnosticOptInOnlyInTwoOfflineFixtures": true,
+    "noDiagnosticPublishedStateTimersNetworkOrCredentials": true,
+    "normalAndReleaseDiagnosticSinkDisabled": true,
+    "formalMetadataCreditsTasksSheetsCoversImageLoadersPlaybackAndMobileLayoutUnchanged": true,
+    "existingUITestAssertionsAndWaitBoundariesUnchanged": true,
+    "newDiagnosticWrapperHasNoAdditionalAcceptanceCoverage": true,
+    "newUnitMethods": 2,
+    "totalTargetedUnitMethods": 41
+  },
+  "diagnosticWindows": [
+    {
+      "window": "dynamic",
+      "eventCount": 50,
+      "controllerCount": 1,
+      "exitCode": 65,
+      "diagnosticEnabled": true,
+      "sameAssertions": true
+    },
+    {
+      "window": "sheet",
+      "eventCount": 104,
+      "controllerCount": 1,
+      "exitCode": 0,
+      "diagnosticEnabled": true,
+      "sameAssertions": true
+    },
+    {
+      "window": "fixed-dynamic",
+      "eventCount": 149,
+      "controllerCount": 1,
+      "exitCode": 65,
+      "diagnosticEnabled": true,
+      "sameAssertions": true
+    }
+  ],
+  "firstOrdinaryFixRun": {
+    "passed": 5,
+    "failed": 1,
+    "exitCode": 65,
+    "failure": "After removing A, requested B rather than first remaining C; stale lastPerson memory. Original package/log/xcresult retained.",
+    "diagnosticFileAbsent": true
+  },
+  "finalOrdinaryUniqueUITestsPassed": 6,
+  "freshOrdinaryConfirmationTestsPassed": 2,
+  "confirmationAddsUniqueAcceptanceCoverage": false,
+  "newDiagnosticWrapperAddsAcceptanceCoverage": false,
+  "targetedUnitTestsPassed": 41,
+  "newUnitMethods": 2,
+  "sixOwnedSimulatorsDeleted": {
+    "ownedCount": 6,
+    "allFreshAbsent": true,
+    "unrelatedSimulatorsUntouched": true,
+    "recordedAt": "2026-10-31T14:03:05.268060+08:00"
+  },
+  "normalRunsDiagnosticFileAbsent": true,
+  "TVSigningBlocked": true,
+  "TVKeptOlderPackageSourceCount": 444,
+  "TVUnsignedBuildNotInstallable": true,
+  "builds": {
+    "mobile-sim-debug-cast": {
+      "startedAt": "2026-10-31T14:03:05.268541+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-31T14:03:34.452186+08:00"
+    },
+    "tv-sim-debug-cast": {
+      "startedAt": "2026-10-31T13:53:11.589118+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-31T13:53:20.132744+08:00"
+    },
+    "ui-build": {
+      "startedAt": "2026-10-31T13:53:11.589118+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-31T13:53:20.132744+08:00"
+    },
+    "module-tests": {
+      "startedAt": "2026-10-31T13:53:06.068129+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-31T13:53:11.564860+08:00"
+    },
+    "mobile-debug": {
+      "startedAt": "2026-10-31T14:03:34.562567+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-31T14:04:11.396963+08:00"
+    },
+    "mobile-release": {
+      "startedAt": "2026-10-31T14:04:11.397950+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-31T14:05:49.772555+08:00"
+    },
+    "tv-debug": {
+      "startedAt": "2026-10-31T14:05:49.773368+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 65,
+      "endedAt": "2026-10-31T14:05:55.098596+08:00"
+    },
+    "tv-unsigned-debug": {
+      "startedAt": "2026-10-31T14:08:11.684802+08:00",
+      "configuration": "Debug",
+      "codeSigningAllowed": false,
+      "physicalDevicesOperated": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-31T14:08:25.802517+08:00"
+    },
+    "tv-release": {
+      "startedAt": "2026-10-31T14:08:25.802967+08:00",
+      "configuration": "Release",
+      "codeSigningAllowed": false,
+      "physicalDevicesOperated": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-31T14:08:53.633217+08:00"
+    }
+  },
+  "packages": {
+    "mobile": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-31T14:04:11.194524+08:00",
+      "frozenAt": "2026-10-31T14:11:32.562721+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 445,
+      "mainSHA256": "963c9647ac0cef41af31e27a8989403a25edff2e4136bc9ab51ca017da618b87",
+      "debugDylibSHA256": "5655da06a12042c76603ff2b9881ce9007e56b834d4c36ea6c73ea19792c1ddb",
+      "signedMachOCount": 30,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false,
+      "copyMethod": "cp -cpR clone requested; hashes and signatures verified independently"
+    },
+    "tv": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-31T12:36:33.579791+08:00",
+      "frozenAt": "2026-10-31T12:37:32.953390+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 444,
+      "mainSHA256": "baf21f8bd1dc412cdd55140b840474d15afe60d4f01b1349e23c864d8a223cfc",
+      "debugDylibSHA256": "41c0e4cc8218d0eed04ed7e401e0a91290d78d6acc4c0a163016e305e3c1e0c5",
+      "signedMachOCount": 27,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false,
+      "copyMethod": "cp -cpR clone requested; hashes and signatures verified independently",
+      "uiValidationStatus": "Known focus failures retained; compile/signature candidate only, not a passed UI regression",
+      "currentSourceMatched": false,
+      "olderPackageRetained": true,
+      "latestBuildAttempt": {
+        "sourceInputCount": 445,
+        "configuration": "Debug",
+        "exitCode": 65,
+        "reason": "No valid tvOS development provisioning profile",
+        "recordedAt": "2026-10-31T14:11:46.992140+08:00",
+        "currentSourceMatched": false
+      }
+    }
+  },
+  "visualReview": {
+    "recordedAt": "2026-10-31T14:04:06.375975+08:00",
+    "reviewed": true,
+    "PNGCount": 8,
+    "finalRunPNGs": 6,
+    "freshConfirmationPNGs": 2,
+    "observations": [
+      "Final dynamic state has both files read-only, people removed and file information focused",
+      "Sheet return ends with count two and selected second file focused in both windows",
+      "Full-screen return count two and final overview focus",
+      "Long final file twelve and person eighteen shown with focus inside viewport",
+      "Original network multi-file first file focused, read-only ISO remains explanation"
+    ],
+    "metrics": {
+      "verticalBeforeY": 1461,
+      "verticalAfterY": 934,
+      "verticalDisplacement": 527,
+      "viewportHeight": 1080,
+      "horizontalInitiallyHittable": false,
+      "horizontalFinallyHittable": true,
+      "frameTiming": "notMeasured"
+    },
+    "notVerified": [
+      "Actual portraits/backdrop images",
+      "Smoothness/intermediate frame timing",
+      "Actual editor or player return"
+    ]
+  },
+  "physicalDevicesOperated": 0,
+  "NASCommands": 0,
+  "playbackCommands": 0,
+  "newPlaybackMatrixP": 0,
+  "notVerified": [
+    "Actual source-backed page, real editor sheet/player return and images",
+    "Mobile/iPad touch, native focus variants, touchpad and intermediate focus latency",
+    "Frame timing/smoothness, real asynchronous metadata and duplicate-person identity",
+    "Jellyfin TV View-specific focus remains separate; no claim that all entry UI focus code is identical"
+  ]
+}

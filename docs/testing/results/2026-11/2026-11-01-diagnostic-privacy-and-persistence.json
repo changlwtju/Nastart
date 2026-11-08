@@ -1,0 +1,102 @@
+{
+  "recordedAt": "2026-11-01T15:36:02.801884+08:00",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceInputCount": 446,
+  "changedExistingSourceFiles": 4,
+  "otherSourceHashesUnchanged": 442,
+  "finalSourceHashesVerified": true,
+  "selectedStoreAndExportTests": 18,
+  "newDiagnosticTests": 6,
+  "baselinePassedTests": 12,
+  "baselineFailedTests": 6,
+  "finalPassedTests": 18,
+  "finalFailedTests": 0,
+  "testBodyMode": "Full production store/entry/context source; UIKit import replaced by synthetic UIDevice header stub; exact selected XCTest method bodies; no host App",
+  "parserModules": 6,
+  "parserTestsPassed": 130,
+  "harnessExtractionCompileFailuresRetained": 1,
+  "candidateCredentialAliasFailureRetained": true,
+  "memoryAndSyntheticPersistenceSecretChecksPassed": true,
+  "legacyEntryDisplayAndExportCheckedWithoutRawRewrite": true,
+  "entrySchemaHeaderAndPersistenceSchedulingUnchanged": true,
+  "sensitiveExpressionsCached": true,
+  "telemetryGoldenFieldsPreserved": true,
+  "localization": {
+    "zh-Hans": {
+      "keyCount": 1185,
+      "changedKeys": [
+        "diagnostics.footer"
+      ],
+      "keySetPreserved": true
+    },
+    "en": {
+      "keyCount": 1185,
+      "changedKeys": [
+        "diagnostics.footer"
+      ],
+      "keySetPreserved": true
+    }
+  },
+  "footerCurrentUIOrVoiceOverValidated": false,
+  "finalBuildExitCodes": {
+    "tv-sim-debug-cast": 0,
+    "mobile-sim-debug-cast": 0,
+    "mobile-unsigned-debug": 0,
+    "mobile-release": 0,
+    "tv-unsigned-debug": 0,
+    "tv-release": 0
+  },
+  "strictAnonymityDelivered": false,
+  "physicalDeviceOperations": 0,
+  "NASCommands": 0,
+  "realCredentialReads": 0,
+  "realDiagnosticOrUserExportReads": 0,
+  "realShares": 0,
+  "newSimulatorsCreated": 0,
+  "newUIImages": 0,
+  "priorProvisioningBlockersRetained": true,
+  "newSignedCandidateFrozen": false,
+  "activeCompilationProcesses": 0,
+  "unrelatedReadOnlyXcodeMetadataProcessesLeftUntouched": 0,
+  "newPlaybackPasses": 0,
+  "playbackMatrixSize": 114,
+  "freeGiB": 13.83,
+  "payloadSourceInventory": {
+    "sourceAuditOnly": true,
+    "realUserPayloadReadOrGenerated": false,
+    "metadata": [
+      "formatVersion",
+      "exportedAt"
+    ],
+    "launchpad": [
+      "name (text masking)",
+      "category (enum raw value)",
+      "visible (Bool)"
+    ],
+    "reminders": [
+      "pending/history",
+      "id (original UUID)",
+      "title/target (text masking)",
+      "createdAt/completedAt/targetDate (dates)",
+      "daysBefore/muted",
+      "kind (raw optional string)"
+    ],
+    "settings": [
+      "launchpadTheme/language/displayMode (raw defaults strings with missing-value fallback)",
+      "compactMetrics/showServiceStatus (typed Bool fallback)"
+    ],
+    "unverified": [
+      "full payload serialization and selection combinations",
+      "enum normalization for three raw settings values",
+      "kindRawValue validation",
+      "ID/date correlation and strict anonymity",
+      "actual ShareLink/UI/VoiceOver"
+    ]
+  },
+  "documentationCheck": {
+    "documents": 574,
+    "localLinks": 3637,
+    "missingDestinations": 0
+  },
+  "finalizedAt": "2026-11-01T15:37:06.542235+08:00"
+}

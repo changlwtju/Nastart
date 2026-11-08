@@ -1,6 +1,35 @@
 import Foundation
 import Security
 
+/// Both library and file playback must look up the same endpoint-scoped accounts.
+/// Path aliases stay on explicitly configured origins; no new host/port is inferred.
+enum JellyfinSessionEndpointPolicy {
+    static func configuredEndpoints(for service: LaunchpadService, dsmBaseURL: URL?) -> [URL] {
+        let effective = ServiceEndpointOverrides.load(service: service, deviceHost: dsmBaseURL?.host)
+            ?? service.preferredEndpoint(for: dsmBaseURL)
+        return [effective, service.endpoint, service.alternateEndpoint].compactMap { $0 }
+    }
+
+    static func candidates(from endpoints: [URL]) -> [URL] {
+        var result: [URL] = []
+        var seen = Set<String>()
+        for endpoint in endpoints {
+            for path in [endpoint.path, "/jellyfin", "/emby"] {
+                guard var components = URLComponents(url: endpoint, resolvingAgainstBaseURL: false) else {
+                    continue
+                }
+                components.path = path == "/" ? "" : path
+                components.query = nil
+                components.fragment = nil
+                guard let candidate = components.url,
+                      seen.insert(candidate.absoluteString).inserted else { continue }
+                result.append(candidate)
+            }
+        }
+        return result
+    }
+}
+
 enum KeychainStoreError: LocalizedError {
     case encodingFailed
     case unexpectedStatus(OSStatus)

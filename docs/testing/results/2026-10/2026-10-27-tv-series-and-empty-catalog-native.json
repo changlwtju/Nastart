@@ -1,0 +1,165 @@
+{
+  "date": "2026-10-27",
+  "scope": "normal Debug native metadata and navigation regression; no video playback",
+  "source": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "dirtyStatusSHA256": "062b33d450daf833f981bbcb2e0bc3031de1f922c32f9a0bf59c2c80f5cb2987",
+    "frozenInputCount": 393,
+    "drift": 0,
+    "appSourceChangedThisBatch": false,
+    "at": "2026-10-27T11:20:27.440667+08:00"
+  },
+  "newBuild": false,
+  "moduleTests": {
+    "count": 113,
+    "run": "previous batch, unchanged 393 frozen inputs; not rerun"
+  },
+  "devices": {
+    "tv": {
+      "at": "2026-10-27T10:43:37.318513+08:00",
+      "installedAt": "2026-10-27T10:43:40.742496+08:00",
+      "packageSHA256": "831f473ba9c8edb3bd058e12b5ff01aa88b462e3cc937eef64bada57101be2e2",
+      "configuration": "Debug",
+      "preserveData": true,
+      "freshIdentityConnected": true,
+      "installComplete": true,
+      "preferences": {
+        "beforeKeys": 15,
+        "afterKeys": 15,
+        "sameKeys": true,
+        "changedValues": 0,
+        "allNonDiagnosticPreferencesEqual": true
+      }
+    },
+    "ipad": {
+      "at": "2026-10-27T10:56:43.906095+08:00",
+      "installedAt": "2026-10-27T10:56:49.152011+08:00",
+      "packageSHA256": "fa4c989c074b352120a7de259667bf1aac9aa4a58413b5085a5fde54d2960599",
+      "configuration": "Debug",
+      "preserveData": true,
+      "freshIdentityConnected": true,
+      "installComplete": true,
+      "preferences": {
+        "beforeKeys": 19,
+        "afterKeys": 19,
+        "sameKeys": true,
+        "changedValues": 0,
+        "allNonDiagnosticPreferencesEqual": true
+      }
+    }
+  },
+  "iphone13": {
+    "accessedThisBatch": false,
+    "lastRegression": "previous poster-layout batch"
+  },
+  "iphone18": {
+    "accessedThisBatch": false,
+    "reason": "user took device to work; hands off"
+  },
+  "tv": {
+    "source": "actual NAS via existing saved WebDAV credentials",
+    "indexedFiles": 18,
+    "seriesPosters": 1,
+    "seasons": 2,
+    "seasonFileCounts": [
+      10,
+      8
+    ],
+    "visibleEpisodeThumbnails": 4,
+    "savedAndReturnedToLibraryHome": true,
+    "seriesSeasonEpisodeDetailReached": true,
+    "localTitleEditVisible": true,
+    "rawFilesUnchangedDuringCorrection": true,
+    "restoreFullSnapshotEqual": true,
+    "originalSnapshotEqual": true,
+    "libraries": 1,
+    "originalFiles": 149,
+    "temporaryRemoved": true,
+    "correctionRestored": true,
+    "preferences": {
+      "changedRawValues": 1,
+      "changedJSONSemanticallyEqual": true,
+      "allOtherPreferencesEqual": true,
+      "posterDensityBefore": 5,
+      "posterDensityAfter": 5
+    },
+    "editControlTimeout": {
+      "seconds": 35,
+      "observedForeground": "TVConferenceRoomDisplay",
+      "appProcessPresentWhenInspected": true,
+      "existingTodayNastartCrashReportsCopied": 0,
+      "flushMoveErase": false,
+      "resumeExistingAppReturnedToSameDetail": true,
+      "cause": "undetermined; not classified as app crash",
+      "recoveredBy": "native Select on confirmed focused edit button"
+    }
+  },
+  "ipad": {
+    "rawFilesUnchanged": true,
+    "restoredCorrectionsEmpty": true,
+    "emptySeasonVisible": true,
+    "emptySeriesVisible": true,
+    "movieCategoryVisible": true,
+    "restoredSeriesSeasonEpisodeVisible": true,
+    "temporaryRemoved": true,
+    "originalSnapshotEqual": true,
+    "originalFiles": 3408,
+    "fixtureOnly": true,
+    "mediaCommands": 0
+  },
+  "fixture": {
+    "sourceUnchanged": true,
+    "stopped": true,
+    "portClosed": true,
+    "requests": 5,
+    "remoteWrites": 0,
+    "videoGETs": 0,
+    "imageGETs": 0,
+    "NFOGETs": 2
+  },
+  "cleanup": {
+    "tvRunner": {
+      "startedAt": "2026-10-27T10:44:09.710256+08:00",
+      "limitSeconds": 900,
+      "runnerStopped": true,
+      "finishedAt": "2026-10-27T10:56:18.927716+08:00"
+    },
+    "tvSettingsRestored": true,
+    "ipadOwnSessionDeleteStatus": 200,
+    "ipadOriginalRunnerKept": true,
+    "ipadFinalPreferenceKeysEqual": 19,
+    "ipadFinalVisibleScene": "landscape",
+    "sourceWritesIssued": 0,
+    "videoCommands": 0,
+    "cellularTasks": 0,
+    "NASOrVPNChanges": 0
+  },
+  "retainedToolFailures": [
+    "TV element click timeout before local editor; system foreground observed",
+    "iPad first cleanup selected source before stable navigation; remained source hub",
+    "iPad first final-index equality assertion failed while temporary library still present; retained then cleanly removed and final verified"
+  ],
+  "requirements": {
+    "total": 30,
+    "inProgress": 14,
+    "awaitingAcceptance": 5,
+    "notStarted": 11,
+    "playbackCells": 114,
+    "newPassCells": 0
+  },
+  "remaining": [
+    "independent indexed-source preview/playback",
+    "FTP production adapter and FTPS session reuse compatibility",
+    "SMB selected-root scope and strict negotiation",
+    "native correction coverage on other devices and full themes/accessibility/split view"
+  ],
+  "validation": {
+    "documentationFiles": 485,
+    "localLinks": 2870,
+    "missingDestinations": 0,
+    "gitDiffCheckPassed": true,
+    "frozenSourceInputsUnchanged": 393,
+    "bothOriginalIndexesEqual": true,
+    "publicCredentialValueMatches": 0
+  }
+}

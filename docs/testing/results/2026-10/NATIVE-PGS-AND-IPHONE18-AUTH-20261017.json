@@ -1,0 +1,256 @@
+{
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceDiffSHA256": "cc64de38bfaadefeb5fd792ab03780a9dd59e1147609ed09dd44212a35fcf17d",
+  "binaryBuildTime": "2026-10-16T19:50:56.667851+08:00",
+  "configuration": "normal Debug -Onone; empty launch environment",
+  "Xcode": "27.0/27A266a",
+  "binaries": {
+    "Nastart": "bb99a1095301a72b870ed8419a37de71cfe6a53f6934a20fa91df973baa40593",
+    "Nastart.debug.dylib": "f0bc22616f4982c4378213b7c6f837158731d0a154a97df6dff8218501d2a08b",
+    "Frameworks/KSPlayer.framework/KSPlayer": "f73e8008a84286299e04dcda6b27921049f326e8190235a5fd7fcbdf5e288be0"
+  },
+  "ipaSHA256": "99e3210fa295ac6b3a3597a00610eac806a6e84cb70d560ca505ce88827549b1",
+  "checkedInputs": 173,
+  "individuallyVerifiedLibraries": 29,
+  "profileExpirationUTC": "2026-10-17T22:23:40",
+  "recordedAt": "2026-10-17T04:01:15.721508+08:00",
+  "appSourceChanged": false,
+  "appBuildOrTestsRerun": false,
+  "currentPackageReverifiedAtEnd": true,
+  "iPhone18": {
+    "freshDiscovery": {
+      "identityMatches": true,
+      "paired": true,
+      "model": "iPhone19,7",
+      "system": "27.0",
+      "verifiedPort": 62078,
+      "connection": "direct Wi-Fi TCP",
+      "targetAbsentFromUSB": true,
+      "systemDNSServiceResolved": true,
+      "resolvedInterfaceIndex": 12,
+      "pairingRecordChanged": false,
+      "networkConfigurationChanged": false,
+      "appInstalledOrLaunched": false,
+      "outcome": "verified"
+    },
+    "installation": {
+      "startedAtUTC": "2026-10-16T19:41:23.491000+00:00",
+      "stage": "installed; launch requested; actual screenshot review required",
+      "packageVerified": true,
+      "targetLiveVerified": true,
+      "preferencesSavedBeforeInstall": true,
+      "installDispatchAttempted": true,
+      "installCommandSent": true,
+      "installCompleteObserved": true,
+      "postInstallLookupExists": true,
+      "actualForegroundUIVerified": false,
+      "newPairingAttempted": false,
+      "networkOrVPNChanged": false,
+      "WDARequiredForInstallation": false,
+      "sourceDiffSHA256": "cc64de38bfaadefeb5fd792ab03780a9dd59e1147609ed09dd44212a35fcf17d",
+      "binaries": {
+        "Nastart": "bb99a1095301a72b870ed8419a37de71cfe6a53f6934a20fa91df973baa40593",
+        "Nastart.debug.dylib": "f0bc22616f4982c4378213b7c6f837158731d0a154a97df6dff8218501d2a08b",
+        "Frameworks/KSPlayer.framework/KSPlayer": "f73e8008a84286299e04dcda6b27921049f326e8190235a5fd7fcbdf5e288be0"
+      },
+      "ipaSHA256": "99e3210fa295ac6b3a3597a00610eac806a6e84cb70d560ca505ce88827549b1",
+      "model": "iPhone19,7",
+      "system": "27.0",
+      "connection": "NETWORK",
+      "existingEscrowUsedForContainerRequest": true,
+      "installedAtUTC": "2026-10-16T19:41:36.031347+00:00",
+      "preferences": {
+        "beforeKeys": 25,
+        "afterKeys": 25,
+        "sameKeys": true,
+        "changedValues": 0,
+        "allNonDiagnosticPreferencesEqual": true
+      },
+      "RSDTargetVerified": true,
+      "normalLaunchRequested": true,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "actualScreenCaptured": true,
+      "preferencesAfterLaunch": {
+        "beforeKeys": 25,
+        "afterKeys": 25,
+        "sameKeys": true,
+        "changedValues": 0,
+        "allNonDiagnosticPreferencesEqual": true
+      },
+      "finishedAtUTC": "2026-10-16T19:41:48.475406+00:00",
+      "actualUIReviewEvidence": "actual-iphone18-review-safe.json"
+    },
+    "actualUI": {
+      "normalLaunchImageActuallyViewed": true,
+      "normalHomeVerified": false,
+      "observedScreen": "SpringBoard; Nastart process present in subsequent DVT inspection",
+      "XCTestAuthorizationImageActuallyViewed": true,
+      "observedSystemPrompt": "Enter iPhone passcode for XCTest / Enable UI Automation",
+      "authorizationReplyReceived": false,
+      "playbackRegressionStarted": false
+    },
+    "inspection": {
+      "at": "2026-10-17T03:42:43.758963+08:00",
+      "normalHomeVerified": false,
+      "unexpectedSpringBoard": true,
+      "standardCrashPullExit": 1,
+      "NastartProcessCount": 1,
+      "RunnerProcessCount": 0,
+      "RunnerInstalled": true,
+      "RunnerProfileValidated": true,
+      "relevantReportCount": 16,
+      "RSDNastartReportPullCompleted": true,
+      "RunnerProfiles": [
+        {
+          "expirationUTC": "2026-10-17T22:28:19",
+          "expired": false,
+          "targetProvisioned": true
+        }
+      ]
+    },
+    "runner": {
+      "at": "2026-10-17T03:43:24.872732+08:00",
+      "reuseInstalledRunner": true,
+      "RunnerInstalled": true,
+      "installedProfileValid": true,
+      "newBuildOrInstall": false,
+      "status": "exited",
+      "testConfigVerified": true,
+      "failureType": "KeyboardInterrupt",
+      "finishedAt": "2026-10-17T03:58:10.503387+08:00"
+    },
+    "intentionalStop": {
+      "at": "2026-10-17T03:58:08.476064+08:00",
+      "ownXCTestStopRequested": true,
+      "reason": "Batch end; on-device UI automation authorization still pending; no further playback possible on iPhone18 this window"
+    },
+    "finalRSDRead": "TimeoutError before process list; no final UI/preferences/process/conditions confirmation",
+    "newPairingOrNetworkChange": false
+  },
+  "iPhone13": {
+    "installation": {
+      "device": "iphone13",
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "connection": "USB",
+      "binaries": {
+        "Nastart": "bb99a1095301a72b870ed8419a37de71cfe6a53f6934a20fa91df973baa40593",
+        "Nastart.debug.dylib": "f0bc22616f4982c4378213b7c6f837158731d0a154a97df6dff8218501d2a08b",
+        "Frameworks/KSPlayer.framework/KSPlayer": "f73e8008a84286299e04dcda6b27921049f326e8190235a5fd7fcbdf5e288be0"
+      },
+      "sourceDiffSHA256": "cc64de38bfaadefeb5fd792ab03780a9dd59e1147609ed09dd44212a35fcf17d",
+      "preservesContainer": true,
+      "signatureVerified": true,
+      "actualForegroundUIVerified": true,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "installation": "success",
+      "startedAt": "2026-10-17T03:46:03.437380+08:00",
+      "installedAt": "2026-10-17T03:46:15.915836+08:00",
+      "preferenceKeysUnchanged": true,
+      "preferenceValuesUnchanged": true,
+      "nonDiagnosticKeys": 25,
+      "actualHomeImageViewed": true
+    },
+    "nativePGSLayout": [
+      {
+        "label": "paused-stable",
+        "screenHeightPoints": 390.0,
+        "cueBottomGapPoints": [
+          33.0
+        ]
+      },
+      {
+        "label": "hidden",
+        "screenHeightPoints": 390.0,
+        "cueBottomGapPoints": [
+          33.0
+        ]
+      },
+      {
+        "label": "reshown",
+        "screenHeightPoints": 390.0,
+        "cueBottomGapPoints": [
+          33.0
+        ]
+      },
+      {
+        "label": "portrait",
+        "screenHeightPoints": 844.0,
+        "cueBottomGapPoints": [
+          46.0
+        ]
+      },
+      {
+        "label": "landscape-restored",
+        "screenHeightPoints": 390.0,
+        "cueBottomGapPoints": [
+          33.0
+        ]
+      }
+    ],
+    "layoutPicturesActuallyViewed": true,
+    "nativeLargeForwardSeek": {
+      "engine": "KSPlayer",
+      "fromSeconds": 83.465,
+      "requestedSliderTargetSeconds": 7500,
+      "actualTargetSeconds": 7332.848473728181,
+      "engineCompletionFromDispatchSeconds": 4.5844199657440186,
+      "targetPreviewFromDispatchSeconds": 5.726467967033386,
+      "previewPTSSeconds": 7332.825,
+      "firstImageWindowFromTouchStartSeconds": [
+        0.8522069454193115,
+        1.3513731956481934
+      ],
+      "oldNativeCueAbsentInFirstImage": true,
+      "targetPictureObservedAt10And30Seconds": true,
+      "allThosePicturesActuallyViewed": true,
+      "speedAcceptance": false
+    },
+    "laterRoute": "AVPlayer/HLS observed at currentSeconds7364.793; later subtitle-switch windows are not native PGS tests",
+    "subtitleSwitch": "Original bilingual default index8 selected again and menu verified; pending replacement invalidated on restore after11234ms, not a timeout; no latency acceptance",
+    "nativeCueHelperAfterRouteChange": "No native cue found in HLS; retained AssertionError is a tool qualification failure, not SUB failure",
+    "naturalTargetPicturesActuallyViewed": true,
+    "fullSUBOrAUDPassed": false,
+    "audit": {
+      "at": "2026-10-17T03:58:40.099043+08:00",
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "USBIdentityMatched": true,
+      "sourceDiffSHA256": "cc64de38bfaadefeb5fd792ab03780a9dd59e1147609ed09dd44212a35fcf17d",
+      "binaries": {
+        "Nastart": "bb99a1095301a72b870ed8419a37de71cfe6a53f6934a20fa91df973baa40593",
+        "Nastart.debug.dylib": "f0bc22616f4982c4378213b7c6f837158731d0a154a97df6dff8218501d2a08b",
+        "Frameworks/KSPlayer.framework/KSPlayer": "f73e8008a84286299e04dcda6b27921049f326e8190235a5fd7fcbdf5e288be0"
+      },
+      "nonBookmarkPreferenceKeys": 24,
+      "nonBookmarkPreferencesUnchanged": true,
+      "originalBookmarksChecked": 36,
+      "originalBookmarksRemoved": 0,
+      "originalTrackChangeCount": 0,
+      "newBookmarksCount": 0,
+      "naturalPositionChangesCount": 1,
+      "newCrashReports": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      },
+      "normalEmptyEnvironment": true,
+      "NASNormal": false,
+      "playerClosed": true,
+      "WDAIdleSeconds": 10,
+      "WDAAnimationCoolOffSeconds": 2,
+      "activeNativeConditions": 0,
+      "finalImageActuallyReviewed": true
+    },
+    "brightnessChanged": false
+  },
+  "iPad": {
+    "newDiscoveryInstallationOrRegression": false,
+    "priorRunnerState": "intentionally stopped in previous batch"
+  },
+  "temporaryMacAssertionReleased": true,
+  "systemPowerSettingsChanged": false,
+  "allOutstandingMatrixAndTestFailuresPreserved": true
+}

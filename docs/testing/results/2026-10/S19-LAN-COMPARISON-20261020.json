@@ -1,0 +1,205 @@
+{
+  "date": "2026-10-20",
+  "purpose": "Same S19 ordinary LAN experience phase comparison against prior cellular windows; different actual routes/output, not a controlled throughput or speedup claim",
+  "device": {
+    "model": "iPhone14,5",
+    "system": "16.3.1",
+    "connection": "USB",
+    "liveIdentityVerified": true,
+    "dataPreservingCoverCompleted": true,
+    "normalHomeActuallyReviewed": true
+  },
+  "build": {
+    "sourceDiffSHA256": "75fedb94550c8be0d2eb439745c139d7eccaf2c83a3a1c0fa6fcab17e5d375d2",
+    "binaries": {
+      "Nastart": "4de4325099651e12ab22e9eed3604a21f6d6c8e67246d3e621580e258248d22d",
+      "Nastart.debug.dylib": "b26741ac2329c2cd8eb584c1a94832c2ced6438205e2cf5eda514498720943d7",
+      "Frameworks/KSPlayer.framework/KSPlayer": "6e1aa05bfe6437e9197a77f903eefcd45ebffdae6b770f2190044e87de2c92a8"
+    }
+  },
+  "sourceUnchangedDuringBatch": true,
+  "windows": [
+    {
+      "entry": "file",
+      "sample": "S19",
+      "observedPlaybackSeconds": 45,
+      "normalEmptyEnvironment": true,
+      "route": "DSM original / localRangeProxy / KSPlayer",
+      "initialPositionSeconds": 0,
+      "firstClockSecondsFromAction": 3.835514,
+      "rendererTapToFirstFrameMs": 1245,
+      "firstOutputSubmitSecondsFromAction": 3.645165,
+      "URLMetricsCount": 7,
+      "URLMetricsCellularYes": 0,
+      "URLMetricsCellularNo": 7,
+      "maxReportedStallCount": 0,
+      "subtitleCondition": "selected embedded track not fully validated",
+      "actualImagesReviewed": [
+        "t10.png",
+        "t30.png",
+        "t45.png"
+      ],
+      "normalExit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "cleanup": {
+        "at": "2026-10-20T00:12:47.547978+08:00",
+        "device": "iphone13",
+        "sample": "S19",
+        "entry": "file",
+        "normalEnvironment": true,
+        "shaping": false,
+        "networkSettingsChanged": false,
+        "windowCompleted": true,
+        "playerClosed": true,
+        "emptyEnvironmentRestored": true,
+        "finishedAt": "2026-10-20T00:14:24.003194+08:00"
+      },
+      "exactVisibleFirstFrameKnown": false,
+      "fullSubtitleOrAudioAccepted": false,
+      "cacheState": "unknown, no clearing"
+    },
+    {
+      "entry": "Jellyfin",
+      "sample": "S19",
+      "observedPlaybackSeconds": 45,
+      "normalEmptyEnvironment": true,
+      "route": "Jellyfin original / localRangeProxy / KSPlayer",
+      "initialPositionSeconds": 0,
+      "firstClockSecondsFromAction": 2.142689,
+      "rendererTapToFirstFrameMs": 908,
+      "firstOutputSubmitSecondsFromAction": 1.917787,
+      "URLMetricsCount": 7,
+      "URLMetricsCellularYes": 0,
+      "URLMetricsCellularNo": 7,
+      "maxReportedStallCount": 0,
+      "subtitleCondition": "source index 8 / PGSSUB",
+      "actualImagesReviewed": [
+        "t10.png",
+        "t30.png",
+        "t45.png"
+      ],
+      "normalExit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "cleanup": {
+        "at": "2026-10-20T00:16:19.917502+08:00",
+        "device": "iphone13",
+        "sample": "S19",
+        "entry": "jf",
+        "normalEnvironment": true,
+        "shaping": false,
+        "networkSettingsChanged": false,
+        "windowCompleted": true,
+        "playerClosed": true,
+        "emptyEnvironmentRestored": true,
+        "finishedAt": "2026-10-20T00:17:51.456394+08:00"
+      },
+      "exactVisibleFirstFrameKnown": false,
+      "fullSubtitleOrAudioAccepted": false,
+      "cacheState": "unknown, no clearing"
+    }
+  ],
+  "filePreparation": {
+    "verifiedOriginalRouteUnavailableMs": 1729,
+    "followingLANRangeValidationMs": 162,
+    "sourceExpectedBytes": 128795641934
+  },
+  "priorCellularComparison": {
+    "file": {
+      "firstClockSeconds": 8.6947,
+      "actualBudgetBps": 2000000,
+      "route": "HLS / AVPlayer",
+      "firstSegmentRequestCount": 2
+    },
+    "Jellyfin": {
+      "firstClockSeconds": 7.912339,
+      "actualBudgetBps": 10000000,
+      "route": "HLS / AVPlayer",
+      "firstSegmentRequestCount": 1
+    },
+    "limits": "Different routes, output budgets and subtitle conditions; independent short windows, cache unknown; no strict causal ratio",
+    "capacityEvidence": {
+      "file": {
+        "sampleBytes": 1048576,
+        "bodyMs": 1905,
+        "totalMs": 2369,
+        "measuredNetworkBodyBps": 4402278,
+        "probeCompleteSecondsFromAction": 0.022,
+        "actualChosenBps": 2000000
+      },
+      "Jellyfin": {
+        "sampleBytes": 1048576,
+        "bodyMs": 263,
+        "totalMs": 363,
+        "measuredNetworkBodyBps": 31845830,
+        "probeCompleteSecondsFromAction": -8.789,
+        "actualChosenBps": 10000000
+      },
+      "scope": "Independent short probes at different times, not sustained bandwidth or quantitative radio signal. File result was still in flight at the action."
+    }
+  },
+  "finalAudit": {
+    "at": "2026-10-20T00:18:09.095094+08:00",
+    "model": "iPhone14,5",
+    "system": "16.3.1",
+    "connection": "USB",
+    "sourceDiffSHA256": "75fedb94550c8be0d2eb439745c139d7eccaf2c83a3a1c0fa6fcab17e5d375d2",
+    "latestPackage": {
+      "Nastart": "4de4325099651e12ab22e9eed3604a21f6d6c8e67246d3e621580e258248d22d",
+      "Nastart.debug.dylib": "b26741ac2329c2cd8eb584c1a94832c2ced6438205e2cf5eda514498720943d7",
+      "Frameworks/KSPlayer.framework/KSPlayer": "6e1aa05bfe6437e9197a77f903eefcd45ebffdae6b770f2190044e87de2c92a8"
+    },
+    "nonBookmarkPreferenceKeys": 24,
+    "nonBookmarkPreferencesExactlyUnchanged": true,
+    "naturalBookmarkChangesCount": 2,
+    "originalBookmarksChecked": 36,
+    "originalBookmarksRemoved": 0,
+    "originalTrackChangeCount": 0,
+    "allOriginalTracksUnchanged": true,
+    "newBookmarksCount": 0,
+    "crashInventoryDelta": {
+      "Nastart": 0,
+      "WebDriverAgent": 0,
+      "JetsamEvent": 0
+    },
+    "normalEmptyEnvironment": true,
+    "playerClosed": true,
+    "WDAIdleSeconds": 10,
+    "WDAAnimationCoolOffSeconds": 2,
+    "nativeConditionsNotRecheckedThisTurn": true,
+    "noConditionInjectedThisTurn": true,
+    "nativeActiveConditions": "not remeasured",
+    "finalHomeActuallyReviewed": true,
+    "sourceTextContainsNASNormal": true,
+    "actualNASCardState": "disconnected; DSM and Jellyfin cards online on later home image",
+    "NASHealthAccepted": false,
+    "finalWiFiIconReviewed": true,
+    "finalImageReviewAt": "2026-10-20T00:20:42.790212+08:00"
+  },
+  "nativeWiFi": {
+    "at": "2026-10-20T00:19:10.675694+08:00",
+    "networkSettingsChanged": false,
+    "playbackAlreadyStopped": true,
+    "nativeWiFiEnabled": true,
+    "originalNetworkSelected": true,
+    "actualIconReviewed": true,
+    "normalHomeRestored": true,
+    "actualReviewAt": "2026-10-20T00:20:42.790212+08:00"
+  },
+  "openRequirements": 28,
+  "productSpeedFixClaimed": false,
+  "toolTestsPassed": 31,
+  "checks": {
+    "documentationFiles": 336,
+    "localLinks": 1686,
+    "missingLinks": 0,
+    "gitDiffCheck": "passed"
+  }
+}

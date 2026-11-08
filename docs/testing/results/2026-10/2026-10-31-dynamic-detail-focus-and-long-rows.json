@@ -1,0 +1,205 @@
+{
+  "recordedAt": "2026-10-31T10:24:19+08:00",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceInputCount": 444,
+  "changedExistingSourceOrTestFiles": 7,
+  "newSourceFiles": 2,
+  "unchangedOldInputs": 435,
+  "unitTestsPassed": 39,
+  "oldUnitMethods": 29,
+  "newUnitMethods": 10,
+  "uniqueUITestsPassed": 4,
+  "oldUITestMethods": 2,
+  "newUITestMethods": 2,
+  "uiExecutionRuns": 5,
+  "failedUIRuns": [
+    {
+      "round": 1,
+      "exitCode": 65,
+      "passed": 3,
+      "failed": 1,
+      "reason": "Unavailable second file fell back to hero instead of the requested first playable file.",
+      "originalSourceHashesPackageLogAndXCResultRetained": true
+    },
+    {
+      "round": 2,
+      "exitCode": 65,
+      "passed": 3,
+      "failed": 1,
+      "reason": "Snapshot-based ownership change did not resolve the same unavailable-file assertion.",
+      "originalSourceHashesPackageLogAndXCResultRetained": true
+    },
+    {
+      "round": 3,
+      "exitCode": 65,
+      "passed": 2,
+      "failed": 2,
+      "reason": "Dynamic assertion still failed; a default-focus change also regressed the old file-return test. Callback diagnostics showed old rather than updated map values.",
+      "originalSourceHashesPackageLogAndXCResultRetained": true
+    },
+    {
+      "round": 4,
+      "exitCode": 65,
+      "passed": 3,
+      "failed": 1,
+      "reason": "Updated-map callback was applied but owner recovery still chose hero. Replaced captured view state with one independently tested session and a live controller.",
+      "originalSourceHashesPackageLogAndXCResultRetained": true
+    }
+  ],
+  "builds": {
+    "mobile-sim-debug-cast": {
+      "startedAt": "2026-10-31T10:19:15.977648+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-31T10:19:51.037866+08:00"
+    },
+    "tv-sim-debug-cast": {
+      "startedAt": "2026-10-31T09:35:59.770728+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-31T09:36:05.022131+08:00"
+    },
+    "ui-build": {
+      "startedAt": "2026-10-31T10:04:13.402757+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-31T10:04:26.903268+08:00"
+    },
+    "mobile-debug": {
+      "startedAt": "2026-10-31T10:19:51.154629+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-31T10:20:29.959499+08:00"
+    },
+    "mobile-release": {
+      "startedAt": "2026-10-31T10:20:29.960222+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-31T10:22:08.906570+08:00"
+    },
+    "tv-debug": {
+      "startedAt": "2026-10-31T10:22:08.907626+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-31T10:22:24.902402+08:00"
+    },
+    "tv-release": {
+      "startedAt": "2026-10-31T10:22:24.903169+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-31T10:22:54.514101+08:00"
+    }
+  },
+  "unitTests": {
+    "exitCode": 0,
+    "recordedAt": "2026-10-31T10:02:34.494960+08:00"
+  },
+  "sourcePreservation": {
+    "recordedAt": "2026-10-31T10:20:59.311845+08:00",
+    "sourceInputCount": 444,
+    "changedExistingSourceOrTestFiles": 7,
+    "unchangedOtherInputs": 435,
+    "newSourceFiles": 2,
+    "metadataAndCreditsTasksUnchanged": true,
+    "sheetAndPlayerCoverUnchanged": true,
+    "playbackCapabilitiesAndSelectionCallbacksUnchanged": true,
+    "portraitLoaderAndOtherNetworkViewsUnchanged": true,
+    "JellyfinViewsAndMediaComponentsUnchanged": true,
+    "personIdentityNowIgnoresArtworkIDsAndPosition": true,
+    "nativeEditUsesBindingOutsideSemanticGraph": true,
+    "scopeAndFixtureHaveNoClientStoreVaultNetworkOrMediaTask": true,
+    "newUnitMethods": 10,
+    "newUITestMethods": 2
+  },
+  "packages": {
+    "mobile": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-31T10:20:29.744404+08:00",
+      "frozenAt": "2026-10-31T10:23:48.332700+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 444,
+      "mainSHA256": "cb89a7e499770f2ba5581ac26fe2a877763468f5e7e732a428df7251ddc81611",
+      "debugDylibSHA256": "42ac93f61f192a089b54c2f4ca9ad76147abd1e00e0b7e9ed49185c5f8c00985",
+      "signedMachOCount": 30,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false,
+      "copyMethod": "cp -cpR clone requested; hashes and signatures verified independently"
+    },
+    "tv": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-31T10:22:24.821041+08:00",
+      "frozenAt": "2026-10-31T10:23:48.720972+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 444,
+      "mainSHA256": "0769b5113456e178c295c709e6bbc494c0c85b77e31e0595c1caeb48e25d5597",
+      "debugDylibSHA256": "2f94deab3c1472e01bbf70d5b5b0fca2007631684af47302a729b108291205d9",
+      "signedMachOCount": 27,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false,
+      "copyMethod": "cp -cpR clone requested; hashes and signatures verified independently"
+    }
+  },
+  "finalUIRun": {
+    "started": true,
+    "startedAt": "2026-10-31T10:06:02.698470+08:00",
+    "physicalDevicesOperated": 0,
+    "NASCommands": 0,
+    "playbackCommands": 0,
+    "customAppLaunchEnvironment": {},
+    "fixture": "early offline branch, no app state/client/store/task",
+    "sourceInputCount": 444,
+    "exitCode": 0,
+    "inputHashesUnchanged": true,
+    "installedBinaryHashesMatchAfterTests": true,
+    "endedAt": "2026-10-31T10:08:57.595334+08:00",
+    "syntheticPreferencesPreserved": true,
+    "unexpectedApplicationKeys": [],
+    "shutdownExit": 0,
+    "deleteExit": 0
+  },
+  "visualReview": {
+    "reviewed": true,
+    "PNGCount": 4,
+    "observations": [
+      "Long row shows focused final file 12 inside viewport",
+      "Horizontal row shows focused final person 18 inside viewport",
+      "Existing multi-file fixture shows focused first file and read-only ISO explanation",
+      "Dynamic replacement final state shows file information header after native edit up-return; people removed and unavailable files remain read-only"
+    ],
+    "metrics": {
+      "verticalBeforeY": 1461.0,
+      "verticalAfterY": 934.0,
+      "verticalDisplacement": 527.0,
+      "viewportHeight": 1080.0,
+      "horizontalInitiallyHittable": false,
+      "horizontalFinallyHittable": true,
+      "frameTiming": "notMeasured"
+    },
+    "notVerified": [
+      "Smoothness or frame timing",
+      "Real artwork/avatar loading",
+      "Production model page or actual media presentation"
+    ]
+  },
+  "ownedSimulatorsDeleted": 5,
+  "unrelatedSimulatorsLeftUntouched": true,
+  "physicalDevicesOperated": 0,
+  "NASCommands": 0,
+  "playbackCommands": 0,
+  "newPlaybackMatrixP": 0,
+  "notVerified": [
+    "Production model-backed detail page and real asynchronous metadata/file capability replacement",
+    "Real artwork/avatar fetch and same-name same-role duplicate identity across reorder",
+    "Touchpad, Menu/Back, intermediate focus events, smoothness and frame timing",
+    "Actual editor sheet or player presentation/return, physical devices and NAS"
+  ],
+  "laterCounterexample": {
+    "date": "2026-10-31",
+    "report": "2026-10-31-detail-presentation-return-and-focus-regression.json",
+    "stableDynamicFocusAcceptanceReopened": true,
+    "note": "Historical four-test successful window retained; later unchanged-production regression failed."
+  }
+}

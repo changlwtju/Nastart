@@ -52,10 +52,13 @@ final class LocalTaskStore {
     static let maxHistoryCount = 500
 
     private let storageKey = "tasks.localState.v1"
+    private let defaults: UserDefaults
+
+    init(defaults: UserDefaults = .standard) { self.defaults = defaults }
 
     func load() -> PersistedTaskState? {
         guard
-            let data = UserDefaults.standard.data(forKey: storageKey),
+            let data = defaults.data(forKey: storageKey),
             let state = try? JSONDecoder().decode(PersistedTaskState.self, from: data)
         else {
             return nil
@@ -68,7 +71,7 @@ final class LocalTaskStore {
         guard let data = try? JSONEncoder().encode(state) else {
             return
         }
-        UserDefaults.standard.set(data, forKey: storageKey)
+        defaults.set(data, forKey: storageKey)
     }
 
     static func normalizedState(pending: [TaskItem], history: [TaskItem]) -> PersistedTaskState {

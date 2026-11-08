@@ -1,0 +1,74 @@
+{
+  "recordedAt": "2026-11-01T10:07:46.017687+08:00",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceInputCount": 446,
+  "changedExistingSourceFiles": 3,
+  "otherSourceHashesUnchanged": 443,
+  "currentSourceInputsVerified": true,
+  "finalBuildExitCodes": {
+    "tv-sim-debug-cast": 0,
+    "mobile-sim-debug-cast": 0,
+    "mobile-unsigned-debug": 0,
+    "mobile-release": 0,
+    "tv-unsigned-debug": 0,
+    "tv-release": 0
+  },
+  "finalUniqueTVUITests": 3,
+  "finalTVTestsPassed": 3,
+  "finalTVTestsFailed": 0,
+  "finalTVImages": 6,
+  "preliminaryFailureInvalidMargin": {
+    "tests": 1,
+    "failed": 1,
+    "reason": "60pt inset assumed without layout requirement; full notice was visible with 53pt bottom margin"
+  },
+  "preFocusResults": {
+    "tests": 3,
+    "passed": 2,
+    "failed": 1,
+    "reason": "large preview footer below viewport; remote Down produced zero displacement"
+  },
+  "postFocusBeforeHostLabelResults": {
+    "tests": 3,
+    "passed": 3,
+    "failed": 0,
+    "finalSourceAcceptance": false
+  },
+  "largeNoticeInitialY": 1219,
+  "largeNoticeFinalY": 979,
+  "largeNoticeHeight": 24,
+  "verticalDisplacementPoints": 240,
+  "viewportHeight": 1080,
+  "padEnglishLargeCurrentImageVerified": false,
+  "padObservationBlock": "CUA AX+image and independent image timeoutReached",
+  "hostNASContextLabel": "当前 NAS 登录配置",
+  "hostNASContextLabelUIValidated": false,
+  "physicalDeviceOperations": 0,
+  "NASCommands": 0,
+  "newSignedCandidateFrozen": false,
+  "priorSigningProfileBlocksRetained": true,
+  "ownedSimulatorCount": 5,
+  "allOwnedSimulatorsFreshAbsent": true,
+  "cleanup": {
+    "tv-before-bounds-correction": true,
+    "tv-before-focus": true,
+    "tv-after-focus-before-host-label": true,
+    "tv-run": true,
+    "pad-footer": true
+  },
+  "frameTimingMeasured": false,
+  "voiceOverValidated": false,
+  "realServiceAuthenticationValidated": false,
+  "playbackMatrixSize": 114,
+  "newPlaybackPasses": 0,
+  "freeGiB": 15.84,
+  "finalTVImagesVisuallyReviewed": 6,
+  "documentationCheck": {
+    "documents": 572,
+    "localLinks": 3627,
+    "missingDestinations": 0
+  },
+  "finalizedAt": "2026-11-01T10:08:20.345080+08:00",
+  "activeCompilationProcessesAtFinalAudit": 0,
+  "unrelatedReadOnlyXcodeMetadataProcessesLeftUntouched": 0
+}

@@ -1,0 +1,176 @@
+{
+  "schemaVersion": 1,
+  "kind": "actual save-boundary diagnostic extraction and deterministic tests; NAS restore blocked media validation",
+  "sourceChanges": "three production files plus seven tests; guards/cadence/UserDefaults schema and writing behavior preserved",
+  "build": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "636192ec133fd31f3c6a404d68fd589c861a4edcf13156108e5d021458fc1911",
+    "binaryBuildTime": "2026-10-22T02:35:01.178821+08:00",
+    "binaries": {
+      "Nastart": "c11e95f8f392d0c00a0ab74df7aa1020c3f00e64832a08c619f70c3f3c570e81",
+      "Nastart.debug.dylib": "82eff0d2681bc2431680c9a4438f116876f2e617c74ec2b1ca9906de74a33617",
+      "Frameworks/KSPlayer.framework/KSPlayer": "2de0eeb2bb8b8b81c87ea70dc720754ab73f1b8192fca6226dd02d063acec529"
+    },
+    "ipaSHA256": "5c9216e950cd38435de76fa618042aa0b0ddf87e31eb55229c4b77b65ac4aae3"
+  },
+  "tests": {
+    "executed": 143,
+    "passed": 142,
+    "skipped": 1,
+    "failed": 0,
+    "normalExit": true,
+    "newRegressions": 7,
+    "scope": "NonPlaybackPolicyTests"
+  },
+  "relatedTests": {
+    "executed": 11,
+    "passed": 11,
+    "skipped": 0,
+    "failed": 0,
+    "normalExit": true,
+    "scope": "Existing recording/resume identity, invalid writes, notification ordering and completion tests; test-without-building"
+  },
+  "preflightChecks": 15,
+  "install13": {
+    "device": "iphone13",
+    "model": "iPhone14,5",
+    "system": "16.3.1",
+    "connection": "USB",
+    "binaries": {
+      "Nastart": "c11e95f8f392d0c00a0ab74df7aa1020c3f00e64832a08c619f70c3f3c570e81",
+      "Nastart.debug.dylib": "82eff0d2681bc2431680c9a4438f116876f2e617c74ec2b1ca9906de74a33617",
+      "Frameworks/KSPlayer.framework/KSPlayer": "2de0eeb2bb8b8b81c87ea70dc720754ab73f1b8192fca6226dd02d063acec529"
+    },
+    "sourceDiffSHA256": "636192ec133fd31f3c6a404d68fd589c861a4edcf13156108e5d021458fc1911",
+    "preservesContainer": true,
+    "signatureVerified": true,
+    "actualForegroundUIVerified": false,
+    "requestedEnvironment": {},
+    "requestedArguments": [],
+    "installation": "success",
+    "startedAt": "2026-10-22T02:38:13.509133+08:00",
+    "installedAt": "2026-10-22T02:38:28.402070+08:00",
+    "preferenceKeysUnchanged": true,
+    "preferenceValuesUnchanged": true,
+    "nonDiagnosticKeys": 25
+  },
+  "normalLaunchObservations": [
+    {
+      "playCommands": 0,
+      "environment": {},
+      "startedAt": "2026-10-22T02:39:15.898674+08:00",
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "connection": "USB",
+      "latestPackageVerified": true,
+      "emptyEnvironmentVerified": true,
+      "failureType": "AssertionError",
+      "failureReason": "Effect unconfirmed; no action replay",
+      "ownedAppStopped": true,
+      "WDASettingsRestored": true,
+      "ownedSyslogStopped": true,
+      "nativeAppAbsent": true,
+      "finishedAt": "2026-10-22T02:39:42.077430+08:00",
+      "NASOnlinePredicateObservationBudgetSeconds": 18
+    },
+    {
+      "playCommands": 0,
+      "environment": {},
+      "startedAt": "2026-10-22T02:41:06.044174+08:00",
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "connection": "USB",
+      "latestPackageVerified": true,
+      "emptyEnvironmentVerified": true,
+      "failureType": "AssertionError",
+      "failureReason": "Effect unconfirmed; no action replay",
+      "ownedAppStopped": true,
+      "WDASettingsRestored": true,
+      "ownedSyslogStopped": true,
+      "nativeAppAbsent": true,
+      "finishedAt": "2026-10-22T02:42:04.446487+08:00",
+      "NASOnlinePredicateObservationBudgetSeconds": 50
+    }
+  ],
+  "mediaPlayCommands": 0,
+  "NASRestoreEvents": [
+    {
+      "timeLocal": "2026-10-22T02:41:08.542924+08:00",
+      "event": "开始连接 DSM",
+      "fields": {}
+    },
+    {
+      "timeLocal": "2026-10-22T02:41:16.927383+08:00",
+      "event": "API 信息读取失败",
+      "fields": {
+        "api": "SYNO.API.Auth"
+      }
+    },
+    {
+      "timeLocal": "2026-10-22T02:41:35.108838+08:00",
+      "event": "登录兼容尝试失败",
+      "fields": {
+        "api": "SYNO.API.Auth",
+        "error": "timeout",
+        "method": "login",
+        "version": "7"
+      }
+    },
+    {
+      "timeLocal": "2026-10-22T02:41:35.109542+08:00",
+      "event": "DSM 登录失败",
+      "fields": {
+        "error": "timeout"
+      }
+    },
+    {
+      "timeLocal": "2026-10-22T02:41:35.165092+08:00",
+      "event": "DSM 会话恢复失败",
+      "fields": {
+        "error": "urlError:-1001"
+      }
+    }
+  ],
+  "rememberedEndpointUnauthenticatedProbe": {
+    "at": "2026-10-22T02:45:06.176247+08:00",
+    "purpose": "one unauthenticated API.Info GET to saved configured DSM endpoint, not media/login",
+    "credentialsSent": false,
+    "endpointSettingsChanged": false,
+    "selfSignedAsConfigured": true,
+    "exitCode": 28,
+    "httpStatus": 0,
+    "elapsedSeconds": 3.0262957079999997,
+    "dnsSeconds": 0.017356,
+    "connectSeconds": 0.220597,
+    "tlsSeconds": 0.0,
+    "firstByteSeconds": 0.0,
+    "responseBytes": 0,
+    "apiEnvelopeSuccess": null,
+    "endpointBinding": "remembered form host; live credential endpoint not proven identical"
+  },
+  "finalAudit": {
+    "at": "2026-10-22T02:46:39.091674+08:00",
+    "sourceInputs": 173,
+    "sourceAndPackageUnchanged": true,
+    "sourceDiffSHA256": "636192ec133fd31f3c6a404d68fd589c861a4edcf13156108e5d021458fc1911",
+    "ipaSHA256": "5c9216e950cd38435de76fa618042aa0b0ddf87e31eb55229c4b77b65ac4aae3",
+    "allBinariesAnd29LibrariesVerified": true,
+    "profileValid": true,
+    "freshUSBIdentityVerified": true,
+    "WDAAutoIdle10CoolOff2ReadbackVerified": true,
+    "ownedPlaybackOrBuildProcessesRemaining": 0,
+    "nativeAppAbsent": true,
+    "all25NonDiagnosticPreferencesUnchanged": true,
+    "bookmarksUnchanged": true,
+    "networkChanged": false,
+    "mediaPlayCommands": 0,
+    "newCrashReportNamesCollected": true,
+    "NASOnlineHomeVerified": false,
+    "nativeHomeWiFiNoPiPReviewPending": false,
+    "nativeHomeWiFiNoPiPReviewed": true
+  },
+  "pad": "not operated; historical 2026-10-21 15:39 package",
+  "iphone18": "user deferred; not operated; historical 2026-10-21 15:39 package",
+  "acceptance": "logic/compile/signature/data-preserving install only; no normal NAS-online home or real movie save regression acceptance",
+  "existingFailuresRetained": true
+}

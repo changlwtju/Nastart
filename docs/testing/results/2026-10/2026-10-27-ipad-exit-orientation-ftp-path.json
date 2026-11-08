@@ -1,0 +1,238 @@
+{
+  "date": "2026-10-27",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "inheritedDirtyPreserved": true,
+  "sourceInputCount": 381,
+  "inputScope": "selected local inputs, including untracked FTP files; not full dependency closure",
+  "configuration": "ordinary Debug arm64",
+  "packages": {
+    "mobile": {
+      "builtAt": "2026-10-27T05:23:57.824069+08:00",
+      "mainSHA256": "a34a6a291c4d058a82582488c410da3c8d5b1c04d1cc609196ba2ef383a24d78",
+      "debugDylibSHA256": "5f6a118527d3e7771edf8be4161b2dc610a51b61375a5157fbd28ade8acc5479",
+      "signedMachOCount": 30
+    },
+    "tv": {
+      "builtAt": "2026-10-27T05:23:45.789167+08:00",
+      "mainSHA256": "935d2e37be1b1f0080ff2db40defcc00a14587b9e3898f1947ca369a6b4b7af7",
+      "debugDylibSHA256": "246a75fb693620a3a9904e4b4eb296a60ac2349f8a3770243e1692f09ad493af",
+      "signedMachOCount": 27
+    }
+  },
+  "tests": {
+    "reason": "prior entire-suite timeout; six FTP cases passed independently",
+    "testOnlyNSUnbufferedIO": true,
+    "exitCode": 0,
+    "testCount": 81,
+    "xctestFailures": 0,
+    "passed": true
+  },
+  "ftpPath": {
+    "newTests": 6,
+    "productionValueTypePresent": true,
+    "literalUTF8Identity": true,
+    "percentDecoding": false,
+    "absoluteTVFSSubsetOnly": true,
+    "maximumDepth": 64,
+    "maximumUTF8Bytes": 8192,
+    "serverContainmentOrSnapshotProven": false,
+    "transportCredentialIndexUIWired": false,
+    "FTPDelivered": false
+  },
+  "devices": {
+    "ipad": {
+      "model": "iPad15,7",
+      "system": "26.6",
+      "connection": "wired",
+      "freshIdentityVerifiedBeforeOverlay": true,
+      "installedAt": "2026-10-27T05:28:36.575094+08:00",
+      "packageMainSHA256": "a34a6a291c4d058a82582488c410da3c8d5b1c04d1cc609196ba2ef383a24d78",
+      "installComplete": true,
+      "dataPreserved": true,
+      "normalHomeImageReviewed": true,
+      "normalEnvironment": {},
+      "normalArguments": [],
+      "preferences": {
+        "beforeKeys": 19,
+        "afterKeys": 19,
+        "sameKeys": true,
+        "changedValues": 0,
+        "allNonDiagnosticPreferencesEqual": true
+      }
+    },
+    "iphone13": {
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "connection": "USB",
+      "freshIdentityVerifiedBeforeOverlay": true,
+      "installedAt": "2026-10-27T05:28:50.948058+08:00",
+      "packageMainSHA256": "a34a6a291c4d058a82582488c410da3c8d5b1c04d1cc609196ba2ef383a24d78",
+      "installComplete": true,
+      "dataPreserved": true,
+      "normalHomeImageReviewed": true,
+      "normalEnvironment": {},
+      "normalArguments": [],
+      "preferences": {
+        "beforeKeys": 26,
+        "afterKeys": 26,
+        "sameKeys": true,
+        "changedValues": 0,
+        "allNonDiagnosticPreferencesEqual": true
+      }
+    },
+    "tv": {
+      "model": "AppleTV14,1",
+      "system": "18.2",
+      "connection": "LAN",
+      "freshIdentityVerifiedBeforeOverlay": true,
+      "installedAt": "2026-10-27T05:28:54.815817+08:00",
+      "packageMainSHA256": "935d2e37be1b1f0080ff2db40defcc00a14587b9e3898f1947ca369a6b4b7af7",
+      "installComplete": true,
+      "dataPreserved": true,
+      "normalHomeImageReviewed": true,
+      "normalEnvironment": {},
+      "normalArguments": [],
+      "preferences": {
+        "beforeKeys": 14,
+        "afterKeys": 14,
+        "sameKeys": true,
+        "changedValues": 0,
+        "allNonDiagnosticPreferencesEqual": true
+      }
+    },
+    "iphone18": {
+      "model": "iPhone19,7",
+      "system": "27.0",
+      "connection": "authenticated paired Wi-Fi TCP",
+      "currentBonjourDiscoveryVerified": true,
+      "installedAtUTC": "2026-10-26T21:29:01.331161+00:00",
+      "packageMainSHA256": "a34a6a291c4d058a82582488c410da3c8d5b1c04d1cc609196ba2ef383a24d78",
+      "installComplete": true,
+      "postInstallLookupExists": true,
+      "preferences": {
+        "beforeKeys": 27,
+        "afterKeys": 27,
+        "sameKeys": true,
+        "changedValues": 0,
+        "allNonDiagnosticPreferencesEqual": true
+      },
+      "normalHomeImageReviewed": false,
+      "normalLaunchPendingUnlock": true,
+      "priorIntermediatePackageLaunchRejectedAndLockScreenReviewed": true,
+      "requestedUnlockOnce": true,
+      "USBRequired": false,
+      "actualDSMRouteVerified": false
+    }
+  },
+  "ipadPlayback": {
+    "packageMainSHA256": "97da576e18f7b54f068c4d03c295f541f7e506b8ddc79361461728ca15265243",
+    "orientationSourceIdenticalToFinalPackage": true,
+    "sample": "S01",
+    "entry": "existing Jellyfin resume",
+    "normalExitVerified": true,
+    "orientationBefore": "LANDSCAPE",
+    "orientationAfter": "LANDSCAPE",
+    "windowsBefore": [
+      {
+        "x": "0",
+        "y": "0",
+        "width": "1180",
+        "height": "820"
+      },
+      {
+        "x": "0",
+        "y": "0",
+        "width": "1180",
+        "height": "820"
+      }
+    ],
+    "windowsAfter": [
+      {
+        "x": "0",
+        "y": "0",
+        "width": "1180",
+        "height": "820"
+      },
+      {
+        "x": "0",
+        "y": "0",
+        "width": "1180",
+        "height": "820"
+      }
+    ],
+    "realDistinct3And10FramesReviewed": true,
+    "captures": [
+      {
+        "targetFromDispatchSeconds": 3,
+        "startElapsed": 3.0086595001630485,
+        "endElapsed": 3.846431666985154
+      },
+      {
+        "targetFromDispatchSeconds": 10,
+        "startElapsed": 10.010046875104308,
+        "endElapsed": 10.898083334323019
+      }
+    ],
+    "mediaCommands": 1,
+    "guardSeconds": 70,
+    "forcedStop": false,
+    "settingsRestored": true,
+    "networkChanged": false,
+    "audioOrSubtitlesChanged": false,
+    "audioSubtitleFramePacingAcceptance": false,
+    "newMatrixPasses": 0,
+    "naturalResumeProgressRetained": true,
+    "finalPackagePlaybackRepeated": false,
+    "actualRoute": {
+      "transport": "localRangeProxy",
+      "playMethod": "directPlay",
+      "connectionScheme": "http",
+      "connectionAddressKind": "privateIP",
+      "routeKind": "localRangeProxy",
+      "engine": "KSPlayer"
+    }
+  },
+  "retainedFailures": [
+    "initial FTPPath delegating initializer compilation error, corrected",
+    "incorrect multibyte over-limit test boundary, corrected",
+    "one entire-suite 90-second timeout, owned XCTest stopped; isolated six cases and bounded full 81-case retry passed",
+    "iPhone18 intermediate package installed but normal launch rejected; lock screen observed; capture helper failed after valid screenshot at absent old preference file",
+    "two private orchestration syntax errors before device commands, corrected",
+    "iOS16 WebDAV old layout hang still open; offline symbol lookup did not resolve function names; no new device retry or layout tuning"
+  ],
+  "cleanup": {
+    "ownMediaEnded": true,
+    "guardDisarmed": true,
+    "originalRunnersPreserved": true,
+    "ownHTTPSessionsDeleted": true,
+    "ownTestHTTPPeersRemaining": 0,
+    "cellularTest": false,
+    "NASVPNOrSystemChanged": false,
+    "backgroundAfterTurnPromised": false
+  },
+  "requirements": {
+    "open": 30,
+    "inProgress": 14,
+    "pendingAcceptance": 5,
+    "notStarted": 11,
+    "playbackCells": 114
+  },
+  "finalVerification": {
+    "at": "2026-10-27T05:36:24.416362+08:00",
+    "sourceInputCount": 381,
+    "inputDrift": 0,
+    "headUnchanged": true,
+    "packages": {
+      "mobile": {
+        "signedMachOCount": 30,
+        "binaryDrift": 0,
+        "deepStrictSignatureValid": true
+      },
+      "tv": {
+        "signedMachOCount": 27,
+        "binaryDrift": 0,
+        "deepStrictSignatureValid": true
+      }
+    }
+  }
+}

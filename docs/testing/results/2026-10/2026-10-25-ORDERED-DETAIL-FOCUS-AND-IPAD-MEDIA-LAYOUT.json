@@ -1,0 +1,599 @@
+{
+  "checkedAt": "2026-10-25T20:34:32.559556+08:00",
+  "phase": "ordered_focus_and_ipad_media_layout_installed_and_verified",
+  "TVPackage": {
+    "configuration": "normal Debug",
+    "HEAD": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceInputs": 510,
+    "signedMachOCount": 27,
+    "mainSHA256": "ee6fac1c5dd34e85676f28961b6a295ce38456ba7398091fb76bd8beea0bf364",
+    "debugDylibSHA256": "bb0df96043e63ad031d5a59452555eaf0ebcb2cbb76d6544b337b79bd7262fff",
+    "binaryBuildAt": "2026-10-25T20:07:27.576001+08:00",
+    "installedAt": "2026-10-25T20:07:31.496083+08:00",
+    "profileTargetAndValidityVerified": true,
+    "AppIDAndKeychainGroupsPreserved": true,
+    "preserveData": true,
+    "launchArguments": [],
+    "launchEnvironment": {}
+  },
+  "phonePackage": {
+    "configuration": "normal Debug",
+    "HEAD": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceInputs": 570,
+    "signedMachOCount": 30,
+    "mainSHA256": "7f0f18cc675e45a9293be2e55b2a27f61287bb198d1fab8217da11153dfb8886",
+    "debugDylibSHA256": "bc2980c9a8efad134a7758ab25702c4dd3d8d02da3cec1439e9979866b5e24e1",
+    "binaryBuildAt": "2026-10-25T20:24:39.981755+08:00",
+    "installedAt": "2026-10-25T20:26:07.248892+08:00",
+    "profileTargetAndValidityVerified": true,
+    "AppIDAndKeychainGroupsPreserved": true,
+    "preserveData": true,
+    "launchArguments": [],
+    "launchEnvironment": {}
+  },
+  "iPadPackage": {
+    "configuration": "normal Debug",
+    "HEAD": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceInputs": 570,
+    "signedMachOCount": 30,
+    "mainSHA256": "7f0f18cc675e45a9293be2e55b2a27f61287bb198d1fab8217da11153dfb8886",
+    "debugDylibSHA256": "bc2980c9a8efad134a7758ab25702c4dd3d8d02da3cec1439e9979866b5e24e1",
+    "binaryBuildAt": "2026-10-25T20:24:39.981755+08:00",
+    "installedAt": "2026-10-25T20:26:23.355497+08:00",
+    "profileTargetAndValidityVerified": true,
+    "AppIDAndKeychainGroupsPreserved": true,
+    "preserveData": true,
+    "launchArguments": [],
+    "launchEnvironment": {}
+  },
+  "tests": {
+    "logicPassed": 40,
+    "noMediaUIPassed": 7,
+    "strictOrderedTest": "testOrderedDetailFocusRoundTrip",
+    "oldImplementationRedTestExit": 65
+  },
+  "TVRealChain": {
+    "at": "2026-10-25T20:15:13.598659+08:00",
+    "mediaCommands": 0,
+    "steps": [
+      {
+        "case": "play-down-first",
+        "key": "down",
+        "passed": true,
+        "settlingPolls": 1
+      },
+      {
+        "case": "cast-right-second",
+        "key": "right",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "cast-right-third",
+        "key": "right",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "cast-left-second",
+        "key": "left",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "cast-down-first-related",
+        "key": "down",
+        "passed": true,
+        "settlingPolls": 1
+      },
+      {
+        "case": "related-right-second",
+        "key": "right",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "related-right-third",
+        "key": "right",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "related-left-second",
+        "key": "left",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "related-up-remembered-cast",
+        "key": "up",
+        "passed": true,
+        "settlingPolls": 1
+      },
+      {
+        "case": "cast-right-third-again",
+        "key": "right",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "cast-left-second-again",
+        "key": "left",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "cast-up-play",
+        "key": "up",
+        "passed": true,
+        "settlingPolls": 1
+      },
+      {
+        "case": "play-right-restart",
+        "key": "right",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 68.0
+      },
+      {
+        "case": "restart-down-first",
+        "key": "down",
+        "passed": true,
+        "settlingPolls": 1
+      },
+      {
+        "case": "cast-first-left-boundary",
+        "key": "left",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "cast-right-1",
+        "key": "right",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "cast-right-2",
+        "key": "right",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "cast-right-3",
+        "key": "right",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "cast-right-4",
+        "key": "right",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "cast-right-5",
+        "key": "right",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "cast-right-6",
+        "key": "right",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "cast-right-7",
+        "key": "right",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "cast-right-8",
+        "key": "right",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "cast-right-9",
+        "key": "right",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "cast-right-10",
+        "key": "right",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "cast-right-11",
+        "key": "right",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "cast-right-12",
+        "key": "right",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "cast-right-13",
+        "key": "right",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "cast-right-14",
+        "key": "right",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "cast-right-15",
+        "key": "right",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "cast-right-16",
+        "key": "right",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "cast-right-17",
+        "key": "right",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "cast-right-18",
+        "key": "right",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "cast-right-19",
+        "key": "right",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "cast-last-right-boundary",
+        "key": "right",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "cast-down-remembered-related",
+        "key": "down",
+        "passed": true,
+        "settlingPolls": 1
+      },
+      {
+        "case": "related-right-2",
+        "key": "right",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "related-left-from-edge",
+        "key": "left",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "related-up-last-cast",
+        "key": "up",
+        "passed": true,
+        "settlingPolls": 1
+      },
+      {
+        "case": "cast-left-from-edge",
+        "key": "left",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      },
+      {
+        "case": "last-cast-up-restart",
+        "key": "up",
+        "passed": true,
+        "settlingPolls": 1
+      },
+      {
+        "case": "hero-reenter-first-after-edge",
+        "key": "down",
+        "passed": true,
+        "settlingPolls": 1
+      },
+      {
+        "case": "first-cast-up-remembered-action",
+        "key": "up",
+        "passed": true,
+        "settlingPolls": 1
+      },
+      {
+        "case": "restart-left-play",
+        "key": "left",
+        "passed": true,
+        "settlingPolls": 1,
+        "medianStablePeerYDelta": 0.0
+      }
+    ],
+    "completed": true,
+    "normalHome": true,
+    "actorCount": 20,
+    "actualUISimilarPrefixVerified": 3,
+    "sampleTitle": "变形金刚3：月黑之时",
+    "settingsRestored": true
+  },
+  "iPadLayout": {
+    "at": "2026-10-25T20:27:49.409430+08:00",
+    "mediaCommands": 0,
+    "settingsChanged": false,
+    "preexistingRunnerPreserved": true,
+    "portrait-hero": {
+      "canvas": {
+        "x": 16.0,
+        "y": 213.0,
+        "width": 788.0,
+        "height": 444.0
+      },
+      "dots": {
+        "x": 692.0,
+        "y": 227.0,
+        "width": 98.0,
+        "height": 22.0
+      },
+      "screenWidth": 820.0,
+      "dotsInside": true
+    },
+    "landscape-hero": {
+      "canvas": {
+        "x": 16.0,
+        "y": 213.0,
+        "width": 1148.0,
+        "height": 492.0
+      },
+      "dots": {
+        "x": 1052.0,
+        "y": 227.0,
+        "width": 98.0,
+        "height": 22.0
+      },
+      "screenWidth": 1180.0,
+      "dotsInside": true
+    },
+    "landscape-after-cycle": {
+      "canvas": {
+        "x": 16.0,
+        "y": 213.0,
+        "width": 1148.0,
+        "height": 492.0
+      },
+      "dots": {
+        "x": 1052.0,
+        "y": 227.0,
+        "width": 98.0,
+        "height": 22.0
+      },
+      "screenWidth": 1180.0,
+      "dotsInside": true
+    },
+    "portraitFacts": {
+      "singleLine": true,
+      "sameRow": true,
+      "facts": [
+        {
+          "text": "1080p · H.265",
+          "x": 111.0,
+          "y": 502.0,
+          "width": 131.0,
+          "height": 19.0
+        },
+        {
+          "text": "E-AC3 · 5.1",
+          "x": 276.0,
+          "y": 502.0,
+          "width": 108.0,
+          "height": 19.0
+        },
+        {
+          "text": "2021年12月24日",
+          "x": 418.0,
+          "y": 502.0,
+          "width": 145.0,
+          "height": 19.0
+        }
+      ]
+    },
+    "landscapeFacts": {
+      "singleLine": true,
+      "facts": [
+        {
+          "text": "1080p · H.265",
+          "x": 273.0,
+          "y": 502.0,
+          "width": 131.0,
+          "height": 19.0
+        },
+        {
+          "text": "E-AC3 · 5.1",
+          "x": 438.0,
+          "y": 502.0,
+          "width": 108.0,
+          "height": 19.0
+        },
+        {
+          "text": "2021年12月24日",
+          "x": 580.0,
+          "y": 502.0,
+          "width": 145.0,
+          "height": 19.0
+        }
+      ]
+    },
+    "normalHome": true,
+    "completed": true,
+    "orientationRestored": true,
+    "settingsPreserved": true,
+    "ownHTTPSessionDeleted": true
+  },
+  "phoneLayout": {
+    "at": "2026-10-25T20:27:54.937081+08:00",
+    "mediaCommands": 0,
+    "existingRunnerSettingsChanged": false,
+    "hero": {
+      "canvas": {
+        "x": 16.0,
+        "y": 217.0,
+        "width": 358.0,
+        "height": 202.0
+      },
+      "dotsAX": {
+        "x": 0.0,
+        "y": 0.0,
+        "width": 0.0,
+        "height": 0.0
+      },
+      "dotsAXGeometryUnavailable": true,
+      "nativeScreenshotRequired": true
+    },
+    "peerActionsSameRow": true,
+    "facts": [
+      {
+        "text": "1080p · H.265 · HDR",
+        "x": 30.0,
+        "y": 472.0,
+        "width": 179.0,
+        "height": 19.0
+      },
+      {
+        "text": "DTS · 5.1",
+        "x": 243.0,
+        "y": 472.0,
+        "width": 93.0,
+        "height": 19.0
+      },
+      {
+        "text": "2023年1月22日",
+        "x": 30.0,
+        "y": 516.0,
+        "width": 139.0,
+        "height": 19.0
+      },
+      {
+        "text": "国语 - Chinese - DTS-HD MA - 5.1 - 默认",
+        "x": 57.0,
+        "y": 739.0,
+        "width": 233.0,
+        "height": 16.0
+      }
+    ],
+    "normalHome": true,
+    "completed": true
+  },
+  "finalAudit": {
+    "at": "2026-10-25T20:30:17.852444+08:00",
+    "mediaCommands": 0,
+    "networkSwitches": 0,
+    "TV": {
+      "sourceInputs": 510,
+      "sourceDrift": 0,
+      "frozenBinaryDrift": 0,
+      "mainSHA256": "ee6fac1c5dd34e85676f28961b6a295ce38456ba7398091fb76bd8beea0bf364",
+      "signedMachOCount": 27,
+      "preferenceChanges": 0,
+      "ownedRunnersStopped": true
+    },
+    "mobile": {
+      "sourceInputs": 570,
+      "sourceDrift": 0,
+      "frozenBinaryDrift": 0,
+      "mainSHA256": "7f0f18cc675e45a9293be2e55b2a27f61287bb198d1fab8217da11153dfb8886",
+      "signedMachOCount": 30
+    },
+    "iPhone13": {
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "changedPreferenceKeys": [
+        "diagnostics.entries.v1"
+      ],
+      "normalHomeVisuallyInspected": true,
+      "preexistingRunnerNotModified": true
+    },
+    "iPad": {
+      "model": "iPad15,7",
+      "system": "26.6",
+      "changedPreferenceKeys": [
+        "diagnostics.entries.v1"
+      ],
+      "normalHomeVisuallyInspected": true,
+      "preexistingRunnerPreserved": true,
+      "ownHTTPSessionsDeleted": true
+    }
+  },
+  "visuallyInspected": [
+    "TV first actor selected after Down; last actor Up and normal home",
+    "Final iPad portrait and landscape hero including all caption text",
+    "Final iPad portrait and landscape metadata",
+    "Final iPhone hero dots and complete fact chips"
+  ],
+  "mediaCommands": 0,
+  "cellularTests": 0,
+  "matrixCells": 114,
+  "openRequirements": 28,
+  "fullGlobalFocusAcceptance": false,
+  "frameTimingPerformanceAcceptance": false,
+  "failureHistoryRetained": [
+    "Old ordered test failed first hero Down; 35 assertions include propagated failures and missing old similar automation identifiers",
+    "First candidate failed returning hero Down to an unrealised first actor",
+    "Second candidate failed related Up after intermediate native focus polluted row memory",
+    "First real test used a separate Jellyfin Similar request as expected order; server reordered/reselected recommendations. Corrected fixture to App actual first three cards; same package passed",
+    "First mobile layout candidate widened hero but aspect-fill image expanded the caption canvas and clipped the landscape title. Fixed fixed-size internal image/caption canvas, rebuilt and reinstalled both devices",
+    "Initial iPad new Runner refused because an unowned Runner already existed; preserved it, status had no HTTP session, created/deleted only own HTTP sessions without settings mutation",
+    "First phone dot geometry assertion failed because iOS16 marks hidden indicator AX rect zero; final native screenshot used for visual validation",
+    "Intermediate iPad hero screenshots were above the visible viewport; not accepted as full visible hero proof; final ordinary entry and cycle screenshots fully visible"
+  ],
+  "subsequentUserReport": {
+    "date": "2026-10-25",
+    "actorEntry": "Native focus briefly commits the second actor before correction to the first; eventual hasFocus did not cover this.",
+    "relatedEntry": "Down must always enter first similar item, including after Up-Up and repeated Down-Down; prior remembered-item expectation superseded.",
+    "acceptance": "Open; preserve historical results, not full navigation acceptance."
+  }
+}

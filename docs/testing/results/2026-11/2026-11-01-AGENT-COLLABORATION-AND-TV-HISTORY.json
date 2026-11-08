@@ -1,0 +1,87 @@
+{
+  "updatedAt": "2026-11-01T20:31:03.324003+08:00",
+  "televisionRemoteAppDevicesPageConfirmedByPhoto": true,
+  "userReportedBothWiFiSameRouter": true,
+  "currentBonjourHostComparison": {
+    "queries": 6,
+    "targetHostnameMatchingRemotepairing": 1,
+    "targetHostnameMatchingMobdev": 1,
+    "hostnameMatchIsNotHardwareAuthentication": true,
+    "results": [
+      {
+        "service": "_remotepairing._tcp",
+        "resolved": true,
+        "sameHostnameAsAirplay": true
+      },
+      {
+        "service": "_remotepairing._tcp",
+        "resolved": true,
+        "sameHostnameAsAirplay": false
+      },
+      {
+        "service": "_remotepairing._tcp",
+        "resolved": true,
+        "sameHostnameAsAirplay": false
+      },
+      {
+        "service": "_apple-mobdev2._tcp",
+        "resolved": true,
+        "sameHostnameAsAirplay": false
+      },
+      {
+        "service": "_apple-mobdev2._tcp",
+        "resolved": true,
+        "sameHostnameAsAirplay": true
+      },
+      {
+        "service": "_apple-mobdev2._tcp",
+        "resolved": true,
+        "sameHostnameAsAirplay": false
+      }
+    ]
+  },
+  "route": {
+    "checkedAt": "2026-11-01T20:11:41.434908+08:00",
+    "userReportedBothWiFiSameRouter": true,
+    "bonjourNameAuthenticatesHardware": false,
+    "NASCommands": 0,
+    "networkSettingsChanged": false,
+    "serviceResolved": true,
+    "IPv4AddressCount": 1,
+    "advertisedModelMatchesKnownTV": true,
+    "routeInterfaces": [
+      "en0"
+    ]
+  },
+  "deviceHubInitiallyEmptyThenLivingRoomDiscovered": true,
+  "selectedLivingRoomAndOpenedNext": true,
+  "verificationCodePromptVisible": true,
+  "userDirectCodeEntryRequested": true,
+  "verificationCodeNotReadOrRecorded": true,
+  "connectionVerifiedAfterCode": false,
+  "newAppInstalled": false,
+  "NASCommands": 0,
+  "mobileActions": 0,
+  "signingConfigurationChanged": false,
+  "localMatchingTVProfileCount": 0,
+  "ordinaryTVRootStarted": false,
+  "verificationCodePromptVisibleAtLastObservation": false,
+  "unavailableMessageVisibleAtLastObservation": true,
+  "userReportedCodePromptNotVisibleInEitherXcodeProject": true,
+  "independentDeviceHub27LocationExplained": true,
+  "codeNotEnteredByAgent": true,
+  "localXcodeVersions": {
+    "primary": {
+      "developerDir": "/Applications/Xcode.app/Contents/Developer",
+      "version": "Xcode 27.0\nBuild version 27A266a"
+    },
+    "legacy": {
+      "developerDir": "/Users/lagransun/Downloads/Xcode.app/Contents/Developer",
+      "version": "Xcode 26.6\nBuild version 17F113"
+    }
+  },
+  "collaborationAgreementWritten": true,
+  "claudeStartedOrContacted": false,
+  "parallelImplementationWorktreePrepared": false,
+  "productSourceChanged": false
+}

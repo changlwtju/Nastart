@@ -1,0 +1,360 @@
+{
+  "recordedAt": "2026-10-11T00:00:01.915726+08:00",
+  "sourceDiffSHA256": "120c092e5787126ded18916f59807d06a640b079414d98410c23bf1b0655ff70",
+  "binaries": {
+    "Nastart": "9e8f21ecdb989ca5cbc99f5cc06b22a60bdc981f80d1aae679e0d771dbe5e894",
+    "Nastart.debug.dylib": "2c3a2ca09b38e86713dc51a0eba5fa137ad07d92ce9a1f9cb2848f7de33faf28",
+    "Frameworks/KSPlayer.framework/KSPlayer": "eda16e6d0e22bc81045752f2f54a263b0f4f8500912378d5ac141013c9042b52"
+  },
+  "configuration": "normal Debug -Onone; empty launch environment",
+  "packagePath": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-10-10-resume-startup-save-230033/Nastart-Resume-Startup-Normal-Debug.app",
+  "sourceChangedThisTurn": false,
+  "packageRecheck": {
+    "checkedAt": "2026-10-10T23:58:26.212273+08:00",
+    "sourceMatches": true,
+    "inputsMatch": true,
+    "binariesMatch": true,
+    "sourceEditsThisTurn": false
+  },
+  "tests": "Previously completed same-source 306/2 skipped/0 failures and 15 preflight; not rerun for unchanged app source",
+  "devices": {
+    "iphone13": {
+      "recordedAt": "2026-10-10T23:43:38.640452+08:00",
+      "device": "iphone13",
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "connection": "USB",
+      "sourceDiffSHA256": "120c092e5787126ded18916f59807d06a640b079414d98410c23bf1b0655ff70",
+      "binaries": {
+        "Nastart": "9e8f21ecdb989ca5cbc99f5cc06b22a60bdc981f80d1aae679e0d771dbe5e894",
+        "Nastart.debug.dylib": "2c3a2ca09b38e86713dc51a0eba5fa137ad07d92ce9a1f9cb2848f7de33faf28",
+        "Frameworks/KSPlayer.framework/KSPlayer": "eda16e6d0e22bc81045752f2f54a263b0f4f8500912378d5ac141013c9042b52"
+      },
+      "preservesContainer": true,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "actualForegroundUIVerified": true,
+      "installation": "success",
+      "installationStartedAt": "2026-10-10T23:43:41.756475+08:00",
+      "installedAt": "2026-10-10T23:43:47.546979+08:00",
+      "nonDiagnosticKeysBefore": 25,
+      "nonDiagnosticKeysAfter": 25,
+      "samePreferenceKeys": true,
+      "unchangedPreferenceValues": 25,
+      "changedPreferenceCount": 0,
+      "postInstallLookupExists": true,
+      "normalLaunch": "success",
+      "normalLaunchVerifiedAt": "2026-10-10T23:43:59.384540+08:00",
+      "actualProcessArguments": {
+        "env": {},
+        "args": []
+      },
+      "pid": 82132,
+      "UIEvidence": "new-package-normal-home.png/xml",
+      "actualUIInspected": true
+    },
+    "ipad": {
+      "recordedAt": "2026-10-10T23:45:03.974190+08:00",
+      "device": "ipad",
+      "model": "iPad12,1",
+      "system": "18.3.1",
+      "connection": "USB",
+      "sourceDiffSHA256": "120c092e5787126ded18916f59807d06a640b079414d98410c23bf1b0655ff70",
+      "binaries": {
+        "Nastart": "9e8f21ecdb989ca5cbc99f5cc06b22a60bdc981f80d1aae679e0d771dbe5e894",
+        "Nastart.debug.dylib": "2c3a2ca09b38e86713dc51a0eba5fa137ad07d92ce9a1f9cb2848f7de33faf28",
+        "Frameworks/KSPlayer.framework/KSPlayer": "eda16e6d0e22bc81045752f2f54a263b0f4f8500912378d5ac141013c9042b52"
+      },
+      "preservesContainer": true,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "actualForegroundUIVerified": true,
+      "installation": "success",
+      "installationStartedAt": "2026-10-10T23:45:04.139556+08:00",
+      "installedAt": "2026-10-10T23:45:19.462866+08:00",
+      "nonDiagnosticKeysBefore": 16,
+      "nonDiagnosticKeysAfter": 16,
+      "samePreferenceKeys": true,
+      "unchangedPreferenceValues": 16,
+      "changedPreferenceCount": 0,
+      "postInstallLookupExists": true,
+      "normalLaunch": "success",
+      "actualProcessArguments": {
+        "env": {},
+        "args": []
+      },
+      "normalPID": 8980,
+      "UIEvidence": "latest-normal-home.png/xml",
+      "actualUIInspected": true,
+      "nativeNormalUIEvidence": "native-normal-home.png",
+      "currentStartupServicesStatus": "NAS normal; fresh launch screenshot service tiles initially unknown, not yet accepted as services online"
+    },
+    "iphone18": {
+      "device": "iphone18",
+      "installation": "BLOCKED before package upload",
+      "sourceDiffSHA256": "120c092e5787126ded18916f59807d06a640b079414d98410c23bf1b0655ff70",
+      "binaries": {
+        "Nastart": "9e8f21ecdb989ca5cbc99f5cc06b22a60bdc981f80d1aae679e0d771dbe5e894",
+        "Nastart.debug.dylib": "2c3a2ca09b38e86713dc51a0eba5fa137ad07d92ce9a1f9cb2848f7de33faf28",
+        "Frameworks/KSPlayer.framework/KSPlayer": "eda16e6d0e22bc81045752f2f54a263b0f4f8500912378d5ac141013c9042b52"
+      },
+      "method": "direct Bonjour TCP lockdown using existing Mac legacy pairing + AFC + installation_proxy Install; preserve container",
+      "newPairingAttempted": false,
+      "preservesContainer": true,
+      "signatureVerified": true,
+      "librariesVerified": 29,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "normalLaunch": "not attempted for latest package",
+      "actualForegroundUIVerified": false,
+      "model": "iPhone19,7",
+      "system": "27.0",
+      "connection": "NETWORK",
+      "installationStartedAt": "2026-10-10T23:52:38.808211+08:00",
+      "failureType": "ConnectionTerminatedError",
+      "newPackageInstalled": false,
+      "blockedStage": "HouseArrest VendContainer / AFC data channel closes after successful existing-pair lockdown session",
+      "successfulReadScope": "fresh physical identity and existing legacy pairing validation over Bonjour direct IPv4/IPv6",
+      "userspaceDeveloperTunnel": "CoreDeviceProxy StartService accepted but tunnel protocol handshake closes; no RSD connection",
+      "pairingRecordsPreserved": true,
+      "finalRecordedAt": "2026-10-10T23:58:26.211959+08:00"
+    }
+  },
+  "iphone13ImmediateTerminate": {
+    "terminationMethod": "XCTest XCUIApplication terminate; process state1 verified; no waiting for disk convergence",
+    "normalColdEnvironment": {},
+    "normalColdArguments": [],
+    "sourcePositionBefore": 121.908,
+    "persistedAfterColdLaunch": 151.508,
+    "sameTrackPreferences": true,
+    "sameBookmarkKeys": true,
+    "savedPositionRevertedToZero": false,
+    "actualUIInspected": true,
+    "actualFilmFrameInspected": true,
+    "lastObservedClock": {
+      "clock": 150.804,
+      "reason": "playbackTick"
+    },
+    "coldLaunchSavedDeltaFromLastObserved": 0.7040000000000077,
+    "closeToTerminateBoundary": "Next native request after close response; host submission interval is not physical termination latency"
+  },
+  "iphone13ColdReplay": {
+    "savedAfterImmediateTermination": 151.508,
+    "firstColdClock": {
+      "seconds": 151.582,
+      "reason": "firstFrame"
+    },
+    "coldClockMatchesSavedWithin2Seconds": true,
+    "normalUIExit": true,
+    "physicalScope": "orderly XCTest application termination; no crash/jetsam loss proof",
+    "actualUIInspected": true
+  },
+  "ipadNormalResume": {
+    "actualFilmFrameAt30SecondsInspected": true,
+    "at3SecondsBlackFrameRetained": true,
+    "normalUIExit": true,
+    "sameBookmarkKeys": true,
+    "changedBookmarkCount": 1,
+    "recordChanges": [
+      {
+        "before": {
+          "subtitleTrackID": 4,
+          "updatedAt": 813320686.070368,
+          "positionSeconds": 60.784,
+          "audioTrackID": 1,
+          "subtitlesDisabled": false,
+          "durationSeconds": 7165.01
+        },
+        "after": {
+          "audioTrackID": 1,
+          "updatedAt": 813340419.999761,
+          "durationSeconds": 7165.01,
+          "subtitleTrackID": 4,
+          "subtitlesDisabled": false,
+          "positionSeconds": 88.272
+        }
+      }
+    ],
+    "actualUIInspected": true
+  },
+  "ipadColdReplay": {
+    "expectedSavedPosition": 88.272,
+    "firstColdClock": {
+      "seconds": 88.272,
+      "reason": "playbackTick"
+    },
+    "coldClockMatchesSavedWithin2Seconds": true,
+    "normalUIExit": true,
+    "actualUIInspected": true
+  },
+  "iphone18DirectPairing": {
+    "recordedAt": "2026-10-10T23:49:52.564861+08:00",
+    "hostCandidateCount": 2,
+    "existingLegacyPairRecordFound": true,
+    "newPairingAttempted": false,
+    "connection": true,
+    "paired": true,
+    "model": "iPhone19,7",
+    "OS": "27.0",
+    "successfulCandidateIndex": 0
+  },
+  "iphone18Services": {
+    "recordedAt": "2026-10-10T23:55:32.921287+08:00",
+    "results": [
+      {
+        "candidateFamily": "IPv6",
+        "existingPairing": true,
+        "containerReadable": false,
+        "proxyService": true,
+        "containerFailureType": "ConnectionTerminatedError"
+      },
+      {
+        "candidateFamily": "IPv4",
+        "existingPairing": true,
+        "containerReadable": false,
+        "proxyService": true,
+        "containerFailureType": "ConnectionTerminatedError"
+      }
+    ],
+    "newPairingAttempted": false,
+    "appInstallationExecuted": false
+  },
+  "iphone18UserspaceTunnel": {
+    "recordedAt": "2026-10-10T23:56:40.521888+08:00",
+    "rootRequired": false,
+    "systemRemotedChanged": false,
+    "pairingRecordChanged": false,
+    "rsdConnected": false,
+    "containerReadable": false,
+    "failureType": "ConnectionTerminatedError"
+  },
+  "privateEvidenceRoot": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-10-10-resume-startup-save-230033/continue-234239",
+  "limitations": [
+    "One orderly XCTest terminate / immediate cold-start window, not crash/jetsam/SIGKILL persistence assurance",
+    "Disk-file staleness alone is not a confirmed lost bookmark; observed new position survives immediate XCTest terminate",
+    "iPad t3 black image retained, later film inspected; no frame/hitch/performance acceptance",
+    "Only S01 file normal Wi-Fi KSPlayer; AV/Jellyfin/real cellular/competitor/full matrix unchanged",
+    "Existing installed iPad WDA profile valid; old local iPad fixture expired and rejected before run; valid same-ID canonical fixture resumed without explicit WDA build/install",
+    "Initial iPad unpaired error, SSL close warning after installed-profile read, iPhone18 selector/context/service failures all retained privately"
+  ],
+  "remaining": [
+    "iPhone18 latest package install and native services",
+    "Crash/background/PiP/AV/full save boundaries",
+    "119 and original weak cellular old ordinal0",
+    "continuous frames and Lenna/DS One valid competition",
+    "all pending PX/UX/CB/L2/L3/Main"
+  ],
+  "finalRecordedAt": "2026-10-11T00:04:49.060653+08:00",
+  "finalInventory": {
+    "recordedAt": "2026-10-11T00:03:38.731408+08:00",
+    "devices": {
+      "iphone13": {
+        "name": "iphone13",
+        "model": "iPhone14,5",
+        "system": "16.3.1",
+        "connection": "USB",
+        "paired": true,
+        "identityVerified": true,
+        "normalForeground": true,
+        "emptyArguments": true,
+        "WDAReady": true,
+        "settingsRestored": true
+      },
+      "ipad": {
+        "name": "ipad",
+        "model": "iPad12,1",
+        "system": "18.3.1",
+        "connection": "USB",
+        "paired": true,
+        "identityVerified": true,
+        "normalForeground": true,
+        "emptyArguments": true,
+        "WDAReady": true,
+        "settingsRestored": true
+      },
+      "iphone18": {
+        "name": "iphone18",
+        "model": "iPhone19,7",
+        "system": "27.0",
+        "connection": "NETWORK direct Bonjour",
+        "paired": true,
+        "identityVerified": true,
+        "newPairingAttempted": false,
+        "newPackageInstalled": false,
+        "latestPackageRegressionComplete": false
+      }
+    }
+  },
+  "finalStateByDevice": {
+    "iphone13": {
+      "recordedAt": "2026-10-11T00:00:01.915726+08:00",
+      "binaries": {
+        "Nastart": "9e8f21ecdb989ca5cbc99f5cc06b22a60bdc981f80d1aae679e0d771dbe5e894",
+        "Nastart.debug.dylib": "2c3a2ca09b38e86713dc51a0eba5fa137ad07d92ce9a1f9cb2848f7de33faf28",
+        "Frameworks/KSPlayer.framework/KSPlayer": "eda16e6d0e22bc81045752f2f54a263b0f4f8500912378d5ac141013c9042b52"
+      },
+      "normalProcessArguments": {
+        "env": {},
+        "args": []
+      },
+      "playerClosed": true,
+      "idleWait": 10,
+      "animationCoolOff": 2,
+      "actualUIInspected": true,
+      "screenshot": "final-normal-home.png/xml",
+      "verifiedAt": "2026-10-11T00:03:38.994321+08:00",
+      "freshPhysicalIdentityVerified": true,
+      "WDAReady": true,
+      "WDASettingsVerified": true,
+      "currentHomeNASStatus": "normal/online; service tiles unknown, not asserted online",
+      "nativeConditions": {
+        "recordedAt": "2026-10-10T23:58:30.443535+08:00",
+        "activeCount": 0,
+        "mutationPerformed": false
+      }
+    },
+    "ipad": {
+      "recordedAt": "2026-10-11T00:00:01.915726+08:00",
+      "binaries": {
+        "Nastart": "9e8f21ecdb989ca5cbc99f5cc06b22a60bdc981f80d1aae679e0d771dbe5e894",
+        "Nastart.debug.dylib": "2c3a2ca09b38e86713dc51a0eba5fa137ad07d92ce9a1f9cb2848f7de33faf28",
+        "Frameworks/KSPlayer.framework/KSPlayer": "eda16e6d0e22bc81045752f2f54a263b0f4f8500912378d5ac141013c9042b52"
+      },
+      "normalProcessArguments": {
+        "env": {},
+        "args": []
+      },
+      "playerClosed": true,
+      "idleWait": 10,
+      "animationCoolOff": 2,
+      "actualUIInspected": true,
+      "screenshot": "final-normal-home.png/xml",
+      "verifiedAt": "2026-10-11T00:03:39.285794+08:00",
+      "freshPhysicalIdentityVerified": true,
+      "WDAReady": true,
+      "WDASettingsVerified": true,
+      "currentHomeNASStatus": "normal/online; service tiles unknown, not asserted online",
+      "nativeConditions": {
+        "recordedAt": "2026-10-10T23:58:30.057558+08:00",
+        "activeCount": 0,
+        "mutationPerformed": false
+      }
+    }
+  },
+  "signingExpiryLocal": {
+    "App": "2026-10-11T06:03:15+08:00",
+    "WDA": "2026-10-11T06:05:26+08:00",
+    "instruction": "Recheck validity before next device run; preserve data when refreshing"
+  },
+  "iphone18DirectPairingLatest": {
+    "name": "iphone18",
+    "model": "iPhone19,7",
+    "system": "27.0",
+    "connection": "NETWORK direct Bonjour",
+    "paired": true,
+    "identityVerified": true,
+    "newPairingAttempted": false,
+    "newPackageInstalled": false,
+    "latestPackageRegressionComplete": false
+  }
+}

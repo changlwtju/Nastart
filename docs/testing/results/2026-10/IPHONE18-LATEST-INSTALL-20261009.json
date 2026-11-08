@@ -1,0 +1,45 @@
+{
+  "recordedAt": "2026-10-09T21:59:21.911895+08:00",
+  "device": {
+    "DeviceName": "iPhone",
+    "ProductType": "iPhone19,7",
+    "ProductVersion": "27.0",
+    "BuildVersion": "24A8428"
+  },
+  "freshUSBIdentity": true,
+  "pairingValid": true,
+  "sourceHEAD": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceDiffSHA256": "cde080f24f91f44cfd9df7d390947c1cd7f0bc563846e51f455044a591e30ad8",
+  "package": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-10-09-av-activation-boundaries-210752/Nastart-AV-Activation-Normal-Debug.app",
+  "configuration": "normal Debug -Onone; empty launch environment",
+  "binaryBuildTime": "2026-10-09T21:13:53.778606+08:00",
+  "binaries": {
+    "Nastart": "1047613b4e704ba454a529b6c3c51c39090c145a0b71416e88fffa1edce59048",
+    "Nastart.debug.dylib": "9c0c9fef86b467f7eb27981de070463521b0cc08ee95b4dd953e9664612cff0a",
+    "Frameworks/KSPlayer.framework/KSPlayer": "eda16e6d0e22bc81045752f2f54a263b0f4f8500912378d5ac141013c9042b52"
+  },
+  "verifiedLibraries": 29,
+  "verifiedSourceInputs": 146,
+  "newerInputs": [],
+  "targetInValidProfile": true,
+  "profileExpirationUTC": "2026-10-10T22:03:15",
+  "dataPreservingCoverInstall": true,
+  "install": "success",
+  "installedAt": "2026-10-09T21:57:17.409182+08:00",
+  "unchangedNonDiagnosticPreferencesAfterInstall": 25,
+  "unchangedNonDiagnosticPreferencesAfterLaunch": 25,
+  "requestedTestEnvironment": {},
+  "actualLaunchEnvironment": {
+    "TERM": "dumb"
+  },
+  "requestedArguments": [],
+  "launchCommandSucceeded": true,
+  "launchPID": 8199,
+  "sameProcessObservationSeconds": 99.24792981147766,
+  "sameLaunchProcessStillRunning": true,
+  "foregroundEvidence": "Native screenshot visually inspected: actual Nastart video player and rendered movie visible. User interaction after launch possible; no automated playback was requested or initiated, no homepage claimed.",
+  "launchTransitionEvidence": "Initial capture showed App transition, not counted as normal UI evidence.",
+  "playbackRegression": "NOT_RUN",
+  "launchFlagToolFailure": "Empty JSON environment flag rejected before launch; retry with inherited DEVICECTL_CHILD variables removed succeeded. TERM=dumb is the only tool-supplied variable; no NASTART_TEST injections.",
+  "wdaReinstalled": false
+}

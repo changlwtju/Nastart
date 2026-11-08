@@ -1,5 +1,7 @@
 # 常态化远程播放调试流程
 
+2026-11-02当前约束优先：NAS仍恢复，本文历史日程中的NAS健康/媒体检查暂停；18 hands off，TV开发连接/签名阻塞。各设备USB/Wi-Fi安装、原生退出/取图、WDA与收尾统一看[真机远控手册](PHYSICAL-DEVICE-REMOTE-CONTROL.md)，不能用旧日程继承当前设备许可。
+
 生效：2026-09-28。用户白天在单位，通过远程任务使用家中 MacBook 和 USB 连接的 iPhone 13；后续加入 iPad。本人及 iPhone 18 通常晚上回家参与。
 
 本文规定日常安排，不新增任务状态总账。PX/UX 状态仍维护在 [播放体验优先级](../project/PLAYBACK_EXPERIENCE_PRIORITIES.md)，验证深度遵循 [分层开发流程](playback-development-workflow.md)。当前新架构为唯一优化主线，手动清晰度入口继续按原决定暂缓。

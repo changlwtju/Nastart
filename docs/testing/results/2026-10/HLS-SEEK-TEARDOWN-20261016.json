@@ -1,0 +1,330 @@
+{
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceDiffSHA256": "0df79c3a7ff56f95f0de0bb84e1f183d33550ce14a08e8dd229accd5e0e78609",
+  "binaryBuildTime": "2026-10-16T11:42:47.041389+08:00",
+  "configuration": "normal Debug -Onone; empty launch environment",
+  "binaries": {
+    "Nastart": "5c247da494ccc5e33ece01454749f7fc75a8c548d7145ddd3ea917d3490d9bad",
+    "Nastart.debug.dylib": "15cf095dfecbbad61afc74fcf93b29ad9719c7b89eb691c43fb9fa953658b2b3",
+    "Frameworks/KSPlayer.framework/KSPlayer": "f9abcc546da9d909cd243f0d808e979cb31b2838f9e1cdc7349dcab9613513c8"
+  },
+  "ipaSHA256": "9523a2c5fd1439a40d43e602218332bfaffc98fe3d471b22aeb856e3b7d92948",
+  "checkedInputs": 173,
+  "individuallyVerifiedLibraries": 29,
+  "profileExpirationUTC": "2026-10-17T22:23:40",
+  "tests": {
+    "executed": 409,
+    "skipped": 2,
+    "failures": 0,
+    "runThisTurn": true
+  },
+  "preflight": {
+    "passed": 15,
+    "runThisTurn": true
+  },
+  "sourceEditsThisTurn": [
+    "Deferred KSPlayer representable detach cleanup beyond SwiftUI graph destruction; retain coordinator/AVStream owner until cleanup; generation protects remount and explicit stop",
+    "Skip repeated nil subtitle selection publication; preserve explicit stop ordering and system PiP lifetime",
+    "Single preparation/buffering indicator and numeric AV seek evidence from earlier candidates retained"
+  ],
+  "at": "2026-10-16T11:52:53.501084+08:00",
+  "privateEvidencePointer": "/tmp/nastart-teardown-fix-evidence",
+  "earlierSeekEvidencePointer": "/tmp/nastart-seek-followup-evidence",
+  "iPhone18": {
+    "actionsDeferredByUser": true,
+    "discoveryPerformed": false,
+    "installationSent": false,
+    "resumeCondition": "user returns home and notifies us tonight",
+    "lastVerifiedInstalledSource": "c868, 2026-10-16 07:10"
+  },
+  "regressionStatus": "Targeted S01 Jellyfin exit validation completed; broader playback acceptance open",
+  "preFixCrash": {
+    "device": "iPad",
+    "source": "84a4b5aeabbc",
+    "bugType": "309",
+    "signal": "SIGABRT",
+    "KSBinaryUUIDMatched": true,
+    "rootFrames": [
+      "swift_beginAccess",
+      "SwiftUI GraphHost.asyncTransaction",
+      "SubtitleModel.selectedSubtitleInfo.setter",
+      "KSVideoPlayer.Coordinator.resetPlayer",
+      "KSVideoPlayer.Coordinator.detachView",
+      "KSVideoPlayer.dismantleUIView"
+    ]
+  },
+  "remaining": [
+    "S19 HLS deep-seek/startup failures",
+    "iPhone18 latest install and subtitle/cellular acceptance",
+    "native AV seek diagnostic timing not yet exercised by a successful real HLS baseline",
+    "CPU/memory/complete subtitle and audio/display timing/matrix gaps"
+  ],
+  "devices": {
+    "iphone13": {
+      "at": "2026-10-16T11:51:12.129288+08:00",
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "USBIdentityMatched": true,
+      "sourceDiffSHA256": "0df79c3a7ff56f95f0de0bb84e1f183d33550ce14a08e8dd229accd5e0e78609",
+      "binaries": {
+        "Nastart": "5c247da494ccc5e33ece01454749f7fc75a8c548d7145ddd3ea917d3490d9bad",
+        "Nastart.debug.dylib": "15cf095dfecbbad61afc74fcf93b29ad9719c7b89eb691c43fb9fa953658b2b3",
+        "Frameworks/KSPlayer.framework/KSPlayer": "f9abcc546da9d909cd243f0d808e979cb31b2838f9e1cdc7349dcab9613513c8"
+      },
+      "nonBookmarkPreferenceKeys": 24,
+      "nonBookmarkPreferencesUnchanged": true,
+      "originalBookmarksChecked": 36,
+      "originalBookmarksRemoved": 0,
+      "originalTrackChangeCount": 0,
+      "newBookmarksCount": 0,
+      "naturalPositionChangesCount": 1,
+      "newCrashReports": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      },
+      "normalEmptyEnvironment": true,
+      "NASNormal": false,
+      "playerClosed": true,
+      "WDAIdleSeconds": 10,
+      "WDAAnimationCoolOffSeconds": 2,
+      "activeNativeConditions": 0,
+      "finalImageActuallyReviewed": true,
+      "finalImageObservation": "Nastart launchpad; player closed; NAS not connected",
+      "reportsAddedAfterFix": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      }
+    },
+    "ipad": {
+      "at": "2026-10-16T11:51:13.063822+08:00",
+      "model": "iPad12,1",
+      "system": "18.3.1",
+      "USBIdentityMatched": true,
+      "sourceDiffSHA256": "0df79c3a7ff56f95f0de0bb84e1f183d33550ce14a08e8dd229accd5e0e78609",
+      "binaries": {
+        "Nastart": "5c247da494ccc5e33ece01454749f7fc75a8c548d7145ddd3ea917d3490d9bad",
+        "Nastart.debug.dylib": "15cf095dfecbbad61afc74fcf93b29ad9719c7b89eb691c43fb9fa953658b2b3",
+        "Frameworks/KSPlayer.framework/KSPlayer": "f9abcc546da9d909cd243f0d808e979cb31b2838f9e1cdc7349dcab9613513c8"
+      },
+      "nonBookmarkPreferenceKeys": 17,
+      "nonBookmarkPreferencesUnchanged": true,
+      "originalBookmarksChecked": 29,
+      "originalBookmarksRemoved": 0,
+      "originalTrackChangeCount": 0,
+      "newBookmarksCount": 0,
+      "naturalPositionChangesCount": 1,
+      "newCrashReports": {
+        "Nastart": 1,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      },
+      "normalEmptyEnvironment": true,
+      "NASNormal": true,
+      "playerClosed": true,
+      "WDAIdleSeconds": 10,
+      "WDAAnimationCoolOffSeconds": 2,
+      "activeNativeConditions": 0,
+      "finalImageActuallyReviewed": true,
+      "finalImageObservation": "Nastart launchpad; player closed; NAS normal",
+      "reportsAddedAfterFix": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      }
+    }
+  },
+  "installedPackages": {
+    "iphone13": {
+      "device": "iphone13",
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "connection": "USB",
+      "binaries": {
+        "Nastart": "5c247da494ccc5e33ece01454749f7fc75a8c548d7145ddd3ea917d3490d9bad",
+        "Nastart.debug.dylib": "15cf095dfecbbad61afc74fcf93b29ad9719c7b89eb691c43fb9fa953658b2b3",
+        "Frameworks/KSPlayer.framework/KSPlayer": "f9abcc546da9d909cd243f0d808e979cb31b2838f9e1cdc7349dcab9613513c8"
+      },
+      "sourceDiffSHA256": "0df79c3a7ff56f95f0de0bb84e1f183d33550ce14a08e8dd229accd5e0e78609",
+      "preservesContainer": true,
+      "signatureVerified": true,
+      "actualForegroundUIVerified": true,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "installation": "success",
+      "startedAt": "2026-10-16T11:44:10.998092+08:00",
+      "installedAt": "2026-10-16T11:44:22.657150+08:00",
+      "preferenceKeysUnchanged": true,
+      "preferenceValuesUnchanged": true,
+      "nonDiagnosticKeys": 25,
+      "actualImageReviewedAt": "2026-10-16T11:45:50.811703+08:00",
+      "imageObservation": "Nastart launchpad; player closed; first frame NAS not connected"
+    },
+    "ipad": {
+      "device": "ipad",
+      "model": "iPad12,1",
+      "system": "18.3.1",
+      "connection": "USB",
+      "binaries": {
+        "Nastart": "5c247da494ccc5e33ece01454749f7fc75a8c548d7145ddd3ea917d3490d9bad",
+        "Nastart.debug.dylib": "15cf095dfecbbad61afc74fcf93b29ad9719c7b89eb691c43fb9fa953658b2b3",
+        "Frameworks/KSPlayer.framework/KSPlayer": "f9abcc546da9d909cd243f0d808e979cb31b2838f9e1cdc7349dcab9613513c8"
+      },
+      "sourceDiffSHA256": "0df79c3a7ff56f95f0de0bb84e1f183d33550ce14a08e8dd229accd5e0e78609",
+      "preservesContainer": true,
+      "signatureVerified": true,
+      "actualForegroundUIVerified": true,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "installation": "success",
+      "startedAt": "2026-10-16T11:43:36.411658+08:00",
+      "installedAt": "2026-10-16T11:43:42.264875+08:00",
+      "preferenceKeysUnchanged": true,
+      "preferenceValuesUnchanged": true,
+      "nonDiagnosticKeys": 18,
+      "actualImageReviewedAt": "2026-10-16T11:44:51.229637+08:00",
+      "imageObservation": "Nastart launchpad; player closed; first frame NAS not connected",
+      "lastNormalLaunchImageReviewedAt": "2026-10-16T11:50:12.719156+08:00",
+      "finalNormalLaunchImageObservation": "Nastart launchpad; NAS not connected; player closed"
+    }
+  },
+  "reviewedS01Exits": {
+    "iphone13": [
+      {
+        "label": "s01-jf-exit-r1",
+        "entry": "Jellyfin",
+        "normalEnvironment": true,
+        "initialEngine": [
+          {
+            "engine": "KSPlayer",
+            "initialPlayMethod": "directPlay",
+            "initialSubtitleMode": "disabled"
+          }
+        ],
+        "durationSeconds": 30,
+        "actualT30AndClosedImagesReviewed": true,
+        "exit": {
+          "normalUIExit": true,
+          "playbackErrorVisible": false,
+          "completionMatches": 1,
+          "playerOpened": true
+        },
+        "fullSubtitleAudioAndPerformanceAccepted": false
+      },
+      {
+        "label": "s01-jf-exit-r2",
+        "entry": "Jellyfin",
+        "normalEnvironment": true,
+        "initialEngine": [
+          {
+            "engine": "KSPlayer",
+            "initialPlayMethod": "directPlay",
+            "initialSubtitleMode": "disabled"
+          }
+        ],
+        "durationSeconds": 30,
+        "actualT30AndClosedImagesReviewed": true,
+        "exit": {
+          "normalUIExit": true,
+          "playbackErrorVisible": false,
+          "completionMatches": 1,
+          "playerOpened": true
+        },
+        "fullSubtitleAudioAndPerformanceAccepted": false
+      }
+    ],
+    "ipad": [
+      {
+        "label": "s01-jf-exit-r1",
+        "entry": "Jellyfin",
+        "normalEnvironment": true,
+        "initialEngine": [
+          {
+            "engine": "KSPlayer",
+            "initialPlayMethod": "directPlay",
+            "initialSubtitleMode": "disabled"
+          }
+        ],
+        "durationSeconds": 30,
+        "actualT30AndClosedImagesReviewed": true,
+        "exit": {
+          "normalUIExit": true,
+          "playbackErrorVisible": false,
+          "completionMatches": 1,
+          "playerOpened": true
+        },
+        "fullSubtitleAudioAndPerformanceAccepted": false
+      },
+      {
+        "label": "s01-jf-exit-r2",
+        "entry": "Jellyfin",
+        "normalEnvironment": true,
+        "initialEngine": [
+          {
+            "engine": "KSPlayer",
+            "initialPlayMethod": "directPlay",
+            "initialSubtitleMode": "disabled"
+          }
+        ],
+        "durationSeconds": 30,
+        "actualT30AndClosedImagesReviewed": true,
+        "exit": {
+          "normalUIExit": true,
+          "playbackErrorVisible": false,
+          "completionMatches": 1,
+          "playerOpened": true
+        },
+        "fullSubtitleAudioAndPerformanceAccepted": false
+      },
+      {
+        "label": "s01-jf-exit-r3",
+        "entry": "Jellyfin",
+        "normalEnvironment": true,
+        "initialEngine": [
+          {
+            "engine": "KSPlayer",
+            "initialPlayMethod": "directPlay",
+            "initialSubtitleMode": "disabled"
+          }
+        ],
+        "durationSeconds": 30,
+        "actualT30AndClosedImagesReviewed": true,
+        "exit": {
+          "normalUIExit": true,
+          "playbackErrorVisible": false,
+          "completionMatches": 1,
+          "playerOpened": true
+        },
+        "fullSubtitleAudioAndPerformanceAccepted": false
+      }
+    ]
+  },
+  "totalS01ExitRounds": 5,
+  "newReportsAfterFinalFix": {
+    "iphone13": {
+      "Nastart": 0,
+      "WDA": 0,
+      "Jetsam": 0
+    },
+    "ipad": {
+      "Nastart": 0,
+      "WDA": 0,
+      "Jetsam": 0
+    }
+  },
+  "wholeTurnOldCandidateReports": {
+    "ipadNastartAbort": 1,
+    "source": "84a4b5aeabbc",
+    "retained": true
+  },
+  "sameStateLiveSingleOverlayAcceptance": false,
+  "liveNativeAVSeekCallbackTimingAcceptance": false,
+  "fullPlaybackMatrixAccepted": false,
+  "brightness": {
+    "userLowBrightnessPreferencePreserved": true,
+    "brightnessModifiedThisTurn": false,
+    "exactPostPlaybackLevelNotRechecked": true
+  },
+  "noServerPairingNetworkSystemOrWDAReinstallation": true
+}

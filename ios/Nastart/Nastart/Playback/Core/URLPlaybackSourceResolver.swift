@@ -2,6 +2,7 @@ import Foundation
 
 struct URLPlaybackSourceResolver: PlaybackSourceResolver {
     let sourceKind: PlaybackSourceKind
+    var originURL: URL?
     var fileExtensionHint: String?
     var mimeHint: String?
     var certificatePolicy: PlaybackCertificatePolicy
@@ -14,6 +15,7 @@ struct URLPlaybackSourceResolver: PlaybackSourceResolver {
 
     init(
         sourceKind: PlaybackSourceKind = .directURL,
+        originURL: URL? = nil,
         fileExtensionHint: String? = nil,
         mimeHint: String? = nil,
         certificatePolicy: PlaybackCertificatePolicy = .systemTrust,
@@ -25,6 +27,7 @@ struct URLPlaybackSourceResolver: PlaybackSourceResolver {
         alternateRoutes: [PlaybackRoute] = []
     ) {
         self.sourceKind = sourceKind
+        self.originURL = originURL
         self.fileExtensionHint = fileExtensionHint
         self.mimeHint = mimeHint
         self.certificatePolicy = certificatePolicy
@@ -46,6 +49,7 @@ struct URLPlaybackSourceResolver: PlaybackSourceResolver {
         return PlaybackPlanningPolicy.makePlan(
             intent: intent,
             url: url,
+            originURL: originURL,
             fileExtensionHint: fileExtensionHint,
             mimeHint: mimeHint,
             certificatePolicy: certificatePolicy,

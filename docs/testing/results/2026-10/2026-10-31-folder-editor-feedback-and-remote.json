@@ -1,0 +1,59 @@
+{
+  "recordedAt": "2026-10-31T16:24:00.711141+08:00",
+  "sourceInputCount": 446,
+  "changedExistingFiles": [
+    "LibraryViews.swift",
+    "TVLaunchTests.swift"
+  ],
+  "otherInitialInputsPreserved": 444,
+  "productionChange": "accessibility identifier on existing note only; no transaction or playback change",
+  "debugPreviewChanges": [
+    "clear previous note when draft changes or validation starts",
+    "clear failure on fixture cancel",
+    "initial note absent"
+  ],
+  "buildExitCodes": {
+    "mobile-sim-debug-cast": 0,
+    "mobile-debug": 0,
+    "mobile-release": 0,
+    "tv-sim-debug-cast": 0,
+    "tv-unsigned-debug": 0,
+    "tv-release": 0
+  },
+  "tvUniqueUITests": 2,
+  "tvPassed": 2,
+  "tvFailed": 0,
+  "tvScreenshotsReviewed": 2,
+  "padLarge": "initial layout/browse/local validation observed; 2GiB disk reserve stopped later regression",
+  "phoneFeedback": {
+    "initialSaveDisabled": true,
+    "initialNoteAbsent": true,
+    "syntheticBrowseEnabledSave": true,
+    "localFormatSuccessNoteObserved": true,
+    "pathEditingOpenedKeyboard": true,
+    "staleSuccessAbsentAfterEdit": null,
+    "errorDoesNotShowPreviousSuccess": null,
+    "correctionCanResubmit": null,
+    "remainingErrorAndFeedbackRegressionComplete": false,
+    "stopReason": "2GiB runtime disk reserve reached; runner finally cleaned owned simulator",
+    "setValueReturnedStaleElementAfterCleanup": true,
+    "appCrashEstablished": false,
+    "realTransactionTested": false
+  },
+  "ownedSimulatorsCleaned": 3,
+  "allFreshAbsent": true,
+  "realDevicesOperated": 0,
+  "NASCommands": 0,
+  "playbackRuns": 0,
+  "matrixNewPasses": 0,
+  "normalTVSigningRetried": false,
+  "normalMobileCandidateSignedMachOCount": 30,
+  "normalCandidatesInstalledOnRealDevices": false,
+  "pending": [
+    "Phone and Pad full feedback regression",
+    "real folder browser and transaction/dismiss",
+    "native TV text entry",
+    "real VoiceOver and frame-time",
+    "password visibility regression remains open"
+  ]
+}

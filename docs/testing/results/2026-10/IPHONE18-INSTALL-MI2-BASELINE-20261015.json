@@ -1,0 +1,277 @@
+{
+  "date": "2026-10-15",
+  "recordedAt": "2026-10-15T07:44:26.045150+08:00",
+  "scope": "Install latest normal package on iPhone18; continue PX-02/PX-20 paused-seek corruption fault analysis on iPhone13",
+  "sourceEditsThisTurn": [],
+  "latestPackage": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "f5d06b2c9a8906ba769b6ed207377f7feb6002aa5c005b1cd078ebe1b4b1a572",
+    "package": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-10-14-native-slider-cue-201359/Nastart-Stable-Timeline-Clock-Normal-Debug.app",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "binaryBuildTime": "2026-10-14T20:56:00.037456+08:00",
+    "binaries": {
+      "Nastart": "a9ab92a85a6d0232421b6fce6b940d1e5767de133d77360c754114e68e13c55a",
+      "Nastart.debug.dylib": "22fe9271410b518e0e60e32ae06c9f608b5a6b192eb65daeb265dac6e20baa61",
+      "Frameworks/KSPlayer.framework/KSPlayer": "0b41cde45c806504810100a3e86d64f9ad352b69a6337ce77b8767d89dae161e"
+    },
+    "signatureVerified": true,
+    "individuallyVerifiedLibraries": 29,
+    "checkedInputs": 173,
+    "newerInputs": [],
+    "profileExpirationUTC": "2026-10-17T22:23:40",
+    "tests": {
+      "executed": 385,
+      "skipped": 2,
+      "failures": 0,
+      "runThisTurn": false
+    },
+    "preflight": {
+      "passed": 15,
+      "runThisTurn": false
+    },
+    "sourceEditsThisTurn": [],
+    "baselineSourceDiffSHA256": "ce538bed01f20d4e123d4a45fc9238edd6988afedc9902feeece1aea31c65d61",
+    "sourceInputManifestSHA256": "1e7bdd076b31c9c96da7696764ec6bd60fc0f9f9472cb32c8dbb958e642d8762",
+    "frozenAt": "2026-10-14T20:57:07.154194+08:00",
+    "linkageVerified": true,
+    "ipa": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-10-14-native-slider-cue-201359/Nastart-Stable-Timeline-Clock-Normal-Debug.ipa",
+    "ipaSHA256": "27ff7f67ec6253de383508a4ad24bfcecc4181318649f4a9daa5f21fb82f43a5",
+    "ipaThreeBinariesVerified": true,
+    "validationOrigin": "2026-10-14 completed stable-clock turn; no app source edits or build this turn; all 173 current inputs and source diff revalidated",
+    "previousTurnSourceEdits": [
+      "Reserve elapsed timeline label width using duration format so crossing the hour boundary does not move the slider during one drag; production SwiftUI layout tests at three Dynamic Type sizes; two inputs changed, other171 unchanged; no seek/media/network/subtitle policy changes"
+    ]
+  },
+  "iphone18": {
+    "installation": {
+      "device": "iphone18",
+      "installation": "success",
+      "sourceDiffSHA256": "f5d06b2c9a8906ba769b6ed207377f7feb6002aa5c005b1cd078ebe1b4b1a572",
+      "binaries": {
+        "Nastart": "a9ab92a85a6d0232421b6fce6b940d1e5767de133d77360c754114e68e13c55a",
+        "Nastart.debug.dylib": "22fe9271410b518e0e60e32ae06c9f608b5a6b192eb65daeb265dac6e20baa61",
+        "Frameworks/KSPlayer.framework/KSPlayer": "0b41cde45c806504810100a3e86d64f9ad352b69a6337ce77b8767d89dae161e"
+      },
+      "method": "direct Bonjour TCP lockdown using existing Mac legacy pairing + AFC + installation_proxy Install; preserve container",
+      "newPairingAttempted": false,
+      "preservesContainer": true,
+      "signatureVerified": true,
+      "librariesVerified": 29,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "normalLaunch": "actual Nastart normal home screenshot reviewed; NAS normal; empty environment/arguments requested",
+      "actualForegroundUIVerified": true,
+      "model": "iPhone19,7",
+      "system": "27.0",
+      "connection": "NETWORK",
+      "installationStartedAt": "2026-10-15T07:29:38.467012+08:00",
+      "installedAt": "2026-10-15T07:29:50.135154+08:00",
+      "postInstallLookupExists": true,
+      "samePreferenceKeys": true,
+      "nonDiagnosticKeysBefore": 25,
+      "nonDiagnosticKeysAfter": 25,
+      "unchangedPreferenceValues": 25,
+      "changedPreferenceCount": 0,
+      "actualPictureReviewedThisTurn": true
+    },
+    "normalLaunch": {
+      "recordedAt": "2026-10-15T07:30:01.071771+08:00",
+      "rootRequired": false,
+      "systemRemotedChanged": false,
+      "pairingRecordChanged": false,
+      "rsdConnected": true,
+      "containerReadable": true,
+      "DVTServiceAdvertised": true,
+      "normalLaunchPID": 26279,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "actualScreenCaptured": true,
+      "actualForegroundUIVerified": true,
+      "actualPictureReviewedThisTurn": true,
+      "NASNormal": true,
+      "playerClosed": true
+    },
+    "postLaunchAndEndConnectionAudit": {
+      "recordedAt": "2026-10-15T07:43:03.992183+08:00",
+      "afterInstallAndNormalLaunchPreferenceComparison": "exactly unchanged",
+      "nonDiagnosticPreferencesIncludingBookmarks": 25,
+      "actualNormalStartupScreenshotReviewed": true,
+      "endOfTurnDirectConnectionRecheck": "TimeoutError before any app command",
+      "endOfTurnDiscoveryTargetVerified": false,
+      "endOfTurnPreferencesRechecked": false,
+      "installationSuccessAndStartupEvidenceRemainValid": true,
+      "newPlaybackRegression": false
+    },
+    "playbackRegressionExecuted": false
+  },
+  "iphone13": {
+    "latestRestoredInstallation": {
+      "device": "iphone13",
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "connection": "USB",
+      "binaries": {
+        "Nastart": "a9ab92a85a6d0232421b6fce6b940d1e5767de133d77360c754114e68e13c55a",
+        "Nastart.debug.dylib": "22fe9271410b518e0e60e32ae06c9f608b5a6b192eb65daeb265dac6e20baa61",
+        "Frameworks/KSPlayer.framework/KSPlayer": "0b41cde45c806504810100a3e86d64f9ad352b69a6337ce77b8767d89dae161e"
+      },
+      "sourceDiffSHA256": "f5d06b2c9a8906ba769b6ed207377f7feb6002aa5c005b1cd078ebe1b4b1a572",
+      "preservesContainer": true,
+      "signatureVerified": true,
+      "actualForegroundUIVerified": true,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "installation": "success",
+      "startedAt": "2026-10-15T07:40:07.083893+08:00",
+      "installedAt": "2026-10-15T07:40:19.080669+08:00",
+      "preferenceKeysUnchanged": true,
+      "preferenceValuesUnchanged": true,
+      "nonDiagnosticKeys": 25,
+      "actualPictureReviewedThisTurn": true
+    },
+    "finalAudit": {
+      "at": "2026-10-15T07:41:46.122451+08:00",
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "connection": "USB",
+      "sourceDiffSHA256": "f5d06b2c9a8906ba769b6ed207377f7feb6002aa5c005b1cd078ebe1b4b1a572",
+      "latestPackage": {
+        "Nastart": "a9ab92a85a6d0232421b6fce6b940d1e5767de133d77360c754114e68e13c55a",
+        "Nastart.debug.dylib": "22fe9271410b518e0e60e32ae06c9f608b5a6b192eb65daeb265dac6e20baa61",
+        "Frameworks/KSPlayer.framework/KSPlayer": "0b41cde45c806504810100a3e86d64f9ad352b69a6337ce77b8767d89dae161e"
+      },
+      "nonBookmarkPreferenceKeys": 24,
+      "nonBookmarkPreferencesExactlyUnchanged": true,
+      "naturalBookmarkChangesCount": 1,
+      "originalBookmarksChecked": 34,
+      "originalBookmarksRemoved": 0,
+      "originalTrackChangeCount": 0,
+      "allOriginalTracksUnchanged": true,
+      "newBookmarksCount": 0,
+      "crashInventoryDelta": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      },
+      "normalEmptyEnvironment": true,
+      "NASNormal": true,
+      "playerClosed": true,
+      "WDAIdleSeconds": 10,
+      "WDAAnimationCoolOffSeconds": 2,
+      "nativeConditionsNotRecheckedThisTurn": false,
+      "noConditionInjectedThisTurn": true,
+      "nativeActiveConditions": 0,
+      "finalHomeActuallyReviewed": true
+    }
+  },
+  "ipad": {
+    "freshInventoryObserved": true,
+    "model": "iPad12,1",
+    "system": "18.3.1",
+    "connection": "USB",
+    "appActionsThisTurn": false,
+    "newPackageInstallationOrPlaybackRegressionClaimed": false
+  },
+  "faultComparison": {
+    "device": "iphone13",
+    "latestSourceDiffSHA256": "f5d06b2c9a8906ba769b6ed207377f7feb6002aa5c005b1cd078ebe1b4b1a572",
+    "classification": "REPRODUCED_VIDEO_CORRUPTION",
+    "latestActualTargetsSeconds": [
+      4719.714853321076,
+      3588.048521659851,
+      4741.904337234497
+    ],
+    "thirdTargetMatchesPreviousTurnExactly": true,
+    "thirdTargetSeconds": 4741.904337234497,
+    "latestPausedTargetPicturesReviewed": [
+      "hour-r3/t3.png",
+      "hour-r3/t20.png"
+    ],
+    "sameCorruptionPersistsAtT20": true,
+    "latestNativePauseRetainedAtAllThreeProbeWindows": true,
+    "latestNaturalResumePicturesReviewedSeconds": [
+      3,
+      8,
+      13
+    ],
+    "naturalResumeT3ShowsRecognizableNormalPicture": true,
+    "naturalResumeFirstRecoveryTimeUnknown": true,
+    "latestThirdSeekTrace": {
+      "flushEpochsBeforeAndAfterDemux": [
+        5,
+        6
+      ],
+      "generationReported": 0,
+      "firstVideoPacketPTS": 4741.32,
+      "firstVideoPacketIsKey": true,
+      "firstVideoPacketBytes": 372605,
+      "sendResultsObserved": [
+        0
+      ],
+      "tracedPacketCount": 12,
+      "tracedFrameCount": 96,
+      "tracedFrameDecodeErrorFlags": [
+        0
+      ],
+      "tracedFrameHardwareFramesContextAllPresent": true,
+      "pixelFormatsObserved": [
+        158
+      ],
+      "demuxReportedSuccess": true,
+      "meaning": "Successful packet send, key flag, flush and decode_error_flags=0 cannot certify image correctness; bounded trace and generation 0 do not prove cross-seek ownership or identify CRA/IDR/RASL"
+    },
+    "baseline": {
+      "sourceDiffSHA256": "ce538bed01f20d4e123d4a45fc9238edd6988afedc9902feeece1aea31c65d61",
+      "configuration": "normal Debug -Onone; no test environment",
+      "same173InputManifestExceptTwoUIAndTestFiles": true,
+      "KSPlayerInputsIdentical": true,
+      "actualTargetsSeconds": [
+        4666.460268733978,
+        3588.048521659851,
+        4741.904337234497
+      ],
+      "thirdRequestedSecondsAfterMeasuredCoordinateCompensation": 4803.254584587098,
+      "thirdActualTargetMatchesLatestExactly": true,
+      "firstTargetDiffersAndNotFullyMatchedSequence": true,
+      "thirdPausedPicturesReviewed": [
+        "hour-r3-target-compensated/t3.png",
+        "hour-r3-target-compensated/t15.png",
+        "hour-r3-target-compensated/t20.png"
+      ],
+      "sameCorruptionAtSameTarget": true,
+      "decodeTraceAvailable": false,
+      "historicalFaultAnalysisOnly": true,
+      "notLatestRegression": true
+    },
+    "conclusion": "Fault is present in historical ce53 package before stable-clock layout correction; root cause and first introducing revision unknown. Latest playback acceptance remains false. No production fix or media parameter change made.",
+    "next": "Independent source-frame reference at same absolute PTS and NAL random-access types; correlate post-flush decoder reference/output ownership before choosing a general repair."
+  },
+  "networkObservedMetrics": {
+    "latest": {
+      "sourceDiffSHA256": "f5d06b2c9a8906ba769b6ed207377f7feb6002aa5c005b1cd078ebe1b4b1a572",
+      "URLMetricsCount": 24,
+      "URLMetricsCellularYes": 0,
+      "URLMetricsCellularNo": 24
+    },
+    "historical": {
+      "sourceDiffSHA256": "ce538bed01f20d4e123d4a45fc9238edd6988afedc9902feeece1aea31c65d61",
+      "URLMetricsCount": 21,
+      "URLMetricsCellularYes": 0,
+      "URLMetricsCellularNo": 21
+    }
+  },
+  "allPlaybackAccepted": false,
+  "fullFramePerformanceOrCompetitorAcceptance": false,
+  "newTestsRun": false,
+  "newBuildRun": false,
+  "validationOrigin": "385 tests / 2 skipped / 0 failures and 15 preflight checks are 2026-10-14 same-source evidence, not rerun this turn",
+  "evidenceRoot": "/Users/lagransun/Library/Application Support/Nastart/DebugEvidence/2026-10-15-iphone18-mi2-followup-072916",
+  "toolLimitations": [
+    "Initial historical home request rejected pending installation before app action; repeated only after cover success",
+    "Contact helper initially used wrong root; missing-file guard prevented write; explicit historical root used afterward",
+    "First comparison safe path formatter rejected already-relative paths before write; corrected without source/device change",
+    "Device syslog stream covers latest run only; no historical decoder trace collected",
+    "iPhone18 later 6 second direct-connect timeout and fresh discovery 3 nonmatching/failing attempts; no new app commands sent in final recheck"
+  ],
+  "openItemsPreserved": "Root cause and first introducing revision; independent source-frame and CRA/IDR/RASL reference; original PGS cues and accurate seek; all prior CURRENT handoff/PX/UX/CB/Main unfinished scopes remain open"
+}

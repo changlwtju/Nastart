@@ -28,7 +28,7 @@ struct CertificateReminderStrip: View {
         .foregroundStyle(.primary)
         .padding(.horizontal, 14)
         .padding(.vertical, 13)
-        .background(AppTheme.secondarySurface)
+        .nastartSurface()
         .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
         .overlay {
             RoundedRectangle(cornerRadius: 18, style: .continuous)
@@ -58,29 +58,45 @@ struct DeviceSummaryPanel: View {
     let compact: Bool
     let isConnected: Bool
     var theme: LaunchpadTheme = .cleanGrid
+    @Environment(\.horizontalSizeClass) private var widthClass
+    @Environment(\.dynamicTypeSize) private var typeSize
 
-    @ViewBuilder
     var body: some View {
-        switch theme {
-        case .cleanGrid:
-            summaryContent
-                .padding(compact ? 14 : 16)
-                .nastartCard(cornerRadius: 18)
-        case .commandCenter:
+        VStack(alignment: .leading, spacing: compact ? 12 : 14) {
+            if theme == .commandCenter && widthClass == .regular && !typeSize.isAccessibilitySize {
+            // Wide screens: the metric rail turns horizontal so the card has no empty right half.
+            HStack(alignment: .center, spacing: 16) {
+                VStack(alignment: .leading, spacing: 14) {
+                    titleCluster
+                    statusCluster(alignment: .leading)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+                HStack(spacing: compact ? 18 : 24) {
+                    ForEach(metrics) { commandMetric($0).frame(minWidth: 72) }
+                }
+                .padding(.vertical, compact ? 12 : 14)
+                .padding(.horizontal, compact ? 16 : 20)
+                .background(AppTheme.primaryAction)
+                .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+            }
+            } else if theme == .commandCenter && typeSize.isAccessibilitySize {
+            // Large text: the narrow rail would break labels per glyph; give metrics a full row.
+            VStack(alignment: .leading, spacing: 14) {
+                titleCluster
+                statusCluster(alignment: .leading)
+                HStack(alignment: .top, spacing: 8) {
+                    ForEach(metrics) { commandMetric($0).frame(maxWidth: .infinity) }
+                }
+                .padding(.vertical, 14)
+                .padding(.horizontal, 8)
+                .background(AppTheme.primaryAction)
+                .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+            }
+            } else if theme == .commandCenter {
             HStack(alignment: .center, spacing: 14) {
                 VStack(spacing: compact ? 14 : 18) {
-                    ForEach(metrics) { metric in
-                        VStack(spacing: 5) {
-                            Label(metric.titleKey, systemImage: metric.symbolName)
-                                .font(.caption2)
-                                .foregroundStyle(.white.opacity(0.8))
-                            Text(metric.value)
-                                .font(.subheadline.weight(.bold))
-                                .foregroundStyle(.white)
-                                .monospacedDigit()
-                        }
-                        .frame(maxWidth: .infinity)
-                    }
+                    ForEach(metrics) { commandMetric($0).frame(maxWidth: .infinity) }
                 }
                 .padding(.vertical, 16)
                 .padding(.horizontal, 6)
@@ -94,17 +110,23 @@ struct DeviceSummaryPanel: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .padding(compact ? 14 : 16)
-            .nastartCard(cornerRadius: 18)
-        case .glassDeck:
-            summaryContent
-                .padding(compact ? 14 : 16)
-                .background(.regularMaterial)
-                .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
-                .overlay {
-                    RoundedRectangle(cornerRadius: 18, style: .continuous)
-                        .stroke(.white.opacity(0.4), lineWidth: 1)
-                }
+            } else {
+                summaryContent
+            }
+        }
+        .padding(compact ? 14 : 16)
+        .nastartCard(cornerRadius: 18)
+    }
+
+    private func commandMetric(_ metric: LaunchpadNASMetricSpec) -> some View {
+        VStack(spacing: 5) {
+            Label(metric.titleKey, systemImage: metric.symbolName)
+                .font(.caption2)
+                .foregroundStyle(.white.opacity(0.8))
+            Text(metric.value)
+                .font(.subheadline.weight(.bold))
+                .foregroundStyle(.white)
+                .monospacedDigit()
         }
     }
 
@@ -147,15 +169,18 @@ struct DeviceSummaryPanel: View {
                     .lineLimit(1)
                     .minimumScaleFactor(0.82)
 
-                Label {
-                    Text(LocalizedStringKey(summaryKey))
-                } icon: {
-                    Image(systemName: summarySymbol)
+                // Disconnected is already shown by the connection badge beside this title.
+                if isConnected {
+                    Label {
+                        Text(LocalizedStringKey(summaryKey))
+                    } icon: {
+                        Image(systemName: summarySymbol)
+                    }
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(summaryColor)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.78)
                 }
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(summaryColor)
-                .lineLimit(1)
-                .minimumScaleFactor(0.78)
             }
         }
         .layoutPriority(1)
@@ -325,7 +350,7 @@ private struct LaunchpadNASMetricTile: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(compact ? 10 : 12)
-        .background(AppTheme.secondarySurface)
+        .nastartSurface()
         .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
     }
 

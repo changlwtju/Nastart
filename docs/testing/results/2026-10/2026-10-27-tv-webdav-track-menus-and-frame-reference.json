@@ -1,0 +1,292 @@
+{
+  "date": "2026-10-27",
+  "scope": "Ordinary Debug TV actual saved read-only WebDAV MKV; track menus and bounded source-frame-reference attempt",
+  "sourceHead": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceInputCount": 399,
+  "changedSourceFiles": [
+    "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/SwiftUI/KSVideoPlayerView.swift",
+    "ios/Nastart/Packages/KSPlayer/Sources/KSPlayer/SwiftUI/KSVideoPlayerViewBuilder.swift"
+  ],
+  "productionChange": "Chinese accessibility labels, current menu values and stable identifiers; Off subtitle option localized to 关闭字幕; no transport, decoder, focus or exit-handler change",
+  "tvPackage": {
+    "configuration": "Debug",
+    "builtAt": "2026-10-27T16:50:31.624282+08:00",
+    "mainSHA256": "d7b97f06b0c3b40b9e0b95b8b056713bd1662f3109c3d073d3f4152bb7db0e6b",
+    "debugDylibSHA256": "8cea50f1efead3b2ee36dffdcc6c05139bfa013bfe2f4a4720b373de915c169f",
+    "signedMachOCount": 27
+  },
+  "tvInstall": {
+    "at": "2026-10-27T16:52:08.137848+08:00",
+    "packageSHA256": "d7b97f06b0c3b40b9e0b95b8b056713bd1662f3109c3d073d3f4152bb7db0e6b",
+    "configuration": "Debug",
+    "preserveData": true,
+    "freshIdentityConnected": true,
+    "preferencesBackedUp": true,
+    "exitCode": 0,
+    "installComplete": true,
+    "installedAt": "2026-10-27T16:52:12.323101+08:00",
+    "preferences": {
+      "beforeKeys": 15,
+      "afterKeys": 15,
+      "sameKeys": true,
+      "changedValues": 0,
+      "allNonDiagnosticPreferencesEqual": true
+    }
+  },
+  "mobilePackage": {
+    "configuration": "Debug",
+    "builtAt": "2026-10-27T16:52:23.433908+08:00",
+    "mainSHA256": "35f3bf871c5abde8621731dcc83f2e0f15e3f8a413ca54677926fc4708ec127b",
+    "debugDylibSHA256": "7e00e683f03d4c9d3af3dffa6206b0bcdb9c33397c35f11ac6e3965cd4fb0863",
+    "signedMachOCount": 30,
+    "devicesInstalledThisBatch": []
+  },
+  "device": {
+    "model": "AppleTV14,1",
+    "os": "18.2",
+    "connection": "LAN",
+    "freshIdentityBeforeEveryNewRegression": true
+  },
+  "menuWindow": {
+    "device": "tv",
+    "scope": "actual saved WebDAV S01 TV ordinary library entered without search",
+    "screenshots": "XCUIScreen via owned WDA; no DVT screenshot notifications",
+    "normalExit": true,
+    "intentionalTermination": false,
+    "guardSeconds": 120,
+    "frames": {
+      "play-3": {
+        "elapsed": 3.400148208718747,
+        "samePID": true
+      },
+      "play-10": {
+        "elapsed": 10.350238916929811,
+        "samePID": true
+      },
+      "controls": {
+        "elapsed": 11.926615958567709,
+        "samePID": true
+      },
+      "audio-options": {
+        "elapsed": 16.596769916824996,
+        "samePID": true
+      },
+      "audio-selected": {
+        "elapsed": 20.47538762493059,
+        "samePID": true
+      },
+      "audio-selected-value": {
+        "elapsed": 22.291504874825478,
+        "samePID": true
+      },
+      "audio-restore-options": {
+        "elapsed": 26.601971166674048,
+        "samePID": true
+      },
+      "audio-restored": {
+        "elapsed": 29.412309791892767,
+        "samePID": true
+      },
+      "audio-restored-value": {
+        "elapsed": 31.01355545874685,
+        "samePID": true
+      },
+      "subtitle-options": {
+        "elapsed": 34.51534487493336,
+        "samePID": true
+      },
+      "subtitle-disabled": {
+        "elapsed": 37.46276116697118,
+        "samePID": true
+      },
+      "subtitle-disabled-value": {
+        "elapsed": 39.185246916953474,
+        "samePID": true
+      },
+      "subtitle-restore-options": {
+        "elapsed": 41.11584599968046,
+        "samePID": true
+      },
+      "subtitle-restored": {
+        "elapsed": 44.94957029167563,
+        "samePID": true
+      },
+      "subtitle-restored-value": {
+        "elapsed": 46.75036974996328,
+        "samePID": true
+      },
+      "speed-options": {
+        "elapsed": 49.77359870867804,
+        "samePID": true
+      },
+      "speed-menu-dismissed": {
+        "elapsed": 51.809814791660756,
+        "samePID": true
+      },
+      "after-menu-1": {
+        "elapsed": 58.15533366659656,
+        "samePID": true
+      },
+      "after-menu-2": {
+        "elapsed": 59.88076466694474,
+        "samePID": true
+      },
+      "after-close-1": {
+        "elapsed": 61.705667291767895,
+        "samePID": true
+      },
+      "after-close-4": {
+        "elapsed": 65.46860166685656,
+        "samePID": true
+      }
+    },
+    "arguments": [],
+    "environment": {},
+    "menuStatesBefore": {
+      "ks.player.audioMenu": {
+        "label": "音轨",
+        "value": "ac3, fltp, 48000Hz, 5.1(side), 448.0Kbps",
+        "type": "XCUIElementTypeButton"
+      },
+      "ks.player.subtitleMenu": {
+        "label": "字幕",
+        "value": "中文字幕",
+        "type": "XCUIElementTypeButton"
+      },
+      "ks.player.speedMenu": {
+        "label": "播放速度",
+        "value": "1 倍",
+        "type": "XCUIElementTypeButton"
+      }
+    },
+    "audioOptions": [
+      "ac3, fltp, 48000Hz, 5.1(side), 448.0Kbps",
+      "ac3, fltp, 48000Hz, stereo, 192.0Kbps",
+      "ac3, fltp, 48000Hz, stereo, 192.0Kbps"
+    ],
+    "audioValueAfter": "ac3, fltp, 48000Hz, stereo, 192.0Kbps",
+    "audioOriginalRestored": true,
+    "subtitleOptions": [
+      "关闭字幕",
+      "中文字幕"
+    ],
+    "subtitleDisabledValue": "关闭",
+    "subtitleOriginalRestored": true,
+    "speedOptions": [
+      "0.5 x",
+      "1.0 x",
+      "1.25 x",
+      "1.5 x",
+      "2.0 x"
+    ],
+    "closeRequestedAt": "2026-10-27T17:23:33.316400+08:00",
+    "menuPresses": 2
+  },
+  "visualReview": {
+    "actualVideoFramesAndMenusReviewed": true,
+    "audioSelectionCheckmarkObserved": true,
+    "subtitleEnabledAndDisabledCheckmarksObserved": true,
+    "subtitleOverlayVisibleBeforeDisableAndAbsentInDisabledMenuImage": true,
+    "returnedDetailImageReviewed": true,
+    "audibleAudioVerified": false,
+    "subtitleTextTimingCompletenessVerified": false,
+    "speedChanged": false,
+    "speedMenuOpenedAndDismissed": true
+  },
+  "referencePrefix": {
+    "requestedPrefixBytes": 33554432,
+    "actualPrefixBytes": 10485760,
+    "deadlineSeconds": 60,
+    "deadlineExceeded": true,
+    "completedExact1MiBWindows": 10,
+    "perWindowStatus206ExactRangeAndStrongETagValidatedBeforeWrite": true,
+    "noRedirect": true,
+    "sourceWriteRequests": 0,
+    "completeMovieDownloaded": false,
+    "partialPrefixSHA256": "d0c2392b651f7e0d355e2007ca8e160250431130e8aa34fe585e3eb3ed4730e9"
+  },
+  "referenceDecode": {
+    "exitCode": 0,
+    "frames": 165,
+    "referenceFPS": 4,
+    "partialPrefixNotFullMovie": true
+  },
+  "sourceFrameMatch": {
+    "accepted": false,
+    "exactSourceFrameOrPTSProven": false,
+    "disposition": "Ambiguous low-correlation candidate contradicted visually distinct scenes; retain failed analysis, infer neither seek pass nor seek defect",
+    "resampledFrames": 165,
+    "gridFPS": 4,
+    "partialReferenceLastGridSeconds": 41
+  },
+  "finalBaseline": {
+    "at": "2026-10-27T17:25:13.050548+08:00",
+    "environment": {},
+    "arguments": [],
+    "mediaCommands": 0,
+    "processObservedAt3": true,
+    "processObservedAt10": true,
+    "nativeBaselineCaptured": true
+  },
+  "finalProcesses": {
+    "normalAppPresent": true,
+    "ownedRunnerAbsent": true,
+    "normalHomePageVisuallyConfirmed": true,
+    "firstFinalBaselineShowedSystemHomeRetained": true,
+    "causeUnknown": true
+  },
+  "index": {
+    "fileCount": 149,
+    "fullJSONEqual": true
+  },
+  "preferences": {
+    "beforeKeys": 15,
+    "afterKeys": 15,
+    "sameKeys": true,
+    "changedValues": 0,
+    "allNonDiagnosticPreferencesEqual": true
+  },
+  "sessionCleanup": {
+    "at": "2026-10-27T17:23:47.480358+08:00",
+    "device": "tv",
+    "ownedSessionSettingsRestored": true,
+    "ownedHTTPSessionDeleted": true,
+    "runnerStopRequested": true
+  },
+  "runnerCleanup": {
+    "startedAt": "2026-10-27T17:22:16.806577+08:00",
+    "limitSeconds": 270,
+    "runnerStopped": true,
+    "finishedAt": "2026-10-27T17:23:49.077163+08:00"
+  },
+  "source399MatchesAtEnd": true,
+  "mobileDevicesAccessed": false,
+  "iPhone18HandsOff": true,
+  "newPlaybackMatrixPasses": 0,
+  "requirementsCounts": {
+    "inProgress": 14,
+    "awaitingAcceptance": 5,
+    "notStarted": 11
+  },
+  "retainedFailures": [
+    "first interactive observer expired before requested control completed, intentionally stopped",
+    "initial driver creation failed before playback",
+    "audio accessibility-element click HTTP400",
+    "first native focus algorithm confused progress-bar row with menu row",
+    "Runner expired before subsequent entry attempt; media not started",
+    "first successful audio switch followed by a mistaken driver Menu assertion and intentional termination",
+    "partial-prefix deadline exceeded; 10 MiB retained rather than requested 32 MiB",
+    "ambiguous frame matcher rejected",
+    "first final ordinary launch only showed system Home despite App PID; subsequent ordinary launch actual app home reviewed"
+  ],
+  "remaining": [
+    "audio names ambiguous for identical codecs; distinguish tracks using trusted metadata and ordinal",
+    "actual audio output and complete subtitle timing/bitmap coverage",
+    "precise seek/source-frame reference and representative formats",
+    "Pad/iPhone13 fresh-package regression",
+    "FTP production protocol/endpoint/account/root adaptation and FTPS reuse",
+    "SMB strict negotiation and selected-root containment"
+  ],
+  "sourceWriteRequests": 0,
+  "nasVpnSystemCredentialChanges": false
+}

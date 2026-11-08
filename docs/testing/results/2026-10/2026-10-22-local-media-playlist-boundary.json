@@ -1,0 +1,615 @@
+{
+  "schemaVersion": 1,
+  "evidenceDates": [
+    "2026-10-21",
+    "2026-10-22"
+  ],
+  "kind": "diagnostic local Wi-Fi initial AV consumer only, not candidate warmup or normal product flow",
+  "build": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "da592296d39ab73cb840c918dc1740fd8a7ca063c997903ff7fe019631dfc26f",
+    "ipaSHA256": "da39e97c922ffd7a2e7c239b38996286ca0dc1c98c376c193acc6a847767e26f",
+    "binaries": {
+      "Nastart": "e34be298a576a424cf96212e082f56d6b9fc1a45aad97e86fab5fc22bcf8936c",
+      "Nastart.debug.dylib": "dd9c3f26abdcff77c75ceac2edd2caf89bd4597ce4ea8ac560a8e68f4bbfdd56",
+      "Frameworks/KSPlayer.framework/KSPlayer": "748465230d5eb779bc7bd0ac77a6f2ea942732927f2d840fd344e987f4e7af03"
+    }
+  },
+  "newSourceBuildInstall": false,
+  "fixture": {
+    "fixtureMediaBytes": 1620153,
+    "fixtureMediaSHA256": "65beac20897d59db2d5e84d35e5423afb862b38ac0e65b7167aba109b0874bd9",
+    "fixtureMasterSHA256": "9d1c557cd4a27cd4a0829da29fca0cf7850b50160fa6b531d73dd25408b6a556",
+    "sameSavedSegments": true
+  },
+  "conditions": [
+    {
+      "condition": "paced25-direct",
+      "observationSeconds": 40,
+      "serverRequests": [
+        {
+          "requestMono": 4.935040833,
+          "method": "GET",
+          "name": "master.m3u8",
+          "writtenBytes": 164,
+          "status": 200,
+          "bodyBytes": 164,
+          "headersMono": 4.935101625,
+          "firstBodyWriteMono": 4.935107291,
+          "lastBodyWriteMono": 4.9351075,
+          "result": "sendCompleted",
+          "endMono": 4.935108083,
+          "requestToEndSeconds": 6.724999999985215e-05
+        },
+        {
+          "requestMono": 4.968855291,
+          "method": "GET",
+          "name": "main.m3u8",
+          "writtenBytes": 1277952,
+          "status": 200,
+          "bodyBytes": 1620153,
+          "headersMono": 4.968894416,
+          "firstBodyWriteMono": 5.484639708,
+          "lastBodyWriteMono": 24.693421125,
+          "result": "BrokenPipeError",
+          "endMono": 25.196196416,
+          "requestToEndSeconds": 20.227341125
+        }
+      ],
+      "appEvents": [
+        {
+          "event": "diagnostics.playback.next.telemetry_sample",
+          "fields": {
+            "currentSeconds": "-",
+            "elapsedMs": "0",
+            "itemStatus": "unknown",
+            "rate": "0.000",
+            "timeControlStatus": "paused"
+          }
+        },
+        {
+          "event": "diagnostics.playback.next.telemetry_sample",
+          "fields": {
+            "currentSeconds": "0.000",
+            "elapsedMs": "4",
+            "itemStatus": "unknown",
+            "rate": "0.000",
+            "timeControlStatus": "paused"
+          }
+        },
+        {
+          "event": "diagnostics.jellyfin.playback_route_state",
+          "fields": {
+            "stage": "networkPathObserved"
+          }
+        },
+        {
+          "event": "diagnostics.playback.next.playback_failed",
+          "fields": {
+            "errorCode": "-1008",
+            "errorDomain": "NSURLErrorDomain",
+            "stage": "avPlayerItemFailed"
+          }
+        },
+        {
+          "event": "diagnostics.playback.next.telemetry_sample",
+          "fields": {
+            "currentSeconds": "0.000",
+            "elapsedMs": "20184",
+            "itemStatus": "failed",
+            "rate": "0.000",
+            "timeControlStatus": "paused"
+          }
+        }
+      ],
+      "cleanup": {
+        "ownedAppStopped": true,
+        "fixtureServerStopped": true,
+        "ownedSyslogStopped": true,
+        "WDASettingsRestored": true,
+        "allNonDiagnosticPreferencesUnchanged": true,
+        "newCrashInventory": {
+          "Nastart": 0,
+          "WebDriverAgent": 0,
+          "JetsamEvent": 0
+        },
+        "normalEmptyEnvironmentRestored": true,
+        "finishedAt": "2026-10-21T20:27:20.280615+08:00"
+      },
+      "nativeUIReviewed": "t40 unavailable media"
+    },
+    {
+      "condition": "paced25-proxy",
+      "observationSeconds": 40,
+      "serverRequests": [
+        {
+          "requestMono": 52.109506,
+          "method": "GET",
+          "name": "master.m3u8",
+          "writtenBytes": 164,
+          "status": 200,
+          "bodyBytes": 164,
+          "headersMono": 52.109568833,
+          "firstBodyWriteMono": 52.109575208,
+          "lastBodyWriteMono": 52.1095755,
+          "result": "sendCompleted",
+          "endMono": 52.109576166,
+          "requestToEndSeconds": 7.016599999332129e-05
+        },
+        {
+          "requestMono": 52.154647708,
+          "method": "GET",
+          "name": "main.m3u8",
+          "writtenBytes": 1620153,
+          "status": 200,
+          "bodyBytes": 1620153,
+          "headersMono": 52.154703541,
+          "firstBodyWriteMono": 52.670427041,
+          "lastBodyWriteMono": 77.157005916,
+          "result": "sendCompleted",
+          "endMono": 77.157009791,
+          "requestToEndSeconds": 25.002362082999994
+        }
+      ],
+      "appEvents": [
+        {
+          "event": "diagnostics.playback.next.telemetry_sample",
+          "fields": {
+            "currentSeconds": "-",
+            "elapsedMs": "0",
+            "itemStatus": "unknown",
+            "rate": "0.000",
+            "timeControlStatus": "paused"
+          }
+        },
+        {
+          "event": "diagnostics.jellyfin.playback_route_state",
+          "fields": {
+            "stage": "networkPathObserved"
+          }
+        },
+        {
+          "event": "diagnostics.playback.next.telemetry_sample",
+          "fields": {
+            "currentSeconds": "0.000",
+            "elapsedMs": "124",
+            "itemStatus": "unknown",
+            "rate": "0.000",
+            "timeControlStatus": "paused"
+          }
+        },
+        {
+          "event": "diagnostics.media.proxy_transfer_started",
+          "fields": {
+            "hlsRole": "masterPlaylist",
+            "proxyKind": "hlsPlaylist",
+            "stage": "upstreamRequestIssued"
+          }
+        },
+        {
+          "event": "diagnostics.media.proxy_transfer_finished",
+          "fields": {
+            "callbackAfterClientFinish": "false",
+            "hlsRole": "masterPlaylist",
+            "proxyKind": "hlsPlaylist",
+            "stage": "urlSessionTaskMetrics",
+            "upstreamCancellationRequested": "false",
+            "upstreamCompletionObserved": "false",
+            "upstreamHeadersObserved": "true"
+          }
+        },
+        {
+          "event": "diagnostics.media.proxy_transfer_finished",
+          "fields": {
+            "callbackAfterClientFinish": "false",
+            "errorCode": "-",
+            "errorDomain": "-",
+            "expectedBytes": "164",
+            "hlsRole": "masterPlaylist",
+            "proxyKind": "hlsPlaylist",
+            "stage": "upstreamTaskCompleted",
+            "taskReceivedBytes": "164",
+            "upstreamCancellationRequested": "false",
+            "upstreamCompletionObserved": "true",
+            "upstreamHeadersObserved": "true"
+          }
+        },
+        {
+          "event": "diagnostics.media.proxy_transfer_finished",
+          "fields": {
+            "hlsRole": "masterPlaylist",
+            "inputBytes": "164",
+            "outputBytes": "233",
+            "playlistDurationSeconds": "0.0",
+            "playlistEndlist": "false",
+            "playlistFirstSegmentDurationSeconds": "unknown",
+            "playlistSegments": "0",
+            "playlistTargetDurationSeconds": "unknown",
+            "proxyKind": "hlsPlaylist",
+            "rewriteMs": "0",
+            "stage": "playlistRewritten"
+          }
+        },
+        {
+          "event": "diagnostics.media.proxy_transfer_finished",
+          "fields": {
+            "callbackAfterClientFinish": "false",
+            "deliveredBytesMeaning": "legacyUpstreamPlaylistBodyReceived",
+            "hlsRole": "masterPlaylist",
+            "playlistClientBodySendCompletedBytes": "0",
+            "playlistClientHeaderSendCompleted": "true",
+            "playlistUpstreamBodyReceivedBytes": "164",
+            "proxyKind": "hlsPlaylist",
+            "stage": "playlistClientHeaderSendCompleted"
+          }
+        },
+        {
+          "event": "diagnostics.media.proxy_transfer_finished",
+          "fields": {
+            "callbackAfterClientFinish": "false",
+            "deliveredBytesMeaning": "legacyUpstreamPlaylistBodyReceived",
+            "hlsRole": "masterPlaylist",
+            "playlistClientBodySendCompletedBytes": "233",
+            "playlistClientHeaderSendCompleted": "true",
+            "playlistUpstreamBodyReceivedBytes": "164",
+            "proxyKind": "hlsPlaylist",
+            "stage": "playlistClientBodySendCompleted"
+          }
+        },
+        {
+          "event": "diagnostics.media.proxy_transfer_started",
+          "fields": {
+            "clientReadAfterFinish": "true",
+            "clientReadComplete": "true",
+            "hlsRole": "masterPlaylist",
+            "proxyKind": "hlsPlaylist",
+            "requestReceivedToReadEndMs": "42",
+            "stage": "clientReadEnded"
+          }
+        },
+        {
+          "event": "diagnostics.media.proxy_transfer_started",
+          "fields": {
+            "hlsRole": "mediaPlaylist",
+            "proxyKind": "hlsPlaylist",
+            "stage": "upstreamRequestIssued"
+          }
+        },
+        {
+          "event": "diagnostics.media.proxy_transfer_started",
+          "fields": {
+            "clientReadAfterFinish": "false",
+            "clientReadComplete": "true",
+            "hlsRole": "mediaPlaylist",
+            "proxyKind": "hlsPlaylist",
+            "requestReceivedToReadEndMs": "20014",
+            "stage": "clientReadEnded"
+          }
+        },
+        {
+          "event": "diagnostics.playback.next.playback_failed",
+          "fields": {
+            "errorCode": "-1008",
+            "errorDomain": "NSURLErrorDomain",
+            "stage": "avPlayerItemFailed"
+          }
+        },
+        {
+          "event": "diagnostics.playback.next.telemetry_sample",
+          "fields": {
+            "currentSeconds": "0.000",
+            "elapsedMs": "20242",
+            "itemStatus": "failed",
+            "rate": "0.000",
+            "timeControlStatus": "paused"
+          }
+        },
+        {
+          "event": "diagnostics.media.proxy_transfer_finished",
+          "fields": {
+            "callbackAfterClientFinish": "false",
+            "hlsRole": "mediaPlaylist",
+            "proxyKind": "hlsPlaylist",
+            "stage": "urlSessionTaskMetrics",
+            "upstreamCancellationRequested": "false",
+            "upstreamCompletionObserved": "false",
+            "upstreamHeadersObserved": "true"
+          }
+        },
+        {
+          "event": "diagnostics.media.proxy_transfer_finished",
+          "fields": {
+            "callbackAfterClientFinish": "false",
+            "errorCode": "-",
+            "errorDomain": "-",
+            "expectedBytes": "1620153",
+            "hlsRole": "mediaPlaylist",
+            "proxyKind": "hlsPlaylist",
+            "stage": "upstreamTaskCompleted",
+            "taskReceivedBytes": "1620153",
+            "upstreamCancellationRequested": "false",
+            "upstreamCompletionObserved": "true",
+            "upstreamHeadersObserved": "true"
+          }
+        },
+        {
+          "event": "diagnostics.media.proxy_transfer_finished",
+          "fields": {
+            "hlsRole": "mediaPlaylist",
+            "inputBytes": "1620153",
+            "outputBytes": "1620297",
+            "playlistDurationSeconds": "4.004",
+            "playlistEndlist": "true",
+            "playlistFirstSegmentDurationSeconds": "2.002",
+            "playlistSegments": "2",
+            "playlistTargetDurationSeconds": "5",
+            "proxyKind": "hlsPlaylist",
+            "rewriteMs": "123",
+            "stage": "playlistRewritten"
+          }
+        },
+        {
+          "event": "diagnostics.media.proxy_transfer_finished",
+          "fields": {
+            "callbackAfterClientFinish": "false",
+            "deliveredBytesMeaning": "legacyUpstreamPlaylistBodyReceived",
+            "hlsRole": "mediaPlaylist",
+            "playlistClientBodySendCompletedBytes": "0",
+            "playlistClientHeaderSendCompleted": "true",
+            "playlistUpstreamBodyReceivedBytes": "1620153",
+            "proxyKind": "hlsPlaylist",
+            "stage": "playlistClientHeaderSendCompleted"
+          }
+        }
+      ],
+      "cleanup": {
+        "ownedAppStopped": true,
+        "fixtureServerStopped": true,
+        "ownedSyslogStopped": true,
+        "WDASettingsRestored": true,
+        "allNonDiagnosticPreferencesUnchanged": true,
+        "newCrashInventory": {
+          "Nastart": 0,
+          "WebDriverAgent": 0,
+          "JetsamEvent": 0
+        },
+        "normalEmptyEnvironmentRestored": true,
+        "finishedAt": "2026-10-21T20:27:20.280615+08:00"
+      },
+      "nativeUIReviewed": "t40 unavailable media"
+    },
+    {
+      "condition": "immediate-direct",
+      "observationSeconds": 15,
+      "serverRequests": [
+        {
+          "requestMono": 4.029785458,
+          "method": "GET",
+          "name": "master.m3u8",
+          "writtenBytes": 164,
+          "status": 200,
+          "bodyBytes": 164,
+          "headersMono": 4.030047291,
+          "firstBodyWriteMono": 4.030069958,
+          "lastBodyWriteMono": 4.030070916,
+          "result": "sendCompleted",
+          "endMono": 4.030072458,
+          "requestToEndSeconds": 0.00028700000000014825
+        },
+        {
+          "requestMono": 4.056188583,
+          "method": "GET",
+          "name": "main.m3u8",
+          "writtenBytes": 1620153,
+          "status": 200,
+          "bodyBytes": 1620153,
+          "headersMono": 4.056374458,
+          "firstBodyWriteMono": 4.056472083,
+          "lastBodyWriteMono": 4.701225625,
+          "result": "sendCompleted",
+          "endMono": 4.701226541,
+          "requestToEndSeconds": 0.6450379579999996
+        },
+        {
+          "requestMono": 5.232810291,
+          "method": "GET",
+          "name": "0.ts",
+          "writtenBytes": 121072,
+          "status": 200,
+          "bodyBytes": 121072,
+          "headersMono": 5.232973083,
+          "firstBodyWriteMono": 5.233028625,
+          "lastBodyWriteMono": 5.233092083,
+          "result": "sendCompleted",
+          "endMono": 5.233092875,
+          "requestToEndSeconds": 0.0002825839999998081
+        },
+        {
+          "requestMono": 5.347278208,
+          "method": "GET",
+          "name": "1.ts",
+          "writtenBytes": 646156,
+          "status": 200,
+          "bodyBytes": 646156,
+          "headersMono": 5.347411625,
+          "firstBodyWriteMono": 5.34747275,
+          "lastBodyWriteMono": 5.42776,
+          "result": "sendCompleted",
+          "endMono": 5.427760916,
+          "requestToEndSeconds": 0.08048270800000079
+        }
+      ],
+      "appEvents": [
+        {
+          "event": "diagnostics.playback.next.telemetry_sample",
+          "fields": {
+            "currentSeconds": "-",
+            "elapsedMs": "0",
+            "itemStatus": "unknown",
+            "rate": "0.000",
+            "timeControlStatus": "paused"
+          }
+        },
+        {
+          "event": "diagnostics.jellyfin.playback_route_state",
+          "fields": {
+            "stage": "networkPathObserved"
+          }
+        },
+        {
+          "event": "diagnostics.playback.next.telemetry_sample",
+          "fields": {
+            "currentSeconds": "0.000",
+            "elapsedMs": "100",
+            "itemStatus": "unknown",
+            "rate": "0.000",
+            "timeControlStatus": "paused"
+          }
+        },
+        {
+          "event": "diagnostics.playback.next.telemetry_sample",
+          "fields": {
+            "currentSeconds": "0.000",
+            "elapsedMs": "1575",
+            "itemStatus": "unknown",
+            "rate": "0.000",
+            "timeControlStatus": "paused"
+          }
+        },
+        {
+          "event": "diagnostics.playback.next.telemetry_sample",
+          "fields": {
+            "currentSeconds": "0.000",
+            "elapsedMs": "1608",
+            "itemStatus": "readyToPlay",
+            "rate": "0.000",
+            "timeControlStatus": "paused"
+          }
+        },
+        {
+          "event": "diagnostics.playback.next.telemetry_sample",
+          "fields": {
+            "currentSeconds": "0.000",
+            "elapsedMs": "1691",
+            "itemStatus": "readyToPlay",
+            "rate": "1.000",
+            "timeControlStatus": "waitingToPlayAtSpecifiedRate"
+          }
+        },
+        {
+          "event": "diagnostics.playback.next.telemetry_sample",
+          "fields": {
+            "currentSeconds": "-0.051",
+            "elapsedMs": "1706",
+            "itemStatus": "readyToPlay",
+            "rate": "1.000",
+            "timeControlStatus": "playing"
+          }
+        },
+        {
+          "event": "diagnostics.playback.next.telemetry_sample",
+          "fields": {
+            "currentSeconds": "0.501",
+            "elapsedMs": "2259",
+            "itemStatus": "readyToPlay",
+            "rate": "1.000",
+            "timeControlStatus": "playing"
+          }
+        },
+        {
+          "event": "diagnostics.playback.next.telemetry_sample",
+          "fields": {
+            "currentSeconds": "1.501",
+            "elapsedMs": "3259",
+            "itemStatus": "readyToPlay",
+            "rate": "1.000",
+            "timeControlStatus": "playing"
+          }
+        },
+        {
+          "event": "diagnostics.playback.next.telemetry_sample",
+          "fields": {
+            "currentSeconds": "3.002",
+            "elapsedMs": "4759",
+            "itemStatus": "readyToPlay",
+            "rate": "1.000",
+            "timeControlStatus": "playing"
+          }
+        },
+        {
+          "event": "diagnostics.playback.next.telemetry_sample",
+          "fields": {
+            "currentSeconds": "3.969",
+            "elapsedMs": "5755",
+            "itemStatus": "readyToPlay",
+            "rate": "0.000",
+            "timeControlStatus": "paused"
+          }
+        },
+        {
+          "event": "diagnostics.jellyfin.playback_route_state",
+          "fields": {
+            "stage": "networkPathObserved"
+          }
+        }
+      ],
+      "cleanup": {
+        "ownedAppStopped": true,
+        "fixtureServerStopped": true,
+        "ownedSyslogStopped": true,
+        "WDASettingsRestored": true,
+        "allNonDiagnosticPreferencesUnchanged": true,
+        "newCrashInventory": {
+          "Nastart": 0,
+          "WebDriverAgent": 0,
+          "JetsamEvent": 0
+        },
+        "normalEmptyEnvironmentRestored": true,
+        "finishedAt": "2026-10-22T01:19:03.116748+08:00"
+      },
+      "nativeUIReviewed": "t1 black/loading; t3 actual dark star-field and clock 00:02/00:04; no frame timing or audio judgment"
+    }
+  ],
+  "controlFailures": [
+    {
+      "condition": "original launch control",
+      "fixtureRequests": 0,
+      "failure": "active bundle/environment combined assertion; exact mismatch not retained",
+      "normalEnvironmentRestored": true
+    },
+    {
+      "condition": "lifecycle launch control",
+      "fixtureRequests": 0,
+      "failure": "404 invalid session after normal-home restoration created a new session",
+      "normalEnvironmentRestored": true
+    }
+  ],
+  "interpretation": {
+    "identicalFastFixtureDecodes": true,
+    "pacedDirectFailedWithHeadersAndBodyProgress": true,
+    "pacedProxyUpstreamCompleteIsNotPlaybackSuccess": true,
+    "universal20SecondAVTimeoutProven": false,
+    "NASWarmupRootCauseProven": false,
+    "subtitlesPipOrPerformanceAccepted": false,
+    "formalMatrixPromoted": false
+  },
+  "finalAudit": {
+    "at": "2026-10-22T01:20:25.735886+08:00",
+    "sourceInputs": 173,
+    "sourceAndPackageUnchanged": true,
+    "sourceDiffSHA256": "da592296d39ab73cb840c918dc1740fd8a7ca063c997903ff7fe019631dfc26f",
+    "ipaSHA256": "da39e97c922ffd7a2e7c239b38996286ca0dc1c98c376c193acc6a847767e26f",
+    "allBinariesAnd29LibrariesVerified": true,
+    "freshUSBIdentityVerified": true,
+    "ownInstallReceiptMatches": true,
+    "WDAAutoIdle10CoolOff2ReadbackVerified": true,
+    "ownedPlaybackOrBuildProcessesRemaining": 0,
+    "allFixtureListenersClosed": true,
+    "normalHomeAndFinalHomeWiFiNoPiPReviewed": true,
+    "networkChanged": false,
+    "noThirdSameConditionNASMediaWindow": true
+  },
+  "device18": "deferred by user; not accessed",
+  "networkChanged": false,
+  "NASMediaRequests": 0
+}

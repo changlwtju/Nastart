@@ -1,0 +1,47 @@
+{
+  "preparedAt": "2026-11-02T01:31:03.320743+08:00",
+  "workspace": "/Users/lagransun/workspace/Nastart-Claude-TVFeedback-20261102",
+  "branch": "claude/tv-feedback-batch2",
+  "baselineCommit": "2a2f002380316dd36e498e098694607e805bbcc9",
+  "baselineParentHEAD": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "acceptedIOSDiffSHA256": "b9463286e205aec3aab82ba2902700ab4d76673662dde5c0ee59f3e1ad80563f",
+  "sourceInputs": 446,
+  "allAcceptedInputsMatch": true,
+  "originalHEADAndIndexUnchanged": true,
+  "independentGitRepository": true,
+  "gitWorktree": false,
+  "remoteConfigured": false,
+  "copiedNonignoredFiles": 1742,
+  "privateEvidenceCopied": false,
+  "buildDependenciesPrepared": false,
+  "productCodeChanged": false,
+  "buildsRun": 0,
+  "devicesControlled": 0,
+  "assignment": "docs/development/CLAUDE-BATCH2-ASSIGNMENT.md",
+  "writableFiles": [
+    "tvos/NastartTV/Sources/TVNASViews.swift"
+  ],
+  "startingFileSHA256": {
+    "tvos/NastartTV/Sources/TVNASViews.swift": "900abea3000eb1a6aacace90b41fa356fd218615284c92b7a3245a751b73d730"
+  },
+  "buildSlotGranted": false,
+  "runtimeGranted": false,
+  "implementationObserved": false,
+  "NASPaused": true,
+  "updatedAt": "2026-11-02T01:32:43.990193+08:00",
+  "finalValidation": {
+    "at": "2026-11-02T01:33:38.497978+08:00",
+    "documentationDocuments": 592,
+    "documentationLocalLinks": 3720,
+    "missingDestinations": 0,
+    "gitDiffCheckExitCode": 0,
+    "sourceInputsStillMatch": 446,
+    "batch2WorkspaceInputsMatch": 446,
+    "batch2WorkspaceClean": true,
+    "batch2RemoteConfigured": false,
+    "initialDocumentationMissingLinkCorrected": true,
+    "initialFailure": "Claude batch1 delivery relative assignment link had one too few parent components; only link corrected, report findings preserved",
+    "buildWorkerCountAtPostIntegrationCheck": 0,
+    "allBatchOwnedRuntimeCleanupAlreadyRecorded": true
+  }
+}

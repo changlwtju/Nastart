@@ -1,0 +1,188 @@
+{
+  "date": "2026-11-01",
+  "scope": "Shared Launchpad appearance toggles, localized labels and focused TV icon/text contrast",
+  "source": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "inputCount": 446,
+    "existingSourceResourceAndTestFilesChanged": 6,
+    "otherHashesUnchanged": 440
+  },
+  "finalBuilds": {
+    "tv-sim-debug-cast": {
+      "startedAt": "2026-11-01T02:23:44.628914+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-11-01T02:23:52.687533+08:00"
+    },
+    "mobile-sim-debug-cast": {
+      "startedAt": "2026-11-01T02:23:52.765980+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-11-01T02:24:17.255004+08:00"
+    },
+    "mobile-debug": {
+      "startedAt": "2026-11-01T02:24:17.255979+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-11-01T02:24:56.722269+08:00"
+    },
+    "mobile-release": {
+      "startedAt": "2026-11-01T02:24:56.723160+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-11-01T02:26:38.015235+08:00"
+    },
+    "tv-unsigned-debug": {
+      "startedAt": "2026-11-01T02:26:38.016411+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-11-01T02:26:53.806811+08:00"
+    },
+    "tv-release": {
+      "startedAt": "2026-11-01T02:26:53.807596+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-11-01T02:27:30.238091+08:00"
+    }
+  },
+  "finalUIBuild": {
+    "startedAt": "2026-11-01T02:20:45.147055+08:00",
+    "exitCode": 0,
+    "endedAt": "2026-11-01T02:20:56.119340+08:00"
+  },
+  "ui": {
+    "uniqueUITestCount": 1,
+    "finalPassed": 1,
+    "finalFailed": 0,
+    "finalSkipped": 0,
+    "finalScreenshotsReviewed": 2,
+    "intermediateScreenshotsReviewedAndExcluded": 2,
+    "initialFunctionalPassButFocusContrastRejected": true,
+    "finalConfiguration": "glassDeck / dark / standard text",
+    "verified": [
+      "settings to appearance native navigation",
+      "three native Toggle values change on Select",
+      "Down focus navigation and focus retained after each selection",
+      "Menu returns to appearance entry focus",
+      "child re-entry preserves synthetic in-memory values",
+      "three native values restored to originals",
+      "focused first and third option icons and text visible; unfocused warm icons and primary text"
+    ],
+    "programmaticFocusAssignment": false,
+    "actualPreferencePersistenceValidated": false,
+    "mobileUILayoutValidated": false,
+    "fullProductionAppearancePageValidated": false,
+    "VoiceOverPhysicalRemoteOrFrameTimingValidated": false,
+    "images": [
+      {
+        "state": "appearance-card-options-toggled",
+        "sha256": "51f65a49463e91f37a673dd8c37b0c68556d14920a51e22301b59fff1d405056"
+      },
+      {
+        "state": "appearance-card-options-initial",
+        "sha256": "1ff9f26b62f4fac7c98899038ce18d61865156ef81ecf360d64e33cb02e9b533"
+      }
+    ]
+  },
+  "behaviorSource": {
+    "mobileOnlyThreeToggleRowsReplaced": true,
+    "originalBindingsPreserved": true,
+    "preferenceStorageDefaultsAndCloudCallbacksUnchanged": true,
+    "scenarioParametersAndMediaRootUnchanged": true,
+    "noModelsClientsCredentialsOrPlaybackChanges": true,
+    "TVExistingToggleIdentifiersPreserved": true,
+    "TVSpecificThemePosterDensityAndServiceDetailsRetained": true,
+    "TVOnlyThreeToggleRowsReplaced": true,
+    "TVFocusContrastObservationOnlyNoProgrammaticFocusAssignment": true
+  },
+  "localization": {
+    "en": {
+      "sameKeySet": true,
+      "changedValueCount": 2,
+      "lintPassed": true
+    },
+    "zh-Hans": {
+      "sameKeySet": true,
+      "changedValueCount": 2,
+      "lintPassed": true
+    }
+  },
+  "simulation": {
+    "ownedSimulatorCount": 2,
+    "runs": {
+      "initial": {
+        "freeGiBBeforeBoot": 4.7843475341796875,
+        "tvStartupMinimumGiB": 3.8,
+        "mobileStartupMinimumGiB": 6,
+        "runtimeReserveGiB": 2,
+        "started": true,
+        "startedAt": "2026-11-01T02:17:23.488229+08:00",
+        "physicalDevicesOperated": 0,
+        "NASCommands": 0,
+        "playbackCommands": 0,
+        "customAppLaunchEnvironment": {},
+        "fixture": "early settings root, shared appearance toggles with memory-only bindings, no app state/client/store/network",
+        "sourceInputCount": 446,
+        "exitCode": 0,
+        "inputHashesUnchanged": true,
+        "installedBinaryHashesMatchAfterTests": true,
+        "traceExported": false,
+        "endedAt": "2026-11-01T02:18:13.759943+08:00",
+        "syntheticPreferencesPreserved": true,
+        "unexpectedApplicationKeys": [],
+        "shutdownExit": 0,
+        "deleteExit": 0,
+        "freshAbsent": true
+      },
+      "final": {
+        "freeGiBBeforeBoot": 3.952800750732422,
+        "tvStartupMinimumGiB": 3.8,
+        "mobileStartupMinimumGiB": 6,
+        "runtimeReserveGiB": 2,
+        "started": true,
+        "startedAt": "2026-11-01T02:22:02.271458+08:00",
+        "physicalDevicesOperated": 0,
+        "NASCommands": 0,
+        "playbackCommands": 0,
+        "customAppLaunchEnvironment": {},
+        "fixture": "early settings root, shared appearance toggles with memory-only bindings, no app state/client/store/network",
+        "sourceInputCount": 446,
+        "exitCode": 0,
+        "inputHashesUnchanged": true,
+        "installedBinaryHashesMatchAfterTests": true,
+        "traceExported": false,
+        "endedAt": "2026-11-01T02:22:52.134233+08:00",
+        "syntheticPreferencesPreserved": true,
+        "unexpectedApplicationKeys": [],
+        "shutdownExit": 0,
+        "deleteExit": 0,
+        "freshAbsent": true
+      }
+    },
+    "mobileStarted": false,
+    "mobileReason": "Below established 6GiB startup budget"
+  },
+  "unitTestsRunThisBatch": 0,
+  "unitTestsReason": "Presentation and existing settings preview changed; native UI regression exercises bindings; parser and service sources unchanged",
+  "package": {
+    "mobileSignedMachOCount": 30,
+    "physicalInstallCount": 0,
+    "normalTVSigningRetried": false,
+    "tvCurrentSignedCandidate": false,
+    "priorProfileBlockRetained": true
+  },
+  "physicalDevicesOperated": 0,
+  "NASRequests": 0,
+  "actualCredentialReadsOrClears": 0,
+  "actualPreferencePersistenceValidated": false,
+  "playbackAttempts": 0,
+  "remoteSourceWrites": 0,
+  "playbackMatrixNewPasses": 0,
+  "limitations": [
+    "Final TV glassDeck dark standard-text preview only",
+    "First functional pass excluded from final visual evidence due focused icon contrast",
+    "Full production-host settings and real preference/cloud callbacks not run",
+    "No mobile UI, large text, long English, physical remote, VoiceOver or frame timing validation",
+    "Prior password, privacy, folder and NAS-dependent items remain open"
+  ],
+  "recordedAt": "2026-11-01T02:28:22.577024+08:00",
+  "documentation": {
+    "documentsChecked": 569,
+    "localLinksChecked": 3605,
+    "missingDestinations": 0
+  }
+}

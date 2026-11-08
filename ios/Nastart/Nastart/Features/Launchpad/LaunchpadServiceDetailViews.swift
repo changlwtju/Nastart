@@ -25,8 +25,9 @@ struct LaunchpadServiceManagementView: View {
                 }
             } footer: {
                 Text("launchpad.services.footer")
-            }
+            }.nastartListSection()
         }
+        .nastartReadableWidth().nastartPageTheme()
         .navigationTitle("launchpad.services.manage")
         .navigationBarTitleDisplayMode(.inline)
         .searchable(text: $query, prompt: "launchpad.services.search")
@@ -65,7 +66,7 @@ struct LaunchpadServiceManagementView: View {
                 }
             } header: {
                 Text(titleKey)
-            }
+            }.nastartListSection()
         }
     }
 
@@ -106,18 +107,15 @@ struct LaunchpadSearchView: View {
                     HStack(spacing: 10) {
                         Image(systemName: "magnifyingglass")
                             .foregroundStyle(.secondary)
-                        TextField("search.placeholder", text: $query)
+                        TextField("search.services.placeholder", text: $query)
                             .textInputAutocapitalization(.never)
                     }
-                }
+                }.nastartListSection()
 
                 Section {
-                    FlowPills(items: ["DSM", "Jellyfin", "Docker", "HTTPS", "Navidrome", "qBittorrent"])
-                } header: {
-                    Text("search.hot")
-                }
-
-                Section {
+                    if filteredServices.isEmpty {
+                        Text("search.services.empty").foregroundStyle(.secondary)
+                    }
                     ForEach(filteredServices) { service in
                         NavigationLink {
                             ServiceDetailView(service: service)
@@ -127,8 +125,9 @@ struct LaunchpadSearchView: View {
                     }
                 } header: {
                     Text("search.services")
-                }
+                }.nastartListSection()
             }
+            .nastartReadableWidth().nastartPageTheme()
             .navigationTitle("search.title")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -156,26 +155,6 @@ private struct ServiceSearchRow: View {
             }
         }
         .padding(.vertical, 3)
-    }
-}
-
-private struct FlowPills: View {
-    let items: [String]
-
-    var body: some View {
-        LazyVGrid(columns: [GridItem(.adaptive(minimum: 96), spacing: 10)], spacing: 10) {
-            ForEach(items, id: \.self) { item in
-                Text(item)
-                    .font(.subheadline.weight(.medium))
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.78)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 10)
-                    .background(AppTheme.secondarySurface)
-                    .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-            }
-        }
-        .padding(.vertical, 4)
     }
 }
 
@@ -217,7 +196,7 @@ struct ServiceDetailView: View {
                     ])
                 }
                 .padding(.vertical, 8)
-            }
+            }.nastartListSection()
 
             Section {
                 if service.name == "DSM" {
@@ -295,7 +274,7 @@ struct ServiceDetailView: View {
                 }
             } header: {
                 Text("service.detail.actions")
-            }
+            }.nastartListSection()
 
             Section {
                 VStack(alignment: .leading, spacing: 7) {
@@ -343,7 +322,7 @@ struct ServiceDetailView: View {
                 }
             } header: {
                 Text("service.detail.connection")
-            }
+            }.nastartListSection()
 
             if service.source == .manual {
                 Section {
@@ -352,7 +331,7 @@ struct ServiceDetailView: View {
                     } label: {
                         Label("manual.service.delete", systemImage: "trash")
                     }
-                }
+                }.nastartListSection()
             }
 
             Section {
@@ -368,8 +347,9 @@ struct ServiceDetailView: View {
                         Image(systemName: isVisibleOnLaunchpad ? "eye.slash" : "eye")
                     }
                 }
-            }
+            }.nastartListSection()
         }
+        .nastartReadableWidth().nastartPageTheme()
         .navigationTitle(service.name)
         .onAppear {
             endpointOverride = ServiceEndpointOverrides.load(
@@ -581,7 +561,7 @@ private struct ServiceEndpointEditor: View {
                         .keyboardType(.URL)
                 } footer: {
                     Text("service.endpoint.hint")
-                }
+                }.nastartListSection()
 
                 if overrideURL != nil {
                     Section {
@@ -589,9 +569,10 @@ private struct ServiceEndpointEditor: View {
                             onSave(nil)
                             dismiss()
                         }
-                    }
+                    }.nastartListSection()
                 }
             }
+            .nastartReadableWidth().nastartPageTheme()
             .navigationTitle("service.endpoint.title")
             .navigationBarTitleDisplayMode(.inline)
             .onAppear {
@@ -632,12 +613,60 @@ struct ServiceSharePayload: Identifiable {
 
 struct SystemShareView: UIViewControllerRepresentable {
     let items: [Any]
+    var includesVideoPlayers = false
 
     func makeUIViewController(context: Context) -> UIActivityViewController {
-        UIActivityViewController(activityItems: items, applicationActivities: nil)
+        let players: [UIActivity]? = includesVideoPlayers
+            ? ExternalOpenTarget.installedPlayers.map { ExternalVideoPlaybackActivity(target: $0) }
+            : nil
+        return UIActivityViewController(activityItems: items, applicationActivities: players)
     }
 
     func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
+}
+
+@MainActor
+private final class ExternalVideoPlaybackActivity: UIActivity {
+    private let target: ExternalOpenTarget
+    private var playbackURL: URL?
+
+    init(target: ExternalOpenTarget) {
+        self.target = target
+        super.init()
+    }
+
+    override class var activityCategory: UIActivity.Category { .action }
+    override var activityType: UIActivity.ActivityType? {
+        UIActivity.ActivityType("com.changliwen.nastart.play.\(target.rawValue)")
+    }
+    override var activityTitle: String? {
+        String(format: NSLocalizedString("external.play_with", comment: ""), target.displayName)
+    }
+    override var activityImage: UIImage? { UIImage(systemName: "play.rectangle") }
+
+    override func canPerform(withActivityItems activityItems: [Any]) -> Bool {
+        mediaURL(in: activityItems) != nil
+    }
+
+    override func prepare(withActivityItems activityItems: [Any]) {
+        playbackURL = mediaURL(in: activityItems)
+    }
+
+    override func perform() {
+        guard let url = target.url(endpoint: playbackURL) else {
+            activityDidFinish(false)
+            return
+        }
+        UIApplication.shared.open(url, options: [:]) { [weak self] accepted in
+            self?.activityDidFinish(accepted)
+        }
+    }
+
+    private func mediaURL(in items: [Any]) -> URL? {
+        items.compactMap { $0 as? URL }.first {
+            ["http", "https"].contains($0.scheme?.lowercased() ?? "")
+        }
+    }
 }
 
 enum ExternalOpenTarget: String, CaseIterable, Identifiable {
@@ -1019,7 +1048,7 @@ struct ServiceWebUIView: View {
                     }
                     .padding(22)
                     .frame(maxWidth: 320)
-                    .background(Color(.secondarySystemBackground))
+                    .nastartSurface()
                     .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
                 }
             }
@@ -1030,6 +1059,7 @@ struct ServiceWebUIView: View {
                     .tint(AppTheme.accent)
             }
         }
+        .nastartPageTheme()
         .navigationTitle(service.name)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {

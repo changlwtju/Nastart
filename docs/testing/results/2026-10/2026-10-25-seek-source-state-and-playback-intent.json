@@ -1,0 +1,456 @@
+{
+  "at": "2026-10-25T15:02:48.520432+08:00",
+  "HEAD": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "configuration": "ordinary Debug",
+  "arguments": [],
+  "environment": {},
+  "tests": {
+    "scopeRed": {
+      "executed": 1,
+      "failures": 2
+    },
+    "scopeGreen": {
+      "executed": 9,
+      "failures": 0
+    },
+    "tracksRed": {
+      "executed": 2,
+      "failures": 8
+    },
+    "tracksGreen": {
+      "executed": 10,
+      "failures": 0
+    },
+    "intentRed": {
+      "executed": 2,
+      "failures": 5
+    },
+    "firstIntentGreen": "compile failed: KS private property access; retained",
+    "intentGreenWithReadonlyAPI": {
+      "executed": 12,
+      "failures": 0
+    },
+    "notWholeSuite": true
+  },
+  "installations": [
+    {
+      "stage": "scope-candidate",
+      "device": "iPhone13",
+      "installedAt": "2026-10-25T13:41:14.175727+08:00",
+      "binaryBuildTime": "2026-10-25T13:39:55.001055+08:00",
+      "mainSHA256": "1ee98aea825174fb05db71b186300340fa67db6776cce1c7bba498d865d59079",
+      "sourceInputs": 570,
+      "signedMachOCount": 30,
+      "changedPreferencesAtInstall": [],
+      "AppIDAndKeychainGroupsPreserved": true
+    },
+    {
+      "stage": "scope-candidate",
+      "device": "iPad A16",
+      "installedAt": "2026-10-25T13:42:17.199823+08:00",
+      "binaryBuildTime": "2026-10-25T13:39:55.001055+08:00",
+      "mainSHA256": "1ee98aea825174fb05db71b186300340fa67db6776cce1c7bba498d865d59079",
+      "sourceInputs": 570,
+      "signedMachOCount": 30,
+      "changedPreferencesAtInstall": [],
+      "AppIDAndKeychainGroupsPreserved": true
+    },
+    {
+      "stage": "tracks-candidate",
+      "device": "iPhone13",
+      "installedAt": "2026-10-25T13:58:00.376419+08:00",
+      "binaryBuildTime": "2026-10-25T13:56:52.057917+08:00",
+      "mainSHA256": "7b82344b8e7b0552b4ca23ff6b5ba675299e326af75717fac459d45974615d90",
+      "sourceInputs": 570,
+      "signedMachOCount": 30,
+      "changedPreferencesAtInstall": [],
+      "AppIDAndKeychainGroupsPreserved": true
+    },
+    {
+      "stage": "tracks-candidate",
+      "device": "iPad A16",
+      "installedAt": "2026-10-25T13:59:22.991408+08:00",
+      "binaryBuildTime": "2026-10-25T13:56:52.057917+08:00",
+      "mainSHA256": "7b82344b8e7b0552b4ca23ff6b5ba675299e326af75717fac459d45974615d90",
+      "sourceInputs": 570,
+      "signedMachOCount": 30,
+      "changedPreferencesAtInstall": [],
+      "AppIDAndKeychainGroupsPreserved": true
+    },
+    {
+      "stage": "intent-candidate",
+      "device": "iPhone13",
+      "installedAt": "2026-10-25T14:54:11.067045+08:00",
+      "binaryBuildTime": "2026-10-25T14:52:11.636674+08:00",
+      "mainSHA256": "a4477a45399a651a9954ffc2e564fdd9fb4008e08c9f3d13999859276161428d",
+      "sourceInputs": 570,
+      "signedMachOCount": 30,
+      "changedPreferencesAtInstall": [],
+      "AppIDAndKeychainGroupsPreserved": true
+    },
+    {
+      "stage": "intent-candidate",
+      "device": "iPad A16",
+      "installedAt": "2026-10-25T14:56:07.229802+08:00",
+      "binaryBuildTime": "2026-10-25T14:52:11.636674+08:00",
+      "mainSHA256": "a4477a45399a651a9954ffc2e564fdd9fb4008e08c9f3d13999859276161428d",
+      "sourceInputs": 570,
+      "signedMachOCount": 30,
+      "changedPreferencesAtInstall": [],
+      "AppIDAndKeychainGroupsPreserved": true
+    }
+  ],
+  "windows": [
+    {
+      "startedAt": "2026-10-25T13:44:33.541510+08:00",
+      "finishedAt": "2026-10-25T13:45:41.598833+08:00",
+      "PlayCommands": 1,
+      "failure": "AssertionError",
+      "normalReturn": false,
+      "wifiRestored": true,
+      "originalNetworkSelected": true,
+      "ownedSyslogStopped": true,
+      "finalSettingsMatch": true,
+      "mainSHA256": "1ee98aea825174fb05db71b186300340fa67db6776cce1c7bba498d865d59079",
+      "window": "file-cellular-syslog-1",
+      "clickCommandsSent": 6,
+      "nativeSeekEvents": 0,
+      "routes": [
+        {
+          "t": 8.831,
+          "decodeEngine": "systemAVPlayer",
+          "routeKind": "localHLS",
+          "playMethod": "localRemux"
+        }
+      ],
+      "replacements": [],
+      "completedURLMetrics": 20,
+      "cellularYes": 20,
+      "transportCounts": [
+        {
+          "scope": "systemShared",
+          "reused": "no",
+          "late": "false",
+          "count": 1
+        },
+        {
+          "scope": "systemShared",
+          "reused": "yes",
+          "late": "false",
+          "count": 19
+        }
+      ],
+      "lastClocks": [
+        {
+          "currentSeconds": "80.502",
+          "elapsedMs": "17987",
+          "engine": "AVPlayer",
+          "stallActive": "no"
+        },
+        {
+          "currentSeconds": "82.023",
+          "elapsedMs": "19508",
+          "engine": "AVPlayer",
+          "stallActive": "no"
+        },
+        {
+          "currentSeconds": "83.501",
+          "elapsedMs": "20987",
+          "engine": "AVPlayer",
+          "stallActive": "no"
+        },
+        {
+          "currentSeconds": "84.501",
+          "elapsedMs": "21987",
+          "engine": "AVPlayer",
+          "stallActive": "no"
+        },
+        {
+          "currentSeconds": "86.002",
+          "elapsedMs": "23487",
+          "engine": "AVPlayer",
+          "stallActive": "no"
+        },
+        {
+          "currentSeconds": "87.503",
+          "elapsedMs": "24989",
+          "engine": "AVPlayer",
+          "stallActive": "no"
+        },
+        {
+          "currentSeconds": "89.002",
+          "elapsedMs": "26487",
+          "engine": "AVPlayer",
+          "stallActive": "no"
+        },
+        {
+          "currentSeconds": "90.006",
+          "elapsedMs": "27491",
+          "engine": "AVPlayer",
+          "stallActive": "no"
+        }
+      ],
+      "actualVisualFinding": "Preparation failure alert after early click; secondary missing-control failure; no KS route."
+    },
+    {
+      "startedAt": "2026-10-25T14:00:53.733583+08:00",
+      "finishedAt": "2026-10-25T14:02:28.807967+08:00",
+      "PlayCommands": 1,
+      "normalReturn": true,
+      "wifiRestored": true,
+      "originalNetworkSelected": true,
+      "ownedSyslogStopped": true,
+      "finalSettingsMatch": true,
+      "mainSHA256": "7b82344b8e7b0552b4ca23ff6b5ba675299e326af75717fac459d45974615d90",
+      "window": "file-cellular-tracks-1",
+      "clickCommandsSent": 1,
+      "nativeSeekEvents": 0,
+      "routes": [
+        {
+          "t": 8.999,
+          "decodeEngine": "systemAVPlayer",
+          "routeKind": "localHLS",
+          "playMethod": "localRemux"
+        },
+        {
+          "t": 11.666,
+          "decodeEngine": "systemAVPlayer",
+          "routeKind": "localHLS",
+          "playMethod": "localRemux"
+        }
+      ],
+      "replacements": [
+        {
+          "t": 11.678,
+          "event": "replacement_warmup_started"
+        },
+        {
+          "t": 35.232,
+          "event": "replacement_warmup_completed"
+        },
+        {
+          "t": 35.233,
+          "event": "replacement_committed",
+          "candidateSeconds": "103.51333333333334",
+          "seconds": "105.000722569",
+          "startsPaused": "true"
+        }
+      ],
+      "completedURLMetrics": 18,
+      "cellularYes": 18,
+      "transportCounts": [
+        {
+          "scope": "systemShared",
+          "reused": "no",
+          "late": "false",
+          "count": 1
+        },
+        {
+          "scope": "systemShared",
+          "reused": "yes",
+          "late": "false",
+          "count": 15
+        },
+        {
+          "scope": "systemShared",
+          "reused": "yes",
+          "late": "true",
+          "count": 2
+        }
+      ],
+      "lastClocks": [
+        {
+          "currentSeconds": "101.532",
+          "elapsedMs": "22259",
+          "engine": "AVPlayer",
+          "stallActive": "no"
+        },
+        {
+          "currentSeconds": "103.001",
+          "elapsedMs": "23729",
+          "engine": "AVPlayer",
+          "stallActive": "no"
+        },
+        {
+          "currentSeconds": "104.002",
+          "elapsedMs": "24729",
+          "engine": "AVPlayer",
+          "stallActive": "no"
+        },
+        {
+          "elapsedMs": "26085",
+          "engine": "AVPlayer",
+          "stallActive": "no"
+        },
+        {
+          "currentSeconds": "103.513",
+          "elapsedMs": "0",
+          "engine": "AVPlayer",
+          "stallActive": "no"
+        },
+        {
+          "currentSeconds": "103.513",
+          "elapsedMs": "120",
+          "engine": "AVPlayer",
+          "stallActive": "no"
+        },
+        {
+          "currentSeconds": "103.513",
+          "elapsedMs": "215",
+          "engine": "AVPlayer",
+          "stallActive": "no"
+        },
+        {
+          "elapsedMs": "28267",
+          "engine": "AVPlayer",
+          "stallActive": "no"
+        }
+      ],
+      "actualVisualFinding": "HLS replacement completed but startsPaused=true; actual late frame paused at 01:43 and 0KB/s."
+    },
+    {
+      "startedAt": "2026-10-25T14:57:09.991015+08:00",
+      "finishedAt": "2026-10-25T14:58:46.284419+08:00",
+      "PlayCommands": 1,
+      "normalReturn": true,
+      "wifiRestored": true,
+      "originalNetworkSelected": true,
+      "ownedSyslogStopped": true,
+      "finalSettingsMatch": true,
+      "mainSHA256": "a4477a45399a651a9954ffc2e564fdd9fb4008e08c9f3d13999859276161428d",
+      "window": "file-cellular-intent-1",
+      "clickCommandsSent": 1,
+      "nativeSeekEvents": 0,
+      "routes": [
+        {
+          "t": 9.372,
+          "decodeEngine": "systemAVPlayer",
+          "routeKind": "localHLS",
+          "playMethod": "localRemux"
+        },
+        {
+          "t": 11.727,
+          "decodeEngine": "systemAVPlayer",
+          "routeKind": "localHLS",
+          "playMethod": "localRemux"
+        }
+      ],
+      "replacements": [
+        {
+          "t": 11.744,
+          "event": "replacement_warmup_started"
+        },
+        {
+          "t": 19.879,
+          "event": "replacement_warmup_completed"
+        },
+        {
+          "t": 19.879,
+          "event": "replacement_committed",
+          "candidateSeconds": "118.51333333333334",
+          "seconds": "103.51333333333334",
+          "startsPaused": "false"
+        }
+      ],
+      "completedURLMetrics": 26,
+      "cellularYes": 26,
+      "transportCounts": [
+        {
+          "scope": "systemShared",
+          "reused": "no",
+          "late": "false",
+          "count": 1
+        },
+        {
+          "scope": "systemShared",
+          "reused": "yes",
+          "late": "false",
+          "count": 23
+        },
+        {
+          "scope": "systemShared",
+          "reused": "yes",
+          "late": "true",
+          "count": 2
+        }
+      ],
+      "lastClocks": [
+        {
+          "currentSeconds": "154.502",
+          "elapsedMs": "36300",
+          "engine": "AVPlayer",
+          "stallActive": "no"
+        },
+        {
+          "currentSeconds": "156.006",
+          "elapsedMs": "37804",
+          "engine": "AVPlayer",
+          "stallActive": "no"
+        },
+        {
+          "currentSeconds": "157.502",
+          "elapsedMs": "39300",
+          "engine": "AVPlayer",
+          "stallActive": "no"
+        },
+        {
+          "currentSeconds": "159.022",
+          "elapsedMs": "40820",
+          "engine": "AVPlayer",
+          "stallActive": "no"
+        },
+        {
+          "currentSeconds": "160.045",
+          "elapsedMs": "41843",
+          "engine": "AVPlayer",
+          "stallActive": "no"
+        },
+        {
+          "currentSeconds": "161.047",
+          "elapsedMs": "42845",
+          "engine": "AVPlayer",
+          "stallActive": "no"
+        },
+        {
+          "currentSeconds": "162.061",
+          "elapsedMs": "43859",
+          "engine": "AVPlayer",
+          "stallActive": "no"
+        },
+        {
+          "elapsedMs": "44677",
+          "engine": "AVPlayer",
+          "stallActive": "no"
+        }
+      ],
+      "actualVisualFinding": "HLS replacement startsPaused=false; subsequent actual movie frame inspected and internal clock advanced to 162 seconds; ordinary detail return."
+    }
+  ],
+  "finalAudit": {
+    "sourceInputDrift": 0,
+    "phoneChangedKeys": [
+      "playback.localResume.v1",
+      "diagnostics.entries.v1"
+    ],
+    "otherPhonePreferencesUnchanged": true,
+    "phoneWiFiOriginalSelectedAndIconInspected": true,
+    "ownSyslogAndMediaStopped": true,
+    "phoneUnknownRunnerUnchanged": true,
+    "iPadRunnerStartedThisBatch": false,
+    "iPadOriginalVPNUnchanged": true,
+    "padChangedKeys": [
+      "diagnostics.entries.v1"
+    ],
+    "otherPadPreferencesUnchanged": true
+  },
+  "limitations": [
+    "Source identity rejection and buffering intent are separate verified defects, not a complete root cause for the iPhone18 cellular complaint.",
+    "Warmup23.55s before and8.14s after are not a matched performance comparison: windows, timeline, cache and signal may differ.",
+    "Sparse native screenshots and internal clocks do not establish continuous-frame, HDR or audible-output acceptance.",
+    "Pad latest package normal launch only this batch; earlier S01 is historical.",
+    "TV latest shared readonly KS API not rebuilt or installed in this batch.",
+    "Full format, concurrency,10minute,source-track switching and persistent KBps issue remain open."
+  ],
+  "openRequirements": 28,
+  "matrixCells": 114
+}

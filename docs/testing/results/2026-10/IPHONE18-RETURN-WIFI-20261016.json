@@ -1,0 +1,132 @@
+{
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceDiffSHA256": "cc64de38bfaadefeb5fd792ab03780a9dd59e1147609ed09dd44212a35fcf17d",
+  "configuration": "normal Debug -Onone; empty launch environment",
+  "Xcode": "27.0/27A266a",
+  "binaryBuildTime": "2026-10-16T19:50:56.667851+08:00",
+  "binaries": {
+    "Nastart": "bb99a1095301a72b870ed8419a37de71cfe6a53f6934a20fa91df973baa40593",
+    "Nastart.debug.dylib": "f0bc22616f4982c4378213b7c6f837158731d0a154a97df6dff8218501d2a08b",
+    "Frameworks/KSPlayer.framework/KSPlayer": "f73e8008a84286299e04dcda6b27921049f326e8190235a5fd7fcbdf5e288be0"
+  },
+  "ipaSHA256": "99e3210fa295ac6b3a3597a00610eac806a6e84cb70d560ca505ce88827549b1",
+  "individuallyVerifiedLibraries": 29,
+  "checkedInputs": 173,
+  "profileExpirationUTC": "2026-10-17T22:23:40",
+  "recordedAt": "2026-10-16T20:29:40.228989+08:00",
+  "currentPackageReverifiedAtEnd": true,
+  "appSourceChanged": false,
+  "appTestsOrBuildRerun": false,
+  "iPhone18": {
+    "startedAtUTC": "2026-10-16T12:27:18.150616+00:00",
+    "stage": "installed; normal home actually reviewed",
+    "packageVerified": true,
+    "targetLiveVerified": true,
+    "preferencesSavedBeforeInstall": true,
+    "installDispatchAttempted": true,
+    "installCommandSent": true,
+    "installCompleteObserved": true,
+    "postInstallLookupExists": true,
+    "actualForegroundUIVerified": true,
+    "newPairingAttempted": false,
+    "networkOrVPNChanged": false,
+    "WDARequiredForInstallation": false,
+    "sourceDiffSHA256": "cc64de38bfaadefeb5fd792ab03780a9dd59e1147609ed09dd44212a35fcf17d",
+    "binaries": {
+      "Nastart": "bb99a1095301a72b870ed8419a37de71cfe6a53f6934a20fa91df973baa40593",
+      "Nastart.debug.dylib": "f0bc22616f4982c4378213b7c6f837158731d0a154a97df6dff8218501d2a08b",
+      "Frameworks/KSPlayer.framework/KSPlayer": "f73e8008a84286299e04dcda6b27921049f326e8190235a5fd7fcbdf5e288be0"
+    },
+    "ipaSHA256": "99e3210fa295ac6b3a3597a00610eac806a6e84cb70d560ca505ce88827549b1",
+    "model": "iPhone19,7",
+    "system": "27.0",
+    "connection": "NETWORK",
+    "existingEscrowUsedForContainerRequest": true,
+    "installedAtUTC": "2026-10-16T12:27:32.267884+00:00",
+    "preferences": {
+      "beforeKeys": 25,
+      "afterKeys": 25,
+      "sameKeys": true,
+      "changedValues": 0,
+      "allNonDiagnosticPreferencesEqual": true
+    },
+    "RSDTargetVerified": true,
+    "normalLaunchRequested": true,
+    "requestedEnvironment": {},
+    "requestedArguments": [],
+    "actualScreenCaptured": true,
+    "preferencesAfterLaunch": {
+      "beforeKeys": 25,
+      "afterKeys": 25,
+      "sameKeys": true,
+      "changedValues": 0,
+      "allNonDiagnosticPreferencesEqual": true
+    },
+    "finishedAtUTC": "2026-10-16T12:27:43.517438+00:00",
+    "actualUIReviewEvidence": "actual-ui-review-safe.json"
+  },
+  "actualUIReview": {
+    "reviewedAt": "2026-10-16T20:29:13.634295+08:00",
+    "image": "normal-launch-private.png",
+    "actualImageViewed": true,
+    "actualForegroundUIVerified": true,
+    "normalHomeVisible": true,
+    "playerClosed": true,
+    "NASStatus": "normal",
+    "JellyfinServiceBadge": "unknown",
+    "WiFiIconVisible": true,
+    "notPlaybackValidation": true
+  },
+  "segmentOrigin": {
+    "sourceDiffSHA256": "cc64de38bfaadefeb5fd792ab03780a9dd59e1147609ed09dd44212a35fcf17d",
+    "appSourceChangedThisBatch": false,
+    "newPlaybackThisBatch": false,
+    "serverLogsFetched": 3,
+    "serverBytes": 601989,
+    "previousClientCase": "iPhone13 S19 HLS large backward seek",
+    "targetOrdinal": 93,
+    "targetServerStartSeconds": 372.372,
+    "targetServerCommandMatchedToFFmpegOutputPath": true,
+    "targetInputSameAsPrevious1870": true,
+    "serverSideOutputEvents": [],
+    "ffmpegProgress": {
+      "firstFrame": 23,
+      "lastFrame": 1265,
+      "lastOutputSeconds": 51.8,
+      "outputOrdinals": [
+        93,
+        106
+      ],
+      "selectedWarningsObserved": false
+    },
+    "clientSessionIdentityVerified": false,
+    "historicalServerClockOffsetVerified": false,
+    "conclusion": "Server command/output log share an output identity and target ordinal; client-to-server session ownership remains unproven. No playback policy change justified.",
+    "currentClockBoundsOnly": {
+      "samples": [
+        {
+          "roundTripSeconds": 0.011979103088378906,
+          "serverMinusMacOffsetBoundsSeconds": [
+            0.16933894157409668,
+            0.18131804466247559
+          ]
+        },
+        {
+          "roundTripSeconds": 0.009445905685424805,
+          "serverMinusMacOffsetBoundsSeconds": [
+            0.16898107528686523,
+            0.17842698097229004
+          ]
+        }
+      ],
+      "historicalSynchronizationProven": false
+    },
+    "iPhone13BrightnessChanged": false
+  },
+  "otherDevices": {
+    "newOperations": false,
+    "iPhone13BrightnessChanged": false,
+    "iPadRunner": "prior intentional stop unchanged"
+  },
+  "allUnfinishedPlaybackAcceptancePreserved": true
+}

@@ -1,0 +1,123 @@
+{
+  "at": "2026-10-18T19:13:13.948948+08:00",
+  "scope": "Apple TV development connection and user-reported pairing popup; no new playback window",
+  "physicalTV": {
+    "model": "AppleTV14,1",
+    "tvOS": "18.2",
+    "build": "22K155",
+    "hardwareUDIDPrivateOnly": true
+  },
+  "popup": {
+    "at": "2026-10-18T18:51:36.189697+08:00",
+    "userScreenshotShowsApp": "Paired Devices",
+    "userScreenshotErrorDecimal": -402653169,
+    "nativeErrorHex": "0xE800000F",
+    "nativeAMDErrorString": "kAMDUnsupportedError",
+    "nativeErrorDefinitionReadDirectlyFromInstalledFramework": true,
+    "DeviceHubScreenshotSelectedDeviceIsSimulator": true,
+    "physicalTVSystem": "18.2",
+    "selectedSimulatorSystem": "27.0",
+    "exactRootCauseProven": false,
+    "incorrectPINProven": false,
+    "systemUpdateOrUnpairPerformed": false
+  },
+  "legacyPopupLog": {
+    "sameAttemptAt": "2026-10-18T18:50:05+08:00",
+    "nativeCode": "0xE800000F",
+    "nativeName": "kAMDUnsupportedError",
+    "failure": "AMDeviceCreateSRPConnection failed; API not supported for this non-WiFi-pairable device reference",
+    "wrongPINProven": false
+  },
+  "systemPairedDeviceUI": {
+    "actualViewed": true,
+    "name": "客厅",
+    "state": "已连接",
+    "doesNotProveDevelopmentInstallation": true,
+    "failedPromptCancelled": true
+  },
+  "refreshes": [
+    {
+      "at": "2026-10-18T18:56:13.223309+08:00",
+      "sameUserRemoteHelperProcessesTerminated": 2,
+      "signal": "SIGTERM",
+      "pairingRecordsChanged": false,
+      "globalDaemonOrUSBServiceTerminated": false,
+      "OSUpdated": false,
+      "reason": "recreate failed remote metadata/service IPC after verified unsupported legacy pairing flow"
+    },
+    {
+      "at": "2026-10-18T19:03:07.004563+08:00",
+      "sameUserCoreDeviceServiceRestartRequested": true,
+      "signal": "SIGTERM",
+      "pairingOrNetworkSettingsChanged": false,
+      "USBServiceTouched": false
+    }
+  ],
+  "existingAuthCheck": {
+    "at": "2026-10-18T19:04:54.868865+08:00",
+    "requireNonInteractive": true,
+    "newPINInteractionAllowed": false,
+    "model": "AppleTV14,1",
+    "beforeAuthentication": "unauthenticated",
+    "errorPresent": true,
+    "errorCode": 1004,
+    "errorDescription": "Non-interactive pairing was requested but is not currently available."
+  },
+  "correctXcodePairing": {
+    "xcode": "26.6/17F113",
+    "actualPhysicalTVSelected": true,
+    "challengeAt": "2026-10-18T19:06:18+08:00",
+    "userCompletedCodeAndConnect": true,
+    "nativeFinishedAt": "2026-10-18T19:07:30+08:00",
+    "nativeError": null,
+    "settled": {
+      "at": "2026-10-18T19:10:00.986966+08:00",
+      "devices": [
+        {
+          "model": "AppleTV14,1",
+          "authState": "authenticated",
+          "hardwareIdentityResolved": true,
+          "metadataDomains": [
+            "NULL",
+            "com.apple.mobile.ldwatch"
+          ]
+        }
+      ],
+      "installationDispatched": false
+    },
+    "physicalCoreDeviceTargetAvailable": false,
+    "xcdeviceTargetAvailableAfterPair": false
+  },
+  "networkPermissionReadOnly": {
+    "MacPrivacyLocalNetworkPageViewed": true,
+    "XcodeRowPresent": false,
+    "XcodeDeniedProven": false,
+    "anyPermissionChanged": false
+  },
+  "build": {
+    "at": "2026-10-18T19:07:39.470043+08:00",
+    "exitCode": 0,
+    "buildSucceeded": true,
+    "sourceInputsVerified": 11,
+    "compiler": "Xcode26.6/17F113",
+    "configuration": "ordinary Debug unsigned tvOS device build",
+    "physicalInstallable": false
+  },
+  "partialDiagnostic": {
+    "complete": false,
+    "commandExit": 1,
+    "archiveCreated": true,
+    "entryCount": 1,
+    "noHostSysdiagnoseRequested": true,
+    "notSentToAppleOrOtherParty": true
+  },
+  "originalIPhone13ServicePreserved": true,
+  "AppOrProjectSourceChanged": false,
+  "tvOSOrDSMUpdated": false,
+  "pairingRecordsDeleted": false,
+  "networkVPNSettingsChanged": false,
+  "physicalTVInstallDispatched": false,
+  "rootCauseConfirmed": false,
+  "nextStep": "User cannot restart Mac now and requests other work first. Defer TV connection troubleshooting; continue offline cellular playback analysis. No restart or repeated PIN requested.",
+  "userDeferredMacRestart": true
+}

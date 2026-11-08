@@ -1,0 +1,324 @@
+{
+  "at": "2026-10-17T10:54:44.202061+08:00",
+  "scope": "iPhone13 ordinary S19 Jellyfin playback on Wi-Fi; no intentional cellular media test",
+  "sampleFileBytes": 128795641934,
+  "appSourceChangedThisBatch": false,
+  "sourceHead": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "appSourceDiffSHA256": "e82c4c41675dd3f1c29d3a6bc40e90d5d03fcb303b2dec0e680bfa239c9eb2e1",
+  "configuration": "normal Debug -Onone; empty launch environment",
+  "buildTime": "2026-10-17T08:23:45.550174+08:00",
+  "Xcode": "27.0/27A266a",
+  "binarySHA256": {
+    "Nastart": "4947a184e9c4addf9dedd3ffa5096189c19e1277379092e94ccb881a3d7b6d52",
+    "Nastart.debug.dylib": "95eec6fb9d96eb1b1f9663240d678b235311617cc27e3f33dc071bca147588e2",
+    "Frameworks/KSPlayer.framework/KSPlayer": "f4dc3f88d9c967a8ca53f93a7315e7c8ce70b65f4864722006f8f0fff8347d06"
+  },
+  "verifiedAppInputCount": 173,
+  "appRebuiltThisBatch": false,
+  "newTestEnvironment": {},
+  "PythonUnitTestsPassed": 19,
+  "AppTargetedTestsRunThisBatch": false,
+  "historicalAppFullSuiteFailuresStillOpen": 5,
+  "installation": {
+    "device": "iphone13",
+    "model": "iPhone14,5",
+    "system": "16.3.1",
+    "connection": "USB",
+    "binaries": {
+      "Nastart": "4947a184e9c4addf9dedd3ffa5096189c19e1277379092e94ccb881a3d7b6d52",
+      "Nastart.debug.dylib": "95eec6fb9d96eb1b1f9663240d678b235311617cc27e3f33dc071bca147588e2",
+      "Frameworks/KSPlayer.framework/KSPlayer": "f4dc3f88d9c967a8ca53f93a7315e7c8ce70b65f4864722006f8f0fff8347d06"
+    },
+    "sourceDiffSHA256": "e82c4c41675dd3f1c29d3a6bc40e90d5d03fcb303b2dec0e680bfa239c9eb2e1",
+    "preservesContainer": true,
+    "signatureVerified": true,
+    "actualForegroundUIVerified": true,
+    "requestedEnvironment": {},
+    "requestedArguments": [],
+    "installation": "success",
+    "startedAt": "2026-10-17T10:33:28.093234+08:00",
+    "installedAt": "2026-10-17T10:33:41.641513+08:00",
+    "preferenceKeysUnchanged": true,
+    "preferenceValuesUnchanged": true,
+    "nonDiagnosticKeys": 25
+  },
+  "cases": {
+    "full": {
+      "capture": {
+        "ready": true,
+        "packets": 827,
+        "IPBytes": 192214,
+        "cellularIPBytes": 0,
+        "maxCaptureLagSeconds": 1.038362979888916,
+        "parseErrors": 0,
+        "stopRequired": false,
+        "case": "full",
+        "limitIPBytes": 100663296,
+        "readyAt": 1792204662.631372,
+        "heartbeatAt": 1792204697.661539,
+        "armedAt": 1792204676.519296,
+        "interfaces": {
+          "en0": 746,
+          "en1": 5
+        },
+        "finishedAt": 1792204697.661536,
+        "physicalTCPPayloadBytesBothDirections": 142536
+      },
+      "guard": {
+        "ready": true,
+        "readyAt": 1792204663.776174,
+        "independentOfWDAAndAFCPrefs": true,
+        "deadlineSeconds": 18,
+        "stopReason": "independent deadline reached",
+        "decisionAt": 1792204694.60791,
+        "observedIPBytes": 178535,
+        "packetThresholdAt": null,
+        "intentionalTermination": true,
+        "killRequestAt": 1792204694.607914,
+        "killReturnedAt": 1792204694.609805,
+        "exactCurrentPIDVerified": true,
+        "finishedAt": 1792204694.609806
+      },
+      "completedMetricsCount": 1,
+      "completedMetricsBodyBytes": 0,
+      "completedCallbacksBodyBytes": 0,
+      "metricProtocols": {
+        "http/1.1": 1
+      },
+      "metricCellularFlags": {
+        "no": 1
+      },
+      "metricCoveragePartialAfterIntentionalKill": true,
+      "internalFirstFrameSecondsAfterAction": [],
+      "UIOrdinaryExitVerified": false,
+      "elapsedUntilKillReturned": 18.090509176254272,
+      "captureTCPPayloadIsNotPlaintextMediaBody": true
+    },
+    "wire": {
+      "capture": {
+        "ready": true,
+        "packets": 85423,
+        "IPBytes": 105309722,
+        "cellularIPBytes": 0,
+        "maxCaptureLagSeconds": 1.089900016784668,
+        "parseErrors": 0,
+        "stopRequired": true,
+        "case": "wire",
+        "limitIPBytes": 100663296,
+        "readyAt": 1792205081.030747,
+        "heartbeatAt": 1792205112.6047559,
+        "armedAt": 1792205098.840702,
+        "thresholdAt": 1792205109.448949,
+        "thresholdIPBytes": 100663588,
+        "interfaces": {
+          "en0": 85371
+        },
+        "finishedAt": 1792205112.604751,
+        "physicalTCPPayloadBytesBothDirections": 100892908
+      },
+      "guard": {
+        "ready": true,
+        "readyAt": 1792205082.169492,
+        "independentOfWDAAndAFCPrefs": true,
+        "deadlineSeconds": 18,
+        "stopReason": "packet budget reached",
+        "decisionAt": 1792205109.580965,
+        "observedIPBytes": 101053850,
+        "packetThresholdAt": 1792205109.448949,
+        "intentionalTermination": true,
+        "killRequestAt": 1792205109.580966,
+        "killReturnedAt": 1792205109.5843892,
+        "exactCurrentPIDVerified": true,
+        "finishedAt": 1792205109.58439
+      },
+      "completedMetricsCount": 7,
+      "completedMetricsBodyBytes": 76713624,
+      "completedCallbacksBodyBytes": 76713624,
+      "metricProtocols": {
+        "http/1.1": 7
+      },
+      "metricCellularFlags": {
+        "no": 7
+      },
+      "metricCoveragePartialAfterIntentionalKill": true,
+      "internalFirstFrameSecondsAfterAction": [
+        3.671152
+      ],
+      "UIOrdinaryExitVerified": false,
+      "elapsedUntilKillReturned": 10.743687152862549,
+      "thresholdToKillReturnedSeconds": 0.13544011116027832,
+      "IPBytesOverBudget": 4646426,
+      "captureTCPPayloadIsNotPlaintextMediaBody": true
+    },
+    "ordinary": {
+      "capture": {
+        "ready": true,
+        "packets": 37929,
+        "IPBytes": 44513358,
+        "cellularIPBytes": 6276,
+        "maxCaptureLagSeconds": 1.0381300449371338,
+        "parseErrors": 0,
+        "stopRequired": true,
+        "case": "ordinary",
+        "limitIPBytes": 100663296,
+        "readyAt": 1792205260.580571,
+        "heartbeatAt": 1792205287.653894,
+        "armedAt": 1792205277.695596,
+        "unexpectedCellularCapture": true,
+        "interfaces": {
+          "en0": 37831,
+          "en1": 9,
+          "pdp_ip1": 12
+        },
+        "finishedAt": 1792205287.653888,
+        "physicalTCPPayloadBytesBothDirections": 42550389
+      },
+      "guard": {
+        "ready": true,
+        "readyAt": 1792205261.706945,
+        "independentOfWDAAndAFCPrefs": true,
+        "deadlineSeconds": 18,
+        "stopReason": "unexpected cellular physical bytes",
+        "decisionAt": 1792205284.6024241,
+        "observedIPBytes": 41942732,
+        "packetThresholdAt": null,
+        "intentionalTermination": true,
+        "killRequestAt": 1792205284.602426,
+        "killReturnedAt": 1792205284.6040199,
+        "exactCurrentPIDVerified": true,
+        "finishedAt": 1792205284.604021
+      },
+      "completedMetricsCount": 5,
+      "completedMetricsBodyBytes": 9389008,
+      "completedCallbacksBodyBytes": 9389008,
+      "metricProtocols": {
+        "http/1.1": 5
+      },
+      "metricCellularFlags": {
+        "no": 5
+      },
+      "metricCoveragePartialAfterIntentionalKill": true,
+      "internalFirstFrameSecondsAfterAction": [
+        3.251397
+      ],
+      "UIOrdinaryExitVerified": false,
+      "elapsedUntilKillReturned": 6.908423900604248,
+      "unexpectedPDPFirstReceiveToKillReturnedSeconds": 0.09317874908447266,
+      "pdpPacketCount": 12,
+      "pdpTCPPayloadParsedBytes": 0,
+      "captureTCPPayloadIsNotPlaintextMediaBody": true
+    }
+  },
+  "firstBlackFrameImageActuallyReviewed": true,
+  "secondMovieFrameAtT6ActuallyReviewed": true,
+  "normalUIExitAcceptedThisBatch": false,
+  "WiFiSelectedMediaProtocol": "http/1.1",
+  "HTTPSH2QUICCoverageThisBatch": false,
+  "postUnexpectedPDPActualNetwork": {
+    "at": "2026-10-17T10:49:12.187887+08:00",
+    "actualCellularDataSwitch": "0",
+    "WiFiAssistSwitch": "1",
+    "mutationPerformed": false
+  },
+  "finalNetwork": {
+    "at": "2026-10-17T10:51:22.200303+08:00",
+    "actualCellularDataSwitch": "1",
+    "actualWiFiOn": true,
+    "WiFiAssistUnchanged": true,
+    "VPNChanged": false,
+    "restored": true
+  },
+  "finalAudit": {
+    "at": "2026-10-17T10:51:54.727945+08:00",
+    "model": "iPhone14,5",
+    "system": "16.3.1",
+    "connection": "USB",
+    "sourceDiffSHA256": "e82c4c41675dd3f1c29d3a6bc40e90d5d03fcb303b2dec0e680bfa239c9eb2e1",
+    "latestPackage": {
+      "Nastart": "4947a184e9c4addf9dedd3ffa5096189c19e1277379092e94ccb881a3d7b6d52",
+      "Nastart.debug.dylib": "95eec6fb9d96eb1b1f9663240d678b235311617cc27e3f33dc071bca147588e2",
+      "Frameworks/KSPlayer.framework/KSPlayer": "f4dc3f88d9c967a8ca53f93a7315e7c8ce70b65f4864722006f8f0fff8347d06"
+    },
+    "nonBookmarkPreferenceKeys": 24,
+    "nonBookmarkPreferencesExactlyUnchanged": true,
+    "naturalBookmarkChangesCount": 1,
+    "originalBookmarksChecked": 36,
+    "originalBookmarksRemoved": 0,
+    "originalTrackChangeCount": 0,
+    "allOriginalTracksUnchanged": true,
+    "newBookmarksCount": 0,
+    "crashInventoryDelta": {
+      "Nastart": 0,
+      "WebDriverAgent": 0,
+      "JetsamEvent": 0
+    },
+    "normalEmptyEnvironment": true,
+    "NASNormal": true,
+    "playerClosed": true,
+    "WDAIdleSeconds": 10,
+    "WDAAnimationCoolOffSeconds": 2,
+    "nativeConditionsNotRecheckedThisTurn": false,
+    "noConditionInjectedThisTurn": true,
+    "nativeActiveConditions": 0,
+    "finalHomeActuallyReviewed": true
+  },
+  "runnerCleanup": {
+    "at": "2026-10-17T10:52:18.150823+08:00",
+    "fixedRunnerNameMatched": true,
+    "intentionalRunnerTerminationCount": 1,
+    "runnerAbsentAfter": true,
+    "appPresentAfter": true,
+    "actualFinalHomeViewed": true
+  },
+  "ownServerCleanup": {
+    "at": "2026-10-17T10:50:29.575410+08:00",
+    "exactPersistentDeviceIDMatched": true,
+    "ownCount": 1,
+    "targetedOtherDeviceSession": false,
+    "StoppedReportSent": true,
+    "encodingTerminationNotSent": true,
+    "HTTPStatus": 204,
+    "exactFreshMovieMatched": true,
+    "ownNowPlayingCleared": true,
+    "ownTranscodingInfoPresent": false,
+    "preExistingTranscodingInfoNotAttributedToThisTest": true
+  },
+  "power": {
+    "startLocal": "2026-10-17 10:33:26",
+    "endLocal": "2026-10-17 10:53:00",
+    "sleepWakeEvents": 0,
+    "ownAssertionStopSent": true
+  },
+  "freshMacSmallRangeReadOnlyProbes": {
+    "readOnly": true,
+    "mediaBytesRequestedPerRoute": 4096,
+    "sampleLargeFileBytes": 128795641934,
+    "routes": {
+      "configured": {
+        "success": true,
+        "status": 206,
+        "headerSeconds": 0.034111976623535156,
+        "readSeconds": 0.03421902656555176,
+        "bytes": 4096
+      },
+      "observedLAN": {
+        "success": true,
+        "status": 206,
+        "headerSeconds": 0.035552978515625,
+        "readSeconds": 0.035629987716674805,
+        "bytes": 4096
+      }
+    }
+  },
+  "cellularRetryStillBlocked": true,
+  "performanceFixAccepted": false,
+  "iPhone18OrIPadTouchedThisBatch": false,
+  "limitations": [
+    "Task metrics after intentional kill cover only completed and persisted tasks, not all body bytes in flight",
+    "First no-body startup and second successful startup are not a paired performance improvement; intervening Mac probes affect warm state",
+    "Physical pdp_ip1 bytes are not proven movie bytes; data switch OFF and persisted movie metrics cellular=no do not establish carrier accounting",
+    "Base IP protocol field was added after these captures; historical packet metadata must not be retroactively classified as UDP or IMS",
+    "Normal UI exit was not visually accepted; guard termination is intentional, not natural crash or playback timeout"
+  ],
+  "privateEvidencePointer": "/tmp/nastart-jf-budget-evidence"
+}

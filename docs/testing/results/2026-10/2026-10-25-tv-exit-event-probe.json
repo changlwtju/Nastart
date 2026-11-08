@@ -1,0 +1,332 @@
+{
+  "updatedAt": "2026-10-25 05:00",
+  "privateEvidencePointer": "/tmp/nastart-tv-exit-probe-evidence",
+  "HEAD": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "configuration": "normal Debug; default environment and arguments for real media",
+  "package": {
+    "at": "2026-10-25T04:47:16.314747+08:00",
+    "configuration": "normal Debug",
+    "HEAD": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceInputs": 508,
+    "binaries": {
+      "__preview.dylib": "62a972e96b28940b30295e0f002972a08387fd61cb3ea99f35a54868ff43e189",
+      "NastartTV": "b8b377279f8098a9e01798c4f6f3b964ef7429fb1466acd85908b96f109f8057",
+      "NastartTV.debug.dylib": "69d32fe565fcffb6c2c36ee96d4bfbf9d4e0e9306f3333f6dcc1d4a31f2ac0a5",
+      "Frameworks/Libswresample.framework/Libswresample": "0248cd11622bf34e8e12ea2384191f3f5a7fcca21b5afd2acf76a640cfd9f7f0",
+      "Frameworks/Libavfilter.framework/Libavfilter": "c878237c59edbfc0a1b18cf7ba32bc94048f6ce73be835ff8e9fbbe1238903b5",
+      "Frameworks/KSPlayer.framework/KSPlayer": "5077f45144ac0101a9e1f2ca4568fc46595a44f8a0be03c5ee8c157570b25501",
+      "Frameworks/Libavformat.framework/Libavformat": "a4387a55f532ab71c9c57a0b4d4919a9342aa1888b91d64a940d80b45b252776",
+      "Frameworks/libshaderc_combined.framework/libshaderc_combined": "b9b4856f545f3f06617e1c7ad120e48134ba7a09317bdb20b3431d2d982a09f0",
+      "Frameworks/Libavutil.framework/Libavutil": "9f47f291d006f259a86a9d4f578d6a5e497d7b58f5399e95976e5baeafaecd05",
+      "Frameworks/libharfbuzz.framework/libharfbuzz": "2fa8e17f7fb4248cb77793638b7df8da60d7f7130e840914cfbf2770284bd88c",
+      "Frameworks/libdav1d.framework/libdav1d": "65951f5b38b4aab6a506efa43766a30e47f9f42478d361133ea8d1249e4e7233",
+      "Frameworks/libfontconfig.framework/libfontconfig": "deea0a600d2a1d7b214ac2fcef9c8929cbf5143159642975e6ff385911960dfa",
+      "Frameworks/libfreetype.framework/libfreetype": "3c44f4cef7c08af3ff37965c9b4375c8a29c2352dff59f64c6d5bae737954805",
+      "Frameworks/libfribidi.framework/libfribidi": "945fcbbb7d148dd863e459e1281ac7579492e0df528c138e74b570f1fab03a2a",
+      "Frameworks/libsmbclient.framework/libsmbclient": "46bcc09abf3f34bf0322c83519ffacadb5b4f23a74d1b1a8edbb35deeb1d23d7",
+      "Frameworks/hogweed.framework/hogweed": "1911ef0eea6aff11b4bf1f2a51ea2075873a89ce7fc5a96393f1f76ab6713bb0",
+      "Frameworks/Libswscale.framework/Libswscale": "74f5a8701f603af74d2ec6d13ac2e90a9e1fed8d399d1c18311803aac9845464",
+      "Frameworks/Libavdevice.framework/Libavdevice": "0d51820e370cb80eceda22ca99a9ebebf5ac5d044f7d6eb72f74dc94ae26af60",
+      "Frameworks/gnutls.framework/gnutls": "1de6a7b54cd55edb99e26a773c18ea4fe2734ebe984107591c00892dacb8560f",
+      "Frameworks/libass.framework/libass": "d7346f4eea3e9ee26c52890a5bfd52bd24f8f1ef91c586af89dd2f879555a0d3",
+      "Frameworks/Libavcodec.framework/Libavcodec": "302ee649f33f0715470c59e79cd9eb15535b2780e4801aacea1e54675669991d",
+      "Frameworks/lcms2.framework/lcms2": "84fb6f08e190a458685239a2f43de725d56043db5c6a80a68663787b5e266da9",
+      "Frameworks/nettle.framework/nettle": "270add856b37235b732099217ca8e2c3286d1de22dae84bceb789514a6c9bfcf",
+      "Frameworks/gmp.framework/gmp": "60468a6d439b36bd8339de2d0213cf6b36f5abef503da282cc377007b61d97b4",
+      "Frameworks/libplacebo.framework/libplacebo": "861e1931951ac4f2b4372c09f7bb1aebc46bf247f91b6e4ad4f7e1b80720c646",
+      "Frameworks/libzvbi.framework/libzvbi": "3c7a05db9b5a3b0730e21c2292e69e041133e92d8713f951824ad65ad0b9b5aa",
+      "Frameworks/libsrt.framework/libsrt": "211c387e47e7c4ec31b7f671b1df9b6eade88ab37cfa82fe25960edd5592706f"
+    },
+    "signedMachOCount": 27,
+    "embeddedDependenciesChecked": true,
+    "profileContainsTarget": true,
+    "profileExpirationUTC": "2026-10-31 05:46:14",
+    "applicationIdentifierAndKeychainGroupsPreserved": true,
+    "installationExit": 0,
+    "installedAt": "2026-10-25T04:47:20.678917+08:00"
+  },
+  "device": {
+    "model": "AppleTV14,1",
+    "system": "18.2",
+    "UDIDMatched": true,
+    "connection": "localNetwork"
+  },
+  "nativeNoMediaProbes": [
+    {
+      "mode": "button",
+      "menus": 1,
+      "closed": true,
+      "receipt": "received=1 disappeared=1"
+    },
+    {
+      "mode": "slider",
+      "menus": 2,
+      "closed": true,
+      "receipt": "received=1 disappeared=1"
+    },
+    {
+      "mode": "player-av",
+      "menus": 3,
+      "closed": true,
+      "receipt": "received=0 disappeared=1"
+    },
+    {
+      "mode": "player-ks",
+      "menus": 1,
+      "closed": true,
+      "receipt": "received=0 disappeared=1"
+    }
+  ],
+  "tests": {
+    "observerOnlyTV": {
+      "logic": 32,
+      "UI": 5,
+      "invocationExit": 0
+    },
+    "surfaceTVFull": {
+      "logicAssertionsPassed": 32,
+      "UIAssertionsPassed": 5,
+      "invocationExit": -15,
+      "reason": "driver did not finalize after completed suites; interrupted owned process"
+    },
+    "surfaceFocusedTV": {
+      "UI": 2,
+      "invocationExit": 0
+    },
+    "mobileSimulator": {
+      "executed": 157,
+      "skipped": 1,
+      "failures": 0,
+      "invocationExit": 0
+    },
+    "tvReleaseCompileOnly": {
+      "exit": 0,
+      "signed": false,
+      "deviceRuntimeTested": false
+    }
+  },
+  "windows": [
+    {
+      "startedAt": "2026-10-25T04:36:49.854447+08:00",
+      "environment": {},
+      "arguments": [],
+      "PlayCommands": 1,
+      "MenuCommands": 3,
+      "normalReturn": false,
+      "captures": [
+        {
+          "targetSeconds": 3,
+          "requestedAtSeconds": 3.002245625,
+          "returnedAtSeconds": 13.662715166
+        },
+        {
+          "targetSeconds": 10,
+          "requestedAtSeconds": 13.968710916,
+          "returnedAtSeconds": 17.265315416
+        }
+      ],
+      "audio": "not listened",
+      "completeSubtitles": "not verified",
+      "frameTiming": "not measured",
+      "playAt": "2026-10-25T04:36:50.968919+08:00",
+      "presses": [
+        {
+          "mono": 18.999093916,
+          "wall": "2026-10-25T04:37:08.714592+08:00"
+        },
+        {
+          "mono": 23.777037666,
+          "wall": "2026-10-25T04:37:13.492469+08:00"
+        },
+        {
+          "mono": 27.428494875,
+          "wall": "2026-10-25T04:37:17.143877+08:00"
+        }
+      ],
+      "sameProcessBeforeRestoration": true,
+      "intentionalCleanupKill": true,
+      "normalRestorationRestart": true,
+      "settingsRestored": true,
+      "finishedAt": "2026-10-25T04:37:32.722273+08:00",
+      "case": "observer-only",
+      "interactionEvents": [
+        {
+          "event": "host.appear"
+        },
+        {
+          "event": "focus"
+        },
+        {
+          "event": "focus"
+        },
+        {
+          "event": "focus"
+        }
+      ]
+    },
+    {
+      "startedAt": "2026-10-25T04:50:19.720831+08:00",
+      "environment": {},
+      "arguments": [],
+      "PlayCommands": 1,
+      "MenuCommands": 1,
+      "normalReturn": true,
+      "captures": [
+        {
+          "targetSeconds": 3,
+          "requestedAtSeconds": 3.0022614999999995,
+          "returnedAtSeconds": 7.346021292
+        },
+        {
+          "targetSeconds": 10,
+          "requestedAtSeconds": 10.002131083,
+          "returnedAtSeconds": 15.551243333
+        }
+      ],
+      "audio": "not listened",
+      "completeSubtitles": "not verified",
+      "frameTiming": "not measured",
+      "playAt": "2026-10-25T04:50:21.100764+08:00",
+      "presses": [
+        {
+          "mono": 17.746697541,
+          "wall": "2026-10-25T04:50:37.258917+08:00"
+        }
+      ],
+      "sameProcessBeforeRestoration": true,
+      "normalRestorationRestart": true,
+      "settingsRestored": true,
+      "finishedAt": "2026-10-25T04:50:53.802187+08:00",
+      "case": "focused-surface-S03",
+      "interactionEvents": [
+        {
+          "event": "host.appear"
+        },
+        {
+          "event": "focus"
+        },
+        {
+          "event": "focus"
+        },
+        {
+          "event": "focus"
+        },
+        {
+          "event": "exit",
+          "receiver": "surface",
+          "mask": "false",
+          "dropdown": "false"
+        },
+        {
+          "event": "focus"
+        },
+        {
+          "event": "host.disappear"
+        },
+        {
+          "event": "stop.requested"
+        },
+        {
+          "event": "stop.finished"
+        }
+      ]
+    },
+    {
+      "startedAt": "2026-10-25T04:56:05.652183+08:00",
+      "environment": {},
+      "arguments": [],
+      "PlayCommands": 1,
+      "MenuCommands": 1,
+      "normalReturn": true,
+      "captures": [
+        {
+          "targetSeconds": 3,
+          "requestedAtSeconds": 3.002063959,
+          "returnedAtSeconds": 3.4341789169999997
+        },
+        {
+          "targetSeconds": 10,
+          "requestedAtSeconds": 10.002078667,
+          "returnedAtSeconds": 10.271887459
+        }
+      ],
+      "audio": "not listened",
+      "completeSubtitles": "not verified",
+      "frameTiming": "not measured",
+      "playAt": "2026-10-25T04:56:08.033553+08:00",
+      "presses": [
+        {
+          "mono": 13.21468675,
+          "wall": "2026-10-25T04:56:18.641636+08:00"
+        }
+      ],
+      "sameProcessBeforeRestoration": true,
+      "normalRestorationRestart": true,
+      "settingsRestored": true,
+      "finishedAt": "2026-10-25T04:56:33.997455+08:00",
+      "case": "focused-surface-S01",
+      "interactionEvents": [
+        {
+          "event": "host.appear"
+        },
+        {
+          "event": "focus"
+        },
+        {
+          "event": "focus"
+        },
+        {
+          "event": "focus"
+        },
+        {
+          "event": "exit",
+          "receiver": "surface",
+          "mask": "false",
+          "dropdown": "false"
+        },
+        {
+          "event": "focus"
+        },
+        {
+          "event": "host.disappear"
+        },
+        {
+          "event": "stop.requested"
+        },
+        {
+          "event": "stop.finished"
+        }
+      ]
+    }
+  ],
+  "cleanup": {
+    "at": "2026-10-25T04:58:04.440735+08:00",
+    "beforeKeyCount": 9,
+    "afterKeyCount": 10,
+    "sourceInputsMatched": true,
+    "allOwnedRunnersStopped": true,
+    "cellularOrNetworkChanges": 0,
+    "phoneDeviceOperations": 0
+  },
+  "preferences": {
+    "beforeKeys": 9,
+    "afterKeys": 10,
+    "changedNaturalResumeEntries": 2,
+    "otherValuesPreserved": true
+  },
+  "accepted": "tvOS video focus surface onExitCommand calls same existing exit policy; root handler retained",
+  "notChanged": [
+    "decode",
+    "Range",
+    "source route",
+    "buffer thresholds",
+    "subtitle layout",
+    "DSM addresses",
+    "network settings"
+  ],
+  "limits": [
+    "No actual audio listening, full subtitle completeness, frame time, HDR or Release runtime acceptance",
+    "No fresh phone device regression; existing installed phone packages predate shared Debug observation code",
+    "Full playback pipelines remain separate; 28 requirements and 114 matrix cells not closed"
+  ]
+}

@@ -99,7 +99,7 @@
 "service.detail.media_service" = "媒体服务";
 "service.endpoint.title" = "访问地址";
 "service.endpoint.placeholder" = "例如：http://192.168.1.10:8123";
-"service.endpoint.hint" = "请填写完整的 WebUI 地址；如服务需要端口或路径，也请一并填写。";
+"service.endpoint.hint" = "请填写完整的 Web UI 地址；如服务需要端口或路径，也请一并填写。";
 "service.endpoint.restore_auto" = "恢复自动识别地址";
 "service.endpoint.invalid" = "请输入有效的 HTTP 或 HTTPS 地址。";
 "service.endpoint.lan_only" = "未发现外网入口，仅在局域网中可用";
@@ -117,7 +117,7 @@
 "service.detail.last_checked" = "最近检查";
 "service.metric.library" = "资源库";
 "service.metric.ports" = "端口";
-"service.open.hint" = "接入真实服务地址后，这里会打开对应的 WebUI。";
+"service.open.hint" = "接入真实服务地址后，这里会打开对应的 Web UI。";
 "service.external.title" = "打开方式";
 "external.jellyfin_app" = "Jellyfin App";
 "service.console.title" = "开发控制台";
@@ -562,7 +562,7 @@
 "mine.appearance.display.system" = "跟随系统";
 "mine.appearance.display.light" = "浅色";
 "mine.appearance.display.dark" = "深色";
-"mine.appearance.theme" = "主题";
+"mine.appearance.theme" = "App 主题";
 "mine.appearance.theme.clean_grid" = "清流";
 "mine.appearance.theme.command_center" = "栈列";
 "mine.appearance.theme.glass_deck" = "流光";
@@ -577,7 +577,7 @@
 "mine.appearance.theme.command_center.description" = "设备指标收进侧轨，适合高频巡检与密集服务。";
 "mine.appearance.theme.glass_deck.description" = "分层材质与通透卡片，带来更沉浸的启动台。";
 "mine.appearance.compact_metrics" = "紧凑指标";
-"mine.appearance.status_dot" = "显示状态点";
+"mine.appearance.status_dot" = "显示服务状态";
 "mine.appearance.cards" = "卡片";
 "mine.appearance.group_order" = "分组顺序";
 "mine.appearance.group_order_desc" = "调整启动台分组顺序和默认展开的分组。";
@@ -588,9 +588,10 @@
 "mine.players.prefer_external" = "优先使用外部播放器";
 "mine.players.integrations" = "接入";
 "mine.players.builtin_engine" = "App 内播放内核";
+"mine.players.video_engine" = "视频播放引擎";
 "mine.players.opening_mode" = "默认打开方式";
 "mine.players.internal_first" = "App 内优先";
-"mine.players.behavior_footer" = "视频和音频默认使用统一的 App 内兼容播放器；外部播放器由每次播放时手动选择。";
+"mine.players.behavior_footer" = "视频默认使用内置播放器，根据视频格式自动选择播放引擎；音频使用内置音频播放器。也可在打开文件时选择外部播放器。";
 "mine.players.external_installed" = "已安装的外部播放器";
 "mine.players.external_none" = "未检测到支持的外部播放器";
 "mine.sync.icloud" = "iCloud";
@@ -616,24 +617,38 @@
 "mine.sync.scope_detail" = "通过你的 iCloud 私有数据库同步启动台卡片、安全的端点元数据、显示状态、提醒、主题和布局。密码、DSM 会话、Agent 令牌、私钥、Cookie 和 URL 查询参数不会离开本机。";
 "mine.sync.applied" = "已应用 iCloud 变更";
 "mine.sync.error.payload_too_large" = "同步快照过大，无法存入单条 CloudKit 记录。";
-"mine.sync.error.missing_entitlement" = "当前构建未签入 iCloud 能力，请切换到付费 Apple Developer 团队后重新构建。";
+"mine.sync.error.missing_entitlement" = "本机内容会继续保留。请使用支持 iCloud 同步的 App 版本，再开启同步。";
+"mine.sync.installation_unavailable" = "此版本暂不支持 iCloud 同步";
+"mine.sync.tv_unavailable" = "此电视暂未提供 iCloud 同步";
+"mine.sync.tv_unavailable_detail" = "此电视目前仅在本机保存设置和事项，不会自动同步手机或平板的内容。";
+"mine.sync.scope.title" = "同步范围与本机数据";
+"mine.sync.scope.preferences.title" = "设置与事项";
+"mine.sync.scope.preferences.detail" = "在支持同步的设备上，可同步启动台卡片、服务显示、提醒、主题和布局。";
+"mine.sync.scope.credentials.title" = "账号与授权";
+"mine.sync.scope.credentials.detail" = "密码、登录会话和访问令牌保存在本机，不参与 iCloud 同步。各设备仍需分别授权。";
+"mine.sync.scope.media.title" = "媒体资料与进度";
+"mine.sync.scope.media.detail" = "网络媒体库索引与海报保存在本机；Jellyfin 观看进度由对应的媒体服务器管理。";
 "mine.sync.error.conflict_retry_limit" = "其他设备持续修改了 iCloud 数据，请稍后重新同步。";
 "mine.sync.error.incompatible_remote_snapshot" = "iCloud 数据由更新版本的 Nastart 创建，请先升级应用后再同步。";
 "mine.sync.error.local_changes_during_sync" = "同步期间本机仍有新修改，请完成编辑后重新同步。";
 "mine.privacy.security" = "安全";
 "mine.privacy.keychain" = "钥匙串";
-"mine.privacy.keychain_desc" = "已保存的 DSM 登录凭据存放在系统钥匙串中，不会包含在数据导出里。";
+"mine.privacy.keychain_desc" = "DSM 登录凭据保存在此设备的系统钥匙串中，不包含在数据导出里。这里仅显示本机凭据状态，不代表 NAS 当前已连接。";
 "mine.privacy.data" = "数据";
 "mine.privacy.export" = "导出数据";
-"mine.privacy.clear_cache" = "清理缓存";
-"mine.privacy.clear_cache_hint" = "网络与预览缓存已清理。";
-"mine.privacy.clear_cache_confirm" = "清理已保存的 NAS 快照、网络缓存、网页数据和临时预览文件吗？";
+"mine.privacy.clear_cache" = "清理缓存与网页数据";
+"mine.privacy.clear_cache_hint" = "缓存与网页数据清理已完成。";
+"mine.privacy.clear_cache_partial" = "清理已结束，但部分缓存或网页数据未能清除。";
+"mine.share.failed" = "无法完成分享，请稍后重试。";
+"mine.privacy.clear_cache_confirm" = "清理缓存与网页数据？";
 "mine.privacy.cache.status" = "NAS 快照";
 "mine.privacy.cache.available" = "可用";
 "mine.privacy.cache.stale" = "已过期";
 "mine.privacy.cache.none" = "不可用";
 "mine.privacy.cache.updated" = "保存时间";
-"mine.privacy.cache.footer" = "清理快照会移除此设备上的离线 NAS 内容，但不会删除 DSM 登录凭据。";
+"mine.privacy.cache.footer" = "清理本机 NAS 快照、网络缓存、网页数据和临时下载/预览。网页可能需要重新登录；钥匙串登录凭据和 NAS 原文件不受影响。";
+"privacy.cache.clear.detail" = "将移除此设备的 NAS 快照、网络缓存、网页数据，以及临时下载和预览文件。网页可能需要重新登录。不会删除钥匙串中的登录凭据或 NAS 原文件。";
+"privacy.cache.offline_result" = "离线预览：未清理任何缓存、网页数据或文件。";
 "mine.about.compatibility" = "最佳兼容";
 "mine.about.feedback" = "反馈";
 "mine.sign_out" = "断开 NAS";
@@ -786,12 +801,16 @@
 "player.orientation.portrait" = "锁定竖屏";
 "player.orientation.landscape" = "锁定横屏";
 
-"mine.appearance.item.subtitle" = "副标题";
+"mine.appearance.item.subtitle" = "显示卡片副标题";
 "mine.appearance.group_default" = "默认展开";
 "mine.appearance.group_footer" = "拖拽可调整启动台分组顺序；关闭的分组默认以折叠态显示。";
 
 "mine.privacy.keychain_items" = "保存项";
-"mine.privacy.keychain.dsm" = "DSM 会话";
+"mine.privacy.keychain.dsm" = "DSM 登录凭据";
+"privacy.credentials.saved" = "已保存";
+"privacy.credentials.unavailable" = "未读取到";
+"privacy.export.no_selection" = "请至少选择一项要导出的内容。";
+"privacy.export.offline_result" = "离线预览：未生成或分享任何导出数据。";
 "mine.privacy.keychain_actions" = "操作";
 "mine.privacy.keychain.clear" = "清除 DSM 凭据";
 "mine.privacy.keychain.clear_confirm" = "清除本机保存的 DSM 登录凭据？";
@@ -800,12 +819,12 @@
 "mine.privacy.export.launchpad" = "启动台配置";
 "mine.privacy.export.reminders" = "提醒";
 "mine.privacy.export.settings" = "偏好设置";
-"mine.privacy.export_footer" = "密码、令牌、服务地址、路径和密钥始终不会导出。";
+"mine.privacy.export_footer" = "导出包含所选配置中的服务名称和提醒文字，不读取钥匙串中的登录凭据。自填内容仍可能包含个人信息，分享前请检查。";
 
 "diagnostics.title" = "开发诊断";
 "diagnostics.recent" = "最近诊断";
 "diagnostics.empty" = "暂无需要排查的问题。";
-"diagnostics.footer" = "内测期间会详细记录刷新、DSM API、容器、文件和媒体播放链路，并保留最近 1000 条直到手动清除；导出时会脱敏密码、令牌、路径、完整地址和文件名。";
+"diagnostics.footer" = "记录刷新、连接、文件和播放等运行情况，保留最近 1000 条，直到手动清除。识别到的凭据字段和网址会脱敏；自填内容或旧记录仍可能含有个人信息，分享前请检查。";
 "diagnostics.actions" = "快捷操作";
 "diagnostics.export" = "导出诊断摘要";
 "diagnostics.export.short" = "导出";
@@ -846,6 +865,7 @@
 "diagnostics.sync.failed" = "iCloud 同步失败";
 "diagnostics.login.started" = "开始连接 DSM";
 "diagnostics.login.succeeded" = "DSM 登录成功";
+"diagnostics.connection.session_lifecycle" = "NAS 会话生命周期";
 "diagnostics.login.attempt_failed" = "登录兼容尝试失败";
 "diagnostics.login.failed" = "DSM 登录失败";
 "diagnostics.restore.missing_credentials" = "未找到已保存的 DSM 凭据，跳过会话恢复";
@@ -955,6 +975,11 @@
 "jellyfin.library.connected" = "Jellyfin 资源库已连接";
 "jellyfin.library.mine" = "我的媒体";
 "jellyfin.library.load_failed" = "无法载入 Jellyfin 资源库。";
+"jellyfin.library.load_incomplete" = "媒体库读取未完成";
+"jellyfin.episodes.load_incomplete" = "剧集列表读取未完成";
+"jellyfin.episodes.load_failed" = "暂时无法读取剧集列表，请稍后重试。";
+"jellyfin.episodes.empty" = "暂无剧集";
+"jellyfin.episodes.empty_detail" = "该剧集暂时没有可见的剧集文件。";
 "jellyfin.library.empty" = "未发现媒体内容";
 "jellyfin.library.empty_detail" = "此 Jellyfin 账号下没有可见资源库或可播放项目。";
 "jellyfin.login.title" = "连接 Jellyfin";
@@ -982,6 +1007,9 @@
 "jellyfin.overview.expand" = "展开全文";
 "jellyfin.overview.collapse" = "收起";
 "jellyfin.people.title" = "演职人员";
+"jellyfin.people.loading" = "正在读取演职资料…";
+"jellyfin.people.missing" = "现有资料未提供演职人员信息。";
+"jellyfin.people.unavailable" = "演职资料暂未读取，现有信息已保留。";
 "jellyfin.similar.title" = "相似作品";
 "jellyfin.studios.title" = "工作室";
 "jellyfin.links.title" = "链接";
@@ -1014,10 +1042,22 @@
 "dsm.player.retry_hint" = "Nastart 无法继续读取这个 DSM 鉴权文件，请检查 NAS 连接后重试。";
 "jellyfin.player.prepare_failed" = "无法准备播放";
 "jellyfin.player.prepare_failed_detail" = "Jellyfin 未返回可播放的直连或转码流，请查看“媒体播放”诊断和服务端 FFmpeg 日志。";
+"jellyfin.player.preparing" = "正在准备播放…";
+"jellyfin.player.prepare_timeout" = "连接 Jellyfin 或读取播放清单超时。请确认网络与服务已恢复，然后重新播放。";
+"jellyfin.player.prepare_connection_failed" = "播放准备期间连接中断或无法连接 Jellyfin。请检查当前网络与服务状态，然后重新播放。";
+"jellyfin.player.prepare_secure_connection_failed" = "无法与 Jellyfin 建立安全连接。请检查服务器证书与访问地址。";
+"jellyfin.player.prepare_access_denied" = "Jellyfin 登录已失效或没有播放权限。请检查登录状态及该影片的访问权限。";
+"jellyfin.player.prepare_server_unavailable" = "Jellyfin 暂时无法处理播放请求。请等待服务恢复后重试。";
+"jellyfin.player.prepare_unknown_failure" = "播放准备失败，尚不能确定原因。请重试；若仍失败，可查看“媒体播放”诊断。";
 "diagnostics.jellyfin.playback_preparing" = "开始请求 Jellyfin 播放方案";
 "diagnostics.jellyfin.playback_prepared" = "Jellyfin 已生成兼容播放流";
 "diagnostics.jellyfin.playback_failed" = "Jellyfin 播放准备失败";
 "diagnostics.jellyfin.playback_report_failed" = "Jellyfin 播放进度回写失败";
+"diagnostics.jellyfin.resume_detail_received" = "已收到 Jellyfin 续播位置";
+"diagnostics.jellyfin.resume_request_created" = "已准备 Jellyfin 续播请求";
+"diagnostics.jellyfin.playback_report_submitted" = "已提交 Jellyfin 播放进度";
+"diagnostics.jellyfin.playback_report_http_accepted" = "Jellyfin 已接受播放进度请求";
+"diagnostics.jellyfin.resume_refresh_failed" = "Jellyfin 续播列表刷新失败";
 "diagnostics.jellyfin.bitrate_measured" = "Jellyfin 连接码率测量完成";
 "diagnostics.jellyfin.playback_downshifted" = "Jellyfin 已切换至更稳定的低码率播放流";
 "diagnostics.jellyfin.playback_downshift_failed" = "Jellyfin 低码率播放流准备失败";
@@ -1056,6 +1096,8 @@
 "connect.input.otp" = "启用两步验证时填写";
 
 "connect.input.address_hint" = "可粘贴完整地址，协议、端口和路径会自动填入。";
+"connect.address.fixed" = "始终使用此地址";
+"connect.address.fixed.hint" = "DSM连接使用上方地址，不自动改用其他地址。此地址不可用时会提示连接失败。";
 
 "connect.input.otp_label" = "验证码";
 
@@ -1078,3 +1120,145 @@
 
 "diagnostics.media.prepared_result_held" = "已准备的播放结果进入取消验证等待";
 "diagnostics.media.prepared_result_released" = "已准备的播放结果结束取消验证等待";
+
+"external.play_with" = "在 %@ 中播放";
+
+"player.subtitles.external" = "外置字幕";
+
+"diagnostics.files.playback_preparation_phase" = "文件播放准备阶段";
+
+/* Playback status strip */
+"player.status.time" = "当前时间";
+"player.status.download_speed" = "播放下载速度";
+"player.status.battery" = "电量";
+"player.status.charging" = "充电中";
+"player.status.network_unknown" = "网络待确认";
+"player.status.network_offline" = "无网络";
+"player.status.network_wifi" = "Wi-Fi";
+"player.status.network_cellular" = "蜂窝";
+"player.status.network_wired" = "有线";
+"player.status.network_other" = "其他网络";
+"player.status.local" = "本地";
+
+// Saved NAS connection recovery
+"connect.restore.title" = "正在恢复 NAS 连接";
+"connect.restore.detail" = "正在重新连接已保存的 NAS。服务入口可达不代表 DSM 会话已恢复。";
+"connect.restore.failed" = "暂时无法连接 NAS";
+"connect.restore.failed_detail" = "已保存的连接信息仍保留。请重试或检查连接设置，无需添加新的 NAS。";
+"connect.restore.settings" = "检查连接设置";
+
+/* Shared launchpad media destinations */
+"launchpad.media.heading" = "影音与文件";
+"launchpad.media.files" = "设备文件";
+"launchpad.media.files.subtitle" = "浏览文件夹 · 播放视频与音乐";
+"launchpad.media.connect_nas" = "连接 NAS 后浏览文件";
+"launchpad.media.library" = "影音媒体库";
+"launchpad.media.library.subtitle" = "电影、剧集与音乐";
+"launchpad.media.library.connect" = "添加 Jellyfin 媒体库";
+"launchpad.media.library.choose" = "选择影音媒体库";
+"launchpad.media.library.empty" = "尚未发现 Jellyfin。可以添加媒体服务器地址；已有服务也可从启动台卡片进入。";
+"launchpad.media.library.add" = "添加 Jellyfin";
+
+"mine.appearance.theme.scope" = "主题风格应用于启动台、设备、事项、我的及其内容页面。播放画面和系统界面保留原本显示。";
+
+"launchpad.media.shares.count %lld" = "共享目录 %lld 个";
+"launchpad.media.movies.count %lld" = "影片 %lld 部";
+"launchpad.media.count.unavailable" = "待统计";
+
+/* Shared read-only help topics */
+"help.guide" = "使用指南";
+"help.offline" = "离线界面测试 · 帮助内容预览";
+"help.connection.title" = "连接与媒体服务";
+"help.connection.subtitle" = "DSM、Jellyfin 与媒体文件夹";
+"help.connection.nas.title" = "设备与文件";
+"help.connection.nas.body" = "连接 DSM 后，可以查看设备状态和共享文件。发现媒体服务后，仍需完成该服务自己的登录授权。";
+"help.connection.library.title" = "媒体库与文件夹";
+"help.connection.library.body" = "Jellyfin 使用服务器已有的媒体库。WebDAV 在连接后选择媒体文件夹，也可以在连接管理中复用已有连接，添加其他文件夹。";
+"help.connection.edit.title" = "修改连接或文件夹";
+"help.connection.edit.body" = "在连接管理中编辑连接信息；更换媒体文件夹时，先验证并读取新目录，成功后再替换客户端索引。未完成验证或取消时保留原资料。";
+"help.media.title" = "浏览与播放";
+"help.media.subtitle" = "海报、资料与播放控制";
+"help.media.posters.title" = "海报与影片详情";
+"help.media.posters.body" = "在海报墙中浏览电影与剧集，进入详情可查看简介和演职人员。内容和图片以媒体库已有资料为准，部分影片可能暂时缺少封面或人物照片。";
+"help.media.files.title" = "本地资料与只读整理";
+"help.media.files.body" = "WebDAV 整理只读取所选目录中的文件、已有 NFO 与海报。索引保存在客户端，不改写 NAS 的文件、文件名或目录；尚未接入独立在线影片资料服务。";
+"help.media.controls.title" = "播放控制";
+"help.media.controls.body" = "播放时可以暂停、继续和跳转进度。音轨、字幕及其他选项以片源和当前播放器实际提供的内容为准；首帧与跳转速度还受连接和文件格式影响。";
+"help.privacy.title" = "隐私与本机数据";
+"help.privacy.subtitle" = "授权、索引与同步范围";
+"help.privacy.accounts.title" = "账号与授权";
+"help.privacy.accounts.body" = "登录凭据保存在当前设备的系统钥匙串中。DSM、Jellyfin 和 WebDAV 分别授权，识别到 NAS 不代表已经获得所有文件和媒体服务的访问权限。";
+"help.privacy.transport.title" = "连接协议";
+"help.privacy.transport.body" = "WebDAV 可选择 HTTP 或 HTTPS。HTTP 不加密传输；服务支持时建议使用 HTTPS。具体连接地址和证书状态应以连接设置及实际服务为准。";
+"help.privacy.sync.title" = "本机与跨设备";
+"help.privacy.sync.body" = "网络媒体库索引保存在客户端，Jellyfin 观看进度由服务器管理。iCloud 同步仅覆盖已接入的项目；Apple TV 当前未接入 iCloud 同步，不会自动复制手机或平板的账号与资料。";
+"help.remote.title" = "遥控器与 iPhone 输入";
+"help.remote.subtitle" = "选择、返回与键盘协作";
+"help.remote.navigation.title" = "选择与返回";
+"help.remote.navigation.body" = "滑动遥控器移动焦点，按下确认。按返回键回到上一层。移动到顶部 Tab 即可切换页面，无需额外按下确认。";
+"help.remote.keyboard.title" = "使用 iPhone 输入";
+"help.remote.keyboard.body" = "选中输入框并进入 Apple TV 系统键盘后，可使用 iPhone 的 Apple TV 键盘通知输入。通知由系统提供，电视仍保留遥控器输入方式。";
+
+/* Shared Plus overview; purchase availability is unchanged. */
+"plus.overview.unavailable_status" = "会员暂未开放";
+"plus.overview.intro" = "为常用的设备、服务与日常管理，留出更多可能。";
+"plus.overview.purchase_title" = "购买暂未开放";
+"plus.overview.purchase_detail" = "当前版本尚未开放购买与恢复。正式价格和购买方式将在开放时展示。";
+"plus.overview.features" = "Plus 功能预览";
+"plus.overview.cards" = "按需安排常用服务";
+"plus.overview.icloud" = "同步已支持的设置与内容";
+"plus.overview.themes" = "选择适合自己的界面风格";
+"plus.overview.reminders" = "集中查看需要关注的事项";
+"plus.overview.scope" = "具体可用功能以当前设备为准，部分功能仍在完善中。";
+"plus.overview.tv_sync" = "此电视暂未提供 iCloud 同步";
+"plus.overview.offline" = "离线界面测试 · 合成会员状态";
+
+/* Shared privacy scope and certificate reset confirmation. */
+"privacy.summary.title" = "数据保存";
+"privacy.summary.credentials.title" = "登录凭据";
+"privacy.summary.credentials.detail" = "保存在当前设备的系统钥匙串中";
+"privacy.summary.local.title" = "本机内容";
+"privacy.summary.local.detail" = "媒体索引、设备文件进度、事项与外观保存在本机";
+"privacy.summary.progress.title" = "Jellyfin 观看进度";
+"privacy.summary.progress.detail" = "由当前授权的 Jellyfin 服务器保存";
+"privacy.summary.sync.title" = "跨设备同步";
+"privacy.summary.sync.detail" = "以 iCloud 同步设置中支持的项目为准";
+"privacy.summary.tv_sync" = "此电视暂未提供 iCloud 同步";
+"privacy.management.title" = "数据管理";
+"privacy.reset.title" = "重置信任证书？";
+"privacy.reset.detail" = "移除此设备保存的服务器证书信任记录。下次连接将重新记录证书，请确认服务器地址可信。不会删除登录凭据或服务器文件。";
+"privacy.offline" = "离线界面测试 · 数据保存说明";
+"privacy.preview.actions" = "确认提示预览";
+
+"mine.players.integration.notObserved" = "尚未确认";
+"mine.players.integration.discovered" = "已发现服务线索";
+"mine.players.integration.savedAuthorization" = "已保存独立授权";
+"mine.players.integration.online" = "清单显示在线";
+"mine.players.integration.installed" = "清单显示已安装";
+"mine.players.integration.warning" = "清单状态异常";
+"mine.players.integration.stopped" = "清单显示未运行";
+"mine.players.integration.unknown" = "清单状态未知";
+"mine.players.integration.native_pending" = "原生媒体库尚未接入";
+"mine.players.integration.notice" = "服务清单与登录授权分别管理。清单或发现状态不代表已登录；各媒体服务需单独授权。";
+
+"devices.files.detail" = "文件详情";
+"player.subtitles.track_format" = "字幕 %d";
+"player.subtitles.image" = "图形";
+"player.load_failed.open_input" = "无法打开这个视频。请检查网络连接，并确认 NAS 上的文件和账号权限正常。";
+"devices.packages.running" = "运行中";
+"devices.packages.stopped" = "已停止";
+"search.services.placeholder" = "搜索服务";
+"search.services.empty" = "没有匹配的服务";
+"tasks.watch.footer" = "选择一项，创建对应的到期或状态提醒。";
+
+"connect.error.login.credentials" = "账号或密码不正确。多次失败可能触发 DSM 自动封锁，请先在连接设置中核对。";
+"connect.error.login.disabled" = "这个 DSM 账号已被停用。请在 DSM 的“控制面板 → 用户账号”中启用。";
+"connect.error.login.denied" = "这个账号没有登录 DSM 的权限。请在 DSM 中检查账号权限后重试。";
+"connect.error.login.blocked_ip" = "这台设备的 IP 已被 DSM 封锁。请在 DSM 的“控制面板 → 安全性 → 账户 → 自动封锁”中解除后重试。";
+"connect.error.login.password_expired" = "这个账号的密码已过期或必须修改。请先登录 DSM 网页修改，再在连接设置中更新。";
+"connect.error.login.locked" = "这个账号已被 DSM 锁定。请稍后再试，或请管理员在 DSM 中解锁。";
+"connect.restore.rejected" = "DSM 拒绝了这次登录";
+"data.refresh.cached_at" = "显示的是 %@ 的缓存数据";
+"devices.files.show_system" = "显示系统文件夹";
+"connect.trust_self_signed.public_warning" = "这是公网地址，跳过验证后密码可能被截获。证书有效时请关闭。";
+"data.refresh.cache_cleared" = "缓存已清理";

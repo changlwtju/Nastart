@@ -1,0 +1,439 @@
+{
+  "date": "2026-10-20",
+  "scope": "full-plan ownership gate in existing ordinary PiP frame callback; partial real-device regression",
+  "package": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "491ed044d0c13cbf31ee3f70125f599431fcb3e783a167097fa9f3d55e7a1184",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "Xcode": "27.0",
+    "binaryBuildTime": "2026-10-20T16:16:59.676117+08:00",
+    "binaries": {
+      "Nastart": "df32a4befe3768aa1eac0d8175c028c00f5141eb3c93b392f88128ef4a10e1d8",
+      "Nastart.debug.dylib": "f43015ca6ce6c3e3f4b1180e1c6d16e107bab012b8d7442d5f01c574cd71bfb1",
+      "Frameworks/KSPlayer.framework/KSPlayer": "d2ccf7a95166b81d1491dea583eb4518ef23a00add3f91d8a3b9d0e9da2b7e37"
+    },
+    "ipaSHA256": "cbafcdb52b4d6939636eff7cba6636eec50109c5d201785f0bee64347cbb9092",
+    "signatureVerified": true,
+    "individuallyVerifiedLibraries": 29,
+    "checkedInputs": 173,
+    "ipaCRCAndBinaryHashesVerified": true,
+    "linkageVerified": true
+  },
+  "tests": {
+    "selected": 10,
+    "passed": 9,
+    "skipped": 1,
+    "failed": 0,
+    "skip": "Simulator AVPictureInPictureController unsupported"
+  },
+  "preflightPassed": 15,
+  "offlineRejectedBudget": [
+    {
+      "case": "newCVWrapperSharesOldIOSurface",
+      "hardSurfaceLifetimeBudgetProven": false,
+      "newPoolAdmittedWhileAliasHeld": true,
+      "oldSurfaceBytesStillHeld": 24891904,
+      "reservationAfterOriginalReleased": 0,
+      "sameIOSurface": true,
+      "tokenCopiedToAlias": false
+    },
+    {
+      "case": "consumerRemovesPrivateAttachment",
+      "hardSurfaceLifetimeBudgetProven": false,
+      "imageBufferBytesStillHeld": 24891840,
+      "originalPixelStillHeld": true,
+      "reservedBytes": 0
+    }
+  ],
+  "attachedTokenMayBeUsedAsProductionHardLimit": false,
+  "windows": [
+    {
+      "device": "ipad",
+      "sample": "S01",
+      "entry": "Jellyfin",
+      "window": "wifi-s01-jf-pip",
+      "result": {
+        "normalUIExit": true,
+        "pipEntered": true,
+        "restoredBySystemButton": true,
+        "deadlineSeconds": 120,
+        "network": "Wi-Fi, no shaping; native switch unchanged",
+        "pipRequestStart": 1792484675.149614,
+        "automaticHomeObserved": false,
+        "manualHomeSent": true,
+        "initialRestoreMatches": 0,
+        "pipContainerMatches": 1,
+        "restoreMatches": 1,
+        "restoreRequestStart": 1792484683.290693,
+        "restoreForegroundBundleMatches": true,
+        "ownedMediaStopped": true,
+        "wdaSettingsRestored": true,
+        "stopMethod": "WDA exact bundle terminate plus state1 after unsupported legacy instruments stop",
+        "fullScreenPictureAfterRestore": "immediate snapshot black; delayed picture not yet sampled"
+      },
+      "playbackFrameTimeOrAudioAccepted": false,
+      "performanceComparisonAccepted": false,
+      "actualSystemPiPWindowVisuallyReviewed": true
+    },
+    {
+      "device": "ipad",
+      "sample": "S01",
+      "entry": "device file",
+      "window": "wifi-s01-file-pip",
+      "result": {
+        "normalUIExit": false,
+        "pipEntered": false,
+        "restoredBySystemButton": false,
+        "deadlineSeconds": 120,
+        "network": "Wi-Fi, no shaping; native switch unchanged",
+        "pipRequestStart": 1792484839.5807738,
+        "automaticHomeObserved": false,
+        "manualHomeSent": true,
+        "failureType": "AssertionError",
+        "ownedMediaStopped": true,
+        "wdaSettingsRestored": true
+      },
+      "playbackFrameTimeOrAudioAccepted": false,
+      "performanceComparisonAccepted": false,
+      "actualSystemPiPWindowVisuallyReviewed": true
+    },
+    {
+      "device": "iphone13",
+      "sample": "S01",
+      "entry": "Jellyfin",
+      "window": "wifi-s01-jf-pip",
+      "result": {
+        "normalUIExit": false,
+        "pipEntered": false,
+        "restoredBySystemButton": false,
+        "deadlineSeconds": 120,
+        "network": "Wi-Fi, no shaping; native switch unchanged",
+        "failureType": "AssertionError",
+        "ownedMediaStopped": true,
+        "wdaSettingsRestored": true
+      },
+      "playbackFrameTimeOrAudioAccepted": false,
+      "performanceComparisonAccepted": false
+    },
+    {
+      "device": "iphone13",
+      "sample": "S19",
+      "entry": "Jellyfin",
+      "window": "wifi-s19-jf-hdr",
+      "result": {
+        "normalUIExit": false,
+        "pipEntered": false,
+        "restoredBySystemButton": false,
+        "deadlineSeconds": 120,
+        "network": "Wi-Fi, no shaping; native switch unchanged",
+        "failureType": "AssertionError",
+        "ownedMediaStopped": true,
+        "wdaSettingsRestored": true
+      },
+      "playbackFrameTimeOrAudioAccepted": false,
+      "performanceComparisonAccepted": false
+    },
+    {
+      "device": "iphone13",
+      "sample": "S19",
+      "entry": "Jellyfin",
+      "window": "wifi-s19-jf-hdr-native-label",
+      "result": {
+        "normalUIExit": false,
+        "pipEntered": true,
+        "restoredBySystemButton": true,
+        "deadlineSeconds": 120,
+        "network": "Wi-Fi, no shaping; native switch unchanged",
+        "pipRequestStart": 1792485108.240712,
+        "automaticHomeObserved": false,
+        "manualHomeSent": true,
+        "initialRestoreMatches": 0,
+        "pipContainerMatches": 1,
+        "restoreMatches": 1,
+        "restoreRequestStart": 1792485113.791538,
+        "restoreForegroundBundleMatches": true,
+        "failureType": "AssertionError",
+        "ownedMediaStopped": true,
+        "wdaSettingsRestored": true
+      },
+      "playbackFrameTimeOrAudioAccepted": false,
+      "performanceComparisonAccepted": false,
+      "actualSystemPiPWindowVisuallyReviewed": true,
+      "systemRestoreForegroundAndChangingSubtitlePicturesReviewed": true,
+      "normalCompletionToolFailed": true,
+      "pipHDRSubtitleStillMissing": true,
+      "HDRFrameObservations": [
+        {
+          "event": "pip_will_start",
+          "secondsAfterAction": 38.363,
+          "fields": {
+            "engine": "KSPlayer"
+          }
+        },
+        {
+          "event": "pip_started",
+          "secondsAfterAction": 38.93,
+          "fields": {
+            "engine": "KSPlayer"
+          }
+        },
+        {
+          "event": "pip_subtitle_frame",
+          "secondsAfterAction": 39.054,
+          "fields": {
+            "allocationStatus": "notAttempted",
+            "composited": "false",
+            "compositionReason": "hdrPQPreserved",
+            "engine": "KSPlayer",
+            "external": "false",
+            "imageCount": "1",
+            "seconds": "37.022",
+            "sourceHeight": "2160",
+            "sourcePixelFormat": "2016686640",
+            "sourceTransfer": "SMPTE_ST_2084_PQ",
+            "sourceWidth": "3840",
+            "textLength": "0"
+          }
+        },
+        {
+          "event": "pip_subtitle_frame",
+          "secondsAfterAction": 44.078,
+          "fields": {
+            "allocationStatus": "notAttempted",
+            "composited": "false",
+            "compositionReason": "hdrPQPreserved",
+            "engine": "KSPlayer",
+            "external": "false",
+            "imageCount": "1",
+            "seconds": "42.057",
+            "sourceHeight": "2160",
+            "sourcePixelFormat": "2016686640",
+            "sourceTransfer": "SMPTE_ST_2084_PQ",
+            "sourceWidth": "3840",
+            "textLength": "0"
+          }
+        }
+      ]
+    },
+    {
+      "device": "iphone13",
+      "sample": "S01",
+      "entry": "device file",
+      "playbackStarted": false,
+      "blocker": "browserRoot list_share HTTP200 API119; actual folder-error UI, no media request",
+      "nativeWiFiIconReviewed": true
+    }
+  ],
+  "devices": {
+    "ipad": {
+      "model": "iPad12,1",
+      "system": "18.3.1",
+      "connection": "USB",
+      "nonBookmarkPreferenceKeys": 17,
+      "nonBookmarkPreferencesExactlyUnchanged": true,
+      "naturalBookmarkChangesCount": 2,
+      "originalBookmarksChecked": 29,
+      "originalBookmarksRemoved": 0,
+      "originalTrackChangeCount": 0,
+      "allOriginalTracksUnchanged": true,
+      "newBookmarksCount": 0,
+      "crashInventoryDelta": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      },
+      "normalEmptyEnvironment": true,
+      "playerClosed": true,
+      "finalHomeActuallyReviewed": true,
+      "nativeWiFiIconActuallyReviewed": true
+    },
+    "iphone13": {
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "connection": "USB",
+      "nonBookmarkPreferenceKeys": 24,
+      "nonBookmarkPreferencesExactlyUnchanged": true,
+      "naturalBookmarkChangesCount": 2,
+      "originalBookmarksChecked": 36,
+      "originalBookmarksRemoved": 0,
+      "originalTrackChangeCount": 0,
+      "allOriginalTracksUnchanged": true,
+      "newBookmarksCount": 0,
+      "crashInventoryDelta": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      },
+      "normalEmptyEnvironment": true,
+      "playerClosed": true,
+      "finalHomeActuallyReviewed": true,
+      "nativeWiFiIconActuallyReviewed": true
+    }
+  },
+  "cleanup": {
+    "noCellularWindowThisBatch": true,
+    "ownedAppMediaStoppedOnBothDevices": true,
+    "phoneOriginalSSIDSelectedAndNativeWiFiIconReviewed": true,
+    "padNativeWiFiIconReviewed": true,
+    "networkSwitchOrVPNChanged": false,
+    "PadOwnedRunnerStopped": true,
+    "phonePersistentRunnerPreserved": true,
+    "ownedHostPythonOrAwakeProcessMatches": 0
+  },
+  "openRequirements": 28,
+  "fullPiPAcceptance": false,
+  "HDRorDolbyAcceptance": false,
+  "remaining": [
+    "SDR complete restore picture continuity and ordinary exit on both entries/devices",
+    "HDR output resource admission and alias lifetime without attachment-only accounting",
+    "original PQ/HLG/DV subtitle composition, metadata and real iOS output",
+    "Cause of same newly attached/published DSM+FileStation pair receiving API119 in both snapshot and browser; no browser-only stale-session proof, later fresh login pairs work"
+  ],
+  "folder119OfflineAudit": {
+    "scope": "offline union of existing private snapshots; no new App launch/device/media/network action",
+    "folder119Responses": 8,
+    "sameAuthenticationAndFileStationPairForAll119": true,
+    "clientInstancesFor119": 3,
+    "errorOrigins": {
+      "snapshot": 2,
+      "browserRoot": 6
+    },
+    "localLogoutInObservedPhoneInterval": false,
+    "timeline": [
+      {
+        "device": "iphone13",
+        "relativeToFirst119ResponseSeconds": -3.641,
+        "event": "succeeded",
+        "matchesFailingPhoneAuthenticationPair": false
+      },
+      {
+        "device": "iphone13",
+        "relativeToFirst119ResponseSeconds": -3.599,
+        "event": "session_lifecycle",
+        "authenticationStage": "sourcePrepared",
+        "matchesFailingPhoneAuthenticationPair": false
+      },
+      {
+        "device": "iphone13",
+        "relativeToFirst119ResponseSeconds": -3.599,
+        "event": "session_lifecycle",
+        "authenticationStage": "connectionPublished",
+        "matchesFailingPhoneAuthenticationPair": false
+      },
+      {
+        "device": "iphone13",
+        "relativeToFirst119ResponseSeconds": -2.841,
+        "event": "succeeded",
+        "matchesFailingPhoneAuthenticationPair": false
+      },
+      {
+        "device": "iphone13",
+        "relativeToFirst119ResponseSeconds": -2.813,
+        "event": "session_lifecycle",
+        "authenticationStage": "fileStationAttached",
+        "matchesFailingPhoneAuthenticationPair": true
+      },
+      {
+        "device": "iphone13",
+        "relativeToFirst119ResponseSeconds": -0.42,
+        "event": "session_lifecycle",
+        "authenticationStage": "sourcePrepared",
+        "matchesFailingPhoneAuthenticationPair": true
+      },
+      {
+        "device": "iphone13",
+        "relativeToFirst119ResponseSeconds": -0.42,
+        "event": "session_lifecycle",
+        "authenticationStage": "connectionPublished",
+        "matchesFailingPhoneAuthenticationPair": true
+      },
+      {
+        "device": "iphone13",
+        "relativeToFirst119ResponseSeconds": 0.0,
+        "event": "folder_response",
+        "folderOrigin": "snapshot",
+        "apiErrorCode": "119",
+        "responseKind": "apiFailure",
+        "matchesFailingPhoneAuthenticationPair": true
+      },
+      {
+        "device": "iphone13",
+        "relativeToFirst119ResponseSeconds": 0.041,
+        "event": "folder_response",
+        "folderOrigin": "browserRoot",
+        "apiErrorCode": "119",
+        "responseKind": "apiFailure",
+        "matchesFailingPhoneAuthenticationPair": true
+      },
+      {
+        "device": "iphone13",
+        "relativeToFirst119ResponseSeconds": 0.055,
+        "event": "folder_response",
+        "folderOrigin": "snapshot",
+        "apiErrorCode": "119",
+        "responseKind": "apiFailure",
+        "matchesFailingPhoneAuthenticationPair": true
+      },
+      {
+        "device": "iphone13",
+        "relativeToFirst119ResponseSeconds": 2.159,
+        "event": "folder_response",
+        "folderOrigin": "browserRoot",
+        "apiErrorCode": "119",
+        "responseKind": "apiFailure",
+        "matchesFailingPhoneAuthenticationPair": true
+      },
+      {
+        "device": "iphone13",
+        "relativeToFirst119ResponseSeconds": 2.588,
+        "event": "session_lifecycle",
+        "authenticationStage": "sourcePrepared",
+        "matchesFailingPhoneAuthenticationPair": true
+      },
+      {
+        "device": "iphone13",
+        "relativeToFirst119ResponseSeconds": 2.589,
+        "event": "session_lifecycle",
+        "authenticationStage": "connectionPublished",
+        "matchesFailingPhoneAuthenticationPair": true
+      },
+      {
+        "device": "iphone13",
+        "relativeToFirst119ResponseSeconds": 3.809,
+        "event": "folder_response",
+        "folderOrigin": "browserRoot",
+        "apiErrorCode": "119",
+        "responseKind": "apiFailure",
+        "matchesFailingPhoneAuthenticationPair": true
+      },
+      {
+        "device": "iphone13",
+        "relativeToFirst119ResponseSeconds": 5.469,
+        "event": "folder_response",
+        "folderOrigin": "browserRoot",
+        "apiErrorCode": "119",
+        "responseKind": "apiFailure",
+        "matchesFailingPhoneAuthenticationPair": true
+      },
+      {
+        "device": "iphone13",
+        "relativeToFirst119ResponseSeconds": 7.085,
+        "event": "folder_response",
+        "folderOrigin": "browserRoot",
+        "apiErrorCode": "119",
+        "responseKind": "apiFailure",
+        "matchesFailingPhoneAuthenticationPair": true
+      },
+      {
+        "device": "iphone13",
+        "relativeToFirst119ResponseSeconds": 8.716,
+        "event": "folder_response",
+        "folderOrigin": "browserRoot",
+        "apiErrorCode": "119",
+        "responseKind": "apiFailure",
+        "matchesFailingPhoneAuthenticationPair": true
+      }
+    ],
+    "conclusion": "The same freshly attached and published pair fails in snapshot and browser; this is not evidence of browser-only stale-session publication. Later new login pairs succeed in snapshots. SID invalidation cause remains unknown. No credentials or server settings changed."
+  }
+}

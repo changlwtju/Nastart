@@ -1,0 +1,30 @@
+{
+  "date": "2026-10-22",
+  "packageBuiltAt": "2026-10-22T05:26:28.931374+08:00",
+  "scope": "iPhone13 bounded metadata-only sample discovery and saved L0 report read",
+  "sourceAndPackageReverified": true,
+  "buildInstallTestRuns": 0,
+  "mediaPreviewDownloadCommands": 0,
+  "naturalNumericUIWitnessFound": false,
+  "knownMissingMetadataMixedUIWitnessFound": false,
+  "sampleLimitation": "Observed season entries use zero-padded episode numbers; no natural-vs-lexical distinction. Captured rows are not a complete NAS inventory.",
+  "savedL0SortMetadataTestResults": [
+    "Passed",
+    "Passed",
+    "Passed",
+    "Passed"
+  ],
+  "savedL0TestRunsAdded": 0,
+  "normalHomeReturnObserved": true,
+  "all25NonDiagnosticPreferencesAnd36BookmarksUnchanged": true,
+  "WDAAppStates": [
+    1,
+    1
+  ],
+  "nativeProcessInspection": "Two DTX sendall failures retained; WDA state and native Home used as separate evidence",
+  "ownedLoggerStopped": true,
+  "settingsAutoIdle10CoolOff2Readback": true,
+  "nativeHomeWiFiNoPiPVisuallyReviewed": true,
+  "iPhone18": "deferred by user; no probe or reinstall",
+  "acceptanceStatusChanged": false
+}

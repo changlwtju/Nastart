@@ -1,0 +1,278 @@
+{
+  "at": "2026-10-19T17:29:47.567506+08:00",
+  "sample": "S01",
+  "purpose": "Input calibration only; no playback performance acceptance",
+  "source": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "139d9310d91cf0643129a51bfeaa4d2238499e8049086dbf6f50626ea806b5be",
+    "productCodeEditsThisRun": false,
+    "currentPhysicalBuildTime": "2026-10-19T17:16:11.246555+08:00",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "binaries": {
+      "Nastart": "da9c7334a3b8af543aa661eec4f8f020ae1ea8dad5118a5fd86a81a16f365c42",
+      "Nastart.debug.dylib": "c5cce68ac4282a2e7d1eac0fcfcd82d056fdf1df24fbac6cde32f482c4d3ec84",
+      "Frameworks/KSPlayer.framework/KSPlayer": "c40cb67b13d4becf363db59714223eb506d6f6f5ae8f9b0adbc8c2a81bf79e73"
+    },
+    "checkedInputs": 173,
+    "verifiedLibraries": 29,
+    "ipaSHA256": "fa695654dfdda03c6bcec9d74bedc9ff01df31c65753e15ff7993aaa4643b0af"
+  },
+  "device": {
+    "at": "2026-10-19T17:16:53.838833+08:00",
+    "model": "iPhone14,5",
+    "system": "16.3.1",
+    "freshUSBIdentityPrivate": true,
+    "binaries": {
+      "Nastart": "da9c7334a3b8af543aa661eec4f8f020ae1ea8dad5118a5fd86a81a16f365c42",
+      "Nastart.debug.dylib": "c5cce68ac4282a2e7d1eac0fcfcd82d056fdf1df24fbac6cde32f482c4d3ec84",
+      "Frameworks/KSPlayer.framework/KSPlayer": "c40cb67b13d4becf363db59714223eb506d6f6f5ae8f9b0adbc8c2a81bf79e73"
+    },
+    "signatureVerified": true,
+    "reason": "installed binary identity not reliably readable; preserve-data overwrite",
+    "installation": "success",
+    "installedAt": "2026-10-19T17:17:07.060606+08:00",
+    "nonDiagnosticKeys": 25,
+    "preferenceValuesUnchanged": true,
+    "actualForegroundUIVerified": true,
+    "actualEmptyEnvironment": true,
+    "playerClosed": true
+  },
+  "trials": [
+    {
+      "method": "nativeNormalized",
+      "lanes": [
+        {
+          "entry": "file",
+          "requestedRatio": 0.5,
+          "actualSeekEvents": [
+            {
+              "event": "seek_started",
+              "secondsFromInput": 0.8799998760223389,
+              "fields": {
+                "seekTargetSeconds": 3646.822703308463
+              }
+            },
+            {
+              "event": "seek_dispatched",
+              "secondsFromInput": 0.8805580139160156,
+              "fields": {}
+            }
+          ],
+          "ordinaryExit": "ordinary UI exit",
+          "strictPairAccepted": false,
+          "performanceAccepted": false,
+          "taskMetrics": {
+            "completed": 4,
+            "cellularYes": 0,
+            "cellularNo": 4,
+            "cellularUnknown": 0
+          }
+        },
+        {
+          "entry": "jf",
+          "requestedRatio": 0.5,
+          "actualSeekEvents": [
+            {
+              "event": "seek_started",
+              "secondsFromInput": 0.9172441959381104,
+              "fields": {
+                "seekTargetSeconds": 286.1684221601274
+              }
+            },
+            {
+              "event": "seek_dispatched",
+              "secondsFromInput": 0.9176709651947021,
+              "fields": {}
+            }
+          ],
+          "ordinaryExit": "ordinary UI exit",
+          "strictPairAccepted": false,
+          "performanceAccepted": false,
+          "taskMetrics": {
+            "completed": 6,
+            "cellularYes": 0,
+            "cellularNo": 6,
+            "cellularUnknown": 0
+          }
+        }
+      ],
+      "actualTargetDifferenceSeconds": 3360.654281148336,
+      "pairedTargetAccepted": false
+    },
+    {
+      "method": "pausedRenderedThumb",
+      "lanes": [
+        {
+          "entry": "file",
+          "requestedRatio": 0.5,
+          "actualSeekEvents": [
+            {
+              "event": "seek_started",
+              "secondsFromInput": 0.7182612419128418,
+              "fields": {
+                "seekTargetSeconds": 3556.777790556252
+              }
+            },
+            {
+              "event": "seek_dispatched",
+              "secondsFromInput": 0.7190511226654053,
+              "fields": {}
+            }
+          ],
+          "ordinaryExit": "ordinary UI exit",
+          "strictPairAccepted": false,
+          "performanceAccepted": false,
+          "taskMetrics": {
+            "completed": 2,
+            "cellularYes": 0,
+            "cellularNo": 2,
+            "cellularUnknown": 0
+          },
+          "geometry": {
+            "actualThumbCenter": [
+              143.33333333333334,
+              245.0
+            ],
+            "targetCenter": [
+              422.0,
+              245.0
+            ],
+            "pixelScale": 3.0,
+            "sliderRect": [
+              130.0,
+              223.0,
+              584.0,
+              44.0
+            ],
+            "method": "paused screenshot white thumb row, native frame ROI",
+            "targetRatio": 0.5
+          },
+          "pauseAndRecognizablePreSeekFrameVisuallyReviewed": true
+        },
+        {
+          "entry": "jf",
+          "requestedRatio": 0.5,
+          "actualSeekEvents": [
+            {
+              "event": "seek_started",
+              "secondsFromInput": 0.8287599086761475,
+              "fields": {
+                "seekTargetSeconds": 3569.641502045095
+              }
+            },
+            {
+              "event": "seek_dispatched",
+              "secondsFromInput": 0.829779863357544,
+              "fields": {}
+            }
+          ],
+          "ordinaryExit": "ordinary UI exit",
+          "strictPairAccepted": false,
+          "performanceAccepted": false,
+          "taskMetrics": {
+            "completed": 2,
+            "cellularYes": 0,
+            "cellularNo": 2,
+            "cellularUnknown": 0
+          },
+          "geometry": {
+            "actualThumbCenter": [
+              144.16666666666666,
+              245.0
+            ],
+            "targetCenter": [
+              422.0,
+              245.0
+            ],
+            "pixelScale": 3.0,
+            "sliderRect": [
+              130.0,
+              223.0,
+              584.0,
+              44.0
+            ],
+            "method": "paused screenshot white thumb row, native frame ROI",
+            "targetRatio": 0.5
+          },
+          "pauseAndRecognizablePreSeekFrameVisuallyReviewed": true
+        }
+      ],
+      "actualTargetDifferenceSeconds": 12.86371148884291,
+      "pairedTargetAccepted": false
+    }
+  ],
+  "predeclaredVisualPairTargetToleranceSeconds": 1.0,
+  "normalizationPreconditionFailure": "File trial initially had no recognizable frame and disabled gray thumb; not a valid performance baseline. Both normalized after10 images still buffering.",
+  "temporaryTool": {
+    "logicTestsPassed": 7,
+    "accepted": false,
+    "scriptAndTestsMovedToPrivateEvidence": true
+  },
+  "retainedToolFailures": [
+    "default Python lacked tidevice before device request; switched to /usr/bin/python3",
+    "first Settings activation had an observation race; app-state wait corrected",
+    "first paused-thumb navigation could not reach file root; no media started, cold normal launch corrected"
+  ],
+  "networkBefore": {
+    "originalWiFiEnabled": true,
+    "firstNativeConnectedNetworkMatchesPreviousPrivateEvidence": true,
+    "wifiSwitchChanged": false,
+    "VPNChanged": false,
+    "statusBarIconVisuallyVerified": true,
+    "initialActivationRaceRetained": true,
+    "originalNetworkCheckmarkVisuallyVerified": true
+  },
+  "networkFinal": {
+    "at": "2026-10-19T17:28:07.734215+08:00",
+    "originalWiFiEnabled": true,
+    "originalNetworkMatchedPrivately": true,
+    "switchChanged": false,
+    "VPNChanged": false,
+    "cellularTaskStarted": false,
+    "mediaStoppedBeforeVerification": true,
+    "statusBarAndCheckmarkVisualReviewPending": false,
+    "originalNetworkCheckmarkAndStatusBarWiFiVisuallyVerified": true
+  },
+  "finalAudit": {
+    "at": "2026-10-19T17:28:25.527687+08:00",
+    "nonBookmarkPreferenceKeys": 24,
+    "nonBookmarkPreferencesUnchanged": true,
+    "originalTrackChanges": 0,
+    "naturalBookmarkChanges": 2,
+    "originalBookmarksRemoved": 0,
+    "newBookmarksCount": 0,
+    "crashInventoryDelta": {
+      "Nastart": 0,
+      "WebDriverAgent": 0,
+      "JetsamEvent": 0
+    },
+    "ordinaryEmptyEnvironment": true,
+    "mediaStopped": true,
+    "NASOnline": true,
+    "sourceAndPackageReverified": true,
+    "nativeSystemConditionsNotRechecked": true,
+    "newTestConditionsInjected": false,
+    "userWiFiCellularVPNPreferencesChanged": false,
+    "initialOneSecondHomeNASOnline": false,
+    "settledHomeAt": "2026-10-19T17:28:47.420172+08:00"
+  },
+  "newSystemConditionsInjected": false,
+  "nativeConditionsInventoryNotRechecked": true,
+  "otherDevices": "iPad/iPhone18 untouched; neither installed current17:16 package",
+  "allRequirementStatesRemainOpen": true,
+  "next": [
+    "Do not repeat the two failed input methods; audit touch/snapshot timing offline",
+    "Old S03 post-dispatch ordinal selection is now corrected in the separate92-test report batch",
+    "PGS supply still needs authenticated client/server session and first-segment readiness evidence"
+  ],
+  "cleanupProcess": {
+    "checkedAt": "2026-10-19 17:29:13",
+    "activeBuildOrCaffeinateMatches": 0,
+    "powerWindowStart": "2026-10-19 17:10:00",
+    "powerWindowEnd": "2026-10-19 17:29:13",
+    "sleepWakeDarkWakeLines": 0,
+    "duringAssertionCaptured": true,
+    "startAssertionNotSeparatelyCaptured": true,
+    "ownMediaStoppedBeforeOfflineAnalysis": true
+  }
+}

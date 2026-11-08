@@ -1,0 +1,956 @@
+{
+  "at": "2026-10-12T22:06:32.541731+08:00",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceDiffSHA256": "ea2f11ebacc2d9c15f9226853517bc27ab59b013a455890a821af610c863a179",
+  "configuration": "normal Debug -Onone; empty launch environment",
+  "binaryBuildTime": "2026-10-12T21:45:21.741066+08:00",
+  "binaries": {
+    "Nastart": "3ecb417331c61ae36776e67b857f23fb03cf286f53c7fa2f36d5b44fc9d32a41",
+    "Nastart.debug.dylib": "d3e7abcbbd97fd9d33eb9be9d16870a1b7592121643e930a2f2af2f186ddaba0",
+    "Frameworks/KSPlayer.framework/KSPlayer": "baaeb6e0837e19b5bc002b6e19a5fe403eaaea4ab163e166d3fb0acee722eea4"
+  },
+  "tests": {
+    "executed": 331,
+    "skipped": 2,
+    "failures": 0,
+    "runThisTurn": true
+  },
+  "preflight": {
+    "passed": 15,
+    "runThisTurn": true
+  },
+  "sourceInputsVerified": 173,
+  "individuallyVerifiedLibraries": 29,
+  "deepSignatureVerified": true,
+  "profileExpirationUTC": "2026-10-17T22:23:40",
+  "devices": {
+    "iphone13": {
+      "at": "2026-10-12T22:03:41.775736+08:00",
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "connection": "USB",
+      "latestPackage": {
+        "Nastart": "3ecb417331c61ae36776e67b857f23fb03cf286f53c7fa2f36d5b44fc9d32a41",
+        "Nastart.debug.dylib": "d3e7abcbbd97fd9d33eb9be9d16870a1b7592121643e930a2f2af2f186ddaba0",
+        "Frameworks/KSPlayer.framework/KSPlayer": "baaeb6e0837e19b5bc002b6e19a5fe403eaaea4ab163e166d3fb0acee722eea4"
+      },
+      "sourceDiffSHA256": "ea2f11ebacc2d9c15f9226853517bc27ab59b013a455890a821af610c863a179",
+      "nonBookmarkPreferenceKeys": 24,
+      "nonBookmarkPreferencesUnchanged": true,
+      "changedBookmarksCount": 1,
+      "originalTrackSelectionsRestored": true,
+      "finalS03": {
+        "S03File": {
+          "positionSeconds": 739.444,
+          "audioTrackID": 4,
+          "subtitleTrackID": 5,
+          "subtitlesDisabled": false
+        },
+        "S03Jellyfin": {
+          "positionSeconds": 6128.139,
+          "audioTrackID": 1,
+          "subtitleTrackID": 7,
+          "subtitlesDisabled": false
+        }
+      },
+      "newCrashReports": 0,
+      "normalEmptyEnvironment": true,
+      "NASNormal": true,
+      "playerClosed": true,
+      "finalScreenshotReviewed": true,
+      "WDAIdleSeconds": 10,
+      "WDAAnimationCoolOffSeconds": 2,
+      "cases": {
+        "s03-jf-baseline-pip-ownership": {
+          "freshPiPFrameEvents": 8,
+          "framesWithText": 1,
+          "compositionGroups": [
+            {
+              "count": 7,
+              "compositionReason": "noCue",
+              "allocationStatus": "notAttempted",
+              "sourceTransfer": "SMPTE_ST_2084_PQ",
+              "sourcePixelFormat": "2016686640",
+              "sourceWidth": "3840",
+              "sourceHeight": "2160",
+              "composited": "false",
+              "external": "true"
+            },
+            {
+              "count": 1,
+              "compositionReason": "hdrPQPreserved",
+              "allocationStatus": "notAttempted",
+              "sourceTransfer": "SMPTE_ST_2084_PQ",
+              "sourcePixelFormat": "2016686640",
+              "sourceWidth": "3840",
+              "sourceHeight": "2160",
+              "composited": "false",
+              "external": "true"
+            }
+          ],
+          "pipLifecycle": [
+            {
+              "event": "pip_will_start",
+              "fields": {
+                "currentSeconds": "5909.55"
+              }
+            },
+            {
+              "event": "pip_started",
+              "fields": {}
+            },
+            {
+              "event": "pip_restore_completed",
+              "fields": {
+                "success": "true"
+              }
+            },
+            {
+              "event": "pip_stopped",
+              "fields": {
+                "restoring": "true"
+              }
+            }
+          ],
+          "performanceAccepted": false,
+          "fullSubtitleAudioHDRAccepted": false,
+          "freshReplacementCommits": 0,
+          "freshAVCandidateWarmups": 0,
+          "sourceDiffSHA256": "5a1e70c58e88cdabeb5a879d419268d48a0b75f30e4679eedf3d85d8350d2c2c",
+          "binaries": {
+            "Nastart": "e74c7ffe7a50d666a93e53ec2a894728878ee9311d4e64d6a662bf1b9e92bd54",
+            "Nastart.debug.dylib": "477aedc5169af9cb366c3ae41f7bb6987bcddf2364436279692fa91743e55892",
+            "Frameworks/KSPlayer.framework/KSPlayer": "baaeb6e0837e19b5bc002b6e19a5fe403eaaea4ab163e166d3fb0acee722eea4"
+          },
+          "correspondsToFinalPackage": false,
+          "normalWindowIncludedPiP": true,
+          "historicalDuplicateCueReplayed": false
+        },
+        "s03-jf-final-paused-pip-ownership": {
+          "freshPiPFrameEvents": 8,
+          "framesWithText": 6,
+          "compositionGroups": [
+            {
+              "count": 6,
+              "compositionReason": "hdrPQPreserved",
+              "allocationStatus": "notAttempted",
+              "sourceTransfer": "SMPTE_ST_2084_PQ",
+              "sourcePixelFormat": "2016686640",
+              "sourceWidth": "3840",
+              "sourceHeight": "2160",
+              "composited": "false",
+              "external": "true"
+            },
+            {
+              "count": 2,
+              "compositionReason": "noCue",
+              "allocationStatus": "notAttempted",
+              "sourceTransfer": "SMPTE_ST_2084_PQ",
+              "sourcePixelFormat": "2016686640",
+              "sourceWidth": "3840",
+              "sourceHeight": "2160",
+              "composited": "false",
+              "external": "true"
+            }
+          ],
+          "pipLifecycle": [
+            {
+              "event": "pip_will_start",
+              "fields": {
+                "controlsPlaying": "true",
+                "currentSeconds": "6035.481",
+                "enginePlaybackState": "playing",
+                "enginePlaying": "true",
+                "layerPlaybackState": "bufferFinished"
+              }
+            },
+            {
+              "event": "pip_started",
+              "fields": {}
+            },
+            {
+              "event": "pip_restore_requested",
+              "fields": {
+                "controlsPlaying": "false",
+                "currentSeconds": "6074.114",
+                "enginePlaybackState": "paused",
+                "enginePlaying": "false",
+                "layerPlaybackState": "bufferFinished"
+              }
+            },
+            {
+              "event": "pip_restore_completed",
+              "fields": {
+                "controlsPlaying": "false",
+                "currentSeconds": "6074.114",
+                "enginePlaybackState": "paused",
+                "enginePlaying": "false",
+                "layerPlaybackState": "bufferFinished",
+                "success": "true"
+              }
+            },
+            {
+              "event": "pip_will_stop",
+              "fields": {
+                "controlsPlaying": "false",
+                "currentSeconds": "6074.114",
+                "enginePlaybackState": "paused",
+                "enginePlaying": "false",
+                "layerPlaybackState": "bufferFinished"
+              }
+            },
+            {
+              "event": "pip_stopped",
+              "fields": {
+                "controlsPlaying": "false",
+                "currentSeconds": "6074.114",
+                "enginePlaybackState": "paused",
+                "enginePlaying": "false",
+                "layerPlaybackState": "bufferFinished",
+                "restoring": "true"
+              }
+            }
+          ],
+          "performanceAccepted": false,
+          "fullSubtitleAudioHDRAccepted": false,
+          "freshReplacementCommits": 0,
+          "freshAVCandidateWarmups": 0,
+          "sourceDiffSHA256": "ea2f11ebacc2d9c15f9226853517bc27ab59b013a455890a821af610c863a179",
+          "binaries": {
+            "Nastart": "3ecb417331c61ae36776e67b857f23fb03cf286f53c7fa2f36d5b44fc9d32a41",
+            "Nastart.debug.dylib": "d3e7abcbbd97fd9d33eb9be9d16870a1b7592121643e930a2f2af2f186ddaba0",
+            "Frameworks/KSPlayer.framework/KSPlayer": "baaeb6e0837e19b5bc002b6e19a5fe403eaaea4ab163e166d3fb0acee722eea4"
+          },
+          "correspondsToFinalPackage": true,
+          "normalWindowIncludedPiP": true,
+          "historicalDuplicateCueReplayed": false
+        },
+        "s03-jf-final-playing-pip-ownership": {
+          "freshPiPFrameEvents": 8,
+          "framesWithText": 2,
+          "compositionGroups": [
+            {
+              "count": 6,
+              "compositionReason": "noCue",
+              "allocationStatus": "notAttempted",
+              "sourceTransfer": "SMPTE_ST_2084_PQ",
+              "sourcePixelFormat": "2016686640",
+              "sourceWidth": "3840",
+              "sourceHeight": "2160",
+              "composited": "false",
+              "external": "true"
+            },
+            {
+              "count": 2,
+              "compositionReason": "hdrPQPreserved",
+              "allocationStatus": "notAttempted",
+              "sourceTransfer": "SMPTE_ST_2084_PQ",
+              "sourcePixelFormat": "2016686640",
+              "sourceWidth": "3840",
+              "sourceHeight": "2160",
+              "composited": "false",
+              "external": "true"
+            }
+          ],
+          "pipLifecycle": [
+            {
+              "event": "pip_will_start",
+              "fields": {
+                "controlsPlaying": "true",
+                "currentSeconds": "5867.096",
+                "enginePlaybackState": "playing",
+                "enginePlaying": "true",
+                "layerPlaybackState": "buffering"
+              }
+            },
+            {
+              "event": "pip_started",
+              "fields": {}
+            },
+            {
+              "event": "pip_restore_requested",
+              "fields": {
+                "controlsPlaying": "true",
+                "currentSeconds": "5905.539",
+                "enginePlaybackState": "playing",
+                "enginePlaying": "true",
+                "layerPlaybackState": "bufferFinished"
+              }
+            },
+            {
+              "event": "pip_restore_completed",
+              "fields": {
+                "controlsPlaying": "true",
+                "currentSeconds": "5906.286",
+                "enginePlaybackState": "playing",
+                "enginePlaying": "true",
+                "layerPlaybackState": "bufferFinished",
+                "success": "true"
+              }
+            },
+            {
+              "event": "pip_will_stop",
+              "fields": {
+                "controlsPlaying": "true",
+                "currentSeconds": "5906.307",
+                "enginePlaybackState": "playing",
+                "enginePlaying": "true",
+                "layerPlaybackState": "bufferFinished"
+              }
+            },
+            {
+              "event": "pip_stopped",
+              "fields": {
+                "controlsPlaying": "true",
+                "currentSeconds": "5906.925",
+                "enginePlaybackState": "playing",
+                "enginePlaying": "true",
+                "layerPlaybackState": "bufferFinished",
+                "restoring": "true"
+              }
+            }
+          ],
+          "performanceAccepted": false,
+          "fullSubtitleAudioHDRAccepted": false,
+          "freshReplacementCommits": 0,
+          "freshAVCandidateWarmups": 1,
+          "sourceDiffSHA256": "ea2f11ebacc2d9c15f9226853517bc27ab59b013a455890a821af610c863a179",
+          "binaries": {
+            "Nastart": "3ecb417331c61ae36776e67b857f23fb03cf286f53c7fa2f36d5b44fc9d32a41",
+            "Nastart.debug.dylib": "d3e7abcbbd97fd9d33eb9be9d16870a1b7592121643e930a2f2af2f186ddaba0",
+            "Frameworks/KSPlayer.framework/KSPlayer": "baaeb6e0837e19b5bc002b6e19a5fe403eaaea4ab163e166d3fb0acee722eea4"
+          },
+          "correspondsToFinalPackage": true,
+          "normalWindowIncludedPiP": true,
+          "historicalDuplicateCueReplayed": false
+        },
+        "s03-jf-new-state-pip-ownership": {
+          "freshPiPFrameEvents": 8,
+          "framesWithText": 7,
+          "compositionGroups": [
+            {
+              "count": 7,
+              "compositionReason": "hdrPQPreserved",
+              "allocationStatus": "notAttempted",
+              "sourceTransfer": "SMPTE_ST_2084_PQ",
+              "sourcePixelFormat": "2016686640",
+              "sourceWidth": "3840",
+              "sourceHeight": "2160",
+              "composited": "false",
+              "external": "true"
+            },
+            {
+              "count": 1,
+              "compositionReason": "noCue",
+              "allocationStatus": "notAttempted",
+              "sourceTransfer": "SMPTE_ST_2084_PQ",
+              "sourcePixelFormat": "2016686640",
+              "sourceWidth": "3840",
+              "sourceHeight": "2160",
+              "composited": "false",
+              "external": "true"
+            }
+          ],
+          "pipLifecycle": [
+            {
+              "event": "pip_will_start",
+              "fields": {
+                "controlsPlaying": "true",
+                "currentSeconds": "6044.998",
+                "enginePlaybackState": "playing",
+                "enginePlaying": "true",
+                "layerPlaybackState": "bufferFinished"
+              }
+            },
+            {
+              "event": "pip_started",
+              "fields": {}
+            },
+            {
+              "event": "pip_restore_requested",
+              "fields": {
+                "controlsPlaying": "false",
+                "currentSeconds": "6082.374",
+                "enginePlaybackState": "paused",
+                "enginePlaying": "false",
+                "layerPlaybackState": "bufferFinished"
+              }
+            },
+            {
+              "event": "pip_restore_completed",
+              "fields": {
+                "controlsPlaying": "false",
+                "currentSeconds": "6082.374",
+                "enginePlaybackState": "paused",
+                "enginePlaying": "false",
+                "layerPlaybackState": "bufferFinished",
+                "success": "true"
+              }
+            },
+            {
+              "event": "pip_will_stop",
+              "fields": {
+                "controlsPlaying": "false",
+                "currentSeconds": "6082.374",
+                "enginePlaybackState": "paused",
+                "enginePlaying": "false",
+                "layerPlaybackState": "bufferFinished"
+              }
+            },
+            {
+              "event": "pip_stopped",
+              "fields": {
+                "controlsPlaying": "false",
+                "currentSeconds": "6082.374",
+                "enginePlaybackState": "paused",
+                "enginePlaying": "false",
+                "layerPlaybackState": "bufferFinished",
+                "restoring": "true"
+              }
+            }
+          ],
+          "performanceAccepted": false,
+          "fullSubtitleAudioHDRAccepted": false,
+          "freshReplacementCommits": 0,
+          "freshAVCandidateWarmups": 0,
+          "sourceDiffSHA256": "d640843be3f382888a6b91bfab41dd9d6087087d2fb18c27b5cfa48f098de9fe",
+          "binaries": {
+            "Nastart": "5b204e59a17fbaf79e167d221ca988b5b20c6a55786ab362e606b28585184f14",
+            "Nastart.debug.dylib": "a4c36c7879e5bfd9ad753dfaf2a8df6091b3e46c4ec53b8b7d945ca1b5fd7338",
+            "Frameworks/KSPlayer.framework/KSPlayer": "baaeb6e0837e19b5bc002b6e19a5fe403eaaea4ab163e166d3fb0acee722eea4"
+          },
+          "correspondsToFinalPackage": false,
+          "normalWindowIncludedPiP": true,
+          "historicalDuplicateCueReplayed": false
+        },
+        "s03-jf-safe-playing-pip-ownership": {
+          "freshPiPFrameEvents": 65,
+          "framesWithText": 24,
+          "compositionGroups": [
+            {
+              "count": 41,
+              "compositionReason": "noCue",
+              "allocationStatus": "notAttempted",
+              "sourceTransfer": "SMPTE_ST_2084_PQ",
+              "sourcePixelFormat": "2016686640",
+              "sourceWidth": "3840",
+              "sourceHeight": "2160",
+              "composited": "false",
+              "external": "true"
+            },
+            {
+              "count": 24,
+              "compositionReason": "hdrPQPreserved",
+              "allocationStatus": "notAttempted",
+              "sourceTransfer": "SMPTE_ST_2084_PQ",
+              "sourcePixelFormat": "2016686640",
+              "sourceWidth": "3840",
+              "sourceHeight": "2160",
+              "composited": "false",
+              "external": "true"
+            }
+          ],
+          "pipLifecycle": [
+            {
+              "event": "pip_will_start",
+              "fields": {
+                "controlsPlaying": "true",
+                "currentSeconds": "6117.339",
+                "enginePlaybackState": "playing",
+                "enginePlaying": "true",
+                "layerPlaybackState": "bufferFinished"
+              }
+            },
+            {
+              "event": "pip_started",
+              "fields": {}
+            },
+            {
+              "event": "pip_restore_requested",
+              "fields": {
+                "controlsPlaying": "true",
+                "currentSeconds": "6443.227",
+                "enginePlaybackState": "playing",
+                "enginePlaying": "true",
+                "layerPlaybackState": "bufferFinished"
+              }
+            },
+            {
+              "event": "pip_restore_completed",
+              "fields": {
+                "controlsPlaying": "true",
+                "currentSeconds": "6443.952",
+                "enginePlaybackState": "playing",
+                "enginePlaying": "true",
+                "layerPlaybackState": "bufferFinished",
+                "success": "true"
+              }
+            },
+            {
+              "event": "pip_will_stop",
+              "fields": {
+                "controlsPlaying": "true",
+                "currentSeconds": "6443.974",
+                "enginePlaybackState": "playing",
+                "enginePlaying": "true",
+                "layerPlaybackState": "bufferFinished"
+              }
+            },
+            {
+              "event": "pip_stopped",
+              "fields": {
+                "controlsPlaying": "true",
+                "currentSeconds": "6444.528",
+                "enginePlaybackState": "playing",
+                "enginePlaying": "true",
+                "layerPlaybackState": "bufferFinished",
+                "restoring": "true"
+              }
+            }
+          ],
+          "performanceAccepted": false,
+          "fullSubtitleAudioHDRAccepted": false,
+          "freshReplacementCommits": 0,
+          "freshAVCandidateWarmups": 0,
+          "sourceDiffSHA256": "d640843be3f382888a6b91bfab41dd9d6087087d2fb18c27b5cfa48f098de9fe",
+          "binaries": {
+            "Nastart": "5b204e59a17fbaf79e167d221ca988b5b20c6a55786ab362e606b28585184f14",
+            "Nastart.debug.dylib": "a4c36c7879e5bfd9ad753dfaf2a8df6091b3e46c4ec53b8b7d945ca1b5fd7338",
+            "Frameworks/KSPlayer.framework/KSPlayer": "baaeb6e0837e19b5bc002b6e19a5fe403eaaea4ab163e166d3fb0acee722eea4"
+          },
+          "correspondsToFinalPackage": false,
+          "normalWindowIncludedPiP": true,
+          "historicalDuplicateCueReplayed": false
+        }
+      },
+      "performanceAccepted": false,
+      "cellularNetworkTested": false,
+      "fullSubtitleAudioHDRAccepted": false
+    },
+    "ipad": {
+      "at": "2026-10-12T22:03:43.071273+08:00",
+      "model": "iPad12,1",
+      "system": "18.3.1",
+      "connection": "USB",
+      "latestPackage": {
+        "Nastart": "3ecb417331c61ae36776e67b857f23fb03cf286f53c7fa2f36d5b44fc9d32a41",
+        "Nastart.debug.dylib": "d3e7abcbbd97fd9d33eb9be9d16870a1b7592121643e930a2f2af2f186ddaba0",
+        "Frameworks/KSPlayer.framework/KSPlayer": "baaeb6e0837e19b5bc002b6e19a5fe403eaaea4ab163e166d3fb0acee722eea4"
+      },
+      "sourceDiffSHA256": "ea2f11ebacc2d9c15f9226853517bc27ab59b013a455890a821af610c863a179",
+      "nonBookmarkPreferenceKeys": 15,
+      "nonBookmarkPreferencesUnchanged": true,
+      "changedBookmarksCount": 1,
+      "originalTrackSelectionsRestored": true,
+      "finalS03": {
+        "S03File": {
+          "positionSeconds": 938.896,
+          "audioTrackID": 4,
+          "subtitleTrackID": null,
+          "subtitlesDisabled": true
+        },
+        "S03Jellyfin": {
+          "positionSeconds": 5860.423337333334,
+          "audioTrackID": 1,
+          "subtitleTrackID": 7,
+          "subtitlesDisabled": false
+        }
+      },
+      "newCrashReports": 0,
+      "normalEmptyEnvironment": true,
+      "NASNormal": true,
+      "playerClosed": true,
+      "finalScreenshotReviewed": true,
+      "WDAIdleSeconds": 10,
+      "WDAAnimationCoolOffSeconds": 2,
+      "cases": {
+        "s03-jf-pad-baseline-pip-ownership": {
+          "freshPiPFrameEvents": 11,
+          "framesWithText": 7,
+          "compositionGroups": [
+            {
+              "count": 4,
+              "compositionReason": "noCue",
+              "allocationStatus": "notAttempted",
+              "sourceTransfer": "SMPTE_ST_2084_PQ",
+              "sourcePixelFormat": "2016686640",
+              "sourceWidth": "3840",
+              "sourceHeight": "2160",
+              "composited": "false",
+              "external": "true"
+            },
+            {
+              "count": 7,
+              "compositionReason": "hdrPQPreserved",
+              "allocationStatus": "notAttempted",
+              "sourceTransfer": "SMPTE_ST_2084_PQ",
+              "sourcePixelFormat": "2016686640",
+              "sourceWidth": "3840",
+              "sourceHeight": "2160",
+              "composited": "false",
+              "external": "true"
+            }
+          ],
+          "pipLifecycle": [
+            {
+              "event": "pip_will_start",
+              "fields": {
+                "currentSeconds": "5916.903"
+              }
+            },
+            {
+              "event": "pip_started",
+              "fields": {}
+            },
+            {
+              "event": "pip_restore_completed",
+              "fields": {
+                "success": "true"
+              }
+            },
+            {
+              "event": "pip_stopped",
+              "fields": {
+                "restoring": "true"
+              }
+            }
+          ],
+          "performanceAccepted": false,
+          "fullSubtitleAudioHDRAccepted": false,
+          "freshReplacementCommits": 0,
+          "freshAVCandidateWarmups": 0,
+          "sourceDiffSHA256": "5a1e70c58e88cdabeb5a879d419268d48a0b75f30e4679eedf3d85d8350d2c2c",
+          "binaries": {
+            "Nastart": "e74c7ffe7a50d666a93e53ec2a894728878ee9311d4e64d6a662bf1b9e92bd54",
+            "Nastart.debug.dylib": "477aedc5169af9cb366c3ae41f7bb6987bcddf2364436279692fa91743e55892",
+            "Frameworks/KSPlayer.framework/KSPlayer": "baaeb6e0837e19b5bc002b6e19a5fe403eaaea4ab163e166d3fb0acee722eea4"
+          },
+          "correspondsToFinalPackage": false,
+          "normalWindowIncludedPiP": true,
+          "historicalDuplicateCueReplayed": false
+        },
+        "s03-jf-pad-final-ass-pip-ownership": {
+          "freshPiPFrameEvents": 0,
+          "framesWithText": 0,
+          "compositionGroups": [],
+          "pipLifecycle": [],
+          "performanceAccepted": false,
+          "fullSubtitleAudioHDRAccepted": false,
+          "freshReplacementCommits": 1,
+          "freshAVCandidateWarmups": 1,
+          "sourceDiffSHA256": "ea2f11ebacc2d9c15f9226853517bc27ab59b013a455890a821af610c863a179",
+          "binaries": {
+            "Nastart": "3ecb417331c61ae36776e67b857f23fb03cf286f53c7fa2f36d5b44fc9d32a41",
+            "Nastart.debug.dylib": "d3e7abcbbd97fd9d33eb9be9d16870a1b7592121643e930a2f2af2f186ddaba0",
+            "Frameworks/KSPlayer.framework/KSPlayer": "baaeb6e0837e19b5bc002b6e19a5fe403eaaea4ab163e166d3fb0acee722eea4"
+          },
+          "correspondsToFinalPackage": true,
+          "normalWindowIncludedPiP": false,
+          "historicalDuplicateCueReplayed": false
+        },
+        "s03-jf-pad-new-state-pip-ownership": {
+          "freshPiPFrameEvents": 0,
+          "framesWithText": 0,
+          "compositionGroups": [],
+          "pipLifecycle": [
+            {
+              "event": "pip_will_start",
+              "fields": {
+                "currentSeconds": "6033.622572357"
+              }
+            },
+            {
+              "event": "pip_started",
+              "fields": {}
+            },
+            {
+              "event": "pip_restore_requested",
+              "fields": {
+                "currentSeconds": "6084.601107627"
+              }
+            },
+            {
+              "event": "pip_restore_completed",
+              "fields": {
+                "currentSeconds": "6085.247255379",
+                "success": "true"
+              }
+            },
+            {
+              "event": "pip_will_stop",
+              "fields": {
+                "currentSeconds": "6085.339913801"
+              }
+            },
+            {
+              "event": "pip_stopped",
+              "fields": {
+                "currentSeconds": "6085.936298432",
+                "restoring": "true"
+              }
+            }
+          ],
+          "performanceAccepted": false,
+          "fullSubtitleAudioHDRAccepted": false,
+          "freshReplacementCommits": 1,
+          "freshAVCandidateWarmups": 1,
+          "sourceDiffSHA256": "d640843be3f382888a6b91bfab41dd9d6087087d2fb18c27b5cfa48f098de9fe",
+          "binaries": {
+            "Nastart": "5b204e59a17fbaf79e167d221ca988b5b20c6a55786ab362e606b28585184f14",
+            "Nastart.debug.dylib": "a4c36c7879e5bfd9ad753dfaf2a8df6091b3e46c4ec53b8b7d945ca1b5fd7338",
+            "Frameworks/KSPlayer.framework/KSPlayer": "baaeb6e0837e19b5bc002b6e19a5fe403eaaea4ab163e166d3fb0acee722eea4"
+          },
+          "correspondsToFinalPackage": false,
+          "normalWindowIncludedPiP": true,
+          "historicalDuplicateCueReplayed": false
+        }
+      },
+      "performanceAccepted": false,
+      "cellularNetworkTested": false,
+      "fullSubtitleAudioHDRAccepted": false
+    }
+  },
+  "iphone18Install": {
+    "device": "iphone18",
+    "installation": "success",
+    "sourceDiffSHA256": "ea2f11ebacc2d9c15f9226853517bc27ab59b013a455890a821af610c863a179",
+    "binaries": {
+      "Nastart": "3ecb417331c61ae36776e67b857f23fb03cf286f53c7fa2f36d5b44fc9d32a41",
+      "Nastart.debug.dylib": "d3e7abcbbd97fd9d33eb9be9d16870a1b7592121643e930a2f2af2f186ddaba0",
+      "Frameworks/KSPlayer.framework/KSPlayer": "baaeb6e0837e19b5bc002b6e19a5fe403eaaea4ab163e166d3fb0acee722eea4"
+    },
+    "method": "direct Bonjour TCP lockdown using existing Mac legacy pairing + AFC + installation_proxy Install; preserve container",
+    "newPairingAttempted": false,
+    "preservesContainer": true,
+    "signatureVerified": true,
+    "librariesVerified": 29,
+    "requestedEnvironment": {},
+    "requestedArguments": [],
+    "normalLaunch": "pending actual current normal launch verification",
+    "actualForegroundUIVerified": false,
+    "model": "iPhone19,7",
+    "system": "27.0",
+    "connection": "NETWORK",
+    "installationStartedAt": "2026-10-12T21:49:09.984095+08:00",
+    "installedAt": "2026-10-12T21:49:28.668115+08:00",
+    "postInstallLookupExists": true,
+    "samePreferenceKeys": true,
+    "nonDiagnosticKeysBefore": 25,
+    "nonDiagnosticKeysAfter": 25,
+    "unchangedPreferenceValues": 25,
+    "changedPreferenceCount": 0
+  },
+  "iphone13PlayingRestore": {
+    "samples": [
+      {
+        "sampleSeconds": 3,
+        "event": "diagnostics.playback.next.telemetry_sample",
+        "fields": {
+          "controlsPlaying": "true",
+          "currentSeconds": "5982.574",
+          "enginePlaybackState": "playing",
+          "enginePlaying": "true",
+          "layerPlaybackState": "bufferFinished"
+        }
+      },
+      {
+        "sampleSeconds": 10,
+        "event": "diagnostics.playback.next.telemetry_sample",
+        "fields": {
+          "controlsPlaying": "true",
+          "currentSeconds": "5982.574",
+          "enginePlaybackState": "playing",
+          "enginePlaying": "true",
+          "layerPlaybackState": "bufferFinished"
+        }
+      },
+      {
+        "sampleSeconds": 15,
+        "event": "diagnostics.playback.next.telemetry_sample",
+        "fields": {
+          "controlsPlaying": "true",
+          "currentSeconds": "5993.069",
+          "enginePlaybackState": "playing",
+          "enginePlaying": "true",
+          "layerPlaybackState": "bufferFinished"
+        }
+      }
+    ],
+    "actualImagesReviewed": [
+      3,
+      15
+    ],
+    "sameProcessVerified": true,
+    "normalEmptyEnvironment": true,
+    "noAppTermination": true,
+    "intent": {
+      "playing": true,
+      "explicitSystemPauseButton": false
+    },
+    "toolRestoreRetryRequired": false,
+    "fullSubtitleAudioHDRAccepted": false,
+    "performanceAccepted": false
+  },
+  "iphone13ExplicitPauseRestore": {
+    "samples": [
+      {
+        "sampleSeconds": 3,
+        "event": "diagnostics.playback.next.telemetry_sample",
+        "fields": {
+          "controlsPlaying": "false",
+          "currentSeconds": "6074.114",
+          "enginePlaybackState": "paused",
+          "enginePlaying": "false",
+          "layerPlaybackState": "bufferFinished"
+        }
+      },
+      {
+        "sampleSeconds": 10,
+        "event": "diagnostics.playback.next.telemetry_sample",
+        "fields": {
+          "controlsPlaying": "false",
+          "currentSeconds": "6074.114",
+          "enginePlaybackState": "paused",
+          "enginePlaying": "false",
+          "layerPlaybackState": "bufferFinished"
+        }
+      },
+      {
+        "sampleSeconds": 15,
+        "event": "diagnostics.playback.next.telemetry_sample",
+        "fields": {
+          "controlsPlaying": "false",
+          "currentSeconds": "6074.114",
+          "enginePlaybackState": "paused",
+          "enginePlaying": "false",
+          "layerPlaybackState": "bufferFinished"
+        }
+      }
+    ],
+    "actualImagesReviewed": [
+      3,
+      15
+    ],
+    "sameProcessVerified": true,
+    "normalEmptyEnvironment": true,
+    "noAppTermination": true,
+    "intent": {
+      "playing": false,
+      "explicitSystemPauseButton": true
+    },
+    "toolRestoreRetryRequired": true,
+    "fullSubtitleAudioHDRAccepted": false,
+    "performanceAccepted": false
+  },
+  "ipadSubtitleTransition": {
+    "normalASSWindow": [
+      {
+        "event": "diagnostics.jellyfin.playback_prepared",
+        "fields": {}
+      },
+      {
+        "event": "diagnostics.jellyfin.playback_prepared",
+        "fields": {}
+      },
+      {
+        "event": "diagnostics.playback.next.route_selected",
+        "fields": {
+          "decodeEngine": "ksPlayer",
+          "routeKind": "localRangeProxy"
+        }
+      },
+      {
+        "event": "diagnostics.playback.subtitle_overlay_loaded",
+        "fields": {
+          "cueCount": "1288"
+        }
+      },
+      {
+        "event": "diagnostics.playback.subtitle_overlay_loaded",
+        "fields": {
+          "cueCount": "1288"
+        }
+      },
+      {
+        "event": "diagnostics.jellyfin.playback_prepared",
+        "fields": {
+          "negotiatedSubtitleIndex": "none",
+          "negotiatedSubtitleMethod": "Encode",
+          "requestedServerSubtitleIndex": "-1"
+        }
+      },
+      {
+        "event": "diagnostics.jellyfin.playback_prepared",
+        "fields": {}
+      },
+      {
+        "event": "diagnostics.playback.next.route_selected",
+        "fields": {
+          "decodeEngine": "systemAVPlayer",
+          "routeKind": "localHLS"
+        }
+      },
+      {
+        "event": "diagnostics.playback.next.replacement_committed",
+        "fields": {
+          "startsPaused": "false"
+        }
+      }
+    ],
+    "pausedPGSWindow": [
+      {
+        "event": "diagnostics.jellyfin.playback_prepared",
+        "fields": {
+          "negotiatedSubtitleIndex": "7",
+          "negotiatedSubtitleMethod": "Encode",
+          "requestedServerSubtitleIndex": "7"
+        }
+      },
+      {
+        "event": "diagnostics.jellyfin.playback_prepared",
+        "fields": {}
+      },
+      {
+        "event": "diagnostics.playback.next.route_selected",
+        "fields": {
+          "decodeEngine": "systemAVPlayer",
+          "routeKind": "localHLS"
+        }
+      },
+      {
+        "event": "diagnostics.playback.next.replacement_committed",
+        "fields": {
+          "startsPaused": "true"
+        }
+      }
+    ],
+    "actualASSImageReviewed": "paused.png",
+    "actualPGSImageReviewed": "natural-30.png",
+    "sampledCue": "不 / No.",
+    "oldWhiteOverlayVisibleAfterPGSCommitted": false,
+    "actualPGSFramePaused": true,
+    "historicalDuplicateCueReplayed": false,
+    "normalWindowIncludedPiP": false,
+    "startupSpinnerObservedAtSeconds": [
+      3,
+      10
+    ],
+    "PGSInitialSpinnerRetained": true,
+    "fullSubtitleAudioHDRAccepted": false,
+    "performanceAccepted": false
+  },
+  "toolInducedPause": {
+    "secondCenterTapHitsSystemPause": true,
+    "freshPhoneEnginePlayingBeforeSystemControls": true,
+    "freshPhoneEnginePausedBeforeRestoreRequest": true,
+    "classifiedAs": "TOOL induced pause; no automatic resume should override it",
+    "historicalFreezeCause": "same tool pattern likely; not independently instrumented historically"
+  },
+  "rawEvidenceLocation": "private local DebugEvidence directory; not checked in",
+  "HDRPiPSubtitleAccepted": false,
+  "historicalDuplicateCueAccepted": false,
+  "fullSubtitleAudioHDRAccepted": false,
+  "performanceAccepted": false,
+  "cellularNetworkTested": false,
+  "competitorFrameEvidenceAcquired": false
+}

@@ -1,0 +1,77 @@
+{
+  "at": "2026-11-08T10:14:10.328351+08:00",
+  "sourceHead": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceInputCount": 542,
+  "sourceManifestSHA256": "fae72d6dccea751980dd8708a688a8309edd760e550b60b0680ae19d96660318",
+  "changedFiles": [
+    "ios/Nastart/Nastart/Features/Devices/DevicesView.swift",
+    "ios/Nastart/Nastart/Features/Launchpad/LaunchpadLayoutViews.swift",
+    "ios/Nastart/Nastart/Playback/GreenfieldPlaybackBridge.swift",
+    "ios/Nastart/Nastart/Playback/GreenfieldVideoPlayerView.swift",
+    "ios/Nastart/NastartTests/PlaybackNextCoreTests.swift",
+    "ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/WebDAVPlaybackSession.swift"
+  ],
+  "build": {
+    "configuration": "normal Debug -Onone; existing automatic signing; no test variables/flags or provisioning updates",
+    "builtAt": "2026-11-08T10:09:03.248462+08:00",
+    "mainSHA256": "4f5f0ffe431e9ea09e7e917279d0d21bb967b38af91607dd7e6b212c62f1262e",
+    "debugDylibSHA256": "97b358321cdd7652b866552e24bb25c65cd1ab800bf42c4afd92905bb3147d5f",
+    "ipaSHA256": "d6d8069e1af7375f26b712acac27ff6f82c4deaa217045b55de6abd0f06ba02c",
+    "signedMachOCount": 31,
+    "profileExpirationUTC": "2026-11-15T00:30:17Z"
+  },
+  "tests": {
+    "initialPassed": 6,
+    "headRepeatedWindowsObservedInInitialLogs": true,
+    "firstAfterHeadFixPassed": 5,
+    "firstAfterHeadFixFailed": 1,
+    "testFailureReason": "HEAD does not emit GET-only upstreamRequestIssued event",
+    "finalPassed": 6,
+    "finalFailed": 0,
+    "ownedSimulatorsDeleted": true
+  },
+  "iphone13": {
+    "model": "iPhone14,5",
+    "system": "16.3.1",
+    "connection": "USB development and Wi-Fi LAN media",
+    "installedAt": "2026-11-08T10:09:42.452882+08:00",
+    "retainDataInstallCompleteAndFreshLookup": true,
+    "installPreferencesEqual": true,
+    "appArguments": [],
+    "appEnvironment": {},
+    "film": "赌侠",
+    "sourceBytes": 5467405922,
+    "actualPictureSeen": true,
+    "route": "sharedProxy",
+    "sourceScheme": "ftp",
+    "networkContext": "privateIP",
+    "upstreamKind": "networkLibraryBridge",
+    "measurementBoundary": "bridgeDelivery",
+    "status206Observed": true,
+    "seekTargetSeconds": 19.254,
+    "seekRecoveredSeconds": 19.348,
+    "ordinaryCloseVerified": false,
+    "ordinaryCloseTapDispatched": false,
+    "nativeCleanupAt": "2026-11-08T10:11:03.052768+08:00",
+    "remainingAppOrRunner": 0,
+    "finalPreferenceChangedKeys": [
+      "diagnostics.entries.v1",
+      "playback.localResume.v1"
+    ],
+    "ownCollectorAndForwarderStopped": true,
+    "preloadedBytes": 0,
+    "preloadReason": "bytesNotMaterialized"
+  },
+  "ipad": {
+    "usbPresent": false,
+    "finalFreshCheck": "2026-11-08T10:12:39.318096+08:00",
+    "phase1Installed": false,
+    "phase1PlaybackVerified": false,
+    "previousPackagePrefix": "bb4defd4"
+  },
+  "newMatrixPasses": 0,
+  "requirements": 30,
+  "matrixCells": 114,
+  "indexUnchanged": true,
+  "committed": false
+}

@@ -1,0 +1,115 @@
+{
+  "updatedAt": "2026-10-23T05:53:53.357426+08:00",
+  "scope": "host WDA selection-age guard; no App source or binary changes",
+  "tests": {
+    "pattern": "test_wda_*.py",
+    "executed": 70,
+    "passed": 70,
+    "failed": 0,
+    "newCases": 18
+  },
+  "optionalAgeBudgetSeconds": {
+    "exclusiveMinimum": 0,
+    "inclusiveMaximum": 2
+  },
+  "expiryIncludes": [
+    "query retries",
+    "read-only target validation",
+    "scene check",
+    "dispatch recorder"
+  ],
+  "expiredSelectionDispatchesClick": false,
+  "unknownActionAutomaticallyResent": false,
+  "appBuildTime": "2026-10-22T05:26:28.931374+08:00",
+  "appIPASHA256": "45d213bafb07a70a3543980ff961388a817172e7e9176185f67c76fb2b1eaf9b",
+  "live13LatestSourceAndPackageReverifiedAt": "2026-10-23T04:07:35+08:00",
+  "live13State": [
+    2,
+    2
+  ],
+  "live13SystemUI": "Control Center visible; unlocked; Wi-Fi icon and not-playing marker observed",
+  "live13Actions": "one homescreen request and one Home swipe response received; neither confirmed dismissal",
+  "live13ManualDismissalRequestedOnce": true,
+  "live13NewGuardActionNotYetExecuted": true,
+  "mediaCommands": 0,
+  "networkChanges": false,
+  "productTestsReexecuted": false,
+  "toolSourceSHA256": {
+    "scripts/wda_command_guard.py": "4698dd6ad0bbd92c68fed19443a8b22134ced855e32800dadbb57a1479347193",
+    "scripts/wda_usb_session.py": "c6cbb15493a2b69f47d19e0c4150b87d0fb875cac403decb735f6744161de10d",
+    "scripts/test_wda_command_guard.py": "8ca3df5bcda7f26ddcaf733a5e6fe867c409d6411aedbb64899fc95195b93826",
+    "scripts/test_wda_usb_session.py": "02b3a9b3b0a8b7d12de9912c14e8d85d5cb260caf27ff07b1dd116e9fa2bb997"
+  },
+  "Pad": {
+    "firstWindow": {
+      "startedAt": 1792704264.633013,
+      "mediaCommands": 0,
+      "newAppInstallOrBuild": false,
+      "guardedClicks": 0,
+      "networkChanges": false,
+      "emptyEnvironmentVerified": true,
+      "expiredLiveSelectionRejected": true,
+      "expiredGateClickCount": 0,
+      "failureType": "ObservationExpired",
+      "failureReason": "details private",
+      "settingsRestoredReadback": true,
+      "homeCommandResponseReceived": true,
+      "finalAppState": 4,
+      "finishedAt": 1792704279.8822122
+    },
+    "boundedTwoSecondWindow": {
+      "startedAt": 1792704385.390953,
+      "mediaCommands": 0,
+      "newAppInstallOrBuild": false,
+      "guardedClicks": 2,
+      "networkChanges": false,
+      "emptyEnvironmentVerified": true,
+      "expiredLiveSelectionRejected": true,
+      "expiredGateClickCount": 0,
+      "mineUIEffectVerified": true,
+      "returnedLaunchpadEffectVerified": true,
+      "settingsRestoredReadback": true,
+      "homeCommandResponseReceived": true,
+      "finalAppState": 4,
+      "finishedAt": 1792704403.4168808
+    },
+    "positiveDispatchAgeSeconds": [
+      1.2178618340000007,
+      0.9790131249999998
+    ],
+    "rawProcessPreservationFlagWithdrawn": true,
+    "sessionChangedAppPID": true,
+    "actualMineAndReturnedLaunchpadImagesReviewed": true,
+    "newMediaCommands": 0,
+    "cleanup": {
+      "at": "2026-10-23T05:30:54.731042+08:00",
+      "killDispatchAttempted": true,
+      "priorBirthParsingFailureRetained": true,
+      "nativePIDAndSessionBirthWindowVerified": true,
+      "nativeNastartCount": 0,
+      "nativeRunnerCount": 0,
+      "preferences": {
+        "beforeKeys": 18,
+        "afterKeys": 18,
+        "sameKeys": true,
+        "changedValues": 0,
+        "allNonDiagnosticPreferencesEqual": true
+      }
+    },
+    "ownedRunnerHostStopped": true,
+    "finalNativeHomeWiFiNoPiPActuallyReviewed": true,
+    "firstCleanupBirthDatetimeParsingFailedBeforeKill": true
+  },
+  "expectedRotationRead": {
+    "API": "USBSession.observe_ui_after_rotation",
+    "requiresMeasuredPriorBoundScene": true,
+    "requiresExplicitDifferentTargetOrientation": true,
+    "ownerSessionBundlePIDStillFixed": true,
+    "noActionOrRetryInsideAPI": true,
+    "fixtureDirections": [
+      "PORTRAIT to LANDSCAPE",
+      "LANDSCAPE to PORTRAIT"
+    ],
+    "livePlayerExitNotYetVerified": true
+  }
+}

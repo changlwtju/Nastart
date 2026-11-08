@@ -1,0 +1,121 @@
+{
+  "recordedAt": "2026-10-30T07:03:35+08:00",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceInputCount": 435,
+  "changedExistingSourceFiles": 2,
+  "testsPassed": 24,
+  "newTests": 0,
+  "testsBySuite": {
+    "MediaPosterGridLayoutTests": 2,
+    "MediaCatalogTests": 11,
+    "MediaPresentationTests": 7,
+    "OfflineUIScenarioTests": 4
+  },
+  "builds": {
+    "module-tests": {
+      "startedAt": "2026-10-30T06:56:19.609296+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T06:56:23.141870+08:00"
+    },
+    "mobile-sim-debug-cast": {
+      "startedAt": "2026-10-30T06:56:19.609240+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T06:56:39.166054+08:00"
+    },
+    "tv-sim-debug-cast": {
+      "startedAt": "2026-10-30T06:56:19.609268+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T06:56:31.863155+08:00"
+    },
+    "mobile-debug": {
+      "startedAt": "2026-10-30T06:57:16.883354+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T07:00:19.781857+08:00"
+    },
+    "tv-debug": {
+      "startedAt": "2026-10-30T06:57:16.883388+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T06:58:27.745506+08:00"
+    },
+    "mobile-release": {
+      "startedAt": "2026-10-30T07:00:19.786223+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T07:02:20.354208+08:00"
+    },
+    "tv-release": {
+      "startedAt": "2026-10-30T06:58:27.747861+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T07:00:35.406770+08:00"
+    }
+  },
+  "capture": {
+    "accepted": 5,
+    "byPlatform": {
+      "phone": 1,
+      "pad": 1,
+      "tv": 3
+    },
+    "allPassed": true,
+    "ownedSimulatorsDeleted": true,
+    "syntheticPreferencesPreserved": true,
+    "physicalDevicesOperated": 0,
+    "NASCommands": 0,
+    "interactionOrAnimationVerified": false
+  },
+  "allCaptureArtifactsHashChecked": true,
+  "packages": {
+    "mobile": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-30T07:00:18.363458+08:00",
+      "frozenAt": "2026-10-30T07:02:49.134667+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 435,
+      "mainSHA256": "9d65e79ab5a0ed506afadb508e98b3bf6659a9192a4341f40b12de985537708e",
+      "debugDylibSHA256": "b7be4ccc35d10a2cf40147742843f380b57a689307aca3041c567008ce8c53ef",
+      "signedMachOCount": 30,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false
+    },
+    "tv": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-30T06:58:27.366024+08:00",
+      "frozenAt": "2026-10-30T07:02:49.526285+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 435,
+      "mainSHA256": "b0480681c16f3b8d0f92c9d325067c09a9cc500488cd4c718e5cb7cf68e01217",
+      "debugDylibSHA256": "cd454cb5cc2a5fde5c8f429c80487f6eebec6251741a82bc6ec5b9a40b1ba3c3",
+      "signedMachOCount": 27,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false
+    }
+  },
+  "sourcePreservation": {
+    "changedExistingSourceFiles": 2,
+    "seriesOverviewUnchanged": true,
+    "seasonDetailDestinationUnchanged": true,
+    "TVJellyfinSourceUnchanged": true,
+    "networkDetailArtworkPlaybackAndGroupingUnchanged": true,
+    "playbackCommands": 0
+  },
+  "physicalDevicesOperated": 0,
+  "NASCommands": 0,
+  "playbackCommands": 0,
+  "ownedSimulatorsDeleted": 3,
+  "privateEvidencePointer": "current-season-grid-polish-private",
+  "notVerified": [
+    "Real server image/metadata retrieval",
+    "Remote focus movement, scrolling, return or VoiceOver",
+    "Multi-version grouping, file chooser and source transactions",
+    "Physical devices, network or playback"
+  ]
+}

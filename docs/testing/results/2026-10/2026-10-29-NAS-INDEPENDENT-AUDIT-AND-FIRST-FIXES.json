@@ -1,0 +1,83 @@
+{
+  "updatedAt": "2026-10-29T12:43+08:00",
+  "scope": "NAS-independent audit, work ordering and first settings corrections",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceInputCount": 430,
+  "changedExistingSourceOrResourceFiles": 5,
+  "playbackRoutingChanged": false,
+  "sharedVideoEngineSummaryUsedBy": [
+    "iPhone/iPad PlayerSettingsView",
+    "AppleTV TVPlayerSettingsView"
+  ],
+  "TVSettingsOrderMatchesMobile": true,
+  "existingEngineAvailabilityTests": {
+    "selected": 1,
+    "passed": 1,
+    "failed": 0
+  },
+  "builds": {
+    "mobile-debug": {
+      "startedAt": "2026-10-29T12:38:13.523446+08:00",
+      "NASCommands": 0,
+      "deviceCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-29T12:38:59.956059+08:00"
+    },
+    "tv-debug": {
+      "startedAt": "2026-10-29T12:38:13.523516+08:00",
+      "NASCommands": 0,
+      "deviceCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-29T12:38:39.064377+08:00"
+    }
+  },
+  "packages": {
+    "mobile": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-29T12:38:59.738020+08:00",
+      "frozenAt": "2026-10-29T12:39:55.883307+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 430,
+      "mainSHA256": "e847f8e3f8e1789de8e86e93d09d5d2773e4dbb89d5d8360d4e74b2a1255241b",
+      "debugDylibSHA256": "43a137541076715607babed4abcff56696639528d452f8a8d31f9f4fdd5eca3f",
+      "signedMachOCount": 30,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false
+    },
+    "tv": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-29T12:38:38.817305+08:00",
+      "frozenAt": "2026-10-29T12:39:56.288309+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 430,
+      "mainSHA256": "589501d220cd19f7f52002f131fa70fa8dae8122cb0dc761c9c3ca65c26a66be",
+      "debugDylibSHA256": "9ac35a1529d868f7f3e242abea56951b6eb610fae1bffea87fd18f6f2d2f126c",
+      "signedMachOCount": 27,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false
+    }
+  },
+  "releaseBuiltThisBatch": false,
+  "deviceInstalledThisBatch": false,
+  "trueDeviceUIAcceptanceThisBatch": false,
+  "competitorAppsLaunchedThisBatch": false,
+  "primaryResearch": [
+    "https://support.firecore.com/hc/en-us/articles/360006462093-Streaming-from-Plex-Emby-and-Jellyfin",
+    "https://support.firecore.com/hc/en-us/articles/23312095185815-Smart-Folders"
+  ],
+  "NASCommands": 0,
+  "deviceControlCommands": 0,
+  "oldNASCredentialsUsed": false,
+  "newPlaybackMatrixPasses": 0,
+  "cellularWindows": 0,
+  "modelSwitchPerformed": false,
+  "finalSourceHashCheck": true,
+  "changedLinesWhitespaceClean": true,
+  "documentationCheck": {
+    "documents": 516,
+    "localLinks": 3107,
+    "missingDestinations": 0
+  }
+}

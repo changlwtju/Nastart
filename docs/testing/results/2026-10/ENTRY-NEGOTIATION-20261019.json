@@ -1,0 +1,38 @@
+{
+  "updatedAt": "2026-10-19T07:40:50.314661+08:00",
+  "scope": "offline reanalysis of existing S19 cellular windows; no new device run",
+  "sample": "S19",
+  "newPlaybackAcceptance": false,
+  "windows": [
+    {
+      "entry": "deviceFile",
+      "requestedMaxStreamingBitrate": 20000000,
+      "negotiatedMaxWidth": 1920,
+      "negotiatedMaxHeight": 1080,
+      "sourceAudioIndexInFallbackLog": 1,
+      "sourceSubtitleIndexInFallbackLog": -1,
+      "finalDimensionsTraceMatchesFinalRoute": true,
+      "fallbackTrackLogTraceMatchesOriginalRoute": true
+    },
+    {
+      "entry": "jellyfin",
+      "requestedMaxStreamingBitrate": 4000000,
+      "negotiatedVideoBitrate": 3360000,
+      "negotiatedVideoCodec": "h264",
+      "negotiatedAudioCodec": "aac",
+      "sourceAudioIndex": 1,
+      "sourceSubtitleIndex": 8,
+      "negotiatedSubtitleMethod": "Encode",
+      "preparedTraceMatchesFinalRoute": true
+    }
+  ],
+  "buildInputsChecked": 173,
+  "changedBuildInputs": 0,
+  "interpretation": [
+    "HLS target budgets differ by five times; segment byte sizes are not a same-rendition network comparison",
+    "Persisted preferences being unchanged does not establish equal effective subtitles: file fallback log Off, Jellyfin subtitle 8 Encode",
+    "Different fallback ceiling semantics found in source; no conclusion that increasing Jellyfin budget or lowering file budget is an accepted fix",
+    "Server generation versus WAN first-byte attribution remains unconfirmed"
+  ],
+  "next": "Freeze effective audio/subtitle state and actual rendition; verify first-original-to-HLS ceiling semantics before making a shared policy change"
+}

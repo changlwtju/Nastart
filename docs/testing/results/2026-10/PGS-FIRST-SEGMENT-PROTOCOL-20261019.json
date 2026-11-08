@@ -1,0 +1,1229 @@
+{
+  "at": "2026-10-19T18:20:19.806875+08:00",
+  "scope": "Live-server protocol supply diagnostics only; no native iPhone/iPad/18 action",
+  "sample": {
+    "at": "2026-10-19T17:58:25.798054+08:00",
+    "serverVersion": "10.11.11",
+    "entry": "Mac direct protocol; no iPhone operation",
+    "selectionCount": 1,
+    "mediaSourceCount": 1,
+    "size": 54005939750,
+    "durationSeconds": 7524.768,
+    "video": [
+      {
+        "Index": 0,
+        "Type": "Video",
+        "Codec": "hevc",
+        "Width": 3840,
+        "Height": 2160,
+        "BitRate": 57416722
+      }
+    ],
+    "audio": [
+      {
+        "Index": 1,
+        "Codec": "truehd",
+        "Channels": 6,
+        "SampleRate": 48000,
+        "BitRate": 3537404
+      },
+      {
+        "Index": 2,
+        "Codec": "ac3",
+        "Channels": 6,
+        "SampleRate": 48000,
+        "BitRate": 448000
+      },
+      {
+        "Index": 3,
+        "Codec": "ac3",
+        "Channels": 6,
+        "SampleRate": 48000,
+        "BitRate": 640000
+      },
+      {
+        "Index": 4,
+        "Codec": "ac3",
+        "Channels": 6,
+        "SampleRate": 48000,
+        "BitRate": 640000
+      }
+    ],
+    "subtitles": [
+      {
+        "Index": 5,
+        "Codec": "ass",
+        "Language": "zho",
+        "IsExternal": false
+      },
+      {
+        "Index": 6,
+        "Codec": "ass",
+        "Language": "zho",
+        "IsExternal": false
+      },
+      {
+        "Index": 7,
+        "Codec": "PGSSUB",
+        "Language": "zho",
+        "IsExternal": false
+      },
+      {
+        "Index": 8,
+        "Codec": "PGSSUB",
+        "Language": "zho",
+        "IsExternal": false
+      },
+      {
+        "Index": 9,
+        "Codec": "PGSSUB",
+        "Language": "eng",
+        "IsExternal": false
+      }
+    ],
+    "usesExistingEndpointAndTokenPrivately": true,
+    "settingsChanged": false,
+    "preflightMediaRequestsStarted": 0
+  },
+  "plan": {
+    "at": "2026-10-19T18:01:31.043026+08:00",
+    "scope": "Mac HTTP/1.1 protocol diagnostic; not native iPhone/cellular playback",
+    "sample": "S03",
+    "sourceSize": 54005939750,
+    "durationSeconds": 7524.768,
+    "order": [
+      "PGS",
+      "Off",
+      "Off",
+      "PGS",
+      "PGS",
+      "Off"
+    ],
+    "startSeconds": 0,
+    "audioStreamIndex": 1,
+    "PGSSubtitleStreamIndex": 7,
+    "maxStreamingBitrate": 2000000,
+    "maxWidth": 854,
+    "maxHeight": 480,
+    "videoCodec": "h264",
+    "audioCodec": "aac",
+    "segmentLengthSeconds": 4,
+    "minSegments": 1,
+    "headerTimeoutSeconds": 25,
+    "roundAlarmSeconds": 60,
+    "manifestByteCap": 3145728,
+    "firstSegmentByteCap": 2097152,
+    "cacheState": "unknown; no cache cleared",
+    "noConcurrentMedia": true,
+    "ownUniqueDeviceAndNegotiatedPlaySessionIDCleanup": true,
+    "nativeDevicesUntouched": true,
+    "NASVPNSettingsChanged": false
+  },
+  "groups": [
+    {
+      "route": "LAN",
+      "client": "urllib Python3.9 HTTP/1.1",
+      "scope": "private IP HTTP",
+      "rounds": [
+        {
+          "round": 1,
+          "condition": "PGS",
+          "sourceSeconds": 0,
+          "result": "complete",
+          "negotiated": {
+            "videocodec": "h264",
+            "audiocodec": "aac",
+            "subtitlemethod": "Encode",
+            "videobitrate": 1616000,
+            "audiobitrate": 384000,
+            "maxwidth": 854,
+            "maxheight": 480,
+            "audiostreamindex": 1,
+            "subtitlestreamindex": 7,
+            "segmentlength": 4,
+            "minsegments": 1
+          },
+          "sessionBinding": {
+            "responseToReturnedURL": true,
+            "uniqueDiagnosticDevice": true,
+            "firstSegmentURLMatchesNegotiatedPlaySession": true
+          },
+          "playlistDurationSeconds": 7524.767999999851,
+          "playlistSegments": 1880,
+          "firstSegment": {
+            "startedAt": 1792404091.419989,
+            "method": "GET",
+            "limitBytes": 2097152,
+            "status": 200,
+            "headersSeconds": 2.285261167,
+            "httpVersion": 11,
+            "contentLength": "744480",
+            "contentType": "video/mp2t",
+            "totalSeconds": 2.325313167,
+            "bodyBytes": 744480,
+            "bodySHA256": "c60581dddbd1f52e111ce3b7f537a5184c51b5c768edf5406be0b3d0f4fb8470",
+            "result": "complete"
+          },
+          "cleanup": {
+            "at": 1792404093.9807181,
+            "status": 204,
+            "exactNegotiatedPlaySessionAndOwnDeviceID": true,
+            "encodingProcessExitNotProvenByHTTPStatusAlone": true
+          },
+          "performanceAccepted": false
+        },
+        {
+          "round": 2,
+          "condition": "Off",
+          "sourceSeconds": 0,
+          "result": "complete",
+          "negotiated": {
+            "videocodec": "h264",
+            "audiocodec": "aac",
+            "subtitlemethod": "Encode",
+            "videobitrate": 1616000,
+            "audiobitrate": 384000,
+            "maxwidth": 854,
+            "maxheight": 480,
+            "audiostreamindex": 1,
+            "segmentlength": 4,
+            "minsegments": 1
+          },
+          "sessionBinding": {
+            "responseToReturnedURL": true,
+            "uniqueDiagnosticDevice": true,
+            "firstSegmentURLMatchesNegotiatedPlaySession": true
+          },
+          "playlistDurationSeconds": 7524.767999999851,
+          "playlistSegments": 1880,
+          "firstSegment": {
+            "startedAt": 1792404094.311806,
+            "method": "GET",
+            "limitBytes": 2097152,
+            "status": 200,
+            "headersSeconds": 2.1673803749999996,
+            "httpVersion": 11,
+            "contentLength": "744480",
+            "contentType": "video/mp2t",
+            "totalSeconds": 2.2216545419999996,
+            "bodyBytes": 744480,
+            "bodySHA256": "c60581dddbd1f52e111ce3b7f537a5184c51b5c768edf5406be0b3d0f4fb8470",
+            "result": "complete"
+          },
+          "cleanup": {
+            "at": 1792404096.817491,
+            "status": 204,
+            "exactNegotiatedPlaySessionAndOwnDeviceID": true,
+            "encodingProcessExitNotProvenByHTTPStatusAlone": true
+          },
+          "performanceAccepted": false
+        },
+        {
+          "round": 3,
+          "condition": "Off",
+          "sourceSeconds": 0,
+          "result": "complete",
+          "negotiated": {
+            "videocodec": "h264",
+            "audiocodec": "aac",
+            "subtitlemethod": "Encode",
+            "videobitrate": 1616000,
+            "audiobitrate": 384000,
+            "maxwidth": 854,
+            "maxheight": 480,
+            "audiostreamindex": 1,
+            "segmentlength": 4,
+            "minsegments": 1
+          },
+          "sessionBinding": {
+            "responseToReturnedURL": true,
+            "uniqueDiagnosticDevice": true,
+            "firstSegmentURLMatchesNegotiatedPlaySession": true
+          },
+          "playlistDurationSeconds": 7524.767999999851,
+          "playlistSegments": 1880,
+          "firstSegment": {
+            "startedAt": 1792404097.2588,
+            "method": "GET",
+            "limitBytes": 2097152,
+            "status": 200,
+            "headersSeconds": 2.1683035410000002,
+            "httpVersion": 11,
+            "contentLength": "744480",
+            "contentType": "video/mp2t",
+            "totalSeconds": 2.237964958000001,
+            "bodyBytes": 744480,
+            "bodySHA256": "c60581dddbd1f52e111ce3b7f537a5184c51b5c768edf5406be0b3d0f4fb8470",
+            "result": "complete"
+          },
+          "cleanup": {
+            "at": 1792404099.755511,
+            "status": 204,
+            "exactNegotiatedPlaySessionAndOwnDeviceID": true,
+            "encodingProcessExitNotProvenByHTTPStatusAlone": true
+          },
+          "performanceAccepted": false
+        },
+        {
+          "round": 4,
+          "condition": "PGS",
+          "sourceSeconds": 0,
+          "result": "complete",
+          "negotiated": {
+            "videocodec": "h264",
+            "audiocodec": "aac",
+            "subtitlemethod": "Encode",
+            "videobitrate": 1616000,
+            "audiobitrate": 384000,
+            "maxwidth": 854,
+            "maxheight": 480,
+            "audiostreamindex": 1,
+            "subtitlestreamindex": 7,
+            "segmentlength": 4,
+            "minsegments": 1
+          },
+          "sessionBinding": {
+            "responseToReturnedURL": true,
+            "uniqueDiagnosticDevice": true,
+            "firstSegmentURLMatchesNegotiatedPlaySession": true
+          },
+          "playlistDurationSeconds": 7524.767999999851,
+          "playlistSegments": 1880,
+          "firstSegment": {
+            "startedAt": 1792404100.159347,
+            "method": "GET",
+            "limitBytes": 2097152,
+            "status": 200,
+            "headersSeconds": 2.210447083,
+            "httpVersion": 11,
+            "contentLength": "744480",
+            "contentType": "video/mp2t",
+            "totalSeconds": 2.2735937909999997,
+            "bodyBytes": 744480,
+            "bodySHA256": "c60581dddbd1f52e111ce3b7f537a5184c51b5c768edf5406be0b3d0f4fb8470",
+            "result": "complete"
+          },
+          "cleanup": {
+            "at": 1792404102.651384,
+            "status": 204,
+            "exactNegotiatedPlaySessionAndOwnDeviceID": true,
+            "encodingProcessExitNotProvenByHTTPStatusAlone": true
+          },
+          "performanceAccepted": false
+        },
+        {
+          "round": 5,
+          "condition": "PGS",
+          "sourceSeconds": 0,
+          "result": "complete",
+          "negotiated": {
+            "videocodec": "h264",
+            "audiocodec": "aac",
+            "subtitlemethod": "Encode",
+            "videobitrate": 1616000,
+            "audiobitrate": 384000,
+            "maxwidth": 854,
+            "maxheight": 480,
+            "audiostreamindex": 1,
+            "subtitlestreamindex": 7,
+            "segmentlength": 4,
+            "minsegments": 1
+          },
+          "sessionBinding": {
+            "responseToReturnedURL": true,
+            "uniqueDiagnosticDevice": true,
+            "firstSegmentURLMatchesNegotiatedPlaySession": true
+          },
+          "playlistDurationSeconds": 7524.767999999851,
+          "playlistSegments": 1880,
+          "firstSegment": {
+            "startedAt": 1792404103.2560031,
+            "method": "GET",
+            "limitBytes": 2097152,
+            "status": 200,
+            "headersSeconds": 2.359522291000001,
+            "httpVersion": 11,
+            "contentLength": "744480",
+            "contentType": "video/mp2t",
+            "totalSeconds": 2.423291916,
+            "bodyBytes": 744480,
+            "bodySHA256": "c60581dddbd1f52e111ce3b7f537a5184c51b5c768edf5406be0b3d0f4fb8470",
+            "result": "complete"
+          },
+          "cleanup": {
+            "at": 1792404106.335691,
+            "status": 204,
+            "exactNegotiatedPlaySessionAndOwnDeviceID": true,
+            "encodingProcessExitNotProvenByHTTPStatusAlone": true
+          },
+          "performanceAccepted": false
+        },
+        {
+          "round": 6,
+          "condition": "Off",
+          "sourceSeconds": 0,
+          "result": "complete",
+          "negotiated": {
+            "videocodec": "h264",
+            "audiocodec": "aac",
+            "subtitlemethod": "Encode",
+            "videobitrate": 1616000,
+            "audiobitrate": 384000,
+            "maxwidth": 854,
+            "maxheight": 480,
+            "audiostreamindex": 1,
+            "segmentlength": 4,
+            "minsegments": 1
+          },
+          "sessionBinding": {
+            "responseToReturnedURL": true,
+            "uniqueDiagnosticDevice": true,
+            "firstSegmentURLMatchesNegotiatedPlaySession": true
+          },
+          "playlistDurationSeconds": 7524.767999999851,
+          "playlistSegments": 1880,
+          "firstSegment": {
+            "startedAt": 1792404106.7743769,
+            "method": "GET",
+            "limitBytes": 2097152,
+            "status": 200,
+            "headersSeconds": 2.2695971250000007,
+            "httpVersion": 11,
+            "contentLength": "744480",
+            "contentType": "video/mp2t",
+            "totalSeconds": 2.329890917,
+            "bodyBytes": 744480,
+            "bodySHA256": "c60581dddbd1f52e111ce3b7f537a5184c51b5c768edf5406be0b3d0f4fb8470",
+            "result": "complete"
+          },
+          "cleanup": {
+            "at": 1792404109.784132,
+            "status": 204,
+            "exactNegotiatedPlaySessionAndOwnDeviceID": true,
+            "encodingProcessExitNotProvenByHTTPStatusAlone": true
+          },
+          "performanceAccepted": false
+        }
+      ],
+      "cleanup": {
+        "at": 1792404109.8529742,
+        "remainingOwnedSessions": 0,
+        "phoneCellularTasksStarted": false,
+        "nativeDevicesTouched": false,
+        "WiFiVPNSettingsChanged": false
+      },
+      "statistics": {
+        "PGS": {
+          "attempted": 3,
+          "completed": 3,
+          "failed": 0,
+          "headersSecondsMedian": 2.285261167,
+          "headersSecondsMin": 2.210447083,
+          "headersSecondsMax": 2.359522291000001,
+          "reliableP95": false
+        },
+        "Off": {
+          "attempted": 3,
+          "completed": 3,
+          "failed": 0,
+          "headersSecondsMedian": 2.1683035410000002,
+          "headersSecondsMin": 2.1673803749999996,
+          "headersSecondsMax": 2.2695971250000007,
+          "reliableP95": false
+        }
+      }
+    },
+    {
+      "route": "configuredPublic",
+      "client": "urllib Python3.9 HTTP/1.1",
+      "scope": "verified same-server HTTPS",
+      "rounds": [
+        {
+          "round": 1,
+          "condition": "PGS",
+          "sourceSeconds": 0,
+          "result": "complete",
+          "negotiated": {
+            "videocodec": "h264",
+            "audiocodec": "aac",
+            "subtitlemethod": "Encode",
+            "videobitrate": 1616000,
+            "audiobitrate": 384000,
+            "maxwidth": 854,
+            "maxheight": 480,
+            "audiostreamindex": 1,
+            "subtitlestreamindex": 7,
+            "segmentlength": 4,
+            "minsegments": 1
+          },
+          "sessionBinding": {
+            "responseToReturnedURL": true,
+            "uniqueDiagnosticDevice": true,
+            "firstSegmentURLMatchesNegotiatedPlaySession": true
+          },
+          "playlistDurationSeconds": 7524.767999999851,
+          "playlistSegments": 1880,
+          "firstSegment": {
+            "startedAt": 1792404452.1536288,
+            "method": "GET",
+            "limitBytes": 2097152,
+            "status": 200,
+            "headersSeconds": 12.360769958000002,
+            "httpVersion": 11,
+            "contentLength": "744480",
+            "contentType": "video/mp2t",
+            "totalSeconds": 12.509556999999997,
+            "bodyBytes": 744480,
+            "bodySHA256": "c60581dddbd1f52e111ce3b7f537a5184c51b5c768edf5406be0b3d0f4fb8470",
+            "result": "complete"
+          },
+          "cleanup": {
+            "at": 1792404472.7853389,
+            "status": 204,
+            "exactNegotiatedPlaySessionAndOwnDeviceID": true,
+            "encodingProcessExitNotProvenByHTTPStatusAlone": true
+          },
+          "performanceAccepted": false
+        },
+        {
+          "round": 2,
+          "condition": "Off",
+          "sourceSeconds": 0,
+          "result": "complete",
+          "negotiated": {
+            "videocodec": "h264",
+            "audiocodec": "aac",
+            "subtitlemethod": "Encode",
+            "videobitrate": 1616000,
+            "audiobitrate": 384000,
+            "maxwidth": 854,
+            "maxheight": 480,
+            "audiostreamindex": 1,
+            "segmentlength": 4,
+            "minsegments": 1
+          },
+          "sessionBinding": {
+            "responseToReturnedURL": true,
+            "uniqueDiagnosticDevice": true,
+            "firstSegmentURLMatchesNegotiatedPlaySession": true
+          },
+          "playlistDurationSeconds": 7524.767999999851,
+          "playlistSegments": 1880,
+          "firstSegment": {
+            "startedAt": 1792404543.161931,
+            "method": "GET",
+            "limitBytes": 2097152,
+            "status": 200,
+            "headersSeconds": 10.081506750000003,
+            "httpVersion": 11,
+            "contentLength": "744480",
+            "contentType": "video/mp2t",
+            "totalSeconds": 10.311335374999985,
+            "bodyBytes": 744480,
+            "bodySHA256": "c60581dddbd1f52e111ce3b7f537a5184c51b5c768edf5406be0b3d0f4fb8470",
+            "result": "complete"
+          },
+          "cleanup": {
+            "at": 1792404561.523791,
+            "status": 204,
+            "exactNegotiatedPlaySessionAndOwnDeviceID": true,
+            "encodingProcessExitNotProvenByHTTPStatusAlone": true
+          },
+          "performanceAccepted": false
+        },
+        {
+          "round": 3,
+          "condition": "Off",
+          "sourceSeconds": 0,
+          "result": "complete",
+          "negotiated": {
+            "videocodec": "h264",
+            "audiocodec": "aac",
+            "subtitlemethod": "Encode",
+            "videobitrate": 1616000,
+            "audiobitrate": 384000,
+            "maxwidth": 854,
+            "maxheight": 480,
+            "audiostreamindex": 1,
+            "segmentlength": 4,
+            "minsegments": 1
+          },
+          "sessionBinding": {
+            "responseToReturnedURL": true,
+            "uniqueDiagnosticDevice": true,
+            "firstSegmentURLMatchesNegotiatedPlaySession": true
+          },
+          "playlistDurationSeconds": 7524.767999999851,
+          "playlistSegments": 1880,
+          "firstSegment": {
+            "startedAt": 1792404597.833094,
+            "method": "GET",
+            "limitBytes": 2097152,
+            "status": 200,
+            "headersSeconds": 7.966198084000013,
+            "httpVersion": 11,
+            "contentLength": "744480",
+            "contentType": "video/mp2t",
+            "totalSeconds": 8.039400625000013,
+            "bodyBytes": 744480,
+            "bodySHA256": "c60581dddbd1f52e111ce3b7f537a5184c51b5c768edf5406be0b3d0f4fb8470",
+            "result": "complete"
+          },
+          "cleanup": {
+            "at": 1792404612.120991,
+            "status": 204,
+            "exactNegotiatedPlaySessionAndOwnDeviceID": true,
+            "encodingProcessExitNotProvenByHTTPStatusAlone": true
+          },
+          "performanceAccepted": false
+        },
+        {
+          "round": 4,
+          "condition": "PGS",
+          "sourceSeconds": 0,
+          "result": "complete",
+          "negotiated": {
+            "videocodec": "h264",
+            "audiocodec": "aac",
+            "subtitlemethod": "Encode",
+            "videobitrate": 1616000,
+            "audiobitrate": 384000,
+            "maxwidth": 854,
+            "maxheight": 480,
+            "audiostreamindex": 1,
+            "subtitlestreamindex": 7,
+            "segmentlength": 4,
+            "minsegments": 1
+          },
+          "sessionBinding": {
+            "responseToReturnedURL": true,
+            "uniqueDiagnosticDevice": true,
+            "firstSegmentURLMatchesNegotiatedPlaySession": true
+          },
+          "playlistDurationSeconds": 7524.767999999851,
+          "playlistSegments": 1880,
+          "firstSegment": {
+            "startedAt": 1792404653.462189,
+            "method": "GET",
+            "limitBytes": 2097152,
+            "status": 200,
+            "headersSeconds": 8.076252374999996,
+            "httpVersion": 11,
+            "contentLength": "744480",
+            "contentType": "video/mp2t",
+            "totalSeconds": 8.16314754199999,
+            "bodyBytes": 744480,
+            "bodySHA256": "c60581dddbd1f52e111ce3b7f537a5184c51b5c768edf5406be0b3d0f4fb8470",
+            "result": "complete"
+          },
+          "cleanup": {
+            "at": 1792404667.740574,
+            "status": 204,
+            "exactNegotiatedPlaySessionAndOwnDeviceID": true,
+            "encodingProcessExitNotProvenByHTTPStatusAlone": true
+          },
+          "performanceAccepted": false
+        },
+        {
+          "round": 5,
+          "condition": "PGS",
+          "sourceSeconds": 0,
+          "result": "complete",
+          "negotiated": {
+            "videocodec": "h264",
+            "audiocodec": "aac",
+            "subtitlemethod": "Encode",
+            "videobitrate": 1616000,
+            "audiobitrate": 384000,
+            "maxwidth": 854,
+            "maxheight": 480,
+            "audiostreamindex": 1,
+            "subtitlestreamindex": 7,
+            "segmentlength": 4,
+            "minsegments": 1
+          },
+          "sessionBinding": {
+            "responseToReturnedURL": true,
+            "uniqueDiagnosticDevice": true,
+            "firstSegmentURLMatchesNegotiatedPlaySession": true
+          },
+          "playlistDurationSeconds": 7524.767999999851,
+          "playlistSegments": 1880,
+          "firstSegment": {
+            "startedAt": 1792404704.02406,
+            "method": "GET",
+            "limitBytes": 2097152,
+            "status": 200,
+            "headersSeconds": 7.991504500000019,
+            "httpVersion": 11,
+            "contentLength": "744480",
+            "contentType": "video/mp2t",
+            "totalSeconds": 8.126761958000031,
+            "bodyBytes": 744480,
+            "bodySHA256": "c60581dddbd1f52e111ce3b7f537a5184c51b5c768edf5406be0b3d0f4fb8470",
+            "result": "complete"
+          },
+          "cleanup": {
+            "at": 1792404720.4180741,
+            "status": 204,
+            "exactNegotiatedPlaySessionAndOwnDeviceID": true,
+            "encodingProcessExitNotProvenByHTTPStatusAlone": true
+          },
+          "performanceAccepted": false
+        },
+        {
+          "round": 6,
+          "condition": "Off",
+          "sourceSeconds": 0,
+          "result": "complete",
+          "negotiated": {
+            "videocodec": "h264",
+            "audiocodec": "aac",
+            "subtitlemethod": "Encode",
+            "videobitrate": 1616000,
+            "audiobitrate": 384000,
+            "maxwidth": 854,
+            "maxheight": 480,
+            "audiostreamindex": 1,
+            "segmentlength": 4,
+            "minsegments": 1
+          },
+          "sessionBinding": {
+            "responseToReturnedURL": true,
+            "uniqueDiagnosticDevice": true,
+            "firstSegmentURLMatchesNegotiatedPlaySession": true
+          },
+          "playlistDurationSeconds": 7524.767999999851,
+          "playlistSegments": 1880,
+          "firstSegment": {
+            "startedAt": 1792404758.702314,
+            "method": "GET",
+            "limitBytes": 2097152,
+            "status": 200,
+            "headersSeconds": 8.009310916999993,
+            "httpVersion": 11,
+            "contentLength": "744480",
+            "contentType": "video/mp2t",
+            "totalSeconds": 8.068268624999973,
+            "bodyBytes": 744480,
+            "bodySHA256": "c60581dddbd1f52e111ce3b7f537a5184c51b5c768edf5406be0b3d0f4fb8470",
+            "result": "complete"
+          },
+          "cleanup": {
+            "at": 1792404773.051965,
+            "status": 204,
+            "exactNegotiatedPlaySessionAndOwnDeviceID": true,
+            "encodingProcessExitNotProvenByHTTPStatusAlone": true
+          },
+          "performanceAccepted": false
+        }
+      ],
+      "cleanup": {
+        "at": 1792404784.7471418,
+        "remainingOwnedSessions": 0,
+        "phoneCellularTasksStarted": false,
+        "nativeDevicesTouched": false,
+        "WiFiVPNSettingsChanged": false
+      },
+      "statistics": {
+        "PGS": {
+          "attempted": 3,
+          "completed": 3,
+          "failed": 0,
+          "headersSecondsMedian": 8.076252374999996,
+          "headersSecondsMin": 7.991504500000019,
+          "headersSecondsMax": 12.360769958000002,
+          "reliableP95": false
+        },
+        "Off": {
+          "attempted": 3,
+          "completed": 3,
+          "failed": 0,
+          "headersSecondsMedian": 8.009310916999993,
+          "headersSecondsMin": 7.966198084000013,
+          "headersSecondsMax": 10.081506750000003,
+          "reliableP95": false
+        }
+      }
+    },
+    {
+      "route": "configuredPublicDetailed",
+      "client": "curl8.7.1 HTTP/1.1",
+      "scope": "additional timing diagnostic, one per condition",
+      "rounds": [
+        {
+          "round": 1,
+          "condition": "PGS",
+          "sourceSeconds": 0,
+          "result": "complete",
+          "negotiated": {
+            "videocodec": "h264",
+            "audiocodec": "aac",
+            "subtitlemethod": "Encode",
+            "videobitrate": 1616000,
+            "audiobitrate": 384000,
+            "maxwidth": 854,
+            "maxheight": 480,
+            "audiostreamindex": 1,
+            "subtitlestreamindex": 7,
+            "segmentlength": 4,
+            "minsegments": 1
+          },
+          "sessionBinding": {
+            "responseToReturnedURL": true,
+            "uniqueDiagnosticDevice": true,
+            "firstSegmentURLMatchesNegotiatedPlaySession": true
+          },
+          "playlistDurationSeconds": 7524.767999999851,
+          "playlistSegments": 1880,
+          "firstSegment": {
+            "startedAt": 1792404809.684573,
+            "method": "GET",
+            "limitBytes": 2097152,
+            "client": "curl8.7.1 HTTP/1.1",
+            "time_namelookup": 0.003222,
+            "time_connect": 0.214398,
+            "time_appconnect": 0.233607,
+            "time_pretransfer": 0.233677,
+            "time_starttransfer": 2.443931,
+            "time_total": 2.573259,
+            "num_connects": 1,
+            "size_download": 744480,
+            "status": 200,
+            "headersSeconds": 2.443931,
+            "totalSeconds": 2.573259,
+            "httpVersion": "1.1",
+            "curlExit": 0,
+            "pretransferToFirstByteSeconds": 2.210254,
+            "bodyBytes": 744480,
+            "bodySHA256": "c60581dddbd1f52e111ce3b7f537a5184c51b5c768edf5406be0b3d0f4fb8470",
+            "result": "complete"
+          },
+          "cleanup": {
+            "at": 1792404812.950346,
+            "status": 204,
+            "exactNegotiatedPlaySessionAndOwnDeviceID": true,
+            "attempts": [
+              {
+                "route": "public",
+                "status": 204
+              }
+            ],
+            "encodingProcessExitNotProvenByHTTPStatusAlone": true
+          },
+          "performanceAccepted": false
+        },
+        {
+          "round": 2,
+          "condition": "Off",
+          "sourceSeconds": 0,
+          "result": "complete",
+          "negotiated": {
+            "videocodec": "h264",
+            "audiocodec": "aac",
+            "subtitlemethod": "Encode",
+            "videobitrate": 1616000,
+            "audiobitrate": 384000,
+            "maxwidth": 854,
+            "maxheight": 480,
+            "audiostreamindex": 1,
+            "segmentlength": 4,
+            "minsegments": 1
+          },
+          "sessionBinding": {
+            "responseToReturnedURL": true,
+            "uniqueDiagnosticDevice": true,
+            "firstSegmentURLMatchesNegotiatedPlaySession": true
+          },
+          "playlistDurationSeconds": 7524.767999999851,
+          "playlistSegments": 1880,
+          "firstSegment": {
+            "startedAt": 1792404815.16181,
+            "method": "GET",
+            "limitBytes": 2097152,
+            "client": "curl8.7.1 HTTP/1.1",
+            "time_namelookup": 0.002529,
+            "time_connect": 0.213725,
+            "time_appconnect": 0.230992,
+            "time_pretransfer": 0.23107,
+            "time_starttransfer": 2.441168,
+            "time_total": 2.522012,
+            "num_connects": 1,
+            "size_download": 744480,
+            "status": 200,
+            "headersSeconds": 2.441168,
+            "totalSeconds": 2.522012,
+            "httpVersion": "1.1",
+            "curlExit": 0,
+            "pretransferToFirstByteSeconds": 2.210098,
+            "bodyBytes": 744480,
+            "bodySHA256": "c60581dddbd1f52e111ce3b7f537a5184c51b5c768edf5406be0b3d0f4fb8470",
+            "result": "complete"
+          },
+          "cleanup": {
+            "at": 1792404818.412537,
+            "status": 204,
+            "exactNegotiatedPlaySessionAndOwnDeviceID": true,
+            "attempts": [
+              {
+                "route": "public",
+                "status": 204
+              }
+            ],
+            "encodingProcessExitNotProvenByHTTPStatusAlone": true
+          },
+          "performanceAccepted": false
+        }
+      ],
+      "cleanup": {
+        "at": 1792404819.0990222,
+        "remainingOwnedSessions": 0,
+        "phoneCellularTasksStarted": false,
+        "nativeDevicesTouched": false,
+        "WiFiVPNSettingsChanged": false
+      },
+      "statistics": {
+        "PGS": {
+          "attempted": 1,
+          "completed": 1,
+          "failed": 0,
+          "headersSecondsMedian": 2.443931,
+          "headersSecondsMin": 2.443931,
+          "headersSecondsMax": 2.443931,
+          "reliableP95": false
+        },
+        "Off": {
+          "attempted": 1,
+          "completed": 1,
+          "failed": 0,
+          "headersSecondsMedian": 2.441168,
+          "headersSecondsMin": 2.441168,
+          "headersSecondsMax": 2.441168,
+          "reliableP95": false
+        }
+      }
+    }
+  ],
+  "publicIdentityVerified": {
+    "at": 1792404386.159198,
+    "hostFromPrivateRememberedNASConfiguration": true,
+    "portFromOldS03DiagnosticEndpoint": 8097,
+    "publicSystemInfoReadWithoutCredentials": true,
+    "TLSTrustNormallyVerified": true,
+    "sameServerIDAsLAN": true,
+    "serverVersion": "10.11.11",
+    "elapsedSeconds": 7.250681161880493
+  },
+  "metadataTransportComparisons": [
+    {
+      "client": "urllib",
+      "anonymousMetadataOnly": true,
+      "headersSeconds": 4.3911975420000005,
+      "totalSeconds": 4.392294209,
+      "status": 200,
+      "sameServerID": true,
+      "dns": [
+        {
+          "startSeconds": 0.0020364590000000043,
+          "elapsedSeconds": 0.003965082999999994,
+          "families": [
+            30,
+            2
+          ]
+        }
+      ],
+      "transportStages": [
+        {
+          "stage": "dnsAndTcp",
+          "startSeconds": 0.0020358340000000003,
+          "endSeconds": 4.316397375
+        },
+        {
+          "stage": "connectionIncludingTLS",
+          "startSeconds": 0.0020351670000000044,
+          "endSeconds": 4.385324292
+        },
+        {
+          "stage": "requestHeadersSent",
+          "seconds": 4.3853719170000005
+        }
+      ]
+    },
+    {
+      "client": "curl",
+      "exitCode": 0,
+      "time_namelookup": 0.003444,
+      "time_connect": 0.214968,
+      "time_appconnect": 0.231259,
+      "time_pretransfer": 0.231302,
+      "time_starttransfer": 0.281439,
+      "time_total": 0.282029,
+      "http_code": 200,
+      "http_version": "1.1",
+      "sameServerID": true
+    },
+    {
+      "client": "urllib",
+      "anonymousMetadataOnly": true,
+      "headersSeconds": 6.7327949160000005,
+      "totalSeconds": 6.735473957999999,
+      "status": 200,
+      "sameServerID": true,
+      "dns": [
+        {
+          "startSeconds": 0.0050919159999995856,
+          "elapsedSeconds": 0.00118070899999978,
+          "families": [
+            30,
+            2
+          ]
+        }
+      ],
+      "transportStages": [
+        {
+          "stage": "dnsAndTcp",
+          "startSeconds": 0.0050896250000000975,
+          "endSeconds": 6.704170041
+        },
+        {
+          "stage": "connectionIncludingTLS",
+          "startSeconds": 0.005086874999999935,
+          "endSeconds": 6.726484833
+        },
+        {
+          "stage": "requestHeadersSent",
+          "seconds": 6.726553915999999
+        }
+      ]
+    },
+    {
+      "client": "curl",
+      "exitCode": 0,
+      "time_namelookup": 0.00742,
+      "time_connect": 0.217715,
+      "time_appconnect": 0.271501,
+      "time_pretransfer": 0.271543,
+      "time_starttransfer": 0.319621,
+      "time_total": 0.321525,
+      "http_code": 200,
+      "http_version": "1.1",
+      "sameServerID": true
+    }
+  ],
+  "onePerAddressObservation": {
+    "anonymousMetadataOnly": true,
+    "socketConnectWrappedWithoutChangingArguments": true,
+    "headersSeconds": 7.465888958,
+    "totalSeconds": 7.4673929160000005,
+    "sameServerID": true,
+    "connectAttempts": [
+      {
+        "family": 30,
+        "startSeconds": 0.005033583000000001,
+        "result": "failed",
+        "elapsedSeconds": 7.4295448749999995,
+        "errno": 51
+      },
+      {
+        "family": 2,
+        "startSeconds": 7.434716666,
+        "result": "connected",
+        "elapsedSeconds": 0.0006719170000000219
+      }
+    ],
+    "nativeDeviceTouched": false,
+    "IPv6VPNSettingsChanged": false,
+    "failedErrnoNames": [
+      "ENETUNREACH"
+    ]
+  },
+  "bitstreamProbe": {
+    "codecFourCC": 1635148593,
+    "width": 852,
+    "method": "CoreMedia H264 SPS/PPS descriptor from saved segment",
+    "status": 0,
+    "height": 480,
+    "framesDecoded": false,
+    "nativePlaybackAccepted": false
+  },
+  "firstSegmentPayloadBytes": 10422720,
+  "completedMediaGETCount": 14,
+  "uniqueFirstSegmentSHA256Count": 1,
+  "allFirstSegmentsBitIdentical": true,
+  "byteScope": "first-segment response bodies only; excludes playlists, API/log bodies, IP headers/retransmissions and server disk reads",
+  "serverCandidateAndCleanupAudit": {
+    "at": "2026-10-19T18:17:04.937015+08:00",
+    "onlyOwnDiagnosticDeviceIDsFiltered": true,
+    "ownSessionCount": 0,
+    "ownNowPlayingCount": 0,
+    "ownTranscodingInfoCount": 0,
+    "encodingStopHTTP204Count": 14,
+    "clientNegotiatedPlaySessionCount": 14,
+    "uniquePlaySessionCount": 14,
+    "newLogCount": 15,
+    "uniqueServerOutputIdentityCount": 15,
+    "itemIDUnchanged": true,
+    "ETagUnchanged": true,
+    "sourceIDAndSizeUnchanged": true,
+    "noNewMediaReads": true,
+    "nativeDevicesTouched": false,
+    "NASVPNSettingsChanged": false,
+    "processExitCannotBeProvedBySessionsAlone": true,
+    "profileCompatibleCandidateCount": 14,
+    "profileIncompatibleExtraLogCount": 1,
+    "initialGlobAlsoMatchedTwoCurlHeaderArtifactsCorrected": true,
+    "globalServerNoOtherWorkloadNotProven": true,
+    "cases": [
+      {
+        "route": "LAN-urllib",
+        "case": "round-1-PGS",
+        "candidateLogs": 1,
+        "profileCompatibleCandidateLogs": 1,
+        "profileIncompatibleCandidateLogs": 0
+      },
+      {
+        "route": "LAN-urllib",
+        "case": "round-2-Off",
+        "candidateLogs": 1,
+        "profileCompatibleCandidateLogs": 1,
+        "profileIncompatibleCandidateLogs": 0
+      },
+      {
+        "route": "LAN-urllib",
+        "case": "round-3-Off",
+        "candidateLogs": 1,
+        "profileCompatibleCandidateLogs": 1,
+        "profileIncompatibleCandidateLogs": 0
+      },
+      {
+        "route": "LAN-urllib",
+        "case": "round-4-PGS",
+        "candidateLogs": 1,
+        "profileCompatibleCandidateLogs": 1,
+        "profileIncompatibleCandidateLogs": 0
+      },
+      {
+        "route": "LAN-urllib",
+        "case": "round-5-PGS",
+        "candidateLogs": 1,
+        "profileCompatibleCandidateLogs": 1,
+        "profileIncompatibleCandidateLogs": 0
+      },
+      {
+        "route": "LAN-urllib",
+        "case": "round-6-Off",
+        "candidateLogs": 1,
+        "profileCompatibleCandidateLogs": 1,
+        "profileIncompatibleCandidateLogs": 0
+      },
+      {
+        "route": "public-urllib",
+        "case": "round-1-PGS",
+        "candidateLogs": 2,
+        "profileCompatibleCandidateLogs": 1,
+        "profileIncompatibleCandidateLogs": 1
+      },
+      {
+        "route": "public-urllib",
+        "case": "round-2-Off",
+        "candidateLogs": 1,
+        "profileCompatibleCandidateLogs": 1,
+        "profileIncompatibleCandidateLogs": 0
+      },
+      {
+        "route": "public-urllib",
+        "case": "round-3-Off",
+        "candidateLogs": 1,
+        "profileCompatibleCandidateLogs": 1,
+        "profileIncompatibleCandidateLogs": 0
+      },
+      {
+        "route": "public-urllib",
+        "case": "round-4-PGS",
+        "candidateLogs": 1,
+        "profileCompatibleCandidateLogs": 1,
+        "profileIncompatibleCandidateLogs": 0
+      },
+      {
+        "route": "public-urllib",
+        "case": "round-5-PGS",
+        "candidateLogs": 1,
+        "profileCompatibleCandidateLogs": 1,
+        "profileIncompatibleCandidateLogs": 0
+      },
+      {
+        "route": "public-urllib",
+        "case": "round-6-Off",
+        "candidateLogs": 1,
+        "profileCompatibleCandidateLogs": 1,
+        "profileIncompatibleCandidateLogs": 0
+      },
+      {
+        "route": "public-curl-detail",
+        "case": "round-1-PGS",
+        "candidateLogs": 1,
+        "profileCompatibleCandidateLogs": 1,
+        "profileIncompatibleCandidateLogs": 0
+      },
+      {
+        "route": "public-curl-detail",
+        "case": "round-2-Off",
+        "candidateLogs": 1,
+        "profileCompatibleCandidateLogs": 1,
+        "profileIncompatibleCandidateLogs": 0
+      }
+    ],
+    "exactServerOutputJobBindingProven": false,
+    "firstSegmentCreationTimeKnown": false
+  },
+  "productSourceChanged": false,
+  "nativePackageChanged": false,
+  "currentSourceMatches1716Package": true,
+  "nativeDeviceIdentityOrInstallationRevalidated": false,
+  "nativeWiFiLastVerificationOnly": "previous17:28; not rechecked, no native WiFi/VPN/cellular setting touched this batch",
+  "toolFailuresRetained": [
+    "stale context alias absent before HTTP; corrected to existing observed context",
+    "redacted diagnostic hostname failed IDNA before DNS/network; configured public origin then anonymously verified same server before token use",
+    "initial offline glob included curl header artifacts; corrected to exact ffmpeg filename regex"
+  ],
+  "findings": [
+    "LAN PGS and Off three each completed with 2.167 to2.360s open-to-response-headers, including connection setup; this is not URLSession requestMs.",
+    "Public urllib timings include seconds of client connection setup. Anonymous metadata independently reproduces slow TCP address fallback.",
+    "One unmodified socket-connect wrapper observed IPv6 ENETUNREACH after7.430s then IPv4 connected in0.000672s; DNS samples were milliseconds. Do not alter network/VPN or treat this as native iPhone proof.",
+    "Public curl one PGS and one Off completed at2.443931/2.441168s; measured pretransfer-to-first-byte2.210254/2.210098s. They do not reproduce the old15.392s native wait.",
+    "All14 first segments were744480 bytes and bit-identical; SPS/PPS identifies H264852x480. Actual subtitle content, audio and rendered frames were not verified.",
+    "Fourteen negotiated PlaySessionIds were matched through returned playlist/child URLs and scoped cleanup; exact server output-job mapping and first-segment creation time remain unproven. A same-source1080p incompatible log candidate was retained, so global server isolation is not claimed."
+  ],
+  "acceptance": {
+    "nativeWeakCellularFixed": false,
+    "PGSColdStartupCauseExcluded": false,
+    "old15SecondWaitExplained": false,
+    "strictNativeSeekPair": false,
+    "newFunctionMatrixPass": false,
+    "actualAUDorSUBPass": false
+  },
+  "next": [
+    "Use stage-aware transport metrics for future protocol probes; do not reclassify old h2 connection-reused native wait as this Mac tool issue.",
+    "Continue zero-start PGS/Off native weak-cellular windows with fresh per-device package/identity gate, actual output/track/session binding and unconditional WiFi restoration.",
+    "Preserve rejected seek input candidates; do not repeat pixel or normalized-slider tuning."
+  ],
+  "finalCleanup": {
+    "at": "2026-10-19 18:22:27",
+    "ownActiveBuildOrCollectionProcessCount": 0,
+    "SleepWakeDarkWakeLines": 0,
+    "windowStart": "2026-10-19 17:55:00",
+    "windowEnd": "2026-10-19 18:22:27",
+    "nativeDevicesTouched": false,
+    "WiFiVPNIPv6SettingsChanged": false,
+    "newCellularTask": false,
+    "nativeWiFiNotRecheckedThisBatch": true,
+    "mediaReadsFinishedBeforeOfflineAnalysis": true,
+    "initialAssertionNotSeparatelyCaptured": true
+  },
+  "endpointAddressGroupingOnly": {
+    "privateTargetUsesHTTP": true,
+    "configuredPublicTargetUsesHTTPS": true,
+    "actualMacInterfaceAndVPNExitNotMeasured": true,
+    "notNativePhoneWiFiOrCellular": true
+  }
+}

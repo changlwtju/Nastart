@@ -1,0 +1,246 @@
+{
+  "date": "2026-11-08",
+  "owner": "Codex",
+  "scope": "Range prerequisite and sequential normal physical baselines; not shared-proxy phase1 integration",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "inheritedDirtyPreserved": true,
+  "realIndexChanged": false,
+  "committed": false,
+  "productAndTestWriteFiles": [
+    "ios/Nastart/Nastart/Features/Devices/DevicesView.swift",
+    "ios/Nastart/NastartTests/PlaybackNextCoreTests.swift"
+  ],
+  "selectedSourceInputs": 542,
+  "deviceBaselineSourceManifestSHA256": "a4a3bfeb02f0c6092aa3c9db67f44bb0c6516ea0011cf453a7d56dd4b5f1ada3",
+  "manifestIncludesExternalSDKs": false,
+  "privateEvidencePointer": "/tmp/nastart-codex-device-resume-path",
+  "tests": {
+    "originalPolicyProbePassed": 7,
+    "rangeAndLifecycleTargeted": {
+      "passed": 8,
+      "failed": 0
+    },
+    "extraFirstAttempt": {
+      "accepted": false,
+      "interruptedOwnedBuildForResourceOverlap": true,
+      "exitCode": 75,
+      "ownSimulatorDeleted": true
+    },
+    "extraSerial": {
+      "passed": 4,
+      "failedMethods": 1,
+      "failedAssertions": 2,
+      "reason": "Inherited48MiB fixture nominal3.84s cannot fit two2s windows; actual3.864s; full bytes and ranges correct"
+    },
+    "fixtureCorrection": {
+      "productSamplerModified": false,
+      "assertionsRetained": true,
+      "payloadMiB": 64,
+      "nominalSeconds": 5.12,
+      "passed": 5,
+      "failed": 0,
+      "oldSourceABBuildRun": false
+    },
+    "errorCases": {
+      "passedMethods": 1,
+      "failed": 0,
+      "freshRouteExchanges": 12,
+      "cases": [
+        "empty416",
+        "ignoredRange200",
+        "IfRangeRepresentationChanged200",
+        "changedTotal206"
+      ],
+      "ownSimulatorDeleted": true
+    }
+  },
+  "builds": {
+    "normalSignedDebug": 0,
+    "iOSReleaseCompileOnly": 0,
+    "releaseInstalled": false
+  },
+  "devices": {
+    "iphone13": {
+      "baseline627c": {
+        "model": "iPhone14,5",
+        "system": "16.3.1",
+        "connection": "USB",
+        "freshIdentityVerified": true,
+        "currentSignedPackageVerified": true,
+        "installedAt": "2026-11-08T08:44:17.707055+08:00",
+        "installComplete": true,
+        "postInstallBundleLookupConfirmed": true,
+        "allPreferenceValuesEqual": true,
+        "uninstalled": false,
+        "appLaunchArguments": [],
+        "appLaunchEnvironment": {},
+        "runnerDeployedThisBatch": false,
+        "remainingAppOrRunner": 0,
+        "normalRootVisuallyVerified": true,
+        "FTPFilm": "赌侠",
+        "FTPBytes": 5467405922,
+        "format": "MKV HEVC1080p AC3",
+        "nominalScreenshotSeconds": [
+          3,
+          10,
+          30
+        ],
+        "distinctIntroFramesVisuallyChecked": true,
+        "actualFirstPresentedFrameMilliseconds": null,
+        "internalFirstFrameClockMilliseconds": 2193,
+        "seekVerified": false,
+        "ordinaryCloseVerified": false,
+        "finalStop": "fresh native exact installed executable/PID",
+        "JellyfinStatus": 401,
+        "finalPreferencesChangedKeys": [
+          "diagnostics.entries.v1",
+          "playback.localResume.v1"
+        ],
+        "finalCleanupAt": "2026-11-08T08:55:59.810633+08:00"
+      },
+      "finalPackagebb4d": {
+        "model": "iPhone14,5",
+        "system": "16.3.1",
+        "connection": "USB",
+        "freshIdentityVerified": true,
+        "currentSignedPackageVerified": true,
+        "installedAt": "2026-11-08T09:16:53.336758+08:00",
+        "installComplete": true,
+        "postInstallBundleLookupConfirmed": true,
+        "allPreferenceValuesEqual": true,
+        "mainSHA256": "384be2453843e34fa463b6f75f6aa8232c669f87abbf5b6dfdbf6cc40a65fdff",
+        "debugDylibSHA256": "bb4defd4dcd424acfe0b7e3c540da8f0869d0d8b52cabec510a2e01e242c7c39",
+        "normalRootVisuallyVerified": true,
+        "appEnvironment": {},
+        "appArguments": [],
+        "playbackPerformed": false,
+        "remainingAppOrRunner": 0,
+        "ownForwarderStopped": true,
+        "cleanupAt": "2026-11-08T09:18:31.635103+08:00",
+        "allNonDiagnosticPreferencesEqual": true,
+        "allPreferences": {
+          "allPreferencesEqual": false,
+          "changedKeys": [
+            "diagnostics.entries.v1"
+          ]
+        },
+        "runnerInstalledThisWindow": false
+      }
+    },
+    "ipad": {
+      "baseline627c": {
+        "model": "iPad15,7",
+        "system": "26.6",
+        "connection": "wired",
+        "freshIdentityVerified": true,
+        "currentSignedPackageVerified": true,
+        "installedAt": "2026-11-08T08:44:46.850899+08:00",
+        "installComplete": true,
+        "postInstallBundleLookupConfirmed": true,
+        "allPreferenceValuesEqual": true,
+        "uninstalled": false,
+        "appLaunchArguments": [],
+        "appLaunchEnvironment": {},
+        "runnerDeployedThisBatch": false,
+        "remainingAppOrRunner": 0,
+        "normalRootVisuallyVerified": true,
+        "FTPIndexedFiles": 2292,
+        "SMBIndexedFiles": 2292,
+        "protocolPlaybackVerified": false,
+        "manualEntryResultReceived": false,
+        "syntheticLibraryRowTapped": false,
+        "allFinalPreferencesEqual": true,
+        "finalCleanupAt": "2026-11-08T09:06:37.044852+08:00",
+        "firstPreflightCleanupToolDefectRetained": true
+      },
+      "finalPackagebb4d": {
+        "model": "iPad15,7",
+        "system": "26.6",
+        "connection": "wired",
+        "freshIdentityVerified": true,
+        "currentSignedPackageVerified": true,
+        "installedAt": "2026-11-08T09:17:26.200071+08:00",
+        "installComplete": true,
+        "postInstallBundleLookupConfirmed": true,
+        "allPreferenceValuesEqual": true,
+        "mainSHA256": "384be2453843e34fa463b6f75f6aa8232c669f87abbf5b6dfdbf6cc40a65fdff",
+        "debugDylibSHA256": "bb4defd4dcd424acfe0b7e3c540da8f0869d0d8b52cabec510a2e01e242c7c39",
+        "normalRootVisuallyVerified": true,
+        "appEnvironment": {},
+        "appArguments": [],
+        "playbackPerformed": false,
+        "remainingAppOrRunner": 0,
+        "ownForwarderStopped": true,
+        "cleanupAt": "2026-11-08T09:19:38.016673+08:00",
+        "allNonDiagnosticPreferencesEqual": true,
+        "allPreferences": {
+          "allPreferencesEqual": false,
+          "changedKeys": [
+            "diagnostics.entries.v1"
+          ]
+        },
+        "runnerInstalledThisWindow": false
+      }
+    }
+  },
+  "network": {
+    "NASSourceWrites": 0,
+    "NASOrVPNConfigurationChanges": 0,
+    "cellularTask": false,
+    "FTPAndSMBLANOnly": true,
+    "sharedProxyPhase1Installed": false,
+    "preloadBytes": 0,
+    "preloadReason": "bytesNotMaterialized",
+    "preloadEvidencePackageSHA256": "627c173d7d0cc43d39e91cc7a8dc43480c8aac33251012bad6a9668af349c190"
+  },
+  "iphone18OrTVControlled": false,
+  "newMatrixPasses": 0,
+  "requirementCount": 30,
+  "matrixCellCount": 114,
+  "remaining": [
+    "Shared proxy phase1 with lifecycle/cancellation/trace/extension/bridge capacity and diagnostics",
+    "Public ByteReader route and consumable preload",
+    "iPhone13 Jellyfin login and controls/seek/ordinary exit",
+    "iPad manual library entry and protocol playback",
+    "Whole Claude source acceptance and remaining playback matrix"
+  ],
+  "baselinePackage627c": {
+    "configuration": "normal Debug -Onone; existing automatic signing; no test variables/flags or provisioning updates",
+    "builtAt": "2026-11-08T08:43:43.572911+08:00",
+    "mainSHA256": "113e91b28971de5a54f16670516fa4a5f6d0e4fdc3b4248d84d79ab62e06142b",
+    "debugDylibSHA256": "627c173d7d0cc43d39e91cc7a8dc43480c8aac33251012bad6a9668af349c190",
+    "ipaSHA256": "88765d6289216e84d346e1fa3ada0f4abef560c423f5776415b694abdb032b0c",
+    "signedMachOCount": 31,
+    "profileExpirationUTC": "2026-11-15T00:30:17Z",
+    "deepAndIndividualSignatureVerificationPassed": true
+  },
+  "normalPackage": {
+    "configuration": "normal Debug -Onone; existing automatic signing; no test variables/flags or provisioning updates",
+    "builtAt": "2026-11-08T09:15:50.547365+08:00",
+    "mainSHA256": "384be2453843e34fa463b6f75f6aa8232c669f87abbf5b6dfdbf6cc40a65fdff",
+    "debugDylibSHA256": "bb4defd4dcd424acfe0b7e3c540da8f0869d0d8b52cabec510a2e01e242c7c39",
+    "ipaSHA256": "6b00f27a5f0c2cec3e39d5f5ed433b7e77536552f44995c07f5241f474e452b0",
+    "signedMachOCount": 31,
+    "profileExpirationUTC": "2026-11-15T00:30:17Z",
+    "deepAndIndividualSignatureVerificationPassed": true
+  },
+  "finalSourceManifestSHA256": "4d99ee1bce4cc990497f825e7c866c4834ec9e31634f9e3e8aa08616da196918",
+  "selectedSourceChangeAfterBaseline": [
+    "ios/Nastart/NastartTests/PlaybackNextCoreTests.swift"
+  ],
+  "normalRebuildChangedBinaryHashes": true,
+  "finalNormalBuildExitCode": 0,
+  "updatedAt": "2026-11-08T09:20:16.417741+08:00",
+  "finalVerification": {
+    "at": "2026-11-08T09:21:41.963167+08:00",
+    "indexUnchanged": true,
+    "selected542InputsUnchanged": true,
+    "documentationDocuments": 677,
+    "documentationLinks": 4011,
+    "missingDocumentationDestinations": 0,
+    "targetedDiffWhitespaceErrors": 0,
+    "remainingOwnWindowOrBuildProcesses": [],
+    "port8102HasListener": false,
+    "port8104HasListener": false
+  }
+}

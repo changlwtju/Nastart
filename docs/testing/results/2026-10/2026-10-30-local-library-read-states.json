@@ -1,0 +1,152 @@
+{
+  "recordedAt": "2026-10-30T16:30:55+08:00",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceInputCount": 437,
+  "changedExistingSourceFiles": 4,
+  "newProductionFiles": 1,
+  "newTestFiles": 1,
+  "tests": {
+    "existingScenarioParameters": 4,
+    "newReadRequestOwnership": 3,
+    "failures": 0
+  },
+  "builds": {
+    "module-tests": {
+      "startedAt": "2026-10-30T16:23:53.931919+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T16:23:56.606777+08:00"
+    },
+    "mobile-sim-debug-cast": {
+      "startedAt": "2026-10-30T16:23:26.975893+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T16:23:44.783046+08:00"
+    },
+    "tv-sim-debug-cast": {
+      "startedAt": "2026-10-30T16:23:44.783471+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T16:23:53.931569+08:00"
+    },
+    "mobile-debug": {
+      "startedAt": "2026-10-30T16:26:45.150053+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T16:27:28.632799+08:00"
+    },
+    "tv-debug": {
+      "startedAt": "2026-10-30T16:29:06.048075+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T16:29:19.798402+08:00"
+    },
+    "mobile-release": {
+      "startedAt": "2026-10-30T16:27:28.633828+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T16:29:06.046998+08:00"
+    },
+    "tv-release": {
+      "startedAt": "2026-10-30T16:29:19.799189+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T16:29:48.346684+08:00"
+    }
+  },
+  "capture": {
+    "accepted": 6,
+    "byPlatform": {
+      "tv": 6
+    },
+    "notStarted": {
+      "phone": {
+        "reason": "Simulator startup free-space budget unmet; no device created",
+        "requiredFreeGiB": 4.8,
+        "observedFreeGiB": 4.17
+      },
+      "pad": {
+        "reason": "Simulator startup free-space budget unmet; no device created",
+        "requiredFreeGiB": 4.8,
+        "observedFreeGiB": 4.17
+      }
+    },
+    "allPassed": true,
+    "ownedSimulatorsDeleted": true,
+    "syntheticPreferencesPreserved": true,
+    "physicalDevicesOperated": 0,
+    "NASCommands": 0,
+    "interactionOrAnimationVerified": false
+  },
+  "visualReview": {
+    "reviewed": true,
+    "recordedAt": "2026-10-30T16:27:24.756896+08:00",
+    "method": "Three paired comparison sheets from six qualified final-source TV screenshots",
+    "windows": 6,
+    "checks": [
+      "No duplicate failed-state headings",
+      "Loading and missing states expose only back",
+      "Idle and error states expose retry and back",
+      "Warm icons and semantic text consistent",
+      "Synthetic markers and control labels visible without overlap"
+    ],
+    "sheetHashes": [
+      "7bd7d0f60f9c15fb5bc07d2dd760f1a9eb41fd36849491c701c3836adb05fb68",
+      "b9ff7e90c1177a1279fbac0367fecd00c8741c9b2f8c7a6b89dc2a2b4abe8199",
+      "31e4d8f37b2d4cfd0340361e73bad397ffc347ebcf1d003f5152f2014ca043ee"
+    ],
+    "interactionFocusMovementAndMobileLayoutVerified": false
+  },
+  "sourcePreservation": {
+    "modelAfterRefreshByteIdentical": true,
+    "wallOnlyDisplayErrorReferencesChanged": true,
+    "folderEditOnSavedDismissPreserved": true,
+    "previewUsesNoModelStoreVaultClient": true,
+    "newPureStateTests": 3,
+    "changedExistingSourceFiles": 4,
+    "newSourceFiles": 1,
+    "newTestFiles": 1,
+    "localReadFailureCopyDoesNotUseNetworkDiagnostic": true,
+    "finalLocalReadStateSHA256": "71959d24e15322edfc621a8b796af7b591bac4966818c222e1a585ddeadd43cf"
+  },
+  "packages": {
+    "mobile": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-30T16:27:28.432269+08:00",
+      "frozenAt": "2026-10-30T16:30:01.244170+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 437,
+      "mainSHA256": "73e49067bf940ddff3df8170a56b339635ce82149a28e100b65d74b663cb42be",
+      "debugDylibSHA256": "82ff316570b9ceeb3efb7f677dec84400ef056deeb5dfd785d43e50f51c86d94",
+      "signedMachOCount": 30,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false
+    },
+    "tv": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-30T16:29:19.719977+08:00",
+      "frozenAt": "2026-10-30T16:30:01.670011+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 437,
+      "mainSHA256": "fbbbf512475ab6124bf407ca3881f9e5f5b64ca1ee832f70c9dbe05abdf6972c",
+      "debugDylibSHA256": "b45b30456574a618b51a33957810059e2ad5a0a677cbc589e2f04ecec1d08e09",
+      "signedMachOCount": 27,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false
+    }
+  },
+  "ownedSimulatorsDeleted": 2,
+  "physicalDevicesOperated": 0,
+  "NASCommands": 0,
+  "playbackCommands": 0,
+  "privateEvidencePointer": "current-library-local-read-private",
+  "notVerified": [
+    "Mobile/tablet new read layouts and extracted existing actions: startup disk budget unmet",
+    "Actual model/store/vault migration integration, retry/back task cancellation or overlapping refresh execution",
+    "Real navigation, retained wall refresh, removal or folder replacement return",
+    "Remote focus movement, accessibility reading, scrolling, image loading or playback"
+  ]
+}

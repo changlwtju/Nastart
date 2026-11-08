@@ -1,0 +1,232 @@
+{
+  "at": "2026-11-08T10:33:18.475609+08:00",
+  "host": {
+    "macOS": "26.7 (25G229)",
+    "Xcodes": [
+      "27.0 (27A266a)",
+      "26.6 (17F113)"
+    ],
+    "sharedCoreDeviceCLI": "642.16"
+  },
+  "target": {
+    "displayName": "客厅",
+    "model": "AppleTV14,1",
+    "tvOS": "18.2"
+  },
+  "linkedPairingAndTunnel": {
+    "confirmedPairSuccessAtLocal": [
+      "09:47:30.205",
+      "10:20:03.991"
+    ],
+    "secondPairObservedFromExistingSystemLogs": true,
+    "tunnelRequestFailures": [
+      {
+        "time": "2026-11-08 09:47:31.684",
+        "coreDevice4000": true,
+        "nestedErrors": [
+          {
+            "domain": "com.apple.dt.RemotePairingError",
+            "code": 1005,
+            "message": "This device does not support tunnel connections."
+          },
+          {
+            "domain": "com.apple.dt.RemotePairingError",
+            "code": 1005,
+            "message": "This device does not support tunnel connections."
+          }
+        ],
+        "requestLinkedByInvocationAndCoreDeviceID": true,
+        "assertionRequest": true,
+        "failureLinked": true,
+        "elapsedMilliseconds": 7.0000000000014495,
+        "architectureWarnings": 4
+      },
+      {
+        "time": "2026-11-08 10:20:05.410",
+        "coreDevice4000": true,
+        "nestedErrors": [
+          {
+            "domain": "com.apple.dt.RemotePairingError",
+            "code": 1005,
+            "message": "This device does not support tunnel connections."
+          },
+          {
+            "domain": "com.apple.dt.RemotePairingError",
+            "code": 1005,
+            "message": "This device does not support tunnel connections."
+          }
+        ],
+        "requestLinkedByInvocationAndCoreDeviceID": true,
+        "assertionRequest": true,
+        "failureLinked": true,
+        "elapsedMilliseconds": 4.999999999999893,
+        "architectureWarnings": 4
+      }
+    ],
+    "unavailableAtLocal": [
+      "09:48:23.396",
+      "10:22:02.298"
+    ],
+    "secondAuthenticatedControlChannelInvalidatedAtLocal": "10:22:01.082",
+    "recognizedStoredPairedIdentityAtLocal": "10:26:52.501",
+    "tunnelEstablishedInTheseCorrelatedRequests": false
+  },
+  "fresh": {
+    "at": "2026-11-08T10:26:34.047979+08:00",
+    "endpoints": [
+      {
+        "service": "_airplay._tcp",
+        "resolved": true,
+        "tcp": [
+          {
+            "port": 7000,
+            "family": "IPv6",
+            "ipv6LinkLocal": true,
+            "state": "connected"
+          },
+          {
+            "port": 7000,
+            "family": "IPv6",
+            "ipv6LinkLocal": false,
+            "state": "connected"
+          },
+          {
+            "port": 7000,
+            "family": "IPv4",
+            "ipv6LinkLocal": false,
+            "state": "connected"
+          }
+        ],
+        "port": 7000,
+        "hostMatchesAirPlayBaseline": true
+      },
+      {
+        "service": "_remotepairing._tcp",
+        "resolved": true,
+        "tcp": [
+          {
+            "port": 49152,
+            "family": "IPv6",
+            "ipv6LinkLocal": true,
+            "state": "connected"
+          },
+          {
+            "port": 49152,
+            "family": "IPv6",
+            "ipv6LinkLocal": false,
+            "state": "connected"
+          },
+          {
+            "port": 49152,
+            "family": "IPv4",
+            "ipv6LinkLocal": false,
+            "state": "connected"
+          }
+        ],
+        "port": 49152,
+        "hostMatchesAirPlayBaseline": true,
+        "authTagPresent": true,
+        "protocolVersion": "22",
+        "minimumProtocolVersion": "8"
+      },
+      {
+        "service": "_apple-mobdev2._tcp",
+        "resolved": true,
+        "tcp": [
+          {
+            "port": 32498,
+            "family": "IPv6",
+            "ipv6LinkLocal": true,
+            "state": "ConnectionRefusedError",
+            "errno": 61
+          },
+          {
+            "port": 32498,
+            "family": "IPv6",
+            "ipv6LinkLocal": false,
+            "state": "ConnectionRefusedError",
+            "errno": 61
+          },
+          {
+            "port": 32498,
+            "family": "IPv4",
+            "ipv6LinkLocal": false,
+            "state": "ConnectionRefusedError",
+            "errno": 61
+          },
+          {
+            "port": 62078,
+            "family": "IPv6",
+            "ipv6LinkLocal": true,
+            "state": "connected"
+          },
+          {
+            "port": 62078,
+            "family": "IPv6",
+            "ipv6LinkLocal": false,
+            "state": "connected"
+          },
+          {
+            "port": 62078,
+            "family": "IPv4",
+            "ipv6LinkLocal": false,
+            "state": "connected"
+          }
+        ],
+        "port": 32498,
+        "hostMatchesAirPlayBaseline": true
+      }
+    ],
+    "coreDevice": [
+      {
+        "version": "27",
+        "exitCode": 1,
+        "exactHardwareIdentity": false,
+        "errorDomain": "com.apple.dt.CoreDeviceError",
+        "errorCode": 1000,
+        "developerServicesAvailable": null
+      },
+      {
+        "version": "26.6",
+        "exitCode": 1,
+        "exactHardwareIdentity": false,
+        "errorDomain": "com.apple.dt.CoreDeviceError",
+        "errorCode": 1000,
+        "developerServicesAvailable": null
+      }
+    ],
+    "remotectl": {
+      "exactUIDVisible": false,
+      "livingRoomNameVisible": false
+    },
+    "nativeBrowse": {
+      "records": 0,
+      "withHardwareUDID": 0,
+      "matchesByExactOrNormalizedHardwareUDID": 0,
+      "reportedTargetName": 0,
+      "onlyBrowseNoPairOrTunnel": true,
+      "deviceInfoKeys": []
+    }
+  },
+  "rawNativeBrowseEventSummary": {
+    "durationSeconds": 32,
+    "events": 1,
+    "eventKinds": {
+      "allCurrentDevicesListed": 1
+    },
+    "targetEvents": [],
+    "callbackErrors": []
+  },
+  "mobileDeviceEnumeration": {
+    "networkDeviceCount": 2,
+    "matchingTVNetworkRecord": false,
+    "matchingTVAnyRecord": false
+  },
+  "historicalSameTVAndTVOSInstallSucceededOn": "2026-10-24",
+  "legacyAdvertisedPortRootCauseKnown": false,
+  "tunnelEligibilityReasonBelow1005Known": false,
+  "networkChange": false,
+  "pairingDispatched": false,
+  "appInstallOrLaunch": false,
+  "privateEvidencePointer": "/tmp/nastart-codex-tv-root-cause-1108-path"
+}

@@ -1,0 +1,280 @@
+{
+  "recordedAt": "2026-11-02T06:28:25.552410+08:00",
+  "status": "component_text_status_UI_verified_with_limits_signed_package_pending",
+  "source": {
+    "HEAD": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceInputs": 446,
+    "iosDiffSHA256": "2f2982850cef605d2def7a503d1895acedc194264a992741c780b7e2439922ee",
+    "changedInputs": [
+      "/Users/lagransun/workspace/Nastart/ios/Nastart/Nastart/Core/Design/AppTheme.swift",
+      "/Users/lagransun/workspace/Nastart/ios/Nastart/Nastart/Features/Mine/MineView.swift",
+      "/Users/lagransun/workspace/Nastart/ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/OfflineMediaScene.swift",
+      "/Users/lagransun/workspace/Nastart/ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/OfflineUIScenario.swift"
+    ]
+  },
+  "initialSixBuilds": {
+    "mobile-sim-debug-cast": {
+      "startedAt": "2026-11-02T05:45:29.789861+08:00",
+      "freeGiBBefore": 17.450305938720703,
+      "reserveGiB": 2,
+      "exitCode": 0,
+      "endedAt": "2026-11-02T05:45:52.896437+08:00",
+      "freeGiBAfter": 17.31692123413086
+    },
+    "tv-sim-debug-cast": {
+      "startedAt": "2026-11-02T05:45:52.898945+08:00",
+      "freeGiBBefore": 17.316909790039062,
+      "reserveGiB": 2,
+      "exitCode": 0,
+      "endedAt": "2026-11-02T05:46:04.955574+08:00",
+      "freeGiBAfter": 17.336288452148438
+    },
+    "mobile-unsigned-debug": {
+      "startedAt": "2026-11-02T05:46:04.957283+08:00",
+      "freeGiBBefore": 17.33627700805664,
+      "reserveGiB": 2,
+      "exitCode": 0,
+      "endedAt": "2026-11-02T05:46:43.121496+08:00",
+      "freeGiBAfter": 17.304157257080078
+    },
+    "mobile-release": {
+      "startedAt": "2026-11-02T05:46:43.124192+08:00",
+      "freeGiBBefore": 17.30414581298828,
+      "reserveGiB": 2,
+      "exitCode": 0,
+      "endedAt": "2026-11-02T05:48:28.674723+08:00",
+      "freeGiBAfter": 17.32867431640625
+    },
+    "tv-unsigned-debug": {
+      "startedAt": "2026-11-02T05:48:28.676134+08:00",
+      "freeGiBBefore": 17.328662872314453,
+      "reserveGiB": 2,
+      "exitCode": 0,
+      "endedAt": "2026-11-02T05:48:55.798281+08:00",
+      "freeGiBAfter": 17.3463134765625
+    },
+    "tv-release": {
+      "startedAt": "2026-11-02T05:48:55.798995+08:00",
+      "freeGiBBefore": 17.346294403076172,
+      "reserveGiB": 2,
+      "exitCode": 0,
+      "endedAt": "2026-11-02T05:49:46.005654+08:00",
+      "freeGiBAfter": 17.344200134277344
+    }
+  },
+  "initialBadgeVisualFailure": {
+    "observedAt": "2026-11-02T05:54:37.030864+08:00",
+    "scope": "iPhone13/iOS27 English standard cleanGrid light frozen initial candidate",
+    "failure": "Stack Plus badge collapsed into narrow vertical pill while AX label remained complete",
+    "evidence": "CUA native screenshot and AX tool trail; initial frozen simulator binaries retained",
+    "acceptance": "failed visual badge layout; AX full text not sufficient",
+    "initialBinaries": {
+      "Nastart": "a14854ba92b04aa772c266475ad036ae35538e8aa9bca2687e6afb2a79765fa5",
+      "Nastart.debug.dylib": "6f550f338675387e4223a1da43ee515af66b42119d026d85d223d5997553b7b1"
+    }
+  },
+  "badgeCorrectionMobileBuilds": {
+    "mobile-sim-debug-cast": {
+      "startedAt": "2026-11-02T05:55:56.946862+08:00",
+      "freeGiBBefore": 16.749755859375,
+      "reserveGiB": 2,
+      "exitCode": 0,
+      "endedAt": "2026-11-02T05:56:18.027704+08:00",
+      "freeGiBAfter": 16.609249114990234
+    },
+    "mobile-unsigned-debug": {
+      "startedAt": "2026-11-02T05:56:18.031277+08:00",
+      "freeGiBBefore": 16.609230041503906,
+      "reserveGiB": 2,
+      "exitCode": 0,
+      "endedAt": "2026-11-02T05:57:12.277636+08:00",
+      "freeGiBAfter": 16.600074768066406
+    },
+    "mobile-release": {
+      "startedAt": "2026-11-02T05:57:12.280554+08:00",
+      "freeGiBBefore": 16.60006332397461,
+      "reserveGiB": 2,
+      "exitCode": 0,
+      "endedAt": "2026-11-02T06:00:07.286798+08:00",
+      "freeGiBAfter": 16.59649658203125
+    }
+  },
+  "badgeCorrectionObservedUI": {
+    "observedAt": "2026-11-02T06:09:37.203371+08:00",
+    "standardEnglishPlusBadgeNowReadable": true,
+    "combinedThreeCardLabelsExcludeDecorativeSampleText": true,
+    "cleanActiveAndUnselectedStatesObserved": true,
+    "commandPlusAndActiveStatesObserved": true,
+    "glassPlusAndActiveAXStatesObserved": true,
+    "ordinaryScrollRequestedNoActualDisplacement": true,
+    "coordinateDragRequestedNoActualDisplacement": true,
+    "notAPassForTouchScrollOrOffscreenCardVisuals": true,
+    "next": "Keep exact production card/ScrollView and add DEBUG-only explicit scroll-to-card control for component snapshots; preserve native scrolling gap."
+  },
+  "debugExplicitJumpLatestSimulatorBuild": {
+    "startedAt": "2026-11-02T06:12:21.457337+08:00",
+    "freeGiBBefore": 16.452651977539062,
+    "reserveGiB": 2,
+    "exitCode": 0,
+    "endedAt": "2026-11-02T06:12:44.546674+08:00",
+    "freeGiBAfter": 16.35399627685547
+  },
+  "explicitJumpRuntimeVerified": true,
+  "parserTests": {
+    "startedAt": "2026-11-02T05:50:17.800495+08:00",
+    "selectedExistingTests": 4,
+    "allScenesIncludesThemeGallery": true,
+    "NASAccess": false,
+    "exitCode": 0,
+    "passedTests": 4,
+    "failedTests": 0,
+    "endedAt": "2026-11-02T05:50:27.753985+08:00"
+  },
+  "initialTwoPhoneInstancesCleaned": true,
+  "normalSignedPackageFrozen": false,
+  "physicalDevicesOperated": 0,
+  "NASCommands": 0,
+  "newPlaybackPassCells": 0,
+  "fullVoiceOverVerified": false,
+  "goalActive": true,
+  "nextClaudeTask": "docs/development/CLAUDE-BATCH5-ASSIGNMENT.md",
+  "fifthTaskSubmittedInExistingConversation": true,
+  "evidencePointer": "/tmp/nastart-claude-batch3-integration-path",
+  "finalChecks": {
+    "at": "2026-11-02T06:29:24.817173+08:00",
+    "documentationDocuments": 603,
+    "localLinks": 3747,
+    "missingDestinations": 0,
+    "gitDiffCheckExitCode": 0,
+    "sourceInputsUnchanged": 446,
+    "claudeGrantedFilesUnchanged": 4,
+    "activeBuildWorkers": 0,
+    "ownedFinalSimulatorsAbsent": true
+  },
+  "finalComponentUI": {
+    "recordedAt": "2026-11-02T06:28:25.552410+08:00",
+    "sourceInputsStillMatch": 446,
+    "simulatorBinaries": {
+      "Nastart": "a14854ba92b04aa772c266475ad036ae35538e8aa9bca2687e6afb2a79765fa5",
+      "Nastart.debug.dylib": "e845a8e08091b1d31ef925a0a790357bfd8ef33454a092a9d7798c32faa2b51e"
+    },
+    "windows": [
+      {
+        "device": "iPhone13 simulator / iOS27",
+        "cases": [
+          "English standard / light / cleanGrid",
+          "Chinese accessibility2 / dark / glassDeck"
+        ],
+        "observed": [
+          "all three card texts/status visual inspected by explicit jump",
+          "Glow synthetic preview/back retains fixture selection",
+          "combined labels exclude decorative DSM/sample metrics",
+          "Chinese descriptions expand and status moves below description",
+          "local selection cycle changes commandCenter then glassDeck; Active replaces Plus"
+        ]
+      },
+      {
+        "device": "A16 iPad simulator / iOS27",
+        "cases": [
+          "English accessibility2 / dark / commandCenter",
+          "Chinese standard / light / cleanGrid"
+        ],
+        "observed": [
+          "all three card texts/status visual inspected",
+          "English accessibility description/status vertical; full Glow text",
+          "landscape and portrait rotation retain fixture selection",
+          "Stack synthetic preview/back completes; no theme application"
+        ]
+      }
+    ],
+    "runtimeJumpDisplacementVerified": true,
+    "touchScrollVerified": false,
+    "fullVoiceOverVerified": false,
+    "physicalDeviceVerified": false,
+    "performanceVerified": false,
+    "ordinaryRootStarted": false,
+    "NASCommands": 0,
+    "toolEvidence": "CUA AX and screenshot tool trail; no standalone PNG artifact claimed",
+    "remaining": [
+      "native wheel/drag had no displacement; failure retained",
+      "English standard Glow description remains intentional two-line truncation; full combined AX and synthetic preview text observed",
+      "decorative artwork text/rows clipped at accessibility2; excluded from AX, visual refinement still open",
+      "DEBUG toolbar controls visible but missing from simulator guest AX; coordinate fallback verified; no claim formal toolbar accessibility"
+    ],
+    "cleanup": {
+      "phone": {
+        "startedAt": "2026-11-02T06:17:33.361957+08:00",
+        "model": "iPhone13",
+        "system": "iOS27",
+        "physicalDevicesControlled": 0,
+        "NASCommands": 0,
+        "ordinaryRootStarted": false,
+        "testEnvironmentVariables": false,
+        "launches": [
+          {
+            "at": "2026-11-02T06:18:14.382700+08:00",
+            "language": "en",
+            "size": "standard",
+            "theme": "cleanGrid",
+            "appearance": "light"
+          },
+          {
+            "at": "2026-11-02T06:23:48.921276+08:00",
+            "language": "zh-Hans",
+            "size": "large",
+            "theme": "glassDeck",
+            "appearance": "dark"
+          }
+        ],
+        "binaries": {
+          "Nastart": "a14854ba92b04aa772c266475ad036ae35538e8aa9bca2687e6afb2a79765fa5",
+          "Nastart.debug.dylib": "e845a8e08091b1d31ef925a0a790357bfd8ef33454a092a9d7798c32faa2b51e"
+        },
+        "fixturePreferencesPreserved": true,
+        "additionalPreferenceKeys": 0,
+        "passwordTraceAbsent": true,
+        "shutdownExitCode": 0,
+        "deleteExitCode": 0,
+        "ownedSimulatorAbsent": true,
+        "endedAt": "2026-11-02T06:24:35.761037+08:00"
+      },
+      "pad": {
+        "startedAt": "2026-11-02T06:24:46.954782+08:00",
+        "model": "A16 iPad",
+        "system": "iOS27",
+        "physicalDevicesControlled": 0,
+        "NASCommands": 0,
+        "ordinaryRootStarted": false,
+        "testEnvironmentVariables": false,
+        "launches": [
+          {
+            "at": "2026-11-02T06:25:27.048211+08:00",
+            "language": "en",
+            "size": "large",
+            "theme": "commandCenter",
+            "appearance": "dark"
+          },
+          {
+            "at": "2026-11-02T06:26:20.922378+08:00",
+            "language": "zh-Hans",
+            "size": "standard",
+            "theme": "cleanGrid",
+            "appearance": "light"
+          }
+        ],
+        "binaries": {
+          "Nastart": "a14854ba92b04aa772c266475ad036ae35538e8aa9bca2687e6afb2a79765fa5",
+          "Nastart.debug.dylib": "e845a8e08091b1d31ef925a0a790357bfd8ef33454a092a9d7798c32faa2b51e"
+        },
+        "fixturePreferencesPreserved": true,
+        "additionalPreferenceKeys": 0,
+        "passwordTraceAbsent": true,
+        "shutdownExitCode": 0,
+        "deleteExitCode": 0,
+        "ownedSimulatorAbsent": true,
+        "endedAt": "2026-11-02T06:27:18.953391+08:00"
+      }
+    }
+  },
+  "threePhoneAndOnePadInstancesCleanedAcrossAllRounds": true
+}

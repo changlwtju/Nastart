@@ -1,0 +1,279 @@
+{
+  "date": "2026-10-26",
+  "configuration": "Debug",
+  "arguments": [],
+  "environment": {},
+  "source": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "uncommittedChangesPreserved": true,
+    "localInputs": 379,
+    "notFullDependencyClosure": true
+  },
+  "packages": {
+    "mobile": {
+      "builtAt": "2026-10-26T23:39:49.192752+08:00",
+      "mainSHA256": "3f9d61ce4027350f33ed98426a22b272544a335de3a243b7265829610dfe5456",
+      "debugDylibSHA256": "06e62e1eddb09c3f588c6aa38279c3af50e62ec43c31672c97b6e7c2f1c2cc8d",
+      "signedMachOCount": 30
+    },
+    "tv": {
+      "builtAt": "2026-10-26T23:39:41.114349+08:00",
+      "mainSHA256": "215b6a99507fcc44233601eb5d54bbdfa9973dc5b39bfcdceca36d0786f0d1c7",
+      "debugDylibSHA256": "279b211cf3700570d89a5e5492ec24e804b90257fa42a701849222225f04914a",
+      "signedMachOCount": 27
+    }
+  },
+  "tests": {
+    "exitCode": 0,
+    "testCount": 73,
+    "xctestFailures": 0,
+    "passed": true
+  },
+  "devices": {
+    "iphone13": {
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "connection": "USB",
+      "freshIdentityChecked": true,
+      "packageSHA256": "3f9d61ce4027350f33ed98426a22b272544a335de3a243b7265829610dfe5456",
+      "installComplete": true,
+      "installedAt": "2026-10-26T23:41:14.118571+08:00",
+      "preserveData": true,
+      "installationPreferences": {
+        "beforeKeys": 26,
+        "afterKeys": 26,
+        "sameKeys": true,
+        "changedValues": 0,
+        "allNonDiagnosticPreferencesEqual": true
+      },
+      "darkUI": {
+        "mediaCommands": 0,
+        "preferencesRestored": true,
+        "packageSHA256": "3f9d61ce4027350f33ed98426a22b272544a335de3a243b7265829610dfe5456",
+        "sixEqualRows": true,
+        "plusDarkCaptured": true,
+        "dockerMetricsDarkCaptured": true
+      },
+      "finalPreferences": {
+        "beforeKeys": 26,
+        "afterKeys": 26,
+        "sameKeys": true,
+        "changedValues": 0,
+        "allNonDiagnosticPreferencesEqual": true
+      }
+    },
+    "iphone18": {
+      "model": "iPhone19,7",
+      "system": "27.0",
+      "connection": "USB",
+      "freshIdentityChecked": true,
+      "packageSHA256": "3f9d61ce4027350f33ed98426a22b272544a335de3a243b7265829610dfe5456",
+      "installComplete": true,
+      "installedAt": "2026-10-26T23:41:07.407884+08:00",
+      "preserveData": true,
+      "installationPreferences": {
+        "beforeKeys": 27,
+        "afterKeys": 27,
+        "sameKeys": true,
+        "changedValues": 0,
+        "allNonDiagnosticPreferencesEqual": true
+      },
+      "normalBaseline": {
+        "at": "2026-10-26T23:41:44.492495+08:00",
+        "environment": {},
+        "arguments": [],
+        "mediaCommands": 0,
+        "processObservedAt3": true,
+        "processObservedAt10": true,
+        "nativeBaselineCaptured": true
+      },
+      "internalUIRegressionComplete": false,
+      "endPreferencesRead": {
+        "at": "2026-10-26T23:49:05.263655+08:00",
+        "readOnly": true,
+        "actualSessionDomainVerified": false,
+        "freshCoreDeviceConnected": false,
+        "blockedBy": "AssertionError"
+      }
+    },
+    "tv": {
+      "model": "AppleTV14,1",
+      "system": "18.2",
+      "connection": "LAN",
+      "freshIdentityChecked": true,
+      "packageSHA256": "215b6a99507fcc44233601eb5d54bbdfa9973dc5b39bfcdceca36d0786f0d1c7",
+      "installComplete": true,
+      "installedAt": "2026-10-26T23:41:00.407849+08:00",
+      "preserveData": true,
+      "installationPreferences": {
+        "beforeKeys": 13,
+        "afterKeys": 13,
+        "sameKeys": true,
+        "changedValues": 0,
+        "allNonDiagnosticPreferencesEqual": true
+      },
+      "finalPreferences": {
+        "raw": {
+          "beforeKeys": 13,
+          "afterKeys": 14,
+          "sameKeys": false,
+          "changedValues": 0,
+          "allNonDiagnosticPreferencesEqual": false
+        },
+        "existing13PreferencesUnchanged": true,
+        "addedEmptyVisibilityOverrideDictionary": true,
+        "effectiveVisibilityOverrides": 0
+      },
+      "normalBaseline": {
+        "at": "2026-10-26T23:54:55.615943+08:00",
+        "environment": {},
+        "arguments": [],
+        "mediaCommands": 0,
+        "processObservedAt3": true,
+        "processObservedAt10": true,
+        "nativeBaselineCaptured": true
+      }
+    },
+    "ipad": {
+      "finalPackageInstalled": false,
+      "regressionComplete": false,
+      "reason": "User disconnected iPad; intermediate installation remains historical."
+    }
+  },
+  "tvUI": {
+    "launchpadGroups": {
+      "favorites": "收藏、2",
+      "media": "媒体、3",
+      "downloads": "下载、2",
+      "network": "网络、2",
+      "tools": "工具、5"
+    },
+    "containerGroups": {
+      "favorites": "收藏、2",
+      "media": "媒体、3",
+      "downloads": "下载、2",
+      "network": "网络、2",
+      "tools": "工具、5"
+    },
+    "mediaCardFrames": [
+      {
+        "x": "162",
+        "y": "772",
+        "width": "790",
+        "height": "128"
+      },
+      {
+        "x": "968",
+        "y": "772",
+        "width": "790",
+        "height": "128"
+      },
+      {
+        "x": "162",
+        "y": "908",
+        "width": "790",
+        "height": "128"
+      }
+    ],
+    "oddCardSameSizeLeft": true,
+    "collapseExpandVerified": true,
+    "leftRightVerified": true,
+    "downToOddVerified": true,
+    "launchpadMatchesContainerGroups": true,
+    "serviceIcons": "54 shared source rules; finite actual images viewed",
+    "allThemesRegressionComplete": false,
+    "finalManagerFocus": {
+      "focusedNameReadable": true,
+      "focusedValue": "显示",
+      "noNativeSwitch": true,
+      "renderedRowsInLazyViewport": 7
+    }
+  },
+  "webdav": {
+    "splitHTTPHTTPSForm": true,
+    "builtIOSATS": {
+      "NSAllowsArbitraryLoads": true
+    },
+    "systemCertificateValidationPreserved": true,
+    "userNASCredentialsSentForProbe": false,
+    "macUnauthenticatedProbe": {
+      "credentialSent": false,
+      "method": "PROPFIND",
+      "depth": "0",
+      "remoteWrites": 0,
+      "httpStatus": 401,
+      "authenticationChallengePresent": true,
+      "responseReceived": true,
+      "elapsedSeconds": 7.33
+    },
+    "newFormFixture": {
+      "stopped": true,
+      "portClosed": true,
+      "sourceBytesUnchanged": true,
+      "videoGETs": 0,
+      "NFOGETs": 0,
+      "remoteWrites": 0,
+      "requests": 1
+    },
+    "deviceFolderTransition": "Blocked after PROPFIND 207; bounded UI timeout; no new index",
+    "deviceUserDomainAuthenticationVerified": false,
+    "deviceUserDomainErrorCapture": "Bounded automation timeout; no credential input",
+    "fullAddNFOCorrectionUIAccepted": false
+  },
+  "jellyfinShelves": {
+    "device": "iphone13",
+    "sourcePackageBeforeHeroAndIconOnlyChanges": "96ad93637c09f9b1ea60a526eb31d69193fa433bcfae477272f6263a40d43fd0",
+    "width": 358,
+    "libraryCardWidth": 173,
+    "libraryFirstTwoX": [
+      16,
+      201
+    ],
+    "continueFirstTwoX": [
+      13,
+      198
+    ],
+    "continueAXWidth": 179,
+    "twoFullCardsObserved": true,
+    "actualPlaybackCommands": 0,
+    "latestBuildFullPlaybackAcceptance": false
+  },
+  "reference": {
+    "Shadowrocket": {
+      "at": "2026-10-26T23:47:19.509611+08:00",
+      "referenceControlsTouched": 0,
+      "VPNControlsTouched": 0,
+      "returnedToNastart": true,
+      "nativeReferenceCaptured": true
+    },
+    "observationLimit": "Native captures caught app transition previews; no full-page or iPad visual audit accepted."
+  },
+  "notDelivered": [
+    "FTP production source",
+    "SMB strict selected-root source",
+    "online metadata and poster provider",
+    "independent network-library playback",
+    "native Agent authorization",
+    "tvOS purchase or iCloud sync"
+  ],
+  "playbackMatrixNewPasses": 0,
+  "remoteMediaWrites": 0,
+  "sourceInputDrift": 0,
+  "cleanup": {
+    "tvOwnedRunnerStopped": true,
+    "tvThreeWDASettingsRestored": true,
+    "iphone13OwnSession": {
+      "ownHTTPSessionDeleted": true,
+      "originalRunnerKept": true,
+      "normalHomeRestored": true
+    },
+    "allFiveFixturePortsClosed": true,
+    "rawDataAndCredentialsKeptOutsideRepository": true
+  },
+  "documentationCheck": {
+    "documents": 478,
+    "localLinks": 2817,
+    "missingDestinations": 0,
+    "gitDiffCheck": true
+  }
+}

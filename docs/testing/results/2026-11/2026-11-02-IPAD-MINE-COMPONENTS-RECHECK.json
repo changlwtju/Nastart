@@ -1,0 +1,167 @@
+{
+  "recordedAt": "2026-11-02T01:45:55.143950+08:00",
+  "identity": {
+    "startedAt": "2026-11-02T01:35:47.482220+08:00",
+    "userReportedExitedNastart": true,
+    "NASPaused": true,
+    "installationDispatched": false,
+    "sourceInputsVerified": 446,
+    "model": "iPad15,7",
+    "system": "26.6",
+    "transport": "wired",
+    "connectionState": "connected",
+    "nameAndUDIDRecordedPrivately": true,
+    "freshIdentityVerified": true,
+    "endedAt": "2026-11-02T01:35:47.802489+08:00"
+  },
+  "installation": {
+    "startedAt": "2026-11-02T01:39:02.677195+08:00",
+    "preserveContainer": true,
+    "uninstallAttempted": false,
+    "installComplete": true,
+    "NASCommands": 0,
+    "appLaunchAttempted": false,
+    "mainSHA256": "a03b284f9428c830aab4ce03c3c37cdc16aecfa08c6109ee6c8ee73e01382f89",
+    "debugDylibSHA256": "6a588beffff1cd3ab979fb5f459ff8445941aa141b0c28ec04b49044237022f9",
+    "freshDetailsAndSignedPackageVerified": true,
+    "existingNastartProcessesBefore": 0,
+    "preferencesSaved": true,
+    "installExitCode": 0,
+    "installedAt": "2026-11-02T01:39:10.984224+08:00",
+    "bundleLookupConfirmed": true,
+    "preferences": {
+      "beforeKeys": 19,
+      "afterKeys": 19,
+      "sameKeys": true,
+      "changedValues": 0,
+      "allNonDiagnosticPreferencesEqual": true
+    },
+    "allPreferenceValuesEqual": true,
+    "remainingNastartProcesses": 0,
+    "endedAt": "2026-11-02T01:39:12.573885+08:00"
+  },
+  "identifiedResidualAppStop": {
+    "startedAt": "2026-11-02T01:38:40.971199+08:00",
+    "userReportedExitedNastart": true,
+    "NASCommands": 0,
+    "appLaunchAttempted": false,
+    "stopDispatched": true,
+    "freshIdentityVerified": true,
+    "installedBundleIdentifierMatched": true,
+    "processExecutableExactlyMatchesInstalledBundle": true,
+    "exactTargetProcesses": 1,
+    "preferencesSavedBeforeStop": true,
+    "identifiedStopSucceeded": true,
+    "remainingNastartProcesses": 0,
+    "endedAt": "2026-11-02T01:38:44.272217+08:00"
+  },
+  "isolatedUI": {
+    "startedAt": "2026-11-02T01:40:01.216066+08:00",
+    "ordinaryRootStarted": false,
+    "NASCommands": 0,
+    "testEnvironmentVariables": false,
+    "windows": [
+      {
+        "scene": "mine-info",
+        "language": "zh-Hans",
+        "textSize": "large",
+        "startedAt": "2026-11-02T01:40:04.701937+08:00",
+        "ownProcessStopped": true,
+        "launchExitCode": 0,
+        "launchAcknowledged": true,
+        "ownPIDAliveAtCapture": true,
+        "screenCaptured": true,
+        "remainingNastartProcesses": 0,
+        "endedAt": "2026-11-02T01:40:08.959722+08:00"
+      },
+      {
+        "scene": "diagnostics",
+        "language": "zh-Hans",
+        "textSize": "large",
+        "startedAt": "2026-11-02T01:40:10.115107+08:00",
+        "ownProcessStopped": true,
+        "launchExitCode": 0,
+        "launchAcknowledged": true,
+        "ownPIDAliveAtCapture": true,
+        "screenCaptured": true,
+        "remainingNastartProcesses": 0,
+        "endedAt": "2026-11-02T01:40:14.493735+08:00"
+      },
+      {
+        "scene": "mine-info",
+        "language": "en",
+        "textSize": "standard",
+        "startedAt": "2026-11-02T01:40:15.712344+08:00",
+        "ownProcessStopped": true,
+        "launchExitCode": 0,
+        "launchAcknowledged": true,
+        "ownPIDAliveAtCapture": true,
+        "screenCaptured": true,
+        "remainingNastartProcesses": 0,
+        "endedAt": "2026-11-02T01:40:19.972302+08:00"
+      },
+      {
+        "scene": "diagnostics",
+        "language": "en",
+        "textSize": "standard",
+        "startedAt": "2026-11-02T01:40:21.096514+08:00",
+        "ownProcessStopped": true,
+        "launchExitCode": 0,
+        "launchAcknowledged": true,
+        "ownPIDAliveAtCapture": true,
+        "screenCaptured": true,
+        "remainingNastartProcesses": 0,
+        "endedAt": "2026-11-02T01:40:25.404794+08:00"
+      }
+    ],
+    "actualUIInspected": true,
+    "mainSHA256": "a03b284f9428c830aab4ce03c3c37cdc16aecfa08c6109ee6c8ee73e01382f89",
+    "debugDylibSHA256": "6a588beffff1cd3ab979fb5f459ff8445941aa141b0c28ec04b49044237022f9",
+    "freshIdentityAndLatestPackageVerified": true,
+    "preferences": {
+      "beforeKeys": 19,
+      "afterKeys": 19,
+      "sameKeys": true,
+      "changedValues": 0,
+      "allNonDiagnosticPreferencesEqual": true
+    },
+    "allPreferenceValuesEqual": true,
+    "allPreferencesEqualFromBeforeStopToFinal": true,
+    "remainingNastartProcesses": 0,
+    "endedAt": "2026-11-02T01:40:26.749198+08:00",
+    "visualScope": "Portrait Chinese accessibility2 and English standard: production sign-out row, diagnostic tiles, summary counts/time and fixture banner visible. No rotation, taps, full VoiceOver or frame-time verification.",
+    "largeDiagnosticSummaryAndTimeVisibleWithoutFooterOverlapOnThisIpad": true
+  },
+  "initialPostUserExitProcessGateBlockedBeforeInstall": true,
+  "localInspectionFailureRetained": "Assumed app directory name Nastart.app; actual installed app directory has frozen package name. Corrected to bundle identifier + actual lookup URL + exact executable path before stop.",
+  "NASPaused": true,
+  "ordinaryRootLaunched": false,
+  "otherDevicesOperated": 0,
+  "sourceInputsUnchanged": 446,
+  "newPlaybackPassCells": 0,
+  "requirementsClosed": 0,
+  "physicalRotationOrInteractionVerified": false,
+  "evidencePointer": "/tmp/nastart-ipad-mine-recheck-path",
+  "existingInteractionRunnerReadiness": {
+    "availableExistingRunnerProfiles": [
+      {
+        "runnerDirectory": "WebDriverAgentRunner-Runner.app",
+        "expirationUTC": "2026-10-25T12:00:45+00:00",
+        "currentlyValid": false,
+        "connectedA16Authorized": false
+      }
+    ],
+    "runnerLaunchedOrInstalled": false,
+    "signingChanged": false
+  },
+  "finalValidation": {
+    "at": "2026-11-02T01:57:51.976885+08:00",
+    "documentationDocuments": 595,
+    "documentationLocalLinks": 3730,
+    "missingDestinations": 0,
+    "gitDiffCheckExitCode": 0,
+    "sourceInputsUnchanged": 446,
+    "activeBuildWorkersAtCleanup": 0,
+    "activeDeviceLease": false
+  }
+}

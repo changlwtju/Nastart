@@ -1,0 +1,128 @@
+{
+  "date": "2026-10-28",
+  "scope": "6.1 offline evidence audit and source adapter wiring; no playback-core optimization",
+  "sourceChange": {
+    "path": "ios/Nastart/Nastart/Features/Launchpad/LaunchpadLayoutViews.swift",
+    "change": "Pass all endpoints of this validated service candidate instead of only its selected endpoint",
+    "corePolicyChanged": false,
+    "scopeOrCredentialsRelaxed": false
+  },
+  "trackAudit": [
+    {
+      "window": "jf-s19-cellular-cold-full-1",
+      "targetSubtitleID": "none",
+      "requestToCommittedSessionSeconds": 12.559,
+      "postCommitSessionSubtitleID": "none",
+      "menuReadbackFailure": "selected option count zero while async replacement may rebuild menu",
+      "testHadEarlierAudioRestoreBeforeCommit": true,
+      "audioPhysicalResponseMeasured": false,
+      "subtitlePresentationMeasured": false,
+      "originalRestorationUIReadbackDoesNotProveStreamOrPreferencesRestored": true
+    },
+    {
+      "window": "file-s19-cellular-resume-1",
+      "targetSubtitleID": "8",
+      "requestToCommittedSessionSeconds": 11.819,
+      "postCommitSessionSubtitleID": "8",
+      "menuReadbackFailure": "selected option count zero while async replacement may rebuild menu",
+      "testHadEarlierAudioRestoreBeforeCommit": true,
+      "audioPhysicalResponseMeasured": false,
+      "subtitlePresentationMeasured": false,
+      "originalRestorationUIReadbackDoesNotProveStreamOrPreferencesRestored": true
+    }
+  ],
+  "networkAudit": {
+    "warmEntry": "jf-s19-cellular-resume-1",
+    "coldEntry": "jf-s19-cellular-cold-full-1",
+    "warmCandidateAddressKinds": [
+      "privateIP",
+      "privateIP",
+      "privateIP"
+    ],
+    "coldCandidateAddressKinds": [
+      "publicDomain",
+      "publicDomain",
+      "publicDomain"
+    ],
+    "warmNetworkAlreadyCellularBeforePreparation": true,
+    "publicFallbackMissingFromWarmCandidateList": true,
+    "reasonBoundary": "Current path was observed; do not blame NWPathMonitor delay or engine decoder. Selected-only candidate wiring loses alternate configured origins; source wiring repair requires native route regression."
+  },
+  "webDAVAudit": {
+    "provenSourceBoundary": "Host receives loopback URL, title and byte count only; upstream origin and stable source identity/tracks/resume lifecycle not delivered",
+    "provenTransportImplementation": "Read windows at most 1MiB, each DAVRequestOperation creates an ephemeral URLSession and invalidates on completion, sequential read-then-send",
+    "observed": "S19 and large AVC M2TS buffered in native frames",
+    "notProven": "Per-window connect/auth/TTFB/body durations absent; cannot assign buffering solely to this implementation or NAS"
+  },
+  "package": {
+    "configuration": "Debug",
+    "builtAt": "2026-10-28T21:32:12.428000+08:00",
+    "mainSHA256": "48b3b8fc56abddf7553d9abbb4d10a4b6f1ffb28c5f4263f48a7333d735baa19",
+    "debugDylibSHA256": "980e0f358bcdda7a5146e580e70b84323aa1af969eb4c1047f61369309a69df3",
+    "signedMachOCount": 30,
+    "sourceInputCount": 419
+  },
+  "tests": {
+    "at": "2026-10-28T21:34:13.980288+08:00",
+    "filter": "MediaServiceDiscoveryTests",
+    "network": "local fixtures only",
+    "exitCode": 0,
+    "passed": 13,
+    "failed": 0
+  },
+  "trackCleanup": {
+    "at": "2026-10-28T21:39:29.037022+08:00",
+    "reason": "Restore only source track fields left changed by owned cellular test; preserve current bookmarks and unrelated preferences",
+    "sourceReads": 0,
+    "remoteWrites": 0,
+    "deviceModel": "iPhone14,5",
+    "deviceOS": "16.3.1",
+    "deviceName": "iPhone",
+    "connection": "USB",
+    "appStopped": true,
+    "changedEntries": 2,
+    "allOtherPreferenceValuesPreserved": true,
+    "allBookmarkProgressPreserved": true,
+    "rawReadbackEqual": true,
+    "verifiedAfterNewInstallAndNormalAppStart": true
+  },
+  "selectionUnchanged": true,
+  "modelSwitchRequested": false,
+  "newMatrixPasses": 0,
+  "installation": {
+    "at": "2026-10-28T21:39:56.577128+08:00",
+    "packageSHA256": "48b3b8fc56abddf7553d9abbb4d10a4b6f1ffb28c5f4263f48a7333d735baa19",
+    "configuration": "Debug",
+    "preserveData": true,
+    "preferencesBackedUp": true,
+    "exitCode": 0,
+    "installComplete": true,
+    "installedAt": "2026-10-28T21:40:12.564000+08:00",
+    "preferences": {
+      "beforeKeys": 26,
+      "afterKeys": 26,
+      "sameKeys": true,
+      "changedValues": 0,
+      "allNonDiagnosticPreferencesEqual": true
+    }
+  },
+  "normalStart": {
+    "at": "2026-10-28T21:41:56.958070+08:00",
+    "environment": {},
+    "arguments": [],
+    "ordinaryHomeSourceObserved": true,
+    "ownHTTPSession": true,
+    "originalRunnerKept": true
+  },
+  "navigation": {
+    "at": "2026-10-28T21:44:38.912790+08:00",
+    "mediaStarted": false,
+    "failureType": "TimeoutError",
+    "ownAppStopped": true
+  },
+  "nativeRouteRegressionComplete": false,
+  "nativeBlocker": "Jellyfin service entry absent during bounded Wi-Fi navigation; no playback or cellular toggle",
+  "status": "Source wiring built/installed; real network-path regression pending; retain 6.1",
+  "sourceInputCount": 419,
+  "nasSourceWrites": 0
+}

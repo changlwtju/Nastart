@@ -1,0 +1,142 @@
+{
+  "updatedAt": "2026-10-29T08:03+08:00",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "userConstraint": "Container Manager still under repair; continue offline playback integration",
+  "inheritedWorkingChangesPreserved": true,
+  "frozenInputCount": 428,
+  "sourceInputsMatch": true,
+  "changedFiles": [
+    "ios/Nastart/Nastart/Playback/Engines/GreenfieldKSPlayerRenderer.swift",
+    "ios/Nastart/Nastart/Playback/GreenfieldVideoPlayerView.swift",
+    "tvos/NastartTV/Sources/TVPlaybackSession.swift",
+    "tvos/NastartTV/Sources/TVNASViews.swift",
+    "tvos/NastartTV/Sources/TVUnifiedPlayback.swift",
+    "tvos/NastartTV/Sources/TVViews.swift",
+    "ios/Nastart/NastartTests/PlaybackNextCoreTests.swift",
+    "tvos/NastartTV/Tests/TVClientTests.swift",
+    "ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/PlaybackTransportState.swift",
+    "ios/Nastart/Packages/NetworkMedia/Tests/NetworkMediaTests/PlaybackTransportStateTests.swift"
+  ],
+  "sharedCode": [
+    "NetworkMedia.PlaybackSeekState",
+    "NetworkMedia.PlaybackHandoffBoundary"
+  ],
+  "productionConsumers": {
+    "seek": [
+      "GreenfieldPlaybackControls: both mobile AV and KS",
+      "TVPlayerControlsModel: TV AV",
+      "TVKSPlaybackControls: TV KS"
+    ],
+    "handoff": [
+      "GreenfieldPlaybackControls.canReplacePlaybackSession",
+      "TVUnifiedPlaybackSession.replace/install"
+    ]
+  },
+  "behaviorChanges": [
+    "TV now uses existing mobile duration-minus-0.1s seek bound",
+    "TV KS relative seek reads actual engine clock with pending-target precedence",
+    "old explicit-generation completion cannot clear a newer pending seek",
+    "TV awaited candidate is discarded after a new timeline generation; current resource remains owned"
+  ],
+  "tests": {
+    "module": {
+      "selected": 26,
+      "passed": 26,
+      "failed": 0,
+      "exitCode": 0
+    },
+    "TVAllUnit": {
+      "selected": 55,
+      "passed": 55,
+      "failed": 0,
+      "exitCode": 0
+    },
+    "mobileFocused": {
+      "selected": 34,
+      "passed": 33,
+      "skipped": 1,
+      "failed": 0,
+      "exitCode": 0,
+      "skippedTest": "testPiPRestoreAndCloseHaveDifferentSessionLifetimes",
+      "skipReason": "simulator cannot create a PiP controller; real-device PiP remains required"
+    }
+  },
+  "builds": {
+    "mobile-debug": {
+      "startedAt": "2026-10-29T07:56:43.479216+08:00",
+      "devicesTouched": false,
+      "exitCode": 0,
+      "endedAt": "2026-10-29T07:57:34.727030+08:00"
+    },
+    "tv-debug": {
+      "startedAt": "2026-10-29T07:56:43.479269+08:00",
+      "devicesTouched": false,
+      "exitCode": 0,
+      "endedAt": "2026-10-29T07:57:03.377701+08:00"
+    },
+    "mobile-release": {
+      "startedAt": "2026-10-29T07:57:34.777749+08:00",
+      "devicesTouched": false,
+      "exitCode": 0,
+      "endedAt": "2026-10-29T07:59:21.902171+08:00"
+    },
+    "tv-release": {
+      "startedAt": "2026-10-29T07:57:03.412054+08:00",
+      "devicesTouched": false,
+      "exitCode": 0,
+      "endedAt": "2026-10-29T07:57:46.401138+08:00"
+    }
+  },
+  "packages": {
+    "mobile": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-29T07:57:34.380878+08:00",
+      "frozenAt": "2026-10-29T07:59:49.637860+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 428,
+      "mainSHA256": "964607a0330d475461a97a2b253dcb5d290659d7627835a7e40f808e26bf08d9",
+      "debugDylibSHA256": "39fc6603da36810138dc677b5eb9b2003a9bcae6b390213724a6c406c3b7f0ae",
+      "signedMachOCount": 30,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false
+    },
+    "tv": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-29T07:57:03.124704+08:00",
+      "frozenAt": "2026-10-29T07:59:50.041807+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 428,
+      "mainSHA256": "a97268926bf21e3299bba46a3c066ca25af8cf0349510f64259a39b91cfeeb0b",
+      "debugDylibSHA256": "ec49cd52cf4b374a18db7e05d26d798bb1dece1d6f3880784d8ed55335f139a1",
+      "signedMachOCount": 27,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false
+    }
+  },
+  "signatureVerified": "every Mach-O + deep/strict; TV embedded libraries",
+  "deviceInstallOrControlCommands": 0,
+  "NASProbeOrAuthenticationCommands": 0,
+  "NASMediaWrites": 0,
+  "cellularWindows": 0,
+  "newPlaybackMatrixPasses": 0,
+  "decoderOrBufferPerformanceParametersChanged": false,
+  "modelSwitchPerformed": false,
+  "limitations": [
+    "No true-device presentation/performance acceptance",
+    "Release compile only; no signed Release install",
+    "PiP controller behavior skipped on simulator",
+    "Native rendering/control and full source-switch execution remain platform-adapted"
+  ],
+  "nextReview": "source-level KS seek autoPlay capture needs controlled asynchronous intent testing; no real-device defect conclusion or library-core change in this batch",
+  "finalSourceHashCheck": true,
+  "changedLinesWhitespaceClean": true,
+  "inheritedTrailingWhitespaceLinesPreserved": 3,
+  "validationToolNote": "Initial whole-file whitespace check flagged 3 inherited TVViews lines; snapshot diff verified no new whitespace error; existing source preserved",
+  "documentationCheck": {
+    "documents": 512,
+    "localLinks": 3080,
+    "missingDestinations": 0
+  }
+}

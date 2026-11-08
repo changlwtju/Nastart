@@ -1,0 +1,871 @@
+{
+  "date": "2026-10-26",
+  "scope": "outside-repository FTPS/FTP control-channel prototype only, not a production storage client",
+  "implementation": {
+    "nativeTransport": "URLSessionStreamTask with startSecureConnection; Foundation/Security only",
+    "modes": [
+      "explicit AUTH TLS",
+      "implicit TLS",
+      "plain only with explicit allowPlaintext configuration"
+    ],
+    "TLSMinConfigured": "TLSv1.2; this batch negotiated TLSv1.3, did not force TLSv1.2 or lower",
+    "trust": "SecTrust SSL hostname/chain/expiry validation; fixture CA only per private test session; never installed into global trust",
+    "credentialGate": "USER/PASS require verified TLS in FTPS; AUTH/PBSZ/PROT rejection stops without downgrade or alternate credential retry",
+    "replyLimits": {
+      "lineBytes": 1024,
+      "replyBytes": 16384,
+      "replyLines": 128,
+      "sessionReceiveBytes": 131072,
+      "readChunkBytes": 4096
+    },
+    "commands": [
+      "AUTH TLS",
+      "PBSZ 0",
+      "PROT P",
+      "USER",
+      "PASS",
+      "FEAT",
+      "QUIT"
+    ],
+    "cancelAndDeadline": "cancel own stream, invalidate own session, independent total-budget timer; callback resumes pending operation",
+    "credentialPersistence": false,
+    "dataConnections": false
+  },
+  "validation": {
+    "at": "2026-10-26T16:34:57.682716+08:00",
+    "selectedFinalScenarios": 28,
+    "passed": 28,
+    "selectedASanScenarios": 5,
+    "executedASanWindows": 6,
+    "observedASanInvalidMemoryReports": 0,
+    "asanLeakDetection": false,
+    "baselineWindows": 8,
+    "mainFinalWindows": 28,
+    "closureObservationWindows": 8,
+    "ownedServerWindowsStopped": 44,
+    "systemTrustStoreChanged": false,
+    "applicationInputCount": 375,
+    "applicationInputDriftCount": 0,
+    "applicationBinaryDriftCounts": {
+      "mobile": 0,
+      "tv": 0
+    },
+    "AppBuilds": 0,
+    "AppInstalls": 0,
+    "physicalFunctionTests": 0,
+    "directNASFileOrMediaRequests": 0,
+    "directoryOrDataConnections": 0,
+    "realTLSVersionsObserved": [
+      "TLSv1.3"
+    ],
+    "TLSv12MinimumConfiguredButNotSeparatelyForced": true
+  },
+  "cases": {
+    "finalexplicit": {
+      "selectedWindow": "finalexplicit",
+      "expected": "success",
+      "outcome": "success",
+      "passed": true,
+      "elapsedMs": 22.577209,
+      "afterCancelMs": null,
+      "build": "normal",
+      "acceptedConnections": 1,
+      "peerClosed": true,
+      "tlsVersion": "TLSv1.3",
+      "commands": [
+        {
+          "verb": "AUTH",
+          "secure": false
+        },
+        {
+          "verb": "PBSZ",
+          "secure": true
+        },
+        {
+          "verb": "PROT",
+          "secure": true
+        },
+        {
+          "verb": "USER",
+          "secure": true
+        },
+        {
+          "verb": "PASS",
+          "secure": true
+        },
+        {
+          "verb": "FEAT",
+          "secure": true
+        },
+        {
+          "verb": "QUIT",
+          "secure": true
+        }
+      ],
+      "cleartextCredentialCommandCount": 0,
+      "explicitPlaintextFixture": false,
+      "writeOrMediaCommands": 0
+    },
+    "finalimplicit": {
+      "selectedWindow": "finalimplicit",
+      "expected": "success",
+      "outcome": "success",
+      "passed": true,
+      "elapsedMs": 16.510041,
+      "afterCancelMs": null,
+      "build": "normal",
+      "acceptedConnections": 1,
+      "peerClosed": true,
+      "tlsVersion": "TLSv1.3",
+      "commands": [
+        {
+          "verb": "PBSZ",
+          "secure": true
+        },
+        {
+          "verb": "PROT",
+          "secure": true
+        },
+        {
+          "verb": "USER",
+          "secure": true
+        },
+        {
+          "verb": "PASS",
+          "secure": true
+        },
+        {
+          "verb": "FEAT",
+          "secure": true
+        },
+        {
+          "verb": "QUIT",
+          "secure": true
+        }
+      ],
+      "cleartextCredentialCommandCount": 0,
+      "explicitPlaintextFixture": false,
+      "writeOrMediaCommands": 0
+    },
+    "finaluntrusted": {
+      "selectedWindow": "finaluntrusted",
+      "expected": "tlsUnverified",
+      "outcome": "tlsUnverified",
+      "passed": true,
+      "elapsedMs": 15.395625,
+      "afterCancelMs": null,
+      "build": "normal",
+      "acceptedConnections": 1,
+      "peerClosed": true,
+      "tlsVersion": null,
+      "commands": [
+        {
+          "verb": "AUTH",
+          "secure": false
+        }
+      ],
+      "cleartextCredentialCommandCount": 0,
+      "explicitPlaintextFixture": false,
+      "writeOrMediaCommands": 0
+    },
+    "finalwrongName": {
+      "selectedWindow": "finalwrongName",
+      "expected": "tlsUnverified",
+      "outcome": "tlsUnverified",
+      "passed": true,
+      "elapsedMs": 15.548333,
+      "afterCancelMs": null,
+      "build": "normal",
+      "acceptedConnections": 1,
+      "peerClosed": true,
+      "tlsVersion": null,
+      "commands": [
+        {
+          "verb": "AUTH",
+          "secure": false
+        }
+      ],
+      "cleartextCredentialCommandCount": 0,
+      "explicitPlaintextFixture": false,
+      "writeOrMediaCommands": 0
+    },
+    "finalexpired": {
+      "selectedWindow": "finalexpired",
+      "expected": "tlsUnverified",
+      "outcome": "tlsUnverified",
+      "passed": true,
+      "elapsedMs": 14.395875,
+      "afterCancelMs": null,
+      "build": "normal",
+      "acceptedConnections": 1,
+      "peerClosed": true,
+      "tlsVersion": null,
+      "commands": [
+        {
+          "verb": "AUTH",
+          "secure": false
+        }
+      ],
+      "cleartextCredentialCommandCount": 0,
+      "explicitPlaintextFixture": false,
+      "writeOrMediaCommands": 0
+    },
+    "finalauthReject": {
+      "selectedWindow": "finalauthReject",
+      "expected": "unexpected(500)",
+      "outcome": "unexpected(500)",
+      "passed": true,
+      "elapsedMs": 7.681625,
+      "afterCancelMs": null,
+      "build": "normal",
+      "acceptedConnections": 1,
+      "peerClosed": true,
+      "tlsVersion": null,
+      "commands": [
+        {
+          "verb": "AUTH",
+          "secure": false
+        }
+      ],
+      "cleartextCredentialCommandCount": 0,
+      "explicitPlaintextFixture": false,
+      "writeOrMediaCommands": 0
+    },
+    "finalprotectReject": {
+      "selectedWindow": "finalprotectReject",
+      "expected": "unexpected(534)",
+      "outcome": "unexpected(534)",
+      "passed": true,
+      "elapsedMs": 7.947291,
+      "afterCancelMs": null,
+      "build": "normal",
+      "acceptedConnections": 1,
+      "peerClosed": true,
+      "tlsVersion": "TLSv1.3",
+      "commands": [
+        {
+          "verb": "AUTH",
+          "secure": false
+        },
+        {
+          "verb": "PBSZ",
+          "secure": true
+        },
+        {
+          "verb": "PROT",
+          "secure": true
+        }
+      ],
+      "cleartextCredentialCommandCount": 0,
+      "explicitPlaintextFixture": false,
+      "writeOrMediaCommands": 0
+    },
+    "finalloginReject": {
+      "selectedWindow": "finalloginReject",
+      "expected": "unexpected(530)",
+      "outcome": "unexpected(530)",
+      "passed": true,
+      "elapsedMs": 8.119083,
+      "afterCancelMs": null,
+      "build": "normal",
+      "acceptedConnections": 1,
+      "peerClosed": true,
+      "tlsVersion": "TLSv1.3",
+      "commands": [
+        {
+          "verb": "AUTH",
+          "secure": false
+        },
+        {
+          "verb": "PBSZ",
+          "secure": true
+        },
+        {
+          "verb": "PROT",
+          "secure": true
+        },
+        {
+          "verb": "USER",
+          "secure": true
+        },
+        {
+          "verb": "PASS",
+          "secure": true
+        }
+      ],
+      "cleartextCredentialCommandCount": 0,
+      "explicitPlaintextFixture": false,
+      "writeOrMediaCommands": 0
+    },
+    "finalfragmented": {
+      "selectedWindow": "finalfragmented",
+      "expected": "success",
+      "outcome": "success",
+      "passed": true,
+      "elapsedMs": 61.918625,
+      "afterCancelMs": null,
+      "build": "normal",
+      "acceptedConnections": 1,
+      "peerClosed": true,
+      "tlsVersion": "TLSv1.3",
+      "commands": [
+        {
+          "verb": "AUTH",
+          "secure": false
+        },
+        {
+          "verb": "PBSZ",
+          "secure": true
+        },
+        {
+          "verb": "PROT",
+          "secure": true
+        },
+        {
+          "verb": "USER",
+          "secure": true
+        },
+        {
+          "verb": "PASS",
+          "secure": true
+        },
+        {
+          "verb": "FEAT",
+          "secure": true
+        },
+        {
+          "verb": "QUIT",
+          "secure": true
+        }
+      ],
+      "cleartextCredentialCommandCount": 0,
+      "explicitPlaintextFixture": false,
+      "writeOrMediaCommands": 0
+    },
+    "finalqueuedPlaintext": {
+      "selectedWindow": "finalqueuedPlaintext",
+      "expected": "invalidReply",
+      "outcome": "invalidReply",
+      "passed": true,
+      "elapsedMs": 4.721875,
+      "afterCancelMs": null,
+      "build": "normal",
+      "acceptedConnections": 1,
+      "peerClosed": true,
+      "tlsVersion": null,
+      "commands": [
+        {
+          "verb": "AUTH",
+          "secure": false
+        }
+      ],
+      "cleartextCredentialCommandCount": 0,
+      "explicitPlaintextFixture": false,
+      "writeOrMediaCommands": 0
+    },
+    "finalsilentGreeting": {
+      "selectedWindow": "closureSilentGreeting",
+      "expected": "deadline",
+      "outcome": "deadline",
+      "passed": true,
+      "elapsedMs": 195.230958,
+      "afterCancelMs": null,
+      "build": "normal",
+      "acceptedConnections": 1,
+      "peerClosed": true,
+      "tlsVersion": null,
+      "commands": [],
+      "cleartextCredentialCommandCount": 0,
+      "explicitPlaintextFixture": false,
+      "writeOrMediaCommands": 0
+    },
+    "finalcancelGreeting": {
+      "selectedWindow": "closureCancelGreeting",
+      "expected": "CancellationError",
+      "outcome": "CancellationError",
+      "passed": true,
+      "elapsedMs": 11.450792,
+      "afterCancelMs": 0.598167,
+      "build": "normal",
+      "acceptedConnections": 1,
+      "peerClosed": true,
+      "tlsVersion": null,
+      "commands": [],
+      "cleartextCredentialCommandCount": 0,
+      "explicitPlaintextFixture": false,
+      "writeOrMediaCommands": 0
+    },
+    "finalsilentTLS": {
+      "selectedWindow": "closureSilentTLS",
+      "expected": "deadline",
+      "outcome": "deadline",
+      "passed": true,
+      "elapsedMs": 194.314333,
+      "afterCancelMs": null,
+      "build": "normal",
+      "acceptedConnections": 1,
+      "peerClosed": true,
+      "tlsVersion": null,
+      "commands": [
+        {
+          "verb": "AUTH",
+          "secure": false
+        }
+      ],
+      "cleartextCredentialCommandCount": 0,
+      "explicitPlaintextFixture": false,
+      "writeOrMediaCommands": 0
+    },
+    "finalcancelTLS": {
+      "selectedWindow": "closureCancelTLS",
+      "expected": "CancellationError",
+      "outcome": "CancellationError",
+      "passed": true,
+      "elapsedMs": 11.829292,
+      "afterCancelMs": 0.436584,
+      "build": "normal",
+      "acceptedConnections": 1,
+      "peerClosed": true,
+      "tlsVersion": null,
+      "commands": [
+        {
+          "verb": "AUTH",
+          "secure": false
+        }
+      ],
+      "cleartextCredentialCommandCount": 0,
+      "explicitPlaintextFixture": false,
+      "writeOrMediaCommands": 0
+    },
+    "finalsilentMulti": {
+      "selectedWindow": "closureSilentMulti",
+      "expected": "deadline",
+      "outcome": "deadline",
+      "passed": true,
+      "elapsedMs": 198.075791,
+      "afterCancelMs": null,
+      "build": "normal",
+      "acceptedConnections": 1,
+      "peerClosed": true,
+      "tlsVersion": "TLSv1.3",
+      "commands": [
+        {
+          "verb": "AUTH",
+          "secure": false
+        },
+        {
+          "verb": "PBSZ",
+          "secure": true
+        },
+        {
+          "verb": "PROT",
+          "secure": true
+        },
+        {
+          "verb": "USER",
+          "secure": true
+        },
+        {
+          "verb": "PASS",
+          "secure": true
+        },
+        {
+          "verb": "FEAT",
+          "secure": true
+        }
+      ],
+      "cleartextCredentialCommandCount": 0,
+      "explicitPlaintextFixture": false,
+      "writeOrMediaCommands": 0
+    },
+    "finalcancelFEAT": {
+      "selectedWindow": "closureCancelFEAT",
+      "expected": "CancellationError",
+      "outcome": "CancellationError",
+      "passed": true,
+      "elapsedMs": 19.537125,
+      "afterCancelMs": 0.390667,
+      "build": "normal",
+      "acceptedConnections": 1,
+      "peerClosed": true,
+      "tlsVersion": "TLSv1.3",
+      "commands": [
+        {
+          "verb": "AUTH",
+          "secure": false
+        },
+        {
+          "verb": "PBSZ",
+          "secure": true
+        },
+        {
+          "verb": "PROT",
+          "secure": true
+        },
+        {
+          "verb": "USER",
+          "secure": true
+        },
+        {
+          "verb": "PASS",
+          "secure": true
+        },
+        {
+          "verb": "FEAT",
+          "secure": true
+        }
+      ],
+      "cleartextCredentialCommandCount": 0,
+      "explicitPlaintextFixture": false,
+      "writeOrMediaCommands": 0
+    },
+    "finaloversized": {
+      "selectedWindow": "finaloversized",
+      "expected": "limit",
+      "outcome": "limit",
+      "passed": true,
+      "elapsedMs": 9.572167,
+      "afterCancelMs": null,
+      "build": "normal",
+      "acceptedConnections": 1,
+      "peerClosed": true,
+      "tlsVersion": null,
+      "commands": [],
+      "cleartextCredentialCommandCount": 0,
+      "explicitPlaintextFixture": false,
+      "writeOrMediaCommands": 0
+    },
+    "finalreplyOverflow": {
+      "selectedWindow": "finalreplyOverflow",
+      "expected": "limit",
+      "outcome": "limit",
+      "passed": true,
+      "elapsedMs": 16.524334,
+      "afterCancelMs": null,
+      "build": "normal",
+      "acceptedConnections": 1,
+      "peerClosed": true,
+      "tlsVersion": "TLSv1.3",
+      "commands": [
+        {
+          "verb": "AUTH",
+          "secure": false
+        },
+        {
+          "verb": "PBSZ",
+          "secure": true
+        },
+        {
+          "verb": "PROT",
+          "secure": true
+        },
+        {
+          "verb": "USER",
+          "secure": true
+        },
+        {
+          "verb": "PASS",
+          "secure": true
+        },
+        {
+          "verb": "FEAT",
+          "secure": true
+        }
+      ],
+      "cleartextCredentialCommandCount": 0,
+      "explicitPlaintextFixture": false,
+      "writeOrMediaCommands": 0
+    },
+    "finalbareLF": {
+      "selectedWindow": "closureBareLF",
+      "expected": "deadline",
+      "outcome": "deadline",
+      "passed": true,
+      "elapsedMs": 199.581417,
+      "afterCancelMs": null,
+      "build": "normal",
+      "acceptedConnections": 1,
+      "peerClosed": true,
+      "tlsVersion": null,
+      "commands": [],
+      "cleartextCredentialCommandCount": 0,
+      "explicitPlaintextFixture": false,
+      "writeOrMediaCommands": 0
+    },
+    "finalplainDenied": {
+      "selectedWindow": "finalplainDenied",
+      "expected": "tlsRequired",
+      "outcome": "tlsRequired",
+      "passed": true,
+      "elapsedMs": 0.41975,
+      "afterCancelMs": null,
+      "build": "normal",
+      "acceptedConnections": 0,
+      "peerClosed": null,
+      "tlsVersion": null,
+      "commands": [],
+      "cleartextCredentialCommandCount": 0,
+      "explicitPlaintextFixture": false,
+      "writeOrMediaCommands": 0
+    },
+    "finalplainExplicitAllowed": {
+      "selectedWindow": "finalplainExplicitAllowed",
+      "expected": "success",
+      "outcome": "success",
+      "passed": true,
+      "elapsedMs": 10.531625,
+      "afterCancelMs": null,
+      "build": "normal",
+      "acceptedConnections": 1,
+      "peerClosed": true,
+      "tlsVersion": null,
+      "commands": [
+        {
+          "verb": "USER",
+          "secure": false
+        },
+        {
+          "verb": "PASS",
+          "secure": false
+        },
+        {
+          "verb": "FEAT",
+          "secure": false
+        },
+        {
+          "verb": "QUIT",
+          "secure": false
+        }
+      ],
+      "cleartextCredentialCommandCount": 2,
+      "explicitPlaintextFixture": true,
+      "writeOrMediaCommands": 0
+    },
+    "finalinvalidUser": {
+      "selectedWindow": "finalinvalidUser",
+      "expected": "invalidInput",
+      "outcome": "invalidInput",
+      "passed": true,
+      "elapsedMs": 0.465291,
+      "afterCancelMs": null,
+      "build": "normal",
+      "acceptedConnections": 0,
+      "peerClosed": null,
+      "tlsVersion": null,
+      "commands": [],
+      "cleartextCredentialCommandCount": 0,
+      "explicitPlaintextFixture": false,
+      "writeOrMediaCommands": 0
+    },
+    "finalinvalidPassword": {
+      "selectedWindow": "finalinvalidPassword",
+      "expected": "invalidInput",
+      "outcome": "invalidInput",
+      "passed": true,
+      "elapsedMs": 0.432125,
+      "afterCancelMs": null,
+      "build": "normal",
+      "acceptedConnections": 0,
+      "peerClosed": null,
+      "tlsVersion": null,
+      "commands": [],
+      "cleartextCredentialCommandCount": 0,
+      "explicitPlaintextFixture": false,
+      "writeOrMediaCommands": 0
+    },
+    "finalasanexplicit": {
+      "selectedWindow": "finalasanexplicit",
+      "expected": "success",
+      "outcome": "success",
+      "passed": true,
+      "elapsedMs": 10.125,
+      "afterCancelMs": null,
+      "build": "asan",
+      "acceptedConnections": 1,
+      "peerClosed": true,
+      "tlsVersion": "TLSv1.3",
+      "commands": [
+        {
+          "verb": "AUTH",
+          "secure": false
+        },
+        {
+          "verb": "PBSZ",
+          "secure": true
+        },
+        {
+          "verb": "PROT",
+          "secure": true
+        },
+        {
+          "verb": "USER",
+          "secure": true
+        },
+        {
+          "verb": "PASS",
+          "secure": true
+        },
+        {
+          "verb": "FEAT",
+          "secure": true
+        },
+        {
+          "verb": "QUIT",
+          "secure": true
+        }
+      ],
+      "cleartextCredentialCommandCount": 0,
+      "explicitPlaintextFixture": false,
+      "writeOrMediaCommands": 0
+    },
+    "finalasanimplicit": {
+      "selectedWindow": "finalasanimplicit",
+      "expected": "success",
+      "outcome": "success",
+      "passed": true,
+      "elapsedMs": 13.640667,
+      "afterCancelMs": null,
+      "build": "asan",
+      "acceptedConnections": 1,
+      "peerClosed": true,
+      "tlsVersion": "TLSv1.3",
+      "commands": [
+        {
+          "verb": "PBSZ",
+          "secure": true
+        },
+        {
+          "verb": "PROT",
+          "secure": true
+        },
+        {
+          "verb": "USER",
+          "secure": true
+        },
+        {
+          "verb": "PASS",
+          "secure": true
+        },
+        {
+          "verb": "FEAT",
+          "secure": true
+        },
+        {
+          "verb": "QUIT",
+          "secure": true
+        }
+      ],
+      "cleartextCredentialCommandCount": 0,
+      "explicitPlaintextFixture": false,
+      "writeOrMediaCommands": 0
+    },
+    "finalasanuntrusted": {
+      "selectedWindow": "finalasanuntrusted",
+      "expected": "tlsUnverified",
+      "outcome": "tlsUnverified",
+      "passed": true,
+      "elapsedMs": 11.3485,
+      "afterCancelMs": null,
+      "build": "asan",
+      "acceptedConnections": 1,
+      "peerClosed": true,
+      "tlsVersion": null,
+      "commands": [
+        {
+          "verb": "AUTH",
+          "secure": false
+        }
+      ],
+      "cleartextCredentialCommandCount": 0,
+      "explicitPlaintextFixture": false,
+      "writeOrMediaCommands": 0
+    },
+    "finalasanoversized": {
+      "selectedWindow": "finalasanoversized",
+      "expected": "limit",
+      "outcome": "limit",
+      "passed": true,
+      "elapsedMs": 6.467083,
+      "afterCancelMs": null,
+      "build": "asan",
+      "acceptedConnections": 1,
+      "peerClosed": true,
+      "tlsVersion": null,
+      "commands": [],
+      "cleartextCredentialCommandCount": 0,
+      "explicitPlaintextFixture": false,
+      "writeOrMediaCommands": 0
+    },
+    "finalasancancelTLS": {
+      "selectedWindow": "closureASanCancelTLS",
+      "expected": "CancellationError",
+      "outcome": "CancellationError",
+      "passed": true,
+      "elapsedMs": 10.276291,
+      "afterCancelMs": 0.786333,
+      "build": "asan",
+      "acceptedConnections": 1,
+      "peerClosed": true,
+      "tlsVersion": null,
+      "commands": [
+        {
+          "verb": "AUTH",
+          "secure": false
+        }
+      ],
+      "cleartextCredentialCommandCount": 0,
+      "explicitPlaintextFixture": false,
+      "writeOrMediaCommands": 0
+    }
+  },
+  "builds": {
+    "mobile": {
+      "exit": 0,
+      "buildSucceeded": true,
+      "platform": "IOS",
+      "signed": false,
+      "embeddedInApp": false,
+      "deviceExecuted": false,
+      "sha256": "8ae2fb4b52f0724bda7c0ba508f41c7c53813c0551bb0a491a5a846ca0a5575c",
+      "platformVerified": true
+    },
+    "tv": {
+      "exit": 0,
+      "buildSucceeded": true,
+      "platform": "TVOS",
+      "signed": false,
+      "embeddedInApp": false,
+      "deviceExecuted": false,
+      "sha256": "6bdb1af9f7c75a83d2e2445354aaaedf9e5e56fd58eec2e100fedd98e12eb8c9",
+      "platformVerified": true
+    }
+  },
+  "device": {
+    "at": "2026-10-26T16:34:57.682632+08:00",
+    "iPhone18": [
+      {
+        "model": "iPhone19,7",
+        "os": "27.0",
+        "state": "unavailable",
+        "usbPresent": false
+      }
+    ],
+    "installed": false
+  },
+  "preservedLimitations": [
+    "initial 8 certificate-negative observations returned NSURLError -999; final delegate records trust rejection separately from user cancellation",
+    "initial 8 silent-server windows ended fixture too early to observe remote close; distinct closure windows wait for peer close and preserve earlier non-observation",
+    "PBSZ/PROT P acceptance is negotiation only, not proof of data-channel TLS",
+    "FEAT reply is bounded/validated, feature values not exposed as production capability model",
+    "no EPSV/PASV data endpoint, MLSD/MLST/CWD/RETR, folder selection, NFO/index transaction, playback, FTPS session reuse, real NAS compatibility or App/UI integration",
+    "plaintext fixture intentionally sent 2 credential commands on explicitly selected plain mode; no FTPS fallback",
+    "minimum TLS setting and cancellation do not prove full DNS/OS daemon/real-device behavior",
+    "SMB forced-local ancestor replacement remains an open containment failure"
+  ],
+  "cleanup": {
+    "ownServiceWindowsStopped": 44,
+    "globalCertificateTrustChanged": false,
+    "NASVPNNetworkOrCredentialsChanged": false,
+    "mediaOrCellularTraffic": false
+  }
+}

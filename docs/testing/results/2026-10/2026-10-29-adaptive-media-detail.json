@@ -1,0 +1,114 @@
+{
+  "recordedAt": "2026-10-29T21:03:57+08:00",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceInputCount": 433,
+  "changedExistingSourceFiles": 4,
+  "existingTestsPassed": 6,
+  "testsBySuite": {
+    "MediaPosterGridLayoutTests": 2,
+    "OfflineUIScenarioTests": 4
+  },
+  "builds": {
+    "module-tests": {
+      "startedAt": "2026-10-29T20:41:54.125692+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-29T20:41:58.495149+08:00"
+    },
+    "mobile-sim-debug-media-adaptive-r2": {
+      "startedAt": "2026-10-29T20:46:29.561982+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-29T20:46:55.415057+08:00"
+    },
+    "tv-sim-debug-media-adaptive-r2": {
+      "startedAt": "2026-10-29T20:46:29.562025+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-29T20:46:39.394199+08:00"
+    },
+    "mobile-debug": {
+      "startedAt": "2026-10-29T20:58:59.819317+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-29T20:59:53.390167+08:00"
+    },
+    "tv-debug": {
+      "startedAt": "2026-10-29T20:58:59.818606+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-29T20:59:23.601719+08:00"
+    },
+    "mobile-release": {
+      "startedAt": "2026-10-29T20:59:53.391013+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-29T21:01:31.802671+08:00"
+    },
+    "tv-release": {
+      "startedAt": "2026-10-29T20:59:23.604512+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-29T21:00:02.426825+08:00"
+    }
+  },
+  "capture": {
+    "accepted": 12,
+    "allPassed": true,
+    "allOwnedSimulatorsDeleted": true,
+    "byPlatform": {
+      "phone": 4,
+      "pad": 5,
+      "tv": 3
+    },
+    "padLandscapeFrames": 2,
+    "padRotatedScreenshotDimensions": [
+      2360,
+      1640
+    ],
+    "rotationMethod": "CUA Rotate on observed task-owned Simulator window; no image rotation or app orientation policy changes",
+    "method": "Expected text and synthetic marker with consecutive backdrop sampling; selected frames visually reviewed",
+    "interactionOrPerformanceAcceptance": false
+  },
+  "physicalDevicesOperated": 0,
+  "NASCommands": 0,
+  "playbackCommands": 0,
+  "packages": {
+    "mobile": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-29T20:59:52.988506+08:00",
+      "frozenAt": "2026-10-29T21:02:36.395179+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 433,
+      "mainSHA256": "0f245b23a40896d503e4242e92ea2809e37de8f66f8d0e323e88a34fa65e2428",
+      "debugDylibSHA256": "276297b0643d90a453275ba7e20a615beb27ab256e4bbe5c3db149ace6d3848a",
+      "signedMachOCount": 30,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false
+    },
+    "tv": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-29T20:59:23.494540+08:00",
+      "frozenAt": "2026-10-29T21:02:36.915514+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 433,
+      "mainSHA256": "4849a425207f207df8813f577e8a49232254c8f3607874ff2c754be34da6dbe0",
+      "debugDylibSHA256": "160b5d251a6453ed8dde31510b11563a73b667eac35843e9173d343183266744",
+      "signedMachOCount": 27,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false
+    }
+  },
+  "retainedFailure": "Initial mobile simulator compile rejected optional lineLimit with reservesSpace; corrected by splitting the modes, first capture gate stopped before device creation",
+  "notVerified": [
+    "Real image fetching, actor photos and metadata completeness",
+    "Full long-text/credits scrolling, focus return and VoiceOver",
+    "Phone landscape or compact-height branch",
+    "All source entry roots and formats",
+    "Playback performance or physical-device appearance"
+  ],
+  "privateEvidencePointer": "current-adaptive-media-detail-private"
+}

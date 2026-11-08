@@ -1,0 +1,140 @@
+{
+  "date": "2026-11-01",
+  "scope": "Isolated TV connection-card native remote regression; tests only, production code unchanged",
+  "source": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "inputCount": 446,
+    "existingTestFilesChanged": 1,
+    "otherHashesUnchanged": 445
+  },
+  "finalBuildChecks": {
+    "tv-sim-debug-cast": {
+      "startedAt": "2026-11-01T01:50:17.396254+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-11-01T01:50:24.080804+08:00"
+    },
+    "mobile-sim-debug-cast": {
+      "startedAt": "2026-11-01T01:51:27.897645+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-11-01T01:51:42.966067+08:00"
+    },
+    "mobile-debug": {
+      "startedAt": "2026-11-01T01:51:42.967221+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-11-01T01:52:17.362350+08:00"
+    },
+    "mobile-release": {
+      "startedAt": "2026-11-01T01:52:17.363431+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-11-01T01:53:53.036857+08:00"
+    },
+    "tv-unsigned-debug": {
+      "startedAt": "2026-11-01T01:53:53.037772+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-11-01T01:54:06.503202+08:00"
+    },
+    "tv-release": {
+      "startedAt": "2026-11-01T01:54:06.503922+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-11-01T01:54:33.696865+08:00"
+    }
+  },
+  "uiBuild": {
+    "startedAt": "2026-11-01T01:48:06.078706+08:00",
+    "exitCode": 0,
+    "endedAt": "2026-11-01T01:48:15.573556+08:00"
+  },
+  "ui": {
+    "uniqueUITestCount": 1,
+    "passed": 1,
+    "failed": 0,
+    "skipped": 0,
+    "screenshotsReviewed": 2,
+    "configuration": "glassDeck / dark / standard text",
+    "input": "XCUIRemote Select/Right/Left; no programmatic focus assignment",
+    "stepsVerified": [
+      "initial native NAS focus and saved configuration",
+      "NAS Select clears saved status and display address; two empty cards",
+      "Right reaches Jellyfin focus; Select shows saved authorization and sanitized address",
+      "Jellyfin Select clears saved authorization and address",
+      "Left reaches NAS focus; Select restores saved configuration and sanitized address"
+    ],
+    "sensitiveSyntheticLabelMatches": 0,
+    "existingTestsAndHelpersUnchanged": true,
+    "productionCodeUnchanged": true,
+    "otherThemesTextSizesOrLongAddressLayoutValidated": false,
+    "physicalRemoteOrVoiceOverValidated": false,
+    "actualLoginOrDisconnectValidated": false,
+    "fullProductionPageValidated": false,
+    "frameTimingValidated": false,
+    "images": [
+      {
+        "state": "nas-empty-jellyfin-saved",
+        "sha256": "803a8ceb8bdf173f07a50b3313f782afe9613cb94fba693cfba9285e32d97d6b"
+      },
+      {
+        "state": "nas-saved-jellyfin-empty",
+        "sha256": "c011f33c03bd1482e1a70edbd6a21a4af0f65f0501830a5d276f7e0dc67d2ef8"
+      }
+    ]
+  },
+  "simulation": {
+    "ownedSimulatorCount": 1,
+    "uiRun": {
+      "freeGiBBeforeBoot": 4.9781951904296875,
+      "tvStartupMinimumGiB": 3.8,
+      "mobileStartupMinimumGiB": 6,
+      "runtimeReserveGiB": 2,
+      "started": true,
+      "startedAt": "2026-11-01T01:49:07.457582+08:00",
+      "physicalDevicesOperated": 0,
+      "NASCommands": 0,
+      "playbackCommands": 0,
+      "customAppLaunchEnvironment": {},
+      "fixture": "early account-connections branch, real cards with synthetic memory only, no app state/client/store/network",
+      "sourceInputCount": 446,
+      "exitCode": 0,
+      "inputHashesUnchanged": true,
+      "installedBinaryHashesMatchAfterTests": true,
+      "traceExported": false,
+      "endedAt": "2026-11-01T01:49:42.111357+08:00",
+      "syntheticPreferencesPreserved": true,
+      "unexpectedApplicationKeys": [],
+      "shutdownExit": 0,
+      "deleteExit": 0,
+      "freshAbsent": true
+    },
+    "mobileStarted": false,
+    "mobileReason": "Below established 6GiB startup budget"
+  },
+  "unitTestsRunThisBatch": 0,
+  "unitTestsReason": "Only existing UI test file changed; unrelated parser and service tests not rerun",
+  "package": {
+    "mobileSignedMachOCount": 30,
+    "physicalInstallCount": 0,
+    "tvCurrentSignedCandidate": false,
+    "normalTVSigningRetried": false,
+    "priorProfileBlockRetained": true,
+    "incrementalProductsMayBeReused": true
+  },
+  "physicalDevicesOperated": 0,
+  "NASRequests": 0,
+  "actualCredentialReadsOrClears": 0,
+  "actualLoginOrDisconnect": 0,
+  "playbackAttempts": 0,
+  "remoteSourceWrites": 0,
+  "playbackMatrixNewPasses": 0,
+  "limitations": [
+    "Synthetic card actions only, not full production-host login/disconnect",
+    "One dark glassDeck standard-text configuration only",
+    "No VoiceOver, physical remote, long address or frame-time validation",
+    "Prior desktop Return/Space no-change observations retained",
+    "Mobile and all NAS-dependent open items retained"
+  ],
+  "recordedAt": "2026-11-01T01:55:07.357942+08:00",
+  "documentation": {
+    "documentsChecked": 568,
+    "localLinksChecked": 3595,
+    "missingDestinations": 0
+  }
+}

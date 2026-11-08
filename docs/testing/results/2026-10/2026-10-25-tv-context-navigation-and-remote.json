@@ -1,0 +1,181 @@
+{
+  "updatedAt": "2026-10-25T15:42:28.606186+08:00",
+  "scope": "Purposeful TV remote adaptation, detail and navigation; mobile shared replay symbol",
+  "TV": {
+    "configuration": "normal Debug",
+    "HEAD": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceInputs": 510,
+    "signedMachOCount": 27,
+    "binaryBuildTime": null,
+    "installedAt": "2026-10-25T15:28:34.205239+08:00",
+    "profileExpirationUTC": "2026-10-31 05:46:14",
+    "installChangedPreferenceKeys": null,
+    "mainSHA256": "bf141166fc9c5356a0c14f80e741ac29f7528f5fe050efd4521de34cc4239ca9",
+    "debugDylibSHA256": "4051cc15028fdbef11f86e1e6912913aa255db9cc30871eeb1fe6fc4bf3abdaa"
+  },
+  "iPhone13": {
+    "configuration": "normal Debug",
+    "HEAD": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceInputs": 570,
+    "signedMachOCount": 30,
+    "binaryBuildTime": "2026-10-25T15:20:39.941614+08:00",
+    "installedAt": "2026-10-25T15:37:02.379055+08:00",
+    "profileExpirationUTC": "2026-10-31 23:30:06",
+    "installChangedPreferenceKeys": [],
+    "mainSHA256": "0b4f66d49a3f9008b320ba716b49f0c01a0b5d4737e739557f52a847dbd08e75",
+    "debugDylibSHA256": "3d28629d7c0e39c645b4a5fb75deb416a03c246a8382cb08ab242fe7682a8729"
+  },
+  "iPad": {
+    "configuration": "normal Debug",
+    "HEAD": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceInputs": 570,
+    "signedMachOCount": 30,
+    "binaryBuildTime": "2026-10-25T15:20:39.941614+08:00",
+    "installedAt": "2026-10-25T15:37:28.381818+08:00",
+    "profileExpirationUTC": "2026-10-31 23:30:06",
+    "installChangedPreferenceKeys": [],
+    "mainSHA256": "0b4f66d49a3f9008b320ba716b49f0c01a0b5d4737e739557f52a847dbd08e75",
+    "debugDylibSHA256": "3d28629d7c0e39c645b4a5fb75deb416a03c246a8382cb08ab242fe7682a8729"
+  },
+  "formalTests": {
+    "logic": 38,
+    "UI": 5,
+    "failures": 0,
+    "configuration": "tvOS Simulator Debug, network-free selected cases; not complete playback matrix"
+  },
+  "realTV": {
+    "startedAt": "2026-10-25T15:31:09.248158+08:00",
+    "arguments": [],
+    "environment": {},
+    "PlayCommands": 1,
+    "normalExit": true,
+    "checks": [
+      {
+        "case": "shortOverview",
+        "noFoldButton": true
+      },
+      {
+        "case": "castDoesNotOpenEmptyPage",
+        "sameDetail": true
+      },
+      {
+        "case": "remoteChrome",
+        "closeAbsent": true,
+        "topMuteAbsent": true
+      },
+      {
+        "case": "timelineFocus",
+        "focused": true,
+        "visualNeedsInspection": true,
+        "capture": "XCUIScreen (avoids DVT screenshot notification)"
+      },
+      {
+        "case": "muteFallback",
+        "exists": true
+      },
+      {
+        "case": "helpAndNetworkOneBack",
+        "passed": true
+      },
+      {
+        "case": "fourLevelBack",
+        "rootTabRestored": true,
+        "sameProcess": true
+      }
+    ],
+    "audio": "not listened",
+    "fullTrackSwitching": "not repeated",
+    "frameTiming": "not measured",
+    "castFocusObserved": true,
+    "settingsRestored": true,
+    "finishedAt": "2026-10-25T15:32:28.272253+08:00"
+  },
+  "actualMovieFollowup": {
+    "startedAt": "2026-10-25T15:36:43.121735+08:00",
+    "sample": "S01",
+    "arguments": [],
+    "environment": {},
+    "PlayCommands": 1,
+    "normalExit": true,
+    "prepared": true,
+    "audio": "not listened",
+    "frameTiming": "not measured",
+    "lastCaptureSeconds": 3,
+    "seekFocused": true,
+    "sameProcess": true,
+    "normalRoot": true,
+    "settingsRestored": true,
+    "finishedAt": "2026-10-25T15:37:01.224796+08:00"
+  },
+  "actualMovieVisualInspection": {
+    "S01": true,
+    "focusedTimelineNoBoxOrPlatter": true,
+    "pauseIconAfterRemotePause": "play triangle",
+    "SpiderMan3ShortSynopsisComplete": true,
+    "castSelectRemainsOnDetail": true,
+    "rootMediaCardFocusVisuallyRestored": true
+  },
+  "preferencesAndInputs": {
+    "at": "2026-10-25T15:38:02.718691+08:00",
+    "mobile": {
+      "iPhone13": {
+        "model": "iPhone14,5",
+        "system": "16.3.1",
+        "changedKeys": [
+          "diagnostics.entries.v1"
+        ],
+        "normalHomeVisuallyInspected": true,
+        "fullPlaybackNotRepeated": true
+      },
+      "iPad": {
+        "model": "iPad15,7",
+        "system": "26.6",
+        "changedKeys": [
+          "diagnostics.entries.v1"
+        ],
+        "normalHomeVisuallyInspected": true,
+        "fullPlaybackNotRepeated": true
+      },
+      "sourceInputs": 570,
+      "sourceDrift": 0
+    },
+    "TV": {
+      "changedKeys": [],
+      "sourceInputs": 510,
+      "sourceDrift": 0
+    }
+  },
+  "runnersStopped": true,
+  "failuresRetained": [
+    {
+      "stage": "first new navigation fixture",
+      "outcome": "failed four assertions; narrow target outside vertical focus corridor; corrected fixture geometry only; rerun passed"
+    },
+    {
+      "stage": "first TV progress style",
+      "outcome": "native plain-button focus adds filled platter; replaced by label-only ButtonStyle"
+    },
+    {
+      "stage": "first real movie window",
+      "outcome": "Menu assertion failed; no App back trace; DVT screenshot notification visible; own media killed/settings restored/Runner stopped; causal role of notification not proven"
+    },
+    {
+      "stage": "final SpiderMan3 short window",
+      "outcome": "still preparing at 3/10 seconds and timeline; navigation passed; not playback PASS"
+    },
+    {
+      "stage": "initial mobile final audit",
+      "outcome": "one TV-only source drift after style change; preserved; rebuilt/refroze/reinstalled mobile after final source; final570/510 drift0"
+    }
+  ],
+  "notAccepted": [
+    "Douban data source unverified; no Douban UI claim or server/plugin changes",
+    "TV file KS controls remain separate; this batch changes Jellyfin AV chrome",
+    "full SUB/AUD/HDR/frame timing/formats/long duration/concurrent playback not repeated",
+    "iPhone18 away; no new install",
+    "original weak-cellular seek low throughput/KS delay remain open"
+  ],
+  "openRequirements": 28,
+  "matrixCells": 114,
+  "cellularMediaCommands": 0
+}

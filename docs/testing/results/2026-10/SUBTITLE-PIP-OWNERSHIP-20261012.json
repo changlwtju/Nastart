@@ -1,0 +1,489 @@
+{
+  "updatedAt": "2026-10-12T21:04:09.700998+08:00",
+  "batch": "subtitle-pip-ownership",
+  "status": "implementation and bounded evidence complete; functional acceptance pending",
+  "privateEvidenceRootLabel": "2026-10-12-subtitle-pip-ownership-201430",
+  "source": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "dirtyIOSDiffSHA256": "5a1e70c58e88cdabeb5a879d419268d48a0b75f30e4679eedf3d85d8350d2c2c",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "binaryBuildTime": "2026-10-12T20:23:53.232853+08:00",
+    "packageName": "Nastart-Subtitle-PiP-Ownership-Normal-Debug.app",
+    "binaries": {
+      "Nastart": "e74c7ffe7a50d666a93e53ec2a894728878ee9311d4e64d6a662bf1b9e92bd54",
+      "Nastart.debug.dylib": "477aedc5169af9cb366c3ae41f7bb6987bcddf2364436279692fa91743e55892",
+      "Frameworks/KSPlayer.framework/KSPlayer": "baaeb6e0837e19b5bc002b6e19a5fe403eaaea4ab163e166d3fb0acee722eea4"
+    },
+    "sourceInputsVerified": 173,
+    "individuallyVerifiedLibraries": 29,
+    "profileExpirationUTC": "2026-10-17T22:23:40",
+    "tests": {
+      "executed": 328,
+      "skipped": 2,
+      "failures": 0,
+      "runThisTurn": true
+    },
+    "preflight": {
+      "passed": 15,
+      "runThisTurn": true
+    }
+  },
+  "installations": {
+    "iphone13": {
+      "device": "iphone13",
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "connection": "USB",
+      "binaries": {
+        "Nastart": "e74c7ffe7a50d666a93e53ec2a894728878ee9311d4e64d6a662bf1b9e92bd54",
+        "Nastart.debug.dylib": "477aedc5169af9cb366c3ae41f7bb6987bcddf2364436279692fa91743e55892",
+        "Frameworks/KSPlayer.framework/KSPlayer": "baaeb6e0837e19b5bc002b6e19a5fe403eaaea4ab163e166d3fb0acee722eea4"
+      },
+      "sourceDiffSHA256": "5a1e70c58e88cdabeb5a879d419268d48a0b75f30e4679eedf3d85d8350d2c2c",
+      "preservesContainer": true,
+      "signatureVerified": true,
+      "actualForegroundUIVerified": true,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "installation": "success",
+      "startedAt": "2026-10-12T20:26:30.436625+08:00",
+      "installedAt": "2026-10-12T20:26:43.647640+08:00",
+      "preferenceKeysUnchanged": true,
+      "preferenceValuesUnchanged": true,
+      "nonDiagnosticKeys": 25
+    },
+    "ipad": {
+      "device": "ipad",
+      "model": "iPad12,1",
+      "system": "18.3.1",
+      "connection": "USB",
+      "binaries": {
+        "Nastart": "e74c7ffe7a50d666a93e53ec2a894728878ee9311d4e64d6a662bf1b9e92bd54",
+        "Nastart.debug.dylib": "477aedc5169af9cb366c3ae41f7bb6987bcddf2364436279692fa91743e55892",
+        "Frameworks/KSPlayer.framework/KSPlayer": "baaeb6e0837e19b5bc002b6e19a5fe403eaaea4ab163e166d3fb0acee722eea4"
+      },
+      "sourceDiffSHA256": "5a1e70c58e88cdabeb5a879d419268d48a0b75f30e4679eedf3d85d8350d2c2c",
+      "preservesContainer": true,
+      "signatureVerified": true,
+      "actualForegroundUIVerified": true,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "installation": "success",
+      "startedAt": "2026-10-12T20:27:09.183161+08:00",
+      "installedAt": "2026-10-12T20:27:19.223991+08:00",
+      "preferenceKeysUnchanged": true,
+      "preferenceValuesUnchanged": true,
+      "nonDiagnosticKeys": 16
+    },
+    "iphone18": {
+      "device": "iphone18",
+      "installation": "success",
+      "sourceDiffSHA256": "5a1e70c58e88cdabeb5a879d419268d48a0b75f30e4679eedf3d85d8350d2c2c",
+      "binaries": {
+        "Nastart": "e74c7ffe7a50d666a93e53ec2a894728878ee9311d4e64d6a662bf1b9e92bd54",
+        "Nastart.debug.dylib": "477aedc5169af9cb366c3ae41f7bb6987bcddf2364436279692fa91743e55892",
+        "Frameworks/KSPlayer.framework/KSPlayer": "baaeb6e0837e19b5bc002b6e19a5fe403eaaea4ab163e166d3fb0acee722eea4"
+      },
+      "method": "direct Bonjour TCP lockdown using existing Mac legacy pairing + AFC + installation_proxy Install; preserve container",
+      "newPairingAttempted": false,
+      "preservesContainer": true,
+      "signatureVerified": true,
+      "librariesVerified": 29,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "normalLaunch": "pending actual current normal launch verification",
+      "actualForegroundUIVerified": false,
+      "model": "iPhone19,7",
+      "system": "27.0",
+      "connection": "NETWORK",
+      "installationStartedAt": "2026-10-12T20:33:01.348488+08:00",
+      "installedAt": "2026-10-12T20:33:11.899406+08:00",
+      "postInstallLookupExists": true,
+      "samePreferenceKeys": true,
+      "nonDiagnosticKeysBefore": 25,
+      "nonDiagnosticKeysAfter": 25,
+      "unchangedPreferenceValues": 25,
+      "changedPreferenceCount": 0
+    }
+  },
+  "usbFinalAudit": {
+    "sourceInputsVerified": 173,
+    "binaryHashesVerified": true,
+    "deepSignatureVerified": true,
+    "devices": {
+      "iphone13": {
+        "at": "2026-10-12T21:00:23.994278+08:00",
+        "model": "iPhone14,5",
+        "system": "16.3.1",
+        "connection": "USB",
+        "latestPackage": {
+          "Nastart": "e74c7ffe7a50d666a93e53ec2a894728878ee9311d4e64d6a662bf1b9e92bd54",
+          "Nastart.debug.dylib": "477aedc5169af9cb366c3ae41f7bb6987bcddf2364436279692fa91743e55892",
+          "Frameworks/KSPlayer.framework/KSPlayer": "baaeb6e0837e19b5bc002b6e19a5fe403eaaea4ab163e166d3fb0acee722eea4"
+        },
+        "sourceDiffSHA256": "5a1e70c58e88cdabeb5a879d419268d48a0b75f30e4679eedf3d85d8350d2c2c",
+        "nonBookmarkPreferenceKeys": 24,
+        "nonBookmarkPreferencesUnchanged": true,
+        "changedBookmarksCount": 2,
+        "originalTrackSelectionsRestored": true,
+        "finalS03": {
+          "S03File": {
+            "positionSeconds": 739.444,
+            "audioTrackID": 4,
+            "subtitleTrackID": 5,
+            "subtitlesDisabled": false
+          },
+          "S03Jellyfin": {
+            "positionSeconds": 5815.383,
+            "audioTrackID": 1,
+            "subtitleTrackID": 7,
+            "subtitlesDisabled": false
+          }
+        },
+        "newCrashReports": 0,
+        "normalEmptyEnvironment": true,
+        "NASNormal": true,
+        "playerClosed": true,
+        "finalScreenshotReviewed": true,
+        "WDAIdleSeconds": 10,
+        "WDAAnimationCoolOffSeconds": 2,
+        "cases": {
+          "s03-jf-new-pip-ownership": {
+            "freshPiPFrameEvents": 8,
+            "framesWithText": 3,
+            "compositionGroups": [
+              {
+                "count": 3,
+                "compositionReason": "hdrPQPreserved",
+                "allocationStatus": "notAttempted",
+                "sourceTransfer": "SMPTE_ST_2084_PQ",
+                "sourcePixelFormat": "2016686640",
+                "sourceWidth": "3840",
+                "sourceHeight": "2160",
+                "composited": "false",
+                "external": "true"
+              },
+              {
+                "count": 5,
+                "compositionReason": "noCue",
+                "allocationStatus": "notAttempted",
+                "sourceTransfer": "SMPTE_ST_2084_PQ",
+                "sourcePixelFormat": "2016686640",
+                "sourceWidth": "3840",
+                "sourceHeight": "2160",
+                "composited": "false",
+                "external": "true"
+              }
+            ],
+            "pipLifecycle": [
+              {
+                "event": "pip_will_start",
+                "fields": {
+                  "currentSeconds": "5481.431"
+                }
+              },
+              {
+                "event": "pip_started",
+                "fields": {}
+              },
+              {
+                "event": "pip_restore_completed",
+                "fields": {
+                  "success": "true"
+                }
+              },
+              {
+                "event": "pip_stopped",
+                "fields": {
+                  "restoring": "true"
+                }
+              }
+            ],
+            "performanceAccepted": false,
+            "fullSubtitleAudioHDRAccepted": false,
+            "freshReplacementCommits": 0,
+            "freshAVCandidateWarmups": 0
+          }
+        },
+        "performanceAccepted": false,
+        "cellularNetworkTested": false,
+        "fullSubtitleAudioHDRAccepted": false
+      },
+      "ipad": {
+        "at": "2026-10-12T21:00:25.391930+08:00",
+        "model": "iPad12,1",
+        "system": "18.3.1",
+        "connection": "USB",
+        "latestPackage": {
+          "Nastart": "e74c7ffe7a50d666a93e53ec2a894728878ee9311d4e64d6a662bf1b9e92bd54",
+          "Nastart.debug.dylib": "477aedc5169af9cb366c3ae41f7bb6987bcddf2364436279692fa91743e55892",
+          "Frameworks/KSPlayer.framework/KSPlayer": "baaeb6e0837e19b5bc002b6e19a5fe403eaaea4ab163e166d3fb0acee722eea4"
+        },
+        "sourceDiffSHA256": "5a1e70c58e88cdabeb5a879d419268d48a0b75f30e4679eedf3d85d8350d2c2c",
+        "nonBookmarkPreferenceKeys": 15,
+        "nonBookmarkPreferencesUnchanged": true,
+        "changedBookmarksCount": 2,
+        "originalTrackSelectionsRestored": true,
+        "finalS03": {
+          "S03File": {
+            "positionSeconds": 938.896,
+            "audioTrackID": 4,
+            "subtitleTrackID": null,
+            "subtitlesDisabled": true
+          },
+          "S03Jellyfin": {
+            "positionSeconds": 5877.583,
+            "audioTrackID": 1,
+            "subtitleTrackID": 7,
+            "subtitlesDisabled": false
+          }
+        },
+        "newCrashReports": 0,
+        "normalEmptyEnvironment": true,
+        "NASNormal": true,
+        "playerClosed": true,
+        "finalScreenshotReviewed": true,
+        "WDAIdleSeconds": 10,
+        "WDAAnimationCoolOffSeconds": 2,
+        "cases": {
+          "s03-jf-pad-new-pip-ownership": {
+            "freshPiPFrameEvents": 11,
+            "framesWithText": 4,
+            "compositionGroups": [
+              {
+                "count": 7,
+                "compositionReason": "noCue",
+                "allocationStatus": "notAttempted",
+                "sourceTransfer": "SMPTE_ST_2084_PQ",
+                "sourcePixelFormat": "2016686640",
+                "sourceWidth": "3840",
+                "sourceHeight": "2160",
+                "composited": "false",
+                "external": "true"
+              },
+              {
+                "count": 4,
+                "compositionReason": "hdrPQPreserved",
+                "allocationStatus": "notAttempted",
+                "sourceTransfer": "SMPTE_ST_2084_PQ",
+                "sourcePixelFormat": "2016686640",
+                "sourceWidth": "3840",
+                "sourceHeight": "2160",
+                "composited": "false",
+                "external": "true"
+              }
+            ],
+            "pipLifecycle": [
+              {
+                "event": "pip_will_start",
+                "fields": {
+                  "currentSeconds": "5766.452"
+                }
+              },
+              {
+                "event": "pip_started",
+                "fields": {}
+              },
+              {
+                "event": "pip_restore_completed",
+                "fields": {
+                  "success": "true"
+                }
+              },
+              {
+                "event": "pip_stopped",
+                "fields": {
+                  "restoring": "true"
+                }
+              }
+            ],
+            "performanceAccepted": false,
+            "fullSubtitleAudioHDRAccepted": false,
+            "freshReplacementCommits": 0,
+            "freshAVCandidateWarmups": 0
+          }
+        },
+        "performanceAccepted": false,
+        "cellularNetworkTested": false,
+        "fullSubtitleAudioHDRAccepted": false
+      }
+    }
+  },
+  "pip": {
+    "iphone13": {
+      "freshPiPFrameEvents": 8,
+      "framesWithText": 3,
+      "compositionGroups": [
+        {
+          "count": 3,
+          "compositionReason": "hdrPQPreserved",
+          "allocationStatus": "notAttempted",
+          "sourceTransfer": "SMPTE_ST_2084_PQ",
+          "sourcePixelFormat": "2016686640",
+          "sourceWidth": "3840",
+          "sourceHeight": "2160",
+          "composited": "false",
+          "external": "true"
+        },
+        {
+          "count": 5,
+          "compositionReason": "noCue",
+          "allocationStatus": "notAttempted",
+          "sourceTransfer": "SMPTE_ST_2084_PQ",
+          "sourcePixelFormat": "2016686640",
+          "sourceWidth": "3840",
+          "sourceHeight": "2160",
+          "composited": "false",
+          "external": "true"
+        }
+      ],
+      "pipLifecycle": [
+        {
+          "event": "pip_will_start",
+          "fields": {
+            "currentSeconds": "5481.431"
+          }
+        },
+        {
+          "event": "pip_started",
+          "fields": {}
+        },
+        {
+          "event": "pip_restore_completed",
+          "fields": {
+            "success": "true"
+          }
+        },
+        {
+          "event": "pip_stopped",
+          "fields": {
+            "restoring": "true"
+          }
+        }
+      ],
+      "performanceAccepted": false,
+      "fullSubtitleAudioHDRAccepted": false,
+      "freshReplacementCommits": 0,
+      "freshAVCandidateWarmups": 0
+    },
+    "ipad": {
+      "freshPiPFrameEvents": 11,
+      "framesWithText": 4,
+      "compositionGroups": [
+        {
+          "count": 7,
+          "compositionReason": "noCue",
+          "allocationStatus": "notAttempted",
+          "sourceTransfer": "SMPTE_ST_2084_PQ",
+          "sourcePixelFormat": "2016686640",
+          "sourceWidth": "3840",
+          "sourceHeight": "2160",
+          "composited": "false",
+          "external": "true"
+        },
+        {
+          "count": 4,
+          "compositionReason": "hdrPQPreserved",
+          "allocationStatus": "notAttempted",
+          "sourceTransfer": "SMPTE_ST_2084_PQ",
+          "sourcePixelFormat": "2016686640",
+          "sourceWidth": "3840",
+          "sourceHeight": "2160",
+          "composited": "false",
+          "external": "true"
+        }
+      ],
+      "pipLifecycle": [
+        {
+          "event": "pip_will_start",
+          "fields": {
+            "currentSeconds": "5766.452"
+          }
+        },
+        {
+          "event": "pip_started",
+          "fields": {}
+        },
+        {
+          "event": "pip_restore_completed",
+          "fields": {
+            "success": "true"
+          }
+        },
+        {
+          "event": "pip_stopped",
+          "fields": {
+            "restoring": "true"
+          }
+        }
+      ],
+      "performanceAccepted": false,
+      "fullSubtitleAudioHDRAccepted": false,
+      "freshReplacementCommits": 0,
+      "freshAVCandidateWarmups": 0
+    }
+  },
+  "retainedFailures": [
+    {
+      "device": "iphone13",
+      "case": "s03-jf-new-pip-ownership",
+      "result": "F",
+      "observation": "same-PID fullscreen restored but last telemetry clock remains 5519.171 and picture unchanged at restored 3/10/15; manual play later advances",
+      "automaticPlaybackResumeAccepted": false
+    },
+    {
+      "device": "ipad",
+      "case": "s03-jf-pad-restored-pgs/pgs-menu",
+      "result": "SUB=F",
+      "observation": "paused ASS-to-PGS switch sampled overlapping white text and gray/yellow bitmap; subsequent natural 10/30 sampled images no longer show white overlay",
+      "persistentDuplicateProven": false
+    },
+    {
+      "device": "iphone13+ipad",
+      "case": "HDR external ASS PiP",
+      "result": "SUB=F",
+      "observation": "7 of 19 fresh frame diagnostics contain text; all 7 rejected by hdrPQPreserved; allocation not attempted; original HDR guard retained"
+    },
+    {
+      "device": "iphone13",
+      "case": "s03-jf-natural-av",
+      "result": "TOOL",
+      "observation": "subtitle detail metadata not ready; selection assertion failed, earlier chain continued 90-second captures on detail with no player; not playback evidence"
+    },
+    {
+      "device": "ipad",
+      "case": "s03-jf-pad-restored-pgs",
+      "result": "TOOL",
+      "observation": "menu Cancel shares xmark with full-screen Done; then native play lookup/click HTTP404; retained and recovered with observed label Cancel and fresh unique playback control"
+    },
+    {
+      "device": "iphone13+ipad",
+      "case": "S03 file counterpart",
+      "result": "startup not fully accepted",
+      "observation": "t3 still preview/preparation; t10/t30 real movie; ordinary exit verified; no full SUB/audio/HDR/performance pass"
+    }
+  ],
+  "pending": [
+    "Replay exact historical white/yellow duplicate subtitle cue after actual AV handoff; latest normal windows had no real AV candidate warmup/commit",
+    "Verify actual Jellyfin HLS negotiation with explicit -1; DTO regression passed but real new HLS negotiation not triggered",
+    "Fix iPhone13 fullscreen return with nonadvancing picture/clock; preserve paused intent",
+    "Fix paused external ASS to PGS overlay ownership; iPad overlap is retained SUB=F",
+    "Implement HDR-preserving subtitle composition; external nonempty-cue rejection now confirmed on both USB devices",
+    "iPhone18 latest normal foreground UI and playback verification; install only this turn",
+    "S01 four-entry same-source regression, representative SUB/AUD/HDR families, manual failed-candidate rollback, iPhone13 real AV",
+    "All prior PX/UX/CB/Main backlog, old 475/119 identity/cellular, HLS deadline/segment/read/callback tests, full frame timings Lenna/DS One, 19x4/L2/L3/MTP remain unaccepted"
+  ],
+  "acceptance": {
+    "exactHistoricalSubtitleCue": false,
+    "fullSubtitleAudioHDR": false,
+    "continuousPerformance": false,
+    "cellular": false,
+    "competitorComparison": false,
+    "MTP": false,
+    "L2": false,
+    "L3": false
+  },
+  "networkConfigurationChanged": false,
+  "uninstalledOrClearedLogin": false,
+  "rawIdentitiesPreferencesCredentialsStoredInRepository": false
+}

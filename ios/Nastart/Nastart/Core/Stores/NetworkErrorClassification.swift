@@ -46,6 +46,8 @@ enum NetworkErrorKind: String, Equatable, Sendable {
                 return .invalidResponse
             case .apiFailed:
                 return .apiFailure
+            case .loginRejected:
+                return .authentication
             case .missingSession:
                 return .authentication
             }
@@ -73,6 +75,10 @@ enum NetworkErrorKind: String, Equatable, Sendable {
         if let dsmError = error as? DSMClientError,
            case .apiFailed(let code) = dsmError {
             return code.map { "\(kind):\($0)" } ?? kind
+        }
+        if let dsmError = error as? DSMClientError,
+           case .loginRejected(let code) = dsmError {
+            return "\(kind):\(code)"
         }
         if let keychainError = error as? KeychainStoreError,
            case .unexpectedStatus(let status) = keychainError {

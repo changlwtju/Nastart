@@ -1,0 +1,296 @@
+{
+  "date": "2026-10-26",
+  "scope": "isolated experimental candidate, rejected for App integration",
+  "summary": {
+    "at": "2026-10-26T14:28:53.098026+08:00",
+    "finalWindows": 13,
+    "finalExpectedOutcomes": 13,
+    "selectedRootContainmentPass": 12,
+    "selectedRootContainmentFail": 1,
+    "finalASanWindows": 4,
+    "finalASanInvalidMemoryReports": 0,
+    "asanLeakDetection": false,
+    "earlierCandidateWindows": 13,
+    "baselineWindows": 1,
+    "allOwnServerWindowsCleaned": 27,
+    "applicationInputCount": 375,
+    "applicationInputDriftCount": 0,
+    "applicationBinaryDriftCounts": {
+      "mobile": 0,
+      "tv": 0
+    },
+    "dependencyChangesFromPreviousBatch": 0,
+    "newAppBuilds": 0,
+    "newInstalls": 0,
+    "physicalFunctionTests": 0,
+    "directNASFileOrMediaRequests": 0,
+    "ownServicesStopped": true,
+    "candidateAcceptedForApplication": false,
+    "reason": "forced server-local ancestor replacement still led to 4 outside-root NFO READs; directory postvalidation prevented commit but did not prevent reads"
+  },
+  "cases": {
+    "v2stable": {
+      "outcome": "success",
+      "observedExpected": true,
+      "selectedRootContainmentPass": true,
+      "outsideRootREADs": 0,
+      "oldIndexPreserved": null,
+      "allOpensExcludeShareDelete": true,
+      "directoryClosesBeforeFinalNFORead": false,
+      "build": "normal",
+      "sourceUnchanged": true,
+      "namespacePolicySimulated": false,
+      "namespaceAttempts": [],
+      "peerClosed": 1,
+      "cancelReturnMs": null
+    },
+    "v2remoteRename": {
+      "outcome": "success",
+      "observedExpected": true,
+      "selectedRootContainmentPass": true,
+      "outsideRootREADs": 0,
+      "oldIndexPreserved": null,
+      "allOpensExcludeShareDelete": true,
+      "directoryClosesBeforeFinalNFORead": false,
+      "build": "normal",
+      "sourceUnchanged": true,
+      "namespacePolicySimulated": true,
+      "namespaceAttempts": [
+        {
+          "fixtureOwnerNamespaceAttempt": "pinRename",
+          "allowed": false,
+          "pinShareDelete": false
+        }
+      ],
+      "peerClosed": 1,
+      "cancelReturnMs": null
+    },
+    "v2localRenameBoundary": {
+      "outcome": "sourceChanged",
+      "observedExpected": true,
+      "selectedRootContainmentPass": false,
+      "outsideRootREADs": 4,
+      "oldIndexPreserved": true,
+      "allOpensExcludeShareDelete": true,
+      "directoryClosesBeforeFinalNFORead": false,
+      "build": "normal",
+      "sourceUnchanged": false,
+      "namespacePolicySimulated": false,
+      "namespaceAttempts": [
+        {
+          "fixtureOwnerNamespaceAttempt": "localRename",
+          "allowed": true,
+          "pinShareDelete": false
+        }
+      ],
+      "peerClosed": 1,
+      "cancelReturnMs": null
+    },
+    "v2initialLink": {
+      "outcome": "reparse",
+      "observedExpected": true,
+      "selectedRootContainmentPass": true,
+      "outsideRootREADs": 0,
+      "oldIndexPreserved": true,
+      "allOpensExcludeShareDelete": true,
+      "directoryClosesBeforeFinalNFORead": false,
+      "build": "normal",
+      "sourceUnchanged": true,
+      "namespacePolicySimulated": false,
+      "namespaceAttempts": [],
+      "peerClosed": 1,
+      "cancelReturnMs": null
+    },
+    "v2leafLink": {
+      "outcome": "unavailable",
+      "observedExpected": true,
+      "selectedRootContainmentPass": true,
+      "outsideRootREADs": 0,
+      "oldIndexPreserved": true,
+      "allOpensExcludeShareDelete": true,
+      "directoryClosesBeforeFinalNFORead": false,
+      "build": "normal",
+      "sourceUnchanged": true,
+      "namespacePolicySimulated": false,
+      "namespaceAttempts": [],
+      "peerClosed": 1,
+      "cancelReturnMs": null
+    },
+    "v2cancelQuery": {
+      "outcome": "CancellationError",
+      "observedExpected": true,
+      "selectedRootContainmentPass": true,
+      "outsideRootREADs": 0,
+      "oldIndexPreserved": true,
+      "allOpensExcludeShareDelete": true,
+      "directoryClosesBeforeFinalNFORead": false,
+      "build": "normal",
+      "sourceUnchanged": true,
+      "namespacePolicySimulated": false,
+      "namespaceAttempts": [],
+      "peerClosed": 1,
+      "cancelReturnMs": 13.481083
+    },
+    "v2cancelRead": {
+      "outcome": "CancellationError",
+      "observedExpected": true,
+      "selectedRootContainmentPass": true,
+      "outsideRootREADs": 0,
+      "oldIndexPreserved": true,
+      "allOpensExcludeShareDelete": true,
+      "directoryClosesBeforeFinalNFORead": false,
+      "build": "normal",
+      "sourceUnchanged": true,
+      "namespacePolicySimulated": false,
+      "namespaceAttempts": [],
+      "peerClosed": 1,
+      "cancelReturnMs": 14.524166
+    },
+    "v2cancelClose": {
+      "outcome": "CancellationError",
+      "observedExpected": true,
+      "selectedRootContainmentPass": true,
+      "outsideRootREADs": 0,
+      "oldIndexPreserved": true,
+      "allOpensExcludeShareDelete": true,
+      "directoryClosesBeforeFinalNFORead": false,
+      "build": "normal",
+      "sourceUnchanged": true,
+      "namespacePolicySimulated": false,
+      "namespaceAttempts": [],
+      "peerClosed": 1,
+      "cancelReturnMs": 12.31575
+    },
+    "v2deadlineClose": {
+      "outcome": "deadline",
+      "observedExpected": true,
+      "selectedRootContainmentPass": true,
+      "outsideRootREADs": 0,
+      "oldIndexPreserved": true,
+      "allOpensExcludeShareDelete": true,
+      "directoryClosesBeforeFinalNFORead": false,
+      "build": "normal",
+      "sourceUnchanged": true,
+      "namespacePolicySimulated": false,
+      "namespaceAttempts": [],
+      "peerClosed": 1,
+      "cancelReturnMs": null
+    },
+    "v2asanStable": {
+      "outcome": "success",
+      "observedExpected": true,
+      "selectedRootContainmentPass": true,
+      "outsideRootREADs": 0,
+      "oldIndexPreserved": null,
+      "allOpensExcludeShareDelete": true,
+      "directoryClosesBeforeFinalNFORead": false,
+      "build": "asan",
+      "sourceUnchanged": true,
+      "namespacePolicySimulated": false,
+      "namespaceAttempts": [],
+      "peerClosed": 1,
+      "cancelReturnMs": null
+    },
+    "v2asanRename": {
+      "outcome": "success",
+      "observedExpected": true,
+      "selectedRootContainmentPass": true,
+      "outsideRootREADs": 0,
+      "oldIndexPreserved": null,
+      "allOpensExcludeShareDelete": true,
+      "directoryClosesBeforeFinalNFORead": false,
+      "build": "asan",
+      "sourceUnchanged": true,
+      "namespacePolicySimulated": true,
+      "namespaceAttempts": [
+        {
+          "fixtureOwnerNamespaceAttempt": "pinRename",
+          "allowed": false,
+          "pinShareDelete": false
+        }
+      ],
+      "peerClosed": 1,
+      "cancelReturnMs": null
+    },
+    "v2asanInitialLink": {
+      "outcome": "reparse",
+      "observedExpected": true,
+      "selectedRootContainmentPass": true,
+      "outsideRootREADs": 0,
+      "oldIndexPreserved": true,
+      "allOpensExcludeShareDelete": true,
+      "directoryClosesBeforeFinalNFORead": false,
+      "build": "asan",
+      "sourceUnchanged": true,
+      "namespacePolicySimulated": false,
+      "namespaceAttempts": [],
+      "peerClosed": 1,
+      "cancelReturnMs": null
+    },
+    "v2asanCancel": {
+      "outcome": "CancellationError",
+      "observedExpected": true,
+      "selectedRootContainmentPass": true,
+      "outsideRootREADs": 0,
+      "oldIndexPreserved": true,
+      "allOpensExcludeShareDelete": true,
+      "directoryClosesBeforeFinalNFORead": false,
+      "build": "asan",
+      "sourceUnchanged": true,
+      "namespacePolicySimulated": false,
+      "namespaceAttempts": [],
+      "peerClosed": 1,
+      "cancelReturnMs": 14.075834
+    }
+  },
+  "builds": {
+    "mobile": {
+      "exit": 0,
+      "buildSucceeded": true,
+      "platform": "IOS",
+      "signed": false,
+      "embeddedInApp": false,
+      "deviceExecuted": false,
+      "sha256": "f53371b7da829d4d93da4acafad97d1e0fa9e7f54fbda7181fd5d5d58b2e4462",
+      "platformVerified": true
+    },
+    "tv": {
+      "exit": 0,
+      "buildSucceeded": true,
+      "platform": "TVOS",
+      "signed": false,
+      "embeddedInApp": false,
+      "deviceExecuted": false,
+      "sha256": "667669934183e12722010b23ee90425bc6f658c31ed3eec05703ab7c25f69a89",
+      "platformVerified": true
+    }
+  },
+  "device": {
+    "at": "2026-10-26T14:29:04.583422+08:00",
+    "iPhone18": [
+      {
+        "model": "iPhone19,7",
+        "os": "27.0",
+        "state": "unavailable",
+        "usbPresent": false
+      }
+    ],
+    "installed": false
+  },
+  "baseline": {
+    "oldClientWithAncestorReplacement": "success committed outside-data; 4 outside-root NFO READs",
+    "candidate1WithForcedLocalReplacement": "success committed outside-data; 4 outside-root NFO READs",
+    "candidate2WithForcedLocalReplacement": "sourceChanged; old index preserved; still 4 outside-root NFO READs"
+  },
+  "limitations": [
+    "rename respecting FILE_SHARE_DELETE was simulated by checking requested sharing mode, not a second SMB client or real Windows/Samba lock enforcement",
+    "server-local force rename bypassed sharing mode; pinning and postvalidation did not prevent outside-root reads",
+    "postvalidation is optimistic and cannot prove atomic path containment",
+    "loopback impacket SMB2.0.2 only; no real SMB3 or signing/distribution acceptance"
+  ],
+  "cleanup": {
+    "ownedServerWindowsStopped": 27,
+    "NASVPNNetworkChanges": false,
+    "AppChanges": false
+  }
+}

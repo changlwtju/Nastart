@@ -1,0 +1,197 @@
+{
+  "date": "2026-10-21",
+  "metric": "CB-15",
+  "baselinePackage": {
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "ipaSHA256": "b4d3e112e56df3fb1e05e4926f4bead14e89a0420ae3bbd593ef6ee9a648c59b",
+    "iOSDiff": "e2cddab7aeb9c9fbe3c090d88fed772a75be21cf2081f9fc56da607382b59ff7"
+  },
+  "baselineDevice": {
+    "model": "iPhone14,5",
+    "system": "16.3.1",
+    "connection": "USB",
+    "networkSettingsChanged": false
+  },
+  "competitor": {
+    "name": "DS One",
+    "version": "2.4.5",
+    "build": "4"
+  },
+  "exploratoryObservations": [
+    {
+      "app": "Nastart",
+      "dashboardObservedIntervalSeconds": {
+        "lower": 2.102981084,
+        "upper": 2.9703164589999997
+      },
+      "folderUIObservedUpperSecondsFromLaunch": 9.994567417,
+      "folderTapToUIObservedUpperSeconds": 0.9283187080000008,
+      "nativeProcessAbsentBeforeLaunch": true,
+      "emptyEnvironmentVerified": true,
+      "preparationMayLaunchTarget": true
+    },
+    {
+      "app": "DSOne",
+      "dashboardObservedIntervalSeconds": {
+        "lower": 1.7379227080000028,
+        "upper": 2.7434958330000008
+      },
+      "folderUIObservedUpperSecondsFromLaunch": 5.067034500000002,
+      "folderTapToUIObservedUpperSeconds": 0.9104135840000005,
+      "nativeProcessAbsentBeforeLaunch": true,
+      "emptyEnvironmentVerified": true,
+      "preparationMayLaunchTarget": true
+    }
+  ],
+  "strictPerformanceVerdict": "INSUFFICIENT",
+  "rankedWinner": null,
+  "reasons": [
+    "One observation per App; not five valid pairs",
+    "Nastart Debug/-Onone versus Store configuration",
+    "Cache retained; unknown coldness; preparation may launch App",
+    "Different navigation layers; first-folder sample already contains results",
+    "Permissions, protocol and server-cache parity unverified"
+  ],
+  "sameDirectoryVisibleItems": 5,
+  "sameDirectoryContentActuallyViewed": true,
+  "failuresRetained": [
+    "Stale WDA session activeAppInfo HTTP400",
+    "Existing server selection response followed by transient account-management overlay; no immediate readiness claim",
+    "First timed Nastart run combined foreground/arguments assertion failed; no timing result",
+    "Pad process preflight found existing background Nastart; no Runner; native Home then checked before authorized update",
+    "First Pad file navigation used iPhone Button role; target query found zero, so no tap issued; corrected from current iPad sidebar StaticText evidence in a separate bounded window"
+  ],
+  "sourceChanged": true,
+  "change": "Publish authenticated File Station session to both readers before optional LAN discovery completes; keep ownership checks, snapshot and credential order",
+  "package": {
+    "sourceDiffSHA256": "65a946fadf61306b78d99aeb3198f202fd8fc34580ed3f2bb619f47d2493c329",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "Xcode": "27.0",
+    "binaryBuildTime": "2026-10-21T12:26:45.225262+08:00",
+    "binaries": {
+      "Nastart": "f8653bcde65da10b863e623892895d61f5c198650fe52a879a8396069333f056",
+      "Nastart.debug.dylib": "eb57e33203b648773b93f5378c34da775b5f844549ac50b2fcfa098706085151",
+      "Frameworks/KSPlayer.framework/KSPlayer": "a939b210b46d7bb4e764eb5ef79f6e7cbab8df68a820a4bae0d76345c1e8da70"
+    },
+    "ipaSHA256": "7344e354d6cf56795048b28992878bef8c8d6a7d90c233c5b4e408873dcb6796",
+    "tests": {
+      "executed": 121,
+      "passed": 120,
+      "skipped": 1,
+      "failed": 0,
+      "commandNormalExit": true,
+      "source": "NonPlaybackPolicyTests lifecycle/auth/deadline and File Station publication before pending LAN discovery"
+    },
+    "checkedInputs": 173,
+    "individuallyVerifiedLibraries": 29,
+    "signatureVerified": true,
+    "ipaCRCAndBinaryHashesVerified": true,
+    "linkageVerified": true
+  },
+  "preflightPassed": 15,
+  "liveIphone13": {
+    "playCommands": 0,
+    "environment": {},
+    "startedAt": "2026-10-21T12:28:53.549059+08:00",
+    "model": "iPhone14,5",
+    "system": "16.3.1",
+    "connection": "USB",
+    "latestPackageVerified": true,
+    "emptyEnvironmentVerified": true,
+    "dashboardObserved": true,
+    "folderContentsObserved": true,
+    "fullNonDiagnosticPreferences": {
+      "beforeKeys": 25,
+      "afterKeys": 25,
+      "sameKeys": true,
+      "changedValues": 0,
+      "allNonDiagnosticPreferencesEqual": true
+    },
+    "ownedAppStopped": true,
+    "WDASettingsRestored": true,
+    "ownedSyslogStopped": true,
+    "nativeAppAbsent": true,
+    "finishedAt": "2026-10-21T12:29:14.015414+08:00"
+  },
+  "livePhase": {
+    "sourcePreparedCount": 4,
+    "fileStationSourcePreparedCount": 3,
+    "sameFullPairBeforeAndAfterDiscovery": true,
+    "fullSessionPublicationToNextPublicationMs": 1886,
+    "folderResponses": [
+      {
+        "folderOrigin": "snapshot",
+        "responseKind": "success",
+        "httpStatus": "200",
+        "envelopeSuccess": "true"
+      },
+      {
+        "folderOrigin": "browserRoot",
+        "responseKind": "success",
+        "httpStatus": "200",
+        "envelopeSuccess": "true"
+      },
+      {
+        "folderOrigin": "browserFolder",
+        "responseKind": "success",
+        "httpStatus": "200",
+        "envelopeSuccess": "true"
+      }
+    ]
+  },
+  "passiveCapture": {
+    "allOwnedCaptureStopped": true,
+    "rawPayloadStored": false,
+    "samePublicTCP5001PayloadDestination": true,
+    "windowsSeparatedByPacketTime": false,
+    "clockCaveat": "macOS Python3.9 time.monotonic mach_absolute_time has per-process epoch; no cross-process join"
+  },
+  "iphone18": {
+    "operationsAfterAwayInstruction": 0,
+    "updateDeferredByUser": true,
+    "installedPackageRemains": "05:31"
+  },
+  "playCommands": 0,
+  "newPlaybackMatrixPasses": 0,
+  "liveIpad": {
+    "playCommands": 0,
+    "environment": {},
+    "startedAt": "2026-10-21T12:35:14.495425+08:00",
+    "model": "iPad12,1",
+    "system": "18.3.1",
+    "connection": "USB",
+    "latestPackageVerified": true,
+    "emptyEnvironmentVerified": true,
+    "dashboardObserved": true,
+    "folderContentsObserved": true,
+    "fullNonDiagnosticPreferences": {
+      "beforeKeys": 18,
+      "afterKeys": 18,
+      "sameKeys": true,
+      "changedValues": 0,
+      "allNonDiagnosticPreferencesEqual": true
+    },
+    "ownedAppStopped": true,
+    "WDASettingsRestored": true,
+    "ownedSyslogStopped": true,
+    "finishedAt": "2026-10-21T12:35:34.219763+08:00"
+  },
+  "ipadCleanup": {
+    "ownedRunnerAbsent": true,
+    "ownedAppAbsent": true,
+    "runnerProcessesStopped": 0,
+    "existingPhoneRunnerUntouched": true
+  },
+  "finalVerification": {
+    "sourceInputsUnchanged": 173,
+    "sourceDiffUnchanged": true,
+    "allThreeBinariesAndIPAUnchanged": true,
+    "activeOwnedBatchPythonHosts": 0
+  },
+  "documentationCheck": {
+    "documents": 366,
+    "localLinks": 1904,
+    "missingDestinations": 0,
+    "gitDiffWhitespacePassed": true
+  }
+}

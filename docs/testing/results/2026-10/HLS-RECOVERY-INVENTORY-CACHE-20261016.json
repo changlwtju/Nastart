@@ -1,0 +1,345 @@
+{
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceDiffSHA256": "65bbef2867944d3961ac6cd706768e1c1d00e95afb0e866b9f5d1bea0d176316",
+  "binaryBuildTime": "2026-10-16T13:06:25.809544+08:00",
+  "configuration": "normal Debug -Onone; empty launch environment",
+  "binaries": {
+    "Nastart": "dd30c668c86b13aff65e901d6b127a492f0abf2e5db605431d1b744c2f003bf9",
+    "Nastart.debug.dylib": "44c34b60ec4ef2cdfdf746d67d4158021a4e02399607652f01eed871491f6c62",
+    "Frameworks/KSPlayer.framework/KSPlayer": "f9abcc546da9d909cd243f0d808e979cb31b2838f9e1cdc7349dcab9613513c8"
+  },
+  "ipaSHA256": "c55ad06d13524f6e42a0f8c10b0c99ae1371b75f497d2d461bf0fabff0bc2e46",
+  "checkedInputs": 173,
+  "individuallyVerifiedLibraries": 29,
+  "profileExpirationUTC": "2026-10-17T22:23:40",
+  "tests": {
+    "executed": 412,
+    "skipped": 2,
+    "failures": 0,
+    "runThisTurn": true
+  },
+  "preflight": {
+    "passed": 15,
+    "runThisTurn": true
+  },
+  "sourceEditsThisTurn": [
+    "Persist the applied DSM inventory after partial failed refresh; retain inventory availability flags and omit independently persisted manual services",
+    "Three cold snapshot round-trip, successful-empty and retained reverse-proxy endpoint counterexamples"
+  ],
+  "at": "2026-10-16T13:52:46.275209+08:00",
+  "privateEvidencePointer": "/tmp/nastart-hls-recovery-evidence",
+  "changedAppInputsThisTurn": 2,
+  "retainedInputCount": 171,
+  "iPhone18": {
+    "actionsDeferredByUser": true,
+    "discoveryPerformed": false,
+    "installationSent": false,
+    "resumeCondition": "user returns home and notifies us",
+    "lastVerifiedInstalledSource": "c868, 2026-10-16 07:10"
+  },
+  "cacheFix": {
+    "memoryMergeWasPreviouslyNotPersisted": true,
+    "iPadColdCacheObservedServices": 33,
+    "iPadColdCacheObservedContainers": 0,
+    "containerInventoryAvailableAtFailure": false,
+    "manualServicesUseSeparateStore": true,
+    "successfulEmptyStillAuthoritative": true,
+    "failedInventoryFlagsPreserved": true,
+    "counterexampleTests": 3,
+    "iPadNativeRefreshRecoveredContainers": 14,
+    "iPadNativeRefreshRecoveredServices": 47,
+    "JellyfinEntryRecovered": true,
+    "noRawCacheOrCredentialReinjection": true
+  },
+  "earlierSameTurnPhoneDirectSeek": {
+    "sourceBeforeCacheFix": "0df79c3a7ff56f95f0de0bb84e1f183d33550ce14a08e8dd229accd5e0e78609",
+    "device": "iphone13",
+    "entry": "Jellyfin",
+    "engine": "KSPlayer direct play",
+    "actualTargetSeconds": 7390.232767986297,
+    "qualifyingOldCueActuallyReviewed": true,
+    "oldCueStillVisibleBeforeSeek": true,
+    "oldCueAbsentAtFirstSavedAfterSeek": true,
+    "firstAfterSeekScreenshotStartSeconds": 0.8926458358764648,
+    "targetSceneActuallyReviewedAt10Seconds": true,
+    "screenBottomCueReviewedBeforeSeekOnly": true,
+    "newTargetCueNotCaptured": true,
+    "HLSNativeAVSeekExercised": false,
+    "fullSUBAUDVerified": false,
+    "performanceFPSVerified": false,
+    "framesReviewed": [
+      "paused-current",
+      "resume-before-seek",
+      "native-deep-t0",
+      "native-deep-t3",
+      "native-deep-t10",
+      "native-deep-t30",
+      "native-deep-t60",
+      "native-deep-t90"
+    ],
+    "continuousPlaybackAcceptance": false,
+    "automaticDownshiftCandidateFailedNotCommitted": true
+  },
+  "controlledStaticHLS": {
+    "sourceDiffSHA256": "65bbef2867944d3961ac6cd706768e1c1d00e95afb0e866b9f5d1bea0d176316",
+    "device": "iphone13",
+    "testEnvironment": {
+      "NASTART_TEST_STATIC_HLS": "1"
+    },
+    "fixture": "Apple bipbop HEVC VOD via existing local proxy; no Jellyfin server",
+    "sourceBuild": "normal Debug -Onone",
+    "staticHighOrLowAutomaticSourceNotEquivalent": true,
+    "nativeAVBoundariesExercised": true,
+    "sliderTargetSeconds": 358.03109407424927,
+    "sliderEngineCompletionSecondsFromAction": 43.57114386558533,
+    "jumpTargetSeconds": 472.780242181,
+    "jumpEngineCompletionSecondsFromAction": 24.610538959503174,
+    "jumpEngineClockRecoverySecondsFromAction": 24.83521318435669,
+    "initialCandidateSeekNotLoaded": true,
+    "timingIsNotFirstVisibleFrame": true,
+    "sourcePlaybackAfterSliderReviewedAtLaterJumpBefore": true,
+    "newJumpFrameNotReviewedDuring20Seconds": true,
+    "singleLoadingOverlayActuallyReviewed": true,
+    "diagnosticPersistenceLagObserved": true,
+    "noDiagnosisFromEarlyMissingPlistEvents": true,
+    "rootCauseProven": false,
+    "allHLSOrJellyfinAcceptance": false,
+    "thresholdsTimeoutsRetriesChanged": false,
+    "primaryTargetRangeFacts": {
+      "requestIssuedSecondsFromSeek": 0.609,
+      "responseHeadersSecondsFromSeek": 25.557,
+      "upstreamHeaderWaitSecondsFromIssue": 24.948,
+      "oldReaderClosedSecondsFromSeek": 8.967,
+      "oldReaderCancelDoesNotProveCause": true,
+      "taskMetricsRequestToResponseMs": 8363,
+      "taskMetricsProtocol": "h2",
+      "taskMetricsConnectionReused": true,
+      "taskMetricsBackpressureMs": 0,
+      "taskMetricsCallbackAfterClientFinish": true,
+      "metricsQueueDNSAndServerWaitNotFullySeparated": true
+    }
+  },
+  "latestDeviceRegression": "Latest normal package verified both devices; iPad actual Jellyfin/native paused AV HLS deep seek failed; phone controlled static HLS two native AV seeks slow; all failures retained",
+  "remaining": [
+    "Ready real Jellyfin AV HLS target1841 no-response-header path; later server startup does not prove root cause",
+    "Controlled static HLS Range response wait: request queue versus upstream response and target data readiness; no guess-based network tuning",
+    "iPhone18 latest package and reported subtitle/cellular scenarios after user returns",
+    "Native subtitle position/seek, burn-in old frame, complete SUB/AUD/display timing, CPU/memory, PiP/file entry and all original matrix gaps"
+  ],
+  "devices": {
+    "iphone13": {
+      "at": "2026-10-16T13:48:56.948724+08:00",
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "USBIdentityMatched": true,
+      "sourceDiffSHA256": "65bbef2867944d3961ac6cd706768e1c1d00e95afb0e866b9f5d1bea0d176316",
+      "binaries": {
+        "Nastart": "dd30c668c86b13aff65e901d6b127a492f0abf2e5db605431d1b744c2f003bf9",
+        "Nastart.debug.dylib": "44c34b60ec4ef2cdfdf746d67d4158021a4e02399607652f01eed871491f6c62",
+        "Frameworks/KSPlayer.framework/KSPlayer": "f9abcc546da9d909cd243f0d808e979cb31b2838f9e1cdc7349dcab9613513c8"
+      },
+      "nonBookmarkPreferenceKeys": 24,
+      "nonBookmarkPreferencesUnchanged": true,
+      "originalBookmarksChecked": 36,
+      "originalBookmarksRemoved": 0,
+      "originalTrackChangeCount": 0,
+      "newBookmarksCount": 0,
+      "naturalPositionChangesCount": 1,
+      "newCrashReports": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      },
+      "normalEmptyEnvironment": true,
+      "NASNormal": true,
+      "playerClosed": true,
+      "WDAIdleSeconds": 10,
+      "WDAAnimationCoolOffSeconds": 2,
+      "activeNativeConditions": 0,
+      "finalImageActuallyReviewed": true
+    },
+    "ipad": {
+      "at": "2026-10-16T13:48:58.005022+08:00",
+      "model": "iPad12,1",
+      "system": "18.3.1",
+      "USBIdentityMatched": true,
+      "sourceDiffSHA256": "65bbef2867944d3961ac6cd706768e1c1d00e95afb0e866b9f5d1bea0d176316",
+      "binaries": {
+        "Nastart": "dd30c668c86b13aff65e901d6b127a492f0abf2e5db605431d1b744c2f003bf9",
+        "Nastart.debug.dylib": "44c34b60ec4ef2cdfdf746d67d4158021a4e02399607652f01eed871491f6c62",
+        "Frameworks/KSPlayer.framework/KSPlayer": "f9abcc546da9d909cd243f0d808e979cb31b2838f9e1cdc7349dcab9613513c8"
+      },
+      "nonBookmarkPreferenceKeys": 17,
+      "nonBookmarkPreferencesUnchanged": true,
+      "originalBookmarksChecked": 29,
+      "originalBookmarksRemoved": 0,
+      "originalTrackChangeCount": 0,
+      "newBookmarksCount": 0,
+      "naturalPositionChangesCount": 1,
+      "newCrashReports": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      },
+      "normalEmptyEnvironment": true,
+      "NASNormal": true,
+      "playerClosed": true,
+      "WDAIdleSeconds": 10,
+      "WDAAnimationCoolOffSeconds": 2,
+      "activeNativeConditions": 0,
+      "finalImageActuallyReviewed": true
+    }
+  },
+  "latestPadPausedHLSSeek": {
+    "sourceDiffSHA256": "65bbef2867944d3961ac6cd706768e1c1d00e95afb0e866b9f5d1bea0d176316",
+    "entry": "Jellyfin",
+    "initialEngine": "KSPlayer",
+    "engineAtDeepSeek": "AVPlayer HLS",
+    "actualTargetSeconds": 7381.983806304932,
+    "pausedAtSeek": true,
+    "nativeAVSeekDispatched": true,
+    "targetAdvertisedSeekable": true,
+    "targetAlreadyLoaded": false,
+    "noNewTargetMovieFrameAtSaved30Seconds": true,
+    "oldMovieImageAndBurnInStillVisible": true,
+    "nativeSubtitleClearAcceptance": false,
+    "cueHelperFailedToQualifyNativeText": true,
+    "cueFailurePreserved": "find-ass-cue-failure",
+    "singleLoadingIndicatorActuallyReviewed": true,
+    "fullSUBAUDOrPerformanceAcceptance": false,
+    "normalCloseSucceeded": true,
+    "sameSourcePhoneDirectSeekNotPairedPerformanceComparison": true,
+    "targetSegmentOrdinal": 1841,
+    "sixRequestsBeforeExitSeconds": [
+      1.079,
+      5.172,
+      15.132,
+      25.195,
+      35.153,
+      45.199
+    ],
+    "noResponseHeadersBeforeRouteRevokedAtSeconds": 51.514,
+    "routeRevokedAfterOrdinaryClose": true
+  },
+  "restoredNormalEnvironment": true,
+  "brightnessChangedThisTurn": false,
+  "cacheColdFailedRefreshDeviceAcceptance": "Unit round-trip verified; real inventory recovered via ordinary refresh, no deliberate failure injection",
+  "serverRead": {
+    "readOnly": true,
+    "noNewPlaybackOrConfigChange": true,
+    "device": "iPad",
+    "sample": "S19",
+    "previousWindowLocalTime": "2026-10-16 13:23",
+    "phoneSessionOwnershipProven": false,
+    "rows": [
+      {
+        "index": 0,
+        "bytes": 95354,
+        "SHA256": "564efcd7b5e93cde51405f69d85a304f0e1bda9d80e07363c9153c01c1aa550a",
+        "category": "server",
+        "modifiedAt": "2026-10-16T05:34:31.7237638Z",
+        "containsMovieText": true,
+        "knownErrorLabelCounts": {},
+        "FFmpegExitCodeMentions": [
+          "0",
+          "0",
+          "0",
+          "137",
+          "137",
+          "0",
+          "0",
+          "0",
+          "0",
+          "137",
+          "137",
+          "137",
+          "0",
+          "0",
+          "0",
+          "0",
+          "0",
+          "137"
+        ]
+      },
+      {
+        "index": 1,
+        "bytes": 0,
+        "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "category": "ffmpeg",
+        "modifiedAt": "2026-10-16T05:22:51.0612518Z",
+        "containsMovieText": false,
+        "knownErrorLabelCounts": {},
+        "FFmpegExitCodeMentions": []
+      },
+      {
+        "index": 2,
+        "bytes": 210918,
+        "SHA256": "bba55d5d9824345509d4c0bf3809f8fb15e935c57919d72653354ddf33188f68",
+        "category": "ffmpeg",
+        "modifiedAt": "2026-10-16T05:22:42.6262644Z",
+        "containsMovieText": false,
+        "knownErrorLabelCounts": {},
+        "FFmpegExitCodeMentions": []
+      },
+      {
+        "index": 3,
+        "bytes": 147324,
+        "SHA256": "cd9b2d9d0a256be9d7ff90fbb1f0223e48edb9eaa5f7a7771653c8032bd87692",
+        "category": "ffmpeg",
+        "modifiedAt": "2026-10-16T05:22:07.4803167Z",
+        "containsMovieText": false,
+        "knownErrorLabelCounts": {},
+        "FFmpegExitCodeMentions": []
+      },
+      {
+        "index": 4,
+        "bytes": 151629,
+        "SHA256": "022ebe8481d50c84bf94df09e4ff07033e142ee06e369f9c6d9ff32a0f2f6431",
+        "category": "ffmpeg",
+        "modifiedAt": "2026-10-16T05:18:08.4306715Z",
+        "containsMovieText": false,
+        "knownErrorLabelCounts": {},
+        "FFmpegExitCodeMentions": []
+      }
+    ],
+    "totalBytes": 605225,
+    "fetchComplete": true
+  },
+  "serverHealthAndStartup": {
+    "at": "2026-10-16T13:51:22.060188+08:00",
+    "readOnly": true,
+    "phoneSessionOwnershipProven": false,
+    "status": 200,
+    "elapsedSeconds": 0.022990708,
+    "serverVersion": "10.11.11",
+    "startupWizardCompleted": true,
+    "laterServerStartupMarkers": [
+      {
+        "at": "2026-10-16 13:33:48.251",
+        "startupLabel": "Jellyfin version"
+      },
+      {
+        "at": "2026-10-16 13:33:48.258",
+        "startupLabel": "Environment Variables:"
+      },
+      {
+        "at": "2026-10-16 13:33:48.259",
+        "startupLabel": "Arguments:"
+      },
+      {
+        "at": "2026-10-16 13:33:48.260",
+        "startupLabel": "Operating system"
+      },
+      {
+        "at": "2026-10-16 13:33:48.261",
+        "startupLabel": "Program data path"
+      },
+      {
+        "at": "2026-10-16 13:33:48.261",
+        "startupLabel": "Application directory"
+      }
+    ],
+    "target1841CommandPresentInFetchedLogs": false,
+    "restartRootCauseProven": false
+  }
+}

@@ -9,11 +9,17 @@ Nastart does not need a first-party account for v1.
 Users connect their own NAS directly:
 
 - DSM address, account, and password or token are used only for DSM login.
-- DSM session tokens, Agent tokens, and service API keys are stored on-device in Keychain.
+- DSM login credentials (including configured endpoints, last route and trusted device ID), Agent tokens, and service API keys are stored on-device in Keychain. DSM SIDs currently live in the active session; cold restore logs in again rather than reusing a persisted SID.
 - Disconnecting NAS removes local NAS credentials and session state.
 - Disconnecting NAS does not affect App Store purchases or Plus entitlement.
 
 This keeps the app local-first, reduces backend cost, and avoids storing user NAS secrets on Nastart servers.
+
+### Current automatic restore (2026-10-22)
+
+`DSMConnectionOperations.login` enables credential-free preparation when multiple validated configured URLs exist. `DSMClient.login` races bounded API.Info GETs on those exact origins, reuses the first usable result and cancels losing probes before sequential authentication. Manual login and single-endpoint restore retain their original order. No new host is learned from discovery or redirects. An uncertain credential POST outcome remains terminal; explicit API-version incompatibility and safe connection errors retain their existing bounded fallback rules.
+
+[Implementation and limited iPhone 13 evidence](../archive/handoffs/2026-10/2026-10-22-CONFIGURED-ENDPOINT-RESTORE.md) do not establish iPhone 18 acceptance or a competitor speed result.
 
 ## Profile
 

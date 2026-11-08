@@ -1,0 +1,346 @@
+{
+  "at": "2026-10-23 15:55",
+  "package": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "560ae5706398d6f8275bf971f9026ba8ae62515e0d49fceef7cd4bd9b2a9b974",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "binaryBuildTime": "2026-10-23T07:33:24.191271+08:00",
+    "ipaSHA256": "7521f0129f4a34f2f47891f532ee75d495abc0a61bbf608294be37260fcba67b",
+    "binaries": {
+      "Nastart": "9191f3185be2cdbdfcb5fb740e413d8f23c9a0dff075d2f57d514ab09483490d",
+      "Nastart.debug.dylib": "1c192a1a918538ee7ab134901f806a2f4d63dc7461096ca64686919510a9399e",
+      "Frameworks/KSPlayer.framework/KSPlayer": "20c4db20ecee3f0fc6a44042984fd33c170abc430a6c3ab0b7bc6f53d2505123"
+    }
+  },
+  "appSourceChanged": false,
+  "newBuild": false,
+  "newInstall": false,
+  "windows": 2,
+  "playCommands": 2,
+  "manualSeekCommands": 0,
+  "pipCommands": 0,
+  "audioSelectionCommands": 2,
+  "firstWindowFailure": {
+    "startedAt": "2026-10-23T15:43:12.634261+08:00",
+    "playCommands": 1,
+    "seekCommands": 0,
+    "pipCommands": 0,
+    "entry": "file",
+    "sample": "S03",
+    "network": "unchanged Wi-Fi; actual route and metrics evaluated after capture",
+    "newCondition": "One S03 device-file audio-track switch and original-track restoration; current normal package, no PiP/manual seek, no acoustic acceptance",
+    "requestedMediaSeconds": 100,
+    "latestSourcePackageAndOwnReceiptVerified": true,
+    "expectedLocalResumeSeconds": 3901.118,
+    "lastConfirmedAction": "显示或隐藏播放控制",
+    "incomingOrientation": "PORTRAIT",
+    "requestedAction": "Continue",
+    "playDispatchAt": 1792741421.5046499,
+    "failureType": "ActionUnconfirmed",
+    "failureReason": "private details",
+    "finalWDAAppStates": [
+      1,
+      1
+    ],
+    "ownGuardianStopped": true,
+    "ownSyslogStopped": true,
+    "otherPreferencesUnchanged": true,
+    "originalBookmarks": 36,
+    "finalBookmarks": 36,
+    "bookmarkKeysSame": true,
+    "trackChanges": 0,
+    "progressEntriesChanged": 1,
+    "newCrashInventory": {
+      "Nastart": 0,
+      "WebDriverAgent": 0,
+      "JetsamEvent": 0
+    },
+    "finishedAt": "2026-10-23T15:44:04.176818+08:00",
+    "audioTrackSelectionCommands": 0,
+    "actualPlaying10Reviewed": true,
+    "actualFinalHomeWiFiReviewed": true,
+    "classification": "Tool effect assertion expected codec labels; actual audio panel has language-only labels, including two English rows. No audio selection dispatched.",
+    "windowPlaybackAcceptance": false
+  },
+  "secondWindow": {
+    "at": "2026-10-23 15:55",
+    "sample": "S03",
+    "device": "iPhone13",
+    "entry": "deviceFile",
+    "sourcePackage": "2026-10-23 07:33 normal Debug",
+    "freshDeviceAnd173InputPackageSignatureOwnReceiptGates": true,
+    "emptyEnvironment": true,
+    "playCommands": 1,
+    "manualSeekCommands": 0,
+    "pipCommands": 0,
+    "audioSelectionCommands": 2,
+    "engineAudioTrackSequence": [
+      4,
+      1,
+      4
+    ],
+    "captionState": "original Off unchanged",
+    "switchToEnglishNative3_10_30": "actual changing movie scenes; first capture clock1:05:30",
+    "restoreOriginalNative3": "actual movie at1:06:02 with spinner",
+    "restoreOriginalNative10_30": "different actual movie scenes without spinner",
+    "nativeEndClock": "1:06:31",
+    "nativeEndCaptureAt": "2026-10-23T15:48:53.160559+08:00",
+    "normalReturnSameFullFileDetailAndHomeWiFiReviewed": true,
+    "audioEvents": [
+      {
+        "actionSeconds": 0.43502,
+        "event": "audio_session_ready",
+        "fields": {
+          "category": "AVAudioSessionCategoryPlayback",
+          "mode": "AVAudioSessionModeMoviePlayback",
+          "outputVolume": "0.05",
+          "outputs": "Speaker",
+          "playbackTraceID": "90458959"
+        }
+      },
+      {
+        "actionSeconds": 1.184232,
+        "event": "audio_track_changed",
+        "fields": {
+          "engineTrackID": "4",
+          "evidence": "engineTrackInventory",
+          "playbackTraceID": "90458959"
+        }
+      },
+      {
+        "actionSeconds": 14.948701,
+        "event": "audio_track_changed",
+        "fields": {
+          "engineTrackID": "1",
+          "evidence": "engineTrackInventoryNotAudibleRecovery",
+          "playbackTraceID": "90458959",
+          "requestedTrackID": "1",
+          "selectionDispatchMs": "0"
+        }
+      },
+      {
+        "actionSeconds": 16.495098,
+        "event": "seek_recovered",
+        "fields": {
+          "currentSeconds": "3928.541",
+          "evidence": "engineCompletionAndAdvancingClock",
+          "playbackTraceID": "90458959",
+          "seekRecoveryMs": "1571",
+          "seekTargetSeconds": "3928.404"
+        }
+      },
+      {
+        "actionSeconds": 50.379975,
+        "event": "audio_track_changed",
+        "fields": {
+          "engineTrackID": "4",
+          "evidence": "engineTrackInventoryNotAudibleRecovery",
+          "playbackTraceID": "90458959",
+          "requestedTrackID": "4",
+          "selectionDispatchMs": "0"
+        }
+      },
+      {
+        "actionSeconds": 54.317301,
+        "event": "seek_recovered",
+        "fields": {
+          "currentSeconds": "3962.484",
+          "evidence": "engineCompletionAndAdvancingClock",
+          "playbackTraceID": "90458959",
+          "seekRecoveryMs": "3956",
+          "seekTargetSeconds": "3962.398"
+        }
+      }
+    ],
+    "stallEpisodes": [
+      {
+        "startActionSeconds": 1.48688,
+        "phaseAtStart": "beforeObservedAdvancingClock",
+        "startFields": {
+          "audioBitrate": 0,
+          "bufferLimitSeconds": 6,
+          "bufferTargetSeconds": 1,
+          "bufferedAheadSeconds": 0,
+          "bytesRead": 1394593,
+          "currentSeconds": 3916.542,
+          "durationSeconds": 7524.768,
+          "elapsedMs": 1026,
+          "engine": "KSPlayer",
+          "ksPlayerState": "-",
+          "planID": "9E215C29",
+          "playbackTraceID": "90458959",
+          "routeID": "F9DE2592",
+          "sampleReason": "playbackTick",
+          "stallActive": "yes",
+          "stallCount": 1,
+          "stallDurationMs": 0,
+          "videoBitrate": 0
+        },
+        "endActionSeconds": 3.185016,
+        "sampledSpanSeconds": 1.698136,
+        "reportedDurationMs": 1701
+      },
+      {
+        "startActionSeconds": 15.998788,
+        "phaseAtStart": "afterObservedAdvancingClock",
+        "startFields": {
+          "audioBitrate": 0,
+          "bufferLimitSeconds": 16,
+          "bufferTargetSeconds": 1,
+          "bufferedAheadSeconds": 0.5422083185962947,
+          "bytesRead": 134741801,
+          "currentSeconds": 3928.404,
+          "deltaSeconds": 0,
+          "durationSeconds": 7524.768,
+          "elapsedMs": 15543,
+          "engine": "KSPlayer",
+          "ksPlayerState": "-",
+          "planID": "9E215C29",
+          "playbackTraceID": "90458959",
+          "routeID": "F9DE2592",
+          "sampleReason": "playbackTick",
+          "stallActive": "yes",
+          "stallCount": 2,
+          "stallDurationMs": 0,
+          "videoBitrate": 0
+        },
+        "endActionSeconds": 17.102309,
+        "sampledSpanSeconds": 1.1035210000000024,
+        "reportedDurationMs": 1100
+      },
+      {
+        "startActionSeconds": 51.925217,
+        "phaseAtStart": "afterObservedAdvancingClock",
+        "startFields": {
+          "audioBitrate": 0,
+          "bufferLimitSeconds": 16,
+          "bufferTargetSeconds": 1,
+          "bufferedAheadSeconds": 0,
+          "bytesRead": 580217721,
+          "currentSeconds": 3962.398,
+          "deltaSeconds": 0,
+          "durationSeconds": 7524.768,
+          "elapsedMs": 51466,
+          "engine": "KSPlayer",
+          "ksPlayerState": "-",
+          "planID": "9E215C29",
+          "playbackTraceID": "90458959",
+          "routeID": "F9DE2592",
+          "sampleReason": "playbackTick",
+          "stallActive": "yes",
+          "stallCount": 3,
+          "stallDurationMs": 0,
+          "videoBitrate": 0
+        },
+        "endActionSeconds": 55.028939,
+        "sampledSpanSeconds": 3.1037219999999976,
+        "reportedDurationMs": 3100
+      }
+    ],
+    "stallsReportedMs": [
+      1701,
+      1100,
+      3100
+    ],
+    "internalAudioChangeClockRecoveryMs": [
+      1571,
+      3956
+    ],
+    "audioRouteObserved": {
+      "output": "Speaker",
+      "volume": 0.05,
+      "changedByTest": false,
+      "meaning": "AVAudioSession route and volume, not acoustic output"
+    },
+    "all36OriginalTrackFieldsUnchanged": true,
+    "otherPreferencesUnchanged": true,
+    "oneNaturalProgressEntryChanged": true,
+    "newCrashReportNames": {
+      "Nastart": 0,
+      "WebDriverAgent": 0,
+      "JetsamEvent": 0
+    },
+    "ownGuardianAndSyslogStopped": true,
+    "actualAudioAcousticVerification": false,
+    "wholePlaybackOrFlowAcceptance": false
+  },
+  "finalAudit": {
+    "at": "2026-10-23T15:51:48.967698+08:00",
+    "freshDeviceNameModelSystemUDIDUSBVerified": true,
+    "source173AndBinaryHashes29SignaturesProfileAndOwnReceiptVerified": true,
+    "WDAAutoIdle10Cool2ReadbackVerified": true,
+    "WDAAppStates": [
+      1,
+      1
+    ],
+    "HomeForeground": true,
+    "fullNonDiagnosticPreferencesUnchangedSinceWindowEnd": true,
+    "allOriginal36TrackFieldsMatchBatchStart": true,
+    "ownedPlaybackBuildLoggerHostsRemaining": 0,
+    "nativeProcessAbsenceClaimed": false,
+    "newMediaCommands": 0,
+    "networkConfigurationChanged": false,
+    "actualFinalHomeImageReviewPending": false,
+    "actualFinalHomeWiFiNoPiPReviewed": true
+  },
+  "otherDevices": {
+    "iPad": "zero commands;06:52 older package",
+    "iPhone18": "zero commands;06:52 installed,07:33 package still pending live connection identity; normal homepage user deferred"
+  },
+  "limits": [
+    "Language-only menu labels include two indistinguishable English entries; current actual first English row was followed by engine track1, not guessed from codec text.",
+    "No actual hearing/acoustic capture, AV sync, continuous frame pacing, complete format/network matrix or Release acceptance.",
+    "Original cold-resume rebuffer remains open; no arbitrary threshold change."
+  ],
+  "sharedSeekPhaseAnalysis": [
+    {
+      "ordinal": 1,
+      "seekTargetSeconds": 3928.404,
+      "seekStartedActionSeconds": 14.946333,
+      "engineCompletedActionSeconds": 15.532675,
+      "engineCompleted": "true",
+      "bufferReadyActionSeconds": 16.291386,
+      "clockRecoveredActionSeconds": 16.495098,
+      "reportedInternalRecoveryMs": 1571,
+      "demuxSeekCall": {
+        "targetSeconds": 3928.404,
+        "timestampMode": false,
+        "result": 0,
+        "demuxSeekCallElapsedSeconds": 0.5508195832371712
+      },
+      "completionToBufferReadySeconds": 0.758711,
+      "bufferReadyToClockRecoverySeconds": 0.203712,
+      "recoveryBufferTargetsObserved": [
+        1
+      ],
+      "evidence": "Engine observations; no precise presentation or audible recovery boundary"
+    },
+    {
+      "ordinal": 2,
+      "seekTargetSeconds": 3962.398,
+      "seekStartedActionSeconds": 50.379156,
+      "engineCompletedActionSeconds": 51.14043,
+      "engineCompleted": "true",
+      "bufferReadyActionSeconds": 54.098268,
+      "clockRecoveredActionSeconds": 54.317301,
+      "reportedInternalRecoveryMs": 3956,
+      "demuxSeekCall": {
+        "targetSeconds": 3962.398,
+        "timestampMode": false,
+        "result": 0,
+        "demuxSeekCallElapsedSeconds": 0.5640263750683516
+      },
+      "completionToBufferReadySeconds": 2.957838,
+      "bufferReadyToClockRecoverySeconds": 0.219033,
+      "recoveryBufferTargetsObserved": [
+        1
+      ],
+      "evidence": "Engine observations; no precise presentation or audible recovery boundary"
+    }
+  ],
+  "reportToolTestsAfterAudioFields": {
+    "total": 110,
+    "failures": 0,
+    "scope": "Host report numeric/Boolean fields, no App XCTest rerun"
+  }
+}

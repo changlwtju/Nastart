@@ -1,0 +1,580 @@
+{
+  "date": "2026-10-24",
+  "scope": "iPad current normal Debug Jellyfin representative format baseline and ordinary close tool regression",
+  "package": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "a6dffa97d9301537a7a104d2700d72854e33040e94d2daed9ee4c1f267b0c024",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "binaryBuildTime": "2026-10-24T06:20:01.466616+08:00",
+    "ipaSHA256": "76ebb89a8b390d650f9b5eb7cf9556f8c945b56ebccf22037cad1426b50bc4b7",
+    "checkedInputs": 174,
+    "individuallyVerifiedLibraries": 29
+  },
+  "appSourceBuildInstallOrNewTestsThisPhase": false,
+  "installationIdentity": "Own iPad 06:26:16 preservation install receipt matches frozen 06:20 normal package; fresh device/source/signature/IPA checks before each case and final audit. No reinstall this phase.",
+  "normalLaunchEnvironment": {},
+  "normalLaunchArguments": [],
+  "networkChanges": false,
+  "macConcurrentMediaFetches": 0,
+  "nativeDevice": {
+    "model": "iPad12,1",
+    "system": "18.3.1",
+    "connection": "USB"
+  },
+  "cases": [
+    {
+      "sample": "S03",
+      "entry": "jf",
+      "startedAt": "2026-10-24T07:56:05.390988+08:00",
+      "finishedAt": "2026-10-24T07:57:51.260084+08:00",
+      "requestedMediaSeconds": 60,
+      "playCommands": 1,
+      "seekCommands": 0,
+      "pipCommands": 0,
+      "requestedAction": "继续观看",
+      "normalCloseEffectCaptured": null,
+      "returnOriginalDetailUIObserved": null,
+      "failureType": "ActionUnconfirmed",
+      "otherPreferencesUnchanged": true,
+      "originalBookmarks": 29,
+      "finalBookmarks": 29,
+      "bookmarkKeysSame": true,
+      "trackChanges": 0,
+      "progressEntriesChanged": 1,
+      "newCrashInventory": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      },
+      "finalWDAAppStates": [
+        1,
+        1
+      ],
+      "ownGuardianStopped": true,
+      "ownSyslogStopped": true,
+      "actualMovieChangeAndOriginalDetailReturnImagesReviewed": null,
+      "earlyCaptureLoadingOverlayObserved": null,
+      "nativeMovieAndPGSImagesReviewed": true,
+      "imageNotes": "3/10/30/60/end native images reviewed; different actual movie and bilingual PGS; initial early capture scheduled3 started8.269 after dispatch, not exact3. End UI 1:14:50. Ordinary close stale failed, cleanup intentional.",
+      "captures": [
+        {
+          "label": "playing-live-3",
+          "startedSecondsAfterPlayDispatch": 8.269,
+          "nativeFinishedSecondsAfterPlayDispatch": 9.464,
+          "provenance": "nativeScreenshotService"
+        },
+        {
+          "label": "playing-live-10",
+          "startedSecondsAfterPlayDispatch": 10.466,
+          "nativeFinishedSecondsAfterPlayDispatch": 10.967,
+          "provenance": "nativeScreenshotService"
+        },
+        {
+          "label": "playing-live-30",
+          "startedSecondsAfterPlayDispatch": 30.009,
+          "nativeFinishedSecondsAfterPlayDispatch": 30.875,
+          "provenance": "nativeScreenshotService"
+        },
+        {
+          "label": "playing-live-60",
+          "startedSecondsAfterPlayDispatch": 60.008,
+          "nativeFinishedSecondsAfterPlayDispatch": 60.41,
+          "provenance": "nativeScreenshotService"
+        },
+        {
+          "label": "playing-end-position",
+          "startedSecondsAfterPlayDispatch": 66.165,
+          "nativeFinishedSecondsAfterPlayDispatch": 66.528,
+          "provenance": "nativeScreenshotService"
+        }
+      ],
+      "rendererSignals": [
+        {
+          "engine": "KSPlayer",
+          "firstRendererSignalMs": 3490,
+          "firstClockPositionSeconds": 4431.351,
+          "maxReportedStallCount": 1,
+          "stallEpisodes": [
+            {
+              "phase": "beforeObservedAdvancingClock",
+              "reportedDurationMs": 735,
+              "sampledSpanSeconds": 0.7168689999999955,
+              "rightCensored": false
+            }
+          ],
+          "lastTelemetryPositionSeconds": 4495.692,
+          "candidateWarmups": 0,
+          "maximumPredictionAttempt": 0,
+          "urlMetricsCellularYes": 0,
+          "rangeMetricCount": 22
+        }
+      ],
+      "limits": "Sparse actual images plus internal telemetry; no full-frame, sound, complete subtitle or matrix PASS."
+    },
+    {
+      "sample": "S03",
+      "entry": "jf",
+      "startedAt": "2026-10-24T08:03:23.879552+08:00",
+      "finishedAt": "2026-10-24T08:04:45.399690+08:00",
+      "requestedMediaSeconds": 15,
+      "playCommands": 1,
+      "seekCommands": 0,
+      "pipCommands": 0,
+      "requestedAction": "继续观看",
+      "normalCloseEffectCaptured": true,
+      "returnOriginalDetailUIObserved": true,
+      "failureType": null,
+      "otherPreferencesUnchanged": true,
+      "originalBookmarks": 29,
+      "finalBookmarks": 29,
+      "bookmarkKeysSame": true,
+      "trackChanges": 0,
+      "progressEntriesChanged": 1,
+      "newCrashInventory": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      },
+      "finalWDAAppStates": [
+        1,
+        1
+      ],
+      "ownGuardianStopped": true,
+      "ownSyslogStopped": true,
+      "actualMovieChangeAndOriginalDetailReturnImagesReviewed": true,
+      "earlyCaptureLoadingOverlayObserved": true,
+      "nativeMovieAndPGSImagesReviewed": null,
+      "imageNotes": null,
+      "captures": [
+        {
+          "label": "playing-live-3",
+          "startedSecondsAfterPlayDispatch": 5.322,
+          "nativeFinishedSecondsAfterPlayDispatch": 5.81,
+          "provenance": "nativeScreenshotService"
+        },
+        {
+          "label": "playing-live-10",
+          "startedSecondsAfterPlayDispatch": 10.01,
+          "nativeFinishedSecondsAfterPlayDispatch": 10.805,
+          "provenance": "nativeScreenshotService"
+        },
+        {
+          "label": "playing-live-15",
+          "startedSecondsAfterPlayDispatch": 15.01,
+          "nativeFinishedSecondsAfterPlayDispatch": 15.391,
+          "provenance": "nativeScreenshotService"
+        },
+        {
+          "label": "playing-end-position",
+          "startedSecondsAfterPlayDispatch": 21.653,
+          "nativeFinishedSecondsAfterPlayDispatch": 22.092,
+          "provenance": "nativeScreenshotService"
+        }
+      ],
+      "rendererSignals": [
+        {
+          "engine": "KSPlayer",
+          "firstRendererSignalMs": 2782,
+          "firstClockPositionSeconds": 4491.825,
+          "maxReportedStallCount": 1,
+          "stallEpisodes": [
+            {
+              "phase": "beforeObservedAdvancingClock",
+              "reportedDurationMs": 1551,
+              "sampledSpanSeconds": 1.5910080000000022,
+              "rightCensored": false
+            }
+          ],
+          "lastTelemetryPositionSeconds": 4526.194,
+          "candidateWarmups": 0,
+          "maximumPredictionAttempt": 0,
+          "urlMetricsCellularYes": 0,
+          "rangeMetricCount": 17
+        }
+      ],
+      "limits": "Sparse actual images plus internal telemetry; no full-frame, sound, complete subtitle or matrix PASS."
+    },
+    {
+      "sample": "S08",
+      "entry": "jf",
+      "startedAt": "2026-10-24T08:05:33.453399+08:00",
+      "finishedAt": "2026-10-24T08:07:37.052842+08:00",
+      "requestedMediaSeconds": 60,
+      "playCommands": 1,
+      "seekCommands": 0,
+      "pipCommands": 0,
+      "requestedAction": "在 Nastart 中播放",
+      "normalCloseEffectCaptured": true,
+      "returnOriginalDetailUIObserved": true,
+      "failureType": null,
+      "otherPreferencesUnchanged": true,
+      "originalBookmarks": 29,
+      "finalBookmarks": 29,
+      "bookmarkKeysSame": true,
+      "trackChanges": 0,
+      "progressEntriesChanged": 1,
+      "newCrashInventory": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      },
+      "finalWDAAppStates": [
+        1,
+        1
+      ],
+      "ownGuardianStopped": true,
+      "ownSyslogStopped": true,
+      "actualMovieChangeAndOriginalDetailReturnImagesReviewed": true,
+      "earlyCaptureLoadingOverlayObserved": true,
+      "nativeMovieAndPGSImagesReviewed": null,
+      "imageNotes": "3s scheduled capture loading; 10s black at displayed 00:01; 30s bilingual subtitle and movie, 60s different movie, end 00:57 movie; original detail return reviewed.",
+      "captures": [
+        {
+          "label": "playing-live-3",
+          "startedSecondsAfterPlayDispatch": 6.211,
+          "nativeFinishedSecondsAfterPlayDispatch": 6.475,
+          "provenance": "nativeScreenshotService"
+        },
+        {
+          "label": "playing-live-10",
+          "startedSecondsAfterPlayDispatch": 10.01,
+          "nativeFinishedSecondsAfterPlayDispatch": 10.625,
+          "provenance": "nativeScreenshotService"
+        },
+        {
+          "label": "playing-live-30",
+          "startedSecondsAfterPlayDispatch": 30.001,
+          "nativeFinishedSecondsAfterPlayDispatch": 30.464,
+          "provenance": "nativeScreenshotService"
+        },
+        {
+          "label": "playing-live-60",
+          "startedSecondsAfterPlayDispatch": 60.01,
+          "nativeFinishedSecondsAfterPlayDispatch": 60.422,
+          "provenance": "nativeScreenshotService"
+        },
+        {
+          "label": "playing-end-position",
+          "startedSecondsAfterPlayDispatch": 65.876,
+          "nativeFinishedSecondsAfterPlayDispatch": 66.232,
+          "provenance": "nativeScreenshotService"
+        }
+      ],
+      "rendererSignals": [
+        {
+          "engine": "KSPlayer",
+          "firstRendererSignalMs": 5175,
+          "firstClockPositionSeconds": 0.08,
+          "maxReportedStallCount": 0,
+          "stallEpisodes": [],
+          "lastTelemetryPositionSeconds": 73.222,
+          "candidateWarmups": 0,
+          "maximumPredictionAttempt": 0,
+          "urlMetricsCellularYes": 0,
+          "rangeMetricCount": 3
+        }
+      ],
+      "limits": "Sparse actual images plus internal telemetry; no full-frame, sound, complete subtitle or matrix PASS."
+    },
+    {
+      "sample": "S11",
+      "entry": "jf",
+      "startedAt": "2026-10-24T08:07:37.271748+08:00",
+      "finishedAt": "2026-10-24T08:09:42.246809+08:00",
+      "requestedMediaSeconds": 60,
+      "playCommands": 1,
+      "seekCommands": 0,
+      "pipCommands": 0,
+      "requestedAction": "在 Nastart 中播放",
+      "normalCloseEffectCaptured": true,
+      "returnOriginalDetailUIObserved": true,
+      "failureType": null,
+      "otherPreferencesUnchanged": true,
+      "originalBookmarks": 29,
+      "finalBookmarks": 29,
+      "bookmarkKeysSame": true,
+      "trackChanges": 0,
+      "progressEntriesChanged": 1,
+      "newCrashInventory": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      },
+      "finalWDAAppStates": [
+        1,
+        1
+      ],
+      "ownGuardianStopped": true,
+      "ownSyslogStopped": true,
+      "actualMovieChangeAndOriginalDetailReturnImagesReviewed": true,
+      "earlyCaptureLoadingOverlayObserved": false,
+      "nativeMovieAndPGSImagesReviewed": null,
+      "imageNotes": "Early 3s black at displayed 00:03; 10s very dark clouds; 30s title; 60s and end different newspaper images, end 01:02. Off subtitles and Mandarin TrueHD selection preserved; no subtitle cue acceptance.",
+      "captures": [
+        {
+          "label": "playing-live-3",
+          "startedSecondsAfterPlayDispatch": 7.952,
+          "nativeFinishedSecondsAfterPlayDispatch": 8.563,
+          "provenance": "nativeScreenshotService"
+        },
+        {
+          "label": "playing-live-10",
+          "startedSecondsAfterPlayDispatch": 10.01,
+          "nativeFinishedSecondsAfterPlayDispatch": 10.381,
+          "provenance": "nativeScreenshotService"
+        },
+        {
+          "label": "playing-live-30",
+          "startedSecondsAfterPlayDispatch": 30.01,
+          "nativeFinishedSecondsAfterPlayDispatch": 30.422,
+          "provenance": "nativeScreenshotService"
+        },
+        {
+          "label": "playing-live-60",
+          "startedSecondsAfterPlayDispatch": 59.996,
+          "nativeFinishedSecondsAfterPlayDispatch": 60.409,
+          "provenance": "nativeScreenshotService"
+        },
+        {
+          "label": "playing-end-position",
+          "startedSecondsAfterPlayDispatch": 66.784,
+          "nativeFinishedSecondsAfterPlayDispatch": 67.2,
+          "provenance": "nativeScreenshotService"
+        }
+      ],
+      "rendererSignals": [
+        {
+          "engine": "KSPlayer",
+          "firstRendererSignalMs": 2077,
+          "firstClockPositionSeconds": 0.496,
+          "maxReportedStallCount": 0,
+          "stallEpisodes": [],
+          "lastTelemetryPositionSeconds": 79.056,
+          "candidateWarmups": 0,
+          "maximumPredictionAttempt": 0,
+          "urlMetricsCellularYes": 0,
+          "rangeMetricCount": 9
+        }
+      ],
+      "limits": "Sparse actual images plus internal telemetry; no full-frame, sound, complete subtitle or matrix PASS."
+    },
+    {
+      "sample": "S18",
+      "entry": "jf",
+      "startedAt": "2026-10-24T08:09:42.557243+08:00",
+      "finishedAt": "2026-10-24T08:11:46.180886+08:00",
+      "requestedMediaSeconds": 60,
+      "playCommands": 1,
+      "seekCommands": 0,
+      "pipCommands": 0,
+      "requestedAction": "在 Nastart 中播放",
+      "normalCloseEffectCaptured": true,
+      "returnOriginalDetailUIObserved": true,
+      "failureType": null,
+      "otherPreferencesUnchanged": true,
+      "originalBookmarks": 29,
+      "finalBookmarks": 29,
+      "bookmarkKeysSame": true,
+      "trackChanges": 0,
+      "progressEntriesChanged": 1,
+      "newCrashInventory": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      },
+      "finalWDAAppStates": [
+        1,
+        1
+      ],
+      "ownGuardianStopped": true,
+      "ownSyslogStopped": true,
+      "actualMovieChangeAndOriginalDetailReturnImagesReviewed": true,
+      "earlyCaptureLoadingOverlayObserved": false,
+      "nativeMovieAndPGSImagesReviewed": null,
+      "imageNotes": "3s black at displayed 00:01; 10s red sun logo; 30s title, 60s martial director credits, end different art/editor credits at 01:00. Cantonese FLAC and selected ASS preserved, no dialogue subtitle cue in captured intro.",
+      "captures": [
+        {
+          "label": "playing-live-3",
+          "startedSecondsAfterPlayDispatch": 7.066,
+          "nativeFinishedSecondsAfterPlayDispatch": 7.312,
+          "provenance": "nativeScreenshotService"
+        },
+        {
+          "label": "playing-live-10",
+          "startedSecondsAfterPlayDispatch": 10.01,
+          "nativeFinishedSecondsAfterPlayDispatch": 10.42,
+          "provenance": "nativeScreenshotService"
+        },
+        {
+          "label": "playing-live-30",
+          "startedSecondsAfterPlayDispatch": 30.01,
+          "nativeFinishedSecondsAfterPlayDispatch": 30.342,
+          "provenance": "nativeScreenshotService"
+        },
+        {
+          "label": "playing-live-60",
+          "startedSecondsAfterPlayDispatch": 60.01,
+          "nativeFinishedSecondsAfterPlayDispatch": 60.335,
+          "provenance": "nativeScreenshotService"
+        },
+        {
+          "label": "playing-end-position",
+          "startedSecondsAfterPlayDispatch": 65.759,
+          "nativeFinishedSecondsAfterPlayDispatch": 66.105,
+          "provenance": "nativeScreenshotService"
+        }
+      ],
+      "rendererSignals": [
+        {
+          "engine": "KSPlayer",
+          "firstRendererSignalMs": 2361,
+          "firstClockPositionSeconds": 0.196,
+          "maxReportedStallCount": 0,
+          "stallEpisodes": [],
+          "lastTelemetryPositionSeconds": 75.056,
+          "candidateWarmups": 0,
+          "maximumPredictionAttempt": 0,
+          "urlMetricsCellularYes": 0,
+          "rangeMetricCount": 7
+        }
+      ],
+      "limits": "Sparse actual images plus internal telemetry; no full-frame, sound, complete subtitle or matrix PASS."
+    }
+  ],
+  "retainedFailures": [
+    {
+      "at": "07:54",
+      "playCommands": 0,
+      "reason": "Private workflow required both App and runner absent; native showed background App1, runner0 and actual Home WiFi/noPiP; permitted normal App cold launch while still requiring no unowned runner."
+    },
+    {
+      "at": "07:57",
+      "playCommands": 1,
+      "reason": "Close target became stale after end screenshot; guard rejected, no resend; fixed by refreshing control visibility after capture then immediate close, max observation age2 retained."
+    },
+    {
+      "at": "07:58",
+      "mediaCommands": 0,
+      "reason": "Normal home image observed, strict full preference equality rejected natural positionSeconds/updatedAt save. Independent two stable reads and preserved keys/tracks verified; private helper now permits only these fields and verifies stable reads."
+    }
+  ],
+  "toolFixesOnly": true,
+  "WDA": "Native bounded XCTest reused installed runner after signature/profile/device checks; no new WDA build/install or icon tap; only owned runner stopped.",
+  "afterFormatsNormalEmptyEnvironmentNASHomeObserved": true,
+  "afterFormatsNativeNASHomeImageReviewed": true,
+  "otherServiceRowsStillUnknownAtCapture": true,
+  "finalAudit": {
+    "at": "2026-10-24T08:12:27.062723+08:00",
+    "current174InputsAndPackageAndOwnInstallReceiptVerified": true,
+    "model": "iPad12,1",
+    "system": "18.3.1",
+    "connection": "USB",
+    "fullNonDiagnosticPreferencesStableTwoReads": true,
+    "other17PreferencesUnchangedSinceInstall": true,
+    "bookmarkKeys": 29,
+    "bookmarkKeysSame": true,
+    "trackPreferencesSame": true,
+    "changedBookmarkFields": [
+      "positionSeconds",
+      "updatedAt"
+    ],
+    "homeImageReviewPending": false,
+    "nativeAppCount": 0,
+    "nativeRunnerCount": 0,
+    "nativeHomeWiFiNoPiPReviewed": true
+  },
+  "hostFinal": {
+    "at": "2026-10-24T08:12:48.436348+08:00",
+    "activeProcessesUnderPrivateBatchRoot": 0,
+    "ownMediaAndRunnerStopped": true,
+    "otherDeviceExistingRunnerPreserved": true
+  },
+  "acceptance": "Finite functional evidence only; 28 requirements and all76 complete cells unchanged. No audio/full-frame/full-subtitle/HDR/DV/Release/automatic candidate PASS.",
+  "iphone13": "Earlier same execution real NAS original-to-candidate S03/S19 controlled Debug results archived separately; normal 07:45 restore and 07:46 final audit retained.",
+  "iphone18": "Latest06:20 package still uninstalled; paired Bonjour service unresolved and no normalized matching target in prior discovery. No new discovery/backup/upload/install/launch in this iPad phase; existing one unlock/familyWiFi request pending.",
+  "privateEvidencePointer": "/tmp/nastart-ipad-format-evidence",
+  "automaticTriggerAudit": {
+    "at": "2026-10-24T08:18:28.052829+08:00",
+    "scope": "Offline automatic trigger audit only, no device/server/network operation",
+    "sourcePolicyThreshold": "sourceBitrate > predictiveDeliveryCapacity * 1.5, after eligible/advancing/grace/cooldown; reserve depletion and repeated-stall rules are separate.",
+    "cases": [
+      {
+        "case": "ipad-s03-jf",
+        "decisionCount": 64,
+        "eligibleTrue": 64,
+        "predictiveEligibleTrue": 55,
+        "qualifiedSamplesWithNumericPredictiveCapacity": 18,
+        "qualifiedSamplesMissingPredictiveCapacity": 37,
+        "sourceBitrates": [
+          62682126
+        ],
+        "staticTriggerCapacityStrictlyBelowBps": [
+          41788084.0
+        ],
+        "numericPredictiveCapacityMinBps": 68294576,
+        "numericPredictiveCapacityMaxBps": 103152674,
+        "staticPredicateMatchesAmongQualified": 0,
+        "predictsUnsustainableDeliveryTrue": 0,
+        "reservePredictionTrue": 0,
+        "repeatedStallsTrue": 0,
+        "maximumAttempt": 0
+      },
+      {
+        "case": "ipad-s03-close-r2",
+        "decisionCount": 35,
+        "eligibleTrue": 35,
+        "predictiveEligibleTrue": 30,
+        "qualifiedSamplesWithNumericPredictiveCapacity": 23,
+        "qualifiedSamplesMissingPredictiveCapacity": 7,
+        "sourceBitrates": [
+          62682126
+        ],
+        "staticTriggerCapacityStrictlyBelowBps": [
+          41788084.0
+        ],
+        "numericPredictiveCapacityMinBps": 82919175,
+        "numericPredictiveCapacityMaxBps": 92055090,
+        "staticPredicateMatchesAmongQualified": 0,
+        "predictsUnsustainableDeliveryTrue": 0,
+        "reservePredictionTrue": 0,
+        "repeatedStallsTrue": 0,
+        "maximumAttempt": 0
+      },
+      {
+        "case": "iphone13-s03-jf",
+        "decisionCount": 61,
+        "eligibleTrue": 61,
+        "predictiveEligibleTrue": 51,
+        "qualifiedSamplesWithNumericPredictiveCapacity": 24,
+        "qualifiedSamplesMissingPredictiveCapacity": 27,
+        "sourceBitrates": [
+          62682126
+        ],
+        "staticTriggerCapacityStrictlyBelowBps": [
+          41788084.0
+        ],
+        "numericPredictiveCapacityMinBps": 58072625,
+        "numericPredictiveCapacityMaxBps": 119627728,
+        "staticPredicateMatchesAmongQualified": 0,
+        "predictsUnsustainableDeliveryTrue": 0,
+        "reservePredictionTrue": 0,
+        "repeatedStallsTrue": 0,
+        "maximumAttempt": 0
+      }
+    ],
+    "conclusion": "For these samples, predictive gate becomes eligible but measured capacity does not cross the static demand margin; no reserve or repeated-stall trigger. No trigger is observed policy behavior, not evidence loader retry succeeded or failed.",
+    "nextMeasurementConditions": [
+      "Normal automatic test must produce a recorded natural rule trigger and actual fresh PlaybackInfo negotiation; stop repeated unchanged no-trigger windows.",
+      "Genuine failure-followup requires attempt1 failed candidate loader ceiling/trace, current ticket/source/seek generation, then attempt2 new lower ceiling negotiation; manual pre-negotiated fixed2Mbps case cannot supply this evidence.",
+      "Old12Mbps deep-position/PGS failure and fresh2Mbps/from-start controlled success differ in timestamp, bitrate, server preparation, position, original reserve and first segment; not an A/B speed or repair comparison.",
+      "Preparation budget remains40s including complete manifest. Handoff requires decoded frame, aligned clocks and contiguous reserve; do not blindly extend deadline or lead."
+    ],
+    "appSourceChanges": false
+  },
+  "documentationVerification": {
+    "documents": 417,
+    "localLinks": 2309,
+    "missingDestinations": 0,
+    "gitDiffCheckPassed": true
+  }
+}

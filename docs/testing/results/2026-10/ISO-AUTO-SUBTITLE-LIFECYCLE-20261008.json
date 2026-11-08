@@ -1,0 +1,238 @@
+{
+  "recordedAt": "2026-10-08 07:09",
+  "scope": "ISO 自动字幕与退出资源释放",
+  "package": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceDiffSHA256": "372e0977edcebb43b69723024fda4ce6e4b33f26e4b81368f17c146723574739",
+    "configuration": "normal Debug -Onone; empty launch environment",
+    "binaryBuildTime": "2026-10-08T06:43:31.993995+08:00",
+    "binaries": {
+      "Nastart": "65f678bc1e81a5ded7ca787b7dc5c188a20abe31f98a14189d4ef923292c8ebb",
+      "Nastart.debug.dylib": "a339d04da9181b462529749d12e22bf018639e818055dda365e3500ea156d120",
+      "Frameworks/KSPlayer.framework/KSPlayer": "5fa42aac977408c21c0a85c45b0d806490c3d7dc2048f0e84ea00eb0dc591cf0"
+    },
+    "signatureVerified": true,
+    "individuallyVerifiedLibraries": 29,
+    "checkedInputs": 128,
+    "newerInputs": [],
+    "profileExpirationUTC": "2026-10-10T22:03:15",
+    "preflight": "15 passed",
+    "tests": "ISO automatic discovery and lifecycle: 190/2 skipped/0 failures",
+    "linkageVerified": true,
+    "packageArtifact": "Nastart-ISOAuto-Latest-Debug.app (private local evidence)"
+  },
+  "devices": [
+    {
+      "recordedAt": "2026-10-08T06:54:54.965314+08:00",
+      "device": "iphone13",
+      "model": "iPhone14,5",
+      "os": "16.3.1",
+      "systemBuild": "20D67",
+      "sourceDiffSHA256": "372e0977edcebb43b69723024fda4ce6e4b33f26e4b81368f17c146723574739",
+      "binaries": {
+        "Nastart": "65f678bc1e81a5ded7ca787b7dc5c188a20abe31f98a14189d4ef923292c8ebb",
+        "Nastart.debug.dylib": "a339d04da9181b462529749d12e22bf018639e818055dda365e3500ea156d120",
+        "Frameworks/KSPlayer.framework/KSPlayer": "5fa42aac977408c21c0a85c45b0d806490c3d7dc2048f0e84ea00eb0dc591cf0"
+      },
+      "binaryBuildTime": "2026-10-08T06:43:31.993995+08:00",
+      "configuration": "normal Debug -Onone; empty launch environment",
+      "signatureVerified": true,
+      "freshUSBIdentity": true,
+      "targetInValidProfile": true,
+      "dataPreservingCoverInstall": true,
+      "unchangedNonDiagnosticPreferences": 25,
+      "installation": "success",
+      "normalLaunchSucceeded": true,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "actualForegroundUIVerified": true,
+      "playbackRegression": "targeted ISO dual-entry cases completed; startup/resume delay remains open",
+      "foregroundEvidence": "latest-normal.png/xml",
+      "finish": {
+        "recordedAt": "2026-10-08T07:05:42.886897+08:00",
+        "device": "iphone13",
+        "ordinaryPlayerClosed": true,
+        "normalAppForegroundVerified": true,
+        "foregroundEvidence": "finished-normal-detail.png/xml",
+        "waitForIdleTimeout": 10,
+        "animationCoolOffTimeout": 2,
+        "networkSettingsChangedThisRound": false
+      },
+      "finishPreferences": {
+        "changedKeyCategories": [
+          "diagnostics.entries.v1",
+          "playback.localResume.v1"
+        ],
+        "otherPreferencesUnchanged": true
+      }
+    },
+    {
+      "recordedAt": "2026-10-08T06:45:17.466837+08:00",
+      "device": "ipad",
+      "model": "iPad12,1",
+      "os": "18.3.1",
+      "systemBuild": "22D72",
+      "sourceDiffSHA256": "372e0977edcebb43b69723024fda4ce6e4b33f26e4b81368f17c146723574739",
+      "binaries": {
+        "Nastart": "65f678bc1e81a5ded7ca787b7dc5c188a20abe31f98a14189d4ef923292c8ebb",
+        "Nastart.debug.dylib": "a339d04da9181b462529749d12e22bf018639e818055dda365e3500ea156d120",
+        "Frameworks/KSPlayer.framework/KSPlayer": "5fa42aac977408c21c0a85c45b0d806490c3d7dc2048f0e84ea00eb0dc591cf0"
+      },
+      "binaryBuildTime": "2026-10-08T06:43:31.993995+08:00",
+      "configuration": "normal Debug -Onone; empty launch environment",
+      "signatureVerified": true,
+      "freshUSBIdentity": true,
+      "targetInValidProfile": true,
+      "dataPreservingCoverInstall": true,
+      "unchangedNonDiagnosticPreferences": 16,
+      "installation": "success",
+      "normalLaunchSucceeded": true,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "actualForegroundUIVerified": true,
+      "playbackRegression": "targeted ISO dual-entry cases completed; startup/resume delay remains open",
+      "foregroundEvidence": "latest-normal.png/xml",
+      "finish": {
+        "recordedAt": "2026-10-08T07:05:44.556855+08:00",
+        "device": "ipad",
+        "ordinaryPlayerClosed": true,
+        "normalAppForegroundVerified": true,
+        "foregroundEvidence": "finished-normal-detail.png/xml",
+        "waitForIdleTimeout": 10,
+        "animationCoolOffTimeout": 2,
+        "networkSettingsChangedThisRound": false
+      },
+      "finishPreferences": {
+        "changedKeyCategories": [
+          "playback.localResume.v1",
+          "diagnostics.entries.v1"
+        ],
+        "otherPreferencesUnchanged": true
+      }
+    }
+  ],
+  "iphone18": "not connected at finish; no install or latest regression this round",
+  "sample": {
+    "film": "Transformers (2007)",
+    "virtualTitleBytes": 28241829888,
+    "runtimeSubtitleCount": 8,
+    "serialOnly": true,
+    "networkConditionsChanged": false
+  },
+  "cases": [
+    {
+      "device": "ipad",
+      "entry": "device-files",
+      "case": "first-open without pre-catalog or bookmark",
+      "trace": "B563495F",
+      "selectedSubtitleID": 6,
+      "actualChineseCueVerified": true,
+      "manuallySelectedBeforeProof": false,
+      "clockStartupMs": null,
+      "normalExitVerified": true,
+      "limitation": "startup event pruned; actual menu and Chinese cue are primary evidence"
+    },
+    {
+      "device": "ipad",
+      "entry": "device-files",
+      "case": "resume saved Chinese",
+      "trace": "929F0A6B",
+      "selectedSubtitleID": 6,
+      "clockStartupMs": 15008,
+      "firstClockPositionSeconds": 70.256,
+      "normalExitVerified": true,
+      "waitingStatus": "OPEN"
+    },
+    {
+      "device": "ipad",
+      "entry": "device-files",
+      "case": "resume explicit saved Off",
+      "trace": "1277D683",
+      "selectedSubtitleID": null,
+      "subtitleMode": "disabled",
+      "clockStartupMs": 12514,
+      "firstClockPositionSeconds": 74.107,
+      "explicitOffPreserved": true,
+      "normalExitVerified": true,
+      "restoredChineseIDAfterTest": 6,
+      "waitingStatus": "OPEN"
+    },
+    {
+      "device": "ipad",
+      "entry": "jellyfin",
+      "case": "from beginning with selected Chinese",
+      "trace": "4E314724",
+      "selectedSubtitleID": 6,
+      "clockStartupMs": 1448,
+      "firstClockPositionSeconds": 0.176,
+      "normalExitVerified": true
+    },
+    {
+      "device": "iphone13",
+      "entry": "device-files",
+      "case": "resume saved English",
+      "trace": "AB843871",
+      "selectedSubtitleID": 5,
+      "clockStartupMs": 5501,
+      "firstClockPositionSeconds": 49.961,
+      "normalExitVerified": true
+    },
+    {
+      "device": "iphone13",
+      "entry": "jellyfin",
+      "case": "from beginning with selected Chinese",
+      "trace": "605F2108",
+      "selectedSubtitleID": 6,
+      "clockStartupMs": 2108,
+      "firstClockPositionSeconds": 0.094,
+      "normalExitVerified": true
+    },
+    {
+      "device": "iphone13",
+      "entry": "jellyfin",
+      "case": "immediate continue-watching",
+      "trace": "3F1B5570",
+      "selectedSubtitleID": 6,
+      "clockStartupMs": 3769,
+      "firstClockPositionSeconds": 32.366,
+      "actualChineseCueVerified": true,
+      "normalExitVerified": true
+    }
+  ],
+  "clockMetric": "advancing playback clock after preparation; excludes ISO index preparation and is not visible first-frame or complete FPS evidence",
+  "intermediateEvidence": {
+    "packageMainPrefix": "4ddf",
+    "ipadJellyfinResumeTrace": "E1C20822",
+    "tapToAdvancingClockSeconds": 20.623,
+    "waitingStatus": "FAIL retained; not final-package result"
+  },
+  "controlledStateRestore": {
+    "onlyOneNewBaselineTestBookmarkRemoved": true,
+    "preexistingBookmarksPreserved": true,
+    "credentialsPreserved": true,
+    "finalTestBookmarkSubtitleID": 6,
+    "finalTestBookmarkSubtitlesDisabled": false
+  },
+  "resourceEvidence": "registeredCount 1 to 0 on ordinary exits; does not prove all in-flight requests canceled or full memory recovery",
+  "diagnosticLimitation": "750ms write debounce and 1000-entry cap; playing snapshots can be stale, early events can be pruned; stable post-exit snapshots and actual screenshots retained privately",
+  "tests": {
+    "executed": 190,
+    "skipped": 2,
+    "failures": 0,
+    "preflightPassed": 15,
+    "newBehaviorTests": 5
+  },
+  "formalCompetitorPairs": 0,
+  "mainPushedThisRound": false,
+  "open": [
+    "iPad ISO startup/resume waiting",
+    "shared playback L2 and representative formats",
+    "S03 old -1008 / long first-clock / candidate HLS failures",
+    "long-background recovery / PiP subtitles",
+    "large-file physical weak cellular with rule VPN, both entries",
+    "multi-device contention and competitor frame/audio evidence",
+    "multi-NAS and multi-account isolation",
+    "LAN IP+port and local-only service URLs",
+    "external app coverage and Main batch gates"
+  ]
+}

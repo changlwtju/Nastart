@@ -1,0 +1,234 @@
+{
+  "date": "2026-11-02",
+  "timezone": "Asia/Shanghai",
+  "coordinator": "Codex",
+  "source": {
+    "HEAD": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceInputs": 446,
+    "iosDiffSHA256": "b9463286e205aec3aab82ba2902700ab4d76673662dde5c0ee59f3e1ad80563f",
+    "changedInputs": [
+      "ios/Nastart/Nastart/Core/Design/AppTheme.swift",
+      "ios/Nastart/Nastart/Features/Mine/MineView.swift",
+      "ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/OfflineMediaScene.swift",
+      "ios/Nastart/Packages/NetworkMedia/Sources/NetworkMedia/OfflineUIScenario.swift"
+    ],
+    "unchangedInputs": 442,
+    "originalHEADUnchanged": true,
+    "uncommittedBaselinePreserved": true
+  },
+  "claude": {
+    "delivery": "docs/archive/handoffs/2026-11/2026-11-01-2256-CLAUDE-BATCH1-DELIVERY.md",
+    "deliveredFiles": 1,
+    "buildsByClaude": 0,
+    "patchSHA256": "41d47b022fadcc8f3dbe51ed767b82517374719c565837df637bdb74c3aadff0",
+    "patchIntegrated": true,
+    "newWriteGrant": false
+  },
+  "builds": {
+    "mobile-release-safe.json": {
+      "startedAt": "2026-11-02T00:57:52.150052+08:00",
+      "freeGiBBefore": 18.64699935913086,
+      "reserveGiB": 2,
+      "exitCode": 0,
+      "endedAt": "2026-11-02T00:59:30.942946+08:00",
+      "freeGiBAfter": 18.65121078491211
+    },
+    "mobile-sim-debug-cast-safe.json": {
+      "startedAt": "2026-11-02T00:56:59.732826+08:00",
+      "freeGiBBefore": 19.03734588623047,
+      "reserveGiB": 2,
+      "exitCode": 0,
+      "endedAt": "2026-11-02T00:57:24.946230+08:00",
+      "freeGiBAfter": 18.827125549316406
+    },
+    "mobile-unsigned-debug-safe.json": {
+      "startedAt": "2026-11-02T00:57:37.041253+08:00",
+      "freeGiBBefore": 18.849712371826172,
+      "reserveGiB": 2,
+      "exitCode": 0,
+      "endedAt": "2026-11-02T00:57:52.148653+08:00",
+      "freeGiBAfter": 18.647010803222656
+    },
+    "tv-release-safe.json": {
+      "startedAt": "2026-11-02T00:59:46.052806+08:00",
+      "freeGiBBefore": 18.67428970336914,
+      "reserveGiB": 2,
+      "exitCode": 0,
+      "endedAt": "2026-11-02T01:00:13.238050+08:00",
+      "freeGiBAfter": 18.677196502685547
+    },
+    "tv-sim-debug-cast-safe.json": {
+      "startedAt": "2026-11-02T00:57:24.948715+08:00",
+      "freeGiBBefore": 18.82711410522461,
+      "reserveGiB": 2,
+      "exitCode": 0,
+      "endedAt": "2026-11-02T00:57:37.038715+08:00",
+      "freeGiBAfter": 18.84972381591797
+    },
+    "tv-unsigned-debug-safe.json": {
+      "startedAt": "2026-11-02T00:59:30.945806+08:00",
+      "freeGiBBefore": 18.651199340820312,
+      "reserveGiB": 2,
+      "exitCode": 0,
+      "endedAt": "2026-11-02T00:59:46.050992+08:00",
+      "freeGiBAfter": 18.67430877685547
+    }
+  },
+  "scenarioTests": {
+    "startedAt": "2026-11-02T01:01:19.649816+08:00",
+    "selectedExistingTests": 4,
+    "allScenesIncludesMineInfoAndDiagnostics": true,
+    "NASAccess": false,
+    "exitCode": 0,
+    "passedTests": 4,
+    "failedTests": 0,
+    "endedAt": "2026-11-02T01:01:27.658529+08:00"
+  },
+  "normalPackage": {
+    "packageVerified": true,
+    "normalDebug": true,
+    "sourceDiffSHA256": "b9463286e205aec3aab82ba2902700ab4d76673662dde5c0ee59f3e1ad80563f",
+    "mainSHA256": "a03b284f9428c830aab4ce03c3c37cdc16aecfa08c6109ee6c8ee73e01382f89",
+    "debugDylibSHA256": "6a588beffff1cd3ab979fb5f459ff8445941aa141b0c28ec04b49044237022f9",
+    "signedMachOCount": 30,
+    "verifiedLibraries": 29,
+    "profileExpirationUTC": "2026-11-08T01:08:19+00:00",
+    "verificationInterpreter": "existing local pymobiledevice3-11.1.0-py314 virtualenv",
+    "newDependenciesInstalled": false,
+    "initialWrongInterpreterModuleNotFoundRetained": true
+  },
+  "normalBuild": {
+    "startedAt": "2026-11-02T01:11:16.679480+08:00",
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "sourceInputCount": 446,
+    "sourceDiffSHA256": "b9463286e205aec3aab82ba2902700ab4d76673662dde5c0ee59f3e1ad80563f",
+    "configuration": "normal Debug -Onone",
+    "provisioningUpdatesRequested": false,
+    "exitCode": 0,
+    "endedAt": "2026-11-02T01:12:02.915441+08:00",
+    "inputHashesUnchanged": true
+  },
+  "simulator": {
+    "startedAt": "2026-11-02T01:02:07.971825+08:00",
+    "physicalDevicesControlled": 0,
+    "NASCommands": 0,
+    "normalRootLaunched": false,
+    "launches": [
+      {
+        "at": "2026-11-02T01:02:49.351199+08:00",
+        "scene": "mine-info",
+        "language": "en",
+        "size": "standard",
+        "explicitFixtureArguments": true,
+        "testEnvironmentVariables": false
+      },
+      {
+        "at": "2026-11-02T01:06:06.088745+08:00",
+        "scene": "mine-info",
+        "language": "zh-Hans",
+        "size": "large",
+        "explicitFixtureArguments": true,
+        "testEnvironmentVariables": false
+      },
+      {
+        "at": "2026-11-02T01:07:27.558745+08:00",
+        "scene": "diagnostics",
+        "language": "en",
+        "size": "standard",
+        "explicitFixtureArguments": true,
+        "testEnvironmentVariables": false
+      },
+      {
+        "at": "2026-11-02T01:08:24.309562+08:00",
+        "scene": "diagnostics",
+        "language": "zh-Hans",
+        "size": "large",
+        "explicitFixtureArguments": true,
+        "testEnvironmentVariables": false
+      }
+    ],
+    "mainSHA256": "a14854ba92b04aa772c266475ad036ae35538e8aa9bca2687e6afb2a79765fa5",
+    "debugDylibSHA256": "1952cccf64b3a196dfdef6a422ec8ae63248fc84a49476bf46444cf87212fea7",
+    "fixturePreferencesSeeded": true,
+    "fixturePreferencesPreserved": true,
+    "additionalPreferenceKeys": 0,
+    "shutdownExitCode": 0,
+    "deleteExitCode": 0,
+    "ownedSimulatorAbsent": true,
+    "endedAt": "2026-11-02T01:10:23.639259+08:00"
+  },
+  "device13": {
+    "model": "iPhone14,5",
+    "system": "16.3.1",
+    "freshIdentityAndSignatureVerified": true,
+    "installComplete": true,
+    "installedAt": "2026-11-02T01:15:28.403340+08:00",
+    "mainSHA256": "a03b284f9428c830aab4ce03c3c37cdc16aecfa08c6109ee6c8ee73e01382f89",
+    "debugDylibSHA256": "6a588beffff1cd3ab979fb5f459ff8445941aa141b0c28ec04b49044237022f9",
+    "isolatedStaticWindows": 2,
+    "actualUIInspected": true,
+    "allPreferenceValuesEqualFromBeforeInstallToFinal": true,
+    "nonDiagnosticKeys": 26,
+    "remainingNastartProcessesAtCleanup": 0,
+    "normalRootLaunched": false,
+    "physicalInteractionsVerified": false
+  },
+  "ipad": {
+    "startedAt": "2026-11-02T01:19:26.177825+08:00",
+    "preserveContainer": true,
+    "uninstallAttempted": false,
+    "installComplete": false,
+    "NASCommands": 0,
+    "appLaunchAttempted": false,
+    "mainSHA256": "a03b284f9428c830aab4ce03c3c37cdc16aecfa08c6109ee6c8ee73e01382f89",
+    "debugDylibSHA256": "6a588beffff1cd3ab979fb5f459ff8445941aa141b0c28ec04b49044237022f9",
+    "freshDetailsAndSignedPackageVerified": true,
+    "existingNastartProcessesBefore": 1,
+    "failureType": "AssertionError",
+    "endedAt": "2026-11-02T01:19:27.324227+08:00"
+  },
+  "failuresAndLimits": {
+    "unknownProcessInstallGateWasNotHonoredOn13": true,
+    "userInformedOfOrchestrationError": true,
+    "subsequentMutationsFailClosed": true,
+    "ipadGateBlockedBeforeInstall": true,
+    "defaultInterpreterModuleFailureRetained": true,
+    "processSummaryDatetimeFailureRetained": true,
+    "ordinaryScrollAndDragProducedNoDisplacement": true,
+    "nativeAXScrollActualDisplacementObserved": true,
+    "debugFooterObscuresLowerSummaryUntilScroll": true,
+    "fullVoiceOverVerified": false,
+    "physicalIpadLatestPackageRegressionCompleted": false,
+    "historicalPreflightFailureCategories": 5,
+    "playbackMatrixNewPasses": 0,
+    "requirementsClosed": 0
+  },
+  "boundaries": {
+    "NASPaused": true,
+    "NASCommandsIssued": 0,
+    "mediaTests": 0,
+    "iphone18Controlled": false,
+    "TVLatestPhysicalRegression": false,
+    "ordinaryRootLaunched": false,
+    "externalClaudeSessionStarted": false,
+    "backgroundScheduleCreated": false
+  },
+  "evidencePointer": "/tmp/nastart-claude-integration-path",
+  "simulatorEvidence": "CUA tool trail; not standalone private PNG files",
+  "updatedAt": "2026-11-02T01:27:34.051780+08:00",
+  "finalValidation": {
+    "at": "2026-11-02T01:33:38.497978+08:00",
+    "documentationDocuments": 592,
+    "documentationLocalLinks": 3720,
+    "missingDestinations": 0,
+    "gitDiffCheckExitCode": 0,
+    "sourceInputsStillMatch": 446,
+    "batch2WorkspaceInputsMatch": 446,
+    "batch2WorkspaceClean": true,
+    "batch2RemoteConfigured": false,
+    "initialDocumentationMissingLinkCorrected": true,
+    "initialFailure": "Claude batch1 delivery relative assignment link had one too few parent components; only link corrected, report findings preserved",
+    "buildWorkerCountAtPostIntegrationCheck": 0,
+    "allBatchOwnedRuntimeCleanupAlreadyRecorded": true
+  }
+}

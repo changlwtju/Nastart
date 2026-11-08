@@ -1,0 +1,108 @@
+{
+  "recordedAt": "2026-10-29T18:26:47+08:00",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceInputCount": 433,
+  "changedExistingFiles": 7,
+  "existingConfigurationTestsPassed": 4,
+  "builds": {
+    "scenario-tests": {
+      "startedAt": "2026-10-29T18:09:29.288163+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-29T18:09:33.424565+08:00"
+    },
+    "localization-lint": {
+      "exitCode": 0
+    },
+    "mobile-sim-debug-plus-r2": {
+      "startedAt": "2026-10-29T18:16:17.457604+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-29T18:16:36.785363+08:00"
+    },
+    "tv-sim-debug-plus-r2": {
+      "startedAt": "2026-10-29T18:16:17.457647+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-29T18:16:34.981837+08:00"
+    },
+    "mobile-debug": {
+      "startedAt": "2026-10-29T18:21:56.726884+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-29T18:23:08.622749+08:00"
+    },
+    "tv-debug": {
+      "startedAt": "2026-10-29T18:21:56.726915+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-29T18:22:24.897121+08:00"
+    },
+    "mobile-release": {
+      "startedAt": "2026-10-29T18:23:08.623877+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-29T18:25:03.330928+08:00"
+    },
+    "tv-release": {
+      "startedAt": "2026-10-29T18:22:24.898388+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-29T18:23:20.682026+08:00"
+    }
+  },
+  "capture": {
+    "accepted": 12,
+    "allPassed": true,
+    "allOwnedSimulatorsDeleted": true,
+    "byPlatform": {
+      "phone": 5,
+      "pad": 4,
+      "tv": 3
+    },
+    "method": "Expected text and synthetic marker, adjacent backdrop stability; selected frames visually reviewed",
+    "completeInteractionOrPerformanceAcceptance": false
+  },
+  "physicalDevicesOperated": 0,
+  "NASCommands": 0,
+  "playbackCommands": 0,
+  "purchasesOrReceiptValidation": 0,
+  "realPrivacyViewsUnchanged": true,
+  "packages": {
+    "mobile": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-29T18:23:08.249401+08:00",
+      "frozenAt": "2026-10-29T18:26:04.643514+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 433,
+      "mainSHA256": "7f75e5ecbfaf8042cc0dd98e104182a11289f9ebe1cf3879635a8d9481c0dd17",
+      "debugDylibSHA256": "3a88607ca15acf8730f7dfd6cf38a9149cf92fdfdf0eee7dd90c719512aaa13c",
+      "signedMachOCount": 30,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false
+    },
+    "tv": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-29T18:22:24.664262+08:00",
+      "frozenAt": "2026-10-29T18:26:05.020589+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 433,
+      "mainSHA256": "23014823d9c17eba8ba2c66a7116255f7665ec3b399cdb34611ba86ba5fcc970",
+      "debugDylibSHA256": "9f495b8e380ed8f3e381a46d8232633ebac2f80f53b8c17a31ec09049b52fa5e",
+      "signedMachOCount": 27,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false
+    }
+  },
+  "privateEvidencePointer": "current-shared-plus-polish-private",
+  "notVerified": [
+    "Full production Plus navigation and TV remote scrolling",
+    "All accessibility/locale/width combinations",
+    "Real membership, StoreKit products, purchase/restore or sync",
+    "Real privacy actions and accounts",
+    "NAS, playback and performance"
+  ]
+}

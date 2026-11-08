@@ -706,10 +706,10 @@ extension CGImage {
             height = max(height, Int(rect.maxY))
         }
         let bitsPerComponent = 8
-        // RGBA(的bytes) * bitsPerComponent *width
-        let bytesPerRow = 4 * 8 * bitsPerComponent * width
         return autoreleasepool {
-            let context = CGContext(data: nil, width: width, height: height, bitsPerComponent: bitsPerComponent, bytesPerRow: bytesPerRow, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)
+            // Let Core Graphics align the four-byte RGBA rows. Multiplying by
+            // bits per component here allocated 64 times the required stride.
+            let context = CGContext(data: nil, width: width, height: height, bitsPerComponent: bitsPerComponent, bytesPerRow: 0, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)
             guard let context else {
                 return nil
             }

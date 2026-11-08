@@ -1,0 +1,432 @@
+{
+  "scope": "Real NAS original KSPlayer to manually requested fresh H264 AAC PGS Encode AVPlayer candidate on iPhone13; explicit Debug lab, not ordinary automatic adaptation or Release acceptance",
+  "package": {
+    "HEAD": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "preservedUncommittedChanges": true,
+    "configuration": "ordinary Debug/-Onone/Xcode27",
+    "builtAt": "2026-10-24T06:20:01.466616+08:00",
+    "sourceInputCount": 174,
+    "signedLibraryCount": 29,
+    "ipaSHA256": "76ebb89a8b390d650f9b5eb7cf9556f8c945b56ebccf22037cad1426b50bc4b7",
+    "iosDiffSHA256": "a6dffa97d9301537a7a104d2700d72854e33040e94c1f267b0c024",
+    "sourceAndPackageUnchangedThisBatch": true,
+    "buildInstallAndXCTestNotRepeated": true
+  },
+  "device": {
+    "label": "iPhone13",
+    "model": "iPhone14,5",
+    "system": "16.3.1",
+    "connection": "USB",
+    "liveNameUDIDAndOwnInstallReceiptVerifiedPerCase": true
+  },
+  "cases": [
+    {
+      "startedAt": "2026-10-24T07:38:44.879440+08:00",
+      "finishedAt": "2026-10-24T07:39:53.013638+08:00",
+      "mode": "S03",
+      "latestSourcePackageAndOwnReceiptVerified": true,
+      "normalPlayCommands": 0,
+      "labPlaybackLaunches": 1,
+      "candidateTriggerCommands": 1,
+      "seekCommands": 0,
+      "pipCommands": 0,
+      "MacMediaGETRequests": 0,
+      "powerEvidence": [
+        {
+          "label": "before-lab",
+          "ownCaffeinateAssertionObserved": true,
+          "ACPower": true,
+          "atUnix": 1792798727.613096
+        },
+        {
+          "label": "during-candidate-10",
+          "ownCaffeinateAssertionObserved": true,
+          "ACPower": true,
+          "atUnix": 1792798751.117097
+        },
+        {
+          "label": "during-candidate-30",
+          "ownCaffeinateAssertionObserved": true,
+          "ACPower": true,
+          "atUnix": 1792798771.351286
+        },
+        {
+          "label": "after-lab-stop",
+          "ownCaffeinateAssertionObserved": true,
+          "ACPower": true,
+          "atUnix": 1792798793.012098
+        }
+      ],
+      "allNonDiagnosticPreferencesUnchanged": true,
+      "newCrashInventory": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      },
+      "finalWDAAppStates": [
+        1,
+        1
+      ],
+      "serverCleanup": {
+        "stopHTTPStatus": 204,
+        "exactOwnDeviceAndNegotiatedPlaySession": true,
+        "remainingOwnedSessions": 0,
+        "encodingProcessExitNotProvenByHTTPStatusAlone": true
+      },
+      "ownGuardianStopped": true,
+      "ownSyslogStopped": true,
+      "negotiation": {
+        "sourceSize": 54005939750,
+        "sourceDurationSeconds": 7524.768,
+        "audioStreamIndex": 1,
+        "subtitleStreamIndex": 7,
+        "subtitleCodec": "pgssub",
+        "serverSubtitleMethod": "Encode",
+        "maxStreamingBitrate": 2000000,
+        "videoCodec": "h264",
+        "audioCodec": "aac",
+        "startSeconds": 0,
+        "liveItemAndMediaSourceAndTracksVerified": true,
+        "uniqueOwnDeviceAndNegotiatedSessionBound": true
+      },
+      "warmupEventToCommitSeconds": 6.524,
+      "timingBoundary": "Persisted device diagnostic event timestamps; excludes prior private PlaybackInfo negotiation and is not a physical touch or screen frame duration.",
+      "manifestElapsedMs": 918,
+      "decodedElapsedMs": 3854,
+      "alignedElapsedMs": 6364,
+      "alignedCandidateSeconds": 18.115,
+      "alignedOriginalSeconds": 18.036,
+      "candidateReserveAtCommitSeconds": 13.83357777777778,
+      "upstreamRequests": {
+        "masterPlaylist": 1,
+        "mediaPlaylist": 1,
+        "segment": 12
+      },
+      "playlistCacheHits": [
+        {
+          "hlsRole": "masterPlaylist",
+          "bytes": 781
+        },
+        {
+          "hlsRole": "mediaPlaylist",
+          "bytes": 1350438
+        }
+      ],
+      "originalMaxReportedStallCount": 0,
+      "candidateMaxReportedStallCount": 1,
+      "candidateReportedStallDurationsMs": [
+        54
+      ],
+      "accessLogStalls": 0,
+      "lastPersistedCandidateTelemetry": {
+        "accessLogBytes": 10356356,
+        "accessLogStalls": 0,
+        "accessLogThroughputMbps": 11.999,
+        "accessLogTransferMs": 6905,
+        "bufferAheadSeconds": 7.937,
+        "bufferEmpty": "no",
+        "currentSeconds": 56.001,
+        "deltaSeconds": 1.5,
+        "elapsedMs": 38153,
+        "engine": "AVPlayer",
+        "indicatedBitrate": 2000000,
+        "likelyToKeepUp": "yes",
+        "loadedRangeCount": 1,
+        "observedBitrate": 10041418,
+        "planID": "F0E9A56A",
+        "playbackTraceID": "8FF46BF7",
+        "rate": 1,
+        "reasonForWaiting": "-",
+        "routeID": "05CF8F6A",
+        "sampleReason": "playbackTick",
+        "stallActive": "no",
+        "stallCount": 1,
+        "timeControlStatus": "playing"
+      },
+      "actualEndDisplayedSeconds": 58,
+      "allSevenNativePlaybackCapturesReviewed": true,
+      "captureLabels": [
+        "playing-original-ready",
+        "playing-original-before-candidate",
+        "playing-candidate-3",
+        "playing-candidate-10",
+        "playing-candidate-30",
+        "playing-candidate-45",
+        "playing-end-position"
+      ],
+      "actualImageObservations": [
+        "Initial source black scene at 00:00",
+        "Original Paramount moving stars before trigger",
+        "Different Paramount logo at trigger+3s while original remains live",
+        "Black scene at trigger+10s and UI 00:20",
+        "Movie at trigger+30s",
+        "Movie with bilingual PGS at trigger+45s, English overlapped by Debug lab home indicator",
+        "Different actor at end 00:58"
+      ]
+    },
+    {
+      "startedAt": "2026-10-24T07:43:41.382230+08:00",
+      "finishedAt": "2026-10-24T07:44:47.259546+08:00",
+      "mode": "S19",
+      "latestSourcePackageAndOwnReceiptVerified": true,
+      "normalPlayCommands": 0,
+      "labPlaybackLaunches": 1,
+      "candidateTriggerCommands": 1,
+      "seekCommands": 0,
+      "pipCommands": 0,
+      "MacMediaGETRequests": 0,
+      "powerEvidence": [
+        {
+          "label": "before-lab",
+          "ownCaffeinateAssertionObserved": true,
+          "ACPower": true,
+          "atUnix": 1792799023.0387268
+        },
+        {
+          "label": "during-candidate-10",
+          "ownCaffeinateAssertionObserved": true,
+          "ACPower": true,
+          "atUnix": 1792799046.3131762
+        },
+        {
+          "label": "during-candidate-30",
+          "ownCaffeinateAssertionObserved": true,
+          "ACPower": true,
+          "atUnix": 1792799066.227349
+        },
+        {
+          "label": "after-lab-stop",
+          "ownCaffeinateAssertionObserved": true,
+          "ACPower": true,
+          "atUnix": 1792799087.257994
+        }
+      ],
+      "allNonDiagnosticPreferencesUnchanged": true,
+      "newCrashInventory": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      },
+      "finalWDAAppStates": [
+        1,
+        1
+      ],
+      "serverCleanup": {
+        "stopHTTPStatus": 204,
+        "exactOwnDeviceAndNegotiatedPlaySession": true,
+        "remainingOwnedSessions": 0,
+        "encodingProcessExitNotProvenByHTTPStatusAlone": true
+      },
+      "ownGuardianStopped": true,
+      "ownSyslogStopped": true,
+      "negotiation": {
+        "sourceSize": 128795641934,
+        "sourceDurationSeconds": 13698.368,
+        "audioStreamIndex": 1,
+        "subtitleStreamIndex": 8,
+        "subtitleCodec": "pgssub",
+        "serverSubtitleMethod": "Encode",
+        "maxStreamingBitrate": 2000000,
+        "videoCodec": "h264",
+        "audioCodec": "aac",
+        "startSeconds": 0,
+        "liveItemAndMediaSourceAndTracksVerified": true,
+        "uniqueOwnDeviceAndNegotiatedSessionBound": true
+      },
+      "warmupEventToCommitSeconds": 6.09,
+      "timingBoundary": "Persisted device diagnostic event timestamps; excludes prior private PlaybackInfo negotiation and is not a physical touch or screen frame duration.",
+      "manifestElapsedMs": 1010,
+      "decodedElapsedMs": 5074,
+      "alignedElapsedMs": 5992,
+      "alignedCandidateSeconds": 17.513333333333332,
+      "alignedOriginalSeconds": 17.417,
+      "candidateReserveAtCommitSeconds": 6.427244444444447,
+      "upstreamRequests": {
+        "masterPlaylist": 1,
+        "mediaPlaylist": 1,
+        "segment": 11
+      },
+      "playlistCacheHits": [
+        {
+          "hlsRole": "masterPlaylist",
+          "bytes": 781
+        },
+        {
+          "hlsRole": "mediaPlaylist",
+          "bytes": 2460059
+        }
+      ],
+      "originalMaxReportedStallCount": 0,
+      "candidateMaxReportedStallCount": 1,
+      "candidateReportedStallDurationsMs": [
+        1524
+      ],
+      "accessLogStalls": 0,
+      "lastPersistedCandidateTelemetry": {
+        "accessLogBytes": 2833348,
+        "accessLogStalls": 0,
+        "accessLogThroughputMbps": 3.527,
+        "accessLogTransferMs": 6426,
+        "bufferAheadSeconds": 4.964,
+        "bufferEmpty": "no",
+        "currentSeconds": 51.008,
+        "deltaSeconds": 1.007,
+        "elapsedMs": 33705,
+        "engine": "AVPlayer",
+        "indicatedBitrate": 2000000,
+        "likelyToKeepUp": "yes",
+        "loadedRangeCount": 1,
+        "observedBitrate": 2985005,
+        "planID": "7DD5DB4C",
+        "playbackTraceID": "0A68610B",
+        "rate": 1,
+        "reasonForWaiting": "-",
+        "routeID": "25CFA10F",
+        "sampleReason": "playbackTick",
+        "stallActive": "no",
+        "stallCount": 1,
+        "timeControlStatus": "playing"
+      },
+      "actualEndDisplayedSeconds": 58,
+      "allSevenNativePlaybackCapturesReviewed": true,
+      "captureLabels": [
+        "playing-original-ready",
+        "playing-original-before-candidate",
+        "playing-candidate-3",
+        "playing-candidate-10",
+        "playing-candidate-30",
+        "playing-candidate-45",
+        "playing-end-position"
+      ],
+      "actualImageObservations": [
+        "Initial source black scene at 00:00",
+        "Original blue New Line animation before trigger",
+        "Different New Line logo at trigger+3s while original remains live",
+        "New Line presents at trigger+10s and UI 00:20",
+        "Different green bilingual PGS/title at trigger+30s",
+        "Different bilingual PGS at trigger+45s, English overlapped by Debug lab home indicator",
+        "Lord of the Rings title at end 00:58"
+      ]
+    }
+  ],
+  "sourceBlackReference": {
+    "sample": "S03",
+    "sameLiveServerItemMediaSourceAndSizeVerified": true,
+    "afterAllPhonePlaybackAndOwnSessionsStopped": true,
+    "fetch": {
+      "startedAt": "2026-10-24T07:42:29.975288+08:00",
+      "scope": "bounded original MKV prefix only, no transcoding, after all iPhone media stopped",
+      "requestedBytes": 100663296,
+      "sourceSize": 54005939750,
+      "status": 206,
+      "completed": true,
+      "bodyBytes": 100663296,
+      "elapsedSeconds": 1.800208333,
+      "finishedAt": "2026-10-24T07:42:31.775539+08:00"
+    },
+    "offlineDecodedSeconds": 30.03,
+    "relevantBlackIntervalSeconds": [
+      19.728,
+      21.98
+    ],
+    "referenceFramesReviewedSeconds": [
+      18,
+      20,
+      21.5,
+      23
+    ],
+    "nativeBlackScreenshotNearestTelemetrySeconds": [
+      20.002,
+      21.501
+    ],
+    "conclusion": "Consistent with original source transition, not evidence of persistent handoff black screen; sparse timings do not establish exact displayed frame identity."
+  },
+  "reportedStallBoundaryAudit": {
+    "sample": "S19",
+    "reportedDurationMs": 1524,
+    "rawTelemetryRetained": true,
+    "playingWhileReportedStall": {
+      "first": {
+        "helperSeconds": 20.707,
+        "currentSeconds": 17.53,
+        "stallActive": "yes",
+        "bufferEmpty": "yes",
+        "timeControlStatus": "playing"
+      },
+      "second": {
+        "helperSeconds": 21.178,
+        "currentSeconds": 18.001,
+        "stallActive": "yes",
+        "bufferEmpty": "yes",
+        "timeControlStatus": "playing"
+      }
+    },
+    "sourceRule": "PlaybackTelemetrySampler classifies playing plus bufferEmpty as stalled even if currentTime advances. This report does not erase the counter or prove uninterrupted video/audio rendering."
+  },
+  "iphone13FinalAudit": {
+    "at": "2026-10-24T07:46:38.249830+08:00",
+    "current174InputsAndPackageAndOwnInstallReceiptVerified": true,
+    "liveModel": "iPhone14,5",
+    "liveSystem": "16.3.1",
+    "connection": "USB",
+    "WDAAppStates": [
+      1,
+      1
+    ],
+    "settingsRestored": true,
+    "fullNonDiagnosticPreferencesStableTwoReads": true,
+    "other24PreferencesUnchangedSinceInstall": true,
+    "bookmarkKeys": 36,
+    "bookmarkKeysSame": true,
+    "trackPreferencesSame": true,
+    "changedBookmarkFields": [
+      "positionSeconds",
+      "updatedAt"
+    ],
+    "homeImageReviewPending": false,
+    "actualHomeWiFiNoPiPReviewed": true
+  },
+  "iphone18": {
+    "discovery": {
+      "outcome": "unverified",
+      "failureType": "ValueError",
+      "pairingRecordChanged": false,
+      "networkConfigurationChanged": false
+    },
+    "browser": {
+      "advertisedInstances": 2,
+      "normalizedSameTargetMatches": 0,
+      "networkConfigurationChanged": false,
+      "pairingChanged": false
+    },
+    "backupUploadInstallLaunchCommands": 0,
+    "latest0620PackageInstalled": false,
+    "onlyHistorical0000InstallConfirmed": true,
+    "existingHumanActionRequestPending": true
+  },
+  "iPad": {
+    "operationsThisBatch": 0,
+    "previous0620PackageAndReceiptNotReverifiedThisBatch": true
+  },
+  "acceptance": {
+    "openRequirements": 28,
+    "ongoing": 12,
+    "awaitingAcceptance": 5,
+    "notStarted": 11,
+    "matrixCells": 76,
+    "statusesUnchanged": true,
+    "ordinaryAutomaticAndDeepPosition12MbpsFailureUnclosed": true,
+    "fullFrameAudioCompleteSubtitlePiPAndReleaseUnverified": true
+  },
+  "hostFinalAudit": {
+    "at": "2026-10-24T07:49:08.021120+08:00",
+    "activeProcessesMentioningThisPrivateEvidenceRoot": 0,
+    "ownedCaseGuardiansAndSyslogsStopped": true
+  },
+  "documentationChecks": {
+    "documents": 416,
+    "localLinks": 2296,
+    "missingDestinations": 0,
+    "gitDiffCheckPassed": true
+  }
+}

@@ -75,7 +75,7 @@ protocol MEFrame: ObjectQueueItem {
 }
 
 extension MEFrame {
-    func endsBeforeSeekTarget(_ target: TimeInterval) -> Bool {
+    func endsBeforeSeekTarget(_ target: TimeInterval, timestampOrigin: CMTime = .zero) -> Bool {
         if let subtitle = self as? SubtitleFrame {
             // SubtitleFrame has no packet duration. Its decoded display interval
             // is on the playback timeline; a cue starting before the seek can
@@ -83,7 +83,7 @@ extension MEFrame {
             return subtitle.part.end < target
         }
         let endTimestamp = timestamp + duration
-        return endTimestamp <= 0 || timebase.cmtime(for: endTimestamp).seconds < target
+        return (timebase.cmtime(for: endTimestamp) - timestampOrigin).seconds < target
     }
 }
 
@@ -440,6 +440,12 @@ public final class VideoVTBFrame: MEFrame {
     public let fps: Float
     public let isDovi: Bool
     public var edrMetaData: EDRMetaData? = nil
+    public var dolbyConfiguration: DOVIDecoderConfigurationRecord?
+    public var pipMasteringDisplayData: Data?
+    public var pipMasteringMaximumNits: Double?
+    public var sideDataInspection = "unknown"
+    public var sideDataSizes: [String: Int] = [:]
+    public var compressedFormatDescription: CMFormatDescription?
     var corePixelBuffer: PixelBufferProtocol?
     init(fps: Float, isDovi: Bool) {
         self.fps = fps
@@ -448,6 +454,13 @@ public final class VideoVTBFrame: MEFrame {
 }
 
 extension VideoVTBFrame {
+    func pictureInPictureContext(displayFormatDescription: CMVideoFormatDescription) -> KSPictureInPictureFrameContext {
+        KSPictureInPictureFrameContext(isDolbyVision: isDovi, dolbyConfiguration: dolbyConfiguration,
+            masteringDisplayData: pipMasteringDisplayData, masteringMaximumNits: pipMasteringMaximumNits,
+            hasStaticEDR: edrMetaData != nil, sideDataInspection: sideDataInspection,
+            sideDataSizes: sideDataSizes, compressedFormatDescription: compressedFormatDescription,
+            displayFormatDescription: displayFormatDescription)
+    }
     #if !os(tvOS)
     @available(iOS 16, *)
     var edrMetadata: CAEDRMetadata? {
@@ -503,4 +516,29 @@ public struct AmbientViewingEnvironment {
     let ambient_illuminance: UInt32
     let ambient_light_x: UInt16
     let ambient_light_y: UInt16
+}
+
+/// ISO/IEC 23008-2 D.2.28 payload: GBR, white point, max/min luminance.
+/// AVFrame rationals are normalized before this call; never copy struct memory.
+enum KSPiPMasteringDisplayEncoder {
+    static func encode(rgb: [[Double]], white: [Double], maximumNits: Double,
+                       minimumNits: Double) -> Data? {
+        guard rgb.count == 3, rgb.allSatisfy({ $0.count == 2 }), white.count == 2,
+              (rgb.flatMap { $0 } + white).allSatisfy({ $0.isFinite && (0...1).contains($0) }),
+              maximumNits.isFinite, minimumNits.isFinite, maximumNits > 0, maximumNits <= 10000,
+              minimumNits >= 0, minimumNits <= maximumNits else { return nil }
+        var data = Data()
+        func append16(_ value: Double) {
+            let code = UInt16((value * 50000).rounded())
+            data.append(UInt8(code >> 8)); data.append(UInt8(code & 255))
+        }
+        func append32(_ value: Double) {
+            let code = UInt32((value * 10000).rounded())
+            for shift in stride(from: 24, through: 0, by: -8) { data.append(UInt8((code >> shift) & 255)) }
+        }
+        for index in [1, 2, 0] { for component in rgb[index] { append16(component) } }
+        for component in white { append16(component) }
+        append32(maximumNits); append32(minimumNits)
+        return data.count == 24 ? data : nil
+    }
 }

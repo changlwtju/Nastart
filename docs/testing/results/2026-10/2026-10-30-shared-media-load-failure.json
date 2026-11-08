@@ -1,0 +1,214 @@
+{
+  "recordedAt": "2026-10-30T18:45:46+08:00",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceInputCount": 439,
+  "changedExistingSourceFiles": 5,
+  "newSourceOrTestFiles": 0,
+  "existingScenarioParameterTests": 4,
+  "builds": {
+    "module-tests": {
+      "startedAt": "2026-10-30T18:34:08.285920+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T18:34:11.964087+08:00"
+    },
+    "mobile-sim-debug-cast": {
+      "startedAt": "2026-10-30T18:33:26.478219+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T18:33:56.437235+08:00"
+    },
+    "tv-sim-debug-cast": {
+      "startedAt": "2026-10-30T18:33:56.437820+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T18:34:08.285559+08:00"
+    },
+    "mobile-debug": {
+      "startedAt": "2026-10-30T18:37:44.665449+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T18:38:30.409335+08:00"
+    },
+    "tv-debug": {
+      "startedAt": "2026-10-30T18:40:08.287758+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T18:40:23.361986+08:00"
+    },
+    "mobile-release": {
+      "startedAt": "2026-10-30T18:38:30.410342+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T18:40:08.286879+08:00"
+    },
+    "tv-release": {
+      "startedAt": "2026-10-30T18:40:23.362751+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T18:40:52.522167+08:00"
+    }
+  },
+  "capture": {
+    "accepted": 12,
+    "byPlatform": {
+      "tv": 5,
+      "phone": 3,
+      "pad": 4
+    },
+    "notStarted": {},
+    "allPassed": false,
+    "ownedSimulatorsDeleted": true,
+    "syntheticPreferencesPreserved": true,
+    "physicalDevicesOperated": 0,
+    "NASCommands": 0,
+    "interactionOrAnimationVerified": false,
+    "attemptedWindows": 15,
+    "failedWindows": [
+      {
+        "platform": "phone",
+        "scene": "media-failure-long",
+        "reason": "Large text places reload below first viewport; scrolling/action unverified"
+      },
+      {
+        "platform": "phone",
+        "scene": "wall-notice",
+        "reason": "Expected library title absent from first viewport; notice content present"
+      },
+      {
+        "platform": "pad",
+        "scene": "wall-notice",
+        "reason": "Expected library title absent from first viewport; notice content present"
+      }
+    ]
+  },
+  "visualReview": {
+    "reviewed": true,
+    "at": "2026-10-30T18:38:55.737885+08:00",
+    "windows": 5,
+    "method": "Three comparison sheets from five final-source TV screenshots",
+    "checks": [
+      "Initial failure uses shared empty state; retained-content notice follows synthetic posters",
+      "Reload semantics explained; correct retry/reload controls visible",
+      "Network home and wall consume same compact notice",
+      "Warm symbols and semantic text visible across three themes/light/dark",
+      "No visible clipping or overlapping labels/markers"
+    ],
+    "sheetSHA256": [
+      "cbc8a1d40efebbc4b2796d30039260d7e2260181375866c34f6c66e6d02be8ce",
+      "2c7c08028461b1b1f348dff95b956b38dae50168088e09afec2abcb6727a159d",
+      "fa6aa480bfc9c1161b19acf272a80572e22960ffb993f933228b354a06f4f4cb"
+    ],
+    "actualJellyfinDataRetryPaginationTVTileStyleFocusAndMobileLayoutVerified": false,
+    "reviewedWindows": 15,
+    "qualifiedWindows": 12,
+    "failedWindows": [
+      {
+        "platform": "phone",
+        "scene": "media-failure-long",
+        "reason": "Large text places reload below first viewport; scrolling/action unverified"
+      },
+      {
+        "platform": "phone",
+        "scene": "wall-notice",
+        "reason": "Expected library title absent from first viewport; notice content present"
+      },
+      {
+        "platform": "pad",
+        "scene": "wall-notice",
+        "reason": "Expected library title absent from first viewport; notice content present"
+      }
+    ],
+    "supplementReviewSheets": [
+      "phone-review-supplement.jpg",
+      "phone-review-rest.jpg",
+      "pad-review-1.jpg",
+      "pad-review-2.jpg",
+      "pad-review-3.jpg"
+    ],
+    "supplementLimits": "Only fixed preview/wrappers inspected; mobile ordinary and tablet layouts inspected, phone large scroll and missing wall title remain unverified."
+  },
+  "sourcePreservation": {
+    "networkModelTasksSourceVaultAndControllersByteIdentical": true,
+    "networkWallAndSelectionByteIdentical": true,
+    "posterEmptyCardGridFocusHeadingAndToolbarComponentsByteIdentical": true,
+    "tvFullSourceOnlyTwoFailurePresentationBlocksChanged": true,
+    "tvRequestsPagingOffsetGenerationDedupFocusAndExitByteIdentical": true,
+    "originalReloadCallbackPreservedForBothRecoveryButtons": true,
+    "newNetworkNoticeKeepsOriginalTitleMessageAndIdentifiers": true,
+    "newPreviewUsesNoModelStoreVaultClientTask": true,
+    "changedExistingSourceFiles": 5,
+    "newSourceOrTestFiles": 0,
+    "sourceInputsCompared": 439,
+    "onlyFiveExpectedSourceInputsChanged": true,
+    "otherSourceInputsUnchanged": 434
+  },
+  "packages": {
+    "mobile": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-30T18:38:30.190028+08:00",
+      "frozenAt": "2026-10-30T18:45:17.677068+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 439,
+      "mainSHA256": "270d75820ef26c8533eb4e612667b1eee163a9a824bd3072b9d4850e401cb92c",
+      "debugDylibSHA256": "6764b2afe1838d17dd36d8667182dc03c26cfc934827ab90f097e22a80661456",
+      "signedMachOCount": 30,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false,
+      "copyMethod": "cp -cpR clone requested; hashes and signatures verified independently"
+    },
+    "tv": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-30T18:40:23.282840+08:00",
+      "frozenAt": "2026-10-30T18:45:18.073143+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 439,
+      "mainSHA256": "78240bdcf37ffea72df72962fd79e52c2494785f0261b11c663855da0ea71abe",
+      "debugDylibSHA256": "85085c4f05a60ad15840083d4c9c7980c91980a9708f685603d0b01255775913",
+      "signedMachOCount": 27,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false,
+      "copyMethod": "cp -cpR clone requested; hashes and signatures verified independently"
+    }
+  },
+  "physicalDevicesOperated": 0,
+  "NASCommands": 0,
+  "playbackCommands": 0,
+  "ownedSimulatorsDeleted": 4,
+  "privateEvidencePointer": "current-shared-load-failure-private",
+  "notVerified": [
+    "Phone large-text long notice reload below first viewport: scrolling/action unverified",
+    "Wall notice preview library title absent on failed platforms; underlying actual navigation unverified",
+    "Actual initial/pagination failure, retained data, retry/reload or cancellation",
+    "Real TVTileStyle action focus and navigation, pagination offsets or server search",
+    "Actual data, images, localization or playback"
+  ],
+  "supplementedAt": "2026-10-30T18:57:08+08:00",
+  "initialCapture": {
+    "accepted": 5,
+    "byPlatform": {
+      "tv": 5
+    },
+    "notStarted": {
+      "phone": {
+        "reason": "Simulator startup free-space budget unmet; no device created",
+        "requiredFreeGiB": 4.8,
+        "observedFreeGiB": 3.89
+      },
+      "pad": {
+        "reason": "Simulator startup free-space budget unmet; no device created",
+        "requiredFreeGiB": 4.8,
+        "observedFreeGiB": 3.89
+      }
+    },
+    "allPassed": true,
+    "ownedSimulatorsDeleted": true,
+    "syntheticPreferencesPreserved": true,
+    "physicalDevicesOperated": 0,
+    "NASCommands": 0,
+    "interactionOrAnimationVerified": false
+  }
+}

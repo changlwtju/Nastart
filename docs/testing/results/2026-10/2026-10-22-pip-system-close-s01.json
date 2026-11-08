@@ -1,0 +1,203 @@
+{
+  "startedAt": "2026-10-22T01:29:31.080625+08:00",
+  "playCommands": 1,
+  "pipCommands": 1,
+  "environment": {},
+  "actions": [
+    {
+      "label": "Jellyfin"
+    },
+    {
+      "label": "library"
+    },
+    {
+      "label": "search"
+    },
+    {
+      "label": "S01 detail"
+    },
+    {
+      "label": "play"
+    },
+    {
+      "label": "show chrome for PiP"
+    },
+    {
+      "label": "enter PiP"
+    },
+    {
+      "label": "system close PiP",
+      "observationToDispatchSeconds": 0.6655808329999999,
+      "method": "fresh current rect W3C touch; no cached element click"
+    }
+  ],
+  "method": "S01 Jellyfin original catalog selection, no track change, one native PiP X close; zero pause/resume requests",
+  "latestPackageVerified": true,
+  "sourceDiffSHA256": "da592296d39ab73cb840c918dc1740fd8a7ca063c997903ff7fe019631dfc26f",
+  "model": "iPhone14,5",
+  "system": "16.3.1",
+  "normalBaselineRestart": true,
+  "emptyEnvironmentVerified": true,
+  "restoringBannerAbsentAndTargetStable": true,
+  "playDispatchWall": 1792603788.670271,
+  "manualHomeSent": true,
+  "retainedAppSessionSystemTarget": true,
+  "systemForegroundVerified": true,
+  "systemChromeRevealCommands": 1,
+  "systemCloseRequestAttempts": 1,
+  "systemCloseResponseObserved": true,
+  "nativePiPWindowAbsentAfterClose": true,
+  "originalDetailAfterSystemClose": true,
+  "observationCompleted": true,
+  "nativeAppAbsent": true,
+  "ownedGuardianStopped": true,
+  "WDASettingsRestored": true,
+  "ownedSyslogStopped": true,
+  "nonBookmarkPreferencesUnchanged": true,
+  "originalBookmarkCount": 36,
+  "originalTrackChanges": 0,
+  "bookmarksAdded": 0,
+  "bookmarksRemoved": 0,
+  "bookmarkProgressChanges": 1,
+  "newCrashInventory": {
+    "Nastart": 0,
+    "WebDriverAgent": 0,
+    "JetsamEvent": 0
+  },
+  "finishedAt": "2026-10-22T01:30:35.911707+08:00",
+  "copiedMethodDescriptionIncorrect": true,
+  "actualMethod": "S01 Jellyfin original catalog selection, no track change, one native PiP X close; zero pause/resume requests",
+  "sourceChanged": false,
+  "newBuildOrInstall": false,
+  "events": [
+    {
+      "event": "diagnostics.playback.next.source_capabilities",
+      "dateAppleReference": 814296590.420534,
+      "fields": {
+        "engine": "KSPlayer",
+        "initialSourceAudioID": "1",
+        "initialSourceSubtitleID": "none",
+        "initialSubtitleMode": "disabled",
+        "videoBitDepth": "8"
+      }
+    },
+    {
+      "event": "diagnostics.playback.next.pip_will_start",
+      "dateAppleReference": 814296601.010516,
+      "fields": {
+        "controlsPlaying": "true",
+        "currentSeconds": "10.27",
+        "engine": "KSPlayer",
+        "ownerPlanID": "4246EF1C-5E17-4CE6-B77F-83989523C4E3"
+      }
+    },
+    {
+      "event": "diagnostics.playback.next.pip_started",
+      "dateAppleReference": 814296601.657559,
+      "fields": {
+        "controlsPlaying": "true",
+        "currentSeconds": "10.868",
+        "engine": "KSPlayer",
+        "ownerPlanID": "4246EF1C-5E17-4CE6-B77F-83989523C4E3"
+      }
+    },
+    {
+      "event": "diagnostics.playback.next.pip_subtitle_frame",
+      "dateAppleReference": 814296601.65797,
+      "fields": {
+        "compositionReason": "noCue",
+        "engine": "KSPlayer",
+        "frameMasteringDisplayBytes": "0"
+      }
+    },
+    {
+      "event": "diagnostics.playback.next.pip_subtitle_frame",
+      "dateAppleReference": 814296606.610197,
+      "fields": {
+        "compositionReason": "noCue",
+        "engine": "KSPlayer",
+        "frameMasteringDisplayBytes": "0"
+      }
+    },
+    {
+      "event": "diagnostics.playback.next.pip_subtitle_frame",
+      "dateAppleReference": 814296611.634871,
+      "fields": {
+        "compositionReason": "noCue",
+        "engine": "KSPlayer",
+        "frameMasteringDisplayBytes": "0"
+      }
+    },
+    {
+      "event": "diagnostics.playback.next.pip_subtitle_frame",
+      "dateAppleReference": 814296616.634217,
+      "fields": {
+        "compositionReason": "noCue",
+        "engine": "KSPlayer",
+        "frameMasteringDisplayBytes": "0"
+      }
+    },
+    {
+      "event": "diagnostics.playback.next.pip_will_stop",
+      "dateAppleReference": 814296619.798232,
+      "fields": {
+        "controlsPlaying": "true",
+        "currentSeconds": "29.086",
+        "engine": "KSPlayer",
+        "ownerPlanID": "4246EF1C-5E17-4CE6-B77F-83989523C4E3"
+      }
+    },
+    {
+      "event": "diagnostics.playback.next.pip_system_playback_changed",
+      "dateAppleReference": 814296619.799418,
+      "fields": {
+        "actualPlaying": "false",
+        "controlsPlaying": "true",
+        "currentSeconds": "29.086",
+        "engine": "KSPlayer",
+        "ownerPlanID": "4246EF1C-5E17-4CE6-B77F-83989523C4E3",
+        "requestedPlaying": "false"
+      }
+    },
+    {
+      "event": "diagnostics.playback.next.pip_stopped",
+      "dateAppleReference": 814296620.644023,
+      "fields": {
+        "controlsPlaying": "false",
+        "currentSeconds": "29.086",
+        "engine": "KSPlayer",
+        "ownerPlanID": "4246EF1C-5E17-4CE6-B77F-83989523C4E3",
+        "restoring": "false"
+      }
+    },
+    {
+      "event": "diagnostics.playback.next.playback_ended",
+      "dateAppleReference": 814296620.696745,
+      "fields": {}
+    }
+  ],
+  "normalPackage": "2026-10-21 19:52 ordinary Debug/-Onone",
+  "actualSource": "S01 Jellyfin original H264 8-bit, source audio 1, subtitles disabled",
+  "systemPauseCommands": 0,
+  "systemResumeCommands": 0,
+  "pictureObservation": "pre-PiP studio title; PiP3 actual Studio Ghibli; PiP10 black unresolved; only finite native close lifecycle accepted, no complete PiP presentation/audio/frame timing acceptance",
+  "nativeScreensReviewed": true,
+  "finalAudit": {
+    "at": "2026-10-22T01:31:06.776356+08:00",
+    "sourceInputs": 173,
+    "sourceAndPackageUnchanged": true,
+    "sourceDiffSHA256": "da592296d39ab73cb840c918dc1740fd8a7ca063c997903ff7fe019631dfc26f",
+    "ipaSHA256": "da39e97c922ffd7a2e7c239b38996286ca0dc1c98c376c193acc6a847767e26f",
+    "allBinariesAnd29LibrariesVerified": true,
+    "freshUSBIdentityVerified": true,
+    "ownInstallReceiptMatches": true,
+    "WDAAutoIdle10CoolOff2ReadbackVerified": true,
+    "ownedPlaybackOrBuildProcessesRemaining": 0,
+    "allFixtureListenersClosed": true,
+    "networkChanged": false,
+    "newCondition": "S01 system X close; no third same-condition S03 candidate window",
+    "actualCurrentUIReviewed": "current window normal baseline Home/NAS; post-close original detail and final native Home WiFi/noPiP"
+  },
+  "metadataCorrection": "Private reused harness method label incorrectly retained PGS/pause/resume; actual actions and source-capabilities establish S01/off with zero pause/resume.",
+  "postCloseMediaRequestsInRecordedWindow": 0
+}

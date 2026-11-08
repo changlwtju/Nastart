@@ -3,11 +3,8 @@ import SwiftUI
 struct DirectMediaPlayerSetupView: View {
     @State private var address: String
     @State private var playbackRequest: MediaPlaybackRequest?
-#if DEBUG
-    @AppStorage(GreenfieldPlaybackDebugSettings.useGreenfieldPlayerKey)
-    private var usesGreenfieldPlayer = true
+    private let usesGreenfieldPlayer = true
     @State private var greenfieldPlaybackRequest: GreenfieldPlaybackLaunchRequest?
-#endif
     @State private var showValidationError = false
 
     init(suggestedURL: URL?) {
@@ -21,7 +18,7 @@ struct DirectMediaPlayerSetupView: View {
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
-            }
+            }.nastartListSection()
 
             Section {
                 TextField("player.url.placeholder", text: $address)
@@ -35,26 +32,20 @@ struct DirectMediaPlayerSetupView: View {
                         return
                     }
                     let request = MediaPlaybackRequest(url: url, title: url.lastPathComponent)
-#if DEBUG
                     if usesGreenfieldPlayer && !request.isAudioOnly {
                         PlayerOrientationController.prepareForPresentation(request.initialOrientationMode)
                         greenfieldPlaybackRequest = request.greenfieldPlaybackLaunchRequest()
                     } else {
                         playbackRequest = request
                     }
-#else
-                    playbackRequest = request
-#endif
                 } label: {
                     Label("player.play_in_app", systemImage: "play.fill")
                 }
-#if DEBUG
-                PlaybackArchitecturePicker(usesGreenfieldPlayer: $usesGreenfieldPlayer)
-#endif
             } footer: {
                 Text("player.direct.footer")
-            }
+            }.nastartListSection()
         }
+        .nastartReadableWidth().nastartPageTheme()
         .navigationTitle("player.open_stream")
         .navigationBarTitleDisplayMode(.inline)
         .alert("player.url.invalid", isPresented: $showValidationError) {
@@ -67,9 +58,7 @@ struct DirectMediaPlayerSetupView: View {
                 BuiltInMediaPlayerView(request: request)
             }
         }
-#if DEBUG
         .greenfieldPlaybackCover(item: $greenfieldPlaybackRequest)
-#endif
     }
 
     private var normalizedURL: URL? {

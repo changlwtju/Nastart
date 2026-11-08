@@ -1,0 +1,126 @@
+{
+  "recordedAt": "2026-10-25T13:38:40.559120+08:00",
+  "sourceMainSHA256": "f453254b97a6e68d0fc3ed790b28049b36492b7c9d57c1bac6f86da41f9c2525",
+  "method": "join each completed metric to its upstreamRequestIssued by transferID + upstreamTaskIndex; identifiers never exported",
+  "newDevicePlaybackWindows": 0,
+  "windows": [
+    {
+      "window": "file-cellular-pinned-early-1",
+      "completedMetrics": 41,
+      "reportedScopeReliable": false,
+      "scopeMismatches": 38,
+      "unmatchedMetrics": 0,
+      "scopeAtIssue": [
+        {
+          "scope": "pinnedRoute",
+          "reused": "no",
+          "count": 1
+        },
+        {
+          "scope": "pinnedRoute",
+          "reused": "yes",
+          "count": 40
+        }
+      ],
+      "reportedAtCompletion": [
+        {
+          "scope": "systemShared",
+          "reused": "no",
+          "count": 1
+        },
+        {
+          "scope": "pinnedRoute",
+          "reused": "yes",
+          "count": 3
+        },
+        {
+          "scope": "systemShared",
+          "reused": "yes",
+          "count": 37
+        }
+      ]
+    },
+    {
+      "window": "file-cellular-pinned-buttons-2",
+      "completedMetrics": 75,
+      "reportedScopeReliable": false,
+      "scopeMismatches": 19,
+      "unmatchedMetrics": 0,
+      "scopeAtIssue": [
+        {
+          "scope": "pinnedRoute",
+          "reused": "yes",
+          "count": 6
+        },
+        {
+          "scope": "pinnedRoute",
+          "reused": "no",
+          "count": 1
+        },
+        {
+          "scope": "systemShared",
+          "reused": "no",
+          "count": 1
+        },
+        {
+          "scope": "systemShared",
+          "reused": "yes",
+          "count": 67
+        }
+      ],
+      "reportedAtCompletion": [
+        {
+          "scope": "pinnedRoute",
+          "reused": "yes",
+          "count": 18
+        },
+        {
+          "scope": "systemShared",
+          "reused": "no",
+          "count": 2
+        },
+        {
+          "scope": "systemShared",
+          "reused": "yes",
+          "count": 55
+        }
+      ]
+    },
+    {
+      "window": "jf-cellular-pinned-single-1",
+      "completedMetrics": 28,
+      "reportedScopeReliable": false,
+      "scopeMismatches": 5,
+      "unmatchedMetrics": 0,
+      "scopeAtIssue": [
+        {
+          "scope": "systemShared",
+          "reused": "yes",
+          "count": 27
+        },
+        {
+          "scope": "systemShared",
+          "reused": "no",
+          "count": 1
+        }
+      ],
+      "reportedAtCompletion": [
+        {
+          "scope": "systemShared",
+          "reused": "yes",
+          "count": 23
+        },
+        {
+          "scope": "pinnedRoute",
+          "reused": "no",
+          "count": 1
+        },
+        {
+          "scope": "pinnedRoute",
+          "reused": "yes",
+          "count": 4
+        }
+      ]
+    }
+  ]
+}

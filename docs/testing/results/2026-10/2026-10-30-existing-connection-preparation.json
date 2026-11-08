@@ -1,0 +1,175 @@
+{
+  "recordedAt": "2026-10-30T11:42:44+08:00",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceInputCount": 435,
+  "changedExistingSourceFiles": 3,
+  "existingOfflineParameterTestsPassed": 4,
+  "newRepositoryTests": 0,
+  "builds": {
+    "module-tests": {
+      "startedAt": "2026-10-30T11:27:44.530816+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T11:27:49.170317+08:00"
+    },
+    "mobile-sim-debug-cast": {
+      "startedAt": "2026-10-30T11:31:47.303617+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T11:32:04.043779+08:00"
+    },
+    "tv-sim-debug-cast": {
+      "startedAt": "2026-10-30T11:31:47.303651+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-30T11:31:59.348763+08:00"
+    },
+    "mobile-debug": {
+      "startedAt": "2026-10-30T11:38:04.233650+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T11:39:00.144697+08:00"
+    },
+    "tv-debug": {
+      "startedAt": "2026-10-30T11:38:04.233689+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T11:38:24.233007+08:00"
+    },
+    "mobile-release": {
+      "startedAt": "2026-10-30T11:39:00.146070+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T11:40:39.919536+08:00"
+    },
+    "tv-release": {
+      "startedAt": "2026-10-30T11:38:24.234562+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-30T11:39:07.515694+08:00"
+    }
+  },
+  "capture": {
+    "accepted": 3,
+    "byPlatform": {
+      "tv": 3
+    },
+    "automatedQualified": 2,
+    "manualOCRQualified": 1,
+    "allPassed": true,
+    "qualificationIncludesManualOCRResolution": true,
+    "notStarted": {
+      "phone": {
+        "reason": "iOS startup disk budget unmet; no device created",
+        "requiredFreeGiB": 4.8,
+        "observedFreeGiB": 3.65
+      },
+      "pad": {
+        "reason": "iOS startup disk budget unmet; no device created",
+        "requiredFreeGiB": 4.8,
+        "observedFreeGiB": 3.65
+      }
+    },
+    "ownedSimulatorsDeleted": true,
+    "syntheticPreferencesPreserved": true,
+    "physicalDevicesOperated": 0,
+    "NASCommands": 0,
+    "interactionOrAnimationVerified": false
+  },
+  "visualReview": {
+    "reviewed": true,
+    "recordedAt": "2026-10-30T11:36:41.795762+08:00",
+    "windows": [
+      {
+        "platform": "tv",
+        "scene": "existing-preparing",
+        "sha256": "a244ea33b83922e0e0ad198353175df59629457faacad8c28aeff14e558466e7"
+      },
+      {
+        "platform": "tv",
+        "scene": "existing-error",
+        "sha256": "75f988568299818d8fb4c260e462bfeb322728826b00511ce8b9b784db29baa1"
+      },
+      {
+        "platform": "tv",
+        "scene": "existing-unavailable",
+        "sha256": "b77046bba803a0dc79417c04b39dc42d9e4e725803d5ef2b0101cbdce4504196"
+      }
+    ],
+    "actualInteractionVerified": false,
+    "actualSourceMappingVerified": false,
+    "manualOCRResolutionCount": 1,
+    "findings": [
+      "Final three TV full screenshots reviewed: loading has visible return action, errors have compact retry and return actions",
+      "Primary and secondary text readable under glass dark, grid light and command dark",
+      "Stored-source caption has no navigation chevron",
+      "Command unavailable state return button visibly reads 返回上一页 despite OCR omission; raw timeout retained",
+      "No actual button, remote, scroll or credential behavior verified"
+    ]
+  },
+  "sourcePreservation": {
+    "changedExistingSourceFiles": 3,
+    "otherLibraryControllersByteUnchanged": true,
+    "folderPickerControllerAndPageByteUnchanged": true,
+    "selectionCallbackAndPermissionsWhitespaceNormalizedUnchanged": true,
+    "connectionFormsSourceAndStorePlaybackInputsUnchanged": true,
+    "preparationRemainsSynchronousLocalClientCreation": true,
+    "startingPathAndSourceAssignedTogetherAfterSuccess": true,
+    "guardsCheckCancellationAndAttemptBeforePreparationAndCommit": true,
+    "retryOnlyFromErrorAndClearsErrorBeforeScheduling": true,
+    "previewUsesProductionStatusPageWithNoModelVaultClientOrTask": true
+  },
+  "rebuildableCacheCleanup": {
+    "recordedAt": "2026-10-30T11:33:41.961169+08:00",
+    "scope": "Task-created NetworkMedia SwiftPM compiler/test scratch only",
+    "logicalMiB": 165.5,
+    "freeGiBBefore": 3.23,
+    "freeGiBAfter": 3.38,
+    "buildAndTestLogsRetained": true,
+    "packagesAndScreenshotsRetained": true,
+    "userDataTouched": false
+  },
+  "packages": {
+    "mobile": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-30T11:38:59.564965+08:00",
+      "frozenAt": "2026-10-30T11:41:59.066721+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 435,
+      "mainSHA256": "a2a6dc845fc2a35198de7fe98243d9bebb28dd136d7dc2e93b56e66202740df2",
+      "debugDylibSHA256": "a341469898906d0bc0ad0643060ee41bb0d01c7d42679a9e96ab0936ccfd228b",
+      "signedMachOCount": 30,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false
+    },
+    "tv": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-30T11:38:23.995451+08:00",
+      "frozenAt": "2026-10-30T11:41:59.500217+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 435,
+      "mainSHA256": "532043225671e7cb987e1ed0dd68e63c610dfd039fe7b971c8d9997b97d41d06",
+      "debugDylibSHA256": "7e965f656d36523e12bbd79f48ce340b6300e2a442dc93f59db016a3f26fe3c6",
+      "signedMachOCount": 27,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false
+    }
+  },
+  "initialReturnLabelWindowsExcluded": 3,
+  "finalOCRTimeoutRetained": true,
+  "ownedSimulatorsDeleted": 2,
+  "physicalDevicesOperated": 0,
+  "NASCommands": 0,
+  "playbackCommands": 0,
+  "privateEvidencePointer": "current-existing-connection-state-private",
+  "notVerified": [
+    "Phone/tablet visual layout and large-text vertical actions; disk budget not met",
+    "Actual retry, cancel, remote back or credential access",
+    "Actual source preparation and folder transactions",
+    "Asynchronous late network responses or cancellation interruption",
+    "Scrolling, VoiceOver, performance or playback"
+  ]
+}

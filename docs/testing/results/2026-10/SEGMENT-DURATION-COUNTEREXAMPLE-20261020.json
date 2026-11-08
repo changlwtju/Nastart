@@ -1,0 +1,956 @@
+{
+  "date": "2026-10-20",
+  "scope": "Mac LAN bounded HTTP/1.1 protocol diagnostic; no native playback or cellular regression",
+  "productSourceChanged": false,
+  "currentHLSConfig": {
+    "segmentSeconds": 4,
+    "minimumSegments": 1
+  },
+  "plannedRounds": 12,
+  "attemptedRounds": 10,
+  "completedMediaRounds": 9,
+  "manifestGuardFailures": 1,
+  "segmentGETCount": 11,
+  "segmentBodyBytes": 6738672,
+  "acceptEncoding": "identity in protocol helper only; App already permits full-playlist content negotiation",
+  "cacheState": "unknown; no cache cleared; slow first sample retained",
+  "rows": [
+    {
+      "round": 1,
+      "condition": 4,
+      "result": "complete",
+      "performanceAccepted": false,
+      "negotiated": {
+        "videocodec": "h264",
+        "audiocodec": "aac",
+        "subtitlemethod": "Encode",
+        "videobitrate": 1616000,
+        "audiobitrate": 384000,
+        "maxwidth": 854,
+        "maxheight": 480,
+        "audiostreamindex": 1,
+        "subtitlestreamindex": 7,
+        "segmentlength": 4,
+        "minsegments": 1
+      },
+      "cleanup": {
+        "status": 204,
+        "exactNegotiatedPlaySessionAndOwnDeviceID": true,
+        "encodingProcessExitNotProvenByHTTPStatusAlone": true
+      },
+      "batch": "S03-first-only",
+      "firstDeclaredSegmentDurationSeconds": 4.004,
+      "playlistSegments": 1880,
+      "playlistDurationSeconds": 7524.767999999851,
+      "playlists": [
+        {
+          "method": "GET",
+          "limitBytes": 3145728,
+          "status": 200,
+          "headersSeconds": 0.04451120899999994,
+          "httpVersion": 11,
+          "contentLength": "895",
+          "contentType": "application/vnd.apple.mpegurl",
+          "totalSeconds": 0.04498541700000003,
+          "bodyBytes": 895,
+          "result": "complete"
+        },
+        {
+          "method": "GET",
+          "limitBytes": 3145728,
+          "status": 200,
+          "headersSeconds": 0.04555462499999996,
+          "httpVersion": 11,
+          "contentLength": "1564758",
+          "contentType": "application/vnd.apple.mpegurl",
+          "totalSeconds": 0.17526750000000002,
+          "bodyBytes": 1564758,
+          "result": "complete"
+        }
+      ],
+      "firstSegment": {
+        "method": "GET",
+        "limitBytes": 2097152,
+        "status": 200,
+        "headersSeconds": 7.355781542000001,
+        "httpVersion": 11,
+        "contentLength": "744480",
+        "contentType": "video/mp2t",
+        "totalSeconds": 7.417974208,
+        "bodyBytes": 744480,
+        "result": "complete"
+      }
+    },
+    {
+      "round": 2,
+      "condition": 2,
+      "result": "complete",
+      "performanceAccepted": false,
+      "negotiated": {
+        "videocodec": "h264",
+        "audiocodec": "aac",
+        "subtitlemethod": "Encode",
+        "videobitrate": 1616000,
+        "audiobitrate": 384000,
+        "maxwidth": 854,
+        "maxheight": 480,
+        "audiostreamindex": 1,
+        "subtitlestreamindex": 7,
+        "segmentlength": 2,
+        "minsegments": 1
+      },
+      "cleanup": {
+        "status": 204,
+        "exactNegotiatedPlaySessionAndOwnDeviceID": true,
+        "encodingProcessExitNotProvenByHTTPStatusAlone": true
+      },
+      "batch": "S03-first-only",
+      "firstDeclaredSegmentDurationSeconds": 2.002,
+      "playlistSegments": 3759,
+      "playlistDurationSeconds": 7524.768000000616,
+      "playlists": [
+        {
+          "method": "GET",
+          "limitBytes": 3145728,
+          "status": 200,
+          "headersSeconds": 0.04291995800000059,
+          "httpVersion": 11,
+          "contentLength": "895",
+          "contentType": "application/vnd.apple.mpegurl",
+          "totalSeconds": 0.04318620799999984,
+          "bodyBytes": 895,
+          "result": "complete"
+        },
+        {
+          "method": "GET",
+          "limitBytes": 3145728,
+          "status": 200,
+          "headersSeconds": 0.04917029100000114,
+          "httpVersion": 11,
+          "contentLength": "3129688",
+          "contentType": "application/vnd.apple.mpegurl",
+          "totalSeconds": 0.28291704100000103,
+          "bodyBytes": 3129688,
+          "result": "complete"
+        }
+      ],
+      "firstSegment": {
+        "method": "GET",
+        "limitBytes": 2097152,
+        "status": 200,
+        "headersSeconds": 1.7279330000000002,
+        "httpVersion": 11,
+        "contentLength": "121072",
+        "contentType": "video/mp2t",
+        "totalSeconds": 1.743882000000001,
+        "bodyBytes": 121072,
+        "result": "complete"
+      }
+    },
+    {
+      "round": 3,
+      "condition": 2,
+      "result": "complete",
+      "performanceAccepted": false,
+      "negotiated": {
+        "videocodec": "h264",
+        "audiocodec": "aac",
+        "subtitlemethod": "Encode",
+        "videobitrate": 1616000,
+        "audiobitrate": 384000,
+        "maxwidth": 854,
+        "maxheight": 480,
+        "audiostreamindex": 1,
+        "subtitlestreamindex": 7,
+        "segmentlength": 2,
+        "minsegments": 1
+      },
+      "cleanup": {
+        "status": 204,
+        "exactNegotiatedPlaySessionAndOwnDeviceID": true,
+        "encodingProcessExitNotProvenByHTTPStatusAlone": true
+      },
+      "batch": "S03-first-only",
+      "firstDeclaredSegmentDurationSeconds": 2.002,
+      "playlistSegments": 3759,
+      "playlistDurationSeconds": 7524.768000000616,
+      "playlists": [
+        {
+          "method": "GET",
+          "limitBytes": 3145728,
+          "status": 200,
+          "headersSeconds": 0.06523033299999881,
+          "httpVersion": 11,
+          "contentLength": "895",
+          "contentType": "application/vnd.apple.mpegurl",
+          "totalSeconds": 0.06544591699999991,
+          "bodyBytes": 895,
+          "result": "complete"
+        },
+        {
+          "method": "GET",
+          "limitBytes": 3145728,
+          "status": 200,
+          "headersSeconds": 0.06639266700000057,
+          "httpVersion": 11,
+          "contentLength": "3129688",
+          "contentType": "application/vnd.apple.mpegurl",
+          "totalSeconds": 0.35433204199999935,
+          "bodyBytes": 3129688,
+          "result": "complete"
+        }
+      ],
+      "firstSegment": {
+        "method": "GET",
+        "limitBytes": 2097152,
+        "status": 200,
+        "headersSeconds": 1.618281125000001,
+        "httpVersion": 11,
+        "contentLength": "121072",
+        "contentType": "video/mp2t",
+        "totalSeconds": 1.634341333,
+        "bodyBytes": 121072,
+        "result": "complete"
+      }
+    },
+    {
+      "round": 4,
+      "condition": 4,
+      "result": "complete",
+      "performanceAccepted": false,
+      "negotiated": {
+        "videocodec": "h264",
+        "audiocodec": "aac",
+        "subtitlemethod": "Encode",
+        "videobitrate": 1616000,
+        "audiobitrate": 384000,
+        "maxwidth": 854,
+        "maxheight": 480,
+        "audiostreamindex": 1,
+        "subtitlestreamindex": 7,
+        "segmentlength": 4,
+        "minsegments": 1
+      },
+      "cleanup": {
+        "status": 204,
+        "exactNegotiatedPlaySessionAndOwnDeviceID": true,
+        "encodingProcessExitNotProvenByHTTPStatusAlone": true
+      },
+      "batch": "S03-first-only",
+      "firstDeclaredSegmentDurationSeconds": 4.004,
+      "playlistSegments": 1880,
+      "playlistDurationSeconds": 7524.767999999851,
+      "playlists": [
+        {
+          "method": "GET",
+          "limitBytes": 3145728,
+          "status": 200,
+          "headersSeconds": 0.04227991700000011,
+          "httpVersion": 11,
+          "contentLength": "895",
+          "contentType": "application/vnd.apple.mpegurl",
+          "totalSeconds": 0.04248037500000024,
+          "bodyBytes": 895,
+          "result": "complete"
+        },
+        {
+          "method": "GET",
+          "limitBytes": 3145728,
+          "status": 200,
+          "headersSeconds": 0.044312833000001106,
+          "httpVersion": 11,
+          "contentLength": "1564758",
+          "contentType": "application/vnd.apple.mpegurl",
+          "totalSeconds": 0.254533833,
+          "bodyBytes": 1564758,
+          "result": "complete"
+        }
+      ],
+      "firstSegment": {
+        "method": "GET",
+        "limitBytes": 2097152,
+        "status": 200,
+        "headersSeconds": 2.1716411250000007,
+        "httpVersion": 11,
+        "contentLength": "744480",
+        "contentType": "video/mp2t",
+        "totalSeconds": 2.234846042000001,
+        "bodyBytes": 744480,
+        "result": "complete"
+      }
+    },
+    {
+      "round": 1,
+      "condition": 2,
+      "result": "complete",
+      "performanceAccepted": false,
+      "negotiated": {
+        "videocodec": "h264",
+        "audiocodec": "aac",
+        "subtitlemethod": "Encode",
+        "videobitrate": 1616000,
+        "audiobitrate": 384000,
+        "maxwidth": 854,
+        "maxheight": 480,
+        "audiostreamindex": 1,
+        "subtitlestreamindex": 7,
+        "segmentlength": 2,
+        "minsegments": 1
+      },
+      "cleanup": {
+        "status": 204,
+        "exactNegotiatedPlaySessionAndOwnDeviceID": true,
+        "encodingProcessExitNotProvenByHTTPStatusAlone": true
+      },
+      "batch": "S03-equal-media",
+      "firstDeclaredSegmentDurationSeconds": 2.002,
+      "playlistSegments": 3759,
+      "playlistDurationSeconds": 7524.768000000616,
+      "playlists": [
+        {
+          "method": "GET",
+          "limitBytes": 3145728,
+          "status": 200,
+          "headersSeconds": 0.04614450000000003,
+          "httpVersion": 11,
+          "contentLength": "890",
+          "contentType": "application/vnd.apple.mpegurl",
+          "totalSeconds": 0.047243333,
+          "bodyBytes": 890,
+          "result": "complete"
+        },
+        {
+          "method": "GET",
+          "limitBytes": 3145728,
+          "status": 200,
+          "headersSeconds": 0.073185791,
+          "httpVersion": 11,
+          "contentLength": "3110893",
+          "contentType": "application/vnd.apple.mpegurl",
+          "totalSeconds": 0.26038716599999995,
+          "bodyBytes": 3110893,
+          "result": "complete"
+        }
+      ],
+      "firstSegment": {
+        "method": "GET",
+        "limitBytes": 2097152,
+        "status": 200,
+        "headersSeconds": 1.575176334,
+        "httpVersion": 11,
+        "contentLength": "121072",
+        "contentType": "video/mp2t",
+        "totalSeconds": 1.665097334,
+        "bodyBytes": 121072,
+        "result": "complete"
+      },
+      "equalMedia": {
+        "segmentsRequested": 2,
+        "declaredDurationSeconds": 4.004,
+        "bodyBytes": 767228,
+        "metricsIncludeConnectionSetup": true,
+        "notPlayerStartup": true,
+        "sumOfTransferSeconds": 1.973549959,
+        "wallSpanFromFirstRequestToFinalBodySeconds": 1.9791777321929933,
+        "wallSpanUsesWallClock": true,
+        "originalFieldLabelCorrected": true
+      }
+    },
+    {
+      "round": 2,
+      "condition": 4,
+      "result": "complete",
+      "performanceAccepted": false,
+      "negotiated": {
+        "videocodec": "h264",
+        "audiocodec": "aac",
+        "subtitlemethod": "Encode",
+        "videobitrate": 1616000,
+        "audiobitrate": 384000,
+        "maxwidth": 854,
+        "maxheight": 480,
+        "audiostreamindex": 1,
+        "subtitlestreamindex": 7,
+        "segmentlength": 4,
+        "minsegments": 1
+      },
+      "cleanup": {
+        "status": 204,
+        "exactNegotiatedPlaySessionAndOwnDeviceID": true,
+        "encodingProcessExitNotProvenByHTTPStatusAlone": true
+      },
+      "batch": "S03-equal-media",
+      "firstDeclaredSegmentDurationSeconds": 4.004,
+      "playlistSegments": 1880,
+      "playlistDurationSeconds": 7524.767999999851,
+      "playlists": [
+        {
+          "method": "GET",
+          "limitBytes": 3145728,
+          "status": 200,
+          "headersSeconds": 0.040952458000000025,
+          "httpVersion": 11,
+          "contentLength": "890",
+          "contentType": "application/vnd.apple.mpegurl",
+          "totalSeconds": 0.041093540999999956,
+          "bodyBytes": 890,
+          "result": "complete"
+        },
+        {
+          "method": "GET",
+          "limitBytes": 3145728,
+          "status": 200,
+          "headersSeconds": 0.04730520800000004,
+          "httpVersion": 11,
+          "contentLength": "1555358",
+          "contentType": "application/vnd.apple.mpegurl",
+          "totalSeconds": 0.17529220800000012,
+          "bodyBytes": 1555358,
+          "result": "complete"
+        }
+      ],
+      "firstSegment": {
+        "method": "GET",
+        "limitBytes": 2097152,
+        "status": 200,
+        "headersSeconds": 2.3765375000000004,
+        "httpVersion": 11,
+        "contentLength": "744480",
+        "contentType": "video/mp2t",
+        "totalSeconds": 2.5661280830000006,
+        "bodyBytes": 744480,
+        "result": "complete"
+      },
+      "equalMedia": {
+        "segmentsRequested": 1,
+        "declaredDurationSeconds": 4.004,
+        "bodyBytes": 744480,
+        "metricsIncludeConnectionSetup": true,
+        "notPlayerStartup": true,
+        "sumOfTransferSeconds": 2.5661280830000006,
+        "wallSpanFromFirstRequestToFinalBodySeconds": 2.5661280830000006,
+        "wallSpanUsesWallClock": true,
+        "originalFieldLabelCorrected": true
+      }
+    },
+    {
+      "round": 3,
+      "condition": 4,
+      "result": "complete",
+      "performanceAccepted": false,
+      "negotiated": {
+        "videocodec": "h264",
+        "audiocodec": "aac",
+        "subtitlemethod": "Encode",
+        "videobitrate": 1616000,
+        "audiobitrate": 384000,
+        "maxwidth": 854,
+        "maxheight": 480,
+        "audiostreamindex": 1,
+        "subtitlestreamindex": 7,
+        "segmentlength": 4,
+        "minsegments": 1
+      },
+      "cleanup": {
+        "status": 204,
+        "exactNegotiatedPlaySessionAndOwnDeviceID": true,
+        "encodingProcessExitNotProvenByHTTPStatusAlone": true
+      },
+      "batch": "S03-equal-media",
+      "firstDeclaredSegmentDurationSeconds": 4.004,
+      "playlistSegments": 1880,
+      "playlistDurationSeconds": 7524.767999999851,
+      "playlists": [
+        {
+          "method": "GET",
+          "limitBytes": 3145728,
+          "status": 200,
+          "headersSeconds": 0.04446954199999986,
+          "httpVersion": 11,
+          "contentLength": "890",
+          "contentType": "application/vnd.apple.mpegurl",
+          "totalSeconds": 0.044634332999999415,
+          "bodyBytes": 890,
+          "result": "complete"
+        },
+        {
+          "method": "GET",
+          "limitBytes": 3145728,
+          "status": 200,
+          "headersSeconds": 0.049303958000000314,
+          "httpVersion": 11,
+          "contentLength": "1555358",
+          "contentType": "application/vnd.apple.mpegurl",
+          "totalSeconds": 0.24175383300000064,
+          "bodyBytes": 1555358,
+          "result": "complete"
+        }
+      ],
+      "firstSegment": {
+        "method": "GET",
+        "limitBytes": 2097152,
+        "status": 200,
+        "headersSeconds": 2.3559942499999993,
+        "httpVersion": 11,
+        "contentLength": "744480",
+        "contentType": "video/mp2t",
+        "totalSeconds": 2.415673708999999,
+        "bodyBytes": 744480,
+        "result": "complete"
+      },
+      "equalMedia": {
+        "segmentsRequested": 1,
+        "declaredDurationSeconds": 4.004,
+        "bodyBytes": 744480,
+        "metricsIncludeConnectionSetup": true,
+        "notPlayerStartup": true,
+        "sumOfTransferSeconds": 2.415673708999999,
+        "wallSpanFromFirstRequestToFinalBodySeconds": 2.415673708999999,
+        "wallSpanUsesWallClock": true,
+        "originalFieldLabelCorrected": true
+      }
+    },
+    {
+      "round": 4,
+      "condition": 2,
+      "result": "complete",
+      "performanceAccepted": false,
+      "negotiated": {
+        "videocodec": "h264",
+        "audiocodec": "aac",
+        "subtitlemethod": "Encode",
+        "videobitrate": 1616000,
+        "audiobitrate": 384000,
+        "maxwidth": 854,
+        "maxheight": 480,
+        "audiostreamindex": 1,
+        "subtitlestreamindex": 7,
+        "segmentlength": 2,
+        "minsegments": 1
+      },
+      "cleanup": {
+        "status": 204,
+        "exactNegotiatedPlaySessionAndOwnDeviceID": true,
+        "encodingProcessExitNotProvenByHTTPStatusAlone": true
+      },
+      "batch": "S03-equal-media",
+      "firstDeclaredSegmentDurationSeconds": 2.002,
+      "playlistSegments": 3759,
+      "playlistDurationSeconds": 7524.768000000616,
+      "playlists": [
+        {
+          "method": "GET",
+          "limitBytes": 3145728,
+          "status": 200,
+          "headersSeconds": 0.04431299999999894,
+          "httpVersion": 11,
+          "contentLength": "890",
+          "contentType": "application/vnd.apple.mpegurl",
+          "totalSeconds": 0.044543916000000294,
+          "bodyBytes": 890,
+          "result": "complete"
+        },
+        {
+          "method": "GET",
+          "limitBytes": 3145728,
+          "status": 200,
+          "headersSeconds": 0.0483184579999989,
+          "httpVersion": 11,
+          "contentLength": "3110893",
+          "contentType": "application/vnd.apple.mpegurl",
+          "totalSeconds": 0.2371620409999995,
+          "bodyBytes": 3110893,
+          "result": "complete"
+        }
+      ],
+      "firstSegment": {
+        "method": "GET",
+        "limitBytes": 2097152,
+        "status": 200,
+        "headersSeconds": 1.5692628339999999,
+        "httpVersion": 11,
+        "contentLength": "121072",
+        "contentType": "video/mp2t",
+        "totalSeconds": 1.6591535000000004,
+        "bodyBytes": 121072,
+        "result": "complete"
+      },
+      "equalMedia": {
+        "segmentsRequested": 2,
+        "declaredDurationSeconds": 4.004,
+        "bodyBytes": 767228,
+        "metricsIncludeConnectionSetup": true,
+        "notPlayerStartup": true,
+        "sumOfTransferSeconds": 1.9536794170000018,
+        "wallSpanFromFirstRequestToFinalBodySeconds": 1.9612486915056166,
+        "wallSpanUsesWallClock": true,
+        "originalFieldLabelCorrected": true
+      }
+    },
+    {
+      "round": 1,
+      "condition": 4,
+      "result": "complete",
+      "performanceAccepted": false,
+      "negotiated": {
+        "videocodec": "h264",
+        "audiocodec": "aac",
+        "subtitlemethod": "Encode",
+        "videobitrate": 9360000,
+        "audiobitrate": 640000,
+        "maxwidth": 1920,
+        "maxheight": 1080,
+        "audiostreamindex": 1,
+        "subtitlestreamindex": 8,
+        "segmentlength": 4,
+        "minsegments": 1
+      },
+      "cleanup": {
+        "status": 204,
+        "exactNegotiatedPlaySessionAndOwnDeviceID": true,
+        "encodingProcessExitNotProvenByHTTPStatusAlone": true
+      },
+      "batch": "S19-equal-media",
+      "firstDeclaredSegmentDurationSeconds": 4.004,
+      "playlistSegments": 3422,
+      "playlistDurationSeconds": 13698.368000000955,
+      "playlists": [
+        {
+          "method": "GET",
+          "limitBytes": 3145728,
+          "status": 200,
+          "headersSeconds": 0.04443937499999995,
+          "httpVersion": 11,
+          "contentLength": "894",
+          "contentType": "application/vnd.apple.mpegurl",
+          "totalSeconds": 0.04497762500000002,
+          "bodyBytes": 894,
+          "result": "complete"
+        },
+        {
+          "method": "GET",
+          "limitBytes": 3145728,
+          "status": 200,
+          "headersSeconds": 0.08645250000000004,
+          "httpVersion": 11,
+          "contentLength": "2833057",
+          "contentType": "application/vnd.apple.mpegurl",
+          "totalSeconds": 0.263418833,
+          "bodyBytes": 2833057,
+          "result": "complete"
+        }
+      ],
+      "firstSegment": {
+        "method": "GET",
+        "limitBytes": 6291456,
+        "status": 200,
+        "headersSeconds": 2.488384125,
+        "httpVersion": 11,
+        "contentLength": "1984152",
+        "contentType": "video/mp2t",
+        "totalSeconds": 2.631680416,
+        "bodyBytes": 1984152,
+        "result": "complete"
+      },
+      "equalMedia": {
+        "segmentsRequested": 1,
+        "declaredDurationSeconds": 4.004,
+        "bodyBytes": 1984152,
+        "metricsIncludeConnectionSetup": true,
+        "notPlayerStartup": true,
+        "sumOfTransferSeconds": 2.631680416,
+        "wallSpanFromFirstRequestToFinalBodySeconds": 2.631680416,
+        "wallSpanUsesWallClock": true,
+        "originalFieldLabelCorrected": true
+      }
+    },
+    {
+      "round": 2,
+      "condition": 2,
+      "result": "failed",
+      "performanceAccepted": false,
+      "negotiated": {
+        "videocodec": "h264",
+        "audiocodec": "aac",
+        "subtitlemethod": "Encode",
+        "videobitrate": 9360000,
+        "audiobitrate": 640000,
+        "maxwidth": 1920,
+        "maxheight": 1080,
+        "audiostreamindex": 1,
+        "subtitlestreamindex": 8,
+        "segmentlength": 2,
+        "minsegments": 1
+      },
+      "cleanup": {
+        "status": 204,
+        "exactNegotiatedPlaySessionAndOwnDeviceID": true,
+        "encodingProcessExitNotProvenByHTTPStatusAlone": true
+      },
+      "batch": "S19-equal-media",
+      "failureType": "AssertionError",
+      "manifestGuardFailure": {
+        "method": "GET",
+        "limitBytes": 3145728,
+        "status": 200,
+        "headersSeconds": 0.07937862499999948,
+        "httpVersion": 11,
+        "contentLength": "5666291",
+        "contentType": "application/vnd.apple.mpegurl",
+        "result": "failed",
+        "failureType": "AssertionError",
+        "elapsedSeconds": 0.6838717919999997,
+        "bodyBytes": 3145729
+      },
+      "firstSegmentRequested": false
+    }
+  ],
+  "savedSegmentDescriptors": [
+    {
+      "height": 480,
+      "framesDecoded": false,
+      "status": 0,
+      "nativePlaybackAccepted": false,
+      "width": 852,
+      "codecFourCC": 1635148593,
+      "method": "CoreMedia H264 SPS/PPS descriptor from saved segment",
+      "bodySHA256": "2f7bc0bc542898fca327c7cfdc0f9df80e1af009241a3af845ac75157f2e2926",
+      "bodyBytes": 121072,
+      "batch": "S03"
+    },
+    {
+      "width": 852,
+      "framesDecoded": false,
+      "method": "CoreMedia H264 SPS/PPS descriptor from saved segment",
+      "height": 480,
+      "nativePlaybackAccepted": false,
+      "codecFourCC": 1635148593,
+      "status": 0,
+      "bodySHA256": "84137f09354d007b643bac8a023d5fedef226399745f5e100f9bfd5629f64b01",
+      "bodyBytes": 646156,
+      "batch": "S03"
+    },
+    {
+      "method": "CoreMedia H264 SPS/PPS descriptor from saved segment",
+      "codecFourCC": 1635148593,
+      "height": 480,
+      "framesDecoded": false,
+      "status": 0,
+      "width": 852,
+      "nativePlaybackAccepted": false,
+      "bodySHA256": "c60581dddbd1f52e111ce3b7f537a5184c51b5c768edf5406be0b3d0f4fb8470",
+      "bodyBytes": 744480,
+      "batch": "S03"
+    },
+    {
+      "method": "CoreMedia H264 SPS/PPS descriptor from saved segment",
+      "codecFourCC": 1635148593,
+      "height": 480,
+      "framesDecoded": false,
+      "status": 0,
+      "width": 852,
+      "nativePlaybackAccepted": false,
+      "bodySHA256": "c60581dddbd1f52e111ce3b7f537a5184c51b5c768edf5406be0b3d0f4fb8470",
+      "bodyBytes": 744480,
+      "batch": "S03"
+    },
+    {
+      "height": 480,
+      "framesDecoded": false,
+      "status": 0,
+      "nativePlaybackAccepted": false,
+      "width": 852,
+      "codecFourCC": 1635148593,
+      "method": "CoreMedia H264 SPS/PPS descriptor from saved segment",
+      "bodySHA256": "2f7bc0bc542898fca327c7cfdc0f9df80e1af009241a3af845ac75157f2e2926",
+      "bodyBytes": 121072,
+      "batch": "S03"
+    },
+    {
+      "width": 852,
+      "framesDecoded": false,
+      "method": "CoreMedia H264 SPS/PPS descriptor from saved segment",
+      "height": 480,
+      "nativePlaybackAccepted": false,
+      "codecFourCC": 1635148593,
+      "status": 0,
+      "bodySHA256": "84137f09354d007b643bac8a023d5fedef226399745f5e100f9bfd5629f64b01",
+      "bodyBytes": 646156,
+      "batch": "S03"
+    },
+    {
+      "method": "CoreMedia H264 SPS/PPS descriptor from saved segment",
+      "codecFourCC": 1635148593,
+      "height": 480,
+      "framesDecoded": false,
+      "status": 0,
+      "width": 852,
+      "nativePlaybackAccepted": false,
+      "bodySHA256": "c60581dddbd1f52e111ce3b7f537a5184c51b5c768edf5406be0b3d0f4fb8470",
+      "bodyBytes": 744480,
+      "batch": "S03"
+    },
+    {
+      "height": 480,
+      "framesDecoded": false,
+      "status": 0,
+      "nativePlaybackAccepted": false,
+      "width": 852,
+      "codecFourCC": 1635148593,
+      "method": "CoreMedia H264 SPS/PPS descriptor from saved segment",
+      "bodySHA256": "2f7bc0bc542898fca327c7cfdc0f9df80e1af009241a3af845ac75157f2e2926",
+      "bodyBytes": 121072,
+      "batch": "S03"
+    },
+    {
+      "height": 480,
+      "framesDecoded": false,
+      "status": 0,
+      "nativePlaybackAccepted": false,
+      "width": 852,
+      "codecFourCC": 1635148593,
+      "method": "CoreMedia H264 SPS/PPS descriptor from saved segment",
+      "bodySHA256": "2f7bc0bc542898fca327c7cfdc0f9df80e1af009241a3af845ac75157f2e2926",
+      "bodyBytes": 121072,
+      "batch": "S03"
+    },
+    {
+      "method": "CoreMedia H264 SPS/PPS descriptor from saved segment",
+      "codecFourCC": 1635148593,
+      "height": 480,
+      "framesDecoded": false,
+      "status": 0,
+      "width": 852,
+      "nativePlaybackAccepted": false,
+      "bodySHA256": "c60581dddbd1f52e111ce3b7f537a5184c51b5c768edf5406be0b3d0f4fb8470",
+      "bodyBytes": 744480,
+      "batch": "S03"
+    },
+    {
+      "framesDecoded": false,
+      "width": 1920,
+      "method": "CoreMedia H264 SPS/PPS descriptor from saved segment",
+      "status": 0,
+      "codecFourCC": 1635148593,
+      "height": 1080,
+      "nativePlaybackAccepted": false,
+      "bodySHA256": "c58a9fd4ab8053cbc6c1639d482d9dcbb5031f274f965738fd2dc51884634116",
+      "bodyBytes": 1984152,
+      "batch": "S19"
+    }
+  ],
+  "priorCellularManifestMetrics": [
+    {
+      "entry": "file",
+      "hlsRole": "masterPlaylist",
+      "cellular": "yes",
+      "protocol": "h2",
+      "connectionReused": "no",
+      "requestMs": "136",
+      "responseMs": "3",
+      "totalMs": "522",
+      "responseBodyBytesReceivedIncludingProtocol": "825",
+      "responseBodyBytesAfterDecoding": "807",
+      "responseContentLength": "807",
+      "responseContentEncoding": "unspecified",
+      "upstreamTaskBodyBytes": "807"
+    },
+    {
+      "entry": "file",
+      "hlsRole": "mediaPlaylist",
+      "cellular": "yes",
+      "protocol": "h2",
+      "connectionReused": "yes",
+      "requestMs": "116",
+      "responseMs": "465",
+      "totalMs": "582",
+      "responseBodyBytesReceivedIncludingProtocol": "2554656",
+      "responseBodyBytesAfterDecoding": "2549031",
+      "responseContentLength": "2549031",
+      "responseContentEncoding": "unspecified",
+      "upstreamTaskBodyBytes": "2549031"
+    },
+    {
+      "entry": "file",
+      "hlsRole": "masterPlaylist",
+      "cellular": "yes",
+      "protocol": "h2",
+      "connectionReused": "yes",
+      "requestMs": "78",
+      "responseMs": "0",
+      "totalMs": "78",
+      "responseBodyBytesReceivedIncludingProtocol": "825",
+      "responseBodyBytesAfterDecoding": "807",
+      "responseContentLength": "807",
+      "responseContentEncoding": "unspecified",
+      "upstreamTaskBodyBytes": "807"
+    },
+    {
+      "entry": "jellyfin",
+      "hlsRole": "masterPlaylist",
+      "cellular": "yes",
+      "protocol": "h2",
+      "connectionReused": "no",
+      "requestMs": "109",
+      "responseMs": "0",
+      "totalMs": "216",
+      "responseBodyBytesReceivedIncludingProtocol": "900",
+      "responseBodyBytesAfterDecoding": "882",
+      "responseContentLength": "882",
+      "responseContentEncoding": "unspecified",
+      "upstreamTaskBodyBytes": "882"
+    },
+    {
+      "entry": "jellyfin",
+      "hlsRole": "mediaPlaylist",
+      "cellular": "yes",
+      "protocol": "h2",
+      "connectionReused": "yes",
+      "requestMs": "109",
+      "responseMs": "599",
+      "totalMs": "709",
+      "responseBodyBytesReceivedIncludingProtocol": "2798149",
+      "responseBodyBytesAfterDecoding": "2791993",
+      "responseContentLength": "2791993",
+      "responseContentEncoding": "unspecified",
+      "upstreamTaskBodyBytes": "2791993"
+    },
+    {
+      "entry": "jellyfin",
+      "hlsRole": "masterPlaylist",
+      "cellular": "yes",
+      "protocol": "h2",
+      "connectionReused": "yes",
+      "requestMs": "96",
+      "responseMs": "4",
+      "totalMs": "100",
+      "responseBodyBytesReceivedIncludingProtocol": "900",
+      "responseBodyBytesAfterDecoding": "882",
+      "responseContentLength": "882",
+      "responseContentEncoding": "unspecified",
+      "upstreamTaskBodyBytes": "882"
+    }
+  ],
+  "priorCellularManifestLimits": "19th 22:20 package. Content-Encoding absent and received count near decoded count; supports little/no response-body compression in these two windows only. Not billing bytes or radio strength. URLSession permits compression; no evidence client forces identity for full playlist.",
+  "reportTimingCorrection": "private historical equalMedia.fromFirstGETToAllBodySeconds summed transfer durations, omitting inter-request gap; derived report separates sumOfTransferSeconds from wall-clock span. Original raw records retained.",
+  "cleanup": {
+    "allAttemptedRoundsScopedStop204": true,
+    "remainingOwnedSessions": [
+      0,
+      0,
+      0
+    ],
+    "processExitNotProvenByHTTP204Alone": true,
+    "nativeDevicesTouched": false,
+    "WiFiVPNChanged": false,
+    "phoneCellularStarted": false
+  },
+  "acceptance": {
+    "nativeFirstVisibleFrame": false,
+    "audio": false,
+    "subtitle": false,
+    "deepSeek": false,
+    "shortSegmentsAdopted": false,
+    "openRequirements": 28
+  }
+}

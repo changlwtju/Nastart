@@ -1,0 +1,161 @@
+{
+  "recordedAt": "2026-10-31T12:37:51+08:00",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceInputCount": 444,
+  "acceptedChangedDebugFixtureOrUITestFiles": 3,
+  "unchangedProductionAndOtherInputs": 441,
+  "newUnitMethods": 0,
+  "prior39UnitTests": "Not rerun; pure implementation and tests unchanged by hash. Prior pass does not prove UI stability.",
+  "uniqueSelectedUITests": 4,
+  "newUniqueUITests": 2,
+  "UIRuns": [
+    {
+      "round": 1,
+      "source": "accepted source, production unchanged",
+      "exitCode": 65,
+      "passed": 3,
+      "failed": 1,
+      "failure": "After person reorder at phase one, B expected but first file focused; request/owner also first file."
+    },
+    {
+      "round": 2,
+      "source": "experimental stable person row identity; reverted",
+      "exitCode": 65,
+      "passed": 2,
+      "failed": 2,
+      "failures": [
+        "Second file disabled: first file expected but overview focused; ownerFile=false.",
+        "After two sheet returns and moving up from file information: file two expected but file one focused."
+      ]
+    }
+  ],
+  "acceptedSourceMatchesRoundOne": true,
+  "stableRowExperimentReverted": true,
+  "stoppedAfterTwoUnresolvedRuns": true,
+  "sheetCloseAndMenuNativeEditReturnAssertions": "Reached in both runs; whole extended sheet path failed in round two at subsequent cross-region file memory assertion.",
+  "syntheticFullScreenWholeTestPassedBothRuns": true,
+  "readOnlyWholeTestPassedBothRuns": true,
+  "priorDynamicFocusStableAcceptanceReopened": true,
+  "sourcePreservation": {
+    "recordedAt": "2026-10-31T12:34:05.798042+08:00",
+    "sourceInputCount": 444,
+    "changedDebugFixtureOrUITestFiles": 3,
+    "unchangedOtherInputs": 441,
+    "allProductionViewsAndFocusComponentsRestoredUnchanged": true,
+    "metadataAndCreditsTasksUnchanged": true,
+    "editorSheetAndPlayerCoverUnchanged": true,
+    "playbackPipelineAndImageLoadersUnchanged": true,
+    "newUITestMethods": 2,
+    "newUnitMethods": 0,
+    "prior39UnitTestSourcesUnchanged": true,
+    "experimentalProductionChangeReverted": true
+  },
+  "rollback": {
+    "recordedAt": "2026-10-31T12:33:44.644513+08:00",
+    "experimentalStableRowIdentityReverted": true,
+    "acceptedSourceMatchesFirstFailedUIRun": true,
+    "ownedSimulatorsDeletedAndFreshAbsent": 2,
+    "furtherUIRoundsStopped": true,
+    "reason": "Two unresolved runs; stop tuning and preserve failures"
+  },
+  "builds": {
+    "mobile-sim-debug-cast": {
+      "startedAt": "2026-10-31T12:33:44.645218+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-31T12:34:06.595412+08:00"
+    },
+    "tv-sim-debug-cast": {
+      "startedAt": "2026-10-31T12:27:17.904794+08:00",
+      "exitCode": 0,
+      "endedAt": "2026-10-31T12:27:33.337954+08:00"
+    },
+    "mobile-debug": {
+      "startedAt": "2026-10-31T12:34:06.671596+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-31T12:34:42.859607+08:00"
+    },
+    "mobile-release": {
+      "startedAt": "2026-10-31T12:34:42.860613+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-31T12:36:18.649391+08:00"
+    },
+    "tv-debug": {
+      "startedAt": "2026-10-31T12:36:18.650109+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-31T12:36:33.662845+08:00"
+    },
+    "tv-release": {
+      "startedAt": "2026-10-31T12:36:33.663587+08:00",
+      "devicesTouched": false,
+      "NASCommands": 0,
+      "exitCode": 0,
+      "endedAt": "2026-10-31T12:37:02.756620+08:00"
+    }
+  },
+  "packages": {
+    "mobile": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-31T12:34:42.660269+08:00",
+      "frozenAt": "2026-10-31T12:37:32.546752+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 444,
+      "mainSHA256": "6acac5c2ce40b26a376996cb3678137f247fdaab4b882bc41929a2acf16cb930",
+      "debugDylibSHA256": "d0e2da148d44f1c0c9a9825972600852f33235a81abf717b8651e4f03c0e158d",
+      "signedMachOCount": 30,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false,
+      "copyMethod": "cp -cpR clone requested; hashes and signatures verified independently",
+      "uiValidationStatus": "Known focus failures retained; compile/signature candidate only"
+    },
+    "tv": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-31T12:36:33.579791+08:00",
+      "frozenAt": "2026-10-31T12:37:32.953390+08:00",
+      "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+      "sourceInputCount": 444,
+      "mainSHA256": "baf21f8bd1dc412cdd55140b840474d15afe60d4f01b1349e23c864d8a223cfc",
+      "debugDylibSHA256": "41c0e4cc8218d0eed04ed7e401e0a91290d78d6acc4c0a163016e305e3c1e0c5",
+      "signedMachOCount": 27,
+      "arguments": [],
+      "environment": {},
+      "deviceInstalledThisBatch": false,
+      "copyMethod": "cp -cpR clone requested; hashes and signatures verified independently",
+      "uiValidationStatus": "Known focus failures retained; compile/signature candidate only"
+    }
+  },
+  "visualReview": {
+    "reviewed": true,
+    "PNGCount": 3,
+    "observations": [
+      "Baseline sheet path ends at file two with edit return count two",
+      "Both full-screen paths end at overview with cover return count two"
+    ],
+    "limits": [
+      "No failure image claimed; failures verified from captured AX trees and XCTest assertion logs",
+      "No actual editor, player, artwork or performance test"
+    ]
+  },
+  "ownedSimulatorsDeleted": 2,
+  "physicalDevicesOperated": 0,
+  "NASCommands": 0,
+  "playbackCommands": 0,
+  "newPlaybackMatrixP": 0,
+  "notVerified": [
+    "Stable dynamic/native focus session under SwiftUI lifecycle",
+    "Production model/editor/player presentations and return flicker",
+    "Mobile/iPad touch return or scroll position",
+    "Actual images, touchpad, intermediate focus and frame timing"
+  ],
+  "laterTargetedFix": {
+    "report": "2026-10-31-native-focus-event-order-and-memory.json",
+    "coveredOfflineCasesRechecked": true,
+    "realProductionReturnAndStabilityBeyondCoverageStillNotVerified": true
+  }
+}

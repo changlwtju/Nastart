@@ -31,9 +31,20 @@ class FFmpegDecode: DecodeProtocol {
     private let frameChange: FrameChange
     private let filter: MEFilter
     private let seekByBytes: Bool
+#if DEBUG
+    // Bounded metadata only: identify the actual FFmpeg hardware path and
+    // frames returned after a seek without logging media URLs or packet data.
+    private let tracesVideo: Bool
+    private var seekTraceEpoch: UInt = 0
+    private var seekTracePacketsRemaining = 2
+    private var seekTraceFramesRemaining = 2
+#endif
     required init(assetTrack: FFmpegAssetTrack, options: KSOptions) {
         self.options = options
         seekByBytes = assetTrack.seekByBytes
+#if DEBUG
+        tracesVideo = assetTrack.mediaType == .video
+#endif
         do {
             codecContext = try assetTrack.createContext(options: options)
         } catch {
@@ -49,7 +60,15 @@ class FFmpegDecode: DecodeProtocol {
     }
 
     func decodeFrame(from packet: Packet, completionHandler: @escaping (Result<MEFrame, Error>) -> Void) {
-        guard let codecContext, avcodec_send_packet(codecContext, packet.corePacket) == 0 else {
+        guard let codecContext else { return }
+        let sendResult = avcodec_send_packet(codecContext, packet.corePacket)
+#if DEBUG
+        if tracesVideo, seekTracePacketsRemaining > 0 {
+            seekTracePacketsRemaining -= 1
+            NSLog("decodeTrace stage=packet epoch=\(seekTraceEpoch) generation=\(options.videoStartupTiming.snapshot.generation) pts=\(packet.seconds) key=\(packet.isKeyFrame) bytes=\(packet.size) sendResult=\(sendResult) hwDevice=\(codecContext.pointee.hw_device_ctx != nil) contextPixelFormat=\(codecContext.pointee.pix_fmt.rawValue)")
+        }
+#endif
+        guard sendResult == 0 else {
             return
         }
         // 需要avcodec_send_packet之后，properties的值才会变成FF_CODEC_PROPERTY_CLOSED_CAPTIONS
@@ -72,6 +91,15 @@ class FFmpegDecode: DecodeProtocol {
         while true {
             let result = avcodec_receive_frame(codecContext, coreFrame)
             if result == 0, let inputFrame = coreFrame {
+#if DEBUG
+                if tracesVideo, seekTraceFramesRemaining > 0 {
+                    seekTraceFramesRemaining -= 1
+                    NSLog("decodeTrace stage=frame epoch=\(seekTraceEpoch) generation=\(options.videoStartupTiming.snapshot.generation) pts=\(inputFrame.pointee.best_effort_timestamp) flags=\(inputFrame.pointee.flags) decodeErrors=\(inputFrame.pointee.decode_error_flags) framePixelFormat=\(inputFrame.pointee.format) hwFrames=\(inputFrame.pointee.hw_frames_ctx != nil)")
+                }
+#endif
+                var sideDataSizes: [String: Int] = [:]
+                var pipMasteringData: Data?
+                var pipMasteringMaximumNits: Double?
                 var displayData: MasteringDisplayMetadata?
                 var contentData: ContentLightMetadata?
                 var ambientViewingEnvironment: AmbientViewingEnvironment?
@@ -79,6 +107,9 @@ class FFmpegDecode: DecodeProtocol {
                 if inputFrame.pointee.nb_side_data > 0 {
                     for i in 0 ..< inputFrame.pointee.nb_side_data {
                         if let sideData = inputFrame.pointee.side_data[Int(i)]?.pointee {
+                            let name = av_frame_side_data_name(sideData.type).map { String(cString: $0) }
+                                ?? "unknown-\(sideData.type.rawValue)"
+                            sideDataSizes[name, default: 0] += Int(sideData.size)
                             if sideData.type == AV_FRAME_DATA_A53_CC {
                                 if let closedCaptionsTrack = packet.assetTrack.closedCaptionsTrack,
                                    let subtitle = closedCaptionsTrack.subtitle
@@ -119,6 +150,19 @@ class FFmpegDecode: DecodeProtocol {
                                 let data = sideData.data.withMemoryRebound(to: AVDynamicHDRVivid.self, capacity: 1) { $0 }.pointee
                             } else if sideData.type == AV_FRAME_DATA_MASTERING_DISPLAY_METADATA {
                                 let data = sideData.data.withMemoryRebound(to: AVMasteringDisplayMetadata.self, capacity: 1) { $0 }.pointee
+                                if data.has_primaries != 0, data.has_luminance != 0 {
+                                    func value(_ q: AVRational) -> Double {
+                                        q.den > 0 ? Double(q.num) / Double(q.den) : .nan
+                                    }
+                                    let maximum = value(data.max_luminance)
+                                    pipMasteringData = KSPiPMasteringDisplayEncoder.encode(rgb: [
+                                        [value(data.display_primaries.0.0), value(data.display_primaries.0.1)],
+                                        [value(data.display_primaries.1.0), value(data.display_primaries.1.1)],
+                                        [value(data.display_primaries.2.0), value(data.display_primaries.2.1)]],
+                                        white: [value(data.white_point.0), value(data.white_point.1)],
+                                        maximumNits: maximum, minimumNits: value(data.min_luminance))
+                                    if pipMasteringData != nil { pipMasteringMaximumNits = maximum }
+                                }
                                 displayData = MasteringDisplayMetadata(
                                     display_primaries_r_x: UInt16(data.display_primaries.0.0.num).bigEndian,
                                     display_primaries_r_y: UInt16(data.display_primaries.0.1.num).bigEndian,
@@ -152,6 +196,12 @@ class FFmpegDecode: DecodeProtocol {
                     do {
                         var frame = try frameChange.change(avframe: avframe)
                         if let videoFrame = frame as? VideoVTBFrame, let pixelBuffer = videoFrame.corePixelBuffer {
+                            videoFrame.pipMasteringDisplayData = pipMasteringData
+                            videoFrame.pipMasteringMaximumNits = pipMasteringMaximumNits
+                            videoFrame.dolbyConfiguration = packet.assetTrack.dovi
+                            videoFrame.sideDataInspection = "avFrameBeforeFilter"
+                            videoFrame.sideDataSizes = sideDataSizes
+                            videoFrame.compressedFormatDescription = packet.assetTrack.formatDescription
                             if let pixelBuffer = pixelBuffer as? PixelBuffer {
                                 pixelBuffer.formatDescription = packet.assetTrack.formatDescription
                             }
@@ -203,6 +253,14 @@ class FFmpegDecode: DecodeProtocol {
         bestEffortTimestamp = Int64(0)
         // seek之后要清空下，不然解码可能还会有缓存，导致返回的数据是之前seek的。
         avcodec_flush_buffers(codecContext)
+#if DEBUG
+        if tracesVideo {
+            seekTraceEpoch &+= 1
+            seekTracePacketsRemaining = 12
+            seekTraceFramesRemaining = 96
+            NSLog("decodeTrace stage=flush epoch=\(seekTraceEpoch) generation=\(options.videoStartupTiming.snapshot.generation)")
+        }
+#endif
     }
 
     func shutdown() {

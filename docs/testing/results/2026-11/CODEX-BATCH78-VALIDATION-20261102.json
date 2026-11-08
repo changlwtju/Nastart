@@ -1,0 +1,97 @@
+{
+  "date": "2026-11-02",
+  "workspace": "main integration workspace with accepted dirty",
+  "xcode": "27.0 (27A266a)",
+  "configurations": [
+    {
+      "platform": "iOS",
+      "simulator": true,
+      "configuration": "Debug",
+      "action": "build-for-testing",
+      "exitCode": 0,
+      "sourceUnchanged": true
+    },
+    {
+      "platform": "iOS",
+      "simulator": false,
+      "configuration": "Debug",
+      "action": "build",
+      "exitCode": 0,
+      "sourceUnchanged": true
+    },
+    {
+      "platform": "iOS",
+      "simulator": false,
+      "configuration": "Release",
+      "action": "build",
+      "exitCode": 0,
+      "sourceUnchanged": true
+    },
+    {
+      "platform": "tvOS",
+      "simulator": true,
+      "configuration": "Debug",
+      "action": "build",
+      "exitCode": 0,
+      "sourceUnchanged": true
+    },
+    {
+      "platform": "tvOS",
+      "simulator": false,
+      "configuration": "Debug",
+      "action": "build",
+      "exitCode": 0,
+      "sourceUnchanged": true
+    },
+    {
+      "platform": "tvOS",
+      "simulator": false,
+      "configuration": "Release",
+      "action": "build",
+      "exitCode": 0,
+      "sourceUnchanged": true
+    }
+  ],
+  "signing": "disabled; no installable signed normal package generated",
+  "hostedTests": {
+    "passed": 13,
+    "failed": 0,
+    "skipped": 0,
+    "classes": {
+      "AppearanceStoreInjectionTests": 5,
+      "PrivacyCacheCleanerTests": 4,
+      "NastartShareOutcomeTests": 4
+    },
+    "simulator": "new dedicated iPhone17 Pro / iOS26.5",
+    "source": "main integration workspace build",
+    "ownedSimulatorCleaned": true
+  },
+  "releaseMarkers": {
+    "count": 13,
+    "mobileBinaries": 28,
+    "tvBinaries": 25,
+    "allZero": true,
+    "debugPositiveControlBinaries": 30,
+    "allDebugPositive": true,
+    "testPluginsExcluded": true
+  },
+  "sourceInputs": 447,
+  "sourceManifestSHA256": "3ee11a90c8d57869e5ccb0d47272eaed6e05f66accd36a510ed3e5c0568fafec",
+  "sourceUnchanged": true,
+  "indexUnchanged": true,
+  "physicalDeviceOperations": 0,
+  "NASOperations": 0,
+  "originalClaudeSimulatorRetained": true,
+  "onlyOwnCompletedMobileIntermediatesRemoved": true,
+  "finalFreeGiB": 4.019344329833984,
+  "preflightGateFailurePreserved": true,
+  "currentSignedPackageGenerated": false,
+  "playbackMatrixNewPasses": 0,
+  "privateEvidencePointer": "/tmp/nastart-codex-batch78-validation-path",
+  "documentationCheck": {
+    "exitCode": 0,
+    "documents": 629,
+    "localLinks": 3887,
+    "missingDestinations": 0
+  }
+}

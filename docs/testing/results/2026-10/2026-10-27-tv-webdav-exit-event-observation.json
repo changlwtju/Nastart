@@ -1,0 +1,119 @@
+{
+  "at": "2026-10-27T14:59:52.130509+08:00",
+  "scope": "TV WebDAV remote event observation",
+  "normalExit": false,
+  "intentionalStop": true,
+  "eventsReachedExistingExitHandler": false,
+  "nativeVideoView": "MetalPlayView",
+  "keyWindow": true,
+  "focusedVideoItem": "UIKitFocusableViewResponderItem",
+  "nativeFocusAfterPlayPause": "TVSlide",
+  "candidate": "Exit handler moved after key/move handlers",
+  "candidateOutcome": "No exit-handler event and no normal exit; reverted",
+  "all399PreBatchSourceInputsRestored": true,
+  "mobileDevicesAccessed": false,
+  "iPhone18HandsOff": true,
+  "networkWrites": 0,
+  "tmdbRequests": 0,
+  "restoredPackage": {
+    "configuration": "Debug",
+    "builtAt": "2026-10-27T14:59:09.083137+08:00",
+    "mainSHA256": "f14dbc7e1301ed754fa8b7cc0960b3a4f14c69d67acfcb61165f5c14f81a0bc3",
+    "debugDylibSHA256": "a1b564ae713d640c5b7d23fcc6c430bbeeb247f1e2a431ef78283c11d6dbb866",
+    "sourceInputCount": 399,
+    "signedMachOCount": 27
+  },
+  "restoredInstall": {
+    "at": "2026-10-27T14:59:51.860364+08:00",
+    "packageSHA256": "f14dbc7e1301ed754fa8b7cc0960b3a4f14c69d67acfcb61165f5c14f81a0bc3",
+    "configuration": "Debug",
+    "preserveData": true,
+    "freshIdentityConnected": true,
+    "preferencesBackedUp": true,
+    "exitCode": 0,
+    "installComplete": true,
+    "installedAt": "2026-10-27T14:59:55.983582+08:00",
+    "preferences": {
+      "beforeKeys": 15,
+      "afterKeys": 15,
+      "sameKeys": true,
+      "changedValues": 0,
+      "allNonDiagnosticPreferencesEqual": true
+    }
+  },
+  "restoredOrdinaryBaseline": {
+    "at": "2026-10-27T14:59:57.525110+08:00",
+    "environment": {},
+    "arguments": [],
+    "mediaCommands": 0,
+    "processObservedAt3": true,
+    "processObservedAt10": true,
+    "nativeBaselineCaptured": true
+  },
+  "originalModuleTestBaseline": {
+    "tests": 131,
+    "failures": 0,
+    "thisBatchRerun": false,
+    "allPreBatchCodeRestored": true
+  },
+  "rawNativeFramesViewed": true,
+  "noNewPlaybackPasses": true,
+  "requirements": {
+    "inProgress": 14,
+    "awaitingAcceptance": 5,
+    "notStarted": 11
+  },
+  "tmdbAdvice": {
+    "networkLibraryAndPlaybackDoNotRequireTMDB": true,
+    "onlineMetadataWithoutAlternativeProviderRemainsUnavailable": true,
+    "useExistingLocalNFOAndArtwork": true,
+    "DockerIsNotAnAutomaticCommercialLicenseExemption": true,
+    "userHasNotAuthorizedProviderPurchaseOrNewCommercialContract": true
+  },
+  "references": [
+    "https://developer.themoviedb.org/docs/faq",
+    "https://www.themoviedb.org/api-terms-of-use?language=en-CA",
+    "https://jellyfin.org/docs/general/server/metadata/nfo/",
+    "https://www.tinymediamanager.org/docs/tvshows/nfo-formats"
+  ],
+  "index": {
+    "completeJSONEqual": true,
+    "libraries": 1,
+    "files": 149
+  },
+  "preferences": {
+    "beforeKeys": 15,
+    "afterKeys": 15,
+    "sameKeys": true,
+    "changedValues": 0,
+    "allNonDiagnosticPreferencesEqual": true
+  },
+  "cleanup": {
+    "ownedRunnerPresent": false,
+    "ordinaryAppPresent": true,
+    "ownedTraceRemoved": true
+  },
+  "sessionsRestoredAndDeleted": {
+    "at": "2026-10-27T14:57:55.874940+08:00",
+    "device": "tv",
+    "thirdOwnedSessionSettingsRestored": true,
+    "thirdOwnedHTTPSessionDeleted": true,
+    "runnerStopRequested": true,
+    "secondHTTPRestoreAndDeleteUnconfirmed": true
+  },
+  "runnerExit": {
+    "startedAt": "2026-10-27T14:55:17.348254+08:00",
+    "limitSeconds": 900,
+    "runnerStopped": true,
+    "finishedAt": "2026-10-27T14:57:57.641066+08:00"
+  },
+  "finishedAt": "2026-10-27T15:01:21.498702+08:00",
+  "verification": {
+    "documentationDocuments": 488,
+    "localLinks": 2893,
+    "missingDestinations": 0,
+    "diffCheckPassed": true,
+    "allPreBatchCodeRestored": true,
+    "sharedCredentialScanPassed": true
+  }
+}

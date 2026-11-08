@@ -1,0 +1,106 @@
+{
+  "date": "2026-10-22",
+  "scope": "same normal 05:26 package iPad installation and native NAS startup; no media or WDA rebuild",
+  "freshDevice": {
+    "model": "iPad12,1",
+    "system": "18.3.1",
+    "connection": "USB",
+    "nameAndUDIDVerifiedPrivately": true
+  },
+  "package": {
+    "sourceDiffSHA256": "e65a8da17ea0db5e1a22d374c2bb79c5d5d8dd4eb4acb4a5fedd8f3057cbaa16",
+    "binaryBuildTime": "2026-10-22T05:26:28.931374+08:00",
+    "ipaSHA256": "45d213bafb07a70a3543980ff961388a817172e7e9176185f67c76fb2b1eaf9b",
+    "binaries": {
+      "Nastart": "f023ef06bad5184423c19d2903907c4c8564bbd2ea346c9bf9f8eaa12f04d658",
+      "Nastart.debug.dylib": "cfb2fe9d031daf8149556bc16109e872f0ffe452cd0990be7c838ee8b7a109e8",
+      "Frameworks/KSPlayer.framework/KSPlayer": "2d184d29e046c4790084a789cd259014b9853c1216218b10f1326a81517d5be2"
+    }
+  },
+  "failedPathsPreserved": [
+    "legacy screenshot InvalidService/DeveloperImage not found before mounting image",
+    "existing WDA not ready",
+    "devicectl failed before install with CoreDevice -1 / mobiledevice -402653181 / Failed to allocate RSD device"
+  ],
+  "acceptedInstall": {
+    "method": "existing paired USB installation_proxy; autopair=false; Install not Uninstall",
+    "completeAndLookup": true,
+    "installedAtUTC": "2026-10-21T21:43:58.089279+00:00",
+    "all18NonDiagnosticPreferencesUnchanged": true,
+    "normalNASHomeNativeScreensVisuallyVerified": true
+  },
+  "normalWindow": {
+    "singleLaunch": true,
+    "requestedEnvironment": {},
+    "requestedArguments": [],
+    "actualProcessEnvironmentReadbackVerified": false,
+    "nativeRSDIdentityVerified": true,
+    "capturesSeconds": [
+      5,
+      15,
+      30
+    ],
+    "15SecondView": "NAS status normal/online; service status still unknown",
+    "30SecondView": "NAS online; DSM/Homepage/Jellyfin online; Radarr/Sonarr/Prowlarr warning",
+    "loginEvents": [
+      {
+        "event": "loginStarted",
+        "time": "Oct 22 05:45:16.773196",
+        "role": "Nastart"
+      },
+      {
+        "event": "loginSucceeded",
+        "time": "Oct 22 05:45:18.477337",
+        "role": "Nastart"
+      },
+      {
+        "event": "loginStarted",
+        "time": "Oct 22 05:45:18.751314",
+        "role": "FileStation"
+      },
+      {
+        "event": "loginSucceeded",
+        "time": "Oct 22 05:45:20.272769",
+        "role": "FileStation"
+      }
+    ],
+    "all18PreferencesAfterLaunchUnchanged": true,
+    "ownedAppKillAcknowledged": true,
+    "nativeProcessListSchemaVerified": true,
+    "ownedPIDAndNastartNameAbsent": true,
+    "ownedLoggerStopped": true,
+    "nativeHomeNoPiPAndWiFiVisuallyVerified": true,
+    "networkSettingsChanged": false,
+    "mediaCommands": 0,
+    "WDAChanged": false
+  },
+  "remaining": [
+    "no Pad App/Mine interaction or playback acceptance; WDA system observation is a finite health slice",
+    "new non-owned/unknown Nastart PID requires ownership/media check before next shared media window",
+    "no all-service health, strict startup/competitor speed or playback acceptance",
+    "iPhone18 remains user-deferred; not probed or updated"
+  ],
+  "privateEvidencePointer": "/tmp/nastart-ipad-configured-restore-evidence",
+  "WDAFollowup": {
+    "time": "05:51–05:56",
+    "sameInstalledSignedRunnerReused": true,
+    "profileAndTargetAuthorizationVerified": true,
+    "newBuildOrInstall": false,
+    "boundedRunTimeoutSeconds": 120,
+    "readyExpectedBundleSystemSessionSourceAndPNGVerified": true,
+    "NastartLaunchCommands": 0,
+    "mediaCommands": 0,
+    "autoIdle10Cool2ReadbackVerified": true,
+    "WDAImageUpsideDown": "actual system PNG delivered upside down; later native RSD Home upright; no input/coordinate acceptance",
+    "ownedHostStoppedBySIGINT": true,
+    "ownedRunnerNativeAbsent": true,
+    "initialCleanupAssertionFailure": "legacy helper wrongly required every Nastart process absent during WDA-only batch; preserved failure, corrected ownership predicate",
+    "earlierOwnedNastartPIDAbsent": true,
+    "newOtherNastartProcessesObserved": 1,
+    "otherNastartProcessesStopped": 0,
+    "currentOtherNastartOwnership": "unknown; no request from WDA observation script to launch Nastart; do not infer user or background root cause",
+    "finalNativeHomeNoPiPWiFiVerified": true,
+    "final18PreferencesUnchanged": true,
+    "currentRunner": "stopped at bounded observation end; restart validated existing fixture next session"
+  }
+}

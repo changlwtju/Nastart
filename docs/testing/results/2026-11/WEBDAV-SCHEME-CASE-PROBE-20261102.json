@@ -1,0 +1,35 @@
+{
+  "recordedAt": "2026-11-02T06:00:22.511884+08:00",
+  "source": "Verbatim NetworkMediaError/DAVPath/WebDAVScope prefix from Models.swift plus whole WebDAVConnectionFields.swift, compiled on macOS",
+  "initialHarnessCompileFailureRetained": "Whole Models.swift also requires unrelated LocalMediaMetadata for RemoteMediaEntry; exact scope definitions then isolated without mocks",
+  "noNetwork": true,
+  "rows": [
+    {
+      "fieldError": "地址栏只填写域名或 IP；协议、端口和路径请在各自栏目填写。",
+      "fieldsAccepted": false,
+      "foundationURLEqualsSchemeNormalized": false,
+      "input": "HTTPS://nas.example.invalid/dav/",
+      "preservedScheme": "HTTPS",
+      "rawStringEqualsSchemeNormalized": false,
+      "scopeAccepted": true
+    },
+    {
+      "fieldError": "地址栏只填写域名或 IP；协议、端口和路径请在各自栏目填写。",
+      "fieldsAccepted": false,
+      "foundationURLEqualsSchemeNormalized": false,
+      "input": "Http://nas.example.invalid:5005/",
+      "preservedScheme": "Http",
+      "rawStringEqualsSchemeNormalized": false,
+      "scopeAccepted": true
+    },
+    {
+      "fieldsAccepted": true,
+      "fieldScheme": "https",
+      "foundationURLEqualsSchemeNormalized": true,
+      "input": "https://[2001:DB8::1]:5443/Movies/",
+      "preservedScheme": "https",
+      "rawStringEqualsSchemeNormalized": true,
+      "scopeAccepted": true
+    }
+  ]
+}

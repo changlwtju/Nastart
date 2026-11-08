@@ -1,0 +1,489 @@
+{
+  "recordedAt": "2026-10-14T05:45:08.463870+08:00",
+  "productionSourceModifiedThisBatch": false,
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "sourceDiffSHA256": "24007d408f33389955233b4e13e284f919690e58a6b81828fd91d4b31c013676",
+  "configuration": "normal Debug",
+  "buildTime": "2026-10-14T02:29:13.376617+08:00",
+  "binaries": {
+    "Nastart": "739a065d9572e6ca23a55e8ff3e58e06c1fad49deab09880c0e86f5c6447f09e",
+    "Nastart.debug.dylib": "42d569022f6d1587593278b8fe9d8771ddd67bde672e0d2db890725e7f1a5a27",
+    "Frameworks/KSPlayer.framework/KSPlayer": "691afae0a0b9f8870c472449a808530a7a940331cd55d09a95d9fc7f1d37a1d4"
+  },
+  "sourceInputsReverified": 173,
+  "unitTests": {
+    "runThisBatch": false,
+    "origin": "2026-10-14-PROXY-ROUTE-REVOCATION",
+    "tests": 371,
+    "skipped": 2,
+    "failed": 0
+  },
+  "devices": {
+    "iphone13": {
+      "device": "iphone13",
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "connection": "USB",
+      "binaries": {
+        "Nastart": "739a065d9572e6ca23a55e8ff3e58e06c1fad49deab09880c0e86f5c6447f09e",
+        "Nastart.debug.dylib": "42d569022f6d1587593278b8fe9d8771ddd67bde672e0d2db890725e7f1a5a27",
+        "Frameworks/KSPlayer.framework/KSPlayer": "691afae0a0b9f8870c472449a808530a7a940331cd55d09a95d9fc7f1d37a1d4"
+      },
+      "sourceDiffSHA256": "24007d408f33389955233b4e13e284f919690e58a6b81828fd91d4b31c013676",
+      "preservesContainer": true,
+      "signatureVerified": true,
+      "actualForegroundUIVerified": true,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "installation": "success",
+      "startedAt": "2026-10-14T04:32:28.866185+08:00",
+      "installedAt": "2026-10-14T04:32:44.551726+08:00",
+      "preferenceKeysUnchanged": true,
+      "preferenceValuesUnchanged": true,
+      "nonDiagnosticKeys": 25
+    },
+    "ipad": {
+      "device": "ipad",
+      "model": "iPad12,1",
+      "system": "18.3.1",
+      "connection": "USB",
+      "binaries": {
+        "Nastart": "739a065d9572e6ca23a55e8ff3e58e06c1fad49deab09880c0e86f5c6447f09e",
+        "Nastart.debug.dylib": "42d569022f6d1587593278b8fe9d8771ddd67bde672e0d2db890725e7f1a5a27",
+        "Frameworks/KSPlayer.framework/KSPlayer": "691afae0a0b9f8870c472449a808530a7a940331cd55d09a95d9fc7f1d37a1d4"
+      },
+      "sourceDiffSHA256": "24007d408f33389955233b4e13e284f919690e58a6b81828fd91d4b31c013676",
+      "preservesContainer": true,
+      "signatureVerified": true,
+      "actualForegroundUIVerified": true,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "installation": "success",
+      "startedAt": "2026-10-14T04:32:48.550477+08:00",
+      "installedAt": "2026-10-14T04:32:53.089524+08:00",
+      "preferenceKeysUnchanged": true,
+      "preferenceValuesUnchanged": true,
+      "nonDiagnosticKeys": 18
+    },
+    "iphone18": {
+      "device": "iphone18",
+      "installation": "success",
+      "sourceDiffSHA256": "24007d408f33389955233b4e13e284f919690e58a6b81828fd91d4b31c013676",
+      "binaries": {
+        "Nastart": "739a065d9572e6ca23a55e8ff3e58e06c1fad49deab09880c0e86f5c6447f09e",
+        "Nastart.debug.dylib": "42d569022f6d1587593278b8fe9d8771ddd67bde672e0d2db890725e7f1a5a27",
+        "Frameworks/KSPlayer.framework/KSPlayer": "691afae0a0b9f8870c472449a808530a7a940331cd55d09a95d9fc7f1d37a1d4"
+      },
+      "method": "live-verified previously paired TCP lockdown using existing Mac legacy pairing + AFC + installation_proxy Install; preserve container",
+      "newPairingAttempted": false,
+      "preservesContainer": true,
+      "signatureVerified": true,
+      "librariesVerified": 29,
+      "requestedEnvironment": {},
+      "requestedArguments": [],
+      "normalLaunch": "normal empty environment launch and actual Nastart NAS home screenshot verified",
+      "actualForegroundUIVerified": true,
+      "model": "iPhone19,7",
+      "system": "27.0",
+      "connection": "NETWORK",
+      "installationStartedAt": "2026-10-14T04:48:16.492551+08:00",
+      "currentPreferencesSavedBeforeInstall": true,
+      "installedAt": "2026-10-14T04:48:29.791629+08:00",
+      "postInstallLookupExists": true,
+      "samePreferenceKeys": true,
+      "nonDiagnosticKeysBefore": 25,
+      "nonDiagnosticKeysAfter": 25,
+      "unchangedPreferenceValues": 25,
+      "changedPreferenceCount": 0,
+      "preferenceValuesUnchanged": true,
+      "preferenceKeysUnchanged": true
+    }
+  },
+  "usbFinalAudit": {
+    "iphone13": {
+      "at": "2026-10-14T05:44:04.479472+08:00",
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "connection": "USB",
+      "sourceDiffSHA256": "24007d408f33389955233b4e13e284f919690e58a6b81828fd91d4b31c013676",
+      "latestPackage": {
+        "Nastart": "739a065d9572e6ca23a55e8ff3e58e06c1fad49deab09880c0e86f5c6447f09e",
+        "Nastart.debug.dylib": "42d569022f6d1587593278b8fe9d8771ddd67bde672e0d2db890725e7f1a5a27",
+        "Frameworks/KSPlayer.framework/KSPlayer": "691afae0a0b9f8870c472449a808530a7a940331cd55d09a95d9fc7f1d37a1d4"
+      },
+      "nonBookmarkPreferenceKeys": 24,
+      "nonBookmarkPreferencesExactlyUnchanged": true,
+      "changedBookmarksCount": 1,
+      "originalS03TrackChanges": {
+        "file": {},
+        "Jellyfin": {}
+      },
+      "originalS03FileAndJellyfinTracksUnchanged": true,
+      "normalEmptyEnvironment": true,
+      "NASNormal": true,
+      "playerClosed": true,
+      "finalHomeScreenshotReviewed": true,
+      "WDAIdleSeconds": 10,
+      "WDAAnimationCoolOffSeconds": 2,
+      "crashInventoryNotCheckedThisTurn": false,
+      "baselineAppCrashRecordedThisTurn": false,
+      "reviewedFinalCapture": "final-home-after-cellular",
+      "historicalIPhone13NetworkCrashUnresolved": true,
+      "candidateCrashInventoryDelta": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      },
+      "performanceAccepted": false,
+      "fullSubtitleAudioHDRAccepted": false
+    },
+    "ipad": {
+      "at": "2026-10-14T05:44:05.344041+08:00",
+      "model": "iPad12,1",
+      "system": "18.3.1",
+      "connection": "USB",
+      "sourceDiffSHA256": "24007d408f33389955233b4e13e284f919690e58a6b81828fd91d4b31c013676",
+      "latestPackage": {
+        "Nastart": "739a065d9572e6ca23a55e8ff3e58e06c1fad49deab09880c0e86f5c6447f09e",
+        "Nastart.debug.dylib": "42d569022f6d1587593278b8fe9d8771ddd67bde672e0d2db890725e7f1a5a27",
+        "Frameworks/KSPlayer.framework/KSPlayer": "691afae0a0b9f8870c472449a808530a7a940331cd55d09a95d9fc7f1d37a1d4"
+      },
+      "nonBookmarkPreferenceKeys": 17,
+      "nonBookmarkPreferencesExactlyUnchanged": true,
+      "changedBookmarksCount": 1,
+      "originalS03TrackChanges": {
+        "file": {},
+        "Jellyfin": {}
+      },
+      "originalS03FileAndJellyfinTracksUnchanged": true,
+      "normalEmptyEnvironment": true,
+      "NASNormal": true,
+      "playerClosed": true,
+      "finalHomeScreenshotReviewed": true,
+      "WDAIdleSeconds": 10,
+      "WDAAnimationCoolOffSeconds": 2,
+      "crashInventoryNotCheckedThisTurn": false,
+      "baselineAppCrashRecordedThisTurn": false,
+      "reviewedFinalCapture": "final-restored-home",
+      "historicalIPhone13NetworkCrashUnresolved": true,
+      "candidateCrashInventoryDelta": {
+        "Nastart": 0,
+        "WebDriverAgent": 0,
+        "JetsamEvent": 0
+      },
+      "performanceAccepted": false,
+      "fullSubtitleAudioHDRAccepted": false
+    }
+  },
+  "serverAlignment": {
+    "serverVersion": "10.11.11",
+    "ffmpegVersion": "7.1.4-Jellyfin",
+    "hardwareVideoEncoder": "h264_vaapi",
+    "hardwareOverlay": true,
+    "probeAnalyzeMicroseconds": 200000000,
+    "probeMaximumBytes": 1000000000,
+    "MediaSourceAnalyzeDurationMs": null,
+    "selectedGraphicalSubtitleKnownSize": true,
+    "unselectedSubtitle9UnknownSizeWarning": true,
+    "mediaSecondsProduced": 919.87,
+    "reportedFinalSpeed": 5.44,
+    "ffmpegLoggedWallSpanSeconds": 190.619,
+    "processingWallSecondsFromRoundedSpeed": 169.09375,
+    "estimatedUnaccountedStartupSeconds": 21.52525,
+    "startupEstimateNotPreciseInstrumentation": true,
+    "firstUpstreamHeadersWaitSeconds": 23.942516,
+    "FFmpegStartSecondsAfterClientSegmentIssue": 0.288301,
+    "conclusion": "Hardware encoding exceeds realtime after initialization in historic scene; neither current probe-only timing nor short current same-pipeline segment-file onset alone reproduces historic wait. Large probe budget is not established as sole root cause; reduced global budget rejected pending subtitle and broader compatibility evidence.",
+    "networkAndServerSettingsChanged": false,
+    "followupProbeBenchmark": "Probe-only A-B-B-A current 200M/1G baseline 1337/871 ms; 10M/64M 53/52 ms loses selected PGS7 size; does not independently explain historical 23.942516 s"
+  },
+  "probeBudgetComparison": {
+    "recordedAt": "2026-10-14T05:15:57.550297+08:00",
+    "method": "existing authenticated DSM Container Manager native terminal, observed UI results",
+    "serverVersion": "10.11.11",
+    "ffprobeVersion": "7.1.4-Jellyfin",
+    "sample": "S03 current movie source, observed exact filename matched via constrained find",
+    "productionConfigChanged": false,
+    "networkConfigChanged": false,
+    "readOnlyInput": true,
+    "outputs": "task-specific /tmp/nastart-probe-043210-* within existing container",
+    "cacheState": "unknown, no cache flush performed",
+    "order": "A1 B1 B2 A2",
+    "timeoutSeconds": 45,
+    "cases": [
+      {
+        "case": "A1",
+        "analyzeduration": "200M",
+        "probesize": "1G",
+        "elapsedMs": 1337,
+        "exit": 0,
+        "streamCount": 12,
+        "stderrLines": 5
+      },
+      {
+        "case": "B1",
+        "analyzeduration": "10M",
+        "probesize": "64M",
+        "elapsedMs": 53,
+        "exit": 0,
+        "streamCount": 12,
+        "stderrLines": 7
+      },
+      {
+        "case": "B2",
+        "analyzeduration": "10M",
+        "probesize": "64M",
+        "elapsedMs": 52,
+        "exit": 0,
+        "streamCount": 12,
+        "stderrLines": 7
+      },
+      {
+        "case": "A2",
+        "analyzeduration": "200M",
+        "probesize": "1G",
+        "elapsedMs": 871,
+        "exit": 0,
+        "streamCount": 12,
+        "stderrLines": 5
+      }
+    ],
+    "selectedVideo": {
+      "index": 0,
+      "codec": "hevc",
+      "width": 3840,
+      "height": 2160
+    },
+    "selectedAudio": {
+      "index": 1,
+      "codec": "truehd",
+      "channels": 6
+    },
+    "selectedPGSSubtitle": {
+      "index": 7,
+      "baselineWidth": 1920,
+      "baselineHeight": 1080,
+      "reducedBudgetWidth": "N/A",
+      "reducedBudgetHeight": "N/A"
+    },
+    "reducedBudgetAccepted": false,
+    "probeAloneExplainsHistorical23_943SecondWait": false,
+    "firstVisibleFrameMeasured": false,
+    "playbackSpeedAccepted": false,
+    "notes": [
+      "All four completed exit0; metadata 12 streams does not prove equal metadata or subtitle compatibility.",
+      "Reduced budget lost selected PGS7 and PGS8 dimensions; do not deploy it globally.",
+      "0.871-1.337 sec probe-only current baseline cannot alone reproduce prior 23.942516 sec client wait."
+    ]
+  },
+  "segmentCompletionComparison": {
+    "at": "2026-10-14T05:32:10.901632+08:00",
+    "method": "observed production pipeline with -nostdin; own /tmp output; next segment11 opened while segment10 nonempty; 100ms poll",
+    "sample": "S03 current source, seek40.040 sec",
+    "budgets": {
+      "A": "200M/1G",
+      "B": "10M/64M"
+    },
+    "cacheState": "unknown, no flush",
+    "cases": [
+      {
+        "case": "A1",
+        "firstNextSegmentOpenedMs": 2567,
+        "boundedProcessMs": 12472,
+        "exit": 124,
+        "firstSegmentMediaDurationSeconds": 4.046656,
+        "hlsEXTINFSeconds": 4.004,
+        "videoCodec": "h264",
+        "width": 852,
+        "height": 480,
+        "audioCodec": "aac",
+        "audioChannels": 6
+      },
+      {
+        "case": "B1",
+        "firstNextSegmentOpenedMs": 1851,
+        "boundedProcessMs": 12071,
+        "exit": 124,
+        "firstSegmentMediaDurationSeconds": 4.046656,
+        "hlsEXTINFSeconds": 4.004,
+        "videoCodec": "h264",
+        "width": 852,
+        "height": 480,
+        "audioCodec": "aac",
+        "audioChannels": 6
+      },
+      {
+        "case": "B2",
+        "firstNextSegmentOpenedMs": 1751,
+        "boundedProcessMs": 12197,
+        "exit": 124,
+        "firstSegmentMediaDurationSeconds": 4.046656,
+        "hlsEXTINFSeconds": 4.004,
+        "videoCodec": "h264",
+        "width": 852,
+        "height": 480,
+        "audioCodec": "aac",
+        "audioChannels": 6
+      },
+      {
+        "case": "A2",
+        "firstNextSegmentOpenedMs": 2562,
+        "boundedProcessMs": 12565,
+        "exit": 124,
+        "firstSegmentMediaDurationSeconds": 4.046656,
+        "hlsEXTINFSeconds": 4.004,
+        "videoCodec": "h264",
+        "width": 852,
+        "height": 480,
+        "audioCodec": "aac",
+        "audioChannels": 6
+      }
+    ],
+    "firstSegmentCompletionConservativeBoundary": true,
+    "firstMovieFrameMeasured": false,
+    "subtitleRenderedContentsVerified": false,
+    "timeoutSeconds": 12,
+    "processExit124IsMeasurementDeadline": true,
+    "serverGlobalConfigurationChanged": false,
+    "historical23_943SecondWaitReproduced": false,
+    "performanceAccepted": false,
+    "diagnosticBackgroundJobsAtEnd": 0,
+    "temporaryShellExited": true,
+    "originalInputModeRestored": true
+  },
+  "invalidMeasurementWindowsRetained": [
+    "background terminal stdin + frame limits, 4 x45sec",
+    "VOD manifest readiness boundary, first2 console times not captured; final2 censored12sec"
+  ],
+  "networkConfigChanged": false,
+  "serverConfigChanged": false,
+  "WDAReinstalled": false,
+  "newPhonePlaybackWindowsThisBatch": 2,
+  "performanceAccepted": false,
+  "fullPlaybackMatrixAccepted": false,
+  "next": "Cellular preparation context ~3.596sec, first ~4.53sec before engine: evaluate own-origin probes in parallel while preserving current-network/session/credentials ownership, positive private-route priority, bounded cancellation/retry; historical HLS24sec not reproduced.",
+  "privateEvidenceAlias": "2026-10-14-hls-header-wait-043210",
+  "rawCredentialsPreferencesIDsMediaPathsInRepository": false,
+  "reviewedDeviceBaselines": {
+    "iphone13": {
+      "device": "iphone13",
+      "label": "cellular-hls-wait-s03-jf-150",
+      "network": "real cellular, WiFi off",
+      "noShaping": true,
+      "sourceDiffSHA256": "24007d408f33389955233b4e13e284f919690e58a6b81828fd91d4b31c013676",
+      "startupAction": "从头播放",
+      "windowSeconds": 150.51618313789368,
+      "engine": "KSPlayer",
+      "firstFrameSignalSecondsFromOuterTouch": 6.113346,
+      "originalFlowStayedActive": true,
+      "HLSIssuedRequestsCount": 0,
+      "URLMetricsCount": 32,
+      "URLMetricsCellularYes": 32,
+      "URLMetricsCellularNo": 0,
+      "maxStallCount": 1,
+      "sparseActualImagesReviewed": true,
+      "normalExit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "routePreparationStages": [
+        {
+          "secondsFromTouch": 0.218901,
+          "stage": "networkPathObserved",
+          "reason": null,
+          "contextProbeMs": null
+        },
+        {
+          "secondsFromTouch": 0.474414,
+          "stage": "playbackContextRequested",
+          "reason": "libraryEndpoint",
+          "contextProbeMs": null
+        },
+        {
+          "secondsFromTouch": 3.200036,
+          "stage": "networkPathObserved",
+          "reason": null,
+          "contextProbeMs": null
+        },
+        {
+          "secondsFromTouch": 4.07018,
+          "stage": "authenticatedPlaybackContext",
+          "reason": "sameServerAndAccountCurrentPublicReachable",
+          "contextProbeMs": "3588"
+        },
+        {
+          "secondsFromTouch": 4.070568,
+          "stage": "playbackPreparation",
+          "reason": "authenticatedOwnSessionFallback",
+          "contextProbeMs": null
+        },
+        {
+          "secondsFromTouch": 4.071042,
+          "stage": "playRequested",
+          "reason": "authenticatedOwnSessionFallback",
+          "contextProbeMs": null
+        }
+      ],
+      "capturedEvents": 574,
+      "capturedNew119": 0,
+      "capturedLogout": 0,
+      "cacheState": "unknown; previous own server benchmarks used same file, no cache clearing",
+      "notComparableWithHistoricalHLSWindow": true,
+      "continuousFPSAudioHDRAndExactVisibleFrameNotAccepted": true,
+      "performanceAccepted": false
+    },
+    "ipad": {
+      "device": "ipad",
+      "label": "wifi-hls-wait-s03-jf-30",
+      "network": "WiFi",
+      "noShaping": true,
+      "sourceDiffSHA256": "24007d408f33389955233b4e13e284f919690e58a6b81828fd91d4b31c013676",
+      "startupAction": "在 Nastart 中播放",
+      "windowSeconds": 30.75287699699402,
+      "engine": "KSPlayer",
+      "firstFrameSignalSecondsFromOuterTouch": 2.288236,
+      "originalFlowStayedActive": true,
+      "HLSIssuedRequestsCount": 0,
+      "URLMetricsCount": 4,
+      "URLMetricsCellularYes": 0,
+      "URLMetricsCellularNo": 4,
+      "maxStallCount": 0,
+      "sparseActualImagesReviewed": true,
+      "normalExit": {
+        "normalUIExit": true,
+        "playbackErrorVisible": false,
+        "completionMatches": 1,
+        "playerOpened": true
+      },
+      "routePreparationStages": [
+        {
+          "secondsFromTouch": 0.531698,
+          "stage": "playbackContextRequested",
+          "reason": "verifiedSameServerLAN",
+          "contextProbeMs": null
+        },
+        {
+          "secondsFromTouch": 0.53243,
+          "stage": "playbackPreparation",
+          "reason": "verifiedSameServerLAN",
+          "contextProbeMs": null
+        },
+        {
+          "secondsFromTouch": 0.533278,
+          "stage": "playRequested",
+          "reason": "verifiedSameServerLAN",
+          "contextProbeMs": null
+        }
+      ],
+      "capturedEvents": 128,
+      "capturedNew119": 0,
+      "capturedLogout": 0,
+      "cacheState": "unknown; previous own server benchmarks used same file, no cache clearing",
+      "notComparableWithHistoricalHLSWindow": true,
+      "continuousFPSAudioHDRAndExactVisibleFrameNotAccepted": true,
+      "performanceAccepted": false
+    }
+  }
+}

@@ -1,0 +1,177 @@
+{
+  "date": "2026-10-26",
+  "scope": "Native NAS session/File Station read-only source, saved WebDAV connection reuse and host theme integration",
+  "source": {
+    "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+    "existingDirtyPreserved": true,
+    "localInputCount": 371,
+    "inputDrift": 0,
+    "binaryDrift": 0,
+    "fullExternalDependencyClosure": false
+  },
+  "tests": {
+    "total": 51,
+    "failures": 0,
+    "newFileStationLogicCases": 7,
+    "newRealLoopbackTransportCases": 2,
+    "finalLayoutChanges": "SwiftUI only after logic tests; both platforms rebuilt and device UI rerun"
+  },
+  "builds": {
+    "mobile": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-26T08:35:47.060282+08:00",
+      "mainSHA256": "08765530c7d154e7370b4024ad32ba704663609b5045d0a4306f2a2e2f1dc23a",
+      "debugDylibSHA256": "04e939421a5a6bd566a10ed45db18824ae4734e048d18552362288181826284d",
+      "signedMachOCount": 30,
+      "arguments": [],
+      "environment": {}
+    },
+    "tv": {
+      "configuration": "Debug",
+      "builtAt": "2026-10-26T08:35:35.882353+08:00",
+      "mainSHA256": "4c27016f56c32c98bf772c5107070c03e2ef5901d62e692be86ef5b2bff92a5c",
+      "debugDylibSHA256": "104f27e976edbf4f23b70d5546a3f2fb6dd80a0964d6a6a30181eb065386cfa1",
+      "signedMachOCount": 27,
+      "arguments": [],
+      "environment": {}
+    }
+  },
+  "devices": {
+    "iphone13": {
+      "model": "iPhone14,5",
+      "system": "16.3.1",
+      "installationComplete": true,
+      "installedAt": "2026-10-26T08:36:45.969359+08:00",
+      "packageSHA256": "08765530c7d154e7370b4024ad32ba704663609b5045d0a4306f2a2e2f1dc23a",
+      "installPreferencesEqual": true,
+      "finalPreferencesEqual": true,
+      "defaultNormalHomeVisuallyReviewed": true,
+      "realNASSharedDirectoryListing": true,
+      "passwordEntryRequired": false,
+      "savedConnectionFlow": {
+        "initialAuthenticatedLibrary": true,
+        "reuseWithoutPasswordEntry": true,
+        "originalLibraryUnchanged": true,
+        "credentialIndependentAfterOriginalRemoved": true,
+        "removedOwnLibraries": true
+      },
+      "finalIndexLibraries": 0,
+      "realNASLeafIndex": {
+        "leafSubdirectories": 0,
+        "videos": 1,
+        "completed": true,
+        "nfoMetadata": 1,
+        "removedOwnLocalLibrary": true
+      }
+    },
+    "ipad": {
+      "model": "iPad15,7",
+      "system": "26.6",
+      "installationComplete": true,
+      "installedAt": "2026-10-26T08:36:35.760738+08:00",
+      "packageSHA256": "08765530c7d154e7370b4024ad32ba704663609b5045d0a4306f2a2e2f1dc23a",
+      "installPreferencesEqual": true,
+      "finalPreferencesEqual": true,
+      "defaultNormalHomeVisuallyReviewed": true,
+      "realNASSharedDirectoryListing": true,
+      "passwordEntryRequired": false,
+      "savedConnectionFlow": {
+        "initialAuthenticatedLibrary": true,
+        "reuseWithoutPasswordEntry": true,
+        "originalLibraryUnchanged": true,
+        "credentialIndependentAfterOriginalRemoved": true,
+        "removedOwnLibraries": true
+      },
+      "finalIndexLibraries": 0
+    },
+    "tv": {
+      "model": "AppleTV14,1",
+      "system": "18.2",
+      "installationComplete": true,
+      "installedAt": "2026-10-26T08:36:36.954790+08:00",
+      "packageSHA256": "4c27016f56c32c98bf772c5107070c03e2ef5901d62e692be86ef5b2bff92a5c",
+      "installPreferencesEqual": true,
+      "finalPreferencesEqual": true,
+      "defaultNormalHomeVisuallyReviewed": true,
+      "realNASSharedDirectoryListing": true,
+      "passwordEntryRequired": false,
+      "savedConnectionFlow": {
+        "initialAuthenticatedLibrary": true,
+        "reuseWithoutPasswordEntry": true,
+        "twoLibraries": true,
+        "removedOwnLibraries": true
+      },
+      "finalIndexLibraries": 0
+    },
+    "iphone18": {
+      "installationComplete": false,
+      "currentState": "No connected target in this batch",
+      "savedDomainAndCredentialsChanged": false,
+      "priorActualDomainRoutingIssue": "open"
+    }
+  },
+  "fixture": {
+    "fixtureFiles": 9,
+    "fixtureDirectories": 3,
+    "sourceFilesUnchanged": true,
+    "sourceDirectoriesUnchanged": true,
+    "fixtureMethods": [
+      "GET",
+      "PROPFIND"
+    ],
+    "onlyNFODownloaded": true,
+    "requests": 70
+  },
+  "cleanup": {
+    "iphone13": {
+      "deletedOwnHTTPSession": true,
+      "originalRunnerKept": true,
+      "settingsChanged": false
+    },
+    "ipad": {
+      "deletedOwnHTTPSession": true,
+      "originalRunnerKept": true,
+      "settingsChanged": false
+    },
+    "fixtureStopRequested": true,
+    "TVRunnerStopped": true,
+    "TVSettingsRestored": true
+  },
+  "limits": [
+    "No FTP/FTPS/SFTP or SMB app adapter delivered",
+    "No new Emby/Plex/music provider clients or complete unified discovery model delivered",
+    "Physical path checks are point-in-time server mappings, not atomic filesystem snapshots",
+    "No native dark/large type/all-theme acceptance",
+    "Real NAS one-leaf index/NFO completed on iPhone 13; iPad/TV real NAS shared-directory listing only",
+    "No independent network-library video playback or full-library performance acceptance",
+    "Existing connections are selected through library records; independent deduplicated connection management pending"
+  ],
+  "failuresPreserved": [
+    "First tvOS build used unavailable scrollContentBackground; iOS-only guard and both builds passed",
+    "Initial tvOS default button labels overlapped; full-row plain action labels rebuilt and device UI retested",
+    "iPad scroll coordinates initially outside modal; no displacement or success claim",
+    "iPad system Save Password prompt blocked first fixture flow; declined saving synthetic credential and resumed successfully",
+    "Old fixed-fixture export assertion rejected an empty index; export made read-only and caller assertions used",
+    "TV owned runner reached 900-second limit after flows; settings restored and runner stopped; subsequent WDA call refused; native normal launch used"
+  ],
+  "requirements": {
+    "total": 30,
+    "inProgress": 14,
+    "pendingAcceptance": 5,
+    "notStarted": 11,
+    "playbackCells": 114
+  },
+  "mediaRequests": 0,
+  "cellularTask": false,
+  "nasOrVPNConfigurationChanged": false,
+  "finalHomeImagesVisuallyReviewed": true,
+  "next": "Shared service discovery/identity/reachability/authorization/capability model; continue isolated SMB and staged FTPS/FTP/provider adapters",
+  "checks": {
+    "documentationDocuments": 461,
+    "documentationLocalLinks": 2684,
+    "missingDestinations": 0,
+    "gitDiffCheck": "passed",
+    "requirementStateCountsVerified": true,
+    "ownedTestProcessesRemaining": 0
+  }
+}

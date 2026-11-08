@@ -62,13 +62,8 @@ public struct KSVideoPlayerView: View {
         ZStack {
             GeometryReader { proxy in
                 playView
-                HStack {
-                    Spacer()
-                    VideoSubtitleView(model: playerCoordinator.subtitleModel)
-                        .allowsHitTesting(false) // 禁止字幕视图交互，以免抢占视图的点击事件或其它手势事件
-                    Spacer()
-                }
-                .padding()
+                VideoSubtitleViewport(coordinator: playerCoordinator,
+                    timeModel: playerCoordinator.timemodel)
                 controllerView(playerWidth: proxy.size.width)
                 #if os(tvOS)
                     .ignoresSafeArea()
@@ -94,19 +89,36 @@ public struct KSVideoPlayerView: View {
                 }
             }
             .onExitCommand {
-                if playerCoordinator.isMaskShow {
-                    playerCoordinator.isMaskShow = false
-                } else {
-                    switch focusableField {
-                    case .play:
-                        dismiss()
-                    default:
-                        focusableField = .play
-                    }
-                }
+                handleTVExit(receiver: "container")
+            }
+            .onChange(of: focusableField) { field in
+                #if DEBUG
+                options.viewInteractionObserved?("focus", ["value": String(describing: field)])
+                #endif
             }
         #endif
     }
+
+    #if os(tvOS)
+    private func handleTVExit(receiver: String) {
+        #if DEBUG
+        options.viewInteractionObserved?("exit", [
+            "receiver": receiver,
+            "focus": String(describing: focusableField),
+            "mask": String(playerCoordinator.isMaskShow),
+            "dropdown": String(isDropdownShow),
+        ])
+        #endif
+        if playerCoordinator.isMaskShow {
+            playerCoordinator.isMaskShow = false
+        } else {
+            switch focusableField {
+            case .play: dismiss()
+            default: focusableField = .play
+            }
+        }
+    }
+    #endif
 
     private var playView: some View {
         KSVideoPlayer(coordinator: playerCoordinator, url: url, options: options)
@@ -146,6 +158,10 @@ public struct KSVideoPlayerView: View {
         #if !os(iOS)
             .focusable(!playerCoordinator.isMaskShow)
         .focused($focusableField, equals: .play)
+        #endif
+        #if os(tvOS)
+        // Keep Menu on the actual video focus surface as well as the container.
+        .onExitCommand { handleTVExit(receiver: "surface") }
         #endif
         #if !os(xrOS)
             .onKeyPressLeftArrow {
@@ -476,15 +492,20 @@ struct VideoControllerView: View {
     }
 
     private func audioButton(audioTracks: [MediaPlayerTrack]) -> some View {
-        MenuView(selection: Binding {
+        // Track IDs remain the selection identity. The ordinal also distinguishes
+        // streams whose language/title/codec metadata are identical or absent.
+        let labels = audioTracks.enumerated().map { index, track in
+            audioTrackLabel(track, index: index)
+        }
+        return MenuView(selection: Binding {
             audioTracks.first { $0.isEnabled }?.trackID
         } set: { value in
             if let track = audioTracks.first(where: { $0.trackID == value }) {
                 config.playerLayer?.player.select(track: track)
             }
         }) {
-            ForEach(audioTracks, id: \.trackID) { track in
-                Text(track.description).tag(track.trackID as Int32?)
+            ForEach(Array(audioTracks.enumerated()), id: \.element.trackID) { index, track in
+                Text(labels[index]).tag(track.trackID as Int32?)
             }
         } label: {
             Image(systemName: "waveform.circle.fill")
@@ -493,6 +514,24 @@ struct VideoControllerView: View {
                 .clipShape(Circle())
             #endif
         }
+        .accessibilityLabel("音轨")
+        .accessibilityValue(audioTracks.firstIndex { $0.isEnabled }.map { labels[$0] } ?? "未选择")
+        .accessibilityIdentifier("ks.player.audioMenu")
+    }
+
+    private func audioTrackLabel(_ track: MediaPlayerTrack, index: Int) -> String {
+        let name = track.name.trimmingCharacters(in: .whitespacesAndNewlines)
+        let description = track.description.trimmingCharacters(in: .whitespacesAndNewlines)
+        let language = track.language?.trimmingCharacters(in: .whitespacesAndNewlines)
+        let title: String?
+        if name.isEmpty || name == track.languageCode ||
+            description.lowercased().hasPrefix(name.lowercased() + ",") {
+            title = language
+        } else {
+            title = name
+        }
+        let heading = ["音轨 \(index + 1)", title].compactMap { $0 }.filter { !$0.isEmpty }.joined(separator: " · ")
+        return description.isEmpty ? heading : heading + "\n" + description
     }
 
     private var subtitleButton: some View {
@@ -590,14 +629,101 @@ extension EventModifiers {
     static let none = Self()
 }
 
+/// Rendering and the existing subtitle viewport without a second control UI.
+/// Hosts can supply their terminal's common playback presentation.
+@available(iOS 16, tvOS 16, macOS 13, *)
+@MainActor
+public struct KSVideoPlayerSurface: View {
+    @ObservedObject private var coordinator: KSVideoPlayer.Coordinator
+    private let url: URL
+    private let options: KSOptions
+    public init(coordinator: KSVideoPlayer.Coordinator, url: URL, options: KSOptions) {
+        self.coordinator = coordinator; self.url = url; self.options = options
+    }
+    public var body: some View {
+        ZStack {
+            KSVideoPlayer(coordinator: coordinator, url: url, options: options)
+            VideoSubtitleViewport(coordinator: coordinator, timeModel: coordinator.timemodel)
+        }
+    }
+}
+
+/// Observe geometry in the caption subtree so time/size updates do not rebuild
+/// the focused native playback surface or replace its remote-command receiver.
+@available(iOS 16, tvOS 16, macOS 13, *)
+@MainActor
+private struct VideoSubtitleViewport: View {
+    @ObservedObject var coordinator: KSVideoPlayer.Coordinator
+    @ObservedObject var timeModel: ControllerTimeModel
+
+    var body: some View {
+        ZStack {
+            SubtitleBitmapLayer(model: coordinator.subtitleModel,
+                videoSize: coordinator.playerLayer?.player.naturalSize ?? .zero,
+                fillsScreen: coordinator.isScaleAspectFill)
+            GeometryReader { proxy in
+                if let rect = SubtitleViewportGeometry.videoRect(viewport: proxy.size,
+                    video: coordinator.playerLayer?.player.naturalSize ?? .zero,
+                    fillsScreen: coordinator.isScaleAspectFill) {
+                    HStack {
+                        Spacer()
+                        VideoSubtitleView(model: coordinator.subtitleModel, excludesPositionedImages: true)
+                        Spacer()
+                    }
+                    .padding()
+                    .frame(width: rect.width, height: rect.height)
+                    .position(x: rect.midX, y: rect.midY)
+                }
+            }
+        }
+        .allowsHitTesting(false)
+    }
+}
+
+/// Authored image cues share the video's transform, not the dialogue bottom
+/// inset. Clip the composed layer after placement, including aspect-fill crops.
+@available(iOS 16, tvOS 16, macOS 13, *)
+@MainActor
+public struct SubtitleBitmapLayer: View {
+    @ObservedObject private var model: SubtitleModel
+    public let videoSize: CGSize
+    public let fillsScreen: Bool
+
+    public init(model: SubtitleModel, videoSize: CGSize, fillsScreen: Bool = false) {
+        self.model = model; self.videoSize = videoSize; self.fillsScreen = fillsScreen
+    }
+
+    public var body: some View {
+        GeometryReader { proxy in
+            if let frame = SubtitleViewportGeometry.videoFrame(viewport: proxy.size,
+                video: videoSize, fillsScreen: fillsScreen) {
+                ForEach(model.parts) { part in
+                    if let image = part.image,
+                       let rect = part.imageDisplayFrame(videoFrame: frame, videoSize: videoSize) {
+                        Image(uiImage: image).resizable()
+                            .frame(width: rect.width, height: rect.height)
+                            .position(x: rect.midX, y: rect.midY)
+                    }
+                }
+            }
+        }
+        .clipped()
+        .allowsHitTesting(false)
+    }
+}
+
 @available(iOS 16, tvOS 16, macOS 13, *)
 public struct VideoSubtitleView: View {
     @ObservedObject
     fileprivate var model: SubtitleModel
-    public init(model: SubtitleModel) { self.model = model }
+    private let excludesPositionedImages: Bool
+    public init(model: SubtitleModel, excludesPositionedImages: Bool = false) {
+        self.model = model
+        self.excludesPositionedImages = excludesPositionedImages
+    }
     public var body: some View {
         ZStack {
-            ForEach(model.parts) { part in
+            ForEach(model.parts.filter { !excludesPositionedImages || !$0.imageUsesCanvasCoordinates }) { part in
                 part.subtitleView
             }
         }

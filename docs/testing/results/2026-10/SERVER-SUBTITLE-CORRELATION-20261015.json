@@ -1,0 +1,501 @@
+{
+  "recordedAt": "2026-10-15T18:01:59.977728+08:00",
+  "scope": "read-only server correlation of prior verified device run, not new on-device playback",
+  "sourceDiffSHA256": "db8730452eaa5f58db20b0e1f74323da31540bf40575e3784d09c0f7ca1cb570",
+  "head": "4de732dd645b36671becff992cdef1d0163fd1e4",
+  "binaryBuildTime": "2026-10-15T11:39:36.195627+08:00",
+  "binaries": {
+    "Nastart": "8783f0dda631046c2ba6554cc60bf719cfeef5dd17c703f081be8924bb51ee70",
+    "Nastart.debug.dylib": "824fe9f607d850e103b113bc0a453012ccc90632d60990cf091089be0af0841b",
+    "Frameworks/KSPlayer.framework/KSPlayer": "98c29f6b9d6f42738801bd5834de45a95a692d923e52e6c614d16907a72dbfc5"
+  },
+  "configuration": "normal Debug -Onone; empty launch environment",
+  "AppSourceChangedThisTurn": false,
+  "newAppBuildThisTurn": false,
+  "newAppInstallationThisTurn": false,
+  "newDeviceUIRegressionThisTurn": false,
+  "sourceInputsVerified": 173,
+  "serverDiscovery": {
+    "at": "2026-10-15T17:53:11.851848+08:00",
+    "readOnly": true,
+    "existingConfiguredJellyfinToken": true,
+    "loginOrConfigChange": false,
+    "requests": [
+      {
+        "operation": "public-info",
+        "start": 1792057991.8518589,
+        "status": 200,
+        "elapsedSeconds": 0.307,
+        "serverVersion": "10.11.11"
+      },
+      {
+        "operation": "log-list",
+        "start": 1792057992.158723,
+        "status": 200,
+        "elapsedSeconds": 0.613,
+        "rows": 136,
+        "keys": [
+          "DateCreated",
+          "DateModified",
+          "Name",
+          "Size"
+        ]
+      }
+    ]
+  },
+  "serverLogFetch": {
+    "readOnly": true,
+    "totalBytes": 3872940,
+    "logs": [
+      {
+        "index": 0,
+        "category": "server",
+        "createdUTC": "2026-10-15T09:06:32.7378796Z",
+        "modifiedUTC": "2026-10-15T09:06:32.7378796Z",
+        "listedBytes": 43441,
+        "status": 200,
+        "bytes": 43441,
+        "SHA256": "f953e08ccdada433e199385a3e22a838b7679a2dc4b034ac19dff1d8c34479ee",
+        "seconds": 0.149
+      },
+      {
+        "index": 1,
+        "category": "ffmpeg",
+        "createdUTC": "2026-10-15T08:59:46.3583309Z",
+        "modifiedUTC": "2026-10-15T08:59:46.3583309Z",
+        "listedBytes": 1250877,
+        "status": 200,
+        "bytes": 1250877,
+        "SHA256": "1f5fcad7165aa51e3b1300742987356314d27dddc3d8ef5abd3b99e7813f5096",
+        "seconds": 0.067
+      },
+      {
+        "index": 2,
+        "category": "ffmpeg",
+        "createdUTC": "2026-10-15T08:56:21.628557Z",
+        "modifiedUTC": "2026-10-15T08:56:21.628557Z",
+        "listedBytes": 382006,
+        "status": 200,
+        "bytes": 382006,
+        "SHA256": "c00075469121c9ef9caefdf5cb9dacdefea48b302ec1a87fa5e3635354d0cce3",
+        "seconds": 0.045
+      },
+      {
+        "index": 3,
+        "category": "ffmpeg",
+        "createdUTC": "2026-10-15T08:55:46.3474237Z",
+        "modifiedUTC": "2026-10-15T08:55:46.3474237Z",
+        "listedBytes": 378544,
+        "status": 200,
+        "bytes": 378544,
+        "SHA256": "690df3772bb740b01f095f9f803b52669552a8912d1b15958c77965fd1a90491",
+        "seconds": 0.063
+      },
+      {
+        "index": 4,
+        "category": "ffmpeg",
+        "createdUTC": "2026-10-15T08:55:12.2302947Z",
+        "modifiedUTC": "2026-10-15T08:55:12.2302947Z",
+        "listedBytes": 390744,
+        "status": 200,
+        "bytes": 390744,
+        "SHA256": "a6fcb593f81c0b1737b6e29dad376df13ad69737657bcf7cb6a776b3eb8140dd",
+        "seconds": 0.062
+      },
+      {
+        "index": 5,
+        "category": "ffmpeg",
+        "createdUTC": "2026-10-15T08:54:35.7071567Z",
+        "modifiedUTC": "2026-10-15T08:54:35.7071567Z",
+        "listedBytes": 373422,
+        "status": 200,
+        "bytes": 373422,
+        "SHA256": "791cbc59d88e6cf8a7122aa4a00701b5a9a1c238b0b979a6a2d3c6fa67162b84",
+        "seconds": 0.067
+      },
+      {
+        "index": 6,
+        "category": "ffmpeg",
+        "createdUTC": "2026-10-15T08:54:01.0500256Z",
+        "modifiedUTC": "2026-10-15T08:54:01.0500256Z",
+        "listedBytes": 376944,
+        "status": 200,
+        "bytes": 376944,
+        "SHA256": "862f4a921bd33eab47455677eb307151ba7ee36e55dac54535aee13f83c080c6",
+        "seconds": 0.065
+      },
+      {
+        "index": 7,
+        "category": "ffmpeg",
+        "createdUTC": "2026-10-15T08:53:27.3078981Z",
+        "modifiedUTC": "2026-10-15T08:53:27.3078981Z",
+        "listedBytes": 676962,
+        "status": 200,
+        "bytes": 676962,
+        "SHA256": "c3c7fe7f4f1d4f7c715ed6661b382d37378b978ed45d4e2dd7b491b14f414356",
+        "seconds": 0.167
+      }
+    ]
+  },
+  "correlation": {
+    "operations": [
+      {
+        "operation": 1,
+        "observationSeconds": 34.755803,
+        "firstSegmentRequests": [
+          {
+            "requestSeconds": 1.234171,
+            "segmentOrdinal": 25,
+            "responseHeadersSeconds": 6.223886,
+            "cancelRequestedSeconds": 6.276298,
+            "requestMs": 4989.0
+          },
+          {
+            "requestSeconds": 5.297706,
+            "segmentOrdinal": 25,
+            "responseHeadersSeconds": 6.270327,
+            "requestMs": 959.0
+          }
+        ],
+        "serverCandidateCount": 1,
+        "association": "timeAndOrdinalOnly",
+        "serverCommand": {
+          "startSegmentOrdinal": 25,
+          "seekSeconds": 100.1,
+          "videoCodec": "h264_vaapi",
+          "audioCodec": "libfdk_aac",
+          "subtitleOverlayFilter": true,
+          "secondsFromAction": 1.526041
+        },
+        "replacement_candidate_decodedSeconds": [
+          8.130122
+        ],
+        "replacement_committedSeconds": [
+          10.166075
+        ]
+      },
+      {
+        "operation": 2,
+        "observationSeconds": 34.818254,
+        "firstSegmentRequests": [
+          {
+            "requestSeconds": 1.444754,
+            "segmentOrdinal": 32,
+            "responseHeadersSeconds": 6.783275,
+            "cancelRequestedSeconds": 6.7842,
+            "requestMs": 5306.0
+          },
+          {
+            "requestSeconds": 5.504722,
+            "segmentOrdinal": 32,
+            "responseHeadersSeconds": 6.732354,
+            "requestMs": 1261.0
+          }
+        ],
+        "serverCandidateCount": 1,
+        "association": "timeAndOrdinalOnly",
+        "serverCommand": {
+          "startSegmentOrdinal": 32,
+          "seekSeconds": 128.128,
+          "videoCodec": "h264_vaapi",
+          "audioCodec": "libfdk_aac",
+          "subtitleOverlayFilter": true,
+          "secondsFromAction": 1.732238
+        },
+        "replacement_candidate_decodedSeconds": [
+          7.081433
+        ],
+        "replacement_committedSeconds": [
+          9.420775
+        ]
+      },
+      {
+        "operation": 3,
+        "observationSeconds": 35.081276,
+        "firstSegmentRequests": [
+          {
+            "requestSeconds": 1.117899,
+            "segmentOrdinal": 38,
+            "responseHeadersSeconds": 6.268283,
+            "cancelRequestedSeconds": 6.319856,
+            "requestMs": 5148.0
+          },
+          {
+            "requestSeconds": 5.179083,
+            "segmentOrdinal": 38,
+            "responseHeadersSeconds": 6.321343,
+            "requestMs": 1157.0
+          }
+        ],
+        "serverCandidateCount": 1,
+        "association": "timeAndOrdinalOnly",
+        "serverCommand": {
+          "startSegmentOrdinal": 38,
+          "seekSeconds": 152.152,
+          "videoCodec": "h264_vaapi",
+          "audioCodec": "libfdk_aac",
+          "subtitleOverlayFilter": true,
+          "secondsFromAction": 1.407984
+        },
+        "replacement_candidate_decodedSeconds": [
+          6.487102
+        ],
+        "replacement_committedSeconds": [
+          9.007618
+        ]
+      },
+      {
+        "operation": 4,
+        "observationSeconds": 34.705998,
+        "firstSegmentRequests": [
+          {
+            "requestSeconds": 1.22135,
+            "segmentOrdinal": 44,
+            "responseHeadersSeconds": 6.259477,
+            "cancelRequestedSeconds": 6.2628,
+            "requestMs": 5036.0
+          },
+          {
+            "requestSeconds": 5.261416,
+            "segmentOrdinal": 44,
+            "responseHeadersSeconds": 6.30278,
+            "requestMs": 1058.0
+          }
+        ],
+        "serverCandidateCount": 1,
+        "association": "timeAndOrdinalOnly",
+        "serverCommand": {
+          "startSegmentOrdinal": 44,
+          "seekSeconds": 176.176,
+          "videoCodec": "h264_vaapi",
+          "audioCodec": "libfdk_aac",
+          "subtitleOverlayFilter": true,
+          "secondsFromAction": 1.521708
+        },
+        "replacement_candidate_decodedSeconds": [
+          6.891753
+        ],
+        "replacement_committedSeconds": [
+          10.495472
+        ]
+      },
+      {
+        "operation": 5,
+        "observationSeconds": 34.621508,
+        "firstSegmentRequests": [
+          {
+            "requestSeconds": 1.229545,
+            "segmentOrdinal": 50,
+            "responseHeadersSeconds": 6.307769,
+            "cancelRequestedSeconds": 6.36052,
+            "requestMs": 5075.0
+          },
+          {
+            "requestSeconds": 5.288552,
+            "segmentOrdinal": 50,
+            "responseHeadersSeconds": 6.360859,
+            "requestMs": 1052.0
+          }
+        ],
+        "serverCandidateCount": 1,
+        "association": "timeAndOrdinalOnly",
+        "serverCommand": {
+          "startSegmentOrdinal": 50,
+          "seekSeconds": 200.2,
+          "videoCodec": "h264_vaapi",
+          "audioCodec": "libfdk_aac",
+          "subtitleOverlayFilter": true,
+          "secondsFromAction": 1.50271
+        },
+        "replacement_candidate_decodedSeconds": [
+          6.881
+        ],
+        "replacement_committedSeconds": [
+          10.227858
+        ]
+      },
+      {
+        "operation": 6,
+        "observationSeconds": 363.79897,
+        "firstSegmentRequests": [
+          {
+            "requestSeconds": 1.50679,
+            "segmentOrdinal": 56,
+            "responseHeadersSeconds": 6.470477,
+            "cancelRequestedSeconds": 6.471412,
+            "requestMs": 4934.0
+          },
+          {
+            "requestSeconds": 5.561631,
+            "segmentOrdinal": 56,
+            "responseHeadersSeconds": 6.418768,
+            "requestMs": 890.0
+          }
+        ],
+        "serverCandidateCount": 1,
+        "association": "timeAndOrdinalOnly",
+        "serverCommand": {
+          "startSegmentOrdinal": 56,
+          "seekSeconds": 224.224,
+          "videoCodec": "h264_vaapi",
+          "audioCodec": "libfdk_aac",
+          "subtitleOverlayFilter": true,
+          "secondsFromAction": 1.751202
+        },
+        "replacement_candidate_decodedSeconds": [
+          7.353981
+        ],
+        "replacement_committedSeconds": [
+          10.594214
+        ]
+      }
+    ],
+    "serverMinusClientOffsetSecondsUsed": 0.0,
+    "matchingWindowSeconds": 5.0,
+    "sessionIdentityVerified": false,
+    "firstVisibleFrameAccepted": false,
+    "actualAudibleAccepted": false,
+    "limitations": [
+      "Server command times are log records, not exact process or segment readiness.",
+      "Time and ordinal correlation does not exclude unrelated concurrent sessions.",
+      "Missing events or commands stay unknown; request intervals may overlap."
+    ]
+  },
+  "clock": {
+    "at": "2026-10-15T17:56:25.151659+08:00",
+    "samples": [
+      {
+        "requestStart": 1792058185.1151319,
+        "responseEnd": 1792058185.124964,
+        "roundTripSeconds": 0.009832143783569336,
+        "serverMinusMacOffsetBoundsSeconds": [
+          0.12215805053710938,
+          0.1319901943206787
+        ]
+      },
+      {
+        "requestStart": 1792058185.125202,
+        "responseEnd": 1792058185.1347651,
+        "roundTripSeconds": 0.009563207626342773,
+        "serverMinusMacOffsetBoundsSeconds": [
+          0.12214374542236328,
+          0.13170695304870605
+        ]
+      },
+      {
+        "requestStart": 1792058185.134909,
+        "responseEnd": 1792058185.151521,
+        "roundTripSeconds": 0.01661205291748047,
+        "serverMinusMacOffsetBoundsSeconds": [
+          0.12388396263122559,
+          0.14049601554870605
+        ]
+      }
+    ],
+    "limitation": "current clock bounds only; no historical synchronization proof"
+  },
+  "historicalClockCorrectionApplied": false,
+  "tests": [
+    {
+      "suite": "test_playback_server_log_report.py",
+      "passed": 14,
+      "failures": 0
+    },
+    {
+      "suite": "test_playback_phase_report.py",
+      "passed": 18,
+      "failures": 0
+    },
+    {
+      "suite": "test_playback_trace_report.py",
+      "passed": 12,
+      "failures": 0
+    }
+  ],
+  "appXCTestReused": {
+    "executed": 394,
+    "skipped": 2,
+    "failures": 0,
+    "runThisTurn": false
+  },
+  "appPreflightReused": {
+    "passed": 15,
+    "runThisTurn": false
+  },
+  "appPackageVerification": {
+    "at": "2026-10-15T17:59:51.230690+08:00",
+    "sourceDiffSHA256": "db8730452eaa5f58db20b0e1f74323da31540bf40575e3784d09c0f7ca1cb570",
+    "inputsVerified": 173,
+    "binariesVerified": {
+      "Nastart": "8783f0dda631046c2ba6554cc60bf719cfeef5dd17c703f081be8924bb51ee70",
+      "Nastart.debug.dylib": "824fe9f607d850e103b113bc0a453012ccc90632d60990cf091089be0af0841b",
+      "Frameworks/KSPlayer.framework/KSPlayer": "98c29f6b9d6f42738801bd5834de45a95a692d923e52e6c614d16907a72dbfc5"
+    },
+    "deepSignatureVerified": true,
+    "deviceUIRegressionRunThisTurn": false,
+    "installationRunThisTurn": false,
+    "appSourceEditsThisTurn": false
+  },
+  "freshUSBIdentityOnly": {
+    "at": "2026-10-15T17:52:58.819823+08:00",
+    "devices": [
+      {
+        "device": "iphone13",
+        "model": "iPhone14,5",
+        "system": "16.3.1",
+        "connection": "USB"
+      },
+      {
+        "device": "ipad",
+        "model": "iPad12,1",
+        "system": "18.3.1",
+        "connection": "USB"
+      }
+    ]
+  },
+  "iphone18": {
+    "InstallSent": false,
+    "latestInstallCompleted": false,
+    "historicalAddressCheck": {
+      "at": "2026-10-15T17:59:51.456222+08:00",
+      "historicalAddressesRequireLiveIdentity": true,
+      "candidateCount": 2,
+      "targetVerified": false,
+      "newPairingAttempted": false,
+      "failures": [
+        "TimeoutError",
+        "TimeoutError"
+      ]
+    },
+    "freshServicesCheck": {
+      "at": "2026-10-15T18:00:09.912898+08:00",
+      "newPairingAttempted": false,
+      "targetLiveVerified": false,
+      "containerReadable": false,
+      "attempts": [
+        {
+          "family": "IPv6",
+          "targetMatches": false,
+          "containerReadable": false,
+          "failureType": "TimeoutError"
+        },
+        {
+          "family": "IPv6",
+          "targetMatches": false,
+          "containerReadable": false,
+          "failureType": "TimeoutError"
+        },
+        {
+          "family": "IPv4",
+          "targetMatches": false,
+          "containerReadable": false,
+          "failureType": "TimeoutError"
+        }
+      ]
+    },
+    "lastConfirmed": "2026-10-15 07:29 f5 older app; latest db873 not installed this turn"
+  },
+  "wholePlaybackAccepted": false,
+  "latencyFixAccepted": false,
+  "actualAudibleAccepted": false
+}

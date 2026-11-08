@@ -2,9 +2,12 @@ import Foundation
 
 struct LaunchpadVisibilityStore {
     private let storageKey = "nastart.launchpadServiceVisibility.v1"
+    private let defaults: UserDefaults
+
+    init(defaults: UserDefaults = .standard) { self.defaults = defaults }
 
     func load() -> [String: Bool] {
-        guard let data = UserDefaults.standard.data(forKey: storageKey) else {
+        guard let data = defaults.data(forKey: storageKey) else {
             return [:]
         }
         return (try? JSONDecoder().decode([String: Bool].self, from: data)) ?? [:]
@@ -12,14 +15,17 @@ struct LaunchpadVisibilityStore {
 
     func save(_ overrides: [String: Bool]) {
         guard let data = try? JSONEncoder().encode(overrides) else { return }
-        UserDefaults.standard.set(data, forKey: storageKey)
+        defaults.set(data, forKey: storageKey)
     }
 }
 struct LaunchpadOrderStore {
     private let storageKey = "nastart.launchpadServiceOrder.v1"
+    private let defaults: UserDefaults
+
+    init(defaults: UserDefaults = .standard) { self.defaults = defaults }
 
     func load() -> [String: [String]] {
-        guard let data = UserDefaults.standard.data(forKey: storageKey) else {
+        guard let data = defaults.data(forKey: storageKey) else {
             return [:]
         }
         return (try? JSONDecoder().decode([String: [String]].self, from: data)) ?? [:]
@@ -27,7 +33,7 @@ struct LaunchpadOrderStore {
 
     func save(_ order: [String: [String]]) {
         guard let data = try? JSONEncoder().encode(order) else { return }
-        UserDefaults.standard.set(data, forKey: storageKey)
+        defaults.set(data, forKey: storageKey)
     }
 }
 
@@ -69,6 +75,9 @@ struct StoredManualLaunchpadService: Codable, Identifiable {
 
 struct ManualLaunchpadServiceStore {
     private let storageKey = "nastart.manualLaunchpadServices.v1"
+    private let defaults: UserDefaults
+
+    init(defaults: UserDefaults = .standard) { self.defaults = defaults }
 
     func load() -> [LaunchpadService] {
         loadStoredServices().compactMap(\.launchpadService)
@@ -141,7 +150,7 @@ struct ManualLaunchpadServiceStore {
     }
 
     private func loadStoredServices() -> [StoredManualLaunchpadService] {
-        guard let data = UserDefaults.standard.data(forKey: storageKey) else {
+        guard let data = defaults.data(forKey: storageKey) else {
             return []
         }
         return (try? JSONDecoder().decode([StoredManualLaunchpadService].self, from: data)) ?? []
@@ -149,7 +158,7 @@ struct ManualLaunchpadServiceStore {
 
     private func save(_ services: [StoredManualLaunchpadService]) {
         guard let data = try? JSONEncoder().encode(services) else { return }
-        UserDefaults.standard.set(data, forKey: storageKey)
+        defaults.set(data, forKey: storageKey)
     }
 
     private static func normalizedIconText(_ value: String, fallbackName: String) -> String {

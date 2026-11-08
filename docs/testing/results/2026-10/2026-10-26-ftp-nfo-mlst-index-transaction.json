@@ -1,0 +1,2379 @@
+{
+  "date": "2026-10-26",
+  "scope": "outside-repository single selected FTP/FTPS NFO read plus fixture bridge to an unchanged copy of NetworkLibraryStore; not App integration",
+  "validation": {
+    "at": "2026-10-26T18:11:20.077706+08:00",
+    "nfoAndIndexWindows": 49,
+    "passed": 49,
+    "legacyListingRegressionWindows": 43,
+    "legacyListingPassed": 43,
+    "finalASanWindows": 14,
+    "finalASanInvalidAccessReports": 0,
+    "ASanLeakDetection": false,
+    "initialBaselines": 3,
+    "earlierNFOEditionWindows": 45,
+    "allOwnedServiceWindowsCleaned": 140,
+    "copiedNetworkMediaInputCount": 21,
+    "copiedProductionSourceDrift": 0,
+    "applicationInputCount": 375,
+    "applicationInputDriftCount": 0,
+    "applicationBinaryDriftCounts": {
+      "mobile": 0,
+      "tv": 0
+    },
+    "newAppBuilds": 0,
+    "newInstalls": 0,
+    "physicalFunctionTests": 0,
+    "directNASFileOrMediaRequests": 0,
+    "ownServicesStopped": true
+  },
+  "nfoCases": {
+    "normal": {
+      "expected": "success",
+      "outcome": "success",
+      "passed": true,
+      "catalog": true,
+      "build": "normal",
+      "mode": "explicit",
+      "indexUnchanged": false,
+      "memoryUnchanged": false,
+      "reopenedUnchanged": false,
+      "durableUnchanged": false,
+      "titles": [
+        "fresh-title"
+      ],
+      "origins": [
+        "nfo"
+      ],
+      "commands": [
+        "AUTH",
+        "PBSZ",
+        "PROT",
+        "USER",
+        "PASS",
+        "TYPE",
+        "OPTS",
+        "EPSV",
+        "MLSD",
+        "PWD",
+        "MLST",
+        "EPSV",
+        "RETR",
+        "MLST",
+        "QUIT"
+      ],
+      "mlstRequests": 2,
+      "nfoRETRRequests": 1,
+      "nfoBytesSent": 50001,
+      "videoRETRRequests": 0,
+      "sourceUnchanged": true,
+      "fixtureOwnerMutations": 0,
+      "controlPeerEOFObserved": true,
+      "dataPeersEOFObserved": 2,
+      "elapsedMs": 13.290833,
+      "cancelReturnMs": null
+    },
+    "plain": {
+      "expected": "success",
+      "outcome": "success",
+      "passed": true,
+      "catalog": false,
+      "build": "normal",
+      "mode": "plain",
+      "indexUnchanged": false,
+      "memoryUnchanged": false,
+      "reopenedUnchanged": false,
+      "durableUnchanged": true,
+      "titles": [
+        "fresh-title"
+      ],
+      "origins": [
+        "nfo"
+      ],
+      "commands": [
+        "USER",
+        "PASS",
+        "TYPE",
+        "OPTS",
+        "EPSV",
+        "MLSD",
+        "PWD",
+        "MLST",
+        "EPSV",
+        "RETR",
+        "MLST",
+        "QUIT"
+      ],
+      "mlstRequests": 2,
+      "nfoRETRRequests": 1,
+      "nfoBytesSent": 50001,
+      "videoRETRRequests": 0,
+      "sourceUnchanged": true,
+      "fixtureOwnerMutations": 0,
+      "controlPeerEOFObserved": true,
+      "dataPeersEOFObserved": 2,
+      "elapsedMs": 11.394583,
+      "cancelReturnMs": null
+    },
+    "implicit": {
+      "expected": "success",
+      "outcome": "success",
+      "passed": true,
+      "catalog": true,
+      "build": "normal",
+      "mode": "implicit",
+      "indexUnchanged": false,
+      "memoryUnchanged": false,
+      "reopenedUnchanged": false,
+      "durableUnchanged": false,
+      "titles": [
+        "fresh-title"
+      ],
+      "origins": [
+        "nfo"
+      ],
+      "commands": [
+        "PBSZ",
+        "PROT",
+        "USER",
+        "PASS",
+        "TYPE",
+        "OPTS",
+        "EPSV",
+        "MLSD",
+        "PWD",
+        "MLST",
+        "EPSV",
+        "RETR",
+        "MLST",
+        "QUIT"
+      ],
+      "mlstRequests": 2,
+      "nfoRETRRequests": 1,
+      "nfoBytesSent": 50001,
+      "videoRETRRequests": 0,
+      "sourceUnchanged": true,
+      "fixtureOwnerMutations": 0,
+      "controlPeerEOFObserved": true,
+      "dataPeersEOFObserved": 2,
+      "elapsedMs": 17.883667,
+      "cancelReturnMs": null
+    },
+    "maxNFO": {
+      "expected": "success",
+      "outcome": "success",
+      "passed": true,
+      "catalog": true,
+      "build": "normal",
+      "mode": "explicit",
+      "indexUnchanged": false,
+      "memoryUnchanged": false,
+      "reopenedUnchanged": false,
+      "durableUnchanged": false,
+      "titles": [
+        "fresh-title"
+      ],
+      "origins": [
+        "nfo"
+      ],
+      "commands": [
+        "AUTH",
+        "PBSZ",
+        "PROT",
+        "USER",
+        "PASS",
+        "TYPE",
+        "OPTS",
+        "EPSV",
+        "MLSD",
+        "PWD",
+        "MLST",
+        "EPSV",
+        "RETR",
+        "MLST",
+        "QUIT"
+      ],
+      "mlstRequests": 2,
+      "nfoRETRRequests": 1,
+      "nfoBytesSent": 65536,
+      "videoRETRRequests": 0,
+      "sourceUnchanged": true,
+      "fixtureOwnerMutations": 0,
+      "controlPeerEOFObserved": true,
+      "dataPeersEOFObserved": 2,
+      "elapsedMs": 13.377959,
+      "cancelReturnMs": null
+    },
+    "emptyNFO": {
+      "expected": "success",
+      "outcome": "success",
+      "passed": true,
+      "catalog": true,
+      "build": "normal",
+      "mode": "explicit",
+      "indexUnchanged": false,
+      "memoryUnchanged": false,
+      "reopenedUnchanged": false,
+      "durableUnchanged": false,
+      "titles": [
+        "Movie"
+      ],
+      "origins": [
+        "filename"
+      ],
+      "commands": [
+        "AUTH",
+        "PBSZ",
+        "PROT",
+        "USER",
+        "PASS",
+        "TYPE",
+        "OPTS",
+        "EPSV",
+        "MLSD",
+        "PWD",
+        "MLST",
+        "EPSV",
+        "RETR",
+        "MLST",
+        "QUIT"
+      ],
+      "mlstRequests": 2,
+      "nfoRETRRequests": 1,
+      "nfoBytesSent": 0,
+      "videoRETRRequests": 0,
+      "sourceUnchanged": true,
+      "fixtureOwnerMutations": 0,
+      "controlPeerEOFObserved": true,
+      "dataPeersEOFObserved": 2,
+      "elapsedMs": 9.936459,
+      "cancelReturnMs": null
+    },
+    "shortTransfer": {
+      "expected": "sourceChanged",
+      "outcome": "sourceChanged",
+      "passed": true,
+      "catalog": true,
+      "build": "normal",
+      "mode": "explicit",
+      "indexUnchanged": true,
+      "memoryUnchanged": true,
+      "reopenedUnchanged": true,
+      "durableUnchanged": true,
+      "titles": [
+        "previous-good"
+      ],
+      "origins": [
+        "filename"
+      ],
+      "commands": [
+        "AUTH",
+        "PBSZ",
+        "PROT",
+        "USER",
+        "PASS",
+        "TYPE",
+        "OPTS",
+        "EPSV",
+        "MLSD",
+        "PWD",
+        "MLST",
+        "EPSV",
+        "RETR"
+      ],
+      "mlstRequests": 1,
+      "nfoRETRRequests": 1,
+      "nfoBytesSent": 4096,
+      "videoRETRRequests": 0,
+      "sourceUnchanged": true,
+      "fixtureOwnerMutations": 0,
+      "controlPeerEOFObserved": true,
+      "dataPeersEOFObserved": 2,
+      "elapsedMs": 13.811875,
+      "cancelReturnMs": null
+    },
+    "badPWDPrefix": {
+      "expected": "invalidReply",
+      "outcome": "invalidReply",
+      "passed": true,
+      "catalog": true,
+      "build": "normal",
+      "mode": "explicit",
+      "indexUnchanged": true,
+      "memoryUnchanged": true,
+      "reopenedUnchanged": true,
+      "durableUnchanged": true,
+      "titles": [
+        "previous-good"
+      ],
+      "origins": [
+        "filename"
+      ],
+      "commands": [
+        "AUTH",
+        "PBSZ",
+        "PROT",
+        "USER",
+        "PASS",
+        "TYPE",
+        "OPTS",
+        "EPSV",
+        "MLSD",
+        "PWD"
+      ],
+      "mlstRequests": 0,
+      "nfoRETRRequests": 0,
+      "nfoBytesSent": 0,
+      "videoRETRRequests": 0,
+      "sourceUnchanged": true,
+      "fixtureOwnerMutations": 0,
+      "controlPeerEOFObserved": true,
+      "dataPeersEOFObserved": 1,
+      "elapsedMs": 10.402584,
+      "cancelReturnMs": null
+    },
+    "videoSelected": {
+      "expected": "invalidInput",
+      "outcome": "invalidInput",
+      "passed": true,
+      "catalog": true,
+      "build": "normal",
+      "mode": "explicit",
+      "indexUnchanged": true,
+      "memoryUnchanged": true,
+      "reopenedUnchanged": true,
+      "durableUnchanged": true,
+      "titles": [
+        "previous-good"
+      ],
+      "origins": [
+        "filename"
+      ],
+      "commands": [],
+      "mlstRequests": 0,
+      "nfoRETRRequests": 0,
+      "nfoBytesSent": 0,
+      "videoRETRRequests": 0,
+      "sourceUnchanged": true,
+      "fixtureOwnerMutations": 0,
+      "controlPeerEOFObserved": false,
+      "dataPeersEOFObserved": 0,
+      "elapsedMs": 0.155667,
+      "cancelReturnMs": null
+    },
+    "escapedSelected": {
+      "expected": "invalidInput",
+      "outcome": "invalidInput",
+      "passed": true,
+      "catalog": true,
+      "build": "normal",
+      "mode": "explicit",
+      "indexUnchanged": true,
+      "memoryUnchanged": true,
+      "reopenedUnchanged": true,
+      "durableUnchanged": true,
+      "titles": [
+        "previous-good"
+      ],
+      "origins": [
+        "filename"
+      ],
+      "commands": [],
+      "mlstRequests": 0,
+      "nfoRETRRequests": 0,
+      "nfoBytesSent": 0,
+      "videoRETRRequests": 0,
+      "sourceUnchanged": true,
+      "fixtureOwnerMutations": 0,
+      "controlPeerEOFObserved": false,
+      "dataPeersEOFObserved": 0,
+      "elapsedMs": 0.115333,
+      "cancelReturnMs": null
+    },
+    "injectedSelected": {
+      "expected": "invalidInput",
+      "outcome": "invalidInput",
+      "passed": true,
+      "catalog": true,
+      "build": "normal",
+      "mode": "explicit",
+      "indexUnchanged": true,
+      "memoryUnchanged": true,
+      "reopenedUnchanged": true,
+      "durableUnchanged": true,
+      "titles": [
+        "previous-good"
+      ],
+      "origins": [
+        "filename"
+      ],
+      "commands": [],
+      "mlstRequests": 0,
+      "nfoRETRRequests": 0,
+      "nfoBytesSent": 0,
+      "videoRETRRequests": 0,
+      "sourceUnchanged": true,
+      "fixtureOwnerMutations": 0,
+      "controlPeerEOFObserved": false,
+      "dataPeersEOFObserved": 0,
+      "elapsedMs": 0.123875,
+      "cancelReturnMs": null
+    },
+    "readTLSWrongName": {
+      "expected": "tlsUnverified",
+      "outcome": "tlsUnverified",
+      "passed": true,
+      "catalog": true,
+      "build": "normal",
+      "mode": "explicit",
+      "indexUnchanged": true,
+      "memoryUnchanged": true,
+      "reopenedUnchanged": true,
+      "durableUnchanged": true,
+      "titles": [
+        "previous-good"
+      ],
+      "origins": [
+        "filename"
+      ],
+      "commands": [
+        "AUTH",
+        "PBSZ",
+        "PROT",
+        "USER",
+        "PASS",
+        "TYPE",
+        "OPTS",
+        "EPSV",
+        "MLSD",
+        "PWD",
+        "MLST",
+        "EPSV",
+        "RETR"
+      ],
+      "mlstRequests": 1,
+      "nfoRETRRequests": 1,
+      "nfoBytesSent": 0,
+      "videoRETRRequests": 0,
+      "sourceUnchanged": true,
+      "fixtureOwnerMutations": 0,
+      "controlPeerEOFObserved": false,
+      "dataPeersEOFObserved": 1,
+      "elapsedMs": 11.664208,
+      "cancelReturnMs": null
+    },
+    "readTLSAlternate": {
+      "expected": "tlsUnverified",
+      "outcome": "tlsUnverified",
+      "passed": true,
+      "catalog": true,
+      "build": "normal",
+      "mode": "explicit",
+      "indexUnchanged": true,
+      "memoryUnchanged": true,
+      "reopenedUnchanged": true,
+      "durableUnchanged": true,
+      "titles": [
+        "previous-good"
+      ],
+      "origins": [
+        "filename"
+      ],
+      "commands": [
+        "AUTH",
+        "PBSZ",
+        "PROT",
+        "USER",
+        "PASS",
+        "TYPE",
+        "OPTS",
+        "EPSV",
+        "MLSD",
+        "PWD",
+        "MLST",
+        "EPSV",
+        "RETR"
+      ],
+      "mlstRequests": 1,
+      "nfoRETRRequests": 1,
+      "nfoBytesSent": 0,
+      "videoRETRRequests": 0,
+      "sourceUnchanged": true,
+      "fixtureOwnerMutations": 0,
+      "controlPeerEOFObserved": false,
+      "dataPeersEOFObserved": 1,
+      "elapsedMs": 17.554791,
+      "cancelReturnMs": null
+    },
+    "preBadDate": {
+      "expected": "invalidListing",
+      "outcome": "invalidListing",
+      "passed": true,
+      "catalog": true,
+      "build": "normal",
+      "mode": "explicit",
+      "indexUnchanged": true,
+      "memoryUnchanged": true,
+      "reopenedUnchanged": true,
+      "durableUnchanged": true,
+      "titles": [
+        "previous-good"
+      ],
+      "origins": [
+        "filename"
+      ],
+      "commands": [
+        "AUTH",
+        "PBSZ",
+        "PROT",
+        "USER",
+        "PASS",
+        "TYPE",
+        "OPTS",
+        "EPSV",
+        "MLSD",
+        "PWD",
+        "MLST"
+      ],
+      "mlstRequests": 1,
+      "nfoRETRRequests": 0,
+      "nfoBytesSent": 0,
+      "videoRETRRequests": 0,
+      "sourceUnchanged": true,
+      "fixtureOwnerMutations": 0,
+      "controlPeerEOFObserved": true,
+      "dataPeersEOFObserved": 1,
+      "elapsedMs": 10.917708,
+      "cancelReturnMs": null
+    },
+    "preLink": {
+      "expected": "unsupportedEntry",
+      "outcome": "unsupportedEntry",
+      "passed": true,
+      "catalog": true,
+      "build": "normal",
+      "mode": "explicit",
+      "indexUnchanged": true,
+      "memoryUnchanged": true,
+      "reopenedUnchanged": true,
+      "durableUnchanged": true,
+      "titles": [
+        "previous-good"
+      ],
+      "origins": [
+        "filename"
+      ],
+      "commands": [
+        "AUTH",
+        "PBSZ",
+        "PROT",
+        "USER",
+        "PASS",
+        "TYPE",
+        "OPTS",
+        "EPSV",
+        "MLSD",
+        "PWD",
+        "MLST"
+      ],
+      "mlstRequests": 1,
+      "nfoRETRRequests": 0,
+      "nfoBytesSent": 0,
+      "videoRETRRequests": 0,
+      "sourceUnchanged": true,
+      "fixtureOwnerMutations": 0,
+      "controlPeerEOFObserved": true,
+      "dataPeersEOFObserved": 1,
+      "elapsedMs": 7.836458,
+      "cancelReturnMs": null
+    },
+    "preDenied": {
+      "expected": "unexpected(550)",
+      "outcome": "unexpected(550)",
+      "passed": true,
+      "catalog": true,
+      "build": "normal",
+      "mode": "explicit",
+      "indexUnchanged": true,
+      "memoryUnchanged": true,
+      "reopenedUnchanged": true,
+      "durableUnchanged": true,
+      "titles": [
+        "previous-good"
+      ],
+      "origins": [
+        "filename"
+      ],
+      "commands": [
+        "AUTH",
+        "PBSZ",
+        "PROT",
+        "USER",
+        "PASS",
+        "TYPE",
+        "OPTS",
+        "EPSV",
+        "MLSD",
+        "PWD",
+        "MLST"
+      ],
+      "mlstRequests": 1,
+      "nfoRETRRequests": 0,
+      "nfoBytesSent": 0,
+      "videoRETRRequests": 0,
+      "sourceUnchanged": true,
+      "fixtureOwnerMutations": 0,
+      "controlPeerEOFObserved": true,
+      "dataPeersEOFObserved": 1,
+      "elapsedMs": 10.751,
+      "cancelReturnMs": null
+    },
+    "unicodeName": {
+      "expected": "success",
+      "outcome": "success",
+      "passed": true,
+      "catalog": true,
+      "build": "normal",
+      "mode": "explicit",
+      "indexUnchanged": false,
+      "memoryUnchanged": false,
+      "reopenedUnchanged": false,
+      "durableUnchanged": false,
+      "titles": [
+        "fresh-title"
+      ],
+      "origins": [
+        "nfo"
+      ],
+      "commands": [
+        "AUTH",
+        "PBSZ",
+        "PROT",
+        "USER",
+        "PASS",
+        "TYPE",
+        "OPTS",
+        "EPSV",
+        "MLSD",
+        "PWD",
+        "MLST",
+        "EPSV",
+        "RETR",
+        "MLST",
+        "QUIT"
+      ],
+      "mlstRequests": 2,
+      "nfoRETRRequests": 1,
+      "nfoBytesSent": 50001,
+      "videoRETRRequests": 0,
+      "sourceUnchanged": true,
+      "fixtureOwnerMutations": 0,
+      "controlPeerEOFObserved": true,
+      "dataPeersEOFObserved": 2,
+      "elapsedMs": 21.71625,
+      "cancelReturnMs": null
+    },
+    "pwdQuote": {
+      "expected": "success",
+      "outcome": "success",
+      "passed": true,
+      "catalog": true,
+      "build": "normal",
+      "mode": "explicit",
+      "indexUnchanged": false,
+      "memoryUnchanged": false,
+      "reopenedUnchanged": false,
+      "durableUnchanged": false,
+      "titles": [
+        "fresh-title"
+      ],
+      "origins": [
+        "nfo"
+      ],
+      "commands": [
+        "AUTH",
+        "PBSZ",
+        "PROT",
+        "USER",
+        "PASS",
+        "TYPE",
+        "OPTS",
+        "EPSV",
+        "MLSD",
+        "PWD",
+        "MLST",
+        "EPSV",
+        "RETR",
+        "MLST",
+        "QUIT"
+      ],
+      "mlstRequests": 2,
+      "nfoRETRRequests": 1,
+      "nfoBytesSent": 50001,
+      "videoRETRRequests": 0,
+      "sourceUnchanged": true,
+      "fixtureOwnerMutations": 0,
+      "controlPeerEOFObserved": true,
+      "dataPeersEOFObserved": 2,
+      "elapsedMs": 13.854583,
+      "cancelReturnMs": null
+    },
+    "relativeMLST": {
+      "expected": "success",
+      "outcome": "success",
+      "passed": true,
+      "catalog": true,
+      "build": "normal",
+      "mode": "explicit",
+      "indexUnchanged": false,
+      "memoryUnchanged": false,
+      "reopenedUnchanged": false,
+      "durableUnchanged": false,
+      "titles": [
+        "fresh-title"
+      ],
+      "origins": [
+        "nfo"
+      ],
+      "commands": [
+        "AUTH",
+        "PBSZ",
+        "PROT",
+        "USER",
+        "PASS",
+        "TYPE",
+        "OPTS",
+        "EPSV",
+        "MLSD",
+        "PWD",
+        "MLST",
+        "EPSV",
+        "RETR",
+        "MLST",
+        "QUIT"
+      ],
+      "mlstRequests": 2,
+      "nfoRETRRequests": 1,
+      "nfoBytesSent": 50001,
+      "videoRETRRequests": 0,
+      "sourceUnchanged": true,
+      "fixtureOwnerMutations": 0,
+      "controlPeerEOFObserved": true,
+      "dataPeersEOFObserved": 2,
+      "elapsedMs": 13.247125,
+      "cancelReturnMs": null
+    },
+    "missingSize": {
+      "expected": "metadataUnavailable",
+      "outcome": "metadataUnavailable",
+      "passed": true,
+      "catalog": true,
+      "build": "normal",
+      "mode": "explicit",
+      "indexUnchanged": true,
+      "memoryUnchanged": true,
+      "reopenedUnchanged": true,
+      "durableUnchanged": true,
+      "titles": [
+        "previous-good"
+      ],
+      "origins": [
+        "filename"
+      ],
+      "commands": [
+        "AUTH",
+        "PBSZ",
+        "PROT",
+        "USER",
+        "PASS",
+        "TYPE",
+        "OPTS",
+        "EPSV",
+        "MLSD"
+      ],
+      "mlstRequests": 0,
+      "nfoRETRRequests": 0,
+      "nfoBytesSent": 0,
+      "videoRETRRequests": 0,
+      "sourceUnchanged": true,
+      "fixtureOwnerMutations": 0,
+      "controlPeerEOFObserved": true,
+      "dataPeersEOFObserved": 1,
+      "elapsedMs": 9.295125,
+      "cancelReturnMs": null
+    },
+    "missingModify": {
+      "expected": "metadataUnavailable",
+      "outcome": "metadataUnavailable",
+      "passed": true,
+      "catalog": true,
+      "build": "normal",
+      "mode": "explicit",
+      "indexUnchanged": true,
+      "memoryUnchanged": true,
+      "reopenedUnchanged": true,
+      "durableUnchanged": true,
+      "titles": [
+        "previous-good"
+      ],
+      "origins": [
+        "filename"
+      ],
+      "commands": [
+        "AUTH",
+        "PBSZ",
+        "PROT",
+        "USER",
+        "PASS",
+        "TYPE",
+        "OPTS",
+        "EPSV",
+        "MLSD"
+      ],
+      "mlstRequests": 0,
+      "nfoRETRRequests": 0,
+      "nfoBytesSent": 0,
+      "videoRETRRequests": 0,
+      "sourceUnchanged": true,
+      "fixtureOwnerMutations": 0,
+      "controlPeerEOFObserved": true,
+      "dataPeersEOFObserved": 1,
+      "elapsedMs": 13.106667,
+      "cancelReturnMs": null
+    },
+    "oversized": {
+      "expected": "limit",
+      "outcome": "limit",
+      "passed": true,
+      "catalog": true,
+      "build": "normal",
+      "mode": "explicit",
+      "indexUnchanged": true,
+      "memoryUnchanged": true,
+      "reopenedUnchanged": true,
+      "durableUnchanged": true,
+      "titles": [
+        "previous-good"
+      ],
+      "origins": [
+        "filename"
+      ],
+      "commands": [
+        "AUTH",
+        "PBSZ",
+        "PROT",
+        "USER",
+        "PASS",
+        "TYPE",
+        "OPTS",
+        "EPSV",
+        "MLSD"
+      ],
+      "mlstRequests": 0,
+      "nfoRETRRequests": 0,
+      "nfoBytesSent": 0,
+      "videoRETRRequests": 0,
+      "sourceUnchanged": true,
+      "fixtureOwnerMutations": 0,
+      "controlPeerEOFObserved": true,
+      "dataPeersEOFObserved": 1,
+      "elapsedMs": 25.520667,
+      "cancelReturnMs": null
+    },
+    "preSize": {
+      "expected": "sourceChanged",
+      "outcome": "sourceChanged",
+      "passed": true,
+      "catalog": true,
+      "build": "normal",
+      "mode": "explicit",
+      "indexUnchanged": true,
+      "memoryUnchanged": true,
+      "reopenedUnchanged": true,
+      "durableUnchanged": true,
+      "titles": [
+        "previous-good"
+      ],
+      "origins": [
+        "filename"
+      ],
+      "commands": [
+        "AUTH",
+        "PBSZ",
+        "PROT",
+        "USER",
+        "PASS",
+        "TYPE",
+        "OPTS",
+        "EPSV",
+        "MLSD",
+        "PWD",
+        "MLST"
+      ],
+      "mlstRequests": 1,
+      "nfoRETRRequests": 0,
+      "nfoBytesSent": 0,
+      "videoRETRRequests": 0,
+      "sourceUnchanged": true,
+      "fixtureOwnerMutations": 0,
+      "controlPeerEOFObserved": true,
+      "dataPeersEOFObserved": 1,
+      "elapsedMs": 25.354541,
+      "cancelReturnMs": null
+    },
+    "preModify": {
+      "expected": "sourceChanged",
+      "outcome": "sourceChanged",
+      "passed": true,
+      "catalog": true,
+      "build": "normal",
+      "mode": "explicit",
+      "indexUnchanged": true,
+      "memoryUnchanged": true,
+      "reopenedUnchanged": true,
+      "durableUnchanged": true,
+      "titles": [
+        "previous-good"
+      ],
+      "origins": [
+        "filename"
+      ],
+      "commands": [
+        "AUTH",
+        "PBSZ",
+        "PROT",
+        "USER",
+        "PASS",
+        "TYPE",
+        "OPTS",
+        "EPSV",
+        "MLSD",
+        "PWD",
+        "MLST"
+      ],
+      "mlstRequests": 1,
+      "nfoRETRRequests": 0,
+      "nfoBytesSent": 0,
+      "videoRETRRequests": 0,
+      "sourceUnchanged": true,
+      "fixtureOwnerMutations": 0,
+      "controlPeerEOFObserved": true,
+      "dataPeersEOFObserved": 1,
+      "elapsedMs": 20.933292,
+      "cancelReturnMs": null
+    },
+    "postSize": {
+      "expected": "sourceChanged",
+      "outcome": "sourceChanged",
+      "passed": true,
+      "catalog": true,
+      "build": "normal",
+      "mode": "explicit",
+      "indexUnchanged": true,
+      "memoryUnchanged": true,
+      "reopenedUnchanged": true,
+      "durableUnchanged": true,
+      "titles": [
+        "previous-good"
+      ],
+      "origins": [
+        "filename"
+      ],
+      "commands": [
+        "AUTH",
+        "PBSZ",
+        "PROT",
+        "USER",
+        "PASS",
+        "TYPE",
+        "OPTS",
+        "EPSV",
+        "MLSD",
+        "PWD",
+        "MLST",
+        "EPSV",
+        "RETR",
+        "MLST"
+      ],
+      "mlstRequests": 2,
+      "nfoRETRRequests": 1,
+      "nfoBytesSent": 50001,
+      "videoRETRRequests": 0,
+      "sourceUnchanged": true,
+      "fixtureOwnerMutations": 0,
+      "controlPeerEOFObserved": true,
+      "dataPeersEOFObserved": 2,
+      "elapsedMs": 17.287458,
+      "cancelReturnMs": null
+    },
+    "postModify": {
+      "expected": "sourceChanged",
+      "outcome": "sourceChanged",
+      "passed": true,
+      "catalog": true,
+      "build": "normal",
+      "mode": "explicit",
+      "indexUnchanged": true,
+      "memoryUnchanged": true,
+      "reopenedUnchanged": true,
+      "durableUnchanged": true,
+      "titles": [
+        "previous-good"
+      ],
+      "origins": [
+        "filename"
+      ],
+      "commands": [
+        "AUTH",
+        "PBSZ",
+        "PROT",
+        "USER",
+        "PASS",
+        "TYPE",
+        "OPTS",
+        "EPSV",
+        "MLSD",
+        "PWD",
+        "MLST",
+        "EPSV",
+        "RETR",
+        "MLST"
+      ],
+      "mlstRequests": 2,
+      "nfoRETRRequests": 1,
+      "nfoBytesSent": 50001,
+      "videoRETRRequests": 0,
+      "sourceUnchanged": true,
+      "fixtureOwnerMutations": 0,
+      "controlPeerEOFObserved": true,
+      "dataPeersEOFObserved": 2,
+      "elapsedMs": 9.688125,
+      "cancelReturnMs": null
+    },
+    "postUnique": {
+      "expected": "sourceChanged",
+      "outcome": "sourceChanged",
+      "passed": true,
+      "catalog": true,
+      "build": "normal",
+      "mode": "explicit",
+      "indexUnchanged": true,
+      "memoryUnchanged": true,
+      "reopenedUnchanged": true,
+      "durableUnchanged": true,
+      "titles": [
+        "previous-good"
+      ],
+      "origins": [
+        "filename"
+      ],
+      "commands": [
+        "AUTH",
+        "PBSZ",
+        "PROT",
+        "USER",
+        "PASS",
+        "TYPE",
+        "OPTS",
+        "EPSV",
+        "MLSD",
+        "PWD",
+        "MLST",
+        "EPSV",
+        "RETR",
+        "MLST"
+      ],
+      "mlstRequests": 2,
+      "nfoRETRRequests": 1,
+      "nfoBytesSent": 50001,
+      "videoRETRRequests": 0,
+      "sourceUnchanged": true,
+      "fixtureOwnerMutations": 0,
+      "controlPeerEOFObserved": true,
+      "dataPeersEOFObserved": 2,
+      "elapsedMs": 9.637875,
+      "cancelReturnMs": null
+    },
+    "postMissingUnique": {
+      "expected": "sourceChanged",
+      "outcome": "sourceChanged",
+      "passed": true,
+      "catalog": true,
+      "build": "normal",
+      "mode": "explicit",
+      "indexUnchanged": true,
+      "memoryUnchanged": true,
+      "reopenedUnchanged": true,
+      "durableUnchanged": true,
+      "titles": [
+        "previous-good"
+      ],
+      "origins": [
+        "filename"
+      ],
+      "commands": [
+        "AUTH",
+        "PBSZ",
+        "PROT",
+        "USER",
+        "PASS",
+        "TYPE",
+        "OPTS",
+        "EPSV",
+        "MLSD",
+        "PWD",
+        "MLST",
+        "EPSV",
+        "RETR",
+        "MLST"
+      ],
+      "mlstRequests": 2,
+      "nfoRETRRequests": 1,
+      "nfoBytesSent": 50001,
+      "videoRETRRequests": 0,
+      "sourceUnchanged": true,
+      "fixtureOwnerMutations": 0,
+      "controlPeerEOFObserved": true,
+      "dataPeersEOFObserved": 2,
+      "elapsedMs": 17.614625,
+      "cancelReturnMs": null
+    },
+    "postLink": {
+      "expected": "unsupportedEntry",
+      "outcome": "unsupportedEntry",
+      "passed": true,
+      "catalog": true,
+      "build": "normal",
+      "mode": "explicit",
+      "indexUnchanged": true,
+      "memoryUnchanged": true,
+      "reopenedUnchanged": true,
+      "durableUnchanged": true,
+      "titles": [
+        "previous-good"
+      ],
+      "origins": [
+        "filename"
+      ],
+      "commands": [
+        "AUTH",
+        "PBSZ",
+        "PROT",
+        "USER",
+        "PASS",
+        "TYPE",
+        "OPTS",
+        "EPSV",
+        "MLSD",
+        "PWD",
+        "MLST",
+        "EPSV",
+        "RETR",
+        "MLST"
+      ],
+      "mlstRequests": 2,
+      "nfoRETRRequests": 1,
+      "nfoBytesSent": 50001,
+      "videoRETRRequests": 0,
+      "sourceUnchanged": true,
+      "fixtureOwnerMutations": 0,
+      "controlPeerEOFObserved": true,
+      "dataPeersEOFObserved": 2,
+      "elapsedMs": 9.547416,
+      "cancelReturnMs": null
+    },
+    "wrongPath": {
+      "expected": "sourceChanged",
+      "outcome": "sourceChanged",
+      "passed": true,
+      "catalog": true,
+      "build": "normal",
+      "mode": "explicit",
+      "indexUnchanged": true,
+      "memoryUnchanged": true,
+      "reopenedUnchanged": true,
+      "durableUnchanged": true,
+      "titles": [
+        "previous-good"
+      ],
+      "origins": [
+        "filename"
+      ],
+      "commands": [
+        "AUTH",
+        "PBSZ",
+        "PROT",
+        "USER",
+        "PASS",
+        "TYPE",
+        "OPTS",
+        "EPSV",
+        "MLSD",
+        "PWD",
+        "MLST"
+      ],
+      "mlstRequests": 1,
+      "nfoRETRRequests": 0,
+      "nfoBytesSent": 0,
+      "videoRETRRequests": 0,
+      "sourceUnchanged": true,
+      "fixtureOwnerMutations": 0,
+      "controlPeerEOFObserved": true,
+      "dataPeersEOFObserved": 1,
+      "elapsedMs": 12.693875,
+      "cancelReturnMs": null
+    },
+    "multipleMLST": {
+      "expected": "invalidReply",
+      "outcome": "invalidReply",
+      "passed": true,
+      "catalog": true,
+      "build": "normal",
+      "mode": "explicit",
+      "indexUnchanged": true,
+      "memoryUnchanged": true,
+      "reopenedUnchanged": true,
+      "durableUnchanged": true,
+      "titles": [
+        "previous-good"
+      ],
+      "origins": [
+        "filename"
+      ],
+      "commands": [
+        "AUTH",
+        "PBSZ",
+        "PROT",
+        "USER",
+        "PASS",
+        "TYPE",
+        "OPTS",
+        "EPSV",
+        "MLSD",
+        "PWD",
+        "MLST"
+      ],
+      "mlstRequests": 1,
+      "nfoRETRRequests": 0,
+      "nfoBytesSent": 0,
+      "videoRETRRequests": 0,
+      "sourceUnchanged": true,
+      "fixtureOwnerMutations": 0,
+      "controlPeerEOFObserved": true,
+      "dataPeersEOFObserved": 1,
+      "elapsedMs": 13.744166,
+      "cancelReturnMs": null
+    },
+    "unsupportedMLST": {
+      "expected": "unexpected(502)",
+      "outcome": "unexpected(502)",
+      "passed": true,
+      "catalog": true,
+      "build": "normal",
+      "mode": "explicit",
+      "indexUnchanged": true,
+      "memoryUnchanged": true,
+      "reopenedUnchanged": true,
+      "durableUnchanged": true,
+      "titles": [
+        "previous-good"
+      ],
+      "origins": [
+        "filename"
+      ],
+      "commands": [
+        "AUTH",
+        "PBSZ",
+        "PROT",
+        "USER",
+        "PASS",
+        "TYPE",
+        "OPTS",
+        "EPSV",
+        "MLSD",
+        "PWD",
+        "MLST"
+      ],
+      "mlstRequests": 1,
+      "nfoRETRRequests": 0,
+      "nfoBytesSent": 0,
+      "videoRETRRequests": 0,
+      "sourceUnchanged": true,
+      "fixtureOwnerMutations": 0,
+      "controlPeerEOFObserved": true,
+      "dataPeersEOFObserved": 1,
+      "elapsedMs": 13.206958,
+      "cancelReturnMs": null
+    },
+    "badPWD": {
+      "expected": "invalidReply",
+      "outcome": "invalidReply",
+      "passed": true,
+      "catalog": true,
+      "build": "normal",
+      "mode": "explicit",
+      "indexUnchanged": true,
+      "memoryUnchanged": true,
+      "reopenedUnchanged": true,
+      "durableUnchanged": true,
+      "titles": [
+        "previous-good"
+      ],
+      "origins": [
+        "filename"
+      ],
+      "commands": [
+        "AUTH",
+        "PBSZ",
+        "PROT",
+        "USER",
+        "PASS",
+        "TYPE",
+        "OPTS",
+        "EPSV",
+        "MLSD",
+        "PWD"
+      ],
+      "mlstRequests": 0,
+      "nfoRETRRequests": 0,
+      "nfoBytesSent": 0,
+      "videoRETRRequests": 0,
+      "sourceUnchanged": true,
+      "fixtureOwnerMutations": 0,
+      "controlPeerEOFObserved": true,
+      "dataPeersEOFObserved": 1,
+      "elapsedMs": 13.633416,
+      "cancelReturnMs": null
+    },
+    "postDenied": {
+      "expected": "unexpected(550)",
+      "outcome": "unexpected(550)",
+      "passed": true,
+      "catalog": true,
+      "build": "normal",
+      "mode": "explicit",
+      "indexUnchanged": true,
+      "memoryUnchanged": true,
+      "reopenedUnchanged": true,
+      "durableUnchanged": true,
+      "titles": [
+        "previous-good"
+      ],
+      "origins": [
+        "filename"
+      ],
+      "commands": [
+        "AUTH",
+        "PBSZ",
+        "PROT",
+        "USER",
+        "PASS",
+        "TYPE",
+        "OPTS",
+        "EPSV",
+        "MLSD",
+        "PWD",
+        "MLST",
+        "EPSV",
+        "RETR",
+        "MLST"
+      ],
+      "mlstRequests": 2,
+      "nfoRETRRequests": 1,
+      "nfoBytesSent": 50001,
+      "videoRETRRequests": 0,
+      "sourceUnchanged": true,
+      "fixtureOwnerMutations": 0,
+      "controlPeerEOFObserved": true,
+      "dataPeersEOFObserved": 2,
+      "elapsedMs": 16.520625,
+      "cancelReturnMs": null
+    },
+    "sameLength": {
+      "expected": "sourceChanged",
+      "outcome": "sourceChanged",
+      "passed": true,
+      "catalog": true,
+      "build": "normal",
+      "mode": "explicit",
+      "indexUnchanged": true,
+      "memoryUnchanged": true,
+      "reopenedUnchanged": true,
+      "durableUnchanged": true,
+      "titles": [
+        "previous-good"
+      ],
+      "origins": [
+        "filename"
+      ],
+      "commands": [
+        "AUTH",
+        "PBSZ",
+        "PROT",
+        "USER",
+        "PASS",
+        "TYPE",
+        "OPTS",
+        "EPSV",
+        "MLSD",
+        "PWD",
+        "MLST",
+        "EPSV",
+        "RETR",
+        "MLST"
+      ],
+      "mlstRequests": 2,
+      "nfoRETRRequests": 1,
+      "nfoBytesSent": 50001,
+      "videoRETRRequests": 0,
+      "sourceUnchanged": false,
+      "fixtureOwnerMutations": 1,
+      "controlPeerEOFObserved": true,
+      "dataPeersEOFObserved": 2,
+      "elapsedMs": 16.9255,
+      "cancelReturnMs": null
+    },
+    "grow": {
+      "expected": "sourceChanged",
+      "outcome": "sourceChanged",
+      "passed": true,
+      "catalog": true,
+      "build": "normal",
+      "mode": "explicit",
+      "indexUnchanged": true,
+      "memoryUnchanged": true,
+      "reopenedUnchanged": true,
+      "durableUnchanged": true,
+      "titles": [
+        "previous-good"
+      ],
+      "origins": [
+        "filename"
+      ],
+      "commands": [
+        "AUTH",
+        "PBSZ",
+        "PROT",
+        "USER",
+        "PASS",
+        "TYPE",
+        "OPTS",
+        "EPSV",
+        "MLSD",
+        "PWD",
+        "MLST",
+        "EPSV",
+        "RETR"
+      ],
+      "mlstRequests": 1,
+      "nfoRETRRequests": 1,
+      "nfoBytesSent": 50007,
+      "videoRETRRequests": 0,
+      "sourceUnchanged": false,
+      "fixtureOwnerMutations": 1,
+      "controlPeerEOFObserved": true,
+      "dataPeersEOFObserved": 2,
+      "elapsedMs": 16.122708,
+      "cancelReturnMs": null
+    },
+    "truncate": {
+      "expected": "sourceChanged",
+      "outcome": "sourceChanged",
+      "passed": true,
+      "catalog": true,
+      "build": "normal",
+      "mode": "explicit",
+      "indexUnchanged": true,
+      "memoryUnchanged": true,
+      "reopenedUnchanged": true,
+      "durableUnchanged": true,
+      "titles": [
+        "previous-good"
+      ],
+      "origins": [
+        "filename"
+      ],
+      "commands": [
+        "AUTH",
+        "PBSZ",
+        "PROT",
+        "USER",
+        "PASS",
+        "TYPE",
+        "OPTS",
+        "EPSV",
+        "MLSD",
+        "PWD",
+        "MLST",
+        "EPSV",
+        "RETR",
+        "MLST"
+      ],
+      "mlstRequests": 2,
+      "nfoRETRRequests": 1,
+      "nfoBytesSent": 50001,
+      "videoRETRRequests": 0,
+      "sourceUnchanged": false,
+      "fixtureOwnerMutations": 1,
+      "controlPeerEOFObserved": true,
+      "dataPeersEOFObserved": 2,
+      "elapsedMs": 16.114791,
+      "cancelReturnMs": null
+    },
+    "replace": {
+      "expected": "sourceChanged",
+      "outcome": "sourceChanged",
+      "passed": true,
+      "catalog": true,
+      "build": "normal",
+      "mode": "explicit",
+      "indexUnchanged": true,
+      "memoryUnchanged": true,
+      "reopenedUnchanged": true,
+      "durableUnchanged": true,
+      "titles": [
+        "previous-good"
+      ],
+      "origins": [
+        "filename"
+      ],
+      "commands": [
+        "AUTH",
+        "PBSZ",
+        "PROT",
+        "USER",
+        "PASS",
+        "TYPE",
+        "OPTS",
+        "EPSV",
+        "MLSD",
+        "PWD",
+        "MLST",
+        "EPSV",
+        "RETR",
+        "MLST"
+      ],
+      "mlstRequests": 2,
+      "nfoRETRRequests": 1,
+      "nfoBytesSent": 50001,
+      "videoRETRRequests": 0,
+      "sourceUnchanged": false,
+      "fixtureOwnerMutations": 1,
+      "controlPeerEOFObserved": true,
+      "dataPeersEOFObserved": 2,
+      "elapsedMs": 15.469667,
+      "cancelReturnMs": null
+    },
+    "retrFinalFailure": {
+      "expected": "unexpected(426)",
+      "outcome": "unexpected(426)",
+      "passed": true,
+      "catalog": true,
+      "build": "normal",
+      "mode": "explicit",
+      "indexUnchanged": true,
+      "memoryUnchanged": true,
+      "reopenedUnchanged": true,
+      "durableUnchanged": true,
+      "titles": [
+        "previous-good"
+      ],
+      "origins": [
+        "filename"
+      ],
+      "commands": [
+        "AUTH",
+        "PBSZ",
+        "PROT",
+        "USER",
+        "PASS",
+        "TYPE",
+        "OPTS",
+        "EPSV",
+        "MLSD",
+        "PWD",
+        "MLST",
+        "EPSV",
+        "RETR"
+      ],
+      "mlstRequests": 1,
+      "nfoRETRRequests": 1,
+      "nfoBytesSent": 50001,
+      "videoRETRRequests": 0,
+      "sourceUnchanged": true,
+      "fixtureOwnerMutations": 0,
+      "controlPeerEOFObserved": true,
+      "dataPeersEOFObserved": 2,
+      "elapsedMs": 16.551834,
+      "cancelReturnMs": null
+    },
+    "invalidXML": {
+      "expected": "success",
+      "outcome": "success",
+      "passed": true,
+      "catalog": true,
+      "build": "normal",
+      "mode": "explicit",
+      "indexUnchanged": false,
+      "memoryUnchanged": false,
+      "reopenedUnchanged": false,
+      "durableUnchanged": false,
+      "titles": [
+        "Movie"
+      ],
+      "origins": [
+        "filename"
+      ],
+      "commands": [
+        "AUTH",
+        "PBSZ",
+        "PROT",
+        "USER",
+        "PASS",
+        "TYPE",
+        "OPTS",
+        "EPSV",
+        "MLSD",
+        "PWD",
+        "MLST",
+        "EPSV",
+        "RETR",
+        "MLST",
+        "QUIT"
+      ],
+      "mlstRequests": 2,
+      "nfoRETRRequests": 1,
+      "nfoBytesSent": 7,
+      "videoRETRRequests": 0,
+      "sourceUnchanged": true,
+      "fixtureOwnerMutations": 0,
+      "controlPeerEOFObserved": true,
+      "dataPeersEOFObserved": 2,
+      "elapsedMs": 18.138834,
+      "cancelReturnMs": null
+    },
+    "slowNFO": {
+      "expected": "deadline",
+      "outcome": "deadline",
+      "passed": true,
+      "catalog": true,
+      "build": "normal",
+      "mode": "explicit",
+      "indexUnchanged": true,
+      "memoryUnchanged": true,
+      "reopenedUnchanged": true,
+      "durableUnchanged": true,
+      "titles": [
+        "previous-good"
+      ],
+      "origins": [
+        "filename"
+      ],
+      "commands": [
+        "AUTH",
+        "PBSZ",
+        "PROT",
+        "USER",
+        "PASS",
+        "TYPE",
+        "OPTS",
+        "EPSV",
+        "MLSD",
+        "PWD",
+        "MLST",
+        "EPSV",
+        "RETR"
+      ],
+      "mlstRequests": 1,
+      "nfoRETRRequests": 1,
+      "nfoBytesSent": 4096,
+      "videoRETRRequests": 0,
+      "sourceUnchanged": true,
+      "fixtureOwnerMutations": 0,
+      "controlPeerEOFObserved": true,
+      "dataPeersEOFObserved": 2,
+      "elapsedMs": 256.398459,
+      "cancelReturnMs": null
+    },
+    "cancelNFO": {
+      "expected": "CancellationError",
+      "outcome": "CancellationError",
+      "passed": true,
+      "catalog": true,
+      "build": "normal",
+      "mode": "explicit",
+      "indexUnchanged": true,
+      "memoryUnchanged": true,
+      "reopenedUnchanged": true,
+      "durableUnchanged": true,
+      "titles": [
+        "previous-good"
+      ],
+      "origins": [
+        "filename"
+      ],
+      "commands": [
+        "AUTH",
+        "PBSZ",
+        "PROT",
+        "USER",
+        "PASS",
+        "TYPE",
+        "OPTS",
+        "EPSV",
+        "MLSD",
+        "PWD",
+        "MLST",
+        "EPSV",
+        "RETR"
+      ],
+      "mlstRequests": 1,
+      "nfoRETRRequests": 1,
+      "nfoBytesSent": 4096,
+      "videoRETRRequests": 0,
+      "sourceUnchanged": true,
+      "fixtureOwnerMutations": 0,
+      "controlPeerEOFObserved": true,
+      "dataPeersEOFObserved": 2,
+      "elapsedMs": 17.039958,
+      "cancelReturnMs": 0.169541
+    },
+    "silentPost": {
+      "expected": "deadline",
+      "outcome": "deadline",
+      "passed": true,
+      "catalog": true,
+      "build": "normal",
+      "mode": "explicit",
+      "indexUnchanged": true,
+      "memoryUnchanged": true,
+      "reopenedUnchanged": true,
+      "durableUnchanged": true,
+      "titles": [
+        "previous-good"
+      ],
+      "origins": [
+        "filename"
+      ],
+      "commands": [
+        "AUTH",
+        "PBSZ",
+        "PROT",
+        "USER",
+        "PASS",
+        "TYPE",
+        "OPTS",
+        "EPSV",
+        "MLSD",
+        "PWD",
+        "MLST",
+        "EPSV",
+        "RETR",
+        "MLST"
+      ],
+      "mlstRequests": 2,
+      "nfoRETRRequests": 1,
+      "nfoBytesSent": 50001,
+      "videoRETRRequests": 0,
+      "sourceUnchanged": true,
+      "fixtureOwnerMutations": 0,
+      "controlPeerEOFObserved": true,
+      "dataPeersEOFObserved": 2,
+      "elapsedMs": 263.500125,
+      "cancelReturnMs": null
+    },
+    "cancelPost": {
+      "expected": "CancellationError",
+      "outcome": "CancellationError",
+      "passed": true,
+      "catalog": true,
+      "build": "normal",
+      "mode": "explicit",
+      "indexUnchanged": true,
+      "memoryUnchanged": true,
+      "reopenedUnchanged": true,
+      "durableUnchanged": true,
+      "titles": [
+        "previous-good"
+      ],
+      "origins": [
+        "filename"
+      ],
+      "commands": [
+        "AUTH",
+        "PBSZ",
+        "PROT",
+        "USER",
+        "PASS",
+        "TYPE",
+        "OPTS",
+        "EPSV",
+        "MLSD",
+        "PWD",
+        "MLST",
+        "EPSV",
+        "RETR",
+        "MLST"
+      ],
+      "mlstRequests": 2,
+      "nfoRETRRequests": 1,
+      "nfoBytesSent": 50001,
+      "videoRETRRequests": 0,
+      "sourceUnchanged": true,
+      "fixtureOwnerMutations": 0,
+      "controlPeerEOFObserved": true,
+      "dataPeersEOFObserved": 2,
+      "elapsedMs": 15.965583,
+      "cancelReturnMs": 0.131875
+    },
+    "asannormal": {
+      "expected": "success",
+      "outcome": "success",
+      "passed": true,
+      "catalog": true,
+      "build": "asan",
+      "mode": "explicit",
+      "indexUnchanged": false,
+      "memoryUnchanged": false,
+      "reopenedUnchanged": false,
+      "durableUnchanged": false,
+      "titles": [
+        "fresh-title"
+      ],
+      "origins": [
+        "nfo"
+      ],
+      "commands": [
+        "AUTH",
+        "PBSZ",
+        "PROT",
+        "USER",
+        "PASS",
+        "TYPE",
+        "OPTS",
+        "EPSV",
+        "MLSD",
+        "PWD",
+        "MLST",
+        "EPSV",
+        "RETR",
+        "MLST",
+        "QUIT"
+      ],
+      "mlstRequests": 2,
+      "nfoRETRRequests": 1,
+      "nfoBytesSent": 50001,
+      "videoRETRRequests": 0,
+      "sourceUnchanged": true,
+      "fixtureOwnerMutations": 0,
+      "controlPeerEOFObserved": true,
+      "dataPeersEOFObserved": 2,
+      "elapsedMs": 15.079,
+      "cancelReturnMs": null
+    },
+    "asansameLength": {
+      "expected": "sourceChanged",
+      "outcome": "sourceChanged",
+      "passed": true,
+      "catalog": true,
+      "build": "asan",
+      "mode": "explicit",
+      "indexUnchanged": true,
+      "memoryUnchanged": true,
+      "reopenedUnchanged": true,
+      "durableUnchanged": true,
+      "titles": [
+        "previous-good"
+      ],
+      "origins": [
+        "filename"
+      ],
+      "commands": [
+        "AUTH",
+        "PBSZ",
+        "PROT",
+        "USER",
+        "PASS",
+        "TYPE",
+        "OPTS",
+        "EPSV",
+        "MLSD",
+        "PWD",
+        "MLST",
+        "EPSV",
+        "RETR",
+        "MLST"
+      ],
+      "mlstRequests": 2,
+      "nfoRETRRequests": 1,
+      "nfoBytesSent": 50001,
+      "videoRETRRequests": 0,
+      "sourceUnchanged": false,
+      "fixtureOwnerMutations": 1,
+      "controlPeerEOFObserved": true,
+      "dataPeersEOFObserved": 2,
+      "elapsedMs": 16.775,
+      "cancelReturnMs": null
+    },
+    "asanpostUnique": {
+      "expected": "sourceChanged",
+      "outcome": "sourceChanged",
+      "passed": true,
+      "catalog": true,
+      "build": "asan",
+      "mode": "explicit",
+      "indexUnchanged": true,
+      "memoryUnchanged": true,
+      "reopenedUnchanged": true,
+      "durableUnchanged": true,
+      "titles": [
+        "previous-good"
+      ],
+      "origins": [
+        "filename"
+      ],
+      "commands": [
+        "AUTH",
+        "PBSZ",
+        "PROT",
+        "USER",
+        "PASS",
+        "TYPE",
+        "OPTS",
+        "EPSV",
+        "MLSD",
+        "PWD",
+        "MLST",
+        "EPSV",
+        "RETR",
+        "MLST"
+      ],
+      "mlstRequests": 2,
+      "nfoRETRRequests": 1,
+      "nfoBytesSent": 50001,
+      "videoRETRRequests": 0,
+      "sourceUnchanged": true,
+      "fixtureOwnerMutations": 0,
+      "controlPeerEOFObserved": true,
+      "dataPeersEOFObserved": 2,
+      "elapsedMs": 18.647042,
+      "cancelReturnMs": null
+    },
+    "asanwrongPath": {
+      "expected": "sourceChanged",
+      "outcome": "sourceChanged",
+      "passed": true,
+      "catalog": true,
+      "build": "asan",
+      "mode": "explicit",
+      "indexUnchanged": true,
+      "memoryUnchanged": true,
+      "reopenedUnchanged": true,
+      "durableUnchanged": true,
+      "titles": [
+        "previous-good"
+      ],
+      "origins": [
+        "filename"
+      ],
+      "commands": [
+        "AUTH",
+        "PBSZ",
+        "PROT",
+        "USER",
+        "PASS",
+        "TYPE",
+        "OPTS",
+        "EPSV",
+        "MLSD",
+        "PWD",
+        "MLST"
+      ],
+      "mlstRequests": 1,
+      "nfoRETRRequests": 0,
+      "nfoBytesSent": 0,
+      "videoRETRRequests": 0,
+      "sourceUnchanged": true,
+      "fixtureOwnerMutations": 0,
+      "controlPeerEOFObserved": true,
+      "dataPeersEOFObserved": 1,
+      "elapsedMs": 11.290292,
+      "cancelReturnMs": null
+    },
+    "asancancelNFO": {
+      "expected": "CancellationError",
+      "outcome": "CancellationError",
+      "passed": true,
+      "catalog": true,
+      "build": "asan",
+      "mode": "explicit",
+      "indexUnchanged": true,
+      "memoryUnchanged": true,
+      "reopenedUnchanged": true,
+      "durableUnchanged": true,
+      "titles": [
+        "previous-good"
+      ],
+      "origins": [
+        "filename"
+      ],
+      "commands": [
+        "AUTH",
+        "PBSZ",
+        "PROT",
+        "USER",
+        "PASS",
+        "TYPE",
+        "OPTS",
+        "EPSV",
+        "MLSD",
+        "PWD",
+        "MLST",
+        "EPSV",
+        "RETR"
+      ],
+      "mlstRequests": 1,
+      "nfoRETRRequests": 1,
+      "nfoBytesSent": 4096,
+      "videoRETRRequests": 0,
+      "sourceUnchanged": true,
+      "fixtureOwnerMutations": 0,
+      "controlPeerEOFObserved": true,
+      "dataPeersEOFObserved": 2,
+      "elapsedMs": 16.805875,
+      "cancelReturnMs": 0.213666
+    },
+    "asancancelPost": {
+      "expected": "CancellationError",
+      "outcome": "CancellationError",
+      "passed": true,
+      "catalog": true,
+      "build": "asan",
+      "mode": "explicit",
+      "indexUnchanged": true,
+      "memoryUnchanged": true,
+      "reopenedUnchanged": true,
+      "durableUnchanged": true,
+      "titles": [
+        "previous-good"
+      ],
+      "origins": [
+        "filename"
+      ],
+      "commands": [
+        "AUTH",
+        "PBSZ",
+        "PROT",
+        "USER",
+        "PASS",
+        "TYPE",
+        "OPTS",
+        "EPSV",
+        "MLSD",
+        "PWD",
+        "MLST",
+        "EPSV",
+        "RETR",
+        "MLST"
+      ],
+      "mlstRequests": 2,
+      "nfoRETRRequests": 1,
+      "nfoBytesSent": 50001,
+      "videoRETRRequests": 0,
+      "sourceUnchanged": true,
+      "fixtureOwnerMutations": 0,
+      "controlPeerEOFObserved": true,
+      "dataPeersEOFObserved": 2,
+      "elapsedMs": 18.758834,
+      "cancelReturnMs": 0.165542
+    }
+  },
+  "listingRegressions": {
+    "explicit": {
+      "passed": true,
+      "outcome": "success",
+      "build": "normal"
+    },
+    "hostname": {
+      "passed": true,
+      "outcome": "success",
+      "build": "normal"
+    },
+    "ipv6": {
+      "passed": true,
+      "outcome": "success",
+      "build": "normal"
+    },
+    "domainOnly": {
+      "passed": true,
+      "outcome": "success",
+      "build": "normal"
+    },
+    "fragmented": {
+      "passed": true,
+      "outcome": "success",
+      "build": "normal"
+    },
+    "multiline": {
+      "passed": true,
+      "outcome": "success",
+      "build": "normal"
+    },
+    "pasvForeign": {
+      "passed": true,
+      "outcome": "success",
+      "build": "normal"
+    },
+    "implicitRegression": {
+      "passed": true,
+      "outcome": "success",
+      "build": "normal"
+    },
+    "plainRegression": {
+      "passed": true,
+      "outcome": "success",
+      "build": "normal"
+    },
+    "plainDenied": {
+      "passed": true,
+      "outcome": "unsupportedMode",
+      "build": "normal"
+    },
+    "invalidRoot": {
+      "passed": true,
+      "outcome": "invalidInput",
+      "build": "normal"
+    },
+    "controlUntrusted": {
+      "passed": true,
+      "outcome": "tlsUnverified",
+      "build": "normal"
+    },
+    "controlWrongName": {
+      "passed": true,
+      "outcome": "tlsUnverified",
+      "build": "normal"
+    },
+    "controlExpired": {
+      "passed": true,
+      "outcome": "tlsUnverified",
+      "build": "normal"
+    },
+    "dataWrongName": {
+      "passed": true,
+      "outcome": "tlsUnverified",
+      "build": "normal"
+    },
+    "dataAlternate": {
+      "passed": true,
+      "outcome": "tlsUnverified",
+      "build": "normal"
+    },
+    "rejectAUTH": {
+      "passed": true,
+      "outcome": "unexpected(500)",
+      "build": "normal"
+    },
+    "rejectPROT": {
+      "passed": true,
+      "outcome": "unexpected(534)",
+      "build": "normal"
+    },
+    "rejectGreeting": {
+      "passed": true,
+      "outcome": "unexpected(500)",
+      "build": "normal"
+    },
+    "queuedPlaintext": {
+      "passed": true,
+      "outcome": "invalidReply",
+      "build": "normal"
+    },
+    "longGreeting": {
+      "passed": true,
+      "outcome": "limit",
+      "build": "normal"
+    },
+    "deadlineGreeting": {
+      "passed": true,
+      "outcome": "deadline",
+      "build": "normal"
+    },
+    "cancelGreeting": {
+      "passed": true,
+      "outcome": "CancellationError",
+      "build": "normal"
+    },
+    "deadlineAUTH": {
+      "passed": true,
+      "outcome": "deadline",
+      "build": "normal"
+    },
+    "cancelAUTH": {
+      "passed": true,
+      "outcome": "CancellationError",
+      "build": "normal"
+    },
+    "deadlineControlTLS": {
+      "passed": true,
+      "outcome": "deadline",
+      "build": "normal"
+    },
+    "cancelControlTLS": {
+      "passed": true,
+      "outcome": "CancellationError",
+      "build": "normal"
+    },
+    "deadlineDataTLS": {
+      "passed": true,
+      "outcome": "deadline",
+      "build": "normal"
+    },
+    "cancelDataTLS": {
+      "passed": true,
+      "outcome": "CancellationError",
+      "build": "normal"
+    },
+    "deadlineFinal": {
+      "passed": true,
+      "outcome": "deadline",
+      "build": "normal"
+    },
+    "cancelFinal": {
+      "passed": true,
+      "outcome": "CancellationError",
+      "build": "normal"
+    },
+    "rejectLogin": {
+      "passed": true,
+      "outcome": "unexpected(530)",
+      "build": "normal"
+    },
+    "finalFailure": {
+      "passed": true,
+      "outcome": "unexpected(426)",
+      "build": "normal"
+    },
+    "requireReuse": {
+      "passed": true,
+      "outcome": "unexpected(522)",
+      "build": "normal"
+    },
+    "invalidEntry": {
+      "passed": true,
+      "outcome": "invalidListing",
+      "build": "normal"
+    },
+    "asanexplicit": {
+      "passed": true,
+      "outcome": "success",
+      "build": "asan"
+    },
+    "asanfragmented": {
+      "passed": true,
+      "outcome": "success",
+      "build": "asan"
+    },
+    "asancontrolUntrusted": {
+      "passed": true,
+      "outcome": "tlsUnverified",
+      "build": "asan"
+    },
+    "asanrejectAUTH": {
+      "passed": true,
+      "outcome": "unexpected(500)",
+      "build": "asan"
+    },
+    "asanqueuedPlaintext": {
+      "passed": true,
+      "outcome": "invalidReply",
+      "build": "asan"
+    },
+    "asancancelAUTH": {
+      "passed": true,
+      "outcome": "CancellationError",
+      "build": "asan"
+    },
+    "asancancelControlTLS": {
+      "passed": true,
+      "outcome": "CancellationError",
+      "build": "asan"
+    },
+    "asanrequireReuse": {
+      "passed": true,
+      "outcome": "unexpected(522)",
+      "build": "asan"
+    }
+  },
+  "builds": {
+    "mobile": {
+      "exit": 0,
+      "buildSucceeded": true,
+      "platform": "IOS",
+      "signed": false,
+      "embeddedInApp": false,
+      "deviceExecuted": false,
+      "sha256": "c0e03ae0004ab4d6591a23c22e7a621e917b12a2e0890c199e5c4ee6f4f6b9a1",
+      "platformVerified": true
+    },
+    "tv": {
+      "exit": 0,
+      "buildSucceeded": true,
+      "platform": "TVOS",
+      "signed": false,
+      "embeddedInApp": false,
+      "deviceExecuted": false,
+      "sha256": "ee3560ae5147c5c499dde2f3f4a3938764991d52e72194b122cbbc8de9837639",
+      "platformVerified": true
+    }
+  },
+  "device": {
+    "at": "2026-10-26T18:13:50.475721+08:00",
+    "iPhone18": [
+      {
+        "model": "iPhone19,7",
+        "os": "27.0",
+        "state": "unavailable",
+        "usbPresent": false
+      }
+    ],
+    "installed": false
+  },
+  "acceptedBehavior": [
+    "one authenticated control session for OPTS MLST, listing, PWD, MLST before RETR and MLST after",
+    "only explicitly selected single-child .nfo may be retrieved; no video RETR",
+    "known size/modify required, max 65536 bytes; directory and pre-MLST versions must agree",
+    "PWD quoted path/doubled quotes parsed; MLST requires one exact relative or known absolute target, no suffix matching",
+    "RETR data bounded by cap and exact reported length, data TLS/peer checks unchanged, final 226 required",
+    "post-MLST name/type/size/modify/unique including optional presence must match; no staged bytes returned on failure",
+    "unchanged production store copy confirms disk bytes, memory snapshot, reload and optional durable catalog retained on scan errors",
+    "invalid/empty but stably read XML follows existing filename fallback, with invalidNFO notice"
+  ],
+  "limitations": [
+    "version hints are optimistic, not an atomic content snapshot or root containment proof; unchanged/coarse timestamps and IDs can miss mutations",
+    "fixture bridge uses a WebDAV-shaped fixture configuration; no production FTP identity/path/schema/credentials adapter or recursive scan",
+    "single selected NFO only, not all sidecars in a real library",
+    "no FTPS cross-channel session reuse support; existing requiring-reuse fixture still rejected with 522",
+    "fixture anchorDER/Codable password config is private harness only and must not be persisted as App connection config",
+    "no signed/embedded App build, installation or device functional validation",
+    "ASan not TSan/leak proof; detect_leaks=0",
+    "tvOS durable catalog logic tested in a macOS isolated suite, not tvOS device restart"
+  ],
+  "preservedEvidence": [
+    "first fixture syntax error (elseabsolute) occurred before any server; original script retained",
+    "3 positive baselines and earlier 45 NFO windows retained",
+    "actual truncation fixture still sent cached old bytes; post-MLST size caught it, separate premature-EOF fixture confirmed exact-length rejection before post-MLST"
+  ],
+  "cleanup": {
+    "all140OwnedServerWindowsStopped": true,
+    "NASVPNSystemTrustChanges": false,
+    "realNASFileOrMediaRequests": 0
+  },
+  "requirements": {
+    "open": 30,
+    "inProgress": 14,
+    "awaitingAcceptance": 5,
+    "notStarted": 11,
+    "playbackCells": 114
+  }
+}

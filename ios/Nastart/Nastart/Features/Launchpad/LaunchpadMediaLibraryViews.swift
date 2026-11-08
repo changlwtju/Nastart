@@ -1,5 +1,6 @@
 import SwiftUI
 import UIKit
+import NetworkMedia
 
 struct MediaLibraryView: View {
     let service: LaunchpadService
@@ -28,6 +29,7 @@ struct MediaLibraryView: View {
                 fallbackLibrary
             }
         }
+        .nastartPageTheme()
         .navigationTitle(service.name)
         .onAppear {
             DiagnosticLogStore.shared.record(
@@ -53,7 +55,8 @@ struct MediaLibraryView: View {
     }
 
     private var jellyfinEndpointCandidates: [URL] {
-        [effectiveJellyfinEndpoint, service.endpoint, service.alternateEndpoint].compactMap { $0 }
+        JellyfinSessionEndpointPolicy.configuredEndpoints(
+            for: service, dsmBaseURL: connectionStore.dsmSession?.baseURL)
     }
 
     private var dsmSharedFolderRootPaths: [String] {
@@ -92,7 +95,7 @@ struct MediaLibraryView: View {
                         .foregroundStyle(.secondary)
                 }
                 .padding(.vertical, 8)
-            }
+            }.nastartListSection()
 
             if libraryItems.isEmpty {
                 Section {
@@ -110,7 +113,7 @@ struct MediaLibraryView: View {
                         } label: {
                             MediaActionRow(
                                 titleKey: "media.service.open_web",
-                                detail: endpoint.absoluteString,
+                                detail: NetworkConnectionAddress.displayText(for: endpoint) ?? "—",
                                 systemImage: "safari"
                             )
                         }
@@ -118,7 +121,7 @@ struct MediaLibraryView: View {
 
                 } header: {
                     Text("media.service.entry")
-                }
+                }.nastartListSection()
             }
 
             Section {
@@ -139,7 +142,7 @@ struct MediaLibraryView: View {
                 }
             } header: {
                 Text("media.library.sections")
-            }
+            }.nastartListSection()
         }
     }
 
@@ -186,7 +189,7 @@ private struct MediaShelfView: View {
                         TextField("media.search.placeholder", text: $query)
                             .textInputAutocapitalization(.never)
                     }
-                }
+                }.nastartListSection()
             }
 
             Section {
@@ -203,9 +206,10 @@ private struct MediaShelfView: View {
                         }
                     }
                 }
-            }
+            }.nastartListSection()
         }
         .listStyle(.insetGrouped)
+        .nastartReadableWidth().nastartPageTheme()
         .navigationTitle(shelf.titleKey)
     }
 
@@ -291,7 +295,7 @@ private struct MediaPlaceholderRow: View {
                 .font(.headline)
                 .foregroundStyle(.secondary)
                 .frame(width: 38, height: 38)
-                .background(AppTheme.secondarySurface)
+                .nastartSurface()
                 .clipShape(RoundedRectangle(cornerRadius: 11, style: .continuous))
 
             VStack(alignment: .leading, spacing: 4) {
@@ -316,7 +320,7 @@ private struct MediaItemRow: View {
             Image(systemName: item.symbolName)
                 .font(.headline)
                 .frame(width: 38, height: 38)
-                .background(AppTheme.secondarySurface)
+                .nastartSurface()
                 .clipShape(RoundedRectangle(cornerRadius: 11, style: .continuous))
 
             VStack(alignment: .leading, spacing: 4) {
@@ -361,7 +365,7 @@ private struct MediaItemDetailView: View {
                         .foregroundStyle(.secondary)
                 }
                 .padding(.vertical, 8)
-            }
+            }.nastartListSection()
 
             Section {
                 LabeledContent("media.item.source", value: service.name)
@@ -369,7 +373,7 @@ private struct MediaItemDetailView: View {
                 LabeledContent("media.item.meta", value: item.meta)
             } header: {
                 Text("media.item.info")
-            }
+            }.nastartListSection()
 
             Section {
                 NavigationLink {
@@ -384,9 +388,10 @@ private struct MediaItemDetailView: View {
                 }
             } header: {
                 Text("media.item.actions")
-            }
+            }.nastartListSection()
         }
         .listStyle(.insetGrouped)
+        .nastartReadableWidth().nastartPageTheme()
         .navigationTitle(item.title)
         .confirmationDialog("service.external.title", isPresented: $showPlayerPicker) {
             if item.kind == .video {
@@ -403,7 +408,7 @@ private struct MediaItemDetailView: View {
             Button("action.ok", role: .cancel) {}
         }
         .sheet(item: $sharePayload) { payload in
-            SystemShareView(items: [payload.url])
+            SystemShareView(items: [payload.url], includesVideoPlayers: item.kind == .video)
         }
     }
 

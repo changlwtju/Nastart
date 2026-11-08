@@ -1,0 +1,118 @@
+{
+  "at": "2026-10-19T18:20:04.393691+08:00",
+  "scope": "offline only; reads immutable copies from 18:03-18:09 windows, no server or device requests",
+  "sourceHeaders": [
+    {
+      "localLogIndex": 0,
+      "serverReportedSourceIdMatchesAuthenticatedClientPlayState": true,
+      "serverReportedInputPathMatchesAuthenticatedClientItem": true,
+      "serverDeclaredSourceSizeBytes": 54005939750,
+      "serverDeclaredRunTimeTicks": 75247680000,
+      "mainCommandMatchesExactPrivateOutputPrefixAndOrdinal": 1,
+      "serverCommandTimes": [
+        "2026-10-19 18:09:11.192 +08:00"
+      ],
+      "serverMinusClientClockOffsetVerified": false,
+      "videoBitrate": 1616000,
+      "PGS7Overlay": false,
+      "DeviceIdAppearsInLog": false,
+      "transcodingUrlInHeaderPresent": false,
+      "openTokenInHeaderPresent": false,
+      "specificClientTranscodeRequestBound": false,
+      "segmentCreationWallTimeKnown": false
+    },
+    {
+      "localLogIndex": 1,
+      "serverReportedSourceIdMatchesAuthenticatedClientPlayState": true,
+      "serverReportedInputPathMatchesAuthenticatedClientItem": true,
+      "serverDeclaredSourceSizeBytes": 54005939750,
+      "serverDeclaredRunTimeTicks": 75247680000,
+      "mainCommandMatchesExactPrivateOutputPrefixAndOrdinal": 1,
+      "serverCommandTimes": [
+        "2026-10-19 18:07:28.461 +08:00"
+      ],
+      "serverMinusClientClockOffsetVerified": false,
+      "videoBitrate": 9360000,
+      "PGS7Overlay": false,
+      "DeviceIdAppearsInLog": false,
+      "transcodingUrlInHeaderPresent": false,
+      "openTokenInHeaderPresent": false,
+      "specificClientTranscodeRequestBound": false,
+      "segmentCreationWallTimeKnown": false
+    },
+    {
+      "localLogIndex": 2,
+      "serverReportedSourceIdMatchesAuthenticatedClientPlayState": true,
+      "serverReportedInputPathMatchesAuthenticatedClientItem": true,
+      "serverDeclaredSourceSizeBytes": 54005939750,
+      "serverDeclaredRunTimeTicks": 75247680000,
+      "mainCommandMatchesExactPrivateOutputPrefixAndOrdinal": 1,
+      "serverCommandTimes": [
+        "2026-10-19 18:07:40.177 +08:00"
+      ],
+      "serverMinusClientClockOffsetVerified": false,
+      "videoBitrate": 1616000,
+      "PGS7Overlay": true,
+      "DeviceIdAppearsInLog": false,
+      "transcodingUrlInHeaderPresent": false,
+      "openTokenInHeaderPresent": false,
+      "specificClientTranscodeRequestBound": false,
+      "segmentCreationWallTimeKnown": false
+    },
+    {
+      "localLogIndex": 3,
+      "serverReportedSourceIdMatchesAuthenticatedClientPlayState": true,
+      "serverReportedInputPathMatchesAuthenticatedClientItem": true,
+      "serverDeclaredSourceSizeBytes": 54005939750,
+      "serverDeclaredRunTimeTicks": 75247680000,
+      "mainCommandMatchesExactPrivateOutputPrefixAndOrdinal": 1,
+      "serverCommandTimes": [
+        "2026-10-19 18:03:56.115 +08:00"
+      ],
+      "serverMinusClientClockOffsetVerified": false,
+      "videoBitrate": 3360000,
+      "PGS7Overlay": true,
+      "DeviceIdAppearsInLog": false,
+      "transcodingUrlInHeaderPresent": false,
+      "openTokenInHeaderPresent": false,
+      "specificClientTranscodeRequestBound": false,
+      "segmentCreationWallTimeKnown": false
+    }
+  ],
+  "sameNonemptyETagAcrossAllFour": true,
+  "sourceIdentityCeiling": "These four server headers describe the same authenticated JF item/media-source/path and declared size/runtime/ETag. They do not identify which client request created each transcode or independently hash the physical file.",
+  "sessionSchema": {
+    "MediaSourceIdPresent": true,
+    "PlaySessionIdPresent": false,
+    "DeviceIdPresent": true
+  },
+  "retrospectiveProcessBindingAvailable": false,
+  "doNotInferJobOwnershipFromTimingOrBitrateAlone": true,
+  "concurrencyStillUncontrolled": true,
+  "noNewMediaReadBuildOrCodeChange": true,
+  "nextDiagnosticCapability": {
+    "existingDebugOnlyEnvironment": {
+      "NASTART_TEST_STARTUP_HLS_BPS": "2000000"
+    },
+    "sourceLocation": "LaunchpadView.swift makePlaybackRequest",
+    "implementedBeforeThisAudit": true,
+    "executedThisBatch": false,
+    "scope": "Jellyfin initial HLS only; not device-file budget control or production default",
+    "guardRange": [
+      2000000,
+      20000000
+    ],
+    "originalAttemptSuppressedWhenActive": true,
+    "noTransportShapingRequested": true,
+    "purpose": "prospective same-entry same-ceiling from-head PGS/Off experiment once no other media task is active",
+    "mustObserveActualNegotiatedBudgetAndCodecs": true,
+    "mustRestoreEmptyEnvironmentAndOriginalTrackPreferences": true,
+    "cacheCannotBeCalledColdUnlessProven": true
+  },
+  "acceptance": {
+    "cellularIssueFixed": false,
+    "sourceContentHashVerified": false,
+    "strictPerformancePairAccepted": false,
+    "matrixPassAdded": false
+  }
+}
